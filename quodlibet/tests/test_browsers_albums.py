@@ -15,7 +15,7 @@ from quodlibet import config
 from quodlibet.browsers.albums import AlbumList
 from quodlibet.browsers.albums.prefs import Preferences, FakeAlbum
 from quodlibet.browsers.albums.main import (compare_title, compare_artist,
-    compare_genre, compare_rating, compare_date)
+    compare_genre, compare_rating, compare_energy, compare_date)
 from quodlibet.formats._audio import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 from quodlibet.util.path import fsnative
@@ -117,6 +117,14 @@ class TAlbumSort(TestCase):
 
         self.assertOrder(compare_rating, [None, a, b, c, n])
 
+    def test_sort_energy(self):
+        a = self._get_album({"album": "b", "~#energy": 0.5})
+        b = self._get_album({"album": "a", "~#energy": 0.25})
+        c = self._get_album({"album": "x", "~#energy": 0.0})
+        n = self._get_album({"album": "", "~#energy": 0.25})
+
+        self.assertOrder(compare_energy, [None, a, b, c, n])
+
 
 class TFakeAlbum(TestCase):
 
@@ -128,6 +136,9 @@ class TFakeAlbum(TestCase):
         self.assertEqual(FakeAlbum()("~#rating"), "Rating")
         self.assertEqual(FakeAlbum({"~#rating": 0.5})("~#rating"), 0.5)
         self.assertEqual(FakeAlbum()("~#rating:max"), "Rating<max>")
+        self.assertEqual(FakeAlbum()("~#energy"), "Energy")
+        self.assertEqual(FakeAlbum({"~#energy": 0.5})("~#energy"), 0.5)
+        self.assertEqual(FakeAlbum()("~#energy:max"), "Energy<max>")
 
     def test_get(self):
         self.assertEqual(FakeAlbum().get("title"), "Title")
@@ -135,6 +146,7 @@ class TFakeAlbum(TestCase):
     def test_comma(self):
         self.assertEqual(FakeAlbum().comma("title"), "Title")
         self.assertEqual(FakeAlbum({"~#rating": 0.5}).comma("~#rating"), 0.5)
+        self.assertEqual(FakeAlbum({"~#energy": 0.5}).comma("~#energy"), 0.5)
         self.assertEqual(FakeAlbum(title="a\nb").comma("title"), "a, b")
 
 

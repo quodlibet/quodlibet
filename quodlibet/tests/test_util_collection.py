@@ -8,23 +8,27 @@ from quodlibet.formats._audio import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
 from quodlibet.library.libraries import FileLibrary
-from quodlibet.util import format_rating
+from quodlibet.util import format_rating, format_energy
 from quodlibet.util.path import fsnative
 
 config.RATINGS = config.HardCodedRatingsPrefs()
+config.ENERGY = config.HardCodedEnergyPrefs()
 
 NUMERIC_SONGS = [
     Fakesong({"~filename": fsnative(u"fake1-\xf0.mp3"),
               "~#length": 4, "~#added": 5, "~#lastplayed": 1,
-              "~#bitrate": 200, "date": "100", "~#rating": 0.1,
+              "~#bitrate": 200, "date": "100",
+              "~#rating": 0.1, "~#energy": 0.1,
               "originaldate": "2004-01-01", "~#filesize": 101}),
     Fakesong({"~filename": fsnative(u"fake2.mp3"),
               "~#length": 7, "~#added": 7, "~#lastplayed": 88,
-              "~#bitrate": 220, "date": "99", "~#rating": 0.3,
+              "~#bitrate": 220, "date": "99",
+              "~#rating": 0.3, "~#energy": 0.3,
               "originaldate": "2002-01-01", "~#filesize": 202}),
     Fakesong({"~filename": fsnative(u"fake3.mp3"),
               "~#length": 1, "~#added": 3, "~#lastplayed": 43,
-              "~#bitrate": 60, "date": "33", "~#rating": 0.5,
+              "~#bitrate": 60, "date": "33",
+              "~#rating": 0.5, "~#energy": 0.5,
               "tracknumber": "4/6", "discnumber": "1/2"})
 ]
 AMAZING_SONG = Fakesong({"~#length": 123, "~#rating": 1.0})
@@ -119,12 +123,14 @@ class TAlbum(TestCase):
         s.failUnlessEqual(album.get("~#bitrate"), 200)
         s.failUnlessEqual(album.get("~#year"), 33)
         s.failUnlessEqual(album.get("~#rating"), 0.3)
+        s.failUnlessEqual(album.get("~#energy"), 0.3)
         s.failUnlessEqual(album.get("~#originalyear"), 2002)
 
     def test_numeric_comma(self):
         songs = [Fakesong({
             "~#added": long(1),
             "~#rating": 0.5,
+            "~#energy": 0.5,
             "~#bitrate": 42,
             "~#length": 1,
         })]
@@ -134,6 +140,7 @@ class TAlbum(TestCase):
 
         self.assertEqual(album.comma("~#added"), 1)
         self.assertEqual(album.comma("~#rating"), 0.5)
+        self.assertEqual(album.comma("~#energy"), 0.5)
         self.assertEqual(album.comma("~#bitrate"), 42)
 
     def test_numeric_funcs_text(self):
@@ -147,6 +154,7 @@ class TAlbum(TestCase):
         self.assertEqual(album("~tracks:min"), "6 tracks")
         self.assertEqual(album("~discs:min"), "2 discs")
         self.assertEqual(album("~rating:min"), format_rating(0.1))
+        self.assertEqual(album("~energy:min"), format_energy(0.1))
         self.assertEqual(album("~filesize:min"), "0 B")
 
     def test_single_rating(s):
@@ -200,6 +208,23 @@ class TAlbum(TestCase):
         # Also check another iterable
         s.failUnlessEqual(expected, bav(tuple(l), 10, 3))
 
+    def test_single_energy(s):
+        songs = [Fakesong({"~#energy": 0.75})]
+        album = Album(songs[0])
+        album.songs = set(songs)
+        # One song should average to its own energy
+        s.failUnlessEqual(album.get("~#energy:avg"), songs[0]("~#energy"))
+        # BAV should now be default for rating
+        s.failUnlessEqual(album.get("~#energy:bav"), album.get("~#energy:avg"))
+
+    def test_multiple_energies(s):
+        r1, r2 = 1.0, 0.5
+        songs = [Fakesong({"~#energy": r1}), Fakesong({"~#energy": r2})]
+        album = Album(songs[0])
+        album.songs = set(songs)
+        # Standard averaging still available
+        s.failUnlessEqual(album("~#energy:avg"), avg([r1, r2]))
+
     def test_defaults(s):
         failUnlessEq = s.failUnlessEqual
         song = Fakesong({})
@@ -212,6 +237,7 @@ class TAlbum(TestCase):
         failUnlessEq(album("~#length", "x"), song("~#length", "x"))
         failUnlessEq(album("~#bitrate", "x"), song("~#bitrate", "x"))
         failUnlessEq(album("~#rating", "x"), song("~#rating", "x"))
+        failUnlessEq(album("~#energy", "x"), song("~#energy", "x"))
         failUnlessEq(album("~#playcount", "x"), song("~#playcount", "x"))
         failUnlessEq(album("~#mtime", "x"), song("~#mtime", "x"))
         failUnlessEq(album("~#year", "x"), song("~#year", "x"))
@@ -227,6 +253,7 @@ class TAlbum(TestCase):
 
         failUnlessEq(album("~cover", "x"), song("~cover", "x"))
         failUnlessEq(album("~rating", "x"), song("~rating", "x"))
+        failUnlessEq(album("~energy", "x"), song("~energy", "x"))
 
         for p in PEOPLE:
             failUnlessEq(album(p, "x"), song(p, "x"))
@@ -388,6 +415,7 @@ class TPlaylist(TestCase):
         s.failUnlessEqual(pl.get("~#length:foo"), 0)
 
         s.failUnlessEqual(pl.get("~#rating:avg"), avg([0.1, 0.3, 0.5]))
+        s.failUnlessEqual(pl.get("~#energy:avg"), avg([0.1, 0.3, 0.5]))
 
         s.failUnlessEqual(pl.get("~#filesize"), 303)
 
@@ -396,6 +424,7 @@ class TPlaylist(TestCase):
         s.failUnlessEqual(pl.get("~#bitrate"), 200)
         s.failUnlessEqual(pl.get("~#year"), 33)
         s.failUnlessEqual(pl.get("~#rating"), 0.3)
+        s.failUnlessEqual(pl.get("~#energy"), 0.3)
         s.failUnlessEqual(pl.get("~#originalyear"), 2002)
         pl.delete()
 

@@ -25,7 +25,7 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(self.library, self.songs, plugins=False,
                               playlists=False, queue=False, devices=False,
                               remove=False, delete=False, edit=False,
-                              ratings=False)
+                              ratings=False, energy=False)
         self.failUnlessEqual(0, len(self.menu))
 
     def test_simple(self):
@@ -35,7 +35,7 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=True,
             queue=False, devices=False, remove=False, delete=False, edit=False,
-            ratings=False)
+            ratings=False, energy=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failUnless(self.menu.get_children()[0].props.sensitive)
 
@@ -43,7 +43,7 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=True,
             queue=False, devices=False, remove=False, delete=False, edit=False,
-            ratings=False)
+            ratings=False, energy=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failIf(self.menu.get_children()[0].props.sensitive)
 
@@ -51,7 +51,7 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
             queue=True, devices=False, remove=False, delete=False, edit=False,
-            ratings=False)
+            ratings=False, energy=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failUnless(self.menu.get_children()[0].props.sensitive)
 
@@ -59,7 +59,7 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
             queue=True, devices=False, remove=False, delete=False, edit=False,
-            ratings=False)
+            ratings=False, energy=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failIf(self.menu.get_children()[0].props.sensitive)
 
@@ -67,7 +67,7 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, devices=True, remove=False, delete=False, edit=False,
-            ratings=False)
+            ratings=False, energy=False)
         from quodlibet import browsers
         if browsers.media.MediaDevices in browsers.browsers:
             self.failUnlessEqual(1, len(self.menu))
@@ -78,7 +78,7 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, devices=False, remove=True, delete=False, edit=False,
-            ratings=False)
+            ratings=False, energy=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failIf(self.menu.get_children()[0].props.sensitive)
 
@@ -87,7 +87,7 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, devices=False, remove=True, delete=False, edit=False,
-            ratings=False)
+            ratings=False, energy=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failUnless(self.menu.get_children()[0].props.sensitive)
 
@@ -95,7 +95,7 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, devices=False, remove=False, delete=True, edit=False,
-            ratings=False)
+            ratings=False, energy=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failUnless(self.menu.get_children()[0].props.sensitive)
 
@@ -103,7 +103,7 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, devices=False, remove=False, delete=True, edit=False,
-            ratings=False)
+            ratings=False, energy=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failIf(self.menu.get_children()[0].props.sensitive)
 

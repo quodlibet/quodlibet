@@ -68,6 +68,7 @@ INITIAL = {
         "radio": "", # radio filter selection
         "rating_click": "true", # click to rate song, on/off
         "rating_confirm_multiple": "false", # confirm rating multiple songs
+        "energy_confirm_multiple": "false", # confirm energizing multiple songs
         "cover_size": "-1", # max cover height/width, <= 0 is default
         "search_limit": "false", # Show the limit widgets for SearchBar
     },
@@ -83,8 +84,14 @@ INITIAL = {
         # Unrated songs are given this value
         "default_rating": "0.5",
 
+        # Songs without energy ratings are given this value.
+        "default_energy": "0.5",
+
         # Rating scale i.e. maximum number of symbols
         "ratings": "4",
+
+        # Energy scale i.e. maximum number of symbols
+        "energy_levels": "4",
 
         # (0 = disabled i.e. arithmetic mean)
         "bayesian_rating_factor": "0.0",
@@ -94,6 +101,12 @@ INITIAL = {
 
         # rating symbol (hollow star)
         "rating_symbol_blank": "\xe2\x98\x86",
+
+        # energy symbol (filled triangle)
+        "energy_symbol_full": "\xe2\x96\xB6",
+
+        # energy symbol (hollow triangle)
+        "energy_symbol_blank": "\xe2\x96\xB7",
 
         # probably belongs in memory
         "repeat": "false",
@@ -319,5 +332,85 @@ class HardCodedRatingsPrefs(RatingsPrefs):
     blank_symbol = INITIAL["settings"]["rating_symbol_blank"].decode("utf-8")
     full_symbol = INITIAL["settings"]["rating_symbol_full"].decode("utf-8")
 
+
+class EnergyPrefs(object):
+    """
+    Models Energy settings as configured by the user, with caching.
+    """
+    def __init__(self):
+        self.__number = self.__default = None
+        self.__full_symbol = self.__blank_symbol = None
+
+    @property
+    def precision(self):
+        """Returns the smallest energy delta currently configured"""
+        return 1.0 / self.number
+
+    @property
+    def number(self):
+        if self.__number is None:
+            self.__number = getint("settings", "energy_levels")
+        return self.__number
+
+    @number.setter
+    def number(self, i):
+        """The (maximum) integer number of energy icons configured"""
+        self.__number = self.__save("energy_levels", int(i))
+
+    @property
+    def default(self):
+        """The current default floating-point energy"""
+        if self.__default is None:
+            self.__default = getfloat("settings", "default_energy")
+        return self.__default
+
+    @default.setter
+    def default(self, f):
+        self.__default = self.__save("default_energy", float(f))
+
+    @property
+    def full_symbol(self):
+        """The symbol to use for a full (active) energy"""
+        if self.__full_symbol is None:
+            self.__full_symbol = self.__get_symbol("full")
+        return self.__full_symbol
+
+    @full_symbol.setter
+    def full_symbol(self, s):
+        self.__full_symbol = self.__save("energy_symbol_full", s)
+
+    @property
+    def blank_symbol(self):
+        """The symbol to use for a blank (inactive) energy, if needed"""
+        if self.__blank_symbol is None:
+            self.__blank_symbol = self.__get_symbol("blank")
+        return self.__blank_symbol
+
+    @blank_symbol.setter
+    def blank_symbol(self, s):
+        self.__blank_symbol = self.__save("energy_symbol_blank", s)
+
+    @property
+    def all(self):
+        """Returns all the possible energy levels currently available"""
+        return [float(i) / self.number for i in range(0, self.number + 1)]
+
+    @staticmethod
+    def __save(key, value):
+        set("settings", key, value)
+        return value
+
+    @staticmethod
+    def __get_symbol(variant="full"):
+        return get("settings", "energy_symbol_%s" % variant).decode("utf-8")
+
+
+class HardCodedEnergyPrefs(RatingsPrefs):
+    number = int(INITIAL["settings"]["energy_levels"])
+    default = float(INITIAL["settings"]["default_energy"])
+    blank_symbol = INITIAL["settings"]["energy_symbol_blank"].decode("utf-8")
+    full_symbol = INITIAL["settings"]["energy_symbol_full"].decode("utf-8")
+
 # Need an instance just for imports to work
 RATINGS = RatingsPrefs()
+ENERGY = EnergyPrefs()

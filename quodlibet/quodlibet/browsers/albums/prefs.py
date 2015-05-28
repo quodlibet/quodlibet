@@ -15,7 +15,7 @@ from quodlibet import qltk
 from quodlibet import util
 from quodlibet.formats import PEOPLE
 
-from quodlibet.util import format_rating, connect_obj
+from quodlibet.util import format_rating, format_energy, connect_obj
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.pattern import XMLFromMarkupPattern
@@ -62,6 +62,7 @@ class Preferences(qltk.UniqueWindow):
         "~tracks": ngettext("%d track", "%d tracks", 5) % 5,
         "~discs": ngettext("%d disc", "%d discs", 2) % 2,
         "~#rating": 0.75,
+        "~#energy": 0.5,
         "album": _("An Example Album"),
         "~people": _SOME_PEOPLE + "..."})
 
@@ -75,6 +76,7 @@ class Preferences(qltk.UniqueWindow):
         self.set_transient_for(qltk.get_top_parent(browser))
         # Do this config-driven setup at instance-time
         self._EXAMPLE_ALBUM["~rating"] = format_rating(0.75)
+        self._EXAMPLE_ALBUM["~energy"] = format_energy(0.5)
 
         box = Gtk.VBox(spacing=6)
         vbox = Gtk.VBox(spacing=6)

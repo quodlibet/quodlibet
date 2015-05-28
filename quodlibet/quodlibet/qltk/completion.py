@@ -126,7 +126,7 @@ class LibraryTagCompletion(EntryWordCompletion):
 
         tags.update(["~dirname", "~basename", "~people", "~format"])
         for tag in ["track", "disc", "playcount", "skipcount", "lastplayed",
-                    "mtime", "added", "rating", "length"]:
+                    "mtime", "added", "rating", "energy", "length"]:
             tags.add("#(" + tag)
         for tag in ["date", "bpm"]:
             if tag in all_tags:

@@ -62,7 +62,7 @@ class AlbumTagCompletion(EntryWordCompletion):
             self.__model.append(row=[tag])
         for tag in ["tracks", "discs", "length", "date"]:
             self.__model.append(row=["#(" + tag])
-        for tag in ["rating", "playcount", "skipcount"]:
+        for tag in ["rating", "energy", "playcount", "skipcount"]:
             for suffix in ["avg", "max", "min", "sum"]:
                 self.__model.append(row=["#(%s:%s" % (tag, suffix)])
 
@@ -141,6 +141,19 @@ def compare_rating(a1, a2):
             cmp(a1.key, a2.key))
 
 
+def compare_energy(a1, a2):
+    if (a1 and a2) is None:
+        return cmp(a1, a2)
+    if not a1.title:
+        return 1
+    if not a2.title:
+        return -1
+    return (-cmp(a1("~#energy"), a2("~#energy")) or
+            cmpa(a1.date, a2.date) or
+            cmpa(a1.sort, a2.sort) or
+            cmp(a1.key, a2.key))
+
+
 class PreferencesButton(Gtk.HBox):
     def __init__(self, browser, model):
         super(PreferencesButton, self).__init__()
@@ -151,6 +164,7 @@ class PreferencesButton(Gtk.HBox):
             (_("_Date"), self.__compare_date),
             (_("_Genre"), self.__compare_genre),
             (_("_Rating"), self.__compare_rating),
+            (_("_Energy"), self.__compare_energy),
         ]
 
         menu = Gtk.Menu()
@@ -213,6 +227,10 @@ class PreferencesButton(Gtk.HBox):
     def __compare_rating(self, model, i1, i2, data):
         a1, a2 = model.get_value(i1), model.get_value(i2)
         return compare_rating(a1, a2)
+
+    def __compare_energy(self, model, i1, i2, data):
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_energy(a1, a2)
 
 
 class VisibleUpdate(object):

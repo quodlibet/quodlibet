@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from quodlibet.config import RatingsPrefs
+from quodlibet.config import RatingsPrefs, EnergyPrefs
 from tests import TestCase, mkstemp
 from helper import capture_output
 
@@ -71,6 +71,46 @@ class TRatingsPrefs(TestCase):
     def test_all(self):
         self.prefs.number = 5
         # Remember zero is a possible rating too
+        self.failUnlessEqual(len(self.prefs.all), 6)
+        self.failUnlessEqual(self.prefs.all, [0, 0.2, 0.4, 0.6, 0.8, 1.0])
+
+    def tearDown(self):
+        config.quit()
+
+
+class TEnergyPrefs(TestCase):
+    initial_number = int(config.INITIAL["settings"]["energy_levels"])
+
+    def setUp(self):
+        config.init()
+        self.prefs = EnergyPrefs()
+
+    def test_getters(self):
+        # A little pointless, and brittle, but still.
+        self.failUnlessEqual(self.prefs.number, self.initial_number)
+        self.failUnlessEqual(self.prefs.precision, 1.0 / self.initial_number)
+        self.failUnlessEqual(self.prefs.full_symbol, config.INITIAL[
+            "settings"]["energy_symbol_full"].decode("utf-8"))
+        self.failUnlessEqual(self.prefs.blank_symbol, config.INITIAL[
+            "settings"]["energy_symbol_blank"].decode("utf-8"))
+
+    def test_caching(self):
+        self.failUnlessEqual(self.prefs.number, self.initial_number)
+        self.prefs.number = 10
+        self.prefs.default = 0.1
+        # Read it back, and it's fine
+        self.failUnlessEqual(self.prefs.number, 10)
+        self.failUnlessEqual(self.prefs.default, 0.1)
+        # .. but modify behind the scenes (unsupported)...
+        config.reset("settings", "energy_levels")
+        config.reset("settings", "default_energy")
+        # ...and caching will return the old one
+        self.failUnlessEqual(self.prefs.number, 10)
+        self.failUnlessEqual(self.prefs.default, 0.1)
+
+    def test_all(self):
+        self.prefs.number = 5
+        # Remember zero is a possible energy too
         self.failUnlessEqual(len(self.prefs.all), 6)
         self.failUnlessEqual(self.prefs.all, [0, 0.2, 0.4, 0.6, 0.8, 1.0])
 

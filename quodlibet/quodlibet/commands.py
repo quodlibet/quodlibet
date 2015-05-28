@@ -241,6 +241,20 @@ def _set_rating(app, value):
         app.library.changed([song])
 
 
+@registry.register("set-energy", args=1)
+def _set_energy(app, value):
+    song = app.player.song
+    if not song:
+        return
+
+    try:
+        song["~#energy"] = max(0.0, min(1.0, float(value)))
+    except (ValueError, TypeError):
+        pass
+    else:
+        app.library.changed([song])
+
+
 @registry.register("dump-browsers")
 def _dump_browsers(app):
     f = StringIO()

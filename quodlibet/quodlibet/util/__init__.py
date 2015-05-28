@@ -319,6 +319,19 @@ def format_rating(value, blank=True):
     return prefs.full_symbol * ons + prefs.blank_symbol * offs
 
 
+def format_energy(value, blank=True):
+    """Turn a number into a sequence of energy symbols."""
+
+    from quodlibet import config
+
+    prefs = config.ENERGY
+    steps = prefs.number
+    value = max(min(value, 1.0), 0)
+    ons = int(round(steps * value))
+    offs = (steps - ons) if blank else 0
+    return prefs.full_symbol * ons + prefs.blank_symbol * offs
+
+
 def format_size(size):
     """Turn an integer size value into something human-readable."""
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import uuid
-from quodlibet.config import HardCodedRatingsPrefs
+from quodlibet.config import HardCodedRatingsPrefs, HardCodedEnergyPrefs
 from quodlibet.util.path import *
 from quodlibet.util import re_escape
 from quodlibet.util.string import decode, encode, split_escape, join_escape
@@ -132,6 +132,60 @@ class Tformat_rating(TestCase):
         # You never know...
         self.failUnlessEqual(util.format_rating(3.0), "11111")
         self.failUnlessEqual(util.format_rating(-0.5), "00000")
+
+
+class Tformat_energy(TestCase):
+    def setUp(self):
+        self.r = config.ENERGY= HardCodedEnergyPrefs()
+
+    def test_empty(self):
+        self.failUnlessEqual(util.format_energy(0, blank=False), "")
+
+    def test_full(self):
+        self.failUnlessEqual(
+            len(util.format_energy(1, blank=False)),
+            int(1 / self.r.precision))
+
+    def test_energy_length(self):
+        config.ENERGY.number = 4
+        for i in range(0, int(1 / self.r.precision + 1)):
+            self.failUnlessEqual(
+                i, len(util.format_energy(i * self.r.precision, blank=False)))
+
+    def test_bogus(self):
+        max_length = int(1 / self.r.precision)
+        self.failUnlessEqual(len(util.format_energy(2 ** 32 - 1, blank=False)),
+                             max_length)
+        self.failUnlessEqual(len(util.format_energy(-4.2, blank=False)), 0)
+
+    def test_blank_lengths(self):
+        """Check that there are no unsuspected edge-cases
+        for various energy precisions"""
+        for self.r.number in [1, 5, 4, 3, 2]:
+            steps = self.r.number
+            self.failUnlessEqual(len(util.format_energy(1)), steps)
+            self.failUnlessEqual(len(util.format_energy(0)), steps)
+            self.failUnlessEqual(len(util.format_energy(0.5)), steps)
+            self.failUnlessEqual(len(util.format_energy(1 / 3.0)), steps)
+
+    def test_blank_values(self):
+        self.r.number = 5
+        self.r.blank_symbol = "0"
+        self.r.full_symbol = "1"
+        # Easy ones first
+        self.failUnlessEqual(util.format_energy(0.0), "00000")
+        self.failUnlessEqual(util.format_energy(0.2), "10000")
+        self.failUnlessEqual(util.format_energy(0.8), "11110")
+        self.failUnlessEqual(util.format_energy(1.0), "11111")
+        # A bit arbitrary, but standard behaviour
+        self.failUnlessEqual(util.format_energy(0.5), "11100")
+        # Test rounding down...
+        self.failUnlessEqual(util.format_energy(0.6), "11100")
+        # Test rounding up...
+        self.failUnlessEqual(util.format_energy(0.9), "11111")
+        # You never know...
+        self.failUnlessEqual(util.format_energy(3.0), "11111")
+        self.failUnlessEqual(util.format_energy(-0.5), "00000")
 
 
 class Tpango(TestCase):

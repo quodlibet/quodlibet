@@ -280,7 +280,7 @@ class PlayQueue(SongList):
 
         menu = SongsMenu(
             library, songs, queue=False, remove=False, delete=False,
-            ratings=False)
+            ratings=False, energy=False)
         menu.preseparate()
         remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
         qltk.add_fake_accel(remove, "Delete")
