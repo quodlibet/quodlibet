@@ -618,7 +618,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         rating_accels = [
             "<ctrl>%d" % i for i in range(min(10, config.RATINGS.number + 1))]
 
-        if qltk.is_accel(event, *rating_accels):
+        if (qltk.is_accel(event, *rating_accels) and
+                config.getboolean("browsers", "rating_hotkeys")):
             rating = int(chr(event.keyval)) * config.RATINGS.precision
             self.__set_rating(rating, self.get_selected_songs(), librarian)
             return True
