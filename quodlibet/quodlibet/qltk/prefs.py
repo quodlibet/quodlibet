@@ -243,15 +243,9 @@ class PreferencesWindow(UniqueWindow):
                      tooltip=_("Enable rating by clicking on the rating "
                                "column in the song list"))
 
-            c3 = CCB(_("Enable rating _hotkeys"),
-                     'browsers', 'rating_hotkeys', populate=True,
-                     tooltip=_("Enable rating by pressing the 0-%d keys " %
-                               min(9, config.RATINGS.number)))
-
             vbox = Gtk.VBox(spacing=6)
             vbox.pack_start(c1, False, True, 0)
             vbox.pack_start(c2, False, True, 0)
-            vbox.pack_start(c3, False, True, 0)
             f = qltk.Frame(_("Ratings"), child=vbox)
             self.pack_start(f, False, True, 0)
 
