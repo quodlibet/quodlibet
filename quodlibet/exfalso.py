@@ -10,7 +10,6 @@
 
 import os
 
-import quodlibet
 from quodlibet import app
 from quodlibet import util
 from quodlibet import const
@@ -19,8 +18,7 @@ from quodlibet.util.path import fsdecode, fsnative
 
 
 def main(argv):
-    global quodlibet
-
+    import quodlibet
     from quodlibet.qltk import add_signal_watch, icons
     add_signal_watch(app.quit)
 
