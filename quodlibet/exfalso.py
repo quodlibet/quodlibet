@@ -11,7 +11,6 @@
 import os
 import sys
 
-import quodlibet
 from quodlibet import app
 from quodlibet import util
 from quodlibet import const
@@ -21,7 +20,7 @@ from quodlibet.util import set_win32_unicode_argv
 
 
 def main():
-    global quodlibet
+    import quodlibet
 
     from quodlibet.qltk import add_signal_watch, icons
     add_signal_watch(app.quit)
