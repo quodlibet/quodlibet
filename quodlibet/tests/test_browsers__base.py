@@ -138,6 +138,15 @@ class TBrowserMixin(object):
                 self.b.filter_text("foo")
                 self.b.filter_text("(((((##!!!!))),,,==")
 
+    def test_get_filter_text(self):
+        with realized(self.b):
+            if self.b.can_filter_text():
+                self.assertEqual(self.b.get_filter_text(), u"")
+                self.assertTrue(isinstance(self.b.get_filter_text(), unicode))
+                self.b.filter_text(u"foo")
+                self.assertEqual(self.b.get_filter_text(), u"foo")
+                self.assertTrue(isinstance(self.b.get_filter_text(), unicode))
+
     def test_filter_albums(self):
         with realized(self.b):
             if self.b.can_filter_albums():

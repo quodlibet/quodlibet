@@ -22,6 +22,10 @@ class TCommands(TestCase):
     def __send(self, command):
         return registry.handle_line(app, command)
 
+    def test_query(self):
+        self.__send(u"query foo")
+        self.assertEqual(self.__send("print-query-text"), u"foo\n")
+
     def test_player(self):
         self.__send("previous")
         self.__send("force-previous")

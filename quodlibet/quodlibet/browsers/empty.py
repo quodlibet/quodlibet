@@ -36,7 +36,7 @@ class EmptyBar(Browser):
 
     def __init__(self, library):
         super(EmptyBar, self).__init__()
-        self._text = ""
+        self._text = u""
         self._query = None
         self._library = library
 
@@ -49,6 +49,9 @@ class EmptyBar(Browser):
     def filter_text(self, text):
         self._text = text
         self.activate()
+
+    def get_filter_text(self):
+        return self._text
 
     def save(self):
         config.set("browsers", "query_text", self._text.encode('utf-8'))

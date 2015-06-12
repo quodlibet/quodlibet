@@ -448,6 +448,12 @@ def _print_query(app, query):
     return "\n".join([song("~filename") for song in songs]) + "\n"
 
 
+@registry.register("print-query-text")
+def _print_query_text(app):
+    if app.browser.can_filter_text():
+        return app.browser.get_filter_text() + "\n"
+
+
 @registry.register("print-playing", optional=1)
 def _print_playing(app, fstring="<artist~album~tracknumber~title>"):
     from quodlibet.formats._audio import AudioFile

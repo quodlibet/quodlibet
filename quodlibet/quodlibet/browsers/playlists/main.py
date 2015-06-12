@@ -440,6 +440,9 @@ class PlaylistsBrowser(Browser):
         self._set_text(text)
         self.activate()
 
+    def get_filter_text(self):
+        return self._get_text()
+
     def can_filter(self, key):
         # TODO: special-case the ~playlists tag maybe?
         return super(PlaylistsBrowser, self).can_filter(key)

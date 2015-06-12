@@ -360,6 +360,9 @@ class CollectionBrowser(Browser, util.InstanceTracker):
             self.__update_filter(self.__search, text)
             self.activate()
 
+    def get_filter_text(self):
+        return self.__search.get_text()
+
     def unfilter(self):
         pass
 

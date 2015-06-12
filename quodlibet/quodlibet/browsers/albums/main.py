@@ -699,6 +699,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
             self.__uninhibit()
             self.activate()
 
+    def get_filter_text(self):
+        return self.__search.get_text()
+
     def can_filter(self, key):
         # numerics are different for collections, and title
         # works, but not of much use here

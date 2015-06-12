@@ -886,6 +886,9 @@ class InternetRadio(Browser, util.InstanceTracker):
             self.__filter_changed(self.__searchbar, text)
             self.activate()
 
+    def get_filter_text(self):
+        return self.__searchbar.get_text()
+
     def activate(self):
         filter_ = self.__get_filter()
         libs = self.__get_selected_libraries()

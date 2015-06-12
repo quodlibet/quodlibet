@@ -31,11 +31,16 @@ class Filter(object):
         return False
 
     def can_filter_text(self):
-        """If filter_text() can be used"""
+        """If filter_text() and get_filter_text() can be used"""
         return False
 
     def filter_text(self, text):
         """Set a text query"""
+        raise NotImplementedError
+
+    def get_filter_text(self):
+        """Get the active text query"""
+
         raise NotImplementedError
 
     def can_filter_albums(self):

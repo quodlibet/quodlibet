@@ -137,6 +137,9 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self._set_text(text)
         self.activate()
 
+    def get_filter_text(self):
+        return self._get_text()
+
     def __select_all(self, *args):
         self._panes[-1].inhibit()
         for pane in self._panes:

@@ -138,6 +138,9 @@ class SearchBar(Browser):
         self._set_text(text)
         self.activate()
 
+    def get_filter_text(self):
+        return self._get_text()
+
     def unfilter(self):
         self.filter_text("")
 
