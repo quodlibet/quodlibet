@@ -159,6 +159,7 @@ Unstable Repo (`OBS <https://build.opensuse.org/project/show/home:lazka0:ql-unst
 
 Unstable Repo (`COPR <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/>`__):
 
+  * `Fedora 22 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-22/lazka-quodlibet-unstable-fedora-22.repo>`__
   * `Fedora 21 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-21/lazka-quodlibet-unstable-fedora-21.repo>`__
   * `Fedora 20 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-20/lazka-quodlibet-unstable-fedora-20.repo>`__
   * `Fedora Rawhide <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-rawhide/lazka-quodlibet-unstable-fedora-rawhide.repo>`__
