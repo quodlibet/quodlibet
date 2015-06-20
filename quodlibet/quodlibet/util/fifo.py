@@ -21,6 +21,9 @@ from gi.repository import GLib
 
 from quodlibet.util.path import mkdir
 
+FIFO_TIMEOUT = 4
+"""time in seconds until we give up writing/reading"""
+
 
 def _write_fifo(fifo_path, data):
     """Writes the data to the fifo or raises EnvironmentError"""
@@ -28,7 +31,7 @@ def _write_fifo(fifo_path, data):
     try:
         # This is a total abuse of Python! Hooray!
         signal.signal(signal.SIGALRM, lambda: "" + 2)
-        signal.alarm(1)
+        signal.alarm(FIFO_TIMEOUT)
         f = file(fifo_path, "w")
         signal.signal(signal.SIGALRM, signal.SIG_IGN)
         f.write(data)
@@ -95,7 +98,7 @@ def write_fifo(fifo_path, data):
 
         try:
             signal.signal(signal.SIGALRM, lambda: "" + 2)
-            signal.alarm(1)
+            signal.alarm(FIFO_TIMEOUT)
             with open(filename, "rb") as h:
                 signal.signal(signal.SIGALRM, signal.SIG_IGN)
                 return h.read()
