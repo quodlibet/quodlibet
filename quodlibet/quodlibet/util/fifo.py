@@ -21,21 +21,35 @@ from gi.repository import GLib
 
 from quodlibet.util.path import mkdir
 
-FIFO_TIMEOUT = 4
+FIFO_TIMEOUT = 10
 """time in seconds until we give up writing/reading"""
 
 
 def _write_fifo(fifo_path, data):
     """Writes the data to the fifo or raises EnvironmentError"""
 
+    # this will raise if the fifo doesn't exist or there is no reader
+    try:
+        fifo = os.open(fifo_path, os.O_WRONLY | os.O_NONBLOCK)
+    except OSError:
+        try:
+            os.unlink(fifo_path)
+        except OSError:
+            pass
+        raise
+    else:
+        try:
+            os.close(fifo)
+        except OSError:
+            pass
+
     try:
         # This is a total abuse of Python! Hooray!
         signal.signal(signal.SIGALRM, lambda: "" + 2)
         signal.alarm(FIFO_TIMEOUT)
-        f = file(fifo_path, "w")
-        signal.signal(signal.SIGALRM, signal.SIG_IGN)
-        f.write(data)
-        f.close()
+        with open(fifo_path, "wb") as f:
+            signal.signal(signal.SIGALRM, signal.SIG_IGN)
+            f.write(data)
     except (OSError, IOError, TypeError):
         # Unable to write to the fifo. Removing it.
         try:
@@ -90,6 +104,7 @@ def write_fifo(fifo_path, data):
 
     fd, filename = tempfile.mkstemp()
     try:
+        os.close(fd)
         os.unlink(filename)
         # mkfifo fails if the file exists, so this is safe.
         os.mkfifo(filename, 0o600)
