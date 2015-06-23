@@ -24,6 +24,8 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
         toplevel = self.get_toplevel()
+        # try to get the child so we ignore the CSD
+        toplevel = toplevel.get_child() or toplevel
 
         try:
             dx, dy = self.translate_coordinates(toplevel, 0, 0)
@@ -46,9 +48,7 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             if not isinstance(top_bar, Gtk.Widget):
                 raise TypeError
         except (AttributeError, TypeError):
-            # In case the window border is at the top, we expect the menubar
-            # there, so draw the normal border
-            border.top = 0
+            pass
         else:
             top_ctx = top_bar.get_style_context()
             b = top_ctx.get_border(top_bar.get_state_flags())
@@ -101,7 +101,8 @@ class ScrolledWindow(Gtk.ScrolledWindow):
                 left = vscroll
                 top = hscroll
 
-        width, height = toplevel.get_size()
+        top_alloc = toplevel.get_allocation()
+        width, height = top_alloc.width, top_alloc.height
         if alloc.height + dy == height and not bottom:
             alloc.height += border.bottom
 
@@ -141,6 +142,8 @@ class Notebook(Gtk.Notebook):
         border = ctx.get_border(self.get_state_flags())
 
         toplevel = self.get_toplevel()
+        # try to get the child so we ignore the CSD
+        toplevel = toplevel.get_child() or toplevel
 
         try:
             dx, dy = self.translate_coordinates(toplevel, 0, 0)
@@ -154,12 +157,17 @@ class Notebook(Gtk.Notebook):
         # all 0 since gtk+ 3.12..
         border.left = border.top = border.right = border.bottom = 1
 
-        width, height = toplevel.get_size()
+        top_alloc = toplevel.get_allocation()
+        width, height = top_alloc.width, top_alloc.height
         if alloc.height + dy == height:
             alloc.height += border.bottom
 
         if alloc.width + dx == width:
             alloc.width += border.right
+
+        if dy == 0:
+            alloc.y -= border.top
+            alloc.height += border.top
 
         if dx == 0:
             alloc.x -= border.left

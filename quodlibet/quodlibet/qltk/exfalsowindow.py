@@ -106,9 +106,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
             page = Page(self, self.__library)
             page.show()
             nb.append_page(page)
-        align = Align(nb, top=3)
-        align.show()
-        hp.pack2(align, resize=True, shrink=False)
+        hp.pack2(nb, resize=True, shrink=False)
         fs.connect('changed', self.__changed, l)
         if dir:
             fs.go_to(dir)
