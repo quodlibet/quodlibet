@@ -15,7 +15,7 @@ tags you want in the file, for all the file formats it supports.
 Unlike some, Quod Libet will scale to libraries with tens of thousands of
 songs. It also supports most of the :ref:`features <Features>` you'd expect
 from a modern media player: Unicode support, advanced tag editing, Replay
-Gain, podcasts & internet radio, album art support and all major audio
+Gain, podcasts & Internet radio, album art support and all major audio
 formats - see the :ref:`screenshots <Screenshots>`.
 
 **Ex Falso** is a program that uses the same **tag editing** back-end as
