@@ -107,7 +107,7 @@ OPTIONS
     Rate the playing song
 
 --show-window
-    Hide main window
+    Show main window
 
 --start-playing
     Begin playing immediately
