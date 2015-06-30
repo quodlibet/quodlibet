@@ -376,7 +376,7 @@ class PlaylistsBrowser(Browser):
         songs = filter(lambda s: isinstance(s, AudioFile), songs)
         menu = SongsMenu(library, songs,
                          playlists=False, remove=False,
-                         ratings=False)
+                         ratings=False, energy=False)
         menu.preseparate()
 
         def _remove(model, itr):

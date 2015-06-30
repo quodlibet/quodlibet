@@ -68,6 +68,7 @@ class TCommands(TestCase):
         self.__send("repeat 0")
         self.__send("set-browser 1")
         self.__send("set-rating 0.5")
+        self.__send("set-energy 0.5")
         self.__send("show-window")
         self.__send("song-list 1")
         self.__send("status")

@@ -15,7 +15,7 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
-from quodlibet.config import RATINGS
+from quodlibet.config import RATINGS, ENERGY
 
 from quodlibet.qltk.ccb import ConfigCheckButton as CCB
 from quodlibet.qltk.data_editors import MultiStringEditor
@@ -208,6 +208,107 @@ class PreferencesWindow(UniqueWindow):
     class Browsers(Gtk.VBox):
         name = "browser"
 
+        def energy_vbox(self):
+            """Returns a new VBox containing all energy widgets"""
+
+            # Confirm multiple energy ratings
+            confirm_cb = CCB(_("Confirm multiple _energy ratings"),
+                             'browsers', 'energy_confirm_multiple',
+                             populate=True,
+                             tooltip=_("Ask for confirmation before changing "
+                               "the energy of multiple songs at once"))
+
+            # Default Energy
+            model = Gtk.ListStore(float)
+            default_combo = Gtk.ComboBox(model=model)
+            default_lab = Gtk.Label(label=_("_Default energy:"))
+            default_lab.set_use_underline(True)
+            default_lab.set_alignment(0, 0.5)
+
+            def draw_energy(column, cell, model, it, data):
+                num = model[it][0]
+                text = "%0.2f: %s" % (num, util.format_energy(num))
+                cell.set_property('text', text)
+
+            def default_energy_changed(combo, model):
+                it = combo.get_active_iter()
+                if it is None:
+                    return
+                ENERGY.default = model[it][0]
+                qltk.redraw_all_toplevels()
+
+            def populate_default_energy_model(combo, num):
+                model = combo.get_model()
+                model.clear()
+                deltas = []
+                default = ENERGY.default
+                precision = ENERGY.precision
+                for i in range(0, num + 1):
+                    r = i * precision
+                    model.append(row=[r])
+                    deltas.append((abs(default - r), i))
+                active = sorted(deltas)[0][1]
+                print_d("Choosing #%d (%.2f), closest to current %.2f"
+                        % (active, precision * active, default))
+                combo.set_active(active)
+
+            cell = Gtk.CellRendererText()
+            default_combo.pack_start(cell, True)
+            default_combo.set_cell_data_func(cell, draw_energy, None)
+            default_combo.connect('changed', default_energy_changed, model)
+            default_lab.set_mnemonic_widget(default_combo)
+
+            def refresh_default_combo(num):
+                populate_default_energy_model(default_combo, num)
+
+            # Energy Scale
+            model = Gtk.ListStore(int)
+            scale_combo = Gtk.ComboBox(model=model)
+            scale_lab = Gtk.Label(label=_("Energy _scale:"))
+            scale_lab.set_use_underline(True)
+            scale_lab.set_mnemonic_widget(scale_combo)
+
+            cell = Gtk.CellRendererText()
+            scale_combo.pack_start(cell, False)
+            num = ENERGY.number
+            for i in [1, 2, 3, 4, 5, 6, 8, 10]:
+                it = model.append(row=[i])
+                if i == num:
+                    scale_combo.set_active_iter(it)
+
+            def draw_energy_scale(column, cell, model, it, data):
+                num_stars = model[it][0]
+                text = "%d: %s" % (num_stars, ENERGY.full_symbol * num_stars)
+                cell.set_property('text', text)
+
+            def energy_scale_changed(combo, model):
+                it = combo.get_active_iter()
+                if it is None:
+                    return
+                ENERGY.number = num = model[it][0]
+                refresh_default_combo(num)
+
+            refresh_default_combo(ENERGY.number)
+            scale_combo.set_cell_data_func(cell, draw_energy_scale, None)
+            scale_combo.connect('changed', energy_scale_changed, model)
+
+            default_align = Align(halign=Gtk.Align.START)
+            default_align.add(default_lab)
+            scale_align = Align(halign=Gtk.Align.START)
+            scale_align.add(scale_lab)
+
+            grid = Gtk.Grid(column_spacing=6, row_spacing=6)
+            grid.add(scale_align)
+            grid.add(scale_combo)
+            grid.attach(default_align, 0, 1, 1, 1)
+            grid.attach(default_combo, 1, 1, 1, 1)
+
+            vb = Gtk.VBox()
+            vb.pack_start(confirm_cb, False, True, 0)
+            vb.pack_start(grid, False, False, 6)
+
+            return vb
+
         def __init__(self):
             super(PreferencesWindow.Browsers, self).__init__(spacing=12)
             self.set_border_width(12)
@@ -247,6 +348,10 @@ class PreferencesWindow(UniqueWindow):
             vbox.pack_start(c1, False, True, 0)
             vbox.pack_start(c2, False, True, 0)
             f = qltk.Frame(_("Ratings"), child=vbox)
+            self.pack_start(f, False, True, 0)
+
+            # Energy
+            f = qltk.Frame(_("Energy"), child=self.energy_vbox())
             self.pack_start(f, False, True, 0)
 
             # Album Art

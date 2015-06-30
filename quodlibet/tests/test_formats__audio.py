@@ -362,7 +362,8 @@ class TAudioFile(TestCase):
     def test_to_dump(self):
         dump = bar_1_1.to_dump()
         num = len(set(bar_1_1.keys()) | INTERN_NUM_DEFAULT)
-        self.failUnlessEqual(dump.count("\n"), num + 2)
+        # The +3 is for the extra \n, rating, and energy.
+        self.failUnlessEqual(dump.count("\n"), num + 3)
         for key, value in bar_1_1.items():
             self.failUnless(key in dump)
             self.failUnless(value in dump)
@@ -378,7 +379,8 @@ class TAudioFile(TestCase):
         b["~#length"] = 200000000000L
         dump = b.to_dump()
         num = len(set(bar_1_1.keys()) | INTERN_NUM_DEFAULT)
-        self.failUnlessEqual(dump.count("\n"), num + 2)
+        # The +3 is for the extra \n, rating, and energy.
+        self.failUnlessEqual(dump.count("\n"), num + 3)
 
         n = AudioFile()
         n.from_dump(dump)

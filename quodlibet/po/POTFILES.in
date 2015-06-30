@@ -138,6 +138,7 @@ quodlibet/qltk/delete.py
 quodlibet/qltk/downloader.py
 quodlibet/qltk/edittags.py
 quodlibet/qltk/_editutils.py
+quodlibet/qltk/energymenu.py
 quodlibet/qltk/exfalsowindow.py
 quodlibet/qltk/filesel.py
 quodlibet/qltk/info.py
