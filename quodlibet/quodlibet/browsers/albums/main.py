@@ -77,10 +77,10 @@ def cmpa(a, b):
 
 
 def compare_title(a1, a2):
-    # all albums has to stay at the top
+    # All albums should stay at the top
     if (a1 and a2) is None:
         return cmp(a1, a2)
-    # move album without a title to the bottom
+    # Move albums without a title to the bottom
     if not a1.title:
         return 1
     if not a2.title:
@@ -290,8 +290,8 @@ class VisibleUpdate(object):
 
         model = view.get_model()
 
-        #generate a path list so that cover scanning starts in the middle
-        #of the visible area and alternately moves up and down
+        # Generate a path list so that cover scanning starts in the middle
+        # of the visible area and alternately moves up and down.
         start, end = vrange
 
         # pygtk2.12 sometimes returns empty tuples
@@ -585,12 +585,12 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
 
         # We could be smart and try to scroll to a selected album
         # but that introduces lots of wild scrolling. Feel free to change it.
-        # Without scrolling the TV trys to stay at the same position (40% down)
-        # which makes no sence so always go to the top.
+        # Without scrolling the TV tries to stay at the same position
+        # (40% down) which makes no sense, so always go to the top.
         if scroll_up:
             self.view.scroll_to_point(0, 0)
 
-        # don't filter on restore if there is nothing to filter
+        # Don't filter on restore if there is nothing to filter
         if not restore or self.__filter or self.__bg_filter:
             model.refilter()
 
@@ -703,8 +703,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
         return self.__search.get_text()
 
     def can_filter(self, key):
-        # numerics are different for collections, and title
-        # works, but not of much use here
+        # Numerics are different for collections, and although title works,
+        # it's not of much use here.
         if key is not None and (key.startswith("~#") or key == "title"):
             return False
         return super(AlbumList, self).can_filter(key)
