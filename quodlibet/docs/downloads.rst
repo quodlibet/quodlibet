@@ -109,7 +109,7 @@ Unstable PPA (12.04+)::
 
     To remove the PPAs and revert back to the old version::
 
-        $ sudo add-get install ppa-purge
+        $ sudo apt-get install ppa-purge
         $ sudo ppa-purge ppa:lazka/ppa
         $ sudo ppa-purge ppa:lazka/dumpingplace
 
