@@ -1,0 +1,499 @@
+<?xml version="1.0"?>
+<!DOCTYPE moduleset SYSTEM "moduleset.dtd">
+<!-- :mode=xml:tabSize=4:indentSize=4:folding=explicit: -->
+<moduleset>
+  <include href="gtk-osx.modules"/>
+
+  <repository type="git" name="svn.gnome.org"
+      href="git://git.gnome.org/">
+  </repository>
+
+  <repository type="tarball" name="effbot"
+              href="http://effbot.org/downloads/"/>
+
+  <repository type="git" name="github"
+      href="git://github.com/"/>
+
+  <repository type="tarball" name="sourceforge"
+		  href="http://iweb.dl.sf.net/project/"/>
+
+  <!-- for setuptools, for feedparser -->
+  <repository type="tarball" name="pypi"
+              href="http://pypi.python.org/packages/source/"/>
+
+  <repository type='tarball' name='ftp.gnu.org' href="ftp://ftp.gnu.org/gnu/"/>
+  <repository type='tarball' name='ftp.gnupg.org' href="ftp://ftp.gnupg.org/" />
+  <repository type="tarball" name="ftp.gnome.org"
+              href="http://ftp.gnome.org/pub/GNOME/sources/"/>
+  <repository type="tarball" name="mutagen"
+              href="https://bitbucket.org/lazka/mutagen/downloads/"/>
+  <repository type="tarball" name="quodlibet"
+              href="https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/"/>
+  <repository type="tarball" name="entropywave"
+	      href="http://code.entropywave.com/download/"/>
+  <repository type="tarball" name="xiph"
+	      href="http://downloads.xiph.org/releases/"/>
+  <repository type="tarball" name="itstool"
+	      href="http://files.itstool.org/itstool/"/>
+  <repository type="tarball" name="ftp.gnutls.org"
+	      href="ftp://ftp.gnutls.org/"/>
+  <repository type="tarball" name="mars"
+	      href="ftp://ftp.mars.org/pub/mpeg/"/>
+  <repository type="tarball" name="gstreamer"
+	      href="http://gstreamer.freedesktop.org/src/"/>
+  <repository type="tarball" name="musicbrainz"
+          href="http://ftp.musicbrainz.org/pub/musicbrainz/"/>
+  <repository type="tarball" name="sqlite" href="http://www.sqlite.org/"/>
+  <repository type="tarball" name="ftp.gnome.org" default="yes"
+          href="http://ftp.gnome.org/pub/GNOME/sources/"/>
+
+  <distutils id="quodlibet" supports-non-srcdir-builds="no">
+    <branch repo="quodlibet" module="quodlibet-3.4.1.tar.gz"
+            version="3.4.1"
+            hash="sha256:73b75ee431b1eaee0513e5e82d3dceecf05a026ce29f2eefc4461e4b19ad14c6">
+    </branch>
+    <dependencies>
+      <dep package="liborc"/>
+      <dep package="gstreamer-1.0"/>
+      <dep package="gst-plugins-base-1.0"/>
+      <dep package="gst-plugins-good-1.0"/>
+      <dep package="gst-plugins-bad-1.0"/>
+      <dep package="gst-plugins-ugly-1.0"/>
+      <dep package="mutagen" />
+      <dep package="feedparser" />
+      <dep package="musicbrainz2" />
+      <dep package="meta-gtk-osx-python-gtk3"/>
+      <dep package="pyobjc"/>
+    </dependencies>
+  </distutils>
+
+  <autotools id="gtk+-3.0" autogen-sh="autogen.sh"
+    autogenargs="--enable-quartz-backend --enable-quartz-relocation">
+    <branch module="gtk+/3.16/gtk+-3.16.5.tar.xz" version="3.16.5"
+        hash="sha256:b87c99d127eb962fc857c246b77a65322cdffd7dcbcf46a83bce2040e0f4bc31">
+        <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug-707945-GTK2-Quartz-typeahead-find-in-GtkTreeView.patch" strip="1"/>
+    </branch>
+    <dependencies>
+        <dep package="glib"/>
+        <dep package="pango"/>
+        <dep package="atk"/>
+        <dep package="gdk-pixbuf"/>
+        <dep package="gobject-introspection"/>
+        <dep package="libepoxy"/>
+    </dependencies>
+    <after>
+        <dep package="meta-gtk-osx-bootstrap"/>
+    </after>
+  </autotools>
+
+  <distutils id="setuptools">
+    <branch repo="pypi" checkoutdir="setuptools-0.6c11" module="s/setuptools/setuptools-0.6c11.tar.gz"
+	    version="0.6c11" md5sum="7df2a529a074f613b509fb44feefe74e"/>
+  </distutils>
+
+  <!-- Upstream: https://github.com/kurtmckee/feedparser/blob/develop/NEWS -->
+  <distutils id="feedparser">
+    <branch repo="pypi" checkoutdir="feedparser-5.2.0" module="f/feedparser/feedparser-5.2.0.post1.tar.bz2"
+	    version="5.2.0.post1"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <!-- Upstream: https://bitbucket.org/lazka/mutagen/downloads -->
+  <distutils id="mutagen">
+    <branch repo="mutagen" checkoutdir="mutagen-1.28" module="mutagen-1.28.tar.gz"
+	    version="1.28" hash="sha256:7d45889c060fdb16aea1733cee92d6dcaa04b8c8574802eb7b43a9f465fa3ca9"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="musicbrainz2"> <!-- note: deprecated, see https://github.com/alastair/python-musicbrainzngs for a replacement -->
+    <branch repo="musicbrainz" checkoutdir="musicbrainz2-0.7.4" module="python-musicbrainz2/python-musicbrainz2-0.7.4.tar.gz"
+	    version="0.7.4"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <!-- {{{ pyObjc, for osxmmkey plugin -->
+  <!-- Upstream: https://pypi.python.org/pypi/pyobjc-core -->
+  <distutils id="pyobjc-core">
+    <branch repo="pypi" checkoutdir="pyobjc-core-3.0.4" module="p/pyobjc-core/pyobjc-core-3.0.4.tar.gz"
+	    version="3.0.4" md5sum="6baaa0d2533cc9c26ad9f889ca9ecb01"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <!-- Upstream: https://pypi.python.org/pypi/pyobjc-framework-Cocoa -->
+  <distutils id="pyobjc-framework-Cocoa">
+    <branch repo="pypi" checkoutdir="pyobjc-framework-Cocoa-3.0.4" module="p/pyobjc-framework-Cocoa/pyobjc-framework-Cocoa-3.0.4.tar.gz"
+	    version="3.0.4" md5sum="5df56f66608812d6db42aa6e554f1529"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    <dep package="pyobjc-core"/>
+    </dependencies>
+  </distutils>
+
+  <!-- https://pypi.python.org/pypi/pyobjc-framework-Quartz -->
+  <distutils id="pyobjc-framework-Quartz">
+    <branch repo="pypi" checkoutdir="pyobjc-framework-Quartz-3.0.4" module="p/pyobjc-framework-Quartz/pyobjc-framework-Quartz-3.0.4.tar.gz"
+	    version="3.0.4" md5sum="85d82afedef8ecf7e20344890a543312"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    <dep package="pyobjc-core"/>
+    <dep package="pyobjc-framework-Cocoa"/>
+    </dependencies>
+  </distutils>
+
+  <!-- https://pypi.python.org/pypi/pyobjc -->
+  <distutils id="pyobjc">
+    <branch repo="pypi" checkoutdir="pyobjc-3.0.4" module="p/pyobjc/pyobjc-3.0.4.tar.gz"
+	    version="3.0.4" md5sum="7b1810f68ee783df943b5be51b694f35"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    <dep package="pyobjc-core"/>
+    <dep package="pyobjc-framework-Cocoa"/>
+    <dep package="pyobjc-framework-Quartz"/>
+    </dependencies>
+  </distutils>
+  <!-- }}} -->
+
+  <!-- {{{ recent gstreamer  (still at 1.4.3 in gtk-osx-gstreamer.modules) -->
+  <autotools id="gst-plugins-base-1.0" autogenargs="--disable-tests --disable-x --disable-xvideo" supports-non-srcdir-builds="no"
+    makeargs="ERROR_CFLAGS=" autogen-sh="configure">
+    <branch repo="gstreamer" module="gst-plugins-base/gst-plugins-base-1.4.5.tar.xz"
+            version="1.4.5" hash="sha256:77bd8199e7a312d3d71de9b7ddf761a3b78560a2c2a80829d0815ca39cbd551d"/>
+    <dependencies>
+      <dep package="gstreamer-1.0"/>
+      <dep package="liborc"/>
+      <dep package="libogg"/>
+      <dep package="libvorbis"/>
+    </dependencies>
+    <after>
+    </after>
+  </autotools>
+
+  <autotools id="gst-plugins-good-1.0" autogenargs="-- --disable-tests --disable-x --disable-xvideo --disable-osx-video --disable-gtk-doc" supports-non-srcdir-builds="no"
+    makeargs="ERROR_CFLAGS=">
+    <branch repo="gstreamer" module="gst-plugins-good/gst-plugins-good-1.4.5.tar.xz"
+            version="1.4.5" hash="sha256:79b1b5f3f7bcaa8a615202eb5e176121eeb8336960f70687e536ad78dbc7e641"/>
+    <dependencies>
+      <dep package="gstreamer-1.0"/>
+      <dep package="gst-plugins-base-1.0"/>
+      <dep package="libspeex"/>
+      <dep package="libflac"/>
+      <dep package="libsoup"/>
+    </dependencies>
+  </autotools>
+
+  <!-- gst-plugins-bad
+       Upstream: http://gstreamer.freedesktop.org/src/gst-plugins-bad/
+  -->
+  <autotools id="gst-plugins-bad-1.0" supports-non-srcdir-builds="no"
+             autogenargs="--disable-accurip
+    --disable-adpcmdec
+    --disable-adpcmenc
+    --disable-aiff
+    --disable-asfmux
+    --disable-audiofxbad
+    --disable-audiomixer
+    --disable-audiovisualizers
+    --disable-autoconvert
+    --disable-bayer
+    --disable-camerabin2
+    --disable-coloreffects
+    --disable-compositor
+    --disable-dataurisrc
+    --disable-debugutils
+    --disable-dvbsuboverlay
+    --disable-dvdspu
+    --disable-festival
+    --disable-fieldanalysis
+    --disable-freeverb
+    --disable-frei0r
+    --disable-gaudieffects
+    --disable-gdp
+    --disable-geometrictransform
+    --disable-id3tag
+    --disable-inter
+    --disable-interlace
+    --disable-ivfparse
+    --disable-ivtc
+    --disable-jp2kdecimator
+    --disable-jpegformat
+    --disable-librfb
+    --disable-liveadder
+    --disable-midi
+    --disable-mpegdemux
+    --disable-mpegpsmux
+    --disable-mpegtsdemux
+    --disable-mpegtsmux
+    --disable-mxf
+    --disable-pcapparse
+    --disable-pnm
+    --disable-rawparse
+    --disable-removesilence
+    --disable-sdp
+    --disable-segmentclip
+    --disable-siren
+    --disable-smooth
+    --disable-speed
+    --disable-stereo
+    --disable-subenc
+    --disable-videofilters
+    --disable-videoparsers
+    --disable-videosignal
+    --disable-vmnc
+    --disable-y4m
+    --disable-yadif
+    --disable-bz2
+    --disable-dash
+    --disable-decklink
+    --disable-gl
+    --disable-hls
+    --disable-rsvg
+    --disable-shm
+    --disable-smoothstreaming
+    --enable-cocoa=no --enable-x11=no --enable-opengl=no --disable-gtk-doc"
+             makeargs="ERROR_CFLAGS=">
+    <branch repo="gstreamer" version="1.4.5"
+            module="gst-plugins-bad/gst-plugins-bad-1.4.5.tar.xz"
+            hash="sha256:152fad7250683d72f9deb36c5685428338365fe4a4c87ffe15e38783b14f983c"/>
+    <dependencies>
+      <dep package="gstreamer-1.0"/>
+      <dep package="gst-plugins-base-1.0"/>
+      <dep package="faad2"/>
+      <dep package="libvorbis"/>
+    </dependencies>
+  </autotools>
+
+  <!-- gst-plugins-ugly
+       Upstream: http://gstreamer.freedesktop.org/src/gst-plugins-ugly/
+  -->
+  <autotools id="gst-plugins-ugly-1.0" autogenargs="--disable-tests --disable-gtk-doc" supports-non-srcdir-builds="no"
+    makeargs="ERROR_CFLAGS=">
+    <branch repo="gstreamer" module="gst-plugins-ugly/gst-plugins-ugly-1.4.5.tar.xz"
+            version="1.4.5" hash="sha256:5cd5e81cf618944f4dc935f1669b2125e8bb2fe9cc7dc8dc15b72237aca49067"/>
+    <dependencies>
+      <dep package="gstreamer-1.0"/>
+      <dep package="gst-plugins-base-1.0"/>
+      <dep package="libmad"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="gstreamer-1.0" autogenargs="--disable-tests --disable-gtk-doc" supports-non-srcdir-builds="no"
+    makeargs="ERROR_CFLAGS=">
+    <branch repo="gstreamer" module="gstreamer/gstreamer-1.4.5.tar.xz"
+    		version="1.4.5" hash="sha256:40801aa7f979024526258a0e94707ba42b8ab6f7d2206e56adbc4433155cb0ae">
+    </branch>
+    <after>
+      <dep package="glib"/>
+    </after>
+  </autotools>
+
+  <!-- for recent gstreamer -->
+  <autotools id="bison" autogen-sh="configure"> <!-- fixme is 3.0.2 ok ? -->
+    <branch repo="ftp.gnu.org" module="bison/bison-2.6.3.tar.xz"
+            version="2.6.3"/>
+  </autotools>
+  
+  <autotools id="liborc" autogen-sh="configure">
+      <!-- FIXME in new gtk-osx-gstreamer it's orc/ 0.4.22 in gstreamer repo -->
+    <branch module="orc/orc-0.4.18.tar.gz"
+	    repo="entropywave" version="0.4.18"/>
+  </autotools>
+
+  <!-- {{{ gstreamer codecs -->
+  <!-- ogg container
+       Upstream: http://downloads.xiph.org/releases/ogg/
+       MacPorts: https://trac.macports.org/browser/trunk/dports/multimedia/libogg/Portfile
+  -->
+  <autotools id="libogg" autogen-sh="configure">
+    <branch module="ogg/libogg-1.3.2.tar.xz"
+	    repo="xiph" version="1.3.2" hash="sha256:3f687ccdd5ac8b52d76328fbbfebc70c459a40ea891dbf3dccb74a210826e79b"/>
+  </autotools>
+
+  <!-- vorbis audio codec
+       Upstream: http://downloads.xiph.org/releases/vorbis/
+       MacPorts: https://trac.macports.org/browser/trunk/dports/audio/libvorbis/Portfile
+  -->
+  <autotools id="libvorbis" autogen-sh="configure" autogenargs="--disable-oggtest">
+    <branch module="vorbis/libvorbis-1.3.5.tar.xz"
+	    repo="xiph" version="1.3.5" hash="sha256:54f94a9527ff0a88477be0a71c0bab09a4c3febe0ed878b24824906cd4b0e1d1"/>
+  </autotools>
+
+  <!-- speex audio codec
+       Upstream: http://downloads.xiph.org/releases/speex/
+       MacPorts: https://trac.macports.org/browser/trunk/dports/audio/speex/Portfile
+  -->
+  <autotools id="libspeex" autogen-sh="configure">
+    <branch module="speex/speex-1.2rc2.tar.gz"
+	    repo="xiph" version="1.2rc2" hash="sha256:caa27c7247ff15c8521c2ae0ea21987c9e9710a8f2d3448e8b79da9806bce891"/>
+    <dependencies>
+      <dep package="libogg"/>
+    </dependencies>
+  </autotools>
+
+  <!-- MPEG Audio Decoder
+       MacPorts: https://trac.macports.org/browser/trunk/dports/audio/libmad/Portfile
+    -->
+  <autotools id="libmad"  autogen-sh="autoreconf" autogenargs="">
+    <branch module="libmad-0.15.1b.tar.gz"
+	    repo="mars" version="0.15.1b" hash="sha256:bbfac3ed6bfbc2823d3775ebb931087371e142bb0e9bb1bee51a76a6e0078690">
+	  <patch file="https://trac.macports.org/export/125862/trunk/dports/audio/libmad/files/patch-configure.ac.diff" />
+	  <patch file="https://trac.macports.org/export/125862/trunk/dports/audio/libmad/files/automake.patch" />
+	  <patch file="quodlibet-patches/libmad-add-missing.patch" />
+	</branch>
+  </autotools>
+
+  <!-- flac audio codec
+       Upstream: http://downloads.xiph.org/releases/flac/
+       MacPorts: https://trac.macports.org/browser/trunk/dports/audio/flac/Portfile
+  -->
+  <autotools id="libflac"  autogen-sh="autoreconf" autogenargs="--disable-silent-rules --disable-xmms-plugin" makeargs="OBJ_FORMAT=macho">
+    <branch module="flac/flac-1.3.1.tar.xz"
+	    repo="xiph" version="1.3.1" hash="sha256:4773c0099dba767d963fd92143263be338c48702172e8754b9bc5103efe1c56c"/>
+    <dependencies>
+      <dep package="libogg"/>
+    </dependencies>
+  </autotools>
+
+  <!-- MPEG4 AAC codec
+       Upstream: http://www.audiocoding.com/faad2.html
+       MacPorts: https://trac.macports.org/browser/trunk/dports/audio/faad2/Portfile
+  -->
+  <autotools id="faad2" autogen-sh="autoreconf"
+             autogenargs="-without-bmp --without-xmms --without-drm --without-mpeg4ip">
+    <branch repo="sourceforge" version="2.7"
+            module="faac/faad2-src/faad2-2.7/faad2-2.7.tar.bz2">
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/faad2-2.7-ac-config-headers.patch" strip="1"/>
+    </branch>
+  </autotools>
+
+  <!-- opus audio codec
+       Upstream: http://downloads.xiph.org/releases/opus/
+       MacPorts: https://trac.macports.org/browser/trunk/dports/audio/libopus/Portfile
+  -->
+  <autotools id="libopus" autogen-sh="configure" autogenargs="--disable-doc">
+    <branch module="opus/opus-1.1.tar.gz"
+	    repo="xiph" version="1.1" hash="sha256:b9727015a58affcf3db527322bf8c4d2fcf39f5f6b8f15dbceca20206cbe1d95"/>
+  </autotools>
+  <!-- }}} -->
+
+  <!-- }}} -->
+
+  <!-- {{{ libsoup and deps -->
+
+  <!-- libsoup net library
+       Upstream: http://ftp.gnome.org/pub/GNOME/sources/libsoup/
+                 https://developer.gnome.org/libsoup/
+  -->
+  <autotools id="libsoup" autogen-sh="configure" autogenargs="--disable-more-warnings --disable-silent-rules --without-gnome --enable-introspection">
+    <branch repo="ftp.gnome.org" module="libsoup/2.50/libsoup-2.50.0.tar.xz"
+            version="2.50.0" hash="sha256:1e01365ac4af3817187ea847f9d3588c27eee01fc519a5a7cb212bb78b0f667b" />
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="glib-networking"/>
+      <dep package="gobject-introspection"/>
+      <dep package='sqlite'/>
+    </dependencies>
+  </autotools>
+
+  <!-- glib-networking
+       Upstream: http://ftp.gnome.org/pub/GNOME/sources/glib-networking/
+  -->
+  <autotools id="glib-networking" autogen-sh="configure"
+	     autogenargs="--without-ca-certificates set_more_warnings=no">
+    <branch repo="ftp.gnome.org" module="glib-networking/2.44/glib-networking-2.44.0.tar.xz"
+	    version="2.44.0" hash="sha256:8f8a340d3ba99bfdef38b653da929652ea6640e27969d29f7ac51fbbe11a4346"/>
+    <dependencies>
+      <dep package="gnutls"/>
+      <dep package="libgcrypt"/>
+    </dependencies>
+  </autotools>
+
+  <!-- gnutls
+       Upstream: http://www.gnutls.org/download.html
+       MacPorts: https://trac.macports.org/browser/trunk/dports/devel/gnutls/Portfile
+  -->
+  <autotools id="gnutls" autogen-sh="configure"
+	     autogenargs="--with-libgcrypt --without-p11-kit">
+    <branch repo='ftp.gnutls.org' version='3.3.14'
+            module="gcrypt/gnutls/v3.3/gnutls-3.3.14.tar.xz"
+            hash="sha256:0dfa0030faad8909c1e904105198232d6bc0123cae8cf4933b2bac85ee7cec52"/>
+    <dependencies>
+      <dep package="nettle" />
+      <dep package="libgcrypt" />
+      <dep package="libtasn1" />
+      <dep package="zlib"/>
+    </dependencies>
+  </autotools>
+
+  <!-- libtasn1
+       Upstream: http://ftp.gnu.org/pub/gnu/libtasn1/
+       MacPorts: https://trac.macports.org/browser/trunk/dports/devel/libtasn1/Portfile
+  -->
+  <autotools id="libtasn1" supports-non-srcdir-builds="no"
+	     autogen-sh="configure">
+    <branch repo="ftp.gnu.org" version='4.4'
+	    module="libtasn1/libtasn1-4.4.tar.gz"
+	    hash="sha256:f8349db1b4fe634105c77e11d26b2173e587827e86e1a489b5e38ffa822e0c5d"/>
+  </autotools>
+
+  <!-- libgcrypt
+       Upstream: ftp://ftp.gnupg.org/gcrypt/libgcrypt/
+       MacPorts: http://trac.macports.org/browser/trunk/dports/devel/libgcrypt/Portfile
+  -->
+  <autotools id="libgcrypt" autogen-sh="configure" autogenargs="--disable-asm --disable-avx-support --disable-avx2-support ">
+    <branch repo='ftp.gnupg.org' version='1.6.3'
+	    module='gcrypt/libgcrypt/libgcrypt-1.6.3.tar.bz2'
+	    hash="sha256:41b4917b93ae34c6a0e2127378d7a4d66d805a2a86a09911d4f9bd871db7025f">
+	    <!-- was unable to compile because the test used an assembly not available to me.
+	         I disabled manually the AVX and AVX2 tests, so this code is not called and
+	         stubbed the result to 0, which doesn't pass the & 0x6 test.
+	      -->
+	  <patch file="quodlibet-patches/libgcrypt-compile-error-no-such-instruction-xgetbv.patch"/>
+    </branch>
+    <dependencies>
+      <dep package="libgpg-error" />
+    </dependencies>
+  </autotools>
+
+  <!-- libgpg-error
+       Upstream: ftp://ftp.gnupg.org/gcrypt/libgpg-error/
+       MacPorts: https://trac.macports.org/browser/trunk/dports/devel/libgpg-error/Portfile
+  -->
+  <autotools id="libgpg-error" autogen-sh="configure"
+	      supports-non-srdir-builds="no">
+    <branch repo='ftp.gnupg.org' version='1.19'
+	    module="gcrypt/libgpg-error/libgpg-error-1.19.tar.bz2"
+	    hash="sha256:53120e1333d5c5d28d87ff2854e9e98719c8e214152f17ad5291704d25c4978b"/>
+  </autotools>
+
+  <!-- nettle
+       Upstream: http://www.lysator.liu.se/~nisse/nettle/
+  -->
+   <autotools id="nettle" autogen-sh="autoreconf" autogen-args="-- --enable-shared --disable-openssl"
+	      supports-non-srdir-builds="no"> <!-- FIXME there is a 3.0 release -->
+    <branch repo='ftp.gnu.org' version='2.7.1'
+	    module="nettle/nettle-2.7.1.tar.gz"
+	    hash="sha256:bc71ebd43435537d767799e414fce88e521b7278d48c860651216e1fc6555b40"/>
+    <dependencies>
+      <dep package="gmpfornettle" />
+    </dependencies>
+  </autotools>
+
+  <!-- sqlite
+       Upstream: http://www.sqlite.org/download.html
+  -->
+  <autotools id="sqlite" autogenargs="--disable-tcl --enable-threadsafe"
+	     autogen-sh="configure">
+    <branch module="2015/sqlite-autoconf-3080900.tar.gz" version='3.8.9'
+	    repo="sqlite" hash="sha1:db70dee268700b312cbaa5b3e5cf8454e1c8b7b9"/>
+  </autotools>
+
+  <!-- }}} -->
+</moduleset>

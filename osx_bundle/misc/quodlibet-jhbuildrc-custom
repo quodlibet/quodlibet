@@ -1,0 +1,12 @@
+import os
+
+checkoutroot = os.path.expanduser("~/jhbuild_checkoutroot")
+prefix = os.path.expanduser("~/jhbuild_prefix")
+modulesets_dir = os.environ["QUODLIBET_MODULESETS"]
+moduleset = ["bootstrap", "quodlibet"]
+modules = []
+
+disable_Werror = False
+skip.append("libiconv")
+
+setup_sdk(target="10.7", sdk_version="native", architectures=[_default_arch])
