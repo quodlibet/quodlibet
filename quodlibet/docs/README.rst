@@ -8,16 +8,10 @@ Dependencies:
 Build:
 
 make
-    Build full documentation
+    Build full documentation (fetches the rtfd.org theme)
 
 make guide
-    Build only the user guide
-
-make all_rtd
-    Build full documentation using the rtfd.org theme
-
-make guide_rtd
-    Build only the user guide using the rtfd.org theme
+    Build only the user guide (fetches the rtfd.org theme)
 
 setup.py build_sphinx
     Build the user guide and put it into ``build/sphinx``.
