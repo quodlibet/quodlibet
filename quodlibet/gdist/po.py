@@ -21,6 +21,7 @@ import shutil
 from distutils.dep_util import newer
 from distutils.spawn import find_executable
 from distutils.core import Command
+from distutils.errors import DistutilsOptionError
 
 from . import gettextutil
 
@@ -121,6 +122,38 @@ class update_po(Command):
         for po in self.po_files:
             if newer(self.pot_file, po):
                 self._update_po(po)
+
+
+class create_po(Command):
+
+    description = "create a new po file"
+    user_options = [
+        ("lang=", None, "create <lang>.po"),
+    ]
+
+    def initialize_options(self):
+        self.po_directory = None
+        self.lang = None
+
+    def finalize_options(self):
+        self.po_directory = self.distribution.po_directory
+        self.po_package = self.distribution.po_package
+        self.pot_file = os.path.join(
+            self.po_directory, self.po_package + ".pot")
+        if not self.lang:
+            raise DistutilsOptionError("no --lang= given")
+
+    def run(self):
+        try:
+            gettextutil.check_version()
+        except gettextutil.GettextError as e:
+            raise SystemExit(e)
+
+        gettextutil.update_pot(self.po_directory, self.po_package)
+        path = gettextutil.create_po(
+            self.po_directory, self.po_package, self.lang)
+        gettextutil.update_po(self.po_directory, self.po_package, self.lang)
+        print "Created %r" % os.path.abspath(path)
 
 
 def strip_pot_date(path):

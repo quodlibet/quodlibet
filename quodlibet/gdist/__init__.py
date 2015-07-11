@@ -26,7 +26,7 @@ from distutils.command.install import install as distutils_install
 
 from gdist.shortcuts import build_shortcuts, install_shortcuts
 from gdist.man import install_man
-from gdist.po import build_mo, install_mo, po_stats, update_po
+from gdist.po import build_mo, install_mo, po_stats, update_po, create_po
 from gdist.icons import install_icons
 from gdist.search_provider import install_search_provider
 from gdist.dbus_services import build_dbus_services, install_dbus_services
@@ -136,6 +136,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("install", install)
         self.cmdclass.setdefault("po_stats", po_stats)
         self.cmdclass.setdefault("update_po", update_po)
+        self.cmdclass.setdefault("create_po", create_po)
 
     def has_po(self):
         return os.name != 'nt' and bool(self.po_directory)
