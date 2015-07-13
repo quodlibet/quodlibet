@@ -249,6 +249,7 @@ class TGStreamerCodecs(TestCase):
             "empty.ogg",
             "empty.opus",
             "silence-44-s.mpc",
+            "silence-44-s.sv8.mpc",
             "silence-44-s.tta",
             "test.mid",
             "test.spc",
