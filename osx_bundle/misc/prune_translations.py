@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""A script to remove all translations for languages where Quod Libet doesn't
+provide a translation. The passed path should point to $PREFIX/share/locale in
+the finished bundle"""
+
 import os
 import sys
 import shutil

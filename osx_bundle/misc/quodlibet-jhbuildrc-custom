@@ -1,3 +1,6 @@
+# This gets copied to $HOME/.jhbuildrc-custom and gets included by the gtk-osx
+# provided ``.jhbuildrc`` file
+
 import os
 
 checkoutroot = os.path.expanduser("~/jhbuild_checkoutroot")

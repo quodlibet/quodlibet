@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+"""Since we create multiple bundles which have pretty much the same content
+and only differ in what they launch, we create a dummy bundle using
+gtk-mac-bundler and replace the info in Info.plist afterwards"""
+
 import sys
 
 def main(argv):
