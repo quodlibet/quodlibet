@@ -298,9 +298,4 @@
   	${prefix}/share/icons/hicolor/scalable/apps/exfalso.svg
   </data>
 
-  <!-- get file-dependent icons (e.g. music note if it's an audio file) -->
-  <data dest="${bundle}/Contents/Resources/share/mime">
-  	${prefix}/share/mime
-  </data>
-
 </app-bundle>

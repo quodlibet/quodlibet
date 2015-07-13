@@ -23,8 +23,6 @@
 
   <repository type='tarball' name='ftp.gnu.org' href="ftp://ftp.gnu.org/gnu/"/>
   <repository type='tarball' name='ftp.gnupg.org' href="ftp://ftp.gnupg.org/" />
-  <repository type="tarball" name="ftp.gnome.org"
-              href="http://ftp.gnome.org/pub/GNOME/sources/"/>
   <repository type="tarball" name="mutagen"
               href="https://bitbucket.org/lazka/mutagen/downloads/"/>
   <repository type="tarball" name="quodlibet"
@@ -46,6 +44,12 @@
   <repository type="tarball" name="sqlite" href="http://www.sqlite.org/"/>
   <repository type="tarball" name="ftp.gnome.org" default="yes"
           href="http://ftp.gnome.org/pub/GNOME/sources/"/>
+  <repository type="tarball" name="mpg123"
+          href="http://www.mpg123.de/download/"/>
+  <repository type="tarball" name="wavpack"
+          href="http://www.wavpack.com/"/>
+  <repository type="tarball" name="musepack"
+          href="http://files.musepack.net/source/"/>
 
   <distutils id="quodlibet" supports-non-srcdir-builds="no">
     <branch repo="quodlibet" module="quodlibet-3.4.1.tar.gz"
@@ -53,12 +57,7 @@
             hash="sha256:73b75ee431b1eaee0513e5e82d3dceecf05a026ce29f2eefc4461e4b19ad14c6">
     </branch>
     <dependencies>
-      <dep package="liborc"/>
-      <dep package="gstreamer-1.0"/>
-      <dep package="gst-plugins-base-1.0"/>
-      <dep package="gst-plugins-good-1.0"/>
-      <dep package="gst-plugins-bad-1.0"/>
-      <dep package="gst-plugins-ugly-1.0"/>
+      <dep package="meta-quodlibet-gstreamer-1.0"/>
       <dep package="mutagen" />
       <dep package="feedparser" />
       <dep package="musicbrainz2" />
@@ -66,6 +65,29 @@
       <dep package="pyobjc"/>
     </dependencies>
   </distutils>
+
+  <autotools id="gst-libav" supports-non-srcdir-builds="no"
+    autogen-sh="configure"
+    autogenargs="--disable-tests --disable-mmx --with-libav-extra-configure='--disable-yasm'">
+    <branch repo="gstreamer" version="1.4.5"
+    module="gst-libav/gst-libav-1.4.5.tar.xz"
+    hash="sha256:605c62624604f3bb5c870844cc1f2711779cc533b004c2aa1d8c0d58557afbbc"/>
+    <dependencies>
+        <dep package="gstreamer-1.0"/>
+        <dep package="gst-plugins-base-1.0"/>
+    </dependencies>
+  </autotools>
+
+  <metamodule id="meta-quodlibet-gstreamer-1.0">
+    <dependencies>
+        <dep package="gstreamer-1.0"/>
+        <dep package="gst-plugins-base-1.0"/>
+        <dep package="gst-plugins-good-1.0"/>
+        <dep package="gst-plugins-ugly-1.0"/>
+        <dep package="gst-plugins-bad-1.0"/>
+        <dep package="gst-libav"/>
+    </dependencies>
+  </metamodule>
 
   <autotools id="gtk+-3.0" autogen-sh="autogen.sh"
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
@@ -172,8 +194,6 @@
       <dep package="libogg"/>
       <dep package="libvorbis"/>
     </dependencies>
-    <after>
-    </after>
   </autotools>
 
   <autotools id="gst-plugins-good-1.0" autogenargs="-- --disable-tests --disable-x --disable-xvideo --disable-osx-video --disable-gtk-doc" supports-non-srcdir-builds="no"
@@ -186,8 +206,17 @@
       <dep package="libspeex"/>
       <dep package="libflac"/>
       <dep package="libsoup"/>
+      <dep package="wavpack"/>
     </dependencies>
   </autotools>
+
+  <autotools id="wavpack" autogen-sh="configure">
+    <branch module="wavpack-4.70.0.tar.bz2"
+    repo="wavpack" version="4.70.0" hash="sha256:2cade379b0aba99fbc4e442ccc6dac6c609f6212e46516a083e24c8c364430a4">
+      <patch file="https://github.com/dbry/WavPack/commit/779a2e62783acc6a46f75dd89359e95079ef708a.diff" strip="1"/>
+    </branch>
+  </autotools>
+
 
   <!-- gst-plugins-bad
        Upstream: http://gstreamer.freedesktop.org/src/gst-plugins-bad/
@@ -267,6 +296,8 @@
       <dep package="gst-plugins-base-1.0"/>
       <dep package="faad2"/>
       <dep package="libvorbis"/>
+      <dep package="libopus"/>
+      <dep package="libmpg123"/>
     </dependencies>
   </autotools>
 
@@ -280,7 +311,6 @@
     <dependencies>
       <dep package="gstreamer-1.0"/>
       <dep package="gst-plugins-base-1.0"/>
-      <dep package="libmad"/>
     </dependencies>
   </autotools>
 
@@ -289,24 +319,12 @@
     <branch repo="gstreamer" module="gstreamer/gstreamer-1.4.5.tar.xz"
     		version="1.4.5" hash="sha256:40801aa7f979024526258a0e94707ba42b8ab6f7d2206e56adbc4433155cb0ae">
     </branch>
-    <after>
+    <dependencies>
       <dep package="glib"/>
-    </after>
+      <dep package="gobject-introspection"/>
+    </dependencies>
   </autotools>
 
-  <!-- for recent gstreamer -->
-  <autotools id="bison" autogen-sh="configure"> <!-- fixme is 3.0.2 ok ? -->
-    <branch repo="ftp.gnu.org" module="bison/bison-2.6.3.tar.xz"
-            version="2.6.3"/>
-  </autotools>
-  
-  <autotools id="liborc" autogen-sh="configure">
-      <!-- FIXME in new gtk-osx-gstreamer it's orc/ 0.4.22 in gstreamer repo -->
-    <branch module="orc/orc-0.4.18.tar.gz"
-	    repo="entropywave" version="0.4.18"/>
-  </autotools>
-
-  <!-- {{{ gstreamer codecs -->
   <!-- ogg container
        Upstream: http://downloads.xiph.org/releases/ogg/
        MacPorts: https://trac.macports.org/browser/trunk/dports/multimedia/libogg/Portfile
@@ -337,17 +355,11 @@
     </dependencies>
   </autotools>
 
-  <!-- MPEG Audio Decoder
-       MacPorts: https://trac.macports.org/browser/trunk/dports/audio/libmad/Portfile
-    -->
-  <autotools id="libmad"  autogen-sh="autoreconf" autogenargs="">
-    <branch module="libmad-0.15.1b.tar.gz"
-	    repo="mars" version="0.15.1b" hash="sha256:bbfac3ed6bfbc2823d3775ebb931087371e142bb0e9bb1bee51a76a6e0078690">
-	  <patch file="https://trac.macports.org/export/125862/trunk/dports/audio/libmad/files/patch-configure.ac.diff" />
-	  <patch file="https://trac.macports.org/export/125862/trunk/dports/audio/libmad/files/automake.patch" />
-	  <patch file="quodlibet-patches/libmad-add-missing.patch" />
-	</branch>
-  </autotools>
+<autotools id="libmpg123"  autogen-sh="configure">
+    <branch module="mpg123-1.22.2.tar.bz2"
+        repo="mpg123" version="1.22.2" hash="sha256:6d1e2487777114ba8a73c543f355cacfa2055646724000fc195ac9e64c843744">
+    </branch>
+</autotools>
 
   <!-- flac audio codec
        Upstream: http://downloads.xiph.org/releases/flac/
@@ -381,11 +393,6 @@
     <branch module="opus/opus-1.1.tar.gz"
 	    repo="xiph" version="1.1" hash="sha256:b9727015a58affcf3db527322bf8c4d2fcf39f5f6b8f15dbceca20206cbe1d95"/>
   </autotools>
-  <!-- }}} -->
-
-  <!-- }}} -->
-
-  <!-- {{{ libsoup and deps -->
 
   <!-- libsoup net library
        Upstream: http://ftp.gnome.org/pub/GNOME/sources/libsoup/
@@ -451,11 +458,6 @@
     <branch repo='ftp.gnupg.org' version='1.6.3'
 	    module='gcrypt/libgcrypt/libgcrypt-1.6.3.tar.bz2'
 	    hash="sha256:41b4917b93ae34c6a0e2127378d7a4d66d805a2a86a09911d4f9bd871db7025f">
-	    <!-- was unable to compile because the test used an assembly not available to me.
-	         I disabled manually the AVX and AVX2 tests, so this code is not called and
-	         stubbed the result to 0, which doesn't pass the & 0x6 test.
-	      -->
-	  <patch file="quodlibet-patches/libgcrypt-compile-error-no-such-instruction-xgetbv.patch"/>
     </branch>
     <dependencies>
       <dep package="libgpg-error" />
@@ -482,18 +484,8 @@
 	    module="nettle/nettle-2.7.1.tar.gz"
 	    hash="sha256:bc71ebd43435537d767799e414fce88e521b7278d48c860651216e1fc6555b40"/>
     <dependencies>
-      <dep package="gmpfornettle" />
+      <dep package="gmp" />
     </dependencies>
   </autotools>
 
-  <!-- sqlite
-       Upstream: http://www.sqlite.org/download.html
-  -->
-  <autotools id="sqlite" autogenargs="--disable-tcl --enable-threadsafe"
-	     autogen-sh="configure">
-    <branch module="2015/sqlite-autoconf-3080900.tar.gz" version='3.8.9'
-	    repo="sqlite" hash="sha1:db70dee268700b312cbaa5b3e5cf8454e1c8b7b9"/>
-  </autotools>
-
-  <!-- }}} -->
 </moduleset>

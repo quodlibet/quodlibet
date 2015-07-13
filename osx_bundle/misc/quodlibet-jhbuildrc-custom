@@ -2,7 +2,7 @@ import os
 
 checkoutroot = os.path.expanduser("~/jhbuild_checkoutroot")
 prefix = os.path.expanduser("~/jhbuild_prefix")
-modulesets_dir = os.environ["QUODLIBET_MODULESETS"]
+modulesets_dir = os.environ["QL_OSXBUNDLE_MODULESETS_DIR"]
 moduleset = ["bootstrap", "quodlibet"]
 modules = []
 

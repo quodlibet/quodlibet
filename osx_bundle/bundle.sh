@@ -27,3 +27,6 @@ mv "$APP" "$QUODLIBET"
 
 (cd "$QL_OSXBUNDLE_BUNDLE_DEST" && zip -rq "QuodLibet-$VERSION.zip" "QuodLibet.app")
 (cd "$QL_OSXBUNDLE_BUNDLE_DEST" && zip -rq "ExFalso-$VERSION.zip" "ExFalso.app")
+
+(cd "$QL_OSXBUNDLE_BUNDLE_DEST" && shasum -a256 "QuodLibet-$VERSION.zip" > "QuodLibet-$VERSION.zip.sha256")
+(cd "$QL_OSXBUNDLE_BUNDLE_DEST" && shasum -a256 "ExFalso-$VERSION.zip" > "ExFalso-$VERSION.zip.sha256")
