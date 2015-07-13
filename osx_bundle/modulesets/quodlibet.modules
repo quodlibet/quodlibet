@@ -25,8 +25,6 @@
   <repository type='tarball' name='ftp.gnupg.org' href="ftp://ftp.gnupg.org/" />
   <repository type="tarball" name="mutagen"
               href="https://bitbucket.org/lazka/mutagen/downloads/"/>
-  <repository type="tarball" name="quodlibet"
-              href="https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/"/>
   <repository type="tarball" name="entropywave"
 	      href="http://code.entropywave.com/download/"/>
   <repository type="tarball" name="xiph"
@@ -35,8 +33,6 @@
 	      href="http://files.itstool.org/itstool/"/>
   <repository type="tarball" name="ftp.gnutls.org"
 	      href="ftp://ftp.gnutls.org/"/>
-  <repository type="tarball" name="mars"
-	      href="ftp://ftp.mars.org/pub/mpeg/"/>
   <repository type="tarball" name="gstreamer"
 	      href="http://gstreamer.freedesktop.org/src/"/>
   <repository type="tarball" name="musicbrainz"
@@ -48,14 +44,8 @@
           href="http://www.mpg123.de/download/"/>
   <repository type="tarball" name="wavpack"
           href="http://www.wavpack.com/"/>
-  <repository type="tarball" name="musepack"
-          href="http://files.musepack.net/source/"/>
 
-  <distutils id="quodlibet" supports-non-srcdir-builds="no">
-    <branch repo="quodlibet" module="quodlibet-3.4.1.tar.gz"
-            version="3.4.1"
-            hash="sha256:73b75ee431b1eaee0513e5e82d3dceecf05a026ce29f2eefc4461e4b19ad14c6">
-    </branch>
+  <metamodule id="quodlibet">
     <dependencies>
       <dep package="meta-quodlibet-gstreamer-1.0"/>
       <dep package="mutagen" />
@@ -64,7 +54,7 @@
       <dep package="meta-gtk-osx-python-gtk3"/>
       <dep package="pyobjc"/>
     </dependencies>
-  </distutils>
+  </metamodule>
 
   <autotools id="gst-libav" supports-non-srcdir-builds="no"
     autogen-sh="configure"

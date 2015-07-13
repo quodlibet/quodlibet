@@ -45,7 +45,7 @@
       so we use the original and ignore it. If your original will work
       in the bundle, you can use this instead.-->
  <main-binary>
-     ${prefix}/bin/quodlibet
+     ${prefix}/bin/python
   </main-binary>
 
   <!-- We need to pack our own Python to avoid compatibility problems. -->
@@ -134,10 +134,6 @@
   <translations name="gtk30">
     ${prefix}/share/locale
   </translations>
-  <translations name="quodlibet">
-    ${prefix}/share/locale
-  </translations>
-
 
   <!-- Be careful, only to pick required python modules  -->
   
@@ -170,7 +166,6 @@
   <data>${prefix}/lib/python2.7/site-packages/gi</data>
   <data>${prefix}/lib/python2.7/site-packages/musicbrainz2</data>
   <data>${prefix}/lib/python2.7/site-packages/mutagen</data>
-  <data>${prefix}/lib/python2.7/site-packages/quodlibet</data>
   <!-- pyObjC -->
   <data>${prefix}/lib/python2.7/distutils</data>
   <data>${prefix}/lib/python2.7/site-packages/pkg_resources.py</data>
@@ -244,22 +239,7 @@
   </data>
 
   <data>
-    ${prefix}/bin/quodlibet
-  </data>
-  <data>
-    ${prefix}/bin/exfalso
-  </data>
-  <data>
-    ${prefix}/bin/operon
-  </data>
-
-  <data>
     ${prefix}/share/glib-2.0/schemas
-  </data>
-
-
-  <data>
-    ${prefix}/share/icons/hicolor/scalable/apps
   </data>
 
   <data dest="${bundle}/Contents/Resources/quodlibet.icns">
@@ -276,26 +256,9 @@
     ${prefix}/share/themes/Adwaita
   </data>
 
-  <!-- Icon themes to copy. The "icons" property can be either of
-       "auto", "all", or "none". All or none should be
-       self-explanatory, while auto means that the script will try to
-       figure out which icons are needed. This is done by getting all
-       the strings from all copied binaries, and matching them against
-       icon names. To be safe, you should use "all". "none" is useful
-       if you want just the index.theme file but no icons, mostly
-       needed for the "hicolor" base theme.
-  -->
   <!-- must say all to get icons at bottom left of paned browser -->
   <icon-theme icons="all">
     Adwaita
   </icon-theme>
-
-  <!-- gPodder icon in the about dialog (gpodder.icon_file initialised in gpodder script) -->
-  <data dest="${bundle}/Contents/Resources/share/icons/hicolor/scalable/apps">
-  	${prefix}/share/icons/hicolor/scalable/apps/quodlibet.svg
-  </data>
-  <data dest="${bundle}/Contents/Resources/share/icons/hicolor/scalable/apps">
-  	${prefix}/share/icons/hicolor/scalable/apps/exfalso.svg
-  </data>
 
 </app-bundle>

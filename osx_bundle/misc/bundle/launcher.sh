@@ -56,7 +56,7 @@ export QUODLIBET_NO_HINTS=yes
 # select target based on our basename
 APP=$(basename "$0")
 if [ "$APP" == "run" ]; then
-    $EXEC "$PYTHON" $*
+    "$PYTHON" "$@"
 else
-    $EXEC "$PYTHON" "$bundle_contents/Resources/bin/$APP" $*
+    "$PYTHON" "$bundle_contents/Resources/bin/$APP" "$@"
 fi
