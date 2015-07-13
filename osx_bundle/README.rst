@@ -2,8 +2,7 @@
 OS X Bundle Build Scripts
 =========================
 
-.. note::
-
+**Note:**
     In case you want just want to run Quod Libet from source you can ignore
     all this and use the released bundle as a development environment.
     Download the official bundle, git clone the quodlibet repo and do
@@ -54,7 +53,8 @@ Content Description
   which adds new packages replaces existing ones.
 * ``misc``: see each file or directory README for a description.
 
-[0] https://developer.apple.com/xcode/downloads/
-[1] https://git-scm.com/download/mac
-[2] https://git.gnome.org/browse/gtk-osx/
-[3] https://git.gnome.org/browse/jhbuild/
+
+| [0] https://developer.apple.com/xcode/downloads/
+| [1] https://git-scm.com/download/mac
+| [2] https://git.gnome.org/browse/gtk-osx/
+| [3] https://git.gnome.org/browse/jhbuild/
