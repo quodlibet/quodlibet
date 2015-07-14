@@ -126,7 +126,7 @@ class TMAFile(TestCase, TAPEv2FileMixin):
         os.unlink(self.f)
 
 
-class TWavpackFile(TestCase, TAPEv2FileMixin):
+class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 
     def setUp(self):
         fd, self.f = mkstemp(".wv")

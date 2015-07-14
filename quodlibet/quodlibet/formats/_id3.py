@@ -112,7 +112,7 @@ class ID3File(AudioFile):
                 continue
             elif frame.FrameID == "TLEN":
                 try:
-                    length = +frame // 1000
+                    length = +frame / 1000.0
                 except ValueError:
                     continue
                 # ignore TLEN <= 0 [issue 222]
@@ -207,7 +207,7 @@ class ID3File(AudioFile):
                 for frame in tag.getall("TXXX:" + k):
                     self[k] = "\n".join(map(unicode, frame.text))
 
-        self.setdefault("~#length", int(audio.info.length))
+        self.setdefault("~#length", audio.info.length)
         try:
             self.setdefault("~#bitrate", int(audio.info.bitrate / 1000))
         except AttributeError:

@@ -17,7 +17,7 @@ class WavpackFile(APEv2File):
     def __init__(self, filename):
         audio = WavPack(filename)
         super(WavpackFile, self).__init__(filename, audio)
-        self["~#length"] = int(audio.info.length)
+        self["~#length"] = audio.info.length
         self.sanitize(filename)
 
 info = WavpackFile

@@ -17,7 +17,7 @@ class TMPCFile(TestCase):
         self.song = MPCFile(os.path.join(DATA_DIR, 'silence-44-s.mpc'))
 
     def test_length(self):
-        self.failUnlessEqual(self.song("~#length"), 0)
+        self.assertAlmostEqual(self.song("~#length"), 0.065306, 3)
 
     def test_bitrate(self):
         self.failUnlessEqual(self.song("~#bitrate"), 239)
@@ -34,7 +34,7 @@ class TMPCSV8File(TestCase):
         self.song = MPCFile(os.path.join(DATA_DIR, 'silence-44-s.sv8.mpc'))
 
     def test_length(self):
-        self.failUnlessEqual(self.song("~#length"), 3)
+        self.assertAlmostEqual(self.song("~#length"), 3.684716, 3)
 
     def test_bitrate(self):
         self.failUnlessEqual(self.song("~#bitrate"), 1)

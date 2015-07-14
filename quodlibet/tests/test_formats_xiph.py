@@ -602,7 +602,7 @@ class TOggOpusFile(TVCFile, TVCFileMixin):
         self.song = OggOpusFile(self.filename)
 
     def test_length(self):
-        self.failUnlessEqual(self.song("~#length"), 3)
+        self.assertAlmostEqual(self.song("~#length"), 3.6847, 3)
         self.failUnless("opusenc" in self.song("encoder"))
 
     def tearDown(self):

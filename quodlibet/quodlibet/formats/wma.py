@@ -89,7 +89,7 @@ class WMAFile(AudioFile):
     def __init__(self, filename, audio=None):
         if audio is None:
             audio = mutagen.asf.ASF(filename)
-        self["~#length"] = int(audio.info.length)
+        self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         for name, values in audio.tags.items():
             if name == "WM/Picture":

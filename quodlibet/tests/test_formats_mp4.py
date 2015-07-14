@@ -41,7 +41,7 @@ class TMP4File(TestCase):
         self.assertEqual(self.song("title"), u"SomeTestValue")
 
     def test_length(self):
-        self.assertEqual(self.song("~#length"), 3)
+        self.assertAlmostEqual(self.song("~#length"), 3.7079, 3)
 
     def test_bitrate(self):
         self.assertEqual(self.song("~#bitrate"), 2)

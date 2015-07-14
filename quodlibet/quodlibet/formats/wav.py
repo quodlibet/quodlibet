@@ -21,7 +21,7 @@ class WAVEFile(AudioFile):
     def __init__(self, filename):
         with open(filename, "rb") as h:
             f = wave.open(h)
-            self["~#length"] = f.getnframes() // f.getframerate()
+            self["~#length"] = f.getnframes() / f.getframerate()
         self.sanitize(filename)
 
     def sanitize(self, filename):
