@@ -104,7 +104,7 @@ class TAPEv2FileMixin(object):
         self.failUnlessEqual(m["track"], "77/88")
 
 
-class TMPCFile(TestCase, TAPEv2FileMixin):
+class TMPCFileAPEv2(TestCase, TAPEv2FileMixin):
     def setUp(self):
         fd, self.f = mkstemp(".mpc")
         os.close(fd)
