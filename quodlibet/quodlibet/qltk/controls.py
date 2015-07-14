@@ -32,6 +32,7 @@ class TimeLabel(Gtk.Label):
     def __init__(self, time_=0):
         Gtk.Label.__init__(self)
         self.__widths = {}  # num-chars -> (max-min-width, max-natural-width)
+        self._disabled = False
         self.set_time(time_)
 
     def do_get_preferred_width(self):
@@ -48,7 +49,21 @@ class TimeLabel(Gtk.Label):
     def set_time(self, time_):
         """Set the time in seconds"""
 
+        self._last_time = time_
+        if self._disabled:
+            return
         self.set_text(util.format_time_display(time_))
+
+    def set_disabled(self, disabled):
+        """Disable the time display temporarily, means there is no meaningful
+        time to show. Re-enabling will show the previous time value
+        """
+
+        self._disabled = disabled
+        if disabled:
+            self.set_text(u"‒\u2236‒‒")
+        else:
+            self.set_time(self._last_time)
 
 
 class SeekBar(HSlider):
@@ -59,6 +74,7 @@ class SeekBar(HSlider):
     def __init__(self, player, library):
         hbox = Gtk.HBox(spacing=3)
         l = TimeLabel()
+        self._time_label = l
         hbox.pack_start(l, True, True, 0)
         arrow = Gtk.Arrow.new(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE)
         hbox.pack_start(arrow, False, True, 0)
@@ -66,6 +82,9 @@ class SeekBar(HSlider):
 
         self._slider_label = TimeLabel()
         self.set_slider_widget(self._slider_label)
+
+        self._on_seekable_changed(player)
+        connect_destroy(player, "notify::seekable", self._on_seekable_changed)
 
         self.scale.connect('button-press-event', self.__seek_lock)
         self.scale.connect('button-release-event', self.__seek_unlock, player)
@@ -104,6 +123,10 @@ class SeekBar(HSlider):
 
         connect_destroy(player, 'song-started', self.__song_started, m)
         connect_destroy(player, 'seek', self.__seeked)
+
+    def _on_seekable_changed(self, player, *args):
+        self._time_label.set_disabled(not player.seekable)
+        self.set_slider_disabled(not player.seekable)
 
     def __check_menu(self, menu, event, player, remaining_item):
         if event.type != Gdk.EventType.BUTTON_PRESS:

@@ -160,6 +160,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         self._volume = 1.0
         self._paused = True
+        self._seekable = False
 
         self._in_gapless_transition = False
         self._active_seeks = []
@@ -219,6 +220,19 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 print_(line)
         else:
             print_e("No active pipeline.")
+
+    def _refresh_seekable(self):
+        query = Gst.Query.new_seeking(Gst.Format.TIME)
+        if self.bin and self.bin.query(query):
+            seekable = query.parse_seeking()[1]
+        elif self.song is None:
+            seekable = False
+        else:
+            seekable = True
+
+        if seekable != self._seekable:
+            self._seekable = seekable
+            self.notify("seekable")
 
     def __init_pipeline(self):
         """Creates a gstreamer pipeline. Returns True on success."""
@@ -438,6 +452,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # and the volume is only valid in > paused states.
             if message.src is self._ext_vol_element:
                 self.notify("volume")
+
+            if message.src is self.bin.bin:
+                new_state = message.parse_state_changed()[1]
+                if new_state >= Gst.State.PAUSED:
+                    self._refresh_seekable()
         elif message.type == Gst.MessageType.STREAM_START:
             if self._in_gapless_transition:
                 print_d("Stream changed")
@@ -571,6 +590,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 if current_state >= Gst.State.PAUSED:
                     self._volume = self._ext_vol_element.get_property("volume")
             return self._volume
+        elif property.name == "seekable":
+            return self._seekable
         else:
             raise AttributeError
 
@@ -637,20 +658,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     # Something wants us to pause between songs, or when
                     # we've got no song playing (probably StopAfterMenu).
                     self.__destroy_pipeline()
-                elif self.song.is_file:
-                    # fast path
+                elif self.seekable:
                     self.bin.set_state(Gst.State.PAUSED)
                 else:
-                    # seekable streams (seem to) have a duration >= 0
-                    ok, d = self.bin.query_duration(Gst.Format.TIME)
-                    if not ok:
-                        d = -1
-
-                    if d >= 0:
-                        self.bin.set_state(Gst.State.PAUSED)
-                    else:
-                        # destroy so that we rebuffer on resume
-                        self.__destroy_pipeline()
+                    # destroy so that we rebuffer on resume i.e. we don't
+                    # want to continue unseekable streams from where we
+                    # paused but from where we unpaused.
+                    self.__destroy_pipeline()
         else:
             if self.song and self.__init_pipeline():
                 self.bin.set_state(Gst.State.PLAYING)
@@ -748,6 +762,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.paused = True
 
         self._in_gapless_transition = False
+        self._refresh_seekable()
 
     def __tag(self, tags, librarian):
         if self.song and self.song.multisong:

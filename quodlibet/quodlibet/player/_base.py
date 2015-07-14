@@ -89,8 +89,10 @@ class BasePlayer(GObject.GObject, Equalizer):
     __gproperties__ = {
         'volume': (float, 'player volume', 'the volume of the player',
                    0.0, 1.0, 1.0,
-                   GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE)
-        }
+                   GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
+        'seekable': (bool, 'seekable', 'if the stream is seekable', True,
+                     GObject.ParamFlags.READABLE),
+    }
 
     def __init__(self, *args, **kwargs):
         super(BasePlayer, self).__init__()
@@ -152,6 +154,14 @@ class BasePlayer(GObject.GObject, Equalizer):
     @volume.setter
     def volume(self, v):
         self.props.volume = min(1.0, max(0.0, v))
+
+    @property
+    def seekable(self):
+        """If the current song can be seeked, in case it's not clear defaults
+        to True. See the "seekable" GObject property for notifications.
+        """
+
+        return self.props.seekable
 
     def _destroy(self):
         """Clean up"""

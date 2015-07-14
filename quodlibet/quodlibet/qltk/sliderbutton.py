@@ -54,6 +54,8 @@ class _PopupSlider(Gtk.Button):
             self.add(child)
         self.connect('clicked', self.__clicked)
 
+        self._disable_slider = False
+
         window = self.__window = Gtk.Window(type=Gtk.WindowType.POPUP)
         self.__adj = adj or self._adj
 
@@ -101,6 +103,15 @@ class _PopupSlider(Gtk.Button):
         self.__window.destroy()
         self.__window = None
 
+    def set_slider_disabled(self, disable):
+        """Hide the slider and don't allow showing it again until it is
+        enabled again
+        """
+
+        self._disable_slider = disable
+        if disable:
+            self.__popup_hide()
+
     def set_slider_length(self, length):
         if self.ORIENTATION == Gtk.Orientation.HORIZONTAL:
             self.scale.set_size_request(length, -1)
@@ -119,6 +130,9 @@ class _PopupSlider(Gtk.Button):
 
     def __clicked(self, button):
         if self.__window.get_property('visible'):
+            return
+
+        if self._disable_slider:
             return
 
         window = self.__window

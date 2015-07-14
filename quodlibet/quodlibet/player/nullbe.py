@@ -42,6 +42,10 @@ class NullPlayer(BasePlayer):
     def do_get_property(self, property):
         if property.name == 'volume':
             return self._volume
+        elif property.name == 'seekable':
+            if self.song is None:
+                return False
+            return True
         else:
             raise AttributeError
 
@@ -82,6 +86,8 @@ class NullPlayer(BasePlayer):
             self.emit("unpaused")
 
         self._position = 0
+        # seekable might change if we change to None, so notify just in case
+        self.notify("seekable")
 
     def can_play_uri(self, uri):
         return True

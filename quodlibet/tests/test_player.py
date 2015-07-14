@@ -171,6 +171,21 @@ class TPlayer(AbstractTestCase):
         config.set("player", "pre_amp_gain", 10.0)
         self.assertEqual(self.player.calc_replaygain_volume(1.0), 1.0)
 
+    def test_seekable(self):
+        self.assertFalse(self.player.seekable)
+        self.player.next()
+        self.assertTrue(self.player.seekable)
+
+        calls = []
+
+        def on_change(*args):
+            calls.append(args)
+
+        self.player.connect("notify::seekable", on_change)
+        self.player.go_to(None)
+        self.assertTrue(calls)
+        self.assertFalse(self.player.seekable)
+
 
 class TNullPlayer(TPlayer):
     NAME = "nullbe"

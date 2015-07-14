@@ -154,6 +154,10 @@ class XinePlaylistPlayer(BasePlayer):
     def do_get_property(self, property):
         if property.name == 'volume':
             return self._volume
+        elif property.name == 'seekable':
+            if self.song is None:
+                return False
+            return True
         else:
             raise AttributeError
 
@@ -263,6 +267,9 @@ class XinePlaylistPlayer(BasePlayer):
         else:
             self.paused = True
             xine_stop(self._stream)
+
+        # seekable might change if we change to None, so notify just in case
+        self.notify("seekable")
 
     def setup(self, playlist, song, seek_pos):
         super(XinePlaylistPlayer, self).setup(playlist, song, seek_pos)
