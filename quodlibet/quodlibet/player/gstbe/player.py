@@ -661,10 +661,14 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 elif self.seekable:
                     self.bin.set_state(Gst.State.PAUSED)
                 else:
-                    # destroy so that we rebuffer on resume i.e. we don't
-                    # want to continue unseekable streams from where we
-                    # paused but from where we unpaused.
-                    self.__destroy_pipeline()
+                    q = Gst.Query.new_buffering(Gst.Format.DEFAULT)
+                    if self.bin.query(q):
+                        # destroy so that we rebuffer on resume i.e. we don't
+                        # want to continue unseekable streams from where we
+                        # paused but from where we unpaused.
+                        self.__destroy_pipeline()
+                    else:
+                        self.bin.set_state(Gst.State.PAUSED)
         else:
             if self.song and self.__init_pipeline():
                 self.bin.set_state(Gst.State.PLAYING)
