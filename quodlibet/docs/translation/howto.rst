@@ -47,13 +47,11 @@ To translate current trunk, update to the default branch::
 
 Create the POT file and update translations::
 
-    $ ./setup.py build_mo
-
+    $ ./setup.py update_po
 
 In case there's not already a translation for your language::
 
-    $ msginit -i po/quodlibet.pot -l po/<mylang>
-
+    $ ./setup.py create_po --lang=<mylang>
 
 Now start translating...
 
