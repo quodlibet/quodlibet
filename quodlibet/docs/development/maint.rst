@@ -1,25 +1,5 @@
-Miscellaneous
-=============
-
-Working with PyCharm
---------------------
-
-QL adds some commonly used functions to `__builtin__` which PyCharm can't
-resolve. You can remove the resulting warnings by adding the function names
-to the `Ignore references` list under `File > Settings > Project Settings >
-Inspections > Python > Unresolved references`.
-
-Add the following names to the list:
-
-* `_`
-* `Q_`
-* `N_`
-* `ngettext`
-* `print_`
-* `print_d`
-* `print_w`
-* `print_e`
-
+Maintainer Resources
+====================
 
 Useful Specifications
 ---------------------
@@ -54,6 +34,44 @@ Downstream Bug Trackers
   * `Debian <http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=quodlibet>`_
   * `Arch Linux <https://bugs.archlinux.org/?project=1&string=quodlibet>`_
   * `Ubuntu <https://launchpad.net/ubuntu/+source/quodlibet/+bugs>`_
+
+
+Tags & Branches
+---------------
+
+At the point where no more functionality will be added to a release, a
+new branch gets created. All bugfix changes should get committed there and
+merged back in the default branch where new functionality can be added. In 
+case a bugfix was committed to the default branch or an unplanned stable
+release is needed, use Git's `cherry-pick` features to copy those changes to
+the stable branch(es).
+
+::
+
+     /|\     /|\
+      |       |
+      |    2.4.91
+    2.5.-1   /   <--- quodlibet-2.5 branch
+      |_____/
+      |       /|\
+      |        |
+      |      2.4.1  <--- quodlibet-2.4.1 tag
+      |        |
+      |      2.4.0.-1
+      |        |
+      |      2.4  <--- quodlibet-2.4.0 tag
+      |        |
+      |      2.3.91.-1
+      |        |
+      |      2.3.91
+    2.4.-1    /
+      |______/   <--- quodlibet-2.4 branch
+      |
+      |  <--- default branch
+    2.3.-1
+      |
+     /|\
+
 
 
 Translation Backport Braindump

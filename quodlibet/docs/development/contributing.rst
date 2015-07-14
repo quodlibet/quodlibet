@@ -27,61 +27,36 @@ Filing bug reports
 ------------------
 
 Useful Links
-^^^^^^^^^^^^
-
- * `List current bugs <https://github.com/quodlibet/quodlibet/issues>`_
- * `Add a new bug <https://github.com/quodlibet/quodlibet/issues/new>`_
+    * `List current bugs <https://github.com/quodlibet/quodlibet/issues>`_
+    * `Add a new bug <https://github.com/quodlibet/quodlibet/issues/new>`_
 
 
 Writing a good bug report
-^^^^^^^^^^^^^^^^^^^^^^^^^
+    Please follow the `bug report guidelines 
+    <https://github.com/quodlibet/quodlibet/blob/master/CONTRIBUTING.rst>`__. 
 
-The more information provided in a bug report, the more likely a bug can be
-reproduced on another system. Good examples of details include:
-
-  * OS, distribution, and version
-  * Versions of Python, Quod Libet, Mutagen, GTK, PyGTK, GStreamer, libXine
-  * A list of all enabled plugins
-  * The current browser
-  * Debug log information (dump files)
-
-For more tips see `How to Report Bugs Effectively
-<http://www.chiark.greenend.org.uk/~sgtatham/bugs.html>`_.
-
-
-Isolating the problem(s)
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-Misbehaving plugins are a common source of bugs. Try reproducing the bug
-with all plugins disabled; if the bug is gone, enable them one by one until
-you find the *combination* of plugins that triggers the bug.
-
-
-Viewing Debug information
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If the bug you have found does not raise an exception, the debug window
-won't appear and the dump won't be generated. In this case, run quodlibet
-from the command line using the command ``$ QUODLIBET_DEBUG=1 quodlibet``
-(or in newer versions, just ``quodlibet --debug``), and use 'Cause an
-error' from the Help menu to produce the dump.
-
-
-Testing the latest code
-^^^^^^^^^^^^^^^^^^^^^^^
-
-Some problems are fixed in the development branch which aren't yet fixed in
-the current release. If you can, try to reproduce your bug against a recent
-checkout before filing.
+    For more general tips see `"How to Report Bugs Effectively"
+    <http://www.chiark.greenend.org.uk/~sgtatham/bugs.html>`_.
 
 
 One bug per ticket
-^^^^^^^^^^^^^^^^^^
+    Please do not create an item (ticket) in the issue tracker which contains
+    reports of multiple unrelated issues. Even if you are reporting several
+    very minor bugs, each one deserves its own issue. This allows each issue to
+    receive independent discussion and analysis, and to be closed separately.
 
-Please do not create an item (ticket) in the issue tracker which contains
-reports of multiple unrelated issues. Even if you are reporting several
-very minor bugs, each one deserves its own issue. This allows each issue to
-receive independent discussion and analysis, and to be closed separately.
+
+Viewing Debug information
+    If the bug you have found does not raise an exception, the debug window
+    won't appear and the dump won't be generated. In this case, run quodlibet
+    from the command line using the command ``quodlibet --debug``. It will show
+    additional information that might be useful.
+
+
+Testing the latest code
+    Some problems are fixed in the development branch which aren't yet fixed in
+    the current release. If you can, try to reproduce your bug against a recent
+    checkout before filing.
 
 
 Filing enhancement requests
@@ -111,17 +86,8 @@ You don't need to know how to program in Python to do it.
 Submitting patches
 ------------------
 
-Patches are always welcome, and should be attached to the issue tracker. We
-review every issue and tag the ones which include patches, so there's no
-need to add "PATCH" to the issue summary.
+Patches are always welcome, and should be in the form of a pull request or by 
+attaching a patch.
 
-We try to keep Quod Libet's code in pretty good shape; when submitting a
-patch, it's much easier to get it included quickly if you run through this
-checklist of common-sense code quality items. Make sure your patch:
-
-  * is `PEP 8 <http://www.python.org/dev/peps/pep-0008/>`_ compliant.
-    Yes, this means an 80-character line length.
-  * passes existing tests, and includes new ones if at all possible.
-  * is commented.
-  * adds your name to the copyright header of every file you touch.
-    This helps you get credit and helps us keep track of authorship.
+If you follow the :ref:`CodingGuidelines` it will be much easier to get your 
+changes included quickly.
