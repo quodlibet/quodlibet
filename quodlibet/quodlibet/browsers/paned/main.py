@@ -37,6 +37,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
 
     name = _("Paned Browser")
     accelerated_name = _("_Paned Browser")
+    keys = ["Paned", "PanedBrowser"]
     priority = 3
 
     def pack(self, songpane):

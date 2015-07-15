@@ -221,6 +221,7 @@ class AudioFeeds(Browser):
 
     name = _("Audio Feeds")
     accelerated_name = _("_Audio Feeds")
+    keys = ["AudioFeeds"]
     priority = 20
     uses_main_library = False
 

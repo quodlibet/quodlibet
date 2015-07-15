@@ -144,11 +144,16 @@ class Browser(Gtk.Box, Filter):
     accelerated_name = _("Library Browser")
     """The name, with an accelerator."""
 
+    keys = ["Unknown"]
+    """Keys which are used to reference the browser from the command line.
+    The first is the primary one.
+    """
+
     priority = 100
     """Priority in the menu list (0 is first, higher numbers come later)"""
 
-    in_menu = True
-    """Whether the browser should appear in the Music->Browse menu."""
+    is_empty = False
+    """Whether the browser is usable or just the dummy/disabled one"""
 
     uses_main_library = True
     """Whether the browser has the main library as source"""

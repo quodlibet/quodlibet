@@ -513,7 +513,7 @@ class TrayIcon(EventPlugin):
         browse_sub = Gtk.Menu()
 
         for Kind in browsers.browsers:
-            if not Kind.in_menu:
+            if Kind.is_empty:
                 continue
             i = Gtk.MenuItem(label=Kind.accelerated_name, use_underline=True)
             connect_obj(i,

@@ -46,8 +46,8 @@ class SearchBar(Browser):
 
     name = _("Search Library")
     accelerated_name = _("_Search Library")
+    keys = ["SearchBar"]
     priority = 1
-    in_menu = True
 
     def pack(self, songpane):
         container = Gtk.VBox(spacing=6)

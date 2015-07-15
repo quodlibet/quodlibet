@@ -21,6 +21,7 @@ class EmptyBar(Browser):
 
     name = _("Disable Browser")
     accelerated_name = _("_Disable Browser")
+    keys = ["Disabled", "EmptyBar"]
     priority = 0
     in_menu = False
 

@@ -244,28 +244,28 @@ def _set_rating(app, value):
 @registry.register("dump-browsers")
 def _dump_browsers(app):
     f = StringIO()
-    for i, browser in enumerate(browsers.browsers):
-        if browser is not browsers.empty.EmptyBar:
-            f.write("%d. %s\n" % (i, browser.__name__))
+    for i, b in enumerate(browsers.browsers):
+        if not b.is_empty:
+            f.write("%d. %s\n" % (i, browsers.name(b)))
     return f.getvalue()
 
 
 @registry.register("set-browser", args=1)
 def _set_browser(app, value):
-    Kind = browsers.get(value)
-    if Kind is not browsers.empty.EmptyBar:
-        app.window.select_browser(None, value, app.library, app.player)
-    else:
+    try:
+        browsers.get(value)
+    except ValueError:
         raise CommandError("Unknown browser %r" % value)
+    app.window.select_browser(None, value, app.library, app.player)
 
 
 @registry.register("open-browser", args=1)
 def _open_browser(app, value):
-    Kind = browsers.get(value)
-    if Kind is not browsers.empty.EmptyBar:
-        LibraryBrowser.open(Kind, app.library, app.player)
-    else:
+    try:
+        Kind = browsers.get(value)
+    except ValueError:
         raise CommandError("Unknown browser %r" % value)
+    LibraryBrowser.open(Kind, app.library, app.player)
 
 
 @registry.register("random", args=1)

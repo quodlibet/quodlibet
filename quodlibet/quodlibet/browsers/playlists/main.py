@@ -35,6 +35,7 @@ class PlaylistsBrowser(Browser):
 
     name = _("Playlists")
     accelerated_name = _("_Playlists")
+    keys = ["Playlists", "PlaylistsBrowser"]
     priority = 2
     replaygain_profiles = ["track"]
 

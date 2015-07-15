@@ -129,6 +129,7 @@ class Menu(Gtk.Menu):
 class MediaDevices(Browser, util.InstanceTracker):
     name = _("Media Devices")
     accelerated_name = _("_Media Devices")
+    keys = ["MediaDevices"]
     priority = 25
     uses_main_library = False
     replaygain_profiles = ['track']

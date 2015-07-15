@@ -85,6 +85,9 @@ class TBrowserMixin(object):
         menu = self.b.Menu([], self.library, [])
         self.assertTrue(isinstance(menu, Gtk.Menu))
 
+    def test_key(self):
+        self.assertEqual(browsers.get(browsers.name(self.Kind)), self.Kind)
+
     def test_pack_unpack(self):
         to_pack = Gtk.Button()
         container = self.b.pack(to_pack)

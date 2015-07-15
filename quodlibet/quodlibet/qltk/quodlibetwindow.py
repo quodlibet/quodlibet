@@ -450,6 +450,23 @@ MENU = """
 """
 
 
+def BrowseLibrary():
+    items = []
+    for Kind in browsers.browsers:
+        if not Kind.is_empty:
+            item = "Browser" + Kind.__name__
+            items.append("<menuitem action='%s'/>" % item)
+    return "\n".join(items)
+
+
+def ViewBrowser():
+    items = []
+    for Kind in browsers.browsers:
+        item = "View" + Kind.__name__
+        items.append("<menuitem action='%s'/>" % item)
+    return "\n".join(items)
+
+
 DND_URI_LIST, = range(1)
 
 
@@ -596,7 +613,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 self, config.get("memory", "browser"), library, player,
                 restore_browser)
         except:
-            config.set("memory", "browser", browsers.name(0))
+            config.set("memory", "browser", browsers.name(browsers.default))
             config.save()
             raise
 
@@ -880,7 +897,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             action = "View" + Kind.__name__
             label = Kind.accelerated_name
             view_actions.append((action, None, label, None, None, i))
-        current = browsers.index(config.get("memory", "browser"))
+
+        current = config.get("memory", "browser")
+        try:
+            browsers.get(current)
+        except ValueError:
+            current = browsers.name(browsers.default)
 
         def action_callback(view_action, current):
             self.select_browser(view_action, current, library, player)
@@ -889,7 +911,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             None)
 
         for Kind in browsers.browsers:
-            if not Kind.in_menu:
+            if Kind.is_empty:
                 continue
             action = "Browser" + Kind.__name__
             label = Kind.accelerated_name
@@ -905,11 +927,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         ui.insert_action_group(ag, -1)
 
         ui.add_ui_from_string(
-            MAIN_MENU % {"browsers": browsers.BrowseLibrary()})
+            MAIN_MENU % {"browsers": BrowseLibrary()})
         self._filter_menu = FilterMenu(library, player, ui)
 
         menustr = MENU % {
-            "views": browsers.ViewBrowser(),
+            "views": ViewBrowser(),
         }
         ui.add_ui_from_string(menustr)
 
@@ -930,6 +952,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                        restore=False):
         if isinstance(current, Gtk.RadioAction):
             current = current.get_current_value()
+
         Browser = browsers.get(current)
 
         config.set("memory", "browser", Browser.__name__)

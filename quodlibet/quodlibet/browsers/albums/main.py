@@ -337,6 +337,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
 
     name = _("Album List")
     accelerated_name = _("_Album List")
+    keys = ["AlbumList"]
     priority = 4
 
     def pack(self, songpane):

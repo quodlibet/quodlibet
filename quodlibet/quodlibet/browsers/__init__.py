@@ -14,10 +14,19 @@ from quodlibet.browsers._base import Browser
 
 
 browsers = []
+default = None
 
 
 def init():
-    global browsers
+    """Import all browsers from this package and from the user directory.
+
+    After this is called the global `browers` list will contain all
+    classes sorted by priority.
+
+    Can be called multiple times.
+    """
+
+    global browsers, default
 
     # ignore double init (for the test suite)
     if browsers:
@@ -50,49 +59,44 @@ def init():
 
     browsers.sort(key=lambda Kind: Kind.priority)
 
+    try:
+        default = get("SearchBar")
+    except ValueError:
+        raise SystemExit("Default browser not found!")
 
-# Return the name of the ith browser.
-def name(i):
-    return browsers[i].__name__
+
+def name(browser):
+    """Return the name of the browser"""
+
+    return browser.keys[0]
 
 
-# Return a constructor for a browser, either given by number, a string
-# of the number, or the name. Defaults to the first browser if all else
-# fails.
 def get(i):
+    """Return a constructor for a browser, either given by number, a string
+    of the number, or the name.
+
+    Raises ValueError if the lookup fails.
+    """
+
     try:
         return browsers[int(i)]
     except (IndexError, ValueError, TypeError):
         try:
             return get(index(i))
         except (IndexError, ValueError):
-            return browsers[0]
+            raise ValueError("%r not found" % i)
 
 
-# Return the index of a browser given its name. Defaults to the first
-# browser if all else fails.
-def index(i):
-    try:
-        return int(i)
-    except (ValueError, TypeError):
-        try:
-            return map(name, range(len(browsers))).index(i)
-        except:
-            return 0
+def index(name):
+    """Return the index of a browser given its name.
 
+    Raises ValueError if the lookup fails.
+    """
 
-def BrowseLibrary():
-    items = []
-    for Kind in browsers:
-        if Kind.in_menu:
-            item = "Browser" + Kind.__name__
-            items.append("<menuitem action='%s'/>" % item)
-    return "\n".join(items)
+    name = name.lower()
+    for j, browser in enumerate(browsers):
+        keys = [k.lower() for k in browser.keys]
+        if name in keys:
+            return j
 
-
-def ViewBrowser():
-    items = []
-    for Kind in browsers:
-        item = "View" + Kind.__name__
-        items.append("<menuitem action='%s'/>" % item)
-    return "\n".join(items)
+    raise ValueError("%r not found" % name)
