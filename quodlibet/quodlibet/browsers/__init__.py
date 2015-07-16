@@ -9,6 +9,7 @@
 import os
 
 import quodlibet
+from quodlibet import util
 from quodlibet.util.importhelper import load_dir_modules
 from quodlibet.browsers._base import Browser
 
@@ -33,7 +34,7 @@ def init():
         return
 
     this_dir = os.path.dirname(__file__)
-    load_pyc = os.name == 'nt'
+    load_pyc = util.is_windows() or util.is_osx()
     modules = load_dir_modules(this_dir,
                                package=__package__,
                                load_compiled=load_pyc)
