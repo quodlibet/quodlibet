@@ -15,6 +15,7 @@ of man pages and gettext/intltool support.
 """
 
 import os
+import sys
 
 try:
     from py2exe import Distribution
@@ -86,6 +87,10 @@ class install(distutils_install):
         self.mandir = None
 
 
+is_windows = (os.name == "nt")
+is_osx = (sys.platform == "darwin")
+
+
 class GDistribution(Distribution):
     """A Distribution with support for GTK+-related options
 
@@ -139,24 +144,24 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("create_po", create_po)
 
     def has_po(self):
-        return os.name != 'nt' and bool(self.po_directory)
+        return not is_windows and bool(self.po_directory)
 
     def has_shortcuts(self):
-        return os.name != 'nt' and bool(self.shortcuts)
+        return not is_windows and not is_osx and bool(self.shortcuts)
 
     def has_appdata(self):
-        return os.name != 'nt' and bool(self.appdata)
+        return not is_windows and not is_osx and bool(self.appdata)
 
     def has_man_pages(self):
-        return os.name != 'nt' and bool(self.man_pages)
+        return not is_windows and bool(self.man_pages)
 
     def has_dbus_services(self):
-        return os.name != 'nt' and bool(self.dbus_services)
+        return not is_windows and not is_osx and bool(self.dbus_services)
 
     def need_icon_install(self):
-        return os.name != 'nt'
+        return not is_windows and not is_osx
 
     def need_search_provider(self):
-        return os.name != 'nt'
+        return not is_windows and not is_osx
 
 __all__ = ["GDistribution"]
