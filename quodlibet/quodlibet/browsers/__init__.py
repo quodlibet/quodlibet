@@ -7,6 +7,7 @@
 # published by the Free Software Foundation
 
 import os
+import sys
 
 from quodlibet import const
 from quodlibet.util.importhelper import load_dir_modules
@@ -24,7 +25,7 @@ def init():
         return
 
     this_dir = os.path.dirname(__file__)
-    load_pyc = os.name == 'nt'
+    load_pyc = os.name == 'nt' or sys.platform == 'darwin'
     modules = load_dir_modules(this_dir,
                                package=__package__,
                                load_compiled=load_pyc)

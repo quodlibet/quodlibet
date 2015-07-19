@@ -7,6 +7,7 @@
 # published by the Free Software Foundation
 
 import os
+import sys
 import ConfigParser
 from os.path import dirname, basename
 from quodlibet.util.dprint import print_d, print_w
@@ -32,7 +33,7 @@ devices = []
 def init_devices():
     global devices
 
-    load_pyc = os.name == 'nt'
+    load_pyc = os.name == 'nt' or sys.platform == 'darwin'
     modules = load_dir_modules(dirname(__file__),
                                package=__package__,
                                load_compiled=load_pyc)

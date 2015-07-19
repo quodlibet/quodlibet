@@ -32,7 +32,7 @@ def init():
             (MinVersions.MUTAGEN, mutagen.version_string))
 
     base = os.path.dirname(__file__)
-    load_pyc = os.name == 'nt'
+    load_pyc = os.name == 'nt' or sys.platform == 'darwin'
     formats = load_dir_modules(base,
                                package=__package__,
                                load_compiled=load_pyc)
