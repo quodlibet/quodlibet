@@ -14,7 +14,7 @@ import sys
 import warnings
 
 from quodlibet.util import set_process_title, environ, cached_func
-from quodlibet.util import windows
+from quodlibet.util import windows, is_osx
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars
@@ -185,6 +185,10 @@ def _gtk_init():
     """Call before using Gtk/Gdk"""
 
     import gi
+
+    # disable for consistency and trigger events seem a bit flaky here
+    if is_osx():
+        os.environ["GTK_OVERLAY_SCROLLING"] = "0"
 
     # make sure GdkX11 doesn't get used under Windows
     if os.name == "nt":

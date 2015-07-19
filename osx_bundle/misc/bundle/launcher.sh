@@ -46,7 +46,6 @@ export PYTHON="$bundle_contents/MacOS/python"
 export PYTHONHOME="$bundle_res"
 
 export GTK_DEBUG="no-pixel-cache"
-export GTK_OVERLAY_SCROLLING=0
 
 # temporary disable multimedia keys
 export QUODLIBET_NO_MMKEYS=yes
