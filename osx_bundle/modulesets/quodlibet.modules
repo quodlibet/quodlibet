@@ -68,6 +68,26 @@
     </dependencies>
   </autotools>
 
+  <!-- enable-fc and enable-ft required for librsvg's pixbuf loader -->
+  <repository type="tarball" name="cairographics"
+              href="http://cairographics.org/releases/"/>
+  <autotools id="cairo"  autogen-sh="configure"
+             autogenargs="--enable-pdf --enable-quartz --enable-ft --enable-fc --disable-xlib --without-x">
+    <branch module="cairo-1.14.2.tar.xz"  version="1.14.2"
+            repo="cairographics"
+            hash="sha1:c8da68aa66ca0855b5d0ff552766d3e8679e1d24">
+            <patch file="https://bugs.freedesktop.org/attachment.cgi?id=117242" strip="1"/>
+    </branch>
+    <dependencies>
+      <dep package="pixman"/>
+      <dep package="fontconfig"/>
+      <dep package="freetype"/>
+    </dependencies>
+    <after>
+      <dep package="meta-gtk-osx-bootstrap"/>
+    </after>
+  </autotools>
+
   <metamodule id="meta-quodlibet-gstreamer-1.0">
     <dependencies>
         <dep package="gstreamer-1.0"/>
