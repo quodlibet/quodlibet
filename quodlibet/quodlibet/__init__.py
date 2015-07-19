@@ -144,6 +144,10 @@ def _gtk_init():
 
     import gi
 
+    # disable for consistency and trigger events seem a bit flaky here
+    if sys.platform == "darwin" or 1:
+        os.environ["GTK_OVERLAY_SCROLLING"] = "0"
+
     # make sure GdkX11 doesn't get used under Windows
     if os.name == "nt":
         sys.modules["gi.repository.GdkX11"] = None
