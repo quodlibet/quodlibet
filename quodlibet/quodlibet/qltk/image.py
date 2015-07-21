@@ -50,16 +50,36 @@ def get_pbosf_for_pixbuf(widget, pixbuf):
         return pixbuf
 
 
-def pbosf_get_width(widget, pbosf):
+def pbosf_get_width(pbosf):
     """The scale independent width"""
 
-    return pbosf.get_width() / get_scale_factor(widget)
+    return pbosf_get_rect(pbosf)[2]
 
 
-def pbosf_get_height(widget, pbosf):
+def pbosf_get_height(pbosf):
     """The scale independent height"""
 
-    return pbosf.get_height() / get_scale_factor(widget)
+    return pbosf_get_rect(pbosf)[3]
+
+
+def pbosf_get_rect(pbosf):
+    """Gives (x, y, width, height) for a pixbuf or a surface,
+    scale independent
+    """
+
+    if isinstance(pbosf, GdkPixbuf.Pixbuf):
+        return (0, 0, pbosf.get_width(), pbosf.get_height())
+    else:
+        ctx = cairo.Context(pbosf)
+        x1, y1, x2, y2 = ctx.clip_extents()
+        x1 = int(math.floor(x1))
+        y1 = int(math.floor(y1))
+        x2 = int(math.ceil(x2))
+        y2 = int(math.ceil(y2))
+        x2 -= x1
+        y2 -= y1
+
+        return (x1, y1, x2, y2)
 
 
 def pbosf_get_property_name(pbosf):

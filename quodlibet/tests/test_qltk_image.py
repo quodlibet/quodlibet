@@ -8,7 +8,7 @@ from quodlibet.qltk.image import set_renderer_from_pbosf, \
     set_image_from_pbosf, get_scale_factor, pbosf_get_property_name, \
     get_pbosf_for_pixbuf, scale, calc_scale_size, add_border, \
     add_border_widget, pbosf_get_width, pbosf_get_height, \
-    set_ctx_source_from_pbosf
+    set_ctx_source_from_pbosf, pbosf_get_rect
 
 
 class TImageUtils(TestCase):
@@ -115,8 +115,8 @@ class TImageUtils(TestCase):
         s = get_scale_factor(w)
         newpb = GdkPixbuf.Pixbuf.new(rgb, True, 8, 10 * s, 15 * s)
         pbosf = get_pbosf_for_pixbuf(w, newpb)
-        self.assertEqual(pbosf_get_width(w, pbosf), 10)
-        self.assertEqual(pbosf_get_height(w, pbosf), 15)
+        self.assertEqual(pbosf_get_width(pbosf), 10)
+        self.assertEqual(pbosf_get_height(pbosf), 15)
 
     def test_set_ctx_source_from_pbosf(self):
         sf = cairo.ImageSurface(cairo.FORMAT_RGB24, 10, 10)
@@ -126,3 +126,9 @@ class TImageUtils(TestCase):
         pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 4, 4)
         set_ctx_source_from_pbosf(ctx, surface)
         set_ctx_source_from_pbosf(ctx, pixbuf)
+
+    def test_pbosf_get_rect(self):
+        sf = cairo.ImageSurface(cairo.FORMAT_RGB24, 10, 11)
+        self.assertEqual(pbosf_get_rect(sf), (0, 0, 10, 11))
+        pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 4, 5)
+        self.assertEqual(pbosf_get_rect(pixbuf), (0, 0, 4, 5))

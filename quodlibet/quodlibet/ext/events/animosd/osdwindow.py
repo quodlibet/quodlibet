@@ -237,8 +237,8 @@ class OSDWindow(Gtk.Window):
                 cr.stroke()
 
             set_ctx_source_from_pbosf(cr, pbuf)
-            transmat.scale(pbosf_get_width(self, pbuf) / float(rect.width),
-                           pbosf_get_height(self, pbuf) / float(rect.height))
+            transmat.scale(pbosf_get_width(pbuf) / float(rect.width),
+                           pbosf_get_height(pbuf) / float(rect.height))
             transmat.translate(-rect.x, -rect.y)
             cr.get_source().set_matrix(transmat)
             self.draw_conf_rect(cr,

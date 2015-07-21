@@ -8,7 +8,6 @@
 
 import os
 import contextlib
-from cStringIO import StringIO
 
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
@@ -16,7 +15,7 @@ import cairo
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version, \
     menu_popup
-from quodlibet.qltk.image import get_scale_factor
+from quodlibet.qltk.image import pbosf_get_rect
 
 
 class TreeViewHints(Gtk.Window):
@@ -753,35 +752,6 @@ class BaseView(Gtk.TreeView):
             column.set_sort_indicator(value)
 
 
-def _get_surface_size(surface, scale_factor):
-    """Returns (width, height) of a surface or None."""
-
-    # X11
-    try:
-        w, h = surface.get_width(), surface.get_height()
-    except AttributeError:
-        pass
-    else:
-        return w / scale_factor, h / scale_factor
-
-    # Everything else: pycairo doesn't expose get_image() so we have
-    # do it the ugly way through png
-    fobj = StringIO()
-    try:
-        surface.write_to_png(fobj)
-        fobj.seek(0, 0)
-        image_surface = cairo.ImageSurface.create_from_png(fobj)
-    except EnvironmentError:
-        return
-    else:
-        try:
-            w, h = image_surface.get_width(), image_surface.get_height()
-        except AttributeError:
-            pass
-        else:
-            return w / scale_factor, h / scale_factor
-
-
 class DragIconTreeView(BaseView):
     """TreeView that sets the selected rows as drag icons
 
@@ -818,12 +788,15 @@ class DragIconTreeView(BaseView):
         if not icons:
             return
 
-        scale_factor = get_scale_factor(self)
-        sizes = [_get_surface_size(s, scale_factor) for s in icons]
+        sizes = [pbosf_get_rect(s) for s in icons]
         if None in sizes:
             return
-        width = max([s[0] for s in sizes])
-        height = sum([s[1] for s in sizes])
+        width = max([s[2] for s in sizes])
+        height = sum([s[3] for s in sizes])
+
+        # this is the border width we see in the gtk provided surface, not
+        # much we can do besides hardcoding it here
+        bw = 1
 
         layout = None
         if len(paths) > max_rows:
@@ -832,7 +805,7 @@ class DragIconTreeView(BaseView):
             layout = self.create_pango_layout("")
             layout.set_markup(more)
             layout.set_alignment(Pango.Alignment.CENTER)
-            layout.set_width(Pango.SCALE * (width - 2))
+            layout.set_width(Pango.SCALE * (width - 2 * bw))
             lw, lh = layout.get_pixel_size()
             height += lh
             height += 6  # padding
@@ -847,17 +820,19 @@ class DragIconTreeView(BaseView):
 
         # render rows
         count_y = 0
-        for icon, (icon_width, icon_height) in zip(icons, sizes):
+        for icon, (x, y, icon_width, icon_height) in zip(icons, sizes):
             ctx.save()
-            ctx.set_source_surface(icon, 2, count_y + 2)
-            ctx.rectangle(2, count_y + 2, icon_width - 4, icon_height - 4)
+            ctx.set_source_surface(icon, -x, count_y + -y)
+            ctx.rectangle(bw, count_y + bw,
+                          icon_width - 2 * bw,
+                          icon_height - 2 * bw)
             ctx.clip()
             ctx.paint()
             ctx.restore()
             count_y += icon_height
 
         if layout:
-            Gtk.render_layout(style_ctx, ctx, 1, count_y, layout)
+            Gtk.render_layout(style_ctx, ctx, bw, count_y, layout)
 
         # render border
         Gtk.render_line(style_ctx, ctx, 0, 0, 0, height - 1)
