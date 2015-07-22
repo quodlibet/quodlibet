@@ -21,11 +21,12 @@ from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet.qltk.renamefiles import RenameFiles
 from quodlibet.qltk.tagsfrompath import TagsFromPath
 from quodlibet.qltk.tracknumbers import TrackNumbers
+from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutExFalso
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Align, SeparatorMenuItem, ConfigRHPaned, \
-    Button
+    Button, SymbolicIconImage, MenuItem
 from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
 from quodlibet.qltk import icons
 from quodlibet.util.path import mtime, normalize_path
@@ -68,23 +69,29 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         connect_obj(about, 'clicked', self.__show_about, self)
         bbox.pack_start(about, False, True, 0)
 
-        prefs = Gtk.Button()
-        prefs.add(Gtk.Image.new_from_stock(
-            Gtk.STOCK_PREFERENCES, Gtk.IconSize.BUTTON))
-
-        def prefs_cb(button):
+        def prefs_cb(*args):
             window = PreferencesWindow(self)
             window.show()
-        prefs.connect('clicked', prefs_cb)
-        bbox.pack_start(prefs, False, True, 0)
 
-        plugins = qltk.Button(_("_Plugins"), Gtk.STOCK_EXECUTE)
-
-        def plugin_window_cb(button):
+        def plugin_window_cb(*args):
             window = PluginWindow(self)
             window.show()
-        plugins.connect('clicked', plugin_window_cb)
-        bbox.pack_start(plugins, False, True, 0)
+
+        menu = Gtk.Menu()
+        plugin_item = MenuItem(_("_Plugins"), Gtk.STOCK_EXECUTE)
+        plugin_item.connect("activate", plugin_window_cb)
+        menu.append(plugin_item)
+
+        pref_item = MenuItem(_("_Preferences"), Gtk.STOCK_PREFERENCES)
+        pref_item.connect("activate", prefs_cb)
+        menu.append(pref_item)
+        menu.show_all()
+
+        menu_button = MenuButton(
+                SymbolicIconImage("emblem-system", Gtk.IconSize.BUTTON),
+                arrow=True, down=False)
+        menu_button.set_menu(menu)
+        bbox.pack_start(menu_button, False, True, 0)
 
         l = Gtk.Label()
         l.set_alignment(1.0, 0.5)
