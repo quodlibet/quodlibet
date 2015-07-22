@@ -12,7 +12,7 @@ from gi.repository import Gtk, GObject, GLib, Gio
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet.qltk import add_css, is_accel
+from quodlibet.qltk import add_css, is_accel, gtk_version
 from quodlibet.util import connect_obj
 
 
@@ -463,3 +463,14 @@ def SymbolicIconImage(name, size, fallbacks=None):
     symbolic_name = name + "-symbolic"
     gicon = Gio.ThemedIcon.new_from_names([symbolic_name, name])
     return Gtk.Image.new_from_gicon(gicon, size)
+
+
+class CellRendererPixbuf(Gtk.CellRendererPixbuf):
+
+    def __init__(self, *args, **kwargs):
+        super(CellRendererPixbuf, self).__init__(*args, **kwargs)
+        if gtk_version < (3, 16):
+            # was deprecated in 3.16 and defaults to True now. Since it was
+            # False before force it here so we have the same behavior in all
+            # cases
+            self.set_property("follow-state", True)

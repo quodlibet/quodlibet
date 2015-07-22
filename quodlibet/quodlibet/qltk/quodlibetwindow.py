@@ -39,7 +39,7 @@ from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import ConfigRVPaned, Align, ScrolledWindow
-from quodlibet.qltk.x import SymbolicIconImage, Button
+from quodlibet.qltk.x import SymbolicIconImage, Button, CellRendererPixbuf
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
@@ -56,7 +56,7 @@ class CurrentColumn(SongListColumn):
 
     def __init__(self):
         super(CurrentColumn, self).__init__("~current")
-        self._render = Gtk.CellRendererPixbuf(follow_state=True)
+        self._render = CellRendererPixbuf()
         self.pack_start(self._render, True)
         self._render.set_property('xalign', 0.5)
 
