@@ -179,6 +179,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render = Gtk.CellRendererPixbuf()
         render.set_property('icon-name', icons.FOLDER)
+        render.props.xpad = 3
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
         if self.supports_hints():
