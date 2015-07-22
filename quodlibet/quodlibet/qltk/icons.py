@@ -20,8 +20,8 @@ QUODLIBET = "quodlibet"
 EXFALSO = "exfalso"
 QUODLIBET_MISSING_COVER = "quodlibet-missing-cover"
 
-# standard ones we also have in our fallback icon theme
-pass
-
 # these only come from an icon theme
 WINDOW_CLOSE = "window-close"  # "_Close"
+AUDIO_X_GENERIC = "audio-x-generic"
+IMAGE_X_GENERIC = "image-x-generic"
+FOLDER = "folder"

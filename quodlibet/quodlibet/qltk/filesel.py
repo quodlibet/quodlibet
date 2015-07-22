@@ -21,6 +21,7 @@ from quodlibet.qltk.views import AllTreeView, RCMHintedTreeView, \
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
+from quodlibet.qltk import icons
 
 from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
     glib2fsnative, fsnative, xdg_get_user_dirs, get_home_dir
@@ -37,15 +38,19 @@ def search_func(model, column, key, iter_, handledirs):
     return key not in check.lower() and key not in check
 
 
-def filesel_filter(filename):
+def is_image(filename):
     IMAGES = [".jpg", ".png", ".jpeg"]
+    for ext in IMAGES:
+        if filename.lower().endswith(ext):
+            return True
+    return False
+
+
+def filesel_filter(filename):
     if formats.filter(filename):
         return True
     else:
-        for ext in IMAGES:
-            if filename.lower().endswith(ext):
-                return True
-    return False
+        return is_image(filename)
 
 
 def _get_win_favorites():
@@ -173,7 +178,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         column = TreeViewColumn(_("Folders"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render = Gtk.CellRendererPixbuf()
-        render.set_property('stock_id', Gtk.STOCK_DIRECTORY)
+        render.set_property('icon-name', icons.FOLDER)
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
         if self.supports_hints():
@@ -481,8 +486,17 @@ class FileSelector(Paned):
         column = TreeViewColumn(_("Songs"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render = Gtk.CellRendererPixbuf()
-        render.set_property('stock_id', Gtk.STOCK_FILE)
         render.props.xpad = 3
+
+        def cell_icon(column, cell, model, iter_, userdata):
+            value = model.get_value(iter_)
+            if is_image(value):
+                cell.set_property('icon-name', icons.IMAGE_X_GENERIC)
+            else:
+                cell.set_property('icon-name', icons.AUDIO_X_GENERIC)
+
+        column.set_cell_data_func(render, cell_icon)
+
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
         if filelist.supports_hints():
@@ -617,18 +631,7 @@ class MainFileSelector(FileSelector):
     def __init__(self, initial=None):
         folders = _get_main_folders()
         super(MainFileSelector, self).__init__(
-            initial, self._filesel_filter, folders=folders)
-
-    @staticmethod
-    def _filesel_filter(filename):
-        IMAGES = [".jpg", ".png", ".jpeg"]
-        if formats.filter(filename):
-            return True
-        else:
-            for ext in IMAGES:
-                if filename.lower().endswith(ext):
-                    return True
-        return False
+            initial, filesel_filter, folders=folders)
 
 
 class MainDirectoryTree(DirectoryTree):
