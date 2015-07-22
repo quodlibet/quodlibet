@@ -9,6 +9,7 @@ from gi.repository import Gtk, Pango
 
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.qltk import icons
 from quodlibet.util.path import fsdecode
 from quodlibet.util import connect_obj
 
@@ -22,8 +23,9 @@ class ConfirmMaskedRemoval(qltk.Message):
             Gtk.MessageType.WARNING, parent, title, description,
             Gtk.ButtonsType.NONE)
 
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_DELETE, Gtk.ResponseType.YES)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Delete"), icons.EDIT_DELETE,
+                             Gtk.ResponseType.YES)
 
 
 class MaskedBox(Gtk.HBox):

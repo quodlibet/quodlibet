@@ -10,10 +10,11 @@ from gi.repository import Gtk
 from quodlibet import util
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk.x import Button
+from quodlibet.qltk.window import Dialog
 from quodlibet.util.path import fsdecode
 
 
-class Message(Gtk.MessageDialog):
+class Message(Gtk.MessageDialog, Dialog):
     """A message dialog that destroys itself after it is run, uses
     markup, and defaults to an 'OK' button."""
 

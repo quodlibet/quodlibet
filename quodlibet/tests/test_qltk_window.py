@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from tests import TestCase
 
-from quodlibet.qltk.window import Window, on_first_map
+from quodlibet.qltk.window import Window, on_first_map, Dialog
 from quodlibet.util import InstanceTracker
 
 
@@ -60,3 +60,11 @@ class TWindows(TestCase):
         w = Window()
         w.use_header_bar()
         self.assertEqual(w.get_title(), None)
+
+
+class TDialog(TestCase):
+
+    def test_add_icon_button(self):
+        d = Dialog()
+        w = d.add_icon_button("foo", "bar", 100)
+        self.assertEqual(d.get_widget_for_response(100), w)

@@ -13,6 +13,7 @@ from gi.repository import Gtk, GObject, Gdk
 
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_wayland
+from quodlibet.qltk.x import Button
 from quodlibet.util import DeferredSignal
 from quodlibet.util import connect_obj, connect_destroy
 
@@ -58,6 +59,14 @@ class Dialog(Gtk.Dialog):
         if not should_use_header_bar():
             kwargs.pop("use_header_bar", None)
         super(Dialog, self).__init__(*args, **kwargs)
+
+    def add_icon_button(self, label, icon_name, response_id):
+        """Like add_button() but allows to pass an icon name"""
+
+        button = Button(label, icon_name)
+        button.show()
+        self.add_action_widget(button, response_id)
+        return button
 
 
 class Window(Gtk.Window):
