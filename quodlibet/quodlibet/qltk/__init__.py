@@ -240,6 +240,20 @@ def is_wayland():
     return False
 
 
+def get_pygi_overridden(cls):
+    """For a pygobject class returns the overridden class or the same
+    class if it isn't an override
+    """
+
+    gtype = cls.__gtype__
+    last = cls
+    for base in cls.__mro__:
+        if getattr(base, "__gtype__", None) != gtype:
+            break
+        last = base
+    return last
+
+
 gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(),
                Gtk.get_micro_version())
 

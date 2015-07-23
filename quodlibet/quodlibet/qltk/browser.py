@@ -13,7 +13,7 @@ from quodlibet import browsers
 from quodlibet import app
 
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.x import ScrolledWindow
+from quodlibet.qltk.x import ScrolledWindow, Action
 from quodlibet.qltk import icons
 from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.util.library import background_filter
@@ -56,7 +56,7 @@ class FilterMenu(object):
                  self.__filter_menu_actions),
                 ("All", icons.EDIT_FIND, _("All _Songs"),
                  self.__filter_menu_actions)]:
-            action = Gtk.Action(name=name, icon_name=icon_name, label=label)
+            action = Action(name=name, icon_name=icon_name, label=label)
             if cb:
                 action.connect('activate', cb)
             ag.add_action(action)
@@ -65,7 +65,7 @@ class FilterMenu(object):
             ("genre", _("Filter on _Genre")),
             ("artist", _("Filter on _Artist")),
             ("album", _("Filter on Al_bum"))]:
-            act = Gtk.Action(
+            act = Action(
                 name="Filter%s" % util.capitalize(tag_), label=lab,
                 icon_name=icons.EDIT_SELECT_ALL)
             act.connect('activate', self.__filter_on, tag_, None, player)
@@ -75,8 +75,8 @@ class FilterMenu(object):
             ("genre", "G", _("Random _Genre")),
             ("artist", "T", _("Random _Artist")),
             ("album", "M", _("Random Al_bum"))]:
-            act = Gtk.Action(name="Random%s" % util.capitalize(tag_),
-                             label=label, icon_name=icons.DIALOG_QUESTION)
+            act = Action(name="Random%s" % util.capitalize(tag_),
+                         label=label, icon_name=icons.DIALOG_QUESTION)
             act.connect('activate', self.__random, tag_)
             ag.add_action_with_accel(act, "<control>" + accel)
 
