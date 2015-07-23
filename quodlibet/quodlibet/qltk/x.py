@@ -13,7 +13,6 @@ from gi.repository import Gtk, GObject, GLib, Gio
 from quodlibet import util
 from quodlibet import config
 from quodlibet.qltk import add_css, is_accel, gtk_version
-from quodlibet.util import connect_obj
 
 
 class ScrolledWindow(Gtk.ScrolledWindow):
@@ -254,8 +253,11 @@ class Align(Gtk.Alignment):
         return self.props.right_padding
 
 
-def MenuItem(label, stock_id):
+def MenuItem(label, stock_id=None):
     """An ImageMenuItem with a custom label and stock image."""
+
+    if stock_id is None:
+        return Gtk.MenuItem.new_with_mnemonic(label)
 
     item = Gtk.ImageMenuItem.new_with_mnemonic(label)
     item.set_always_show_image(True)
@@ -268,9 +270,13 @@ def MenuItem(label, stock_id):
     return item
 
 
-def Button(label, stock_id, size=Gtk.IconSize.BUTTON):
+def Button(label, stock_id=None, size=Gtk.IconSize.BUTTON):
     """A Button with a custom label and stock image. It should pack
-    exactly like a stock button."""
+    exactly like a stock button.
+    """
+
+    if stock_id is None:
+        return Gtk.Button.new_with_mnemonic(label)
 
     align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
     hbox = Gtk.HBox(spacing=2)
@@ -417,15 +423,6 @@ class SmallImageButton(_SmallImageButton, Gtk.Button):
 
 class SmallImageToggleButton(_SmallImageButton, Gtk.ToggleButton):
     pass
-
-
-def ClearButton(entry=None):
-    clear = Gtk.Button()
-    clear.add(Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU))
-    clear.set_tooltip_text(_("Clear search"))
-    if entry is not None:
-        connect_obj(clear, 'clicked', entry.set_text, '')
-    return clear
 
 
 def EntryCompletion(words):

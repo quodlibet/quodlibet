@@ -19,9 +19,10 @@ from gi.repository import Gtk
 
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import icons
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.wlw import WaitLoadWindow
-from quodlibet.qltk.x import Button, MenuItem, Align
+from quodlibet.qltk.x import MenuItem, Align
 from quodlibet.util.path import fsdecode, unexpand
 
 
@@ -85,10 +86,9 @@ class DeleteDialog(WarningMessage):
         exp.show()
         area.pack_start(exp, False, True, 0)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        delete_button = Button(_("_Delete Files"), Gtk.STOCK_DELETE)
-        delete_button.show()
-        self.add_action_widget(delete_button, self.RESPONSE_DELETE)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Delete Files"), icons.EDIT_DELETE,
+                             self.RESPONSE_DELETE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
 
@@ -133,10 +133,9 @@ class TrashDialog(WarningMessage):
         exp.show()
         area.pack_start(exp, False, True, 0)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        trash_button = Button(_("_Move to Trash"), "user-trash")
-        trash_button.show()
-        self.add_action_widget(trash_button, self.RESPONSE_TRASH)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Move to Trash"), icons.USER_TRASH,
+                             self.RESPONSE_TRASH)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
 

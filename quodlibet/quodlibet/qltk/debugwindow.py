@@ -10,7 +10,9 @@ from gi.repository import Gtk
 import quodlibet
 from quodlibet import const
 from quodlibet import util
+from quodlibet import qltk
 from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.qltk import icons
 from quodlibet.qltk import get_top_parent, Align
 from quodlibet.util.path import unexpand, mkdir
 from quodlibet.util import connect_obj
@@ -154,8 +156,8 @@ class ExceptionDialog(Gtk.Window):
         model = Gtk.ListStore(str, str, int)
         self.__fill_list(view, model, value, traceback)
         view.set_model(model)
-        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
-        close = Gtk.Button(stock=Gtk.STOCK_QUIT)
+        cancel = qltk.Button(_("_Cancel"))
+        close = qltk.Button(_("_Quit"), icons.APPLICATION_EXIT)
         buttons.pack_start(close, True, True, 0)
         buttons.pack_start(cancel, True, True, 0)
         box.pack_start(label, False, True, 0)

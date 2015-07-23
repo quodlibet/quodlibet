@@ -14,6 +14,7 @@ from quodlibet import util
 
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
+from quodlibet.qltk import icons
 
 
 def MenuItems(marks, player, seekable):
@@ -54,8 +55,7 @@ class EditBookmarksPane(Gtk.VBox):
         self.time = time = Gtk.Entry()
         time.set_width_chars(5)
         self.markname = name = Gtk.Entry()
-        add = Gtk.Button(stock=Gtk.STOCK_ADD)
-        add.get_image().set_from_icon_name(Gtk.STOCK_ADD, Gtk.IconSize.MENU)
+        add = qltk.Button(_("_Add"), icons.LIST_ADD, Gtk.IconSize.MENU)
         hb.pack_start(time, False, True, 0)
         hb.pack_start(name, True, True, 0)
         hb.pack_start(add, False, True, 0)
@@ -90,11 +90,11 @@ class EditBookmarksPane(Gtk.VBox):
         self.accels = Gtk.AccelGroup()
 
         hbox = Gtk.HButtonBox()
-        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        remove = qltk.Button(_("_Remove"), icons.LIST_REMOVE)
         remove.set_sensitive(False)
         hbox.pack_start(remove, True, True, 0)
         if close:
-            self.close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+            self.close = qltk.Button(_("_Close"), icons.WINDOW_CLOSE)
             hbox.pack_start(self.close, True, True, 0)
         else:
             hbox.set_layout(Gtk.ButtonBoxStyle.END)
@@ -120,7 +120,7 @@ class EditBookmarksPane(Gtk.VBox):
         name.set_text(_("Bookmark Name"))
 
         menu = Gtk.Menu()
-        remove = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE, use_stock=True)
+        remove = qltk.MenuItem(_("_Remove"), icons.LIST_REMOVE)
         remove.connect('activate', self.__remove, selection, library, song)
         keyval, mod = Gtk.accelerator_parse("Delete")
         remove.add_accelerator(

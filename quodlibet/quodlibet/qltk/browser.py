@@ -14,6 +14,7 @@ from quodlibet import app
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import ScrolledWindow
+from quodlibet.qltk import icons
 from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.util.library import background_filter
 
@@ -45,33 +46,37 @@ class FilterMenu(object):
         self._player = player
 
         ag = Gtk.ActionGroup.new('QuodLibetFilterActions')
-        ag.add_actions([
-            ('Filters', None, _("_Filters")),
-            ("PlayedRecently", Gtk.STOCK_FIND, _("Recently _Played"),
-             "", None, self.__filter_menu_actions),
-            ("AddedRecently", Gtk.STOCK_FIND, _("Recently _Added"),
-             "", None, self.__filter_menu_actions),
-            ("TopRated", Gtk.STOCK_FIND, _("_Top 40"),
-             "", None, self.__filter_menu_actions),
-            ("All", Gtk.STOCK_FIND, _("All _Songs"),
-             "", None, self.__filter_menu_actions),
-        ])
+        for name, icon_name, label, cb in [
+                ('Filters', "", _("_Filters"), None),
+                ("PlayedRecently", icons.EDIT_FIND, _("Recently _Played"),
+                 self.__filter_menu_actions),
+                ("AddedRecently", icons.EDIT_FIND, _("Recently _Added"),
+                 self.__filter_menu_actions),
+                ("TopRated", icons.EDIT_FIND, _("_Top 40"),
+                 self.__filter_menu_actions),
+                ("All", icons.EDIT_FIND, _("All _Songs"),
+                 self.__filter_menu_actions)]:
+            action = Gtk.Action(name=name, icon_name=icon_name, label=label)
+            if cb:
+                action.connect('activate', cb)
+            ag.add_action(action)
 
         for tag_, lab in [
             ("genre", _("Filter on _Genre")),
             ("artist", _("Filter on _Artist")),
             ("album", _("Filter on Al_bum"))]:
-            act = Gtk.Action.new(
-                "Filter%s" % util.capitalize(tag_), lab, None, Gtk.STOCK_INDEX)
+            act = Gtk.Action(
+                name="Filter%s" % util.capitalize(tag_), label=lab,
+                icon_name=icons.EDIT_SELECT_ALL)
             act.connect('activate', self.__filter_on, tag_, None, player)
-            ag.add_action_with_accel(act, None)
+            ag.add_action(act)
 
         for (tag_, accel, label) in [
             ("genre", "G", _("Random _Genre")),
             ("artist", "T", _("Random _Artist")),
             ("album", "M", _("Random Al_bum"))]:
-            act = Gtk.Action.new("Random%s" % util.capitalize(tag_), label,
-                                 None, Gtk.STOCK_DIALOG_QUESTION)
+            act = Gtk.Action(name="Random%s" % util.capitalize(tag_),
+                             label=label, icon_name=icons.DIALOG_QUESTION)
             act.connect('activate', self.__random, tag_)
             ag.add_action_with_accel(act, "<control>" + accel)
 

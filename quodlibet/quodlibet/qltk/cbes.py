@@ -14,6 +14,7 @@ from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
 from quodlibet.qltk import entry
+from quodlibet.qltk import icons
 
 
 class _KeyValueEditor(qltk.Window):
@@ -50,7 +51,7 @@ class _KeyValueEditor(qltk.Window):
         l.set_alignment(0.0, 0.5)
         t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
         t.attach(self.value, 1, 2, 1, 2)
-        add = Gtk.Button(stock=Gtk.STOCK_ADD)
+        add = qltk.Button(_("_Add"), icons.LIST_ADD)
         add.set_sensitive(False)
         t.attach(add, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.FILL)
 
@@ -77,18 +78,18 @@ class _KeyValueEditor(qltk.Window):
         self.get_child().pack_start(sw, True, True, 0)
 
         menu = Gtk.Menu()
-        remove = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE, use_stock=True)
+        remove = qltk.MenuItem(_("_Remove"), icons.LIST_REMOVE)
         connect_obj(remove, 'activate', self.__remove, view)
         qltk.add_fake_accel(remove, "Delete")
         menu.append(remove)
         menu.show_all()
 
         bbox = Gtk.HButtonBox()
-        rem_b = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        rem_b = qltk.Button(_("_Remove"), icons.LIST_REMOVE)
         rem_b.set_sensitive(False)
         bbox.pack_start(rem_b, True, True, 0)
         self.use_header_bar()
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = qltk.Button(_("_Close"), icons.WINDOW_CLOSE)
         if not self.has_close_button():
             bbox.pack_start(close, True, True, 0)
         else:
@@ -232,8 +233,6 @@ class StandaloneEditor(_KeyValueEditor):
         except EnvironmentError:
             pass
 
-ICONS = {Gtk.STOCK_EDIT: CBESEditor}
-
 
 class ComboBoxEntrySave(Gtk.ComboBox):
     """A ComboBoxEntry that remembers the past 'count' strings entered,
@@ -266,7 +265,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
 
         render = Gtk.CellRendererPixbuf()
         self.pack_start(render, False)
-        self.add_attribute(render, 'stock-id', 2)
+        self.add_attribute(render, 'icon-name', 2)
 
         render = Gtk.CellRendererText()
         self.pack_start(render, True)
@@ -290,10 +289,9 @@ class ComboBoxEntrySave(Gtk.ComboBox):
     def __changed(self, model, validator, title):
         iter = self.get_active_iter()
         if iter:
-            if model[iter][2] in ICONS:
+            if model[iter][2]:
                 self.get_child().set_text(self.__last)
-                Kind = ICONS[model[iter][2]]
-                win = Kind(self, title, validator)
+                win = CBESEditor(self, title, validator)
                 win.show()
                 self.set_active(-1)
             else:
@@ -310,7 +308,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
 
     def __fill(self, filename, initial, edit_title):
         model = self.get_model()
-        model.append(row=["", edit_title, Gtk.STOCK_EDIT])
+        model.append(row=["", edit_title, icons.DOCUMENT_PROPERTIES])
         model.append(row=[None, None, None])
 
         if filename is None:

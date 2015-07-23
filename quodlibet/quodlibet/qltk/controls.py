@@ -10,6 +10,7 @@ from gi.repository import Gtk, GLib, Gdk
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet.qltk import bookmarks
+from quodlibet.qltk import icons
 from quodlibet import util
 
 from quodlibet.util import connect_obj, connect_destroy
@@ -101,7 +102,7 @@ class SeekBar(HSlider):
         self.__remaining = c
         m.append(c)
         m.append(SeparatorMenuItem())
-        i = qltk.MenuItem(_(u"_Edit Bookmarks…"), Gtk.STOCK_EDIT)
+        i = qltk.MenuItem(_(u"_Edit Bookmarks…"), icons.EDIT)
 
         def edit_bookmarks_cb(menu_item):
             window = bookmarks.EditBookmarks(self, library, player)

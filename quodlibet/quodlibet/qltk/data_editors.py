@@ -12,6 +12,8 @@ from quodlibet import qltk, util
 from quodlibet.util.dprint import print_d
 from quodlibet.qltk.entry import UndoEntry, ValidatingEntry
 from quodlibet.qltk.views import RCMHintedTreeView, HintedTreeView
+from quodlibet.qltk.x import MenuItem, Button
+from quodlibet.qltk import icons
 from quodlibet.util.json_data import JSONObjectDict
 from quodlibet.util import connect_obj
 from quodlibet.qltk.getstring import GetStringDialog
@@ -72,7 +74,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
 
         # Add context menu
         menu = Gtk.Menu()
-        rem = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_REMOVE, None)
+        rem = MenuItem(_("_Remove"), icons.LIST_REMOVE)
         keyval, mod = Gtk.accelerator_parse("Delete")
         rem.add_accelerator(
             'activate', self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
@@ -85,12 +87,12 @@ class JSONBasedEditor(qltk.UniqueWindow):
 
         # New and Close buttons
         bbox = Gtk.HButtonBox()
-        self.remove_but = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        self.remove_but = Button(_("_Remove"), icons.LIST_REMOVE)
         self.remove_but.set_sensitive(False)
-        self.new_but = Gtk.Button(stock=Gtk.STOCK_NEW)
+        self.new_but = Button(_("_New"), icons.DOCUMENT_NEW)
         self.new_but.connect('clicked', self._new_item)
         bbox.pack_start(self.new_but, True, True, 0)
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = Button(_("_Close"), icons.WINDOW_CLOSE)
         connect_obj(close, 'clicked', qltk.Window.destroy, self)
         bbox.pack_start(close, True, True, 0)
         vbox.pack_end(bbox, False, True, 0)
@@ -98,7 +100,6 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.get_child().pack_start(vbox, True, True, 0)
         # Initialise
         self.selection = view.get_selection()
-        model, _ = self.selection.get_selected()
 
         self.selection.connect('changed', self.__select)
         self.connect('destroy', self.__finish)
@@ -288,7 +289,7 @@ class MultiStringEditor(qltk.UniqueWindow):
 
         # Context menu
         menu = Gtk.Menu()
-        remove_item = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE)
+        remove_item = MenuItem(_("_Remove"), icons.LIST_REMOVE)
         menu.append(remove_item)
         menu.show_all()
         view.connect('popup-menu', self.__popup, menu)
@@ -298,10 +299,10 @@ class MultiStringEditor(qltk.UniqueWindow):
         vbbox = Gtk.VButtonBox()
         vbbox.set_layout(Gtk.ButtonBoxStyle.START)
         vbbox.set_spacing(6)
-        add = Gtk.Button(stock=Gtk.STOCK_ADD)
+        add = Button(_("_Add"), icons.LIST_ADD)
         add.connect("clicked", self.__add)
         vbbox.pack_start(add, False, True, 0)
-        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        remove = Button(_("_Remove"), icons.LIST_REMOVE)
         remove.connect("clicked", self.__remove)
         vbbox.pack_start(remove, False, True, 0)
         hbox.pack_start(vbbox, False, True, 0)
@@ -309,9 +310,9 @@ class MultiStringEditor(qltk.UniqueWindow):
 
         # Close buttons
         bbox = Gtk.HButtonBox()
-        self.remove_but = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        self.remove_but = Button(_("_Remove"), icons.LIST_REMOVE)
         self.remove_but.set_sensitive(False)
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = Button(_("_Close"), icons.WINDOW_CLOSE)
         connect_obj(close, 'clicked', qltk.Window.destroy, self)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         bbox.pack_start(close, True, True, 0)

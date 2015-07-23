@@ -64,6 +64,8 @@ class Dialog(Gtk.Dialog):
         """Like add_button() but allows to pass an icon name"""
 
         button = Button(label, icon_name)
+        # file chooser uses grab_default() on this
+        button.set_can_default(True)
         button.show()
         self.add_action_widget(button, response_id)
         return button
