@@ -12,7 +12,7 @@ from gi.repository import Gtk, GObject, GLib, Gio
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet.qltk import add_css, is_accel, gtk_version, get_pygi_overridden
+from quodlibet.qltk import add_css, is_accel, gtk_version
 
 
 class ScrolledWindow(Gtk.ScrolledWindow):
@@ -473,7 +473,8 @@ class CellRendererPixbuf(Gtk.CellRendererPixbuf):
             self.set_property("follow-state", True)
 
 
-Action = get_pygi_overridden(Gtk.Action)
-"""Older pygobject didn't pass through kwargs to GObject.Object, so remove
-the unneeded override.
-"""
+class Action(Gtk.Action):
+    def __init__(self, *args, **kargs):
+        # Older pygobject didn't pass through kwargs to GObject.Object
+        # so skip the override __init__
+        GObject.Object.__init__(self, *args, **kargs)
