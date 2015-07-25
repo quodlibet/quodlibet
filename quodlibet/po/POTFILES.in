@@ -86,6 +86,7 @@ quodlibet/ext/songsmenu/cddb.py
 quodlibet/ext/songsmenu/console.py
 quodlibet/ext/songsmenu/custom_commands.py
 quodlibet/ext/songsmenu/duplicates.py
+quodlibet/ext/songsmenu/editplaycount.py
 quodlibet/ext/songsmenu/embedded.py
 quodlibet/ext/songsmenu/exact_rating.py
 quodlibet/ext/songsmenu/filterall.py
