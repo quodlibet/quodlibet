@@ -66,6 +66,7 @@ Aymeric Mansoux
 Bastian Kleineidam
 Bastien Gorissen
 Ben Zeigler
+Bruno Bergot
 Carlo Teubner
 Christine Spang
 Christoph Reiter
@@ -111,6 +112,7 @@ Philipp Weis
 Quincy John Hamilton
 Remi Vanicat
 Robert Muth
+Ryan Turner
 Sebastian Thürrschmidt
 Simonas Kazlauskas
 Steven Robertson
