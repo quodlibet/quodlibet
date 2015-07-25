@@ -51,6 +51,7 @@ class TWindows(TestCase):
         Window.prevent_inital_show(False)
         w.show_maybe()
         self.assertTrue(w.get_visible())
+        w.destroy()
 
     def test_use_header_bar(self):
         w = Window(title="foo")
