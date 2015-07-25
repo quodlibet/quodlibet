@@ -141,6 +141,7 @@ class PluginListView(HintedTreeView):
         def cell_data(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
             pm = PluginManager.instance
+            render.set_activatable(plugin.can_enable)
             render.set_active(pm.enabled(plugin))
 
         render.connect('toggled', self.__toggled)
