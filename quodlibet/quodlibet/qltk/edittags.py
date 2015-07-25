@@ -23,7 +23,7 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.window import Dialog
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.qltk.x import SeparatorMenuItem, Button
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.qltk import icons
@@ -398,13 +398,6 @@ class ListEntry(object):
 
 
 class EditTags(Gtk.VBox):
-    _SAVE_BUTTON_KEY = 'ql-save'
-    _REVERT_BUTTON_KEY = 'ql-revert'
-    # Translators: translate only to override the text
-    # for the tag "save" button
-    _SAVE_BUTTON_TEXT = _('ql-save')
-    # Translators: translate only to override the  for the tag "revert" button
-    _REVERT_BUTTON_TEXT = _('ql-revert')
     handler = EditTagsPluginHandler()
 
     @classmethod
@@ -511,17 +504,13 @@ class EditTags(Gtk.VBox):
         bbox2 = Gtk.HButtonBox()
         bbox2.set_spacing(6)
         bbox2.set_layout(Gtk.ButtonBoxStyle.END)
-        revert = (Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
-                  if self._REVERT_BUTTON_KEY == self._REVERT_BUTTON_TEXT
-                  else Gtk.Button(label=self._REVERT_BUTTON_TEXT,
-                                  use_underline=True))
+        # Translators: Revert button in the tag editor
+        revert = Button(C_("edittags", "_Revert"), icons.DOCUMENT_REVERT)
+
         self._revert = revert
         revert.set_sensitive(False)
-        # Save button.
-        save = (Gtk.Button(stock=Gtk.STOCK_SAVE)
-                if self._SAVE_BUTTON_TEXT == self._SAVE_BUTTON_KEY
-                else Gtk.Button(label=self._SAVE_BUTTON_TEXT,
-                                use_underline=True))
+        # Translators: Save button in the tag editor
+        save = Button(C_("edittags", "_Save"), icons.DOCUMENT_SAVE)
         save.set_sensitive(False)
         self._save = save
         bbox2.pack_start(revert, True, True, 0)
