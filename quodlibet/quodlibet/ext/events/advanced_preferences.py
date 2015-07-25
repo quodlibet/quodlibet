@@ -39,15 +39,15 @@ class AdvancedPreferences(EventPlugin):
         rows = []
 
         ve = Gtk.Entry()
-        ve.set_tooltip_text(_("ID3 encodings separated by spaces. "
-            "UTF-8 is always tried first, and Latin-1 is always tried last."))
+        ve.set_tooltip_text("ID3 encodings separated by spaces. "
+            "UTF-8 is always tried first, and Latin-1 is always tried last.")
         ve.set_text(config.get("editing", "id3encoding"))
         ve.connect('changed', changed, 'id3encoding', 'editing')
         rows.append((Gtk.Label(label=_("ID3 encodings:")), ve))
 
         ve = Gtk.Entry()
-        ve.set_tooltip_text(_("Tags which get searched in addition to "
-            "the ones present in the song list, separate with \",\""))
+        ve.set_tooltip_text("Tags which get searched in addition to "
+            "the ones present in the song list, separate with \",\"")
         ve.set_text(config.get("settings", "search_tags"))
         ve.connect('changed', changed, 'search_tags', 'settings')
         rows.append((Gtk.Label(label=_("Search tags:")), ve))
@@ -65,7 +65,7 @@ class AdvancedPreferences(EventPlugin):
         rows.append((Gtk.Label(label=_("Rating symbol blank:")), ve))
 
         ve = Gtk.Entry()
-        ve.set_tooltip_text(_("Identifier of the playback backend to use"))
+        ve.set_tooltip_text("Identifier of the playback backend to use")
         ve.set_text(config.get("player", "backend"))
         ve.connect('changed', changed, 'backend', 'player')
         rows.append((Gtk.Label(label=_("Backend:")), ve))
@@ -80,7 +80,7 @@ class AdvancedPreferences(EventPlugin):
 
         disable_hints = ConfigCheckButton(_("Disable hints"),
                  'settings', 'disable_hints', populate=True,
-                 tooltip=_("Disable popup windows (treeview hints)"))
+                 tooltip="Disable popup windows (treeview hints)")
         vb.pack_start(disable_hints, True, True, 0)
 
         return vb
