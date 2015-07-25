@@ -64,8 +64,8 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         bbox = Gtk.HBox(spacing=6)
 
         about = Gtk.Button()
-        about.add(Gtk.Image.new_from_stock(
-            Gtk.STOCK_ABOUT, Gtk.IconSize.BUTTON))
+        about.add(Gtk.Image.new_from_icon_name(
+            icons.HELP_ABOUT, Gtk.IconSize.BUTTON))
         connect_obj(about, 'clicked', self.__show_about, self)
         bbox.pack_start(about, False, True, 0)
 
@@ -78,11 +78,11 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
             window.show()
 
         menu = Gtk.Menu()
-        plugin_item = MenuItem(_("_Plugins"), Gtk.STOCK_EXECUTE)
+        plugin_item = MenuItem(_("_Plugins"), icons.SYSTEM_RUN)
         plugin_item.connect("activate", plugin_window_cb)
         menu.append(plugin_item)
 
-        pref_item = MenuItem(_("_Preferences"), Gtk.STOCK_PREFERENCES)
+        pref_item = MenuItem(_("_Preferences"), icons.PREFERENCES_SYSTEM)
         pref_item.connect("activate", prefs_cb)
         menu.append(pref_item)
         menu.show_all()

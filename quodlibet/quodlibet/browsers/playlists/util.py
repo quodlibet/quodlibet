@@ -11,6 +11,7 @@ import quodlibet
 from quodlibet import formats, qltk
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.getstring import GetStringDialog
+from quodlibet.qltk import icons
 from quodlibet.util import escape
 from quodlibet.util.collection import Playlist
 from quodlibet.util.path import mkdir, fsdecode, is_fsnative
@@ -45,7 +46,7 @@ class GetPlaylistName(GetStringDialog):
         super(GetPlaylistName, self).__init__(
             parent, _("New Playlist"),
             _("Enter a name for the new playlist:"),
-            okbutton=Gtk.STOCK_ADD)
+            button_label=_("_Add"), button_icon=icons.LIST_ADD)
 
 
 def parse_m3u(filename, library=None):

@@ -152,7 +152,7 @@ class PluginListView(HintedTreeView):
 
         def cell_data2(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
-            icon = plugin.icon or Gtk.STOCK_EXECUTE
+            icon = plugin.icon or icons.SYSTEM_RUN
             if Gtk.stock_lookup(icon):
                 render.set_property('stock-id', icon)
             else:
@@ -259,7 +259,7 @@ class PluginPreferencesContainer(Gtk.VBox):
                     frame.hide()
                 else:
                     if isinstance(prefs, Gtk.Window):
-                        b = Gtk.Button(stock=Gtk.STOCK_PREFERENCES)
+                        b = Button(_("_Preferences"), icons.PREFERENCES_SYSTEM)
                         connect_obj(b, 'clicked', Gtk.Window.show, prefs)
                         connect_obj(b, 'destroy', Gtk.Window.destroy, prefs)
                         frame.add(b)
@@ -313,7 +313,7 @@ class PluginWindow(UniqueWindow):
 
         bbox = Gtk.HBox(homogeneous=True, spacing=12)
 
-        errors = qltk.Button(_("Show _Errors"), Gtk.STOCK_DIALOG_WARNING)
+        errors = qltk.Button(_("Show _Errors"), icons.DIALOG_WARNING)
         errors.set_focus_on_click(False)
         errors.connect('clicked', self.__show_errors)
         bbox.pack_start(errors, True, True, 0)
@@ -321,7 +321,7 @@ class PluginWindow(UniqueWindow):
         pref_box = PluginPreferencesContainer()
 
         if const.DEBUG:
-            refresh = Gtk.Button(stock=Gtk.STOCK_REFRESH)
+            refresh = qltk.Button(_("_Refresh"), icons.VIEW_REFRESH)
             refresh.set_focus_on_click(False)
             refresh.connect('clicked', self.__refresh, tv, pref_box, errors,
                             filter_combo)
@@ -332,7 +332,7 @@ class PluginWindow(UniqueWindow):
         vbox.pack_start(bbox, False, True, 0)
         paned.pack1(vbox, True, False)
 
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = qltk.Button(_("_Close"), icons.WINDOW_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
         bb_align = Align(halign=Gtk.Align.END, valign=Gtk.Align.END)
         bb = Gtk.HButtonBox()

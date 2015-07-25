@@ -17,6 +17,7 @@ import urllib
 from gi.repository import Gtk, GLib
 
 from quodlibet import qltk
+from quodlibet.qltk import icons
 from quodlibet import util
 from quodlibet.util import connect_obj
 
@@ -30,10 +31,10 @@ class LyricsPane(Gtk.VBox):
         view = Gtk.TextView()
         sw = Gtk.ScrolledWindow()
         sw.add(view)
-        refresh = qltk.Button(_("_Download"), Gtk.STOCK_CONNECT)
-        save = Gtk.Button(stock=Gtk.STOCK_SAVE)
-        delete = Gtk.Button(stock=Gtk.STOCK_DELETE)
-        add = Gtk.Button(stock=Gtk.STOCK_EDIT)
+        refresh = qltk.Button(_("_Download"))
+        save = qltk.Button(_("_Save"), icons.DOCUMENT_SAVE)
+        delete = qltk.Button(_("_Delete"), icons.EDIT_DELETE)
+        add = qltk.Button(_("_Edit"), icons.EDIT)
         view.set_wrap_mode(Gtk.WrapMode.WORD)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 

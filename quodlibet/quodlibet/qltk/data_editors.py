@@ -348,7 +348,8 @@ class MultiStringEditor(qltk.UniqueWindow):
 
     def __add(self, *args):
         dialog = GetStringDialog(self, _("Enter new value"), "",
-                                 okbutton=Gtk.STOCK_ADD)
+                                 button_label=_("_Add"),
+                                 button_icon=icons.LIST_ADD)
         new = dialog.run()
         if new:
             self.model.append(row=[new])

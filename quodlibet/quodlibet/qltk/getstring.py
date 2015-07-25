@@ -10,21 +10,23 @@ from gi.repository import Gtk, Gdk
 
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.window import Dialog
+from quodlibet.qltk import icons
 
 
 class GetStringDialog(Dialog):
     """Simple dialog to return a string from the user"""
     _WIDTH = 300
 
-    def __init__(self, parent, title, text, okbutton=Gtk.STOCK_OPEN):
+    def __init__(self, parent, title, text,
+                 button_label=_("_OK"), button_icon=icons.DOCUMENT_OPEN):
         super(GetStringDialog, self).__init__(
             title=title, transient_for=parent, use_header_bar=True)
 
         self.set_border_width(6)
         self.set_default_size(width=self._WIDTH, height=0)
         self.set_resizable(True)
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         okbutton, Gtk.ResponseType.OK)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(button_label, button_icon, Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
 

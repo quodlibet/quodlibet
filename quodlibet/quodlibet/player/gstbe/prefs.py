@@ -13,6 +13,7 @@ from quodlibet import config
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.x import Button
+from quodlibet.qltk import icons
 from quodlibet.util import connect_obj
 
 
@@ -36,7 +37,7 @@ class GstPlayerPreferences(Gtk.VBox):
         pipe_label.set_use_underline(True)
         pipe_label.set_mnemonic_widget(e)
 
-        apply_button = Gtk.Button(stock=Gtk.STOCK_APPLY)
+        apply_button = Button(_("_Apply"))
 
         def format_buffer(scale, value):
             return _("%.1f seconds") % value
@@ -97,6 +98,6 @@ class GstPlayerPreferences(Gtk.VBox):
             def print_bin(player):
                 player._print_pipeline()
 
-            b = Button("Print Pipeline", Gtk.STOCK_DIALOG_INFO)
+            b = Button("Print Pipeline", icons.DIALOG_INFORMATION)
             connect_obj(b, 'clicked', print_bin, player)
             self.pack_start(b, True, True, 0)

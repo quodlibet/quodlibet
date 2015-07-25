@@ -27,6 +27,7 @@ from quodlibet.query import Query
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.notif import Task
+from quodlibet.qltk import icons
 from quodlibet.util import copool, connect_destroy, sanitize_tags, connect_obj
 from quodlibet.util.string import decode, encode
 from quodlibet.util.uri import URI
@@ -333,7 +334,7 @@ class AddNewStation(GetStringDialog):
         super(AddNewStation, self).__init__(
             parent, _("New Station"),
             _("Enter the location of an Internet radio station:"),
-            okbutton=Gtk.STOCK_ADD)
+            button_label=_("_Add"), button_icon=icons.LIST_ADD)
 
     def _verify_clipboard(self, text):
         # try to extract a URI from the clipboard

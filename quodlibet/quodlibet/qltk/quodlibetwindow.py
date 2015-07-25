@@ -40,6 +40,7 @@ from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import ConfigRVPaned, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage, Button, CellRendererPixbuf
+from quodlibet.qltk import icons
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
@@ -1138,7 +1139,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
     def open_location(self, action):
         name = GetStringDialog(self, _("Add a Location"),
             _("Enter the location of an audio file:"),
-            okbutton=Gtk.STOCK_ADD).run()
+            button_label=_("_Add"), button_icon=icons.LIST_ADD).run()
         if name:
             if not util.uri_is_valid(name):
                 ErrorMessage(

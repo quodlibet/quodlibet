@@ -10,6 +10,7 @@ from threading import Thread
 
 from quodlibet import qltk
 from quodlibet.qltk.notif import Task
+from quodlibet.qltk import icons
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
@@ -69,7 +70,7 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
         dialog = GetStringDialog(None,
             _("Export playlist to Squeezebox"),
             _("Playlist name (will overwrite existing)"),
-            okbutton=Gtk.STOCK_SAVE)
+            button_label=_("_Save"), button_icon=icons.DOCUMENT_SAVE)
         name = dialog.run(text=name)
         return name
 
