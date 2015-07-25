@@ -113,6 +113,12 @@ class AdvancedPreferences(EventPlugin):
                 "Disable Hints:",
                 "Disable popup windows (treeview hints)"))
 
+        rows.append(
+            boolean_config(
+                "browsers", "rating_hotkeys",
+                "Rating Hotkeys:",
+                "Enable rating by pressing the 0-X keys"))
+
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
             table.attach(label, 0, 1, row, row + 1,
