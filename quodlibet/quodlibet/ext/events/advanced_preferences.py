@@ -54,6 +54,7 @@ class AdvancedPreferences(EventPlugin):
     PLUGIN_ID = "Advanced Preferences"
     PLUGIN_NAME = _("Advanced Preferences")
     PLUGIN_DESC = _("Allow to tweak advanced config settings.")
+    PLUGIN_CAN_ENABLE = False
 
     def __init_defaults(self):
         self.__enabled = False

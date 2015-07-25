@@ -129,6 +129,10 @@ class Plugin(object):
         return "<%s id=%r name=%r>" % (type(self).__name__, self.id, self.name)
 
     @property
+    def can_enable(self):
+        return getattr(self.cls, "PLUGIN_CAN_ENABLE", True)
+
+    @property
     def id(self):
         return self.cls.PLUGIN_ID
 
