@@ -1,22 +1,54 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011,2013 Christoph Reiter
+# Copyright 2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import warnings
-import os
-
 from gi.repository import Gtk
 
-from quodlibet import qltk
 from quodlibet import config
-from quodlibet import const
-from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.qltk.entry import UndoEntry
+from quodlibet.util.string import decode
 from quodlibet.plugins.events import EventPlugin
 
-# TODO : rating_symbol_blank, rating_symbol_full
+
+def _config(section, option, label, tooltip, getter):
+    def on_changed(entry, *args):
+        config.set(section, option, entry.get_text())
+
+    entry = UndoEntry()
+    entry.set_tooltip_text(tooltip)
+    entry.set_text(decode(config.get(section, option)))
+    entry.connect("changed", on_changed)
+
+    def on_reverted(*args):
+        config.reset(section, option)
+        entry.set_text(decode(config.get(section, option)))
+
+    revert = Gtk.Button()
+    revert.add(Gtk.Image.new_from_stock(
+        Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.BUTTON))
+    revert.connect("clicked", on_reverted)
+
+    return (Gtk.Label(label=label), entry, revert)
+
+
+def text_config(section, option, label, tooltip):
+
+    def getter(section, option):
+        return decode(config.get(section, option))
+
+    return _config(section, option, label, tooltip, getter)
+
+
+def boolean_config(section, option, label, tooltip):
+
+    def getter(section, option):
+        return unicode(config.getboolean(section, option))
+
+    return _config(section, option, label, tooltip, getter)
+
 
 class AdvancedPreferences(EventPlugin):
     PLUGIN_ID = "Advanced Preferences"
@@ -38,49 +70,56 @@ class AdvancedPreferences(EventPlugin):
         table.set_row_spacings(6)
         rows = []
 
-        ve = Gtk.Entry()
-        ve.set_tooltip_text("ID3 encodings separated by spaces. "
-            "UTF-8 is always tried first, and Latin-1 is always tried last.")
-        ve.set_text(config.get("editing", "id3encoding"))
-        ve.connect('changed', changed, 'id3encoding', 'editing')
-        rows.append((Gtk.Label(label=_("ID3 encodings:")), ve))
+        # We don't use translations as these things are internal and I don't
+        # want to burden the translators...
 
-        ve = Gtk.Entry()
-        ve.set_tooltip_text("Tags which get searched in addition to "
-            "the ones present in the song list, separate with \",\"")
-        ve.set_text(config.get("settings", "search_tags"))
-        ve.connect('changed', changed, 'search_tags', 'settings')
-        rows.append((Gtk.Label(label=_("Search tags:")), ve))
+        rows.append(
+            text_config(
+                "editing", "id3encoding",
+                "ID3 Encodings:",
+                ("ID3 encodings separated by spaces. "
+                 "UTF-8 is always tried first, and Latin-1 "
+                 "is always tried last.")))
 
-        ve = Gtk.Entry()
-        ve.set_text(config.get("settings", "rating_symbol_full",
-                               "\xe2\x98\x85"))
-        ve.connect('changed', changed, 'rating_symbol_full', 'settings')
-        rows.append((Gtk.Label(label=_("Rating symbol full:")), ve))
+        rows.append(
+            text_config(
+                "settings", "search_tags",
+                "Search Tags:",
+                ("Tags which get searched in addition to "
+                 "the ones present in the song list, separate with \",\"")))
 
-        ve = Gtk.Entry()
-        ve.set_text(config.get("settings", "rating_symbol_blank",
-                               "\xe2\x98\x86"))
-        ve.connect('changed', changed, 'rating_symbol_blank', 'settings')
-        rows.append((Gtk.Label(label=_("Rating symbol blank:")), ve))
+        rows.append(
+            text_config(
+                "settings", "rating_symbol_full",
+                "Rating Symbol (Full):",
+                ""))
 
-        ve = Gtk.Entry()
-        ve.set_tooltip_text("Identifier of the playback backend to use")
-        ve.set_text(config.get("player", "backend"))
-        ve.connect('changed', changed, 'backend', 'player')
-        rows.append((Gtk.Label(label=_("Backend:")), ve))
+        rows.append(
+            text_config(
+                "settings", "rating_symbol_blank",
+                "Rating Symbol (Blank):",
+                ""))
 
-        for (row, (label, entry)) in enumerate(rows):
-            label.set_alignment(0.0, 0.5)
+        rows.append(
+            text_config(
+                "player", "backend",
+                "Backend:",
+                "Identifier of the playback backend to use"))
+
+        rows.append(
+            boolean_config(
+                "settings", "disable_hints",
+                "Disable Hints:",
+                "Disable popup windows (treeview hints)"))
+
+        for (row, (label, entry, button)) in enumerate(rows):
+            label.set_alignment(1.0, 0.5)
             table.attach(label, 0, 1, row, row + 1,
                          xoptions=Gtk.AttachOptions.FILL)
             table.attach(entry, 1, 2, row, row + 1)
+            table.attach(button, 2, 3, row, row + 1,
+                         xoptions=Gtk.AttachOptions.SHRINK)
 
         vb.pack_start(table, True, True, 0)
-
-        disable_hints = ConfigCheckButton(_("Disable hints"),
-                 'settings', 'disable_hints', populate=True,
-                 tooltip="Disable popup windows (treeview hints)")
-        vb.pack_start(disable_hints, True, True, 0)
 
         return vb
