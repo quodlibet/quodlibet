@@ -81,8 +81,6 @@ class SongListColumn(TreeViewColumnButton):
 class TextColumn(SongListColumn):
     """Base text column"""
 
-    __label = Gtk.Label().create_pango_layout("")
-
     def __init__(self, tag):
         super(TextColumn, self).__init__(tag)
 
@@ -92,6 +90,10 @@ class TextColumn(SongListColumn):
 
         self.set_clickable(True)
 
+    @util.cached_property
+    def _layout(self):
+        return Gtk.Label().create_pango_layout("")
+
     def _cell_width(self, text, pad=8):
         """Returns the column width needed for the passed text"""
 
@@ -99,8 +101,8 @@ class TextColumn(SongListColumn):
         return self._text_width(text) + pad + cell_pad
 
     def _text_width(self, text):
-        self.__label.set_text(text, -1)
-        return self.__label.get_pixel_size()[0]
+        self._layout.set_text(text, -1)
+        return self._layout.get_pixel_size()[0]
 
     def _cdf(self, column, cell, model, iter_, user_data):
         """CellRenderer cell_data_func"""
