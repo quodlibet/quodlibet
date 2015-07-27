@@ -6,7 +6,7 @@ from gi.repository import Gtk
 
 from quodlibet.qltk.songlistcolumns import create_songlist_column
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 import quodlibet.config
 
 

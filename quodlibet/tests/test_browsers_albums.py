@@ -16,7 +16,7 @@ from quodlibet.browsers.albums import AlbumList
 from quodlibet.browsers.albums.prefs import Preferences, FakeAlbum
 from quodlibet.browsers.albums.main import (compare_title, compare_artist,
     compare_genre, compare_rating, compare_date)
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 from quodlibet.util.path import fsnative
 from quodlibet.util.collection import Album

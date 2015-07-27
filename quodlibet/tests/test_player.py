@@ -13,7 +13,7 @@ from quodlibet import config
 from quodlibet.util.path import fsnative
 from quodlibet.util import connect_obj
 from quodlibet.player.nullbe import NullPlayer
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk.controls import Volume
 

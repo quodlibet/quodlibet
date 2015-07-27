@@ -7,7 +7,7 @@ from tests import TestCase, mkdtemp
 from gi.repository import Gtk
 
 from quodlibet import config
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.tracker import SongTracker, FSInterface
 from quodlibet.library import SongLibrary

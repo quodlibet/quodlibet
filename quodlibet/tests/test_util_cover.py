@@ -7,7 +7,7 @@
 import os
 
 from quodlibet import config
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.cover.manager import CoverManager
 from quodlibet.util.path import fsnative, normalize_path
 

@@ -11,8 +11,7 @@ from tests import TestCase, mkdtemp, mkstemp, DATA_DIR
 from quodlibet import config
 from quodlibet.plugins import Plugin
 from quodlibet.formats.mp3 import MP3File
-from quodlibet.formats._audio import AudioFile
-from quodlibet.formats._image import EmbeddedImage
+from quodlibet.formats import AudioFile, EmbeddedImage
 from quodlibet.plugins.cover import CoverSourcePlugin
 from quodlibet.util.cover.manager import CoverPluginHandler, CoverManager
 from quodlibet.util.path import path_equal

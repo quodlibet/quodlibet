@@ -3,7 +3,7 @@ from tests import TestCase, AbstractTestCase
 
 import os
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.path import is_fsnative
 from quodlibet.pattern import (FileFromPattern, XMLFromPattern, Pattern,
     XMLFromMarkupPattern, ArbitraryExtensionFileFromPattern)
@@ -47,7 +47,7 @@ class _TPattern(AbstractTestCase):
 
 
 class TPattern(_TPattern):
-    from quodlibet.formats._audio import AudioFile
+    from quodlibet.formats import AudioFile
     AudioFile
 
     def test_query_like_tag(self):

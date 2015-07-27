@@ -11,7 +11,7 @@ from quodlibet.qltk.bookmarks import EditBookmarks, MenuItems
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet import config
 
 

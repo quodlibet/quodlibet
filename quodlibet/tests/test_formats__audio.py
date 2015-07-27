@@ -5,7 +5,7 @@ import os
 
 from quodlibet import config
 from quodlibet.util.path import is_fsnative, fsnative, fsdecode
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 from quodlibet.formats import decode_value
 

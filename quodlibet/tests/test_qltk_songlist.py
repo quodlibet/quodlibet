@@ -7,7 +7,7 @@ from quodlibet.library import SongLibrary
 from quodlibet.util.path import fsnative
 from quodlibet.qltk.songlist import SongList, set_columns, get_columns, \
     header_tag_split
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet import config
 
 

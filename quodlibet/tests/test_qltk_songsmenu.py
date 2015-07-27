@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from tests import TestCase
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.util.path import fsnative
 from quodlibet.qltk.songsmenu import SongsMenu

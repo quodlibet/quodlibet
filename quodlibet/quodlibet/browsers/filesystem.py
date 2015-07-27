@@ -18,7 +18,7 @@ from quodlibet import config
 from quodlibet import formats
 from quodlibet import qltk
 
-from quodlibet.browsers._base import Browser
+from quodlibet.browsers import Browser
 from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import MainDirectoryTree
 from quodlibet.qltk.songsmenu import SongsMenu

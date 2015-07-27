@@ -4,7 +4,7 @@ from tests import TestCase
 from gi.repository import Gtk
 
 from quodlibet.player.nullbe import NullPlayer
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
 from quodlibet.qltk.playorder import ORDERS, Order
 

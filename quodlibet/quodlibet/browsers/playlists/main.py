@@ -12,8 +12,8 @@ from tempfile import NamedTemporaryFile
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 
 from quodlibet import config
-from quodlibet.browsers._base import Browser
-from quodlibet.formats._audio import AudioFile
+from quodlibet.browsers import Browser
+from quodlibet.formats import AudioFile
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songlist import SongList

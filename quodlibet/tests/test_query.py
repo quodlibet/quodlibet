@@ -4,6 +4,7 @@ from tests import TestCase
 from quodlibet import config
 from quodlibet.query import Query, QueryType
 from quodlibet.query import _match as match
+from quodlibet.formats import AudioFile
 
 
 class TQuery_is_valid(TestCase):
@@ -103,23 +104,21 @@ class TQuery_is_valid(TestCase):
 
 
 class TQuery(TestCase):
-    from quodlibet.formats._audio import AudioFile as AF
-    AF
 
     def setUp(self):
         config.init()
-        self.s1 = self.AF(
+        self.s1 = AudioFile(
             {"album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
              "version": "cake mix", "~filename": "/dir1/foobar.ogg"})
-        self.s2 = self.AF(
+        self.s2 = AudioFile(
             {"album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
              "~filename": "/dir2/something.mp3", "tracknumber": "12/15"})
 
-        self.s3 = self.AF(
+        self.s3 = AudioFile(
             {"artist": "piman\nmu",
              "~filename": "/test/\xc3\xb6\xc3\xa4\xc3\xbc/fo\xc3\xbc.ogg"})
-        self.s4 = self.AF({"title": u"Ångström", "utf8": "Ångström"})
-        self.s5 = self.AF({"title": "oh&blahhh", "artist": "!ohno"})
+        self.s4 = AudioFile({"title": u"Ångström", "utf8": "Ångström"})
+        self.s5 = AudioFile({"title": "oh&blahhh", "artist": "!ohno"})
 
     def tearDown(self):
         config.quit()
@@ -136,7 +135,7 @@ class TQuery(TestCase):
             "<Query string=u'&(/bar/d)' type=QueryType.TEXT star=['foo']>")
 
     def test_2007_07_27_synth_search(self):
-        song = self.AF({"~filename": "foo/64K/bar.ogg"})
+        song = AudioFile({"~filename": "foo/64K/bar.ogg"})
         query = Query("~dirname = !64K")
         self.failIf(query.search(song), "%r, %r" % (query, song))
 
@@ -275,7 +274,7 @@ class TQuery(TestCase):
         self.failIf(Query("~dirname=/dirty/").search(self.s2))
 
     def test_search_almostequal(self):
-        a, b = self.AF({"~#rating": 0.771}), self.AF({"~#rating": 0.769})
+        a, b = AudioFile({"~#rating": 0.771}), AudioFile({"~#rating": 0.769})
         self.failUnless(Query("#(rating = 0.77)").search(a))
         self.failUnless(Query("#(rating = 0.77)").search(b))
 

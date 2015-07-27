@@ -7,7 +7,7 @@
 
 
 from tests.plugin import PluginTestCase
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.path import is_fsnative
 
 

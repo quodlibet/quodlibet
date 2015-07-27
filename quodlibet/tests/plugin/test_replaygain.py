@@ -12,7 +12,7 @@ import re
 import time
 from quodlibet.ext.songsmenu.replaygain import UpdateMode
 from quodlibet.formats import MusicFile
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 
 from tests.plugin import PluginTestCase
 from tests import DATA_DIR

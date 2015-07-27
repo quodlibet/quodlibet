@@ -12,10 +12,10 @@ from tests import TestCase
 from helper import realized
 
 from quodlibet import browsers
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.path import fsnative
 from quodlibet import config
-from quodlibet.browsers._base import Browser
+from quodlibet.browsers import Browser
 from quodlibet.library import SongFileLibrary, SongLibrarian
 
 

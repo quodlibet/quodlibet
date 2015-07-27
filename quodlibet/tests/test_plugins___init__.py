@@ -4,7 +4,7 @@ from tests import TestCase, mkstemp
 import os
 
 from quodlibet import config
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.songwrapper import SongWrapper, ListWrapper
 from quodlibet.plugins import PluginConfig
 

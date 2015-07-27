@@ -9,8 +9,7 @@ from tests import TestCase, DATA_DIR, mkstemp
 
 import os
 
-from quodlibet.formats._audio import AudioFile
-from quodlibet.formats._image import EmbeddedImage, APICType
+from quodlibet.formats import AudioFile, EmbeddedImage, APICType
 
 
 class TAPICType(TestCase):

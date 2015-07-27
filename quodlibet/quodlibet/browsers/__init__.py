@@ -11,7 +11,8 @@ import os
 import quodlibet
 from quodlibet import util
 from quodlibet.util.importhelper import load_dir_modules
-from quodlibet.browsers._base import Browser
+
+from ._base import Browser
 
 
 browsers = []

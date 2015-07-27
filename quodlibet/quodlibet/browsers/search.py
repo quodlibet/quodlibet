@@ -12,7 +12,7 @@ from gi.repository import Gtk, GLib
 from quodlibet import config
 from quodlibet import qltk
 
-from quodlibet.browsers._base import Browser
+from quodlibet.browsers import Browser
 from quodlibet.query import Query
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.completion import LibraryTagCompletion

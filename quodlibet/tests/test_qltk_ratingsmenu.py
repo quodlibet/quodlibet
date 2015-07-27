@@ -10,7 +10,7 @@ from quodlibet import config
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 
 
 class TRatingsMenuItem(TestCase):

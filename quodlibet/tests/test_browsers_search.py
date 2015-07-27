@@ -8,7 +8,7 @@ import quodlibet.config
 
 from quodlibet.browsers.search import SearchBar
 from quodlibet.browsers.empty import EmptyBar
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 

@@ -5,7 +5,7 @@ from tests import TestCase, mkstemp, mkdtemp
 
 import os
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginManager, Plugin
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from tests.helper import capture_output

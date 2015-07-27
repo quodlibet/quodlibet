@@ -4,7 +4,7 @@ import os
 from quodlibet import config
 
 from tests import TestCase, mkdtemp
-from quodlibet.formats._audio import AudioFile as Fakesong
+from quodlibet.formats import AudioFile as Fakesong
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
 from quodlibet.library.libraries import FileLibrary

@@ -456,7 +456,7 @@ def _print_query_text(app):
 
 @registry.register("print-playing", optional=1)
 def _print_playing(app, fstring="<artist~album~tracknumber~title>"):
-    from quodlibet.formats._audio import AudioFile
+    from quodlibet.formats import AudioFile
     from quodlibet.pattern import Pattern
 
     song = app.player.song

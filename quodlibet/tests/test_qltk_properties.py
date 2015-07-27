@@ -3,7 +3,7 @@ from tests import TestCase
 
 from gi.repository import Gtk
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.path import fsnative
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.library import SongLibrary

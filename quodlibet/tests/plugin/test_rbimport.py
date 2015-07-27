@@ -7,7 +7,7 @@
 
 import xml.sax
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 
 from tests.helper import temp_filename
 from quodlibet.library.libraries import SongFileLibrary

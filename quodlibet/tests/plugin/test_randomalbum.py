@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from quodlibet.util.collection import Album
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet import config
 from tests.plugin import PluginTestCase
 from quodlibet.util.dprint import print_d

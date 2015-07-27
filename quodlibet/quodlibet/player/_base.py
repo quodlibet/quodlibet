@@ -9,7 +9,7 @@
 
 from gi.repository import GObject
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet import config
 
 

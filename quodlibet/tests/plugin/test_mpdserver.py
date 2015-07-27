@@ -10,7 +10,7 @@ import socket
 
 from gi.repository import Gtk
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet import app
 from quodlibet import config
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app

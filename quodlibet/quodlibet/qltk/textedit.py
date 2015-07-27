@@ -10,7 +10,7 @@ from gi.repository import Gtk, GLib, Pango
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.pattern import XMLFromPattern, XMLFromMarkupPattern, \
     error as PatternError
 from quodlibet.util import connect_obj

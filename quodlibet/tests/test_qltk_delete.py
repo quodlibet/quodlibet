@@ -4,7 +4,7 @@ from gi.repository import Gtk
 from tests import TestCase
 
 from quodlibet import config
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.path import fsnative
 from quodlibet.qltk.delete import DeleteDialog, TrashDialog, TrashMenuItem
 

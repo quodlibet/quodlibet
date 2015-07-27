@@ -16,7 +16,7 @@ from quodlibet import app
 from quodlibet.qltk.msg import WarningMessage
 from quodlibet.qltk.x import Button
 from quodlibet.devices._base import Device
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 
 
 # Wraps an itdb_track from libgpod in an AudioFile instance

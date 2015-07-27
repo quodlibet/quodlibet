@@ -5,7 +5,7 @@ from gi.repository import Gtk, GdkPixbuf, Gdk
 
 from tests import TestCase, mkstemp, init_fake_app, destroy_fake_app
 from quodlibet import config
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.qltk.cover import (CoverImage, BigCenteredImage, ResizeImage,
     get_no_cover_pixbuf)
 

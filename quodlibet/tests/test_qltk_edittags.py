@@ -8,7 +8,7 @@
 from tests import TestCase
 
 from quodlibet.qltk.edittags import *
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
 import quodlibet.config
 

@@ -7,7 +7,7 @@
 
 import quodlibet
 from quodlibet import print_w, print_d, qltk
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.cbes import StandaloneEditor

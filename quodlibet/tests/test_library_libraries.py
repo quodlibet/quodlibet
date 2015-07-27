@@ -5,7 +5,7 @@ import os
 import shutil
 from quodlibet import config
 from quodlibet.util import connect_obj
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 
 from tests import TestCase, DATA_DIR, mkstemp
 from helper import capture_output

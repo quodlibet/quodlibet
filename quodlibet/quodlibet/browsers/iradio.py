@@ -19,7 +19,7 @@ from quodlibet import qltk
 from quodlibet import util
 from quodlibet import config
 
-from quodlibet.browsers._base import Browser
+from quodlibet.browsers import Browser
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.formats._audio import TAG_TO_SORT, MIGRATE, AudioFile
 from quodlibet.library import SongLibrary

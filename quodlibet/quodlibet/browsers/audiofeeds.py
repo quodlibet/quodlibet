@@ -19,8 +19,8 @@ from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.browsers._base import Browser
-from quodlibet.formats._audio import AudioFile
+from quodlibet.browsers import Browser
+from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.downloader import DownloadWindow
 from quodlibet.qltk.getstring import GetStringDialog

@@ -10,7 +10,7 @@ from gi.repository import Gtk, GLib
 
 from quodlibet import config
 
-from quodlibet.browsers._base import Browser
+from quodlibet.browsers import Browser
 from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
 

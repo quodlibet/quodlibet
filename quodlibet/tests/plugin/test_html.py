@@ -9,7 +9,7 @@ from tests.plugin import PluginTestCase
 
 from quodlibet import config
 from quodlibet.util.path import fsnative
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 
 
 SONGS = [

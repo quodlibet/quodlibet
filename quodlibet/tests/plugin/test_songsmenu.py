@@ -11,7 +11,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from tests.plugin import PluginTestCase
 from quodlibet import config
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 

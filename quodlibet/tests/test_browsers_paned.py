@@ -14,7 +14,7 @@ from quodlibet.browsers.paned.models import PaneModel
 from quodlibet.browsers.paned.prefs import PatternEditor, Preferences
 from quodlibet.browsers.paned.prefs import PreferencesButton
 from quodlibet.browsers.paned.pane import Pane
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.collection import Collection
 from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian

@@ -22,7 +22,7 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.browsers._base import Browser
+from quodlibet.browsers import Browser
 from quodlibet.query import Query
 from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.completion import EntryWordCompletion

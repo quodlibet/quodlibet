@@ -9,7 +9,7 @@ import shutil
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.library import SongLibrary
 import quodlibet.config
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.path import fsnative, fsnative2glib
 from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary

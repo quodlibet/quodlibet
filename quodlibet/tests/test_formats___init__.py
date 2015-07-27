@@ -13,7 +13,7 @@ from tests import TestCase, DATA_DIR
 from helper import capture_output, temp_filename
 
 from quodlibet import formats
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet import config
 
 
