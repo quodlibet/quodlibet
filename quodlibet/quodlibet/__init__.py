@@ -470,8 +470,8 @@ _init_gettext()
 def init():
     """This needs to be called before any API can be used"""
 
-    _init_debug()
     _init_gtk()
+    _init_debug()
     _init_gst()
     _init_dbus()
 
