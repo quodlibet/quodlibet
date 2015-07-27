@@ -646,6 +646,12 @@ def main(window, before_quit=None):
     print_d("Entering quodlibet.main")
     from gi.repository import Gtk, Gdk
 
+    # PyGObject doesn't fail anymore when init fails, so do it ourself
+    initialized, argv = Gtk.init_check(sys.argv)
+    if not initialized:
+        raise SystemExit("Gtk.init failed")
+    sys.argv = list(argv)
+
     def quit_gtk(window):
 
         if before_quit is not None:
