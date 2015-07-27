@@ -41,12 +41,12 @@ def main(argv):
     from quodlibet import util
     from quodlibet.util.string import decode
 
-    config.init(os.path.join(quodlibet.get_user_dir(), "config"))
-
     app.name = "Quod Libet"
     app.id = "quodlibet"
 
-    quodlibet.init(icon=icons.QUODLIBET, name=app.name, proc_title=app.id)
+    config.init(os.path.join(quodlibet.get_user_dir(), "config"))
+
+    quodlibet.init()
 
     library_path = os.path.join(quodlibet.get_user_dir(), "songs")
 
@@ -203,7 +203,8 @@ def main(argv):
         print_d("Shutting down player device %r." % player.version_info)
         player.destroy()
 
-    quodlibet.main(window, before_quit=before_quit)
+    quodlibet.main(window, icons.QUODLIBET, app.id, app.name,
+                   before_quit=before_quit)
 
     quodlibet.finish_first_session(app.id)
     mmkeys_handler.quit()

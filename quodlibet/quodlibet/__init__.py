@@ -142,6 +142,10 @@ def get_user_dir():
     except IOError:
         pass
 
+    # XXX: users shouldn't assume the dir is there, but we currently do in
+    # some places
+    mkdir(USERDIR, 0750)
+
     return USERDIR
 
 
@@ -181,7 +185,7 @@ def _fix_gst_leaks():
         Gst.Element.add_pad = do_wrap(Gst.Element.add_pad)
 
 
-def _gtk_init():
+def _init_gtk():
     """Call before using Gtk/Gdk"""
 
     import gi
@@ -228,6 +232,12 @@ def _gtk_init():
     if not hasattr(Gdk, "EVENT_PROPAGATE"):
         Gdk.EVENT_PROPAGATE = 0
         Gdk.EVENT_STOP = 1
+
+    # include our own icon theme directory
+    theme = Gtk.IconTheme.get_default()
+    theme_search_path = get_image_dir()
+    assert os.path.exists(theme_search_path)
+    theme.append_search_path(theme_search_path)
 
     # On windows the default variants only do ANSI paths, so replace them.
     # In some typelibs they are replaced by default, in some don't..
@@ -332,7 +342,7 @@ def _gtk_init():
         GObject.threads_init()
 
 
-def _gst_init():
+def _init_gst():
     """Call once before importing GStreamer"""
 
     assert "gi.repository.Gst" not in sys.modules
@@ -375,26 +385,7 @@ def _gst_init():
         threading.Thread(target=lambda: None).start()
 
 
-def _gtk_icons_init(theme_search_path, default_icon_name=None):
-    """Register a local fallback icon theme containing our own icons.
-
-    `default_icon_name` is the icon name used for all windows if nothing
-    else is specified.
-    """
-
-    from gi.repository import Gtk
-
-    theme = Gtk.IconTheme.get_default()
-
-    assert os.path.exists(theme_search_path)
-    theme.append_search_path(theme_search_path)
-
-    if default_icon_name is not None:
-        assert theme.has_icon(default_icon_name)
-        Gtk.Window.set_default_icon_name(default_icon_name)
-
-
-def _dbus_init():
+def _init_dbus():
     """Setup dbus mainloop integration. Call before using dbus"""
 
     try:
@@ -410,7 +401,7 @@ def _dbus_init():
         DBusGMainLoop(set_as_default=True)
 
 
-def _gettext_init():
+def _init_gettext():
     """Call before using gettext helpers"""
 
     # set by tests
@@ -455,7 +446,7 @@ def _gettext_init():
     t.install(unicode=True, debug_text=debug_text)
 
 
-def _python_init():
+def _init_python():
 
     import sys
     if sys.version_info < MinVersions.PYTHON:
@@ -472,35 +463,17 @@ def _python_init():
     __builtin__.__dict__["print_e"] = print_e
     __builtin__.__dict__["print_w"] = print_w
 
-_python_init()
-_gettext_init()
+_init_python()
+_init_gettext()
 
 
-def init(icon=None, proc_title=None, name=None):
-    global quodlibet
+def init():
+    """This needs to be called before any API can be used"""
 
-    print_d("Entering quodlibet.init")
-
-    _gtk_init()
-    _gtk_icons_init(get_image_dir(), icon)
-    _gst_init()
-    _dbus_init()
     _init_debug()
-
-    from gi.repository import GLib
-
-    if proc_title:
-        GLib.set_prgname(proc_title)
-        set_process_title(proc_title)
-        # Issue 736 - set after main loop has started (gtk seems to reset it)
-        GLib.idle_add(set_process_title, proc_title)
-
-    if name:
-        GLib.set_application_name(name)
-
-    mkdir(get_user_dir(), 0750)
-
-    print_d("Finished initialization.")
+    _init_gtk()
+    _init_gst()
+    _init_dbus()
 
 
 def init_plugins(no_plugins=False):
@@ -642,15 +615,26 @@ def _init_osx(window):
             "delete-event", lambda window, event: window.hide() or True)
 
 
-def main(window, before_quit=None):
+def main(window, icon_name, process_title, app_name, before_quit=None):
     print_d("Entering quodlibet.main")
-    from gi.repository import Gtk, Gdk
+    from gi.repository import Gtk, Gdk, GLib
 
     # PyGObject doesn't fail anymore when init fails, so do it ourself
     initialized, argv = Gtk.init_check(sys.argv)
     if not initialized:
         raise SystemExit("Gtk.init failed")
     sys.argv = list(argv)
+
+    set_process_title(process_title)
+    # Issue 736 - set after main loop has started (gtk seems to reset it)
+    GLib.idle_add(set_process_title, process_title)
+
+    GLib.set_prgname(process_title)
+    GLib.set_application_name(app_name)
+
+    theme = Gtk.IconTheme.get_default()
+    assert theme.has_icon(icon_name)
+    Gtk.Window.set_default_icon_name(icon_name)
 
     def quit_gtk(window):
 
