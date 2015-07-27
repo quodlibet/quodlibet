@@ -20,10 +20,11 @@ _infos = {}
 modules = []
 names = []
 types = []
+_extensions = ()
 
 
 def init():
-    global mimes, _infos, modules, names
+    global mimes, _infos, modules, names, _extensions
 
     import mutagen
     if mutagen.version < MinVersions.MUTAGEN:
@@ -68,10 +69,7 @@ def init():
     if not _infos:
         raise SystemExit("No formats found!")
 
-init()
-
-
-_extensions = tuple(_infos.keys())
+    _extensions = tuple(_infos.keys())
 
 
 def MusicFile(filename):

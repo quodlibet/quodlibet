@@ -13,6 +13,10 @@ import os
 import sys
 import warnings
 
+# some code depends on utf-8 default encoding (pygtk used to set it)
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 from quodlibet.util import set_process_title, environ, cached_func
 from quodlibet.util import windows, is_osx
 from quodlibet.util.path import mkdir, unexpand
@@ -28,6 +32,8 @@ PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
 
 
 GlibTranslations().install(unicode=True)
+
+_initialized = False
 
 
 class Application(object):
@@ -447,33 +453,47 @@ def _init_gettext():
 
 
 def _init_python():
-
-    import sys
     if sys.version_info < MinVersions.PYTHON:
         actual = Version(sys.version_info[:3])
         raise ImportError("Python %s required. %s found." %
                           (MinVersions.PYTHON, actual))
-
-    # some code depends on utf-8 default encoding (pygtk used to set it)
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
 
     __builtin__.__dict__["print_"] = print_
     __builtin__.__dict__["print_d"] = print_d
     __builtin__.__dict__["print_e"] = print_e
     __builtin__.__dict__["print_w"] = print_w
 
-_init_python()
-_init_gettext()
+
+def _init_formats():
+    from quodlibet.formats import init
+    init()
+
+
+def init_cli():
+    """This needs to be called before any API can be used.
+    Might raise in case of an error.
+
+    Like init() but for code not using Gtk etc.
+    """
+
+    _init_python()
+    _init_gettext()
+    _init_formats()
 
 
 def init():
-    """This needs to be called before any API can be used"""
+    """This needs to be called before any API can be used.
+    Might raise in case of an error."""
 
+    global _initialized
+
+    init_cli()
     _init_gtk()
-    _init_debug()
+    _init_gtk_debug()
     _init_gst()
     _init_dbus()
+
+    _initialized = True
 
 
 def init_plugins(no_plugins=False):
@@ -552,7 +572,7 @@ def finish_first_session(app_name):
     config.set("memory", "%s_last_active_version" % app_name, const.VERSION)
 
 
-def _init_debug():
+def _init_gtk_debug():
     from gi.repository import GLib
     from quodlibet.qltk.debugwindow import ExceptionDialog
 
@@ -618,6 +638,8 @@ def _init_osx(window):
 def main(window, icon_name, process_title, app_name, before_quit=None):
     print_d("Entering quodlibet.main")
     from gi.repository import Gtk, Gdk, GLib
+
+    assert _initialized
 
     # PyGObject doesn't fail anymore when init fails, so do it ourself
     initialized, argv = Gtk.init_check(sys.argv)

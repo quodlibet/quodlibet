@@ -19,6 +19,8 @@ from quodlibet.util.path import fsdecode, fsnative
 
 def main(argv):
     import quodlibet
+    quodlibet.init()
+
     from quodlibet.qltk import add_signal_watch, icons
     add_signal_watch(app.quit)
 
@@ -35,8 +37,6 @@ def main(argv):
 
     app.name = "Ex Falso"
     app.id = "exfalso"
-
-    quodlibet.init()
 
     import quodlibet.library
     import quodlibet.player

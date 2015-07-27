@@ -30,6 +30,8 @@ def main(argv):
 
     import traceback
     import quodlibet
+    quodlibet.init()
+
     from quodlibet import app
     from quodlibet.qltk import add_signal_watch, icons
     add_signal_watch(app.quit)
@@ -45,8 +47,6 @@ def main(argv):
     app.id = "quodlibet"
 
     config.init(os.path.join(quodlibet.get_user_dir(), "config"))
-
-    quodlibet.init()
 
     library_path = os.path.join(quodlibet.get_user_dir(), "songs")
 

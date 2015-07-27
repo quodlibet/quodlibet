@@ -10,9 +10,11 @@
 
 import sys
 
+import quodlibet
 from quodlibet.operon import main
 from quodlibet import util
 
 
 if __name__ == "__main__":
+    quodlibet.init_cli()
     sys.exit(main(util.argv))
