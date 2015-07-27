@@ -10,8 +10,9 @@ import struct
 import mutagen.asf
 
 from quodlibet.util.path import get_temp_cover_file
-from quodlibet.formats._audio import AudioFile
-from quodlibet.formats._image import EmbeddedImage, APICType
+
+from ._audio import AudioFile
+from ._image import EmbeddedImage, APICType
 
 
 class WMAFile(AudioFile):

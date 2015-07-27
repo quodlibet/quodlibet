@@ -6,7 +6,8 @@
 # published by the Free Software Foundation
 
 from mutagen.musepack import Musepack
-from quodlibet.formats._apev2 import APEv2File
+
+from ._apev2 import APEv2File
 
 
 class MPCFile(APEv2File):

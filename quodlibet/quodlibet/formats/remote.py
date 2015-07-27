@@ -7,9 +7,11 @@
 
 import os
 
-from quodlibet.formats._audio import AudioFile
 from quodlibet.util.path import fsnative, is_fsnative
 from quodlibet.util.uri import URI
+
+from ._audio import AudioFile
+
 
 extensions = []
 

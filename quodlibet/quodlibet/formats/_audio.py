@@ -14,8 +14,6 @@ import os
 import shutil
 import time
 
-from ._image import ImageContainer
-
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, is_fsnative
@@ -26,6 +24,8 @@ from quodlibet.util.uri import URI
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
+
+from ._image import ImageContainer
 
 
 MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",

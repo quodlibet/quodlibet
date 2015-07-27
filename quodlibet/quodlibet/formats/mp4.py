@@ -8,10 +8,11 @@
 
 from mutagen.mp4 import MP4, MP4Cover
 
-from quodlibet.formats._audio import AudioFile
-from quodlibet.formats._image import EmbeddedImage
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import decode
+
+from ._audio import AudioFile
+from ._image import EmbeddedImage
 
 
 class MP4File(AudioFile):

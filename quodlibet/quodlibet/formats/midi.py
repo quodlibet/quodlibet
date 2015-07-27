@@ -7,7 +7,7 @@
 
 import struct
 
-from quodlibet.formats._audio import AudioFile
+from ._audio import AudioFile
 
 
 class MidiError(Exception):

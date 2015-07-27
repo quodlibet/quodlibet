@@ -6,7 +6,8 @@
 # published by the Free Software Foundation
 
 from mutagen.trueaudio import TrueAudio
-from quodlibet.formats._id3 import ID3File
+
+from ._id3 import ID3File
 
 
 class TrueAudioFile(ID3File):

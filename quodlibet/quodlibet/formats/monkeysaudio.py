@@ -7,7 +7,7 @@
 
 from mutagen.monkeysaudio import MonkeysAudio
 
-from quodlibet.formats._apev2 import APEv2File
+from ._apev2 import APEv2File
 
 
 class MonkeysAudioFile(APEv2File):

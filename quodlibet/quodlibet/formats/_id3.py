@@ -11,11 +11,12 @@ import mutagen.id3
 from quodlibet import config, const, print_d
 from quodlibet import util
 from quodlibet.config import RATINGS
-from quodlibet.formats._audio import AudioFile
-from quodlibet.formats._image import EmbeddedImage, APICType
 from quodlibet.util.massagers import LanguageMassager
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import isascii
+
+from ._audio import AudioFile
+from ._image import EmbeddedImage, APICType
 
 
 def encoding_for(s):

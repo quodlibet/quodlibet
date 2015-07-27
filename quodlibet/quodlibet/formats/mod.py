@@ -9,7 +9,9 @@ import os
 import ctypes
 
 from quodlibet.util import load_library
-from quodlibet.formats._audio import AudioFile
+
+from ._audio import AudioFile
+
 
 extensions = [
     '.669', '.amf', '.ams', '.dsm', '.far', '.it', '.med', '.mod', '.mt2',

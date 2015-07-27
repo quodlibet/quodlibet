@@ -7,7 +7,7 @@
 
 import os
 
-from quodlibet.formats._audio import AudioFile
+from ._audio import AudioFile
 
 extensions = [".spc"]
 

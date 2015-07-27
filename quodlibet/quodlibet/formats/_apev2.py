@@ -7,9 +7,10 @@
 
 import mutagen.apev2
 
-from quodlibet.formats._audio import AudioFile
-from quodlibet.formats._image import APICType, EmbeddedImage
 from quodlibet.util.path import get_temp_cover_file
+
+from ._audio import AudioFile
+from ._image import APICType, EmbeddedImage
 
 
 def get_cover_type(key, value):

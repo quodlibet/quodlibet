@@ -8,8 +8,10 @@
 import os
 import wave
 
-from quodlibet.formats._audio import AudioFile
 from quodlibet.util.path import fsdecode
+
+from ._audio import AudioFile
+
 
 extensions = [".wav"]
 
