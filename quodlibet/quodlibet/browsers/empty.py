@@ -23,7 +23,7 @@ class EmptyBar(Browser):
     accelerated_name = _("_Disable Browser")
     keys = ["Disabled", "EmptyBar"]
     priority = 0
-    in_menu = False
+    is_empty = True
 
     def pack(self, songpane):
         container = Gtk.VBox(spacing=6)
