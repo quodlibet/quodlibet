@@ -38,8 +38,9 @@ from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
-from quodlibet.qltk.x import ConfigRVPaned, Align, ScrolledWindow
-from quodlibet.qltk.x import SymbolicIconImage, Button, CellRendererPixbuf
+from quodlibet.qltk.x import ConfigRVPaned, Align, ScrolledWindow, Action
+from quodlibet.qltk.x import SymbolicIconImage, Button, CellRendererPixbuf, \
+    ToggleAction, RadioAction
 from quodlibet.qltk import Icons
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
@@ -800,69 +801,106 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
     def __create_menu(self, player, library):
         ag = Gtk.ActionGroup.new('QuodLibetWindowActions')
 
-        actions = [
-            ('Music', None, _("_Music")),
-            ('AddFolders', Gtk.STOCK_ADD, _(u'_Add a Folder…'),
-             "<control>O", None, self.open_chooser),
-            ('AddFiles', Gtk.STOCK_ADD, _(u'_Add a File…'),
-             None, None, self.open_chooser),
-            ('AddLocation', Gtk.STOCK_ADD, _(u'_Add a Location…'),
-             None, None, self.open_location),
-            ('BrowseLibrary', Gtk.STOCK_FIND, _('Open _Browser'), ""),
-            ("Preferences", Gtk.STOCK_PREFERENCES, None, None, None,
-             self.__preferences),
-            ("Plugins", Gtk.STOCK_EXECUTE, _("_Plugins"), None, None,
-             self.__plugins),
-            ("Quit", Gtk.STOCK_QUIT, None, None, None,
-             lambda *x: self.destroy()),
-            ("Control", None, _("_Control")),
-            ("EditTags", Gtk.STOCK_PROPERTIES, _("Edit _Tags"), "", None,
-             self.__current_song_prop),
-            ("Information", Gtk.STOCK_INFO, None, None, None,
-             self.__current_song_info),
+        act = Action(name="Music", label=_("_Music"))
+        ag.add_action(act)
 
-            ("Jump", Gtk.STOCK_JUMP_TO, _("_Jump to Playing Song"),
-             "<control>J", None, self.__jump_to_current),
+        act = Action(name="AddFolders", label=_(u'_Add a Folder…'),
+                     icon_name=Icons.LIST_ADD)
+        act.connect('activate', self.open_chooser)
+        ag.add_action_with_accel(act, "<control>O")
 
-            ("View", None, _("_View")),
-            ("Help", None, _("_Help")),
-            ]
+        act = Action(name="AddFiles", label=_(u'_Add a File…'),
+                     icon_name=Icons.LIST_ADD)
+        act.connect('activate', self.open_chooser)
+        ag.add_action(act)
 
-        actions.append(("Previous", Gtk.STOCK_MEDIA_PREVIOUS, None,
-                        "<control>comma", None, self.__previous_song))
+        act = Action(name="AddLocation", label=_(u'_Add a Location…'),
+                     icon_name=Icons.LIST_ADD)
+        act.connect('activate', self.open_location)
+        ag.add_action(act)
 
-        actions.append(("PlayPause", Gtk.STOCK_MEDIA_PLAY, None,
-                        "<control>space", None, self.__play_pause))
+        act = Action(name="BrowseLibrary", label=_('Open _Browser'),
+                     icon_name=Icons.EDIT_FIND)
+        ag.add_action(act)
 
-        actions.append(("Next", Gtk.STOCK_MEDIA_NEXT, None,
-                        "<control>period", None, self.__next_song))
+        act = Action(name="Preferences", label=_('_Preferences'),
+                     icon_name=Icons.PREFERENCES_SYSTEM)
+        act.connect('activate', self.__preferences)
+        ag.add_action(act)
 
-        ag.add_actions(actions)
+        act = Action(name="Plugins", label=_('_Plugins'),
+                     icon_name=Icons.SYSTEM_RUN)
+        act.connect('activate', self.__plugins)
+        ag.add_action(act)
 
-        act = Gtk.ToggleAction.new("StopAfter",
-                                   _("Stop After This Song"), None, "")
+        act = Action(name="Quit", label=_('_Quit'),
+                     icon_name=Icons.APPLICATION_EXIT)
+        act.connect('activate', lambda *x: self.destroy())
+        ag.add_action_with_accel(act, "<control>Q")
+
+        act = Action(name="Control", label=_('_Control'))
+        ag.add_action(act)
+
+        act = Action(name="EditTags", label=_('Edit _Tags'),
+                     icon_name=Icons.DOCUMENT_PROPERTIES)
+        act.connect('activate', self.__current_song_prop)
+        ag.add_action(act)
+
+        act = Action(name="Information", label=_('_Information'),
+                     icon_name=Icons.DIALOG_INFORMATION)
+        act.connect('activate', self.__current_song_info)
+        ag.add_action(act)
+
+        act = Action(name="Jump", label=_('_Jump to Playing Song'),
+                     icon_name=Icons.GO_JUMP)
+        act.connect('activate', self.__jump_to_current)
+        ag.add_action_with_accel(act, "<control>J")
+
+        act = Action(name="View", label=_('_View'))
+        ag.add_action(act)
+
+        act = Action(name="Help", label=_('_Help'))
+        ag.add_action(act)
+
+        act = Action(name="Previous", label=_('Pre_vious'),
+                     icon_name=Icons.MEDIA_SKIP_BACKWARD)
+        act.connect('activate', self.__previous_song)
+        ag.add_action_with_accel(act, "<control>comma")
+
+        act = Action(name="PlayPause", label=_('_Play'),
+                     icon_name=Icons.MEDIA_PLAYBACK_START)
+        act.connect('activate', self.__play_pause)
+        ag.add_action_with_accel(act, "<control>space")
+
+        act = Action(name="Next", label=_('_Next'),
+                     icon_name=Icons.MEDIA_SKIP_FORWARD)
+        act.connect('activate', self.__next_song)
+        ag.add_action_with_accel(act, "<control>period")
+
+        act = ToggleAction(name="StopAfter", label=_("Stop After This Song"))
         ag.add_action_with_accel(act, "<shift>space")
 
         # access point for the tray icon
         self.stop_after = act
 
-        act = Gtk.Action.new(
-            "AddBookmark", _("Add Bookmark"), None, Gtk.STOCK_ADD)
+        act = Action(name="AddBookmark", label=_("Add Bookmark"),
+                     icon_name=Icons.LIST_ADD)
         connect_obj(act, 'activate', self.__add_bookmark,
                            library.librarian, player)
         ag.add_action_with_accel(act, "<ctrl>D")
 
-        act = Gtk.Action.new("EditBookmarks", _(u"Edit Bookmarks…"), None, "")
+        act = Action(name="EditBookmarks", label=_(u"Edit Bookmarks…"))
         connect_obj(act, 'activate', self.__edit_bookmarks,
                            library.librarian, player)
         ag.add_action_with_accel(act, "<ctrl>B")
 
-        act = Gtk.Action.new("About", None, None, Gtk.STOCK_ABOUT)
+        act = Action(name="About", label=_("_About"),
+                     icon_name=Icons.HELP_ABOUT)
         connect_obj(act, 'activate', self.__show_about, player)
         ag.add_action_with_accel(act, None)
 
-        act = Gtk.Action.new(
-            "OnlineHelp", _("Online Help"), None, Gtk.STOCK_HELP)
+        act = Action(name="OnlineHelp", label=_("Online Help"),
+                     icon_name=Icons.HELP_BROWSER)
 
         def website_handler(*args):
             util.website(const.ONLINE_HELP)
@@ -870,7 +908,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         act.connect('activate', website_handler)
         ag.add_action_with_accel(act, "F1")
 
-        act = Gtk.Action.new("SearchHelp", _("Search Help"), None, "")
+        act = Action(name="SearchHelp", label=_("Search Help"))
 
         def search_help_handler(*args):
             util.website(const.SEARCH_HELP)
@@ -878,26 +916,21 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         act.connect('activate', search_help_handler)
         ag.add_action_with_accel(act, None)
 
-        act = Gtk.Action.new(
-            "RefreshLibrary", _("Re_fresh Library"), None, Gtk.STOCK_REFRESH)
+        act = Action(
+            name="RefreshLibrary", label=_("Re_fresh Library"),
+            icon_name=Icons.VIEW_REFRESH)
         act.connect('activate', self.__rebuild, False)
-        ag.add_action_with_accel(act, None)
+        ag.add_action(act)
 
-        ag.add_toggle_actions([
-            ("SongList", None, _("Song _List"), None, None,
-             self.showhide_playlist,
-             config.getboolean("memory", "songlist"))])
+        act = ToggleAction(name="SongList", label=_("Song _List"))
+        act.set_active(config.getboolean("memory", "songlist"))
+        act.connect('activate', self.showhide_playlist)
+        ag.add_action(act)
 
-        ag.add_toggle_actions([
-            ("Queue", None, _("_Queue"), None, None,
-             self.showhide_playqueue,
-             config.getboolean("memory", "queue"))])
-
-        view_actions = []
-        for i, Kind in enumerate(browsers.browsers):
-            action = "View" + Kind.__name__
-            label = Kind.accelerated_name
-            view_actions.append((action, None, label, None, None, i))
+        act = ToggleAction(name="Queue", label=_("_Queue"))
+        act.set_active(config.getboolean("memory", "queue"))
+        act.connect('activate', self.showhide_playqueue)
+        ag.add_action(act)
 
         current = config.get("memory", "browser")
         try:
@@ -905,18 +938,35 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         except ValueError:
             current = browsers.name(browsers.default)
 
-        def action_callback(view_action, current):
+        view_actions = []
+        first_action = None
+        for Kind in browsers.browsers:
+            name = browsers.name(Kind)
+            index = browsers.index(name)
+            action_name = "View" + Kind.__name__
+            label = Kind.accelerated_name
+            act = RadioAction(name=action_name, label=Kind.accelerated_name,
+                              value=index)
+            act.join_group(first_action)
+            first_action = first_action or act
+            if name == current:
+                act.set_active(True)
+            ag.add_action(act)
+        assert first_action
+
+        def action_callback(view_action, current_action):
+            current = browsers.name(
+                browsers.get(current_action.get_current_value()))
             self.select_browser(view_action, current, library, player)
-        ag.add_radio_actions(
-            view_actions, current, action_callback,
-            None)
+
+        first_action.connect("changed", action_callback)
 
         for Kind in browsers.browsers:
             if Kind.is_empty:
                 continue
             action = "Browser" + Kind.__name__
             label = Kind.accelerated_name
-            act = Gtk.Action.new(action, label, None, None)
+            act = Action(name=action, label=label)
 
             def browser_activate(action, Kind):
                 LibraryBrowser.open(Kind, library, player)
@@ -951,12 +1001,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
     def select_browser(self, activator, current, library, player,
                        restore=False):
-        if isinstance(current, Gtk.RadioAction):
-            current = current.get_current_value()
 
         Browser = browsers.get(current)
 
-        config.set("memory", "browser", Browser.__name__)
+        config.set("memory", "browser", current)
         if self.browser:
             if not (self.browser.uses_main_library and
                     Browser.uses_main_library):

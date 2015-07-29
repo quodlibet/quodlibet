@@ -478,3 +478,13 @@ class Action(Gtk.Action):
         # Older pygobject didn't pass through kwargs to GObject.Object
         # so skip the override __init__
         GObject.Object.__init__(self, *args, **kargs)
+
+
+class ToggleAction(Gtk.ToggleAction):
+    def __init__(self, *args, **kargs):
+        GObject.Object.__init__(self, *args, **kargs)
+
+
+class RadioAction(Gtk.RadioAction):
+    def __init__(self, *args, **kargs):
+        GObject.Object.__init__(self, *args, **kargs)
