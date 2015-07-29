@@ -15,9 +15,9 @@ from quodlibet.qltk.msg import WarningMessage
 from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
-from quodlibet.qltk.x import SeparatorMenuItem, Button
+from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
-from quodlibet.qltk import get_top_parent, get_menu_item_top_parent
+from quodlibet.qltk import get_top_parent, get_menu_item_top_parent, Icons
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
@@ -38,10 +38,9 @@ class ConfirmMultiSongInvoke(WarningMessage):
             title, "",
             buttons=Gtk.ButtonsType.NONE)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        delete_button = Button(_("_Run Plugin"), Gtk.STOCK_EXECUTE)
-        delete_button.show()
-        self.add_action_widget(delete_button, self.RESPONSE_INVOKE)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Run Plugin"), Icons.SYSTEM_RUN,
+                             self.RESPONSE_INVOKE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
     @classmethod
@@ -67,10 +66,9 @@ class ConfirmMultiAlbumInvoke(WarningMessage):
             title, "",
             buttons=Gtk.ButtonsType.NONE)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        delete_button = Button(_("_Run Plugin"), Gtk.STOCK_EXECUTE)
-        delete_button.show()
-        self.add_action_widget(delete_button, self.RESPONSE_INVOKE)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Run Plugin"), Icons.SYSTEM_RUN,
+                             self.RESPONSE_INVOKE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
     @classmethod
@@ -295,7 +293,7 @@ class SongsMenu(Gtk.Menu):
         if plugins:
             submenu = self.plugins.Menu(librarian, songs)
             if submenu is not None:
-                b = qltk.MenuItem(_("_Plugins"), Gtk.STOCK_EXECUTE)
+                b = qltk.MenuItem(_("_Plugins"), Icons.SYSTEM_RUN)
                 b.set_sensitive(bool(songs))
                 self.append(b)
                 b.set_submenu(submenu)
@@ -325,12 +323,12 @@ class SongsMenu(Gtk.Menu):
             except AttributeError as e:
                 print_w("Couldn't get Playlists menu: %s" % e)
             else:
-                b = qltk.MenuItem(_("Play_lists"), Gtk.STOCK_ADD)
+                b = qltk.MenuItem(_("Play_lists"), Icons.LIST_ADD)
                 b.set_sensitive(can_add and bool(songs))
                 b.set_submenu(submenu)
                 self.append(b)
         if queue:
-            b = qltk.MenuItem(_("Add to _Queue"), Gtk.STOCK_ADD)
+            b = qltk.MenuItem(_("Add to _Queue"), Icons.LIST_ADD)
 
             def enqueue_cb(item, songs):
                 songs = filter(lambda s: s.can_add, songs)
@@ -353,7 +351,7 @@ class SongsMenu(Gtk.Menu):
             else:
                 if browsers.media.MediaDevices in browsers.browsers:
                     submenu = browsers.media.Menu(songs, library)
-                    b = qltk.MenuItem(_("_Copy to Device"), Gtk.STOCK_COPY)
+                    b = qltk.MenuItem(_("_Copy to Device"), Icons.EDIT_COPY)
                     b.set_sensitive(
                         can_add and len(submenu) > 0 and bool(songs))
                     b.set_submenu(submenu)
@@ -363,7 +361,7 @@ class SongsMenu(Gtk.Menu):
             self.separate()
 
         if remove:
-            b = qltk.MenuItem(_("_Remove from library"), Gtk.STOCK_REMOVE)
+            b = qltk.MenuItem(_("_Remove from library"), Icons.LIST_REMOVE)
             if callable(remove):
                 b.connect('activate', lambda item: remove(songs))
             else:
@@ -376,7 +374,7 @@ class SongsMenu(Gtk.Menu):
 
         if delete:
             if callable(delete):
-                b = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
+                b = qltk.MenuItem(_("_Delete"), Icons.EDIT_DELETE)
                 b.connect('activate', lambda item: delete(songs))
             else:
                 b = TrashMenuItem()
@@ -391,7 +389,7 @@ class SongsMenu(Gtk.Menu):
 
         if edit:
             self.separate()
-            b = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)
+            b = qltk.MenuItem(_("Edit _Tags"), Icons.DOCUMENT_PROPERTIES)
             b.set_sensitive(bool(songs))
             if accels:
                 qltk.add_fake_accel(b, "<alt>Return")
@@ -404,7 +402,7 @@ class SongsMenu(Gtk.Menu):
             b.connect('activate', song_properties_cb)
             self.append(b)
 
-            b = Gtk.ImageMenuItem(label=Gtk.STOCK_INFO, use_stock=True)
+            b = qltk.MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
             b.set_sensitive(bool(songs))
             if accels:
                 qltk.add_fake_accel(b, "<ctrl>I")

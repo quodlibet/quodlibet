@@ -21,7 +21,7 @@ from quodlibet.qltk._editutils import EditingPluginHandler
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, Button
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj
 from quodlibet.util.path import fsdecode, fsnative
@@ -164,7 +164,7 @@ class RenameFiles(Gtk.VBox):
         self.pack_start(filter_box, False, True, 0)
 
         # Save button
-        self.save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        self.save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
@@ -248,9 +248,6 @@ class RenameFiles(Gtk.VBox):
                 if skip_all:
                     continue
                 RESPONSE_SKIP_ALL = 1
-                buttons = (_("Ignore _All Errors"), RESPONSE_SKIP_ALL,
-                           Gtk.STOCK_STOP, Gtk.ResponseType.CANCEL,
-                           _("_Continue"), Gtk.ResponseType.OK)
                 msg = qltk.Message(
                     Gtk.MessageType.ERROR, win, _("Unable to rename file"),
                     _("Renaming <b>%(old-name)s</b> to <b>%(new-name)s</b> "
@@ -261,7 +258,10 @@ class RenameFiles(Gtk.VBox):
                         "new-name": util.escape(new_name),
                       },
                     buttons=Gtk.ButtonsType.NONE)
-                msg.add_buttons(*buttons)
+                msg.add_button(_("Ignore _All Errors"), RESPONSE_SKIP_ALL)
+                msg.add_icon_button(_("_Stop"), Icons.PROCESS_STOP,
+                                    Gtk.ResponseType.CANCEL)
+                msg.add_button(_("_Continue"), Gtk.ResponseType.OK)
                 msg.set_default_response(Gtk.ResponseType.OK)
                 resp = msg.run()
                 skip_all |= (resp == RESPONSE_SKIP_ALL)

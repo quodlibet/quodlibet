@@ -40,11 +40,11 @@ class MaskedBox(Gtk.HBox):
         self.view = view
 
         menu = Gtk.Menu()
-        unhide_item = qltk.MenuItem(_("Unhide"), Gtk.STOCK_ADD)
+        unhide_item = qltk.MenuItem(_("Unhide"), Icons.LIST_ADD)
         connect_obj(unhide_item, 'activate', self.__unhide, view, library)
         menu.append(unhide_item)
 
-        remove_item = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE, use_stock=True)
+        remove_item = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         connect_obj(remove_item, 'activate', self.__remove, view, library)
         menu.append(remove_item)
 
@@ -82,9 +82,9 @@ class MaskedBox(Gtk.HBox):
 
         view.append_column(column)
 
-        unhide = qltk.Button(_("Unhide"), Gtk.STOCK_ADD)
+        unhide = qltk.Button(_("_Unhide"), Icons.LIST_ADD)
         connect_obj(unhide, "clicked", self.__unhide, view, library)
-        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
 
         selection = view.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)

@@ -24,9 +24,10 @@ def filechooser(save, title):
         title=(save and "Export %s Metadata to ..." or
                "Import %s Metadata from ...") % title,
         action=(save and Gtk.FileChooserAction.SAVE or
-                Gtk.FileChooserAction.OPEN),
-        buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
-                 Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT))
+                Gtk.FileChooserAction.OPEN))
+
+    chooser.add_button(_("_OK"), Gtk.ResponseType.ACCEPT)
+    chooser.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
 
     for name, pattern in [('Tag files (*.tags)', '*.tags'),
                           ('All Files', '*')]:

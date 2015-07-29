@@ -5,6 +5,7 @@ from gi.repository import Gtk, GObject
 
 from quodlibet.plugins.editing import RenameFilesPlugin, TagsFromPathPlugin
 from quodlibet.util import connect_obj
+from quodlibet.qltk import Icons
 
 
 class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
@@ -12,7 +13,7 @@ class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
     PLUGIN_NAME = _("Regex Substitution")
     PLUGIN_DESC = _("Allows arbitrary regex substitutions (s///) when "
                     "tagging or renaming files.")
-    PLUGIN_ICON = Gtk.STOCK_FIND_AND_REPLACE
+    PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
     __gsignals__ = {
         "changed": (GObject.SignalFlags.RUN_LAST, None, ())

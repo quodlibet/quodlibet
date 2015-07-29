@@ -144,7 +144,7 @@ class PreferencesWindow(UniqueWindow):
 
             # Apply button
             vbox = Gtk.VBox(spacing=12)
-            apply = Gtk.Button(stock=Gtk.STOCK_APPLY)
+            apply = Button(_("_Apply"))
             apply.set_tooltip_text(_("Apply current configuration to song "
                                      "list, adding new columns to the end"))
             b = Gtk.HButtonBox()
@@ -543,9 +543,7 @@ class PreferencesWindow(UniqueWindow):
                 config.reset(section, option)
                 e.set_text(config.get(section, option))
 
-            split_revert = Gtk.Button()
-            split_revert.add(Gtk.Image.new_from_stock(
-                             Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
+            split_revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
             split_revert.connect("clicked", do_revert_split, "editing",
                                  "split_on")
             l = Gtk.Label(label=_("Split _on:"))
@@ -601,14 +599,14 @@ class PreferencesWindow(UniqueWindow):
             def refresh_cb(button):
                 scan_library(app.library, force=False)
 
-            refresh = qltk.Button(_("Re_fresh Library"), Gtk.STOCK_REFRESH)
+            refresh = qltk.Button(_("Re_fresh Library"), Icons.VIEW_REFRESH)
             refresh.connect("clicked", refresh_cb)
             refresh.set_tooltip_text(_("Check for changes in your library"))
 
             def reload_cb(button):
                 scan_library(app.library, force=True)
 
-            reload_ = qltk.Button(_("Re_load Library"), Gtk.STOCK_REFRESH)
+            reload_ = qltk.Button(_("Re_load Library"), Icons.VIEW_REFRESH)
             reload_.connect("clicked", reload_cb)
             reload_.set_tooltip_text(
                 _("Reload all songs in your library. "

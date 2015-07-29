@@ -39,7 +39,7 @@ from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import ConfigRVPaned, Align, ScrolledWindow, Action
-from quodlibet.qltk.x import SymbolicIconImage, Button, CellRendererPixbuf, \
+from quodlibet.qltk.x import SymbolicIconImage, CellRendererPixbuf, \
     ToggleAction, RadioAction
 from quodlibet.qltk import Icons
 from quodlibet.qltk.about import AboutQuodLibet
@@ -386,12 +386,8 @@ class ConfirmLibDirSetup(WarningMessage):
         super(ConfirmLibDirSetup, self).__init__(
             parent, title, description, buttons=Gtk.ButtonsType.NONE)
 
-        cancel_button = Button(_("_Not Now"), Gtk.STOCK_CANCEL)
-        cancel_button.show()
-        self.add_action_widget(cancel_button, Gtk.ResponseType.CANCEL)
-        save_button = Gtk.Button(label=_("_Set Up"), use_underline=True)
-        save_button.show()
-        self.add_action_widget(save_button, self.RESPONSE_SETUP)
+        self.add_button(_("_Not Now"), Gtk.ResponseType.CANCEL)
+        self.add_button(_("_Set Up"), self.RESPONSE_SETUP)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
 
@@ -1043,15 +1039,15 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
     def __update_paused(self, player, paused):
         menu = self.ui.get_widget("/Menu/Control/PlayPause")
+        image = menu.get_image()
 
         if paused:
-            key = Gtk.STOCK_MEDIA_PLAY
+            label, icon = _("_Play"), Icons.MEDIA_PLAYBACK_START
         else:
-            key = Gtk.STOCK_MEDIA_PAUSE
-        text = Gtk.stock_lookup(key).label
-        menu.get_image().set_from_stock(key, Gtk.IconSize.MENU)
-        menu.set_label(text)
-        menu.set_use_underline(True)
+            label, icon = _("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE
+
+        menu.set_label(label)
+        image.set_from_icon_name(icon, Gtk.IconSize.MENU)
 
     def __song_ended(self, player, song, stopped):
         # check if the song should be removed base on the

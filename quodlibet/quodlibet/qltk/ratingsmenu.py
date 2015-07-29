@@ -29,7 +29,7 @@ class ConfirmRateMultipleDialog(qltk.Message):
         super(ConfirmRateMultipleDialog, self).__init__(
             Gtk.MessageType.WARNING, parent, title, desc, Gtk.ButtonsType.NONE)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_button(action_title, Gtk.ResponseType.YES)
 
 

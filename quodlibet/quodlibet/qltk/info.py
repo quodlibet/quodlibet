@@ -14,6 +14,7 @@ from gi.repository import Gtk, Gdk, Pango
 from quodlibet import qltk
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import SeparatorMenuItem, Align
+from quodlibet.qltk import Icons
 from quodlibet.util import connect_destroy
 
 from quodlibet.pattern import XMLFromMarkupPattern
@@ -102,7 +103,7 @@ class SongInfo(Gtk.EventBox):
             menu.append(sub)
 
     def _get_menu(self, player, library):
-        item = qltk.MenuItem(_(u"_Edit Display…"), Gtk.STOCK_EDIT)
+        item = qltk.MenuItem(_(u"_Edit Display…"), Icons.EDIT)
         item.connect('activate', self._on_edit_display, player)
 
         songs = [player.song] if player.song else []

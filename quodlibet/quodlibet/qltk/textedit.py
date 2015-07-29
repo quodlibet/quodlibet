@@ -10,6 +10,7 @@ from gi.repository import Gtk, GLib, Pango
 from quodlibet import qltk
 from quodlibet import util
 
+from quodlibet.qltk import Button, Icons
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import XMLFromPattern, XMLFromMarkupPattern, \
     error as PatternError
@@ -56,8 +57,8 @@ class TextEditBox(Gtk.HBox):
         self.buffer = sw.get_child().get_buffer()
 
         box = Gtk.VBox(spacing=6)
-        rev = Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
-        app = Gtk.Button(stock=Gtk.STOCK_APPLY)
+        rev = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
+        app = Button(_("_Apply"))
         box.pack_start(rev, False, True, 0)
         box.pack_start(app, False, True, 0)
         self.pack_start(box, False, True, 0)
@@ -156,7 +157,7 @@ class TextEdit(qltk.UniqueWindow):
         self.set_default_size(420, 190)
 
         vbox = Gtk.VBox(spacing=12)
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
         b = Gtk.HButtonBox()
         b.set_layout(Gtk.ButtonBoxStyle.END)

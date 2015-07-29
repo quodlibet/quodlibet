@@ -270,11 +270,7 @@ def MenuItem(label, stock_id=None):
     return item
 
 
-def Button(label, stock_id=None, size=Gtk.IconSize.BUTTON):
-    """A Button with a custom label and stock image. It should pack
-    exactly like a stock button.
-    """
-
+def _Button(type_, label, stock_id, size):
     if stock_id is None:
         return Gtk.Button.new_with_mnemonic(label)
 
@@ -290,9 +286,25 @@ def Button(label, stock_id=None, size=Gtk.IconSize.BUTTON):
     hbox.pack_start(label, True, True, 0)
     align.add(hbox)
     align.show_all()
-    button = Gtk.Button()
+    button = type_()
     button.add(align)
     return button
+
+
+def Button(label, stock_id=None, size=Gtk.IconSize.BUTTON):
+    """A Button with a custom label and stock image. It should pack
+    exactly like a stock button.
+    """
+
+    return _Button(Gtk.Button, label, stock_id, size)
+
+
+def ToggleButton(label, stock_id=None, size=Gtk.IconSize.BUTTON):
+    """A ToggleButton with a custom label and stock image. It should pack
+    exactly like a stock button.
+    """
+
+    return _Button(Gtk.ToggleButton, label, stock_id, size)
 
 
 class Paned(Gtk.Paned):

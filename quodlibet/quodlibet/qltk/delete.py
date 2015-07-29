@@ -140,8 +140,10 @@ class TrashDialog(WarningMessage):
 
 
 def TrashMenuItem():
-    return (MenuItem(_("_Move to Trash"), "user-trash") if trash.use_trash()
-            else Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True))
+    if trash.use_trash():
+        return MenuItem(_("_Move to Trash"), Icons.USER_TRASH)
+    else:
+        return MenuItem(_("_Delete"), Icons.EDIT_DELETE)
 
 
 def _do_trash_songs(parent, songs, librarian):

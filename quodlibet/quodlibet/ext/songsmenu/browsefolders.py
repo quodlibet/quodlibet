@@ -20,6 +20,7 @@ except ImportError:
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.uri import URI
 from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
 from quodlibet.util.path import is_fsnative, normalize_path
 
@@ -169,7 +170,7 @@ class BrowseFolders(SongsMenuPlugin):
     PLUGIN_ID = 'Browse Folders'
     PLUGIN_NAME = _('Browse Folders')
     PLUGIN_DESC = _("Opens the songs' folders in a file manager.")
-    PLUGIN_ICON = Gtk.STOCK_OPEN
+    PLUGIN_ICON = Icons.DOCUMENT_OPEN
 
     _HANDLERS = [browse_folders_fdo, browse_folders_thunar,
                  browse_folders_xdg_open, browse_folders_gnome_open,

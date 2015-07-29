@@ -33,13 +33,11 @@ class Iconv(EditTagsPlugin):
     PLUGIN_NAME = _("Convert Encodings")
     PLUGIN_DESC = _("Fixes misinterpreted tag value encodings in the "
                     "tag editor.")
-    PLUGIN_ICON = Gtk.STOCK_CONVERT
 
     def __init__(self, tag, value):
         super(Iconv, self).__init__(
             _(u"_Convert Encoding…"), use_underline=True)
-        self.set_image(
-            Gtk.Image.new_from_stock(Gtk.STOCK_CONVERT, Gtk.IconSize.MENU))
+
         submenu = Gtk.Menu()
 
         items = []

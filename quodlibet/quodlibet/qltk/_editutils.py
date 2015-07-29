@@ -15,7 +15,7 @@ from quodlibet import util
 from quodlibet.plugins import PluginHandler
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
-from quodlibet.qltk.x import Button
+from quodlibet.qltk import Icons
 from quodlibet.util.path import fsdecode
 from quodlibet.util import connect_obj
 
@@ -35,10 +35,9 @@ class OverwriteWarning(WarningMessage):
         super(OverwriteWarning, self).__init__(
             parent, title, description, buttons=Gtk.ButtonsType.NONE)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        save_button = Button(_("_Save"), "document-save")
-        save_button.show()
-        self.add_action_widget(save_button, self.RESPONSE_SAVE)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
+                             self.RESPONSE_SAVE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
 

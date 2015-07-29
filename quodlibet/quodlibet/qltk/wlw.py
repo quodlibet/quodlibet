@@ -10,7 +10,7 @@ import time
 
 from gi.repository import Gtk, Pango, Gdk
 
-from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton
 from quodlibet import util
 
 
@@ -44,9 +44,9 @@ class WaitLoadBase(object):
         if self.count > limit or self.count == 0:
             # Add stop/pause buttons. count = 0 means an indefinite
             # number of steps.
-            self._cancel_button = Gtk.Button.new_from_stock(Gtk.STOCK_STOP)
-            self._pause_button = Gtk.ToggleButton(label=Gtk.STOCK_MEDIA_PAUSE)
-            self._pause_button.set_use_stock(True)
+            self._cancel_button = Button(_("_Stop"), Icons.PROCESS_STOP)
+            self._pause_button = ToggleButton(_("P_ause"),
+                                              Icons.MEDIA_PLAYBACK_PAUSE)
             self._cancel_button.connect('clicked', self.__cancel_clicked)
             self._pause_button.connect('clicked', self.__pause_clicked)
         else:
@@ -199,11 +199,11 @@ class WaitLoadBar(WaitLoadBase, Gtk.HBox):
         self._label.set_ellipsize(Pango.EllipsizeMode.END)
 
         self._cancel_button.remove(self._cancel_button.get_child())
-        self._cancel_button.add(Gtk.Image.new_from_stock(
-            Gtk.STOCK_STOP, Gtk.IconSize.MENU))
+        self._cancel_button.add(Gtk.Image.new_from_icon_name(
+            Icons.PROCESS_STOP, Gtk.IconSize.MENU))
         self._pause_button.remove(self._pause_button.get_child())
-        self._pause_button.add(Gtk.Image.new_from_stock(
-            Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.MENU))
+        self._pause_button.add(Gtk.Image.new_from_icon_name(
+            Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.MENU))
 
         self.pack_start(self._label, True, True, 0)
         self.pack_start(self._progress, False, True, 6)

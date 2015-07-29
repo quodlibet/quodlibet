@@ -7,8 +7,6 @@
 
 import os
 
-from gi.repository import Gtk
-
 from quodlibet import util, qltk
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
@@ -17,7 +15,6 @@ class IFPUpload(SongsMenuPlugin):
     PLUGIN_ID = "Send to iFP"
     PLUGIN_NAME = _("Send to iFP")
     PLUGIN_DESC = _("Uploads songs to an iRiver iFP device.")
-    PLUGIN_ICON = Gtk.STOCK_CONVERT
 
     def plugin_songs(self, songs):
         if os.system("ifp typestring"):
