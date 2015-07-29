@@ -938,7 +938,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         except ValueError:
             current = browsers.name(browsers.default)
 
-        view_actions = []
         first_action = None
         for Kind in browsers.browsers:
             name = browsers.name(Kind)
