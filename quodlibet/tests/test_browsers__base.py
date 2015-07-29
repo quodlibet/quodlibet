@@ -8,7 +8,7 @@
 
 from gi.repository import Gtk
 
-from tests import TestCase
+from tests import TestCase, init_fake_app, destroy_fake_app
 from helper import realized
 
 from quodlibet import browsers
@@ -64,6 +64,7 @@ class TBrowserBase(TestCase):
 
     def setUp(self):
         config.init()
+        init_fake_app()
         self.library = library = SongFileLibrary()
         library.librarian = SongLibrarian()
         library.add(SONGS)
@@ -74,6 +75,7 @@ class TBrowserBase(TestCase):
         self.b.destroy()
         self.library.destroy()
         config.quit()
+        destroy_fake_app()
 
 
 class TBrowserMixin(object):
