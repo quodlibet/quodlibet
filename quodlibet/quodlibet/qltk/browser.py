@@ -14,7 +14,7 @@ from quodlibet import app
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import ScrolledWindow, Action
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.util.library import background_filter
 
@@ -48,13 +48,13 @@ class FilterMenu(object):
         ag = Gtk.ActionGroup.new('QuodLibetFilterActions')
         for name, icon_name, label, cb in [
                 ('Filters', "", _("_Filters"), None),
-                ("PlayedRecently", icons.EDIT_FIND, _("Recently _Played"),
+                ("PlayedRecently", Icons.EDIT_FIND, _("Recently _Played"),
                  self.__filter_menu_actions),
-                ("AddedRecently", icons.EDIT_FIND, _("Recently _Added"),
+                ("AddedRecently", Icons.EDIT_FIND, _("Recently _Added"),
                  self.__filter_menu_actions),
-                ("TopRated", icons.EDIT_FIND, _("_Top 40"),
+                ("TopRated", Icons.EDIT_FIND, _("_Top 40"),
                  self.__filter_menu_actions),
-                ("All", icons.EDIT_FIND, _("All _Songs"),
+                ("All", Icons.EDIT_FIND, _("All _Songs"),
                  self.__filter_menu_actions)]:
             action = Action(name=name, icon_name=icon_name, label=label)
             if cb:
@@ -67,7 +67,7 @@ class FilterMenu(object):
             ("album", _("Filter on Al_bum"))]:
             act = Action(
                 name="Filter%s" % util.capitalize(tag_), label=lab,
-                icon_name=icons.EDIT_SELECT_ALL)
+                icon_name=Icons.EDIT_SELECT_ALL)
             act.connect('activate', self.__filter_on, tag_, None, player)
             ag.add_action(act)
 
@@ -76,7 +76,7 @@ class FilterMenu(object):
             ("artist", "T", _("Random _Artist")),
             ("album", "M", _("Random Al_bum"))]:
             act = Action(name="Random%s" % util.capitalize(tag_),
-                         label=label, icon_name=icons.DIALOG_QUESTION)
+                         label=label, icon_name=Icons.DIALOG_QUESTION)
             act.connect('activate', self.__random, tag_)
             ag.add_action_with_accel(act, "<control>" + accel)
 

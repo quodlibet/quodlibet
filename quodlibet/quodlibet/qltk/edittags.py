@@ -26,7 +26,7 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.x import SeparatorMenuItem, Button, MenuItem
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.plugins import PluginManager
 from quodlibet.util import connect_obj
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
@@ -187,7 +187,7 @@ class SplitValues(Gtk.ImageMenuItem):
         super(SplitValues, self).__init__(
             label=_("Split into _Multiple Values"), use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
-            icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
         self.set_sensitive(len(split_value(value, spls)) > 1)
@@ -207,7 +207,7 @@ class SplitDisc(Gtk.ImageMenuItem):
         super(SplitDisc, self).__init__(
             label=_("Split Disc out of _Album"), use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
-            icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
         self.set_sensitive(split_album(value)[1] is not None)
 
     def activated(self, tag, value):
@@ -224,7 +224,7 @@ class SplitTitle(Gtk.ImageMenuItem):
         super(SplitTitle, self).__init__(
             label=_("Split _Version out of Title"), use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
-            icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
         self.set_sensitive(bool(split_title(value, spls)[1]))
@@ -243,7 +243,7 @@ class SplitPerson(Gtk.ImageMenuItem):
     def __init__(self, tag, value):
         super(SplitPerson, self).__init__(label=self.title, use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
-            icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
         spls = config.get("editing", "split_on").decode(
             'utf-8', 'replace').split()
         self.set_sensitive(bool(split_people(value, spls)[1]))
@@ -286,7 +286,7 @@ class AddTagDialog(Dialog):
         self.set_border_width(6)
         self.set_resizable(False)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        add = self.add_icon_button(_("_Add"), icons.LIST_ADD,
+        add = self.add_icon_button(_("_Add"), Icons.LIST_ADD,
                                    Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
@@ -321,7 +321,7 @@ class AddTagDialog(Dialog):
         hbox.pack_start(self.__val, True, True, 0)
         hbox.set_spacing(6)
         invalid = Gtk.Image.new_from_icon_name(
-            icons.DIALOG_WARNING, Gtk.IconSize.SMALL_TOOLBAR)
+            Icons.DIALOG_WARNING, Gtk.IconSize.SMALL_TOOLBAR)
         hbox.pack_start(invalid, True, True, 0)
 
         self.vbox.pack_start(table, True, True, 0)
@@ -421,11 +421,11 @@ class EditTags(Gtk.VBox):
             if entry.canedit or entry.deleted:
                 rend.set_property('sensitive', entry.edited or entry.deleted)
                 if entry.deleted:
-                    rend.set_property('icon-name', icons.EDIT_DELETE)
+                    rend.set_property('icon-name', Icons.EDIT_DELETE)
                 else:
-                    rend.set_property('icon-name', icons.EDIT)
+                    rend.set_property('icon-name', Icons.EDIT)
             else:
-                rend.set_property('icon-name', icons.DIALOG_PASSWORD)
+                rend.set_property('icon-name', Icons.DIALOG_PASSWORD)
         column.set_cell_data_func(render, cdf_write)
         view.append_column(column)
 
@@ -485,13 +485,13 @@ class EditTags(Gtk.VBox):
         bbox1 = Gtk.HButtonBox()
         bbox1.set_spacing(6)
         bbox1.set_layout(Gtk.ButtonBoxStyle.START)
-        add = qltk.Button(_("_Add"), icons.LIST_ADD)
+        add = qltk.Button(_("_Add"), Icons.LIST_ADD)
         add.set_focus_on_click(False)
         self._add = add
         add.connect('clicked', self.__add_tag, model, library)
         bbox1.pack_start(add, True, True, 0)
         # Remove button
-        remove = qltk.Button(_("_Remove"), icons.LIST_REMOVE)
+        remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.set_focus_on_click(False)
         remove.connect('clicked', self.__remove_tag, view)
         remove.set_sensitive(False)
@@ -505,12 +505,12 @@ class EditTags(Gtk.VBox):
         bbox2.set_spacing(6)
         bbox2.set_layout(Gtk.ButtonBoxStyle.END)
         # Translators: Revert button in the tag editor
-        revert = Button(C_("edittags", "_Revert"), icons.DOCUMENT_REVERT)
+        revert = Button(C_("edittags", "_Revert"), Icons.DOCUMENT_REVERT)
 
         self._revert = revert
         revert.set_sensitive(False)
         # Translators: Save button in the tag editor
-        save = Button(C_("edittags", "_Save"), icons.DOCUMENT_SAVE)
+        save = Button(C_("edittags", "_Save"), Icons.DOCUMENT_SAVE)
         save.set_sensitive(False)
         self._save = save
         bbox2.pack_start(revert, True, True, 0)
@@ -629,7 +629,7 @@ class EditTags(Gtk.VBox):
             if menu.get_children():
                 menu.append(SeparatorMenuItem())
 
-        b = MenuItem(_("_Remove"), icons.LIST_REMOVE)
+        b = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         b.connect('activate', self.__remove_tag, view)
         qltk.add_fake_accel(b, "Delete")
         menu.append(b)

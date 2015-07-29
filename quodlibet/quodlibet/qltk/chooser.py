@@ -8,7 +8,7 @@
 from gi.repository import Gtk
 
 from quodlibet.qltk import get_top_parent
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.qltk.window import Dialog
 
 
@@ -20,7 +20,7 @@ class FolderChooser(Gtk.FileChooserDialog, Dialog):
             title=title, transient_for=get_top_parent(parent), action=action)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Open"), icons.DOCUMENT_OPEN,
+        self.add_icon_button(_("_Open"), Icons.DOCUMENT_OPEN,
                              Gtk.ResponseType.OK)
 
         if initial_dir:

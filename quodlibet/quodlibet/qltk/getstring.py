@@ -10,7 +10,7 @@ from gi.repository import Gtk, Gdk
 
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.window import Dialog
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 
 
 class GetStringDialog(Dialog):
@@ -18,7 +18,7 @@ class GetStringDialog(Dialog):
     _WIDTH = 300
 
     def __init__(self, parent, title, text,
-                 button_label=_("_OK"), button_icon=icons.DOCUMENT_OPEN):
+                 button_label=_("_OK"), button_icon=Icons.DOCUMENT_OPEN):
         super(GetStringDialog, self).__init__(
             title=title, transient_for=parent, use_header_bar=True)
 

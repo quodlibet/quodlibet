@@ -28,7 +28,7 @@ from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Align, SeparatorMenuItem, ConfigRHPaned, \
     Button, SymbolicIconImage, MenuItem
 from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.util.path import mtime, normalize_path
 from quodlibet.util import connect_obj, connect_destroy
 
@@ -65,7 +65,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
 
         about = Gtk.Button()
         about.add(Gtk.Image.new_from_icon_name(
-            icons.HELP_ABOUT, Gtk.IconSize.BUTTON))
+            Icons.HELP_ABOUT, Gtk.IconSize.BUTTON))
         connect_obj(about, 'clicked', self.__show_about, self)
         bbox.pack_start(about, False, True, 0)
 
@@ -78,11 +78,11 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
             window.show()
 
         menu = Gtk.Menu()
-        plugin_item = MenuItem(_("_Plugins"), icons.SYSTEM_RUN)
+        plugin_item = MenuItem(_("_Plugins"), Icons.SYSTEM_RUN)
         plugin_item.connect("activate", plugin_window_cb)
         menu.append(plugin_item)
 
-        pref_item = MenuItem(_("_Preferences"), icons.PREFERENCES_SYSTEM)
+        pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
         pref_item.connect("activate", prefs_cb)
         menu.append(pref_item)
         menu.show_all()
@@ -260,7 +260,7 @@ class PreferencesWindow(UniqueWindow):
         vbox.pack_start(hb, False, True, 0)
         f = qltk.Frame(_("Tag Editing"), child=vbox)
 
-        close = Button(_("_Close"), icons.WINDOW_CLOSE)
+        close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         connect_obj(close, 'clicked', lambda x: x.destroy(), self)
         button_box = Gtk.HButtonBox()
         button_box.set_layout(Gtk.ButtonBoxStyle.END)

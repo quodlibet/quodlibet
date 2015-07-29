@@ -27,7 +27,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 from quodlibet.util.path import get_home_dir
 from quodlibet.qltk.x import ScrolledWindow, Align, Button
@@ -204,7 +204,7 @@ class AddFeedDialog(GetStringDialog):
         super(AddFeedDialog, self).__init__(
             qltk.get_top_parent(parent), _("New Feed"),
             _("Enter the location of an audio feed:"),
-            button_label=_("_Add"), button_icon=icons.LIST_ADD)
+            button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
     def run(self):
         uri = super(AddFeedDialog, self).run()

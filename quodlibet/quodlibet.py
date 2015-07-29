@@ -33,7 +33,7 @@ def main(argv):
     quodlibet.init()
 
     from quodlibet import app
-    from quodlibet.qltk import add_signal_watch, icons
+    from quodlibet.qltk import add_signal_watch, Icons
     add_signal_watch(app.quit)
 
     import quodlibet.player
@@ -203,7 +203,7 @@ def main(argv):
         print_d("Shutting down player device %r." % player.version_info)
         player.destroy()
 
-    quodlibet.main(window, icons.QUODLIBET, app.id, app.name,
+    quodlibet.main(window, Icons.QUODLIBET, app.id, app.name,
                    before_quit=before_quit)
 
     quodlibet.finish_first_session(app.id)

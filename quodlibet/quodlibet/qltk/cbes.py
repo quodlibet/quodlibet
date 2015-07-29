@@ -14,7 +14,7 @@ from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
 from quodlibet.qltk import entry
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 
 
 class _KeyValueEditor(qltk.Window):
@@ -51,7 +51,7 @@ class _KeyValueEditor(qltk.Window):
         l.set_alignment(0.0, 0.5)
         t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
         t.attach(self.value, 1, 2, 1, 2)
-        add = qltk.Button(_("_Add"), icons.LIST_ADD)
+        add = qltk.Button(_("_Add"), Icons.LIST_ADD)
         add.set_sensitive(False)
         t.attach(add, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.FILL)
 
@@ -78,18 +78,18 @@ class _KeyValueEditor(qltk.Window):
         self.get_child().pack_start(sw, True, True, 0)
 
         menu = Gtk.Menu()
-        remove = qltk.MenuItem(_("_Remove"), icons.LIST_REMOVE)
+        remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         connect_obj(remove, 'activate', self.__remove, view)
         qltk.add_fake_accel(remove, "Delete")
         menu.append(remove)
         menu.show_all()
 
         bbox = Gtk.HButtonBox()
-        rem_b = qltk.Button(_("_Remove"), icons.LIST_REMOVE)
+        rem_b = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         rem_b.set_sensitive(False)
         bbox.pack_start(rem_b, True, True, 0)
         self.use_header_bar()
-        close = qltk.Button(_("_Close"), icons.WINDOW_CLOSE)
+        close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
         if not self.has_close_button():
             bbox.pack_start(close, True, True, 0)
         else:
@@ -308,7 +308,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
 
     def __fill(self, filename, initial, edit_title):
         model = self.get_model()
-        model.append(row=["", edit_title, icons.DOCUMENT_PROPERTIES])
+        model.append(row=["", edit_title, Icons.DOCUMENT_PROPERTIES])
         model.append(row=[None, None, None])
 
         if filename is None:

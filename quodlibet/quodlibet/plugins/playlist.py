@@ -9,7 +9,7 @@ from gi.repository import Gtk
 from quodlibet.qltk import get_top_parent, get_menu_item_top_parent
 from quodlibet.qltk.msg import WarningMessage
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.util import print_exc
 from quodlibet.util.dprint import print_d, print_e
 from quodlibet.plugins import PluginHandler, PluginManager
@@ -35,7 +35,7 @@ class ConfirmMultiPlaylistInvoke(WarningMessage):
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_icon_button(
-            _("_Run Plugin"), icons.SYSTEM_RUN, self.RESPONSE_INVOKE)
+            _("_Run Plugin"), Icons.SYSTEM_RUN, self.RESPONSE_INVOKE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
     @classmethod

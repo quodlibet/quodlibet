@@ -13,7 +13,7 @@ from quodlibet import config
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.x import Button
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 
 
@@ -98,6 +98,6 @@ class GstPlayerPreferences(Gtk.VBox):
             def print_bin(player):
                 player._print_pipeline()
 
-            b = Button("Print Pipeline", icons.DIALOG_INFORMATION)
+            b = Button("Print Pipeline", Icons.DIALOG_INFORMATION)
             connect_obj(b, 'clicked', print_bin, player)
             self.pack_start(b, True, True, 0)

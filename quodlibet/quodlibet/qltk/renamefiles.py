@@ -21,7 +21,7 @@ from quodlibet.qltk._editutils import EditingPluginHandler
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj
 from quodlibet.util.path import fsdecode, fsnative
@@ -139,7 +139,7 @@ class RenameFiles(Gtk.VBox):
             edit_title=_(u"Edit saved patterns…"))
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
-        self.preview = qltk.Button(_("_Preview"), icons.VIEW_REFRESH)
+        self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
         hbox.pack_start(self.preview, False, True, 0)
         self.pack_start(hbox, False, True, 0)

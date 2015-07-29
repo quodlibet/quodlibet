@@ -14,7 +14,7 @@ from gi.repository import Pango
 from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import MenuItem, Button
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.util.path import fsdecode, unexpand, get_home_dir
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util import connect_obj
@@ -41,7 +41,7 @@ class ScanBox(Gtk.HBox):
         view.set_tooltip_text(_("Songs in the listed folders will be added "
                                 "to the library during a library refresh"))
         menu = Gtk.Menu()
-        remove_item = MenuItem(_("_Remove"), icons.LIST_REMOVE)
+        remove_item = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         menu.append(remove_item)
         menu.show_all()
         view.connect('popup-menu', self.__popup, menu)
@@ -65,9 +65,9 @@ class ScanBox(Gtk.HBox):
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         view.append_column(column)
 
-        add = Button(_("_Add"), icons.LIST_ADD)
+        add = Button(_("_Add"), Icons.LIST_ADD)
         add.connect("clicked", self.__add)
-        remove = Button(_("_Remove"), icons.LIST_REMOVE)
+        remove = Button(_("_Remove"), Icons.LIST_REMOVE)
 
         selection = view.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)

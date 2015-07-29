@@ -16,7 +16,7 @@ from quodlibet import util
 from quodlibet.util import connect_obj
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 
 
 class DownloadWindow(qltk.UniqueWindow):
@@ -91,7 +91,7 @@ class DownloadWindow(qltk.UniqueWindow):
         if model:
             iters = map(model.get_iter, paths)
             menu = Gtk.Menu()
-            item = MenuItem(_("_Stop"), icons.PROCESS_STOP)
+            item = MenuItem(_("_Stop"), Icons.PROCESS_STOP)
             connect_obj(item, 'activate', self.__stop_download, iters)
             menu.append(item)
             menu.connect('selection-done', lambda m: m.destroy())

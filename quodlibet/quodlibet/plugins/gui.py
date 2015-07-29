@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from quodlibet import config
 from quodlibet.qltk import get_menu_item_top_parent
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from gi.repository import Gtk
 
 
@@ -32,7 +32,7 @@ class MenuItemPlugin(Gtk.ImageMenuItem):
 
     def __set_icon(self):
         """Sets the GTK icon for this plugin item"""
-        icon = getattr(self, "PLUGIN_ICON", icons.SYSTEM_RUN)
+        icon = getattr(self, "PLUGIN_ICON", Icons.SYSTEM_RUN)
 
         image = (Gtk.Image.new_from_stock(icon, Gtk.IconSize.MENU)
                  if Gtk.stock_lookup(icon)

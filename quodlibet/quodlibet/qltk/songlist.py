@@ -23,7 +23,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.views import AllTreeView, DragScroll
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songmodel import PlaylistModel
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.util.uri import URI
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
@@ -349,7 +349,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
             b = qltk.MenuItem(
-                _("_Filter on %s") % util.tag(t, True), icons.EDIT_SELECT_ALL)
+                _("_Filter on %s") % util.tag(t, True), Icons.EDIT_SELECT_ALL)
             b.connect('activate', self.__filter_on, t, songs, browser)
             return b
 

@@ -24,7 +24,7 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.util.path import fsdecode
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.util.string.splitters import split_value
@@ -114,7 +114,7 @@ class TagsFromPath(Gtk.VBox):
             edit_title=_(u"Edit saved patterns…"))
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
-        self.preview = qltk.Button(_("_Preview"), icons.VIEW_REFRESH)
+        self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
         hbox.pack_start(self.preview, False, True, 0)
         self.pack_start(hbox, False, True, 0)
@@ -147,7 +147,7 @@ class TagsFromPath(Gtk.VBox):
         self.pack_start(filter_box, False, True, 0)
 
         # Save button
-        self.save = qltk.Button(_("Save"), icons.DOCUMENT_SAVE)
+        self.save = qltk.Button(_("Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)

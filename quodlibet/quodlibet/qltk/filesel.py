@@ -21,7 +21,7 @@ from quodlibet.qltk.views import AllTreeView, RCMHintedTreeView, \
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 
 from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
     glib2fsnative, fsnative, xdg_get_user_dirs, get_home_dir
@@ -178,7 +178,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         column = TreeViewColumn(_("Folders"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render = Gtk.CellRendererPixbuf()
-        render.set_property('icon-name', icons.FOLDER)
+        render.set_property('icon-name', Icons.FOLDER)
         render.props.xpad = 3
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
@@ -218,16 +218,16 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             self.go_to(initial)
 
         menu = Gtk.Menu()
-        m = qltk.MenuItem(_(u"_New Folder…"), icons.DOCUMENT_NEW)
+        m = qltk.MenuItem(_(u"_New Folder…"), Icons.DOCUMENT_NEW)
         m.connect('activate', self.__mkdir)
         menu.append(m)
-        m = qltk.MenuItem(_("_Delete"), icons.EDIT_DELETE)
+        m = qltk.MenuItem(_("_Delete"), Icons.EDIT_DELETE)
         m.connect('activate', self.__rmdir)
         menu.append(m)
-        m = qltk.MenuItem(_("_Refresh"), icons.VIEW_REFRESH)
+        m = qltk.MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
         m.connect('activate', self.__refresh)
         menu.append(m)
-        m = qltk.MenuItem(_("_Select All Subfolders"), icons.FOLDER)
+        m = qltk.MenuItem(_("_Select All Subfolders"), Icons.FOLDER)
         m.connect('activate', self.__expand)
         menu.append(m)
         menu.show_all()
@@ -492,9 +492,9 @@ class FileSelector(Paned):
         def cell_icon(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
             if is_image(value):
-                cell.set_property('icon-name', icons.IMAGE_X_GENERIC)
+                cell.set_property('icon-name', Icons.IMAGE_X_GENERIC)
             else:
-                cell.set_property('icon-name', icons.AUDIO_X_GENERIC)
+                cell.set_property('icon-name', Icons.AUDIO_X_GENERIC)
 
         column.set_cell_data_func(render, cell_icon)
 

@@ -19,7 +19,7 @@ from gi.repository import Gtk
 
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.x import MenuItem, Align
@@ -87,7 +87,7 @@ class DeleteDialog(WarningMessage):
         area.pack_start(exp, False, True, 0)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Delete Files"), icons.EDIT_DELETE,
+        self.add_icon_button(_("_Delete Files"), Icons.EDIT_DELETE,
                              self.RESPONSE_DELETE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
@@ -134,7 +134,7 @@ class TrashDialog(WarningMessage):
         area.pack_start(exp, False, True, 0)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Move to Trash"), icons.USER_TRASH,
+        self.add_icon_button(_("_Move to Trash"), Icons.USER_TRASH,
                              self.RESPONSE_TRASH)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 

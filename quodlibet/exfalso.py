@@ -21,7 +21,7 @@ def main(argv):
     import quodlibet
     quodlibet.init()
 
-    from quodlibet.qltk import add_signal_watch, icons
+    from quodlibet.qltk import add_signal_watch, Icons
     add_signal_watch(app.quit)
 
     opts = util.OptionParser(
@@ -62,7 +62,7 @@ def main(argv):
     session.init("exfalso")
 
     quodlibet.enable_periodic_save(save_library=False)
-    quodlibet.main(app.window, icons.EXFALSO, app.id, app.name)
+    quodlibet.main(app.window, Icons.EXFALSO, app.id, app.name)
     quodlibet.finish_first_session(app.id)
     config.save()
 

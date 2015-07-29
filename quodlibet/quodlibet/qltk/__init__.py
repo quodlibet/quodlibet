@@ -345,7 +345,9 @@ def add_signal_watch(signal_action):
 # Legacy plugin/code support.
 from quodlibet.qltk.msg import *
 from quodlibet.qltk.x import *
+from quodlibet.qltk.icons import Icons
 from quodlibet.qltk.window import Window, UniqueWindow
 
 Window
 UniqueWindow
+Icons

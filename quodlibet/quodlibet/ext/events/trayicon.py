@@ -22,7 +22,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.window import Window
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.util.thumbnails import scale
 from quodlibet.util import connect_obj
 
@@ -309,7 +309,7 @@ class TrayIcon(EventPlugin):
                 flags = Gtk.IconLookupFlags.FORCE_SIZE
             try:
                 self.__pixbuf = self.__icon_theme.load_icon(
-                    icons.QUODLIBET, self.__size, flags)
+                    Icons.QUODLIBET, self.__size, flags)
             except GLib.GError:
                 util.print_exc()
                 return

@@ -31,7 +31,7 @@ from gi.repository import Gtk, GLib, Pango
 
 from quodlibet.util import copool
 from quodlibet.qltk.x import SmallImageToggleButton, SmallImageButton, Align
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 
 
 class ParentProperty(object):
@@ -246,13 +246,13 @@ class TaskWidget(Gtk.HBox):
         self.pack_start(self.progress, True, True, 0)
         self.pause = SmallImageToggleButton()
         self.pause.add(
-            Gtk.Image.new_from_icon_name(icons.MEDIA_PLAYBACK_PAUSE,
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE,
                                          Gtk.IconSize.MENU))
         self.pause.connect('toggled', self.__pause_toggled)
         self.pack_start(self.pause, False, True, 0)
         self.stop = SmallImageButton()
         self.stop.add(
-            Gtk.Image.new_from_icon_name(icons.MEDIA_PLAYBACK_STOP,
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP,
                                          Gtk.IconSize.MENU))
         self.stop.connect('clicked', self.__stop_clicked)
         self.pack_start(self.stop, False, True, 0)

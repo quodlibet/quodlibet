@@ -8,7 +8,7 @@
 from gi.repository import Gtk
 
 from quodlibet import util
-from quodlibet.qltk import icons
+from quodlibet.qltk.icons import Icons
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk.window import Dialog
 from quodlibet.util.path import fsdecode
@@ -48,10 +48,10 @@ class CancelRevertSave(Gtk.MessageDialog, Dialog):
             message_type=Gtk.MessageType.WARNING,
             buttons=Gtk.ButtonsType.NONE)
 
-        self.add_icon_button(_("_Save"), icons.DOCUMENT_SAVE,
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
                              Gtk.ResponseType.YES)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Revert"), icons.DOCUMENT_REVERT,
+        self.add_icon_button(_("_Revert"), Icons.DOCUMENT_REVERT,
                              Gtk.ResponseType.NO)
 
         self.set_default_response(Gtk.ResponseType.NO)
@@ -90,6 +90,6 @@ class ConfirmFileReplace(WarningMessage):
             parent, title, description, buttons=Gtk.ButtonsType.NONE)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Replace File"), icons.DOCUMENT_SAVE,
+        self.add_icon_button(_("_Replace File"), Icons.DOCUMENT_SAVE,
                              self.RESPONSE_REPLACE)
         self.set_default_response(Gtk.ResponseType.CANCEL)

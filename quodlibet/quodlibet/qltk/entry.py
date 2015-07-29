@@ -12,7 +12,7 @@ from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
 from quodlibet.qltk import is_accel, add_fake_accel
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.query import Query, QueryType
 
 
@@ -75,9 +75,9 @@ class EditableUndo(object):
         del self.__del_pos
 
     def __popup(self, entry, menu):
-        undo = MenuItem(_("_Undo"), icons.EDIT_UNDO)
+        undo = MenuItem(_("_Undo"), Icons.EDIT_UNDO)
         add_fake_accel(undo, "<ctrl>z")
-        redo = MenuItem(_("_Redo"), icons.EDIT_REDO)
+        redo = MenuItem(_("_Redo"), Icons.EDIT_REDO)
         add_fake_accel(redo, "<ctrl><shift>z")
         sep = SeparatorMenuItem()
 
