@@ -13,7 +13,7 @@ from quodlibet.util import re_escape, enum, cached_property
 
 
 @enum
-class QueryType(object):
+class QueryType(int):
     TEXT = 0
     VALID = 1
     INVALID = 2

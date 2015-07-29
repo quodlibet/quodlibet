@@ -1105,22 +1105,22 @@ def enum(cls):
     """Class decorator for enum types::
 
         @enum
-        class SomeEnum(object):
+        class SomeEnum(int):
             FOO = 0
             BAR = 1
 
     Result is an int subclass and all attributes are instances of it.
     """
 
-    assert cls.__bases__ == (object,)
+    type_ = cls.__bases__[0]
 
     d = dict(cls.__dict__)
-    new_type = type(cls.__name__, (int,), d)
+    new_type = type(cls.__name__, (type_,), d)
     new_type.__module__ = cls.__module__
 
     map_ = {}
     for key, value in d.iteritems():
-        if key.upper() == key and isinstance(value, (int, long)):
+        if key.upper() == key and isinstance(value, type_):
             value_instance = new_type(value)
             setattr(new_type, key, value_instance)
             map_[value] = key

@@ -36,7 +36,7 @@ def get_thumbnail_folder():
 
 
 @enum
-class ThumbSize(object):
+class ThumbSize(int):
     NORMAL = 128
     LARGE = 256
     LARGEST = LARGE

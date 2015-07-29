@@ -1032,7 +1032,7 @@ class Tenum(TestCase):
     def test_main(self):
 
         @util.enum
-        class Foo(object):
+        class Foo(int):
             FOO = 0
             BAR = 1
 
@@ -1041,6 +1041,17 @@ class Tenum(TestCase):
         self.assertTrue(isinstance(Foo.FOO, Foo))
         self.assertEqual(Foo.FOO, 0)
         self.assertEqual(Foo.BAR, 1)
+
+    def test_str(self):
+        @util.enum
+        class Foo(str):
+            FOO = "blah"
+            BAR = "foo"
+
+        self.assertTrue(issubclass(Foo, str))
+        self.assertTrue(isinstance(Foo.BAR, Foo))
+        self.assertEqual(Foo.FOO, "blah")
+        self.assertEqual(repr(Foo.BAR), "Foo.BAR")
 
 
 class Tlist_unique(TestCase):
