@@ -222,6 +222,12 @@ def _init_gtk():
 
     from gi.repository import Gtk, GObject, Gdk, GdkPixbuf
 
+    # PyGObject doesn't fail anymore when init fails, so do it ourself
+    initialized, argv = Gtk.init_check(sys.argv)
+    if not initialized:
+        raise SystemExit("Gtk.init failed")
+    sys.argv = list(argv)
+
     # add Gtk.TreePath.__getitem__/__len__ for PyGObject 3.2
     try:
         Gtk.TreePath()[0]
@@ -640,12 +646,6 @@ def main(window, icon_name, process_title, app_name, before_quit=None):
     from gi.repository import Gtk, Gdk, GLib
 
     assert _initialized
-
-    # PyGObject doesn't fail anymore when init fails, so do it ourself
-    initialized, argv = Gtk.init_check(sys.argv)
-    if not initialized:
-        raise SystemExit("Gtk.init failed")
-    sys.argv = list(argv)
 
     set_process_title(process_title)
     # Issue 736 - set after main loop has started (gtk seems to reset it)
