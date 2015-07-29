@@ -14,9 +14,9 @@ from StringIO import StringIO
 import csv
 
 # We don't need/want variable interpolation.
-from ConfigParser import RawConfigParser as ConfigParser, Error
+from ConfigParser import RawConfigParser as ConfigParser, Error, NoSectionError
 
-from quodlibet.util import atomic_save
+from quodlibet.util import atomic_save, list_unique
 from quodlibet.util.string import join_escape, split_escape
 from quodlibet.util.path import is_fsnative, mkdir
 
@@ -107,7 +107,20 @@ class Config(object):
     def options(self, section):
         """Returns a list of options available in the specified section."""
 
-        return self._config.options(section)
+        try:
+            options = self._config.options(section)
+        except NoSectionError:
+            if self.defaults:
+                return self.defaults.options(section)
+            raise
+        else:
+            if self.defaults:
+                try:
+                    options.extend(self.defaults.options(section))
+                    options = list_unique(options)
+                except NoSectionError:
+                    pass
+            return options
 
     def get(self, section, option, default=_DEFAULT):
         """get(section, option[, default]) -> str
@@ -251,7 +264,15 @@ class Config(object):
         # first config save..)
         if not isinstance(value, str):
             value = str(value)
-        self._config.set(section, option, value)
+
+        try:
+            self._config.set(section, option, value)
+        except NoSectionError:
+            if self.defaults and self.defaults.has_section(section):
+                self._config.add_section(section)
+                self._config.set(section, option, value)
+            else:
+                raise
 
     def write(self, filename):
         """Write config to filename.
@@ -275,19 +296,14 @@ class Config(object):
                 self.set("__config__", "version", self._loaded_version)
 
     def clear(self):
-        """Remove all sections and initial values"""
+        """Remove all sections."""
 
         for section in self._config.sections():
             self._config.remove_section(section)
 
-        if self.defaults is not None:
-            self.defaults.clear()
-
     def is_empty(self):
         """Whether the config has any sections"""
 
-        if self.defaults is not None:
-            return not self._config.sections() and self.defaults.is_empty()
         return not self._config.sections()
 
     def read(self, filename):
@@ -308,7 +324,14 @@ class Config(object):
     def has_option(self, section, option):
         """If the given section exists, and contains the given option"""
 
-        return self._config.has_option(section, option)
+        return self._config.has_option(section, option) or (
+            self.defaults and self.defaults.has_option(section, option))
+
+    def has_section(self, section):
+        """If the given section exists"""
+
+        return self._config.has_section(section) or (
+            self.defaults and self.defaults.has_section(section))
 
     def remove_option(self, section, option):
         """Remove the specified option from the specified section
@@ -324,9 +347,6 @@ class Config(object):
 
         if not self._config.has_section(section):
             self._config.add_section(section)
-
-        if self.defaults is not None:
-            self.defaults.add_section(section)
 
 
 class ConfigProxy(object):

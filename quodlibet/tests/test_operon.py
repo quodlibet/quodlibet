@@ -16,7 +16,7 @@ from quodlibet import config
 from quodlibet import util
 from quodlibet.util.path import fsnative
 from quodlibet.formats import MusicFile
-from quodlibet.operon.main import _main as operon_main
+from quodlibet.operon.main import main as operon_main
 
 
 def call(args=None):

@@ -11,7 +11,6 @@ import os
 
 from optparse import OptionParser
 
-from quodlibet import config
 from quodlibet import const
 
 from quodlibet.util.dprint import print_
@@ -20,16 +19,6 @@ from .base import Command, CommandError
 from . import commands
 
 commands
-
-
-def main(argv):
-    """Main entry point"""
-
-    config.init()
-    try:
-        return _main(argv)
-    finally:
-        config.quit()
 
 
 def _print_help(main_cmd, parser, file=None):
@@ -50,7 +39,7 @@ def _print_help(main_cmd, parser, file=None):
     print_("\n".join(cl), file)
 
 
-def _main(argv):
+def main(argv):
     main_cmd = os.path.basename(argv[0])
 
     # the main optparser

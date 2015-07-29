@@ -8,6 +8,40 @@ from quodlibet.util.config import Config, Error, ConfigProxy
 
 class TConfig(TestCase):
 
+    def test_set_default_only(self):
+        conf = Config()
+        self.assertRaises(Error, conf.set, "foo", "bar", 1)
+        conf.defaults.add_section("foo")
+        conf.set("foo", "bar", 1)
+
+    def test_options(self):
+        conf = Config()
+        self.assertRaises(Error, conf.options, "foo")
+        conf.defaults.add_section("foo")
+        self.assertEqual(conf.options("foo"), [])
+        conf.defaults.set("foo", "bar", 1)
+        conf.defaults.set("foo", "blah", 1)
+        conf.set("foo", "blah", 1)
+        conf.set("foo", "quux", 1)
+        self.assertEqual(conf.options("foo"), ['blah', 'quux', 'bar'])
+        conf.defaults.clear()
+
+    def test_options_no_default(self):
+        conf = Config()
+        conf.add_section("foo")
+        self.assertEqual(conf.options("foo"), [])
+
+    def test_has_section(self):
+        conf = Config()
+        self.assertFalse(conf.has_section("foo"))
+        conf.defaults.add_section("foo")
+        self.assertTrue(conf.has_section("foo"))
+        conf.add_section("foo")
+        conf.defaults.clear()
+        self.assertTrue(conf.has_section("foo"))
+        conf.clear()
+        self.assertFalse(conf.has_section("foo"))
+
     def test_read_garbage_file(self):
         conf = Config()
         garbage = "\xf1=\xab\xac"
@@ -29,7 +63,7 @@ class TConfig(TestCase):
 
     def test_reset(self):
         conf = Config()
-        conf.add_section("player")
+        conf.defaults.add_section("player")
         conf.defaults.set("player", "backend", "blah")
         conf.set("player", "backend", "foo")
         self.assertEqual(conf.get("player", "backend"), "foo")
@@ -40,11 +74,40 @@ class TConfig(TestCase):
         conf = Config()
         conf.add_section("player")
         conf.set("player", "backend", "orig")
+        conf.defaults.add_section("player")
         conf.defaults.set("player", "backend", "initial")
         self.assertEqual(conf.get("player", "backend"), "orig")
         self.assertEqual(conf.defaults.get("player", "backend"), "initial")
         conf.reset("player", "backend")
         self.assertEqual(conf.get("player", "backend"), "initial")
+
+    def test_get_fallback_default(self):
+        conf = Config()
+
+        conf.defaults.add_section("get")
+        self.assertRaises(Error, conf.get, "get", "bar")
+        conf.defaults.set("get", "bar", 1)
+        self.assertEqual(conf.get("get", "bar"), "1")
+
+        conf.defaults.add_section("getboolean")
+        self.assertRaises(Error, conf.getboolean, "getboolean", "bar")
+        conf.defaults.set("getboolean", "bar", True)
+        self.assertEqual(conf.getboolean("getboolean", "bar"), True)
+
+        conf.defaults.add_section("getfloat")
+        self.assertRaises(Error, conf.getfloat, "getfloat", "bar")
+        conf.defaults.set("getfloat", "bar", 1.0)
+        self.assertEqual(conf.getfloat("getfloat", "bar"), 1.0)
+
+        conf.defaults.add_section("getint")
+        self.assertRaises(Error, conf.getint, "getint", "bar")
+        conf.defaults.set("getint", "bar", 42)
+        self.assertEqual(conf.getint("getint", "bar"), 42)
+
+        conf.defaults.add_section("getlist")
+        self.assertRaises(Error, conf.getlist, "getlist", "bar")
+        conf.defaults.setlist("getlist", "bar", [1, 2, 3])
+        self.assertEqual(conf.getlist("getlist", "bar"), ["1", "2", "3"])
 
     def test_get(self):
         conf = Config()
@@ -213,7 +276,7 @@ class TConfigProxy(TestCase):
 
     def setUp(self):
         conf = Config()
-        conf.add_section("somesection")
+        conf.defaults.add_section("somesection")
         self.proxy = ConfigProxy(conf, "somesection")
 
     def test_getters_setters(self):

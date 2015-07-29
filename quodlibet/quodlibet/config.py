@@ -181,23 +181,23 @@ _filename = None
 """The filename last used for loading"""
 
 
-def init(filename=None, initial=None):
+def init_defaults():
+    """Fills in the defaults, so they are guaranteed to be available"""
+
+    _config.defaults.clear()
+    for section, values in INITIAL.iteritems():
+        _config.defaults.add_section(section)
+        for key, value in values.iteritems():
+            _config.defaults.set(section, key, value)
+
+
+def init(filename=None):
     global _filename
 
     if not _config.is_empty():
         raise ValueError("config initialized twice without quitting")
 
     _filename = filename
-
-    if initial is None:
-        initial = INITIAL
-
-    for section, values in initial.iteritems():
-        _config.defaults.add_section(section)
-        _config.add_section(section)
-        for key, value in values.iteritems():
-            _config.defaults.set(section, key, value)
-            _config.set(section, key, value)
 
     if filename is not None:
         try:

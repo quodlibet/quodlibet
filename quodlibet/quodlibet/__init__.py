@@ -482,7 +482,10 @@ def init_cli():
     Like init() but for code not using Gtk etc.
     """
 
+    from quodlibet import config
+
     _init_python()
+    config.init_defaults()
     _init_gettext()
     _init_formats()
 
