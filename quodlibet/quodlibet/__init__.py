@@ -644,11 +644,14 @@ def _init_osx(window):
             "delete-event", lambda window, event: window.hide() or True)
 
 
-def main(window, icon_name, process_title, app_name, before_quit=None):
-    print_d("Entering quodlibet.main")
-    from gi.repository import Gtk, Gdk, GLib
+def set_application_info(icon_name, process_title, app_name):
+    """Call after init() and before creating any windows to apply default
+    values for names and icons.
+    """
 
     assert _initialized
+
+    from gi.repository import Gtk, GLib
 
     set_process_title(process_title)
     # Issue 736 - set after main loop has started (gtk seems to reset it)
@@ -660,6 +663,13 @@ def main(window, icon_name, process_title, app_name, before_quit=None):
     theme = Gtk.IconTheme.get_default()
     assert theme.has_icon(icon_name)
     Gtk.Window.set_default_icon_name(icon_name)
+
+
+def main(window, before_quit=None):
+    print_d("Entering quodlibet.main")
+    from gi.repository import Gtk, Gdk
+
+    assert _initialized
 
     def quit_gtk(window):
 

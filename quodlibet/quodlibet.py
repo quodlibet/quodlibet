@@ -45,6 +45,7 @@ def main(argv):
 
     app.name = "Quod Libet"
     app.id = "quodlibet"
+    quodlibet.set_application_info(Icons.QUODLIBET, app.id, app.name)
 
     config.init(os.path.join(quodlibet.get_user_dir(), "config"))
 
@@ -203,8 +204,7 @@ def main(argv):
         print_d("Shutting down player device %r." % player.version_info)
         player.destroy()
 
-    quodlibet.main(window, Icons.QUODLIBET, app.id, app.name,
-                   before_quit=before_quit)
+    quodlibet.main(window, before_quit=before_quit)
 
     quodlibet.finish_first_session(app.id)
     mmkeys_handler.quit()

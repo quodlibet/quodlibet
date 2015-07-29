@@ -37,6 +37,7 @@ def main(argv):
 
     app.name = "Ex Falso"
     app.id = "exfalso"
+    quodlibet.set_application_info(Icons.EXFALSO, app.id, app.name)
 
     import quodlibet.library
     import quodlibet.player
@@ -62,7 +63,7 @@ def main(argv):
     session.init("exfalso")
 
     quodlibet.enable_periodic_save(save_library=False)
-    quodlibet.main(app.window, Icons.EXFALSO, app.id, app.name)
+    quodlibet.main(app.window)
     quodlibet.finish_first_session(app.id)
     config.save()
 
