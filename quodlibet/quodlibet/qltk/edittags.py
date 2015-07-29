@@ -23,7 +23,7 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.window import Dialog
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.x import SeparatorMenuItem, Button
+from quodlibet.qltk.x import SeparatorMenuItem, Button, MenuItem
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.qltk import icons
@@ -629,7 +629,7 @@ class EditTags(Gtk.VBox):
             if menu.get_children():
                 menu.append(SeparatorMenuItem())
 
-        b = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_REMOVE, None)
+        b = MenuItem(_("_Remove"), icons.LIST_REMOVE)
         b.connect('activate', self.__remove_tag, view)
         qltk.add_fake_accel(b, "Delete")
         menu.append(b)

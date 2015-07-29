@@ -5,6 +5,7 @@ from helper import visible
 from gi.repository import Gtk
 
 from quodlibet.qltk import x
+from quodlibet.qltk import icons
 from quodlibet import config
 
 
@@ -40,12 +41,12 @@ class Frame(TestCase):
 
 class MenuItem(TestCase):
     def test_ctr(self):
-        self.failUnless(x.MenuItem("foo", Gtk.STOCK_FIND))
+        self.failUnless(x.MenuItem("foo", icons.EDIT_FIND))
 
 
 class Button(TestCase):
     def test_ctr(self):
-        self.failUnless(x.Button("foo", Gtk.STOCK_FIND))
+        self.failUnless(x.Button("foo", icons.EDIT_FIND))
 
 
 class RPaned(object):

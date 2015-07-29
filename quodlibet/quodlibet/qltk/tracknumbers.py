@@ -13,7 +13,9 @@ from quodlibet import util
 from quodlibet.qltk._editutils import OverwriteWarning, WriteFailedError
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.qltk.x import Button
 from quodlibet.qltk.models import ObjectStore
+from quodlibet.qltk import icons
 from quodlibet.util.path import fsdecode
 from quodlibet.util import connect_obj
 
@@ -56,7 +58,7 @@ class TrackNumbers(Gtk.VBox):
         label_total.set_mnemonic_widget(spin_total)
         hbox_total.pack_start(label_total, True, True, 0)
         hbox_total.pack_start(spin_total, True, True, 0)
-        preview = qltk.Button(_("_Preview"), Gtk.STOCK_CONVERT)
+        preview = qltk.Button(_("_Preview"), icons.VIEW_REFRESH)
 
         hbox2.pack_start(hbox_start, True, False, 0)
         hbox2.pack_start(hbox_total, True, False, 0)
@@ -100,11 +102,11 @@ class TrackNumbers(Gtk.VBox):
         bbox = Gtk.HButtonBox()
         bbox.set_spacing(6)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        save = Button(_("_Save"), icons.DOCUMENT_SAVE)
         self.save = save
         connect_obj(save,
             'clicked', self.__save_files, prop, model, library)
-        revert = Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
+        revert = Button(_("_Revert"), icons.DOCUMENT_REVERT)
         self.revert = revert
         bbox.pack_start(revert, True, True, 0)
         bbox.pack_start(save, True, True, 0)

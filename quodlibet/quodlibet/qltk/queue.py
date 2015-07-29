@@ -15,13 +15,14 @@ from quodlibet import util
 from quodlibet import qltk
 
 from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.qltk import icons
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
-    SmallImageButton
+    SmallImageButton, MenuItem
 
 QUEUE = os.path.join(quodlibet.get_user_dir(), "queue")
 
@@ -79,7 +80,8 @@ class QueueExpander(Gtk.Expander):
         left.pack_start(hb2, False, True, 0)
 
         b = SmallImageButton(
-            image=Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU))
+            image=Gtk.Image.new_from_icon_name(icons.EDIT_CLEAR,
+                                               Gtk.IconSize.MENU))
         b.set_tooltip_text(_("Remove all songs from the queue"))
         b.connect('clicked', self.__clear_queue)
         b.hide()
@@ -282,7 +284,7 @@ class PlayQueue(SongList):
             library, songs, queue=False, remove=False, delete=False,
             ratings=False)
         menu.preseparate()
-        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
+        remove = MenuItem(_("_Remove"), icons.LIST_REMOVE)
         qltk.add_fake_accel(remove, "Delete")
         remove.connect('activate', self.__remove)
         menu.prepend(remove)
