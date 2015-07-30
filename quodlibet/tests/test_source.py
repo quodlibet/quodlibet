@@ -60,6 +60,10 @@ class TStockIcons(TestCase):
         # gtk setting keys start like stock icons, so white list them
         white = [x.replace("_", "-") for x in
                  dir(Gtk.Settings.get_default().props) if x.startswith("gtk_")]
+        # older gtk doesn't have those, but we still have them in the source
+        white.append("gtk-dialogs-use-header")
+        white.append("gtk-primary-button-warps-slider")
+        # some more..
         white.append("gtk-tooltip")
         white.append("gtk-")
         white.append("gtk-update-icon-cache-")
