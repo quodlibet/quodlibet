@@ -34,6 +34,7 @@ import traceback
 from gi.repository import Gtk, Pango, Gdk, GLib
 
 from quodlibet import const
+from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
@@ -41,7 +42,7 @@ class PyConsole(SongsMenuPlugin):
     PLUGIN_ID = 'Python Console'
     PLUGIN_NAME = _('Python Console')
     PLUGIN_DESC = _('Interactive Python console.')
-    PLUGIN_ICON = 'gtk-execute'
+    PLUGIN_ICON = Icons.SYSTEM_RUN
 
     def plugin_songs(self, songs):
         win = ConsoleWindow(songs)

@@ -7,6 +7,7 @@
 
 from quodlibet import app
 from quodlibet.qltk.notif import Task
+from quodlibet.qltk import Icons
 from quodlibet.util import copool
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -18,7 +19,7 @@ class RefreshSongs(SongsMenuPlugin):
     PLUGIN_NAME = _("Refresh Songs")
     PLUGIN_DESC = _("Checks for file changes and reloads / removes "
                     "the songs if needed.")
-    PLUGIN_ICON = 'gtk-refresh'
+    PLUGIN_ICON = Icons.VIEW_REFRESH
 
     def plugin_songs(self, songs):
 

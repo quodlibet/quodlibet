@@ -9,7 +9,7 @@ from gi.repository import Gtk
 from os.path import splitext, extsep, dirname
 
 from quodlibet import app
-from quodlibet.qltk import ErrorMessage
+from quodlibet.qltk import ErrorMessage, Icons
 from quodlibet.util.path import get_home_dir
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
@@ -45,7 +45,7 @@ class Export(SongsMenuPlugin):
     PLUGIN_ID = "ExportMeta"
     PLUGIN_NAME = _("Export Metadata")
     PLUGIN_DESC = _("Exports metadata of selected songs as a .tags file.")
-    PLUGIN_ICON = 'gtk-save'
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def plugin_album(self, songs):
 
@@ -83,7 +83,7 @@ class Import(SongsMenuPlugin):
     PLUGIN_ID = "ImportMeta"
     PLUGIN_NAME = _("Import Metadata")
     PLUGIN_DESC = _("Imports metadata for selected songs from a .tags file.")
-    PLUGIN_ICON = 'gtk-open'
+    PLUGIN_ICON = Icons.DOCUMENT_OPEN
 
     # Note: the usage of plugin_album here is sometimes NOT what you want. It
     # supports fixing up tags on several already-known albums just by walking

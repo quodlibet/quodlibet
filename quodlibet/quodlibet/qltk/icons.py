@@ -75,3 +75,4 @@ class Icons(str):
     USER_TRASH = "user-trash" # "Trash"
     VIEW_REFRESH = "view-refresh"  # "_Refresh"
     WINDOW_CLOSE = "window-close"  # "_Close"
+    AUDIO_CARD = "audio-card"

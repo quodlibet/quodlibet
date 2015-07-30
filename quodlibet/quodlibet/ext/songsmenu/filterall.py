@@ -79,7 +79,7 @@ class FilterAll(SongsMenuPlugin):
     PLUGIN_NAME = _("Filter on Any Tag")
     PLUGIN_DESC = _("Creates a search query based on "
                     "tags of the selected songs.")
-    PLUGIN_ICON = 'gtk-index'
+    PLUGIN_ICON = Icons.EDIT_SELECT_ALL
 
     def plugin_songs(self, songs):
         browser = self.plugin_window.browser

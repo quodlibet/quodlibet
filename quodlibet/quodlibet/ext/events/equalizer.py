@@ -91,7 +91,7 @@ class Equalizer(EventPlugin):
     PLUGIN_ID = "Equalizer"
     PLUGIN_NAME = _("Equalizer")
     PLUGIN_DESC = _("Controls the tone of your music with an equalizer.")
-    PLUGIN_ICON = 'gtk-connect'
+    PLUGIN_ICON = Icons.AUDIO_CARD
 
     @property
     def player_has_eq(self):

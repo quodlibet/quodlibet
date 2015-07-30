@@ -27,6 +27,7 @@ except ImportError as e:
     raise (plugins.MissingModulePluginException("zeitgeist") if
            hasattr(plugins, "MissingModulePluginException") else e)
 
+from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -35,7 +36,7 @@ class Zeitgeist(EventPlugin):
     PLUGIN_NAME = _("Event Logging")
     PLUGIN_DESC = _("Sends song events to the Zeitgeist event logging "
                     "service.")
-    PLUGIN_ICON = 'gtk-network'
+    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def enabled(self):
         self.client = ZeitgeistClient()

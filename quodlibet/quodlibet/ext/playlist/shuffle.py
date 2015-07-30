@@ -6,13 +6,14 @@
 # published by the Free Software Foundation
 
 from quodlibet.plugins.playlist import PlaylistPlugin
+from quodlibet.qltk import Icons
 
 
 class Shuffle(PlaylistPlugin):
     PLUGIN_ID = "Shuffle Playlist"
     PLUGIN_NAME = _("Shuffle Playlist")
     PLUGIN_DESC = _("Randomly shuffles a playlist.")
-    PLUGIN_ICON = 'gtk-execute'
+    PLUGIN_ICON = Icons.SYSTEM_RUN
 
     def plugin_playlist(self, playlist):
         playlist.shuffle()

@@ -11,6 +11,7 @@ from gi.repository import Gtk
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
+from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 
 
@@ -18,7 +19,7 @@ class BurnCD(SongsMenuPlugin):
     PLUGIN_ID = 'Burn CD'
     PLUGIN_NAME = _('Burn CD')
     PLUGIN_DESC = _('Burns CDs with K3b, Brasero or xfburn.')
-    PLUGIN_ICON = 'gtk-cdrom'
+    PLUGIN_ICON = Icons.MEDIA_OPTICAL
 
     burn_programs = {
         'K3b': ['k3b', '--audiocd'],

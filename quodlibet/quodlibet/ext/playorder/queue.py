@@ -8,12 +8,13 @@
 from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderInOrderMixin
 
 from quodlibet import app
+from quodlibet.qltk import Icons
 
 
 class QueueOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
     PLUGIN_ID = "queue"
     PLUGIN_NAME = _("Queue Only")
-    PLUGIN_ICON = "gtk-media-next"
+    PLUGIN_ICON = Icons.MEDIA_SKIP_FORWARD
     PLUGIN_DESC = _("Limits playing of songs to the queue. Double-click on "
                     "any song to enqueue it.")
 

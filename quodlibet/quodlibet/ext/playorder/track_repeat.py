@@ -17,13 +17,14 @@ from gi.repository import Gtk
 from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderShuffleMixin
 from quodlibet.util.dprint import print_d
 from quodlibet.plugins import PluginConfigMixin
+from quodlibet.qltk import Icons
 
 
 class TrackRepeatOrder(PlayOrderPlugin,
         PlayOrderShuffleMixin, PluginConfigMixin):
     PLUGIN_ID = "track_repeat"
     PLUGIN_NAME = _("Track Repeat")
-    PLUGIN_ICON = "gtk-refresh"
+    PLUGIN_ICON = Icons.VIEW_REFRESH
     PLUGIN_DESC = _("Shuffle songs, "
                     "but repeat every track a set number of times.")
     PLAY_EACH_DEFAULT = 2

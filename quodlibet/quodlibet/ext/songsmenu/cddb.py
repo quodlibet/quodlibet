@@ -154,7 +154,7 @@ class CDDBLookup(SongsMenuPlugin):
     PLUGIN_ID = 'CDDB lookup'
     PLUGIN_NAME = _('CDDB Lookup')
     PLUGIN_DESC = _('Looks up album information in FreeDB. Requires CDDB.py.')
-    PLUGIN_ICON = 'gtk-cdrom'
+    PLUGIN_ICON = Icons.MEDIA_OPTICAL
 
     def plugin_album(self, album):
         discid = calculate_discid(album)

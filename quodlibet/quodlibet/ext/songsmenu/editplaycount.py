@@ -8,6 +8,7 @@
 from gi.repository import Gtk
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons
 
 
 class EditPlaycount(SongsMenuPlugin):
@@ -22,7 +23,7 @@ class EditPlaycount(SongsMenuPlugin):
                     "~#lastplayed and ~#laststarted entries will be cleared. "
                     "However, when setting a 0-play song to a positive play "
                     "count, no play times will be created.")
-    PLUGIN_ICON = "gtk-edit"
+    PLUGIN_ICON = Icons.EDIT
     PLUGIN_VERSION = "1.2"
 
     def plugin_songs(self, songs):

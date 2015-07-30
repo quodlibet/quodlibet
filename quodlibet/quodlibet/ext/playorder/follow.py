@@ -9,13 +9,14 @@ from quodlibet.plugins.playorder import PlayOrderPlugin, \
     PlayOrderRememberedMixin, PlayOrderInOrderMixin
 
 from quodlibet import app
+from quodlibet.qltk import Icons
 
 
 class FollowOrder(PlayOrderPlugin, PlayOrderRememberedMixin,
     PlayOrderInOrderMixin):
     PLUGIN_ID = "follow"
     PLUGIN_NAME = _("Follow Cursor")
-    PLUGIN_ICON = "gtk-jump-to"
+    PLUGIN_ICON = Icons.GO_JUMP
     PLUGIN_DESC = _("Playback follows your selection.")
 
     __last_path = None

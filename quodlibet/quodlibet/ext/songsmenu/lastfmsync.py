@@ -228,7 +228,7 @@ class LastFMSync(SongsMenuPlugin):
     PLUGIN_NAME = _("Last.fm Sync")
     PLUGIN_DESC = _("Updates your library's statistics from your "
                     "Last.fm profile.")
-    PLUGIN_ICON = 'gtk-refresh'
+    PLUGIN_ICON = Icons.VIEW_REFRESH
 
     CACHE_PATH = os.path.join(quodlibet.get_user_dir(), "lastfmsync.db")
 

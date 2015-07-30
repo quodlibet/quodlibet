@@ -18,6 +18,7 @@ from gi.repository import Gtk
 from quodlibet import util, qltk
 from quodlibet.util.path import glib2fsnative, get_home_dir
 from quodlibet.qltk.msg import ConfirmFileReplace
+from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
@@ -50,7 +51,7 @@ class PlaylistExport(SongsMenuPlugin):
     PLUGIN_ID = 'Playlist Export'
     PLUGIN_NAME = _('Playlist Export')
     PLUGIN_DESC = _('Exports songs to an M3U or PLS playlist.')
-    PLUGIN_ICON = 'gtk-save'
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     lastfolder = None
 

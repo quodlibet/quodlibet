@@ -35,6 +35,7 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.query import Query
 from quodlibet.plugins import PluginImportException
 from quodlibet.util.path import xdg_get_system_data_dirs
+from quodlibet.qltk import Icons
 
 
 def get_gs_provider_files():
@@ -75,7 +76,7 @@ class GnomeSearchProvider(EventPlugin):
     PLUGIN_ID = "searchprovider"
     PLUGIN_NAME = _("GNOME Search Provider")
     PLUGIN_DESC = _("Allows GNOME Shell to search the library.")
-    PLUGIN_ICON = "gtk-connect"
+    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def enabled(self):
         self.obj = SearchProvider()

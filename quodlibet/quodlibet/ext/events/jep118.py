@@ -9,6 +9,7 @@ import os
 
 import quodlibet
 from quodlibet import util
+from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
 outfile = os.path.join(quodlibet.get_user_dir(), "jabber")
@@ -26,7 +27,7 @@ class JEP118(EventPlugin):
     PLUGIN_ID = "JEP-118"
     PLUGIN_NAME = _("JEP-118")
     PLUGIN_DESC = _("Outputs a Jabber User Tunes file to ~/.quodlibet/jabber.")
-    PLUGIN_ICON = 'gtk-save'
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def plugin_on_song_started(self, song):
         if song is None:

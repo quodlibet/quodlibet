@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons
 
 
 def artist_to_sort(artist):
@@ -31,7 +32,7 @@ class MakeSortTags(SongsMenuPlugin):
     PLUGIN_ID = "SortTags"
     PLUGIN_NAME = _("Create Sort Tags")
     PLUGIN_DESC = _("Converts album and artist names to sort names, poorly.")
-    PLUGIN_ICON = 'gtk-edit'
+    PLUGIN_ICON = Icons.EDIT
 
     def plugin_song(self, song):
         for tag in ["album"]:

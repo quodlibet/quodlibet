@@ -16,7 +16,6 @@ class APEv2toID3v2(SongsMenuPlugin):
     PLUGIN_NAME = _("APEv2 to ID3v2")
     PLUGIN_DESC = _("Converts your APEv2 tags to ID3v2 tags. This will delete "
                     "the APEv2 tags after conversion.")
-    PLUGIN_ICON = 'gtk-convert'
 
     def plugin_handles(self, songs):
         for song in songs:
