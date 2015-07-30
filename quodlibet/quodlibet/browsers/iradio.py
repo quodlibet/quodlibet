@@ -487,7 +487,7 @@ class InternetRadio(Browser, util.InstanceTracker):
     headers = "title artist ~people grouping genre website ~format " \
         "channel-mode".split()
 
-    TYPE, STOCK, KEY, NAME = range(4)
+    TYPE, ICON_NAME, KEY, NAME = range(4)
     TYPE_FILTER, TYPE_ALL, TYPE_FAV, TYPE_SEP, TYPE_NOCAT = range(5)
     STAR = ["artist", "title", "website", "genre", "comment"]
 
@@ -546,16 +546,16 @@ class InternetRadio(Browser, util.InstanceTracker):
         search.connect('query-changed', self.__filter_changed)
 
         menu = Gtk.Menu()
-        new_item = MenuItem(_(u"_New Station…"), Gtk.STOCK_ADD)
+        new_item = MenuItem(_(u"_New Station…"), Icons.LIST_ADD)
         new_item.connect('activate', self.__add)
         menu.append(new_item)
-        update_item = MenuItem(_("_Update Stations"), Gtk.STOCK_REFRESH)
+        update_item = MenuItem(_("_Update Stations"), Icons.VIEW_REFRESH)
         update_item.connect('activate', self.__update)
         menu.append(update_item)
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
             arrow=True)
         button.set_menu(menu)
 
@@ -575,19 +575,19 @@ class InternetRadio(Browser, util.InstanceTracker):
         scrolled_window.add(view)
         model = Gtk.ListStore(int, str, str, str)
 
-        model.append(row=[self.TYPE_ALL, Gtk.STOCK_DIRECTORY, "__all",
+        model.append(row=[self.TYPE_ALL, Icons.FOLDER, "__all",
                           _("All Stations")])
-        model.append(row=[self.TYPE_SEP, Gtk.STOCK_DIRECTORY, "", ""])
+        model.append(row=[self.TYPE_SEP, Icons.FOLDER, "", ""])
         #Translators: Favorite radio stations
-        model.append(row=[self.TYPE_FAV, Gtk.STOCK_DIRECTORY, "__fav",
+        model.append(row=[self.TYPE_FAV, Icons.FOLDER, "__fav",
                           _("Favorites")])
-        model.append(row=[self.TYPE_SEP, Gtk.STOCK_DIRECTORY, "", ""])
+        model.append(row=[self.TYPE_SEP, Icons.FOLDER, "", ""])
 
         filters = self.filters
         for text, k in sorted([(filters.text(k), k) for k in filters.keys()]):
-            model.append(row=[self.TYPE_FILTER, Gtk.STOCK_FIND, k, text])
+            model.append(row=[self.TYPE_FILTER, Icons.EDIT_FIND, k, text])
 
-        model.append(row=[self.TYPE_NOCAT, Gtk.STOCK_DIRECTORY,
+        model.append(row=[self.TYPE_NOCAT, Icons.FOLDER,
                           "nocat", _("No Category")])
 
         def separator(model, iter, data):
@@ -605,7 +605,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         renderpb = Gtk.CellRendererPixbuf()
         renderpb.props.xpad = 3
         column.pack_start(renderpb, False)
-        column.add_attribute(renderpb, "stock_id", self.STOCK)
+        column.add_attribute(renderpb, "icon-name", self.ICON_NAME)
 
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
@@ -834,11 +834,11 @@ class InternetRadio(Browser, util.InstanceTracker):
                 break
 
         iradio_items = []
-        button = MenuItem(_("Add to Favorites"), Gtk.STOCK_ADD)
+        button = MenuItem(_("Add to Favorites"), Icons.LIST_ADD)
         button.set_sensitive(in_all)
         connect_obj(button, 'activate', self.__add_fav, songs)
         iradio_items.append(button)
-        button = MenuItem(_("Remove from Favorites"), Gtk.STOCK_REMOVE)
+        button = MenuItem(_("Remove from Favorites"), Icons.LIST_REMOVE)
         button.set_sensitive(in_fav)
         connect_obj(button, 'activate', self.__remove_fav, songs)
         iradio_items.append(button)

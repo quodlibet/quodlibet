@@ -12,10 +12,10 @@ if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
-from gi.repository import Gtk
 import dbus
 
 from quodlibet import app
+from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -23,7 +23,7 @@ class ScreensaverPause(EventPlugin):
     PLUGIN_ID = "screensaver_pause"
     PLUGIN_NAME = _("Screensaver Pause")
     PLUGIN_DESC = _("Pauses playback while the GNOME screensaver is active.")
-    PLUGIN_ICON = Gtk.STOCK_MEDIA_PAUSE
+    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_PAUSE
 
     DBUS_NAME = "org.gnome.ScreenSaver"
     DBUS_INTERFACE = "org.gnome.ScreenSaver"

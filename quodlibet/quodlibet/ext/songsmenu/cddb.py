@@ -22,7 +22,8 @@ except ImportError as e:
 from os import path
 from gi.repository import Gtk
 
-from quodlibet.qltk import ErrorMessage
+from quodlibet.qltk import ErrorMessage, Icons
+from quodlibet.qltk.window import Dialog
 from quodlibet.const import VERSION
 from quodlibet.util import tag, escape
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -167,11 +168,12 @@ class CDDBLookup(SongsMenuPlugin):
 
         if stat in (200, 211):
             xcode = 'utf8:utf8'
-            dlg = Gtk.Dialog(title=_('Select an album'))
+            dlg = Dialog(title=_('Select an album'))
             dlg.set_border_width(6)
             dlg.set_resizable(False)
-            dlg.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-            dlg.add_buttons(Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
+            dlg.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+            dlg.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
+                                Gtk.ResponseType.OK)
             dlg.vbox.set_spacing(6)
             dlg.set_default_response(Gtk.ResponseType.CANCEL)
             model = Gtk.ListStore(str, str, str, str, str, str)

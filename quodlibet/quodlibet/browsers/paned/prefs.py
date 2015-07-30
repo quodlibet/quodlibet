@@ -12,7 +12,8 @@ from quodlibet import qltk
 
 from quodlibet.qltk.views import BaseView
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
-from quodlibet.qltk.x import SymbolicIconImage, MenuItem
+from quodlibet.qltk.x import SymbolicIconImage, MenuItem, Button
+from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.util import connect_obj
@@ -66,11 +67,11 @@ class PatternEditor(Gtk.VBox):
 
         ctrl_box = Gtk.VBox(spacing=6)
 
-        add = Gtk.Button(stock=Gtk.STOCK_ADD)
+        add = Button(_("_Add"), Icons.LIST_ADD)
         ctrl_box.pack_start(add, False, True, 0)
         add.connect('clicked', self.__add, model, cb)
 
-        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         ctrl_box.pack_start(remove, False, True, 0)
         remove.connect('clicked', self.__remove, view)
 
@@ -154,7 +155,7 @@ class PreferencesButton(Gtk.HBox):
         wide_mode.connect("toggled", self.__wide_mode_changed, browser)
         menu.append(wide_mode)
 
-        pref_item = MenuItem(_("_Preferences"), Gtk.STOCK_PREFERENCES)
+        pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
 
         def preferences_cb(menu_item):
             window = Preferences(browser)
@@ -165,7 +166,7 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-                SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
+                SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
                 arrow=True)
         button.set_menu(menu)
         button.show()
@@ -192,10 +193,10 @@ class Preferences(qltk.UniqueWindow):
         editor = PatternEditor()
         editor.headers = get_headers()
 
-        apply_ = Gtk.Button(stock=Gtk.STOCK_APPLY)
+        apply_ = Button(_("_Apply"))
         connect_obj(apply_, "clicked", self.__apply, editor, browser, False)
 
-        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+        cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda x: self.destroy())
 
         box = Gtk.HButtonBox()

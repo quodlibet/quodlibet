@@ -2,6 +2,7 @@
 from gi.repository import Gtk
 
 from quodlibet import util
+from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util import connect_obj
@@ -33,7 +34,7 @@ class SendTo(SongsMenuPlugin):
     PLUGIN_ID = 'SendTo'
     PLUGIN_NAME = _(u'Send To…')
     PLUGIN_DESC = _("Generic file-opening plugin.")
-    PLUGIN_ICON = Gtk.STOCK_EXECUTE
+    PLUGIN_ICON = Icons.SYSTEM_RUN
 
     commands = [
         Command("K3B", "k3b --audiocd", Command.FILES),

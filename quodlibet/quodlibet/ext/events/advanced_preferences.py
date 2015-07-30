@@ -9,6 +9,7 @@ from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet.qltk.entry import UndoEntry
+from quodlibet.qltk import Icons
 from quodlibet.util.string import decode
 from quodlibet.plugins.events import EventPlugin
 
@@ -27,8 +28,8 @@ def _config(section, option, label, tooltip, getter):
         entry.set_text(decode(config.get(section, option)))
 
     revert = Gtk.Button()
-    revert.add(Gtk.Image.new_from_stock(
-        Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.BUTTON))
+    revert.add(Gtk.Image.new_from_icon_name(
+        Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
 
     return (Gtk.Label(label=label), entry, revert)

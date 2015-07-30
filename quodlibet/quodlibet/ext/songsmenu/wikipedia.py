@@ -12,6 +12,7 @@ from gi.repository import Gtk
 from quodlibet import config
 from quodlibet.util import website
 from quodlibet.qltk.entry import Entry
+from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 WIKI_URL = "http://%s.wikipedia.org/wiki/"
@@ -26,7 +27,7 @@ def set_lang(value):
 
 
 class WikiSearch(object):
-    PLUGIN_ICON = Gtk.STOCK_OPEN
+    PLUGIN_ICON = Icons.DOCUMENT_OPEN
 
     @classmethod
     def changed(self, e):

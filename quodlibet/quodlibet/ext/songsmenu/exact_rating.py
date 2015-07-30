@@ -10,6 +10,7 @@ from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet.qltk.getstring import GetStringDialog
+from quodlibet.qltk import Icons
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
@@ -27,7 +28,8 @@ class ExactRating(SongsMenuPlugin):
                 self.PLUGIN_NAME,
                 _("Please give your desired rating on a scale "
                   "from 0.0 to 1.0"),
-                Gtk.STOCK_APPLY
+                _("_Apply"),
+                Icons.NONE
             ).run()
 
             if input_string is None:

@@ -21,7 +21,7 @@ from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.window import Window
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem
+from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.util.thumbnails import scale
 from quodlibet.util import connect_obj
@@ -149,7 +149,7 @@ def get_paused_pixbuf(boundary, diff):
     if diff < 0:
         raise ValueError("diff has to be >= 0")
 
-    names = ('media-playback-pause', Gtk.STOCK_MEDIA_PAUSE)
+    names = (Icons.MEDIA_PLAYBACK_PAUSE,)
     theme = Gtk.IconTheme.get_default()
 
     # Get the suggested icon
@@ -455,14 +455,16 @@ class TrayIcon(EventPlugin):
         player = app.player
         window = app.window
 
-        pp_icon = [Gtk.STOCK_MEDIA_PAUSE, Gtk.STOCK_MEDIA_PLAY][player.paused]
-        playpause = Gtk.ImageMenuItem.new_from_stock(pp_icon, None)
+        if player.paused:
+            playpause = MenuItem(_("_Play"), Icons.MEDIA_PLAYBACK_START)
+        else:
+            playpause = MenuItem(_("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE)
         playpause.connect('activate', self.__play_pause)
 
-        previous = Gtk.ImageMenuItem.new_from_stock(
-            Gtk.STOCK_MEDIA_PREVIOUS, None)
+        previous = MenuItem(_("Pre_vious"), Icons.MEDIA_SKIP_BACKWARD)
         previous.connect('activate', lambda *args: player.previous())
-        next = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_MEDIA_NEXT, None)
+
+        next = MenuItem(_("_Next"), Icons.MEDIA_SKIP_FORWARD)
         next.connect('activate', lambda *args: player.next())
 
         orders = Gtk.MenuItem(label=_("Play _Order"), use_underline=True)
@@ -509,7 +511,7 @@ class TrayIcon(EventPlugin):
             order_sub.append(item)
         orders.set_submenu(order_sub)
 
-        browse = qltk.MenuItem(_("_Browse Library"), Gtk.STOCK_FIND)
+        browse = qltk.MenuItem(_("_Browse Library"), Icons.EDIT_FIND)
         browse_sub = Gtk.Menu()
 
         for Kind in browsers.browsers:
@@ -522,10 +524,10 @@ class TrayIcon(EventPlugin):
 
         browse.set_submenu(browse_sub)
 
-        props = qltk.MenuItem(_("Edit _Tags"), Gtk.STOCK_PROPERTIES)
+        props = qltk.MenuItem(_("Edit _Tags"), Icons.DOCUMENT_PROPERTIES)
         props.connect('activate', self.__properties)
 
-        info = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_INFO, None)
+        info = MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
         info.connect('activate', self.__information)
 
         def set_rating(value):
@@ -544,7 +546,7 @@ class TrayIcon(EventPlugin):
             rating_sub.append(item)
         rating.set_submenu(rating_sub)
 
-        quit = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_QUIT, None)
+        quit = MenuItem(_("_Quit"), Icons.APPLICATION_EXIT)
         quit.connect('activate', lambda *x: app.quit())
 
         menu.append(playpause)

@@ -19,6 +19,7 @@ from quodlibet.query import Query
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk import Icons
 from quodlibet.qltk.image import (get_scale_factor, get_pbosf_for_pixbuf,
     set_renderer_from_pbosf, scale, add_border_widget)
 from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
@@ -201,7 +202,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         def cell_data_pb(column, cell, model, iter_, data):
             album = model.get_album(iter_)
             if album is None:
-                cell.set_property('stock_id', Gtk.STOCK_DIRECTORY)
+                cell.set_property('icon-name', Icons.FOLDER)
             else:
                 cover = get_scaled_cover(album)
                 if cover:
@@ -211,7 +212,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
                     pbosf = get_pbosf_for_pixbuf(self, cover)
                     set_renderer_from_pbosf(cell, pbosf)
                 else:
-                    cell.set_property('stock_id', Gtk.STOCK_CDROM)
+                    cell.set_property('icon-name', Icons.MEDIA_OPTICAL)
 
         imgrender = Gtk.CellRendererPixbuf()
         render = Gtk.CellRendererText()
@@ -229,7 +230,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         hbox = Gtk.HBox(spacing=6)
 
         prefs = Gtk.Button()
-        prefs.add(SymbolicIconImage("emblem-system", Gtk.IconSize.MENU))
+        prefs.add(SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU))
         prefs.connect('clicked', lambda *x: Preferences(self))
 
         search = SearchBarBox(completion=AlbumTagCompletion(),

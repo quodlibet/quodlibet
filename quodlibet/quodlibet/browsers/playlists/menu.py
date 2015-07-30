@@ -10,7 +10,7 @@ from gi.repository import Gtk, Pango
 from quodlibet import qltk
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
-from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent
+from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent, Icons
 from quodlibet.util.collection import Playlist
 
 
@@ -89,6 +89,6 @@ class ConfirmMultipleSongsAction(qltk.Message):
             Gtk.MessageType.QUESTION, parent, title, desc,
             Gtk.ButtonsType.NONE)
 
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_ADD, self.ADD,
-                         Gtk.STOCK_REMOVE, self.REMOVE)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Add"), Icons.LIST_ADD, self.ADD)
+        self.add_icon_button(_("_Remove"), Icons.LIST_REMOVE, self.REMOVE)

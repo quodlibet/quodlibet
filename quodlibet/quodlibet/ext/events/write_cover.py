@@ -14,6 +14,7 @@ import quodlibet
 from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk import Icons
 
 
 def get_path():
@@ -29,7 +30,7 @@ class PictureSaver(EventPlugin):
     PLUGIN_ID = "Picture Saver"
     PLUGIN_NAME = _("Picture Saver")
     PLUGIN_DESC = _("Saves the cover image of the current song to a file.")
-    PLUGIN_ICON = Gtk.STOCK_SAVE
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def plugin_on_song_started(self, song):
         outfile = get_path()

@@ -14,8 +14,8 @@ class GetPlayerDialog(Gtk.Dialog):
         super(GetPlayerDialog, self).__init__(title, parent)
         self.set_border_width(6)
         self.set_resizable(False)
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_OK, Gtk.ResponseType.OK)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_button(_("_OK"), Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
 

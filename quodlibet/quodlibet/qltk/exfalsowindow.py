@@ -88,7 +88,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         menu.show_all()
 
         menu_button = MenuButton(
-                SymbolicIconImage("emblem-system", Gtk.IconSize.BUTTON),
+                SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.BUTTON),
                 arrow=True, down=False)
         menu_button.set_menu(menu)
         bbox.pack_start(menu_button, False, True, 0)

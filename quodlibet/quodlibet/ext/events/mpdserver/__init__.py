@@ -22,6 +22,7 @@ from quodlibet import app
 from quodlibet import qltk
 from quodlibet import config
 from quodlibet.qltk.entry import UndoEntry
+from quodlibet.qltk import Icons
 
 from .main import MPDServer
 from .tcpserver import ServerError
@@ -63,7 +64,7 @@ class MPDServerPlugin(EventPlugin):
     PLUGIN_DESC = _("Allows remote control of Quod Libet using an MPD Client. "
                     "Streaming, playlist and library management "
                     "are not supported.")
-    PLUGIN_ICON = Gtk.STOCK_CONNECT
+    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     _server = None
 
@@ -104,8 +105,8 @@ class MPDServerPlugin(EventPlugin):
         table.attach(entry, 1, 2, 0, 1)
 
         port_revert = Gtk.Button()
-        port_revert.add(Gtk.Image.new_from_stock(
-            Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
+        port_revert.add(Gtk.Image.new_from_icon_name(
+            Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
 
         def port_revert_cb(button, entry):
             entry.set_text(str(DEFAULT_PORT))

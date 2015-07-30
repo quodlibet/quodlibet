@@ -27,6 +27,7 @@ from quodlibet.qltk.edittags import AudioFileGroup
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.qltk import Icons, Button
 from quodlibet.util import connect_obj, connect_destroy
 
 
@@ -347,7 +348,7 @@ class DuplicateDialog(Gtk.Window):
         label = Gtk.Label(label=_("Duplicate key expression is '%s'") %
                 Duplicates.get_key_expression())
         hbox.pack_start(label, True, True, 0)
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect('clicked', self.__quit)
         hbox.pack_start(close, False, True, 0)
 
@@ -362,7 +363,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Duplicates'
     PLUGIN_NAME = _('Duplicates Browser')
     PLUGIN_DESC = _('Finds and displays similarly tagged versions of songs.')
-    PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
+    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
 
     MIN_GROUP_SIZE = 2
     _CFG_KEY_KEY = "key_expression"

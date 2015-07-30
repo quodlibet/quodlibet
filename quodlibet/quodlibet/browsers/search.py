@@ -20,6 +20,7 @@ from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.searchbar import LimitSearchBarBox
 from quodlibet.qltk.x import Align, SymbolicIconImage
+from quodlibet.qltk import Icons
 
 
 class PreferencesButton(Gtk.HBox):
@@ -35,7 +36,7 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
             arrow=True)
         button.set_menu(menu)
         self.pack_start(button, True, True, 0)

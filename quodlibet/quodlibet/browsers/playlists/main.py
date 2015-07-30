@@ -23,7 +23,8 @@ from quodlibet.util.path import get_home_dir
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.models import ObjectStore, ObjectModelSort
-from quodlibet.qltk.x import ScrolledWindow, Align
+from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem
+from quodlibet.qltk import Icons
 
 from .util import *
 
@@ -115,7 +116,7 @@ class PlaylistsBrowser(Browser):
     def Menu(self, songs, library, items):
         songlist = qltk.get_top_parent(self).songlist
         model, iters = self.__get_selected_songs(songlist)
-        item = qltk.MenuItem(_("_Remove from Playlist"), Gtk.STOCK_REMOVE)
+        item = qltk.MenuItem(_("_Remove from Playlist"), Icons.LIST_REMOVE)
         qltk.add_fake_accel(item, "Delete")
         connect_obj(item, 'activate', self.__remove, iters, model)
         item.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
@@ -174,9 +175,9 @@ class PlaylistsBrowser(Browser):
         self.pack_start(swin, True, True, 0)
 
     def __configure_buttons(self, library):
-        newpl = qltk.Button(_("_New"), Gtk.STOCK_NEW, Gtk.IconSize.MENU)
+        newpl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
         newpl.connect('clicked', self.__new_playlist)
-        importpl = qltk.Button(_("_Import"), Gtk.STOCK_ADD, Gtk.IconSize.MENU)
+        importpl = qltk.Button(_("_Import"), Icons.LIST_ADD, Gtk.IconSize.MENU)
         importpl.connect('clicked', self.__import, library)
         hb = Gtk.HBox(spacing=6)
         hb.set_homogeneous(True)
@@ -388,7 +389,7 @@ class PlaylistsBrowser(Browser):
                 model.get_model().remove(
                     model.convert_iter_to_child_iter(itr))
 
-        rem = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
+        rem = MenuItem(_("_Delete"), Icons.EDIT_DELETE)
         connect_obj(rem, 'activate', _remove, model, itr)
         menu.prepend(rem)
 
@@ -396,7 +397,7 @@ class PlaylistsBrowser(Browser):
             self.__render.set_property('editable', True)
             view.set_cursor(path, view.get_columns()[0], start_editing=True)
 
-        ren = qltk.MenuItem(_("_Rename"), Gtk.STOCK_EDIT)
+        ren = qltk.MenuItem(_("_Rename"), Icons.EDIT)
         qltk.add_fake_accel(ren, "F2")
         connect_obj(ren, 'activate', _rename, model.get_path(itr))
         menu.prepend(ren)

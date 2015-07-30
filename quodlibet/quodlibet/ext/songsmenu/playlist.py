@@ -63,9 +63,9 @@ class PlaylistExport(SongsMenuPlugin):
     def __save_playlist(self, songs, name=None):
         dialog = Gtk.FileChooserDialog(self.PLUGIN_NAME,
             None,
-            Gtk.FileChooserAction.SAVE,
-            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-             Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+            Gtk.FileChooserAction.SAVE)
+        dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        dialog.add_button(_("_Save"), Gtk.ResponseType.OK)
         dialog.set_default_response(Gtk.ResponseType.OK)
         if name:
             dialog.set_current_name(name)

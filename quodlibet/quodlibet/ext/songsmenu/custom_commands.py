@@ -18,7 +18,7 @@ from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.data_editors import JSONBasedEditor
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk import ErrorMessage
+from quodlibet.qltk import ErrorMessage, Icons
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.util.dprint import print_w, print_d, print_e
 from quodlibet.util.json_data import JSONObject, JSONObjectDict
@@ -108,7 +108,7 @@ class Command(JSONObject):
 
 class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
 
-    PLUGIN_ICON = Gtk.STOCK_OPEN
+    PLUGIN_ICON = Icons.DOCUMENT_OPEN
     PLUGIN_ID = "CustomCommands"
     PLUGIN_NAME = _("Custom Commands")
     PLUGIN_DESC = _("Runs custom commands (in batches if required) on songs "
@@ -165,7 +165,7 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
         hb = Gtk.HBox(spacing=3)
         hb.set_border_width(0)
 
-        button = qltk.Button(_("Edit Custom Commands") + "...", Gtk.STOCK_EDIT)
+        button = qltk.Button(_("Edit Custom Commands") + "...", Icons.EDIT)
         button.set_tooltip_markup(util.escape(_("Supports QL patterns\neg "
                                                 "<tt><~artist~title></tt>")))
         button.connect("clicked", cls.edit_patterns)

@@ -18,6 +18,7 @@ from gi.repository import Gtk, GLib
 import quodlibet
 from quodlibet import config, util, qltk
 from quodlibet.qltk.entry import UndoEntry
+from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 try:
@@ -191,12 +192,13 @@ class LastFMSyncCache(object):
             song['~#added'] = min(song['~#added'], stats['added'])
 
 
-class LastFMSyncWindow(Gtk.Dialog):
+class LastFMSyncWindow(qltk.Dialog):
     def __init__(self, parent):
         super(LastFMSyncWindow, self).__init__(
-                _("Last.fm Sync"), parent, buttons=(
-                    Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
-                    Gtk.STOCK_SAVE, Gtk.ResponseType.ACCEPT))
+                _("Last.fm Sync"), parent)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
+                             Gtk.ResponseType.ACCEPT)
         self.set_border_width(5)
         self.set_default_size(300, 100)
 

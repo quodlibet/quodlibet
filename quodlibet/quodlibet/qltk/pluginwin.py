@@ -154,10 +154,7 @@ class PluginListView(HintedTreeView):
         def cell_data2(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
             icon = plugin.icon or Icons.SYSTEM_RUN
-            if Gtk.stock_lookup(icon):
-                render.set_property('stock-id', icon)
-            else:
-                render.set_property('icon-name', icon)
+            render.set_property('icon-name', icon)
 
         column = Gtk.TreeViewColumn("image", render)
         column.set_cell_data_func(render, cell_data2)

@@ -23,6 +23,7 @@ from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import MainDirectoryTree
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import ScrolledWindow
+from quodlibet.qltk import Icons
 from quodlibet.util import copool
 from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.dprint import print_d
@@ -183,7 +184,7 @@ class FileSystem(Browser, Gtk.HBox):
 
     def Menu(self, songs, library, items):
 
-        i = qltk.MenuItem(_("_Add to Library"), Gtk.STOCK_ADD)
+        i = qltk.MenuItem(_("_Add to Library"), Icons.LIST_ADD)
         i.set_sensitive(False)
         i.connect('activate', self.__add_songs, songs)
         for song in songs:

@@ -253,33 +253,27 @@ class Align(Gtk.Alignment):
         return self.props.right_padding
 
 
-def MenuItem(label, stock_id=None):
+def MenuItem(label, icon_name=None):
     """An ImageMenuItem with a custom label and stock image."""
 
-    if stock_id is None:
+    if icon_name is None:
         return Gtk.MenuItem.new_with_mnemonic(label)
 
     item = Gtk.ImageMenuItem.new_with_mnemonic(label)
     item.set_always_show_image(True)
-    if Gtk.stock_lookup(stock_id):
-        image = Gtk.Image.new_from_stock(stock_id, Gtk.IconSize.MENU)
-    else:
-        image = Gtk.Image.new_from_icon_name(stock_id, Gtk.IconSize.MENU)
+    image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.MENU)
     image.show()
     item.set_image(image)
     return item
 
 
-def _Button(type_, label, stock_id, size):
-    if stock_id is None:
+def _Button(type_, label, icon_name, size):
+    if icon_name is None:
         return Gtk.Button.new_with_mnemonic(label)
 
     align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
     hbox = Gtk.HBox(spacing=2)
-    if Gtk.stock_lookup(stock_id):
-        image = Gtk.Image.new_from_stock(stock_id, size)
-    else:
-        image = Gtk.Image.new_from_icon_name(stock_id, size)
+    image = Gtk.Image.new_from_icon_name(icon_name, size)
     hbox.pack_start(image, True, True, 0)
     label = Gtk.Label(label=label)
     label.set_use_underline(True)
@@ -291,20 +285,20 @@ def _Button(type_, label, stock_id, size):
     return button
 
 
-def Button(label, stock_id=None, size=Gtk.IconSize.BUTTON):
+def Button(label, icon_name=None, size=Gtk.IconSize.BUTTON):
     """A Button with a custom label and stock image. It should pack
     exactly like a stock button.
     """
 
-    return _Button(Gtk.Button, label, stock_id, size)
+    return _Button(Gtk.Button, label, icon_name, size)
 
 
-def ToggleButton(label, stock_id=None, size=Gtk.IconSize.BUTTON):
+def ToggleButton(label, icon_name=None, size=Gtk.IconSize.BUTTON):
     """A ToggleButton with a custom label and stock image. It should pack
     exactly like a stock button.
     """
 
-    return _Button(Gtk.ToggleButton, label, stock_id, size)
+    return _Button(Gtk.ToggleButton, label, icon_name, size)
 
 
 class Paned(Gtk.Paned):

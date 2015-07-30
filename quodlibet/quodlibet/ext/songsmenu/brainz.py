@@ -25,6 +25,7 @@ except ImportError as e:
 
 from quodlibet import config, util
 from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.qltk import Dialog, Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
 
@@ -65,12 +66,6 @@ def get_trackcount(album):
 
 def config_get(key, default=''):
     return config.getboolean('plugins', 'brainz_' + key, default)
-
-
-def dialog_get_widget_for_stockid(dialog, stockid):
-    for child in dialog.get_action_area().get_children():
-        if child.get_label() == stockid:
-            return child
 
 
 class ResultTreeView(HintedTreeView, MultiDragTreeView):
@@ -265,7 +260,7 @@ class QueryThread(object):
             time.sleep(1)
 
 
-class SearchWindow(Gtk.Dialog):
+class SearchWindow(Dialog):
     def __save(self, widget=None, response=None):
         """Writes values to Song objects."""
         self._qthread.stop()
@@ -401,7 +396,7 @@ class SearchWindow(Gtk.Dialog):
         self.result_treeview.update_remote_album(release.tracks)
         self.current_release = release
         self.release_combo.update(release)
-        save_button = dialog_get_widget_for_stockid(self, Gtk.STOCK_SAVE)
+        save_button = self.get_widget_for_response(Gtk.ResponseType.ACCEPT)
         save_button.set_sensitive(True)
 
     def __init__(self, parent, album, cache):
@@ -413,14 +408,17 @@ class SearchWindow(Gtk.Dialog):
         self._qthread = QueryThread()
         self.current_release = None
 
-        super(SearchWindow, self).__init__(_("MusicBrainz lookup"), buttons=(
-                    Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
-                    Gtk.STOCK_SAVE, Gtk.ResponseType.ACCEPT))
+        super(SearchWindow, self).__init__(_("MusicBrainz lookup"))
+
+        self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
+                             Gtk.ResponseType.ACCEPT)
+
         self.set_default_size(650, 500)
         self.set_border_width(5)
         self.set_transient_for(parent)
 
-        save_button = dialog_get_widget_for_stockid(self, Gtk.STOCK_SAVE)
+        save_button = self.get_widget_for_response(Gtk.ResponseType.ACCEPT)
         save_button.set_sensitive(False)
 
         vb = Gtk.VBox()
@@ -483,7 +481,7 @@ class SearchWindow(Gtk.Dialog):
 class MyBrainz(SongsMenuPlugin):
     PLUGIN_ID = "MusicBrainz lookup"
     PLUGIN_NAME = _("MusicBrainz Lookup")
-    PLUGIN_ICON = Gtk.STOCK_CDROM
+    PLUGIN_ICON = Icons.MEDIA_OPTICAL
     PLUGIN_DESC = _('Re-tags an album based on a MusicBrainz search.')
 
     cache = {}

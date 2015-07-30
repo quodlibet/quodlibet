@@ -34,6 +34,7 @@ from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
+from quodlibet.qltk import Icons
 from quodlibet.util import copool, connect_destroy
 from quodlibet.util.library import background_filter
 from quodlibet.util import connect_obj, DeferredSignal
@@ -177,14 +178,14 @@ class PreferencesButton(Gtk.HBox):
         sort_item.set_submenu(sort_menu)
         menu.append(sort_item)
 
-        pref_item = MenuItem(_("_Preferences"), Gtk.STOCK_PREFERENCES)
+        pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
         menu.append(pref_item)
         connect_obj(pref_item, "activate", Preferences, browser)
 
         menu.show_all()
 
         button = MenuButton(
-                SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
+                SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
                 arrow=True)
         button.set_menu(menu)
         self.pack_start(button, True, True, 0)
@@ -637,7 +638,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
             num = len(albums)
             button = MenuItem(
                 ngettext("Reload album _cover", "Reload album _covers", num),
-                Gtk.STOCK_REFRESH)
+                Icons.VIEW_REFRESH)
             button.connect('activate', self.__refresh_album, view)
             items.append(button)
 

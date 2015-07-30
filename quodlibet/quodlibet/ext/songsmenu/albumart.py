@@ -30,8 +30,9 @@ from quodlibet.util.dprint import print_d
 
 from quodlibet import util, qltk, print_w, app
 from quodlibet.qltk.msg import ConfirmFileReplace
-from quodlibet.qltk.x import Paned, Align
+from quodlibet.qltk.x import Paned, Align, Button
 from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk import Icons
 from quodlibet.qltk.image import (set_renderer_from_pbosf, get_scale_factor,
     get_pbosf_for_pixbuf, set_image_from_pbosf, scale, add_border_widget)
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -216,11 +217,11 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.current_pixbuf = None
 
         self.image = Gtk.Image()
-        self.button = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        self.button = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.button.set_sensitive(False)
         self.button.connect('clicked', self.__save)
 
-        close_button = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close_button = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close_button.connect('clicked', lambda x: self.main_win.destroy())
 
         self.window_fit = self.ConfigCheckButton(_('Fit image to _window'),
@@ -508,7 +509,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         self.search_lock = False
 
         self.set_title(_('Album Art Downloader'))
-        self.set_icon_name(Gtk.STOCK_FIND)
+        self.set_icon_name(Icons.EDIT_FIND)
         self.set_default_size(800, 550)
 
         image = CoverArea(self, songs[0])
@@ -584,7 +585,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         sw_list.add(treeview)
 
         self.search_field = Gtk.Entry()
-        self.search_button = Gtk.Button(stock=Gtk.STOCK_FIND)
+        self.search_button = Button(_("_Search"), Icons.EDIT_FIND)
         self.search_button.connect('clicked', self.start_search)
         self.search_field.connect('activate', self.start_search)
 
@@ -818,7 +819,7 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Download Album Art'
     PLUGIN_NAME = _('Download Album Art')
     PLUGIN_DESC = _('Downloads album covers from various websites.')
-    PLUGIN_ICON = Gtk.STOCK_FIND
+    PLUGIN_ICON = Icons.EDIT_FIND
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
 
     @classmethod

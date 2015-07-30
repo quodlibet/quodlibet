@@ -16,6 +16,7 @@ from quodlibet import qltk
 from quodlibet.util import connect_obj
 from quodlibet.formats import DUMMY_SONG
 from quodlibet.qltk.textedit import PatternEdit
+from quodlibet.qltk import Icons
 
 
 class ConfigLabel(Gtk.Label):
@@ -264,7 +265,7 @@ class AnimOsdPrefs(Gtk.VBox):
         def build_buttons_widget():
             hb = Gtk.HBox(spacing=6)
             edit_button = qltk.Button(_(u"Ed_it Display Pattern…"),
-                                      Gtk.STOCK_EDIT)
+                                      Icons.EDIT)
             edit_button.connect('clicked', edit_pattern)
             hb.pack_start(edit_button, False, True, 0)
             preview_button = Gtk.Button(label=_("Preview"))

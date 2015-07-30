@@ -16,7 +16,7 @@ from .util import get_api_key
 
 from quodlibet import config
 from quodlibet import util
-from quodlibet.qltk import Button, Frame
+from quodlibet.qltk import Button, Frame, Icons
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -26,7 +26,7 @@ class AcoustidSearch(SongsMenuPlugin):
     PLUGIN_ID = "AcoustidSearch"
     PLUGIN_NAME = _("Acoustic Fingerprint Lookup")
     PLUGIN_DESC = _("Looks up song metadata through acoustic fingerprinting.")
-    PLUGIN_ICON = Gtk.STOCK_CONNECT
+    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def plugin_songs(self, songs):
         from .search import SearchWindow
@@ -46,7 +46,7 @@ class AcoustidSubmit(SongsMenuPlugin):
     PLUGIN_NAME = _("Submit Acoustic Fingerprints")
     PLUGIN_DESC = _("Generates acoustic fingerprints using chromaprint "
                     "and submits them to acoustid.org.")
-    PLUGIN_ICON = Gtk.STOCK_CONNECT
+    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def plugin_songs(self, songs):
         if not get_api_key():
@@ -65,7 +65,7 @@ class AcoustidSubmit(SongsMenuPlugin):
             config.set("plugins", "fingerprint_acoustid_api_key",
                 entry.get_text())
 
-        button = Button(_("Request API key"), Gtk.STOCK_NETWORK)
+        button = Button(_("Request API key"), Icons.NETWORK_WORKGROUP)
         button.connect("clicked",
             lambda s: util.website("https://acoustid.org/api-key"))
         key_box = Gtk.HBox(spacing=6)

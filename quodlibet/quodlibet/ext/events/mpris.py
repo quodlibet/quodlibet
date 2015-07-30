@@ -29,6 +29,7 @@ from quodlibet import app
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.qltk import Icons
 from quodlibet.util.uri import URI
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
@@ -43,7 +44,7 @@ class MPRIS(EventPlugin):
     PLUGIN_NAME = _("MPRIS D-Bus Support")
     PLUGIN_DESC = _("Allows control of Quod Libet using the "
                     "MPRIS 1.0/2.0 D-Bus Interface Specification.")
-    PLUGIN_ICON = Gtk.STOCK_CONNECT
+    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def PluginPreferences(self, parent):
         box = Gtk.HBox()

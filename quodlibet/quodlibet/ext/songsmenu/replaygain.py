@@ -21,6 +21,7 @@ from quodlibet.browsers.collection.models import EMPTY
 
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.x import Frame
+from quodlibet.qltk import Icons, Dialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util import cached_property
 
@@ -344,14 +345,15 @@ class ReplayGainPipeline(GObject.Object):
             self._next_song()
 
 
-class RGDialog(Gtk.Dialog):
+class RGDialog(Dialog):
 
     def __init__(self, albums, parent, process_mode):
         super(RGDialog, self).__init__(
-            title=_('ReplayGain Analyzer'), parent=parent,
-            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                     Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
-        )
+            title=_('ReplayGain Analyzer'), parent=parent)
+
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
+                             Gtk.ResponseType.OK)
 
         self.process_mode = process_mode
         self.set_default_size(600, 400)
@@ -373,9 +375,9 @@ class RGDialog(Gtk.Dialog):
         def icon_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
             if item.error:
-                cell.set_property('stock-id', Gtk.STOCK_DIALOG_ERROR)
+                cell.set_property('icon-name', Icons.DIALOG_ERROR)
             else:
-                cell.set_property('stock-id', None)
+                cell.set_property('icon-name', Icons.NONE)
 
         column = Gtk.TreeViewColumn()
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -566,7 +568,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_NAME = _('Replay Gain')
     PLUGIN_DESC = _('Analyzes and updates ReplayGain information, '
                     'using GStreamer. Results are grouped by album.')
-    PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
+    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
     CONFIG_SECTION = 'replaygain'
 
     def plugin_albums(self, albums):

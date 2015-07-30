@@ -18,6 +18,7 @@ from quodlibet.formats import PEOPLE
 from quodlibet.util import format_rating, connect_obj
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.textedit import PatternEditBox
+from quodlibet.qltk import Button, Icons
 from quodlibet.pattern import XMLFromMarkupPattern
 
 
@@ -113,7 +114,7 @@ class Preferences(qltk.UniqueWindow):
         box.pack_start(f, True, True, 0)
 
         main_box = Gtk.VBox(spacing=12)
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
         b = Gtk.HButtonBox()
         b.set_layout(Gtk.ButtonBoxStyle.END)

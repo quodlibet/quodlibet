@@ -36,7 +36,7 @@ class ConfirmDBCreate(WarningMessage):
         super(ConfirmDBCreate, self).__init__(
             parent, title, description, buttons=Gtk.ButtonsType.NONE)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         save_button = Button(_("_Create Database"), "system-run")
         save_button.show()
         self.add_action_widget(save_button, self.RESPONSE_CREATE)

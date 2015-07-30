@@ -30,6 +30,7 @@ from quodlibet.pattern import XMLFromPattern
 from quodlibet.qltk.textedit import TextView, TextBuffer
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.qltk import Icons
 from quodlibet.util import unescape
 from quodlibet.util.uri import URI
 from quodlibet.util import connect_obj
@@ -91,8 +92,8 @@ class PreferencesWidget(Gtk.VBox):
                      Gtk.AttachOptions.SHRINK)
 
         title_revert = Gtk.Button()
-        title_revert.add(Gtk.Image.new_from_stock(
-            Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
+        title_revert.add(Gtk.Image.new_from_icon_name(
+            Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
         title_revert.set_tooltip_text(_("Revert to default pattern"))
         connect_obj(title_revert,
             "clicked", title_entry.set_text, DEFAULT_CONFIG["titlepattern"])
@@ -120,8 +121,8 @@ class PreferencesWidget(Gtk.VBox):
         table.attach(body_label, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.SHRINK)
 
         body_revert = Gtk.Button()
-        body_revert.add(Gtk.Image.new_from_stock(
-                        Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
+        body_revert.add(Gtk.Image.new_from_icon_name(
+                        Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
         body_revert.set_tooltip_text(_("Revert to default pattern"))
         connect_obj(body_revert,
             "clicked", body_textbuffer.set_text, DEFAULT_CONFIG["bodypattern"])
@@ -132,7 +133,7 @@ class PreferencesWidget(Gtk.VBox):
 
         # preview button
         preview_button = qltk.Button(
-            _("_Show notification"), Gtk.STOCK_EXECUTE)
+            _("_Show notification"), Icons.SYSTEM_RUN)
         preview_button.set_sensitive(app.player.info is not None)
         preview_button.connect("clicked", self.on_preview_button_clicked)
         self.qlplayer_connected_signals = [
@@ -239,7 +240,7 @@ class Notify(EventPlugin):
     PLUGIN_ID = "Notify"
     PLUGIN_NAME = _("Song Notifications")
     PLUGIN_DESC = _("Displays a notification when the song changes.")
-    PLUGIN_ICON = Gtk.STOCK_DIALOG_INFO
+    PLUGIN_ICON = Icons.DIALOG_INFORMATION
 
     DBUS_NAME = "org.freedesktop.Notifications"
     DBUS_IFACE = "org.freedesktop.Notifications"

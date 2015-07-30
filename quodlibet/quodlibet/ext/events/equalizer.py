@@ -12,6 +12,7 @@ from gi.repository import Gtk
 
 from quodlibet import app
 from quodlibet import config
+from quodlibet.qltk import Button, Icons
 from quodlibet.plugins.events import EventPlugin
 
 # Presets taken from pulseaudio equalizer
@@ -185,7 +186,7 @@ class Equalizer(EventPlugin):
         combo.connect("changed", combo_changed)
 
         bbox = Gtk.HButtonBox()
-        clear = Gtk.Button(stock=Gtk.STOCK_CLEAR)
+        clear = Button(_("_Clear"), Icons.EDIT_CLEAR)
         clear.connect('clicked', clicked_cb)
         bbox.pack_start(combo, True, True, 0)
         bbox.pack_start(clear, True, True, 0)

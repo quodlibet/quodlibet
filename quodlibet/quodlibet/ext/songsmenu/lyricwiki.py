@@ -25,6 +25,7 @@ from gi.repository import WebKit, Gtk, GLib
 from quodlibet import app
 from quodlibet.util import DeferredSignal, escape
 from quodlibet.qltk.window import Window
+from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
@@ -195,7 +196,7 @@ class LyricWiki(SongsMenuPlugin):
     PLUGIN_ID = 'lyricwiki'
     PLUGIN_NAME = _('Lyrics Window')
     PLUGIN_DESC = _("Shows a window containing lyrics of the playing song.")
-    PLUGIN_ICON = Gtk.STOCK_FIND
+    PLUGIN_ICON = Icons.EDIT_FIND
 
     _window = None
 

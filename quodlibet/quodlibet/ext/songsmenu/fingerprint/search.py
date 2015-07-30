@@ -15,7 +15,7 @@ from .util import get_write_mb_tags, get_group_by_dir
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.window import Window
-from quodlibet.qltk.x import Button
+from quodlibet.qltk import Button, Icons
 from quodlibet import util
 from quodlibet.qltk.ccb import ConfigCheckButton
 
@@ -113,17 +113,10 @@ class ResultView(AllTreeView):
         render = Gtk.CellRendererPixbuf()
         column = Gtk.TreeViewColumn(_("Write"), render)
 
-        style = self.get_style()
-        pixbufs = []
-        for state in [Gtk.StateType.INSENSITIVE, Gtk.StateType.NORMAL]:
-            pb = style.lookup_icon_set(Gtk.STOCK_EDIT).render_icon(
-                style, Gtk.TextDirection.NONE, state, Gtk.IconSize.MENU,
-                self, None)
-            pixbufs.append(pb)
-
         def cell_data(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
-            cell.set_property('pixbuf', pixbufs[entry.can_write])
+            cell.set_property('icon-name', Icons.EDIT)
+            cell.set_sensitive(entry.can_write)
 
         column.set_cell_data_func(render, cell_data)
         column.set_expand(False)
@@ -280,10 +273,10 @@ class SearchWindow(Window):
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         bbox.set_spacing(6)
-        self.__save = save = Button(_("_Save"), Gtk.STOCK_SAVE)
+        self.__save = save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         save.connect("clicked", self.__on_save)
         save.set_sensitive(False)
-        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+        cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda *x: self.destroy())
         bbox.pack_start(save, True, True, 0)
         bbox.pack_start(cancel, True, True, 0)

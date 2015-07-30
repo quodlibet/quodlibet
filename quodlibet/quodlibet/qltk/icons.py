@@ -20,6 +20,9 @@ from quodlibet.util import enum
 
 @enum
 class Icons(str):
+
+    NONE = ""
+
     # these we have in our fallback icon theme
     QUODLIBET = "quodlibet"
     EXFALSO = "exfalso"
@@ -31,6 +34,7 @@ class Icons(str):
     # these only come from an icon theme
     APPLICATION_EXIT = "application-exit"  # "_Quit"
     AUDIO_X_GENERIC = "audio-x-generic"
+    DIALOG_ERROR = "dialog-error"  # "Error"
     DIALOG_INFORMATION = "dialog-information"  # "Information"
     DIALOG_PASSWORD = "dialog-password"
     DIALOG_QUESTION = "dialog-question"  # "Question"
@@ -48,7 +52,7 @@ class Icons(str):
     EDIT_REDO = "edit-redo"  # "_Redo"
     EDIT_SELECT_ALL = "edit-select-all"
     EDIT_UNDO = "edit-undo"  # "_Undo"
-    FOLDER = "folder"
+    EMBLEM_SYSTEM = "emblem-system"
     FOLDER = "folder"
     GO_JUMP = "go-jump"  # "_Jump to"
     HELP_ABOUT = "help-about"  # "_About"
@@ -56,11 +60,14 @@ class Icons(str):
     IMAGE_X_GENERIC = "image-x-generic"
     LIST_ADD = "list-add"  # "_Add"
     LIST_REMOVE = "list-remove"  # "_Remove"
+    MEDIA_EJECT = "media-eject"
+    MEDIA_OPTICAL = "media-optical"  # "_CD-ROM"
     MEDIA_PLAYBACK_PAUSE = "media-playback-pause"  # "P_ause"
     MEDIA_PLAYBACK_START = "media-playback-start"  # "_Play"
     MEDIA_PLAYBACK_STOP = "media-playback-stop"  # "_Stop"
     MEDIA_SKIP_BACKWARD = "media-skip-backward"  # "Pre_vious"
     MEDIA_SKIP_FORWARD = "media-skip-forward"  # "_Next"
+    NETWORK_WORKGROUP = "network-workgroup"  # "_Network"
     PREFERENCES_SYSTEM = "preferences-system"  # "_Preferences"
     PROCESS_STOP = "process-stop"  # "_Stop"
     SYSTEM_RUN = "system-run"  # "_Execute"

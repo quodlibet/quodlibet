@@ -9,6 +9,7 @@ from gi.repository import Gtk
 
 from quodlibet import app
 from quodlibet.qltk.x import MenuItem
+from quodlibet.qltk import Icons
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.formats._image import EmbeddedImage
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -18,7 +19,7 @@ class EditEmbedded(SongsMenuPlugin):
     PLUGIN_ID = "embedded_edit"
     PLUGIN_NAME = _("Edit Embedded Images")
     PLUGIN_DESC = _("Removes or replaces embedded images.")
-    PLUGIN_ICON = Gtk.STOCK_EDIT
+    PLUGIN_ICON = Icons.EDIT
 
     def __init__(self, songs, *args, **kwargs):
         super(EditEmbedded, self).__init__(songs, *args, **kwargs)

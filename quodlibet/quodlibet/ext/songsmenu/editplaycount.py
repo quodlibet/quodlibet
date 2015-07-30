@@ -34,9 +34,9 @@ class EditPlaycount(SongsMenuPlugin):
         # Create a dialog.
         dlg = Gtk.Dialog(title=_("Edit Playcount"),
                          flags=(Gtk.DialogFlags.MODAL |
-                                Gtk.DialogFlags.DESTROY_WITH_PARENT),
-                         buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
-                                  Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY))
+                                Gtk.DialogFlags.DESTROY_WITH_PARENT))
+        dlg.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
+        dlg.add_button(_("_Apply"), Gtk.ResponseType.APPLY)
         dlg.set_default_response(Gtk.ResponseType.APPLY)
         dlg.set_border_width(4)
         dlg.vbox.set_spacing(4)

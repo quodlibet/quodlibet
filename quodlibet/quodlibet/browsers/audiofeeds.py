@@ -30,7 +30,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 from quodlibet.util.path import get_home_dir
-from quodlibet.qltk.x import ScrolledWindow, Align, Button
+from quodlibet.qltk.x import ScrolledWindow, Align, Button, MenuItem
 
 
 FEEDS = os.path.join(quodlibet.get_user_dir(), "feeds")
@@ -293,13 +293,13 @@ class AudioFeeds(Browser):
 
     def Menu(self, songs, library, items):
         if len(songs) == 1:
-            item = qltk.MenuItem(_(u"_Download…"), Gtk.STOCK_CONNECT)
+            item = qltk.MenuItem(_(u"_Download…"), Icons.NETWORK_WORKGROUP)
             item.connect('activate', self.__download, songs[0]("~uri"))
             item.set_sensitive(not songs[0].is_file)
         else:
             songs = filter(lambda s: not s.is_file, songs)
             uris = [song("~uri") for song in songs]
-            item = qltk.MenuItem(_(u"_Download…"), Gtk.STOCK_CONNECT)
+            item = qltk.MenuItem(_(u"_Download…"), Icons.NETWORK_WORKGROUP)
             item.connect('activate', self.__download_many, uris)
             item.set_sensitive(bool(songs))
 
@@ -310,9 +310,9 @@ class AudioFeeds(Browser):
     def __download_many(self, activator, sources):
         chooser = Gtk.FileChooserDialog(
             title=_("Download Files"), parent=qltk.get_top_parent(self),
-            action=Gtk.FileChooserAction.CREATE_FOLDER,
-            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                     Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+            action=Gtk.FileChooserAction.CREATE_FOLDER)
+        chooser.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        chooser.add_button(_("_Save"), Gtk.ResponseType.OK)
         chooser.set_current_folder(self.__last_folder)
         resp = chooser.run()
         if resp == Gtk.ResponseType.OK:
@@ -331,9 +331,9 @@ class AudioFeeds(Browser):
     def __download(self, activator, source):
         chooser = Gtk.FileChooserDialog(
             title=_("Download File"), parent=qltk.get_top_parent(self),
-            action=Gtk.FileChooserAction.SAVE,
-            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                     Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+            action=Gtk.FileChooserAction.SAVE)
+        chooser.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        chooser.add_button(_("_Save"), Gtk.ResponseType.OK)
         chooser.set_current_folder(self.__last_folder)
         name = os.path.basename(source)
         if name:
@@ -365,7 +365,7 @@ class AudioFeeds(Browser):
         swin.add(view)
         self.pack_start(swin, True, True, 0)
 
-        new = Button(_("_New"), Gtk.STOCK_ADD, Gtk.IconSize.MENU)
+        new = Button(_("_New"), Icons.LIST_ADD, Gtk.IconSize.MENU)
         new.connect('clicked', self.__new_feed)
         view.get_selection().connect('changed', self.__changed)
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -433,8 +433,8 @@ class AudioFeeds(Browser):
     def __popup_menu(self, view):
         model, paths = view.get_selection().get_selected_rows()
         menu = Gtk.Menu()
-        refresh = Gtk.ImageMenuItem(Gtk.STOCK_REFRESH, use_stock=True)
-        delete = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
+        refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
+        delete = MenuItem(_("_Delete"), Icons.EDIT_DELETE)
 
         connect_obj(refresh,
             'activate', self.__refresh, [model[p][0] for p in paths])

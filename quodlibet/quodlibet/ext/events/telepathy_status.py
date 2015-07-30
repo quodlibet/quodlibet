@@ -25,6 +25,7 @@ from quodlibet import qltk
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.util.dprint import print_d
+from quodlibet.qltk import Icons
 
 
 AM_PATH = "/org/freedesktop/Telepathy/AccountManager"
@@ -61,7 +62,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_DESC = _("Updates all Telepathy-based IM accounts (as configured "
                     "in Empathy etc) with a status message based on current "
                     "song.")
-    PLUGIN_ICON = Gtk.STOCK_CONNECT
+    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     DEFAULT_PAT = "♫ <~artist~title> ♫"
     DEFAULT_PAT_PAUSED = "<~artist~title> [%s]" % _("paused")

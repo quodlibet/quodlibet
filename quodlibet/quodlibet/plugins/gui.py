@@ -34,9 +34,7 @@ class MenuItemPlugin(Gtk.ImageMenuItem):
         """Sets the GTK icon for this plugin item"""
         icon = getattr(self, "PLUGIN_ICON", Icons.SYSTEM_RUN)
 
-        image = (Gtk.Image.new_from_stock(icon, Gtk.IconSize.MENU)
-                 if Gtk.stock_lookup(icon)
-                 else Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.MENU))
+        image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.MENU)
         self.set_always_show_image(True)
         self.set_image(image)
 

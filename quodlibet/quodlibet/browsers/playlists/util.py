@@ -37,8 +37,9 @@ class ConfirmRemovePlaylistDialog(qltk.Message):
             Gtk.MessageType.WARNING, parent, title, description,
             Gtk.ButtonsType.NONE)
 
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_DELETE, Gtk.ResponseType.YES)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Delete"), Icons.EDIT_DELETE,
+                             Gtk.ResponseType.YES)
 
 
 class GetPlaylistName(GetStringDialog):

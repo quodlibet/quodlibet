@@ -12,10 +12,10 @@ if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
-from gi.repository import Gtk
 import dbus
 
 from quodlibet import app
+from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -40,7 +40,7 @@ class SessionInhibit(EventPlugin):
     PLUGIN_NAME = _("Inhibit Screensaver")
     PLUGIN_DESC = _("Prevents the GNOME screensaver from activating while"
                     " a song is playing.")
-    PLUGIN_ICON = Gtk.STOCK_STOP
+    PLUGIN_ICON = Icons.PROCESS_STOP
 
     DBUS_NAME = "org.gnome.SessionManager"
     DBUS_INTERFACE = "org.gnome.SessionManager"

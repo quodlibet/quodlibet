@@ -13,6 +13,7 @@ from quodlibet import qltk
 
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import BaseView
+from quodlibet.qltk import Button, Icons
 from quodlibet.util import connect_obj
 
 
@@ -85,11 +86,11 @@ class PatternEditor(Gtk.HBox):
 
         ctrl_box = Gtk.VBox(spacing=6)
 
-        add = Gtk.Button(stock=Gtk.STOCK_ADD)
+        add = Button(_("_Add"), Icons.LIST_ADD)
         ctrl_box.pack_start(add, False, True, 0)
         add.connect('clicked', self.__add, model, cb)
 
-        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         ctrl_box.pack_start(remove, False, True, 0)
         remove.connect('clicked', self.__remove, view)
 
@@ -190,10 +191,10 @@ class Preferences(qltk.UniqueWindow):
         editor = PatternEditor()
         editor.headers = get_headers()
 
-        apply = Gtk.Button(stock=Gtk.STOCK_APPLY)
+        apply = Button(_("_Apply"))
         connect_obj(apply, "clicked", self.__apply, editor, False)
 
-        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+        cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda x: self.destroy())
 
         box = Gtk.HButtonBox()

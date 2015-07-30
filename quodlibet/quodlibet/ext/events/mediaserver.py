@@ -22,6 +22,7 @@ import dbus.service
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
+from quodlibet.qltk import Icons
 from quodlibet.util.uri import URI
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
@@ -35,7 +36,7 @@ class MediaServer(EventPlugin):
     PLUGIN_NAME = _("UPnP AV Media Server")
     PLUGIN_DESC = _("Exposes all albums to the Rygel UPnP Media Server "
                     "through the MediaServer2 D-Bus interface.")
-    PLUGIN_ICON = Gtk.STOCK_CONNECT
+    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def enabled(self):
         try:

@@ -5,7 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
 from threading import Thread
 
 from quodlibet import qltk
@@ -24,7 +23,7 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_DESC = _("Dynamically exports a playlist to Logitech Squeezebox "
                     "playlist, provided both share a directory structure. "
                     "Shares configuration with Squeezebox Sync plugin.")
-    PLUGIN_ICON = Gtk.STOCK_CONNECT
+    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
     TEMP_PLAYLIST = "_quodlibet"
 
     def __add_songs(self, task, songs, name):

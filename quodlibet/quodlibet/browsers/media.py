@@ -22,17 +22,20 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.wlw import WaitLoadBar
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.delete import DeleteDialog
-from quodlibet.qltk.x import Align, ScrolledWindow, Button
+from quodlibet.qltk.window import Dialog
+from quodlibet.qltk.x import Align, ScrolledWindow, Button, MenuItem
+from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 
 
-class DeviceProperties(Gtk.Dialog):
+class DeviceProperties(Dialog):
     def __init__(self, parent, device):
         super(DeviceProperties, self).__init__(
             title=_("Device Properties"),
             transient_for=qltk.get_top_parent(parent))
 
-        self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
+        self.add_icon_button(_("_Close"), Icons.WINDOW_CLOSE,
+                             Gtk.ResponseType.CLOSE)
         self.set_default_size(400, -1)
         self.connect('response', self.__close)
 
@@ -209,14 +212,14 @@ class MediaDevices(Browser, util.InstanceTracker):
         self.pack_start(Align(hbox, left=3, bottom=3), False, True, 0)
 
         # refresh button
-        refresh = Button(_("_Refresh"), Gtk.STOCK_REFRESH, Gtk.IconSize.MENU)
+        refresh = Button(_("_Refresh"), Icons.VIEW_REFRESH, Gtk.IconSize.MENU)
         self.__refresh_button = refresh
         connect_obj(refresh, 'clicked', self.__refresh, True)
         refresh.set_sensitive(False)
         hbox.pack_start(refresh, True, True, 0)
 
         # eject button
-        eject = Button(_("_Eject"), "media-eject", Gtk.IconSize.MENU)
+        eject = Button(_("_Eject"), Icons.MEDIA_EJECT, Gtk.IconSize.MENU)
         self.__eject_button = eject
         eject.connect('clicked', self.__eject)
         eject.set_sensitive(False)
@@ -350,12 +353,12 @@ class MediaDevices(Browser, util.InstanceTracker):
 
         menu.preseparate()
 
-        props = Gtk.ImageMenuItem(Gtk.STOCK_PROPERTIES, use_stock=True)
+        props = MenuItem(_("_Properties"), Icons.DOCUMENT_PROPERTIES)
         connect_obj(props, 'activate', self.__properties, model[iter][0])
         props.set_sensitive(not self.__busy)
         menu.prepend(props)
 
-        ren = qltk.MenuItem(_("_Rename"), Gtk.STOCK_EDIT)
+        ren = qltk.MenuItem(_("_Rename"), Icons.EDIT)
         keyval, mod = Gtk.accelerator_parse("F2")
         ren.add_accelerator(
             'activate', self.accelerators, keyval, mod, Gtk.AccelFlags.VISIBLE)
@@ -370,13 +373,13 @@ class MediaDevices(Browser, util.InstanceTracker):
 
         eject = Gtk.ImageMenuItem(_("_Eject"), use_underline=True)
         eject.set_image(
-            Gtk.Image.new_from_icon_name("media-eject", Gtk.IconSize.MENU))
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_EJECT, Gtk.IconSize.MENU))
         eject.set_sensitive(
             not self.__busy and device.eject and device.is_connected())
         connect_obj(eject, 'activate', self.__eject, None)
         menu.prepend(eject)
 
-        refresh = Gtk.ImageMenuItem(Gtk.STOCK_REFRESH, use_stock=True)
+        refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
         refresh.set_sensitive(device.is_connected())
         connect_obj(refresh, 'activate', self.__refresh, True)
         menu.prepend(refresh)

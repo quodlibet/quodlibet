@@ -12,6 +12,7 @@ from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.cbes import StandaloneEditor
 from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.qltk import Icons
 from quodlibet.util import website
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
 from quodlibet.util import connect_obj
@@ -28,7 +29,7 @@ class WebsiteSearch(SongsMenuPlugin):
     specific site look-up. The URLs are customisable using tag patterns.
     """
 
-    PLUGIN_ICON = Gtk.STOCK_OPEN
+    PLUGIN_ICON = Icons.DOCUMENT_OPEN
     PLUGIN_ID = "Website Search"
     PLUGIN_NAME = _("Website Search")
     PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
@@ -85,7 +86,7 @@ class WebsiteSearch(SongsMenuPlugin):
         hb = Gtk.HBox(spacing=3)
         hb.set_border_width(0)
 
-        button = qltk.Button(_("Edit search URLs"), Gtk.STOCK_EDIT)
+        button = qltk.Button(_("Edit search URLs"), Icons.EDIT)
         button.connect("clicked", cls.edit_patterns)
         hb.pack_start(button, True, True, 0)
         hb.show_all()

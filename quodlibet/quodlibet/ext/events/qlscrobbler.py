@@ -32,6 +32,7 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, QueryValidator
 from quodlibet.qltk.msg import Message
+from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
 
 
@@ -342,7 +343,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
     PLUGIN_NAME = _("AudioScrobbler Submission")
     PLUGIN_DESC = _("Audioscrobbler client for Last.fm, Libre.fm and other "
                     "Audioscrobbler services.")
-    PLUGIN_ICON = Gtk.STOCK_CONNECT
+    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
     # Retain original config section
     CONFIG_SECTION = "scrobbler"
 
@@ -515,7 +516,8 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         row += 1
 
         # verify data
-        button = qltk.Button(_("_Verify account data"), Gtk.STOCK_INFO)
+        button = qltk.Button(_("_Verify account data"),
+                             Icons.DIALOG_INFORMATION)
         button.connect('clicked', check_login)
         table.attach(button, 0, 2, 4, 5)
 
