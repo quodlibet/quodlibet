@@ -27,11 +27,13 @@ from quodlibet.qltk.notif import Task
 
 from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,
     GStreamerSink, link_many, bin_debug)
+
+from .sources import PlaybinHandler
+from .sourceshandler import GstAppSrcPluginHandler
 from .plugins import GStreamerPluginHandler
 from .prefs import GstPlayerPreferences
 
 STATE_CHANGE_TIMEOUT = Gst.SECOND * 4
-
 
 class BufferingWrapper(object):
     """A wrapper for a Gst.Element (usually GstPlayBin) which pauses the
@@ -157,6 +159,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         self.version_info = "GStreamer: %s" % fver(Gst.version())
         self._pipeline_desc = None
+        self._appsrc_plugin_handler = None
 
         self._volume = 1.0
         self._paused = True
@@ -166,6 +169,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._active_seeks = []
         self._active_error = False
         self._last_position = 0
+        self._uri_handler = None
 
         self.bin = None
         self._vol_element = None
@@ -178,6 +182,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.__atf_id = None
         self.__bus_id = None
         self._runner = MainRunner()
+
+    def init_plugins(self):
+        super(GStreamerPlayer, self).init_plugins()
+        self._appsrc_plugin_handler = GstAppSrcPluginHandler()
+        self._appsrc_plugin_handler.init_plugins()
 
     def __songs_changed(self, librarian, songs):
         # replaygain values might have changed, recalc volume
@@ -354,35 +363,33 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         flags &= ~(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_TEXT)
         self.bin.set_property("flags", flags)
 
-        # find the (uri)decodebin after setup and use autoplug-sort
-        # to sort elements like decoders
-        def source_setup(*args):
-            def autoplug_sort(decode, pad, caps, factories):
-                def set_prio(x):
-                    i, f = x
-                    i = {
-                        "mad": -1,
-                        "mpg123audiodec": -2
-                    }.get(f.get_name(), i)
-                    return (i, f)
-                return zip(*sorted(map(set_prio, enumerate(factories))))[1]
-
-            for e in iter_to_list(self.bin.iterate_recurse):
-                try:
-                    e.connect("autoplug-sort", autoplug_sort)
-                except TypeError:
-                    pass
-                else:
-                    break
-        self.bin.connect("source-setup", source_setup)
-
+        self._uri_handler = None
         # ReplayGain information gets lost when destroying
         self._reset_replaygain()
 
         if self.song:
-            self.bin.set_property('uri', self.song("~uri"))
+            self._set_song(self.song)
 
         return True
+
+    def _set_song(self, song):
+        if song is not None:
+            uri = song('~uri')
+            uri_split = uri.split(':')
+            uri_protocol = uri_split[0] if len(uri_split) > 1 else None
+            handler = (self._appsrc_plugin_handler
+                           .get_handler_for_protocol(uri_protocol))
+        else:
+            handler = None
+
+        if handler is None:
+            handler = PlaybinHandler
+
+        # if the current handler isn't correct for the new song
+        if not isinstance(self._uri_handler, handler):
+            self._uri_handler = handler(self, self.bin)
+
+        self._uri_handler.play_song(song)
 
     def __destroy_pipeline(self):
         self._remove_plugin_elements()
@@ -411,6 +418,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._ext_vol_element = None
         self._vol_element = None
         self._eq_element = None
+        self._uri_handler = None
 
     def _rebuild_pipeline(self):
         """If a pipeline is active, rebuild it and restore vol, position etc"""
@@ -574,8 +582,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if ok:
             print_d("About to finish (async): setting uri")
-            uri = song("~uri") if song is not None else None
-            playbin.set_property('uri', uri)
+            self._set_song(song)
         print_d("About to finish (async): done")
 
     def stop(self):

@@ -24,7 +24,7 @@ from quodlibet.const import MinVersions, Version
 
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
-               "gstreamer", "covers"]
+               "gstreamer", "covers", "gstappsrc"]
 
 
 GlibTranslations().install(unicode=True)
