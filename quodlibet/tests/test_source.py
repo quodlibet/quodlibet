@@ -20,7 +20,6 @@ def iter_py_paths():
     import quodlibet
     root = os.path.dirname(quodlibet.__path__[0])
 
-    print os.path.realpath(__file__)
     skip = [os.path.join(root, "docs")]
     for dirpath, dirnames, filenames in os.walk(root):
         if any((dirpath.startswith(s + os.sep) or s == dirpath)
