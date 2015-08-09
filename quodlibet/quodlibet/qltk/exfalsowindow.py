@@ -138,11 +138,16 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         self.__ag.connect(key, mod, 0, lambda *x: self.destroy())
         self.add_accel_group(self.__ag)
 
+        # GtkosxApplication assumes the menu bar is mapped, so add
+        # it but don't show it.
+        self._dummy_osx_menu_bar = Gtk.MenuBar()
+        vb.pack_start(self._dummy_osx_menu_bar, False, False, 0)
+
     def __library_changed(self, library, songs, fs):
         fs.rescan()
 
     def set_as_osx_window(self, osx_app):
-        osx_app.set_menu_bar(Gtk.MenuBar())
+        osx_app.set_menu_bar(self._dummy_osx_menu_bar)
 
     def get_osx_is_persistent(self):
         return False
