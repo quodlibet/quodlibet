@@ -71,7 +71,7 @@
   <!-- enable-fc and enable-ft required for librsvg's pixbuf loader -->
   <repository type="tarball" name="cairographics"
               href="http://cairographics.org/releases/"/>
-  <autotools id="cairo"  autogen-sh="configure"
+  <autotools id="cairo"  autogen-sh="configure" supports-non-srcdir-builds="no"
              autogenargs="--enable-pdf --enable-quartz --enable-ft --enable-fc --disable-xlib --without-x">
     <branch module="cairo-1.14.2.tar.xz"  version="1.14.2"
             repo="cairographics"
