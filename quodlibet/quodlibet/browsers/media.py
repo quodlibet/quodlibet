@@ -595,5 +595,6 @@ class MediaDevices(Browser, util.InstanceTracker):
 if devices.init():
     browsers = [MediaDevices]
 else:
-    print_w(_("No device backend, Media Devices browser disabled."))
+    if not util.is_windows() and not util.is_osx():
+        print_w(_("No device backend, Media Devices browser disabled."))
     browsers = []

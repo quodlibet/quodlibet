@@ -14,17 +14,19 @@ from quodlibet.util.dprint import print_d, print_w
 from gi.repository import GObject
 from quodlibet.util.path import xdg_get_system_data_dirs
 
-try:
-    import dbus
-except ImportError:
-    print_w(_("Could not import %s, which is needed for "
-        "device support.") % "dbus-python")
-    dbus = None
-
 import quodlibet
 from quodlibet import util
 from quodlibet.devices import _udev as udev
 from quodlibet.util.importhelper import load_dir_modules
+
+try:
+    import dbus
+except ImportError:
+    if not util.is_osx() and not util.is_windows():
+        print_w(_("Could not import %s, which is needed for "
+            "device support.") % "dbus-python")
+    dbus = None
+
 
 devices = []
 
@@ -45,7 +47,9 @@ def init_devices():
 
     devices.sort()
 
-init_devices()
+
+if not util.is_osx() and not util.is_windows():
+    init_devices()
 
 DEVICES = os.path.join(quodlibet.get_user_dir(), "devices")
 
