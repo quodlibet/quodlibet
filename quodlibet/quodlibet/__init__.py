@@ -606,11 +606,13 @@ def _init_osx(window):
     import objc
 
     try:
+        import gi
+        gi.require_version('GtkosxApplication', '1.0')
         from gi.repository import GtkosxApplication
-        osx_app = GtkosxApplication.Application()
-    except ImportError:
+    except (ValueError, ImportError):
         print_d("importing GtkosxApplication failed, no native menus")
     else:
+        osx_app = GtkosxApplication.Application()
         window.set_as_osx_window(osx_app)
         osx_app.ready()
 
