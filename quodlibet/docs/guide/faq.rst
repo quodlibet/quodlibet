@@ -114,6 +114,14 @@ Player
   Lesser-known (but useful) tags here might include ``~#playcount``,
   ``~#skipcount``, ``~#bitrate`` or ``~playlists``.
 
+**How do I add my own tags and display them in the header?**
+
+    1. Right-click (ctrl-click, etc) song in main window and select "Edit Tags" from the pop-up
+    dialogue.
+    2. Click the "Add" button and enter custom tag (ie. (*description*)). Save & Close popup.
+    3. Right-click Header bar and select "Customize Headers" from pop-up.
+    4. In the "Others" field, enter the (case sensitive) text of the custom tag name.
+
 
 **How do I use a different soundcard with Quod Libet?**
 
