@@ -101,10 +101,18 @@ properly**
 Player
 ------
 
-**How do I add the play count or skip count to the columns in the song list?**
+**How do I add custom / unusual tags to the columns in the song list?**
 
-    Add the ``~#playcount`` and/or ``~#skipcount`` tags to the song header
-    list (in the "Others" field).
+ 1. Refer to :ref:`editing tags<EditingTags>` if you need to add any custom
+    tags.
+ 2. Right-click the song list header bar and select *Customize Headers* from
+    the context menu (or click *Preferences* from the main menu and select
+    *Song List*)
+ 3. In the *Others* field, click *Edit*, then *Add*, and enter the custom tag
+    name, remembering that they are case-sensitive.
+
+  Lesser-known (but useful) tags here might include ``~#playcount``,
+  ``~#skipcount``, ``~#bitrate`` or ``~playlists``.
 
 
 **How do I use a different soundcard with Quod Libet?**
