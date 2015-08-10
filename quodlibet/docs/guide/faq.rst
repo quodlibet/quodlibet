@@ -4,14 +4,16 @@ Frequently Asked Questions
 Installation
 ------------
 
-**Does Quod Libet require GNOME?**
+Does Quod Libet require GNOME?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     No, but we recommend you install the GNOME libraries and Python
     bindings when using Quod Libet. If they are installed, Quod Libet will
     use your default GNOME audio options.
 
 
-**I'm running Gentoo / Arch, and...**
+I'm running Gentoo / Arch, and...
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     We are not the first line of support for `Gentoo Linux
     <http://gentoo.org/>`_. If you are running Gentoo and experience
@@ -23,14 +25,15 @@ Installation
 General
 -------
 
-**Why don't all my songs appear in the song list when I select their artist
-/ album / genre or search for them?**
+Why don't all my songs appear in the song list when searching for them?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Do you have a global filter in use? Check the *Browsers* tab in *Music*
     → *Preferences*.
 
 
-**Why can't I double-click a song in GNOME to play in Quod Libet?**
+Why can't I double-click a song in GNOME to play in Quod Libet?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     You can! File association is more to do with the file manager you're
     using. If you're using GNOME, right-click on the audio file in Nautilus
@@ -48,8 +51,8 @@ General
     one instance is ever loaded unless in dev mode).
 
 
-**My filenames with special characters (ú, ç, はあ, etc.) don't appear
-properly**
+My filenames with special characters (ú, ç, はあ, etc.) don't appear properly
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~@~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Unless told otherwise Quod Libet assumes your filesystem is using UTF-8
     filenames (this is a standard assumption for GTK+ applications). To
@@ -59,7 +62,8 @@ properly**
     character encoding for your locale.
 
 
-**Why do my MP3 files have the wrong length?**
+Why do my MP3 files have the wrong length?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     The ID3 standard defines the ``TLEN`` frame. If an MP3 has an ID3 tag
     which contains a ``TLEN`` frame, Quod Libet will use it. You can remove
@@ -77,7 +81,8 @@ properly**
         $ mp3val -f filename.mp3
 
 
-**I want keyboard shortcuts to change browsers (or anything else)**
+I want keyboard shortcuts to change browsers (or anything else)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Put ``gtk-can-change-accels = 1`` in ``~/.gtkrc-2.0`` (and restart Quod
     Libet). Then hover the mouse over the menu item you want to set an
@@ -87,7 +92,8 @@ properly**
     the GNOME settings.
 
 
-**Whenever I type a space, Quod Libet pauses**
+Whenever I type a space, Quod Libet pauses
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Users of some keyboard layouts, including the popular French
     Alternative, may hit this bug. In these layouts, the spacebar sends a
@@ -101,7 +107,8 @@ properly**
 Player
 ------
 
-**How do I add custom / unusual tags to the columns in the song list?**
+How do I add custom / unusual tags to the columns in the song list?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  1. Refer to :ref:`editing tags<EditingTags>` if you need to add any custom
     tags.
@@ -115,12 +122,14 @@ Player
   ``~#skipcount``, ``~#bitrate`` or ``~playlists``.
 
 
-**How do I use a different soundcard with Quod Libet?**
+How do I use a different soundcard with Quod Libet?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     See the chapter on configuring the AudioBackends in the user's guide.
 
 
-**Why does Quod Libet sort my songs out of order?**
+Why does Quod Libet sort my songs out of order?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Music metadata, like music, comes in many languages, and sorting
     multi-language text is hard to do. It depends on your language as well
@@ -132,8 +141,8 @@ Player
     would have to be fast since we compare thousands of strings when sorting.
 
 
-**I have two albums with the same name, and they sort out of order/get
-merged in the Album List**
+I have two albums with the same name which are merged in the Album List
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Tag them with different ``labelid`` tags (it's best if you use the
     actual label catalog ID, but if you can't find it you can also just use
@@ -141,8 +150,8 @@ merged in the Album List**
     which several other taggers can write.
 
 
-**I have two discs of the same album, and they don't get merged in the
-Album List.**
+I have two discs of the same album, and they don't get merged in the Album List
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Make sure they have the same name (i.e. without "(disc x)" on the end).
     If they are still not merged, they have different `labelid` or
@@ -151,7 +160,8 @@ Album List.**
     tags, add a ``labelid`` tag that is the same for both albums.
 
 
-**Can I show more than 0 to 4 notes when rating songs?**
+Can I show more than 0 to 4 notes when rating songs?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Close Quod Libet; in ``~/.quodlibet/config`` find the ``ratings = 4``
     line. Change it to ``ratings = however many ratings you want``. It's
@@ -159,13 +169,15 @@ Album List.**
     You will need to use the ratings right-click menu to set ratings above 4.
 
 
-**How can I hide incomplete albums from the Album View?**
+How can I hide incomplete albums from the Album View?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     One way is to enter ``#(tracks > 5)`` into the search box above the
     album list - this will only show albums with greater than than 5 tracks.
 
 
-**How can I list my tracks based on their ratings?**
+How can I list my tracks based on their ratings?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Right-click somewhere on the headers bar (below the search bar), select
     "Track Headers" from the menu and add "Ratings". Now if you click
@@ -173,7 +185,8 @@ Album List.**
     ratings.
 
 
-**How is album art handled?**
+How is album art handled?
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
     There are many ways users like to keep their album art, and Quod Libet
     supports graphics (primarily `.jpg` but `.gif` and `.png` also) in
@@ -197,7 +210,8 @@ Album List.**
     allows you to do so easily and is compatible with the above.
 
 
-**Why do songs disappear from my playlists?**
+Why do songs disappear from my playlists?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     This is due to the way the library works, and that playlists entries
     are based on filename. One of several things might have happened,
@@ -216,8 +230,8 @@ Album List.**
 Tag Editing
 -----------
 
-**I have a lot of ID3 tags in euc-kr/cp1251/windows-1252/latin-1024/insert
-favorite encoding here; can QL read them?**
+Can QL read my ID3 tags encoded in euc-kr / cp1251 / windows-1252 etc?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     You can define a custom list of encodings to check. UTF-8 is always
     tried first, and Latin-1 is always tried last. To make your own list,
@@ -232,7 +246,8 @@ favorite encoding here; can QL read them?**
 Other stuff
 -----------
 
-**What does the name mean?**
+What does the name mean?
+~~~~~~~~~~~~~~~~~~~~~~~~
 
     *Quodlibet* or *Quod libet* is Latin for "whatever you please" or
     "whatever you want", which is the kind of attitude we want to convey
@@ -249,13 +264,15 @@ Other stuff
     because I was experimenting with a syntax for a _q_uery _l_anguage.
 
 
-**Where do the release names come from?**
+Where do the release names come from?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     `Daily Dinosaur Comics <http://www.qwantz.com/>`_ at the time of the
     release.
 
 
-**I like <my favorite player>, so I won't use Quod Libet!**
+I like <my favorite player>, so I won't use Quod Libet!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Okay. We think Quod Libet beats other players in the areas where it
     counts (where exactly it does count is undecided; 'tag editing',
