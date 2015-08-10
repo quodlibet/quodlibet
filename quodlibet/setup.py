@@ -43,7 +43,7 @@ class build_sphinx(Command):
         TARGET = os.path.join(self.build_dir, "sphinx")
 
         self.spawn(["sphinx-build", "-b", "html", "-c", DOCS_ROOT,
-                    "-n", GUIDE_ROOT, TARGET])
+                    "-n", DOCS_ROOT, TARGET])
 
 
 class test_cmd(Command):
