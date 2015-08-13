@@ -2,6 +2,7 @@
 from quodlibet.browsers.playlists.util import parse_m3u, parse_pls, PLAYLISTS
 from quodlibet.util.collection import Playlist
 from tests import TestCase, DATA_DIR, mkstemp, mkdtemp
+from helper import dummy_path
 
 import os
 import shutil
@@ -80,23 +81,23 @@ class TPlaylistIntegration(TestCase):
     SONG = AudioFile({
                 "title": "two",
                 "artist": "mu",
-                "~filename": fsnative(u"/dev/zero")})
+                "~filename": dummy_path(u"/dev/zero")})
     SONGS = [
         AudioFile({
                 "title": "one",
                 "artist": "piman",
-                "~filename": fsnative(u"/dev/null")}),
+                "~filename": dummy_path(u"/dev/null")}),
         SONG,
         AudioFile({
                 "title": "three",
                 "artist": "boris",
-                "~filename": fsnative(u"/bin/ls")}),
+                "~filename": dummy_path(u"/bin/ls")}),
         AudioFile({
                 "title": "four",
                 "artist": "random",
                 "album": "don't stop",
                 "labelid": "65432-1",
-                "~filename": fsnative(u"/dev/random")}),
+                "~filename": dummy_path(u"/dev/random")}),
         SONG,
         ]
 

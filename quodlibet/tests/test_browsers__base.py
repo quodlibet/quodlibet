@@ -9,11 +9,10 @@
 from gi.repository import Gtk
 
 from tests import TestCase, init_fake_app, destroy_fake_app
-from helper import realized
+from helper import realized, dummy_path
 
 from quodlibet import browsers
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import fsnative
 from quodlibet import config
 from quodlibet.browsers import Browser
 from quodlibet.library import SongFileLibrary, SongLibrarian
@@ -23,17 +22,17 @@ SONGS = [
     AudioFile({
         "title": "one",
         "artist": "piman",
-        "~filename": fsnative(u"/dev/null"),
+        "~filename": dummy_path(u"/dev/null"),
     }),
     AudioFile({
         "title": "two",
         "artist": "mu",
-        "~filename": fsnative(u"/dev/zero"),
+        "~filename": dummy_path(u"/dev/zero"),
     }),
     AudioFile({
         "title": "three",
         "artist": "boris",
-        "~filename": fsnative(u"/bin/ls"),
+        "~filename": dummy_path(u"/bin/ls"),
     })
 ]
 SONGS.sort()
@@ -123,7 +122,7 @@ class TBrowserMixin(object):
             self.b.activate()
             self.b.statusbar(1000)
             self.b.statusbar(1)
-            song = AudioFile({"~filename": fsnative(u"/fake")})
+            song = AudioFile({"~filename": dummy_path(u"/fake")})
             song.sanitize()
             self.b.scroll(song)
 

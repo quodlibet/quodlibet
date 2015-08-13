@@ -14,6 +14,14 @@ import sys
 from gi.repository import Gtk, Gdk
 
 from quodlibet.qltk import find_widgets
+from quodlibet.util.path import fsnative, normalize_path
+
+
+def dummy_path(path):
+    path = fsnative(path)
+    if os.name == "nt":
+        return normalize_path(u"z:\\" + path.replace(u"/", u"\\"))
+    return path
 
 
 def _send_key_click_event(widget, **kwargs):
