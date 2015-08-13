@@ -11,7 +11,7 @@ from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.library import SongLibrary
 import quodlibet.config
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import fsnative, fsnative2glib
+from quodlibet.util.path import fsnative2glib, mkdir
 from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
 from tests.test_browsers_search import SONGS, TSearchBar
@@ -154,36 +154,47 @@ class TPlaylistIntegration(TestCase):
 
 class TPlaylists(TSearchBar):
     Bar = PlaylistsBrowser
+
     ANOTHER_SONG = AudioFile({
         "title": "lonely",
         "artist": "new artist",
-        "~filename": fsnative(u"/dev/urandom")})
-
-    @classmethod
-    def setUpClass(cls):
-        # Only want to do this playlists setup once per test class...
-        quodlibet.config.init()
-        cls.lib = quodlibet.browsers.playlists.library = SongLibrary()
-        cls.lib.librarian = SongLibrarian()
-        all_songs = SONGS + [cls.ANOTHER_SONG]
-        for af in all_songs:
-            af.sanitize()
-        cls.lib.add(all_songs)
-        cls._create_temp_playlist_with("Big", SONGS)
-        cls._create_temp_playlist_with("Small", [cls.ANOTHER_SONG])
-        PlaylistsBrowser.init(cls.lib)
-
-    @classmethod
-    def _create_temp_playlist_with(cls, name, songs):
-        pl = Playlist.new(PLAYLISTS, name, cls.lib)
-        pl.extend(songs)
-        pl.write()
+        "~filename": dummy_path(u"/dev/urandom")})
 
     def setUp(self):
+        try:
+            shutil.rmtree(PLAYLISTS)
+        except OSError:
+            pass
+
+        mkdir(PLAYLISTS)
+
+        self.lib = quodlibet.browsers.playlists.library = SongLibrary()
+        self.lib.librarian = SongLibrarian()
+        all_songs = SONGS + [self.ANOTHER_SONG]
+        for af in all_songs:
+            af.sanitize()
+        self.lib.add(all_songs)
+
+        pl = Playlist.new(PLAYLISTS, "Big", self.lib)
+        pl.extend(SONGS)
+        pl.write()
+
+        pl = Playlist.new(PLAYLISTS, "Small", self.lib)
+        pl.extend([self.ANOTHER_SONG])
+        pl.write()
+
+        PlaylistsBrowser.init(self.lib)
+
         self.bar = PlaylistsBrowser(self.lib)
         self.bar.connect('songs-selected', self._expected)
         self.bar._select_playlist(self.bar.playlists()[0])
         self.expected = None
+
+    def tearDown(self):
+        self.bar.destroy()
+        self.lib.destroy()
+        shutil.rmtree(PLAYLISTS)
+        PlaylistsBrowser.deinit(self.lib)
 
     def test_saverestore(self):
         # Flush previous signals, etc. Hmm.
@@ -223,11 +234,3 @@ class TPlaylists(TSearchBar):
         self.bar.filter_text("piman")
         self.assertFalse(self.bar.active_filter(self.ANOTHER_SONG),
                          msg="Shouldn't have matched 'piman' on second list")
-
-    def tearDown(self):
-        self.bar.destroy()
-        self.lib.destroy()
-
-    @classmethod
-    def tearDownClass(cls):
-        quodlibet.config.quit()

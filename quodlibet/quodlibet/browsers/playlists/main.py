@@ -66,9 +66,21 @@ class PlaylistsBrowser(Browser):
                 model.append(row=[playlist])
             except EnvironmentError:
                 pass
-        library.connect('removed', klass.__removed)
-        library.connect('added', klass.__added)
-        library.connect('changed', klass.__changed)
+
+        klass._ids = [
+            library.connect('removed', klass.__removed),
+            library.connect('added', klass.__added),
+            library.connect('changed', klass.__changed),
+        ]
+
+    @classmethod
+    def deinit(cls, library):
+        model = cls.__lists.get_model()
+        model.clear()
+
+        for id_ in cls._ids:
+            library.disconnect(id_)
+        del cls._ids
 
     @classmethod
     def playlists(klass):
