@@ -63,6 +63,13 @@ class CoverManager(GObject.Object):
         self.plugin_handler = CoverPluginHandler(use_built_in)
         self._pool = ThreadPool()
 
+    def destroy(self):
+        """After this is called the manager can't be used anymore.
+        Any outstanding work will be aborted.
+        """
+
+        self._pool.terminate()
+
     def init_plugins(self):
         """Register the cover sources plugin handler with the global
         plugin manager.

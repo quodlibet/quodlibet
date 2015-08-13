@@ -210,6 +210,7 @@ def main(argv):
     mmkeys_handler.quit()
     remote.stop()
     fsiface.destroy()
+    app.cover_manager.destroy()
 
     tracker.destroy()
     quodlibet.library.save()
