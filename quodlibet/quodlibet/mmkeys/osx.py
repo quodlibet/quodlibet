@@ -75,6 +75,7 @@ class MacKeyEventsTap(threading.Thread):
         # evenTrap disabled by timeout or user input, reenable
         if type_ == Quartz.kCGEventTapDisabledByUserInput or \
                 type_ == Quartz.kCGEventTapDisabledByTimeout:
+            assert self._tap is not None
             Quartz.CGEventTapEnable(self._tap, True)
             return event
 
@@ -147,10 +148,6 @@ class MacKeyEventsTap(threading.Thread):
         if self._tap is None:
             return
 
-        # Disable the tap
-        Quartz.CGEventTapEnable(self._tap, False)
-        self._tap = None
-
         # remove the runloop source
         Quartz.CFRunLoopRemoveSource(
             self._loop,
@@ -167,3 +164,7 @@ class MacKeyEventsTap(threading.Thread):
         # stop the loop
         Quartz.CFRunLoopStop(self._loop)
         self._loop = None
+
+        # Disable the tap
+        Quartz.CGEventTapEnable(self._tap, False)
+        self._tap = None
