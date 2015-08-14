@@ -977,8 +977,6 @@ def load_library(names, shared=True):
         except OSError as e:
             errors.append(str(e))
 
-
-
     raise OSError("\n".join(errors))
 
 
