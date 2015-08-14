@@ -953,16 +953,31 @@ def load_library(names, shared=True):
     else:
         load_func = ctypes.cdll.LoadLibrary
 
+    if is_osx():
+        # make sure it's either empty or contains /usr/lib.
+        # (jhbuild sets it for example). Otherwise ctypes can't
+        # find libc (bug?)
+        if "DYLD_FALLBACK_LIBRARY_PATH" in os.environ:
+            paths = os.environ["DYLD_FALLBACK_LIBRARY_PATH"]
+            paths = paths.split(os.pathsep)
+            if "/usr/lib" not in paths:
+                paths.append("/usr/lib")
+                os.environ["DYLD_FALLBACK_LIBRARY_PATH"] = \
+                    os.pathsep.join(paths)
+
     errors = []
     for name in names:
         dlopen_name = name
-        if ".so" not in name and ".dll" not in name:
+        if ".so" not in name and ".dll" not in name and \
+                ".dylib" not in name:
             dlopen_name = ctypes.util.find_library(name) or name
 
         try:
             return load_func(dlopen_name), name
         except OSError as e:
             errors.append(str(e))
+
+
 
     raise OSError("\n".join(errors))
 

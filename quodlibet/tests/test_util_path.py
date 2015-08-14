@@ -64,7 +64,7 @@ class Tiscommand(TestCase):
     def test_unix(self):
         self.failUnless(iscommand("ls"))
         self.failUnless(iscommand("/bin/ls"))
-        self.failUnless(iscommand("pidof"))
+        self.failUnless(iscommand("whoami"))
 
     def test_both(self):
         self.failIf(iscommand("zzzzzzzzz"))

@@ -267,7 +267,7 @@ class TCoverManagerBuiltin(TestCase):
         song2 = MP3File(self.file2)
 
         def is_embedded(fileobj):
-            return not path_equal(fileobj.name, self.cover2)
+            return not path_equal(fileobj.name, self.cover2, True)
 
         # each should find a cover
         self.assertTrue(is_embedded(self.manager.get_cover(song1)))

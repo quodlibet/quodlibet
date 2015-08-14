@@ -29,4 +29,4 @@ class TUtilEnvironment(TestCase):
             self.assertFalse(is_osx())
 
         if is_osx():
-            self.assertFalse(is_osx())
+            self.assertFalse(is_windows())
