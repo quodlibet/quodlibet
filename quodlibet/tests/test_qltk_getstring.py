@@ -25,6 +25,10 @@ class TGetStringDialog(TestCase):
         ret = self.gsd1.run(text="foobar", test=True)
         self.failUnlessEqual(ret, "foobar")
 
+    def test_tooltip(self):
+        foo = GetStringDialog(Gtk.Window(), "title", "", tooltip="foo bar")
+        self.failUnlessEqual(foo._val.get_tooltip_text(), "foo bar")
+
     def test_clipboard(self):
         clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
         clipboard.set_text("42", -1)
