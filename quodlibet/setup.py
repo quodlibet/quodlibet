@@ -29,21 +29,25 @@ class build_sphinx(Command):
     description = "build sphinx documentation"
     user_options = [
         ("build-dir=", "d", "build directory"),
+        ("all", "a", "build all docs, not just the user guide"),
     ]
 
     def initialize_options(self):
         self.build_dir = None
+        self.all = False
 
     def finalize_options(self):
         self.build_dir = self.build_dir or "build"
+        self.all = bool(self.all)
 
     def run(self):
         DOCS_ROOT = "docs"
         GUIDE_ROOT = os.path.join(DOCS_ROOT, "guide")
         TARGET = os.path.join(self.build_dir, "sphinx")
 
+        srcdir = GUIDE_ROOT if not self.all else DOCS_ROOT
         self.spawn(["sphinx-build", "-b", "html", "-c", DOCS_ROOT,
-                    "-n", GUIDE_ROOT, TARGET])
+                    "-n", "-E", srcdir, TARGET])
 
 
 class test_cmd(Command):
