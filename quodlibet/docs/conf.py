@@ -2,6 +2,7 @@
 
 import os
 import sys
+import sphinx
 
 dir_ = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, dir_)
@@ -18,11 +19,12 @@ release = const.VERSION
 if release.endswith(".-1"):
     release = release[:-3]
 exclude_patterns = ['_build', '_rtd_theme_repo', 'README.rst']
-html_theme = "haiku"
+if sphinx.version_info >= (1, 3):
+    html_theme = "sphinx_rtd_theme"
+else:
+    html_theme = "default"
 html_title = "%s (%s)" % (project, version)
 bug_url_template = "https://github.com/quodlibet/quodlibet/issues/%s"
-
-RTD_NEW_THEME = True
 
 # on a stable branch which isn't a release
 if const.BRANCH_NAME != "master" and const.VERSION_TUPLE[-1] == -1:
