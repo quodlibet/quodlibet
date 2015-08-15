@@ -333,8 +333,10 @@ class MediaDevices(Browser, util.InstanceTracker):
         selection.select_iter(row.iter)
 
     def active_filter(self, song):
-        model, iter = self.__view.get_selection().get_selected()
-        device = model[iter][0]
+        model, iter_ = self.__view.get_selection().get_selected()
+        if iter_ is None:
+            return False
+        device = model[iter_][0]
         return device.contains(song)
 
     def dropped(self, songs):

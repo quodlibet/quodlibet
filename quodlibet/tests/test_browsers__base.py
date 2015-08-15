@@ -109,6 +109,11 @@ class TBrowserMixin(object):
     def test_init(self):
         self.Kind.init(self.library)
 
+    def test_active_filter(self):
+        with realized(self.b):
+            if self.b.active_filter is not None:
+                self.b.active_filter(SONGS[0])
+
     def test_save_restore(self):
         self.b.restore()
         self.b.finalize(True)

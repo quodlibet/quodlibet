@@ -66,7 +66,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         super(PanedBrowser, self).__init__()
         self._register_instance()
 
-        self._filter = None
+        self._filter = lambda s: False
         self._library = library
 
         self.set_spacing(6)
