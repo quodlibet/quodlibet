@@ -7,6 +7,7 @@
 
 from gi.repository import Gtk
 from gi.repository import Pango
+import re
 
 from quodlibet import qltk, util
 from quodlibet.util.dprint import print_d
@@ -17,6 +18,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util.json_data import JSONObjectDict
 from quodlibet.util import connect_obj
 from quodlibet.qltk.getstring import GetStringDialog
+from quodlibet.util.tags import _TAGS
 
 
 class JSONBasedEditor(qltk.UniqueWindow):
@@ -254,13 +256,13 @@ class JSONBasedEditor(qltk.UniqueWindow):
         all.save(filename=self.filename)
 
 
-class MultiStringEditor(qltk.UniqueWindow):
-    """Dialog to edit a list of strings"""
-    _WIDTH = 400
+class TagListEditor(qltk.UniqueWindow):
+    """Dialog to edit a list of tag names."""
+    _WIDTH = 600
     _HEIGHT = 300
 
     def __init__(self, title, values=None):
-        super(MultiStringEditor, self).__init__()
+        super(TagListEditor, self).__init__()
         self.data = values or []
         self.set_border_width(12)
         self.set_title(title)
@@ -323,17 +325,39 @@ class MultiStringEditor(qltk.UniqueWindow):
         self.get_child().show_all()
 
     def __setup_column(self, view):
-        def cdf(column, cell, model, iter, data):
+        def tag_cdf(column, cell, model, iter, data):
             row = model[iter]
             if row:
                 cell.set_property('text', row[0])
 
+        def desc_cdf(column, cell, model, iter, data):
+            row = model[iter]
+            if row:
+                name = re.sub(':[a-z]+$', '', row[0].strip('~#'))
+                try:
+                    t = _TAGS[name]
+                    valid = (not t.hidden
+                             and t.numeric == row[0].startswith('~#'))
+                    val = t.desc if valid else name
+                except KeyError:
+                    val = name
+                cell.set_property('text', util.title(val.replace('~', ' / ')))
+
+        render = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn(_("Tag expression"), render)
+        column.set_cell_data_func(render, tag_cdf)
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column.set_expand(True)
+        view.append_column(column)
+
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
-        column = Gtk.TreeViewColumn(None, render)
-        column.set_cell_data_func(render, cdf)
+        column = Gtk.TreeViewColumn(_("Description"), render)
+        column.set_cell_data_func(render, desc_cdf)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column.set_expand(True)
         view.append_column(column)
+        view.set_headers_visible(True)
 
     def __fill_values(self):
         for s in self.data:
@@ -347,9 +371,10 @@ class MultiStringEditor(qltk.UniqueWindow):
         self.view.remove_selection()
 
     def __add(self, *args):
-        dialog = GetStringDialog(self, _("Enter new value"), "",
-                                 button_label=_("_Add"),
-                                 button_icon=Icons.LIST_ADD)
+        tooltip = _('Tag expression e.g. people:real or ~album~year.')
+        dialog = GetStringDialog(self, _("Enter new tag"), "",
+                                 button_icon=None,
+                                 tooltip=tooltip)
         new = dialog.run()
         if new:
             self.model.append(row=[new])

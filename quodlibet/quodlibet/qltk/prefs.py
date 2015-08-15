@@ -18,7 +18,7 @@ from quodlibet import app
 from quodlibet.config import RATINGS
 
 from quodlibet.qltk.ccb import ConfigCheckButton as CCB
-from quodlibet.qltk.data_editors import MultiStringEditor
+from quodlibet.qltk.data_editors import TagListEditor
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, QueryValidator
 from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.maskedbox import MaskedBox
@@ -201,7 +201,7 @@ class PreferencesWindow(UniqueWindow):
                 self.other_cols = widget.get_strings()
                 self.others.set_text(", ".join(self.other_cols))
 
-            m = MultiStringEditor(_("Extra Columns"), self.other_cols)
+            m = TagListEditor(_("Extra Columns"), self.other_cols)
             m.connect('destroy', __closed)
             m.show()
 

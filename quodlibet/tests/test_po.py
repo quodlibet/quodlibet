@@ -125,7 +125,8 @@ class TPot(TestCase):
             Hello,world - missing whitespace
         """
         fails = []
-        regex = re.compile(r'\s[.,:;!?](?![a-z])|[a-z][,:;][a-zA-Z]')
+        regex = re.compile(r'\s[.,:;!?](?![a-z])|'
+                           r'[a-z](?<!people)[,:;][a-zA-Z]')
 
         for entry in self.pot:
             if regex.findall(entry.msgid):
