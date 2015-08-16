@@ -25,6 +25,8 @@
   <repository type='tarball' name='ftp.gnupg.org' href="ftp://ftp.gnupg.org/" />
   <repository type="tarball" name="mutagen"
               href="https://bitbucket.org/lazka/mutagen/downloads/"/>
+  <repository type="tarball" name="chromaprint"
+              href="https://bitbucket.org/acoustid/chromaprint/downloads/"/>
   <repository type="tarball" name="entropywave"
 	      href="http://code.entropywave.com/download/"/>
   <repository type="tarball" name="xiph"
@@ -311,8 +313,16 @@
       <dep package="libopus"/>
       <dep package="libmpg123"/>
       <dep package="bs2b"/>
+      <dep package="chromaprint"/>
     </dependencies>
   </autotools>
+
+  <cmake id="chromaprint" cmakeargs="-DCMAKE_BUILD_TYPE=Release">
+        <branch repo="chromaprint" checkoutdir="chromaprint-1.1" module="chromaprint-1.1.tar.gz"
+            version="1.1" hash="sha256:6b14d7ea4964581b73bd3f8038c8857c01e446421c1ae99cbbf64de26b47cd12">
+            <patch file="patches/chromaprint-pkgconfig.diff"/>
+        </branch>
+  </cmake>
 
   <!-- gst-plugins-ugly
        Upstream: http://gstreamer.freedesktop.org/src/gst-plugins-ugly/
