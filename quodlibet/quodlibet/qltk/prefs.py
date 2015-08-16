@@ -202,6 +202,7 @@ class PreferencesWindow(UniqueWindow):
                 self.others.set_text(", ".join(self.other_cols))
 
             m = TagListEditor(_("Extra Columns"), self.other_cols)
+            m.set_transient_for(qltk.get_top_parent(self))
             m.connect('destroy', __closed)
             m.show()
 

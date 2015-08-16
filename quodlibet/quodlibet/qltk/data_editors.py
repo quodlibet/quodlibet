@@ -256,13 +256,14 @@ class JSONBasedEditor(qltk.UniqueWindow):
         all.save(filename=self.filename)
 
 
-class TagListEditor(qltk.UniqueWindow):
+class TagListEditor(qltk.Window):
     """Dialog to edit a list of tag names."""
     _WIDTH = 600
     _HEIGHT = 300
 
     def __init__(self, title, values=None):
         super(TagListEditor, self).__init__()
+        self.use_header_bar()
         self.data = values or []
         self.set_border_width(12)
         self.set_title(title)
@@ -317,8 +318,9 @@ class TagListEditor(qltk.UniqueWindow):
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         connect_obj(close, 'clicked', qltk.Window.destroy, self)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        bbox.pack_start(close, True, True, 0)
-        vbox.pack_start(bbox, False, True, 0)
+        if not self.has_close_button():
+            bbox.pack_start(close, True, True, 0)
+            vbox.pack_start(bbox, False, True, 0)
 
         # Finish up
         self.add(vbox)
