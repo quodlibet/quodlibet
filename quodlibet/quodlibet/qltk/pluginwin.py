@@ -28,7 +28,7 @@ class PluginErrorWindow(UniqueWindow):
             return
         super(PluginErrorWindow, self).__init__()
 
-        self.set_title(_("Plugin Errors") + " - Quod Libet")
+        self.set_title(_("Plugin Errors"))
         self.set_border_width(12)
         self.set_transient_for(parent)
         self.set_default_size(520, 300)
@@ -274,7 +274,7 @@ class PluginWindow(UniqueWindow):
         if self.is_not_unique():
             return
         super(PluginWindow, self).__init__()
-        self.set_title(_("Plugins") + " - Quod Libet")
+        self.set_title(_("Plugins"))
         self.set_border_width(12)
         self.set_default_size(655, 404)
         self.set_transient_for(parent)

@@ -184,7 +184,7 @@ class Preferences(qltk.UniqueWindow):
         self.set_default_size(350, 225)
         self.set_border_width(12)
 
-        self.set_title(_("Album Collection Preferences") + " - Quod Libet")
+        self.set_title(_("Album Collection Preferences"))
 
         vbox = Gtk.VBox(spacing=12)
 

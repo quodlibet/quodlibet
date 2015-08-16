@@ -71,7 +71,7 @@ class Preferences(qltk.UniqueWindow):
             return
         super(Preferences, self).__init__()
         self.set_border_width(12)
-        self.set_title(_("Album List Preferences") + " - Quod Libet")
+        self.set_title(_("Album List Preferences"))
         self.set_default_size(420, 380)
         self.set_transient_for(qltk.get_top_parent(browser))
         # Do this config-driven setup at instance-time

@@ -637,7 +637,7 @@ class PreferencesWindow(UniqueWindow):
             return
         super(PreferencesWindow, self).__init__()
         self.current_scan_dirs = get_scan_dirs()
-        self.set_title(_("Preferences") + " - Quod Libet")
+        self.set_title(_("Preferences"))
         self.set_resizable(False)
         self.set_transient_for(qltk.get_top_parent(parent))
 

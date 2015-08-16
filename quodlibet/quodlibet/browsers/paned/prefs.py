@@ -186,7 +186,7 @@ class Preferences(qltk.UniqueWindow):
         self.set_default_size(350, 300)
         self.set_border_width(12)
 
-        self.set_title(_("Paned Browser Preferences") + " - Quod Libet")
+        self.set_title(_("Paned Browser Preferences"))
 
         vbox = Gtk.VBox(spacing=12)
 
