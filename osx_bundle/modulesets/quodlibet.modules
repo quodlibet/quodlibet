@@ -57,6 +57,7 @@
       <dep package="musicbrainz2" />
       <dep package="meta-gtk-osx-python-gtk3"/>
       <dep package="pyobjc"/>
+      <dep package="cddb"/>
     </dependencies>
   </metamodule>
 
@@ -125,6 +126,13 @@
   <distutils id="setuptools">
     <branch repo="pypi" checkoutdir="setuptools-0.6c11" module="s/setuptools/setuptools-0.6c11.tar.gz"
 	    version="0.6c11" md5sum="7df2a529a074f613b509fb44feefe74e"/>
+  </distutils>
+
+  <distutils id="cddb">
+    <branch repo="sourceforge" version="1.4"
+            module="cddb-py/cddb-py/1.4/CDDB-1.4.tar.gz"
+            hash="sha256:bcd0f2f21848f2fcd692c542f124ec3e1414391ddeb6114f6f7bc5724a831d25">
+    </branch>
   </distutils>
 
   <!-- Upstream: https://github.com/kurtmckee/feedparser/blob/develop/NEWS -->
