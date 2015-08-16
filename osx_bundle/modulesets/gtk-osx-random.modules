@@ -157,10 +157,10 @@ Libglade itself is deprecated. This is the last release. -->
 <!-- Glade 3.10 is the first stable series for Gtk+-3. Note the name
      change back to just "glade"-->
   <autotools id="glade" autogen-sh="configure"
-	     autogenargs="--disable-scrollkeeper">
+	     autogenargs='--disable-scrollkeeper --disable-introspection CPPFLAGS="$CPPFLAGS -xobjective-c"'>
     <branch module="glade/3.18/glade-3.18.3.tar.xz" version="3.18.3"
             hash="sha256:ecdbce46e7fbfecd463be840b94fbf54d83723b3ebe075414cfd225ddab66452">
-      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/glade-3_16_1.patch" strip="1"/>
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/glade-1-18.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="itstool"/>
@@ -410,6 +410,7 @@ Libglade itself is deprecated. This is the last release. -->
     <!--branch repo="ftp.gnu.org" module="gmp/gmp-5.0.5.tar.bz2" version="5.0.5"/-->
     <branch repo="ftp.gnu.org" module="gmp/gmp-4.3.2.tar.bz2" version="4.3.2">
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gmp-cc-for-build-needs-cflags.patch" strip="1"/>
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gmp-4.3.2-stddef.patch" strip="1"/>
     </branch>
   </autotools>
 

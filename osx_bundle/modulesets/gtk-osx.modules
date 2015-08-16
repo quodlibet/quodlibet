@@ -215,7 +215,8 @@
     </after>
   </autotools>
 
-  <autotools id="pixman" autogenargs="--disable-gtk" autogen-sh="configure">
+  <autotools id="pixman" autogenargs="--disable-gtk --disable-mmx"
+             autogen-sh="configure">
     <branch version="0.32.6" module="pixman-0.32.6.tar.gz"
             repo="cairographics"
             hash="sha1:8791343cbf6d99451f4d08e8209d6ac11bf96df2"/>
