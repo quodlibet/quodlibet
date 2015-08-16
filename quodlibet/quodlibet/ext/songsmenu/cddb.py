@@ -34,7 +34,7 @@ CLIENTINFO = {'client_name': "quodlibet", 'client_version': VERSION}
 
 
 def sumdigits(n):
-    return sum(map(long, str(n)))
+    return sum(map(long, str(int(n))))
 
 
 def calculate_discid(album):
@@ -44,6 +44,7 @@ def calculate_discid(album):
     for length in lengths:
         offsets.append(total_time)
         total_time += length
+    total_time = int(total_time)
     checksum = sum(map(sumdigits, offsets))
     discid = ((checksum % 0xff) << 24) | (total_time << 8) | len(album)
     return [discid, len(album)] + [75 * o for o in offsets] + [total_time]
