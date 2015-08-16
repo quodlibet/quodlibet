@@ -5,6 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
+import sys
 import urllib
 import urllib2
 import threading
@@ -12,7 +14,11 @@ import socket
 import Queue
 from xml.dom import minidom
 
-from quodlibet.plugins import PluginImportException
+from quodlibet.plugins import PluginImportException, \
+    PluginNotSupportedError
+
+if os.name == "nt" or sys.platform == "darwin":
+    raise PluginNotSupportedError
 
 import gi
 try:

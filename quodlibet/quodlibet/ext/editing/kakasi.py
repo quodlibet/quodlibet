@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 
-if os.name == "nt":
+if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
