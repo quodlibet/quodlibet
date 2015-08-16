@@ -310,6 +310,7 @@
       <dep package="libvorbis"/>
       <dep package="libopus"/>
       <dep package="libmpg123"/>
+      <dep package="bs2b"/>
     </dependencies>
   </autotools>
 
@@ -394,6 +395,14 @@
     <branch repo="sourceforge" version="2.7"
             module="faac/faad2-src/faad2-2.7/faad2-2.7.tar.bz2">
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/faad2-2.7-ac-config-headers.patch" strip="1"/>
+    </branch>
+  </autotools>
+
+  <autotools id="bs2b" autogen-sh="autoreconf"
+             autogenargs="">
+    <branch repo="sourceforge" version="3.1.0"
+            module="bs2b/libbs2b/3.1.0/libbs2b-3.1.0.tar.gz">
+        <patch file="patches/libbs2b-no-bs2bconvert.diff" strip="1"/>
     </branch>
   </autotools>
 

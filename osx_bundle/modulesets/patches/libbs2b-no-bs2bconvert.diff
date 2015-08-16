@@ -1,0 +1,51 @@
+diff -Nur libbs2b-3.1.0/configure.ac libbs2b-3.1.0_mod/configure.ac
+--- libbs2b-3.1.0/configure.ac	2009-06-04 20:17:02.000000000 +0200
++++ libbs2b-3.1.0_mod/configure.ac	2015-08-16 15:21:15.000000000 +0200
+@@ -5,7 +5,7 @@
+ AC_INIT([libbs2b], [3.1.0], [boris_mikhaylov@users.sourceforge.net])
+ AC_CONFIG_AUX_DIR([build-aux])
+ AM_INIT_AUTOMAKE([1.10.1 -Wall foreign subdir-objects
+-                  dist-zip dist-bzip2 dist-lzma])
++                  dist-zip dist-bzip2])
+ AC_CONFIG_SRCDIR([src/bs2b.h])
+ 
+ # Checks for programs.
+@@ -14,11 +14,6 @@
+ AC_PROG_LIBTOOL
+ PKG_PROG_PKG_CONFIG
+ 
+-# Checks for libraries.
+-PKG_CHECK_EXISTS([sndfile], [], [
+-    AC_MSG_ERROR(Please install libsndfile.)
+-])
+-
+ # Checks for header files.
+ AC_CHECK_HEADERS([fcntl.h malloc.h string.h])
+ 
+diff -Nur libbs2b-3.1.0/src/Makefile.am libbs2b-3.1.0_mod/src/Makefile.am
+--- libbs2b-3.1.0/src/Makefile.am	2009-03-20 15:13:53.000000000 +0100
++++ libbs2b-3.1.0_mod/src/Makefile.am	2015-08-16 15:17:18.000000000 +0200
+@@ -2,7 +2,6 @@
+ 	libbs2b.la
+ 
+ bin_PROGRAMS = \
+-	bs2bconvert \
+ 	bs2bstream
+ 
+ 
+@@ -24,15 +23,6 @@
+ 	bs2b.c \
+ 	bs2bclass.cpp
+ 
+-bs2bconvert_LDADD = \
+-	libbs2b.la
+-
+-bs2bconvert_LDFLAGS = \
+-	-lsndfile
+-
+-bs2bconvert_SOURCES = \
+-	bs2bconvert.c
+-
+ bs2bstream_LDADD = \
+ 	libbs2b.la
+ 
