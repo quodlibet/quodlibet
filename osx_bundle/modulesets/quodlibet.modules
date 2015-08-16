@@ -27,6 +27,8 @@
               href="https://bitbucket.org/lazka/mutagen/downloads/"/>
   <repository type="tarball" name="chromaprint"
               href="https://bitbucket.org/acoustid/chromaprint/downloads/"/>
+  <repository type="tarball" name="soundtouch"
+              href="http://www.surina.net/soundtouch/"/>
   <repository type="tarball" name="entropywave"
 	      href="http://code.entropywave.com/download/"/>
   <repository type="tarball" name="xiph"
@@ -233,7 +235,8 @@
        Upstream: http://gstreamer.freedesktop.org/src/gst-plugins-bad/
   -->
   <autotools id="gst-plugins-bad-1.0" supports-non-srcdir-builds="no"
-             autogenargs="--disable-accurip
+             autogenargs="HAVE_CXX=yes
+    --disable-accurip
     --disable-adpcmdec
     --disable-adpcmenc
     --disable-aiff
@@ -314,6 +317,7 @@
       <dep package="libmpg123"/>
       <dep package="bs2b"/>
       <dep package="chromaprint"/>
+      <dep package="soundtouch"/>
     </dependencies>
   </autotools>
 
@@ -323,6 +327,12 @@
             <patch file="patches/chromaprint-pkgconfig.diff"/>
         </branch>
   </cmake>
+
+  <autotools id="soundtouch" autogen-sh="autoreconf">
+        <branch repo="soundtouch" checkoutdir="soundtouch-1.9.0" module="soundtouch-1.9.0.tar.gz"
+            version="1.9.0" hash="sha256:1fe4fc03cbfe696c1281fd623d089baffe1b70265acc60eac7a6d9b5742971ad">
+        </branch>
+  </autotools>
 
   <!-- gst-plugins-ugly
        Upstream: http://gstreamer.freedesktop.org/src/gst-plugins-ugly/
