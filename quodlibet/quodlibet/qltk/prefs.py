@@ -75,19 +75,12 @@ class PreferencesWindow(UniqueWindow):
             vbox = Gtk.VBox(spacing=12)
             buttons = {}
             table = Gtk.Table.new(3, 3, True)
-            cols = get_columns()
 
             for i, (k, t) in enumerate(self.PREDEFINED_TAGS):
                 x, y = i % 3, i / 3
                 buttons[k] = Gtk.CheckButton(label=t, use_underline=True)
-                if k in cols:
-                    buttons[k].set_active(True)
-                    cols.remove(k)
                 table.attach(buttons[k], x, x + 1, y, y + 1)
             vbox.pack_start(table, False, True, 0)
-            if "~current" in cols:
-                cols.remove("~current")
-            self.other_cols = cols
 
             # Other columns
             hbox = Gtk.HBox(spacing=6)
@@ -98,7 +91,7 @@ class PreferencesWindow(UniqueWindow):
             # Stock edit doesn't have ellipsis chars.
             edit_button = Gtk.Button(
                 label=_(u"_Edit…"), use_underline=True)
-            edit_button.connect("clicked", self.__config_cols)
+            edit_button.connect("clicked", self.__config_cols, buttons)
             edit_button.set_tooltip_text(_("Add or remove additional column "
                                            "headers"))
             l.set_mnemonic_widget(edit_button)
@@ -125,15 +118,9 @@ class PreferencesWindow(UniqueWindow):
                 (fip, "~basename", "~filename"),
                 (aio, "artist", "~people")
             ]
-            # Turn on the toggles if the toggled version is detected in config
-            for (check, off, on) in self._toggle_data:
-                if on in cols:
-                    buttons[off].set_active(True)
-                    check.set_active(True)
-                    cols.remove(on)
 
-            # Update text once to exclude ticked columns, munged or not
-            others.set_text(", ".join(cols))
+            self.__update(buttons, self._toggle_data, get_columns())
+
             t = Gtk.Table.new(2, 2, True)
             t.attach(tiv, 0, 1, 0, 1)
             t.attach(aip, 0, 1, 1, 2)
@@ -152,15 +139,37 @@ class PreferencesWindow(UniqueWindow):
             b.pack_start(apply, True, True, 0)
             vbox.pack_start(b, True, True, 0)
             self.pack_start(vbox, True, True, 0)
-            apply.connect('clicked', self.__apply, buttons, tiv, aip, fip,
-                          aio)
+            apply.connect('clicked', self.__apply, buttons)
             # Apply on destroy, else config gets mangled
-            self.connect('destroy', self.__apply, buttons, tiv, aip, fip, aio)
+            self.connect('destroy', self.__apply, buttons)
 
             for child in self.get_children():
                 child.show_all()
 
-        def __apply(self, button, buttons, tiv, aip, fip, aio):
+        def __update(self, buttons, toggle_data, columns):
+            """Updates all widgets based on the passed column list"""
+
+            columns = list(columns)
+
+            for key, widget in buttons.items():
+                widget.set_active(key in columns)
+                if key in columns:
+                    columns.remove(key)
+
+            for (check, off, on) in toggle_data:
+                if on in columns:
+                    buttons[off].set_active(True)
+                    check.set_active(True)
+                    columns.remove(on)
+
+            self.others.set_text(", ".join(columns))
+            self.other_cols = columns
+
+        def __get_current_columns(self, buttons):
+            """Given the current column list and the widgets states compute
+            a new column list.
+            """
+
             new_headers = set()
             # Get the checked headers
             for key, name in self.PREDEFINED_TAGS:
@@ -194,14 +203,19 @@ class PreferencesWindow(UniqueWindow):
                     except ValueError:
                         pass
 
+            return result
+
+        def __apply(self, button, buttons):
+            result = self.__get_current_columns(buttons)
             SongList.set_all_column_headers(result)
 
-        def __config_cols(self, button):
+        def __config_cols(self, button, buttons):
             def __closed(widget):
-                self.other_cols = widget.get_strings()
-                self.others.set_text(", ".join(self.other_cols))
+                cols = widget.get_strings()
+                self.__update(buttons, self._toggle_data, cols)
 
-            m = TagListEditor(_("Extra Columns"), self.other_cols)
+            columns = self.__get_current_columns(buttons)
+            m = TagListEditor(_("Edit Columns"), columns)
             m.set_transient_for(qltk.get_top_parent(self))
             m.connect('destroy', __closed)
             m.show()

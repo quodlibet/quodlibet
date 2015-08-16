@@ -113,19 +113,22 @@ def get_columns():
     """Gets the list of songlist column headings"""
 
     if config.has_option("settings", "columns"):
-        return config.getstringlist(
+        columns = config.getstringlist(
             "settings", "columns", const.DEFAULT_COLUMNS)
     else:
         # migrate old settings
         try:
             columns = config.get("settings", "headers").split()
         except config.Error:
-            return const.DEFAULT_COLUMNS
+            columns = const.DEFAULT_COLUMNS
         else:
             config.remove_option("settings", "headers")
             set_columns(columns)
             config.setstringlist("settings", "columns", columns)
-            return columns
+
+    if "~current" in columns:
+        columns.remove("~current")
+    return columns
 
 
 def set_columns(vals):
