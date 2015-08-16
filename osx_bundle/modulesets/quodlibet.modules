@@ -297,7 +297,7 @@
     --disable-smoothstreaming
     --disable-apple_media
     --disable-gtk3
-    -disable-dtls
+    --disable-dtls
     --enable-cocoa=no --enable-x11=no --enable-opengl=no --disable-gtk-doc"
              makeargs="ERROR_CFLAGS=">
     <branch repo="gstreamer" version="1.5.2"
