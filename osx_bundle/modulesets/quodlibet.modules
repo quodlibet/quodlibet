@@ -136,8 +136,8 @@
 
   <!-- Upstream: https://bitbucket.org/lazka/mutagen/downloads -->
   <distutils id="mutagen">
-    <branch repo="mutagen" checkoutdir="mutagen-1.28" module="mutagen-1.28.tar.gz"
-	    version="1.28" hash="sha256:7d45889c060fdb16aea1733cee92d6dcaa04b8c8574802eb7b43a9f465fa3ca9"/>
+    <branch repo="mutagen" checkoutdir="mutagen-1.29" module="mutagen-1.29.tar.gz"
+	    version="1.29" hash="sha256:dbad61c8db882f849f25183448f21e440f5eceaf614dd8c2c5ae9392f33f599f"/>
     <dependencies>
     <dep package="setuptools"/>
     </dependencies>
