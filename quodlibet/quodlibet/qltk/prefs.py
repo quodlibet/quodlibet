@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson
-#           2011-2013 Nick Boultbee
+#           2011-2015 Nick Boultbee
 #           2013      Christoph Reiter
 #           2014      Jan Path
 #
@@ -97,8 +97,11 @@ class PreferencesWindow(UniqueWindow):
             l.set_mnemonic_widget(edit_button)
             l.set_use_underline(True)
             hbox.pack_start(others, True, True, 0)
-            hbox.pack_start(edit_button, False, True, 0)
             vbox.pack_start(hbox, False, True, 0)
+            b = Gtk.HButtonBox()
+            b.set_layout(Gtk.ButtonBoxStyle.END)
+            b.pack_start(edit_button, True, True, 0)
+            vbox.pack_start(b, True, True, 0)
 
             frame = qltk.Frame(_("Visible Columns"), child=vbox)
             self.pack_start(frame, False, True, 0)
