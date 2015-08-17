@@ -314,6 +314,7 @@ class PluginWindow(UniqueWindow):
         errors = qltk.Button(_("Show _Errors"), Icons.DIALOG_WARNING)
         errors.set_focus_on_click(False)
         errors.connect('clicked', self.__show_errors)
+        errors.set_no_show_all(True)
         bbox.pack_start(errors, True, True, 0)
 
         pref_box = PluginPreferencesContainer()
@@ -432,7 +433,7 @@ class PluginWindow(UniqueWindow):
         if not len(pm.plugins):
             prefs.set_no_plugins()
 
-        errors.set_sensitive(bool(pm.failures))
+        errors.set_visible(bool(pm.failures))
 
     def __refresh(self, activator, view, prefs, errors, combo):
         pm = PluginManager.instance
