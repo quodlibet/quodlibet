@@ -144,6 +144,7 @@ _TAGS = dict((t.name, t) for t in [
     T("bitrate", "n", _("bitrate")),
     T("filesize", "n", _("file size")),
     T("format", "i", _("file format")),
+    T("playlists", "i", _("playlists")),
 ])
 
 
