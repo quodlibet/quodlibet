@@ -51,6 +51,14 @@ def boolean_config(section, option, label, tooltip):
     return _config(section, option, label, tooltip, getter)
 
 
+def int_config(section, option, label, tooltip):
+
+    def getter(section, option):
+        return unicode(config.getint(section, option))
+
+    return _config(section, option, label, tooltip, getter)
+
+
 class AdvancedPreferences(EventPlugin):
     PLUGIN_ID = "Advanced Preferences"
     PLUGIN_NAME = _("Advanced Preferences")
@@ -119,6 +127,13 @@ class AdvancedPreferences(EventPlugin):
                 "browsers", "rating_hotkeys",
                 "Rating Hotkeys:",
                 "Enable rating by pressing the 0-X keys"))
+
+        rows.append(
+            int_config(
+                "browsers", "cover_size",
+                "Album Cover Size:",
+                ("Size of the album cover images in the album list browser "
+                 "(restart required)")))
 
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
