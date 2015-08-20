@@ -1,0 +1,146 @@
+From 048d710d676f79784502ee86fefd3b4c9993014e Mon Sep 17 00:00:00 2001
+From: Christoph Reiter <reiter.christoph@gmail.com>
+Date: Fri, 24 Jul 2015 15:28:27 +0200
+Subject: [PATCH] quartz app menu: add hidpi support for menu icons
+
+Use the new cairo to NSImage converter function
+to set the device scale.
+
+Remove the pixbuf converter function as this was
+the last user.
+---
+ gtk/gtkapplication-quartz-menu.c | 32 +++++++++++++++++++++++-
+ gtk/gtkquartz.c                  | 54 ----------------------------------------
+ gtk/gtkquartz.h                  |  2 --
+ 3 files changed, 31 insertions(+), 57 deletions(-)
+
+diff --git a/gtk/gtkapplication-quartz-menu.c b/gtk/gtkapplication-quartz-menu.c
+index caf0154..0e2567f 100644
+--- a/gtk/gtkapplication-quartz-menu.c
++++ b/gtk/gtkapplication-quartz-menu.c
+@@ -107,13 +107,43 @@ icon_loaded (GObject      *object,
+   GNSMenuItem *item = user_data;
+   GError *error = NULL;
+   GdkPixbuf *pixbuf;
++  gint scale = 1;
++
++#ifdef AVAILABLE_MAC_OS_X_VERSION_10_7_AND_LATER
++       /* we need a run-time check for the backingScaleFactor selector because we
++        * may be compiling on a 10.7 framework, but targeting a 10.6 one
++        */
++      if ([[NSScreen mainScreen] respondsToSelector:@selector(backingScaleFactor)])
++        scale = roundf ([[NSScreen mainScreen] backingScaleFactor]);
++#endif
+ 
+   pixbuf = gtk_icon_info_load_symbolic_finish (info, result, NULL, &error);
+ 
+   if (pixbuf != NULL)
+     {
+-      [item setImage:_gtk_quartz_create_image_from_pixbuf (pixbuf)];
++      cairo_t *cr;
++      cairo_surface_t *surface;
++      NSImage *image;
++
++      surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
++                                            gdk_pixbuf_get_width (pixbuf),
++                                            gdk_pixbuf_get_height (pixbuf));
++
++      cr = cairo_create (surface);
++      cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
++      gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
++      cairo_paint (cr);
++      cairo_destroy (cr);
+       g_object_unref (pixbuf);
++
++      cairo_surface_set_device_scale (surface, scale, scale);
++      image = _gtk_quartz_create_image_from_surface (surface);
++      cairo_surface_destroy (surface);
++
++      if (image != NULL)
++        [item setImage:image];
++      else
++        [item setImage:nil];
+     }
+   else
+     {
+diff --git a/gtk/gtkquartz.c b/gtk/gtkquartz.c
+index 253e8a9..183bef6 100644
+--- a/gtk/gtkquartz.c
++++ b/gtk/gtkquartz.c
+@@ -122,60 +122,6 @@ _gtk_quartz_create_image_from_surface (cairo_surface_t *surface)
+   return nsimage;
+ }
+ 
+-NSImage *
+-_gtk_quartz_create_image_from_pixbuf (GdkPixbuf *pixbuf)
+-{
+-  CGColorSpaceRef colorspace;
+-  CGDataProviderRef data_provider;
+-  CGContextRef context;
+-  CGImageRef image;
+-  void *data;
+-  int rowstride, pixbuf_width, pixbuf_height;
+-  gboolean has_alpha;
+-  NSImage *nsimage;
+-  NSSize nsimage_size;
+-
+-  pixbuf_width = gdk_pixbuf_get_width (pixbuf);
+-  pixbuf_height = gdk_pixbuf_get_height (pixbuf);
+-  g_return_val_if_fail (pixbuf_width != 0 && pixbuf_height != 0, NULL);
+-  rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+-  has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+-
+-  data = gdk_pixbuf_get_pixels (pixbuf);
+-
+-  colorspace = CGColorSpaceCreateDeviceRGB ();
+-  data_provider = CGDataProviderCreateWithData (NULL, data, pixbuf_height * rowstride, NULL);
+-
+-  image = CGImageCreate (pixbuf_width, pixbuf_height, 8,
+-			 has_alpha ? 32 : 24, rowstride, 
+-			 colorspace, 
+-			 has_alpha ? kCGImageAlphaLast : 0,
+-			 data_provider, NULL, FALSE, 
+-			 kCGRenderingIntentDefault);
+-
+-  CGDataProviderRelease (data_provider);
+-  CGColorSpaceRelease (colorspace);
+-
+-  nsimage = [[NSImage alloc] initWithSize:NSMakeSize (pixbuf_width, pixbuf_height)];
+-  nsimage_size = [nsimage size];
+-  if (nsimage_size.width == 0.0 && nsimage_size.height == 0.0)
+-    {
+-      [nsimage release];
+-      g_critical ("%s returned a zero-sized image", G_STRFUNC);
+-      return NULL;
+-    }
+-  [nsimage lockFocus];
+-
+-  context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+-  CGContextDrawImage (context, CGRectMake (0, 0, pixbuf_width, pixbuf_height), image);
+- 
+-  [nsimage unlockFocus];
+-
+-  CGImageRelease (image);
+-
+-  return nsimage;
+-}
+-
+ NSSet *
+ _gtk_quartz_target_list_to_pasteboard_types (GtkTargetList *target_list)
+ {
+diff --git a/gtk/gtkquartz.h b/gtk/gtkquartz.h
+index e739508..120168a 100644
+--- a/gtk/gtkquartz.h
++++ b/gtk/gtkquartz.h
+@@ -37,8 +37,6 @@ GtkSelectionData *_gtk_quartz_get_selection_data_from_pasteboard (NSPasteboard *
+ void _gtk_quartz_set_selection_data_for_pasteboard (NSPasteboard *pasteboard,
+ 						    GtkSelectionData *selection_data);
+ 
+-NSImage *_gtk_quartz_create_image_from_pixbuf (GdkPixbuf *pixbuf);
+-
+ NSImage *_gtk_quartz_create_image_from_surface (cairo_surface_t *surface);
+ 
+ G_END_DECLS
+-- 
+2.5.0
+

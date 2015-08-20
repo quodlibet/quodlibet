@@ -1,0 +1,40 @@
+From 61ce90a8e25ea63248ffa12707148e449494f34b Mon Sep 17 00:00:00 2001
+From: Christoph Reiter <reiter.christoph@gmail.com>
+Date: Mon, 20 Jul 2015 08:32:05 +0200
+Subject: [PATCH] quartz: make moving CSD windows right up to the screen's menu
+ bar work.
+
+The default implementation prevents the window + shadow to move above
+the menu bar. Change it so only the window is considered.
+---
+ gdk/quartz/GdkQuartzNSWindow.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/gdk/quartz/GdkQuartzNSWindow.c b/gdk/quartz/GdkQuartzNSWindow.c
+index 43348ef..8795d3d 100644
+--- a/gdk/quartz/GdkQuartzNSWindow.c
++++ b/gdk/quartz/GdkQuartzNSWindow.c
+@@ -673,4 +673,20 @@ update_context_from_dragging_info (id <NSDraggingInfo> sender)
+ 
+ #endif
+ 
++- (NSRect)constrainFrameRect:(NSRect)frameRect toScreen:(NSScreen *)screen
++{
++  NSRect rect;
++  GdkWindow *window = [[self contentView] gdkWindow];
++  GdkWindowImplQuartz *impl = GDK_WINDOW_IMPL_QUARTZ (window->impl);
++
++  /* Allow the window to move up "shadow_top" more than normally allowed
++   * by the default impl. This makes it possible to move windows with
++   * client side shadow right up to the screen's menu bar. */
++  rect = [super constrainFrameRect:frameRect toScreen:screen];
++  if (frameRect.origin.y > rect.origin.y)
++    rect.origin.y = MIN (frameRect.origin.y, rect.origin.y + impl->shadow_top);
++
++  return rect;
++}
++
+ @end
+-- 
+2.5.0
+

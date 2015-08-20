@@ -1,0 +1,37 @@
+From 8c8b2b518d1a6067b7f203309bd4158de7cb78b9 Mon Sep 17 00:00:00 2001
+From: Brion Vibber <brion@pobox.com>
+Date: Sun, 16 Nov 2014 16:53:13 -0800
+Subject: [PATCH] Provisional fix for cairo scaling on Quartz backend
+
+CGContexts by default apply a device scaling factor, which ends up
+interfering with the device_scale that is set on cairo at higher levels
+of the stack (eg in GDK).
+
+Undoing it here makes behavior more consistent with X11, as long as the
+caller sets the device scale appropriately in cairo.
+
+See:
+* https://www.libreoffice.org/bugzilla/show_bug.cgi?id=69796
+* https://bugzilla.gnome.org/show_bug.cgi?id=740199
+---
+ src/cairo-quartz-surface.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/cairo-quartz-surface.c b/src/cairo-quartz-surface.c
+index 1116ff9..f763668 100644
+--- a/src/cairo-quartz-surface.c
++++ b/src/cairo-quartz-surface.c
+@@ -2266,6 +2266,10 @@ _cairo_quartz_surface_create_internal (CGContextRef cgContext,
+ 	return surface;
+     }
+ 
++    /* Undo the default scaling transform, since we apply our own */
++    CGSize scale = CGContextConvertSizeToDeviceSpace (cgContext, CGSizeMake (1.0, 1.0));
++    CGContextScaleCTM(cgContext, 1.0 / scale.width, 1.0 / scale.height);
++
+     /* Save so we can always get back to a known-good CGContext -- this is
+      * required for proper behaviour of intersect_clip_path(NULL)
+      */
+-- 
+1.9.3 (Apple Git-50)
+

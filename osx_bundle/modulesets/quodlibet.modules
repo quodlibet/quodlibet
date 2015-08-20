@@ -21,6 +21,8 @@
   <repository type="tarball" name="pypi"
               href="http://pypi.python.org/packages/source/"/>
 
+  <repository type="tarball" name="cairographics"
+              href="http://cairographics.org/releases/"/>
   <repository type='tarball' name='ftp.gnu.org' href="ftp://ftp.gnu.org/gnu/"/>
   <repository type='tarball' name='ftp.gnupg.org' href="ftp://ftp.gnupg.org/" />
   <repository type="tarball" name="mutagen"
@@ -74,14 +76,12 @@
   </autotools>
 
   <!-- enable-fc and enable-ft required for librsvg's pixbuf loader -->
-  <repository type="tarball" name="cairographics"
-              href="http://cairographics.org/releases/"/>
   <autotools id="cairo"  autogen-sh="configure" supports-non-srcdir-builds="no"
              autogenargs="--enable-pdf --enable-quartz --enable-ft --enable-fc --disable-xlib --without-x">
     <branch module="cairo-1.14.2.tar.xz"  version="1.14.2"
             repo="cairographics"
             hash="sha1:c8da68aa66ca0855b5d0ff552766d3e8679e1d24">
-            <patch file="https://bugs.freedesktop.org/attachment.cgi?id=117242" strip="1"/>
+            <patch file="patches/cairo-0000-hidpi.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="pixman"/>
@@ -106,9 +106,18 @@
 
   <autotools id="gtk+-3.0" autogen-sh="autogen.sh"
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
-    <branch module="gtk+/3.16/gtk+-3.16.5.tar.xz" version="3.16.5"
-        hash="sha256:b87c99d127eb962fc857c246b77a65322cdffd7dcbcf46a83bce2040e0f4bc31">
+    <branch module="gtk+/3.16/gtk+-3.16.6.tar.xz" version="3.16.6"
+        hash="sha256:4d12726d0856a968b41802ae5c5971d7e9bac532717e309d3f81b9989da5ffbe">
         <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug-707945-GTK2-Quartz-typeahead-find-in-GtkTreeView.patch" strip="1"/>
+        <patch file="patches/gtk-0000-hidpi.patch" strip="1"/>
+        <patch file="patches/gtk-0001-quartz-make-moving-CSD-windows-right-up-to-the-scree.patch" strip="1"/>
+        <patch file="patches/gtk-0002-quartz-implement-maximized-unmaximized.patch" strip="1"/>
+        <patch file="patches/gtk-0003-quartz-remove-maximized-state-when-the-window-positi.patch" strip="1"/>
+        <patch file="patches/gtk-0004-quartz-disable-system-shadows-if-a-GdkWindow-shadow-.patch" strip="1"/>
+        <patch file="patches/gtk-0005-quartz-dnd-fix-drag-icon-position-relative-to-cursor.patch" strip="1"/>
+        <patch file="patches/gtk-0006-quartz-dnd-add-hidpi-support-for-gtk_drag_set_icon_s.patch" strip="1"/>
+        <patch file="patches/gtk-0007-quartz-app-menu-add-hidpi-support-for-menu-icons.patch" strip="1"/>
+        <patch file="patches/gtk-0008-quartz-Implement-CSD-drag-resize-for-all-edges-corne.patch" strip="1"/>
     </branch>
     <dependencies>
         <dep package="glib"/>

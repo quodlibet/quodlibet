@@ -1,0 +1,41 @@
+From 2544b9256318b5f921e6eebb5925bdc8b3419125 Mon Sep 17 00:00:00 2001
+From: Brion Vibber <brion@pobox.com>
+Date: Sun, 16 Nov 2014 15:10:30 -0800
+Subject: [PATCH 3/3] Work in progress fix for low-res GL views on Quartz
+ HiDPI/Retina
+
+gdk_quartz_ref_cairo_surface () wasn't respecting the window's scale
+when creating a surface, whereas the equivalent on other backends was.
+
+This patch fixes GL views, but breaks non-GL ones on Retina display
+by making them double-sized. Not sure where the doubling on that code
+path is yet...
+---
+ gdk/quartz/gdkwindow-quartz.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/gdk/quartz/gdkwindow-quartz.c b/gdk/quartz/gdkwindow-quartz.c
+index 1d39e8f..04539d3 100644
+--- a/gdk/quartz/gdkwindow-quartz.c
++++ b/gdk/quartz/gdkwindow-quartz.c
+@@ -320,10 +320,15 @@ gdk_quartz_ref_cairo_surface (GdkWindow *window)
+ 
+   if (!impl->cairo_surface)
+     {
++      int scale = gdk_window_get_scale_factor (impl->wrapper);
++      if (scale == 0)
++        scale = 1;
++
+       impl->cairo_surface = 
+           gdk_quartz_create_cairo_surface (impl,
+-                                           gdk_window_get_width (impl->wrapper),
+-                                           gdk_window_get_height (impl->wrapper));
++                                           gdk_window_get_width (impl->wrapper) * scale,
++                                           gdk_window_get_height (impl->wrapper) * scale);
++      cairo_surface_set_device_scale (impl->cairo_surface, scale, scale);
+     }
+   else
+     cairo_surface_reference (impl->cairo_surface);
+-- 
+1.9.3 (Apple Git-50)
+
