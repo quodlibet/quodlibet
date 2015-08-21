@@ -12,4 +12,4 @@ modules = []
 disable_Werror = False
 skip.append("libiconv")
 
-setup_sdk(target="10.7", sdk_version="native", architectures=[_default_arch])
+setup_sdk(target="10.6", sdk_version="native", architectures=[_default_arch])
