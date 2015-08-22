@@ -49,6 +49,9 @@ VERSION=$("$QUODLIBET"/Contents/MacOS/run -c "import sys;import quodlibet.const;
 ./misc/fixup_info.py "$QUODLIBET"/Contents/Info.plist "quodlibet" "Quod Libet" "$VERSION"
 ./misc/fixup_info.py "$EXFALSO"/Contents/Info.plist "exfalso" "Ex Falso" "$VERSION"
 
+./misc/list_content.py "$HOME/jhbuild_prefix" "$QUODLIBET" > "$QUODLIBET/Contents/Resources/content.txt"
+./misc/list_content.py "$HOME/jhbuild_prefix" "$EXFALSO" > "$EXFALSO/Contents/Resources/content.txt"
+
 (cd "$QL_OSXBUNDLE_BUNDLE_DEST" && zip -rq "QuodLibet-$VERSION.zip" "QuodLibet.app")
 (cd "$QL_OSXBUNDLE_BUNDLE_DEST" && zip -rq "ExFalso-$VERSION.zip" "ExFalso.app")
 
