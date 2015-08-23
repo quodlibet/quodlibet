@@ -19,7 +19,7 @@
     <key>CFBundleVersion</key>
     <string>@APP_VERSION@</string>
     <key>LSMinimumSystemVersion</key>
-    <string>10.7</string>
+    <string>10.6</string>
     <key>AppleMagnifiedMode</key>
     <false />
     <key>NSHighResolutionCapable</key>
