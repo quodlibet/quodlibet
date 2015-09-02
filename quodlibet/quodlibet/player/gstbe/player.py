@@ -18,6 +18,7 @@ from gi.repository import Gst, GLib, GstPbutils
 from quodlibet import const
 from quodlibet import config
 from quodlibet import util
+from quodlibet import app
 
 from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError, \
     MainRunnerAbortedError, MainRunnerTimeoutError
@@ -511,6 +512,26 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             Gst.update_registry()
 
         context = GstPbutils.InstallPluginsContext.new()
+
+        # new in 1.6
+        if hasattr(context, "set_desktop_id"):
+            from gi.repository import Gtk
+            context.set_desktop_id(app.id)
+
+        # new in 1.6
+        if hasattr(context, "set_startup_notification_id"):
+            current_time = Gtk.get_current_event_time()
+            context.set_startup_notification_id("_TIME%d" % current_time)
+
+        gdk_window = app.window.get_window()
+        if gdk_window:
+            try:
+                xid = gdk_window.get_xid()
+            except AttributeError:  # non X11
+                pass
+            else:
+                context.set_xid(xid)
+
         res = GstPbutils.install_plugins_async(
             [details], context, install_done_cb, None)
         print_d("Gstreamer plugin install result: %r" % res)
