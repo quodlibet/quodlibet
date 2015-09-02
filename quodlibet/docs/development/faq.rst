@@ -101,3 +101,44 @@ the existing setup, but there is *significant* work porting an optimised native
 pickle-based repository to any of these, and each comes with a compatibility
 / maintenance cost. This doesn't mean it won't happen some day, but there has
 to be a genuine case for the benefits outweighing the migration cost.
+
+
+Any environment variables I should know about?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+QUODLIBET_TEST_TRANS
+    When set to a string will enclose all translatable strings with that
+    string. This is useful for testing how the layout of the user interface
+    behaves with longer text as can occur with translations and to see if all
+    visible text is correctly marked as translatable.
+
+    ::
+
+        QUODLIBET_TEST_TRANS=XXX
+
+QUODLIBET_DEBUG
+    When in the environment gives the same result as if ``--debug`` was passed.
+
+QUODLIBET_NO_TRANS
+    When in the environment disables translations
+
+QUODLIBET_NO_MMKEYS
+    When in the environment disables multimedia keys support
+
+QUODLIBET_BACKEND
+    Can be set to the audio backend, overriding the value present in the main
+    config file. Useful for quickly testing a different audio backend.
+
+    ::
+
+        QUODLIBET_BACKEND=xinebe ./quodlibet.py
+
+QUODLIBET_USERDIR
+    Can be set to a (potentially not existing) directory which will be used as
+    the main config directory. Useful to test Quod Libet with a fresh config,
+    test the initial user experience, or to try out things without them
+    affecting your main library.
+
+    ::
+
+        QUODLIBET_USERDIR=foo ./quodlibet.py
