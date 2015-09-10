@@ -416,10 +416,6 @@ def _init_dbus():
 def _init_gettext():
     """Call before using gettext helpers"""
 
-    # set by tests
-    if "QUODLIBET_NO_TRANS" in environ:
-        return
-
     set_i18n_envvars()
     fixup_i18n_envvars()
 
@@ -475,7 +471,7 @@ def _init_formats():
     init()
 
 
-def init_cli():
+def init_cli(no_translations=False):
     """This needs to be called before any API can be used.
     Might raise in case of an error.
 
@@ -486,17 +482,23 @@ def init_cli():
 
     _init_python()
     config.init_defaults()
-    _init_gettext()
+    if not no_translations and "QUODLIBET_NO_TRANS" not in environ:
+        _init_gettext()
     _init_formats()
 
 
-def init():
+def init(**kwargs):
     """This needs to be called before any API can be used.
-    Might raise in case of an error."""
+    Might raise in case of an error.
+
+    Pass no_translations=True to disable translations (used by tests)
+    """
 
     global _initialized
 
-    init_cli()
+    assert not _initialized
+
+    init_cli(**kwargs)
     _init_gtk()
     _init_gtk_debug()
     _init_gst()

@@ -7,9 +7,6 @@ import shutil
 import subprocess
 import tarfile
 
-# disable translations
-os.environ["QUODLIBET_NO_TRANS"] = ""
-
 from distutils.core import setup, Command
 from distutils.dep_util import newer
 from distutils import dir_util

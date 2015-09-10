@@ -232,7 +232,7 @@ def init_test_environ():
             del(sys.modules[key])
 
     import quodlibet
-    quodlibet.init()
+    quodlibet.init(no_translations=True)
 
 
 def exit_test_environ():
