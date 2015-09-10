@@ -20,11 +20,6 @@ from gdist.clean import clean
 from distutils.command.sdist import sdist
 
 
-# TODO: link this better to the app definitions
-MIN_PYTHON_VER = (2, 6)
-MIN_PYTHON_VER_STR = ".".join(map(str, MIN_PYTHON_VER))
-
-
 class build_sphinx(Command):
     description = "build sphinx documentation"
     user_options = [
