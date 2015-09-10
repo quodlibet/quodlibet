@@ -23,7 +23,7 @@ class Version(tuple):
 class MinVersions(object):
     """Dependency requirements for Quod Libet / Ex Falso"""
     PYTHON = Version(2, 7)
-    MUTAGEN = Version(1, 22)
+    MUTAGEN = Version(1, 27)
 
 VERSION_TUPLE = Version(3, 4, -1)
 VERSION = str(VERSION_TUPLE)
