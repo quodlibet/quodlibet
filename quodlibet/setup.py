@@ -8,9 +8,7 @@ import subprocess
 import tarfile
 
 from distutils.core import setup, Command
-from distutils.dep_util import newer
 from distutils import dir_util
-from distutils.command.build_scripts import build_scripts as du_build_scripts
 
 from gdist import GDistribution
 from gdist.clean import clean
@@ -160,19 +158,6 @@ class distcheck(sdist):
         self._check_dist()
 
 
-class build_scripts(du_build_scripts):
-    description = "copy scripts to build directory"
-
-    def run(self):
-        self.mkpath(self.build_dir)
-        for script in self.scripts:
-            newpath = os.path.join(self.build_dir, os.path.basename(script))
-            if newpath.lower().endswith(".py"):
-                newpath = newpath[:-3]
-            if newer(script, newpath) or self.force:
-                self.copy_file(script, newpath)
-
-
 def recursive_include(base, sub, ext):
     paths = []
     for path, dirs, files in os.walk(os.path.join(base, sub)):
@@ -219,7 +204,6 @@ if __name__ == "__main__":
         "distcheck": distcheck,
         "test": test_cmd,
         "quality": quality_cmd,
-        "build_scripts": build_scripts,
     }
 
     package_path = quodlibet.__path__[0]

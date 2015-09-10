@@ -34,6 +34,7 @@ from gdist.dbus_services import build_dbus_services, install_dbus_services
 from gdist.appdata import build_appdata, install_appdata
 from gdist.coverage import coverage_cmd
 from gdist.docs import build_sphinx
+from gdist.scripts import build_scripts
 
 
 class build(distutils_build):
@@ -131,6 +132,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("build_shortcuts", build_shortcuts)
         self.cmdclass.setdefault("build_dbus_services", build_dbus_services)
         self.cmdclass.setdefault("build_appdata", build_appdata)
+        self.cmdclass.setdefault("build_scripts", build_scripts)
         self.cmdclass.setdefault("install_icons", install_icons)
         self.cmdclass.setdefault("install_shortcuts", install_shortcuts)
         self.cmdclass.setdefault("install_dbus_services",
