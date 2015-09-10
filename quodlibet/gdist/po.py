@@ -16,7 +16,6 @@ import os
 import glob
 from subprocess import Popen, PIPE
 from tempfile import mkstemp
-import shutil
 
 from distutils.dep_util import newer
 from distutils.spawn import find_executable
@@ -106,17 +105,7 @@ class update_po(Command):
             self._update_po(po)
             return
 
-        infilename = os.path.join(self.po_directory, "POTFILES.in")
-        with open(infilename, "rb") as h:
-            infiles = h.read().splitlines()
-
-        # if any of the in files is newer than the pot, update the pot
-        for filename in infiles:
-            if newer(filename, self.pot_file):
-                self._update_pot()
-                break
-        else:
-            print "not pot update"
+        self._update_pot()
 
         # if the pot file is newer than any of the po files, update that po
         for po in self.po_files:
@@ -182,33 +171,23 @@ class build_mo(Command):
     user_options = []
 
     def initialize_options(self):
-        self.skip_po_update = None
         self.build_base = None
         self.po_package = None
         self.po_files = None
-        self.pot_file = None
 
     def finalize_options(self):
         self.po_directory = self.distribution.po_directory
         self.po_package = self.distribution.po_package
         self.set_undefined_options('build', ('build_base', 'build_base'))
-        self.set_undefined_options(
-            'build', ('skip_po_update', 'skip_po_update'))
         self.po_files = glob.glob(os.path.join(self.po_directory, "*.po"))
-        self.pot_file = os.path.join(
-            self.po_directory, self.po_package + ".pot")
 
     def run(self):
         if find_executable("msgfmt") is None:
             raise SystemExit("Error: 'gettext' not found.")
 
-        # It's OK to skip po update for building release tarballs, since
-        # things are updated right before release...
-        if not self.skip_po_update:
-            self.run_command("update_po")
+        gettextutil.update_pot(self.po_directory, self.po_package)
 
         basepath = os.path.join(self.build_base, 'share', 'locale')
-
         for po in self.po_files:
             language = os.path.basename(po).split(".")[0]
             fullpath = os.path.join(basepath, language, "LC_MESSAGES")
@@ -220,7 +199,8 @@ class build_mo(Command):
                 fd, temp_path = mkstemp(".po")
                 try:
                     os.close(fd)
-                    shutil.copy(po, temp_path)
+                    gettextutil.update_po(self.po_directory, self.po_package,
+                                          language, output_file=temp_path)
                     strip_pot_date(temp_path)
                     self.spawn(["msgfmt", "-o", destpath, temp_path])
                 finally:

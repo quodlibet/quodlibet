@@ -44,8 +44,10 @@ def update_pot(po_dir, package):
     return os.path.join(po_dir, package + ".pot")
 
 
-def update_po(po_dir, package, lang_code):
+def update_po(po_dir, package, lang_code, output_file=None):
     """Update the <lang_code>.po file based on <package>.pot
+
+    If output_file is given the resulting po file will be save to that path.
 
     Returns the path to the po file
     or raise GettextError
@@ -55,13 +57,19 @@ def update_po(po_dir, package, lang_code):
     os.chdir(po_dir)
     try:
         os.environ["XGETTEXT_ARGS"] = XGETTEXT_ARGS
-        subprocess.check_call(["intltool-update", "--dist",
-                               "--gettext-package", package,
-                               lang_code])
+        args = ["intltool-update", "--dist",
+                "--gettext-package", package,
+                lang_code]
+        if output_file is not None:
+            args.extend(["--output-file", output_file])
+        subprocess.check_call(args)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
     finally:
         os.chdir(old_dir)
+
+    if output_file is not None:
+        return output_file
 
     return os.path.join(po_dir, lang_code + ".po")
 

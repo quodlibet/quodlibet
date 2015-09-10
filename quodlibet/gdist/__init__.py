@@ -57,14 +57,6 @@ class build(distutils_build):
          lambda self: self.distribution.has_appdata()),
     ]
 
-    def initialize_options(self):
-        distutils_build.initialize_options(self)
-        self.skip_po_update = False
-
-    def finalize_options(self):
-        distutils_build.finalize_options(self)
-        self.skip_po_update = bool(self.skip_po_update)
-
 
 class install(distutils_install):
     """Override the default install with new subcommands."""
