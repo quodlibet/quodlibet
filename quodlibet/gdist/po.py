@@ -36,17 +36,28 @@ class po_stats(Command):
 
     def finalize_options(self):
         self.po_directory = self.distribution.po_directory
+        self.po_package = self.distribution.po_package
         self.po_files = glob.glob(os.path.join(self.po_directory, "*.po"))
 
     def run(self):
-        self.run_command("update_po")
+        gettextutil.update_pot(self.po_directory, self.po_package)
+
         res = []
         for po in self.po_files:
             language = os.path.basename(po).split(".")[0]
-            p = Popen(["msgfmt", "--statistics", po], stdout=PIPE, stderr=PIPE)
-            output = p.communicate()[1]
-            res.append((language, output))
-        del p
+
+            fd, temp_path = mkstemp(".po")
+            try:
+                os.close(fd)
+                gettextutil.update_po(self.po_directory, self.po_package,
+                                      language, output_file=temp_path)
+
+                proc = Popen(["msgfmt", "--statistics", temp_path],
+                             stdout=PIPE, stderr=PIPE)
+                output = proc.communicate()[1]
+                res.append((language, output))
+            finally:
+                os.remove(temp_path)
 
         stats = []
         for po, r in res:
