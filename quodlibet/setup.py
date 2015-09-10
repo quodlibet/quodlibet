@@ -201,52 +201,6 @@ class build_scripts(du_build_scripts):
                 self.copy_file(script, newpath)
 
 
-class coverage_cmd(Command):
-    description = "generate test coverage data"
-    user_options = [
-        ("to-run=", None, "list of tests to run (default all)"),
-    ]
-
-    def initialize_options(self):
-        self.to_run = []
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        # Wipe existing modules, to make sure coverage data is properly
-        # generated for them.
-        for key in sys.modules.keys():
-            if key.startswith('quodlibet'):
-                del(sys.modules[key])
-
-        try:
-            from coverage import coverage
-        except ImportError:
-            print("Missing 'coverage' module. See "
-                  "https://pypi.python.org/pypi/coverage or try "
-                  "`apt-get install python-coverage`")
-            return
-
-        cov = coverage()
-        cov.start()
-
-        cmd = self.reinitialize_command("test")
-        cmd.to_run = self.to_run[:]
-        cmd.ensure_finalized()
-        cmd.run()
-
-        dest = os.path.join(os.getcwd(), "coverage")
-
-        cov.stop()
-        cov.html_report(
-            directory=dest,
-            ignore_errors=True,
-            include=["quodlibet*", "operon*"])
-
-        print("Coverage summary: file://%s/index.html" % dest)
-
-
 def recursive_include(base, sub, ext):
     paths = []
     for path, dirs, files in os.walk(os.path.join(base, sub)):
@@ -293,7 +247,6 @@ if __name__ == "__main__":
         "distcheck": distcheck,
         "test": test_cmd,
         "quality": quality_cmd,
-        "coverage": coverage_cmd,
         "build_scripts": build_scripts,
         "build_sphinx": build_sphinx,
     }
@@ -335,7 +288,10 @@ if __name__ == "__main__":
             "data/operon.1",
         ],
         "search_provider": "data/quodlibet-search-provider.ini",
-        }
+        "coverage_options": {
+            "directory": "coverage",
+        },
+    }
 
     if os.name == 'nt':
 
