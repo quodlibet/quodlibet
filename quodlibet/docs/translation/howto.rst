@@ -45,13 +45,18 @@ To translate current trunk, update to the default branch::
 
     $ git checkout master
 
-Create the POT file and update translations::
+You can find the translation file for your chosen language in::
 
-    $ ./setup.py update_po
+    ./po/<lang>.po
 
-In case there's not already a translation for your language::
+In case there's not already a translation for your language, create one::
 
     $ ./setup.py create_po --lang=<mylang>
+
+Create the POT file and update translations so all new strings that were added
+since the last translation update get included::
+
+    $ ./setup.py update_po --lang=<mylang>
 
 Now start translating...
 
