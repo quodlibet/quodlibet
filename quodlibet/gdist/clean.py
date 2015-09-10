@@ -70,6 +70,12 @@ class clean(distutils_clean, Command):
             if os.path.isdir(base):
                 shutil.rmtree(base)
 
+        # docs
+        for entry in os.listdir("docs"):
+            path = os.path.join("docs", entry)
+            if entry.startswith("_") and os.path.isdir(path):
+                shutil.rmtree(path)
+
         try:
             os.remove("MANIFEST")
         except EnvironmentError:
