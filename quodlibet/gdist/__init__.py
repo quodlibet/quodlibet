@@ -36,6 +36,7 @@ from gdist.coverage import coverage_cmd
 from gdist.docs import build_sphinx
 from gdist.scripts import build_scripts
 from gdist.tests import quality_cmd, distcheck_cmd, test_cmd
+from gdist.clean import clean
 
 
 class build(distutils_build):
@@ -154,6 +155,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("distcheck", distcheck_cmd)
         self.cmdclass.setdefault("test", test_cmd)
         self.cmdclass.setdefault("quality", quality_cmd)
+        self.cmdclass.setdefault("clean", clean)
 
     def has_po(self):
         return not is_windows and bool(self.po_directory)

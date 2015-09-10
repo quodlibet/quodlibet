@@ -1,38 +1,21 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
+# Copyright 2010-2015 Christoph Reiter
+#           2015 Nick Boultbee
+#           2010 Steven Robertson
+#           2007-2008 Joe Wreschnig
+#
+# This software and accompanying documentation, if any, may be freely
+# used, distributed, and/or modified, in any form and for any purpose,
+# as long as this notice is preserved. There is no warranty, either
+# express or implied, for this software.
 
 import sys
 import os
 import shutil
 
 from distutils.core import setup
-
-
 from gdist import GDistribution
-from gdist.clean import clean
-
-
-def recursive_include(base, sub, ext):
-    paths = []
-    for path, dirs, files in os.walk(os.path.join(base, sub)):
-        for f in files:
-            if f.split('.')[-1] in ext:
-                p = os.path.relpath(os.path.join(path, f), base)
-                paths.append(p)
-    return paths
-
-
-def recursive_include_py2exe(dir_, pre, ext):
-    all_ = []
-    dir_ = os.path.join(dir_, pre)
-    for path, dirs, files in os.walk(dir_):
-        all_path = []
-        for file_ in files:
-            if file_.split('.')[-1] in ext:
-                all_path.append(os.path.join(path, file_))
-        if all_path:
-            all_.append((path, all_path))
-    return all_
 
 
 if __name__ == "__main__":
@@ -53,17 +36,8 @@ if __name__ == "__main__":
             package_name = relpath.replace(os.sep, ".")
             packages.append(package_name)
 
-    cmd_classes = {
-        'clean': clean,
-    }
-
-    package_path = quodlibet.__path__[0]
-    package_data_paths = recursive_include(
-        package_path, "images", ("svg", "png"))
-
     setup_kwargs = {
         'distclass': GDistribution,
-        'cmdclass': cmd_classes,
         'name': "quodlibet",
         'version': const.VERSION,
         'url': "https://quodlibet.readthedocs.org",
@@ -73,7 +47,12 @@ if __name__ == "__main__":
         'maintainer': "Steven Robertson and Christoph Reiter",
         'license': "GNU GPL v2",
         'packages': packages,
-        'package_data': {"quodlibet": package_data_paths},
+        'package_data': {
+            "quodlibet": [
+                "images/hicolor/*/*/*.png",
+                "images/hicolor/*/*/*.svg",
+            ],
+        },
         'scripts': ["quodlibet.py", "exfalso.py", "operon.py"],
         'po_directory': "po",
         'po_package': "quodlibet",
@@ -81,8 +60,8 @@ if __name__ == "__main__":
         'dbus_services': [
             "data/net.sacredchao.QuodLibet.service",
             # https://github.com/quodlibet/quodlibet/issues/1268
-            #"data/org.mpris.MediaPlayer2.quodlibet.service",
-            #"data/org.mpris.quodlibet.service",
+            # "data/org.mpris.MediaPlayer2.quodlibet.service",
+            # "data/org.mpris.quodlibet.service",
         ],
         'appdata': [
             "data/quodlibet.appdata.xml",
@@ -126,6 +105,18 @@ if __name__ == "__main__":
         except ImportError:
             # no build path setup, no worries.
             pass
+
+        def recursive_include_py2exe(dir_, pre, ext):
+            all_ = []
+            dir_ = os.path.join(dir_, pre)
+            for path, dirs, files in os.walk(dir_):
+                all_path = []
+                for file_ in files:
+                    if file_.split('.')[-1] in ext:
+                        all_path.append(os.path.join(path, file_))
+                if all_path:
+                    all_.append((path, all_path))
+            return all_
 
         data_files = [('', ['COPYING'])] + recursive_include_py2exe(
             "quodlibet", "images", ("svg", "png"))
