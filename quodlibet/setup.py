@@ -17,31 +17,6 @@ from gdist.clean import clean
 from distutils.command.sdist import sdist
 
 
-class build_sphinx(Command):
-    description = "build sphinx documentation"
-    user_options = [
-        ("build-dir=", "d", "build directory"),
-        ("all", "a", "build all docs, not just the user guide"),
-    ]
-
-    def initialize_options(self):
-        self.build_dir = None
-        self.all = False
-
-    def finalize_options(self):
-        self.build_dir = self.build_dir or "build"
-        self.all = bool(self.all)
-
-    def run(self):
-        DOCS_ROOT = "docs"
-        GUIDE_ROOT = os.path.join(DOCS_ROOT, "guide")
-        TARGET = os.path.join(self.build_dir, "sphinx")
-
-        srcdir = GUIDE_ROOT if not self.all else DOCS_ROOT
-        self.spawn(["sphinx-build", "-b", "html", "-c", DOCS_ROOT,
-                    "-n", "-E", srcdir, TARGET])
-
-
 class test_cmd(Command):
     description = "run automated tests"
     user_options = [
@@ -245,7 +220,6 @@ if __name__ == "__main__":
         "test": test_cmd,
         "quality": quality_cmd,
         "build_scripts": build_scripts,
-        "build_sphinx": build_sphinx,
     }
 
     package_path = quodlibet.__path__[0]

@@ -33,6 +33,7 @@ from gdist.search_provider import install_search_provider
 from gdist.dbus_services import build_dbus_services, install_dbus_services
 from gdist.appdata import build_appdata, install_appdata
 from gdist.coverage import coverage_cmd
+from gdist.docs import build_sphinx
 
 
 class build(distutils_build):
@@ -145,6 +146,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("update_po", update_po)
         self.cmdclass.setdefault("create_po", create_po)
         self.cmdclass.setdefault("coverage", coverage_cmd)
+        self.cmdclass.setdefault("build_sphinx", build_sphinx)
 
     def has_po(self):
         return not is_windows and bool(self.po_directory)
