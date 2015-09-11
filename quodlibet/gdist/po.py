@@ -51,9 +51,8 @@ class po_stats(Command):
                 os.close(fd)
                 gettextutil.update_po(self.po_directory, self.po_package,
                                       language, output_file=temp_path)
-
-                proc = Popen(["msgfmt", "--statistics", temp_path],
-                             stdout=PIPE, stderr=PIPE)
+                proc = Popen(["msgfmt", "-o", "/dev/null", "--statistics",
+                              temp_path], stdout=PIPE, stderr=PIPE)
                 output = proc.communicate()[1]
                 res.append((language, output))
             finally:
