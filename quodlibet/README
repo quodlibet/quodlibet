@@ -6,62 +6,6 @@ ways to view your audio library, as well as support for Internet radio and
 audio feeds. It has extremely flexible metadata tag editing and searching
 capabilities.
 
-Ex Falso is a tag editor with the same tag editing interface as Quod Libet,
-but it does not play files.
+Ex Falso is a tag editor with the same tag editing interface as Quod Libet.
 
-Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC,
-MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI.
-
-
-Contact & Bug Reports
----------------------
-
-To report bugs, suggest features, ask a question, get the latest version,
-or help us out, visit https://github.com/quodlibet/quodlibet.
-
-IRC: #quodlibet on irc.oftc.net
-Mailing List: http://groups.google.com/group/quod-libet-development
-
-
-Documentation
--------------
-
-Call 'make' in the 'docs' directory to build sphinx documentation.
-
-Or access it online: https://quodlibet.readthedocs.org/
-
-
-Installation Requirements
--------------------------
-
-* intltool
-* gettext
-
-
-Runtime Requirements
---------------------
-
-* Python >= 2.7
-* PyGObject >= 3.2
-* GTK+ >= 3.0
-* GStreamer >= 1.0 or xine-lib 1.x
-* Mutagen >= 1.14
-
-
-Installation
-------------
-
-::
-
-    ./setup.py build
-    ./setup.py install
-
-
-Tests
------
-
-::
-
-    ./setup.py test
-    ./setup.py test --to-run=TestClassName
-    ./setup.py test --suite=quality
+For more information see https://quodlibet.readthedocs.org/
