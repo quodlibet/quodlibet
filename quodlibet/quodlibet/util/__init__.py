@@ -13,7 +13,6 @@ import ctypes
 import ctypes.util
 import sys
 import traceback
-import urlparse
 import unicodedata
 import threading
 import subprocess
@@ -27,6 +26,7 @@ try:
 except ImportError:
     fcntl = None
 
+from quodlibet.compat import reraise as py_reraise, urlparse
 from quodlibet.util.path import iscommand, is_fsnative
 from quodlibet.util.string.titlecase import title
 
@@ -154,7 +154,7 @@ class OptionParser(object):
         from getopt import getopt, GetoptError
         try:
             opts, args = getopt(args, self.__shorts(), self.__longs())
-        except GetoptError, s:
+        except GetoptError as s:
             s = str(s)
             text = []
             if "not recognized" in s:
@@ -563,7 +563,7 @@ def fver(tup):
 
 
 def uri_is_valid(uri):
-    return bool(urlparse.urlparse(uri)[0])
+    return bool(urlparse(uri)[0])
 
 
 def make_case_insensitive(filename):
@@ -1189,4 +1189,4 @@ def reraise(tp, value, tb=None):
 
     if tb is None:
         tb = sys.exc_info()[2]
-    raise tp, value, tb
+    py_reraise(tp, value, tb)

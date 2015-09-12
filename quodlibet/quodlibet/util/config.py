@@ -10,12 +10,18 @@
 """Simple proxy to a Python ConfigParser."""
 
 import os
-from StringIO import StringIO
 import csv
 
-# We don't need/want variable interpolation.
-from ConfigParser import RawConfigParser as ConfigParser, Error, NoSectionError
+try:
+    # Python 2
+    from ConfigParser import RawConfigParser as ConfigParser, Error, \
+        NoSectionError
+except ImportError:
+    # Python 3
+    from configparser import RawConfigParser as ConfigParser, Error, \
+        NoSectionError
 
+from quodlibet.compat import cBytesIO
 from quodlibet.util import atomic_save, list_unique
 from quodlibet.util.string import join_escape, split_escape
 from quodlibet.util.path import is_fsnative, mkdir
@@ -224,7 +230,7 @@ class Config(object):
     def setstringlist(self, section, option, values):
         """Saves a list of unicode strings using the csv module"""
 
-        sw = StringIO()
+        sw = cBytesIO()
         values = [unicode(v).encode('utf-8') for v in values]
         writer = csv.writer(sw, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(values)

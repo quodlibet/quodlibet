@@ -9,6 +9,7 @@ import tempfile
 import shutil
 import atexit
 import subprocess
+from quodlibet.compat import PY3
 from quodlibet.util.dprint import Colorise, print_
 from quodlibet.util.path import fsnative, is_fsnative
 
@@ -206,7 +207,7 @@ def init_test_environ():
 
     # needed for dbus/dconf
     runtime_dir = tempfile.mkdtemp(prefix=fsnative(u"RUNTIME-"), dir=_TEMP_DIR)
-    os.chmod(runtime_dir, 0700)
+    os.chmod(runtime_dir, 0o700)
     os.environ["XDG_RUNTIME_DIR"] = runtime_dir
 
     # set HOME and remove all XDG vars that default to it if not set
@@ -222,12 +223,14 @@ def init_test_environ():
         except (subprocess.CalledProcessError, OSError):
             pass
         else:
+            if PY3:
+                out = out.decode("ascii")
             _BUS_INFO = dict([l.split("=", 1) for l in out.splitlines()])
             os.environ.update(_BUS_INFO)
 
     # Ideally nothing should touch the FS on import, but we do atm..
     # Get rid of all modules so QUODLIBET_USERDIR gets used everywhere.
-    for key in sys.modules.keys():
+    for key in list(sys.modules.keys()):
         if key.startswith('quodlibet'):
             del(sys.modules[key])
 

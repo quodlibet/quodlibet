@@ -9,7 +9,7 @@
 
 import shutil
 
-import const
+from . import const
 from quodlibet.util.config import Config, Error
 
 # Some plugins can be enabled on first install

@@ -7,9 +7,10 @@
 
 import os
 import sys
-import __builtin__
 import gettext
 import locale
+
+from quodlibet.compat import builtins
 
 
 def bcp47_to_language(code):
@@ -177,8 +178,8 @@ class GlibTranslations(gettext.GNUTranslations):
             def wrap(f):
                 return f
 
-        __builtin__.__dict__["_"] = wrap(self.ugettext)
-        __builtin__.__dict__["N_"] = wrap(type(u""))
-        __builtin__.__dict__["C_"] = wrap(self.upgettext)
-        __builtin__.__dict__["ngettext"] = wrap(self.ungettext)
-        __builtin__.__dict__["npgettext"] = wrap(self.unpgettext)
+        builtins.__dict__["_"] = wrap(self.ugettext)
+        builtins.__dict__["N_"] = wrap(type(u""))
+        builtins.__dict__["C_"] = wrap(self.upgettext)
+        builtins.__dict__["ngettext"] = wrap(self.ungettext)
+        builtins.__dict__["npgettext"] = wrap(self.unpgettext)

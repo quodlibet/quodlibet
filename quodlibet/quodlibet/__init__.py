@@ -5,17 +5,18 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import __builtin__
-
 import gettext
 import locale
 import os
 import sys
 import warnings
 
-# some code depends on utf-8 default encoding (pygtk used to set it)
-reload(sys)
-sys.setdefaultencoding("utf-8")
+from quodlibet.compat import builtins, PY2
+
+if PY2:
+    # some code depends on utf-8 default encoding (pygtk used to set it)
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
 
 from quodlibet.util import set_process_title, environ, cached_func
 from quodlibet.util import windows, is_osx
@@ -150,7 +151,7 @@ def get_user_dir():
 
     # XXX: users shouldn't assume the dir is there, but we currently do in
     # some places
-    mkdir(USERDIR, 0750)
+    mkdir(USERDIR, 0o750)
 
     return USERDIR
 
@@ -460,10 +461,10 @@ def _init_python():
         raise ImportError("Python %s required. %s found." %
                           (MinVersions.PYTHON, actual))
 
-    __builtin__.__dict__["print_"] = print_
-    __builtin__.__dict__["print_d"] = print_d
-    __builtin__.__dict__["print_e"] = print_e
-    __builtin__.__dict__["print_w"] = print_w
+    builtins.__dict__["print_"] = print_
+    builtins.__dict__["print_d"] = print_d
+    builtins.__dict__["print_e"] = print_e
+    builtins.__dict__["print_w"] = print_w
 
 
 def _init_formats():

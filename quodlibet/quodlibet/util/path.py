@@ -14,6 +14,8 @@ import tempfile
 import codecs
 import shlex
 import urllib
+
+from quodlibet.compat import pathname2url, text_type, PY2
 from quodlibet.util.string import decode
 from . import windows
 from .misc import environ, get_fs_encoding
@@ -83,12 +85,12 @@ if sys.platform == "win32":
     def is_fsnative(path):
         """If path is a native path"""
 
-        return isinstance(path, unicode)
+        return isinstance(path, text_type)
 
     def fsnative(path=u""):
         """unicode -> native path"""
 
-        assert isinstance(path, unicode)
+        assert isinstance(path, text_type)
         return path
 
     def glib2fsnative(path):
@@ -100,7 +102,7 @@ if sys.platform == "win32":
     def fsnative2glib(path):
         """native path -> glib path"""
 
-        assert isinstance(path, unicode)
+        assert isinstance(path, text_type)
         return path.encode("utf-8")
 
     fsnative2bytes = fsnative2glib
@@ -116,24 +118,49 @@ if sys.platform == "win32":
     if the input wasn't produced by fsnative2bytes.
     """
 else:
-    def is_fsnative(path):
-        return isinstance(path, bytes)
 
-    def fsnative(path=u""):
-        assert isinstance(path, unicode)
-        return path.encode(_FSCODING, 'replace')
+    if PY2:
+        def is_fsnative(path):
+            return isinstance(path, bytes)
 
-    def glib2fsnative(path):
-        assert isinstance(path, bytes)
-        return path
+        def fsnative(path=u""):
+            assert isinstance(path, text_type)
+            return path.encode(_FSCODING, 'replace')
 
-    def fsnative2glib(path):
-        assert isinstance(path, bytes)
-        return path
+        def glib2fsnative(path):
+            assert isinstance(path, bytes)
+            return path
 
-    fsnative2bytes = fsnative2glib
+        def fsnative2glib(path):
+            assert isinstance(path, bytes)
+            return path
 
-    bytes2fsnative = glib2fsnative
+        fsnative2bytes = fsnative2glib
+
+        bytes2fsnative = glib2fsnative
+    else:
+        def is_fsnative(path):
+            return isinstance(path, text_type)
+
+        def fsnative(path=u""):
+            assert isinstance(path, text_type)
+            return path
+
+        def glib2fsnative(path):
+            assert isinstance(path, text_type)
+            return path
+
+        def fsnative2glib(path):
+            assert isinstance(path, text_type)
+            return path
+
+        def fsnative2bytes(path):
+            assert isinstance(path, text_type)
+            return path.encode(_FSCODING, "surrogateescape")
+
+        def bytes2fsnative(path):
+            assert isinstance(path, bytes)
+            return path.decode(_FSCODING, "surrogateescape")
 
 
 def iscommand(s):
@@ -266,9 +293,10 @@ def pathname2url_win32(path):
     return "/%s:%s" % (quote(drive), quote("/".join(remain.split("\\"))))
 
 if os.name == "nt":
+    pathname2url
     pathname2url = pathname2url_win32
 else:
-    pathname2url = urllib.pathname2url
+    pathname2url
 
 
 def xdg_get_system_data_dirs():
