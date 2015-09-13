@@ -114,7 +114,7 @@ class Mql(Query):
     NUM_VAL = Word(nums, nums + '.:')("NUM_VAL") + Optional(UNITS)
     # TODO: support for regex escaping e.g. /\/home\/[^\/]+\/dir/
     REGEX = Literal("/") + Regex("[^\/]*")("REGEX") + Literal("/")
-    LIST_ = (Suppress("[") + Optional(delimitedList(VALUE)) + Suppress("]"))
+    LIST_ = Suppress("[") + Optional(delimitedList(VALUE)) + Suppress("]")
 
     # Tag-related
     TAG_NAME = Word(alphas, alphas + "_.")
@@ -187,19 +187,18 @@ class Mql(Query):
         num_expr.setParseAction(self.handle_num_expr)
         list_expr = (self.TAG + Mql.IN_ + Mql.LIST_("LIST"))
         list_expr.setParseAction(self.handle_in)
-        expr = Group(
-            (Literal("(") + clause + Literal(")")) |
-            no_tag_val |
-            num_expr |
-            tag_expr |
-            exc_expr |
-            list_expr |
-            Mql.REGEX.setParseAction(self.handle_bare_regex) |
-            OneOrMore(Mql.VALUE).setParseAction(self.handle_bare_value)
-        )
-        clause << (expr + ZeroOrMore((Mql.JUNCTION + clause)
+        expr = ((Literal("(") + clause + Literal(")")) |
+                no_tag_val |
+                num_expr |
+                tag_expr |
+                exc_expr |
+                list_expr |
+                OneOrMore(Mql.REGEX).setParseAction(self.handle_bare_regex) |
+                OneOrMore(Mql.VALUE).setParseAction(self.handle_bare_value))
+
+        clause << (expr + ZeroOrMore((Mql.JUNCTION + expr)
                                      .setParseAction(self.handle_junction)))
-        self.pp_query << (Group(Optional(clause) + Optional(limit_clause))
+        self.pp_query << ((Optional(clause) + Optional(limit_clause))
                           + StringEnd())
         if debug:
             self.pp_query.setDebug()
@@ -237,7 +236,7 @@ class Mql(Query):
         if not self._stack:
             print_d("Empty stack")
             return self.EMPTY_MATCH
-        # print_d("Here's the stack: %s" % list(reversed(self.stack)))
+        # print_d("Here's the stack: %s" % list(reversed(self._stack)))
         try:
             x = self._stack.pop()
         except IndexError, e:
@@ -306,6 +305,7 @@ class Mql(Query):
 
     def handle_bare_regex(self, string, location, tokens):
         try:
+            # print_d("Handling bare regex %s" % tokens.REGEX)
             matcher = Tag(tokens.REGEX, self.star)
         except Exception:
             raise ParseError("Invalid regex: %s" % tokens.REGEX)
