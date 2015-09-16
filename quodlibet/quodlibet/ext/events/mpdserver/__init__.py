@@ -173,7 +173,7 @@ namelessdev.mpdroid">MPDroid 1.06</a> (Android)<small>
 
         port_num = get_port_num()
         try:
-            self._avahi.register("quodlibet", port_num, "_mpd._tcp")
+            self._avahi.register(app.name, port_num, "_mpd._tcp")
         except AvahiError as e:
             print_w(str(e))
 
