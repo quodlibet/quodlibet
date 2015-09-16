@@ -672,7 +672,7 @@ def set_application_info(icon_name, process_title, app_name):
 
 def main(window, before_quit=None):
     print_d("Entering quodlibet.main")
-    from gi.repository import Gtk, Gdk
+    from gi.repository import Gtk, Gdk, GLib
 
     assert _initialized
 
@@ -718,5 +718,13 @@ def main(window, before_quit=None):
         # if we don't show a window, startup isn't completed, so call manually
         Gdk.notify_startup_complete()
 
-    Gtk.main()
+    # set QUODLIBET_START_PERF to measure startup time until the
+    # windows is first shown.
+    if "QUODLIBET_START_PERF" in os.environ:
+        window.connect("draw", Gtk.main_quit)
+        Gtk.main()
+        sys.exit()
+    else:
+        Gtk.main()
+
     print_d("Gtk.main() done.")
