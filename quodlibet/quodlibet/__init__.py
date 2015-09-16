@@ -672,7 +672,7 @@ def set_application_info(icon_name, process_title, app_name):
 
 def main(window, before_quit=None):
     print_d("Entering quodlibet.main")
-    from gi.repository import Gtk, Gdk, GLib
+    from gi.repository import Gtk, Gdk
 
     assert _initialized
 
