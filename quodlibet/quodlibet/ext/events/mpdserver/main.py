@@ -181,6 +181,7 @@ class MPDService(object):
         self._app = app
         self._connections = set()
         self._idle_subscriptions = {}
+        self._idle_queue = {}
         self._pl_ver = 0
 
         self._options = PlayerOptions(app)
@@ -232,28 +233,47 @@ class MPDService(object):
 
     def add_connection(self, connection):
         self._connections.add(connection)
+        self._idle_queue[connection] = set()
 
     def remove_connection(self, connection):
         self._idle_subscriptions.pop(connection, None)
+        self._idle_queue.pop(connection, None)
         self._connections.remove(connection)
 
     def register_idle(self, connection, subsystems):
-        self._idle_subscriptions[connection] = subsystems
+        self._idle_subscriptions[connection] = set(subsystems)
+        self.flush_idle()
 
-    def unregister_idle(self, connection):
-        try:
-            del self._idle_subscriptions[connection]
-        except KeyError:
-            pass
-
-    def emit_changed(self, subsystem):
+    def flush_idle(self):
+        flushed = []
         for conn, subs in self._idle_subscriptions.iteritems():
-            if not subs or subsystem in subs:
-                line = u"changed: %s" % subsystem
-                conn.log(u"<- " + line)
-                conn.write_line(line)
+            # figure out which subsystems to report for each connection
+            queued = self._idle_queue[conn]
+            if subs:
+                to_send = subs & queued
+            else:
+                to_send = queued
+            queued -= to_send
+
+            # send out the response and remove the idle status for affected
+            # connections
+            for subsystem in to_send:
+                conn.write_line(u"changed: %s" % subsystem)
+            if to_send:
+                flushed.append(conn)
                 conn.ok()
                 conn.start_write()
+
+        for conn in flushed:
+            self._idle_subscriptions.pop(conn, None)
+
+    def unregister_idle(self, connection):
+        self._idle_subscriptions.pop(connection, None)
+
+    def emit_changed(self, subsystem):
+        for conn, subs in self._idle_queue.iteritems():
+            subs.add(subsystem)
+        self.flush_idle()
 
     def play(self):
         if not self._app.player.song:
@@ -516,6 +536,7 @@ class MPDConnection(BaseTCPConnection):
         """Writes a line to the client"""
 
         assert isinstance(line, unicode)
+        self.log(u"<- " + repr(line))
 
         self._buf.extend(line.encode("utf-8", errors="replace") + "\n")
 
