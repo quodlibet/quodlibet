@@ -312,9 +312,9 @@ class MPDService(object):
     def seekcur(self, value, relative):
         if relative:
             pos = self._app.player.get_position()
-            self._app.player.seek(pos + value)
+            self._app.player.seek(pos + value * 1000)
         else:
-            self._app.player.seek(value)
+            self._app.player.seek(value * 1000)
 
     def setvol(self, value):
         """value: 0..100"""
@@ -831,7 +831,7 @@ def _cmd_seekcur(conn, service, args):
     except ValueError:
         raise MPDRequestError("arg not a number")
 
-    service.seekid(time_, relative)
+    service.seekcur(time_, relative)
 
 
 @MPDConnection.Command("outputs")
