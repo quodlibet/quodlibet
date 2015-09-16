@@ -9,6 +9,15 @@ What do these things in strings mean?
   see `String Formatting`_
 
 
+What does ``msgctxt`` in the .po files mean?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It stands for message context and (optionally) allows for different
+translations of the same translatable text appearing in different contexts.
+For example the word "Search" could be a title of a window or the label of a
+button. The former meaning "a search" and the latter "to search".
+
+
 Why are some strings not translatable?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
