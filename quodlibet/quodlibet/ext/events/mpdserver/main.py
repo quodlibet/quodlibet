@@ -692,6 +692,16 @@ def _cmd_play(conn, service, args):
     service.play()
 
 
+@MPDConnection.Command("listplaylists")
+def _cmd_listplaylists(conn, service, args):
+    pass
+
+
+@MPDConnection.Command("list")
+def _cmd_list(conn, service, args):
+    pass
+
+
 @MPDConnection.Command("playid")
 def _cmd_playid(conn, service, args):
     _verify_length(args, 1)
