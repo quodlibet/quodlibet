@@ -319,7 +319,7 @@ class MPDService(object):
     def setvol(self, value):
         """value: 0..100"""
 
-        self._app.player.volume = value / 100.0
+        self._app.player.volume = (value / 100.0) ** 3.0
 
     def repeat(self, value):
         self._options.set_repeat(value)
@@ -357,7 +357,7 @@ class MPDService(object):
             state = "stop"
 
         status = [
-            ("volume", int(app.player.volume * 100)),
+            ("volume", int((app.player.volume ** (1.0 / 3.0)) * 100)),
             ("repeat", int(self._options.get_repeat())),
             ("random", int(self._options.get_random())),
             ("single", int(self._options.get_single())),
