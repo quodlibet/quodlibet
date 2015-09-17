@@ -317,6 +317,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if hasattr(sink_element.props, "volume"):
             self._ext_vol_element = sink_element
 
+            # In case we use the sink volume directly we can increase buffering
+            # without affecting the volume change delay too much and safe some
+            # CPU time... (2x default for now).
+            if hasattr(sink_element.props, "buffer_time"):
+                sink_element.set_property("buffer-time", 400000)
+
             def ext_volume_notify(*args):
                 # gets called from a thread
                 GLib.idle_add(self.notify, "volume")
