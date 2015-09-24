@@ -34,6 +34,7 @@ PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
 
 GlibTranslations().install(unicode=True)
 
+_cli_initialized = False
 _initialized = False
 
 
@@ -479,6 +480,11 @@ def init_cli(no_translations=False):
     Like init() but for code not using Gtk etc.
     """
 
+    global _cli_initialized
+
+    if _cli_initialized:
+        return
+
     from quodlibet import config
 
     _init_python()
@@ -486,6 +492,8 @@ def init_cli(no_translations=False):
     if not no_translations and "QUODLIBET_NO_TRANS" not in environ:
         _init_gettext()
     _init_formats()
+
+    _cli_initialized = True
 
 
 def init(**kwargs):
@@ -497,7 +505,8 @@ def init(**kwargs):
 
     global _initialized
 
-    assert not _initialized
+    if _initialized:
+        return
 
     init_cli(**kwargs)
     _init_gtk()

@@ -11,8 +11,8 @@
 # published by the Free Software Foundation.
 
 import sys
-
 import os
+import traceback
 
 from quodlibet.cli import process_arguments, exit_
 from quodlibet.util.dprint import print_d, print_
@@ -20,6 +20,10 @@ from quodlibet import util
 
 
 def main(argv):
+    import quodlibet
+
+    quodlibet.init_cli()
+
     try:
         # we want basic commands not to import gtk (doubles process time)
         assert "gi.repository.Gtk" not in sys.modules
@@ -28,8 +32,6 @@ def main(argv):
     finally:
         sys.modules.pop("gi.repository.Gtk", None)
 
-    import traceback
-    import quodlibet
     quodlibet.init()
 
     from quodlibet import app
