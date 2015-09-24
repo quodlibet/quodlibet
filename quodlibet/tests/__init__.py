@@ -122,7 +122,6 @@ def destroy_fake_app():
     app.library.destroy()
     app.library.librarian.destroy()
     app.player.destroy()
-    app.cover_manager.destroy()
 
     app.window = app.library = app.player = app.name = app.id = None
     app.cover_manager = None

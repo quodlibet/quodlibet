@@ -7,13 +7,13 @@
 # published by the Free Software Foundation
 
 from itertools import chain
-from multiprocessing.pool import ThreadPool
 
-from gi.repository import GObject, GLib
+from gi.repository import GObject
 
 from quodlibet import config
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.util.cover import built_in
+from quodlibet.util.thread import call_async
 from quodlibet.util.thumbnails import get_thumbnail_from_file
 from quodlibet.plugins.cover import CoverSourcePlugin
 
@@ -61,14 +61,6 @@ class CoverManager(GObject.Object):
     def __init__(self, use_built_in=True):
         super(CoverManager, self).__init__()
         self.plugin_handler = CoverPluginHandler(use_built_in)
-        self._pool = ThreadPool()
-
-    def destroy(self):
-        """After this is called the manager can't be used anymore.
-        Any outstanding work will be aborted.
-        """
-
-        self._pool.terminate()
 
     def init_plugins(self):
         """Register the cover sources plugin handler with the global
@@ -223,16 +215,5 @@ class CoverManager(GObject.Object):
         if fileobj is None:
             return
 
-        def main_loop_callback(result):
-            if not cancel.is_cancelled():
-                callback(result)
-
-        def thread_callback(result):
-            if cancel.is_cancelled():
-                return
-            GLib.idle_add(main_loop_callback, result,
-                          priority=GLib.PRIORITY_DEFAULT)
-
-        self._pool.apply_async(
-            get_thumbnail_from_file, args=(fileobj, (width, height)),
-            callback=thread_callback)
+        call_async(get_thumbnail_from_file, cancel, callback,
+                   args=(fileobj, (width, height)))
