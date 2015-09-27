@@ -575,8 +575,8 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         # offline mode
         offline = self.ConfigCheckButton(
                 _("_Offline mode (don't submit anything)"),
-                'scrobbler_offline')
-        offline.set_active(self.config_get('offline') == "true")
+                'offline')
+        offline.set_active(self.config_get_bool('offline'))
         table.attach(offline, 0, 2, row, row + 1)
 
         box.pack_start(qltk.Frame(_("Submission"), child=table), True, True, 0)
