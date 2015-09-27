@@ -25,11 +25,11 @@ except ImportError:
     from md5 import md5
 
 import quodlibet
-from quodlibet import config, const, app, util, qltk
+from quodlibet import const, app, util, qltk
 from quodlibet.pattern import Pattern
 from quodlibet.query import Query
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.plugins import PluginConfigMixin
+from quodlibet.plugins import PluginConfig
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, QueryValidator
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk import Icons
@@ -46,16 +46,40 @@ DEFAULT_TITLEPAT = '<title><version| (<version>)>'
 DEFAULT_ARTISTPAT = '<artist|<artist>|<composer|<composer>|<performer>>>'
 
 
-def config_get(key, default=''):
-    """Returns value for 'key' from config. If key is missing *or empty*,
-    return default."""
-    try:
-        return (config.get("plugins", "scrobbler_%s" % key) or default)
-    except config.Error:
-        return default
+plugin_config = PluginConfig("scrobbler")
+defaults = plugin_config.defaults
+defaults.set("service", DEFAULT_SERVICE)
+defaults.set("titlepat", "")
+defaults.set("artistpat", "")
+defaults.set("url", "")
+defaults.set("username", "")
+defaults.set("password", "")
+defaults.set("exclude", "")
+defaults.set("offline", False)
 
 
-class QLSubmitQueue(PluginConfigMixin):
+def config_get_url():
+    """Gets the URL for the currently configured service.
+    This logic was used often enough to be split out from generic config
+    """
+
+    # TODO: share this between the classes better
+    service = plugin_config.get('service')
+    if service in SERVICES:
+        return SERVICES[service]
+    else:
+        return plugin_config.get('url')
+
+
+def config_get_title_pattern():
+    return plugin_config.get('titlepat') or DEFAULT_TITLEPAT
+
+
+def config_get_artist_pattern():
+    return plugin_config.get('artistpat') or DEFAULT_ARTISTPAT
+
+
+class QLSubmitQueue(object):
     """Manages the submit queue for scrobbles. Works independently of the
     QLScrobbler plugin being enabled; other plugins may use submit() to queue
     songs for scrobbling.
@@ -65,23 +89,11 @@ class QLSubmitQueue(PluginConfigMixin):
     CLIENT_VERSION = const.VERSION
     PROTOCOL_VERSION = "1.2"
     DUMP = os.path.join(quodlibet.get_user_dir(), "scrobbler_cache")
-    # This must be the kept the same as `QLScrobbler`
-    CONFIG_SECTION = "scrobbler"
 
     # These objects are shared across instances, to allow other plugins to
     # queue scrobbles in future versions of QL
     queue = []
     changed_event = threading.Event()
-
-    def config_get_url(self):
-        """Gets the URL for the currently configured service.
-        This logic was used often enough to be split out from generic config"""
-        # TODO: share this between the classes better
-        service = self.config_get('service', DEFAULT_SERVICE)
-        if service in SERVICES:
-            return SERVICES[service]
-        else:
-            return self.config_get('url')
 
     def set_nowplaying(self, song):
         """Send a Now Playing notification."""
@@ -134,10 +146,8 @@ class QLSubmitQueue(PluginConfigMixin):
         self.username, self.password, self.base_url = ('', '', '')
 
         # These need to be set early for _format_song to work
-        self.titlepat = Pattern(
-            self.config_get('titlepat', "") or DEFAULT_TITLEPAT)
-        self.artpat = Pattern(
-            self.config_get('artistpat', "") or DEFAULT_ARTISTPAT)
+        self.titlepat = Pattern(config_get_title_pattern())
+        self.artpat = Pattern(config_get_artist_pattern())
 
         try:
             disk_queue_file = open(self.DUMP, 'r')
@@ -160,9 +170,9 @@ class QLSubmitQueue(PluginConfigMixin):
         return 0
 
     def _check_config(self):
-        user = self.config_get('username')
-        passw = md5(self.config_get('password')).hexdigest()
-        url = self.config_get_url()
+        user = plugin_config.get('username')
+        passw = md5(plugin_config.get('password')).hexdigest()
+        url = config_get_url()
         if not user or not passw or not url:
             if self.queue and not self.broken:
                 self.quick_dialog(_("Please visit the Plugins window to set "
@@ -174,11 +184,9 @@ class QLSubmitQueue(PluginConfigMixin):
             self.username, self.password, self.base_url = (user, passw, url)
             self.broken = False
             self.handshake_sent = False
-        self.offline = self.config_get_bool('offline')
-        self.titlepat = Pattern(
-                self.config_get('titlepat', "") or DEFAULT_TITLEPAT)
-        self.artpat = Pattern(
-                self.config_get('artistpat', "") or DEFAULT_ARTISTPAT)
+        self.offline = plugin_config.getboolean('offline')
+        self.titlepat = Pattern(config_get_title_pattern())
+        self.artpat = Pattern(config_get_artist_pattern())
 
     def changed(self):
         """Signal that settings or queue contents were changed."""
@@ -338,14 +346,12 @@ class QLSubmitQueue(PluginConfigMixin):
         GLib.idle_add(self.quick_dialog_helper, dialog_type, msg)
 
 
-class QLScrobbler(EventPlugin, PluginConfigMixin):
+class QLScrobbler(EventPlugin):
     PLUGIN_ID = "QLScrobbler"
     PLUGIN_NAME = _("AudioScrobbler Submission")
     PLUGIN_DESC = _("Audioscrobbler client for Last.fm, Libre.fm and other "
                     "Audioscrobbler services.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
-    # Retain original config section
-    CONFIG_SECTION = "scrobbler"
 
     def __init__(self):
         self.__enabled = False
@@ -359,16 +365,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         self.elapsed = 0
         self.nowplaying = None
 
-        self.exclude = self.config_get('exclude')
-
-    def config_get_url(self):
-        """Gets the URL for the currently configured service.
-        This logic was used often enough to be split out from generic config"""
-        service = self.config_get('service', DEFAULT_SERVICE)
-        if service in SERVICES:
-            return SERVICES[service]
-        else:
-            return self.config_get('url')
+        self.exclude = plugin_config.get('exclude')
 
     def plugin_on_song_ended(self, song, stopped):
         if song is None or not self.__enabled:
@@ -437,13 +434,13 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
     def PluginPreferences(self, parent):
         def changed(entry, key):
             if entry.get_property('sensitive'):
-                config.set("plugins", "scrobbler_" + key, entry.get_text())
+                plugin_config.set(key, entry.get_text())
 
         def combo_changed(widget, urlent):
             service = widget.get_active_text()
-            config.set("plugins", "scrobbler_service", service)
+            plugin_config.set("service", service)
             urlent.set_sensitive((service not in SERVICES))
-            urlent.set_text(self.config_get_url())
+            urlent.set_text(config_get_url())
 
         def check_login(*args):
             queue = QLSubmitQueue()
@@ -475,7 +472,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         row = 0
         service_combo = Gtk.ComboBoxText()
         table.attach(service_combo, 1, 2, row, row + 1)
-        cur_service = self.config_get('service')
+        cur_service = plugin_config.get('service')
 
         # Translators: Other service
         other_label = _(u"Other…")
@@ -490,7 +487,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
 
         # url
         entry = UndoEntry()
-        entry.set_text(self.config_get('url'))
+        entry.set_text(plugin_config.get('url'))
         entry.connect('changed', changed, 'url')
         service_combo.connect('changed', combo_changed, entry)
         service_combo.emit('changed')
@@ -500,7 +497,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
 
         # username
         entry = UndoEntry()
-        entry.set_text(self.config_get('username'))
+        entry.set_text(plugin_config.get('username'))
         entry.connect('changed', changed, 'username')
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
@@ -508,7 +505,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
 
         # password
         entry = UndoEntry()
-        entry.set_text(self.config_get('password'))
+        entry.set_text(plugin_config.get('password'))
         entry.set_visibility(False)
         entry.connect('changed', changed, 'password')
         table.attach(entry, 1, 2, row, row + 1)
@@ -544,7 +541,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         row = 0
         # artist pattern
         entry = UndoEntry()
-        entry.set_text(self.config_get('artistpat'))
+        entry.set_text(plugin_config.get('artistpat'))
         entry.connect('changed', changed, 'artistpat')
         table.attach(entry, 1, 2, row, row + 1)
         entry.set_tooltip_text(_("The pattern used to format "
@@ -554,7 +551,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
 
         # title pattern
         entry = UndoEntry()
-        entry.set_text(self.config_get('titlepat'))
+        entry.set_text(plugin_config.get('titlepat'))
         entry.connect('changed', changed, 'titlepat')
         table.attach(entry, 1, 2, row, row + 1)
         entry.set_tooltip_text(_("The pattern used to format "
@@ -564,7 +561,7 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
 
         # exclude filter
         entry = ValidatingEntry(QueryValidator)
-        entry.set_text(self.config_get('exclude'))
+        entry.set_text(plugin_config.get('exclude'))
         entry.set_tooltip_text(
                 _("Songs matching this filter will not be submitted."))
         entry.connect('changed', changed, 'exclude')
@@ -573,10 +570,9 @@ class QLScrobbler(EventPlugin, PluginConfigMixin):
         row += 1
 
         # offline mode
-        offline = self.ConfigCheckButton(
+        offline = plugin_config.ConfigCheckButton(
                 _("_Offline mode (don't submit anything)"),
-                'offline')
-        offline.set_active(self.config_get_bool('offline'))
+                'offline', populate=True)
         table.attach(offline, 0, 2, row, row + 1)
 
         box.pack_start(qltk.Frame(_("Submission"), child=table), True, True, 0)

@@ -448,6 +448,10 @@ class PluginConfig(ConfigProxy):
     def _option(self, name):
         return "%s_%s" % (self._prefix, name)
 
+    def ConfigCheckButton(self, label, option, **kwargs):
+        return ConfigCheckButton(label, PM.CONFIG_SECTION,
+                                 self._option(option), **kwargs)
+
 
 class PluginConfigMixin(object):
     """
