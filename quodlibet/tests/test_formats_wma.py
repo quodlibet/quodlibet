@@ -9,6 +9,7 @@ import os
 import shutil
 import StringIO
 
+import mutagen
 from mutagen import asf
 
 from tests import TestCase, DATA_DIR, mkstemp
@@ -29,9 +30,15 @@ class TWMAFile(TestCase):
         shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.f2)
         self.song2 = WMAFile(self.f2)
 
+        fd, self.f3 = mkstemp(".asf")
+        os.close(fd)
+        shutil.copy(os.path.join(DATA_DIR, 'test.asf'), self.f3)
+        self.song3 = WMAFile(self.f3)
+
     def tearDown(self):
         os.unlink(self.f)
         os.unlink(self.f2)
+        os.unlink(self.f3)
 
     def test_basic(self):
         self.song["title"] = u"SomeTestValue"
@@ -48,17 +55,33 @@ class TWMAFile(TestCase):
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.7120, 3)
+        self.assertAlmostEqual(self.song2("~#length"), 3.684, 3)
+        self.assertAlmostEqual(self.song3("~#length"), 11.38, 2)
 
     def test_bitrate(self):
         self.assertEqual(self.song("~#bitrate"), 64)
+        self.assertEqual(self.song2("~#bitrate"), 38)
+        self.assertEqual(self.song3("~#bitrate"), 5)
 
     def test_write(self):
         self.song.write()
+        self.song2.write()
+        self.song3.write()
 
     def test_can_change(self):
         self.assertTrue(self.song.can_change("title"))
         self.assertFalse(self.song.can_change("foobar"))
         self.assertTrue("albumartist" in self.song.can_change())
+
+    def test_format(self):
+        if mutagen.version < (1, 31):
+            return
+        self.assertEqual(self.song("~format"),
+                         u"ASF Windows Media Audio 9 Standard")
+        self.assertEqual(self.song2("~format"),
+                         u"ASF Windows Media Audio 9 Professional")
+        self.assertEqual(self.song3("~format"),
+                         u"ASF Intel G.723")
 
     def test_invalid(self):
         path = os.path.join(DATA_DIR, 'empty.xm')

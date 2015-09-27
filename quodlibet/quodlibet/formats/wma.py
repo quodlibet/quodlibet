@@ -18,7 +18,7 @@ from ._image import EmbeddedImage, APICType
 class WMAFile(AudioFile):
     mimes = ["audio/x-ms-wma", "audio/x-ms-wmv", "video/x-ms-asf",
              "audio/x-wma", "video/x-wmv"]
-    format = "Windows Media Audio"
+    format = "ASF"
 
     #http://msdn.microsoft.com/en-us/library/dd743066%28VS.85%29.aspx
     #http://msdn.microsoft.com/en-us/library/dd743063%28VS.85%29.aspx
@@ -92,6 +92,13 @@ class WMAFile(AudioFile):
             audio = mutagen.asf.ASF(filename)
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
+
+        try:
+            # mutagen 1.31+
+            self["~format"] = u"%s %s" % (self.format, audio.info.codec_type)
+        except AttributeError:
+            pass
+
         for name, values in audio.tags.items():
             if name == "WM/Picture":
                 self.has_images = True
@@ -267,4 +274,4 @@ def pack_image(mime, description, imagedata, type_):
 
 info = WMAFile
 types = [WMAFile]
-extensions = [".wma"]
+extensions = [".wma", ".asf", ".wmv"]
