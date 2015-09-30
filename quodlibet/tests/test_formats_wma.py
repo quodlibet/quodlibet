@@ -74,14 +74,18 @@ class TWMAFile(TestCase):
         self.assertTrue("albumartist" in self.song.can_change())
 
     def test_format(self):
+        self.assertEqual(self.song("~format"), "ASF")
+        self.assertEqual(self.song2("~format"), "ASF")
+        self.assertEqual(self.song3("~format"), "ASF")
+
         if mutagen.version < (1, 31):
             return
-        self.assertEqual(self.song("~format"),
-                         u"ASF Windows Media Audio 9 Standard")
-        self.assertEqual(self.song2("~format"),
-                         u"ASF Windows Media Audio 9 Professional")
-        self.assertEqual(self.song3("~format"),
-                         u"ASF Intel G.723")
+        self.assertEqual(self.song("~codec"),
+                         u"Windows Media Audio 9 Standard")
+        self.assertEqual(self.song2("~codec"),
+                         u"Windows Media Audio 9 Professional")
+        self.assertEqual(self.song3("~codec"),
+                         u"Intel G.723")
 
     def test_invalid(self):
         path = os.path.join(DATA_DIR, 'empty.xm')

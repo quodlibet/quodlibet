@@ -13,10 +13,16 @@ extensions = [".mp3", ".mp2"]
 
 
 class MP3File(ID3File):
-    format = "MP3"
+    format = "MPEG-1/2"
     mimes = ["audio/mp3", "audio/x-mp3", "audio/mpeg", "audio/mpg",
              "audio/x-mpeg"]
     Kind = MP3
+
+    def _parse_info(self, info):
+        self["~#length"] = info.length
+        self["~#bitrate"] = int(info.bitrate / 1000)
+        self["~format"] = u"MP%d" % info.layer
+
 
 info = MP3File
 types = [MP3File]

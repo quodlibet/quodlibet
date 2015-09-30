@@ -103,6 +103,7 @@ class ID3File(AudioFile):
     def __init__(self, filename):
         audio = self.Kind(filename, ID3=ID3hack)
         tag = audio.tags or mutagen.id3.ID3()
+        self._parse_info(audio.info)
 
         for frame in tag.values():
             if frame.FrameID == "APIC" and len(frame.data):
@@ -208,13 +209,12 @@ class ID3File(AudioFile):
                 for frame in tag.getall("TXXX:" + k):
                     self[k] = "\n".join(map(unicode, frame.text))
 
-        self.setdefault("~#length", audio.info.length)
-        try:
-            self.setdefault("~#bitrate", int(audio.info.bitrate / 1000))
-        except AttributeError:
-            pass
-
         self.sanitize(filename)
+
+    def _parse_info(self, info):
+        """Optionally implement in subclasses"""
+
+        pass
 
     def __validate_name(self, k):
         """Returns a ascii string or None if the key isn't supported"""

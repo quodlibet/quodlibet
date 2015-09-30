@@ -95,7 +95,7 @@ class WMAFile(AudioFile):
 
         try:
             # mutagen 1.31+
-            self["~format"] = u"%s %s" % (self.format, audio.info.codec_type)
+            self["~codec"] = audio.info.codec_type
         except AttributeError:
             pass
 

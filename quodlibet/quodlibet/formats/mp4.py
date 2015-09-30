@@ -61,8 +61,7 @@ class MP4File(AudioFile):
 
     def __init__(self, filename):
         audio = MP4(filename)
-        self["~format"] = "%s %s" % (
-            self.format, getattr(audio.info, "codec_description", "AAC"))
+        self["~codec"] = getattr(audio.info, "codec_description", u"AAC")
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         for key, values in audio.items():

@@ -15,6 +15,9 @@ class TrueAudioFile(ID3File):
     mimes = ["audio/x-tta"]
     Kind = TrueAudio
 
+    def _parse_info(self, info):
+        self["~#length"] = info.length
+
 info = TrueAudioFile
 types = [TrueAudioFile]
 extensions = [".tta"]
