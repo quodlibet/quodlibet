@@ -9,7 +9,7 @@ from mutagen.mp3 import MP3
 
 from ._id3 import ID3File
 
-extensions = [".mp3", ".mp2"]
+extensions = [".mp3", ".mp2", ".mp1", ".mpg", ".mpeg"]
 
 
 class MP3File(ID3File):
