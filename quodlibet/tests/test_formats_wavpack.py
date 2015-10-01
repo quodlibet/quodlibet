@@ -21,3 +21,8 @@ class TWavpackFile(TestCase):
 
     def test_bitrate(self):
         self.failUnlessEqual(self.song("~#bitrate"), 76)
+
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "WavPack")
+        self.assertEqual(self.song("~codec"), "WavPack")
+        self.assertEqual(self.song("~encoding"), "")

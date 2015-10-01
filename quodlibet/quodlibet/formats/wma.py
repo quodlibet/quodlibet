@@ -90,14 +90,23 @@ class WMAFile(AudioFile):
     def __init__(self, filename, audio=None):
         if audio is None:
             audio = mutagen.asf.ASF(filename)
-        self["~#length"] = audio.info.length
-        self["~#bitrate"] = int(audio.info.bitrate / 1000)
+        info = audio.info
+
+        self["~#length"] = info.length
+        self["~#bitrate"] = int(info.bitrate / 1000)
 
         try:
             # mutagen 1.31+
-            self["~codec"] = audio.info.codec_type
+            type_, name, desc = info.codec_type, info.codec_name, \
+                info.codec_description
         except AttributeError:
             pass
+        else:
+            if type_:
+                self["~codec"] = type_
+            encoding = u"\n".join(filter(None, [name, desc]))
+            if encoding:
+                self["~encoding"] = encoding
 
         for name, values in audio.tags.items():
             if name == "WM/Picture":

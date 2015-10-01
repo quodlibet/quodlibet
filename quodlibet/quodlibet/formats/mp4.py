@@ -30,7 +30,7 @@ class MP4File(AudioFile):
         "\xa9grp": "grouping",
         "\xa9gen": "genre",
         "tmpo": "bpm",
-        "\xa9too": "encodedby",
+        "\xa9too": "encodedby",  # FIXME: \xa9enc should be encodedby
         "cprt": "copyright",
         "soal": "albumsort",
         "soaa": "albumartistsort",
@@ -64,6 +64,7 @@ class MP4File(AudioFile):
         self["~codec"] = getattr(audio.info, "codec_description", u"AAC")
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
+
         for key, values in audio.items():
             if key in self.__tupletranslate:
                 name = self.__tupletranslate[key]

@@ -34,3 +34,8 @@ class TVgmFile(TestCase):
     def test_invalid(self):
         path = os.path.join(DATA_DIR, 'empty.xm')
         self.failUnlessRaises(Exception, VgmFile, path)
+
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "VGM")
+        self.assertEqual(self.song("~codec"), "VGM")
+        self.assertEqual(self.song("~encoding"), "")

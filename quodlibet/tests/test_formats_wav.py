@@ -33,3 +33,8 @@ class TWAVEFile(TestCase):
         path = os.path.join(DATA_DIR, 'empty.xm')
         self.failUnless(os.path.exists(path))
         self.failUnlessRaises(Exception, WAVEFile, path)
+
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "WAVE")
+        self.assertEqual(self.song("~codec"), "WAVE")
+        self.assertEqual(self.song("~encoding"), "")

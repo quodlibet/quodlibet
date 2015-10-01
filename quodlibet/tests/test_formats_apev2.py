@@ -125,6 +125,11 @@ class TMAFile(TestCase, TAPEv2FileMixin):
     def tearDown(self):
         os.unlink(self.f)
 
+    def test_format_codec(self):
+        self.assertEqual(self.s("~format"), "Monkey's Audio")
+        self.assertEqual(self.s("~codec"), "Monkey's Audio")
+        self.assertEqual(self.s("~encoding"), "")
+
 
 class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 
@@ -136,6 +141,11 @@ class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 
     def tearDown(self):
         os.unlink(self.f)
+
+    def test_format_codec(self):
+        self.assertEqual(self.s("~format"), "WavPack")
+        self.assertEqual(self.s("~codec"), "WavPack")
+        self.assertEqual(self.s("~encoding"), "")
 
 
 class TWvCoverArt(TestCase):

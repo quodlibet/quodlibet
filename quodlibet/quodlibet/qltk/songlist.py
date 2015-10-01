@@ -1060,7 +1060,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         dateinfo = """date originaldate recordingdate ~#laststarted
             ~#lastplayed ~#added ~#mtime""".split()
         fileinfo = """~format ~#bitrate ~#filesize ~filename ~basename ~dirname
-            ~uri ~codec""".split()
+            ~uri ~codec ~encoding""".split()
         copyinfo = """copyright organization location isrc
             contact website""".split()
         all_headers = reduce(lambda x, y: x + y,

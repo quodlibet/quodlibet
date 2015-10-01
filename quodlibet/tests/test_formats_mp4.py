@@ -30,10 +30,15 @@ class TMP4File(TestCase):
 
     def test_format(self):
         self.assertEqual(self.song("~format"), "MPEG-4")
+
+    def test_codec(self):
         if mutagen.version >= (1, 27):
             self.assertEqual(self.song("~codec"), "AAC LC")
         else:
             self.assertEqual(self.song("~codec"), "MPEG-4")
+
+    def test_encoding(self):
+        self.assertEqual(self.song("~encoding"), "FAAC 1.24")
 
     def test_basic(self):
         self.song["title"] = u"SomeTestValue"

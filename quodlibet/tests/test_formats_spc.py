@@ -39,3 +39,8 @@ class TSPCFile(TestCase):
         path = os.path.join(DATA_DIR, 'empty.xm')
         self.failUnless(os.path.exists(path))
         self.failUnlessRaises(Exception, SPCFile, path)
+
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "SPC700")
+        self.assertEqual(self.song("~codec"), "SPC700")
+        self.assertEqual(self.song("~encoding"), "")

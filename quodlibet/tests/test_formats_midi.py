@@ -34,3 +34,8 @@ class TMidiFile(TestCase):
     def test_invalid(self):
         path = os.path.join(DATA_DIR, 'empty.xm')
         self.failUnlessRaises(Exception, MidiFile, path)
+
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "MIDI")
+        self.assertEqual(self.song("~codec"), "MIDI")
+        self.assertEqual(self.song("~encoding"), "")

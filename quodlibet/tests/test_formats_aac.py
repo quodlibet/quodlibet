@@ -56,6 +56,11 @@ class _TAACFileMixin(object):
         self.assertTrue(os.path.exists(path))
         self.assertRaises(Exception, AACFile, path)
 
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "AAC")
+        self.assertEqual(self.song("~codec"), "AAC")
+        self.assertEqual(self.song("~encoding"), "")
+
 
 @skipUnless(AAC, "too old mutagen")
 class TADTSFile(_TAACFile, _TAACFileMixin):

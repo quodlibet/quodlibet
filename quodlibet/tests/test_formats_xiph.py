@@ -293,6 +293,11 @@ class TFLACFile(TVCFile, TVCFileMixin):
         shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
         self.song = FLACFile(self.filename)
 
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "FLAC")
+        self.assertEqual(self.song("~codec"), "FLAC")
+        self.assertEqual(self.song("~encoding"), "")
+
     def test_mime(self):
         self.failUnless(self.song.mimes)
 
@@ -591,6 +596,11 @@ class TOggFile(TVCFile, TVCFileMixin):
         os.unlink(self.filename)
         config.quit()
 
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "Ogg Vorbis")
+        self.assertEqual(self.song("~codec"), "Ogg Vorbis")
+        self.assertEqual(self.song("~encoding"), "")
+
 
 @skipUnless(OggOpus, "Ogg Opus mutagen support missing")
 class TOggOpusFile(TVCFile, TVCFileMixin):
@@ -604,6 +614,11 @@ class TOggOpusFile(TVCFile, TVCFileMixin):
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.6847, 3)
         self.failUnless("opusenc" in self.song("encoder"))
+
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "Ogg Opus")
+        self.assertEqual(self.song("~codec"), "Ogg Opus")
+        self.assertEqual(self.song("~encoding"), "libopus 0.9.14")
 
     def tearDown(self):
         os.unlink(self.filename)

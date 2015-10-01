@@ -320,6 +320,11 @@ class AudioFile(dict, ImageContainer):
                 if codec is None:
                     return self("~format")
                 return codec
+            elif key == "encoding":
+                parts = filter(None,
+                               [self.get("~encoding"), self.get("encodedby")])
+                encoding = u"\n".join(parts)
+                return encoding or default
             elif key == "#date":
                 date = self.get("date")
                 if date is None:

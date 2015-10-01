@@ -16,3 +16,8 @@ class TModFile(TestCase):
 
     def test_title(self):
         self.failUnlessEqual("test song", self.song["title"])
+
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "MOD/XM/IT")
+        self.assertEqual(self.song("~codec"), "MOD/XM/IT")
+        self.assertEqual(self.song("~encoding"), "")

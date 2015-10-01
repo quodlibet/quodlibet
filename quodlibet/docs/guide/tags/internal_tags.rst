@@ -13,8 +13,9 @@ String Tags
  * ``~basename``: The last component of the full path name
  * ``~dirname``: Everything but the last component of the file path name
  * ``~filename``: The full path name
- * ``~format``: The file format (e.g. MPEG-4)
- * ``~codec``: The audio codec (e.g. AAC LC)
+ * ``~format``: The file format (e.g. "MPEG-4")
+ * ``~codec``: The audio codec (e.g. "AAC LC")
+ * ``~encoding``: Encoder name, version, settings used (e.g. "LAME 3.97.0, VBR")
  * ``~length``: The length of the file in H:MM:SS format
  * ``~mountpoint``: The component of the full path name that corresponds to the file's immediate parent mount
  * ``~performers``: A list of performers, including :ref:`roles <PerformerRoles>`

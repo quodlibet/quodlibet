@@ -78,6 +78,7 @@ class TWMAFile(TestCase):
         self.assertEqual(self.song2("~format"), "ASF")
         self.assertEqual(self.song3("~format"), "ASF")
 
+    def test_codec(self):
         if mutagen.version < (1, 31):
             return
         self.assertEqual(self.song("~codec"),
@@ -86,6 +87,19 @@ class TWMAFile(TestCase):
                          u"Windows Media Audio 9 Professional")
         self.assertEqual(self.song3("~codec"),
                          u"Intel G.723")
+
+    def test_encoding(self):
+        if mutagen.version < (1, 31):
+            return
+        self.assertEqual(
+            self.song("~encoding"),
+            u"Windows Media Audio 9.1\n64 kbps, 48 kHz, stereo 2-pass CBR")
+        self.assertEqual(
+            self.song2("~encoding"),
+            (u"Windows Media Audio 9.1 Professional\n192 kbps, 44 kHz, "
+             "2 channel 24 bit 2-pass VBR"))
+        self.assertEqual(self.song3("~encoding"),
+                         u"Microsoft G.723.1\n8 kHz Mono, 5333 Bit/s")
 
     def test_invalid(self):
         path = os.path.join(DATA_DIR, 'empty.xm')

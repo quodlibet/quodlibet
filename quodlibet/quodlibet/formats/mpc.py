@@ -20,6 +20,9 @@ class MPCFile(APEv2File):
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
 
+        version = audio.info.version
+        self["~codec"] = u"%s SV%d" % (self.format, version)
+
         try:
             if audio.info.title_gain:
                 track_g = u"%+0.2f dB" % audio.info.title_gain
