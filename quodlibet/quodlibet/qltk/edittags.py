@@ -764,7 +764,14 @@ class EditTags(Gtk.VBox):
 
             for key, values in deleted.iteritems():
                 for value in values:
-                    if key in song:
+                    if not value.shared:
+                        # In case it isn't shared we don't know the actual
+                        # values to remove. But we know that in that case
+                        # we merge all values into one Comment so just removing
+                        # everything for that key is OK.
+                        song.remove(key, None)
+                        changed = True
+                    elif key in song:
                         song.remove(key, value.text)
                         changed = True
 
