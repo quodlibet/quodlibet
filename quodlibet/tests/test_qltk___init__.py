@@ -4,6 +4,7 @@ from tests import TestCase
 from gi.repository import Gtk, Gdk
 
 from quodlibet import qltk
+from quodlibet import util
 
 
 class TQltk(TestCase):
@@ -28,22 +29,27 @@ class TQltk(TestCase):
         l.destroy()
 
     def test_is_accel(self):
-        RETURN = 65293
-
         e = Gdk.Event.new(Gdk.EventType.KEY_RELEASE)
         self.failIf(qltk.is_accel(e, "a"))
 
         e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
-        e.keyval = RETURN
+        e.keyval = Gdk.KEY_Return
         e.state = Gdk.ModifierType.CONTROL_MASK
         self.failUnless(qltk.is_accel(e, "<ctrl>Return"))
 
         e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
-        e.keyval = RETURN
+        e.keyval = Gdk.KEY_Return
         e.state = Gdk.ModifierType.CONTROL_MASK
         self.failUnless(qltk.is_accel(e, "a", "<ctrl>Return"))
         self.failUnless(qltk.is_accel(e, "<ctrl>Return", "b"))
         self.failIf(qltk.is_accel(e, "a", "b"))
+
+    def test_is_accel_primary(self):
+        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
+        e.keyval = Gdk.KEY_Return
+        e.state = Gdk.ModifierType.CONTROL_MASK
+        if not util.is_osx():
+            self.assertTrue(qltk.is_accel(e, "<Primary>Return"))
 
     def test_popup_menu_under_widget(self):
         w = Gtk.Window()
