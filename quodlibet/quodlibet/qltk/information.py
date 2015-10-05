@@ -264,21 +264,21 @@ class OneSong(qltk.Notebook):
             song.get("~#filesize") or filesize(song["~filename"]))
         mtime = ftime(util.path.mtime(song["~filename"]))
         format_ = song("~format")
+        codec = song("~codec")
+        encoding = song.comma("~encoding")
         bitrate = song.get("~#bitrate", 0)
-        if bitrate != 0:
-            bitrate = _("%d kbps") % int(bitrate)
-        else:
-            bitrate = False
+        bitrate = _("%d kbps") % int(bitrate)
 
         t = Gtk.Table(n_rows=4, n_columns=2)
         t.set_col_spacings(6)
         t.set_homogeneous(False)
         table = [(_("length"), length),
                  (_("format"), format_),
+                 (_("codec"), codec),
+                 (_("encoding"), encoding),
+                 (_("bitrate"), bitrate),
                  (_("file size"), size),
                  (_("modified"), mtime)]
-        if bitrate:
-            table.insert(2, (_("bitrate"), bitrate))
         fnlab = Label(fn)
         fnlab.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
         t.attach(fnlab, 0, 2, 0, 1, xoptions=Gtk.AttachOptions.FILL)
