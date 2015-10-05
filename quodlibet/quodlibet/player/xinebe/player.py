@@ -158,6 +158,10 @@ class XinePlaylistPlayer(BasePlayer):
             if self.song is None:
                 return False
             return True
+        elif property.name == 'mute':
+            if not self._destroyed:
+                return xine_get_param(self._stream, XINE_PARAM_AUDIO_AMP_MUTE)
+            return False
         else:
             raise AttributeError
 
@@ -168,6 +172,9 @@ class XinePlaylistPlayer(BasePlayer):
             v = min(100, int(v * 100))
             if not self._destroyed:
                 xine_set_param(self._stream, XINE_PARAM_AUDIO_AMP_LEVEL, v)
+        elif property.name == 'mute':
+            if not self._destroyed:
+                xine_set_param(self._stream, XINE_PARAM_AUDIO_AMP_MUTE, v)
         else:
             raise AttributeError
 

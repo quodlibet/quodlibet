@@ -326,7 +326,15 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             def ext_volume_notify(*args):
                 # gets called from a thread
                 GLib.idle_add(self.notify, "volume")
+
             self._ext_vol_element.connect("notify::volume", ext_volume_notify)
+
+        def mute_notify(*args):
+            # gets called from a thread
+            GLib.idle_add(self.notify, "mute")
+
+        mute_element = self._mute_element
+        mute_element.connect("notify::mute", mute_notify)
 
         # Make the sink of the first element the sink of the bin
         gpad = Gst.GhostPad.new('sink', pipeline[0].get_static_pad('sink'))
@@ -390,6 +398,15 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.bin.set_property('uri', self.song("~uri"))
 
         return True
+
+    @property
+    def _mute_element(self):
+        """The element used for muting (volume or sink).
+
+        Might return None in case there is no active pipeline
+        """
+
+        return self._ext_vol_element or self._vol_element
 
     def __destroy_pipeline(self):
         self._remove_plugin_elements()
@@ -459,6 +476,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # and the volume is only valid in > paused states.
             if message.src is self._ext_vol_element:
                 self.notify("volume")
+                self.notify("mute")
 
             if message.src is self.bin.bin:
                 new_state = message.parse_state_changed()[1]
@@ -617,6 +635,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 if current_state >= Gst.State.PAUSED:
                     self._volume = self._ext_vol_element.get_property("volume")
             return self._volume
+        elif property.name == "mute":
+            if self._mute_element is None:
+                return False
+            return self._mute_element.props.mute
         elif property.name == "seekable":
             return self._seekable
         else:
@@ -642,6 +664,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 if self.bin:
                     v = min(10.0, max(0.0, v))
                     self._vol_element.set_property('volume', v)
+        elif property.name == 'mute':
+            if self._mute_element is not None:
+                self._mute_element.props.mute = v
         else:
             raise AttributeError
 

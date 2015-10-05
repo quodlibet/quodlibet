@@ -186,6 +186,13 @@ class TPlayer(AbstractTestCase):
         self.assertTrue(calls)
         self.assertFalse(self.player.seekable)
 
+    def test_mute(self):
+        self.assertFalse(self.player.mute)
+        self.player.next()
+        self.assertFalse(self.player.mute)
+        # backend don't have to support it, but shouldn't fail on set/get
+        self.player.mute = not self.player.mute
+
 
 class TNullPlayer(TPlayer):
     NAME = "nullbe"

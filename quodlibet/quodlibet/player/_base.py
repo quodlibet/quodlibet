@@ -92,6 +92,8 @@ class BasePlayer(GObject.GObject, Equalizer):
                    GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
         'seekable': (bool, 'seekable', 'if the stream is seekable', True,
                      GObject.ParamFlags.READABLE),
+        'mute': (bool, 'mute', 'if the stream is muted', False,
+                 GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
     }
 
     def __init__(self, *args, **kwargs):
@@ -154,6 +156,14 @@ class BasePlayer(GObject.GObject, Equalizer):
     @volume.setter
     def volume(self, v):
         self.props.volume = min(1.0, max(0.0, v))
+
+    @property
+    def mute(self):
+        return self.props.mute
+
+    @mute.setter
+    def mute(self, v):
+        self.props.mute = v
 
     @property
     def seekable(self):

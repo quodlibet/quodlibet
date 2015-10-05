@@ -18,6 +18,7 @@ class NullPlayer(BasePlayer):
         self._paused = True
         self._source = None
         self._volume = 1.0
+        self._mute = False
         self._position = 0
 
     def _destroy(self):
@@ -46,12 +47,16 @@ class NullPlayer(BasePlayer):
             if self.song is None:
                 return False
             return True
+        elif property.name == 'mute':
+            return self._mute
         else:
             raise AttributeError
 
     def do_set_property(self, property, v):
         if property.name == 'volume':
             self._volume = v
+        elif property.name == 'mute':
+            self._mute = v
         else:
             raise AttributeError
 

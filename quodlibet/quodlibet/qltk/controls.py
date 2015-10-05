@@ -245,7 +245,10 @@ class Volume(Gtk.VolumeButton):
 
         self._id = self.connect('value-changed', self.__volume_changed, player)
         self._id2 = player.connect('notify::volume', self.__volume_notify)
+        self._id3 = player.connect('notify::mute', self.__mute_notify)
+        self._orig_icon_list = self.props.icons
         player.notify("volume")
+        player.notify("mute")
 
         self.connect("event", self._on_button_event, player)
 
@@ -253,16 +256,24 @@ class Volume(Gtk.VolumeButton):
         replaygain_menu.attach_to_widget(self, None)
         self.connect('popup-menu', self.__popup, replaygain_menu)
         connect_obj(self, 'button-press-event', self.__volume_button_press,
-                    replaygain_menu)
+                    replaygain_menu, player)
 
     def __popup(self, widget, menu):
         time = Gtk.get_current_event_time()
         button = 3
         return qltk.popup_menu_under_widget(menu, widget, button, time)
 
-    def __volume_button_press(self, menu, event):
+    def __volume_button_press(self, menu, event, player):
+        if event.type != Gdk.EventType.BUTTON_PRESS:
+            return False
+
         if event.button == Gdk.BUTTON_SECONDARY:
             menu.popup(None, None, None, None, event.button, event.time)
+            return True
+        elif event.button == Gdk.BUTTON_MIDDLE:
+            # toggle the muted state, if the backend doesn't support it
+            # this action will just be ignored
+            player.mute = not player.mute
             return True
 
     def __iadd__(self, v):
@@ -283,6 +294,17 @@ class Volume(Gtk.VolumeButton):
         self.set_value(player.volume ** (1.0 / 3.0))
         self.handler_unblock(self._id)
 
+    def __mute_notify(self, player, prop):
+        self._update_mute(player)
+
+    def _update_mute(self, player):
+        if player.mute:
+            # remove all icons except the mute one to show a muted state
+            # that is not affected by the volume slider
+            self.props.icons = [self._orig_icon_list[0]]
+        else:
+            self.props.icons = self._orig_icon_list
+
     def _on_button_event(self, widget, event, player):
         # pulsesink doesn't emit volume changes when it's paused, but
         # fetching the value works. To prevent user volume changes based on a
@@ -291,6 +313,8 @@ class Volume(Gtk.VolumeButton):
         self.handler_block(self._id)
         self.set_value(player.volume ** (1.0 / 3.0))
         self.handler_unblock(self._id)
+        # same with mute
+        self._update_mute(player)
 
 
 class ReplayGainMenu(Gtk.Menu):
