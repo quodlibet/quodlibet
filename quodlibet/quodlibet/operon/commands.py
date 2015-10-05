@@ -473,7 +473,7 @@ class InfoCommand(Command):
         if not options.terse:
             tags = []
             for key in ["~format", "~codec", "~encoding", "~length",
-                        "~#bitrate", "~filesize"]:
+                        "~bitrate", "~filesize"]:
                 tags.append((util.tag(key), unicode(song.comma(key))))
 
             print_table(tags, headers, nicks, order)

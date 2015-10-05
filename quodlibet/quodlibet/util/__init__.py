@@ -319,6 +319,10 @@ def format_rating(value, blank=True):
     return prefs.full_symbol * ons + prefs.blank_symbol * offs
 
 
+def format_bitrate(value):
+    return _("%d kbps") % int(value)
+
+
 def format_size(size):
     """Turn an integer size value into something human-readable."""
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)

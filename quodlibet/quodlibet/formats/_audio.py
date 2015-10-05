@@ -325,6 +325,8 @@ class AudioFile(dict, ImageContainer):
                                [self.get("~encoding"), self.get("encodedby")])
                 encoding = u"\n".join(parts)
                 return encoding or default
+            elif key == "bitrate":
+                return util.format_bitrate(self("~#bitrate"))
             elif key == "#date":
                 date = self.get("date")
                 if date is None:

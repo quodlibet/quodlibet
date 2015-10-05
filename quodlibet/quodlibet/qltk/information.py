@@ -266,8 +266,7 @@ class OneSong(qltk.Notebook):
         format_ = song("~format")
         codec = song("~codec")
         encoding = song.comma("~encoding")
-        bitrate = song.get("~#bitrate", 0)
-        bitrate = _("%d kbps") % int(bitrate)
+        bitrate = song("~bitrate")
 
         t = Gtk.Table(n_rows=4, n_columns=2)
         t.set_col_spacings(6)

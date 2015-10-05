@@ -21,7 +21,7 @@ bar_1_2 = AudioFile({
     "discnumber": "1", "tracknumber": "2/3",
     "artist": "Lali-ho!", "album": "Bar",
     "date": "2004-12-12", "originaldate": "2005-01-01",
-    "~#filesize": 1024 ** 2})
+    "~#filesize": 1024 ** 2, "~#bitrate": 128})
 bar_2_1 = AudioFile({
     "~filename": fsnative(u"does not/exist"),
     "title": "more songs",
@@ -103,6 +103,10 @@ class TAudioFile(TestCase):
     def test_filesize(self):
         self.failUnlessEqual(bar_1_2("~filesize"), "1.00 MB")
         self.failUnlessEqual(bar_1_2("~#filesize"), 1024 ** 2)
+
+    def test_bitrate(self):
+        self.assertEqual(bar_1_2("~#bitrate"), 128)
+        self.assertEqual(bar_1_2("~bitrate"), "128 kbps")
 
     def test_originalyear(self):
         self.failUnlessEqual(bar_1_2("~originalyear"), "2005")
