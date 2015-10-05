@@ -338,7 +338,7 @@ class SongsMenu(Gtk.Menu):
 
             b.connect('activate', enqueue_cb, songs)
             if accels:
-                qltk.add_fake_accel(b, "<ctrl>Return")
+                qltk.add_fake_accel(b, "<Primary>Return")
             self.append(b)
             b.set_sensitive(can_add and bool(songs))
 
@@ -405,7 +405,7 @@ class SongsMenu(Gtk.Menu):
             b = qltk.MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
             b.set_sensitive(bool(songs))
             if accels:
-                qltk.add_fake_accel(b, "<ctrl>I")
+                qltk.add_fake_accel(b, "<Primary>I")
 
             def information_cb(menu_item):
                 parent = get_menu_item_top_parent(menu_item)

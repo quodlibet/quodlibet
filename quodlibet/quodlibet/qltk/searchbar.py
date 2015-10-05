@@ -75,7 +75,7 @@ class SearchBarBox(Gtk.HBox):
         self.pack_start(combo, True, True, 0)
 
         if accel_group:
-            key, mod = Gtk.accelerator_parse("<ctrl>L")
+            key, mod = Gtk.accelerator_parse("<Primary>L")
             accel_group.connect(key, mod, 0,
                     lambda *x: entry.mnemonic_activate(True))
 

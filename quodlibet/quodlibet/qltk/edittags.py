@@ -549,7 +549,7 @@ class EditTags(Gtk.VBox):
         if qltk.is_accel(event, "Delete"):
             self.__remove_tag(view, view)
             return Gdk.EVENT_STOP
-        elif qltk.is_accel(event, "<ctrl>s"):
+        elif qltk.is_accel(event, "<Primary>s"):
             # Issue 697: allow Ctrl-s to save.
             self._save.emit('clicked')
             return Gdk.EVENT_STOP

@@ -529,7 +529,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
         self.show_all()
 
     def __key_pressed(self, widget, event, librarian):
-        if qltk.is_accel(event, "<ctrl>I"):
+        if qltk.is_accel(event, "<Primary>I"):
             songs = self.__get_selected_songs()
             if songs:
                 window = Information(librarian, songs, self)

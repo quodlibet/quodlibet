@@ -58,8 +58,8 @@ class TBaseView(TestCase):
 
     def test_key_events(self):
         with visible(self.c):
-            send_key_click(self.c, "<ctrl>Right")
-            send_key_click(self.c, "<ctrl>Left")
+            send_key_click(self.c, "<Primary>Right")
+            send_key_click(self.c, "<Primary>Left")
 
     def test_select_func(self):
         self.m.append(row=["foo"])

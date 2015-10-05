@@ -490,7 +490,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         def scroll_and_jump(*args):
             self.__jump_to_current(True, True)
 
-        keyval, mod = Gtk.accelerator_parse("<control><shift>J")
+        keyval, mod = Gtk.accelerator_parse("<Primary><shift>J")
         accel_group.connect(keyval, mod, 0, scroll_and_jump)
 
         # dbus app menu
@@ -803,7 +803,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         act = Action(name="AddFolders", label=_(u'_Add a Folder…'),
                      icon_name=Icons.LIST_ADD)
         act.connect('activate', self.open_chooser)
-        ag.add_action_with_accel(act, "<control>O")
+        ag.add_action_with_accel(act, "<Primary>O")
 
         act = Action(name="AddFiles", label=_(u'_Add a File…'),
                      icon_name=Icons.LIST_ADD)
@@ -832,7 +832,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         act = Action(name="Quit", label=_('_Quit'),
                      icon_name=Icons.APPLICATION_EXIT)
         act.connect('activate', lambda *x: self.destroy())
-        ag.add_action_with_accel(act, "<control>Q")
+        ag.add_action_with_accel(act, "<Primary>Q")
 
         act = Action(name="Control", label=_('_Control'))
         ag.add_action(act)
@@ -850,7 +850,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         act = Action(name="Jump", label=_('_Jump to Playing Song'),
                      icon_name=Icons.GO_JUMP)
         act.connect('activate', self.__jump_to_current)
-        ag.add_action_with_accel(act, "<control>J")
+        ag.add_action_with_accel(act, "<Primary>J")
 
         act = Action(name="View", label=_('_View'))
         ag.add_action(act)
@@ -861,17 +861,17 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         act = Action(name="Previous", label=_('Pre_vious'),
                      icon_name=Icons.MEDIA_SKIP_BACKWARD)
         act.connect('activate', self.__previous_song)
-        ag.add_action_with_accel(act, "<control>comma")
+        ag.add_action_with_accel(act, "<Primary>comma")
 
         act = Action(name="PlayPause", label=_('_Play'),
                      icon_name=Icons.MEDIA_PLAYBACK_START)
         act.connect('activate', self.__play_pause)
-        ag.add_action_with_accel(act, "<control>space")
+        ag.add_action_with_accel(act, "<Primary>space")
 
         act = Action(name="Next", label=_('_Next'),
                      icon_name=Icons.MEDIA_SKIP_FORWARD)
         act.connect('activate', self.__next_song)
-        ag.add_action_with_accel(act, "<control>period")
+        ag.add_action_with_accel(act, "<Primary>period")
 
         act = ToggleAction(name="StopAfter", label=_("Stop After This Song"))
         ag.add_action_with_accel(act, "<shift>space")
@@ -883,12 +883,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                      icon_name=Icons.LIST_ADD)
         connect_obj(act, 'activate', self.__add_bookmark,
                            library.librarian, player)
-        ag.add_action_with_accel(act, "<ctrl>D")
+        ag.add_action_with_accel(act, "<Primary>D")
 
         act = Action(name="EditBookmarks", label=_(u"Edit Bookmarks…"))
         connect_obj(act, 'activate', self.__edit_bookmarks,
                            library.librarian, player)
-        ag.add_action_with_accel(act, "<ctrl>B")
+        ag.add_action_with_accel(act, "<Primary>B")
 
         act = Action(name="About", label=_("_About"),
                      icon_name=Icons.HELP_ABOUT)

@@ -78,7 +78,7 @@ class FilterMenu(object):
             act = Action(name="Random%s" % util.capitalize(tag_),
                          label=label, icon_name=Icons.DIALOG_QUESTION)
             act.connect('activate', self.__random, tag_)
-            ag.add_action_with_accel(act, "<control>" + accel)
+            ag.add_action_with_accel(act, "<Primary>" + accel)
 
         ui = ui or Gtk.UIManager()
         ui.insert_action_group(ag, -1)

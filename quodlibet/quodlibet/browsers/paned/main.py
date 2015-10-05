@@ -83,7 +83,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         align = Align(sbb, left=6, right=6, top=6)
         self.pack_start(align, False, True, 0)
 
-        keyval, mod = Gtk.accelerator_parse("<control>Home")
+        keyval, mod = Gtk.accelerator_parse("<Primary>Home")
         self.accelerators.connect(keyval, mod, 0, self.__select_all)
         select = Gtk.Button(label=_("Select _All"), use_underline=True)
         select.connect('clicked', self.__select_all)

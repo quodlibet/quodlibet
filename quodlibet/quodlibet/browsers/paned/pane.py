@@ -98,7 +98,7 @@ class Pane(AllTreeView):
 
     def __key_pressed(self, view, event):
         # if ctrl+a is pressed, intercept and select the All entry instead
-        if is_accel(event, "<ctrl>a"):
+        if is_accel(event, "<Primary>a"):
             self.set_selected([])
             return True
         return False

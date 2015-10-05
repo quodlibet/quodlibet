@@ -134,7 +134,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         self.get_child().show()
 
         self.__ag = Gtk.AccelGroup()
-        key, mod = Gtk.accelerator_parse("<control>Q")
+        key, mod = Gtk.accelerator_parse("<Primary>Q")
         self.__ag.connect(key, mod, 0, lambda *x: self.destroy())
         self.add_accel_group(self.__ag)
 

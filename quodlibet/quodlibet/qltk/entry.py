@@ -56,10 +56,10 @@ class EditableUndo(object):
             ]
 
     def __key_press(self, entry, event):
-        if is_accel(event, "<ctrl>z"):
+        if is_accel(event, "<Primary>z"):
             self.undo()
             return True
-        elif is_accel(event, "<ctrl><shift>z"):
+        elif is_accel(event, "<Primary><shift>z"):
             self.redo()
             return True
         return False
@@ -76,9 +76,9 @@ class EditableUndo(object):
 
     def __popup(self, entry, menu):
         undo = MenuItem(_("_Undo"), Icons.EDIT_UNDO)
-        add_fake_accel(undo, "<ctrl>z")
+        add_fake_accel(undo, "<Primary>z")
         redo = MenuItem(_("_Redo"), Icons.EDIT_REDO)
-        add_fake_accel(redo, "<ctrl><shift>z")
+        add_fake_accel(redo, "<Primary><shift>z")
         sep = SeparatorMenuItem()
 
         for widget in [sep, redo, undo]:

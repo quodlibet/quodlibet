@@ -612,11 +612,11 @@ class BaseView(Gtk.TreeView):
             model, paths = selection.get_selected_rows()
             return paths and paths[0] or None
 
-        if is_accel(event, "Right") or is_accel(event, "<ctrl>Right"):
+        if is_accel(event, "Right") or is_accel(event, "<Primary>Right"):
             first = get_first_selected()
             if first:
                 self.expand_row(first, False)
-        elif is_accel(event, "Left") or is_accel(event, "<ctrl>Left"):
+        elif is_accel(event, "Left") or is_accel(event, "<Primary>Left"):
             first = get_first_selected()
             if first:
                 if self.row_expanded(first):
