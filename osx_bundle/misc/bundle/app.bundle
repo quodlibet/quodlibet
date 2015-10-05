@@ -255,6 +255,7 @@
        in your bundle. -->
   <data>
     ${prefix}/share/themes/Adwaita
+    ${prefix}/share/themes/Mac
   </data>
 
   <!-- must say all to get icons at bottom left of paned browser -->
