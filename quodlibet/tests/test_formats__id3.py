@@ -290,6 +290,14 @@ class TID3File(TestCase):
         # Others don't like RVA2, so we have to read/write foobar style
         # https://github.com/quodlibet/quodlibet/issues/1027
         f = mutagen.File(self.filename)
+
+        # use RVA2 in case it's the only one
+        f.tags.add(mutagen.id3.RVA2(desc="track", channel=1,
+                                    gain=-9, peak=1.0))
+        f.save()
+        song = MP3File(self.filename)
+        self.failUnlessAlmostEqual(song.replay_gain(["track"]), 0.35, 1)
+
         f.tags.add(mutagen.id3.TXXX(encoding=3, desc="replaygain_track_gain",
                                     text=["-6 db"]))
         f.tags.add(mutagen.id3.TXXX(encoding=3, desc="replaygain_track_peak",
@@ -305,13 +313,6 @@ class TID3File(TestCase):
         self.failUnlessEqual(song("replaygain_track_peak"), "0.9")
         self.failUnlessEqual(song("replaygain_album_gain"), "3 db")
         self.failUnlessEqual(song("replaygain_album_peak"), "0.8")
-
-        # still prefer RVA2 in case there are both
-        f.tags.add(mutagen.id3.RVA2(desc="track", channel=1,
-                                    gain=-9, peak=1.0))
-        f.save()
-        song = MP3File(self.filename)
-        self.failUnlessAlmostEqual(song.replay_gain(["track"]), 0.35, 1)
 
     def test_foobar2k_replaygain_write_new(self):
         # Others don't like RVA2, so we have to read/write foobar style

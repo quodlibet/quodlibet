@@ -202,12 +202,11 @@ class ID3File(AudioFile):
             for frame in tag.getall('TXXX:DATE'):
                 self["date"] = "\n".join(map(unicode, frame.text))
 
-        # Read TXXX replaygain in case we don't have any (from RVA2)
+        # Read TXXX replaygain and replace previously read values from RVA2
         for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
             k = "replaygain_" + k
-            if k not in self:
-                for frame in tag.getall("TXXX:" + k):
-                    self[k] = "\n".join(map(unicode, frame.text))
+            for frame in tag.getall("TXXX:" + k):
+                self[k] = "\n".join(map(unicode, frame.text))
 
         self.sanitize(filename)
 
