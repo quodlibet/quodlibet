@@ -255,6 +255,9 @@
        in your bundle. -->
   <data>
     ${prefix}/share/themes/Adwaita
+  </data>
+
+  <data>
     ${prefix}/share/themes/Mac
   </data>
 
