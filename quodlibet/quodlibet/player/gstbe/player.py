@@ -406,7 +406,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         Might return None in case there is no active pipeline
         """
 
-        return self._ext_vol_element or self._vol_element
+        ext = self._ext_vol_element
+        if ext is not None and hasattr(ext.props, "mute"):
+            return ext
+        return self._vol_element
 
     def __destroy_pipeline(self):
         self._remove_plugin_elements()
