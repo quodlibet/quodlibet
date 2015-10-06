@@ -65,6 +65,7 @@ Ari Pollak
 Aymeric Mansoux
 Bastian Kleineidam
 Bastien Gorissen
+Benjamin Boutier
 Ben Zeigler
 Bruno Bergot
 Carlo Teubner
@@ -74,6 +75,7 @@ David Kågedal
 David Schneider
 Decklin Foster
 Eduardo Gonzalez
+Eric Casteleijn
 Erich Schubert
 Eric Le Lay
 Federico Pelloni
@@ -93,6 +95,7 @@ Johannes Marbach
 Johannes Rohrer
 Joschka Fischer
 Josh Lee
+Joshua Homan
 Joshua Kwan
 Lalo Martins
 Lee Willis
@@ -115,6 +118,7 @@ Robert Muth
 Ryan Turner
 Sebastian Thürrschmidt
 Simonas Kazlauskas
+Simon Larsen
 Steven Robertson
 Thomas Vogt
 Tobias Wolf
