@@ -34,6 +34,11 @@ class ID3hack(mutagen.id3.ID3):
         else:
             self[tag.HashKey] = tag
 
+RG_KEYS = [
+    "replaygain_track_peak", "replaygain_track_gain",
+    "replaygain_album_peak", "replaygain_album_gain",
+]
+
 
 # ID3 is absolutely the worst thing ever.
 class ID3File(AudioFile):
@@ -203,10 +208,10 @@ class ID3File(AudioFile):
                 self["date"] = "\n".join(map(unicode, frame.text))
 
         # Read TXXX replaygain and replace previously read values from RVA2
-        for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
-            k = "replaygain_" + k
-            for frame in tag.getall("TXXX:" + k):
-                self[k] = "\n".join(map(unicode, frame.text))
+        for frame in tag.getall("TXXX"):
+            k = frame.desc.lower()
+            if k in RG_KEYS:
+                self[str(k)] = "\n".join(map(unicode, frame.text))
 
         self.sanitize(filename)
 
@@ -297,10 +302,8 @@ class ID3File(AudioFile):
             else:
                 tag.add(Kind(encoding=enc, text=text))
 
-        dontwrite = ["genre", "comment", "replaygain_album_peak",
-                     "replaygain_track_peak", "replaygain_album_gain",
-                     "replaygain_track_gain", "musicbrainz_trackid",
-                     ] + self.TXXX_MAP.values()
+        dontwrite = ["genre", "comment", "musicbrainz_trackid"] \
+            + RG_KEYS + self.TXXX_MAP.values()
 
         if "musicbrainz_trackid" in self.realkeys():
             f = mutagen.id3.UFID(owner="http://musicbrainz.org",
@@ -353,14 +356,13 @@ class ID3File(AudioFile):
             tag.add(mutagen.id3.COMM(encoding=enc, text=t, desc=u"",
                                      lang="\x00\x00\x00"))
 
-        # Delete old foobar replaygain and write new one
-        for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
-            k = "replaygain_" + k
-            # Delete Foobar droppings.
-            try:
-                del(tag["TXXX:" + k])
-            except KeyError:
-                pass
+        # Delete old foobar replaygain ..
+        for frame in tag.getall("TXXX"):
+            if frame.desc.lower() in RG_KEYS:
+                del tag[frame.HashKey]
+
+        # .. write new one
+        for k in RG_KEYS:
             # Add new ones
             if k in self:
                 value = self[k]

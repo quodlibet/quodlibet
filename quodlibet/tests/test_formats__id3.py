@@ -328,6 +328,23 @@ class TID3File(TestCase):
         for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
             self.failUnless(f["TXXX:replaygain_" + k])
 
+    def test_foobar2k_rg_caseinsensitive(self):
+        f = mutagen.File(self.filename)
+        f.tags.add(mutagen.id3.TXXX(encoding=3, desc="REPLAYGAIN_TRACK_GAIN",
+                                    text=["-6 db"]))
+        f.save()
+        song = MP3File(self.filename)
+        self.failUnlessEqual(song("replaygain_track_gain"), "-6 db")
+        song.write()
+        f = mutagen.File(self.filename)
+        frames = f.tags.getall("TXXX:replaygain_track_gain")
+        self.assertTrue(frames)
+        self.assertEqual(frames[0].desc, "replaygain_track_gain")
+        del song["replaygain_track_gain"]
+        song.write()
+        f = mutagen.File(self.filename)
+        self.assertFalse(f.tags.getall("TXXX:replaygain_track_gain"))
+
     def test_quodlibet_txxx_inval(self):
         # This shouldn't happen in our namespace, but check anyway since
         # we might open the whole TXXX namespace sometime
