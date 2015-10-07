@@ -1,3 +1,59 @@
+3.5.0 (2015-10-07) - BETTER ANSWERS TO "HEY HOW ARE YOU?" THAN "I'M FINE"
+-------------------------------------------------------------------------
+
+General:
+ * Add --print-query-text to get the current query for browsers that support
+   it :bug:`1634`
+ * Support conditional patterns with QL Query syntax :bug:`1604`
+   (Nick Boultbee)
+ * Playlist content search in the playlist browser :pr:`1593` (Nick Boultbee)
+ * Disable app menu under Unity :bug:`1599`
+ * Allow users to optionally bypass the trash even if it is available on their
+   operating system (Eric Casteleijn) :pr:`1573`
+ * Try to prevent fifo timeouts for slow operations :bug:`1616`
+ * Fix border drawing with CSD/wayland
+ * Use float for ~#length :bug:`1483`
+ * Add a setting to enable/disable rating hotkeys :pr:`1625` (Ryan Turner)
+ * Display all tags in tag list editor not just the non-default ones
+   bug:`1660`
+ * Add a new ~codec and ~encoding tag (library reload needed) :bug:`9`
+ * Add ~bitrate tag including the unit
+ * Asymmetric search improvements e.g. 'o' now matches 'ø'
+ * Various custom column header dialog improvements :bug:`1660` (Nick Boultbee)
+ * Prefer txxx replaygain over rva2 :bug:`1587`
+ * Support reading RG when ID3 tag key is in uppercase :bug:`1502`
+
+Playback:
+ * Implement direct sink volume control (e.g. for pulsesink, directsoundsink).
+   Changing volume will now control the PA stream volume and result in less
+   delay :bug:`1389` :bug:`1512`
+ * Allow muting by middle clicking the volume button. Controls the
+   pulseaudio stream mute property directly.
+ * Increased GStreamer pipeline buffer size to reduce CPU usage :bug:`1687`
+ * Hide seek slider when not seekable
+
+OSX:
+ * Replace "Ctrl" with "Command" in all keyboard shortcuts bug:`1677`
+ * (already in 3.4.1-v2 build) HIDPI support
+ * (already in 3.4.1-v2 build) Support for more audio formats
+
+Plugins:
+ * Add a plugin for editing ~#playcount and ~#skipcount. :pr:`1624`
+   (Ryan Turner)
+ * Advanced preferences plugin :bug:`1050` (Bruno Bergot)
+ * Allow to configure cover size in animosd plugin :bug:`1049` (Bruno Bergot)
+ * Add plugin for removing TLEN frames from ID3 based files. :bug:`1655`
+ * mpd: fix state sync with mpdroid 0.8. bug:`1636`
+ * Fix screensaver inhibit plugin. :bug:`1692`
+ * qlscrobbler: fix offline mode check box. :bug:`1688`
+ * lyrics window: use mobile wikia version
+
+Translations:
+ * Update Dutch translation :pr:`1618` (Nathan Follens)
+ * Updated greek translation :bug:`1684` (Dimitris Papageorgiou)
+ * setup.py: add a new create_po command for starting new translations
+
+
 3.4.1 (2015-05-24) - Apparently, MY problem is a poisonous basement
 -------------------------------------------------------------------
 

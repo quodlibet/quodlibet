@@ -25,6 +25,7 @@ else:
     html_theme = "default"
 html_title = "%s (%s)" % (project, version)
 bug_url_template = "https://github.com/quodlibet/quodlibet/issues/%s"
+pr_url_template = "https://github.com/quodlibet/quodlibet/pull/%s"
 
 # on a stable branch which isn't a release
 if const.BRANCH_NAME != "master" and const.VERSION_TUPLE[-1] == -1:
