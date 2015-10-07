@@ -25,7 +25,7 @@ class MinVersions(object):
     PYTHON = Version(2, 7)
     MUTAGEN = Version(1, 27)
 
-VERSION_TUPLE = Version(3, 4, -1)
+VERSION_TUPLE = Version(3, 5, 0)
 VERSION = str(VERSION_TUPLE)
 
 # entry point for the user guide / wiki
