@@ -327,12 +327,14 @@ class VolumeMenu(Gtk.Menu):
     def __init__(self, player):
         super(VolumeMenu, self).__init__()
 
-        # Translators: player state, no action
-        item = Gtk.CheckMenuItem(label=_("Mute"))
-        player.bind_property("mute", item, "active",
-                             GObject.BindingFlags.BIDIRECTIONAL)
-        self.append(item)
-        item.show()
+        # ubuntu 12.04..
+        if hasattr(player, "bind_property"):
+            # Translators: player state, no action
+            item = Gtk.CheckMenuItem(label=_("Mute"))
+            player.bind_property("mute", item, "active",
+                                 GObject.BindingFlags.BIDIRECTIONAL)
+            self.append(item)
+            item.show()
 
         item = Gtk.MenuItem(label=_("Replay Gain Mode"))
         self.append(item)
