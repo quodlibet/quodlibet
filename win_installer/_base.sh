@@ -22,7 +22,7 @@ QL_TEMP="$QL_REPO_TEMP"/quodlibet
 
 
 PYGI_AIO_VER="3.14.0_rev12"
-MUTAGEN_VER="1.27"
+MUTAGEN_VER="1.31"
 
 
 function download_and_verify {
@@ -31,7 +31,7 @@ function download_and_verify {
     local FILEHASHES="\
 7f6507d400d07edfd1ea8205da36808009b0c539f5b8a6e0ab54337b955e6dc3  feedparser-5.1.3.tar.bz2
 d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-preview20141217.exe
-cc884fe1e20fe220be7ce7c3b269f4cadc69a8310150a3a41162fba1ca9c88bd  mutagen-$MUTAGEN_VER.tar.gz
+0aa011707785fe30935d8655380052a20ba8b972aa738d4f144c457b35b4d699  mutagen-$MUTAGEN_VER.tar.gz
 69c2ae5c9f2ee45b0626905faffaa86d4e2fc0d3e8c118c8bc6899df68467b32  nsis-2.46-setup.exe
 610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c  py2exe-0.6.9.win32-py2.7.exe
 690698f42193330e363a0d38abf76962015459f12d38c320248c8fd6a2c8ab66  pygi-aio-$PYGI_AIO_VER-setup.exe
