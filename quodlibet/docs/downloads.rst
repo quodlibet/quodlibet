@@ -51,10 +51,14 @@ All files are signed with the following key: `0EBF 782C 5D53 F7E5 FB02  A667 46B
 ========================== =============================== ================================================== ============================================
 Release                    File                            SHA256                                             PGP
 ========================== =============================== ================================================== ============================================
+Quod Libet 3.5.0           quodlibet-3.5.0.tar.gz_         `SHA256 <quodlibet-3.5.0.tar.gz.sha256_>`_         `SIG <quodlibet-3.5.0.tar.gz.sig_>`_
 Quod Libet 3.4.1           quodlibet-3.4.1.tar.gz_         `SHA256 <quodlibet-3.4.1.tar.gz.sha256_>`_         `SIG <quodlibet-3.4.1.tar.gz.sig_>`_
 Quod Libet 3.3.1           quodlibet-3.3.1.tar.gz_         `SHA256 <quodlibet-3.3.1.tar.gz.sha256_>`_         `SIG <quodlibet-3.3.1.tar.gz.sig_>`_
-Quod Libet 3.2.2           quodlibet-3.2.2.tar.gz_         `SHA256 <quodlibet-3.2.2.tar.gz.sha256_>`_         `SIG <quodlibet-3.2.2.tar.gz.sig_>`_
 ========================== =============================== ================================================== ============================================
+
+.. _quodlibet-3.5.0.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.5.0.tar.gz
+.. _quodlibet-3.5.0.tar.gz.sha256: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.5.0.tar.gz.sha256
+.. _quodlibet-3.5.0.tar.gz.sig: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.5.0.tar.gz.sig
 
 .. _quodlibet-3.4.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.4.1.tar.gz
 .. _quodlibet-3.4.1.tar.gz.sha256: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.4.1.tar.gz.sha256
@@ -63,10 +67,6 @@ Quod Libet 3.2.2           quodlibet-3.2.2.tar.gz_         `SHA256 <quodlibet-3.
 .. _quodlibet-3.3.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.3.1.tar.gz
 .. _quodlibet-3.3.1.tar.gz.sha256: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.3.1.tar.gz.sha256
 .. _quodlibet-3.3.1.tar.gz.sig: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.3.1.tar.gz.sig
-
-.. _quodlibet-3.2.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.2.2.tar.gz
-.. _quodlibet-3.2.2.tar.gz.sha256: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.2.2.tar.gz.sha256
-.. _quodlibet-3.2.2.tar.gz.sig: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.2.2.tar.gz.sig
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet-files/src/default/releases>`__.
 
@@ -200,13 +200,21 @@ Zakkum <https://github.com/tumagonx>`__
 =========================== ============================== ================================================= ==========================================
 Release                     File                           SHA256                                            PGP
 =========================== ============================== ================================================= ==========================================
+Quod Libet 3.5.0            quodlibet-3.5.0-installer.exe_ `SHA256 <quodlibet-3.5.0-installer.exe.sha256_>`_ `SIG <quodlibet-3.5.0-installer.exe.sig_>`_
+Quod Libet 3.5.0 (portable) quodlibet-3.5.0-portable.exe_  `SHA256 <quodlibet-3.5.0-portable.exe.sha256_>`_  `SIG <quodlibet-3.5.0-portable.exe.sig_>`_
 Quod Libet 3.4.1            quodlibet-3.4.1-installer.exe_ `SHA256 <quodlibet-3.4.1-installer.exe.sha256_>`_ `SIG <quodlibet-3.4.1-installer.exe.sig_>`_
 Quod Libet 3.4.1 (portable) quodlibet-3.4.1-portable.exe_  `SHA256 <quodlibet-3.4.1-portable.exe.sha256_>`_  `SIG <quodlibet-3.4.1-portable.exe.sig_>`_
 Quod Libet 3.3.1            quodlibet-3.3.1-installer.exe_ `SHA256 <quodlibet-3.3.1-installer.exe.sha256_>`_ `SIG <quodlibet-3.3.1-installer.exe.sig_>`_
 Quod Libet 3.3.1 (portable) quodlibet-3.3.1-portable.exe_  `SHA256 <quodlibet-3.3.1-portable.exe.sha256_>`_  `SIG <quodlibet-3.3.1-portable.exe.sig_>`_
-Quod Libet 3.2.2            quodlibet-3.2.2-installer.exe_ `SHA256 <quodlibet-3.2.2-installer.exe.sha256_>`_ `SIG <quodlibet-3.2.2-installer.exe.sig_>`_
-Quod Libet 3.2.2 (portable) quodlibet-3.2.2-portable.exe_  `SHA256 <quodlibet-3.2.2-portable.exe.sha256_>`_  `SIG <quodlibet-3.2.2-portable.exe.sig_>`_
 =========================== ============================== ================================================= ==========================================
+
+.. _quodlibet-3.5.0-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.0-portable.exe
+.. _quodlibet-3.5.0-portable.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.0-portable.exe.sha256
+.. _quodlibet-3.5.0-portable.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.0-portable.exe.sig
+
+.. _quodlibet-3.5.0-installer.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.0-installer.exe
+.. _quodlibet-3.5.0-installer.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.0-installer.exe.sha256
+.. _quodlibet-3.5.0-installer.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.0-installer.exe.sig
 
 .. _quodlibet-3.4.1-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.4.1-portable.exe
 .. _quodlibet-3.4.1-portable.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.4.1-portable.exe.sha256
@@ -224,14 +232,6 @@ Quod Libet 3.2.2 (portable) quodlibet-3.2.2-portable.exe_  `SHA256 <quodlibet-3.
 .. _quodlibet-3.3.1-installer.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.3.1-installer.exe.sha256
 .. _quodlibet-3.3.1-installer.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.3.1-installer.exe.sig
 
-.. _quodlibet-3.2.2-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.2.2-portable.exe
-.. _quodlibet-3.2.2-portable.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.2.2-portable.exe.sha256
-.. _quodlibet-3.2.2-portable.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.2.2-portable.exe.sig
-
-.. _quodlibet-3.2.2-installer.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.2.2-installer.exe
-.. _quodlibet-3.2.2-installer.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.2.2-installer.exe.sha256
-.. _quodlibet-3.2.2-installer.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.2.2-installer.exe.sig
-
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet/downloads/>`__.
 
 There is also an SDK for developing under Windows: `quodlibet-win-sdk.tar.gz <https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-win-sdk.tar.gz>`__
@@ -248,15 +248,21 @@ created by `Eric Le Lay <https://github.com/elelay>`__
 =========================== ============================== ========================================== ==========================================
 Release                     Application Bundle             SHA256                                     PGP
 =========================== ============================== ========================================== ==========================================
+Quod Libet 3.5.0            QuodLibet-3.5.0.zip_           `SHA256 <QuodLibet-3.5.0.zip.sha256_>`_    `SIG <QuodLibet-3.5.0.zip.sig_>`_
+Ex Falso 3.5.0              ExFalso-3.5.0.zip_             `SHA256 <ExFalso-3.5.0.zip.sha256_>`_      `SIG <ExFalso-3.5.0.zip.sig_>`_
 Quod Libet 3.4.1 (v2)       QuodLibet-3.4.1-v2.zip_        `SHA256 <QuodLibet-3.4.1-v2.zip.sha256_>`_ `SIG <QuodLibet-3.4.1-v2.zip.sig_>`_
 Ex Falso 3.4.1 (v2)         ExFalso-3.4.1-v2.zip_          `SHA256 <ExFalso-3.4.1-v2.zip.sha256_>`_   `SIG <ExFalso-3.4.1-v2.zip.sig_>`_
 Quod Libet 3.4.1            QuodLibet-3.4.1.zip_           `SHA256 <QuodLibet-3.4.1.zip.sha256_>`_    `SIG <QuodLibet-3.4.1.zip.sig_>`_
 Ex Falso 3.4.1              ExFalso-3.4.1.zip_             `SHA256 <ExFalso-3.4.1.zip.sha256_>`_      `SIG <ExFalso-3.4.1.zip.sig_>`_
-Quod Libet 3.4.0            Quodlibet-3.4.0_1.zip_         `SHA256 <Quodlibet-3.4.0_1.zip.sha256_>`_
-Ex Falso 3.4.0              ExFalso-3.4.0_1.zip_           `SHA256 <ExFalso-3.4.0_1.zip.sha256_>`_
-Quod Libet 3.3.1            Quodlibet-3.3.1_0.zip_         `SHA256 <Quodlibet-3.3.1_0.zip.sha256_>`_
-Ex Falso 3.3.1              ExFalso-3.3.1_0.zip_           `SHA256 <ExFalso-3.3.1_0.zip.sha256_>`_
 =========================== ============================== ========================================== ==========================================
+
+.. _QuodLibet-3.5.0.zip: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.0.zip
+.. _QuodLibet-3.5.0.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.0.zip.sha256
+.. _QuodLibet-3.5.0.zip.sig: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.0.zip.sig
+
+.. _ExFalso-3.5.0.zip: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.0.zip
+.. _ExFalso-3.5.0.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.0.zip.sha256
+.. _ExFalso-3.5.0.zip.sig: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.0.zip.sig
 
 .. _QuodLibet-3.4.1-v2.zip: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.4.1-v2.zip
 .. _QuodLibet-3.4.1-v2.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.4.1-v2.zip.sha256
@@ -273,15 +279,3 @@ Ex Falso 3.3.1              ExFalso-3.3.1_0.zip_           `SHA256 <ExFalso-3.3.
 .. _ExFalso-3.4.1.zip: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.4.1.zip
 .. _ExFalso-3.4.1.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.4.1.zip.sha256
 .. _ExFalso-3.4.1.zip.sig: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.4.1.zip.sig
-
-.. _Quodlibet-3.4.0_1.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.4.0_1/Quodlibet-3.4.0_1.zip
-.. _Quodlibet-3.4.0_1.zip.sha256: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.4.0_1/Quodlibet-3.4.0_1.zip.sha256
-
-.. _ExFalso-3.4.0_1.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/ExFalso-3.4.0_1/ExFalso-3.4.0_1.zip
-.. _ExFalso-3.4.0_1.zip.sha256: https://github.com/elelay/quodlibet-osx-bundle/releases/download/ExFalso-3.4.0_1/ExFalso-3.4.0_1.zip.sha256
-
-.. _Quodlibet-3.3.1_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.1_0/Quodlibet-3.3.1_0.zip
-.. _Quodlibet-3.3.1_0.zip.sha256: https://github.com/elelay/quodlibet-osx-bundle/releases/download/Quodlibet-3.3.1_0/Quodlibet-3.3.1_0.zip.sha256
-
-.. _ExFalso-3.3.1_0.zip: https://github.com/elelay/quodlibet-osx-bundle/releases/download/ExFalso-3.3.1_0/ExFalso-3.3.1_0.zip
-.. _ExFalso-3.3.1_0.zip.sha256: https://github.com/elelay/quodlibet-osx-bundle/releases/download/ExFalso-3.3.1_0/ExFalso-3.3.1_0.zip.sha256
