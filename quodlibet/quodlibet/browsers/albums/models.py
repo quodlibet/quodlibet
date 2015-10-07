@@ -64,12 +64,17 @@ class AlbumModel(ObjectStore, AlbumModelMixin):
 
     def _remove_albums(self, library, removed):
         removed_albums = removed.copy()
+        iters_remove = []
         for iter_, value in self.iterrows():
             if value is not None and value in removed_albums:
                 removed_albums.remove(value)
-                self.remove(iter_)
+                iters_remove.append(iter_)
                 if not removed_albums:
                     break
+
+        for iter_ in iters_remove:
+            self.remove(iter_)
+
         self._update_all()
 
     def _change_albums(self, library, changed):
