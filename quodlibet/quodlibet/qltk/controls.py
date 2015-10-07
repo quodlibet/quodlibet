@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GLib, Gdk
+from gi.repository import Gtk, GLib, Gdk, GObject
 
 from quodlibet import config
 from quodlibet import qltk
@@ -252,7 +252,7 @@ class Volume(Gtk.VolumeButton):
 
         self.connect("event", self._on_button_event, player)
 
-        replaygain_menu = ReplayGainMenu(player)
+        replaygain_menu = VolumeMenu(player)
         replaygain_menu.attach_to_widget(self, None)
         self.connect('popup-menu', self.__popup, replaygain_menu)
         connect_obj(self, 'button-press-event', self.__volume_button_press,
@@ -317,7 +317,7 @@ class Volume(Gtk.VolumeButton):
         self._update_mute(player)
 
 
-class ReplayGainMenu(Gtk.Menu):
+class VolumeMenu(Gtk.Menu):
     __modes = (
         ("auto", _("Auto_matic"), None),
         ("track", _("_Track Mode"), ["track"]),
@@ -325,13 +325,27 @@ class ReplayGainMenu(Gtk.Menu):
     )
 
     def __init__(self, player):
-        super(ReplayGainMenu, self).__init__()
+        super(VolumeMenu, self).__init__()
 
+        # Translators: player state, no action
+        item = Gtk.CheckMenuItem(label=_("Mute"))
+        player.bind_property("mute", item, "active",
+                             GObject.BindingFlags.BIDIRECTIONAL)
+        self.append(item)
+        item.show()
+
+        item = Gtk.MenuItem(label=_("Replay Gain Mode"))
+        self.append(item)
+        item.show()
+
+        rg = Gtk.Menu()
+        rg.show()
+        item.set_submenu(rg)
         item = None
         for mode, title, profile in self.__modes:
             item = RadioMenuItem(group=item, label=title,
                                  use_underline=True)
-            self.append(item)
+            rg.append(item)
             item.connect("toggled", self.__changed, player, profile)
             if player.replaygain_profiles[0] == profile:
                 item.set_active(True)
@@ -346,7 +360,7 @@ class ReplayGainMenu(Gtk.Menu):
         gain = config.getboolean("player", "replaygain")
         for child in self.get_children():
             child.set_sensitive(gain)
-        return super(ReplayGainMenu, self).popup(*args)
+        return super(VolumeMenu, self).popup(*args)
 
 
 class PlayControls(Gtk.VBox):
