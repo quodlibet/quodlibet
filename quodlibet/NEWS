@@ -15,7 +15,7 @@ General:
  * Use float for ~#length :bug:`1483`
  * Add a setting to enable/disable rating hotkeys :pr:`1625` (Ryan Turner)
  * Display all tags in tag list editor not just the non-default ones
-   bug:`1660`
+   :bug:`1660`
  * Add a new ~codec and ~encoding tag (library reload needed) :bug:`9`
  * Add ~bitrate tag including the unit
  * Asymmetric search improvements e.g. 'o' now matches 'ø'
@@ -33,7 +33,7 @@ Playback:
  * Hide seek slider when not seekable
 
 OSX:
- * Replace "Ctrl" with "Command" in all keyboard shortcuts bug:`1677`
+ * Replace "Ctrl" with "Command" in all keyboard shortcuts :bug:`1677`
  * (already in 3.4.1-v2 build) HIDPI support
  * (already in 3.4.1-v2 build) Support for more audio formats
 
@@ -43,7 +43,7 @@ Plugins:
  * Advanced preferences plugin :bug:`1050` (Bruno Bergot)
  * Allow to configure cover size in animosd plugin :bug:`1049` (Bruno Bergot)
  * Add plugin for removing TLEN frames from ID3 based files. :bug:`1655`
- * mpd: fix state sync with mpdroid 0.8. bug:`1636`
+ * mpd: fix state sync with mpdroid 0.8. :bug:`1636`
  * Fix screensaver inhibit plugin. :bug:`1692`
  * qlscrobbler: fix offline mode check box. :bug:`1688`
  * lyrics window: use mobile wikia version
