@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-14 18:02+0300\n"
+"POT-Creation-Date: 2015-10-07 20:08+0200\n"
 "PO-Revision-Date: 2015-09-14 22:31+0300\n"
 "Last-Translator: Dimitris Papageorgiou <dipap@gmx.com>\n"
 "Language-Team: Greek\n"
@@ -136,7 +136,7 @@ msgid "Songs not in an album"
 msgstr "Τραγούδια που δεν ανήκουν σε κάποιο άλμπουμ"
 
 #: ../quodlibet/browsers/albums/prefs.py:63
-#: ../quodlibet/ext/songsmenu/cddb.py:260 ../quodlibet/qltk/information.py:345
+#: ../quodlibet/ext/songsmenu/cddb.py:260 ../quodlibet/qltk/information.py:344
 #: ../quodlibet/util/collection.py:238
 #, python-format
 msgid "%d track"
@@ -145,7 +145,7 @@ msgstr[0] "%d τραγούδι"
 msgstr[1] "%d τραγούδια"
 
 #: ../quodlibet/browsers/albums/prefs.py:64
-#: ../quodlibet/qltk/information.py:343 ../quodlibet/util/collection.py:242
+#: ../quodlibet/qltk/information.py:342 ../quodlibet/util/collection.py:242
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -190,7 +190,7 @@ msgstr "_Κλείσιμο"
 #: ../quodlibet/browsers/albums/prefs.py:140
 #: ../quodlibet/browsers/albums/prefs.py:145
 #: ../quodlibet/qltk/tagsfrompath.py:191 ../quodlibet/qltk/textedit.py:137
-#: ../quodlibet/util/__init__.py:532
+#: ../quodlibet/util/__init__.py:536
 msgid "Invalid pattern"
 msgstr "Μη έγκυρη αναζήτηση"
 
@@ -200,7 +200,7 @@ msgstr "Μη έγκυρη αναζήτηση"
 #: ../quodlibet/browsers/audiofeeds.py:148
 #: ../quodlibet/browsers/paned/models.py:81
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:44
-#: ../quodlibet/formats/_audio.py:394 ../quodlibet/qltk/information.py:217
+#: ../quodlibet/formats/_audio.py:406 ../quodlibet/qltk/information.py:217
 #: ../quodlibet/qltk/information.py:226 ../quodlibet/qltk/information.py:255
 #: ../quodlibet/qltk/playorder.py:20 ../quodlibet/qltk/wlw.py:66
 msgid "Unknown"
@@ -308,7 +308,9 @@ msgstr "Αδυναμία προσθήκης ροής"
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
 "audio feed."
-msgstr "Η ροή <b>%s</b> δεν ήταν δυνατό να προστεθεί. Ίσως ο διακομιστής να είναι εκτός λειτουργίας, ή η τοποθεσία δεν είναι ροή ήχου."
+msgstr ""
+"Η ροή <b>%s</b> δεν ήταν δυνατό να προστεθεί. Ίσως ο διακομιστής να είναι "
+"εκτός λειτουργίας, ή η τοποθεσία δεν είναι ροή ήχου."
 
 #. refresh button
 #: ../quodlibet/browsers/audiofeeds.py:436 ../quodlibet/browsers/media.py:215
@@ -773,7 +775,8 @@ msgstr "Αδυναμία εξαγωγής συσκευής"
 
 #: ../quodlibet/browsers/media.py:601
 msgid "No device backend, Media Devices browser disabled."
-msgstr "Χωρίς υποστήριξη συσκευών, ο περιηγητής Συσκευών Μέσων απενεργοποιήθηκε."
+msgstr ""
+"Χωρίς υποστήριξη συσκευών, ο περιηγητής Συσκευών Μέσων απενεργοποιήθηκε."
 
 #: ../quodlibet/browsers/paned/main.py:38
 msgid "Paned Browser"
@@ -1283,7 +1286,9 @@ msgstr "Αντικατάσταση με χρήση Regex"
 #: ../quodlibet/ext/editing/resub.py:14
 msgid ""
 "Allows arbitrary regex substitutions (s///) when tagging or renaming files."
-msgstr "Επιτρέπει αντικαταστάσεις με χρήση κανονικών εκφράσεων (s///) στην επεξεργασία ετικετών ή την μετονομασία αρχείων."
+msgstr ""
+"Επιτρέπει αντικαταστάσεις με χρήση κανονικών εκφράσεων (s///) στην "
+"επεξεργασία ετικετών ή την μετονομασία αρχείων."
 
 #: ../quodlibet/ext/editing/titlecase.py:19
 msgid "Title Case"
@@ -1423,7 +1428,8 @@ msgstr "Αυτόματη Ανανέωση Μουσικοθήκης"
 #: ../quodlibet/ext/events/auto_library_update.py:124
 #, python-format
 msgid "Keeps your library up to date with inotify. Requires %s."
-msgstr "Διατηρεί τη μουσικοθήκη σας ενημερωμένη με χρήση inotify. Χρειάζεται το %s."
+msgstr ""
+"Διατηρεί τη μουσικοθήκη σας ενημερωμένη με χρήση inotify. Χρειάζεται το %s."
 
 #: ../quodlibet/ext/events/automask.py:23
 msgid "Automatic Masking"
@@ -1617,7 +1623,9 @@ msgstr "Καταγραφή Διαδικτυακού Ραδιοφώνου"
 msgid ""
 "Records the last 10 songs played on radio stations, and lists them in the "
 "seek context menu."
-msgstr "Καταγράφει τα τελευταία 10 τραγούδια που έχουν αναπαραχθεί σε ραδιοφωνικούς σταθμούς και τα εμφανίζει στο μενού της αναζήτησης χρόνου."
+msgstr ""
+"Καταγράφει τα τελευταία 10 τραγούδια που έχουν αναπαραχθεί σε ραδιοφωνικούς "
+"σταθμούς και τα εμφανίζει στο μενού της αναζήτησης χρόνου."
 
 #: ../quodlibet/ext/events/jep118.py:28
 msgid "JEP-118"
@@ -1635,7 +1643,9 @@ msgstr "Διακομιστής πολυμέσων UPnP AV Media Server"
 msgid ""
 "Exposes all albums to the Rygel UPnP Media Server through the MediaServer2 D-"
 "Bus interface."
-msgstr "Εξάγει όλα τα άλμπουμ στον διακομιστή πολυμέσων Rygel UPnP μέσω της διεπαφής D-Bus MediaServer2."
+msgstr ""
+"Εξάγει όλα τα άλμπουμ στον διακομιστή πολυμέσων Rygel UPnP μέσω της διεπαφής "
+"D-Bus MediaServer2."
 
 #: ../quodlibet/ext/events/mpdserver/__init__.py:63
 msgid "MPD Server"
@@ -1749,7 +1759,7 @@ msgstr "Εμφανίζει ειδοποίηση στην αλλαγή τραγο
 msgid "Next"
 msgstr "Επόμενο"
 
-#: ../quodlibet/ext/events/qlscrobbler.py:168
+#: ../quodlibet/ext/events/qlscrobbler.py:178
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
@@ -1757,34 +1767,34 @@ msgstr ""
 "Παρακαλώ ανοίξτε το παράθυρο προσθέτων και ρυθμίστε το QLScrobbler. "
 "Διαφορετικά τα τραγούδια δεν θα υποβάλλονται."
 
-#: ../quodlibet/ext/events/qlscrobbler.py:246
+#: ../quodlibet/ext/events/qlscrobbler.py:254
 #, python-format
 msgid "Could not contact service '%s'."
 msgstr "Δεν ήταν δυνατή η σύνδεση στην υπηρεσία '%s'."
 
-#: ../quodlibet/ext/events/qlscrobbler.py:252
+#: ../quodlibet/ext/events/qlscrobbler.py:260
 msgid "Authentication failed: invalid URL."
 msgstr "Η πιστοποίηση απέτυχε: μη έγκυρο URL."
 
-#: ../quodlibet/ext/events/qlscrobbler.py:269
+#: ../quodlibet/ext/events/qlscrobbler.py:277
 #, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
 msgstr "Η πιστοποίηση απέτυχε: Μη έγκυρο όνομα χρήστη '%s' ή λάθος κωδικός."
 
-#: ../quodlibet/ext/events/qlscrobbler.py:274
+#: ../quodlibet/ext/events/qlscrobbler.py:282
 msgid "Client is banned. Contact the author."
 msgstr "Ο πελάτης έχει απαγορευτεί. Ειδοποιήστε τον συγγραφέα."
 
-#: ../quodlibet/ext/events/qlscrobbler.py:278
+#: ../quodlibet/ext/events/qlscrobbler.py:286
 msgid "Wrong system time. Submissions may fail until it is corrected."
 msgstr ""
 "Λάθος ώρα συστήματος. Οι υποβολές μπορεί να αποτυγχάνουν μέχρι να διορθωθεί."
 
-#: ../quodlibet/ext/events/qlscrobbler.py:343
+#: ../quodlibet/ext/events/qlscrobbler.py:351
 msgid "AudioScrobbler Submission"
 msgstr "Υποβολή AudioScrobbler"
 
-#: ../quodlibet/ext/events/qlscrobbler.py:344
+#: ../quodlibet/ext/events/qlscrobbler.py:352
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
@@ -1792,54 +1802,54 @@ msgstr ""
 "Πελάτης Audioscrobbler για το Last.fm, Libre.fm και άλλες υπηρεσίες "
 "Audioscrobbler."
 
-#: ../quodlibet/ext/events/qlscrobbler.py:453
+#: ../quodlibet/ext/events/qlscrobbler.py:450
 msgid "Authentication successful."
 msgstr "Επιτυχημένη πιστοποίηση"
 
-#: ../quodlibet/ext/events/qlscrobbler.py:464
+#: ../quodlibet/ext/events/qlscrobbler.py:461
 msgid "_Service:"
 msgstr "_Υπηρεσία:"
 
-#: ../quodlibet/ext/events/qlscrobbler.py:464
+#: ../quodlibet/ext/events/qlscrobbler.py:461
 msgid "_URL:"
 msgstr ""
 
-#: ../quodlibet/ext/events/qlscrobbler.py:464
+#: ../quodlibet/ext/events/qlscrobbler.py:461
 msgid "User_name:"
 msgstr "Όνομα _χρήστη:"
 
-#: ../quodlibet/ext/events/qlscrobbler.py:465
+#: ../quodlibet/ext/events/qlscrobbler.py:462
 msgid "_Password:"
 msgstr "_Κωδικός:"
 
 #. Translators: Other service
-#: ../quodlibet/ext/events/qlscrobbler.py:481
+#: ../quodlibet/ext/events/qlscrobbler.py:478
 msgid "Other…"
 msgstr "Άλλο…"
 
 #. verify data
-#: ../quodlibet/ext/events/qlscrobbler.py:519
+#: ../quodlibet/ext/events/qlscrobbler.py:516
 msgid "_Verify account data"
 msgstr "_Επαλήθευση δεδομένων λογαριασμού"
 
-#: ../quodlibet/ext/events/qlscrobbler.py:524
+#: ../quodlibet/ext/events/qlscrobbler.py:521
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:288
 msgid "Account"
 msgstr "Λογαριασμός"
 
-#: ../quodlibet/ext/events/qlscrobbler.py:531
+#: ../quodlibet/ext/events/qlscrobbler.py:528
 msgid "_Artist pattern:"
 msgstr "Πρότυπο _Καλλιτέχνη:"
 
-#: ../quodlibet/ext/events/qlscrobbler.py:531
+#: ../quodlibet/ext/events/qlscrobbler.py:528
 msgid "_Title pattern:"
 msgstr "_Πρότυπο Τίτλου:"
 
-#: ../quodlibet/ext/events/qlscrobbler.py:532
+#: ../quodlibet/ext/events/qlscrobbler.py:529
 msgid "Exclude _filter:"
 msgstr "_Φίλτρο εξαιρέσεων:"
 
-#: ../quodlibet/ext/events/qlscrobbler.py:550
+#: ../quodlibet/ext/events/qlscrobbler.py:547
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -1847,22 +1857,22 @@ msgstr ""
 "Το πρότυπο που θα χρησιμοποιηθεί για την υποβολή του ονόματος καλλιτέχνη. "
 "Αφήστε το κενό για τη χρήση προκαθορισμένου."
 
-#: ../quodlibet/ext/events/qlscrobbler.py:560
+#: ../quodlibet/ext/events/qlscrobbler.py:557
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
 "Το πρότυπο που θα χρησιμοποιηθεί για την υποβολή του τίτλου. Αφήστε το κενό "
 "για τη χρήση προκαθορισμένου."
 
-#: ../quodlibet/ext/events/qlscrobbler.py:569
+#: ../quodlibet/ext/events/qlscrobbler.py:566
 msgid "Songs matching this filter will not be submitted."
 msgstr "Τα τραγούδια που ταιριάζουν με αυτό το φίλτρο δεν θα υποβάλλονται."
 
-#: ../quodlibet/ext/events/qlscrobbler.py:577
+#: ../quodlibet/ext/events/qlscrobbler.py:574
 msgid "_Offline mode (don't submit anything)"
 msgstr "Λειτουργία Εκτός _Σύνδεσης (να μην υποβληθεί τίποτα)"
 
-#: ../quodlibet/ext/events/qlscrobbler.py:582
+#: ../quodlibet/ext/events/qlscrobbler.py:578
 msgid "Submission"
 msgstr "Υποβολή"
 
@@ -1886,7 +1896,9 @@ msgstr "Αναπαραγωγή Τυχαίου Άλμπουμ"
 msgid ""
 "Starts a random album when your playlist reaches its end. It requires that "
 "your active browser supports filtering by album."
-msgstr "Θα ξεκινήσει ένα τυχαίο άλμπουμ όταν τελειώσει η λίστα αναπαραγωγής σας. Χρειάζεται ο ενεργός περιηγητής να υποστηρίζει φιλτράρισμα κατά άλμπουμ."
+msgstr ""
+"Θα ξεκινήσει ένα τυχαίο άλμπουμ όταν τελειώσει η λίστα αναπαραγωγής σας. "
+"Χρειάζεται ο ενεργός περιηγητής να υποστηρίζει φιλτράρισμα κατά άλμπουμ."
 
 #: ../quodlibet/ext/events/randomalbum.py:35
 msgid "Rated higher"
@@ -1976,7 +1988,8 @@ msgstr "Παύει τη μουσική όταν ενεργοποιηθεί η π
 
 #: ../quodlibet/ext/events/searchprovider.py:71
 msgid "No GNOME Shell search provider for Quod Libet installed."
-msgstr "Δεν έχει εγκατασταθεί ο πάροχος αναζήτησης του Quod Libet για το GNOME Shell."
+msgstr ""
+"Δεν έχει εγκατασταθεί ο πάροχος αναζήτησης του Quod Libet για το GNOME Shell."
 
 #: ../quodlibet/ext/events/searchprovider.py:77
 msgid "GNOME Search Provider"
@@ -2032,7 +2045,9 @@ msgstr "Αναπαράγεται:"
 #: ../quodlibet/ext/events/telepathy_status.py:122
 #, python-format
 msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
-msgstr "Μήνυμα κατάστασης όταν αναπαράγεται κάποιο τραγούδι. Δέχεται πρότυπα QL π.χ. %s"
+msgstr ""
+"Μήνυμα κατάστασης όταν αναπαράγεται κάποιο τραγούδι. Δέχεται πρότυπα QL π.χ. "
+"%s"
 
 #: ../quodlibet/ext/events/telepathy_status.py:138
 msgid "Paused:"
@@ -2041,7 +2056,9 @@ msgstr "Παυμένο:"
 #: ../quodlibet/ext/events/telepathy_status.py:139
 #, python-format
 msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
-msgstr "Μήνυμα κατάστασης όταν κάποιο τραγούδι είναι παυμένο. Δέχεται πρότυπα QL π.χ. %s"
+msgstr ""
+"Μήνυμα κατάστασης όταν κάποιο τραγούδι είναι παυμένο. Δέχεται πρότυπα QL π."
+"χ. %s"
 
 #: ../quodlibet/ext/events/telepathy_status.py:155
 msgid "Plain text for status when there is no current song"
@@ -2231,7 +2248,9 @@ msgstr "Συμπιεστής Ήχου"
 msgid ""
 "Changes the amplitude of all samples above a specific threshold with a "
 "specific ratio."
-msgstr "Αλλαγή του πλάτους κύματος όλων των δειγμάτων πάνω από κάποιο συγκεκριμένο κατώφλι με καθορισμένη αναλογία."
+msgstr ""
+"Αλλαγή του πλάτους κύματος όλων των δειγμάτων πάνω από κάποιο συγκεκριμένο "
+"κατώφλι με καθορισμένη αναλογία."
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:24
 msgid "_Preset:"
@@ -2367,7 +2386,10 @@ msgid ""
 "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
 "both share a directory structure. Shares configuration with Squeezebox Sync "
 "plugin."
-msgstr "Εξαγωγή λίστας αναπαραγωγής στο Logitech Squeezebox, αρκεί να χρησιμοποιούν την ίδια δομή καταλόγων. Χρησιμοποιεί τις ρυθμίσεις του προσθέτου Squeezebox Sync."
+msgstr ""
+"Εξαγωγή λίστας αναπαραγωγής στο Logitech Squeezebox, αρκεί να χρησιμοποιούν "
+"την ίδια δομή καταλόγων. Χρησιμοποιεί τις ρυθμίσεις του προσθέτου Squeezebox "
+"Sync."
 
 #: ../quodlibet/ext/playlist/export_to_squeezebox.py:70
 msgid "Export playlist to Squeezebox"
@@ -2424,7 +2446,9 @@ msgstr "Μόνο Ουρά"
 #: ../quodlibet/ext/playorder/queue.py:18
 msgid ""
 "Limits playing of songs to the queue. Double-click on any song to enqueue it."
-msgstr "Αναπαραγωγή μόνο τραγουδιών από την ουρά. Διπλό κλικ σε τραγούδι για να το προσθέσετε στην ουρά αναπαραγωγής."
+msgstr ""
+"Αναπαραγωγή μόνο τραγουδιών από την ουρά. Διπλό κλικ σε τραγούδι για να το "
+"προσθέσετε στην ουρά αναπαραγωγής."
 
 #: ../quodlibet/ext/playorder/reverse.py:8
 msgid "Reverse"
@@ -2754,7 +2778,7 @@ msgstr "Αδυναμία ανοίγματος φακέλων"
 msgid "No program available to open folders."
 msgstr "Δεν υπάρχει διαθέσιμη εφαρμογή για το άνοιγμα φακέλων."
 
-#: ../quodlibet/ext/songsmenu/cddb.py:144 ../quodlibet/qltk/information.py:442
+#: ../quodlibet/ext/songsmenu/cddb.py:144 ../quodlibet/qltk/information.py:441
 msgid "Track List"
 msgstr "Λίστα Κομματιών"
 
@@ -2996,10 +3020,12 @@ msgid ""
 msgstr ""
 "Επεξεργασία των μετρητών ~#playcount και ~#skipcount τραγουδιού.\n"
 "\n"
-"Όταν έχουν επιλεχθεί πολλαπλά τραγούδια, οι μετρητές θα προσαυξηθούν αντί να\n"
+"Όταν έχουν επιλεχθεί πολλαπλά τραγούδια, οι μετρητές θα προσαυξηθούν αντί "
+"να\n"
 "καθοριστούν.\n"
 "\n"
-"Αν ορίσετε το ~#playcount ενός τραγουδιού σε 0, οι καταχωρήσεις ~#lastplayed\n"
+"Αν ορίσετε το ~#playcount ενός τραγουδιού σε 0, οι καταχωρήσεις "
+"~#lastplayed\n"
 "και ~#laststarted διαγράφονται. Αν όμως ορίσετε θετική τιμή σε τραγούδι που\n"
 "δεν έχετε παίξει ποτέ δεν θα δημιουργηθούν αυτές οι τιμές."
 
@@ -3045,7 +3071,8 @@ msgstr "Φίλτρο Βάσει Οποιασδήποτε Ετικέτας"
 
 #: ../quodlibet/ext/songsmenu/filterall.py:80
 msgid "Creates a search query based on tags of the selected songs."
-msgstr "Δημιουργία αναζήτησης βασισμένης σε ετικέτες των επιλεγμένων τραγουδιών."
+msgstr ""
+"Δημιουργία αναζήτησης βασισμένης σε ετικέτες των επιλεγμένων τραγουδιών."
 
 #: ../quodlibet/ext/songsmenu/filterbrowser.py:17
 msgid "Filter on Directory"
@@ -3211,7 +3238,9 @@ msgstr "Υποχρεωτική Αποθήκευση"
 msgid ""
 "Saves the files again. This will make sure play counts and ratings are up to "
 "date."
-msgstr "Αποθήκευση των αρχείων ξανά. Οι μετρητές αναπαραγωγής και οι βαθμολογίες ενημερώνονται υποχρεωτικά."
+msgstr ""
+"Αποθήκευση των αρχείων ξανά. Οι μετρητές αναπαραγωγής και οι βαθμολογίες "
+"ενημερώνονται υποχρεωτικά."
 
 #: ../quodlibet/ext/songsmenu/html.py:63
 msgid "Export to HTML"
@@ -3229,7 +3258,9 @@ msgstr "Διόρθωση της διάρκειας του MP3"
 msgid ""
 "Removes TLEN frames from ID3 tags which can be the cause for invalid song "
 "durations."
-msgstr "Αφαιρεί από τις ID3 ετικέτες τις καταχωρήσεις TLEN, που ίσως δημιουργούν λανθασμένες διάρκειες τραγουδιών."
+msgstr ""
+"Αφαιρεί από τις ID3 ετικέτες τις καταχωρήσεις TLEN, που ίσως δημιουργούν "
+"λανθασμένες διάρκειες τραγουδιών."
 
 #: ../quodlibet/ext/songsmenu/ifp.py:16
 msgid "Send to iFP"
@@ -3253,7 +3284,8 @@ msgstr "Εισαγωγή Μεταδεδομένων"
 
 #: ../quodlibet/ext/songsmenu/importexport.py:85
 msgid "Imports metadata for selected songs from a .tags file."
-msgstr "Εισαγωγή μεταδεδομένων για τα επιλεγμένα τραγούδια από ένα αρχείο .tags."
+msgstr ""
+"Εισαγωγή μεταδεδομένων για τα επιλεγμένα τραγούδια από ένα αρχείο .tags."
 
 #: ../quodlibet/ext/songsmenu/k3b.py:20
 msgid "Burn CD"
@@ -3292,29 +3324,30 @@ msgstr "Συγχρονισμός last.fm"
 
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:229
 msgid "Updates your library's statistics from your Last.fm profile."
-msgstr "Ενημερώστε τα στατιστικά της μουσικοθήκης σας από το προφίλ σας στο Last.fm."
+msgstr ""
+"Ενημερώστε τα στατιστικά της μουσικοθήκης σας από το προφίλ σας στο Last.fm."
 
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:277
 msgid "_Username:"
 msgstr "_Όνομα χρήστη:"
 
-#: ../quodlibet/ext/songsmenu/lyricwiki.py:162
+#: ../quodlibet/ext/songsmenu/lyricwiki.py:168
 msgid "No active song"
 msgstr "Δεν υπάρχει ενεργό τραγούδι"
 
-#: ../quodlibet/ext/songsmenu/lyricwiki.py:190
+#: ../quodlibet/ext/songsmenu/lyricwiki.py:196
 msgid "No lyrics found"
 msgstr "Δεν βρέθηκαν στίχοι"
 
-#: ../quodlibet/ext/songsmenu/lyricwiki.py:198
+#: ../quodlibet/ext/songsmenu/lyricwiki.py:204
 msgid "Lyrics:"
 msgstr "Στίχοι:"
 
-#: ../quodlibet/ext/songsmenu/lyricwiki.py:203
+#: ../quodlibet/ext/songsmenu/lyricwiki.py:209
 msgid "Lyrics Window"
 msgstr "Παράθυρο Στίχων"
 
-#: ../quodlibet/ext/songsmenu/lyricwiki.py:204
+#: ../quodlibet/ext/songsmenu/lyricwiki.py:210
 msgid "Shows a window containing lyrics of the playing song."
 msgstr "Εμφανίζει ένα παράθυρο με στίχους του αναπαραγώμενου τραγουδιού."
 
@@ -3373,7 +3406,7 @@ msgstr ""
 "χρειάζεται."
 
 #: ../quodlibet/ext/songsmenu/refresh.py:27
-#: ../quodlibet/qltk/exfalsowindow.py:213 ../quodlibet/qltk/information.py:527
+#: ../quodlibet/qltk/exfalsowindow.py:213 ../quodlibet/qltk/information.py:526
 #: ../quodlibet/qltk/maskedbox.py:67 ../quodlibet/util/collection.py:544
 #: ../quodlibet/util/collection.py:571
 #, python-format
@@ -3406,8 +3439,10 @@ msgstr "Κορυφή"
 #, python-format
 msgid "There is <b>%(to-process)d</b> album to update (of %(all)d)"
 msgid_plural "There are <b>%(to-process)d</b> albums to update (of %(all)d)"
-msgstr[0] "Υπάρχει ακόμα <b>%(to-process)d</b> άλμπουμ για ενημέρωση (από %(all)d)"
-msgstr[1] "Υπάρχουν ακόμα <b>%(to-process)d</b> άλμπουμ για ενημέρωση (από %(all)d)"
+msgstr[0] ""
+"Υπάρχει ακόμα <b>%(to-process)d</b> άλμπουμ για ενημέρωση (από %(all)d)"
+msgstr[1] ""
+"Υπάρχουν ακόμα <b>%(to-process)d</b> άλμπουμ για ενημέρωση (από %(all)d)"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:568
 msgid "Replay Gain"
@@ -3498,7 +3533,9 @@ msgstr "Αναζήτηση του καλλιτέχνη στη Βικιπαίδε
 #: ../quodlibet/ext/songsmenu/wikipedia.py:64
 msgid ""
 "Opens a browser window with Wikipedia article on the playing song artist."
-msgstr "Ανοίγει ένα παράθυρο περιηγητή με το άρθρο της Βικιπαίδειας για τον καλλιτέχνη του τρέχοντος τραγουδιού."
+msgstr ""
+"Ανοίγει ένα παράθυρο περιηγητή με το άρθρο της Βικιπαίδειας για τον "
+"καλλιτέχνη του τρέχοντος τραγουδιού."
 
 #: ../quodlibet/ext/songsmenu/wikipedia.py:71
 msgid "Search Album in Wikipedia"
@@ -3507,7 +3544,9 @@ msgstr "Αναζήτηση του άλμπουμ στη Βικιπαίδεια"
 #: ../quodlibet/ext/songsmenu/wikipedia.py:72
 msgid ""
 "Opens a browser window with Wikipedia article on the playing song album."
-msgstr "Ανοίγει ένα παράθυρο περιηγητή με το άρθρο της Βικιπαίδειας για το τρέχον άλμπουμ"
+msgstr ""
+"Ανοίγει ένα παράθυρο περιηγητή με το άρθρο της Βικιπαίδειας για το τρέχον "
+"άλμπουμ"
 
 #: ../quodlibet/library/libraries.py:657 ../quodlibet/library/libraries.py:667
 #: ../quodlibet/library/libraries.py:723 ../quodlibet/qltk/information.py:250
@@ -3557,8 +3596,8 @@ msgstr "Εμφάνιση _προγραμματικών ετικετών"
 #: ../quodlibet/operon/commands.py:326 ../quodlibet/operon/commands.py:330
 #: ../quodlibet/operon/commands.py:381 ../quodlibet/operon/commands.py:384
 #: ../quodlibet/operon/commands.py:423 ../quodlibet/operon/commands.py:458
-#: ../quodlibet/operon/commands.py:496 ../quodlibet/operon/commands.py:528
-#: ../quodlibet/operon/commands.py:567
+#: ../quodlibet/operon/commands.py:498 ../quodlibet/operon/commands.py:530
+#: ../quodlibet/operon/commands.py:569
 msgid "Not enough arguments"
 msgstr "Μη αρκετός αριθμός ορισμάτων"
 
@@ -3623,7 +3662,7 @@ msgid "Set a tag and remove existing values"
 msgstr "Καθόρισε μια ετικέτα και αφαίρεσε τις παρούσες τιμές της"
 
 #: ../quodlibet/operon/commands.py:294 ../quodlibet/operon/commands.py:434
-#: ../quodlibet/operon/commands.py:658
+#: ../quodlibet/operon/commands.py:660
 #, python-format
 msgid "Can not set %r"
 msgstr "Αδύνατος ο ορισμός του %r"
@@ -3661,7 +3700,7 @@ msgstr "Προσθήκη τιμής σε ετικέτα"
 msgid "List file information"
 msgstr "Προβολή πληροφοριών αρχείου"
 
-#: ../quodlibet/operon/commands.py:490
+#: ../quodlibet/operon/commands.py:492
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
@@ -3669,55 +3708,55 @@ msgstr ""
 "Καθορισμός της εικόνας ως κύριας ενσωματωμένης εικόνας και αφαίρεση των "
 "υπολοίπων ενσωματωμένων εικόνων."
 
-#: ../quodlibet/operon/commands.py:503
+#: ../quodlibet/operon/commands.py:505
 #, python-format
 msgid "Failed to load image file: %r"
 msgstr "Αποτυχία ανοίγματος αρχείου εικόνας: %r"
 
-#: ../quodlibet/operon/commands.py:510 ../quodlibet/operon/commands.py:536
+#: ../quodlibet/operon/commands.py:512 ../quodlibet/operon/commands.py:538
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr ""
 "Η επεξεργασία εικόνων δεν επιτρέπεται για %(file_name)s (%(file_format)s)"
 
-#: ../quodlibet/operon/commands.py:523
+#: ../quodlibet/operon/commands.py:525
 msgid "Remove all embedded images"
 msgstr "Διαγραφή όλων των ενσωματωμένων εικόνων"
 
-#: ../quodlibet/operon/commands.py:550
+#: ../quodlibet/operon/commands.py:552
 #, python-format
 msgid "Extract embedded images to %(filepath)s"
 msgstr "Εξαγωγή ενσωματωμένων εικόνων σε %(filepath)s"
 
-#: ../quodlibet/operon/commands.py:562
+#: ../quodlibet/operon/commands.py:564
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr ""
 "Τοποθεσία αποθήκευσης εικόνων (η προεπιλογή είναι ο κατάλογος εργασίας)"
 
-#: ../quodlibet/operon/commands.py:621
+#: ../quodlibet/operon/commands.py:623
 msgid "Rename files based on tags"
 msgstr "Μετονομασία αρχείων βάσει ετικετών"
 
-#: ../quodlibet/operon/commands.py:636
+#: ../quodlibet/operon/commands.py:638
 msgid "Fill tags based on the file path"
 msgstr "Συμπλήρωση ετικετών βάσει διαδρομής αρχείου"
 
-#: ../quodlibet/operon/commands.py:686 ../quodlibet/qltk/information.py:292
+#: ../quodlibet/operon/commands.py:688 ../quodlibet/qltk/information.py:291
 #: ../quodlibet/qltk/properties.py:81 ../quodlibet/qltk/renamefiles.py:175
 #: ../quodlibet/qltk/tagsfrompath.py:226 ../quodlibet/qltk/tracknumbers.py:73
 msgid "File"
 msgstr "Αρχείο"
 
-#: ../quodlibet/operon/commands.py:694
+#: ../quodlibet/operon/commands.py:696
 msgid "Fill tracknumbers for all files"
 msgstr "Συμπλήρωση αριθμών κομματιού για όλα τα αρχεία"
 
-#: ../quodlibet/operon/commands.py:713
+#: ../quodlibet/operon/commands.py:715
 msgid "Print tags based on the given pattern"
 msgstr "Εμφάνιση ετικετών βάσει παρεχόμενου προτύπου"
 
-#: ../quodlibet/operon/commands.py:750
+#: ../quodlibet/operon/commands.py:752
 msgid "Display help information"
 msgstr "Προβολή σύντομων πληροφοριών χρήσης"
 
@@ -3738,12 +3777,12 @@ msgstr "Buffering"
 msgid "Could not create GStreamer pipeline"
 msgstr "Αδυναμία δημιουργίας διασωλήνωσης GStreamer"
 
-#: ../quodlibet/player/gstbe/player.py:506
+#: ../quodlibet/player/gstbe/player.py:533
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "Δεν βρέθηκε στοιχείο GStreamer ικανό να χειριστεί αυτό το είδος αρχείου"
 
-#: ../quodlibet/player/gstbe/player.py:507
+#: ../quodlibet/player/gstbe/player.py:534
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Μορφή πολυμέσου: %(format-description)s"
@@ -3826,23 +3865,27 @@ msgstr "Αδυναμία εύρεσης του στοιχείου '{element}' τ
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d playlist?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d playlists?"
-msgstr[0] "Εκτέλεση του πρόσθετου \"%(name)s\" σε %(count)d λίστα αναπαραγωγής;"
-msgstr[1] "Εκτέλεση του πρόσθετου \"%(name)s\" σε %(count)d λίστες αναπαραγωγής;"
+msgstr[0] ""
+"Εκτέλεση του πρόσθετου \"%(name)s\" σε %(count)d λίστα αναπαραγωγής;"
+msgstr[1] ""
+"Εκτέλεση του πρόσθετου \"%(name)s\" σε %(count)d λίστες αναπαραγωγής;"
 
 #: ../quodlibet/plugins/playlist.py:38 ../quodlibet/qltk/songsmenu.py:42
 #: ../quodlibet/qltk/songsmenu.py:70
 msgid "_Run Plugin"
 msgstr "_Εκτέλεση Πρόσθετου"
 
-#: ../quodlibet.py:148
+#: ../quodlibet.py:150
 msgid "Audio Backend Failed to Load"
 msgstr "Αδυναμία Φόρτωσης Ηχητικού Συστήματος"
 
-#: ../quodlibet.py:149
+#: ../quodlibet.py:151
 #, python-format
 msgid ""
 "Loading the audio backend '%(name)s' failed. Audio playback will be disabled."
-msgstr "Η φόρτωση του ηχητικού συστήματος '%(name)s' απέτυχε. Η αναπαραγωγή ήχου θα απενεργοποιηθεί."
+msgstr ""
+"Η φόρτωση του ηχητικού συστήματος '%(name)s' απέτυχε. Η αναπαραγωγή ήχου θα "
+"απενεργοποιηθεί."
 
 #: ../quodlibet/qltk/about.py:56
 #, python-format
@@ -3933,7 +3976,7 @@ msgstr ""
 "υπάρχουν ισοπαλίες)"
 
 #: ../quodlibet/qltk/browser.py:275 ../quodlibet/qltk/notif.py:294
-#: ../quodlibet/util/__init__.py:372
+#: ../quodlibet/util/__init__.py:376
 msgid "No time information"
 msgstr "Χωρίς πληροφορίες χρόνου"
 
@@ -3961,17 +4004,27 @@ msgstr "Τραγούδια"
 msgid "Display remaining time"
 msgstr "Προβολή χρόνου που υπολείπεται"
 
-#: ../quodlibet/qltk/controls.py:298
+#: ../quodlibet/qltk/controls.py:322
 msgid "Auto_matic"
 msgstr "Αυτό_ματα"
 
-#: ../quodlibet/qltk/controls.py:299
+#: ../quodlibet/qltk/controls.py:323
 msgid "_Track Mode"
 msgstr "Λειτουργία _Κομματιού"
 
-#: ../quodlibet/qltk/controls.py:300
+#: ../quodlibet/qltk/controls.py:324
 msgid "_Album Mode"
 msgstr "Λειτουργία Ά_λμπουμ"
+
+#. Translators: player state, no action
+#: ../quodlibet/qltk/controls.py:333
+msgid "_Mute"
+msgstr ""
+
+#: ../quodlibet/qltk/controls.py:339
+#, fuzzy
+msgid "_Replay Gain Mode"
+msgstr "Αναλυτής ReplayGain"
 
 #: ../quodlibet/qltk/data_editors.py:116
 #, python-format
@@ -4011,7 +4064,14 @@ msgid ""
 "may contain some identifying information about you or your system, such as a "
 "list of recent files played. If this is unacceptable, send <b>"
 "%(mini-dump-path)s</b> instead with a description of what you were doing."
-msgstr "Σημειώθηκε μια εξαίρεση στον Quod Libet. Ένα αρχείο καταγραφής σώθηκε στο <b>%(dump-path)s</b> που θα βοηθήσει στην επίλυση του σφάλματος. Παρακαλώ καταχωρήστε μια αναφορά στο %(new-issue-url)s και συμπεριλάβετε αυτό το αρχείο. Αυτό το αρχείο ίσως περιέχει στοιχεία που προσωποποιούν εσάς ή το σύστημά σας, π.χ. η λίστα των πρόσφατα παιγμένων αρχείων σας. Αν αυτό δεν είναι επιθυμητό στείλτε το αρχείο <b>%(mini-dump-path)s</b> μαζί με μια περιγραφή του τι κάνατε."
+msgstr ""
+"Σημειώθηκε μια εξαίρεση στον Quod Libet. Ένα αρχείο καταγραφής σώθηκε στο <b>"
+"%(dump-path)s</b> που θα βοηθήσει στην επίλυση του σφάλματος. Παρακαλώ "
+"καταχωρήστε μια αναφορά στο %(new-issue-url)s και συμπεριλάβετε αυτό το "
+"αρχείο. Αυτό το αρχείο ίσως περιέχει στοιχεία που προσωποποιούν εσάς ή το "
+"σύστημά σας, π.χ. η λίστα των πρόσφατα παιγμένων αρχείων σας. Αν αυτό δεν "
+"είναι επιθυμητό στείλτε το αρχείο <b>%(mini-dump-path)s</b> μαζί με μια "
+"περιγραφή του τι κάνατε."
 
 #: ../quodlibet/qltk/debugwindow.py:141
 msgid ""
@@ -4206,13 +4266,13 @@ msgid ""
 msgstr "Τα επιλεγμένα αρχεία δεν υποστηρίζουν πολλαπλές τιμές <b>%s</b>."
 
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:687 ../quodlibet/qltk/edittags.py:848
-#: ../quodlibet/qltk/tagsfrompath.py:209 ../quodlibet/util/__init__.py:476
-#: ../quodlibet/util/tags.py:223
+#: ../quodlibet/qltk/edittags.py:687 ../quodlibet/qltk/edittags.py:855
+#: ../quodlibet/qltk/tagsfrompath.py:209 ../quodlibet/util/__init__.py:480
+#: ../quodlibet/util/tags.py:225
 msgid "Invalid tag"
 msgstr "Μη έγκυρη ετικέτα"
 
-#: ../quodlibet/qltk/edittags.py:688 ../quodlibet/qltk/edittags.py:849
+#: ../quodlibet/qltk/edittags.py:688 ../quodlibet/qltk/edittags.py:856
 #: ../quodlibet/qltk/tagsfrompath.py:210
 #, python-format
 msgid ""
@@ -4224,11 +4284,11 @@ msgstr ""
 "\n"
 "Τα επιλεγμένα αρχεία δεν υποστηρίζουν επεξεργασία αυτής της ετικέτας."
 
-#: ../quodlibet/qltk/edittags.py:821 ../quodlibet/qltk/edittags.py:862
+#: ../quodlibet/qltk/edittags.py:828 ../quodlibet/qltk/edittags.py:869
 msgid "Invalid value"
 msgstr "Μη έγκυρη τιμή"
 
-#: ../quodlibet/qltk/edittags.py:822 ../quodlibet/qltk/edittags.py:863
+#: ../quodlibet/qltk/edittags.py:829 ../quodlibet/qltk/edittags.py:870
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -4329,7 +4389,7 @@ msgid "by %s"
 msgstr "από %s"
 
 #: ../quodlibet/qltk/info.py:41 ../quodlibet/qltk/information.py:117
-#: ../quodlibet/qltk/information.py:425
+#: ../quodlibet/qltk/information.py:424
 #, python-format
 msgid "Disc %s"
 msgstr "Δίσκος %s"
@@ -4351,8 +4411,8 @@ msgstr "Δεν υπάρχουν επιλεγμένα τραγούδια."
 msgid "No Songs"
 msgstr "Κανένα Τραγούδι"
 
-#: ../quodlibet/qltk/information.py:68 ../quodlibet/qltk/information.py:299
-#: ../quodlibet/qltk/information.py:449 ../quodlibet/qltk/information.py:515
+#: ../quodlibet/qltk/information.py:68 ../quodlibet/qltk/information.py:298
+#: ../quodlibet/qltk/information.py:448 ../quodlibet/qltk/information.py:514
 msgid "Information"
 msgstr "Πληροφορίες"
 
@@ -4360,18 +4420,18 @@ msgstr "Πληροφορίες"
 msgid "Lyrics"
 msgstr "Στίχοι"
 
-#: ../quodlibet/qltk/information.py:156 ../quodlibet/qltk/information.py:394
+#: ../quodlibet/qltk/information.py:156 ../quodlibet/qltk/information.py:393
 #: ../quodlibet/util/tags.py:73
 msgid "artist"
 msgstr "καλλιτέχνης"
 
-#: ../quodlibet/qltk/information.py:158 ../quodlibet/qltk/information.py:396
-#: ../quodlibet/qltk/information.py:547 ../quodlibet/util/tags.py:73
+#: ../quodlibet/qltk/information.py:158 ../quodlibet/qltk/information.py:395
+#: ../quodlibet/qltk/information.py:546 ../quodlibet/util/tags.py:73
 msgid "artists"
 msgstr "καλλιτέχνες"
 
 #. for backwards compat
-#: ../quodlibet/qltk/information.py:201 ../quodlibet/qltk/information.py:404
+#: ../quodlibet/qltk/information.py:201 ../quodlibet/qltk/information.py:403
 #: ../quodlibet/util/tags.py:82 ../quodlibet/util/tags.py:110
 msgid "performers"
 msgstr "εκτελεστές"
@@ -4408,82 +4468,86 @@ msgstr "παραλήψεις"
 msgid "rating"
 msgstr "βαθμολογία"
 
-#: ../quodlibet/qltk/information.py:269
-#, python-format
-msgid "%d kbps"
-msgstr "%d kbps"
-
-#: ../quodlibet/qltk/information.py:276 ../quodlibet/util/tags.py:149
+#: ../quodlibet/qltk/information.py:274 ../quodlibet/util/tags.py:149
 msgid "length"
 msgstr "διάρκεια"
 
-#: ../quodlibet/qltk/information.py:277
+#: ../quodlibet/qltk/information.py:275
 msgid "format"
 msgstr "μορφή"
 
-#: ../quodlibet/qltk/information.py:278 ../quodlibet/util/tags.py:156
-msgid "file size"
-msgstr "μέγεθος αρχείου"
+#: ../quodlibet/qltk/information.py:276 ../quodlibet/util/tags.py:158
+msgid "codec"
+msgstr ""
 
-#: ../quodlibet/qltk/information.py:279 ../quodlibet/util/tags.py:144
-msgid "modified"
-msgstr "τροποποίηση"
+#: ../quodlibet/qltk/information.py:277 ../quodlibet/util/tags.py:159
+#, fuzzy
+msgid "encoding"
+msgstr "Αύξουσα"
 
-#: ../quodlibet/qltk/information.py:281 ../quodlibet/util/tags.py:155
+#: ../quodlibet/qltk/information.py:278 ../quodlibet/util/tags.py:155
 msgid "bitrate"
 msgstr "bitrate"
 
-#: ../quodlibet/qltk/information.py:347
+#: ../quodlibet/qltk/information.py:279 ../quodlibet/util/tags.py:156
+msgid "file size"
+msgstr "μέγεθος αρχείου"
+
+#: ../quodlibet/qltk/information.py:280 ../quodlibet/util/tags.py:144
+msgid "modified"
+msgstr "τροποποίηση"
+
+#: ../quodlibet/qltk/information.py:346
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d επιλεγμένο"
 msgstr[1] "%d επιλεγμένα"
 
-#: ../quodlibet/qltk/information.py:360
+#: ../quodlibet/qltk/information.py:359
 #, python-format
 msgid "Produced by %s"
 msgstr "Παραγωγή από %s"
 
-#: ../quodlibet/qltk/information.py:402 ../quodlibet/util/tags.py:82
+#: ../quodlibet/qltk/information.py:401 ../quodlibet/util/tags.py:82
 msgid "performer"
 msgstr "εκτελεστής"
 
-#: ../quodlibet/qltk/information.py:435
+#: ../quodlibet/qltk/information.py:434
 msgid "Track unavailable"
 msgstr "Μη διαθέσιμο κομμάτι"
 
-#: ../quodlibet/qltk/information.py:487 ../quodlibet/qltk/information.py:563
+#: ../quodlibet/qltk/information.py:486 ../quodlibet/qltk/information.py:562
 #, python-format
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
 msgstr[0] "%d τραγούδι χωρίς άλμπουμ"
 msgstr[1] "%d τραγούδια χωρίς άλμπουμ"
 
-#: ../quodlibet/qltk/information.py:491
+#: ../quodlibet/qltk/information.py:490
 msgid "Selected Discography"
 msgstr "Επιλεγμένη Δισκογραφία"
 
-#: ../quodlibet/qltk/information.py:544
+#: ../quodlibet/qltk/information.py:543
 #, python-format
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
 msgstr[0] "%d τραγούδι χωρίς καλλιτέχνη"
 msgstr[1] "%d τραγούδια χωρίς καλλιτέχνες"
 
-#: ../quodlibet/qltk/information.py:566 ../quodlibet/util/tags.py:71
+#: ../quodlibet/qltk/information.py:565 ../quodlibet/util/tags.py:71
 msgid "albums"
 msgstr "άλμπουμ"
 
-#: ../quodlibet/qltk/information.py:581
+#: ../quodlibet/qltk/information.py:580
 msgid "Total length:"
 msgstr "Συνολική διάρκεια:"
 
-#: ../quodlibet/qltk/information.py:585
+#: ../quodlibet/qltk/information.py:584
 msgid "Total size:"
 msgstr "Συνολικό μέγεθος:"
 
-#: ../quodlibet/qltk/information.py:588
+#: ../quodlibet/qltk/information.py:587
 msgid "Files"
 msgstr "Αρχεία"
 
@@ -5141,7 +5205,10 @@ msgid ""
 "Renaming <b>%(old-name)s</b> to <b>%(new-name)s</b> failed. Possibly the "
 "target file already exists, or you do not have permission to make the new "
 "file or remove the old one."
-msgstr "Η μετονομασία του <b>%(old-name)s</b> σε <b>%(new-name)s</b> απέτυχε. Πιθανότατα το αρχείο προορισμού υπάρχει ήδη, ή δεν έχετε δικαιώματα δημιουργίας νέου αρχείου ή διαγραφής του παλιού."
+msgstr ""
+"Η μετονομασία του <b>%(old-name)s</b> σε <b>%(new-name)s</b> απέτυχε. "
+"Πιθανότατα το αρχείο προορισμού υπάρχει ήδη, ή δεν έχετε δικαιώματα "
+"δημιουργίας νέου αρχείου ή διαγραφής του παλιού."
 
 #: ../quodlibet/qltk/renamefiles.py:261
 msgid "Ignore _All Errors"
@@ -5220,39 +5287,39 @@ msgstr "_Βαρύτητα"
 msgid "_Filter on %s"
 msgstr "_Φίλτρο στο %s"
 
-#: ../quodlibet/qltk/songlist.py:1070
+#: ../quodlibet/qltk/songlist.py:1071
 msgid "All _Headers"
 msgstr "Όλες οι Κε_φαλίδες"
 
-#: ../quodlibet/qltk/songlist.py:1071
+#: ../quodlibet/qltk/songlist.py:1072
 msgid "_Track Headers"
 msgstr "Κεφαλίδες _Κομματιών"
 
-#: ../quodlibet/qltk/songlist.py:1072
+#: ../quodlibet/qltk/songlist.py:1073
 msgid "_Album Headers"
 msgstr "Κεφαλίδες Ά_λμπουμ"
 
-#: ../quodlibet/qltk/songlist.py:1073
+#: ../quodlibet/qltk/songlist.py:1074
 msgid "_People Headers"
 msgstr "Κεφαλίδες _Συντελεστών"
 
-#: ../quodlibet/qltk/songlist.py:1074
+#: ../quodlibet/qltk/songlist.py:1075
 msgid "_Date Headers"
 msgstr "Κεφαλίδες _Ημερομηνιών"
 
-#: ../quodlibet/qltk/songlist.py:1075
+#: ../quodlibet/qltk/songlist.py:1076
 msgid "_File Headers"
 msgstr "Κεφαλίδες Αρ_χείων"
 
-#: ../quodlibet/qltk/songlist.py:1076
+#: ../quodlibet/qltk/songlist.py:1077
 msgid "_Production Headers"
 msgstr "Κεφαλίδες Παρα_γωγής"
 
-#: ../quodlibet/qltk/songlist.py:1091
+#: ../quodlibet/qltk/songlist.py:1092
 msgid "_Customize Headers…"
 msgstr "Προσαρμογή _Κεφαλίδων…"
 
-#: ../quodlibet/qltk/songlist.py:1096
+#: ../quodlibet/qltk/songlist.py:1097
 msgid "_Expand Column"
 msgstr "_Επέκταση Στήλης"
 
@@ -5475,35 +5542,40 @@ msgstr "Η επιλογή %r χρειάζεται ένα όρισμα"
 msgid "%r is not a unique prefix."
 msgstr "Το %r δεν είναι μοναδικά ταυτοποιήσιμο πρόθεμα"
 
-#: ../quodlibet/util/__init__.py:375
+#: ../quodlibet/util/__init__.py:323
+#, python-format
+msgid "%d kbps"
+msgstr "%d kbps"
+
+#: ../quodlibet/util/__init__.py:379
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d δευτερόλεπτο"
 msgstr[1] "%d δευτερόλεπτα"
 
-#: ../quodlibet/util/__init__.py:376
+#: ../quodlibet/util/__init__.py:380
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d λεπτό"
 msgstr[1] "%d λεπτά"
 
-#: ../quodlibet/util/__init__.py:377
+#: ../quodlibet/util/__init__.py:381
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d ώρα"
 msgstr[1] "%d ώρες"
 
-#: ../quodlibet/util/__init__.py:378
+#: ../quodlibet/util/__init__.py:382
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d ημέρα"
 msgstr[1] "%d ημέρες"
 
-#: ../quodlibet/util/__init__.py:379
+#: ../quodlibet/util/__init__.py:383
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -5514,7 +5586,7 @@ msgstr[1] "%d χρόνια"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "titlecase?".
-#: ../quodlibet/util/__init__.py:485
+#: ../quodlibet/util/__init__.py:489
 msgctxt "check"
 msgid "titlecase?"
 msgstr ""
@@ -5826,17 +5898,17 @@ msgstr "σελιδοδείκτης"
 msgid "file format"
 msgstr "τύπος αρχείου"
 
-#: ../quodlibet/util/tags.py:158
+#: ../quodlibet/util/tags.py:160
 msgid "playlists"
 msgstr "λίστες αναπαραγωγής"
 
 #. Translators: e.g. "artist (sort)"
-#: ../quodlibet/util/tags.py:248
+#: ../quodlibet/util/tags.py:250
 msgid "sort"
 msgstr "ταξινόμηση"
 
 #. Translators: e.g. "performer (roles)"
-#: ../quodlibet/util/tags.py:256
+#: ../quodlibet/util/tags.py:258
 msgid "roles"
 msgstr "ρόλοι"
 
@@ -5855,8 +5927,8 @@ msgstr "ρόλοι"
 
 #~ msgid "The audio backend '%(backend-name)s' could not be loaded."
 #~ msgstr ""
-#~ "Δεν ήταν δυνατό να φορτωθεί η υποστήριξη ηχητικού συστήματος "
-#~ "'%(backend-name)s'."
+#~ "Δεν ήταν δυνατό να φορτωθεί η υποστήριξη ηχητικού συστήματος '%(backend-"
+#~ "name)s'."
 
 #~ msgid "Clear search"
 #~ msgstr "Καθαρισμός αναζήτησης"
@@ -6043,9 +6115,6 @@ msgstr "ρόλοι"
 
 #~ msgid "Tag:"
 #~ msgstr "Ετικέτα:"
-
-#~ msgid "Ascending"
-#~ msgstr "Αύξουσα"
 
 #~ msgid "Descending"
 #~ msgstr "Φθήνουσα"
