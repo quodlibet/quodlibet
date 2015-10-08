@@ -245,6 +245,13 @@ There is also an SDK for developing under Windows: `quodlibet-win-sdk.tar.gz <ht
 Based on the `OS X bundles <https://github.com/elelay/quodlibet-osx-bundle>`__
 created by `Eric Le Lay <https://github.com/elelay>`__
 
+.. warning::
+
+    Quod Libet fails to start on **El Capitan** unless `SIP
+    <https://en.wikipedia.org/wiki/System_Integrity_Protection>`__ is disabled.
+    See bug :bug:`1697` for more details.
+
+
 =========================== ============================== ========================================== ==========================================
 Release                     Application Bundle             SHA256                                     PGP
 =========================== ============================== ========================================== ==========================================
