@@ -162,12 +162,14 @@ Stable Repo:
   * `openSUSE 13.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_13.2/>`__
   * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_Tumbleweed>`__
+  * `openSUSE Leap 42.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_42.1>`__
 
 Unstable Repo:
 
   * `openSUSE 13.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.2/>`__
   * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.1/>`__
   * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_Tumbleweed>`__
+  * `openSUSE Leap 42.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_42.1>`__
 
 
 .. _arch:
