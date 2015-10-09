@@ -352,6 +352,19 @@ def xdg_get_config_home():
         return os.path.join(os.path.expanduser("~"), ".config")
 
 
+def expandvars(path):
+    if os.name == "nt":
+        # XXX: monkey patch environ for unicode support
+        old_environ = os.environ
+        os.environ = environ
+        try:
+            return os.path.expandvars(path)
+        finally:
+            os.environ = old_environ
+    else:
+        return os.path.expandvars(path)
+
+
 def parse_xdg_user_dirs(data):
     """Parses xdg-user-dirs and returns a dict of keys and paths.
 
@@ -376,7 +389,7 @@ def parse_xdg_user_dirs(data):
         if len(values) != 1:
             continue
         paths[key] = os.path.normpath(
-            os.path.expandvars(bytes2fsnative(values[0])))
+            expandvars(bytes2fsnative(values[0])))
 
     return paths
 

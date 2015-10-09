@@ -636,12 +636,12 @@ class Txdg_dirs(TestCase):
         data = '# foo\nBLA="$HOME/blah"\n'
         vars_ = parse_xdg_user_dirs(data)
         self.assertTrue("BLA" in vars_)
-        expected = os.path.join(os.environ.get("HOME", ""), "blah")
+        expected = os.path.join(environ.get("HOME", ""), "blah")
         self.assertEqual(vars_["BLA"], expected)
 
         vars_ = parse_xdg_user_dirs('BLA="$HOME/"')
         self.assertTrue("BLA" in vars_)
-        self.assertEqual(vars_["BLA"], os.environ.get("HOME", ""))
+        self.assertEqual(vars_["BLA"], environ.get("HOME", ""))
 
         # some invalid
         self.assertFalse(parse_xdg_user_dirs("foo"))
