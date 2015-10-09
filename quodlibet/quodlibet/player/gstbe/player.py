@@ -411,7 +411,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # directsoundsink has a mute property but it doesn't work
             # https://bugzilla.gnome.org/show_bug.cgi?id=755106
             if ext.get_factory().get_name() == "directsoundsink":
-                return elf._vol_element
+                return self._vol_element
             return ext
         return self._vol_element
 
