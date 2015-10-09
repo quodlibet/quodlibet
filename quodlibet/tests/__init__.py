@@ -11,7 +11,8 @@ import atexit
 import subprocess
 from quodlibet.compat import PY3
 from quodlibet.util.dprint import Colorise, print_
-from quodlibet.util.path import fsnative, is_fsnative
+from quodlibet.util.path import fsnative, is_fsnative, xdg_get_cache_home
+from quodlibet.util.misc import environ
 
 from unittest import TestCase as OrigTestCase
 
@@ -207,16 +208,21 @@ def init_test_environ():
     # needed for dbus/dconf
     runtime_dir = tempfile.mkdtemp(prefix=fsnative(u"RUNTIME-"), dir=_TEMP_DIR)
     os.chmod(runtime_dir, 0o700)
-    os.environ["XDG_RUNTIME_DIR"] = runtime_dir
+    environ["XDG_RUNTIME_DIR"] = runtime_dir
+
+    # force the old cache dir so that GStreamer can re-use the GstRegistry
+    # cache file
+    environ["XDG_CACHE_HOME"] = xdg_get_cache_home()
 
     # set HOME and remove all XDG vars that default to it if not set
     home_dir = tempfile.mkdtemp(prefix=fsnative(u"HOME-"), dir=_TEMP_DIR)
-    os.environ["HOME"] = home_dir
-    os.environ.pop("XDG_DATA_HOME", None)
-    os.environ.pop("XDG_CACHE_HOME", None)
+    environ["HOME"] = home_dir
+
+    # set to new default
+    environ.pop("XDG_DATA_HOME", None)
 
     _BUS_INFO = None
-    if os.name != "nt" and "DBUS_SESSION_BUS_ADDRESS" in os.environ:
+    if os.name != "nt" and "DBUS_SESSION_BUS_ADDRESS" in environ:
         try:
             out = subprocess.check_output(["dbus-launch"])
         except (subprocess.CalledProcessError, OSError):
@@ -225,7 +231,7 @@ def init_test_environ():
             if PY3:
                 out = out.decode("ascii")
             _BUS_INFO = dict([l.split("=", 1) for l in out.splitlines()])
-            os.environ.update(_BUS_INFO)
+            environ.update(_BUS_INFO)
 
     # Ideally nothing should touch the FS on import, but we do atm..
     # Get rid of all modules so QUODLIBET_USERDIR gets used everywhere.
