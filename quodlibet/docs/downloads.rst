@@ -247,31 +247,24 @@ There is also an SDK for developing under Windows: `quodlibet-win-sdk.tar.gz <ht
 Based on the `OS X bundles <https://github.com/elelay/quodlibet-osx-bundle>`__
 created by `Eric Le Lay <https://github.com/elelay>`__
 
-.. warning::
-
-    Quod Libet fails to start on **El Capitan** unless `SIP
-    <https://en.wikipedia.org/wiki/System_Integrity_Protection>`__ is disabled.
-    See bug :bug:`1697` for more details.
-
-
 =========================== ============================== ========================================== ==========================================
 Release                     Application Bundle             SHA256                                     PGP
 =========================== ============================== ========================================== ==========================================
-Quod Libet 3.5.0            QuodLibet-3.5.0.zip_           `SHA256 <QuodLibet-3.5.0.zip.sha256_>`_    `SIG <QuodLibet-3.5.0.zip.sig_>`_
-Ex Falso 3.5.0              ExFalso-3.5.0.zip_             `SHA256 <ExFalso-3.5.0.zip.sha256_>`_      `SIG <ExFalso-3.5.0.zip.sig_>`_
+Quod Libet 3.5.0-v2         QuodLibet-3.5.0-v2.zip_        `SHA256 <QuodLibet-3.5.0-v2.zip.sha256_>`_ `SIG <QuodLibet-3.5.0-v2.zip.sig_>`_
+Ex Falso 3.5.0-v2           ExFalso-3.5.0-v2.zip_          `SHA256 <ExFalso-3.5.0-v2.zip.sha256_>`_   `SIG <ExFalso-3.5.0-v2.zip.sig_>`_
 Quod Libet 3.4.1 (v2)       QuodLibet-3.4.1-v2.zip_        `SHA256 <QuodLibet-3.4.1-v2.zip.sha256_>`_ `SIG <QuodLibet-3.4.1-v2.zip.sig_>`_
 Ex Falso 3.4.1 (v2)         ExFalso-3.4.1-v2.zip_          `SHA256 <ExFalso-3.4.1-v2.zip.sha256_>`_   `SIG <ExFalso-3.4.1-v2.zip.sig_>`_
 Quod Libet 3.4.1            QuodLibet-3.4.1.zip_           `SHA256 <QuodLibet-3.4.1.zip.sha256_>`_    `SIG <QuodLibet-3.4.1.zip.sig_>`_
 Ex Falso 3.4.1              ExFalso-3.4.1.zip_             `SHA256 <ExFalso-3.4.1.zip.sha256_>`_      `SIG <ExFalso-3.4.1.zip.sig_>`_
 =========================== ============================== ========================================== ==========================================
 
-.. _QuodLibet-3.5.0.zip: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.0.zip
-.. _QuodLibet-3.5.0.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.0.zip.sha256
-.. _QuodLibet-3.5.0.zip.sig: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.0.zip.sig
+.. _QuodLibet-3.5.0-v2.zip: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.0-v2.zip
+.. _QuodLibet-3.5.0-v2.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.0-v2.zip.sha256
+.. _QuodLibet-3.5.0-v2.zip.sig: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.0-v2.zip.sig
 
-.. _ExFalso-3.5.0.zip: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.0.zip
-.. _ExFalso-3.5.0.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.0.zip.sha256
-.. _ExFalso-3.5.0.zip.sig: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.0.zip.sig
+.. _ExFalso-3.5.0-v2.zip: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.0-v2.zip
+.. _ExFalso-3.5.0-v2.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.0-v2.zip.sha256
+.. _ExFalso-3.5.0-v2.zip.sig: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.0-v2.zip.sig
 
 .. _QuodLibet-3.4.1-v2.zip: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.4.1-v2.zip
 .. _QuodLibet-3.4.1-v2.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.4.1-v2.zip.sha256
