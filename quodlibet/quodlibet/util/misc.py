@@ -46,6 +46,14 @@ def cached_func(f):
     return wrapper
 
 
+def _verify_encoding(encoding):
+    try:
+        u"".encode(encoding)
+    except LookupError:
+        encoding = "utf-8"
+    return encoding
+
+
 @cached_func
 def get_locale_encoding():
     """Returns the encoding defined by the locale"""
@@ -56,10 +64,7 @@ def get_locale_encoding():
         encoding = "utf-8"
     else:
         # python on macports can return a bugs result (empty string)
-        try:
-            u"".encode(encoding)
-        except LookupError:
-            encoding = "utf-8"
+        encoding = _verify_encoding(encoding)
 
     return encoding
 
@@ -76,6 +81,7 @@ def get_fs_encoding():
         fscoding = os.environ["G_FILENAME_ENCODING"].split(",")[0]
         if fscoding == "@locale":
             fscoding = get_locale_encoding()
+        return _verify_encoding(fscoding)
     elif "G_BROKEN_FILENAMES" in os.environ:
         return get_locale_encoding()
     else:
