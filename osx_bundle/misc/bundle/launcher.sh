@@ -32,7 +32,7 @@ export GI_TYPELIB_PATH="$bundle_lib/girepository-1.0"
 
 # gstreamer
 export GST_PLUGIN_SYSTEM_PATH="$bundle_lib/gstreamer-1.0"
-export GST_PLUGIN_SCANNER="$bundle_res/libexec/gstreamer-1.0/gst-plugin-scanner"
+export GST_PLUGIN_SCANNER="$bundle_contents/MacOS/gst-plugin-scanner"
 
 export G_MESSAGES_DEBUG=all
 
@@ -54,6 +54,11 @@ export QUODLIBET_NO_HINTS=yes
 APP=$(basename "$0")
 if [ "$APP" == "run" ]; then
     "$PYTHON" "$@"
+elif  [ "$APP" == "gst-plugin-scanner" ]; then
+    # Starting with 10.11 OSX will no longer pass DYLD_LIBRARY_PATH
+    # to child processes. To work around use this launcher for the
+    # GStreamer plugin scanner helper
+    "$bundle_res/libexec/gstreamer-1.0/gst-plugin-scanner" "$@"
 else
     "$PYTHON" "$bundle_contents/Resources/bin/$APP" "$@"
 fi

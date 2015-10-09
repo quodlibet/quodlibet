@@ -38,6 +38,7 @@ find "$APP_PREFIX"/lib/python2.7 -name '*.py' -delete
 (cd "$APP"/Contents/MacOS/ && ln -s _launcher exfalso)
 (cd "$APP"/Contents/MacOS/ && ln -s _launcher operon)
 (cd "$APP"/Contents/MacOS/ && ln -s _launcher run)
+(cd "$APP"/Contents/MacOS/ && ln -s _launcher gst-plugin-scanner)
 
 EXFALSO="$QL_OSXBUNDLE_BUNDLE_DEST/ExFalso.app"
 QUODLIBET="$QL_OSXBUNDLE_BUNDLE_DEST/QuodLibet.app"
