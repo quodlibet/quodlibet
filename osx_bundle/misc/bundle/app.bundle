@@ -84,9 +84,6 @@
   <binary>
     ${prefix}/lib/gdk-pixbuf-2.0/2.10.0/loaders/*.so
   </binary>
-  <binary>
-  ${prefix}/bin/gdk-pixbuf-query-loaders
-  </binary>
 
   <!-- pango 2.36 has its own separate modules -->
   <binary>
