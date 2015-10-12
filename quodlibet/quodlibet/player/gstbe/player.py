@@ -169,7 +169,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._last_position = 0
 
         self.bin = None
-        self._vol_element = None
+        self._int_vol_element = None
         self._ext_vol_element = None
         self._use_eq = False
         self._eq_element = None
@@ -199,7 +199,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     @property
     def has_external_volume(self):
-        return self._ext_vol_element is not None
+        ext = self._ext_vol_element
+        if ext is None or ext.get_factory().get_name() != "pulsesink":
+            return False
+        return True
 
     def _set_buffer_duration(self, duration):
         """Set the stream buffer duration in msecs"""
@@ -272,8 +275,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # playbin2 has started to control the volume through pulseaudio,
         # which means the volume property can change without us noticing.
         # Use our own volume element for now until this works with PA.
-        self._vol_element = Gst.ElementFactory.make('volume', None)
-        pipeline.insert(0, self._vol_element)
+        self._int_vol_element = Gst.ElementFactory.make('volume', None)
+        pipeline.insert(0, self._int_vol_element)
 
         # Get all plugin elements and append audio converters.
         # playbin already includes one at the end
@@ -411,9 +414,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # directsoundsink has a mute property but it doesn't work
             # https://bugzilla.gnome.org/show_bug.cgi?id=755106
             if ext.get_factory().get_name() == "directsoundsink":
-                return self._vol_element
+                return self._int_vol_element
             return ext
-        return self._vol_element
+        return self._int_vol_element
 
     def __destroy_pipeline(self):
         self._remove_plugin_elements()
@@ -440,7 +443,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._active_seeks = []
 
         self._ext_vol_element = None
-        self._vol_element = None
+        self._int_vol_element = None
         self._eq_element = None
 
     def _rebuild_pipeline(self):
@@ -636,7 +639,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     def do_get_property(self, property):
         if property.name == 'volume':
-            if self.has_external_volume:
+            if self._ext_vol_element:
                 # pulsesink volume is only valid in PAUSED/PLAYING
                 current_state = self._ext_vol_element.get_state(0)[1]
                 if current_state >= Gst.State.PAUSED:
@@ -658,19 +661,19 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         v = 1.0 if self.has_external_volume else self._volume
         v = self.calc_replaygain_volume(v)
         v = min(10.0, max(0.0, v))
-        self._vol_element.set_property('volume', v)
+        self._int_vol_element.set_property('volume', v)
 
     def do_set_property(self, property, v):
         if property.name == 'volume':
             self._volume = v
-            if self.has_external_volume:
+            if self._ext_vol_element:
                 v = min(10.0, max(0.0, v))
                 self._ext_vol_element.set_property("volume", v)
             else:
                 v = self.calc_replaygain_volume(v)
                 if self.bin:
                     v = min(10.0, max(0.0, v))
-                    self._vol_element.set_property('volume', v)
+                    self._int_vol_element.set_property('volume', v)
         elif property.name == 'mute':
             if self._mute_element is not None:
                 self._mute_element.props.mute = v
