@@ -160,7 +160,7 @@ class TopBar(Gtk.Toolbar):
         if not player.has_external_volume:
             player.volume = config.getfloat("memory", "volume")
 
-        self.volume.connect("value-changed", self._on_volume_changed)
+        connect_destroy(player, "notify::volume", self._on_volume_changed)
         control_item.add(t)
 
         self.insert(Gtk.SeparatorToolItem(), 1)
@@ -201,8 +201,8 @@ class TopBar(Gtk.Toolbar):
         context = self.get_style_context()
         context.add_class("primary-toolbar")
 
-    def _on_volume_changed(self, widget, value):
-        config.set("memory", "volume", str(value))
+    def _on_volume_changed(self, player, *args):
+        config.set("memory", "volume", str(player.volume))
 
     def __new_song(self, player, song):
         self.image.set_song(song)

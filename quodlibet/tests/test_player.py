@@ -193,6 +193,12 @@ class TPlayer(AbstractTestCase):
         # backend don't have to support it, but shouldn't fail on set/get
         self.player.mute = not self.player.mute
 
+    def test_preserve_volume(self):
+        self.player.next()
+        self.player.volume = 0.5
+        self.player.next()
+        self.assertEqual(self.player.volume, 0.5)
+
 
 class TNullPlayer(TPlayer):
     NAME = "nullbe"
