@@ -652,14 +652,19 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     def do_get_property(self, property):
         if property.name == 'volume':
-            if self._ext_vol_element:
-                if sink_state_is_valid(self._ext_vol_element):
-                    self._volume = self._ext_vol_element.get_property("volume")
+            if self._ext_vol_element is not None and \
+                    sink_has_external_state(self._ext_vol_element) and \
+                    sink_state_is_valid(self._ext_vol_element):
+                # never read back the volume if we don't have to, e.g.
+                # directsoundsink maps volume to an int which makes UI
+                # sliders jump if we read the value back
+                self._volume = self._ext_vol_element.get_property("volume")
             return self._volume
         elif property.name == "mute":
-            if self._ext_mute_element is not None:
-                if sink_state_is_valid(self._ext_mute_element):
-                    self._mute = self._ext_mute_element.get_property("mute")
+            if self._ext_mute_element is not None and \
+                    sink_has_external_state(self._ext_mute_element) and \
+                    sink_state_is_valid(self._ext_mute_element):
+                self._mute = self._ext_mute_element.get_property("mute")
             return self._mute
         elif property.name == "seekable":
             return self._seekable
