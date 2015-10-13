@@ -670,7 +670,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if not self.bin:
             return
 
-        v = 1.0 if self.has_external_volume else self._volume
+        v = 1.0 if self._ext_vol_element is not None else self._volume
         v = self.calc_replaygain_volume(v)
         v = min(10.0, max(0.0, v))
         self._int_vol_element.set_property('volume', v)
