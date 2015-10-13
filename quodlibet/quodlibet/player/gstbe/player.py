@@ -421,8 +421,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self._reset_replaygain()
         else:
             # Restore volume/ReplayGain and mute state
-            self.volume = self.volume
-            self.mute = self.mute
+            self.volume = self._volume
+            self.mute = self._mute
 
         if self.song:
             self.bin.set_property('uri', self.song("~uri"))
