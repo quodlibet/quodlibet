@@ -145,6 +145,20 @@ class BufferingWrapper(object):
         self.bin = None
 
 
+def sink_has_external_state(sink):
+    return sink.get_factory().get_name() == "pulsesink"
+
+
+def sink_state_is_valid(sink):
+    if not sink_has_external_state(sink):
+        return True
+
+    # pulsesink volume is only valid in PAUSED/PLAYING
+    # https://bugzilla.gnome.org/show_bug.cgi?id=748577
+    current_state = sink.get_state(0)[1]
+    return current_state >= Gst.State.PAUSED
+
+
 class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     def PlayerPreferences(self):
@@ -162,6 +176,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._volume = 1.0
         self._paused = True
         self._seekable = False
+        self._mute = False
 
         self._in_gapless_transition = False
         self._active_seeks = []
@@ -171,6 +186,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.bin = None
         self._int_vol_element = None
         self._ext_vol_element = None
+        self._ext_mute_element = None
         self._use_eq = False
         self._eq_element = None
         self.__info_buffer = None
@@ -200,7 +216,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     @property
     def has_external_volume(self):
         ext = self._ext_vol_element
-        if ext is None or ext.get_factory().get_name() != "pulsesink":
+        if ext is None or not sink_has_external_state(ext):
             return False
         return True
 
@@ -332,12 +348,18 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
             self._ext_vol_element.connect("notify::volume", ext_volume_notify)
 
-        def mute_notify(*args):
-            # gets called from a thread
-            GLib.idle_add(self.notify, "mute")
+        self._ext_mute_element = None
+        if hasattr(sink_element.props, "mute") and \
+                sink_element.get_factory().get_name() != "directsoundsink":
+            # directsoundsink has a mute property but it doesn't work
+            # https://bugzilla.gnome.org/show_bug.cgi?id=755106
+            self._ext_mute_element = sink_element
 
-        mute_element = self._mute_element
-        mute_element.connect("notify::mute", mute_notify)
+            def mute_notify(*args):
+                # gets called from a thread
+                GLib.idle_add(self.notify, "mute")
+
+            self._ext_mute_element.connect("notify::mute", mute_notify)
 
         # Make the sink of the first element the sink of the bin
         gpad = Gst.GhostPad.new('sink', pipeline[0].get_static_pad('sink'))
@@ -394,29 +416,18 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     break
         self.bin.connect("source-setup", source_setup)
 
-        # ReplayGain information gets lost when destroying
-        self._reset_replaygain()
+        if self.has_external_volume:
+            # ReplayGain information gets lost when destroying
+            self._reset_replaygain()
+        else:
+            # Restore volume/ReplayGain and mute state
+            self.volume = self.volume
+            self.mute = self.mute
 
         if self.song:
             self.bin.set_property('uri', self.song("~uri"))
 
         return True
-
-    @property
-    def _mute_element(self):
-        """The element used for muting (volume or sink).
-
-        Might return None in case there is no active pipeline
-        """
-
-        ext = self._ext_vol_element
-        if ext is not None and hasattr(ext.props, "mute"):
-            # directsoundsink has a mute property but it doesn't work
-            # https://bugzilla.gnome.org/show_bug.cgi?id=755106
-            if ext.get_factory().get_name() == "directsoundsink":
-                return self._int_vol_element
-            return ext
-        return self._int_vol_element
 
     def __destroy_pipeline(self):
         self._remove_plugin_elements()
@@ -444,6 +455,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         self._ext_vol_element = None
         self._int_vol_element = None
+        self._ext_mute_element = None
         self._eq_element = None
 
     def _rebuild_pipeline(self):
@@ -486,6 +498,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # and the volume is only valid in > paused states.
             if message.src is self._ext_vol_element:
                 self.notify("volume")
+            if message.src is self._ext_mute_element:
                 self.notify("mute")
 
             if message.src is self.bin.bin:
@@ -640,15 +653,14 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def do_get_property(self, property):
         if property.name == 'volume':
             if self._ext_vol_element:
-                # pulsesink volume is only valid in PAUSED/PLAYING
-                current_state = self._ext_vol_element.get_state(0)[1]
-                if current_state >= Gst.State.PAUSED:
+                if sink_state_is_valid(self._ext_vol_element):
                     self._volume = self._ext_vol_element.get_property("volume")
             return self._volume
         elif property.name == "mute":
-            if self._mute_element is None:
-                return False
-            return self._mute_element.props.mute
+            if self._ext_mute_element is not None:
+                if sink_state_is_valid(self._ext_mute_element):
+                    self._mute = self._ext_mute_element.get_property("mute")
+            return self._mute
         elif property.name == "seekable":
             return self._seekable
         else:
@@ -675,8 +687,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     v = min(10.0, max(0.0, v))
                     self._int_vol_element.set_property('volume', v)
         elif property.name == 'mute':
-            if self._mute_element is not None:
-                self._mute_element.props.mute = v
+            self._mute = v
+            if self._ext_mute_element is not None:
+                self._ext_mute_element.set_property("mute", v)
+            else:
+                if self.bin:
+                    self._int_vol_element.set_property("mute", v)
         else:
             raise AttributeError
 
