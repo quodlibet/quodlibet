@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ex Falso / Quod Libet SVN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-07 20:37+0200\n"
+"POT-Creation-Date: 2015-10-14 11:13+0200\n"
 "PO-Revision-Date: 2013-07-20 22:34+0100\n"
 "Last-Translator: Johám-Luís Miguéns Vila <galiza.ceive@gmail.com>\n"
 "Language-Team: Galician\n"
@@ -3826,16 +3826,16 @@ msgstr "Stream"
 msgid "Buffering"
 msgstr "A encher o buffer"
 
-#: ../quodlibet/player/gstbe/player.py:294
+#: ../quodlibet/player/gstbe/player.py:313
 #, fuzzy
 msgid "Could not create GStreamer pipeline"
 msgstr "Non se puido crear a pipeline predefinida do GStreamer"
 
-#: ../quodlibet/player/gstbe/player.py:533
+#: ../quodlibet/player/gstbe/player.py:553
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:534
+#: ../quodlibet/player/gstbe/player.py:554
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr ""

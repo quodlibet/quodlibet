@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-07 20:37+0200\n"
+"POT-Creation-Date: 2015-10-14 11:13+0200\n"
 "PO-Revision-Date: 2015-05-22 21:19+0100\n"
 "Last-Translator: Nathan Follens <nthn@unseen.is>\n"
 "Language-Team: Nederlands <en@li.org>\n"
@@ -3775,15 +3775,15 @@ msgstr "Stream"
 msgid "Buffering"
 msgstr "Bufferen"
 
-#: ../quodlibet/player/gstbe/player.py:294
+#: ../quodlibet/player/gstbe/player.py:313
 msgid "Could not create GStreamer pipeline"
 msgstr "Kon GStreamer-pijplijn niet aanmaken"
 
-#: ../quodlibet/player/gstbe/player.py:533
+#: ../quodlibet/player/gstbe/player.py:553
 msgid "No GStreamer element found to handle media format"
 msgstr "Geen GStreamer-element gevonden om mediaformaat te verwerken"
 
-#: ../quodlibet/player/gstbe/player.py:534
+#: ../quodlibet/player/gstbe/player.py:554
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Mediaformaat: %(format-description)s"

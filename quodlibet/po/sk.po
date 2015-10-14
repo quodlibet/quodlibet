@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-07 20:37+0200\n"
+"POT-Creation-Date: 2015-10-14 11:13+0200\n"
 "PO-Revision-Date: 2006-11-08 19:59+0100\n"
 "Last-Translator: Lukáš Lalinský <lalinsky@gmail.com>\n"
 "Language-Team: Slovak <sk@li.org>\n"
@@ -3796,15 +3796,15 @@ msgstr ""
 msgid "Buffering"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:294
+#: ../quodlibet/player/gstbe/player.py:313
 msgid "Could not create GStreamer pipeline"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:533
+#: ../quodlibet/player/gstbe/player.py:553
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 
-#: ../quodlibet/player/gstbe/player.py:534
+#: ../quodlibet/player/gstbe/player.py:554
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr ""

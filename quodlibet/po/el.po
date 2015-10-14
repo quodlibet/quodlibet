@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-07 20:37+0200\n"
+"POT-Creation-Date: 2015-10-14 11:13+0200\n"
 "PO-Revision-Date: 2015-09-14 22:31+0300\n"
 "Last-Translator: Dimitris Papageorgiou <dipap@gmx.com>\n"
 "Language-Team: Greek\n"
@@ -3773,16 +3773,16 @@ msgstr "Ροή"
 msgid "Buffering"
 msgstr "Buffering"
 
-#: ../quodlibet/player/gstbe/player.py:294
+#: ../quodlibet/player/gstbe/player.py:313
 msgid "Could not create GStreamer pipeline"
 msgstr "Αδυναμία δημιουργίας διασωλήνωσης GStreamer"
 
-#: ../quodlibet/player/gstbe/player.py:533
+#: ../quodlibet/player/gstbe/player.py:553
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "Δεν βρέθηκε στοιχείο GStreamer ικανό να χειριστεί αυτό το είδος αρχείου"
 
-#: ../quodlibet/player/gstbe/player.py:534
+#: ../quodlibet/player/gstbe/player.py:554
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Μορφή πολυμέσου: %(format-description)s"

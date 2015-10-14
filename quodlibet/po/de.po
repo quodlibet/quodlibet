@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 3.0.-1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-07 20:37+0200\n"
+"POT-Creation-Date: 2015-10-14 11:13+0200\n"
 "PO-Revision-Date: 2014-01-05 18:16+0100\n"
 "Last-Translator: Rüdiger Arp <ruediger@gmx.net>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -3823,19 +3823,19 @@ msgstr "Stream"
 msgid "Buffering"
 msgstr "Puffer wird gefüllt"
 
-#: ../quodlibet/player/gstbe/player.py:294
+#: ../quodlibet/player/gstbe/player.py:313
 #, fuzzy
 msgid "Could not create GStreamer pipeline"
 msgstr "GStreamer-Standard-Pipeline konnte nicht angelegt werden"
 
-#: ../quodlibet/player/gstbe/player.py:533
+#: ../quodlibet/player/gstbe/player.py:553
 #, fuzzy
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "Es wurde kein GStreamer-Element für das folgende Medienformat gefunden: "
 "%(format_details)r"
 
-#: ../quodlibet/player/gstbe/player.py:534
+#: ../quodlibet/player/gstbe/player.py:554
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr ""
