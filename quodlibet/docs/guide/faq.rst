@@ -282,3 +282,13 @@ I like <my favorite player>, so I won't use Quod Libet!
     lot of media players out there, there are far fewer choices for tag
     editors.
     You could also :ref:`help us make Quod Libet better <Contribute>`.
+
+
+Changing the volume in Quod Libet changes the master volume!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Since 3.5 Quod Libet will control the PulseAudio stream volume directly (same
+as the application slider in ``pavucontrol``) which might have an effect on
+the master volume and vice versa. To restore the old behavior disable
+``flat-volumes`` mode in PulseAudio. See ``man pulse-daemon.conf`` for more
+information.
