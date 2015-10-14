@@ -1,3 +1,11 @@
+3.5.1 (2015-10-14) - HOW TO SUCCEED AT SMALLTALK
+------------------------------------------------
+
+* Fix volume / mute state resetting on song change with some configurations
+  :bug:`1703`
+* Fix crash when G_FILENAME_ENCODING is set :bug:`1699`
+
+
 3.5.0 (2015-10-07) - BETTER ANSWERS TO "HEY HOW ARE YOU?" THAN "I'M FINE"
 -------------------------------------------------------------------------
 
