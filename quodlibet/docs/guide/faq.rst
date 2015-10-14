@@ -1,26 +1,6 @@
 Frequently Asked Questions
 ==========================
 
-Installation
-------------
-
-Does Quod Libet require GNOME?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    No, but we recommend you install the GNOME libraries and Python
-    bindings when using Quod Libet. If they are installed, Quod Libet will
-    use your default GNOME audio options.
-
-
-I'm running Gentoo / Arch, and...
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    We are not the first line of support for `Gentoo Linux
-    <http://gentoo.org/>`_. If you are running Gentoo and experience
-    problems, file a bug on the
-    `Gentoo bug tracking system <http://bugs.gentoo.org>`_.
-
-    The same goes for Arch... and any other distribution-specific problems.
 
 General
 -------

@@ -34,6 +34,7 @@ Downstream Bug Trackers
   * `Debian <http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=quodlibet>`_
   * `Arch Linux <https://bugs.archlinux.org/?project=1&string=quodlibet>`_
   * `Ubuntu <https://launchpad.net/ubuntu/+source/quodlibet/+bugs>`_
+  * `Gentoo <https://bugs.gentoo.org/buglist.cgi?quicksearch=media-sound%2Fquodlibet>`_
 
 
 Tags & Branches
