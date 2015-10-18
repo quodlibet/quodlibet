@@ -106,18 +106,10 @@
 
   <autotools id="gtk+-3.0" autogen-sh="autogen.sh"
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
-    <branch module="gtk+/3.16/gtk+-3.16.6.tar.xz" version="3.16.6"
-        hash="sha256:4d12726d0856a968b41802ae5c5971d7e9bac532717e309d3f81b9989da5ffbe">
+    <branch module="gtk+/3.18/gtk+-3.18.2.tar.xz" version="3.18.2"
+        hash="sha256:5dbec561c4a00070073bf9cf4cfdd61fab4a14c8ff5b15d700bd378f8185e152">
         <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug-707945-GTK2-Quartz-typeahead-find-in-GtkTreeView.patch" strip="1"/>
         <patch file="patches/gtk-0000-hidpi.patch" strip="1"/>
-        <patch file="patches/gtk-0001-quartz-make-moving-CSD-windows-right-up-to-the-scree.patch" strip="1"/>
-        <patch file="patches/gtk-0002-quartz-implement-maximized-unmaximized.patch" strip="1"/>
-        <patch file="patches/gtk-0003-quartz-remove-maximized-state-when-the-window-positi.patch" strip="1"/>
-        <patch file="patches/gtk-0004-quartz-disable-system-shadows-if-a-GdkWindow-shadow-.patch" strip="1"/>
-        <patch file="patches/gtk-0005-quartz-dnd-fix-drag-icon-position-relative-to-cursor.patch" strip="1"/>
-        <patch file="patches/gtk-0006-quartz-dnd-add-hidpi-support-for-gtk_drag_set_icon_s.patch" strip="1"/>
-        <patch file="patches/gtk-0007-quartz-app-menu-add-hidpi-support-for-menu-icons.patch" strip="1"/>
-        <patch file="patches/gtk-0008-quartz-Implement-CSD-drag-resize-for-all-edges-corne.patch" strip="1"/>
     </branch>
     <dependencies>
         <dep package="glib"/>
@@ -129,6 +121,49 @@
     </dependencies>
     <after>
         <dep package="meta-gtk-osx-bootstrap"/>
+    </after>
+  </autotools>
+
+   <autotools id="pygobject3" autogen-sh="configure" >
+    <branch version="3.18.0" module="pygobject/3.18/pygobject-3.18.0.tar.xz"
+	    hash="sha256:1c3ba1112d3713cd5c86260312bfeb0de1f84f18808e51072c50b29d46156dc9"/>
+    <dependencies>
+      <dep package="meta-gtk-osx-gtk3"/>
+    </dependencies>
+    <after>
+      <dep package="python"/>
+      <dep package="python3"/>
+    </after>
+  </autotools>
+
+  <autotools id="glib" autogen-sh="autoreconf">
+    <branch module="glib/2.46/glib-2.46.1.tar.xz"  version="2.46.1"
+            hash="sha256:5a1f03b952ebc3a7e9f612b8724f70898183e31503db329b4f15d07163c8fdfb">
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/0001-Fix-g_get_monotonic_time-on-non-Intel-Darwin.patch" strip="1"/>
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug-724590-GSlice-slab_stack-corruption.patch" strip="1"/>
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gio-in-reserved-in-gcc-48.patch" strip="1"/>
+    </branch>
+    <dependencies>
+        <dep package="libffi"/>
+    </dependencies>
+    <after>
+      <dep package="meta-gtk-osx-bootstrap"/>
+    </after>
+  </autotools>
+
+  <autotools id="pango"  autogen-sh="autoreconf">
+    <branch version="1.38.1" module="pango/1.38/pango-1.38.1.tar.xz"
+            hash="sha256:1320569f6c6d75d6b66172b2d28e59c56ee864ee9df202b76799c4506a214eb7">
+    </branch>
+    <dependencies>
+      <dep package="cairo"/>
+     </dependencies>
+    <after>
+      <dep package="gobject-introspection"/>
+      <dep package="gobject-introspection-10"/>
+      <dep package="meta-gtk-osx-freetype"/>
+      <dep package="glib"/>
+      <dep package="meta-gtk-osx-bootstrap"/>
     </after>
   </autotools>
 
