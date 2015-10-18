@@ -251,8 +251,8 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
         environ_prepend("CXXFLAGS", "-I" + sdkdir + "/usr/include")
         environ_prepend("OBJCFLAGS", "-I" + sdkdir + "/usr/include")
         environ_prepend("CPPFLAGS", "-I" + sdkdir + "/usr/include")
-        environ_prepend("CMAKE_PREFIX_PATH", os.path.join(sdkdir, 'usr'))
-        environ_prepend("LIBRARY_PATH", sdkdir + "/usr/lib")
+        environ_prepend("CMAKE_PREFIX_PATH", os.path.join(sdkdir, 'usr'), ':')
+        environ_prepend("LIBRARY_PATH", sdkdir + "/usr/lib", ':')
         # It looks like -isysroot is broken when building on 10.4, causing link
         # problems. But we don't really need to set it for 10.4 so just
         # skip that.
@@ -262,6 +262,7 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
         #developing, and it takes a lot of typing, so define a
         #convenience environment variable:
         environ_append('SDKDIR', sdkdir)
+        environ_append('SDKROOT', sdkdir)
 
 #Apple Documentation says that "-syslibroot" is the arg to pass to the
 #linker, but we are using the compiler to control the linker, and

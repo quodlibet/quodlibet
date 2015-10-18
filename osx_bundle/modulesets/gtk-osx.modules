@@ -78,7 +78,7 @@
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gio-in-reserved-in-gcc-48.patch" strip="1"/>
     </branch>
     <dependencies>
-      <dep package="libffi"/>
+        <dep package="libffi"/>
     </dependencies>
     <after>
       <dep package="meta-gtk-osx-bootstrap"/>
@@ -227,15 +227,13 @@
 
   <!-- enable-fc and enable-ft required for librsvg's pixbuf loader -->
   <autotools id="cairo"  autogen-sh="configure"
-             autogenargs="--enable-pdf --enable-quartz --enable-ft --enable-fc --disable-xlib --without-x">
+             autogenargs="--enable-pdf --enable-quartz --disable-xlib --without-x">
     <branch module="cairo-1.14.0.tar.xz"  version="1.14.0"
             repo="cairographics"
             hash="sha1:53cf589b983412ea7f78feee2e1ba9cea6e3ebae">
     </branch>
     <dependencies>
       <dep package="pixman"/>
-      <dep package="fontconfig"/>
-      <dep package="freetype"/>
     </dependencies>
     <after>
       <dep package="meta-gtk-osx-bootstrap"/>

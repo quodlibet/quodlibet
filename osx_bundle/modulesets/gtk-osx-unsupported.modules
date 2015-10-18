@@ -93,10 +93,10 @@
 
   <!-- of the many arguments such as prefix and libdir that jhbuild might pass
   to configure, openssl only understands prefix, and only with =. -->
-  <autotools id="openssl" autogen-sh="Configure" autogenargs="shared"
-             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s %(autogenargs)s"
+  <autotools id="openssl" autogen-sh="config" autogenargs="shared"
+             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --openssldir=%(prefix)s/etc/ssl %(autogenargs)s" makeinstallargs="install_sw"
 	     supports-non-srcdir-builds="no">
-    <branch module="openssl-0.9.8ze.tar.gz" version="0.9.8ze" repo="openssl"/>
+    <branch module="openssl-0.9.8zg.tar.gz" version="0.9.8zg" repo="openssl"/>
   </autotools>
 
 
@@ -228,12 +228,13 @@
              strip="1"/>
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/webkit-1.10-pango-includes.patch"
              strip="1"/>
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/webkit-1.10-remove-pangoft2-dependency.patch"
+             strip="1"/>
     </branch>
     <dependencies>
       <dep package="enchant"/>
       <dep package="icu"/>
       <dep package="libsoup"/>
-      <dep package="meta-gtk-osx-freetype"/>
     </dependencies>
     <after>
       <dep package="meta-gtk-osx-core"/>
@@ -253,7 +254,8 @@
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/webkit-1.6-gnome-3.6-fixup.patch" strip="1"/>
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/webkit-1.6-clang-fixup.patch" strip="1"/>
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/webkit-1.6-out-of-source-fixup.patch" strip="1"/>
-
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/webkit-1.6-remove-pangoft2-dependency.patch"
+             strip="1"/>
     </branch>
     <dependencies>
       <dep package="enchant"/>

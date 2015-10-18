@@ -121,6 +121,11 @@
     <branch repo="ftp.gnu.org" module="bison/bison-3.0.2.tar.xz"
             version="3.0.2"/>
   </autotools>
+  
+  <autotools id="bison2" autogen-sh="configure">
+    <branch repo="ftp.gnu.org" module="bison/bison-2.7.1.tar.xz"
+            version="2.7.1"/>
+  </autotools>
 
   <!-- 10.4 has 2.5.4, too old for gstreamer (and probably others as well)
   10.6-10.10 have 2.5.35, 10.5 2.5.33 -->
