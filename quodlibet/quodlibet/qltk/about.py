@@ -11,7 +11,7 @@ import platform
 from gi.repository import Gtk, GLib, GdkPixbuf
 import mutagen
 
-from quodlibet.qltk import gtk_version, pygobject_version
+from quodlibet.qltk import gtk_version, pygobject_version, get_backend_name
 from quodlibet import const
 from quodlibet import formats
 from quodlibet.util import fver
@@ -59,7 +59,7 @@ class AboutDialog(Gtk.AboutDialog):
             text.append(_("Audio device: %s") % player.name)
         text.append("Python: %s" % platform.python_version())
         text.append("Mutagen: %s" % fver(mutagen.version))
-        text.append("GTK+: %s" % fver(gtk_version))
+        text.append("GTK+: %s (%s)" % (fver(gtk_version), get_backend_name()))
         text.append("PyGObject: %s" % fver(pygobject_version))
         if player:
             text.append(player.version_info)

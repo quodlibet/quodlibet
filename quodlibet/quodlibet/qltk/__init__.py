@@ -240,6 +240,20 @@ def is_wayland():
     return False
 
 
+def get_backend_name():
+    """The GDK backend name"""
+
+    display = Gdk.Display.get_default()
+    if display is not None:
+        name = display.__gtype__.name.decode("utf-8")
+        if name.startswith("Gdk"):
+            name = name[3:]
+        if name.endswith("Display"):
+            name = name[:-7]
+        return name
+    return u"Unknown"
+
+
 gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(),
                Gtk.get_micro_version())
 
