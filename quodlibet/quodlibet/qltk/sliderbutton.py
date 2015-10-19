@@ -8,8 +8,75 @@
 
 from gi.repository import Gtk, Gdk
 
-from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import get_top_parent, is_wayland
 from quodlibet.qltk.x import Align
+
+
+def window_grab_and_map(window, mask):
+    """Returns a list of devices that have a grab or an empty list if
+    something failed.
+
+    If somethings failed the window will be hidden.
+    """
+
+    device = Gtk.get_current_event_device()
+    event_time = Gtk.get_current_event_time()
+    if not device:
+        return []
+
+    # On wayland we need to grab before mapping and on X11 and everywhere else
+    # we can grab after we are mapped
+    if not is_wayland():
+        window.show()
+    else:
+        window.realize()
+
+    Gtk.device_grab_add(window, device, True)
+
+    status = device.grab(
+        window.get_window(), Gdk.GrabOwnership.WINDOW, True,
+        mask, None, event_time)
+
+    if status != Gdk.GrabStatus.SUCCESS:
+        Gtk.device_grab_remove(window, device)
+        window.hide()
+        return []
+
+    associated_device = device.get_associated_device()
+    if associated_device is None:
+        if is_wayland():
+            window.show()
+        return [device]
+
+    Gtk.device_grab_add(window, associated_device, True)
+
+    status = associated_device.grab(
+        window.get_window(), Gdk.GrabOwnership.WINDOW, True,
+        mask, None, event_time)
+
+    if status != Gdk.GrabStatus.SUCCESS:
+        Gtk.device_grab_remove(window, associated_device)
+        Gtk.device_grab_remove(window, device)
+        device.ungrab(event_time)
+        window.hide()
+        return []
+
+    if is_wayland():
+        window.show()
+
+    return [device, associated_device]
+
+
+def window_ungrab_and_unmap(window, devices):
+    """Takes the result of window_grab_and_map() and removes the grabs"""
+
+    event_time = Gtk.get_current_event_time()
+    for device in devices:
+        Gtk.device_grab_remove(window, device)
+        device.ungrab(event_time)
+    window.hide()
+    #gtk3.8 bug: https://bugzilla.gnome.org/show_bug.cgi?id=700185
+    window.unrealize()
 
 
 class _PopupSlider(Gtk.Button):
@@ -23,6 +90,7 @@ class _PopupSlider(Gtk.Button):
         self.connect('clicked', self.__clicked)
 
         self._disable_slider = False
+        self.__grabbed = []
 
         window = self.__window = Gtk.Window(type=Gtk.WindowType.POPUP)
         self.__adj = adj or self._adj
@@ -103,6 +171,9 @@ class _PopupSlider(Gtk.Button):
         if self._disable_slider:
             return
 
+        if self.__grabbed:
+            self.__popup_hide()
+
         window = self.__window
         frame = window.get_child()
 
@@ -119,30 +190,16 @@ class _PopupSlider(Gtk.Button):
         sx, sy = self._move_to(x, y, w, h, ww, wh, pad=3)
         window.set_transient_for(get_top_parent(self))
         window.move(sx, sy)
-        window.show()
-        window.grab_focus()
-        window.grab_add()
+        # this type hint tells the wayland backend to create a popup
+        window.set_type_hint(Gdk.WindowTypeHint.UTILITY)
 
-        event_time = Gtk.get_current_event_time()
-
-        pointer = Gdk.pointer_grab(
-            window.get_window(), True,
+        self.__grabbed = window_grab_and_map(
+            window,
             Gdk.EventMask.BUTTON_PRESS_MASK |
             Gdk.EventMask.BUTTON_RELEASE_MASK |
             Gdk.EventMask.BUTTON_MOTION_MASK |
             Gdk.EventMask.POINTER_MOTION_MASK |
-            Gdk.EventMask.SCROLL_MASK, None, None, event_time)
-        keyboard = Gdk.keyboard_grab(window.get_window(), True, event_time)
-
-        grab_sucess = Gdk.GrabStatus.SUCCESS
-        if pointer != grab_sucess or keyboard != grab_sucess:
-            window.grab_remove()
-            window.hide()
-
-            if pointer == Gdk.GrabStatus.SUCCESS:
-                Gdk.pointer_ungrab(event_time)
-            if keyboard == Gdk.GrabStatus.SUCCESS:
-                Gdk.keyboard_ungrab(event_time)
+            Gdk.EventMask.SCROLL_MASK)
 
     def __scroll(self, widget, ev, hscale):
         adj = self.__adj
@@ -165,15 +222,8 @@ class _PopupSlider(Gtk.Button):
             self.__popup_hide()
 
     def __popup_hide(self):
-        window = self.__window
-        event_time = Gtk.get_current_event_time()
-
-        window.grab_remove()
-        Gdk.pointer_ungrab(event_time)
-        Gdk.keyboard_ungrab(event_time)
-        window.hide()
-        #gtk3.8 bug: https://bugzilla.gnome.org/show_bug.cgi?id=700185
-        window.unrealize()
+        window_ungrab_and_unmap(self.__window, self.__grabbed)
+        del self.__grabbed[:]
 
 
 class HSlider(_PopupSlider):
