@@ -30,6 +30,7 @@ class BigCenteredImage(qltk.Window):
 
     def __init__(self, title, fileobj, parent):
         super(BigCenteredImage, self).__init__(type=Gtk.WindowType.POPUP)
+        self.set_type_hint(Gdk.WindowTypeHint.TOOLTIP)
 
         assert parent
         parent = qltk.get_top_parent(parent)
