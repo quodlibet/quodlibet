@@ -38,6 +38,9 @@ class TreeViewHints(Gtk.Window):
 
     def __init__(self):
         super(TreeViewHints, self).__init__(type=Gtk.WindowType.POPUP)
+        # set the type hint so the wayland backend maps it as a subsurface
+        # which supports relative positioning
+        self.set_type_hint(Gdk.WindowTypeHint.TOOLTIP)
         self.__clabel = Gtk.Label()
         self.__clabel.show()
         self.__clabel.set_alignment(0, 0.5)
