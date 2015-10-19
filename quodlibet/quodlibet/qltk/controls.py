@@ -243,6 +243,10 @@ class Volume(Gtk.VolumeButton):
         self.set_relief(Gtk.ReliefStyle.NORMAL)
         self.set_adjustment(Gtk.Adjustment.new(0, 0, 1, 0.05, 0.1, 0))
 
+        popup = self.get_popup()
+        if hasattr(popup, "set_position"):
+            popup.set_position(Gtk.PositionType.BOTTOM)
+
         self._id = self.connect('value-changed', self.__volume_changed, player)
         self._id2 = player.connect('notify::volume', self.__volume_notify)
         self._id3 = player.connect('notify::mute', self.__mute_notify)
