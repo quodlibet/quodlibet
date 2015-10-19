@@ -12,38 +12,6 @@ from quodlibet.qltk import get_top_parent
 from quodlibet.qltk.x import Align
 
 
-class PrimaryWarpsRange(Gtk.Range):
-    """A GtkRange which behaves as if gtk-primary-button-warps-slider
-    was always True.
-
-    Adjusts key events depending on the current settings value.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super(PrimaryWarpsRange, self).__init__(*args, **kwargs)
-        self.connect("button-press-event", self.__button_event)
-        self.connect("button-release-event", self.__button_event)
-
-    @property
-    def _warps(self):
-        settings = Gtk.Settings.get_default()
-        if settings:
-            try:
-                return settings.get_property("gtk-primary-button-warps-slider")
-            except TypeError:
-                pass
-        return False
-
-    def __button_event(self, widget, event):
-        if not self._warps:
-            event.button = event.button % 3 + 1
-        return False
-
-
-class PrimaryWarpsScale(Gtk.Scale, PrimaryWarpsRange):
-    pass
-
-
 class _PopupSlider(Gtk.Button):
     # Based on the Rhythmbox volume control button; thanks to Colin Walters,
     # Richard Hult, Michael Fulbright, Miguel de Icaza, and Federico Mena.
@@ -65,7 +33,7 @@ class _PopupSlider(Gtk.Button):
 
         self.add_events(Gdk.EventMask.SCROLL_MASK)
 
-        hscale = PrimaryWarpsScale(adjustment=self.__adj)
+        hscale = Gtk.Scale(adjustment=self.__adj)
         hscale.set_orientation(self.ORIENTATION)
         window.connect('button-press-event', self.__button)
         window.connect('key-press-event', self.__key)
