@@ -76,28 +76,23 @@ For old releases see the `full file listing <https://bitbucket.org/lazka/quodlib
 |ubuntu-logo| Ubuntu
 --------------------
 
-Stable PPA (12.04+)::
+Stable Repo (14.04+):
+    ::
 
-    $ sudo add-apt-repository ppa:lazka/ppa
-
-
-Unstable PPA (12.04+)::
-
-    $ sudo add-apt-repository ppa:lazka/dumpingplace
+        $ sudo add-apt-repository ppa:lazka/ppa
 
 
-.. note::
+Unstable PPA (14.04+):
+    ::
 
-    While Ubuntu 12.04 is supported, drag and drop does not work.
+        $ sudo add-apt-repository ppa:lazka/dumpingplace
 
 
-.. note::
+To remove the PPAs and revert back to the old version::
 
-    To remove the PPAs and revert back to the old version::
-
-        $ sudo apt-get install ppa-purge
-        $ sudo ppa-purge ppa:lazka/ppa
-        $ sudo ppa-purge ppa:lazka/dumpingplace
+    $ sudo apt-get install ppa-purge
+    $ sudo ppa-purge ppa:lazka/ppa
+    $ sudo ppa-purge ppa:lazka/dumpingplace
 
 
 .. _debian:
@@ -106,24 +101,22 @@ Unstable PPA (12.04+)::
 --------------------
 
 Stable Repo:
+    * Debian Stable::
 
-* Debian Stable::
+        # deb http://lazka.github.io/ql-debian/stable/ quodlibet-stable/
 
-    # deb http://lazka.github.io/ql-debian/stable/ quodlibet-stable/
-
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5A62D0CAB6264964
-    sudo apt-get update
-    sudo apt-get install quodlibet
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5A62D0CAB6264964
+        sudo apt-get update
+        sudo apt-get install quodlibet
 
 Unstable Repo:
+    * Debian Testing::
 
-* Debian Testing::
+        # deb http://lazka.github.io/ql-debian/testing/ quodlibet-unstable/
 
-    # deb http://lazka.github.io/ql-debian/testing/ quodlibet-unstable/
-
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5A62D0CAB6264964
-    sudo apt-get update
-    sudo apt-get install quodlibet
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5A62D0CAB6264964
+        sudo apt-get update
+        sudo apt-get install quodlibet
 
 
 .. _fedora:
@@ -131,25 +124,15 @@ Unstable Repo:
 |fedora-logo| Fedora
 --------------------
 
-Stable Repo (`OBS <https://build.opensuse.org/project/show/home:lazka0:ql-stable>`__):
+Stable Repo:
+    `Fedora 20, 21, 22 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
 
-  * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/Fedora_20/home:lazka0:ql-stable.repo>`__
+Unstable Repo :
+    `Fedora 20, 21, 22 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
 
-.. note::
-
-    Check out the official repos first, they usually contain the latest stable release: https://apps.fedoraproject.org/packages/quodlibet/overview/
-
-Unstable Repo (`OBS <https://build.opensuse.org/project/show/home:lazka0:ql-unstable>`__):
-
-  * `Fedora 20 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/Fedora_20/home:lazka0:ql-unstable.repo>`__
-
-Unstable Repo (`COPR <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/>`__):
-
-  * `Fedora 22 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-22/lazka-quodlibet-unstable-fedora-22.repo>`__
-  * `Fedora 21 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-21/lazka-quodlibet-unstable-fedora-21.repo>`__
-  * `Fedora 20 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-20/lazka-quodlibet-unstable-fedora-20.repo>`__
-  * `Fedora Rawhide <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/fedora-rawhide/lazka-quodlibet-unstable-fedora-rawhide.repo>`__
-  * `RHEL 7 <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstable/repo/epel-7/lazka-quodlibet-unstable-epel-7.repo>`__
+For stable releases check out the `official
+repos <https://apps.fedoraproject.org/packages/quodlibet/overview/>`__ first -
+they usually contain the latest release:
 
 
 .. _opensuse:
@@ -158,19 +141,10 @@ Unstable Repo (`COPR <http://copr.fedoraproject.org/coprs/lazka/quodlibet-unstab
 ------------------------
 
 Stable Repo:
-
-  * `openSUSE 13.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_13.2/>`__
-  * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_13.1/>`__
-  * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_Tumbleweed>`__
-  * `openSUSE Leap 42.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-stable/openSUSE_42.1>`__
+    `openSUSE 13.1, 13.2, Tumbleweed, Leap 42.1 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
 
 Unstable Repo:
-
-  * `openSUSE 13.2 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.2/>`__
-  * `openSUSE 13.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_13.1/>`__
-  * `openSUSE Tumbleweed <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_Tumbleweed>`__
-  * `openSUSE Leap 42.1 <http://download.opensuse.org/repositories/home:/lazka0:/ql-unstable/openSUSE_42.1>`__
-
+    `openSUSE 13.1, 13.2, Tumbleweed, Leap 42.1 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
 
 .. _arch:
 
@@ -178,17 +152,14 @@ Unstable Repo:
 ----------------------
 
 Stable:
+    ::
 
-::
-
-    $ pacman -S quodlibet
+        $ pacman -S quodlibet
 
 
 Unstable:
-
-
-See `quodlibet-hg <https://aur.archlinux.org/packages/quodlibet-hg>`__ in
-the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
+    See `quodlibet-hg <https://aur.archlinux.org/packages/quodlibet-hg>`__ in
+    the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
 
 
 .. _windows:
