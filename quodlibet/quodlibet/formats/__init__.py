@@ -27,10 +27,8 @@ def init():
     global mimes, _infos, modules, names, _extensions
 
     import mutagen
-    if mutagen.version < MinVersions.MUTAGEN:
-        raise ImportError(
-            "Mutagen %s required. %s found." %
-            (MinVersions.MUTAGEN, mutagen.version_string))
+
+    MinVersions.MUTAGEN.check(mutagen.version)
 
     base = os.path.dirname(__file__)
     load_pyc = util.is_windows() or util.is_osx()

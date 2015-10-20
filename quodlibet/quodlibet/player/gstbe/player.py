@@ -34,6 +34,9 @@ from .prefs import GstPlayerPreferences
 STATE_CHANGE_TIMEOUT = Gst.SECOND * 4
 
 
+const.MinVersions.GSTREAMER.check(Gst.version())
+
+
 class BufferingWrapper(object):
     """A wrapper for a Gst.Element (usually GstPlayBin) which pauses the
     elmement in case buffering is needed, but hides the fact that it does.

@@ -8,10 +8,10 @@ import os
 class Version(tuple):
     """Represent the version of a dependency as a tuple"""
 
-    def __new__(cls, *args):
-        # Support tuple or varargs instantiation
-        value = args[0] if len(args) == 1 else args
-        return tuple.__new__(Version, value)
+    def __new__(cls, name, *args):
+        inst = tuple.__new__(Version, args)
+        inst.name = name
+        return inst
 
     def human_version(self):
         return ".".join(map(str, self))
@@ -19,13 +19,26 @@ class Version(tuple):
     def __str__(self):
         return self.human_version()
 
+    def check(self, version_tuple):
+        """Raises ImportError if the version isn't supported"""
+
+        if self[0] == version_tuple[0] and version_tuple >= self:
+            return
+        raise ImportError("%s %s required. %s found." % (
+            self.name, self, Version("", *version_tuple)))
+
 
 class MinVersions(object):
     """Dependency requirements for Quod Libet / Ex Falso"""
-    PYTHON = Version(2, 7)
-    MUTAGEN = Version(1, 27)
 
-VERSION_TUPLE = Version(3, 5, -1)
+    PYTHON = Version("Python", 2, 7)
+    MUTAGEN = Version("Mutagen", 1, 30)
+    GTK = Version("GTK+", 3, 10)
+    PYGOBJECT = Version("PyGObject", 3, 10)
+    GSTREAMER = Version("GStreamer", 1, 2)
+
+
+VERSION_TUPLE = Version("", 3, 5, -1)
 VERSION = str(VERSION_TUPLE)
 
 # entry point for the user guide / wiki

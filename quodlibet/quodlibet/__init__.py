@@ -25,7 +25,7 @@ from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
 from quodlibet import const
-from quodlibet.const import MinVersions, Version
+from quodlibet.const import MinVersions
 
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
@@ -352,9 +352,10 @@ def _init_gtk():
     sys.modules["gobject"] = None
     sys.modules["gnome"] = None
 
-    from quodlibet.qltk import pygobject_version
-    if pygobject_version < (3, 9):
-        GObject.threads_init()
+    from quodlibet.qltk import pygobject_version, gtk_version
+
+    MinVersions.GTK.check(gtk_version)
+    MinVersions.PYGOBJECT.check(pygobject_version)
 
 
 def _init_gst():
@@ -458,10 +459,7 @@ def _init_gettext():
 
 
 def _init_python():
-    if sys.version_info < MinVersions.PYTHON:
-        actual = Version(sys.version_info[:3])
-        raise ImportError("Python %s required. %s found." %
-                          (MinVersions.PYTHON, actual))
+    MinVersions.PYTHON.check(sys.version_info)
 
     builtins.__dict__["print_"] = print_
     builtins.__dict__["print_d"] = print_d
