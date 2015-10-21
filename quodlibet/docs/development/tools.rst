@@ -1,6 +1,26 @@
 Useful Development Tools
 ========================
 
+Memory Profiling
+----------------
+
+GObject Instance Count Leak Check
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Requires a development (only available in debug mode) version of glib. Jhbuild
+recommended.
+
+::
+
+    jhbuild shell
+    GOBJECT_DEBUG=instance-count GTK_DEBUG=interactive ./quodlibet.py
+
+* In the GTK+ Inspector switch to the "Statistics" tab
+* Sort by "Cumulative" and press the "Next" multimedia key to quickly switch
+  songs.
+* If something in the "Cumulative" column steadily increases we have a leak.
+
+
 Performance Profiling
 ---------------------
 
