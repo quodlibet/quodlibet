@@ -18,6 +18,15 @@ from gi.repository import Gdk
 from gi.repository import GLib
 
 
+def get_primary_accel_mod():
+    """Returns the primary Gdk.ModifierType modifier.
+
+    cmd on osx, ctrl everywhere else.
+    """
+
+    return Gtk.accelerator_parse("<Primary>")[1]
+
+
 def redraw_all_toplevels():
     """A hack to trigger redraws for all windows and widgets."""
 

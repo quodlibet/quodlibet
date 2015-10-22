@@ -13,7 +13,7 @@ import sys
 
 from gi.repository import Gtk, Gdk
 
-from quodlibet.qltk import find_widgets
+from quodlibet.qltk import find_widgets, get_primary_accel_mod
 from quodlibet.util.path import fsnative, normalize_path
 
 
@@ -95,13 +95,13 @@ def _send_button_click_event(widget, **kwargs):
     return handled
 
 
-def send_button_click(widget, button, ctrl=False, shift=False,
+def send_button_click(widget, button, primary=False, shift=False,
                       recursive=False):
     """See send_key_click_event"""
 
     state = Gdk.ModifierType(0)
-    if ctrl:
-        state |= Gdk.ModifierType.CONTROL_MASK
+    if primary:
+        state |= get_primary_accel_mod()
     if shift:
         state |= Gdk.ModifierType.SHIFT_MASK
 
@@ -112,7 +112,7 @@ def send_button_click(widget, button, ctrl=False, shift=False,
         if isinstance(widget, Gtk.Container):
             for child in widget.get_children():
                 handled += send_button_click(
-                    child, button, ctrl, shift, recursive)
+                    child, button, primary, shift, recursive)
 
     return handled
 

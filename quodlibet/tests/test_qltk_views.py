@@ -165,7 +165,7 @@ class TMultiDragTreeView(TestCase):
     def test_click(self):
         with visible(self.c):
             send_button_click(self.c, Gdk.BUTTON_PRIMARY)
-            send_button_click(self.c, Gdk.BUTTON_PRIMARY, ctrl=True)
+            send_button_click(self.c, Gdk.BUTTON_PRIMARY, primary=True)
 
 
 class TRCMTreeView(TestCase):
@@ -177,7 +177,7 @@ class TRCMTreeView(TestCase):
     def test_right_click(self):
         with visible(self.c):
             send_button_click(self.c, Gdk.BUTTON_SECONDARY)
-            send_button_click(self.c, Gdk.BUTTON_SECONDARY, ctrl=True)
+            send_button_click(self.c, Gdk.BUTTON_SECONDARY, primary=True)
 
     def test_popup(self):
         menu = Gtk.Menu()

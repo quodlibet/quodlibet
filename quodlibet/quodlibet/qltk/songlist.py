@@ -1002,7 +1002,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                 event = Gtk.get_current_event()
                 if event:
                     ok, state = event.get_state()
-                    if ok and state & Gdk.ModifierType.CONTROL_MASK:
+                    if ok and state & qltk.get_primary_accel_mod():
                         ctrl_held = True
 
                 self.toggle_column_sort(column, replace=not ctrl_held)

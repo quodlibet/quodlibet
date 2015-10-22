@@ -14,7 +14,7 @@ import cairo
 
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version, \
-    menu_popup
+    menu_popup, get_primary_accel_mod
 from quodlibet.qltk.image import pbosf_get_rect
 
 
@@ -874,7 +874,7 @@ class MultiDragTreeView(BaseView):
         selection = self.get_selection()
         is_selected = selection.path_is_selected(path)
         mod_active = event.get_state() & (
-            Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
+            get_primary_accel_mod() | Gdk.ModifierType.SHIFT_MASK)
 
         if is_selected and not mod_active:
             self.__pending_event = [x, y]
