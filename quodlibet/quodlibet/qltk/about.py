@@ -5,10 +5,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
 import platform
 
-from gi.repository import Gtk, GLib, GdkPixbuf
+from gi.repository import Gtk
 import mutagen
 
 from quodlibet.qltk import gtk_version, pygobject_version, get_backend_name

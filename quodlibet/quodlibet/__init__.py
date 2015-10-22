@@ -222,7 +222,7 @@ def _init_gtk():
     gi.require_version("GdkPixbuf", "2.0")
     gi.require_version("Gio", "2.0")
 
-    from gi.repository import Gtk, GObject, Gdk, GdkPixbuf
+    from gi.repository import Gtk, Gdk, GdkPixbuf
 
     # PyGObject doesn't fail anymore when init fails, so do it ourself
     initialized, argv = Gtk.init_check(sys.argv)
