@@ -35,7 +35,7 @@ class MinVersions(object):
     MUTAGEN = Version("Mutagen", 1, 30)
     GTK = Version("GTK+", 3, 10)
     PYGOBJECT = Version("PyGObject", 3, 10)
-    GSTREAMER = Version("GStreamer", 1, 2)
+    GSTREAMER = Version("GStreamer", 1, 0)
 
 
 VERSION_TUPLE = Version("", 3, 5, -1)
