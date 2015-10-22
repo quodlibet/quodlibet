@@ -217,6 +217,7 @@ class ShuffleButton(Gtk.Box):
         # shuffle button
         b = Gtk.ToggleButton(image=SymbolicIconImage(
             "media-playlist-shuffle", Gtk.IconSize.SMALL_TOOLBAR))
+        b.set_tooltip_text(_("Toggle shuffle mode"))
         b.show_all()
         qltk.add_css(b, """
             * {
