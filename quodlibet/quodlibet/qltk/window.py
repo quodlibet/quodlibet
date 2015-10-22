@@ -100,11 +100,10 @@ class Window(Gtk.Window):
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.add_accel_group(self.__accels)
         if not dialog:
-            self.add_accelerator('close-accel', self.__accels,
-                                 ord('w'), Gdk.ModifierType.CONTROL_MASK, 0)
+            esc, mod = Gtk.accelerator_parse("<Primary>w")
         else:
             esc, mod = Gtk.accelerator_parse("Escape")
-            self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
+        self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
         connect_obj(self, 'destroy', type(self).windows.remove, self)
 
     def set_default_size(self, width, height):
