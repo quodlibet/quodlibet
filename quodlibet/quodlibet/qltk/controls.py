@@ -244,7 +244,7 @@ class Volume(Gtk.VolumeButton):
         self.set_adjustment(Gtk.Adjustment.new(0, 0, 1, 0.05, 0.1, 0))
 
         popup = self.get_popup()
-        if hasattr(popup, "set_position"):
+        if hasattr(Gtk, "Popover") and isinstance(popup, Gtk.Popover):
             popup.set_position(Gtk.PositionType.BOTTOM)
 
         self._id = self.connect('value-changed', self.__volume_changed, player)
