@@ -61,19 +61,20 @@ class DockMenu(Gtk.Menu):
         super(DockMenu, self).__init__()
 
         player = app.player
-        self._play_item = MenuItem(_("_Play"), Icons.MEDIA_PLAYBACK_START)
-        self._play_item.connect("activate", self._on_play, player)
-        self._pause_item = MenuItem(_("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE)
-        self._pause_item.connect("activate", self._on_pause, player)
-        self.append(self._play_item)
-        self.append(self._pause_item)
+
+        play_item = MenuItem(_("_Play"), Icons.MEDIA_PLAYBACK_START)
+        play_item.connect("activate", self._on_play, player)
+        pause_item = MenuItem(_("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE)
+        pause_item.connect("activate", self._on_pause, player)
+        self.append(play_item)
+        self.append(pause_item)
 
         previous = MenuItem(_("Pre_vious"), Icons.MEDIA_SKIP_BACKWARD)
         previous.connect('activate', lambda *args: player.previous())
         self.append(previous)
 
         next_ = MenuItem(_("_Next"), Icons.MEDIA_SKIP_FORWARD)
-        next_.connect('activate', lambda *args: player.next_())
+        next_.connect('activate', lambda *args: player.next())
         self.append(next_)
 
         browse = qltk.MenuItem(_("_Browse Library"), Icons.EDIT_FIND)
@@ -92,15 +93,6 @@ class DockMenu(Gtk.Menu):
 
         self.show_all()
         self.hide()
-        connect_destroy(player, "paused", self._on_player_paused)
-        self._update_paused(player)
-
-    def _update_paused(self, player):
-        self._play_item.set_visible(player.paused)
-        self._pause_item.set_visible(not player.paused)
-
-    def _on_player_paused(self, player):
-        self._update_paused(player)
 
     def _on_play(self, item, player):
         player.paused = False
