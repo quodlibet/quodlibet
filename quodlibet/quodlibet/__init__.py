@@ -627,6 +627,9 @@ def _init_osx(window):
         window.set_as_osx_window(osx_app)
         osx_app.ready()
 
+    shared_app = NSApplication.sharedApplication()
+    gtk_delegate = shared_app.delegate()
+
     # Instead of quitting when the main window gets closed just hide it.
     # If the dock icon gets clicked we get
     # applicationShouldHandleReopen_hasVisibleWindows_ and show everything.
@@ -646,7 +649,9 @@ def _init_osx(window):
             GLib.idle_add(app.quit)
             return False
 
-    shared_app = NSApplication.sharedApplication()
+        def applicationDockMenu_(self, sender):
+            return gtk_delegate.applicationDockMenu_(sender)
+
     delegate = Delegate.alloc().init()
     delegate.retain()
     shared_app.setDelegate_(delegate)

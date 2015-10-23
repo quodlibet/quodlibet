@@ -41,6 +41,7 @@ from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import ConfigRVPaned, Align, ScrolledWindow, Action
 from quodlibet.qltk.x import SymbolicIconImage, CellRendererPixbuf, \
     ToggleAction, RadioAction
+from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.qltk.about import AboutQuodLibet
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
@@ -51,6 +52,61 @@ from quodlibet.util.path import glib2fsnative, get_home_dir
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
 from quodlibet.qltk.songlistcolumns import SongListColumn
+
+
+class DockMenu(Gtk.Menu):
+    """Menu used for the OSX dock and the tray icon"""
+
+    def __init__(self, app):
+        super(DockMenu, self).__init__()
+
+        player = app.player
+        self._play_item = MenuItem(_("_Play"), Icons.MEDIA_PLAYBACK_START)
+        self._play_item.connect("activate", self._on_play, player)
+        self._pause_item = MenuItem(_("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE)
+        self._pause_item.connect("activate", self._on_pause, player)
+        self.append(self._play_item)
+        self.append(self._pause_item)
+
+        previous = MenuItem(_("Pre_vious"), Icons.MEDIA_SKIP_BACKWARD)
+        previous.connect('activate', lambda *args: player.previous())
+        self.append(previous)
+
+        next_ = MenuItem(_("_Next"), Icons.MEDIA_SKIP_FORWARD)
+        next_.connect('activate', lambda *args: player.next_())
+        self.append(next_)
+
+        browse = qltk.MenuItem(_("_Browse Library"), Icons.EDIT_FIND)
+        browse_sub = Gtk.Menu()
+        for Kind in browsers.browsers:
+            if Kind.is_empty:
+                continue
+            i = Gtk.MenuItem(label=Kind.accelerated_name, use_underline=True)
+            connect_obj(i,
+                'activate', LibraryBrowser.open, Kind, app.library, app.player)
+            browse_sub.append(i)
+
+        browse.set_submenu(browse_sub)
+        self.append(SeparatorMenuItem())
+        self.append(browse)
+
+        self.show_all()
+        self.hide()
+        connect_destroy(player, "paused", self._on_player_paused)
+        self._update_paused(player)
+
+    def _update_paused(self, player):
+        self._play_item.set_visible(player.paused)
+        self._pause_item.set_visible(not player.paused)
+
+    def _on_player_paused(self, player):
+        self._update_paused(player)
+
+    def _on_play(self, item, player):
+        player.paused = False
+
+    def _on_pause(self, item, player):
+        player.paused = True
 
 
 class CurrentColumn(SongListColumn):
@@ -647,6 +703,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
     def set_as_osx_window(self, osx_app):
         assert osx_app
+
+        self._dock_menu = DockMenu(app)
+        osx_app.set_dock_menu(self._dock_menu)
 
         menu = self.ui.get_widget("/Menu")
         menu.hide()
