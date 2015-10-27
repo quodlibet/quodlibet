@@ -57,6 +57,7 @@ quodlibet/ext/events/rbimport.py
 quodlibet/ext/events/screensaver.py
 quodlibet/ext/events/searchprovider.py
 quodlibet/ext/events/squeezebox_sync.py
+quodlibet/ext/events/synchronizedlyrics.py
 quodlibet/ext/events/telepathy_status.py
 quodlibet/ext/events/themeswitcher.py
 quodlibet/ext/events/trayicon.py
