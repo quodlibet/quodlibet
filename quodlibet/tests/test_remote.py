@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase
-from helper import temp_filename
+from . import TestCase
+from .helper import temp_filename
 
 from quodlibet.remote import QuodLibetUnixRemote
 

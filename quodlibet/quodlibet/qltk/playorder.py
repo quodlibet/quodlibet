@@ -191,8 +191,7 @@ ORDERS = []
 def set_orders(orders):
     ORDERS[:] = [OrderInOrder, OrderShuffle, OrderWeighted, OrderOneSong]
     ORDERS.extend(orders)
-    ORDERS.sort(lambda K1, K2:
-                cmp(K1.priority, K2.priority) or cmp(K1.name, K2.name))
+    ORDERS.sort(key=lambda k: (k.priority, k.name))
 set_orders([])
 
 

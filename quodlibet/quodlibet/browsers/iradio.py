@@ -224,7 +224,7 @@ def add_station(uri):
     else:
         try:
             irfs = [IRFile(uri)]
-        except ValueError, err:
+        except ValueError as err:
             qltk.ErrorMessage(None, _("Unable to add station"), err).run()
 
     return irfs

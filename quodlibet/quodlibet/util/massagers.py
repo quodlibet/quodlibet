@@ -179,7 +179,7 @@ class LanguageMassager(Massager):
         return True
 
 tags = {}
-for f in globals().values():
+for f in list(globals().values()):
     if isinstance(f, type) and issubclass(f, Massager):
         for t in f.tags:
             tags[t] = f()

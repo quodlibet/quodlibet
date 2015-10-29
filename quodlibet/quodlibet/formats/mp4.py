@@ -10,6 +10,7 @@ from mutagen.mp4 import MP4, MP4Cover
 
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import decode
+from quodlibet.compat import iteritems
 
 from ._audio import AudioFile
 from ._image import EmbeddedImage
@@ -51,13 +52,13 @@ class MP4File(AudioFile):
         "----:com.apple.iTunes:MusicBrainz Album Release Country":
             "releasecountry",
     }
-    __rtranslate = dict([(v, k) for k, v in __translate.iteritems()])
+    __rtranslate = dict([(v, k) for k, v in iteritems(__translate)])
 
     __tupletranslate = {
         "disk": "discnumber",
         "trkn": "tracknumber",
         }
-    __rtupletranslate = dict([(v, k) for k, v in __tupletranslate.iteritems()])
+    __rtupletranslate = dict([(v, k) for k, v in iteritems(__tupletranslate)])
 
     def __init__(self, filename):
         audio = MP4(filename)

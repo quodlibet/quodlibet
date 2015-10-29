@@ -175,7 +175,7 @@ class FIFO(object):
         self._id = None
         mkdir(os.path.dirname(self._path))
         try:
-            os.mkfifo(self._path, 0600)
+            os.mkfifo(self._path, 0o600)
         except OSError:
             # maybe exists, we'll fail below otherwise
             pass

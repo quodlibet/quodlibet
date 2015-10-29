@@ -8,6 +8,9 @@
 
 import unicodedata
 
+from quodlibet.compat import text_type, xrange
+
+
 # Cheat list for human title-casing in English. See Issue 424.
 ENGLISH_INCORRECTLY_CAPITALISED_WORDS = \
     [u"The", u"An", u"A", u"'N'", u"'N", u"N'", u"Tha", u"De", u"Da",
@@ -65,7 +68,7 @@ def title(string, locale="utf-8"):
     #   Lots of Japanese songs use entirely upper-case English titles,
     #   so I don't like this change... - JoeW
     #if string == string.upper(): string = string.lower()
-    if not isinstance(string, unicode):
+    if not isinstance(string, text_type):
         string = string.decode(locale)
     return utitle(string)
 

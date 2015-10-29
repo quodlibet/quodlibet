@@ -11,6 +11,7 @@ import shutil
 
 from . import const
 from quodlibet.util.config import Config, Error
+from quodlibet.compat import PY2, iteritems
 
 # Some plugins can be enabled on first install
 AUTO_ENABLED_PLUGINS = ["Shuffle Playlist", "Remove Playlist Duplicates"]
@@ -162,6 +163,7 @@ _config = Config(version=0)
 
 options = _config.options
 get = _config.get
+gettext = _config.gettext
 getboolean = _config.getboolean
 getint = _config.getint
 getfloat = _config.getfloat
@@ -170,6 +172,7 @@ setstringlist = _config.setstringlist
 getlist = _config.getlist
 setlist = _config.setlist
 set = _config.set
+settext = _config.settext
 write = _config.write
 reset = _config.reset
 add_section = _config.add_section
@@ -185,9 +188,9 @@ def init_defaults():
     """Fills in the defaults, so they are guaranteed to be available"""
 
     _config.defaults.clear()
-    for section, values in INITIAL.iteritems():
+    for section, values in iteritems(INITIAL):
         _config.defaults.add_section(section)
-        for key, value in values.iteritems():
+        for key, value in iteritems(values):
             _config.defaults.set(section, key, value)
 
 
@@ -311,14 +314,18 @@ class RatingsPrefs(object):
 
     @staticmethod
     def __get_symbol(variant="full"):
-        return get("settings", "rating_symbol_%s" % variant).decode("utf-8")
+        return gettext("settings", "rating_symbol_%s" % variant)
 
 
 class HardCodedRatingsPrefs(RatingsPrefs):
     number = int(INITIAL["settings"]["ratings"])
     default = float(INITIAL["settings"]["default_rating"])
-    blank_symbol = INITIAL["settings"]["rating_symbol_blank"].decode("utf-8")
-    full_symbol = INITIAL["settings"]["rating_symbol_full"].decode("utf-8")
+    blank_symbol = INITIAL["settings"]["rating_symbol_blank"]
+    full_symbol = INITIAL["settings"]["rating_symbol_full"]
+    if PY2:
+        blank_symbol = blank_symbol.decode("utf-8")
+        full_symbol = full_symbol.decode("utf-8")
+
 
 # Need an instance just for imports to work
 RATINGS = RatingsPrefs()

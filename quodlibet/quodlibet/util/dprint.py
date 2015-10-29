@@ -14,6 +14,7 @@ import quodlibet.util.logging
 
 from quodlibet.util.clicolor import Colorise
 from quodlibet.util import clicolor
+from quodlibet.compat import text_type, PY2
 from .misc import get_locale_encoding
 from .environment import is_py2exe, is_py2exe_console
 
@@ -82,10 +83,20 @@ def _print(string, output, frm="utf-8", strip_color=True, end=os.linesep):
         string = clicolor.strip_color(string)
         can_have_color = False
 
-    if isinstance(string, unicode):
+    if not PY2:
+        # FIXME: PY3PORT
+        can_have_color = False
+
+    if isinstance(string, text_type):
         string = string.encode(_ENCODING, "replace")
     else:
         string = string.decode(frm).encode(_ENCODING, "replace")
+
+    if isinstance(end, text_type):
+        end = end.encode(_ENCODING, "replace")
+
+    assert isinstance(string, bytes)
+    assert isinstance(end, bytes)
 
     try:
         if can_have_color:
@@ -99,7 +110,10 @@ def _print(string, output, frm="utf-8", strip_color=True, end=os.linesep):
 
 def print_(string, output=None, end=os.linesep):
     if output is None:
-        output = sys.stdout
+        if PY2:
+            output = sys.stdout
+        else:
+            output = sys.stdout.buffer
 
     _print(string, output, end=end)
 
@@ -107,7 +121,10 @@ def print_(string, output=None, end=os.linesep):
 def print_d(string, context=""):
     """Print debugging information."""
     if quodlibet.const.DEBUG:
-        output = sys.stderr
+        if PY2:
+            output = sys.stderr
+        else:
+            output = sys.stderr.buffer
     else:
         output = None
 
@@ -140,7 +157,10 @@ def print_w(string):
     prefix = _("W:") + " "
 
     string = _format_print(string, Colorise.red(prefix))
-    _print(string, sys.stderr)
+    if PY2:
+        _print(string, sys.stderr)
+    else:
+        _print(string, sys.stderr.buffer)
 
     # Translators: Name of the warnings tab in the Output Log window
     quodlibet.util.logging.log(clicolor.strip_color(string), "warnings")

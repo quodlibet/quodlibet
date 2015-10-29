@@ -5,6 +5,7 @@ import os
 
 from quodlibet import config
 from quodlibet.util.path import is_fsnative, fsnative, fsdecode
+from quodlibet.compat import PY2
 from quodlibet.formats import AudioFile
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 from quodlibet.formats import decode_value
@@ -203,9 +204,9 @@ class TAudioFile(TestCase):
 
     def test_is_writable(self):
         self.assertTrue(quux.is_writable())
-        os.chmod(quux["~filename"], 0444)
+        os.chmod(quux["~filename"], 0o444)
         self.assertFalse(quux.is_writable())
-        os.chmod(quux["~filename"], 0644)
+        os.chmod(quux["~filename"], 0o644)
         self.assertTrue(quux.is_writable())
 
     def test_can_multiple_values(self):
@@ -378,8 +379,10 @@ class TAudioFile(TestCase):
         self.failUnless(set(dump.split("\n")) == set(n.to_dump().split("\n")))
 
     def test_to_dump_long(self):
+        if not PY2:
+            return
         b = AudioFile(bar_1_1)
-        b["~#length"] = 200000000000L
+        b["~#length"] = long(200000000000)
         dump = b.to_dump()
         num = len(set(bar_1_1.keys()) | INTERN_NUM_DEFAULT)
         self.failUnlessEqual(dump.count("\n"), num + 2)

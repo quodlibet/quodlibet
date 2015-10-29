@@ -10,7 +10,7 @@ import sys
 import gettext
 import locale
 
-from quodlibet.compat import builtins
+from quodlibet.compat import builtins, text_type, PY2
 
 
 def bcp47_to_language(code):
@@ -133,20 +133,27 @@ class GlibTranslations(gettext.GNUTranslations):
         # force unicode here since __contains__ (used in gettext) ignores
         # our changed defaultencoding for coercion, so utf-8 encoded strings
         # fail at lookup.
-        message = unicode(message)
-        return unicode(gettext.GNUTranslations.ugettext(self, message))
+        message = text_type(message)
+        if PY2:
+            return text_type(gettext.GNUTranslations.ugettext(self, message))
+        else:
+            return text_type(gettext.GNUTranslations.gettext(self, message))
 
     def ungettext(self, msgid1, msgid2, n):
         # see ugettext
-        msgid1 = unicode(msgid1)
-        msgid2 = unicode(msgid2)
-        return unicode(
-            gettext.GNUTranslations.ungettext(self, msgid1, msgid2, n))
+        msgid1 = text_type(msgid1)
+        msgid2 = text_type(msgid2)
+        if PY2:
+            return text_type(
+                gettext.GNUTranslations.ungettext(self, msgid1, msgid2, n))
+        else:
+            return text_type(
+                gettext.GNUTranslations.ngettext(self, msgid1, msgid2, n))
 
     def unpgettext(self, context, msgid, msgidplural, n):
-        context = unicode(context)
-        msgid = unicode(msgid)
-        msgidplural = unicode(msgidplural)
+        context = text_type(context)
+        msgid = text_type(msgid)
+        msgidplural = text_type(msgidplural)
         real_msgid = u"%s\x04%s" % (context, msgid)
         real_msgidplural = u"%s\x04%s" % (context, msgidplural)
         result = self.ngettext(real_msgid, real_msgidplural, n)
@@ -157,8 +164,8 @@ class GlibTranslations(gettext.GNUTranslations):
         return result
 
     def upgettext(self, context, msgid):
-        context = unicode(context)
-        msgid = unicode(msgid)
+        context = text_type(context)
+        msgid = text_type(msgid)
         real_msgid = u"%s\x04%s" % (context, msgid)
         result = self.ugettext(real_msgid)
         if result == real_msgid:

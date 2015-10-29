@@ -14,27 +14,61 @@ PY3 = not PY2
 if PY2:
     import __builtin__ as builtins
     builtins
-    from urlparse import urlparse
-    urlparse
-    from urllib import pathname2url
-    pathname2url
+    from urlparse import urlparse, urlunparse
+    urlparse, urlunparse
+    from urllib import pathname2url, url2pathname, quote_plus, unquote_plus
+    pathname2url, url2pathname, quote_plus, unquote_plus
     from cStringIO import StringIO as cBytesIO
     cBytesIO
+    from StringIO import StringIO
+    StringIO
+    import cPickle as pickle
+    pickle
+
+    xrange = xrange
 
     text_type = unicode
+    string_types = (str, unicode)
+    integer_types = (int, long)
+
+    iteritems = lambda d: d.iteritems()
+
+    def exec_(_code_, _globs_=None, _locs_=None):
+        if _globs_ is None:
+            frame = sys._getframe(1)
+            _globs_ = frame.f_globals
+            if _locs_ is None:
+                _locs_ = frame.f_locals
+            del frame
+        elif _locs_ is None:
+            _locs_ = _globs_
+        exec("""exec _code_ in _globs_, _locs_""")
 
     exec("def reraise(tp, value, tb):\n raise tp, value, tb")
 elif PY3:
     import builtins
     builtins
-    from urllib.parse import urlparse
-    urlparse
-    from urllib.request import pathname2url
-    pathname2url
+    from urllib.parse import urlparse, urlunparse, quote_plus, unquote_plus
+    urlparse, quote_plus, unquote_plus, urlunparse
+    from urllib.request import pathname2url, url2pathname
+    pathname2url, url2pathname
     from io import BytesIO as cBytesIO
     cBytesIO
+    from io import StringIO
+    StringIO = StringIO
+    import pickle
+    pickle
+
+    xrange = range
 
     text_type = str
+    string_types = (str,)
+    integer_types = (int,)
+
+    iteritems = lambda d: iter(d.items())
+
+    import builtins
+    exec_ = getattr(builtins, "exec")
 
     def reraise(tp, value, tb):
         raise tp(value).with_traceback(tb)

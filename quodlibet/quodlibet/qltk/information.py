@@ -473,7 +473,8 @@ class OneArtist(qltk.Notebook):
                   album, song in albums.items()]
         albums.sort()
 
-        def format((date, song, album)):
+        def format(args):
+            date, song, album = args
             if date:
                 return "%s (%s)" % (album, date[:4])
             else:

@@ -28,6 +28,7 @@ import unicodedata
 import sys
 
 from quodlibet.util import re_escape
+from quodlibet.compat import iteritems
 
 
 _DIACRITIC_CACHE = {
@@ -196,7 +197,7 @@ def generate_re_mapping(_diacritic_for_letters):
     letter_to_variants = {}
 
     # combine combining characters with the ascii chars
-    for dia, letters in _diacritic_for_letters.iteritems():
+    for dia, letters in iteritems(_diacritic_for_letters):
         for c in letters:
             unichar = unicodedata.normalize("NFKC", c + dia)
             letter_to_variants.setdefault(c, []).append(unichar)
@@ -351,7 +352,7 @@ def re_replace_literals(text, mapping):
 _mapping = generate_re_mapping(diacritic_for_letters(regenerate=False))
 
 # add more from the UCA decomp dataset
-for cp, repl in _UCA_DECOMPS.iteritems():
+for cp, repl in iteritems(_UCA_DECOMPS):
     _mapping[cp] = _mapping.get(cp, u"") + repl
 
 

@@ -3,8 +3,8 @@ import json
 import os
 
 from quodlibet.util.json_data import JSONObjectDict, JSONObject
-from tests import TestCase, mkstemp
-from helper import capture_output
+from . import TestCase, mkstemp
+from .helper import capture_output
 
 Field = JSONObject.Field
 

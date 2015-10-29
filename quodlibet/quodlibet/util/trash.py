@@ -72,16 +72,16 @@ def trash_free_desktop(path):
 
     for d in (files, info):
         if not isdir(d):
-            os.makedirs(d, 0700)
+            os.makedirs(d, 0o700)
 
     info_ext = ".trashinfo"
     name = basename(path)
     flags = os.O_EXCL | os.O_CREAT | os.O_WRONLY
-    mode = 0644
+    mode = 0o644
     try:
         info_path = join(info, name + info_ext)
         info_fd = os.open(info_path, flags, mode)
-    except OSError, e:
+    except OSError as e:
         if e.errno != errno.EEXIST:
             raise
         i = 2
@@ -91,7 +91,7 @@ def trash_free_desktop(path):
             info_path = join(info, temp_name + info_ext)
             try:
                 info_fd = os.open(info_path, flags, mode)
-            except OSError, e:
+            except OSError as e:
                 if e.errno != errno.EEXIST:
                     raise
                 i += 1

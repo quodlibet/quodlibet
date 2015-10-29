@@ -24,6 +24,7 @@ from quodlibet.util.uri import URI
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
+from quodlibet.compat import iteritems, string_types
 
 from ._image import ImageContainer
 
@@ -43,7 +44,7 @@ INTERN_NUM_DEFAULT = {"~#lastplayed", "~#laststarted", "~#playcount",
 FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname"}
 """Values are bytes in Linux instead of unicode"""
 
-SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.iteritems()])
+SORT_TO_TAG = dict([(v, k) for (k, v) in iteritems(TAG_TO_SORT)])
 """Reverse map, so sort tags can fall back to the normal ones"""
 
 PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
@@ -179,14 +180,6 @@ class AudioFile(dict, ImageContainer):
     def mountpoint(self):
         return self["~mountpoint"]
 
-    def __cmp__(self, other):
-        if not other:
-            return -1
-        try:
-            return cmp(self.sort_key, other.sort_key)
-        except AttributeError:
-            return -1
-
     def __hash__(self):
         # Dicts aren't hashable by default, so we need a hash
         # function. Previously this used ~filename. That created a
@@ -197,6 +190,9 @@ class AudioFile(dict, ImageContainer):
     def __eq__(self, other):
         # And to preserve Python hash rules, we need a strict __eq__.
         return self is other
+
+    def __lt__(self, other):
+        return self.sort_key < other.sort_key
 
     def __ne__(self, other):
         return self is not other
@@ -237,7 +233,7 @@ class AudioFile(dict, ImageContainer):
         return "\n".join(self.list_unique(sorted(self.prefixkeys(tag))))
 
     def iterrealitems(self):
-        return ((k, v) for (k, v) in self.iteritems() if k[:1] != "~")
+        return ((k, v) for (k, v) in iteritems(self) if k[:1] != "~")
 
     def __call__(self, key, default=u"", connector=" - "):
         """Return a key, synthesizing it if necessary. A default value
@@ -562,7 +558,7 @@ class AudioFile(dict, ImageContainer):
 
         merged = AudioFile()
         text = {}
-        for key, value in self.iteritems():
+        for key, value in iteritems(self):
             lower = key.lower()
             if key.startswith("~#"):
                 merged[lower] = value
@@ -671,7 +667,7 @@ class AudioFile(dict, ImageContainer):
 
         # Replace nulls with newlines, trimming zero-length segments
         for key, val in self.items():
-            if isinstance(val, basestring) and '\0' in val:
+            if isinstance(val, string_types) and '\0' in val:
                 self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
             # Remove unnecessary defaults
             if key in INTERN_NUM_DEFAULT and val == 0:

@@ -5,7 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import cPickle as pickle
 import os
 import sys
 import threading
@@ -19,6 +18,7 @@ from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import util
 
+from quodlibet.compat import pickle
 from quodlibet.browsers import Browser
 from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile

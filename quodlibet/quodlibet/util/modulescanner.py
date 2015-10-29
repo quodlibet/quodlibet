@@ -137,7 +137,7 @@ class ModuleScanner(object):
                 if mod is None:
                     continue
 
-            except Exception, err:
+            except Exception as err:
                 text = format_exception(*sys.exc_info())
                 self.__failures[name] = ModuleImportError(name, err, text)
             else:

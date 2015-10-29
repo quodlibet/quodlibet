@@ -17,6 +17,7 @@ from re import Scanner
 
 from quodlibet import util
 from quodlibet.query import Query
+from quodlibet.compat import exec_
 from quodlibet.util.path import expanduser, fsnative, sep
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 from quodlibet.formats._audio import decode_value
@@ -279,7 +280,7 @@ class PatternCompiler(object):
         code = "\n".join(content)
 
         scope = dict(queries.itervalues())
-        exec compile(code, "<string>", "exec") in scope
+        exec_(compile(code, "<string>", "exec"), scope)
         return scope["f"], tags
 
     def __get_value(self, text, scope, tag):

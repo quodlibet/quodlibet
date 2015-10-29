@@ -16,6 +16,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
+from quodlibet.compat import xrange
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.path import bytes2fsnative, is_fsnative, fsnative2bytes

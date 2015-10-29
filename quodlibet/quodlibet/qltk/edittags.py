@@ -560,7 +560,8 @@ class EditTags(Gtk.VBox):
         for b in buttons:
             b.set_sensitive(True)
 
-    def __paste(self, clip, text, (rend, path)):
+    def __paste(self, clip, text, args):
+        rend, path = args
         if text:
             rend.emit('edited', path, text.strip())
 

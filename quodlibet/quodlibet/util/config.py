@@ -21,7 +21,7 @@ except ImportError:
     from configparser import RawConfigParser as ConfigParser, Error, \
         NoSectionError
 
-from quodlibet.compat import cBytesIO
+from quodlibet.compat import cBytesIO, PY2, text_type
 from quodlibet.util import atomic_save, list_unique
 from quodlibet.util.string import join_escape, split_escape
 from quodlibet.util.path import is_fsnative, mkdir
@@ -145,6 +145,12 @@ class Config(object):
                         pass
                 raise
             return default
+
+    def gettext(self, *args, **kwargs):
+        value = self.get(*args, **kwargs)
+        if PY2:
+            value = value.decode("utf-8")
+        return value
 
     def getboolean(self, section, option, default=_DEFAULT):
         """getboolean(section, option[, default]) -> bool
@@ -280,6 +286,12 @@ class Config(object):
             else:
                 raise
 
+    def settext(self, section, option, value):
+        assert isinstance(value, text_type)
+        if PY2:
+            value = value.encode("utf-8")
+        self.set(section, option, value)
+
     def write(self, filename):
         """Write config to filename.
 
@@ -390,7 +402,7 @@ class ConfigProxy(object):
 
         # methods starting with a section arg
         for name in ["get", "set", "getboolean", "getint", "getfloat",
-                     "reset"]:
+                     "reset", "settext", "gettext"]:
             setattr(cls, name, get_func(name))
 
 ConfigProxy._init_wrappers()

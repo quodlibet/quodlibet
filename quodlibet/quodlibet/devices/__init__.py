@@ -7,7 +7,10 @@
 # published by the Free Software Foundation
 
 import os
-import ConfigParser
+try:
+    import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
 from os.path import dirname, basename
 from quodlibet.util.dprint import print_d, print_w
 

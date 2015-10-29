@@ -14,8 +14,6 @@ least useful but most content-agnostic.
 """
 
 from pickle import Unpickler
-from cStringIO import StringIO
-import cPickle as pickle
 import os
 import shutil
 import time
@@ -24,6 +22,7 @@ from gi.repository import GObject
 
 from quodlibet.formats import MusicFile
 from quodlibet.query import Query
+from quodlibet.compat import cBytesIO, pickle
 from quodlibet.qltk.notif import Task
 from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
@@ -238,7 +237,7 @@ def unpickle_save(data, default, type_=dict):
             except (ImportError, AttributeError):
                 return dummy
 
-    fileobj = StringIO(data)
+    fileobj = cBytesIO(data)
 
     try:
         items = SaveUnpickler(fileobj).load()

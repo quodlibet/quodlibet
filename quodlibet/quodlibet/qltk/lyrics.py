@@ -93,7 +93,7 @@ class LyricsPane(Gtk.VBox):
                 urllib.quote(artist.encode('utf-8')),
                 urllib.quote(title.encode('utf-8'))))
             text = sock.read()
-        except Exception, err:
+        except Exception as err:
             encoding = util.get_locale_encoding()
             try:
                 err = err.strerror.decode(encoding, 'replace')
@@ -115,7 +115,7 @@ class LyricsPane(Gtk.VBox):
     def __save(self, save, lyricname, buffer, delete):
         try:
             os.makedirs(os.path.dirname(lyricname))
-        except EnvironmentError, err:
+        except EnvironmentError as err:
             pass
 
         try:

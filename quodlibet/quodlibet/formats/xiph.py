@@ -462,7 +462,7 @@ class FLACFile(MutagenVCFile):
         super(FLACFile, self).write()
 
 types = []
-for var in globals().values():
+for var in list(globals().values()):
     if getattr(var, 'MutagenType', None):
         types.append(var)
 

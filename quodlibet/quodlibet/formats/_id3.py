@@ -11,6 +11,7 @@ import mutagen.id3
 from quodlibet import config, const, print_d
 from quodlibet import util
 from quodlibet.config import RATINGS
+from quodlibet.compat import iteritems
 from quodlibet.util.massagers import LanguageMassager
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import isascii
@@ -80,7 +81,7 @@ class ID3File(AudioFile):
            # TLAN requires an ISO 639-2 language code, check manually
            #"TLAN": "language"
     }
-    SDI = dict([(v, k) for k, v in IDS.iteritems()])
+    SDI = dict([(v, k) for k, v in iteritems(IDS)])
 
     # At various times, information for this came from
     # http://musicbrainz.org/docs/specs/metadata_tags.html
@@ -101,7 +102,7 @@ class ID3File(AudioFile):
         u"ALBUMARTISTSORT": "albumartistsort",
         u"BARCODE": "barcode",
         }
-    PAM_XXXT = dict([(v, k) for k, v in TXXX_MAP.iteritems()])
+    PAM_XXXT = dict([(v, k) for k, v in iteritems(TXXX_MAP)])
 
     Kind = None
 

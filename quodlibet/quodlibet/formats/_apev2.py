@@ -8,6 +8,7 @@
 import mutagen.apev2
 
 from quodlibet.util.path import get_temp_cover_file
+from quodlibet.compat import iteritems
 
 from ._audio import AudioFile
 from ._image import APICType, EmbeddedImage
@@ -84,7 +85,7 @@ class APEv2File(AudioFile):
              "original artist": "originalartist",
              "mixartist": "remixer",
     }
-    SNART = dict([(v, k) for k, v in TRANS.iteritems()])
+    SNART = dict([(v, k) for k, v in iteritems(TRANS)])
 
     can_change_images = True
 

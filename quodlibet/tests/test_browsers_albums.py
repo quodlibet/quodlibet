@@ -7,8 +7,8 @@
 
 from gi.repository import Gtk
 
-from tests import TestCase
-from helper import realized
+from . import TestCase
+from .helper import realized
 
 from quodlibet import config
 

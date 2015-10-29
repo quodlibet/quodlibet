@@ -8,10 +8,14 @@
 from gi.repository import Gtk, GObject
 
 from quodlibet.qltk import pygobject_version
+from quodlibet.compat import integer_types, string_types
+
+_auto_types = [float, bool, GObject.Object]
+_auto_types.extend(integer_types)
+_auto_types.extend(string_types)
 
 
-def _gets_marshaled_to_pyobject(obj,
-        _types=(long, float, int, basestring, bool, GObject.Object)):
+def _gets_marshaled_to_pyobject(obj, _types=tuple(_auto_types)):
     """Python objects get automarshalled to GValues which is faster than
     doing it in python but also has its own mapping, because it doesn't
     know the column type of the model.

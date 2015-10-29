@@ -11,10 +11,10 @@
 #    Punycode for the domain) and back.
 
 import os
-from urllib import url2pathname, quote_plus, unquote_plus
-from urlparse import urlparse, urlunparse
 
 from quodlibet.util.path import fsdecode, pathname2url
+from quodlibet.compat import url2pathname, quote_plus, unquote_plus, \
+    urlparse, urlunparse
 
 
 def _urlunparse(parts):

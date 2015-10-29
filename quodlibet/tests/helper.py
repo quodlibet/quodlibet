@@ -8,13 +8,13 @@
 
 import os
 import contextlib
-import StringIO
 import sys
 
 from gi.repository import Gtk, Gdk
 
 from quodlibet.qltk import find_widgets, get_primary_accel_mod
 from quodlibet.util.path import fsnative, normalize_path
+from quodlibet.compat import StringIO
 
 
 def dummy_path(path):
@@ -214,8 +214,8 @@ def capture_output():
     print stdout.getvalue(), stderr.getvalue()
     """
 
-    err = StringIO.StringIO()
-    out = StringIO.StringIO()
+    err = StringIO()
+    out = StringIO()
     old_err = sys.stderr
     old_out = sys.stdout
     sys.stderr = err

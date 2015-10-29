@@ -26,7 +26,8 @@ try:
 except ImportError:
     fcntl = None
 
-from quodlibet.compat import reraise as py_reraise, urlparse, PY2, text_type
+from quodlibet.compat import reraise as py_reraise, urlparse, PY2, text_type, \
+    iteritems
 from quodlibet.util.path import iscommand, is_fsnative
 from quodlibet.util.string.titlecase import title
 
@@ -437,7 +438,7 @@ def _split_numeric_sortkey(s, limit=10,
 
 
 def human_sort_key(s, normalize=unicodedata.normalize):
-    if not isinstance(s, unicode):
+    if not isinstance(s, text_type):
         s = s.decode("utf-8")
     s = normalize("NFD", s.lower())
     return s and _split_numeric_sortkey(s)
@@ -590,8 +591,11 @@ def make_case_insensitive(filename):
 
 def print_exc(limit=None, file=None):
     """A wrapper preventing crashes on broken pipes in print_exc."""
-    if not file:
-        file = sys.stderr
+    if file is None:
+        if PY2:
+            file = sys.stderr
+        else:
+            file = sys.stderr.buffer
     print_(traceback.format_exc(limit=limit), output=file)
 
 
@@ -761,7 +765,7 @@ def sanitize_tags(tags, stream=False):
     """
 
     san = {}
-    for key, value in tags.iteritems():
+    for key, value in iteritems(tags):
         key = key.lower()
         key = {"location": "website"}.get(key, key)
 
@@ -1150,7 +1154,7 @@ def enum(cls):
     new_type.__module__ = cls.__module__
 
     map_ = {}
-    for key, value in d.iteritems():
+    for key, value in iteritems(d):
         if key.upper() == key and isinstance(value, type_):
             value_instance = new_type(value)
             setattr(new_type, key, value_instance)

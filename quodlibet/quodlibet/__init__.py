@@ -26,6 +26,7 @@ from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
 from quodlibet.util.dprint import print_, print_d, print_w, print_e
 from quodlibet import const
 from quodlibet.const import MinVersions
+from quodlibet.compat import PY2
 
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
@@ -145,10 +146,12 @@ def get_user_dir():
     # (this doesn't use the old win api in case of str compared to os.*)
     _CONF_PATH = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), "conf.py")
-    try:
-        execfile(_CONF_PATH)
-    except IOError:
-        pass
+    if PY2:
+        # FIXME: PY3PORT
+        try:
+            execfile(_CONF_PATH)
+        except IOError:
+            pass
 
     # XXX: users shouldn't assume the dir is there, but we currently do in
     # some places
@@ -459,7 +462,11 @@ def _init_gettext():
 
 
 def _init_python():
-    MinVersions.PYTHON.check(sys.version_info)
+    if PY2 or is_release():
+        MinVersions.PYTHON2.check(sys.version_info)
+    else:
+        # for non release builds we allow Python3
+        MinVersions.PYTHON3.check(sys.version_info)
 
     builtins.__dict__["print_"] = print_
     builtins.__dict__["print_d"] = print_d

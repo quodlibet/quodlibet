@@ -1036,7 +1036,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             return util.tag(tag)
         current = zip(map(tag_title, current), current)
 
-        def add_header_toggle(menu, (header, tag), active, column=column):
+        def add_header_toggle(menu, pair, active, column=column):
+            header, tag = pair
             item = Gtk.CheckMenuItem(label=header)
             item.tag = tag
             item.set_active(active)

@@ -5,7 +5,7 @@ from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn, \
 import quodlibet.config
 from gi.repository import Gtk, Gdk
 
-from helper import send_key_click, visible, send_button_click, realized
+from .helper import send_key_click, visible, send_button_click, realized
 
 
 def _fill_view(view):

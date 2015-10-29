@@ -489,7 +489,7 @@ class PlaylistsBrowser(Browser):
     def __edited(self, render, path, newname):
         try:
             self.__lists[path][0].rename(newname)
-        except ValueError, s:
+        except ValueError as s:
             qltk.ErrorMessage(
                 None, _("Unable to rename playlist"), s).run()
         else:

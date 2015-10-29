@@ -31,7 +31,8 @@ class Version(tuple):
 class MinVersions(object):
     """Dependency requirements for Quod Libet / Ex Falso"""
 
-    PYTHON = Version("Python", 2, 7)
+    PYTHON2 = Version("Python2", 2, 7)
+    PYTHON3 = Version("Python3", 3, 4)
     MUTAGEN = Version("Mutagen", 1, 30)
     GTK = Version("GTK+", 3, 10)
     PYGOBJECT = Version("PyGObject", 3, 10)
