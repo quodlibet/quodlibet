@@ -16,6 +16,7 @@ import traceback
 import time
 from quodlibet import util
 from quodlibet import config
+from quodlibet.compat import text_type, PY2
 from quodlibet.util import format_time_long as f_t_l
 
 
@@ -1084,3 +1085,12 @@ class Tenviron(TestCase):
                 self.assertTrue(isinstance(v, unicode))
             else:
                 self.assertTrue(isinstance(v, str))
+
+
+class Tgdecode(TestCase):
+
+    def test_main(self):
+        if PY2:
+            self.assertTrue(isinstance(util.gdecode(b"foo"), text_type))
+        else:
+            self.assertTrue(isinstance(util.gdecode(u"foo"), text_type))

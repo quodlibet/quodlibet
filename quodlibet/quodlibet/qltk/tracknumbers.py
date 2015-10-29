@@ -17,7 +17,7 @@ from quodlibet.qltk.x import Button
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons
 from quodlibet.util.path import fsdecode
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, gdecode
 
 
 class Entry(object):
@@ -136,7 +136,7 @@ class TrackNumbers(Gtk.VBox):
         path = Gtk.TreePath.new_from_string(path)
         row = model[path]
         entry = row[0]
-        new = new.decode("utf-8")
+        new = gdecode(new)
         if entry.tracknumber != new:
             entry.tracknumber = new
             preview.set_sensitive(True)

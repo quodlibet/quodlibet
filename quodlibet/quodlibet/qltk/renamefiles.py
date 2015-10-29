@@ -23,7 +23,7 @@ from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons, Button
 from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, gdecode
 from quodlibet.util.path import fsdecode, fsnative
 from quodlibet.util.path import strip_win32_incompat_from_path
 
@@ -219,7 +219,7 @@ class RenameFiles(Gtk.VBox):
         path = Gtk.TreePath.new_from_string(path)
         model = self.view.get_model()
         entry = model[path][0]
-        new = new.decode("utf-8")
+        new = gdecode(new)
         if entry.new_name != new:
             entry.new_name = new
             self.preview.set_sensitive(True)
@@ -284,7 +284,7 @@ class RenameFiles(Gtk.VBox):
         if songs is None:
             songs = [e.song for e in model.itervalues()]
 
-        pattern_text = self.combo.get_child().get_text().decode("utf-8")
+        pattern_text = gdecode(self.combo.get_child().get_text())
 
         try:
             pattern = FileFromPattern(pattern_text)

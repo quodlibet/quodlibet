@@ -17,7 +17,7 @@ from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.entry import QueryValidator
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.util import limit_songs, DeferredSignal
+from quodlibet.util import limit_songs, DeferredSignal, gdecode
 
 
 class SearchBarBox(Gtk.HBox):
@@ -95,7 +95,7 @@ class SearchBarBox(Gtk.HBox):
     def get_text(self):
         """Get the active text as unicode"""
 
-        return self.__entry.get_text().decode("utf-8")
+        return gdecode(self.__entry.get_text())
 
     def changed(self):
         """Triggers a filter-changed signal if the current text

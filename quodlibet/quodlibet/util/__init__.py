@@ -26,7 +26,7 @@ try:
 except ImportError:
     fcntl = None
 
-from quodlibet.compat import reraise as py_reraise, urlparse
+from quodlibet.compat import reraise as py_reraise, urlparse, PY2, text_type
 from quodlibet.util.path import iscommand, is_fsnative
 from quodlibet.util.string.titlecase import title
 
@@ -39,6 +39,20 @@ from .environment import *
 
 # pyflakes
 environ, argv, cached_func, get_locale_encoding, get_fs_encoding
+
+
+if PY2:
+    def gdecode(s):
+        """Returns unicode for the glib text type"""
+
+        assert isinstance(s, bytes)
+        return s.decode("utf-8")
+else:
+    def gdecode(s):
+        """Returns unicode for the glib text type"""
+
+        assert isinstance(s, text_type)
+        return s
 
 
 class InstanceTracker(object):

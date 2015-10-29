@@ -17,6 +17,8 @@ from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
 
+from quodlibet.util import gdecode
+
 
 def get_primary_accel_mod():
     """Returns the primary Gdk.ModifierType modifier.
@@ -254,7 +256,7 @@ def get_backend_name():
 
     display = Gdk.Display.get_default()
     if display is not None:
-        name = display.__gtype__.name.decode("utf-8")
+        name = gdecode(display.__gtype__.name)
         if name.startswith("Gdk"):
             name = name[3:]
         if name.endswith("Display"):

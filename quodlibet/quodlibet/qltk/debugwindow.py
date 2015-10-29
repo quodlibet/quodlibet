@@ -16,7 +16,7 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk import get_top_parent, Align
 from quodlibet.util.path import unexpand, mkdir
 from quodlibet.util import connect_obj
-from quodlibet.util import logging
+from quodlibet.util import logging, gdecode
 
 old_hook = sys.excepthook
 
@@ -173,7 +173,7 @@ class ExceptionDialog(Gtk.Window):
 
         def first_draw(*args):
             filename = unexpand(dump)
-            offset = label.get_text().decode("utf-8").find(filename)
+            offset = gdecode(label.get_text()).find(filename)
             label.select_region(offset, offset + len(filename))
             self.disconnect(self.__draw_id)
 

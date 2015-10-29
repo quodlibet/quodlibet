@@ -28,7 +28,7 @@ from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.qltk import Icons
 from quodlibet.plugins import PluginManager
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, gdecode
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
@@ -350,7 +350,7 @@ class AddTagDialog(Dialog):
             return self.__tag.tag
 
     def get_value(self):
-        return self.__val.get_text().decode("utf-8")
+        return gdecode(self.__val.get_text())
 
     def __validate(self, editable, add, invalid, box):
         tag = self.get_tag()

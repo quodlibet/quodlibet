@@ -13,6 +13,7 @@ from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 from quodlibet.qltk import is_accel, add_fake_accel
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
+from quodlibet.util import gdecode
 from quodlibet.query import Query, QueryType
 
 
@@ -94,7 +95,7 @@ class EditableUndo(object):
             menu.prepend(item)
 
     def __all(self):
-        text = self.get_chars(0, -1).decode("utf-8")
+        text = gdecode(self.get_chars(0, -1))
         pos = self.get_position()
         return [text, pos]
 
@@ -243,7 +244,7 @@ class ValidatingEntryMixin(object):
             self.connect('changed', self.__color, validator)
 
     def __color(self, widget, validator):
-        value = validator(self.get_text().decode("utf-8"))
+        value = validator(gdecode(self.get_text()))
         if value is True:
             color = self.VALID
         elif value is False:
