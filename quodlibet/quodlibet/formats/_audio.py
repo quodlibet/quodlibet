@@ -145,9 +145,20 @@ class AudioFile(dict, ImageContainer):
         pass
 
     def __setitem__(self, key, value):
-        dict.__setitem__(self, key, value)
         if not self.__dict__:
+            # unpickle case.. we can't fail
+            dict.__setitem__(self, key, value)
             return
+
+        if key.startswith("~#"):
+            assert isinstance(value, (int, long, float))
+        elif key in FILESYSTEM_TAGS:
+            assert is_fsnative(value)
+        else:
+            value = unicode(value)
+
+        dict.__setitem__(self, key, value)
+
         pop = self.__dict__.pop
         pop("album_key", None)
         pop("sort_key", None)

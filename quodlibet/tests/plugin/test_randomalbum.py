@@ -35,7 +35,7 @@ A3 = Album(A3S1)
 A3.songs = {A3S1, A3S2, A3S3}
 
 for song in [A1S1, A1S2, A2S1, A2S2, A3S1, A3S2, A3S3]:
-    song["length"] = 100
+    song["~#length"] = 100
 
 
 class TRandomAlbum(PluginTestCase):

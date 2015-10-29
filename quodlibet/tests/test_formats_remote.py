@@ -20,7 +20,7 @@ class TRemoteFile(TestCase):
 
     def test_fix_old_types(self):
         f = RemoteFile("http://example.com")
-        f["~filename"] = b"foo"
+        dict.__setitem__(f, "~filename", b"foo")
         self.assertTrue(is_fsnative(f["~filename"]))
-        f["~filename"] = u"foo"
+        dict.__setitem__(f, "~filename", u"foo")
         self.assertTrue(is_fsnative(f["~filename"]))

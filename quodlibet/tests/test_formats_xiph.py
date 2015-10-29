@@ -101,12 +101,6 @@ class TVCFileMixin(object):
         config.set("editing", "save_email", const.EMAIL)
         self.failUnlessEqual(song["~#rating"], 0.2)
 
-    def test_invalid_rating(self):
-        self.song["~#rating"] = "invalid"
-        self.song.write()
-        song = type(self.song)(self.filename)
-        self.failUnlessEqual(song("~#rating"), RATINGS.default)
-
     def test_huge_playcount(self):
         count = 1000000000000000L
         self.song["~#playcount"] = count
