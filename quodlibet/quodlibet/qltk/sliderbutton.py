@@ -191,7 +191,7 @@ class _PopupSlider(Gtk.Button):
         window.set_transient_for(get_top_parent(self))
         window.move(sx, sy)
         # this type hint tells the wayland backend to create a popup
-        window.set_type_hint(Gdk.WindowTypeHint.UTILITY)
+        window.set_type_hint(Gdk.WindowTypeHint.DROPDOWN_MENU)
 
         self.__grabbed = window_grab_and_map(
             window,
