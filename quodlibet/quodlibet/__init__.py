@@ -196,6 +196,42 @@ def _fix_gst_leaks():
         Gst.Element.add_pad = do_wrap(Gst.Element.add_pad)
 
 
+def _init_g():
+    """Call before using GdkPixbuf/GLib/Gio/GObject"""
+
+    import gi
+
+    gi.require_version("GLib", "2.0")
+    gi.require_version("Gio", "2.0")
+    gi.require_version("GObject", "2.0")
+    gi.require_version("GdkPixbuf", "2.0")
+
+    from gi.repository import GdkPixbuf
+
+    # On windows the default variants only do ANSI paths, so replace them.
+    # In some typelibs they are replaced by default, in some don't..
+    if os.name == "nt":
+        for name in ["new_from_file_at_scale", "new_from_file_at_size",
+                     "new_from_file"]:
+            cls = GdkPixbuf.Pixbuf
+            setattr(cls, name, getattr(cls, name + "_utf8", name))
+
+    # https://bugzilla.gnome.org/show_bug.cgi?id=670372
+    if not hasattr(GdkPixbuf.Pixbuf, "savev"):
+        GdkPixbuf.Pixbuf.savev = GdkPixbuf.Pixbuf.save
+
+    # Newer glib is noisy regarding deprecated signals/properties
+    # even with stable releases.
+    if is_release():
+        warnings.filterwarnings(
+            'ignore', '.* It will be removed in a future version.',
+            Warning)
+
+    # blacklist some modules, simply loading can cause segfaults
+    sys.modules["glib"] = None
+    sys.modules["gobject"] = None
+
+
 def _init_gtk():
     """Call before using Gtk/Gdk"""
 
@@ -217,15 +253,11 @@ def _init_gtk():
     except (ValueError, ImportError):
         pass
 
-    gi.require_version("GLib", "2.0")
     gi.require_version("Gtk", "3.0")
     gi.require_version("Gdk", "3.0")
-    gi.require_version("GObject", "2.0")
     gi.require_version("Pango", "1.0")
-    gi.require_version("GdkPixbuf", "2.0")
-    gi.require_version("Gio", "2.0")
 
-    from gi.repository import Gtk, Gdk, GdkPixbuf
+    from gi.repository import Gtk, Gdk
 
     # PyGObject doesn't fail anymore when init fails, so do it ourself
     initialized, argv = Gtk.init_check(sys.argv)
@@ -256,18 +288,6 @@ def _init_gtk():
     assert os.path.exists(theme_search_path)
     theme.append_search_path(theme_search_path)
 
-    # On windows the default variants only do ANSI paths, so replace them.
-    # In some typelibs they are replaced by default, in some don't..
-    if os.name == "nt":
-        for name in ["new_from_file_at_scale", "new_from_file_at_size",
-                     "new_from_file"]:
-            cls = GdkPixbuf.Pixbuf
-            setattr(cls, name, getattr(cls, name + "_utf8", name))
-
-    # https://bugzilla.gnome.org/show_bug.cgi?id=670372
-    if not hasattr(GdkPixbuf.Pixbuf, "savev"):
-        GdkPixbuf.Pixbuf.savev = GdkPixbuf.Pixbuf.save
-
     # Force menu/button image related settings. We might show too many atm
     # but this makes sure we don't miss cases where we forgot to force them
     # per widget.
@@ -282,13 +302,6 @@ def _init_gtk():
     warnings.filterwarnings(
         'ignore', '.*The property GtkAlignment:[^\s]+ is deprecated.*',
         Warning)
-
-    # Newer glib is noisy regarding deprecated signals/properties
-    # even with stable releases.
-    if is_release():
-        warnings.filterwarnings(
-            'ignore', '.* It will be removed in a future version.',
-            Warning)
 
     settings = Gtk.Settings.get_default()
     with warnings.catch_warnings():
@@ -351,8 +364,6 @@ def _init_gtk():
     # blacklist some modules, simply loading can cause segfaults
     sys.modules["gtk"] = None
     sys.modules["gpod"] = None
-    sys.modules["glib"] = None
-    sys.modules["gobject"] = None
     sys.modules["gnome"] = None
 
     from quodlibet.qltk import pygobject_version, gtk_version
@@ -498,6 +509,7 @@ def init_cli(no_translations=False):
     if not no_translations and "QUODLIBET_NO_TRANS" not in environ:
         _init_gettext()
     _init_formats()
+    _init_g()
 
     _cli_initialized = True
 
