@@ -309,10 +309,10 @@ class Paned(Gtk.Paned):
 
     def ensure_wide_handle(self):
         if hasattr(self.props, "wide_handle"):
-            # gtk 3.16
+            # gtk 3.16, "paned separator" for 3.20
             self.props.wide_handle = True
             add_css(self, """
-                GtkPaned {
+                GtkPaned, paned separator {
                     border-width: 0;
                 }
             """)
