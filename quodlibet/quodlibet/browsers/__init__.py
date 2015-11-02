@@ -54,7 +54,7 @@ def init():
 
     def is_browser(Kind):
         return isinstance(Kind, type) and issubclass(Kind, Browser)
-    browsers = filter(is_browser, browsers)
+    browsers = list(filter(is_browser, browsers))
 
     if not browsers:
         raise SystemExit("No browsers found!")

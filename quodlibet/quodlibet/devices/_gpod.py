@@ -953,7 +953,7 @@ def sw_get_tracks(itdb_ptr):
 
 
 __all__ = []
-for key in globals().keys():
+for key in list(globals()):
     lower = key.lower()
     if lower.startswith("itdb_") or lower.startswith("sw_"):
         __all__.append(key)

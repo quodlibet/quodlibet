@@ -92,7 +92,7 @@ class QueryParser(object):
 
     def __init__(self, tokens):
         self.tokens = iter(tokens)
-        self.lookahead = self.tokens.next()
+        self.lookahead = next(self.tokens)
 
     def _match_parened(self, expect, ReturnType, InternalType):
         self.match(expect)
@@ -280,7 +280,7 @@ class QueryParser(object):
                              "tokens were expected.")
         try:
             if self.lookahead.type in tokens:
-                self.lookahead = self.tokens.next()
+                self.lookahead = next(self.tokens)
             else:
                 raise ParseError("The token '%s' is not the type exected." % (
                     self.lookahead.lexeme))

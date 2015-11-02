@@ -32,6 +32,7 @@ if PY2:
     integer_types = (int, long)
 
     iteritems = lambda d: d.iteritems()
+    itervalues = lambda d: d.itervalues()
 
     def exec_(_code_, _globs_=None, _locs_=None):
         if _globs_ is None:
@@ -66,6 +67,7 @@ elif PY3:
     integer_types = (int,)
 
     iteritems = lambda d: iter(d.items())
+    itervalues = lambda d: iter(d.values())
 
     import builtins
     exec_ = getattr(builtins, "exec")

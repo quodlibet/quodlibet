@@ -17,7 +17,7 @@ from re import Scanner
 
 from quodlibet import util
 from quodlibet.query import Query
-from quodlibet.compat import exec_
+from quodlibet.compat import exec_, itervalues
 from quodlibet.util.path import expanduser, fsnative, sep
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 from quodlibet.formats._audio import decode_value
@@ -114,7 +114,7 @@ class TagNode(object):
 class PatternParser(object):
     def __init__(self, tokens):
         self.tokens = iter(tokens)
-        self.lookahead = self.tokens.next()
+        self.lookahead = next(self.tokens)
         self.node = self.Pattern()
 
     def Pattern(self):
@@ -172,7 +172,7 @@ class PatternParser(object):
                              "tokens were expected.")
         try:
             if self.lookahead.type in tokens:
-                self.lookahead = self.tokens.next()
+                self.lookahead = next(self.tokens)
             else:
                 raise ParseError("The token '%s' is not the type exected." % (
                     self.lookahead.lexeme))
@@ -279,7 +279,7 @@ class PatternCompiler(object):
         content.append("  return r")
         code = "\n".join(content)
 
-        scope = dict(queries.itervalues())
+        scope = dict(itervalues(queries))
         exec_(compile(code, "<string>", "exec"), scope)
         return scope["f"], tags
 

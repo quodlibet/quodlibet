@@ -22,7 +22,7 @@ from gi.repository import GObject
 
 from quodlibet.formats import MusicFile
 from quodlibet.query import Query
-from quodlibet.compat import cBytesIO, pickle
+from quodlibet.compat import cBytesIO, pickle, itervalues
 from quodlibet.qltk.notif import Task
 from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
@@ -87,7 +87,7 @@ class Library(GObject.GObject, DictMixin):
 
         if not items:
             return
-        if self.librarian and self in self.librarian.libraries.itervalues():
+        if self.librarian and self in itervalues(self.librarian.libraries):
             print_d("Changing %d items via librarian." % len(items), self)
             self.librarian.changed(items)
         else:
@@ -109,7 +109,7 @@ class Library(GObject.GObject, DictMixin):
 
     def __iter__(self):
         """Iterate over the items in the library."""
-        return self._contents.itervalues()
+        return itervalues(self._contents)
 
     def iteritems(self):
         return self._contents.iteritems()
@@ -118,7 +118,7 @@ class Library(GObject.GObject, DictMixin):
         return self._contents.iterkeys()
 
     def itervalues(self):
-        return self._contents.itervalues()
+        return itervalues(self._contents)
 
     def __len__(self):
         """The number of items in the library."""
@@ -774,12 +774,12 @@ class FileLibrary(PicklingLibrary):
             point = item.mountpoint
         except AttributeError:
             # Checking a key.
-            for point in self._masked.itervalues():
+            for point in itervalues(self._masked):
                 if item in point:
                     return True
         else:
             # Checking a full item.
-            return item in self._masked.get(point, {}).itervalues()
+            return item in itervalues(self._masked.get(point, {}))
 
     def unmask(self, point):
         print_d("Unmasking %r." % point, self)

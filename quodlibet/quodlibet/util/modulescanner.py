@@ -13,6 +13,7 @@ from traceback import format_exception
 
 from quodlibet.util.path import mtime
 from quodlibet.util.importhelper import get_importables, load_module
+from quodlibet.compat import iteritems
 
 
 class Module(object):
@@ -30,7 +31,7 @@ class Module(object):
         if set(self.deps.keys()) != set(dep_paths):
             return True
 
-        for path, old_mtime in self.deps.iteritems():
+        for path, old_mtime in iteritems(self.deps):
             if mtime(path) != old_mtime:
                 return True
 
@@ -120,7 +121,7 @@ class ModuleScanner(object):
         self.__failures.clear()
 
         # add new ones
-        for (name, (path, deps)) in info.iteritems():
+        for (name, (path, deps)) in iteritems(info):
             if name in self.__modules:
                 continue
 

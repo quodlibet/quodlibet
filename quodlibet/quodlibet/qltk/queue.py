@@ -258,7 +258,8 @@ class PlayQueue(SongList):
 
     def __fill(self, library):
         try:
-            filenames = file(QUEUE, "rU").readlines()
+            with open(QUEUE, "rU") as f:
+                filenames = f.readlines()
         except EnvironmentError:
             pass
         else:
@@ -271,9 +272,8 @@ class PlayQueue(SongList):
 
     def __write(self, model):
         filenames = "\n".join([row[0]["~filename"] for row in model])
-        f = file(QUEUE, "w")
-        f.write(filenames)
-        f.close()
+        with open(QUEUE, "w") as f:
+            f.write(filenames)
 
     def __popup(self, library):
         songs = self.get_selected_songs()

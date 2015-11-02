@@ -148,7 +148,8 @@ class FileSystem(Browser, Gtk.HBox):
 
         paths = map(normalize_path, paths)
 
-        def select(model, path, iter_, (paths, first)):
+        def select(model, path, iter_, paths_):
+            (paths, first) = paths_
             value = model.get_value(iter_)
             if value is None:
                 return not bool(paths)

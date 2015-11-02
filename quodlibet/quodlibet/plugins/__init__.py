@@ -11,6 +11,7 @@ from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.util.dprint import print_d
 from quodlibet.util.config import ConfigProxy
 from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.compat import itervalues, iteritems
 
 
 def init(folders=None, disable_plugins=False):
@@ -275,14 +276,14 @@ class PluginManager(object):
 
     @property
     def _modules(self):
-        return self.__scanner.modules.itervalues()
+        return itervalues(self.__scanner.modules)
 
     @property
     def _plugins(self):
         """All registered plugins"""
 
         plugins = []
-        for module in self.__modules.itervalues():
+        for module in itervalues(self.__modules):
             for plugin in module.plugins:
                 plugins.append(plugin)
         return plugins
@@ -366,7 +367,7 @@ class PluginManager(object):
         """module name: list of error message text lines"""
 
         errors = {}
-        for name, error in self.__scanner.failures.iteritems():
+        for name, error in iteritems(self.__scanner.failures):
             exception = error.exception
             if isinstance(exception, PluginImportException):
                 if not exception.should_show():
