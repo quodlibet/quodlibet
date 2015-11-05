@@ -646,8 +646,8 @@ class DeferredSignal(object):
                 timeout, f, priority=priority)
 
     @property
-    def im_self(self):
-        return self.func.im_self
+    def __self__(self):
+        return self.func.__self__
 
     @property
     def __code__(self):
@@ -711,8 +711,8 @@ def _connect_destroy(sender, func, detailed_signal, handler, *args, **kwargs):
     to the bound method and the bound to object doesn't get GCed.
     """
 
-    if hasattr(handler, "im_self"):
-        obj = handler.im_self
+    if hasattr(handler, "__self__"):
+        obj = handler.__self__
     else:
         # XXX: get the "self" var of the enclosing scope.
         # Used for nested functions which ref the object but aren't methods.

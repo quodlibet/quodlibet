@@ -10,7 +10,7 @@ import gi
 try:
     gi.require_version("Gst", "1.0")
     gi.require_version("GstPbutils", "1.0")
-except ValueError, e:
+except ValueError as e:
     raise ImportError(e)
 
 from gi.repository import Gst, GLib, GstPbutils

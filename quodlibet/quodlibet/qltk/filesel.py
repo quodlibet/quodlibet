@@ -320,7 +320,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         delete = menu.get_children()[1]
         try:
             delete.set_sensitive(len(os.listdir(directory)) == 0)
-        except OSError, err:
+        except OSError as err:
             if err.errno == errno.ENOENT:
                 model.remove(model.get_iter(path))
             return False
@@ -349,7 +349,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         try:
             os.makedirs(fullpath)
-        except EnvironmentError, err:
+        except EnvironmentError as err:
             error = "<b>%s</b>: %s" % (err.filename, err.strerror)
             qltk.ErrorMessage(
                 None, _("Unable to create folder"), error).run()
@@ -366,7 +366,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         directory = model[paths[0]][0]
         try:
             os.rmdir(directory)
-        except EnvironmentError, err:
+        except EnvironmentError as err:
             error = "<b>%s</b>: %s" % (err.filename, err.strerror)
             qltk.ErrorMessage(
                 None, _("Unable to delete folder"), error).run()

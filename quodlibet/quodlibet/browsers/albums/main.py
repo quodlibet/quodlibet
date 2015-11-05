@@ -354,7 +354,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
     @classmethod
     def init(klass, library):
         try:
-            klass._pattern_text = file(PATTERN_FN).read().rstrip()
+            with open(PATTERN_FN, "r") as f:
+                klass._pattern_text = f.read().rstrip()
         except EnvironmentError:
             klass._pattern_text = PATTERN
 
@@ -381,9 +382,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
         klass._pattern = XMLFromMarkupPattern(pattern_text)
         klass.__model.refresh_all()
         pattern_fn = PATTERN_FN
-        f = file(pattern_fn, "w")
-        f.write(pattern_text + "\n")
-        f.close()
+        with open(pattern_fn, "w") as f:
+            f.write(pattern_text + "\n")
 
     @classmethod
     def _init_model(klass, library):
