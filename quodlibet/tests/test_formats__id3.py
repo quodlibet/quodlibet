@@ -593,6 +593,13 @@ class TID3File(TestCase):
         song["replaygain_track_peak"] = u'Dvo\u0159\xe1k, Anton\xedn'
         song.write()
 
+    def test_albumartistsort(self):
+        song = MP3File(self.filename)
+        song['albumartistsort'] = u"foo"
+        song.write()
+        song = MP3File(self.filename)
+        self.assertEqual(song['albumartistsort'], u"foo")
+
     def tearDown(self):
         os.unlink(self.filename2)
         os.unlink(self.filename)
