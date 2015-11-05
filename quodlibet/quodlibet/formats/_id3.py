@@ -399,6 +399,9 @@ class ID3File(AudioFile):
             except KeyError:
                 pass
         for key in self.PAM_XXXT:
+            if key in self.SDI:
+                # we already write it back using non-TXXX frames
+                continue
             if key in self:
                 value = self[key]
                 f = mutagen.id3.TXXX(encoding=encoding_for(value),
