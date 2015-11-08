@@ -14,6 +14,7 @@ import os
 from datetime import datetime
 
 from gi.repository import Gtk, Gdk, GLib
+from quodlibet.util.dprint import print_d
 
 from quodlibet import app
 from quodlibet import qltk
@@ -174,9 +175,11 @@ as the track.')
             #check in same location as track
             trackName = app.player.song.get("~filename")
             newLrc = os.path.splitext(trackName)[0] + ".lrc"
+            print_d("Checking for lyrics file %s" % newLrc)
             if self._currentLrc != newLrc:
                 self._lines = []
                 if os.path.exists(newLrc):
+                    print_d("Found lyrics: %s" % newLrc)
                     self._parse_lrc_file(newLrc)
             self._currentLrc = newLrc
 
@@ -261,12 +264,13 @@ as the track.')
 
     def _show(self, line):
         self.textbuffer.set_text(line)
+        print_d("♪ %s ♪" % line.strip())
         return False
 
     def plugin_on_song_started(self, song):
         self._build_data()
         #delay so that current position is for current track, not previous one
-        GLib.timeout_add(5, self.timerControl)
+        GLib.timeout_add(5, self._timer_control)
 
     def plugin_on_song_ended(self, song, stopped):
         self._clear_timers()
