@@ -37,6 +37,12 @@ class TreeViewHints(Gtk.Window):
         'override')
 
     def __init__(self):
+        try:
+            TreeViewHints.set_css_name("tooltip")
+        except AttributeError:
+            # gtk+ 3.20
+            pass
+
         super(TreeViewHints, self).__init__(type=Gtk.WindowType.POPUP)
         # set the type hint so the wayland backend maps it as a subsurface
         # which supports relative positioning
