@@ -271,10 +271,16 @@ class AudioFeeds(Browser):
             pass
         else:
             for feed in feeds:
-                if feed.uri not in uris:
-                    klass.__feeds.append(row=[feed])
-                    uris.add(feed.uri)
+                if feed.uri in uris:
+                    continue
+                klass.__feeds.append(row=[feed])
+                uris.add(feed.uri)
         GLib.idle_add(klass.__do_check)
+
+    @classmethod
+    def reload(klass, library):
+        klass.__feeds = Gtk.ListStore(object)  # unread
+        klass.init(library)
 
     @classmethod
     def __do_check(klass):
