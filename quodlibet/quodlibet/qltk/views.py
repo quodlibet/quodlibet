@@ -38,9 +38,9 @@ class TreeViewHints(Gtk.Window):
 
     def __init__(self):
         try:
+            # gtk+ 3.20
             TreeViewHints.set_css_name("tooltip")
         except AttributeError:
-            # gtk+ 3.20
             pass
 
         super(TreeViewHints, self).__init__(type=Gtk.WindowType.POPUP)
