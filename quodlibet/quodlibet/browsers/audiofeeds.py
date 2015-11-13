@@ -264,13 +264,16 @@ class AudioFeeds(Browser):
 
     @classmethod
     def init(klass, library):
+        uris = set()
         try:
             feeds = pickle.load(file(FEEDS, "rb"))
         except (pickle.PickleError, EnvironmentError, EOFError):
             pass
         else:
             for feed in feeds:
-                klass.__feeds.append(row=[feed])
+                if feed.uri not in uris:
+                    klass.__feeds.append(row=[feed])
+                    uris.add(feed.uri)
         GLib.idle_add(klass.__do_check)
 
     @classmethod
