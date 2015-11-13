@@ -105,9 +105,7 @@ class TImageUtils(TestCase):
 
     def test_add_border_widget(self):
         widget = Gtk.Button()
-        cell = Gtk.CellRendererText()
-        add_border_widget(self.small, widget, cell, True)
-        add_border_widget(self.small, widget, None, True)
+        add_border_widget(self.small, widget, True)
 
     def test_pbosf_get_width_height(self):
         w = Gtk.Button()

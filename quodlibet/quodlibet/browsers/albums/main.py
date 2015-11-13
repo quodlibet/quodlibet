@@ -443,8 +443,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
             elif album.cover:
                 pixbuf = album.cover
                 round_ = config.getboolean("albumart", "round")
-                pixbuf = add_border_widget(
-                    pixbuf, self.view, cell, round_)
+                pixbuf = add_border_widget(pixbuf, self.view, round_)
                 pixbuf = get_pbosf_for_pixbuf(self, pixbuf)
                 # don't cache, too much state has an effect on the result
                 self.__last_render_pb = None

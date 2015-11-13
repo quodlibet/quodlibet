@@ -161,7 +161,7 @@ def add_border(pixbuf, color, round=False, width=1):
     return Gdk.pixbuf_get_from_surface(surface, 0, 0, w, h)
 
 
-def add_border_widget(pixbuf, widget, cell=None, round=False):
+def add_border_widget(pixbuf, widget, round=False):
     """Like add_border() but uses the widget to get a border color and a
     border width.
     """
@@ -169,11 +169,7 @@ def add_border_widget(pixbuf, widget, cell=None, round=False):
     from quodlibet.qltk.image import get_scale_factor
 
     context = widget.get_style_context()
-    if cell is not None:
-        state = cell.get_state(widget, 0)
-    else:
-        state = widget.get_state_flags()
-    color = context.get_color(state)
+    color = context.get_color(context.get_state())
     scale_factor = get_scale_factor(widget)
 
     return add_border(pixbuf, color, round=round, width=scale_factor)

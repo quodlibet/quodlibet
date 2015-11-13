@@ -207,8 +207,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
                 cover = get_scaled_cover(album)
                 if cover:
                     round_ = config.getboolean("albumart", "round")
-                    cover = add_border_widget(
-                        cover, view, cell, round=round_)
+                    cover = add_border_widget(cover, view, round=round_)
                     pbosf = get_pbosf_for_pixbuf(self, cover)
                     set_renderer_from_pbosf(cell, pbosf)
                 else:
