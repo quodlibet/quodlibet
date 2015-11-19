@@ -459,7 +459,7 @@ def _print_playing(app, fstring="<artist~album~tracknumber~title>"):
     from quodlibet.formats import AudioFile
     from quodlibet.pattern import Pattern
 
-    song = app.player.song
+    song = app.player.info
     if song is None:
         song = AudioFile({"~filename": fsnative(u"/")})
         song.sanitize()
