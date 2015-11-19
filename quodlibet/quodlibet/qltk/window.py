@@ -12,7 +12,7 @@ import os
 from gi.repository import Gtk, GObject, Gdk
 
 from quodlibet import config
-from quodlibet.qltk import get_top_parent, is_wayland
+from quodlibet.qltk import get_top_parent, is_wayland, gtk_version
 from quodlibet.qltk.x import Button
 from quodlibet.util import DeferredSignal
 from quodlibet.util import connect_obj, connect_destroy
@@ -108,7 +108,9 @@ class Window(Gtk.Window):
 
     def set_default_size(self, width, height):
         # https://bugzilla.gnome.org/show_bug.cgi?id=740922
-        if self._header_bar:
+        if self._header_bar and gtk_version < (3, 19):
+            # fixed with 3.20:
+            #   https://bugzilla.gnome.org/show_bug.cgi?id=756618
             if width != -1:
                 width += min((width - 174), 56)
             if height != -1:
