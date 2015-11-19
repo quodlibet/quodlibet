@@ -9,7 +9,7 @@ install:
  - sudo apt-get update -q
  - apt-cache depends quodlibet | sed -nre 's/\s+Depends. ([a-z0-9\.]+)/\1/p' | xargs sudo apt-get install -y
  - sudo apt-get install -y xvfb libgpod4 python-feedparser python-pyparsing
- - pip install --upgrade pyflakes pep8
+ - pip install --upgrade pyflakes pep8 mutagen python-musicbrainz2
 
 before_script:
   - "export DISPLAY=:99.0"
