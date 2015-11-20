@@ -3,16 +3,22 @@ dist: trusty
 language: python
 python:
   - "2.7"
+os:
+  - linux
+  - osx
 
 install:
- - sudo add-apt-repository -y ppa:lazka/dumpingplace
- - sudo apt-get update -q
- - sudo apt-get install -y quodlibet exfalso xvfb pep8 pyflakes
+ - echo $TRAVIS_OS_NAME
+ - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository -y ppa:lazka/dumpingplace; fi
+ - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update -q; fi
+ - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y quodlibet exfalso xvfb pep8 pyflakes; fi
+ - if [ "$TRAVIS_OS_NAME" == "osx" ]; then wget http://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.1.zip; fi
+ - if [ "$TRAVIS_OS_NAME" == "osx" ]; then unzip QuodLibet-3.5.1.zip; fi
 
 script:
- - cd quodlibet
- - xvfb-run -a ./setup.py test
- - xvfb-run -a ./setup.py quality
+ - if [ "$TRAVIS_OS_NAME" == "linux" ]; then xvfb-run -a ./quodlibet/setup.py test; fi
+ - if [ "$TRAVIS_OS_NAME" == "linux" ]; then ./quodlibet/setup.py quality; fi
+ - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./QuodLibet.app/Contents/MacOS/run ./quodlibet/setup.py test; fi
 
 virtualenv:
   system_site_packages: true
