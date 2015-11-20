@@ -10,7 +10,9 @@ install:
  - sudo apt-get install -y quodlibet exfalso xvfb pep8 pyflakes
 
 script:
- - deactivate
  - cd quodlibet
  - xvfb-run -a ./setup.py test
  - xvfb-run -a ./setup.py quality
+
+virtualenv:
+  system_site_packages: true
