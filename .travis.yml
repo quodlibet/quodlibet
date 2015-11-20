@@ -7,7 +7,7 @@ python:
 install:
  - sudo add-apt-repository -y ppa:lazka/dumpingplace
  - sudo apt-get update -q
- - sudo apt-get install quodlibet exfalso xvfb pep8 pyflakes
+ - sudo apt-get install -y quodlibet exfalso xvfb pep8 pyflakes
 
 script:
  - cd quodlibet
