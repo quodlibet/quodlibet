@@ -308,11 +308,25 @@ class Paned(Gtk.Paned):
         self.ensure_wide_handle()
 
     def ensure_wide_handle(self):
+        if gtk_version >= (3, 19):
+            # FIXME.. css node transition
+            add_css(self, """
+                paned {
+                    -GtkPaned-handle-size: 5;
+                }
+                paned separator {
+                    background: transparent;
+                    margin: 0;
+                    border-width: 0;
+                }
+            """)
+            return
+
         if hasattr(self.props, "wide_handle"):
-            # gtk 3.16, "paned separator" for 3.20
+            # gtk 3.16
             self.props.wide_handle = True
             add_css(self, """
-                GtkPaned, paned separator {
+                GtkPaned {
                     border-width: 0;
                 }
             """)
