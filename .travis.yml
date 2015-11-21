@@ -7,11 +7,13 @@ matrix:
       dist: trusty
       language: python
       python: "2.7_with_system_site_packages"
+      env: PYTHON="python2"
     - os: linux
       sudo: required
       dist: trusty
       language: python
       python: "3.4_with_system_site_packages"
+      env: PYTHON="python3"
     - os: osx
       language: generic
 
@@ -24,6 +26,6 @@ install:
 
 script:
  - cd quodlibet
- - if [ "$TRAVIS_OS_NAME" == "linux" ]; then xvfb-run -a ./setup.py test; fi
- - if [ "$TRAVIS_OS_NAME" == "linux" ]; then xvfb-run -a ./setup.py quality; fi
+ - if [ "$TRAVIS_OS_NAME" == "linux" ]; then xvfb-run -a $PYTHON ./setup.py test; fi
+ - if [ "$TRAVIS_OS_NAME" == "linux" ]; then xvfb-run -a $PYTHON ./setup.py quality; fi
  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ../QuodLibet.app/Contents/MacOS/run setup.py test; fi
