@@ -18,7 +18,7 @@ matrix:
 install:
  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository -y ppa:lazka/dumpingplace; fi
  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update -q; fi
- - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y quodlibet exfalso xvfb pep8 pyflakes; fi
+ - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y quodlibet exfalso xvfb pep8 pyflakes python3-mutagen python3-gi python3-gi-cairo; fi
  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then wget http://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.1.zip; fi
  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then unzip QuodLibet-3.5.1.zip; fi
 
