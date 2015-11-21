@@ -7,27 +7,34 @@
 
 import os
 import sys
+import re
 
 try:
     from pyflakes.scripts import pyflakes
 except ImportError:
     pyflakes = None
 
+from quodlibet.compat import PY3
+
 from tests import TestCase, skipUnless
 
 
 class FakeStream(object):
-    # skip these, can be false positives
-    BL = [
-        "unable to detect undefined names",
-    ]
+    # skip these by default
+    BL = ["unable to detect undefined names"]
+    if PY3:
+        BL.append(
+            "undefined name '(unichr|unicode|long|basestring|xrange|cmp)'")
 
-    def __init__(self):
+    def __init__(self, blacklist=None):
         self.lines = []
+        if blacklist is None:
+            blacklist = []
+        self.bl = self.BL[:] + blacklist
 
     def write(self, text):
-        for p in self.BL:
-            if p in text:
+        for p in self.bl:
+            if re.search(p, text):
                 return
         text = text.strip()
         if not text:
@@ -36,7 +43,7 @@ class FakeStream(object):
 
     def check(self):
         if self.lines:
-            raise Exception("\n".join(self.lines))
+            raise Exception("\n" + "\n".join(self.lines))
 
 
 @skipUnless(pyflakes, "pyflakes not found")
