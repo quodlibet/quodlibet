@@ -16,6 +16,7 @@ install:
  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then unzip QuodLibet-3.5.1.zip; fi
 
 script:
- - if [ "$TRAVIS_OS_NAME" == "linux" ]; then xvfb-run -a ./quodlibet/setup.py test; fi
- - if [ "$TRAVIS_OS_NAME" == "linux" ]; then xvfb-run -a ./quodlibet/setup.py quality; fi
- - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./QuodLibet.app/Contents/MacOS/run ./quodlibet/setup.py test; fi
+ - cd quodlibet
+ - if [ "$TRAVIS_OS_NAME" == "linux" ]; then xvfb-run -a ./setup.py test; fi
+ - if [ "$TRAVIS_OS_NAME" == "linux" ]; then xvfb-run -a ./setup.py quality; fi
+ - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ../QuodLibet.app/Contents/MacOS/run setup.py test; fi
