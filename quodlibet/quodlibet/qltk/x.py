@@ -33,7 +33,7 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
         ctx = self.get_style_context()
-        border = ctx.get_border(self.get_state_flags())
+        border = ctx.get_border(ctx.get_state())
 
         # https://bugzilla.gnome.org/show_bug.cgi?id=694844
         border.left = border.top = border.right = border.bottom = 1
@@ -50,7 +50,7 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             pass
         else:
             top_ctx = top_bar.get_style_context()
-            b = top_ctx.get_border(top_bar.get_state_flags())
+            b = top_ctx.get_border(top_ctx.get_state())
             if b.bottom:
                 dy_bar = self.translate_coordinates(top_bar, 0, 0)[1]
                 dy_bar -= top_bar.get_allocation().height
@@ -138,7 +138,7 @@ class Notebook(Gtk.Notebook):
 
     def do_size_allocate(self, alloc):
         ctx = self.get_style_context()
-        border = ctx.get_border(self.get_state_flags())
+        border = ctx.get_border(ctx.get_state())
 
         toplevel = self.get_toplevel()
         # try to get the child so we ignore the CSD
