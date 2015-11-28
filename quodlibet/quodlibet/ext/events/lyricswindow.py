@@ -13,7 +13,9 @@ import socket
 import Queue
 from xml.dom import minidom
 
-from quodlibet.plugins import PluginImportException, PluginConfig
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.plugins import (PluginImportException, PluginConfig, ConfProp,
+    BoolConfProp, IntConfProp, FloatConfProp)
 import gi
 try:
     gi.require_version("WebKit", "3.0")
@@ -23,20 +25,32 @@ except ValueError as e:
 from gi.repository import WebKit, Gtk, GLib
 
 from quodlibet import app, qltk
-from quodlibet.util import DeferredSignal, escape, cached_property
+from quodlibet.util import escape, cached_property, connect_obj
+from quodlibet.qltk import Icons
 from quodlibet.qltk.window import Window
-from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk.entry import UndoEntry
+from quodlibet.pattern import URLFromPattern
 
 
 LYRICS_WIKIA_URL = ("http://lyrics.wikia.com/api.php?client=QuodLibet"
                     "&action=lyrics&func=getSong&artist=%s&song=%s&fmt=xml")
+DEFAULT_ALTERNATE_SEARCH_URL = ("https://duckduckgo.com/"
+                                "?q=lyrics+<artist|<artist>+-+><title>")
 
 
-class SearchThread(threading.Thread):
+def create_api_search_url(song):
+    artist, title = song("artist"), song("title")
+    artist = urllib.quote(artist.encode('utf-8'))
+    title = urllib.quote(title.encode('utf-8'))
+
+    return LYRICS_WIKIA_URL % (artist, title)
+
+
+class LyricsWikiaSearchThread(threading.Thread):
     TIMEOUT = 4.0
 
     def __init__(self):
-        super(SearchThread, self).__init__()
+        super(LyricsWikiaSearchThread, self).__init__()
         self.daemon = True
         self._queue = Queue.Queue()
         self._stopped = False
@@ -57,7 +71,7 @@ class SearchThread(threading.Thread):
         self._queue.put((song, done_cb))
 
     def stop(self):
-        """Stop all active searchs, no callback will be called after this
+        """Stop all active searches, no callback will be called after this
            returns.
         """
 
@@ -75,11 +89,7 @@ class SearchThread(threading.Thread):
     def _do_search(self, song):
         """Returns a URL or None"""
 
-        artist, title = song("artist"), song("title")
-        artist = urllib.quote(artist.encode('utf-8'))
-        title = urllib.quote(title.encode('utf-8'))
-
-        fetch_url = LYRICS_WIKIA_URL % (artist, title)
+        fetch_url = create_api_search_url(song)
         try:
             response = urllib2.urlopen(fetch_url, timeout=self.TIMEOUT)
         except (urllib2.URLError, socket.timeout):
@@ -123,7 +133,7 @@ class LyricsWebViewWindow(Window):
         super(LyricsWebViewWindow, self).__init__(dialog=False)
         self.set_transient_for(app.window)
 
-        self._thread = SearchThread()
+        self._thread = LyricsWikiaSearchThread()
         self.connect("destroy", lambda *x: self._thread.stop())
 
         sw = Gtk.ScrolledWindow()
@@ -152,12 +162,12 @@ class LyricsWebViewWindow(Window):
 
         sw.add(view)
         sw.show_all()
-        
+
         self.conf = conf
         self.set_zoom_level(conf.zoom_level)
         self.resize(conf.width, conf.height)
         self.move(conf.x, conf.y)
-    
+
     def set_zoom_level(self, zoom_level):
         self._view.set_zoom_level(zoom_level)
 
@@ -182,7 +192,11 @@ class LyricsWebViewWindow(Window):
     def _callback(self, song, page):
         if page is None:
             message = _("No lyrics found")
-            self._set_html(message, song("~artist~title"))
+            if self.conf.alternate_search_enabled:
+                url = URLFromPattern(self.conf.alternate_search_url) % song
+                self._view.load_uri(url)
+            else:
+                self._set_html(message, song("~artist~title"))
             self._set_title(message)
         else:
             self._view.load_uri(page)
@@ -192,38 +206,15 @@ class LyricsWebViewWindow(Window):
         self.set_title(_("Lyrics:") + " " + message)
 
 
-class ConfProp(object):
-
-    def __init__(self, conf, name, default):
-        self._conf = conf
-        self._name = name
-
-        self._conf.defaults.set(name, default)
-
-    def __get__(self, *args, **kwargs):
-        return self._conf.get(self._name)
-
-    def __set__(self, obj, value):
-        self._conf.set(self._name, value)
-
-
-class IntConfProp(ConfProp):
-
-    def __get__(self, *args, **kwargs):
-        return self._conf.getint(self._name)
-
-
-class FloatConfProp(ConfProp):
-
-    def __get__(self, *args, **kwargs):
-        return self._conf.getfloat(self._name)
-
-
 def get_config(prefix):
     class LyricsWindowConfig(object):
 
         plugin_conf = PluginConfig(prefix)
 
+        alternate_search_url = ConfProp(plugin_conf, "alternate_search_url",
+            DEFAULT_ALTERNATE_SEARCH_URL)
+        alternate_search_enabled = BoolConfProp(plugin_conf,
+            "alternate_search_enabled", True)
         zoom_level = FloatConfProp(plugin_conf, "zoom_level", 1.4)
         width = IntConfProp(plugin_conf, "width", 500)
         height = IntConfProp(plugin_conf, "height", 500)
@@ -250,14 +241,6 @@ class LyricsWindowPrefs(Gtk.VBox):
         self.Conf = plugin.Conf
         self.plugin = plugin
 
-        def change_zoom_level(button):
-            value = float(button.get_value())
-            self.Conf.zoom_level = value
-            
-            window = self.plugin._window
-            if window:
-                window.set_zoom_level(value)
-
         def build_display_widget():
             vb2 = Gtk.VBox(spacing=3)
 
@@ -267,6 +250,15 @@ class LyricsWindowPrefs(Gtk.VBox):
                     self.Conf.zoom_level, -10, 10, 0.1, 1, 0),
                 climb_rate=0.1, digits=2)
             zoom_level.set_numeric(True)
+
+            def change_zoom_level(button):
+                value = float(button.get_value())
+                self.Conf.zoom_level = value
+
+                window = self.plugin._window
+                if window:
+                    window.set_zoom_level(value)
+
             zoom_level.connect('value-changed', change_zoom_level)
             l1 = ConfigLabel(_("_Zoom level:"), zoom_level)
             hb.pack_start(l1, False, True, 0)
@@ -274,45 +266,94 @@ class LyricsWindowPrefs(Gtk.VBox):
             vb2.pack_start(hb, False, True, 0)
             return vb2
 
-        frame = qltk.Frame(label=_("Display"), child=build_display_widget())
+        def build_alternate_search_widget():
+            vb2 = Gtk.VBox(spacing=3)
+
+            hb = Gtk.HBox(spacing=6)
+
+            def on_entry_changed(entry, *args):
+                self.Conf.alternate_search_url = entry.get_text()
+
+            URL_entry = UndoEntry()
+            URL_entry.set_text(self.Conf.alternate_search_url)
+            URL_entry.connect("changed", on_entry_changed)
+
+            l1 = ConfigLabel(_("URL:"), URL_entry)
+
+            URL_revert = Gtk.Button()
+            URL_revert.add(Gtk.Image.new_from_icon_name(
+                Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
+            URL_revert.set_tooltip_text(_("Revert to default"))
+
+            connect_obj(URL_revert, "clicked", URL_entry.set_text,
+                DEFAULT_ALTERNATE_SEARCH_URL)
+
+            hb.pack_start(l1, False, True, 0)
+            hb.pack_start(URL_entry, True, True, 0)
+            hb.pack_start(URL_revert, False, True, 0)
+
+            vb2.pack_start(hb, False, True, 0)
+
+            def on_alternate_search_toggled(button, *args):
+                self.Conf.alternate_search_enabled = button.get_active()
+
+            alternate_search_enabled = Gtk.CheckButton(
+                label=_("Search via above URL if the lyrics "
+                        "couldn't be found in LyricsWikia."),
+                use_underline=True)
+            alternate_search_enabled.set_active(
+                self.Conf.alternate_search_enabled)
+            alternate_search_enabled.connect("toggled",
+                on_alternate_search_toggled)
+
+            vb2.pack_start(alternate_search_enabled, False, True, 0)
+
+            return vb2
+
+        frame = qltk.Frame(label=_("Display"),
+            child=build_display_widget())
         frame.set_border_width(6)
         self.pack_start(frame, False, True, 0)
 
+        frame = qltk.Frame(label=_("Alternate search"),
+            child=build_alternate_search_widget())
+        frame.set_border_width(6)
+        self.pack_start(frame, False, True, 0)
 
 
 class LyricsWindow(EventPlugin):
     PLUGIN_ID = 'lyricswindow'
     PLUGIN_NAME = _('Lyrics Window')
     PLUGIN_DESC = _("Shows a window containing lyrics of the playing song.")
-    PLUGIN_ICON = Gtk.STOCK_FIND
+    PLUGIN_ICON = Icons.EDIT_FIND
 
     _window = None
 
     def _destroy(self, *args):
         self._window = None
-    
+
     def enabled(self):
         if self._window is None:
             self._open_webview_window()
-    
+
     def disabled(self):
         if self._window is not None:
             self._window.close()
-        
+
     @cached_property
     def Conf(self):
         return get_config(self.PLUGIN_ID)
-        
+
     def PluginPreferences(self, parent):
         return LyricsWindowPrefs(self)
-        
+
     def _save_window_size_and_position(self, *args):
         window = self._window
         if window is not None:
             conf = self.Conf
             conf.width, conf.height = window.get_size()
             conf.x, conf.y = window.get_position()
-        
+
     def _open_webview_window(self):
         window = LyricsWebViewWindow(self.Conf)
         window.show()

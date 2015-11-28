@@ -12,6 +12,10 @@ PY2 = sys.version_info[0] == 2
 PY3 = not PY2
 
 if PY2:
+    # discard this in merge
+    from urllib import quote_plus
+    quote_plus
+
     import __builtin__ as builtins
     builtins
     from urlparse import urlparse, urlunparse
@@ -54,6 +58,10 @@ if PY2:
 
     exec("def reraise(tp, value, tb):\n raise tp, value, tb")
 elif PY3:
+    # discard this in merge
+    from urllib.parse import quote_plus
+    quote_plus
+
     import builtins
     builtins
     from urllib.parse import urlparse, urlunparse, quote_plus, unquote_plus

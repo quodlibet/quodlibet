@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from ._pattern import (Pattern, FileFromPattern, XMLFromPattern,
     XMLFromMarkupPattern, pattern_from_markup, error,
-    ArbitraryExtensionFileFromPattern)
+    ArbitraryExtensionFileFromPattern, URLFromPattern)
 
 
+URLFromPattern
 ArbitraryExtensionFileFromPattern
 FileFromPattern
 Pattern

@@ -501,3 +501,69 @@ class PluginConfigMixin(object):
             cls.config_set(name, default)
         return ConfigCheckButton(label, PM.CONFIG_SECTION,
                                  option, populate=True)
+
+
+class ConfProp(object):
+
+    def __init__(self, conf, name, default):
+        self._conf = conf
+        self._name = name
+
+        self._conf.defaults.set(name, default)
+
+    def __get__(self, *args, **kwargs):
+        return self._conf.get(self._name)
+
+    def __set__(self, obj, value):
+        self._conf.set(self._name, value)
+
+
+class BoolConfProp(ConfProp):
+
+    def __get__(self, *args, **kwargs):
+        return self._conf.getboolean(self._name)
+
+
+class IntConfProp(ConfProp):
+
+    def __get__(self, *args, **kwargs):
+        return self._conf.getint(self._name)
+
+
+class FloatConfProp(ConfProp):
+
+    def __get__(self, *args, **kwargs):
+        return self._conf.getfloat(self._name)
+
+
+def str_to_color_tuple(s):
+    """Raises ValueError"""
+
+    lst = map(float, s.split())
+    while len(lst) < 4:
+        lst.append(0.0)
+    return tuple(lst)
+
+
+def color_tuple_to_str(t):
+    return " ".join(map(str, t))
+
+
+class ColorConfProp(ConfProp):
+
+    def __init__(self, conf, name, default):
+        self._conf = conf
+        self._name = name
+
+        self._conf.defaults.set(name, color_tuple_to_str(default))
+
+    def __get__(self, *args, **kwargs):
+        s = self._conf.get(self._name)
+
+        try:
+            return str_to_color_tuple(s)
+        except ValueError:
+            return str_to_color_tuple(self._conf.defaults.get(self._name))
+
+    def __set__(self, obj, value):
+        self._conf.set(self._name, color_tuple_to_str(value))
