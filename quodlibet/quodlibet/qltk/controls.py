@@ -264,7 +264,7 @@ class Volume(Gtk.VolumeButton):
     def __popup(self, widget, menu):
         time = Gtk.get_current_event_time()
         button = 3
-        qltk.popup_menu_at_widget(menu, widget, button, time)
+        qltk.popup_menu_under_widget(menu, widget, button, time)
         return True
 
     def __volume_button_press(self, menu, event, player):
@@ -272,7 +272,7 @@ class Volume(Gtk.VolumeButton):
             return False
 
         if event.button == Gdk.BUTTON_SECONDARY:
-            qltk.popup_menu_under_widget(menu, self, event.button, event.time)
+            qltk.popup_menu_at_widget(menu, self, event.button, event.time)
             return True
         elif event.button == Gdk.BUTTON_MIDDLE:
             # toggle the muted state, if the backend doesn't support it
