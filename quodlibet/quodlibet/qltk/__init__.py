@@ -156,12 +156,28 @@ def _popup_menu_at_widget(menu, widget, button, time, under):
     return True
 
 
+def _ensure_menu_attached(menu, widget):
+    attached_widget = menu.get_attach_widget()
+    if attached_widget is widget:
+        return
+    if attached_widget is not None:
+        menu.detach()
+    menu.attach_to_widget(widget)
+
+
 def popup_menu_under_widget(menu, widget, button, time):
+    _ensure_menu_attached(menu, widget)
     return _popup_menu_at_widget(menu, widget, button, time, True)
 
 
 def popup_menu_above_widget(menu, widget, button, time):
+    _ensure_menu_attached(menu, widget)
     return _popup_menu_at_widget(menu, widget, button, time, False)
+
+
+def popup_menu_at_widget(menu, widget, button, time):
+    _ensure_menu_attached(menu, widget)
+    menu_popup(menu, None, None, None, None, button, time)
 
 
 def add_fake_accel(widget, accel):

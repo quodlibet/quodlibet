@@ -111,7 +111,7 @@ class SeekBar(HSlider):
         i.connect('activate', edit_bookmarks_cb)
         m.append(i)
         m.show_all()
-        m.attach_to_widget(self, None)
+
         connect_obj(self,
             'button-press-event', self.__check_menu, m, player, c)
         connect_obj(self, 'popup-menu', self.__popup_menu, m, player)
@@ -156,7 +156,7 @@ class SeekBar(HSlider):
                 menu.insert(i, 2)
 
         if event:
-            menu.popup(None, None, None, None, 3, event.time)
+            qltk.popup_menu_at_widget(menu, self, 3, event.time)
             return True
         else:
             time = Gtk.get_current_event_time()
@@ -253,7 +253,6 @@ class Volume(Gtk.VolumeButton):
         self.connect("event", self._on_button_event, player)
 
         replaygain_menu = VolumeMenu(player)
-        replaygain_menu.attach_to_widget(self, None)
         self.connect('popup-menu', self.__popup, replaygain_menu)
         connect_obj(self, 'button-press-event', self.__volume_button_press,
                     replaygain_menu, player)
@@ -268,7 +267,7 @@ class Volume(Gtk.VolumeButton):
             return False
 
         if event.button == Gdk.BUTTON_SECONDARY:
-            menu.popup(None, None, None, None, event.button, event.time)
+            qltk.popup_menu_under_widget(menu, self, event.button, event.time)
             return True
         elif event.button == Gdk.BUTTON_MIDDLE:
             # toggle the muted state, if the backend doesn't support it
