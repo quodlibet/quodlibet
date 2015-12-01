@@ -4,8 +4,10 @@ Development Guide
 .. toctree::
     :titlesonly:
 
-    contributing
+    overview
     devenv
+    testing
+    contributing
     guidelines
     plugins
     tools
