@@ -1161,7 +1161,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             return True
 
         widget = column.get_widget()
-        return qltk.popup_menu_under_widget(menu, widget, 3, time)
+        qltk.popup_menu_under_widget(menu, widget, 3, time)
+        return True
 
 
 @config.register_upgrade_function

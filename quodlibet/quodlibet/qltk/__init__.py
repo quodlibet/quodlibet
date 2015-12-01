@@ -164,7 +164,6 @@ def _popup_menu_at_widget(menu, widget, button, time, under):
 
         return (menu_x, menu_y, True) # x, y, move_within_screen
     menu_popup(menu, None, None, pos_func, None, button, time)
-    return True
 
 
 def _ensure_menu_attached(menu, widget):
@@ -186,12 +185,12 @@ def _ensure_menu_attached(menu, widget):
 
 def popup_menu_under_widget(menu, widget, button, time):
     _ensure_menu_attached(menu, widget)
-    return _popup_menu_at_widget(menu, widget, button, time, True)
+    _popup_menu_at_widget(menu, widget, button, time, True)
 
 
 def popup_menu_above_widget(menu, widget, button, time):
     _ensure_menu_attached(menu, widget)
-    return _popup_menu_at_widget(menu, widget, button, time, False)
+    _popup_menu_at_widget(menu, widget, button, time, False)
 
 
 def popup_menu_at_widget(menu, widget, button, time):

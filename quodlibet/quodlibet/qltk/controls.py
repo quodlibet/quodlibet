@@ -157,10 +157,10 @@ class SeekBar(HSlider):
 
         if event:
             qltk.popup_menu_at_widget(menu, self, 3, event.time)
-            return True
         else:
             time = Gtk.get_current_event_time()
-            return qltk.popup_menu_under_widget(menu, self, 3, time)
+            qltk.popup_menu_under_widget(menu, self, 3, time)
+        return True
 
     def __seeked(self, player, song, ms):
         # If it's not paused, we'll grab it in our next update.
@@ -264,7 +264,8 @@ class Volume(Gtk.VolumeButton):
     def __popup(self, widget, menu):
         time = Gtk.get_current_event_time()
         button = 3
-        return qltk.popup_menu_at_widget(menu, widget, button, time)
+        qltk.popup_menu_at_widget(menu, widget, button, time)
+        return True
 
     def __volume_button_press(self, menu, event, player):
         if event.type != Gdk.EventType.BUTTON_PRESS:
