@@ -173,7 +173,7 @@ def _ensure_menu_attached(menu, widget):
         return
     if attached_widget is not None:
         menu.detach()
-    menu.attach_to_widget(widget)
+    menu.attach_to_widget(widget, None)
 
 
 def popup_menu_under_widget(menu, widget, button, time):

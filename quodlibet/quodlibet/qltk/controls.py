@@ -264,7 +264,7 @@ class Volume(Gtk.VolumeButton):
     def __popup(self, widget, menu):
         time = Gtk.get_current_event_time()
         button = 3
-        return qltk.popup_menu_under_widget(menu, widget, button, time)
+        return qltk.popup_menu_at_widget(menu, widget, button, time)
 
     def __volume_button_press(self, menu, event, player):
         if event.type != Gdk.EventType.BUTTON_PRESS:
