@@ -157,6 +157,14 @@ def _popup_menu_at_widget(menu, widget, button, time, under):
 
 
 def _ensure_menu_attached(menu, widget):
+    assert widget is not None
+
+    # Workaround the menu inheriting the wrong colors with the Ubuntu 12.04
+    # default themes. Attaching to the parent kinda works... submenus still
+    # have the wrong color.
+    if isinstance(widget, Gtk.Button):
+        widget = widget.get_parent() or widget
+
     attached_widget = menu.get_attach_widget()
     if attached_widget is widget:
         return
