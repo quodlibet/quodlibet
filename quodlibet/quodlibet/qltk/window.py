@@ -320,16 +320,15 @@ class PersistentWindowMixin(object):
         # to QL remembering the wrong size. Work around that by waiting
         # until configure-event settles down, at which point the maximized
         # state should be set
-        # WARNING: we can't keep the event, because PyGObject doesn't
-        # keep it alive; so extract width/height before returning here.
 
-        self.__save_size_pos_deferred(event.width, event.height)
+        self.__save_size_pos_deferred()
         return False
 
-    def __do_save_size_pos(self, width, height):
+    def __do_save_size_pos(self):
         if self.__state & Gdk.WindowState.MAXIMIZED:
             return
 
+        width, height = self.get_size()
         value = "%d %d" % (width, height)
         config.set("memory", self.__conf("size"), value)
 
