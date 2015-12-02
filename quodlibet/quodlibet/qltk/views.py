@@ -415,8 +415,7 @@ class TreeViewHints(Gtk.Window):
         if event.type == Gdk.EventType.BUTTON_PRESS:
             # hack: present is overridden to present all windows.
             # bypass to only select one
-            if not is_wayland():  # present duplicates windows in weston
-                Gtk.Window.present(get_top_parent(self.__view))
+            Gtk.Window.present(get_top_parent(self.__view))
 
         def translate_enter_leave_event(event):
             # enter/leave events have different x/y values as motion events
