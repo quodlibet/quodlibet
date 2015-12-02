@@ -234,6 +234,18 @@ class StandaloneEditor(_KeyValueEditor):
             pass
 
 
+def clone_css_classes(src, dest):
+    """Makes dest have the same css classes as src"""
+
+    src_ctx = src.get_style_context()
+    dest_ctx = dest.get_style_context()
+
+    for class_ in dest_ctx.list_classes():
+        dest_ctx.remove_class(class_)
+    for class_ in src_ctx.list_classes():
+        dest_ctx.add_class(class_)
+
+
 class ComboBoxEntrySave(Gtk.ComboBox):
     """A ComboBoxEntry that remembers the past 'count' strings entered,
     and can save itself to (and load itself from) a filename or file-like."""
@@ -276,8 +288,11 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         if not len(model):
             self.__fill(filename, initial, edit_title)
 
-        self.remove(self.get_child())
-        self.add(entry.ValidatingEntry(validator))
+        old_entry = self.get_child()
+        self.remove(old_entry)
+        new_entry = entry.ValidatingEntry(validator)
+        clone_css_classes(old_entry, new_entry)
+        self.add(new_entry)
 
         connect_obj(self, 'destroy', self.set_model, None)
         connect_obj(self, 'changed', self.__changed, model,
