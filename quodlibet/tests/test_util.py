@@ -6,7 +6,7 @@ from quodlibet.util import re_escape
 from quodlibet.util.string import decode, encode, split_escape, join_escape
 from quodlibet.util.string.splitters import *
 from quodlibet.util.library import *
-from tests import TestCase, mkstemp, skipIf
+from tests import TestCase, skipIf
 
 import tempfile
 import os
@@ -712,25 +712,6 @@ class TNormalizePath(TestCase):
             if link:
                 os.remove(link)
             os.remove(path)
-
-
-class Tatomic_save(TestCase):
-
-    def test_basic(self):
-        fd, filename = mkstemp(".cfg")
-        os.close(fd)
-
-        with open(filename, "wb") as fobj:
-            fobj.write("nope")
-        with open(filename + ".tmp", "wb") as fobj:
-            fobj.write("temp_nope")
-
-        with util.atomic_save(filename, ".tmp", "wb") as fobj:
-            fobj.write("foo")
-
-        with open(filename, "rb") as fobj:
-            self.assertEqual(fobj.read(), "foo")
-        self.assertFalse(os.path.exists(filename + ".tmp"))
 
 
 class Tescape_filename(TestCase):

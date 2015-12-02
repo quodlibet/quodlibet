@@ -24,6 +24,7 @@ from quodlibet.formats import MusicFile
 from quodlibet.query import Query
 from quodlibet.compat import cBytesIO, pickle, itervalues
 from quodlibet.qltk.notif import Task
+from quodlibet.util.atomic import atomic_save
 from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
 from quodlibet import util
@@ -209,7 +210,7 @@ def dump_items(filename, items):
     dirname = os.path.dirname(filename)
     mkdir(dirname)
 
-    with util.atomic_save(filename, ".tmp", "wb") as fileobj:
+    with atomic_save(filename, "wb") as fileobj:
         # While protocol 2 is usually faster it uses __setitem__
         # for unpickle and we override it to clear the sort cache.
         # This roundtrip makes it much slower, so we use protocol 1

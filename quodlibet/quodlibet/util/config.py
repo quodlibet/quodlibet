@@ -22,7 +22,8 @@ except ImportError:
         NoSectionError
 
 from quodlibet.compat import cBytesIO, PY2, text_type
-from quodlibet.util import atomic_save, list_unique
+from quodlibet.util import list_unique
+from quodlibet.util.atomic import atomic_save
 from quodlibet.util.string import join_escape, split_escape
 from quodlibet.util.path import is_fsnative, mkdir
 
@@ -307,7 +308,7 @@ class Config(object):
             self.add_section("__config__")
             self.set("__config__", "version", self._version)
         try:
-            with atomic_save(filename, ".tmp", "wb") as fileobj:
+            with atomic_save(filename, "wb") as fileobj:
                 self._config.write(fileobj)
         finally:
             if self._loaded_version is not None:
