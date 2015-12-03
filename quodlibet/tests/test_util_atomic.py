@@ -57,14 +57,22 @@ class Tatomic_save(TestCase):
         with open(filename, "wb") as fobj:
             fobj.write("nope")
 
-        mode = os.stat(self.dir).st_mode
+        dir_mode = os.stat(self.dir).st_mode
+        file_mode = os.stat(filename).st_mode
+        # setting directory permissions doesn't work under Windows, so make
+        # the file read only, so the rename fails. On the other hand marking
+        # the file read only doesn't make rename fail on unix, so make the
+        # directory read only as well.
+        os.chmod(filename, stat.S_IREAD)
         os.chmod(self.dir, stat.S_IREAD)
         try:
             with self.assertRaises(OSError):
                 with atomic_save(filename, "wb") as fobj:
                     fobj.write("foo")
         finally:
-            os.chmod(self.dir, mode)
+            # restore permissions
+            os.chmod(self.dir, dir_mode)
+            os.chmod(filename, file_mode)
 
         with open(filename, "rb") as fobj:
             self.assertEqual(fobj.read(), "nope")
