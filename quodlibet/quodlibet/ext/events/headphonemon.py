@@ -140,7 +140,8 @@ class HeadphoneMonitor(GObject.Object):
             self._subscribe_id = None
 
         if self._process is not None:
-            self._process.kill()
+            self._process.terminate()
+            self._process.wait()
             self._process = None
 
         self._status = None
