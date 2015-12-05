@@ -320,6 +320,7 @@ function setup_sdk {
     ln -s "$MISC"/clone.bat "$SDK"
     ln -s "$MISC"/wine.sh "$SDK"
     ln -s "$MISC"/test.sh "$SDK"
+    ln -s "$MISC"/test_ci.sh "$SDK"
     ln -s "$MISC"/README-SDK.txt "$SDK"/README.txt
 
     # bin deps
