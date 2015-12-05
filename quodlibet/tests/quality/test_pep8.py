@@ -80,7 +80,7 @@ class TPEP8(TestCase):
             res = f.result()
             if res is not None:
                 stdout, stderr = res
-                errors.append(stdout)
+                errors.append(stdout.decode("utf-8"))
 
         if errors:
             raise Exception("\n".join(errors))
