@@ -335,7 +335,7 @@ function setup_sdk {
     ln -s "$SDK" "$DIR"/_sdk
 
     # create the distributable archive
-    tar --dereference -zcvf "$DIR"/quodlibet-win-sdk.tar.gz _sdk/ \
+    tar --dereference -Jcvf "$DIR"/quodlibet-win-sdk.tar.xz _sdk/ \
         --exclude=_sdk/quodlibet \
         --exclude=_sdk/_wine_prefix \
         --exclude=_sdk/_ql_config &> /dev/null
