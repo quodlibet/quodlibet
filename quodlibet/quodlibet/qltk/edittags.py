@@ -414,18 +414,20 @@ class EditTags(Gtk.VBox):
         self._view = view
         selection = view.get_selection()
         render = Gtk.CellRendererPixbuf()
-        column = TreeViewColumn(_("Write"), render)
+        column = TreeViewColumn(u"", render)
+        column.set_fixed_width(24)
+        column.set_expand(False)
 
         def cdf_write(col, rend, model, iter_, *args):
             entry = model.get_value(iter_)
+            rend.set_property('sensitive', entry.edited or entry.deleted)
             if entry.canedit or entry.deleted:
-                rend.set_property('sensitive', entry.edited or entry.deleted)
                 if entry.deleted:
                     rend.set_property('icon-name', Icons.EDIT_DELETE)
                 else:
                     rend.set_property('icon-name', Icons.EDIT)
             else:
-                rend.set_property('icon-name', Icons.DIALOG_PASSWORD)
+                rend.set_property('icon-name', Icons.CHANGES_PREVENT)
         column.set_cell_data_func(render, cdf_write)
         view.append_column(column)
 
@@ -902,19 +904,7 @@ class EditTags(Gtk.VBox):
         except TypeError:
             return Gdk.EVENT_PROPAGATE
 
-        if event.button == Gdk.BUTTON_PRIMARY and col is view.get_columns()[0]:
-            model = view.get_model()
-            row = model[path]
-            entry = row[0]
-            # In case we have a (partially) shared value, write it
-            # to all songs. For unshared/incomplete do nothing
-            if entry.value.shared:
-                entry.edited = not entry.edited
-                if entry.edited:
-                    entry.value.complete = True
-            model.row_changed(row.path, row.iter)
-            return Gdk.EVENT_STOP
-        elif event.button == Gdk.BUTTON_MIDDLE and \
+        if event.button == Gdk.BUTTON_MIDDLE and \
                 col == view.get_columns()[2]:
             display = Gdk.DisplayManager.get().get_default_display()
             selection = Gdk.SELECTION_PRIMARY

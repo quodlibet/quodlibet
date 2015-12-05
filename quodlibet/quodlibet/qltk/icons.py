@@ -33,7 +33,9 @@ class Icons(str):
 
     # these only come from an icon theme
     APPLICATION_EXIT = "application-exit"  # "_Quit"
+    AUDIO_CARD = "audio-card"
     AUDIO_X_GENERIC = "audio-x-generic"
+    CHANGES_PREVENT = "changes-prevent"
     DIALOG_ERROR = "dialog-error"  # "Error"
     DIALOG_INFORMATION = "dialog-information"  # "Information"
     DIALOG_PASSWORD = "dialog-password"
@@ -75,4 +77,3 @@ class Icons(str):
     USER_TRASH = "user-trash" # "Trash"
     VIEW_REFRESH = "view-refresh"  # "_Refresh"
     WINDOW_CLOSE = "window-close"  # "_Close"
-    AUDIO_CARD = "audio-card"
