@@ -221,7 +221,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
                 if song("~#mtime") + 1. < mtime(filename):
                     try:
                         song.reload()
-                    except StandardError:
+                    except Exception:
                         pass
                 files.append(song)
             else:

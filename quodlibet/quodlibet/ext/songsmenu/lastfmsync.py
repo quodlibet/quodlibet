@@ -107,7 +107,7 @@ class LastFMSyncCache(object):
                 args = {'user': self.username, 'from': fro, 'to': to}
                 try:
                     resp = apicall('user.getweeklytrackchart', **args)
-                except urllib2.HTTPError, err:
+                except urllib2.HTTPError as err:
                     msg = "HTTP error %d, retrying in %d seconds."
                     log(msg % (err.code, 15))
                     for i in range(15, 0, -1):

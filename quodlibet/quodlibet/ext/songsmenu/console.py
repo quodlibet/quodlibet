@@ -35,6 +35,7 @@ from gi.repository import Gtk, Pango, Gdk, GLib
 
 from quodlibet import const
 from quodlibet.qltk import Icons
+from quodlibet.compat import exec_
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
@@ -330,9 +331,9 @@ class PythonConsole(Gtk.ScrolledWindow):
             try:
                 r = eval(command, self.namespace, self.namespace)
                 if r is not None:
-                    print repr(r)
+                    print_(repr(r))
             except SyntaxError:
-                exec command in self.namespace
+                exec_(command, self.namespace)
         except:
             if hasattr(sys, 'last_type') and sys.last_type == SystemExit:
                 self.destroy()

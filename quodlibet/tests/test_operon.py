@@ -23,7 +23,7 @@ def call(args=None):
     with capture_output() as (out, err):
         try:
             return_code = operon_main(["operon.py"] + args)
-        except SystemExit, e:
+        except SystemExit as e:
             return_code = e.code
 
     return (return_code, out.getvalue(), err.getvalue())
@@ -117,14 +117,14 @@ class TOperonAdd(TOperonBase):
 
     def test_permissions(self):
         try:
-            os.chmod(self.f, 0000)
+            os.chmod(self.f, 0o000)
             self.check_false(["add", "foo", "bar", self.f, self.f],
                              False, True)
-            os.chmod(self.f, 0444)
+            os.chmod(self.f, 0o444)
             self.check_false(["add", "foo", "bar", self.f, self.f],
                              False, True)
         finally:
-            os.chmod(self.f, 0666)
+            os.chmod(self.f, 0o666)
 
 
 class TOperonPrint(TOperonBase):
@@ -158,7 +158,7 @@ class TOperonPrint(TOperonBase):
         # doesn't prevent reading under wine..
         if os.name == "nt":
             return
-        os.chmod(self.f, 0000)
+        os.chmod(self.f, 0o000)
         self.check_false(["print", "-p", "<title>", self.f],
                          False, True)
 

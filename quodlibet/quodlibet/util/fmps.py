@@ -73,12 +73,12 @@ def _split(val, sep):
 
 def _unescape(val):
     return val.replace(
-        ur"\;", u";").replace(ur"\:", u":").replace(ur"\\", u"\\")
+        u"\\;", u";").replace(u"\\:", u":").replace(u"\\\\", u"\\")
 
 
 def _escape(val):
     return val.replace(
-        u"\\", ur"\\").replace(u";", ur"\;").replace(u":", ur"\:")
+        u"\\", u"\\\\").replace(u";", u"\\;").replace(u":", u"\\:")
 
 
 def _escape_inval(val):

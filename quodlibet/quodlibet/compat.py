@@ -24,8 +24,11 @@ if PY2:
     StringIO
     import cPickle as pickle
     pickle
+    from functools import reduce
+    reduce
 
     xrange = xrange
+    long = long
 
     text_type = unicode
     string_types = (str, unicode)
@@ -59,8 +62,11 @@ elif PY3:
     StringIO = StringIO
     import pickle
     pickle
+    from functools import reduce
+    reduce
 
     xrange = range
+    long = int
 
     text_type = str
     string_types = (str,)

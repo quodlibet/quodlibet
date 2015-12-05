@@ -11,6 +11,7 @@ import StringIO
 from quodlibet import config, const, formats
 from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
 from quodlibet.formats._image import EmbeddedImage, APICType
+from quodlibet.compat import long
 
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
@@ -102,7 +103,7 @@ class TVCFileMixin(object):
         self.failUnlessEqual(song["~#rating"], 0.2)
 
     def test_huge_playcount(self):
-        count = 1000000000000000L
+        count = long(1000000000000000)
         self.song["~#playcount"] = count
         self.song.write()
         song = type(self.song)(self.filename)

@@ -125,7 +125,8 @@ def query(category, discid, xcode='utf8:utf8'):
     return discinfo, tracktitles
 
 
-def make_info_label((disc, track), album, discid):
+def make_info_label(item, album, discid):
+    disc, track = item
     message = []
 
     if 'artist' in disc:

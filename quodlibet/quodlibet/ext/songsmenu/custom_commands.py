@@ -227,7 +227,7 @@ class CustomCommands(SongsMenuPlugin, PluginConfigMixin):
             print_d("Running %s" % com)
             try:
                 com.run(songs)
-            except Exception, err:
+            except Exception as err:
                 print_e("Couldn't run command %s: %s %s at"
                         % (com.name, type(err), err))
                 ErrorMessage(

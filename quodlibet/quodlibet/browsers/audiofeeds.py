@@ -265,7 +265,8 @@ class AudioFeeds(Browser):
     def init(klass, library):
         uris = set()
         try:
-            feeds = pickle.load(file(FEEDS, "rb"))
+            with open(FEEDS, "rb") as fileobj:
+                feeds = pickle.load(fileobj)
         except (pickle.PickleError, EnvironmentError, EOFError):
             pass
         else:

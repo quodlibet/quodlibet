@@ -28,6 +28,7 @@ except ImportError as e:
 from quodlibet import print_d
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.util.library import get_scan_dirs
+from quodlibet.compat import reduce
 from quodlibet import app
 from gi.repository import GLib
 import os

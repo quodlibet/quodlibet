@@ -60,7 +60,8 @@ class LyricsPane(Gtk.VBox):
         add.set_sensitive(True)
 
         if os.path.exists(lyricname):
-            buffer.set_text(file(lyricname).read())
+            with open(lyricname) as h:
+                buffer.set_text(h.read())
         else:
             #buffer.set_text(_("No lyrics found.\n\nYou can click the "
             #                  "Download button to have Quod Libet search "

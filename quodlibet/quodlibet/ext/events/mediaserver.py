@@ -428,7 +428,8 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
             ("removed", self.__songs_removed),
             ("added", self.__songs_added),
         ]
-        self.__sigs = map(lambda (s, f): self.__library.connect(s, f), signals)
+        self.__sigs = map(
+            lambda x: self.__library.connect(x[0], x[1]), signals)
 
     def __songs_changed(self, lib, songs):
         # We don't know what changed, so get all properties
@@ -501,7 +502,8 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
             ("removed", self.__albums_removed),
             ("added", self.__albums_added),
         ]
-        self.__sigs = map(lambda (s, f): self.__library.connect(s, f), signals)
+        self.__sigs = map(
+            lambda x: self.__library.connect(x[0], x[1]), signals)
 
         self.__dummy = DummyAlbumObject(self)
 
