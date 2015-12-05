@@ -79,8 +79,6 @@ function init_wine {
     export XDG_DATA_HOME="$HOME"/.local/share
     export XDG_CONFIG_HOME="$HOME"/.config
     export XDG_CACHE_HOME="$HOME"/.cache
-    export DISPLAY_SAVED=$DISPLAY
-    export DISPLAY=be_quiet_damnit
 
     mkdir -p "$WINEPREFIX"
     wine wineboot -u
@@ -228,11 +226,7 @@ function install_python {
 }
 
 function install_git {
-    local DISPLAY_OLD=$DISPLAY
-    export DISPLAY=$DISPLAY_SAVED
-    # this needs a valid DISPLAY..
     wine "$BUILD_ENV"/bin/Git-1.9.5-preview20141217.exe /VERYSILENT;
-    export DISPLAY=$DISPLAY_OLD
     GITDIR="$(winepath -u "$(wine cmd.exe /c 'echo | set /p=%ProgramFiles%')")/Git";
 }
 
