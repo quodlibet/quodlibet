@@ -70,8 +70,8 @@ class po_stats(Command):
         print("#" * 30)
         for po, trans, fuzzy, untrans in stats:
             all_ = float(trans + fuzzy + untrans) / 100
-            print ("%5s: %3d%% (+%2d%% fuzzy)" %
-                   (po, trans / all_, fuzzy / all_))
+            print("%5s: %3d%% (+%2d%% fuzzy)" %
+                  (po, trans / all_, fuzzy / all_))
 
 
 class update_po(Command):
