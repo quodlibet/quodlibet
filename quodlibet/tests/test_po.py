@@ -30,7 +30,7 @@ class TPOTFILESIN(TestCase):
 
         result = gettextutil.get_missing(PODIR, "quodlibet")
         if result:
-            raise Exception(result)
+            raise Exception("\n".join(result))
 
 
 @skipIf(polib is None, "polib not found")
