@@ -21,7 +21,7 @@ matrix:
       language: generic
       sudo: required
       dist: trusty
-      env: TYPE="windows" APT_PACKAGES="wine1.6-i386 xvfb"
+      env: TYPE="windows" APT_PACKAGES="wine xvfb"
 
 install:
  - if [ "$APT_PACKAGES" != "" ]; then sudo add-apt-repository -y ppa:lazka/dumpingplace; fi
