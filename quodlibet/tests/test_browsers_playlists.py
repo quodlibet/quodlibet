@@ -30,7 +30,7 @@ class TParsePlaylistMixin(object):
     def test_parse_empty(self):
         h, name = mkstemp()
         os.close(h)
-        file(name, "w").close()
+        open(name, "w").close()
         pl = self.Parse(name)
         os.unlink(name)
         self.failUnlessEqual(0, len(pl))
@@ -56,9 +56,8 @@ class TParsePlaylistMixin(object):
         from quodlibet.util.uri import URI
         target = URI.frompath(target)
         target = self.prefix + target
-        f = file(name, "w")
-        f.write(target)
-        f.close()
+        with open(name, "w") as f:
+            f.write(target)
         list = self.Parse(name)
         os.unlink(name)
         self.failUnlessEqual(len(list), 1)

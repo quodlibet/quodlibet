@@ -162,12 +162,10 @@ class FSInterface(object):
     def __started(self, player, song):
         if song:
             try:
-                f = file(self.path, "w")
+                with open(self.path, "w") as f:
+                    f.write(song.to_dump())
             except EnvironmentError:
                 pass
-            else:
-                f.write(song.to_dump())
-                f.close()
 
     def __ended(self, player, song, stopped):
         try:

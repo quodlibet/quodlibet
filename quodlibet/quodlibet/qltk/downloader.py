@@ -141,7 +141,7 @@ class DownloadWindow(qltk.UniqueWindow):
         return True
 
     def _download(self, source, target):
-        fileobj = file(target, "wb")
+        fileobj = open(target, "wb")
         self.downloads.append(row=[None, fileobj, 0, source])
         self.__start_next()
 

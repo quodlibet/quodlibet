@@ -71,19 +71,18 @@ def parse_pls(filename, name="", library=None):
         os.path.splitext(filename)[0]))
 
     filenames = []
-    h = file(filename)
-    for line in h:
-        line = line.strip()
-        if not line.lower().startswith("file"):
-            continue
-        else:
-            try:
-                line = line[line.index("=") + 1:].strip()
-            except ValueError:
-                pass
+    with open(filename) as h:
+        for line in h:
+            line = line.strip()
+            if not line.lower().startswith("file"):
+                continue
             else:
-                filenames.append(line)
-    h.close()
+                try:
+                    line = line[line.index("=") + 1:].strip()
+                except ValueError:
+                    pass
+                else:
+                    filenames.append(line)
     return __parse_playlist(plname, filename, filenames, library)
 
 

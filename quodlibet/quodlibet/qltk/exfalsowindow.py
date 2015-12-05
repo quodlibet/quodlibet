@@ -217,13 +217,13 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
             if not os.path.exists(filename):
                 pass
             elif filename in self.__library:
-                file = self.__library[filename]
-                if file("~#mtime") + 1. < mtime(filename):
+                song = self.__library[filename]
+                if song("~#mtime") + 1. < mtime(filename):
                     try:
-                        file.reload()
+                        song.reload()
                     except StandardError:
                         pass
-                files.append(file)
+                files.append(song)
             else:
                 files.append(formats.MusicFile(filename))
         files = filter(None, files)

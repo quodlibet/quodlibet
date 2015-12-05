@@ -258,9 +258,8 @@ class AudioFeeds(Browser):
     @classmethod
     def write(klass):
         feeds = [row[0] for row in klass.__feeds]
-        f = file(FEEDS, "wb")
-        pickle.dump(feeds, f, pickle.HIGHEST_PROTOCOL)
-        f.close()
+        with open(FEEDS, "wb") as f:
+            pickle.dump(feeds, f, pickle.HIGHEST_PROTOCOL)
 
     @classmethod
     def init(klass, library):

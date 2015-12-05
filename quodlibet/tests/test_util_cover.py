@@ -39,7 +39,7 @@ class TCoverManager(TestCase):
                       self.full_path("nothing.jpg")
                       ]
         for f in self.files:
-            file(f, "w").close()
+            open(f, "w").close()
 
     def _find_cover(self, song):
         return self.manager.get_cover(song)
@@ -69,7 +69,7 @@ class TCoverManager(TestCase):
                  ["cover.png", "folder.jpg", "frontcover.jpg",
                   "front_folder_cover.gif", "jacket_cover.front.folder.jpeg"]]
         for f in files:
-            file(f, "w").close()
+            open(f, "w").close()
             self.files.append(f)
             self.failUnlessEqual(
                 os.path.abspath(self._find_cover(quux).name), f)
@@ -80,7 +80,7 @@ class TCoverManager(TestCase):
             return
 
         f = self.full_path("\xff\xff\xff\xff - cover.jpg")
-        file(f, "w").close()
+        open(f, "w").close()
         self.files.append(f)
         self.assertTrue(isinstance(quux("album"), unicode))
         h = self._find_cover(quux)
@@ -94,7 +94,7 @@ class TCoverManager(TestCase):
                  ["Quuxly - back.jpg", "Quuxly.jpg", "q-man - quxxly.jpg",
                   "folder.jpeg", "Q-man - Quuxly (FRONT).jpg"]]
         for f in files:
-            file(f, "w").close()
+            open(f, "w").close()
             self.files.append(f)
             cover = self._find_cover(song)
             if cover:
@@ -122,7 +122,7 @@ class TCoverManager(TestCase):
                   'foobar.jpg', 'folder.jpg',     # Though this is debatable
                   'Q-Man - foobar.jpg', 'Q-man - foobar (cover).jpg']]
         for f in files:
-            file(f, "w").close()
+            open(f, "w").close()
             self.files.append(f)
             cover = self._find_cover(song)
             if cover:

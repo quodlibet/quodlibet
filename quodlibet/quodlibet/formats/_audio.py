@@ -365,7 +365,7 @@ class AudioFile(dict, ImageContainer):
                     return default
             elif key == "lyrics":
                 try:
-                    fileobj = file(self.lyric_filename, "rU")
+                    fileobj = open(self.lyric_filename, "rU")
                 except EnvironmentError:
                     return default
                 else:

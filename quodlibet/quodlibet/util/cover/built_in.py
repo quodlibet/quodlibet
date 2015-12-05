@@ -139,7 +139,7 @@ class FilesystemCover(CoverSourcePlugin):
             if not os.path.isfile(path):
                 continue
             try:
-                return file(path, "rb")
+                return open(path, "rb")
             except IOError:
                 print_w("Failed reading album art \"%s\"" % path)
 

@@ -48,7 +48,7 @@ num_call = AudioFile({"custom": "0.3"})
 class TAudioFile(TestCase):
     def setUp(self):
         config.RATINGS = config.HardCodedRatingsPrefs()
-        file(quux["~filename"], "w")
+        open(quux["~filename"], "w").close()
 
     def test_sort(self):
         l = [quux, bar_1_2, bar_2_1, bar_1_1]

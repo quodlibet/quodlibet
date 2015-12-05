@@ -55,26 +55,27 @@ def query(category, discid, xcode='utf8:utf8'):
     tracktitles = {}
     dump = path.join(expanduser("~"), '.cddb', category, discid)
     try:
-        for line in file(dump):
-            if line.startswith("TTITLE"):
-                track, title = line.split("=", 1)
-                try:
-                    track = int(track[6:])
-                except (ValueError):
-                    pass
-                else:
-                    tracktitles[track] = \
-                        title.decode('utf-8', 'replace').strip()
-            elif line.startswith("DGENRE"):
-                discinfo['genre'] = line.split('=', 1)[1].strip()
-            elif line.startswith("DTITLE"):
-                dtitle = line.split('=', 1)[1].strip().split(' / ', 1)
-                if len(dtitle) == 2:
-                    discinfo['artist'], discinfo['title'] = dtitle
-                else:
-                    discinfo['title'] = dtitle[0].strip()
-            elif line.startswith("DYEAR"):
-                discinfo['year'] = line.split('=', 1)[1].strip()
+        with open(dump) as fileobj:
+            for line in fileobj:
+                if line.startswith("TTITLE"):
+                    track, title = line.split("=", 1)
+                    try:
+                        track = int(track[6:])
+                    except (ValueError):
+                        pass
+                    else:
+                        tracktitles[track] = \
+                            title.decode('utf-8', 'replace').strip()
+                elif line.startswith("DGENRE"):
+                    discinfo['genre'] = line.split('=', 1)[1].strip()
+                elif line.startswith("DTITLE"):
+                    dtitle = line.split('=', 1)[1].strip().split(' / ', 1)
+                    if len(dtitle) == 2:
+                        discinfo['artist'], discinfo['title'] = dtitle
+                    else:
+                        discinfo['title'] = dtitle[0].strip()
+                elif line.startswith("DYEAR"):
+                    discinfo['year'] = line.split('=', 1)[1].strip()
     except EnvironmentError:
         pass
     else:
@@ -88,13 +89,13 @@ def query(category, discid, xcode='utf8:utf8'):
         os.makedirs(path.join(expanduser("~"), '.cddb'))
     except EnvironmentError:
         pass
+
     try:
-        save = file(dump, 'w')
-        keys = info.keys()
-        keys.sort()
-        for key in keys:
-            print>>save, "%s=%s" % (key, info[key])
-        save.close()
+        with open(dump, 'w') as save:
+            keys = info.keys()
+            keys.sort()
+            for key in keys:
+                print>>save, "%s=%s" % (key, info[key])
     except EnvironmentError:
         pass
 

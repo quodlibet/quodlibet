@@ -61,9 +61,8 @@ config.read(DEVICES)
 
 
 def write():
-    f = file(DEVICES, 'w')
-    config.write(f)
-    f.close()
+    with open(DEVICES, 'w') as f:
+        config.write(f)
 
 
 # Return a constructor for a device given by a string

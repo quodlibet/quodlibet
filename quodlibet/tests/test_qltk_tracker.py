@@ -97,7 +97,8 @@ class TFSInterface(TestCase):
     def test_start(self):
         self.p.emit('song_started', AudioFile({"woo": "bar", "~#length": 10}))
         self.do()
-        self.failUnless("woo=bar\n" in file(self.filename).read())
+        with open(self.filename) as h:
+            self.failUnless("woo=bar\n" in h.read())
 
     def test_song_ended(self):
         self.p.emit('song-started', AudioFile({"woo": "bar", "~#length": 10}))
