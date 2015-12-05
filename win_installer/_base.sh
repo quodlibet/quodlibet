@@ -73,6 +73,7 @@ function init_wine {
     export WINEARCH=win32
     export WINEPREFIX="$BUILD_ENV"/wine_env
     export WINEDEBUG=-all
+    export WINEDLLOVERRIDES="mscoree,mshtml="
 
     # try to limit the effect on the host system when installing with wine.
     export HOME="$BUILD_ENV"/home
