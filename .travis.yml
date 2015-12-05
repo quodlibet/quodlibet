@@ -1,6 +1,7 @@
 matrix:
   allow_failures:
     - python: "3.4_with_system_site_packages"
+    - env: TYPE="windows"
   include:
     - os: linux
       sudo: required
@@ -26,7 +27,7 @@ matrix:
 install:
  - if [ "$APT_PACKAGES" != "" ]; then sudo dpkg --add-architecture i386; fi
  - if [ "$APT_PACKAGES" != "" ]; then sudo add-apt-repository -y ppa:lazka/dumpingplace; fi
- - if [ "$APT_PACKAGES" != "" ]; then sudo apt-get -o APT::Architectures="amd64 i386" update -q; fi
+ - if [ "$APT_PACKAGES" != "" ]; then sudo apt-get update -q; fi
  - if [ "$APT_PACKAGES" != "" ]; then sudo apt-get install -y $(echo $APT_PACKAGES); fi
  - if [ "$TYPE" == "linux" ]; then pip install --upgrade pep8 pyflakes; fi
  - if [ "$TYPE" == "osx" ]; then wget http://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.1.zip; fi
