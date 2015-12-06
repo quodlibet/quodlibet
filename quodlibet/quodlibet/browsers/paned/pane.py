@@ -10,7 +10,7 @@ import operator
 from gi.repository import Gtk, Pango, Gdk
 
 from quodlibet import qltk
-from quodlibet.qltk.views import AllTreeView, TreeViewColumn
+from quodlibet.qltk.views import AllTreeView, TreeViewColumnButton
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk import is_accel
 from quodlibet.util import connect_obj
@@ -35,7 +35,18 @@ class Pane(AllTreeView):
 
         self.__no_fill = 0
 
-        column = TreeViewColumn(self.config.title)
+        column = TreeViewColumnButton(self.config.title)
+
+        def on_column_header_clicked(column, event):
+            # In case the column header gets clicked select the "All" entry
+            if event.button != Gdk.BUTTON_PRIMARY or \
+                    event.type != Gdk.EventType.BUTTON_PRESS:
+                return Gdk.EVENT_PROPAGATE
+            self.set_selected([])
+            return Gdk.EVENT_STOP
+
+        column.set_clickable(True)
+        column.connect("button-press-event", on_column_header_clicked)
         column.set_use_markup(True)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column.set_fixed_width(50)
