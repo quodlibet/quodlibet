@@ -39,6 +39,7 @@ A programmatic tag is one typically added by either Quod Libet / Ex Falso or
  these, you must turn on "Show programmatic tags" in the relevant
  preferences window.
 
+
 Internal Tags
 -------------
 
@@ -47,6 +48,16 @@ Internal tags are tags that start with a ``~`` like ``~people``, ``~length`` or
 from the values in the files.
 
 See :ref:`InternalTags` for a complete list.
+
+.. _PerformerRoles:
+
+Performer Roles
+---------------
+
+Quod Libet supports performer roles, which let you associate a performer in a
+song with a specific instrument. To use this feature, name a tag
+performer:role. Quod Libet will display the roles alongside the names in
+``~people:roles`` and ``~performers:roles``.
 
 
 Album Identification

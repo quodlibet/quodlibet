@@ -153,20 +153,11 @@ specification, the tag must be a UTF-8 represention of the Unicode string.
 
 This tag may occur any number of times in a file.
 
-.. _PerformerRoles:
-
 Performer Roles
 ^^^^^^^^^^^^^^^
 
-Quod Libet supports performer roles, which let you associate a performer in 
-a song with a specific instrument. To use this feature, name a tag 
-performer:role. This is similar to the ID3v2 IPLS (involved person list) 
-frame.
-
-Examples: ``*performer:vocals=Brandon Patton``, ``performer:banjo=Béla 
-Fleck*``.
-
-Quod Libet displays these tags by putting the role after the name, 
-parenthesized (e.g. ``Béla Fleck (banjo)``), but in other supporting 
-programs the role can be associated with the name in any understandable 
-way, or simply ignored and treated like an ordinary performer tag.
+This is similar to the ID3v2 IPLS (involved person list) frame. Quod Libet
+displays these tags by putting the role after the name, parenthesized (e.g.
+``Béla Fleck (banjo)``), but in other supporting programs the role can be
+associated with the name in any understandable way, or simply ignored and
+treated like an ordinary performer tag.

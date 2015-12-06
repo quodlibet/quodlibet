@@ -18,7 +18,7 @@ String Tags
  * ``~encoding``: Encoder name, version, settings used (e.g. "LAME 3.97.0, VBR")
  * ``~length``: The length of the file in H:MM:SS format
  * ``~mountpoint``: The component of the full path name that corresponds to the file's immediate parent mount
- * ``~performers``: A list of performers, including :ref:`roles <PerformerRoles>`
+ * ``~performers``: A list of performers
  * ``~people``: A list of all people involved in the song
  * ``~rating``: A string representation of the song's rating (e.g. ★★★☆)
  * ``~uri``: The full URI of the song
@@ -40,10 +40,31 @@ For sorting, this means that all album artists come first followed by
 all artists and so on. For song collections / albums, the values of
 each included tag are sorted by frequency.
 
-Note there is a ``~people:real`` specialisation
-`added in #1034 <https://github.com/quodlibet/quodlibet/issues/1034>`_ which
-excludes *Various Artists*, commonly used as a placeholder for album artists
-on compilations, etc.
+Variants:
+    ``~people:roles`` includes roles e.g. ``"The Parley of Instruments
+    (Orchestra), David Thomas (Bass)"``. The roles are either derived from the
+    source tag name (``composer=Joseph Haydn`` → ``Joseph Haydn
+    (Composition)``) or from the performer role
+    (``performer:composition=Joseph Haydn`` → ``Joseph Haydn (Composition)``).
+    For the latter see the ``~performers`` tag.
+
+    ``~people:real`` excludes *Various Artists*, commonly used as a
+    placeholder for album artists on compilations, etc.
+
+
+The ``~performers`` Internal Tag
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The internal ``~performers`` tag combines all the artists specified in the
+performer tags to a single one.
+
+Example: ``performer:vocals=Brandon Patton, performer:banjo=Béla Fleck``
+
+``~performers`` will then display ``"Brandon Patton, Béla Fleck"``
+
+Variants:
+    ``~performer:roles`` includes the roles as well. For the above example
+    it will display ``"Brandon Patton (Vocals), Béla Fleck (Banjo)"``
 
 
 Song Collections / Albums
