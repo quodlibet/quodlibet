@@ -689,6 +689,66 @@ class BaseView(Gtk.TreeView):
                     break
         return not first
 
+    def iter_select_by_func(self, func, scroll=True):
+        """Selects the next row after the current selection for which func
+        returns True, removing the selection of all other rows.
+
+        func gets passed Gtk.TreeModelRow and should return True if
+        the row should be selected.
+
+        If scroll=True then scroll the the selected row if the selection
+        changes.
+
+        Returns True if the selection was changed.
+        """
+
+        model = self.get_model()
+        if not model:
+            return False
+
+        if not model.get_iter_first():
+            # empty model
+            return False
+
+        selection = self.get_selection()
+        model, paths = selection.get_selected_rows()
+
+        # get the last iter we shouldn't be looking at
+        if not paths:
+            last_iter = model[-1].iter
+        else:
+            last_iter = model.get_iter(paths[-1])
+
+        # get the first iter we should be looking at
+        start_iter = model.iter_next(last_iter)
+        if start_iter is None:
+            start_iter = model.get_iter_first()
+
+        row_iter = Gtk.TreeModelRowIter(model, start_iter)
+
+        for row in row_iter:
+            if not func(row):
+                continue
+            self.set_cursor(row.path)
+            if scroll:
+                self.scroll_to_cell(row.path, use_align=True,
+                                    row_align=0.5)
+            return True
+
+        last_path = model.get_path(last_iter)
+        for row in model:
+            if row.path.compare(last_path) == 0:
+                return False
+            if not func(row):
+                continue
+            self.set_cursor(row.path)
+            if scroll:
+                self.scroll_to_cell(row.path, use_align=True,
+                                    row_align=0.5)
+            return True
+
+        return False
+
     def set_drag_dest(self, x, y, into_only=False):
         """Sets a drag destination for widget coords
 

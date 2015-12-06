@@ -68,6 +68,30 @@ class TBaseView(TestCase):
         self.failIf(self.c.select_by_func(lambda r: False))
         self.c.select_by_func(lambda r: False, scroll=False, one=True)
 
+    def test_iter_select_func(self):
+        # empty
+        self.assertFalse(self.c.iter_select_by_func(lambda r: False))
+        self.assertFalse(self.c.iter_select_by_func(lambda r: True))
+
+        self.m.append(row=["foo"])
+        self.m.append(row=["bar"])
+        self.m.append(row=["foo"])
+        self.c.remove_selection()
+        self.assertTrue(self.c.iter_select_by_func(lambda r: r[0] == "foo"))
+        selection = self.c.get_selection()
+        model, iter_ = selection.get_selected()
+        self.assertEqual(model.get_path(iter_)[:], [0])
+        self.assertTrue(self.c.iter_select_by_func(lambda r: r[0] == "foo"))
+        model, iter_ = selection.get_selected()
+        self.assertEqual(model.get_path(iter_)[:], [2])
+        self.assertTrue(self.c.iter_select_by_func(lambda r: r[0] == "foo"))
+        model, iter_ = selection.get_selected()
+        self.assertEqual(model.get_path(iter_)[:], [0])
+        self.assertTrue(self.c.iter_select_by_func(lambda r: r[0] == "bar"))
+        model, iter_ = selection.get_selected()
+        self.assertEqual(model.get_path(iter_)[:], [1])
+        self.assertFalse(self.c.iter_select_by_func(lambda r: r[0] == "bar"))
+
     def test_remove_select_single(self):
         # empty
         self.c.remove_selection()
