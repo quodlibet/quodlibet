@@ -533,6 +533,9 @@ class PlaylistsBrowser(Browser):
 
     can_reorder = True
 
+    def scroll(self, song):
+        self.__view.iter_select_by_func(lambda r: song in r[0])
+
     def reordered(self, songs):
         model, iter = self.__view.get_selection().get_selected()
         playlist = None
