@@ -686,6 +686,8 @@ class EditTags(Gtk.VBox):
             assert isinstance(value, unicode)
             if tag in massagers.tags:
                 value = massagers.tags[tag].validate(value)
+                value = unicode(value)
+            assert isinstance(value, unicode)
             if not self.__songinfo.can_change(tag):
                 title = _("Invalid tag")
                 msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
