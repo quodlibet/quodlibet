@@ -355,18 +355,14 @@ class AddTagDialog(Dialog):
     def __validate(self, editable, add, invalid, box):
         tag = self.get_tag()
         value = self.get_value()
-        fmt = massagers.tags.get(tag)
-        if fmt:
-            valid = fmt.is_valid(value)
-        else:
-            valid = True
+        valid = massagers.is_valid(tag, value)
         add.set_sensitive(valid)
         if valid:
             invalid.hide()
             box.set_tooltip_text("")
         else:
             invalid.show()
-            box.set_tooltip_text(fmt.error)
+            box.set_tooltip_text(massagers.error_message(tag, value))
 
     def run(self):
         self.show()
@@ -684,9 +680,9 @@ class EditTags(Gtk.VBox):
             tag = add.get_tag()
             value = add.get_value()
             assert isinstance(value, unicode)
-            if tag in massagers.tags:
-                value = massagers.tags[tag].validate(value)
-                value = unicode(value)
+            value = massagers.validate(tag, value)
+            # XXX some return str for unicode input
+            value = unicode(value)
             assert isinstance(value, unicode)
             if not self.__songinfo.can_change(tag):
                 title = _("Invalid tag")
@@ -826,15 +822,14 @@ class EditTags(Gtk.VBox):
         entry = model[path][0]
         error_dialog = None
 
-        if entry.tag in massagers.tags:
-            fmt = massagers.tags[entry.tag]
-            if not fmt.is_valid(new_value):
-                error_dialog = qltk.WarningMessage(
-                    self, _("Invalid value"),
-                    _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
-                    "value": new_value, "error": fmt.error})
-            else:
-                new_value = fmt.validate(new_value)
+        if not massagers.is_valid(entry.tag, new_value):
+            error_dialog = qltk.WarningMessage(
+                self, _("Invalid value"),
+                _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
+                "value": new_value,
+                "error": massagers.error_message(entry.tag, new_value)})
+        else:
+            new_value = massagers.validate(entry.tag, new_value)
 
         comment = entry.value
         changed = comment.text != new_value
@@ -867,15 +862,14 @@ class EditTags(Gtk.VBox):
             # validate one value and never write it back..
 
             text = entry.value.text
-            if new_tag in massagers.tags:
-                fmt = massagers.tags[new_tag]
-                if not fmt.is_valid(text):
-                    qltk.WarningMessage(
-                        self, _("Invalid value"),
-                        _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
-                          "value": text, "error": fmt.error}).run()
-                    return
-                text = fmt.validate(text)
+            if not massagers.is_valid(new_tag, text):
+                qltk.WarningMessage(
+                    self, _("Invalid value"),
+                    _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
+                      "value": text,
+                      "error": massagers.error_message(new_tag, text)}).run()
+                return
+            text = massagers.validate(new_tag, text)
 
             if entry.origvalue is None:
                 # The tag hasn't been saved yet, so we can just update

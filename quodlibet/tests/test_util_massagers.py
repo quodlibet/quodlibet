@@ -1,22 +1,41 @@
 # -*- coding: utf-8 -*-
 from tests import TestCase
 
-import quodlibet.util.massagers
+from quodlibet.util.massagers import Massager, validate, is_valid, \
+    error_message, get_options
 
 
 class TMassagers(TestCase):
     def validate(self, key, values):
         for val in values:
-            self.failUnless(quodlibet.util.massagers.tags[key].is_valid(val))
+            self.failUnless(Massager.for_tag(key).is_valid(val))
 
     def invalidate(self, key, values):
         for val in values:
-            self.failIf(quodlibet.util.massagers.tags[key].is_valid(val))
+            self.failIf(Massager.for_tag(key).is_valid(val))
 
     def equivs(self, key, equivs):
         for value, normed in equivs.items():
             self.failUnlessEqual(
-                normed, quodlibet.util.massagers.tags[key].validate(value))
+                normed, Massager.for_tag(key).validate(value))
+
+    def test_validate_helper(self):
+        self.assertEqual(validate("foo", "bar"), "bar")
+        self.assertFalse(validate("date", "bar"))
+        self.assertEqual(validate("date", "2000"), "2000")
+
+    def test_is_valid_helper(self):
+        self.assertTrue(is_valid("foo", "bar"))
+        self.assertFalse(is_valid("date", "bar"))
+        self.assertTrue(is_valid("date", "2000"))
+
+    def test_error_message_helper(self):
+        self.assertFalse(error_message("foo", "bar"))
+        self.assertTrue(error_message("date", "2000"))
+
+    def test_get_options_helper(self):
+        self.assertFalse(get_options("foo"))
+        self.assertTrue(get_options("language"))
 
     def test_date_valid(self):
         self.validate("date", ["2002-10-12", "2000", "1200-10", "0000-00-00",
@@ -84,7 +103,7 @@ class TMassagers(TestCase):
         # self.invalidate("language", ["xxx", "ROFL", "", "es", "ENG"])
         # Issue 439: Actually, allow free-text.
         self.validate("language", ["", "German", "Chinese", "Foobarlanguage"])
-        mas = quodlibet.util.massagers.tags["language"]
+        mas = Massager.for_tag("language")
 
         # Check completion help too
         for code in ["eng", "fra", "fre", "deu", "zho"]:

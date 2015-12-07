@@ -12,7 +12,7 @@ from quodlibet import config, const, print_d
 from quodlibet import util
 from quodlibet.config import RATINGS
 from quodlibet.compat import iteritems
-from quodlibet.util.massagers import LanguageMassager
+from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import isascii
 
@@ -315,7 +315,7 @@ class ID3File(AudioFile):
         tag.delall("TLAN")
         if "language" in self:
             langs = self["language"].split("\n")
-            if all([lang in LanguageMassager.ISO_639_2 for lang in langs]):
+            if all([lang in ISO_639_2 for lang in langs]):
                 # Save value(s) to TLAN tag. Guaranteed to be ASCII here
                 tag.add(mutagen.id3.TLAN(encoding=3, text=langs))
                 dontwrite.append("language")
