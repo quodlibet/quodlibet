@@ -11,6 +11,10 @@ import re
 from .iso639 import ISO_639_2
 
 
+class ValidationError(Exception):
+    pass
+
+
 class Massager(object):
     """Massage a tag value from various 'okay' formats to the
     'correct' format."""
@@ -22,14 +26,21 @@ class Massager(object):
     _massagers = {}
 
     def validate(self, value):
-        """Returns a validated value, or False if invalid"""
+        """Returns a validated value.
+
+        Raises ValidationError if invalid.
+        """
 
         raise NotImplementedError
 
     def is_valid(self, value):
         """Returns True if a field is valid, False if not"""
 
-        return bool(self.validate(value))
+        try:
+            self.validate(value)
+        except ValidationError:
+            return False
+        return True
 
     @classmethod
     def _register(cls, other):
@@ -55,7 +66,10 @@ class Massager(object):
 
 
 def validate(tag, value):
-    """Validate a value based on the tag"""
+    """Validate a value based on the tag.
+
+    Raises ValidationError if invalid
+    """
 
     try:
         return Massager.for_tag(tag).validate(value)
@@ -102,7 +116,9 @@ class DateMassager(Massager):
 
     def validate(self, value):
         value = value.strip().replace(".", "-").replace("/", "-")
-        return self.__match(value) and value
+        if not self.__match(value):
+            raise ValidationError
+        return value
 
 
 @Massager._register
@@ -121,9 +137,9 @@ class GainMassager(Massager):
                 try:
                     f = locale.atof(value.split()[0])
                 except (IndexError, TypeError, ValueError):
-                    return False
+                    raise ValidationError
             else:
-                return ("%+f" % f).rstrip("0") + " dB"
+                return (u"%+f" % f).rstrip("0") + " dB"
 
 
 @Massager._register
@@ -139,9 +155,11 @@ class PeakMassager(Massager):
             try:
                 f = locale.atof(value)
             except (TypeError, ValueError):
-                return False
+                raise ValidationError
         else:
-            return (f >= 0) and (f < 2) and str(f)
+            if f < 0 or f >= 2:
+                raise ValidationError
+            return unicode(f)
 
 
 @Massager._register
@@ -157,13 +175,13 @@ class MBIDMassager(Massager):
         try:
             int(value, 16)
         except ValueError:
-            return False
+            raise ValidationError
         else:
             if len(value) != 32:
-                return False
+                raise ValidationError
             else:
-                return "-".join([value[:8], value[8:12], value[12:16],
-                                 value[16:20], value[20:]])
+                return u"-".join([value[:8], value[8:12], value[12:16],
+                                  value[16:20], value[20:]])
 
 
 @Massager._register
@@ -176,7 +194,9 @@ class MBAlbumStatus(Massager):
     options = ["official", "promotional", "bootleg"]
 
     def validate(self, value):
-        return value in self.options and value
+        if value not in self.options:
+            raise ValidationError
+        return value
 
 
 @Massager._register

@@ -681,8 +681,6 @@ class EditTags(Gtk.VBox):
             value = add.get_value()
             assert isinstance(value, unicode)
             value = massagers.validate(tag, value)
-            # XXX some return str for unicode input
-            value = unicode(value)
             assert isinstance(value, unicode)
             if not self.__songinfo.can_change(tag):
                 title = _("Invalid tag")

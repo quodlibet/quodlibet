@@ -2,26 +2,31 @@
 from tests import TestCase
 
 from quodlibet.util.massagers import Massager, validate, is_valid, \
-    error_message, get_options
+    error_message, get_options, ValidationError
 
 
 class TMassagers(TestCase):
     def validate(self, key, values):
+        massager = Massager.for_tag(key)
         for val in values:
-            self.failUnless(Massager.for_tag(key).is_valid(val))
+            self.assertTrue(massager.is_valid(val))
+            self.assertTrue(
+                isinstance(massager.validate(unicode(val)), unicode))
 
     def invalidate(self, key, values):
         for val in values:
             self.failIf(Massager.for_tag(key).is_valid(val))
 
     def equivs(self, key, equivs):
+        massager = Massager.for_tag(key)
         for value, normed in equivs.items():
-            self.failUnlessEqual(
-                normed, Massager.for_tag(key).validate(value))
+            self.assertEqual(normed, massager.validate(value))
+            self.assertTrue(
+                isinstance(massager.validate(unicode(value)), unicode))
 
     def test_validate_helper(self):
         self.assertEqual(validate("foo", "bar"), "bar")
-        self.assertFalse(validate("date", "bar"))
+        self.assertRaises(ValidationError, validate, "date", "bar")
         self.assertEqual(validate("date", "2000"), "2000")
 
     def test_is_valid_helper(self):
