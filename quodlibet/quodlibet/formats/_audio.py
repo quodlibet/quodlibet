@@ -337,7 +337,7 @@ class AudioFile(dict, ImageContainer):
                 codes = self.list("language")
                 if not codes:
                     return default
-                return "\n".join(iso639.get_name(c) or c for c in codes)
+                return u"\n".join(iso639.translate(c) or c for c in codes)
             elif key == "bitrate":
                 return util.format_bitrate(self("~#bitrate"))
             elif key == "#date":

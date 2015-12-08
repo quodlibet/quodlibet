@@ -5,6 +5,10 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import gettext
+
+from .i18n import GlibTranslations
+
 
 # Based on https://pkg-isocodes.alioth.debian.org/
 # which is licensed under LGPL-2.1+
@@ -504,11 +508,13 @@ _ISO_639 = [
 
 _ISO_639_1 = {}
 _ISO_639_2 = {}
+_LOWER = {}
 
 
 def _fill_mappings():
     for entry in _ISO_639:
         name, _1, _2B, _2T = entry
+        _LOWER[name.lower()] = name
         if _1:
             _ISO_639_1[_1] = entry
         _ISO_639_2[_2B] = entry
@@ -521,8 +527,19 @@ _fill_mappings()
 ISO_639_2 = _ISO_639_2.keys()
 
 
+def _gettext(name, cache=[]):
+    if not cache:
+        try:
+            t = gettext.translation("iso_639", class_=GlibTranslations)
+        except IOError:
+            cache.append(lambda x: x)
+        else:
+            cache.append(t.gettext)
+    return cache[0](name)
+
+
 def get_name(iso_code):
-    """Returns the englisch name for the iso_639_1/2 code or an empty string
+    """Returns the English name for the iso_639_1/2 code or an empty string
     if the code is not known.
     """
 
@@ -532,6 +549,26 @@ def get_name(iso_code):
         return _ISO_639_2[iso_code][0]
 
     return u""
+
+
+def translate(text):
+    """Given an iso code or a name tries to return a translated version
+    for the current locale.
+
+    If no translation is found returns an empty string.
+    """
+
+    # try to convert iso codes to English names and then translate
+    name = get_name(text)
+    if name:
+        return _gettext(name)
+    else:
+        # not an iso code, try to match with the English name.
+        # If all fails just return the original input
+        lower = text.lower()
+        if lower in _LOWER:
+            return _gettext(_LOWER[lower])
+        return u""
 
 
 def _print_iso_639():
