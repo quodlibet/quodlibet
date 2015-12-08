@@ -34,6 +34,7 @@ bar_va = AudioFile({
     "title": "latest",
     "artist": "Foo\nI have two artists",
     "album": "Bar",
+    "language": "de\neng",
     "albumartist": "Various Artists",
     "performer": "Jay-Z"})
 
@@ -67,6 +68,12 @@ class TAudioFile(TestCase):
         self.assertEqual(
             list(quux.iterrealitems()),
             [('album', u'Quuxly')])
+
+    def test_language(self):
+        self.assertEqual(bar_va("~language"), "German\nEnglish")
+        self.assertEqual(bar_va.list("~language"), ['German', 'English'])
+        self.assertEqual(bar_1_1("~language", default="foo"), "foo")
+        self.assertEqual(bar_1_1.list("~language"), [])
 
     def test_trackdisc(self):
         self.failUnlessEqual(bar_1_1("~#track"), 1)

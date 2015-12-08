@@ -20,6 +20,7 @@ from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, is_fsnative
 from quodlibet.util.path import normalize_path, fsnative, escape_filename
 from quodlibet.util.string import encode, decode, isascii
 
+from quodlibet.util import iso639
 from quodlibet.util.uri import URI
 from quodlibet.util import human_sort_key as human, capitalize
 
@@ -332,6 +333,11 @@ class AudioFile(dict, ImageContainer):
                                [self.get("~encoding"), self.get("encodedby")])
                 encoding = u"\n".join(parts)
                 return encoding or default
+            elif key == "language":
+                codes = self.list("language")
+                if not codes:
+                    return default
+                return "\n".join(iso639.get_name(c) or c for c in codes)
             elif key == "bitrate":
                 return util.format_bitrate(self("~#bitrate"))
             elif key == "#date":

@@ -521,6 +521,19 @@ _fill_mappings()
 ISO_639_2 = _ISO_639_2.keys()
 
 
+def get_name(iso_code):
+    """Returns the englisch name for the iso_639_1/2 code or an empty string
+    if the code is not known.
+    """
+
+    if iso_code in _ISO_639_1:
+        return _ISO_639_1[iso_code][0]
+    elif iso_code in _ISO_639_2:
+        return _ISO_639_2[iso_code][0]
+
+    return u""
+
+
 def _print_iso_639():
     """Prints the _ISO_639 list from above based on iso_639.xml.
 
