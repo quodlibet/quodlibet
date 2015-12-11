@@ -499,6 +499,24 @@ class TAudioFile(TestCase):
         self.failUnlessRaises(
             ValueError, setattr, AudioFile(), 'bookmarks', [(-1, "!")])
 
+    def test_has_rating(self):
+        song = AudioFile()
+        self.assertFalse(song.has_rating)
+        song["~#rating"] = 0.5
+        self.assertTrue(song.has_rating)
+        song.remove_rating()
+        self.assertFalse(song.has_rating)
+
+    def test_remove_rating(self):
+        song = AudioFile()
+        self.assertFalse(song.has_rating)
+        song.remove_rating()
+        self.assertFalse(song.has_rating)
+        song["~#rating"] = 0.5
+        self.assertTrue(song.has_rating)
+        song.remove_rating()
+        self.assertFalse(song.has_rating)
+
     def test_album_key(self):
         album_key_tests = [
             ({}, ('', '', '')),

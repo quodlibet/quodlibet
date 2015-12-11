@@ -477,6 +477,20 @@ class AudioFile(dict, ImageContainer):
             expanduser(fsnative(u"~/.lyrics")), sub_dir, filename)
         return path
 
+    @property
+    def has_rating(self):
+        """True if the song has a rating set.
+
+        In case this is False song('~#rating') would return the default value
+        """
+
+        return self.get("~#rating") is not None
+
+    def remove_rating(self):
+        """Removes the set rating so the default will be returned"""
+
+        self.pop("~#rating", None)
+
     def comma(self, key):
         """Get all values of a tag, separated by commas. Synthetic
         tags are supported, but will be slower. All list items
