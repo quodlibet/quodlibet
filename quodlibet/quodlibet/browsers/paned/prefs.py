@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
+#           2015 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -16,8 +17,7 @@ from quodlibet.qltk.x import SymbolicIconImage, MenuItem, Button
 from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
-from quodlibet.util import connect_obj
-
+from quodlibet.util import connect_obj, escape
 from .util import get_headers, save_headers
 
 
@@ -27,7 +27,10 @@ class PatternEditor(Gtk.VBox):
         ["genre", "~people", "album"],
         ["~people", "album"],
     ]
-    COMPLETION = ["genre", "grouping", "~people", "artist", "album", "~year"]
+    COMPLETION = ["genre", "grouping", "~people", "artist", "album", "~year",
+                  "~rating"]
+
+    _COMPLEX_PATTERN_EXAMPLE = "<~year|[b]<~year>[/b]|[i]unknown year[/i]>"
 
     def __init__(self):
         super(PatternEditor, self).__init__(spacing=6)
@@ -59,7 +62,10 @@ class PatternEditor(Gtk.VBox):
 
         self.pack_start(radio_box, False, True, 0)
 
-        cb = TagsComboBoxEntry(self.COMPLETION)
+        tooltip = _("Tag pattern with optional markup "
+                    "e.g. <tt>composer</tt> or\n<tt>%s</tt>"
+                    % escape(self._COMPLEX_PATTERN_EXAMPLE))
+        cb = TagsComboBoxEntry(self.COMPLETION, tooltip_markup=tooltip)
 
         view = BaseView(model=model)
         view.set_reorderable(True)
