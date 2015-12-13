@@ -234,13 +234,13 @@ class PanedBrowser(Browser, util.InstanceTracker):
     def __get_filter_pane(self, key):
         """Get the best pane for filtering etc."""
 
-        canditates = []
+        candidates = []
         for pane in self._panes:
             if (key in pane.tags or
                     (key in PEOPLE and "~people" in pane.tags)):
-                canditates.append((len(pane.tags), pane))
-        canditates.sort()
-        return (canditates and canditates[0][1]) or None
+                candidates.append((len(pane.tags), pane))
+        candidates.sort()
+        return (candidates and candidates[0][1]) or None
 
     def can_filter_tag(self, tag):
         return (self.__get_filter_pane(tag) is not None)

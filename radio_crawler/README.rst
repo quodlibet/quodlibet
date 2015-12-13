@@ -2,7 +2,7 @@
 Quod Libet Radio Crawler
 ========================
 
-A bunch of scripts for retrieving internet radio stream URLs and their 
+A bunch of scripts for retrieving Internet radio stream URLs and their
 metadata.
 
 Execute in the following order:

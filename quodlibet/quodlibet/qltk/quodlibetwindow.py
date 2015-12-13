@@ -1101,8 +1101,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         image.set_from_icon_name(icon, Gtk.IconSize.MENU)
 
     def __song_ended(self, player, song, stopped):
-        # check if the song should be removed base on the
-        # active filter of the current browser
+        # Check if the song should be removed, based on the
+        # active filter of the current browser.
         active_filter = self.browser.active_filter
         if song and active_filter and not active_filter(song):
             iter_ = self.songlist.model.find(song)
