@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from quodlibet.browsers.playlists.util import parse_m3u, parse_pls, PLAYLISTS
 from quodlibet.util.collection import Playlist
-from tests import TestCase, DATA_DIR, mkstemp, mkdtemp
+from tests import TestCase, DATA_DIR, mkstemp, mkdtemp, _TEMP_DIR
 from helper import dummy_path
 
 import os
@@ -151,7 +151,7 @@ class TPlaylistIntegration(TestCase):
         self.assertFalse(len(pl))
 
 
-class TPlaylists(TSearchBar):
+class TPlaylistsBrowser(TSearchBar):
     Bar = PlaylistsBrowser
 
     ANOTHER_SONG = AudioFile({
@@ -160,6 +160,9 @@ class TPlaylists(TSearchBar):
         "~filename": dummy_path(u"/dev/urandom")})
 
     def setUp(self):
+        # Testing locally is VERY dangerous without this...
+        self.assertTrue(_TEMP_DIR in PLAYLISTS,
+                        msg="Failing, don't want to delete %s" % PLAYLISTS)
         try:
             shutil.rmtree(PLAYLISTS)
         except OSError:
@@ -174,11 +177,11 @@ class TPlaylists(TSearchBar):
             af.sanitize()
         self.lib.add(all_songs)
 
-        pl = Playlist.new(PLAYLISTS, "Big", self.lib)
+        self.big = pl = Playlist.new(PLAYLISTS, "Big", self.lib)
         pl.extend(SONGS)
         pl.write()
 
-        pl = Playlist.new(PLAYLISTS, "Small", self.lib)
+        self.small = pl = Playlist.new(PLAYLISTS, "Small", self.lib)
         pl.extend([self.ANOTHER_SONG])
         pl.write()
 
@@ -233,3 +236,9 @@ class TPlaylists(TSearchBar):
         self.bar.filter_text("piman")
         self.assertFalse(self.bar.active_filter(self.ANOTHER_SONG),
                          msg="Shouldn't have matched 'piman' on second list")
+
+    def test_rename(self):
+        self.assertEquals(self.bar.playlists()[1], self.small)
+        self.bar._rename(0, "zBig")
+        self.assertEquals(self.bar.playlists()[0], self.small)
+        self.assertEquals(self.bar.playlists()[1].name, "zBig")

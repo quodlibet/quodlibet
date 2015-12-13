@@ -24,7 +24,6 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.models import ObjectStore, ObjectModelSort
 from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem
-from quodlibet.qltk import Icons
 
 from .util import *
 
@@ -143,7 +142,7 @@ class PlaylistsBrowser(Browser):
         return model, iters
 
     __lists = ObjectModelSort(model=ObjectStore())
-    __lists.set_default_sort_func(lambda m, a, b, data: cmp(m[a][0], m[b][0]))
+    __lists.set_default_sort_func(ObjectStore._sort_on_value)
 
     def __init__(self, library):
         super(PlaylistsBrowser, self).__init__(spacing=6)
@@ -487,14 +486,22 @@ class PlaylistsBrowser(Browser):
         editable.set_text(self.__lists[path][0].name)
 
     def __edited(self, render, path, newname):
+        return self._rename(path, newname)
+
+    def _rename(self, path, newname):
+        playlist = self.__lists[path][0]
         try:
-            self.__lists[path][0].rename(newname)
+            playlist.rename(newname)
         except ValueError as s:
             qltk.ErrorMessage(
                 None, _("Unable to rename playlist"), s).run()
         else:
             row = self.__lists[path]
-            self.__lists.row_changed(row.path, row.iter)
+            child_model = self.__lists.get_model()
+            child_model.remove(
+                self.__lists.convert_iter_to_child_iter(row.iter))
+            child_model.append(row=[playlist])
+            self._select_playlist(playlist)
 
     def __import(self, activator, library):
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013, 2014 Christoph Reiter
+#                 2015 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -179,6 +180,12 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
      - append_many(), insert_many()
      - itervalues()
     """
+
+    @staticmethod
+    def _sort_on_value(m, a, b, data):
+        """Sorts two items in an ObjectStore,
+        suitable for passing to `set_default_sort_func`"""
+        return cmp(m[a][0], m[b][0])
 
     def __init__(self, *args):
         if len(args) > 1:

@@ -220,6 +220,14 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
         self.assertEqual(changed[0], 0)
         self.assertEqual(inserted[0], len(m))
 
+    def test__sort_on_value(self):
+        m = ObjectStore()
+        iterBob = m.append(row=["bob"])
+        iterAlice = m.append(row=["alice"])
+        m.append(row=["charlie"])
+        result = ObjectStore._sort_on_value(m, iterAlice, iterBob, None)
+        self.assertEqual(result, cmp("alice", "bob"))
+
 
 class _TObjectTreeStoreMixin(object):
 
