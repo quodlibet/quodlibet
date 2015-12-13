@@ -161,7 +161,7 @@ class TPlaylistsBrowser(TSearchBar):
 
     def setUp(self):
         # Testing locally is VERY dangerous without this...
-        self.assertTrue(_TEMP_DIR in PLAYLISTS,
+        self.assertTrue(_TEMP_DIR in PLAYLISTS or os.name == "nt",
                         msg="Failing, don't want to delete %s" % PLAYLISTS)
         try:
             shutil.rmtree(PLAYLISTS)
