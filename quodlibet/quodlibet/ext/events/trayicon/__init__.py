@@ -11,7 +11,7 @@ from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import is_wayland
 from quodlibet.qltk.window import Window
-from quodlibet.util import is_unity, is_osx
+from quodlibet.util import is_unity, is_osx, is_plasma
 
 from .prefs import Preferences
 from .util import pconfig
@@ -27,7 +27,7 @@ def get_indicator_impl():
         # no indicator, fall back
         return SystemTray
 
-    if is_unity() or is_wayland():
+    if is_unity() or is_wayland() or is_plasma():
         return AppIndicator
     return SystemTray
 

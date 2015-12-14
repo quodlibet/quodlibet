@@ -13,10 +13,34 @@ import os
 import sys
 
 
+def xdg_get_session_desktop():
+    """Returns a list of values present in XDG_SESSION_DESKTOP"""
+
+    value = os.environ.get("XDG_SESSION_DESKTOP", "")
+    if not value:
+        return []
+    return value.split(":")
+
+
+def xdg_get_current_desktop():
+    """Returns a list of values present in XDG_CURRENT_DESKTOP"""
+
+    value = os.environ.get("XDG_CURRENT_DESKTOP", "")
+    if not value:
+        return []
+    return value.split(":")
+
+
+def is_plasma():
+    """If we are running under KDE/plasma"""
+
+    return "plasma" in xdg_get_session_desktop()
+
+
 def is_unity():
     """If we are running under Ubuntu/Unity"""
 
-    return os.environ.get("XDG_CURRENT_DESKTOP", "") == "Unity"
+    return "Unity" in xdg_get_current_desktop()
 
 
 def is_windows():
