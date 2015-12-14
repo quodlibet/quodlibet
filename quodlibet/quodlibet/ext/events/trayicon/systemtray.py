@@ -11,113 +11,17 @@ import sys
 
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 
-from quodlibet import browsers, config, qltk, util, app
-from quodlibet.config import RATINGS
+from quodlibet import app
+from quodlibet import config
+from quodlibet import util
 from quodlibet.pattern import Pattern
-from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk.browser import LibraryBrowser
-from quodlibet.qltk.information import Information
-from quodlibet.qltk.playorder import ORDERS
-from quodlibet.qltk.properties import SongProperties
-from quodlibet.qltk.window import Window
-from quodlibet.qltk.entry import UndoEntry
-from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
+from quodlibet.qltk.window import Window
 from quodlibet.util.thumbnails import scale
-from quodlibet.util import connect_obj
-from quodlibet.plugins import PluginConfig
 
-
-# migrate option
-if config.has_option('plugins', 'trayicon_window_hide'):
-    value = config.getboolean('plugins', 'trayicon_window_hide')
-    config.remove_option('plugins', 'trayicon_window_hide')
-    config.set('plugins', 'icon_window_hide', value)
-
-
-DEFAULT_PATTERN = ("<album|<album~discnumber~part~tracknumber~title~version>|"
-                   "<artist~title~version>>")
-
-
-pconfig = PluginConfig("icon")
-pconfig.defaults.set("window_hide", True)
-pconfig.defaults.set("tooltip", DEFAULT_PATTERN)
-pconfig.defaults.set("modifier_swap", False)
-pconfig.defaults.set("window_visible", True)
-
-
-class Preferences(Gtk.VBox):
-    """A small window to configure the tray icon's tooltip."""
-
-    def __init__(self):
-        super(Preferences, self).__init__(spacing=12)
-
-        self.set_border_width(6)
-
-        ccb = pconfig.ConfigCheckButton(_("Hide main window on close"),
-                                        'window_hide', populate=True)
-        self.pack_start(ccb, False, True, 0)
-
-        combo = Gtk.ComboBoxText()
-        combo.append_text(_("Scroll wheel adjusts volume\n"
-                            "Shift and scroll wheel changes song"))
-        combo.append_text(_("Scroll wheel changes song\n"
-                            "Shift and scroll wheel adjusts volume"))
-        combo.set_active(int(pconfig.getboolean("modifier_swap")))
-        combo.connect('changed', self.__changed_combo)
-
-        self.pack_start(qltk.Frame(_("Scroll _Wheel"), child=combo),
-                        True, True, 0)
-
-        box = Gtk.VBox(spacing=12)
-
-        entry_box = Gtk.HBox(spacing=6)
-
-        entry = UndoEntry()
-        entry_box.pack_start(entry, True, True, 0)
-
-        def on_reverted(*args):
-            pconfig.reset("tooltip")
-            entry.set_text(pconfig.gettext("tooltip"))
-
-        revert = Gtk.Button()
-        revert.add(Gtk.Image.new_from_icon_name(
-            Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
-        revert.connect("clicked", on_reverted)
-        entry_box.pack_start(revert, False, True, 0)
-
-        box.pack_start(entry_box, False, True, 0)
-
-        preview = Gtk.Label()
-        preview.set_line_wrap(True)
-        frame = Gtk.Frame()
-        frame.add(preview)
-        box.pack_start(frame, False, True, 0)
-
-        frame = qltk.Frame(_("Tooltip Display"), child=box)
-        frame.get_label_widget().set_mnemonic_widget(entry)
-        self.pack_start(frame, True, True, 0)
-
-        entry.connect('changed', self.__changed_entry, preview, frame)
-        entry.set_text(pconfig.gettext("tooltip"))
-
-        for child in self.get_children():
-            child.show_all()
-
-    def __changed_combo(self, combo):
-        pconfig.set("modifier_swap", bool(combo.get_active()))
-
-    def __changed_entry(self, entry, label, frame):
-        text = entry.get_text().decode("utf-8")
-
-        if app.player.info is None:
-            text = _("Not playing")
-        else:
-            text = Pattern(text) % app.player.info
-
-        label.set_text(text)
-        frame.set_tooltip_text(text)
-        pconfig.set("tooltip", entry.get_text())
+from .base import BaseIndicator
+from .menu import IndicatorMenu
+from .util import pconfig
 
 
 def get_paused_pixbuf(boundary, diff):
@@ -191,14 +95,10 @@ def new_with_paused_emblem(icon_pixbuf):
     return True, base
 
 
-class SysTray(object):
+class SystemTray(BaseIndicator):
     """A wrapper for Gtk.StatusIcon with some added features,
     workarounds for bugs etc..
     """
-
-    __pattern = Pattern(
-        "<album|<album~discnumber~part~tracknumber~title~version>|"
-        "<artist~title~version>>")
 
     def __init__(self):
         self.__size = -1
@@ -214,7 +114,7 @@ class SysTray(object):
         self._icon.connect('size-changed', self.__size_changed)
         self._icon.connect("notify::embedded", self.__embedded_changed)
         self.__embedded_changed(self._icon)
-        self._icon.connect('popup-menu', self._popup_menu)
+        self._icon.connect('popup-menu', self.__popup_menu)
         self._icon.connect('activate', self.__button_left)
 
         self._icon.connect('scroll-event', self.__scroll)
@@ -266,7 +166,7 @@ class SysTray(object):
         self._icon = None
         self.__show_window()
 
-    def set_song(self, song):
+    def set_info_song(self, song):
         """Updates the tooltip based on the passed song"""
 
         if not self._icon:
@@ -276,9 +176,9 @@ class SysTray(object):
             try:
                 pattern = Pattern(pconfig.get("tooltip"))
             except ValueError:
-                pattern = self.__pattern
-
-            tooltip = pattern % song
+                tooltip = u""
+            else:
+                tooltip = pattern % song
         else:
             tooltip = _("Not playing")
 
@@ -298,7 +198,7 @@ class SysTray(object):
         if not self._icon:
             return
 
-        self._popup_menu(
+        self.__popup_menu(
             self._icon, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time())
 
     def __embedded_changed(self, icon, *args):
@@ -444,122 +344,12 @@ class SysTray(object):
             self.__menu = None
             return True
 
-    def _popup_menu(self, icon, button, time):
+    def __popup_menu(self, icon, button, time):
         if self.__destroy_win32_menu():
             return
-        self.__menu = menu = Gtk.Menu()
-
-        player = app.player
-        window = app.window
-
-        if player.paused:
-            playpause = MenuItem(_("_Play"), Icons.MEDIA_PLAYBACK_START)
-        else:
-            playpause = MenuItem(_("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE)
-        playpause.connect('activate', self.__play_pause)
-
-        previous = MenuItem(_("Pre_vious"), Icons.MEDIA_SKIP_BACKWARD)
-        previous.connect('activate', lambda *args: player.previous())
-
-        next = MenuItem(_("_Next"), Icons.MEDIA_SKIP_FORWARD)
-        next.connect('activate', lambda *args: player.next())
-
-        orders = Gtk.MenuItem(label=_("Play _Order"), use_underline=True)
-
-        repeat = Gtk.CheckMenuItem(label=_("_Repeat"), use_underline=True)
-        repeat.set_active(window.repeat.get_active())
-        repeat.connect('toggled',
-            lambda s: window.repeat.set_active(s.get_active()))
-
-        def set_safter(widget, safter_action):
-            safter_action.set_active(widget.get_active())
-
-        safter_action = app.window.stop_after
-        safter = Gtk.CheckMenuItem(label=_("Stop _after this song"),
-                                   use_underline=True)
-        safter.set_active(safter_action.get_active())
-        safter.connect('toggled', set_safter, safter_action)
-
-        def set_order(widget, order):
-            name = order.name
-            try:
-                window.order.set_active_by_name(name)
-            except ValueError:
-                pass
-
-        order_items = []
-        item = None
-        active_order = window.order.get_active()
-        for Kind in ORDERS:
-            item = RadioMenuItem(
-                    group=item,
-                    label=Kind.accelerated_name,
-                    use_underline=True)
-            order_items.append(item)
-            if Kind is active_order:
-                item.set_active(True)
-            item.connect('toggled', set_order, Kind)
-
-        order_sub = Gtk.Menu()
-        order_sub.append(repeat)
-        order_sub.append(safter)
-        order_sub.append(SeparatorMenuItem())
-        for item in order_items:
-            order_sub.append(item)
-        orders.set_submenu(order_sub)
-
-        browse = qltk.MenuItem(_("_Browse Library"), Icons.EDIT_FIND)
-        browse_sub = Gtk.Menu()
-
-        for Kind in browsers.browsers:
-            if Kind.is_empty:
-                continue
-            i = Gtk.MenuItem(label=Kind.accelerated_name, use_underline=True)
-            connect_obj(i,
-                'activate', LibraryBrowser.open, Kind, app.library, app.player)
-            browse_sub.append(i)
-
-        browse.set_submenu(browse_sub)
-
-        props = qltk.MenuItem(_("Edit _Tags"), Icons.DOCUMENT_PROPERTIES)
-        props.connect('activate', self.__properties)
-
-        info = MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
-        info.connect('activate', self.__information)
-
-        def set_rating(value):
-            song = player.song
-            if song is None:
-                return
-            else:
-                song["~#rating"] = value
-                app.librarian.changed([song])
-
-        rating = Gtk.MenuItem(label=_("_Rating"), use_underline=True)
-        rating_sub = Gtk.Menu()
-        for r in RATINGS.all:
-            item = Gtk.MenuItem(label="%0.2f\t%s" % (r, util.format_rating(r)))
-            connect_obj(item, 'activate', set_rating, r)
-            rating_sub.append(item)
-        rating.set_submenu(rating_sub)
-
-        quit = MenuItem(_("_Quit"), Icons.APPLICATION_EXIT)
-        quit.connect('activate', lambda *x: app.quit())
-
-        menu.append(playpause)
-        menu.append(SeparatorMenuItem())
-        menu.append(previous)
-        menu.append(next)
-        menu.append(orders)
-        menu.append(SeparatorMenuItem())
-        menu.append(browse)
-        menu.append(SeparatorMenuItem())
-        menu.append(props)
-        menu.append(info)
-        menu.append(rating)
-        menu.append(SeparatorMenuItem())
-        menu.append(quit)
-
+        self.__menu = menu = IndicatorMenu(app)
+        menu.set_paused(app.player.paused)
+        menu.set_song(app.player.song)
         menu.show_all()
 
         if sys.platform in ("win32", "darwin"):
@@ -569,41 +359,3 @@ class SysTray(object):
             pos_arg = self._icon
 
         menu.popup(None, None, pos_func, pos_arg, button, time)
-
-    def __properties(self, *args):
-        song = app.player.song
-        if song:
-            window = SongProperties(app.librarian, [song])
-            window.show()
-
-    def __information(self, *args):
-        song = app.player.song
-        if song:
-            window = Information(app.librarian, [song])
-            window.show()
-
-
-class TrayIcon(EventPlugin):
-
-    PLUGIN_ID = "Tray Icon"
-    PLUGIN_NAME = _("Tray Icon")
-    PLUGIN_DESC = _("Controls Quod Libet from the system tray.")
-
-    def enabled(self):
-        self._tray = SysTray()
-
-    def disabled(self):
-        self._tray.remove()
-        del self._tray
-
-    def PluginPreferences(self, parent):
-        return Preferences()
-
-    def plugin_on_song_started(self, song):
-        self._tray.set_song(song)
-
-    def plugin_on_paused(self):
-        self._tray.set_paused(True)
-
-    def plugin_on_unpaused(self):
-        self._tray.set_paused(False)

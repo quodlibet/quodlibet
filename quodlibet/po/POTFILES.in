@@ -61,7 +61,10 @@ quodlibet/ext/events/squeezebox_sync.py
 quodlibet/ext/events/synchronizedlyrics.py
 quodlibet/ext/events/telepathy_status.py
 quodlibet/ext/events/themeswitcher.py
-quodlibet/ext/events/trayicon.py
+quodlibet/ext/events/trayicon/__init__.py
+quodlibet/ext/events/trayicon/menu.py
+quodlibet/ext/events/trayicon/prefs.py
+quodlibet/ext/events/trayicon/systemtray.py
 quodlibet/ext/events/viewlyrics.py
 quodlibet/ext/events/write_cover.py
 quodlibet/ext/events/zeitgeist_client.py

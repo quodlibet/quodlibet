@@ -42,7 +42,8 @@ class TTrayIcon(PluginTestCase):
             self.plugin.disabled()
 
     def test_get_paused_pixbuf(self):
-        get_paused_pixbuf = self.modules["Tray Icon"].get_paused_pixbuf
+        get_paused_pixbuf = \
+            self.modules["Tray Icon"].systemtray.get_paused_pixbuf
 
         self.assertTrue(get_paused_pixbuf((1, 1), 0))
         self.assertRaises(ValueError, get_paused_pixbuf, (0, 0), 0)
@@ -50,7 +51,7 @@ class TTrayIcon(PluginTestCase):
 
     def test_new_with_paused_emblem(self):
         new_with_paused_emblem = \
-            self.modules["Tray Icon"].new_with_paused_emblem
+            self.modules["Tray Icon"].systemtray.new_with_paused_emblem
 
         # too small source pixbuf
         for w, h in [(150, 1), (1, 150), (1, 1)]:

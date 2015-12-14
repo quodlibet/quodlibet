@@ -13,7 +13,6 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet.config import RATINGS
 from quodlibet.qltk import SeparatorMenuItem
-from quodlibet.util import connect_obj
 
 
 class ConfirmRateMultipleDialog(qltk.Message):
@@ -34,7 +33,34 @@ class ConfirmRateMultipleDialog(qltk.Message):
 
 
 class RatingsMenuItem(Gtk.MenuItem):
-    __accels = Gtk.AccelGroup()
+
+    def __init__(self, songs, library, label=_("_Rating")):
+        super(RatingsMenuItem, self).__init__(label=label, use_underline=True)
+        self.set_songs(songs)
+
+        submenu = Gtk.Menu()
+        self.set_submenu(submenu)
+        for i in RATINGS.all:
+            itm = Gtk.MenuItem(label="%0.2f\t%s" % (i, util.format_rating(i)))
+            submenu.append(itm)
+            itm.connect('activate', self._on_rating_change, i, library)
+        reset = Gtk.MenuItem(label=_("_Remove rating"), use_underline=True)
+        reset.connect('activate', self._on_rating_remove, library)
+
+        submenu.append(SeparatorMenuItem())
+        submenu.append(reset)
+        submenu.show_all()
+
+    def set_songs(self, songs):
+        """Set a new set of songs affected by the rating menu"""
+
+        self._songs = songs
+
+    def _on_rating_change(self, menuitem, value, library):
+        self.set_rating(value, self._songs, library)
+
+    def _on_rating_remove(self, menutitem, library):
+        self.remove_rating(self._songs, library)
 
     def set_rating(self, value, songs, librarian):
         count = len(songs)
@@ -64,17 +90,3 @@ class RatingsMenuItem(Gtk.MenuItem):
                 del song["~#rating"]
                 reset.append(song)
         librarian.changed(reset)
-
-    def __init__(self, songs, library, label=_("_Rating")):
-        super(RatingsMenuItem, self).__init__(label=label, use_underline=True)
-        submenu = Gtk.Menu()
-        self.set_submenu(submenu)
-        for i in RATINGS.all:
-            itm = Gtk.MenuItem(label="%0.2f\t%s" % (i, util.format_rating(i)))
-            submenu.append(itm)
-            connect_obj(itm, 'activate', self.set_rating, i, songs, library)
-        reset = Gtk.MenuItem(label=_("_Remove rating"), use_underline=True)
-        connect_obj(reset, 'activate', self.remove_rating, songs, library)
-        submenu.append(SeparatorMenuItem())
-        submenu.append(reset)
-        submenu.show_all()
