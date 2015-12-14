@@ -9,7 +9,7 @@
 
 import sys
 
-from gi.repository import Gtk, Pango, Gdk, GdkPixbuf, GLib
+from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 
 from quodlibet import browsers, config, qltk, util, app
 from quodlibet.config import RATINGS
@@ -21,6 +21,7 @@ from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.window import Window
 from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.util.thumbnails import scale
@@ -29,6 +30,12 @@ from quodlibet.util import connect_obj
 
 def get_hide_window():
     return config.getboolean('plugins', 'trayicon_window_hide', True)
+
+
+def get_pattern():
+    default = ("<album|<album~discnumber~part~tracknumber~title~version>|"
+               "<artist~title~version>>")
+    return config.get("plugins", "icon_tooltip", default)
 
 
 class Preferences(Gtk.VBox):
@@ -57,43 +64,36 @@ class Preferences(Gtk.VBox):
                         True, True, 0)
 
         box = Gtk.VBox(spacing=12)
-        table = Gtk.Table(n_rows=2, n_columns=4)
-        table.set_row_spacings(6)
-        table.set_col_spacings(12)
 
-        cbs = []
-        for i, tag in enumerate([
-                "genre", "artist", "album", "discnumber", "part",
-                "tracknumber", "title", "version"]):
-            cb = Gtk.CheckButton(label=util.tag(tag))
-            cb.tag = tag
-            cbs.append(cb)
-            table.attach(cb, i % 3, i % 3 + 1, i // 3, i // 3 + 1)
-        box.pack_start(table, True, True, 0)
+        entry_box = Gtk.HBox(spacing=6)
 
-        entry = Gtk.Entry()
-        box.pack_start(entry, False, True, 0)
+        entry = UndoEntry()
+        entry_box.pack_start(entry, True, True, 0)
+
+        def on_reverted(*args):
+            config.remove_option("plugins", "icon_tooltip")
+            entry.set_text(get_pattern())
+
+        revert = Gtk.Button()
+        revert.add(Gtk.Image.new_from_icon_name(
+            Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
+        revert.connect("clicked", on_reverted)
+        entry_box.pack_start(revert, False, True, 0)
+
+        box.pack_start(entry_box, False, True, 0)
 
         preview = Gtk.Label()
-        preview.set_ellipsize(Pango.EllipsizeMode.END)
-        ev = Gtk.EventBox()
-        ev.add(preview)
-        box.pack_start(ev, False, True, 0)
+        preview.set_line_wrap(True)
+        frame = Gtk.Frame()
+        frame.add(preview)
+        box.pack_start(frame, False, True, 0)
 
         frame = qltk.Frame(_("Tooltip Display"), child=box)
         frame.get_label_widget().set_mnemonic_widget(entry)
         self.pack_start(frame, True, True, 0)
 
-        for cb in cbs:
-            cb.connect('toggled', self.__changed_cb, cbs, entry)
-        entry.connect(
-            'changed', self.__changed_entry, cbs, preview)
-        try:
-            entry.set_text(config.get("plugins", "icon_tooltip"))
-        except:
-            entry.set_text(
-                "<album|<album~discnumber~part~tracknumber~title~version>|"
-                "<artist~title~version>>")
+        entry.connect('changed', self.__changed_entry, preview, frame)
+        entry.set_text(get_pattern())
 
         for child in self.get_children():
             child.show_all()
@@ -102,35 +102,16 @@ class Preferences(Gtk.VBox):
         config.set(
             "plugins", "icon_modifier_swap", str(bool(combo.get_active())))
 
-    def __changed_cb(self, cb, cbs, entry):
-        text = "<%s>" % "~".join([c.tag for c in cbs if c.get_active()])
-        entry.set_text(text)
-
-    def __changed_entry(self, entry, cbs, label):
-        text = entry.get_text()
-        if text[0:1] == "<" and text[-1:] == ">":
-            parts = text[1:-1].split("~")
-            for cb in cbs:
-                if parts and parts[0] == cb.tag:
-                    parts.pop(0)
-            if parts:
-                for cb in cbs:
-                    cb.set_inconsistent(True)
-            else:
-                parts = text[1:-1].split("~")
-                for cb in cbs:
-                    cb.set_inconsistent(False)
-                    cb.set_active(cb.tag in parts)
-        else:
-            for cb in cbs:
-                cb.set_inconsistent(True)
+    def __changed_entry(self, entry, label, frame):
+        text = entry.get_text().decode("utf-8")
 
         if app.player.info is None:
             text = _("Not playing")
         else:
-            text = Pattern(entry.get_text()) % app.player.info
+            text = Pattern(text) % app.player.info
+
         label.set_text(text)
-        label.get_parent().set_tooltip_text(text)
+        frame.set_tooltip_text(text)
         config.set("plugins", "icon_tooltip", entry.get_text())
 
 
@@ -302,6 +283,18 @@ class SysTray(object):
         """Update the icon base on the paused state"""
 
         self.__update_icon()
+
+    def popup_menu(self):
+        """Show the context menu as if the icon was pressed.
+
+        Mainly for testing
+        """
+
+        if not self._icon:
+            return
+
+        self._popup_menu(
+            self._icon, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time())
 
     def __embedded_changed(self, icon, *args):
         if icon.get_property("embedded"):

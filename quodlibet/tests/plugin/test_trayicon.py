@@ -7,7 +7,7 @@
 
 import sys
 
-from gi.repository import Gtk, Gdk, GdkPixbuf
+from gi.repository import GdkPixbuf
 from quodlibet import config
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 from tests import skipIf
@@ -36,9 +36,10 @@ class TTrayIcon(PluginTestCase):
 
     def test_popup_menu(self):
         self.plugin.enabled()
-        self.plugin._popup_menu(self.plugin._icon, Gdk.BUTTON_SECONDARY,
-                                Gtk.get_current_event_time())
-        self.plugin.disabled()
+        try:
+            self.plugin._tray.popup_menu()
+        finally:
+            self.plugin.disabled()
 
     def test_get_paused_pixbuf(self):
         get_paused_pixbuf = self.modules["Tray Icon"].get_paused_pixbuf
