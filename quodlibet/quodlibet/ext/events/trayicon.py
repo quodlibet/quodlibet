@@ -34,7 +34,7 @@ def get_hide_window():
 class Preferences(Gtk.VBox):
     """A small window to configure the tray icon's tooltip."""
 
-    def __init__(self, activator):
+    def __init__(self):
         super(Preferences, self).__init__(spacing=12)
 
         self.set_border_width(6)
@@ -205,26 +205,21 @@ def new_with_paused_emblem(icon_pixbuf):
     return True, base
 
 
-class TrayIcon(EventPlugin):
-    _icon = None
-    __pixbuf = None
-    __pixbuf_paused = None
-    __icon_theme = None
-    __menu = None
-    __size = -1
-    __w_sig_map = None
-    __w_sig_del = None
-    __theme_sig = None
-    __first_map = True
+class SysTray(object):
+    """A wrapper for Gtk.StatusIcon with some added features,
+    workarounds for bugs etc..
+    """
+
     __pattern = Pattern(
         "<album|<album~discnumber~part~tracknumber~title~version>|"
         "<artist~title~version>>")
 
-    PLUGIN_ID = "Tray Icon"
-    PLUGIN_NAME = _("Tray Icon")
-    PLUGIN_DESC = _("Controls Quod Libet from the system tray.")
+    def __init__(self):
+        self.__size = -1
+        self.__pixbuf = None
+        self.__pixbuf_paused = None
+        self.__menu = None
 
-    def enabled(self):
         self._icon = Gtk.StatusIcon()
         self.__icon_theme = Gtk.IconTheme.get_default()
         self.__theme_sig = self.__icon_theme.connect('changed',
@@ -265,12 +260,12 @@ class TrayIcon(EventPlugin):
             if not config.getboolean("plugins", "icon_window_visible", True):
                 Window.prevent_inital_show(True)
 
-    def __embedded_changed(self, icon, *args):
-        if icon.get_property("embedded"):
-            size = icon.get_size()
-            self.__size_changed(icon, size)
+    def remove(self):
+        """Hides the tray icon and frees all resources.
 
-    def disabled(self):
+        Can only be called once.
+        """
+
         if self.__menu:
             self.__menu.destroy()
             self.__menu = None
@@ -285,6 +280,34 @@ class TrayIcon(EventPlugin):
         self._icon = None
         self.__show_window()
 
+    def set_song(self, song):
+        """Updates the tooltip based on the passed song"""
+
+        if not self._icon:
+            return
+
+        if song:
+            try:
+                pattern = Pattern(config.get("plugins", "icon_tooltip"))
+            except (ValueError, config.Error):
+                pattern = self.__pattern
+
+            tooltip = pattern % song
+        else:
+            tooltip = _("Not playing")
+
+        self._icon.set_tooltip_markup(util.escape(tooltip))
+
+    def set_paused(self, paused):
+        """Update the icon base on the paused state"""
+
+        self.__update_icon()
+
+    def __embedded_changed(self, icon, *args):
+        if icon.get_property("embedded"):
+            size = icon.get_size()
+            self.__size_changed(icon, size)
+
     def __user_can_unhide(self):
         """Return if the user has the possibility to show the Window somehow"""
 
@@ -293,11 +316,6 @@ class TrayIcon(EventPlugin):
 
         # Either if it's embedded, or if we are waiting for the embedded check
         return bool(self._icon.is_embedded() or self.__emb_sig)
-
-    def PluginPreferences(self, parent):
-        p = Preferences(self)
-        p.connect('destroy', self.__prefs_destroy)
-        return p
 
     def __update_icon(self):
         if self.__size <= 0:
@@ -353,10 +371,6 @@ class TrayIcon(EventPlugin):
             self.__update_icon()
 
         return size == req_size and self.__pixbuf is not None
-
-    def __prefs_destroy(self, *args):
-        if self._icon:
-            self.plugin_on_song_started(app.player.song)
 
     def __window_delete(self, win, event):
         if self.__user_can_unhide() and get_hide_window():
@@ -424,24 +438,9 @@ class TrayIcon(EventPlugin):
             elif event.direction in [DIR.DOWN, DIR.RIGHT]:
                 player.volume -= 0.05
 
-    def plugin_on_song_started(self, song):
-        if not self._icon:
-            return
-
-        if song:
-            try:
-                pattern = Pattern(config.get("plugins", "icon_tooltip"))
-            except (ValueError, config.Error):
-                pattern = self.__pattern
-
-            tooltip = pattern % song
-        else:
-            tooltip = _("Not playing")
-
-        self._icon.set_tooltip_markup(util.escape(tooltip))
-
     def __destroy_win32_menu(self):
         """Returns True if current action should only hide the menu"""
+
         if sys.platform in ("win32", "darwin") and self.__menu:
             self.__menu.destroy()
             self.__menu = None
@@ -573,9 +572,6 @@ class TrayIcon(EventPlugin):
 
         menu.popup(None, None, pos_func, pos_arg, button, time)
 
-    plugin_on_paused = __update_icon
-    plugin_on_unpaused = __update_icon
-
     def __properties(self, *args):
         song = app.player.song
         if song:
@@ -587,3 +583,29 @@ class TrayIcon(EventPlugin):
         if song:
             window = Information(app.librarian, [song])
             window.show()
+
+
+class TrayIcon(EventPlugin):
+
+    PLUGIN_ID = "Tray Icon"
+    PLUGIN_NAME = _("Tray Icon")
+    PLUGIN_DESC = _("Controls Quod Libet from the system tray.")
+
+    def enabled(self):
+        self._tray = SysTray()
+
+    def disabled(self):
+        self._tray.remove()
+        del self._tray
+
+    def PluginPreferences(self, parent):
+        return Preferences()
+
+    def plugin_on_song_started(self, song):
+        self._tray.set_song(song)
+
+    def plugin_on_paused(self):
+        self._tray.set_paused(True)
+
+    def plugin_on_unpaused(self):
+        self._tray.set_paused(False)
