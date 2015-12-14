@@ -20,22 +20,30 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.window import Window
-from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.util.thumbnails import scale
 from quodlibet.util import connect_obj
+from quodlibet.plugins import PluginConfig
 
 
-def get_hide_window():
-    return config.getboolean('plugins', 'trayicon_window_hide', True)
+# migrate option
+if config.has_option('plugins', 'trayicon_window_hide'):
+    value = config.getboolean('plugins', 'trayicon_window_hide')
+    config.remove_option('plugins', 'trayicon_window_hide')
+    config.set('plugins', 'icon_window_hide', value)
 
 
-def get_pattern():
-    default = ("<album|<album~discnumber~part~tracknumber~title~version>|"
-               "<artist~title~version>>")
-    return config.get("plugins", "icon_tooltip", default)
+DEFAULT_PATTERN = ("<album|<album~discnumber~part~tracknumber~title~version>|"
+                   "<artist~title~version>>")
+
+
+pconfig = PluginConfig("icon")
+pconfig.defaults.set("window_hide", True)
+pconfig.defaults.set("tooltip", DEFAULT_PATTERN)
+pconfig.defaults.set("modifier_swap", False)
+pconfig.defaults.set("window_visible", True)
 
 
 class Preferences(Gtk.VBox):
@@ -46,9 +54,8 @@ class Preferences(Gtk.VBox):
 
         self.set_border_width(6)
 
-        ccb = ConfigCheckButton(_("Hide main window on close"),
-                                'plugins', 'trayicon_window_hide')
-        ccb.set_active(get_hide_window())
+        ccb = pconfig.ConfigCheckButton(_("Hide main window on close"),
+                                        'window_hide', populate=True)
         self.pack_start(ccb, False, True, 0)
 
         combo = Gtk.ComboBoxText()
@@ -56,8 +63,7 @@ class Preferences(Gtk.VBox):
                             "Shift and scroll wheel changes song"))
         combo.append_text(_("Scroll wheel changes song\n"
                             "Shift and scroll wheel adjusts volume"))
-        combo.set_active(int(
-                config.getboolean("plugins", "icon_modifier_swap", False)))
+        combo.set_active(int(pconfig.getboolean("modifier_swap")))
         combo.connect('changed', self.__changed_combo)
 
         self.pack_start(qltk.Frame(_("Scroll _Wheel"), child=combo),
@@ -71,8 +77,8 @@ class Preferences(Gtk.VBox):
         entry_box.pack_start(entry, True, True, 0)
 
         def on_reverted(*args):
-            config.remove_option("plugins", "icon_tooltip")
-            entry.set_text(get_pattern())
+            pconfig.reset("tooltip")
+            entry.set_text(pconfig.gettext("tooltip"))
 
         revert = Gtk.Button()
         revert.add(Gtk.Image.new_from_icon_name(
@@ -93,14 +99,13 @@ class Preferences(Gtk.VBox):
         self.pack_start(frame, True, True, 0)
 
         entry.connect('changed', self.__changed_entry, preview, frame)
-        entry.set_text(get_pattern())
+        entry.set_text(pconfig.gettext("tooltip"))
 
         for child in self.get_children():
             child.show_all()
 
     def __changed_combo(self, combo):
-        config.set(
-            "plugins", "icon_modifier_swap", str(bool(combo.get_active())))
+        pconfig.set("modifier_swap", bool(combo.get_active()))
 
     def __changed_entry(self, entry, label, frame):
         text = entry.get_text().decode("utf-8")
@@ -112,7 +117,7 @@ class Preferences(Gtk.VBox):
 
         label.set_text(text)
         frame.set_tooltip_text(text)
-        config.set("plugins", "icon_tooltip", entry.get_text())
+        pconfig.set("tooltip", entry.get_text())
 
 
 def get_paused_pixbuf(boundary, diff):
@@ -238,7 +243,7 @@ class SysTray(object):
         self.__emb_sig = GLib.idle_add(add_timeout)
 
         if sys.platform != "darwin":
-            if not config.getboolean("plugins", "icon_window_visible", True):
+            if not pconfig.getboolean("window_visible"):
                 Window.prevent_inital_show(True)
 
     def remove(self):
@@ -269,8 +274,8 @@ class SysTray(object):
 
         if song:
             try:
-                pattern = Pattern(config.get("plugins", "icon_tooltip"))
-            except (ValueError, config.Error):
+                pattern = Pattern(pconfig.get("tooltip"))
+            except ValueError:
                 pattern = self.__pattern
 
             tooltip = pattern % song
@@ -366,17 +371,17 @@ class SysTray(object):
         return size == req_size and self.__pixbuf is not None
 
     def __window_delete(self, win, event):
-        if self.__user_can_unhide() and get_hide_window():
+        if self.__user_can_unhide() and pconfig.getboolean("window_hide"):
             self.__hide_window()
             return True
         return False
 
     def __window_show(self, win, *args):
-        config.set("plugins", "icon_window_visible", "true")
+        pconfig.set("window_visible", True)
 
     def __hide_window(self):
         app.hide()
-        config.set("plugins", "icon_window_visible", "false")
+        pconfig.set("window_visible", False)
 
     def __show_window(self):
         app.present()
@@ -411,7 +416,7 @@ class SysTray(object):
     def __scroll(self, widget, event):
         state = event.get_state()
         try:
-            state ^= config.getboolean("plugins", "icon_modifier_swap")
+            state ^= pconfig.getboolean("modifier_swap")
         except config.Error:
             pass
 
