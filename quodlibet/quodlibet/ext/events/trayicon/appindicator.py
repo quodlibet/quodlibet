@@ -16,6 +16,7 @@ except ValueError as e:
 from gi.repository import AppIndicator3
 
 from quodlibet import app
+from quodlibet.util import is_plasma
 from .base import BaseIndicator
 from .util import pconfig
 from .menu import IndicatorMenu
@@ -24,9 +25,12 @@ from .menu import IndicatorMenu
 class AppIndicator(BaseIndicator):
 
     def __init__(self):
+        # KDE doesn't support symbolic icons afaics
+        icon_name = app.icon_name if is_plasma() else app.symbolic_icon_name
         self.indicator = AppIndicator3.Indicator.new(
-            app.id, app.symbolic_icon_name,
+            app.id, icon_name,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
+
         self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self.menu = IndicatorMenu(app, add_show_item=True)
         self.indicator.set_menu(self.menu)
