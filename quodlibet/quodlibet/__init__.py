@@ -65,6 +65,14 @@ class Application(object):
     """The application ID e.g. 'quodlibet'"""
 
     @property
+    def icon_name(self):
+        return self.id
+
+    @property
+    def symbolic_icon_name(self):
+        return "%s-symbolic" % self.icon_name
+
+    @property
     def librarian(self):
         return self.library.librarian
 

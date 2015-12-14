@@ -25,7 +25,7 @@ class AppIndicator(BaseIndicator):
 
     def __init__(self):
         self.indicator = AppIndicator3.Indicator.new(
-            app.id, app.id,
+            app.id, app.symbolic_icon_name,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
         self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self.menu = IndicatorMenu(app, add_show_item=True)
