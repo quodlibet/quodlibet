@@ -34,8 +34,15 @@ class AppIndicator(BaseIndicator):
         self.indicator.set_title(app.name)
         self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self.menu = IndicatorMenu(app, add_show_item=True)
-        play_item = self.menu.get_play_item()
-        self.indicator.set_secondary_activate_target(play_item)
+
+        def on_action_item_changed(menu, indicator):
+            indicator.set_secondary_activate_target(menu.get_action_item())
+
+        self.menu.connect("action-item-changed",
+                          on_action_item_changed,
+                          self.indicator)
+        action_item = self.menu.get_action_item()
+        self.indicator.set_secondary_activate_target(action_item)
         self.indicator.set_menu(self.menu)
 
         self.__w_sig_show = app.window.connect('show', self.__window_show)

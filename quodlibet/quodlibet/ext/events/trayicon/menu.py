@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
+from gi.repository import GObject, Gtk
 
 from quodlibet import browsers
 from quodlibet import qltk
@@ -23,6 +23,10 @@ from .util import pconfig
 
 
 class IndicatorMenu(Gtk.Menu):
+
+    __gsignals__ = {
+        'action-item-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+    }
 
     def __init__(self, app, add_show_item=False):
         super(IndicatorMenu, self).__init__()
@@ -54,6 +58,7 @@ class IndicatorMenu(Gtk.Menu):
         self._play_item.connect("activate", self._on_play_pause, player)
         self._pause_item = MenuItem(_("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE)
         self._pause_item.connect("activate", self._on_play_pause, player)
+        self._action_item = None
 
         previous = MenuItem(_("Pre_vious"), Icons.MEDIA_SKIP_BACKWARD)
         previous.connect('activate', lambda *args: player.previous())
@@ -171,16 +176,20 @@ class IndicatorMenu(Gtk.Menu):
         self.set_paused(True)
         self.set_song(None)
 
-    def get_play_item(self):
-        """Returns the 'Play' action menu item (used for unity)"""
+    def get_action_item(self):
+        """Returns the 'Play' or 'Pause' action menu item (used for unity).
+        'action-item-changed' gets emitted if this changes.
+        """
 
-        return self._play_item
+        return self._action_item
 
     def set_paused(self, paused):
         """Update the menu based on the player paused state"""
 
         self._play_item.set_visible(paused)
         self._pause_item.set_visible(not paused)
+        self._action_item = self._play_item if paused else self._pause_item
+        self.emit("action-item-changed")
 
     def set_song(self, song):
         """Update the menu based on the passed song. Can be None.
