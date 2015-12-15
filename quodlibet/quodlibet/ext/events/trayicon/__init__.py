@@ -42,6 +42,7 @@ class TrayIconPlugin(EventPlugin):
         impl = get_indicator_impl()
         self._tray = impl()
         self._tray.set_song(app.player.song)
+        self._tray.set_info_song(app.player.info)
         self._tray.set_paused(app.player.paused)
 
         if not is_osx() and not pconfig.getboolean("window_visible"):

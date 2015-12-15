@@ -17,6 +17,7 @@ from gi.repository import AppIndicator3, Gdk
 
 from quodlibet import app
 from quodlibet.util import is_plasma
+from quodlibet.pattern import Pattern
 from .base import BaseIndicator
 from .util import pconfig
 from .menu import IndicatorMenu
@@ -60,6 +61,20 @@ class AppIndicator(BaseIndicator):
         self.__w_sig_show = app.window.connect('show', self.__window_show)
         self.__w_sig_del = app.window.connect('delete-event',
                                               self.__window_delete)
+
+    def set_info_song(self, song):
+        if song:
+            try:
+                pattern = Pattern(pconfig.get("tooltip"))
+            except ValueError:
+                tooltip = u""
+            else:
+                tooltip = pattern % song
+        else:
+            tooltip = _("Not playing")
+
+        print tooltip
+        self.indicator.set_title(tooltip)
 
     def set_paused(self, value):
         self.menu.set_paused(value)
