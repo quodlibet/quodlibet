@@ -22,13 +22,23 @@ from .util import pconfig
 from .menu import IndicatorMenu
 
 
+def get_next_app_id(state=[0]):
+    """Returns an ever increasing app id variant.. I can't find a way
+    to remove an indicator, so just hide old ones and add new different ones
+    this way.
+    """
+
+    state[0] += 1
+    return "%s-%d" % (app.id, state[0])
+
+
 class AppIndicator(BaseIndicator):
 
     def __init__(self):
         # KDE doesn't support symbolic icons afaics
         icon_name = app.icon_name if is_plasma() else app.symbolic_icon_name
         self.indicator = AppIndicator3.Indicator.new(
-            app.id, icon_name,
+            get_next_app_id(), icon_name,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
 
         self.indicator.set_title(app.name)
@@ -59,6 +69,7 @@ class AppIndicator(BaseIndicator):
 
     def remove(self):
         # No function to remove an Indicator so it can be added back :(
+        # If there is we can get rid of get_next_app_id()
         app.window.disconnect(self.__w_sig_show)
         app.window.disconnect(self.__w_sig_del)
         self.indicator.disconnect(self.__scroll_id)
