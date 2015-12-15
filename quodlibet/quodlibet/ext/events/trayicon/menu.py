@@ -171,6 +171,11 @@ class IndicatorMenu(Gtk.Menu):
         self.set_paused(True)
         self.set_song(None)
 
+    def get_play_item(self):
+        """Returns the 'Play' action menu item (used for unity)"""
+
+        return self._play_item
+
     def set_paused(self, paused):
         """Update the menu based on the player paused state"""
 

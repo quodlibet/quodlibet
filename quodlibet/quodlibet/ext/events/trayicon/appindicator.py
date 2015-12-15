@@ -31,8 +31,11 @@ class AppIndicator(BaseIndicator):
             app.id, icon_name,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
 
+        self.indicator.set_title(app.name)
         self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self.menu = IndicatorMenu(app, add_show_item=True)
+        play_item = self.menu.get_play_item()
+        self.indicator.set_secondary_activate_target(play_item)
         self.indicator.set_menu(self.menu)
 
         self.__w_sig_show = app.window.connect('show', self.__window_show)
