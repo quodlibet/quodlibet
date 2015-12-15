@@ -73,7 +73,6 @@ class AppIndicator(BaseIndicator):
         else:
             tooltip = _("Not playing")
 
-        print tooltip
         self.indicator.set_title(tooltip)
 
     def set_paused(self, value):
