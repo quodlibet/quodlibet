@@ -13,7 +13,7 @@ try:
 except ValueError as e:
     raise ImportError(e)
 
-from gi.repository import AppIndicator3
+from gi.repository import AppIndicator3, Gdk
 
 from quodlibet import app
 from quodlibet.util import is_plasma
@@ -44,6 +44,8 @@ class AppIndicator(BaseIndicator):
         action_item = self.menu.get_action_item()
         self.indicator.set_secondary_activate_target(action_item)
         self.indicator.set_menu(self.menu)
+        self.__scroll_id = self.indicator.connect(
+            "scroll_event", self.__on_scroll)
 
         self.__w_sig_show = app.window.connect('show', self.__window_show)
         self.__w_sig_del = app.window.connect('delete-event',
@@ -56,12 +58,31 @@ class AppIndicator(BaseIndicator):
         self.menu.set_song(song)
 
     def remove(self):
+        # No function to remove an Indicator so it can be added back :(
         app.window.disconnect(self.__w_sig_show)
         app.window.disconnect(self.__w_sig_del)
+        self.indicator.disconnect(self.__scroll_id)
+        self.__scroll_id = None
         self.indicator.set_status(AppIndicator3.IndicatorStatus.PASSIVE)
         self.indicator = None
         self.menu.destroy()
         self.menu = None
+
+    def __on_scroll(self, indicator, steps, direction):
+        # If direction here is always UP you're hitting
+        # https://bugs.launchpad.net/indicator-application/+bug/1075152
+        modifier_swap = pconfig.getboolean("modifier_swap")
+        for step in xrange(steps):
+            if direction == Gdk.ScrollDirection.UP:
+                if modifier_swap:
+                    app.player.previous()
+                else:
+                    app.player.volume += 0.05
+            elif direction == Gdk.ScrollDirection.DOWN:
+                if modifier_swap:
+                    app.player.next()
+                else:
+                    app.player.volume -= 0.05
 
     def __window_delete(self, win, event):
         if pconfig.getboolean("window_hide"):
