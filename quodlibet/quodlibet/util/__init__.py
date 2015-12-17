@@ -525,8 +525,10 @@ def pattern(pat, cap=True, esc=False):
 
         def list(self, key):
             return [tag(k, self.cap) for k in tagsplit(key)]
-        list_seperate = list
-        __call__ = comma
+        list_separate = list
+
+        def __call__(self, tag, default):
+            return 0 if '~#' in tag[:2] else self.comma(tag)
 
     fakesong = Fakesong({'filename': tag('filename', cap)})
     fakesong.cap = cap
