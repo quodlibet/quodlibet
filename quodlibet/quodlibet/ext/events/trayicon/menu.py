@@ -11,10 +11,9 @@ from gi.repository import GObject, Gtk
 from quodlibet import browsers
 from quodlibet import qltk
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
-from quodlibet.qltk.x import RadioMenuItem, SeparatorMenuItem, MenuItem
+from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.qltk import Icons
-from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
@@ -33,7 +32,6 @@ class IndicatorMenu(Gtk.Menu):
 
         self._app = app
         player = app.player
-        window = app.window
 
         if add_show_item:
             show_item = Gtk.CheckMenuItem.new_with_mnemonic(
@@ -56,8 +54,10 @@ class IndicatorMenu(Gtk.Menu):
 
         self._play_item = MenuItem(_("_Play"), Icons.MEDIA_PLAYBACK_START)
         self._play_item.connect("activate", self._on_play_pause, player)
+        self._play_item.set_no_show_all(True)
         self._pause_item = MenuItem(_("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE)
         self._pause_item.connect("activate", self._on_play_pause, player)
+        self._pause_item.set_no_show_all(True)
         self._action_item = None
 
         previous = MenuItem(_("Pre_vious"), Icons.MEDIA_SKIP_BACKWARD)
@@ -66,50 +66,23 @@ class IndicatorMenu(Gtk.Menu):
         next = MenuItem(_("_Next"), Icons.MEDIA_SKIP_FORWARD)
         next.connect('activate', lambda *args: player.next())
 
-        # FIXME: the order/repeat items should depend on the player state..
-        orders = Gtk.MenuItem(label=_("Play _Order"), use_underline=True)
+        player_options = app.player_options
+
+        shuffle = Gtk.CheckMenuItem(label=_("_Shuffle"), use_underline=True)
+        player_options.bind_property("random", shuffle, "active",
+                                     GObject.BindingFlags.BIDIRECTIONAL)
+        player_options.notify("random")
 
         repeat = Gtk.CheckMenuItem(label=_("_Repeat"), use_underline=True)
-        repeat.set_active(window.repeat.get_active())
-        repeat.connect('toggled',
-            lambda s: window.repeat.set_active(s.get_active()))
+        player_options.bind_property("repeat", repeat, "active",
+                                     GObject.BindingFlags.BIDIRECTIONAL)
+        player_options.notify("repeat")
 
-        def set_safter(widget, safter_action):
-            safter_action.set_active(widget.get_active())
-
-        safter_action = app.window.stop_after
         safter = Gtk.CheckMenuItem(label=_("Stop _after this song"),
                                    use_underline=True)
-        safter.set_active(safter_action.get_active())
-        safter.connect('toggled', set_safter, safter_action)
-
-        def set_order(widget, order):
-            name = order.name
-            try:
-                window.order.set_active_by_name(name)
-            except ValueError:
-                pass
-
-        order_items = []
-        item = None
-        active_order = window.order.get_active()
-        for Kind in ORDERS:
-            item = RadioMenuItem(
-                    group=item,
-                    label=Kind.accelerated_name,
-                    use_underline=True)
-            order_items.append(item)
-            if Kind is active_order:
-                item.set_active(True)
-            item.connect('toggled', set_order, Kind)
-
-        order_sub = Gtk.Menu()
-        order_sub.append(repeat)
-        order_sub.append(safter)
-        order_sub.append(SeparatorMenuItem())
-        for item in order_items:
-            order_sub.append(item)
-        orders.set_submenu(order_sub)
+        player_options.bind_property("stop-after", safter, "active",
+                                     GObject.BindingFlags.BIDIRECTIONAL)
+        player_options.notify("stop-after")
 
         browse = qltk.MenuItem(_("_Browse Library"), Icons.EDIT_FIND)
         browse_sub = Gtk.Menu()
@@ -158,16 +131,18 @@ class IndicatorMenu(Gtk.Menu):
 
         self.append(self._play_item)
         self.append(self._pause_item)
-        self.append(SeparatorMenuItem())
         self.append(previous)
         self.append(next)
-        self.append(orders)
         self.append(SeparatorMenuItem())
-        self.append(browse)
+        self.append(shuffle)
+        self.append(repeat)
+        self.append(safter)
         self.append(SeparatorMenuItem())
+        self.append(rating)
         self.append(self._props)
         self.append(self._info)
-        self.append(rating)
+        self.append(SeparatorMenuItem())
+        self.append(browse)
         self.append(SeparatorMenuItem())
         self.append(quit)
 

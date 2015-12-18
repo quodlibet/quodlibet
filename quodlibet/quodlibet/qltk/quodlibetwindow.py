@@ -65,10 +65,16 @@ class PlayerOptions(GObject.Object):
     is called.
     """
 
-    __gsignals__ = {
-        'random-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
-        'repeat-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
-        'single-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+    __gproperties__ = {
+        'random': (bool, '', '', False,
+                   GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
+        'repeat': (bool, '', '', False,
+                   GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
+        'single': (bool, '', '', False,
+                   GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
+        'stop-after': (
+            bool, '', '', False,
+            GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
     }
 
     def __init__(self, window):
@@ -78,11 +84,15 @@ class PlayerOptions(GObject.Object):
 
         self._repeat = window.repeat
         self._rid = self._repeat.connect(
-            "toggled", lambda *x: self.emit("repeat-changed"))
+            "toggled", lambda *x: self.notify("repeat"))
+
+        self._stop_after = window.stop_after
+        self._said = self._stop_after.connect(
+            "toggled", lambda *x: self.notify("stop-after"))
 
         def order_changed(*args):
-            self.emit("random-changed")
-            self.emit("single-changed")
+            self.notify("random")
+            self.notify("single")
 
         self._order = window.order
         self._oid = self._order.connect("changed", order_changed)
@@ -99,6 +109,15 @@ class PlayerOptions(GObject.Object):
         if self._order:
             self._order.disconnect(self._oid)
             self._order = None
+        if self._stop_after:
+            self._stop_after.disconnect(self._said)
+            self._stop_after = None
+
+    def do_get_property(self, param):
+        return getattr(self, param.name.replace("-", "_"))
+
+    def do_set_property(self, param, value):
+        setattr(self, param.name.replace("-", "_"), value)
 
     @property
     def single(self):
@@ -137,6 +156,16 @@ class PlayerOptions(GObject.Object):
     @repeat.setter
     def repeat(self, value):
         self._repeat.set_active(value)
+
+    @property
+    def stop_after(self):
+        """If the player will pause after the current song ends"""
+
+        return self._stop_after.get_active()
+
+    @stop_after.setter
+    def stop_after(self, value):
+        self._stop_after.set_active(value)
 
 
 class DockMenu(Gtk.Menu):

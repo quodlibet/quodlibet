@@ -132,9 +132,9 @@ class MPDService(object):
         def options_changed(*args):
             self.emit_changed("options")
 
-        self._options.connect("random-changed", options_changed)
-        self._options.connect("repeat-changed", options_changed)
-        self._options.connect("single-changed", options_changed)
+        self._options.connect("notify::random", options_changed)
+        self._options.connect("notify::repeat", options_changed)
+        self._options.connect("notify::single", options_changed)
 
         self._player_sigs = []
 
