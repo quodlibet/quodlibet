@@ -526,6 +526,9 @@ class Tpattern(TestCase):
         self.failUnlessEqual(util.pattern("<date"), "")
         util.pattern("<d\\")
 
+    def test_complex_condition(self):
+        self.assertEqual(util.pattern("<#(bitrate \> 150)|HQ|LQ>"), "LQ")
+
 
 class Tformat_time_long(TestCase):
 
