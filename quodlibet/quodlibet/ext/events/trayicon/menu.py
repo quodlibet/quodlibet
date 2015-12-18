@@ -61,7 +61,7 @@ class IndicatorMenu(Gtk.Menu):
         self._action_item = None
 
         previous = MenuItem(_("Pre_vious"), Icons.MEDIA_SKIP_BACKWARD)
-        previous.connect('activate', lambda *args: player.previous())
+        previous.connect('activate', lambda *args: player.previous(force=True))
 
         next = MenuItem(_("_Next"), Icons.MEDIA_SKIP_FORWARD)
         next.connect('activate', lambda *args: player.next())
