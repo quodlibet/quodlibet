@@ -8,8 +8,6 @@
 import re
 import shlex
 
-from gi.repository import GObject
-
 from quodlibet import const
 from .tcpserver import BaseTCPServer, BaseTCPConnection
 
@@ -117,61 +115,6 @@ def parse_command(line):
     return command, dec_args
 
 
-class PlayerOptions(GObject.Object):
-    """Provides a simplified interface for playback options.
-
-    This should probably go into the core.
-    """
-
-    __gsignals__ = {
-        'random-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
-        'repeat-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
-        'single-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
-    }
-
-    def __init__(self, app):
-        super(PlayerOptions, self).__init__()
-
-        self._repeat = app.window.repeat
-        self._rid = self._repeat.connect(
-            "toggled", lambda *x: self.emit("repeat-changed"))
-
-        def order_changed(*args):
-            self.emit("random-changed")
-            self.emit("single-changed")
-
-        self._order = app.window.order
-        self._oid = self._order.connect("changed", order_changed)
-
-    def destroy(self):
-        self._repeat.disconnect(self._rid)
-        del self._repeat
-        self._order.disconnect(self._oid)
-        del self._order
-
-    def set_single(self, value):
-        is_single = self.get_single()
-        if value and not is_single:
-            self._order.set_active_by_name("onesong")
-        elif not value and is_single:
-            self._order.set_active_by_name("inorder")
-
-    def get_single(self):
-        return self._order.get_active_name() == "onesong"
-
-    def get_random(self):
-        return self._order.get_shuffle()
-
-    def set_random(self, value):
-        self._order.set_shuffle(value)
-
-    def get_repeat(self):
-        return self._repeat.get_active()
-
-    def set_repeat(self, value):
-        self._repeat.set_active(value)
-
-
 class MPDService(object):
     """This is the actual shared MPD service which the clients talk to"""
 
@@ -184,7 +127,7 @@ class MPDService(object):
         self._idle_queue = {}
         self._pl_ver = 0
 
-        self._options = PlayerOptions(app)
+        self._options = app.player_options
 
         def options_changed(*args):
             self.emit_changed("options")
@@ -227,9 +170,8 @@ class MPDService(object):
     def destroy(self):
         for id_ in self._player_sigs:
             self._app.player.disconnect(id_)
-        self._options.destroy()
-        del self._app
         del self._options
+        del self._app
 
     def add_connection(self, connection):
         self._connections.add(connection)
@@ -322,13 +264,13 @@ class MPDService(object):
         self._app.player.volume = (value / 100.0) ** 3.0
 
     def repeat(self, value):
-        self._options.set_repeat(value)
+        self._options.repeat = value
 
     def random(self, value):
-        self._options.set_random(value)
+        self._options.random = value
 
     def single(self, value):
-        self._options.set_single(value)
+        self._options.single = value
 
     def stats(self):
         has_song = int(bool(self._app.player.info))
@@ -358,9 +300,9 @@ class MPDService(object):
 
         status = [
             ("volume", int((app.player.volume ** (1.0 / 3.0)) * 100)),
-            ("repeat", int(self._options.get_repeat())),
-            ("random", int(self._options.get_random())),
-            ("single", int(self._options.get_single())),
+            ("repeat", int(self._options.repeat)),
+            ("random", int(self._options.random)),
+            ("single", int(self._options.single)),
             ("consume", 0),
             ("playlist", self._pl_ver),
             ("playlistlength", int(bool(app.player.info))),

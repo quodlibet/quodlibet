@@ -56,6 +56,9 @@ class Application(object):
     library = None
     player = None
 
+    player_options = None
+    """A PlayerOptions instance or None in case there is no playback support"""
+
     cover_manager = None
 
     name = None

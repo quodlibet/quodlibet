@@ -8,7 +8,7 @@
 
 import os
 
-from gi.repository import Gtk, Gdk, GLib, Gio
+from gi.repository import Gtk, Gdk, GLib, Gio, GObject
 
 import quodlibet
 
@@ -52,6 +52,91 @@ from quodlibet.util.path import glib2fsnative, get_home_dir
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
 from quodlibet.qltk.songlistcolumns import SongListColumn
+
+
+class PlayerOptions(GObject.Object):
+    """Provides a simplified interface for playback options.
+
+    This currently provides a limited view on the play order state which is
+    useful for external interfaces (mpd, mpris, etc.) and for reducing
+    the dependency on the state holding widgets in the main window.
+
+    Usable as long as the main window is not destroyedor until destroy()
+    is called.
+    """
+
+    __gsignals__ = {
+        'random-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+        'repeat-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+        'single-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+    }
+
+    def __init__(self, window):
+        """windows is a QuodLibetWindow"""
+
+        super(PlayerOptions, self).__init__()
+
+        self._repeat = window.repeat
+        self._rid = self._repeat.connect(
+            "toggled", lambda *x: self.emit("repeat-changed"))
+
+        def order_changed(*args):
+            self.emit("random-changed")
+            self.emit("single-changed")
+
+        self._order = window.order
+        self._oid = self._order.connect("changed", order_changed)
+
+        window.connect("destroy", self._window_destroy)
+
+    def _window_destroy(self, window):
+        self.destroy()
+
+    def destroy(self):
+        if self._repeat:
+            self._repeat.disconnect(self._rid)
+            self._repeat = None
+        if self._order:
+            self._order.disconnect(self._oid)
+            self._order = None
+
+    @property
+    def single(self):
+        """If only the current song is considered as next track
+
+        This means in case repeat() is False the playlist will end after
+        this song finishes. In cas.e repeat() is True the current song will
+        be replayed.
+        """
+
+        return self._order.get_active_name() == "onesong"
+
+    @single.setter
+    def single(self, value):
+        if value and not self.single:
+            self._order.set_active_by_name("onesong")
+        elif not value and self.single:
+            self._order.set_active_by_name("inorder")
+
+    @property
+    def random(self):
+        """If a random based play order is active"""
+
+        return self._order.get_shuffle()
+
+    @random.setter
+    def random(self, value):
+        self._order.set_shuffle(value)
+
+    @property
+    def repeat(self):
+        """If the playlist will be restarted if it ended"""
+
+        return self._repeat.get_active()
+
+    @repeat.setter
+    def repeat(self, value):
+        self._repeat.set_active(value)
 
 
 class DockMenu(Gtk.Menu):

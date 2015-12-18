@@ -134,13 +134,15 @@ def main(argv):
                 if resp is not None:
                     print_(resp, end="")
 
-    from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
+    from quodlibet.qltk.quodlibetwindow import QuodLibetWindow, PlayerOptions
     # Call exec_commands after the window is restored, but make sure
     # it's after the mainloop has started so everything is set up.
     app.window = window = QuodLibetWindow(
         library, player,
         restore_cb=lambda:
             GLib.idle_add(exec_commands, priority=GLib.PRIORITY_HIGH))
+
+    app.player_options = PlayerOptions(window)
 
     from quodlibet.qltk.debugwindow import MinExceptionDialog
     from quodlibet.qltk.window import on_first_map
@@ -208,6 +210,7 @@ def main(argv):
 
     quodlibet.main(window, before_quit=before_quit)
 
+    app.player_options.destroy()
     quodlibet.finish_first_session(app.id)
     mmkeys_handler.quit()
     remote.stop()
