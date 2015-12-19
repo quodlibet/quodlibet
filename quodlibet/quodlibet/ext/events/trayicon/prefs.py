@@ -29,15 +29,27 @@ class Preferences(Gtk.VBox):
                                         'window_hide', populate=True)
         self.pack_start(ccb, False, True, 0)
 
-        combo = Gtk.ComboBoxText()
-        combo.append_text(_("Scroll wheel adjusts volume\n"
-                            "Shift and scroll wheel changes song"))
-        combo.append_text(_("Scroll wheel changes song\n"
-                            "Shift and scroll wheel adjusts volume"))
-        combo.set_active(int(pconfig.getboolean("modifier_swap")))
-        combo.connect('changed', self.__changed_combo)
+        def on_scroll_changed(button, new_state):
+            if button.get_active():
+                pconfig.set("modifier_swap", new_state)
 
-        self.pack_start(qltk.Frame(_("Scroll _Wheel"), child=combo),
+        modifier_swap = pconfig.getboolean("modifier_swap")
+
+        scrollwheel_box = Gtk.VBox(spacing=0)
+        group = Gtk.RadioButton(
+            group=None, label=_("Scroll wheel adjusts volume"),
+            use_underline=True)
+        group.connect("toggled", on_scroll_changed, False)
+        group.set_active(not modifier_swap)
+        scrollwheel_box.pack_start(group, False, True, 0)
+        group = Gtk.RadioButton(
+            group=group, label=_("Scroll wheel changes song"),
+            use_underline=True)
+        group.connect("toggled", on_scroll_changed, True)
+        group.set_active(modifier_swap)
+        scrollwheel_box.pack_start(group, False, True, 0)
+
+        self.pack_start(qltk.Frame(_("Scroll _Wheel"), child=scrollwheel_box),
                         True, True, 0)
 
         box = Gtk.VBox(spacing=12)
@@ -74,9 +86,6 @@ class Preferences(Gtk.VBox):
 
         for child in self.get_children():
             child.show_all()
-
-    def __changed_combo(self, combo):
-        pconfig.set("modifier_swap", bool(combo.get_active()))
 
     def __changed_entry(self, entry, label, frame):
         text = entry.get_text().decode("utf-8")
