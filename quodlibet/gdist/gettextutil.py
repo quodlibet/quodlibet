@@ -34,8 +34,10 @@ def update_pot(po_dir, package):
     os.chdir(po_dir)
     try:
         os.environ["XGETTEXT_ARGS"] = XGETTEXT_ARGS
-        subprocess.check_call(["intltool-update", "--pot",
-                               "--gettext-package", package])
+        with open(os.devnull, 'wb') as devnull:
+            subprocess.check_call(["intltool-update", "--pot",
+                                   "--gettext-package", package],
+                                   stderr=devnull, stdout=devnull)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
     finally:
@@ -62,7 +64,8 @@ def update_po(po_dir, package, lang_code, output_file=None):
                 lang_code]
         if output_file is not None:
             args.extend(["--output-file", output_file])
-        subprocess.check_call(args)
+        with open(os.devnull, 'wb') as devnull:
+            subprocess.check_call(args, stderr=devnull, stdout=devnull)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
     finally:
@@ -110,15 +113,31 @@ def get_missing(po_dir, package):
     or raise GettextError
     """
 
+    missing_path = os.path.join(po_dir, "missing")
+
     old_dir = os.getcwd()
     os.chdir(po_dir)
     try:
-        result = subprocess.check_output(
-            ["intltool-update", "--maintain",
-             "--gettext-package", package],
-            stderr=subprocess.STDOUT)
+        os.remove(missing_path)
+    except OSError:
+        pass
+
+    # While intltool prints the result also to stderr it gets mixed with
+    # warnings etc. so we have to check the "missing" file
+    try:
+        with open(os.devnull, 'wb') as devnull:
+            subprocess.check_call(
+                ["intltool-update", "--maintain",
+                 "--gettext-package", package],
+                stderr=devnull, stdout=devnull)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
+    else:
+        try:
+            with open(missing_path) as h:
+                result = h.read()
+        except IOError:
+            result = ""
     finally:
         os.chdir(old_dir)
 
