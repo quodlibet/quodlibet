@@ -49,7 +49,7 @@ quodlibet/ext/events/iradiolog.py
 quodlibet/ext/events/jep118.py
 quodlibet/ext/events/mediaserver.py
 quodlibet/ext/events/mpdserver/__init__.py
-quodlibet/ext/events/mpris.py
+quodlibet/ext/events/mpris/__init__.py
 quodlibet/ext/events/notify.py
 quodlibet/ext/events/qlscrobbler.py
 quodlibet/ext/events/radioadmute.py
