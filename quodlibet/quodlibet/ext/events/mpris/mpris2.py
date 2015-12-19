@@ -104,9 +104,14 @@ value="false"/>
         name = dbus.service.BusName(self.BUS_NAME, bus)
         MPRISObject.__init__(self, bus, self.PATH, name)
 
-        self.__rsig = app.window.repeat.connect("toggled",
-                                                self.__repeat_changed)
-        self.__ssig = app.window.order.connect("changed", self.__order_changed)
+        player_options = app.player_options
+        self.__repeat_id = player_options.connect(
+            "notify::repeat", self.__repeat_changed)
+        self.__random_id = player_options.connect(
+            "notify::random", self.__random_changed)
+        self.__single_id = player_options.connect(
+            "notify::single", self.__single_changed)
+
         self.__lsig = app.librarian.connect("changed", self.__library_changed)
         self.__vsig = app.player.connect("notify::volume",
                                          self.__volume_changed)
@@ -116,8 +121,10 @@ value="false"/>
         super(MPRIS2, self).remove_from_connection(*arg, **kwargs)
 
         self.__cover = None
-        app.window.repeat.disconnect(self.__rsig)
-        app.window.order.disconnect(self.__ssig)
+        player_options = app.player_options
+        player_options.disconnect(self.__repeat_id)
+        player_options.disconnect(self.__random_id)
+        player_options.disconnect(self.__single_id)
         app.librarian.disconnect(self.__lsig)
         app.player.disconnect(self.__vsig)
         app.player.disconnect(self.__seek_sig)
@@ -128,9 +135,12 @@ value="false"/>
     def __repeat_changed(self, *args):
         self.emit_properties_changed(self.PLAYER_IFACE, ["LoopStatus"])
 
-    def __order_changed(self, *args):
+    def __random_changed(self, *args):
         self.emit_properties_changed(self.PLAYER_IFACE,
                                      ["Shuffle", "LoopStatus"])
+
+    def __single_changed(self, *args):
+        self.emit_properties_changed(self.PLAYER_IFACE, ["LoopStatus"])
 
     def __seeked(self, player, song, ms):
         self.Seeked(ms * 1000)
@@ -291,28 +301,29 @@ value="false"/>
 
     def set_property(self, interface, name, value):
         player = app.player
-        window = app.window
+        player_options = app.player_options
 
         if interface == self.PLAYER_IFACE:
             if name == "LoopStatus":
                 if value == "Playlist":
-                    window.repeat.set_active(True)
-                    window.order.set_active_by_name("inorder")
+                    player_options.repeat = True
+                    player_options.single = False
                 elif value == "Track":
-                    window.repeat.set_active(True)
-                    window.order.set_active_by_name("onesong")
+                    player_options.repeat = True
+                    player_options.single = True
                 elif value == "None":
-                    window.repeat.set_active(False)
+                    player_options.repeat = False
+                    player_options.single = False
             elif name == "Rate":
                 pass
             elif name == "Shuffle":
-                window.order.set_shuffle(value)
+                player_options.random = value
             elif name == "Volume":
                 player.volume = value
 
     def get_property(self, interface, name):
         player = app.player
-        window = app.window
+        player_options = app.player_options
 
         if interface == self.ROOT_IFACE:
             if name == "CanQuit":
@@ -342,19 +353,16 @@ value="false"/>
                     return "Stopped"
                 return ("Playing", "Paused")[int(player.paused)]
             elif name == "LoopStatus":
-                repeat = window.repeat.get_active()
-                if repeat:
-                    onesong = window.order.get_active_name() == "onesong"
-                    if onesong:
-                        return "Track"
-                    else:
-                        return "Playlist"
-                else:
+                if not player_options.repeat:
                     return "None"
+                else:
+                    if player_options.single:
+                        return "Track"
+                    return "Playlist"
             elif name == "Rate":
                 return 1.0
             elif name == "Shuffle":
-                return window.order.get_shuffle()
+                return player_options.random
             elif name == "Metadata":
                 return self.__get_metadata()
             elif name == "Volume":

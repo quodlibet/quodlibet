@@ -71,13 +71,12 @@ class MPRIS1DummyTracklist(MPRISObject):
         return -1
 
     @dbus.service.method(IFACE, in_signature="b")
-    def SetLoop(self, loop):
-        app.window.repeat.set_active(loop)
+    def SetLoop(self, value):
+        app.player_options.repeat = value
 
     @dbus.service.method(IFACE, in_signature="b")
-    def SetRandom(self, shuffle):
-        window = app.window
-        window.order.set_shuffle(shuffle)
+    def SetRandom(self, value):
+        app.player_options.random = value
 
 
 class MPRIS1Player(MPRISObject):
@@ -90,18 +89,22 @@ class MPRIS1Player(MPRISObject):
         name = dbus.service.BusName(self.BUS_NAME, bus)
         super(MPRIS1Player, self).__init__(name, self.PATH)
 
-        self.__rsig = app.window.repeat.connect(
-            "toggled", self.__update_status)
-        self.__ssig = app.window.order.connect(
-            "changed", self.__update_status)
+        player_options = app.player_options
+        self.__sigs = [
+            player_options.connect("notify::repeat", self.__update_status),
+            player_options.connect("notify::single", self.__update_status),
+            player_options.connect("notify::random", self.__update_status),
+        ]
+
         self.__lsig = app.librarian.connect(
             "changed", self.__update_track_changed)
 
     def remove_from_connection(self, *arg, **kwargs):
         super(MPRIS1Player, self).remove_from_connection(*arg, **kwargs)
 
-        app.window.repeat.disconnect(self.__rsig)
-        app.window.order.disconnect(self.__ssig)
+        for id_ in self.__sigs:
+            app.player_options.disconnect(id_)
+
         app.librarian.disconnect(self.__lsig)
 
     def paused(self):
@@ -182,11 +185,13 @@ class MPRIS1Player(MPRISObject):
         return metadata
 
     def __get_status(self):
-        window = app.window
-        play = (not app.player.info and 2) or int(app.player.paused)
-        shuffle = window.order.get_shuffle()
-        repeat_one = window.order.get_active_name() == "onesong"
-        repeat_all = int(window.repeat.get_active())
+        if app.player.info is not None:
+            play = 0 if not app.player.paused else 1
+        else:
+            play = 2
+        shuffle = app.player_options.random
+        repeat_one = app.player_options.single
+        repeat_all = app.player_options.repeat
 
         return (play, shuffle, repeat_one, repeat_all)
 
@@ -220,9 +225,9 @@ class MPRIS1Player(MPRISObject):
             else:
                 player.seek(0)
 
-    @dbus.service.method(IFACE)
-    def Repeat(self):
-        pass
+    @dbus.service.method(IFACE, in_signature="b")
+    def Repeat(self, value):
+        app.player_options.single = value
 
     @dbus.service.method(IFACE, out_signature="(iiii)")
     def GetStatus(self):
