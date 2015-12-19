@@ -16,7 +16,7 @@ from quodlibet.plugins import PluginManager
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import UniqueWindow
 from quodlibet.qltk.entry import ClearEntry
-from quodlibet.qltk.x import Align, Paned, Button
+from quodlibet.qltk.x import Align, Paned, Button, ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
@@ -277,14 +277,13 @@ class PluginWindow(UniqueWindow):
             return
         super(PluginWindow, self).__init__()
         self.set_title(_("Plugins"))
-        self.set_border_width(12)
         self.set_default_size(655, 404)
         self.set_transient_for(parent)
 
         paned = Paned()
-        vbox = Gtk.VBox(spacing=6)
+        vbox = Gtk.VBox()
 
-        sw = Gtk.ScrolledWindow()
+        sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
 
         model = ObjectStore()
@@ -317,7 +316,7 @@ class PluginWindow(UniqueWindow):
         errors.set_focus_on_click(False)
         errors.connect('clicked', self.__show_errors)
         errors.set_no_show_all(True)
-        bbox.pack_start(errors, True, True, 0)
+        bbox.pack_start(Align(errors, border=6, right=-6), True, True, 0)
 
         pref_box = PluginPreferencesContainer()
 
@@ -328,10 +327,10 @@ class PluginWindow(UniqueWindow):
                             filter_combo)
             bbox.pack_start(refresh, True, True, 0)
 
-        vbox.pack_start(fb, False, True, 0)
+        vbox.pack_start(Align(fb, border=6, right=-6), False, True, 0)
         vbox.pack_start(sw, True, True, 0)
         vbox.pack_start(bbox, False, True, 0)
-        paned.pack1(vbox, True, False)
+        paned.pack1(vbox, False, False)
 
         close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
@@ -351,7 +350,7 @@ class PluginWindow(UniqueWindow):
         if not self.has_close_button():
             right_box.pack_start(bb_align, True, True, 0)
 
-        paned.pack2(Align(right_box, left=6), True, False)
+        paned.pack2(Align(right_box, border=12), True, False)
         paned.set_position(250)
 
         self.add(paned)
