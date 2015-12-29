@@ -76,7 +76,7 @@ class TCommands(TestCase):
         self.__send("unqueue /dev/null")
 
     def test_enqueue_files(self):
-        songs = [AudioFile({"~filename": fn, "title":fn})
+        songs = [AudioFile({"~filename": fn, "title": fn})
                  for fn in ["one", "two, please", "slash\\.mp3", "four"]]
         app.library.add(songs)
 
