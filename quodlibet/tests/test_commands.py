@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from quodlibet.formats import AudioFile
 from tests import TestCase, init_fake_app, destroy_fake_app
 from helper import capture_output
 
@@ -73,3 +74,13 @@ class TCommands(TestCase):
         self.__send("status")
         self.__send("toggle-window")
         self.__send("unqueue /dev/null")
+
+    def test_enqueue_files(self):
+        songs = [AudioFile({"~filename": fn, "title":fn})
+                 for fn in ["one", "two, please", "slash\\.mp3", "four"]]
+        app.library.add(songs)
+
+        self.assertFalse(app.window.playlist.q.get())
+        self.__send("enqueue-files "
+                    "one,two\\, please,slash\\\\.mp3,four")
+        self.assertEquals(app.window.playlist.q.get(), songs)

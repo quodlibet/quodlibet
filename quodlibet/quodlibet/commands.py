@@ -10,6 +10,8 @@
 import os
 from cStringIO import StringIO
 
+from quodlibet.util.string import split_escape
+
 from quodlibet import browsers
 
 from quodlibet import util
@@ -332,12 +334,13 @@ def _enqueue(app, value):
 
 @registry.register("enqueue-files", args=1)
 def _enqueue_files(app, value):
-    """Enqueues comma-separated filenames or song names."""
+    """Enqueues comma-separated filenames or song names.
+    Commas in filenames should be backslash-escaped"""
 
     library = app.library
     window = app.window
     songs = []
-    for param in value.split(","):
+    for param in split_escape(value, ","):
         try:
             song_path = URI(param).filename
         except ValueError:
