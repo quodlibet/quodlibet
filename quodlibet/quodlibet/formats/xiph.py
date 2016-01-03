@@ -85,7 +85,9 @@ class MutagenVCFile(AudioFile):
 
     def __post_read(self):
         email = config.get("editing", "save_email").strip()
-        maps = {"rating": float, "playcount": int}
+        maps = {
+            "added": int, "lastplayed": int, "playcount": int,
+            "skipcount": int, "rating": float}
         for keyed_key, func in maps.items():
             for subkey in ["", ":" + const.EMAIL, ":" + email]:
                 key = keyed_key + subkey
@@ -255,12 +257,15 @@ class MutagenVCFile(AudioFile):
 
         if config.getboolean("editing", "save_to_songs"):
             email = email or const.EMAIL
-            rating = self("~#rating")
-            if rating != RATINGS.default:
-                comments["rating:" + email] = str(rating)
-            playcount = self.get("~#playcount", 0)
-            if playcount != 0:
-                comments["playcount:" + email] = str(playcount)
+
+            comments["added:" + email] = str(self("~#added"))
+            if self.get("~#lastplayed", 0) != 0:
+                comments["lastplayed:" + email] = str(self("~#lastplayed"))
+            if self.get("~#playcount", 0) != 0:
+                comments["playcount:" + email] = str(int(self("~#playcount")))
+            if self.get("~#skipcount", 0) != 0:
+                comments["skipcount:" + email] = str(int(self("~#skipcount")))
+            comments["rating:" + email] = str(self("~#rating"))
 
     def __prep_write_total(self, comments, main, fallback, single):
         lower = self.as_lowercased()
