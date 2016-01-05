@@ -66,7 +66,7 @@ Nick Boultbee""".split("\n")
 
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = """Copyright © 2004-2015 %s...""" % ", ".join(MAIN_AUTHORS)
+COPYRIGHT = """Copyright © 2004-2016 %s...""" % ", ".join(MAIN_AUTHORS)
 
 AUTHORS = sorted("""\
 Alexandre Passos
