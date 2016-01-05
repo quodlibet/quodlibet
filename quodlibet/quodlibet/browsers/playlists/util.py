@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014-2015 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -12,7 +12,7 @@ from quodlibet import formats, qltk
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk import Icons
-from quodlibet.util import escape
+from quodlibet.util import escape, format_size
 from quodlibet.util.collection import Playlist
 from quodlibet.util.path import mkdir, fsdecode, is_fsnative
 
@@ -123,3 +123,17 @@ def __parse_playlist(name, plfilename, files, library):
     win.destroy()
     playlist.extend(filter(None, songs))
     return playlist
+
+
+def playlist_info_markup(pl):
+    """Returns markup of information for `pl`"""
+
+    def format_extra(pl):
+        total_size = float(pl.get("~#filesize") or 0.0)
+        return " (%s / %s)" % (pl.get("~length"), format_size(total_size))
+
+    songs_text = ngettext("%d song", "%d songs", len(pl.songs)) % len(pl.songs)
+    return "<b>{name}</b>\n<small>{text}{extra}</small>".format(
+            name=escape(pl.name),
+            text=songs_text,
+            extra=format_extra(pl) if len(pl) else "")

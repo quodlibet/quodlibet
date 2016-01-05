@@ -121,7 +121,7 @@ class PlaylistsBrowser(Browser):
 
     @staticmethod
     def cell_data(col, render, model, iter, data):
-        render.markup = model[iter][0].format()
+        render.markup = playlist_info_markup(model[iter][0])
         render.set_property('markup', render.markup)
 
     def Menu(self, songs, library, items):

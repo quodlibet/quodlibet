@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson
-#           2011-2014 Nick Boultbee
+#           2011-2015 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -538,19 +538,6 @@ class Playlist(Collection, Iterable):
                     f.write(fsnative2bytes(song) + "\n")
                 else:
                     f.write(fsnative2bytes(song("~filename")) + "\n")
-
-    def format(self):
-        """Return a markup representation of information for this playlist"""
-        total_size = float(self.get("~#filesize") or 0.0)
-        songs_text = (ngettext("%d song", "%d songs", len(self.songs))
-                      % len(self.songs))
-        # see Issue 504
-        return "<b>%s</b>\n<small>%s (%s%s)</small>" % (
-               util.escape(self.name),
-               songs_text,
-               self.get("~length", "0:00"),
-               " / %s" %
-               util.format_size(total_size) if total_size > 0 else "")
 
     @property
     def has_duplicates(self):
