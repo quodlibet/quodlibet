@@ -2,7 +2,7 @@
 #
 # View Lyrics: a Quod Libet plugin for viewing lyrics.
 # Copyright (C) 2008, 2011, 2012 Vasiliy Faronov <vfaronov@gmail.com>
-#                           2013 Nick Boultbee
+#                     2013, 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 2
@@ -15,9 +15,6 @@
 #
 # You can get a copy of the GNU General Public License at:
 # http://www.gnu.org/licenses/gpl-2.0.html
-
-
-"""Provides the `ViewLyrics` plugin for viewing lyrics in the main window."""
 
 import os
 
@@ -32,7 +29,8 @@ class ViewLyrics(EventPlugin):
 
     PLUGIN_ID = 'View Lyrics'
     PLUGIN_NAME = _('View Lyrics')
-    PLUGIN_DESC = _('Displays lyrics beneath the song list.')
+    PLUGIN_DESC = _('Automatically displays lyrics '
+                    'beneath the song list in the main window.')
 
     def enabled(self):
         self.expander = Gtk.Expander(label=_("_Lyrics"), use_underline=True)
