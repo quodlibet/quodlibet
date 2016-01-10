@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson
-#           2011-2015 Nick Boultbee
+#           2011-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -335,52 +335,9 @@ class Album(Collection):
 class Playlist(Collection, Iterable):
     """A Playlist is a `Collection` that has list-like features
     Songs can appear more than once.
-
-    TODO: Fix this crap
     """
 
     __instances = []
-
-    quote = staticmethod(escape_filename)
-    unquote = staticmethod(unescape_filename)
-
-    @classmethod
-    def new(cls, dir_, base=_("New Playlist"), library=None):
-        assert is_fsnative(dir_)
-
-        if not (dir_ and os.path.realpath(dir_)):
-            raise ValueError("Invalid playlist directory %r" % (dir_,))
-
-        p = Playlist(dir_, "", library)
-        i = 0
-        try:
-            p.rename(base)
-        except ValueError:
-            while not p.name:
-                i += 1
-                try:
-                    p.rename("%s %d" % (base, i))
-                except ValueError:
-                    pass
-        return p
-
-    @classmethod
-    def fromsongs(cls, dir_, songs, library=None):
-        assert is_fsnative(dir_)
-
-        if len(songs) == 1:
-            title = songs[0].comma("title")
-        else:
-            title = ngettext(
-                "%(title)s and %(count)d more",
-                "%(title)s and %(count)d more",
-                len(songs) - 1) % (
-                    {'title': songs[0].comma("title"),
-                     'count': len(songs) - 1})
-
-        playlist = cls.new(dir_, title, library)
-        playlist.extend(songs)
-        return playlist
 
     @classmethod
     def playlists_featuring(cls, song):
@@ -426,55 +383,36 @@ class Playlist(Collection, Iterable):
     def songs(self):
         return [s for s in self._list if not isinstance(s, basestring)]
 
-    def __init__(self, dir, name, library=None):
+    def __init__(self, name, library=None):
         super(Playlist, self).__init__()
         self.__instances.append(self)
 
         if isinstance(name, unicode) and os.name != "nt":
             name = name.encode('utf-8')
 
+        if not name:
+            raise ValueError("Playlists must have a name")
         self.name = name
-        self.dir = dir
         self.library = library
         self._list = HashedList()
-        try:
-            with open(self.filename, "rb") as h:
-                for line in h:
-                    assert library is not None
-                    try:
-                        line = bytes2fsnative(line.rstrip())
-                    except ValueError:
-                        # decoding failed
-                        continue
-                    if line in library:
-                        self._list.append(library[line])
-                    elif library and library.masked(line):
-                        self._list.append(line)
-        except IOError:
-            if self.name:
-                self.write()
 
-    @property
-    def filename(self):
-        basename = self.quote(self.name)
-        return os.path.join(self.dir, basename)
-
-    def rename(self, newname):
-        if isinstance(newname, unicode):
-            newname = newname.encode('utf-8')
-
-        if newname == self.name:
-            return
-        elif os.path.exists(os.path.join(self.dir, self.quote(newname))):
-            raise ValueError(
-                _("A playlist named %s already exists.") % newname)
+    @classmethod
+    def suggested_name_for(cls, songs):
+        if len(songs) == 1:
+            title = songs[0].comma("title")
         else:
-            try:
-                os.unlink(self.filename)
-            except EnvironmentError:
-                pass
-            self.name = newname
-            self.write()
+            title = ngettext(
+                    "%(title)s and %(count)d more",
+                    "%(title)s and %(count)d more",
+                    len(songs) - 1) % (
+                        {'title': songs[0].comma("title"),
+                         'count': len(songs) - 1})
+        return title
+
+    def rename(self, new_name):
+        if new_name == self.name:
+            return
+        self.name = new_name
 
     def add_songs(self, filenames, library):
         changed = False
@@ -524,20 +462,11 @@ class Playlist(Collection, Iterable):
 
     def delete(self):
         self.clear()
-        try:
-            os.unlink(self.filename)
-        except EnvironmentError:
-            pass
         if self in self.__instances:
             self.__instances.remove(self)
 
     def write(self):
-        with open(self.filename, "wb") as f:
-            for song in self._list:
-                if isinstance(song, basestring):
-                    f.write(fsnative2bytes(song) + "\n")
-                else:
-                    f.write(fsnative2bytes(song("~filename")) + "\n")
+        pass
 
     @property
     def has_duplicates(self):
@@ -559,3 +488,97 @@ class Playlist(Collection, Iterable):
         songs_text = (ngettext("%d song", "%d songs", len(self.songs))
                       % len(self.songs))
         return "\"%s\" (%s)" % (self.name, songs_text)
+
+
+class FileBackedPlaylist(Playlist):
+    """A `Playlist` that is stored as a file on disk"""
+
+    quote = staticmethod(escape_filename)
+    unquote = staticmethod(unescape_filename)
+
+    def __init__(self, dir, name, library=None, validate=False):
+        super(FileBackedPlaylist, self).__init__(name, library)
+        self.dir = dir
+        if validate:
+            self.name = self._validate_new_name(name)
+        self.__populate_from_file()
+
+    def __populate_from_file(self):
+        library = self.library
+        try:
+            with open(self.filename, "rb") as h:
+                for line in h:
+                    assert library is not None
+                    try:
+                        line = bytes2fsnative(line.rstrip())
+                    except ValueError:
+                        # decoding failed
+                        continue
+                    if line in library:
+                        self._list.append(library[line])
+                    elif library and library.masked(line):
+                        self._list.append(line)
+        except IOError:
+            if self.name:
+                print_d("Playlist '%s' not found, creating new." % self.name)
+                self.write()
+
+    @classmethod
+    def new(cls, dir_, base=_("New Playlist"), library=None):
+        assert is_fsnative(dir_)
+
+        if not (dir_ and os.path.realpath(dir_)):
+            raise ValueError("Invalid playlist directory %r" % (dir_,))
+
+        for i in range(1000):
+            try:
+                name = "%s %d" % (base, i) if i else base
+                return FileBackedPlaylist(dir_, name, library, validate=True)
+            except ValueError:
+                pass
+        raise ValueError("Couldn't create playlist of name '%s'" % base)
+
+    @classmethod
+    def from_songs(cls, dir_, songs, library=None):
+        assert is_fsnative(dir_)
+        title = cls.suggested_name_for(songs)
+        playlist = cls.new(dir_, title, library)
+        playlist.extend(songs)
+        return playlist
+
+    @property
+    def filename(self):
+        basename = self.quote(self.name)
+        return os.path.join(self.dir, basename)
+
+    def rename(self, new_name):
+        new_name = self._validate_new_name(new_name)
+        try:
+            os.unlink(self.filename)
+        except EnvironmentError:
+            print_w("Couldn't remove old playlist '%s'" % self.filename)
+        self.name = new_name
+        self.write()
+
+    def _validate_new_name(self, new_name):
+        if isinstance(new_name, unicode):
+            new_name = new_name.encode('utf-8')
+        if os.path.exists(os.path.join(self.dir, self.quote(new_name))):
+            raise ValueError(
+                    _("A playlist named %s already exists.") % new_name)
+        return new_name
+
+    def delete(self):
+        super(FileBackedPlaylist, self).delete()
+        try:
+            os.unlink(self.filename)
+        except EnvironmentError:
+            pass
+
+    def write(self):
+        with open(self.filename, "wb") as f:
+            for song in self._list:
+                if isinstance(song, basestring):
+                    f.write(fsnative2bytes(song) + "\n")
+                else:
+                    f.write(fsnative2bytes(song("~filename")) + "\n")

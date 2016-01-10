@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
-#    2012 - 2015 Nick Boultbee
+#    2012 - 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -60,10 +60,11 @@ class PlaylistsBrowser(Browser):
         model = klass.__lists.get_model()
         for playlist in os.listdir(PLAYLISTS):
             try:
-                playlist = Playlist(PLAYLISTS, Playlist.unquote(playlist),
-                                    library=library)
+                playlist = FileBackedPlaylist(PLAYLISTS,
+                      FileBackedPlaylist.unquote(playlist), library=library)
                 model.append(row=[playlist])
             except EnvironmentError:
+                print_w("Invalid Playlist '%s'" % playlist)
                 pass
 
         klass._ids = [
@@ -321,7 +322,8 @@ class PlaylistsBrowser(Browser):
             try:
                 path, pos = view.get_dest_row_at_pos(x, y)
             except TypeError:
-                playlist = Playlist.fromsongs(PLAYLISTS, songs, library)
+                playlist = FileBackedPlaylist.from_songs(PLAYLISTS, songs,
+                                                         library)
                 GLib.idle_add(self._select_playlist, playlist)
             else:
                 playlist = model[path][0]
@@ -478,7 +480,7 @@ class PlaylistsBrowser(Browser):
         config.set("browsers", "query_text", text)
 
     def __new_playlist(self, activator):
-        playlist = Playlist.new(PLAYLISTS)
+        playlist = FileBackedPlaylist.new(PLAYLISTS)
         self.__lists.get_model().append(row=[playlist])
         self._select_playlist(playlist)
 
@@ -550,7 +552,7 @@ class PlaylistsBrowser(Browser):
             playlist = model[iter][0]
             playlist[:] = songs
         elif songs:
-            playlist = Playlist.fromsongs(PLAYLISTS, songs)
+            playlist = FileBackedPlaylist.from_songs(PLAYLISTS, songs)
             GLib.idle_add(self._select_playlist, playlist)
         if playlist:
             PlaylistsBrowser.changed(playlist, refresh=False)

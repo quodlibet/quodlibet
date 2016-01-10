@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,7 +11,7 @@ from quodlibet import qltk
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
 from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent, Icons
-from quodlibet.util.collection import Playlist
+from quodlibet.util.collection import Playlist, FileBackedPlaylist
 
 
 class PlaylistMenu(Gtk.Menu):
@@ -36,21 +36,11 @@ class PlaylistMenu(Gtk.Menu):
 
     def _on_new_playlist_activate(self, item, songs):
         parent = get_menu_item_top_parent(item)
-
-        if len(songs) == 1:
-            title = songs[0].comma("title")
-        else:
-            title = ngettext(
-                "%(title)s and %(count)d more",
-                "%(title)s and %(count)d more",
-                len(songs) - 1) % {
-                    'title': songs[0].comma("title"),
-                    'count': len(songs) - 1
-                }
+        title = Playlist.suggested_name_for(songs)
         title = GetPlaylistName(qltk.get_top_parent(parent)).run(title)
         if title is None:
             return
-        playlist = Playlist.new(PLAYLISTS, title)
+        playlist = FileBackedPlaylist.new(PLAYLISTS, title)
         playlist.extend(songs)
         PlaylistsBrowser.changed(playlist)
 

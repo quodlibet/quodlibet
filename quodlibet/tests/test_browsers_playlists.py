@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from quodlibet.browsers.playlists.util import parse_m3u, parse_pls, PLAYLISTS
-from quodlibet.util.collection import Playlist
+from quodlibet.util.collection import FileBackedPlaylist
 from tests import TestCase, DATA_DIR, mkstemp, mkdtemp, _TEMP_DIR
 from helper import dummy_path
 
@@ -108,7 +108,7 @@ class TPlaylistIntegration(TestCase):
             af.sanitize()
         self.lib.add(self.SONGS)
         self._dir = mkdtemp()
-        self.pl = Playlist.new(self._dir, "Foobar", self.lib)
+        self.pl = FileBackedPlaylist.new(self._dir, "Foobar", self.lib)
         self.pl.extend(self.SONGS)
 
     def tearDown(self):
@@ -144,7 +144,7 @@ class TPlaylistIntegration(TestCase):
         self.failUnlessEqual(len(self.pl), len(self.SONGS) - 1)
 
     def test_remove_no_lib(self):
-        pl = Playlist.new(self._dir, "Foobar")
+        pl = FileBackedPlaylist.new(self._dir, "Foobar")
         pl.extend(self.SONGS)
         self.assertTrue(len(pl))
         pl.remove_songs(self.SONGS, False)
@@ -177,11 +177,11 @@ class TPlaylistsBrowser(TSearchBar):
             af.sanitize()
         self.lib.add(all_songs)
 
-        self.big = pl = Playlist.new(PLAYLISTS, "Big", self.lib)
+        self.big = pl = FileBackedPlaylist.new(PLAYLISTS, "Big", self.lib)
         pl.extend(SONGS)
         pl.write()
 
-        self.small = pl = Playlist.new(PLAYLISTS, "Small", self.lib)
+        self.small = pl = FileBackedPlaylist.new(PLAYLISTS, "Small", self.lib)
         pl.extend([self.ANOTHER_SONG])
         pl.write()
 

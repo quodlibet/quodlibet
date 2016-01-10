@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014-2015 Nick Boultbee
+# Copyright 2014-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,13 +13,12 @@ from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk import Icons
 from quodlibet.util import escape, format_size
-from quodlibet.util.collection import Playlist
+from quodlibet.util.collection import FileBackedPlaylist
 from quodlibet.util.path import mkdir, fsdecode, is_fsnative
 
-
-# Directory for playlist files
 from quodlibet.util.uri import URI
 
+# Directory for playlist files
 PLAYLISTS = os.path.join(quodlibet.get_user_dir(), "playlists")
 assert is_fsnative(PLAYLISTS)
 if not os.path.isdir(PLAYLISTS):
@@ -87,7 +86,7 @@ def parse_pls(filename, name="", library=None):
 
 
 def __parse_playlist(name, plfilename, files, library):
-    playlist = Playlist.new(PLAYLISTS, name, library=library)
+    playlist = FileBackedPlaylist.new(PLAYLISTS, name, library=library)
     songs = []
     win = WaitLoadWindow(
         None, len(files),
