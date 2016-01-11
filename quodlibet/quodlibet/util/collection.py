@@ -410,9 +410,19 @@ class Playlist(Collection, Iterable):
         return title
 
     def rename(self, new_name):
+        """Changes this playlist's name and re-saves, or raises an `ValueError`
+        if the name is not allowed"""
         if new_name == self.name:
             return
-        self.name = new_name
+        self.name = self._validated_name(new_name)
+        self.write()
+
+    def _validated_name(self, new_name):
+        """Returns a transformed (or not) name, or raises a `ValueError`
+        if the name is not allowed"""
+        if not new_name:
+            raise ValueError(_("Playlists must have a name"))
+        return new_name
 
     def add_songs(self, filenames, library):
         changed = False
@@ -500,7 +510,7 @@ class FileBackedPlaylist(Playlist):
         super(FileBackedPlaylist, self).__init__(name, library)
         self.dir = dir
         if validate:
-            self.name = self._validate_new_name(name)
+            self.name = self._validated_name(name)
         self.__populate_from_file()
 
     def __populate_from_file(self):
@@ -551,16 +561,8 @@ class FileBackedPlaylist(Playlist):
         basename = self.quote(self.name)
         return os.path.join(self.dir, basename)
 
-    def rename(self, new_name):
-        new_name = self._validate_new_name(new_name)
-        try:
-            os.unlink(self.filename)
-        except EnvironmentError:
-            print_w("Couldn't remove old playlist '%s'" % self.filename)
-        self.name = new_name
-        self.write()
-
-    def _validate_new_name(self, new_name):
+    def _validated_name(self, new_name):
+        new_name = super(FileBackedPlaylist, self)._validated_name(new_name)
         if isinstance(new_name, unicode):
             new_name = new_name.encode('utf-8')
         if os.path.exists(os.path.join(self.dir, self.quote(new_name))):

@@ -393,6 +393,25 @@ class TPlaylist(TestCase):
             s.failUnlessEqual(NUMERIC_SONGS[1:2], pl[1:2])
             s.failUnless(NUMERIC_SONGS[1] in pl)
 
+    def test_make(self):
+        with self.wrap("Does not exist") as pl:
+            self.failUnlessEqual(0, len(pl))
+            self.failUnlessEqual(pl.name, "Does not exist")
+
+    def test_rename_working(self):
+        with self.wrap("Foobar") as pl:
+            pl.rename("Foo Quuxly")
+            self.failUnlessEqual(pl.name, "Foo Quuxly")
+
+    def test_rename_nothing(self):
+        with self.wrap("Foobar") as pl:
+            self.failUnlessRaises(ValueError, pl.rename, "")
+
+    def test_no_op_rename(self):
+        with self.wrap("playlist") as pl:
+            pl.rename("playlist")
+            self.failUnlessEqual(pl.name, "playlist")
+
     def test_playlists_featuring(s):
         with s.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
@@ -443,6 +462,11 @@ class TFileBackedPlaylist(TPlaylist):
     def pl(self, name, lib=None):
         return FileBackedPlaylist(self.temp, name, lib)
 
+    def test_from_songs(self):
+        pl = FileBackedPlaylist.from_songs(self.temp, NUMERIC_SONGS)
+        self.failUnlessEqual(pl.songs, NUMERIC_SONGS)
+        pl.delete()
+
     def test_read(self):
         with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
@@ -453,11 +477,6 @@ class TFileBackedPlaylist(TPlaylist):
             pl = self.pl("playlist", lib)
             self.assertEqual(len(pl), len(NUMERIC_SONGS))
 
-    def test_make(self):
-        with self.wrap("Does not exist") as pl:
-            self.failUnlessEqual(0, len(pl))
-            self.failUnlessEqual(pl.name, "Does not exist")
-
     def test_write(self):
         with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
@@ -467,15 +486,6 @@ class TFileBackedPlaylist(TPlaylist):
             with open(pl.filename, "rb") as h:
                 self.assertEqual(len(h.read().splitlines()),
                                  len(NUMERIC_SONGS) + 1)
-
-    def test_rename_working(self):
-        with self.wrap("Foobar") as pl:
-            pl.rename("Foo Quuxly")
-            self.failUnlessEqual(pl.name, "Foo Quuxly")
-
-    def test_rename_nothing(self):
-        with self.wrap("Foobar") as pl:
-            self.failUnlessRaises(ValueError, pl.rename, "")
 
     def test_make_dup(self):
         p1 = FileBackedPlaylist.new(self.temp, "Does not exist")
