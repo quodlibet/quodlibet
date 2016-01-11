@@ -32,6 +32,7 @@ _PATTERN_TEXT = ("[b]<~name>[/b]\n"
 """The (currently) hard-coded pattern for formatting Playlist entries"""
 PATTERN = XMLFromMarkupPattern(_PATTERN_TEXT)
 
+
 class ConfirmRemovePlaylistDialog(qltk.Message):
     def __init__(self, parent, playlist):
         title = (_("Are you sure you want to delete the playlist '%s'?")
