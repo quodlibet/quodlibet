@@ -20,6 +20,7 @@ SONGS = [AudioFile({
          AudioFile({
                 "title": "two",
                 "artist": "mu",
+                "~#length": 234,
                 "~filename": fsnative(u"/dev/zero")}),
          AudioFile({
                 "title": "three",

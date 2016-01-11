@@ -13,7 +13,6 @@ from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 
 from quodlibet import config
 from quodlibet.browsers import Browser
-from quodlibet.formats import AudioFile
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songlist import SongList
@@ -38,6 +37,7 @@ class PlaylistsBrowser(Browser):
     keys = ["Playlists", "PlaylistsBrowser"]
     priority = 2
     replaygain_profiles = ["track"]
+    __last_render = None
 
     def pack(self, songpane):
         self._main_box.pack1(self, True, False)
@@ -120,10 +120,15 @@ class PlaylistsBrowser(Browser):
                     PlaylistsBrowser.changed(playlist, refresh=False)
                     break
 
-    @staticmethod
-    def cell_data(col, render, model, iter, data):
-        render.markup = playlist_info_markup(model[iter][0])
-        render.set_property('markup', render.markup)
+    def cell_data(self, col, cell, model, iter, data):
+        playlist = model[iter][0]
+        cell.markup = playlist_info_markup(playlist)
+        markup = playlist_info_markup(model[iter][0])
+        if self.__last_render == markup:
+            return
+        self.__last_render = markup
+        cell.markup = markup
+        cell.set_property('markup', markup)
 
     def Menu(self, songs, library, items):
         songlist = qltk.get_top_parent(self).songlist
@@ -205,7 +210,7 @@ class PlaylistsBrowser(Browser):
             lambda model, col, key, iter, data:
             not model[iter][col].name.lower().startswith(key.lower()), None)
         col = Gtk.TreeViewColumn("Playlists", render)
-        col.set_cell_data_func(render, PlaylistsBrowser.cell_data)
+        col.set_cell_data_func(render, self.cell_data)
         view.append_column(col)
         view.set_model(self.__lists)
         view.set_rules_hint(True)
@@ -238,6 +243,7 @@ class PlaylistsBrowser(Browser):
 
     def __create_cell_renderer(self):
         render = Gtk.CellRendererText()
+        render.set_padding(3, 3)
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.connect('editing-started', self.__start_editing)
         render.connect('edited', self.__edited)

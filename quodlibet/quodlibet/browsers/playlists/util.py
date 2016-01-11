@@ -9,10 +9,12 @@ import os
 from gi.repository import Gtk
 import quodlibet
 from quodlibet import formats, qltk
+from quodlibet.formats import AudioFile
+from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk import Icons
-from quodlibet.util import escape, format_size
+from quodlibet.util import escape
 from quodlibet.util.collection import FileBackedPlaylist
 from quodlibet.util.path import mkdir, fsdecode, is_fsnative
 
@@ -24,6 +26,11 @@ assert is_fsnative(PLAYLISTS)
 if not os.path.isdir(PLAYLISTS):
     mkdir(PLAYLISTS)
 
+_FOOTER = "<~tracks> (<~filesize> / <~length>)"
+_PATTERN_TEXT = ("[b]<~name>[/b]\n"
+            "[small]<~tracks|%s|[i](%s)[/i]>[/small]" % (_FOOTER, _("empty")))
+"""The (currently) hard-coded pattern for formatting Playlist entries"""
+PATTERN = XMLFromMarkupPattern(_PATTERN_TEXT)
 
 class ConfirmRemovePlaylistDialog(qltk.Message):
     def __init__(self, parent, playlist):
@@ -124,15 +131,19 @@ def __parse_playlist(name, plfilename, files, library):
     return playlist
 
 
-def playlist_info_markup(pl):
-    """Returns markup of information for `pl`"""
+def playlist_info_markup(pl, pattern=PATTERN):
+    """Returns markup of information for `pl` as formatted by `pattern`"""
 
-    def format_extra(pl):
-        total_size = float(pl.get("~#filesize") or 0.0)
-        return " (%s / %s)" % (pl.get("~length"), format_size(total_size))
+    class PlaylistWrapper(AudioFile):
+        def __init__(self, pl):
+            self.pl = pl
 
-    songs_text = ngettext("%d song", "%d songs", len(pl.songs)) % len(pl.songs)
-    return "<b>{name}</b>\n<small>{text}{extra}</small>".format(
-            name=escape(pl.name),
-            text=songs_text,
-            extra=format_extra(pl) if len(pl) else "")
+        def get(self, key, default=None):
+            return pl.get(key, default)
+
+        def __call__(self, key, default=u"", connector=" - "):
+            if key == '~name':
+                return pl.name
+            return pl.__call__(key, default, connector)
+
+    return pattern % PlaylistWrapper(pl)
