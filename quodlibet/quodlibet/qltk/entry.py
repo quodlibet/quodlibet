@@ -171,8 +171,11 @@ class Entry(Gtk.Entry):
         if self._max_width_chars >= 0:
             # based on gtkentry.c
             style_context = self.get_style_context()
-            border = style_context.get_border(Gtk.StateFlags.NORMAL)
-            padding = style_context.get_padding(Gtk.StateFlags.NORMAL)
+            style_context.save()
+            style_context.set_state(Gtk.StateFlags.NORMAL)
+            border = style_context.get_border(style_context.get_state())
+            padding = style_context.get_padding(style_context.get_state())
+            style_context.restore()
             pango_context = self.get_pango_context()
 
             metrics = pango_context.get_metrics(
