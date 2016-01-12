@@ -313,6 +313,7 @@ class Paned(Gtk.Paned):
             add_css(self, """
                 paned separator {
                     border-width: 0;
+                    background-image: none;
                 }
             """)
             return
