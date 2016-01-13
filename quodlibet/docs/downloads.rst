@@ -173,21 +173,21 @@ Zakkum <https://github.com/tumagonx>`__
 =========================== ============================== ================================================= ==========================================
 Release                     File                           SHA256                                            PGP
 =========================== ============================== ================================================= ==========================================
-Quod Libet 3.5.1            quodlibet-3.5.1-installer.exe_ `SHA256 <quodlibet-3.5.1-installer.exe.sha256_>`_ `SIG <quodlibet-3.5.1-installer.exe.sig_>`_
-Quod Libet 3.5.1 (portable) quodlibet-3.5.1-portable.exe_  `SHA256 <quodlibet-3.5.1-portable.exe.sha256_>`_  `SIG <quodlibet-3.5.1-portable.exe.sig_>`_
+Quod Libet 3.5.2            quodlibet-3.5.2-installer.exe_ `SHA256 <quodlibet-3.5.2-installer.exe.sha256_>`_ `SIG <quodlibet-3.5.2-installer.exe.sig_>`_
+Quod Libet 3.5.2 (portable) quodlibet-3.5.2-portable.exe_  `SHA256 <quodlibet-3.5.2-portable.exe.sha256_>`_  `SIG <quodlibet-3.5.2-portable.exe.sig_>`_
 Quod Libet 3.4.1            quodlibet-3.4.1-installer.exe_ `SHA256 <quodlibet-3.4.1-installer.exe.sha256_>`_ `SIG <quodlibet-3.4.1-installer.exe.sig_>`_
 Quod Libet 3.4.1 (portable) quodlibet-3.4.1-portable.exe_  `SHA256 <quodlibet-3.4.1-portable.exe.sha256_>`_  `SIG <quodlibet-3.4.1-portable.exe.sig_>`_
 Quod Libet 3.3.1            quodlibet-3.3.1-installer.exe_ `SHA256 <quodlibet-3.3.1-installer.exe.sha256_>`_ `SIG <quodlibet-3.3.1-installer.exe.sig_>`_
 Quod Libet 3.3.1 (portable) quodlibet-3.3.1-portable.exe_  `SHA256 <quodlibet-3.3.1-portable.exe.sha256_>`_  `SIG <quodlibet-3.3.1-portable.exe.sig_>`_
 =========================== ============================== ================================================= ==========================================
 
-.. _quodlibet-3.5.1-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.1-portable.exe
-.. _quodlibet-3.5.1-portable.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.1-portable.exe.sha256
-.. _quodlibet-3.5.1-portable.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.1-portable.exe.sig
+.. _quodlibet-3.5.2-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-portable.exe
+.. _quodlibet-3.5.2-portable.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-portable.exe.sha256
+.. _quodlibet-3.5.2-portable.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-portable.exe.sig
 
-.. _quodlibet-3.5.1-installer.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.1-installer.exe
-.. _quodlibet-3.5.1-installer.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.1-installer.exe.sha256
-.. _quodlibet-3.5.1-installer.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.1-installer.exe.sig
+.. _quodlibet-3.5.2-installer.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-installer.exe
+.. _quodlibet-3.5.2-installer.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-installer.exe.sha256
+.. _quodlibet-3.5.2-installer.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-installer.exe.sig
 
 .. _quodlibet-3.4.1-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.4.1-portable.exe
 .. _quodlibet-3.4.1-portable.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.4.1-portable.exe.sha256
