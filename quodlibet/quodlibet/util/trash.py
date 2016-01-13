@@ -11,6 +11,7 @@ import sys
 import errno
 import urllib
 import time
+import shutil
 
 from os.path import join, islink, abspath, dirname
 from os.path import isdir, basename, exists, splitext
@@ -51,8 +52,7 @@ def trash_free_desktop(path):
     """Partial implementation of
     http://www.freedesktop.org/wiki/Specifications/trash-spec
 
-    No copy fallback, either it can be moved on the same FS or it failes.
-    Also doesn't work for files in the trash directory.
+    This doesn't work for files in the trash directory.
     """
 
     path = abspath(path)
@@ -113,11 +113,10 @@ def trash_free_desktop(path):
     os.write(info_fd, data)
     os.close(info_fd)
 
+    target_path = join(files, name)
     try:
-        # We only move to the same file system.. so this is ok.
-        os.rename(path, join(files, name))
+        shutil.move(path, target_path)
     except OSError:
-        # In case something failes, remove the info file and raise again
         os.unlink(info_path)
         raise
 
