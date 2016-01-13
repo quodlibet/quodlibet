@@ -92,7 +92,6 @@ def trash_free_desktop(path):
 
     trash_dir, files, info = _get_fd_trash_dirs(path)
 
-
     info_ext = ".trashinfo"
     name = basename(path)
     flags = os.O_EXCL | os.O_CREAT | os.O_WRONLY
