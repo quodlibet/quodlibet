@@ -28,24 +28,54 @@ def is_sticky(path):
     return bool(os.stat(path).st_mode & stat.S_ISVTX)
 
 
-def get_fd_trash_dir(path):
-    """Returns the right trash directory for the given path."""
+def _get_fd_trash_dirs(path):
+    """Returns verified trash folders for the given path.
+
+    Returns (rootdir, filesdir, infodir), or raises a TrashError if a
+    valid trash folder structure could not be found. The returned trash
+    folders are not guaranteed to be on the same volume as the original
+    path: a fallback may be returned instead.
+
+    Returned paths are absolute. This method may create partial or
+    complete trash directory structures as part of its search.
+    """
 
     path = abspath(path)
     mount = find_mount_point(path)
     xdg_data_home = xdg_get_data_home()
-    xdg_mount = find_mount_point(xdg_data_home)
-    if mount == xdg_mount:
-        trash_home = join(xdg_data_home, "Trash")
-        return trash_home
-    else:
+    xdg_home_mount = find_mount_point(xdg_data_home)
+    trash_home = join(xdg_data_home, "Trash")
+    # Build a list of trash roots to try.
+    trash_roots = []
+    if mount != xdg_home_mount:
         root = join(mount, ".Trash")
         uid = str(os.getuid())
         if isdir(root) and not islink(root) and is_sticky(root):
-            root = join(root, uid)
+            trash_roots.append(join(root, uid))
         else:
-            root = join(mount, ".Trash-" + uid)
-        return root
+            trash_roots.append(join(mount, ".Trash-" + uid))
+    trash_roots.append(trash_home)
+    trash_roots = [abspath(r) for r in trash_roots]
+    # Try and verify each potential trash path, and create its
+    # required structure if needed.
+    for trash_root in trash_roots:
+        if path.startswith(join(trash_root, "")) or path == trash_root:
+            # Can't move files to the trash from within the trash root.
+            # But a fallback root may be OK.
+            continue  # makes things easier
+        subdirs = [join(trash_root, s) for s in ("files", "info")]
+        subdirs_valid = True
+        for subdir in subdirs:
+            if not isdir(subdir):
+                try:
+                    os.makedirs(subdir, 0o700)
+                except OSError:
+                    subdirs_valid = False
+            if not os.access(subdir, os.W_OK):
+                subdirs_valid = False
+        if subdirs_valid:
+            return tuple([trash_root] + subdirs)
+    raise TrashError("No valid trash folder exists for %r" % (path,))
 
 
 def trash_free_desktop(path):
@@ -60,19 +90,8 @@ def trash_free_desktop(path):
     if not exists(path):
         raise TrashError("Path %s does not exist." % path)
 
-    trash_dir = abspath(get_fd_trash_dir(path))
+    trash_dir, files, info = _get_fd_trash_dirs(path)
 
-    # to make things easier
-    if path.startswith(join(trash_dir, "")) or path == trash_dir:
-        raise TrashError("Can't move files to the trash from within the"
-                         "trash directory.")
-
-    files = join(trash_dir, "files")
-    info = join(trash_dir, "info")
-
-    for d in (files, info):
-        if not isdir(d):
-            os.makedirs(d, 0o700)
 
     info_ext = ".trashinfo"
     name = basename(path)
