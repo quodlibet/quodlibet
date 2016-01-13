@@ -228,7 +228,7 @@ function install_python {
 
 function install_git {
     wine "$BUILD_ENV"/bin/Git-1.9.5-preview20141217.exe /VERYSILENT;
-    GITDIR="$(winepath -u "$(wine cmd.exe /c 'echo | set /p=%ProgramFiles%')")/Git";
+    GITDIR="$(wine winepath -u "$(wine cmd.exe /c 'echo | set /p=%ProgramFiles%')")/Git";
 }
 
 function install_7zip {
@@ -287,7 +287,7 @@ function build_quodlibet {
 }
 
 function package_installer {
-    local NSIS_PATH=$(winepath "C:\\Program Files\\NSIS\\")
+    local NSIS_PATH=$(wine winepath "C:\\Program Files\\NSIS\\")
     # now package everything up
     (cd "$BUILD_ENV" && wine "$NSIS_PATH/makensis.exe" win_installer.nsi)
     mv "$BUILD_ENV/quodlibet-LATEST.exe" "$DIR/quodlibet-$QL_VERSION-installer.exe"
