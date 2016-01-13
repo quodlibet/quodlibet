@@ -1,12 +1,4 @@
-.. |windows-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/windows.png
-   :height: 16
-   :width: 16
-.. |linux-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/linux.png
-   :height: 16
-   :width: 16
-.. |macosx-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/macosx.png
-   :height: 16
-   :width: 16
+.. include:: ../icons.rst
 
 .. _DevEnv:
 
