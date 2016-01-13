@@ -158,6 +158,8 @@ def get_sort_tag(tag):
     if tag.startswith("<"):
         for key, value in replace_order.iteritems():
             tag = tag.replace("<%s>" % key, "<%s>" % value)
+        for key, value in TAG_TO_SORT.iteritems():
+            tag = tag.replace("<%s>" % key, "<{1}|<{1}>|<{0}>>".format(key,value))
         tag = Pattern(tag).format
     else:
         tags = util.tagsplit(tag)
