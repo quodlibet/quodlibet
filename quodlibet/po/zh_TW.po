@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-14 11:13+0200\n"
+"POT-Creation-Date: 2016-01-13 17:23+0100\n"
 "PO-Revision-Date: 2013-07-20 22:36+0100\n"
 "Last-Translator: Hsin-lin Cheng <lancetw@gmail.com>\n"
 "Language-Team: Hsin-lin Cheng <lancetw@gmail.com>\n"
@@ -184,7 +184,7 @@ msgstr ""
 #: ../quodlibet/browsers/albums/prefs.py:140
 #: ../quodlibet/browsers/albums/prefs.py:145
 #: ../quodlibet/qltk/tagsfrompath.py:191 ../quodlibet/qltk/textedit.py:137
-#: ../quodlibet/util/__init__.py:536
+#: ../quodlibet/util/__init__.py:538
 msgid "Invalid pattern"
 msgstr "無效的格式"
 
@@ -3992,26 +3992,26 @@ msgstr "曲目"
 msgid "Display remaining time"
 msgstr "顯示剩餘時間"
 
-#: ../quodlibet/qltk/controls.py:322
+#: ../quodlibet/qltk/controls.py:321
 msgid "Auto_matic"
 msgstr ""
 
-#: ../quodlibet/qltk/controls.py:323
+#: ../quodlibet/qltk/controls.py:322
 #, fuzzy
 msgid "_Track Mode"
 msgstr "音軌檔頭 (_T)"
 
-#: ../quodlibet/qltk/controls.py:324
+#: ../quodlibet/qltk/controls.py:323
 #, fuzzy
 msgid "_Album Mode"
 msgstr "專輯檔頭 (_A)"
 
 #. Translators: player state, no action
-#: ../quodlibet/qltk/controls.py:333
+#: ../quodlibet/qltk/controls.py:332
 msgid "_Mute"
 msgstr ""
 
-#: ../quodlibet/qltk/controls.py:339
+#: ../quodlibet/qltk/controls.py:338
 #, fuzzy
 msgid "_Replay Gain Mode"
 msgstr "回放增益音量修正 (_R)"
@@ -4251,13 +4251,13 @@ msgstr ""
 "當前選取的檔案不支援多重設定值。"
 
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:687 ../quodlibet/qltk/edittags.py:855
+#: ../quodlibet/qltk/edittags.py:689 ../quodlibet/qltk/edittags.py:857
 #: ../quodlibet/qltk/tagsfrompath.py:209 ../quodlibet/util/__init__.py:480
 #: ../quodlibet/util/tags.py:225
 msgid "Invalid tag"
 msgstr "無效的標籤"
 
-#: ../quodlibet/qltk/edittags.py:688 ../quodlibet/qltk/edittags.py:856
+#: ../quodlibet/qltk/edittags.py:690 ../quodlibet/qltk/edittags.py:858
 #: ../quodlibet/qltk/tagsfrompath.py:210
 #, python-format
 msgid ""
@@ -4269,11 +4269,11 @@ msgstr ""
 "\n"
 "當前選取的檔案不支援標籤編輯。"
 
-#: ../quodlibet/qltk/edittags.py:828 ../quodlibet/qltk/edittags.py:869
+#: ../quodlibet/qltk/edittags.py:830 ../quodlibet/qltk/edittags.py:871
 msgid "Invalid value"
 msgstr "無效的設定值"
 
-#: ../quodlibet/qltk/edittags.py:829 ../quodlibet/qltk/edittags.py:870
+#: ../quodlibet/qltk/edittags.py:831 ../quodlibet/qltk/edittags.py:872
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"

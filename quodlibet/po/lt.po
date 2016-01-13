@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-14 11:13+0200\n"
+"POT-Creation-Date: 2016-01-13 17:23+0100\n"
 "PO-Revision-Date: 2012-12-07 17:22+0300\n"
 "Last-Translator: Naglis Jonaitis <njonaitis@gmail.com>\n"
 "Language-Team: Lithuanian (http://www.transifex.net/projects/p/quodlibet/"
@@ -190,7 +190,7 @@ msgstr ""
 #: ../quodlibet/browsers/albums/prefs.py:140
 #: ../quodlibet/browsers/albums/prefs.py:145
 #: ../quodlibet/qltk/tagsfrompath.py:191 ../quodlibet/qltk/textedit.py:137
-#: ../quodlibet/util/__init__.py:536
+#: ../quodlibet/util/__init__.py:538
 msgid "Invalid pattern"
 msgstr "Netaisyklingas šablonas"
 
@@ -4045,24 +4045,24 @@ msgstr "Dainos"
 msgid "Display remaining time"
 msgstr "Rodyti, kiek liko laiko"
 
-#: ../quodlibet/qltk/controls.py:322
+#: ../quodlibet/qltk/controls.py:321
 msgid "Auto_matic"
 msgstr "Auto_matinis"
 
-#: ../quodlibet/qltk/controls.py:323
+#: ../quodlibet/qltk/controls.py:322
 msgid "_Track Mode"
 msgstr "_Takelio režimas"
 
-#: ../quodlibet/qltk/controls.py:324
+#: ../quodlibet/qltk/controls.py:323
 msgid "_Album Mode"
 msgstr "_Albumo režimas"
 
 #. Translators: player state, no action
-#: ../quodlibet/qltk/controls.py:333
+#: ../quodlibet/qltk/controls.py:332
 msgid "_Mute"
 msgstr ""
 
-#: ../quodlibet/qltk/controls.py:339
+#: ../quodlibet/qltk/controls.py:338
 #, fuzzy
 msgid "_Replay Gain Mode"
 msgstr "Garsumo derinimas (Replay Gain)"
@@ -4324,13 +4324,13 @@ msgstr ""
 "Failai, kuriuos pasirinkote, nepalaiko kelių reikšmių redagavimo."
 
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:687 ../quodlibet/qltk/edittags.py:855
+#: ../quodlibet/qltk/edittags.py:689 ../quodlibet/qltk/edittags.py:857
 #: ../quodlibet/qltk/tagsfrompath.py:209 ../quodlibet/util/__init__.py:480
 #: ../quodlibet/util/tags.py:225
 msgid "Invalid tag"
 msgstr "Netaisyklinga žymė"
 
-#: ../quodlibet/qltk/edittags.py:688 ../quodlibet/qltk/edittags.py:856
+#: ../quodlibet/qltk/edittags.py:690 ../quodlibet/qltk/edittags.py:858
 #: ../quodlibet/qltk/tagsfrompath.py:210
 #, python-format
 msgid ""
@@ -4342,11 +4342,11 @@ msgstr ""
 "\n"
 "Failai, kuriuos pasirinkote, nepalaiko šios žymės redagavimo."
 
-#: ../quodlibet/qltk/edittags.py:828 ../quodlibet/qltk/edittags.py:869
+#: ../quodlibet/qltk/edittags.py:830 ../quodlibet/qltk/edittags.py:871
 msgid "Invalid value"
 msgstr "Netaisyklinga reikšmė"
 
-#: ../quodlibet/qltk/edittags.py:829 ../quodlibet/qltk/edittags.py:870
+#: ../quodlibet/qltk/edittags.py:831 ../quodlibet/qltk/edittags.py:872
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"

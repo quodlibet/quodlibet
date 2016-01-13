@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-14 11:13+0200\n"
+"POT-Creation-Date: 2016-01-13 17:23+0100\n"
 "PO-Revision-Date: 2015-01-05 14:45+0800\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
@@ -190,7 +190,7 @@ msgstr ""
 #: ../quodlibet/browsers/albums/prefs.py:140
 #: ../quodlibet/browsers/albums/prefs.py:145
 #: ../quodlibet/qltk/tagsfrompath.py:191 ../quodlibet/qltk/textedit.py:137
-#: ../quodlibet/util/__init__.py:536
+#: ../quodlibet/util/__init__.py:538
 msgid "Invalid pattern"
 msgstr "Некорректный шаблон"
 
@@ -3991,24 +3991,24 @@ msgstr "Композиции"
 msgid "Display remaining time"
 msgstr "Отображать оставшееся время"
 
-#: ../quodlibet/qltk/controls.py:322
+#: ../quodlibet/qltk/controls.py:321
 msgid "Auto_matic"
 msgstr "Авто_матически"
 
-#: ../quodlibet/qltk/controls.py:323
+#: ../quodlibet/qltk/controls.py:322
 msgid "_Track Mode"
 msgstr "Режим _дорожки"
 
-#: ../quodlibet/qltk/controls.py:324
+#: ../quodlibet/qltk/controls.py:323
 msgid "_Album Mode"
 msgstr "Режим _альбома"
 
 #. Translators: player state, no action
-#: ../quodlibet/qltk/controls.py:333
+#: ../quodlibet/qltk/controls.py:332
 msgid "_Mute"
 msgstr ""
 
-#: ../quodlibet/qltk/controls.py:339
+#: ../quodlibet/qltk/controls.py:338
 #, fuzzy
 msgid "_Replay Gain Mode"
 msgstr "Анализ ReplayGain"
@@ -4264,13 +4264,13 @@ msgstr ""
 "Выбранные файлы не поддерживают множественные значения <b>%s</b>."
 
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:687 ../quodlibet/qltk/edittags.py:855
+#: ../quodlibet/qltk/edittags.py:689 ../quodlibet/qltk/edittags.py:857
 #: ../quodlibet/qltk/tagsfrompath.py:209 ../quodlibet/util/__init__.py:480
 #: ../quodlibet/util/tags.py:225
 msgid "Invalid tag"
 msgstr "Недопустимый тег"
 
-#: ../quodlibet/qltk/edittags.py:688 ../quodlibet/qltk/edittags.py:856
+#: ../quodlibet/qltk/edittags.py:690 ../quodlibet/qltk/edittags.py:858
 #: ../quodlibet/qltk/tagsfrompath.py:210
 #, python-format
 msgid ""
@@ -4282,11 +4282,11 @@ msgstr ""
 "\n"
 "Выбранные файлы не поддерживают изменение этого тега."
 
-#: ../quodlibet/qltk/edittags.py:828 ../quodlibet/qltk/edittags.py:869
+#: ../quodlibet/qltk/edittags.py:830 ../quodlibet/qltk/edittags.py:871
 msgid "Invalid value"
 msgstr "Недопустимое значение"
 
-#: ../quodlibet/qltk/edittags.py:829 ../quodlibet/qltk/edittags.py:870
+#: ../quodlibet/qltk/edittags.py:831 ../quodlibet/qltk/edittags.py:872
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"

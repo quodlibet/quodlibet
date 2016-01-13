@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-14 11:13+0200\n"
+"POT-Creation-Date: 2016-01-13 17:23+0100\n"
 "PO-Revision-Date: 2015-10-20 03:35+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
@@ -195,7 +195,7 @@ msgstr "Za_mknij"
 #: ../quodlibet/browsers/albums/prefs.py:140
 #: ../quodlibet/browsers/albums/prefs.py:145
 #: ../quodlibet/qltk/tagsfrompath.py:191 ../quodlibet/qltk/textedit.py:137
-#: ../quodlibet/util/__init__.py:536
+#: ../quodlibet/util/__init__.py:538
 msgid "Invalid pattern"
 msgstr "Nieprawidłowy wzorzec"
 
@@ -3769,7 +3769,8 @@ msgstr "Wyświetla informacje pomocy"
 #: ../quodlibet/operon/util.py:40
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
-msgstr "„%(column-id)s” nie jest prawidłową nazwą kolumny (%(all-column-ids)s)."
+msgstr ""
+"„%(column-id)s” nie jest prawidłową nazwą kolumny (%(all-column-ids)s)."
 
 #: ../quodlibet/player/gstbe/player.py:92
 msgid "Stream"
@@ -3858,8 +3859,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
-msgstr ""
-"Nie można odnaleźć modułu „{module}”. Może trzeba zainstalować pakiet?"
+msgstr "Nie można odnaleźć modułu „{module}”. Może trzeba zainstalować pakiet?"
 
 #: ../quodlibet/plugins/__init__.py:69
 #, python-brace-format
@@ -4008,24 +4008,24 @@ msgstr "Utwory"
 msgid "Display remaining time"
 msgstr "Wyświetlanie pozostałego czasu"
 
-#: ../quodlibet/qltk/controls.py:322
+#: ../quodlibet/qltk/controls.py:321
 msgid "Auto_matic"
 msgstr "Auto_matycznie"
 
-#: ../quodlibet/qltk/controls.py:323
+#: ../quodlibet/qltk/controls.py:322
 msgid "_Track Mode"
 msgstr "Tryb ś_cieżek"
 
-#: ../quodlibet/qltk/controls.py:324
+#: ../quodlibet/qltk/controls.py:323
 msgid "_Album Mode"
 msgstr "Tryb _albumów"
 
 #. Translators: player state, no action
-#: ../quodlibet/qltk/controls.py:333
+#: ../quodlibet/qltk/controls.py:332
 msgid "_Mute"
 msgstr "Wy_ciszenie"
 
-#: ../quodlibet/qltk/controls.py:339
+#: ../quodlibet/qltk/controls.py:338
 msgid "_Replay Gain Mode"
 msgstr "_Tryb ReplayGain"
 
@@ -4271,13 +4271,13 @@ msgid ""
 msgstr "Zaznaczone pliki nie obsługują wielu wartości dla <b>%s</b>."
 
 #. Can't add the new tag.
-#: ../quodlibet/qltk/edittags.py:687 ../quodlibet/qltk/edittags.py:855
+#: ../quodlibet/qltk/edittags.py:689 ../quodlibet/qltk/edittags.py:857
 #: ../quodlibet/qltk/tagsfrompath.py:209 ../quodlibet/util/__init__.py:480
 #: ../quodlibet/util/tags.py:225
 msgid "Invalid tag"
 msgstr "Nieprawidłowa etykieta"
 
-#: ../quodlibet/qltk/edittags.py:688 ../quodlibet/qltk/edittags.py:856
+#: ../quodlibet/qltk/edittags.py:690 ../quodlibet/qltk/edittags.py:858
 #: ../quodlibet/qltk/tagsfrompath.py:210
 #, python-format
 msgid ""
@@ -4289,11 +4289,11 @@ msgstr ""
 "\n"
 "Zaznaczone pliki nie obsługują modyfikowania tej etykiety."
 
-#: ../quodlibet/qltk/edittags.py:828 ../quodlibet/qltk/edittags.py:869
+#: ../quodlibet/qltk/edittags.py:830 ../quodlibet/qltk/edittags.py:871
 msgid "Invalid value"
 msgstr "Nieprawidłowa wartość"
 
-#: ../quodlibet/qltk/edittags.py:829 ../quodlibet/qltk/edittags.py:870
+#: ../quodlibet/qltk/edittags.py:831 ../quodlibet/qltk/edittags.py:872
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -5602,8 +5602,7 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"Datę należy podać w formacie „RRRR”, „RRRR-MM-DD” lub „RRRR-MM-DD GG∶MM∶"
-"SS”."
+"Datę należy podać w formacie „RRRR”, „RRRR-MM-DD” lub „RRRR-MM-DD GG∶MM∶SS”."
 
 #: ../quodlibet/util/massagers.py:43
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
@@ -5623,8 +5622,8 @@ msgstr "Identyfikatory MusicBrainz muszą być w formacie UUID."
 msgid ""
 "MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
 msgstr ""
-"Stan wydania MusicBrainz może wynosić tylko „official”, „promotional” "
-"lub „bootleg”."
+"Stan wydania MusicBrainz może wynosić tylko „official”, „promotional” lub "
+"„bootleg”."
 
 #: ../quodlibet/util/massagers.py:113
 msgid "Language must be an ISO 639-2 three-letter code"
