@@ -5,7 +5,7 @@
 * ID3: don't write albumartistsort twice :bug:`1732`
 * Use the stream song for ``--print-playing``. :bug:`1742`
 * Fix background color of some context menus with the Ubuntu 12.04 theme
-* Fix adding new tags failing in some cases :bug:`1757
+* Fix adding new tags failing in some cases :bug:`1757`
 * OSX: make cmd+w close windows :bug:`1715`
 * Fix a crash with numerics in tag pattern conditionals :bug:`1762` (Nick Boultbee)
 * Fix tests with newer Perl (through intltool)
