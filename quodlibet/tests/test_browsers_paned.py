@@ -180,7 +180,7 @@ class TPaneConfig(TestCase):
         self.failUnlessEqual(p.title, "Title / Artist")
         self.failUnlessEqual(p.tags, {"title", "artist"})
 
-        self.failUnlessEqual(p.format(SONGS[0]), ["three - boris"])
+        self.failUnlessEqual(p.format(SONGS[0]), ["three", "boris"])
         self.failIf(p.has_markup)
 
     def test_pattern(self):

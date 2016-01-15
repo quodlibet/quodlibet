@@ -533,7 +533,7 @@ class AudioFile(dict, ImageContainer):
             return [] if v is None else v.split("\n")
 
     def list_separate(self, key, connector=" - "):
-        """Similar to list, but will return a list of all combinations
+        """Similar to list, but will return a list of all values
         for tied tags instead of one comma separated string.
 
         In case of tied tags the result will be unicode, otherwise
@@ -541,15 +541,14 @@ class AudioFile(dict, ImageContainer):
         """
 
         if key[:1] == "~" and "~" in key[1:]:
-            vals = []
-            for v in map(self.__call__, util.tagsplit(key)):
-                v = decode_value(key, v)
-                if v:
-                    vals.append(v.split("\n"))
-            r = [[]]
-            for x in vals:
-                r = [i + [y] for y in x for i in r]
-            return map(connector.join, r)
+            vals = \
+                filter(None,
+                map(lambda x: isinstance(x, basestring) and x or str(x),
+                map(lambda x: (isinstance(x, float) and "%.2f" % x) or x,
+                (self(tag) for tag in util.tagsplit(key)))))
+            vals = (val.split("\n") for val in vals)
+            r = [j for i in vals for j in i]
+            return r
         else:
             return self.list(key)
 
