@@ -197,21 +197,21 @@ created by `Eric Le Lay <https://github.com/elelay>`__
 =========================== ============================== ========================================== ==========================================
 Release                     Application Bundle             SHA256                                     PGP
 =========================== ============================== ========================================== ==========================================
-Quod Libet 3.5.2            QuodLibet-3.5.2.zip_           `SHA256 <QuodLibet-3.5.2.zip.sha256_>`_    `SIG <QuodLibet-3.5.2.zip.sig_>`_
-Ex Falso 3.5.2              ExFalso-3.5.2.zip_             `SHA256 <ExFalso-3.5.2.zip.sha256_>`_      `SIG <ExFalso-3.5.2.zip.sig_>`_
+Quod Libet 3.5.2-v2         QuodLibet-3.5.2-v2.zip_        `SHA256 <QuodLibet-3.5.2-v2.zip.sha256_>`_ `SIG <QuodLibet-3.5.2-v2.zip.sig_>`_
+Ex Falso 3.5.2-v2           ExFalso-3.5.2-v2.zip_          `SHA256 <ExFalso-3.5.2-v2.zip.sha256_>`_   `SIG <ExFalso-3.5.2-v2.zip.sig_>`_
 Quod Libet 3.4.1 (v2)       QuodLibet-3.4.1-v2.zip_        `SHA256 <QuodLibet-3.4.1-v2.zip.sha256_>`_ `SIG <QuodLibet-3.4.1-v2.zip.sig_>`_
 Ex Falso 3.4.1 (v2)         ExFalso-3.4.1-v2.zip_          `SHA256 <ExFalso-3.4.1-v2.zip.sha256_>`_   `SIG <ExFalso-3.4.1-v2.zip.sig_>`_
 =========================== ============================== ========================================== ==========================================
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet/downloads/>`__.
 
-.. _QuodLibet-3.5.2.zip: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.2.zip
-.. _QuodLibet-3.5.2.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.2.zip.sha256
-.. _QuodLibet-3.5.2.zip.sig: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.2.zip.sig
+.. _QuodLibet-3.5.2-v2.zip: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.2-v2.zip
+.. _QuodLibet-3.5.2-v2.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.2-v2.zip.sha256
+.. _QuodLibet-3.5.2-v2.zip.sig: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.2-v2.zip.sig
 
-.. _ExFalso-3.5.2.zip: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.2.zip
-.. _ExFalso-3.5.2.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.2.zip.sha256
-.. _ExFalso-3.5.2.zip.sig: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.2.zip.sig
+.. _ExFalso-3.5.2-v2.zip: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.2-v2.zip
+.. _ExFalso-3.5.2-v2.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.2-v2.zip.sha256
+.. _ExFalso-3.5.2-v2.zip.sig: https://bitbucket.org/lazka/quodlibet/downloads/ExFalso-3.5.2-v2.zip.sig
 
 .. _QuodLibet-3.4.1-v2.zip: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.4.1-v2.zip
 .. _QuodLibet-3.4.1-v2.zip.sha256: https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.4.1-v2.zip.sha256
