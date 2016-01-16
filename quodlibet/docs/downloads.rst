@@ -27,14 +27,14 @@ All files are signed with the following key: `0EBF 782C 5D53 F7E5 FB02  A667 46B
 ========================== =============================== ================================================== ============================================
 Release                    File                            SHA256                                             PGP
 ========================== =============================== ================================================== ============================================
-Quod Libet 3.5.2           quodlibet-3.5.2.tar.gz_         `SHA256 <quodlibet-3.5.2.tar.gz.sha256_>`_         `SIG <quodlibet-3.5.2.tar.gz.sig_>`_
+Quod Libet 3.5.3           quodlibet-3.5.3.tar.gz_         `SHA256 <quodlibet-3.5.3.tar.gz.sha256_>`_         `SIG <quodlibet-3.5.3.tar.gz.sig_>`_
 Quod Libet 3.4.1           quodlibet-3.4.1.tar.gz_         `SHA256 <quodlibet-3.4.1.tar.gz.sha256_>`_         `SIG <quodlibet-3.4.1.tar.gz.sig_>`_
 Quod Libet 3.3.1           quodlibet-3.3.1.tar.gz_         `SHA256 <quodlibet-3.3.1.tar.gz.sha256_>`_         `SIG <quodlibet-3.3.1.tar.gz.sig_>`_
 ========================== =============================== ================================================== ============================================
 
-.. _quodlibet-3.5.2.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.5.2.tar.gz
-.. _quodlibet-3.5.2.tar.gz.sha256: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.5.2.tar.gz.sha256
-.. _quodlibet-3.5.2.tar.gz.sig: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.5.2.tar.gz.sig
+.. _quodlibet-3.5.3.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.5.3.tar.gz
+.. _quodlibet-3.5.3.tar.gz.sha256: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.5.3.tar.gz.sha256
+.. _quodlibet-3.5.3.tar.gz.sig: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.5.3.tar.gz.sig
 
 .. _quodlibet-3.4.1.tar.gz: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.4.1.tar.gz
 .. _quodlibet-3.4.1.tar.gz.sha256: https://bitbucket.org/lazka/quodlibet-files/raw/default/releases/quodlibet-3.4.1.tar.gz.sha256
