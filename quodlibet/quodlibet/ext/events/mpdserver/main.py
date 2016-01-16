@@ -475,6 +475,13 @@ class MPDConnection(BaseTCPConnection):
 
     #  ------------ rest ------------
 
+    def authenticate(self, password):
+        if password == self.service._config.config_get("password"):
+            self.permission = Permissions.PERMISSION_ALL
+        else:
+            self.permission = self.service.default_permission
+            raise MPDRequestError("Password incorrect", AckError.PASSWORD)
+
     def log(self, msg):
         if const.DEBUG:
             print_d("[%s] %s" % (self.name, msg))
@@ -639,6 +646,12 @@ def _cmd_idle(conn, service, args):
 @MPDConnection.Command("ping")
 def _cmd_ping(conn, service, args):
     return
+
+
+@MPDConnection.Command("password")
+def _cmd_password(conn, service, args):
+    _verify_length(args, 1)
+    conn.authenticate(args[0])
 
 
 @MPDConnection.Command("noidle")
