@@ -27,6 +27,19 @@ class AckError(object):
     EXIST = 56
 
 
+class Permissions(object):
+    PERMISSION_NONE = 0
+    PERMISSION_READ = 1
+    PERMISSION_ADD = 2
+    PERMISSION_CONTROL = 4
+    PERMISSION_ADMIN = 8
+    PERMISSION_ALL = PERMISSION_NONE | \
+                     PERMISSION_READ | \
+                     PERMISSION_ADD | \
+                     PERMISSION_CONTROL | \
+                     PERMISSION_ADMIN
+
+
 TAG_MAPPING = [
     (u"Artist", "artist"),
     (u"ArtistSort", "artistsort"),
@@ -120,14 +133,20 @@ class MPDService(object):
 
     version = (0, 17, 0)
 
-    def __init__(self, app):
+    def __init__(self, app, config):
         self._app = app
         self._connections = set()
         self._idle_subscriptions = {}
         self._idle_queue = {}
         self._pl_ver = 0
 
+        self._config = config
         self._options = app.player_options
+
+        if not self._config.config_get("password"):
+            self.default_permission = Permissions.PERMISSION_ALL
+        else:
+            self.default_permission = Permissions.PERMISSION_NONE
 
         def options_changed(*args):
             self.emit_changed("options")
@@ -366,13 +385,14 @@ class MPDService(object):
 
 class MPDServer(BaseTCPServer):
 
-    def __init__(self, app, port):
+    def __init__(self, app, config, port):
         self._app = app
+        self._config = config
         super(MPDServer, self).__init__(port, MPDConnection, const.DEBUG)
 
     def handle_init(self):
         print_d("Creating the MPD service")
-        self.service = MPDService(self._app)
+        self.service = MPDService(self._app, self._config)
 
     def handle_idle(self):
         print_d("Destroying the MPD service")
@@ -411,6 +431,8 @@ class MPDConnection(BaseTCPConnection):
         self._command_list = []
         self._command = None
         # end - command processing state
+
+        self.permission = self.service.default_permission
 
         self.start_write()
         self.start_read()

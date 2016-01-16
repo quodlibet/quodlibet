@@ -172,7 +172,7 @@ namelessdev.mpdroid">MPDroid 1.06</a> (Android)<small>
     def _enable_server(self):
         port_num = get_port_num()
         print_d("Starting MPD server on port %d" % port_num)
-        self._server = MPDServer(app, port_num)
+        self._server = MPDServer(app, self, port_num)
         try:
             self._server.start()
         except ServerError as e:
