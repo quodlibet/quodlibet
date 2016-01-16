@@ -573,7 +573,8 @@ class MPDConnection(BaseTCPConnection):
                 self.write_line(u"list_OK")
             return
 
-        cmd, do_ack = self._commands[command]
+        cmd, do_ack, permission = self._commands[command]
+
         cmd(self, self.service, args)
 
         if self._use_command_list:
@@ -585,11 +586,11 @@ class MPDConnection(BaseTCPConnection):
     _commands = {}
 
     @classmethod
-    def Command(cls, name, ack=True):
+    def Command(cls, name, ack=True, permission=Permissions.PERMISSION_ADMIN):
 
         def wrap(func):
             assert name not in cls._commands, name
-            cls._commands[name] = (func, ack)
+            cls._commands[name] = (func, ack, permission)
             return func
 
         return wrap
@@ -643,12 +644,12 @@ def _cmd_idle(conn, service, args):
     service.register_idle(conn, args)
 
 
-@MPDConnection.Command("ping")
+@MPDConnection.Command("ping", permission=Permissions.PERMISSION_NONE)
 def _cmd_ping(conn, service, args):
     return
 
 
-@MPDConnection.Command("password")
+@MPDConnection.Command("password", permission=Permissions.PERMISSION_NONE)
 def _cmd_password(conn, service, args):
     _verify_length(args, 1)
     conn.authenticate(args[0])
@@ -659,7 +660,8 @@ def _cmd_noidle(conn, service, args):
     service.unregister_idle(conn)
 
 
-@MPDConnection.Command("close", ack=False)
+@MPDConnection.Command("close", ack=False,
+        permission=Permissions.PERMISSION_NONE)
 def _cmd_close(conn, service, args):
     conn.close()
 
@@ -828,7 +830,7 @@ def _cmd_outputs(conn, service, args):
     conn.write_line(u"outputenabled: 1")
 
 
-@MPDConnection.Command("commands")
+@MPDConnection.Command("commands", permission=Permissions.PERMISSION_NONE)
 def _cmd_commands(conn, service, args):
     for name in conn.list_commands():
         conn.write_line(u"command: " + unicode(name))
