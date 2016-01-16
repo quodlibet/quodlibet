@@ -1,3 +1,9 @@
+3.5.3 (2016-01-16) - Uh, I GUESS that'd be good too??
+-----------------------------------------------------
+
+* Fix crash when opening new windows under some DEs (Linux only) :bug:`1788`
+
+
 3.5.2 (2016-01-13) - This is because dates are arbitrary and friendship can be whatever we want it to be!
 ---------------------------------------------------------------------------------------------------------
 
@@ -5,7 +11,7 @@
 * ID3: don't write albumartistsort twice :bug:`1732`
 * Use the stream song for ``--print-playing``. :bug:`1742`
 * Fix background color of some context menus with the Ubuntu 12.04 theme
-* Fix adding new tags failing in some cases :bug:`1757
+* Fix adding new tags failing in some cases :bug:`1757`
 * OSX: make cmd+w close windows :bug:`1715`
 * Fix a crash with numerics in tag pattern conditionals :bug:`1762` (Nick Boultbee)
 * Fix tests with newer Perl (through intltool)
