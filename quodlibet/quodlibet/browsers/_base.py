@@ -131,7 +131,7 @@ class Filter(object):
 
 
 class Browser(Gtk.Box, Filter):
-    """Browers are how the audio library is presented to the user; they
+    """Browsers are how the audio library is presented to the user; they
     create the list of songs that MainSongList is filled with, and pass
     them back via a callback function.
     """
@@ -239,7 +239,7 @@ class Browser(Gtk.Box, Filter):
     """
 
     def reordered(self, songs):
-        """In case can_reorder is True and the song list gets reorderd
+        """In case can_reorder is True and the song list gets reordered
         this gets called with the whole list of songs.
         """
 
