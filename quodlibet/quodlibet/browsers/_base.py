@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,11 +9,14 @@
 
 import random
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, GLib, Pango
 
-from quodlibet import app
+from quodlibet import app, qltk
 from quodlibet import util
+from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.textedit import PatternEditBox
+from quodlibet.util import connect_obj
 from quodlibet.util.library import background_filter
 
 
@@ -273,3 +277,119 @@ class Browser(Gtk.Box, Filter):
 
     replaygain_profiles = None
     """Replay Gain profiles for this browser."""
+
+
+class DisplayPatternMixin(object):
+    """Allows Browsers customisable item (e.g. album) display patterns"""
+
+    _DEFAULT_PATTERN_TEXT = ""
+    """The default pattern to display"""
+
+    _PATTERN_FN = None
+    """The filename to save the display pattern under"""
+
+    _pattern = None
+    _pattern_text = None
+
+    @classmethod
+    def load_pattern(cls):
+        """Load the pattern as defined in `_PATTERN_FN`"""
+        print_d("Loading Pattern for %s browser" % cls.__name__)
+        try:
+            with open(cls._PATTERN_FN, "r") as f:
+                cls._pattern_text = f.read().rstrip()
+        except EnvironmentError:
+            cls._pattern_text = cls._DEFAULT_PATTERN_TEXT
+        cls._pattern = XMLFromMarkupPattern(cls._pattern_text)
+
+    @classmethod
+    def update_pattern(cls, pattern_text):
+        """Saves `pattern_text` to disk (and caches)"""
+        if pattern_text == cls._pattern_text:
+            return
+        cls._pattern_text = pattern_text
+        cls._pattern = XMLFromMarkupPattern(pattern_text)
+        cls.refresh_all()
+        with open(cls._PATTERN_FN, "w") as f:
+            f.write(pattern_text + "\n")
+
+    @classmethod
+    def refresh_all(cls):
+        pass
+
+
+class FakeDisplayItem(dict):
+    """Like an `AudioFile`, but if the values aren't present in the underlying
+    dictionary, it uses the translated tag names as values.
+    See also `util.pattern`"""
+
+    def get(self, key, default="", connector=" - "):
+        if key[:1] == "~" and '~' in key[1:]:
+            return connector.join(map(self.get, util.tagsplit(key)))
+        elif key[:1] == "~" and key[-4:-3] == ":":
+            func = key[-3:]
+            key = key[:-4]
+            return "%s<%s>" % (util.tag(key), func)
+        elif key in self:
+            return self[key]
+        return util.tag(key)
+
+    __call__ = get
+
+    def comma(self, key):
+        value = self.get(key)
+        if isinstance(value, (int, float)):
+            return value
+        return value.replace("\n", ", ")
+
+
+class EditDisplayPatternMixin(object):
+    """Provides a display Pattern in an editable frame"""
+
+    _PREVIEW_ITEM = None
+    """The `FakeItem` (or similar) to use to interpolate into the pattern"""
+
+    _DEFAULT_PATTERN = None
+    """The display pattern to use when none is saved"""
+
+    @classmethod
+    def edit_display_pane(cls, browser, frame_title=None):
+        """Returns a Pattern edit widget, with preview,
+         optionally wrapped in a named Frame"""
+
+        vbox = Gtk.VBox(spacing=6)
+        label = Gtk.Label()
+        label.set_alignment(0.0, 0.5)
+        label.set_padding(6, 6)
+        eb = Gtk.EventBox()
+        eb.get_style_context().add_class("entry")
+        eb.add(label)
+        edit = PatternEditBox(cls._DEFAULT_PATTERN)
+        edit.text = browser._pattern_text
+        edit.apply.connect('clicked', cls._set_pattern, edit, browser)
+        connect_obj(
+                edit.buffer, 'changed', cls._preview_pattern, edit, label)
+        vbox.pack_start(eb, False, True, 3)
+        vbox.pack_start(edit, True, True, 0)
+        cls._preview_pattern(edit, label)
+        return qltk.Frame(frame_title, child=vbox) if frame_title else vbox
+
+    @classmethod
+    def _set_pattern(cls, button, edit, browser):
+        browser.update_pattern(edit.text)
+
+    @classmethod
+    def _preview_pattern(cls, edit, label):
+        try:
+            text = XMLFromMarkupPattern(edit.text) % cls._PREVIEW_ITEM
+        except:
+            text = _("Invalid pattern")
+            edit.apply.set_sensitive(False)
+        try:
+            Pango.parse_markup(text, -1, u"\u0000")
+        except GLib.GError:
+            text = _("Invalid pattern")
+            edit.apply.set_sensitive(False)
+        else:
+            edit.apply.set_sensitive(True)
+        label.set_markup(text)
