@@ -12,7 +12,7 @@ import os
 from gi.repository import Gtk, GObject, Gdk
 
 from quodlibet import config
-from quodlibet.qltk import get_top_parent, is_wayland
+from quodlibet.qltk import get_top_parent, is_wayland, gtk_version
 from quodlibet.qltk.x import Button
 from quodlibet.util import DeferredSignal
 from quodlibet.util import connect_obj, connect_destroy
