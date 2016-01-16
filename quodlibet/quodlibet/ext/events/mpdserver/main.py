@@ -574,6 +574,9 @@ class MPDConnection(BaseTCPConnection):
             return
 
         cmd, do_ack, permission = self._commands[command]
+        if permission != (self.permission & permission):
+            raise MPDRequestError("Insufficient permission",
+                    AckError.PERMISSION)
 
         cmd(self, self.service, args)
 
