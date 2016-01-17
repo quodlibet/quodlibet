@@ -326,7 +326,7 @@ class DisplayPatternMixin(object):
     def display_pattern_text(self):
         """The text of the display pattern
         used for formatting entries in this browser"""
-        return self.__pattern_text
+        return self.__pattern_text or self._DEFAULT_PATTERN_TEXT
 
     @classmethod
     def refresh_all(cls):
@@ -367,8 +367,7 @@ class EditDisplayPatternMixin(object):
     _DEFAULT_PATTERN = None
     """The display pattern to use when none is saved"""
 
-    @classmethod
-    def edit_display_pane(cls, browser, frame_title=None):
+    def edit_display_pane(self, browser, frame_title=None):
         """Returns a Pattern edit widget, with preview,
          optionally wrapped in a named Frame"""
 
@@ -379,24 +378,22 @@ class EditDisplayPatternMixin(object):
         eb = Gtk.EventBox()
         eb.get_style_context().add_class("entry")
         eb.add(label)
-        edit = PatternEditBox(cls._DEFAULT_PATTERN)
+        edit = PatternEditBox(self._DEFAULT_PATTERN)
         edit.text = browser.display_pattern_text
-        edit.apply.connect('clicked', cls._set_pattern, edit, browser)
+        edit.apply.connect('clicked', self._set_pattern, edit, browser)
         connect_obj(
-                edit.buffer, 'changed', cls._preview_pattern, edit, label)
+                edit.buffer, 'changed', self._preview_pattern, edit, label)
         vbox.pack_start(eb, False, True, 3)
         vbox.pack_start(edit, True, True, 0)
-        cls._preview_pattern(edit, label)
+        self._preview_pattern(edit, label)
         return qltk.Frame(frame_title, child=vbox) if frame_title else vbox
 
-    @classmethod
-    def _set_pattern(cls, button, edit, browser):
+    def _set_pattern(self, button, edit, browser):
         browser.update_pattern(edit.text)
 
-    @classmethod
-    def _preview_pattern(cls, edit, label):
+    def _preview_pattern(self, edit, label):
         try:
-            text = XMLFromMarkupPattern(edit.text) % cls._PREVIEW_ITEM
+            text = XMLFromMarkupPattern(edit.text) % self._PREVIEW_ITEM
         except:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)

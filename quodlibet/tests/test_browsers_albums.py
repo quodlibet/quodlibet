@@ -8,6 +8,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet.browsers._base import DisplayPatternMixin
 from . import TestCase
 from .helper import realized
 
@@ -57,8 +58,9 @@ class TAlbumPrefs(TestCase):
 
     def test_main(self):
 
-        class Browser(Gtk.Box):
-            _pattern_text = ""
+        class Browser(Gtk.Box, DisplayPatternMixin):
+            _DEFAULT_PATTERN_TEXT = ""
+            _PATTERN_FN = self.pat_fn
 
         widget = Preferences(Browser())
         widget.destroy()
