@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Nick Boultbee
+# Copyright 2013-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -58,15 +58,15 @@ class PlaylistPlugin(MenuItemPlugin):
     All matching provided callables on a single object are called in the
     above order if they match until one returns a true value.
 
-    The single_ variant is only called if a single song/album is selected.
+    The `single_` variant is only called if a single song/album is selected.
 
-    The singular tense is called once for each selected playlist, but the
-    plural tense is called with a list of playlists
+    The singular version is called once for each selected playlist, but the
+    plural version is called with a list of playlists.
 
     Returning `True` from these signifies a change was made and the UI /
     library should update; otherwise this isn't guaranteed.
 
-    Currently (01/2014) only the singular forms are actually supported in
+    Currently (01/2016) only the singular forms are actually supported in
     the UI, but this won't always be the case.
 
     To make your plugin insensitive if unsupported playlists are selected,
@@ -100,13 +100,11 @@ class PlaylistPluginHandler(PluginHandler):
         PluginManager.instance.register_handler(self)
 
     def __init__(self, confirmer=None):
-        """custom confirmer mainly for testing"""
+        """Takes an optional `confirmer`, mainly for testing"""
 
         self.__plugins = []
-        if confirmer is None:
-            self._confirm_multiple = ConfirmMultiPlaylistInvoke.confirm
-        else:
-            self._confirm_multiple = confirmer
+        self._confirm_multiple = (confirmer or
+                                  ConfirmMultiPlaylistInvoke.confirm)
 
     def populate_menu(self, menu, library, browser, playlists):
         """Appends items onto `menu` for each enabled playlist plugin,
