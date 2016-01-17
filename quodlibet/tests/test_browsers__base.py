@@ -6,11 +6,12 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-
+import os
 from gi.repository import Gtk
 
-from quodlibet.browsers._base import FakeDisplayItem as FDI
-from tests import TestCase, init_fake_app, destroy_fake_app
+from quodlibet.browsers._base import FakeDisplayItem as FDI, \
+    DisplayPatternMixin, FakeDisplayItem
+from tests import TestCase, init_fake_app, destroy_fake_app, mkstemp
 from helper import realized, dummy_path
 
 from quodlibet import browsers
@@ -188,6 +189,34 @@ class TFakeDisplayItem(TestCase):
         self.assertEqual(FDI().comma("title"), "Title")
         self.assertEqual(FDI({"~#rating": 0.5}).comma("~#rating"), 0.5)
         self.assertEqual(FDI(title="a\nb").comma("title"), "a, b")
+
+
+class DummyDPM(DisplayPatternMixin):
+    _PATTERN_FN = mkstemp()[1]
+
+
+class TDisplayPatternMixin(TestCase):
+    TEST_PATTERN = "<~name>: <artist|<artist>|?> [b]<~length>[/b]"
+
+    def setUp(self):
+        with open(DummyDPM._PATTERN_FN, "wb") as f:
+            f.write(self.TEST_PATTERN + "\n")
+
+    @classmethod
+    def tearDownClass(cls):
+        os.unlink(DummyDPM._PATTERN_FN)
+
+    def test_loading_pattern(self):
+        dpm = DummyDPM()
+        dpm.load_pattern()
+        self.failUnlessEqual(dpm.display_pattern_text, self.TEST_PATTERN)
+
+    def test_markup(self):
+        dpm = DummyDPM()
+        dpm.load_pattern()
+        item = FakeDisplayItem({"~length": "2:34"})
+        self.failUnlessEqual(dpm.display_pattern % item,
+                             "Name: Artist <b>2:34</b>")
 
 
 browsers.init()

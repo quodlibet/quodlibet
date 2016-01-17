@@ -459,7 +459,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
                         len(model) - 1) % (len(model) - 1)
                 markup = text
             else:
-                markup = AlbumList._pattern % album
+                markup = self.display_pattern % album
 
             if self.__last_render == markup:
                 return

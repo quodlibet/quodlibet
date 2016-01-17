@@ -307,6 +307,11 @@ class TPlaylist(TestCase):
             except ValueError:
                 pass
 
+    def test_name_tag(s):
+        with s.wrap("a playlist") as pl:
+            s.failUnlessEqual(pl("~name"), "a playlist")
+            s.failUnlessEqual(pl.get("~name"), "a playlist")
+
     def test_internal_tags(s):
         with s.wrap("playlist") as pl:
             pl.extend(s.TWO_SONGS)

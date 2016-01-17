@@ -288,8 +288,8 @@ class DisplayPatternMixin(object):
     _PATTERN_FN = None
     """The filename to save the display pattern under"""
 
-    _pattern = None
-    _pattern_text = None
+    __pattern = None
+    __pattern_text = None
 
     @classmethod
     def load_pattern(cls):
@@ -297,21 +297,36 @@ class DisplayPatternMixin(object):
         print_d("Loading Pattern for %s browser" % cls.__name__)
         try:
             with open(cls._PATTERN_FN, "r") as f:
-                cls._pattern_text = f.read().rstrip()
+                cls.__pattern_text = f.read().rstrip()
         except EnvironmentError:
-            cls._pattern_text = cls._DEFAULT_PATTERN_TEXT
-        cls._pattern = XMLFromMarkupPattern(cls._pattern_text)
+            cls.__pattern_text = cls._DEFAULT_PATTERN_TEXT
+        cls.__refresh_pattern()
 
     @classmethod
     def update_pattern(cls, pattern_text):
         """Saves `pattern_text` to disk (and caches)"""
-        if pattern_text == cls._pattern_text:
+        if pattern_text == cls.__pattern_text:
             return
-        cls._pattern_text = pattern_text
-        cls._pattern = XMLFromMarkupPattern(pattern_text)
+        cls.__pattern_text = pattern_text
+        cls.__refresh_pattern()
         cls.refresh_all()
         with open(cls._PATTERN_FN, "w") as f:
             f.write(pattern_text + "\n")
+
+    @classmethod
+    def __refresh_pattern(cls):
+        cls.__pattern = XMLFromMarkupPattern(cls.__pattern_text)
+
+    @property
+    def display_pattern(self):
+        """The `Pattern` used for formatting entries in this browser"""
+        return self.__pattern
+
+    @property
+    def display_pattern_text(self):
+        """The text of the display pattern
+        used for formatting entries in this browser"""
+        return self.__pattern_text
 
     @classmethod
     def refresh_all(cls):
@@ -365,7 +380,7 @@ class EditDisplayPatternMixin(object):
         eb.get_style_context().add_class("entry")
         eb.add(label)
         edit = PatternEditBox(cls._DEFAULT_PATTERN)
-        edit.text = browser._pattern_text
+        edit.text = browser.display_pattern_text
         edit.apply.connect('clicked', cls._set_pattern, edit, browser)
         connect_obj(
                 edit.buffer, 'changed', cls._preview_pattern, edit, label)

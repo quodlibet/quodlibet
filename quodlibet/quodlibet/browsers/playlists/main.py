@@ -9,28 +9,30 @@
 import urllib
 from gi.repository import Gtk, GLib, Pango, Gdk
 from tempfile import NamedTemporaryFile
-from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 
 from quodlibet import config
 from quodlibet.browsers import Browser
+from quodlibet.browsers._base import DisplayPatternMixin
+from quodlibet.browsers.playlists.prefs import Preferences
+from quodlibet.formats import AudioFile
+from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 from quodlibet.qltk.completion import LibraryTagCompletion
+from quodlibet.qltk.menubutton import MenuButton
+from quodlibet.qltk.models import ObjectStore, ObjectModelSort
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songlist import SongList
+from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem, SymbolicIconImage
 from quodlibet.query import Query
 from quodlibet.util import connect_obj
 from quodlibet.util.path import get_home_dir
-from quodlibet.qltk.songsmenu import SongsMenu
-from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.qltk.models import ObjectStore, ObjectModelSort
-from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem
-
 from .util import *
-
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
 
-class PlaylistsBrowser(Browser):
+class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     name = _("Playlists")
     accelerated_name = _("_Playlists")
@@ -38,6 +40,11 @@ class PlaylistsBrowser(Browser):
     priority = 2
     replaygain_profiles = ["track"]
     __last_render = None
+    _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "playlist_pattern")
+    _FOOTER = "<~tracks> (<~filesize> / <~length>)"
+    _DEFAULT_PATTERN_TEXT = ("[b]<~name>[/b]\n"
+                             "[small]<~tracks|%s|[i](%s)[/i]>[/small]"
+                             % (_FOOTER, (_("empty"))))
 
     def pack(self, songpane):
         self._main_box.pack1(self, True, False)
@@ -72,6 +79,7 @@ class PlaylistsBrowser(Browser):
             library.connect('added', klass.__added),
             library.connect('changed', klass.__changed),
         ]
+        klass.load_pattern()
 
     @classmethod
     def deinit(cls, library):
@@ -122,8 +130,7 @@ class PlaylistsBrowser(Browser):
 
     def cell_data(self, col, cell, model, iter, data):
         playlist = model[iter][0]
-        cell.markup = playlist_info_markup(playlist)
-        markup = playlist_info_markup(model[iter][0])
+        cell.markup = markup = self.display_pattern % playlist
         if self.__last_render == markup:
             return
         self.__last_render = markup
@@ -131,8 +138,7 @@ class PlaylistsBrowser(Browser):
         cell.set_property('markup', markup)
 
     def Menu(self, songs, library, items):
-        songlist = qltk.get_top_parent(self).songlist
-        model, iters = self.__get_selected_songs(songlist)
+        model, iters = self.__get_selected_songs()
         item = qltk.MenuItem(_("_Remove from Playlist"), Icons.LIST_REMOVE)
         qltk.add_fake_accel(item, "Delete")
         connect_obj(item, 'activate', self.__remove, iters, model)
@@ -142,7 +148,8 @@ class PlaylistsBrowser(Browser):
         menu = super(PlaylistsBrowser, self).Menu(songs, library, items)
         return menu
 
-    def __get_selected_songs(self, songlist):
+    def __get_selected_songs(self):
+        songlist = qltk.get_top_parent(self).songlist
         model, rows = songlist.get_selection().get_selected_rows()
         iters = map(model.get_iter, rows)
         return model, iters
@@ -192,15 +199,19 @@ class PlaylistsBrowser(Browser):
         self.pack_start(swin, True, True, 0)
 
     def __configure_buttons(self, library):
-        newpl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
-        newpl.connect('clicked', self.__new_playlist)
-        importpl = qltk.Button(_("_Import"), Icons.LIST_ADD, Gtk.IconSize.MENU)
-        importpl.connect('clicked', self.__import, library)
+        new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
+        new_pl.connect('clicked', self.__new_playlist)
+        import_pl = qltk.Button(_("_Import"), Icons.LIST_ADD,
+                                Gtk.IconSize.MENU)
+        import_pl.connect('clicked', self.__import, library)
         hb = Gtk.HBox(spacing=6)
-        hb.set_homogeneous(True)
-        hb.pack_start(newpl, True, True, 0)
-        hb.pack_start(importpl, True, True, 0)
-        self.pack_start(Align(hb, left=3, bottom=3), False, True, 0)
+        hb.set_homogeneous(False)
+        hb.pack_start(new_pl, True, True, 0)
+        hb.pack_start(import_pl, True, True, 0)
+        hb2 = Gtk.HBox(spacing=0)
+        hb2.pack_start(hb, True, True, 0)
+        hb2.pack_start(PreferencesButton(self), False, False, 6)
+        self.pack_start(Align(hb2, left=3, bottom=3), False, False, 0)
 
     def __create_playlists_view(self, render):
         view = RCMHintedTreeView()
@@ -256,8 +267,7 @@ class PlaylistsBrowser(Browser):
         return False
 
     def __handle_songlist_delete(self, *args):
-        songlist = qltk.get_top_parent(self).songlist
-        model, iters = self.__get_selected_songs(songlist)
+        model, iters = self.__get_selected_songs()
         self.__remove(iters, model)
 
     def __key_pressed(self, widget, event):
@@ -448,6 +458,16 @@ class PlaylistsBrowser(Browser):
             songs = self._query.filter(songs)
         GLib.idle_add(self.songs_selected, songs, resort)
 
+    @classmethod
+    def refresh_all(cls):
+        model = cls.__lists.get_model()
+        for iter_, value in model.iterrows():
+            model.row_changed(model.get_path(iter_), iter_)
+
+    @property
+    def model(self):
+        return self.__lists.get_model()
+
     def _get_playlist_songs(self):
         model, iter = self.__view.get_selection().get_selected()
         songs = iter and list(model[iter][0]) or []
@@ -487,7 +507,7 @@ class PlaylistsBrowser(Browser):
 
     def __new_playlist(self, activator):
         playlist = FileBackedPlaylist.new(PLAYLISTS)
-        self.__lists.get_model().append(row=[playlist])
+        self.model.append(row=[playlist])
         self._select_playlist(playlist)
 
     def __start_editing(self, render, editable, path):
@@ -505,7 +525,7 @@ class PlaylistsBrowser(Browser):
                 None, _("Unable to rename playlist"), s).run()
         else:
             row = self.__lists[path]
-            child_model = self.__lists.get_model()
+            child_model = self.model
             child_model.remove(
                 self.__lists.convert_iter_to_child_iter(row.iter))
             child_model.append(row=[playlist])
@@ -562,3 +582,22 @@ class PlaylistsBrowser(Browser):
             GLib.idle_add(self._select_playlist, playlist)
         if playlist:
             PlaylistsBrowser.changed(playlist, refresh=False)
+
+
+class PreferencesButton(Gtk.HBox):
+    def __init__(self, browser):
+        super(PreferencesButton, self).__init__()
+
+        menu = Gtk.Menu()
+
+        pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
+        menu.append(pref_item)
+        connect_obj(pref_item, "activate", Preferences, browser)
+
+        menu.show_all()
+
+        button = MenuButton(
+                SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
+                arrow=True)
+        button.set_menu(menu)
+        self.pack_start(button, True, True, 0)

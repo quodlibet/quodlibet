@@ -7,17 +7,15 @@
 
 import os
 from gi.repository import Gtk
+
 import quodlibet
 from quodlibet import formats, qltk
-from quodlibet.formats import AudioFile
-from quodlibet.pattern import XMLFromMarkupPattern
-from quodlibet.qltk.wlw import WaitLoadWindow
-from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk import Icons
+from quodlibet.qltk.getstring import GetStringDialog
+from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.util import escape
 from quodlibet.util.collection import FileBackedPlaylist
 from quodlibet.util.path import mkdir, fsdecode, is_fsnative
-
 from quodlibet.util.uri import URI
 
 # Directory for playlist files
@@ -25,12 +23,6 @@ PLAYLISTS = os.path.join(quodlibet.get_user_dir(), "playlists")
 assert is_fsnative(PLAYLISTS)
 if not os.path.isdir(PLAYLISTS):
     mkdir(PLAYLISTS)
-
-_FOOTER = "<~tracks> (<~filesize> / <~length>)"
-_PATTERN_TEXT = ("[b]<~name>[/b]\n"
-            "[small]<~tracks|%s|[i](%s)[/i]>[/small]" % (_FOOTER, _("empty")))
-"""The (currently) hard-coded pattern for formatting Playlist entries"""
-PATTERN = XMLFromMarkupPattern(_PATTERN_TEXT)
 
 
 class ConfirmRemovePlaylistDialog(qltk.Message):
@@ -130,21 +122,3 @@ def __parse_playlist(name, plfilename, files, library):
     win.destroy()
     playlist.extend(filter(None, songs))
     return playlist
-
-
-def playlist_info_markup(pl, pattern=PATTERN):
-    """Returns markup of information for `pl` as formatted by `pattern`"""
-
-    class PlaylistWrapper(AudioFile):
-        def __init__(self, pl):
-            self.pl = pl
-
-        def get(self, key, default=None):
-            return pl.get(key, default)
-
-        def __call__(self, key, default=u"", connector=" - "):
-            if key == '~name':
-                return pl.name
-            return pl.__call__(key, default, connector)
-
-    return pattern % PlaylistWrapper(pl)
