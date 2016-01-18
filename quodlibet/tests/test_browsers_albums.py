@@ -60,7 +60,6 @@ class TAlbumPrefs(TestCase):
 
         class Browser(Gtk.Box, DisplayPatternMixin):
             _DEFAULT_PATTERN_TEXT = ""
-            _PATTERN_FN = self.pat_fn
 
         widget = Preferences(Browser())
         widget.destroy()
