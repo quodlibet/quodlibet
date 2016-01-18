@@ -769,7 +769,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         restore_browser = not headless
         try:
-            self.select_browser(
+            self._select_browser(
                 self, config.get("memory", "browser"), library, player,
                 restore_browser)
         except:
@@ -1113,11 +1113,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 act.set_active(True)
             ag.add_action(act)
         assert first_action
+        self._browser_action = first_action
 
         def action_callback(view_action, current_action):
             current = browsers.name(
                 browsers.get(current_action.get_current_value()))
-            self.select_browser(view_action, current, library, player)
+            self._select_browser(view_action, current, library, player)
 
         first_action.connect("changed", action_callback)
 
@@ -1159,7 +1160,27 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         about.run()
         about.destroy()
 
-    def select_browser(self, activator, current, library, player,
+    def select_browser(self, browser_key, library, player):
+        """Given a browser name (see browsers.get()) changes the current
+        browser.
+
+        Returns True if the passed browser ID is known and the change
+        was initiated.
+        """
+
+        try:
+            Browser = browsers.get(browser_key)
+        except ValueError:
+            return False
+
+        action_name = "View%s" % Browser.__name__
+        for i, action in enumerate(self._browser_action.get_group()):
+            if action.get_name() == action_name:
+                action.set_active(True)
+                return True
+        return False
+
+    def _select_browser(self, activator, current, library, player,
                        restore=False):
 
         Browser = browsers.get(current)

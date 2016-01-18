@@ -254,11 +254,8 @@ def _dump_browsers(app):
 
 @registry.register("set-browser", args=1)
 def _set_browser(app, value):
-    try:
-        browsers.get(value)
-    except ValueError:
+    if not app.window.select_browser(value, app.library, app.player):
         raise CommandError("Unknown browser %r" % value)
-    app.window.select_browser(None, value, app.library, app.player)
 
 
 @registry.register("open-browser", args=1)
