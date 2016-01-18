@@ -193,7 +193,7 @@ class TFakeDisplayItem(TestCase):
 
 class DummyDPM(DisplayPatternMixin):
     fd, _PATTERN_FN = mkstemp()
-    os.clse(fd)
+    os.close(fd)
 
 
 class TDisplayPatternMixin(TestCase):
