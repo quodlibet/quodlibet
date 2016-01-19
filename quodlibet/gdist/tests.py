@@ -149,6 +149,7 @@ class distcheck_cmd(sdist):
         old_pwd = os.getcwd()
         os.chdir(extract_dir)
         self.spawn([sys.executable, "setup.py", "test"])
+        self.spawn([sys.executable, "setup.py", "quality"])
         self.spawn([sys.executable, "setup.py", "build"])
         self.spawn([sys.executable, "setup.py", "build_sphinx"])
         self.spawn([sys.executable, "setup.py", "install",

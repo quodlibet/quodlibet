@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
 #           2013 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-
+import os
 from gi.repository import Gtk
 
-from tests import TestCase, init_fake_app, destroy_fake_app
+from quodlibet.browsers._base import FakeDisplayItem as FDI, \
+    DisplayPatternMixin, FakeDisplayItem
+from tests import TestCase, init_fake_app, destroy_fake_app, mkstemp
 from helper import realized, dummy_path
 
 from quodlibet import browsers
@@ -166,6 +169,55 @@ class TBrowserMixin(object):
     def test_filter_other(self):
         with realized(self.b):
             self.b.unfilter()
+
+
+class TFakeDisplayItem(TestCase):
+
+    def test_call(self):
+        self.assertEqual(FDI()("title"), "Title")
+        self.assertEqual(FDI()("~title~artist"), "Title - Artist")
+        self.assertEqual(FDI(title="foo")("title"), "foo")
+        self.assertEqual(FDI(title="f")("~title~artist"), "f - Artist")
+        self.assertEqual(FDI()("~#rating"), "Rating")
+        self.assertEqual(FDI({"~#rating": 0.5})("~#rating"), 0.5)
+        self.assertEqual(FDI()("~#rating:max"), "Rating<max>")
+
+    def test_get(self):
+        self.assertEqual(FDI().get("title"), "Title")
+
+    def test_comma(self):
+        self.assertEqual(FDI().comma("title"), "Title")
+        self.assertEqual(FDI({"~#rating": 0.5}).comma("~#rating"), 0.5)
+        self.assertEqual(FDI(title="a\nb").comma("title"), "a, b")
+
+
+class DummyDPM(DisplayPatternMixin):
+    fd, _PATTERN_FN = mkstemp()
+    os.close(fd)
+
+
+class TDisplayPatternMixin(TestCase):
+    TEST_PATTERN = "<~name>: <artist|<artist>|?> [b]<~length>[/b]"
+
+    def setUp(self):
+        with open(DummyDPM._PATTERN_FN, "wb") as f:
+            f.write(self.TEST_PATTERN + "\n")
+
+    @classmethod
+    def tearDownClass(cls):
+        os.unlink(DummyDPM._PATTERN_FN)
+
+    def test_loading_pattern(self):
+        dpm = DummyDPM()
+        dpm.load_pattern()
+        self.failUnlessEqual(dpm.display_pattern_text, self.TEST_PATTERN)
+
+    def test_markup(self):
+        dpm = DummyDPM()
+        dpm.load_pattern()
+        item = FakeDisplayItem({"~length": "2:34"})
+        self.failUnlessEqual(dpm.display_pattern % item,
+                             "Name: Artist <b>2:34</b>")
 
 
 browsers.init()

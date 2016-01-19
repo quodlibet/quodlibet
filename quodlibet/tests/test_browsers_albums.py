@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012,2014 Christoph Reiter
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,13 +8,14 @@
 
 from gi.repository import Gtk
 
+from quodlibet.browsers._base import DisplayPatternMixin
 from . import TestCase
 from .helper import realized
 
 from quodlibet import config
 
 from quodlibet.browsers.albums import AlbumList
-from quodlibet.browsers.albums.prefs import Preferences, FakeAlbum
+from quodlibet.browsers.albums.prefs import Preferences
 from quodlibet.browsers.albums.main import (compare_title, compare_artist,
     compare_genre, compare_rating, compare_date)
 from quodlibet.formats import AudioFile
@@ -56,8 +58,8 @@ class TAlbumPrefs(TestCase):
 
     def test_main(self):
 
-        class Browser(Gtk.Box):
-            _pattern_text = ""
+        class Browser(Gtk.Box, DisplayPatternMixin):
+            _DEFAULT_PATTERN_TEXT = ""
 
         widget = Preferences(Browser())
         widget.destroy()
@@ -116,26 +118,6 @@ class TAlbumSort(TestCase):
         n = self._get_album({"album": "", "~#rating": 0.25})
 
         self.assertOrder(compare_rating, [None, a, b, c, n])
-
-
-class TFakeAlbum(TestCase):
-
-    def test_call(self):
-        self.assertEqual(FakeAlbum()("title"), "Title")
-        self.assertEqual(FakeAlbum()("~title~artist"), "Title - Artist")
-        self.assertEqual(FakeAlbum(title="foo")("title"), "foo")
-        self.assertEqual(FakeAlbum(title="f")("~title~artist"), "f - Artist")
-        self.assertEqual(FakeAlbum()("~#rating"), "Rating")
-        self.assertEqual(FakeAlbum({"~#rating": 0.5})("~#rating"), 0.5)
-        self.assertEqual(FakeAlbum()("~#rating:max"), "Rating<max>")
-
-    def test_get(self):
-        self.assertEqual(FakeAlbum().get("title"), "Title")
-
-    def test_comma(self):
-        self.assertEqual(FakeAlbum().comma("title"), "Title")
-        self.assertEqual(FakeAlbum({"~#rating": 0.5}).comma("~#rating"), 0.5)
-        self.assertEqual(FakeAlbum(title="a\nb").comma("title"), "a, b")
 
 
 class TAlbumBrowser(TestCase):

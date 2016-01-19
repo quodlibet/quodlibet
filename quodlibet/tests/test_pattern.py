@@ -56,6 +56,14 @@ class TPattern(_TPattern):
     from quodlibet.formats import AudioFile
     AudioFile
 
+    def test_space(self):
+        pat = Pattern("a ")
+        self.assertEqual(pat.format(self.a), "a ")
+        pat = Pattern(" a")
+        self.assertEqual(pat.format(self.a), " a")
+        pat = Pattern("a\n\n")
+        self.assertEqual(pat.format(self.a), "a\n\n")
+
     def test_query_like_tag(self):
         pat = Pattern("<t=v>")
         self.assertEqual(pat.format(AudioFile({"t=v": "foo"})), "foo")

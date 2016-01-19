@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from quodlibet.browsers.playlists.util import *
-from quodlibet.pattern import XMLFromMarkupPattern as MarkupPattern
-from quodlibet.util.collection import FileBackedPlaylist, Playlist
+from quodlibet.util.collection import FileBackedPlaylist
 from tests import TestCase, DATA_DIR, mkstemp, mkdtemp, _TEMP_DIR
 from helper import dummy_path
 
@@ -243,10 +242,3 @@ class TPlaylistsBrowser(TSearchBar):
         self.bar._rename(0, "zBig")
         self.assertEquals(self.bar.playlists()[0], self.small)
         self.assertEquals(self.bar.playlists()[1].name, "zBig")
-
-    def test_playlist_info_markup(self):
-        pl = Playlist("foobar")
-        pl.extend(SONGS[0:2])
-        pat = MarkupPattern("<~name>: <artist|<artist>|?> [b]<~length>[/b]")
-        markup = playlist_info_markup(pl, pat)
-        self.failUnlessEqual(markup, "foobar: mu, piman <b>3:54</b>")

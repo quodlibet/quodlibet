@@ -334,9 +334,7 @@ class DuplicateDialog(Gtk.Window):
             model = view.get_model()
             for row in model:
                 if view.row_expanded(row.path):
-                    for row in model:
-                        view.collapse_row(row.path)
-                    break
+                    view.collapse_row(row.path)
             else:
                 for row in model:
                     view.expand_row(row.path, False)

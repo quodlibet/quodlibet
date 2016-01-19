@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2013 Nick Boultbee
+#      2012,2013,2016 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -14,7 +14,7 @@ import os
 
 from gi.repository import Gtk, Pango, Gdk, GLib, Gio
 
-from .prefs import Preferences, PATTERN
+from .prefs import Preferences
 from .models import AlbumModel, AlbumFilterModel, AlbumSortModel
 
 import quodlibet
@@ -24,7 +24,7 @@ from quodlibet import util
 
 from quodlibet.browsers import Browser
 from quodlibet.query import Query
-from quodlibet.pattern import XMLFromMarkupPattern
+from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
@@ -40,11 +40,7 @@ from quodlibet.util.library import background_filter
 from quodlibet.util import connect_obj, DeferredSignal
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
-from quodlibet.qltk.image import (get_pbosf_for_pixbuf, get_scale_factor,
-    set_renderer_from_pbosf, add_border_widget)
-
-
-PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
+from quodlibet.qltk.image import *
 
 
 class AlbumTagCompletion(EntryWordCompletion):
@@ -331,10 +327,13 @@ class VisibleUpdate(object):
         self.__pending_paths = visible_paths
 
 
-class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
+class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
+                DisplayPatternMixin):
     __model = None
     __last_render = None
     __last_render_pb = None
+
+    _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
 
     name = _("Album List")
     accelerated_name = _("_Album List")
@@ -353,13 +352,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
 
     @classmethod
     def init(klass, library):
-        try:
-            with open(PATTERN_FN, "r") as f:
-                klass._pattern_text = f.read().rstrip()
-        except EnvironmentError:
-            klass._pattern_text = PATTERN
-
-        klass._pattern = XMLFromMarkupPattern(klass._pattern_text)
+        super(AlbumList, klass).load_pattern()
 
     @classmethod
     def _destroy_model(klass):
@@ -375,15 +368,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
                 column.queue_resize()
 
     @classmethod
-    def refresh_pattern(klass, pattern_text):
-        if pattern_text == klass._pattern_text:
-            return
-        klass._pattern_text = pattern_text
-        klass._pattern = XMLFromMarkupPattern(pattern_text)
-        klass.__model.refresh_all()
-        pattern_fn = PATTERN_FN
-        with open(pattern_fn, "w") as f:
-            f.write(pattern_text + "\n")
+    def refresh_all(cls):
+        cls.__model.refresh_all()
 
     @classmethod
     def _init_model(klass, library):
@@ -473,7 +459,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate):
                         len(model) - 1) % (len(model) - 1)
                 markup = text
             else:
-                markup = AlbumList._pattern % album
+                markup = self.display_pattern % album
 
             if self.__last_render == markup:
                 return

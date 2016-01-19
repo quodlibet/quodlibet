@@ -22,7 +22,7 @@ default = None
 def init():
     """Import all browsers from this package and from the user directory.
 
-    After this is called the global `browers` list will contain all
+    After this is called the global `browsers` list will contain all
     classes sorted by priority.
 
     Can be called multiple times.

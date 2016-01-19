@@ -349,6 +349,13 @@ class Playlist(Collection, Iterable):
                 playlists.append(instance)
         return playlists
 
+    def get(self, key, default=u"", connector=u" - "):
+        if key == "~name":
+            return self.name
+        return super(Playlist, self).get(key, default, connector)
+
+    __call__ = get
+
     # List-like methods, for compatibilty with original Playlist class.
     def extend(self, songs):
         self._list.extend(songs)
