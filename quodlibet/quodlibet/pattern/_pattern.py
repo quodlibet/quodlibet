@@ -55,7 +55,7 @@ class PatternLexeme(object):
 
 class PatternLexer(Scanner):
     def __init__(self, s):
-        self.string = s.strip()
+        self.string = s
         Scanner.__init__(self,
                          [(r"([^<>|\\]|\\.)+", self.text),
                           (r"[<>|]", self.table),
