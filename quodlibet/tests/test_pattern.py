@@ -27,6 +27,10 @@ class _TPattern(AbstractTestCase):
         s7 = {'artist': u'un élève français', '~filename': '/path/to/g.mp3',
               'albumartist': u'Lee "Scratch" Perry',
               'album': "The 'only' way!", 'comment': 'Trouble|Strife'}
+        s8 = {'tracknumber': '7/8', 'artist': 'Artist1\n\nArtist3',
+              'artistsort': 'SortA1\nSortA2',
+              'album': 'Album5', 'albumsort': 'SortAlbum5',
+              '~filename': '/path/to/g.mp3', 'xmltest': "<&>"}
 
         if os.name == "nt":
             s1["filename"] = u"C:\\path\\to\\a.mp3"
@@ -36,6 +40,7 @@ class _TPattern(AbstractTestCase):
             s5["filename"] = u"C:\\path\\to\\a.mp3"
             s6["filename"] = u"C:\\path\\to\\f.mp3"
             s7["filename"] = u"C:\\path\\to\\g.mp3"
+            s8["filename"] = u"C:\\path\\to\\h.mp3"
 
         self.a = AudioFile(s1)
         self.b = AudioFile(s2)
@@ -44,6 +49,7 @@ class _TPattern(AbstractTestCase):
         self.e = AudioFile(s5)
         self.f = AudioFile(s6)
         self.g = AudioFile(s7)
+        self.h = AudioFile(s8)
 
 
 class TPattern(_TPattern):
@@ -426,6 +432,70 @@ class TPatternFormatList(_TPattern):
         s.failUnlessEqual(pat.format_list(s.d), {'foo.', 'bar.'})
         pat = Pattern('<artist|<artist|<artist>.|<performer>>>')
         s.failUnlessEqual(pat.format_list(s.d), {'foo.', 'bar.'})
+
+    def test_sort(s):
+        pat = Pattern('<album>')
+        s.failUnlessEqual(pat.format_list(s.h), {(u'Album5', u'SortAlbum5')})
+        pat = Pattern('<artist>')
+        s.failUnlessEqual(pat.format_list(s.h), {(u'Artist1', u'SortA1'),
+                                                 (u'SortA2', u'SortA2'),
+                                                 (u'Artist3', u'Artist3')})
+
+    def test_sort_tied(s):
+        pat = Pattern('<~artist~album>')
+        s.failUnlessEqual(pat.format_list(s.h), {(u'Artist1', u'SortA1'),
+                                                 (u'SortA2', u'SortA2'),
+                                                 (u'Artist3', u'Artist3'),
+                                                 (u'Album5', u'SortAlbum5')})
+        pat = Pattern('<~album~artist>')
+        s.failUnlessEqual(pat.format_list(s.h), {(u'Artist1', u'SortA1'),
+                                                 (u'SortA2', u'SortA2'),
+                                                 (u'Artist3', u'Artist3'),
+                                                 (u'Album5', u'SortAlbum5')})
+        pat = Pattern('<~artist~artist>')
+        s.failUnlessEqual(pat.format_list(s.h), {(u'Artist1', u'SortA1'),
+                                                 (u'SortA2', u'SortA2'),
+                                                 (u'Artist3', u'Artist3')})
+
+    def test_sort_combine(s):
+        pat = Pattern('<album> <artist>')
+        s.failUnlessEqual(pat.format_list(s.h),
+                          {(u'Album5 Artist1', u'SortAlbum5 SortA1'),
+                           (u'Album5 SortA2', u'SortAlbum5 SortA2'),
+                           (u'Album5 Artist3', u'SortAlbum5 Artist3')})
+        pat = Pattern('x <artist> <album>')
+        s.failUnlessEqual(pat.format_list(s.h),
+                          {(u'x Artist1 Album5', u'x SortA1 SortAlbum5'),
+                           (u'x SortA2 Album5', u'x SortA2 SortAlbum5'),
+                           (u'x Artist3 Album5', u'x Artist3 SortAlbum5')})
+        pat = Pattern(' <artist> <album> xx')
+        s.failUnlessEqual(pat.format_list(s.h),
+                          {(u' Artist1 Album5 xx', u' SortA1 SortAlbum5 xx'),
+                           (u' SortA2 Album5 xx', u' SortA2 SortAlbum5 xx'),
+                           (u' Artist3 Album5 xx', u' Artist3 SortAlbum5 xx')})
+        pat = Pattern('<album> <tracknumber> <artist>')
+        s.failUnlessEqual(pat.format_list(s.h),
+                          {(u'Album5 7/8 Artist1', u'SortAlbum5 7/8 SortA1'),
+                           (u'Album5 7/8 SortA2', u'SortAlbum5 7/8 SortA2'),
+                           (u'Album5 7/8 Artist3', u'SortAlbum5 7/8 Artist3')})
+        pat = Pattern('<tracknumber> <album> <artist>')
+        s.failUnlessEqual(pat.format_list(s.h),
+                          {(u'7/8 Album5 Artist1', u'7/8 SortAlbum5 SortA1'),
+                           (u'7/8 Album5 SortA2', u'7/8 SortAlbum5 SortA2'),
+                           (u'7/8 Album5 Artist3', u'7/8 SortAlbum5 Artist3')})
+
+    def test_sort_multiply(s):
+        pat = Pattern('<artist> <artist>')
+        s.failUnlessEqual(pat.format_list(s.h),
+                          {(u'Artist1 Artist1', u'SortA1 SortA1'),
+                           (u'SortA2 Artist1', u'SortA2 SortA1'),
+                           (u'Artist3 Artist1', u'Artist3 SortA1'),
+                           (u'Artist1 SortA2', u'SortA1 SortA2'),
+                           (u'SortA2 SortA2', u'SortA2 SortA2'),
+                           (u'Artist3 SortA2', u'Artist3 SortA2'),
+                           (u'Artist1 Artist3', u'SortA1 Artist3'),
+                           (u'SortA2 Artist3', u'SortA2 Artist3'),
+                           (u'Artist3 Artist3', u'Artist3 Artist3')})
 
     def test_missing_value(self):
         pat = Pattern('<genre> - <artist>')

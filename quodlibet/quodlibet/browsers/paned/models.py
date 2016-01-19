@@ -207,12 +207,14 @@ class PaneModel(ObjectStore):
             keys = self.get_format_keys(song)
             if not keys:
                 unknown.songs.add(song)
-            for key in keys:
+            for ks in keys:
+                sort = ks[1] if isinstance(ks, tuple) else ks
+                key = ks[0] if isinstance(ks, tuple) else ks
                 if key in collection:
                     collection[key][0].songs.add(song)
-                else:
+                else: # first key sets up sorting
                     entry = SongsEntry(key)
-                    collection[key] = (entry, human_sort(key))
+                    collection[key] = (entry, human_sort(sort))
                     entry.songs.add(song)
 
         items = sorted(collection.iteritems(),
@@ -304,8 +306,9 @@ class PaneModel(ObjectStore):
 
         for path in paths:
             entry = self.get_value(self.get_iter(path))
-            if entry.key in keys:
-                return True
+            for key in keys:
+                if entry.key == (key[0] if isinstance(key, tuple) else key):
+                    return True
 
         return False
 
