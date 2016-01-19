@@ -69,11 +69,12 @@ class TMPDCommands(PluginTestCase):
         config.init()
         init_fake_app()
 
+        MPDServerPlugin = self.mod.MPDServerPlugin
         MPDConnection = self.mod.main.MPDConnection
         MPDService = self.mod.main.MPDService
 
         class Server(object):
-            service = MPDService(app)
+            service = MPDService(app, MPDServerPlugin())
 
             def _remove_connection(self, conn):
                 pass
