@@ -537,11 +537,12 @@ class AudioFile(dict, ImageContainer):
         """Like list but return display,sort pairs when appropriate
         and work on all tags
         """
-        display = decode_value(key,self.__call__(key))
+        display = decode_value(key, self.__call__(key))
         display = display.split("\n") if display else []
         sort = []
         if key in TAG_TO_SORT:
-            sort = decode_value(TAG_TO_SORT[key],self.__call__(TAG_TO_SORT[key]))
+            sort = decode_value(TAG_TO_SORT[key],
+                                self.__call__(TAG_TO_SORT[key]))
             # it would be better to use something that doesn't fall back
             # to the key itself, but what?
             sort = sort.split("\n") if sort else []
@@ -552,7 +553,7 @@ class AudioFile(dict, ImageContainer):
             return display if len(display) > 0 else sort
 
     def list_separate(self, key):
-        """For tied tags return the list union of the display,sort values 
+        """For tied tags return the list union of the display,sort values
            otherwise just do list_sort
         """
         if key[:1] == "~" and "~" in key[1:]: # tied tag
