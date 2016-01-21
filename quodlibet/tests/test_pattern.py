@@ -464,7 +464,7 @@ class TPatternFormatList(_TPattern):
         pat = Pattern('<~album~artist>')
         s.failUnlessEqual(pat.format_list(s.h), {(u'Artist1', u'SortA1'),
                                                  (u'SortA2', u'SortA2'),
-                                                 u'Artist3', 
+                                                 u'Artist3',
                                                  (u'Album5', u'SortAlbum5')})
         pat = Pattern('<~artist~artist>')
         s.failUnlessEqual(pat.format_list(s.h), {(u'Artist1', u'SortA1'),

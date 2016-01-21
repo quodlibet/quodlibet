@@ -171,7 +171,7 @@ class TAudioFile(TestCase):
 
     def test_list_list_separate_types(self):
         res = bar_2_1.list_separate("~~#track~artist~~filename")
-        self.assertEqual(res, [u'1', u'Foo', 
+        self.assertEqual(res, [u'1', u'Foo',
                                u'I have two artists', u'does not/exist'])
 
     def test_comma(self):
