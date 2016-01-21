@@ -546,9 +546,8 @@ class AudioFile(dict, ImageContainer):
             # to the key itself, but what?
             sort = sort.split("\n") if sort else []
         if len(display) > 0 and len(sort) > 0 and display != sort:
-            return [(d if d is not None and d != "" else s,
-                     s if s is not None and s != "" else d)
-                    for d, s in izip_longest(display, sort)]
+            return [((d if d != "" else s, s) if s != "" else d)
+                    for d, s in izip_longest(display, sort, fillvalue="")]
         else:
             return display if len(display) > 0 else sort
 

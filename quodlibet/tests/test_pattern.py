@@ -443,27 +443,33 @@ class TPatternFormatList(_TPattern):
 
     def test_sort(s):
         pat = Pattern('<album>')
+        s.failUnlessEqual(pat.format_list(s.f), {u'Best Of'})
+        pat = Pattern('<album>')
         s.failUnlessEqual(pat.format_list(s.h), {(u'Album5', u'SortAlbum5')})
         pat = Pattern('<artist>')
         s.failUnlessEqual(pat.format_list(s.h), {(u'Artist1', u'SortA1'),
                                                  (u'SortA2', u'SortA2'),
-                                                 (u'Artist3', u'Artist3')})
+                                                 u'Artist3'})
+        pat = Pattern('<artist> x')
+        s.failUnlessEqual(pat.format_list(s.h), {(u'Artist1 x', u'SortA1 x'),
+                                                 (u'SortA2 x', u'SortA2 x'),
+                                                 u'Artist3 x'})
 
     def test_sort_tied(s):
         pat = Pattern('<~artist~album>')
         s.failUnlessEqual(pat.format_list(s.h), {(u'Artist1', u'SortA1'),
                                                  (u'SortA2', u'SortA2'),
-                                                 (u'Artist3', u'Artist3'),
+                                                 u'Artist3',
                                                  (u'Album5', u'SortAlbum5')})
         pat = Pattern('<~album~artist>')
         s.failUnlessEqual(pat.format_list(s.h), {(u'Artist1', u'SortA1'),
                                                  (u'SortA2', u'SortA2'),
-                                                 (u'Artist3', u'Artist3'),
+                                                 u'Artist3', 
                                                  (u'Album5', u'SortAlbum5')})
         pat = Pattern('<~artist~artist>')
         s.failUnlessEqual(pat.format_list(s.h), {(u'Artist1', u'SortA1'),
                                                  (u'SortA2', u'SortA2'),
-                                                 (u'Artist3', u'Artist3')})
+                                                 u'Artist3'})
 
     def test_sort_combine(s):
         pat = Pattern('<album> <artist>')
@@ -503,7 +509,7 @@ class TPatternFormatList(_TPattern):
                            (u'Artist3 SortA2', u'Artist3 SortA2'),
                            (u'Artist1 Artist3', u'SortA1 Artist3'),
                            (u'SortA2 Artist3', u'SortA2 Artist3'),
-                           (u'Artist3 Artist3', u'Artist3 Artist3')})
+                           u'Artist3 Artist3'})
 
     def test_missing_value(self):
         pat = Pattern('<genre> - <artist>')
