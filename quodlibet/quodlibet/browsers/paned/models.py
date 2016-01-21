@@ -203,7 +203,6 @@ class PaneModel(ObjectStore):
     def add_songs(self, songs):
         """Add new songs to the list, creating new rows"""
 
-        print "\nAdding", len(songs), "entries to", len(self), "entries" # pfps
         collection = {}
         unknown = UnknownEntry()
         human_sort = self.__human_sort_key
@@ -230,13 +229,6 @@ class PaneModel(ObjectStore):
         items = sorted(collection.iteritems(),
                        key=lambda s: s[1][1],
                        reverse=True)
-
-        if len(self) < 100: # pfps
-            for iterr, entry in self.iterrows(): # pfps
-                print "Self Row", iterr, entry, entry.sort # pfps
-        if len(items) < 100: # pfps
-            for item in items: # pfps
-                print "New Item", item # pfps
 
         # fast path
         if not len(self):
