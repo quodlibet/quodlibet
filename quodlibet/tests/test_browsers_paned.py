@@ -212,7 +212,7 @@ class TPaneConfig(TestCase):
 class TPaneEntry(TestCase):
 
     def test_all_have(self):
-        sel = SongsEntry("foo", SONGS)
+        sel = SongsEntry("foo", "foo", SONGS)
         self.assertFalse(sel.all_have("artist", "one"))
         self.assertFalse(sel.all_have("~#mtime", 4))
         self.assertTrue(sel.all_have("foo", "bar"))
@@ -237,7 +237,7 @@ class TPaneEntry(TestCase):
         repr(entry)
 
     def test_songs(self):
-        entry = SongsEntry("key", SONGS)
+        entry = SongsEntry("key", "key", SONGS)
         self.assertEqual(entry.key, "key")
         conf = PaneConfig("title:artist")
         self.assertTrue("boris" in entry.get_count_text(conf))
@@ -246,7 +246,7 @@ class TPaneEntry(TestCase):
         repr(entry)
 
     def test_songs_markup(self):
-        entry = SongsEntry("key", SONGS)
+        entry = SongsEntry("key", "key", SONGS)
         conf = PaneConfig("<title>")
         self.assertEqual(entry.get_text(conf), (True, "key"))
 

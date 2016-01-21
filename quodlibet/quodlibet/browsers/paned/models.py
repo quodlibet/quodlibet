@@ -18,7 +18,8 @@ class BaseEntry(Collection):
         super(BaseEntry, self).__init__()
 
         self.songs = set(songs or [])
-        self.key = key
+        self.key = key # not used for sorting!
+        self.sort = ""
 
     def all_have(self, tag, value):
         """Check if all songs have tag `tag` set to `value`"""
@@ -49,8 +50,10 @@ class BaseEntry(Collection):
 
 class SongsEntry(BaseEntry):
 
-    def __init__(self, key, songs=None):
+    def __init__(self, key, sort, songs=None):
         super(SongsEntry, self).__init__(key, songs)
+
+        self.sort = sort # value used for sorting
 
     def get_count_text(self, config):
         return config.format_display(self)
@@ -75,7 +78,7 @@ class SongsEntry(BaseEntry):
 class UnknownEntry(SongsEntry):
 
     def __init__(self, songs=None):
-        super(UnknownEntry, self).__init__("", songs)
+        super(UnknownEntry, self).__init__("", "", songs)
 
     def get_text(self, config):
         return True, "<b>%s</b>" % _("Unknown")
@@ -112,8 +115,8 @@ class PaneModel(ObjectStore):
 
     def __init__(self, pattern_config):
         super(PaneModel, self).__init__()
-        self.__sort_cache = {}
-        self.__key_cache = {}
+        self.__sort_cache = {} # text to sort text cache
+        self.__key_cache = {} # song to key cache
         self.config = pattern_config
 
     def get_format_keys(self, song):
@@ -200,6 +203,7 @@ class PaneModel(ObjectStore):
     def add_songs(self, songs):
         """Add new songs to the list, creating new rows"""
 
+        print "\nAdding", len(songs), "entries to", len(self), "entries" # pfps
         collection = {}
         unknown = UnknownEntry()
         human_sort = self.__human_sort_key
@@ -208,25 +212,38 @@ class PaneModel(ObjectStore):
             if not keys:
                 unknown.songs.add(song)
             for ks in keys:
-                sort = ks[1] if isinstance(ks, tuple) else ks
                 key = ks[0] if isinstance(ks, tuple) else ks
+                sort = ks[1] if isinstance(ks, tuple) else ks
+                srtp = isinstance(ks, tuple)
                 if key in collection:
+                    if srtp and not collection[key][2]: # first actual sort key
+                        hsort = human_sort(sort)
+                        collection[key][0].sort = hsort
+                        collection[key] = (collection[key][0], hsort, True)
                     collection[key][0].songs.add(song)
                 else: # first key sets up sorting
-                    entry = SongsEntry(key)
-                    collection[key] = (entry, human_sort(sort))
+                    hsort = human_sort(sort)
+                    entry = SongsEntry(key, hsort)
+                    collection[key] = (entry, hsort, srtp)
                     entry.songs.add(song)
 
         items = sorted(collection.iteritems(),
                        key=lambda s: s[1][1],
                        reverse=True)
 
+        if len(self) < 100: # pfps
+            for iterr, entry in self.iterrows(): # pfps
+                print "Self Row", iterr, entry, entry.sort # pfps
+        if len(items) < 100: # pfps
+            for item in items: # pfps
+                print "New Item", item # pfps
+
         # fast path
         if not len(self):
             if unknown.songs:
                 self.insert(0, [unknown])
             entries = []
-            for key, (val, sort_key) in items:
+            for key, (val, sort_key, srtp) in items:
                 entries.append(val)
             self.insert_many(0, reversed(entries))
             if len(self) > 1:
@@ -245,25 +262,25 @@ class PaneModel(ObjectStore):
             if key is None:
                 if not items:
                     break
-                key, (val, sort_key) = items.pop(-1)
+                key, (val, sort_key, srtp) = items.pop(-1)
 
-            if key == entry.key:
+            if key == entry.key: # Display strings the same
                 entry.songs |= val.songs
                 entry.finalize()
                 self.row_changed(self.get_path(iter_), iter_)
                 key = None
-            elif sort_key < human_sort(entry.key):
+            elif sort_key < entry.sort:
                 self.insert_before(iter_, row=[val])
                 key = None
 
         # the last one failed, add it again
         if key:
-            items.append((key, (val, sort_key)))
+            items.append((key, (val, sort_key, srtp)))
 
         # insert the left over songs
         if items:
             entries = []
-            for key, (val, srt) in items:
+            for key, (val, srt, srtp) in items:
                 entries.append(val)
             if isinstance(self[-1][0], UnknownEntry):
                 self.insert_many(len(self) - 1, entries)
