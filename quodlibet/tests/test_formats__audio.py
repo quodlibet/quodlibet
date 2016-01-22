@@ -28,7 +28,7 @@ bar_2_1 = AudioFile({
     "~filename": fsnative(u"does not/exist"),
     "title": "more songs",
     "discnumber": "2/2", "tracknumber": "1",
-    "artist": "Foo\nI have two artists", 
+    "artist": "Foo\nI have two artists",
     "artistsort": "Foosort\n\nThird artist",
     "album": "Bar",
     "lyricist": "Foo", "composer": "Foo", "performer": "I have two artists"})
@@ -172,8 +172,8 @@ class TAudioFile(TestCase):
 
         self.failUnlessEqual(bar_1_2.list_sort("title"), ["Perhaps another"])
         self.failUnlessEqual(bar_2_1.list_sort("artist"),
-                             [("Foo","Foosort"),
-                              "I have two artists", 
+                             [("Foo", "Foosort"),
+                              "I have two artists",
                               ("Third artist", "Third artist")])
         self.failUnlessEqual(bar_2_1.list_sort("~#track"),
                              ['1'])
@@ -183,17 +183,17 @@ class TAudioFile(TestCase):
             self.failUnlessEqual(bar_1_1.list_separate(key), [bar_1_1(key)])
 
         self.failUnlessEqual(bar_2_1.list_separate("~artist~album"),
-                             [('Foo','Foosort'), 'I have two artists',
+                             [('Foo', 'Foosort'), 'I have two artists',
                               (u'Third artist', u'Third artist'), 'Bar'])
 
         self.failUnlessEqual(bar_2_1.list_separate("~artist~~#track"),
-                             [('Foo','Foosort'), 'I have two artists',
+                             [('Foo', 'Foosort'), 'I have two artists',
                               (u'Third artist', u'Third artist'), '1'])
 
     def test_list_list_separate_types(self):
         res = bar_2_1.list_separate("~~#track~artist~~filename")
-        self.assertEqual(res, [u'1', (u'Foo',u'Foosort'),
-                               u'I have two artists', 
+        self.assertEqual(res, [u'1', (u'Foo', u'Foosort'),
+                               u'I have two artists',
                                (u'Third artist', u'Third artist'),
                                u'does not/exist'])
 
