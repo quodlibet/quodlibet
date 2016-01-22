@@ -537,12 +537,12 @@ class AudioFile(dict, ImageContainer):
         """Like list but return display,sort pairs when appropriate
         and work on all tags
         """
-        display = decode_value(key, self.__call__(key))
+        display = decode_value(key, self(key))
         display = display.split("\n") if display else []
         sort = []
         if key in TAG_TO_SORT:
             sort = decode_value(TAG_TO_SORT[key],
-                                self.__call__(TAG_TO_SORT[key]))
+                                self(TAG_TO_SORT[key]))
             # it would be better to use something that doesn't fall back
             # to the key itself, but what?
             sort = sort.split("\n") if sort else []
