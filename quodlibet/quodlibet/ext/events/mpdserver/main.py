@@ -520,7 +520,7 @@ class MPDConnection(BaseTCPConnection):
         if index is not None:
             error.append(u"@%d" % index)
         assert self._command is not None
-        error.append("u] {%s}" % self._command)
+        error.append(u"] {%s}" % self._command)
         if msg is not None:
             error.append(u" %s" % msg)
         self.write_line(u"".join(error))
