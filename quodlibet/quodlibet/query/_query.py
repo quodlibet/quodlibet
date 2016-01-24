@@ -56,6 +56,8 @@ class Query(Node):
             etc...
         """
 
+        #TODO dumb_match_diacritics
+
         if star is None:
             star = self.STAR
 
@@ -65,31 +67,8 @@ class Query(Node):
         self.star = list(star)
         self.string = string
 
-        try:
-            self.type = QueryType.VALID
-            self._match = QueryParser(QueryLexer(string)).StartStarQuery(star)
-            return
-        except error:
-            pass
-
-        # normal string, put it in a intersection to get a value list
-        if not set("#=").intersection(string):
-            parts = ["/%s/" % re_escape(s) for s in string.split()]
-            if dumb_match_diacritics:
-                parts = [p + "d" for p in parts]
-            string = "&(" + ",".join(parts) + ")"
-            self.string = string
-
-            try:
-                self.type = QueryType.TEXT
-                self._match = QueryParser(
-                    QueryLexer(string)).StartStarQuery(star)
-                return
-            except error:
-                pass
-
         self.type = QueryType.VALID
-        self._match = QueryParser(QueryLexer(string)).StartQuery()
+        self._match = QueryParser(string, star=star).Query()
 
     @classmethod
     def StrictQueryMatcher(cls, string):
@@ -97,7 +76,7 @@ class Query(Node):
            or `None` if this fails.
         """
         try:
-            return QueryParser(QueryLexer(string)).StartQuery()
+            return QueryParser(string).Query()
         except error:
             return None
 

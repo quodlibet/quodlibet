@@ -13,7 +13,7 @@ class QueryParser(object):
     TAG = re.compile(r'[~\w+]+')
     UNARY_OPERATOR = re.compile(r'-')
     BINARY_OPERATOR = re.compile(r'[+-\*/]')
-    RELATIONAL_OPERATOR = re.compile(r'>|<|=|>=|<=|==')
+    RELATIONAL_OPERATOR = re.compile(r'>|<|=|>=|<=|==|!=')
     DIGITS = re.compile(r'\d+')
     WORD = re.compile(r'\w+')
     REGEXP = re.compile(r'([^/\\]|\\.)*')
@@ -118,25 +118,25 @@ class QueryParser(object):
     
     def Numexpr(self):
         if self.accept('('):
-            expr = self.Numexpr()
+            expr = match.NumexprGroup(self.Numexpr())
             self.expect(')')
         if self.accept_re(UNARY_OPERATOR):
-            expr = match.NumcmpUnary(self.last_match, self.Numexpr())
+            expr = match.NumexprUnary(self.last_match, self.Numexpr())
         elif self.accept_re(TAG):
-            expr = match.NumcmpTag(self.last_match)
+            expr = match.numexprTagOrSpecial(self.last_match)
         else:
-            number = self.expect_re(DIGITS).group()
+            number = float(self.expect_re(DIGITS).group())
             if self.accept(':'):
-                number2 = self.expect_re(DIGITS).group()
-                expr = match.NumcmpTime(number, number2)
+                number2 = float(self.expect_re(DIGITS).group())
+                expr = match.NumexprNumber(60*number, number2)
             elif self.accept_re(WORD):
-                expr = match.NumcmpUnit(number, self.last_match)
+                expr = match.numexprUnit(number, self.last_match)
             else:
-                expr = match.NumcmpNumber(number)
+                expr = match.NumexprNumber(number)
         if self.accept_re(BINARY_OPERATOR):
             binop = self.last_match
             expr2 = self.Numexpr()
-            return match.NumcmpBinop(binop, expr, expr2)
+            return match.NumexprBinary(binop, expr, expr2)
         else:
             return expr
         
@@ -145,7 +145,7 @@ class QueryParser(object):
         if self.accept_re(BINARY_OPERATOR):
             binop = self.last_match
             expr2 = self.Numexpr()
-            return match.NumcmpBinop(binop, expr, expr2)
+            return match.NumexprBinary(binop, expr, expr2)
         else:
             return expr
         
@@ -184,7 +184,7 @@ class QueryParser(object):
         tag = self.expect_re(TAG)
         self.expect('=')
         value = self.Value()
-        return match.equals(tag, value)
+        return match.Tag([tag], value)
     
     def Value(self):
         if self.lookahead() in '/\'"':
