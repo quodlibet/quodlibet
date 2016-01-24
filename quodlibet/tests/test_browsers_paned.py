@@ -163,7 +163,7 @@ class TPaneConfig(TestCase):
         self.failUnlessEqual(p.title, "Title")
         self.failUnlessEqual(p.tags, {"title"})
 
-        self.failUnlessEqual(p.format(SONGS[0]), ["three"])
+        self.failUnlessEqual(p.format(SONGS[0]), [("three", "three")])
         self.failUnless(str(len(ALBUM.songs)) in p.format_display(ALBUM))
         self.failIf(p.has_markup)
 
@@ -180,7 +180,8 @@ class TPaneConfig(TestCase):
         self.failUnlessEqual(p.title, "Title / Artist")
         self.failUnlessEqual(p.tags, {"title", "artist"})
 
-        self.failUnlessEqual(p.format(SONGS[0]), ["three", "boris"])
+        self.failUnlessEqual(p.format(SONGS[0]),
+                             [("three", "three"), ("boris", "boris")])
         self.failIf(p.has_markup)
 
     def test_pattern(self):

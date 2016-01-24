@@ -270,7 +270,8 @@ class PatternFormatter(object):
                            else r + val)
                          for r in vals]
         if self._post:
-            vals = (self._post(v, song) for v in vals)
+            vals = (self._post(v[0] if isinstance(v, tuple) else v, song)
+                    for v in vals)
         return set(vals)
 
     __mod__ = format

@@ -212,8 +212,9 @@ class PaneModel(ObjectStore):
                 unknown.songs.add(song)
             for ks in keys:
                 key = ks[0] if isinstance(ks, tuple) else ks
-                sort = ks[1] if isinstance(ks, tuple) else ks
-                srtp = isinstance(ks, tuple)
+                sort = ((ks[1] if ks[1] != "" else ks[0])
+                        if isinstance(ks, tuple) else ks)
+                srtp = isinstance(ks, tuple) and ks[1] != ""
                 if key in collection:
                     if srtp and not collection[key][2]: # first actual sort key
                         hsort = human_sort(sort)

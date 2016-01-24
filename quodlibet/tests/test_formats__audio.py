@@ -163,39 +163,45 @@ class TAudioFile(TestCase):
                              bar_2_1["artist"].split("\n"))
 
     def test_list_sort(self):
-        for key in bar_1_1.realkeys():
-            self.failUnlessEqual(bar_1_1.list_sort(key), [bar_1_1(key)])
+        self.failUnlessEqual(bar_1_1.list_sort("title"),
+                             [("A song", "A song")])
+        self.failUnlessEqual(bar_1_1.list_sort("artist"),
+                             [("Foo", "Foo")])
 
         self.failUnlessEqual(quux.list_sort("artist"), [])
-        self.failUnlessEqual(quux.list_sort("title"), [quux("title")])
+        self.failUnlessEqual(quux.list_sort("title"),
+                             [(quux("title"), quux("title"))])
         self.failUnlessEqual(quux.list_sort("not a key"), [])
 
-        self.failUnlessEqual(bar_1_2.list_sort("title"), ["Perhaps another"])
+        self.failUnlessEqual(bar_1_2.list_sort("title"),
+                             [("Perhaps another", "Perhaps another")])
         self.failUnlessEqual(bar_2_1.list_sort("artist"),
                              [("Foo", "Foosort"),
-                              "I have two artists",
-                              ("Third artist", "Third artist")])
+                              ("I have two artists", "I have two artists")])
         self.failUnlessEqual(bar_2_1.list_sort("~#track"),
-                             ['1'])
+                             [('1', '1')])
 
     def test_list_separate(self):
-        for key in bar_1_1.realkeys():
-            self.failUnlessEqual(bar_1_1.list_separate(key), [bar_1_1(key)])
+        self.failUnlessEqual(bar_1_1.list_separate("title"),
+                             [("A song", "A song")])
+        self.failUnlessEqual(bar_1_1.list_separate("artist"),
+                             [("Foo", "Foo")])
 
         self.failUnlessEqual(bar_2_1.list_separate("~artist~album"),
-                             [('Foo', 'Foosort'), 'I have two artists',
-                              (u'Third artist', u'Third artist'), 'Bar'])
+                             [('Foo', 'Foosort'),
+                              ('I have two artists', 'I have two artists'),
+                              ('Bar', 'Bar')])
 
         self.failUnlessEqual(bar_2_1.list_separate("~artist~~#track"),
-                             [('Foo', 'Foosort'), 'I have two artists',
-                              (u'Third artist', u'Third artist'), '1'])
+                             [('Foo', 'Foosort'),
+                              ('I have two artists', 'I have two artists'),
+                              ('1', '1')])
 
     def test_list_list_separate_types(self):
         res = bar_2_1.list_separate("~~#track~artist~~filename")
-        self.assertEqual(res, [u'1', (u'Foo', u'Foosort'),
-                               u'I have two artists',
-                               (u'Third artist', u'Third artist'),
-                               u'does not/exist'])
+        self.assertEqual(res, [(u'1', u'1'), (u'Foo', u'Foosort'),
+                               (u'I have two artists', u'I have two artists'),
+                               (u'does not/exist', u'does not/exist')])
 
     def test_comma(self):
         for key in bar_1_1.realkeys():

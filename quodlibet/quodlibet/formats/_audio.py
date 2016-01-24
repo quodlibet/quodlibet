@@ -29,7 +29,10 @@ from quodlibet.compat import iteritems, string_types
 
 from ._image import ImageContainer
 
-from itertools import izip_longest
+try:
+    from itertools import izip_longest
+except ImportError:  # python3.x
+    izip = zip
 
 MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
            "~#skipcount", "~#rating", "~bookmark"}
@@ -546,11 +549,11 @@ class AudioFile(dict, ImageContainer):
             # it would be better to use something that doesn't fall back
             # to the key itself, but what?
             sort = sort.split("\n") if sort else []
-        if len(display) > 0 and len(sort) > 0 and display != sort:
-            return [((d if d != "" else s, s) if s != "" else d)
-                    for d, s in izip_longest(display, sort, fillvalue="")]
-        else:
-            return display if len(display) > 0 else sort
+        result = []
+        for d, s in izip_longest(display, sort):
+            if d is not None:
+                result.append((d, s if s is not None and s != "" else d))
+        return result
 
     def list_separate(self, key):
         """For tied tags return the list union of the display,sort values
