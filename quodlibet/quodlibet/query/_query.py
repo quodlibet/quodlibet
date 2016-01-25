@@ -68,7 +68,10 @@ class Query(Node):
         self.string = string
 
         self.type = QueryType.VALID
-        self._match = QueryParser(string, star=star).StartQuery()
+        try:
+            self._match = QueryParser(string, star=star).StartQuery()
+        except error:
+            self.type = QueryType.INVALID
 
     @classmethod
     def StrictQueryMatcher(cls, string):
