@@ -137,7 +137,7 @@ class QueryParser(object):
         if self.accept('('):
             expr = match.NumexprGroup(self.Numexpr())
             self.expect(')')
-        if self.accept_re(UNARY_OPERATOR):
+        elif self.accept_re(UNARY_OPERATOR):
             expr = match.NumexprUnary(self.last_match, self.Numexpr())
         elif self.accept_re(DIGITS):
             number = float(self.last_match)
