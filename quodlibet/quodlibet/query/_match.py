@@ -163,7 +163,7 @@ class Neg(Node):
 
 
 class Numcmp(Node):
-    """Numeric comparisons"""
+    """Numeric comparisons. Search method has time_ parameter used for testing."""
 
     operators = {
         "<": operator.lt,
@@ -180,9 +180,11 @@ class Numcmp(Node):
         self.__op = self.operators[op]
         self.__expr2 = expr2
 
-    def search(self, data):
-        val = self.__expr.evaluate(data)
-        val2 = self.__expr2.evaluate(data)
+    def search(self, data, time_=None):
+        if time_ is None:
+            time_ = time.time()
+        val = self.__expr.evaluate(data, time_)
+        val2 = self.__expr2.evaluate(data, time_)
         if val is not None and val2 is not None:
             return self.__op(val, val2)
         return False
@@ -206,7 +208,7 @@ class Numcmp(Node):
 class Numexpr(object):
     """Expression in numeric comparison"""
     
-    def evaluate(self, data):
+    def evaluate(self, data, time):
         raise NotImplementedError
     
 class NumexprTag(Numexpr):
@@ -220,11 +222,11 @@ class NumexprTag(Numexpr):
 
         self.__ftag = "~#" + self.__tag
     
-    def evaluate(self, data):
+    def evaluate(self, data, time):
         num = data(self.__ftag, None)
         if num is not None:
             if self.__ftag in TIME_KEYS:
-                num = time.time() - num
+                num = time - num
             return round(num, 2)
         return None
     
@@ -242,8 +244,8 @@ class NumexprUnary(Numexpr):
         self.__op = self.operators[op]
         self.__expr = expr
     
-    def evaluate(self, data):
-        val = self.__expr.evaluate(data)
+    def evaluate(self, data, time):
+        val = self.__expr.evaluate(data, time)
         if val is not None:
             return self.__op(val)
         return None
@@ -283,9 +285,9 @@ class NumexprBinary(Numexpr):
             expr.__expr2 = expr2
             self.__expr2 = expr
     
-    def evaluate(self, data):
-        val = self.__expr.evaluate(data)
-        val2 = self.__expr2.evaluate(data)
+    def evaluate(self, data, time):
+        val = self.__expr.evaluate(data, time)
+        val2 = self.__expr2.evaluate(data, time)
         if val is not None and val2 is not None:
             return self.__op(val, val2)
         return None
@@ -300,8 +302,8 @@ class NumexprGroup(Numexpr):
     def __init__(self, expr):
         self.__expr = expr
     
-    def evaluate(self, data):
-        return self.__expr.evaluate(data)
+    def evaluate(self, data, time):
+        return self.__expr.evaluate(data, time)
     
     def __repr__(self):
         return "<NumexprGroup expr=%r>" % (self.__expr)
@@ -312,16 +314,30 @@ class NumexprNumber(Numexpr):
     def __init__(self, value):
         self.__value = float(value)
         
-    def evaluate(self, data):
+    def evaluate(self, data, time):
         return self.__value
     
     def __repr__(self):
         return "<NumexprNumber value=%.2f>" % (self.__value)
     
+class NumexprNow(Numexpr):
+    """Current time, with optional offset"""
+    
+    def __init__(self, offset=0):
+        self.__offset = offset
+        
+    def evaluate(self, data, time):
+        return time - self.__offset
+    
+    def __repr__(self):
+        return "<NumexprNow offset=%r>" % (self.__offset)
+    
 def numexprUnit(value, unit):
     """Process numeric units and return NumexprNumber"""
+
+    unit = unit.lower().strip()
     
-    # Time units
+    # Time units    
     if unit.startswith("second"):
         value = value
     elif unit.startswith("minute"):
@@ -353,9 +369,9 @@ def numexprTagOrSpecial(tag):
     """Handle special values that look like tags"""
     
     if tag == "now":
-        return NumexprNumber(time.time())
+        return NumexprNow())
     if tag == "today":
-        return NumexprNumber(time.time() - 24 * 60 * 60)
+        return NumexprNow(offset = 24 * 60 * 60)
     else:
         return NumexprTag(tag)
 

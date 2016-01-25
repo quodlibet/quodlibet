@@ -131,7 +131,10 @@ class QueryParser(object):
             cmps.append(match.Numcmp(expr, relop, expr2))
         if not cmps:
             raise ParseError('No relational operator in numerical comparison')
-        return match.Inter(cmps)
+        if len(cmps) > 1:
+            return match.Inter(cmps)
+        else:
+            return cmps[0]
     
     def Numexpr(self):
         if self.accept('('):
