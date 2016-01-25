@@ -143,11 +143,10 @@ class TQuery(TestCase):
         self.s1 = AudioFile(
             {"album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
              "version": "cake mix", "~filename": "/dir1/foobar.ogg",
-             "length": "224", "skipcount": "13", "playcount": "24"})
+             "~#length": 224, "~#skipcount": 13, "~#playcount": 24})
         self.s2 = AudioFile(
             {"album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
-             "~filename": "/dir2/something.mp3", "tracknumber": "12/15",
-             "length": "409", "skipcount": "9", "playcount": "9"})
+             "~filename": "/dir2/something.mp3", "tracknumber": "12/15"})
 
         self.s3 = AudioFile(
             {"artist": "piman\nmu",
@@ -406,9 +405,7 @@ class TQuery(TestCase):
         self.failUnless(Query("#(length > 3 minutes)").search(self.s1))
         self.failUnless(Query("#(3:00 < length < 4:00)").search(self.s1))
         self.failUnless(Query("#(40 seconds < length/5 < 1 minute)").search(self.s1))
-        self.failUnless(Query("#(skipcount = playcount)").search(self.s2))
-        self.failUnless(Query("#(skipcount != playcount + 1)").search(self.s2))
-        self.failUnless(Query("#(2+3 * 5 = 17)").search(self.s2))
+        self.failUnless(Query("#(2+3 * 5 = 17)").search(self.s1))
         
         self.failIf(Query("#(track + 1 != 13)").search(self.s2))
         
