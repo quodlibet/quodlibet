@@ -122,7 +122,7 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query.is_valid("#(t < r < 9)"))
         self.failUnless(Query.is_valid("#((t-9)*r < -(6*2) = g*g-1)"))
         self.failUnless(Query.is_valid("#(t + 1 + 2 + -4 * 9 > g*(r/4 + 6))"))
-        self.failUnless(Query.is_valid("#(t > 3 minutes"))
+        self.failUnless(Query.is_valid("#(t > 3 minutes)"))
         self.failUnless(Query.is_valid("#(added > today)"))
         self.failUnless(Query.is_valid("#(length < 5:00)"))
         self.failUnless(Query.is_valid("#(filesize > 5M)"))
