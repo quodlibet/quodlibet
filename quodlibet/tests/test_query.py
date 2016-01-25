@@ -101,6 +101,35 @@ class TQuery_is_valid(TestCase):
 
     def test_nesting(self):
         self.failUnless(Query.is_valid("|(s, t = &(/a/, /b/),!#(2 > q > 3))"))
+        
+    def test_extension(self):
+        self.failUnless(Query.is_valid("@(name)"))
+        self.failUnless(Query.is_valid("@(name: extension body)"))
+        self.failUnless(Query.is_valid("@(name: body (with (nested) parens))"))
+        self.failUnless(Query.is_valid(r"@(name: body \\ with \) escapes)"))
+        
+        self.failIf(Query.is_valid("@()"))
+        self.failIf(Query.is_valid(r"@(invalid %name!\\)"))
+        self.failIf(Query.is_valid("@(name: mismatched ( parenthesis)"))
+        self.failIf(Query.is_valid(r"@(\()"))
+        self.failIf(Query.is_valid("@(name:unclosed body"))
+        self.failIf(Query.is_valid("@ )"))
+        
+    def test_numexpr(self):
+        self.failUnless(Query.is_valid("#(t < 3*4)"))
+        self.failUnless(Query.is_valid("#(t * (1+r) < 7)"))
+        self.failUnless(Query.is_valid("#(0 = t)"))
+        self.failUnless(Query.is_valid("#(t < r < 9)"))
+        self.failUnless(Query.is_valid("#((t-9)*r < -(6*2) = g*g-1)"))
+        self.failUnless(Query.is_valid("#(t + 1 + 2 + -4 * 9 > g*(r/4 + 6))"))
+        
+        self.failIf(Query.is_valid("#(3*4)"))
+        self.failIf(Query.is_valid("#(t = 3 + )"))
+        self.failIf(Query.is_valid("#(t = -)"))
+        self.failIf(Query.is_valid("#(-4 <)"))
+        self.failIf(Query.is_valid("#(t < ()"))
+        self.failIf(Query.is_valid("#((t +) - 1 > 8)"))
+        self.failIf(Query.is_valid("#(t += 8)"))
 
 
 class TQuery(TestCase):
