@@ -88,7 +88,7 @@ class Query(Node):
             except error:
                 pass
             
-        self.type = QueryType.INVALID
+        raise error('Query is not VALID or TEXT')
         
         
 
