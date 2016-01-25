@@ -122,6 +122,10 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query.is_valid("#(t < r < 9)"))
         self.failUnless(Query.is_valid("#((t-9)*r < -(6*2) = g*g-1)"))
         self.failUnless(Query.is_valid("#(t + 1 + 2 + -4 * 9 > g*(r/4 + 6))"))
+        self.failUnless(Query.is_valid("#(t > 3 minutes"))
+        self.failUnless(Query.is_valid("#(added > today)"))
+        self.failUnless(Query.is_valid("#(length < 5:00)"))
+        self.failUnless(Query.is_valid("#(filesize > 5M)"))
         
         self.failIf(Query.is_valid("#(3*4)"))
         self.failIf(Query.is_valid("#(t = 3 + )"))
@@ -138,10 +142,12 @@ class TQuery(TestCase):
         config.init()
         self.s1 = AudioFile(
             {"album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
-             "version": "cake mix", "~filename": "/dir1/foobar.ogg"})
+             "version": "cake mix", "~filename": "/dir1/foobar.ogg",
+             "length": "224", "skipcount": "13", "playcount": "24"})
         self.s2 = AudioFile(
             {"album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
-             "~filename": "/dir2/something.mp3", "tracknumber": "12/15"})
+             "~filename": "/dir2/something.mp3", "tracknumber": "12/15",
+             "length": "409", "skipcount": "9", "playcount": "9"})
 
         self.s3 = AudioFile(
             {"artist": "piman\nmu",
@@ -390,6 +396,23 @@ class TQuery(TestCase):
         Query(u'/Sigur [r-zos/d')
         # group refs unsupported for diacritic matching
         Query(u'/(<)?(\w+@\w+(?:\.\w+)+)(?(1)>)/d')
+        
+    def test_numexpr(self):
+        self.failUnless(Query("#(length = 224)").search(self.s1))
+        self.failUnless(Query("#(length = 3:44)").search(self.s1))
+        self.failUnless(Query("#(length = 3 minutes + 44 seconds)").search(self.s1))
+        self.failUnless(Query("#(playcount > skipcount)").search(self.s1))
+        self.failUnless(Query("#(playcount < 2 * skipcount)").search(self.s1))
+        self.failUnless(Query("#(length > 3 minutes)").search(self.s1))
+        self.failUnless(Query("#(3:00 < length < 4:00)").search(self.s1))
+        self.failUnless(Query("#(40 seconds < length/5 < 1 minute)").search(self.s1))
+        self.failUnless(Query("#(skipcount = playcount)").search(self.s2))
+        self.failUnless(Query("#(skipcount != playcount + 1)").search(self.s2))
+        self.failUnless(Query("#(2+3 * 5 = 17)").search(self.s2))
+        
+        self.failIf(Query("#(track + 1 != 13)").search(self.s2))
+        
+        
 
 
 class TQuery_get_type(TestCase):
