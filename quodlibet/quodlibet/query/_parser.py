@@ -101,8 +101,10 @@ class QueryParser(object):
         elif self.accept('@'):
             return self.Extension()
         try:
+            index = self.index
             return self.Equals()
         except ParseError:
+            self.index = index
             return self.Star()
         
     def Negation(self, rule):
@@ -226,7 +228,7 @@ class QueryParser(object):
         else:
             text = self.expect_re(TEXT)
             words = text.split()
-            return match.Inter([self.str_to_re(word) for word in words])
+            return match.Inter([self.RegexpMods(word) for word in words])
         
     def RegexpMods(self, regex):
         mod_string = self.expect_re(MODIFIERS)
