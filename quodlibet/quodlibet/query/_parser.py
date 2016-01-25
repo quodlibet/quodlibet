@@ -103,7 +103,7 @@ class QueryParser(object):
         try:
             return self.Equals()
         except ParseError:
-            return self.Value()
+            return self.Star()
         
     def Negation(self, rule):
         return match.Neg(rule())
@@ -192,7 +192,8 @@ class QueryParser(object):
                 index += 1
         except IndexError:
             if depth != 0:
-                raise ParseError('Unexpected end of string while parsing extension body')
+                raise ParseError('Unexpected end of string while parsing '
+                                 'extension body')
         result = self.tokens[self.index:index]
         self.index = index
         return tokens
@@ -225,8 +226,7 @@ class QueryParser(object):
         else:
             text = self.expect_re(TEXT)
             words = text.split()
-            stars = [match.Tag(self.star, self.str_to_re(word)) for word in words]
-            return match.Inter(stars)
+            return match.Inter([self.str_to_re(word) for word in words])
         
     def RegexpMods(self, regex):
         mod_string = self.expect_re(MODIFIERS)
@@ -250,6 +250,9 @@ class QueryParser(object):
             return re.compile(regex, mods)
         except re.error:
             raise ParseError("The regular expression /%s/ is invalid." % regex)
+        
+    def Star(self):
+        return match.Tag(self.star, self.Value())        
         
     def str_to_re(self, string):
         if isinstance(string, unicode):
