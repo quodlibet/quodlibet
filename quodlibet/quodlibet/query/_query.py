@@ -70,8 +70,27 @@ class Query(Node):
         self.type = QueryType.VALID
         try:
             self._match = QueryParser(string, star=star).StartQuery()
+            return
         except error:
-            self.type = QueryType.INVALID
+            pass
+        
+        if not set("#=").intersection(string):
+            parts = ["/%s/" % re_escape(s) for s in string.split()]
+            if dumb_match_diacritics:
+                parts = [p + "d" for p in parts]
+            string = "&(" + ",".join(parts) + ")"
+            self.string = string
+
+            try:
+                self.type = QueryType.TEXT
+                self._match = QueryParser(string, star=star).StartQuery()
+                return
+            except error:
+                pass
+            
+        self.type = QueryType.INVALID
+        
+        
 
     @classmethod
     def StrictQueryMatcher(cls, string):

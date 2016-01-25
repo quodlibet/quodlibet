@@ -11,7 +11,7 @@ TAG = re.compile(r'[~\w]+')
 UNARY_OPERATOR = re.compile(r'-')
 BINARY_OPERATOR = re.compile(r'[+\-\*/]')
 RELATIONAL_OPERATOR = re.compile(r'>=|<=|==|!=|>|<|=')
-DIGITS = re.compile(r'\d+')
+DIGITS = re.compile(r'\d+(\.\d+)?')
 WORD = re.compile(r'\w+')
 REGEXP = re.compile(r'([^/\\]|\\.)*')
 SINGLE_STRING = re.compile(r"([^'\\]|\\.)*")
@@ -36,15 +36,13 @@ class QueryParser(object):
             return False
         
     def space(self):
-        if self.eof():
-            return
-        while self.tokens[self.index] == ' ':
+        while not self.eof() and self.tokens[self.index] == ' ':
             self.index += 1
         
     def accept(self, token, advance=True):
+        self.space()
         if self.eof():
             return False
-        self.space()
         if self.tokens[self.index] == token:
             if advance:
                 self.index += 1
@@ -82,12 +80,13 @@ class QueryParser(object):
         return m
 
     def StartQuery(self):
-        s = self.Query()
+        s = self.Query(outer=True)
         if not self.eof():
             raise ParseError('Query ended before end of input')
         return s
 
-    def Query(self):
+    def Query(self, outer=False):
+        self.space()
         if self.eof():
             return match.True_()
         elif self.accept('!'):
@@ -105,7 +104,7 @@ class QueryParser(object):
             return self.Equals()
         except ParseError:
             self.index = index
-            return self.Star()
+            return self.Star(outer=outer)
         
     def Negation(self, rule):
         return match.Neg(rule())
@@ -140,10 +139,8 @@ class QueryParser(object):
             self.expect(')')
         if self.accept_re(UNARY_OPERATOR):
             expr = match.NumexprUnary(self.last_match, self.Numexpr())
-        elif self.accept_re(TAG):
-            expr = match.numexprTagOrSpecial(self.last_match)
-        else:
-            number = float(self.expect_re(DIGITS))
+        elif self.accept_re(DIGITS):
+            number = float(self.last_match)
             if self.accept(':'):
                 number2 = float(self.expect_re(DIGITS))
                 expr = match.NumexprNumber(60*number, number2)
@@ -151,6 +148,8 @@ class QueryParser(object):
                 expr = match.numexprUnit(number, self.last_match)
             else:
                 expr = match.NumexprNumber(number)
+        else:
+            expr = match.numexprTagOrSpecial(self.expect_re(TAG))
         if self.accept_re(BINARY_OPERATOR):
             binop = self.last_match
             expr2 = self.Numexpr()
@@ -206,7 +205,7 @@ class QueryParser(object):
         value = self.Value()
         return match.Tag(tags, value)
     
-    def Value(self):
+    def Value(self, outer=False):
         if self.accept('/'):
             regex = self.expect_re(REGEXP)
             self.expect('/')
@@ -226,9 +225,10 @@ class QueryParser(object):
         elif self.accept('&'):
             return self.Intersection(self.Value)
         else:
-            text = self.expect_re(TEXT)
-            words = text.split()
-            return match.Inter([self.RegexpMods(word) for word in words])
+            if outer:
+                # Hack to force plain text parsing for top level free text
+                raise ParseError('Free text not allowed at top level of query')
+            return self.RegexpMods(self.expect_re(TEXT))
         
     def RegexpMods(self, regex):
         mod_string = self.expect_re(MODIFIERS)
@@ -253,8 +253,8 @@ class QueryParser(object):
         except re.error:
             raise ParseError("The regular expression /%s/ is invalid." % regex)
         
-    def Star(self):
-        return match.Tag(self.star, self.Value())        
+    def Star(self, outer=False):
+        return match.Tag(self.star, self.Value(outer=outer))
         
     def str_to_re(self, string):
         if isinstance(string, unicode):

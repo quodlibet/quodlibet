@@ -181,15 +181,15 @@ class Numcmp(Node):
         self.__expr2 = expr2
 
     def search(self, data):
-        val = self.__expr.evaluate()
-        val2 = self.__expr2.evaluate()
+        val = self.__expr.evaluate(data)
+        val2 = self.__expr2.evaluate(data)
         if val is not None and val2 is not None:
             return self.__op(val, val2)
         return False
 
     def __repr__(self):
-        return "<Numcmp tag=%r, op=%r, value=%.2f>" % (
-            self.__tag, self.__op.__name__, self.__value)
+        return "<Numcmp expr=%r, op=%r, expr2=%r>" % (
+            self.__expr, self.__op.__name__, self.__expr2)
 
     def __and__(self, other):
         other = other._unpack()
@@ -224,7 +224,10 @@ class NumexprTag(Numexpr):
         num = data(self.__ftag, None)
         if num is not None:
             return round(num, 2)
-        return False
+        return None
+    
+    def __repr__(self):
+        return "<NumexprTag tag=%r>" % self.__tag
     
 class NumexprUnary(Numexpr):
     """Unary numeric operation (like -)"""
@@ -238,10 +241,13 @@ class NumexprUnary(Numexpr):
         self.__expr = expr
     
     def evaluate(self, data):
-        val = self.__expr.evaluate()
+        val = self.__expr.evaluate(data)
         if val is not None:
             return self.__op(val)
         return None
+    
+    def __repr__(self):
+        return "<NumexprUnary op=%r expr=%r>" % (self.__op, self.__expr)
     
 class NumexprBinary(Numexpr):
     """Binary numeric operation (like + or *)"""
@@ -276,11 +282,15 @@ class NumexprBinary(Numexpr):
             self.__expr2 = expr
     
     def evaluate(self, data):
-        val = self.__expr.evaluate()
-        val2 = self.__expr2.evaluate()
+        val = self.__expr.evaluate(data)
+        val2 = self.__expr2.evaluate(data)
         if val is not None and val2 is not None:
             return self.__op(val, val2)
         return None
+    
+    def __repr__(self):
+        return "<NumexprBinary op=%r expr=%r expr2=%r>" % (
+            self.__op, self.__expr, self.__expr2)
     
 class NumexprGroup(Numexpr):
     """Parenthesized group in numeric expression"""
@@ -289,16 +299,22 @@ class NumexprGroup(Numexpr):
         self.__expr = expr
     
     def evaluate(self, data):
-        return self.__expr.evaluate()
+        return self.__expr.evaluate(data)
+    
+    def __repr__(self):
+        return "<NumexprGroup expr=%r>" % (self.__expr)
     
 class NumexprNumber(Numexpr):
     """Number in numeric expression"""
     
-    def __init__(self, number):
-        self.__number = float(number)
+    def __init__(self, value):
+        self.__value = float(value)
         
-    def evaluate(self, date):
-        return self.__number
+    def evaluate(self, data):
+        return self.__value
+    
+    def __repr__(self):
+        return "<NumexprNumber value=%.2f>" % (self.__value)
     
 def numexprUnit(value, unit):
     """Process numeric units and return NumexprNumber"""
