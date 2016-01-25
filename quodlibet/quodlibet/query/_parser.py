@@ -197,7 +197,7 @@ class QueryParser(object):
                                  'extension body')
         result = self.tokens[self.index:index]
         self.index = index
-        return tokens
+        return result
         
     def Equals(self):
         tags = self.match_list(lambda:self.expect_re(TAG))
