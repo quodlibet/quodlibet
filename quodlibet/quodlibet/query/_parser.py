@@ -143,7 +143,7 @@ class QueryParser(object):
             number = float(self.last_match)
             if self.accept(':'):
                 number2 = float(self.expect_re(DIGITS))
-                expr = match.NumexprNumber(60*number, number2)
+                expr = match.NumexprNumber(60*number + number2)
             elif self.accept_re(WORD):
                 expr = match.numexprUnit(number, self.last_match)
             else:
