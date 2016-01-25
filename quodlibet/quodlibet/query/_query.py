@@ -8,7 +8,7 @@
 
 from . import _match as match
 from ._match import error, Node
-from ._parser import QueryLexer, QueryParser
+from ._parser import QueryParser
 from quodlibet.util import re_escape, enum, cached_property
 
 
@@ -68,7 +68,7 @@ class Query(Node):
         self.string = string
 
         self.type = QueryType.VALID
-        self._match = QueryParser(string, star=star).Query()
+        self._match = QueryParser(string, star=star).StartQuery()
 
     @classmethod
     def StrictQueryMatcher(cls, string):
@@ -76,7 +76,7 @@ class Query(Node):
            or `None` if this fails.
         """
         try:
-            return QueryParser(string).Query()
+            return QueryParser(string).StartQuery()
         except error:
             return None
 

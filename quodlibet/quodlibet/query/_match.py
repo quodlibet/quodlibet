@@ -177,13 +177,13 @@ class Numcmp(Node):
 
     def __init__(self, expr, op, expr2):
         self.__expr = expr
-        self.__op = operators[op]
+        self.__op = self.operators[op]
         self.__expr2 = expr2
 
     def search(self, data):
         val = self.__expr.evaluate()
         val2 = self.__expr2.evaluate()
-        if val is not None and val2 is not None
+        if val is not None and val2 is not None:
             return self.__op(val, val2)
         return False
 
@@ -229,12 +229,12 @@ class NumexprTag(Numexpr):
 class NumexprUnary(Numexpr):
     """Unary numeric operation (like -)"""
     
-    UNARY_OPERATOR = {
+    operators = {
         '-': operator.neg
     }
 
     def __init__(self, op, expr):
-        self.__op = UNARY_OPERATOR[op]
+        self.__op = self.operators[op]
         self.__expr = expr
     
     def evaluate(self, data):
@@ -246,14 +246,14 @@ class NumexprUnary(Numexpr):
 class NumexprBinary(Numexpr):
     """Binary numeric operation (like + or *)"""
     
-    BINARY_OPERATOR = {
+    operators = {
         '-': operator.sub,
         '+': operator.add,
         '*': operator.mul,
         '/': operator.div,
     }
     
-    PRECEDENCE = {
+    precedence = {
         operator.sub: 1,
         operator.add: 1,
         operator.mul: 2,
@@ -261,23 +261,24 @@ class NumexprBinary(Numexpr):
     }
 
     def __init__(self, op, expr, expr2):
-        self.__op = BiNARY_OPERATOR[op]
+        self.__op = self.operators[op]
         self.__expr = expr
         self.__expr2 = expr2
         # Rearrange expressions for operator precedence
-        if isinstance(self.__expr, NumexprBinary) and
-                PRECEDENCE[self.__expr.__op] < PRECEDENCE[self.__op]:
+        if (isinstance(self.__expr, NumexprBinary) and
+                self.precedence[self.__expr.__op] <
+                self.precedence[self.__op]):
             self.__expr = expr.__expr
             self.__op = expr.__op
             expr.__expr = expr.__expr2
-            expr.__op = BINARY_OPERATOR[op]
+            expr.__op = self.operators[op]
             expr.__expr2 = expr2
             self.__expr2 = expr
     
     def evaluate(self, data):
         val = self.__expr.evaluate()
         val2 = self.__expr2.evaluate()
-        if val is not None and val2 is not None
+        if val is not None and val2 is not None:
             return self.__op(val, val2)
         return None
     
