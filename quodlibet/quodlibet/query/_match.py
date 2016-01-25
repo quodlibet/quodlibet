@@ -223,6 +223,8 @@ class NumexprTag(Numexpr):
     def evaluate(self, data):
         num = data(self.__ftag, None)
         if num is not None:
+            if self.__ftag in TIME_KEYS:
+                num = time.time() - num
             return round(num, 2)
         return None
     
