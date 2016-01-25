@@ -369,7 +369,7 @@ def numexprTagOrSpecial(tag):
     """Handle special values that look like tags"""
     
     if tag == "now":
-        return NumexprNow())
+        return NumexprNow()
     if tag == "today":
         return NumexprNow(offset = 24 * 60 * 60)
     else:
