@@ -17,11 +17,15 @@ class IncludeSavedSearchQuery(QueryPlugin):
     def search(self, data, body):
         return body.search(data)
         
-    def parse_body(self, body):
+    def parse_body(self, body, query_path_=None):
         if body is None:
             raise QueryPluginError
         body = body.strip().lower()
-        query_path = os.path.join(get_user_dir(), 'lists', 'queries.saved')
+        # Use provided query file for testing
+        if query_path_:
+            query_path = query_path_
+        else:
+            query_path = os.path.join(get_user_dir(), 'lists', 'queries.saved')
         try:
             with open(query_path, 'rU') as query_file:
                 for query_string in query_file:
