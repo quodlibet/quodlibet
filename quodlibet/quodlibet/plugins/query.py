@@ -63,7 +63,7 @@ class QueryPluginHandler(PluginHandler):
         self.plugins[plugin.cls.key] = plugin.cls
 
     def plugin_disable(self, plugin):
-        del self.plugins.remove(plugin.cls)
+        del self.plugins[plugin.cls.key]
 
     def get_plugin(self, key):
         return self.plugins[key]
