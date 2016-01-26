@@ -10,7 +10,7 @@ class PythonQuery(QueryPlugin):
     key = 'python'
     
     def search(self, data, body):
-        try
+        try:
             return eval(body, {'s': data})
         except:
             return False

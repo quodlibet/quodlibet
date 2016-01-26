@@ -6,8 +6,8 @@ from quodlibet.query._parser import QueryParser
 class ConditionalQuery(QueryPlugin):
     PLUGIN_ID = "conditional_query"
     PLUGIN_NAME = _("Conditional Query")
-    PLUGIN_DESC _("Chooses the query to match based on a condition query. "
-                  "Syntax is '@(if: condition, then, else)'")
+    PLUGIN_DESC = _("Chooses the query to match based on a condition query. "
+                  "Syntax is '@(if: condition, then, else)'.")
     key = 'if'
     
     def search(self, data, body):

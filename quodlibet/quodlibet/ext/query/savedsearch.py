@@ -10,8 +10,8 @@ from quodlibet import get_user_dir
 class IncludeSavedSearchQuery(QueryPlugin):
     PLUGIN_ID = "include_saved"
     PLUGIN_NAME = _("Include Saved Search")
-    PLUGIN_DESC _("Include the results of a saved search as part of another "
-                  "query. Syntax is '@(saved: search name)'")
+    PLUGIN_DESC = _("Include the results of a saved search as part of another "
+                  "query. Syntax is '@(saved: search name)'.")
     key = 'saved'
     
     def search(self, data, body):
