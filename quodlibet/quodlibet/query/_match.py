@@ -472,7 +472,7 @@ class Extension(Node):
             return
         
     def search(self, data):
-        return self.__valid and self.__plugin.search(data)
+        return self.__valid and self.__plugin.search(data, self.__body)
 
 
 def map_numeric_op(tag, op, value, time_=None):

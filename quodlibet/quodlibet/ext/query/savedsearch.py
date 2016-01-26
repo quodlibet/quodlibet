@@ -21,12 +21,12 @@ class IncludeSavedSearchQuery(QueryPlugin):
         body = body.strip().lower()
         query_path = os.path.join(get_user_dir(), 'lists', 'queries.saved')
         try:
-            with open(query_file, 'rU') as query_file:
+            with open(query_path, 'rU') as query_file:
                 for query_string in query_file:
                     name = next(query_file).strip().lower()
                     if name == body:
                         try:
-                            return Query(query_string)
+                            return Query(query_string.strip())
                         except QueryError:
                             raise QueryPluginError
             # We've searched the whole file and haven't found a match
