@@ -538,7 +538,7 @@ class Extension(Node):
 
     def search(self, data):
         return self.__valid and self.__plugin.search(data, self.__body)
-    
+
     def __repr__(self):
         return ('<Extension name=%r valid=%r body=%r>'
                 % (self.__name, self.__valid, self.__body))
