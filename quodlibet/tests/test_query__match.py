@@ -8,7 +8,7 @@ from quodlibet.formats import AudioFile
 
 
 class TQueryMatch(TestCase):
-    
+
     def test_numexpr_unit(self):
         self.failUnless(numexprUnit(10, 'seconds').evaluate(None, 0, True)
                         == 10)
@@ -21,7 +21,7 @@ class TQueryMatch(TestCase):
         self.failUnless(numexprUnit(3, 'megabytes').evaluate(None, 0, True)
                         == 3 * 1024 ** 2)
         self.failUnlessRaises(ParseError, numexprUnit, 7, 'invalid unit')
-        
+
     def test_time_tag(self):
         time = 424242
         song = AudioFile({'~#added': 400000, '~#mtime': 410000,
@@ -32,7 +32,7 @@ class TQueryMatch(TestCase):
         self.failUnless(NumexprTag('date').evaluate(song, time, True) is None)
         self.failUnless(NumexprTag('added').evaluate(song, time, True)
                         > NumexprTag('mtime').evaluate(song, time, True))
-        
+
     def test_date_tag(self):
         song = AudioFile({'date': '2012-11-09'})
         self.failUnless(NumexprTag('date').evaluate(song, 0, True)
@@ -43,7 +43,7 @@ class TQueryMatch(TestCase):
                         > parse_date('2012-11-08'))
         self.failUnless(NumexprTag('date').evaluate(song, 0, True)
                         < parse_date('2012-11-10'))
-        
+
     def test_numexpr_now(self):
         time = 424242
         day = 24 * 60 * 60
