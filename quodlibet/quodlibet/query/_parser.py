@@ -18,6 +18,7 @@ SINGLE_STRING = re.compile(r"([^'\\]|\\.)*")
 DOUBLE_STRING = re.compile(r'([^"\\]|\\.)*')
 MODIFIERS = re.compile(r'[cisld]*')
 TEXT = re.compile(r'[^=)|&#/<>!@,]+')
+DATE = re.compile(r'(\d{4})(?:\s*-\s*(\d{1,2})(?:\s*-\s*(\d{1,2}))?)?')
 
 
 class QueryParser(object):
@@ -123,11 +124,11 @@ class QueryParser(object):
     
     def Numcmp(self):
         cmps = []
-        expr2 = self.Numexpr()
+        expr2 = self.Numexpr(allow_date = True)
         while self.accept_re(RELATIONAL_OPERATOR):
             expr = expr2
             relop = self.last_match
-            expr2 = self.Numexpr()
+            expr2 = self.Numexpr(allow_date = True)
             cmps.append(match.Numcmp(expr, relop, expr2))
         if not cmps:
             raise ParseError('No relational operator in numerical comparison')
@@ -136,12 +137,14 @@ class QueryParser(object):
         else:
             return cmps[0]
     
-    def Numexpr(self):
+    def Numexpr(self, allow_date=False):
         if self.accept('('):
-            expr = match.NumexprGroup(self.Numexpr())
+            expr = match.NumexprGroup(self.Numexpr(allow_date=True))
             self.expect(')')
         elif self.accept_re(UNARY_OPERATOR):
             expr = match.NumexprUnary(self.last_match, self.Numexpr())
+        elif allow_date and self.accept_re(DATE):
+            return match.NumexprNumberOrDate(self.last_match)
         elif self.accept_re(DIGITS):
             number = float(self.last_match)
             if self.accept(':'):
