@@ -370,6 +370,8 @@ class NumexprNow(Numexpr):
 
 
 class NumexprNumberOrDate(Numexpr):
+    """An ambiguous value like 2015-09-25 than can be interpreted as either
+    a number or a date."""
 
     def __init__(self, date):
         self.date = parse_date(date)
