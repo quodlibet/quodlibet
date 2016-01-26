@@ -124,6 +124,8 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query.is_valid("#(t + 1 + 2 + -4 * 9 > g*(r/4 + 6))"))
         self.failUnless(Query.is_valid("#(date < 2010-4)"))
         self.failUnless(Query.is_valid("#(date < 2010 - 4)"))
+        self.failUnless(Query.is_valid("#(date > 0000)"))
+        self.failUnless(Query.is_valid("#(date > 00004)"))
         self.failUnless(Query.is_valid("#(t > 3 minutes)"))
         self.failUnless(Query.is_valid("#(added > today)"))
         self.failUnless(Query.is_valid("#(length < 5:00)"))
@@ -423,6 +425,9 @@ class TQuery(TestCase):
         self.failUnless(Query("#(date - 5 days = 2007-05-19)").search(self.s1))
         self.failUnless(Query("#(2010-02-18 > date)").search(self.s1))
         self.failUnless(Query("#(2010 > date)").search(self.s1))
+        self.failUnless(Query("#(date > 4)").search(self.s1))
+        self.failUnless(Query("#(date > 0004)").search(self.s1))
+        self.failUnless(Query("#(date > 0000)").search(self.s1))
 
 
 class TQuery_get_type(TestCase):
