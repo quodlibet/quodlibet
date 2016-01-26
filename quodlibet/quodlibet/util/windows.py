@@ -61,8 +61,6 @@ def _get_known_path(folder, default=False, create=False):
     if create:
         flags |= KnownFolderFlag.CREATE
 
-    flags |= KnownFolderFlag.DONT_UNEXPAND
-
     ptr = ctypes.c_wchar_p()
     result = SHGetKnownFolderPath(
         guid2bytes(folder), flags, None, ctypes.byref(ptr))
