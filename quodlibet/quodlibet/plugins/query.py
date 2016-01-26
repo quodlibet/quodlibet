@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 
 from quodlibet.plugins import PluginHandler, PluginManager
-from quodlibet.query._match import ParseError
 
 class QueryPlugin(object):
     """
@@ -39,13 +38,13 @@ class QueryPlugin(object):
     the 'key' attribute to a different string to be used.
     """
     search = None
+    key = None
     
     def parse_body(self, body):
         return body
     
-    @property
-    def key(self):
-        return self.PLUGIN_NAME
+class ParseError(Exception):
+    pass
     
 class QueryPluginHandler(PluginHandler):
     """Maintains a dictionary of enabled Query Plugins by key"""
@@ -60,10 +59,10 @@ class QueryPluginHandler(PluginHandler):
         return issubclass(plugin.cls, QueryPlugin)
 
     def plugin_enable(self, plugin):
-        self.plugins[plugin.cls.key] = plugin.cls
+        self.plugins[plugin.cls.key or plugin.name] = plugin.cls()
 
     def plugin_disable(self, plugin):
-        del self.plugins[plugin.cls.key]
+        del self.plugins[plugin.cls.key or plugin.name]
 
     def get_plugin(self, key):
         return self.plugins[key]

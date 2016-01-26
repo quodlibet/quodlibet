@@ -461,7 +461,10 @@ class Extension(Node):
             self.__plugin = QUERY_HANDLER.get_plugin(name)
         except KeyError:
             raise ParseError('No such query plugin: {0}'.format(name))
-        self.__body = self.__plugin.parse_body(body)
+        try:
+            self.__body = self.__plugin.parse_body(body)
+        except PluginParseError:
+            raise ParseError
         
     def search(self, data):
         return self.__plugin.search(data)
