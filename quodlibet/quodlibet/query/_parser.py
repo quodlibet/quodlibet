@@ -165,7 +165,13 @@ class QueryParser(object):
         elif allow_date and self.accept_re(DATE):
             # Parse sequences of numbers that looks like dates as either dates
             # or numbers
-            expr = match.NumexprNumberOrDate(self.last_match)
+            try:
+                expr = match.NumexprNumberOrDate(self.last_match)
+            except ValueError:
+                # If the date can't be parsed then backtrack and try again
+                # without allowing dates
+                self.index -= len(self.last_match)
+                expr = self.Numexpr(allow_date=False)
         elif self.accept_re(DIGITS):
             number = float(self.last_match)
             if self.accept(':'):
