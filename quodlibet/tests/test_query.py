@@ -103,6 +103,19 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query.is_valid("|(s, t = &(/a/, /b/),!#(2 > q > 3))"))
         
     def test_extension(self):
+        from quodlibet.plugins import Plugin
+        from quodlibet.plugins.query import QueryPlugin, QUERY_HANDLER
+        
+        class NamePlugin(QueryPlugin):
+            PLUGIN_ID = 'NamePlugin'
+            PLUGIN_NAME = 'name'
+            PLUGIN_DESC = 'description'
+            
+            def search(self, data, body):
+                return True
+            
+        QUERY_HANDLER.plugin_enable(Plugin(NamePlugin))
+        
         self.failUnless(Query.is_valid("@(name)"))
         self.failUnless(Query.is_valid("@(name: extension body)"))
         self.failUnless(Query.is_valid("@(name: body (with (nested) parens))"))
