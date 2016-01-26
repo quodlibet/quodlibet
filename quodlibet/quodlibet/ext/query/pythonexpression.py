@@ -25,6 +25,6 @@ class PythonQuery(QueryPlugin):
         if body is None:
             raise QueryPluginError
         try:
-            return compile(body, 'query', 'eval')
+            return compile(body.strip(), 'query', 'eval')
         except SyntaxError:
             raise QueryPluginError
