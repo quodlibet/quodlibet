@@ -40,13 +40,12 @@ class QueryParser(object):
         while not self.eof() and self.tokens[self.index] == ' ':
             self.index += 1
 
-    def accept(self, token, advance=True):
+    def accept(self, token):
         self.space()
         if self.eof():
             return False
         if self.tokens[self.index] == token:
-            if advance:
-                self.index += 1
+            self.index += 1
             return True
         else:
             return False
