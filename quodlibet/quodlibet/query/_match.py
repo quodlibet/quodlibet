@@ -12,7 +12,7 @@ import operator
 from quodlibet.util.path import fsdecode
 from quodlibet.util import date_key, validate_query_date, parse_date
 from quodlibet.plugins.query import QUERY_HANDLER
-from quodlibet.plugins.query import ParseError as PluginParseError
+from quodlibet.plugins.query import QueryPluginError
 
 
 class error(ValueError):
@@ -457,17 +457,22 @@ class Extension(Node):
     
     def __init__(self, name, body):
         self.__name = name
+        self.__valid = True
+        
         try:
             self.__plugin = QUERY_HANDLER.get_plugin(name)
         except KeyError:
-            raise ParseError('No such query plugin: {0}'.format(name))
+            self.__valid = False
+            return
+        
         try:
             self.__body = self.__plugin.parse_body(body)
-        except PluginParseError:
-            raise ParseError
+        except QueryPluginError:
+            self.__valid = False
+            return
         
     def search(self, data):
-        return self.__plugin.search(data)
+        return self.__valid and self.__plugin.search(data)
 
 
 def map_numeric_op(tag, op, value, time_=None):

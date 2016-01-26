@@ -30,8 +30,9 @@ class QueryPlugin(object):
     string from the query, or None if the query contained no body. It should
     return a value representing the parsed body, to be used in self.search.
 
-    If the provided body is invalid, the method may raise a ParseError to
-    cancel the query parsing.
+    If the provided body is invalid, the method may raise a QueryPluginError
+    to indicate that all matches should fail. In this case search will not be
+    called.
     
     By default, the name used in the '@(name)' query to use the plugin is
     the PLUGIN_NAME attribute. However, this can be changed by overriding
@@ -43,7 +44,7 @@ class QueryPlugin(object):
     def parse_body(self, body):
         return body
     
-class ParseError(Exception):
+class QueryPluginError(Exception):
     pass
     
 class QueryPluginHandler(PluginHandler):

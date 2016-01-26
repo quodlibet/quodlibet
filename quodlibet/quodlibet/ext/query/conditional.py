@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from quodlibet.plugins.query import QueryPlugin, ParseError
+from quodlibet.plugins.query import QueryPlugin, QueryPluginError
 from quodlibet.query._parser import QueryParser
 
 class ConditionalQuery(QueryPlugin):
@@ -20,5 +20,5 @@ class ConditionalQuery(QueryPlugin):
         parser = QueryParser(body)
         queries = parser.match_list(parser.Query)
         if len(queries) != 3:
-            raise ParseError
+            raise QueryPluginError
         return queries

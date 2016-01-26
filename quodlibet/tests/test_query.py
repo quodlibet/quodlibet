@@ -102,23 +102,13 @@ class TQuery_is_valid(TestCase):
     def test_nesting(self):
         self.failUnless(Query.is_valid("|(s, t = &(/a/, /b/),!#(2 > q > 3))"))
         
-    def test_extension(self):
-        from quodlibet.plugins import Plugin
-        from quodlibet.plugins.query import QueryPlugin, QUERY_HANDLER
-        
-        class NamePlugin(QueryPlugin):
-            PLUGIN_ID = 'NamePlugin'
-            PLUGIN_NAME = 'name'
-            
-        QUERY_HANDLER.plugin_enable(Plugin(NamePlugin))
-        
+    def test_extension(self):        
         self.failUnless(Query.is_valid("@(name)"))
         self.failUnless(Query.is_valid("@(name: extension body)"))
         self.failUnless(Query.is_valid("@(name: body (with (nested) parens))"))
         self.failUnless(Query.is_valid(r"@(name: body \\ with \) escapes)"))
         
         self.failIf(Query.is_valid("@()"))
-        self.failIf(Query.is_valid("@(unloaded_plugin)"))
         self.failIf(Query.is_valid(r"@(invalid %name!\\)"))
         self.failIf(Query.is_valid("@(name: mismatched ( parenthesis)"))
         self.failIf(Query.is_valid(r"@(\()"))
