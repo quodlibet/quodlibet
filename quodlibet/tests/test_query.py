@@ -109,10 +109,6 @@ class TQuery_is_valid(TestCase):
         class NamePlugin(QueryPlugin):
             PLUGIN_ID = 'NamePlugin'
             PLUGIN_NAME = 'name'
-            PLUGIN_DESC = 'description'
-            
-            def search(self, data, body):
-                return True
             
         QUERY_HANDLER.plugin_enable(Plugin(NamePlugin))
         
@@ -122,6 +118,7 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query.is_valid(r"@(name: body \\ with \) escapes)"))
         
         self.failIf(Query.is_valid("@()"))
+        self.failIf(Query.is_valid("@(unloaded_plugin)"))
         self.failIf(Query.is_valid(r"@(invalid %name!\\)"))
         self.failIf(Query.is_valid("@(name: mismatched ( parenthesis)"))
         self.failIf(Query.is_valid(r"@(\()"))
