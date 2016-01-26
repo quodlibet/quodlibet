@@ -17,6 +17,8 @@ class ConditionalQuery(QueryPlugin):
             return body[2].search(data)
         
     def parse_body(self, body):
+        if body is None:
+            raise QueryParserError
         parser = QueryParser(body)
         queries = parser.match_list(parser.Query)
         if len(queries) != 3:

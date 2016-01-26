@@ -18,6 +18,8 @@ class IncludeSavedSearchQuery(QueryPlugin):
         return body.search(data)
         
     def parse_body(self, body):
+        if body is None:
+            raise QueryPluginError
         body = body.strip().lower()
         query_path = os.path.join(get_user_dir(), 'lists', 'queries.saved')
         try:

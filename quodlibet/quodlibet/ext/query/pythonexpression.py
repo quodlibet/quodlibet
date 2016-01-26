@@ -16,6 +16,8 @@ class PythonQuery(QueryPlugin):
             return False
         
     def parse_body(self, body):
+        if body is None:
+            raise QueryPluginError
         try:
             return compile(body, 'query', 'eval')
         except SyntaxError:
