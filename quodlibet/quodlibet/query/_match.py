@@ -522,6 +522,7 @@ class Extension(Node):
     def __init__(self, name, body):
         self.__name = name
         self.__valid = True
+        self.__body = body
 
         try:
             self.__plugin = QUERY_HANDLER.get_plugin(name)
@@ -537,3 +538,7 @@ class Extension(Node):
 
     def search(self, data):
         return self.__valid and self.__plugin.search(data, self.__body)
+    
+    def __repr__(self):
+        return ('<Extension name=%r valid=%r body=%r>'
+                % (self.__name, self.__valid, self.__body))
