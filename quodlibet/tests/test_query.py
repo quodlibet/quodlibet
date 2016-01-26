@@ -101,20 +101,20 @@ class TQuery_is_valid(TestCase):
 
     def test_nesting(self):
         self.failUnless(Query.is_valid("|(s, t = &(/a/, /b/),!#(2 > q > 3))"))
-        
-    def test_extension(self):        
+
+    def test_extension(self):
         self.failUnless(Query.is_valid("@(name)"))
         self.failUnless(Query.is_valid("@(name: extension body)"))
         self.failUnless(Query.is_valid("@(name: body (with (nested) parens))"))
         self.failUnless(Query.is_valid(r"@(name: body \\ with \) escapes)"))
-        
+
         self.failIf(Query.is_valid("@()"))
         self.failIf(Query.is_valid(r"@(invalid %name!\\)"))
         self.failIf(Query.is_valid("@(name: mismatched ( parenthesis)"))
         self.failIf(Query.is_valid(r"@(\()"))
         self.failIf(Query.is_valid("@(name:unclosed body"))
         self.failIf(Query.is_valid("@ )"))
-        
+
     def test_numexpr(self):
         self.failUnless(Query.is_valid("#(t < 3*4)"))
         self.failUnless(Query.is_valid("#(t * (1+r) < 7)"))
@@ -126,7 +126,7 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query.is_valid("#(added > today)"))
         self.failUnless(Query.is_valid("#(length < 5:00)"))
         self.failUnless(Query.is_valid("#(filesize > 5M)"))
-        
+
         self.failIf(Query.is_valid("#(3*4)"))
         self.failIf(Query.is_valid("#(t = 3 + )"))
         self.failIf(Query.is_valid("#(t = -)"))
@@ -396,30 +396,31 @@ class TQuery(TestCase):
         Query(u'/Sigur [r-zos/d')
         # group refs unsupported for diacritic matching
         Query(u'/(<)?(\w+@\w+(?:\.\w+)+)(?(1)>)/d')
-        
+
     def test_numexpr(self):
         self.failUnless(Query("#(length = 224)").search(self.s1))
         self.failUnless(Query("#(length = 3:44)").search(self.s1))
-        self.failUnless(Query("#(length = 3 minutes + 44 seconds)").search(self.s1))
+        self.failUnless(Query("#(length = 3 minutes + 44 seconds)")
+                        .search(self.s1))
         self.failUnless(Query("#(playcount > skipcount)").search(self.s1))
         self.failUnless(Query("#(playcount < 2 * skipcount)").search(self.s1))
         self.failUnless(Query("#(length > 3 minutes)").search(self.s1))
         self.failUnless(Query("#(3:00 < length < 4:00)").search(self.s1))
-        self.failUnless(Query("#(40 seconds < length/5 < 1 minute)").search(self.s1))
+        self.failUnless(Query("#(40 seconds < length/5 < 1 minute)")
+                        .search(self.s1))
         self.failUnless(Query("#(2+3 * 5 = 17)").search(self.s1))
-        
+
         self.failIf(Query("#(track + 1 != 13)").search(self.s2))
-        
+
     def test_numexpr_date(self):
         self.failUnless(Query("#(length < 2005-07-19)").search(self.s1))
         self.failUnless(Query("#(date > 2005-07-19)").search(self.s1))
         self.failUnless(Query("#(2005-11-24 < 2005-07-19)").search(self.s1))
-        self.failUnless(Query("#(date = (2007-05-19) + 5 days)").search(self.s1))
+        self.failUnless(Query("#(date = (2007-05-19) + 5 days)")
+                        .search(self.s1))
         self.failUnless(Query("#(date - 5 days = 2007-05-19)").search(self.s1))
         self.failUnless(Query("#(2010-02-18 > date)").search(self.s1))
         self.failUnless(Query("#(2010 > date)").search(self.s1))
-        
-        
 
 
 class TQuery_get_type(TestCase):

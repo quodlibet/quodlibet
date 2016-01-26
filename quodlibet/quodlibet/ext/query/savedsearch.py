@@ -7,16 +7,17 @@ from quodlibet.query import Query
 from quodlibet.query._match import error as QueryError
 from quodlibet import get_user_dir
 
+
 class IncludeSavedSearchQuery(QueryPlugin):
     PLUGIN_ID = "include_saved"
     PLUGIN_NAME = _("Include Saved Search")
     PLUGIN_DESC = _("Include the results of a saved search as part of another "
                   "query. Syntax is '@(saved: search name)'.")
     key = 'saved'
-    
+
     def search(self, data, body):
         return body.search(data)
-        
+
     def parse_body(self, body, query_path_=None):
         if body is None:
             raise QueryPluginError

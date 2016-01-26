@@ -2,10 +2,10 @@
 import re
 
 from . import _match as match
-from ._match import error, ParseError
+from ._match import ParseError
 from ._diacritic import re_add_variants
 from quodlibet.util import re_escape
-        
+
 # Precompiled regexes
 TAG = re.compile(r'[~\w]+')
 UNARY_OPERATOR = re.compile(r'-')
@@ -29,17 +29,17 @@ class QueryParser(object):
         self.index = 0
         self.last_match = None
         self.star = star
-        
+
     def lookahead(self, *tokens):
         try:
             return self.tokens[self.index] in tokens
         except IndexError:
             return False
-        
+
     def space(self):
         while not self.eof() and self.tokens[self.index] == ' ':
             self.index += 1
-        
+
     def accept(self, token, advance=True):
         self.space()
         if self.eof():
@@ -50,7 +50,7 @@ class QueryParser(object):
             return True
         else:
             return False
-        
+
     def accept_re(self, regexp):
         self.space()
         re_match = regexp.match(self.tokens, self.index)
@@ -59,21 +59,21 @@ class QueryParser(object):
             re_match = re_match.group()
         self.last_match = re_match
         return re_match
-        
+
     def expect(self, token):
         if not self.accept(token):
             raise ParseError("'{0}' expected at index {1}, but not found"
                              .format(token, self.index))
-        
+
     def expect_re(self, regexp):
         if self.accept_re(regexp) is None:
             raise ParseError("RE match expected at index {0}, but not found"
                              .format(self.index))
         return self.last_match
-        
+
     def eof(self):
         return self.index >= len(self.tokens)
-        
+
     def match_list(self, rule):
         m = [rule()]
         while self.accept(','):
@@ -106,29 +106,29 @@ class QueryParser(object):
         except ParseError:
             self.index = index
             return self.Star(outer=outer)
-        
+
     def Negation(self, rule):
         return match.Neg(rule())
-    
+
     def Intersection(self, rule):
         self.expect('(')
         inter = match.Inter(self.match_list(rule))
         self.expect(')')
         return inter
-    
+
     def Union(self, rule):
         self.expect('(')
         union = match.Union(self.match_list(rule))
         self.expect(')')
         return union
-    
+
     def Numcmp(self):
         cmps = []
-        expr2 = self.Numexpr(allow_date = True)
+        expr2 = self.Numexpr(allow_date=True)
         while self.accept_re(RELATIONAL_OPERATOR):
             expr = expr2
             relop = self.last_match
-            expr2 = self.Numexpr(allow_date = True)
+            expr2 = self.Numexpr(allow_date=True)
             cmps.append(match.Numcmp(expr, relop, expr2))
         if not cmps:
             raise ParseError('No relational operator in numerical comparison')
@@ -136,7 +136,7 @@ class QueryParser(object):
             return match.Inter(cmps)
         else:
             return cmps[0]
-    
+
     def Numexpr(self, allow_date=False):
         if self.accept('('):
             expr = match.NumexprGroup(self.Numexpr(allow_date=True))
@@ -149,7 +149,7 @@ class QueryParser(object):
             number = float(self.last_match)
             if self.accept(':'):
                 number2 = float(self.expect_re(DIGITS))
-                expr = match.NumexprNumber(60*number + number2)
+                expr = match.NumexprNumber(60 * number + number2)
             elif self.accept_re(WORD):
                 expr = match.numexprUnit(number, self.last_match)
             else:
@@ -162,7 +162,7 @@ class QueryParser(object):
             return match.NumexprBinary(binop, expr, expr2)
         else:
             return expr
-        
+
     def Binexpr(self):
         expr = self.Numexpr()
         if self.accept_re(BINARY_OPERATOR):
@@ -171,7 +171,7 @@ class QueryParser(object):
             return match.NumexprBinary(binop, expr, expr2)
         else:
             return expr
-        
+
     def Extension(self):
         self.expect('(')
         name = self.expect_re(WORD)
@@ -181,7 +181,7 @@ class QueryParser(object):
             body = None
         self.expect(')')
         return match.Extension(name, body)
-    
+
     def ExtBody(self):
         depth = 0
         index = self.index
@@ -204,13 +204,13 @@ class QueryParser(object):
         result = self.tokens[self.index:index]
         self.index = index
         return result
-        
+
     def Equals(self):
-        tags = self.match_list(lambda:self.expect_re(TAG))
+        tags = self.match_list(lambda: self.expect_re(TAG))
         self.expect('=')
         value = self.Value()
         return match.Tag(tags, value)
-    
+
     def Value(self, outer=False):
         if self.accept('/'):
             regex = self.expect_re(REGEXP)
@@ -235,7 +235,7 @@ class QueryParser(object):
                 # Hack to force plain text parsing for top level free text
                 raise ParseError('Free text not allowed at top level of query')
             return self.RegexpMods(self.expect_re(TEXT))
-        
+
     def RegexpMods(self, regex):
         mod_string = self.expect_re(MODIFIERS)
         mods = re.MULTILINE | re.UNICODE | re.IGNORECASE
@@ -258,10 +258,10 @@ class QueryParser(object):
             return re.compile(regex, mods)
         except re.error:
             raise ParseError("The regular expression /%s/ is invalid." % regex)
-        
+
     def Star(self, outer=False):
         return match.Tag(self.star, self.Value(outer=outer))
-        
+
     def str_to_re(self, string):
         if isinstance(string, unicode):
             string = string.encode('utf-8')

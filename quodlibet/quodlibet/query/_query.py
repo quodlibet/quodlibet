@@ -73,7 +73,7 @@ class Query(Node):
             return
         except error:
             pass
-        
+
         if not set("#=").intersection(string):
             parts = ["/%s/" % re_escape(s) for s in string.split()]
             if dumb_match_diacritics:
@@ -87,10 +87,8 @@ class Query(Node):
                 return
             except error:
                 pass
-            
+
         raise error('Query is not VALID or TEXT')
-        
-        
 
     @classmethod
     def StrictQueryMatcher(cls, string):

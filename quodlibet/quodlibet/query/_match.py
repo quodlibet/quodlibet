@@ -10,7 +10,7 @@ import time
 import operator
 
 from quodlibet.util.path import fsdecode
-from quodlibet.util import date_key, validate_query_date, parse_date
+from quodlibet.util import parse_date
 from quodlibet.plugins.query import QUERY_HANDLER
 from quodlibet.plugins.query import QueryPluginError
 
@@ -165,7 +165,7 @@ class Neg(Node):
 
 
 class Numcmp(Node):
-    """Numeric comparisons. Search method has time_ parameter used for testing."""
+    """Numeric comparisons"""
 
     operators = {
         "<": operator.lt,
@@ -182,9 +182,8 @@ class Numcmp(Node):
         self.__op = self.operators[op]
         self.__expr2 = expr2
 
-    def search(self, data, time_=None):
-        if time_ is None:
-            time_ = time.time()
+    def search(self, data):
+        time_ = time.time()
         use_date = self.__expr.use_date() or self.__expr2.use_date()
         val = self.__expr.evaluate(data, time_, use_date)
         val2 = self.__expr2.evaluate(data, time_, use_date)
@@ -207,22 +206,24 @@ class Numcmp(Node):
         if isinstance(other, True_):
             return other.__or__(self)
         return Union([self, other])
-    
+
+
 class Numexpr(object):
     """Expression in numeric comparison"""
-    
+
     def evaluate(self, data, time, use_date):
         """Evaluate the expression to a number. data is the audiofile to
         evaluate for, time is the current time, and is_date is a boolean
         indicating whether to evaulate as a date (used to handle expressions
         like 2015-02-11 that look like dates and subtraction)"""
         raise NotImplementedError
-    
+
     def use_date(self):
         """Returns whether to force the final comparison to compare the date
         values instead of the number values."""
         return False
-    
+
+
 class NumexprTag(Numexpr):
     """Numeric tag"""
 
@@ -233,7 +234,7 @@ class NumexprTag(Numexpr):
             self.__tag = tag
 
         self.__ftag = "~#" + self.__tag
-    
+
     def evaluate(self, data, time, use_date):
         if self.__tag == 'date':
             date = data('date')
@@ -247,16 +248,17 @@ class NumexprTag(Numexpr):
                 num = time - num
             return round(num, 2)
         return None
-    
+
     def __repr__(self):
         return "<NumexprTag tag=%r>" % self.__tag
-    
+
     def use_date(self):
         return self.__tag == 'date'
-    
+
+
 class NumexprUnary(Numexpr):
     """Unary numeric operation (like -)"""
-    
+
     operators = {
         '-': operator.neg
     }
@@ -264,29 +266,30 @@ class NumexprUnary(Numexpr):
     def __init__(self, op, expr):
         self.__op = self.operators[op]
         self.__expr = expr
-    
+
     def evaluate(self, data, time, use_date):
         val = self.__expr.evaluate(data, time, use_date)
         if val is not None:
             return self.__op(val)
         return None
-    
+
     def __repr__(self):
         return "<NumexprUnary op=%r expr=%r>" % (self.__op, self.__expr)
-    
+
     def use_date(self):
         return self.__expr.use_date()
-    
+
+
 class NumexprBinary(Numexpr):
     """Binary numeric operation (like + or *)"""
-    
+
     operators = {
         '-': operator.sub,
         '+': operator.add,
         '*': operator.mul,
         '/': operator.div,
     }
-    
+
     precedence = {
         operator.sub: 1,
         operator.add: 1,
@@ -308,62 +311,66 @@ class NumexprBinary(Numexpr):
             expr.__op = self.operators[op]
             expr.__expr2 = expr2
             self.__expr2 = expr
-    
+
     def evaluate(self, data, time, use_date):
         val = self.__expr.evaluate(data, time, use_date)
         val2 = self.__expr2.evaluate(data, time, use_date)
         if val is not None and val2 is not None:
             return self.__op(val, val2)
         return None
-    
+
     def __repr__(self):
         return "<NumexprBinary op=%r expr=%r expr2=%r>" % (
             self.__op, self.__expr, self.__expr2)
-    
+
     def use_date(self):
         return self.__expr.use_date() or self.__expr2.use_date()
-    
+
+
 class NumexprGroup(Numexpr):
     """Parenthesized group in numeric expression"""
 
     def __init__(self, expr):
         self.__expr = expr
-    
+
     def evaluate(self, data, time, use_date):
         return self.__expr.evaluate(data, time, use_date)
-    
+
     def __repr__(self):
         return "<NumexprGroup expr=%r>" % (self.__expr)
-    
+
     def use_date(self):
         return self.__expr.use_date()
-    
+
+
 class NumexprNumber(Numexpr):
     """Number in numeric expression"""
-    
+
     def __init__(self, value):
         self.__value = float(value)
-        
+
     def evaluate(self, data, time, use_date):
         return self.__value
-    
+
     def __repr__(self):
         return "<NumexprNumber value=%.2f>" % (self.__value)
-    
+
+
 class NumexprNow(Numexpr):
     """Current time, with optional offset"""
-    
+
     def __init__(self, offset=0):
         self.__offset = offset
-        
+
     def evaluate(self, data, time, use_date):
         return time - self.__offset
-    
+
     def __repr__(self):
         return "<NumexprNow offset=%r>" % (self.__offset)
-    
+
+
 class NumexprNumberOrDate(Numexpr):
-    
+
     def __init__(self, date):
         self.date = parse_date(date)
         parts = date.split('-')
@@ -372,23 +379,24 @@ class NumexprNumberOrDate(Numexpr):
             self.number -= int(parts[1])
         if len(parts) > 2:
             self.number -= int(parts[2])
-            
+
     def evaluate(self, data, time, use_date):
         if use_date:
             return self.date
         else:
             return self.number
-    
+
     def __repr__(self):
         return ('<NumexprNumberOrDate number=%r date=%r>' %
             (self.number, self.date))
-    
+
+
 def numexprUnit(value, unit):
     """Process numeric units and return NumexprNumber"""
 
     unit = unit.lower().strip()
-    
-    # Time units    
+
+    # Time units
     if unit.startswith("second"):
         value = value
     elif unit.startswith("minute"):
@@ -416,13 +424,14 @@ def numexprUnit(value, unit):
         raise ParseError("No such unit: %r" % unit)
     return NumexprNumber(value)
 
+
 def numexprTagOrSpecial(tag):
     """Handle special values that look like tags"""
-    
+
     if tag == "now":
         return NumexprNow()
     if tag == "today":
-        return NumexprNow(offset = 24 * 60 * 60)
+        return NumexprNow(offset=24 * 60 * 60)
     else:
         return NumexprTag(tag)
 
@@ -495,30 +504,31 @@ class Tag(Node):
         if isinstance(other, True_):
             return other.__or__(self)
         return Union([self, other])
-    
+
+
 class Extension(Node):
     """Plugin-defined query extension
-    
+
     Syntax is @(plugin_name) or @(plugin_name: body)
-    
+
     Raises a ParseError if no plugin is loaded for the name, or if the plugin
     fails to parse the body"""
-    
+
     def __init__(self, name, body):
         self.__name = name
         self.__valid = True
-        
+
         try:
             self.__plugin = QUERY_HANDLER.get_plugin(name)
         except KeyError:
             self.__valid = False
             return
-        
+
         try:
             self.__body = self.__plugin.parse_body(body)
         except QueryPluginError:
             self.__valid = False
             return
-        
+
     def search(self, data):
         return self.__valid and self.__plugin.search(data, self.__body)
