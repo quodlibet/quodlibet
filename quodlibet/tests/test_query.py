@@ -143,7 +143,8 @@ class TQuery(TestCase):
         self.s1 = AudioFile(
             {"album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
              "version": "cake mix", "~filename": "/dir1/foobar.ogg",
-             "~#length": 224, "~#skipcount": 13, "~#playcount": 24})
+             "~#length": 224, "~#skipcount": 13, "~#playcount": 24,
+             "date": "2007-05-24"})
         self.s2 = AudioFile(
             {"album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
              "~filename": "/dir2/something.mp3", "tracknumber": "12/15"})
@@ -408,6 +409,15 @@ class TQuery(TestCase):
         self.failUnless(Query("#(2+3 * 5 = 17)").search(self.s1))
         
         self.failIf(Query("#(track + 1 != 13)").search(self.s2))
+        
+    def test_numexpr_date(self):
+        self.failUnless(Query("#(length < 2005-07-19)").search(self.s1))
+        self.failUnless(Query("#(date > 2005-07-19)").search(self.s1))
+        self.failUnless(Query("#(2005-11-24 < 2005-07-19)").search(self.s1))
+        self.failUnless(Query("#(date = (2007-05-19) + 5 days)").search(self.s1))
+        self.failUnless(Query("#(date - 5 days = 2007-05-19)").search(self.s1))
+        self.failUnless(Query("#(2010-02-18 > date)").search(self.s1))
+        self.failUnless(Query("#(2010 > date)").search(self.s1))
         
         
 
