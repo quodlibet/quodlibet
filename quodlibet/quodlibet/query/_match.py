@@ -11,6 +11,8 @@ import operator
 
 from quodlibet.util.path import fsdecode
 from quodlibet.util import date_key, validate_query_date, parse_date
+from quodlibet.plugins.query import QUERY_HANDLER
+from quodlibet.plugins.query import ParseError as PluginParseError
 
 
 class error(ValueError):
@@ -445,20 +447,24 @@ class Tag(Node):
             return other.__or__(self)
         return Union([self, other])
     
-# TODO add search plugin that uses Extension
 class Extension(Node):
     """Plugin-defined query extension
     
     Syntax is @(plugin_name) or @(plugin_name: body)
     
-    Returns false for all names until search plugins are implemented"""
+    Raises a ParseError if no plugin is loaded for the name, or if the plugin
+    fails to parse the body"""
     
     def __init__(self, name, body):
         self.__name = name
-        self.__body = body
+        try:
+            self.__plugin = QUERY_HANDLER.get_plugin(name)
+        except KeyError:
+            raise ParseError('No such query plugin: {0}'.format(name))
+        self.__body = self.__plugin.parse_body(body)
         
     def search(self, data):
-        return False
+        return self.__plugin.search(data)
 
 
 def map_numeric_op(tag, op, value, time_=None):

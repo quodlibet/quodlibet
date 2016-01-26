@@ -122,6 +122,9 @@ def main(argv):
     from quodlibet.plugins.playlist import PLAYLIST_HANDLER
     PLAYLIST_HANDLER.init_plugins()
 
+    from quodlibet.plugins.playlist import QUERY_HANDLER
+    QUERY_HANDLER.init_plugins()
+
     from gi.repository import GLib
 
     def exec_commands(*args):
