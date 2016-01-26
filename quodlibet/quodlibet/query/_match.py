@@ -240,7 +240,10 @@ class NumexprTag(Numexpr):
             date = data('date')
             if not date:
                 return None
-            num = parse_date(date)
+            try:
+                num = parse_date(date)
+            except ValueError:
+                return None
         else:
             num = data(self.__ftag, None)
         if num is not None:
