@@ -75,7 +75,12 @@ def _get_win_favorites():
     # if not already present
     links = windows.get_links_dir()
     if links is not None:
-        for entry in os.listdir(links):
+        try:
+            link_entries = os.listdir(links)
+        except OSError:
+            link_entries = []
+
+        for entry in link_entries:
             if entry.endswith(".lnk"):
                 target = windows.get_link_target(os.path.join(links, entry))
                 if target is not None:
