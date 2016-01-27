@@ -41,7 +41,10 @@ def _get_path(folder, default=False, create=False):
     folder |= CSIDLFlag.DONT_UNEXPAND
 
     buffer_ = ctypes.create_unicode_buffer(MAX_PATH)
-    result = SHGetFolderPathW(0, folder, 0, flags, buffer_)
+    try:
+        result = SHGetFolderPathW(0, folder, 0, flags, buffer_)
+    except WindowsError:
+        return None
     if result != S_OK:
         return None
     return buffer_.value
@@ -65,10 +68,13 @@ def _get_known_path(folder, default=False, create=False):
 
     ptr = ctypes.c_wchar_p()
     guid = GUID.from_uuid(folder)
-    result = SHGetKnownFolderPath(
-        ctypes.byref(guid), flags, None, ctypes.byref(ptr))
+    try:
+        result = SHGetKnownFolderPath(
+            ctypes.byref(guid), flags, None, ctypes.byref(ptr))
+    except WindowsError:
+        return None
     if result != S_OK:
-        return
+        return None
     path = ptr.value
     CoTaskMemFree(ptr)
     return path
