@@ -16,7 +16,7 @@ if os.name == "nt":
     from win32com.shell import shell
     import pywintypes
     import pythoncom
-    from .winapi import SHGFPType, CSIDLFlag, CSIDL, guid2bytes, \
+    from .winapi import SHGFPType, CSIDLFlag, CSIDL, GUID, \
         SHGetFolderPathW, SetEnvironmentVariableW, S_OK, \
         GetEnvironmentStringsW, FreeEnvironmentStringsW, \
         GetCommandLineW, CommandLineToArgvW, LocalFree, MAX_PATH, \
@@ -62,8 +62,9 @@ def _get_known_path(folder, default=False, create=False):
         flags |= KnownFolderFlag.CREATE
 
     ptr = ctypes.c_wchar_p()
+    guid = GUID.from_uuid(folder)
     result = SHGetKnownFolderPath(
-        guid2bytes(folder), flags, None, ctypes.byref(ptr))
+        ctypes.byref(guid), flags, None, ctypes.byref(ptr))
     if result != S_OK:
         return
     path = ptr.value

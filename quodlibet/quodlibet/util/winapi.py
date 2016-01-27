@@ -13,8 +13,29 @@ from ctypes import wintypes, cdll, windll
 from .enum import enum
 
 
+class GUID(ctypes.Structure):
+    # https://msdn.microsoft.com/en-us/library/windows/desktop/
+    #   aa373931%28v=vs.85%29.aspx
+
+    _fields_ = [
+        ("Data1", wintypes.DWORD),
+        ("Data2", wintypes.WORD),
+        ("Data3", wintypes.WORD),
+        ("Data4", wintypes.BYTE * 8),
+    ]
+
+    @classmethod
+    def from_uuid(cls, id_):
+        assert isinstance(id_, UUID)
+
+        f = id_.fields
+        data4 = (wintypes.BYTE * 8)(
+            f[3], f[4], *struct.unpack("8B", struct.pack(">Q", f[5]))[2:])
+        return cls(f[0], f[1], f[2], data4)
+
+
 LPTSTR = wintypes.LPWSTR
-REFKNOWNFOLDERID = ctypes.c_char_p
+REFKNOWNFOLDERID = ctypes.POINTER(GUID)
 
 SetEnvironmentVariableW = ctypes.windll.kernel32.SetEnvironmentVariableW
 SetEnvironmentVariableW.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p]
@@ -58,17 +79,6 @@ LocalFree.restype = wintypes.HLOCAL
 
 S_OK = wintypes.HRESULT(0).value
 MAX_PATH = wintypes.MAX_PATH
-
-
-def guid2bytes(id_):
-    assert isinstance(id_, UUID)
-
-    fields = id_.fields
-    return b"".join([
-        struct.pack("<IHH", *fields[:3]),
-        struct.pack("BB", *fields[3:5]),
-        struct.pack(">Q", fields[5])[2:],
-    ])
 
 
 @enum
