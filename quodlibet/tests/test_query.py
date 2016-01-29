@@ -130,6 +130,7 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query.is_valid("#(added > today)"))
         self.failUnless(Query.is_valid("#(length < 5:00)"))
         self.failUnless(Query.is_valid("#(filesize > 5M)"))
+        self.failUnless(Query.is_valid("#(added < 7 days ago)"))
 
         self.failIf(Query.is_valid("#(3*4)"))
         self.failIf(Query.is_valid("#(t = 3 + )"))
