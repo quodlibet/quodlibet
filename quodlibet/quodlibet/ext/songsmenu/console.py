@@ -38,6 +38,7 @@ from quodlibet import const
 from quodlibet.qltk import Icons
 from quodlibet.compat import exec_
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.util.collection import Collection
 
 
 class PyConsole(SongsMenuPlugin):
@@ -59,6 +60,8 @@ class ConsoleWindow(Gtk.Window):
 
         files = [song('~filename') for song in songs]
         song_dicts = [song._song for song in songs]
+        collection = Collection()
+        collection.songs = song_dicts
 
         self.set_size_request(700, 500)
 
@@ -68,17 +71,18 @@ class ConsoleWindow(Gtk.Window):
                 'songs': songs,
                 'files': files,
                 'sdict': song_dicts,
+                'col': collection,
                 'app': app})
         self.add(console)
 
         acces_string = _("You can access the following objects by default:")
         acces_string += "\\n".join([
                         "",
-                        "  '%s' (SongWrapper objects)",
-                        "  '%s' (Song dictionaries)",
-                        "  '%s' (Filename list)",
-                        "  '%s' (Songs Collection)",
-                        "  '%s' (Application instance)"]) % (
+                        "  %5s: SongWrapper objects",
+                        "  %5s: Song dictionaries",
+                        "  %5s: Filename list",
+                        "  %5s: Songs Collection",
+                        "  %5s: Application instance"]) % (
                            "songs", "sdict", "files", "col", "app")
 
         dir_string = _("Your current working directory is:")
