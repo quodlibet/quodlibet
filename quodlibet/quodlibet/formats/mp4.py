@@ -38,6 +38,12 @@ class MP4File(AudioFile):
         "soar": "artistsort",
         "sonm": "titlesort",
         "soco": "composersort",
+
+        "----:com.apple.iTunes:CONDUCTOR": "conductor",
+        "----:com.apple.iTunes:DISCSUBTITLE": "discsubtitle",
+        "----:com.apple.iTunes:LANGUAGE": "language",
+        "----:com.apple.iTunes:MOOD": "mood",
+
         "----:com.apple.iTunes:MusicBrainz Artist Id":
             "musicbrainz_artistid",
         "----:com.apple.iTunes:MusicBrainz Track Id": "musicbrainz_trackid",
