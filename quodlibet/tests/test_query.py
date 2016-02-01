@@ -29,6 +29,7 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query.is_valid('t = |(tag, bar)'))
         self.failUnless(Query.is_valid('t = a"tag"'))
         self.failIf(Query.is_valid('t = a, tag'))
+        self.failUnless(Query.is_valid('tag with spaces = tag'))
 
     def test_empty(self):
         self.failUnless(Query.is_valid(''))

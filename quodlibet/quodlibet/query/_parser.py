@@ -14,7 +14,7 @@ from ._diacritic import re_add_variants
 from quodlibet.util import re_escape
 
 # Precompiled regexes
-TAG = re.compile(r'[~\w]+')
+TAG = re.compile(r'[~\w\s]+')
 UNARY_OPERATOR = re.compile(r'-')
 BINARY_OPERATOR = re.compile(r'[+\-\*/]')
 RELATIONAL_OPERATOR = re.compile(r'>=|<=|==|!=|>|<|=')
@@ -185,7 +185,7 @@ class QueryParser(object):
                 expr = match.NumexprNumber(number)
         else:
             # Either tag name or special name like "today"
-            expr = match.numexprTagOrSpecial(self.expect_re(TAG))
+            expr = match.numexprTagOrSpecial(self.expect_re(TAG).strip())
         if self.accept_re(BINARY_OPERATOR):
             # Try matching a binary operator then the second argument
             binop = self.last_match
@@ -232,6 +232,7 @@ class QueryParser(object):
     def Equals(self):
         """Rule for 'tag=value' queries"""
         tags = self.match_list(lambda: self.expect_re(TAG))
+        tags = [tag.strip() for tag in tags]
         self.expect('=')
         value = self.Value()
         return match.Tag(tags, value)
