@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#                2015 Nick Boultbee
+#                2015 Nick Boultbee, 2016 Ryan Dellenbaugh
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,7 +8,7 @@
 
 from . import _match as match
 from ._match import error, Node
-from ._parser import QueryLexer, QueryParser
+from ._parser import QueryParser
 from quodlibet.util import re_escape, enum, cached_property
 
 
@@ -56,6 +56,8 @@ class Query(Node):
             etc...
         """
 
+        #TODO dumb_match_diacritics
+
         if star is None:
             star = self.STAR
 
@@ -65,14 +67,13 @@ class Query(Node):
         self.star = list(star)
         self.string = string
 
+        self.type = QueryType.VALID
         try:
-            self.type = QueryType.VALID
-            self._match = QueryParser(QueryLexer(string)).StartStarQuery(star)
+            self._match = QueryParser(string, star=star).StartQuery()
             return
         except error:
             pass
 
-        # normal string, put it in a intersection to get a value list
         if not set("#=").intersection(string):
             parts = ["/%s/" % re_escape(s) for s in string.split()]
             if dumb_match_diacritics:
@@ -82,14 +83,12 @@ class Query(Node):
 
             try:
                 self.type = QueryType.TEXT
-                self._match = QueryParser(
-                    QueryLexer(string)).StartStarQuery(star)
+                self._match = QueryParser(string, star=star).StartQuery()
                 return
             except error:
                 pass
 
-        self.type = QueryType.VALID
-        self._match = QueryParser(QueryLexer(string)).StartQuery()
+        raise error('Query is not VALID or TEXT')
 
     @classmethod
     def StrictQueryMatcher(cls, string):
@@ -97,7 +96,7 @@ class Query(Node):
            or `None` if this fails.
         """
         try:
-            return QueryParser(QueryLexer(string)).StartQuery()
+            return QueryParser(string).StartQuery()
         except error:
             return None
 

@@ -30,7 +30,7 @@ from quodlibet.compat import PY2
 
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
-               "gstreamer", "covers"]
+               "gstreamer", "covers", "query"]
 
 
 GlibTranslations().install(unicode=True)
