@@ -22,11 +22,11 @@ if os.name == "nt" or sys.platform == "darwin":
 
 import gi
 try:
-    gi.require_version("WebKit", "3.0")
+    gi.require_version("WebKit2", "4.0")
 except ValueError as e:
     raise PluginImportException("GObject Introspection: " + str(e))
 
-from gi.repository import WebKit, Gtk, GLib
+from gi.repository import WebKit2, Gtk, GLib
 
 from quodlibet import app
 from quodlibet.util import DeferredSignal, escape
@@ -137,7 +137,7 @@ class LyricWikiWindow(Window):
         sw = Gtk.ScrolledWindow()
         self.add(sw)
 
-        self._view = view = WebKit.WebView()
+        self._view = view = WebKit2.WebView()
         settings = view.get_settings()
         # for the mobile version
         settings.set_property("user-agent",
@@ -145,18 +145,18 @@ class LyricWikiWindow(Window):
              "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0"
              "Chrome/43.0.2357.65 Mobile Safari/537.36"))
 
-        def scroll_tp_lyrics(view, *args):
-            view.execute_script("""
+        def scroll_tp_lyrics(view, load_event):
+            if load_event != WebKit2.LoadEvent.COMMITTED:
+                return
+
+            view.run_javascript("""
                 document.addEventListener('DOMContentLoaded', function() {
                     var box = document.getElementsByClassName('lyricbox')[0];
                     box.scrollIntoView(true);
                 }, false);
-            """)
+            """, None, None, None)
 
-        view.connect('load-committed', scroll_tp_lyrics)
-
-        # block messages
-        view.connect("console-message", lambda *x: True)
+        view.connect('load-changed', scroll_tp_lyrics)
 
         sw.add(view)
         sw.show_all()
@@ -189,7 +189,7 @@ class LyricWikiWindow(Window):
         if details:
             html += "<center><p>%s</p><center>" % escape(details)
 
-        self._view.load_html_string(html, "http://foo.bar")
+        self._view.load_html(html, "http://foo.bar")
 
     def _callback(self, song, page):
         if page is None:
