@@ -3,12 +3,9 @@
 Packaging Guide
 ===============
 
-This page is directed at distributions, packagers and developers.
-
-Please :ref:`contact us <Contact>` if there is anything unclear / out of date /
-missing.
-
-For license & copyright information see :ref:`license`
+This page is directed at distributions, packagers and developers. Please
+:ref:`contact us <Contact>` if there is anything unclear / out of date /
+missing. For license & copyright information see :ref:`license`
 
 
 Changes
@@ -21,6 +18,7 @@ Changes
 * **GTK+ 3.10** required
 * **PyGObject 3.10** required
 * **webkitgtk-3.0** → **webkit2gtk-4.0** (Lyrics Window plugin)
+* **sphinx 1.3** required for building the documentation
 
 
 3.5
@@ -205,6 +203,7 @@ Build Dependencies
 
 * **Python** 2.7 (stdlib only)
 * **gettext** >= 0.15 and **intltool** for translations.
+* (optional) **sphinx** >= 1.3
 
 For user documentation ``setup.py build_sphinx`` can be used to create the
 HTML user guide and put it in the build directory in the ``sphinx``
