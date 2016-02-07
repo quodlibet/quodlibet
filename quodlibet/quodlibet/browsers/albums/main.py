@@ -14,7 +14,7 @@ import os
 
 from gi.repository import Gtk, Pango, Gdk, GLib, Gio
 
-from .prefs import Preferences
+from .prefs import Preferences, DEFAULT_PATTERN_TEXT
 from .models import AlbumModel, AlbumFilterModel, AlbumSortModel
 
 import quodlibet
@@ -334,6 +334,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
     __last_render_pb = None
 
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
+    _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
 
     name = _("Album List")
     accelerated_name = _("_Album List")

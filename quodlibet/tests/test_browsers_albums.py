@@ -15,7 +15,7 @@ from .helper import realized
 from quodlibet import config
 
 from quodlibet.browsers.albums import AlbumList
-from quodlibet.browsers.albums.prefs import Preferences
+from quodlibet.browsers.albums.prefs import Preferences, DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.albums.main import (compare_title, compare_artist,
     compare_genre, compare_rating, compare_date)
 from quodlibet.formats import AudioFile
@@ -213,6 +213,11 @@ class TAlbumBrowser(TestCase):
             for s in SONGS:
                 if s is not self.songs[0]:
                     self.failIf(self.bar.active_filter(s))
+
+    def test_default_display_pattern(self):
+        pattern_text = self.bar.display_pattern_text
+        self.failUnlessEqual(pattern_text, DEFAULT_PATTERN_TEXT)
+        self.failUnless("<album>" in pattern_text)
 
     def tearDown(self):
         self.bar.disconnect(self._id)

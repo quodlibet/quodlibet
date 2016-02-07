@@ -13,7 +13,8 @@ from tempfile import NamedTemporaryFile
 from quodlibet import config
 from quodlibet.browsers import Browser
 from quodlibet.browsers._base import DisplayPatternMixin
-from quodlibet.browsers.playlists.prefs import Preferences
+from quodlibet.browsers.playlists.prefs import Preferences, \
+    DEFAULT_PATTERN_TEXT
 from quodlibet.formats import AudioFile
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 from quodlibet.qltk.completion import LibraryTagCompletion
@@ -41,10 +42,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     replaygain_profiles = ["track"]
     __last_render = None
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "playlist_pattern")
-    _FOOTER = "<~tracks> (<~filesize> / <~length>)"
-    _DEFAULT_PATTERN_TEXT = ("[b]<~name>[/b]\n"
-                             "[small]<~tracks|%s|[i](%s)[/i]>[/small]"
-                             % (_FOOTER, (_("empty"))))
+    _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
 
     def pack(self, songpane):
         self._main_box.pack1(self, True, False)
