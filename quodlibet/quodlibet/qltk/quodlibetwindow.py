@@ -39,8 +39,7 @@ from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import ConfigRVPaned, Align, ScrolledWindow, Action
-from quodlibet.qltk.x import SymbolicIconImage, CellRendererPixbuf, \
-    ToggleAction, RadioAction
+from quodlibet.qltk.x import SymbolicIconImage, ToggleAction, RadioAction
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.qltk.about import AboutQuodLibet
@@ -51,7 +50,8 @@ from quodlibet.util import connect_obj
 from quodlibet.util.path import glib2fsnative, get_home_dir
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
-from quodlibet.qltk.songlistcolumns import SongListColumn
+from quodlibet.qltk.songlistcolumns import SongListColumn, \
+    SongListPixbufRenderer
 
 
 class PlayerOptions(GObject.Object):
@@ -220,7 +220,7 @@ class CurrentColumn(SongListColumn):
 
     def __init__(self):
         super(CurrentColumn, self).__init__("~current")
-        self._render = CellRendererPixbuf()
+        self._render = SongListPixbufRenderer()
         self.pack_start(self._render, True)
         self._render.set_property('xalign', 0.5)
 
@@ -249,6 +249,8 @@ class CurrentColumn(SongListColumn):
                 name = STOP
         else:
             name = None
+
+        cell.highlight = model.get_path(iter_) == model.current_path
 
         if not self._needs_update(name):
             return

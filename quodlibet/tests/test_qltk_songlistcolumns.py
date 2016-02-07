@@ -5,7 +5,7 @@ from helper import visible
 from gi.repository import Gtk
 
 from quodlibet.qltk.songlistcolumns import create_songlist_column
-from quodlibet.qltk.models import ObjectStore
+from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.formats import AudioFile
 import quodlibet.config
 
@@ -19,7 +19,7 @@ class TSongListColumns(TestCase):
 
     def _render_column(self, column, **kwargs):
         view = Gtk.TreeView()
-        model = ObjectStore()
+        model = PlaylistModel()
         view.set_model(model)
         song = AudioFile({"~filename": "/dev/null", "~#rating": 0.6666})
         song.update(kwargs)
