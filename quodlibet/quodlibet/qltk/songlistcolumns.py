@@ -45,7 +45,7 @@ def create_songlist_column(t):
         return WideTextColumn(t)
 
 
-def _highlight_current_cell(cr, background_area, flags):
+def _highlight_current_cell(cr, background_area, cell_area, flags):
     """Draws a 'highlighting' background for the cell. Look depends on
     the active theme.
     """
@@ -62,14 +62,18 @@ def _highlight_current_cell(cr, background_area, flags):
             "* { border-color: rgba(%d, %d, %d, 0.3); }" % (
                     color.red * 255, color.green * 255, color.blue * 255))
     ba = background_area
-    # draw over the left and right border so we don't see the rounded corners
+    ca = cell_area
+    # Draw over the left and right border so we don't see the rounded corners
     # and borders. Use height for the overshoot as rounded corners + border
     # should never be larger than the height..
-    draw_area = (ba.x - ba.height, ba.y,
-                 ba.width + ba.height * 2, ba.height)
+    # Ideally we would draw over the whole background but the cell area only
+    # redraws the cell_area so we get leftover artifacts if we draw
+    # above/below.
+    draw_area = (ba.x - ca.height, ca.y,
+                 ba.width + ca.height * 2, ca.height)
     cr.save()
     cr.new_path()
-    cr.rectangle(ba.x, ba.y, ba.width, ba.height)
+    cr.rectangle(ba.x, ca.y, ba.width, ca.height)
     cr.clip()
     Gtk.render_background(style_context, cr, *draw_area)
     Gtk.render_frame(style_context, cr, *draw_area)
@@ -84,7 +88,7 @@ class SongListCellAreaBox(Gtk.CellAreaBox):
     def do_render(self, context, widget, cr, background_area, cell_area,
                   flags, paint_focus):
         if self.highlight and not flags & Gtk.CellRendererState.SELECTED:
-            _highlight_current_cell(cr, background_area, flags)
+            _highlight_current_cell(cr, background_area, cell_area, flags)
         return Gtk.CellAreaBox.do_render(
             self, context, widget, cr, background_area, cell_area,
             flags, paint_focus)
