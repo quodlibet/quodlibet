@@ -28,21 +28,21 @@ be cherry-picked to the respective stable branches and vice versa.
      /|\     /|\
       |       |
       |       |
-    3.5.-1   /   <--- "quodlibet-2.5" branch
+    3.6.-1   /   <--- "quodlibet-3.5" branch
       |_____/  .
       |       /|\
       |        |
-      |      3.4.1  <--- "release-2.4.1" tag
+      |      3.4.1  <--- "release-3.4.1" tag
       |        |
       |      3.4.0.-1
       |        |
-      |      3.4  <--- "release-2.4.0" tag
+      |      3.4  <--- "release-3.4.0" tag
       |        |
-    3.4.-1    /
-      |______/   <--- "quodlibet-2.4" branch
+    3.5.-1    /
+      |______/   <--- "quodlibet-3.4" branch
       |
       |  <--- "master" branch
-    3.3.-1
+    3.4.-1
       |
      /|\
 
