@@ -42,7 +42,7 @@ from quodlibet.qltk.x import ConfigRVPaned, Align, ScrolledWindow, Action
 from quodlibet.qltk.x import SymbolicIconImage, ToggleAction, RadioAction
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem, CellRendererPixbuf
 from quodlibet.qltk import Icons
-from quodlibet.qltk.about import AboutQuodLibet
+from quodlibet.qltk.about import AboutDialog
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util.uri import URI
@@ -1056,7 +1056,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         act = Action(name="About", label=_("_About"),
                      icon_name=Icons.HELP_ABOUT)
-        connect_obj(act, 'activate', self.__show_about, player)
+        act.connect('activate', self.__show_about)
         ag.add_action_with_accel(act, None)
 
         act = Action(name="OnlineHelp", label=_("Online Help"),
@@ -1154,8 +1154,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         return ui
 
-    def __show_about(self, player):
-        about = AboutQuodLibet(self, player)
+    def __show_about(self, *args):
+        about = AboutDialog(self, app)
         about.run()
         about.destroy()
 
