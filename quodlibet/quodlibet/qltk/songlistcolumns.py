@@ -17,6 +17,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.views import TreeViewColumnButton
+from quodlibet.qltk import add_css
 from quodlibet.util.path import fsdecode, unexpand, fsnative
 from quodlibet.formats._audio import FILESYSTEM_TAGS
 
@@ -44,20 +45,22 @@ def create_songlist_column(t):
         return WideTextColumn(t)
 
 
-def _highlight_current_cell(cr, background_area, flags, _widget=[]):
+def _highlight_current_cell(cr, background_area, flags):
     """Draws a 'highlighting' background for the cell. Look depends on
     the active theme.
     """
 
     # Use drawing code/CSS for Entry (reason being that it looks best here)
-    if not _widget:
-        _widget.append(Gtk.Entry())
-    dummy_widget = _widget[0]
+    dummy_widget = Gtk.Entry()
     style_context = dummy_widget.get_style_context()
     style_context.save()
     # Make it less prominent
-    style_context.set_state(
-        Gtk.StateFlags.INSENSITIVE | Gtk.StateFlags.BACKDROP)
+    state = Gtk.StateFlags.INSENSITIVE | Gtk.StateFlags.BACKDROP
+    style_context.set_state(state)
+    color = style_context.get_border_color(state)
+    add_css(dummy_widget,
+            "* { border-color: rgba(%d, %d, %d, 0.3); }" % (
+                    color.red * 255, color.green * 255, color.blue * 255))
     ba = background_area
     # draw over the left and right border so we don't see the rounded corners
     # and borders. Use height for the overshoot as rounded corners + border
@@ -65,6 +68,7 @@ def _highlight_current_cell(cr, background_area, flags, _widget=[]):
     draw_area = (ba.x - ba.height, ba.y,
                  ba.width + ba.height * 2, ba.height)
     cr.save()
+    cr.new_path()
     cr.rectangle(ba.x, ba.y, ba.width, ba.height)
     cr.clip()
     Gtk.render_background(style_context, cr, *draw_area)
