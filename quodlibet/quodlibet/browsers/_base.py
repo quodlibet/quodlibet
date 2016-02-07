@@ -294,11 +294,13 @@ class DisplayPatternMixin(object):
     @classmethod
     def load_pattern(cls):
         """Load the pattern as defined in `_PATTERN_FN`"""
-        print_d("Loading Pattern for %s browser" % cls.__name__)
+        print_d("Loading pattern from %s" % cls._PATTERN_FN)
         try:
             with open(cls._PATTERN_FN, "r") as f:
                 cls.__pattern_text = f.read().rstrip()
-        except EnvironmentError:
+        except EnvironmentError as e:
+            print_d("Couldn't load pattern for %s (%s), using default." %
+                    (cls.__name__, e))
             cls.__pattern_text = cls._DEFAULT_PATTERN_TEXT
         cls.__refresh_pattern()
 
@@ -310,6 +312,8 @@ class DisplayPatternMixin(object):
         cls.__pattern_text = pattern_text
         cls.__refresh_pattern()
         cls.refresh_all()
+        print_d("Saving pattern for %s to %s" %
+                (cls.__name__, cls._PATTERN_FN))
         with open(cls._PATTERN_FN, "w") as f:
             f.write(pattern_text + "\n")
 
@@ -330,6 +334,7 @@ class DisplayPatternMixin(object):
 
     @classmethod
     def refresh_all(cls):
+        """Refresh the browser's items"""
         pass
 
 

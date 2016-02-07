@@ -28,8 +28,8 @@ _SOME_PEOPLE = "\n".join([util.tag("artist"), util.tag("performer"),
 
 class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
     _DEFAULT_PATTERN = """[b]<album|<album>|%s>[/b]<date| (<date>)>
-    [small]<~discs|<~discs> - ><~tracks> - <~long-length>[/small]
-    <~people>""" % EMPTY
+[small]<~discs|<~discs> - ><~tracks> - <~long-length>[/small]
+<~people>""" % EMPTY
 
     _PREVIEW_ITEM = FakeDisplayItem({
         "date": "2010-10-31",
