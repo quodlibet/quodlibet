@@ -16,13 +16,22 @@ from quodlibet import formats
 from quodlibet.util import fver
 
 
+def get_version_description():
+    version = const.VERSION_TUPLE
+    note = ""
+    if version[-1] == -1:
+        version = version[:-1]
+        note = " (development)"
+    return ".".join(map(str, version)) + note
+
+
 class AboutDialog(Gtk.AboutDialog):
 
     def __init__(self, parent, app):
         super(AboutDialog, self).__init__()
         self.set_transient_for(parent)
         self.set_program_name(app.name)
-        self.set_version(const.VERSION)
+        self.set_version(get_version_description())
         self.set_authors(const.AUTHORS)
         self.set_artists(const.ARTISTS)
         self.set_logo_icon_name(app.icon_name)
