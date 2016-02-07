@@ -1166,8 +1166,10 @@ class _TreeViewColumnLabel(Gtk.Label):
 
 
 class TreeViewColumn(Gtk.TreeViewColumn):
-    def __init__(self, title="", *args, **kwargs):
-        super(TreeViewColumn, self).__init__(None, *args, **kwargs)
+    def __init__(self, **kwargs):
+        title = kwargs.pop("title", u"")
+        # skip overrides which don't allow to set properties
+        GObject.Object.__init__(self, **kwargs)
         label = _TreeViewColumnLabel(label=title)
         label.set_padding(1, 1)
         label.show()
@@ -1205,8 +1207,8 @@ class TreeViewColumnButton(TreeViewColumn):
         'popup-menu': (GObject.SignalFlags.RUN_LAST, bool, ()),
     }
 
-    def __init__(self, title="", *args, **kw):
-        super(TreeViewColumnButton, self).__init__(title, *args, **kw)
+    def __init__(self, **kwargs):
+        super(TreeViewColumnButton, self).__init__(**kwargs)
         label = self.get_widget()
         label.__realize = label.connect('realize', self.__connect_menu_event)
 

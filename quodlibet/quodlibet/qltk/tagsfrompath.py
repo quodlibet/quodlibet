@@ -223,7 +223,8 @@ class TagsFromPath(Gtk.VBox):
             self.view.remove_column(col)
 
         render = Gtk.CellRendererText()
-        col = TreeViewColumn(_('File'), render)
+        col = TreeViewColumn(title=_('File'))
+        col.pack_start(render, True)
         col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_file(column, cell, model, iter_, data):

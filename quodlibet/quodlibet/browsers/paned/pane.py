@@ -35,7 +35,7 @@ class Pane(AllTreeView):
 
         self.__no_fill = 0
 
-        column = TreeViewColumnButton(self.config.title)
+        column = TreeViewColumnButton(title=self.config.title)
 
         def on_column_header_clicked(column, event):
             # In case the column header gets clicked select the "All" entry

@@ -246,3 +246,12 @@ class TDragScroll(TestCase):
         self.c.scroll_motion(42, 42)
         self.c.scroll_motion(999, 999)
         self.c.scroll_disable()
+
+
+class TTreeViewColumn(TestCase):
+
+    def test_main(self):
+        TreeViewColumn(title="foo")
+        area = Gtk.CellAreaBox()
+        tvc = TreeViewColumn(cell_area=area)
+        self.assertEqual(tvc.get_area(), area)

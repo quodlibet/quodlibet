@@ -17,7 +17,6 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.views import TreeViewColumnButton
-from quodlibet.qltk.x import CellRendererPixbuf
 from quodlibet.util.path import fsdecode, unexpand, fsnative
 from quodlibet.formats._audio import FILESYSTEM_TAGS
 
@@ -65,32 +64,31 @@ def _highlight_current_cell(cr, background_area, flags, _widget=[]):
     # should never be larger than the height..
     draw_area = (ba.x - ba.height, ba.y,
                  ba.width + ba.height * 2, ba.height)
+    cr.save()
+    cr.rectangle(ba.x, ba.y, ba.width, ba.height)
+    cr.clip()
     Gtk.render_background(style_context, cr, *draw_area)
     Gtk.render_frame(style_context, cr, *draw_area)
+    cr.restore()
     style_context.restore()
 
 
-class SongListRenderer(object):
+class SongListCellAreaBox(Gtk.CellAreaBox):
 
     highlight = False
 
-
-class SongListTextRenderer(Gtk.CellRendererText, SongListRenderer):
-
-    def do_render(self, cr, widget, background_area, cell_area, flags):
+    def do_render(self, context, widget, cr, background_area, cell_area,
+                  flags, paint_focus):
         if self.highlight and not flags & Gtk.CellRendererState.SELECTED:
             _highlight_current_cell(cr, background_area, flags)
-        return Gtk.CellRendererText.do_render(
-            self, cr, widget, background_area, cell_area, flags)
+        return Gtk.CellAreaBox.do_render(
+            self, context, widget, cr, background_area, cell_area,
+            flags, paint_focus)
 
-
-class SongListPixbufRenderer(CellRendererPixbuf, SongListRenderer):
-
-    def do_render(self, cr, widget, background_area, cell_area, flags):
-        if self.highlight and not flags & Gtk.CellRendererState.SELECTED:
-            _highlight_current_cell(cr, background_area, flags)
-        return CellRendererPixbuf.do_render(
-            self, cr, widget, background_area, cell_area, flags)
+    def do_apply_attributes(self, tree_model, iter_, is_expander, is_expanded):
+        self.highlight = tree_model.get_path(iter_) == tree_model.current_path
+        return Gtk.CellAreaBox.do_apply_attributes(
+            self, tree_model, iter_, is_expander, is_expanded)
 
 
 class SongListColumn(TreeViewColumnButton):
@@ -101,7 +99,8 @@ class SongListColumn(TreeViewColumnButton):
         """tag e.g. 'artist'"""
 
         title = self._format_title(tag)
-        super(SongListColumn, self).__init__(title)
+        super(SongListColumn, self).__init__(
+            title=title, cell_area=SongListCellAreaBox())
         self.set_tooltip_text(title)
         self.header_name = tag
 
@@ -133,7 +132,7 @@ class TextColumn(SongListColumn):
     def __init__(self, tag):
         super(TextColumn, self).__init__(tag)
 
-        self._render = SongListTextRenderer()
+        self._render = Gtk.CellRendererText()
         self.pack_start(self._render, True)
         self.set_cell_data_func(self._render, self._cdf)
 
@@ -156,7 +155,7 @@ class TextColumn(SongListColumn):
     def _cdf(self, column, cell, model, iter_, user_data):
         """CellRenderer cell_data_func"""
 
-        cell.highlight = (model.get_path(iter_) == model.current_path)
+        raise NotImplementedError
 
 
 class RatingColumn(TextColumn):
@@ -174,8 +173,6 @@ class RatingColumn(TextColumn):
         self.set_min_width(width)
 
     def _cdf(self, column, cell, model, iter_, user_data):
-        TextColumn._cdf(self, column, cell, model, iter_, user_data)
-
         song = model.get_value(iter_)
         rating = song.get("~#rating")
         default = config.RATINGS.default
@@ -200,8 +197,6 @@ class WideTextColumn(TextColumn):
         self.set_min_width(self._cell_width("000"))
 
     def _cdf(self, column, cell, model, iter_, user_data):
-        TextColumn._cdf(self, column, cell, model, iter_, user_data)
-
         text = model.get_value(iter_).comma(self.header_name)
         if not self._needs_update(text):
             return
@@ -212,8 +207,6 @@ class DateColumn(WideTextColumn):
     """The '~#' keys that are dates."""
 
     def _cdf(self, column, cell, model, iter_, user_data):
-        TextColumn._cdf(self, column, cell, model, iter_, user_data)
-
         stamp = model.get_value(iter_)(self.header_name)
         if not self._needs_update(stamp):
             return
@@ -242,8 +235,6 @@ class NonSynthTextColumn(WideTextColumn):
     """
 
     def _cdf(self, column, cell, model, iter_, user_data):
-        TextColumn._cdf(self, column, cell, model, iter_, user_data)
-
         value = model.get_value(iter_).get(self.header_name, "")
         if not self._needs_update(value):
             return
@@ -260,8 +251,6 @@ class FSColumn(WideTextColumn):
         self._render.set_property('ellipsize', Pango.EllipsizeMode.MIDDLE)
 
     def _cdf(self, column, cell, model, iter_, user_data):
-        TextColumn._cdf(self, column, cell, model, iter_, user_data)
-
         values = model.get_value(iter_).list(self.header_name)
         value = values[0] if values else fsnative(u"")
         if not self._needs_update(value):
@@ -283,8 +272,6 @@ class PatternColumn(WideTextColumn):
         return util.pattern(tag)
 
     def _cdf(self, column, cell, model, iter_, user_data):
-        TextColumn._cdf(self, column, cell, model, iter_, user_data)
-
         song = model.get_value(iter_)
         if not self._pattern:
             return
@@ -319,8 +306,6 @@ class NumericColumn(TextColumn):
         return self._cell_width("-22.22")
 
     def _cdf(self, column, cell, model, iter_, user_data):
-        TextColumn._cdf(self, column, cell, model, iter_, user_data)
-
         value = model.get_value(iter_).comma(self.header_name)
         if not self._needs_update(value):
             return
@@ -383,8 +368,6 @@ class LengthColumn(NumericColumn):
         return self._cell_width(util.format_time_display(60 * 82 + 22))
 
     def _cdf(self, column, cell, model, iter_, user_data):
-        TextColumn._cdf(self, column, cell, model, iter_, user_data)
-
         value = model.get_value(iter_).get("~#length", 0)
         if not self._needs_update(value):
             return
@@ -403,8 +386,6 @@ class FilesizeColumn(NumericColumn):
         return self._cell_width(util.format_size(2.22 * (1024 ** 2)))
 
     def _cdf(self, column, cell, model, iter_, user_data):
-        TextColumn._cdf(self, column, cell, model, iter_, user_data)
-
         value = model.get_value(iter_).get("~#filesize", 0)
         if not self._needs_update(value):
             return
