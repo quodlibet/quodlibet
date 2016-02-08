@@ -19,6 +19,8 @@ Changes
 * **PyGObject 3.10** required
 * **webkitgtk-3.0** → **webkit2gtk-4.0** (Lyrics Window plugin)
 * **sphinx 1.3** required for building the documentation
+* New optional plugin dependency: **libappindicator-gtk3** + **typelibs**:
+  for the Tray Icon plugin under Ubuntu Unity and KDE Plasma
 
 
 3.5
@@ -196,6 +198,9 @@ plugin from loading.
 
 **webkit2gtk** (== 4.0) + **typelibs**:
     * For the Lyrics Window plugin
+
+**libappindicator-gtk3** + **typelibs**:
+    * For the Tray Icon plugin under Ubuntu Unity and KDE Plasma
 
 
 Build Dependencies
