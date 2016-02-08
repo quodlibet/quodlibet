@@ -34,7 +34,7 @@ def xdg_get_current_desktop():
 def is_plasma():
     """If we are running under KDE/plasma"""
 
-    return "plasma" in xdg_get_session_desktop()
+    return "KDE" in xdg_get_session_desktop()
 
 
 def is_unity():
