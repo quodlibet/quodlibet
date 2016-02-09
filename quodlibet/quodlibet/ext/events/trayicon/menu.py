@@ -126,7 +126,7 @@ class IndicatorMenu(Gtk.Menu):
         quit = MenuItem(_("_Quit"), Icons.APPLICATION_EXIT)
         quit.connect('activate', lambda *x: app.quit())
 
-        if not show_item_bottom:
+        if not show_item_bottom and show_item:
             self.append(show_item)
             self.append(SeparatorMenuItem())
 
@@ -147,7 +147,7 @@ class IndicatorMenu(Gtk.Menu):
         self.append(SeparatorMenuItem())
         self.append(quit)
 
-        if show_item_bottom:
+        if show_item_bottom and show_item:
             self.append(SeparatorMenuItem())
             self.append(show_item)
 
