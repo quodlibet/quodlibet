@@ -16,7 +16,7 @@ except ValueError as e:
 from gi.repository import AppIndicator3, Gdk
 
 from quodlibet import app
-from quodlibet.util import is_plasma
+from quodlibet.util import is_kde
 from quodlibet.pattern import Pattern
 from .base import BaseIndicator
 from .util import pconfig
@@ -37,7 +37,7 @@ class AppIndicator(BaseIndicator):
 
     def __init__(self):
         # KDE doesn't support symbolic icons afaics
-        icon_name = app.icon_name if is_plasma() else app.symbolic_icon_name
+        icon_name = app.icon_name if is_kde() else app.symbolic_icon_name
         self.indicator = AppIndicator3.Indicator.new(
             get_next_app_id(), icon_name,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS)

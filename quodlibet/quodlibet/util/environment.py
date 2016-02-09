@@ -13,17 +13,11 @@ import os
 import sys
 
 
-def xdg_get_session_desktop():
-    """Returns a list of values present in XDG_SESSION_DESKTOP"""
-
-    value = os.environ.get("XDG_SESSION_DESKTOP", "")
-    if not value:
-        return []
-    return value.split(":")
-
-
 def xdg_get_current_desktop():
-    """Returns a list of values present in XDG_CURRENT_DESKTOP"""
+    """Returns a list of values present in XDG_CURRENT_DESKTOP
+
+    https://www.freedesktop.org/software/systemd/man/pam_systemd.html
+    """
 
     value = os.environ.get("XDG_CURRENT_DESKTOP", "")
     if not value:
@@ -31,10 +25,10 @@ def xdg_get_current_desktop():
     return value.split(":")
 
 
-def is_plasma():
+def is_kde():
     """If we are running under KDE/plasma"""
 
-    return "plasma" in xdg_get_session_desktop()
+    return "KDE" in xdg_get_current_desktop()
 
 
 def is_unity():
