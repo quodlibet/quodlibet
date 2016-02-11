@@ -1110,7 +1110,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             first_action = first_action or act
             if name == current:
                 act.set_active(True)
-            ag.add_action(act)
+            ag.add_action_with_accel(act, None)
         assert first_action
         self._browser_action = first_action
 
