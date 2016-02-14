@@ -89,7 +89,8 @@ class Pane(AllTreeView):
 
         selection = self.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
-        self.__sig = selection.connect('changed', self.__selection_changed)
+        self.__sig = self.connect(
+            'selection-changed', self.__selection_changed)
         s = self.connect('popup-menu', self.__popup_menu, library)
         connect_obj(self, 'destroy', self.disconnect, s)
 
@@ -202,12 +203,12 @@ class Pane(AllTreeView):
         """Inhibit selection change events and song propagation"""
 
         self.__no_fill += 1
-        self.get_selection().handler_block(self.__sig)
+        self.handler_block(self.__sig)
 
     def uninhibit(self):
         """Uninhibit selection change events and song propagation"""
 
-        self.get_selection().handler_unblock(self.__sig)
+        self.handler_unblock(self.__sig)
         self.__no_fill -= 1
 
     def fill(self, songs):

@@ -610,9 +610,51 @@ class DragScroll(object):
 
 class BaseView(Gtk.TreeView):
 
+    __gsignals__ = {
+        # like the tree selection changed signal but doesn't emit twice in case
+        # a row is activated
+        'selection-changed': (
+            GObject.SignalFlags.RUN_LAST, None, (object, )),
+    }
+
     def __init__(self, *args, **kwargs):
         super(BaseView, self).__init__(*args, **kwargs)
         self.connect("key-press-event", self.__key_pressed)
+        self._setup_selection_signal()
+
+    def _setup_selection_signal(self):
+        # Forwards selection changed events except in case row-activated
+        # just happened and the selection changed event is a result of the
+        # button release after the row-activated event.
+        # This makes the selection change only once in case of double clicking
+        # a row.
+
+        self._sel_ignore_next = False
+        self._sel_ignore_time = -1
+
+        def on_selection_changed(selection):
+            if self._sel_ignore_time != Gtk.get_current_event_time():
+                self.emit("selection-changed", selection)
+            self._sel_ignore_time = -1
+
+        id_ = self.get_selection().connect('changed', on_selection_changed)
+
+        def on_destroy(self):
+            self.get_selection().disconnect(id_)
+
+        self.connect('destroy', on_destroy)
+
+        def on_row_activated(*args):
+            self._sel_ignore_next = True
+
+        self.connect_after("row-activated", on_row_activated)
+
+        def on_button_release_event(self, event):
+            if self._sel_ignore_next:
+                self._sel_ignore_time = Gtk.get_current_event_time()
+            self._sel_ignore_next = False
+
+        self.connect("button-release-event", on_button_release_event)
 
     def __key_pressed(self, view, event):
         def get_first_selected():
