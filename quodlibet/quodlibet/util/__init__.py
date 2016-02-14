@@ -428,7 +428,8 @@ def _split_numeric_sortkey(s, limit=10,
     it can be used for human sorting. Also removes all extra whitespace."""
     result = reg(s)
     if not result or not limit:
-        return (join(s.split()),)
+        text = join(s.split())
+        return (text,) if text else tuple()
     else:
         start, end = result.span()
         return (
@@ -438,10 +439,12 @@ def _split_numeric_sortkey(s, limit=10,
 
 
 def human_sort_key(s, normalize=unicodedata.normalize):
+    if not s:
+        return ()
     if not isinstance(s, text_type):
         s = s.decode("utf-8")
     s = normalize("NFD", s.lower())
-    return s and _split_numeric_sortkey(s)
+    return _split_numeric_sortkey(s)
 
 
 def website(site):
