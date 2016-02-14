@@ -119,10 +119,7 @@ class LyricsPane(Gtk.VBox):
 
         # First, write back to the tags.
         song["lyrics"] = text.decode("utf-8")
-        try:
-            song.write()
-        except NotImplementedError:
-            pass
+        song.write()
 
         # Then, write to file.
         # TODO: write to file only if could not write to tags, otherwise delete
@@ -145,10 +142,7 @@ class LyricsPane(Gtk.VBox):
     def __delete(self, delete, song, save):
         # First, delete from the tags.
         song.remove("lyrics")
-        try:
-            song.write()
-        except NotImplementedError:
-            pass
+        song.write()
 
         # Then, delete the file.
         lyricname = song.lyric_filename
