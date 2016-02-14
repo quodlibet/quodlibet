@@ -421,7 +421,8 @@ class TPatternFormatList(_TPattern):
     def test_same2(s):
         fpat = FileFromPattern('<~filename>')
         pat = Pattern('<~filename>')
-        s.assertEquals(fpat.format_list(s.a), {fpat.format(s.a)})
+        s.assertEquals(fpat.format_list(s.a),
+                       {(fpat.format(s.a), fpat.format(s.a))})
         s.assertEquals(pat.format_list(s.a),
                        {(pat.format(s.a), pat.format(s.a))})
 
@@ -524,6 +525,9 @@ class TPatternFormatList(_TPattern):
         pat = Pattern('<genre> - <artist>')
         self.assertEqual(pat.format_list(self.a),
                          {(" - Artist", " - Artist")})
-
         pat = Pattern('')
-        self.assertEqual(pat.format_list(self.a), {""})
+        self.assertEqual(pat.format_list(self.a), {("", "")})
+
+    def test_string(s):
+        pat = Pattern('display')
+        s.assertEqual(pat.format_list(s.a), {("display", "display")})

@@ -242,36 +242,25 @@ class PatternFormatter(object):
         return value
 
     def format_list(self, song):
-        """Returns a set of formatted patterns with all tag combinations:
-        <performer>-bla returns [performer1-bla, performer2-bla]
-        if there are only display results,
-        otherwise a pair of display and sort results
+        """Formats the output of a list pattern, generating all the combinations
+        always returns pairs of display and sort values.
         The returned set will never be empty (e.g. for an empty pattern).
         """
-        vals = [u""]
+        vals = [(u"", u"")]
         for val in self.__list_func(self.SongProxy(song, self._format)):
             if not val:
                 continue
             if isinstance(val, tuple): # tuple of display,sort pair to add
-                vals = [((r[0] + val[0], r[1] + val[1]) if isinstance(r, tuple)
-                           else (r + val[0], r + val[1]))
-                         for r in vals]
+                vals = [(r[0] + val[0], r[1] + val[1]) for r in vals]
             elif isinstance(val, list): # list of strings or pairs
-                vals = [(((r[0] + part[0], r[1] + part[1])
-                             if isinstance(part, tuple)
-                             else (r[0] + part, r[1] + part))
-                           if isinstance(r, tuple)
-                           else ((r + part[0], r + part[1])
-                                  if isinstance(part, tuple)
-                                  else r + part))
-                         for part in val for r in vals]
+                vals = [((r[0] + part[0], r[1] + part[1])
+                         if isinstance(part, tuple)
+                         else (r[0] + part, r[1] + part))
+                        for part in val for r in vals]
             else: # just a display string to concatenate
-                vals = [((r[0] + val, r[1] + val) if isinstance(r, tuple)
-                           else r + val)
-                         for r in vals]
+                vals = [((r[0] + val, r[1] + val)) for r in vals]
         if self._post:
-            vals = (self._post(v[0] if isinstance(v, tuple) else v, song)
-                    for v in vals)
+            vals = ((self._post(v[0], song), v[1]) for v in vals)
         return set(vals)
 
     __mod__ = format
