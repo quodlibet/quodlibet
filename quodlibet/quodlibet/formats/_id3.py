@@ -167,6 +167,9 @@ class ID3File(AudioFile):
             elif frame.FrameID == "TLAN":
                 self["language"] = "\n".join(frame.text)
                 continue
+            elif (frame.FrameID == "USLT" and frame.desc == "" and
+                  frame.lang == "\x00\x00\x00"):
+                name = "lyrics"
             else:
                 name = self.IDS.get(frame.FrameID, "").lower()
 
@@ -180,6 +183,9 @@ class ID3File(AudioFile):
                 text = "\n".join(map(unicode, frame.text))
             elif id3id == "COMM":
                 text = "\n".join(frame.text)
+            elif id3id == "USLT":
+                # lyrics are single string, not list
+                text = frame.text
             elif id3id.startswith("W"):
                 text = frame.url
                 frame.encoding = 0
@@ -303,7 +309,7 @@ class ID3File(AudioFile):
             else:
                 tag.add(Kind(encoding=enc, text=text))
 
-        dontwrite = ["genre", "comment", "musicbrainz_trackid"] \
+        dontwrite = ["genre", "comment", "musicbrainz_trackid", "lyrics"] \
             + RG_KEYS + self.TXXX_MAP.values()
 
         if "musicbrainz_trackid" in self.realkeys():
@@ -356,6 +362,13 @@ class ID3File(AudioFile):
             t = self["comment"].split("\n")
             tag.add(mutagen.id3.COMM(encoding=enc, text=t, desc=u"",
                                      lang="\x00\x00\x00"))
+
+        tag.delall("USLT::\x00\x00\x00")
+        if "lyrics" in self:
+            enc = encoding_for(self["lyrics"])
+            # lyrics are single string, not array
+            tag.add(mutagen.id3.USLT(encoding=enc, text=self["lyrics"],
+                                     desc=u"", lang="\x00\x00\x00"))
 
         # Delete old foobar replaygain ..
         for frame in tag.getall("TXXX"):
