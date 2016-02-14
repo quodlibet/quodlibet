@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from tests import TestCase
-from helper import realized
+from .helper import realized
 
 from gi.repository import Gtk
 
@@ -36,7 +36,6 @@ SONGS = [
     AudioFile({
         "title": "xxx", "~filename": fsnative(u"/bin/bar"), "foo": "bar"}),
 ]
-SONGS.sort()
 
 UNKNOWN_ARTIST = AudioFile(dict(SONGS[0]))
 del UNKNOWN_ARTIST["artist"]

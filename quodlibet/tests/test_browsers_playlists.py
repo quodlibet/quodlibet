@@ -3,7 +3,7 @@ from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.playlists.util import *
 from quodlibet.util.collection import FileBackedPlaylist
 from tests import TestCase, DATA_DIR, mkstemp, mkdtemp, _TEMP_DIR
-from helper import dummy_path
+from .helper import dummy_path
 
 import os
 import shutil

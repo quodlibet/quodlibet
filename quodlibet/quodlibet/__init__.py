@@ -525,7 +525,7 @@ def init_cli(no_translations=False):
     _cli_initialized = True
 
 
-def init(**kwargs):
+def init(no_translations=False, no_excepthook=False):
     """This needs to be called before any API can be used.
     Might raise in case of an error.
 
@@ -537,9 +537,9 @@ def init(**kwargs):
     if _initialized:
         return
 
-    init_cli(**kwargs)
+    init_cli(no_translations=no_translations)
     _init_gtk()
-    _init_gtk_debug()
+    _init_gtk_debug(no_excepthook=no_excepthook)
     _init_gst()
     _init_dbus()
 
@@ -622,7 +622,7 @@ def finish_first_session(app_name):
     config.set("memory", "%s_last_active_version" % app_name, const.VERSION)
 
 
-def _init_gtk_debug():
+def _init_gtk_debug(no_excepthook):
     from gi.repository import GLib
     from quodlibet.qltk.debugwindow import ExceptionDialog
 
@@ -631,7 +631,8 @@ def _init_gtk_debug():
     def _override_exceptions():
         print_d("Enabling custom exception handler.")
         sys.excepthook = ExceptionDialog.excepthook
-    GLib.idle_add(_override_exceptions)
+    if not no_excepthook:
+        GLib.idle_add(_override_exceptions)
 
     # faulthandler gives a python stacktrace on segfaults..
     try:

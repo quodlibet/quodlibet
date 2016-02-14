@@ -4,6 +4,7 @@ import os
 import quodlibet
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.plugins import list_plugins, Plugin, PluginImportException
+from quodlibet.compat import PY3, iteritems
 
 from tests import AbstractTestCase, init_fake_app, destroy_fake_app
 
@@ -25,7 +26,9 @@ for entry in os.listdir(root):
 PLUGIN_DIRS.append(os.path.join(os.path.dirname(__file__), "test_plugins"))
 
 ms = ModuleScanner(PLUGIN_DIRS)
-ms.rescan()
+
+if not PY3:
+    ms.rescan()
 
 # make sure plugins only raise expected errors
 for name, err in ms.failures.items():
@@ -36,7 +39,7 @@ for name, err in ms.failures.items():
 
 plugins = {}
 modules = {}
-for name, module in ms.modules.iteritems():
+for name, module in iteritems(ms.modules):
     for plugin in list_plugins(module.module):
         plugins[plugin.PLUGIN_ID] = Plugin(plugin)
         modules[plugin.PLUGIN_ID] = module.module

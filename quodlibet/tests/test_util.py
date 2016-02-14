@@ -212,6 +212,9 @@ class Thuman_sort(TestCase):
     def smaller(self, x, y):
         return util.human_sort_key(x) < util.human_sort_key(y)
 
+    def equal(self, x, y):
+        return util.human_sort_key(x) == util.human_sort_key(y)
+
     def test_human(self):
         self.failUnlessEqual(self.smaller(u"2", u"15"), True)
         self.failUnlessEqual(self.smaller(u" 2", u"15 "), True)
@@ -222,6 +225,12 @@ class Thuman_sort(TestCase):
         self.failUnlessEqual(self.smaller(u"42\xf6", u"42p"), True)
 
         self.failUnlessEqual(self.smaller(u"bbb", u"zzz3"), True)
+
+        self.assertTrue(self.equal(" foo", "foo"))
+        self.assertTrue(self.equal(" ", ""))
+        self.assertTrue(self.smaller("", "."))
+        self.assertTrue(self.smaller("a", "b"))
+        self.assertTrue(self.smaller("A", "b"))
 
     def test_false(self):
         # album browser needs that to sort albums without artist/title

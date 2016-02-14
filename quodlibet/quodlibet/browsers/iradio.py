@@ -8,8 +8,6 @@
 import os
 import sys
 import bz2
-import urllib2
-import urllib
 import itertools
 
 from gi.repository import Gtk, GLib, Pango
@@ -24,7 +22,7 @@ from quodlibet.formats.remote import RemoteFile
 from quodlibet.formats._audio import TAG_TO_SORT, MIGRATE, AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.query import Query
-from quodlibet.compat import reduce
+from quodlibet.compat import reduce, urlopen
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.notif import Task
@@ -206,7 +204,7 @@ def add_station(uri):
 
     if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):
         try:
-            sock = urllib.urlopen(uri)
+            sock = urlopen(uri)
         except EnvironmentError as e:
             encoding = util.get_locale_encoding()
             try:
@@ -242,8 +240,8 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
             task.copool(cofuncid)
 
         try:
-            response = urllib2.urlopen(STATION_LIST_URL)
-        except urllib2.URLError:
+            response = urlopen(STATION_LIST_URL)
+        except EnvironmentError:
             GLib.idle_add(callback, None)
             return
 

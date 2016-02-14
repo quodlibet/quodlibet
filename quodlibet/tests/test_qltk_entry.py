@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from tests import TestCase
-from helper import visible
+from .helper import visible
 
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, Entry, \
     QueryValidator

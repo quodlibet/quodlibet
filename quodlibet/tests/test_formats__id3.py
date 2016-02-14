@@ -4,12 +4,12 @@ from tests import TestCase, DATA_DIR, mkstemp
 
 import os
 import shutil
-import StringIO
 
 from quodlibet import config, const
 from quodlibet.formats._image import EmbeddedImage
 from quodlibet.formats.mp3 import MP3File
 from quodlibet.formats._id3 import ID3hack
+from quodlibet.compat import cBytesIO
 
 import mutagen
 
@@ -76,7 +76,7 @@ class TID3Images(TestCase):
         self.assertFalse(song.has_images)
 
     def test_set_image(self):
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = MP3File(self.filename)
@@ -92,7 +92,7 @@ class TID3Images(TestCase):
         f = mutagen.File(self.filename)
         f.delete()
         song = MP3File(self.filename)
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         song.set_image(image)
 

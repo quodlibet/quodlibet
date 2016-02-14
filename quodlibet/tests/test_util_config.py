@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from tests import TestCase, mkstemp
-from helper import temp_filename
+from .helper import temp_filename
 
 from quodlibet.util.config import Config, Error, ConfigProxy
 

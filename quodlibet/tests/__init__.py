@@ -241,7 +241,7 @@ def init_test_environ():
             del(sys.modules[key])
 
     import quodlibet
-    quodlibet.init(no_translations=True)
+    quodlibet.init(no_translations=True, no_excepthook=True)
 
 
 def exit_test_environ():

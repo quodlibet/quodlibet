@@ -7,7 +7,6 @@
 
 import os
 import shutil
-import StringIO
 
 import mutagen
 from mutagen import asf
@@ -15,6 +14,7 @@ from mutagen import asf
 from tests import TestCase, DATA_DIR, mkstemp
 from quodlibet.formats.wma import WMAFile, unpack_image, pack_image
 from quodlibet.formats._image import APICType, EmbeddedImage
+from quodlibet.compat import cBytesIO
 
 
 class TWMAFile(TestCase):
@@ -172,7 +172,7 @@ class TWMAFile(TestCase):
         self.song.clear_images()
 
     def test_set_image(self):
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.assertFalse(self.song.has_images)
         self.song.set_image(image)

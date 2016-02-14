@@ -81,37 +81,37 @@ def _get_known_path(folder, default=False, create=False):
 
 
 def get_personal_dir(**kwargs):
-    """e.g. 'C:\Users\<user>\Documents'"""
+    r"""e.g. 'C:\Users\<user>\Documents'"""
 
     return _get_path(CSIDL.PERSONAL, **kwargs)
 
 
 def get_appdate_dir(**kwargs):
-    """e.g. 'C:\Users\<user>\AppDate\Roaming'"""
+    r"""e.g. 'C:\Users\<user>\AppDate\Roaming'"""
 
     return _get_path(CSIDL.APPDATA, **kwargs)
 
 
 def get_desktop_dir(**kwargs):
-    """e.g. 'C:\Users\<user>\Desktop'"""
+    r"""e.g. 'C:\Users\<user>\Desktop'"""
 
     return _get_path(CSIDL.DESKTOP, **kwargs)
 
 
 def get_music_dir(**kwargs):
-    """e.g. 'C:\Users\<user>\Music'"""
+    r"""e.g. 'C:\Users\<user>\Music'"""
 
     return _get_path(CSIDL.MYMUSIC, **kwargs)
 
 
 def get_profile_dir(**kwargs):
-    """e.g. 'C:\Users\<user>'"""
+    r"""e.g. 'C:\Users\<user>'"""
 
     return _get_path(CSIDL.PROFILE, **kwargs)
 
 
 def get_links_dir(**kwargs):
-    """e.g. 'C:\Users\<user>\Links'"""
+    r"""e.g. 'C:\Users\<user>\Links'"""
 
     return _get_known_path(FOLDERID.LINKS, **kwargs)
 

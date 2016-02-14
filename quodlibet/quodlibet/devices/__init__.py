@@ -48,7 +48,7 @@ def init_devices():
         except AttributeError:
             print_w("%r doesn't contain any devices." % mod.__name__)
 
-    devices.sort()
+    devices.sort(key=lambda d: repr(d))
 
 
 if not util.is_osx() and not util.is_windows():

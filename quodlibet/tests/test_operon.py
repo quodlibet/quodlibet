@@ -10,7 +10,7 @@ import sys
 import shutil
 
 from tests import TestCase, DATA_DIR, mkstemp
-from helper import capture_output
+from .helper import capture_output
 
 from quodlibet import config
 from quodlibet import util

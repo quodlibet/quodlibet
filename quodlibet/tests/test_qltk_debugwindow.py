@@ -8,7 +8,7 @@
 import sys
 
 from tests import TestCase
-from helper import capture_output
+from .helper import capture_output
 
 from quodlibet.qltk.debugwindow import ExceptionDialog, MinExceptionDialog
 

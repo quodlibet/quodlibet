@@ -9,6 +9,7 @@
 import time
 import operator
 
+from quodlibet.compat import floordiv
 from quodlibet.util.path import fsdecode
 from quodlibet.util import parse_date
 from quodlibet.plugins.query import QUERY_HANDLER
@@ -290,14 +291,14 @@ class NumexprBinary(Numexpr):
         '-': operator.sub,
         '+': operator.add,
         '*': operator.mul,
-        '/': operator.div,
+        '/': floordiv,
     }
 
     precedence = {
         operator.sub: 1,
         operator.add: 1,
         operator.mul: 2,
-        operator.div: 2,
+        floordiv: 2,
     }
 
     def __init__(self, op, expr, expr2):

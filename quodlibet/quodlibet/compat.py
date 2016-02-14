@@ -18,6 +18,8 @@ if PY2:
     urlparse, urlunparse
     from urllib import pathname2url, url2pathname, quote_plus, unquote_plus
     pathname2url, url2pathname, quote_plus, unquote_plus
+    from urllib2 import urlopen
+    urlopen
     from cStringIO import StringIO as cBytesIO
     cBytesIO
     from StringIO import StringIO
@@ -26,6 +28,7 @@ if PY2:
     pickle
     from functools import reduce
     reduce
+    from operator import div as floordiv
 
     xrange = xrange
     long = long
@@ -33,6 +36,7 @@ if PY2:
     text_type = unicode
     string_types = (str, unicode)
     integer_types = (int, long)
+    number_types = (int, long, float)
 
     iteritems = lambda d: d.iteritems()
     itervalues = lambda d: d.itervalues()
@@ -56,6 +60,8 @@ elif PY3:
     urlparse, quote_plus, unquote_plus, urlunparse
     from urllib.request import pathname2url, url2pathname
     pathname2url, url2pathname
+    from urllib.request import urlopen
+    urlopen
     from io import BytesIO as cBytesIO
     cBytesIO
     from io import StringIO
@@ -64,6 +70,8 @@ elif PY3:
     pickle
     from functools import reduce
     reduce
+    from operator import floordiv
+    floordiv
 
     xrange = range
     long = int
@@ -71,6 +79,7 @@ elif PY3:
     text_type = str
     string_types = (str,)
     integer_types = (int,)
+    number_types = (int, float)
 
     iteritems = lambda d: iter(d.items())
     itervalues = lambda d: iter(d.values())

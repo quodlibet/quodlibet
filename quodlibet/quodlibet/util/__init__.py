@@ -428,7 +428,8 @@ def _split_numeric_sortkey(s, limit=10,
     it can be used for human sorting. Also removes all extra whitespace."""
     result = reg(s)
     if not result or not limit:
-        return (join(s.split()),)
+        text = join(s.split())
+        return (text,) if text else tuple()
     else:
         start, end = result.span()
         return (
@@ -438,10 +439,12 @@ def _split_numeric_sortkey(s, limit=10,
 
 
 def human_sort_key(s, normalize=unicodedata.normalize):
+    if not s:
+        return ()
     if not isinstance(s, text_type):
         s = s.decode("utf-8")
     s = normalize("NFD", s.lower())
-    return s and _split_numeric_sortkey(s)
+    return _split_numeric_sortkey(s)
 
 
 def website(site):
@@ -906,15 +909,16 @@ def gi_require_versions(name, versions):
 
     import gi
 
+    error = None
     for version in versions:
         try:
             gi.require_version(name, version)
         except ValueError as e:
-            pass
+            error = e
         else:
             return version
     else:
-        raise e
+        raise error
 
 
 def load_library(names, shared=True):

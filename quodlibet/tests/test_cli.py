@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from helper import capture_output
+from .helper import capture_output
 from quodlibet import cli
 from tests import TestCase
 

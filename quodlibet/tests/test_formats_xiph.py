@@ -6,12 +6,11 @@ import os
 import sys
 import shutil
 import base64
-import StringIO
 
 from quodlibet import config, const, formats
 from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
 from quodlibet.formats._image import EmbeddedImage, APICType
-from quodlibet.compat import long
+from quodlibet.compat import long, cBytesIO
 
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
@@ -467,7 +466,7 @@ class TVCCoverMixin(object):
         song["coverartmime"] = "image/jpeg"
         song.save()
 
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = self.QLType(self.filename)
@@ -566,7 +565,7 @@ class TFlacPicture(TestCase):
         self.assertFalse(song.get_primary_image())
 
     def test_set_image(self):
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = FLACFile(self.filename)
