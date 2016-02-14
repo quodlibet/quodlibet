@@ -25,7 +25,7 @@ from quodlibet.util.uri import URI
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
-from quodlibet.compat import iteritems, string_types, text_type
+from quodlibet.compat import iteritems, string_types, text_type, number_types
 
 from ._image import ImageContainer
 
@@ -157,11 +157,11 @@ class AudioFile(dict, ImageContainer):
             return
 
         if key.startswith("~#"):
-            assert isinstance(value, (int, long, float))
+            assert isinstance(value, number_types)
         elif key in FILESYSTEM_TAGS:
             assert is_fsnative(value)
         else:
-            value = unicode(value)
+            value = text_type(value)
 
         dict.__setitem__(self, key, value)
 

@@ -36,6 +36,7 @@ if PY2:
     text_type = unicode
     string_types = (str, unicode)
     integer_types = (int, long)
+    number_types = (int, long, float)
 
     iteritems = lambda d: d.iteritems()
     itervalues = lambda d: d.itervalues()
@@ -78,6 +79,7 @@ elif PY3:
     text_type = str
     string_types = (str,)
     integer_types = (int,)
+    number_types = (int, float)
 
     iteritems = lambda d: iter(d.items())
     itervalues = lambda d: iter(d.values())
