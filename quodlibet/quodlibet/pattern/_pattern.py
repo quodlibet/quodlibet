@@ -260,7 +260,8 @@ class PatternFormatter(object):
             else: # just a display string to concatenate
                 vals = [((r[0] + val, r[1] + val)) for r in vals]
         if self._post:
-            vals = ((self._post(v[0], song), v[1]) for v in vals)
+            vals = ((self._post(v[0], song), self._post(v[1], song))
+                    for v in vals)
         return set(vals)
 
     __mod__ = format
