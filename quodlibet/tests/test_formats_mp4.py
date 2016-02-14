@@ -7,9 +7,9 @@
 
 import os
 import shutil
-import StringIO
 import mutagen
 
+from quodlibet.compat import cBytesIO
 from tests import TestCase, DATA_DIR, mkstemp
 from quodlibet.formats.mp4 import MP4File
 from quodlibet.formats._image import EmbeddedImage
@@ -112,7 +112,7 @@ class TMP4File(TestCase):
 
     def test_set_image(self):
         self.assertTrue(self.song.has_images)
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.song.set_image(image)
         image = self.song.get_primary_image()

@@ -16,7 +16,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, INTERN_NUM_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
-from quodlibet.compat import xrange
+from quodlibet.compat import xrange, text_type
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.path import bytes2fsnative, is_fsnative, fsnative2bytes
@@ -394,7 +394,7 @@ class Playlist(Collection, Iterable):
         super(Playlist, self).__init__()
         self.__instances.append(self)
 
-        if isinstance(name, unicode) and os.name != "nt":
+        if isinstance(name, text_type) and os.name != "nt":
             name = name.encode('utf-8')
 
         if not name:
@@ -570,7 +570,7 @@ class FileBackedPlaylist(Playlist):
 
     def _validated_name(self, new_name):
         new_name = super(FileBackedPlaylist, self)._validated_name(new_name)
-        if isinstance(new_name, unicode):
+        if isinstance(new_name, text_type):
             new_name = new_name.encode('utf-8')
         if os.path.exists(os.path.join(self.dir, self.quote(new_name))):
             raise ValueError(

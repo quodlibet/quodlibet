@@ -8,12 +8,12 @@
 # published by the Free Software Foundation
 
 import os
-from cStringIO import StringIO
 
 from quodlibet.util.string import split_escape
 
 from quodlibet import browsers
 
+from quodlibet.compat import cBytesIO as StringIO
 from quodlibet import util
 from quodlibet.util.uri import URI
 from quodlibet.util.path import fsnative

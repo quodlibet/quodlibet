@@ -8,7 +8,7 @@ from quodlibet.util import connect_obj
 from quodlibet.formats import AudioFile
 
 from tests import TestCase, DATA_DIR, mkstemp
-from helper import capture_output
+from .helper import capture_output
 
 from quodlibet.library.libraries import *
 

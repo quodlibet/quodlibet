@@ -2,7 +2,7 @@
 import os
 from quodlibet.config import RatingsPrefs
 from tests import TestCase, mkstemp
-from helper import capture_output
+from .helper import capture_output
 
 from quodlibet import config
 

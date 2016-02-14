@@ -12,7 +12,7 @@ from gi.repository import Gtk
 from quodlibet.browsers._base import FakeDisplayItem as FDI, \
     DisplayPatternMixin, FakeDisplayItem
 from tests import TestCase, init_fake_app, destroy_fake_app, mkstemp
-from helper import realized, dummy_path
+from .helper import realized, dummy_path
 
 from quodlibet import browsers
 from quodlibet.formats import AudioFile

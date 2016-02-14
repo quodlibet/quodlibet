@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from quodlibet.formats import AudioFile
 from tests import TestCase, init_fake_app, destroy_fake_app
-from helper import capture_output
+from .helper import capture_output
 
 from gi.repository import Gtk
 

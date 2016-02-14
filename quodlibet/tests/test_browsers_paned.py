@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from tests import TestCase
-from helper import realized
+from .helper import realized
 
 from gi.repository import Gtk
 

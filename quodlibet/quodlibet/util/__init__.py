@@ -906,15 +906,16 @@ def gi_require_versions(name, versions):
 
     import gi
 
+    error = None
     for version in versions:
         try:
             gi.require_version(name, version)
         except ValueError as e:
-            pass
+            error = e
         else:
             return version
     else:
-        raise e
+        raise error
 
 
 def load_library(names, shared=True):

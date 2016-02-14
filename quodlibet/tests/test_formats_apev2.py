@@ -3,12 +3,12 @@ from tests import DATA_DIR, mkstemp, TestCase
 
 import os
 import shutil
-import StringIO
 
 import mutagen
 
 from mutagen.apev2 import BINARY, APEValue
 
+from quodlibet.compat import cBytesIO
 from quodlibet.formats.monkeysaudio import MonkeysAudioFile
 from quodlibet.formats.mpc import MPCFile
 from quodlibet.formats.wavpack import WavpackFile
@@ -187,7 +187,7 @@ class TWvCoverArt(TestCase):
         self.s.clear_images()
 
     def test_set_image(self):
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.s.set_image(image)
         self.assertTrue(self.s.has_images)
@@ -200,7 +200,7 @@ class TWvCoverArt(TestCase):
     def test_set_image_no_tag(self):
         m = mutagen.apev2.APEv2(self.f)
         m.delete()
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.s.set_image(image)
         images = self.s.get_images()
