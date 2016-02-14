@@ -70,10 +70,11 @@ class SongInfoSelection(GObject.Object):
         self.__songlist = songlist
         self.__selection = sel = songlist.get_selection()
         self.__count = sel.count_selected_rows()
-        self.__sel_id = sel.connect('changed', self.__selection_changed_cb)
+        self.__sel_id = songlist.connect(
+            'selection-changed', self.__selection_changed_cb)
 
     def destroy(self):
-        self.__selection.disconnect(self.__sel_id)
+        self.__songlist.disconnect(self.__sel_id)
         if self.__idle:
             GLib.source_remove(self.__idle)
 
@@ -98,7 +99,7 @@ class SongInfoSelection(GObject.Object):
         self.__idle = GLib.idle_add(
             self.__idle_emit, songs, priority=GLib.PRIORITY_LOW)
 
-    def __selection_changed_cb(self, selection):
+    def __selection_changed_cb(self, songlist, selection):
         count = selection.count_selected_rows()
         if self.__count == count == 0:
             return

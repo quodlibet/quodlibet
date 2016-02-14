@@ -14,16 +14,18 @@ from quodlibet import qltk
 from quodlibet.browsers._base import EditDisplayPatternMixin, FakeDisplayItem
 from quodlibet.qltk import Button, Icons
 
+_FOOTER = "<~tracks> (<~filesize> / <~length>)"
+DEFAULT_PATTERN_TEXT = ("[b]<~name>[/b]\n"
+                        "[small]<~tracks|%s|[i](%s)[/i]>[/small]"
+                        % (_FOOTER, (_("empty"))))
+
 
 class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
     _A_SIZE = 127 * 1024 * 1024
     _SOME_PEOPLE = "\n".join(
             tag(t) for t in ["artist", "performer", "composer", "arranger"])
 
-    _DEFAULT_PATTERN = \
-        ("[b]<~name>[/b]\n"
-         "<~tracks|<~tracks> / <~length> / <~filesize>|[i](%s)[/i]>"
-         % _("empty"))
+    _DEFAULT_PATTERN = DEFAULT_PATTERN_TEXT
 
     _PREVIEW_ITEM = FakeDisplayItem({
         "date": "2015-11-31",

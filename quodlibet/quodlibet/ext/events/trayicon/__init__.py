@@ -11,7 +11,7 @@ from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import is_wayland
 from quodlibet.qltk.window import Window
-from quodlibet.util import is_unity, is_osx, is_plasma
+from quodlibet.util import is_unity, is_osx, is_kde, print_exc
 
 from .prefs import Preferences
 from .util import pconfig
@@ -21,15 +21,21 @@ from .systemtray import SystemTray
 def get_indicator_impl():
     """Returns a BaseIndicator implementation depending on the environ"""
 
-    try:
-        from .appindicator import AppIndicator
-    except ImportError:
-        # no indicator, fall back
-        return SystemTray
+    use_app_indicator = (is_unity() or is_wayland() or is_kde())
 
-    if is_unity() or is_wayland() or is_plasma():
-        return AppIndicator
-    return SystemTray
+    print_d("use app indicator: %s" % use_app_indicator)
+    if not use_app_indicator:
+        return SystemTray
+    else:
+        try:
+            from .appindicator import AppIndicator
+        except ImportError:
+            print_w("importing app indicator failed")
+            print_exc()
+            # no indicator, fall back
+            return SystemTray
+        else:
+            return AppIndicator
 
 
 class TrayIconPlugin(EventPlugin):

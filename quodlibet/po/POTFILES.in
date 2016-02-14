@@ -82,6 +82,9 @@ quodlibet/ext/playorder/follow.py
 quodlibet/ext/playorder/queue.py
 quodlibet/ext/playorder/reverse.py
 quodlibet/ext/playorder/track_repeat.py
+quodlibet/ext/query/conditional.py
+quodlibet/ext/query/pythonexpression.py
+quodlibet/ext/query/savedsearch.py
 quodlibet/ext/_shared/squeezebox/base.py
 quodlibet/ext/_shared/squeezebox/server.py
 quodlibet/ext/_shared/squeezebox/util.py

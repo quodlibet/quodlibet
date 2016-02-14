@@ -44,6 +44,19 @@ class TBaseView(TestCase):
         self.m = Gtk.ListStore(str)
         self.c = BaseView(model=self.m)
 
+    def test_selection_changed(self):
+        events = []
+
+        def on_selection_changed(*args):
+            events.append(args)
+
+        self.c.connect("selection-changed", on_selection_changed)
+
+        self.m.append(row=["foo"])
+        self.c.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
+        self.c.get_selection().select_all()
+        self.assertTrue(events)
+
     def test_remove(self):
         self.m.append(row=["foo"])
         self.c.remove_iters([self.m[0].iter])
@@ -246,3 +259,12 @@ class TDragScroll(TestCase):
         self.c.scroll_motion(42, 42)
         self.c.scroll_motion(999, 999)
         self.c.scroll_disable()
+
+
+class TTreeViewColumn(TestCase):
+
+    def test_main(self):
+        TreeViewColumn(title="foo")
+        area = Gtk.CellAreaBox()
+        tvc = TreeViewColumn(cell_area=area)
+        self.assertEqual(tvc.get_area(), area)

@@ -38,12 +38,11 @@ class LyricsPane(Gtk.VBox):
         view.set_wrap_mode(Gtk.WrapMode.WORD)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        lyricname = song.lyric_filename
         buffer = view.get_buffer()
 
         refresh.connect('clicked', self.__refresh, add, buffer, song)
-        save.connect('clicked', self.__save, lyricname, buffer, delete)
-        delete.connect('clicked', self.__delete, lyricname, save)
+        save.connect('clicked', self.__save, song, buffer, delete)
+        delete.connect('clicked', self.__delete, song, save)
         add.connect('clicked', self.__add, song)
 
         sw.set_shadow_type(Gtk.ShadowType.IN)
@@ -59,9 +58,10 @@ class LyricsPane(Gtk.VBox):
         save.set_sensitive(False)
         add.set_sensitive(True)
 
-        if os.path.exists(lyricname):
-            with open(lyricname) as h:
-                buffer.set_text(h.read())
+        lyrics = song("~lyrics")
+
+        if lyrics:
+            buffer.set_text(lyrics)
         else:
             #buffer.set_text(_("No lyrics found.\n\nYou can click the "
             #                  "Download button to have Quod Libet search "
@@ -113,23 +113,39 @@ class LyricsPane(Gtk.VBox):
             GLib.idle_add(buffer.set_text, text)
             GLib.idle_add(refresh.set_sensitive, True)
 
-    def __save(self, save, lyricname, buffer, delete):
+    def __save(self, save, song, buffer, delete):
+        start, end = buffer.get_bounds()
+        text = buffer.get_text(start, end, True)
+
+        # First, write back to the tags.
+        song["lyrics"] = text.decode("utf-8")
+        song.write()
+
+        # Then, write to file.
+        # TODO: write to file only if could not write to tags, otherwise delete
+        # the file.
+        lyricname = song.lyric_filename
         try:
             os.makedirs(os.path.dirname(lyricname))
         except EnvironmentError as err:
             pass
 
-        start, end = buffer.get_bounds()
         try:
             with open(lyricname, "w") as f:
-                f.write(buffer.get_text(start, end, True))
+                f.write(text)
         except EnvironmentError as err:
             encoding = util.get_locale_encoding()
             print_w(err.strerror.decode(encoding, "replace"))
         delete.set_sensitive(True)
         save.set_sensitive(False)
 
-    def __delete(self, delete, lyricname, save):
+    def __delete(self, delete, song, save):
+        # First, delete from the tags.
+        song.remove("lyrics")
+        song.write()
+
+        # Then, delete the file.
+        lyricname = song.lyric_filename
         try:
             os.unlink(lyricname)
         except EnvironmentError:

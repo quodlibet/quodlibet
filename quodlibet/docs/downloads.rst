@@ -134,7 +134,7 @@ Stable:
 
 
 Unstable:
-    See `quodlibet-hg <https://aur.archlinux.org/packages/quodlibet-hg>`__ in
+    See `quodlibet-git <https://aur4.archlinux.org/packages/quodlibet-git/>`__ in
     the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
 
 

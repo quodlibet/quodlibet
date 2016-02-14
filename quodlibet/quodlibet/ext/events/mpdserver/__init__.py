@@ -17,6 +17,7 @@ import threading
 
 from gi.repository import Gtk, GLib
 
+from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import app
 from quodlibet import qltk
@@ -58,7 +59,7 @@ def set_port_num(value):
     return config.set("plugins", "mpdserver_port", str(value))
 
 
-class MPDServerPlugin(EventPlugin):
+class MPDServerPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "mpd_server"
     PLUGIN_NAME = _("MPD Server")
     PLUGIN_DESC = _("Allows remote control of Quod Libet using an MPD Client. "
@@ -66,10 +67,12 @@ class MPDServerPlugin(EventPlugin):
                     "are not supported.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
+    CONFIG_SECTION = "mpdserver"
+
     _server = None
 
     def PluginPreferences(self, parent):
-        table = Gtk.Table(n_rows=2, n_columns=3)
+        table = Gtk.Table(n_rows=3, n_columns=3)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
@@ -122,6 +125,18 @@ class MPDServerPlugin(EventPlugin):
                      xoptions=Gtk.AttachOptions.FILL |
                      Gtk.AttachOptions.SHRINK)
 
+        label = Gtk.Label(label=_("P_assword:"), use_underline=True)
+        label.set_alignment(0.0, 0.5)
+        table.attach(label, 0, 1, 2, 3,
+                     xoptions=Gtk.AttachOptions.FILL |
+                     Gtk.AttachOptions.SHRINK)
+
+        entry = UndoEntry()
+        entry.set_text(self.config_get("password"))
+        entry.connect('changed', self.config_entry_changed, "password")
+
+        table.attach(entry, 1, 3, 2, 3)
+
         entry = UndoEntry()
         entry.set_text("...")
         entry.set_editable(False)
@@ -157,7 +172,7 @@ namelessdev.mpdroid">MPDroid 1.06</a> (Android)<small>
     def _enable_server(self):
         port_num = get_port_num()
         print_d("Starting MPD server on port %d" % port_num)
-        self._server = MPDServer(app, port_num)
+        self._server = MPDServer(app, self, port_num)
         try:
             self._server.start()
         except ServerError as e:

@@ -124,7 +124,7 @@
     </after>
   </autotools>
 
-   <autotools id="pygobject3" autogen-sh="configure" >
+   <autotools id="pygobject3" autogenargs="--with-python=python2">
     <branch version="3.18.0" module="pygobject/3.18/pygobject-3.18.0.tar.xz"
 	    hash="sha256:1c3ba1112d3713cd5c86260312bfeb0de1f84f18808e51072c50b29d46156dc9"/>
     <dependencies>
@@ -132,7 +132,6 @@
     </dependencies>
     <after>
       <dep package="python"/>
-      <dep package="python3"/>
     </after>
   </autotools>
 

@@ -70,7 +70,8 @@ class TrackNumbers(Gtk.VBox):
         self.pack_start(hbox2, False, True, 0)
 
         render = Gtk.CellRendererText()
-        column = TreeViewColumn(_('File'), render)
+        column = TreeViewColumn(title=_('File'))
+        column.pack_start(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_file(column, cell, model, iter_, data):
@@ -82,7 +83,8 @@ class TrackNumbers(Gtk.VBox):
         view.append_column(column)
         render = Gtk.CellRendererText()
         render.set_property('editable', True)
-        column = TreeViewColumn(_('Track'), render)
+        column = TreeViewColumn(title=_('Track'))
+        column.pack_start(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_track(column, cell, model, iter_, data):

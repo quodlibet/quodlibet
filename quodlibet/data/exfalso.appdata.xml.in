@@ -5,6 +5,7 @@
     <_summary>Edit tags in your audio files</_summary>
     <metadata_license>CC0</metadata_license>
     <project_license>GPL-2.0</project_license>
+    <translation type="gettext">quodlibet</translation>
     <description>
     <_p>
         Ex Falso is a tag editor with the same tag editing interface as

@@ -12,6 +12,7 @@ from gi.repository import Gtk, GObject, Pango
 from quodlibet import config
 from quodlibet import formats
 from quodlibet import qltk
+from quodlibet import app
 
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.delete import trash_files, TrashMenuItem
@@ -23,7 +24,7 @@ from quodlibet.qltk.tagsfrompath import TagsFromPath
 from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.entry import UndoEntry
-from quodlibet.qltk.about import AboutExFalso
+from quodlibet.qltk.about import AboutDialog
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Align, SeparatorMenuItem, ConfigRHPaned, \
     Button, SymbolicIconImage, MenuItem
@@ -66,7 +67,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         about = Gtk.Button()
         about.add(Gtk.Image.new_from_icon_name(
             Icons.HELP_ABOUT, Gtk.IconSize.BUTTON))
-        connect_obj(about, 'clicked', self.__show_about, self)
+        about.connect('clicked', self.__show_about)
         bbox.pack_start(about, False, True, 0)
 
         def prefs_cb(*args):
@@ -152,8 +153,8 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
     def get_osx_is_persistent(self):
         return False
 
-    def __show_about(self, window):
-        about = AboutExFalso(self)
+    def __show_about(self, widget):
+        about = AboutDialog(self, app)
         about.run()
         about.destroy()
 

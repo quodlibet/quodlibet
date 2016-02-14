@@ -14,7 +14,7 @@ import os
 
 from gi.repository import Gtk, Pango, Gdk, GLib, Gio
 
-from .prefs import Preferences
+from .prefs import Preferences, DEFAULT_PATTERN_TEXT
 from .models import AlbumModel, AlbumFilterModel, AlbumSortModel
 
 import quodlibet
@@ -334,6 +334,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
     __last_render_pb = None
 
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
+    _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
 
     name = _("Album List")
     accelerated_name = _("_Album List")
@@ -479,10 +480,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         sw.add(view)
 
         view.connect('row-activated', self.__play_selection)
-
-        self.__sig = connect_destroy(
-            view.get_selection(), 'changed',
-            util.DeferredSignal(self.__update_songs, owner=self))
+        self.__sig = view.connect('selection-changed',
+            util.DeferredSignal(self.__update_songs, owner=view))
 
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
@@ -719,10 +718,10 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         self.view.get_selection().emit('changed')
 
     def __inhibit(self):
-        self.view.get_selection().handler_block(self.__sig)
+        self.view.handler_block(self.__sig)
 
     def __uninhibit(self):
-        self.view.get_selection().handler_unblock(self.__sig)
+        self.view.handler_unblock(self.__sig)
 
     def restore(self):
         text = config.get("browsers", "query_text").decode("utf-8")
@@ -779,6 +778,6 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         text = self.__search.get_text().encode("utf-8")
         config.set("browsers", "query_text", text)
 
-    def __update_songs(self, selection):
+    def __update_songs(self, view, selection):
         songs = self.__get_selected_songs(sort=False)
         self.songs_selected(songs)

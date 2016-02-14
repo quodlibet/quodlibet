@@ -13,3 +13,8 @@ disable_Werror = False
 skip.append("libiconv")
 
 setup_sdk(target="10.6", sdk_version="native", architectures=[_default_arch])
+
+# disable the SIP workaround as bash in bootstrap can't be build
+# without bootstrap..
+skip.append("bash")
+os.environ.pop("CONFIG_SHELL", None)

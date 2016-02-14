@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013 Christoph Reiter
+# Copyright 2013,2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,62 +13,107 @@ import collections
 import ctypes
 
 if os.name == "nt":
-    from win32com.shell import shellcon, shell
+    from win32com.shell import shell
     import pywintypes
     import pythoncom
-
-
-SHGFP_TYPE_CURRENT = 0
-SHGFP_TYPE_DEFAULT = 1
-
-CSIDL_FLAG_CREATE = 0x8000
-CSIDL_FLAG_DONT_UNEXPAND = 0x2000
+    from .winapi import SHGFPType, CSIDLFlag, CSIDL, GUID, \
+        SHGetFolderPathW, SetEnvironmentVariableW, S_OK, \
+        GetEnvironmentStringsW, FreeEnvironmentStringsW, \
+        GetCommandLineW, CommandLineToArgvW, LocalFree, MAX_PATH, \
+        KnownFolderFlag, FOLDERID, SHGetKnownFolderPath, CoTaskMemFree
 
 
 def _get_path(folder, default=False, create=False):
-    """A path to an directory or None"""
+    """A path to an directory or None.
+
+    Takes a CSIDL instance as folder.
+    """
 
     if default:
-        flags = SHGFP_TYPE_DEFAULT
+        flags = SHGFPType.DEFAULT
     else:
-        flags = SHGFP_TYPE_CURRENT
+        flags = SHGFPType.CURRENT
 
     if create:
-        folder |= CSIDL_FLAG_CREATE
+        folder |= CSIDLFlag.CREATE
 
     # we don't want env vars
-    folder |= CSIDL_FLAG_DONT_UNEXPAND
+    folder |= CSIDLFlag.DONT_UNEXPAND
 
+    buffer_ = ctypes.create_unicode_buffer(MAX_PATH)
     try:
-        # returns either unicode or ascii str, depending on the env
-        path = shell.SHGetFolderPath(0, folder, 0, flags)
-    except pywintypes.com_error:
-        return
+        result = SHGetFolderPathW(0, folder, 0, flags, buffer_)
+    except WindowsError:
+        return None
+    if result != S_OK:
+        return None
+    return buffer_.value
 
-    if not isinstance(path, unicode):
-        path = path.decode("ascii")
 
+def _get_known_path(folder, default=False, create=False):
+    """A path to an directory or None
+
+    Takes a FOLDERID instances as folder.
+    """
+
+    if default:
+        flags = KnownFolderFlag.DEFAULT_PATH
+    else:
+        flags = 0
+
+    if create:
+        flags |= KnownFolderFlag.CREATE
+
+    flags |= KnownFolderFlag.DONT_VERIFY
+
+    ptr = ctypes.c_wchar_p()
+    guid = GUID.from_uuid(folder)
+    try:
+        result = SHGetKnownFolderPath(
+            ctypes.byref(guid), flags, None, ctypes.byref(ptr))
+    except WindowsError:
+        return None
+    if result != S_OK:
+        return None
+    path = ptr.value
+    CoTaskMemFree(ptr)
     return path
 
 
 def get_personal_dir(**kwargs):
-    return _get_path(shellcon.CSIDL_PERSONAL, **kwargs)
+    """e.g. 'C:\Users\<user>\Documents'"""
+
+    return _get_path(CSIDL.PERSONAL, **kwargs)
 
 
 def get_appdate_dir(**kwargs):
-    return _get_path(shellcon.CSIDL_APPDATA, **kwargs)
+    """e.g. 'C:\Users\<user>\AppDate\Roaming'"""
+
+    return _get_path(CSIDL.APPDATA, **kwargs)
 
 
 def get_desktop_dir(**kwargs):
-    return _get_path(shellcon.CSIDL_DESKTOP, **kwargs)
+    """e.g. 'C:\Users\<user>\Desktop'"""
+
+    return _get_path(CSIDL.DESKTOP, **kwargs)
 
 
 def get_music_dir(**kwargs):
-    return _get_path(shellcon.CSIDL_MYMUSIC, **kwargs)
+    """e.g. 'C:\Users\<user>\Music'"""
+
+    return _get_path(CSIDL.MYMUSIC, **kwargs)
 
 
 def get_profile_dir(**kwargs):
-    return _get_path(shellcon.CSIDL_PROFILE, **kwargs)
+    """e.g. 'C:\Users\<user>'"""
+
+    return _get_path(CSIDL.PROFILE, **kwargs)
+
+
+def get_links_dir(**kwargs):
+    """e.g. 'C:\Users\<user>\Links'"""
+
+    return _get_known_path(FOLDERID.LINKS, **kwargs)
 
 
 def get_link_target(path):
@@ -88,38 +133,6 @@ def get_link_target(path):
         return path.decode("latin-1")
     except pywintypes.com_error:
         pass
-
-
-def get_links_dir():
-    """Get the path to the Links directory (%USERPROFILE%\\Links) or None"""
-
-    try:
-        kfm = pythoncom.CoCreateInstance(shell.CLSID_KnownFolderManager, None,
-            pythoncom.CLSCTX_INPROC_SERVER, shell.IID_IKnownFolderManager)
-    except pywintypes.com_error:
-        # WinXP for example
-        return
-
-    try:
-        libs_folder = kfm.GetFolder(shell.FOLDERID_Links)
-        # returns unicode
-        return libs_folder.GetPath()
-    except pywintypes.com_error:
-        pass
-
-
-if os.name == "nt":
-    SetEnvironmentVariableW = ctypes.windll.kernel32.SetEnvironmentVariableW
-    SetEnvironmentVariableW.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p]
-    SetEnvironmentVariableW.restype = ctypes.c_bool
-
-    GetEnvironmentStringsW = ctypes.windll.kernel32.GetEnvironmentStringsW
-    GetEnvironmentStringsW.argtypes = []
-    GetEnvironmentStringsW.restype = ctypes.c_void_p
-
-    FreeEnvironmentStringsW = ctypes.windll.kernel32.FreeEnvironmentStringsW
-    FreeEnvironmentStringsW.argtypes = [ctypes.c_void_p]
-    FreeEnvironmentStringsW.restype = ctypes.c_bool
 
 
 class WindowsEnvironError(Exception):
@@ -252,21 +265,6 @@ class WindowsEnviron(collections.MutableMapping):
 
 def get_win32_unicode_argv():
     """Returns a unicode version of sys.argv"""
-
-    from ctypes import cdll, windll, wintypes
-
-    GetCommandLineW = cdll.kernel32.GetCommandLineW
-    GetCommandLineW.argtypes = []
-    GetCommandLineW.restype = wintypes.LPCWSTR
-
-    CommandLineToArgvW = windll.shell32.CommandLineToArgvW
-    CommandLineToArgvW.argtypes = [
-        wintypes.LPCWSTR, ctypes.POINTER(ctypes.c_int)]
-    CommandLineToArgvW.restype = ctypes.POINTER(wintypes.LPWSTR)
-
-    LocalFree = windll.kernel32.LocalFree
-    LocalFree.argtypes = [wintypes.HLOCAL]
-    LocalFree.restype = wintypes.HLOCAL
 
     argc = ctypes.c_int()
     argv = CommandLineToArgvW(GetCommandLineW(), ctypes.byref(argc))

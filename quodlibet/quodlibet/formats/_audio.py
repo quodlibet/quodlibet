@@ -374,6 +374,14 @@ class AudioFile(dict, ImageContainer):
                 except (ValueError, IndexError, TypeError, KeyError):
                     return default
             elif key == "lyrics":
+                # First, try the embedded lyrics.
+                try:
+                    return self[key]
+                except KeyError:
+                    pass
+
+                # If there are no embedded lyrics, try to read them from
+                # the external file.
                 try:
                     fileobj = open(self.lyric_filename, "rU")
                 except EnvironmentError:

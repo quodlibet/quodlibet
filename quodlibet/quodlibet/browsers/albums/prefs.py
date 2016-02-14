@@ -19,17 +19,18 @@ from quodlibet.qltk import Button, Icons
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import format_rating
 
-EMPTY = _("Songs not in an album")
-
 PEOPLE
 _SOME_PEOPLE = "\n".join([util.tag("artist"), util.tag("performer"),
                          util.tag("composer"), util.tag("arranger"), ])
 
+_EMPTY = _("Songs not in an album")
+DEFAULT_PATTERN_TEXT = """[b]<album|<album>|%s>[/b]<date| (<date>)>
+[small]<~discs|<~discs> - ><~tracks> - <~long-length>[/small]
+<~people>""" % _EMPTY
+
 
 class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
-    _DEFAULT_PATTERN = """[b]<album|<album>|%s>[/b]<date| (<date>)>
-    [small]<~discs|<~discs> - ><~tracks> - <~long-length>[/small]
-    <~people>""" % EMPTY
+    _DEFAULT_PATTERN = DEFAULT_PATTERN_TEXT
 
     _PREVIEW_ITEM = FakeDisplayItem({
         "date": "2010-10-31",

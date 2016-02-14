@@ -126,6 +126,14 @@ def environ_prepend(key, value, separator=' '):
         value = value + separator + old_value
     os.environ[key] = value
 
+def environ_remove(key, value, separator=':'):
+    old_value = os.environ.get(key)
+    if old_value is not None:
+        old_value_split = old_value.split(separator)
+        value_split = [x for x in old_value_split if x != value]
+        value = separator.join(value_split)
+    os.environ[key] = value
+
 def parse_custom_argument(key):
     for i, arg in enumerate(sys.argv[:-1]):
         if arg == key:
@@ -321,6 +329,8 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
         os.environ["OBJC"] = os.path.join(_toolpath, "gcc-4.2")
         os.environ["CXX"] = os.path.join(_toolpath, "g++-4.2")
 
+    os.environ['LD'] = os.path.join(_toolpath, "ld")
+
     # Set the -arch flags for everything we're building.
     #
     for arch in architectures:
@@ -354,6 +364,14 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
     # Leopard and later have m4
     if _osx_version >= 5.0:
 	skip.append('m4')
+
+    # El Capitan needs bash to work around SIP. If you're using a
+    # common bootstrap directory (e.g. $HOME/.local) then override
+    # CONFIG_SHELL in .jhbuildrc-custom after calling setup_sdk().
+    if _osx_version < 11.0:
+        skip.append('bash')
+    elif not 'bootstrap' in modules:
+        os.environ['CONFIG_SHELL'] = os.path.join(prefix, 'bin', 'bash')
 
     # gettext-fw rebuilds gettext with an in-tree libiconv to get
     # around the Apple-provided one not defining _libiconv_init for
@@ -405,6 +423,10 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
     # build products. Note that this will generally break
     # cross-compilation, not that it works anyway.
     os.environ['CFLAGS_FOR_BUILD'] = os.environ['CFLAGS']
+
+    # Make sure we don't link against XQuartz whose freetype-config is on PATH
+    # when XQuartz is installed by removing it from PATH
+    environ_remove('PATH', '/opt/X11/bin')
     return sdkdir
 
 # This is a convenience function for older .jhbuildrc-customs.
@@ -476,7 +498,6 @@ modules = [ 'meta-gtk-osx-bootstrap', 'meta-gtk-osx-core' ]
 
 # A list of modules to skip.
 #
-
 # Source and installation locations.
 #
 _root = os.path.expanduser("~/gtk")

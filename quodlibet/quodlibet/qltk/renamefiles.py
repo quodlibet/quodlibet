@@ -172,7 +172,8 @@ class RenameFiles(Gtk.VBox):
         self.pack_start(bbox, False, True, 0)
 
         render = Gtk.CellRendererText()
-        column = TreeViewColumn(_('File'), render)
+        column = TreeViewColumn(title=_('File'))
+        column.pack_start(render, True)
 
         def cell_data_file(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
@@ -185,7 +186,8 @@ class RenameFiles(Gtk.VBox):
 
         render = Gtk.CellRendererText()
         render.set_property('editable', True)
-        column = TreeViewColumn(_('New Name'), render)
+        column = TreeViewColumn(title=_('New Name'))
+        column.pack_start(render, True)
 
         def cell_data_new_name(column, cell, model, iter_, data):
             entry = model.get_value(iter_)

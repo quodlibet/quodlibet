@@ -16,8 +16,6 @@
 # You can get a copy of the GNU General Public License at:
 # http://www.gnu.org/licenses/gpl-2.0.html
 
-import os
-
 from gi.repository import Gtk, Gdk
 
 from quodlibet import app
@@ -71,12 +69,14 @@ class ViewLyrics(EventPlugin):
         If there are lyrics associated with `song`, load them into the
         lyrics viewer. Otherwise, hides the lyrics viewer.
         """
-        if (song is not None) and os.path.exists(song.lyric_filename):
-            with open(song.lyric_filename, 'r') as lyric_file:
-                self.textbuffer.set_text(lyric_file.read())
-            self.adjustment.set_value(0)    # Scroll to the top.
-            self.expander.show()
-        else:
+        if song is not None:
+            lyrics = song("~lyrics")
+            if lyrics:
+                self.textbuffer.set_text(lyrics)
+                self.adjustment.set_value(0)    # Scroll to the top.
+                self.expander.show()
+
+        if not lyrics:
             self.expander.hide()
 
     def key_press_event_cb(self, widget, event):

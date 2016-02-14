@@ -17,6 +17,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.views import TreeViewColumnButton
+from quodlibet.qltk import add_css
 from quodlibet.util.path import fsdecode, unexpand, fsnative
 from quodlibet.formats._audio import FILESYSTEM_TAGS
 
@@ -44,6 +45,60 @@ def create_songlist_column(t):
         return WideTextColumn(t)
 
 
+def _highlight_current_cell(cr, background_area, cell_area, flags):
+    """Draws a 'highlighting' background for the cell. Look depends on
+    the active theme.
+    """
+
+    # Use drawing code/CSS for Entry (reason being that it looks best here)
+    dummy_widget = Gtk.Entry()
+    style_context = dummy_widget.get_style_context()
+    style_context.save()
+    # Make it less prominent
+    state = Gtk.StateFlags.INSENSITIVE | Gtk.StateFlags.BACKDROP
+    style_context.set_state(state)
+    color = style_context.get_border_color(state)
+    add_css(dummy_widget,
+            "* { border-color: rgba(%d, %d, %d, 0.3); }" % (
+                    color.red * 255, color.green * 255, color.blue * 255))
+    ba = background_area
+    ca = cell_area
+    # Draw over the left and right border so we don't see the rounded corners
+    # and borders. Use height for the overshoot as rounded corners + border
+    # should never be larger than the height..
+    # Ideally we would draw over the whole background but the cell area only
+    # redraws the cell_area so we get leftover artifacts if we draw
+    # above/below.
+    draw_area = (ba.x - ca.height, ca.y,
+                 ba.width + ca.height * 2, ca.height)
+    cr.save()
+    cr.new_path()
+    cr.rectangle(ba.x, ca.y, ba.width, ca.height)
+    cr.clip()
+    Gtk.render_background(style_context, cr, *draw_area)
+    Gtk.render_frame(style_context, cr, *draw_area)
+    cr.restore()
+    style_context.restore()
+
+
+class SongListCellAreaBox(Gtk.CellAreaBox):
+
+    highlight = False
+
+    def do_render(self, context, widget, cr, background_area, cell_area,
+                  flags, paint_focus):
+        if self.highlight and not flags & Gtk.CellRendererState.SELECTED:
+            _highlight_current_cell(cr, background_area, cell_area, flags)
+        return Gtk.CellAreaBox.do_render(
+            self, context, widget, cr, background_area, cell_area,
+            flags, paint_focus)
+
+    def do_apply_attributes(self, tree_model, iter_, is_expander, is_expanded):
+        self.highlight = tree_model.get_path(iter_) == tree_model.current_path
+        return Gtk.CellAreaBox.do_apply_attributes(
+            self, tree_model, iter_, is_expander, is_expanded)
+
+
 class SongListColumn(TreeViewColumnButton):
 
     __last_rendered = None
@@ -52,7 +107,8 @@ class SongListColumn(TreeViewColumnButton):
         """tag e.g. 'artist'"""
 
         title = self._format_title(tag)
-        super(SongListColumn, self).__init__(title)
+        super(SongListColumn, self).__init__(
+            title=title, cell_area=SongListCellAreaBox())
         self.set_tooltip_text(title)
         self.header_name = tag
 

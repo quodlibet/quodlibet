@@ -3,12 +3,72 @@
 Packaging Guide
 ===============
 
-This page is directed at distributions, packagers and developers.
+This page is directed at distributions, packagers and developers. Please
+:ref:`contact us <Contact>` if there is anything unclear / out of date /
+missing. For license & copyright information see :ref:`license`
 
-Please :ref:`contact us <Contact>` if there is anything unclear / out of date /
-missing.
 
-For license & copyright information see :ref:`license`
+Changes
+-------
+
+3.6
+^^^
+
+* **Mutagen 1.30** required
+* **GTK+ 3.10** required
+* **PyGObject 3.10** required
+* **webkitgtk-3.0** → **webkit2gtk-4.0** (Lyrics Window plugin)
+* **sphinx 1.3** required for building the documentation
+* New optional plugin dependency: **libappindicator-gtk3** + **typelibs**:
+  for the Tray Icon plugin under Ubuntu Unity and KDE Plasma
+
+
+3.5
+^^^
+
+* **Mutagen 1.27** required
+
+
+3.4
+^^^
+
+* The main repo moved from Mercurial (Google Code) to Git (GitHub)
+* The build should now be reproducible
+* **gtk-update-icon-cache** is no longer a build dependency
+* **gettext >= 0.15** is required now at build time
+* A complete **icon theme** is now required (this was also partly the case
+  with 3.3) and an icon theme including symbolic icons is recommended.
+  **adwaita-icon-theme** provides both for example.
+* **Mutagen 1.22** required, **Mutagen 1.27** recommended
+* New files installed to ``/usr/share/icons/hicolor/scalable/apps/``
+* **quodlibet.desktop** now contains a **MimeType** entry, which means
+  calling **update-desktop-database** is needed after package installation.
+
+
+3.3
+^^^
+
+* New optional plugin dependency: **webkitgtk-3.0 + typelibs**
+* **Mutagen 1.27** recommended
+
+3.2
+^^^
+
+* **Plugins got merged** into Quod Libet. This means the quodlibet-plugins
+  tarball is gone and plugins will be installed by ``setup.py install``. For
+  distros that used to include the plugins in the main package this means all
+  plugin related packaging code can simply be removed. For distros that
+  offered separate packages the installation can be split by packaging
+  ``quodlibet/ext`` in a separate package. Quod Libet can run without it.
+
+* **UDisks2** is supported, in addition to UDisks1
+
+* **Python 2.7** required instead of 2.6 (might still work, but not tested)
+
+3.1
+^^^
+
+* **No changes** compared to 3.0
 
 
 Existing Packaging
@@ -136,8 +196,11 @@ plugin from loading.
 **pynotify**:
     * For the auto library update plugin
 
-**webkitgtk** (== 3.0) + **typelibs**:
+**webkit2gtk** (== 4.0) + **typelibs**:
     * For the Lyrics Window plugin
+
+**libappindicator-gtk3** + **typelibs**:
+    * For the Tray Icon plugin under Ubuntu Unity and KDE Plasma
 
 
 Build Dependencies
@@ -145,67 +208,9 @@ Build Dependencies
 
 * **Python** 2.7 (stdlib only)
 * **gettext** >= 0.15 and **intltool** for translations.
+* (optional) **sphinx** >= 1.3
 
 For user documentation ``setup.py build_sphinx`` can be used to create the
 HTML user guide and put it in the build directory in the ``sphinx``
 subdirectory. This is not part of the default build process and requires
 **sphinx**.
-
-
-Changes
--------
-
-3.4 → 3.5
-^^^^^^^^^
-
-* **Mutagen 1.30** required
-* **GTK+ 3.10** required
-* **PyGObject 3.10** required
-
-
-3.4 → 3.5
-^^^^^^^^^
-
-* **Mutagen 1.27** required
-
-
-3.3 → 3.4
-^^^^^^^^^
-
-* The main repo moved from Mercurial (Google Code) to Git (GitHub)
-* The build should now be reproducible
-* **gtk-update-icon-cache** is no longer a build dependency
-* **gettext >= 0.15** is required now at build time
-* A complete **icon theme** is now required (this was also partly the case
-  with 3.3) and an icon theme including symbolic icons is recommended.
-  **adwaita-icon-theme** provides both for example.
-* **Mutagen 1.22** required, **Mutagen 1.27** recommended
-* New files installed to ``/usr/share/icons/hicolor/scalable/apps/``
-* **quodlibet.desktop** now contains a **MimeType** entry, which means
-  calling **update-desktop-database** is needed after package installation.
-
-
-3.2 → 3.3
-^^^^^^^^^
-
-* New optional plugin dependency: **webkitgtk-3.0 + typelibs**
-* **Mutagen 1.27** recommended
-
-3.1 → 3.2
-^^^^^^^^^
-
-* **Plugins got merged** into Quod Libet. This means the quodlibet-plugins
-  tarball is gone and plugins will be installed by ``setup.py install``. For
-  distros that used to include the plugins in the main package this means all
-  plugin related packaging code can simply be removed. For distros that
-  offered separate packages the installation can be split by packaging
-  ``quodlibet/ext`` in a separate package. Quod Libet can run without it.
-
-* **UDisks2** is supported, in addition to UDisks1
-
-* **Python 2.7** required instead of 2.6 (might still work, but not tested)
-
-3.0 → 3.1
-^^^^^^^^^
-
-* **No changes** compared to 3.0

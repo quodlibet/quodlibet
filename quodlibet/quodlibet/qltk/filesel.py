@@ -75,7 +75,12 @@ def _get_win_favorites():
     # if not already present
     links = windows.get_links_dir()
     if links is not None:
-        for entry in os.listdir(links):
+        try:
+            link_entries = os.listdir(links)
+        except OSError:
+            link_entries = []
+
+        for entry in link_entries:
             if entry.endswith(".lnk"):
                 target = windows.get_link_target(os.path.join(links, entry))
                 if target is not None:
@@ -175,7 +180,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         if initial is not None:
             assert is_fsnative(initial)
 
-        column = TreeViewColumn(_("Folders"))
+        column = TreeViewColumn(title=_("Folders"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render = Gtk.CellRendererPixbuf()
         render.set_property('icon-name', Icons.FOLDER)
@@ -484,7 +489,7 @@ class FileSelector(Paned):
         model = ObjectStore()
         filelist = AllTreeView(model=model)
 
-        column = TreeViewColumn(_("Songs"))
+        column = TreeViewColumn(title=_("Songs"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render = Gtk.CellRendererPixbuf()
         render.props.xpad = 3

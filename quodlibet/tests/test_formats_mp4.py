@@ -28,6 +28,12 @@ class TMP4File(TestCase):
     def tearDown(self):
         os.unlink(self.f)
 
+    def _assert_tag_supported(self, tag, value="SomeTestValue"):
+        self.song[tag] = value
+        self.song.write()
+        self.song.reload()
+        self.assertEqual(self.song(tag), value)
+
     def test_format(self):
         self.assertEqual(self.song("~format"), "MPEG-4")
 
@@ -41,10 +47,22 @@ class TMP4File(TestCase):
         self.assertEqual(self.song("~encoding"), "FAAC 1.24")
 
     def test_basic(self):
-        self.song["title"] = u"SomeTestValue"
-        self.song.write()
-        self.song.reload()
-        self.assertEqual(self.song("title"), u"SomeTestValue")
+        self._assert_tag_supported("title")
+        self._assert_tag_supported("artist")
+        self._assert_tag_supported("albumartist")
+        self._assert_tag_supported("album")
+        self._assert_tag_supported("genre")
+        self._assert_tag_supported("date")
+
+    def test_basic_numeric(self):
+        self._assert_tag_supported("tracknumber", "12")
+        self._assert_tag_supported("discnumber", "1")
+        self._assert_tag_supported("bpm", "132")
+
+    def test_less_common_tags(self):
+        self._assert_tag_supported("discsubtitle")
+        self._assert_tag_supported("mood")
+        self._assert_tag_supported("conductor")
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.7079, 3)

@@ -16,46 +16,46 @@ from quodlibet import formats
 from quodlibet.util import fver
 
 
+def get_version_description():
+    version = const.VERSION_TUPLE
+    note = ""
+    if version[-1] == -1:
+        version = version[:-1]
+        note = " (development)"
+    return ".".join(map(str, version)) + note
+
+
 class AboutDialog(Gtk.AboutDialog):
-    def __init__(self, parent, player, name, icon):
+
+    def __init__(self, parent, app):
         super(AboutDialog, self).__init__()
         self.set_transient_for(parent)
-        self.set_program_name(name)
-        self.set_version(const.VERSION)
+        self.set_program_name(app.name)
+        self.set_version(get_version_description())
         self.set_authors(const.AUTHORS)
         self.set_artists(const.ARTISTS)
-        self.set_logo_icon_name(icon)
+        self.set_logo_icon_name(app.icon_name)
 
         def chunks(l, n):
             return [l[i:i + n] for i in range(0, len(l), n)]
+
+        is_real_player = app.player.name != "Null"
 
         fmts = ",\n".join(", ".join(c) for c in chunks(formats.names, 4))
         text = []
         text.append(_("Supported formats: %s") % fmts)
         text.append("")
-        if player:
-            text.append(_("Audio device: %s") % player.name)
+        if is_real_player:
+            text.append(_("Audio device: %s") % app.player.name)
         text.append("Python: %s" % platform.python_version())
         text.append("Mutagen: %s" % fver(mutagen.version))
         text.append("GTK+: %s (%s)" % (fver(gtk_version), get_backend_name()))
         text.append("PyGObject: %s" % fver(pygobject_version))
-        if player:
-            text.append(player.version_info)
+        if is_real_player:
+            text.append(app.player.version_info)
         self.set_comments("\n".join(text))
         self.set_license_type(Gtk.License.GPL_2_0)
         self.set_translator_credits("\n".join(const.TRANSLATORS))
         self.set_website(const.WEBSITE)
         self.set_copyright(const.COPYRIGHT + "\n" +
                            "<%s>" % const.SUPPORT_EMAIL)
-
-
-class AboutQuodLibet(AboutDialog):
-    def __init__(self, parent, player):
-        super(AboutQuodLibet, self).__init__(
-            parent, player, "Quod Libet", "quodlibet")
-
-
-class AboutExFalso(AboutDialog):
-    def __init__(self, parent, player=None):
-        super(AboutExFalso, self).__init__(
-            parent, player, "Ex Falso", "exfalso")
