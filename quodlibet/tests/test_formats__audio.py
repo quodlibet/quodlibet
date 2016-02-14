@@ -19,6 +19,7 @@ bar_1_1 = AudioFile({
 bar_1_2 = AudioFile({
     "~filename": fsnative(u"/fakepath/2"),
     "title": "Perhaps another",
+    "titlesort": "Titles don't sort",
     "discnumber": "1", "tracknumber": "2/3",
     "artist": "Lali-ho!", "album": "Bar",
     "date": "2004-12-12", "originaldate": "2005-01-01",
@@ -27,7 +28,9 @@ bar_2_1 = AudioFile({
     "~filename": fsnative(u"does not/exist"),
     "title": "more songs",
     "discnumber": "2/2", "tracknumber": "1",
-    "artist": "Foo\nI have two artists", "album": "Bar",
+    "artist": "Foo\nI have two artists",
+    "artistsort": "Foosort\n\nThird artist",
+    "album": "Bar",
     "lyricist": "Foo", "composer": "Foo", "performer": "I have two artists"})
 bar_va = AudioFile({
     "~filename": "/fakepath/3",
@@ -159,20 +162,46 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_2_1.list("artist"),
                              bar_2_1["artist"].split("\n"))
 
+    def test_list_sort(self):
+        self.failUnlessEqual(bar_1_1.list_sort("title"),
+                             [("A song", "A song")])
+        self.failUnlessEqual(bar_1_1.list_sort("artist"),
+                             [("Foo", "Foo")])
+
+        self.failUnlessEqual(quux.list_sort("artist"), [])
+        self.failUnlessEqual(quux.list_sort("title"),
+                             [(quux("title"), quux("title"))])
+        self.failUnlessEqual(quux.list_sort("not a key"), [])
+
+        self.failUnlessEqual(bar_1_2.list_sort("title"),
+                             [("Perhaps another", "Perhaps another")])
+        self.failUnlessEqual(bar_2_1.list_sort("artist"),
+                             [("Foo", "Foosort"),
+                              ("I have two artists", "I have two artists")])
+        self.failUnlessEqual(bar_2_1.list_sort("~#track"),
+                             [('1', '1')])
+
     def test_list_separate(self):
-        for key in bar_1_1.realkeys():
-            self.failUnlessEqual(bar_1_1.list_separate(key), [bar_1_1(key)])
+        self.failUnlessEqual(bar_1_1.list_separate("title"),
+                             [("A song", "A song")])
+        self.failUnlessEqual(bar_1_1.list_separate("artist"),
+                             [("Foo", "Foo")])
 
         self.failUnlessEqual(bar_2_1.list_separate("~artist~album"),
-                             ['Foo - Bar', 'I have two artists - Bar'])
+                             [('Foo', 'Foosort'),
+                              ('I have two artists', 'I have two artists'),
+                              ('Bar', 'Bar')])
 
         self.failUnlessEqual(bar_2_1.list_separate("~artist~~#track"),
-                             ['Foo - 1', 'I have two artists - 1'])
+                             [('Foo', 'Foosort'),
+                              ('I have two artists', 'I have two artists'),
+                              ('1', '1')])
 
     def test_list_list_separate_types(self):
         res = bar_2_1.list_separate("~~#track~artist~~filename")
-        self.assertEqual(res, [u'1 - Foo - does not/exist',
-                               u'1 - I have two artists - does not/exist'])
+        self.assertEqual(res, [(u'1', u'1'), (u'Foo', u'Foosort'),
+                               (u'I have two artists', u'I have two artists'),
+                               (u'does not/exist', u'does not/exist')])
 
     def test_comma(self):
         for key in bar_1_1.realkeys():

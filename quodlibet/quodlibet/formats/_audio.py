@@ -29,6 +29,10 @@ from quodlibet.compat import iteritems, string_types
 
 from ._image import ImageContainer
 
+try:
+    from itertools import izip_longest
+except ImportError:  # python3.x
+    izip = zip
 
 MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
            "~#skipcount", "~#rating", "~bookmark"}
@@ -540,26 +544,35 @@ class AudioFile(dict, ImageContainer):
             v = self.get(key)
             return [] if v is None else v.split("\n")
 
-    def list_separate(self, key, connector=" - "):
-        """Similar to list, but will return a list of all combinations
-        for tied tags instead of one comma separated string.
-
-        In case of tied tags the result will be unicode, otherwise
-        it returns the same as list()
+    def list_sort(self, key):
+        """Like list but return display,sort pairs when appropriate
+        and work on all tags
         """
+        display = decode_value(key, self(key))
+        display = display.split("\n") if display else []
+        sort = []
+        if key in TAG_TO_SORT:
+            sort = decode_value(TAG_TO_SORT[key],
+                                self(TAG_TO_SORT[key]))
+            # it would be better to use something that doesn't fall back
+            # to the key itself, but what?
+            sort = sort.split("\n") if sort else []
+        result = []
+        for d, s in izip_longest(display, sort):
+            if d is not None:
+                result.append((d, s if s is not None and s != "" else d))
+        return result
 
-        if key[:1] == "~" and "~" in key[1:]:
-            vals = []
-            for v in map(self.__call__, util.tagsplit(key)):
-                v = decode_value(key, v)
-                if v:
-                    vals.append(v.split("\n"))
-            r = [[]]
-            for x in vals:
-                r = [i + [y] for y in x for i in r]
-            return map(connector.join, r)
+    def list_separate(self, key):
+        """For tied tags return the list union of the display,sort values
+           otherwise just do list_sort
+        """
+        if key[:1] == "~" and "~" in key[1:]: # tied tag
+            vals = [self.list_sort(tag) for tag in util.tagsplit(key)]
+            r = [j for i in vals for j in i]
+            return r
         else:
-            return self.list(key)
+            return self.list_sort(key)
 
     def list_unique(self, keys):
         """Returns a combined value of all values in keys; duplicate values
