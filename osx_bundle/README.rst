@@ -9,7 +9,7 @@ OS X Bundle Build Scripts
     ``./QuodLibet.app/Contents/MacOS/run quodlibet.py``.
 
 
-Uses jhbuild [3] and the stable module set provided by gtk-osx [2] with a Quod
+Uses jhbuild [2] and the stable module set provided by gtk-osx [1] with a Quod
 Libet specific module set overlay to build all needed dependencies for Quod
 Libet. Everything will be downloaded/installed into this directory and your
 user directory will not be touched.
@@ -18,10 +18,10 @@ user directory will not be touched.
 Creating a Bundle
 -----------------
 
-Prerequisites: `OS X` 10.7+ and a working `Xcode` [0] and `git` [1]
+Prerequisites: `OS X` 10.7+ and a working `Xcode` [0]
 
 Verify that Xcode and git is installed and in your ``$PATH`` by invoking ``git
---version`` and ``gcc --version``. Also make sure that other pacakge managers
+--version`` and ``gcc --version``. Also make sure that other package managers
 like homebrew or macports aren't in your ``$PATH``.
 
 (Tested on OS X 10.9)
@@ -31,6 +31,9 @@ like homebrew or macports aren't in your ``$PATH``.
    This should not lead to errors; if it does please file a bug.
 3) Call ``bundle.sh`` to create the finished bundles for QL and EF in
    ``_build``.
+
+Call ``clean.sh`` to remove everything created above again and get back to
+the initial state.
 
 
 Development
@@ -55,6 +58,5 @@ Content Description
 
 
 | [0] https://developer.apple.com/xcode/downloads/
-| [1] https://git-scm.com/download/mac
-| [2] https://git.gnome.org/browse/gtk-osx/
-| [3] https://git.gnome.org/browse/jhbuild/
+| [1] https://git.gnome.org/browse/gtk-osx/
+| [2] https://git.gnome.org/browse/jhbuild/
