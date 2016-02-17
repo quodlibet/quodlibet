@@ -128,7 +128,11 @@ def print_d(string, context=""):
     else:
         output = None
 
-    context = extract_caller_info()
+    if PY2:
+        context = extract_caller_info()
+    else:
+        # FIXME: PY3PORT
+        context = ""
     # strip the package name
     if context.startswith("quodlibet.") and context.count(".") > 1:
         context = context[10:]
