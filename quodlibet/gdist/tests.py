@@ -69,13 +69,13 @@ class test_cmd(Command):
         elif self.suite:
             subdirs.append(self.suite)
 
-        failures, errors = tests.unit(self.to_run, main=main, subdirs=subdirs,
-                                      strict=self.strict,
-                                      stop_first=self.exitfirst)
+        failures, errors, all_ = tests.unit(
+            self.to_run, main=main, subdirs=subdirs,
+            strict=self.strict, stop_first=self.exitfirst)
         if failures or errors:
             raise SystemExit(self._red("%d test failure(s) and "
-                                       "%d test error(s), as detailed above."
-                             % (failures, errors)))
+                                       "%d test error(s) for %d tests."
+                             % (failures, errors, all_)))
 
 
 class quality_cmd(Command):

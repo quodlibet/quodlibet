@@ -188,7 +188,7 @@ class Runner(object):
         result = Result(test.__name__, len(suite._tests), failfast=failfast)
         suite(result)
         result.printErrors()
-        return len(result.failures), len(result.errors)
+        return len(result.failures), len(result.errors), len(suite._tests)
 
 
 _BUS_INFO = None
@@ -337,17 +337,18 @@ def unit(run=[], filter_func=None, main=False, subdirs=None,
     import quodlibet.config
 
     runner = Runner()
-    failures = errors = 0
+    failures = errors = all_ = 0
     use_suites = filter(filter_func, suites)
     for test in sorted(use_suites, key=repr):
         if (not run
                 or test.__name__ in run
                 or test.__module__[11:] in run):
-            df, de = runner.run(test, failfast=stop_first)
-            if stop_first and (df or de):
-                break
+            df, de, num = runner.run(test, failfast=stop_first)
             failures += df
             errors += de
+            all_ += num
+            if stop_first and (df or de):
+                break
             quodlibet.config.quit()
 
-    return failures, errors
+    return failures, errors, all_
