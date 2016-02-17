@@ -83,7 +83,7 @@ class PlaylistPlugin(MenuItemPlugin):
     plugin_playlist = None
     plugin_playlists = None
 
-    def __init__(self, playlists, library):
+    def __init__(self, playlists=None, library=None):
         super(PlaylistPlugin, self).__init__()
         self._library = library
 

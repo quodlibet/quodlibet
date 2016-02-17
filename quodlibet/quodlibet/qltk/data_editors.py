@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012-2014 Nick Boultbee
+# Copyright 2012-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -10,10 +10,9 @@ from gi.repository import Pango
 import re
 
 from quodlibet import qltk, util
-from quodlibet.util.dprint import print_d
-from quodlibet.qltk.entry import UndoEntry, ValidatingEntry
+from quodlibet.qltk.entry import UndoEntry, ValidatingEntry, QueryValidator
 from quodlibet.qltk.views import RCMHintedTreeView, HintedTreeView
-from quodlibet.qltk.x import MenuItem, Button
+from quodlibet.qltk.x import MenuItem, Button, Align
 from quodlibet.qltk import Icons
 from quodlibet.util.json_data import JSONObjectDict
 from quodlibet.util import connect_obj
@@ -28,7 +27,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
     TODO: validation, especially for name.
     """
 
-    _WIDTH = 600
+    _WIDTH = 800
     _HEIGHT = 400
 
     def __init__(self, Prototype, values, filename, title):
@@ -134,13 +133,12 @@ class JSONBasedEditor(qltk.UniqueWindow):
             callback = self.__toggled_widget
             signal = "toggled"
         elif isinstance(val, int):
-            adj = Gtk.Adjustment.new(0, 0, 10000, 1, 10, 0)
+            adj = Gtk.Adjustment.new(0, 0, 9999, 1, 10, 0)
             entry = Gtk.SpinButton(adjustment=adj)
             entry.set_numeric(True)
             callback = self.__changed_numeric_widget
-        elif key.find("pattern") >= 0:
-            print_d("Found Pattern type: %s" % key)
-            entry = ValidatingEntry()
+        elif "pattern" in key:
+            entry = ValidatingEntry(validator=QueryValidator)
         else:
             entry = UndoEntry()
         entry.connect(signal or "changed",
@@ -199,8 +197,12 @@ class JSONBasedEditor(qltk.UniqueWindow):
             l.set_mnemonic_widget(entry)
             l.set_use_underline(True)
             l.set_alignment(0.0, 0.5)
+            if isinstance(val, int) or isinstance(val, bool):
+                align = Align(entry, halign=Gtk.Align.START)
+                t.attach(align, 1, 2, i, i + 1)
+            else:
+                t.attach(entry, 1, 2, i, i + 1)
             t.attach(l, 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
-            t.attach(entry, 1, 2, i, i + 1)
         frame = qltk.Frame(label=self.name, child=t)
         self.input_entries["name"].grab_focus()
         return frame
