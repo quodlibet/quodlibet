@@ -27,12 +27,14 @@ PLUGIN_DIRS.append(os.path.join(os.path.dirname(__file__), "test_plugins"))
 
 ms = ModuleScanner(PLUGIN_DIRS)
 
-if not PY3:
-    ms.rescan()
+ms.rescan()
 
 # make sure plugins only raise expected errors
 for name, err in ms.failures.items():
     exc = err.exception
+    if PY3:
+        # FIXME: PY3PORT
+        continue
     assert issubclass(type(exc), (PluginImportException, ImportError)),\
         "%s shouldn't have raised a %s, but it did (%r)."\
         % (name, type(exc), exc)

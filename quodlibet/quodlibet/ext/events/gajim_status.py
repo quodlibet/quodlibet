@@ -13,8 +13,6 @@ if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
-from string import join
-
 from gi.repository import Gtk
 import dbus
 
@@ -52,7 +50,7 @@ class GajimStatusMessage(EventPlugin):
             self.statuses = config.get('plugins', self.c_statuses).split()
         except:
             self.statuses = ['online', 'chat']
-            config.set('plugins', self.c_statuses, join(self.statuses))
+            config.set('plugins', self.c_statuses, " ".join(self.statuses))
 
         try:
             self.pattern = config.get('plugins', self.c_pattern)
@@ -122,7 +120,7 @@ class GajimStatusMessage(EventPlugin):
             self.statuses.append(b.get_name())
         elif b.get_active() is False and b.get_name() in self.statuses:
             self.statuses.remove(b.get_name())
-        config.set('plugins', self.c_statuses, join(self.statuses))
+        config.set('plugins', self.c_statuses, " ".join(self.statuses))
 
     def PluginPreferences(self, parent):
         vb = Gtk.VBox(spacing=3)
@@ -138,7 +136,7 @@ class GajimStatusMessage(EventPlugin):
         accounts_box = Gtk.HBox(spacing=3)
         accounts_box.set_border_width(3)
         accounts = Gtk.Entry()
-        accounts.set_text(join(self.accounts))
+        accounts.set_text(" ".join(self.accounts))
         accounts.connect('changed', self.accounts_changed)
         accounts.set_tooltip_text(
             _("List accounts, separated by spaces, for "
