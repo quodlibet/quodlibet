@@ -12,3 +12,7 @@ modules = []
 skip.append("libiconv")
 
 setup_sdk(target="10.6", sdk_version="native", architectures=[_default_arch])
+
+_config_shell = os.environ.get("CONFIG_SHELL", "")
+if not os.path.exists(_config_shell):
+    os.environ.pop("CONFIG_SHELL", None)
