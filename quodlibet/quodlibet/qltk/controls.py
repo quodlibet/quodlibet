@@ -369,6 +369,45 @@ class VolumeMenu(Gtk.Menu):
         return super(VolumeMenu, self).popup(*args)
 
 
+class PlayPauseButton(Gtk.Button):
+
+    __gsignals__ = {
+        'toggled': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+    }
+
+    def __init__(self):
+        super(PlayPauseButton, self).__init__(relief=Gtk.ReliefStyle.NONE)
+        self._pause_image = SymbolicIconImage("media-playback-pause",
+                                               Gtk.IconSize.LARGE_TOOLBAR)
+        self._play_image = SymbolicIconImage("media-playback-start",
+                                             Gtk.IconSize.LARGE_TOOLBAR)
+        self._set_active(False)
+        self.connect("clicked", self._on_clicked)
+
+    def _on_clicked(self, *args):
+        self.set_active(not self.get_active())
+
+    def _set_active(self, is_active):
+        if self.get_child():
+            self.remove(self.get_child())
+
+        if is_active:
+            self.add(self._pause_image)
+        else:
+            self.add(self._play_image)
+        self.get_child().show()
+
+        self.emit("toggled")
+
+    def set_active(self, is_active):
+        if self.get_active() == is_active:
+            return
+        self._set_active(is_active)
+
+    def get_active(self):
+        return self.get_child() is self._pause_image
+
+
 class PlayControls(Gtk.VBox):
 
     def __init__(self, player, library):
@@ -383,9 +422,7 @@ class PlayControls(Gtk.VBox):
                                    Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(prev, 0, 1, 0, 1)
 
-        play = Gtk.ToggleButton(relief=Gtk.ReliefStyle.NONE)
-        play.add(SymbolicIconImage("media-playback-start",
-                                   Gtk.IconSize.LARGE_TOOLBAR))
+        play = PlayPauseButton()
         upper.attach(play, 1, 2, 0, 1)
 
         next_ = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
