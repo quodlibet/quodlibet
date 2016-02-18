@@ -220,12 +220,6 @@ class TSongList(TestCase):
         self.assertEqual(get_sort_tag("date"), "date")
         self.assertEqual(get_sort_tag("~artist~date"), "~artistsort~date")
         self.assertEqual(get_sort_tag("~date~artist"), "~date~artistsort")
-# is there a way to test?
-#  self.assertEqual(get_sort_tag("<artist>"), Pattern("<artistsort>").format)
-#  self.assertEqual(get_sort_tag("pat <artist>"),
-#	  Pattern("pat <artistsort>").format)
-#  self.assertEqual(get_sort_tag("pat <artist|<artist>\<artist\>|<date>>"),
-#         Pattern("pat <artist|<artistsort>\<artist\>|<date>>").format)
 
     def tearDown(self):
         self.songlist.destroy()
