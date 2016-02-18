@@ -21,6 +21,7 @@ from quodlibet.compat import exec_, itervalues
 from quodlibet.util.path import expanduser, fsnative, sep
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 from quodlibet.formats._audio import decode_value
+from quodlibet.compat import quote_plus
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -472,3 +473,13 @@ def XMLFromMarkupPattern(string):
 
     string = pattern_from_markup(string)
     return Pattern(string, _XMLFromPattern)
+
+
+class _URLFromPattern(PatternFormatter):
+
+    def _format(self, key, value):
+        return quote_plus(value.encode('utf8'))
+
+
+def URLFromPattern(string):
+    return Pattern(string, _URLFromPattern)

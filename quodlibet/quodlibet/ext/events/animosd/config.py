@@ -9,20 +9,8 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-from quodlibet.plugins import PluginConfig
-
-
-def str_to_tuple(s):
-    """Raises ValueError"""
-
-    lst = map(float, s.split())
-    while len(lst) < 4:
-        lst.append(0.0)
-    return tuple(lst)
-
-
-def tuple_to_str(t):
-    return " ".join(map(str, t))
+from quodlibet.plugins import (PluginConfig, ConfProp, IntConfProp,
+    FloatConfProp, ColorConfProp)
 
 
 DEFAULT_PATTERN = (r"<album|[b]<album>[/b]<discnumber| - Disc "
@@ -30,53 +18,6 @@ DEFAULT_PATTERN = (r"<album|[b]<album>[/b]<discnumber| - Disc "
     >[span weight='bold' size='large']<title>[/span] - <~length><version|
     [small][i]<version>[/i][/small]><~people|
     by <~people>>""")
-
-
-class ConfProp(object):
-
-    def __init__(self, conf, name, default):
-        self._conf = conf
-        self._name = name
-
-        self._conf.defaults.set(name, default)
-
-    def __get__(self, *args, **kwargs):
-        return self._conf.get(self._name)
-
-    def __set__(self, obj, value):
-        self._conf.set(self._name, value)
-
-
-class IntConfProp(ConfProp):
-
-    def __get__(self, *args, **kwargs):
-        return self._conf.getint(self._name)
-
-
-class FloatConfProp(ConfProp):
-
-    def __get__(self, *args, **kwargs):
-        return self._conf.getfloat(self._name)
-
-
-class ColorConfProp(object):
-
-    def __init__(self, conf, name, default):
-        self._conf = conf
-        self._name = name
-
-        self._conf.defaults.set(name, tuple_to_str(default))
-
-    def __get__(self, *args, **kwargs):
-        s = self._conf.get(self._name)
-
-        try:
-            return str_to_tuple(s)
-        except ValueError:
-            return str_to_tuple(self._conf.defaults.get(self._name))
-
-    def __set__(self, obj, value):
-        self._conf.set(self._name, tuple_to_str(value))
 
 
 def get_config(prefix):
