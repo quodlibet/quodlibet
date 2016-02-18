@@ -24,7 +24,7 @@ from quodlibet.qltk import Dialog, Icons
 from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
 
 from .query import QueryThread
-from .util import config_get
+from .util import pconfig
 
 
 VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
@@ -228,7 +228,7 @@ class SearchWindow(Dialog):
         shared = {}
 
         shared['album'] = album.title
-        if config_get('split_disc', True):
+        if pconfig.getboolean('split_disc'):
             m = re.match(r'(.*) \(disc (.*?)\)$', album.title)
             if m:
                 shared['album'] = m.group(1)
@@ -239,22 +239,22 @@ class SearchWindow(Dialog):
 
         relevt = self.release_combo.get_release_event()
         shared['date'] = relevt and relevt.getDate() or ''
-        if shared['date'] and config_get('year_only', False):
+        if shared['date'] and pconfig.getboolean('year_only'):
             shared['date'] = shared['date'].split('-')[0]
 
-        if config_get('labelid', True):
+        if pconfig.getboolean('labelid'):
             if relevt and relevt.getCatalogNumber():
                 shared['labelid'] = relevt.getCatalogNumber()
 
         if not album.isSingleArtistRelease():
-            if (config_get('albumartist', True)
+            if (pconfig.getboolean('albumartist')
                 and extractUuid(album.artist.id) != VARIOUS_ARTISTS_ARTISTID):
                 shared['albumartist'] = album.artist.name
-                if config_get('artist_sort', False) and \
+                if pconfig.getboolean('artist_sort') and \
                         album.artist.sortName != album.artist.name:
                     shared['albumartistsort'] = album.artist.sortName
 
-        if config_get('standard', True):
+        if pconfig.getboolean('standard'):
             shared['musicbrainz_albumartistid'] = extractUuid(album.artist.id)
             shared['musicbrainz_albumid'] = extractUuid(album.id)
 
@@ -268,21 +268,21 @@ class SearchWindow(Dialog):
             song['title'] = track.title
             song['tracknumber'] = '%d/%d' % (idx + 1,
                     max(len(album.tracks), len(self.result_treeview.model)))
-            if config_get('standard', True):
+            if pconfig.getboolean('standard'):
                 song['musicbrainz_trackid'] = extractUuid(track.id)
             if album.isSingleArtistRelease() or not track.artist:
                 song['artist'] = album.artist.name
-                if config_get('artist_sort', False) and \
+                if pconfig.getboolean('artist_sort') and \
                         album.artist.sortName != album.artist.name:
                     song['artistsort'] = album.artist.sortName
             else:
                 song['artist'] = track.artist.name
-                if config_get('artist_sort', False) and \
+                if pconfig.getboolean('artist_sort') and \
                         track.artist.sortName != track.artist.name:
                     song['artistsort'] = track.artist.sortName
-                if config_get('standard', True):
+                if pconfig.getboolean('standard'):
                     song['musicbrainz_artistid'] = extractUuid(track.artist.id)
-            if config_get('split_feat', False):
+            if pconfig.getboolean('split_feat'):
                 feats = re.findall(r' \(feat\. (.*?)\)', track.title)
                 if feats:
                     feat = []

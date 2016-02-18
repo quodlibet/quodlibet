@@ -7,14 +7,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-
 from gi.repository import Gtk
 
-from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
-from .util import config_get
+from .util import pconfig
 from .widgets import SearchWindow
 
 
@@ -47,22 +45,20 @@ class MyBrainz(SongsMenuPlugin):
     @classmethod
     def PluginPreferences(self, win):
         items = [
-            ('split_disc', _('Split _disc from album'), True),
-            ('split_feat', _('Split _featured performers from track'), False),
-            ('year_only', _('Only use year for "date" tag'), False),
-            ('albumartist', _('Write "_albumartist" when needed'), True),
-            ('artist_sort', _('Write sort tags for artist names'), False),
-            ('standard', _('Write _standard MusicBrainz tags'), True),
-            ('labelid',
-                _('Write _labelid tag (fixes multi-disc albums)'), True),
+            ('split_disc', _('Split _disc from album')),
+            ('split_feat', _('Split _featured performers from track')),
+            ('year_only', _('Only use year for "date" tag')),
+            ('albumartist', _('Write "_albumartist" when needed')),
+            ('artist_sort', _('Write sort tags for artist names')),
+            ('standard', _('Write _standard MusicBrainz tags')),
+            ('labelid', _('Write _labelid tag (fixes multi-disc albums)')),
         ]
 
         vb = Gtk.VBox()
         vb.set_spacing(8)
 
-        for key, label, default in items:
-            ccb = ConfigCheckButton(label, 'plugins', 'brainz_' + key)
-            ccb.set_active(config_get(key, default))
+        for key, label in items:
+            ccb = pconfig.ConfigCheckButton(label, key, populate=True)
             vb.pack_start(ccb, True, True, 0)
 
         return vb

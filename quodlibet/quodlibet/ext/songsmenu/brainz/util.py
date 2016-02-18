@@ -7,8 +7,22 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from quodlibet import config
+from quodlibet.plugins import PluginConfig
 
 
-def config_get(key, default=''):
-    return config.getboolean('plugins', 'brainz_' + key, default)
+def get_config():
+    pc = PluginConfig("brainz")
+
+    defaults = pc.defaults
+    defaults.set("split_disc", True)
+    defaults.set("split_feat", False)
+    defaults.set("year_only", False)
+    defaults.set("albumartist", True)
+    defaults.set("artist_sort", False)
+    defaults.set("standard", True)
+    defaults.set("labelid", True)
+
+    return pc
+
+
+pconfig = get_config()
