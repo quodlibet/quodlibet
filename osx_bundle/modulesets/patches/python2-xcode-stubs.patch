@@ -1,0 +1,79 @@
+Patch from https://bugs.python.org/issue25136. Fixes Python not finding
+zlib/bz2 on OS X 10.11 and Xcode 7
+
+From 613d602c7966d68947458e07e05728b5372c76b9 Mon Sep 17 00:00:00 2001
+From: "Tim D. Smith" <git@tim-smith.us>
+Date: Tue, 15 Sep 2015 20:48:29 -0700
+Subject: [PATCH] add distutils support for Xcode 7 .tbd library stubs
+
+---
+ Lib/distutils/ccompiler.py     | 5 +++--
+ Lib/distutils/unixccompiler.py | 7 +++++++
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/Lib/distutils/ccompiler.py b/Lib/distutils/ccompiler.py
+index c0c446f..62506a6 100644
+--- a/Lib/distutils/ccompiler.py
++++ b/Lib/distutils/ccompiler.py
+@@ -842,8 +842,9 @@ main (int argc, char **argv) {
+     def library_filename(self, libname, lib_type='static',     # or 'shared'
+                          strip_dir=0, output_dir=''):
+         assert output_dir is not None
+-        if lib_type not in ("static", "shared", "dylib"):
+-            raise ValueError, "'lib_type' must be \"static\", \"shared\" or \"dylib\""
++        if lib_type not in ("static", "shared", "dylib", "xcode_stub"):
++            raise ValueError, ("""'lib_type' must be "static", "shared", """
++                               """"dylib", or "xcode_stub".""")
+         fmt = getattr(self, lib_type + "_lib_format")
+         ext = getattr(self, lib_type + "_lib_extension")
+ 
+diff --git a/Lib/distutils/unixccompiler.py b/Lib/distutils/unixccompiler.py
+index 2aa1cb1..83ec109 100644
+--- a/Lib/distutils/unixccompiler.py
++++ b/Lib/distutils/unixccompiler.py
+@@ -79,7 +79,9 @@ class UnixCCompiler(CCompiler):
+     static_lib_extension = ".a"
+     shared_lib_extension = ".so"
+     dylib_lib_extension = ".dylib"
++    xcode_stub_lib_extension = ".tbd"
+     static_lib_format = shared_lib_format = dylib_lib_format = "lib%s%s"
++    xcode_stub_lib_format = dylib_lib_format
+     if sys.platform == "cygwin":
+         exe_extension = ".exe"
+ 
+@@ -245,6 +247,7 @@ class UnixCCompiler(CCompiler):
+     def find_library_file(self, dirs, lib, debug=0):
+         shared_f = self.library_filename(lib, lib_type='shared')
+         dylib_f = self.library_filename(lib, lib_type='dylib')
++        xcode_stub_f = self.library_filename(lib, lib_type='xcode_stub')
+         static_f = self.library_filename(lib, lib_type='static')
+ 
+         if sys.platform == 'darwin':
+@@ -264,6 +267,7 @@ class UnixCCompiler(CCompiler):
+             shared = os.path.join(dir, shared_f)
+             dylib = os.path.join(dir, dylib_f)
+             static = os.path.join(dir, static_f)
++            xcode_stub = os.path.join(dir, xcode_stub_f)
+ 
+             if sys.platform == 'darwin' and (
+                 dir.startswith('/System/') or (
+@@ -272,6 +276,7 @@ class UnixCCompiler(CCompiler):
+                 shared = os.path.join(sysroot, dir[1:], shared_f)
+                 dylib = os.path.join(sysroot, dir[1:], dylib_f)
+                 static = os.path.join(sysroot, dir[1:], static_f)
++                xcode_stub = os.path.join(sysroot, dir[1:], xcode_stub_f)
+ 
+             # We're second-guessing the linker here, with not much hard
+             # data to go on: GCC seems to prefer the shared library, so I'm
+@@ -279,6 +284,8 @@ class UnixCCompiler(CCompiler):
+             # ignoring even GCC's "-static" option.  So sue me.
+             if os.path.exists(dylib):
+                 return dylib
++            elif os.path.exists(xcode_stub):
++                return xcode_stub
+             elif os.path.exists(shared):
+                 return shared
+             elif os.path.exists(static):
+-- 
+2.5.2
+
