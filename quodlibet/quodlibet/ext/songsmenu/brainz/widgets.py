@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# brainz.py - Quod Libet plugin to tag files from MusicBrainz automatically
 # Copyright 2005-2010   Joshua Kwan <joshk@triplehelix.org>,
 #                       Michael Ball <michael.ball@gmail.com>,
 #                       Steven Robertson <steven@strobe.cc>
@@ -10,11 +9,6 @@
 
 import os
 import re
-import threading
-import time
-
-from gi.repository import Gtk, GObject, Pango, GLib
-
 try:
     from musicbrainz2 import webservice as ws
     from musicbrainz2.utils import extractUuid
@@ -23,11 +17,15 @@ except ImportError as e:
     raise (plugins.MissingModulePluginException("musicbrainz2") if
            hasattr(plugins, "MissingModulePluginException") else e)
 
-from quodlibet import config, util
-from quodlibet.qltk.ccb import ConfigCheckButton
+from gi.repository import Gtk, GObject, Pango
+
+from quodlibet import util
 from quodlibet.qltk import Dialog, Icons
-from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
+
+from .query import QueryThread
+from .util import config_get
+
 
 VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
 
@@ -64,8 +62,76 @@ def get_trackcount(album):
     return max_count
 
 
-def config_get(key, default=''):
-    return config.getboolean('plugins', 'brainz_' + key, default)
+class ResultComboBox(Gtk.ComboBox):
+    """Formatted picker for different Result entries."""
+
+    def __init__(self, model):
+        super(ResultComboBox, self).__init__(model=model)
+        render = Gtk.CellRendererText()
+        render.set_fixed_height_from_font(2)
+
+        def celldata(layout, cell, model, iter, data):
+            release = model[iter][0]
+            if not release:
+                return
+            date = release.getEarliestReleaseDate()
+            if date:
+                date = '%s, ' % date
+            else:
+                date = ''
+            markup = "<b>%s</b>\n%s - %s%s tracks" % (
+                    util.escape(release.title),
+                    util.escape(release.artist.name),
+                    date, release.tracksCount)
+            cell.set_property('markup', markup)
+        self.pack_start(render, True)
+        self.set_cell_data_func(render, celldata, None)
+
+
+class ReleaseEventComboBox(Gtk.HBox):
+    """A ComboBox for picking a release event."""
+
+    def __init__(self):
+        super(ReleaseEventComboBox, self).__init__()
+        self.model = Gtk.ListStore(object, str)
+        self.combo = Gtk.ComboBox(model=self.model)
+        render = Gtk.CellRendererText()
+        self.combo.pack_start(render, True)
+        self.combo.add_attribute(render, "markup", 1)
+        self.combo.set_sensitive(False)
+        self.label = Gtk.Label(label=_("_Release:"), use_underline=True)
+        self.label.set_use_underline(True)
+        self.label.set_mnemonic_widget(self.combo)
+        self.pack_start(self.label, False, True, 0)
+        self.pack_start(self.combo, True, True, 0)
+
+    def update(self, release):
+        self.model.clear()
+        events = release.getReleaseEvents()
+        # The catalog number is the most important of these fields, as it's
+        # the source for the 'labelid' tag, which we'll use until MB NGS is
+        # up and running to deal with multi-disc albums properly. We sort to
+        # find the earliest release with a catalog number.
+        events.sort(key=lambda e: (bool(not e.getCatalogNumber()),
+                                   e.getDate() or '9999-12-31'))
+        for rel_event in events:
+            text = '%s %s: <b>%s</b> <i>(%s)</i>' % (
+                    rel_event.getDate() or '', rel_event.getLabel() or '',
+                    rel_event.getCatalogNumber(), rel_event.getCountry())
+            self.model.append((rel_event, text))
+        if len(events) > 0:
+            self.combo.set_active(0)
+        self.combo.set_sensitive((len(events) > 0))
+        text = ngettext("%d _release:", "%d _releases:", len(events))
+        self.label.set_text(text % len(events))
+        self.label.set_use_underline(True)
+
+    def get_release_event(self):
+        itr = self.combo.get_active_iter()
+        if itr:
+            return self.model[itr][0]
+        else:
+            return None
 
 
 class ResultTreeView(HintedTreeView, MultiDragTreeView):
@@ -148,116 +214,6 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
         col.set_visible(has_artists)
         self.columns_autosize()
         self.queue_draw()
-
-
-class ResultComboBox(Gtk.ComboBox):
-    """Formatted picker for different Result entries."""
-
-    def __init__(self, model):
-        super(ResultComboBox, self).__init__(model=model)
-        render = Gtk.CellRendererText()
-        render.set_fixed_height_from_font(2)
-
-        def celldata(layout, cell, model, iter, data):
-            release = model[iter][0]
-            if not release:
-                return
-            date = release.getEarliestReleaseDate()
-            if date:
-                date = '%s, ' % date
-            else:
-                date = ''
-            markup = "<b>%s</b>\n%s - %s%s tracks" % (
-                    util.escape(release.title),
-                    util.escape(release.artist.name),
-                    date, release.tracksCount)
-            cell.set_property('markup', markup)
-        self.pack_start(render, True)
-        self.set_cell_data_func(render, celldata, None)
-
-
-class ReleaseEventComboBox(Gtk.HBox):
-    """A ComboBox for picking a release event."""
-
-    def __init__(self):
-        super(ReleaseEventComboBox, self).__init__()
-        self.model = Gtk.ListStore(object, str)
-        self.combo = Gtk.ComboBox(model=self.model)
-        render = Gtk.CellRendererText()
-        self.combo.pack_start(render, True)
-        self.combo.add_attribute(render, "markup", 1)
-        self.combo.set_sensitive(False)
-        self.label = Gtk.Label(label=_("_Release:"), use_underline=True)
-        self.label.set_use_underline(True)
-        self.label.set_mnemonic_widget(self.combo)
-        self.pack_start(self.label, False, True, 0)
-        self.pack_start(self.combo, True, True, 0)
-
-    def update(self, release):
-        self.model.clear()
-        events = release.getReleaseEvents()
-        # The catalog number is the most important of these fields, as it's
-        # the source for the 'labelid' tag, which we'll use until MB NGS is
-        # up and running to deal with multi-disc albums properly. We sort to
-        # find the earliest release with a catalog number.
-        events.sort(key=lambda e: (bool(not e.getCatalogNumber()),
-                                   e.getDate() or '9999-12-31'))
-        for rel_event in events:
-            text = '%s %s: <b>%s</b> <i>(%s)</i>' % (
-                    rel_event.getDate() or '', rel_event.getLabel() or '',
-                    rel_event.getCatalogNumber(), rel_event.getCountry())
-            self.model.append((rel_event, text))
-        if len(events) > 0:
-            self.combo.set_active(0)
-        self.combo.set_sensitive((len(events) > 0))
-        text = ngettext("%d _release:", "%d _releases:", len(events))
-        self.label.set_text(text % len(events))
-        self.label.set_use_underline(True)
-
-    def get_release_event(self):
-        itr = self.combo.get_active_iter()
-        if itr:
-            return self.model[itr][0]
-        else:
-            return None
-
-
-class QueryThread(object):
-    """Daemon thread which does HTTP retries and avoids flooding."""
-    def __init__(self):
-        self.running = True
-        self.queue = []
-        thread = threading.Thread(target=self.__run)
-        thread.daemon = True
-        thread.start()
-
-    def add(self, callback, func, *args, **kwargs):
-        """Add a func to be evaluated in a background thread.
-        Callback will be called with the result from the main thread."""
-        self.queue.append((callback, func, args, kwargs))
-
-    def stop(self):
-        """Stop the background thread."""
-        self.running = False
-
-    def __run(self):
-        while self.running:
-            if self.queue:
-                callback, func, args, kwargs = self.queue.pop(0)
-                try:
-                    res = func(*args, **kwargs)
-                except:
-                    time.sleep(2)
-                    try:
-                        res = func(*args, **kwargs)
-                    except:
-                        res = None
-
-                def idle_check(cb, res):
-                    if self.running:
-                        cb(res)
-                GLib.idle_add(idle_check, callback, res)
-            time.sleep(1)
 
 
 class SearchWindow(Dialog):
@@ -476,53 +432,3 @@ class SearchWindow(Dialog):
 
         stb.emit('clicked')
         self.get_child().show_all()
-
-
-class MyBrainz(SongsMenuPlugin):
-    PLUGIN_ID = "MusicBrainz lookup"
-    PLUGIN_NAME = _("MusicBrainz Lookup")
-    PLUGIN_ICON = Icons.MEDIA_OPTICAL
-    PLUGIN_DESC = _('Re-tags an album based on a MusicBrainz search.')
-
-    cache = {}
-
-    def plugin_albums(self, albums):
-        if not albums:
-            return
-
-        def win_finished_cb(widget, *args):
-            if albums:
-                start_processing(albums.pop(0))
-            else:
-                self.plugin_finish()
-
-        def start_processing(disc):
-            win = SearchWindow(
-                self.plugin_window, disc, self.cache)
-            win.connect("destroy", win_finished_cb)
-            win.show()
-
-        start_processing(albums.pop(0))
-
-    @classmethod
-    def PluginPreferences(self, win):
-        items = [
-            ('split_disc', _('Split _disc from album'), True),
-            ('split_feat', _('Split _featured performers from track'), False),
-            ('year_only', _('Only use year for "date" tag'), False),
-            ('albumartist', _('Write "_albumartist" when needed'), True),
-            ('artist_sort', _('Write sort tags for artist names'), False),
-            ('standard', _('Write _standard MusicBrainz tags'), True),
-            ('labelid',
-                _('Write _labelid tag (fixes multi-disc albums)'), True),
-        ]
-
-        vb = Gtk.VBox()
-        vb.set_spacing(8)
-
-        for key, label, default in items:
-            ccb = ConfigCheckButton(label, 'plugins', 'brainz_' + key)
-            ccb.set_active(config_get(key, default))
-            vb.pack_start(ccb, True, True, 0)
-
-        return vb
