@@ -26,5 +26,5 @@ class TBrainz(PluginTestCase):
             AudioFile({"tracknumber": "garbage"}),
             AudioFile({"tracknumber": "10/42"}),
         ]
-        self.assertEqual(brainz.get_trackcount([]), 0)
-        self.assertEqual(brainz.get_trackcount(album), 42)
+        self.assertEqual(brainz.widgets.get_trackcount([]), 0)
+        self.assertEqual(brainz.widgets.get_trackcount(album), 42)
