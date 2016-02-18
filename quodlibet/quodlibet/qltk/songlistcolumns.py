@@ -37,7 +37,7 @@ def create_songlist_column(t):
         return NumericColumn(t)
     elif t in FILESYSTEM_TAGS:
         return FSColumn(t)
-    elif t.startswith("<"):
+    elif "<" in t:
         return PatternColumn(t)
     elif "~" not in t and t != "title":
         return NonSynthTextColumn(t)

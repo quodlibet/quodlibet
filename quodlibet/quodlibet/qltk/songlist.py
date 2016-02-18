@@ -156,7 +156,7 @@ def get_sort_tag(tag):
     elif tag == "~album~discsubtitle":
         tag = "album"
 
-    if tag.startswith("<"):
+    if "<" in tag:
         for key, value in replace_order.iteritems():
             tag = tag.replace("<%s>" % key, "<%s>" % value)
         for key, value in TAG_TO_SORT.iteritems():
@@ -1036,7 +1036,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         current_set = set(current)
 
         def tag_title(tag):
-            if tag.startswith("<"):
+            if "<" in tag:
                 return util.pattern(tag)
             return util.tag(tag)
         current = zip(map(tag_title, current), current)
