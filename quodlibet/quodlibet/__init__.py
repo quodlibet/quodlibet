@@ -148,6 +148,9 @@ def get_user_dir():
     else:
         USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
 
+    if not PY2:
+        USERDIR += "_py3"
+
     if 'QUODLIBET_USERDIR' in environ:
         USERDIR = environ['QUODLIBET_USERDIR']
 
