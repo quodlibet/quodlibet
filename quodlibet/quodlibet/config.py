@@ -120,6 +120,9 @@ INITIAL = {
         # If set to "true" allow directly deleting files, even on systems that
         # support sending them to the trash.
         "bypass_trash": "false",
+
+        # our implementation is buggy and disabled by default
+        "osx_mmkeys": "false",
     },
     "rename": {
         "spaces": "false",

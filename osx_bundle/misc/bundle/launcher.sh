@@ -45,8 +45,6 @@ fi
 export PYTHON="$bundle_contents/MacOS/python"
 export PYTHONHOME="$bundle_res"
 
-# temporary disable multimedia keys
-export QUODLIBET_NO_MMKEYS=yes
 # temporary disable tooltips
 export QUODLIBET_NO_HINTS=yes
 

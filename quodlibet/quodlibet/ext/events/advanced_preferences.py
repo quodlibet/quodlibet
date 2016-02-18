@@ -135,6 +135,12 @@ class AdvancedPreferences(EventPlugin):
                 ("Size of the album cover images in the album list browser "
                  "(restart required)")))
 
+        rows.append(
+            boolean_config(
+                "settings", "osx_mmkeys",
+                "OS X Multimedia Keys:",
+                "Enable experimental mmkeys support (restart required)"))
+
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
             table.attach(label, 0, 1, row, row + 1,

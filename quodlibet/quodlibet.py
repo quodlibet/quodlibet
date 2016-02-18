@@ -174,9 +174,9 @@ def main(argv):
     except ImportError:
         DBusHandler = lambda player, library: None
 
-    mmkeys_handler = MMKeysHandler(app.name, window, player)
-    if "QUODLIBET_NO_MMKEYS" not in os.environ:
-        mmkeys_handler.start()
+    mmkeys_handler = MMKeysHandler(app)
+    mmkeys_handler.start()
+
     current_path = os.path.join(quodlibet.get_user_dir(), "current")
     fsiface = FSInterface(current_path, player)
     remote = Remote(app, cmd_registry)

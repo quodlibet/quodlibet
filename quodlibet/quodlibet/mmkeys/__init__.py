@@ -5,6 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import config
+
 from ._base import MMKeysAction, MMKeysImportError
 
 
@@ -31,12 +33,13 @@ def iter_backends():
     else:
         yield PyHookBackend
 
-    try:
-        from .osx import OSXBackend
-    except MMKeysImportError:
-        pass
-    else:
-        yield OSXBackend
+    if config.getboolean("settings", "osx_mmkeys"):
+        try:
+            from .osx import OSXBackend
+        except MMKeysImportError:
+            pass
+        else:
+            yield OSXBackend
 
 
 def find_active_backend():
@@ -52,11 +55,11 @@ class MMKeysHandler(object):
     events to actions on the player backend.
     """
 
-    def __init__(self, app_name, window, player):
+    def __init__(self, app):
         self._backend = None
-        self._window = window
-        self._player = player
-        self._app_name = app_name
+        self._window = app.window
+        self._player = app.player
+        self._app_name = app.name
 
     def start(self):
         kind = find_active_backend()

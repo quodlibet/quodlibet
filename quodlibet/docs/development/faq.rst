@@ -122,9 +122,6 @@ QUODLIBET_DEBUG
 QUODLIBET_NO_TRANS
     When in the environment disables translations
 
-QUODLIBET_NO_MMKEYS
-    When in the environment disables multimedia keys support
-
 QUODLIBET_BACKEND
     Can be set to the audio backend, overriding the value present in the main
     config file. Useful for quickly testing a different audio backend.
