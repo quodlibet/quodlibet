@@ -9,7 +9,6 @@ modulesets_dir = os.environ["QL_OSXBUNDLE_MODULESETS_DIR"]
 moduleset = ["quodlibet"]
 modules = []
 
-disable_Werror = False
 skip.append("libiconv")
 
 setup_sdk(target="10.6", sdk_version="native", architectures=[_default_arch])
