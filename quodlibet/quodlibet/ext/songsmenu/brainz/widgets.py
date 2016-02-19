@@ -226,6 +226,7 @@ class SearchWindow(Dialog):
 
     def __init__(self, parent, album, cache):
         self.album = album
+        self.album.sort(key=lambda s: s.sort_key)
 
         self._query = ws.Query()
         self._resultlist = ObjectStore()
