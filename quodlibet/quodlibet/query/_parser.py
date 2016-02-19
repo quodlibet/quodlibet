@@ -14,7 +14,7 @@ from ._diacritic import re_add_variants
 from quodlibet.util import re_escape
 
 # Precompiled regexes
-TAG = re.compile(r'[~\w\s]+')
+TAG = re.compile(r'[~\w\s:]+')
 UNARY_OPERATOR = re.compile(r'-')
 BINARY_OPERATOR = re.compile(r'[+\-\*/]')
 RELATIONAL_OPERATOR = re.compile(r'>=|<=|==|!=|>|<|=')

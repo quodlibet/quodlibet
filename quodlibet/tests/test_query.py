@@ -88,6 +88,11 @@ class TQuery_is_valid(TestCase):
         self.failIf(Query.is_valid("#(t !> 3)"))
         self.failIf(Query.is_valid("#(t >> 3)"))
 
+    def test_numcmp_func(self):
+        self.assertTrue(Query.is_valid("#(t:min < 3)"))
+        self.assertTrue(
+            Query.is_valid("&(#(playcount:min = 0), #(added < 1 month ago))"))
+
     def test_trinary(self):
         self.failUnless(Query.is_valid("#(2 < t < 3)"))
         self.failUnless(Query.is_valid("#(2 >= t > 3)"))
