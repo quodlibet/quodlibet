@@ -20,11 +20,39 @@ class TBrainz(PluginTestCase):
     def setUp(self):
         globals()["brainz"] = self.modules["MusicBrainz lookup"]
 
-    def test(self):
+    def test_get_trackcount(self):
+        get_trackcount = brainz.widgets.get_trackcount
+
         album = [
             AudioFile({"tracknumber": "7"}),
             AudioFile({"tracknumber": "garbage"}),
             AudioFile({"tracknumber": "10/42"}),
         ]
-        self.assertEqual(brainz.widgets.get_trackcount([]), 0)
-        self.assertEqual(brainz.widgets.get_trackcount(album), 42)
+        self.assertEqual(get_trackcount([]), 0)
+        self.assertEqual(get_trackcount(album), 42)
+
+    def test_get_artist(self):
+        get_artist = brainz.widgets.get_artist
+
+        self.assertEqual(get_artist([]), None)
+
+        album = [
+            AudioFile({"artist": u"garbage"}),
+            AudioFile({"albumartist": u"foo"}),
+        ]
+
+        self.assertEqual(get_artist(album), u"foo")
+
+        album = [
+            AudioFile({"artist": u"garbage"}),
+            AudioFile({"artist": u"bla"}),
+        ]
+
+        self.assertEqual(get_artist(album), None)
+
+        album = [
+            AudioFile({"artist": u"bla"}),
+            AudioFile({"artist": u"bla"}),
+        ]
+
+        self.assertEqual(get_artist(album), u"bla")

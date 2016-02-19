@@ -33,6 +33,7 @@ VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
 
 def get_artist(album):
     """Returns a single artist likely to be the MB AlbumArtist, or None."""
+
     for tag in ["albumartist", "artist", "performer"]:
         names = set()
         for song in album:
