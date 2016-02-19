@@ -6,7 +6,7 @@ from tests import TestCase
 from quodlibet.library import SongLibrary
 from quodlibet.util.path import fsnative
 from quodlibet.qltk.songlist import SongList, set_columns, get_columns, \
-    header_tag_split
+    header_tag_split, get_sort_tag
 from quodlibet.formats import AudioFile
 from quodlibet import config
 
@@ -211,6 +211,15 @@ class TSongList(TestCase):
         self.assertEqual(header_tag_split("~foo~bar"), ["foo", "bar"])
         self.assertEqual(header_tag_split("<foo>"), ["foo"])
         self.assertEqual(header_tag_split("<~foo~bar>"), ["foo", "bar"])
+        self.assertEqual(header_tag_split("pattern <~foo~bar>"),
+                         ["foo", "bar"])
+
+    def test_get_sort_tag(self):
+        self.assertEqual(get_sort_tag("~#track"), "")
+        self.assertEqual(get_sort_tag("artist"), "artistsort")
+        self.assertEqual(get_sort_tag("date"), "date")
+        self.assertEqual(get_sort_tag("~artist~date"), "~artistsort~date")
+        self.assertEqual(get_sort_tag("~date~artist"), "~date~artistsort")
 
     def tearDown(self):
         self.songlist.destroy()
