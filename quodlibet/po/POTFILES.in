@@ -48,6 +48,7 @@ quodlibet/ext/events/headphonemon.py
 quodlibet/ext/events/inhibit.py
 quodlibet/ext/events/iradiolog.py
 quodlibet/ext/events/jep118.py
+quodlibet/ext/events/lyricswindow.py
 quodlibet/ext/events/mediaserver.py
 quodlibet/ext/events/mpdserver/__init__.py
 quodlibet/ext/events/mpris/__init__.py
@@ -91,7 +92,8 @@ quodlibet/ext/_shared/squeezebox/util.py
 quodlibet/ext/songsmenu/albumart.py
 quodlibet/ext/songsmenu/ape2id3.py
 quodlibet/ext/songsmenu/bookmarks.py
-quodlibet/ext/songsmenu/brainz.py
+quodlibet/ext/songsmenu/brainz/__init__.py
+quodlibet/ext/songsmenu/brainz/widgets.py
 quodlibet/ext/songsmenu/browsefolders.py
 quodlibet/ext/songsmenu/console.py
 quodlibet/ext/songsmenu/custom_commands.py
@@ -111,7 +113,6 @@ quodlibet/ext/songsmenu/ifp.py
 quodlibet/ext/songsmenu/importexport.py
 quodlibet/ext/songsmenu/k3b.py
 quodlibet/ext/songsmenu/lastfmsync.py
-quodlibet/ext/songsmenu/lyricwiki.py
 quodlibet/ext/songsmenu/makesorttags.py
 quodlibet/ext/songsmenu/openwith.py
 quodlibet/ext/songsmenu/playlist.py
