@@ -14,13 +14,10 @@ def get_config():
     pc = PluginConfig("brainz")
 
     defaults = pc.defaults
-    defaults.set("split_disc", True)
-    defaults.set("split_feat", False)
     defaults.set("year_only", False)
     defaults.set("albumartist", True)
     defaults.set("artist_sort", False)
     defaults.set("standard", True)
-    defaults.set("labelid", True)
 
     return pc
 

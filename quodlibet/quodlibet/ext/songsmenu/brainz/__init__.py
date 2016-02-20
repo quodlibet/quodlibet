@@ -22,8 +22,6 @@ class MyBrainz(SongsMenuPlugin):
     PLUGIN_ICON = Icons.MEDIA_OPTICAL
     PLUGIN_DESC = _('Re-tags an album based on a MusicBrainz search.')
 
-    cache = {}
-
     def plugin_albums(self, albums):
         if not albums:
             return
@@ -35,8 +33,7 @@ class MyBrainz(SongsMenuPlugin):
                 self.plugin_finish()
 
         def start_processing(disc):
-            win = SearchWindow(
-                self.plugin_window, disc, self.cache)
+            win = SearchWindow(self.plugin_window, disc)
             win.connect("destroy", win_finished_cb)
             win.show()
 
@@ -45,13 +42,10 @@ class MyBrainz(SongsMenuPlugin):
     @classmethod
     def PluginPreferences(self, win):
         items = [
-            ('split_disc', _('Split _disc from album')),
-            ('split_feat', _('Split _featured performers from track')),
             ('year_only', _('Only use year for "date" tag')),
             ('albumartist', _('Write "_albumartist" when needed')),
             ('artist_sort', _('Write sort tags for artist names')),
             ('standard', _('Write _standard MusicBrainz tags')),
-            ('labelid', _('Write _labelid tag (fixes multi-disc albums)')),
         ]
 
         vb = Gtk.VBox()

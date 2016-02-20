@@ -242,6 +242,7 @@ def init_test_environ():
 
     import quodlibet
     quodlibet.init(no_translations=True, no_excepthook=True)
+    quodlibet.app.name = "QL Tests"
 
 
 def exit_test_environ():

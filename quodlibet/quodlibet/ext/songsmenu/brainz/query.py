@@ -12,6 +12,8 @@ import time
 
 from gi.repository import GLib
 
+from quodlibet.util import print_exc
+
 
 class QueryThread(object):
     """Daemon thread which does HTTP retries and avoids flooding."""
@@ -25,11 +27,14 @@ class QueryThread(object):
 
     def add(self, callback, func, *args, **kwargs):
         """Add a func to be evaluated in a background thread.
-        Callback will be called with the result from the main thread."""
+        Callback will be called with the result from the main thread.
+        """
+
         self.queue.append((callback, func, args, kwargs))
 
     def stop(self):
         """Stop the background thread."""
+
         self.running = False
 
     def __run(self):
@@ -43,6 +48,7 @@ class QueryThread(object):
                     try:
                         res = func(*args, **kwargs)
                     except:
+                        print_exc()
                         res = None
 
                 def idle_check(cb, res):

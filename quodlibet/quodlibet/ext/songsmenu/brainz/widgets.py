@@ -7,28 +7,17 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
-import re
-try:
-    from musicbrainz2 import webservice as ws
-    from musicbrainz2.utils import extractUuid
-except ImportError as e:
-    from quodlibet import plugins
-    raise (plugins.MissingModulePluginException("musicbrainz2") if
-           hasattr(plugins, "MissingModulePluginException") else e)
-
 from gi.repository import Gtk, Pango
 
 from quodlibet import util
+from quodlibet.util import path
 from quodlibet.qltk import Dialog, Icons
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
 
 from .query import QueryThread
 from .util import pconfig
-
-
-VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
+from .mb import search_releases
 
 
 def get_artist(album):
@@ -64,6 +53,23 @@ def get_trackcount(album):
     return max_count
 
 
+def build_query(album):
+    """Builds an initial mb release search query.
+
+    See: https://musicbrainz.org/doc/Development/XML%20Web%20Service/
+        Version%202/Search#Release
+    """
+
+    if not album:
+        return u""
+
+    alb = '"%s"' % album[0].comma("album").replace('"', '')
+    art = get_artist(album)
+    if art:
+        alb = '%s AND artist:"%s"' % (alb, art.replace('"', ''))
+    return u'%s AND tracks:%d' % (alb, get_trackcount(album))
+
+
 class ResultComboBox(Gtk.ComboBox):
     """Formatted picker for different Result entries."""
 
@@ -72,113 +78,43 @@ class ResultComboBox(Gtk.ComboBox):
         render = Gtk.CellRendererText()
         render.set_fixed_height_from_font(2)
 
-        def celldata(layout, cell, model, iter, data):
-            release = model[iter][0]
-            if not release:
-                return
-            date = release.getEarliestReleaseDate()
-            if date:
-                date = '%s, ' % date
-            else:
-                date = ''
-            markup = "<b>%s</b>\n%s - %s%s tracks" % (
+        def celldata(layout, cell, model, iter_, data):
+            release = model.get_value(iter_)
+
+            extra_info = ", ".join(
+                filter(None, [util.escape(release.date),
+                util.escape(release.country),
+                util.escape(release.medium_format)]))
+
+            artist_names = [a.name for a in release.artists]
+            disc_count = release.disc_count
+            track_count = release.track_count
+
+            discs_format = ngettext(
+                "%d disc", "%d discs", disc_count) % disc_count
+            tracks_format = ngettext(
+                "%d track", "%d tracks", track_count) % track_count
+
+            markup = "<b>%s</b>\n%s - %s, %s (%s)" % (
                     util.escape(release.title),
-                    util.escape(release.artist.name),
-                    date, release.tracksCount)
+                    util.escape(", ".join(artist_names)),
+                    util.escape(discs_format),
+                    util.escape(tracks_format),
+                    extra_info)
             cell.set_property('markup', markup)
+
         self.pack_start(render, True)
         self.set_cell_data_func(render, celldata, None)
 
 
-class ReleaseEventComboBox(Gtk.HBox):
-    """A ComboBox for picking a release event."""
-
-    def __init__(self):
-        super(ReleaseEventComboBox, self).__init__()
-        self._model = ObjectStore()
-        self.combo = Gtk.ComboBox(model=self._model)
-        render = Gtk.CellRendererText()
-        self.combo.pack_start(render, True)
-
-        def render_release_event(combo, cell, model, iter_):
-            rel_event = model.get_value(iter_)
-            text = '%s %s: <b>%s</b> <i>(%s)</i>' % (
-                rel_event.getDate() or '', rel_event.getLabel() or '',
-                rel_event.getCatalogNumber(), rel_event.getCountry())
-            cell.set_property("markup", text)
-
-        self.combo.set_cell_data_func(render, render_release_event)
-        self.combo.set_sensitive(False)
-
-        self.label = Gtk.Label(label=_("_Release:"), use_underline=True)
-        self.label.set_use_underline(True)
-        self.label.set_mnemonic_widget(self.combo)
-        self.pack_start(self.label, False, True, 0)
-        self.pack_start(self.combo, True, True, 0)
-
-    def update(self, release):
-        self._model.clear()
-        events = release.getReleaseEvents()
-        # The catalog number is the most important of these fields, as it's
-        # the source for the 'labelid' tag, which we'll use until MB NGS is
-        # up and running to deal with multi-disc albums properly. We sort to
-        # find the earliest release with a catalog number.
-        events.sort(key=lambda e: (bool(not e.getCatalogNumber()),
-                                   e.getDate() or '9999-12-31'))
-        self._model.append_many(events)
-        if len(events) > 0:
-            self.combo.set_active(0)
-        self.combo.set_sensitive((len(events) > 0))
-        text = ngettext("%d _release:", "%d _releases:", len(events))
-        self.label.set_text(text % len(events))
-        self.label.set_use_underline(True)
-
-    def get_release_event(self):
-        itr = self.combo.get_active_iter()
-        if itr:
-            return self._model[itr][0]
-        else:
-            return None
-
-
 class ResultTreeView(HintedTreeView, MultiDragTreeView):
-    """The result treeview. The model only stores local tracks; info about
-    remote results is pulled from self.remote_album."""
-
-    def __name_datafunc(self, col, cell, model, itr, data):
-        song = model[itr][0]
-        if song:
-            cell.set_property('text', os.path.basename(song.get("~filename")))
-        else:
-            cell.set_property('text', '')
-
-    def __track_datafunc(self, col, cell, model, itr, data):
-        idx = model.get_path(itr)[0]
-        if idx >= len(self.remote_album):
-            cell.set_property('text', '')
-        else:
-            cell.set_property('text', str(idx + 1))
-
-    def __title_datafunc(self, col, cell, model, itr, data):
-        idx = model.get_path(itr)[0]
-        if idx >= len(self.remote_album):
-            cell.set_property('text', '')
-        else:
-            cell.set_property('text', self.remote_album[idx].title)
-
-    def __artist_datafunc(self, col, cell, model, itr, data):
-        idx = model.get_path(itr)[0]
-        if idx >= len(self.remote_album) or not self.remote_album[idx].artist:
-            cell.set_property('text', '')
-        else:
-            cell.set_property('text', self.remote_album[idx].artist.name)
+    """The result treeview"""
 
     def __init__(self, album):
         self.album = album
-        self.remote_album = []
+        self._release = None
         self.model = ObjectStore()
-        for song in album:
-            self.model.append([song])
+        self.model.append_many(album)
 
         super(ResultTreeView, self).__init__(self.model)
         self.set_headers_clickable(True)
@@ -186,52 +122,224 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
         self.set_reorderable(True)
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
 
+        mode = Pango.EllipsizeMode
         cols = [
-                (_('Filename'), self.__name_datafunc, True),
-                (_('Track'), self.__track_datafunc, False),
-                (_('Title'), self.__title_datafunc, True),
-                (_('Artist'), self.__artist_datafunc, True),
+                (_('Filename'), self.__name_datafunc, True, mode.MIDDLE),
+                (_('Disc'), self.__disc_datafunc, False, mode.END),
+                (_('Track'), self.__track_datafunc, False, mode.END),
+                (_('Title'), self.__title_datafunc, True, mode.END),
+                (_('Artist'), self.__artist_datafunc, True, mode.END),
             ]
 
-        for title, func, resize in cols:
+        for title, func, resize, mode in cols:
             render = Gtk.CellRendererText()
-            render.set_property('ellipsize', Pango.EllipsizeMode.END)
+            render.set_property('ellipsize', mode)
             col = Gtk.TreeViewColumn(title, render)
             col.set_cell_data_func(render, func)
             col.set_resizable(resize)
             col.set_expand(resize)
             self.append_column(col)
 
-    def update_remote_album(self, remote_album):
+    def iter_tracks(self):
+        """Yields tuples of (release, track, song) combinations as they
+        are shown in the list.
+        """
+
+        tracks = self._tracks
+        for idx, (song, ) in enumerate(self.model):
+            if song is None:
+                continue
+            if idx >= len(tracks):
+                continue
+            track = tracks[idx]
+            yield (self._release, track, song)
+
+    def update_release(self, full_release):
         """Updates the TreeView, handling results with a different number of
-        tracks than the album being tagged."""
-        for i in range(len(self.model), len(remote_album)):
+        tracks than the album being tagged.
+
+        Passing in None will reset the list.
+        """
+
+        if full_release is not None:
+            tracks = full_release.tracks
+        else:
+            tracks = []
+
+        for i in range(len(self.model), len(tracks)):
             self.model.append((None, ))
-        for i in range(len(self.model), len(remote_album), -1):
+        for i in range(len(self.model), len(tracks), -1):
             if self.model[-1][0] is not None:
                 break
             itr = self.model.get_iter_from_string(str(len(self.model) - 1))
             self.model.remove(itr)
-        self.remote_album = remote_album
-        has_artists = bool(filter(lambda t: t.artist, remote_album))
-        col = self.get_column(3)
-        # sometimes gets called after the treeview is already gone
-        if not col:
-            return
+
+        self._release = full_release
+
+        for row in self.model:
+            self.model.row_changed(row.path, row.iter)
+
+        # Only show artists if we have any
+        has_artists = bool(filter(lambda t: t.artists, tracks))
+        col = self.get_column(4)
         col.set_visible(has_artists)
+
+        # Only show discs column if we have more than one disc
+        col = self.get_column(1)
+        col.set_visible(
+            bool(full_release) and bool(full_release.disc_count > 1))
+
         self.columns_autosize()
-        self.queue_draw()
+
+    @property
+    def _tracks(self):
+        if self._release is None:
+            return []
+        return self._release.tracks
+
+    def __name_datafunc(self, col, cell, model, itr, data):
+        song = model[itr][0]
+        if song:
+            cell.set_property('text', path.fsdecode(song("~basename")))
+        else:
+            cell.set_property('text', '')
+
+    def __track_datafunc(self, col, cell, model, itr, data):
+        idx = model.get_path(itr)[0]
+        if idx >= len(self._tracks):
+            cell.set_property('text', '')
+        else:
+            cell.set_property('text', self._tracks[idx].tracknumber)
+
+    def __disc_datafunc(self, col, cell, model, itr, data):
+        idx = model.get_path(itr)[0]
+        if idx >= len(self._tracks):
+            cell.set_property('text', '')
+        else:
+            cell.set_property('text', self._tracks[idx].discnumber)
+
+    def __title_datafunc(self, col, cell, model, itr, data):
+        idx = model.get_path(itr)[0]
+        if idx >= len(self._tracks):
+            cell.set_property('text', '')
+        else:
+            cell.set_property('text', self._tracks[idx].title)
+
+    def __artist_datafunc(self, col, cell, model, itr, data):
+        idx = model.get_path(itr)[0]
+        if idx >= len(self._tracks):
+            cell.set_property('text', '')
+        else:
+            names = [a.name for a in self._tracks[idx].artists]
+            cell.set_property('text', ", ".join(names))
+
+
+def build_song_data(release, track):
+    """Returns a dict of tags to apply to a song. All the values are unicode.
+    If the value is empty it means the tag should be deleted.
+    """
+
+    meta = {}
+
+    join = lambda l: "\n".join(l)
+
+    # track/disc data
+    meta["tracknumber"] = "%s/%d" % (track.tracknumber, track.track_count)
+    if release.disc_count > 1:
+        meta["discnumber"] = "%s/%d" % (track.discnumber, release.disc_count)
+    else:
+        meta["discnumber"] = ""
+    meta["title"] = track.title
+    meta["musicbrainz_releasetrackid"] = track.id
+    meta["musicbrainz_trackid"] = u""  # we used to write those, so delete
+
+    # disc data
+    meta["discsubtitle"] = track.disctitle
+
+    # release data
+    meta["album"] = release.title
+    meta["date"] = release.date
+    meta["musicbrainz_albumid"] = release.id
+    # we did write labelid before ngs, albumid supersedes it
+    meta["labelid"] = ""
+
+    if not release.is_single_artist and not release.is_various_artists:
+        artists = release.artists
+        meta["albumartist"] = join([a.name for a in artists])
+        meta["albumartistsort"] = join([a.sort_name for a in artists])
+        meta["musicbrainz_albumartistid"] = join([a.id for a in artists])
+    else:
+        meta["albumartist"] = ""
+        meta["albumartistsort"] = ""
+        meta["musicbrainz_albumartistid"] = ""
+
+    meta["artist"] = join([a.name for a in track.artists])
+    meta["artistsort"] = join([a.sort_name for a in track.artists])
+    meta["musicbrainz_artistid"] = join([a.id for a in track.artists])
+
+    # clean up "redundant" data
+    if meta["albumartist"] == meta["albumartistsort"]:
+        meta["albumartistsort"] = ""
+    if meta["artist"] == meta["artistsort"]:
+        meta["artistsort"] = ""
+
+    # finally, as musicbrainzngs returns str values if it's ascii, we force
+    # everything to unicode now
+    for key, value in meta.iteritems():
+        meta[key] = unicode(value)
+
+    return meta
+
+
+def apply_options(meta, year_only, albumartist, artistsort, musicbrainz):
+    """Takes the tags extracted from musicbrainz and adjusts them according
+    to the user preferences.
+    """
+
+    if year_only:
+        meta["date"] = meta["date"].split('-', 1)[0]
+
+    if not albumartist:
+        meta["albumartist"] = u""
+
+    if not artistsort:
+        meta["albumartistsort"] = u""
+        meta["artistsort"] = u""
+
+    if not musicbrainz:
+        for key in meta:
+            if key.startswith("musicbrainz_"):
+                meta[key] = u""
+
+
+def apply_to_song(meta, song):
+    """Applies the tags to a AudioFile instance"""
+
+    for key, value in meta.iteritems():
+        if not value:
+            song.remove(key)
+        else:
+            assert isinstance(value, unicode)
+            song[key] = value
+
+
+def sort_key(song):
+    """Sort by path so untagged albums have a good start order. Also
+    take into account the directory in case it's split in different folders
+    by medium.
+    """
+
+    return util.human_sort_key(path.fsdecode(song("~filename")))
 
 
 class SearchWindow(Dialog):
 
-    def __init__(self, parent, album, cache):
+    def __init__(self, parent, album):
         self.album = album
-        self.album.sort(key=lambda s: s.sort_key)
+        self.album.sort(key=lambda s: sort_key(s))
 
-        self._query = ws.Query()
         self._resultlist = ObjectStore()
-        self._releasecache = cache
+        self._releasecache = {}
         self._qthread = QueryThread()
         self.current_release = None
 
@@ -254,27 +362,22 @@ class SearchWindow(Dialog):
         hb = Gtk.HBox()
         hb.set_spacing(8)
         sq = self.search_query = Gtk.Entry()
-        sq.connect('activate', self.__do_query)
+        sq.connect('activate', self._do_query)
 
-        alb = '"%s"' % album[0].comma("album").replace('"', '')
-        art = get_artist(album)
-        if art:
-            alb = '%s AND artist:"%s"' % (alb, art.replace('"', ''))
-        sq.set_text('%s AND tracks:%d' %
-                (alb, get_trackcount(album)))
+        sq.set_text(build_query(album))
 
         lbl = Gtk.Label(label=_("_Query:"))
         lbl.set_use_underline(True)
         lbl.set_mnemonic_widget(sq)
         stb = self.search_button = Gtk.Button(_('S_earch'), use_underline=True)
-        stb.connect('clicked', self.__do_query)
+        stb.connect('clicked', self._do_query)
         hb.pack_start(lbl, False, True, 0)
         hb.pack_start(sq, True, True, 0)
         hb.pack_start(stb, False, True, 0)
         vb.pack_start(hb, False, True, 0)
 
         self.result_combo = ResultComboBox(self._resultlist)
-        self.result_combo.connect('changed', self.__result_changed)
+        self.result_combo.connect('changed', self._result_changed)
         vb.pack_start(self.result_combo, False, True, 0)
 
         rhb = Gtk.HBox()
@@ -293,151 +396,103 @@ class SearchWindow(Dialog):
         sw.add(rtv)
         vb.pack_start(sw, True, True, 0)
 
-        hb = Gtk.HBox()
-        hb.set_spacing(8)
-        self.release_combo = ReleaseEventComboBox()
-        vb.pack_start(self.release_combo, False, True, 0)
-
+        self.get_action_area().set_border_width(4)
         self.get_content_area().pack_start(vb, True, True, 0)
-        self.connect('response', self.__save)
+        self.connect('response', self._on_response)
+        self.connect("destroy", self._on_destroy)
 
         stb.emit('clicked')
         self.get_child().show_all()
 
-    def __save(self, widget=None, response=None):
-        """Writes values to Song objects."""
+    def _on_destroy(self, *args):
         self._qthread.stop()
+
+    def _on_response(self, widget, response):
         if response != Gtk.ResponseType.ACCEPT:
             self.destroy()
             return
 
-        album = self.current_release
-        shared = {}
+        self._save()
 
-        shared['album'] = album.title
-        if pconfig.getboolean('split_disc'):
-            m = re.match(r'(.*) \(disc (.*?)\)$', album.title)
-            if m:
-                shared['album'] = m.group(1)
-                disc = m.group(2).split(': ', 1)
-                shared['discnumber'] = disc[0]
-                if len(disc) > 1:
-                    shared['discsubtitle'] = disc[1]
+    def _save(self):
+        """Writes values to Song objects."""
 
-        relevt = self.release_combo.get_release_event()
-        shared['date'] = relevt and relevt.getDate() or ''
-        if shared['date'] and pconfig.getboolean('year_only'):
-            shared['date'] = shared['date'].split('-')[0]
+        year_only = pconfig.getboolean("year_only")
+        albumartist = pconfig.getboolean("albumartist")
+        artistsort = pconfig.getboolean("artist_sort")
+        musicbrainz = pconfig.getboolean("standard")
 
-        if pconfig.getboolean('labelid'):
-            if relevt and relevt.getCatalogNumber():
-                shared['labelid'] = relevt.getCatalogNumber()
-
-        if not album.isSingleArtistRelease():
-            if (pconfig.getboolean('albumartist')
-                and extractUuid(album.artist.id) != VARIOUS_ARTISTS_ARTISTID):
-                shared['albumartist'] = album.artist.name
-                if pconfig.getboolean('artist_sort') and \
-                        album.artist.sortName != album.artist.name:
-                    shared['albumartistsort'] = album.artist.sortName
-
-        if pconfig.getboolean('standard'):
-            shared['musicbrainz_albumartistid'] = extractUuid(album.artist.id)
-            shared['musicbrainz_albumid'] = extractUuid(album.id)
-
-        for idx, (song, ) in enumerate(self.result_treeview.model):
-            if song is None:
-                continue
-            song.update(shared)
-            if idx >= len(album.tracks):
-                continue
-            track = album.tracks[idx]
-            song['title'] = track.title
-            song['tracknumber'] = '%d/%d' % (idx + 1,
-                    max(len(album.tracks), len(self.result_treeview.model)))
-            if pconfig.getboolean('standard'):
-                song['musicbrainz_trackid'] = extractUuid(track.id)
-            if album.isSingleArtistRelease() or not track.artist:
-                song['artist'] = album.artist.name
-                if pconfig.getboolean('artist_sort') and \
-                        album.artist.sortName != album.artist.name:
-                    song['artistsort'] = album.artist.sortName
-            else:
-                song['artist'] = track.artist.name
-                if pconfig.getboolean('artist_sort') and \
-                        track.artist.sortName != track.artist.name:
-                    song['artistsort'] = track.artist.sortName
-                if pconfig.getboolean('standard'):
-                    song['musicbrainz_artistid'] = extractUuid(track.artist.id)
-            if pconfig.getboolean('split_feat'):
-                feats = re.findall(r' \(feat\. (.*?)\)', track.title)
-                if feats:
-                    feat = []
-                    for value in feats:
-                        values = value.split(', ')
-                        if len(values) > 1:
-                            values += values.pop().split(' & ')
-                        feat += values
-                    song['performer'] = '\n'.join(feat)
-                    song['title'] = re.sub(r' \(feat\. .*?\)', '', track.title)
+        for release, track, song in self.result_treeview.iter_tracks():
+            meta = build_song_data(release, track)
+            apply_options(
+                meta, year_only, albumartist, artistsort, musicbrainz)
+            apply_to_song(meta, song)
 
         self.destroy()
 
-    def __do_query(self, *args):
+    def _do_query(self, *args):
         """Search for album using the query text."""
-        query = self.search_query.get_text()
+
+        query = util.gdecode(self.search_query.get_text())
+
         if not query:
             self.result_label.set_markup(
                 "<b>%s</b>" % _("Please enter a query."))
             self.search_button.set_sensitive(True)
             return
-        self.result_label.set_markup("<i>%s</i>" % _(u"Searching…"))
-        filt = ws.ReleaseFilter(query=query)
-        self._qthread.add(self.__process_results,
-                         self._query.getReleases, filt)
 
-    def __process_results(self, results):
-        """Callback for search query completion."""
+        self.result_label.set_markup("<i>%s</i>" % _(u"Searching…"))
+
+        self._qthread.add(self._process_results, search_releases, query)
+
+    def _process_results(self, results):
+        """Called when a query result is returned.
+
+        `results` is None if an error occurred.
+        """
+
         self._resultlist.clear()
         self.search_button.set_sensitive(True)
+
         if results is None:
             self.result_label.set_text(_("Error encountered. Please retry."))
             self.search_button.set_sensitive(True)
             return
-        for release in map(lambda r: r.release, results):
-            self._resultlist.append((release, ))
-        if len(results) > 0 and self.result_combo.get_active() == -1:
+
+        self._resultlist.append_many(results)
+
+        if len(results) > 0:
             self.result_label.set_markup("<i>%s</i>" % _(u"Loading result…"))
             self.result_combo.set_active(0)
         else:
             self.result_label.set_markup(_("No results found."))
 
-    def __result_changed(self, combo):
+    def _result_changed(self, combo):
         """Called when a release is chosen from the result combo."""
+
         idx = combo.get_active()
         if idx == -1:
             return
-        rel_id = self._resultlist[idx][0].id
-        if rel_id in self._releasecache:
-            self.__update_results(self._releasecache[rel_id])
+        release = self._resultlist[idx][0]
+
+        if release.id in self._releasecache:
+            self._update_result(self._releasecache[release.id])
         else:
             self.result_label.set_markup("<i>%s</i>" % _(u"Loading result…"))
-            inc = ws.ReleaseIncludes(
-                    artist=True, releaseEvents=True, tracks=True)
-            self._qthread.add(self.__update_result,
-                    self._query.getReleaseById, rel_id, inc)
+            self.result_treeview.update_release(None)
+            self._qthread.add(self._update_result, release.fetch_full)
 
-    def __update_result(self, release):
+    def _update_result(self, full_release):
         """Callback for release detail download from result combo."""
-        num_results = len(self._resultlist)
-        text = ngettext("Found %d result.", "Found %d results.", num_results)
-        self.result_label.set_text(text % num_results)
-        # issue 973: search can return invalid (or removed) ReleaseIDs
-        if release is None:
+
+        if full_release is None:
+            self.result_label.set_text(_("Error encountered. Please retry."))
             return
-        self._releasecache.setdefault(extractUuid(release.id), release)
-        self.result_treeview.update_remote_album(release.tracks)
-        self.current_release = release
-        self.release_combo.update(release)
+
+        self.result_label.set_text(u"")
+        self._releasecache.setdefault(full_release.id, full_release)
+
+        self.result_treeview.update_release(full_release)
+        self.current_release = full_release
         save_button = self.get_widget_for_response(Gtk.ResponseType.ACCEPT)
         save_button.set_sensitive(True)
