@@ -22,6 +22,7 @@ Changes
 * New optional plugin dependency: **libappindicator-gtk3** + **typelibs**:
   for the Tray Icon plugin under Ubuntu Unity and KDE Plasma
 * **python-musicbrainzngs** instead of **python-musicbrainz2**
+* **python-cddb** no longer needed
 
 
 3.5
@@ -175,9 +176,6 @@ plugin from loading.
 
 **GStreamer Plugins Bad**:
     * For the acoustid plugin
-
-**python-cddb**:
-    * For the CDDB plugin
 
 **python-dbus**:
     * "Browse Folders"
