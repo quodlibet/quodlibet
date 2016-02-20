@@ -57,6 +57,55 @@ u'h\xb3\xe6', 'release-event-count': 1, 'medium-count': 2, 'cover-art-archive':
 'quality': 'normal', 'id': '59211ea4-ffd2-4ad9-9a4e-941d3148024a'}
 
 
+# This isn't a complete/original ngs result, it just contains the minimum
+# a pregap track and a normal track.
+# The original release used here does also contain a pregap.
+TEST_PREGAP = \
+{'artist-credit': [],
+'date': '2008-10-17',
+'id': '87c070fc-90d5-39d1-b0ca-777236588378',
+'medium-count': 1,
+'medium-list': [{'format': 'CD',
+'position': '1',
+'pregap': {'artist-credit': [
+{'artist': {'id': '90b18d97-718b-4a95-982d-b14019d084c0',
+'name': 'Polarkreis 18',
+'sort-name': 'Polarkreis 18'}}],
+'artist-credit-phrase': 'Polarkreis 18',
+'id': '2edd640f-2365-4440-b6e5-1f65dd72440b',
+'length': '63000',
+'number': '0',
+'position': '0',
+'recording': {'artist-credit': [
+{'artist': {'id': '90b18d97-718b-4a95-982d-b14019d084c0',
+'name': 'Polarkreis 18',
+'sort-name': 'Polarkreis 18'}}],
+'artist-credit-phrase': 'Polarkreis 18',
+'id': 'e7f3e14b-7acf-47cc-bc26-d66269b821f4',
+'length': '63000',
+'title': 'Herbstlied'},
+'track_or_recording_length': '63000'},
+'track-count': 1,
+'track-list': [{'artist-credit': [
+{'artist': {'id': '90b18d97-718b-4a95-982d-b14019d084c0',
+'name': 'Polarkreis 18',
+'sort-name': 'Polarkreis 18'}}],
+'artist-credit-phrase': 'Polarkreis 18',
+'id': '03cdb09e-5a22-3e0d-88c9-da24793ccbab',
+'length': '202106',
+'number': '1',
+'position': '1',
+'recording': {'artist-credit': [
+{'artist': {'id': '90b18d97-718b-4a95-982d-b14019d084c0',
+'name': 'Polarkreis 18',
+'sort-name': 'Polarkreis 18'}}],
+'artist-credit-phrase': 'Polarkreis 18',
+'id': 'b2bcb18f-ef9b-4e7e-ac4a-29234b3bac4e',
+'length': '202106',
+'title': 'Tourist'},
+'track_or_recording_length': '202106'}]}]}
+
+
 @skipUnless(brainz, "brainz plugin not loaded")
 class TBrainz(PluginTestCase):
     """Test CustomCommands plugin and associated classes"""
@@ -170,3 +219,22 @@ class TBrainz(PluginTestCase):
         self.assertEqual(dummy("album"), u'\xe6\xb3o &h\xb3\xe6')
         self.assertEqual(dummy("date"), u'2003')
         self.assertEqual(dummy("title"), u'h\xb3\xe6')
+
+    def test_pregap(self):
+        Release = brainz.mb.Release
+
+        release = Release(TEST_PREGAP)
+        self.assertEqual(release.track_count, 2)
+        self.assertEqual(len(release.tracks), 2)
+
+        pregap = release.tracks[0]
+        self.assertEqual(pregap.title, "Herbstlied")
+        self.assertEqual(pregap.tracknumber, "0")
+        self.assertEqual(pregap.track_count, 2)
+        self.assertEqual(pregap.discnumber, "1")
+
+        track = release.tracks[1]
+        self.assertEqual(track.title, "Tourist")
+        self.assertEqual(track.tracknumber, "1")
+        self.assertEqual(track.track_count, 2)
+        self.assertEqual(track.discnumber, "1")

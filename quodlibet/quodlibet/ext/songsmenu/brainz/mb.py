@@ -143,6 +143,8 @@ class Release(object):
         for medium in self._mbrelease["medium-list"]:
             if "track-count" in medium:
                 track_count += medium["track-count"]
+            if "pregap" in medium:
+                track_count += 1
         return track_count
 
     @property
@@ -152,6 +154,10 @@ class Release(object):
             disc = medium["position"]
             title = medium.get("title", u"")
             track_count = medium["track-count"]
+            if "pregap" in medium:
+                track_count += 1
+                tracks.append(
+                    ReleaseTrack(medium["pregap"], disc, track_count, title))
             for track in medium["track-list"]:
                 tracks.append(ReleaseTrack(track, disc, track_count, title))
         return tracks
