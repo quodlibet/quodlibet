@@ -71,7 +71,7 @@
 	    module="2.7.11/Python-2.7.11.tar.xz" version="2.7.11">
       <patch file="patches/python2-test_grammar.py-typo.patch" strip="1"/>
       <patch file="patches/python2-xcode-stubs.patch" strip="1"/>
-      <patch file="patches/python2-xcode-stubs.patch" strip="1"/>
+      <patch file="patches/python2-linkflags.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="gettext-runtime"/>
