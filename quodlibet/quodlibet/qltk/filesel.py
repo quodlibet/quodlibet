@@ -6,7 +6,7 @@
 # published by the Free Software Foundation
 
 import os
-from quodlibet.compat import urlparse
+from quodlibet.compat import urlparse, urlsplit
 import errno
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
@@ -157,7 +157,7 @@ def get_gtk_bookmarks():
                 if not parts:
                     continue
                 folder_url = parts[0]
-                folders.append(urlparse.urlsplit(folder_url)[2])
+                folders.append(urlsplit(folder_url)[2])
     except EnvironmentError:
         pass
 
