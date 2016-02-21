@@ -151,6 +151,31 @@ class ID3File(AudioFile):
             elif frame.FrameID in ["COMM", "TXXX"]:
                 if frame.desc.startswith("QuodLibet::"):
                     name = frame.desc[11:]
+                    email = config.get("editing", "save_email").strip()
+                    if name.endswith(':%s' % (email,)):
+                        maps = {
+                            "added": int, "lastplayed": int,
+                            "playcount": int, "skipcount": int,
+                            "rating": float}
+                        keyed_key = name.split(':', 1)[0]
+                        map_func = maps.get(keyed_key)
+                        if map_func is not None:
+                            try:
+                                self["~#" + keyed_key] = map_func(frame.text)
+                            except (TypeError, ValueError):
+                                print_d(
+                                    ("File %s: failed to load QL-Frame '%s'"
+                                     " with value %r.") %
+                                    (filename, keyed_key, frame.text))
+                        # can delete the frame here, probably?
+                        # another way is to use `getall('TXXX:QuodLibet:')`
+                        # anyway, for now this is just a little permanent hack-in
+                elif frame.desc.startswith("replaygain_") and \
+                        frame.desc[11:] in ("track_peak", "track_gain",
+                                            "album_peak", "album_gain"):
+                    # Some versions of Foobar2000 write broken Replay Gain
+                    # tags in this format.
+                    name = frame.desc
                 elif frame.desc in self.TXXX_MAP:
                     name = self.TXXX_MAP[frame.desc]
                 else:
@@ -422,14 +447,38 @@ class ID3File(AudioFile):
                                      desc=self.PAM_XXXT[key])
                 tag.add(f)
 
-        if (config.getboolean("editing", "save_to_songs") and
-                (self("~#rating") != RATINGS.default or
-                 self.get("~#playcount", 0) != 0)):
+        if config.getboolean("editing", "save_to_songs"):
             email = config.get("editing", "save_email").strip()
             email = email or const.EMAIL
+            default_rating = config.getfloat("settings",  "default_rating")
+            # write both POPM with playcount & rating and TXXX with all library info.
             t = mutagen.id3.POPM(email=email,
                                  rating=int(255 * self("~#rating")),
                                  count=self.get("~#playcount", 0))
+            tag.add(t)
+
+            t = mutagen.id3.TXXX(
+                encoding=enc, text=str(self("~#added")),
+                desc=u"QuodLibet::added:%s" % email)
+            tag.add(t)
+            if self.get("~#lastplayed", 0) != 0:
+                t = mutagen.id3.TXXX(
+                    encoding=enc, text=str(self("~#lastplayed")),
+                    desc=u"QuodLibet::lastplayed:%s" % email)
+                tag.add(t)
+            if self.get("~#playcount", 0) != 0:
+                t = mutagen.id3.TXXX(
+                    encoding=enc, text=str(self("~#playcount")),
+                    desc=u"QuodLibet::playcount:%s" % email)
+                tag.add(t)
+            if self.get("~#skipcount", 0) != 0:
+                t = mutagen.id3.TXXX(
+                    encoding=enc, text=str(self("~#skipcount")),
+                    desc=u"QuodLibet::skipcount:%s" % email)
+                tag.add(t)
+            t = mutagen.id3.TXXX(
+                encoding=enc, text=str(self("~#rating")),
+                desc=u"QuodLibet::rating:%s" % email)
             tag.add(t)
 
         tag.save(self["~filename"])
