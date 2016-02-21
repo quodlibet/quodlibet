@@ -70,7 +70,7 @@ class RPaned(object):
         p.pack1(Gtk.Button())
         p.pack2(Gtk.Button())
         p.set_relative(0.75)
-        self.failUnlessEqual(p.get_relative(), 0.75)
+        self.failUnlessAlmostEqual(p.get_relative(), 0.75)
         with visible(p, width=200, height=200) as p:
             self.failUnlessAlmostEqual(p.get_relative(), 0.75, 2)
 
@@ -79,7 +79,7 @@ class RPaned(object):
         p.set_relative(0.75)
         self.failUnlessEqual(p.get_relative(), 0.75)
         with visible(p) as p:
-            self.failUnlessEqual(p.get_relative(), 0.75)
+            self.failUnlessAlmostEqual(p.get_relative(), 0.75, 2)
 
 
 class RHPaned(TestCase, RPaned):
