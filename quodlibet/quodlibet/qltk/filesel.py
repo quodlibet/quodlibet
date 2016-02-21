@@ -6,7 +6,7 @@
 # published by the Free Software Foundation
 
 import os
-from quodlibet.compat import urlparse, urlsplit
+from quodlibet.compat import urlsplit
 import errno
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
