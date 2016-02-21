@@ -72,13 +72,19 @@ class ScrolledWindow(Gtk.ScrolledWindow):
         # and the scrollbar on that edge is visible
         bottom = left = right = top = False
 
-        value = GObject.Value()
-        value.init(GObject.TYPE_BOOLEAN)
-        # default to True: https://bugzilla.gnome.org/show_bug.cgi?id=701058
-        value.set_boolean(True)
-        ctx.get_style_property("scrollbars-within-bevel", value)
-        scroll_within = value.get_boolean()
-        value.unset()
+        if gtk_version < (3, 19):
+            value = GObject.Value()
+            value.init(GObject.TYPE_BOOLEAN)
+            # default to True: https://bugzilla.gnome.org/show_bug.cgi?id=701058
+            value.set_boolean(True)
+            ctx.get_style_property("scrollbars-within-bevel", value)
+            scroll_within = value.get_boolean()
+            value.unset()
+        else:
+            # was deprecated in gtk 3.20
+            # https://git.gnome.org/browse/gtk+/commit/?id=
+            #   7c0f0e882ae60911e39aaf7b42fb2d94108f3474
+            scroll_within = True
 
         if not scroll_within:
             h, v = self.get_hscrollbar(), self.get_vscrollbar()
