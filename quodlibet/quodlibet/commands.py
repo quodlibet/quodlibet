@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#           2011-2013 Nick Boultbee
+#           2011-2013,2016 Nick Boultbee
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -76,7 +76,7 @@ class CommandRegistry(object):
         if len(args) > argcount + optcount:
             raise CommandError("Too many arguments for %r" % name)
 
-        print_d("Running %r with params %r " % (cmd, args))
+        print_d("Running %r with params %s " % (cmd.__name__, args))
 
         try:
             return cmd(app, *args)
@@ -465,3 +465,8 @@ def _print_playing(app, fstring="<artist~album~tracknumber~title>"):
         song.sanitize()
 
     return Pattern(fstring).format(song) + "\n"
+
+
+@registry.register("uri-received", args=1)
+def _uri_received(app, uri):
+    app.browser.emit("uri-received", uri)
