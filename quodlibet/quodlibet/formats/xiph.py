@@ -255,9 +255,8 @@ class MutagenVCFile(AudioFile):
 
         if config.getboolean("editing", "save_to_songs"):
             email = email or const.EMAIL
-            rating = self("~#rating")
-            if rating != RATINGS.default:
-                comments["rating:" + email] = str(rating)
+            if self.has_rating:
+                comments["rating:" + email] = str(self("~#rating"))
             playcount = self.get("~#playcount", 0)
             if playcount != 0:
                 comments["playcount:" + email] = str(playcount)
