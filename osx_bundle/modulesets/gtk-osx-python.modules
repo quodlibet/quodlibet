@@ -71,8 +71,10 @@
   <autotools id="python" autogenargs="--enable-shared"
 	     autogen-sh="configure" supports-non-srcdir-builds="no">
     <branch repo="python"
-	    module="2.7.8/Python-2.7.8.tar.xz" version="2.7.8">
-      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/python-2.7.8-test_grammar.py-typo.patch" strip="1"/>
+	    module="2.7.11/Python-2.7.11.tar.xz" version="2.7.11">
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/python2-test_grammar.py-typo.patch" strip="1"/>
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/python2-xcode-stubs.patch" strip="1"/>
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/python2-linkflags.patch" strip="1"/>"/>
     </branch>
     <dependencies>
       <dep package="gettext-runtime"/>

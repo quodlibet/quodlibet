@@ -65,24 +65,6 @@
     </dependencies>
   </metamodule>
 
-  <autotools id="python" autogenargs="--enable-shared"
-	    autogen-sh="configure" supports-non-srcdir-builds="no">
-    <branch repo="python"
-	    module="2.7.11/Python-2.7.11.tar.xz" version="2.7.11">
-      <patch file="patches/python2-test_grammar.py-typo.patch" strip="1"/>
-      <patch file="patches/python2-xcode-stubs.patch" strip="1"/>
-      <patch file="patches/python2-linkflags.patch" strip="1"/>
-    </branch>
-    <dependencies>
-      <dep package="gettext-runtime"/>
-      <dep package='readline'/>
-    </dependencies>
-    <after>
-      <dep package="berkeleydb"/>
-      <dep package="berkeleydb-nonsrctree"/>
-    </after>
-  </autotools>
-
   <autotools id="gst-libav" supports-non-srcdir-builds="no"
     autogen-sh="configure"
     autogenargs="--enable-gpl --disable-tests --disable-mmx --with-libav-extra-configure='--disable-yasm'">

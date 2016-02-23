@@ -3,7 +3,7 @@
 source env.sh
 
 # https://git.gnome.org/browse/gtk-osx/tree/jhbuild-revision
-JHBUILD_REVISION="07b5a7d"
+JHBUILD_REVISION="7c8d34736c3804"
 
 mkdir -p "$HOME"
 git clone git://git.gnome.org/jhbuild "$QL_OSXBUNDLE_JHBUILD_DEST"

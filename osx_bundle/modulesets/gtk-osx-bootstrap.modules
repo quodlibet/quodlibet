@@ -28,12 +28,6 @@
   <repository type="tarball" name="icu"
               href="http://download.icu-project.org/files/"/>
 
-  <autotools id='readline' autogen-sh="configure">
-    <branch repo="ftp.gnu.org" module="readline/readline-6.3.tar.gz"
-	    version="6.3">
-    </branch>
-  </autotools>
-
   <autotools id="libpng" autogenargs="--enable-shared" autogen-sh="configure">
     <branch version="1.6.17" module="libpng/libpng-1.6.17.tar.xz"
             repo="sourceforge" md5sum="430a9b76b78533235cd4b9b26ce75c7e"/>
