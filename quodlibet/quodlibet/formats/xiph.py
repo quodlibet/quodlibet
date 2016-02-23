@@ -15,7 +15,6 @@ from mutagen.id3 import ID3
 
 from quodlibet import config
 from quodlibet import const
-from quodlibet.config import RATINGS
 from quodlibet.util.path import get_temp_cover_file
 
 from ._audio import AudioFile
