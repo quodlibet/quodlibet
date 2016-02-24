@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 source env.sh
 
 git clone git://git.gnome.org/gtk-osx _gtk-osx

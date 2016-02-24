@@ -19,22 +19,21 @@ from xml.dom import minidom
 def main(argv):
     assert len(argv) == 3
 
-    jhbuild = os.path.join(argv[1], "_jhbuild")
+    prefix = argv[1]
+    jhbuild = os.path.join(prefix, "_jhbuild")
     bundle_base = os.path.join(argv[2], "Contents", "Resources")
-    info = os.path.join(jhbuild, "info")
+    packagedb = os.path.join(jhbuild, "packagedb.xml")
 
     Entry = namedtuple("Entry", ["package", "version", "files"])
     entries = {}
 
-    for key in os.listdir(info):
-        path = os.path.join(info, key)
-        xmldoc = minidom.parse(path)
-        item = xmldoc.getElementsByTagName('entry')[0]
+    xmldoc = minidom.parse(packagedb)
+    for item in xmldoc.getElementsByTagName('entry'):
         package = item.attributes['package'].value
         version = item.attributes['version'].value
 
         entry = Entry(package, version, set())
-        entries[key] = entry
+        entries[entry.package] = entry
 
     def norm_py(path):
         # reduce all paths to their source variant so we can connect
@@ -51,12 +50,14 @@ def main(argv):
 
         with open(path, "rb") as h:
             for file_ in h.read().splitlines():
+                file_ = os.path.relpath(file_, prefix)
                 entries[key].files.add(norm_py(file_))
 
     found = set()
     for root, dirs, files in os.walk(bundle_base):
         for f in files:
-            path = os.path.relpath(os.path.join(root, f), bundle_base)
+            path = os.path.join(root, f)
+            path = os.path.relpath(path, bundle_base)
             found.add(norm_py(path))
 
     for entry in sorted(entries.values(), key=lambda e: e.package):

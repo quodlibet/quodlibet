@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 source env.sh
 
 rm -Rf "$HOME"

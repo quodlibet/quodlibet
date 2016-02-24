@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 source env.sh
 
 # https://git.gnome.org/browse/gtk-osx/tree/jhbuild-revision
