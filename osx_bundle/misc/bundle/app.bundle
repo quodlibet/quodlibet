@@ -85,11 +85,6 @@
     ${prefix}/lib/gdk-pixbuf-2.0/2.10.0/loaders/*.so
   </binary>
 
-  <!-- pango 2.36 has its own separate modules -->
-  <binary>
-    ${prefix}/lib/pango/1.8.0/modules/*.so
-  </binary>
-
   <!-- gstreamer plugins -->
   <binary>
   	${prefix}/lib/gstreamer-1.0/*.so
@@ -159,10 +154,9 @@
   <data>${prefix}/lib/python2.7/xml</data>
   <!-- only required extra modules (no dbus, for instance) -->
   <data>${prefix}/lib/python2.7/site-packages/feedparser.py</data>
-  <data>${prefix}/lib/python2.7/site-packages/CDDB.py</data>
   <data>${prefix}/lib/python2.7/site-packages/cairo</data>
   <data>${prefix}/lib/python2.7/site-packages/gi</data>
-  <data>${prefix}/lib/python2.7/site-packages/musicbrainz2</data>
+  <data>${prefix}/lib/python2.7/site-packages/musicbrainzngs</data>
   <data>${prefix}/lib/python2.7/site-packages/mutagen</data>
   <!-- pyObjC -->
   <data>${prefix}/lib/python2.7/distutils</data>

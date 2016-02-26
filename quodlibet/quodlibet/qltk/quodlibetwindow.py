@@ -1077,7 +1077,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         ag.add_action_with_accel(act, None)
 
         act = Action(
-            name="RefreshLibrary", label=_("Re_fresh Library"),
+            name="RefreshLibrary", label=_("_Scan Library"),
             icon_name=Icons.VIEW_REFRESH)
         act.connect('activate', self.__rebuild, False)
         ag.add_action(act)

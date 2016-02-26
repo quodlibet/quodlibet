@@ -368,10 +368,11 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
     # El Capitan needs bash to work around SIP. If you're using a
     # common bootstrap directory (e.g. $HOME/.local) then override
     # CONFIG_SHELL in .jhbuildrc-custom after calling setup_sdk().
+    config_shell = os.path.join(prefix, 'bin', 'bash')
     if _osx_version < 11.0:
         skip.append('bash')
-    elif not 'bootstrap' in modules:
-        os.environ['CONFIG_SHELL'] = os.path.join(prefix, 'bin', 'bash')
+    elif os.path.exists(config_shell):
+        os.environ['CONFIG_SHELL'] = config_shell
 
     # gettext-fw rebuilds gettext with an in-tree libiconv to get
     # around the Apple-provided one not defining _libiconv_init for
@@ -547,6 +548,7 @@ if os.path.exists(_userrc):
 # builds, for example.
 #
 _build = os.environ.get('JHB', _gtk_osx_default_build)
+disable_Werror = False
 
 ###### Everything Below Uses (and Overrides) customizations! #######
 

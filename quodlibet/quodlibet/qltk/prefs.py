@@ -607,7 +607,7 @@ class PreferencesWindow(UniqueWindow):
             self.set_border_width(12)
             self.title = _("Library")
 
-            cb = CCB(_("_Refresh library on start"),
+            cb = CCB(_("Scan library _on start"),
                      "library", "refresh_on_start", populate=True)
             scan_dirs = ScanBox()
 
@@ -617,14 +617,14 @@ class PreferencesWindow(UniqueWindow):
             def refresh_cb(button):
                 scan_library(app.library, force=False)
 
-            refresh = qltk.Button(_("Re_fresh Library"), Icons.VIEW_REFRESH)
+            refresh = qltk.Button(_("_Scan Library"), Icons.VIEW_REFRESH)
             refresh.connect("clicked", refresh_cb)
             refresh.set_tooltip_text(_("Check for changes in your library"))
 
             def reload_cb(button):
                 scan_library(app.library, force=True)
 
-            reload_ = qltk.Button(_("Re_load Library"), Icons.VIEW_REFRESH)
+            reload_ = qltk.Button(_("Re_build Library"), Icons.VIEW_REFRESH)
             reload_.connect("clicked", reload_cb)
             reload_.set_tooltip_text(
                 _("Reload all songs in your library. "

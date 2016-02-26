@@ -14,8 +14,8 @@ PY3 = not PY2
 if PY2:
     import __builtin__ as builtins
     builtins
-    from urlparse import urlparse, urlunparse
-    urlparse, urlunparse
+    from urlparse import urlparse, urlunparse, urlsplit
+    urlparse, urlunparse, urlsplit
     from urllib import pathname2url, url2pathname, quote_plus, unquote_plus
     pathname2url, url2pathname, quote_plus, unquote_plus
     from urllib2 import urlopen
@@ -56,8 +56,9 @@ if PY2:
 elif PY3:
     import builtins
     builtins
-    from urllib.parse import urlparse, urlunparse, quote_plus, unquote_plus
-    urlparse, quote_plus, unquote_plus, urlunparse
+    from urllib.parse import urlparse, urlunparse, quote_plus, unquote_plus, \
+        urlsplit
+    urlparse, quote_plus, unquote_plus, urlunparse, urlsplit
     from urllib.request import pathname2url, url2pathname
     pathname2url, url2pathname
     from urllib.request import urlopen

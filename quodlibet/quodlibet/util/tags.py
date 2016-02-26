@@ -86,7 +86,7 @@ _TAGS = dict((t.name, t) for t in [
     T("language", "ui", _("language")),
     T("license", "u", _("license")),
     T("location", "u", _("location")),
-    T("lyricist", "u", _("lyricist")),
+    T("lyricist", "u", _("lyricist"), _("lyricists"), _("lyrics")),
     # Translators: Also e.g. "record label", "publisher"
     T("organization", "u", _("organization")),
     T("title", "u", _("title")),

@@ -11,8 +11,8 @@
   <repository type="tarball" name="effbot"
               href="http://effbot.org/downloads/"/>
 
-  <repository type="git" name="github"
-      href="git://github.com/"/>
+  <repository type="tarball" name="github"
+      href="https://github.com/"/>
 
   <repository type="tarball" name="sourceforge"
 		  href="http://iweb.dl.sf.net/project/"/>
@@ -41,8 +41,6 @@
 	      href="ftp://ftp.gnutls.org/"/>
   <repository type="tarball" name="gstreamer"
 	      href="http://gstreamer.freedesktop.org/src/"/>
-  <repository type="tarball" name="musicbrainz"
-          href="http://ftp.musicbrainz.org/pub/musicbrainz/"/>
   <repository type="tarball" name="sqlite" href="http://www.sqlite.org/"/>
   <repository type="tarball" name="ftp.gnome.org" default="yes"
           href="http://ftp.gnome.org/pub/GNOME/sources/"/>
@@ -58,30 +56,11 @@
       <dep package="meta-quodlibet-gstreamer-1.0"/>
       <dep package="mutagen" />
       <dep package="feedparser" />
-      <dep package="musicbrainz2" />
+      <dep package="musicbrainzngs" />
       <dep package="meta-gtk-osx-python-gtk3"/>
       <dep package="pyobjc"/>
-      <dep package="cddb"/>
     </dependencies>
   </metamodule>
-
-  <autotools id="python" autogenargs="--enable-shared"
-	    autogen-sh="configure" supports-non-srcdir-builds="no">
-    <branch repo="python"
-	    module="2.7.11/Python-2.7.11.tar.xz" version="2.7.11">
-      <patch file="patches/python2-test_grammar.py-typo.patch" strip="1"/>
-      <patch file="patches/python2-xcode-stubs.patch" strip="1"/>
-      <patch file="patches/python2-linkflags.patch" strip="1"/>
-    </branch>
-    <dependencies>
-      <dep package="gettext-runtime"/>
-      <dep package='readline'/>
-    </dependencies>
-    <after>
-      <dep package="berkeleydb"/>
-      <dep package="berkeleydb-nonsrctree"/>
-    </after>
-  </autotools>
 
   <autotools id="gst-libav" supports-non-srcdir-builds="no"
     autogen-sh="configure"
@@ -191,13 +170,6 @@
 	    version="0.6c11" md5sum="7df2a529a074f613b509fb44feefe74e"/>
   </distutils>
 
-  <distutils id="cddb">
-    <branch repo="sourceforge" version="1.4"
-            module="cddb-py/cddb-py/1.4/CDDB-1.4.tar.gz"
-            hash="sha256:bcd0f2f21848f2fcd692c542f124ec3e1414391ddeb6114f6f7bc5724a831d25">
-    </branch>
-  </distutils>
-
   <!-- Upstream: https://github.com/kurtmckee/feedparser/blob/develop/NEWS -->
   <distutils id="feedparser">
     <branch repo="pypi" checkoutdir="feedparser-5.2.0" module="f/feedparser/feedparser-5.2.0.post1.tar.bz2"
@@ -216,9 +188,9 @@
     </dependencies>
   </distutils>
 
-  <distutils id="musicbrainz2"> <!-- note: deprecated, see https://github.com/alastair/python-musicbrainzngs for a replacement -->
-    <branch repo="musicbrainz" checkoutdir="musicbrainz2-0.7.4" module="python-musicbrainz2/python-musicbrainz2-0.7.4.tar.gz"
-	    version="0.7.4"/>
+  <distutils id="musicbrainzngs">
+    <branch repo="github" checkoutdir="musicbrainzngs-0.5" module="alastair/python-musicbrainzngs/archive/v0.5.tar.gz"
+	    version="0.5"/>
     <dependencies>
     <dep package="setuptools"/>
     </dependencies>

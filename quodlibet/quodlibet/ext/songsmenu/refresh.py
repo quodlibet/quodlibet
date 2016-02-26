@@ -16,7 +16,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 class RefreshSongs(SongsMenuPlugin):
     PLUGIN_ID = "refresh-songs"
     # Translators: Plugin name
-    PLUGIN_NAME = _("Refresh Songs")
+    PLUGIN_NAME = _("Rescan Songs")
     PLUGIN_DESC = _("Checks for file changes and reloads / removes "
                     "the songs if needed.")
     PLUGIN_ICON = Icons.VIEW_REFRESH
@@ -25,7 +25,7 @@ class RefreshSongs(SongsMenuPlugin):
 
         def check_songs():
             desc = ngettext("%d song", "%d songs", len(songs)) % len(songs)
-            with Task(_("Refresh songs"), desc) as task:
+            with Task(_("Rescan songs"), desc) as task:
                 task.copool(check_songs)
                 for i, song in enumerate(songs):
                     song = song._song

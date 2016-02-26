@@ -23,10 +23,6 @@ export GTK_IM_MODULE_FILE="$bundle_etc/gtk-3.0/gtk.immodules"
 # comment following line and you won't see the quodlibet icon in the about dialog
 export GDK_PIXBUF_MODULE_FILE="$bundle_lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"
 
-# Pango wants these 2 otherwise it displays square boxes instead of letters
-export PANGO_LIBDIR="$bundle_lib"
-export PANGO_SYSCONFDIR="$bundle_etc"
-
 # gobject-introspection
 export GI_TYPELIB_PATH="$bundle_lib/girepository-1.0"
 

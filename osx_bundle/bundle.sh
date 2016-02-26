@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # pass the tag/revision to install, or install the current revision
 # if nothing is passed
