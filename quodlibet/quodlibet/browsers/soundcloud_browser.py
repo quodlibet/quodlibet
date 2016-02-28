@@ -92,7 +92,7 @@ class SoundcloudApiClient(object):
     def get_tracks(self, query):
         params = {
             "q": query,
-            "limit": 50,
+            "limit": 100,
             "duration[from]": 100 * 1000,
             "duration[to]": 10000 * 1000
         }
@@ -222,9 +222,13 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     headers = ("artist title ~#length genre ~mtime ~bitrate date website "
                "comment ~rating ~#playback_count ~#likes_count").split()
 
-    TYPE, ICON_NAME, KEY, NAME = range(4)
-    TYPE_FILTER, TYPE_ALL, TYPE_SEP, TYPE_NOCAT = range(4)
-    STAR = SoundcloudLibrary.STAR
+    class ModelIndex(object):
+        TYPE, ICON_NAME, KEY, NAME = range(4)
+
+    class FilterType(object):
+        SEARCH, TYPE_ALL, SEP = range(3)
+
+    STAR = [tag for tag in headers if not tag.startswith("~#")]
 
     @classmethod
     def _init(klass, library):
@@ -232,12 +236,12 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         klass.filters = {"All": Query("", star=klass.STAR)}
         token = config.get("browsers", "soundcloud_token", default=None)
         klass.api_client = SoundcloudApiClient(token)
-        klass.library = SoundcloudLibrary(klass.api_client)
+        if not hasattr(klass, "library"):
+            klass.library = SoundcloudLibrary(klass.api_client)
 
     @classmethod
     def _destroy(klass):
         klass.__librarian = None
-
         klass.filters = {}
 
     def __inhibit(self):
@@ -309,25 +313,22 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         scrolled_window.add(view)
         model = Gtk.ListStore(int, str, str, str)
 
-        model.append(row=[self.TYPE_SEP, Icons.FOLDER, "", ""])
+        model.append(row=[self.FilterType.SEP, Icons.FOLDER, "", ""])
 
         filters = self.filters
         for name, query in sorted(filters.iteritems()):
-            model.append(row=[self.TYPE_FILTER,
+            model.append(row=[self.FilterType.SEARCH,
                               Icons.EDIT_FIND,
                               name,
                               name])
 
-        model.append(row=[self.TYPE_NOCAT, Icons.FOLDER,
-                          "nocat", _("No Category")])
-
-        def separator(model, iter, data):
-            return model[iter][self.TYPE] == self.TYPE_SEP
-        view.set_row_separator_func(separator, None)
+        def is_separator(model, iter, data):
+            return model[iter][self.ModelIndex.TYPE] == self.FilterType.SEP
+        view.set_row_separator_func(is_separator, None)
 
         def search_func(model, column, key, iter, data):
             return key.lower() not in model[iter][column].lower()
-        view.set_search_column(self.NAME)
+        view.set_search_column(self.ModelIndex.NAME)
         view.set_search_equal_func(search_func, None)
 
         column = Gtk.TreeViewColumn("genres")
@@ -336,13 +337,13 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         renderpb = Gtk.CellRendererPixbuf()
         renderpb.props.xpad = 3
         column.pack_start(renderpb, False)
-        column.add_attribute(renderpb, "icon-name", self.ICON_NAME)
+        column.add_attribute(renderpb, "icon-name", self.ModelIndex.ICON_NAME)
 
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         view.append_column(column)
         column.pack_start(render, True)
-        column.add_attribute(render, "text", self.NAME)
+        column.add_attribute(render, "text", self.ModelIndex.NAME)
 
         view.set_model(model)
 
