@@ -11,7 +11,6 @@ from quodlibet import config
 from quodlibet import util
 
 from quodlibet.pattern import XMLFromMarkupPattern as XMLFromPattern
-from quodlibet.pattern import pattern_from_markup
 
 
 class PaneConfig(object):
@@ -37,7 +36,7 @@ class PaneConfig(object):
         cat = parts[0]
 
         if is_pattern(cat):
-            title = util.pattern(pattern_from_markup(cat), esc=True)
+            title = util.pattern(cat, esc=True, markup=True)
             try:
                 pc = XMLFromPattern(cat)
             except ValueError:

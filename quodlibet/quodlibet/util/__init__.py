@@ -530,10 +530,12 @@ def tagsplit(tag):
         return [tag]
 
 
-def pattern(pat, cap=True, esc=False):
+def pattern(pat, cap=True, esc=False, markup=False):
     """Return a 'natural' version of the pattern string for human-readable
-    bits. Assumes all tags in the pattern are present."""
-    from quodlibet.pattern import Pattern, XMLFromPattern
+    bits. Assumes all tags in the pattern are present.
+    """
+
+    from quodlibet.pattern import Pattern, XMLFromPattern, XMLFromMarkupPattern
 
     class Fakesong(dict):
         cap = False
@@ -545,13 +547,18 @@ def pattern(pat, cap=True, esc=False):
             return [tag(k, self.cap) for k in tagsplit(key)]
         list_separate = list
 
-        def __call__(self, tag, default):
+        def __call__(self, tag, *args):
             return 0 if '~#' in tag[:2] else self.comma(tag)
 
     fakesong = Fakesong({'filename': tag('filename', cap)})
     fakesong.cap = cap
     try:
-        p = (esc and XMLFromPattern(pat)) or Pattern(pat)
+        if markup:
+            p = XMLFromMarkupPattern(pat)
+        elif esc:
+            p = XMLFromPattern(pat)
+        else:
+            p = Pattern(pat)
     except ValueError:
         return _("Invalid pattern")
 

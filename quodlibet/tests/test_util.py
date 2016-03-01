@@ -538,6 +538,10 @@ class Tpattern(TestCase):
     def test_complex_condition(self):
         self.assertEqual(util.pattern("<#(bitrate \> 150)|HQ|LQ>"), "LQ")
 
+    def test_escape_condition(self):
+        self.assertEqual(
+            util.pattern(r"<~filename=/\/adsad\/sadads/|BLA|BLU>"), "BLU")
+
 
 class Tformat_time_long(TestCase):
 
