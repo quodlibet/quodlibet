@@ -228,7 +228,8 @@ class _TFileFromPattern(_TPattern):
 
         if os.name != "nt":
             wpat = s._create(r'\\<artist>\\ "<title>')
-            s.assertTrue(wpat.format(s.a).startswith("\\\\Artist\\\\ \"Title5"))
+            s.assertTrue(
+                wpat.format(s.a).startswith("\\\\Artist\\\\ \"Title5"))
         else:
             # FIXME..
             pass
