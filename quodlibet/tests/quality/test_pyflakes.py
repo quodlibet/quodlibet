@@ -24,6 +24,7 @@ class FakeStream(object):
     BL = [
         "unable to detect undefined names",
         "may be undefined, or defined from star imports",
+        re.escape(".*' imported but unused"),
     ]
     if PY3:
         BL.append(
