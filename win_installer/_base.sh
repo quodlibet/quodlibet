@@ -37,7 +37,7 @@ d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-prev
 cb5d82025b2d969abfa2e32d3d26c4a244657c510612739dcc2517f84525ee97  pygi-aio-$PYGI_AIO_VER-setup.exe
 3db9fa9adc45703589b93df05aab77bdabe985a17565b465a9e550585f85322a  pyHook-1.5.1.win32-py2.7.exe
 22f8a2b3231f9f671d660f149f7e60215b1908fa09fbb832123bf12a3e20b447  python-2.7.9.msi
-728fbe415da98dad5c4d462e56cf106cf50cc28eb6a9f46b8ebabc3029f37fb9  python-musicbrainz2-0.7.4.tar.gz
+ea84abc60fcb5152418dd49e8fdecf3e68759304a71bef422c3b1376886c5b7a  python-musicbrainzngs-0.5.tar.gz
 dd665cca88cb059fec960516ed5f29474b33fce50fcb2633d397d4a3aa705c16  pywin32-218.win32-py2.7.exe
 fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
 8a94f6ff1ee9562a2216d2096b87d0e54a5eb5c9391874800e5032033a1c8e85  libmodplug-1.dll
@@ -57,7 +57,7 @@ fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
         wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.9/python-2.7.9.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/sevenzip/7z920.msi
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
-        wget -P "$BIN" -c http://ftp.musicbrainz.org/pub/musicbrainz/python-musicbrainz2/python-musicbrainz2-0.7.4.tar.gz
+        wget -c http://github.com/alastair/python-musicbrainzngs/archive/v0.5.tar.gz -O "$BIN"/python-musicbrainzngs-0.5.tar.gz
         wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstopus.dll
 
         pip install --download="$BIN" "mutagen==$MUTAGEN_VER"
@@ -223,7 +223,7 @@ function install_pydeps {
     cd "$BUILD_ENV"/bin
     wine $PYTHON -m pip install "mutagen-$MUTAGEN_VER.tar.gz"
     wine $PYTHON -m pip install feedparser-5.1.3.tar.bz2
-    wine $PYTHON -m pip install python-musicbrainz2-0.7.4.tar.gz
+    wine $PYTHON -m pip install python-musicbrainzngs-0.5.tar.gz
     wine $PYTHON -m easy_install -Z pywin32-218.win32-py2.7.exe
     wine $PYTHON -m easy_install -Z py2exe-0.6.9.win32-py2.7.exe
     wine $PYTHON -m easy_install -Z pyHook-1.5.1.win32-py2.7.exe
