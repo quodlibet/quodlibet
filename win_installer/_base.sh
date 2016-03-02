@@ -21,7 +21,7 @@ QL_REPO_TEMP="$BUILD_ENV"/ql_temp
 QL_TEMP="$QL_REPO_TEMP"/quodlibet
 
 
-PYGI_AIO_VER="3.14.0_rev12"
+PYGI_AIO_VER="3.18.2_rev5"
 MUTAGEN_VER="1.31"
 
 
@@ -34,7 +34,7 @@ d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-prev
 0aa011707785fe30935d8655380052a20ba8b972aa738d4f144c457b35b4d699  mutagen-$MUTAGEN_VER.tar.gz
 69c2ae5c9f2ee45b0626905faffaa86d4e2fc0d3e8c118c8bc6899df68467b32  nsis-2.46-setup.exe
 610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c  py2exe-0.6.9.win32-py2.7.exe
-690698f42193330e363a0d38abf76962015459f12d38c320248c8fd6a2c8ab66  pygi-aio-$PYGI_AIO_VER-setup.exe
+cb5d82025b2d969abfa2e32d3d26c4a244657c510612739dcc2517f84525ee97  pygi-aio-$PYGI_AIO_VER-setup.exe
 3db9fa9adc45703589b93df05aab77bdabe985a17565b465a9e550585f85322a  pyHook-1.5.1.win32-py2.7.exe
 22f8a2b3231f9f671d660f149f7e60215b1908fa09fbb832123bf12a3e20b447  python-2.7.9.msi
 728fbe415da98dad5c4d462e56cf106cf50cc28eb6a9f46b8ebabc3029f37fb9  python-musicbrainz2-0.7.4.tar.gz
@@ -136,34 +136,12 @@ function extract_deps {
     mkdir "$DEPS"
 
     for name in rtvc9-32 noarch; do
-        cp -RT "$PYGI"/"$name"/Base/gnome "$DEPS"
-
-        cp -RT "$PYGI"/"$name"/JPEG/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/WebP/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/Jasper/gnome "$DEPS"
-
-        cp -RT "$PYGI"/"$name"/GDK/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/GDKPixbuf/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/ATK/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/Pango/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/GTK/gnome "$DEPS"
-
-        cp -RT "$PYGI"/"$name"/Gstreamer/gnome "$DEPS"
-
-        cp -RT "$PYGI"/"$name"/Orc/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/GnuTLS/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/Aerial/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/Soup/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/Jack/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/SQLite/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/GSTPlugins/gnome "$DEPS"
-
-        cp -RT "$PYGI"/"$name"/OpenJPEG/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/OpenEXR/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/Curl/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/IDN/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/GSTPluginsExtra/gnome "$DEPS"
-        cp -RT "$PYGI"/"$name"/GSTPluginsMore/gnome "$DEPS"
+        for package in ATK Aerial Base Curl GCrypt GDK GDKPixbuf GSTPlugins \
+            GSTPluginsExtra GSTPluginsMore GTK GnuTLS Graphene Gstreamer \
+            HarfBuzz IDN JPEG Jack LibAV OpenEXR OpenJPEG OpenSSL Orc Pango \
+            SQLite Soup StdCPP TIFF WebP; do
+        cp -RT "$PYGI"/"$name"/"$package"/gnome "$DEPS"
+        done
     done
 
     # remove ladspa, frei0r
@@ -223,7 +201,6 @@ function install_python {
     local SITEPACKAGES="$PYDIR"/Lib/site-packages
     cp -R "$PYGI"/binding/py2.7-32/cairo "$SITEPACKAGES"
     cp -R "$PYGI"/binding/py2.7-32/gi "$SITEPACKAGES"
-    cp "$PYGI"/binding/py2.7-32/*.pyd "$SITEPACKAGES"
 }
 
 function install_git {
