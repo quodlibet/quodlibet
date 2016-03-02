@@ -159,7 +159,7 @@ class _PopupSlider(Gtk.Button):
 
     def set_slider_widget(self, widget):
         self._box.pack_start(
-            Align(widget, left=3, right=3), False, True, 0)
+            Align(widget, border=6, left=-3), False, True, 0)
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         raise NotImplementedError
