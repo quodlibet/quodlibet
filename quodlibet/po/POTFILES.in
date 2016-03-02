@@ -24,11 +24,13 @@ quodlibet/browsers/playlists/menu.py
 quodlibet/browsers/playlists/prefs.py
 quodlibet/browsers/playlists/util.py
 quodlibet/browsers/search.py
+quodlibet/browsers/soundcloud/main.py
 quodlibet/cli.py
 quodlibet/devices/_base.py
 quodlibet/devices/__init__.py
 quodlibet/devices/ipod.py
 quodlibet/devices/storage.py
+quodlibet/ext/covers/artwork_url.py
 quodlibet/ext/covers/lastfm.py
 quodlibet/ext/covers/musicbrainz.py
 quodlibet/ext/editing/iconv.py

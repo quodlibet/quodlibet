@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,6 +8,7 @@
 import json
 
 from gi.repository import Soup, Gio, GLib, GObject
+from gi.repository.GObject import ParamFlags, SignalFlags
 if not hasattr(Gio.MemoryOutputStream, 'new_resizable'):
     raise ImportError(
         'GLib and gobject-introspection libraries are too old. GLib since ' +
@@ -15,8 +17,8 @@ if not hasattr(Gio.MemoryOutputStream, 'new_resizable'):
 from quodlibet.const import VERSION, WEBSITE
 
 
-PARAM_READWRITECONSTRUCT = GObject.ParamFlags.CONSTRUCT_ONLY | \
-    GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE
+PARAM_READWRITECONSTRUCT = \
+    ParamFlags.CONSTRUCT_ONLY | ParamFlags.READABLE | ParamFlags.WRITABLE
 SoupStatus = Soup.Status if hasattr(Soup, 'Status') else Soup.KnownStatusCode
 
 
@@ -28,14 +30,14 @@ class DefaultHTTPRequest(GObject.Object):
 
     __gsignals__ = {
         # Successes
-        'sent': (GObject.SignalFlags.RUN_LAST, None, (Soup.Message,)),
-        'received': (GObject.SignalFlags.RUN_LAST, None, (Gio.OutputStream,)),
+        'sent': (SignalFlags.RUN_LAST, None, (Soup.Message,)),
+        'received': (SignalFlags.RUN_LAST, None, (Gio.OutputStream,)),
         # Failures
-        'send-failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'receive-failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        # Common failure signal which will be emited when either of above
+        'send-failure': (SignalFlags.RUN_LAST, None, (object,)),
+        'receive-failure': (SignalFlags.RUN_LAST, None, (object,)),
+        # Common failure signal which will be emitted when either of above
         # failure signals are.
-        'failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        'failure': (SignalFlags.RUN_LAST, None, (object,)),
     }
 
     message = GObject.Property(type=Soup.Message,
@@ -67,13 +69,15 @@ class DefaultHTTPRequest(GObject.Object):
         Send the request and receive HTTP headers. Some of the body might
         get downloaded too.
         """
-        print_d('Sending request to {0}'.format(self._uri))
+        print_d('Sending {1} request to {0}'.format(self._uri,
+                                                    self.message.method))
         session.send_async(self.message, self.cancellable, self._sent, None)
 
     def _sent(self, session, task, data):
         try:
             self.istream = session.send_finish(task)
-            print_d('Sent request to {0}'.format(self._uri))
+            print_d('Sent {1} request to {0}'.format(self._uri,
+                                                     self.message.method))
             self.emit('sent', self.message)
         except GLib.GError as e:
             print_w('Failed sending request to {0}'.format(self._uri))

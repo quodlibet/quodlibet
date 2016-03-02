@@ -36,9 +36,10 @@ class SearchBarBox(Gtk.HBox):
         'focus-out': (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 
-    timeout = 400
+    DEFAULT_TIMEOUT = 400
 
-    def __init__(self, filename=None, completion=None, accel_group=None):
+    def __init__(self, filename=None, completion=None, accel_group=None,
+                 timeout=DEFAULT_TIMEOUT):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
@@ -50,7 +51,7 @@ class SearchBarBox(Gtk.HBox):
                 edit_title=_(u"Edit saved searches…"))
 
         self.__deferred_changed = DeferredSignal(
-            self.__filter_changed, timeout=self.timeout, owner=self)
+            self.__filter_changed, timeout=timeout, owner=self)
 
         self.__combo = combo
         entry = combo.get_child()

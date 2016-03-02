@@ -1,9 +1,13 @@
-from soundcloud.resource import Resource
+# -*- coding: utf-8 -*-
+# Copyright 2016 Nick Boultbee
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
 
+from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
+from quodlibet.browsers.soundcloud.library import SoundcloudLibrary
 from tests import TestCase
-
-from quodlibet.browsers.soundcloud_browser import SoundcloudLibrary, \
-    SoundcloudApiClient
 
 PERMALINK = "https://soundcloud.com/"
 "kerstineden/banging-techno-sets-098-kerstin-eden-02-2015"
@@ -57,15 +61,26 @@ TRACK = {
 
 class TSoundcloudLibrary(TestCase):
     class FakeClient(SoundcloudApiClient):
-        def __init__(self, token=None):
-            pass
 
         def get_tracks(self, query):
-            return [Resource(TRACK)]
+            self._on_track_data(None, [TRACK], None)
+
+        def __init__(self, token=None):
+            super(TSoundcloudLibrary.FakeClient, self).__init__(token)
+
+        def authenticate_user(self):
+            pass
+
+    def setUp(self):
+        self.lib = SoundcloudLibrary(self.FakeClient())
+
+    def tearDown(self):
+        self.lib.destroy()
 
     def test_parse(self):
-        lib = SoundcloudLibrary(self.FakeClient())
-        songs = lib.get_tracks("dummy search")
+        lib = self.lib
+        lib.query_with_refresh("dummy search")
+        songs = lib._contents.values()
         self.failUnlessEqual(len(songs), 1)
         s = songs[0]
         self.failUnlessEqual(s("artist"), "Kerstin Eden")
@@ -79,6 +94,8 @@ class TSoundcloudLibrary(TestCase):
 
     def test_artwork_url(self):
         lib = SoundcloudLibrary(self.FakeClient())
-        s = lib.get_tracks("")[0]
-        self.failUnlessEqual(s("soundcloud_artwork_url"),
-                             "https://i1.sndcdn.com/artworks-000108682375-q4j7y6-t500x500.jpg")
+        lib.query_with_refresh("")
+        s = lib._contents.values()[0]
+        self.failUnlessEqual(
+            s("artwork_url"),
+            "https://i1.sndcdn.com/artworks-000108682375-q4j7y6-t500x500.jpg")
