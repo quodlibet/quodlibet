@@ -91,11 +91,11 @@ class TImageUtils(TestCase):
     def test_add_border(self):
         color = Gdk.RGBA()
         w, h = self.small.get_width(), self.small.get_height()
-        res = add_border(self.small, color, round=False)
+        res = add_border(self.small, color)
         self.assertEqual(res.get_width(), w + 2)
         self.assertEqual(res.get_height(), h + 2)
 
-        res = add_border(self.small, color, round=True)
+        res = add_border(self.small, color)
         self.assertEqual(res.get_width(), w + 2)
         self.assertEqual(res.get_height(), h + 2)
 
@@ -105,7 +105,7 @@ class TImageUtils(TestCase):
 
     def test_add_border_widget(self):
         widget = Gtk.Button()
-        add_border_widget(self.small, widget, True)
+        add_border_widget(self.small, widget)
 
     def test_pbosf_get_width_height(self):
         w = Gtk.Button()

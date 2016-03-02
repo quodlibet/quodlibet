@@ -153,7 +153,6 @@ INITIAL = {
         "default_tags": "", # e.g. "title,artist"
     },
     "albumart": {
-        "round": "true", # use rounded corners for artwork thumbnails
         "prefer_embedded": "false",
         "force_filename": "false",
         "filename": "folder.jpg",
