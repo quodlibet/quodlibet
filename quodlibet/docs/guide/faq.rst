@@ -77,20 +77,19 @@ would have to be fast since we compare thousands of strings when sorting.
 I have two albums with the same name which are merged in the Album List
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Tag them with different ``labelid`` tags (it's best if you use the
-actual label catalog ID, but if you can't find it you can also just use
-any different values). You can also use ``musicbrainz_albumid`` tags,
-which several other taggers can write.
+Tag them with different ``albumartist`` tags. You can also use
+``musicbrainz_albumid`` tags, which several other taggers and our "MusicBrainz
+Lookup" plugin can write.
 
 
 I have two discs of the same album, and they don't get merged in the Album List
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Make sure they have the same name (i.e. without "(disc x)" on the end).
-If they are still not merged, they have different `labelid` or
-``musicbrainz_albumid`` tags. If they have different label ID tags,
-delete the incorrect one. If they have different MusicBrainz album ID
-tags, add a ``labelid`` tag that is the same for both albums.
+Make sure they have the same name (i.e. without "(disc x)" on the end). If
+they are still not merged, they have different `albumartist`, `labelid` or
+``musicbrainz_albumid`` tags. If they have different label ID tags, delete the
+incorrect one. If they have different MusicBrainz album ID tags, add a
+``labelid`` tag that is the same for both albums.
 
 
 Can I show more than 0 to 4 notes when rating songs?
