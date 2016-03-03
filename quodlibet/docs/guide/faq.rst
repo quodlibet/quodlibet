@@ -28,17 +28,6 @@ from any tags. You can fix this problem with various tools, e.g.
     $ mp3val -f filename.mp3
 
 
-I want keyboard shortcuts to change browsers (or anything else)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Put ``gtk-can-change-accels = 1`` in ``~/.gtkrc-2.0`` (and restart Quod
-Libet). Then hover the mouse over the menu item you want to set an
-accelerator for, and press that key.
-
-When using GNOME this setting can be toggled in *Menus and Toolbars* in
-the GNOME settings.
-
-
 Whenever I type a space, Quod Libet pauses
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
