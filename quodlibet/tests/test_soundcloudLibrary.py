@@ -72,6 +72,7 @@ class TSoundcloudLibrary(TestCase):
             pass
 
     def setUp(self):
+        SoundcloudLibrary.librarian = None
         self.lib = SoundcloudLibrary(self.FakeClient())
 
     def tearDown(self):

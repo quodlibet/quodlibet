@@ -75,6 +75,7 @@ class TBrowserBase(TestCase):
 
     def tearDown(self):
         self.b.destroy()
+        self.library.librarian = None
         self.library.destroy()
         config.quit()
         destroy_fake_app()

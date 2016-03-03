@@ -68,7 +68,6 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         klass.filters = {}
         klass.library.destroy()
         klass.library = None
-        klass.api_client.disconnect(klass.__auth_sig)
 
     def __inhibit(self):
         self.view.get_selection().handler_block(self.__changed_sig)
@@ -77,6 +76,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.view.get_selection().handler_unblock(self.__changed_sig)
 
     def __destroy(self, *args):
+        self.api_client.disconnect(self.__auth_sig)
         if not self.instances():
             self._destroy()
 
