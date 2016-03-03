@@ -60,7 +60,7 @@ You can also search :ref:internal tags <InternalTags>, e.g.
 
 It's also possible to search in multiple tags at once:
 
- * ``*artist, performer = "Boa"c``
+ * ``artist, performer = "Boa"c``
 
 
 Exact Matching
