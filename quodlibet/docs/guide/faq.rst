@@ -9,17 +9,6 @@ Do you have a global filter in use? Check the *Browsers* tab in *Music*
 → *Preferences*.
 
 
-My filenames with special characters (ú, ç, はあ, etc.) don't appear properly
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Unless told otherwise Quod Libet assumes your filesystem is using UTF-8
-filenames (this is a standard assumption for GTK+ applications). To
-tell it otherwise, ``export G_FILENAME_ENCODING="iso-8859-1"` (or
-whatever value you need) in your ``~/.bashrc`` or other appropriate
-place. You can also use the magic value `@locale` to use the default
-character encoding for your locale.
-
-
 Why do my MP3 files have the wrong length?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
