@@ -9,25 +9,6 @@ Do you have a global filter in use? Check the *Browsers* tab in *Music*
 → *Preferences*.
 
 
-Why can't I double-click a song in GNOME to play in Quod Libet?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-You can! File association is more to do with the file manager you're
-using. If you're using GNOME, right-click on the audio file in Nautilus
-and select 'Properties'. Go to the 'Open with' tab, then select the
-'Add' button. In the 'Use custom command' text field add the following:
-
-    ``quodlibet --play-file %F``
-
-and then click 'add'. Now you can select 'quodlibet' from the list of
-programs to open that file. Double-click the file and Quod Libet will
-start to play it.
-
-Note this will *only work is Quod Libet is currently running*, though a
-workaround is to make a script that starts ``quodlibet`` first (only
-one instance is ever loaded unless in dev mode).
-
-
 My filenames with special characters (ú, ç, はあ, etc.) don't appear properly
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
