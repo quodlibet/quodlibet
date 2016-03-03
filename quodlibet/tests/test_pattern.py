@@ -68,6 +68,9 @@ class TPattern(_TPattern):
         pat = Pattern("a \\<foo\\|bla\\>")
         self.assertEqual(pat.format(self.a), "a <foo|bla>")
 
+        pat = Pattern(r"a\\<foo>")
+        self.assertEqual(pat.format(self.a), "a\\")
+
     def test_query_like_tag(self):
         pat = Pattern("<t=v>")
         self.assertEqual(pat.format(AudioFile({"t=v": "foo"})), "foo")
@@ -229,7 +232,7 @@ class _TFileFromPattern(_TPattern):
         if os.name != "nt":
             wpat = s._create(r'\\<artist>\\ "<title>')
             s.assertTrue(
-                wpat.format(s.a).startswith("\\\\Artist\\\\ \"Title5"))
+                wpat.format(s.a).startswith(r'\Artist\ "Title5'))
         else:
             # FIXME..
             pass
@@ -405,7 +408,7 @@ class TXMLFromMarkupPattern(_TPattern):
         s.assertEquals(pat.format(s.a), '[b]')
         s._test_markup(pat.format(s.a))
 
-        pat = XMLFromMarkupPattern(r'\\[b]\\[/b]')
+        pat = XMLFromMarkupPattern(r'\\\\[b]\\\\[/b]')
         s.assertEquals(pat.format(s.a), r'\\<b>\\</b>')
         s._test_markup(pat.format(s.a))
 

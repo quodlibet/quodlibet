@@ -63,7 +63,7 @@ class PatternLexer(Scanner):
                           ])
 
     def text(self, scanner, string):
-        return PatternLexeme(TEXT, re.sub(r"\\([|<>])", r"\1", string))
+        return PatternLexeme(TEXT, re.sub(r"\\([|<>\\])", r"\1", string))
 
     def table(self, scanner, string):
         return PatternLexeme(
