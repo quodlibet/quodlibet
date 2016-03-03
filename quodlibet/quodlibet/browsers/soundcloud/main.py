@@ -116,6 +116,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                                                  accel_group=self.accelerators,
                                                  timeout=3000)
         search.connect('query-changed', self.__filter_changed)
+
         def focus(widget, *args):
             qltk.get_top_parent(widget).songlist.grab_focus()
         search.connect('focus-out', focus)
