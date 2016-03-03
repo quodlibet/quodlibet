@@ -7,7 +7,7 @@ matrix:
       dist: trusty
       language: python
       python: "2.7_with_system_site_packages"
-      env: TYPE="linux" PYTHON="python2" APT_PACKAGES="quodlibet exfalso xvfb"
+      env: TYPE="linux" PYTHON="python2" APT_PACKAGES="quodlibet exfalso xvfb python-gi"
     - os: linux
       sudo: required
       dist: trusty
