@@ -157,6 +157,7 @@ if __name__ == "__main__":
                     'packages': ('encodings, feedparser, quodlibet, '
                                  'HTMLParser, cairo, musicbrainzngs, shelve, '
                                  'json, gi'),
+                    'excludes': ['Tkconstants', 'Tkinter'],
                     'skip_archive': True,
                     'dist_dir': os.path.join('dist', 'bin'),
                 }
