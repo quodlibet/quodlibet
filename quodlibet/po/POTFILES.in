@@ -171,6 +171,7 @@ quodlibet/qltk/ratingsmenu.py
 quodlibet/qltk/renamefiles.py
 quodlibet/qltk/scanbox.py
 quodlibet/qltk/searchbar.py
+quodlibet/qltk/shortcuts.py
 quodlibet/qltk/songlistcolumns.py
 quodlibet/qltk/songlist.py
 quodlibet/qltk/songsmenu.py

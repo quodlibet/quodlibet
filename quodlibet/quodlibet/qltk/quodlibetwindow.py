@@ -27,6 +27,7 @@ from quodlibet.qltk.controls import PlayControls
 from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.bookmarks import EditBookmarks
+from quodlibet.qltk.shortcuts import show_shortcuts
 from quodlibet.qltk.info import SongInfo
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
@@ -601,6 +602,7 @@ MENU = """
     </menu>
     <menu action='Help'>
       <menuitem action='OnlineHelp' always-show-image='true'/>
+      <menuitem action='Shortcuts' always-show-image='true'/>
       <menuitem action='SearchHelp' always-show-image='true'/>
       <menuitem action='About' always-show-image='true'/>
     </menu>
@@ -857,6 +859,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 bookmarks.append(new_mark)
                 player.song.bookmarks = bookmarks
 
+    def __keyboard_shortcuts(self, action):
+        show_shortcuts(self)
+
     def __edit_bookmarks(self, librarian, player):
         if player.song:
             window = EditBookmarks(self, librarian, player)
@@ -1053,6 +1058,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         connect_obj(act, 'activate', self.__edit_bookmarks,
                            library.librarian, player)
         ag.add_action_with_accel(act, "<Primary>B")
+
+        act = Action(name="Shortcuts", label=_("_Keyboard Shortcuts"))
+        act.connect('activate', self.__keyboard_shortcuts)
+        ag.add_action_with_accel(act, "<Primary>F1")
 
         act = Action(name="About", label=_("_About"),
                      icon_name=Icons.HELP_ABOUT)
