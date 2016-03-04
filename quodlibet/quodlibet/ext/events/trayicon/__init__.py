@@ -18,6 +18,14 @@ from .util import pconfig
 from .systemtray import SystemTray
 
 
+if is_osx():
+    # Works, but not without problems:
+    # https://github.com/quodlibet/quodlibet/issues/1870
+    # The dock menu is more useful so disable.
+    from quodlibet.plugins import PluginNotSupportedError
+    raise PluginNotSupportedError
+
+
 def get_indicator_impl():
     """Returns a BaseIndicator implementation depending on the environ"""
 
