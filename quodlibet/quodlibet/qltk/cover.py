@@ -9,7 +9,6 @@
 from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject
 
 from quodlibet import qltk
-from quodlibet import config
 from quodlibet import app
 from quodlibet.util import thumbnails
 from quodlibet.util.path import is_fsnative
@@ -197,10 +196,9 @@ class ResizeImage(Gtk.Bin):
         if self._path:
             if width < (2 * scale_factor) or height < (2 * scale_factor):
                 return
-            round_thumbs = config.getboolean("albumart", "round")
             pixbuf = scale(
                 pixbuf, (width - 2 * scale_factor, height - 2 * scale_factor))
-            pixbuf = add_border_widget(pixbuf, self, round_thumbs)
+            pixbuf = add_border_widget(pixbuf, self)
         else:
             pixbuf = scale(pixbuf, (width, height))
 

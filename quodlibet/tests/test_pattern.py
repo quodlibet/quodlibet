@@ -64,6 +64,13 @@ class TPattern(_TPattern):
         pat = Pattern("a\n\n")
         self.assertEqual(pat.format(self.a), "a\n\n")
 
+    def test_escape(self):
+        pat = Pattern("a \\<foo\\|bla\\>")
+        self.assertEqual(pat.format(self.a), "a <foo|bla>")
+
+        pat = Pattern(r"a\\<foo>")
+        self.assertEqual(pat.format(self.a), "a\\")
+
     def test_query_like_tag(self):
         pat = Pattern("<t=v>")
         self.assertEqual(pat.format(AudioFile({"t=v": "foo"})), "foo")
@@ -138,6 +145,12 @@ class TPattern(_TPattern):
         pat = Pattern("</The .+ way/|matched|not matched>")
         s.assertEquals(pat.format(s.g), 'not matched')
 
+    def test_tag_internal(self):
+        pat = Pattern("<~filename='/path/to/a.mp3'|matched|not matched>")
+        self.assertEquals(pat.format(self.a), 'matched')
+        pat = Pattern("<~filename=/\\/path\\/to\\/a.mp3/|matched|not matched>")
+        self.assertEquals(pat.format(self.a), 'matched')
+
     def test_tag_query_disallowed_free_text(s):
         pat = Pattern("<The only way|matched|not matched>")
         s.assertEquals(pat.format(s.g), 'not matched')
@@ -211,12 +224,15 @@ class _TFileFromPattern(_TPattern):
 
     def test_escape_slash(s):
         fpat = s._create('<~filename>')
-        pat = Pattern('<~filename>')
-        wpat = s._create(r'\\<artist>\\ "<title>')
         s.assertTrue(fpat.format(s.a).startswith("_path_to_a.mp3"))
+
+        pat = Pattern('<~filename>')
         s.assertTrue(pat.format(s.a).startswith("/path/to/a"))
+
         if os.name != "nt":
-            s.assertTrue(wpat.format(s.a).startswith("\\Artist\\ \"Title5"))
+            wpat = s._create(r'\\<artist>\\ "<title>')
+            s.assertTrue(
+                wpat.format(s.a).startswith(r'\Artist\ "Title5'))
         else:
             # FIXME..
             pass
@@ -392,8 +408,8 @@ class TXMLFromMarkupPattern(_TPattern):
         s.assertEquals(pat.format(s.a), '[b]')
         s._test_markup(pat.format(s.a))
 
-        pat = XMLFromMarkupPattern(r'\\[b]\\[/b]')
-        s.assertEquals(pat.format(s.a), r'\<b>\</b>')
+        pat = XMLFromMarkupPattern(r'\\\\[b]\\\\[/b]')
+        s.assertEquals(pat.format(s.a), r'\\<b>\\</b>')
         s._test_markup(pat.format(s.a))
 
 

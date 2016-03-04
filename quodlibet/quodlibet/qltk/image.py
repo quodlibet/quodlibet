@@ -127,7 +127,27 @@ def pbosf_render(style_context, cairo_context, pbosf, x, y):
         Gtk.render_icon_surface(style_context, cairo_context, pbosf, x, y)
 
 
-def add_border(pixbuf, color, round=False, width=1):
+def get_border_radius(_widgets=[]):
+    """Returns the border radius commonly used in the current theme.
+    If there are no rounded corners 0 will be returned.
+    """
+
+    if not _widgets:
+        b = Gtk.Button()
+        b.show()
+        e = Gtk.Entry()
+        e.show()
+        _widgets += [b, e]
+
+    radii = []
+    for widget in _widgets:
+        style_context = widget.get_style_context()
+        radii.append(style_context.get_property(
+            Gtk.STYLE_PROPERTY_BORDER_RADIUS, style_context.get_state()))
+    return max(radii)
+
+
+def add_border(pixbuf, color, width=1, radius=0):
     """Add a border to the pixbuf and round of the edges.
     color is a Gdk.RGBA
     The resulting pixbuf will be width * 2px higher and wider.
@@ -142,7 +162,7 @@ def add_border(pixbuf, color, round=False, width=1):
     ctx = cairo.Context(surface)
 
     pi = math.pi
-    r = min(w, h) / 10.0 if round else 0
+    r = min(radius, min(w, h) / 2)
     ctx.new_path()
     ctx.arc(w - r, r, r, -pi / 2, 0)
     ctx.arc(w - r, h - r, r, 0, pi / 2)
@@ -161,7 +181,7 @@ def add_border(pixbuf, color, round=False, width=1):
     return Gdk.pixbuf_get_from_surface(surface, 0, 0, w, h)
 
 
-def add_border_widget(pixbuf, widget, round=False):
+def add_border_widget(pixbuf, widget):
     """Like add_border() but uses the widget to get a border color and a
     border width.
     """
@@ -171,8 +191,9 @@ def add_border_widget(pixbuf, widget, round=False):
     context = widget.get_style_context()
     color = context.get_color(context.get_state())
     scale_factor = get_scale_factor(widget)
+    border_radius = get_border_radius() * scale_factor
 
-    return add_border(pixbuf, color, round=round, width=scale_factor)
+    return add_border(pixbuf, color, width=scale_factor, radius=border_radius)
 
 
 def scale(pixbuf, boundary, scale_up=True, force_copy=False):

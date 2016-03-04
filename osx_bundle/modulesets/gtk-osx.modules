@@ -141,8 +141,8 @@
   </autotools>
 
  <autotools id="pango"  autogen-sh="autoreconf">
-    <branch version="1.36.8" module="pango/1.36/pango-1.36.8.tar.xz"
-            hash="sha256:18dbb51b8ae12bae0ab7a958e7cf3317c9acfc8a1e1103ec2f147164a0fc2d07">
+    <branch version="1.38.1" module="pango/1.38/pango-1.38.1.tar.xz"
+            hash="sha256:1320569f6c6d75d6b66172b2d28e59c56ee864ee9df202b76799c4506a214eb7">
     </branch>
     <dependencies>
       <dep package="cairo"/>
@@ -205,11 +205,14 @@
     <branch module="gtk+/3.14/gtk+-3.14.15.tar.xz" version="3.14.15"
             hash="sha256:3ac87659112ced9e5ee5bd55d055faa881aafd040f26ca40b0d8ba0fa6509c83">
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug-707945-GTK2-Quartz-typeahead-find-in-GtkTreeView.patch" strip="1"/>
+      <!-- https://bugzilla.gnome.org/show_bug.cgi?id=740199#c4 -->
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gtk3-hidpi.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="glib"/>
       <dep package="pango"/>
       <dep package="atk"/>
+      <dep package="cairo"/>
       <dep package="gdk-pixbuf"/>
       <dep package="gobject-introspection"/>
     </dependencies>
@@ -222,11 +225,14 @@
              autogenargs="--enable-quartz-backend --enable-quartz-relocation">
     <branch module="gtk+/3.16/gtk+-3.16.7.tar.xz" version="3.16.7"
             hash="sha256:19689d14de54d182fad538153dbff6d41f53841f940aa871585fdea0306c7fba">
+      <!-- https://bugzilla.gnome.org/show_bug.cgi?id=740199#c4 -->
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gtk3-hidpi.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="glib"/>
       <dep package="pango"/>
       <dep package="atk"/>
+      <dep package="cairo"/>
       <dep package="gdk-pixbuf"/>
       <dep package="gobject-introspection"/>
       <dep package="libepoxy"/>
@@ -255,6 +261,8 @@
     <branch module="cairo-1.14.0.tar.xz"  version="1.14.0"
             repo="cairographics"
             hash="sha1:53cf589b983412ea7f78feee2e1ba9cea6e3ebae">
+      <!-- https://bugs.freedesktop.org/show_bug.cgi?id=69796#c4 -->
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/cairo-hidpi.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="pixman"/>

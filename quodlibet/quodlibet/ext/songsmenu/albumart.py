@@ -686,7 +686,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
             size = self.THUMB_SIZE * scale_factor - scale_factor * 2
             pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
                 GdkPixbuf.InterpType.BILINEAR)
-            pixbuf = add_border_widget(pixbuf, self, round=True)
+            pixbuf = add_border_widget(pixbuf, self)
             thumb = get_pbosf_for_pixbuf(self, pixbuf)
         except (GLib.GError, IOError):
             pass

@@ -9,36 +9,6 @@ Do you have a global filter in use? Check the *Browsers* tab in *Music*
 → *Preferences*.
 
 
-Why can't I double-click a song in GNOME to play in Quod Libet?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-You can! File association is more to do with the file manager you're
-using. If you're using GNOME, right-click on the audio file in Nautilus
-and select 'Properties'. Go to the 'Open with' tab, then select the
-'Add' button. In the 'Use custom command' text field add the following:
-
-    ``quodlibet --play-file %F``
-
-and then click 'add'. Now you can select 'quodlibet' from the list of
-programs to open that file. Double-click the file and Quod Libet will
-start to play it.
-
-Note this will *only work is Quod Libet is currently running*, though a
-workaround is to make a script that starts ``quodlibet`` first (only
-one instance is ever loaded unless in dev mode).
-
-
-My filenames with special characters (ú, ç, はあ, etc.) don't appear properly
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Unless told otherwise Quod Libet assumes your filesystem is using UTF-8
-filenames (this is a standard assumption for GTK+ applications). To
-tell it otherwise, ``export G_FILENAME_ENCODING="iso-8859-1"` (or
-whatever value you need) in your ``~/.bashrc`` or other appropriate
-place. You can also use the magic value `@locale` to use the default
-character encoding for your locale.
-
-
 Why do my MP3 files have the wrong length?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -56,17 +26,6 @@ from any tags. You can fix this problem with various tools, e.g.
 
     $ sudo apt-get install mp3val
     $ mp3val -f filename.mp3
-
-
-I want keyboard shortcuts to change browsers (or anything else)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Put ``gtk-can-change-accels = 1`` in ``~/.gtkrc-2.0`` (and restart Quod
-Libet). Then hover the mouse over the menu item you want to set an
-accelerator for, and press that key.
-
-When using GNOME this setting can be toggled in *Menus and Toolbars* in
-the GNOME settings.
 
 
 Whenever I type a space, Quod Libet pauses
@@ -118,20 +77,19 @@ would have to be fast since we compare thousands of strings when sorting.
 I have two albums with the same name which are merged in the Album List
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Tag them with different ``labelid`` tags (it's best if you use the
-actual label catalog ID, but if you can't find it you can also just use
-any different values). You can also use ``musicbrainz_albumid`` tags,
-which several other taggers can write.
+Tag them with different ``albumartist`` tags. You can also use
+``musicbrainz_albumid`` tags, which several other taggers and our "MusicBrainz
+Lookup" plugin can write.
 
 
 I have two discs of the same album, and they don't get merged in the Album List
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Make sure they have the same name (i.e. without "(disc x)" on the end).
-If they are still not merged, they have different `labelid` or
-``musicbrainz_albumid`` tags. If they have different label ID tags,
-delete the incorrect one. If they have different MusicBrainz album ID
-tags, add a ``labelid`` tag that is the same for both albums.
+Make sure they have the same name (i.e. without "(disc x)" on the end). If
+they are still not merged, they have different `albumartist`, `labelid` or
+``musicbrainz_albumid`` tags. If they have different label ID tags, delete the
+incorrect one. If they have different MusicBrainz album ID tags, add a
+``labelid`` tag that is the same for both albums.
 
 
 Can I show more than 0 to 4 notes when rating songs?

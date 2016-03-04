@@ -22,5 +22,7 @@ if __name__ == "__main__":
     # delete all gtk+ etc translations which QL doesn't support
     for entry in os.listdir(main_locale):
         entry_path = os.path.join(main_locale, entry)
+        if not os.path.isdir(entry_path):
+            continue
         if get_lang(entry) not in ql_langs:
             shutil.rmtree(entry_path)

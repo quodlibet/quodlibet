@@ -80,7 +80,8 @@
     <branch module="cairo-1.14.2.tar.xz"  version="1.14.2"
             repo="cairographics"
             hash="sha1:c8da68aa66ca0855b5d0ff552766d3e8679e1d24">
-            <patch file="patches/cairo-0000-hidpi.patch" strip="1"/>
+        <!-- https://bugs.freedesktop.org/show_bug.cgi?id=69796#c4 -->
+        <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/cairo-hidpi.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="pixman"/>
@@ -107,8 +108,8 @@
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
     <branch module="gtk+/3.18/gtk+-3.18.2.tar.xz" version="3.18.2"
         hash="sha256:5dbec561c4a00070073bf9cf4cfdd61fab4a14c8ff5b15d700bd378f8185e152">
-        <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug-707945-GTK2-Quartz-typeahead-find-in-GtkTreeView.patch" strip="1"/>
-        <patch file="patches/gtk-0000-hidpi.patch" strip="1"/>
+        <!-- https://bugzilla.gnome.org/show_bug.cgi?id=740199#c4 -->
+        <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gtk3-hidpi.patch" strip="1"/>
     </branch>
     <dependencies>
         <dep package="glib"/>
@@ -145,22 +146,6 @@
         <dep package="libffi"/>
     </dependencies>
     <after>
-      <dep package="meta-gtk-osx-bootstrap"/>
-    </after>
-  </autotools>
-
-  <autotools id="pango"  autogen-sh="autoreconf">
-    <branch version="1.38.1" module="pango/1.38/pango-1.38.1.tar.xz"
-            hash="sha256:1320569f6c6d75d6b66172b2d28e59c56ee864ee9df202b76799c4506a214eb7">
-    </branch>
-    <dependencies>
-      <dep package="cairo"/>
-     </dependencies>
-    <after>
-      <dep package="gobject-introspection"/>
-      <dep package="gobject-introspection-10"/>
-      <dep package="meta-gtk-osx-freetype"/>
-      <dep package="glib"/>
       <dep package="meta-gtk-osx-bootstrap"/>
     </after>
   </autotools>

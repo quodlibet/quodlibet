@@ -21,7 +21,11 @@ from tests import TestCase, skipUnless
 
 class FakeStream(object):
     # skip these by default
-    BL = ["unable to detect undefined names"]
+    BL = [
+        "unable to detect undefined names",
+        "may be undefined, or defined from star imports",
+        re.escape(".*' imported but unused"),
+    ]
     if PY3:
         BL.append(
             "undefined name '(unichr|unicode|long|basestring|xrange|cmp)'")

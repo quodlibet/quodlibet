@@ -288,9 +288,9 @@ class ComboBoxEntrySave(Gtk.ComboBox):
             self.__fill(filename, initial, edit_title)
 
         old_entry = self.get_child()
-        self.remove(old_entry)
         new_entry = entry.ValidatingEntry(validator)
         clone_css_classes(old_entry, new_entry)
+        old_entry.destroy()
         self.add(new_entry)
 
         connect_obj(self, 'destroy', self.set_model, None)

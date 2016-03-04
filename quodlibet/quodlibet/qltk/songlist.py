@@ -2,7 +2,7 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #           2014 Jan Path
-#      2011-2015 Nick Boultbee
+#      2011-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -25,7 +25,6 @@ from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk import Icons
 from quodlibet.util.uri import URI
-from quodlibet.compat import reduce
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column
@@ -1059,19 +1058,20 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         menu.append(sep)
 
         trackinfo = """title genre ~title~version ~#track
-            ~#playcount ~#skipcount ~rating ~#length""".split()
+            ~#playcount ~#skipcount ~rating ~#length ~playlists""".split()
         peopleinfo = """artist ~people performer arranger author composer
             conductor lyricist originalartist""".split()
         albuminfo = """album ~album~discsubtitle labelid ~#disc ~#discs
             ~#tracks albumartist""".split()
-        dateinfo = """date originaldate recordingdate ~#laststarted
-            ~#lastplayed ~#added ~#mtime""".split()
+        dateinfo = """date originaldate recordingdate ~year ~originalyear
+            ~#laststarted ~#lastplayed ~#added ~#mtime""".split()
         fileinfo = """~format ~#bitrate ~#filesize ~filename ~basename ~dirname
             ~uri ~codec ~encoding""".split()
         copyinfo = """copyright organization location isrc
             contact website""".split()
-        all_headers = reduce(lambda x, y: x + y,
-            [trackinfo, peopleinfo, albuminfo, dateinfo, fileinfo, copyinfo])
+        all_headers = sum(
+            [trackinfo, peopleinfo, albuminfo, dateinfo, fileinfo, copyinfo],
+            [])
 
         for name, group in [
             (_("All _Headers"), all_headers),

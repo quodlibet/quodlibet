@@ -155,8 +155,9 @@ if __name__ == "__main__":
             'options': {
                 'py2exe': {
                     'packages': ('encodings, feedparser, quodlibet, '
-                                 'HTMLParser, cairo, musicbrainz2, shelve, '
+                                 'HTMLParser, cairo, musicbrainzngs, shelve, '
                                  'json, gi'),
+                    'excludes': ['Tkconstants', 'Tkinter'],
                     'skip_archive': True,
                     'dist_dir': os.path.join('dist', 'bin'),
                 }

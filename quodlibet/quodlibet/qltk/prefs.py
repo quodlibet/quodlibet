@@ -267,14 +267,7 @@ class PreferencesWindow(UniqueWindow):
             f = qltk.Frame(_("Ratings"), child=vbox)
             self.pack_start(f, False, True, 0)
 
-            # Album Art
             vb = Gtk.VBox(spacing=6)
-            c = CCB(_("_Use rounded corners on thumbnails"),
-                    'albumart', 'round', populate=True,
-                    tooltip=_("Round the corners of album artwork thumbnail "
-                              "images."))
-            c.connect('toggled', self.__toggle_round_corners)
-            vb.pack_start(c, False, True, 0)
 
             # Filename choice algorithm config
             cb = CCB(_("Prefer _embedded art"),
@@ -309,9 +302,6 @@ class PreferencesWindow(UniqueWindow):
 
         def __changed_text(self, entry, name):
             config.set('albumart', name, entry.get_text())
-
-        def __toggle_round_corners(self, *args):
-            qltk.redraw_all_toplevels()
 
         def __toggled_force_filename(self, cb, fn_entry):
             fn_entry.set_sensitive(cb.get_active())

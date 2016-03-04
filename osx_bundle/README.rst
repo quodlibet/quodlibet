@@ -40,8 +40,16 @@ Development
 -----------
 
 * After ``bootstrap.sh`` has finished executing ``source env.sh`` will put you
-  in the build environment. After that jhbuild can be used directly or the
-  Quod Libet test suite can be executed.
+  in the build environment. After that jhbuild can be used directly (Enter the
+  jhbuild environment using ``jhbuild shell``) or the Quod Libet test suite
+  can be executed.
+* ``bootstrap.sh`` can be called again to update the build environment while
+  keeping any build packages.
+
+
+Maintenance
+-----------
+
 * ``fetch_modules()`` downloads the git master of the gtk-osx module set
   and replaces the modules under "modulessets" and the
   ``misc/gtk-osx-jhbuildrc`` file. Doing so so should ideally be followed by a
