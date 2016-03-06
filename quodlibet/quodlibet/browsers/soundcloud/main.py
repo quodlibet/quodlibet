@@ -260,7 +260,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
     def __handle_incoming_uri(self, obj, uri):
         uri = URI(uri)
-        if uri.scheme == "quodlibet" and "/soundcloud/callback" in uri:
+        if uri.scheme == "quodlibet" and "/callbacks/soundcloud" in uri:
             try:
                 code = parse_qs(uri.query)["code"][0]
             except IndexError:

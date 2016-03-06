@@ -29,7 +29,7 @@ class SoundcloudApiClient(GObject.Object):
     __CLIENT_SECRET = 'ca2b69301bd1f73985a9b47224a2a239'
     __CLIENT_ID = '5acc74891941cfc73ec8ee2504be6617'
     SOUNDCLOUD_API_HOST = "https://api.soundcloud.com"
-    REDIRECT_URI = 'quodlibet://soundcloud/callback'
+    REDIRECT_URI = 'http://quodlibet.github.io/callbacks/soundcloud.html'
 
     __gsignals__ = {
         'fetch-success': (GObject.SignalFlags.RUN_LAST, None, (object,)),
@@ -49,10 +49,9 @@ class SoundcloudApiClient(GObject.Object):
     def authenticate_user(self):
         # create client object with app credentials
         if self.access_token:
-            print_d("Using saved Soundcloud token...")
-        else:
-            # redirect user to authorize URL
-            website(self.authorize_url)
+            print_d("Ignoring saved Soundcloud token...")
+        # redirect user to authorize URL
+        website(self.authorize_url)
 
     def get_token(self, code):
         print_d("Getting access token...")
