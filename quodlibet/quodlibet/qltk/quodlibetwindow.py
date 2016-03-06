@@ -61,7 +61,7 @@ class PlayerOptions(GObject.Object):
     useful for external interfaces (mpd, mpris, etc.) and for reducing
     the dependency on the state holding widgets in the main window.
 
-    Usable as long as the main window is not destroyedor until destroy()
+    Usable as long as the main window is not destroyed, or until `destroy()`
     is called.
     """
 
@@ -123,9 +123,8 @@ class PlayerOptions(GObject.Object):
     def single(self):
         """If only the current song is considered as next track
 
-        This means in case repeat() is False the playlist will end after
-        this song finishes. In cas.e repeat() is True the current song will
-        be replayed.
+        When `repeat` is False the playlist will end after this song finishes.
+        When `repeat` is True the current song will be replayed.
         """
 
         return self._order.get_active_name() == "onesong"
@@ -263,7 +262,7 @@ class CurrentColumn(SongListColumn):
 
 
 class MainSongList(SongList):
-    # The SongList that represents the current playlist.
+    """SongList for the main browser's displayed songs."""
 
     _activated = False
 
@@ -382,10 +381,10 @@ class TopBar(Gtk.Toolbar):
             library.albums.refresh(refresh_albums)
 
 
-class ReapeatButton(Gtk.ToggleButton):
+class RepeatButton(Gtk.ToggleButton):
 
     def __init__(self):
-        super(ReapeatButton, self).__init__(
+        super(RepeatButton, self).__init__(
             image=SymbolicIconImage(
                 "media-playlist-repeat", Gtk.IconSize.SMALL_TOOLBAR))
 
@@ -418,7 +417,7 @@ class StatusBarBox(Gtk.HBox):
         self.order = order = PlayOrder(model, player)
         self.pack_start(order, False, True, 0)
 
-        self.repeat = repeat = ReapeatButton()
+        self.repeat = repeat = RepeatButton()
         self.pack_start(repeat, False, True, 0)
         repeat.connect('toggled', self.__repeat, model)
         model.repeat = repeat.get_active()

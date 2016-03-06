@@ -124,7 +124,7 @@ class SongListColumn(TreeViewColumnButton):
     def _needs_update(self, value):
         """Call to check if the last passed value was the same.
 
-        This is used to reduce formating if the input is the same
+        This is used to reduce formatting if the input is the same
         either because of redraws or all columns have the same value
         """
 

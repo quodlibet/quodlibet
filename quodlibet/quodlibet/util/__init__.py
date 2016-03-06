@@ -619,7 +619,7 @@ class DeferredSignal(object):
     priority and prevents multiple calls from being inserted in the
     mainloop at a time, greatly improving responsiveness in some places.
 
-    When the target function will finally be called the arguments passed
+    When the target function is finally called, the arguments passed
     are the last arguments passed to DeferredSignal.
 
     `priority` defaults to GLib.PRIORITY_DEFAULT
