@@ -738,7 +738,7 @@ class BaseView(Gtk.TreeView):
         func gets passed Gtk.TreeModelRow and should return True if
         the row should be selected.
 
-        If scroll=True then scroll the the selected row if the selection
+        If scroll=True then scroll to the selected row if the selection
         changes.
 
         Returns True if the selection was changed.

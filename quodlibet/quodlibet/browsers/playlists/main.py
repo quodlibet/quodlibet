@@ -284,10 +284,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         elif qltk.is_accel(event, "F2"):
             model, iter = self.__view.get_selection().get_selected()
             if iter:
-                self.__render.set_property('editable', True)
-                self.__view.set_cursor(model.get_path(iter),
-                                       self.__view.get_columns()[0],
-                                       start_editing=True)
+                self._start_rename(model.get_path(iter))
             return True
         return False
 
@@ -390,12 +387,15 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         else:
             sel.set_uris([song("~uri") for song in songs])
 
-    def _select_playlist(self, playlist):
+    def _select_playlist(self, playlist, scroll=False):
         view = self.__view
         model = view.get_model()
         for row in model:
             if row[0] is playlist:
                 view.get_selection().select_iter(row.iter)
+                if scroll:
+                    view.scroll_to_cell(row.path, use_align=True,
+                                        row_align=0.5)
 
     def __popup_menu(self, view, library):
         model, itr = view.get_selection().get_selected()
@@ -421,8 +421,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         menu.prepend(rem)
 
         def _rename(path):
-            self.__render.set_property('editable', True)
-            view.set_cursor(path, view.get_columns()[0], start_editing=True)
+            self._start_rename(path)
 
         ren = qltk.MenuItem(_("_Rename"), Icons.EDIT)
         qltk.add_fake_accel(ren, "F2")
@@ -433,6 +432,11 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         PLAYLIST_HANDLER.populate_menu(menu, library, self, [playlist])
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+
+    def _start_rename(self, path):
+        view = self.__view
+        self.__render.set_property('editable', True)
+        view.set_cursor(path, view.get_columns()[0], start_editing=True)
 
     def __focus(self, widget, *args):
         qltk.get_top_parent(widget).songlist.grab_focus()
@@ -506,7 +510,11 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __new_playlist(self, activator):
         playlist = FileBackedPlaylist.new(PLAYLISTS)
         self.model.append(row=[playlist])
-        self._select_playlist(playlist)
+        self._select_playlist(playlist, scroll=True)
+
+        model, iter = self.__view.get_selection().get_selected()
+        path = model.get_path(iter)
+        GLib.idle_add(self._start_rename, path)
 
     def __start_editing(self, render, editable, path):
         editable.set_text(self.__lists[path][0].name)
@@ -527,7 +535,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             child_model.remove(
                 self.__lists.convert_iter_to_child_iter(row.iter))
             child_model.append(row=[playlist])
-            self._select_playlist(playlist)
+            self._select_playlist(playlist, scroll=True)
 
     def __import(self, activator, library):
         filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
