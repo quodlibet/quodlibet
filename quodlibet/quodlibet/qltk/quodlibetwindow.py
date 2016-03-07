@@ -698,6 +698,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         main_box.pack_start(top_bar, False, True, 0)
         self.top_bar = top_bar
 
+        self._seekbar_container = Gtk.Box()
+        main_box.pack_start(self._seekbar_container, False, True, 0)
+
         self.__browserbox = Align(bottom=3)
         main_box.pack_start(self.__browserbox, True, True, 0)
 
@@ -806,6 +809,21 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.connect("destroy", self.__destroy)
 
         self.enable_window_tracking("quodlibet")
+
+    def set_seekbar_widget(self, widget):
+        """Add an alternative seek bar widget.
+
+        Args:
+            widget (Gtk.Widget): a new widget or None to remove the current one
+        """
+
+        self._seekbar_container.hide()
+        for child in self._seekbar_container.get_children():
+            self._seekbar_container.remove(child)
+
+        if widget:
+            self._seekbar_container.pack_start(widget, True, True, 0)
+            self._seekbar_container.show()
 
     def set_as_osx_window(self, osx_app):
         assert osx_app
