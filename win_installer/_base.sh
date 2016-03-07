@@ -41,6 +41,7 @@ ea84abc60fcb5152418dd49e8fdecf3e68759304a71bef422c3b1376886c5b7a  python-musicbr
 dd665cca88cb059fec960516ed5f29474b33fce50fcb2633d397d4a3aa705c16  pywin32-218.win32-py2.7.exe
 fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
 8a94f6ff1ee9562a2216d2096b87d0e54a5eb5c9391874800e5032033a1c8e85  libmodplug-1.dll
+2b53c7bb3a92218f8ff197d259b7769754ec9a578561e69578739fcbdbb53da3  libgstdirectsoundsink.dll
 1eeedf2c29e0e7566217ba5a51aa1e3b73dfe173800fa71ac598470fbed3baf5  libgstopus.dll\
 "
 
@@ -59,6 +60,7 @@ fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
         wget -c http://github.com/alastair/python-musicbrainzngs/archive/v0.5.tar.gz -O "$BIN"/python-musicbrainzngs-0.5.tar.gz
         wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstopus.dll
+        wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstdirectsoundsink.dll
 
         pip install --download="$BIN" "mutagen==$MUTAGEN_VER"
         pip install --download="$BIN" feedparser==5.1.3
@@ -191,6 +193,9 @@ function setup_deps {
     # copy old libgstopus
     # https://github.com/quodlibet/quodlibet/issues/1511
     cp "$BUILD_ENV/bin/libgstopus.dll" "$DEPS"/lib/gstreamer-1.0
+    # copy old libgstdirectsoundsink.dll (from 1.4 GStreamer)
+    # https://github.com/quodlibet/quodlibet/issues/1880
+    cp "$BUILD_ENV/bin/libgstdirectsoundsink.dll" "$DEPS"/lib/gstreamer-1.0
 }
 
 function install_python {
