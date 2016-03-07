@@ -518,6 +518,7 @@ class FileBackedPlaylist(Playlist):
         self.dir = dir
         if validate:
             self.name = self._validated_name(name)
+        self._last_fn = self.filename
         self.__populate_from_file()
 
     def __populate_from_file(self):
@@ -579,15 +580,23 @@ class FileBackedPlaylist(Playlist):
 
     def delete(self):
         super(FileBackedPlaylist, self).delete()
+        self.__delete_file(self.filename)
+
+    @classmethod
+    def __delete_file(cls, fn):
         try:
-            os.unlink(self.filename)
+            os.unlink(fn)
         except EnvironmentError:
             pass
 
     def write(self):
-        with open(self.filename, "wb") as f:
+        fn = self.filename
+        with open(fn, "wb") as f:
             for song in self._list:
                 if isinstance(song, basestring):
                     f.write(fsnative2bytes(song) + "\n")
                 else:
                     f.write(fsnative2bytes(song("~filename")) + "\n")
+        if self._last_fn != fn:
+            self.__delete_file(self._last_fn)
+            self._last_fn = fn
