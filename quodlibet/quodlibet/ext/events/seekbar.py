@@ -12,7 +12,7 @@ from gi.repository import GObject, Gtk
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons
-from quodlibet.qltk.controls import TimeLabel
+from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.qltk import Align
 from quodlibet.util import connect_destroy
