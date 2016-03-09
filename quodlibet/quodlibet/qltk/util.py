@@ -75,3 +75,37 @@ def window_ungrab_and_unmap(window, devices):
     window.hide()
     #gtk3.8 bug: https://bugzilla.gnome.org/show_bug.cgi?id=700185
     window.unrealize()
+
+
+def position_window_beside_widget(window, widget, end=True, pad=3):
+    """Positions `window` left or right beside `widget` on the screen.
+    `padding` is the space between the widget and the window.
+    If `end` is True the window will be placed on the right side
+    in LTR mode or on the left side in RTL mode.
+    """
+
+    if Gtk.Widget.get_default_direction() != Gtk.TextDirection.LTR:
+        right = not end
+    else:
+        right = end
+
+    assert widget.get_realized()
+
+    toplevel = widget.get_toplevel()
+    dx, dy = widget.translate_coordinates(toplevel, 0, 0)
+    x, y = toplevel.get_window().get_origin()[1:]
+    x += dx
+    y += dy
+
+    widget_alloc = widget.get_allocation()
+    w, h = widget_alloc.width, widget_alloc.height
+
+    window.size_request()
+    ww, wh = window.get_size()
+
+    if right:
+        sx, sy = ((x + w + pad), (y + (h - wh) // 2))
+    else:
+        sx, sy = ((x - (ww + pad)), (y + (h - wh) // 2))
+
+    window.move(sx, sy)

@@ -17,7 +17,8 @@ from quodlibet.qltk import bookmarks
 from quodlibet.qltk.x import Align
 from quodlibet.qltk import Icons
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
-from quodlibet.qltk.util import window_grab_and_map, window_ungrab_and_unmap
+from quodlibet.qltk.util import window_grab_and_map, window_ungrab_and_unmap, \
+    position_window_beside_widget
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import connect_obj, connect_destroy, gdecode
 
@@ -157,22 +158,13 @@ class HSlider(Gtk.Button):
 
         window = self.__window
         frame = window.get_child()
-
         frame.show_all()
-        window.size_request()
 
-        dummy, x, y = self.get_window().get_origin()
-        x, y = self.translate_coordinates(self.get_toplevel(), x, y)[:2]
-
-        button_alloc = self.get_allocation()
-        w, h = button_alloc.width, button_alloc.height
-
-        ww, wh = window.get_size()
-        sx, sy = self._move_to(x, y, w, h, ww, wh, pad=3)
         window.set_transient_for(get_top_parent(self))
-        window.move(sx, sy)
         # this type hint tells the wayland backend to create a popup
         window.set_type_hint(Gdk.WindowTypeHint.DROPDOWN_MENU)
+
+        position_window_beside_widget(window, self)
 
         self.__grabbed = window_grab_and_map(
             window,
@@ -206,12 +198,6 @@ class HSlider(Gtk.Button):
     def __popup_hide(self):
         window_ungrab_and_unmap(self.__window, self.__grabbed)
         del self.__grabbed[:]
-
-    def _move_to(self, x, y, w, h, ww, wh, pad=3):
-        if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
-            return ((x + w + pad), (y + (h - wh) // 2))
-        else:
-            return ((x - (ww + pad)), (y + (h - wh) // 2))
 
 
 class SeekButton(HSlider):
