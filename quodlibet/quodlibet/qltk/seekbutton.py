@@ -68,12 +68,10 @@ class TimeLabel(Gtk.Label):
             self.set_time(self._last_time)
 
 
-class _PopupSlider(Gtk.Button):
-    # Based on the Rhythmbox volume control button; thanks to Colin Walters,
-    # Richard Hult, Michael Fulbright, Miguel de Icaza, and Federico Mena.
+class HSlider(Gtk.Button):
 
-    def __init__(self, child=None, adj=None):
-        super(_PopupSlider, self).__init__()
+    def __init__(self, child=None):
+        super(HSlider, self).__init__()
         if child:
             self.add(child)
         self.connect('clicked', self.__clicked)
@@ -82,7 +80,7 @@ class _PopupSlider(Gtk.Button):
         self.__grabbed = []
 
         window = self.__window = Gtk.Window(type=Gtk.WindowType.POPUP)
-        self.__adj = adj or self._adj
+        self.__adj = Gtk.Adjustment.new(0, 0, 0, 3, 15, 0)
 
         frame = Gtk.Frame()
         frame.set_border_width(0)
@@ -91,13 +89,13 @@ class _PopupSlider(Gtk.Button):
         self.add_events(Gdk.EventMask.SCROLL_MASK)
 
         hscale = Gtk.Scale(adjustment=self.__adj)
-        hscale.set_orientation(self.ORIENTATION)
+        hscale.set_orientation(Gtk.Orientation.HORIZONTAL)
         window.connect('button-press-event', self.__button)
         window.connect('key-press-event', self.__key)
         hscale.set_draw_value(False)
         self.scale = hscale
         window.add(frame)
-        self._box = Gtk.Box(orientation=self.ORIENTATION)
+        self._box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self._box.add(hscale)
         frame.add(self._box)
         self.connect('scroll-event', self.__scroll, hscale)
@@ -138,10 +136,7 @@ class _PopupSlider(Gtk.Button):
             self.__popup_hide()
 
     def set_slider_length(self, length):
-        if self.ORIENTATION == Gtk.Orientation.HORIZONTAL:
-            self.scale.set_size_request(length, -1)
-        else:
-            self.scale.set_size_request(-1, length)
+        self.scale.set_size_request(length, -1)
 
         # force a window resize..
         self.__window.resize(1, 1)
@@ -149,9 +144,6 @@ class _PopupSlider(Gtk.Button):
     def set_slider_widget(self, widget):
         self._box.pack_start(
             Align(widget, border=6, left=-3), False, True, 0)
-
-    def _move_to(self, x, y, w, h, ww, wh, pad=3):
-        raise NotImplementedError
 
     def __clicked(self, button):
         if self.__window.get_property('visible'):
@@ -190,12 +182,13 @@ class _PopupSlider(Gtk.Button):
             Gdk.EventMask.POINTER_MOTION_MASK |
             Gdk.EventMask.SCROLL_MASK)
 
-    def __scroll(self, widget, ev, hscale):
+    def __scroll(self, widget, event, hscale):
         adj = self.__adj
         v = hscale.get_value()
-        if ev.direction in self.UP:
+        direction = event.direction
+        if direction in [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]:
             v += adj.props.step_increment
-        elif ev.direction in self.DOWN:
+        elif direction in [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]:
             v -= adj.props.step_increment
         else:
             # newer Gdk.ScrollDirection.SMOOTH
@@ -213,13 +206,6 @@ class _PopupSlider(Gtk.Button):
     def __popup_hide(self):
         window_ungrab_and_unmap(self.__window, self.__grabbed)
         del self.__grabbed[:]
-
-
-class HSlider(_PopupSlider):
-    ORIENTATION = Gtk.Orientation.HORIZONTAL
-    _adj = Gtk.Adjustment.new(0, 0, 0, 3, 15, 0)
-    UP = [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]
-    DOWN = [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]
 
     def _move_to(self, x, y, w, h, ww, wh, pad=3):
         if Gtk.Widget.get_default_direction() == Gtk.TextDirection.LTR:
