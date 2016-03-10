@@ -25,6 +25,10 @@ class TInternetRadio(TestCase):
         self.assertTrue(self.bar.can_filter("foo"))
         self.assertTrue(self.bar.can_filter_text())
 
+    def test_status_bar_text(self):
+        self.assertEqual(self.bar.status_text(1), "1 station")
+        self.assertEqual(self.bar.status_text(101, 123), "101 stations")
+
     def tearDown(self):
         self.bar.destroy()
         quodlibet.config.quit()

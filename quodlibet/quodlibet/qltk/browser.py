@@ -272,7 +272,6 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         filter_menu.get_widget().show()
 
         self.__statusbar = Gtk.Label()
-        self.__statusbar.set_text(_("No time information"))
         self.__statusbar.set_alignment(1.0, 0.5)
         self.__statusbar.set_padding(6, 3)
         self.__statusbar.set_ellipsize(Pango.EllipsizeMode.START)
@@ -338,6 +337,6 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
     def __set_time(self, info, songs):
         i = len(songs)
         length = sum(song.get("~#length", 0) for song in songs)
-        t = self.browser.statusbar(i) % {
-            'count': i, 'time': util.format_time_long(length)}
+        t = self.browser.status_text(count=i,
+                                     time=util.format_time_long(length))
         self.__statusbar.set_text(t)

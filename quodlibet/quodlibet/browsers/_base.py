@@ -271,9 +271,10 @@ class Browser(Gtk.Box, Filter):
 
         return SongsMenu(library, songs, delete=True, items=items)
 
-    def statusbar(self, i):
-        return ngettext(
-            "%(count)d song (%(time)s)", "%(count)d songs (%(time)s)", i)
+    def status_text(self, count, time=None):
+        tmpl = ngettext("%(count)d song (%(time)s)",
+                        "%(count)d songs (%(time)s)", count)
+        return tmpl % {'count': count, 'time': time}
 
     replaygain_profiles = None
     """Replay Gain profiles for this browser."""
