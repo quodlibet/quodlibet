@@ -44,7 +44,7 @@ class RatingsMenuItem(Gtk.MenuItem):
             itm = Gtk.MenuItem(label="%0.2f\t%s" % (i, util.format_rating(i)))
             submenu.append(itm)
             itm.connect('activate', self._on_rating_change, i, library)
-        reset = Gtk.MenuItem(label=_("_Remove rating"), use_underline=True)
+        reset = Gtk.MenuItem(label=_("_Remove Rating"), use_underline=True)
         reset.connect('activate', self._on_rating_remove, library)
 
         submenu.append(SeparatorMenuItem())

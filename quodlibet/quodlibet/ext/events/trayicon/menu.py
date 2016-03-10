@@ -79,7 +79,7 @@ class IndicatorMenu(Gtk.Menu):
                                      GObject.BindingFlags.BIDIRECTIONAL)
         player_options.notify("repeat")
 
-        safter = Gtk.CheckMenuItem(label=_("Stop _after this song"),
+        safter = Gtk.CheckMenuItem(label=_("Stop _After This Song"),
                                    use_underline=True)
         player_options.bind_property("stop-after", safter, "active",
                                      GObject.BindingFlags.BIDIRECTIONAL)

@@ -361,7 +361,7 @@ class SongsMenu(Gtk.Menu):
             self.separate()
 
         if remove:
-            b = qltk.MenuItem(_("_Remove from library"), Icons.LIST_REMOVE)
+            b = qltk.MenuItem(_("_Remove from Library"), Icons.LIST_REMOVE)
             if callable(remove):
                 b.connect('activate', lambda item: remove(songs))
             else:
