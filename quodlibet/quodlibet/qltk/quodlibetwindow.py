@@ -334,10 +334,13 @@ class TopBar(Gtk.Toolbar):
         info_item.add(box)
         qltk.add_css(self, "GtkToolbar {padding: 3px;}")
 
+        self._pattern_box = Gtk.VBox()
+
         # song text
         info_pattern_path = os.path.join(quodlibet.get_user_dir(), "songinfo")
         text = SongInfo(library.librarian, player, info_pattern_path)
-        box.pack_start(Align(text, border=3), True, True, 0)
+        self._pattern_box.pack_start(Align(text, border=3), True, True, 0)
+        box.pack_start(self._pattern_box, True, True, 0)
 
         # cover image
         self.image = CoverImage(resize=True)
@@ -361,6 +364,14 @@ class TopBar(Gtk.Toolbar):
 
         context = self.get_style_context()
         context.add_class("primary-toolbar")
+
+    def set_seekbar_widget(self, widget):
+        children = self._pattern_box.get_children()
+        if len(children) > 1:
+            self._pattern_box.remove(children[-1])
+
+        if widget:
+            self._pattern_box.pack_start(widget, False, True, 0)
 
     def _on_volume_changed(self, player, *args):
         config.set("memory", "volume", str(player.volume))
@@ -698,9 +709,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         main_box.pack_start(top_bar, False, True, 0)
         self.top_bar = top_bar
 
-        self._seekbar_container = Gtk.Box()
-        main_box.pack_start(self._seekbar_container, False, True, 0)
-
         self.__browserbox = Align(bottom=3)
         main_box.pack_start(self.__browserbox, True, True, 0)
 
@@ -817,13 +825,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             widget (Gtk.Widget): a new widget or None to remove the current one
         """
 
-        self._seekbar_container.hide()
-        for child in self._seekbar_container.get_children():
-            self._seekbar_container.remove(child)
-
-        if widget:
-            self._seekbar_container.pack_start(widget, True, True, 0)
-            self._seekbar_container.show()
+        self.top_bar.set_seekbar_widget(widget)
 
     def set_as_osx_window(self, osx_app):
         assert osx_app
