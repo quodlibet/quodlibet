@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013 Christoph Reiter, Nick Boultbee
+# Copyright 2013 Christoph Reiter
+#     2013, 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,6 +9,7 @@
 from gi.repository import Gtk
 
 from quodlibet import app
+from quodlibet.plugins.songshelpers import any_song, has_writable_image
 from quodlibet.qltk.x import MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.qltk.wlw import WritingWindow
@@ -20,6 +22,9 @@ class EditEmbedded(SongsMenuPlugin):
     PLUGIN_NAME = _("Edit Embedded Images")
     PLUGIN_DESC = _("Removes or replaces embedded images.")
     PLUGIN_ICON = Icons.EDIT
+
+    plugin_handles = any_song(has_writable_image)
+    """if any song supports editing, we are active"""
 
     def __init__(self, songs, *args, **kwargs):
         super(EditEmbedded, self).__init__(songs, *args, **kwargs)
@@ -78,10 +83,3 @@ class EditEmbedded(SongsMenuPlugin):
 
     def plugin_songs(self, songs):
         return True
-
-    def plugin_handles(self, songs):
-        # if any song supports editing, we are active
-        for song in songs:
-            if song.can_change_images:
-                return True
-        return False

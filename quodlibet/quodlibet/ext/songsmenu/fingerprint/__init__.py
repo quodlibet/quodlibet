@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011,2013 Christoph Reiter
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -20,6 +21,7 @@ from quodlibet.qltk import Button, Frame, Icons
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
 
 
 class AcoustidSearch(SongsMenuPlugin):
@@ -27,6 +29,8 @@ class AcoustidSearch(SongsMenuPlugin):
     PLUGIN_NAME = _("Acoustic Fingerprint Lookup")
     PLUGIN_DESC = _("Looks up song metadata through acoustic fingerprinting.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
+
+    plugin_handles = each_song(is_finite, is_writable)
 
     def plugin_songs(self, songs):
         from .search import SearchWindow
@@ -47,6 +51,8 @@ class AcoustidSubmit(SongsMenuPlugin):
     PLUGIN_DESC = _("Generates acoustic fingerprints using chromaprint "
                     "and submits them to acoustid.org.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
+
+    plugin_handles = each_song(is_finite, is_writable)
 
     def plugin_songs(self, songs):
         if not get_api_key():

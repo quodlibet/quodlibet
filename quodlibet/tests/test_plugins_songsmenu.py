@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from quodlibet.library import SongLibrary
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.plugins.songshelpers import any_song, each_song
 from tests import TestCase, mkstemp, mkdtemp
 
 import os
@@ -9,6 +10,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginManager, Plugin
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from tests.helper import capture_output
+from tests.test_library_libraries import FakeSong
 
 
 class TSongsMenuPlugins(TestCase):
@@ -135,6 +137,42 @@ class TSongsMenuPlugins(TestCase):
         self.failUnless(self.confirmed,
                         ("Should have confirmed %d invocations (Max=%d)."
                          % (len(songs), MAX)))
+
+
+def even(i):
+    return i % 2 == 0
+
+
+def never(_):
+    return False
+
+
+class Tsongsmenu(TestCase):
+    songs = [FakeSong(1), FakeSong(2)]
+
+    def test_any_song(self):
+        FakeSongsMenuPlugin.plugin_handles = any_song(even)
+        p = FakeSongsMenuPlugin(self.songs, None)
+        self.failUnless(p.plugin_handles(self.songs))
+        self.failIf(p.plugin_handles(self.songs[:1]))
+
+    def test_any_song_multiple(self):
+        FakeSongsMenuPlugin.plugin_handles = any_song(even, never)
+        p = FakeSongsMenuPlugin(self.songs, None)
+        self.failIf(p.plugin_handles(self.songs))
+        self.failIf(p.plugin_handles(self.songs[:1]))
+
+    def test_each_song(self):
+        FakeSongsMenuPlugin.plugin_handles = each_song(even)
+        p = FakeSongsMenuPlugin(self.songs, None)
+        self.failIf(p.plugin_handles(self.songs))
+        self.failUnless(p.plugin_handles(self.songs[1:]))
+
+    def test_each_song_multiple(self):
+        FakeSongsMenuPlugin.plugin_handles = each_song(even, never)
+        p = FakeSongsMenuPlugin(self.songs, None)
+        self.failIf(p.plugin_handles(self.songs))
+        self.failIf(p.plugin_handles(self.songs[:1]))
 
 
 class FakeSongsMenuPlugin(SongsMenuPlugin):

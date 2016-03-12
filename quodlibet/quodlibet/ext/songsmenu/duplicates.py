@@ -2,7 +2,7 @@
 #
 #    Duplicates songs plugin.
 #
-#    Copyright (C) 2012, 2011 Nick Boultbee
+#    Copyright (C) 2012, 2011, 2016 Nick Boultbee
 #
 #    Finds "duplicates" of songs selected by searching the library for
 #    others with the same user-configurable "key", presenting a browser-like
@@ -21,6 +21,7 @@ from gi.repository import Gtk, Pango
 from quodlibet import app
 from quodlibet import print_d, util, qltk
 from quodlibet.plugins import PluginConfigMixin
+from quodlibet.plugins.songshelpers import any_song, is_finite
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.edittags import AudioFileGroup
@@ -371,6 +372,8 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     _CFG_REMOVE_DIACRITICS = 'remove_diacritics'
     _CFG_REMOVE_PUNCTUATION = 'remove_punctuation'
     _CFG_CASE_INSENSITIVE = 'case_insensitive'
+
+    plugin_handles = any_song(is_finite)
 
     # Cached values
     key_expression = None

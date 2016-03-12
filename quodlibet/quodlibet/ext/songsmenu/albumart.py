@@ -25,6 +25,7 @@ from xml.dom import minidom
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 from quodlibet.plugins import PluginConfigMixin
+from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.util import format_size, print_exc
 from quodlibet.util.dprint import print_d
 
@@ -821,6 +822,8 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_DESC = _('Downloads album covers from various websites.')
     PLUGIN_ICON = Icons.EDIT_FIND
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
+
+    plugin_handles = any_song(is_a_file)
 
     @classmethod
     def PluginPreferences(cls, window):
