@@ -98,7 +98,8 @@ class AudioFile(dict, ImageContainer):
     """New song duration from the backend will update the song"""
 
     multisong = False
-    """Is a container for multiple songs, while played new songs can start/end"""
+    """Is a container for multiple songs
+     i.e. while played new songs can start / end"""
 
     streamsong = False
     """Is part of a multisong"""
