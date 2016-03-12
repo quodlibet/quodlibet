@@ -18,9 +18,9 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
 class Bookmarks(SongsMenuPlugin):
-    PLUGIN_ID = "Go to Bookmark..."
-    PLUGIN_NAME = _(u"Go to Bookmark…")
-    PLUGIN_DESC = _("Lists all bookmarks in the selected files.")
+    PLUGIN_ID = "Go to Bookmark"
+    PLUGIN_NAME = _(u"Go to Bookmark")
+    PLUGIN_DESC = _("Manages bookmarks in the selected files.")
     PLUGIN_ICON = Icons.GO_JUMP
 
     plugin_handles = any_song(has_bookmark)

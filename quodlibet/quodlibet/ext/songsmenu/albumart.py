@@ -822,6 +822,7 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_DESC = _('Downloads album covers from various websites.')
     PLUGIN_ICON = Icons.EDIT_FIND
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
+    REQUIRES_ACTION = True
 
     plugin_handles = any_song(is_a_file)
 

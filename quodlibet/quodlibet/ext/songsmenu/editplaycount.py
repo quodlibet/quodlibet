@@ -26,7 +26,7 @@ class EditPlaycount(SongsMenuPlugin):
                     "However, when setting a 0-play song to a positive play "
                     "count, no play times will be created.")
     PLUGIN_ICON = Icons.EDIT
-    PLUGIN_VERSION = "1.2"
+    REQUIRES_ACTION = True
 
     plugin_handles = each_song(is_writable)
 

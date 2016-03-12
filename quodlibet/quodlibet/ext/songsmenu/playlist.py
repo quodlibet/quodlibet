@@ -29,9 +29,10 @@ lastfolder = get_home_dir()
 
 class PlaylistExport(SongsMenuPlugin, PlaylistPlugin):
     PLUGIN_ID = 'Playlist Export'
-    PLUGIN_NAME = _('Playlist Export')
+    PLUGIN_NAME = _('Export as Playlist')
     PLUGIN_DESC = _('Exports songs to an M3U or PLS playlist.')
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
+    REQUIRES_ACTION = True
 
     lastfolder = None
 

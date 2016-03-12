@@ -49,6 +49,7 @@ class Export(SongsMenuPlugin):
     PLUGIN_NAME = _("Export Metadata")
     PLUGIN_DESC = _("Exports metadata of selected songs as a .tags file.")
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
+    REQUIRES_ACTION = True
 
     plugin_handles = each_song(is_finite)
 
@@ -89,6 +90,7 @@ class Import(SongsMenuPlugin):
     PLUGIN_NAME = _("Import Metadata")
     PLUGIN_DESC = _("Imports metadata for selected songs from a .tags file.")
     PLUGIN_ICON = Icons.DOCUMENT_OPEN
+    REQUIRES_ACTION = True
 
     plugin_handles = each_song(is_writable, is_a_file)
 

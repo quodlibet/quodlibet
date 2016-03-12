@@ -21,6 +21,7 @@ class ExactRating(SongsMenuPlugin):
     PLUGIN_ID = "exact-rating"
     PLUGIN_NAME = _("Set Exact Rating")
     PLUGIN_DESC = _("Allows setting the rating of songs with a number.")
+    REQUIRES_ACTION = True
 
     plugin_handles = any_song(lambda s: s.can_change())
 

@@ -62,6 +62,7 @@ class ExportToHTML(SongsMenuPlugin):
     PLUGIN_ID = "Export to HTML"
     PLUGIN_NAME = _("Export to HTML")
     PLUGIN_DESC = _("Exports the selected song list to HTML.")
+    REQUIRES_ACTION = True
 
     def plugin_songs(self, songs):
         if not songs:

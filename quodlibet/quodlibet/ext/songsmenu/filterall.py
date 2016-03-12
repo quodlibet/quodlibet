@@ -80,6 +80,7 @@ class FilterAll(SongsMenuPlugin):
     PLUGIN_DESC = _("Creates a search query based on "
                     "tags of the selected songs.")
     PLUGIN_ICON = Icons.EDIT_SELECT_ALL
+    REQUIRES_ACTION = True
 
     def plugin_songs(self, songs):
         browser = self.plugin_window.browser
