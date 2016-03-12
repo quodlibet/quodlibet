@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2009 Christoph Reiter
-#           2014 Nick Boultbee
+#      2014,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -9,11 +9,12 @@
 # The Unofficial M3U and PLS Specification (Winamp):
 # http://forums.winamp.com/showthread.php?threadid=65772
 #
-# TODO: Support PlaylistPlugin, somehow
 
 import os
 
 from gi.repository import Gtk
+
+from quodlibet.plugins.playlist import PlaylistPlugin
 
 from quodlibet import util, qltk
 from quodlibet.util.path import glib2fsnative, get_home_dir
@@ -47,7 +48,7 @@ else:
         return os.path.join(*rel_list)
 
 
-class PlaylistExport(SongsMenuPlugin):
+class PlaylistExport(SongsMenuPlugin, PlaylistPlugin):
     PLUGIN_ID = 'Playlist Export'
     PLUGIN_NAME = _('Playlist Export')
     PLUGIN_DESC = _('Exports songs to an M3U or PLS playlist.')
@@ -55,8 +56,8 @@ class PlaylistExport(SongsMenuPlugin):
 
     lastfolder = None
 
-    # def plugin_single_playlist(self, playlist):
-    #     return self.__save_playlist(playlist.songs, playlist.name)
+    def plugin_single_playlist(self, playlist):
+        return self.__save_playlist(playlist.songs, playlist.name)
 
     def plugin_songs(self, songs):
         self.__save_playlist(songs)
@@ -65,6 +66,8 @@ class PlaylistExport(SongsMenuPlugin):
         dialog = Gtk.FileChooserDialog(self.PLUGIN_NAME,
             None,
             Gtk.FileChooserAction.SAVE)
+        dialog.set_show_hidden(False)
+        dialog.set_create_folders(True)
         dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         dialog.add_button(_("_Save"), Gtk.ResponseType.OK)
         dialog.set_default_response(Gtk.ResponseType.OK)
