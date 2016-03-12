@@ -75,11 +75,10 @@ class Filter(object):
         bg = background_filter()
         if bg:
             songs = filter(bg, library.itervalues())
-            tags = set()
-            for song in songs:
-                tags.update(song.list(tag))
-            return list(tags)
-        return library.tag_values(tag)
+            return list({value
+                         for song in songs
+                         for value in song.list(tag)})
+        return list(library.tag_values(tag))
 
     def unfilter(self):
         """Reset all filters and display the whole library."""
@@ -94,8 +93,7 @@ class Filter(object):
     def filter_on(self, songs, key):
         """Do filtering in the best way the browser can handle"""
         if key == "album" and self.can_filter_albums():
-            values = set()
-            values.update([s.album_key for s in songs])
+            values = {s.album_key for s in songs}
             self.filter_albums(values)
         elif self.can_filter_tag(key) or self.can_filter_text():
             values = set()

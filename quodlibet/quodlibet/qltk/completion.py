@@ -170,7 +170,7 @@ class LibraryValueCompletion(Gtk.EntryCompletion):
         # Issue 439: pre-fill with valid values if available
         values = massagers.get_options(tag)
 
-        values = sorted(set(values + library.tag_values(tag)))
+        values = sorted(set(values) | library.tag_values(tag))
         self.set_minimum_key_length(int(len(values) > 100))
         yield True
         for count, value in enumerate(values):

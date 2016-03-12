@@ -92,7 +92,7 @@ class Library(GObject.GObject, DictMixin):
             print_d("Changing %d items via librarian." % len(items), self)
             self.librarian.changed(items)
         else:
-            items = set(item for item in items if item in self)
+            items = {item for item in items if item in self}
             if not items:
                 return
             print_d("Changing %d items directly." % len(items), self)
@@ -170,7 +170,7 @@ class Library(GObject.GObject, DictMixin):
         already in the library.
         """
 
-        items = set(item for item in items if item not in self)
+        items = {item for item in items if item not in self}
         if not items:
             return items
 
@@ -188,7 +188,7 @@ class Library(GObject.GObject, DictMixin):
         Return the sequence of items actually removed.
         """
 
-        items = set(item for item in items if item in self)
+        items = {item for item in items if item in self}
         if not items:
             return items
 
@@ -489,11 +489,9 @@ class SongLibrary(PicklingLibrary):
             self.albums.destroy()
 
     def tag_values(self, tag):
-        """Return a list of all values for the given tag."""
-        tags = set()
-        for song in self.itervalues():
-            tags.update(song.list(tag))
-        return list(tags)
+        """Return a set of all values for the given tag."""
+        return {value for song in self.itervalues()
+                for value in song.list(tag)}
 
     def rename(self, song, newname, changed=None):
         """Rename a song.

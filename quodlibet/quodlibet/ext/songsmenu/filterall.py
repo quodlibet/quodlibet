@@ -86,9 +86,8 @@ class FilterAll(SongsMenuPlugin):
         if not browser.can_filter_text():
             return
 
-        keys = set()
-        for song in songs:
-            keys.update(song.realkeys())
+        keys = {key for song in songs
+                for key in song.realkeys()}
         keys.difference_update(MACHINE_TAGS)
 
         filters = {}
