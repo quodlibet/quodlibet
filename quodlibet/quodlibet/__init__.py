@@ -19,7 +19,7 @@ if PY2:
     sys.setdefaultencoding("utf-8")
 
 from quodlibet.util import set_process_title, environ, cached_func
-from quodlibet.util import windows, is_osx
+from quodlibet.util import windows, is_osx, is_windows
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars
@@ -258,7 +258,8 @@ def _init_gtk():
     # pygiaio 3.14rev16 switched to fontconfig for PangoCairo. As this results
     # in 100% CPU under win7 revert it. Maybe we need to update the
     # cache in the windows installer for it to work... but for now revert.
-    os.environ['PANGOCAIRO_BACKEND'] = 'win32'
+    if is_windows():
+        os.environ['PANGOCAIRO_BACKEND'] = 'win32'
 
     # disable for consistency and trigger events seem a bit flaky here
     if is_osx():
