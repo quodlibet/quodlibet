@@ -157,7 +157,7 @@ class PaneModel(ObjectStore):
         return s
 
     def get_keys(self, paths):
-        return set(self[p][0].key for p in paths)
+        return {self[p][0].key for p in paths}
 
     def remove_songs(self, songs, remove_if_empty):
         """Remove all songs from the entries.
@@ -328,8 +328,8 @@ class PaneModel(ObjectStore):
         # fast path, use the keys since they are unique and only depend
         # on the tag in question.
         if tag in tags and len(tags) == 1:
-            return set(r.key for r in self.itervalues()
-                       if not isinstance(r, AllEntry))
+            return {r.key for r in self.itervalues()
+                    if not isinstance(r, AllEntry)}
 
         # For patterns/tied tags we have to make sure that filtering for
         # that key will return only songs that all have the specified value

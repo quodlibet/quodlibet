@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012-2015 Ryan "ZDBioHazard" Turner <zdbiohazard2@gmail.com>
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,6 +8,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet.plugins.songshelpers import each_song, is_writable
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons
 
@@ -24,7 +26,9 @@ class EditPlaycount(SongsMenuPlugin):
                     "However, when setting a 0-play song to a positive play "
                     "count, no play times will be created.")
     PLUGIN_ICON = Icons.EDIT
-    PLUGIN_VERSION = "1.2"
+    REQUIRES_ACTION = True
+
+    plugin_handles = each_song(is_writable)
 
     def plugin_songs(self, songs):
         # This is just here so the spinner has something to call. >.>

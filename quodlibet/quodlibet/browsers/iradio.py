@@ -936,8 +936,9 @@ class InternetRadio(Browser, util.InstanceTracker):
         self.view.set_cursor(path)
         self.view.scroll_to_cell(path, use_align=True, row_align=0.5)
 
-    def statusbar(self, i):
-        return ngettext("%(count)d station", "%(count)d stations", i)
+    def status_text(self, count, time=None):
+        return (ngettext("%(count)d station", "%(count)d stations", count)
+                % {'count': count})
 
 
 from quodlibet import app

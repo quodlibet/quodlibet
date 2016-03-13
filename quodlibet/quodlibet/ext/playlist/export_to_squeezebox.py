@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014, 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -19,11 +19,13 @@ from quodlibet.ext._shared.squeezebox.base import SqueezeboxPluginMixin
 
 class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = "Export to Squeezebox Playlist"
-    PLUGIN_NAME = _(u"Export to Squeezebox…")
+    PLUGIN_NAME = _(u"Export to Squeezebox")
     PLUGIN_DESC = _("Dynamically exports a playlist to Logitech Squeezebox "
                     "playlist, provided both share a directory structure. "
                     "Shares configuration with Squeezebox Sync plugin.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
+    ELLIPSIZE_NAME = True
+
     TEMP_PLAYLIST = "_quodlibet"
 
     def __add_songs(self, task, songs, name):

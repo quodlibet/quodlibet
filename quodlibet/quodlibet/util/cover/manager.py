@@ -51,7 +51,7 @@ class CoverPluginHandler(PluginHandler):
 class CoverManager(GObject.Object):
 
     __gsignals__ = {
-        # artwork_changed([AudioFile]), emmited if the cover art for one
+        # artwork_changed([AudioFile]), emitted if the cover art for one
         # or more songs might have changed
         'cover-changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }

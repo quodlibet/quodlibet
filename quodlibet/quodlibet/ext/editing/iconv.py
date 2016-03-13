@@ -11,6 +11,7 @@ import locale
 
 from gi.repository import Gtk
 
+from quodlibet.qltk import Icons
 from quodlibet.util import get_fs_encoding
 from quodlibet.plugins.editing import EditTagsPlugin
 
@@ -33,6 +34,7 @@ class Iconv(EditTagsPlugin):
     PLUGIN_NAME = _("Convert Encodings")
     PLUGIN_DESC = _("Fixes misinterpreted tag value encodings in the "
                     "tag editor.")
+    PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
     def __init__(self, tag, value):
         super(Iconv, self).__init__(

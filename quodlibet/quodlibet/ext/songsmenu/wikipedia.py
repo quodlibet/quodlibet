@@ -27,7 +27,7 @@ def set_lang(value):
 
 
 class WikiSearch(object):
-    PLUGIN_ICON = Icons.DOCUMENT_OPEN
+    PLUGIN_ICON = Icons.APPLICATION_INTERNET
 
     @classmethod
     def changed(self, e):

@@ -9,13 +9,21 @@
 
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import is_wayland
+from quodlibet.qltk import is_wayland, Icons
 from quodlibet.qltk.window import Window
 from quodlibet.util import is_unity, is_osx, is_kde, print_exc
 
 from .prefs import Preferences
 from .util import pconfig
 from .systemtray import SystemTray
+
+
+if is_osx():
+    # Works, but not without problems:
+    # https://github.com/quodlibet/quodlibet/issues/1870
+    # The dock menu is more useful so disable.
+    from quodlibet.plugins import PluginNotSupportedError
+    raise PluginNotSupportedError
 
 
 def get_indicator_impl():
@@ -43,6 +51,7 @@ class TrayIconPlugin(EventPlugin):
     PLUGIN_ID = "Tray Icon"
     PLUGIN_NAME = _("Tray Icon")
     PLUGIN_DESC = _("Controls Quod Libet from the system tray.")
+    PLUGIN_ICON = Icons.USER_DESKTOP
 
     def enabled(self):
         impl = get_indicator_impl()

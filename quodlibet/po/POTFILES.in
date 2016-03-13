@@ -61,6 +61,7 @@ quodlibet/ext/events/randomalbum.py
 quodlibet/ext/events/rbimport.py
 quodlibet/ext/events/screensaver.py
 quodlibet/ext/events/searchprovider.py
+quodlibet/ext/events/seekbar.py
 quodlibet/ext/events/squeezebox_sync.py
 quodlibet/ext/events/synchronizedlyrics.py
 quodlibet/ext/events/telepathy_status.py
@@ -116,7 +117,6 @@ quodlibet/ext/songsmenu/importexport.py
 quodlibet/ext/songsmenu/k3b.py
 quodlibet/ext/songsmenu/lastfmsync.py
 quodlibet/ext/songsmenu/makesorttags.py
-quodlibet/ext/songsmenu/openwith.py
 quodlibet/ext/songsmenu/playlist.py
 quodlibet/ext/songsmenu/refresh.py
 quodlibet/ext/songsmenu/replaygain.py
@@ -173,6 +173,8 @@ quodlibet/qltk/ratingsmenu.py
 quodlibet/qltk/renamefiles.py
 quodlibet/qltk/scanbox.py
 quodlibet/qltk/searchbar.py
+quodlibet/qltk/seekbutton.py
+quodlibet/qltk/shortcuts.py
 quodlibet/qltk/songlistcolumns.py
 quodlibet/qltk/songlist.py
 quodlibet/qltk/songsmenu.py

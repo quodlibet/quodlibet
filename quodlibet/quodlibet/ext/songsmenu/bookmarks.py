@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig, 2010 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -9,6 +10,7 @@ from gi.repository import Gtk
 
 from quodlibet import app
 from quodlibet import qltk
+from quodlibet.plugins.songshelpers import any_song, has_bookmark
 from quodlibet.qltk.bookmarks import EditBookmarks
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk import Icons
@@ -16,10 +18,12 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
 class Bookmarks(SongsMenuPlugin):
-    PLUGIN_ID = "Go to Bookmark..."
-    PLUGIN_NAME = _(u"Go to Bookmark…")
-    PLUGIN_DESC = _("Lists all bookmarks in the selected files.")
+    PLUGIN_ID = "Go to Bookmark"
+    PLUGIN_NAME = _(u"Go to Bookmark")
+    PLUGIN_DESC = _("Manages bookmarks in the selected files.")
     PLUGIN_ICON = Icons.GO_JUMP
+
+    plugin_handles = any_song(has_bookmark)
 
     def __init__(self, songs, *args, **kwargs):
         super(Bookmarks, self).__init__(songs, *args, **kwargs)

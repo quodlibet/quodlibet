@@ -32,7 +32,7 @@ An argv list which contains unicode under Windows and str everywhere else
 
 
 def cached_func(f):
-    """Decorateor which caches the return value of a function which
+    """Decorator which caches the return value of a function which
     doesn't take any input.
     """
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#                2015 Nick Boultbee, 2016 Ryan Dellenbaugh
+#           2015-2016 Nick Boultbee,
+#                2016 Ryan Dellenbaugh
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -22,10 +23,10 @@ class QueryType(int):
 class Query(Node):
 
     STAR = ["artist", "album", "title"]
-    """default tags to search in, use/extend and pass to Query()"""
+    """Default tags to search in, use/extend and pass to Query()"""
 
     error = error
-    """base error type"""
+    """Base error type"""
 
     type = None
     """The QueryType value: VALID or TEXT"""
@@ -34,13 +35,13 @@ class Query(Node):
     """The original string which was used to create this query"""
 
     stars = None
-    """list of default tags used"""
+    """List of default tags used"""
 
     def __init__(self, string, star=None, dumb_match_diacritics=True):
         """Parses the query string and returns a match object.
 
         star -- List of tags to look in if none are specified in the query.
-                You can add some by extending Query.START and pass it here.
+                Defaults to those specified in `STAR`.
 
         dumb_match_diacritics -- In case of text queries (QueryType.TEXT)
                                  try to match variants with diacritic marks.
@@ -56,7 +57,7 @@ class Query(Node):
             etc...
         """
 
-        #TODO dumb_match_diacritics
+        # TODO dumb_match_diacritics
 
         if star is None:
             star = self.STAR

@@ -32,15 +32,16 @@ function download_and_verify {
 7f6507d400d07edfd1ea8205da36808009b0c539f5b8a6e0ab54337b955e6dc3  feedparser-5.1.3.tar.bz2
 d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-preview20141217.exe
 0aa011707785fe30935d8655380052a20ba8b972aa738d4f144c457b35b4d699  mutagen-$MUTAGEN_VER.tar.gz
-69c2ae5c9f2ee45b0626905faffaa86d4e2fc0d3e8c118c8bc6899df68467b32  nsis-2.46-setup.exe
+a3e4ac1dfe57d385c2a966c5f283ad0eca8fd0f66c551645cb637f4ae712e161  nsis-2.50-setup.exe
 610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c  py2exe-0.6.9.win32-py2.7.exe
 cb5d82025b2d969abfa2e32d3d26c4a244657c510612739dcc2517f84525ee97  pygi-aio-$PYGI_AIO_VER-setup.exe
 3db9fa9adc45703589b93df05aab77bdabe985a17565b465a9e550585f85322a  pyHook-1.5.1.win32-py2.7.exe
-22f8a2b3231f9f671d660f149f7e60215b1908fa09fbb832123bf12a3e20b447  python-2.7.9.msi
+9debc6445b81ad735b5e5767d5609ed56167cbcc52c62a55b66629fcbe23a188  python-2.7.11.msi
 ea84abc60fcb5152418dd49e8fdecf3e68759304a71bef422c3b1376886c5b7a  python-musicbrainzngs-0.5.tar.gz
 dd665cca88cb059fec960516ed5f29474b33fce50fcb2633d397d4a3aa705c16  pywin32-218.win32-py2.7.exe
 fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
 8a94f6ff1ee9562a2216d2096b87d0e54a5eb5c9391874800e5032033a1c8e85  libmodplug-1.dll
+2b53c7bb3a92218f8ff197d259b7769754ec9a578561e69578739fcbdbb53da3  libgstdirectsoundsink.dll
 1eeedf2c29e0e7566217ba5a51aa1e3b73dfe173800fa71ac598470fbed3baf5  libgstopus.dll\
 "
 
@@ -48,17 +49,18 @@ fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
     if (cd "$BIN" && echo "$FILEHASHES" | sha256sum --status --strict -c -); then
         echo "all installers here, continue.."
     else
-        wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46-setup.exe
+        wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.50/nsis-2.50-setup.exe
         wget -P "$BIN" -c https://github.com/msysgit/msysgit/releases/download/Git-1.9.5-preview20141217/Git-1.9.5-preview20141217.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
         wget -P "$BIN" -c "http://bitbucket.org/lazka/quodlibet/downloads/pygi-aio-$PYGI_AIO_VER-setup.exe"
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
-        wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.9/python-2.7.9.msi
+        wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.11/python-2.7.11.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/sevenzip/7z920.msi
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
         wget -c http://github.com/alastair/python-musicbrainzngs/archive/v0.5.tar.gz -O "$BIN"/python-musicbrainzngs-0.5.tar.gz
         wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstopus.dll
+        wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstdirectsoundsink.dll
 
         pip install --download="$BIN" "mutagen==$MUTAGEN_VER"
         pip install --download="$BIN" feedparser==5.1.3
@@ -191,10 +193,13 @@ function setup_deps {
     # copy old libgstopus
     # https://github.com/quodlibet/quodlibet/issues/1511
     cp "$BUILD_ENV/bin/libgstopus.dll" "$DEPS"/lib/gstreamer-1.0
+    # copy old libgstdirectsoundsink.dll (from 1.4 GStreamer)
+    # https://github.com/quodlibet/quodlibet/issues/1880
+    cp "$BUILD_ENV/bin/libgstdirectsoundsink.dll" "$DEPS"/lib/gstreamer-1.0
 }
 
 function install_python {
-    wine msiexec /a "$BUILD_ENV"/bin/python-2.7.9.msi /qb
+    wine msiexec /a "$BUILD_ENV"/bin/python-2.7.11.msi /qb
     PYDIR="$WINEPREFIX"/drive_c/Python27
 
     # install the python packages
@@ -214,7 +219,7 @@ function install_7zip {
 }
 
 function install_nsis {
-    wine "$BUILD_ENV"/bin/nsis-2.46-setup.exe /S
+    wine "$BUILD_ENV"/bin/nsis-2.50-setup.exe /S
 }
 
 function install_pydeps {

@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+# Copyright 2014, 2016 Nick Boultbee
+#                 2015 Christoph Reiter
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from quodlibet import config
 from quodlibet.qltk import get_menu_item_top_parent
 from quodlibet.qltk import Icons
@@ -7,8 +14,7 @@ from gi.repository import Gtk
 
 class MenuItemPlugin(Gtk.ImageMenuItem):
     """
-    A base plugin that appears in a menu, typically
-
+    A base plugin that appears in a menu, typically.
 
     During plugin callbacks, `self.plugin_window` will be
     available. This is the `Gtk.Window` that the plugin was invoked from.
@@ -16,13 +22,18 @@ class MenuItemPlugin(Gtk.ImageMenuItem):
     and `self.plugin_window.songlist`.
     """
 
-    # An upper limit on how many instances of the plugin should be launched
-    # at once without warning. Heavyweight plugins should override this value
-    # to prevent users killing their performance by opening on many songs.
     MAX_INVOCATIONS = config.getint("plugins", "default_max_invocations", 30)
+    """An upper limit on how many instances of the plugin should be launched
+       at once without warning. Heavyweight plugins should override this value
+       to prevent users killing their performance by opening on many songs."""
+
+    REQUIRES_ACTION = False
+    """This plugin will run a user interface first (e.g. dialog) requiring
+       action from the user. The menu entry may be altered accordingly"""
 
     def __init__(self):
-        super(Gtk.ImageMenuItem, self).__init__(label=self.PLUGIN_NAME)
+        label = self.PLUGIN_NAME + ("…" if self.REQUIRES_ACTION else "")
+        super(Gtk.ImageMenuItem, self).__init__(label=label)
         self.__set_icon()
         self.__initialized = True
 

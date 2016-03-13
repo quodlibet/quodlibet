@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,13 +9,18 @@
 import os
 
 from quodlibet import util, qltk
+from quodlibet.plugins.songshelpers import each_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons
 
 
 class IFPUpload(SongsMenuPlugin):
     PLUGIN_ID = "Send to iFP"
     PLUGIN_NAME = _("Send to iFP")
     PLUGIN_DESC = _("Uploads songs to an iRiver iFP device.")
+    PLUGIN_ICON = Icons.MULTIMEDIA_PLAYER
+
+    plugin_handles = each_song(is_a_file)
 
     def plugin_songs(self, songs):
         if os.system("ifp typestring"):

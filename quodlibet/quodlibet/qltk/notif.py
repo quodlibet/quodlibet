@@ -291,7 +291,6 @@ class StatusBar(Gtk.HBox):
         self.task_controller.parent = self
 
         self.default_label = Gtk.Label(selectable=True)
-        self.default_label.set_text(_("No time information"))
         self.default_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.pack_start(
             Align(self.default_label, halign=Gtk.Align.END),

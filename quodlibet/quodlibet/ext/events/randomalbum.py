@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005-2009 Joe Wreschnig, Steven Robertson
-#                2012 Nick Boultbee
+#           2012,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -15,7 +15,7 @@ from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import util
 try:
-    from quodlibet.qltk import notif
+    from quodlibet.qltk import notif, Icons
 except Exception:
     notif = None
 
@@ -26,6 +26,7 @@ class RandomAlbum(EventPlugin):
     PLUGIN_DESC = _("Starts a random album when your playlist reaches its "
                     "end. It requires that your active browser supports "
                     "filtering by album.")
+    PLUGIN_ICON = Icons.MEDIA_SKIP_FORWARD
 
     weights = {}
     use_weights = False

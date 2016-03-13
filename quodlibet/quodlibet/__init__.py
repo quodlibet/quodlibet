@@ -19,7 +19,7 @@ if PY2:
     sys.setdefaultencoding("utf-8")
 
 from quodlibet.util import set_process_title, environ, cached_func
-from quodlibet.util import windows, is_osx
+from quodlibet.util import windows, is_osx, is_windows
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars
@@ -160,12 +160,16 @@ def get_user_dir():
     # (this doesn't use the old win api in case of str compared to os.*)
     _CONF_PATH = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), "conf.py")
+
     if PY2:
+        locals_ = {}
         # FIXME: PY3PORT
         try:
-            execfile(_CONF_PATH)
+            execfile(_CONF_PATH, globals(), locals_)
         except IOError:
             pass
+        else:
+            USERDIR = locals_["USERDIR"]
 
     # XXX: users shouldn't assume the dir is there, but we currently do in
     # some places
@@ -251,6 +255,12 @@ def _init_gtk():
 
     import gi
 
+    # pygiaio 3.14rev16 switched to fontconfig for PangoCairo. As this results
+    # in 100% CPU under win7 revert it. Maybe we need to update the
+    # cache in the windows installer for it to work... but for now revert.
+    if is_windows():
+        os.environ['PANGOCAIRO_BACKEND'] = 'win32'
+
     # disable for consistency and trigger events seem a bit flaky here
     if is_osx():
         os.environ["GTK_OVERLAY_SCROLLING"] = "0"
@@ -270,6 +280,7 @@ def _init_gtk():
     gi.require_version("Gtk", "3.0")
     gi.require_version("Gdk", "3.0")
     gi.require_version("Pango", "1.0")
+    gi.require_version('Soup', '2.4')
 
     from gi.repository import Gtk, Gdk
 

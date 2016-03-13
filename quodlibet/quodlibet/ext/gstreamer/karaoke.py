@@ -11,7 +11,7 @@ from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
 from quodlibet import config
-
+from quodlibet.qltk import Icons
 
 _PLUGIN_ID = "karaoke"
 
@@ -103,7 +103,7 @@ class Karaoke(GStreamerPlugin):
     PLUGIN_ID = _PLUGIN_ID
     PLUGIN_NAME = _("Karaoke")
     PLUGIN_DESC = _("Removes main vocals from audio.")
-    PLUGIN_ICON = "audio-volume-high"
+    PLUGIN_ICON = Icons.AUDIO_INPUT_MICROPHONE
 
     @classmethod
     def setup_element(cls):

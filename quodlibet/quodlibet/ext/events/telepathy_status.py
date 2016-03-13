@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Quod Libet Telepathy Plugin
-# Copyright 2012 Nick Boultbee, Christoph Reiter
+# Copyright 2012 Christoph Reiter
+#      2012,2016 Nick Boultbee
 #
 #
 # This program is free software; you can redistribute it and/or modify
@@ -62,7 +63,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_DESC = _("Updates all Telepathy-based IM accounts (as configured "
                     "in Empathy etc) with a status message based on current "
                     "song.")
-    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
+    PLUGIN_ICON = Icons.FACE_SMILE
 
     DEFAULT_PAT = "♫ <~artist~title> ♫"
     DEFAULT_PAT_PAUSED = "<~artist~title> [%s]" % _("paused")

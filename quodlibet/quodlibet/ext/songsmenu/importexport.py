@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Michael Urman
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -9,6 +10,8 @@ from gi.repository import Gtk
 from os.path import splitext, extsep, dirname
 
 from quodlibet import app
+from quodlibet.plugins.songshelpers import each_song, is_writable, is_a_file, \
+    is_finite
 from quodlibet.qltk import ErrorMessage, Icons
 from quodlibet.util.path import get_home_dir
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -45,7 +48,10 @@ class Export(SongsMenuPlugin):
     PLUGIN_ID = "ExportMeta"
     PLUGIN_NAME = _("Export Metadata")
     PLUGIN_DESC = _("Exports metadata of selected songs as a .tags file.")
-    PLUGIN_ICON = Icons.DOCUMENT_SAVE
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE_AS
+    REQUIRES_ACTION = True
+
+    plugin_handles = each_song(is_finite)
 
     def plugin_album(self, songs):
 
@@ -84,6 +90,9 @@ class Import(SongsMenuPlugin):
     PLUGIN_NAME = _("Import Metadata")
     PLUGIN_DESC = _("Imports metadata for selected songs from a .tags file.")
     PLUGIN_ICON = Icons.DOCUMENT_OPEN
+    REQUIRES_ACTION = True
+
+    plugin_handles = each_song(is_writable, is_a_file)
 
     # Note: the usage of plugin_album here is sometimes NOT what you want. It
     # supports fixing up tags on several already-known albums just by walking

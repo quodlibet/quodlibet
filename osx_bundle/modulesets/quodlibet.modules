@@ -65,9 +65,9 @@
   <autotools id="gst-libav" supports-non-srcdir-builds="no"
     autogen-sh="configure"
     autogenargs="--enable-gpl --disable-tests --disable-mmx --with-libav-extra-configure='--disable-yasm'">
-    <branch repo="gstreamer" version="1.6.0"
-    module="gst-libav/gst-libav-1.6.0.tar.xz"
-    hash="sha256:6cca6cf73182a882768ef0c860af88c2fd2c77e2c81ce464a998ab4e6baa604c"/>
+    <branch repo="gstreamer" version="1.6.3"
+    module="gst-libav/gst-libav-1.6.3.tar.xz"
+    hash="sha256:857b9c060a0337de38c6d26238c47352433c02eabf26c2f860c854dbc35bd4ab"/>
     <dependencies>
         <dep package="gstreamer-1.0"/>
         <dep package="gst-plugins-base-1.0"/>
@@ -77,9 +77,9 @@
   <!-- enable-fc and enable-ft required for librsvg's pixbuf loader -->
   <autotools id="cairo"  autogen-sh="configure" supports-non-srcdir-builds="no"
              autogenargs="--enable-pdf --enable-quartz --enable-ft --enable-fc --disable-xlib --without-x">
-    <branch module="cairo-1.14.2.tar.xz"  version="1.14.2"
+    <branch module="cairo-1.14.4.tar.xz"  version="1.14.4"
             repo="cairographics"
-            hash="sha1:c8da68aa66ca0855b5d0ff552766d3e8679e1d24">
+            hash="sha1:5b44471e7c328f96de6830baf8ea65030de797f9">
         <!-- https://bugs.freedesktop.org/show_bug.cgi?id=69796#c4 -->
         <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/cairo-hidpi.patch" strip="1"/>
     </branch>
@@ -106,8 +106,8 @@
 
   <autotools id="gtk+-3.0" autogen-sh="autogen.sh"
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
-    <branch module="gtk+/3.18/gtk+-3.18.2.tar.xz" version="3.18.2"
-        hash="sha256:5dbec561c4a00070073bf9cf4cfdd61fab4a14c8ff5b15d700bd378f8185e152">
+    <branch module="gtk+/3.18/gtk+-3.18.9.tar.xz" version="3.18.9"
+        hash="sha256:783d7f8b00f9b4224cc94d7da885a67598e711c2d6d79c9c873c6b203e83acbd">
         <!-- https://bugzilla.gnome.org/show_bug.cgi?id=740199#c4 -->
         <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gtk3-hidpi.patch" strip="1"/>
     </branch>
@@ -124,9 +124,24 @@
     </after>
   </autotools>
 
+  <autotools id="gobject-introspection" autogen-sh="configure">
+    <branch module="gobject-introspection/1.46/gobject-introspection-1.46.0.tar.xz"
+            version="1.46.0"
+            hash="sha256:6658bd3c2b8813eb3e2511ee153238d09ace9d309e4574af27443d87423e4233">
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/girscanner-objc.patch" strip="1"/>
+    </branch>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="cairo"/>
+    </dependencies>
+    <after>
+      <dep package='python'/>
+    </after>
+  </autotools>
+
    <autotools id="pygobject3" autogenargs="--with-python=python2">
-    <branch version="3.18.0" module="pygobject/3.18/pygobject-3.18.0.tar.xz"
-	    hash="sha256:1c3ba1112d3713cd5c86260312bfeb0de1f84f18808e51072c50b29d46156dc9"/>
+    <branch version="3.19.91" module="pygobject/3.19/pygobject-3.19.91.tar.xz"
+	    hash="sha256:9d00372f0ddf9f001e1d3f45acbd76205641019a58daa4f894aab02a41ece19b"/>
     <dependencies>
       <dep package="meta-gtk-osx-gtk3"/>
     </dependencies>
@@ -136,8 +151,8 @@
   </autotools>
 
   <autotools id="glib" autogen-sh="autoreconf">
-    <branch module="glib/2.46/glib-2.46.1.tar.xz"  version="2.46.1"
-            hash="sha256:5a1f03b952ebc3a7e9f612b8724f70898183e31503db329b4f15d07163c8fdfb">
+    <branch module="glib/2.46/glib-2.46.2.tar.xz"  version="2.46.2"
+            hash="sha256:5031722e37036719c1a09163cc6cf7c326e4c4f1f1e074b433c156862bd733db">
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/0001-Fix-g_get_monotonic_time-on-non-Intel-Darwin.patch" strip="1"/>
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug-724590-GSlice-slab_stack-corruption.patch" strip="1"/>
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gio-in-reserved-in-gcc-48.patch" strip="1"/>
@@ -227,8 +242,8 @@
 
   <autotools id="gst-plugins-base-1.0" autogenargs="--disable-tests --disable-x --disable-xvideo" supports-non-srcdir-builds="no"
     makeargs="ERROR_CFLAGS=" autogen-sh="configure">
-    <branch repo="gstreamer" module="gst-plugins-base/gst-plugins-base-1.6.0.tar.xz"
-            version="1.6.0" hash="sha256:314fd1b707f65caf8eb6164d9422fc51e2b220a890ccd2de6ec03a2883d77231"/>
+    <branch repo="gstreamer" module="gst-plugins-base/gst-plugins-base-1.6.3.tar.xz"
+            version="1.6.3" hash="sha256:b6154f8fdba4877e95efd94610ef0ada4f0171cd12eb829a3c3c97345d9c7a75"/>
     <dependencies>
       <dep package="gstreamer-1.0"/>
       <dep package="liborc"/>
@@ -239,8 +254,8 @@
 
   <autotools id="gst-plugins-good-1.0" autogenargs="-- --disable-tests --disable-x --disable-xvideo --disable-osx-video --disable-gtk-doc" supports-non-srcdir-builds="no"
     makeargs="ERROR_CFLAGS=">
-    <branch repo="gstreamer" module="gst-plugins-good/gst-plugins-good-1.6.0.tar.xz"
-            version="1.6.0" hash="sha256:a0915639595305e48884656e22b16fda7c6892aa02cdb3eb43e23dab6e6b81fa"/>
+    <branch repo="gstreamer" module="gst-plugins-good/gst-plugins-good-1.6.3.tar.xz"
+            version="1.6.3" hash="sha256:24b19db70b2a83461ebddfe20033db432dadfdb5d4b54ffb1dfa0d830134a177"/>
     <dependencies>
       <dep package="gstreamer-1.0"/>
       <dep package="gst-plugins-base-1.0"/>
@@ -333,9 +348,9 @@
     --disable-dtls
     --enable-cocoa=no --enable-x11=no --enable-opengl=no --disable-gtk-doc"
              makeargs="ERROR_CFLAGS=">
-    <branch repo="gstreamer" version="1.6.0"
-            module="gst-plugins-bad/gst-plugins-bad-1.6.0.tar.xz"
-            hash="sha256:d8ff26128d4ecd2ffeb28e14843808d2d971b09056b7cee6f08afcae01fc0f49"/>
+    <branch repo="gstreamer" version="1.6.3"
+            module="gst-plugins-bad/gst-plugins-bad-1.6.3.tar.xz"
+            hash="sha256:971b29101d6a9c5e3fe94d99d977a227f58f0b2d29b6ca2c7f292052542b3a61"/>
     <dependencies>
       <dep package="gstreamer-1.0"/>
       <dep package="gst-plugins-base-1.0"/>
@@ -367,8 +382,8 @@
   -->
   <autotools id="gst-plugins-ugly-1.0" autogenargs="--disable-tests --disable-gtk-doc" supports-non-srcdir-builds="no"
     makeargs="ERROR_CFLAGS=">
-    <branch repo="gstreamer" module="gst-plugins-ugly/gst-plugins-ugly-1.6.0.tar.xz"
-            version="1.6.0" hash="sha256:91178dc0d687a83c083190a905681d3a66901374b1004fc52cd300b7802e5f06"/>
+    <branch repo="gstreamer" module="gst-plugins-ugly/gst-plugins-ugly-1.6.3.tar.xz"
+            version="1.6.3" hash="sha256:2fecf7b7c7882f8f62f1900048f4013f98c214fb3d3303d8d812245bb41fd064"/>
     <dependencies>
       <dep package="gstreamer-1.0"/>
       <dep package="gst-plugins-base-1.0"/>
@@ -377,8 +392,8 @@
 
   <autotools id="gstreamer-1.0" autogenargs="--disable-tests --disable-gtk-doc" supports-non-srcdir-builds="no"
     makeargs="ERROR_CFLAGS=">
-    <branch repo="gstreamer" module="gstreamer/gstreamer-1.6.0.tar.xz"
-            version="1.6.0" hash="sha256:52ef885647afef11c8b7645a9afefe04aa09e8971c4b932e7717872ab8a30fcc">
+    <branch repo="gstreamer" module="gstreamer/gstreamer-1.6.3.tar.xz"
+            version="1.6.3" hash="sha256:22f9568d67b87cf700a111f381144bd37cb93790a77e4e331db01fe854a37f24">
     </branch>
     <dependencies>
       <dep package="glib"/>

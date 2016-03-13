@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #    ReplayGain Album Analysis using gstreamer rganalysis element
 #    Copyright (C) 2005,2007,2009  Michael Urman
-#                         2012,14  Nick Boultbee
+#                  2012,2014,2016  Nick Boultbee
 #                            2013  Christoph Reiter
 #
 #    This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,7 @@ from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.x import Frame
 from quodlibet.qltk import Icons, Dialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
 from quodlibet.util import cached_property
 
 __all__ = ['ReplayGain']
@@ -568,8 +569,10 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_NAME = _('Replay Gain')
     PLUGIN_DESC = _('Analyzes and updates ReplayGain information, '
                     'using GStreamer. Results are grouped by album.')
-    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
+    PLUGIN_ICON = Icons.MULTIMEDIA_VOLUME_CONTROL
     CONFIG_SECTION = 'replaygain'
+
+    plugin_handles = each_song(is_finite, is_writable)
 
     def plugin_albums(self, albums):
         mode = self.config_get("process_if", UpdateMode.ALWAYS)

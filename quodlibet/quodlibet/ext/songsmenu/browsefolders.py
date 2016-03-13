@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012 Nick Boultbee
+# Copyright 2012,2016 Nick Boultbee
 #           2012,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -11,6 +11,8 @@ import sys
 import subprocess
 
 from gi.repository import Gtk
+
+from quodlibet.plugins.songshelpers import any_song, is_a_file
 
 try:
     import dbus
@@ -184,12 +186,8 @@ class BrowseFolders(SongsMenuPlugin):
                          _("Unable to open folders"),
                          _("No program available to open folders.")).run()
 
-    def plugin_handles(self, songs):
-        # By default, any single song being a file is good enough
-        for song in songs:
-            if song.is_file:
-                return True
-        return False
+    plugin_handles = any_song(is_a_file)
+    """By default, any single song being a file is good enough"""
 
     def _handle(self, songs):
         """

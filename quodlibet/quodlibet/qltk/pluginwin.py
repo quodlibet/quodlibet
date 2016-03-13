@@ -142,7 +142,7 @@ class PluginListView(HintedTreeView):
             plugin = model.get_value(iter_)
             pm = PluginManager.instance
             render.set_activatable(plugin.can_enable)
-            # if it can't be enabled because it's an always one kinda thing
+            # If it can't be enabled because it's an always-on kinda thing,
             # show it as enabled so it doesn't look broken.
             render.set_active(pm.enabled(plugin) or not plugin.can_enable)
 

@@ -248,22 +248,21 @@ class PatternFormatter(object):
         always returns pairs of display and sort values.
         The returned set will never be empty (e.g. for an empty pattern).
         """
+
         vals = [(u"", u"")]
         for val in self.__list_func(self.SongProxy(song, self._format)):
             if not val:
                 continue
-            if isinstance(val, tuple): # tuple of display,sort pair to add
-                vals = [(r[0] + val[0], r[1] + val[1]) for r in vals]
-            elif isinstance(val, list): # list of strings or pairs
-                vals = [((r[0] + part[0], r[1] + part[1])
-                         if isinstance(part, tuple)
-                         else (r[0] + part, r[1] + part))
+            if isinstance(val, list): # list of pairs
+                vals = [(r[0] + part[0], r[1] + part[1])
                         for part in val for r in vals]
             else: # just a display string to concatenate
                 vals = [((r[0] + val, r[1] + val)) for r in vals]
+
         if self._post:
             vals = ((self._post(v[0], song), self._post(v[1], song))
                     for v in vals)
+
         return set(vals)
 
     __mod__ = format

@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk import Icons
 
 
 class AutoRating(EventPlugin):
@@ -14,6 +15,7 @@ class AutoRating(EventPlugin):
     PLUGIN_DESC = _("Rates songs automatically when they are played or "
                     "skipped. This uses the 'accelerated' algorithm from "
                     "vux by Brian Nelson.")
+    PLUGIN_ICON = Icons.USER_BOOKMARKS
 
     def plugin_on_song_ended(self, song, skipped):
         if song is not None:

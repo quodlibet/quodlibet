@@ -501,6 +501,21 @@ class TFileBackedPlaylist(TPlaylist):
         p1.delete()
         p2.delete()
 
+    def test_rename_removes(self):
+        with self.wrap("foo") as pl:
+            pl.rename("bar")
+            self.failUnless(os.path.exists(os.path.join(self.temp, 'bar')))
+            self.failIf(os.path.exists(os.path.join(self.temp, 'foo')))
+
+    def test_rename_fails_if_file_exists(self):
+        with self.wrap("foo") as foo:
+            with self.wrap("bar") as bar:
+                try:
+                    foo.rename("bar")
+                    self.fail("Should have raised, %s exists" % bar.filename)
+                except ValueError:
+                    pass
+
     def test_masked_handling(self):
         if os.name == "nt":
             # FIXME: masking isn't properly implemented on Windows

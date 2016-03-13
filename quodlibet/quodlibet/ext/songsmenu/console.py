@@ -20,7 +20,7 @@
 #     Copyright (C), 1998 James Henstridge <james@daa.com.au>
 #     Copyright (C), 2005 Adam Hooper <adamh@densi.com>
 # Bits from gedit Python Console Plugin
-#     Copyrignt (C), 2005 Raphaël Slinckx
+#     Copyright (C), 2005 Raphaël Slinckx
 
 # PythonConsole taken from totem
 # Plugin parts:
@@ -45,7 +45,7 @@ class PyConsole(SongsMenuPlugin):
     PLUGIN_ID = 'Python Console'
     PLUGIN_NAME = _('Python Console')
     PLUGIN_DESC = _('Interactive Python console.')
-    PLUGIN_ICON = Icons.SYSTEM_RUN
+    PLUGIN_ICON = Icons.UTILITIES_TERMINAL
 
     def plugin_songs(self, songs):
         win = ConsoleWindow(songs)

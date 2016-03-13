@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011,2012 Nick Boultbee
+# Copyright 2011,2012,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -21,10 +21,10 @@ from quodlibet.qltk import Icons
 
 
 class TrackRepeatOrder(PlayOrderPlugin,
-        PlayOrderShuffleMixin, PluginConfigMixin):
+                       PlayOrderShuffleMixin, PluginConfigMixin):
     PLUGIN_ID = "track_repeat"
     PLUGIN_NAME = _("Track Repeat")
-    PLUGIN_ICON = Icons.VIEW_REFRESH
+    PLUGIN_ICON = Icons.MEDIA_PLAYLIST_REPEAT
     PLUGIN_DESC = _("Shuffle songs, "
                     "but repeat every track a set number of times.")
     PLAY_EACH_DEFAULT = 2

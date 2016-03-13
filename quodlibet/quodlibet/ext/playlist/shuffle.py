@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,7 +13,7 @@ class Shuffle(PlaylistPlugin):
     PLUGIN_ID = "Shuffle Playlist"
     PLUGIN_NAME = _("Shuffle Playlist")
     PLUGIN_DESC = _("Randomly shuffles a playlist.")
-    PLUGIN_ICON = Icons.SYSTEM_RUN
+    PLUGIN_ICON = Icons.MEDIA_PLAYLIST_SHUFFLE
 
     def plugin_playlist(self, playlist):
         playlist.shuffle()

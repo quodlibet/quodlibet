@@ -8,7 +8,9 @@
 from quodlibet import app
 from quodlibet import util
 from quodlibet.formats._id3 import ID3File, ID3hack
+from quodlibet.plugins.songshelpers import any_song, is_writable, is_an_id3
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons
 
 
 class RemoveID3TLEN(SongsMenuPlugin):
@@ -16,6 +18,9 @@ class RemoveID3TLEN(SongsMenuPlugin):
     PLUGIN_NAME = _("Fix MP3 Duration")
     PLUGIN_DESC = _("Removes TLEN frames from ID3 tags which can be the cause "
                     "for invalid song durations.")
+    PLUGIN_ICON = Icons.EDIT_CLEAR
+
+    plugin_handles = any_song(is_an_id3, is_writable)
 
     def plugin_songs(self, songs):
         for song in songs:

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
-#           2012 Nick Boultbee
+#     2012, 2016 Nick Boultbee
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -141,11 +141,9 @@ class SongLibrarian(Librarian):
     """A librarian for SongLibraries."""
 
     def tag_values(self, tag):
-        """Return a list of all values for the given tag."""
-        tags = set()
-        for library in itervalues(self.libraries):
-            tags.update(library.tag_values(tag))
-        return list(tags)
+        """Return a set of all values for the given tag."""
+        return {value for lib in self.libraries.itervalues()
+                for value in lib.tag_values(tag)}
 
     def rename(self, song, newname, changed=None):
         """Rename the song in all libraries it belongs to.

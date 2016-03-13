@@ -232,7 +232,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         m = qltk.MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
         m.connect('activate', self.__refresh)
         menu.append(m)
-        m = qltk.MenuItem(_("_Select All Subfolders"), Icons.FOLDER)
+        m = qltk.MenuItem(_("_Select all Sub-Folders"), Icons.FOLDER)
         m.connect('activate', self.__expand)
         menu.append(m)
         menu.show_all()

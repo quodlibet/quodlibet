@@ -57,6 +57,12 @@ class TBrowser(TestCase):
         self.failIf(self.browser.can_reorder)
         self.failIf(self.browser.headers)
 
+    def test_status_bar(self):
+        self.assertEqual(self.browser.status_text(1, "21s"),
+                         "1 song (21s)")
+        self.assertEqual(self.browser.status_text(101, "2:03"),
+                         "101 songs (2:03)")
+
     def tearDown(self):
         self.browser = None
 
@@ -129,8 +135,8 @@ class TBrowserMixin(object):
     def test_msic(self):
         with realized(self.b):
             self.b.activate()
-            self.b.statusbar(1000)
-            self.b.statusbar(1)
+            self.b.status_text(1000)
+            self.b.status_text(1)
             song = AudioFile({"~filename": dummy_path(u"/fake")})
             song.sanitize()
             self.b.scroll(song)

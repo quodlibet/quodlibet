@@ -125,7 +125,7 @@ class Command(JSONObject):
 
 class CustomCommands(SongsMenuPlugin, PlaylistPlugin, PluginConfigMixin):
 
-    PLUGIN_ICON = Icons.DOCUMENT_OPEN
+    PLUGIN_ICON = Icons.APPLICATION_UTILITIES
     PLUGIN_ID = "CustomCommands"
     PLUGIN_NAME = _("Custom Commands")
     PLUGIN_DESC = _("Runs custom commands (in batches if required) on songs "

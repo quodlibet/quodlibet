@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011, 2012, 2014 Nick Boultbee
+# Copyright 2011-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -29,7 +29,7 @@ class WebsiteSearch(SongsMenuPlugin):
     specific site look-up. The URLs are customisable using tag patterns.
     """
 
-    PLUGIN_ICON = Icons.DOCUMENT_OPEN
+    PLUGIN_ICON = Icons.APPLICATION_INTERNET
     PLUGIN_ID = "Website Search"
     PLUGIN_NAME = _("Website Search")
     PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
@@ -38,7 +38,6 @@ class WebsiteSearch(SongsMenuPlugin):
                             "http://google.com?q=<~artist~title>"}
 
     # Here are some starters...
-    # Sorry, PEP-8 : sometimes you're unrealistic
     DEFAULT_URL_PATS = [
         ("Google song search",
             "http://google.com/search?q=<artist~title>"),
@@ -112,7 +111,7 @@ class WebsiteSearch(SongsMenuPlugin):
             connect_obj(item, 'activate', self.__set_site, name)
             submenu.append(item)
         # Add link to editor
-        configure = Gtk.MenuItem(label=_(u"Configure searches…"))
+        configure = Gtk.MenuItem(label=_(u"Configure Searches…"))
         connect_obj(configure, 'activate', self.edit_patterns, configure)
         submenu.append(SeparatorMenuItem())
         submenu.append(configure)

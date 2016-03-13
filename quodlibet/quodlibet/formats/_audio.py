@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2014 Nick Boultbee
+#           2012-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -91,21 +91,30 @@ class AudioFile(dict, ImageContainer):
     their description.
     """
 
-    # New tags received from the backend will update the song
     fill_metadata = False
-    # New song duration from the backend will update the song
+    """New tags received from the backend will update the song"""
+
     fill_length = False
-    # Container for multiple songs, while played new songs can start/end
+    """New song duration from the backend will update the song"""
+
     multisong = False
-    # Part of a multisong
+    """Is a container for multiple songs
+     i.e. while played new songs can start / end"""
+
     streamsong = False
-    # Can be added to the queue, playlists
+    """Is part of a multisong"""
+
     can_add = True
-    # Is a real file
+    """Can be added to the queue, playlists"""
+
     is_file = True
+    """Is a real (local) file"""
 
     format = "Unknown Audio File"
+    """The underlying file format"""
+
     mimes = []
+    """MIME types this class can represent"""
 
     def __song_key(self):
         return (self("~#disc"), self("~#track"),

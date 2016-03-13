@@ -33,8 +33,8 @@ class SongsMenuPlugin(MenuItemPlugin):
 
     The single_ variant is only called if a single song/album is selected.
 
-    The singular tense is called once for each selected song/album, but the
-    plural tense is called with a list of songs/albums.
+    The singular version is called once for each selected song/album,
+    whereas the plural version is called with a list of songs/albums.
 
     An album is a list of songs all with the same album, labelid,
     and/or musicbrainz_albumid tags (like in the Album List).

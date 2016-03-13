@@ -213,9 +213,9 @@ class Numexpr(object):
     """Expression in numeric comparison"""
 
     def evaluate(self, data, time, use_date):
-        """Evaluate the expression to a number. data is the audiofile to
+        """Evaluate the expression to a number. `data` is the audiofile to
         evaluate for, time is the current time, and is_date is a boolean
-        indicating whether to evaulate as a date (used to handle expressions
+        indicating whether to evaluate as a date (used to handle expressions
         like 2015-02-11 that look like dates and subtraction)"""
         raise NotImplementedError
 

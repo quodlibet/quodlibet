@@ -40,7 +40,7 @@ class SessionInhibit(EventPlugin):
     PLUGIN_NAME = _("Inhibit Screensaver")
     PLUGIN_DESC = _("Prevents the GNOME screensaver from activating while"
                     " a song is playing.")
-    PLUGIN_ICON = Icons.PROCESS_STOP
+    PLUGIN_ICON = Icons.PREFERENCES_DESKTOP_SCREENSAVER
 
     DBUS_NAME = "org.gnome.SessionManager"
     DBUS_INTERFACE = "org.gnome.SessionManager"

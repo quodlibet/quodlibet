@@ -49,6 +49,7 @@ DOCS_LATEST = DOCS_BASE_URL % "latest"
 DOCS_BASE_URL %= BRANCH_NAME if BRANCH_NAME != "master" else "latest"
 ONLINE_HELP = DOCS_BASE_URL + "/guide/index.html"
 SEARCH_HELP = DOCS_BASE_URL + "/guide/searching.html"
+SHORTCUTS_HELP = DOCS_BASE_URL + "/guide/shortcuts.html"
 
 # Email used as default for reading/saving per-user data in tags, etc.
 EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")

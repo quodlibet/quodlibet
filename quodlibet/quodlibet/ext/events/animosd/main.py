@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012-13 Nick Boultbee, Thomas Vogt
+# Copyright (c) 2012,2013,2016 Nick Boultbee
+# Copyright (C) 2012-13 Thomas Vogt
 # Copyright (C) 2008 Andreas Bombe
 # Copyright (C) 2005  Michael Urman
 # Based on osd.py (C) 2005 Ton van den Heuvel, Joe Wreshnig
@@ -12,6 +13,7 @@
 from gi.repository import Gdk, GLib
 
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk import Icons
 from quodlibet.util import cached_property
 
 from .osdwindow import OSDWindow
@@ -24,6 +26,7 @@ class AnimOsd(EventPlugin):
     PLUGIN_NAME = _("Animated On-Screen Display")
     PLUGIN_DESC = _("Displays song information on your screen when it "
                     "changes.")
+    PLUGIN_ICON = Icons.DIALOG_INFORMATION
 
     __current_window = None
 
