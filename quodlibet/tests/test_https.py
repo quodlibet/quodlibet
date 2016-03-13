@@ -9,7 +9,6 @@ import urllib2
 
 from tests import TestCase, skipUnless
 
-import gi
 from gi.repository import Gio, Soup
 
 from quodlibet.util import is_osx, is_windows
