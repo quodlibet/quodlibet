@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
 #           2014 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -10,6 +11,9 @@ import os
 
 
 import gi
+
+from quodlibet.qltk import Icons
+
 gi.require_version("Gio", "2.0")
 
 from gi.repository import Gio
@@ -23,6 +27,7 @@ class AutoMasking(EventPlugin):
     PLUGIN_NAME = _("Automatic Masking")
     PLUGIN_DESC = _("Automatically masks and unmasks drives when they "
                     "are unmounted or mounted.")
+    PLUGIN_ICON = Icons.DRIVE_REMOVABLE_MEDIA
 
     __sigs = None
     __monitor = None

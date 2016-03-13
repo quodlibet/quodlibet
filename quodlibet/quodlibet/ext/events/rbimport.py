@@ -12,6 +12,7 @@ from gi.repository import Gtk
 
 from quodlibet import app
 from quodlibet import util
+from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
 from quodlibet.util.uri import URI
 from quodlibet.util.path import expanduser, normalize_path
@@ -127,6 +128,7 @@ class RBImport(EventPlugin):
     PLUGIN_ID = "rbimport"
     PLUGIN_NAME = _("Rhythmbox Import")
     PLUGIN_DESC = _("Imports ratings and song statistics from Rhythmbox.")
+    PLUGIN_ICON = Icons.DOCUMENT_OPEN
 
     def PluginPreferences(self, *args):
         button = Gtk.Button(label=_("Start Import"))

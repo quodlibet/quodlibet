@@ -11,6 +11,8 @@
 import os
 import sys
 
+from quodlibet.qltk import Icons
+
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
@@ -124,6 +126,7 @@ class AutoLibraryUpdate(EventPlugin):
     PLUGIN_NAME = _("Automatic Library Update")
     PLUGIN_DESC = _("Keeps your library up to date with inotify. "
                     "Requires %s.") % "pyinotify"
+    PLUGIN_ICON = Icons.VIEW_REFRESH
 
     # TODO: make a config option
     USE_THREADS = True

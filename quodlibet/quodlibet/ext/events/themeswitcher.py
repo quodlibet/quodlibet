@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011,2013 Christoph Reiter
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -12,6 +13,7 @@ from gi.repository import Gtk
 
 from quodlibet import qltk
 from quodlibet import config
+from quodlibet.qltk import Icons
 from quodlibet.util.path import get_home_dir
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.events import EventPlugin
@@ -42,6 +44,7 @@ class ThemeSwitcher(EventPlugin):
     PLUGIN_ID = "Theme Switcher"
     PLUGIN_NAME = _("Theme Switcher")
     PLUGIN_DESC = _("Changes the active GTK+ theme.")
+    PLUGIN_ICON = Icons.PREFERENCES_DESKTOP_THEME
 
     __enabled = False
     __defaults = False

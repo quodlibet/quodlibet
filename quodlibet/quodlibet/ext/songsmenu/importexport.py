@@ -48,7 +48,7 @@ class Export(SongsMenuPlugin):
     PLUGIN_ID = "ExportMeta"
     PLUGIN_NAME = _("Export Metadata")
     PLUGIN_DESC = _("Exports metadata of selected songs as a .tags file.")
-    PLUGIN_ICON = Icons.DOCUMENT_SAVE
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE_AS
     REQUIRES_ACTION = True
 
     plugin_handles = each_song(is_finite)

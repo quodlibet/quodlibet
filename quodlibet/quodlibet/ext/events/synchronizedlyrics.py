@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
+#               2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
@@ -14,6 +15,8 @@ import os
 from datetime import datetime
 
 from gi.repository import Gtk, Gdk, GLib
+
+from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
 
 from quodlibet import app
@@ -30,6 +33,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     PLUGIN_NAME = _('Synchronized Lyrics')
     PLUGIN_DESC = _('Shows synchronized lyrics from .lrc file with same name \
 as the track.')
+    PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     SYNC_PERIOD = 3000
 

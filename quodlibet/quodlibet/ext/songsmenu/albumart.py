@@ -6,7 +6,7 @@
 #                Jeremy Cantrell <jmcantrell@gmail.com>
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
-#           2011-2014 Nick Boultbee
+#           2011-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -218,7 +218,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.current_pixbuf = None
 
         self.image = Gtk.Image()
-        self.button = Button(_("_Save"), Icons.DOCUMENT_SAVE)
+        self.button = Button(_("_Save"), Icons.DOCUMENT_SAVE_AS)
         self.button.set_sensitive(False)
         self.button.connect('clicked', self.__save)
 
@@ -820,7 +820,7 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Download Album Art'
     PLUGIN_NAME = _('Download Album Art')
     PLUGIN_DESC = _('Downloads album covers from various websites.')
-    PLUGIN_ICON = Icons.EDIT_FIND
+    PLUGIN_ICON = Icons.INSERT_IMAGE
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
     REQUIRES_ACTION = True
 

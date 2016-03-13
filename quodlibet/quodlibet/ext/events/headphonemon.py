@@ -8,6 +8,8 @@
 import os
 import sys
 
+from quodlibet.qltk import Icons
+
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
@@ -152,6 +154,7 @@ class HeadphoneMonitorPlugin(EventPlugin):
     PLUGIN_NAME = _("Pause on Headphone Unplug")
     PLUGIN_DESC = _("Pauses in case headphones get unplugged and unpauses in "
                     "case they get plugged in again.")
+    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_PAUSE
 
     def enabled(self):
         self._was_paused = False

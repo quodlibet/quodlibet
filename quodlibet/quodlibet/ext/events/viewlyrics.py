@@ -20,6 +20,7 @@ from gi.repository import Gtk, Gdk
 
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk import Icons
 
 
 class ViewLyrics(EventPlugin):
@@ -29,6 +30,7 @@ class ViewLyrics(EventPlugin):
     PLUGIN_NAME = _('View Lyrics')
     PLUGIN_DESC = _('Automatically displays lyrics '
                     'beneath the song list in the main window.')
+    PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     def enabled(self):
         self.expander = Gtk.Expander(label=_("_Lyrics"), use_underline=True)

@@ -76,7 +76,7 @@ class GnomeSearchProvider(EventPlugin):
     PLUGIN_ID = "searchprovider"
     PLUGIN_NAME = _("GNOME Search Provider")
     PLUGIN_DESC = _("Allows GNOME Shell to search the library.")
-    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
+    PLUGIN_ICON = Icons.SYSTEM_SEARCH
 
     def enabled(self):
         self.obj = SearchProvider()

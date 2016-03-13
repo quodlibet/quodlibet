@@ -326,7 +326,7 @@ class LyricsWindow(EventPlugin):
     PLUGIN_ID = 'lyricswindow'
     PLUGIN_NAME = _('Lyrics Window')
     PLUGIN_DESC = _("Shows a window containing lyrics of the playing song.")
-    PLUGIN_ICON = Icons.EDIT_FIND
+    PLUGIN_ICON = Icons.APPLICATION_INTERNET
 
     _window = None
 

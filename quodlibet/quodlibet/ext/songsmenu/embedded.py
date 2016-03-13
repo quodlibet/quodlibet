@@ -21,7 +21,7 @@ class EditEmbedded(SongsMenuPlugin):
     PLUGIN_ID = "embedded_edit"
     PLUGIN_NAME = _("Edit Embedded Images")
     PLUGIN_DESC = _("Removes or replaces embedded images.")
-    PLUGIN_ICON = Icons.EDIT
+    PLUGIN_ICON = Icons.INSERT_IMAGE
 
     plugin_handles = any_song(has_writable_image)
     """if any song supports editing, we are active"""

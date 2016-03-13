@@ -9,7 +9,7 @@
 
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import is_wayland
+from quodlibet.qltk import is_wayland, Icons
 from quodlibet.qltk.window import Window
 from quodlibet.util import is_unity, is_osx, is_kde, print_exc
 
@@ -51,6 +51,7 @@ class TrayIconPlugin(EventPlugin):
     PLUGIN_ID = "Tray Icon"
     PLUGIN_NAME = _("Tray Icon")
     PLUGIN_DESC = _("Controls Quod Libet from the system tray.")
+    PLUGIN_ICON = Icons.USER_DESKTOP
 
     def enabled(self):
         impl = get_indicator_impl()

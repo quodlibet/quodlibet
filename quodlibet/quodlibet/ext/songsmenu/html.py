@@ -7,6 +7,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet.qltk import Icons
 from quodlibet.util import tag, escape
 from quodlibet.qltk.songlist import get_columns
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -63,6 +64,7 @@ class ExportToHTML(SongsMenuPlugin):
     PLUGIN_NAME = _("Export to HTML")
     PLUGIN_DESC = _("Exports the selected song list to HTML.")
     REQUIRES_ACTION = True
+    PLUGIN_ICON = Icons.TEXT_HTML
 
     def plugin_songs(self, songs):
         if not songs:

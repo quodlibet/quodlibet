@@ -24,6 +24,8 @@ class GStreamerPlugin(object):
     To notify setting changes, call queue_update.
     """
 
+    PLUGIN_ICON = "audio-volume-high"
+
     _handler = None
 
     priority = 0

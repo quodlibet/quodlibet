@@ -94,7 +94,6 @@ class Pitch(GStreamerPlugin):
     PLUGIN_ID = _PLUGIN_ID
     PLUGIN_NAME = _("Audio Pitch / Speed")
     PLUGIN_DESC = _("Controls the pitch of an audio stream.")
-    PLUGIN_ICON = "audio-volume-high"
 
     @classmethod
     def setup_element(cls):

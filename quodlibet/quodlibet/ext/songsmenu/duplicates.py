@@ -362,7 +362,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Duplicates'
     PLUGIN_NAME = _('Duplicates Browser')
     PLUGIN_DESC = _('Finds and displays similarly tagged versions of songs.')
-    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
+    PLUGIN_ICON = Icons.EDIT_SELECT_ALL
 
     MIN_GROUP_SIZE = 2
     _CFG_KEY_KEY = "key_expression"

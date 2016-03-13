@@ -2,6 +2,8 @@
 import os
 import sys
 
+from quodlibet.qltk import Icons
+
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
@@ -17,6 +19,7 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     PLUGIN_ID = "Kana/Kanji Simple Inverter"
     PLUGIN_NAME = _("Kana/Kanji Simple Inverter")
     PLUGIN_DESC = _("Converts kana/kanji to romaji before renaming.")
+    PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
     __gsignals__ = {
         "preview": (GObject.SignalFlags.RUN_LAST, None, ())

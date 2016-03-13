@@ -569,7 +569,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_NAME = _('Replay Gain')
     PLUGIN_DESC = _('Analyzes and updates ReplayGain information, '
                     'using GStreamer. Results are grouped by album.')
-    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
+    PLUGIN_ICON = Icons.MULTIMEDIA_VOLUME_CONTROL
     CONFIG_SECTION = 'replaygain'
 
     plugin_handles = each_song(is_finite, is_writable)

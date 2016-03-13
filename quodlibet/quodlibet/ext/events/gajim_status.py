@@ -18,7 +18,7 @@ import dbus
 
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
-from quodlibet.qltk import Frame
+from quodlibet.qltk import Frame, Icons
 from quodlibet import config
 
 
@@ -27,6 +27,7 @@ class GajimStatusMessage(EventPlugin):
     PLUGIN_NAME = _('Gajim Status Message')
     PLUGIN_DESC = _("Changes Gajim status message according to what "
                     "you are currently listening to.")
+    PLUGIN_ICON = Icons.FACE_SMILE
 
     c_accounts = __name__ + '_accounts'
     c_paused = __name__ + '_paused'
