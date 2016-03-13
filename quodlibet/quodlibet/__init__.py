@@ -160,12 +160,16 @@ def get_user_dir():
     # (this doesn't use the old win api in case of str compared to os.*)
     _CONF_PATH = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), "conf.py")
+
     if PY2:
+        locals_ = {}
         # FIXME: PY3PORT
         try:
-            execfile(_CONF_PATH)
+            execfile(_CONF_PATH, globals(), locals_)
         except IOError:
             pass
+        else:
+            USERDIR = locals_["USERDIR"]
 
     # XXX: users shouldn't assume the dir is there, but we currently do in
     # some places
