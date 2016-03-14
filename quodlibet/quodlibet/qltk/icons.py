@@ -36,6 +36,7 @@ class Icons(str):
     APPLICATION_EXIT = "application-exit"  # "_Quit"
     APPLICATION_INTERNET = "applications-internet"
     APPLICATION_UTILITIES = "applications-utilities"
+    APPOINTMENT_NEW = "appointment-new"
     AUDIO_CARD = "audio-card"
     AUDIO_INPUT_MICROPHONE = "audio-input-microphone"
     AUDIO_VOLUME_MUTED = "audio-volume-muted"

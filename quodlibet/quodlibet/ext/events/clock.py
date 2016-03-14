@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -21,7 +22,7 @@ class Alarm(EventPlugin):
     PLUGIN_ID = "Alarm Clock"
     PLUGIN_NAME = _("Alarm Clock")
     PLUGIN_DESC = _("Wakes you up with loud music.")
-    PLUGIN_ICON = Icons.DIALOG_INFORMATION
+    PLUGIN_ICON = Icons.APPOINTMENT_NEW
 
     _pref_name = "alarm_times"
     _times = ["HH:MM"] * 7
