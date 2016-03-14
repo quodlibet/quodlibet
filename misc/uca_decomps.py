@@ -29,10 +29,10 @@ with open("decomps.txt", "rb") as h:
         if not is_letter(cp):
             continue
 
-        letter_count = sum((is_letter(c) for c in decomp))
-        if letter_count != 1 or not is_letter(decomp[0]):
+        decomp = filter(is_letter, decomp)
+        simple = "".join(decomp)
+        if not simple:
             continue
-        simple = decomp[0]
 
         # skip anything we get from normalization
         if unicodedata.normalize("NFKD", cp)[0] == simple:
