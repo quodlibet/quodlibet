@@ -4,8 +4,12 @@
 <moduleset>
   <include href="gtk-osx.modules"/>
 
-  <repository type="git" name="svn.gnome.org"
+  <repository type="git" name="git.gnome.org"
       href="git://git.gnome.org/">
+  </repository>
+
+  <repository type="tarball" name="git.gnome.org/browse"
+      href="http://git.gnome.org/browse/">
   </repository>
 
   <repository type="tarball" name="effbot"
@@ -59,6 +63,7 @@
       <dep package="musicbrainzngs" />
       <dep package="meta-gtk-osx-python-gtk3"/>
       <dep package="pyobjc"/>
+      <dep package="certifi"/>
     </dependencies>
   </metamodule>
 
@@ -168,6 +173,11 @@
   <distutils id="setuptools">
     <branch repo="pypi" checkoutdir="setuptools-0.6c11" module="s/setuptools/setuptools-0.6c11.tar.gz"
 	    version="0.6c11" md5sum="7df2a529a074f613b509fb44feefe74e"/>
+  </distutils>
+
+  <distutils id="certifi">
+    <branch repo="pypi" checkoutdir="certifi-2016.2.28" module="c/certifi/certifi-2016.2.28.tar.gz"
+	    version="2016.2.28" md5sum="5d672aa766e1f773c75cfeccd02d3650"/>
   </distutils>
 
   <!-- Upstream: https://github.com/kurtmckee/feedparser/blob/develop/NEWS -->
@@ -496,10 +506,14 @@
   <!-- glib-networking
        Upstream: http://ftp.gnome.org/pub/GNOME/sources/glib-networking/
   -->
-  <autotools id="glib-networking" autogen-sh="configure"
+  <autotools id="glib-networking" autogen-sh="autogen.sh"
 	     autogenargs="--without-ca-certificates set_more_warnings=no">
-    <branch repo="ftp.gnome.org" module="glib-networking/2.44/glib-networking-2.44.0.tar.xz"
-	    version="2.44.0" hash="sha256:8f8a340d3ba99bfdef38b653da929652ea6640e27969d29f7ac51fbbe11a4346"/>
+    <!-- git version since we need master for the gnutls backend to work properly -->
+    <branch repo="git.gnome.org/browse" module="glib-networking/snapshot/glib-networking-2dbab5a20ddc4cd2d856ecd97e4b5fb18d3a1221.tar.xz"
+	    version="2.47.1.1" hash="sha256:6ecad7b020b32e888906a43341f2b086119ee006035542c85174f7c4bde2e953">
+        <!-- This allows us to set GTLS_SYSTEM_CA_FILE at runtime to a CA file -->
+        <patch file="patches/glib-networking-gtls-ca-env-var.patch" strip="1"/>
+    </branch>
     <dependencies>
       <dep package="gnutls"/>
       <dep package="libgcrypt"/>

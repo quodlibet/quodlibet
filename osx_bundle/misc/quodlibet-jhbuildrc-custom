@@ -12,3 +12,6 @@ modules = []
 skip.append("libiconv")
 
 setup_sdk(target="10.6", sdk_version="native")
+
+os.environ["GTLS_SYSTEM_CA_FILE"] = os.path.join(
+    prefix, "lib/python2.7/site-packages/certifi/cacert.pem")

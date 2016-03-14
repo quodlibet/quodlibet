@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
+import os
 import urllib2
 
 from tests import TestCase, skipUnless
@@ -12,6 +13,13 @@ from tests import TestCase, skipUnless
 from gi.repository import Gio, Soup
 
 from quodlibet.util import is_osx, is_windows
+
+
+# this is fixed in 3.6, but we currently still use 3.5 bundles on travis
+if is_osx():
+    glib_net_fixed = "GTLS_SYSTEM_CA_FILE" in os.environ
+else:
+    glib_net_fixed = True
 
 
 @skipUnless(is_osx() or is_windows())
@@ -29,16 +37,14 @@ class Thttps(TestCase):
         urllib2.urlopen(self.URI).close()
 
     def test_gio(self):
-        if is_osx():
-            # FXIME
+        if not glib_net_fixed:
             return
         client = Gio.SocketClient.new()
         client.set_tls(True)
         client.connect_to_uri(self.URI, 443, None).close()
 
     def test_soup(self):
-        if is_osx():
-            # FXIME
+        if not glib_net_fixed:
             return
         session = Soup.Session.new()
         request = session.request_http("get", self.URI)
