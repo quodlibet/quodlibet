@@ -15,7 +15,6 @@ from quodlibet.qltk import Icons
 
 class GetStringDialog(Dialog):
     """Simple dialog to return a string from the user"""
-    _WIDTH = 300
 
     def __init__(self, parent, title, text,
                  button_label=_("_OK"), button_icon=Icons.DOCUMENT_OPEN,
@@ -24,7 +23,6 @@ class GetStringDialog(Dialog):
             title=title, transient_for=parent, use_header_bar=True)
 
         self.set_border_width(6)
-        self.set_default_size(width=self._WIDTH, height=0)
         self.set_resizable(True)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_icon_button(button_label, button_icon, Gtk.ResponseType.OK)
@@ -41,6 +39,7 @@ class GetStringDialog(Dialog):
         self._val = UndoEntry()
         if tooltip:
             self._val.set_tooltip_text(tooltip)
+        self._val.set_max_width_chars(50)
         box.pack_start(self._val, True, True, 0)
 
         self.vbox.pack_start(box, True, True, 0)
