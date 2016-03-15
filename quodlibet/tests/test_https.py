@@ -6,13 +6,13 @@
 # published by the Free Software Foundation.
 
 import os
-import urllib2
 
 from tests import TestCase, skipUnless
 
 from gi.repository import Gio, Soup
 
 from quodlibet.util import is_osx, is_windows
+from quodlibet.compat import urlopen
 
 
 # this is fixed in 3.6, but we currently still use 3.5 bundles on travis
@@ -34,7 +34,7 @@ class Thttps(TestCase):
         if is_windows():
             # FXIME
             return
-        urllib2.urlopen(self.URI).close()
+        urlopen(self.URI).close()
 
     def test_gio(self):
         if not glib_net_fixed:
