@@ -10,7 +10,7 @@ import urllib
 from gi.repository import Gtk, GLib, Pango, Gdk
 from tempfile import NamedTemporaryFile
 
-from quodlibet import config
+from quodlibet import config, print_d
 from quodlibet.browsers import Browser
 from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.browsers.playlists.prefs import Preferences, \
@@ -137,12 +137,12 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def Menu(self, songs, library, items):
         model, iters = self.__get_selected_songs()
-        item = qltk.MenuItem(_("_Remove from Playlist"), Icons.LIST_REMOVE)
-        qltk.add_fake_accel(item, "Delete")
-        connect_obj(item, 'activate', self.__remove, iters, model)
-        item.set_sensitive(bool(self.__view.get_selection().get_selected()[1]))
-
-        items.append([item])
+        remove = qltk.MenuItem(_("_Remove from Playlist"), Icons.LIST_REMOVE)
+        qltk.add_fake_accel(remove, "Delete")
+        connect_obj(remove, 'activate', self.__remove, iters, model)
+        playlist_iter = self.__view.get_selection().get_selected()[1]
+        remove.set_sensitive(bool(playlist_iter))
+        items.append([remove])
         menu = super(PlaylistsBrowser, self).Menu(songs, library, items)
         return menu
 
@@ -308,17 +308,34 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         view.get_parent().drag_unhighlight()
 
     def __remove(self, iters, smodel):
+        def song_at(itr):
+            return smodel[smodel.get_path(itr)][0]
+
+        def remove_from_model(iters, smodel):
+            for it in iters:
+                smodel.remove(it)
+
         model, iter = self.__view.get_selection().get_selected()
         if iter:
-            for iter_remove in iters:
-                smodel.remove(iter_remove)
             playlist = model[iter][0]
-            # Calling playlist.remove_songs(songs) won't remove the right ones
-            # if there are duplicates
-            playlist.clear()
-            playlist.extend([row[0] for row in smodel])
+            if self._query is None or not self.get_filter_text():
+                # Calling playlist.remove_songs(songs) won't remove the
+                # right ones if there are duplicates
+                remove_from_model(iters, smodel)
+                self.__rebuild_playlist_from_songs_model(playlist, smodel)
+            else:
+                removals = [song_at(iter_remove) for iter_remove in iters]
+                print_d("Removing %d song(s) from %s"
+                        % (len(removals), playlist))
+                playlist.remove_songs(removals, True)
+                remove_from_model(iters, smodel)
             PlaylistsBrowser.changed(playlist)
             self.activate()
+
+    @classmethod
+    def __rebuild_playlist_from_songs_model(cls, playlist, smodel):
+        playlist.clear()
+        playlist.extend([row[0] for row in smodel])
 
     def __drag_data_received(self, view, ctx, x, y, sel, tid, etime, library):
         # TreeModelSort doesn't support GtkTreeDragDestDrop.
@@ -444,16 +461,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __text_parse(self, bar, text):
         self.activate()
 
-    def _get_text(self):
-        return self._sb_box.get_text()
-
     def _set_text(self, text):
         self._sb_box.set_text(text)
 
     def activate(self, widget=None, resort=True):
         songs = self._get_playlist_songs()
 
-        text = self._get_text()
+        text = self.get_filter_text()
         # TODO: remove static dependency on Query
         if Query.is_parsable(text):
             self._query = Query(text, SongList.star)
@@ -484,7 +498,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.activate()
 
     def get_filter_text(self):
-        return self._get_text()
+        return self._sb_box.get_text()
 
     def can_filter(self, key):
         # TODO: special-case the ~playlists tag maybe?
@@ -504,7 +518,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         model, iter = self.__view.get_selection().get_selected()
         name = iter and model[iter][0].name or ""
         config.set("browsers", "playlist", name)
-        text = self._get_text()
+        text = self.get_filter_text()
         config.set("browsers", "query_text", text)
 
     def __new_playlist(self, activator):
