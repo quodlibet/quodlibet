@@ -4,9 +4,8 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-from quodlibet.config import RatingsPrefs, RATINGS
-
 from quodlibet import print_d, print_w
+from quodlibet.config import RATINGS
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.library.libraries import SongLibrary
 from quodlibet.query import Query

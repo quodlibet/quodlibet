@@ -16,7 +16,7 @@ from quodlibet.browsers.soundcloud.util import EPOCH, DEFAULT_BITRATE, \
     Wrapper, json_callback
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w
-from quodlibet.util.http import download_json, HTTPRequest, download
+from quodlibet.util.http import download_json, download
 
 try:
     gi.require_version("Soup", "2.4")
