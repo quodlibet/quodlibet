@@ -11,12 +11,12 @@ from gi.repository import GObject, Gio
 from urllib import urlencode
 
 from quodlibet import print_d, util, config
+from quodlibet.browsers.soundcloud.library import SoundcloudFile
 from quodlibet.browsers.soundcloud.util import EPOCH, DEFAULT_BITRATE, \
     Wrapper, json_callback
-from quodlibet.formats.remote import RemoteFile
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w
-from quodlibet.util.http import download_json
+from quodlibet.util.http import download_json, HTTPRequest, download
 
 try:
     gi.require_version("Soup", "2.4")
@@ -25,10 +25,56 @@ except ValueError as e:
 from gi.repository import Soup
 
 
-class SoundcloudApiClient(GObject.Object):
+class RestApi(GObject.Object):
+    """Semi-generic REST API client, using libsoup / `http.py`"""
+
+    def __init__(self, root):
+        super(RestApi, self).__init__()
+        self._cancellable = Gio.Cancellable.new()
+        self.root = root
+
+    def _default_params(self):
+        return {}
+
+    def _get(self, path, callback, **kwargs):
+        args = self._default_params()
+        args.update(kwargs)
+        msg = Soup.Message.new('GET', self._url(path, args))
+        download_json(msg, self._cancellable, callback, None)
+
+    def _post(self, path, callback, **kwargs):
+        args = self._default_params()
+        args.update(kwargs)
+        msg = Soup.Message.new('POST', self._url(path))
+        post_body = urlencode(args)
+        msg.set_request('application/x-www-form-urlencoded',
+                        Soup.MemoryUse.COPY, post_body)
+        download_json(msg, self._cancellable, callback, None)
+
+    def _put(self, path, callback, **kwargs):
+        args = self._default_params()
+        args.update(kwargs)
+        msg = Soup.Message.new('PUT', self._url(path))
+        body = urlencode(args)
+        msg.set_request('application/x-www-form-urlencoded',
+                        Soup.MemoryUse.COPY, body)
+        download_json(msg, self._cancellable, callback, None)
+
+    def _delete(self, path, callback, **kwargs):
+        args = self._default_params()
+        args.update(kwargs)
+        msg = Soup.Message.new('DELETE', self._url(path))
+        download(msg, self._cancellable, callback, None, try_decode=False)
+
+    def _url(self, path, args=None):
+        path = "%s%s" % (self.root, path)
+        return "%s?%s" % (path, urlencode(args)) if args else path
+
+
+class SoundcloudApiClient(RestApi):
     __CLIENT_SECRET = 'ca2b69301bd1f73985a9b47224a2a239'
     __CLIENT_ID = '5acc74891941cfc73ec8ee2504be6617'
-    SOUNDCLOUD_API_HOST = "https://api.soundcloud.com"
+    API_ROOT = "https://api.soundcloud.com"
     REDIRECT_URI = 'http://quodlibet.github.io/callbacks/soundcloud.html'
 
     __gsignals__ = {
@@ -39,19 +85,24 @@ class SoundcloudApiClient(GObject.Object):
     }
 
     def __init__(self, token=None):
-        super(SoundcloudApiClient, self).__init__()
         print_d("Starting Soundcloud API...")
-        self.online = False
+        super(SoundcloudApiClient, self).__init__(self.API_ROOT)
+        self.online = bool(token)
         self.username = None
         self.access_token = token
-        self._cancellable = Gio.Cancellable.new()
+
+    def _default_params(self):
+        params = {'client_id': self.__CLIENT_ID}
+        if self.access_token:
+            params["oauth_token"] = self.access_token
+        return params
 
     def authenticate_user(self):
         # create client object with app credentials
         if self.access_token:
             print_d("Ignoring saved Soundcloud token...")
         # redirect user to authorize URL
-        website(self.authorize_url)
+        website(self._authorize_url)
 
     def get_token(self, code):
         print_d("Getting access token...")
@@ -87,43 +138,35 @@ class SoundcloudApiClient(GObject.Object):
         print_d("Getting tracks: params=%s" % params)
         self._get('/tracks', self._on_track_data, **params)
 
-    def _get(self, path, callback, **kwargs):
-        args = self._default_params()
-        args.update(kwargs)
-        msg = Soup.Message.new('GET', self._url(path, args))
-        download_json(msg, self._cancellable, callback, None)
-
-    def _post(self, path, callback, **kwargs):
-        args = self._default_params()
-        args.update(kwargs)
-        msg = Soup.Message.new('POST', self._url(path))
-        post_body = urlencode(args)
-        msg.set_request('application/x-www-form-urlencoded',
-                        Soup.MemoryUse.COPY, post_body)
-        download_json(msg, self._cancellable, callback, None)
-
-    def _default_params(self):
-        params = {'client_id': self.__CLIENT_ID}
+    def save_token(self):
         if self.access_token:
-            params["oauth_token"] = self.access_token
-        return params
+            config.set("browsers", "soundcloud_token", self.access_token)
 
-    def _url(self, path, args=None):
-        base = "%s%s" % (self.SOUNDCLOUD_API_HOST, path)
-        return "%s?%s" % (base, urlencode(args)) if args else base
+    def put_favourite(self, track_id):
+        print_d("Saving track %s as favourite" % track_id)
+        url = '/me/favorites/%s' % track_id
+        self._put(url, self._on_favourited)
+
+    def remove_favourite(self, track_id):
+        print_d("Deleting favourite for %s" % track_id)
+        url = '/me/favorites/%s' % track_id
+        self._delete(url, self._on_favourited)
+
+    @json_callback
+    def _on_favourited(self, json):
+        print_d("Successfully updated favourite")
 
     @json_callback
     def _on_track_data(self, json):
-        songs = [self.audiofile_for(r) for r in json]
+        songs = [self._audiofile_for(r) for r in json]
         self.emit('songs-received', songs)
 
-    @classmethod
-    def audiofile_for(cls, response):
+    def _audiofile_for(self, response):
         r = Wrapper(response)
         d = r.data
         dl = d.get("downloadable", False) and d.get("download_url", None)
-        uri = SoundcloudApiClient.add_secret(dl or r.stream_url)
-        song = RemoteFile(uri=uri)
+        uri = SoundcloudApiClient._add_secret(dl or r.stream_url)
+        song = SoundcloudFile(uri=uri, client=self)
 
         def get_utc_date(s):
             parts = s.split()
@@ -185,16 +228,12 @@ class SoundcloudApiClient(GObject.Object):
         return song
 
     @classmethod
-    def add_secret(cls, stream_url):
+    def _add_secret(cls, stream_url):
         return "%s?client_id=%s" % (stream_url, cls.__CLIENT_ID)
 
-    def save_token(self):
-        if self.access_token:
-            config.set("browsers", "soundcloud_token", self.access_token)
-
     @util.cached_property
-    def authorize_url(self):
-        url = '%s/connect' % (self.SOUNDCLOUD_API_HOST,)
+    def _authorize_url(self):
+        url = '%s/connect' % (self.API_ROOT,)
         options = {
             'scope': 'non-expiring',
             'client_id': self.__CLIENT_ID,
