@@ -39,7 +39,7 @@ class Wrapper(object):
 def json_callback(wrapped):
     """Decorator for `download_json` callbacks, handling common errors"""
     def _callback(self, message, json, data):
-        if not json:
+        if json is None:
             print_d('Invalid JSON ({message.status_code}): '
                     '{message.response_body.data} (request: {data})'
                     .format(**locals()))
