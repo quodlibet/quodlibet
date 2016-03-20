@@ -34,6 +34,7 @@ class Paned(Gtk.Paned):
             add_css(self, """
                 GtkPaned {
                     border-width: 0;
+                    background: none;
                 }
             """)
             return
