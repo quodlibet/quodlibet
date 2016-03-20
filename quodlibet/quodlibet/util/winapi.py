@@ -5,9 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import struct
 import ctypes
-from uuid import UUID
 from ctypes import wintypes, cdll, windll
 
 from .enum import enum
@@ -24,18 +22,43 @@ class GUID(ctypes.Structure):
         ("Data4", wintypes.BYTE * 8),
     ]
 
-    @classmethod
-    def from_uuid(cls, id_):
-        assert isinstance(id_, UUID)
+    def __init__(self, name=None):
+        if name is not None:
+            IIDFromString(str(name), ctypes.byref(self))
 
-        f = id_.fields
-        data4 = (wintypes.BYTE * 8)(
-            f[3], f[4], *struct.unpack("8B", struct.pack(">Q", f[5]))[2:])
-        return cls(f[0], f[1], f[2], data4)
+    def __str__(self):
+        ptr = wintypes.LPOLESTR()
+        StringFromIID(ctypes.byref(self), ctypes.byref(ptr))
+        string = str(ptr.value)
+        CoTaskMemFree(ptr)
+        return string
 
+
+LPGUID = ctypes.POINTER(GUID)
+IID = GUID
+LPIID = ctypes.POINTER(IID)
+REFIID = ctypes.POINTER(IID)
+CLSID = GUID
+REFCLSID = ctypes.POINTER(CLSID)
+
+LPWIN32_FIND_DATAW = ctypes.POINTER(wintypes.WIN32_FIND_DATAW)
+
+IIDFromString = windll.ole32.IIDFromString
+IIDFromString.argtypes = [wintypes.LPCOLESTR, LPIID]
+IIDFromString.restype = wintypes.HRESULT
+
+StringFromIID = windll.ole32.StringFromIID
+StringFromIID.argtypes = [REFIID, ctypes.POINTER(wintypes.LPOLESTR)]
+StringFromIID.restype = wintypes.HRESULT
+
+CoInitialize = windll.ole32.CoInitialize
+CoInitialize.argtypes = [wintypes.LPVOID]
+CoInitialize.restype = wintypes.HRESULT
 
 LPTSTR = wintypes.LPWSTR
 REFKNOWNFOLDERID = ctypes.POINTER(GUID)
+
+CLSCTX_INPROC_SERVER = 1
 
 SetEnvironmentVariableW = ctypes.windll.kernel32.SetEnvironmentVariableW
 SetEnvironmentVariableW.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p]
@@ -81,8 +104,99 @@ S_OK = wintypes.HRESULT(0).value
 MAX_PATH = wintypes.MAX_PATH
 
 
+class COMMethod(object):
+
+    def __init__(self, name, offset, restype, argtypes):
+        self._name = name
+        self._restype = restype
+        self._offset = offset
+        self._argtypes = argtypes
+
+    def __get__(self, instance, owner):
+        func = ctypes.WINFUNCTYPE(
+            self._restype, *self._argtypes)(self._offset, self._name)
+
+        def wrapper(self, *args, **kwargs):
+            return func(self, *args, **kwargs)
+
+        setattr(owner, self._name, wrapper)
+        return getattr(instance or owner, self._name)
+
+
+class COMInterface(type(ctypes.c_void_p)):
+
+    def __new__(mcls, cls_name, bases, d):
+
+        offset = 0
+        for base in bases:
+            for realbase in base.__mro__:
+                offset += len(realbase.__dict__.get("_methods_", []))
+
+        for i, args in enumerate(d.get("_methods_", [])):
+            name = args[0]
+            restype = args[1]
+            argtypes = args[2:]
+            m = COMMethod(name, offset + i, restype, argtypes)
+            d[name] = m
+
+        return type(ctypes.c_void_p).__new__(mcls, cls_name, bases, dict(d))
+
+
+class IUnknown(ctypes.c_void_p):
+
+    __metaclass__ = COMInterface
+
+    IID = GUID("{00000001-0000-0000-c000-000000000046}")
+
+    _methods_ = [
+      ("QueryInterface", wintypes.HRESULT, LPGUID, wintypes.LPVOID),
+      ("AddRef", wintypes.DWORD),
+      ("Release", wintypes.DWORD),
+    ]
+
+
+LPUNKNOWN = ctypes.POINTER(IUnknown)
+
+CoCreateInstance = windll.ole32.CoCreateInstance
+CoCreateInstance.argtypes = [REFCLSID, LPUNKNOWN, wintypes.DWORD, REFIID,
+                             wintypes.LPVOID]
+CoCreateInstance.restype = wintypes.HRESULT
+
+
+class IShellLinkW(IUnknown):
+
+    IID = GUID("{000214F9-0000-0000-C000-000000000046}")
+
+    _methods_ = [
+        ("GetPath", wintypes.HRESULT, wintypes.LPWSTR, wintypes.INT,
+         LPWIN32_FIND_DATAW, wintypes.DWORD),
+    ]
+
+
+class IPersist(IUnknown):
+
+    IID = GUID("{0000010c-0000-0000-C000-000000000046}")
+
+    _methods_ = [
+        ("GetClassID", wintypes.HRESULT, LPGUID),
+    ]
+
+
+class IPersistFile(IPersist):
+
+    IID = GUID("{0000010b-0000-0000-c000-000000000046}")
+
+    _methods_ = [
+        ("IsDirty", wintypes.HRESULT),
+        ("Load", wintypes.HRESULT, wintypes.LPOLESTR, wintypes.DWORD),
+    ]
+
+
+CLSID_ShellLink = GUID("{00021401-0000-0000-C000-000000000046}")
+
+
 @enum
-class FOLDERID(UUID):
+class FOLDERID(str):
     LINKS = "{bfb9d5e0-c6a9-404c-b2b2-ae6db6af4968}"
 
 

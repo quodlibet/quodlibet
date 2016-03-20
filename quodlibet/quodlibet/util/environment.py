@@ -43,6 +43,12 @@ def is_windows():
     return os.name == "nt"
 
 
+def is_wine():
+    """If we are running under Wine"""
+
+    return is_windows() and "WINEDEBUG" in os.environ
+
+
 def is_osx():
     """If we are running under OS X"""
 
