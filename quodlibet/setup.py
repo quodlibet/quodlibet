@@ -10,7 +10,6 @@
 # as long as this notice is preserved. There is no warranty, either
 # express or implied, for this software.
 
-import sys
 import os
 import shutil
 
