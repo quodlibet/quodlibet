@@ -24,7 +24,7 @@ from quodlibet.util.uri import URI
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
-from quodlibet.util.path import is_fsnative, normalize_path
+from quodlibet.util.path import is_fsnative
 
 
 class BrowseError(Exception):
@@ -121,30 +121,16 @@ def show_files_win32(path, files):
     """
 
     assert os.name == "nt"
-
-    import pywintypes
-    from win32com.shell import shell
-
     assert is_fsnative(path)
     assert all(is_fsnative(f) for f in files)
 
-    normalized_files = map(normalize_path, files)
+    from quodlibet.util.windows import open_folder_and_select_items
 
     try:
-        folder_pidl = shell.SHILCreateFromPath(path, 0)[0]
-        desktop = shell.SHGetDesktopFolder()
-        shell_folder = desktop.BindToObject(
-            folder_pidl, None, shell.IID_IShellFolder)
-        items = []
-        for item in shell_folder:
-            name = desktop.GetDisplayNameOf(item, 0)
-            if normalize_path(name) in normalized_files:
-                items.append(item)
-        shell.SHOpenFolderAndSelectItems(folder_pidl, items, 0)
-    except pywintypes.com_error:
+        open_folder_and_select_items(path, files)
+    except WindowsError:
         return False
-    else:
-        return True
+    return True
 
 
 def browse_folders_win_explorer(songs):

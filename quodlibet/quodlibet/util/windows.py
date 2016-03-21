@@ -13,6 +13,7 @@ import collections
 import ctypes
 
 if os.name == "nt":
+    from . import winapi
     from .winapi import SHGFPType, CSIDLFlag, CSIDL, GUID, \
         SHGetFolderPathW, SetEnvironmentVariableW, S_OK, \
         GetEnvironmentStringsW, FreeEnvironmentStringsW, \
@@ -20,6 +21,64 @@ if os.name == "nt":
         KnownFolderFlag, FOLDERID, SHGetKnownFolderPath, CoTaskMemFree, \
         CoInitialize, IShellLinkW, CoCreateInstance, CLSID_ShellLink, \
         CLSCTX_INPROC_SERVER, IPersistFile
+
+
+def open_folder_and_select_items(folder, items=None):
+    """Shows a directory and optional files or subdirectories in the
+    file manager (explorer.exe).
+
+    If both folder and items is given the file manager will
+    display the content of `folder` and highlight all `items`.
+
+    If only a directory is given then the content of the parent directory is
+    shown and the `folder` highlighted.
+
+    Might raise WindowsError in case something fails (any of the
+    files not existing etc.)
+    """
+
+    if items is None:
+        items = []
+
+    assert isinstance(folder, unicode)
+    for item in items:
+        assert isinstance(item, unicode)
+        assert not os.path.split(item)[0]
+
+    desktop = winapi.IShellFolder()
+    parent = winapi.IShellFolder()
+    parent_id = winapi.PIDLIST_ABSOLUTE()
+    child_ids = (winapi.PIDLIST_RELATIVE * len(items))()
+
+    try:
+        winapi.CoInitialize(None)
+
+        winapi.SHILCreateFromPath(folder, ctypes.byref(parent_id), 0)
+
+        winapi.SHGetDesktopFolder(ctypes.byref(desktop))
+
+        desktop.BindToObject(
+            parent_id, None, winapi.IShellFolder.IID, ctypes.byref(parent))
+
+        for i, item in enumerate(items):
+            attrs = winapi.ULONG(0)
+            parent.ParseDisplayName(
+                None, None, item, None,
+                ctypes.byref(child_ids[i]), ctypes.byref(attrs))
+
+        winapi.SHOpenFolderAndSelectItems(
+            parent_id, len(child_ids),
+            winapi.PCUITEMID_CHILD_ARRAY(child_ids), 0)
+    finally:
+        for child_id in child_ids:
+            if child_id:
+                winapi.CoTaskMemFree(child_id)
+        if parent_id:
+            winapi.ILFree(parent_id)
+        if parent:
+            parent.Release()
+        if desktop:
+            desktop.Release()
 
 
 def _get_path(folder, default=False, create=False):

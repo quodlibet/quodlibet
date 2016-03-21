@@ -5,8 +5,14 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+"""
+Error handling: every function which has wintypes.HRESULT as restype
+will automatically raise WindowsError if a bad result is returned.
+For all other functions check the return status and raise ctypes.WinError()
+"""
+
 import ctypes
-from ctypes import wintypes, cdll, windll
+from ctypes import wintypes, cdll, windll, oledll
 
 from .enum import enum
 
@@ -42,6 +48,7 @@ CLSID = GUID
 REFCLSID = ctypes.POINTER(CLSID)
 
 DWORD = wintypes.DWORD
+ULONG = wintypes.ULONG
 
 LPWIN32_FIND_DATAW = ctypes.POINTER(wintypes.WIN32_FIND_DATAW)
 
@@ -205,6 +212,8 @@ class COMInterface(type(ctypes.c_void_p)):
         for i, args in enumerate(d.get("_methods_", [])):
             name = args[0]
             restype = args[1]
+            if restype is None:
+                continue
             argtypes = args[2:]
             m = COMMethod(name, offset + i, restype, argtypes)
             d[name] = m
@@ -262,7 +271,65 @@ class IPersistFile(IPersist):
     ]
 
 
+class ITEMIDLIST(ctypes.Structure):
+    pass
+
+
+IBindCtx = ctypes.c_void_p
+ITEMIDLIST_ABSOLUTE = ITEMIDLIST
+ITEMIDLIST_RELATIVE = ITEMIDLIST
+PIDLIST_ABSOLUTE = ctypes.POINTER(ITEMIDLIST_ABSOLUTE)
+PCUIDLIST_RELATIVE = ctypes.POINTER(ITEMIDLIST_RELATIVE)
+PIDLIST_RELATIVE = ctypes.POINTER(ITEMIDLIST_RELATIVE)
+PCIDLIST_ABSOLUTE = ctypes.POINTER(ITEMIDLIST_ABSOLUTE)
+ITEMID_CHILD = ITEMIDLIST
+PCUITEMID_CHILD = ctypes.POINTER(ITEMID_CHILD)
+PCUITEMID_CHILD_ARRAY = ctypes.POINTER(PCUITEMID_CHILD)
+
+
+class IShellFolder(IUnknown):
+
+    IID = GUID("{000214E6-0000-0000-C000-000000000046}")
+
+    _methods_ = [
+        ("ParseDisplayName", wintypes.HRESULT, wintypes.HWND,
+         ctypes.POINTER(IBindCtx), wintypes.LPWSTR,
+         ctypes.POINTER(wintypes.ULONG), ctypes.POINTER(PIDLIST_RELATIVE),
+         ctypes.POINTER(wintypes.ULONG)),
+        ("EnumObjects", None),
+        ("BindToObject", wintypes.HRESULT, PCUIDLIST_RELATIVE,
+         ctypes.POINTER(IBindCtx), REFIID, ctypes.c_void_p),
+    ]
+
+
 CLSID_ShellLink = GUID("{00021401-0000-0000-C000-000000000046}")
+
+SHGetDesktopFolder = oledll.shell32.SHGetDesktopFolder
+SHGetDesktopFolder.argtypes = [ctypes.POINTER(IShellFolder)]
+SHGetDesktopFolder.restype = wintypes.HRESULT
+
+ILCombine = windll.shell32.ILCombine
+ILCombine.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+ILCombine.restype = ctypes.c_void_p
+
+ILCreateFromPathW = windll.shell32.ILCreateFromPathW
+ILCreateFromPathW.argtypes = [wintypes.LPCWSTR]
+ILCreateFromPathW.restype = PIDLIST_ABSOLUTE
+
+ILFree = windll.shell32.ILFree
+ILFree.argtypes = [PIDLIST_RELATIVE]
+ILFree.restype = None
+
+SHOpenFolderAndSelectItems = windll.shell32.SHOpenFolderAndSelectItems
+SHOpenFolderAndSelectItems.argtypes = [
+    PCIDLIST_ABSOLUTE, wintypes.UINT, PCUITEMID_CHILD_ARRAY, DWORD]
+SHOpenFolderAndSelectItems.restype = wintypes.HRESULT
+
+PCWSTR = ctypes.c_wchar_p
+
+SHILCreateFromPath = oledll.shell32.SHILCreateFromPath
+SHILCreateFromPath.argtypes = [PCWSTR, ctypes.POINTER(PIDLIST_ABSOLUTE), DWORD]
+SHILCreateFromPath.restype = wintypes.HRESULT
 
 
 @enum
