@@ -41,6 +41,8 @@ REFIID = ctypes.POINTER(IID)
 CLSID = GUID
 REFCLSID = ctypes.POINTER(CLSID)
 
+DWORD = wintypes.DWORD
+
 LPWIN32_FIND_DATAW = ctypes.POINTER(wintypes.WIN32_FIND_DATAW)
 
 IIDFromString = windll.ole32.IIDFromString
@@ -55,7 +57,7 @@ CoInitialize = windll.ole32.CoInitialize
 CoInitialize.argtypes = [wintypes.LPVOID]
 CoInitialize.restype = wintypes.HRESULT
 
-LPTSTR = wintypes.LPWSTR
+LPDWORD = ctypes.POINTER(wintypes.DWORD)
 REFKNOWNFOLDERID = ctypes.POINTER(GUID)
 
 CLSCTX_INPROC_SERVER = 1
@@ -74,7 +76,8 @@ FreeEnvironmentStringsW.restype = ctypes.c_bool
 
 SHGetFolderPathW = ctypes.windll.shell32.SHGetFolderPathW
 SHGetFolderPathW.argtypes = [
-    wintypes.HWND, ctypes.c_int, wintypes.HANDLE, wintypes.DWORD, LPTSTR]
+    wintypes.HWND, ctypes.c_int, wintypes.HANDLE, wintypes.DWORD,
+    wintypes.LPWSTR]
 SHGetFolderPathW.restype = wintypes.HRESULT
 
 SHGetKnownFolderPath = windll.shell32.SHGetKnownFolderPath
@@ -100,8 +103,75 @@ LocalFree = windll.kernel32.LocalFree
 LocalFree.argtypes = [wintypes.HLOCAL]
 LocalFree.restype = wintypes.HLOCAL
 
+WaitNamedPipeW = windll.kernel32.WaitNamedPipeW
+WaitNamedPipeW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD]
+WaitNamedPipeW.restype = wintypes.BOOL
+
+
+class SECURITY_ATTRIBUTES(ctypes.Structure):
+
+    _fields_ = [
+        ("nLength", wintypes.DWORD),
+        ("lpSecurityDescriptor", wintypes.LPVOID),
+        ("bInheritHandle", wintypes.BOOL),
+    ]
+
+LPSECURITY_ATTRIBUTES = ctypes.POINTER(SECURITY_ATTRIBUTES)
+PSECURITY_ATTRIBUTES = LPSECURITY_ATTRIBUTES
+
+CreateNamedPipeW = windll.kernel32.CreateNamedPipeW
+CreateNamedPipeW.argtypes = [
+    wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, wintypes.DWORD,
+    wintypes.DWORD, wintypes.DWORD, wintypes.DWORD, LPSECURITY_ATTRIBUTES]
+CreateNamedPipeW.restype = wintypes.HANDLE
+
+LPOVERLAPPED = ctypes.c_void_p
+
+PIPE_ACCEPT_REMOTE_CLIENTS = 0x00000000
+PIPE_REJECT_REMOTE_CLIENTS = 0x00000008
+
+PIPE_ACCESS_DUPLEX = 0x00000003
+PIPE_ACCESS_INBOUND = 0x00000001
+PIPE_ACCESS_OUTBOUND = 0x00000002
+
+PIPE_TYPE_BYTE = 0x00000000
+PIPE_TYPE_MESSAGE = 0x00000004
+
+PIPE_READMODE_BYTE = 0x00000000
+PIPE_READMODE_MESSAGE = 0x00000002
+
+PIPE_WAIT = 0x00000000
+PIPE_NOWAIT = 0x00000001
+
+FILE_FLAG_FIRST_PIPE_INSTANCE = 0x00080000
+FILE_FLAG_WRITE_THROUGH = 0x80000000
+FILE_FLAG_OVERLAPPED = 0x40000000
+
+PIPE_UNLIMITED_INSTANCES = 255
+
+NMPWAIT_USE_DEFAULT_WAIT = 0x00000000
+NMPWAIT_WAIT_FOREVER = 0xffffffff
+
+ConnectNamedPipe = windll.kernel32.ConnectNamedPipe
+ConnectNamedPipe.argtypes = [wintypes.HANDLE, LPOVERLAPPED]
+ConnectNamedPipe.restype = wintypes.BOOL
+
+DisconnectNamedPipe = windll.kernel32.DisconnectNamedPipe
+DisconnectNamedPipe.argtypes = [wintypes.HANDLE]
+DisconnectNamedPipe.restype = wintypes.BOOL
+
+ReadFile = windll.kernel32.ReadFile
+ReadFile.argtypes = [wintypes.HANDLE, wintypes.LPVOID, wintypes.DWORD,
+                     LPDWORD, LPOVERLAPPED]
+ReadFile.restype = wintypes.BOOL
+
+CloseHandle = windll.kernel32.CloseHandle
+CloseHandle.argtypes = [wintypes.HANDLE]
+CloseHandle.restype = wintypes.BOOL
+
 S_OK = wintypes.HRESULT(0).value
 MAX_PATH = wintypes.MAX_PATH
+INVALID_HANDLE_VALUE = wintypes.HANDLE(-1).value
 
 
 class COMMethod(object):
