@@ -38,7 +38,6 @@ cb5d82025b2d969abfa2e32d3d26c4a244657c510612739dcc2517f84525ee97  pygi-aio-$PYGI
 3db9fa9adc45703589b93df05aab77bdabe985a17565b465a9e550585f85322a  pyHook-1.5.1.win32-py2.7.exe
 9debc6445b81ad735b5e5767d5609ed56167cbcc52c62a55b66629fcbe23a188  python-2.7.11.msi
 ea84abc60fcb5152418dd49e8fdecf3e68759304a71bef422c3b1376886c5b7a  python-musicbrainzngs-0.5.tar.gz
-dd665cca88cb059fec960516ed5f29474b33fce50fcb2633d397d4a3aa705c16  pywin32-218.win32-py2.7.exe
 fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
 8a94f6ff1ee9562a2216d2096b87d0e54a5eb5c9391874800e5032033a1c8e85  libmodplug-1.dll
 2b53c7bb3a92218f8ff197d259b7769754ec9a578561e69578739fcbdbb53da3  libgstdirectsoundsink.dll
@@ -54,7 +53,6 @@ fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
         wget -P "$BIN" -c "http://bitbucket.org/lazka/quodlibet/downloads/pygi-aio-$PYGI_AIO_VER-setup.exe"
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
-        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pywin32/pywin32/Build%20218/pywin32-218.win32-py2.7.exe
         wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.11/python-2.7.11.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/sevenzip/7z920.msi
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
@@ -229,7 +227,6 @@ function install_pydeps {
     wine $PYTHON -m pip install "mutagen-$MUTAGEN_VER.tar.gz"
     wine $PYTHON -m pip install feedparser-5.1.3.tar.bz2
     wine $PYTHON -m pip install python-musicbrainzngs-0.5.tar.gz
-    wine $PYTHON -m easy_install -Z pywin32-218.win32-py2.7.exe
     wine $PYTHON -m easy_install -Z py2exe-0.6.9.win32-py2.7.exe
     wine $PYTHON -m easy_install -Z pyHook-1.5.1.win32-py2.7.exe
     )
