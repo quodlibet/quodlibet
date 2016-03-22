@@ -114,6 +114,16 @@ WaitNamedPipeW = windll.kernel32.WaitNamedPipeW
 WaitNamedPipeW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD]
 WaitNamedPipeW.restype = wintypes.BOOL
 
+LANGID = wintypes.WORD
+
+GetUserDefaultUILanguage = ctypes.windll.kernel32.GetUserDefaultUILanguage
+GetUserDefaultUILanguage.argtypes = []
+GetUserDefaultUILanguage.restype = LANGID
+
+GetSystemDefaultUILanguage = ctypes.windll.kernel32.GetSystemDefaultUILanguage
+GetSystemDefaultUILanguage.argtypes = []
+GetSystemDefaultUILanguage.restype = LANGID
+
 
 class SECURITY_ATTRIBUTES(ctypes.Structure):
 
@@ -176,6 +186,14 @@ CloseHandle = windll.kernel32.CloseHandle
 CloseHandle.argtypes = [wintypes.HANDLE]
 CloseHandle.restype = wintypes.BOOL
 
+MOVEFILE_WRITE_THROUGH = 0x8
+MOVEFILE_REPLACE_EXISTING = 0x1
+
+MoveFileExW = windll.kernel32.MoveFileExW
+MoveFileExW.argtypes = [wintypes.LPWSTR, wintypes.LPWSTR, wintypes.DWORD]
+MoveFileExW.restype = wintypes.BOOL
+
+WinError = ctypes.WinError
 S_OK = wintypes.HRESULT(0).value
 MAX_PATH = wintypes.MAX_PATH
 INVALID_HANDLE_VALUE = wintypes.HANDLE(-1).value
