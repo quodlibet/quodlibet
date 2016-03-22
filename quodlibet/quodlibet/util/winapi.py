@@ -327,7 +327,7 @@ SHOpenFolderAndSelectItems.restype = wintypes.HRESULT
 
 PCWSTR = ctypes.c_wchar_p
 
-SHILCreateFromPath = oledll.shell32.SHILCreateFromPath
+SHILCreateFromPath = windll.shell32.SHILCreateFromPath
 SHILCreateFromPath.argtypes = [PCWSTR, ctypes.POINTER(PIDLIST_ABSOLUTE), DWORD]
 SHILCreateFromPath.restype = wintypes.HRESULT
 
