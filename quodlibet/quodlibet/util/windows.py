@@ -53,7 +53,8 @@ def open_folder_and_select_items(folder, items=None):
     try:
         winapi.CoInitialize(None)
 
-        winapi.SHILCreateFromPath(folder, ctypes.byref(parent_id), 0)
+        winapi.SHParseDisplayName(
+            folder, None, ctypes.byref(parent_id), 0, None)
 
         winapi.SHGetDesktopFolder(ctypes.byref(desktop))
 

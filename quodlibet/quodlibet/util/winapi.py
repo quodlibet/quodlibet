@@ -325,11 +325,13 @@ SHOpenFolderAndSelectItems.argtypes = [
     PCIDLIST_ABSOLUTE, wintypes.UINT, PCUITEMID_CHILD_ARRAY, DWORD]
 SHOpenFolderAndSelectItems.restype = wintypes.HRESULT
 
-PCWSTR = ctypes.c_wchar_p
+SFGAOF = wintypes.ULONG
 
-SHILCreateFromPath = windll.shell32.SHILCreateFromPath
-SHILCreateFromPath.argtypes = [PCWSTR, ctypes.POINTER(PIDLIST_ABSOLUTE), DWORD]
-SHILCreateFromPath.restype = wintypes.HRESULT
+SHParseDisplayName = windll.shell32.SHParseDisplayName
+SHParseDisplayName.argtypes = [
+    wintypes.LPCWSTR, ctypes.POINTER(IBindCtx),
+    ctypes.POINTER(PIDLIST_ABSOLUTE), SFGAOF, ctypes.POINTER(SFGAOF)]
+SHParseDisplayName.restype = wintypes.HRESULT
 
 
 @enum
