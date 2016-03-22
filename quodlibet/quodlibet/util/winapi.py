@@ -47,8 +47,10 @@ REFIID = ctypes.POINTER(IID)
 CLSID = GUID
 REFCLSID = ctypes.POINTER(CLSID)
 
+WORD = wintypes.WORD
 DWORD = wintypes.DWORD
 ULONG = wintypes.ULONG
+SHORT = wintypes.SHORT
 
 LPWIN32_FIND_DATAW = ctypes.POINTER(wintypes.WIN32_FIND_DATAW)
 
@@ -193,10 +195,66 @@ MoveFileExW = windll.kernel32.MoveFileExW
 MoveFileExW.argtypes = [wintypes.LPWSTR, wintypes.LPWSTR, wintypes.DWORD]
 MoveFileExW.restype = wintypes.BOOL
 
+GetStdHandle = windll.kernel32.GetStdHandle
+GetStdHandle.argtypes = [DWORD]
+GetStdHandle.restype = wintypes.HANDLE
+
+SetConsoleTextAttribute = windll.kernel32.SetConsoleTextAttribute
+SetConsoleTextAttribute.argtypes = [wintypes.HANDLE, WORD]
+SetConsoleTextAttribute.restype = wintypes.BOOL
+
 WinError = ctypes.WinError
 S_OK = wintypes.HRESULT(0).value
 MAX_PATH = wintypes.MAX_PATH
 INVALID_HANDLE_VALUE = wintypes.HANDLE(-1).value
+
+STD_INPUT_HANDLE = DWORD(-10)
+STD_OUTPUT_HANDLE = DWORD(-11)
+STD_ERROR_HANDLE = DWORD(-12)
+
+
+class COORD(ctypes.Structure):
+
+    _fields_ = [
+        ("X", SHORT),
+        ("Y", SHORT),
+    ]
+
+
+class SMALL_RECT(ctypes.Structure):
+
+    _fields_ = [
+        ("Left", SHORT),
+        ("Top", SHORT),
+        ("Right", SHORT),
+        ("Bottom", SHORT),
+    ]
+
+
+class PCONSOLE_SCREEN_BUFFER_INFO(ctypes.Structure):
+
+    _fields_ = [
+        ("dwSize", COORD),
+        ("dwCursorPosition", COORD),
+        ("wAttributes", WORD),
+        ("srWindow", SMALL_RECT),
+        ("dwMaximumWindowSize", COORD),
+    ]
+
+
+GetConsoleScreenBufferInfo = windll.kernel32.GetConsoleScreenBufferInfo
+GetConsoleScreenBufferInfo.argtypes = [
+    wintypes.HANDLE, ctypes.POINTER(PCONSOLE_SCREEN_BUFFER_INFO)]
+GetConsoleScreenBufferInfo.restype = wintypes.BOOL
+
+FOREGROUND_BLUE = 0x0001
+FOREGROUND_GREEN = 0x0002
+FOREGROUND_RED = 0x0004
+FOREGROUND_INTENSITY = 0x0008
+BACKGROUND_BLUE = 0x0010
+BACKGROUND_GREEN = 0x0020
+BACKGROUND_RED = 0x0040
+BACKGROUND_RED = 0x0040
 
 
 class COMMethod(object):
