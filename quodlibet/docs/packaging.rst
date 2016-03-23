@@ -23,6 +23,7 @@ Changes
   for the Tray Icon plugin under Ubuntu Unity and KDE Plasma
 * **python-musicbrainzngs** instead of **python-musicbrainz2**
 * **python-cddb** no longer needed
+* **libsoup** (>= 2.44) + **typelibs** required
 
 
 3.5
@@ -99,6 +100,7 @@ The following software is needed to start Ex Falso or Quod Libet.
 * **pycairo** (>= 1.8)
 * **mutagen** (>= 1.30)
 * **GTK+** (>= 3.10)
+* **libsoup** (>= 2.44)
 * On OS X only: **PyObjC**
 
 For icons a complete **icon theme** is needed, preferably with symbolic icons. 
