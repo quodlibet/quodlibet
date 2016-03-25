@@ -85,8 +85,6 @@
     <branch module="cairo-1.14.4.tar.xz"  version="1.14.4"
             repo="cairographics"
             hash="sha1:5b44471e7c328f96de6830baf8ea65030de797f9">
-        <!-- https://bugs.freedesktop.org/show_bug.cgi?id=69796#c4 -->
-        <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/cairo-hidpi.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="pixman"/>
@@ -113,13 +111,14 @@
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
     <branch module="gtk+/3.18/gtk+-3.18.9.tar.xz" version="3.18.9"
         hash="sha256:783d7f8b00f9b4224cc94d7da885a67598e711c2d6d79c9c873c6b203e83acbd">
-        <!-- https://bugzilla.gnome.org/show_bug.cgi?id=740199#c4 -->
-        <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gtk3-hidpi.patch" strip="1"/>
+      <!-- https://bugzilla.gnome.org/show_bug.cgi?id=763779 -->
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gtk-quartz-fix-pixelated-image-surfaces-in-retina-hidpi-.patch" strip="1"/>
     </branch>
     <dependencies>
         <dep package="glib"/>
         <dep package="pango"/>
         <dep package="atk"/>
+        <dep package="cairo"/>
         <dep package="gdk-pixbuf"/>
         <dep package="gobject-introspection"/>
         <dep package="libepoxy"/>
