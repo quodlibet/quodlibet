@@ -29,8 +29,8 @@ install:
  - if [ "$APT_PACKAGES" != "" ]; then sudo apt-get update -q || true; fi
  - if [ "$APT_PACKAGES" != "" ]; then sudo apt-get install -y $(echo $APT_PACKAGES); fi
  - if [ "$TYPE" == "linux" ]; then pip install --upgrade pep8 pyflakes; fi
- - if [ "$TYPE" == "osx" ]; then wget http://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.6.0.zip; fi
- - if [ "$TYPE" == "osx" ]; then unzip -qq QuodLibet-3.6.0.zip; fi
+ - if [ "$TYPE" == "osx" ]; then wget http://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.5.1.zip; fi
+ - if [ "$TYPE" == "osx" ]; then unzip -qq QuodLibet-3.5.1.zip; fi
  - if [ "$TYPE" == "windows" ]; then wget http://bitbucket.org/lazka/quodlibet/downloads/quodlibet-win-sdk.tar.xz; fi
  - if [ "$TYPE" == "windows" ]; then tar -xJf quodlibet-win-sdk.tar.xz; fi
 
