@@ -5,8 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-import os
-
 from tests import TestCase, skipUnless
 
 from gi.repository import Gio, Soup
