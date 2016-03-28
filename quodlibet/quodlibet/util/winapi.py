@@ -52,6 +52,61 @@ DWORD = wintypes.DWORD
 ULONG = wintypes.ULONG
 SHORT = wintypes.SHORT
 
+ULONG_PTR = wintypes.WPARAM
+LONG_PTR = wintypes.LPARAM
+LRESULT = LONG_PTR
+HHOOK = wintypes.HANDLE
+
+HC_ACTION = 0
+HC_NOREMOVE = 3
+
+VK_MEDIA_NEXT_TRACK = 0xB0
+VK_MEDIA_PREV_TRACK = 0xB1
+VK_MEDIA_STOP = 0xB2
+VK_MEDIA_PLAY_PAUSE = 0xB3
+
+WM_KEYDOWN = 0x0100
+WM_KEYUP = 0x0101
+WM_SYSKEYDOWN = 0x0104
+WM_SYSKEYUP = 0x0105
+
+CallNextHookEx = windll.user32.CallNextHookEx
+CallNextHookEx.argtypes = [
+    HHOOK, ctypes.c_int, wintypes.WPARAM, wintypes.LPARAM]
+CallNextHookEx.restype = LRESULT
+
+
+class KBDLLHOOKSTRUCT(ctypes.Structure):
+    _fields_ = [
+        ("vkCode", DWORD),
+        ("scanCode", DWORD),
+        ("flags", DWORD),
+        ("time", DWORD),
+        ("dwExtraInfo", ULONG_PTR),
+    ]
+
+LPKBDLLHOOKSTRUCT = PKBDLLHOOKSTRUCT = ctypes.POINTER(KBDLLHOOKSTRUCT)
+
+LowLevelKeyboardProc = ctypes.WINFUNCTYPE(
+    LRESULT, ctypes.c_int, wintypes.WPARAM, wintypes.LPARAM)
+
+_SetWindowsHookExW = windll.user32.SetWindowsHookExW
+_SetWindowsHookExW.argtypes = [
+    ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p, wintypes.DWORD]
+_SetWindowsHookExW.restype = HHOOK
+
+
+def SetWindowsHookExW(idHook, lpfn, hMod, dwThreadId):
+    assert idHook == WH_KEYBOARD_LL
+    assert isinstance(lpfn, LowLevelKeyboardProc)
+    return _SetWindowsHookExW(idHook, lpfn, hMod, dwThreadId)
+
+UnhookWindowsHookEx = windll.user32.UnhookWindowsHookEx
+UnhookWindowsHookEx.argtypes = [HHOOK]
+UnhookWindowsHookEx.restype = wintypes.BOOL
+
+WH_KEYBOARD_LL = 13
+
 LPWIN32_FIND_DATAW = ctypes.POINTER(wintypes.WIN32_FIND_DATAW)
 
 IIDFromString = windll.ole32.IIDFromString
