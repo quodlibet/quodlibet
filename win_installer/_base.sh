@@ -35,7 +35,6 @@ d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-prev
 a3e4ac1dfe57d385c2a966c5f283ad0eca8fd0f66c551645cb637f4ae712e161  nsis-2.50-setup.exe
 610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c  py2exe-0.6.9.win32-py2.7.exe
 cb5d82025b2d969abfa2e32d3d26c4a244657c510612739dcc2517f84525ee97  pygi-aio-$PYGI_AIO_VER-setup.exe
-3db9fa9adc45703589b93df05aab77bdabe985a17565b465a9e550585f85322a  pyHook-1.5.1.win32-py2.7.exe
 9debc6445b81ad735b5e5767d5609ed56167cbcc52c62a55b66629fcbe23a188  python-2.7.11.msi
 ea84abc60fcb5152418dd49e8fdecf3e68759304a71bef422c3b1376886c5b7a  python-musicbrainzngs-0.5.tar.gz
 fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
@@ -52,7 +51,6 @@ fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
         wget -P "$BIN" -c https://github.com/msysgit/msysgit/releases/download/Git-1.9.5-preview20141217/Git-1.9.5-preview20141217.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
         wget -P "$BIN" -c "http://bitbucket.org/lazka/quodlibet/downloads/pygi-aio-$PYGI_AIO_VER-setup.exe"
-        wget -P "$BIN" -c http://downloads.sourceforge.net/project/pyhook/pyhook/1.5.1/pyHook-1.5.1.win32-py2.7.exe
         wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.11/python-2.7.11.msi
         wget -P "$BIN" -c http://downloads.sourceforge.net/sevenzip/7z920.msi
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
@@ -228,7 +226,6 @@ function install_pydeps {
     wine $PYTHON -m pip install feedparser-5.1.3.tar.bz2
     wine $PYTHON -m pip install python-musicbrainzngs-0.5.tar.gz
     wine $PYTHON -m easy_install -Z py2exe-0.6.9.win32-py2.7.exe
-    wine $PYTHON -m easy_install -Z pyHook-1.5.1.win32-py2.7.exe
     )
 }
 
