@@ -11,6 +11,10 @@ will automatically raise WindowsError if a bad result is returned.
 For all other functions check the return status and raise ctypes.WinError()
 """
 
+import os
+if os.name != "nt":
+    raise ImportError
+
 import ctypes
 from ctypes import wintypes, cdll, windll, oledll
 
