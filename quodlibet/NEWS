@@ -25,6 +25,9 @@
   button. :bug:`1814`
 * Playlist browser: implement scroll to playing song :bug:`1426`
 * Playlist browser: Make display configurable :bug:`1780` (Nick Boultbee)
+* Playlist browser: Improve usability when creating a new playlist :bug:`1839`
+  (Nick Boultbee)
+* Playlist browser: Fix bug when deleting playlists :bug:`1882` (Nick Boultbee)
 * Remove rounded cover preference and make border radius depend on theme.
   :bug:`1864`
 * Search: make "ae" match "æ" and "ss" match "ß" etc.
@@ -39,7 +42,12 @@ Translations:
   * Updated Polish translation :pr:`1898` (Piotr Drąg)
 
 Plugins:
+  * Update icons for most plugins: more and (mostly) better chosen.
+    :bug:`1894` (Nick Boultbee)
+  * Make songsmenu plugins only enabled if it makes sense for them
+    :bug:`1858` (Nick Boultbee)
   * Remove cddb plugin; it's broken
+  * Remove Send To plugin, in favour of Browse Folders and k3b plugins.
   * New plugin: Pause on headphone unplug. :bug:`1753`
   * New events plugin: Shows synchronized lyrics from .lrc file with same name
     as the track :pr:`1723`
@@ -51,6 +59,9 @@ Plugins:
     releases. :bug:`829`
   * Make LyricsWindow an events plugin; Add zoom level preference :pr:`1709`
   * Add authentication for MPDServer plugin :pr:`1789`
+  * Custom Commands: add support for playlist name. :bug:`1685` (Nick Boultbee)
+  * Playlist Export: convert to being a playlist plugin as well as songsmenu.
+    (Nick Boultbee)
 
 OS X:
   * Add a simple dock menu
