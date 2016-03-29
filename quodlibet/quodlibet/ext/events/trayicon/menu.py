@@ -40,7 +40,10 @@ class IndicatorMenu(Gtk.Menu):
                     "application-name": app.name})
 
             def on_toggled(menuitem):
-                app.window.set_visible(menuitem.get_active())
+                if menuitem.get_active():
+                    app.present()
+                else:
+                    app.hide()
                 pconfig.set("window_visible", menuitem.get_active())
 
             self._toggle_id = show_item.connect("toggled", on_toggled)
