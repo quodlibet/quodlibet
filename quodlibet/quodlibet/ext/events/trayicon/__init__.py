@@ -11,7 +11,7 @@ from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import is_wayland, Icons
 from quodlibet.qltk.window import Window
-from quodlibet.util import is_unity, is_osx, is_kde, print_exc
+from quodlibet.util import is_unity, is_osx, is_plasma, print_exc
 
 from .prefs import Preferences
 from .util import pconfig
@@ -29,7 +29,7 @@ if is_osx():
 def get_indicator_impl():
     """Returns a BaseIndicator implementation depending on the environ"""
 
-    use_app_indicator = (is_unity() or is_wayland() or is_kde())
+    use_app_indicator = (is_unity() or is_wayland() or is_plasma())
 
     print_d("use app indicator: %s" % use_app_indicator)
     if not use_app_indicator:

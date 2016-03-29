@@ -12,7 +12,7 @@ from quodlibet import browsers
 from quodlibet import qltk
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
-from quodlibet.util import connect_obj, connect_destroy, is_kde
+from quodlibet.util import connect_obj, connect_destroy, is_plasma
 from quodlibet.qltk import Icons
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.information import Information
@@ -33,7 +33,7 @@ class IndicatorMenu(Gtk.Menu):
         self._app = app
         player = app.player
 
-        show_item_bottom = is_kde()
+        show_item_bottom = is_plasma()
         if add_show_item:
             show_item = Gtk.CheckMenuItem.new_with_mnemonic(
                 _("_Show %(application-name)s") % {
