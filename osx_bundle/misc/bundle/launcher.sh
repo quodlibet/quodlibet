@@ -1,6 +1,6 @@
 #!/bin/sh
 
-bundle="$(dirname "$(dirname "$(dirname "$0")")")"
+bundle=$(cd "$(dirname "$(dirname "$(dirname "$0")")")"; pwd)
 bundle_contents="$bundle"/Contents
 bundle_res="$bundle_contents"/Resources
 bundle_lib="$bundle_res"/lib
