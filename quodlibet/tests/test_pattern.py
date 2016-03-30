@@ -56,6 +56,10 @@ class TPattern(_TPattern):
     from quodlibet.formats import AudioFile
     AudioFile
 
+    def test_numeric(self):
+        pat = Pattern("<~#rating>")
+        self.assertEqual(pat.format(self.a), "0.50")
+
     def test_space(self):
         pat = Pattern("a ")
         self.assertEqual(pat.format(self.a), "a ")
@@ -426,6 +430,15 @@ class TRealTags(TestCase):
 
 
 class TPatternFormatList(_TPattern):
+
+    def test_numeric(self):
+        pat = Pattern("<~#rating>")
+        self.assertEqual(pat.format_list(self.a), {("0.50", "0.50")})
+
+    def test_empty(self):
+        pat = Pattern("<nopenope>")
+        self.assertEqual(pat.format_list(self.a), {("", "")})
+
     def test_same(s):
         pat = Pattern('<~basename> <title>')
         s.failUnlessEqual(pat.format_list(s.a),
