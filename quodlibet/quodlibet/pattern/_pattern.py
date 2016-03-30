@@ -244,9 +244,9 @@ class PatternFormatter(object):
         return value
 
     def format_list(self, song):
-        """Formats the output of a list pattern, generating all the combinations
-        always returns pairs of display and sort values.
-        The returned set will never be empty (e.g. for an empty pattern).
+        """Formats the output of a list pattern, generating all the
+        combinations always returns pairs of display and sort values. The
+        returned set will never be empty (e.g. for an empty pattern).
         """
         vals = [(u"", u"")]
         for val in self.__list_func(self.SongProxy(song, self._format)):

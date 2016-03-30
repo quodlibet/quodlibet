@@ -181,6 +181,28 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_2_1.list_sort("~#track"),
                              [('1', '1')])
 
+    def test_list_sort_noexist(self):
+        self.failUnlessEqual(bar_1_1.list_sort("nopenopenope"), [])
+
+    def test_list_separate_noexist(self):
+        self.failUnlessEqual(bar_1_1.list_separate("nopenopenope"), [])
+
+    def test_list_sort_length_diff(self):
+        s = AudioFile({"artist": "a\nb", "artistsort": "c"})
+        self.assertEqual(s.list_sort("artist"), [("a", "c"), ("b", "b")])
+
+        s = AudioFile({"artist": "a\nb", "artistsort": "c\nd\ne"})
+        self.assertEqual(s.list_sort("artist"), [("a", "c"), ("b", "d")])
+
+        s = AudioFile({"artistsort": "c\nd\ne"})
+        self.assertEqual(s.list_sort("artist"), [])
+
+        s = AudioFile({"artist": "a\nb"})
+        self.assertEqual(s.list_sort("artist"), [("a", "a"), ("b", "b")])
+
+        s = AudioFile({})
+        self.assertEqual(s.list_sort("artist"), [])
+
     def test_list_separate(self):
         self.failUnlessEqual(bar_1_1.list_separate("title"),
                              [("A song", "A song")])
