@@ -555,7 +555,10 @@ class AudioFile(dict, ImageContainer):
 
     def list_sort(self, key):
         """Like list but return display,sort pairs when appropriate
-        and work on all tags
+        and work on all tags.
+
+        In case no sort value exists the display one is returned. The sort
+        value is only an empty string if the display one is empty as well.
         """
 
         display = decode_value(key, self(key))
