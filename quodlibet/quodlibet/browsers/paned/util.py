@@ -49,7 +49,10 @@ class PaneConfig(object):
             tags = util.tagsplit(cat)
             has_markup = False
             if is_numeric(cat):
-                format = lambda song: [unicode(f_round(song(cat)))]
+
+                def format(song):
+                    v = unicode(f_round(song(cat)))
+                    return [(v, v)]
             else:
                 format = lambda song: song.list_separate(cat)
 

@@ -181,6 +181,13 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_2_1.list_sort("~#track"),
                              [('1', '1')])
 
+    def test_list_sort_empty_sort(self):
+        # we don't want to care about empty sort values, make sure we ignore
+        # them
+        s = AudioFile({"artist": "x\ny\nz", "artistsort": "c\n\nd"})
+        self.assertEqual(
+            s.list_sort("artist"), [("x", "c"), ("y", "y"), ("z", "d")])
+
     def test_list_sort_noexist(self):
         self.failUnlessEqual(bar_1_1.list_sort("nopenopenope"), [])
 

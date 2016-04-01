@@ -171,7 +171,7 @@ class TPaneConfig(TestCase):
         self.failUnlessEqual(p.title, "Last Played")
         self.failUnlessEqual(p.tags, {"~#lastplayed"})
 
-        self.failUnlessEqual(p.format(SONGS[0]), ["0"])
+        self.failUnlessEqual(p.format(SONGS[0]), [("0", "0")])
         self.failIf(p.has_markup)
 
     def test_tied(self):
