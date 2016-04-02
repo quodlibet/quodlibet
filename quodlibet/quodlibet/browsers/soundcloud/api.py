@@ -104,6 +104,11 @@ class SoundcloudApiClient(RestApi):
         # redirect user to authorize URL
         website(self._authorize_url)
 
+    def log_out(self):
+        print_d("Destroying access token...")
+        self.access_token = None
+        self.online = False
+
     def get_token(self, code):
         print_d("Getting access token...")
         options = {
