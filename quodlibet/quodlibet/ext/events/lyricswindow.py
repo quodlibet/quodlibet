@@ -18,7 +18,6 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import (PluginImportException, PluginConfig, ConfProp,
     BoolConfProp, IntConfProp, FloatConfProp)
 
-import gi
 try:
     gi_require_versions("WebKit2", ["4.0", "3.0"])
 except ValueError as e:
