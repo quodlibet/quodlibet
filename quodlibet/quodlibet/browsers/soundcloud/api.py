@@ -218,7 +218,7 @@ class SoundcloudApiClient(RestApi):
             song.update(title=r.title,
                         artist=r.user["username"],
                         website=r.permalink_url,
-                        soundcloud_track_id = r.id,
+                        soundcloud_track_id=r.id,
                         genre="\n".join(r.genre and r.genre.split(",") or []))
             if dl:
                 song.update(format=r.original_format)
