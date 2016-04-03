@@ -4,20 +4,25 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
+
 from quodlibet import print_d, print_w
 from quodlibet.config import RATINGS
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.library.libraries import SongLibrary
 from quodlibet.query import Query
+from quodlibet.util import cached_property
 
 
 class SoundcloudLibrary(SongLibrary):
-    STAR = ["artist", "title", "genre", "comment"]
+    STAR = ["artist", "title", "genre", "tags"]
 
-    def __init__(self, client):
+    def __init__(self, client, player=None):
         super(SoundcloudLibrary, self).__init__("Soundcloud")
         self.client = client
         self.client.connect('songs-received', self._on_songs_received)
+        self.client.connect('comments-received', self._on_comments_received)
+        if player:
+            player.connect('song-started', self.__song_started)
 
     def query(self, text, sort=None, star=STAR):
         return Query(text).filter(self._contents.values())
@@ -35,6 +40,26 @@ class SoundcloudLibrary(SongLibrary):
         new = len(self.add(songs))
         print_d("Got %d songs (%d new)." % (len(songs), new))
 
+    def _on_comments_received(self, client, track_id, comments):
+        def bookmark_for(com):
+            text = "\"%s\" --%s" % (com['body'], com['user']['username'])
+            return int((com.get('timestamp') or 0) / 1000.0), text
+
+        song = self.song_by_track_id(track_id)
+        song.bookmarks = [bookmark_for(c) for c in comments]
+
+    def song_by_track_id(self, track_id):
+        for song in self.values():
+            if song.track_id == track_id:
+                return song
+        raise KeyError("No track with id %s. Do have %s"
+                       % (track_id, [s.track_id for s in self.values()]))
+
+    def __song_started(self, player, song):
+        if isinstance(song, SoundcloudFile):
+            print_d("Getting comments for %s (%s)" % (song("title"), song.key))
+            self.client.get_comments(song.track_id)
+
 
 class SoundcloudFile(RemoteFile):
     format = "Remote Soundcloud File"
@@ -48,9 +73,13 @@ class SoundcloudFile(RemoteFile):
     def set_image(self, image):
         raise TypeError("Can't change images on Soundcloud")
 
-    @property
+    @cached_property
     def track_id(self):
-        return self["soundcloud_track_id"]
+        return int(self["soundcloud_track_id"])
+
+    @cached_property
+    def key(self):
+        return "track-%s" % (self.track_id,)
 
     def can_change(self, k=None):
         if k is None:

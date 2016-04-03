@@ -12,8 +12,7 @@ from urllib import urlencode
 
 from quodlibet import print_d, util, config
 from quodlibet.browsers.soundcloud.library import SoundcloudFile
-from quodlibet.browsers.soundcloud.util import EPOCH, DEFAULT_BITRATE, \
-    Wrapper, json_callback
+from quodlibet.browsers.soundcloud.util import *
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w
 from quodlibet.util.http import download_json, download
@@ -81,6 +80,8 @@ class SoundcloudApiClient(RestApi):
         'fetch-success': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'fetch-failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'songs-received': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        'comments-received': (GObject.SignalFlags.RUN_LAST, None,
+                              (int, object,)),
         'authenticated': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
@@ -133,15 +134,32 @@ class SoundcloudApiClient(RestApi):
         self.username = json['username']
         self.emit('authenticated', Wrapper(json))
 
-    def get_tracks(self, query):
+    def get_tracks(self, query, limit=100, min_length=120, max_length=10000):
         params = {
-            "q": query,
-            "limit": 100,
-            "duration[from]": 100 * 1000,
-            "duration[to]": 10000 * 1000
+            "q": query or "",
+            "limit": clamp(limit, 10, 200),
+            "duration[from]": clamp(min_length, 10, 10000) * 1000,
+            "duration[to]": clamp(max_length, 10, 50000) * 1000
         }
         print_d("Getting tracks: params=%s" % params)
         self._get('/tracks', self._on_track_data, **params)
+
+    @json_callback
+    def _on_track_data(self, json):
+        songs = [self._audiofile_for(r) for r in json]
+        self.emit('songs-received', songs)
+
+    def get_comments(self, track_id):
+        self._get('/tracks/%s/comments' % track_id, self._receive_comments,
+                  limit=200)
+
+    @json_callback
+    def _receive_comments(self, json):
+        print_d("Comments for %s" % json)
+        if json and len(json):
+            # Should all be the same track...
+            track_id = json[0]["track_id"]
+            self.emit('comments-received', track_id, json)
 
     def save_token(self):
         if self.access_token:
@@ -160,11 +178,6 @@ class SoundcloudApiClient(RestApi):
     @json_callback
     def _on_favourited(self, json):
         print_d("Successfully updated favourite")
-
-    @json_callback
-    def _on_track_data(self, json):
-        songs = [self._audiofile_for(r) for r in json]
-        self.emit('songs-received', songs)
 
     def _audiofile_for(self, response):
         r = Wrapper(response)
@@ -204,16 +217,17 @@ class SoundcloudApiClient(RestApi):
         try:
             song.update(title=r.title,
                         artist=r.user["username"],
-                        comment=r.description,
                         website=r.permalink_url,
+                        soundcloud_track_id = r.id,
                         genre="\n".join(r.genre and r.genre.split(",") or []))
             if dl:
                 song.update(format=r.original_format)
                 song["~#bitrate"] = r.original_content_size * 8 / r.duration
             else:
                 song["~#bitrate"] = DEFAULT_BITRATE
+            if r.description:
+                song["comment"] = r.description
             song["~#length"] = int(r.duration) / 1000
-            song["soundcloud_track_id"] = r.id
             art_url = r.artwork_url
             if art_url:
                 song["artwork_url"] = (
@@ -226,7 +240,7 @@ class SoundcloudApiClient(RestApi):
             plays = d.get("user_playback_count", 0)
             if plays:
                 song["~#playcount"] = plays
-            print_d("Got song: %s" % song)
+            # print_d("Got song: %s" % song)
         except Exception as e:
             print_w("Couldn't parse a song from %s (%r). "
                     "Had these tags:\n  %s" % (r, e, song.keys()))

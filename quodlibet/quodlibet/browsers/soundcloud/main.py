@@ -62,7 +62,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         except AttributeError:
             pass
         klass.api_client = SoundcloudApiClient(token)
-        klass.library = SoundcloudLibrary(klass.api_client)
+        klass.library = SoundcloudLibrary(klass.api_client, app.player)
 
     @classmethod
     def _destroy(klass):

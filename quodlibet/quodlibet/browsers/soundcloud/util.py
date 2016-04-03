@@ -73,3 +73,8 @@ def json_callback(wrapped):
         return wrapped(self, json)
 
     return _callback
+
+
+def clamp(val, low, high):
+    intval = int(val or 0)
+    return max(low, min(high, intval))
