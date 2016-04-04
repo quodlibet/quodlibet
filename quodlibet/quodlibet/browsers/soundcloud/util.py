@@ -18,11 +18,13 @@ from quodlibet.query._match import Inter, Tag, Union, Numcmp, NumexprTag, \
     NumexprNumber
 
 from quodlibet import print_d
+from quodlibet.util.path import normalize_path
 
 DEFAULT_BITRATE = 128
 EPOCH = datetime(1970, 1, 1)
 SITE_URL = "http://soundcloud.com"
-IMAGE_DIR = 'quodlibet/images/branding/soundcloud'
+IMAGE_DIR = normalize_path(
+    path.join(path.dirname(__file__), '../../images/branding/soundcloud'))
 
 
 def _local_image(filename):
@@ -30,7 +32,7 @@ def _local_image(filename):
     Get a local branding image from disk
     TODO: load these from the web (and cache)
     """
-    return Gtk.Image.new_from_file(os.path.join(IMAGE_DIR, filename))
+    return Gtk.Image.new_from_file(path.join(IMAGE_DIR, filename))
 
 
 LOGO_IMAGE_BLACK = _local_image('soundcloud-logo-black-104x16.png')
