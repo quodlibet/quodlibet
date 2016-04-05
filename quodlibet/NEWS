@@ -1,3 +1,16 @@
+3.6.1 (2016-04-05) - GOOD LUCK OUT THERE
+----------------------------------------
+
+* Tray icon: Don't use the app indicator for Ubuntu GNOME and KDE 4.
+  :bug:`1904`
+* Tray icon: Present the window when showing the window through the app
+  indicator menu item. :bug:`1904`
+* Paned browser: Fix crash with numeric tags in patterns :bug:`1903`
+* Paned browser: Fix missing "Unknown" entry for patterns
+* OS X: Fix TLS for real
+* Lyrics window: Also support webkitgtk2 3.0 (for Ubuntu 14.04)
+
+
 3.6.0 (2016-03-24) - It is altogether fitting and proper that we should do this
 -------------------------------------------------------------------------------
 
