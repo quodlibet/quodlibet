@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-24 21:24+0100\n"
+"POT-Creation-Date: 2016-04-05 20:10+0200\n"
 "PO-Revision-Date: 2016-03-17 01:01+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
@@ -1376,7 +1376,7 @@ msgid "_Cover size:"
 msgstr "Rozmiar _okładki:"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:176
-#: ../quodlibet/ext/events/lyricswindow.py:314
+#: ../quodlibet/ext/events/lyricswindow.py:315
 msgid "Display"
 msgstr "Wyświetlanie"
 
@@ -1673,45 +1673,45 @@ msgstr "JEP-118"
 msgid "Outputs a Jabber User Tunes file to ~/.quodlibet/jabber."
 msgstr "Wypisuje plik „Jabber User Tunes” do ~/.quodlibet/jabber."
 
-#: ../quodlibet/ext/events/lyricswindow.py:179
+#: ../quodlibet/ext/events/lyricswindow.py:180
 msgid "No active song"
 msgstr "Brak aktywnego utworu"
 
-#: ../quodlibet/ext/events/lyricswindow.py:195
+#: ../quodlibet/ext/events/lyricswindow.py:196
 msgid "No lyrics found"
 msgstr "Nie odnaleziono tekstu utworu"
 
-#: ../quodlibet/ext/events/lyricswindow.py:207
+#: ../quodlibet/ext/events/lyricswindow.py:208
 msgid "Lyrics:"
 msgstr "Tekst utworu:"
 
-#: ../quodlibet/ext/events/lyricswindow.py:264
+#: ../quodlibet/ext/events/lyricswindow.py:265
 msgid "_Zoom level:"
 msgstr "_Poziom powiększenia:"
 
-#: ../quodlibet/ext/events/lyricswindow.py:282
+#: ../quodlibet/ext/events/lyricswindow.py:283
 msgid "URL:"
 msgstr "Adres URL:"
 
-#: ../quodlibet/ext/events/lyricswindow.py:287
+#: ../quodlibet/ext/events/lyricswindow.py:288
 msgid "Revert to default"
 msgstr "Przywróć domyślne"
 
-#: ../quodlibet/ext/events/lyricswindow.py:302
+#: ../quodlibet/ext/events/lyricswindow.py:303
 msgid "Search via above URL if the lyrics couldn't be found in LyricsWikia."
 msgstr ""
 "Wyszukiwanie przez powyższy adres URL, jeśli nie można znaleźć tekstu utworu "
 "w serwisie LyricsWikia."
 
-#: ../quodlibet/ext/events/lyricswindow.py:319
+#: ../quodlibet/ext/events/lyricswindow.py:320
 msgid "Alternate search"
 msgstr "Alternatywne wyszukiwanie"
 
-#: ../quodlibet/ext/events/lyricswindow.py:327
+#: ../quodlibet/ext/events/lyricswindow.py:328
 msgid "Lyrics Window"
 msgstr "Okno tekstu utworu"
 
-#: ../quodlibet/ext/events/lyricswindow.py:328
+#: ../quodlibet/ext/events/lyricswindow.py:329
 msgid "Shows a window containing lyrics of the playing song."
 msgstr "Wyświetla okno zawierające tekst odtwarzanego utworu."
 
@@ -2242,60 +2242,60 @@ msgstr "Kontroluje program Quod Libet z obszaru powiadamiania."
 msgid "_Show %(application-name)s"
 msgstr "_Wyświetlanie programu %(application-name)s"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:56
+#: ../quodlibet/ext/events/trayicon/menu.py:59
 #: ../quodlibet/qltk/quodlibetwindow.py:178
 #: ../quodlibet/qltk/quodlibetwindow.py:1054
 #: ../quodlibet/qltk/quodlibetwindow.py:1258
 msgid "_Play"
 msgstr "_Odtwórz"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:59
+#: ../quodlibet/ext/events/trayicon/menu.py:62
 #: ../quodlibet/qltk/quodlibetwindow.py:180
 #: ../quodlibet/qltk/quodlibetwindow.py:1260 ../quodlibet/qltk/wlw.py:48
 msgid "P_ause"
 msgstr "_Wstrzymaj"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:64
+#: ../quodlibet/ext/events/trayicon/menu.py:67
 #: ../quodlibet/qltk/quodlibetwindow.py:185
 #: ../quodlibet/qltk/quodlibetwindow.py:1049
 msgid "Pre_vious"
 msgstr "_Poprzedni"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:67
+#: ../quodlibet/ext/events/trayicon/menu.py:70
 #: ../quodlibet/qltk/quodlibetwindow.py:189
 #: ../quodlibet/qltk/quodlibetwindow.py:1059
 msgid "_Next"
 msgstr "_Następny"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:72
+#: ../quodlibet/ext/events/trayicon/menu.py:75
 #: ../quodlibet/qltk/playorder.py:135
 msgid "_Shuffle"
 msgstr "_Losowo"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:77
+#: ../quodlibet/ext/events/trayicon/menu.py:80
 msgid "_Repeat"
 msgstr "Powta_rzanie"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:82
+#: ../quodlibet/ext/events/trayicon/menu.py:85
 msgid "Stop _After This Song"
 msgstr "_Zatrzymanie po tym utworze"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:88
+#: ../quodlibet/ext/events/trayicon/menu.py:91
 #: ../quodlibet/qltk/quodlibetwindow.py:1006
 msgid "Open _Browser"
 msgstr "Otwórz p_rzeglądarkę"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:101
+#: ../quodlibet/ext/events/trayicon/menu.py:104
 #: ../quodlibet/qltk/quodlibetwindow.py:1028 ../quodlibet/qltk/songsmenu.py:398
 msgid "Edit _Tags"
 msgstr "Modyfikuj _etykiety"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:110
+#: ../quodlibet/ext/events/trayicon/menu.py:113
 #: ../quodlibet/qltk/quodlibetwindow.py:1033 ../quodlibet/qltk/songsmenu.py:411
 msgid "_Information"
 msgstr "_Informacje"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:126
+#: ../quodlibet/ext/events/trayicon/menu.py:129
 #: ../quodlibet/qltk/debugwindow.py:160
 #: ../quodlibet/qltk/quodlibetwindow.py:1020
 msgid "_Quit"

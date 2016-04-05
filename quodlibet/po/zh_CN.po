@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-24 21:24+0100\n"
+"POT-Creation-Date: 2016-04-05 20:10+0200\n"
 "PO-Revision-Date: 2013-07-20 22:33+0100\n"
 "Last-Translator: Emfox Zhou <EmfoxZhou@gmail.com>\n"
 "Language-Team: Emfox Zhou <EmfoxZhou@gmail.com>\n"
@@ -1391,7 +1391,7 @@ msgid "_Cover size:"
 msgstr "总大小："
 
 #: ../quodlibet/ext/events/animosd/prefs.py:176
-#: ../quodlibet/ext/events/lyricswindow.py:314
+#: ../quodlibet/ext/events/lyricswindow.py:315
 #, fuzzy
 msgid "Display"
 msgstr "编辑显示"
@@ -1681,48 +1681,48 @@ msgstr ""
 msgid "Outputs a Jabber User Tunes file to ~/.quodlibet/jabber."
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:179
+#: ../quodlibet/ext/events/lyricswindow.py:180
 #, fuzzy
 msgid "No active song"
 msgstr "无法保存曲目"
 
-#: ../quodlibet/ext/events/lyricswindow.py:195
+#: ../quodlibet/ext/events/lyricswindow.py:196
 #, fuzzy
 msgid "No lyrics found"
 msgstr "没有找到插件。"
 
-#: ../quodlibet/ext/events/lyricswindow.py:207
+#: ../quodlibet/ext/events/lyricswindow.py:208
 #, fuzzy
 msgid "Lyrics:"
 msgstr "歌词"
 
-#: ../quodlibet/ext/events/lyricswindow.py:264
+#: ../quodlibet/ext/events/lyricswindow.py:265
 msgid "_Zoom level:"
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:282
+#: ../quodlibet/ext/events/lyricswindow.py:283
 msgid "URL:"
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:287
+#: ../quodlibet/ext/events/lyricswindow.py:288
 msgid "Revert to default"
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:302
+#: ../quodlibet/ext/events/lyricswindow.py:303
 msgid "Search via above URL if the lyrics couldn't be found in LyricsWikia."
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:319
+#: ../quodlibet/ext/events/lyricswindow.py:320
 #, fuzzy
 msgid "Alternate search"
 msgstr "清空搜索"
 
-#: ../quodlibet/ext/events/lyricswindow.py:327
+#: ../quodlibet/ext/events/lyricswindow.py:328
 #, fuzzy
 msgid "Lyrics Window"
 msgstr "歌词"
 
-#: ../quodlibet/ext/events/lyricswindow.py:328
+#: ../quodlibet/ext/events/lyricswindow.py:329
 msgid "Shows a window containing lyrics of the playing song."
 msgstr ""
 
@@ -2240,7 +2240,7 @@ msgstr ""
 msgid "_Show %(application-name)s"
 msgstr ""
 
-#: ../quodlibet/ext/events/trayicon/menu.py:56
+#: ../quodlibet/ext/events/trayicon/menu.py:59
 #: ../quodlibet/qltk/quodlibetwindow.py:178
 #: ../quodlibet/qltk/quodlibetwindow.py:1054
 #: ../quodlibet/qltk/quodlibetwindow.py:1258
@@ -2248,57 +2248,57 @@ msgstr ""
 msgid "_Play"
 msgstr "播放列表(_P)"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:59
+#: ../quodlibet/ext/events/trayicon/menu.py:62
 #: ../quodlibet/qltk/quodlibetwindow.py:180
 #: ../quodlibet/qltk/quodlibetwindow.py:1260 ../quodlibet/qltk/wlw.py:48
 #, fuzzy
 msgid "P_ause"
 msgstr "播放器"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:64
+#: ../quodlibet/ext/events/trayicon/menu.py:67
 #: ../quodlibet/qltk/quodlibetwindow.py:185
 #: ../quodlibet/qltk/quodlibetwindow.py:1049
 #, fuzzy
 msgid "Pre_vious"
 msgstr "预览(_P)"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:67
+#: ../quodlibet/ext/events/trayicon/menu.py:70
 #: ../quodlibet/qltk/quodlibetwindow.py:189
 #: ../quodlibet/qltk/quodlibetwindow.py:1059
 msgid "_Next"
 msgstr ""
 
-#: ../quodlibet/ext/events/trayicon/menu.py:72
+#: ../quodlibet/ext/events/trayicon/menu.py:75
 #: ../quodlibet/qltk/playorder.py:135
 msgid "_Shuffle"
 msgstr ""
 
-#: ../quodlibet/ext/events/trayicon/menu.py:77
+#: ../quodlibet/ext/events/trayicon/menu.py:80
 msgid "_Repeat"
 msgstr "重复(_R)"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:82
+#: ../quodlibet/ext/events/trayicon/menu.py:85
 #, fuzzy
 msgid "Stop _After This Song"
 msgstr "这首曲目放完后就停止"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:88
+#: ../quodlibet/ext/events/trayicon/menu.py:91
 #: ../quodlibet/qltk/quodlibetwindow.py:1006
 #, fuzzy
 msgid "Open _Browser"
 msgstr "打开新的浏览器"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:101
+#: ../quodlibet/ext/events/trayicon/menu.py:104
 #: ../quodlibet/qltk/quodlibetwindow.py:1028 ../quodlibet/qltk/songsmenu.py:398
 msgid "Edit _Tags"
 msgstr "编辑标签(_T)"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:110
+#: ../quodlibet/ext/events/trayicon/menu.py:113
 #: ../quodlibet/qltk/quodlibetwindow.py:1033 ../quodlibet/qltk/songsmenu.py:411
 msgid "_Information"
 msgstr "信息(_I)"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:126
+#: ../quodlibet/ext/events/trayicon/menu.py:129
 #: ../quodlibet/qltk/debugwindow.py:160
 #: ../quodlibet/qltk/quodlibetwindow.py:1020
 msgid "_Quit"

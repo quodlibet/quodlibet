@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-24 21:24+0100\n"
+"POT-Creation-Date: 2016-04-05 20:10+0200\n"
 "PO-Revision-Date: 2010-03-30 10:12+0300\n"
 "Last-Translator: Einars Sprugis <einars8@gmail.com>\n"
 "Language-Team: Latvian <locale@laka.lv>\n"
@@ -1403,7 +1403,7 @@ msgid "_Cover size:"
 msgstr "Kopējais izmērs:"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:176
-#: ../quodlibet/ext/events/lyricswindow.py:314
+#: ../quodlibet/ext/events/lyricswindow.py:315
 #, fuzzy
 msgid "Display"
 msgstr "Rediģēt rādāmo"
@@ -1697,48 +1697,48 @@ msgstr ""
 msgid "Outputs a Jabber User Tunes file to ~/.quodlibet/jabber."
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:179
+#: ../quodlibet/ext/events/lyricswindow.py:180
 #, fuzzy
 msgid "No active song"
 msgstr "Neizdevās saglabāt dziesmu"
 
-#: ../quodlibet/ext/events/lyricswindow.py:195
+#: ../quodlibet/ext/events/lyricswindow.py:196
 #, fuzzy
 msgid "No lyrics found"
 msgstr "Nav atrasts neviens spraudnis."
 
-#: ../quodlibet/ext/events/lyricswindow.py:207
+#: ../quodlibet/ext/events/lyricswindow.py:208
 #, fuzzy
 msgid "Lyrics:"
 msgstr "Dziesmas vārdi"
 
-#: ../quodlibet/ext/events/lyricswindow.py:264
+#: ../quodlibet/ext/events/lyricswindow.py:265
 msgid "_Zoom level:"
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:282
+#: ../quodlibet/ext/events/lyricswindow.py:283
 msgid "URL:"
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:287
+#: ../quodlibet/ext/events/lyricswindow.py:288
 msgid "Revert to default"
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:302
+#: ../quodlibet/ext/events/lyricswindow.py:303
 msgid "Search via above URL if the lyrics couldn't be found in LyricsWikia."
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:319
+#: ../quodlibet/ext/events/lyricswindow.py:320
 #, fuzzy
 msgid "Alternate search"
 msgstr "Notīrīt meklējumu lauku"
 
-#: ../quodlibet/ext/events/lyricswindow.py:327
+#: ../quodlibet/ext/events/lyricswindow.py:328
 #, fuzzy
 msgid "Lyrics Window"
 msgstr "Dziesmas vārdi"
 
-#: ../quodlibet/ext/events/lyricswindow.py:328
+#: ../quodlibet/ext/events/lyricswindow.py:329
 msgid "Shows a window containing lyrics of the playing song."
 msgstr ""
 
@@ -2257,7 +2257,7 @@ msgstr ""
 msgid "_Show %(application-name)s"
 msgstr ""
 
-#: ../quodlibet/ext/events/trayicon/menu.py:56
+#: ../quodlibet/ext/events/trayicon/menu.py:59
 #: ../quodlibet/qltk/quodlibetwindow.py:178
 #: ../quodlibet/qltk/quodlibetwindow.py:1054
 #: ../quodlibet/qltk/quodlibetwindow.py:1258
@@ -2265,57 +2265,57 @@ msgstr ""
 msgid "_Play"
 msgstr "Re_pertuāri"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:59
+#: ../quodlibet/ext/events/trayicon/menu.py:62
 #: ../quodlibet/qltk/quodlibetwindow.py:180
 #: ../quodlibet/qltk/quodlibetwindow.py:1260 ../quodlibet/qltk/wlw.py:48
 #, fuzzy
 msgid "P_ause"
 msgstr "Atskaņotājs"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:64
+#: ../quodlibet/ext/events/trayicon/menu.py:67
 #: ../quodlibet/qltk/quodlibetwindow.py:185
 #: ../quodlibet/qltk/quodlibetwindow.py:1049
 #, fuzzy
 msgid "Pre_vious"
 msgstr "_Priekšskats"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:67
+#: ../quodlibet/ext/events/trayicon/menu.py:70
 #: ../quodlibet/qltk/quodlibetwindow.py:189
 #: ../quodlibet/qltk/quodlibetwindow.py:1059
 msgid "_Next"
 msgstr ""
 
-#: ../quodlibet/ext/events/trayicon/menu.py:72
+#: ../quodlibet/ext/events/trayicon/menu.py:75
 #: ../quodlibet/qltk/playorder.py:135
 msgid "_Shuffle"
 msgstr "_Sajaukt"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:77
+#: ../quodlibet/ext/events/trayicon/menu.py:80
 msgid "_Repeat"
 msgstr "_Atkārtot"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:82
+#: ../quodlibet/ext/events/trayicon/menu.py:85
 #, fuzzy
 msgid "Stop _After This Song"
 msgstr "Apstāties pēc šīs dziesmas"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:88
+#: ../quodlibet/ext/events/trayicon/menu.py:91
 #: ../quodlibet/qltk/quodlibetwindow.py:1006
 #, fuzzy
 msgid "Open _Browser"
 msgstr "Atvērt jaunu pārlūku"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:101
+#: ../quodlibet/ext/events/trayicon/menu.py:104
 #: ../quodlibet/qltk/quodlibetwindow.py:1028 ../quodlibet/qltk/songsmenu.py:398
 msgid "Edit _Tags"
 msgstr "Rediģēt _tagus"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:110
+#: ../quodlibet/ext/events/trayicon/menu.py:113
 #: ../quodlibet/qltk/quodlibetwindow.py:1033 ../quodlibet/qltk/songsmenu.py:411
 msgid "_Information"
 msgstr "_Informācija"
 
-#: ../quodlibet/ext/events/trayicon/menu.py:126
+#: ../quodlibet/ext/events/trayicon/menu.py:129
 #: ../quodlibet/qltk/debugwindow.py:160
 #: ../quodlibet/qltk/quodlibetwindow.py:1020
 msgid "_Quit"
