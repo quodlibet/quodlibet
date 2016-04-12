@@ -5,8 +5,10 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-# Things that are more or less direct wrappers around GTK widgets to
-# ease constructors.
+"""
+Things that are more or less direct wrappers around GTK widgets to
+ease constructors.
+"""
 
 from gi.repository import Gtk, GObject, GLib, Gio
 

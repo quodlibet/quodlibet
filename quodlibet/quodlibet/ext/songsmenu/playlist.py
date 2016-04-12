@@ -5,10 +5,9 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-#
+
 # The Unofficial M3U and PLS Specification (Winamp):
 # http://forums.winamp.com/showthread.php?threadid=65772
-#
 
 import os
 

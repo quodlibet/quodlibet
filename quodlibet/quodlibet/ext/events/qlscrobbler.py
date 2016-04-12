@@ -7,7 +7,10 @@
 #                  Nicholas J. Michalek <djphazer@gmail.com>,
 #                  Steven Robertson <steven@strobe.cc>
 #                  Nick Boultbee <nick.boultbee@gmail.com>
-# Licensed under GPLv2. See Quod Libet's COPYING for more information.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
 
 from httplib import HTTPException
 import cPickle as pickle
