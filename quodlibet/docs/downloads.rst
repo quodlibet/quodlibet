@@ -183,7 +183,7 @@ Quod Libet 3.4.1 (portable) quodlibet-3.4.1-portable.exe_  `SHA256 <quodlibet-3.
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet/downloads/>`__.
 
-There is also an SDK for developing under Windows: `quodlibet-win-sdk.tar.gz <https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-win-sdk.tar.gz>`__
+There is also an SDK for developing under Windows: `quodlibet-3.6-win-sdk.tar.xz <https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.6-win-sdk.tar.xz>`__
 
 
 .. _macosx:
