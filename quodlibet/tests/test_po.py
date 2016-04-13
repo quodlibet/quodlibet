@@ -223,7 +223,8 @@ class POMixin(object):
         if not iscommand("msgfmt"):
             return
 
-        self.failIf(os.system("msgfmt -c po/%s.po > /dev/null" % self.lang))
+        po_path = os.path.join(PODIR, "%s.po" % self.lang)
+        self.failIf(os.system("msgfmt -c %s > /dev/null" % po_path))
         try:
             os.unlink("messages.mo")
         except OSError:

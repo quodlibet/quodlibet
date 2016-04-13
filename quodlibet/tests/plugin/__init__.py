@@ -10,7 +10,7 @@ from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.plugins import list_plugins, Plugin, PluginImportException
 from quodlibet.compat import PY3, iteritems
 
-from tests import TestCase, init_fake_app, destroy_fake_app, skip
+from tests import TestCase, init_fake_app, destroy_fake_app
 
 
 init_fake_app, destroy_fake_app

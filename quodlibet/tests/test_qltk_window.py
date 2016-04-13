@@ -61,10 +61,12 @@ class TWindows(TestCase):
         w = Window(title="foo")
         w.use_header_bar()
         self.assertEqual(w.get_title(), "foo")
+        w.destroy()
 
         w = Window()
         w.use_header_bar()
         self.assertEqual(w.get_title(), None)
+        w.destroy()
 
 
 class TDialog(TestCase):

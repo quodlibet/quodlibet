@@ -3,7 +3,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import mkstemp, TestCase
+from tests import mkstemp, TestCase, DATA_DIR
 
 import os
 
@@ -15,7 +15,7 @@ from shutil import copyfileobj
 
 class TestMetaDataBase(TestCase):
 
-    base = 'tests/data/silence-44-s'
+    base = os.path.join(DATA_DIR, "silence-44-s")
 
     def setUp(self):
         """Copy the base silent file to a temp name/location and load it"""
@@ -37,7 +37,7 @@ class TestMetaDataBase(TestCase):
         config.quit()
 
 
-class TestMetaDataMixin(object):
+class _TestMetaDataMixin(object):
 
     def test_base_data(self):
         self.failUnlessEqual(self.song['artist'], 'piman\njzig')
@@ -94,22 +94,21 @@ tags = ['album', 'arranger', 'artist', 'author', 'comment', 'composer',
 
 for ext in formats._infos.keys():
     if os.path.exists(TestMetaDataBase.base + ext):
-
         extra_tests = {}
         for tag in tags:
             if tag in ['artist', 'date', 'genre']:
                 continue
 
-            def test_tag(self, tag=tag):
+            def _test_tag(self, tag=tag):
                 self._test_tag(tag, [u'a'])
-            extra_tests['test_tag_' + tag] = test_tag
+            extra_tests['test_tag_' + tag] = _test_tag
 
-            def test_tags(self, tag=tag):
+            def _test_tags(self, tag=tag):
                 self._test_tag(tag, [u'b\nc'])
-            extra_tests['test_tags_' + tag] = test_tags
+            extra_tests['test_tags_' + tag] = _test_tags
 
         name = 'MetaData' + ext
         testcase = type(
-            name, (TestMetaDataBase, TestMetaDataMixin), extra_tests)
+            name, (TestMetaDataBase, _TestMetaDataMixin), extra_tests)
         testcase.ext = ext
         globals()[name] = testcase
