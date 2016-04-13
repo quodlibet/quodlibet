@@ -13,7 +13,7 @@ from quodlibet.util import is_osx, is_windows
 from quodlibet.compat import urlopen
 
 
-@skipUnless(is_osx() or is_windows())
+@skipUnless(is_osx() or is_windows(), "not on linux")
 class Thttps(TestCase):
     """For Windows/OSX to check if we can create a TLS connection
     using both openssl and whatever backend soup/gio uses.

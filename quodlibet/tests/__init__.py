@@ -37,36 +37,9 @@ class AbstractTestCase(TestCase):
     """If a class is a direct subclass of this one it gets skipped"""
 
 
-skipped = []
-skipped_reason = {}
-skipped_warn = set()
-
-
-def skip(cls, reason=None, warn=True):
-    assert inspect.isclass(cls)
-
-    skipped.append(cls)
-    if reason:
-        skipped_reason[cls] = reason
-    if warn:
-        skipped_warn.add(cls)
-
-    cls = unittest.skip(cls)
-    return cls
-
-
-def skipUnless(value, *args, **kwargs):
-    def dec(cls):
-        assert inspect.isclass(cls)
-
-        if value:
-            return cls
-        return skip(cls, *args, **kwargs)
-    return dec
-
-
-def skipIf(value, *args, **kwargs):
-    return skipUnless(not value, *args, **kwargs)
+skip = unittest.skip
+skipUnless = unittest.skipUnless
+skipIf = unittest.skipIf
 
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data")
@@ -299,7 +272,7 @@ def unit(run=[], filter_func=None, main=False, subdirs=None,
                     inspect.isclass(value) and issubclass(value, TestCase):
                 if AbstractTestCase in value.__bases__:
                     abstract.append(value)
-                elif value not in skipped:
+                else:
                     suites.append(value)
 
     if main:
@@ -319,25 +292,6 @@ def unit(run=[], filter_func=None, main=False, subdirs=None,
                 mod = __import__(
                     ".".join([__name__, subdir, name[:-3]]), {}, {}, [])
                 discover_tests(getattr(getattr(mod, subdir), name[:-3]))
-
-    # check if each abstract class is actually used (also by skipped ones)
-    unused_abstract = set(abstract)
-    for case in suites:
-        unused_abstract -= set(case.__mro__)
-    for case in skipped:
-        unused_abstract -= set(case.__mro__)
-    if unused_abstract:
-        raise Exception("The following abstract test cases have no "
-                        "implementation: %r" % list(unused_abstract))
-
-    for case in skipped:
-        # don't warn for tests we won't run anyway
-        if run and case not in run:
-            continue
-        name = "%s.%s" % (case.__module__, case.__name__)
-        reason = skipped_reason.get(case, "??")
-        if case in skipped_warn:
-            print_w("Skipped test: %s (%s)" % (name, reason))
 
     import quodlibet.config
 

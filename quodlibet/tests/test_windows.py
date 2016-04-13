@@ -15,7 +15,7 @@ from quodlibet.util import is_wine
 from quodlibet import windows
 
 
-@skipUnless(os.name == "nt", "Wrong platform", warn=False)
+@skipUnless(os.name == "nt", "Wrong platform")
 class TWindows(TestCase):
 
     def test_dir_funcs(self):
@@ -75,7 +75,7 @@ class TWindows(TestCase):
         del env["FOO"]
 
 
-@skipUnless(os.name == "nt", "Wrong platform", warn=False)
+@skipUnless(os.name == "nt", "Wrong platform")
 class Tget_win32_unicode_argv(TestCase):
 
     def test_main(self):

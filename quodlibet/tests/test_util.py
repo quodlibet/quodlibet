@@ -747,7 +747,7 @@ class Tescape_filename(TestCase):
         self.assertTrue(is_fsnative(result))
 
 
-@skipIf(is_win)
+@skipIf(is_win, "not on Windows")
 class Tload_library(TestCase):
 
     def test_libc(self):
