@@ -3,7 +3,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import mkstemp, AbstractTestCase
+from tests import mkstemp, TestCase
 
 import os
 
@@ -13,11 +13,13 @@ from quodlibet import config
 from shutil import copyfileobj
 
 
-class TestMetaData(AbstractTestCase):
+class TestMetaDataBase(TestCase):
+
     base = 'tests/data/silence-44-s'
 
     def setUp(self):
         """Copy the base silent file to a temp name/location and load it"""
+
         config.init()
         fd, self.filename = mkstemp(suffix=self.ext, text=False)
         dst = os.fdopen(fd, 'w')
@@ -28,10 +30,14 @@ class TestMetaData(AbstractTestCase):
 
     def tearDown(self):
         """Delete the temp file"""
+
         os.remove(self.filename)
         del self.filename
         del self.song
         config.quit()
+
+
+class TestMetaDataMixin(object):
 
     def test_base_data(self):
         self.failUnlessEqual(self.song['artist'], 'piman\njzig')
@@ -87,7 +93,7 @@ tags = ['album', 'arranger', 'artist', 'author', 'comment', 'composer',
 'releasecountry']
 
 for ext in formats._infos.keys():
-    if os.path.exists(TestMetaData.base + ext):
+    if os.path.exists(TestMetaDataBase.base + ext):
 
         extra_tests = {}
         for tag in tags:
@@ -103,6 +109,7 @@ for ext in formats._infos.keys():
             extra_tests['test_tags_' + tag] = test_tags
 
         name = 'MetaData' + ext
-        testcase = type(name, (TestMetaData,), extra_tests)
+        testcase = type(
+            name, (TestMetaDataBase, TestMetaDataMixin), extra_tests)
         testcase.ext = ext
         globals()[name] = testcase

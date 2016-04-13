@@ -3,7 +3,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, AbstractTestCase
+from tests import TestCase
 
 import os
 
@@ -13,7 +13,7 @@ from quodlibet.pattern import (FileFromPattern, XMLFromPattern, Pattern,
     XMLFromMarkupPattern, ArbitraryExtensionFileFromPattern)
 
 
-class _TPattern(AbstractTestCase):
+class _TPattern(TestCase):
 
     def setUp(self):
         s1 = {'tracknumber': '5/6', 'artist': 'Artist', 'title': 'Title5',

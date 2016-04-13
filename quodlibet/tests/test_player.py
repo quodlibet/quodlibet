@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, skipUnless, AbstractTestCase
+from tests import TestCase, skipUnless
 
 from quodlibet import player
 from quodlibet import library
@@ -29,7 +29,7 @@ for file_ in FILES:
 UNKNOWN_FILE = FILES.pop(-1)
 
 
-class TPlayer(AbstractTestCase):
+class TPlayer(TestCase):
     NAME = None
 
     def setUp(self):
@@ -76,6 +76,9 @@ class TPlayer(AbstractTestCase):
         del self.events
         del self.signals
         config.quit()
+
+
+class TPlayerMixin(object):
 
     def test_song_start(self):
         self.assertFalse(self.player.song)
@@ -200,7 +203,7 @@ class TPlayer(AbstractTestCase):
         self.assertEqual(self.player.volume, 0.5)
 
 
-class TNullPlayer(TPlayer):
+class TNullPlayer(TPlayer, TPlayerMixin):
     NAME = "nullbe"
 
     def test_previous_seek(self):
@@ -254,7 +257,7 @@ except player.PlayerError:
 
 
 @skipUnless(has_xine, "couldn't load/test xinebe")
-class TXinePlayer(TPlayer):
+class TXinePlayer(TPlayer, TPlayerMixin):
     NAME = "xinebe"
 
     def test_can_play_uri_xine(self):
@@ -271,7 +274,7 @@ except player.PlayerError:
 
 
 @skipUnless(has_gstbe, "couldn't load/test gstbe")
-class TGstPlayer(TPlayer):
+class TGstPlayer(TPlayer, TPlayerMixin):
     NAME = "gstbe"
 
     def test_can_play_uri_gst(self):

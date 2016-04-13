@@ -3,7 +3,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, AbstractTestCase, skipIf
+from tests import TestCase, skipIf
 from tests.helper import ListWithUnused as L
 
 import os
@@ -217,7 +217,8 @@ class TPot(TestCase):
         self.conclude(fails, "leading or trailing spaces")
 
 
-class PO(AbstractTestCase):
+class POMixin(object):
+
     def test_pos(self):
         if not iscommand("msgfmt"):
             return
@@ -309,6 +310,6 @@ class PO(AbstractTestCase):
 
 for fn in glob.glob(os.path.join(PODIR, "*.po")):
     lang = os.path.basename(fn)[:-3]
-    testcase = type('PO.' + lang, (PO,), {})
+    testcase = type('PO.' + lang, (TestCase, POMixin), {})
     testcase.lang = lang
     globals()['PO.' + lang] = testcase

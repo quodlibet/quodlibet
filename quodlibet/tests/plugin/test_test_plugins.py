@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests.plugin import PluginTestCase
+from tests.plugin import TestCase, PluginTestCase
 
 
 class TTestPlugins(PluginTestCase):

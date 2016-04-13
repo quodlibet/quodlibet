@@ -33,10 +33,6 @@ class TestCase(OrigTestCase):
     failIfAlmostEqual = OrigTestCase.assertNotAlmostEqual
 
 
-class AbstractTestCase(TestCase):
-    """If a class is a direct subclass of this one it gets skipped"""
-
-
 skip = unittest.skip
 skipUnless = unittest.skipUnless
 skipIf = unittest.skipIf
@@ -162,6 +158,8 @@ class Runner(object):
 
     def run(self, test, failfast=False):
         suite = unittest.makeSuite(test)
+        if suite.countTestCases() == 0:
+            return 0, 0, 0
         result = Result(test.__name__, len(suite._tests), failfast=failfast)
         suite(result)
         result.printErrors()
@@ -262,18 +260,14 @@ def unit(run=[], filter_func=None, main=False, subdirs=None,
             GLib.LogLevelFlags.LEVEL_WARNING)
 
     suites = []
-    abstract = []
 
     def discover_tests(mod):
         for k in vars(mod):
             value = getattr(mod, k)
 
-            if value not in (TestCase, AbstractTestCase) and \
+            if value is not TestCase and \
                     inspect.isclass(value) and issubclass(value, TestCase):
-                if AbstractTestCase in value.__bases__:
-                    abstract.append(value)
-                else:
-                    suites.append(value)
+                suites.append(value)
 
     if main:
         for name in os.listdir(path):
