@@ -200,7 +200,7 @@ def init(filename=None):
     global _filename
 
     if not _config.is_empty():
-        raise ValueError("config initialized twice without quitting")
+        _config.clear()
 
     _filename = filename
 

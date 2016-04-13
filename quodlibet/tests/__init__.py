@@ -287,8 +287,6 @@ def unit(run=[], filter_func=None, main=False, subdirs=None,
                     ".".join([__name__, subdir, name[:-3]]), {}, {}, [])
                 discover_tests(getattr(getattr(mod, subdir), name[:-3]))
 
-    import quodlibet.config
-
     runner = Runner()
     failures = errors = all_ = 0
     use_suites = filter(filter_func, suites)
@@ -302,6 +300,5 @@ def unit(run=[], filter_func=None, main=False, subdirs=None,
             all_ += num
             if stop_first and (df or de):
                 break
-            quodlibet.config.quit()
 
     return failures, errors, all_
