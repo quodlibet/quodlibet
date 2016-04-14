@@ -108,7 +108,28 @@ class Window(Gtk.Window):
             self.close()
             return Gdk.EVENT_STOP
 
+        if not is_dialog and is_accel(event, "F11"):
+            self.toggle_fullscreen()
+            return Gdk.EVENT_STOP
+
         return Gdk.EVENT_PROPAGATE
+
+    def toggle_fullscreen(self):
+        """Toggle the fullscreen mode of the window depending on its current
+        state. If the windows isn't realized it will switch to fullscreen
+        when it does.
+        """
+
+        window = self.get_window()
+        if not window:
+            is_fullscreen = False
+        else:
+            is_fullscreen = window.get_state() & Gdk.WindowState.FULLSCREEN
+
+        if is_fullscreen:
+            self.unfullscreen()
+        else:
+            self.fullscreen()
 
     def set_default_size(self, width, height):
         # https://bugzilla.gnome.org/show_bug.cgi?id=740922
@@ -328,8 +349,17 @@ class PersistentWindowMixin(object):
         self.__save_size_pos_deferred()
         return False
 
-    def __do_save_size_pos(self):
+    def _should_ignore_state(self):
         if self.__state & Gdk.WindowState.MAXIMIZED:
+            return True
+        elif self.__state & Gdk.WindowState.FULLSCREEN:
+            return True
+        elif not self.get_visible():
+            return True
+        return False
+
+    def __do_save_size_pos(self):
+        if self._should_ignore_state():
             return
 
         width, height = self.get_size()
@@ -339,10 +369,7 @@ class PersistentWindowMixin(object):
         self.__do_save_pos()
 
     def __do_save_pos(self):
-        if self.__state & Gdk.WindowState.MAXIMIZED:
-            return
-
-        if not self.get_property("visible"):
+        if self._should_ignore_state():
             return
 
         x, y = self.get_position()

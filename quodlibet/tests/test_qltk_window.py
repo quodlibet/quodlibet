@@ -8,6 +8,8 @@ from tests import TestCase
 from quodlibet.qltk.window import Window, on_first_map, Dialog
 from quodlibet.util import InstanceTracker
 
+from .helper import realized
+
 
 class TWindows(TestCase):
 
@@ -66,6 +68,14 @@ class TWindows(TestCase):
         w = Window()
         w.use_header_bar()
         self.assertEqual(w.get_title(), None)
+        w.destroy()
+
+    def test_toggle_fullscreen(self):
+        w = Window(title="foo")
+        w.toggle_fullscreen()
+        with realized(w):
+            w.toggle_fullscreen()
+            w.toggle_fullscreen()
         w.destroy()
 
 
