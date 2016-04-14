@@ -193,7 +193,7 @@ def init_test_environ():
     # (in Gst.init()). Since it takes 0.5s here and doesn't add much,
     # disable it. If the registry cache is missing it will be created
     # despite this setting.
-    environ["GST_REGISTRY_UPDATE"] = "no"
+    environ["GST_REGISTRY_UPDATE"] = fsnative(u"no")
 
     # set HOME and remove all XDG vars that default to it if not set
     home_dir = tempfile.mkdtemp(prefix=fsnative(u"HOME-"), dir=_TEMP_DIR)
