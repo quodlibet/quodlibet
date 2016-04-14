@@ -189,6 +189,11 @@ def init_test_environ():
     # force the old cache dir so that GStreamer can re-use the GstRegistry
     # cache file
     environ["XDG_CACHE_HOME"] = xdg_get_cache_home()
+    # GStreamer will update the cache if the environment has changed
+    # (in Gst.init()). Since it takes 0.5s here and doesn't add much,
+    # disable it. If the registry cache is missing it will be created
+    # despite this setting.
+    environ["GST_REGISTRY_UPDATE"] = "no"
 
     # set HOME and remove all XDG vars that default to it if not set
     home_dir = tempfile.mkdtemp(prefix=fsnative(u"HOME-"), dir=_TEMP_DIR)
