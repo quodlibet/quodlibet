@@ -9,10 +9,10 @@
 import sys
 import os
 
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, Gdk
 
 from quodlibet import config
-from quodlibet.qltk import get_top_parent, is_wayland, gtk_version
+from quodlibet.qltk import get_top_parent, is_wayland, gtk_version, is_accel
 from quodlibet.qltk.x import Button
 from quodlibet.util import DeferredSignal
 from quodlibet.util import connect_obj, connect_destroy
@@ -82,29 +82,33 @@ class Window(Gtk.Window):
     windows = []
     _preven_inital_show = False
 
-    __gsignals__ = {
-        "close-accel": (GObject.SignalFlags.RUN_LAST |
-                            GObject.SignalFlags.ACTION,
-                        GObject.TYPE_NONE, ())
-    }
-
     def __init__(self, *args, **kwargs):
         self._header_bar = None
         dialog = kwargs.pop("dialog", True)
         super(Window, self).__init__(*args, **kwargs)
         type(self).windows.append(self)
-        self.__accels = Gtk.AccelGroup()
         if dialog:
             self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_destroy_with_parent(True)
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.add_accel_group(self.__accels)
-        if not dialog:
-            esc, mod = Gtk.accelerator_parse("<Primary>w")
-        else:
-            esc, mod = Gtk.accelerator_parse("Escape")
-        self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
         connect_obj(self, 'destroy', type(self).windows.remove, self)
+        self.connect('key-press-event', self._on_key_press)
+
+    def _on_key_press(self, widget, event):
+        is_dialog = (self.get_type_hint() == Gdk.WindowTypeHint.DIALOG)
+
+        if (is_dialog and is_accel(event, "Escape")) or (
+                not is_dialog and is_accel(event, "<Primary>w")):
+            # Do not close the window if we edit a Gtk.CellRendererText.
+            # Focus the treeview instead.
+            if isinstance(self.get_focus(), Gtk.Entry) and \
+                isinstance(self.get_focus().get_parent(), Gtk.TreeView):
+                self.get_focus().get_parent().grab_focus()
+                return Gdk.EVENT_PROPAGATE
+            self.close()
+            return Gdk.EVENT_STOP
+
+        return Gdk.EVENT_PROPAGATE
 
     def set_default_size(self, width, height):
         # https://bugzilla.gnome.org/show_bug.cgi?id=740922
@@ -200,16 +204,6 @@ class Window(Gtk.Window):
             from quodlibet import app
             parent = app.window
         super(Window, self).set_transient_for(parent)
-
-    def do_close_accel(self):
-        #Do not close the window if we edit a Gtk.CellRendererText.
-        #Focus the treeview instead.
-        if isinstance(self.get_focus(), Gtk.Entry) and \
-            isinstance(self.get_focus().get_parent(), Gtk.TreeView):
-            self.get_focus().get_parent().grab_focus()
-            return
-        if not self.emit('delete-event', Gdk.Event.new(Gdk.EventType.DELETE)):
-            self.destroy()
 
     @classmethod
     def prevent_inital_show(cls, value):
