@@ -94,6 +94,9 @@ OPTIONS
 --random=tag
     Filter on a random value
 
+--refresh
+    Refresh and rescan library
+
 --repeat=off|on|t
     Turn repeat off, on, or toggle
 
