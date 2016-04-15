@@ -118,6 +118,9 @@ OPTIONS
 --status
     Print playing status
 
+--stop-after=0|1
+    Stop after the playing song
+
 --toggle-window
     Toggle main window visibility
 

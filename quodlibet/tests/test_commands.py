@@ -75,6 +75,7 @@ class TCommands(TestCase):
         self.__send("set-rating 0.5")
         self.__send("show-window")
         self.__send("song-list 1")
+        self.__send("stop-after 1")
         self.__send("status")
         self.__send("toggle-window")
         self.__send("unqueue /dev/null")

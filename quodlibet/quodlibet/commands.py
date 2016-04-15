@@ -174,6 +174,16 @@ def _order(app, value):
             pass
 
 
+@registry.register("stop-after", args=1)
+def _stop_after(app, value):
+    try:
+        value = bool(int(value))
+    except ValueError:
+        raise CommandError("Invalid value %r" % value)
+
+    app.player_options.stop_after = value
+
+
 @registry.register("repeat", args=1)
 def _repeat(app, value):
     repeat = app.window.repeat
