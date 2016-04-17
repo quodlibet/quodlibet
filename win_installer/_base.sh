@@ -21,7 +21,7 @@ QL_REPO_TEMP="$BUILD_ENV"/ql_temp
 QL_TEMP="$QL_REPO_TEMP"/quodlibet
 
 
-PYGI_AIO_VER="3.18.2_rev5"
+PYGI_AIO_VER="3.18.2_rev6"
 MUTAGEN_VER="1.31"
 
 
@@ -30,11 +30,13 @@ function download_and_verify {
 
     local FILEHASHES="\
 7f6507d400d07edfd1ea8205da36808009b0c539f5b8a6e0ab54337b955e6dc3  feedparser-5.1.3.tar.bz2
+c577815dd00f1394203fc44eb979724b098f88264a9ef898ee45b8e5e9cf587f  requests-2.9.1.tar.gz
+5e8eccf95924658c97b990b50552addb64f55e1e3dfe4880456ac1f287dc79d0  certifi-2016.2.28.tar.gz
 d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-preview20141217.exe
 0aa011707785fe30935d8655380052a20ba8b972aa738d4f144c457b35b4d699  mutagen-$MUTAGEN_VER.tar.gz
 a3e4ac1dfe57d385c2a966c5f283ad0eca8fd0f66c551645cb637f4ae712e161  nsis-2.50-setup.exe
 610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c  py2exe-0.6.9.win32-py2.7.exe
-cb5d82025b2d969abfa2e32d3d26c4a244657c510612739dcc2517f84525ee97  pygi-aio-$PYGI_AIO_VER-setup.exe
+1750556a9c797ec157ac837c531fef05f60a5595d2a1553c7d3f5be7bc085b70  pygi-aio-$PYGI_AIO_VER-setup.exe
 9debc6445b81ad735b5e5767d5609ed56167cbcc52c62a55b66629fcbe23a188  python-2.7.11.msi
 ea84abc60fcb5152418dd49e8fdecf3e68759304a71bef422c3b1376886c5b7a  python-musicbrainzngs-0.5.tar.gz
 fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
@@ -60,6 +62,8 @@ fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
 
         pip install --download="$BIN" "mutagen==$MUTAGEN_VER"
         pip install --download="$BIN" feedparser==5.1.3
+        pip download --dest="$BIN" --no-binary=":all:" "requests==2.9.1"
+        pip download --dest="$BIN" --no-binary=":all:" "certifi==2016.2.28"
 
         # check again
         (cd "$BIN" && echo "$FILEHASHES" |  sha256sum --strict -c -) || exit
@@ -224,6 +228,8 @@ function install_pydeps {
     cd "$BUILD_ENV"/bin
     wine $PYTHON -m pip install "mutagen-$MUTAGEN_VER.tar.gz"
     wine $PYTHON -m pip install feedparser-5.1.3.tar.bz2
+    wine $PYTHON -m pip install requests-2.9.1.tar.gz
+    wine $PYTHON -m pip install certifi-2016.2.28.tar.gz
     wine $PYTHON -m pip install python-musicbrainzngs-0.5.tar.gz
     wine $PYTHON -m easy_install -Z py2exe-0.6.9.win32-py2.7.exe
     )
