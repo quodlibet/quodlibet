@@ -101,10 +101,10 @@ Unstable Repo:
 --------------------
 
 Stable Repo:
-    `Fedora 20, 21, 22 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
+    `Fedora 20, 21, 22, 23 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
 
 Unstable Repo :
-    `Fedora 20, 21, 22 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
+    `Fedora 20, 21, 22, 23 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
 
 For stable releases check out the `official
 repos <https://apps.fedoraproject.org/packages/quodlibet/overview/>`__ first -
