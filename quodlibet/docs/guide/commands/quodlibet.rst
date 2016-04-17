@@ -118,7 +118,7 @@ OPTIONS
 --status
     Print playing status
 
---stop-after=0|1
+--stop-after=0|1|t
     Stop after the playing song
 
 --toggle-window
