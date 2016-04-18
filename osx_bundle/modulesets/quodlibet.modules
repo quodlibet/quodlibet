@@ -54,6 +54,8 @@
           href="http://www.wavpack.com/"/>
   <repository type="tarball" name="python"
 	      href="https://www.python.org/ftp/python/"/>
+  <repository name="openssl" type="tarball"
+              href="https://www.openssl.org/source/"/>
 
   <metamodule id="quodlibet">
     <dependencies>
@@ -67,6 +69,36 @@
       <dep package="requests"/>
     </dependencies>
   </metamodule>
+
+  <!-- INSTALL_PREFIX because it doesn't ue DESTDIR and LIBS="" to skip installing static libs -->
+  <autotools id="openssl" autogen-sh="Configure" autogenargs="shared zlib-dynamic"
+             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --openssldir=%(prefix)s/etc/ssl %(autogenargs)s"
+             makeinstallargs="INSTALL_PREFIX=$JHBUILD_PREFIX/_jhbuild/root-openssl LIBS= install_sw"
+             supports-parallel-builds="no">
+    <branch module="openssl-1.0.2g.tar.gz" version="1.0.2g" repo="openssl"
+    hash="sha256:b784b1b3907ce39abf4098702dade6365522a253ad1552e267a9a0e89594aa33"/>
+  </autotools>
+
+  <autotools id="python" autogenargs="--enable-shared"
+	     autogen-sh="configure" supports-non-srcdir-builds="no">
+    <branch repo="python"
+	    module="2.7.11/Python-2.7.11.tar.xz" version="2.7.11">
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/python2-test_grammar.py-typo.patch" strip="1"/>
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/python2-xcode-stubs.patch" strip="1"/>
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/python2-linkflags.patch" strip="1"/>"/>
+      <patch file="patches/python2-setup.py-disabled_modules.diff" strip="1"/>"/>
+      <patch file="patches/python2-setup.py-remove-hardcoded.diff" strip="1"/>"/>
+    </branch>
+    <dependencies>
+      <dep package="gettext-runtime"/>
+      <dep package="readline"/>
+      <dep package="openssl"/>
+    </dependencies>
+    <after>
+      <dep package="berkeleydb"/>
+      <dep package="berkeleydb-nonsrctree"/>
+    </after>
+  </autotools>
 
   <autotools id="gst-libav" supports-non-srcdir-builds="no"
     autogen-sh="configure"
