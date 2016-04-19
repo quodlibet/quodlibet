@@ -24,6 +24,7 @@ from quodlibet.qltk.views import AllTreeView, DragScroll
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk import Icons
+from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.util.uri import URI
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
@@ -638,6 +639,11 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         elif qltk.is_accel(event, "<Primary>F"):
             self.emit('start-interactive-search')
             return True
+        elif qltk.is_accel(event, "<Primary>Delete"):
+            songs =  self.get_selected_songs()
+            if songs:
+                trash_songs(self, songs, librarian)
+            return True
         elif qltk.is_accel(event, "<alt>Return"):
             songs = self.get_selected_songs()
             if songs:
@@ -657,7 +663,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         if songs:
             from quodlibet import app
             app.window.playlist.enqueue(songs)
-
+        
     def __redraw_current(self):
         model = self.get_model()
         iter_ = model.current_iter
