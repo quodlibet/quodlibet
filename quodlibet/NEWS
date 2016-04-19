@@ -1,3 +1,91 @@
+3.6.1 (2016-04-05) - GOOD LUCK OUT THERE
+----------------------------------------
+
+* Tray icon: Don't use the app indicator for Ubuntu GNOME and KDE 4.
+  :bug:`1904`
+* Tray icon: Present the window when showing the window through the app
+  indicator menu item. :bug:`1904`
+* Paned browser: Fix crash with numeric tags in patterns :bug:`1903`
+* Paned browser: Fix missing "Unknown" entry for patterns
+* OS X: Fix TLS for real
+* Lyrics window: Also support webkitgtk2 3.0 (for Ubuntu 14.04)
+
+
+3.6.0 (2016-03-24) - It is altogether fitting and proper that we should do this
+-------------------------------------------------------------------------------
+
+* Add a keyboard shortcut window. :bug:`1837`
+* Add ~language, which shows the language name for iso639 codes
+* Allow cross-device moves to trash. :pr:`1782` :bug:`1339` (Andrew Chadwick)
+* CLI: allow backslash-escaped commas in --enqueue-files. :bug:`1773`
+  (Nick Boultbee)
+* Fix custom accels read from ``~/.quodlibet/accels`` :bug:`1726` :pr:`1818`
+* Fix determination of tag patterns in songlist :pr:`1830`
+  (Peter F. Patel-Schneider)
+* Fix ratings not being stored if they are the same as the default :bug:`1461`
+  :pr:`1846`
+* ID3: read lyrics from USLT frame, make ~lyrics read lyrics and form files
+  :pr:`1810` (Ivan Shapovalov)
+* Make test suite run (and fail) under Python 3 :bug:`1580`
+* MP4: support conductor, discsubtitle, language & mood :bug:`323`
+  (Nick Boultbee)
+* Paned browser: Allow filters to be reset by clicking heading. :bug:`1284`
+* Paned browser: use sort tags :bug:`1785`, :pr:`1796`
+  (Peter F. Patel-Schneider)
+* Patterns: Allow proper escaping in nested queries.
+  (``<~filename=/^\/bla\/foo/|match|no-match>``)
+* Player controls: use a normal button with two icons instead of a toggle
+  button. :bug:`1814`
+* Playlist browser: implement scroll to playing song :bug:`1426`
+* Playlist browser: Make display configurable :bug:`1780` (Nick Boultbee)
+* Playlist browser: Improve usability when creating a new playlist :bug:`1839`
+  (Nick Boultbee)
+* Playlist browser: Fix bug when deleting playlists :bug:`1882` (Nick Boultbee)
+* Remove rounded cover preference and make border radius depend on theme.
+  :bug:`1864`
+* Search: make "ae" match "æ" and "ss" match "ß" etc.
+* Search: numeric expressions and query plugins :pr:`1799`
+* Song info display: show delete option to context menu. :bug:`1869`
+* Songlist: Highlight the current song. See :bug:`1809`
+* Support sort tags in song list patterns :pr:`1783` (Peter F. Patel-Schneider)
+* Various GTK+ 3.20 related fixes
+
+Translations:
+  * Updated Dutch and Norwegian Bokmål translation :pr:`1784` (Nathan Follens)
+  * Updated Polish translation :pr:`1898` (Piotr Drąg)
+
+Plugins:
+  * Update icons for most plugins: more and (mostly) better chosen.
+    :bug:`1894` (Nick Boultbee)
+  * Make songsmenu plugins only enabled if it makes sense for them
+    :bug:`1858` (Nick Boultbee)
+  * Remove cddb plugin; it's broken
+  * Remove Send To plugin, in favour of Browse Folders and k3b plugins.
+  * New plugin: Pause on headphone unplug. :bug:`1753`
+  * New events plugin: Shows synchronized lyrics from .lrc file with same name
+    as the track :pr:`1723`
+  * Add a seekbar plugin. See :bug:`204`
+  * lyricwiki: port to WebKit2
+  * tray icon: support Ubuntu Unity and KDE Plasma (using libappindicator)
+    :bug:`1756`
+  * musicbrainz: port to musicbrainzngs. This fixes tagging of multi disc
+    releases. :bug:`829`
+  * Make LyricsWindow an events plugin; Add zoom level preference :pr:`1709`
+  * Add authentication for MPDServer plugin :pr:`1789`
+  * Custom Commands: add support for playlist name. :bug:`1685` (Nick Boultbee)
+  * Playlist Export: convert to being a playlist plugin as well as songsmenu.
+    (Nick Boultbee)
+
+OS X:
+  * Add a simple dock menu
+  * TLS support (https streams..) :bug:`1895`
+  * Add option to enable experimental mmkeys support in the advanced
+    prefs plugin. :bug:`1817`
+
+Wayland:
+  * Fix seek bar window position (needs gtk+ 3.20)
+
+
 3.5.3 (2016-01-16) - Uh, I GUESS that'd be good too??
 -----------------------------------------------------
 

@@ -12,7 +12,7 @@ from quodlibet import browsers
 from quodlibet import qltk
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
-from quodlibet.util import connect_obj, connect_destroy, is_kde
+from quodlibet.util import connect_obj, connect_destroy, is_plasma
 from quodlibet.qltk import Icons
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.information import Information
@@ -33,14 +33,17 @@ class IndicatorMenu(Gtk.Menu):
         self._app = app
         player = app.player
 
-        show_item_bottom = is_kde()
+        show_item_bottom = is_plasma()
         if add_show_item:
             show_item = Gtk.CheckMenuItem.new_with_mnemonic(
                 _("_Show %(application-name)s") % {
                     "application-name": app.name})
 
             def on_toggled(menuitem):
-                app.window.set_visible(menuitem.get_active())
+                if menuitem.get_active():
+                    app.present()
+                else:
+                    app.hide()
                 pconfig.set("window_visible", menuitem.get_active())
 
             self._toggle_id = show_item.connect("toggled", on_toggled)
@@ -85,7 +88,7 @@ class IndicatorMenu(Gtk.Menu):
                                      GObject.BindingFlags.BIDIRECTIONAL)
         player_options.notify("stop-after")
 
-        browse = qltk.MenuItem(_("_Browse Library"), Icons.EDIT_FIND)
+        browse = qltk.MenuItem(_("Open _Browser"), Icons.EDIT_FIND)
         browse_sub = Gtk.Menu()
 
         for Kind in browsers.browsers:

@@ -4,8 +4,12 @@
 <moduleset>
   <include href="gtk-osx.modules"/>
 
-  <repository type="git" name="svn.gnome.org"
+  <repository type="git" name="git.gnome.org"
       href="git://git.gnome.org/">
+  </repository>
+
+  <repository type="tarball" name="git.gnome.org/browse"
+      href="http://git.gnome.org/browse/">
   </repository>
 
   <repository type="tarball" name="effbot"
@@ -50,6 +54,8 @@
           href="http://www.wavpack.com/"/>
   <repository type="tarball" name="python"
 	      href="https://www.python.org/ftp/python/"/>
+  <repository name="openssl" type="tarball"
+              href="https://www.openssl.org/source/"/>
 
   <metamodule id="quodlibet">
     <dependencies>
@@ -59,8 +65,40 @@
       <dep package="musicbrainzngs" />
       <dep package="meta-gtk-osx-python-gtk3"/>
       <dep package="pyobjc"/>
+      <dep package="certifi"/>
+      <dep package="requests"/>
     </dependencies>
   </metamodule>
+
+  <!-- INSTALL_PREFIX because it doesn't ue DESTDIR and LIBS="" to skip installing static libs -->
+  <autotools id="openssl" autogen-sh="Configure" autogenargs="shared zlib-dynamic"
+             autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --openssldir=%(prefix)s/etc/ssl %(autogenargs)s"
+             makeinstallargs="INSTALL_PREFIX=$JHBUILD_PREFIX/_jhbuild/root-openssl LIBS= install_sw"
+             supports-parallel-builds="no">
+    <branch module="openssl-1.0.2g.tar.gz" version="1.0.2g" repo="openssl"
+    hash="sha256:b784b1b3907ce39abf4098702dade6365522a253ad1552e267a9a0e89594aa33"/>
+  </autotools>
+
+  <autotools id="python" autogenargs="--enable-shared"
+	     autogen-sh="configure" supports-non-srcdir-builds="no">
+    <branch repo="python"
+	    module="2.7.11/Python-2.7.11.tar.xz" version="2.7.11">
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/python2-test_grammar.py-typo.patch" strip="1"/>
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/python2-xcode-stubs.patch" strip="1"/>
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/python2-linkflags.patch" strip="1"/>"/>
+      <patch file="patches/python2-setup.py-disabled_modules.diff" strip="1"/>"/>
+      <patch file="patches/python2-setup.py-remove-hardcoded.diff" strip="1"/>"/>
+    </branch>
+    <dependencies>
+      <dep package="gettext-runtime"/>
+      <dep package="readline"/>
+      <dep package="openssl"/>
+    </dependencies>
+    <after>
+      <dep package="berkeleydb"/>
+      <dep package="berkeleydb-nonsrctree"/>
+    </after>
+  </autotools>
 
   <autotools id="gst-libav" supports-non-srcdir-builds="no"
     autogen-sh="configure"
@@ -80,8 +118,6 @@
     <branch module="cairo-1.14.4.tar.xz"  version="1.14.4"
             repo="cairographics"
             hash="sha1:5b44471e7c328f96de6830baf8ea65030de797f9">
-        <!-- https://bugs.freedesktop.org/show_bug.cgi?id=69796#c4 -->
-        <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/cairo-hidpi.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="pixman"/>
@@ -108,13 +144,14 @@
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
     <branch module="gtk+/3.18/gtk+-3.18.9.tar.xz" version="3.18.9"
         hash="sha256:783d7f8b00f9b4224cc94d7da885a67598e711c2d6d79c9c873c6b203e83acbd">
-        <!-- https://bugzilla.gnome.org/show_bug.cgi?id=740199#c4 -->
-        <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gtk3-hidpi.patch" strip="1"/>
+      <!-- https://bugzilla.gnome.org/show_bug.cgi?id=763779 -->
+      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gtk-quartz-fix-pixelated-image-surfaces-in-retina-hidpi-.patch" strip="1"/>
     </branch>
     <dependencies>
         <dep package="glib"/>
         <dep package="pango"/>
         <dep package="atk"/>
+        <dep package="cairo"/>
         <dep package="gdk-pixbuf"/>
         <dep package="gobject-introspection"/>
         <dep package="libepoxy"/>
@@ -168,6 +205,16 @@
   <distutils id="setuptools">
     <branch repo="pypi" checkoutdir="setuptools-0.6c11" module="s/setuptools/setuptools-0.6c11.tar.gz"
 	    version="0.6c11" md5sum="7df2a529a074f613b509fb44feefe74e"/>
+  </distutils>
+
+  <distutils id="certifi">
+    <branch repo="pypi" checkoutdir="certifi-2016.2.28" module="c/certifi/certifi-2016.2.28.tar.gz"
+	    version="2016.2.28" md5sum="5d672aa766e1f773c75cfeccd02d3650"/>
+  </distutils>
+
+  <distutils id="requests">
+    <branch repo="pypi" checkoutdir="requests-2.9.1" module="r/requests/requests-2.9.1.tar.gz"
+	    version="2.9.1" md5sum="0b7f480d19012ec52bab78292efd976d"/>
   </distutils>
 
   <!-- Upstream: https://github.com/kurtmckee/feedparser/blob/develop/NEWS -->
@@ -496,10 +543,14 @@
   <!-- glib-networking
        Upstream: http://ftp.gnome.org/pub/GNOME/sources/glib-networking/
   -->
-  <autotools id="glib-networking" autogen-sh="configure"
+  <autotools id="glib-networking" autogen-sh="autogen.sh"
 	     autogenargs="--without-ca-certificates set_more_warnings=no">
-    <branch repo="ftp.gnome.org" module="glib-networking/2.44/glib-networking-2.44.0.tar.xz"
-	    version="2.44.0" hash="sha256:8f8a340d3ba99bfdef38b653da929652ea6640e27969d29f7ac51fbbe11a4346"/>
+    <!-- git version since we need master for the gnutls backend to work properly -->
+    <branch repo="git.gnome.org/browse" module="glib-networking/snapshot/glib-networking-2dbab5a20ddc4cd2d856ecd97e4b5fb18d3a1221.tar.xz"
+	    version="2.47.1.1" hash="sha256:6ecad7b020b32e888906a43341f2b086119ee006035542c85174f7c4bde2e953">
+        <!-- This allows us to set GTLS_SYSTEM_CA_FILE at runtime to a CA file -->
+        <patch file="patches/glib-networking-gtls-ca-env-var.patch" strip="1"/>
+    </branch>
     <dependencies>
       <dep package="gnutls"/>
       <dep package="libgcrypt"/>

@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-# Constants used in various parts of QL, mostly strings.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+"""Constants used in various parts of QL, mostly strings."""
 
 import sys
 import os
@@ -39,7 +43,7 @@ class MinVersions(object):
     GSTREAMER = Version("GStreamer", 1, 0)
 
 
-VERSION_TUPLE = Version("", 3, 6, -1)
+VERSION_TUPLE = Version("", 3, 7, -1)
 VERSION = str(VERSION_TUPLE)
 
 # entry point for the user guide / wiki

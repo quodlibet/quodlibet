@@ -23,6 +23,7 @@ This is also called Asymmetric Search:
 TODO: support replacing multiple characters, so AE matches Æ
 """
 
+import re
 import sre_parse
 import unicodedata
 import sys
@@ -133,30 +134,93 @@ _DIACRITIC_CACHE = {
 
 # See misc/uca_decomps.py
 _UCA_DECOMPS = {
+    u'AA': u'\ua732',
+    u'AE': u'\xc6\u01e2\u01fc',
+    u'AO': u'\ua734',
+    u'AU': u'\ua736',
+    u'AV': u'\ua738\ua73a',
+    u'AY': u'\ua73c',
     u'D': u'\xd0\u0110\ua779',
+    u'DZ': u'\u01c4\u01f1',
+    u'Dz': u'\u01c5\u01f2',
     u'F': u'\ua77b',
     u'G': u'\ua77d',
     u'H': u'\u0126',
+    u'IJ': u'\u0132',
     u'L': u'\u0141',
+    u'LJ': u'\u01c7',
+    u'LL': u'\u1efa',
+    u'Lj': u'\u01c8',
+    u'NJ': u'\u01ca',
+    u'Nj': u'\u01cb',
     u'O': u'\xd8\u01fe',
+    u'OE': u'\u0152',
+    u'OO': u'\ua74e',
     u'R': u'\ua782',
     u'S': u'\ua784',
+    u'SS': u'\u1e9e',
     u'T': u'\ua786',
+    u'Tz': u'\ua728',
+    u'VY': u'\ua760',
+    u'aa': u'\ua733',
+    u'ae': u'\xe6\u01e3\u01fd',
+    u'ao': u'\ua735',
+    u'au': u'\ua737',
+    u'av': u'\ua739\ua73b',
+    u'ay': u'\ua73d',
     u'd': u'\xf0\u0111\ua77a',
+    u'db': u'\u0238',
+    u'dz': u'\u01c6\u01f3\u02a3',
+    u'd\u0291': u'\u02a5',
+    u'd\u0292': u'\u02a4',
     u'f': u'\ua77c',
+    u'ff': u'\ufb00',
+    u'ffi': u'\ufb03',
+    u'ffl': u'\ufb04',
+    u'fi': u'\ufb01',
+    u'fl': u'\ufb02',
+    u'f\u014b': u'\u02a9',
     u'g': u'\u1d79',
     u'h': u'\u0127\u210f',
+    u'ij': u'\u0133',
     u'l': u'\u0142',
+    u'lj': u'\u01c9',
+    u'll': u'\u1efb',
+    u'ls': u'\u02aa',
+    u'lz': u'\u02ab',
+    u'n': u'\u0149',
+    u'nj': u'\u01cc',
     u'o': u'\xf8\u01ff',
+    u'oe': u'\u0153',
+    u'oo': u'\ua74f',
+    u'qp': u'\u0239',
     u'r': u'\ua783',
     u's': u'\ua785',
+    u'ss': u'\xdf',
+    u'st': u'\ufb05\ufb06',
     u't': u'\ua787',
-    u'\u03c3': (u'\u03c2\u03f2\U0001d6d3\U0001d70d\U0001d747'
-                u'\U0001d781\U0001d7bb'),
+    u'th': u'\u1d7a',
+    u'ts': u'\u01be\u02a6',
+    u'tz': u'\ua729',
+    u't\u0255': u'\u02a8',
+    u't\u0283': u'\u02a7',
+    u'vy': u'\ua761',
+    u'zw': u'\u018d',
+    u'\u039a\u03b1\u03b9': u'\u03cf',
+    u'\u03ba\u03b1\u03b9': u'\u03d7',
+    u'\u03c3': u'\u03c2\u03f2\U0001d6d3\U0001d70d'
+               u'\U0001d747\U0001d781\U0001d7bb',
     u'\u0413': u'\u0490',
     u'\u041e': u'\ua668\ua66a\ua66c',
     u'\u0433': u'\u0491',
     u'\u043e': u'\ua669\ua66b\ua66d',
+    u'\u0565\u0582': u'\u0587',
+    u'\u0574\u0565': u'\ufb14',
+    u'\u0574\u056b': u'\ufb15',
+    u'\u0574\u056d': u'\ufb17',
+    u'\u0574\u0576': u'\ufb13',
+    u'\u057e\u0576': u'\ufb16',
+    u'\u2c95\u2c81\u2c93': u'\u2ce4',
 }
 
 
@@ -220,6 +284,34 @@ def _fixup_literal(literal, in_seq, mapping):
     return u
 
 
+def _fixup_literal_list(literals, mapping):
+    u = re_escape("".join(map(unichr, literals)))
+
+    if not mapping:
+        return u
+
+    # longest matches first, we will handle contained ones in the replacement
+    # function
+    reg = u"(%s)" % u"|".join(
+        map(re_escape, sorted(mapping.keys(), key=len, reverse=True)))
+
+    def replace_func(match):
+        text = match.group(1)
+        all_ = u""
+        for c in text:
+            all_ += _fixup_literal(ord(c), False, mapping)
+        if len(text) > 1:
+            multi = mapping[text]
+            if len(multi) > 1:
+                multi = "[%s]" % re_escape(multi)
+            else:
+                multi = re_escape(multi)
+            return "(%s|%s)" % (all_, multi)
+        return all_
+
+    return re.sub(reg, replace_func, u)
+
+
 def _fixup_not_literal(literal, mapping):
     u = unichr(literal)
     if u in mapping:
@@ -243,12 +335,19 @@ def _construct_regexp(pattern, mapping):
     """Raises NotImplementedError"""
 
     parts = []
+    literals = []
 
     for op, av in pattern:
+
+        if literals and op != "literal":
+            parts.append(_fixup_literal_list(literals, mapping))
+            del literals[:]
+
         if op == "not_literal":
             parts.append(_fixup_not_literal(av, mapping))
         elif op == "literal":
-            parts.append(_fixup_literal(av, False, mapping))
+            literals.append(av)
+            continue
         elif op == "category":
             cats = {
                 "category_word": u"\\w",
@@ -335,6 +434,10 @@ def _construct_regexp(pattern, mapping):
             parts.append(u"%s" % (u"|".join(branches)))
         else:
             raise NotImplementedError(op)
+
+    if literals:
+        parts.append(_fixup_literal_list(literals, mapping))
+        del literals[:]
 
     return u"".join(parts)
 

@@ -13,12 +13,13 @@ import socket
 import Queue
 from xml.dom import minidom
 
+from quodlibet.util import gi_require_versions
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import (PluginImportException, PluginConfig, ConfProp,
     BoolConfProp, IntConfProp, FloatConfProp)
-import gi
+
 try:
-    gi.require_version("WebKit2", "4.0")
+    gi_require_versions("WebKit2", ["4.0", "3.0"])
 except ValueError as e:
     raise PluginImportException("GObject Introspection: " + str(e))
 

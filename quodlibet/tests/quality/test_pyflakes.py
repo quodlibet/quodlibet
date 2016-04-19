@@ -16,7 +16,7 @@ except ImportError:
 
 from quodlibet.compat import PY3
 
-from tests import TestCase, skipUnless
+from tests import TestCase
 
 
 class FakeStream(object):
@@ -50,10 +50,12 @@ class FakeStream(object):
             raise Exception("\n" + "\n".join(self.lines))
 
 
-@skipUnless(pyflakes, "pyflakes not found")
 class TPyFlakes(TestCase):
 
     def __check_path(self, path):
+        if not pyflakes:
+            raise Exception("pyflakes missing; please install")
+
         old_stdout = sys.stdout
         stream = FakeStream()
         try:

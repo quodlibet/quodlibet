@@ -27,11 +27,11 @@ def iter_backends():
         yield KeybinderBackend
 
     try:
-        from .pyhook import PyHookBackend
+        from .winhook import WinHookBackend
     except MMKeysImportError:
         pass
     else:
-        yield PyHookBackend
+        yield WinHookBackend
 
     if config.getboolean("settings", "osx_mmkeys"):
         try:

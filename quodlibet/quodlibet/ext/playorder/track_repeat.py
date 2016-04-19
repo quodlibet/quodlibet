@@ -4,13 +4,14 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
-#
-# Repeats a given track a configurable number of times
-# Useful for musicians practising / working out songs...
-# or maybe you just REALLY like your playlist.
-#
-# TODO: notification of play count? Non-shuffle? Integration with main UI?
-#
+
+"""
+Repeats a given track a configurable number of times
+Useful for musicians practising / working out songs...
+or maybe you just REALLY like your playlist.
+
+TODO: notification of play count? Non-shuffle? Integration with main UI?
+"""
 
 from gi.repository import Gtk
 

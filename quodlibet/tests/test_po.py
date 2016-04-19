@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase, AbstractTestCase, skipIf
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+from tests import TestCase, skipIf
 from tests.helper import ListWithUnused as L
 
 import os
@@ -213,12 +217,14 @@ class TPot(TestCase):
         self.conclude(fails, "leading or trailing spaces")
 
 
-class PO(AbstractTestCase):
+class POMixin(object):
+
     def test_pos(self):
         if not iscommand("msgfmt"):
             return
 
-        self.failIf(os.system("msgfmt -c po/%s.po > /dev/null" % self.lang))
+        po_path = os.path.join(PODIR, "%s.po" % self.lang)
+        self.failIf(os.system("msgfmt -c %s > /dev/null" % po_path))
         try:
             os.unlink("messages.mo")
         except OSError:
@@ -305,6 +311,6 @@ class PO(AbstractTestCase):
 
 for fn in glob.glob(os.path.join(PODIR, "*.po")):
     lang = os.path.basename(fn)[:-3]
-    testcase = type('PO.' + lang, (PO,), {})
+    testcase = type('PO.' + lang, (TestCase, POMixin), {})
     testcase.lang = lang
     globals()['PO.' + lang] = testcase

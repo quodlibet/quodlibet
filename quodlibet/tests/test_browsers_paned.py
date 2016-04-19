@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase
 from .helper import realized
 
@@ -171,7 +175,7 @@ class TPaneConfig(TestCase):
         self.failUnlessEqual(p.title, "Last Played")
         self.failUnlessEqual(p.tags, {"~#lastplayed"})
 
-        self.failUnlessEqual(p.format(SONGS[0]), ["0"])
+        self.failUnlessEqual(p.format(SONGS[0]), [("0", "0")])
         self.failIf(p.has_markup)
 
     def test_tied(self):

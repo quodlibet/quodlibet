@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase, DATA_DIR
 
 import os
@@ -180,6 +184,35 @@ class TAudioFile(TestCase):
                               ("I have two artists", "I have two artists")])
         self.failUnlessEqual(bar_2_1.list_sort("~#track"),
                              [('1', '1')])
+
+    def test_list_sort_empty_sort(self):
+        # we don't want to care about empty sort values, make sure we ignore
+        # them
+        s = AudioFile({"artist": "x\ny\nz", "artistsort": "c\n\nd"})
+        self.assertEqual(
+            s.list_sort("artist"), [("x", "c"), ("y", "y"), ("z", "d")])
+
+    def test_list_sort_noexist(self):
+        self.failUnlessEqual(bar_1_1.list_sort("nopenopenope"), [])
+
+    def test_list_separate_noexist(self):
+        self.failUnlessEqual(bar_1_1.list_separate("nopenopenope"), [])
+
+    def test_list_sort_length_diff(self):
+        s = AudioFile({"artist": "a\nb", "artistsort": "c"})
+        self.assertEqual(s.list_sort("artist"), [("a", "c"), ("b", "b")])
+
+        s = AudioFile({"artist": "a\nb", "artistsort": "c\nd\ne"})
+        self.assertEqual(s.list_sort("artist"), [("a", "c"), ("b", "d")])
+
+        s = AudioFile({"artistsort": "c\nd\ne"})
+        self.assertEqual(s.list_sort("artist"), [])
+
+        s = AudioFile({"artist": "a\nb"})
+        self.assertEqual(s.list_sort("artist"), [("a", "a"), ("b", "b")])
+
+        s = AudioFile({})
+        self.assertEqual(s.list_sort("artist"), [])
 
     def test_list_separate(self):
         self.failUnlessEqual(bar_1_1.list_separate("title"),

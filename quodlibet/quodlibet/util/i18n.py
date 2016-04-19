@@ -62,11 +62,12 @@ def set_i18n_envvars():
     """
 
     if os.name == "nt":
-        import ctypes
-        k32 = ctypes.windll.kernel32
+        from quodlibet.util.winapi import GetUserDefaultUILanguage, \
+            GetSystemDefaultUILanguage
+
         langs = filter(None, map(locale.windows_locale.get,
-                                 [k32.GetUserDefaultUILanguage(),
-                                  k32.GetSystemDefaultUILanguage()]))
+                                 [GetUserDefaultUILanguage(),
+                                  GetSystemDefaultUILanguage()]))
         if langs:
             os.environ.setdefault('LANG', langs[0])
             os.environ.setdefault('LANGUAGE', ":".join(langs))

@@ -26,7 +26,7 @@ from quodlibet import config
 from quodlibet.formats import MusicFile
 
 
-@skipUnless(Gst and chromaprint and vorbisdec)
+@skipUnless(Gst and chromaprint and vorbisdec, "gstreamer plugins missing")
 class TFingerprint(PluginTestCase):
 
     TIMEOUT = 20.0
@@ -81,7 +81,7 @@ class TFingerprint(PluginTestCase):
         self.assertEqual(events[1][-1], "error")
 
 
-@skipUnless(Gst and chromaprint)
+@skipUnless(Gst and chromaprint, "gstreamer plugins missing")
 class TAcoustidLookup(PluginTestCase):
 
     def setUp(self):

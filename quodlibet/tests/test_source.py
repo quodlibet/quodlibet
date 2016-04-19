@@ -52,6 +52,54 @@ class TSourceEncoding(TestCase):
                                      "Insert:\n# -*- coding: utf-8 -*-" % path)
 
 
+class TLicense(TestCase):
+
+    ALLOWED = ["""This program is free software; you can redistribute it \
+and/or modify it under the terms of the GNU General Public License version 2 \
+as published by the Free Software Foundation""",
+               """This program is free software; you can redistribute it \
+and/or modify it under the terms of version 2 of the GNU General Public \
+License as published by the Free Software Foundation""",
+               """This software and accompanying documentation, if any, may \
+be freely used, distributed, and/or modified, in any form and for any \
+purpose, as long as this notice is preserved. There is no warranty, either \
+express or implied, for this software""",
+               """This program is free software; you can redistribute it \
+and/or modify it under the terms of the GNU General Public License as \
+published by the Free Software Foundation; either version 2, or (at your \
+option) any later version. This program is distributed in the hope that it \
+will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty o\
+f MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General \
+Public License for more details. You should have received a copy of the \
+GNU General Public License along with this program; if not, write to the \
+Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, \
+MA 02111-1307, USA""",
+]
+
+    def test_main(self):
+        missing = []
+        for path in iter_py_paths():
+            header = ""
+            with open(path, "rb") as h:
+                for line in h:
+                    line = line.strip()
+                    if not line.startswith("#"):
+                        break
+                    header += line.lstrip("# ") + "\n"
+
+            norm = " ".join(header.strip().split())
+            maybe_license = norm.rstrip(".")
+            for license_ in self.ALLOWED:
+                if maybe_license.endswith(license_):
+                    maybe_license = license_
+                    break
+
+            if maybe_license not in self.ALLOWED:
+                missing.append(path)
+
+        self.assertFalse(missing, msg="Missing license: %r" % missing)
+
+
 class TStockIcons(TestCase):
 
     def test_main(self):

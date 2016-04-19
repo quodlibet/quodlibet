@@ -555,8 +555,12 @@ class AudioFile(dict, ImageContainer):
 
     def list_sort(self, key):
         """Like list but return display,sort pairs when appropriate
-        and work on all tags
+        and work on all tags.
+
+        In case no sort value exists the display one is returned. The sort
+        value is only an empty string if the display one is empty as well.
         """
+
         display = decode_value(key, self(key))
         display = display.split("\n") if display else []
         sort = []
@@ -566,10 +570,11 @@ class AudioFile(dict, ImageContainer):
             # it would be better to use something that doesn't fall back
             # to the key itself, but what?
             sort = sort.split("\n") if sort else []
+
         result = []
         for d, s in izip_longest(display, sort):
             if d is not None:
-                result.append((d, s if s is not None and s != "" else d))
+                result.append((d, (s if s is not None and s != "" else d)))
         return result
 
     def list_separate(self, key):

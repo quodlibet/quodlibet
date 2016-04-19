@@ -19,7 +19,7 @@ from quodlibet.util import connect_obj
 
 def get_headers():
     result = []
-    headers = config.get("browsers", "collection_headers", "")
+    headers = config.get("browsers", "collection_headers")
     for h in headers.splitlines():
         values = h.split()
         if len(values) != 2:

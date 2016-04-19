@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 import os
 
 import quodlibet
@@ -6,7 +10,7 @@ from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.plugins import list_plugins, Plugin, PluginImportException
 from quodlibet.compat import PY3, iteritems
 
-from tests import AbstractTestCase, init_fake_app, destroy_fake_app
+from tests import TestCase, init_fake_app, destroy_fake_app
 
 
 init_fake_app, destroy_fake_app
@@ -47,7 +51,8 @@ for name, module in iteritems(ms.modules):
         modules[plugin.PLUGIN_ID] = module.module
 
 
-class PluginTestCase(AbstractTestCase):
+class PluginTestCase(TestCase):
     """Base class for all plugin tests"""
+
     plugins = plugins
     modules = modules

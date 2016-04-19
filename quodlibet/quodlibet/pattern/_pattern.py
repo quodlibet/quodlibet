@@ -227,14 +227,15 @@ class PatternFormatter(object):
             if key.startswith("~#") and "~" not in key[2:]:
                 value = self.__song(key)
                 value = decode_value(key, value)
-                values = [value]
+                if self.__formatter:
+                    value = self.__formatter(key, value)
+                values = [(value, value)]
             else:
                 values = self.__song.list_separate(key)
-            if self.__formatter:
-                return [((self.__formatter(key, v[0]),
-                          self.__formatter(key, v[1]))
-                         if isinstance(v, tuple) else self.__formatter(key, v))
-                        for v in values]
+                if self.__formatter:
+                    return [(self.__formatter(key, v[0]),
+                             self.__formatter(key, v[1])) for v in values]
+
             return values
 
     def format(self, song):
@@ -244,25 +245,23 @@ class PatternFormatter(object):
         return value
 
     def format_list(self, song):
-        """Formats the output of a list pattern, generating all the combinations
-        always returns pairs of display and sort values.
-        The returned set will never be empty (e.g. for an empty pattern).
+        """Formats the output of a list pattern, generating all the
+        combinations always returns pairs of display and sort values. The
+        returned set will never be empty (e.g. for an empty pattern).
         """
-
         vals = [(u"", u"")]
         for val in self.__list_func(self.SongProxy(song, self._format)):
             if not val:
                 continue
-            if isinstance(val, list): # list of pairs
+            if isinstance(val, list): # list of strings or pairs
                 vals = [(r[0] + part[0], r[1] + part[1])
                         for part in val for r in vals]
             else: # just a display string to concatenate
-                vals = [((r[0] + val, r[1] + val)) for r in vals]
+                vals = [(r[0] + val, r[1] + val) for r in vals]
 
         if self._post:
             vals = ((self._post(v[0], song), self._post(v[1], song))
                     for v in vals)
-
         return set(vals)
 
     __mod__ = format

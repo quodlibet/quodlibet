@@ -11,20 +11,11 @@ import os
 import contextlib
 import tempfile
 if os.name == "nt":
-    from ctypes import windll, wintypes, WinError
+    from . import winapi
 else:
     import fcntl
 
 from .path import fsnative, is_fsnative
-
-
-if os.name == "nt":
-    MOVEFILE_WRITE_THROUGH = 0x8
-    MOVEFILE_REPLACE_EXISTING = 0x1
-
-    MoveFileExW = windll.kernel32.MoveFileExW
-    MoveFileExW.argtypes = [wintypes.LPWSTR, wintypes.LPWSTR, wintypes.DWORD]
-    MoveFileExW.restype = wintypes.BOOL
 
 
 def _windows_rename(source, dest):
@@ -36,12 +27,12 @@ def _windows_rename(source, dest):
     assert os.name == "nt"
 
     # not atomic, but better than removing the original first..
-    status = MoveFileExW(
+    status = winapi.MoveFileExW(
         source, dest,
-        MOVEFILE_WRITE_THROUGH | MOVEFILE_REPLACE_EXISTING)
+        winapi.MOVEFILE_WRITE_THROUGH | winapi.MOVEFILE_REPLACE_EXISTING)
 
     if status == 0:
-        raise WinError()
+        raise winapi.WinError()
 
 
 @contextlib.contextmanager

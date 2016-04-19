@@ -13,14 +13,73 @@ import collections
 import ctypes
 
 if os.name == "nt":
-    from win32com.shell import shell
-    import pywintypes
-    import pythoncom
+    from . import winapi
     from .winapi import SHGFPType, CSIDLFlag, CSIDL, GUID, \
         SHGetFolderPathW, SetEnvironmentVariableW, S_OK, \
         GetEnvironmentStringsW, FreeEnvironmentStringsW, \
         GetCommandLineW, CommandLineToArgvW, LocalFree, MAX_PATH, \
-        KnownFolderFlag, FOLDERID, SHGetKnownFolderPath, CoTaskMemFree
+        KnownFolderFlag, FOLDERID, SHGetKnownFolderPath, CoTaskMemFree, \
+        CoInitialize, IShellLinkW, CoCreateInstance, CLSID_ShellLink, \
+        CLSCTX_INPROC_SERVER, IPersistFile
+
+
+def open_folder_and_select_items(folder, items=None):
+    """Shows a directory and optional files or subdirectories in the
+    file manager (explorer.exe).
+
+    If both folder and items is given the file manager will
+    display the content of `folder` and highlight all `items`.
+
+    If only a directory is given then the content of the parent directory is
+    shown and the `folder` highlighted.
+
+    Might raise WindowsError in case something fails (any of the
+    files not existing etc.)
+    """
+
+    if items is None:
+        items = []
+
+    assert isinstance(folder, unicode)
+    for item in items:
+        assert isinstance(item, unicode)
+        assert not os.path.split(item)[0]
+
+    desktop = winapi.IShellFolder()
+    parent = winapi.IShellFolder()
+    parent_id = winapi.PIDLIST_ABSOLUTE()
+    child_ids = (winapi.PIDLIST_RELATIVE * len(items))()
+
+    try:
+        winapi.CoInitialize(None)
+
+        winapi.SHParseDisplayName(
+            folder, None, ctypes.byref(parent_id), 0, None)
+
+        winapi.SHGetDesktopFolder(ctypes.byref(desktop))
+
+        desktop.BindToObject(
+            parent_id, None, winapi.IShellFolder.IID, ctypes.byref(parent))
+
+        for i, item in enumerate(items):
+            attrs = winapi.ULONG(0)
+            parent.ParseDisplayName(
+                None, None, item, None,
+                ctypes.byref(child_ids[i]), ctypes.byref(attrs))
+
+        winapi.SHOpenFolderAndSelectItems(
+            parent_id, len(child_ids),
+            winapi.PCUITEMID_CHILD_ARRAY(child_ids), 0)
+    finally:
+        for child_id in child_ids:
+            if child_id:
+                winapi.CoTaskMemFree(child_id)
+        if parent_id:
+            winapi.ILFree(parent_id)
+        if parent:
+            parent.Release()
+        if desktop:
+            desktop.Release()
 
 
 def _get_path(folder, default=False, create=False):
@@ -67,7 +126,7 @@ def _get_known_path(folder, default=False, create=False):
     flags |= KnownFolderFlag.DONT_VERIFY
 
     ptr = ctypes.c_wchar_p()
-    guid = GUID.from_uuid(folder)
+    guid = GUID(folder)
     try:
         result = SHGetKnownFolderPath(
             ctypes.byref(guid), flags, None, ctypes.byref(ptr))
@@ -118,21 +177,33 @@ def get_links_dir(**kwargs):
 
 def get_link_target(path):
     """Takes a path to a .lnk file and returns a path the .lnk file
-    is targeting or None.
+    is targeting.
+
+    Might raise WindowsError in case something fails.
     """
 
-    link = pythoncom.CoCreateInstance(
-        shell.CLSID_ShellLink, None,
-        pythoncom.CLSCTX_INPROC_SERVER,
-        shell.IID_IShellLink)
+    assert isinstance(path, unicode)
 
+    CoInitialize(None)
+
+    pShellLinkW = IShellLinkW()
+    CoCreateInstance(
+        ctypes.byref(CLSID_ShellLink), None, CLSCTX_INPROC_SERVER,
+        ctypes.byref(IShellLinkW.IID), ctypes.byref(pShellLinkW))
     try:
-        link.QueryInterface(pythoncom.IID_IPersistFile).Load(path)
-        # FIXME: this only supports the old non-unicode API..
-        path = link.GetPath(0)[0]
-        return path.decode("latin-1")
-    except pywintypes.com_error:
-        pass
+        pPersistFile = IPersistFile()
+        pShellLinkW.QueryInterface(ctypes.byref(IPersistFile.IID),
+                                   ctypes.byref(pPersistFile))
+        try:
+            buffer_ = ctypes.create_unicode_buffer(path, MAX_PATH)
+            pPersistFile.Load(buffer_, 0)
+        finally:
+            pPersistFile.Release()
+        pShellLinkW.GetPath(buffer_, MAX_PATH, None, 0)
+    finally:
+        pShellLinkW.Release()
+
+    return ctypes.wstring_at(buffer_)
 
 
 class WindowsEnvironError(Exception):

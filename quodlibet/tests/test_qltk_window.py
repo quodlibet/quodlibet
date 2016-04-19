@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase
 
 from quodlibet.qltk.window import Window, on_first_map, Dialog
 from quodlibet.util import InstanceTracker
+
+from .helper import realized
 
 
 class TWindows(TestCase):
@@ -57,10 +63,20 @@ class TWindows(TestCase):
         w = Window(title="foo")
         w.use_header_bar()
         self.assertEqual(w.get_title(), "foo")
+        w.destroy()
 
         w = Window()
         w.use_header_bar()
         self.assertEqual(w.get_title(), None)
+        w.destroy()
+
+    def test_toggle_fullscreen(self):
+        w = Window(title="foo")
+        w.toggle_fullscreen()
+        with realized(w):
+            w.toggle_fullscreen()
+            w.toggle_fullscreen()
+        w.destroy()
 
 
 class TDialog(TestCase):

@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from quodlibet.library import SongLibrary
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import any_song, each_song

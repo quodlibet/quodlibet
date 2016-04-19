@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
-#      2013-2014 Nick Boultbee
+#      2013-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+
+from quodlibet.qltk.pluginwin import PluginWindow
 
 from quodlibet import qltk
 
@@ -141,6 +143,10 @@ class SongsMenuPluginHandler(PluginHandler):
                 except:
                     print_exc()
                     item.destroy()
+            menu.append(SeparatorMenuItem())
+            prefs = Gtk.MenuItem(label=_("Configure Plugins…"))
+            prefs.connect("activate", lambda _: PluginWindow().show())
+            menu.append(prefs)
 
         else:
             menu = None

@@ -433,7 +433,7 @@ class PluginConfig(ConfigProxy):
     """A proxy for a Config object that can be used by plugins.
 
     Provides some methods of the Config class but doesn't need a
-    sections and prefixes the config option name.
+    section and prefixes the config option name.
     """
 
     def __init__(self, prefix, _config=None, _defaults=True):

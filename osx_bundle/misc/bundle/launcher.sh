@@ -1,6 +1,6 @@
 #!/bin/sh
 
-bundle="$(dirname "$(dirname "$(dirname "$0")")")"
+bundle=$(cd "$(dirname "$(dirname "$(dirname "$0")")")"; pwd)
 bundle_contents="$bundle"/Contents
 bundle_res="$bundle_contents"/Resources
 bundle_lib="$bundle_res"/lib
@@ -40,6 +40,10 @@ fi
 #Set $PYTHON to point inside the bundle
 export PYTHON="$bundle_contents/MacOS/python"
 export PYTHONHOME="$bundle_res"
+
+# GTLS_SYSTEM_CA_FILE sets the path in the gnutls backend of glib-networking
+# (the env var gets respected because we patch it.. not available upstream)
+export GTLS_SYSTEM_CA_FILE="$bundle_lib/python2.7/site-packages/certifi/cacert.pem"
 
 # temporary disable tooltips
 export QUODLIBET_NO_HINTS=yes

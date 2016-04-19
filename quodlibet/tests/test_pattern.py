@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase, AbstractTestCase
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+from tests import TestCase
 
 import os
 
@@ -9,7 +13,7 @@ from quodlibet.pattern import (FileFromPattern, XMLFromPattern, Pattern,
     XMLFromMarkupPattern, ArbitraryExtensionFileFromPattern)
 
 
-class _TPattern(AbstractTestCase):
+class _TPattern(TestCase):
 
     def setUp(self):
         s1 = {'tracknumber': '5/6', 'artist': 'Artist', 'title': 'Title5',
@@ -55,6 +59,10 @@ class _TPattern(AbstractTestCase):
 class TPattern(_TPattern):
     from quodlibet.formats import AudioFile
     AudioFile
+
+    def test_numeric(self):
+        pat = Pattern("<~#rating>")
+        self.assertEqual(pat.format(self.a), "0.50")
 
     def test_space(self):
         pat = Pattern("a ")
@@ -426,6 +434,15 @@ class TRealTags(TestCase):
 
 
 class TPatternFormatList(_TPattern):
+
+    def test_numeric(self):
+        pat = Pattern("<~#rating>")
+        self.assertEqual(pat.format_list(self.a), {("0.50", "0.50")})
+
+    def test_empty(self):
+        pat = Pattern("<nopenope>")
+        self.assertEqual(pat.format_list(self.a), {("", "")})
+
     def test_same(s):
         pat = Pattern('<~basename> <title>')
         s.failUnlessEqual(pat.format_list(s.a),

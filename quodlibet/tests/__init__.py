@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 import fnmatch
 import inspect
 from math import log
@@ -29,40 +33,9 @@ class TestCase(OrigTestCase):
     failIfAlmostEqual = OrigTestCase.assertNotAlmostEqual
 
 
-class AbstractTestCase(TestCase):
-    """If a class is a direct subclass of this one it gets skipped"""
-
-
-skipped = []
-skipped_reason = {}
-skipped_warn = set()
-
-
-def skip(cls, reason=None, warn=True):
-    assert inspect.isclass(cls)
-
-    skipped.append(cls)
-    if reason:
-        skipped_reason[cls] = reason
-    if warn:
-        skipped_warn.add(cls)
-
-    cls = unittest.skip(cls)
-    return cls
-
-
-def skipUnless(value, *args, **kwargs):
-    def dec(cls):
-        assert inspect.isclass(cls)
-
-        if value:
-            return cls
-        return skip(cls, *args, **kwargs)
-    return dec
-
-
-def skipIf(value, *args, **kwargs):
-    return skipUnless(not value, *args, **kwargs)
+skip = unittest.skip
+skipUnless = unittest.skipUnless
+skipIf = unittest.skipIf
 
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data")
@@ -185,6 +158,8 @@ class Runner(object):
 
     def run(self, test, failfast=False):
         suite = unittest.makeSuite(test)
+        if suite.countTestCases() == 0:
+            return 0, 0, 0
         result = Result(test.__name__, len(suite._tests), failfast=failfast)
         suite(result)
         result.printErrors()
@@ -214,6 +189,11 @@ def init_test_environ():
     # force the old cache dir so that GStreamer can re-use the GstRegistry
     # cache file
     environ["XDG_CACHE_HOME"] = xdg_get_cache_home()
+    # GStreamer will update the cache if the environment has changed
+    # (in Gst.init()). Since it takes 0.5s here and doesn't add much,
+    # disable it. If the registry cache is missing it will be created
+    # despite this setting.
+    environ["GST_REGISTRY_UPDATE"] = fsnative(u"no")
 
     # set HOME and remove all XDG vars that default to it if not set
     home_dir = tempfile.mkdtemp(prefix=fsnative(u"HOME-"), dir=_TEMP_DIR)
@@ -285,18 +265,14 @@ def unit(run=[], filter_func=None, main=False, subdirs=None,
             GLib.LogLevelFlags.LEVEL_WARNING)
 
     suites = []
-    abstract = []
 
     def discover_tests(mod):
         for k in vars(mod):
             value = getattr(mod, k)
 
-            if value not in (TestCase, AbstractTestCase) and \
+            if value is not TestCase and \
                     inspect.isclass(value) and issubclass(value, TestCase):
-                if AbstractTestCase in value.__bases__:
-                    abstract.append(value)
-                elif value not in skipped:
-                    suites.append(value)
+                suites.append(value)
 
     if main:
         for name in os.listdir(path):
@@ -316,27 +292,6 @@ def unit(run=[], filter_func=None, main=False, subdirs=None,
                     ".".join([__name__, subdir, name[:-3]]), {}, {}, [])
                 discover_tests(getattr(getattr(mod, subdir), name[:-3]))
 
-    # check if each abstract class is actually used (also by skipped ones)
-    unused_abstract = set(abstract)
-    for case in suites:
-        unused_abstract -= set(case.__mro__)
-    for case in skipped:
-        unused_abstract -= set(case.__mro__)
-    if unused_abstract:
-        raise Exception("The following abstract test cases have no "
-                        "implementation: %r" % list(unused_abstract))
-
-    for case in skipped:
-        # don't warn for tests we won't run anyway
-        if run and case not in run:
-            continue
-        name = "%s.%s" % (case.__module__, case.__name__)
-        reason = skipped_reason.get(case, "??")
-        if case in skipped_warn:
-            print_w("Skipped test: %s (%s)" % (name, reason))
-
-    import quodlibet.config
-
     runner = Runner()
     failures = errors = all_ = 0
     use_suites = filter(filter_func, suites)
@@ -350,6 +305,5 @@ def unit(run=[], filter_func=None, main=False, subdirs=None,
             all_ += num
             if stop_first and (df or de):
                 break
-            quodlibet.config.quit()
 
     return failures, errors, all_

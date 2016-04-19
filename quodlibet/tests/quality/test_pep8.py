@@ -7,14 +7,12 @@
 
 import os
 import glob
+import errno
 import subprocess
 
-from quodlibet.util.path import iscommand
-
-from tests import TestCase, skipUnless
+from tests import TestCase
 
 
-@skipUnless(iscommand("pep8"), "pep8 not found")
 class TPEP8(TestCase):
     # E12x popped up in pep8 1.4 compared to 1.2..
     # drop them once 1.4 is common enough
@@ -27,9 +25,14 @@ class TPEP8(TestCase):
             ignore = []
         ignore += self.IGNORE_ERROROS
 
-        p = subprocess.Popen(
-            ["pep8", "--ignore=" + ",".join(ignore), path],
-            stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        try:
+            p = subprocess.Popen(
+                ["pep8", "--ignore=" + ",".join(ignore), path],
+                stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        except OSError as e:
+            if e.errno == errno.ENOENT:
+                raise Exception("pep8 missing; please install")
+            raise
 
         class Future(object):
 

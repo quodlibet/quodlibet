@@ -82,9 +82,16 @@ def _get_win_favorites():
 
         for entry in link_entries:
             if entry.endswith(".lnk"):
-                target = windows.get_link_target(os.path.join(links, entry))
-                if target is not None:
-                    folders.append(target)
+                try:
+                    target = windows.get_link_target(
+                        os.path.join(links, entry))
+                except WindowsError:
+                    pass
+                else:
+                    if target:
+                        # RecentPlaces.lnk resolves
+                        # to an empty string for example
+                        folders.append(target)
 
     # remove duplicated entries
     filtered = []

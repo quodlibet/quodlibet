@@ -94,6 +94,9 @@ OPTIONS
 --random=tag
     Filter on a random value
 
+--refresh
+    Refresh and rescan library
+
 --repeat=off|on|t
     Turn repeat off, on, or toggle
 
@@ -114,6 +117,9 @@ OPTIONS
 
 --status
     Print playing status
+
+--stop-after=0|1|t
+    Stop after the playing song
 
 --toggle-window
     Toggle main window visibility
