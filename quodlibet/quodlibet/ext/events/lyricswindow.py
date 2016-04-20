@@ -148,16 +148,16 @@ class LyricsWebViewWindow(Window):
         self._scrolled_window = Gtk.ScrolledWindow()
         self.add(self._scrolled_window)
 
-        self._reset_webkit()
+        self._reload_web_view()
 
-    def _reset_webkit(self, web_view=None):
+    def _reload_web_view(self, web_view=None):
         if web_view is not None:
             self._scrolled_window.remove(web_view)
         
         self._view = view = WebKit2.WebView()
         self.set_zoom_level(self.conf.zoom_level)
         
-        view.connect('web-process-crashed', self._reset_webkit)
+        view.connect('web-process-crashed', self._reload_web_view)
         
         settings = view.get_settings()
         settings.set_property("user-agent", USER_AGENT)
