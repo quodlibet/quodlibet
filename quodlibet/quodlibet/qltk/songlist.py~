@@ -663,7 +663,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         if songs:
             from quodlibet import app
             app.window.playlist.enqueue(songs)
-
+                    
     def __redraw_current(self):
         model = self.get_model()
         iter_ = model.current_iter
