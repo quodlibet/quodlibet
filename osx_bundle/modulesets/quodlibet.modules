@@ -166,6 +166,7 @@
             version="1.46.0"
             hash="sha256:6658bd3c2b8813eb3e2511ee153238d09ace9d309e4574af27443d87423e4233">
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/girscanner-objc.patch" strip="1"/>
+      <patch file="patches/gi-make-shared-library-in-cairo-1.0.gir-an-absolute-pat.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="glib"/>
