@@ -137,7 +137,7 @@ class LyricsWebViewWindow(Window):
     def __init__(self, conf):
         super(LyricsWebViewWindow, self).__init__(dialog=False)
         self.set_transient_for(app.window)
-        
+
         self.conf = conf
         self.resize(conf.width, conf.height)
         self.move(conf.x, conf.y)
@@ -153,12 +153,12 @@ class LyricsWebViewWindow(Window):
     def _reload_web_view(self, web_view=None):
         if web_view is not None:
             self._scrolled_window.remove(web_view)
-        
+
         self._view = view = WebKit2.WebView()
         self.set_zoom_level(self.conf.zoom_level)
-        
+
         view.connect('web-process-crashed', self._reload_web_view)
-        
+
         settings = view.get_settings()
         settings.set_property("user-agent", USER_AGENT)
         settings.set_media_playback_requires_user_gesture(True)
