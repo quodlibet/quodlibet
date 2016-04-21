@@ -148,6 +148,7 @@ class LyricsWebViewWindow(Window):
         self._scrolled_window = Gtk.ScrolledWindow()
         self.add(self._scrolled_window)
 
+        self.current_song = None
         self._reload_web_view()
 
     def _reload_web_view(self, web_view=None):
@@ -178,12 +179,16 @@ class LyricsWebViewWindow(Window):
 
         self._scrolled_window.add(view)
         self._scrolled_window.show_all()
+        
+        if self.current_song is not None:
+            self.set_song(self.current_song)
 
     def set_zoom_level(self, zoom_level):
         self._view.set_zoom_level(zoom_level)
 
     def set_song(self, song):
         """Display lyrics for the given song"""
+        self.current_song = song
 
         if song is None:
             message = _("No active song")
