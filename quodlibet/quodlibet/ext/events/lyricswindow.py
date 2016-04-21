@@ -179,7 +179,7 @@ class LyricsWebViewWindow(Window):
 
         self._scrolled_window.add(view)
         self._scrolled_window.show_all()
-        
+
         if self.current_song is not None:
             self.set_song(self.current_song)
 
