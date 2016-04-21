@@ -382,8 +382,12 @@ class SongsMenu(Gtk.Menu):
             if callable(delete):
                 b = qltk.MenuItem(_("_Delete"), Icons.EDIT_DELETE)
                 b.connect('activate', lambda item: delete(songs))
+                if accels:
+                    qltk.add_fake_accel(b, "<Primary>Delete")
             else:
                 b = TrashMenuItem()
+                if accels:
+                    qltk.add_fake_accel(b, "<Primary>Delete")
 
                 def trash_cb(item):
                     parent = get_menu_item_top_parent(item)
