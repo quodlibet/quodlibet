@@ -33,6 +33,10 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.pattern import URLFromPattern
 
 
+# for the mobile version
+USER_AGENT = ("Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) "
+             "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0"
+             "Chrome/43.0.2357.65 Mobile Safari/537.36")
 LYRICS_WIKIA_URL = ("http://lyrics.wikia.com/api.php?client=QuodLibet"
                     "&action=lyrics&func=getSong&artist=%s&song=%s&fmt=xml")
 DEFAULT_ALTERNATE_SEARCH_URL = ("https://duckduckgo.com/"
@@ -134,19 +138,30 @@ class LyricsWebViewWindow(Window):
         super(LyricsWebViewWindow, self).__init__(dialog=False)
         self.set_transient_for(app.window)
 
+        self.conf = conf
+        self.resize(conf.width, conf.height)
+        self.move(conf.x, conf.y)
+
         self._thread = LyricsWikiaSearchThread()
         self.connect("destroy", lambda *x: self._thread.stop())
 
-        sw = Gtk.ScrolledWindow()
-        self.add(sw)
+        self._scrolled_window = Gtk.ScrolledWindow()
+        self.add(self._scrolled_window)
+
+        self.current_song = None
+        self._reload_web_view()
+
+    def _reload_web_view(self, web_view=None):
+        if web_view is not None:
+            self._scrolled_window.remove(web_view)
 
         self._view = view = WebKit2.WebView()
+        self.set_zoom_level(self.conf.zoom_level)
+
+        view.connect('web-process-crashed', self._reload_web_view)
+
         settings = view.get_settings()
-        # for the mobile version
-        settings.set_property("user-agent",
-            ("Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) "
-             "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0"
-             "Chrome/43.0.2357.65 Mobile Safari/537.36"))
+        settings.set_property("user-agent", USER_AGENT)
         settings.set_media_playback_requires_user_gesture(True)
 
         def scroll_tp_lyrics(view, load_event):
@@ -162,19 +177,18 @@ class LyricsWebViewWindow(Window):
 
         view.connect('load-changed', scroll_tp_lyrics)
 
-        sw.add(view)
-        sw.show_all()
+        self._scrolled_window.add(view)
+        self._scrolled_window.show_all()
 
-        self.conf = conf
-        self.set_zoom_level(conf.zoom_level)
-        self.resize(conf.width, conf.height)
-        self.move(conf.x, conf.y)
+        if self.current_song is not None:
+            self.set_song(self.current_song)
 
     def set_zoom_level(self, zoom_level):
         self._view.set_zoom_level(zoom_level)
 
     def set_song(self, song):
         """Display lyrics for the given song"""
+        self.current_song = song
 
         if song is None:
             message = _("No active song")
