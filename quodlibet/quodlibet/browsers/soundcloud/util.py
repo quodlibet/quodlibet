@@ -9,6 +9,8 @@ import os
 from datetime import datetime
 from gi.repository import Gtk
 
+from quodlibet.query._match import Inter, Tag, Union
+
 from quodlibet import print_d
 
 DEFAULT_BITRATE = 128
@@ -78,3 +80,24 @@ def json_callback(wrapped):
 def clamp(val, low, high):
     intval = int(val or 0)
     return max(low, min(high, intval))
+
+
+def extract(node):
+    def terms_from_re(node):
+        pat = node.pattern.lstrip('^').rstrip('$')
+        return set(pat.split('|'))
+
+    if isinstance(node, Tag):
+        print_d("%r is a Tag" % (node,))
+        return extract(node.res)
+    elif isinstance(node, Inter) or isinstance(node, Union):
+        terms = set()
+        for n in node.res:
+            terms |= extract(n)
+        # terms = reduce(lambda t, n: operator.ior(t, extract(n)), node.res, set())
+        return terms
+    elif hasattr(node, "pattern"):
+        return terms_from_re(node)
+    else:
+        print_d("Unhandled node '%s' (%s)" % (node, type(node)))
+    return set()

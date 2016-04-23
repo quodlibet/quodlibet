@@ -15,7 +15,7 @@ from quodlibet.browsers import Browser
 from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
 from quodlibet.browsers.soundcloud.library import SoundcloudLibrary
 from quodlibet.browsers.soundcloud.util import SITE_URL, LOGO_IMAGE_BLACK, \
-    LOGIN_IMAGES
+    LOGIN_IMAGES, extract
 from quodlibet.qltk import Icons, Message
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
@@ -236,6 +236,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
     def __filter_changed(self, bar, text, restore=False):
         self.__filter = Query(text, self.STAR)
+        terms = extract(self.__filter._match)
+        print_d("Got terms from query: %s" % (terms,))
         if not restore:
             self.activate()
 
