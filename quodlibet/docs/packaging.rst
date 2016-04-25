@@ -11,6 +11,12 @@ missing. For license & copyright information see :ref:`license`
 Changes
 -------
 
+3.7
+^^^
+
+* **udisks1** support removed
+
+
 3.6
 ^^^
 
@@ -150,7 +156,7 @@ Optional Runtime Dependencies
 **media-player-info**:
     * For detection of DAPs
 
-**udisks** or **udisks2**:
+**udisks2**:
     * For detection of DAPs
 
 **python-feedparser**:
