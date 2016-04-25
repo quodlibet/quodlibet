@@ -17,6 +17,7 @@ from quodlibet.compat import PY3
 from quodlibet.util.dprint import Colorise, print_
 from quodlibet.util.path import fsnative, is_fsnative, xdg_get_cache_home
 from quodlibet.util.misc import environ
+from quodlibet import util
 
 from unittest import TestCase as OrigTestCase
 
@@ -38,9 +39,7 @@ skipUnless = unittest.skipUnless
 skipIf = unittest.skipIf
 
 
-DATA_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data")
-if os.name == "nt":
-    DATA_DIR = DATA_DIR.decode("ascii")
+DATA_DIR = os.path.join(util.get_module_dir(), "data")
 assert is_fsnative(DATA_DIR)
 _TEMP_DIR = None
 
@@ -252,7 +251,7 @@ atexit.register(exit_test_environ)
 def unit(run=[], filter_func=None, main=False, subdirs=None,
                strict=False, stop_first=False):
 
-    path = os.path.dirname(__file__)
+    path = util.get_module_dir()
     if subdirs is None:
         subdirs = []
 

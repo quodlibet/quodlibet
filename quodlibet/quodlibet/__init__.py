@@ -18,6 +18,7 @@ if PY2:
     reload(sys)
     sys.setdefaultencoding("utf-8")
 
+from quodlibet import util
 from quodlibet.util import set_process_title, environ, cached_func
 from quodlibet.util import windows, is_osx, is_windows
 from quodlibet.util.path import mkdir, unexpand
@@ -126,10 +127,7 @@ def is_release():
 def get_base_dir():
     """The path to the quodlibet package"""
 
-    file_path = __file__
-    if os.name == "nt":
-        file_path = file_path.decode(sys.getfilesystemencoding())
-    return os.path.dirname(os.path.realpath(file_path))
+    return util.get_module_dir()
 
 
 @cached_func

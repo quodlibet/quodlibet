@@ -11,7 +11,7 @@ try:
     import ConfigParser
 except ImportError:
     import configparser as ConfigParser
-from os.path import dirname, basename
+from os.path import basename
 from quodlibet.util.dprint import print_d, print_w
 
 from gi.repository import GObject
@@ -38,7 +38,7 @@ def init_devices():
     global devices
 
     load_pyc = util.is_windows() or util.is_osx()
-    modules = load_dir_modules(dirname(__file__),
+    modules = load_dir_modules(util.get_module_dir(),
                                package=__package__,
                                load_compiled=load_pyc)
 
