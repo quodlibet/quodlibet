@@ -15,6 +15,7 @@ Changes
 ^^^
 
 * **udisks1** support removed
+* New dependency: **python-requests** (>= 2.2.1)
 
 
 3.6
@@ -107,6 +108,7 @@ The following software is needed to start Ex Falso or Quod Libet.
 * **mutagen** (>= 1.30)
 * **GTK+** (>= 3.10)
 * **libsoup** (>= 2.44)
+* **python-requests** (>= 2.2.1)
 * On OS X only: **PyObjC**
 
 For icons a complete **icon theme** is needed, preferably with symbolic icons. 
