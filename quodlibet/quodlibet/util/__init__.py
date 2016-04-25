@@ -1161,7 +1161,7 @@ def get_module_dir(module=None):
     else:
         file_path = getattr(module, "__file__")
     if is_windows():
-        file_path = file_.decode(sys.getfilesystemencoding())
+        file_path = file_path.decode(sys.getfilesystemencoding())
     return os.path.dirname(os.path.realpath(file_path))
 
 
