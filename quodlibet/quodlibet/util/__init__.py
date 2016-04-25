@@ -1149,3 +1149,32 @@ def reraise(tp, value, tb=None):
     if tb is None:
         tb = sys.exc_info()[2]
     py_reraise(tp, value, tb)
+
+
+def get_module_dir(module=None):
+    """Returns the absolute path of a module. If no module is given
+    the one this is called from is used.
+    """
+
+    if module is None:
+        file_path = sys._getframe(1).f_globals["__file__"]
+    else:
+        file_path = getattr(module, "__file__")
+    if is_windows():
+        file_path = file_.decode(sys.getfilesystemencoding())
+    return os.path.dirname(os.path.realpath(file_path))
+
+
+def get_ca_file():
+    """A path to a CA file or None.
+
+    Depends whether we use certifi or the system trust store
+    on the current platform.
+    """
+
+    if is_linux():
+        return None
+
+    import certifi
+
+    return os.path.join(get_module_dir(certifi), "cacert.pem")
