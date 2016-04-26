@@ -39,7 +39,7 @@ class MinVersions(object):
     PYTHON3 = Version("Python3", 3, 4)
     MUTAGEN = Version("Mutagen", 1, 30)
     GTK = Version("GTK+", 3, 10)
-    PYGOBJECT = Version("PyGObject", 3, 10)
+    PYGOBJECT = Version("PyGObject", 3, 12)
     GSTREAMER = Version("GStreamer", 1, 0)
 
 

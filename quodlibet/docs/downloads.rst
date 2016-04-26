@@ -120,7 +120,7 @@ Stable Repo:
     `openSUSE 13.1, 13.2, Tumbleweed, Leap 42.1 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
 
 Unstable Repo:
-    `openSUSE 13.1, 13.2, Tumbleweed, Leap 42.1 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
+    `openSUSE 13.2, Tumbleweed, Leap 42.1 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
 
 .. _arch:
 

@@ -16,6 +16,7 @@ Changes
 
 * **udisks1** support removed
 * New dependency: **python-requests** (>= 2.2.1)
+* **PyGObject 3.12** required
 
 
 3.6
@@ -103,7 +104,7 @@ Non-Optional Runtime Dependencies
 The following software is needed to start Ex Falso or Quod Libet.
 
 * **Python** (2.7)
-* **PyGObject** including **cairo support** (>= 3.10)
+* **PyGObject** including **cairo support** (>= 3.12)
 * **pycairo** (>= 1.8)
 * **mutagen** (>= 1.30)
 * **GTK+** (>= 3.10)
