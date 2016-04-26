@@ -5,14 +5,11 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-try:
-    import requests
-except ImportError:
-    requests = None
+import requests
 
 from gi.repository import Gio, Soup, GLib
 
-from tests import TestCase, skipIf, skipUnless
+from tests import TestCase, skipIf
 
 from quodlibet.util import is_linux, is_osx, get_ca_file
 from quodlibet.compat import urlopen
@@ -38,7 +35,6 @@ class Thttps(TestCase):
             with self.assertRaises(Exception):
                 urlopen(url, cafile=get_ca_file()).close()
 
-    @skipUnless(requests, "requests missing")
     def test_requests(self):
         for url in self.GOOD:
             requests.get(url).close()
