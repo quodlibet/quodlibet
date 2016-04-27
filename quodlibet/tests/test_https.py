@@ -11,7 +11,7 @@ from gi.repository import Gio, Soup, GLib
 
 from tests import TestCase, skipIf
 
-from quodlibet.util import is_linux, is_osx, get_ca_file
+from quodlibet.util import is_linux, get_ca_file
 from quodlibet.compat import urlopen
 
 
@@ -43,9 +43,6 @@ class Thttps(TestCase):
                 requests.get(url).close()
 
     def test_gio(self):
-        if is_osx():
-            return
-
         for url in self.GOOD:
             client = Gio.SocketClient.new()
             client.set_tls(True)
@@ -58,9 +55,6 @@ class Thttps(TestCase):
                 client.connect_to_uri(url, 443, None).close()
 
     def test_soup(self):
-        if is_osx():
-            return
-
         for url in self.GOOD:
             session = Soup.Session.new()
             request = session.request_http("get", url)
