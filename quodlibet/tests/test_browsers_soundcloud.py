@@ -57,7 +57,7 @@ class TestExtract(TestCase):
         self.verify("&(artist='foo', genre=|(rock, metal))",
                     {'foo', 'rock', 'metal'})
 
-    def verify(self, text, expected, term = 'q'):
+    def verify(self, text, expected, term='q'):
         print_d("Trying '%s'..." % text)
         terms = extract(Query(text)._match)
         self.failUnlessEqual(terms[term], expected,

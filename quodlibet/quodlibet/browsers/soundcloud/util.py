@@ -5,10 +5,10 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
 from collections import defaultdict
 from datetime import datetime
 from gi.repository import Gtk
+from os import path
 
 import operator
 
