@@ -26,6 +26,7 @@ class test_cmd(Command):
         ("strict", None, "make glib warnings / errors fatal"),
         ("all", None, "run all suites"),
         ("exitfirst", "x", "stop after first failing test"),
+        ("no-network", "n", "skip tests requiring a network connection"),
     ]
     use_colors = sys.stderr.isatty() and os.name != "nt"
 
@@ -35,6 +36,7 @@ class test_cmd(Command):
         self.strict = False
         self.all = False
         self.exitfirst = False
+        self.no_network = False
 
     def finalize_options(self):
         if self.to_run:
@@ -43,6 +45,7 @@ class test_cmd(Command):
         self.all = bool(self.all)
         self.suite = self.suite and str(self.suite)
         self.exitfirst = bool(self.exitfirst)
+        self.no_network = bool(self.no_network)
 
     @classmethod
     def _red(cls, text):
@@ -71,7 +74,8 @@ class test_cmd(Command):
 
         failures, errors, all_ = tests.unit(
             self.to_run, main=main, subdirs=subdirs,
-            strict=self.strict, stop_first=self.exitfirst)
+            strict=self.strict, stop_first=self.exitfirst,
+            no_network=self.no_network)
         if failures or errors:
             raise SystemExit(self._red("%d test failure(s) and "
                                        "%d test error(s) for %d tests."

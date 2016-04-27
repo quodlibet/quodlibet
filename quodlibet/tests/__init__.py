@@ -37,6 +37,11 @@ class TestCase(OrigTestCase):
 skip = unittest.skip
 skipUnless = unittest.skipUnless
 skipIf = unittest.skipIf
+_NO_NETWORK = False
+
+
+def skipUnlessNetwork(*args, **kwargs):
+    return skipIf(_NO_NETWORK, "no network")(*args, **kwargs)
 
 
 DATA_DIR = os.path.join(util.get_module_dir(), "data")
@@ -249,11 +254,15 @@ atexit.register(exit_test_environ)
 
 
 def unit(run=[], filter_func=None, main=False, subdirs=None,
-               strict=False, stop_first=False):
+               strict=False, stop_first=False, no_network=False):
+
+    global _NO_NETWORK
 
     path = util.get_module_dir()
     if subdirs is None:
         subdirs = []
+
+    _NO_NETWORK = no_network
 
     # make glib warnings fatal
     if strict:
