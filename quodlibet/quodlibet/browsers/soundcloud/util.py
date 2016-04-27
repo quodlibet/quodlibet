@@ -6,10 +6,16 @@
 # published by the Free Software Foundation
 
 import os
+from collections import defaultdict
 from datetime import datetime
 from gi.repository import Gtk
 
-from quodlibet.query._match import Inter, Tag, Union
+import operator
+
+from quodlibet.util.dprint import print_w
+
+from quodlibet.query._match import Inter, Tag, Union, Numcmp, NumexprTag, \
+    NumexprNumber
 
 from quodlibet import print_d
 
@@ -82,22 +88,68 @@ def clamp(val, low, high):
     return max(low, min(high, intval))
 
 
-def extract(node):
-    def terms_from_re(node):
-        pat = node.pattern.lstrip('^').rstrip('$')
-        return set(pat.split('|'))
+INVERSE_OPS = {operator.le: operator.gt,
+               operator.gt: operator.le,
+               operator.lt: operator.ge,
+               operator.ge: operator.lt}
 
-    if isinstance(node, Tag):
-        print_d("%r is a Tag" % (node,))
-        return extract(node.res)
+
+def extract(node):
+    """Return a list of tuples of search terms
+        that could be used to query the API
+        and might return results useful for populating the songlist
+
+        Note this is not a *translation* of the query in any sense,
+        and that (currently) the browser filters ingested API results properly
+        (given the tag mappings) so that the QL results are still valid
+        based on
+        the query given, even if some more could have been returned.
+        ...so if in doubt, less restrictive is better here."""
+    tuples = _extract_terms(node)
+    terms = defaultdict(set)
+    for (k, v) in tuples:
+        terms[k].add(v)
+    return terms
+
+SUPPORTED = {'artist', 'title', 'genre', 'tags', 'album', 'comment'}
+
+
+def _extract_terms(node):
+    def terms_from_re(pattern):
+        """Best efforts to de-regex"""
+        pat = pattern.lstrip('^').rstrip('$')
+        return {('q', p) for p in pat.split('|')}
+
+    if isinstance(node, Tag) and set(node._names) & SUPPORTED:
+        print_d("%r is a supported Tag" % (node,))
+        return _extract_terms(node.res)
     elif isinstance(node, Inter) or isinstance(node, Union):
+        # return reduce(lambda t, n: operator.ior(t, extract(n)),
+        #               node.res, set())
         terms = set()
         for n in node.res:
-            terms |= extract(n)
-        # terms = reduce(lambda t, n: operator.ior(t, extract(n)), node.res, set())
+            terms |= _extract_terms(n)
         return terms
-    elif hasattr(node, "pattern"):
-        return terms_from_re(node)
-    else:
-        print_d("Unhandled node '%s' (%s)" % (node, type(node)))
+    elif isinstance(node, Numcmp):
+        def from_relative(op, l, r):
+            tag = l._tag
+            value = r._value
+            if op == operator.eq:
+                return {(tag, value)}
+            elif op in (operator.le, operator.lt):
+                return {(tag + "[to]", value)}
+            elif op in (operator.ge, operator.gt):
+                return {(tag + "[from]", value)}
+            print_w("Unsupported operator: %s" % op)
+
+        left = node._expr
+        right = node._expr2
+        if isinstance(left, NumexprTag) and isinstance(right, NumexprNumber):
+            return from_relative(node._op, left, right)
+        elif isinstance(right, NumexprTag) and isinstance(left, NumexprNumber):
+            return from_relative(INVERSE_OPS[node._op], right, left)
+        print_w("Unsupported numeric: %s" % node)
+    elif hasattr(node, 'pattern'):
+        return terms_from_re(node.pattern)
+    print_d("Unhandled node of type '%s'" % (type(node).__name__))
     return set()
