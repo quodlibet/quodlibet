@@ -53,6 +53,7 @@ class RGAlbum(object):
         self.songs = rg_songs
         self.gain = None
         self.peak = None
+        self.reference_loudness = None
         self.__should_process = None
         self.__process_mode = process_mode
 
@@ -98,7 +99,7 @@ class RGAlbum(object):
             return
 
         for song in self.songs:
-            song._write(self.gain, self.peak)
+            song._write(self.gain, self.peak, self.reference_loudness)
 
     @classmethod
     def from_songs(cls, songs, process_mode=UpdateMode.ALWAYS):
@@ -132,7 +133,7 @@ class RGSong(object):
         #       e.g. to re-run over entire library but keeping files untouched
         self.overwrite_existing = True
 
-    def _write(self, album_gain, album_peak):
+    def _write(self, album_gain, album_peak, reference_loudness):
         if self.error or not self.done:
             return
         song = self.song
@@ -151,6 +152,8 @@ class RGSong(object):
         write_to_song('replaygain_track_peak', '%.4f', self.peak)
         write_to_song('replaygain_album_gain', '%.2f dB', album_gain)
         write_to_song('replaygain_album_peak', '%.4f', album_peak)
+        write_to_song('replaygain_reference_loudness', '%.2g dB',
+            reference_loudness)
 
     @property
     def title(self):
@@ -285,6 +288,8 @@ class ReplayGainPipeline(GObject.Object):
         self._songs = list(album.songs)
         self._done = []
         self._next_song(first=True)
+        self._album.reference_loudness = self.analysis.get_property(
+            'reference-level')
 
     def quit(self):
         self.bus.remove_signal_watch()
