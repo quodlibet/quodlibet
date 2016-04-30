@@ -6,7 +6,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
 import sys
 
 from quodlibet.util.importhelper import load_dir_modules
@@ -30,7 +29,7 @@ def init():
 
     MinVersions.MUTAGEN.check(mutagen.version)
 
-    base = os.path.dirname(__file__)
+    base = util.get_module_dir()
     load_pyc = util.is_windows() or util.is_osx()
     formats = load_dir_modules(base,
                                package=__package__,

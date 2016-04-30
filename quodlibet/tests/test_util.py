@@ -1095,3 +1095,25 @@ class Tgdecode(TestCase):
             self.assertTrue(isinstance(util.gdecode(b"foo"), text_type))
         else:
             self.assertTrue(isinstance(util.gdecode(u"foo"), text_type))
+
+
+class Tget_module_dir(TestCase):
+
+    def test_self(self):
+        path = util.get_module_dir()
+        self.assertTrue(is_fsnative(path))
+        self.assertTrue(os.path.exists(path))
+
+    def test_other(self):
+        path = util.get_module_dir(util)
+        self.assertTrue(is_fsnative(path))
+        self.assertTrue(os.path.exists(path))
+
+
+class Tget_ca_file(TestCase):
+
+    def test_main(self):
+        path = util.get_ca_file()
+        if path is not None:
+            self.assertTrue(is_fsnative(path))
+            self.assertTrue(os.path.exists(path))

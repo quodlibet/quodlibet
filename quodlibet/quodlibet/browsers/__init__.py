@@ -6,9 +6,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
-
-import quodlibet
 from quodlibet import util
 from quodlibet.util.importhelper import load_dir_modules
 
@@ -34,17 +31,11 @@ def init():
     if browsers:
         return
 
-    this_dir = os.path.dirname(__file__)
+    this_dir = util.get_module_dir()
     load_pyc = util.is_windows() or util.is_osx()
     modules = load_dir_modules(this_dir,
                                package=__package__,
                                load_compiled=load_pyc)
-
-    user_dir = os.path.join(quodlibet.get_user_dir(), "browsers")
-    if os.path.isdir(user_dir):
-        modules += load_dir_modules(user_dir,
-                                    package="quodlibet.fake.browsers",
-                                    load_compiled=load_pyc)
 
     for browser in modules:
         try:

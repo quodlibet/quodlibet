@@ -123,7 +123,7 @@ def process_arguments(argv):
         ("play-file", _("Play a file"), C_("command", "filename")),
         ("set-rating", _("Rate the playing song"), "0.0..1.0"),
         ("set-browser", _("Set the current browser"), "BrowserName"),
-        ("stop-after", _("Stop after the playing song"), "0|1"),
+        ("stop-after", _("Stop after the playing song"), "0|1|t"),
         ("open-browser", _("Open a new browser"), "BrowserName"),
         ("queue", _("Show or hide the queue"), "on|off|t"),
         ("song-list", _("Show or hide the main song list"), "on|off|t"),
@@ -177,7 +177,7 @@ def process_arguments(argv):
         "volume": is_vol,
         "seek": is_time,
         "set-rating": is_float,
-        "stop-after": ["0", "1"].__contains__,
+        "stop-after": ["0", "1", "t"].__contains__,
         }
 
     cmds_todo = []

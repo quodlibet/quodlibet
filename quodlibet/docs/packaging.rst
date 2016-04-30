@@ -11,6 +11,14 @@ missing. For license & copyright information see :ref:`license`
 Changes
 -------
 
+3.7
+^^^
+
+* **udisks1** support removed
+* New dependency: **python-requests** (>= 2.2.1)
+* **PyGObject 3.12** required
+
+
 3.6
 ^^^
 
@@ -96,11 +104,12 @@ Non-Optional Runtime Dependencies
 The following software is needed to start Ex Falso or Quod Libet.
 
 * **Python** (2.7)
-* **PyGObject** including **cairo support** (>= 3.10)
+* **PyGObject** including **cairo support** (>= 3.12)
 * **pycairo** (>= 1.8)
 * **mutagen** (>= 1.30)
 * **GTK+** (>= 3.10)
 * **libsoup** (>= 2.44)
+* **python-requests** (>= 2.2.1)
 * On OS X only: **PyObjC**
 
 For icons a complete **icon theme** is needed, preferably with symbolic icons. 
@@ -150,7 +159,7 @@ Optional Runtime Dependencies
 **media-player-info**:
     * For detection of DAPs
 
-**udisks** or **udisks2**:
+**udisks2**:
     * For detection of DAPs
 
 **python-feedparser**:
