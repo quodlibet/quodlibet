@@ -158,6 +158,9 @@ class LyricsWebViewWindow(Window):
         self._view = view = WebKit2.WebView()
         self.set_zoom_level(self.conf.zoom_level)
 
+        # stop alert windows
+        view.connect('script-dialog', lambda *args: True)
+
         view.connect('web-process-crashed', self._reload_web_view)
 
         settings = view.get_settings()
