@@ -56,7 +56,7 @@ class TReplayGain(PluginTestCase):
     def test_RGSong_zero(self):
         rgs = self.mod.RGSong(SONG)
         rgs.done = True
-        rgs._write(0.0, 0.0, 0)
+        rgs._write(0.0, 0.0, 0.0)
         self.failUnless(rgs.has_album_tags,
                         msg="Failed with 0.0 album tags (%s)" % rgs)
 

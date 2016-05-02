@@ -152,8 +152,13 @@ class RGSong(object):
         write_to_song('replaygain_track_peak', '%.4f', self.peak)
         write_to_song('replaygain_album_gain', '%.2f dB', album_gain)
         write_to_song('replaygain_album_peak', '%.4f', album_peak)
-        write_to_song('replaygain_reference_loudness', '%.2g dB',
-            reference_loudness)
+
+        # Will write the replaygain_reference_loudness tag if
+        # preferences allow or if it already exists.
+        write_rl = False # TODO: support pref for writing this tag
+        if write_rl or song('replaygain_reference_loudness', None):
+            write_to_song('replaygain_reference_loudness', '%.2g dB',
+                reference_loudness)
 
     @property
     def title(self):
