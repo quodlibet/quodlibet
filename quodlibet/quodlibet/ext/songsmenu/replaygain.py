@@ -19,6 +19,7 @@ from quodlibet.plugins import PluginConfigMixin
 
 from quodlibet.browsers.collection.models import EMPTY
 
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.x import Frame
 from quodlibet.qltk import Icons, Dialog
@@ -129,9 +130,9 @@ class RGSong(object):
         self.peak = None
         self.progress = 0.0
         self.done = False
-        # TODO: support prefs for not overwriting individual existing tags
-        #       e.g. to re-run over entire library but keeping files untouched
-        self.overwrite_existing = True
+        self.overwrite_existing = not ReplayGain.config_get_bool(
+            "never_overwrite", False)
+        self.write_rl = ReplayGain.config_get_bool("write_rl", False)
 
     def _write(self, album_gain, album_peak, reference_loudness):
         if self.error or not self.done:
@@ -154,9 +155,8 @@ class RGSong(object):
         write_to_song('replaygain_album_peak', '%.4f', album_peak)
 
         # Will write the replaygain_reference_loudness tag if
-        # preferences allow or if it already exists.
-        write_rl = False # TODO: support pref for writing this tag
-        if write_rl or song('replaygain_reference_loudness', None):
+        # preferences allow or update it if it already exists.
+        if self.write_rl or song('replaygain_reference_loudness', None):
             write_to_song('replaygain_reference_loudness', '%.2g dB',
                 reference_loudness)
 
@@ -206,7 +206,10 @@ class RGSong(object):
 
     def __str__(self):
         vals = {k: self._get_rg_tag(k)
-                for k in 'track_gain album_gain album_peak track_peak'.split()}
+            for k in (
+                'track_gain', 'album_gain',
+                'album_peak', 'track_peak',
+                'reference_loudness')}
         return "<Song=%s RG data=%s>" % (self.song, vals)
 
 
@@ -645,10 +648,24 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
                          xoptions=Gtk.AttachOptions.FILL)
             table.attach(entry, 1, 2, row, row + 1)
 
-        # Server settings Frame
-        frame = Frame(_("Existing Tags"), table)
-
+        # Processing Options
+        frame = Frame(_("Processing Options"), table)
         vb.pack_start(frame, True, True, 0)
+
+        # Options
+        toggles = [
+            ('write_rl', _("Store _reference loudness")),
+            ('never_overwrite', _("_Never overwrite existing tags")),
+        ]
+        vb2 = Gtk.VBox(spacing=6)
+        for key, label in toggles:
+            ccb = ConfigCheckButton(label, 'plugins', cls._config_key(key))
+            ccb.set_active(cls.config_get_bool(key))
+            vb2.pack_start(ccb, True, True, 0)
+
+        frame2 = Frame(_("Misc Options"), vb2)
+        vb.pack_start(frame2, False, True, 0)
+
         return vb
 
 
