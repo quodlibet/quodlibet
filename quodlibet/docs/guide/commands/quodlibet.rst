@@ -24,7 +24,7 @@ capabilities.
 
 This manual page is only a short reference for Quod Libet. Complete 
 documentation is available at 
-https://quodlibet.readthedocs.org/en/latest/guide/index.html.
+https://quodlibet.readthedocs.io/en/latest/guide/index.html.
 
 OPTIONS
 =======
@@ -179,14 +179,14 @@ The 'c' postfix on strings or regular expressions makes the  search
 case-sensitive. Numeric values may be given as integers, floating-point
 numbers, MM:SS format, or simple English, e.g. "3 days", "2 hours".
 
-See https://quodlibet.readthedocs.org/en/latest/guide/searching.html.
+See https://quodlibet.readthedocs.io/en/latest/guide/searching.html.
 
 All internal tags begin with a ~ character. Non-numeric internal tags are
 ~base‐ name, ~dirname, ~filename, ~format, ~length, ~people, and ~rating.
 Numeric internal tags are ~#added, ~#bitrate, ~#disc, ~#lastplayed,
 ~#laststarted, ~#length, ~#mtime, ~#playcount, ~#skipcount, and ~#track.
 
-See https://quodlibet.readthedocs.org/en/latest/guide/tags/internal_tags.html.
+See https://quodlibet.readthedocs.io/en/latest/guide/tags/internal_tags.html.
 
 RENAMING FILES
 ==============
@@ -205,7 +205,7 @@ You can also specify literal text to use if the tag is missing by adding another
 
 ``<album|<album>|No Album> - <title>``
 
-See https://quodlibet.readthedocs.org/en/latest/guide/renaming_files.html.
+See https://quodlibet.readthedocs.io/en/latest/guide/renaming_files.html.
 
 
 AUDIO BACKENDS
@@ -217,7 +217,7 @@ change the pipeline option in ~/.quodlibet/config to use a different sink, or
 pass options to the sink. For example, you might use esdsink or alsasink
 device=hw:1.
 
-See https://quodlibet.readthedocs.org/en/latest/guide/playback/backends.html.
+See https://quodlibet.readthedocs.io/en/latest/guide/playback/backends.html.
 
 
 FILES
@@ -244,7 +244,7 @@ FILES
 ~/.quodlibet/browsers/
    Put custom library browsers here.
 
-See https://quodlibet.readthedocs.org/en/latest/guide/interacting.html.
+See https://quodlibet.readthedocs.io/en/latest/guide/interacting.html.
 
 BUGS
 ====
@@ -260,6 +260,6 @@ Joe Wreschnig and Michael Urman are the primary authors of Quod Libet.
 SEE ALSO
 ========
 
-| https://quodlibet.readthedocs.org/en/latest/guide,
-| https://quodlibet.readthedocs.org/en/latest/guide/faq.html,
+| https://quodlibet.readthedocs.io/en/latest/guide/,
+| https://quodlibet.readthedocs.io/en/latest/guide/faq.html,
 | ``regex``\(7), ``gst-launch``\(1)

@@ -23,7 +23,7 @@ To translate, you'll want to have intltool, gettext and git installed::
 
 
 For translating itself you need a PO editor like `Poedit 
-<http://www.poedit.net/>`_::
+<https://poedit.net/>`_::
 
     apt-get install poedit
 

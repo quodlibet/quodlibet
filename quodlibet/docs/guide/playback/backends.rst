@@ -33,7 +33,7 @@ for the current active song to *stdout*.
 
 For debugging GStreamer related issues see the official GStreamer docs:
 `Running and debugging GStreamer Applications
-<http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gst-
+<https://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gst-
 running.html>`__
 
 

@@ -21,8 +21,8 @@ If you want to listen to Electronic music but no Ambient::
     &(electro, !ambient)
 
 Or you want to get all songs by `Neutral Milk Hotel
-<http://en.wikipedia.org/wiki/Neutral_Milk_Hotel>`_ including the solo
-performances of `Jeff Mangum <http://en.wikipedia.org/wiki/Jeff_Mangum>`_::
+<https://en.wikipedia.org/wiki/Neutral_Milk_Hotel>`_ including the solo
+performances of `Jeff Mangum <https://en.wikipedia.org/wiki/Jeff_Mangum>`_::
 
     |(mangum, neutral milk)
 
@@ -32,7 +32,7 @@ You can get all songs that don't match the search term using ``!``::
 
 Lets say you want to listen to you whole library but are not in the mood
 for classical music or songs by `The Smiths
-<http://en.wikipedia.org/wiki/The_Smiths>`_::
+<https://en.wikipedia.org/wiki/The_Smiths>`_::
 
     !|(classical, smiths)
 
@@ -90,12 +90,11 @@ matches or regular expressions::
     artist = |(Townshend, Who)
     &(artist = Lindsay Smith, album = Vat)
 
-The first finds anything by `The Who <http://www.thewho.net/>`_ or
-guitarist `Pete Townshend <http://www.petetownshend.co.uk/>`_ .
-The second gives the songs that match both, so you'll find
-songs `Lindsay Smith <http://www.lindsay-smith.com/>`_'s `Tales From The
-Fruitbat Vat <http://www.cdbaby.com/cd/lindsaysmith>`_, but not her other
-albums.
+The first finds anything by `The Who <https://en.wikipedia.org/wiki/The_Who>`_
+or guitarist `Pete Townshend <https://en.wikipedia.org/wiki/Pete_Townshend>`_
+. The second gives the songs that match both, so you'll find songs `Lindsay
+Smith <http://www.lindsay-smith.com/>`_'s `Tales From The Fruitbat Vat
+<http://www.cdbaby.com/cd/lindsaysmith>`_, but not her other albums.
 
 You can also pick out all the songs that *don't* match the terms you give,
 using ``!``::
@@ -166,7 +165,7 @@ Quod Libet also supports searching your library using ''regular
 expressions'', a common way of finding text for Unix applications. Regular
 expressions look like regular searches, except they use / instead of ", and
 some punctuation has special meaning. There are many good tutorials on the
-web, and useful online regex testers (such as `Regex Pal <http://regexpal
+web, and useful online regex testers (such as `Regex Pal <http://www.regexpal
 .com/>`_)
 
 Some examples:

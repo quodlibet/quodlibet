@@ -54,7 +54,7 @@ Quod Libet understands a number of command line arguments to control a running p
   * ``--play-file <filename>`` plays that file or directory.
 
 Quod Libet can also be controlled via a `FIFO 
-<http://en.wikipedia.org/wiki/Named_pipe>`_ , ``~/.quodlibet/control``. To see 
+<https://en.wikipedia.org/wiki/Named_pipe>`_ , ``~/.quodlibet/control``. To see 
 how the command-line arguments map to FIFO commands, refer to 
 ``process_arguments()`` in 
 https://github.com/quodlibet/quodlibet/blob/master/quodlibet/quodlibet/cli.py; 

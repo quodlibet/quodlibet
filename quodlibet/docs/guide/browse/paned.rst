@@ -12,7 +12,7 @@ The Paned Browser offers a convenient way to quickly drill down into a large
 music collection, by narrowing  selections in several stages. Some users 
 may find this reminiscent of `RhythmBox <http://www.rhythmbox.org>`_ or, 
 to some extent, `iTunes 
-<http://www.apple.com/uk/itunes/what-is/player.html>`_.
+<https://www.apple.com/uk/itunes/>`_.
 
 In Quod Libet though, you can have as many panes as you want, grouped by 
 any tags you want, for example the popular ''genre/artist/album'' and 

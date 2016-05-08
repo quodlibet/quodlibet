@@ -389,7 +389,7 @@ Windows:
 
 Misc:
  * Keyboard shortcuts are now documented:
-   https://quodlibet.readthedocs.org/en/latest/guide/shortcuts.html
+   https://quodlibet.readthedocs.io/en/latest/guide/shortcuts.html
 
 Developers:
  * Due to the inclusion of the plugins into the core, the symlink from
@@ -405,7 +405,7 @@ Packaging:
    quodlibet/plugins to quodlibet/ext for system wide plugins, loading from
    ~/.quodlibet/plugins is the same) :bug:`1396`
  * For BSDs: setup.py has a new "--mandir" to select the man page location
- * Packaging guide: https://quodlibet.readthedocs.org/en/latest/packaging.html
+ * Packaging guide: https://quodlibet.readthedocs.io/en/latest/packaging.html
 
 
 3.1.91 [beta] (2014-07-22) - Pumps, powerheads, lights and filters!
@@ -613,7 +613,7 @@ Known Regressions
    due to missing packaging:
 
    * https://bugzilla.redhat.com/show_bug.cgi?id=963476
-   * http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=710254
+   * https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=710254
 
  * Animated On-Screen Display plugin is missing transparency support
  * No Windows build (work in progress)
@@ -1626,7 +1626,7 @@ Windows
  * More command-line and FIFO options.
  * Read-only M4A support. (thanks to Alexey Bobyakov)
  * Wavpack support.
- * Audio Feed (Podcast) support (requires http://www.feedparser.org).
+ * Audio Feed (Podcast) support (requires https://pythonhosted.org/feedparser/).
  * "One Song" (and repeat) play mode.
  * Improved and configurable tray icon.
  * New install system that is more FHS-compliant.
@@ -1783,7 +1783,7 @@ Windows
 --------------------------------------------------------
 
  * Plugins (either appearing in the right-click menu, or triggered on a
-   player event); see http://www.sacredchao.net/quodlibet/wiki/Plugins.
+   player event)
  * Browse songs by album, with a cover display.
  * "Library Browser" added to search/edit files without disturbing your
    playlist.

@@ -93,7 +93,7 @@ The following distributions package Quod Libet:
 
 The Ubuntu PPA / unstable repo builds are automated by the following scripts:
 
-https://github.com/lazka/quodlibet-ppa
+https://github.com/quodlibet/ppa-scripts
 
 
 .. _Dependencies:
