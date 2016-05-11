@@ -297,7 +297,7 @@ class RenameFiles(Gtk.VBox):
                   "does not start from root. To avoid misnamed "
                   "folders, root your pattern by starting "
                   "it with / or ~/.") % (
-                util.escape(pattern))).run()
+                util.escape(pattern_text))).run()
             return
         else:
             if pattern:
