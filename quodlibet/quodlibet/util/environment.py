@@ -43,6 +43,12 @@ def is_unity():
     return _dbus_name_owned("com.canonical.Unity")
 
 
+def is_enlightenment():
+    """If we are running under Enlightenment"""
+
+    return _dbus_name_owned("org.enlightenment.wm.service")
+
+
 def is_linux():
     """If we are on Linux (or similar)"""
 
