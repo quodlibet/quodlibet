@@ -14,7 +14,6 @@ from quodlibet.qltk import is_accel, add_fake_accel
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.util import gdecode
-from quodlibet.query import Query, QueryType
 
 
 class EditableUndo(object):
@@ -262,20 +261,6 @@ class ValidatingEntryMixin(object):
             self.override_color(Gtk.StateType.NORMAL, color)
         else:
             self.override_color(Gtk.StateType.NORMAL, None)
-
-
-def QueryValidator(string):
-    """Returns True/False for a query, None for a text only query"""
-
-    type_ = Query.get_type(string)
-    if type_ == QueryType.VALID:
-        # in case of an empty but valid query we say it's "text"
-        if Query.match_all(string):
-            return None
-        return True
-    elif type_ == QueryType.INVALID:
-        return False
-    return None
 
 
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):

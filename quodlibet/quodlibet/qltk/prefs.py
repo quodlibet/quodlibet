@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson
-#           2011-2015 Nick Boultbee
+#           2011-2016 Nick Boultbee
 #           2013      Christoph Reiter
 #           2014      Jan Path
 #
@@ -19,7 +19,8 @@ from quodlibet.config import RATINGS
 
 from quodlibet.qltk.ccb import ConfigCheckButton as CCB
 from quodlibet.qltk.data_editors import TagListEditor
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, QueryValidator
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
+from quodlibet.query._query import Query
 from quodlibet.qltk.scanbox import ScanBox
 from quodlibet.qltk.maskedbox import MaskedBox
 from quodlibet.qltk.songlist import SongList, get_columns
@@ -236,7 +237,7 @@ class PreferencesWindow(UniqueWindow):
             hb = Gtk.HBox(spacing=6)
             l = Gtk.Label(label=_("_Global filter:"))
             l.set_use_underline(True)
-            e = ValidatingEntry(QueryValidator)
+            e = ValidatingEntry(Query.validator)
             e.set_text(config.get("browsers", "background"))
             e.connect('changed', self._entry, 'background', 'browsers')
             e.set_tooltip_text(_("Apply this query in addition to all others"))
