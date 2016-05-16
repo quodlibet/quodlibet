@@ -38,6 +38,7 @@ html_context = {
     ],
 }
 exclude_patterns = ["icons.rst", "README.rst"]
+html_favicon = "favicon/favicon.ico"
 
 # on a stable branch which isn't a release
 if const.BRANCH_NAME != "master" and const.VERSION_TUPLE[-1] == -1:
