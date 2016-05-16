@@ -6,6 +6,7 @@
 import os
 
 import quodlibet
+from quodlibet import util
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.plugins import list_plugins, Plugin, PluginImportException
 from quodlibet.compat import PY3, iteritems
@@ -27,7 +28,7 @@ for entry in os.listdir(root):
         continue
     PLUGIN_DIRS.append(path)
 
-PLUGIN_DIRS.append(os.path.join(os.path.dirname(__file__), "test_plugins"))
+PLUGIN_DIRS.append(os.path.join(util.get_module_dir(), "test_plugins"))
 
 ms = ModuleScanner(PLUGIN_DIRS)
 

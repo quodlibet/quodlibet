@@ -3,7 +3,7 @@
 Replay Gain
 ===========
 
-`Replay Gain <http://en.wikipedia.org/wiki/Replay_Gain>`_ is a common 
+`Replay Gain <https://en.wikipedia.org/wiki/Replay_Gain>`_ is a common 
 standard for adjusting the loudness of songs/albums to the same level.
 
 Quod Libet provides tools for analyzing songs, saving the calculated values 
@@ -35,7 +35,7 @@ and pushing the volume over it would lead to sound distortion, so called
 
 To find out more about how the calculation is done, read the `detailed 
 summary 
-<http://wiki.hydrogenaudio.org/index.php?title=Replay_Gain_specification>`_ 
+<http://wiki.hydrogenaud.io/index.php?title=Replay_Gain_specification>`_ 
 over at the hydrogenaudio's knowledgebase. QL uses GStreamer for this 
 operation, so check out `rganalysis docs 
 <http://www.gstreamer.net/data/doc/gstreamer/head/gst-plugins-good-plugins/ht

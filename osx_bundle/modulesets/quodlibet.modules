@@ -166,6 +166,7 @@
             version="1.46.0"
             hash="sha256:6658bd3c2b8813eb3e2511ee153238d09ace9d309e4574af27443d87423e4233">
       <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/girscanner-objc.patch" strip="1"/>
+      <patch file="patches/gi-make-shared-library-in-cairo-1.0.gir-an-absolute-pat.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="glib"/>
@@ -411,10 +412,10 @@
     </dependencies>
   </autotools>
 
-  <cmake id="chromaprint" cmakeargs="-DCMAKE_BUILD_TYPE=Release">
-        <branch repo="chromaprint" checkoutdir="chromaprint-1.1" module="chromaprint-1.1.tar.gz"
-            version="1.1" hash="sha256:6b14d7ea4964581b73bd3f8038c8857c01e446421c1ae99cbbf64de26b47cd12">
-            <patch file="patches/chromaprint-pkgconfig.diff"/>
+  <!-- CMAKE_INSTALL_NAME_DIR is needed to get an absolute path for the install name (otool -D) -->
+  <cmake id="chromaprint" cmakeargs="-DCMAKE_BUILD_TYPE=Release -DBUILD_FRAMEWORK=OFF -DCMAKE_INSTALL_NAME_DIR='${prefix}/lib'">
+        <branch repo="chromaprint" checkoutdir="chromaprint-1.3.1" module="chromaprint-1.3.1.tar.gz"
+            version="1.3.1" hash="sha256:8f95a011e6fe3a75281520daa9376b7f028300e20a5be9af08ef9c851d4bb581">
         </branch>
   </cmake>
 

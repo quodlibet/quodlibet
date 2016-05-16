@@ -31,7 +31,7 @@ Google group <http://groups.google.com/group/quod-libet-development>`_.
 IRC
 ---
 
-Quod Libet has an IRC channel on `OFTC <http://www.oftc.net/>`_ , 
+Quod Libet has an IRC channel on `OFTC <https://www.oftc.net/>`_ , 
 *#quodlibet*. IRC is not a good place to report bugs; we'll just refer you 
 to the mailing list if you try. It is a good place to ask for help with 
 installation and configuration, or discuss development (assuming people 

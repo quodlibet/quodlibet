@@ -25,12 +25,25 @@ html_title = "%s (%s)" % (project, version)
 bug_url_template = "https://github.com/quodlibet/quodlibet/issues/%s"
 pr_url_template = "https://github.com/quodlibet/quodlibet/pull/%s"
 
+linkcheck_anchors = True
+linkcheck_workers = 20
+linkcheck_ignore = [
+    ".*groups\.google\.com/.*",
+    r".*keyserver\.ubuntu\.com.*"
+]
+
 html_context = {
     'extra_css_files': [
         '//quodlibet.github.io/fonts/font-mfizz.css',
     ],
 }
+
+html_theme_options = {
+    "display_version": False,
+}
+
 exclude_patterns = ["icons.rst", "README.rst"]
+html_favicon = "favicon/favicon.ico"
 
 # on a stable branch which isn't a release
 if const.BRANCH_NAME != "master" and const.VERSION_TUPLE[-1] == -1:

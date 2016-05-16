@@ -15,3 +15,7 @@ setup_sdk(target="10.6", sdk_version="native")
 
 os.environ["GTLS_SYSTEM_CA_FILE"] = os.path.join(
     prefix, "lib/python2.7/site-packages/certifi/cacert.pem")
+
+# Make sure we use the same shell in "jhbuild shell" as during building
+if os.environ.get("CONFIG_SHELL"):
+    os.environ["SHELL"] = os.environ.get("CONFIG_SHELL")

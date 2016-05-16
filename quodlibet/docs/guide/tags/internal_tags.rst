@@ -122,6 +122,6 @@ default.
  * ``sum``: Returns the summation of all values (``~#length``, ``~#playcount``, ``~#skipcount``, ``~#filesize``)
  * ``min``: Returns the smallest value (``~#year``)
  * ``max``: Returns the largest value (``~#added``, ``~#lastplayed``, ``~#laststarted``, ``~#mtime``)
- * ``bav``: Returns the `Bayesian average <http://en.wikipedia .org/wiki/Bayesian_average>`_ value (``~#rating``)
+ * ``bav``: Returns the `Bayesian average <https://en.wikipedia .org/wiki/Bayesian_average>`_ value (``~#rating``)
             Being most appropriate for ratings, the parameter is adjusted
             globally under the preferences for ratings.

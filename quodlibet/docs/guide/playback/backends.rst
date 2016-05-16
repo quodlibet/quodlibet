@@ -6,10 +6,6 @@ default backend can be changed in ``~/.quodlibet/config`` by setting the
 ``backend`` option (``gstbe`` = GStreamer, ``xinebe`` = Xine, ``nullbe`` =
 no backend). Make sure Quod Libet isn't running while you edit the file.
 
-There is also an experimental `Mac OS X NSSound backend (macbe)
-<https://github.com/quodlibet/quodlibet/issues/509>`_ available in
-the issue tracker.
-
 
 GStreamer Backend
 -----------------
@@ -37,7 +33,7 @@ for the current active song to *stdout*.
 
 For debugging GStreamer related issues see the official GStreamer docs:
 `Running and debugging GStreamer Applications
-<http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gst-
+<https://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gst-
 running.html>`__
 
 
@@ -53,34 +49,32 @@ Selecting an Output Device
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you want QL to output to a different device you have to pass the device
-option to the sink by setting a custom pipeline. In case of alsa you can get
-a list of available devices by executing::
+option to the sink by setting a custom pipeline. In case of pulseaudio you can
+get a list of available devices by executing::
 
-    python -c 'import gst; sink = gst.element_factory_make("alsasink");sink.probe_property_name("device"); print "\n".join(sink.probe_get_values_name("device"))'
+    #!/usr/bin/env python2
+    import gi
+    gi.require_version("Gst", "1.0")
+    from gi.repository import Gst
+
+    Gst.init(None)
+    dm = Gst.DeviceMonitor()
+    dm.start()
+    for device in dm.get_devices():
+        if device.get_device_class() == "Audio/Sink":
+            props = device.get_properties()
+            element = device.create_element(None)
+            type_name = element.get_factory().get_name()
+            device_name = element.props.device
+            print "%s device=%r" % (type_name, device_name)
+    dm.stop()
 
 which should give you something like::
 
-    hw:0,0
-    hw:0,1
-    hw:2,0
-
-and a pipeline using hw:2,0 looks like::
-
-    alsasink device=hw:2,0
+    pulsesink device='alsa_output.pci-0000_00_1b.0.analog-stereo'
 
 
-And similar for pulseaudio::
-
-    python -c 'import gst; sink = gst.element_factory_make("pulsesink");sink.probe_property_name("device"); print "\n".join(sink.probe_get_values_name("device"))'
-
-
-which outputs something like::
-
-    alsa_output.pci-0000_00_1b.0.analog-stereo
-
-and the pipeline should look like::
-
-    pulsesink device=alsa_output.pci-0000_00_1b.0.analog-stereo
+which you can use as is, as a custom pipeline.
 
 
 Xine Backend

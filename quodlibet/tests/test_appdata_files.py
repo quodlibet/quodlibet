@@ -9,12 +9,12 @@ import os
 import subprocess
 
 from quodlibet.util.path import iscommand
+from quodlibet import util
 
 from tests import TestCase, mkstemp, skipUnless
 
 
-QLDATA_DIR = os.path.join(os.path.dirname(
-    os.path.dirname(os.path.realpath(__file__))), "data")
+QLDATA_DIR = os.path.join(os.path.dirname(util.get_module_dir()), "data")
 
 
 class _TAppDataFileMixin(object):
