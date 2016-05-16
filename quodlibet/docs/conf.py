@@ -37,6 +37,11 @@ html_context = {
         '//quodlibet.github.io/fonts/font-mfizz.css',
     ],
 }
+
+html_theme_options = {
+    "display_version": False,
+}
+
 exclude_patterns = ["icons.rst", "README.rst"]
 html_favicon = "favicon/favicon.ico"
 
