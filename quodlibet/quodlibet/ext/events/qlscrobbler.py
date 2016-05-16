@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
 # version 0.11
-# (C) 2005-2012 by Joshua Kwan <joshk@triplehelix.org>,
+# (C) 2005-2016 by Joshua Kwan <joshk@triplehelix.org>,
 #                  Joe Wreschnig <piman@sacredchao.net>,
 #                  Franz Pletyz <fpletz@franz-pletz.org>,
 #                  Nicholas J. Michalek <djphazer@gmail.com>,
@@ -33,7 +33,7 @@ from quodlibet.pattern import Pattern
 from quodlibet.query import Query
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfig
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, QueryValidator
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
@@ -563,7 +563,7 @@ class QLScrobbler(EventPlugin):
         row += 1
 
         # exclude filter
-        entry = ValidatingEntry(QueryValidator)
+        entry = ValidatingEntry(Query.validator)
         entry.set_text(plugin_config.get('exclude'))
         entry.set_tooltip_text(
                 _("Songs matching this filter will not be submitted."))

@@ -72,7 +72,7 @@ class Query(Node):
         try:
             self._match = QueryParser(string, star=star).StartQuery()
             return
-        except error:
+        except self.error:
             pass
 
         if not set("#=").intersection(string):
@@ -86,7 +86,7 @@ class Query(Node):
                 self.type = QueryType.TEXT
                 self._match = QueryParser(string, star=star).StartQuery()
                 return
-            except error:
+            except self.error:
                 pass
 
         raise error('Query is not VALID or TEXT')
@@ -160,3 +160,17 @@ class Query(Node):
 
     def __neg__(self):
         return self._match.__neg__()
+
+    @classmethod
+    def validator(cls, string):
+        """Returns True/False for a query, None for a text only query"""
+
+        type_ = cls.get_type(string)
+        if type_ == QueryType.VALID:
+            # in case of an empty but valid query we say it's "text"
+            if cls.match_all(string):
+                return None
+            return True
+        elif type_ == QueryType.INVALID:
+            return False
+        return None
