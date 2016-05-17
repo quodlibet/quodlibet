@@ -190,6 +190,52 @@
           version="0.6c11" md5sum="7df2a529a074f613b509fb44feefe74e"/>
   </distutils>
 
+  <distutils id="dmgbuild">
+    <branch repo="pypi" checkoutdir="dmgbuild-1.1.0" module="4b/12/a97aeae9b91dbf97cde1c06587db2ad9e056cd966de61c60009b04c2f9b4/dmgbuild-1.1.0.tar.gz"
+        version="1.1.0" md5sum="bcccf26bcd1a73c57be77ff4a6301551"/>
+    <dependencies>
+      <dep package="setuptools"/>
+      <dep package="six"/>
+      <dep package="mac_alias"/>
+      <dep package="ds_store"/>
+      <dep package="pyobjc-framework-Quartz"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="six">
+    <branch repo="pypi" checkoutdir="six-1.10.0" module="b3/b2/238e2590826bfdd113244a40d9d3eb26918bd798fc187e2360a8367068db/six-1.10.0.tar.gz"
+        version="1.10.0" md5sum="34eed507548117b2ab523ab14b2f8b55"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="mac_alias">
+    <branch repo="pypi" checkoutdir="mac_alias-1.1.0" module="a6/f2/360810459fa97d20c45327d287c468e34930205912e7159c483359b03551/mac_alias-1.1.0.tar.gz"
+        version="1.1.0" md5sum="ad364059987b16ef10e0c1cdaf9877f1"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="biplist">
+    <branch repo="pypi" checkoutdir="biplist-1.0.1" module="c4/30/c2a6f5f082c55aaa6bd683943c8ff79270eed145597b8dc253fb97b0dc17/biplist-1.0.1.tar.gz"
+        version="1.0.1" md5sum="b461c526cb2a80ab302b4953ae950379"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="ds_store">
+    <branch repo="pypi" checkoutdir="ds_store-1.0.1" module="a8/4b/4f8b1dff01bd93ea0ffbf3006818e2a34a2a2d62ec774cff734c736dc10a/ds_store-1.0.1.tar.gz"
+        version="1.0.1" md5sum="3ec322188a0304959e17cddf402ea8c9"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    <dep package="six"/>
+    <dep package="biplist"/>
+    </dependencies>
+  </distutils>
+
   <distutils id="certifi">
     <branch repo="pypi" checkoutdir="certifi-2016.2.28" module="source/c/certifi/certifi-2016.2.28.tar.gz"
         version="2016.2.28" md5sum="5d672aa766e1f773c75cfeccd02d3650"/>

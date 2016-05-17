@@ -11,6 +11,7 @@ jhbuild run gtk-mac-bundler misc/bundle/app.bundle
 
 APP="$QL_OSXBUNDLE_BUNDLE_DEST/Application.app"
 APP_PREFIX="$APP"/Contents/Resources
+DMG_SETTINGS="misc/dmg_settings.py"
 
 # clone this repo and install into the bundle
 CLONE="$QL_OSXBUNDLE_BUNDLE_DEST"/_temp_clone
@@ -53,8 +54,8 @@ VERSION=$("$QUODLIBET"/Contents/MacOS/run -c "import sys;import quodlibet.const;
 ./misc/list_content.py "$HOME/jhbuild_prefix" "$QUODLIBET" > "$QUODLIBET/Contents/Resources/content.txt"
 ./misc/list_content.py "$HOME/jhbuild_prefix" "$EXFALSO" > "$EXFALSO/Contents/Resources/content.txt"
 
-(cd "$QL_OSXBUNDLE_BUNDLE_DEST" && zip -rq "QuodLibet-$VERSION.zip" "QuodLibet.app")
-(cd "$QL_OSXBUNDLE_BUNDLE_DEST" && zip -rq "ExFalso-$VERSION.zip" "ExFalso.app")
+jhbuild run dmgbuild -s "$DMG_SETTINGS" -D app="$QUODLIBET" "Quod Libet $VERSION" "$QL_OSXBUNDLE_BUNDLE_DEST/QuodLibet-$VERSION.dmg"
+jhbuild run dmgbuild -s "$DMG_SETTINGS" -D app="$EXFALSO" "Ex Falso $VERSION" "$QL_OSXBUNDLE_BUNDLE_DEST/ExFalso-$VERSION.dmg"
 
-(cd "$QL_OSXBUNDLE_BUNDLE_DEST" && shasum -a256 "QuodLibet-$VERSION.zip" > "QuodLibet-$VERSION.zip.sha256")
-(cd "$QL_OSXBUNDLE_BUNDLE_DEST" && shasum -a256 "ExFalso-$VERSION.zip" > "ExFalso-$VERSION.zip.sha256")
+(cd "$QL_OSXBUNDLE_BUNDLE_DEST" && shasum -a256 "QuodLibet-$VERSION.dmg" > "QuodLibet-$VERSION.dmg.sha256")
+(cd "$QL_OSXBUNDLE_BUNDLE_DEST" && shasum -a256 "ExFalso-$VERSION.dmg" > "ExFalso-$VERSION.dmg.sha256")
