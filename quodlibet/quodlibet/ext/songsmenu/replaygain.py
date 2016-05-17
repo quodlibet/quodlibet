@@ -49,6 +49,13 @@ class UpdateMode(object):
     ANY_MISSING = "any_tags_missing"
 
 
+class PrefDefaults(object):
+    update_mode = UpdateMode.ALWAYS
+    never_overwrite = False
+    write_rl = False
+    delete_unused = True
+
+
 class RGAlbum(object):
     def __init__(self, rg_songs, process_mode):
         self.songs = rg_songs
@@ -103,7 +110,7 @@ class RGAlbum(object):
             song._write(self.gain, self.peak, self.reference_loudness)
 
     @classmethod
-    def from_songs(cls, songs, process_mode=UpdateMode.ALWAYS):
+    def from_songs(cls, songs, process_mode=PrefDefaults.update_mode):
         return RGAlbum([RGSong(s) for s in songs], process_mode)
 
     @cached_property
@@ -131,8 +138,11 @@ class RGSong(object):
         self.progress = 0.0
         self.done = False
         self.overwrite_existing = not ReplayGain.config_get_bool(
-            "never_overwrite", False)
-        self.write_rl = ReplayGain.config_get_bool("write_rl", False)
+            "never_overwrite", PrefDefaults.never_overwrite)
+        self.write_rl = ReplayGain.config_get_bool(
+            "write_rl", PrefDefaults.write_rl)
+        self.delete_unused = ReplayGain.config_get_bool(
+            "delete_unused", PrefDefaults.delete_unused)
 
     def _write(self, album_gain, album_peak, reference_loudness):
         if self.error or not self.done:
@@ -153,6 +163,15 @@ class RGSong(object):
         write_to_song('replaygain_track_peak', '%.4f', self.peak)
         write_to_song('replaygain_album_gain', '%.2f dB', album_gain)
         write_to_song('replaygain_album_peak', '%.4f', album_peak)
+
+        # Other scanners (ex:bs1770gain) may produce these.
+        # Perhaps delete them so the data is consistent.
+        if self.delete_unused and not self.overwrite_existing:
+            song.pop('replaygain_track_range', None)
+            song.pop('replaygain_album_range', None)
+            song.pop('replaygain_algorithm', None)
+            if not self.write_rl:
+                song.pop('replaygain_reference_loudness', None)
 
         # Will write the replaygain_reference_loudness tag if
         # preferences allow or update it if it already exists.
@@ -588,7 +607,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     plugin_handles = each_song(is_finite, is_writable)
 
     def plugin_albums(self, albums):
-        mode = self.config_get("process_if", UpdateMode.ALWAYS)
+        mode = self.config_get("process_if", PrefDefaults.update_mode)
         win = RGDialog(albums, parent=self.plugin_window, process_mode=mode)
         win.show_all()
         win.start_analysis()
@@ -631,7 +650,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
 
         model = create_model()
         combo = Gtk.ComboBox(model=model)
-        set_active(cls.config_get("process_if", UpdateMode.ALWAYS))
+        set_active(cls.config_get("process_if", PrefDefaults.update_mode))
         renderer = Gtk.CellRendererText()
         combo.connect('changed', process_option_changed)
         combo.pack_start(renderer, True)
@@ -654,13 +673,17 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
 
         # Options
         toggles = [
-            ('write_rl', _("Store _reference loudness")),
-            ('never_overwrite', _("_Never overwrite existing tags")),
+            ('write_rl', _("Store _reference loudness"),
+                PrefDefaults.write_rl),
+            ('delete_unused', _("_Delete tags that this scanner doesn't use"),
+                PrefDefaults.delete_unused),
+            ('never_overwrite', _("_Never overwrite existing tags"),
+                PrefDefaults.never_overwrite),
         ]
         vb2 = Gtk.VBox(spacing=6)
-        for key, label in toggles:
+        for key, label, dv in toggles:
             ccb = ConfigCheckButton(label, 'plugins', cls._config_key(key))
-            ccb.set_active(cls.config_get_bool(key))
+            ccb.set_active(cls.config_get_bool(key, dv))
             vb2.pack_start(ccb, True, True, 0)
 
         frame2 = Frame(_("Misc Options"), vb2)

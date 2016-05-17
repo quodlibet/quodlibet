@@ -37,6 +37,8 @@ class ID3hack(mutagen.id3.ID3):
 RG_KEYS = [
     "replaygain_track_peak", "replaygain_track_gain",
     "replaygain_album_peak", "replaygain_album_gain",
+    "replaygain_track_range", "replaygain_album_range",
+    "replaygain_reference_loudness", "replaygain_algorithm",
 ]
 
 
