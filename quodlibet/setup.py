@@ -26,6 +26,13 @@ if __name__ == "__main__":
     import quodlibet
     from quodlibet import const
 
+    # convert to a setuptools compatible version string
+    version = const.VERSION_TUPLE
+    if version[-1] == -1:
+        version_string = ".".join(map(str, version[:-1])) + ".dev0"
+    else:
+        version_string = ".".join(map(str, version))
+
     # find all packages
     package_path = quodlibet.__path__[0]
     packages = []
@@ -38,7 +45,7 @@ if __name__ == "__main__":
     setup_kwargs = {
         'distclass': GDistribution,
         'name': "quodlibet",
-        'version': const.VERSION,
+        'version': version_string,
         'url': "https://quodlibet.readthedocs.org",
         'description': "a music library, tagger, and player",
         'author': "Joe Wreschnig, Michael Urman, & others",
@@ -92,10 +99,6 @@ if __name__ == "__main__":
 
         data_files = [('', ['COPYING'])] + recursive_include_py2exe(
             "quodlibet", "images", ("svg", "png"))
-
-        # py2exe trips over -1 when trying to write version info in the exe
-        if setup_kwargs["version"].endswith(".-1"):
-            setup_kwargs["version"] = setup_kwargs["version"][:-3]
 
         CMD_SUFFIX = "-cmd"
         GUI_TOOLS = ["quodlibet", "exfalso"]
