@@ -17,11 +17,15 @@ from quodlibet.util import website
 from quodlibet.util.dprint import print_w
 from quodlibet.util.http import download_json, download
 
+
 try:
     gi.require_version("Soup", "2.4")
 except ValueError as e:
     raise ImportError(e)
 from gi.repository import Soup
+
+
+PAGE_SIZE = 150
 
 
 class RestApi(GObject.Object):
@@ -134,15 +138,17 @@ class SoundcloudApiClient(RestApi):
         self.username = json['username']
         self.emit('authenticated', Wrapper(json))
 
-    def get_tracks(self, query, limit=100, min_length=120, max_length=10000):
-        params = {
-            "q": query or "",
-            "limit": clamp(limit, 10, 200),
-            "duration[from]": clamp(min_length, 10, 10000) * 1000,
-            "duration[to]": clamp(max_length, 10, 50000) * 1000
+    def get_tracks(self, params):
+        merged = {
+            "q": "",
+            "limit": PAGE_SIZE,
+            "duration[from]": 120 * 1000,
         }
-        print_d("Getting tracks: params=%s" % params)
-        self._get('/tracks', self._on_track_data, **params)
+        for k,v in params.iteritems():
+            delim = " " if k == 'q' else ","
+            merged[k] = delim.join(list(v))
+        print_d("Getting tracks: params=%s" % merged)
+        self._get('/tracks', self._on_track_data, **merged)
 
     @json_callback
     def _on_track_data(self, json):

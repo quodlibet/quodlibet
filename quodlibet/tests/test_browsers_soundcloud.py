@@ -5,12 +5,13 @@
 
 from unittest import TestCase
 
-from quodlibet.query import Query
+import time
+
+from quodlibet.browsers.soundcloud import query
+from quodlibet.browsers.soundcloud.query import SoundcloudQuery, convert_time
 
 from quodlibet import const
 from quodlibet.util.dprint import print_d
-
-from quodlibet.browsers.soundcloud.util import extract
 
 NONE = set([])
 
@@ -29,23 +30,31 @@ class TestExtract(TestCase):
         self.verify("artist=jay-z", {"jay-z"})
 
     def test_extract_unsupported(self):
-        self.verify("musicbrainz_discid=12345", NONE)
+        try:
+            self.verify("musicbrainz_discid=12345", NONE)
+        except query.error:
+            pass
+        else:
+            self.fail("Should have thrown")
 
     def test_extract_composite_text(self):
         self.verify("&(foo, bar)", {"foo", "bar"})
         self.verify("|(either, or)", {"either", "or"})
 
     def test_numeric_simple(self):
-        self.verify("#(length=180)", {180}, term='length')
+        self.verify("#(length=180)", {'180000'}, term='duration')
 
     def test_extract_date(self):
-        self.verify("#(date>today)", {180}, term='length')
+        now = int(time.time())
+        terms = SoundcloudQuery("#(date>today)", clock=lambda: now).terms
+        self.failUnlessEqual(terms['created_at[from]'].pop(),
+                             convert_time(now - 86400))
 
     def test_numeric_relative(self):
-        self.verify("#(length>180)", {180}, term='length[from]')
-        self.verify("#(180<=length)", {180}, term='length[from]')
-        self.verify("#(length<360)", {360}, term='length[to]')
-        self.verify("#(360>=length)", {360}, term='length[to]')
+        self.verify("#(length>180)", {'180000'}, term='duration[from]')
+        self.verify("#(180<=length)", {'180000'}, term='duration[from]')
+        self.verify("#(length<360)", {'360000'}, term='duration[to]')
+        self.verify("#(360>=length)", {'360000'}, term='duration[to]')
 
     def test_extract_tag_inter(self):
         self.verify("genre=&(jazz, funk)", {'jazz', 'funk'})
@@ -59,7 +68,7 @@ class TestExtract(TestCase):
 
     def verify(self, text, expected, term='q'):
         print_d("Trying '%s'..." % text)
-        terms = extract(Query(text)._match)
+        terms = SoundcloudQuery(text).terms
         self.failUnlessEqual(terms[term], expected,
                              msg="terms[%s] wasn't %r. Full terms: %r"
                                  % (term, expected, terms))

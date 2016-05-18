@@ -6,10 +6,10 @@
 # published by the Free Software Foundation
 
 from quodlibet import print_d, print_w
+from quodlibet.browsers.soundcloud.query import SoundcloudQuery
 from quodlibet.config import RATINGS
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.library.libraries import SongLibrary
-from quodlibet.query import Query
 from quodlibet.util import cached_property
 
 
@@ -25,12 +25,14 @@ class SoundcloudLibrary(SongLibrary):
             player.connect('song-started', self.__song_started)
 
     def query(self, text, sort=None, star=STAR):
-        return Query(text).filter(self._contents.values())
+        values = self._contents.values()
+        return SoundcloudQuery(text).filter(values)
 
     def query_with_refresh(self, text, sort=None, star=STAR):
         """Queries Soundcloud for some (more) relevant results, then filters"""
         print_d("Updating library with new results...")
-        self.client.get_tracks(text.strip('"\''))
+        query = SoundcloudQuery(text)
+        self.client.get_tracks(query.terms)
         return self.query(text, sort, star)
 
     def rename(self, song, newname, changed=None):

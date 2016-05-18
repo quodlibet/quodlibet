@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import config
 from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
 from quodlibet.browsers.soundcloud.library import SoundcloudLibrary
 from tests import TestCase
@@ -77,6 +78,10 @@ class TSoundcloudLibrary(TestCase):
 
     def tearDown(self):
         self.lib.destroy()
+
+    @classmethod
+    def setUpClass(cls):
+        config.RATINGS = config.HardCodedRatingsPrefs()
 
     def test_parse(self):
         lib = self.lib

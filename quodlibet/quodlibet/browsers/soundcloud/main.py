@@ -14,8 +14,9 @@ from quodlibet import util
 from quodlibet.browsers import Browser
 from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
 from quodlibet.browsers.soundcloud.library import SoundcloudLibrary
+from quodlibet.browsers.soundcloud.query import SoundcloudQuery
 from quodlibet.browsers.soundcloud.util import SITE_URL, LOGO_IMAGE_BLACK, \
-    LOGIN_IMAGES, extract
+    LOGIN_IMAGES
 from quodlibet.qltk import Icons, Message
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
@@ -23,7 +24,6 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
-from quodlibet.query import Query
 from quodlibet.util import connect_destroy, DeferredSignal, website
 from quodlibet.util.uri import URI
 
@@ -54,7 +54,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     @classmethod
     def _init(klass, library):
         klass.__librarian = library.librarian
-        klass.filters = {"All": Query("", star=klass.STAR)}
+        klass.filters = {"All": SoundcloudQuery("", star=klass.STAR)}
         token = config.get("browsers", "soundcloud_token", default=None)
         try:
             if klass.library:
@@ -126,9 +126,11 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     def _create_searchbar(self, library):
         completion = LibraryTagCompletion(library)
         self.accelerators = Gtk.AccelGroup()
-        self.__searchbar = search = SearchBarBox(completion=completion,
-                                                 accel_group=self.accelerators,
-                                                 timeout=3000)
+        search = SearchBarBox(completion=completion,
+                              validator=SoundcloudQuery.validator,
+                              accel_group=self.accelerators,
+                              timeout=3000)
+        self.__searchbar = search
         search.connect('query-changed', self.__filter_changed)
 
         def focus(widget, *args):
@@ -235,11 +237,14 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         container.remove(self)
 
     def __filter_changed(self, bar, text, restore=False):
-        self.__filter = Query(text, self.STAR)
-        terms = extract(self.__filter._match)
-        print_d("Got terms from query: %s" % (terms,))
-        if not restore:
-            self.activate()
+        try:
+            self.__filter = SoundcloudQuery(text, self.STAR)
+        except SoundcloudQuery.error as e:
+            print_w("Couldn't parse query: " % e)
+        else:
+            print_d("Got terms from query: %s" % (self.__filter.terms,))
+            if not restore:
+                self.activate()
 
     def __get_selected_libraries(self):
         """Returns the libraries to search in depending on the
@@ -250,18 +255,17 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     def restore(self):
         text = config.get("browsers", "query_text").decode("utf-8")
         self.__searchbar.set_text(text)
-        if Query.is_parsable(text):
-            self.__filter_changed(self.__searchbar, text, restore=True)
+        self.__filter_changed(self.__searchbar, text, restore=True)
 
     def __get_filter(self):
-        return self.__filter or Query("")
+        return self.__filter or SoundcloudQuery("")
 
     def can_filter_text(self):
         return True
 
     def filter_text(self, text):
         self.__searchbar.set_text(text)
-        if Query.is_parsable(text):
+        if SoundcloudQuery.is_parsable(text):
             self.__filter_changed(self.__searchbar, text)
             self.activate()
         else:
