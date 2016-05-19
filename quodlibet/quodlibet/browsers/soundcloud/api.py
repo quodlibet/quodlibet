@@ -144,7 +144,7 @@ class SoundcloudApiClient(RestApi):
             "limit": PAGE_SIZE,
             "duration[from]": 120 * 1000,
         }
-        for k,v in params.iteritems():
+        for k, v in params.iteritems():
             delim = " " if k == 'q' else ","
             merged[k] = delim.join(list(v))
         print_d("Getting tracks: params=%s" % merged)

@@ -42,7 +42,8 @@ SUPPORTED = set(_QL_TO_SC.keys())
 
 class SoundcloudQuery(Query):
 
-    def __init__(self, string, star=None, dumb_match_diacritics=False, clock=time.time):
+    def __init__(self, string, star=None, dumb_match_diacritics=False,
+                 clock=time.time):
         super(SoundcloudQuery, self).__init__(string, star,
                                               dumb_match_diacritics)
         self._clock = clock
@@ -54,11 +55,11 @@ class SoundcloudQuery(Query):
             and might return results useful for populating the songlist.
 
             Note this is not a *translation* of the query in any sense,
-            and that (currently) the browser filters ingested API results properly
-            (given the tag mappings) so that the QL results are still valid
-            based on
+            and that (currently) the browser filters ingested API results
+            so that the QL results are still valid based on
             the query given, even if some more could have been returned.
-            ...so if in doubt, less restrictive is better here."""
+
+            ...so if in doubt, *less* restrictive is better here."""
         tuples = self._extract_terms_set(node)
         terms = defaultdict(set)
         for (k, v) in tuples:
