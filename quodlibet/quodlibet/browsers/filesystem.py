@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#                2012 Nick Boultbee
+#           2012,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -195,7 +195,7 @@ class FileSystem(Browser, Gtk.HBox):
 
         items.append([i])
         menu = SongsMenu(library, songs, remove=self.__remove_songs,
-                         delete=True, items=items)
+                         delete=True, queue=True, items=items)
         return menu
 
     def __add_songs(self, item, songs):
