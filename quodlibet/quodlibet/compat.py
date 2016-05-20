@@ -18,8 +18,8 @@ if PY2:
     urlparse, urlunparse, urlsplit
     from urllib import pathname2url, url2pathname, quote_plus, unquote_plus
     pathname2url, url2pathname, quote_plus, unquote_plus
-    from urllib2 import urlopen
-    urlopen
+    from urllib2 import urlopen, build_opener
+    urlopen, build_opener
     from cStringIO import StringIO as cBytesIO
     cBytesIO
     from StringIO import StringIO
@@ -61,8 +61,8 @@ elif PY3:
     urlparse, quote_plus, unquote_plus, urlunparse, urlsplit
     from urllib.request import pathname2url, url2pathname
     pathname2url, url2pathname
-    from urllib.request import urlopen
-    urlopen
+    from urllib.request import urlopen, build_opener
+    urlopen, build_opener
     from io import BytesIO as cBytesIO
     cBytesIO
     from io import StringIO

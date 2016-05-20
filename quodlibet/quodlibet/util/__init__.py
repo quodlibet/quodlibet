@@ -1181,20 +1181,27 @@ def get_ca_file():
 
 
 def install_urllib2_ca_file():
-    """Makes urllib2.urlopen use the ca file returned by get_ca_file()
-    as default fallback.
+    """Makes urllib2.urlopen and urllib2.build_opener use the ca file
+    returned by get_ca_file()
     """
+
+    try:
+        import ssl
+    except ImportError:
+        return
 
     import urllib2
 
-    class CustomOpener(object):
+    base = urllib2.HTTPSHandler
 
-        def open(self, *args, **kwargs):
+    class MyHandler(base):
+
+        def __init__(self, debuglevel=0, context=None):
             ca_file = get_ca_file()
-            if ca_file is None:
-                return urllib2.build_opener().open(*args, **kwargs)
-            else:
-                kwargs["cafile"] = ca_file
-                return urllib2.urlopen(*args, **kwargs)
+            if context is None and ca_file is not None:
+                context = ssl.create_default_context(
+                    purpose=ssl.Purpose.SERVER_AUTH,
+                    cafile=ca_file)
+            base.__init__(self, debuglevel, context)
 
-    urllib2.install_opener(CustomOpener())
+    urllib2.HTTPSHandler = MyHandler
