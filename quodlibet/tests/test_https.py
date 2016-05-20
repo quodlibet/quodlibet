@@ -36,6 +36,13 @@ class Thttps(TestCase):
             with self.assertRaises(Exception):
                 urlopen(url, cafile=get_ca_file()).close()
 
+    def test_urllib_default(self):
+        for url in self.GOOD:
+            urlopen(url).close()
+        for url in self.BAD:
+            with self.assertRaises(Exception):
+                urlopen(url).close()
+
     def test_requests(self):
         for url in self.GOOD:
             requests.get(url).close()

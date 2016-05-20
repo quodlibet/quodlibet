@@ -1178,3 +1178,23 @@ def get_ca_file():
     import certifi
 
     return os.path.join(get_module_dir(certifi), "cacert.pem")
+
+
+def install_urllib2_ca_file():
+    """Makes urllib2.urlopen use the ca file returned by get_ca_file()
+    as default fallback.
+    """
+
+    import urllib2
+
+    class CustomOpener(object):
+
+        def open(self, *args, **kwargs):
+            ca_file = get_ca_file()
+            if ca_file is None:
+                return urllib2.build_opener().open(*args, **kwargs)
+            else:
+                kwargs["cafile"] = ca_file
+                return urllib2.urlopen(*args, **kwargs)
+
+    urllib2.install_opener(CustomOpener())

@@ -502,6 +502,12 @@ def _init_python():
         # for non release builds we allow Python3
         MinVersions.PYTHON3.check(sys.version_info)
 
+    if is_osx():
+        # We build our own openssl on OSX and need to make sure that
+        # our own ca file is used in all cases as the non-system openssl
+        # doesn't use the system certs
+        util.install_urllib2_ca_file()
+
     builtins.__dict__["print_"] = print_
     builtins.__dict__["print_d"] = print_d
     builtins.__dict__["print_e"] = print_e
