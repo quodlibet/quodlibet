@@ -508,6 +508,11 @@ def _init_python():
         # doesn't use the system certs
         util.install_urllib2_ca_file()
 
+    if is_windows():
+        # Not really needed on Windows as pygi-aio seems to work fine, but
+        # wine doesn't have certs which we use for testing.
+        util.install_urllib2_ca_file()
+
     builtins.__dict__["print_"] = print_
     builtins.__dict__["print_d"] = print_d
     builtins.__dict__["print_e"] = print_e

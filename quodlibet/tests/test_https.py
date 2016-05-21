@@ -11,7 +11,7 @@ from gi.repository import Gio, Soup, GLib
 
 from tests import TestCase, skipIf, skipUnlessNetwork
 
-from quodlibet.util import is_linux, is_osx, get_ca_file, is_wine
+from quodlibet.util import is_linux, is_osx, get_ca_file
 from quodlibet.compat import urlopen, build_opener
 
 
@@ -37,9 +37,6 @@ class Thttps(TestCase):
                 urlopen(url, cafile=get_ca_file()).close()
 
     def test_urllib_default(self):
-        if is_wine():
-            return
-
         for url in self.GOOD:
             urlopen(url).close()
         for url in self.BAD:
@@ -47,9 +44,6 @@ class Thttps(TestCase):
                 urlopen(url).close()
 
     def test_urllib_build_opener(self):
-        if is_wine():
-            return
-
         for url in self.GOOD:
             build_opener().open(url).close()
         for url in self.BAD:
