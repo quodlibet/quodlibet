@@ -6,7 +6,6 @@
 import os
 from quodlibet.config import RatingsPrefs
 from tests import TestCase, mkstemp
-from .helper import capture_output
 
 from quodlibet import config
 
@@ -25,9 +24,7 @@ class Tconfig(TestCase):
         with open(filename, "wb") as f:
             f.write(garbage)
 
-        with capture_output() as (stdout, stderr):
-            config.init(filename)
-        self.assertTrue(stderr.getvalue())
+        config.init(filename)
         self.assertTrue(config.options("player"))
 
         invalid_filename = filename + ".not-valid"

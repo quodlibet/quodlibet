@@ -64,13 +64,13 @@ class TFormats(TestCase):
         with capture_output() as (stdout, stderr):
             song = formats.MusicFile(os.path.join(DATA_DIR, "nope.mp3"))
             self.assertFalse(song)
-            self.assertTrue("Error" in stderr.getvalue())
+            self.assertTrue(stderr.getvalue())
 
         # unknown extension
         with capture_output() as (stdout, stderr):
             song = formats.MusicFile(os.path.join(DATA_DIR, "nope.xxx"))
             self.assertFalse(song)
-            self.assertTrue("extension" in stderr.getvalue())
+            self.assertFalse(stderr.getvalue())
 
 
 class TPickle(TestCase):
