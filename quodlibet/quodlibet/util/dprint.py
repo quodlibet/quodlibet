@@ -29,49 +29,54 @@ def _format_print(string, prefix=""):
     return string
 
 
-def extract_caller_info():
-    """Returns a string describing the caller of the caller of this function.
+def frame_info(level=0):
+    """Return a short string describing the current stack frame which can
+    be used for debug messages.
 
-    It currently checks if the caller got arguments that have an attribute
-    with the same name as the caller (so it's probably the class of a method)
-    or returns the module name for everything else.
+    level defines which frame should be used. 0 means the caller, 1 the caller
+    of the caller etc.
     """
-    try:
-        raise ZeroDivisionError
-    except:
+
+    info = ""
+
+    # The frame of the calling function
+    if hasattr(sys, "_getframe"):
+        frame = sys._getframe()
+    else:
+        return ""
+
+    for i in range(level + 1):
         try:
-            info = ""
+            frame = frame.f_back
+        except AttributeError:
+            break
 
-            # The frame of the calling function
-            frame = sys.exc_info()[2].tb_frame.f_back.f_back
-            f_code = frame.f_code
+    f_code = frame.f_code
 
-            co_name = f_code.co_name
-            co_varnames = f_code.co_varnames
+    co_name = f_code.co_name
+    co_varnames = f_code.co_varnames
 
-            # the calling function got arguments
-            if co_varnames and co_varnames[0] in frame.f_locals:
-                # the first one could be the class
-                cls = frame.f_locals[co_varnames[0]]
+    # the calling function got arguments
+    if co_varnames and co_varnames[0] in frame.f_locals:
+        # the first one could be the class
+        cls = frame.f_locals[co_varnames[0]]
 
-                # the arg has an attr that is named like the function
-                if hasattr(cls, co_name):
-                    # If it's an instance get the class
-                    if not hasattr(cls, '__name__'):
-                        cls = cls.__class__
-                    info = cls.__name__
+        # the arg has an attr that is named like the function
+        if hasattr(cls, co_name):
+            # If it's an instance get the class
+            if not hasattr(cls, '__name__'):
+                cls = cls.__class__
+            info = cls.__name__
 
-            # else, get the module name
-            if not info:
-                info = frame.f_globals.get("__name__", "")
+    # else, get the module name
+    if not info:
+        info = frame.f_globals.get("__name__", "")
 
-            # append the function/method name
-            if info:
-                info += "." + co_name
-        except (AttributeError, IndexError):
-            return ""
-        else:
-            return info
+    # append the function/method name
+    if info:
+        info += "." + co_name
+
+    return info
 
 
 def _print(string, output, frm="utf-8", strip_color=True, end=os.linesep):
@@ -128,11 +133,8 @@ def print_d(string, context=""):
     else:
         output = None
 
-    if PY2:
-        context = extract_caller_info()
-    else:
-        # FIXME: PY3PORT
-        context = ""
+    context = frame_info(1)
+
     # strip the package name
     if context.startswith("quodlibet.") and context.count(".") > 1:
         context = context[10:]
