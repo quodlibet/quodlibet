@@ -16,7 +16,7 @@ from quodlibet import util
 from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, print_d
 from quodlibet.util.library import background_filter
 
 

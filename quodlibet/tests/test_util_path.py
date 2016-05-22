@@ -9,6 +9,7 @@ from tests import TestCase
 
 from quodlibet.util.path import pathname2url_win32, iscommand, limit_path, \
     fsnative, is_fsnative, get_home_dir
+from quodlibet.util import print_d
 
 is_win = os.name == "nt"
 path_set = bool(os.environ.get('PATH', False))

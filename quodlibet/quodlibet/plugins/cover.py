@@ -12,6 +12,7 @@ from gi.repository import GObject
 
 from quodlibet.qltk import Icons
 from quodlibet.util.path import escape_filename, xdg_get_cache_home
+from quodlibet.util import print_w
 
 
 class CoverSourcePlugin(GObject.Object):

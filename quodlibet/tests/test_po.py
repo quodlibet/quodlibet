@@ -18,6 +18,7 @@ except ImportError:
 import quodlibet
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import human_title
+from quodlibet.util import print_w
 from gdist import gettextutil
 
 
@@ -250,7 +251,6 @@ class POMixin(object):
                     self.lang, line))
 
     def conclude(self, fails, reason):
-        from quodlibet import print_w
         if fails:
             def format_occurrences(e):
                 occurences = [(self.lang + ".po", e.linenum)]

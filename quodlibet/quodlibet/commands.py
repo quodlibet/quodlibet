@@ -17,6 +17,7 @@ from quodlibet.compat import cBytesIO as StringIO
 from quodlibet import util
 from quodlibet.util.uri import URI
 from quodlibet.util.path import fsnative
+from quodlibet.util import print_d, print_e
 
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.properties import SongProperties

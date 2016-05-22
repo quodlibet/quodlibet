@@ -10,6 +10,7 @@ import re
 
 from quodlibet.plugins.cover import CoverSourcePlugin
 from quodlibet.util.path import fsdecode
+from quodlibet.util import print_w
 from quodlibet import config
 
 

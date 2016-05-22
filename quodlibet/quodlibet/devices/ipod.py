@@ -22,6 +22,7 @@ from quodlibet.formats import AudioFile
 # Wraps an itdb_track from libgpod in an AudioFile instance
 from quodlibet.util.path import fsdecode, mtime, filesize, fsnative2glib
 from quodlibet.util.string import decode, encode
+from quodlibet.util import print_w
 
 
 class ConfirmDBCreate(WarningMessage):

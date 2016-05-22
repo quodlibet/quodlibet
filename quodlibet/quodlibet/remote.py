@@ -7,7 +7,7 @@
 
 import os
 
-from quodlibet.util import fifo
+from quodlibet.util import fifo, print_w
 from quodlibet import get_user_dir
 try:
     from quodlibet.util import winpipe

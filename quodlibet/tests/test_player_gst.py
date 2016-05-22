@@ -23,7 +23,7 @@ except ImportError:
     pass
 
 from quodlibet.player import PlayerError
-from quodlibet.util import sanitize_tags
+from quodlibet.util import sanitize_tags, print_w
 from quodlibet.formats import MusicFile
 from quodlibet.compat import long
 from quodlibet import config

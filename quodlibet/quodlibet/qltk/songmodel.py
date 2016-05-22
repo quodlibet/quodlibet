@@ -11,6 +11,7 @@ from gi.repository import Gtk
 
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.models import ObjectStore
+from quodlibet.util import print_d
 
 
 class PlaylistMux(object):

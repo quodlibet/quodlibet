@@ -30,7 +30,7 @@ API_KEY = "f536cdadb4c2aec75ae15e2b719cb3a1"
 
 
 def log(msg):
-    print_d('[lastfmsync] %s' % msg)
+    util.print_d('[lastfmsync] %s' % msg)
 
 
 def apicall(method, **kwargs):

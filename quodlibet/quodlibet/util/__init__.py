@@ -31,7 +31,7 @@ from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
-from quodlibet.util.dprint import print_d, print_
+from quodlibet.util.dprint import print_d, print_, print_e, print_w
 from .misc import environ, argv, cached_func, get_locale_encoding, \
     get_fs_encoding
 from .environment import *
@@ -39,7 +39,7 @@ from .enum import enum
 
 
 # pyflakes
-environ, argv, cached_func, get_locale_encoding, get_fs_encoding, enum
+environ, argv, cached_func, get_locale_encoding, get_fs_encoding, enum, print_w
 
 
 if PY2:

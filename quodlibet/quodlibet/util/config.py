@@ -22,7 +22,7 @@ except ImportError:
         NoSectionError
 
 from quodlibet.compat import cBytesIO, PY2, text_type
-from quodlibet.util import list_unique
+from quodlibet.util import list_unique, print_d
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.string import join_escape, split_escape
 from quodlibet.util.path import is_fsnative, mkdir

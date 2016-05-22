@@ -10,6 +10,8 @@
 
 from gi.repository import GLib
 
+from quodlibet.util import print_d
+
 
 class _Routine(object):
 

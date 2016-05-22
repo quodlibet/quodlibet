@@ -11,7 +11,7 @@ import sys
 from quodlibet.util.importhelper import load_dir_modules
 from quodlibet import util
 from quodlibet import const
-from quodlibet.util.dprint import print_w
+from quodlibet.util import print_w, print_d
 from quodlibet.const import MinVersions
 
 mimes = set()

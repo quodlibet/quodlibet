@@ -538,7 +538,8 @@ class FileBackedPlaylist(Playlist):
                         self._list.append(line)
         except IOError:
             if self.name:
-                print_d("Playlist '%s' not found, creating new." % self.name)
+                util.print_d(
+                    "Playlist '%s' not found, creating new." % self.name)
                 self.write()
 
     @classmethod

@@ -9,6 +9,7 @@ import sys
 from optparse import OptionParser
 
 from quodlibet.formats import MusicFile
+from quodlibet.util import print_
 
 
 class CommandError(Exception):

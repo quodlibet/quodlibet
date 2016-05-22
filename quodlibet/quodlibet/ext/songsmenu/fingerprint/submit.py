@@ -8,7 +8,7 @@
 from gi.repository import Gtk, Pango, GLib
 
 from quodlibet.qltk import Button, Window
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, print_w
 
 from .acoustid import AcoustidSubmissionThread
 from .analyze import FingerPrintPool

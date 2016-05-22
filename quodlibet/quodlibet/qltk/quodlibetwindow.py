@@ -47,7 +47,7 @@ from quodlibet.qltk.about import AboutDialog
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util.uri import URI
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, print_d
 from quodlibet.util.path import glib2fsnative, get_home_dir
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map

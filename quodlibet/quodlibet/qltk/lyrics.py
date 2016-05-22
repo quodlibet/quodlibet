@@ -19,7 +19,7 @@ from gi.repository import Gtk, GLib
 from quodlibet import qltk
 from quodlibet.qltk import Icons
 from quodlibet import util
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, print_w
 
 
 class LyricsPane(Gtk.VBox):

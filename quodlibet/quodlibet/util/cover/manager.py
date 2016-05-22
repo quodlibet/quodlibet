@@ -13,6 +13,7 @@ from gi.repository import GObject
 from quodlibet import config
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.util.cover import built_in
+from quodlibet.util import print_d
 from quodlibet.util.thread import call_async
 from quodlibet.util.thumbnails import get_thumbnail_from_file
 from quodlibet.plugins.cover import CoverSourcePlugin

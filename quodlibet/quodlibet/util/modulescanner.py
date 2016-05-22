@@ -13,6 +13,7 @@ from traceback import format_exception
 
 from quodlibet.util.path import mtime
 from quodlibet.util.importhelper import get_importables, load_module
+from quodlibet.util import print_d
 from quodlibet.compat import iteritems
 
 

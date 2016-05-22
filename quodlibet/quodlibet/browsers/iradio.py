@@ -30,6 +30,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util import copool, connect_destroy, sanitize_tags, connect_obj
 from quodlibet.util.string import decode, encode
 from quodlibet.util.uri import URI
+from quodlibet.util import print_w
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.completion import LibraryTagCompletion

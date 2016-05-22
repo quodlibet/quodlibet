@@ -9,6 +9,7 @@ import re
 import shlex
 
 from quodlibet import const
+from quodlibet.util import print_d, print_w
 from .tcpserver import BaseTCPServer, BaseTCPConnection
 
 

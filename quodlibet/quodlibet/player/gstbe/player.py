@@ -21,7 +21,8 @@ from quodlibet import util
 from quodlibet import app
 
 from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError, \
-    MainRunnerAbortedError, MainRunnerTimeoutError
+    MainRunnerAbortedError, MainRunnerTimeoutError, print_w, print_d, \
+    print_e, print_
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.notif import Task

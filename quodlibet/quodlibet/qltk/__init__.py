@@ -17,7 +17,7 @@ from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
 
-from quodlibet.util import gdecode
+from quodlibet.util import gdecode, print_d
 
 
 def get_primary_accel_mod():

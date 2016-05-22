@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 from quodlibet import config
+from quodlibet.util import print_d
 
 from ._base import MMKeysAction, MMKeysImportError
 

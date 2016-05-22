@@ -11,7 +11,7 @@ import os
 import sys
 import warnings
 
-from quodlibet.compat import builtins, PY2
+from quodlibet.compat import PY2
 
 if PY2:
     # some code depends on utf-8 default encoding (pygtk used to set it)
@@ -24,7 +24,7 @@ from quodlibet.util import windows, is_osx, is_windows
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars
-from quodlibet.util.dprint import print_, print_d, print_w, print_e
+from quodlibet.util.dprint import print_d, print_e
 from quodlibet import const
 from quodlibet.const import MinVersions
 from quodlibet.compat import PY2
@@ -512,11 +512,6 @@ def _init_python():
         # Not really needed on Windows as pygi-aio seems to work fine, but
         # wine doesn't have certs which we use for testing.
         util.install_urllib2_ca_file()
-
-    builtins.__dict__["print_"] = print_
-    builtins.__dict__["print_d"] = print_d
-    builtins.__dict__["print_e"] = print_e
-    builtins.__dict__["print_w"] = print_w
 
 
 def _init_formats():

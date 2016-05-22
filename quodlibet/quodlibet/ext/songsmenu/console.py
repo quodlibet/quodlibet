@@ -39,6 +39,7 @@ from quodlibet.qltk import Icons
 from quodlibet.compat import exec_
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.collection import Collection
+from quodlibet.util import print_
 
 
 class PyConsole(SongsMenuPlugin):

@@ -13,6 +13,7 @@ if not hasattr(Gio.MemoryOutputStream, 'new_resizable'):
         '2.36 and gobject-introspection since 1.36 are known to work fine.')
 
 from quodlibet.const import VERSION, WEBSITE
+from quodlibet.util import print_d, print_w
 
 
 PARAM_READWRITECONSTRUCT = GObject.ParamFlags.CONSTRUCT_ONLY | \

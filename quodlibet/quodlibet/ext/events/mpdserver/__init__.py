@@ -24,6 +24,7 @@ from quodlibet import qltk
 from quodlibet import config
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
+from quodlibet.util import print_w, print_d
 
 from .main import MPDServer
 from .tcpserver import ServerError

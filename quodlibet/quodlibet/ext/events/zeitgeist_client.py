@@ -29,6 +29,7 @@ except ImportError as e:
 
 from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.util import print_d
 
 
 class Zeitgeist(EventPlugin):
