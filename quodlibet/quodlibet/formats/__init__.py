@@ -10,7 +10,6 @@ import sys
 
 from quodlibet.util.importhelper import load_dir_modules
 from quodlibet import util
-from quodlibet import const
 from quodlibet.util import print_w, print_d
 from quodlibet.const import MinVersions
 
@@ -79,8 +78,7 @@ def MusicFile(filename):
                 return _infos[ext](filename)
             except:
                 print_w("Error loading %r" % filename)
-                if const.DEBUG:
-                    util.print_exc()
+                util.print_exc()
                 return
     else:
         print_w("Unknown file extension %r" % filename)

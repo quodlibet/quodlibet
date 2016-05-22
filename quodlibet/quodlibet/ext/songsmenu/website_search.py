@@ -97,7 +97,7 @@ class WebsiteSearch(SongsMenuPlugin):
         # Failing all else...
         if not len(self._url_pats):
             print_d("No saved searches found in %s. Using defaults." %
-                    filename, context=self)
+                    filename)
             self._url_pats = self.DEFAULT_URL_PATS
 
     def __init__(self, *args, **kwargs):

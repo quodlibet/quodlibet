@@ -213,7 +213,6 @@ class StandaloneEditor(_KeyValueEditor):
                 self.model.prepend(
                     row=[lines.pop(1).strip(), lines.pop(0).strip()])
         if not len(self.model) and self.initial:
-            #print_d("None found - using defaults.", context=self)
             for (k, v) in self.initial:
                 self.model.append(row=[v.strip(), k.strip()])
 

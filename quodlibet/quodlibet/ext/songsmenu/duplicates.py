@@ -218,13 +218,12 @@ class DuplicatesTreeModel(Gtk.TreeStore):
             self.append(parent, self.__make_row(s))
 
     def go_to(self, song, explicit=False):
-        #print_d("Duplicates: told to go to %r" % song, context=self)
         self.__iter = None
         if isinstance(song, Gtk.TreeIter):
             self.__iter = song
             self.sourced = True
         elif not self.find_row(song):
-            print_d("Failed to find song", context=self)
+            print_d("Failed to find song")
         return self.__iter
 
     def remove(self, itr):
@@ -276,7 +275,7 @@ class DuplicateDialog(Gtk.Window):
     def __quit(self, widget=None, response=None):
         if response == Gtk.ResponseType.OK or \
                 response == Gtk.ResponseType.CLOSE:
-            print_d("Exiting plugin on user request...", self)
+            print_d("Exiting plugin on user request...")
         self.finished = True
         self.destroy()
         return
@@ -455,7 +454,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
         # Index all songs by our custom key
         # TODO: make this cache-friendly
-        print_d("Calculating duplicates...", self)
+        print_d("Calculating duplicates...")
         groups = {}
         for song in songs:
             key = self.get_key(song)

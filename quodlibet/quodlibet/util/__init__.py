@@ -12,7 +12,6 @@ import re
 import ctypes
 import ctypes.util
 import sys
-import traceback
 import unicodedata
 import threading
 import subprocess
@@ -31,7 +30,7 @@ from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
-from quodlibet.util.dprint import print_d, print_, print_e, print_w
+from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
 from .misc import environ, argv, cached_func, get_locale_encoding, \
     get_fs_encoding
 from .environment import *
@@ -39,7 +38,8 @@ from .enum import enum
 
 
 # pyflakes
-environ, argv, cached_func, get_locale_encoding, get_fs_encoding, enum, print_w
+environ, argv, cached_func, get_locale_encoding, get_fs_encoding, enum,
+print_w, print_exc
 
 
 if PY2:
@@ -599,16 +599,6 @@ def uri_is_valid(uri):
 
 def make_case_insensitive(filename):
     return "".join(["[%s%s]" % (c.lower(), c.upper()) for c in filename])
-
-
-def print_exc(limit=None, file=None):
-    """A wrapper preventing crashes on broken pipes in print_exc."""
-    if file is None:
-        if PY2:
-            file = sys.stderr
-        else:
-            file = sys.stderr.buffer
-    print_(traceback.format_exc(limit=limit), output=file)
 
 
 class DeferredSignal(object):

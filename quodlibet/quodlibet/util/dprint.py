@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011,2013 Christoph Reiter
+# Copyright 2011,2013,2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,25 +8,19 @@
 import sys
 import time
 import os
+import traceback
 
 import quodlibet.const
-import quodlibet.util.logging
 
 from quodlibet.util.clicolor import Colorise
-from quodlibet.util import clicolor
+from quodlibet.util import clicolor, logging
 from quodlibet.compat import text_type, PY2
 from .misc import get_locale_encoding
 from .environment import is_py2exe, is_py2exe_console
 
 
 _ENCODING = get_locale_encoding()
-
-
-def _format_print(string, prefix=""):
-    """Inserts the given prefix at the beginning of each line"""
-    if prefix:
-        string = prefix + ("\n" + prefix).join(string.splitlines())
-    return string
+_TIME = time.time()
 
 
 def frame_info(level=0):
@@ -114,6 +108,12 @@ def _print(string, output, frm="utf-8", strip_color=True, end=os.linesep):
 
 
 def print_(string, output=None, end=os.linesep):
+    """Print something to `output`. This should be used instead of
+    the Python built-in print statement or function.
+
+    output defaults to sys.stdout
+    """
+
     if output is None:
         if PY2:
             output = sys.stdout
@@ -123,9 +123,10 @@ def print_(string, output=None, end=os.linesep):
     _print(string, output, end=end)
 
 
-def print_d(string, context=""):
-    """Print debugging information."""
-    if quodlibet.const.DEBUG:
+def _print_message(string, custom_context, debug_only, prefix,
+                   color, logging_category):
+
+    if not debug_only or quodlibet.const.DEBUG:
         if PY2:
             output = sys.stderr
         else:
@@ -133,53 +134,67 @@ def print_d(string, context=""):
     else:
         output = None
 
-    context = frame_info(1)
+    context = frame_info(2)
 
     # strip the package name
-    if context.startswith("quodlibet.") and context.count(".") > 1:
-        context = context[10:]
+    if context.count(".") > 1:
+        context = context.split(".", 1)[-1]
 
-    timestr = ("%0.2f" % time.time())[-6:]
+    if custom_context:
+        context = "%s(%r)" % (context, custom_context)
 
-    # Translators: "D" as in "Debug". It is prepended to
-    # terminal output. APT uses a similar output format.
-    prefix = _("D:") + " "
+    timestr = ("%2.3f" % (time.time() - _TIME))[-6:]
 
-    string = "%s: %s: %s" % (Colorise.magenta(timestr),
-                             Colorise.blue(context), string)
-    string = _format_print(string, Colorise.green(prefix))
+    info = "%s: %s: %s:" % (
+        getattr(Colorise, color)(prefix),
+        Colorise.magenta(timestr),
+        Colorise.blue(context))
+
+    lines = string.splitlines()
+    if len(lines) > 1:
+        string = os.linesep.join([info] + [" " * 4 + l for l in lines])
+    else:
+        string = info + " " + lines[0]
 
     if output is not None:
         _print(string, output)
 
-    # Translators: Name of the debug tab in the Output Log window
-    quodlibet.util.logging.log(clicolor.strip_color(string), "debug")
+    logging.log(clicolor.strip_color(string), logging_category)
 
 
-def print_w(string):
-    """Print warnings."""
-    # Translators: "W" as in "Warning". It is prepended to
-    # terminal output. APT uses a similar output format.
-    prefix = _("W:") + " "
+def print_exc():
+    """Prints the stack trace of the current exception. Depending
+    on the configuration will either print a short summary or the whole
+    stacktrace.
+    """
 
-    string = _format_print(string, Colorise.red(prefix))
-    if PY2:
-        _print(string, sys.stderr)
+    if quodlibet.const.DEBUG:
+        string = traceback.format_exc()
     else:
-        _print(string, sys.stderr.buffer)
+        # try to get a short error message pointing at the cause of
+        # the exception
+        tp = traceback.extract_tb(sys.exc_info()[2])[-1]
+        filename, lineno, name, line = tp
+        text = os.linesep.join(traceback.format_exc(0).splitlines()[1:])
+        string = "%s:%s:%s: %s" % (
+            os.path.basename(filename), lineno, name, text)
 
-    # Translators: Name of the warnings tab in the Output Log window
-    quodlibet.util.logging.log(clicolor.strip_color(string), "warnings")
+    _print_message(string, None, False, "E", "red", "errors")
+
+
+def print_d(string, context=None):
+    """Print debugging information."""
+
+    _print_message(string, context, True, "D", "green", "debug")
+
+
+def print_w(string, context=None):
+    """Print warnings"""
+
+    _print_message(string, context, True, "W", "yellow", "warnings")
 
 
 def print_e(string, context=None):
-    """Print errors."""
-    # Translators: "E" as in "Error". It is prepended to
-    # terminal output. APT uses a similar output format.
-    prefix = _("E:") + " "
+    """Print errors"""
 
-    string = _format_print(string, Colorise.red(prefix))
-    _print(string, sys.stderr)
-
-    # Translators: Name of the warnings tab in the Output Log window
-    quodlibet.util.logging.log(clicolor.strip_color(string), "errors")
+    _print_message(string, context, False, "E", "red", "errors")

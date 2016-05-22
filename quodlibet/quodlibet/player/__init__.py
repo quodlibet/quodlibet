@@ -6,7 +6,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from quodlibet import const
 from quodlibet import util
 
 
@@ -59,8 +58,7 @@ def init_backend(backend_name):
     try:
         backend = __import__(modulename, {}, {}, "quodlibet.player")
     except Exception as e:
-        if const.DEBUG:
-            util.print_exc()
+        util.print_exc()
         util.reraise(PlayerError, str(e))
     else:
         return backend
