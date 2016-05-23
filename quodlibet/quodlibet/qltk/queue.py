@@ -64,6 +64,7 @@ class QueueExpander(Gtk.Expander):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.queue = PlayQueue(library, player)
+        self.queue.props.expand = True
         sw.add(self.queue)
 
         outer = Gtk.HBox(spacing=12)
