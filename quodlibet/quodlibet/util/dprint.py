@@ -15,15 +15,12 @@ import re
 from quodlibet import const
 from quodlibet.compat import text_type, PY2
 from .misc import get_locale_encoding
-from .environment import is_py2exe, is_py2exe_console
+from .environment import is_py2exe_window, is_windows
 from . import logging
 
 
-_ENCODING = get_locale_encoding()
-_TIME = time.time()
-
-
 class Color(object):
+
     NO_COLOR = '\033[0m'
     MAGENTA = '\033[95m'
     BLUE = '\033[94m'
@@ -37,6 +34,7 @@ class Color(object):
 
 
 class Colorise(object):
+
     @classmethod
     def __reset(cls, text):
         return text + Color.NO_COLOR
@@ -91,25 +89,77 @@ def strip_color(text):
     return _ANSI_ESC_RE.sub("", text)
 
 
-def print_color_default(text, output):
-    assert isinstance(text, str)
+def print_(*objects, **kwargs):
+    """print_(*objects, sep=None, end=None, file=None, has_color=True)
 
-    output.write(text)
-
-
-def print_color_win(text, output):
-    """Parses some ansi escape codes and translates them to Windows
-    console API calls.
+    objects can be valid paths or text (can be mixed).
+    If has_color is True the text can include ansi color codes.
     """
 
-    assert isinstance(text, str)
+    file_ = kwargs.get("file", sys.stdout)
+
+    if is_windows() and file_ in (sys.__stdout__, sys.__stderr__):
+        _print_windows(*objects, **kwargs)
+    else:
+        _print_unix(*objects, **kwargs)
+
+
+def _print_unix(*objects, **kwargs):
+    """A print_() implementation for tests. Writes utf-8 or bytes.
+
+    Also used when stdout is replaced, for example in tests etc..
+    """
+
+    sep = kwargs.get("sep", " ")
+    end = kwargs.get("end", os.linesep)
+    file_ = kwargs.get("file", sys.stdout)
+    has_color = kwargs.get("has_color", True)
+
+    encoding = get_locale_encoding()
+
+    parts = []
+    for obj in objects:
+        if isinstance(obj, text_type):
+            if PY2:
+                obj = obj.encode(encoding, "replace")
+            else:
+                obj = obj.encode(encoding, "surrogateescape")
+        parts.append(obj)
+
+    if isinstance(sep, text_type):
+        sep = sep.encode(encoding, "replace")
+
+    if isinstance(end, text_type):
+        end = end.encode(encoding, "replace")
+
+    data = sep.join(parts) + end
+
+    if has_color and not file_.isatty():
+        data = strip_color(data)
+
+    file_ = getattr(file_, "buffer", file_)
+    file_.write(data)
+
+
+def _print_windows(*objects, **kwargs):
+    """The windows implementation of print_()"""
+
+    if is_py2exe_window():
+        return
+
+    sep = kwargs.get("sep", u" ")
+    end = kwargs.get("end", os.linesep)
+    file_ = kwargs.get("file", sys.stdout)
+    has_color = kwargs.get("has_color", True)
 
     from quodlibet.util import winapi
 
-    if output is sys.stdout:
+    if file_ is sys.__stdout__:
         h = winapi.GetStdHandle(winapi.STD_OUTPUT_HANDLE)
-    else:
+    elif file_ is sys.__stderr__:
         h = winapi.GetStdHandle(winapi.STD_ERROR_HANDLE)
+    else:
+        raise AssertionError("only stdout/stderr supported")
 
     if h == winapi.INVALID_HANDLE_VALUE:
         return
@@ -136,19 +186,38 @@ def print_color_win(text, output):
         Color.GRAY: winapi.FOREGROUND_INTENSITY,
     }
 
-    bg = info.wAttributes & (~0xF)
-    for part in _ANSI_ESC_RE.split(text):
-        if part in mapping:
-            winapi.SetConsoleTextAttribute(h, mapping[part] | bg)
-        elif not _ANSI_ESC_RE.match(part):
-            output.write(part)
+    parts = []
+    for obj in objects:
+        if not isinstance(obj, text_type):
+            obj = obj.decode("utf-8")
+        parts.append(obj)
 
+    text = sep.join(parts) + end
+    assert isinstance(text, text_type)
 
-def print_color(text, output):
-    if os.name == "nt":
-        print_color_win(text, output)
+    fileno = file_.fileno()
+    file_.flush()
+
+    # try to force a utf-8 code page
+    old_cp = winapi.GetConsoleOutputCP()
+    encoding = "utf-8"
+    if winapi.SetConsoleOutputCP(65001) == 0:
+        encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
+        old_cp = None
+
+    if not has_color:
+        os.write(fileno, text.encode(encoding, 'replace'))
     else:
-        print_color_default(text, output)
+        bg = info.wAttributes & (~0xF)
+        for part in _ANSI_ESC_RE.split(text):
+            if part in mapping:
+                winapi.SetConsoleTextAttribute(h, mapping[part] | bg)
+            elif not _ANSI_ESC_RE.match(part):
+                os.write(fileno, part.encode(encoding, 'replace'))
+
+    # reset the code page to what we had before
+    if old_cp is not None:
+        winapi.SetConsoleOutputCP(old_cp)
 
 
 def frame_info(level=0):
@@ -201,66 +270,8 @@ def frame_info(level=0):
     return info
 
 
-def _print(string, output, frm="utf-8", end=os.linesep):
-    if is_py2exe() and not is_py2exe_console():
-        return
-
-    can_have_color = True
-    if can_have_color and not output.isatty():
-        string = strip_color(string)
-        can_have_color = False
-
-    if not PY2:
-        # FIXME: PY3PORT
-        can_have_color = False
-
-    if isinstance(string, text_type):
-        string = string.encode(_ENCODING, "replace")
-    else:
-        string = string.decode(frm).encode(_ENCODING, "replace")
-
-    if isinstance(end, text_type):
-        end = end.encode(_ENCODING, "replace")
-
-    assert isinstance(string, bytes)
-    assert isinstance(end, bytes)
-
-    try:
-        if can_have_color:
-            print_color(string, output)
-        else:
-            output.write(string)
-        output.write(end)
-    except IOError:
-        pass
-
-
-def print_(string, output=None, end=os.linesep):
-    """Print something to `output`. This should be used instead of
-    the Python built-in print statement or function.
-
-    output defaults to sys.stdout
-    """
-
-    if output is None:
-        if PY2:
-            output = sys.stdout
-        else:
-            output = sys.stdout.buffer
-
-    _print(string, output, end=end)
-
-
 def _print_message(string, custom_context, debug_only, prefix,
-                   color, logging_category):
-
-    if not debug_only or const.DEBUG:
-        if PY2:
-            output = sys.stderr
-        else:
-            output = sys.stderr.buffer
-    else:
-        output = None
+                   color, logging_category, start_time=time.time()):
 
     context = frame_info(2)
 
@@ -271,7 +282,7 @@ def _print_message(string, custom_context, debug_only, prefix,
     if custom_context:
         context = "%s(%r)" % (context, custom_context)
 
-    timestr = ("%2.3f" % (time.time() - _TIME))[-6:]
+    timestr = ("%2.3f" % (time.time() - start_time))[-6:]
 
     info = "%s: %s: %s:" % (
         getattr(Colorise, color)(prefix),
@@ -284,8 +295,8 @@ def _print_message(string, custom_context, debug_only, prefix,
     else:
         string = info + " " + lines[0]
 
-    if output is not None:
-        _print(string, output)
+    if not debug_only or const.DEBUG:
+        print_(string, file=sys.stderr)
 
     logging.log(strip_color(string), logging_category)
 

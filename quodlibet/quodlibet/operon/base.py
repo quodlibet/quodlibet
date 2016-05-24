@@ -58,7 +58,7 @@ class Command(object):
         """Print output if --verbose was passed"""
 
         if self.verbose:
-            return print_(text, sys.stderr)
+            return print_(text, file=sys.stderr)
 
     def load_song(self, path):
         """Load a song. Raises CommandError in case it fails"""

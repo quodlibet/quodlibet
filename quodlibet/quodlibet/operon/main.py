@@ -36,7 +36,7 @@ def _print_help(main_cmd, parser, file=None):
     cl.append("See '%s help <command>' for more information "
               "on a specific command." % main_cmd)
 
-    print_("\n".join(cl), file)
+    print_("\n".join(cl), file=file)
 
 
 def main(argv):
@@ -103,12 +103,12 @@ def main(argv):
             try:
                 cmd.execute(argv[offset + 1:])
             except CommandError as e:
-                print_(u"%s: %s" % (command.NAME, e), sys.stderr)
+                print_(u"%s: %s" % (command.NAME, e), file=sys.stderr)
                 return 1
             break
     else:
         print_(u"Unknown command '%s'. See '%s help'." % (arg, main_cmd),
-               sys.stderr)
+               file=sys.stderr)
         return 1
 
     return 0
