@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 20:10+0200\n"
+"POT-Creation-Date: 2016-05-24 13:16+0200\n"
 "PO-Revision-Date: 2013-07-20 22:30+0100\n"
 "Last-Translator: Mugurel Tudor <mugurelu@gnome.ro>\n"
 "Language-Team: Română <gnomero@lists.sourceforge.net>\n"
@@ -345,7 +345,7 @@ msgstr ""
 msgid "Library Browser"
 msgstr "Navigator colecţie"
 
-#: ../quodlibet/browsers/_base.py:273 ../quodlibet/qltk/queue.py:185
+#: ../quodlibet/browsers/_base.py:273 ../quodlibet/qltk/queue.py:186
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
@@ -393,7 +393,7 @@ msgstr "_Personalizat"
 #: ../quodlibet/qltk/data_editors.py:297 ../quodlibet/qltk/data_editors.py:310
 #: ../quodlibet/qltk/data_editors.py:318 ../quodlibet/qltk/edittags.py:495
 #: ../quodlibet/qltk/edittags.py:634 ../quodlibet/qltk/maskedbox.py:47
-#: ../quodlibet/qltk/maskedbox.py:87 ../quodlibet/qltk/queue.py:287
+#: ../quodlibet/qltk/maskedbox.py:87 ../quodlibet/qltk/queue.py:288
 #: ../quodlibet/qltk/scanbox.py:44 ../quodlibet/qltk/scanbox.py:70
 #, fuzzy
 msgid "_Remove"
@@ -5100,15 +5100,15 @@ msgstr "Nici o piesă"
 msgid "Properties"
 msgstr "Proprietăţi"
 
-#: ../quodlibet/qltk/queue.py:78 ../quodlibet/qltk/quodlibetwindow.py:1118
+#: ../quodlibet/qltk/queue.py:79 ../quodlibet/qltk/quodlibetwindow.py:1118
 msgid "_Queue"
 msgstr "_Coadă"
 
-#: ../quodlibet/qltk/queue.py:85
+#: ../quodlibet/qltk/queue.py:86
 msgid "Remove all songs from the queue"
 msgstr "Şterge toate piesele din coadă"
 
-#: ../quodlibet/qltk/queue.py:106
+#: ../quodlibet/qltk/queue.py:107
 msgid "_Random"
 msgstr "_Aleator"
 

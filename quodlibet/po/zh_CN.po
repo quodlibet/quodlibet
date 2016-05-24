@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 20:10+0200\n"
+"POT-Creation-Date: 2016-05-24 13:16+0200\n"
 "PO-Revision-Date: 2013-07-20 22:33+0100\n"
 "Last-Translator: Emfox Zhou <EmfoxZhou@gmail.com>\n"
 "Language-Team: Emfox Zhou <EmfoxZhou@gmail.com>\n"
@@ -332,7 +332,7 @@ msgstr ""
 msgid "Library Browser"
 msgstr "库浏览器"
 
-#: ../quodlibet/browsers/_base.py:273 ../quodlibet/qltk/queue.py:185
+#: ../quodlibet/browsers/_base.py:273 ../quodlibet/qltk/queue.py:186
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
@@ -378,7 +378,7 @@ msgstr "自定义(_C)"
 #: ../quodlibet/qltk/data_editors.py:297 ../quodlibet/qltk/data_editors.py:310
 #: ../quodlibet/qltk/data_editors.py:318 ../quodlibet/qltk/edittags.py:495
 #: ../quodlibet/qltk/edittags.py:634 ../quodlibet/qltk/maskedbox.py:47
-#: ../quodlibet/qltk/maskedbox.py:87 ../quodlibet/qltk/queue.py:287
+#: ../quodlibet/qltk/maskedbox.py:87 ../quodlibet/qltk/queue.py:288
 #: ../quodlibet/qltk/scanbox.py:44 ../quodlibet/qltk/scanbox.py:70
 #, fuzzy
 msgid "_Remove"
@@ -5047,15 +5047,15 @@ msgstr "没有曲目"
 msgid "Properties"
 msgstr "属性"
 
-#: ../quodlibet/qltk/queue.py:78 ../quodlibet/qltk/quodlibetwindow.py:1118
+#: ../quodlibet/qltk/queue.py:79 ../quodlibet/qltk/quodlibetwindow.py:1118
 msgid "_Queue"
 msgstr "队列(_Q)"
 
-#: ../quodlibet/qltk/queue.py:85
+#: ../quodlibet/qltk/queue.py:86
 msgid "Remove all songs from the queue"
 msgstr "删除队列里的所有曲目"
 
-#: ../quodlibet/qltk/queue.py:106
+#: ../quodlibet/qltk/queue.py:107
 msgid "_Random"
 msgstr "随机(_R)"
 

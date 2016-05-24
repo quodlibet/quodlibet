@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 20:10+0200\n"
+"POT-Creation-Date: 2016-05-24 13:16+0200\n"
 "PO-Revision-Date: 2010-02-15 18:25+0100\n"
 "Last-Translator: Johám-Luís Miguéns Vila <galiza.ceive@gmail.com>\n"
 "Language-Team: Spanish <LL@li.org>\n"
@@ -343,7 +343,7 @@ msgstr ""
 msgid "Library Browser"
 msgstr "Navegador de la colección"
 
-#: ../quodlibet/browsers/_base.py:273 ../quodlibet/qltk/queue.py:185
+#: ../quodlibet/browsers/_base.py:273 ../quodlibet/qltk/queue.py:186
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
@@ -390,7 +390,7 @@ msgstr "_Personalizada"
 #: ../quodlibet/qltk/data_editors.py:297 ../quodlibet/qltk/data_editors.py:310
 #: ../quodlibet/qltk/data_editors.py:318 ../quodlibet/qltk/edittags.py:495
 #: ../quodlibet/qltk/edittags.py:634 ../quodlibet/qltk/maskedbox.py:47
-#: ../quodlibet/qltk/maskedbox.py:87 ../quodlibet/qltk/queue.py:287
+#: ../quodlibet/qltk/maskedbox.py:87 ../quodlibet/qltk/queue.py:288
 #: ../quodlibet/qltk/scanbox.py:44 ../quodlibet/qltk/scanbox.py:70
 #, fuzzy
 msgid "_Remove"
@@ -5179,15 +5179,15 @@ msgstr "Sin canciones"
 msgid "Properties"
 msgstr "Propiedades"
 
-#: ../quodlibet/qltk/queue.py:78 ../quodlibet/qltk/quodlibetwindow.py:1118
+#: ../quodlibet/qltk/queue.py:79 ../quodlibet/qltk/quodlibetwindow.py:1118
 msgid "_Queue"
 msgstr "_Cola de reproducción"
 
-#: ../quodlibet/qltk/queue.py:85
+#: ../quodlibet/qltk/queue.py:86
 msgid "Remove all songs from the queue"
 msgstr "Elimina todas las canciones de la cola de reproducción"
 
-#: ../quodlibet/qltk/queue.py:106
+#: ../quodlibet/qltk/queue.py:107
 msgid "_Random"
 msgstr "Aleato_rio"
 
