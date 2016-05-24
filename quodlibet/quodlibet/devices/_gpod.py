@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -15,7 +16,7 @@ These are needed since the original bindings depend on pygtk which breaks
 in combination with pygobject.
 """
 
-from quodlibet.util import load_library
+from quodlibet.util import load_library, print_d
 from ctypes import *
 
 

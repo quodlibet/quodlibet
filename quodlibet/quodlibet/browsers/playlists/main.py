@@ -10,7 +10,7 @@ import urllib
 from gi.repository import Gtk, GLib, Pango, Gdk
 from tempfile import NamedTemporaryFile
 
-from quodlibet import config, print_d
+from quodlibet import config
 from quodlibet.browsers import Browser
 from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.browsers.playlists.prefs import Preferences, \
@@ -28,6 +28,7 @@ from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem, SymbolicIconImage
 from quodlibet.query import Query
 from quodlibet.util import connect_obj
 from quodlibet.util.path import get_home_dir
+from quodlibet.util.dprint import print_d, print_w
 from .util import *
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)

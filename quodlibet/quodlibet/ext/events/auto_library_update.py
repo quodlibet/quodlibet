@@ -27,7 +27,7 @@ except ImportError as e:
            else e)
 
 
-from quodlibet import print_d
+from quodlibet.util.dprint import print_d
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.util.library import get_scan_dirs
 from quodlibet.compat import reduce

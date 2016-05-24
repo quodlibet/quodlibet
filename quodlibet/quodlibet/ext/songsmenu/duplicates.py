@@ -89,7 +89,6 @@ class DuplicateSongsView(RCMHintedTreeView):
                     print_d("Removing group %s" % group_row)
                     model.remove(group_row)
             else:
-                # print_w("Couldn't delete song %s" % song)
                 pass
 
     def _added(self, library, songs):
