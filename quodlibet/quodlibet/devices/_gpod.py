@@ -16,9 +16,12 @@ These are needed since the original bindings depend on pygtk which breaks
 in combination with pygobject.
 """
 
-from quodlibet.util import load_library, print_d
-from ctypes import *
+from ctypes import Structure, POINTER, cast, c_void_p, c_uint8, c_char_p, \
+    CFUNCTYPE, c_ulong, c_int64, c_bool, c_uint32, c_int32, c_float, \
+    c_double, c_size_t, c_long, c_ushort, c_short, c_uint16, c_uint64, \
+    c_int16, c_int8, c_int, c_uint, c_char
 
+from quodlibet.util import load_library, print_d
 
 try:
     _glib = load_library(["libglib-2.0.so.0", "libglib-2.0.so", "glib-2.0"])[0]
