@@ -61,7 +61,7 @@ EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 # Displayed as registered / help email address
 SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
-MAIN_AUTHORS = """\
+MAIN_AUTHORS = u"""\
 Joe Wreschnig
 Michael Urman
 Iñigo Serna
@@ -71,9 +71,9 @@ Nick Boultbee""".split("\n")
 
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = """Copyright © 2004-2016 %s...""" % ", ".join(MAIN_AUTHORS)
+COPYRIGHT = u"""Copyright © 2004-2016 %s...""" % u", ".join(MAIN_AUTHORS)
 
-AUTHORS = sorted("""\
+AUTHORS = sorted(u"""\
 Alexandre Passos
 Alexey Bobyakov
 Alex Geoffrey Smith
@@ -150,7 +150,7 @@ Vasiliy Faronov
 Zack Weinberg
 """.strip().split("\n"))
 
-TRANSLATORS = sorted("""
+TRANSLATORS = sorted(u"""
 Alexandre Passos (pt)
 Andreas Bertheussen (nb)
 Anton Shestakov (ru)
@@ -205,7 +205,7 @@ Yasushi Iwata (ja)
 Сергей Федосеев (ru)
 """.strip().splitlines())
 
-ARTISTS = sorted("""\
+ARTISTS = sorted(u"""\
 Tobias
 Jakub Steiner
 Fabien Devaux

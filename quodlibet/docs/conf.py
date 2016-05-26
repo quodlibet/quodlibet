@@ -2,11 +2,25 @@
 
 import os
 import sys
+import types
 
 dir_ = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, dir_)
-sys.path.insert(0, os.path.abspath(os.path.join(dir_, "..")))
-from quodlibet import const
+
+def exec_module(path):
+    """Executes the Python file at `path` and returns it as the module"""
+
+    globals_ = {}
+    if sys.version_info[0] == 2:
+        execfile(path, globals_)
+    else:
+        with open(path) as h:
+            exec(h.read(), globals_)
+    module = types.ModuleType("")
+    module.__dict__.update(globals_)
+    return module
+
+const = exec_module(os.path.join(dir_, "..", "quodlibet", "const.py"))
 
 needs_sphinx = "1.3"
 
