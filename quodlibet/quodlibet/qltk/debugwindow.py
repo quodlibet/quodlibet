@@ -21,6 +21,7 @@ from quodlibet.qltk import get_top_parent, Align
 from quodlibet.util.path import unexpand, mkdir
 from quodlibet.util import connect_obj
 from quodlibet.util import logging, gdecode
+from quodlibet.compat import text_type
 
 old_hook = sys.excepthook
 
@@ -38,9 +39,9 @@ class MinExceptionDialog(ErrorMessage):
             get_top_parent(parent),
             title, description)
 
-        assert isinstance(title, unicode)
-        assert isinstance(description, unicode)
-        assert isinstance(traceback, unicode)
+        assert isinstance(title, text_type)
+        assert isinstance(description, text_type)
+        assert isinstance(traceback, text_type)
 
         exp = Gtk.Expander(label=_("Error Details"))
         lab = Gtk.Label(label=traceback)

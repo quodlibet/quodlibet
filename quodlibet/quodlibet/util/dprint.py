@@ -16,6 +16,7 @@ from quodlibet import const
 from quodlibet.compat import text_type, PY2
 from .misc import get_locale_encoding
 from .environment import is_py2exe_window, is_windows
+from .path import fsdecode
 from . import logging
 
 
@@ -301,6 +302,13 @@ def _print_message(string, custom_context, debug_only, prefix,
     logging.log(strip_color(string), logging_category)
 
 
+def format_exc(*args, **kwargs):
+    """Returns text_type"""
+
+    # stack traces can contain byte paths under py2
+    return fsdecode(traceback.format_exc(*args, **kwargs))
+
+
 def print_exc():
     """Prints the stack trace of the current exception. Depending
     on the configuration will either print a short summary or the whole
@@ -308,15 +316,15 @@ def print_exc():
     """
 
     if const.DEBUG:
-        string = traceback.format_exc()
+        string = format_exc()
     else:
         # try to get a short error message pointing at the cause of
         # the exception
         tp = traceback.extract_tb(sys.exc_info()[2])[-1]
         filename, lineno, name, line = tp
-        text = os.linesep.join(traceback.format_exc(0).splitlines()[1:])
-        string = "%s:%s:%s: %s" % (
-            os.path.basename(filename), lineno, name, text)
+        text = os.linesep.join(format_exc(0).splitlines()[1:])
+        string = u"%s:%s:%s: %s" % (
+            fsdecode(os.path.basename(filename)), lineno, name, text)
 
     _print_message(string, None, False, "E", "red", "errors")
 

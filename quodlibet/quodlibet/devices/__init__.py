@@ -16,6 +16,7 @@ from gi.repository import GObject
 from quodlibet.util.path import xdg_get_system_data_dirs
 
 import quodlibet
+from quodlibet.compat import iteritems
 from quodlibet import util
 from quodlibet.devices import _udev as udev
 from quodlibet.util.importhelper import load_dir_modules
@@ -290,7 +291,7 @@ class UDisks2Manager(DeviceManager):
 
     def discover(self):
         objects = self._interface.GetManagedObjects()
-        for object_path, interfaces_and_properties in objects.iteritems():
+        for object_path, interfaces_and_properties in iteritems(objects):
             self._update_interfaces(object_path, interfaces_and_properties)
         self._check_interfaces()
 

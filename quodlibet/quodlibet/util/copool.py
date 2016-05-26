@@ -11,6 +11,7 @@
 from gi.repository import GLib
 
 from quodlibet.util import print_d
+from quodlibet.compat import PY2
 
 
 class _Routine(object):
@@ -26,7 +27,8 @@ class _Routine(object):
             pool.remove(funcid)
             yield False
 
-        self.source_func = wrap(func, funcid, args, kwargs).next
+        f = wrap(func, funcid, args, kwargs)
+        self.source_func = f.next if PY2 else f.__next__
 
     @property
     def paused(self):

@@ -60,7 +60,7 @@ def fsdecode(s, note=True):
     Can not fail and can't be reversed.
     """
 
-    if isinstance(s, unicode):
+    if isinstance(s, text_type):
         return s
     elif note:
         return decode(s, _FSCODING)

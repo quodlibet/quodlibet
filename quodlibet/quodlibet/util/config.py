@@ -21,7 +21,7 @@ except ImportError:
     from configparser import RawConfigParser as ConfigParser, Error, \
         NoSectionError
 
-from quodlibet.compat import cBytesIO, PY2, text_type
+from quodlibet.compat import cBytesIO, PY2, text_type, StringIO
 from quodlibet.util import list_unique, print_d
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.string import join_escape, split_escape
@@ -220,7 +220,10 @@ class Config(object):
             parser = csv.reader(
                 [value], lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
             try:
-                vals = [v.decode('utf-8') for v in parser.next()]
+                if PY2:
+                    vals = [v.decode('utf-8') for v in next(parser)]
+                else:
+                    vals = next(parser)
             except (csv.Error, ValueError) as e:
                 raise Error(e)
             return vals
@@ -237,8 +240,13 @@ class Config(object):
     def setstringlist(self, section, option, values):
         """Saves a list of unicode strings using the csv module"""
 
-        sw = cBytesIO()
-        values = [unicode(v).encode('utf-8') for v in values]
+        if PY2:
+            sw = cBytesIO()
+            values = [text_type(v).encode('utf-8') for v in values]
+        else:
+            sw = StringIO()
+            values = [text_type(v) for v in values]
+
         writer = csv.writer(sw, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(values)
         self.set(section, option, sw.getvalue())
@@ -308,7 +316,7 @@ class Config(object):
             self.add_section("__config__")
             self.set("__config__", "version", self._version)
         try:
-            with atomic_save(filename, "wb") as fileobj:
+            with atomic_save(filename, "wb" if PY2 else "w") as fileobj:
                 self._config.write(fileobj)
         finally:
             if self._loaded_version is not None:

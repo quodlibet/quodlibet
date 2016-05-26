@@ -261,6 +261,9 @@ def add_css(widget, css):
     Can raise GLib.GError in case the css is invalid
     """
 
+    if not isinstance(css, bytes):
+        css = css.encode("utf-8")
+
     provider = Gtk.CssProvider()
     provider.load_from_data(css)
     context = widget.get_style_context()
@@ -350,6 +353,13 @@ def add_signal_watch(signal_action):
             return True
         else:
             return False
+
+    try:
+        import fcntl
+    except ImportError:
+        pass
+    else:
+        fcntl.fcntl(wfd, fcntl.F_SETFL, os.O_NONBLOCK)
 
     signal.set_wakeup_fd(wfd)
     io_add_watch(rfd, GLib.PRIORITY_HIGH,
