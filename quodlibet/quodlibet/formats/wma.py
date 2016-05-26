@@ -54,6 +54,7 @@ class WMAFile(AudioFile):
         "WM/OriginalAlbumTitle": "originalalbum",
         "WM/AlbumSortOrder": "albumsort",
         "WM/ArtistSortOrder": "artistsort",
+        "WM/AlbumArtistSortOrder": "albumartistsort",
         "WM/Genre": "genre",
         "WM/Publisher": "publisher",
         "WM/AuthorURL": "website",
