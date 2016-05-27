@@ -1,9 +1,13 @@
+.. _release-3.6.2:
+
 3.6.2 (2016-05-24) - It seemed like there was a lesson here, but nobody was sure what it was
 --------------------------------------------------------------------------------------------
 
 * Fix queue not expanding with GTK+ 3.20 :bug:`1915`
 * Tag editor: Fix error message for unrooted patterns :bug:`1937`
 
+
+.. _release-3.6.1:
 
 3.6.1 (2016-04-05) - GOOD LUCK OUT THERE
 ----------------------------------------
@@ -17,6 +21,8 @@
 * OS X: Fix TLS for real
 * Lyrics window: Also support webkitgtk2 3.0 (for Ubuntu 14.04)
 
+
+.. _release-3.6.0:
 
 3.6.0 (2016-03-24) - It is altogether fitting and proper that we should do this
 -------------------------------------------------------------------------------
@@ -93,11 +99,15 @@ Wayland:
   * Fix seek bar window position (needs gtk+ 3.20)
 
 
+.. _release-3.5.3:
+
 3.5.3 (2016-01-16) - Uh, I GUESS that'd be good too??
 -----------------------------------------------------
 
 * Fix crash when opening new windows under some DEs (Linux only) :bug:`1788`
 
+
+.. _release-3.5.2:
 
 3.5.2 (2016-01-13) - This is because dates are arbitrary and friendship can be whatever we want it to be!
 ---------------------------------------------------------------------------------------------------------
@@ -112,6 +122,8 @@ Wayland:
 * Fix tests with newer Perl (through intltool)
 
 
+.. _release-3.5.1:
+
 3.5.1 (2015-10-14) - HOW TO SUCCEED AT SMALLTALK
 ------------------------------------------------
 
@@ -119,6 +131,8 @@ Wayland:
   :bug:`1703`
 * Fix crash when G_FILENAME_ENCODING is set :bug:`1699`
 
+
+.. _release-3.5.0:
 
 3.5.0 (2015-10-07) - BETTER ANSWERS TO "HEY HOW ARE YOU?" THAN "I'M FINE"
 -------------------------------------------------------------------------
@@ -176,6 +190,8 @@ Translations:
  * setup.py: add a new create_po command for starting new translations
 
 
+.. _release-3.4.1:
+
 3.4.1 (2015-05-24) - Apparently, MY problem is a poisonous basement
 -------------------------------------------------------------------
 
@@ -188,6 +204,8 @@ Regressions:
  * Fix main window sometimes not showing under Ubuntu 12.04
  * Fix search not working with non-ASCII text in some cases
 
+
+.. _release-3.4.0:
 
 3.4.0 (2015-04-09) - She knew every of the things
 -------------------------------------------------
@@ -229,6 +247,8 @@ Packaging:
  * See the Packaging Guide for changes
 
 
+.. _release-3.3.1:
+
 3.3.1 (2015-01-10) - Reduce, reuse, recycle, RESUBMIT
 -----------------------------------------------------
 
@@ -241,6 +261,8 @@ Regressions:
 Fixes:
  * Fix HiDPI DnD images when dragging multiple rows
 
+
+.. _release-3.3.0:
 
 3.3.0 (2014-12-31) - PARALLEL UNIVERSES. Travel there and THEN go back in time, and you can mess things up as much as you want.
 -------------------------------------------------------------------------------------------------------------------------------
@@ -328,6 +350,8 @@ Windows:
    can be executed in the Windows console with visible stdout :bug:`635`
 
 
+.. _release-3.2.2:
+
 3.2.2 (2014-10-03) - ENJOY, THERE'S NO GOING BACK
 -------------------------------------------------
 
@@ -341,6 +365,8 @@ Translations
  * Russian translation update (Anton Shestakov)
 
 
+.. _release-3.2.1:
+
 3.2.1 (2014-08-16) - BAKE HIM AWAY, TOYS
 ----------------------------------------
 
@@ -352,6 +378,8 @@ Fixes
 Translations
  * Russian translation update (Anton Shestakov) :bug:`1441`
 
+
+.. _release-3.2.0:
 
 3.2.0 (2014-08-01) - WHAT KIND OF GOD MADE IT SO LIONS HUG BACK TOO HARD
 ------------------------------------------------------------------------
@@ -415,17 +443,23 @@ Packaging:
  * Packaging guide: https://quodlibet.readthedocs.io/en/latest/packaging.html
 
 
+.. _release-3.1.91:
+
 3.1.91 [beta] (2014-07-22) - Pumps, powerheads, lights and filters!
 -------------------------------------------------------------------
 
-See final release
+See :ref:`final release <release-3.2.0>`
 
+
+.. _release-3.1.2:
 
 3.1.2 (2014-06-20) - Dang it
 ----------------------------
 
 * Fix 3.1.1 regression causing folders in the file browser to show up in reverse order :bug:`1390`
 
+
+.. _release-3.1.1:
 
 3.1.1 (2014-04-28) - I've shown that you're dealing with an Alpha here, baby, not some weak Beta!
 -------------------------------------------------------------------------------------------------
@@ -434,6 +468,8 @@ See final release
 * Handle invalid flac picture blocks :bug:`1385`
 * Fix "setup.py install --record" :bug:`1373`
 
+
+.. _release-3.1.0:
 
 3.1.0 (2014-04-10) - Olden times, man! NEVER LIVE THERE.
 --------------------------------------------------------
@@ -514,10 +550,13 @@ Dependencies & Packaging:
 * ``setup.py build_sphinx`` builds the html user guide
 
 
+.. _release-3.0.91:
+
 3.0.91 [beta] (2014-02-28) - You'd have to be in space for that to work.
 ------------------------------------------------------------------------
 
-See final release
+See :ref:`final release <release-3.1.0>`
+
 
 2.6.3 (2013-09-25) - The one that can't even go naked into space without dying!
 -------------------------------------------------------------------------------
@@ -526,6 +565,9 @@ This is a Windows only bug fix release.
 
 Windows:
  * Fix library saving [1230] (Sebastian Thürrschmidt)
+
+
+.. _release-3.0.2:
 
 3.0.2 (2013-07-22) - LATER, THE OCEANS BOIL AS THE EARTH TURNS TO FIRE
 ----------------------------------------------------------------------
@@ -559,10 +601,16 @@ Plugins
  * Fix HTML export plugin
  * Fix Bookmarks plugin
 
+
+.. _release-3.0.1:
+
 3.0.1 (2013-07-08) - *gasp*
 ---------------------------
 
  * Fix a crasher with some PyGObject versions [1211]
+
+
+.. _release-3.0.0:
 
 3.0.0 (2013-06-15) - THE NEMESIS HYPOTHESIS
 -------------------------------------------
