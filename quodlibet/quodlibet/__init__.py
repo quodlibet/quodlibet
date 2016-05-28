@@ -642,13 +642,13 @@ def finish_first_session(app_name):
 
 def _init_gtk_debug(no_excepthook):
     from gi.repository import GLib
-    from quodlibet.qltk.debugwindow import ExceptionDialog
+    from quodlibet.qltk.debugwindow import excepthook
 
     print_d("Initializing debugging extensions")
 
     def _override_exceptions():
         print_d("Enabling custom exception handler.")
-        sys.excepthook = ExceptionDialog.excepthook
+        sys.excepthook = excepthook
     if not no_excepthook:
         GLib.idle_add(_override_exceptions)
 

@@ -11,6 +11,7 @@ from quodlibet.util.string import decode, encode, split_escape, join_escape
 from quodlibet.util.string.splitters import *
 from quodlibet.util.library import *
 from tests import TestCase, skipIf
+from .helper import capture_output
 
 import tempfile
 import os
@@ -22,6 +23,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.compat import text_type, PY2
 from quodlibet.util import format_time_long as f_t_l
+from quodlibet.util.dprint import print_exc, format_exception, extract_tb
 
 
 is_win = os.name == "nt"
@@ -1117,3 +1119,39 @@ class Tget_ca_file(TestCase):
         if path is not None:
             self.assertTrue(is_fsnative(path))
             self.assertTrue(os.path.exists(path))
+
+
+class Tprint_exc(TestCase):
+
+    def test_main(self):
+        try:
+            1 / 0
+        except:
+            with capture_output():
+                print_exc()
+
+
+class Tformat_exception(TestCase):
+
+    def test_main(self):
+        try:
+            1 / 0
+        except:
+            result = format_exception(*sys.exc_info())
+            self.assertTrue(isinstance(result, list))
+            self.assertTrue(all([isinstance(l, text_type) for l in result]))
+
+
+class Textract_tb(TestCase):
+
+    def test_main(self):
+        try:
+            1 / 0
+        except:
+            result = extract_tb(sys.exc_info()[2])
+            self.assertTrue(isinstance(result, list))
+            for fn, l, fu, text in result:
+                self.assertTrue(is_fsnative(fn))
+                self.assertTrue(isinstance(l, int))
+                self.assertTrue(isinstance(fu, text_type))
+                self.assertTrue(isinstance(text, text_type))

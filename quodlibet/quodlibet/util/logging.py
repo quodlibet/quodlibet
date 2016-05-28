@@ -10,6 +10,8 @@ from __future__ import absolute_import
 import collections
 import threading
 
+from quodlibet.compat import xrange
+
 
 class Logs(object):
     """Thread safe log store"""
@@ -61,7 +63,7 @@ class Logs(object):
         content = []
         for cat, string in self._save_iter():
             if category is None or category == cat:
-                if isinstance(string, str):
+                if isinstance(string, bytes):
                     string = string.decode("utf-8", "replace")
                 content.append(string)
 

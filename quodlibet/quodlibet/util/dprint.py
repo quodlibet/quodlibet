@@ -16,7 +16,8 @@ from quodlibet import const
 from quodlibet.compat import text_type, PY2
 from .misc import get_locale_encoding
 from .environment import is_py2exe_window, is_windows
-from .path import fsdecode
+from .path import py2fsnative, fsdecode
+from .string import decode
 from . import logging
 
 
@@ -307,6 +308,32 @@ def format_exc(*args, **kwargs):
 
     # stack traces can contain byte paths under py2
     return fsdecode(traceback.format_exc(*args, **kwargs))
+
+
+def format_exception(*args, **kwargs):
+    """Returns a list of text_type"""
+
+    result_lines = traceback.format_exception(*args, **kwargs)
+    return [fsdecode(l) for l in result_lines]
+
+
+def extract_tb(*args, **kwargs):
+    """Returns a list of tuples containing
+
+    (fsnative, int, text_type, text_type)
+    """
+
+    tp = traceback.extract_tb(*args, **kwargs)
+    if not PY2:
+        return tp
+
+    result = []
+    for filename, line_number, function_name, text in tp:
+        filename = py2fsnative(filename)
+        function_name = decode(function_name)
+        text = decode(text)
+        result.append((filename, line_number, function_name, text))
+    return result
 
 
 def print_exc():

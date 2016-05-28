@@ -14,13 +14,15 @@ from quodlibet.qltk.debugwindow import ExceptionDialog, MinExceptionDialog
 
 
 class TExceptionDialog(TestCase):
+
     def test_exec_hook(self):
         with capture_output():
             try:
                 raise Exception
             except Exception:
-                ExceptionDialog.from_except(*sys.exc_info())
-                ExceptionDialog.instance.destroy()
+                instance = ExceptionDialog.from_except(*sys.exc_info())
+                instance.dump_to_disk(*sys.exc_info())
+                instance.destroy()
 
 
 class TMinExceptionDialog(TestCase):

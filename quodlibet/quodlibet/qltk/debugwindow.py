@@ -6,9 +6,9 @@
 import os
 import sys
 import time
-import traceback
 import platform
 
+import mutagen
 from gi.repository import Gtk
 
 import quodlibet
@@ -18,19 +18,18 @@ from quodlibet import qltk
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
 from quodlibet.qltk import get_top_parent, Align
-from quodlibet.util.path import unexpand, mkdir
+from quodlibet.util.path import unexpand, mkdir, fsdecode
 from quodlibet.util import connect_obj
 from quodlibet.util import logging, gdecode
+from quodlibet.util.dprint import format_exception, extract_tb
 from quodlibet.compat import text_type
-
-old_hook = sys.excepthook
 
 
 class MinExceptionDialog(ErrorMessage):
     """A dialog which shows a title, description and an expandable
     error report.
 
-    For example decode(traceback.format_exc()) for displaying details
+    For example format_exc() for displaying details
     about an exception.
     """
 
@@ -61,66 +60,96 @@ class MinExceptionDialog(ErrorMessage):
         area.pack_start(exp, False, True, 0)
 
 
+def excepthook(type_, value, traceback):
+    """Custom exception hook which displays a ExceptionDialog window"""
+
+    instance = ExceptionDialog.from_except(type_, value, traceback)
+    if instance:
+        instance.show()
+        instance.dump_to_disk(type_, value, traceback)
+    return sys.__excepthook__(type_, value, traceback)
+
+
+def format_dump_header(type_, value, traceback):
+    """Returns system information and the traceback as`text_type`"""
+
+    lines = [
+        u"=== SYSTEM INFORMATION:"
+        u"",
+        u"Quod Libet %s" % const.VERSION,
+        u"Mutagen %s" % mutagen.version_string,
+        u"Python %s %s" % (sys.version, sys.platform),
+        u"Platform %s" % platform.platform(),
+        u"=== STACK TRACE",
+        u"",
+    ]
+
+    lines.extend(format_exception(type_, value, traceback))
+    lines.append(u"")
+    return os.linesep.join(lines)
+
+
+def format_dump_log(limit=75):
+    """Returns recent log entries as `text_type`"""
+
+    dump = [u"=== LOG:"]
+    dump.extend(logging.get_content(limit=limit))
+    return os.linesep.join(dump)
+
+
 class ExceptionDialog(Gtk.Window):
-    running = False
-    instance = None
+    """The windows which is shown if an unhandled exception occurred"""
+
+    _running = False
+    _instance = None
 
     DUMPDIR = os.path.join(quodlibet.get_user_dir(), "dumps")
 
     @classmethod
-    def from_except(Kind, *args):
-        mkdir(Kind.DUMPDIR)
+    def from_except(cls, type_, value, traceback):
+        """Returns an instance or None."""
 
-        dump = os.path.join(
-            Kind.DUMPDIR, time.strftime("Dump_%Y%m%d_%H%M%S.txt"))
-        minidump = os.path.join(
-            Kind.DUMPDIR, time.strftime("MiniDump_%Y%m%d_%H%M%S.txt"))
-
-        full_args = list(args) + [dump, minidump]
-        Kind.__dump(*full_args)
         # Don't get in a recursive exception handler loop.
-        if not Kind.running:
-            Kind.running = True
-            Kind.instance = Kind(*full_args)
-        return Kind.instance
+        if not cls._running:
+            cls._running = True
+            cls._instance = cls(type_, value, traceback)
+            return cls._instance
 
-    @classmethod
-    def excepthook(Kind, *args):
-        instance = Kind.from_except(*args)
-        instance.show()
-        old_hook(*args)
+    @property
+    def dump_path(self):
+        return os.path.join(
+            self.DUMPDIR,
+            time.strftime("Dump_%Y%m%d_%H%M%S.txt", self._time))
 
-    @classmethod
-    def __dump(self, Kind, value, trace, dump, minidump):
-        import mutagen
+    @property
+    def minidump_path(self):
+        return os.path.join(
+            self.DUMPDIR,
+            time.strftime("MiniDump_%Y%m%d_%H%M%S.txt", self._time))
 
-        dumpobj = open(dump, "wb")
-        minidumpobj = open(minidump, "wb")
+    def dump_to_disk(self, type_, value, traceback):
+        """Writes the dump files to DUMDIR"""
 
-        header = "Quod Libet %s\nMutagen %s\nPython %s %s\nPlatform %s" % (
-            const.VERSION, mutagen.version_string, sys.version,
-            sys.platform, platform.platform())
+        mkdir(self.DUMPDIR)
 
-        minidump_data = ("=== SYSTEM INFORMATION:\n%s\n\n"
-                         "=== STACK TRACE\n%s\n\n") % (
-            header, "\n".join(traceback.format_exception(Kind, value, trace)))
+        header = format_dump_header(type_, value, traceback).encode("utf-8")
+        log = format_dump_log().encode("utf-8")
 
-        dumpobj.write(minidump_data)
-        minidumpobj.write(minidump_data)
-        minidumpobj.close()
+        print(self.dump_path)
+        with open(self.dump_path, "wb") as dump:
+            with open(self.minidump_path, "wb") as minidump:
+                minidump.write(header)
+                dump.write(header)
+            dump.write(log)
 
-        dumpobj.write("=== LOG:\n")
-        for item in logging.get_content(limit=75):
-            dumpobj.write(item.decode("utf-8") + "\n")
-
-        dumpobj.close()
-
-    def __init__(self, Kind, value, traceback, dump, minidump):
+    def __init__(self, type_, value, traceback):
         # This is all implemented a bit different than the rest of Quod
         # Libet's windows since I want it to be as stupid as possible, to
         # minimize the chances of something going wrong with the thing
         # that handles things going wrong, i.e. it only uses GTK+ code,
         # no QLTK wrappers.
+
+        self._time = time.localtime()
 
         Gtk.Window.__init__(self)
         self.set_default_size(400, 400)
@@ -137,8 +166,8 @@ class ExceptionDialog(Gtk.Window):
             "unacceptable, send <b>%(mini-dump-path)s</b> instead with a "
             "description of what "
             "you were doing.") % {
-                "dump-path": unexpand(dump),
-                "mini-dump-path": unexpand(minidump),
+                "dump-path": unexpand(self.dump_path),
+                "mini-dump-path": unexpand(self.minidump_path),
                 "new-issue-url":
                     "https://github.com/quodlibet/quodlibet/issues/new",
             }
@@ -158,7 +187,7 @@ class ExceptionDialog(Gtk.Window):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
-        model = Gtk.ListStore(str, str, int)
+        model = Gtk.ListStore(object, object, object)
         self.__fill_list(view, model, value, traceback)
         view.set_model(model)
         cancel = qltk.Button(_("_Cancel"))
@@ -177,7 +206,7 @@ class ExceptionDialog(Gtk.Window):
         self.get_child().show_all()
 
         def first_draw(*args):
-            filename = unexpand(dump)
+            filename = unexpand(self.dump_path)
             offset = gdecode(label.get_text()).find(filename)
             label.select_region(offset, offset + len(filename))
             self.disconnect(self.__draw_id)
@@ -191,23 +220,28 @@ class ExceptionDialog(Gtk.Window):
         util.spawn(["sensible-editor", "+%d" % line, filename])
 
     def __fill_list(self, view, model, value, trace):
-        for frame in reversed(traceback.extract_tb(trace)):
+        for frame in reversed(extract_tb(trace)):
             (filename, line, function, text) = frame
             model.append(row=[filename, function, line])
         view.connect('row-activated', self.__stack_row_activated)
 
         def cdf(column, cell, model, iter, data):
-            cell.set_property("markup", "<b>%s</b> line %d\n\t%s" % (
-                util.escape(model[iter][1]), model[iter][2],
-                util.escape(unexpand(model[iter][0]))))
+            row = model[iter]
+            filename = fsdecode(unexpand(row[0]))
+            function = row[1]
+            line = row[2]
+            cell.set_property(
+                "markup", "<b>%s</b> line %d\n\t%s" % (
+                    util.escape(function), line, util.escape(filename)))
+
         render = Gtk.CellRendererText()
-        col = Gtk.TreeViewColumn(str(value).replace("_", "__"), render)
+        col = Gtk.TreeViewColumn(text_type(value).replace("_", "__"), render)
         col.set_cell_data_func(render, cdf)
         col.set_visible(True)
         col.set_expand(True)
         view.append_column(col)
 
     def __destroy(self, window):
-        type(self).running = False
+        type(self)._running = False
         type(self).instance = None
         window.destroy()
