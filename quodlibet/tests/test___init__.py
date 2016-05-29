@@ -32,3 +32,10 @@ class TQuodlibet(TestCase):
         self.assertTrue(is_fsnative(quodlibet.get_base_dir()))
         self.assertTrue(is_fsnative(quodlibet.get_image_dir()))
         self.assertTrue(is_fsnative(quodlibet.get_user_dir()))
+
+    def test_get_build_description(self):
+        quodlibet.get_build_description()
+
+    def test_get_build_version(self):
+        ver = quodlibet.get_build_version()
+        self.assertTrue(isinstance(ver, tuple))

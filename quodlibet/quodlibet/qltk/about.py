@@ -10,19 +10,11 @@ import platform
 from gi.repository import Gtk
 import mutagen
 
+import quodlibet
 from quodlibet.qltk import gtk_version, pygobject_version, get_backend_name
 from quodlibet import const
 from quodlibet import formats
 from quodlibet.util import fver
-
-
-def get_version_description():
-    version = const.VERSION_TUPLE
-    note = ""
-    if version[-1] == -1:
-        version = version[:-1]
-        note = " (development)"
-    return ".".join(map(str, version)) + note
 
 
 class AboutDialog(Gtk.AboutDialog):
@@ -31,7 +23,7 @@ class AboutDialog(Gtk.AboutDialog):
         super(AboutDialog, self).__init__()
         self.set_transient_for(parent)
         self.set_program_name(app.name)
-        self.set_version(get_version_description())
+        self.set_version(quodlibet.get_build_description())
         self.set_authors(const.AUTHORS)
         self.set_artists(const.ARTISTS)
         self.set_logo_icon_name(app.icon_name)

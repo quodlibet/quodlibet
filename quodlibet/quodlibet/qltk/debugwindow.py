@@ -12,7 +12,6 @@ import mutagen
 from gi.repository import Gtk
 
 import quodlibet
-from quodlibet import const
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet.qltk.msg import ErrorMessage
@@ -76,7 +75,7 @@ def format_dump_header(type_, value, traceback):
     lines = [
         u"=== SYSTEM INFORMATION:"
         u"",
-        u"Quod Libet %s" % const.VERSION,
+        u"Quod Libet %s" % quodlibet.get_build_description(),
         u"Mutagen %s" % mutagen.version_string,
         u"Python %s %s" % (sys.version, sys.platform),
         u"Platform %s" % platform.platform(),

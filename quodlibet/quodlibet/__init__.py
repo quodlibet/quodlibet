@@ -124,6 +124,37 @@ def is_release():
     return const.VERSION_TUPLE[-1] != -1
 
 
+def get_build_version():
+    """Returns a build version tuple"""
+
+    version = list(const.VERSION_TUPLE)
+    if version[-1] != -1 and build.BUILD_VERSION > 0:
+        version.append(build.BUILD_VERSION)
+
+    return tuple(version)
+
+
+def get_build_description():
+    """Returns text describing the version of the build.
+
+    Includes additional build info like git hash and build version.
+    """
+
+    version = list(get_build_version())
+    notes = []
+    if version[-1] == -1:
+        version = version[:-1]
+        notes.append(u"development")
+
+    if build.BUILD_INFO:
+        notes.append(build.BUILD_INFO)
+
+    version_string = u".".join(map(str, version))
+    note = u" (%s)" % u", ".join(notes) if notes else u""
+
+    return version_string + note
+
+
 @cached_func
 def get_base_dir():
     """The path to the quodlibet package"""
