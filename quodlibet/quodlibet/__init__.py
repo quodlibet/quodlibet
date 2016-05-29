@@ -26,6 +26,7 @@ from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars
 from quodlibet.util.dprint import print_d, print_e
 from quodlibet import const
+from quodlibet import build
 from quodlibet.const import MinVersions
 from quodlibet.compat import PY2
 
@@ -152,22 +153,8 @@ def get_user_dir():
     if 'QUODLIBET_USERDIR' in environ:
         USERDIR = environ['QUODLIBET_USERDIR']
 
-    # XXX: Exec conf.py in this directory, used to override const globals
-    # e.g. for setting USERDIR for the Windows portable version
-    # Note: execfile doesn't handle unicode paths on windows, so encode.
-    # (this doesn't use the old win api in case of str compared to os.*)
-    _CONF_PATH = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "conf.py")
-
-    if PY2:
-        locals_ = {}
-        # FIXME: PY3PORT
-        try:
-            execfile(_CONF_PATH, globals(), locals_)
-        except IOError:
-            pass
-        else:
-            USERDIR = locals_["USERDIR"]
+    if build.BUILD_TYPE == u"windows-portable":
+        USERDIR = os.path.join(get_base_dir(), "..", "..", "..", "config")
 
     # XXX: users shouldn't assume the dir is there, but we currently do in
     # some places
