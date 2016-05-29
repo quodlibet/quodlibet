@@ -23,6 +23,7 @@ QL_TEMP="$QL_REPO_TEMP"/quodlibet
 
 PYGI_AIO_VER="3.18.2_rev6"
 MUTAGEN_VER="1.31"
+BUILD_VERSION="0"
 
 
 function download_and_verify {
@@ -270,6 +271,12 @@ function build_quodlibet {
 
 function package_installer {
     local NSIS_PATH=$(wine winepath "C:\\Program Files\\NSIS\\")
+
+    # write build config
+    local BUILDPY="$QL_TEMP"/quodlibet/build.py
+    echo 'BUILD_TYPE = u"windows"' >> "$BUILDPY"
+    echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
+
     # now package everything up
     (cd "$BUILD_ENV" && wine "$NSIS_PATH/makensis.exe" win_installer.nsi)
     mv "$BUILD_ENV/quodlibet-LATEST.exe" "$DIR/quodlibet-$QL_VERSION-installer.exe"
@@ -277,6 +284,7 @@ function package_installer {
 
 function package_portable_installer {
     local PORTABLE="$BUILD_ENV/quodlibet-$QL_VERSION-portable"
+    local PYTHON="$PYDIR"/python.exe
     mkdir "$PORTABLE"
 
     cp "$MISC"/quodlibet.lnk "$PORTABLE"
@@ -286,7 +294,14 @@ function package_portable_installer {
     PORTABLE_DATA="$PORTABLE"/data
     mkdir "$PORTABLE_DATA"
     cp -RT "$QL_DEST" "$PORTABLE_DATA"
-    cp "$MISC"/conf.py "$PORTABLE_DATA"/bin/quodlibet/
+
+    # write build config
+    local BUILDPY="$PORTABLE_DATA"/bin/quodlibet/build.py
+    cp "$QL_TEMP"/quodlibet/build.py "$BUILDPY"
+    echo 'BUILD_TYPE = u"windows-portable"' >> "$BUILDPY"
+    echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
+    (cd $(dirname "$BUILDPY") && "$PYTHON" -m compileall -f -l .)
+    rm -f "$BUILDPY"
 
     wine "$SZIPDIR"/7z.exe a "$BUILD_ENV"/portable-temp.7z "$PORTABLE"
     cat "$SZIPDIR"/7z.sfx "$BUILD_ENV"/portable-temp.7z > "$DIR/quodlibet-$QL_VERSION-portable.exe"
