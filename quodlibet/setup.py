@@ -116,6 +116,10 @@ def main():
         data_files = [('', ['COPYING'])] + recursive_include_py2exe(
             "quodlibet", "images", ("svg", "png"))
 
+        # py2exe can only handle simple versions
+        if setup_kwargs["version"].endswith(".dev0"):
+            setup_kwargs["version"] = setup_kwargs["version"][:-5]
+
         CMD_SUFFIX = "-cmd"
         GUI_TOOLS = ["quodlibet", "exfalso"]
 
