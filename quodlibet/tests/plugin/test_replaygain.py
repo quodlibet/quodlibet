@@ -18,31 +18,33 @@ from tests.plugin import PluginTestCase
 from tests import DATA_DIR
 from quodlibet import config
 
-# Give up analysis after 5s, in case GStreamer (or something else) dies.
-TIMEOUT = 5
-SONG = AudioFile({'artist': 'foo', 'album': 'the album'})
-
 
 class TReplayGain(PluginTestCase):
-    # Ugh. Store test results statically
-    analysed = None
+
+    # Give up analysis after some time, in case GStreamer dies.
+    TIMEOUT = 10
 
     @classmethod
     def setUpClass(cls):
-        config.init()
-
         cls.mod = cls.modules["ReplayGain"]
-        Kind = cls.plugins["ReplayGain"].cls
-        cls.songs = []
-        cls.plugin = Kind(cls.songs, None)
+        cls.kind = cls.plugins["ReplayGain"].cls
 
     @classmethod
     def tearDownClass(cls):
-        config.quit()
         del cls.mod
+        del cls.kind
+
+    def setUp(self):
+        self.song = AudioFile({'artist': 'foo', 'album': 'the album'})
+        self.plugin = self.kind([self.song], None)
+
+    def tearDown(self):
+        self.plugin.destroy()
+        del self.plugin
+        del self.song
 
     def test_RGSong_properties(self):
-        rgs = self.mod.RGSong(SONG)
+        rgs = self.mod.RGSong(self.song)
         self.failIf(rgs.has_album_tags)
         self.failIf(rgs.has_track_tags)
         self.failIf(rgs.has_all_rg_tags)
@@ -54,14 +56,14 @@ class TReplayGain(PluginTestCase):
         self.failIf(rgs.has_all_rg_tags)
 
     def test_RGSong_zero(self):
-        rgs = self.mod.RGSong(SONG)
+        rgs = self.mod.RGSong(self.song)
         rgs.done = True
         rgs._write(0.0, 0.0)
         self.failUnless(rgs.has_album_tags,
                         msg="Failed with 0.0 album tags (%s)" % rgs)
 
     def test_RGAlbum_properties(self):
-        rga = self.mod.RGAlbum([self.mod.RGSong(SONG)], UpdateMode.ALWAYS)
+        rga = self.mod.RGAlbum([self.mod.RGSong(self.song)], UpdateMode.ALWAYS)
         self.failIf(rga.done)
         self.failUnlessEqual(rga.title, 'foo - the album')
 
@@ -71,22 +73,23 @@ class TReplayGain(PluginTestCase):
         self.analysed = None
 
         def _run_main_loop():
-            def on_complete(self, album):
+            def on_complete(pipeline, album):
                 album.write()
-                TReplayGain.analysed = [album]
+                self.analysed = [album]
 
             pipeline = self.mod.ReplayGainPipeline()
             sig = pipeline.connect('done', on_complete)
 
             pipeline.start(album)
             start = time.time()
-            while not self.analysed and time.time() - start < TIMEOUT:
+            while not self.analysed and \
+                    abs(time.time() - start) < self.TIMEOUT:
                 Gtk.main_iteration_do(False)
             pipeline.quit()
             pipeline.disconnect(sig)
 
         _run_main_loop()
-        self.assertTrue("Timed out", self.analysed)
+        self.assertTrue(self.analysed, "Timed out")
 
     def test_analyze_sinewave(self):
         song = MusicFile(os.path.join(DATA_DIR, "sine-110hz.flac"))
