@@ -60,8 +60,15 @@ class MP4File(AudioFile):
 
         '----:com.apple.iTunes:replaygain_album_gain': 'replaygain_album_gain',
         '----:com.apple.iTunes:replaygain_album_peak': 'replaygain_album_peak',
+        '----:com.apple.iTunes:replaygain_album_range':
+            'replaygain_album_range',
         '----:com.apple.iTunes:replaygain_track_gain': 'replaygain_track_gain',
         '----:com.apple.iTunes:replaygain_track_peak': 'replaygain_track_peak',
+        '----:com.apple.iTunes:replaygain_track_range':
+            'replaygain_track_range',
+        '----:com.apple.iTunes:replaygain_algorithm': 'replaygain_algorithm',
+        '----:com.apple.iTunes:replaygain_reference_loudness':
+            'replaygain_reference_loudness',
     }
     __rtranslate = dict([(v, k) for k, v in iteritems(__translate)])
 

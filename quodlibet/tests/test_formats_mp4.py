@@ -67,8 +67,12 @@ class TMP4File(TestCase):
     def test_replaygain_tags(self):
         self._assert_tag_supported('replaygain_album_gain', '-5.67 dB')
         self._assert_tag_supported('replaygain_album_peak', '1.0')
+        self._assert_tag_supported('replaygain_album_range', '1.0 dB')
         self._assert_tag_supported('replaygain_track_gain', '-5.67 dB')
         self._assert_tag_supported('replaygain_track_peak', '1.0')
+        self._assert_tag_supported('replaygain_track_range', '1.0 dB')
+        self._assert_tag_supported('replaygain_reference_loudness', '89 dB')
+        self._assert_tag_supported('replaygain_algorithm', 'ReplayGain/1.0')
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.7079, 3)

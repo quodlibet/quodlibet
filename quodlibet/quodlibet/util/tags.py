@@ -128,10 +128,13 @@ _TAGS = dict((t.name, t) for t in [
     # Translators: "gain" means a volume adjustment, not "to acquire".
     T("replaygain_track_gain", "umn", _("track gain")),
     T("replaygain_track_peak", "umn", _("track peak")),
+    T("replaygain_track_range", "umn", _("track range")),
     # Translators: "gain" means a volume adjustment, not "to acquire".
     T("replaygain_album_gain", "umn", _("album gain")),
     T("replaygain_album_peak", "umn", _("album peak")),
+    T("replaygain_album_range", "umn", _("album range")),
     T("replaygain_reference_loudness", "umn", _("reference loudness")),
+    T("replaygain_algorithm", "um", _("replaygain algorithm")),
 
     T("added", "n", _("added")),
     T("lastplayed", "n", _("last played")),
