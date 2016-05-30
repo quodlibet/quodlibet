@@ -49,6 +49,18 @@ def should_use_header_bar():
     return settings.get_property("gtk-dialogs-use-header")
 
 
+def fix_default_size(width, height):
+    # https://bugzilla.gnome.org/show_bug.cgi?id=740922
+    if gtk_version < (3, 19):
+        # fixed with 3.20:
+        #   https://bugzilla.gnome.org/show_bug.cgi?id=756618
+        if width != -1:
+            width += min((width - 174), 56)
+        if height != -1:
+            height += 84
+    return (width, height)
+
+
 class Dialog(Gtk.Dialog):
     """A Gtk.Dialog subclass which supports the use_header_bar property
     for all Gtk versions and will ignore it if header bars shouldn't be
@@ -59,6 +71,17 @@ class Dialog(Gtk.Dialog):
         if not should_use_header_bar():
             kwargs.pop("use_header_bar", None)
         super(Dialog, self).__init__(*args, **kwargs)
+
+    def set_default_size(self, width, height):
+        if self.get_titlebar():
+            width, height = fix_default_size(width, height)
+        else:
+            # In case we don't use a headerbar we have to add an additional
+            # row of buttons in the content box. To get roughly the same
+            # content height make the window a bit taller.
+            if height != -1:
+                height += 20
+        super(Dialog, self).set_default_size(width, height)
 
     def add_icon_button(self, label, icon_name, response_id):
         """Like add_button() but allows to pass an icon name"""
@@ -132,14 +155,8 @@ class Window(Gtk.Window):
             self.fullscreen()
 
     def set_default_size(self, width, height):
-        # https://bugzilla.gnome.org/show_bug.cgi?id=740922
-        if self._header_bar and gtk_version < (3, 19):
-            # fixed with 3.20:
-            #   https://bugzilla.gnome.org/show_bug.cgi?id=756618
-            if width != -1:
-                width += min((width - 174), 56)
-            if height != -1:
-                height += 84
+        if self._header_bar:
+            width, height = fix_default_size(width, height)
         super(Window, self).set_default_size(width, height)
 
     def use_header_bar(self):

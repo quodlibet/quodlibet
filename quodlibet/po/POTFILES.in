@@ -184,6 +184,7 @@ quodlibet/qltk/unity.py
 quodlibet/qltk/views.py
 quodlibet/qltk/wlw.py
 quodlibet/qltk/x.py
+quodlibet/update.py
 quodlibet/util/collection.py
 quodlibet/util/cover/built_in.py
 quodlibet/util/dprint.py

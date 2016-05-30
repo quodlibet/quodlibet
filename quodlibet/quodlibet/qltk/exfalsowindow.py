@@ -32,6 +32,7 @@ from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
 from quodlibet.qltk import Icons
 from quodlibet.util.path import mtime, normalize_path
 from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.update import UpdateDialog
 
 
 class ExFalsoWindow(Window, PersistentWindowMixin):
@@ -64,12 +65,6 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
 
         bbox = Gtk.HBox(spacing=6)
 
-        about = Gtk.Button()
-        about.add(Gtk.Image.new_from_icon_name(
-            Icons.HELP_ABOUT, Gtk.IconSize.BUTTON))
-        about.connect('clicked', self.__show_about)
-        bbox.pack_start(about, False, True, 0)
-
         def prefs_cb(*args):
             window = PreferencesWindow(self)
             window.show()
@@ -78,7 +73,28 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
             window = PluginWindow(self)
             window.show()
 
+        def about_cb(*args):
+            about = AboutDialog(self, app)
+            about.run()
+            about.destroy()
+
+        def update_cb(*args):
+            d = UpdateDialog(self)
+            d.run()
+            d.destroy()
+
         menu = Gtk.Menu()
+
+        about_item = MenuItem(_("_About"), Icons.HELP_ABOUT)
+        about_item.connect("activate", about_cb)
+        menu.append(about_item)
+
+        check_item = MenuItem(_("_Check for Updates…"), Icons.NETWORK_SERVER)
+        check_item.connect("activate", update_cb)
+        menu.append(check_item)
+
+        menu.append(SeparatorMenuItem())
+
         plugin_item = MenuItem(_("_Plugins"), Icons.SYSTEM_RUN)
         plugin_item.connect("activate", plugin_window_cb)
         menu.append(plugin_item)
@@ -86,6 +102,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
         pref_item.connect("activate", prefs_cb)
         menu.append(pref_item)
+
         menu.show_all()
 
         menu_button = MenuButton(
@@ -152,11 +169,6 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
 
     def get_osx_is_persistent(self):
         return False
-
-    def __show_about(self, widget):
-        about = AboutDialog(self, app)
-        about.run()
-        about.destroy()
 
     def set_pending(self, button, *excess):
         self.__save = button

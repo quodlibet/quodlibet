@@ -20,6 +20,7 @@ from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
 
+from quodlibet.update import UpdateDialog
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.browser import LibraryBrowser, FilterMenu
 from quodlibet.qltk.chooser import FolderChooser, FileChooser
@@ -614,6 +615,7 @@ MENU = """
       <menuitem action='OnlineHelp' always-show-image='true'/>
       <menuitem action='Shortcuts' always-show-image='true'/>
       <menuitem action='SearchHelp' always-show-image='true'/>
+      <menuitem action='CheckUpdates' always-show-image='true'/>
       <menuitem action='About' always-show-image='true'/>
     </menu>
   </menubar>
@@ -1102,6 +1104,17 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             util.website(const.SEARCH_HELP)
 
         act.connect('activate', search_help_handler)
+        ag.add_action_with_accel(act, None)
+
+        act = Action(name="CheckUpdates", label=_("_Check for Updates…"),
+                     icon_name=Icons.NETWORK_SERVER)
+
+        def check_updates_handler(*args):
+            d = UpdateDialog(self)
+            d.run()
+            d.destroy()
+
+        act.connect('activate', check_updates_handler)
         ag.add_action_with_accel(act, None)
 
         act = Action(
