@@ -72,6 +72,13 @@ class Dialog(Gtk.Dialog):
             kwargs.pop("use_header_bar", None)
         super(Dialog, self).__init__(*args, **kwargs)
 
+    def get_titlebar(self):
+        try:
+            # gtk+ >=3.16
+            return super(Dialog, self).get_titlebar()
+        except AttributeError:
+            return None
+
     def set_default_size(self, width, height):
         if self.get_titlebar():
             width, height = fix_default_size(width, height)
