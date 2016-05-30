@@ -6,7 +6,7 @@
 # published by the Free Software Foundation
 
 import quodlibet
-from quodlibet import print_w, print_d, qltk
+from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -15,7 +15,7 @@ from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk import Icons
 from quodlibet.util import website
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, print_w, print_d
 from urllib import quote_plus
 
 from gi.repository import Gtk
