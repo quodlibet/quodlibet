@@ -16,7 +16,6 @@ from quodlibet.formats import AudioFile
 
 from tests.plugin import PluginTestCase
 from tests import DATA_DIR
-from quodlibet import config
 
 
 class TReplayGain(PluginTestCase):
@@ -66,6 +65,20 @@ class TReplayGain(PluginTestCase):
         rga = self.mod.RGAlbum([self.mod.RGSong(self.song)], UpdateMode.ALWAYS)
         self.failIf(rga.done)
         self.failUnlessEqual(rga.title, 'foo - the album')
+
+    def test_delete_bs1770gain(self):
+        tags = ["replaygain_reference_loudness", "replaygain_algorithm",
+                "replaygain_album_range", "replaygain_track_range"]
+
+        for tag in tags:
+            self.song[tag] = u"foo"
+
+        rgs = self.mod.RGSong(self.song)
+        rgs.done = True
+        rgs._write(0.0, 0.0)
+
+        for tag in tags:
+            self.assertFalse(self.song(tag))
 
     def _analyse_song(self, song):
         mode = self.mod.UpdateMode.ALWAYS

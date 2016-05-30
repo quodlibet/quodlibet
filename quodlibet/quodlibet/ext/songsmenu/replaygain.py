@@ -152,6 +152,13 @@ class RGSong(object):
         write_to_song('replaygain_album_gain', '%.2f dB', album_gain)
         write_to_song('replaygain_album_peak', '%.4f', album_peak)
 
+        # bs1770gain writes those and since we still do old replaygain
+        # just delete them so players use the defaults.
+        song.pop("replaygain_reference_loudness", None)
+        song.pop("replaygain_algorithm", None)
+        song.pop("replaygain_album_range", None)
+        song.pop("replaygain_track_range", None)
+
     @property
     def title(self):
         return self.song('~tracknumber~title~version')
