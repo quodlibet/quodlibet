@@ -32,8 +32,6 @@ rm -Rf "$APP_PREFIX"/include/
 
 # only keep *.pyc
 find "$APP_PREFIX"/lib/python2.7 -name '*.pyo' -delete
-jhbuild run python -m compileall -f "$APP_PREFIX"/lib/python2.7
-find "$APP_PREFIX"/lib/python2.7 -name '*.py' -delete
 
 (cd "$APP"/Contents/MacOS/ && ln -s _launcher quodlibet)
 (cd "$APP"/Contents/MacOS/ && ln -s _launcher exfalso)
@@ -42,10 +40,20 @@ find "$APP_PREFIX"/lib/python2.7 -name '*.py' -delete
 (cd "$APP"/Contents/MacOS/ && ln -s _launcher gst-plugin-scanner)
 
 EXFALSO="$QL_OSXBUNDLE_BUNDLE_DEST/ExFalso.app"
+EXFALSO_PREFIX="$EXFALSO"/Contents/Resources
 QUODLIBET="$QL_OSXBUNDLE_BUNDLE_DEST/QuodLibet.app"
+QUODLIBET_PREFIX="$QUODLIBET"/Contents/Resources
 
 cp -R "$APP" "$EXFALSO"
 mv "$APP" "$QUODLIBET"
+
+echo 'BUILD_TYPE = u"osx-exfalso"' >> "$EXFALSO_PREFIX"/lib/python2.7/site-packages/quodlibet/build.py
+echo 'BUILD_TYPE = u"osx-quodlibet"' >> "$QUODLIBET_PREFIX"/lib/python2.7/site-packages/quodlibet/build.py
+
+jhbuild run python -m compileall -f "$EXFALSO_PREFIX"/lib/python2.7
+jhbuild run python -m compileall -f "$QUODLIBET_PREFIX"/lib/python2.7
+find "$EXFALSO_PREFIX"/lib/python2.7 -name '*.py' -delete
+find "$QUODLIBET_PREFIX"/lib/python2.7 -name '*.py' -delete
 
 VERSION=$("$QUODLIBET"/Contents/MacOS/run -c "import sys;import quodlibet.const;sys.stdout.write(quodlibet.const.VERSION)")
 ./misc/fixup_info.py "$QUODLIBET"/Contents/Info.plist "quodlibet" "Quod Libet" "$VERSION"
