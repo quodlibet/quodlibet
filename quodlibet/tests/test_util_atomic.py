@@ -26,14 +26,14 @@ class Tatomic_save(TestCase):
         filename = os.path.join(self.dir, "foo.txt")
 
         with open(filename, "wb") as fobj:
-            fobj.write("nope")
+            fobj.write(b"nope")
 
         with atomic_save(filename, "wb") as fobj:
-            fobj.write("foo")
+            fobj.write(b"foo")
             temp_name = fobj.name
 
         with open(filename, "rb") as fobj:
-            self.assertEqual(fobj.read(), "foo")
+            self.assertEqual(fobj.read(), b"foo")
 
         self.assertFalse(os.path.exists(temp_name))
         self.assertEqual(os.listdir(self.dir), [os.path.basename(filename)])
@@ -42,11 +42,11 @@ class Tatomic_save(TestCase):
         filename = os.path.join(self.dir, "foo.txt")
 
         with atomic_save(filename, "wb") as fobj:
-            fobj.write("foo")
+            fobj.write(b"foo")
             temp_name = fobj.name
 
         with open(filename, "rb") as fobj:
-            self.assertEqual(fobj.read(), "foo")
+            self.assertEqual(fobj.read(), b"foo")
 
         self.assertFalse(os.path.exists(temp_name))
         self.assertEqual(os.listdir(self.dir), [os.path.basename(filename)])
@@ -55,7 +55,7 @@ class Tatomic_save(TestCase):
         filename = os.path.join(self.dir, "foo.txt")
 
         with open(filename, "wb") as fobj:
-            fobj.write("nope")
+            fobj.write(b"nope")
 
         dir_mode = os.stat(self.dir).st_mode
         file_mode = os.stat(filename).st_mode
@@ -68,13 +68,13 @@ class Tatomic_save(TestCase):
         try:
             with self.assertRaises(OSError):
                 with atomic_save(filename, "wb") as fobj:
-                    fobj.write("foo")
+                    fobj.write(b"foo")
         finally:
             # restore permissions
             os.chmod(self.dir, dir_mode)
             os.chmod(filename, file_mode)
 
         with open(filename, "rb") as fobj:
-            self.assertEqual(fobj.read(), "nope")
+            self.assertEqual(fobj.read(), b"nope")
 
         self.assertEqual(os.listdir(self.dir), [os.path.basename(filename)])

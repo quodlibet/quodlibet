@@ -31,10 +31,10 @@ class _TDesktopFileMixin(object):
         with open(name, "wb") as temp:
             new_lines = []
             for l in desktop_data.splitlines():
-                if l.startswith("_"):
+                if l.startswith(b"_"):
                     l = l[1:]
                 new_lines.append(l)
-            temp.write("\n".join(new_lines))
+            temp.write(b"\n".join(new_lines))
 
         # pass to desktop-file-validate
         try:
