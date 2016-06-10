@@ -22,7 +22,7 @@ QL_TEMP="$QL_REPO_TEMP"/quodlibet
 
 
 PYGI_AIO_VER="3.18.2_rev6"
-MUTAGEN_VER="1.31"
+MUTAGEN_VER="1.32"
 BUILD_VERSION="0"
 
 
@@ -34,7 +34,7 @@ function download_and_verify {
 c577815dd00f1394203fc44eb979724b098f88264a9ef898ee45b8e5e9cf587f  requests-2.9.1.tar.gz
 5e8eccf95924658c97b990b50552addb64f55e1e3dfe4880456ac1f287dc79d0  certifi-2016.2.28.tar.gz
 d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-preview20141217.exe
-0aa011707785fe30935d8655380052a20ba8b972aa738d4f144c457b35b4d699  mutagen-$MUTAGEN_VER.tar.gz
+7721ded04caf36fc30661165ae311fed342f7503b048e9db3d52764108ed3ab5  mutagen-$MUTAGEN_VER.tar.gz
 a3e4ac1dfe57d385c2a966c5f283ad0eca8fd0f66c551645cb637f4ae712e161  nsis-2.50-setup.exe
 610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c  py2exe-0.6.9.win32-py2.7.exe
 1750556a9c797ec157ac837c531fef05f60a5595d2a1553c7d3f5be7bc085b70  pygi-aio-$PYGI_AIO_VER-setup.exe
@@ -61,7 +61,7 @@ fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
         wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstopus.dll
         wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstdirectsoundsink.dll
 
-        pip install --download="$BIN" "mutagen==$MUTAGEN_VER"
+        pip download --dest="$BIN" --no-binary=":all:" "mutagen==$MUTAGEN_VER"
         pip install --download="$BIN" feedparser==5.1.3
         pip download --dest="$BIN" --no-binary=":all:" "requests==2.9.1"
         pip download --dest="$BIN" --no-binary=":all:" "certifi==2016.2.28"
@@ -333,10 +333,12 @@ function setup_sdk {
     ln -s "$SDK" "$DIR"/_sdk
 
     # create the distributable archive
-    tar --dereference -Jcvf "$DIR"/quodlibet-win-sdk.tar.xz _sdk/ \
+    tar --dereference \
         --exclude=_sdk/quodlibet \
         --exclude=_sdk/_wine_prefix \
-        --exclude=_sdk/_ql_config &> /dev/null
+        --exclude=_sdk/_ql_config \
+        -Jcvf "$DIR"/quodlibet-win-sdk.tar.xz _sdk/ \
+        &> /dev/null
 }
 
 
