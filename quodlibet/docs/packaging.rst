@@ -14,6 +14,7 @@ Changes
 3.7
 ^^^
 
+* **Mutagen 1.32** required
 * **udisks1** support removed
 * New dependency: **python-requests** (>= 2.2.1)
 * **PyGObject 3.12** required
