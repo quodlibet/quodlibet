@@ -97,18 +97,14 @@ class WMAFile(AudioFile):
         self["~#length"] = info.length
         self["~#bitrate"] = int(info.bitrate / 1000)
 
-        try:
-            # mutagen 1.31+
-            type_, name, desc = info.codec_type, info.codec_name, \
-                info.codec_description
-        except AttributeError:
-            pass
-        else:
-            if type_:
-                self["~codec"] = type_
-            encoding = u"\n".join(filter(None, [name, desc]))
-            if encoding:
-                self["~encoding"] = encoding
+        type_, name, desc = info.codec_type, info.codec_name, \
+            info.codec_description
+
+        if type_:
+            self["~codec"] = type_
+        encoding = u"\n".join(filter(None, [name, desc]))
+        if encoding:
+            self["~encoding"] = encoding
 
         for name, values in audio.tags.items():
             if name == "WM/Picture":

@@ -5,14 +5,11 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from mutagen.aac import AAC
+
 from ._audio import AudioFile
 
 extensions = [".aac", ".adif", ".adts"]
-try:
-    # since mutagen 1.27
-    from mutagen.aac import AAC
-except ImportError:
-    extensions = []
 
 
 class AACFile(AudioFile):
