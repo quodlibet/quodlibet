@@ -7,6 +7,8 @@
 
 from tests import TestCase, skipUnless
 
+from quodlibet.compat import text_type
+
 try:
     import dbus
 except ImportError:
@@ -17,7 +19,7 @@ else:
     from quodlibet.util.dbusutils import dbus_unicode_validate
 
 
-ANN1 = """
+ANN1 = b"""
 <property name="Position" type="s" access="read">
 <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" \
 value="false"/>
@@ -25,7 +27,7 @@ value="false"/>
 <property name="MinimumRate" type="s" access="read"/>
 """
 
-ANN2 = """
+ANN2 = b"""
 <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" \
 value="false"/>
 <property name="Foobar" type="s" access="read">
@@ -57,17 +59,17 @@ class TDbusUtils(TestCase):
 
         self.failUnlessRaises(TypeError, apply_signature, 2, "a(s)")
 
-        text = '\xc3\xb6\xc3\xa4\xc3\xbc'
+        text = b'\xc3\xb6\xc3\xa4\xc3\xbc'
         value = apply_signature(text, "s", utf8_strings=True)
         self.failUnless(isinstance(value, str))
         value = apply_signature(text, "s")
-        self.failUnless(isinstance(value, unicode))
+        self.failUnless(isinstance(value, text_type))
 
         text = u"öäü"
         value = apply_signature(text, "s", utf8_strings=True)
         self.failUnless(isinstance(value, str))
         value = apply_signature(text, "s")
-        self.failUnless(isinstance(value, unicode))
+        self.failUnless(isinstance(value, text_type))
 
     def test_list_props(self):
         props = list_spec_properties(ANN1)
@@ -83,12 +85,13 @@ class TDbusUtils(TestCase):
 
     def test_filter_props(self):
         spec = filter_property_spec(ANN1, wl=["Position"])
-        self.failUnlessEqual(list_spec_properties(spec).keys(), ["Position"])
+        self.failUnlessEqual(
+            list(list_spec_properties(spec).keys()), ["Position"])
         props = list_spec_properties(spec)
         self.failUnlessEqual(props["Position"]["emit"], "false")
 
         spec = filter_property_spec(ANN1, bl=["Position"])
-        self.failUnlessEqual(list_spec_properties(spec).keys(),
+        self.failUnlessEqual(list(list_spec_properties(spec).keys()),
                              ["MinimumRate"])
 
         spec = filter_property_spec(ANN1)
@@ -96,7 +99,7 @@ class TDbusUtils(TestCase):
 
     def test_validate_utf8(self):
         self.failUnlessEqual(dbus_unicode_validate(u'X\ufffeX'), u"X\ufffdX")
-        self.failUnlessEqual(dbus_unicode_validate('X\xef\xbf\xbeX'),
+        self.failUnlessEqual(dbus_unicode_validate(b'X\xef\xbf\xbeX'),
                              u"X\ufffdX")
 
     def test_property_mixin(self):

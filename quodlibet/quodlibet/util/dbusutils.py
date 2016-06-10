@@ -10,12 +10,14 @@ import xml.etree.ElementTree as ET
 import dbus
 import dbus.service
 
+from quodlibet.compat import unichr, text_type, PY3
+
 
 def dbus_unicode_validate(text):
     """Takes a unicode string and replaces all invalid codepoints that would
     lead to errors if passed to dbus"""
 
-    if isinstance(text, str):
+    if isinstance(text, bytes):
         text = text.decode("utf-8")
 
     # https://bugs.freedesktop.org/show_bug.cgi?id=40817
@@ -44,6 +46,8 @@ def list_spec_properties(spec):
     'emit' can be true/false/invalidates (see dbus spec)
     """
 
+    assert isinstance(spec, bytes)
+
     ANNOTATION_EMITS = "org.freedesktop.DBus.Property.EmitsChangedSignal"
 
     def get_emit(element, fallback):
@@ -55,7 +59,7 @@ def list_spec_properties(spec):
             emit = fallback
         return emit
 
-    root = ET.fromstring('<?xml version="1.0"?><props>' + spec + '</props>')
+    root = ET.fromstring(b'<?xml version="1.0"?><props>' + spec + b'</props>')
     props = {}
     root_emit = get_emit(root, "true")
     for element in root:
@@ -77,7 +81,7 @@ def filter_property_spec(spec, wl=None, bl=None):
         raise ValueError
     if not wl and not bl:
         return spec
-    root = ET.fromstring('<?xml version="1.0"?><props>' + spec + '</props>')
+    root = ET.fromstring(b'<?xml version="1.0"?><props>' + spec + b'</props>')
     if wl:
         to_rm = lambda e: e.attrib["name"] not in wl
     elif bl:
@@ -86,7 +90,7 @@ def filter_property_spec(spec, wl=None, bl=None):
     for element in root:
         if element.tag != "property" or not to_rm(element):
             strs.append(ET.tostring(element).strip())
-    return "\n".join(strs)
+    return b"\n".join(strs)
 
 
 TYPE_MAP = {
@@ -121,12 +125,12 @@ def apply_signature(value, sig, utf8_strings=False):
     elif sig.startswith("a"):
         return dbus.Array(value, signature=sig[1:])
     elif sig == "s":
-        if utf8_strings:
-            if isinstance(value, unicode):
+        if utf8_strings and not PY3:
+            if isinstance(value, text_type):
                 value = value.encode("utf-8")
             return dbus.UTF8String(value)
         else:
-            if isinstance(value, str):
+            if isinstance(value, bytes):
                 value = value.decode("utf-8")
             return dbus.String(value)
     else:
