@@ -22,7 +22,7 @@ select some songs, or some albums and activate the replaygain plugin in the
 plugin submenu. The replaygain plugin has to go through every bit of song 
 data so this can take some time.
 
-After the the analyzing part is finished you can save the calculated
+After the analyzing part is finished you can save the calculated
 values. They will be written into the song's metadata.
 
 The replay gain plugin calculates a peak and a gain value for each song and

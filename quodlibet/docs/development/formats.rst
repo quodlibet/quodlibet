@@ -149,7 +149,7 @@ for opening in a standard web browser (e.g. http, https, or ftp scheme). As
 it is an IRI, and not a URI, it should be stored in unescaped form. If an 
 application needs a URI, it should follow the procedure in RFC 3987 section 
 3.1 to convert a valid IRI to a valid URI. As per the Vorbis comment 
-specification, the tag must be a UTF-8 represention of the Unicode string.
+specification, the tag must be a UTF-8 representation of the Unicode string.
 
 This tag may occur any number of times in a file.
 
