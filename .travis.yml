@@ -38,5 +38,5 @@ script:
  - cd quodlibet
  - if [ "$TYPE" == "linux" ]; then xvfb-run -a $PYTHON ./setup.py test; fi
  - if [ "$TYPE" == "linux" ]; then xvfb-run -a $PYTHON ./setup.py quality; fi
- - if [ "$TYPE" == "osx" ]; then ./_mount/QuodLibet.app/Contents/MacOS/run setup.py test; fi
+ - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run setup.py test; fi
  - if [ "$TYPE" == "windows" ]; then xvfb-run -a ../_sdk/test_ci.sh ./setup.py test; fi
