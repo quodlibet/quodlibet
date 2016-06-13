@@ -105,7 +105,7 @@ How can I hide incomplete albums from the Album View?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 One way is to enter ``#(tracks > 5)`` into the search box above the
-album list - this will only show albums with greater than than 5 tracks.
+album list - this will only show albums with greater than 5 tracks.
 
 
 How can I list my tracks based on their ratings?
