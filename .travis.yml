@@ -29,8 +29,8 @@ install:
  - if [ "$APT_PACKAGES" != "" ]; then sudo apt-get update -q || true; fi
  - if [ "$APT_PACKAGES" != "" ]; then travis_retry sudo apt-get install -y $(echo $APT_PACKAGES); fi
  - if [ "$TYPE" == "linux" ]; then travis_retry pip install --upgrade pep8 pyflakes; fi
- - if [ "$TYPE" == "osx" ]; then travis_retry wget http://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.7.-1.zip; fi
- - if [ "$TYPE" == "osx" ]; then unzip -qq QuodLibet-3.7.-1.zip; fi
+ - if [ "$TYPE" == "osx" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.7.-1.dmg; fi
+ - if [ "$TYPE" == "osx" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-3.7.-1.dmg; fi
  - if [ "$TYPE" == "windows" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.7-win-sdk.tar.xz; fi
  - if [ "$TYPE" == "windows" ]; then tar -xJf quodlibet-3.7-win-sdk.tar.xz; fi
 
@@ -38,5 +38,5 @@ script:
  - cd quodlibet
  - if [ "$TYPE" == "linux" ]; then xvfb-run -a $PYTHON ./setup.py test; fi
  - if [ "$TYPE" == "linux" ]; then xvfb-run -a $PYTHON ./setup.py quality; fi
- - if [ "$TYPE" == "osx" ]; then ../QuodLibet.app/Contents/MacOS/run setup.py test; fi
+ - if [ "$TYPE" == "osx" ]; then ./_mount/QuodLibet.app/Contents/MacOS/run setup.py test; fi
  - if [ "$TYPE" == "windows" ]; then xvfb-run -a ../_sdk/test_ci.sh ./setup.py test; fi
