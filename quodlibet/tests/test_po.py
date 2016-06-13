@@ -60,7 +60,7 @@ class TPot(TestCase):
 
     def test_multiple_format_placeholders(self):
         fails = []
-        reg = re.compile(r"((?<!%)%[sbcdoxXneEfFgGn]|\{\})")
+        reg = re.compile(r"((?<!%)%[sbcdoxXneEfFgG]|\{\})")
         for entry in self.pot:
             if len(reg.findall(entry.msgid)) > 1:
                 fails.append(entry)
