@@ -26,10 +26,6 @@ Add the following names to the list:
 * `Q_`
 * `N_`
 * `ngettext`
-* `print_`
-* `print_d`
-* `print_w`
-* `print_e`
 
 
 Why don't you use SQLite for the song database?
