@@ -4,10 +4,8 @@ Frequently Asked Questions
 Any plans to use Python 3?
 --------------------------
 
-Not immediately, though it's now (May 2015)
-`on the development radar <https://github.com/quodlibet/quodlibet/issues/1580>`_.
-First, all dependencies (like mutagen) would need to be ported, though this is
-largely done now.
+We are currently working on porting to Python 3. See the `github issue
+<https://github.com/quodlibet/quodlibet/issues/1580>`_ for updates.
 
 That said, at the moment Python 2 does its job well.
 
