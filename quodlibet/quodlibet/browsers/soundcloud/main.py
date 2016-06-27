@@ -240,7 +240,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         try:
             self.__filter = SoundcloudQuery(text, self.STAR)
         except SoundcloudQuery.error as e:
-            print_w("Couldn't parse query: " % e)
+            print_w("Couldn't parse query: %s" % e)
         else:
             print_d("Got terms from query: %s" % (self.__filter.terms,))
             if not restore:
