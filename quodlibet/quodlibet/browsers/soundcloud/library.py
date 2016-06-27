@@ -57,6 +57,12 @@ class SoundcloudLibrary(SongLibrary):
         raise KeyError("No track with id %s. Do have %s"
                        % (track_id, [s.track_id for s in self.values()]))
 
+    def _changed(self, items):
+        super(SoundcloudLibrary, self)._changed(items)
+        # We should ask the AudioFile subclass to write what it can ASAP
+        for item in items:
+            item.write()
+
     def __song_started(self, player, song):
         if isinstance(song, SoundcloudFile):
             print_d("Getting comments for %s (%s)" % (song("title"), song.key))

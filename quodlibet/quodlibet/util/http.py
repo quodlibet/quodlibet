@@ -5,6 +5,7 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
+
 import json
 
 from gi.repository import Soup, Gio, GLib, GObject
@@ -75,6 +76,12 @@ class DefaultHTTPRequest(GObject.Object):
 
     def _sent(self, session, task, data):
         try:
+            status = int(self.message.get_property('status-code'))
+            if status >= 400:
+                msg = 'HTTP {0} error in {1} request to {2}'.format(
+                    status, self.message.method, self._uri)
+                print_w(msg)
+                return self.emit('send-failure', Exception(msg))
             self.istream = session.send_finish(task)
             print_d('Sent {1} request to {0}'.format(self._uri,
                                                      self.message.method))

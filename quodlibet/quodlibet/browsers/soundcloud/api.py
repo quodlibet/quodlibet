@@ -6,17 +6,15 @@
 # published by the Free Software Foundation
 
 import gi
-from datetime import datetime
 from gi.repository import GObject, Gio
 from urllib import urlencode
 
-from quodlibet import print_d, util, config
+from quodlibet import util, config
 from quodlibet.browsers.soundcloud.library import SoundcloudFile
 from quodlibet.browsers.soundcloud.util import *
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w
 from quodlibet.util.http import download_json, download
-
 
 try:
     gi.require_version("Soup", "2.4")
@@ -66,7 +64,12 @@ class RestApi(GObject.Object):
     def _delete(self, path, callback, **kwargs):
         args = self._default_params()
         args.update(kwargs)
+        # Turns out the SC API doesn't mind body arguments for DELETEs,
+        # and as it's neater and slightly more secure, let's do that.
+        body = urlencode(args)
         msg = Soup.Message.new('DELETE', self._url(path))
+        msg.set_request('application/x-www-form-urlencoded',
+                        Soup.MemoryUse.COPY, body)
         download(msg, self._cancellable, callback, None, try_decode=False)
 
     def _url(self, path, args=None):
@@ -161,7 +164,7 @@ class SoundcloudApiClient(RestApi):
 
     @json_callback
     def _receive_comments(self, json):
-        print_d("Comments for %s" % json)
+        print_d("Got comments: %s" % json)
         if json and len(json):
             # Should all be the same track...
             track_id = json[0]["track_id"]
@@ -183,7 +186,7 @@ class SoundcloudApiClient(RestApi):
 
     @json_callback
     def _on_favourited(self, json):
-        print_d("Successfully updated favourite")
+        print_d("Successfully updated favourite: %s" % json)
 
     def _audiofile_for(self, response):
         r = Wrapper(response)
