@@ -28,8 +28,7 @@ class Bookmarks(SongsMenuPlugin):
     def __init__(self, songs, *args, **kwargs):
         super(Bookmarks, self).__init__(songs, *args, **kwargs)
         self.__menu = Gtk.Menu()
-        self.__menu.connect('map', self.__map, songs)
-        self.__menu.connect('unmap', self.__unmap)
+        self.__menu.connect('map', self.__create_children, songs)
         self.set_submenu(self.__menu)
 
     class FakePlayer(object):
@@ -40,9 +39,11 @@ class Bookmarks(SongsMenuPlugin):
             if app.player.go_to(self.song._song, explicit=True):
                 app.player.seek(time)
 
-        get_position = lambda *x: 0
+        def get_position(self, *args):
+            return 0
 
-    def __map(self, menu, songs):
+    def __create_children(self, menu, songs):
+        self.__remove_children(menu)
         for song in songs:
             marks = song.bookmarks
             if marks:
@@ -74,9 +75,9 @@ class Bookmarks(SongsMenuPlugin):
 
         menu.show_all()
 
-    def __unmap(self, menu):
-        for child in self.__menu.get_children():
-            self.__menu.remove(child)
+    def __remove_children(self, menu):
+        for child in menu.get_children():
+            menu.remove(child)
 
     def plugin_songs(self, songs):
         pass
