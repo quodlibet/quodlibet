@@ -29,7 +29,7 @@ def convert_time(t):
 # Convert QL to Soundcloud tags with optional value mapper
 _QL_TO_SC = {
     'genre': ('genres', None),
-    'length': ('duration', lambda x: int(x * 1000)),
+    'length': ('duration', lambda x: int((x or 0) * 1000)),
     'date': ('created_at', convert_time),
     'tags': ('tags', None),
     'bpm': ('bpm', None),
