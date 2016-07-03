@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011-2013 Nick Boultbee
+# Copyright 2011-2016 Nick Boultbee
 #           2005 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
@@ -36,12 +36,16 @@ class RatingsMenuItem(Gtk.MenuItem):
 
     def __init__(self, songs, library, label=_("_Rating")):
         super(RatingsMenuItem, self).__init__(label=label, use_underline=True)
-        self.set_songs(songs)
+        self._songs = songs
+        ratings = {song("~#rating") for song in songs}
 
         submenu = Gtk.Menu()
         self.set_submenu(submenu)
         for i in RATINGS.all:
-            itm = Gtk.MenuItem(label="%0.2f\t%s" % (i, util.format_rating(i)))
+            text = "%0.2f\t%s" % (i, util.format_rating(i))
+            itm = Gtk.CheckMenuItem(label=text)
+            is_selected = i in ratings
+            itm.set_active(is_selected)
             submenu.append(itm)
             itm.connect('activate', self._on_rating_change, i, library)
         reset = Gtk.MenuItem(label=_("_Remove Rating"), use_underline=True)
@@ -53,7 +57,6 @@ class RatingsMenuItem(Gtk.MenuItem):
 
     def set_songs(self, songs):
         """Set a new set of songs affected by the rating menu"""
-
         self._songs = songs
 
     def _on_rating_change(self, menuitem, value, library):
