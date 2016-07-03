@@ -12,9 +12,10 @@ import os
 class Version(tuple):
     """Represent the version of a dependency as a tuple"""
 
-    def __new__(cls, name, *args):
+    def __new__(cls, name, *args, **kwargs):
         inst = tuple.__new__(Version, args)
         inst.name = name
+        inst.message = kwargs.pop("message", "")
         return inst
 
     def human_version(self):
@@ -28,8 +29,9 @@ class Version(tuple):
 
         if self[0] == version_tuple[0] and version_tuple >= self:
             return
-        raise ImportError("%s %s required. %s found." % (
-            self.name, self, Version("", *version_tuple)))
+        message = " " + self.message if self.message else ""
+        raise ImportError("%s %s required. %s found.%s" % (
+            self.name, self, Version("", *version_tuple), message))
 
 
 class MinVersions(object):
@@ -37,7 +39,9 @@ class MinVersions(object):
 
     PYTHON2 = Version("Python2", 2, 7)
     PYTHON3 = Version("Python3", 3, 4)
-    MUTAGEN = Version("Mutagen", 1, 32)
+    MUTAGEN = Version("Mutagen", 1, 32,
+        message="Use the Quod Libet unstable PPAs/repos to get a newer "
+                "mutagen version.")
     GTK = Version("GTK+", 3, 10)
     PYGOBJECT = Version("PyGObject", 3, 12)
     GSTREAMER = Version("GStreamer", 1, 0)
