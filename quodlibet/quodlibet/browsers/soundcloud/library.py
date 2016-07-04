@@ -7,7 +7,7 @@
 
 from quodlibet import print_d, print_w
 from quodlibet.browsers.soundcloud.query import SoundcloudQuery
-from quodlibet.config import RATINGS
+from quodlibet import config
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.library.libraries import SongLibrary
 from quodlibet.util import cached_property
@@ -72,9 +72,13 @@ class SoundcloudLibrary(SongLibrary):
 class SoundcloudFile(RemoteFile):
     format = "Remote Soundcloud File"
 
-    def __init__(self, uri, client=None):
+    def __init__(self, uri, track_id, favorite=False, client=None):
         super(SoundcloudFile, self).__init__(uri)
         self.client = client
+        self["soundcloud_track_id"] = track_id
+        self.favorite = favorite
+        if self.favorite:
+            self['~#rating'] = 1.0
         if not self.client:
             raise EnvironmentError("Must have a Soundcloud client")
 
@@ -103,8 +107,12 @@ class SoundcloudFile(RemoteFile):
         self._write_rating()
 
     def _write_rating(self):
+        should_fave = (self.has_rating and
+                       self("~#rating") >= config.RATINGS.default)
         track_id = self.track_id
-        if self.has_rating and self("~#rating") >= RATINGS.default:
-            self.client.put_favourite(track_id)
-        else:
-            self.client.remove_favourite(track_id)
+        if not self.favorite and should_fave:
+            self.client.put_favorite(track_id)
+            self.favorite = True
+        elif self.favorite and not should_fave:
+            self.client.remove_favorite(track_id)
+            self.favorite = False

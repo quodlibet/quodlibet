@@ -174,26 +174,29 @@ class SoundcloudApiClient(RestApi):
         if self.access_token:
             config.set("browsers", "soundcloud_token", self.access_token)
 
-    def put_favourite(self, track_id):
-        print_d("Saving track %s as favourite" % track_id)
+    def put_favorite(self, track_id):
+        print_d("Saving track %s as favorite" % track_id)
         url = '/me/favorites/%s' % track_id
-        self._put(url, self._on_favourited)
+        self._put(url, self._on_favorited)
 
-    def remove_favourite(self, track_id):
-        print_d("Deleting favourite for %s" % track_id)
+    def remove_favorite(self, track_id):
+        print_d("Deleting favorite for %s" % track_id)
         url = '/me/favorites/%s' % track_id
-        self._delete(url, self._on_favourited)
+        self._delete(url, self._on_favorited)
 
     @json_callback
-    def _on_favourited(self, json):
-        print_d("Successfully updated favourite: %s" % json)
+    def _on_favorited(self, json):
+        print_d("Successfully updated favorite: %s" % json)
 
     def _audiofile_for(self, response):
         r = Wrapper(response)
         d = r.data
         dl = d.get("downloadable", False) and d.get("download_url", None)
         uri = SoundcloudApiClient._add_secret(dl or r.stream_url)
-        song = SoundcloudFile(uri=uri, client=self)
+        song = SoundcloudFile(uri=uri,
+                              track_id=r.id,
+                              favorite=d.get("user_favorite", False),
+                              client=self)
 
         def get_utc_date(s):
             parts = s.split()
@@ -227,7 +230,6 @@ class SoundcloudApiClient(RestApi):
             song.update(title=r.title,
                         artist=r.user["username"],
                         website=r.permalink_url,
-                        soundcloud_track_id=r.id,
                         genre="\n".join(r.genre and r.genre.split(",") or []))
             if dl:
                 song.update(format=r.original_format)
@@ -243,8 +245,6 @@ class SoundcloudApiClient(RestApi):
                     art_url.replace("-large.", "-t500x500."))
             put_time("~#mtime", r, "last_modified")
             put_date("date", r, "created_at")
-            if d.get("user_favorite", False):
-                song["~#rating"] = 1.0
             put_counts("playback", "download", "favoritings", "likes")
             plays = d.get("user_playback_count", 0)
             if plays:
