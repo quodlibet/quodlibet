@@ -629,15 +629,20 @@ MENU = """
 
 
 def secondary_browser_menu_items():
-    items = ["<menuitem action='Browser%s'/>" % kind.__name__
-             for kind in browsers.browsers if not kind.is_empty]
+    items = (_browser_items('Browser') + ["<separator />"] +
+             _browser_items('Browser', True))
     return "\n".join(items)
 
 
 def browser_menu_items():
-    items = ["<menuitem action='Browse%s'/>" % kind.__name__
-             for kind in browsers.browsers]
+    items = (_browser_items('Browse') + ["<separator />"] +
+             _browser_items('Browse', True))
     return "\n".join(items)
+
+
+def _browser_items(prefix, external=False):
+    return ["<menuitem action='%s%s'/>" % (prefix, kind.__name__)
+            for kind in browsers.browsers if kind.uses_main_library ^ external]
 
 
 DND_URI_LIST, = range(1)
