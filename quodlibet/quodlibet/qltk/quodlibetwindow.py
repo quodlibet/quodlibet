@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
+#           2012-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -564,17 +565,14 @@ class ConfirmLibDirSetup(WarningMessage):
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
 
-MAIN_MENU = """
+MENU = """
 <ui>
   <menubar name='Menu'>
-    <menu action='Music'>
+
+    <menu action='File'>
       <menuitem action='AddFolders' always-show-image='true'/>
       <menuitem action='AddFiles' always-show-image='true'/>
       <menuitem action='AddLocation' always-show-image='true'/>
-      <separator/>
-      <menu action='BrowseLibrary' always-show-image='true'>
-      %(browsers)s
-      </menu>
       <separator/>
       <menuitem action='Preferences' always-show-image='true'/>
       <menuitem action='Plugins' always-show-image='true'/>
@@ -583,34 +581,40 @@ MAIN_MENU = """
       <separator/>
       <menuitem action='Quit' always-show-image='true'/>
     </menu>
-  </menubar>
-</ui>
-"""
 
+    <menu action='Edit'>
+      <menuitem action='EditBookmarks' always-show-image='true'/>
+      <separator/>
+      <menuitem action='EditTags' always-show-image='true'/>
+    </menu>
 
-MENU = """
-<ui>
-  <menubar name='Menu'>
+    <menu action='View'>
+      <menuitem action='SongList' always-show-image='true'/>
+      <menuitem action='Queue' always-show-image='true'/>
+      <separator/>
+      <menuitem action='Jump' always-show-image='true'/>
+      <separator/>
+      <menuitem action='Information' always-show-image='true'/>
+    </menu>
+
+    <menu action='Browse'>
+      %(filters_menu)s
+      <separator/>
+      <menu action='BrowseLibrary' always-show-image='true'>
+        %(browsers)s
+      </menu>
+      <separator />
+
+      %(views)s
+    </menu>
+
     <menu action='Control'>
       <menuitem action='Previous' always-show-image='true'/>
       <menuitem action='PlayPause' always-show-image='true'/>
       <menuitem action='Next' always-show-image='true'/>
       <menuitem action='StopAfter' always-show-image='true'/>
-      <separator/>
-      <menuitem action='AddBookmark' always-show-image='true'/>
-      <menuitem action='EditBookmarks' always-show-image='true'/>
-      <separator/>
-      <menuitem action='EditTags' always-show-image='true'/>
-      <menuitem action='Information' always-show-image='true'/>
-      <separator/>
-      <menuitem action='Jump' always-show-image='true'/>
     </menu>
-    <menu action='View'>
-      <menuitem action='SongList' always-show-image='true'/>
-      <menuitem action='Queue' always-show-image='true'/>
-      <separator/>
-      %(views)s
-    </menu>
+
     <menu action='Help'>
       <menuitem action='OnlineHelp' always-show-image='true'/>
       <menuitem action='Shortcuts' always-show-image='true'/>
@@ -618,25 +622,21 @@ MENU = """
       <menuitem action='CheckUpdates' always-show-image='true'/>
       <menuitem action='About' always-show-image='true'/>
     </menu>
+
   </menubar>
 </ui>
 """
 
 
-def BrowseLibrary():
-    items = []
-    for Kind in browsers.browsers:
-        if not Kind.is_empty:
-            item = "Browser" + Kind.__name__
-            items.append("<menuitem action='%s'/>" % item)
+def secondary_browser_menu_items():
+    items = ["<menuitem action='Browser%s'/>" % kind.__name__
+             for kind in browsers.browsers if not kind.is_empty]
     return "\n".join(items)
 
 
-def ViewBrowser():
-    items = []
-    for Kind in browsers.browsers:
-        item = "View" + Kind.__name__
-        items.append("<menuitem action='%s'/>" % item)
+def browser_menu_items():
+    items = ["<menuitem action='Browse%s'/>" % kind.__name__
+             for kind in browsers.browsers]
     return "\n".join(items)
 
 
@@ -842,9 +842,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         item = self.ui.get_widget('/Menu/Help/About')
         osx_app.insert_app_menu_item(item, 0)
         osx_app.insert_app_menu_item(Gtk.SeparatorMenuItem(), 1)
-        item = self.ui.get_widget('/Menu/Music/Preferences')
+        item = self.ui.get_widget('/Menu/File/Preferences')
         osx_app.insert_app_menu_item(item, 2)
-        quit_item = self.ui.get_widget('/Menu/Music/Quit')
+        quit_item = self.ui.get_widget('/Menu/File/Quit')
         quit_item.hide()
 
     def get_osx_is_persistent(self):
@@ -870,15 +870,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 prefs = PreferencesWindow(self)
                 prefs.set_page("library")
                 prefs.show()
-
-    def __add_bookmark(self, librarian, player):
-        if player.song:
-            position = player.get_position() // 1000
-            bookmarks = player.song.bookmarks
-            new_mark = (position, _("Bookmark Name"))
-            if new_mark not in bookmarks:
-                bookmarks.append(new_mark)
-                player.song.bookmarks = bookmarks
 
     def __keyboard_shortcuts(self, action):
         show_shortcuts(self)
@@ -985,10 +976,38 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                 self.songpane.set_property("position", p_max)
 
     def __create_menu(self, player, library):
-        ag = Gtk.ActionGroup.new('QuodLibetWindowActions')
+        def add_view_items(ag):
+            act = ToggleAction(name="SongList", label=_("Song _List"))
+            act.set_active(config.getboolean("memory", "songlist"))
+            act.connect('activate', self.showhide_playlist)
+            ag.add_action(act)
 
-        act = Action(name="Music", label=_("_Music"))
-        ag.add_action(act)
+            act = ToggleAction(name="Queue", label=_("_Queue"))
+            act.set_active(config.getboolean("memory", "queue"))
+            act.connect('activate', self.showhide_playqueue)
+            ag.add_action(act)
+
+            act = Action(name="Information", label=_('_Information'),
+                         icon_name=Icons.DIALOG_INFORMATION)
+            act.connect('activate', self.__current_song_info)
+            ag.add_action_with_accel(act, "<Primary>I")
+
+            act = Action(name="Jump", label=_('_Jump to Playing Song'),
+                         icon_name=Icons.GO_JUMP)
+            act.connect('activate', self.__jump_to_current)
+            ag.add_action_with_accel(act, "<Primary>J")
+
+        def add_top_level_items(ag):
+            ag.add_action(Action(name="File", label=_("_File")))
+            ag.add_action(Action(name="Edit", label=_("_Edit")))
+            ag.add_action(Action(name="View", label=_('_View')))
+            ag.add_action(Action(name="Browse", label=_("_Browse")))
+            ag.add_action(Action(name="Control", label=_('_Control')))
+            ag.add_action(Action(name="Help", label=_('_Help')))
+
+        ag = Gtk.ActionGroup.new('QuodLibetWindowActions')
+        add_top_level_items(ag)
+        add_view_items(ag)
 
         act = Action(name="AddFolders", label=_(u'_Add a Folder…'),
                      icon_name=Icons.LIST_ADD)
@@ -1024,29 +1043,15 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         act.connect('activate', lambda *x: self.destroy())
         ag.add_action_with_accel(act, "<Primary>Q")
 
-        act = Action(name="Control", label=_('_Control'))
-        ag.add_action(act)
-
         act = Action(name="EditTags", label=_('Edit _Tags'),
                      icon_name=Icons.DOCUMENT_PROPERTIES)
         act.connect('activate', self.__current_song_prop)
-        ag.add_action(act)
+        ag.add_action_with_accel(act, "<Alt>Return")
 
-        act = Action(name="Information", label=_('_Information'),
-                     icon_name=Icons.DIALOG_INFORMATION)
-        act.connect('activate', self.__current_song_info)
-        ag.add_action(act)
-
-        act = Action(name="Jump", label=_('_Jump to Playing Song'),
-                     icon_name=Icons.GO_JUMP)
-        act.connect('activate', self.__jump_to_current)
-        ag.add_action_with_accel(act, "<Primary>J")
-
-        act = Action(name="View", label=_('_View'))
-        ag.add_action(act)
-
-        act = Action(name="Help", label=_('_Help'))
-        ag.add_action(act)
+        act = Action(name="EditBookmarks", label=_(u"Edit Bookmarks…"))
+        connect_obj(act, 'activate', self.__edit_bookmarks,
+                           library.librarian, player)
+        ag.add_action_with_accel(act, "<Primary>B")
 
         act = Action(name="Previous", label=_('Pre_vious'),
                      icon_name=Icons.MEDIA_SKIP_BACKWARD)
@@ -1068,17 +1073,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         # access point for the tray icon
         self.stop_after = act
-
-        act = Action(name="AddBookmark", label=_("Add Bookmark"),
-                     icon_name=Icons.LIST_ADD)
-        connect_obj(act, 'activate', self.__add_bookmark,
-                           library.librarian, player)
-        ag.add_action_with_accel(act, "<Primary>D")
-
-        act = Action(name="EditBookmarks", label=_(u"Edit Bookmarks…"))
-        connect_obj(act, 'activate', self.__edit_bookmarks,
-                           library.librarian, player)
-        ag.add_action_with_accel(act, "<Primary>B")
 
         act = Action(name="Shortcuts", label=_("_Keyboard Shortcuts"))
         act.connect('activate', self.__keyboard_shortcuts)
@@ -1123,16 +1117,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         act.connect('activate', self.__rebuild, False)
         ag.add_action(act)
 
-        act = ToggleAction(name="SongList", label=_("Song _List"))
-        act.set_active(config.getboolean("memory", "songlist"))
-        act.connect('activate', self.showhide_playlist)
-        ag.add_action(act)
-
-        act = ToggleAction(name="Queue", label=_("_Queue"))
-        act.set_active(config.getboolean("memory", "queue"))
-        act.connect('activate', self.showhide_playqueue)
-        ag.add_action(act)
-
         current = config.get("memory", "browser")
         try:
             browsers.get(current)
@@ -1143,8 +1127,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         for Kind in browsers.browsers:
             name = browsers.name(Kind)
             index = browsers.index(name)
-            action_name = "View" + Kind.__name__
-            label = Kind.accelerated_name
+            action_name = "Browse" + Kind.__name__
             act = RadioAction(name=action_name, label=Kind.accelerated_name,
                               value=index)
             act.join_group(first_action)
@@ -1178,20 +1161,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         ui = Gtk.UIManager()
         ui.insert_action_group(ag, -1)
 
-        ui.add_ui_from_string(
-            MAIN_MENU % {"browsers": BrowseLibrary()})
-        self._filter_menu = FilterMenu(library, player, ui)
-
         menustr = MENU % {
-            "views": ViewBrowser(),
+            "views": browser_menu_items(),
+            "browsers": secondary_browser_menu_items(),
+            "filters_menu": FilterMenu.MENU
         }
         ui.add_ui_from_string(menustr)
+        self._filter_menu = FilterMenu(library, player, ui)
 
         # Cute. So. UIManager lets you attach tooltips, but when they're
         # for menu items, they just get ignored. So here I get to actually
         # attach them.
-        ui.get_widget("/Menu/Music/RefreshLibrary").set_tooltip_text(
-                _("Check for changes in your library"))
+        ui.get_widget("/Menu/File/RefreshLibrary").set_tooltip_text(
+            _("Check for changes in your library"))
 
         return ui
 
@@ -1213,8 +1195,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         except ValueError:
             return False
 
-        action_name = "View%s" % Browser.__name__
-        for i, action in enumerate(self._browser_action.get_group()):
+        action_name = "Browse%s" % Browser.__name__
+        for action in self._browser_action.get_group():
             if action.get_name() == action_name:
                 action.set_active(True)
                 return True
@@ -1302,14 +1284,16 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
     def __song_started(self, player, song):
         self.__update_title(player)
 
-        for wid in ["Jump", "Next", "EditTags", "Information",
-                    "EditBookmarks", "AddBookmark", "StopAfter"]:
-            self.ui.get_widget(
-                '/Menu/Control/' + wid).set_sensitive(bool(song))
+        for wid in ["View/Jump", "Control/Next", "Control/StopAfter",
+                    "Edit/EditTags", "View/Information", "Edit/EditBookmarks"]:
+            self.ui.get_widget('/Menu/' + wid).set_sensitive(bool(song))
 
         # don't jump on stream changes (player.info != player.song)
-        if song and player.song is song and not self.songlist._activated and \
-            config.getboolean("settings", "jump") and self.songlist.sourced:
+        should_jump = (song and player.song is song and
+                       not self.songlist._activated and
+                       config.getboolean("settings", "jump") and
+                       self.songlist.sourced)
+        if should_jump:
             self.__jump_to_current(False)
 
     def __refresh_size(self):

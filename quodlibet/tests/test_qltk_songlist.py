@@ -179,7 +179,7 @@ class TSongList(TestCase):
 
         library = SongLibrary()
         library.librarian = SongLibrarian()
-        browser = browsers.get("EmptyBar")(library)
+        browser = browsers.get("SearchBar")(library)
 
         self.songlist.set_column_headers(["foo"])
 

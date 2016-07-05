@@ -5,8 +5,7 @@ Frequently Asked Questions
 Why don't all my songs appear in the song list when searching for them?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Do you have a global filter in use? Check the *Browsers* tab in *Music*
-→ *Preferences*.
+Do you have a global filter in use? Check the *Browsers* tab in *Preferences*.
 
 
 Why do my MP3 files have the wrong length?
