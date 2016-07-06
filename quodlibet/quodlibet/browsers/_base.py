@@ -154,9 +154,6 @@ class Browser(Gtk.Box, Filter):
     priority = 100
     """Priority in the menu list (0 is first, higher numbers come later)"""
 
-    is_empty = False
-    """Whether the browser is usable or just the dummy/disabled one"""
-
     uses_main_library = True
     """Whether the browser has the main library as source"""
 
@@ -232,7 +229,7 @@ class Browser(Gtk.Box, Filter):
 
     can_reorder = False
     """If the song list should be reorderable. In case this is True
-    every time the song list gets reorderd the whole list of songs is
+    every time the song list gets reordered the whole list of songs is
     passed to reordered().
     """
 

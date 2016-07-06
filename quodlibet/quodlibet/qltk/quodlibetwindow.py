@@ -195,8 +195,6 @@ class DockMenu(Gtk.Menu):
         browse = qltk.MenuItem(_("_Browse Library"), Icons.EDIT_FIND)
         browse_sub = Gtk.Menu()
         for Kind in browsers.browsers:
-            if Kind.is_empty:
-                continue
             i = Gtk.MenuItem(label=Kind.accelerated_name, use_underline=True)
             connect_obj(i,
                 'activate', LibraryBrowser.open, Kind, app.library, app.player)
@@ -1151,8 +1149,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         first_action.connect("changed", action_callback)
 
         for Kind in browsers.browsers:
-            if Kind.is_empty:
-                continue
             action = "Browser" + Kind.__name__
             label = Kind.accelerated_name
             act = Action(name=action, label=label)
@@ -1208,7 +1204,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         return False
 
     def _select_browser(self, activator, current, library, player,
-                       restore=False):
+                        restore=False):
 
         Browser = browsers.get(current)
 

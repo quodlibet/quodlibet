@@ -261,8 +261,7 @@ def _set_rating(app, value):
 def _dump_browsers(app):
     f = StringIO()
     for i, b in enumerate(browsers.browsers):
-        if not b.is_empty:
-            f.write("%d. %s\n" % (i, browsers.name(b)))
+        f.write("%d. %s\n" % (i, browsers.name(b)))
     return f.getvalue()
 
 
