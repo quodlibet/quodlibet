@@ -580,19 +580,18 @@ MENU = """
       <menuitem action='Quit' always-show-image='true'/>
     </menu>
 
-    <menu action='Edit'>
-      <menuitem action='EditBookmarks' always-show-image='true'/>
-      <separator/>
-      <menuitem action='EditTags' always-show-image='true'/>
-    </menu>
-
     <menu action='View'>
       <menuitem action='SongList' always-show-image='true'/>
       <menuitem action='Queue' always-show-image='true'/>
-      <separator/>
-      <menuitem action='Jump' always-show-image='true'/>
+    </menu>
+
+    <menu action='Song'>
+      <menuitem action='EditBookmarks' always-show-image='true'/>
+      <menuitem action='EditTags' always-show-image='true'/>
       <separator/>
       <menuitem action='Information' always-show-image='true'/>
+      <separator/>
+      <menuitem action='Jump' always-show-image='true'/>
     </menu>
 
     <menu action='Browse'>
@@ -1002,7 +1001,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         def add_top_level_items(ag):
             ag.add_action(Action(name="File", label=_("_File")))
-            ag.add_action(Action(name="Edit", label=_("_Edit")))
+            ag.add_action(Action(name="Song", label=_("_Song")))
             ag.add_action(Action(name="View", label=_('_View')))
             ag.add_action(Action(name="Browse", label=_("_Browse")))
             ag.add_action(Action(name="Control", label=_('_Control')))
@@ -1285,8 +1284,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
     def __song_started(self, player, song):
         self.__update_title(player)
 
-        for wid in ["View/Jump", "Control/Next", "Control/StopAfter",
-                    "Edit/EditTags", "View/Information", "Edit/EditBookmarks"]:
+        for wid in ["Control/Next", "Control/StopAfter",
+                    "Song/EditTags", "Song/Information",
+                    "Song/EditBookmarks", "Song/Jump"]:
             self.ui.get_widget('/Menu/' + wid).set_sensitive(bool(song))
 
         # don't jump on stream changes (player.info != player.song)

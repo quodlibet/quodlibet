@@ -66,9 +66,9 @@ class FilterMenu(object):
             ag.add_action(action)
 
         for tag_, lab in [
-            ("genre", _("Filter on _Genre")),
-            ("artist", _("Filter on _Artist")),
-            ("album", _("Filter on Al_bum"))]:
+            ("genre", _("Only current _Genre")),
+            ("artist", _("Only current _Artist")),
+            ("album", _("Only current Al_bum"))]:
             act = Action(
                 name="Filter%s" % util.capitalize(tag_), label=lab,
                 icon_name=Icons.EDIT_SELECT_ALL)
