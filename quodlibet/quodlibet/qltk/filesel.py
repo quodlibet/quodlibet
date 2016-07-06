@@ -529,7 +529,7 @@ class FileSelector(Paned):
         filelist.set_search_column(0)
 
         # Allow to drag and drop files from outside
-        filelist.enable_model_drag_dest([], Gdk.DragAction.COPY)
+        filelist.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.COPY)
         filelist.drag_dest_add_uri_targets()
         filelist.connect('drag-data-received', self.__file_dropped)
 
