@@ -47,7 +47,7 @@ class FilterMenu(object):
         self._browser = None
         self._library = library
         self._player = player
-        self._standalone = ui is None
+        self._standalone = not ui
 
         ag = Gtk.ActionGroup.new('QuodLibetFilterActions')
         for name, icon_name, label, cb in [
@@ -84,18 +84,18 @@ class FilterMenu(object):
             act.connect('activate', self.__random, tag_)
             ag.add_action_with_accel(act, "<Primary>" + accel)
 
-        if not ui:
+        if self._standalone:
             ui = Gtk.UIManager()
             ui.add_ui_from_string(self.__OUTER_MENU)
         ui.insert_action_group(ag, -1)
         self._ui = ui
 
-        self.get_widget("TopRated").set_tooltip_text(
+        self._get_child_widget("TopRated").set_tooltip_text(
                 _("The 40 songs you've played most (more than 40 may "
                   "be chosen if there are ties)"))
 
         # https://git.gnome.org/browse/gtk+/commit/?id=b44df22895c79
-        menu_item = self.get_widget(None)
+        menu_item = self._get_child_widget('/Menu/Filters')
         if isinstance(menu_item, Gtk.ImageMenuItem):
             menu_item.set_image(None)
 
@@ -181,7 +181,8 @@ class FilterMenu(object):
             else:
                 can_filter = False
             for name in widget_names:
-                self.get_widget(name).set_property('visible', can_filter)
+                self._get_child_widget(name).set_property('visible',
+                                                          can_filter)
 
     def set_browser(self, browser):
         self._browser = browser
@@ -189,17 +190,21 @@ class FilterMenu(object):
 
     def set_song(self, song):
         for wid in ["FilterAlbum", "FilterArtist", "FilterGenre"]:
-            self.get_widget(wid).set_sensitive(bool(song))
+            self._get_child_widget(wid).set_sensitive(bool(song))
 
         if song:
             for h in ['genre', 'artist', 'album']:
-                widget = self.get_widget("Filter%s" % h.capitalize())
+                widget = self._get_child_widget("Filter%s" % h.capitalize())
                 widget.set_sensitive(h in song)
 
-    def get_widget(self, name=None):
+    def _get_child_widget(self, name=None):
         path = '/Menu%s/Filters' % ('' if self._standalone else '/Browse')
         if name:
             path += "/" + name
+        return self._ui.get_widget(path)
+
+    def get_widget(self):
+        path = '/Menu' if self._standalone else '/Menu/Browse'
         return self._ui.get_widget(path)
 
     def get_accel_group(self):
