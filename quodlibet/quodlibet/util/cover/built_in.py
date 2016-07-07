@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
+#      2015-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -10,13 +11,17 @@ import re
 
 from quodlibet.plugins.cover import CoverSourcePlugin
 from quodlibet.util.path import fsdecode
-from quodlibet.util import print_w
+from quodlibet.util.dprint import print_w
 from quodlibet import config
 
 
-class EmbedCover(CoverSourcePlugin):
+def get_ext(s):
+    return os.path.splitext(s)[1].lstrip('.')
+
+
+class EmbeddedCover(CoverSourcePlugin):
     PLUGIN_ID = "embed-cover"
-    PLUGIN_NAME = _("Embed cover")
+    PLUGIN_NAME = _("Embedded album covers")
     PLUGIN_DESC = _("Uses covers embedded into audio files.")
 
     embedded = True
@@ -49,17 +54,16 @@ class FilesystemCover(CoverSourcePlugin):
 
     cover_positive_words = ["front", "cover", "frontcover", "jacket",
                             "folder", "albumart", "edited"]
+    cover_negative_words = ["back", "inlay", "inset", "inside"]
     cover_positive_regexes = frozenset(
-        map(lambda s: re.compile(r'(\b|_)' + s + r'(\b|_)'),
-                                 cover_positive_words))
+        [re.compile(r'(\b|_)' + s + r'(\b|_)') for s in cover_positive_words])
     cover_negative_regexes = frozenset(
-        map(lambda s: re.compile(r'(\b|_|)' + s + r'(\b|_)'),
-            ["back", "inlay", "inset", "inside"]))
+        [re.compile(r'(\b|_|)' + s + r'(\b|_)') for s in cover_negative_words])
 
     @classmethod
     def group_by(cls, song):
         # in the common case this means we only search once per album
-        return (song('~dirname'), song.album_key)
+        return song('~dirname'), song.album_key
 
     @staticmethod
     def priority():
@@ -80,13 +84,11 @@ class FilesystemCover(CoverSourcePlugin):
             if os.path.isfile(path):
                 images = [(100, path)]
         else:
-            get_ext = lambda s: os.path.splitext(s)[1].lstrip('.')
-
             entries = []
             try:
                 entries = os.listdir(base)
             except EnvironmentError:
-                pass
+                print_w("Can't list album art directory %s" % base)
 
             fns = []
             for entry in entries:
@@ -115,20 +117,20 @@ class FilesystemCover(CoverSourcePlugin):
                     score += 20
 
                 # Track-related keywords
-                keywords = [k.lower().strip() for k in [self.song("artist"),
-                            self.song("albumartist"), self.song("album")]
-                            if len(k) > 1]
-                score += 2 * sum(map(dec_lfn.__contains__, keywords))
+                values = self.song.list("~people") + [self.song("album")]
+                lowers = [value.lower().strip() for value in values
+                          if len(value) > 1]
+                score += 2 * sum([value in dec_lfn for value in lowers])
 
                 # Generic keywords
                 score += 3 * sum(r.search(dec_lfn) is not None
                                  for r in self.cover_positive_regexes)
 
-                negs = sum(r.search(dec_lfn) is not None
-                           for r in self.cover_negative_regexes)
-                score -= 2 * negs
-                #print("[%s - %s]: Album art \"%s\" scores %d (%s neg)." % (
-                #        self("artist"), self("title"), fn, score, negs))
+                score -= 2 * sum(r.search(dec_lfn) is not None
+                                 for r in self.cover_negative_regexes)
+
+                # print("[%s - %s]: Album art \"%s\" scores %d." %
+                #         (self.song("artist"), self.song("title"), fn, score))
                 if score > 0:
                     if sub is not None:
                         fn = os.path.join(sub, fn)
