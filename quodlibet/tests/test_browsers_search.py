@@ -11,7 +11,6 @@ import quodlibet.browsers.search
 import quodlibet.config
 
 from quodlibet.browsers.search import SearchBar
-from quodlibet.browsers.empty import EmptyBar
 from quodlibet.formats import AudioFile
 from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
@@ -44,8 +43,8 @@ SONGS = [AudioFile({
                 "~filename": fsnative(u"/dev/sh")})]
 
 
-class TEmptyBar(TestCase):
-    Bar = EmptyBar
+class TSearchBar(TestCase):
+    Bar = SearchBar
 
     def setUp(self):
         quodlibet.config.init()
@@ -124,7 +123,3 @@ class TEmptyBar(TestCase):
         self.bar.destroy()
         quodlibet.browsers.search.library.destroy()
         quodlibet.config.quit()
-
-
-class TSearchBar(TEmptyBar):
-    Bar = SearchBar

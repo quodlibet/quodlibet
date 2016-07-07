@@ -92,8 +92,6 @@ class IndicatorMenu(Gtk.Menu):
         browse_sub = Gtk.Menu()
 
         for Kind in browsers.browsers:
-            if Kind.is_empty:
-                continue
             i = Gtk.MenuItem(label=Kind.accelerated_name, use_underline=True)
             connect_obj(i,
                 'activate', LibraryBrowser.open, Kind, app.library, app.player)
