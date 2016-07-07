@@ -142,8 +142,7 @@ class TCoverManager(TestCase):
             "album": "foobar",
             "title": "Ode to Baz",
             "performer": "The Performer",
-            "artist": "The Composer",
-            "artist": "The Conductor",
+            "artist": "The Composer\nThe Conductor",
             "composer": "The Composer",
         })
         for fn in ["foobar.jpg",
