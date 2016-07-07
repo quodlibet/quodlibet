@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2007-2008 Joe Wreschnig
 #           2014 Christoph Reiter
-#           2014 Nick Boultbee
+#      2014-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -74,7 +74,7 @@ _TAGS = dict((t.name, t) for t in [
     T("arranger", "u", _("arranger"), _("arrangers"), _("arrangement")),
     T("artist", "us", _("artist"), _("artists")),
     T("author", "u", _("author"), _("authors")),
-    T("composer", "u", _("composer"), _("composers"), _("composition")),
+    T("composer", "us", _("composer"), _("composers"), _("composition")),
     T("conductor", "u", _("conductor"), _("conductors"), _("conducting")),
     T("contact", "u", _("contact")),
     T("copyright", "u", _("copyright")),
