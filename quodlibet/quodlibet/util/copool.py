@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig, Alexandre Passos
 #           2014 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -94,7 +95,6 @@ class CoPool(object):
         priority = kwargs.pop("priority", GLib.PRIORITY_LOW)
         timeout = kwargs.pop("timeout", None)
 
-        print_d("Added copool function %r with id %r" % (func, funcid))
         routine = _Routine(self, func, funcid, priority, timeout, args, kwargs)
         self.__routines[funcid] = routine
         routine.resume()
@@ -110,7 +110,6 @@ class CoPool(object):
         routine = self._get(funcid)
         routine.pause()
         del self.__routines[funcid]
-        print_d("Removed copool function id %r" % funcid)
 
     def remove_all(self):
         """Stop all running routines."""
@@ -123,7 +122,6 @@ class CoPool(object):
 
         routine = self._get(funcid)
         routine.pause()
-        print_d("Paused copool function id %r" % funcid)
 
     def pause_all(self):
         """Temporarily pause all registered routines."""
@@ -136,7 +134,6 @@ class CoPool(object):
 
         routine = self._get(funcid)
         routine.resume()
-        print_d("Resumed copool function id %r" % funcid)
 
     def step(self, funcid):
         """Force this function to iterate once."""
