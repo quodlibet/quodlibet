@@ -11,7 +11,6 @@
 
 from gi.repository import GLib
 
-from quodlibet.util import print_d
 from quodlibet.compat import PY2
 
 
