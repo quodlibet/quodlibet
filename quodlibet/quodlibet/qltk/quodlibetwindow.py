@@ -992,7 +992,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             act = Action(name="Information", label=_('_Information'),
                          icon_name=Icons.DIALOG_INFORMATION)
             act.connect('activate', self.__current_song_info)
-            ag.add_action_with_accel(act, "<Primary>I")
+            ag.add_action(act)
 
             act = Action(name="Jump", label=_('_Jump to Playing Song'),
                          icon_name=Icons.GO_JUMP)
@@ -1048,7 +1048,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         act = Action(name="EditTags", label=_('Edit _Tags'),
                      icon_name=Icons.DOCUMENT_PROPERTIES)
         act.connect('activate', self.__current_song_prop)
-        ag.add_action_with_accel(act, "<Alt>Return")
+        ag.add_action(act)
 
         act = Action(name="EditBookmarks", label=_(u"Edit Bookmarks…"))
         connect_obj(act, 'activate', self.__edit_bookmarks,
