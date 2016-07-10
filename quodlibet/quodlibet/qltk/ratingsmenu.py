@@ -37,7 +37,7 @@ class RatingsMenuItem(Gtk.MenuItem):
     def __init__(self, songs, library, label=_("_Rating")):
         super(RatingsMenuItem, self).__init__(label=label, use_underline=True)
         self._songs = songs
-        ratings = {song("~#rating") for song in songs}
+        ratings = {song("~#rating") for song in songs if song.has_rating}
 
         submenu = Gtk.Menu()
         self.set_submenu(submenu)
