@@ -124,6 +124,9 @@ INITIAL = {
 
         # our implementation is buggy and disabled by default
         "osx_mmkeys": "false",
+
+        # default to (HH:)MM:SS, only alternative so far is "seconds"
+        "timeformat": "",
     },
     "rename": {
         "spaces": "false",

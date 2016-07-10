@@ -360,6 +360,11 @@ def format_size(size):
 def format_time(time):
     """Turn a time value in seconds into hh:mm:ss or mm:ss."""
 
+    from quodlibet import config
+
+    if config.get("settings", "timeformat", "") == "seconds":
+        return "%ds" % time
+
     if time < 0:
         time = abs(time)
         prefix = "-"
@@ -389,6 +394,11 @@ def format_time_long(time, limit=2):
 
     if time < 1:
         return _("No time information")
+
+    from quodlibet import config
+
+    if config.get("settings", "timeformat", "") == "seconds":
+        return ngettext("%d second", "%d seconds", time) % time
 
     cutoffs = [
         (60, lambda n: ngettext("%d second", "%d seconds", n)),
