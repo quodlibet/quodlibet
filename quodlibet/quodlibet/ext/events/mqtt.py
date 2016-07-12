@@ -26,8 +26,8 @@ from quodlibet.util import copool
 
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet.util.dprint import print_d, print_w, print_e, print_exc
-from quodlibet.qltk import Icons, ErrorMessage, Message, util
+from quodlibet.util.dprint import print_d, print_w, print_e
+from quodlibet.qltk import Icons, ErrorMessage, Message
 
 EXPAND = Gtk.AttachOptions.EXPAND
 FILL = Gtk.AttachOptions.FILL
