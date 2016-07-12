@@ -23,21 +23,7 @@ class MetadataCopier(SongsMenuPlugin):
     PLUGIN_NAME = _("Migrate Metadata")
     PLUGIN_VERSION = "1.0"
     PLUGIN_ICON = Icons.EDIT_COPY
-    PLUGIN_DESC = _("Copies the quodlibet-specific metadata (~#rating, "
-                    "~#playcount, ~#skipcount, ~#added, ~#laststarted, "
-                    "~#lastplayed) of a selection of songs, and lets you "
-                    "paste it to another selection of songs."
-                    "\n\n"
-                    "When more than one track is selected, songs can be "
-                    "matched by disc and track number."
-                    "\n\n"
-                    "This is useful when you have an existing collection of "
-                    "music files encoded in one format that you want to "
-                    "replace with files encoded in another format, such as "
-                    "migrating an old MP3 collection to newly-ripped FLACs."
-                    "\n\n"
-                    "The fields that are used are able to be selected at "
-                    "both copy and paste time.")
+    PLUGIN_DESC = _("Copies the quodlibet-specific metadata between songs.")
 
     def plugin_songs(self, songs):
         global songinfo
