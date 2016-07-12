@@ -88,8 +88,9 @@ class MetadataCopier(SongsMenuPlugin):
         frame.add(table)
         dlg.vbox.add(frame)
         dlg.vbox.add(index)
-        dlg.vbox.add(Gtk.Label(_("Currently stored tracks: %d" %
-                                 len(songinfo))))
+        dlg.vbox.add(Gtk.Label(ngettext("There is %d stored track.",
+                                        "There are %d stored tracks.",
+                                        len(songinfo)) % len(songinfo)))
         dlg.show_all()
         response = dlg.run()
 
