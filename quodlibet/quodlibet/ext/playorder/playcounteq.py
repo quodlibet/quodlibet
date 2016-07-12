@@ -15,17 +15,7 @@ from quodlibet.qltk import Icons
 class PlaycountEqualizer(PlayOrderPlugin, PlayOrderShuffleMixin):
     PLUGIN_ID = "playcounteq"
     PLUGIN_NAME = _("Playcount Equalizer")
-    PLUGIN_DESC = _("This shuffle play order plugin selects the next song "
-                    "weighted inversely by ~#playcount. Attempting to "
-                    "equalize the ~#playcount of all songs in the playlist."
-                    "\n\n"
-                    "This might be useful when you have new songs that you "
-                    "aren't tired of yet; They will be played more often than "
-                    "songs you've had for a while and have heard many times."
-                    "\n\n"
-                    "Note: In some cases, the same song can be played "
-                    "multiple times in a row. This usually happens in small "
-                    "playlists with large ~#playcount divides.")
+    PLUGIN_DESC = _("Shuffle, preferring songs with fewer total plays.")
     PLUGIN_ICON = Icons.VIEW_REFRESH
     PLUGIN_VERSION = "1.0"
 
