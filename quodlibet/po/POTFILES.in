@@ -81,6 +81,7 @@ quodlibet/ext/playlist/export_to_squeezebox.py
 quodlibet/ext/playlist/remove_duplicates.py
 quodlibet/ext/playlist/shuffle.py
 quodlibet/ext/playorder/follow.py
+quodlibet/ext/playorder/playcounteq.py
 quodlibet/ext/playorder/queue.py
 quodlibet/ext/playorder/reverse.py
 quodlibet/ext/playorder/track_repeat.py
