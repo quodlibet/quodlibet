@@ -5,9 +5,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import math
+
 from gi.repository import Gtk
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.formats._audio import MIGRATE
+from quodlibet.util.tags import readable
 from quodlibet.qltk import Icons
 
 
@@ -19,7 +23,7 @@ songinfo = {}
 
 
 class MetadataCopier(SongsMenuPlugin):
-    PLUGIN_ID = "migratemetadata"
+    PLUGIN_ID = "Migrate Metadata"
     PLUGIN_NAME = _("Migrate Metadata")
     PLUGIN_VERSION = "1.0"
     PLUGIN_ICON = Icons.EDIT_COPY
@@ -44,36 +48,27 @@ class MetadataCopier(SongsMenuPlugin):
         else:
             dlg.set_default_response(Gtk.ResponseType.APPLY)
 
-        # Add stuff to the dialog.
+        # Create the tag table.
         frame = Gtk.Frame(label=_("Information to copy/paste"))
-        table = Gtk.Table(rows=3, columns=2, homogeneous=True)
+        # Try to make a nice even square-ish table.
+        bias = 3  # Columns count for 3 rows, due to label text using space.
+        columns = int(max(1, math.ceil(math.sqrt(len(MIGRATE) / bias))))
+        rows = int(max(1, math.ceil(len(MIGRATE) / columns)))
+        table = Gtk.Table(rows=rows, columns=columns, homogeneous=True)
         table.set_border_width(4)
         table.set_row_spacings(4)
         table.set_col_spacings(4)
 
         # Create check boxes.
-        rating = Gtk.CheckButton(label=_("Rating"))
-        energy = Gtk.CheckButton(label=_("Energy"))
-        playct = Gtk.CheckButton(label=_("Play Count"))
-        skipct = Gtk.CheckButton(label=_("Skip Count"))
-        dstart = Gtk.CheckButton(label=_("Last Started"))
-        dlplay = Gtk.CheckButton(label=_("Last Played"))
-        dadded = Gtk.CheckButton(label=_("Date Added"))
-        bkmark = Gtk.CheckButton(label=_("Bookmarks"))
-        # Check all the checkboxes.
-        for box in [rating, energy, playct, skipct,
-                    dstart, dlplay, dadded, bkmark]:
-            box.set_active(True)
+        tags = {}
+        for ctr, tag in enumerate(sorted(MIGRATE)):
+            tags[tag] = Gtk.CheckButton(label=readable(tag).capitalize())
+            tags[tag].set_active(True)
 
-        # Put all those checkboxes into the tble.
-        table.attach(rating, 0, 1, 0, 1)
-        table.attach(energy, 1, 2, 0, 1)
-        table.attach(playct, 0, 1, 1, 2)
-        table.attach(skipct, 1, 2, 1, 2)
-        table.attach(dstart, 0, 1, 2, 3)
-        table.attach(dlplay, 1, 2, 2, 3)
-        table.attach(dadded, 0, 1, 3, 4)
-        table.attach(bkmark, 1, 2, 3, 4)
+            # These floors and casts make sure we don't get floats.
+            col = int(math.floor(ctr % columns))
+            row = int(math.floor(ctr / columns))
+            table.attach(tags[tag], col, col + 1, row, row + 1)
 
         # Create the indexing box.
         index = Gtk.CheckButton(label=_("Map tracks by disc and track number"))
@@ -119,20 +114,19 @@ class MetadataCopier(SongsMenuPlugin):
             if response == Gtk.ResponseType.OK:
                 songinfo[tid] = {}
 
-            for field in [("~#rating", rating), ("~#energy", energy),
-                          ("~#playcount", playct), ("~#skipcount", skipct),
-                          ("~#laststarted", dstart), ("~#lastplayed", dlplay),
-                          ("~#added", dadded), ("~bookmark", bkmark)]:
-                if field[1].get_active() is True:
-                    try:
-                        if response == Gtk.ResponseType.OK:
-                            # Copy information.
-                            songinfo[tid][field[0]] = song[field[0]]
-                        elif response == Gtk.ResponseType.APPLY:
-                            # Paste information.
-                            song[field[0]] = songinfo[tid][field[0]]
-                    except KeyError:
-                        pass  # Just leave out fields that aren't present.
+            for tag in tags.keys():
+                if tags[tag].get_active() is False:
+                    continue  # Skip unchecked tags.
+
+                try:
+                    if response == Gtk.ResponseType.OK:
+                        # Copy information.
+                        songinfo[tid][tag] = song[tag]
+                    elif response == Gtk.ResponseType.APPLY:
+                        # Paste information.
+                        song[tag] = songinfo[tid][tag]
+                except KeyError:
+                    continue  # Just leave out tags that aren't present.
 
         # Erase songinfo after pasting.
         if response == Gtk.ResponseType.APPLY:
