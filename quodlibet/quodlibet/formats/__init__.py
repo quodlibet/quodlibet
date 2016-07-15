@@ -91,10 +91,11 @@ def filter(filename):
     return filename.lower().endswith(_extensions)
 
 
-from ._audio import PEOPLE, AudioFile, DUMMY_SONG, decode_value
+from ._audio import PEOPLE, AudioFile, DUMMY_SONG, decode_value, AudioFileError
 from ._image import EmbeddedImage, APICType
 
 AudioFile
+AudioFileError
 EmbeddedImage
 DUMMY_SONG
 PEOPLE

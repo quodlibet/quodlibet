@@ -12,7 +12,7 @@ import mutagen.asf
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.compat import iteritems
 
-from ._audio import AudioFile
+from ._audio import AudioFile, translate_errors
 from ._image import EmbeddedImage, APICType
 
 
@@ -91,7 +91,8 @@ class WMAFile(AudioFile):
 
     def __init__(self, filename, audio=None):
         if audio is None:
-            audio = mutagen.asf.ASF(filename)
+            with translate_errors():
+                audio = mutagen.asf.ASF(filename)
         info = audio.info
 
         self["~#length"] = info.length
@@ -117,7 +118,8 @@ class WMAFile(AudioFile):
         self.sanitize(filename)
 
     def write(self):
-        audio = mutagen.asf.ASF(self["~filename"])
+        with translate_errors():
+            audio = mutagen.asf.ASF(self["~filename"])
         for key in self.__translate.keys():
             try:
                 del(audio[key])
@@ -130,7 +132,8 @@ class WMAFile(AudioFile):
             except KeyError:
                 continue
             audio.tags[name] = self.list(key)
-        audio.save()
+        with translate_errors():
+            audio.save()
         self.sanitize()
 
     def can_multiple_values(self, key=None):

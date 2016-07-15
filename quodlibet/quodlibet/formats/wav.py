@@ -10,7 +10,7 @@ import wave
 
 from quodlibet.util.path import fsdecode
 
-from ._audio import AudioFile
+from ._audio import AudioFile, translate_errors
 
 
 extensions = [".wav"]
@@ -21,9 +21,10 @@ class WAVEFile(AudioFile):
     mimes = ["audio/wav", "audio/x-wav", "audio/wave"]
 
     def __init__(self, filename):
-        with open(filename, "rb") as h:
-            f = wave.open(h)
-            self["~#length"] = f.getnframes() / f.getframerate()
+        with translate_errors():
+            with open(filename, "rb") as h:
+                f = wave.open(h)
+                self["~#length"] = f.getnframes() / f.getframerate()
         self.sanitize(filename)
 
     def sanitize(self, filename):

@@ -7,7 +7,7 @@
 
 from mutagen.smf import SMF
 
-from ._audio import AudioFile
+from ._audio import AudioFile, translate_errors
 
 
 class MidiError(Exception):
@@ -19,7 +19,8 @@ class MidiFile(AudioFile):
     mimes = ["audio/midi", "audio/x-midi"]
 
     def __init__(self, filename):
-        audio = SMF(filename)
+        with translate_errors():
+            audio = SMF(filename)
         self["~#length"] = audio.info.length
         self.sanitize(filename)
 

@@ -10,7 +10,7 @@ import os
 from quodlibet import config
 from quodlibet.util.path import is_fsnative, fsnative, fsdecode
 from quodlibet.compat import PY2
-from quodlibet.formats import AudioFile
+from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 from quodlibet.formats import decode_value
 
@@ -661,6 +661,37 @@ class TAudioFile(TestCase):
 
     def tearDown(self):
         os.unlink(quux["~filename"])
+
+
+class TAudioFormats(TestCase):
+
+    def test_load_non_exist(self):
+        for t in format_types:
+            if not t.is_file:
+                continue
+            self.assertRaises(AudioFileError, t, fsnative(u"/dev/null"))
+
+    def test_write_non_existing(self):
+        for t in format_types:
+            if not t.is_file:
+                continue
+            instance = AudioFile.__new__(t)
+            instance.sanitize(fsnative(u"/dev/null"))
+            try:
+                instance.write()
+            except AudioFileError:
+                pass
+
+    def test_reaload_non_existing(self):
+        for t in format_types:
+            if not t.is_file:
+                continue
+            instance = AudioFile.__new__(t)
+            instance.sanitize(fsnative(u"/dev/null"))
+            try:
+                instance.reload()
+            except AudioFileError:
+                pass
 
 
 class Tdecode_value(TestCase):

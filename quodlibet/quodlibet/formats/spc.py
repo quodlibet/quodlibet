@@ -7,7 +7,7 @@
 
 import os
 
-from ._audio import AudioFile
+from ._audio import AudioFile, translate_errors
 
 extensions = [".spc"]
 
@@ -16,18 +16,17 @@ class SPCFile(AudioFile):
     format = "SPC700"
 
     def __init__(self, filename):
-        h = open(filename, "rb")
-        try:
-            head = h.read(46)
-            if len(head) != 46 or head[:27] != 'SNES-SPC700 Sound File Data':
-                raise IOError("Not a valid SNES-SPC700 file")
+        with translate_errors():
+            with open(filename, "rb") as h:
+                head = h.read(46)
+                if len(head) != 46 or \
+                        head[:27] != 'SNES-SPC700 Sound File Data':
+                    raise IOError("Not a valid SNES-SPC700 file")
 
-            if head[35] == '\x1a':
-                data = h.read(210)
-                if len(data) == 210:
-                    self.update(parse_id666(data))
-        finally:
-            h.close()
+                if head[35] == '\x1a':
+                    data = h.read(210)
+                    if len(data) == 210:
+                        self.update(parse_id666(data))
 
         self.setdefault("title", os.path.basename(filename)[:-4])
         self.sanitize(filename)

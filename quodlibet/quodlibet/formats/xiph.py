@@ -17,7 +17,7 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet.util.path import get_temp_cover_file
 
-from ._audio import AudioFile
+from ._audio import AudioFile, translate_errors
 from ._image import EmbeddedImage, APICType
 
 
@@ -36,7 +36,8 @@ class MutagenVCFile(AudioFile):
         # If we're done a type probe, use the results of that to avoid
         # reopening the file.
         if audio is None:
-            audio = self.MutagenType(filename)
+            with translate_errors():
+                audio = self.MutagenType(filename)
         self["~#length"] = audio.info.length
         try:
             self["~#bitrate"] = int(audio.info.bitrate / 1000)
@@ -286,7 +287,8 @@ class MutagenVCFile(AudioFile):
                 comments[main] = lower.list(fallback)
 
     def write(self):
-        audio = self.MutagenType(self["~filename"])
+        with translate_errors():
+            audio = self.MutagenType(self["~filename"])
         if audio.tags is None:
             audio.add_tags()
 
@@ -301,7 +303,8 @@ class MutagenVCFile(AudioFile):
         self.__prep_write_total(audio.tags,
                                 "disctotal", "totaldiscs", "discnumber")
 
-        audio.save()
+        with translate_errors():
+            audio.save()
         self.sanitize()
 
 extensions = []
@@ -370,7 +373,8 @@ class FLACFile(MutagenVCFile):
 
     def __init__(self, filename, audio=None):
         if audio is None:
-            audio = FLAC(filename)
+            with translate_errors():
+                audio = FLAC(filename)
         super(FLACFile, self).__init__(filename, audio)
         if audio.pictures:
             self.has_images = True
@@ -456,7 +460,8 @@ class FLACFile(MutagenVCFile):
 
     def write(self):
         if ID3 is not None:
-            ID3().delete(filename=self["~filename"])
+            with translate_errors():
+                ID3().delete(filename=self["~filename"])
         super(FLACFile, self).write()
 
 types = []

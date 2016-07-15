@@ -15,7 +15,7 @@ from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import isascii
 
-from ._audio import AudioFile
+from ._audio import AudioFile, translate_errors
 from ._image import EmbeddedImage, APICType
 
 
@@ -96,7 +96,8 @@ class ID3File(AudioFile):
     Kind = None
 
     def __init__(self, filename):
-        audio = self.Kind(filename)
+        with translate_errors():
+            audio = self.Kind(filename)
         tag = audio.tags or mutagen.id3.ID3()
         self._parse_info(audio.info)
 
@@ -262,10 +263,11 @@ class ID3File(AudioFile):
         return text
 
     def write(self):
-        try:
-            tag = mutagen.id3.ID3(self['~filename'])
-        except mutagen.id3.error:
-            tag = mutagen.id3.ID3()
+        with translate_errors():
+            try:
+                tag = mutagen.id3.ID3(self['~filename'])
+            except mutagen.id3.error:
+                tag = mutagen.id3.ID3()
 
         # prefill TMCL with the ones we can't read
         mcl = tag.get("TMCL", mutagen.id3.TMCL(encoding=3, people=[]))
@@ -420,7 +422,8 @@ class ID3File(AudioFile):
                                  count=self.get("~#playcount", 0))
             tag.add(t)
 
-        tag.save(self["~filename"])
+        with translate_errors():
+            tag.save(self["~filename"])
         self.sanitize()
 
     can_change_images = True

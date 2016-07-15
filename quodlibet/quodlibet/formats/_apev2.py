@@ -10,7 +10,7 @@ import mutagen.apev2
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.compat import iteritems
 
-from ._audio import AudioFile
+from ._audio import AudioFile, translate_errors
 from ._image import APICType, EmbeddedImage
 
 
@@ -93,10 +93,12 @@ class APEv2File(AudioFile):
         if audio:
             tag = audio.tags or {}
         else:
-            try:
-                tag = mutagen.apev2.APEv2(filename)
-            except mutagen.apev2.APENoHeaderError:
-                tag = {}
+            with translate_errors():
+                try:
+                    tag = mutagen.apev2.APEv2(filename)
+                except mutagen.apev2.APENoHeaderError:
+                    tag = {}
+
         for key, value in tag.items():
             if get_cover_type(key, value) is not None:
                 self.has_images = True
@@ -125,10 +127,11 @@ class APEv2File(AudioFile):
                     mutagen.apev2.is_valid_apev2_key(self.__titlecase(key)))
 
     def write(self):
-        try:
-            tag = mutagen.apev2.APEv2(self['~filename'])
-        except mutagen.apev2.APENoHeaderError:
-            tag = mutagen.apev2.APEv2()
+        with translate_errors():
+            try:
+                tag = mutagen.apev2.APEv2(self['~filename'])
+            except mutagen.apev2.APENoHeaderError:
+                tag = mutagen.apev2.APEv2()
 
         # Remove any text keys we read in
         for key in tag.iterkeys():
@@ -146,7 +149,8 @@ class APEv2File(AudioFile):
             new_key = self.__titlecase(new_key)
             tag[new_key] = lower.list(key)
 
-        tag.save(self["~filename"])
+        with translate_errors():
+            tag.save(self["~filename"])
         self.sanitize()
 
     def get_primary_image(self):

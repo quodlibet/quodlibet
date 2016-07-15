@@ -10,7 +10,7 @@ import ctypes
 
 from quodlibet.util import load_library
 
-from ._audio import AudioFile
+from ._audio import AudioFile, translate_errors
 
 
 extensions = [
@@ -41,17 +41,19 @@ class ModFile(AudioFile):
     format = "MOD/XM/IT"
 
     def __init__(self, filename):
-        data = open(filename, "rb").read()
-        f = _modplug.ModPlug_Load(data, len(data))
-        if not f:
-            raise IOError("%r not a valid MOD file" % filename)
-        self["~#length"] = _modplug.ModPlug_GetLength(f) // 1000
-        title = _modplug.ModPlug_GetName(f) or os.path.basename(filename)
-        try:
-            self["title"] = title.decode('utf-8')
-        except UnicodeError:
-            self["title"] = title.decode("iso-8859-1")
-        _modplug.ModPlug_Unload(f)
+        with translate_errors():
+            data = open(filename, "rb").read()
+            f = _modplug.ModPlug_Load(data, len(data))
+            if not f:
+                raise IOError("%r not a valid MOD file" % filename)
+            self["~#length"] = _modplug.ModPlug_GetLength(f) // 1000
+            title = _modplug.ModPlug_GetName(f) or os.path.basename(filename)
+            try:
+                self["title"] = title.decode('utf-8')
+            except UnicodeError:
+                self["title"] = title.decode("iso-8859-1")
+            _modplug.ModPlug_Unload(f)
+
         self.sanitize(filename)
 
     def write(self):

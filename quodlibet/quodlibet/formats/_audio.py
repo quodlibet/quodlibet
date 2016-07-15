@@ -13,6 +13,9 @@
 import os
 import shutil
 import time
+import contextlib
+
+import mutagen
 
 from quodlibet import util
 from quodlibet import config
@@ -73,6 +76,31 @@ def decode_value(tag, value):
     elif tag in FILESYSTEM_TAGS:
         return fsdecode(value)
     return unicode(value)
+
+
+class AudioFileError(Exception):
+    """Base error for AudioFile, mostly IO/parsing related operations"""
+
+
+class MutagenBug(AudioFileError):
+    """Raised in is caused by a mutagen bug, so we can highlight it"""
+
+
+@contextlib.contextmanager
+def translate_errors():
+    """Context manager for mutagen calls to load/save. Translates exceptions
+    to local ones.
+    """
+
+    try:
+        yield
+    except AudioFileError:
+        raise
+    except (mutagen.MutagenError, IOError) as e:
+        # old mutagen raised IOError
+        raise AudioFileError(e)
+    except Exception as e:
+        raise MutagenBug(e)
 
 
 class AudioFile(dict, ImageContainer):
@@ -213,7 +241,11 @@ class AudioFile(dict, ImageContainer):
 
     def reload(self):
         """Reload an audio file from disk. The caller is responsible for
-        handling any errors."""
+        handling any errors.
+
+        Raises:
+            AudioFileError: if the file fails to load
+        """
 
         fn = self["~filename"]
         saved = {}
@@ -718,7 +750,10 @@ class AudioFile(dict, ImageContainer):
 
     def sanitize(self, filename=None):
         """Fill in metadata defaults. Find ~mountpoint, ~#mtime, ~#filesize
-        and ~#added. Check for null bytes in tags."""
+        and ~#added. Check for null bytes in tags.
+
+        Does not raise.
+        """
 
         # Replace nulls with newlines, trimming zero-length segments
         for key, val in self.items():
@@ -900,7 +935,12 @@ class AudioFile(dict, ImageContainer):
             return min(15, scale)
 
     def write(self):
-        """Write metadata back to the file."""
+        """Write metadata back to the file.
+
+        Raises:
+            AudioFileError: in case writing fails
+        """
+
         raise NotImplementedError
 
     @property

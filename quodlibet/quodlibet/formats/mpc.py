@@ -7,6 +7,7 @@
 
 from mutagen.musepack import Musepack
 
+from ._audio import translate_errors
 from ._apev2 import APEv2File
 
 
@@ -15,7 +16,9 @@ class MPCFile(APEv2File):
     mimes = ["audio/x-musepack", "audio/x-mpc"]
 
     def __init__(self, filename):
-        audio = Musepack(filename)
+        with translate_errors():
+            audio = Musepack(filename)
+
         super(MPCFile, self).__init__(filename, audio)
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
