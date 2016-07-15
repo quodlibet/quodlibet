@@ -12,7 +12,7 @@ from quodlibet.util.path import is_fsnative, fsnative, fsdecode
 from quodlibet.compat import PY2
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
-from quodlibet.formats import decode_value
+from quodlibet.formats import decode_value, MusicFile
 
 
 bar_1_1 = AudioFile({
@@ -658,6 +658,19 @@ class TAudioFile(TestCase):
         else:
             f = AudioFile({"~filename": "/\x87\x12.mp3", "title": "linux"})
             self.failUnlessEqual(f("~uri"), "file:///%87%12.mp3")
+
+    def test_reload(self):
+        audio = MusicFile(os.path.join(DATA_DIR, 'silence-44-s.mp3'))
+        audio["title"] = u"foo"
+        audio.reload()
+        self.assertNotEqual(audio.get("title"), u"foo")
+
+    def test_reload_fail(self):
+        audio = MusicFile(os.path.join(DATA_DIR, 'silence-44-s.mp3'))
+        audio["title"] = u"foo"
+        audio.sanitize(fsnative(u"/dev/null"))
+        self.assertRaises(AudioFileError, audio.reload)
+        self.assertEqual(audio["title"], u"foo")
 
     def tearDown(self):
         os.unlink(quux["~filename"])

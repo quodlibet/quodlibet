@@ -240,13 +240,14 @@ class AudioFile(dict, ImageContainer):
         return self is not other
 
     def reload(self):
-        """Reload an audio file from disk. The caller is responsible for
-        handling any errors.
+        """Reload an audio file from disk. If reloading fails nothing will
+        change.
 
         Raises:
             AudioFileError: if the file fails to load
         """
 
+        backup = dict(self)
         fn = self["~filename"]
         saved = {}
         for key in self:
@@ -254,8 +255,13 @@ class AudioFile(dict, ImageContainer):
                 saved[key] = self[key]
         self.clear()
         self["~filename"] = fn
-        self.__init__(fn)
-        self.update(saved)
+        try:
+            self.__init__(fn)
+        except AudioFileError:
+            self.update(backup)
+            raise
+        else:
+            self.update(saved)
 
     def realkeys(self):
         """Returns a list of keys that are not internal, i.e. they don't
