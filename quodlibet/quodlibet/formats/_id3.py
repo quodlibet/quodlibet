@@ -24,16 +24,6 @@ def encoding_for(s):
     return 3 if isascii(s) else 1
 
 
-class ID3hack(mutagen.id3.ID3):
-    """Override 'correct' behavior with desired behavior"""
-    def add(self, tag):
-        if len(type(tag).__name__) == 3:
-            tag = type(tag).__base__(tag)
-        if tag.HashKey in self and tag.FrameID[0] == "T":
-            self[tag.HashKey].extend(tag[:])
-        else:
-            self[tag.HashKey] = tag
-
 RG_KEYS = [
     "replaygain_track_peak", "replaygain_track_gain",
     "replaygain_album_peak", "replaygain_album_gain",
@@ -106,7 +96,7 @@ class ID3File(AudioFile):
     Kind = None
 
     def __init__(self, filename):
-        audio = self.Kind(filename, ID3=ID3hack)
+        audio = self.Kind(filename)
         tag = audio.tags or mutagen.id3.ID3()
         self._parse_info(audio.info)
 

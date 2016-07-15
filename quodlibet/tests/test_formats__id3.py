@@ -11,7 +11,6 @@ import shutil
 from quodlibet import config, const
 from quodlibet.formats._image import EmbeddedImage
 from quodlibet.formats.mp3 import MP3File
-from quodlibet.formats._id3 import ID3hack
 from quodlibet.compat import cBytesIO
 
 import mutagen
@@ -475,20 +474,6 @@ class TID3File(TestCase):
         f.save()
 
         MP3File(self.filename)
-
-    def test_id3_hack(self):
-        # will only show the content of the last frame
-        f = mutagen.File(self.filename)
-        self.failUnless(len(f.tags["TPE1"].text), 1)
-
-        # will merge both frames and translate TP1 to TPE1, so 3 values
-        f = mutagen.mp3.MP3(self.filename, ID3=ID3hack)
-        f.tags.add(mutagen.id3.TP1(encoding=3, text="blah"))
-        self.failUnless(len(f.tags["TPE1"].text), 3)
-
-        # same here, but without the TP1, so 2 values
-        song = MP3File(self.filename)
-        self.failUnlessEqual(len(song.list("artist")), 2)
 
     def test_encoding(self):
         song = MP3File(self.filename)
