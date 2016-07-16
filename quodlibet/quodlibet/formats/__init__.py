@@ -6,7 +6,10 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import sys
+
+import mutagen
 
 from quodlibet.util.importhelper import load_dir_modules
 from quodlibet import util
@@ -18,13 +21,10 @@ _infos = {}
 modules = []
 names = []
 types = []
-_extensions = ()
 
 
 def init():
-    global mimes, _infos, modules, names, _extensions
-
-    import mutagen
+    global mimes, _infos, modules, names
 
     MinVersions.MUTAGEN.check(mutagen.version)
 
@@ -65,29 +65,32 @@ def init():
     if not _infos:
         raise SystemExit("No formats found!")
 
-    _extensions = tuple(_infos.keys())
+
+def get_loader(filename):
+    """Returns a callable which takes a filename and returns
+    AudioFile or raises AudioFileError, or returns None.
+    """
+
+    ext = os.path.splitext(filename)[-1]
+    return _infos.get(ext.lower())
 
 
 def MusicFile(filename):
     """Returns a AudioFile instance or None"""
 
-    lower = filename.lower()
-    for ext in _extensions:
-        if lower.endswith(ext):
-            try:
-                return _infos[ext](filename)
-            except AudioFileError:
-                print_w("Error loading %r" % filename)
-                util.print_exc()
-                return
-    else:
-        return
+    loader = get_loader(filename)
+    if loader is not None:
+        try:
+            return loader(filename)
+        except AudioFileError:
+            print_w("Error loading %r" % filename)
+            util.print_exc()
 
 
 def filter(filename):
-    """Returns true if the file extension is supported"""
+    """Returns True if the file extension is supported"""
 
-    return filename.lower().endswith(_extensions)
+    return get_loader(filename) is not None
 
 
 from ._audio import PEOPLE, AudioFile, DUMMY_SONG, decode_value, AudioFileError
