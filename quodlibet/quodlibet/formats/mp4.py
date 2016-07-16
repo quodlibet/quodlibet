@@ -12,7 +12,8 @@ from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import decode
 from quodlibet.compat import iteritems
 
-from ._audio import AudioFile, translate_errors
+from ._audio import AudioFile
+from ._misc import AudioFileError, translate_errors
 from ._image import EmbeddedImage
 
 
@@ -189,13 +190,10 @@ class MP4File(AudioFile):
     def clear_images(self):
         """Delete all embedded images"""
 
-        try:
+        with translate_errors():
             tag = MP4(self["~filename"])
-        except Exception:
-            return
-
-        tag.pop("covr", None)
-        tag.save()
+            tag.pop("covr", None)
+            tag.save()
 
         self.has_images = False
 
@@ -207,12 +205,11 @@ class MP4File(AudioFile):
         elif image.mime_type == "image/png":
             image_format = MP4Cover.FORMAT_PNG
         else:
-            return
+            raise AudioFileError(
+                "mp4: Unsupported image format %r" % image.mime_type)
 
-        try:
+        with translate_errors():
             tag = MP4(self["~filename"])
-        except Exception:
-            return
 
         try:
             data = image.file.read()
@@ -221,7 +218,9 @@ class MP4File(AudioFile):
 
         cover = MP4Cover(data, image_format)
         tag["covr"] = [cover]
-        tag.save()
+
+        with translate_errors():
+            tag.save()
 
         self.has_images = True
 

@@ -12,8 +12,9 @@ import mutagen.asf
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.compat import iteritems
 
-from ._audio import AudioFile, translate_errors
+from ._audio import AudioFile
 from ._image import EmbeddedImage, APICType
+from ._misc import AudioFileError, translate_errors
 
 
 class WMAFile(AudioFile):
@@ -189,28 +190,23 @@ class WMAFile(AudioFile):
     def clear_images(self):
         """Delete all embedded images"""
 
-        try:
+        with translate_errors():
             tag = mutagen.asf.ASF(self["~filename"])
-        except Exception:
-            return
-
-        tag.pop("WM/Picture", None)
-        tag.save()
+            tag.pop("WM/Picture", None)
+            tag.save()
 
         self.has_images = False
 
     def set_image(self, image):
         """Replaces all embedded images by the passed image"""
 
-        try:
+        with translate_errors():
             tag = mutagen.asf.ASF(self["~filename"])
-        except Exception:
-            return
 
         try:
             imagedata = image.file.read()
-        except EnvironmentError:
-            return
+        except EnvironmentError as e:
+            raise AudioFileError(e)
 
         # thumbnail gets used in WMP..
         data = pack_image(image.mime_type, u"thumbnail",
@@ -218,7 +214,9 @@ class WMAFile(AudioFile):
 
         value = mutagen.asf.ASFValue(data, mutagen.asf.BYTEARRAY)
         tag["WM/Picture"] = [value]
-        tag.save()
+
+        with translate_errors():
+            tag.save()
 
         self.has_images = True
 

@@ -13,9 +13,6 @@
 import os
 import shutil
 import time
-import contextlib
-
-import mutagen
 
 from quodlibet import util
 from quodlibet import config
@@ -31,11 +28,14 @@ from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 from quodlibet.compat import iteritems, string_types, text_type, number_types
 
 from ._image import ImageContainer
+from ._misc import AudioFileError, translate_errors
 
 try:
     from itertools import izip_longest
 except ImportError:  # python3.x
     izip = zip
+
+translate_errors
 
 MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
            "~#skipcount", "~#rating", "~bookmark"}
@@ -76,31 +76,6 @@ def decode_value(tag, value):
     elif tag in FILESYSTEM_TAGS:
         return fsdecode(value)
     return unicode(value)
-
-
-class AudioFileError(Exception):
-    """Base error for AudioFile, mostly IO/parsing related operations"""
-
-
-class MutagenBug(AudioFileError):
-    """Raised in is caused by a mutagen bug, so we can highlight it"""
-
-
-@contextlib.contextmanager
-def translate_errors():
-    """Context manager for mutagen calls to load/save. Translates exceptions
-    to local ones.
-    """
-
-    try:
-        yield
-    except AudioFileError:
-        raise
-    except (mutagen.MutagenError, IOError) as e:
-        # old mutagen raised IOError
-        raise AudioFileError(e)
-    except Exception as e:
-        raise MutagenBug(e)
 
 
 class AudioFile(dict, ImageContainer):

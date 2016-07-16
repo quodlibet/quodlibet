@@ -113,7 +113,7 @@ class MutagenVCFile(AudioFile):
     def get_images(self):
         try:
             audio = self.MutagenType(self["~filename"])
-        except EnvironmentError:
+        except Exception:
             return []
 
         # metadata_block_picture
@@ -151,7 +151,7 @@ class MutagenVCFile(AudioFile):
 
         try:
             audio = self.MutagenType(self["~filename"])
-        except EnvironmentError:
+        except Exception:
             return None
 
         pictures = []
@@ -192,29 +192,25 @@ class MutagenVCFile(AudioFile):
     def clear_images(self):
         """Delete all embedded images"""
 
-        if not self.has_images:
-            return
-
-        try:
+        with translate_errors():
             audio = self.MutagenType(self["~filename"])
-        except EnvironmentError:
-            return
-
-        audio.pop("metadata_block_picture", None)
-        audio.pop("coverart", None)
-        audio.pop("coverartmime", None)
-        audio.save()
+            audio.pop("metadata_block_picture", None)
+            audio.pop("coverart", None)
+            audio.pop("coverartmime", None)
+            audio.save()
 
         self.has_images = False
 
     def set_image(self, image):
         """Replaces all embedded images by the passed image"""
 
-        try:
+        with translate_errors():
             audio = self.MutagenType(self["~filename"])
+
+        try:
             data = image.file.read()
-        except EnvironmentError:
-            return
+        except EnvironmentError as e:
+            raise AudioFileError(e)
 
         pic = Picture()
         pic.data = data
@@ -227,7 +223,9 @@ class MutagenVCFile(AudioFile):
         audio.pop("coverart", None)
         audio.pop("coverartmime", None)
         audio["metadata_block_picture"] = base64.b64encode(pic.write())
-        audio.save()
+
+        with translate_errors():
+            audio.save()
 
         self.has_images = True
 
@@ -384,7 +382,7 @@ class FLACFile(MutagenVCFile):
 
         try:
             tag = FLAC(self["~filename"])
-        except EnvironmentError:
+        except Exception:
             return images
 
         for cover in tag.pictures:
@@ -402,7 +400,7 @@ class FLACFile(MutagenVCFile):
 
         try:
             tag = FLAC(self["~filename"])
-        except EnvironmentError:
+        except Exception:
             return None
 
         covers = tag.pictures
@@ -420,13 +418,10 @@ class FLACFile(MutagenVCFile):
     def clear_images(self):
         """Delete all embedded images"""
 
-        try:
+        with translate_errors():
             tag = FLAC(self["~filename"])
-        except EnvironmentError:
-            return
-
-        tag.clear_pictures()
-        tag.save()
+            tag.clear_pictures()
+            tag.save()
 
         # clear vcomment tags
         super(FLACFile, self).clear_images()
@@ -436,11 +431,13 @@ class FLACFile(MutagenVCFile):
     def set_image(self, image):
         """Replaces all embedded images by the passed image"""
 
-        try:
+        with translate_errors():
             tag = FLAC(self["~filename"])
+
+        try:
             data = image.file.read()
-        except EnvironmentError:
-            return
+        except EnvironmentError as e:
+            raise AudioFileError(e)
 
         pic = Picture()
         pic.data = data
@@ -451,7 +448,9 @@ class FLACFile(MutagenVCFile):
         pic.depth = image.color_depth
 
         tag.add_picture(pic)
-        tag.save()
+
+        with translate_errors():
+            tag.save()
 
         # clear vcomment tags
         super(FLACFile, self).clear_images()
