@@ -76,12 +76,11 @@ def MusicFile(filename):
         if lower.endswith(ext):
             try:
                 return _infos[ext](filename)
-            except:
+            except AudioFileError:
                 print_w("Error loading %r" % filename)
                 util.print_exc()
                 return
     else:
-        print_w("Unknown file extension %r" % filename)
         return
 
 

@@ -17,7 +17,7 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet.util.path import get_temp_cover_file
 
-from ._audio import AudioFile, translate_errors
+from ._audio import AudioFile, translate_errors, AudioFileError
 from ._image import EmbeddedImage, APICType
 
 
@@ -471,20 +471,25 @@ for var in list(globals().values()):
 
 
 def info(filename):
-    try:
+    """
+    Returns:
+        AudioFile
+    Raises:
+        AudioFileError
+    """
+
+    with translate_errors():
         audio = mutagen.File(filename, options=ogg_formats)
-    except AttributeError:
-        audio = OggVorbis(filename)
-    if audio is None and FLAC is not None:
-        # FLAC with ID3
-        try:
-            audio = FLAC(filename)
-        except FLACNoHeaderError:
-            pass
-    if audio is None:
-        raise IOError("file type could not be determined")
-    Kind = type(audio)
-    for klass in globals().values():
-        if Kind is getattr(klass, 'MutagenType', None):
-            return klass(filename, audio)
-    raise IOError("file type could not be determined")
+        if audio is None and FLAC is not None:
+            # FLAC with ID3
+            try:
+                audio = FLAC(filename)
+            except FLACNoHeaderError:
+                pass
+        if audio is None:
+            raise AudioFileError("file type could not be determined")
+        Kind = type(audio)
+        for klass in globals().values():
+            if Kind is getattr(klass, 'MutagenType', None):
+                return klass(filename, audio)
+        raise AudioFileError("file type could not be determined")

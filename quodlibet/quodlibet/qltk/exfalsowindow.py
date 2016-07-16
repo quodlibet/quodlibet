@@ -14,6 +14,7 @@ from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import app
 
+from quodlibet.formats import AudioFileError
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.delete import trash_files, TrashMenuItem
 from quodlibet.qltk.edittags import EditTags
@@ -234,7 +235,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
                 if song("~#mtime") + 1. < mtime(filename):
                     try:
                         song.reload()
-                    except Exception:
+                    except AudioFileError:
                         pass
                 files.append(song)
             else:

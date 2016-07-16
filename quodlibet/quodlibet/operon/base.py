@@ -8,7 +8,7 @@
 import sys
 from optparse import OptionParser
 
-from quodlibet.formats import MusicFile
+from quodlibet.formats import MusicFile, AudioFileError
 from quodlibet.util import print_
 
 
@@ -77,7 +77,7 @@ class Command(object):
         for song in songs:
             try:
                 song.write()
-            except Exception as e:
+            except AudioFileError as e:
                 raise CommandError(e)
 
     def _execute(self, options, args):
