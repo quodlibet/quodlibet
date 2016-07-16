@@ -7,7 +7,7 @@
 
 from mutagen.aac import AAC
 
-from ._audio import AudioFile
+from ._audio import AudioFile, translate_errors
 
 extensions = [".aac", ".adif", ".adts"]
 
@@ -20,7 +20,8 @@ class AACFile(AudioFile):
     fill_length = True
 
     def __init__(self, filename):
-        audio = AAC(filename)
+        with translate_errors():
+            audio = AAC(filename)
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         self.sanitize(filename)

@@ -20,7 +20,7 @@ import time
 
 from gi.repository import GObject
 
-from quodlibet.formats import MusicFile
+from quodlibet.formats import MusicFile, AudioFileError
 from quodlibet.query import Query
 from quodlibet.compat import cBytesIO, pickle, itervalues
 from quodlibet.qltk.notif import Task
@@ -590,7 +590,7 @@ class FileLibrary(PicklingLibrary):
             if item.exists():
                 try:
                     item.reload()
-                except (Exception, EnvironmentError):
+                except AudioFileError:
                     print_d("Error reloading %r." % item.key, self)
                     util.print_exc()
                     return False, True

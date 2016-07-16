@@ -53,7 +53,7 @@ class RemoteFile(AudioFile):
         return True
 
     def write(self):
-        raise TypeError("RemoteFiles do not support writing!")
+        pass
 
     def can_change(self, k=None):
         if k is None:

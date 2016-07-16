@@ -9,11 +9,12 @@
 from gi.repository import Gtk
 
 from quodlibet import app
+from quodlibet import util
 from quodlibet.plugins.songshelpers import any_song, has_writable_image
 from quodlibet.qltk.x import MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.formats._image import EmbeddedImage
+from quodlibet.formats import EmbeddedImage, AudioFileError
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
@@ -39,7 +40,10 @@ class EditEmbedded(SongsMenuPlugin):
 
         for song in songs:
             if song.has_images and song.can_change_images:
-                song.clear_images()
+                try:
+                    song.clear_images()
+                except AudioFileError:
+                    util.print_exc()
 
             if win.step():
                 break
@@ -58,7 +62,10 @@ class EditEmbedded(SongsMenuPlugin):
                     path = fileobj.name
                     image = EmbeddedImage.from_path(path)
                     if image:
-                        song.set_image(image)
+                        try:
+                            song.set_image(image)
+                        except AudioFileError:
+                            util.print_exc()
 
             if win.step():
                 break

@@ -13,6 +13,7 @@ from quodlibet.util.string import decode
 from quodlibet.compat import iteritems
 
 from ._audio import AudioFile
+from ._misc import AudioFileError, translate_errors
 from ._image import EmbeddedImage
 
 
@@ -74,7 +75,8 @@ class MP4File(AudioFile):
     __rtupletranslate = dict([(v, k) for k, v in iteritems(__tupletranslate)])
 
     def __init__(self, filename):
-        audio = MP4(filename)
+        with translate_errors():
+            audio = MP4(filename)
         self["~codec"] = getattr(audio.info, "codec_description", u"AAC")
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
@@ -101,7 +103,9 @@ class MP4File(AudioFile):
         self.sanitize(filename)
 
     def write(self):
-        audio = MP4(self["~filename"])
+        with translate_errors():
+            audio = MP4(self["~filename"])
+
         for key in self.__translate.keys() + self.__tupletranslate.keys():
             try:
                 del(audio[key])
@@ -125,7 +129,8 @@ class MP4File(AudioFile):
         disc, discs = self("~#disc"), self("~#discs", 0)
         if disc:
             audio["disk"] = [(disc, discs)]
-        audio.save()
+        with translate_errors():
+            audio.save()
         self.sanitize()
 
     def can_multiple_values(self, key=None):
@@ -185,13 +190,10 @@ class MP4File(AudioFile):
     def clear_images(self):
         """Delete all embedded images"""
 
-        try:
+        with translate_errors():
             tag = MP4(self["~filename"])
-        except Exception:
-            return
-
-        tag.pop("covr", None)
-        tag.save()
+            tag.pop("covr", None)
+            tag.save()
 
         self.has_images = False
 
@@ -203,12 +205,11 @@ class MP4File(AudioFile):
         elif image.mime_type == "image/png":
             image_format = MP4Cover.FORMAT_PNG
         else:
-            return
+            raise AudioFileError(
+                "mp4: Unsupported image format %r" % image.mime_type)
 
-        try:
+        with translate_errors():
             tag = MP4(self["~filename"])
-        except Exception:
-            return
 
         try:
             data = image.file.read()
@@ -217,7 +218,9 @@ class MP4File(AudioFile):
 
         cover = MP4Cover(data, image_format)
         tag["covr"] = [cover]
-        tag.save()
+
+        with translate_errors():
+            tag.save()
 
         self.has_images = True
 

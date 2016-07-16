@@ -5,17 +5,25 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from ._misc import AudioFileError
+
 
 class ImageContainer(object):
     """Mixin/Interface for AudioFile to support basic embedded image editing"""
 
     def get_primary_image(self):
-        """Returns the primary embedded image or None."""
+        """Returns the primary embedded image or None.
+
+        In case of an error returns None.
+        """
 
         return
 
     def get_images(self):
-        """Returns a list of embedded images, primary first"""
+        """Returns a list of embedded images, primary first.
+
+        In case of an error returns an empty list.
+        """
 
         # fall back to the single implementation
         image = self.get_primary_image()
@@ -46,18 +54,25 @@ class ImageContainer(object):
         return False
 
     def clear_images(self):
-        """Delete all embedded images"""
+        """Delete all embedded images.
 
-        raise NotImplementedError
+        Raises:
+            AudioFileError
+        """
+
+        raise AudioFileError("Not supported for this format")
 
     def set_image(self, image):
         """Replaces all embedded images by the passed image.
 
         The image type recorded in the file will be APICType.COVER_FRONT,
         disregarding image.type.
+
+        Raises:
+            AudioFileError
         """
 
-        raise NotImplementedError
+        raise AudioFileError("Not supported for this format")
 
 
 class APICType(object):

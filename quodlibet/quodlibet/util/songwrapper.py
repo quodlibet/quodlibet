@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet.formats import AudioFileError
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet.qltk.wlw import WritingWindow
@@ -97,7 +98,7 @@ def check_wrapper_changed(library, parent, songs):
         for song in needs_write:
             try:
                 song._song.write()
-            except Exception:
+            except AudioFileError:
                 qltk.ErrorMessage(
                     None, _("Unable to edit song"),
                     _("Saving <b>%s</b> failed. The file "

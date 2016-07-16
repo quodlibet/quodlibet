@@ -16,6 +16,7 @@ from quodlibet import util
 
 from quodlibet.util import massagers
 
+from quodlibet.formats import AudioFileError
 from quodlibet.qltk.completion import LibraryValueCompletion
 from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn
@@ -799,7 +800,7 @@ class EditTags(Gtk.VBox):
             if changed:
                 try:
                     song.write()
-                except:
+                except AudioFileError:
                     util.print_exc()
                     WriteFailedError(self, song).run()
                     library.reload(song, changed=was_changed)
