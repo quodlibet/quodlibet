@@ -14,6 +14,8 @@ from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import INTERN_NUM_DEFAULT
 from quodlibet.formats import decode_value, MusicFile
 
+from .helper import temp_filename
+
 
 bar_1_1 = AudioFile({
     "~filename": fsnative(u"/fakepath/1"),
@@ -678,18 +680,22 @@ class TAudioFile(TestCase):
 
 class TAudioFormats(TestCase):
 
+    def setUp(self):
+        with temp_filename() as filename:
+            self.filename = filename
+
     def test_load_non_exist(self):
         for t in format_types:
             if not t.is_file:
                 continue
-            self.assertRaises(AudioFileError, t, fsnative(u"/dev/null"))
+            self.assertRaises(AudioFileError, t, self.filename)
 
     def test_write_non_existing(self):
         for t in format_types:
             if not t.is_file:
                 continue
             instance = AudioFile.__new__(t)
-            instance.sanitize(fsnative(u"/dev/null"))
+            instance.sanitize(self.filename)
             try:
                 instance.write()
             except AudioFileError:
@@ -700,7 +706,7 @@ class TAudioFormats(TestCase):
             if not t.is_file:
                 continue
             instance = AudioFile.__new__(t)
-            instance.sanitize(fsnative(u"/dev/null"))
+            instance.sanitize(self.filename)
             try:
                 instance.reload()
             except AudioFileError:
