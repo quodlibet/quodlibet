@@ -30,7 +30,7 @@ Changes
 * **sphinx 1.3** required for building the documentation
 * New optional plugin dependency: **libappindicator-gtk3** + **typelibs**:
   for the Tray Icon plugin under Ubuntu Unity and KDE Plasma
-* **python-musicbrainzngs** instead of **python-musicbrainz2**
+* **python-musicbrainzngs** (>= 0.5) instead of **python-musicbrainz2**
 * **python-cddb** no longer needed
 * **libsoup** (>= 2.44) + **typelibs** required
 
@@ -179,7 +179,7 @@ plugin from loading.
 **notification-daemon** (or any other implementation of the dbus spec):
     * For the notification plugin
 
-**python-musicbrainzngs**:
+**python-musicbrainzngs** (>= 0.5):
     * For the musicbrainz plugin
 
 **GStreamer Plugins Good**:
