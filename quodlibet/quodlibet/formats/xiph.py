@@ -17,7 +17,7 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet.util.path import get_temp_cover_file
 
-from ._audio import AudioFile
+from ._audio import AudioFile, translate_errors, AudioFileError
 from ._image import EmbeddedImage, APICType
 
 
@@ -36,7 +36,8 @@ class MutagenVCFile(AudioFile):
         # If we're done a type probe, use the results of that to avoid
         # reopening the file.
         if audio is None:
-            audio = self.MutagenType(filename)
+            with translate_errors():
+                audio = self.MutagenType(filename)
         self["~#length"] = audio.info.length
         try:
             self["~#bitrate"] = int(audio.info.bitrate / 1000)
@@ -112,7 +113,7 @@ class MutagenVCFile(AudioFile):
     def get_images(self):
         try:
             audio = self.MutagenType(self["~filename"])
-        except EnvironmentError:
+        except Exception:
             return []
 
         # metadata_block_picture
@@ -150,7 +151,7 @@ class MutagenVCFile(AudioFile):
 
         try:
             audio = self.MutagenType(self["~filename"])
-        except EnvironmentError:
+        except Exception:
             return None
 
         pictures = []
@@ -191,29 +192,25 @@ class MutagenVCFile(AudioFile):
     def clear_images(self):
         """Delete all embedded images"""
 
-        if not self.has_images:
-            return
-
-        try:
+        with translate_errors():
             audio = self.MutagenType(self["~filename"])
-        except EnvironmentError:
-            return
-
-        audio.pop("metadata_block_picture", None)
-        audio.pop("coverart", None)
-        audio.pop("coverartmime", None)
-        audio.save()
+            audio.pop("metadata_block_picture", None)
+            audio.pop("coverart", None)
+            audio.pop("coverartmime", None)
+            audio.save()
 
         self.has_images = False
 
     def set_image(self, image):
         """Replaces all embedded images by the passed image"""
 
-        try:
+        with translate_errors():
             audio = self.MutagenType(self["~filename"])
+
+        try:
             data = image.file.read()
-        except EnvironmentError:
-            return
+        except EnvironmentError as e:
+            raise AudioFileError(e)
 
         pic = Picture()
         pic.data = data
@@ -226,7 +223,9 @@ class MutagenVCFile(AudioFile):
         audio.pop("coverart", None)
         audio.pop("coverartmime", None)
         audio["metadata_block_picture"] = base64.b64encode(pic.write())
-        audio.save()
+
+        with translate_errors():
+            audio.save()
 
         self.has_images = True
 
@@ -286,7 +285,8 @@ class MutagenVCFile(AudioFile):
                 comments[main] = lower.list(fallback)
 
     def write(self):
-        audio = self.MutagenType(self["~filename"])
+        with translate_errors():
+            audio = self.MutagenType(self["~filename"])
         if audio.tags is None:
             audio.add_tags()
 
@@ -301,7 +301,8 @@ class MutagenVCFile(AudioFile):
         self.__prep_write_total(audio.tags,
                                 "disctotal", "totaldiscs", "discnumber")
 
-        audio.save()
+        with translate_errors():
+            audio.save()
         self.sanitize()
 
 extensions = []
@@ -370,7 +371,8 @@ class FLACFile(MutagenVCFile):
 
     def __init__(self, filename, audio=None):
         if audio is None:
-            audio = FLAC(filename)
+            with translate_errors():
+                audio = FLAC(filename)
         super(FLACFile, self).__init__(filename, audio)
         if audio.pictures:
             self.has_images = True
@@ -380,7 +382,7 @@ class FLACFile(MutagenVCFile):
 
         try:
             tag = FLAC(self["~filename"])
-        except EnvironmentError:
+        except Exception:
             return images
 
         for cover in tag.pictures:
@@ -398,7 +400,7 @@ class FLACFile(MutagenVCFile):
 
         try:
             tag = FLAC(self["~filename"])
-        except EnvironmentError:
+        except Exception:
             return None
 
         covers = tag.pictures
@@ -416,13 +418,10 @@ class FLACFile(MutagenVCFile):
     def clear_images(self):
         """Delete all embedded images"""
 
-        try:
+        with translate_errors():
             tag = FLAC(self["~filename"])
-        except EnvironmentError:
-            return
-
-        tag.clear_pictures()
-        tag.save()
+            tag.clear_pictures()
+            tag.save()
 
         # clear vcomment tags
         super(FLACFile, self).clear_images()
@@ -432,11 +431,13 @@ class FLACFile(MutagenVCFile):
     def set_image(self, image):
         """Replaces all embedded images by the passed image"""
 
-        try:
+        with translate_errors():
             tag = FLAC(self["~filename"])
+
+        try:
             data = image.file.read()
-        except EnvironmentError:
-            return
+        except EnvironmentError as e:
+            raise AudioFileError(e)
 
         pic = Picture()
         pic.data = data
@@ -447,7 +448,9 @@ class FLACFile(MutagenVCFile):
         pic.depth = image.color_depth
 
         tag.add_picture(pic)
-        tag.save()
+
+        with translate_errors():
+            tag.save()
 
         # clear vcomment tags
         super(FLACFile, self).clear_images()
@@ -456,7 +459,8 @@ class FLACFile(MutagenVCFile):
 
     def write(self):
         if ID3 is not None:
-            ID3().delete(filename=self["~filename"])
+            with translate_errors():
+                ID3().delete(filename=self["~filename"])
         super(FLACFile, self).write()
 
 types = []
@@ -466,20 +470,25 @@ for var in list(globals().values()):
 
 
 def info(filename):
-    try:
+    """
+    Returns:
+        AudioFile
+    Raises:
+        AudioFileError
+    """
+
+    with translate_errors():
         audio = mutagen.File(filename, options=ogg_formats)
-    except AttributeError:
-        audio = OggVorbis(filename)
-    if audio is None and FLAC is not None:
-        # FLAC with ID3
-        try:
-            audio = FLAC(filename)
-        except FLACNoHeaderError:
-            pass
-    if audio is None:
-        raise IOError("file type could not be determined")
-    Kind = type(audio)
-    for klass in globals().values():
-        if Kind is getattr(klass, 'MutagenType', None):
-            return klass(filename, audio)
-    raise IOError("file type could not be determined")
+        if audio is None and FLAC is not None:
+            # FLAC with ID3
+            try:
+                audio = FLAC(filename)
+            except FLACNoHeaderError:
+                pass
+        if audio is None:
+            raise AudioFileError("file type could not be determined")
+        Kind = type(audio)
+        for klass in globals().values():
+            if Kind is getattr(klass, 'MutagenType', None):
+                return klass(filename, audio)
+        raise AudioFileError("file type could not be determined")

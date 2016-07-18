@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
-#           2014 Nick Boultbee
+#      2014,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,6 +13,7 @@ from gi.repository import GObject
 from quodlibet import config
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.util.cover import built_in
+from quodlibet.util import print_d
 from quodlibet.util.thread import call_async
 from quodlibet.util.thumbnails import get_thumbnail_from_file
 from quodlibet.plugins.cover import CoverSourcePlugin
@@ -24,7 +25,7 @@ class CoverPluginHandler(PluginHandler):
     def __init__(self, use_built_in=True):
         self.providers = set()
         if use_built_in:
-            self.built_in = {built_in.EmbedCover, built_in.FilesystemCover}
+            self.built_in = {built_in.EmbeddedCover, built_in.FilesystemCover}
         else:
             self.built_in = set()
 
@@ -120,7 +121,7 @@ class CoverManager(GObject.Object):
             cover = provider.cover
             if cover:
                 name = provider.__class__.__name__
-                print_d('Found local cover from {0}'.format(name))
+                print_d('Found local cover from {0}: {1}'.format(name, cover))
                 callback(True, cover)
             else:
                 provider.connect('fetch-success', success)

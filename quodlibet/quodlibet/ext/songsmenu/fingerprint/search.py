@@ -17,6 +17,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.window import Window
 from quodlibet.qltk import Button, Icons
 from quodlibet import util
+from quodlibet.util import print_w
 from quodlibet.qltk.ccb import ConfigCheckButton
 
 

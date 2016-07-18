@@ -35,7 +35,7 @@ class _TAppDataFileMixin(object):
 
         with open(name, "wb") as temp:
             header = open(self.PATH, "rb").read().splitlines()[0]
-            temp.write(header + "\n")
+            temp.write(header + b"\n")
             temp.write(ElementTree.tostring(tree.getroot(), encoding="utf-8"))
 
         # pass to desktop-file-validate

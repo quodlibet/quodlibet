@@ -5,9 +5,11 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from mutagen.id3 import ID3
+
 from quodlibet import app
 from quodlibet import util
-from quodlibet.formats._id3 import ID3File, ID3hack
+from quodlibet.formats._id3 import ID3File
 from quodlibet.plugins.songshelpers import any_song, is_writable, is_an_id3
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons
@@ -31,7 +33,7 @@ class RemoveID3TLEN(SongsMenuPlugin):
             filename = song["~filename"]
 
             try:
-                tag = ID3hack(filename)
+                tag = ID3(filename)
             except Exception:
                 util.print_exc()
                 continue

@@ -41,7 +41,7 @@ class coverage_cmd(Command):
                     break
 
         try:
-            from coverage import coverage
+            from coverage import coverage, CoverageException
         except ImportError:
             print("Missing 'coverage' module. See "
                   "https://pypi.python.org/pypi/coverage or try "
@@ -57,7 +57,12 @@ class coverage_cmd(Command):
         cmd.run()
 
         cov.stop()
-        cov.html_report(**self.options)
+        try:
+            cov.html_report(**self.options)
+        except CoverageException as e:
+            # this fails in case js libs are missing, but the html is still
+            # there, so don't fail completely
+            print(e)
 
         dest = os.path.abspath(self.options["directory"])
         index = os.path.join(dest, "index.html")

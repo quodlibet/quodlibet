@@ -7,6 +7,8 @@ from gi.repository import Gtk
 
 import os
 import shutil
+
+from quodlibet.formats import AudioFileError
 from quodlibet import config
 from quodlibet.util import connect_obj
 from quodlibet.formats import AudioFile
@@ -415,7 +417,7 @@ class TSongFileLibrary(TSongLibrary):
             new = self.Fake(100)
 
             def error():
-                raise IOError
+                raise AudioFileError
             new.reload = error
             new._valid = False
             changed, removed = self.library._load_item(new)

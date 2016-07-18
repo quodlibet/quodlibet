@@ -14,7 +14,7 @@ Custom Pipelines
 ^^^^^^^^^^^^^^^^
 
 It's possible to attach a custom GStreamer pipeline to the player backend
-under *Music* → *Preferences* → *Playback* → *Output Pipeline*. The
+under *File* → *Preferences* → *Playback* → *Output Pipeline*. The
 pipeline syntax is equivalent to what is used in the *gst-launch* utility.
 See ``man gst-launch`` for further information and examples.
 
@@ -27,7 +27,7 @@ Debugging Pipelines
 
 In case you are interested in which GStreamer elements and audio formats
 are used in the current pipeline, start Quod Libet in debug mode
-(``quodlibet --debug``), go to *Music* → *Preferences* → *Playback* and
+(``quodlibet --debug``), go to *File* → *Preferences* → *Playback* and
 press the *Print Pipeline* button. It will print the whole pipeline used
 for the current active song to *stdout*.
 

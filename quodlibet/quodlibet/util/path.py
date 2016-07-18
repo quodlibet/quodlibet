@@ -60,7 +60,7 @@ def fsdecode(s, note=True):
     Can not fail and can't be reversed.
     """
 
-    if isinstance(s, unicode):
+    if isinstance(s, text_type):
         return s
     elif note:
         return decode(s, _FSCODING)
@@ -68,12 +68,20 @@ def fsdecode(s, note=True):
         return s.decode(_FSCODING, 'replace')
 
 
+def fsencode(s):
+    """Takes a `text_type` and returns a fsnative path"""
+
+    assert isinstance(s, text_type)
+    return fsnative(s)
+
+
 """
-There exist 3 types of paths:
+There exist 4 types of paths:
 
  * Python: bytes on Linux, unicode on Windows
  * GLib: bytes on Linux, utf-8 bytes on Windows
  * Serialized for the config: same as GLib
+ * Python 2 filenames: bytes on Linux, mangled ASCII on Windows
 """
 
 
@@ -82,10 +90,12 @@ if sys.platform == "win32":
     # so this should never change on Windows (like in glib)
     assert _FSCODING == "utf-8"
 
+    fsnative_type = text_type
+
     def is_fsnative(path):
         """If path is a native path"""
 
-        return isinstance(path, text_type)
+        return isinstance(path, fsnative_type)
 
     def fsnative(path=u""):
         """unicode -> native path"""
@@ -102,7 +112,7 @@ if sys.platform == "win32":
     def fsnative2glib(path):
         """native path -> glib path"""
 
-        assert isinstance(path, text_type)
+        assert isinstance(path, fsnative_type)
         return path.encode("utf-8")
 
     fsnative2bytes = fsnative2glib
@@ -118,10 +128,11 @@ if sys.platform == "win32":
     if the input wasn't produced by fsnative2bytes.
     """
 else:
-
     if PY2:
+        fsnative_type = bytes
+
         def is_fsnative(path):
-            return isinstance(path, bytes)
+            return isinstance(path, fsnative_type)
 
         def fsnative(path=u""):
             assert isinstance(path, text_type)
@@ -132,15 +143,17 @@ else:
             return path
 
         def fsnative2glib(path):
-            assert isinstance(path, bytes)
+            assert isinstance(path, fsnative_type)
             return path
 
         fsnative2bytes = fsnative2glib
 
         bytes2fsnative = glib2fsnative
     else:
+        fsnative_type = text_type
+
         def is_fsnative(path):
-            return isinstance(path, text_type)
+            return isinstance(path, fsnative_type)
 
         def fsnative(path=u""):
             assert isinstance(path, text_type)
@@ -151,16 +164,22 @@ else:
             return path
 
         def fsnative2glib(path):
-            assert isinstance(path, text_type)
+            assert isinstance(path, fsnative_type)
             return path
 
         def fsnative2bytes(path):
-            assert isinstance(path, text_type)
+            assert isinstance(path, fsnative_type)
             return path.encode(_FSCODING, "surrogateescape")
 
         def bytes2fsnative(path):
             assert isinstance(path, bytes)
             return path.decode(_FSCODING, "surrogateescape")
+
+
+py2fsnative = glib2fsnative
+"""For a path from Python internals, like __path__, to fsnative.
+Under Windows+Py2 this doesn't return the real path if unicode is used.
+"""
 
 
 def iscommand(s):

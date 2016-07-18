@@ -6,11 +6,15 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import urllib
-from gi.repository import Gtk, GLib, Pango, Gdk
 from tempfile import NamedTemporaryFile
 
-from quodlibet import config, print_d
+from gi.repository import Gtk, GLib, Pango, Gdk
+
+import quodlibet
+from quodlibet import config
+from quodlibet import qltk
 from quodlibet.browsers import Browser
 from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.browsers.playlists.prefs import Preferences, \
@@ -25,10 +29,14 @@ from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem, SymbolicIconImage
+from quodlibet.qltk import Icons
 from quodlibet.query import Query
 from quodlibet.util import connect_obj
 from quodlibet.util.path import get_home_dir
-from .util import *
+from quodlibet.util.dprint import print_d, print_w
+from quodlibet.util.collection import FileBackedPlaylist
+
+from .util import parse_m3u, parse_pls, PLAYLISTS, ConfirmRemovePlaylistDialog
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 

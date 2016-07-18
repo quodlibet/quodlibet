@@ -12,6 +12,7 @@ except ImportError:
     dbus = None
 
 from quodlibet import app
+from quodlibet.util import print_d
 
 
 def init(app_id):

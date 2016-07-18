@@ -5,8 +5,7 @@ Frequently Asked Questions
 Why don't all my songs appear in the song list when searching for them?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Do you have a global filter in use? Check the *Browsers* tab in *Music*
-→ *Preferences*.
+Do you have a global filter in use? Check the *Browsers* tab in *Preferences*.
 
 
 Why do my MP3 files have the wrong length?
@@ -105,7 +104,7 @@ How can I hide incomplete albums from the Album View?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 One way is to enter ``#(tracks > 5)`` into the search box above the
-album list - this will only show albums with greater than than 5 tracks.
+album list - this will only show albums with greater than 5 tracks.
 
 
 How can I list my tracks based on their ratings?

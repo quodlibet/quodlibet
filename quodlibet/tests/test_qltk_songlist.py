@@ -179,7 +179,7 @@ class TSongList(TestCase):
 
         library = SongLibrary()
         library.librarian = SongLibrarian()
-        browser = browsers.get("EmptyBar")(library)
+        browser = browsers.get("SearchBar")(library)
 
         self.songlist.set_column_headers(["foo"])
 
@@ -224,6 +224,7 @@ class TSongList(TestCase):
         self.assertEqual(get_sort_tag("date"), "date")
         self.assertEqual(get_sort_tag("~artist~date"), "~artistsort~date")
         self.assertEqual(get_sort_tag("~date~artist"), "~date~artistsort")
+        self.assertEqual(get_sort_tag("composer"), "composersort")
 
     def tearDown(self):
         self.songlist.destroy()

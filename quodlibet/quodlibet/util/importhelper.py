@@ -26,7 +26,7 @@ def load_dir_modules(path, package, load_compiled=False):
     try:
         modules = [e[0] for e in get_importables(path, load_compiled)]
     except OSError:
-        print_w("%r not found" % path)
+        util.print_w("%r not found" % path)
         return []
 
     # get_importables can yield py and pyc for the same module

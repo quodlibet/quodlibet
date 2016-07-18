@@ -54,7 +54,7 @@ class TrackRepeatOrder(PlayOrderPlugin,
 
     def restart_counting(self):
         self.play_count = 0
-        print_d("Resetting play count", context=self)
+        print_d("Resetting play count")
 
     def next(self, playlist, iter):
         self.play_count += 1

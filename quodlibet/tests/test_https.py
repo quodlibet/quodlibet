@@ -12,7 +12,7 @@ from gi.repository import Gio, Soup, GLib
 from tests import TestCase, skipIf, skipUnlessNetwork
 
 from quodlibet.util import is_linux, is_osx, get_ca_file
-from quodlibet.compat import urlopen
+from quodlibet.compat import urlopen, build_opener
 
 
 @skipUnlessNetwork
@@ -35,6 +35,20 @@ class Thttps(TestCase):
         for url in self.BAD:
             with self.assertRaises(Exception):
                 urlopen(url, cafile=get_ca_file()).close()
+
+    def test_urllib_default(self):
+        for url in self.GOOD:
+            urlopen(url).close()
+        for url in self.BAD:
+            with self.assertRaises(Exception):
+                urlopen(url).close()
+
+    def test_urllib_build_opener(self):
+        for url in self.GOOD:
+            build_opener().open(url).close()
+        for url in self.BAD:
+            with self.assertRaises(Exception):
+                build_opener().open(url).close()
 
     def test_requests(self):
         for url in self.GOOD:

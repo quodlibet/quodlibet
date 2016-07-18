@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -17,7 +18,7 @@ from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
 
-from quodlibet.util import gdecode
+from quodlibet.util import gdecode, print_d, print_w
 
 
 def get_primary_accel_mod():
@@ -260,6 +261,9 @@ def add_css(widget, css):
     Can raise GLib.GError in case the css is invalid
     """
 
+    if not isinstance(css, bytes):
+        css = css.encode("utf-8")
+
     provider = Gtk.CssProvider()
     provider.load_from_data(css)
     context = widget.get_style_context()
@@ -349,6 +353,13 @@ def add_signal_watch(signal_action):
             return True
         else:
             return False
+
+    try:
+        import fcntl
+    except ImportError:
+        pass
+    else:
+        fcntl.fcntl(wfd, fcntl.F_SETFL, os.O_NONBLOCK)
 
     signal.set_wakeup_fd(wfd)
     io_add_watch(rfd, GLib.PRIORITY_HIGH,

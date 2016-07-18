@@ -11,10 +11,9 @@
 
 import sys
 import os
-import traceback
 
 from quodlibet.cli import process_arguments, exit_
-from quodlibet.util.dprint import print_d, print_
+from quodlibet.util.dprint import print_d, print_, format_exc
 from quodlibet import util
 
 
@@ -42,7 +41,6 @@ def main(argv):
     from quodlibet import config
     from quodlibet import browsers
     from quodlibet import util
-    from quodlibet.util.string import decode
 
     app.name = "Quod Libet"
     app.id = "quodlibet"
@@ -67,7 +65,7 @@ def main(argv):
         try:
             player = quodlibet.player.init_player(backend, app.librarian)
         except PlayerError:
-            backend_traceback = decode(traceback.format_exc())
+            backend_traceback = format_exc()
         else:
             break
     app.player = player

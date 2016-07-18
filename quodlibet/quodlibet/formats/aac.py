@@ -5,14 +5,11 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from ._audio import AudioFile
+from mutagen.aac import AAC
+
+from ._audio import AudioFile, translate_errors
 
 extensions = [".aac", ".adif", ".adts"]
-try:
-    # since mutagen 1.27
-    from mutagen.aac import AAC
-except ImportError:
-    extensions = []
 
 
 class AACFile(AudioFile):
@@ -23,7 +20,8 @@ class AACFile(AudioFile):
     fill_length = True
 
     def __init__(self, filename):
-        audio = AAC(filename)
+        with translate_errors():
+            audio = AAC(filename)
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         self.sanitize(filename)

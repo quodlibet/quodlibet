@@ -10,6 +10,7 @@ from gi.repository import Gtk
 from quodlibet import qltk
 from quodlibet import util
 
+from quodlibet.formats import AudioFileError
 from quodlibet.qltk._editutils import OverwriteWarning, WriteFailedError
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
@@ -164,7 +165,7 @@ class TrackNumbers(Gtk.VBox):
             song["tracknumber"] = track
             try:
                 song.write()
-            except:
+            except AudioFileError:
                 util.print_exc()
                 WriteFailedError(self, song).run()
                 library.reload(song, changed=was_changed)

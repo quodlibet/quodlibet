@@ -18,6 +18,7 @@ from xml.dom.minidom import parseString
 
 from gi.repository import GLib
 
+from quodlibet.util import print_w
 from .util import get_api_key, GateKeeper
 
 

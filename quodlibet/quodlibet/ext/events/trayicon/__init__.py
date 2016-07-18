@@ -12,7 +12,7 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import is_wayland, Icons
 from quodlibet.qltk.window import Window
 from quodlibet.util import (is_unity, is_osx, is_plasma, is_enlightenment,
-                            print_exc)
+                            print_exc, print_w, print_d)
 
 from .prefs import Preferences
 from .util import pconfig

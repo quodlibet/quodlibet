@@ -73,7 +73,7 @@
   <autotools id="cmake" autogen-sh="bootstrap"
              autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s">
     <branch repo="cmake" module="v3.2/cmake-3.2.1.tar.gz" version="3.2.1">
-      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/cmake-libnetwork.patch" strip="1"/>
+      <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/cmake-libnetwork.patch" strip="1"/>
     </branch>
   </autotools>
 
@@ -186,8 +186,9 @@
 
   <perl id="perl-xml-simple">
     <branch repo="cpan"
-            module="authors/id/G/GR/GRANTM/XML-Simple-2.20.tar.gz" version="2.20"
-            size="75993" md5sum="4d10964e123b76eca36678464daa63cd"/>
+	    module="authors/id/G/GR/GRANTM/XML-Simple-2.22.tar.gz"
+	    version="2.22"
+            size="77937" md5sum="0914abddfce749453ed89b54029f2643"/>
     <dependencies>
       <dep package="perl-xml-parser"/>
     </dependencies>

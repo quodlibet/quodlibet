@@ -14,6 +14,7 @@ from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import util
+from quodlibet.util import print_d
 try:
     from quodlibet.qltk import notif, Icons
 except Exception:

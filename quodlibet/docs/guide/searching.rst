@@ -36,8 +36,8 @@ for classical music or songs by `The Smiths
 
     !|(classical, smiths)
 
-While these searches are easy to type in, they depend on the visible colums
-and the active browser, also the last one might exclude some songs wich
+While these searches are easy to type in, they depend on the visible columns
+and the active browser, also the last one might exclude some songs which
 happen to contain "smiths" in their album title.
 
 

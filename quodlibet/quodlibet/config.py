@@ -11,6 +11,7 @@ import shutil
 
 from . import const
 from quodlibet.util.config import Config, Error
+from quodlibet.util import print_d, print_w
 from quodlibet.compat import PY2, iteritems
 
 # Some plugins can be enabled on first install

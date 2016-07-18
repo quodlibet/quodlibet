@@ -30,7 +30,7 @@ class GStreamerPluginHandler(PluginHandler):
             except Exception:
                 util.print_exc()
             if not element:
-                print_w(
+                util.print_w(
                     _("GStreamer plugin '%(name)s' could not be initialized")
                     % {"name": plugin.PLUGIN_ID})
                 return

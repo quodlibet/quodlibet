@@ -17,6 +17,7 @@ from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
 from quodlibet.util.http import download_json
 from quodlibet.util.cover.http import HTTPDownloadMixin
 from quodlibet.util.path import escape_filename
+from quodlibet.util import print_d
 
 
 class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):

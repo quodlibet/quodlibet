@@ -18,6 +18,7 @@ except ImportError:
 import quodlibet
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import human_title
+from quodlibet.util import print_w
 from gdist import gettextutil
 
 
@@ -59,7 +60,7 @@ class TPot(TestCase):
 
     def test_multiple_format_placeholders(self):
         fails = []
-        reg = re.compile(r"((?<!%)%[sbcdoxXneEfFgGn]|\{\})")
+        reg = re.compile(r"((?<!%)%[sbcdoxXneEfFgG]|\{\})")
         for entry in self.pot:
             if len(reg.findall(entry.msgid)) > 1:
                 fails.append(entry)
@@ -232,25 +233,24 @@ class POMixin(object):
 
     def test_gtranslator_blows_goats(self):
         for line in open(os.path.join(PODIR, "%s.po" % self.lang), "rb"):
-            if line.strip().startswith("#"):
+            if line.strip().startswith(b"#"):
                 continue
-            self.failIf("\xc2\xb7" in line,
+            self.failIf(b"\xc2\xb7" in line,
                         "Broken GTranslator copy/paste in %s:\n%s" % (
                 self.lang, line))
 
     def test_gtk_stock_items(self):
         for line in open(os.path.join(PODIR, "%s.po" % self.lang), "rb"):
-            if line.strip().startswith('msgstr "gtk-'):
+            if line.strip().startswith(b'msgstr "gtk-'):
                 parts = line.strip().split()
                 value = parts[1].strip('"')[4:]
                 self.failIf(value and value not in [
-                    'media-next', 'media-previous', 'media-play',
-                    'media-pause'],
+                    b'media-next', b'media-previous', b'media-play',
+                    b'media-pause'],
                             "Invalid stock translation in %s\n%s" % (
                     self.lang, line))
 
     def conclude(self, fails, reason):
-        from quodlibet import print_w
         if fails:
             def format_occurrences(e):
                 occurences = [(self.lang + ".po", e.linenum)]

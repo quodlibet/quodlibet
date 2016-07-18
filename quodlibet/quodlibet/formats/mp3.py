@@ -22,16 +22,12 @@ class MP3File(ID3File):
         self["~#length"] = info.length
         self["~#bitrate"] = int(info.bitrate / 1000)
         self["~format"] = u"MP%d" % info.layer
-        try:
-            # mutagen 1.30+
-            encoder, brm = info.encoder_info, info.bitrate_mode
-        except AttributeError:
-            pass
-        else:
-            brm = {1: u"CBR", 2: u"VBR", 3: u"ABR"}.get(brm, u"")
-            encoding = u"\n".join(filter(None, [encoder, brm]))
-            if encoding:
-                self["~encoding"] = encoding
+
+        encoder, brm = info.encoder_info, info.bitrate_mode
+        brm = {1: u"CBR", 2: u"VBR", 3: u"ABR"}.get(brm, u"")
+        encoding = u"\n".join(filter(None, [encoder, brm]))
+        if encoding:
+            self["~encoding"] = encoding
 
 
 info = MP3File

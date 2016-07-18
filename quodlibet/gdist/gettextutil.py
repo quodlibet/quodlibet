@@ -153,7 +153,7 @@ def _get_xgettext_version():
         raise GettextError(e)
 
     try:
-        return tuple(map(int, result.splitlines()[0].split()[-1].split(".")))
+        return tuple(map(int, result.splitlines()[0].split()[-1].split(b".")))
     except (IndexError, ValueError) as e:
         raise GettextError(e)
 

@@ -67,7 +67,7 @@ def main(argv):
     quodlibet.finish_first_session(app.id)
     config.save()
 
-    print_d("Finished shutdown.")
+    util.print_d("Finished shutdown.")
 
 
 if __name__ == "__main__":

@@ -16,6 +16,13 @@ except ImportError:
     from quodlibet import plugins
     raise plugins.MissingModulePluginException("musicbrainzngs")
 
+
+# musicbrainzngs.get_url_by_id was added in version 0.5
+if not hasattr(musicbrainzngs, "get_url_by_id"):
+    from quodlibet import plugins
+    raise plugins.MissingModulePluginException("musicbrainzngs >= 0.5")
+
+
 from quodlibet import app
 from quodlibet import const
 from quodlibet import util

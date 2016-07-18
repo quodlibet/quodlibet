@@ -10,6 +10,7 @@
 from gi.repository import GObject
 
 from quodlibet.formats import AudioFile
+from quodlibet.util import print_d
 from quodlibet import config
 
 

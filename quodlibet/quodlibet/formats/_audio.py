@@ -28,11 +28,14 @@ from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 from quodlibet.compat import iteritems, string_types, text_type, number_types
 
 from ._image import ImageContainer
+from ._misc import AudioFileError, translate_errors
 
 try:
     from itertools import izip_longest
 except ImportError:  # python3.x
     izip = zip
+
+translate_errors
 
 MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
            "~#skipcount", "~#rating", "~bookmark"}
@@ -212,9 +215,14 @@ class AudioFile(dict, ImageContainer):
         return self is not other
 
     def reload(self):
-        """Reload an audio file from disk. The caller is responsible for
-        handling any errors."""
+        """Reload an audio file from disk. If reloading fails nothing will
+        change.
 
+        Raises:
+            AudioFileError: if the file fails to load
+        """
+
+        backup = dict(self)
         fn = self["~filename"]
         saved = {}
         for key in self:
@@ -222,8 +230,13 @@ class AudioFile(dict, ImageContainer):
                 saved[key] = self[key]
         self.clear()
         self["~filename"] = fn
-        self.__init__(fn)
-        self.update(saved)
+        try:
+            self.__init__(fn)
+        except AudioFileError:
+            self.update(backup)
+            raise
+        else:
+            self.update(saved)
 
     def realkeys(self):
         """Returns a list of keys that are not internal, i.e. they don't
@@ -718,7 +731,10 @@ class AudioFile(dict, ImageContainer):
 
     def sanitize(self, filename=None):
         """Fill in metadata defaults. Find ~mountpoint, ~#mtime, ~#filesize
-        and ~#added. Check for null bytes in tags."""
+        and ~#added. Check for null bytes in tags.
+
+        Does not raise.
+        """
 
         # Replace nulls with newlines, trimming zero-length segments
         for key, val in self.items():
@@ -900,7 +916,12 @@ class AudioFile(dict, ImageContainer):
             return min(15, scale)
 
     def write(self):
-        """Write metadata back to the file."""
+        """Write metadata back to the file.
+
+        Raises:
+            AudioFileError: in case writing fails
+        """
+
         raise NotImplementedError
 
     @property

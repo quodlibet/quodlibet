@@ -11,7 +11,6 @@ quodlibet/browsers/_base.py
 quodlibet/browsers/collection/main.py
 quodlibet/browsers/collection/models.py
 quodlibet/browsers/collection/prefs.py
-quodlibet/browsers/empty.py
 quodlibet/browsers/filesystem.py
 quodlibet/browsers/__init__.py
 quodlibet/browsers/iradio.py
@@ -54,6 +53,7 @@ quodlibet/ext/events/lyricswindow.py
 quodlibet/ext/events/mediaserver.py
 quodlibet/ext/events/mpdserver/__init__.py
 quodlibet/ext/events/mpris/__init__.py
+quodlibet/ext/events/mqtt.py
 quodlibet/ext/events/notify.py
 quodlibet/ext/events/qlscrobbler.py
 quodlibet/ext/events/radioadmute.py
@@ -83,6 +83,7 @@ quodlibet/ext/playlist/export_to_squeezebox.py
 quodlibet/ext/playlist/remove_duplicates.py
 quodlibet/ext/playlist/shuffle.py
 quodlibet/ext/playorder/follow.py
+quodlibet/ext/playorder/playcounteq.py
 quodlibet/ext/playorder/queue.py
 quodlibet/ext/playorder/reverse.py
 quodlibet/ext/playorder/track_repeat.py
@@ -186,6 +187,7 @@ quodlibet/qltk/unity.py
 quodlibet/qltk/views.py
 quodlibet/qltk/wlw.py
 quodlibet/qltk/x.py
+quodlibet/update.py
 quodlibet/util/collection.py
 quodlibet/util/cover/built_in.py
 quodlibet/util/dprint.py

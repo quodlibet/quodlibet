@@ -12,7 +12,7 @@ from quodlibet.qltk.pluginwin import PluginWindow
 
 from quodlibet import qltk
 
-from quodlibet.util import print_exc
+from quodlibet.util import print_exc, print_e, print_w
 from quodlibet.qltk.msg import WarningMessage
 from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information

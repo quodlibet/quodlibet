@@ -21,7 +21,7 @@ case you have a lot of multi-artist albums.
 
 The songlist is presented at the bottom, and the panes, which run from left 
 to right, are above. Clicking on an item (or items) in a pane will restrict 
-it to just songs matching those (e.g those artists, or dates, genres etc). 
+it to just songs matching those (e.g. those artists, or dates, genres etc). 
 This will update the counts and choices on the next pane, and the filtered 
 results will be updated automatically in the song list.
 

@@ -41,7 +41,7 @@ def init():
         try:
             browsers.extend(browser.browsers)
         except AttributeError:
-            print_w("%r doesn't contain any browsers." % browser.__name__)
+            util.print_w("%r doesn't contain any browsers." % browser.__name__)
 
     def is_browser(Kind):
         return isinstance(Kind, type) and issubclass(Kind, Browser)

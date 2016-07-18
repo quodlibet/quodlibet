@@ -16,7 +16,7 @@ import subprocess
 import tempfile
 
 from quodlibet import util
-from quodlibet.formats import EmbeddedImage
+from quodlibet.formats import EmbeddedImage, AudioFileError
 from quodlibet.util.path import mtime, fsdecode
 from quodlibet.pattern import Pattern, error as PatternError
 from quodlibet.util.tags import USER_TAGS, sortkey
@@ -516,7 +516,10 @@ class ImageSetCommand(Command):
                     })
 
         for song in songs:
-            song.set_image(image)
+            try:
+                song.set_image(image)
+            except AudioFileError as e:
+                raise CommandError(e)
 
 
 @Command.register
@@ -542,7 +545,10 @@ class ImageClearCommand(Command):
                     })
 
         for song in songs:
-            song.clear_images()
+            try:
+                song.clear_images()
+            except AudioFileError as e:
+                raise CommandError(e)
 
 
 @Command.register
@@ -738,7 +744,7 @@ class PrintCommand(Command):
         error = False
         for path in paths:
             try:
-                print_(pattern % self.load_song(path))
+                util.print_(pattern % self.load_song(path))
             except CommandError:
                 error = True
 

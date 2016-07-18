@@ -11,7 +11,7 @@ import os
 import sys
 import warnings
 
-from quodlibet.compat import builtins, PY2
+from quodlibet.compat import PY2
 
 if PY2:
     # some code depends on utf-8 default encoding (pygtk used to set it)
@@ -24,8 +24,9 @@ from quodlibet.util import windows, is_osx, is_windows
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars
-from quodlibet.util.dprint import print_, print_d, print_w, print_e
+from quodlibet.util.dprint import print_d, print_e
 from quodlibet import const
+from quodlibet import build
 from quodlibet.const import MinVersions
 from quodlibet.compat import PY2
 
@@ -123,6 +124,37 @@ def is_release():
     return const.VERSION_TUPLE[-1] != -1
 
 
+def get_build_version():
+    """Returns a build version tuple"""
+
+    version = list(const.VERSION_TUPLE)
+    if version[-1] != -1 and build.BUILD_VERSION > 0:
+        version.append(build.BUILD_VERSION)
+
+    return tuple(version)
+
+
+def get_build_description():
+    """Returns text describing the version of the build.
+
+    Includes additional build info like git hash and build version.
+    """
+
+    version = list(get_build_version())
+    notes = []
+    if version[-1] == -1:
+        version = version[:-1]
+        notes.append(u"development")
+
+    if build.BUILD_INFO:
+        notes.append(build.BUILD_INFO)
+
+    version_string = u".".join(map(str, version))
+    note = u" (%s)" % u", ".join(notes) if notes else u""
+
+    return version_string + note
+
+
 @cached_func
 def get_base_dir():
     """The path to the quodlibet package"""
@@ -152,22 +184,8 @@ def get_user_dir():
     if 'QUODLIBET_USERDIR' in environ:
         USERDIR = environ['QUODLIBET_USERDIR']
 
-    # XXX: Exec conf.py in this directory, used to override const globals
-    # e.g. for setting USERDIR for the Windows portable version
-    # Note: execfile doesn't handle unicode paths on windows, so encode.
-    # (this doesn't use the old win api in case of str compared to os.*)
-    _CONF_PATH = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), "conf.py")
-
-    if PY2:
-        locals_ = {}
-        # FIXME: PY3PORT
-        try:
-            execfile(_CONF_PATH, globals(), locals_)
-        except IOError:
-            pass
-        else:
-            USERDIR = locals_["USERDIR"]
+    if build.BUILD_TYPE == u"windows-portable":
+        USERDIR = os.path.join(get_base_dir(), "..", "..", "..", "config")
 
     # XXX: users shouldn't assume the dir is there, but we currently do in
     # some places
@@ -502,10 +520,16 @@ def _init_python():
         # for non release builds we allow Python3
         MinVersions.PYTHON3.check(sys.version_info)
 
-    builtins.__dict__["print_"] = print_
-    builtins.__dict__["print_d"] = print_d
-    builtins.__dict__["print_e"] = print_e
-    builtins.__dict__["print_w"] = print_w
+    if is_osx():
+        # We build our own openssl on OSX and need to make sure that
+        # our own ca file is used in all cases as the non-system openssl
+        # doesn't use the system certs
+        util.install_urllib2_ca_file()
+
+    if is_windows():
+        # Not really needed on Windows as pygi-aio seems to work fine, but
+        # wine doesn't have certs which we use for testing.
+        util.install_urllib2_ca_file()
 
 
 def _init_formats():
@@ -636,13 +660,13 @@ def finish_first_session(app_name):
 
 def _init_gtk_debug(no_excepthook):
     from gi.repository import GLib
-    from quodlibet.qltk.debugwindow import ExceptionDialog
+    from quodlibet.qltk.debugwindow import excepthook
 
     print_d("Initializing debugging extensions")
 
     def _override_exceptions():
         print_d("Enabling custom exception handler.")
-        sys.excepthook = ExceptionDialog.excepthook
+        sys.excepthook = excepthook
     if not no_excepthook:
         GLib.idle_add(_override_exceptions)
 

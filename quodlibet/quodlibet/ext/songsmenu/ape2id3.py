@@ -8,10 +8,12 @@
 
 import mutagen.apev2
 
+from quodlibet.formats import AudioFileError
 from quodlibet.formats._apev2 import APEv2File
 from quodlibet.plugins.songshelpers import each_song, is_writable
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons
+from quodlibet.util import print_exc
 
 
 def is_an_mp3(song):
@@ -34,4 +36,7 @@ class APEv2toID3v2(SongsMenuPlugin):
             return # File doesn't have an APEv2 tag
         song.update(apesong)
         mutagen.apev2.delete(song["~filename"])
-        song._song.write()
+        try:
+            song._song.write()
+        except AudioFileError:
+            print_exc()

@@ -24,7 +24,7 @@ from quodlibet.qltk.x import Frame
 from quodlibet.qltk import Icons, Dialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
-from quodlibet.util import cached_property
+from quodlibet.util import cached_property, print_w, print_e
 
 __all__ = ['ReplayGain']
 
@@ -151,6 +151,13 @@ class RGSong(object):
         write_to_song('replaygain_track_peak', '%.4f', self.peak)
         write_to_song('replaygain_album_gain', '%.2f dB', album_gain)
         write_to_song('replaygain_album_peak', '%.4f', album_peak)
+
+        # bs1770gain writes those and since we still do old replaygain
+        # just delete them so players use the defaults.
+        song.pop("replaygain_reference_loudness", None)
+        song.pop("replaygain_algorithm", None)
+        song.pop("replaygain_album_range", None)
+        song.pop("replaygain_track_range", None)
 
     @property
     def title(self):

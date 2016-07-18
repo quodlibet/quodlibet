@@ -10,12 +10,14 @@ import json
 
 from gi.repository import Soup, Gio, GLib, GObject
 from gi.repository.GObject import ParamFlags, SignalFlags
+
 if not hasattr(Gio.MemoryOutputStream, 'new_resizable'):
     raise ImportError(
         'GLib and gobject-introspection libraries are too old. GLib since ' +
         '2.36 and gobject-introspection since 1.36 are known to work fine.')
 
 from quodlibet.const import VERSION, WEBSITE
+from quodlibet.util import print_d, print_w
 
 
 PARAM_READWRITECONSTRUCT = \
@@ -230,7 +232,11 @@ def download(message, cancellable, callback, data, try_decode=False):
         if not try_decode:
             callback(message, bs, data)
             return
-        #otherwise try to decode data
+        # Otherwise try to decode data
+        code = int(message.get_property('status-code'))
+        if code >= 400:
+            print_w("HTTP %d error received on %s" % (code, request._uri))
+            return
         ctype = message.get_property('response-headers').get_content_type()
         encoding = ctype[1].get('charset', 'utf-8')
         try:

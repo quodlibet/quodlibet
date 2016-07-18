@@ -262,6 +262,14 @@ SetConsoleTextAttribute = windll.kernel32.SetConsoleTextAttribute
 SetConsoleTextAttribute.argtypes = [wintypes.HANDLE, WORD]
 SetConsoleTextAttribute.restype = wintypes.BOOL
 
+GetConsoleOutputCP = windll.kernel32.GetConsoleOutputCP
+GetConsoleOutputCP.argtypes = []
+GetConsoleOutputCP.restype = wintypes.UINT
+
+SetConsoleOutputCP = windll.kernel32.SetConsoleOutputCP
+SetConsoleOutputCP.argtypes = [wintypes.UINT]
+SetConsoleOutputCP.restype = wintypes.BOOL
+
 WinError = ctypes.WinError
 S_OK = wintypes.HRESULT(0).value
 MAX_PATH = wintypes.MAX_PATH

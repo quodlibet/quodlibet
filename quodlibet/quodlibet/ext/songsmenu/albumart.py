@@ -27,9 +27,9 @@ from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.util import format_size, print_exc
-from quodlibet.util.dprint import print_d
+from quodlibet.util.dprint import print_d, print_w
 
-from quodlibet import util, qltk, print_w, app
+from quodlibet import util, qltk, app
 from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.qltk.x import Paned, Align, Button
 from quodlibet.qltk.views import AllTreeView

@@ -8,7 +8,8 @@
 import sys
 from optparse import OptionParser
 
-from quodlibet.formats import MusicFile
+from quodlibet.formats import MusicFile, AudioFileError
+from quodlibet.util import print_
 
 
 class CommandError(Exception):
@@ -57,7 +58,7 @@ class Command(object):
         """Print output if --verbose was passed"""
 
         if self.verbose:
-            return print_(text, sys.stderr)
+            return print_(text, file=sys.stderr)
 
     def load_song(self, path):
         """Load a song. Raises CommandError in case it fails"""
@@ -76,7 +77,7 @@ class Command(object):
         for song in songs:
             try:
                 song.write()
-            except Exception as e:
+            except AudioFileError as e:
                 raise CommandError(e)
 
     def _execute(self, options, args):

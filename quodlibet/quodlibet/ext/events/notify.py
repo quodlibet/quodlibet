@@ -31,9 +31,8 @@ from quodlibet.qltk.textedit import TextView, TextBuffer
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
-from quodlibet.util import unescape
+from quodlibet.util import connect_obj, unescape, print_w
 from quodlibet.util.uri import URI
-from quodlibet.util import connect_obj
 
 
 # configuration stuff

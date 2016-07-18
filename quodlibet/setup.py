@@ -11,34 +11,57 @@
 # express or implied, for this software.
 
 import os
+import sys
 import shutil
+import types
 
 from distutils.core import setup
 from gdist import GDistribution
 
 
-if __name__ == "__main__":
+def exec_module(path):
+    """Executes the Python file at `path` and returns it as the module"""
+
+    globals_ = {}
+    if sys.version_info[0] == 2:
+        execfile(path, globals_)
+    else:
+        with open(path) as h:
+            exec(h.read(), globals_)
+    module = types.ModuleType("")
+    module.__dict__.update(globals_)
+    return module
+
+
+def main():
     # distutils depends on setup.py beeing executed from the same dir.
     # Most of our custom commands work either way, but this makes
     # it work in all cases.
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
-    import quodlibet
-    from quodlibet import const
+    const = exec_module(os.path.join("quodlibet", "const.py"))
+
+    # convert to a setuptools compatible version string
+    version = const.VERSION_TUPLE
+    if version[-1] == -1:
+        version_string = ".".join(map(str, version[:-1])) + ".dev0"
+    else:
+        version_string = ".".join(map(str, version))
 
     # find all packages
-    package_path = quodlibet.__path__[0]
+    package_path = "quodlibet"
     packages = []
     for root, dirnames, filenames in os.walk(package_path):
         if "__init__.py" in filenames:
             relpath = os.path.relpath(root, os.path.dirname(package_path))
             package_name = relpath.replace(os.sep, ".")
             packages.append(package_name)
+    assert packages
 
     setup_kwargs = {
         'distclass': GDistribution,
         'name': "quodlibet",
-        'version': const.VERSION,
+        'version': version_string,
         'url': "https://quodlibet.readthedocs.org",
         'description': "a music library, tagger, and player",
         'author': "Joe Wreschnig, Michael Urman, & others",
@@ -93,9 +116,9 @@ if __name__ == "__main__":
         data_files = [('', ['COPYING'])] + recursive_include_py2exe(
             "quodlibet", "images", ("svg", "png"))
 
-        # py2exe trips over -1 when trying to write version info in the exe
-        if setup_kwargs["version"].endswith(".-1"):
-            setup_kwargs["version"] = setup_kwargs["version"][:-3]
+        # py2exe can only handle simple versions
+        if setup_kwargs["version"].endswith(".dev0"):
+            setup_kwargs["version"] = setup_kwargs["version"][:-5]
 
         CMD_SUFFIX = "-cmd"
         GUI_TOOLS = ["quodlibet", "exfalso"]
@@ -145,3 +168,7 @@ if __name__ == "__main__":
                 os.unlink("%s%s.py" % (name, CMD_SUFFIX))
     else:
         setup(**setup_kwargs)
+
+
+if __name__ == "__main__":
+    main()

@@ -10,7 +10,7 @@ from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject
 
 from quodlibet import qltk
 from quodlibet import app
-from quodlibet.util import thumbnails
+from quodlibet.util import thumbnails, print_w
 from quodlibet.util.path import is_fsnative
 from quodlibet.qltk.image import (get_scale_factor, pixbuf_from_file,
     set_image_from_pbosf, get_pbosf_for_pixbuf, pbosf_render, calc_scale_size,
