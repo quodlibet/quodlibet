@@ -8,7 +8,7 @@
 from gi.repository import Gtk, Pango
 from urlparse import parse_qs
 
-from quodlibet import config, print_d, print_w, app
+from quodlibet import config, app
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet.browsers import Browser
@@ -26,6 +26,7 @@ from quodlibet.qltk.x import Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.util import connect_destroy, DeferredSignal, website
 from quodlibet.util.uri import URI
+from quodlibet.util.dprint import print_w, print_d
 
 
 class SoundcloudBrowser(Browser, util.InstanceTracker):

@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from quodlibet import print_d, print_w
+from quodlibet.util.dprint import print_d, print_w
 from quodlibet.browsers.soundcloud.query import SoundcloudQuery
 from quodlibet import config
 from quodlibet.formats.remote import RemoteFile
