@@ -155,7 +155,7 @@ class SoundcloudApiClient(RestApi):
 
     @json_callback
     def _on_track_data(self, json):
-        songs = [self._audiofile_for(r) for r in json]
+        songs = filter(None, [self._audiofile_for(r) for r in json])
         self.emit('songs-received', songs)
 
     def get_comments(self, track_id):
@@ -192,7 +192,12 @@ class SoundcloudApiClient(RestApi):
         r = Wrapper(response)
         d = r.data
         dl = d.get("downloadable", False) and d.get("download_url", None)
-        uri = SoundcloudApiClient._add_secret(dl or r.stream_url)
+        try:
+            url = dl or r.stream_url
+        except AttributeError as e:
+            print_w("Unusable result (%s) from SC: %s" % (e, d))
+            return None
+        uri = SoundcloudApiClient._add_secret(url)
         song = SoundcloudFile(uri=uri,
                               track_id=r.id,
                               favorite=d.get("user_favorite", False),
