@@ -9,9 +9,13 @@ from datetime import datetime
 from gi.repository import Gtk
 from os import path
 
-
 from quodlibet import print_d
+from quodlibet.qltk.getstring import GetStringDialog
+from quodlibet.util import enum
 from quodlibet.util.path import normalize_path
+
+SOUNDCLOUD_NAME = "Soundcloud"
+PROCESS_QL_URLS = True
 
 DEFAULT_BITRATE = 128
 EPOCH = datetime(1970, 1, 1)
@@ -27,11 +31,7 @@ def _local_image(filename):
     """
     return Gtk.Image.new_from_file(path.join(IMAGE_DIR, filename))
 
-
 LOGO_IMAGE_BLACK = _local_image('soundcloud-logo-black-104x16.png')
-LOGIN_IMAGES = [_local_image('btn-%s-l.png'
-                             % ('disconnect' if online else 'connect'))
-                for online in (False, True)]
 
 
 class Wrapper(object):
@@ -43,7 +43,7 @@ class Wrapper(object):
     def __getattr__(self, name):
         if name in self.data:
             return self.data.get(name)
-        raise AttributeError(name)
+        raise AttributeError("'%s' not found" % (name,))
 
     def __getitem__(self, item):
         return self.data[item]
@@ -81,3 +81,31 @@ def json_callback(wrapped):
 def clamp(val, low, high):
     intval = int(val or 0)
     return max(low, min(high, intval))
+
+
+@enum
+class State(int):
+    LOGGED_OUT, LOGGING_IN, LOGGED_IN = range(3)
+
+"""Login-state-based data for configuring actions (e.g. in the button)"""
+LOGIN_STATE_DATA = {
+    State.LOGGED_IN: (_("Log out of %s") % SOUNDCLOUD_NAME,
+                      _local_image('btn-disconnect-l.png')),
+    State.LOGGING_IN: (_("Enter code…"), None),
+    State.LOGGED_OUT: (_("Log in to %s") % SOUNDCLOUD_NAME,
+                       _local_image('btn-connect-l.png')),
+}
+
+
+class EnterAuthCodeDialog(GetStringDialog):
+
+    def __init__(self, parent):
+        super(EnterAuthCodeDialog, self).__init__(
+            parent,
+            _("Soundcloud authorisation"),
+            _("Enter Soundcloud auth code:"),
+            button_icon=None)
+
+    def _verify_clipboard(self, text):
+        if len(text) > 10:
+            return text

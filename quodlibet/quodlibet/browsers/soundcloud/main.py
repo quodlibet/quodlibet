@@ -15,18 +15,15 @@ from quodlibet.browsers import Browser
 from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
 from quodlibet.browsers.soundcloud.library import SoundcloudLibrary
 from quodlibet.browsers.soundcloud.query import SoundcloudQuery
-from quodlibet.browsers.soundcloud.util import SITE_URL, LOGO_IMAGE_BLACK, \
-    LOGIN_IMAGES
+from quodlibet.browsers.soundcloud.util import *
 from quodlibet.qltk import Icons, Message
 from quodlibet.qltk.completion import LibraryTagCompletion
-from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import Align, ScrolledWindow
-from quodlibet.qltk.x import SymbolicIconImage
-from quodlibet.util import connect_destroy, DeferredSignal, website
-from quodlibet.util.uri import URI
+from quodlibet.util import connect_destroy, DeferredSignal, website, enum
 from quodlibet.util.dprint import print_w, print_d
+from quodlibet.util.uri import URI
 
 
 class SoundcloudBrowser(Browser, util.InstanceTracker):
@@ -44,11 +41,15 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                "website comment ~rating "
                "~#playback_count ~#likes_count").split()
 
-    class ModelIndex(object):
+    @enum
+    class ModelIndex(int):
         TYPE, ICON_NAME, KEY, NAME = range(4)
 
-    class FilterType(object):
+    @enum
+    class FilterType(int):
         SEARCH, TYPE_ALL, SEP = range(3)
+
+    login_state = State.LOGGED_OUT
 
     STAR = [tag for tag in headers if not tag.startswith("~#")]
 
@@ -95,9 +96,9 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.connect('uri-received', self.__handle_incoming_uri)
         self.__auth_sig = self.api_client.connect('authenticated',
                                                   self.__on_authenticated)
-
+        self.login_state = (State.LOGGED_IN if self.api_client.online
+                            else State.LOGGED_OUT)
         self._create_searchbar(library)
-
         vbox = Gtk.VBox()
         vbox.pack_start(self._create_footer(), False, False, 6)
         vbox.pack_start(self._create_category_widget(), True, True, 0)
@@ -141,39 +142,45 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self._searchbox = Align(search, left=0, right=6, top=6)
         self._searchbox.show_all()
 
-    def _create_prefs_button(self, menu):
-        prefs_button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
-            arrow=True)
-        prefs_button.set_menu(menu)
-        return prefs_button
-
-    def update_connect_button(self, online):
+    def update_connect_button(self):
         but = self.login_button
         but.set_sensitive(False)
-        but.set_tooltip_text((_("Log out of %s") if online
-                              else _("Log in to %s")) % "soundcloud")
-        image = but.get_child()
-        if image:
+        tooltip, icon = LOGIN_STATE_DATA[self.login_state]
+        but.set_tooltip_text(tooltip)
+        child = but.get_child()
+        if child:
             print_d("Removing old image...")
-            but.remove(image)
-        but.add(LOGIN_IMAGES[online])
+            but.remove(child)
+        but.add(icon if icon else Gtk.Label(tooltip))
+
         but.get_child().show()
         but.set_sensitive(True)
         but.show()
 
     def create_login_button(self):
         def clicked_login(*args):
-            if self.api_client.online:
+            # TODO: use a magic enum next() method, or similar
+            state = self.login_state
+            if state == State.LOGGED_IN:
                 self.api_client.log_out()
-            else:
+                self.login_state = State.LOGGED_OUT
+            elif state == State.LOGGING_IN:
+                # Enter code stuff
+                dialog = EnterAuthCodeDialog(app.window)
+                value = dialog.run(clipboard=True)
+                if value:
+                    self.login_state = State.LOGGED_IN
+                    print_d("Got a user token value of '%s'" % value)
+                    self.api_client.get_token(value)
+            elif state == State.LOGGED_OUT:
                 self.api_client.authenticate_user()
-            self.update_connect_button(self.api_client.online)
+                self.login_state = State.LOGGING_IN
+            self.update_connect_button()
 
         hbox = Gtk.HBox()
         self.login_button = login = Gtk.Button(always_show_image=True,
                                                relief=Gtk.ReliefStyle.NONE)
-        self.update_connect_button(self.api_client.online)
+        self.update_connect_button()
         login.connect('clicked', clicked_login)
         hbox.pack_start(login, True, False, 0)
         hbox.show_all()
@@ -296,6 +303,9 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.api_client.save_token()
 
     def __handle_incoming_uri(self, obj, uri):
+        if not PROCESS_QL_URLS:
+            print_w("Processing of quodlibet:// URLs is disabled. (%s)" % uri)
+            return
         uri = URI(uri)
         if uri.scheme == "quodlibet" and "/callbacks/soundcloud" in uri:
             try:
@@ -310,7 +320,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
     def __on_authenticated(self, obj, data):
         name = data.username
+        self.login_state = State.LOGGED_IN
+        self.update_connect_button()
         msg = Message(Gtk.MessageType.INFO, app.window, _("Connected"),
                       _("Quod Libet is now connected, <b>%s</b>!") % name)
         msg.run()
-        self.update_connect_button(self.api_client.online)
