@@ -16,6 +16,8 @@ from quodlibet.util import website
 from quodlibet.util.dprint import print_w
 from quodlibet.util.http import download_json, download
 
+MIN_DURATION_SECS = 120
+
 try:
     gi.require_version("Soup", "2.4")
 except ValueError as e:
@@ -145,7 +147,7 @@ class SoundcloudApiClient(RestApi):
         merged = {
             "q": "",
             "limit": PAGE_SIZE,
-            "duration[from]": 120 * 1000,
+            "duration[from]": MIN_DURATION_SECS * 1000,
         }
         for k, v in params.iteritems():
             delim = " " if k == 'q' else ","
@@ -157,6 +159,9 @@ class SoundcloudApiClient(RestApi):
     def _on_track_data(self, json):
         songs = filter(None, [self._audiofile_for(r) for r in json])
         self.emit('songs-received', songs)
+
+    def get_favorites(self):
+        self._get('/me/favorites', self._on_track_data, limit=PAGE_SIZE)
 
     def get_comments(self, track_id):
         self._get('/tracks/%s/comments' % track_id, self._receive_comments,
@@ -242,7 +247,7 @@ class SoundcloudApiClient(RestApi):
             else:
                 song["~#bitrate"] = DEFAULT_BITRATE
             if r.description:
-                song["comment"] = r.description
+                song["comment"] = sanitise_tag(r.description)
             song["~#length"] = int(r.duration) / 1000
             art_url = r.artwork_url
             if art_url:
@@ -250,7 +255,7 @@ class SoundcloudApiClient(RestApi):
                     art_url.replace("-large.", "-t500x500."))
             put_time("~#mtime", r, "last_modified")
             put_date("date", r, "created_at")
-            put_counts("playback", "download", "favoritings", "likes")
+            put_counts("playback", "download", "favoritings", "comments")
             plays = d.get("user_playback_count", 0)
             if plays:
                 song["~#playcount"] = plays

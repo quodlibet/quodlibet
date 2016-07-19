@@ -97,8 +97,12 @@ LOGIN_STATE_DATA = {
 }
 
 
-class EnterAuthCodeDialog(GetStringDialog):
+@enum
+class FilterType(int):
+    SEP, SEARCH, FAVORITES = range(3)
 
+
+class EnterAuthCodeDialog(GetStringDialog):
     def __init__(self, parent):
         super(EnterAuthCodeDialog, self).__init__(
             parent,
@@ -109,3 +113,10 @@ class EnterAuthCodeDialog(GetStringDialog):
     def _verify_clipboard(self, text):
         if len(text) > 10:
             return text
+
+
+def sanitise_tag(value):
+    """QL doesn't want newlines in tags, but they Soundcloud ones
+     are not always best represented as multi-value tags (comments, etc)
+    """
+    return (value or '').replace('\n', '\t').replace('\r', '')

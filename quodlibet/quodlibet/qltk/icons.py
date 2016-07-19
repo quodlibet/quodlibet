@@ -66,6 +66,7 @@ class Icons(str):
     EMBLEM_DOWNLOADS = "emblem-downloads"
     EMBLEM_SYSTEM = "emblem-system"
     FACE_SMILE = "face-smile"
+    FAVORITE = "emblem-favorite"
     FOLDER = "folder"
     FOLDER_OPEN = "folder-open"
     FORMAT_JUSTIFY_FILL = "format-justify-fill"

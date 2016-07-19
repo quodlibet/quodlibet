@@ -26,14 +26,23 @@ class SoundcloudLibrary(SongLibrary):
 
     def query(self, text, sort=None, star=STAR):
         values = self._contents.values()
-        return SoundcloudQuery(text).filter(values)
+        try:
+            return SoundcloudQuery(text).filter(values)
+        except SoundcloudQuery.error:
+            return values
 
     def query_with_refresh(self, text, sort=None, star=STAR):
         """Queries Soundcloud for some (more) relevant results, then filters"""
-        print_d("Updating library with new results...")
-        query = SoundcloudQuery(text)
-        self.client.get_tracks(query.terms)
-        return self.query(text, sort, star)
+        current = self._contents.values()
+        try:
+            query = SoundcloudQuery(text, star=star)
+            self.client.get_tracks(query.terms)
+        except SoundcloudQuery.error as e:
+            print_w("Couldn't filter for query '%s' (%s)" % (text, e))
+            return current
+        filtered = query.filter(current)
+        print_d("Filtered %d results to %d" % (len(current), len(filtered)))
+        return filtered
 
     def rename(self, song, newname, changed=None):
         raise TypeError("Can't rename Soundcloud files")

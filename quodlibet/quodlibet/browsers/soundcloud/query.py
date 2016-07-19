@@ -37,7 +37,7 @@ _QL_TO_SC = {
     'title': ('q', None),
     'comments': ('q', None),
 }
-SUPPORTED = set(_QL_TO_SC.keys())
+SUPPORTED = set(_QL_TO_SC.keys()) | {"rating"}
 
 
 class SoundcloudQuery(Query):
@@ -71,15 +71,19 @@ class SoundcloudQuery(Query):
             try:
                 api_tag, converter = _QL_TO_SC[tag] if tag else ('q', None)
             except KeyError:
-                raise self.error("Unsupported '%s' tag" % (tag,))
-            value = str(converter(raw_value) if converter else raw_value)
-            return api_tag, value
+                if tag not in SUPPORTED:
+                    raise self.error("Unsupported '%s' tag. Try: %s"
+                                     % (tag, ", ". join(SUPPORTED)))
+                return None, None
+            else:
+                value = str(converter(raw_value) if converter else raw_value)
+                return api_tag, value
 
         def terms_from_re(pattern, t):
             """Best efforts to de-regex"""
             pat = pattern.lstrip('^').rstrip('$')
             api_tag, pat = to_api(t, pat)
-            return {(api_tag, p) for p in pat.split('|')}
+            return {(api_tag, p) for p in pat.split('|')} if api_tag else set()
 
         if isinstance(node, Tag) and set(node._names) & SUPPORTED:
             if len(node._names) == 1:
@@ -96,6 +100,8 @@ class SoundcloudQuery(Query):
             def from_relative(op, l, r):
                 raw_value = r.evaluate(_DUMMY_AF, self._clock(), True)
                 tag, value = to_api(l._tag, raw_value)
+                if not value:
+                    return set()
                 if op == operator.eq:
                     return {(tag, value)}
                 elif op in (operator.le, operator.lt):

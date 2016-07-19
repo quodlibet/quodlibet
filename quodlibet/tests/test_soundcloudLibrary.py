@@ -25,7 +25,7 @@ TRACK = {
     u'label_name': None, u'duration': 3944440, u'id': 193910405,
     u'streamable': True, u'user_id': 313827, u'user_favorite': True,
     u'title': u'Banging Techno Sets :: 098 Kerstin Eden // 03-2015',
-    u'favoritings_count': 0, u'commentable': True,
+    u'favoritings_count': 882, u'commentable': True,
     u'comment_count': 39,
     u'download_url': u'https://api.soundcloud.com/tracks/193910405/download',
     u'label_id': None, u'downloadable': True,
@@ -49,7 +49,7 @@ TRACK = {
               u'id': 313827}, u'genre': u'banging techno',
     u'isrc': None, u'download_count': 2062,
     u'permalink_url': PERMALINK,
-    u'likes_count': 882, u'kind': u'track', u'playback_count': 23656,
+    u'kind': u'track', u'playback_count': 23656,
     u'license': u'all-rights-reserved',
     u'artwork_url':
         u'https://i1.sndcdn.com/artworks-000108682375-q4j7y6-large.jpg',
@@ -93,7 +93,7 @@ class TSoundcloudLibrary(TestCase):
         self.failUnlessEqual(s("date"), "2015-03-02")
         self.failUnlessEqual(s("~#download_count"), 2062)
         self.failUnlessEqual(s("~#playback_count"), 23656)
-        self.failUnlessEqual(s("~#likes_count"), 882)
+        self.failUnlessEqual(s("~#favoritings_count"), 882)
         self.failUnlessEqual(s("~#rating"), 1.0)
         self.failUnlessEqual(s("~#playcount"), 4)
         self.failUnlessAlmostEqual(s("~#bitrate"), 319)
