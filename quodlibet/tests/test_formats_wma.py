@@ -101,6 +101,17 @@ class TWMAFile(TestCase):
         self.assertEqual(self.song3("~encoding"),
                          u"Microsoft G.723.1\n8 kHz Mono, 5333 Bit/s")
 
+    def test_mb_release_track_id(self):
+        tag = asf.ASF(self.f)
+        tag["MusicBrainz/Release Track Id"] = [u"foo"]
+        tag.save()
+        song = WMAFile(self.f)
+        self.assertEqual(song("musicbrainz_releasetrackid"), u"foo")
+        song["musicbrainz_releasetrackid"] = u"bla"
+        song.write()
+        tag = asf.ASF(self.f)
+        self.assertEqual(tag["MusicBrainz/Release Track Id"], [u"bla"])
+
     def test_invalid(self):
         path = os.path.join(DATA_DIR, 'empty.xm')
         self.assertTrue(os.path.exists(path))
