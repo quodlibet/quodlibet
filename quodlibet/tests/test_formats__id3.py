@@ -299,6 +299,21 @@ class TID3File(TestCase):
         f = mutagen.File(self.filename)
         self.failIf(f.tags.get("UFID:http://musicbrainz.org"))
 
+    def test_mb_release_track_id(self):
+        f = mutagen.File(self.filename)
+        f.tags.add(
+            mutagen.id3.TXXX(encoding=3, desc=u"MusicBrainz Release Track Id",
+                             text=["bla"]))
+        f.save()
+        song = MP3File(self.filename)
+        self.assertEqual(song["musicbrainz_releasetrackid"], u"bla")
+        song["musicbrainz_releasetrackid"] = u"foo"
+        song.write()
+        f = mutagen.File(self.filename)
+        frames = f.tags.getall("TXXX:MusicBrainz Release Track Id")
+        self.assertTrue(frames)
+        self.assertEqual(frames[0].text, [u"foo"])
+
     def test_load_comment(self):
         # comm with empty descriptions => comment
         f = mutagen.File(self.filename)

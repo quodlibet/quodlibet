@@ -276,6 +276,7 @@ def build_song_data(release, track):
     meta["artist"] = join([a.name for a in track.artists])
     meta["artistsort"] = join([a.sort_name for a in track.artists])
     meta["musicbrainz_artistid"] = join([a.id for a in track.artists])
+    meta["musicbrainz_releasetrackid"] = track.id
 
     # clean up "redundant" data
     if meta["albumartist"] == meta["albumartistsort"]:
