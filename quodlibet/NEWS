@@ -1,3 +1,15 @@
+.. _release-3.7.0:
+
+3.7.0 (????-??-??)
+------------------
+
+Packaging Changes:
+  * **Mutagen 1.32** required
+  * **udisks1** support removed
+  * New dependency: **python-requests** (>= 2.2.1)
+  * **PyGObject 3.12** required
+
+
 .. _release-3.6.2:
 
 3.6.2 (2016-05-24) - It seemed like there was a lesson here, but nobody was sure what it was
@@ -26,6 +38,18 @@
 
 3.6.0 (2016-03-24) - It is altogether fitting and proper that we should do this
 -------------------------------------------------------------------------------
+
+Packaging Changes:
+  * **Mutagen 1.30** required
+  * **GTK+ 3.10** required
+  * **PyGObject 3.10** required
+  * **webkitgtk-3.0** → **webkit2gtk-4.0** (Lyrics Window plugin)
+  * **sphinx 1.3** required for building the documentation
+  * New optional plugin dependency: **libappindicator-gtk3** + **typelibs**:
+    for the Tray Icon plugin under Ubuntu Unity and KDE Plasma
+  * **python-musicbrainzngs** (>= 0.5) instead of **python-musicbrainz2**
+  * **python-cddb** no longer needed
+  * **libsoup** (>= 2.44) + **typelibs** required
 
 * Add a keyboard shortcut window. :bug:`1837`
 * Add ~language, which shows the language name for iso639 codes
@@ -137,6 +161,9 @@ Wayland:
 3.5.0 (2015-10-07) - BETTER ANSWERS TO "HEY HOW ARE YOU?" THAN "I'M FINE"
 -------------------------------------------------------------------------
 
+Packaging Changes:
+  * **Mutagen 1.27** required
+
 General:
  * Add --print-query-text to get the current query for browsers that support
    it :bug:`1634`
@@ -210,41 +237,51 @@ Regressions:
 3.4.0 (2015-04-09) - She knew every of the things
 -------------------------------------------------
 
- * Improved Gnome 3.16 compatibility
+Packaging Changes:
+  * The main repo moved from Mercurial (Google Code) to Git (GitHub)
+  * The build should now be reproducible
+  * **gtk-update-icon-cache** is no longer a build dependency
+  * **gettext >= 0.15** is required now at build time
+  * A complete **icon theme** is now required (this was also partly the case
+    with 3.3) and an icon theme including symbolic icons is recommended.
+    **adwaita-icon-theme** provides both for example.
+  * **Mutagen 1.22** required, **Mutagen 1.27** recommended
+  * New files installed to ``/usr/share/icons/hicolor/scalable/apps/``
+  * **quodlibet.desktop** now contains a **MimeType** entry, which means
+    calling **update-desktop-database** is needed after package installation.
 
-   * Fixes for the list tooltips in combination with GTK 3.16 scrollbars
-   * Include symbolic icons for gnome-shell 3.16
+* Improved Gnome 3.16 compatibility
 
- * Album browser: faster cover loading
- * Devices: fix detection of Sansa Clip+ with some setups :bug:`1523`
- * Prefs: restore active tab
- * Songlist: support patterns in the filter song list menu
- * New shortcut ``ctrl+shift+j``, like ``ctrl+j`` but refilters the browser
-   always
- * Make build reproducible :bug:`1524`
- * MP4: include codec information in ``~format``
-   (needs a library reload) :bug:`1505`
- * GStreamer: fix a deadlock when seeking right at a song change
- * Queue: don't decide the next song too early :bug:`1496`
- * Song info widget: provide the full song context menu :bug:`1527`
- * CLI: ``--run`` to make QL start if it isn't already.
-   Useful for pairing with other commands like ``--play-file``. :bug:`67`
- * Add supported mime types to desktop file :bug:`67`
- * CLI: ``--play-file`` doesn't add songs to the library anymore :bug:`1537`
- * Fix QL starting twice if started in quick succession
- * Tooltips: don't span multiple monitors :bug:`1554`
- * MPD-Server: Fix a crash when changing the port number :bug:`1559`
- * Fix short hang on shutdown with GStreamer plugins active :bug:`1567`
- * Fix setting an embedded image in case the file doesn't have tags :bug:`1531`
- * OSX: add a menu bar for Ex Falso
- * Fifo: Fix commands failing in case QL is busy :bug:`1542`
- * ...
+ * Fixes for the list tooltips in combination with GTK 3.16 scrollbars
+ * Include symbolic icons for gnome-shell 3.16
+
+* Album browser: faster cover loading
+* Devices: fix detection of Sansa Clip+ with some setups :bug:`1523`
+* Prefs: restore active tab
+* Songlist: support patterns in the filter song list menu
+* New shortcut ``ctrl+shift+j``, like ``ctrl+j`` but refilters the browser
+  always
+* Make build reproducible :bug:`1524`
+* MP4: include codec information in ``~format``
+  (needs a library reload) :bug:`1505`
+* GStreamer: fix a deadlock when seeking right at a song change
+* Queue: don't decide the next song too early :bug:`1496`
+* Song info widget: provide the full song context menu :bug:`1527`
+* CLI: ``--run`` to make QL start if it isn't already.
+  Useful for pairing with other commands like ``--play-file``. :bug:`67`
+* Add supported mime types to desktop file :bug:`67`
+* CLI: ``--play-file`` doesn't add songs to the library anymore :bug:`1537`
+* Fix QL starting twice if started in quick succession
+* Tooltips: don't span multiple monitors :bug:`1554`
+* MPD-Server: Fix a crash when changing the port number :bug:`1559`
+* Fix short hang on shutdown with GStreamer plugins active :bug:`1567`
+* Fix setting an embedded image in case the file doesn't have tags :bug:`1531`
+* OSX: add a menu bar for Ex Falso
+* Fifo: Fix commands failing in case QL is busy :bug:`1542`
+* ...
 
 Translations:
  * Use msgctx for message contexts
-
-Packaging:
- * See the Packaging Guide for changes
 
 
 .. _release-3.3.1:
@@ -266,6 +303,10 @@ Fixes:
 
 3.3.0 (2014-12-31) - PARALLEL UNIVERSES. Travel there and THEN go back in time, and you can mess things up as much as you want.
 -------------------------------------------------------------------------------------------------------------------------------
+
+Packaging Changes:
+  * New optional plugin dependency: **webkitgtk-3.0 + typelibs**
+  * **Mutagen 1.27** recommended
 
 General:
  * Support ``--query`` with all browsers that have a search entry. :bug:`1437`
@@ -383,6 +424,16 @@ Translations
 
 3.2.0 (2014-08-01) - WHAT KIND OF GOD MADE IT SO LIONS HUG BACK TOO HARD
 ------------------------------------------------------------------------
+
+Packaging Changes:
+  * **Plugins got merged** into Quod Libet. This means the quodlibet-plugins
+    tarball is gone and plugins will be installed by ``setup.py install``. For
+    distros that used to include the plugins in the main package this means all
+    plugin related packaging code can simply be removed. For distros that
+    offered separate packages the installation can be split by packaging
+    ``quodlibet/ext`` in a separate package. Quod Libet can run without it.
+  * **UDisks2** is supported, in addition to UDisks1
+  * **Python 2.7** required instead of 2.6 (might still work, but not tested)
 
 Tags:
  * ~people and ~performer don't show roles anymore, which makes them more
