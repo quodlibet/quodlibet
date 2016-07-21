@@ -139,9 +139,9 @@ class AdvancedPreferences(EventPlugin):
 
         rows.append(
             boolean_config(
-                "settings", "osx_mmkeys",
-                "OS X Multimedia Keys:",
-                "Enable experimental mmkeys support (restart required)"))
+                "settings", "disable_mmkeys",
+                "Disable Multimedia Keys:",
+                "(restart required)"))
 
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
