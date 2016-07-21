@@ -151,6 +151,15 @@ class AdvancedPreferences(EventPlugin):
             table.attach(button, 2, 3, row, row + 1,
                          xoptions=Gtk.AttachOptions.SHRINK)
 
+        def on_click(button):
+            button.hide()
+            table.set_no_show_all(False)
+            table.show_all()
+
+        button = Gtk.Button(label=_("I know what I'm doing"))
+        button.connect("clicked", on_click)
+        vb.pack_start(button, True, True, 0)
         vb.pack_start(table, True, True, 0)
+        table.set_no_show_all(True)
 
         return vb
