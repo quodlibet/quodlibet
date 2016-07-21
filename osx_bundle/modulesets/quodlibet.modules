@@ -65,7 +65,6 @@
       <dep package="meta-gtk-osx-python-gtk3"/>
       <dep package="pyobjc"/>
       <dep package="certifi"/>
-      <dep package="requests"/>
     </dependencies>
   </metamodule>
 
@@ -239,11 +238,6 @@
   <distutils id="certifi">
     <branch repo="pypi" checkoutdir="certifi-2016.2.28" module="source/c/certifi/certifi-2016.2.28.tar.gz"
         version="2016.2.28" md5sum="5d672aa766e1f773c75cfeccd02d3650"/>
-  </distutils>
-
-  <distutils id="requests">
-    <branch repo="pypi" checkoutdir="requests-2.10" module="49/6f/183063f01aae1e025cf0130772b55848750a2f3a89bfa11b385b35d7329d/requests-2.10.0.tar.gz"
-        version="2.10" md5sum="a36f7a64600f1bfec4d55ae021d232ae"/>
   </distutils>
 
   <distutils id="feedparser">

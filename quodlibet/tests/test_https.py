@@ -5,8 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-import requests
-
 from gi.repository import Gio, Soup, GLib
 
 from tests import TestCase, skipIf, skipUnlessNetwork
@@ -49,13 +47,6 @@ class Thttps(TestCase):
         for url in self.BAD:
             with self.assertRaises(Exception):
                 build_opener().open(url).close()
-
-    def test_requests(self):
-        for url in self.GOOD:
-            requests.get(url).close()
-        for url in self.BAD:
-            with self.assertRaises(requests.RequestException):
-                requests.get(url).close()
 
     def test_gio(self):
         if is_osx():

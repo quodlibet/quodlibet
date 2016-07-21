@@ -159,7 +159,6 @@
   <data>${prefix}/lib/python2.7/site-packages/musicbrainzngs</data>
   <data>${prefix}/lib/python2.7/site-packages/mutagen</data>
   <data>${prefix}/lib/python2.7/site-packages/certifi</data>
-  <data>${prefix}/lib/python2.7/site-packages/requests</data>
   <!-- pyObjC -->
   <data>${prefix}/lib/python2.7/distutils</data>
   <data>${prefix}/lib/python2.7/site-packages/pkg_resources.py</data>
