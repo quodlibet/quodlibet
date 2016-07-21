@@ -65,7 +65,7 @@ def control(command, arg=None, ignore_error=False):
 
 
 def process_arguments(argv):
-    from quodlibet.util.uri import URI
+    from quodlibet.util.path import uri_from_path
     from quodlibet import util
     from quodlibet import const
 
@@ -216,7 +216,7 @@ def process_arguments(argv):
             queue("volume -")
         elif command == "enqueue" or command == "unqueue":
             try:
-                filename = URI(arg).filename
+                filename = uri_from_path(arg)
             except ValueError:
                 filename = arg
             queue(command, filename)
@@ -224,7 +224,7 @@ def process_arguments(argv):
             queue(command, arg)
         elif command == "play-file":
             try:
-                filename = URI(arg).filename
+                filename = uri_from_path(arg)
             except ValueError:
                 filename = os.path.abspath(util.path.expanduser(arg))
             queue("play-file", filename)

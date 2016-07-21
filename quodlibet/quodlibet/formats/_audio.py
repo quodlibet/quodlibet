@@ -16,12 +16,11 @@ import time
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, is_fsnative
-from quodlibet.util.path import normalize_path, fsnative, escape_filename
+from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, \
+    is_fsnative, normalize_path, fsnative, escape_filename, uri_from_path
 from quodlibet.util.string import encode, decode, isascii
 
 from quodlibet.util import iso639
-from quodlibet.util.uri import URI
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
@@ -346,7 +345,7 @@ class AudioFile(dict, ImageContainer):
                 try:
                     return self["~uri"]
                 except KeyError:
-                    return URI.frompath(self["~filename"])
+                    return text_type(uri_from_path(self["~filename"]))
             elif key == "format":
                 return self.get("~format", self.format)
             elif key == "codec":

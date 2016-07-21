@@ -32,7 +32,7 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, unescape, print_w
-from quodlibet.util.uri import URI
+from quodlibet.util.path import uri_from_path
 
 
 # configuration stuff
@@ -345,8 +345,7 @@ class Notify(EventPlugin):
         fileobj = app.cover_manager.get_cover(song)
         self._set_image_fileobj(fileobj)
         if fileobj:
-            image_path = fileobj.name
-            return URI.frompath(image_path).decode("utf-8")
+            return unicode(uri_from_path(fileobj.name))
         return u""
 
     def show_notification(self, song):
