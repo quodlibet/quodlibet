@@ -15,7 +15,8 @@ import codecs
 import shlex
 import urllib
 
-from quodlibet.compat import pathname2url, text_type, PY2
+from quodlibet.compat import pathname2url, text_type, PY2, urlparse, \
+    url2pathname
 from quodlibet.util.string import decode
 from . import windows
 from .misc import environ, get_fs_encoding
@@ -543,3 +544,50 @@ def get_home_dir():
         return windows.get_profile_dir()
     else:
         return expanduser("~")
+
+
+def uri_from_path(path):
+    """Takes a file path and returns an URI
+
+    The URI type is the same as for paths (unicode on Windows, bytes on Unix)
+
+    Returns:
+        fsnative
+    """
+
+    assert is_fsnative(path)
+
+    prefix = fsnative(u"file://")
+
+    if os.name == "nt":
+        return prefix + pathname2url(path.encode("utf-8")).decode("ascii")
+    else:
+        return prefix + pathname2url(path)
+
+
+def uri_to_path(uri):
+    """Takes a file URI and returns the path.
+
+    Args:
+        uri: Either bytes or text URI
+    Raises:
+        ValueError: in case the URI isn't a valid file URI
+    Returns:
+        fsnative
+    """
+
+    if not isinstance(uri, bytes):
+        uri = uri.encode("ascii")
+
+    parsed = urlparse(uri)
+    scheme = parsed[0]
+    netloc = parsed[1]
+    path = parsed[2]
+
+    if scheme != b"file" or netloc:
+        raise ValueError("Not a file URI")
+    else:
+        if os.name == "nt":
+            return url2pathname(path).decode("utf-8")
+        else:
+            return url2pathname(path)
