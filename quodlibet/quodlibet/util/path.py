@@ -552,7 +552,7 @@ def uri_from_path(path):
     The URI type is the same as for paths (unicode on Windows, bytes on Unix)
 
     Returns:
-        fsnative
+        str
     """
 
     assert is_fsnative(path)
@@ -560,9 +560,28 @@ def uri_from_path(path):
     prefix = fsnative(u"file://")
 
     if os.name == "nt":
-        return prefix + pathname2url(path.encode("utf-8")).decode("ascii")
+        return prefix + pathname2url(path.encode("utf-8"))
     else:
         return prefix + pathname2url(path)
+
+
+def uri_is_valid(uri):
+    """Returns True if the passed in text is a valid URI (file, http, etc.)
+
+    Returns:
+        bool
+    """
+
+    if not isinstance(uri, bytes):
+        uri = uri.encode("ascii")
+
+    parsed = urlparse(uri)
+    if not parsed.scheme or not len(parsed.scheme) > 1:
+        return False
+    elif not (parsed.netloc or parsed.path):
+        return False
+    else:
+        return True
 
 
 def uri_to_path(uri):

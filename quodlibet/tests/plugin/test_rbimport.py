@@ -11,15 +11,14 @@ from quodlibet.formats import AudioFile
 
 from tests.helper import temp_filename
 from quodlibet.library.libraries import SongFileLibrary
-from quodlibet.util.uri import URI
-from quodlibet.util.path import find_mount_point
+from quodlibet.util.path import find_mount_point, uri_from_path
 from . import PluginTestCase
 
 
 def get_example_xml(song_path, rating, lastplayed):
 
-    song_uri = URI.frompath(song_path)
-    mount_uri = URI.frompath(find_mount_point(song_path))
+    song_uri = uri_from_path(song_path)
+    mount_uri = uri_from_path(find_mount_point(song_path))
 
     return """\
 <?xml version="1.0" standalone="yes"?>

@@ -8,7 +8,8 @@ import unittest
 from tests import TestCase
 
 from quodlibet.util.path import pathname2url_win32, iscommand, limit_path, \
-    fsnative, is_fsnative, get_home_dir, uri_to_path, uri_from_path
+    fsnative, is_fsnative, get_home_dir, uri_to_path, uri_from_path, \
+    uri_is_valid
 from quodlibet.util import print_d
 
 is_win = os.name == "nt"
@@ -45,16 +46,22 @@ class Turi(TestCase):
         self.assertRaises(ValueError, uri_to_path, "file://foo.txt")
         self.assertRaises(ValueError, uri_to_path, "http://example.com")
 
+    def test_path_as_uri(self):
+        if os.name != "nt":
+            self.assertRaises(ValueError, uri_to_path, "/foo")
+        else:
+            self.assertRaises(ValueError, uri_to_path, u"C:\\foo")
+
     def test_uri_from_path(self):
         if os.name != "nt":
             uri = uri_from_path(fsnative(u"/öäü.txt"))
-            self.assertEqual(uri, fsnative(u"file:///%C3%B6%C3%A4%C3%BC.txt"))
+            self.assertEqual(uri, u"file:///%C3%B6%C3%A4%C3%BC.txt")
         else:
             uri = uri_from_path(fsnative(u"C:\\öäü.txt"))
             self.assertEqual(
-                uri, fsnative(u"file:///C:/%C3%B6%C3%A4%C3%BC.txt"))
+                uri, "file:///C:/%C3%B6%C3%A4%C3%BC.txt")
             self.assertEqual(
-                uri_from_path(u"C:\\SomeDir\xe4"), u"file:///C:/SomeDir%C3%A4")
+                uri_from_path(u"C:\\SomeDir\xe4"), "file:///C:/SomeDir%C3%A4")
 
     def test_roundtrip(self):
         if os.name == "nt":
@@ -72,6 +79,15 @@ class Turi(TestCase):
             self.assertEqual(
                 uri_from_path(u"\\\\server\\share\\path"),
                 u"file:////server/share/path")
+
+    def test_uri_is_valid(self):
+        self.assertTrue(uri_is_valid(u"file:///foo"))
+        self.assertTrue(uri_is_valid(u"file:///C:/foo"))
+        self.assertTrue(uri_is_valid(u"http://www.example.com"))
+
+        self.assertFalse(uri_is_valid(u"/bla"))
+        self.assertFalse(uri_is_valid(u"test"))
+        self.assertFalse(uri_is_valid(u""))
 
 
 class Tget_x_dir(TestCase):

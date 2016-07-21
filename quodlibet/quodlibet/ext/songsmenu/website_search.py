@@ -16,11 +16,11 @@ from quodlibet.qltk import Icons
 from quodlibet.util import website
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
 from quodlibet.util import connect_obj, print_w, print_d
+from quodlibet.util.path import uri_is_valid
 from urllib import quote_plus
 
 from gi.repository import Gtk
 import os
-from quodlibet.util.uri import URI
 
 
 class WebsiteSearch(SongsMenuPlugin):
@@ -68,9 +68,7 @@ class WebsiteSearch(SongsMenuPlugin):
             # TODO: some pattern validation too (that isn't slow)
             try:
                 p = Pattern(s)
-                u = URI(s)
-                return (p and u.netloc and
-                        u.scheme in ["http", "https", "ftp", "file"])
+                return (p and uri_is_valid(s))
             except ValueError:
                 return False
 

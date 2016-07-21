@@ -20,11 +20,10 @@ except ImportError:
     dbus = None
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.util.uri import URI
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
-from quodlibet.util.path import is_fsnative
+from quodlibet.util.path import is_fsnative, uri_from_path
 
 
 class BrowseError(Exception):
@@ -87,7 +86,7 @@ def browse_folders_thunar(songs, display=""):
         # open each folder and select the first file we have selected
         for dirname, sub_songs in group_songs(songs).items():
             bus_iface.DisplayFolderAndSelect(
-                URI.frompath(dirname),
+                uri_from_path(dirname),
                 sub_songs[0]("~basename"),
                 display,
                 get_startup_id())

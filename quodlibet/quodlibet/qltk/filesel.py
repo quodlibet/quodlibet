@@ -24,8 +24,7 @@ from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
 
 from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
-    glib2fsnative, fsnative, xdg_get_user_dirs, get_home_dir
-from quodlibet.util.uri import URI
+    glib2fsnative, fsnative, xdg_get_user_dirs, get_home_dir, uri_to_path
 from quodlibet.util import connect_obj
 
 
@@ -313,7 +312,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             uris = data.get_uris()
             if uris:
                 try:
-                    filename = URI(uris[0]).filename
+                    filename = uri_to_path(uris[0])
                 except ValueError:
                     pass
                 else:

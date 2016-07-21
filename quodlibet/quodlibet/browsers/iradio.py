@@ -32,8 +32,8 @@ from quodlibet.qltk.notif import Task
 from quodlibet.qltk import Icons, ErrorMessage, WarningMessage
 from quodlibet.util import copool, connect_destroy, sanitize_tags, \
     connect_obj, escape
+from quodlibet.util.path import uri_is_valid
 from quodlibet.util.string import decode, encode
-from quodlibet.util.uri import URI
 from quodlibet.util import print_w
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
@@ -350,11 +350,7 @@ class AddNewStation(GetStringDialog):
         for line in text.splitlines():
             line = line.strip()
 
-            try:
-                URI(line)
-            except ValueError:
-                pass
-            else:
+            if uri_is_valid(line):
                 return line
 
 
