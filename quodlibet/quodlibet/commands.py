@@ -15,8 +15,7 @@ from quodlibet import browsers
 
 from quodlibet.compat import cBytesIO as StringIO
 from quodlibet import util
-from quodlibet.util.uri import URI
-from quodlibet.util.path import fsnative
+from quodlibet.util.path import fsnative, uri_to_path
 from quodlibet.util import print_d, print_e
 
 from quodlibet.qltk.browser import LibraryBrowser
@@ -352,7 +351,7 @@ def _enqueue_files(app, value):
     songs = []
     for param in split_escape(value, ","):
         try:
-            song_path = URI(param).filename
+            song_path = uri_to_path(param)
         except ValueError:
             song_path = param
         if song_path in library:

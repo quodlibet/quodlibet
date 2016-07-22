@@ -31,7 +31,6 @@ function download_and_verify {
 
     local FILEHASHES="\
 7f6507d400d07edfd1ea8205da36808009b0c539f5b8a6e0ab54337b955e6dc3  feedparser-5.1.3.tar.bz2
-c577815dd00f1394203fc44eb979724b098f88264a9ef898ee45b8e5e9cf587f  requests-2.9.1.tar.gz
 5e8eccf95924658c97b990b50552addb64f55e1e3dfe4880456ac1f287dc79d0  certifi-2016.2.28.tar.gz
 d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-preview20141217.exe
 7721ded04caf36fc30661165ae311fed342f7503b048e9db3d52764108ed3ab5  mutagen-$MUTAGEN_VER.tar.gz
@@ -63,7 +62,6 @@ fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
 
         pip download --dest="$BIN" --no-binary=":all:" "mutagen==$MUTAGEN_VER"
         pip install --download="$BIN" feedparser==5.1.3
-        pip download --dest="$BIN" --no-binary=":all:" "requests==2.9.1"
         pip download --dest="$BIN" --no-binary=":all:" "certifi==2016.2.28"
 
         # check again
@@ -229,7 +227,6 @@ function install_pydeps {
     cd "$BUILD_ENV"/bin
     wine $PYTHON -m pip install "mutagen-$MUTAGEN_VER.tar.gz"
     wine $PYTHON -m pip install feedparser-5.1.3.tar.bz2
-    wine $PYTHON -m pip install requests-2.9.1.tar.gz
     wine $PYTHON -m pip install certifi-2016.2.28.tar.gz
     wine $PYTHON -m pip install python-musicbrainzngs-0.5.tar.gz
     wine $PYTHON -m easy_install -Z py2exe-0.6.9.win32-py2.7.exe

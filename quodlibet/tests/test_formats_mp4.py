@@ -46,6 +46,19 @@ class TMP4File(TestCase):
     def test_encoding(self):
         self.assertEqual(self.song("~encoding"), "FAAC 1.24")
 
+    def test_mb_release_track_id(self):
+        tag = mutagen.mp4.MP4(self.f)
+        tag["----:com.apple.iTunes:MusicBrainz Release Track Id"] = [b"foo"]
+        tag.save()
+        song = MP4File(self.f)
+        self.assertEqual(song("musicbrainz_releasetrackid"), u"foo")
+        song["musicbrainz_releasetrackid"] = u"bla"
+        song.write()
+        tag = mutagen.mp4.MP4(self.f)
+        self.assertEqual(
+            tag["----:com.apple.iTunes:MusicBrainz Release Track Id"],
+            [b"bla"])
+
     def test_basic(self):
         self._assert_tag_supported("title")
         self._assert_tag_supported("artist")

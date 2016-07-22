@@ -45,6 +45,7 @@ class WMAFile(AudioFile):
         "WM/Mood": "mood",
         "WM/EncodedBy": "encodedby",
         "MusicBrainz/Track Id": "musicbrainz_trackid",
+        "MusicBrainz/Release Track Id": "musicbrainz_releasetrackid",
         "MusicBrainz/Album Id": "musicbrainz_albumid",
         "MusicBrainz/Artist Id": "musicbrainz_artistid",
         "MusicBrainz/Album Artist Id": "musicbrainz_albumartistid",

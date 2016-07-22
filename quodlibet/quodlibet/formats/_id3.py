@@ -77,6 +77,7 @@ class ID3File(AudioFile):
     # http://bugs.musicbrainz.org/ticket/1383
     # http://musicbrainz.org/doc/MusicBrainzTag
     TXXX_MAP = {
+        u"MusicBrainz Release Track Id": "musicbrainz_releasetrackid",
         u"MusicBrainz Artist Id": "musicbrainz_artistid",
         u"MusicBrainz Album Id": "musicbrainz_albumid",
         u"MusicBrainz Album Artist Id": "musicbrainz_albumartistid",

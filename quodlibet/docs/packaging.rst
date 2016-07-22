@@ -7,82 +7,6 @@ This page is directed at distributions, packagers and developers. Please
 :ref:`contact us <Contact>` if there is anything unclear / out of date /
 missing. For license & copyright information see :ref:`license`
 
-
-Changes
--------
-
-3.7
-^^^
-
-* **Mutagen 1.32** required
-* **udisks1** support removed
-* New dependency: **python-requests** (>= 2.2.1)
-* **PyGObject 3.12** required
-
-
-3.6
-^^^
-
-* **Mutagen 1.30** required
-* **GTK+ 3.10** required
-* **PyGObject 3.10** required
-* **webkitgtk-3.0** → **webkit2gtk-4.0** (Lyrics Window plugin)
-* **sphinx 1.3** required for building the documentation
-* New optional plugin dependency: **libappindicator-gtk3** + **typelibs**:
-  for the Tray Icon plugin under Ubuntu Unity and KDE Plasma
-* **python-musicbrainzngs** (>= 0.5) instead of **python-musicbrainz2**
-* **python-cddb** no longer needed
-* **libsoup** (>= 2.44) + **typelibs** required
-
-
-3.5
-^^^
-
-* **Mutagen 1.27** required
-
-
-3.4
-^^^
-
-* The main repo moved from Mercurial (Google Code) to Git (GitHub)
-* The build should now be reproducible
-* **gtk-update-icon-cache** is no longer a build dependency
-* **gettext >= 0.15** is required now at build time
-* A complete **icon theme** is now required (this was also partly the case
-  with 3.3) and an icon theme including symbolic icons is recommended.
-  **adwaita-icon-theme** provides both for example.
-* **Mutagen 1.22** required, **Mutagen 1.27** recommended
-* New files installed to ``/usr/share/icons/hicolor/scalable/apps/``
-* **quodlibet.desktop** now contains a **MimeType** entry, which means
-  calling **update-desktop-database** is needed after package installation.
-
-
-3.3
-^^^
-
-* New optional plugin dependency: **webkitgtk-3.0 + typelibs**
-* **Mutagen 1.27** recommended
-
-3.2
-^^^
-
-* **Plugins got merged** into Quod Libet. This means the quodlibet-plugins
-  tarball is gone and plugins will be installed by ``setup.py install``. For
-  distros that used to include the plugins in the main package this means all
-  plugin related packaging code can simply be removed. For distros that
-  offered separate packages the installation can be split by packaging
-  ``quodlibet/ext`` in a separate package. Quod Libet can run without it.
-
-* **UDisks2** is supported, in addition to UDisks1
-
-* **Python 2.7** required instead of 2.6 (might still work, but not tested)
-
-3.1
-^^^
-
-* **No changes** compared to 3.0
-
-
 Existing Packaging
 ------------------
 
@@ -110,7 +34,6 @@ The following software is needed to start Ex Falso or Quod Libet.
 * **mutagen** (>= 1.30)
 * **GTK+** (>= 3.10)
 * **libsoup** (>= 2.44)
-* **python-requests** (>= 2.2.1)
 * On OS X only: **PyObjC**
 
 For icons a complete **icon theme** is needed, preferably with symbolic icons. 

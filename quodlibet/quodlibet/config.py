@@ -122,8 +122,8 @@ INITIAL = {
         # support sending them to the trash.
         "bypass_trash": "false",
 
-        # our implementation is buggy and disabled by default
-        "osx_mmkeys": "false",
+        # osx implementation might be buggy so let users disable it
+        "disable_mmkeys": "false",
     },
     "rename": {
         "spaces": "false",

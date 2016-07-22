@@ -220,6 +220,26 @@ class TBrainz(PluginTestCase):
         self.assertEqual(dummy("date"), u'2003')
         self.assertEqual(dummy("title"), u'h\xb3\xe6')
 
+    def test_build_mbids(self):
+        Release = brainz.mb.Release
+        build_song_data = brainz.widgets.build_song_data
+        apply_options = brainz.widgets.apply_options
+        apply_to_song = brainz.widgets.apply_to_song
+
+        release = Release(TEST_DATA)
+        track = release.tracks[1]
+        meta = build_song_data(release, track)
+        apply_options(meta, True, False, False, True)
+        dummy = AudioFile()
+        apply_to_song(meta, dummy)
+
+        self.assertEqual(dummy("musicbrainz_releasetrackid"), track.id)
+        self.assertEqual(dummy("musicbrainz_albumid"), release.id)
+        self.assertEqual(
+            dummy.list("musicbrainz_artistid"),
+            [u'410c9baf-5469-44f6-9852-826524b80c61',
+             u'146c01d0-d3a2-44c3-acb5-9208bce75e14'])
+
     def test_pregap(self):
         Release = brainz.mb.Release
 

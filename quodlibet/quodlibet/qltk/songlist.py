@@ -25,11 +25,11 @@ from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk import Icons
 from quodlibet.qltk.delete import trash_songs
-from quodlibet.util.uri import URI
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column
 from quodlibet.util import connect_destroy
+from quodlibet.util.path import uri_to_path
 
 
 DND_QL, DND_URI_LIST = range(2)
@@ -271,7 +271,7 @@ class SongListDnDMixin(object):
         elif info == DND_URI_LIST:
             def to_filename(s):
                 try:
-                    return URI(s).filename
+                    return uri_to_path(s)
                 except ValueError:
                     return None
 

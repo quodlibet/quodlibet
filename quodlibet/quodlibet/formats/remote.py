@@ -8,7 +8,6 @@
 import os
 
 from quodlibet.util.path import fsnative, is_fsnative
-from quodlibet.util.uri import URI
 
 from ._audio import AudioFile
 
@@ -23,8 +22,8 @@ class RemoteFile(AudioFile):
     format = "Remote File"
 
     def __init__(self, uri):
-        self["~uri"] = str(URI(uri))
-        self.sanitize(fsnative(unicode(self["~uri"])))
+        self["~uri"] = unicode(uri)
+        self.sanitize(fsnative(self["~uri"]))
 
     def __getitem__(self, key):
         # we used to save them with the wrong type

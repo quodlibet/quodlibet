@@ -16,8 +16,8 @@ Since there can be multiple builds per release for the same release type
 is used and not the release version.
 """
 
-import requests
-from requests.exceptions import RequestException
+import urllib2
+
 from gi.repository import Gtk
 
 import quodlibet
@@ -64,13 +64,13 @@ def fetch_versions(build_type, timeout=5.0):
         raise UpdateError(error)
 
     try:
-        r = requests.get(
+        content = urllib2.urlopen(
             u"https://quodlibet.github.io/appcast/%s.rss" % build_type,
-            timeout=timeout)
-    except RequestException as error:
+            timeout=timeout).read()
+    except Exception as error:
         raise UpdateError(error)
 
-    d = feedparser.parse(r.content)
+    d = feedparser.parse(content)
     if d.bozo:
         raise UpdateError(d.bozo_exception)
 
