@@ -225,7 +225,7 @@ def process_arguments(argv):
         elif command == "play-file":
             try:
                 filename = uri_from_path(arg)
-                if uri.scheme == "quodlibet":
+                if filename.startswith("quodlibet://"):
                     # TODO: allow handling of URIs without --play-file
                     queue("uri-received", arg)
             except ValueError:
