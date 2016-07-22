@@ -6,7 +6,7 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, Pango
-from urlparse import parse_qs
+from urlparse import parse_qs, urlparse
 
 from quodlibet import config, app
 from quodlibet import qltk
@@ -23,7 +23,6 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import Align, ScrolledWindow
 from quodlibet.util import connect_destroy, DeferredSignal, website, enum
 from quodlibet.util.dprint import print_w, print_d
-from quodlibet.util.uri import URI
 
 
 class SoundcloudBrowser(Browser, util.InstanceTracker):
@@ -325,8 +324,9 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         if not PROCESS_QL_URLS:
             print_w("Processing of quodlibet:// URLs is disabled. (%s)" % uri)
             return
-        uri = URI(uri)
-        if uri.scheme == "quodlibet" and "/callbacks/soundcloud" in uri:
+        uri = urlparse(uri)
+        if (uri.scheme == 'quodlibet' and uri.netloc == 'callbacks' and
+                uri.path == '/soundcloud'):
             try:
                 code = parse_qs(uri.query)["code"][0]
             except IndexError:
@@ -335,7 +335,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             print_d("Processing Soundcloud callback (%s)" % (uri,))
             self.api_client.get_token(code)
         else:
-            print_w("Unknown scheme passed in URL (%s)" % (uri,))
+            print_w("Unknown URL format (%s)" % (uri,))
 
     def __on_authenticated(self, obj, data):
         name = data.username
