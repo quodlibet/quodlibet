@@ -10,9 +10,14 @@ Things that are more or less direct wrappers around GTK widgets to
 ease constructors.
 """
 
-from gi.repository import Gtk, GObject, GLib, Gio
+from gi.repository import Gtk, GObject, GLib, Gio, GdkPixbuf
+
+from quodlibet.util.dprint import print_d
 
 from quodlibet import util
+from quodlibet.compat import urlopen
+from quodlibet.util import print_w
+from quodlibet.util.thread import call_async, Cancellable
 from quodlibet.qltk import add_css, is_accel, gtk_version
 
 from .paned import Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, \
@@ -400,3 +405,50 @@ class ToggleAction(Gtk.ToggleAction):
 class RadioAction(Gtk.RadioAction):
     def __init__(self, *args, **kargs):
         GObject.Object.__init__(self, *args, **kargs)
+
+
+class WebImage(Gtk.Image):
+    """A Gtk.Image which loads the image over HTTP in the background
+    and displays it when available.
+    """
+
+    def __init__(self, url, width=-1, height=-1):
+        """
+        Args:
+            url (str): an HTTP URL
+            width (int): a width to reserve for the image or -1
+            height (int): a height to reserve for the image or -1
+        """
+
+        super(WebImage, self).__init__()
+
+        self._cancel = Cancellable()
+        call_async(self._fetch_image, self._cancel, self._finished, (url,))
+        self.connect("destroy", self._on_destroy)
+        self.set_size_request(width, height)
+        self.set_from_icon_name("image-loading", Gtk.IconSize.BUTTON)
+
+    def _on_destroy(self, *args):
+        self._cancel.cancel()
+
+    def _fetch_image(self, url):
+        try:
+            data = urlopen(url).read()
+        except Exception as e:
+            print_w("Couldn't read web image from %s (%s)" % (url, e))
+            return None
+        try:
+            loader = GdkPixbuf.PixbufLoader()
+        except GLib.GError as e:
+            print_w("Couldn't create GdkPixbuf (%s)" % e)
+        else:
+            loader.write(data)
+            loader.close()
+            print_d("Got web image from %s" % url)
+            return loader.get_pixbuf()
+
+    def _finished(self, pixbuf):
+        if pixbuf is None:
+            self.set_from_icon_name("image-missing", Gtk.IconSize.BUTTON)
+        else:
+            self.set_from_pixbuf(pixbuf)

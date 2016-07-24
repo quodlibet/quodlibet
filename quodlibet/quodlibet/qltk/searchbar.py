@@ -84,6 +84,13 @@ class SearchBarBox(Gtk.HBox):
         for child in self.get_children():
             child.show_all()
 
+    def set_enabled(self, enabled=True):
+        self.__entry.set_sensitive(enabled)
+        if enabled:
+            self.__uninhibit()
+        else:
+            self.__inhibit()
+
     def set_text(self, text):
         """Set the text without firing any signals"""
 
