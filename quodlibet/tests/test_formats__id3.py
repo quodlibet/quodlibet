@@ -55,7 +55,7 @@ class TID3Images(TestCase):
         song = MP3File(self.filename)
         self.failUnless(song.has_images)
         image = song.get_primary_image()
-        self.failUnlessEqual(image.file.read(), "bar2")
+        self.failUnlessEqual(image.read(), "bar2")
 
         # get_images()
         images = song.get_images()

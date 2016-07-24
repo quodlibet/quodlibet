@@ -487,7 +487,7 @@ class ID3File(AudioFile):
                 tag = mutagen.id3.ID3()
 
         try:
-            data = image.file.read()
+            data = image.read()
         except EnvironmentError as e:
             raise AudioFileError(e)
 

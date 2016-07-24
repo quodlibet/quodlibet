@@ -174,6 +174,20 @@ class EmbeddedImage(object):
             type(self).__name__, self.mime_type, self.width, self.height,
             APICType.to_string(self.type), self.file)
 
+    def read(self):
+        """Read the raw image data
+
+        Returns:
+            bytes
+        Raises:
+            IOError
+        """
+
+        self.file.seek(0)
+        data = self.file.read()
+        self.file.seek(0)
+        return data
+
     @property
     def sort_key(self):
         return APICType.sort_key(self.type)

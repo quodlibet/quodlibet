@@ -127,7 +127,7 @@ class TWMAFile(TestCase):
         image = self.song2.get_primary_image()
         self.assertTrue(image)
         self.assertEqual(image.mime_type, "image/jpeg")
-        self.assertTrue(image.file.read())
+        self.assertTrue(image.read())
 
     def test_get_image_invalid_data(self):
         tag = asf.ASF(self.f)
@@ -186,7 +186,7 @@ class TWMAFile(TestCase):
 
         image = self.song.get_primary_image()
         self.assertEqual(image.mime_type, "image/jpeg")
-        self.assertEqual(image.file.read(), "foo")
+        self.assertEqual(image.read(), "foo")
 
     def test_can_change_images(self):
         self.assertTrue(self.song.can_change_images)

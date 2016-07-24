@@ -208,7 +208,7 @@ class MutagenVCFile(AudioFile):
             audio = self.MutagenType(self["~filename"])
 
         try:
-            data = image.file.read()
+            data = image.read()
         except EnvironmentError as e:
             raise AudioFileError(e)
 
@@ -435,7 +435,7 @@ class FLACFile(MutagenVCFile):
             tag = FLAC(self["~filename"])
 
         try:
-            data = image.file.read()
+            data = image.read()
         except EnvironmentError as e:
             raise AudioFileError(e)
 

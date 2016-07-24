@@ -206,7 +206,7 @@ class WMAFile(AudioFile):
             tag = mutagen.asf.ASF(self["~filename"])
 
         try:
-            imagedata = image.file.read()
+            imagedata = image.read()
         except EnvironmentError as e:
             raise AudioFileError(e)
 

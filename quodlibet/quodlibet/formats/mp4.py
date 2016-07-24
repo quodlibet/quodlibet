@@ -216,7 +216,7 @@ class MP4File(AudioFile):
             tag = MP4(self["~filename"])
 
         try:
-            data = image.file.read()
+            data = image.read()
         except EnvironmentError:
             return
 

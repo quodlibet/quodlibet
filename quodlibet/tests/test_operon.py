@@ -502,7 +502,7 @@ class TOperonImageExtract(TOperonBase):
         self.assertTrue(os.path.exists(expected_path))
 
         with open(expected_path, "rb") as h:
-            self.assertEqual(h.read(), image.file.read())
+            self.assertEqual(h.read(), image.read())
 
     def test_extract_primary(self):
         target_dir = os.path.dirname(self.fcover)
@@ -521,7 +521,7 @@ class TOperonImageExtract(TOperonBase):
         self.assertTrue(os.path.exists(expected_path))
 
         with open(expected_path, "rb") as h:
-            self.assertEqual(h.read(), image.file.read())
+            self.assertEqual(h.read(), image.read())
 
 
 class TOperonImageSet(TOperonBase):
@@ -538,6 +538,9 @@ class TOperonImageSet(TOperonBase):
 
         self.fcover = get_temp_copy(os.path.join(DATA_DIR, 'test-2.wma'))
         self.cover = MusicFile(self.fcover)
+
+        self.fcover2 = get_temp_copy(os.path.join(DATA_DIR, 'test-2.wma'))
+        self.cover2 = MusicFile(self.fcover2)
 
     def tearDown(self):
         os.unlink(self.fcover)
@@ -567,7 +570,20 @@ class TOperonImageSet(TOperonBase):
         self.assertEqual(len(images), 1)
 
         with open(self.filename, "rb") as h:
-            self.assertEqual(h.read(), images[0].file.read())
+            self.assertEqual(h.read(), images[0].read())
+
+    def test_set_two(self):
+        self.check_true(
+            ["image-set", self.filename, self.fcover, self.fcover2],
+            False, False)
+
+        with open(self.filename, "rb") as h:
+            image_data = h.read()
+
+        for audio in [self.cover, self.cover2]:
+            audio.reload()
+            image = audio.get_images()[0]
+            self.assertEqual(image.read(), image_data)
 
 
 class TOperonImageClear(TOperonBase):
