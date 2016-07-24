@@ -39,6 +39,6 @@ class MidiFile(AudioFile):
         else:
             return k == "title"
 
-info = MidiFile
+loader = MidiFile
 types = [MidiFile]
 extensions = [".mid"]

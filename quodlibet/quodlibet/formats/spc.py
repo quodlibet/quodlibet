@@ -75,5 +75,5 @@ def parse_id666(data):
     return tags
 
 
-info = SPCFile
+loader = SPCFile
 types = [SPCFile]

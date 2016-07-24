@@ -6,33 +6,27 @@
 # published by the Free Software Foundation
 
 import os
-import shutil
 
-import mutagen
 from mutagen import asf
 
-from tests import TestCase, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR
 from quodlibet.formats.wma import WMAFile, unpack_image, pack_image
 from quodlibet.formats._image import APICType, EmbeddedImage
 from quodlibet.compat import cBytesIO
+
+from .helper import get_temp_copy
 
 
 class TWMAFile(TestCase):
 
     def setUp(self):
-        fd, self.f = mkstemp(".wma")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'test.wma'), self.f)
+        self.f = get_temp_copy(os.path.join(DATA_DIR, 'test.wma'))
         self.song = WMAFile(self.f)
 
-        fd, self.f2 = mkstemp(".wma")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.f2)
+        self.f2 = get_temp_copy(os.path.join(DATA_DIR, 'test-2.wma'))
         self.song2 = WMAFile(self.f2)
 
-        fd, self.f3 = mkstemp(".asf")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'test.asf'), self.f3)
+        self.f3 = get_temp_copy(os.path.join(DATA_DIR, 'test.asf'))
         self.song3 = WMAFile(self.f3)
 
     def tearDown(self):
@@ -79,8 +73,6 @@ class TWMAFile(TestCase):
         self.assertEqual(self.song3("~format"), "ASF")
 
     def test_codec(self):
-        if mutagen.version < (1, 31):
-            return
         self.assertEqual(self.song("~codec"),
                          u"Windows Media Audio 9 Standard")
         self.assertEqual(self.song2("~codec"),
@@ -89,8 +81,6 @@ class TWMAFile(TestCase):
                          u"Intel G.723")
 
     def test_encoding(self):
-        if mutagen.version < (1, 31):
-            return
         self.assertEqual(
             self.song("~encoding"),
             u"Windows Media Audio 9.1\n64 kbps, 48 kHz, stereo 2-pass CBR")
@@ -132,7 +122,7 @@ class TWMAFile(TestCase):
         image = self.song2.get_primary_image()
         self.assertTrue(image)
         self.assertEqual(image.mime_type, "image/jpeg")
-        self.assertTrue(image.file.read())
+        self.assertTrue(image.read())
 
     def test_get_image_invalid_data(self):
         tag = asf.ASF(self.f)
@@ -191,7 +181,7 @@ class TWMAFile(TestCase):
 
         image = self.song.get_primary_image()
         self.assertEqual(image.mime_type, "image/jpeg")
-        self.assertEqual(image.file.read(), "foo")
+        self.assertEqual(image.read(), "foo")
 
     def test_can_change_images(self):
         self.assertTrue(self.song.can_change_images)

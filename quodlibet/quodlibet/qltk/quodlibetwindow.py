@@ -631,8 +631,8 @@ def secondary_browser_menu_items():
 
 
 def browser_menu_items():
-    items = (_browser_items('Browse') + ["<separator />"] +
-             _browser_items('Browse', True))
+    items = (_browser_items('View') + ["<separator />"] +
+             _browser_items('View', True))
     return "\n".join(items)
 
 
@@ -1128,7 +1128,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         for Kind in browsers.browsers:
             name = browsers.name(Kind)
             index = browsers.index(name)
-            action_name = "Browse" + Kind.__name__
+            action_name = "View" + Kind.__name__
             act = RadioAction(name=action_name, label=Kind.accelerated_name,
                               value=index)
             act.join_group(first_action)
@@ -1194,7 +1194,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         except ValueError:
             return False
 
-        action_name = "Browse%s" % Browser.__name__
+        action_name = "View%s" % Browser.__name__
         for action in self._browser_action.get_group():
             if action.get_name() == action_name:
                 action.set_active(True)

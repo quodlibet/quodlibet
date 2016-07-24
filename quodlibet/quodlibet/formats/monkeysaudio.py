@@ -21,6 +21,6 @@ class MonkeysAudioFile(APEv2File):
         self["~#length"] = int(audio.info.length)
         self.sanitize(filename)
 
-info = MonkeysAudioFile
+loader = MonkeysAudioFile
 types = [MonkeysAudioFile]
 extensions = [".ape"]

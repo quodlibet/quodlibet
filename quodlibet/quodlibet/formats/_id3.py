@@ -77,6 +77,7 @@ class ID3File(AudioFile):
     # http://bugs.musicbrainz.org/ticket/1383
     # http://musicbrainz.org/doc/MusicBrainzTag
     TXXX_MAP = {
+        u"MusicBrainz Release Group Id": "musicbrainz_releasegroupid",
         u"MusicBrainz Release Track Id": "musicbrainz_releasetrackid",
         u"MusicBrainz Artist Id": "musicbrainz_artistid",
         u"MusicBrainz Album Id": "musicbrainz_albumid",
@@ -486,7 +487,7 @@ class ID3File(AudioFile):
                 tag = mutagen.id3.ID3()
 
         try:
-            data = image.file.read()
+            data = image.read()
         except EnvironmentError as e:
             raise AudioFileError(e)
 

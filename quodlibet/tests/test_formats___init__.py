@@ -40,8 +40,8 @@ class TFormats(TestCase):
         self.failUnless(formats.wma)
         self.failUnless(formats.xiph)
 
-    def test_infos(self):
-        self.failUnless(formats._infos[".mp3"] is formats.mp3.MP3File)
+    def test_loaders(self):
+        self.failUnless(formats.loaders[".mp3"] is formats.mp3.MP3File)
 
     def test_migration(self):
         self.failUnless(formats.mp3 is sys.modules["quodlibet.formats.mp3"])

@@ -51,6 +51,7 @@ class WMAFile(AudioFile):
         "MusicBrainz/Album Artist Id": "musicbrainz_albumartistid",
         "MusicBrainz/TRM Id": "musicbrainz_trmid",
         "MusicIP/PUID": "musicip_puid",
+        "MusicBrainz/Release Group Id": "musicbrainz_releasegroupid",
         "WM/Year": "date",
         "WM/OriginalArtist": "originalartist",
         "WM/OriginalAlbumTitle": "originalalbum",
@@ -205,7 +206,7 @@ class WMAFile(AudioFile):
             tag = mutagen.asf.ASF(self["~filename"])
 
         try:
-            imagedata = image.file.read()
+            imagedata = image.read()
         except EnvironmentError as e:
             raise AudioFileError(e)
 
@@ -281,6 +282,6 @@ def pack_image(mime, description, imagedata, type_):
     return data
 
 
-info = WMAFile
+loader = WMAFile
 types = [WMAFile]
 extensions = [".wma", ".asf", ".wmv"]

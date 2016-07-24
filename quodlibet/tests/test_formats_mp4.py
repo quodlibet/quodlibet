@@ -6,23 +6,22 @@
 # published by the Free Software Foundation
 
 import os
-import shutil
 import mutagen
 
 from quodlibet.compat import cBytesIO
-from tests import TestCase, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR
 from quodlibet.formats.mp4 import MP4File
 from quodlibet.formats._image import EmbeddedImage
 
 import mutagen.mp4
 
+from .helper import get_temp_copy
+
 
 class TMP4File(TestCase):
 
     def setUp(self):
-        fd, self.f = mkstemp(".m4a")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'test.m4a'), self.f)
+        self.f = get_temp_copy(os.path.join(DATA_DIR, 'test.m4a'))
         self.song = MP4File(self.f)
 
     def tearDown(self):
@@ -38,10 +37,7 @@ class TMP4File(TestCase):
         self.assertEqual(self.song("~format"), "MPEG-4")
 
     def test_codec(self):
-        if mutagen.version >= (1, 27):
-            self.assertEqual(self.song("~codec"), "AAC LC")
-        else:
-            self.assertEqual(self.song("~codec"), "MPEG-4")
+        self.assertEqual(self.song("~codec"), "AAC LC")
 
     def test_encoding(self):
         self.assertEqual(self.song("~encoding"), "FAAC 1.24")
@@ -137,7 +133,7 @@ class TMP4File(TestCase):
         self.song.set_image(image)
         image = self.song.get_primary_image()
         self.assertTrue(image)
-        self.assertEqual(image.file.read(), "foo")
+        self.assertEqual(image.read(), "foo")
         self.assertTrue(self.song.has_images)
 
     def test_can_change_images(self):

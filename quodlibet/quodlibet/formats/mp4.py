@@ -60,6 +60,8 @@ class MP4File(AudioFile):
             "musicbrainz_albumtype",
         "----:com.apple.iTunes:MusicBrainz Album Release Country":
             "releasecountry",
+        '----:com.apple.iTunes:MusicBrainz Release Group Id':
+            'musicbrainz_releasegroupid',
 
         '----:com.apple.iTunes:replaygain_album_gain': 'replaygain_album_gain',
         '----:com.apple.iTunes:replaygain_album_peak': 'replaygain_album_peak',
@@ -214,7 +216,7 @@ class MP4File(AudioFile):
             tag = MP4(self["~filename"])
 
         try:
-            data = image.file.read()
+            data = image.read()
         except EnvironmentError:
             return
 
@@ -226,6 +228,6 @@ class MP4File(AudioFile):
 
         self.has_images = True
 
-info = MP4File
+loader = MP4File
 types = [MP4File]
 extensions = ['.mp4', '.m4a', '.m4v', '.3gp', '.3g2', '.3gp2']

@@ -16,7 +16,6 @@ also be queried in various ways.
 import time
 
 from quodlibet import print_d
-import quodlibet.formats as formats
 
 from quodlibet.library.libraries import SongFileLibrary, SongLibrary
 from quodlibet.library.librarians import SongLibrarian
@@ -29,8 +28,7 @@ def init(cache_fn=None):
     Return a main library, and set a librarian for
     all future SongLibraries.
     """
-    s = ", ".join(formats.modules)
-    print_d("Supported formats: %s" % s)
+
     SongFileLibrary.librarian = SongLibrary.librarian = SongLibrarian()
     library = SongFileLibrary("main")
     if cache_fn:

@@ -92,7 +92,7 @@ tags = ['album', 'arranger', 'artist', 'author', 'comment', 'composer',
 'tracknumber', 'version', 'xyzzy_undefined_tag', 'musicbrainz_trackid',
 'releasecountry']
 
-for ext in formats._infos.keys():
+for ext in formats.loaders.keys():
     if os.path.exists(TestMetaDataBase.base + ext):
         extra_tests = {}
         for tag in tags:

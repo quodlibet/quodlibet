@@ -11,7 +11,7 @@ from quodlibet import config
 from quodlibet.util.path import is_fsnative, fsnative, fsdecode
 from quodlibet.compat import PY2
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
-from quodlibet.formats._audio import INTERN_NUM_DEFAULT
+from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile
 
 from .helper import temp_filename
@@ -437,12 +437,12 @@ class TAudioFile(TestCase):
 
     def test_to_dump(self):
         dump = bar_1_1.to_dump()
-        num = len(set(bar_1_1.keys()) | INTERN_NUM_DEFAULT)
+        num = len(set(bar_1_1.keys()) | NUMERIC_ZERO_DEFAULT)
         self.failUnlessEqual(dump.count("\n"), num + 2)
         for key, value in bar_1_1.items():
             self.failUnless(key in dump)
             self.failUnless(value in dump)
-        for key in INTERN_NUM_DEFAULT:
+        for key in NUMERIC_ZERO_DEFAULT:
             self.failUnless(key in dump)
 
         n = AudioFile()
@@ -455,7 +455,7 @@ class TAudioFile(TestCase):
         b = AudioFile(bar_1_1)
         b["~#length"] = long(200000000000)
         dump = b.to_dump()
-        num = len(set(bar_1_1.keys()) | INTERN_NUM_DEFAULT)
+        num = len(set(bar_1_1.keys()) | NUMERIC_ZERO_DEFAULT)
         self.failUnlessEqual(dump.count("\n"), num + 2)
 
         n = AudioFile()

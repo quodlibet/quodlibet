@@ -6,7 +6,6 @@
 from gi.repository import Gtk
 
 import os
-import shutil
 
 from quodlibet.formats import AudioFileError
 from quodlibet import config
@@ -14,7 +13,7 @@ from quodlibet.util import connect_obj
 from quodlibet.formats import AudioFile
 
 from tests import TestCase, DATA_DIR, mkstemp
-from .helper import capture_output
+from .helper import capture_output, get_temp_copy
 
 from quodlibet.library.libraries import *
 
@@ -441,10 +440,7 @@ class TSongFileLibrary(TSongLibrary):
         self.failUnless(self.library.masked(new))
 
     def __get_file(self):
-        fd, filename = mkstemp(".flac")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), filename)
-        return filename
+        return get_temp_copy(os.path.join(DATA_DIR, 'empty.flac'))
 
     def test_add_filename(self):
         config.init()

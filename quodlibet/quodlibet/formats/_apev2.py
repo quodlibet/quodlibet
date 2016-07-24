@@ -62,7 +62,7 @@ def write_cover(image):
         key = "Cover Art (Back)"
 
     try:
-        data = image.file.read()
+        data = image.read()
     except EnvironmentError as e:
         raise AudioFileError(e)
 

@@ -56,6 +56,6 @@ class VgmFile(AudioFile):
             return k == "title"
 
 
-info = VgmFile
+loader = VgmFile
 types = [VgmFile]
 extensions = [".vgm"]

@@ -71,5 +71,5 @@ class ModFile(AudioFile):
         else:
             return k == "artist"
 
-info = ModFile
+loader = ModFile
 types = [ModFile]

@@ -9,7 +9,7 @@ from quodlibet import config
 
 from tests import TestCase, mkdtemp
 from quodlibet.formats import AudioFile as Fakesong
-from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
+from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average, \
     FileBackedPlaylist
 from quodlibet.library.libraries import FileLibrary
@@ -236,7 +236,7 @@ class TAlbum(TestCase):
         for p in PEOPLE:
             failUnlessEq(album(p, "x"), song(p, "x"))
 
-        for p in INTERN_NUM_DEFAULT:
+        for p in NUMERIC_ZERO_DEFAULT:
             failUnlessEq(album(p, "x"), song(p, "x"))
 
     def test_methods(s):

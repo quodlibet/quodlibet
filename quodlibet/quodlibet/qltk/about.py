@@ -33,7 +33,8 @@ class AboutDialog(Gtk.AboutDialog):
 
         is_real_player = app.player.name != "Null"
 
-        fmts = ",\n".join(", ".join(c) for c in chunks(formats.names, 4))
+        format_names = sorted([t.format for t in formats.types])
+        fmts = ",\n".join(", ".join(c) for c in chunks(format_names, 4))
         text = []
         text.append(_("Supported formats: %s") % fmts)
         text.append("")

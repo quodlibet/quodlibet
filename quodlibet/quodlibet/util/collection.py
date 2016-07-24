@@ -14,7 +14,7 @@ import random
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet.formats._audio import TAG_TO_SORT, INTERN_NUM_DEFAULT
+from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.compat import xrange, text_type
 from collections import Iterable
@@ -184,7 +184,7 @@ class Collection(object):
                 values = (song(key) for song in self.songs)
                 values = [v for v in values if v != ""]
                 return func(values) if values else None
-            elif key in INTERN_NUM_DEFAULT:
+            elif key in NUMERIC_ZERO_DEFAULT:
                 return 0
             return None
         elif key[:1] == "~":

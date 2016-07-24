@@ -64,5 +64,5 @@ class RemoteFile(AudioFile):
     def key(self):
         return self["~uri"]
 
-info = RemoteFile
+loader = RemoteFile
 types = [RemoteFile]
