@@ -124,6 +124,7 @@ _TAGS = dict((t.name, t) for t in [
     T("musicip_puid", "um", _("MusicIP PUID")),
     T("musicbrainz_albumstatus", "um", _("MusicBrainz album status")),
     T("musicbrainz_albumtype", "um", _("MusicBrainz album type")),
+    T("musicbrainz_releasegroupid", "um", _("MusicBrainz release group ID")),
 
     # Translators: "gain" means a volume adjustment, not "to acquire".
     T("replaygain_track_gain", "umn", _("track gain")),

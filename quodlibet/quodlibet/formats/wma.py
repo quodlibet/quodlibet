@@ -51,6 +51,7 @@ class WMAFile(AudioFile):
         "MusicBrainz/Album Artist Id": "musicbrainz_albumartistid",
         "MusicBrainz/TRM Id": "musicbrainz_trmid",
         "MusicIP/PUID": "musicip_puid",
+        "MusicBrainz/Release Group Id": "musicbrainz_releasegroupid",
         "WM/Year": "date",
         "WM/OriginalArtist": "originalartist",
         "WM/OriginalAlbumTitle": "originalalbum",
