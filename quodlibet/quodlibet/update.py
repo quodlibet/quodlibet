@@ -16,13 +16,11 @@ Since there can be multiple builds per release for the same release type
 is used and not the release version.
 """
 
-import urllib2
-
 from gi.repository import Gtk
 
 import quodlibet
 from quodlibet.build import BUILD_TYPE
-from quodlibet.compat import text_type
+from quodlibet.compat import text_type, urlopen
 from quodlibet.qltk.window import Dialog
 from quodlibet.util.dprint import print_exc
 from quodlibet.util import escape
@@ -64,7 +62,7 @@ def fetch_versions(build_type, timeout=5.0):
         raise UpdateError(error)
 
     try:
-        content = urllib2.urlopen(
+        content = urlopen(
             u"https://quodlibet.github.io/appcast/%s.rss" % build_type,
             timeout=timeout).read()
     except Exception as error:

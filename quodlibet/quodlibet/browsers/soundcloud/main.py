@@ -6,8 +6,8 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, Pango
-from urlparse import parse_qs, urlparse
 
+from quodlibet.compat import parse_qs, urlparse
 from quodlibet import config, app
 from quodlibet import qltk
 from quodlibet import util
