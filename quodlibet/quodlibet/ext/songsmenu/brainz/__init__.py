@@ -50,6 +50,7 @@ class MyBrainz(SongsMenuPlugin):
             ('albumartist', _('Write "_albumartist" when needed')),
             ('artist_sort', _('Write sort tags for artist names')),
             ('standard', _('Write _standard MusicBrainz tags')),
+            ('labelid2', _('Write "labelid" tag')),
         ]
 
         vb = Gtk.VBox()

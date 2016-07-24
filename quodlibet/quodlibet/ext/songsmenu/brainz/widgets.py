@@ -84,7 +84,8 @@ class ResultComboBox(Gtk.ComboBox):
             extra_info = ", ".join(
                 filter(None, [util.escape(release.date),
                 util.escape(release.country),
-                util.escape(release.medium_format)]))
+                util.escape(release.medium_format),
+                util.escape(release.labelid)]))
 
             artist_names = [a.name for a in release.artists]
             disc_count = release.disc_count
@@ -260,8 +261,7 @@ def build_song_data(release, track):
     meta["album"] = release.title
     meta["date"] = release.date
     meta["musicbrainz_albumid"] = release.id
-    # we did write labelid before ngs, albumid supersedes it
-    meta["labelid"] = ""
+    meta["labelid"] = release.labelid
 
     if not release.is_single_artist and not release.is_various_artists:
         artists = release.artists
@@ -292,7 +292,8 @@ def build_song_data(release, track):
     return meta
 
 
-def apply_options(meta, year_only, albumartist, artistsort, musicbrainz):
+def apply_options(meta, year_only, albumartist, artistsort, musicbrainz,
+                  labelid):
     """Takes the tags extracted from musicbrainz and adjusts them according
     to the user preferences.
     """
@@ -311,6 +312,9 @@ def apply_options(meta, year_only, albumartist, artistsort, musicbrainz):
         for key in meta:
             if key.startswith("musicbrainz_"):
                 meta[key] = u""
+
+    if not labelid:
+        meta["labelid"] = ""
 
 
 def apply_to_song(meta, song):
@@ -422,11 +426,12 @@ class SearchWindow(Dialog):
         albumartist = pconfig.getboolean("albumartist")
         artistsort = pconfig.getboolean("artist_sort")
         musicbrainz = pconfig.getboolean("standard")
+        labelid = pconfig.getboolean("labelid2")
 
         for release, track, song in self.result_treeview.iter_tracks():
             meta = build_song_data(release, track)
             apply_options(
-                meta, year_only, albumartist, artistsort, musicbrainz)
+                meta, year_only, albumartist, artistsort, musicbrainz, labelid)
             apply_to_song(meta, song)
 
         self.destroy()

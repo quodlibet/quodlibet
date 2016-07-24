@@ -12,12 +12,41 @@ from . import PluginTestCase, modules
 
 brainz = modules.get("MusicBrainz lookup", None)
 
+TEST_SEARCH_RESULT = \
+{'release-count': 1, 'release-list': [{'status': 'Official', 'artist-credit':
+[{'artist': {'sort-name': 'Necks, The', 'id':
+'51f8d454-f4a8-41e6-8bd7-a35921eeedd0', 'name': 'The Necks'}}],
+'label-info-list': [{'catalog-number': 'FOM 0008', 'label': {'id':
+'b887f682-e9e5-40d2-b4c7-cdbbcd2b3787', 'name': 'Fish of Milk'}}], 'title':
+'Athenaeum, Homebush, Quay & Raab', 'country': 'AU', 'medium-count': 4,
+'release-event-list': [{'date': '2002', 'area': {'sort-name': 'Australia',
+'iso-3166-1-code-list': ['AU'], 'id': '106e0bec-b638-3b37-b731-f53d507dc00e',
+'name': 'Australia'}}], 'medium-list': [{}, {'disc-list': [], 'format': 'CD',
+'track-list': [], 'track-count': 1, 'disc-count': 1}, {'disc-list': [],
+'format': 'CD', 'track-list': [], 'track-count': 1, 'disc-count': 1},
+{'disc-list': [], 'format': 'CD', 'track-list': [], 'track-count': 1,
+'disc-count': 1}, {'disc-list': [], 'format': 'CD', 'track-list': [],
+'track-count': 1, 'disc-count': 1}], 'text-representation': {'language':
+'eng', 'script': 'Latn'}, 'ext:score': '100', 'date': '2002',
+'artist-credit-phrase': 'The Necks', 'release-group': {'secondary-type-list':
+['Live'], 'type': 'Live', 'id': '88e47489-a3d0-3344-864d-4b09188ba9e0',
+'primary-type': 'Album'}, 'id': '3663a8a9-1c67-41c2-82c8-6a241d1558f7',
+'asin': 'B00007FKRD'}]}
+
 
 TEST_DATA = \
-{'status': 'Official', 'artist-credit': [{'artist': {'sort-name':
-'Autechre', 'id': '410c9baf-5469-44f6-9852-826524b80c61', 'name':
-'Autechre'}}, ' & ', {'artist': {'sort-name': 'Hafler Trio, The', 'id':
+{'status': 'Official', 'artist-credit': [{'artist': {'sort-name': 'Autechre',
+'id': '410c9baf-5469-44f6-9852-826524b80c61', 'name': 'Autechre'}}, ' & ',
+{'artist': {'sort-name': 'Hafler Trio, The', 'id':
 '146c01d0-d3a2-44c3-acb5-9208bce75e14', 'name': 'The Hafler Trio'}}],
+'label-info-list': [{'catalog-number': 'pgram002', 'label': {'sort-name':
+'Phonometrography', 'id': 'a0759efa-f583-49ea-9a8d-d5bbce55541c', 'name':
+'Phonometrography'}}], 'title': u'\xe6\xb3o & h\xb3\xe6',
+'release-event-count': 1, 'medium-count': 2, 'cover-art-archive': {'count':
+'1', 'front': 'true', 'back': 'false', 'artwork': 'true'},
+'release-event-list': [{'date': '2003-12-04', 'area': {'sort-name':
+'United Kingdom', 'iso-3166-1-code-list': ['GB'], 'id':
+'8a754a16-0027-3a29-b6d7-2b40ea0481ed', 'name': 'United Kingdom'}}],
 'medium-list': [{'position': '1', 'title': u'\xe6\xb3o', 'track-list':
 [{'artist-credit': [{'artist': {'sort-name': 'Autechre', 'id':
 '410c9baf-5469-44f6-9852-826524b80c61', 'name': 'Autechre'}}, ' & ',
@@ -46,13 +75,8 @@ u'h\xb3\xe6', 'track-list': [{'artist-credit': [{'artist': {'sort-name':
 'id': '5aff6309-2e02-4a47-9233-32d7dcc9a960', 'title': u'h\xb3\xe6'},
 'length': '922546', 'position': '1', 'id':
 '5f2031a2-c67d-3bec-8ae5-8d22847ab0a5', 'track_or_recording_length':
-'922546'}], 'track-count': 1, 'format': 'CD'}], 'title': u'\xe6\xb3o &'
-u'h\xb3\xe6', 'release-event-count': 1, 'medium-count': 2, 'cover-art-archive':
-{'count': '1', 'front': 'true', 'back': 'false', 'artwork': 'true'},
-'release-event-list': [{'date': '2003-12-04', 'area': {'sort-name': 'United '
-'Kingdom', 'iso-3166-1-code-list': ['GB'], 'id':
-'8a754a16-0027-3a29-b6d7-2b40ea0481ed', 'name': 'United Kingdom'}}],
-'text-representation': {'language': 'eng', 'script': 'Latn'}, 'country': 'GB',
+'922546'}], 'track-count': 1, 'format': 'CD'}], 'text-representation':
+{'language': 'eng', 'script': 'Latn'}, 'label-info-count': 1, 'country': 'GB',
 'date': '2003-12-04', 'artist-credit-phrase': 'Autechre & The Hafler Trio',
 'quality': 'normal', 'id': '59211ea4-ffd2-4ad9-9a4e-941d3148024a'}
 
@@ -172,7 +196,7 @@ class TBrainz(PluginTestCase):
         self.assertEqual(release.disc_count, 2)
         self.assertEqual(release.track_count, 2)
         self.assertEqual(len(release.tracks), 2)
-        self.assertEqual(release.title, u'\xe6\xb3o &h\xb3\xe6')
+        self.assertEqual(release.title, u'\xe6\xb3o & h\xb3\xe6')
         self.assertTrue(release.is_single_artist)
         self.assertFalse(release.is_various_artists)
         self.assertTrue(release.artists)
@@ -189,6 +213,12 @@ class TBrainz(PluginTestCase):
         self.assertEqual(track.discnumber, "1")
         self.assertEqual(track.track_count, 1)
         self.assertEqual(track.disctitle, u"\xe6\xb3o")
+
+    def test_labelid(self):
+        Release = brainz.mb.Release
+
+        release = Release(TEST_SEARCH_RESULT["release-list"][0])
+        self.assertEqual(release.labelid, u"FOM 0008")
 
     def test_release_artist(self):
         Release = brainz.mb.Release
@@ -212,15 +242,17 @@ class TBrainz(PluginTestCase):
         meta = build_song_data(release, track)
         self.assertEqual(meta["tracknumber"], "1/1")
         self.assertEqual(meta["discnumber"], "2/2")
+        self.assertEqual(meta["labelid"], "pgram002")
 
-        apply_options(meta, True, False, False, False)
+        apply_options(meta, True, False, False, False, False)
         dummy = AudioFile()
         apply_to_song(meta, dummy)
-        self.assertEqual(dummy("album"), u'\xe6\xb3o &h\xb3\xe6')
+        self.assertEqual(dummy("album"), u'\xe6\xb3o & h\xb3\xe6')
         self.assertEqual(dummy("date"), u'2003')
         self.assertEqual(dummy("title"), u'h\xb3\xe6')
+        self.assertEqual(dummy("pgram002"), u'')
 
-    def test_build_mbids(self):
+    def test_build_mbids_labelid(self):
         Release = brainz.mb.Release
         build_song_data = brainz.widgets.build_song_data
         apply_options = brainz.widgets.apply_options
@@ -229,7 +261,7 @@ class TBrainz(PluginTestCase):
         release = Release(TEST_DATA)
         track = release.tracks[1]
         meta = build_song_data(release, track)
-        apply_options(meta, True, False, False, True)
+        apply_options(meta, True, False, False, True, True)
         dummy = AudioFile()
         apply_to_song(meta, dummy)
 
@@ -239,6 +271,7 @@ class TBrainz(PluginTestCase):
             dummy.list("musicbrainz_artistid"),
             [u'410c9baf-5469-44f6-9852-826524b80c61',
              u'146c01d0-d3a2-44c3-acb5-9208bce75e14'])
+        self.assertEqual(dummy("labelid"), u"pgram002")
 
     def test_pregap(self):
         Release = brainz.mb.Release

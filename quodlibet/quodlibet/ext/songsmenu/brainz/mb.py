@@ -52,7 +52,8 @@ def _get_release(release_id):
 
     return musicbrainzngs.get_release_by_id(
         release_id,
-        includes=["recordings", "artists", "artist-credits"])["release"]
+        includes=["recordings", "artists", "artist-credits", "labels"]
+    )["release"]
 
 
 class Artist(object):
@@ -113,6 +114,11 @@ class Release(object):
 
     def __init__(self, mbrelease):
         self._mbrelease = mbrelease
+
+    @property
+    def labelid(self):
+        label_list = self._mbrelease.get("label-info-list", [])
+        return label_list[0]["catalog-number"] if label_list else u""
 
     @property
     def id(self):
