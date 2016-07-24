@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2011 Christoph Reiter, 2016 Ryan Dellenbaugh
+#           2011 Christoph Reiter
+#           2016 Ryan Dellenbaugh
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -230,7 +232,7 @@ class NumexprTag(Numexpr):
         else:
             self._tag = tag
 
-        self.__ftag = "~#" + self._tag
+        self._ftag = "~#" + self._tag
 
     def evaluate(self, data, time, use_date):
         if self._tag == 'date':
@@ -242,7 +244,7 @@ class NumexprTag(Numexpr):
             except ValueError:
                 return None
         else:
-            num = data(self.__ftag, None)
+            num = data(self._ftag, None)
         if num is not None:
             if self._ftag in TIME_TAGS:
                 num = time - num
