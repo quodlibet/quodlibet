@@ -100,7 +100,10 @@ class ID3File(AudioFile):
     def __init__(self, filename):
         with translate_errors():
             audio = self.Kind(filename)
-        tag = audio.tags or mutagen.id3.ID3()
+        if audio.tags is None:
+            audio.add_tags()
+        tag = audio.tags
+
         self._parse_info(audio.info)
 
         for frame in tag.values():
@@ -266,10 +269,11 @@ class ID3File(AudioFile):
 
     def write(self):
         with translate_errors():
-            try:
-                tag = mutagen.id3.ID3(self['~filename'])
-            except mutagen.id3.error:
-                tag = mutagen.id3.ID3()
+            audio = self.Kind(self['~filename'])
+
+        if audio.tags is None:
+            audio.add_tags()
+        tag = audio.tags
 
         # prefill TMCL with the ones we can't read
         mcl = tag.get("TMCL", mutagen.id3.TMCL(encoding=3, people=[]))
@@ -425,7 +429,7 @@ class ID3File(AudioFile):
             tag.add(t)
 
         with translate_errors():
-            tag.save(self["~filename"])
+            audio.save()
         self.sanitize()
 
     can_change_images = True
@@ -434,9 +438,11 @@ class ID3File(AudioFile):
         """Delete all embedded images"""
 
         with translate_errors():
-            tag = mutagen.id3.ID3(self["~filename"])
-            tag.delall("APIC")
-            tag.save()
+            audio = self.Kind(self["~filename"])
+
+        if audio.tags is not None:
+            audio.tags.delall("APIC")
+            audio.save()
 
         self.has_images = False
 
@@ -446,8 +452,13 @@ class ID3File(AudioFile):
         images = []
 
         try:
-            tag = mutagen.id3.ID3(self["~filename"])
-        except Exception:
+            with translate_errors():
+                audio = self.Kind(self["~filename"])
+        except AudioFileError:
+            return images
+
+        tag = audio.tags
+        if tag is None:
             return images
 
         for frame in tag.getall("APIC"):
@@ -461,8 +472,13 @@ class ID3File(AudioFile):
         """Returns the primary embedded image"""
 
         try:
-            tag = mutagen.id3.ID3(self["~filename"])
-        except Exception:
+            with translate_errors():
+                audio = self.Kind(self["~filename"])
+        except AudioFileError:
+            return
+
+        tag = audio.tags
+        if tag is None:
             return
 
         # get the APIC frame with type == 3 (cover) or the first one
@@ -481,10 +497,12 @@ class ID3File(AudioFile):
         """Replaces all embedded images by the passed image"""
 
         with translate_errors():
-            try:
-                tag = mutagen.id3.ID3(self["~filename"])
-            except mutagen.id3.ID3NoHeaderError:
-                tag = mutagen.id3.ID3()
+            audio = self.Kind(self["~filename"])
+
+        if audio.tags is None:
+            audio.add_tags()
+
+        tag = audio.tags
 
         try:
             data = image.read()
@@ -498,6 +516,6 @@ class ID3File(AudioFile):
         tag.add(frame)
 
         with translate_errors():
-            tag.save(self["~filename"])
+            audio.save()
 
         self.has_images = True
