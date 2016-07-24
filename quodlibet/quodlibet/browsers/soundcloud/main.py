@@ -21,7 +21,8 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import Align, ScrolledWindow
-from quodlibet.util import connect_destroy, DeferredSignal, website, enum
+from quodlibet.util import connect_destroy, DeferredSignal, website, enum, \
+    cached_property
 from quodlibet.util.dprint import print_w, print_d
 
 
@@ -88,6 +89,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             self._destroy()
 
     def __init__(self, library):
+        print_d("Creating Soundcloud Browser")
         super(SoundcloudBrowser, self).__init__(spacing=12)
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
@@ -123,7 +125,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                             relief=Gtk.ReliefStyle.NONE)
         button.connect('clicked', lambda _: website(SITE_URL))
         button.set_tooltip_text(_("Go to %s" % SITE_URL))
-        button.add(LOGO_IMAGE_BLACK)
+        button.add(self._logo_image)
         hbox.pack_start(button, True, True, 6)
         hbox.show_all()
         return hbox
@@ -148,7 +150,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     def update_connect_button(self):
         but = self.login_button
         but.set_sensitive(False)
-        tooltip, icon = LOGIN_STATE_DATA[self.login_state]
+        tooltip, icon = self._login_state_data[self.login_state]
         but.set_tooltip_text(tooltip)
         child = but.get_child()
         if child:
@@ -344,3 +346,19 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         msg = Message(Gtk.MessageType.INFO, app.window, _("Connected"),
                       _("Quod Libet is now connected, <b>%s</b>!") % name)
         msg.run()
+
+    @cached_property
+    def _logo_image(self):
+        return WebImage(
+            "https://developers.soundcloud.com/assets/logo_black.png", 104, 16)
+
+    @cached_property
+    def _login_state_data(self):
+        """Login-state-based data for configuring actions (e.g. the button)"""
+        return {
+            State.LOGGED_IN: (_("Log out of %s") % SOUNDCLOUD_NAME,
+                              sc_btn_image('disconnect-l', 140, 29)),
+            State.LOGGING_IN: (_("Enter code…"), None),
+            State.LOGGED_OUT: (_("Log in to %s") % SOUNDCLOUD_NAME,
+                               sc_btn_image('connect-l', 124, 29)),
+        }

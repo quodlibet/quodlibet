@@ -74,23 +74,6 @@ class State(int):
     LOGGED_OUT, LOGGING_IN, LOGGED_IN = range(3)
 
 
-def _sc_image(path, w, h):
-    return WebImage('http://connect.soundcloud.com/2/btn-%s.png' % path, w, h)
-
-
-LOGO_IMAGE_BLACK = WebImage(
-    "https://developers.soundcloud.com/assets/logo_black.png", 104, 16)
-
-"""Login-state-based data for configuring actions (e.g. in the button)"""
-LOGIN_STATE_DATA = {
-    State.LOGGED_IN: (_("Log out of %s") % SOUNDCLOUD_NAME,
-                      _sc_image('disconnect-l', 140, 29)),
-    State.LOGGING_IN: (_("Enter code…"), None),
-    State.LOGGED_OUT: (_("Log in to %s") % SOUNDCLOUD_NAME,
-                       _sc_image('connect-l', 124, 29)),
-}
-
-
 @enum
 class FilterType(int):
     SEP, SEARCH, FAVORITES = range(3)
@@ -114,3 +97,7 @@ def sanitise_tag(value):
      are not always best represented as multi-value tags (comments, etc)
     """
     return (value or '').replace('\n', '\t').replace('\r', '')
+
+
+def sc_btn_image(path, w, h):
+    return WebImage('http://connect.soundcloud.com/2/btn-%s.png' % path, w, h)
