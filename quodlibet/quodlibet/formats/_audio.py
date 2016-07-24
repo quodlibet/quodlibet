@@ -44,9 +44,17 @@ PEOPLE = ["artist", "albumartist", "author", "composer", "~performers",
           "originalartist", "lyricist", "arranger", "conductor"]
 """Sources of the ~people tag, most important first"""
 
-INTERN_NUM_DEFAULT = {"~#lastplayed", "~#laststarted", "~#playcount",
-                      "~#skipcount", "~#length", "~#bitrate", "~#filesize"}
-"""Default to 0"""
+TIME_TAGS = {"~#lastplayed", "~#laststarted", "~#added", "~#mtime"}
+"""Time in seconds since epoch, defaults to 0"""
+
+SIZE_TAGS = {"~#filesize"}
+"""Size in bytes, defaults to 0"""
+
+NUMERIC_ZERO_DEFAULT = {"~#skipcount", "~#playcount", "~#length", "~#bitrate"}
+"""Defaults to 0"""
+
+NUMERIC_ZERO_DEFAULT.update(TIME_TAGS)
+NUMERIC_ZERO_DEFAULT.update(SIZE_TAGS)
 
 FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname"}
 """Values are bytes in Linux instead of unicode"""
@@ -427,8 +435,8 @@ class AudioFile(dict, ImageContainer):
                 key = "~" + key
                 if key in self:
                     return self[key]
-                elif key in INTERN_NUM_DEFAULT:
-                    return dict.get(self, key, 0)
+                elif key in NUMERIC_ZERO_DEFAULT:
+                    return 0
                 else:
                     try:
                         val = self[key[2:]]
@@ -740,7 +748,7 @@ class AudioFile(dict, ImageContainer):
             if isinstance(val, string_types) and '\0' in val:
                 self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
             # Remove unnecessary defaults
-            if key in INTERN_NUM_DEFAULT and val == 0:
+            if key in NUMERIC_ZERO_DEFAULT and val == 0:
                 del self[key]
 
         if filename:
@@ -806,7 +814,7 @@ class AudioFile(dict, ImageContainer):
                         s.append("%s=%s" % (enc_key, v2))
                     else:
                         s.append("%s=%s" % (enc_key, encode(v2)))
-        for k in (INTERN_NUM_DEFAULT - set(self.keys())):
+        for k in (NUMERIC_ZERO_DEFAULT - set(self.keys())):
             enc_key = encode_key(k)
             s.append("%s=%d" % (enc_key, self.get(k, 0)))
         if "~#rating" not in self:
