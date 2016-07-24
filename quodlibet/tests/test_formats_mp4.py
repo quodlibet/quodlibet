@@ -6,23 +6,22 @@
 # published by the Free Software Foundation
 
 import os
-import shutil
 import mutagen
 
 from quodlibet.compat import cBytesIO
-from tests import TestCase, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR
 from quodlibet.formats.mp4 import MP4File
 from quodlibet.formats._image import EmbeddedImage
 
 import mutagen.mp4
 
+from .helper import get_temp_copy
+
 
 class TMP4File(TestCase):
 
     def setUp(self):
-        fd, self.f = mkstemp(".m4a")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'test.m4a'), self.f)
+        self.f = get_temp_copy(os.path.join(DATA_DIR, 'test.m4a'))
         self.song = MP4File(self.f)
 
     def tearDown(self):

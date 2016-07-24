@@ -7,10 +7,9 @@
 
 import os
 import sys
-import shutil
 
 from tests import TestCase, DATA_DIR, mkstemp
-from .helper import capture_output
+from .helper import capture_output, get_temp_copy
 
 from quodlibet import config
 from quodlibet import util
@@ -32,17 +31,15 @@ def call(args=None):
 class TOperonBase(TestCase):
     def setUp(self):
         config.init()
-        fd, self.f = mkstemp(".ogg")
-        os.close(fd)
-        fd, self.f2 = mkstemp(".mp3")
-        os.close(fd)
+
+        self.f = get_temp_copy(os.path.join(DATA_DIR, 'silence-44-s.ogg'))
+        self.f2 = get_temp_copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'))
+        self.s = MusicFile(self.f)
+        self.s2 = MusicFile(self.f2)
+
         fd, self.f3 = mkstemp(".mp3")
         os.write(fd, "garbage")
         os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ogg'), self.f)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.f2)
-        self.s = MusicFile(self.f)
-        self.s2 = MusicFile(self.f2)
 
     def tearDown(self):
         os.unlink(self.f)
@@ -475,9 +472,7 @@ class TOperonImageExtract(TOperonBase):
     def setUp(self):
         super(TOperonImageExtract, self).setUp()
 
-        h, self.fcover = mkstemp(".wma")
-        os.close(h)
-        shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
+        self.fcover = get_temp_copy(os.path.join(DATA_DIR, 'test-2.wma'))
         self.cover = MusicFile(self.fcover)
 
     def tearDown(self):
@@ -541,9 +536,7 @@ class TOperonImageSet(TOperonBase):
         wide = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
         wide.savev(self.filename, "png", [], [])
 
-        h, self.fcover = mkstemp(".wma")
-        os.close(h)
-        shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
+        self.fcover = get_temp_copy(os.path.join(DATA_DIR, 'test-2.wma'))
         self.cover = MusicFile(self.fcover)
 
     def tearDown(self):
@@ -582,9 +575,7 @@ class TOperonImageClear(TOperonBase):
 
     def setUp(self):
         super(TOperonImageClear, self).setUp()
-        fd, self.fcover = mkstemp(".wma")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
+        self.fcover = get_temp_copy(os.path.join(DATA_DIR, 'test-2.wma'))
         self.cover = MusicFile(self.fcover)
 
     def tearDown(self):

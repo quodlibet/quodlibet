@@ -9,6 +9,7 @@
 import os
 import contextlib
 import sys
+import shutil
 
 from gi.repository import Gtk, Gdk
 
@@ -246,6 +247,18 @@ def temp_filename(*args, **kwargs):
     yield filename
 
     os.remove(filename)
+
+
+def get_temp_copy(path):
+    """Returns a copy of the file with the same extension"""
+
+    from tests import mkstemp
+
+    ext = os.path.splitext(path)[-1]
+    fd, filename = mkstemp(suffix=ext)
+    os.close(fd)
+    shutil.copy(path, filename)
+    return filename
 
 
 class ListWithUnused(object):

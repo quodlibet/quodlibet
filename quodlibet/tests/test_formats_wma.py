@@ -6,33 +6,28 @@
 # published by the Free Software Foundation
 
 import os
-import shutil
 
 import mutagen
 from mutagen import asf
 
-from tests import TestCase, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR
 from quodlibet.formats.wma import WMAFile, unpack_image, pack_image
 from quodlibet.formats._image import APICType, EmbeddedImage
 from quodlibet.compat import cBytesIO
+
+from .helper import get_temp_copy
 
 
 class TWMAFile(TestCase):
 
     def setUp(self):
-        fd, self.f = mkstemp(".wma")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'test.wma'), self.f)
+        self.f = get_temp_copy(os.path.join(DATA_DIR, 'test.wma'))
         self.song = WMAFile(self.f)
 
-        fd, self.f2 = mkstemp(".wma")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.f2)
+        self.f2 = get_temp_copy(os.path.join(DATA_DIR, 'test-2.wma'))
         self.song2 = WMAFile(self.f2)
 
-        fd, self.f3 = mkstemp(".asf")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'test.asf'), self.f3)
+        self.f3 = get_temp_copy(os.path.join(DATA_DIR, 'test.asf'))
         self.song3 = WMAFile(self.f3)
 
     def tearDown(self):

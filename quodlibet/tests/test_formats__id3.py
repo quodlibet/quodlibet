@@ -3,10 +3,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR
 
 import os
-import shutil
 
 from quodlibet import config, const
 from quodlibet.formats._image import EmbeddedImage
@@ -15,14 +14,15 @@ from quodlibet.compat import cBytesIO
 
 import mutagen
 
+from .helper import get_temp_copy
+
 
 class TID3Images(TestCase):
 
     def setUp(self):
         config.init()
-        fd, self.filename = mkstemp(".mp3")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.filename)
+        self.filename = get_temp_copy(
+            os.path.join(DATA_DIR, 'silence-44-s.mp3'))
 
     def tearDown(self):
         os.remove(self.filename)
@@ -105,12 +105,12 @@ class TID3Images(TestCase):
 class TID3File(TestCase):
     def setUp(self):
         config.init()
-        fd, self.filename = mkstemp(".mp3")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.filename)
-        fd, self.filename2 = mkstemp(".mp3")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'mutagen-bug.mp3'), self.filename2)
+
+        self.filename = get_temp_copy(
+            os.path.join(DATA_DIR, 'silence-44-s.mp3'))
+
+        self.filename2 = get_temp_copy(
+            os.path.join(DATA_DIR, 'mutagen-bug.mp3'))
 
     def test_optional_POPM_count(self):
         # https://github.com/quodlibet/quodlibet/issues/364

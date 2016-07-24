@@ -4,11 +4,12 @@
 # published by the Free Software Foundation
 
 import os
-import shutil
 
-from tests import TestCase, DATA_DIR, mkstemp
+from tests import TestCase, DATA_DIR
 
 from quodlibet.formats import MusicFile, AudioFileError, EmbeddedImage
+
+from .helper import get_temp_copy
 
 
 FILES = [
@@ -36,11 +37,8 @@ class TAudioFileAllBase(object):
     FILE = None
 
     def setUp(self):
-        fd, filename = mkstemp(os.path.splitext(self.FILE)[-1])
-        os.close(fd)
-        shutil.copy(self.FILE, filename)
-        self.song = MusicFile(filename)
-        self.filename = filename
+        self.filename = get_temp_copy(self.FILE)
+        self.song = MusicFile(self.filename)
 
     def tearDown(self):
         try:

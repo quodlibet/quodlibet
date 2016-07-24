@@ -20,6 +20,9 @@ from quodlibet.plugins.cover import CoverSourcePlugin
 from quodlibet.util.cover.manager import CoverPluginHandler, CoverManager
 from quodlibet.util.path import path_equal
 
+from .helper import get_temp_copy
+
+
 DUMMY_COVER = io.StringIO()
 
 
@@ -219,13 +222,8 @@ class TCoverManagerBuiltin(TestCase):
         pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 20, 20)
         pb.savev(self.cover2, "png", [], [])
 
-        fd, self.file1 = mkstemp(".mp3", dir=self.main)
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.file1)
-
-        fd, self.file2 = mkstemp(".mp3", dir=self.main)
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.file2)
+        self.file1 = get_temp_copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'))
+        self.file2 = get_temp_copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'))
 
         self.manager = CoverManager()
 

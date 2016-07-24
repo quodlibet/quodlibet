@@ -6,10 +6,11 @@
 # published by the Free Software Foundation
 
 import os
-import shutil
 
-from tests import TestCase, DATA_DIR, mkstemp, skipUnless
+from tests import TestCase, DATA_DIR, skipUnless
 from quodlibet.formats.aac import AACFile
+
+from .helper import get_temp_copy
 
 try:
     from mutagen.aac import AAC
@@ -22,9 +23,7 @@ class _TAACFile(TestCase):
     NAME = None
 
     def setUp(self):
-        fd, self.f = mkstemp(".aac")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, self.NAME), self.f)
+        self.f = get_temp_copy(os.path.join(DATA_DIR, self.NAME))
         self.song = AACFile(self.f)
 
     def tearDown(self):
