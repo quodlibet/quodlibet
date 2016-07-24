@@ -14,6 +14,7 @@ from quodlibet.util.path import fsdecode
 from quodlibet.util import parse_date
 from quodlibet.plugins.query import QUERY_HANDLER
 from quodlibet.plugins.query import QueryPluginError
+from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 
 
 class error(ValueError):
@@ -22,11 +23,6 @@ class error(ValueError):
 
 class ParseError(error):
     pass
-
-
-TIME_KEYS = ["added", "mtime", "lastplayed", "laststarted"]
-SIZE_KEYS = ["filesize"]
-FS_KEYS = ["~filename", "~basename", "~dirname"]
 
 
 class Node(object):
@@ -248,7 +244,7 @@ class NumexprTag(Numexpr):
         else:
             num = data(self.__ftag, None)
         if num is not None:
-            if self.__tag in TIME_KEYS:
+            if self.__ftag in TIME_TAGS:
                 num = time - num
             return round(num, 2)
         return None
@@ -465,7 +461,7 @@ class Tag(Node):
             if name[:1] == "~":
                 if name.startswith("~#"):
                     raise ValueError("numeric tags not supported")
-                if name in FS_KEYS:
+                if name in FILESYSTEM_TAGS:
                     self.__fs.append(name)
                 else:
                     self.__intern.append(name)

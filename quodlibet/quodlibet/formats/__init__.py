@@ -93,7 +93,8 @@ def filter(filename):
     return get_loader(filename) is not None
 
 
-from ._audio import PEOPLE, AudioFile, DUMMY_SONG, decode_value
+from ._audio import PEOPLE, AudioFile, DUMMY_SONG, decode_value, \
+    FILESYSTEM_TAGS, TIME_TAGS
 from ._image import EmbeddedImage, APICType
 from ._misc import AudioFileError
 
@@ -104,3 +105,5 @@ DUMMY_SONG
 PEOPLE
 decode_value
 APICType
+FILESYSTEM_TAGS
+TIME_TAGS
