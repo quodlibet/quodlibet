@@ -6,13 +6,11 @@
 # published by the Free Software Foundation
 
 from datetime import datetime
-from gi.repository import Gtk
-from os import path
 
 from quodlibet import print_d
+from quodlibet.qltk import WebImage
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.util import enum
-from quodlibet.util.path import normalize_path
 
 SOUNDCLOUD_NAME = "Soundcloud"
 PROCESS_QL_URLS = True
@@ -20,18 +18,6 @@ PROCESS_QL_URLS = True
 DEFAULT_BITRATE = 128
 EPOCH = datetime(1970, 1, 1)
 SITE_URL = "http://soundcloud.com"
-IMAGE_DIR = normalize_path(
-    path.join(path.dirname(__file__), '../../images/branding/soundcloud'))
-
-
-def _local_image(filename):
-    """
-    Get a local branding image from disk
-    TODO: load these from the web (and cache)
-    """
-    return Gtk.Image.new_from_file(path.join(IMAGE_DIR, filename))
-
-LOGO_IMAGE_BLACK = _local_image('soundcloud-logo-black-104x16.png')
 
 
 class Wrapper(object):
@@ -87,13 +73,21 @@ def clamp(val, low, high):
 class State(int):
     LOGGED_OUT, LOGGING_IN, LOGGED_IN = range(3)
 
+
+def _sc_image(path, w, h):
+    return WebImage('http://connect.soundcloud.com/2/btn-%s.png' % path, w, h)
+
+
+LOGO_IMAGE_BLACK = WebImage(
+    "https://developers.soundcloud.com/assets/logo_black.png", 104, 16)
+
 """Login-state-based data for configuring actions (e.g. in the button)"""
 LOGIN_STATE_DATA = {
     State.LOGGED_IN: (_("Log out of %s") % SOUNDCLOUD_NAME,
-                      _local_image('btn-disconnect-l.png')),
+                      _sc_image('disconnect-l', 140, 29)),
     State.LOGGING_IN: (_("Enter code…"), None),
     State.LOGGED_OUT: (_("Log in to %s") % SOUNDCLOUD_NAME,
-                       _local_image('btn-connect-l.png')),
+                       _sc_image('connect-l', 124, 29)),
 }
 
 
