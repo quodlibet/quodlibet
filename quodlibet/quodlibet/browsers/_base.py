@@ -138,6 +138,7 @@ class Browser(Gtk.Box, Filter):
         'songs-selected':
         (GObject.SignalFlags.RUN_LAST, None, (object, object)),
         'songs-activated': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'uri-received': (GObject.SignalFlags.RUN_LAST, None, (str,))
     }
 
     name = _("Library Browser")

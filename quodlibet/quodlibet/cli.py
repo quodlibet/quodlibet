@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -225,6 +225,9 @@ def process_arguments(argv):
         elif command == "play-file":
             try:
                 filename = uri_from_path(arg)
+                if filename.startswith("quodlibet://"):
+                    # TODO: allow handling of URIs without --play-file
+                    queue("uri-received", arg)
             except ValueError:
                 filename = os.path.abspath(util.path.expanduser(arg))
             queue("play-file", filename)
