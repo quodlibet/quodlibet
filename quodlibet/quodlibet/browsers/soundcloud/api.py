@@ -16,16 +16,11 @@ from quodlibet.util import website
 from quodlibet.util.dprint import print_w
 from quodlibet.util.http import download_json, download
 
-MIN_DURATION_SECS = 120
-
 try:
     gi.require_version("Soup", "2.4")
 except ValueError as e:
     raise ImportError(e)
 from gi.repository import Soup
-
-
-PAGE_SIZE = 150
 
 
 class RestApi(GObject.Object):
@@ -84,6 +79,11 @@ class SoundcloudApiClient(RestApi):
     __CLIENT_ID = '5acc74891941cfc73ec8ee2504be6617'
     API_ROOT = "https://api.soundcloud.com"
     REDIRECT_URI = 'http://quodlibet.github.io/callbacks/soundcloud.html'
+    PAGE_SIZE = 150
+    MIN_DURATION_SECS = 120
+    COUNT_TAGS = {'%s_count' % t
+                  for t in ('playback', 'download', 'likes', 'favoritings',
+                            'download', 'comments')}
 
     __gsignals__ = {
         'fetch-success': (GObject.SignalFlags.RUN_LAST, None, (object,)),
@@ -146,8 +146,8 @@ class SoundcloudApiClient(RestApi):
     def get_tracks(self, params):
         merged = {
             "q": "",
-            "limit": PAGE_SIZE,
-            "duration[from]": MIN_DURATION_SECS * 1000,
+            "limit": self.PAGE_SIZE,
+            "duration[from]": self.MIN_DURATION_SECS * 1000,
         }
         for k, v in params.iteritems():
             delim = " " if k == 'q' else ","
@@ -161,7 +161,7 @@ class SoundcloudApiClient(RestApi):
         self.emit('songs-received', songs)
 
     def get_favorites(self):
-        self._get('/me/favorites', self._on_track_data, limit=PAGE_SIZE)
+        self._get('/me/favorites', self._on_track_data, limit=self.PAGE_SIZE)
 
     def get_comments(self, track_id):
         self._get('/tracks/%s/comments' % track_id, self._receive_comments,
@@ -228,9 +228,8 @@ class SoundcloudApiClient(RestApi):
             except KeyError:
                 pass
 
-        def put_counts(*args):
-            for name in args:
-                tag = "%s_count" % name
+        def put_counts(tags):
+            for tag in tags:
                 try:
                     song["~#%s" % tag] = int(r[tag])
                 except KeyError:
@@ -255,7 +254,7 @@ class SoundcloudApiClient(RestApi):
                     art_url.replace("-large.", "-t500x500."))
             put_time("~#mtime", r, "last_modified")
             put_date("date", r, "created_at")
-            put_counts("playback", "download", "favoritings", "comments")
+            put_counts(self.COUNT_TAGS)
             plays = d.get("user_playback_count", 0)
             if plays:
                 song["~#playcount"] = plays
