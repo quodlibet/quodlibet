@@ -41,5 +41,5 @@ class WAVEFile(AudioFile):
         else:
             return k == "artist"
 
-info = WAVEFile
+loader = WAVEFile
 types = [WAVEFile]

@@ -469,7 +469,7 @@ for var in list(globals().values()):
         types.append(var)
 
 
-def info(filename):
+def loader(filename):
     """
     Returns:
         AudioFile

@@ -42,5 +42,5 @@ class AACFile(AudioFile):
             return k == "title"
 
 
-info = AACFile
+loader = AACFile
 types = [AACFile]

@@ -22,6 +22,6 @@ class WavpackFile(APEv2File):
         self["~#length"] = audio.info.length
         self.sanitize(filename)
 
-info = WavpackFile
+loader = WavpackFile
 types = [WavpackFile]
 extensions = [".wv"]

@@ -282,6 +282,6 @@ def pack_image(mime, description, imagedata, type_):
     return data
 
 
-info = WMAFile
+loader = WMAFile
 types = [WMAFile]
 extensions = [".wma", ".asf", ".wmv"]

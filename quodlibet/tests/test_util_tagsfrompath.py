@@ -33,7 +33,7 @@ class TTagsFromPattern(TestCase):
         from quodlibet import formats
         pat = TagsFromPattern('<tracknumber>. <title>')
         tracktitle = {'tracknumber': '01', 'title': 'Title'}
-        for ext, kind in formats._infos.iteritems():
+        for ext, kind in formats.loaders.iteritems():
             f = formats._audio.AudioFile()
             if not isinstance(kind, type):
                 continue

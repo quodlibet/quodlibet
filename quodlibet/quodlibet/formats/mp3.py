@@ -30,5 +30,5 @@ class MP3File(ID3File):
             self["~encoding"] = encoding
 
 
-info = MP3File
+loader = MP3File
 types = [MP3File]
