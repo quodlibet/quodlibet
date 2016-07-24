@@ -7,15 +7,12 @@
 
 import os
 
-from tests import TestCase, DATA_DIR, skipUnless
+from mutagen.aac import AAC
+
 from quodlibet.formats.aac import AACFile
 
+from . import TestCase, DATA_DIR, skipUnless
 from .helper import get_temp_copy
-
-try:
-    from mutagen.aac import AAC
-except ImportError:
-    AAC = None
 
 
 class _TAACFile(TestCase):

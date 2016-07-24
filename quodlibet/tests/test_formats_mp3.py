@@ -7,8 +7,6 @@
 
 import os
 
-import mutagen
-
 from tests import TestCase, DATA_DIR
 from quodlibet.formats.mp3 import MP3File
 
@@ -23,14 +21,12 @@ class TMP3File(TestCase):
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.0, 1)
         self.assertAlmostEqual(self.song2("~#length"), 1.764, 3)
-        if mutagen.version >= (1, 31):
-            self.assertAlmostEqual(self.song3("~#length"), 0.0616, 3)
+        self.assertAlmostEqual(self.song3("~#length"), 0.0616, 3)
 
     def test_bitrate(self):
         self.failUnlessEqual(self.song("~#bitrate"), 32)
         self.failUnlessEqual(self.song2("~#bitrate"), 32)
-        if mutagen.version >= (1, 31):
-            self.failUnlessEqual(self.song3("~#bitrate"), 270)
+        self.failUnlessEqual(self.song3("~#bitrate"), 270)
 
     def test_format(self):
         self.assertEqual(self.song("~format"), "MP3")
@@ -43,8 +39,6 @@ class TMP3File(TestCase):
         self.assertEqual(self.song3("~codec"), "MP3")
 
     def test_encoding(self):
-        if mutagen.version < (1, 31):
-            return
         self.assertEqual(self.song("~encoding"), "")
         self.assertEqual(self.song2("~encoding"), "")
         self.assertEqual(self.song3("~encoding"), "LAME 3.99.1+\nVBR")

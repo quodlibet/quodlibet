@@ -7,7 +7,6 @@
 
 import os
 
-import mutagen
 from mutagen import asf
 
 from tests import TestCase, DATA_DIR
@@ -74,8 +73,6 @@ class TWMAFile(TestCase):
         self.assertEqual(self.song3("~format"), "ASF")
 
     def test_codec(self):
-        if mutagen.version < (1, 31):
-            return
         self.assertEqual(self.song("~codec"),
                          u"Windows Media Audio 9 Standard")
         self.assertEqual(self.song2("~codec"),
@@ -84,8 +81,6 @@ class TWMAFile(TestCase):
                          u"Intel G.723")
 
     def test_encoding(self):
-        if mutagen.version < (1, 31):
-            return
         self.assertEqual(
             self.song("~encoding"),
             u"Windows Media Audio 9.1\n64 kbps, 48 kHz, stereo 2-pass CBR")
