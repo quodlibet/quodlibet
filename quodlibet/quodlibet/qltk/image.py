@@ -34,6 +34,14 @@ def get_scale_factor(widget):
         return 1
 
 
+def get_surface_for_pixbuf(widget, pixbuf):
+    """Returns a cairo surface"""
+
+    scale_factor = widget.get_scale_factor()
+    return Gdk.cairo_surface_create_from_pixbuf(
+            pixbuf, scale_factor, widget.get_window())
+
+
 def get_pbosf_for_pixbuf(widget, pixbuf):
     """Returns a cairo surface or the same pixbuf,
     let's call it PixbufOrSurface..

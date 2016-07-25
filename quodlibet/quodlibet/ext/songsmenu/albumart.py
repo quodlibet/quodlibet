@@ -34,8 +34,8 @@ from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.qltk.x import Paned, Align, Button
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
-from quodlibet.qltk.image import (set_renderer_from_pbosf, get_scale_factor,
-    get_pbosf_for_pixbuf, set_image_from_pbosf, scale, add_border_widget)
+from quodlibet.qltk.image import scale, add_border_widget, \
+    get_surface_for_pixbuf
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 
@@ -378,7 +378,9 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         pixbuf = loader.get_pixbuf()
 
         def idle_set():
-            set_image_from_pbosf(self.image, pixbuf)
+            if pixbuf is not None:
+                surface = get_surface_for_pixbuf(self, pixbuf)
+                self.image.set_from_surface(surface)
 
         GLib.idle_add(idle_set)
 
@@ -387,18 +389,16 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             return
         pixbuf = self.current_pixbuf
 
-        if not self.window_fit.get_active():
-            pbosf = pixbuf
-        else:
+        if self.window_fit.get_active():
             alloc = self.scrolled.get_allocation()
             width = alloc.width
             height = alloc.height
-            scale_factor = get_scale_factor(self)
+            scale_factor = self.get_scale_factor()
             boundary = (width * scale_factor, height * scale_factor)
             pixbuf = scale(pixbuf, boundary, scale_up=False)
-            pbosf = get_pbosf_for_pixbuf(self, pixbuf)
 
-        set_image_from_pbosf(self.image, pbosf)
+        surface = get_surface_for_pixbuf(self, pixbuf)
+        self.image.set_from_surface(surface)
 
     def __close(self, loader, *data):
         if self.stop_loading:
@@ -538,15 +538,15 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         img_col.pack_start(rend_pix, False)
 
         def cell_data_pb(column, cell, model, iter_, *args):
-            pbosf = model[iter_][0]
-            set_renderer_from_pbosf(cell, pbosf)
+            surface = model[iter_][0]
+            cell.set_property("surface", surface)
 
         img_col.set_cell_data_func(rend_pix, cell_data_pb, None)
         treeview.append_column(img_col)
 
         rend_pix.set_property('xpad', 2)
         rend_pix.set_property('ypad', 2)
-        border_width = get_scale_factor(self) * 2
+        border_width = self.get_scale_factor() * 2
         rend_pix.set_property('width', self.THUMB_SIZE + 4 + border_width)
         rend_pix.set_property('height', self.THUMB_SIZE + 4 + border_width)
 
@@ -683,18 +683,18 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
             pbloader.write(get_url(cover['thumbnail'])[0])
             pbloader.close()
 
-            scale_factor = get_scale_factor(self)
+            scale_factor = self.get_scale_factor()
             size = self.THUMB_SIZE * scale_factor - scale_factor * 2
             pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
                 GdkPixbuf.InterpType.BILINEAR)
             pixbuf = add_border_widget(pixbuf, self)
-            thumb = get_pbosf_for_pixbuf(self, pixbuf)
+            surface = get_surface_for_pixbuf(self, pixbuf)
         except (GLib.GError, IOError):
             pass
         else:
             def append(data):
                 self.liststore.append(data)
-            GLib.idle_add(append, [thumb, cover])
+            GLib.idle_add(append, [surface, cover])
 
     def __search_callback(self, covers, progress):
         for cover in covers:
