@@ -292,6 +292,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         table.attach(self.cmd, 1, 2, 0, 1)
         table.attach(self.name_combo, 1, 2, 1, 2)
+        table.props.expand = False
 
         self.scrolled = Gtk.ScrolledWindow()
         self.scrolled.add_with_viewport(self.image)
