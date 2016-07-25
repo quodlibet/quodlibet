@@ -40,7 +40,8 @@ from quodlibet.util.library import background_filter
 from quodlibet.util import connect_obj, DeferredSignal
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
-from quodlibet.qltk.image import *
+from quodlibet.qltk.image import get_scale_factor, get_pbosf_for_pixbuf, \
+    add_border_widget, set_renderer_from_pbosf
 
 
 class AlbumTagCompletion(EntryWordCompletion):

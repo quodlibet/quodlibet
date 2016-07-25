@@ -4,26 +4,33 @@
 # published by the Free Software Foundation
 
 import uuid
-from quodlibet.config import HardCodedRatingsPrefs
-from quodlibet.util.path import *
-from quodlibet.util import re_escape
-from quodlibet.util.string import decode, encode, split_escape, join_escape
-from quodlibet.util.string.splitters import *
-from quodlibet.util.library import *
-from tests import TestCase, skipIf
-from .helper import capture_output
-
 import tempfile
 import os
 import sys
 import threading
 import traceback
 import time
-from quodlibet import util
-from quodlibet import config
+
 from quodlibet.compat import text_type, PY2
-from quodlibet.util import format_time_long as f_t_l
+from quodlibet.config import HardCodedRatingsPrefs
+from quodlibet import config
+from quodlibet import util
 from quodlibet.util.dprint import print_exc, format_exception, extract_tb
+from quodlibet.util import format_time_long as f_t_l
+from quodlibet.util import re_escape
+from quodlibet.util.library import set_scan_dirs, get_scan_dirs
+from quodlibet.util.path import is_fsnative, fsnative2glib, glib2fsnative, \
+    parse_xdg_user_dirs, xdg_get_system_data_dirs, escape_filename, \
+    strip_win32_incompat_from_path, xdg_get_cache_home, environ, \
+    xdg_get_data_home, unexpand, expanduser, xdg_get_user_dirs, \
+    xdg_get_config_home, fsnative, bytes2fsnative, fsnative2bytes, \
+    get_temp_cover_file, mkdir, getcwd, mtime
+from quodlibet.util.string import decode, encode, split_escape, join_escape
+from quodlibet.util.string.splitters import split_people, split_title, \
+    split_album
+
+from . import TestCase, skipIf
+from .helper import capture_output
 
 
 is_win = os.name == "nt"

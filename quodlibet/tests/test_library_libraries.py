@@ -15,7 +15,8 @@ from quodlibet.formats import AudioFile
 from tests import TestCase, DATA_DIR, mkstemp
 from .helper import capture_output, get_temp_copy
 
-from quodlibet.library.libraries import *
+from quodlibet.library.libraries import Library, PicklingMixin, SongLibrary, \
+    FileLibrary, AlbumLibrary, SongFileLibrary
 
 
 class Fake(int):

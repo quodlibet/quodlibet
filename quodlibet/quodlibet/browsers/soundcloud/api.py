@@ -5,16 +5,19 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from datetime import datetime
+
 import gi
 from gi.repository import GObject, Gio
 
 from quodlibet import util, config
-from quodlibet.browsers.soundcloud.library import SoundcloudFile
-from quodlibet.browsers.soundcloud.util import *
 from quodlibet.util import website
-from quodlibet.util.dprint import print_w
+from quodlibet.util.dprint import print_w, print_d
 from quodlibet.util.http import download_json, download
 from quodlibet.compat import urlencode
+
+from .library import SoundcloudFile
+from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH
 
 try:
     gi.require_version("Soup", "2.4")

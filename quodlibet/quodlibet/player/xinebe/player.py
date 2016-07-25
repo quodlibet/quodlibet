@@ -12,7 +12,19 @@ from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 
 from . import cdefs
-from .cdefs import *
+from .cdefs import XINE_PARAM_SPEED, XINE_PARAM_GAPLESS_SWITCH, xine_dispose, \
+    XINE_SPEED_PAUSE, xine_play, xine_close, xine_set_param, xine_get_param, \
+    xine_get_status, xine_open, xine_stop, XINE_PARAM_EARLY_FINISHED_EVENT, \
+    XINE_META_INFO_ARTIST, xine_ui_message_data_t, XINE_EVENT_UI_SET_TITLE, \
+    XINE_PARAM_AUDIO_AMP_MUTE, XINE_PARAM_AUDIO_AMP_LEVEL, xine_new, \
+    XINE_EVENT_UI_PLAYBACK_FINISHED, xine_event_dispose_queue, xine_init, \
+    XINE_PARAM_IGNORE_VIDEO, XINE_PARAM_IGNORE_SPU, xine_config_load, \
+    xine_check_version, xine_get_homedir, xine_list_input_plugins, xine_exit, \
+    xine_open_audio_driver, xine_close_audio_driver, XINE_STATUS_PLAY, \
+    XINE_SPEED_NORMAL, xine_get_pos_length, XINE_MSG_NO_ERROR, \
+    XINE_EVENT_UI_MESSAGE, xine_get_meta_info, XINE_META_INFO_ALBUM, \
+    XINE_META_INFO_TITLE, xine_stream_new, xine_get_version_string, \
+    xine_event_new_queue, xine_event_create_listener_thread
 
 
 class XineHandle(object):

@@ -5,13 +5,18 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import time
+import operator
 from collections import defaultdict
 from datetime import datetime
 
 from quodlibet.formats import AudioFile
 from quodlibet.query import Query
-from quodlibet.query._match import *
+from quodlibet.query._match import Tag, Inter, Union, Numcmp, NumexprTag, \
+    Numexpr, True_, error
 
+
+error
 
 INVERSE_OPS = {operator.le: operator.gt,
                operator.gt: operator.le,

@@ -9,9 +9,11 @@ from tests import TestCase
 
 from quodlibet import config
 
-from quodlibet.browsers.collection import *
-from quodlibet.browsers.collection.models import *
-from quodlibet.browsers.collection.prefs import *
+from quodlibet.browsers.collection import CollectionBrowser
+from quodlibet.browsers.collection.models import UnknownNode, \
+    CollectionTreeStore, build_tree, MultiNode
+from quodlibet.browsers.collection.prefs import save_headers, get_headers, \
+    PatternEditor
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
 

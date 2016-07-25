@@ -33,13 +33,17 @@ from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
 from .misc import environ, argv, cached_func, get_locale_encoding, \
     get_fs_encoding
-from .environment import *
+from .environment import is_plasma, is_unity, is_enlightenment, \
+    is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console, \
+    is_py2exe_window
 from .enum import enum
 
 
 # pyflakes
 environ, argv, cached_func, get_locale_encoding, get_fs_encoding, enum,
-print_w, print_exc
+print_w, print_exc, is_plasma, is_unity, is_enlightenment,
+is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console,
+is_py2exe_window
 
 
 if PY2:

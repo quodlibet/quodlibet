@@ -5,7 +5,8 @@
 
 from tests import TestCase
 
-from quodlibet.qltk.msg import *
+from quodlibet.qltk.msg import WarningMessage, ErrorMessage, \
+    CancelRevertSave, ConfirmFileReplace
 
 
 class TWarningMessage(TestCase):

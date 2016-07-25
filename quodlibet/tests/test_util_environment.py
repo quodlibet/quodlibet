@@ -7,7 +7,8 @@
 
 from tests import TestCase
 
-from quodlibet.util.environment import *
+from quodlibet.util import is_unity, is_windows, is_osx, is_py2exe, \
+    is_py2exe_console, is_py2exe_window
 
 
 class TUtilEnvironment(TestCase):

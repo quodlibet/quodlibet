@@ -12,18 +12,20 @@ from quodlibet import config, app
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet.browsers import Browser
-from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
-from quodlibet.browsers.soundcloud.library import SoundcloudLibrary
-from quodlibet.browsers.soundcloud.query import SoundcloudQuery
-from quodlibet.browsers.soundcloud.util import *
 from quodlibet.qltk import Icons, Message
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.qltk.x import Align, ScrolledWindow
+from quodlibet.qltk.x import Align, ScrolledWindow, WebImage
 from quodlibet.util import connect_destroy, DeferredSignal, website, enum, \
     cached_property
 from quodlibet.util.dprint import print_w, print_d
+
+from .api import SoundcloudApiClient
+from .library import SoundcloudLibrary
+from .query import SoundcloudQuery
+from .util import State, FilterType, PROCESS_QL_URLS, EnterAuthCodeDialog, \
+    SITE_URL, SOUNDCLOUD_NAME, sc_btn_image
 
 
 class SoundcloudBrowser(Browser, util.InstanceTracker):

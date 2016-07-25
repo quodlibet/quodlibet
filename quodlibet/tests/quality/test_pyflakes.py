@@ -21,10 +21,7 @@ from tests import TestCase
 
 class FakeStream(object):
     # skip these by default
-    BL = [
-        "unable to detect undefined names",
-        "may be undefined, or defined from star imports",
-    ]
+    BL = []
     if PY3:
         BL.append(
             "undefined name "
