@@ -592,9 +592,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self._error(PlayerError(title, error_details))
 
     def __about_to_finish_sync(self):
-        """Returns a tuple (ok, next_song). ok is True if the next song
-        should be set.
-        """
+        """Returns the next song uri to play or None"""
 
         print_d("About to finish (sync)")
 
@@ -605,30 +603,32 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # https://bugzilla.gnome.org/show_bug.cgi?id=695474
         if self.song.multisong:
             print_d("multisong: ignore about to finish")
-            return (False, None)
+            return
 
         if config.getboolean("player", "gst_disable_gapless"):
             print_d("Gapless disabled")
-            return (False, None)
+            return
 
         # this can trigger twice, see issue 987
         if self._in_gapless_transition:
-            return (False, None)
+            return
         self._in_gapless_transition = True
 
         print_d("Select next song in mainloop..")
         self._source.next_ended()
         print_d("..done.")
 
-        return (True, self._source.current)
+        song = self._source.current
+        if song is not None:
+            return song("~uri")
 
     def __about_to_finish(self, playbin):
         print_d("About to finish (async)")
 
         try:
-            ok, song = self._runner.call(self.__about_to_finish_sync,
-                                         priority=GLib.PRIORITY_HIGH,
-                                         timeout=0.5)
+            uri = self._runner.call(self.__about_to_finish_sync,
+                                    priority=GLib.PRIORITY_HIGH,
+                                    timeout=0.5)
         except MainRunnerTimeoutError as e:
             # Due to some locks being held during this signal we can get
             # into a deadlock when a seek or state change event happens
@@ -644,9 +644,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             util.print_exc()
             return
 
-        if ok:
+        if uri is not None:
             print_d("About to finish (async): setting uri")
-            uri = song("~uri") if song is not None else None
             playbin.set_property('uri', uri)
         print_d("About to finish (async): done")
 
