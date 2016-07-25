@@ -31,7 +31,7 @@ from quodlibet.util.dprint import print_d, print_w
 
 from quodlibet import util, qltk, app
 from quodlibet.qltk.msg import ConfirmFileReplace
-from quodlibet.qltk.x import Paned, Align, Button, Table
+from quodlibet.qltk.x import Paned, Align, Button
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
 from quodlibet.qltk.image import scale, add_border_widget, \
@@ -281,7 +281,8 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         if self.name_combo.get_active() < 0:
             self.name_combo.set_active(0)
 
-        table = Table(n_rows=2, n_columns=2, homogeneous=False)
+        table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
+        table.props.expand = False
         table.set_row_spacing(0, 5)
         table.set_row_spacing(1, 5)
         table.set_col_spacing(0, 5)
@@ -828,7 +829,8 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def PluginPreferences(cls, window):
-        table = Table(n_rows=len(engines), n_columns=2)
+        table = Gtk.Table(n_rows=len(engines), n_columns=2)
+        table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         frame = qltk.Frame(_("Sources"), child=table)

@@ -20,7 +20,7 @@ from quodlibet.plugins import PluginConfigMixin
 from quodlibet.browsers.collection.models import EMPTY
 
 from quodlibet.qltk.views import HintedTreeView
-from quodlibet.qltk.x import Frame, Table
+from quodlibet.qltk.x import Frame
 from quodlibet.qltk import Icons, Dialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
@@ -598,7 +598,8 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
         vb = Gtk.VBox(spacing=12)
 
         # Tabulate all settings for neatness
-        table = Table(n_rows=1, n_columns=2)
+        table = Gtk.Table(n_rows=1, n_columns=2)
+        table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         rows = []

@@ -35,7 +35,6 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfig
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.msg import Message
-from quodlibet.qltk.x import Table
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
 
@@ -457,7 +456,8 @@ class QLScrobbler(EventPlugin):
         box = Gtk.VBox(spacing=12)
 
         # first frame
-        table = Table(n_rows=5, n_columns=2)
+        table = Gtk.Table(n_rows=5, n_columns=2)
+        table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
@@ -526,6 +526,7 @@ class QLScrobbler(EventPlugin):
 
         # second frame
         table = Gtk.Table(n_rows=4, n_columns=2)
+        table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 

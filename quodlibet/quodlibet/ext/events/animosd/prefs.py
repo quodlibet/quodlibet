@@ -16,7 +16,6 @@ from quodlibet import qltk
 from quodlibet.util import connect_obj
 from quodlibet.formats import DUMMY_SONG
 from quodlibet.qltk.textedit import PatternEdit
-from quodlibet.qltk.x import Table
 from quodlibet.qltk import Icons
 
 
@@ -179,7 +178,8 @@ class AnimOsdPrefs(Gtk.VBox):
         self.pack_start(frame, False, True, 0)
 
         def build_text_widget():
-            t = Table(n_rows=2, n_columns=2)
+            t = Gtk.Table(n_rows=2, n_columns=2)
+            t.props.expand = False
             t.set_col_spacings(6)
             t.set_row_spacings(3)
 
@@ -207,7 +207,8 @@ class AnimOsdPrefs(Gtk.VBox):
         self.pack_start(frame, False, True, 0)
 
         def build_colors_widget():
-            t = Table(n_rows=2, n_columns=2)
+            t = Gtk.Table(n_rows=2, n_columns=2)
+            t.props.expand = False
             t.set_col_spacings(6)
             t.set_row_spacings(3)
             b = Gtk.ColorButton(
