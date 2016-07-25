@@ -452,3 +452,12 @@ class WebImage(Gtk.Image):
             self.set_from_icon_name("image-missing", Gtk.IconSize.BUTTON)
         else:
             self.set_from_pixbuf(pixbuf)
+
+
+class Table(Gtk.Table):
+
+    def __init__(self, *args, **kwargs):
+        # Work around expand propagating through here. Might be a bug in
+        # GtkTable since 3.20...
+        kwargs["expand"] = False
+        super(Table, self).__init__(*args, **kwargs)

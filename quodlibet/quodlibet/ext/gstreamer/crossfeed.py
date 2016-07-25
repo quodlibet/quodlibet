@@ -15,6 +15,7 @@ from gi.repository import Gtk, Gst, GObject
 
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk, plugins
+from quodlibet.qltk.x import Table
 from quodlibet import config
 
 
@@ -62,7 +63,7 @@ class Preferences(Gtk.VBox):
     def __init__(self):
         super(Preferences, self).__init__(spacing=12)
 
-        table = Gtk.Table(n_rows=3, n_columns=2)
+        table = Table(n_rows=3, n_columns=2)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
