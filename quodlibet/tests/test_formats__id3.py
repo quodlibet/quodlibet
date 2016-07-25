@@ -40,7 +40,7 @@ class TID3ImagesMixin(object):
 
         f = mutagen.File(self.filename)
         apic = mutagen.id3.APIC(encoding=3, mime="image/jpeg", type=4,
-                                desc="foo", data="bar")
+                                desc="foo", data=b"bar")
         f.tags.add(apic)
         f.save()
 
@@ -49,17 +49,17 @@ class TID3ImagesMixin(object):
         image = song.get_primary_image()
         self.assertEqual(image.mime_type, "image/jpeg")
         fn = image.file
-        self.failUnlessEqual(fn.read(), "bar")
+        self.failUnlessEqual(fn.read(), b"bar")
 
         apic = mutagen.id3.APIC(encoding=3, mime="image/jpeg", type=3,
-                                desc="xx", data="bar2")
+                                desc="xx", data=b"bar2")
         f.tags.add(apic)
         f.save()
 
         song = self.KIND(self.filename)
         self.failUnless(song.has_images)
         image = song.get_primary_image()
-        self.failUnlessEqual(image.read(), "bar2")
+        self.failUnlessEqual(image.read(), b"bar2")
 
         # get_images()
         images = song.get_images()
@@ -70,7 +70,7 @@ class TID3ImagesMixin(object):
     def test_clear_images(self):
         f = mutagen.File(self.filename)
         apic = mutagen.id3.APIC(encoding=3, mime="image/jpeg", type=4,
-                                desc="foo", data="bar")
+                                desc="foo", data=b"bar")
         f.tags.add(apic)
         f.save()
 
@@ -306,14 +306,14 @@ class TID3FileMixin(object):
 
     def test_mb_track_id(self):
         f = mutagen.File(self.filename)
-        f.tags.add(mutagen.id3.UFID(owner="http://musicbrainz.org", data="x"))
+        f.tags.add(mutagen.id3.UFID(owner="http://musicbrainz.org", data=b"x"))
         f.save()
         song = self.KIND(self.filename)
         self.failUnlessEqual(song("musicbrainz_trackid"), "x")
         song["musicbrainz_trackid"] = "y"
         song.write()
         f = mutagen.File(self.filename)
-        self.failUnlessEqual(f.tags["UFID:http://musicbrainz.org"].data, "y")
+        self.failUnlessEqual(f.tags["UFID:http://musicbrainz.org"].data, b"y")
         del song["musicbrainz_trackid"]
         song.write()
         f = mutagen.File(self.filename)

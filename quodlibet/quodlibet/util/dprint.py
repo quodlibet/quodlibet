@@ -82,13 +82,16 @@ class Colorise(object):
         return cls.__reset(Color.GRAY + text)
 
 
-_ANSI_ESC_RE = re.compile("(\x1b\[\d\d?m)")
+_ANSI_ESC_RE = re.compile(u"(\x1b\[\d\d?m)")
+_ANSI_ESC_RE_B = re.compile(b"(\x1b\[\d\d?m)")
 
 
 def strip_color(text):
     """Strip ansi escape codes from the passed text"""
 
-    return _ANSI_ESC_RE.sub("", text)
+    if isinstance(text, bytes):
+        return _ANSI_ESC_RE_B.sub(b"", text)
+    return _ANSI_ESC_RE.sub(u"", text)
 
 
 def print_(*objects, **kwargs):

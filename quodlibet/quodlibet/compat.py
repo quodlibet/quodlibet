@@ -30,10 +30,14 @@ if PY2:
     from functools import reduce
     reduce
     from operator import div as floordiv
+    from itertools import izip_longest
+    izip_longest
 
     xrange = xrange
     long = long
     unichr = unichr
+
+    getbyte = lambda b, i: b[i]
 
     text_type = unicode
     string_types = (str, unicode)
@@ -42,6 +46,10 @@ if PY2:
 
     iteritems = lambda d: d.iteritems()
     itervalues = lambda d: d.itervalues()
+    iterkeys = lambda d: d.iterkeys()
+    listitems = lambda d: d.items()
+    listkeys = lambda d: d.keys()
+    listvalues = lambda d: d.values()
 
     def exec_(_code_, _globs_=None, _locs_=None):
         if _globs_ is None:
@@ -76,10 +84,14 @@ elif PY3:
     reduce
     from operator import floordiv
     floordiv
+    from itertools import zip_longest as izip_longest
+    izip_longest
 
     xrange = range
     long = int
     unichr = chr
+
+    getbyte = lambda b, i: b[i:i + 1]
 
     text_type = str
     string_types = (str,)
@@ -88,6 +100,10 @@ elif PY3:
 
     iteritems = lambda d: iter(d.items())
     itervalues = lambda d: iter(d.values())
+    iterkeys = lambda d: iter(d.keys())
+    listitems = lambda d: list(d.items())
+    listkeys = lambda d: list(d.keys())
+    listvalues = lambda d: list(d.values())
 
     import builtins
     exec_ = getattr(builtins, "exec")

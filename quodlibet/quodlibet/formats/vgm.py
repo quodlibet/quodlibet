@@ -20,7 +20,7 @@ class VgmFile(AudioFile):
         with translate_errors():
             with open(filename, "rb") as h:
                 header = h.read(64)
-                if len(header) != 64 or header[:4] != "Vgm ":
+                if len(header) != 64 or header[:4] != b"Vgm ":
                     raise Exception("Not a VGM file")
 
                 samples_to_sec = lambda s: s / 44100.

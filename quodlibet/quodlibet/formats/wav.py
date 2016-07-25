@@ -24,7 +24,7 @@ class WAVEFile(AudioFile):
         with translate_errors():
             with open(filename, "rb") as h:
                 f = wave.open(h)
-                self["~#length"] = f.getnframes() / f.getframerate()
+                self["~#length"] = float(f.getnframes()) / f.getframerate()
         self.sanitize(filename)
 
     def sanitize(self, filename):

@@ -133,7 +133,7 @@ class TMP4File(TestCase):
         self.song.set_image(image)
         image = self.song.get_primary_image()
         self.assertTrue(image)
-        self.assertEqual(image.read(), "foo")
+        self.assertEqual(image.read(), b"foo")
         self.assertTrue(self.song.has_images)
 
     def test_can_change_images(self):

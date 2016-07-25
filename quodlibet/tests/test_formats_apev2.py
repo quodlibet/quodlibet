@@ -63,7 +63,7 @@ class TAPEv2FileMixin(object):
 
     def test_binary_ignore(self):
         m = mutagen.apev2.APEv2(self.f)
-        m["foo"] = APEValue("bar", BINARY)
+        m["foo"] = APEValue(b"bar", BINARY)
         m.save()
         self.s.reload()
         self.failUnlessEqual(self.s.get("foo"), None)
@@ -192,7 +192,7 @@ class TWvCoverArt(TestCase):
         images = self.s.get_images()
         self.assertEqual(len(images), 1)
         self.assertEqual(images[0].mime_type, "image/")
-        self.assertEqual(images[0].read(), "foo")
+        self.assertEqual(images[0].read(), b"foo")
 
     def test_set_image_no_tag(self):
         m = mutagen.apev2.APEv2(self.f)

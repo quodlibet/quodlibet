@@ -8,7 +8,7 @@
 import mutagen.apev2
 
 from quodlibet.util.path import get_temp_cover_file
-from quodlibet.compat import iteritems
+from quodlibet.compat import iteritems, iterkeys
 
 from ._audio import AudioFile
 from ._image import APICType, EmbeddedImage
@@ -67,7 +67,7 @@ def write_cover(image):
         raise AudioFileError(e)
 
     ext = (image.extensions and image.extensions[0]) or "jpg"
-    data = ("hello.%s\x00" % (ext)) + data
+    data = ("hello.%s\x00" % (ext)).encode("ascii") + data
 
     value = mutagen.apev2.APEValue(data, mutagen.apev2.BINARY)
 
@@ -139,7 +139,7 @@ class APEv2File(AudioFile):
                 tag = mutagen.apev2.APEv2()
 
         # Remove any text keys we read in
-        for key in tag.iterkeys():
+        for key in iterkeys(tag):
             value = tag[key]
             if (value.kind == mutagen.apev2.TEXT and
                 key.lower() not in self.IGNORE):
@@ -165,7 +165,7 @@ class APEv2File(AudioFile):
             return
 
         primary = None
-        for key, value in tag.iteritems():
+        for key, value in iteritems(tag):
             cover_type = get_cover_type(key, value)
             if cover_type is not None:
                 primary = primary or (key, value)
@@ -182,7 +182,7 @@ class APEv2File(AudioFile):
             return []
 
         images = []
-        for key, value in tag.iteritems():
+        for key, value in iteritems(tag):
             image = parse_cover(key, value)
             if image is not None:
                 images.append(image)

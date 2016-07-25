@@ -25,7 +25,7 @@ except ImportError:
     fcntl = None
 
 from quodlibet.compat import reraise as py_reraise, urlparse, PY2, text_type, \
-    iteritems
+    iteritems, reduce
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import title
 
@@ -232,17 +232,21 @@ def italic(string):
     return "<i>%s</i>" % string
 
 
-def parse_time(timestr, err=(ValueError, re.error)):
+def parse_time(timestr, err=object()):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
+
     if timestr[0:1] == "-":
         m = -1
         timestr = timestr[1:]
     else:
         m = 1
+
     try:
         return m * reduce(lambda s, a: s * 60 + int(a),
                           re.split(r":|\.", timestr), 0)
-    except err:
+    except (ValueError, re.error):
+        if err is None:
+            raise
         return 0
 
 

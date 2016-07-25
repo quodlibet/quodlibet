@@ -7,6 +7,8 @@
 
 import os
 
+from quodlibet.compat import getbyte, listkeys
+from quodlibet.util.path import fsdecode
 from ._audio import AudioFile, translate_errors
 
 extensions = [".spc"]
@@ -20,15 +22,15 @@ class SPCFile(AudioFile):
             with open(filename, "rb") as h:
                 head = h.read(46)
                 if len(head) != 46 or \
-                        head[:27] != 'SNES-SPC700 Sound File Data':
+                        head[:27] != b'SNES-SPC700 Sound File Data':
                     raise IOError("Not a valid SNES-SPC700 file")
 
-                if head[35] == '\x1a':
+                if getbyte(head, 35) == b'\x1a':
                     data = h.read(210)
                     if len(data) == 210:
                         self.update(parse_id666(data))
 
-        self.setdefault("title", os.path.basename(filename)[:-4])
+        self.setdefault("title", fsdecode(os.path.basename(filename)[:-4]))
         self.sanitize(filename)
 
     def write(self):
@@ -56,19 +58,19 @@ def parse_id666(data):
     # Instead of detecting "perfectly", we'll just detect enough for
     # the "artist" field. This fails for artist names that begin with
     # numbers or symbols less than ascii value A.
-    if data[130] < 'A':
+    if getbyte(data, 130) < b'A':
         try:
-            tags["~#length"] = int(data[123:126].strip("\x00"))
+            tags["~#length"] = int(data[123:126].strip(b"\x00"))
         except ValueError:
             pass
         tags["artist"] = data[131:163]
     else:
         tags["artist"] = data[130:162]
 
-    for k in tags.keys():
+    for k in listkeys(tags):
         if k[:2] == "~#":
             continue
-        tags[k] = tags[k].replace("\x00", "").decode("ascii", "ignore")
+        tags[k] = tags[k].replace(b"\x00", b"").decode("ascii", "ignore")
         if not tags[k]:
             del tags[k]
 

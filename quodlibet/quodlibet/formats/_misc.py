@@ -12,7 +12,7 @@ import contextlib
 import mutagen
 
 from quodlibet import util
-from quodlibet.util import print_w, print_d
+from quodlibet.util import print_w, print_d, reraise
 from quodlibet.util.importhelper import load_dir_modules
 from quodlibet.const import MinVersions
 
@@ -47,9 +47,9 @@ def translate_errors():
         raise
     except (mutagen.MutagenError, IOError) as e:
         # old mutagen raised IOError
-        raise AudioFileError(e)
+        reraise(AudioFileError, e)
     except Exception as e:
-        raise MutagenBug(e)
+        reraise(MutagenBug, e)
 
 
 def init():

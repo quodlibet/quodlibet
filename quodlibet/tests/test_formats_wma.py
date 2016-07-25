@@ -126,7 +126,7 @@ class TWMAFile(TestCase):
 
     def test_get_image_invalid_data(self):
         tag = asf.ASF(self.f)
-        tag["WM/Picture"] = [asf.ASFValue("nope", asf.BYTEARRAY)]
+        tag["WM/Picture"] = [asf.ASFValue(b"nope", asf.BYTEARRAY)]
         tag.save()
 
         self.assertFalse(self.song.has_images)
@@ -137,26 +137,26 @@ class TWMAFile(TestCase):
         self.assertFalse(image)
 
     def test_unpack_image_min(self):
-        data = "\x03" + "\x00" * 4 + "\x00" * 4
+        data = b"\x03" + b"\x00" * 4 + b"\x00" * 4
         mime, desc, data, type_ = unpack_image(data)
         self.assertEqual(mime, u"")
         self.assertEqual(desc, u"")
-        self.assertEqual(data, "")
+        self.assertEqual(data, b"")
         self.assertEqual(type_, 3)
 
     def test_unpack_image_invalid(self):
-        self.assertRaises(ValueError, unpack_image, "")
-        self.assertRaises(ValueError, unpack_image, "\x00" * 6)
-        self.assertRaises(ValueError, unpack_image, "\x00" * 8)
-        self.assertRaises(ValueError, unpack_image, "\x00" * 100)
+        self.assertRaises(ValueError, unpack_image, b"")
+        self.assertRaises(ValueError, unpack_image, b"\x00" * 6)
+        self.assertRaises(ValueError, unpack_image, b"\x00" * 8)
+        self.assertRaises(ValueError, unpack_image, b"\x00" * 100)
 
     def test_pack_image(self):
         d = pack_image(
-            u"image/jpeg", u"Description", "foo", APICType.COVER_FRONT)
+            u"image/jpeg", u"Description", b"foo", APICType.COVER_FRONT)
         mime, desc, data, type_ = unpack_image(d)
         self.assertEqual(mime, u"image/jpeg")
         self.assertEqual(desc, u"Description")
-        self.assertEqual(data, "foo")
+        self.assertEqual(data, b"foo")
         self.assertEqual(type_, APICType.COVER_FRONT)
 
     def test_clear_images(self):
@@ -181,7 +181,7 @@ class TWMAFile(TestCase):
 
         image = self.song.get_primary_image()
         self.assertEqual(image.mime_type, "image/jpeg")
-        self.assertEqual(image.read(), "foo")
+        self.assertEqual(image.read(), b"foo")
 
     def test_can_change_images(self):
         self.assertTrue(self.song.can_change_images)

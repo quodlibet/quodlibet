@@ -13,7 +13,7 @@ def isascii(string):
     """
 
     try:
-        if isinstance(string, str):
+        if isinstance(string, bytes):
             string.decode("ascii")
         else:
             string.encode("ascii")

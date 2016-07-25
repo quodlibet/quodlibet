@@ -10,7 +10,7 @@ import mutagen.id3
 
 from quodlibet import config, const, print_d
 from quodlibet import util
-from quodlibet.compat import iteritems
+from quodlibet.compat import iteritems, text_type, listvalues
 from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import isascii
@@ -124,7 +124,8 @@ class ID3File(AudioFile):
                 continue
             elif (frame.FrameID == "UFID" and
                   frame.owner == "http://musicbrainz.org"):
-                self["musicbrainz_trackid"] = frame.data
+                self["musicbrainz_trackid"] = frame.data.decode("utf-8",
+                                                                "replace")
                 continue
             elif frame.FrameID == "POPM":
                 rating = frame.rating / 255.0
@@ -175,7 +176,7 @@ class ID3File(AudioFile):
 
             id3id = frame.FrameID
             if id3id.startswith("T"):
-                text = "\n".join(map(unicode, frame.text))
+                text = "\n".join(map(text_type, frame.text))
             elif id3id == "COMM":
                 text = "\n".join(frame.text)
             elif id3id == "USLT":
@@ -207,13 +208,13 @@ class ID3File(AudioFile):
         # to avoid reverting or duplicating tags in existing libraries.
         if audio.tags and "date" not in self:
             for frame in tag.getall('TXXX:DATE'):
-                self["date"] = "\n".join(map(unicode, frame.text))
+                self["date"] = "\n".join(map(text_type, frame.text))
 
         # Read TXXX replaygain and replace previously read values from RVA2
         for frame in tag.getall("TXXX"):
             k = frame.desc.lower()
             if k in RG_KEYS:
-                self[str(k)] = "\n".join(map(unicode, frame.text))
+                self[str(k)] = u"\n".join(map(text_type, frame.text))
 
         self.sanitize(filename)
 
@@ -224,12 +225,11 @@ class ID3File(AudioFile):
 
     def __validate_name(self, k):
         """Returns a ascii string or None if the key isn't supported"""
-        if isinstance(k, unicode):
-            k = k.encode("utf-8")
+
         if not (k and "=" not in k and "~" not in k
                 and k.encode("ascii", "replace") == k):
             return
-        return k
+        return k.encode("ascii")
 
     def __process_rg(self, frame):
         if frame.channel == 1:
@@ -307,11 +307,12 @@ class ID3File(AudioFile):
                 tag.add(Kind(encoding=enc, text=text))
 
         dontwrite = ["genre", "comment", "musicbrainz_trackid", "lyrics"] \
-            + RG_KEYS + self.TXXX_MAP.values()
+            + RG_KEYS + listvalues(self.TXXX_MAP)
 
         if "musicbrainz_trackid" in self.realkeys():
-            f = mutagen.id3.UFID(owner="http://musicbrainz.org",
-                                 data=self["musicbrainz_trackid"])
+            f = mutagen.id3.UFID(
+                owner="http://musicbrainz.org",
+                data=self["musicbrainz_trackid"].encode("utf-8"))
             tag.add(f)
 
         # Issue 439 - Only write valid ISO 639-2 codes to TLAN (else TXXX)

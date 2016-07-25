@@ -9,6 +9,7 @@ import os
 
 from tests import TestCase, DATA_DIR
 from quodlibet.formats.wav import WAVEFile
+from quodlibet.compat import text_type
 
 
 class TWAVEFile(TestCase):
@@ -18,10 +19,10 @@ class TWAVEFile(TestCase):
 
     def test_title_tag(self):
         self.assertEqual(self.song["title"], "test")
-        self.assertTrue(isinstance(self.song["title"], unicode))
+        self.assertTrue(isinstance(self.song["title"], text_type))
 
     def test_length(self):
-        self.failUnlessEqual(self.song("~#length"), 0)
+        self.failUnlessAlmostEqual(self.song("~#length"), 0.227, 2)
 
     def test_write(self):
         self.song.write()

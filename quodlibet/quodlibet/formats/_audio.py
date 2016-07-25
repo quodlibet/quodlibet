@@ -24,15 +24,12 @@ from quodlibet.util import iso639
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
-from quodlibet.compat import iteritems, string_types, text_type, number_types
+from quodlibet.compat import iteritems, string_types, text_type, \
+    number_types, listitems, izip_longest, integer_types
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
 
-try:
-    from itertools import izip_longest
-except ImportError:  # python3.x
-    izip = zip
 
 translate_errors
 
@@ -82,7 +79,7 @@ def decode_value(tag, value):
         return u"%.2f" % value
     elif tag in FILESYSTEM_TAGS:
         return fsdecode(value)
-    return unicode(value)
+    return text_type(value)
 
 
 class AudioFile(dict, ImageContainer):
@@ -547,7 +544,7 @@ class AudioFile(dict, ImageContainer):
         else:
             v = self.get(key, u"")
 
-        if isinstance(v, (int, long, float)):
+        if isinstance(v, number_types):
             return v
         else:
             return v.replace("\n", ", ")
@@ -744,7 +741,7 @@ class AudioFile(dict, ImageContainer):
         """
 
         # Replace nulls with newlines, trimming zero-length segments
-        for key, val in self.items():
+        for key, val in listitems(self):
             if isinstance(val, string_types) and '\0' in val:
                 self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
             # Remove unnecessary defaults
@@ -804,7 +801,7 @@ class AudioFile(dict, ImageContainer):
         for k in self.keys():
             enc_key = encode_key(k)
 
-            if isinstance(self[k], int) or isinstance(self[k], long):
+            if isinstance(self[k], integer_types):
                 s.append("%s=%d" % (enc_key, self[k]))
             elif isinstance(self[k], float):
                 s.append("%s=%f" % (enc_key, self[k]))

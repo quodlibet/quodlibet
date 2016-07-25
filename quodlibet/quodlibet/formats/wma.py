@@ -10,7 +10,7 @@ import struct
 import mutagen.asf
 
 from quodlibet.util.path import get_temp_cover_file
-from quodlibet.compat import iteritems
+from quodlibet.compat import iteritems, text_type
 
 from ._audio import AudioFile
 from ._image import EmbeddedImage, APICType
@@ -117,7 +117,7 @@ class WMAFile(AudioFile):
                 name = self.__translate[name]
             except KeyError:
                 continue
-            self[name] = "\n".join(map(unicode, values))
+            self[name] = u"\n".join(map(text_type, values))
         self.sanitize(filename)
 
     def write(self):
@@ -242,10 +242,10 @@ def unpack_image(data):
         raise ValueError(e)
     data = data[5:]
 
-    mime = ""
+    mime = b""
     while data:
         char, data = data[:2], data[2:]
-        if char == "\x00\x00":
+        if char == b"\x00\x00":
             break
         mime += char
     else:
@@ -253,10 +253,10 @@ def unpack_image(data):
 
     mime = mime.decode("utf-16-le")
 
-    description = ""
+    description = b""
     while data:
         char, data = data[:2], data[2:]
-        if char == "\x00\x00":
+        if char == b"\x00\x00":
             break
         description += char
     else:
@@ -275,8 +275,8 @@ def pack_image(mime, description, imagedata, type_):
 
     size = len(imagedata)
     data = struct.pack("<bi", type_, size)
-    data += mime.encode("utf-16-le") + "\x00\x00"
-    data += description.encode("utf-16-le") + "\x00\x00"
+    data += mime.encode("utf-16-le") + b"\x00\x00"
+    data += description.encode("utf-16-le") + b"\x00\x00"
     data += imagedata
 
     return data

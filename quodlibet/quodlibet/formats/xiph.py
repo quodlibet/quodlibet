@@ -158,7 +158,7 @@ class MutagenVCFile(AudioFile):
         for data in audio.get("metadata_block_picture", []):
             try:
                 pictures.append(Picture(base64.b64decode(data)))
-            except (TypeError, FLACError):
+            except (TypeError, FLACError, ValueError):
                 pass
 
         cover = None
@@ -177,7 +177,7 @@ class MutagenVCFile(AudioFile):
         cover = audio.get("coverart")
         try:
             cover = cover and base64.b64decode(cover[0])
-        except TypeError:
+        except (TypeError, ValueError):
             cover = None
 
         if not cover:
@@ -222,7 +222,8 @@ class MutagenVCFile(AudioFile):
 
         audio.pop("coverart", None)
         audio.pop("coverartmime", None)
-        audio["metadata_block_picture"] = base64.b64encode(pic.write())
+        audio["metadata_block_picture"] = base64.b64encode(
+            pic.write()).decode("ascii")
 
         with translate_errors():
             audio.save()

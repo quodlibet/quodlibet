@@ -9,7 +9,7 @@ import os
 
 from quodlibet import config
 from quodlibet.util.path import is_fsnative, fsnative, fsdecode
-from quodlibet.compat import PY2
+from quodlibet.compat import PY2, text_type
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile
@@ -244,7 +244,7 @@ class TAudioFile(TestCase):
         self.failUnless(", " in bar_2_1.comma("artist"))
 
     def test_comma_filename(self):
-        self.assertTrue(isinstance(bar_1_1.comma("~filename"), unicode))
+        self.assertTrue(isinstance(bar_1_1.comma("~filename"), text_type))
 
     def test_exist(self):
         self.failIf(bar_2_1.exists())
@@ -719,7 +719,7 @@ class Tdecode_value(TestCase):
         self.assertEqual(decode_value("~#foo", 0.25), u"0.25")
         self.assertEqual(decode_value("~#foo", 4), u"4")
         self.assertEqual(decode_value("~#foo", "bar"), u"bar")
-        self.assertTrue(isinstance(decode_value("~#foo", "bar"), unicode))
+        self.assertTrue(isinstance(decode_value("~#foo", "bar"), text_type))
         path = fsnative(u"/foobar")
         self.assertEqual(decode_value("~filename", path), fsdecode(path))
 

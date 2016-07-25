@@ -10,7 +10,7 @@ from mutagen.mp4 import MP4, MP4Cover
 
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import decode
-from quodlibet.compat import iteritems
+from quodlibet.compat import iteritems, listkeys, text_type
 
 from ._audio import AudioFile
 from ._misc import AudioFileError, translate_errors
@@ -92,11 +92,11 @@ class MP4File(AudioFile):
                 if total:
                     self[name] = u"%d/%d" % (cur, total)
                 else:
-                    self[name] = unicode(cur)
+                    self[name] = text_type(cur)
             elif key in self.__translate:
                 name = self.__translate[key]
                 if key == "tmpo":
-                    self[name] = "\n".join(map(unicode, values))
+                    self[name] = u"\n".join(map(text_type, values))
                 elif key.startswith("----"):
                     self[name] = "\n".join(
                         map(lambda v: decode(v).strip("\x00"), values))
@@ -110,7 +110,8 @@ class MP4File(AudioFile):
         with translate_errors():
             audio = MP4(self["~filename"])
 
-        for key in self.__translate.keys() + self.__tupletranslate.keys():
+        for key in (listkeys(self.__translate) +
+                    listkeys(self.__tupletranslate)):
             try:
                 del(audio[key])
             except KeyError:
@@ -123,9 +124,9 @@ class MP4File(AudioFile):
                 continue
             values = self.list(key)
             if name == "tmpo":
-                values = map(int, values)
+                values = list(map(int, values))
             elif name.startswith("----"):
-                values = map(lambda v: v.encode("utf-8"), values)
+                values = list(map(lambda v: v.encode("utf-8"), values))
             audio[name] = values
         track, tracks = self("~#track"), self("~#tracks", 0)
         if track:
@@ -143,7 +144,7 @@ class MP4File(AudioFile):
         return False
 
     def can_change(self, key=None):
-        OK = self.__rtranslate.keys() + self.__rtupletranslate.keys()
+        OK = listkeys(self.__rtranslate) + listkeys(self.__rtupletranslate)
         if key is None:
             return OK
         else:

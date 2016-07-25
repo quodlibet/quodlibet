@@ -13,7 +13,7 @@ import base64
 from quodlibet import config, const, formats
 from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
 from quodlibet.formats._image import EmbeddedImage, APICType
-from quodlibet.compat import long, cBytesIO
+from quodlibet.compat import long, cBytesIO, iteritems
 
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
@@ -28,7 +28,7 @@ def _get_jpeg(size=5):
         GdkPixbuf.Colorspace.RGB, False, 8, size, size)
     fd, fn = mkstemp()
     pb.savev(fn, "jpeg", [], [])
-    with os.fdopen(fd) as h:
+    with os.fdopen(fd, "rb") as h:
         data = h.read()
     os.unlink(fn)
     return data
@@ -169,11 +169,11 @@ class TTotalTagsMixin(object):
 
     def __load_tags(self, tags, expected):
         m = OggVorbis(self.filename)
-        for key, value in tags.iteritems():
+        for key, value in iteritems(tags):
             m.tags[key] = value
         m.save()
         song = OggFile(self.filename)
-        for key, value in expected.iteritems():
+        for key, value in iteritems(expected):
             self.failUnlessEqual(song(key), value)
         if self.MAIN not in expected:
             self.failIf(self.MAIN in song)
@@ -220,12 +220,12 @@ class TTotalTagsMixin(object):
     def __save_tags(self, tags, expected):
         #return
         song = OggFile(self.filename)
-        for key, value in tags.iteritems():
+        for key, value in iteritems(tags):
             song[key] = value
         song.write()
         m = OggVorbis(self.filename)
         # test if all values ended up where we wanted
-        for key, value in expected.iteritems():
+        for key, value in iteritems(expected):
             self.failUnless(key in m.tags)
             self.failUnlessEqual(m.tags[key], [value])
 
@@ -344,8 +344,8 @@ class TVCCoverMixin(object):
         # coverart + coverartmime
         data = _get_jpeg()
         song = self.MutagenType(self.filename)
-        song["coverart"] = base64.b64encode(data)
-        song["coverartmime"] = "image/jpeg"
+        song["coverart"] = base64.b64encode(data).decode("ascii")
+        song["coverartmime"] = u"image/jpeg"
         song.save()
 
         song = self.QLType(self.filename)
@@ -356,7 +356,7 @@ class TVCCoverMixin(object):
         pic = Picture()
         pic.data = _get_jpeg()
         pic.type = APICType.COVER_FRONT
-        b64pic_cover = base64.b64encode(pic.write())
+        b64pic_cover = base64.b64encode(pic.write()).decode("ascii")
 
         song = self.MutagenType(self.filename)
         song["metadata_block_picture"] = [b64pic_cover]
@@ -369,7 +369,7 @@ class TVCCoverMixin(object):
     def test_handle_old_coverart(self):
         data = _get_jpeg()
         song = self.MutagenType(self.filename)
-        song["coverart"] = base64.b64encode(data)
+        song["coverart"] = base64.b64encode(data).decode("ascii")
         song["coverartmime"] = "image/jpeg"
         song.save()
 
@@ -389,7 +389,7 @@ class TVCCoverMixin(object):
         self.failUnlessEqual(song["coverartmime"][0], "image/jpeg")
 
     def test_handle_invalid_coverart(self):
-        crap = ".-a,a.f,afa-,.-"
+        crap = u".-a,a.f,afa-,.-"
         song = self.MutagenType(self.filename)
         song["coverart"] = crap
         song.save()
@@ -408,12 +408,12 @@ class TVCCoverMixin(object):
         pic = Picture()
         pic.data = _get_jpeg()
         pic.type = APICType.COVER_FRONT
-        b64pic_cover = base64.b64encode(pic.write())
+        b64pic_cover = base64.b64encode(pic.write()).decode("ascii")
 
         pic2 = Picture()
         pic2.data = _get_jpeg(size=6)
         pic2.type = APICType.COVER_BACK
-        b64pic_other = base64.b64encode(pic2.write())
+        b64pic_other = base64.b64encode(pic2.write()).decode("ascii")
 
         song = self.MutagenType(self.filename)
         song["metadata_block_picture"] = [b64pic_other, b64pic_cover]
@@ -453,9 +453,9 @@ class TVCCoverMixin(object):
         self.failUnlessEqual(song["metadata_block_picture"][0], crap)
 
     def test_handle_invalid_flac_picture(self):
-        crap = ".-a,a.f,afa-,.-"
+        crap = b".-a,a.f,afa-,.-"
         song = self.MutagenType(self.filename)
-        song["metadata_block_picture"] = base64.b64encode(crap)
+        song["metadata_block_picture"] = base64.b64encode(crap).decode("ascii")
         song.save()
         song = self.QLType(self.filename)
         self.failIf(song.get_primary_image())
@@ -464,7 +464,7 @@ class TVCCoverMixin(object):
     def test_set_image(self):
         data = _get_jpeg()
         song = self.MutagenType(self.filename)
-        song["coverart"] = base64.b64encode(data)
+        song["coverart"] = base64.b64encode(data).decode("ascii")
         song["coverartmime"] = "image/jpeg"
         song.save()
 
@@ -509,7 +509,7 @@ class TFlacPicture(TestCase):
         pic = Picture()
         pic.data = _get_jpeg()
         pic.type = APICType.COVER_FRONT
-        b64pic_cover = base64.b64encode(pic.write())
+        b64pic_cover = base64.b64encode(pic.write()).decode("ascii")
 
         # metadata_block_picture
         song = FLAC(self.filename)
@@ -533,7 +533,7 @@ class TFlacPicture(TestCase):
         self.assertEqual(song.get_images()[-1].type, APICType.COVER_BACK)
 
     def test_get_image(self):
-        data = "abc"
+        data = b"abc"
         song = FLAC(self.filename)
         pic = Picture()
         pic.data = data
@@ -546,7 +546,7 @@ class TFlacPicture(TestCase):
         self.failUnlessEqual(fn.read(), pic.data)
 
     def test_clear_images(self):
-        data = "abc"
+        data = b"abc"
         song = FLAC(self.filename)
         pic = Picture()
         pic.data = data
