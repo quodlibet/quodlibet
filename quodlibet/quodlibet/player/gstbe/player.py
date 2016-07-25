@@ -637,7 +637,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # in a non-gapless transition.
             print_d("About to finish (async): %s" % e)
             return
-        except MainRunnerAbortedError:
+        except MainRunnerAbortedError as e:
             print_d("About to finish (async): %s" % e)
             return
         except MainRunnerError:

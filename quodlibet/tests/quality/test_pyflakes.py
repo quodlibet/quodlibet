@@ -28,7 +28,8 @@ class FakeStream(object):
     ]
     if PY3:
         BL.append(
-            "undefined name '(unichr|unicode|long|basestring|xrange|cmp)'")
+            "undefined name "
+            "'(unichr|unicode|long|basestring|xrange|cmp|execfile|reload)'")
 
     def __init__(self, blacklist=None):
         self.lines = []
