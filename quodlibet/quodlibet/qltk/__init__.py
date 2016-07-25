@@ -401,12 +401,16 @@ def add_signal_watch(signal_action):
         unix_signal_add(GLib.PRIORITY_HIGH, signum, handler, signum)
 
 
-# Legacy plugin/code support.
-from quodlibet.qltk.msg import *
-from quodlibet.qltk.x import *
-from quodlibet.qltk.icons import Icons
-from quodlibet.qltk.window import Window, UniqueWindow
+from .msg import Message, ErrorMessage, WarningMessage
+from .x import Align, Button, ToggleButton, Notebook, SeparatorMenuItem, \
+    WebImage, MenuItem, Frame
+from .icons import Icons
+from .window import Window, UniqueWindow, Dialog
+from .paned import ConfigRPaned, ConfigRHPaned
 
-Window
-UniqueWindow
+Message, ErrorMessage, WarningMessage
+Align, Button, ToggleButton, Notebook, SeparatorMenuItem, \
+    WebImage, MenuItem, Frame
 Icons
+Window, UniqueWindow, Dialog
+ConfigRPaned, ConfigRHPaned
