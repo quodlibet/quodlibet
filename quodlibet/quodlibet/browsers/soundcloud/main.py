@@ -19,7 +19,7 @@ from quodlibet.browsers.soundcloud.util import *
 from quodlibet.qltk import Icons, Message
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
-from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import Align, ScrolledWindow
 from quodlibet.util import connect_destroy, DeferredSignal, website, enum, \
     cached_property
@@ -43,7 +43,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
     @enum
     class ModelIndex(int):
-        TYPE, ICON_NAME, NAME, QUERY = range(4)
+        TYPE, ICON_NAME, NAME, QUERY, ALWAYS_ENABLE = range(5)
 
     login_state = State.LOGGED_OUT
 
@@ -55,11 +55,13 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         klass.filters = {
             _("Search"): (FilterType.SEARCH,
                           Icons.EDIT_FIND,
-                          ""),
+                          "",
+                          True),
             # TODO: support for ~#rating=!None etc (#1940)
             _("Favorites"): (FilterType.FAVORITES,
                              Icons.FAVORITE,
-                             "#(rating = 1.0)"),
+                             "#(rating = 1.0)",
+                             False),
         }
         token = config.get("browsers", "soundcloud_token", default=None)
         try:
@@ -101,7 +103,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.connect('uri-received', self.__handle_incoming_uri)
         self.__auth_sig = self.api_client.connect('authenticated',
                                                   self.__on_authenticated)
-        self.login_state = (State.LOGGED_IN if self.api_client.online
+        self.login_state = (State.LOGGED_IN if self.online
                             else State.LOGGED_OUT)
         self._create_searchbar(library)
         vbox = Gtk.VBox()
@@ -118,6 +120,10 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         pane.pack2(songs_box, resize=True, shrink=False)
         self.pack_start(pane, True, True, 0)
         self.show()
+
+    @property
+    def online(self):
+        return self.api_client.online
 
     def _create_footer(self):
         hbox = Gtk.HBox()
@@ -169,8 +175,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             if state == State.LOGGED_IN:
                 self.api_client.log_out()
                 self.login_state = State.LOGGED_OUT
+                self._refresh_online_filters()
             elif state == State.LOGGING_IN:
-                # Enter code stuff
                 dialog = EnterAuthCodeDialog(app.window)
                 value = dialog.run(clipboard=True)
                 if value:
@@ -195,22 +201,23 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         scrolled_window = ScrolledWindow()
         scrolled_window.show()
         scrolled_window.set_shadow_type(Gtk.ShadowType.IN)
-        self.view = view = AllTreeView()
+        self.view = view = RCMHintedTreeView()
         view.show()
         view.set_headers_visible(False)
         scrolled_window.set_policy(
             Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolled_window.add(view)
-        model = Gtk.ListStore(int, str, str, str)
+        model = Gtk.ListStore(int, str, str, str, bool)
         filters = self.filters
         for (i, (name, data)) in enumerate(filters.iteritems()):
-            filter_type, icon, query = data
-            model.append(row=[filter_type, icon, name, query])
+            filter_type, icon, query, always = data
+            enabled = always or self.online
+            model.append(row=[filter_type, icon, name, query, enabled])
             if i + 1 < len(filters):
-                model.append(row=[FilterType.SEP, None, "", None])
+                model.append(row=[FilterType.SEP, None, "", None, False])
 
-        def is_separator(model, iter, data):
-            return model[iter][self.ModelIndex.TYPE] == FilterType.SEP
+        def is_separator(model, iter_, data):
+            return model[iter_][self.ModelIndex.TYPE] == FilterType.SEP
         view.set_row_separator_func(is_separator, None)
 
         def search_func(model, column, key, iter, data):
@@ -218,6 +225,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
         view.set_search_column(self.ModelIndex.NAME)
         view.set_search_equal_func(search_func, None)
+
         column = Gtk.TreeViewColumn("Songs")
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         renderpb = Gtk.CellRendererPixbuf()
@@ -227,18 +235,35 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         column.add_attribute(renderpb, "icon-name", self.ModelIndex.ICON_NAME)
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
+
+        def cdf(column, cell, model, iter_, user_data):
+            on = (self.online or
+                  model[iter_][self.ModelIndex.ALWAYS_ENABLE])
+            cell.set_sensitive(on)
+        column.set_cell_data_func(render, cdf)
+        column.set_cell_data_func(renderpb, cdf)
+
         view.append_column(column)
         column.pack_start(render, True)
         column.add_attribute(render, "text", self.ModelIndex.NAME)
         view.set_model(model)
 
         selection = view.get_selection()
+
+        def select_func(sel, model, path, value):
+            return (self.online or
+                    model[model.get_iter(path)][self.ModelIndex.ALWAYS_ENABLE])
+
+        selection.set_select_function(select_func)
+        self._refresh_online_filters()
         self.__changed_sig = connect_destroy(selection, 'changed',
                                              DeferredSignal(self._on_select))
         return scrolled_window
 
     def _on_select(self, sel):
         model, paths = sel.get_selected_rows()
+        if not paths:
+            return
         row = model[paths[0]]
         filter_type = row[self.ModelIndex.TYPE]
 
@@ -294,7 +319,6 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     def filter_text(self, text):
         self.__searchbar.set_text(text)
         if SoundcloudQuery.is_parsable(text):
-            # self.__query_changed(self.__searchbar, text)
             self.activate()
         else:
             print_w("Not parseable: %s" % text)
@@ -322,6 +346,12 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         config.set("browsers", "query_text", text)
         self.api_client.save_token()
 
+    def _refresh_online_filters(self):
+        model = self.view.get_model()
+        # TODO: less hard-coding of these
+        for path in [2]:
+            model.row_changed(path, model.get_iter(path))
+
     def __handle_incoming_uri(self, obj, uri):
         if not PROCESS_QL_URLS:
             print_w("Processing of quodlibet:// URLs is disabled. (%s)" % uri)
@@ -343,6 +373,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         name = data.username
         self.login_state = State.LOGGED_IN
         self.update_connect_button()
+        self._refresh_online_filters()
         msg = Message(Gtk.MessageType.INFO, app.window, _("Connected"),
                       _("Quod Libet is now connected, <b>%s</b>!") % name)
         msg.run()
