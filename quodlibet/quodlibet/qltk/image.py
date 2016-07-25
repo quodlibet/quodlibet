@@ -144,7 +144,15 @@ def get_border_radius(_widgets=[]):
         style_context = widget.get_style_context()
         radii.append(style_context.get_property(
             Gtk.STYLE_PROPERTY_BORDER_RADIUS, style_context.get_state()))
-    return max(radii)
+    radius = max(radii)
+
+    # Doesn't work on the default Ubuntu theme.
+    # Not sure why, so fix manually for now
+    theme_name = Gtk.Settings.get_default().props.gtk_theme_name
+    if theme_name in ("Ambiance", "Radiance"):
+        radius = int(radius / 1.5)
+
+    return radius
 
 
 def add_border(pixbuf, color, width=1, radius=0):
