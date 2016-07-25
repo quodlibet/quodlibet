@@ -117,6 +117,7 @@ class SoundcloudApiClient(RestApi):
     def log_out(self):
         print_d("Destroying access token...")
         self.access_token = None
+        self.save_token()
         self.online = False
 
     def get_token(self, code):
@@ -176,8 +177,7 @@ class SoundcloudApiClient(RestApi):
             self.emit('comments-received', track_id, json)
 
     def save_token(self):
-        if self.access_token:
-            config.set("browsers", "soundcloud_token", self.access_token)
+        config.set("browsers", "soundcloud_token", self.access_token or "")
 
     def put_favorite(self, track_id):
         print_d("Saving track %s as favorite" % track_id)
