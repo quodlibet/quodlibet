@@ -101,8 +101,6 @@ class SongListCellAreaBox(Gtk.CellAreaBox):
 
 class SongListColumn(TreeViewColumnButton):
 
-    __last_rendered = None
-
     def __init__(self, tag):
         """tag e.g. 'artist'"""
 
@@ -116,6 +114,8 @@ class SongListColumn(TreeViewColumnButton):
         self.set_visible(True)
         self.set_sort_indicator(False)
 
+        self._last_rendered = None
+
     def _format_title(self, tag):
         """Format the column title based on the tag"""
 
@@ -128,9 +128,9 @@ class SongListColumn(TreeViewColumnButton):
         either because of redraws or all columns have the same value
         """
 
-        if self.__last_rendered == value:
+        if self._last_rendered == value:
             return False
-        self.__last_rendered = value
+        self._last_rendered = value
         return True
 
 
@@ -142,23 +142,46 @@ class TextColumn(SongListColumn):
 
         self._render = Gtk.CellRendererText()
         self.pack_start(self._render, True)
-        self.set_cell_data_func(self._render, self._cdf)
+        self.set_cell_data_func(self._render, self._cdf_before)
 
         self.set_clickable(True)
+        self._last_width = None
+        self._force_update = False
 
-    @util.cached_property
-    def _layout(self):
-        return Gtk.Label().create_pango_layout("")
+    def _get_min_width(self):
+        return -1
 
-    def _cell_width(self, text, pad=8):
+    def _cell_width(self, text):
         """Returns the column width needed for the passed text"""
 
+        widget = self.get_tree_view()
+        assert widget is not None
+        layout = widget.create_pango_layout(text)
+        text_width = layout.get_pixel_size()[0]
         cell_pad = self._render.get_property('xpad')
-        return self._text_width(text) + pad + cell_pad
 
-    def _text_width(self, text):
-        self._layout.set_text(text, -1)
-        return self._layout.get_pixel_size()[0]
+        return text_width + 8 + cell_pad
+
+    def _needs_width_update(self):
+        width = self._cell_width(u"abc 123")
+        if self._last_width == width:
+            return False
+        self._last_width = width
+        return True
+
+    def _needs_update(self, value):
+        return super(TextColumn, self)._needs_update(value) or \
+            self._force_update
+
+    def _cdf_before(self, *args):
+        if self._needs_width_update():
+            self._force_update = True
+            min_width = self._get_min_width()
+            self.set_min_width(min_width)
+            self.set_fixed_width(min_width)
+        else:
+            self._force_update = False
+        return self._cdf(*args)
 
     def _cdf(self, column, cell, model, iter_, user_data):
         """CellRenderer cell_data_func"""
@@ -176,9 +199,9 @@ class RatingColumn(TextColumn):
         super(RatingColumn, self).__init__("~rating", *args, **kwargs)
         self.set_expand(False)
         self.set_resizable(False)
-        width = self._cell_width(util.format_rating(1.0))
-        self.set_fixed_width(width)
-        self.set_min_width(width)
+
+    def _get_min_width(self):
+        return self._cell_width(util.format_rating(1.0))
 
     def _cdf(self, column, cell, model, iter_, user_data):
         song = model.get_value(iter_)
@@ -202,7 +225,9 @@ class WideTextColumn(TextColumn):
         super(WideTextColumn, self).__init__(*args, **kwargs)
         self._render.set_property('ellipsize', Pango.EllipsizeMode.END)
         self.set_resizable(True)
-        self.set_min_width(self._cell_width("000"))
+
+    def _get_min_width(self):
+        return self._cell_width("000")
 
     def _cdf(self, column, cell, model, iter_, user_data):
         text = model.get_value(iter_).comma(self.header_name)
@@ -296,13 +321,9 @@ class NumericColumn(TextColumn):
         super(NumericColumn, self).__init__(*args, **kwargs)
         self._render.set_property('xalign', 1.0)
         self.set_alignment(1.0)
-        self.__min_width = self._get_min_width()
-        self.set_fixed_width(self.__min_width)
-
         self.set_expand(False)
         self.set_resizable(False)
 
-        self._single_char_width = self._text_width("0")
         self._texts = {}
         self._timeout = None
 
@@ -349,11 +370,11 @@ class NumericColumn(TextColumn):
 
         # resize if too small or way too big and above the minimum
         width = self.get_width()
-        needed_width = max([self.__min_width] + self._texts.values())
+        needed_width = max([self._get_min_width()] + self._texts.values())
         if width < needed_width:
             self.set_fixed_width(needed_width)
             self.set_min_width(needed_width)
-        elif width - needed_width >= self._single_char_width:
+        elif width - needed_width >= self._cell_width("0"):
             self.set_fixed_width(needed_width)
             self.set_max_width(needed_width)
 
