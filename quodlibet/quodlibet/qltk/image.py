@@ -25,15 +25,6 @@ from gi.repository import GdkPixbuf, Gtk, Gdk, GLib
 import cairo
 
 
-def get_scale_factor(widget):
-    """Returns the scale factor for a Gtk.Widget"""
-
-    if hasattr(widget, "get_scale_factor"):
-        return widget.get_scale_factor()
-    else:
-        return 1
-
-
 def get_surface_for_pixbuf(widget, pixbuf):
     """Returns a cairo surface"""
 
@@ -124,11 +115,9 @@ def add_border_widget(pixbuf, widget):
     border width.
     """
 
-    from quodlibet.qltk.image import get_scale_factor
-
     context = widget.get_style_context()
     color = context.get_color(context.get_state())
-    scale_factor = get_scale_factor(widget)
+    scale_factor = widget.get_scale_factor()
     border_radius = get_border_radius() * scale_factor
 
     return add_border(pixbuf, color, width=scale_factor, radius=border_radius)

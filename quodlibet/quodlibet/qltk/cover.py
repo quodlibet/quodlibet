@@ -12,7 +12,7 @@ from quodlibet import qltk
 from quodlibet import app
 from quodlibet.util import thumbnails, print_w
 from quodlibet.util.path import is_fsnative
-from quodlibet.qltk.image import get_scale_factor, pixbuf_from_file, \
+from quodlibet.qltk.image import pixbuf_from_file, \
     calc_scale_size, scale, add_border_widget, get_surface_for_pixbuf
 
 
@@ -46,7 +46,7 @@ class BigCenteredImage(qltk.Window):
 
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 
-        scale_factor = get_scale_factor(self)
+        scale_factor = self.get_scale_factor()
 
         pixbuf = None
         try:
@@ -133,7 +133,7 @@ class ResizeImage(Gtk.Bin):
             return self._pixbuf
         self._dirty = False
 
-        max_size = 256 * get_scale_factor(self)
+        max_size = 256 * self.get_scale_factor()
 
         self._pixbuf = None
         if self._file:
@@ -187,7 +187,7 @@ class ResizeImage(Gtk.Bin):
         alloc = self.get_allocation()
         width, height = alloc.width, alloc.height
 
-        scale_factor = get_scale_factor(self)
+        scale_factor = self.get_scale_factor()
 
         width *= scale_factor
         height *= scale_factor
