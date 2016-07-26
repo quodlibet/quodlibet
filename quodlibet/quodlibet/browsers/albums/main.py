@@ -40,8 +40,7 @@ from quodlibet.util.library import background_filter
 from quodlibet.util import connect_obj, DeferredSignal
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
-from quodlibet.qltk.image import get_scale_factor, get_pbosf_for_pixbuf, \
-    add_border_widget, set_renderer_from_pbosf
+from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 
 
 class AlbumTagCompletion(EntryWordCompletion):
@@ -332,7 +331,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
                 DisplayPatternMixin):
     __model = None
     __last_render = None
-    __last_render_pb = None
+    __last_render_surface = None
 
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
@@ -387,12 +386,12 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     @util.cached_property
     def _no_cover(self):
-        """Returns a cairo surface of pixbuf representing a missing cover"""
+        """Returns a cairo surface representing a missing cover"""
 
         cover_size = Album.COVER_SIZE
-        scale_factor = get_scale_factor(self)
+        scale_factor = self.get_scale_factor()
         pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
-        return get_pbosf_for_pixbuf(self, pb)
+        return get_surface_for_pixbuf(self, pb)
 
     def __init__(self, library):
         super(AlbumList, self).__init__(spacing=6)
@@ -427,20 +426,20 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
             album = model.get_album(iter_)
 
             if album is None:
-                pixbuf = None
+                surface = None
             elif album.cover:
                 pixbuf = album.cover
                 pixbuf = add_border_widget(pixbuf, self.view)
-                pixbuf = get_pbosf_for_pixbuf(self, pixbuf)
+                surface = get_surface_for_pixbuf(self, pixbuf)
                 # don't cache, too much state has an effect on the result
-                self.__last_render_pb = None
+                self.__last_render_surface = None
             else:
-                pixbuf = no_cover
+                surface = no_cover
 
-            if self.__last_render_pb == pixbuf:
+            if self.__last_render_surface == surface:
                 return
-            self.__last_render_pb = pixbuf
-            set_renderer_from_pbosf(cell, pixbuf)
+            self.__last_render_surface = surface
+            cell.set_property("surface", surface)
 
         column.set_cell_data_func(render, cell_data_pb, self._no_cover)
         view.append_column(column)
@@ -544,7 +543,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
                 model.row_changed(path, model.get_iter(path))
 
         album = model.get_album(iter_)
-        scale_factor = get_scale_factor(self)
+        scale_factor = self.get_scale_factor()
         album.scan_cover(scale_factor=scale_factor,
                          callback=callback,
                          cancel=self._cover_cancel)

@@ -20,8 +20,8 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
-from quodlibet.qltk.image import (get_scale_factor, get_pbosf_for_pixbuf,
-    set_renderer_from_pbosf, scale, add_border_widget)
+from quodlibet.qltk.image import get_scale_factor, scale, add_border_widget, \
+    get_surface_for_pixbuf
 from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
 from quodlibet.util.collection import Album
 from quodlibet.util import connect_obj
@@ -207,8 +207,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
                 cover = get_scaled_cover(album)
                 if cover:
                     cover = add_border_widget(cover, view)
-                    pbosf = get_pbosf_for_pixbuf(self, cover)
-                    set_renderer_from_pbosf(cell, pbosf)
+                    surface = get_surface_for_pixbuf(self, cover)
+                    cell.set_property("surface", surface)
                 else:
                     cell.set_property('icon-name', Icons.MEDIA_OPTICAL)
 

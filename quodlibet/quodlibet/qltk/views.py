@@ -15,7 +15,7 @@ import cairo
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version, \
     menu_popup, get_primary_accel_mod
-from quodlibet.qltk.image import pbosf_get_rect
+from quodlibet.qltk.image import get_surface_extents
 
 
 class TreeViewHints(Gtk.Window):
@@ -898,7 +898,7 @@ class DragIconTreeView(BaseView):
         if not icons:
             return
 
-        sizes = [pbosf_get_rect(s) for s in icons]
+        sizes = [get_surface_extents(s) for s in icons]
         if None in sizes:
             return
         width = max([s[2] for s in sizes])

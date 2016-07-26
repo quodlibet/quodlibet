@@ -42,97 +42,19 @@ def get_surface_for_pixbuf(widget, pixbuf):
             pixbuf, scale_factor, widget.get_window())
 
 
-def get_pbosf_for_pixbuf(widget, pixbuf):
-    """Returns a cairo surface or the same pixbuf,
-    let's call it PixbufOrSurface..
-    """
+def get_surface_extents(surface):
+    """Gives (x, y, width, height) for a surface, scale independent"""
 
-    if hasattr(Gdk, "cairo_surface_create_from_pixbuf"):
-        scale_factor = widget.get_scale_factor()
-        # Don't create a surface if we don't have to
-        if scale_factor == 1:
-            return pixbuf
-        return Gdk.cairo_surface_create_from_pixbuf(
-                pixbuf, scale_factor, widget.get_window())
-    else:
-        return pixbuf
+    ctx = cairo.Context(surface)
+    x1, y1, x2, y2 = ctx.clip_extents()
+    x1 = int(math.floor(x1))
+    y1 = int(math.floor(y1))
+    x2 = int(math.ceil(x2))
+    y2 = int(math.ceil(y2))
+    x2 -= x1
+    y2 -= y1
 
-
-def pbosf_get_width(pbosf):
-    """The scale independent width"""
-
-    return pbosf_get_rect(pbosf)[2]
-
-
-def pbosf_get_height(pbosf):
-    """The scale independent height"""
-
-    return pbosf_get_rect(pbosf)[3]
-
-
-def pbosf_get_rect(pbosf):
-    """Gives (x, y, width, height) for a pixbuf or a surface,
-    scale independent
-    """
-
-    if isinstance(pbosf, GdkPixbuf.Pixbuf):
-        return (0, 0, pbosf.get_width(), pbosf.get_height())
-    else:
-        ctx = cairo.Context(pbosf)
-        x1, y1, x2, y2 = ctx.clip_extents()
-        x1 = int(math.floor(x1))
-        y1 = int(math.floor(y1))
-        x2 = int(math.ceil(x2))
-        y2 = int(math.ceil(y2))
-        x2 -= x1
-        y2 -= y1
-
-        return (x1, y1, x2, y2)
-
-
-def pbosf_get_property_name(pbosf):
-    """Gives the property name to use for the PixbufOrSurface."""
-
-    if pbosf is None or isinstance(pbosf, GdkPixbuf.Pixbuf):
-        return "pixbuf"
-    else:
-        return "surface"
-
-
-def set_renderer_from_pbosf(renderer, pbosf):
-    """Set a Gtk.CellRendererPixbuf given a PixbufOrSurface or None"""
-
-    name = pbosf_get_property_name(pbosf)
-    renderer.set_property(name, pbosf)
-
-
-def set_image_from_pbosf(image, pbosf):
-    """Sets a Gtk.Image given a PixbufOrSurface"""
-
-    if isinstance(pbosf, GdkPixbuf.Pixbuf):
-        return image.set_from_pixbuf(pbosf)
-    else:
-        return image.set_from_surface(pbosf)
-
-
-def set_ctx_source_from_pbosf(context, pbosf, x=0.0, y=0.0):
-    """Sets the passed PixbufOrSurface as a source for the
-    given cairo.Context
-    """
-
-    if isinstance(pbosf, GdkPixbuf.Pixbuf):
-        Gdk.cairo_set_source_pixbuf(context, pbosf, x, y)
-    else:
-        context.set_source_surface(pbosf, x, y)
-
-
-def pbosf_render(style_context, cairo_context, pbosf, x, y):
-    """Draws the PixbufOrSurface to the cairo context at (x, y)"""
-
-    if isinstance(pbosf, GdkPixbuf.Pixbuf):
-        Gtk.render_icon(style_context, cairo_context, pbosf, x, y)
-    else:
-        Gtk.render_icon_surface(style_context, cairo_context, pbosf, x, y)
+    return (x1, y1, x2, y2)
 
 
 def get_border_radius(_widgets=[]):

@@ -20,8 +20,7 @@ from gi.repository import Gdk
 from gi.repository import Pango, PangoCairo
 import cairo
 
-from quodlibet.qltk.image import set_ctx_source_from_pbosf, get_scale_factor, \
-    get_pbosf_for_pixbuf, pbosf_get_width, pbosf_get_height
+from quodlibet.qltk.image import get_surface_for_pixbuf, get_surface_extents
 from quodlibet import qltk
 from quodlibet import app
 from quodlibet import pattern
@@ -65,16 +64,18 @@ class OSDWindow(Gtk.Window):
         mgeo = screen.get_monitor_geometry(conf.monitor)
         textwidth = mgeo.width - 2 * (self.BORDER + self.MARGIN)
 
-        scale_factor = get_scale_factor(self)
-        self.cover_pixbuf = app.cover_manager.get_pixbuf(
+        scale_factor = self.get_scale_factor()
+        cover_pixbuf = app.cover_manager.get_pixbuf(
             song, conf.coversize * scale_factor, conf.coversize * scale_factor)
         coverheight = 0
         coverwidth = 0
-        if self.cover_pixbuf:
-            self.cover_pixbuf = get_pbosf_for_pixbuf(self, self.cover_pixbuf)
-            coverwidth = self.cover_pixbuf.get_width() // scale_factor
-            coverheight = self.cover_pixbuf.get_height() // scale_factor
+        if cover_pixbuf:
+            self.cover_surface = get_surface_for_pixbuf(self, cover_pixbuf)
+            coverwidth = cover_pixbuf.get_width() // scale_factor
+            coverheight = cover_pixbuf.get_height() // scale_factor
             textwidth -= coverwidth + self.BORDER
+        else:
+            self.cover_surface = None
 
         layout = self.create_pango_layout('')
         layout.set_alignment((Pango.Alignment.LEFT, Pango.Alignment.CENTER,
@@ -214,10 +215,10 @@ class OSDWindow(Gtk.Window):
 
         textx = self.BORDER
 
-        if self.cover_pixbuf is not None:
+        if self.cover_surface is not None:
             rect = self.cover_rectangle
             textx += rect.width + self.BORDER
-            pbuf = self.cover_pixbuf
+            surface = self.cover_surface
             transmat = cairo.Matrix()
 
             if do_shadow:
@@ -236,9 +237,11 @@ class OSDWindow(Gtk.Window):
                                     0.6 * self.corners_factor * rect.width)
                 cr.stroke()
 
-            set_ctx_source_from_pbosf(cr, pbuf)
-            transmat.scale(pbosf_get_width(pbuf) / float(rect.width),
-                           pbosf_get_height(pbuf) / float(rect.height))
+            cr.set_source_surface(surface, 0, 0)
+            width, height = get_surface_extents(surface)[2:]
+
+            transmat.scale(width / float(rect.width),
+                           height / float(rect.height))
             transmat.translate(-rect.x, -rect.y)
             cr.get_source().set_matrix(transmat)
             self.draw_conf_rect(cr,

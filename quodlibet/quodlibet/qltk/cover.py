@@ -12,9 +12,8 @@ from quodlibet import qltk
 from quodlibet import app
 from quodlibet.util import thumbnails, print_w
 from quodlibet.util.path import is_fsnative
-from quodlibet.qltk.image import (get_scale_factor, pixbuf_from_file,
-    set_image_from_pbosf, get_pbosf_for_pixbuf, pbosf_render, calc_scale_size,
-    scale, add_border_widget)
+from quodlibet.qltk.image import get_scale_factor, pixbuf_from_file, \
+    calc_scale_size, scale, add_border_widget, get_surface_for_pixbuf
 
 
 # TODO: neater way of managing dependency on this particular plugin
@@ -61,7 +60,7 @@ class BigCenteredImage(qltk.Window):
             return
 
         image = Gtk.Image()
-        set_image_from_pbosf(image, get_pbosf_for_pixbuf(self, pixbuf))
+        image.set_from_surface(get_surface_for_pixbuf(self, pixbuf))
 
         event_box = Gtk.EventBox()
         event_box.add(image)
@@ -204,8 +203,8 @@ class ResizeImage(Gtk.Bin):
 
         style_context = self.get_style_context()
 
-        pbosf = get_pbosf_for_pixbuf(self, pixbuf)
-        pbosf_render(style_context, cairo_context, pbosf, 0, 0)
+        surface = get_surface_for_pixbuf(self, pixbuf)
+        Gtk.render_icon_surface(style_context, cairo_context, surface, 0, 0)
 
 
 class CoverImage(Gtk.EventBox):
