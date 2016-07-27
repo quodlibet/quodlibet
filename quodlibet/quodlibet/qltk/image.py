@@ -5,19 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-"""
-Some helper function for loading and converting image data.
-
-A PixbufOrSurface is either a GdkPixbuf.Pixbuf or a cairo.Surface. Gtk+ 3.10
-added HiDPI support and added APIs which take cairo surfaces. Since we still
-want to support older GTK+  we provide some helpers to work on both data
-types.
-
-Rule of thumb: Every pixbuf which ends up in a surface before getting drawn
-needs to be loaded at original_size * scale_factor.
-
-To test HiDPI start QL with GDK_SCALE=2.
-"""
+"""Some helper function for loading and converting image data."""
 
 import math
 

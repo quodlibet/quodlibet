@@ -458,18 +458,7 @@ class QuestionBar(Gtk.InfoBar):
         content.add(label)
 
         self.add_button(_("_Load Stations"), self.RESPONSE_LOAD)
-
-        try:
-            self.set_show_close_button(True)
-        except AttributeError:
-            # < gtk3.10
-            action = self.get_action_area()
-            close_button = CloseButton()
-            close_button.show()
-            self.add_action_widget(close_button, Gtk.ResponseType.CLOSE)
-            # FIXME: doesn't seem to have any effect
-            action.set_child_packing(
-                close_button, False, True, 2, Gtk.PackType.START)
+        self.set_show_close_button(True)
 
     def __response(self, bar, response_id):
         if response_id == Gtk.ResponseType.CLOSE:

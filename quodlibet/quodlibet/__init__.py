@@ -306,23 +306,6 @@ def _init_gtk():
         raise SystemExit("Gtk.init failed")
     sys.argv = list(argv)
 
-    # add Gtk.TreePath.__getitem__/__len__ for PyGObject 3.2
-    try:
-        Gtk.TreePath()[0]
-    except TypeError:
-        Gtk.TreePath.__getitem__ = lambda self, index: list(self)[index]
-        Gtk.TreePath.__len__ = lambda self: self.get_depth()
-
-    # GTK+ 3.4+ constants
-    if not hasattr(Gdk, "BUTTON_PRIMARY"):
-        Gdk.BUTTON_PRIMARY = 1
-        Gdk.BUTTON_MIDDLE = 2
-        Gdk.BUTTON_SECONDARY = 3
-
-    if not hasattr(Gdk, "EVENT_PROPAGATE"):
-        Gdk.EVENT_PROPAGATE = 0
-        Gdk.EVENT_STOP = 1
-
     # include our own icon theme directory
     theme = Gtk.IconTheme.get_default()
     theme_search_path = get_image_dir()
