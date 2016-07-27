@@ -194,6 +194,8 @@ class TextColumn(SongListColumn):
             min_width = self._get_min_width()
             self.set_min_width(min_width)
             self.set_fixed_width(min_width)
+            # calling it in the cell_data_func leads to broken drawing..
+            GLib.idle_add(self.queue_resize)
         self._cdf(*args)
 
     def _cdf(self, column, cell, model, iter_, user_data):
@@ -371,8 +373,7 @@ class NumericColumn(TextColumn):
         self._timeout = None
 
         tv = self.get_tree_view()
-        if not tv:
-            return
+        assert tv is not None
         range_ = tv.get_visible_range()
         if not range_:
             return
@@ -394,9 +395,11 @@ class NumericColumn(TextColumn):
         if width < needed_width:
             self.set_fixed_width(needed_width)
             self.set_min_width(needed_width)
+            self.queue_resize()
         elif width - needed_width >= self._cell_width("0"):
             self.set_fixed_width(needed_width)
             self.set_max_width(needed_width)
+            self.queue_resize()
 
     def _recalc_width(self, path, text):
         self._texts[path[0]] = text
