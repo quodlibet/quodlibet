@@ -667,6 +667,13 @@ class DeferredSignal(object):
     def __closure__(self):
         return self.func.__closure__
 
+    def call(self, *args):
+        """Force a call"""
+
+        self.abort()
+        self.args = args
+        self._wrap()
+
     def abort(self):
         """Abort any queued up calls.
 

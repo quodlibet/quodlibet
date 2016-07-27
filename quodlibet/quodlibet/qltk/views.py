@@ -1208,31 +1208,37 @@ class _TreeViewColumnLabel(Gtk.Label):
 
 
 class TreeViewColumn(Gtk.TreeViewColumn):
+
+    __gsignals__ = {
+        # tree-view-changed(old_tree_view, new_tree_view)
+        # Triggers when the columns gets added/removed from a tree view.
+        # The passed values are either a TreeView or None
+        'tree-view-changed': (
+            GObject.SignalFlags.RUN_LAST, None, (object, object)),
+    }
+
     def __init__(self, **kwargs):
         title = kwargs.pop("title", u"")
         # skip overrides which don't allow to set properties
         GObject.Object.__init__(self, **kwargs)
+
         label = _TreeViewColumnLabel(label=title)
         label.set_padding(1, 1)
         label.show()
         self.set_widget(label)
 
-        # the button gets created once the widget gets realized
-        self._button = None
-        label.__realize = label.connect('realize', self.__realized)
-        self._tooltip_text = None
+        self._button = self.get_widget().get_toplevel()
+        assert isinstance(self._button, Gtk.Button)
 
-    def __realized(self, widget):
-        widget.disconnect(widget.__realize)
-        self._button = widget.get_ancestor(Gtk.Button)
-        self.set_tooltip_text(self._tooltip_text)
+        def on_parent_set(button, old_parent):
+            new_parent = button.get_parent()
+            assert new_parent is None or isinstance(new_parent, Gtk.TreeView)
+            self.emit("tree-view-changed", old_parent, new_parent)
+
+        self._button.connect("parent-set", on_parent_set)
 
     def set_tooltip_text(self, text):
-        if self._button:
-            # gtk3.4: set_tooltip_text didn't allow None
-            self._button.props.tooltip_text = text
-        else:
-            self._tooltip_text = text
+        self._button.props.tooltip_text = text
 
     def set_use_markup(self, value):
         widget = self.get_widget()

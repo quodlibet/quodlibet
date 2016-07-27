@@ -143,10 +143,23 @@ class TextColumn(SongListColumn):
         self._render = Gtk.CellRendererText()
         self.pack_start(self._render, True)
         self.set_cell_data_func(self._render, self._cdf_before)
-
         self.set_clickable(True)
+
+        # We check once in a while if the font size has changed. If it has
+        # we reset the min/fixed width and force at least one cell to update
+        # (which might trigger other column size changes..)
         self._last_width = None
         self._force_update = False
+        self._deferred_width_check = util.DeferredSignal(
+            self._check_width_update, timeout=500)
+
+        def on_tv_changed(column, old, new):
+            if new is None:
+                self._deferred_width_check.abort()
+            else:
+                self._deferred_width_check.call()
+
+        self.connect("tree-view-changed", on_tv_changed)
 
     def _get_min_width(self):
         return -1
@@ -162,26 +175,26 @@ class TextColumn(SongListColumn):
 
         return text_width + 8 + cell_pad
 
-    def _needs_width_update(self):
+    def _check_width_update(self):
         width = self._cell_width(u"abc 123")
         if self._last_width == width:
-            return False
+            self._force_update = False
+            return
         self._last_width = width
-        return True
+        self._force_update = True
+        self.queue_resize()
 
     def _needs_update(self, value):
-        return super(TextColumn, self)._needs_update(value) or \
-            self._force_update
+        return self._force_update or \
+            super(TextColumn, self)._needs_update(value)
 
     def _cdf_before(self, *args):
-        if self._needs_width_update():
-            self._force_update = True
+        self._deferred_width_check()
+        if self._force_update:
             min_width = self._get_min_width()
             self.set_min_width(min_width)
             self.set_fixed_width(min_width)
-        else:
-            self._force_update = False
-        return self._cdf(*args)
+        self._cdf(*args)
 
     def _cdf(self, column, cell, model, iter_, user_data):
         """CellRenderer cell_data_func"""
@@ -326,6 +339,13 @@ class NumericColumn(TextColumn):
 
         self._texts = {}
         self._timeout = None
+
+        def on_tv_changed(column, old, new):
+            if new is None and self._timeout is not None:
+                GLib.source_remove(self._timeout)
+                self._timeout = None
+
+        self.connect("tree-view-changed", on_tv_changed)
 
     def _get_min_width(self):
         """Give the initial and minimum width. override if needed"""
