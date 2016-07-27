@@ -1227,18 +1227,30 @@ class TreeViewColumn(Gtk.TreeViewColumn):
         label.show()
         self.set_widget(label)
 
-        self._button = self.get_widget().get_toplevel()
-        assert isinstance(self._button, Gtk.Button)
+        # the button gets created once the widget gets realized
+        self._button = None
+        self._tooltip_text = None
+        label.__realize = label.connect('realize', self.__realized)
+
+    def __realized(self, widget):
+        widget.disconnect(widget.__realize)
+        self._button = widget.get_ancestor(Gtk.Button)
+        self.set_tooltip_text(self._tooltip_text)
 
         def on_parent_set(button, old_parent):
             new_parent = button.get_parent()
             assert new_parent is None or isinstance(new_parent, Gtk.TreeView)
             self.emit("tree-view-changed", old_parent, new_parent)
 
+        # parent already set, emit manually
+        on_parent_set(self._button, None)
         self._button.connect("parent-set", on_parent_set)
 
     def set_tooltip_text(self, text):
-        self._button.props.tooltip_text = text
+        if self._button:
+            self._button.props.tooltip_text = text
+        else:
+            self._tooltip_text = text
 
     def set_use_markup(self, value):
         widget = self.get_widget()
