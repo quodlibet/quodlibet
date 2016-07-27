@@ -142,7 +142,7 @@ class TextColumn(SongListColumn):
 
         self._render = Gtk.CellRendererText()
         self.pack_start(self._render, True)
-        self.set_cell_data_func(self._render, self._cdf_before)
+        self.set_cell_data_func(self._render, self._cdf)
         self.set_clickable(True)
 
         # We check once in a while if the font size has changed. If it has
@@ -188,7 +188,7 @@ class TextColumn(SongListColumn):
         return self._force_update or \
             super(TextColumn, self)._needs_update(value)
 
-    def _cdf_before(self, *args):
+    def _cdf(self, column, cell, model, iter_, user_data):
         self._deferred_width_check()
         if self._force_update:
             min_width = self._get_min_width()
@@ -196,10 +196,19 @@ class TextColumn(SongListColumn):
             self.set_fixed_width(min_width)
             # calling it in the cell_data_func leads to broken drawing..
             GLib.idle_add(self.queue_resize)
-        self._cdf(*args)
 
-    def _cdf(self, column, cell, model, iter_, user_data):
-        """CellRenderer cell_data_func"""
+        value = self._fetch_value(model, iter_)
+        if not self._needs_update(value):
+            return
+        self._apply_value(model, iter_, cell, value)
+
+    def _fetch_value(self, model, iter_):
+        """Should return everything needed for formating the final value"""
+
+        raise NotImplementedError
+
+    def _apply_value(self, model, iter_, cell, value):
+        """Should format the value and set it on the cell renderer"""
 
         raise NotImplementedError
 
@@ -218,14 +227,14 @@ class RatingColumn(TextColumn):
     def _get_min_width(self):
         return self._cell_width(util.format_rating(1.0))
 
-    def _cdf(self, column, cell, model, iter_, user_data):
+    def _fetch_value(self, model, iter_):
         song = model.get_value(iter_)
         rating = song.get("~#rating")
         default = config.RATINGS.default
+        return (rating, default)
 
-        if not self._needs_update((rating, default)):
-            return
-
+    def _apply_value(self, model, iter_, cell, value):
+        rating, default = value
         cell.set_sensitive(rating is not None)
         value = rating if rating is not None else default
         cell.set_property('text', util.format_rating(value))
@@ -244,21 +253,20 @@ class WideTextColumn(TextColumn):
     def _get_min_width(self):
         return self._cell_width("000")
 
-    def _cdf(self, column, cell, model, iter_, user_data):
-        text = model.get_value(iter_).comma(self.header_name)
-        if not self._needs_update(text):
-            return
-        cell.set_property('text', text)
+    def _fetch_value(self, model, iter_):
+        return model.get_value(iter_).comma(self.header_name)
+
+    def _apply_value(self, model, iter_, cell, value):
+        cell.set_property('text', value)
 
 
 class DateColumn(WideTextColumn):
     """The '~#' keys that are dates."""
 
-    def _cdf(self, column, cell, model, iter_, user_data):
-        stamp = model.get_value(iter_)(self.header_name)
-        if not self._needs_update(stamp):
-            return
+    def _fetch_value(self, model, iter_):
+        return model.get_value(iter_)(self.header_name)
 
+    def _apply_value(self, model, iter_, cell, stamp):
         if not stamp:
             cell.set_property('text', _("Never"))
         else:
@@ -282,10 +290,10 @@ class NonSynthTextColumn(WideTextColumn):
     Used for any tag without a '~' except 'title'.
     """
 
-    def _cdf(self, column, cell, model, iter_, user_data):
-        value = model.get_value(iter_).get(self.header_name, "")
-        if not self._needs_update(value):
-            return
+    def _fetch_value(self, model, iter_):
+        return model.get_value(iter_).get(self.header_name, "")
+
+    def _apply_value(self, model, iter_, cell, value):
         cell.set_property('text', value.replace("\n", ", "))
 
 
@@ -298,11 +306,11 @@ class FSColumn(WideTextColumn):
         super(FSColumn, self).__init__(*args, **kwargs)
         self._render.set_property('ellipsize', Pango.EllipsizeMode.MIDDLE)
 
-    def _cdf(self, column, cell, model, iter_, user_data):
+    def _fetch_value(self, model, iter_):
         values = model.get_value(iter_).list(self.header_name)
-        value = values[0] if values else fsnative(u"")
-        if not self._needs_update(value):
-            return
+        return values[0] if values else fsnative(u"")
+
+    def _apply_value(self, model, iter_, cell, value):
         cell.set_property('text', fsdecode(unexpand(value)))
 
 
@@ -319,13 +327,13 @@ class PatternColumn(WideTextColumn):
     def _format_title(self, tag):
         return util.pattern(tag)
 
-    def _cdf(self, column, cell, model, iter_, user_data):
+    def _fetch_value(self, model, iter_):
         song = model.get_value(iter_)
-        if not self._pattern:
-            return
-        value = self._pattern % song
-        if not self._needs_update(value):
-            return
+        if self._pattern is not None:
+            return self._pattern % song
+        return u""
+
+    def _apply_value(self, model, iter_, cell, value):
         cell.set_property('text', value)
 
 
@@ -356,11 +364,10 @@ class NumericColumn(TextColumn):
         # Allows well for >=1000 Kbps, -12.34 dB RG values, "Length" etc
         return self._cell_width("-22.22")
 
-    def _cdf(self, column, cell, model, iter_, user_data):
-        value = model.get_value(iter_).comma(self.header_name)
-        if not self._needs_update(value):
-            return
+    def _fetch_value(self, model, iter_):
+        return model.get_value(iter_).comma(self.header_name)
 
+    def _apply_value(self, model, iter_, cell, value):
         if isinstance(value, float):
             text = u"%.2f" % round(value, 2)
         else:
@@ -419,10 +426,10 @@ class LengthColumn(NumericColumn):
         # 1:22:22, allows entire albums as files (< 75mins)
         return self._cell_width(util.format_time_display(60 * 82 + 22))
 
-    def _cdf(self, column, cell, model, iter_, user_data):
-        value = model.get_value(iter_).get("~#length", 0)
-        if not self._needs_update(value):
-            return
+    def _fetch_value(self, model, iter_):
+        return model.get_value(iter_).get("~#length", 0)
+
+    def _apply_value(self, model, iter_, cell, value):
         text = util.format_time_display(value)
         cell.set_property('text', text)
         self._recalc_width(model.get_path(iter_), text)
@@ -437,10 +444,10 @@ class FilesizeColumn(NumericColumn):
         # e.g "2.22 MB"
         return self._cell_width(util.format_size(2.22 * (1024 ** 2)))
 
-    def _cdf(self, column, cell, model, iter_, user_data):
-        value = model.get_value(iter_).get("~#filesize", 0)
-        if not self._needs_update(value):
-            return
+    def _fetch_value(self, model, iter_):
+        return model.get_value(iter_).get("~#filesize", 0)
+
+    def _apply_value(self, model, iter_, cell, value):
         text = util.format_size(value)
         cell.set_property('text', text)
         self._recalc_width(model.get_path(iter_), text)
