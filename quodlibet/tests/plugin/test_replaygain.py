@@ -21,7 +21,7 @@ from tests import DATA_DIR
 class TReplayGain(PluginTestCase):
 
     # Give up analysis after some time, in case GStreamer dies.
-    TIMEOUT = 10
+    TIMEOUT = 20
 
     @classmethod
     def setUpClass(cls):
