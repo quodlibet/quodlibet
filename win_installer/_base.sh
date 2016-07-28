@@ -22,7 +22,7 @@ QL_TEMP="$QL_REPO_TEMP"/quodlibet
 
 
 PYGI_AIO_VER="3.18.2_rev6"
-MUTAGEN_VER="1.32"
+MUTAGEN_VER="1.34"
 BUILD_VERSION="0"
 
 
@@ -30,16 +30,16 @@ function download_and_verify {
     # download all installers and check with sha256sum
 
     local FILEHASHES="\
-7f6507d400d07edfd1ea8205da36808009b0c539f5b8a6e0ab54337b955e6dc3  feedparser-5.1.3.tar.bz2
+cd2485472e41471632ed3029d44033ee420ad0b57111db95c240c9160a85831c  feedparser-5.2.1.zip
 5e8eccf95924658c97b990b50552addb64f55e1e3dfe4880456ac1f287dc79d0  certifi-2016.2.28.tar.gz
 d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-preview20141217.exe
-7721ded04caf36fc30661165ae311fed342f7503b048e9db3d52764108ed3ab5  mutagen-$MUTAGEN_VER.tar.gz
-a3e4ac1dfe57d385c2a966c5f283ad0eca8fd0f66c551645cb637f4ae712e161  nsis-2.50-setup.exe
+baf089121710c36ce317d9f107d552a3c7ec14dfcaa9618b809c4b25ef775619  mutagen-$MUTAGEN_VER.tar.gz
+8a4a86bd028793038a4b744281a4df436948f3d1941adcb68c07ba6e42fb6165  nsis-2.51-setup.exe
 610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c  py2exe-0.6.9.win32-py2.7.exe
 1750556a9c797ec157ac837c531fef05f60a5595d2a1553c7d3f5be7bc085b70  pygi-aio-$PYGI_AIO_VER-setup.exe
-9debc6445b81ad735b5e5767d5609ed56167cbcc52c62a55b66629fcbe23a188  python-2.7.11.msi
-ea84abc60fcb5152418dd49e8fdecf3e68759304a71bef422c3b1376886c5b7a  python-musicbrainzngs-0.5.tar.gz
-fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
+3ac291535bcf15fd5a15bcd29b066570e8d2a0cab4f3b92a2372f41aa09a4f48  python-2.7.12.msi
+ec447bcab906fe7c4dbd714a1dff1b00adcd20d0011968df1a740e6b1fb09cb5  python-musicbrainzngs-0.6.tar.gz
+547c24748705ad4b6e3f3944f38d0416c5cdd2de6ebe3d65a1840bd2b82519a4  7z1602.msi
 8a94f6ff1ee9562a2216d2096b87d0e54a5eb5c9391874800e5032033a1c8e85  libmodplug-1.dll
 2b53c7bb3a92218f8ff197d259b7769754ec9a578561e69578739fcbdbb53da3  libgstdirectsoundsink.dll
 1eeedf2c29e0e7566217ba5a51aa1e3b73dfe173800fa71ac598470fbed3baf5  libgstopus.dll\
@@ -49,19 +49,19 @@ fe4807b4698ec89f82de7d85d32deaa4c772fc871537e31fb0fccf4473455cb8  7z920.msi
     if (cd "$BIN" && echo "$FILEHASHES" | sha256sum --status --strict -c -); then
         echo "all installers here, continue.."
     else
-        wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.50/nsis-2.50-setup.exe
+        wget -P "$BIN" -c http://downloads.sourceforge.net/project/nsis/NSIS%202/2.51/nsis-2.51-setup.exe
         wget -P "$BIN" -c https://github.com/msysgit/msysgit/releases/download/Git-1.9.5-preview20141217/Git-1.9.5-preview20141217.exe
         wget -P "$BIN" -c http://downloads.sourceforge.net/project/py2exe/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe
         wget -P "$BIN" -c "http://bitbucket.org/lazka/quodlibet/downloads/pygi-aio-$PYGI_AIO_VER-setup.exe"
-        wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.11/python-2.7.11.msi
-        wget -P "$BIN" -c http://downloads.sourceforge.net/sevenzip/7z920.msi
+        wget -P "$BIN" -c http://www.python.org/ftp/python/2.7.12/python-2.7.12.msi
+        wget -P "$BIN" -c http://downloads.sourceforge.net/sevenzip/7z1602.msi
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
-        wget -c http://github.com/alastair/python-musicbrainzngs/archive/v0.5.tar.gz -O "$BIN"/python-musicbrainzngs-0.5.tar.gz
+        wget -c http://github.com/alastair/python-musicbrainzngs/archive/v0.6.tar.gz -O "$BIN"/python-musicbrainzngs-0.6.tar.gz
         wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstopus.dll
         wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstdirectsoundsink.dll
 
         pip download --dest="$BIN" --no-binary=":all:" "mutagen==$MUTAGEN_VER"
-        pip install --download="$BIN" feedparser==5.1.3
+        pip download --dest="$BIN" --no-binary=":all:" "feedparser==5.2.1"
         pip download --dest="$BIN" --no-binary=":all:" "certifi==2016.2.28"
 
         # check again
@@ -198,7 +198,7 @@ function setup_deps {
 }
 
 function install_python {
-    wine msiexec /a "$BUILD_ENV"/bin/python-2.7.11.msi /qb
+    wine msiexec /a "$BUILD_ENV"/bin/python-2.7.12.msi /qb
     PYDIR="$WINEPREFIX"/drive_c/Python27
 
     # install the python packages
@@ -213,12 +213,12 @@ function install_git {
 }
 
 function install_7zip {
-    wine msiexec /a "$BUILD_ENV"/bin/7z920.msi /qb
+    wine msiexec /a "$BUILD_ENV"/bin/7z1602.msi /qb
     SZIPDIR="$WINEPREFIX/drive_c/Program Files/7-Zip/"
 }
 
 function install_nsis {
-    wine "$BUILD_ENV"/bin/nsis-2.50-setup.exe /S
+    wine "$BUILD_ENV"/bin/nsis-2.51-setup.exe /S
 }
 
 function install_pydeps {
@@ -226,9 +226,9 @@ function install_pydeps {
     (
     cd "$BUILD_ENV"/bin
     wine $PYTHON -m pip install "mutagen-$MUTAGEN_VER.tar.gz"
-    wine $PYTHON -m pip install feedparser-5.1.3.tar.bz2
+    wine $PYTHON -m pip install feedparser-5.2.1.zip
     wine $PYTHON -m pip install certifi-2016.2.28.tar.gz
-    wine $PYTHON -m pip install python-musicbrainzngs-0.5.tar.gz
+    wine $PYTHON -m pip install python-musicbrainzngs-0.6.tar.gz
     wine $PYTHON -m easy_install -Z py2exe-0.6.9.win32-py2.7.exe
     )
 }
