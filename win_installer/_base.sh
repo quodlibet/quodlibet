@@ -297,7 +297,7 @@ function package_portable_installer {
     cp "$QL_TEMP"/quodlibet/build.py "$BUILDPY"
     echo 'BUILD_TYPE = u"windows-portable"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
-    (cd $(dirname "$BUILDPY") && "$PYTHON" -m compileall -f -l .)
+    (cd $(dirname "$BUILDPY") && wine "$PYTHON" -m compileall -f -l .)
     rm -f "$BUILDPY"
 
     wine "$SZIPDIR"/7z.exe a "$BUILD_ENV"/portable-temp.7z "$PORTABLE"
