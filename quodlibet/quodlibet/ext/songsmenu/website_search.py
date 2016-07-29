@@ -35,19 +35,19 @@ class WebsiteSearch(SongsMenuPlugin):
     PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
                     "Supports patterns e.g. %(pattern-example)s.") % {
                         "pattern-example":
-                            "http://google.com?q=<~artist~title>"}
+                            "https://google.com?q=<~artist~title>"}
 
     # Here are some starters...
     DEFAULT_URL_PATS = [
         ("Google song search",
-            "http://google.com/search?q=<artist~title>"),
+            "https://google.com/search?q=<artist~title>"),
         ("Wikipedia (en) artist entry",
-            "http://wikipedia.org/wiki/<albumartist|<albumartist>|<artist>>"),
+            "https://wikipedia.org/wiki/<albumartist|<albumartist>|<artist>>"),
         ("Musicbrainz album listing",
-            "http://musicbrainz.org/<musicbrainz_albumid|release/"
+            "https://musicbrainz.org/<musicbrainz_albumid|release/"
             "<musicbrainz_albumid>|search?query=<album>&type=release>"),
         ("Discogs album search",
-            "http://www.discogs.com/search?type=release&artist="
+            "https://www.discogs.com/search?type=release&artist="
             "<albumartist|<albumartist>|<artist>>&title=<album>"),
         ("Youtube video search",
          "https://www.youtube.com/results?search_query=<artist~title>"),

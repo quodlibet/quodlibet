@@ -41,7 +41,7 @@ def apicall(method, **kwargs):
             'method': method,
             }
     real_args.update(kwargs)
-    url = ''.join(["http://ws.audioscrobbler.com/2.0/?",
+    url = ''.join(["https://ws.audioscrobbler.com/2.0/?",
                    urllib.urlencode(real_args)])
     log(url)
     uobj = urllib2.urlopen(url)

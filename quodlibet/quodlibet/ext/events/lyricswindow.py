@@ -37,7 +37,7 @@ from quodlibet.pattern import URLFromPattern
 USER_AGENT = ("Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) "
              "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0"
              "Chrome/43.0.2357.65 Mobile Safari/537.36")
-LYRICS_WIKIA_URL = ("http://lyrics.wikia.com/api.php?client=QuodLibet"
+LYRICS_WIKIA_URL = ("https://lyrics.wikia.com/api.php?client=QuodLibet"
                     "&action=lyrics&func=getSong&artist=%s&song=%s&fmt=xml")
 DEFAULT_ALTERNATE_SEARCH_URL = ("https://duckduckgo.com/"
                                 "?q=lyrics+<artist|<artist>+-+><title>")

@@ -43,7 +43,7 @@ from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
 
 STATION_LIST_URL = \
-    "http://bitbucket.org/lazka/quodlibet/downloads/radiolist.bz2"
+    "https://bitbucket.org/lazka/quodlibet/downloads/radiolist.bz2"
 STATIONS_FAV = os.path.join(quodlibet.get_user_dir(), "stations")
 STATIONS_ALL = os.path.join(quodlibet.get_user_dir(), "stations_all")
 

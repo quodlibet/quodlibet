@@ -718,7 +718,7 @@ class AudioFile(dict, ImageContainer):
             elif c.startswith("//www."):
                 return "http:" + cont
         else:
-            text = "http://www.google.com/search?q="
+            text = "https://www.google.com/search?q="
             esc = lambda c: ord(c) > 127 and '%%%x' % ord(c) or c
             if "labelid" in self:
                 text += ''.join(map(esc, self["labelid"]))

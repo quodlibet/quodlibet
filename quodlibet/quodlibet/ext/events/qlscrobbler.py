@@ -40,7 +40,7 @@ from quodlibet.util.dprint import print_d
 
 
 SERVICES = {
-    'Last.fm': 'http://post.audioscrobbler.com/',
+    'Last.fm': 'https://post.audioscrobbler.com/',
     'Libre.fm': 'http://turtle.libre.fm/'
 }
 

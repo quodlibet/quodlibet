@@ -27,7 +27,7 @@ gatekeeper = GateKeeper(requests_per_sec=3)
 
 
 class AcoustidSubmissionThread(threading.Thread):
-    URL = "http://api.acoustid.org/v2/submit"
+    URL = "https://api.acoustid.org/v2/submit"
     SONGS_PER_SUBMISSION = 50
     TIMEOUT = 10.0
 
@@ -258,7 +258,7 @@ def parse_acoustid_response(json_data):
 
 
 class AcoustidLookupThread(threading.Thread):
-    URL = "http://api.acoustid.org/v2/lookup"
+    URL = "https://api.acoustid.org/v2/lookup"
     MAX_SONGS_PER_SUBMISSION = 5
     TIMEOUT = 10.0
 

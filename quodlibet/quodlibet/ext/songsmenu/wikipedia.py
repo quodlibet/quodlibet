@@ -15,7 +15,7 @@ from quodlibet.qltk.entry import Entry
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
-WIKI_URL = "http://%s.wikipedia.org/wiki/"
+WIKI_URL = "https://%s.wikipedia.org/wiki/"
 
 
 def get_lang():
@@ -44,7 +44,7 @@ class WikiSearch(object):
         e.connect('changed', self.changed)
         hb.pack_start(
             Gtk.Label(label=_("Search at %(website)s") % {
-                "website": "http://"}),
+                "website": "https://"}),
             False, True, 0)
         hb.pack_start(e, False, True, 0)
         hb.pack_start(Gtk.Label(label=".wikipedia.org"), False, True, 0)

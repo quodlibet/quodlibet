@@ -43,7 +43,7 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
         if not self.mbid:
             return None
         mbid = Soup.URI.encode(self.mbid, None)
-        return 'http://coverartarchive.org/release/{0}/front'.format(mbid)
+        return 'https://coverartarchive.org/release/{0}/front'.format(mbid)
 
     def fetch_cover(self):
         if not self.mbid:

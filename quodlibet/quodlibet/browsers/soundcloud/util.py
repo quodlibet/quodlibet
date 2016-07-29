@@ -17,7 +17,7 @@ PROCESS_QL_URLS = True
 
 DEFAULT_BITRATE = 128
 EPOCH = datetime(1970, 1, 1)
-SITE_URL = "http://soundcloud.com"
+SITE_URL = "https://soundcloud.com"
 
 
 class Wrapper(object):
@@ -100,4 +100,4 @@ def sanitise_tag(value):
 
 
 def sc_btn_image(path, w, h):
-    return WebImage('http://connect.soundcloud.com/2/btn-%s.png' % path, w, h)
+    return WebImage('https://connect.soundcloud.com/2/btn-%s.png' % path, w, h)
