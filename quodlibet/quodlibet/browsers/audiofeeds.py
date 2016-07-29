@@ -231,7 +231,7 @@ class AudioFeeds(Browser):
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "audiofeeds_pos", 0.4)
         self.show()
-        container.pack1(self, True, False)
+        container.pack1(self, False, False)
         container.pack2(songpane, True, False)
         return container
 
