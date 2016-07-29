@@ -268,11 +268,16 @@ function build_quodlibet {
 
 function package_installer {
     local NSIS_PATH=$(wine winepath "C:\\Program Files\\NSIS\\")
+    local PYTHON="$PYDIR"/python.exe
 
     # write build config
-    local BUILDPY="$QL_TEMP"/quodlibet/build.py
+    local BUILDPY="$QL_DEST"/bin/quodlibet/build.py
+    cp "$QL_TEMP"/quodlibet/build.py "$BUILDPY"
     echo 'BUILD_TYPE = u"windows"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
+    (cd "$QL_TEMP" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
+    (cd $(dirname "$BUILDPY") && wine "$PYTHON" -m compileall -f -l .)
+    rm -f "$BUILDPY"
 
     # now package everything up
     (cd "$BUILD_ENV" && wine "$NSIS_PATH/makensis.exe" win_installer.nsi)
@@ -297,6 +302,7 @@ function package_portable_installer {
     cp "$QL_TEMP"/quodlibet/build.py "$BUILDPY"
     echo 'BUILD_TYPE = u"windows-portable"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
+    (cd "$QL_TEMP" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
     (cd $(dirname "$BUILDPY") && wine "$PYTHON" -m compileall -f -l .)
     rm -f "$BUILDPY"
 
