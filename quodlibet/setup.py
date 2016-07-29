@@ -116,6 +116,9 @@ def main():
         data_files = [('', ['COPYING'])] + recursive_include_py2exe(
             "quodlibet", "images", ("svg", "png"))
 
+        import certifi
+        data_files.append(("certifi", [certifi.where()]))
+
         # py2exe can only handle simple versions
         if setup_kwargs["version"].endswith(".dev0"):
             setup_kwargs["version"] = setup_kwargs["version"][:-5]
