@@ -105,7 +105,7 @@ class AmazonParser(object):
         # Amazon now requires that all requests be signed.
         # I have built a webapp on AppEngine for this purpose. -- wm_eddie
         # url = 'http://webservices.amazon.com/onca/xml'
-        url = 'http://qlwebservices.appspot.com/onca/xml'
+        url = 'https://qlwebservices.appspot.com/onca/xml'
 
         parameters = {
             'Service': 'AWSECommerceService',

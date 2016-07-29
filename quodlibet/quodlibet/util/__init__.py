@@ -24,7 +24,7 @@ try:
 except ImportError:
     fcntl = None
 
-from quodlibet.compat import reraise as py_reraise, urlparse, PY2, text_type, \
+from quodlibet.compat import reraise as py_reraise, PY2, text_type, \
     iteritems, reduce
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import title
