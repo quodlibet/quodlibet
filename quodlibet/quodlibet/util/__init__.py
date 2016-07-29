@@ -601,10 +601,6 @@ def fver(tup):
     return ".".join(map(str, tup))
 
 
-def uri_is_valid(uri):
-    return bool(urlparse(uri)[0])
-
-
 def make_case_insensitive(filename):
     return "".join(["[%s%s]" % (c.lower(), c.upper()) for c in filename])
 
