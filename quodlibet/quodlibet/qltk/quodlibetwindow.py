@@ -292,19 +292,6 @@ class MainSongList(SongList):
             player.paused = False
 
 
-class SongListScroller(ScrolledWindow):
-    def __init__(self, menu):
-        super(SongListScroller, self).__init__()
-        self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        self.set_shadow_type(Gtk.ShadowType.IN)
-        self.connect('notify::visible', self.__visibility, menu)
-
-    def __visibility(self, widget, event, menu):
-        value = self.get_property('visible')
-        menu.set_active(value)
-        config.set("memory", "songlist", str(value))
-
-
 class TopBar(Gtk.Toolbar):
     def __init__(self, parent, player, library):
         super(TopBar, self).__init__()
@@ -580,7 +567,6 @@ MENU = """
     </menu>
 
     <menu action='View'>
-      <menuitem action='SongList' always-show-image='true'/>
       <menuitem action='Queue' always-show-image='true'/>
     </menu>
 
@@ -697,13 +683,15 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         # get the playlist up before other stuff
         self.songlist = MainSongList(library, player)
-        self.songlist.show_all()
         self.songlist.connect("key-press-event", self.__songlist_key_press)
         self.songlist.connect_after(
             'drag-data-received', self.__songlist_drag_data_recv)
-        self.song_scroller = SongListScroller(
-            ui.get_widget("/Menu/View/SongList"))
+        self.song_scroller = ScrolledWindow()
+        self.song_scroller.set_policy(
+            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.song_scroller.set_shadow_type(Gtk.ShadowType.IN)
         self.song_scroller.add(self.songlist)
+
         self.qexpander = QueueExpander(
             ui.get_widget("/Menu/View/Queue"), library, player)
         self.playlist = PlaylistMux(
@@ -729,6 +717,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.songpane.pack1(self.song_scroller, resize=True, shrink=False)
         self.songpane.pack2(self.qexpander, resize=True, shrink=False)
         self.__handle_position = self.songpane.get_property("position")
+        self.songpane.show_all()
 
         def songpane_button_press_cb(pane, event):
             """If we start to drag the pane handle while the
@@ -746,8 +735,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         self.songpane.connect("button-press-event", songpane_button_press_cb)
 
-        self.song_scroller.connect('notify::visible', self.__show_or)
-        self.qexpander.connect('notify::visible', self.__show_or)
+        self.qexpander.connect('notify::visible', self.__expand_or)
         self.qexpander.connect('notify::expanded', self.__expand_or)
         self.qexpander.connect('draw', self.__qex_size_allocate)
         self.songpane.connect('notify', self.__moved_pane_handle)
@@ -792,7 +780,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             config.save()
             raise
 
-        self.showhide_playlist(ui.get_widget("/Menu/View/SongList"))
         self.showhide_playqueue(ui.get_widget("/Menu/View/Queue"))
 
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
@@ -954,14 +941,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             self.browser.reordered(songs)
         self.songlist.clear_sort()
 
-    def __show_or(self, widget, prop):
-        ssv = self.song_scroller.get_property('visible')
-        qxv = self.qexpander.get_property('visible')
-        self.songpane.set_property('visible', ssv or qxv)
-        if not ssv:
-            self.qexpander.set_expanded(True)
-        self.__expand_or(widget, prop)
-
     def __expand_or(self, widget, prop):
         if self.qexpander.get_property('expanded'):
             self.songpane.set_property("position", self.__handle_position)
@@ -979,11 +958,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
     def __create_menu(self, player, library):
         def add_view_items(ag):
-            act = ToggleAction(name="SongList", label=_("Song _List"))
-            act.set_active(config.getboolean("memory", "songlist"))
-            act.connect('activate', self.showhide_playlist)
-            ag.add_action(act)
-
             act = ToggleAction(name="Queue", label=_("_Queue"))
             act.set_active(config.getboolean("memory", "queue"))
             act.connect('activate', self.showhide_playqueue)
@@ -1317,10 +1291,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             width, height = self.get_size()
             height = self.size_request().height
             self.resize(width, height)
-
-    def showhide_playlist(self, toggle):
-        self.song_scroller.set_property('visible', toggle.get_active())
-        self.__refresh_size()
 
     def showhide_playqueue(self, toggle):
         self.qexpander.set_property('visible', toggle.get_active())

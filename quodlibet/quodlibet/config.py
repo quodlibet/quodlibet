@@ -43,7 +43,6 @@ INITIAL = {
         "seek": "0", # last song position, in milliseconds
         "volume": "1.0", # internal volume, [0.0, 1.0]
         "browser": "PanedBrowser", # browser name
-        "songlist": "true", # on or off
         "queue": "false", # on or off
         "shufflequeue": "false", # on or off
         "sortby": "0album", # <reversed?>tagname, song list sort

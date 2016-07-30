@@ -409,12 +409,8 @@ def _status(app):
 
 @registry.register("song-list", args=1)
 def _song_list(app, value):
-    window = app.window
-    if value.startswith("t"):
-        value = not window.song_scroller.get_property('visible')
-    else:
-        value = value not in ['0', 'off', 'false']
-    window.song_scroller.set_property('visible', value)
+    # deprecated
+    return
 
 
 @registry.register("queue", args=1)
