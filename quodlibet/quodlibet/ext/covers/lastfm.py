@@ -6,11 +6,7 @@
 # published by the Free Software Foundation
 
 from os import path
-import gi
-try:
-    gi.require_version("Soup", "2.4")
-except ValueError as e:
-    raise ImportError(e)
+
 from gi.repository import Soup
 
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir

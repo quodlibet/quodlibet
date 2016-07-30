@@ -7,8 +7,7 @@
 
 from datetime import datetime
 
-import gi
-from gi.repository import GObject, Gio
+from gi.repository import GObject, Gio, Soup
 
 from quodlibet import util, config
 from quodlibet.util import website
@@ -18,12 +17,6 @@ from quodlibet.compat import urlencode
 
 from .library import SoundcloudFile
 from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH
-
-try:
-    gi.require_version("Soup", "2.4")
-except ValueError as e:
-    raise ImportError(e)
-from gi.repository import Soup
 
 
 class RestApi(GObject.Object):

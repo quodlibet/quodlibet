@@ -9,15 +9,9 @@
 
 import os
 
-
-import gi
-
-from quodlibet.qltk import Icons
-
-gi.require_version("Gio", "2.0")
-
 from gi.repository import Gio
 
+from quodlibet.qltk import Icons
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 
