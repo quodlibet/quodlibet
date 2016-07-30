@@ -40,7 +40,7 @@ def is_plasma():
 def is_unity():
     """If we are running under Ubuntu/Unity"""
 
-    return _dbus_name_owned("com.canonical.Unity")
+    return _dbus_name_owned("com.canonical.Unity.Launcher")
 
 
 def is_enlightenment():
