@@ -624,16 +624,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         librarian.changed(songs)
 
     def __key_press(self, songlist, event, librarian):
-        rating_accels = [
-            "<Primary>%d" % i for i in range(
-                min(10, config.RATINGS.number + 1))]
-
-        if (qltk.is_accel(event, *rating_accels) and
-                config.getboolean("browsers", "rating_hotkeys")):
-            rating = int(chr(event.keyval)) * config.RATINGS.precision
-            self.__set_rating(rating, self.get_selected_songs(), librarian)
-            return True
-        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+        if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
             self.__enqueue(self.get_selected_songs())
             return True
         elif qltk.is_accel(event, "<Primary>F"):

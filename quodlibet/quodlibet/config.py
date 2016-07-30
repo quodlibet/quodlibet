@@ -69,7 +69,6 @@ INITIAL = {
         "collection_headers": "~people 0",
         "radio": "", # radio filter selection
         "rating_click": "true", # click to rate song, on/off
-        "rating_hotkeys": "true", # press number keys to rate song on/off
         "rating_confirm_multiple": "false", # confirm rating multiple songs
         "cover_size": "-1", # max cover height/width, <= 0 is default
         "search_limit": "false", # Show the limit widgets for SearchBar

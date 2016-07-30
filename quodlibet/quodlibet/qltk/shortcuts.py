@@ -27,7 +27,6 @@ SHORTCUTS = [
         ("<Primary>Return", _("Queue the selected songs")),
         ("<Primary>Delete", _("Delete the selected songs")),
         ("<Primary>F", _("Show the inline search entry")),
-        ("<Primary>0...4", _("Rate the selected songs with 0-4 stars")),
         ("<Ctrl>", "+ " + _("Left click on a column header") + ":\n"
          + _("Add the column to the list of columns to sort by")),
     ]),

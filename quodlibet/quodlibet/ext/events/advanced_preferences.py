@@ -125,12 +125,6 @@ class AdvancedPreferences(EventPlugin):
                 "Disable popup windows (treeview hints)"))
 
         rows.append(
-            boolean_config(
-                "browsers", "rating_hotkeys",
-                "Rating Hotkeys:",
-                "Enable rating by pressing the 0-X keys"))
-
-        rows.append(
             int_config(
                 "browsers", "cover_size",
                 "Album Cover Size:",
