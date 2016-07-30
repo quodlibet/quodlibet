@@ -15,6 +15,7 @@ except ValueError as e:
 
 from gi.repository import AppIndicator3, Gdk
 
+import quodlibet
 from quodlibet import app
 from quodlibet.util import is_plasma
 from quodlibet.pattern import Pattern
@@ -42,6 +43,7 @@ class AppIndicator(BaseIndicator):
             get_next_app_id(), icon_name,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
 
+        self.indicator.set_icon_theme_path(quodlibet.get_image_dir())
         self.indicator.set_title(app.name)
         self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self.menu = IndicatorMenu(app, add_show_item=True)
