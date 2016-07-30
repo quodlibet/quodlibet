@@ -118,6 +118,11 @@ class HSlider(Gtk.Button):
         self.scale.connect_after('button-press-event', handle_all)
         self.scale.connect_after('button-release-event', handle_all)
 
+        # forward release event to the scale
+        def foward_release(scale, event):
+            self.scale.emit('button-release-event', event.copy())
+        window.connect('button-release-event', foward_release)
+
         self.set_slider_length(200)
 
         if child:
