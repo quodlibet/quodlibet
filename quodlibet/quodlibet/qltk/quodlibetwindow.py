@@ -615,6 +615,7 @@ MENU = """
       <menuitem action='OnlineHelp' always-show-image='true'/>
       <menuitem action='Shortcuts' always-show-image='true'/>
       <menuitem action='SearchHelp' always-show-image='true'/>
+      <separator/>
       <menuitem action='CheckUpdates' always-show-image='true'/>
       <menuitem action='About' always-show-image='true'/>
     </menu>
