@@ -193,7 +193,8 @@ class TextColumn(SongListColumn):
         if self._force_update:
             min_width = self._get_min_width()
             self.set_min_width(min_width)
-            self.set_fixed_width(min_width)
+            if not self.get_resizable():
+                self.set_fixed_width(min_width)
             # calling it in the cell_data_func leads to broken drawing..
             GLib.idle_add(self.queue_resize)
 
