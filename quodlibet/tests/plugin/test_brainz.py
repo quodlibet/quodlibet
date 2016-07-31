@@ -34,6 +34,30 @@ TEST_SEARCH_RESULT = \
 'asin': 'B00007FKRD'}]}
 
 
+TEST_SEARCH_RESULT_2 = \
+{'release-count': 1, 'release-list': [{'artist-credit': [{'artist':
+{'alias-list': [{'alias': u'\u30a2\u30d0', 'locale': 'ja', 'primary':
+'primary', 'sort-name': u'\u30a2\u30d0', 'type': 'Artist name'}, {'alias':
+u'\u15c5\u15fa\u15f7\u15c5', 'sort-name': u'\u15c5\u15fa\u15f7\u15c5', 'type':
+'Search hint'}, {'alias': 'Abba', 'sort-name': 'Abba'}, {'alias':
+u'Bj\xf6rn + Benny + Anna + Frieda', 'sort-name':
+u'Bj\xf6rn + Benny + Anna + Frieda'}],
+'id': 'd87e52c5-bb8d-4da8-b941-9f4928627dc8', 'name': 'ABBA', 'sort-name':
+'ABBA'}}], 'artist-credit-phrase': 'ABBA', 'barcode': '602537784608',
+'country': 'XW', 'date': '2014-04-04', 'ext:score': '100', 'id':
+'9daa9d6e-7780-487f-9ef8-885755b73125', 'label-info-list': [{'label': {'id':
+'91edee57-cbb2-44f4-a6c7-a1a022aead78', 'name': 'Polar'}}], 'medium-count': 1,
+'medium-list': [{}, {'disc-count': 0, 'disc-list': [], 'format':
+'Digital Media', 'track-count': 19, 'track-list': []}], 'packaging': 'None',
+'release-event-list': [{'area': {'id': '525d4e18-3d00-31b9-a58b-a146a916de8f',
+'iso-3166-1-code-list': ['XW'], 'name': '[Worldwide]', 'sort-name':
+'[Worldwide]'}, 'date': '2014-04-04'}], 'release-group': {'id':
+'b69d665a-3eee-39f3-b156-58b122232304', 'primary-type': 'Album',
+'secondary-type-list': ['Compilation'], 'type': 'Compilation'}, 'status':
+'Official', 'text-representation': {'language': 'eng', 'script': 'Latn'},
+'title': 'Gold: Greatest Hits'}]}
+
+
 TEST_DATA = \
 {'status': 'Official', 'artist-credit': [{'artist': {'sort-name': 'Autechre',
 'id': '410c9baf-5469-44f6-9852-826524b80c61', 'name': 'Autechre'}}, ' & ',
@@ -219,6 +243,9 @@ class TBrainz(PluginTestCase):
 
         release = Release(TEST_SEARCH_RESULT["release-list"][0])
         self.assertEqual(release.labelid, u"FOM 0008")
+
+        release = Release(TEST_SEARCH_RESULT_2["release-list"][0])
+        self.assertEqual(release.labelid, u"")
 
     def test_release_artist(self):
         Release = brainz.mb.Release

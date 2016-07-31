@@ -117,8 +117,8 @@ class Release(object):
 
     @property
     def labelid(self):
-        label_list = self._mbrelease.get("label-info-list", [])
-        return label_list[0]["catalog-number"] if label_list else u""
+        label_list = self._mbrelease.get("label-info-list", [{}])
+        return label_list[0].get("catalog-number", u"")
 
     @property
     def id(self):
