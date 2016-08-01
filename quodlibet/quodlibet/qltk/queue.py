@@ -85,7 +85,7 @@ class QueueExpander(Gtk.Expander):
                                                Gtk.IconSize.MENU))
         b.set_tooltip_text(_("Remove all songs from the queue"))
         b.connect('clicked', self.__clear_queue)
-        b.hide()
+        b.set_no_show_all(True)
         b.set_relief(Gtk.ReliefStyle.NONE)
         left.pack_start(b, False, False, 0)
 
@@ -107,6 +107,7 @@ class QueueExpander(Gtk.Expander):
             _("_Random"), "memory", "shufflequeue")
         cb.connect('toggled', self.__queue_shuffle, self.queue.model)
         cb.set_active(config.getboolean("memory", "shufflequeue"))
+        cb.set_no_show_all(True)
         left.pack_start(cb, False, True, 0)
 
         self.set_label_widget(outer)
@@ -123,13 +124,10 @@ class QueueExpander(Gtk.Expander):
         self.connect('drag-motion', self.__motion)
         self.connect('drag-data-received', self.__drag_data_received)
 
-        self.show_all()
-
         self.queue.model.connect_after('row-inserted',
             util.DeferredSignal(self.__check_expand), count_label)
         self.queue.model.connect_after('row-deleted',
             util.DeferredSignal(self.__update_count), count_label)
-        cb.hide()
 
         connect_obj(self, 'notify::visible', self.__visible, cb, menu, b)
         self.__update_count(self.model, None, count_label)
@@ -151,6 +149,12 @@ class QueueExpander(Gtk.Expander):
                 label.unmap()
                 label.map()
         self.connect("map", hack)
+
+        self.set_expanded(config.getboolean("memory", "queue_expanded"))
+        self.notify("expanded")
+
+        for child in self.get_children():
+            child.show_all()
 
     @property
     def model(self):
@@ -190,8 +194,6 @@ class QueueExpander(Gtk.Expander):
         lab.set_text(text)
 
     def __check_expand(self, model, path, iter, lab):
-        if not self.get_property('visible'):
-            self.set_expanded(False)
         self.__update_count(model, path, lab)
         self.show()
 
@@ -205,16 +207,15 @@ class QueueExpander(Gtk.Expander):
             model.order = OrderShuffle(model)
 
     def __expand(self, cb, prop, clear):
-        cb.set_property('visible', self.get_expanded())
-        clear.set_property('visible', self.get_expanded())
+        expanded = self.get_expanded()
+        cb.set_property('visible', expanded)
+        clear.set_property('visible', expanded)
+        config.set("memory", "queue_expanded", str(expanded))
 
     def __visible(self, cb, prop, menu, clear):
         value = self.get_property('visible')
         config.set("memory", "queue", str(value))
         menu.set_active(value)
-        self.set_expanded(not self.model.is_empty())
-        cb.set_property('visible', self.get_expanded())
-        clear.set_property('visible', self.get_expanded())
 
 
 class QueueModel(PlaylistModel):

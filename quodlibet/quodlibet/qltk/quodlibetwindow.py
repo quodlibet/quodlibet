@@ -41,7 +41,7 @@ from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
-from quodlibet.qltk.x import ConfigRVPaned, Align, ScrolledWindow, Action
+from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action
 from quodlibet.qltk.x import SymbolicIconImage, ToggleAction, RadioAction
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem, CellRendererPixbuf
 from quodlibet.qltk import Icons
@@ -631,6 +631,63 @@ def _browser_items(prefix, external=False):
 DND_URI_LIST, = range(1)
 
 
+class SongListPaned(RVPaned):
+
+    def __init__(self, song_scroller, qexpander):
+        super(SongListPaned, self).__init__()
+
+        self.pack1(song_scroller, resize=True, shrink=False)
+        self.pack2(qexpander, resize=True, shrink=False)
+
+        self.set_relative(config.getfloat("memory", "queue_position", 0.75))
+        self.connect(
+            'notify::position', self._changed, "memory", "queue_position")
+
+        self._handle_position = self.get_relative()
+        qexpander.connect('notify::visible', self._expand_or)
+        qexpander.connect('notify::expanded', self._expand_or)
+        qexpander.connect('draw', self._check_minimize)
+
+        self.connect("button-press-event", self._on_button_press)
+        self.connect('notify', self._moved_pane_handle)
+
+    @property
+    def _expander(self):
+        return self.get_child2()
+
+    def _on_button_press(self, pane, event):
+        # If we start to drag the pane handle while the
+        # queue expander is unexpanded, expand it and move the handle
+        # to the bottom, so we can 'drag' the queue out
+
+        if event.window != pane.get_handle_window():
+            return False
+
+        if not self._expander.get_expanded():
+            self._expander.set_expanded(True)
+            pane.set_relative(1.0)
+        return False
+
+    def _expand_or(self, widget, prop):
+        if self._expander.get_property('expanded'):
+            self.set_relative(self._handle_position)
+
+    def _moved_pane_handle(self, widget, prop):
+        if self._expander.get_property('expanded'):
+            self._handle_position = self.get_relative()
+
+    def _check_minimize(self, *args):
+        if not self._expander.get_property('expanded'):
+            p_max = self.get_property("max-position")
+            p_cur = self.get_property("position")
+            if p_max != p_cur:
+                self.set_property("position", p_max)
+
+    def _changed(self, widget, event, section, option):
+        if self._expander.get_expanded() and self.get_property('position-set'):
+            config.set(section, option, str(self.get_relative()))
+
+
 class QuodLibetWindow(Window, PersistentWindowMixin):
 
     def __init__(self, library, player, headless=False, restore_cb=None):
@@ -694,6 +751,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
         self.qexpander = QueueExpander(
             ui.get_widget("/Menu/View/Queue"), library, player)
+        self.qexpander.set_no_show_all(True)
         self.playlist = PlaylistMux(
             player, self.qexpander.model, self.songlist.model)
 
@@ -713,32 +771,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             Align(statusbox, border=3, top=-3, right=3),
             False, True, 0)
 
-        self.songpane = ConfigRVPaned("memory", "queue_position", 0.75)
-        self.songpane.pack1(self.song_scroller, resize=True, shrink=False)
-        self.songpane.pack2(self.qexpander, resize=True, shrink=False)
-        self.__handle_position = self.songpane.get_property("position")
+        self.songpane = SongListPaned(self.song_scroller, self.qexpander)
         self.songpane.show_all()
-
-        def songpane_button_press_cb(pane, event):
-            """If we start to drag the pane handle while the
-            queue expander is unexpanded, expand it and move the handle
-            to the bottom, so we can 'drag' the queue out
-            """
-
-            if event.window != pane.get_handle_window():
-                return False
-
-            if not self.qexpander.get_expanded():
-                self.qexpander.set_expanded(True)
-                pane.set_relative(1.0)
-            return False
-
-        self.songpane.connect("button-press-event", songpane_button_press_cb)
-
-        self.qexpander.connect('notify::visible', self.__expand_or)
-        self.qexpander.connect('notify::expanded', self.__expand_or)
-        self.qexpander.connect('draw', self.__qex_size_allocate)
-        self.songpane.connect('notify', self.__moved_pane_handle)
 
         try:
             orders = []
@@ -940,21 +974,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             songs = view.get_songs()
             self.browser.reordered(songs)
         self.songlist.clear_sort()
-
-    def __expand_or(self, widget, prop):
-        if self.qexpander.get_property('expanded'):
-            self.songpane.set_property("position", self.__handle_position)
-
-    def __moved_pane_handle(self, widget, prop):
-        if self.qexpander.get_property('expanded'):
-            self.__handle_position = self.songpane.get_property("position")
-
-    def __qex_size_allocate(self, event, param=None):
-        if not self.qexpander.get_property('expanded'):
-            p_max = self.songpane.get_property("max-position")
-            p_cur = self.songpane.get_property("position")
-            if p_max != p_cur:
-                self.songpane.set_property("position", p_max)
 
     def __create_menu(self, player, library):
         def add_view_items(ag):
