@@ -1259,7 +1259,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         container.show()
         self._filter_menu.set_browser(self.browser)
         self.__hide_headers()
-        self.__refresh_size()
 
     def __update_paused(self, player, paused):
         menu = self.ui.get_widget("/Menu/Control/PlayPause")
@@ -1312,27 +1311,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
                        self.songlist.sourced)
         if should_jump:
             self.__jump_to_current(False)
-
-    def __refresh_size(self):
-        ssv = self.song_scroller.get_property('visible')
-        qex = self.qexpander.get_property('visible')
-
-        if ssv or qex:
-            return
-
-        # Handle more later if needed..
-        if not isinstance(self.browser, Gtk.Box):
-            return
-
-        # If a child expands the browser will take the new space
-        for child in self.browser.get_children():
-            if self.browser.query_child_packing(child)[0]:
-                break
-        else:
-            # no expanding child, make the window smaller instead
-            width, height = self.get_size()
-            height = self.size_request().height
-            self.resize(width, height)
 
     def __play_pause(self, *args):
         if app.player.song is None:
