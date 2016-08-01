@@ -82,8 +82,7 @@ class QueueExpander(Gtk.Expander):
         left.pack_start(hb2, False, True, 0)
 
         b = SmallImageButton(
-            image=Gtk.Image.new_from_icon_name(Icons.EDIT_CLEAR,
-                                               Gtk.IconSize.MENU))
+            image=SymbolicIconImage(Icons.EDIT_CLEAR, Gtk.IconSize.MENU))
         b.set_tooltip_text(_("Remove all songs from the queue"))
         b.connect('clicked', self.__clear_queue)
         b.set_no_show_all(True)
