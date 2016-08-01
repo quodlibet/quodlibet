@@ -54,7 +54,7 @@ class SoundcloudLibrary(SongLibrary):
     def _on_comments_received(self, client, track_id, comments):
         def bookmark_for(com):
             text = "\"%s\" --%s" % (com['body'], com['user']['username'])
-            return int((com.get('timestamp') or 0) / 1000.0), text
+            return max(0, int((com.get('timestamp') or 0) / 1000.0)), text
 
         song = self.song_by_track_id(track_id)
         song.bookmarks = [bookmark_for(c) for c in comments]

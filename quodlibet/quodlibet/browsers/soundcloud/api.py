@@ -74,7 +74,7 @@ class SoundcloudApiClient(RestApi):
     __CLIENT_SECRET = 'ca2b69301bd1f73985a9b47224a2a239'
     __CLIENT_ID = '5acc74891941cfc73ec8ee2504be6617'
     API_ROOT = "https://api.soundcloud.com"
-    REDIRECT_URI = 'http://quodlibet.github.io/callbacks/soundcloud.html'
+    REDIRECT_URI = 'https://quodlibet.github.io/callbacks/soundcloud.html'
     PAGE_SIZE = 150
     MIN_DURATION_SECS = 120
     COUNT_TAGS = {'%s_count' % t
