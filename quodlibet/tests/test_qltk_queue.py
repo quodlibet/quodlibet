@@ -5,8 +5,6 @@
 
 from tests import TestCase
 
-from gi.repository import Gtk
-
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.queue import QueueExpander, PlaybackStatusIcon
 from quodlibet.library import SongLibrary
@@ -17,7 +15,7 @@ class TQueueExpander(TestCase):
     def setUp(self):
         quodlibet.config.init()
         player = NullPlayer()
-        self.queue = QueueExpander(Gtk.CheckMenuItem(), SongLibrary(), player)
+        self.queue = QueueExpander(SongLibrary(), player)
 
     def test_ctr(self):
         pass

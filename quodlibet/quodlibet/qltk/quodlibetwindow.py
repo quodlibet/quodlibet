@@ -406,9 +406,31 @@ class RepeatButton(Gtk.ToggleButton):
         self.connect('toggled', toggled_cb)
 
 
+class QueueButton(Gtk.ToggleButton):
+
+    def __init__(self):
+        # XXX: view-list isn't part of the fdo spec, so fall back t justify..
+        gicon = Gio.ThemedIcon.new_from_names(
+            ["view-list-symbolic", "format-justify-fill-symbolic",
+             "view-list", "format-justify"])
+        image = Gtk.Image.new_from_gicon(gicon, Gtk.IconSize.SMALL_TOOLBAR)
+
+        super(QueueButton, self).__init__(image=image)
+
+        self.set_name("ql-queue-button")
+        qltk.add_css(self, """
+            #ql-queue-button {
+                padding: 0px;
+            }
+        """)
+        self.set_size_request(26, 26)
+
+        self.set_tooltip_text(_("Toggle queue visibility"))
+
+
 class StatusBarBox(Gtk.HBox):
 
-    def __init__(self, model, player):
+    def __init__(self, model, player, queue):
         super(StatusBarBox, self).__init__(spacing=6)
 
         self.order = order = PlayOrder(model, player)
@@ -421,6 +443,12 @@ class StatusBarBox(Gtk.HBox):
 
         self.statusbar = StatusBar(TaskController.default_instance)
         self.pack_start(self.statusbar, True, True, 0)
+        queue_button = QueueButton()
+        queue_button.bind_property("active", queue, "visible",
+                                   GObject.BindingFlags.BIDIRECTIONAL)
+        queue_button.props.active = queue.props.visible
+
+        self.pack_start(queue_button, False, True, 0)
 
     def __repeat(self, button, model):
         model.repeat = button.get_active()
@@ -564,10 +592,6 @@ MENU = """
       <menuitem action='RefreshLibrary' always-show-image='true'/>
       <separator/>
       <menuitem action='Quit' always-show-image='true'/>
-    </menu>
-
-    <menu action='View'>
-      <menuitem action='Queue' always-show-image='true'/>
     </menu>
 
     <menu action='Song'>
@@ -749,9 +773,15 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.song_scroller.set_shadow_type(Gtk.ShadowType.IN)
         self.song_scroller.add(self.songlist)
 
-        self.qexpander = QueueExpander(
-            ui.get_widget("/Menu/View/Queue"), library, player)
+        self.qexpander = QueueExpander(library, player)
         self.qexpander.set_no_show_all(True)
+        self.qexpander.set_visible(config.getboolean("memory", "queue"))
+
+        def on_queue_visible(qex, param):
+            config.set("memory", "queue", str(qex.get_visible()))
+
+        self.qexpander.connect("notify::visible", on_queue_visible)
+
         self.playlist = PlaylistMux(
             player, self.qexpander.model, self.songlist.model)
 
@@ -762,13 +792,13 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.__browserbox = Align(bottom=3)
         main_box.pack_start(self.__browserbox, True, True, 0)
 
-        statusbox = StatusBarBox(self.songlist.model, player)
+        statusbox = StatusBarBox(self.songlist.model, player, self.qexpander)
         self.order = statusbox.order
         self.repeat = statusbox.repeat
         self.statusbar = statusbox.statusbar
 
         main_box.pack_start(
-            Align(statusbox, border=3, top=-3, right=3),
+            Align(statusbox, border=3, top=-3),
             False, True, 0)
 
         self.songpane = SongListPaned(self.song_scroller, self.qexpander)
@@ -813,8 +843,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             config.set("memory", "browser", browsers.name(browsers.default))
             config.save()
             raise
-
-        self.showhide_playqueue(ui.get_widget("/Menu/View/Queue"))
 
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
@@ -977,11 +1005,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
 
     def __create_menu(self, player, library):
         def add_view_items(ag):
-            act = ToggleAction(name="Queue", label=_("_Queue"))
-            act.set_active(config.getboolean("memory", "queue"))
-            act.connect('activate', self.showhide_playqueue)
-            ag.add_action(act)
-
             act = Action(name="Information", label=_('_Information'),
                          icon_name=Icons.DIALOG_INFORMATION)
             act.connect('activate', self.__current_song_info)
@@ -1310,10 +1333,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             width, height = self.get_size()
             height = self.size_request().height
             self.resize(width, height)
-
-    def showhide_playqueue(self, toggle):
-        self.qexpander.set_property('visible', toggle.get_active())
-        self.__refresh_size()
 
     def __play_pause(self, *args):
         if app.player.song is None:

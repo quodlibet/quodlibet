@@ -58,7 +58,8 @@ class PlaybackStatusIcon(Gtk.Box):
 
 
 class QueueExpander(Gtk.Expander):
-    def __init__(self, menu, library, player):
+
+    def __init__(self, library, player):
         super(QueueExpander, self).__init__(spacing=3)
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -129,7 +130,7 @@ class QueueExpander(Gtk.Expander):
         self.queue.model.connect_after('row-deleted',
             util.DeferredSignal(self.__update_count), count_label)
 
-        connect_obj(self, 'notify::visible', self.__visible, cb, menu, b)
+        connect_obj(self, 'notify::visible', self.__visible, cb, b)
         self.__update_count(self.model, None, count_label)
 
         connect_destroy(
@@ -212,10 +213,9 @@ class QueueExpander(Gtk.Expander):
         clear.set_property('visible', expanded)
         config.set("memory", "queue_expanded", str(expanded))
 
-    def __visible(self, cb, prop, menu, clear):
+    def __visible(self, cb, prop, clear):
         value = self.get_property('visible')
         config.set("memory", "queue", str(value))
-        menu.set_active(value)
 
 
 class QueueModel(PlaylistModel):
