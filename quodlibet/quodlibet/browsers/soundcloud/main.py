@@ -41,7 +41,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     uses_main_library = False
     headers = ("artist ~people title genre ~#length ~mtime ~bitrate date "
                "website comment ~rating "
-               "~#playback_count ~#favoritings_count").split()
+               "~#playback_count ~#favoritings_count ~#likes_count").split()
 
     @enum
     class ModelIndex(int):
