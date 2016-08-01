@@ -603,6 +603,13 @@ MENU = """
       <menuitem action='Jump' always-show-image='true'/>
     </menu>
 
+    <menu action='Control'>
+      <menuitem action='Previous' always-show-image='true'/>
+      <menuitem action='PlayPause' always-show-image='true'/>
+      <menuitem action='Next' always-show-image='true'/>
+      <menuitem action='StopAfter' always-show-image='true'/>
+    </menu>
+
     <menu action='Browse'>
       %(filters_menu)s
       <separator/>
@@ -612,13 +619,6 @@ MENU = """
       <separator />
 
       %(views)s
-    </menu>
-
-    <menu action='Control'>
-      <menuitem action='Previous' always-show-image='true'/>
-      <menuitem action='PlayPause' always-show-image='true'/>
-      <menuitem action='Next' always-show-image='true'/>
-      <menuitem action='StopAfter' always-show-image='true'/>
     </menu>
 
     <menu action='Help'>
