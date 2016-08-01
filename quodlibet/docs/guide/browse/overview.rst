@@ -26,8 +26,9 @@ The Song List
 
 The *Song List*, as the name implies, presents a list of all the songs that 
 the current browser has found, or filtered for you. The columns are 
-configurable, and can be any tag, or even combinations of tags from your 
-library. For more information on tags, see :ref:`AudioTags`.
+configurable, and can generally be any tag, or even combinations of tags
+from your library.
+For more information on tags, see :ref:`AudioTags`.
 
 Sorting:
 
