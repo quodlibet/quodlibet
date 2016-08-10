@@ -8,8 +8,8 @@
 
 from gi.repository import Gtk, GObject
 
-from quodlibet.qltk import pygobject_version
 from quodlibet.compat import integer_types, string_types
+
 
 _auto_types = [float, bool, GObject.Object]
 _auto_types.extend(integer_types)
@@ -42,15 +42,8 @@ class _ModelMixin(object):
     Set to False if you know what you're doing.
     """
 
-    def get_value(self, iter_, column=0,
-            _value_type=GObject.Value,
-            _base=Gtk.TreeModel.get_value):
-
-        res = _base(self, iter_, column)
-        # PyGObject 3.4 doesn't unbox in some cases...
-        if isinstance(res, _value_type):
-            res = res.get_boxed()
-        return res
+    def get_value(self, iter_, column=0, _base=Gtk.TreeModel.get_value):
+        return _base(self, iter_, column)
 
     def get_n_columns(self):
         return 1
@@ -88,27 +81,16 @@ class _ModelMixin(object):
     def is_empty(self):
         return not self.get_iter_first()
 
-    if pygobject_version >= (3, 12):
-        _value = GObject.Value()
-        _value.init(GObject.TYPE_PYOBJECT)
+    _value = GObject.Value()
+    _value.init(GObject.TYPE_PYOBJECT)
 
-        def _get_marshalable(self, obj, _value=_value):
-            if _gets_marshaled_to_pyobject(obj):
-                return obj
-            _value.set_boxed(obj)
-            return _value
+    def _get_marshalable(self, obj, _value=_value):
+        if _gets_marshaled_to_pyobject(obj):
+            return obj
+        _value.set_boxed(obj)
+        return _value
 
-        del _value
-    else:
-        # https://bugzilla.gnome.org/show_bug.cgi?id=703662
-
-        def _get_marshalable(self, obj):
-            if _gets_marshaled_to_pyobject(obj):
-                return obj
-            value = GObject.Value()
-            value.init(GObject.TYPE_PYOBJECT)
-            value.set_boxed(obj)
-            return value
+    del _value
 
 
 class ObjectModelFilter(_ModelMixin, Gtk.TreeModelFilter):
