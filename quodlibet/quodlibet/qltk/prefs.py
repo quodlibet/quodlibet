@@ -58,94 +58,94 @@ class PreferencesWindow(UniqueWindow):
             ("~#filesize", util.tag("~#filesize"))]
 
         def __init__(self):
+            def create_behaviour_frame():
+                vbox = Gtk.VBox(spacing=6)
+                c = CCB(_("_Jump to playing song automatically"),
+                        'settings', 'jump', populate=True,
+                        tooltip=_("When the playing song changes, "
+                                  "scroll to it in the song list"))
+                vbox.pack_start(c, False, True, 0)
+                frame = qltk.Frame(_("Behavior"), child=vbox)
+                return frame
+
+            def create_visible_columns_frame():
+                buttons = {}
+                vbox = Gtk.VBox(spacing=12)
+                table = Gtk.Table.new(3, 3, True)
+                for i, (k, t) in enumerate(self.PREDEFINED_TAGS):
+                    x, y = i % 3, i / 3
+                    buttons[k] = Gtk.CheckButton(label=t, use_underline=True)
+                    table.attach(buttons[k], x, x + 1, y, y + 1)
+                vbox.pack_start(table, False, True, 0)
+                # Other columns
+                hbox = Gtk.HBox(spacing=6)
+                l = Gtk.Label(label=_("_Others:"), use_underline=True)
+                hbox.pack_start(l, False, True, 0)
+                self.others = others = UndoEntry()
+                others.set_sensitive(False)
+                # Stock edit doesn't have ellipsis chars.
+                edit_button = Gtk.Button(
+                    label=_(u"_Edit…"), use_underline=True)
+                edit_button.connect("clicked", self.__config_cols, buttons)
+                edit_button.set_tooltip_text(
+                    _("Add or remove additional column "
+                      "headers"))
+                l.set_mnemonic_widget(edit_button)
+                l.set_use_underline(True)
+                hbox.pack_start(others, True, True, 0)
+                vbox.pack_start(hbox, False, True, 0)
+                b = Gtk.HButtonBox()
+                b.set_layout(Gtk.ButtonBoxStyle.END)
+                b.pack_start(edit_button, True, True, 0)
+                vbox.pack_start(b, True, True, 0)
+                return qltk.Frame(_("Visible Columns"), child=vbox), buttons
+
+            def create_columns_prefs_frame():
+                tiv = Gtk.CheckButton(label=_("Title includes _version"),
+                                      use_underline=True)
+                aio = Gtk.CheckButton(label=_("Artist includes all _people"),
+                                      use_underline=True)
+                aip = Gtk.CheckButton(label=_("Album includes _disc subtitle"),
+                                      use_underline=True)
+                fip = Gtk.CheckButton(label=_("Filename includes _folder"),
+                                      use_underline=True)
+                self._toggle_data = [
+                    (tiv, "title", "~title~version"),
+                    (aip, "album", "~album~discsubtitle"),
+                    (fip, "~basename", "~filename"),
+                    (aio, "artist", "~people")
+                ]
+                t = Gtk.Table.new(2, 2, True)
+                t.attach(tiv, 0, 1, 0, 1)
+                t.attach(aip, 0, 1, 1, 2)
+                t.attach(aio, 1, 2, 0, 1)
+                t.attach(fip, 1, 2, 1, 2)
+                return qltk.Frame(_("Column Preferences"), child=t)
+
+            def create_apply_button():
+                vbox = Gtk.VBox(spacing=12)
+                apply = Button(_("_Apply"))
+                apply.set_tooltip_text(
+                    _("Apply current configuration to song list, "
+                      "adding new columns to the end"))
+                apply.connect('clicked', self.__apply, buttons)
+                # Apply on destroy, else config gets mangled
+                self.connect('destroy', self.__apply, buttons)
+                b = Gtk.HButtonBox()
+                b.set_layout(Gtk.ButtonBoxStyle.END)
+                b.pack_start(apply, True, True, 0)
+                vbox.pack_start(b, True, True, 0)
+                return vbox
+
             super(PreferencesWindow.SongList, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Song List")
-
-            # Behaviour
-            vbox = Gtk.VBox(spacing=6)
-            c = CCB(_("_Jump to playing song automatically"),
-                    'settings', 'jump', populate=True,
-                    tooltip=_("When the playing song changes, "
-                              "scroll to it in the song list"))
-            vbox.pack_start(c, False, True, 0)
-            frame = qltk.Frame(_("Behavior"), child=vbox)
-            self.pack_start(frame, False, True, 0)
-
-            # Columns
-            vbox = Gtk.VBox(spacing=12)
-            buttons = {}
-            table = Gtk.Table.new(3, 3, True)
-
-            for i, (k, t) in enumerate(self.PREDEFINED_TAGS):
-                x, y = i % 3, i / 3
-                buttons[k] = Gtk.CheckButton(label=t, use_underline=True)
-                table.attach(buttons[k], x, x + 1, y, y + 1)
-            vbox.pack_start(table, False, True, 0)
-
-            # Other columns
-            hbox = Gtk.HBox(spacing=6)
-            l = Gtk.Label(label=_("_Others:"), use_underline=True)
-            hbox.pack_start(l, False, True, 0)
-            self.others = others = UndoEntry()
-            others.set_sensitive(False)
-            # Stock edit doesn't have ellipsis chars.
-            edit_button = Gtk.Button(
-                label=_(u"_Edit…"), use_underline=True)
-            edit_button.connect("clicked", self.__config_cols, buttons)
-            edit_button.set_tooltip_text(_("Add or remove additional column "
-                                           "headers"))
-            l.set_mnemonic_widget(edit_button)
-            l.set_use_underline(True)
-            hbox.pack_start(others, True, True, 0)
-            vbox.pack_start(hbox, False, True, 0)
-            b = Gtk.HButtonBox()
-            b.set_layout(Gtk.ButtonBoxStyle.END)
-            b.pack_start(edit_button, True, True, 0)
-            vbox.pack_start(b, True, True, 0)
-
-            frame = qltk.Frame(_("Visible Columns"), child=vbox)
-            self.pack_start(frame, False, True, 0)
-
-            # Column preferences
-            tiv = Gtk.CheckButton(label=_("Title includes _version"),
-                                  use_underline=True)
-            aio = Gtk.CheckButton(label=_("Artist includes all _people"),
-                                  use_underline=True)
-            aip = Gtk.CheckButton(label=_("Album includes _disc subtitle"),
-                                  use_underline=True)
-            fip = Gtk.CheckButton(label=_("Filename includes _folder"),
-                                  use_underline=True)
-            self._toggle_data = [
-                (tiv, "title", "~title~version"),
-                (aip, "album", "~album~discsubtitle"),
-                (fip, "~basename", "~filename"),
-                (aio, "artist", "~people")
-            ]
-
+            self.pack_start(create_behaviour_frame(), False, True, 0)
+            columns_frame, buttons = create_visible_columns_frame()
+            self.pack_start(columns_frame, False, True, 0)
+            self.pack_start(create_columns_prefs_frame(), False, True, 0)
+            self.pack_start(create_apply_button(), True, True, 0)
             self.__update(buttons, self._toggle_data, get_columns())
-
-            t = Gtk.Table.new(2, 2, True)
-            t.attach(tiv, 0, 1, 0, 1)
-            t.attach(aip, 0, 1, 1, 2)
-            t.attach(aio, 1, 2, 0, 1)
-            t.attach(fip, 1, 2, 1, 2)
-            frame = qltk.Frame(_("Column Preferences"), child=t)
-            self.pack_start(frame, False, True, 0)
-
-            # Apply button
-            vbox = Gtk.VBox(spacing=12)
-            apply = Button(_("_Apply"))
-            apply.set_tooltip_text(_("Apply current configuration to song "
-                                     "list, adding new columns to the end"))
-            b = Gtk.HButtonBox()
-            b.set_layout(Gtk.ButtonBoxStyle.END)
-            b.pack_start(apply, True, True, 0)
-            vbox.pack_start(b, True, True, 0)
-            self.pack_start(vbox, True, True, 0)
-            apply.connect('clicked', self.__apply, buttons)
-            # Apply on destroy, else config gets mangled
-            self.connect('destroy', self.__apply, buttons)
 
             for child in self.get_children():
                 child.show_all()
