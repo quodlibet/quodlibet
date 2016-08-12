@@ -15,7 +15,7 @@ from quodlibet import util
 from quodlibet import qltk
 
 from quodlibet.util import connect_obj, connect_destroy
-from quodlibet.qltk import Icons, gtk_version
+from quodlibet.qltk import Icons, gtk_version, add_css
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
 from quodlibet.qltk.songsmenu import SongsMenu
@@ -81,6 +81,8 @@ class QueueExpander(Gtk.Expander):
         self.queue = PlayQueue(library, player)
         self.queue.props.expand = True
         sw.add(self.queue)
+
+        add_css(self, ".ql-expanded title { margin-bottom: 5px; }")
 
         outer = ExpandBoxHack(spacing=12)
 
@@ -222,6 +224,13 @@ class QueueExpander(Gtk.Expander):
 
     def __expand(self, cb, prop, clear):
         expanded = self.get_expanded()
+
+        style_context = self.get_style_context()
+        if expanded:
+            style_context.add_class("ql-expanded")
+        else:
+            style_context.remove_class("ql-expanded")
+
         cb.set_property('visible', expanded)
         clear.set_property('visible', expanded)
         config.set("memory", "queue_expanded", str(expanded))
