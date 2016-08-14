@@ -6,10 +6,10 @@ Soundcloud Browser
 Overview
 --------
 
-This browser lets you interact with `Soundcloud
-<http://soundcloud.com>`_ and play tracks from the millions on offer.
+This browser lets you interact with `Soundcloud <http://soundcloud.com>`_
+and play tracks from the millions on offer.
 Where possible it aims to keep the look and feel as familiar and integrated to
-the Quod Libet esperience as possible.
+the Quod Libet experience as possible.
 
 
 .. image:: ../../images/soundcloud-browser.png
@@ -25,9 +25,10 @@ To do so, click the Soundcloud connect button at the bottom right.
 This will then take you to. If your operating system is configured to process
 ``quodlibet://`` URLs with Quod Libet (see `the instructions <https://quodlibet.github.io/callbacks/soundcloud.html?code=CODE_GOES_HERE>`_ given to you there) then
 this process will happen automatically.
+
 If not, you can copy the code from the web page that appears and click the QL button again to enter it.
 
-Once you are logged in you can log out by clicking the same button,
+Once you are logged, in you can log out by clicking the same button again,
 now a disconnect button (seen in the screenshot).
 
 
@@ -37,8 +38,8 @@ Features
 Higher quality streams
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The Soundcloud browser will use the download URL where available for highest quality stream.
-Note this may require that you are logged in.
+The Soundcloud browser will use the download URL, where available, for the highest quality stream.
+Note this may require that you are logged in, and is usually *not* available.
 
 Support for Quod Libet queries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -63,7 +64,8 @@ Supported tags
  * ``~comments`` is translated to the track details.
 
 New tags
- * ``~#favoritings_count`` and ``~#likes_count`` etc represent how often these tracks have been favorited / liked.
+ * ``~#favoritings_count`` and ``~#likes_count`` etc represent how often these tracks have been favorited / liked
+   (note that there currently seem to be inconsistencies within Soundcloud itself as to how these are populated)
  * ``soundcloud_track_id`` is the soundcloud unique ID for the track.
 
 Comments
@@ -72,5 +74,5 @@ Comments in Soundcloud have been integrated to QL as read-only bookmarks, as
 they are also time-specific text to do with a particular song. Unlike bookmarks
 they have a lot more metadata (notably the user), so this is rendered as text.
 
-To see them, access as you normally would bookmarks (e.g. view info, right click the time widget or edit the bookmarks).
+To see them, access as you normally would bookmarks (e.g. view info, right-click the time widget or edit the bookmarks).
 
