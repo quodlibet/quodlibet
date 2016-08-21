@@ -1035,31 +1035,46 @@ class Tcached_property(TestCase):
         self.assertRaises(AssertionError, define_class)
 
 
+@util.enum
+class Foo(str):
+    FOO = "blah"
+    BAR = "not foo"
+    BAZ = "baz!"
+
+
 class Tenum(TestCase):
 
     def test_main(self):
 
         @util.enum
-        class Foo(int):
+        class IntFoo(int):
             FOO = 0
             BAR = 1
 
-        self.assertTrue(issubclass(Foo, int))
-        self.assertTrue(isinstance(Foo.BAR, Foo))
-        self.assertTrue(isinstance(Foo.FOO, Foo))
-        self.assertEqual(Foo.FOO, 0)
-        self.assertEqual(Foo.BAR, 1)
+        self.assertTrue(issubclass(IntFoo, int))
+        self.assertTrue(isinstance(IntFoo.BAR, IntFoo))
+        self.assertTrue(isinstance(IntFoo.FOO, IntFoo))
+        self.assertEqual(IntFoo.FOO, 0)
+        self.assertEqual(IntFoo.BAR, 1)
 
     def test_str(self):
-        @util.enum
-        class Foo(str):
-            FOO = "blah"
-            BAR = "foo"
-
         self.assertTrue(issubclass(Foo, str))
         self.assertTrue(isinstance(Foo.BAR, Foo))
         self.assertEqual(Foo.FOO, "blah")
         self.assertEqual(repr(Foo.BAR), "Foo.BAR")
+
+    def test_values(self):
+        self.assertEqual(Foo.values, {Foo.FOO, Foo.BAR, Foo.BAZ})
+
+    def test_value_of(self):
+        self.assertEqual(Foo.value_of("blah"), Foo.FOO)
+        self.assertEqual(Foo.value_of("baz!"), Foo.BAZ)
+
+    def test_value_of_raises_for_unknown(self):
+        self.assertRaises(ValueError, Foo.value_of, "??")
+
+    def test_value_of_uses_default(self):
+        self.assertEquals(Foo.value_of("??", "default"), "default")
 
 
 class Tlist_unique(TestCase):
