@@ -40,7 +40,7 @@ from quodlibet.util.dprint import print_d
 
 
 SERVICES = {
-    'Last.fm': 'https://post.audioscrobbler.com/',
+    'Last.fm': 'http://post.audioscrobbler.com/',
     'Libre.fm': 'http://turtle.libre.fm/'
 }
 
@@ -289,7 +289,7 @@ class QLSubmitQueue(object):
             self.quick_dialog(_("Wrong system time. Submissions may fail "
                             "until it is corrected."), Gtk.MessageType.ERROR)
         else:  # "FAILED"
-            self.quick_dialog(status, Gtk.MessageType.ERROR)
+            self.quick_dialog(util.escape(status), Gtk.MessageType.ERROR)
         self.changed()
         return False
 
