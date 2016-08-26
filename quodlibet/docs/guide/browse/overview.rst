@@ -49,7 +49,7 @@ Filters allow you to remove all but a subset of songs that from a browser's
 
 Different browsers implement these accordingly; in the Search browser,
 these become searches
- e.g. filtering by Artist might produce a search ``artist='Beethoven'c``
+e.g. filtering by Artist might produce a search ``artist='Beethoven'c``
 
 Some filters are not available on all browsers. For example, the Search
 Bar can filter by anything, but there's no way to get a "top 40" in the

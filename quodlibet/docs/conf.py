@@ -28,7 +28,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = 'Quod Libet'
 copyright = u"2004-2016 %s and more" % ", ".join(const.MAIN_AUTHORS)
-exclude_patterns = ['_build', '_build_all', 'README.rst']
+exclude_patterns = ['_build', '_build_all', 'README.rst', '**/README.rst']
 html_theme = "sphinx_rtd_theme"
 
 if const.BRANCH_NAME != "master":
@@ -63,7 +63,6 @@ html_theme_options = {
     "display_version": False,
 }
 
-exclude_patterns = ["icons.rst", "README.rst"]
 html_favicon = "favicon/favicon.ico"
 
 # on a stable branch which isn't a release
