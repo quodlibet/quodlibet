@@ -85,7 +85,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
     def pack(self, songpane):
         container = qltk.ConfigRHPaned(
             "browsers", "collectionbrowser_pos", 0.4)
-        container.pack1(self, False, False)
+        container.pack1(self, True, False)
         container.pack2(songpane, True, False)
         return container
 

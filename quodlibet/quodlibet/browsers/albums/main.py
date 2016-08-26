@@ -343,7 +343,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "albumlist_pos", 0.4)
-        container.pack1(self, False, False)
+        container.pack1(self, True, False)
         container.pack2(songpane, True, False)
         return container
 
