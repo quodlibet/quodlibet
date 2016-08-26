@@ -29,13 +29,18 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = 'Quod Libet'
 copyright = u"2004-2016 %s and more" % ", ".join(const.MAIN_AUTHORS)
-version = ".".join(const.VERSION.rsplit(".")[:2])
-release = const.VERSION
-if release.endswith(".-1"):
-    release = release[:-3]
 exclude_patterns = ['_build', '_build_all', 'README.rst']
 html_theme = "sphinx_rtd_theme"
-html_title = "%s (%s)" % (project, version)
+
+if const.BRANCH_NAME != "master":
+    version = ".".join(const.VERSION.rsplit(".")[:2])
+    release = const.VERSION
+    if release.endswith(".-1"):
+        release = release[:-3]
+    html_title = "%s (%s)" % (project, version)
+else:
+    html_title = project
+
 bug_url_template = "https://github.com/quodlibet/quodlibet/issues/%s"
 pr_url_template = "https://github.com/quodlibet/quodlibet/pull/%s"
 
@@ -60,7 +65,7 @@ exclude_patterns = ["icons.rst", "README.rst"]
 html_favicon = "favicon/favicon.ico"
 
 # on a stable branch which isn't a release
-if const.BRANCH_NAME != "master" and const.VERSION_TUPLE[-1] == -1:
+if const.BRANCH_NAME != "master":
     rst_prolog = """
 
 .. note::
