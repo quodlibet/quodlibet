@@ -5,7 +5,6 @@ import sys
 import types
 
 dir_ = os.path.dirname(os.path.realpath(__file__))
-sys.path.insert(0, dir_)
 
 def exec_module(path):
     """Executes the Python file at `path` and returns it as the module"""
@@ -24,7 +23,7 @@ const = exec_module(os.path.join(dir_, "..", "quodlibet", "const.py"))
 
 needs_sphinx = "1.3"
 
-extensions = ['sphinx.ext.autodoc', 'ext']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.extlinks']
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'Quod Libet'
@@ -41,8 +40,11 @@ if const.BRANCH_NAME != "master":
 else:
     html_title = project
 
-bug_url_template = "https://github.com/quodlibet/quodlibet/issues/%s"
-pr_url_template = "https://github.com/quodlibet/quodlibet/pull/%s"
+extlinks = {
+    'bug': ('https://github.com/quodlibet/quodlibet/issues/%s', '#'),
+    'pr': ('https://github.com/quodlibet/quodlibet/pull/%s', '#'),
+    'user': ('https://github.com/%s', ''),
+}
 
 linkcheck_anchors = True
 linkcheck_workers = 20
