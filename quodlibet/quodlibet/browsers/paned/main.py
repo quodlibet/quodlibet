@@ -216,7 +216,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
             sw.add(pane)
             hbox.pack_start(sw, True, True, 0)
 
-        self.main_box.pack1(hbox, False, False)
+        self.main_box.pack1(hbox, True, False)
         hbox.show_all()
 
         self.__star = {}

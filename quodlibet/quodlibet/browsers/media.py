@@ -271,7 +271,7 @@ class MediaDevices(Browser, util.InstanceTracker):
 
         self.__paned = paned = qltk.ConfigRHPaned(
             "browsers", "mediadevices_pos", 0.4)
-        paned.pack1(self, False, False)
+        paned.pack1(self, True, False)
         paned.pack2(vbox, True, False)
         return paned
 

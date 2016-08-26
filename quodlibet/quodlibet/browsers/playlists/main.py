@@ -53,7 +53,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
 
     def pack(self, songpane):
-        self._main_box.pack1(self, False, False)
+        self._main_box.pack1(self, True, False)
         self._rh_box = rhbox = Gtk.VBox(spacing=6)
         align = Align(self._sb_box, left=0, right=6, top=6)
         rhbox.pack_start(align, False, True, 0)
