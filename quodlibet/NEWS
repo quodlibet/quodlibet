@@ -8,6 +8,60 @@ Packaging Changes:
   * **udisks1** support removed
   * **PyGObject 3.12** required
 
+* Add Soundcloud browser :bug:`1828` :pr:`1990` (:user:`Nick Boultbee <declension>`)
+* Make F11 toggle fullscreen mode
+* Add ``--refresh`` to the man page. :bug:`1914`
+* Add ``--stop-after``. :bug:`1909`
+* Remove support for loading browsers from ``~/.quodlibet/browsers`` :bug:`1919`
+* Added shortcut of ``<Primary>Delete`` for moving files to trash :pr:`1921` (:user:`Victoria Hayes <victoriahayes>`)
+* gstbe: always use pulsesink if pulseaudio is running. :bug:`1926`
+* Remove udisks1 support
+* Add a "Check for Updates" dialog
+* Windows: Port mmkeys support from pyhook to ctypes.
+  Fixes accents not working when QL is running. :bug:`1168`
+* OSX: Enable multimedia key handling by default :bug:`1817`
+* Add selection tick (check) for rating(s) that are selected :bug:`1891` (:user:`Nick Boultbee <declension>`)
+* Support composersort :bug:`1795` (:user:`Nick Boultbee <declension>`)
+* Rework application menu :bug:`1598` (:user:`Nick Boultbee <declension>`)
+* Add a ~#playcount equalizer play order plugin :pr:`1626` (:user:`Ryan Turner <ZDBioHazard>`)
+* Fix too large cover art border radius with Ubuntu themes
+* songlist columns: handle font size changes at runtime. :bug:`1420`
+* Fix song list column label fade out in RTL mode
+* Fix seek bar getting stuck when releasing the button outside of the widget. :bug:`1953`
+* Add default keyboard shortcuts for browsers/views :bug:`1540`
+* Restore queue state. :bug:`1605`
+* Add a queue toggle button to the status bar and remove the view menu
+* docs: Clarified function of the queue :pr:`2004` (:user:`Bernd Wechner <bernd-wechner>`)
+
+Translations:
+  * Updated Polish translation :pr:`2009` (:user:`Piotr Drąg <piotrdrag>`)
+  * French translation update :pr:`1932` (:user:`Ludovic Druette <LudoBike>`)
+  * Fully update British English "translation" (:user:`Nick Boultbee <declension>`)
+
+Tagging:
+  * AIFF support :bug:`1801`
+  * Support musicbrainz_releasetrackid :pr:`1992`
+  * Support musicbrainz_releasegroupid :bug:`1896`
+  * operon: Fix image-set when passing multiple files. :bug:`1729`
+  * ASF: add WM/AlbumArtistSortOrder :bug:`1936`
+  * MP4: Support saving replaygain tags :pr:`1916` (:user:`bp0`)
+  * MP4: support replaygain_reference_loudness. :pr:`1928`
+
+Plugins:
+  * lyricswindow: Restart WebKit when crashed :pr:`1923` (:user:`CreamyCookie`)
+  * lyricswindow: Prevent alert windows. :pr:`1927` (:user:`CreamyCookie`)
+  * tray icon: Improve unity detection :bug:`1999`
+  * musicbrainz: Add option to write labelid. :bug:`1929`
+  * musicbrainz: Write musicbrainz release track ids :pr:`1992`
+  * Rename Force Write plugin to "update tags in files" :bug:`1938` (:user:`Nick Boultbee <declension>`)
+  * tray icon: Use App indicator when running under Enlightenment :pr:`1941` (:user:`Jakob Gahde <J5lx>`)
+  * replaygain: delete tags written by bs1770gain. :bug:`1942`
+
+Development:
+  * py.test support
+  * Some Python 3 porting progress: 47% tests passing :bug:`1580`
+  * OSX: build dmgs
+
 
 .. _release-3.6.2:
 
