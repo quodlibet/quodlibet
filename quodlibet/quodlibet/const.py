@@ -91,6 +91,7 @@ Bastian Kleineidam
 Bastien Gorissen
 Benjamin Boutier
 Ben Zeigler
+Bernd Wechner
 Bruno Bergot
 Carlo Teubner
 Christine Spang
@@ -109,6 +110,7 @@ Guillaume Chazarain
 Hans Scholze
 Iñigo Serna
 Jacob Lee
+Jakob Gahde
 Jan Arne Petersen
 Jan Path
 Javier Kohen
@@ -151,6 +153,7 @@ Tomasz Torcz
 Tshepang Lekhonkhobe
 Türerkan İnce
 Vasiliy Faronov
+Victoria Hayes
 Zack Weinberg
 """.strip().split("\n"))
 
