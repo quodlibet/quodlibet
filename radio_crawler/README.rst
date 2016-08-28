@@ -11,6 +11,7 @@ Execute in the following order:
 * clean_uris.py
 * init_cache.py
 * fetch_xiph.py
+* fetch_soma.py
 * fetch_tags.py
 * fetch_cast.py
 * fetch_tags.py (yes, twice)
