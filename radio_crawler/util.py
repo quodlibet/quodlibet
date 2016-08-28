@@ -168,9 +168,15 @@ def parse_icecast(url, timeout=5):
                 raise ParseError
             desc, value = [to_text(td) for td in tds]
             if "Peak Listeners" in desc:
-                peak = str(int(value))
+                try:
+                    peak = str(int(value))
+                except ValueError:
+                    raise ParseError
             elif "Current Listeners" in desc:
-                current = str(int(value))
+                try:
+                    current = str(int(value))
+                except ValueError:
+                    raise ParseError
         streams.append(Stream(stream, current, peak))
 
     return streams

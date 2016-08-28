@@ -7,7 +7,7 @@ metadata.
 
 Execute in the following order:
 
-* crawler_google.py
+* crawler_bing.py
 * clean_uris.py
 * init_cache.py
 * fetch_xiph.py
