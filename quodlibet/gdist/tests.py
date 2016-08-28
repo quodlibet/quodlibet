@@ -106,33 +106,25 @@ class distcheck_cmd(sdist):
         assert self.get_archive_files()
 
         # make sure MANIFEST.in includes all tracked files
-        if subprocess.call(["hg", "status"],
+        if subprocess.call(["git", "status"],
                            stdout=subprocess.PIPE,
                            stderr=subprocess.PIPE) == 0:
             # contains the packaged files after run() is finished
             included_files = self.filelist.files
             assert included_files
 
-            process = subprocess.Popen(["hg", "locate"],
-                                       stdout=subprocess.PIPE)
+            process = subprocess.Popen(
+                ["git", "ls-tree", "-r", "HEAD", "--name-only"],
+                stdout=subprocess.PIPE, universal_newlines=True)
             out, err = process.communicate()
             assert process.returncode == 0
 
-            tracked_files = []
-            for path in out.splitlines():
-                if not path.startswith("quodlibet" + os.sep):
-                    continue
-                path = path.split(os.sep, 1)[-1]
-                tracked_files.append(path)
+            tracked_files = out.splitlines()
 
-            diff = set(tracked_files) ^ set(included_files)
-            if diff:
-                print("#" * 80)
-                print("WARNING: MANFIFEST.in doesn't include all "
-                      "tracked files or includes non-tracked files")
-                for path in sorted(diff):
-                    print(path)
-                raise AssertionError
+            diff = set(tracked_files) - set(included_files)
+            assert not diff, (
+                "Not all tracked files included in tarball, check MANIFEST.in",
+                diff)
 
     def _check_dist(self):
         assert self.get_archive_files()
