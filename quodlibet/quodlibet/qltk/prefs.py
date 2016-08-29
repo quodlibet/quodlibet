@@ -85,7 +85,7 @@ class PreferencesWindow(UniqueWindow):
                 duration = Gtk.ComboBox(model=model)
                 cell = Gtk.CellRendererText()
                 duration.pack_start(cell, True)
-                duration.set_cell_data_func(cell, draw_duration,None)
+                duration.set_cell_data_func(cell, draw_duration, None)
                 index = list(DurationFormat.values).index(DURATION.format)
                 duration.set_active(index)
                 duration.connect('changed', on_changed)
