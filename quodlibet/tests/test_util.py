@@ -627,7 +627,6 @@ class TFormatTimePreferred(TestCase):
         while x < 100000000:
             s.assertEquals(f(x), f2(x))
             x = x * 3 / 2 + 1
-            print ("%s = %s" % (x, f(x)))
 
     def test_acts_like_display(s):
         def fmt_numeric(x):
