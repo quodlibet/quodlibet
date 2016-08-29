@@ -253,7 +253,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.add(Gtk.VBox())
 
         view = SongList(library, update=True)
-        view.info.connect("changed", self.__set_time)
+        view.info.connect("changed", self.__set_totals)
         self.songlist = view
 
         sw = ScrolledWindow()
@@ -345,9 +345,9 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             view.popup_menu(menu, 0, Gtk.get_current_event_time())
         return True
 
-    def __set_time(self, info, songs):
+    def __set_totals(self, info, songs):
         i = len(songs)
         length = sum(song.get("~#length", 0) for song in songs)
         t = self.browser.status_text(count=i,
-                                     time=util.format_time_long(length))
+                                     time=util.format_time_preferred(length))
         self.__statusbar.set_text(t)

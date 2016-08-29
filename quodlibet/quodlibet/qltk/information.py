@@ -259,7 +259,7 @@ class OneSong(qltk.Notebook):
                 return timestr.decode(encoding)
 
         fn = fsdecode(unexpand(song["~filename"]))
-        length = util.format_time_long(song.get("~#length", 0))
+        length = util.format_time_preferred(song.get("~#length", 0))
         size = util.format_size(
             song.get("~#filesize") or filesize(song["~filename"]))
         mtime = ftime(util.path.mtime(song["~filename"]))
@@ -347,7 +347,7 @@ class OneAlbum(qltk.Notebook):
                 len(songs)) % len(songs))
 
         text.append(", ".join(parts))
-        text.append(util.format_time_long(length))
+        text.append(util.format_time_preferred(length))
 
         if "location" in song:
             text.append(util.escape(song["location"]))
@@ -581,7 +581,7 @@ class ManySongs(qltk.Notebook):
         table.attach(Label(_("Total length:")), 0, 1, 0, 1,
                      xoptions=Gtk.AttachOptions.FILL)
         table.attach(
-            Label(util.format_time_long(length)), 1, 2, 0, 1)
+            Label(util.format_time_preferred(length)), 1, 2, 0, 1)
         table.attach(Label(_("Total size:")), 0, 1, 1, 2,
                      xoptions=Gtk.AttachOptions.FILL)
         table.attach(Label(util.format_size(size)), 1, 2, 1, 2)

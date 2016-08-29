@@ -424,6 +424,14 @@ def format_time_long(time, limit=2):
     return ", ".join(time_str)
 
 
+def format_time_preferred(t, fmt=None):
+    """Returns duration formatted to user's preference"""
+    from quodlibet.config import DurationFormat, DURATION
+    fmt = fmt or DURATION.format
+    return (format_time_long(t) if fmt == DurationFormat.LONG
+            else format_time_display(t))
+
+
 def capitalize(str):
     """Capitalize a string, not affecting any character after the first."""
     return str[:1].upper() + str[1:]

@@ -9,6 +9,7 @@
 
 import shutil
 
+from quodlibet.util import enum
 from . import const
 from quodlibet.util.config import Config, Error
 from quodlibet.util import print_d, print_w
@@ -156,6 +157,9 @@ INITIAL = {
         "prefer_embedded": "false",
         "force_filename": "false",
         "filename": "folder.jpg",
+    },
+    "display": {
+        "duration_format": "long"
     }
 }
 
@@ -331,3 +335,22 @@ class HardCodedRatingsPrefs(RatingsPrefs):
 
 # Need an instance just for imports to work
 RATINGS = RatingsPrefs()
+
+
+@enum
+class DurationFormat(str):
+    LONG, SHORT = "long", "short"
+
+
+class DurationFormatPref(object):
+    @property
+    def format(self):
+        raw = get("display", "duration_format")
+        return DurationFormat.value_of(raw)
+
+    @format.setter
+    def format(self, value):
+        set("display", "duration_format", value)
+
+
+DURATION = DurationFormatPref()

@@ -14,7 +14,7 @@ from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk
 
-from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.util import connect_obj, connect_destroy, format_time_preferred
 from quodlibet.qltk import Icons, gtk_version, add_css
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
@@ -206,7 +206,7 @@ class QueueExpander(Gtk.Expander):
             text = ngettext("%(count)d song (%(time)s)",
                             "%(count)d songs (%(time)s)",
                             len(model)) % {
-                "count": len(model), "time": util.format_time_display(time)}
+                "count": len(model), "time": format_time_preferred(time)}
         lab.set_text(text)
 
     def __check_expand(self, model, path, iter, lab):

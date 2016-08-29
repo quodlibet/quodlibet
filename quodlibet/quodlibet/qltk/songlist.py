@@ -35,7 +35,7 @@ from quodlibet.util.path import uri_to_path
 DND_QL, DND_URI_LIST = range(2)
 
 
-class SongInfoSelection(GObject.Object):
+class SongSelectionInfo(GObject.Object):
     """
     Songs which get included in the status bar summary.
 
@@ -64,7 +64,7 @@ class SongInfoSelection(GObject.Object):
     }
 
     def __init__(self, songlist):
-        super(SongInfoSelection, self).__init__()
+        super(SongSelectionInfo, self).__init__()
 
         self.__idle = None
         self.__songlist = songlist
@@ -380,7 +380,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         super(SongList, self).__init__()
         self._register_instance(SongList)
         self.set_model(model_cls())
-        self.info = SongInfoSelection(self)
+        self.info = SongSelectionInfo(self)
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
