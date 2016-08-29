@@ -79,7 +79,7 @@ class PreferencesWindow(UniqueWindow):
                     df, example = model[it]
                     cell.set_property('text', example)
 
-                for df in DurationFormat.values:
+                for df in sorted(DurationFormat.values):
                     # 4954s == longest ever CD, FWIW
                     model.append([df, format_time_preferred(4954, df)])
                 duration = Gtk.ComboBox(model=model)

@@ -339,14 +339,15 @@ RATINGS = RatingsPrefs()
 
 @enum
 class DurationFormat(str):
-    LONG, SHORT = "long", "short"
+    NUMERIC, SECONDS = "numeric", "numeric-seconds"
+    STANDARD, FULL = "standard", "text-full"
 
 
 class DurationFormatPref(object):
     @property
     def format(self):
         raw = get("display", "duration_format")
-        return DurationFormat.value_of(raw)
+        return DurationFormat.value_of(raw, DurationFormat.STANDARD)
 
     @format.setter
     def format(self, value):

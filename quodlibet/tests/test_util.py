@@ -17,7 +17,7 @@ from quodlibet import config
 from quodlibet import util
 from quodlibet.util.dprint import print_exc, format_exception, extract_tb
 from quodlibet.util import format_time_long as f_t_l, format_time_preferred, \
-    format_time_display
+    format_time_display, format_time_seconds
 from quodlibet.util import re_escape
 from quodlibet.util.library import set_scan_dirs, get_scan_dirs
 from quodlibet.util.path import is_fsnative, fsnative2glib, glib2fsnative, \
@@ -617,7 +617,7 @@ class Tformat_time_long(TestCase):
 class TFormatTimePreferred(TestCase):
 
     def test_default_setting_is_long(s):
-        s.assertEquals(config.DURATION.format, DurationFormat.LONG)
+        s.assertEquals(config.DURATION.format, DurationFormat.STANDARD)
 
     def test_acts_like_long(s):
         s._fuzz_loop(format_time_preferred, f_t_l)
@@ -630,8 +630,14 @@ class TFormatTimePreferred(TestCase):
             print ("%s = %s" % (x, f(x)))
 
     def test_acts_like_display(s):
-        s._fuzz_loop(lambda x: format_time_preferred(x, DurationFormat.SHORT),
-                     format_time_display)
+        def fmt_numeric(x):
+            return format_time_preferred(x, DurationFormat.NUMERIC)
+        s._fuzz_loop(fmt_numeric, format_time_display)
+
+    def test_seconds(s):
+        def fmt_seconds(x):
+            return format_time_preferred(x, DurationFormat.SECONDS)
+        s._fuzz_loop(fmt_seconds, format_time_seconds)
 
 
 class Tspawn(TestCase):
