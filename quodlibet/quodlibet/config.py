@@ -159,7 +159,7 @@ INITIAL = {
         "filename": "folder.jpg",
     },
     "display": {
-        "duration_format": "long"
+        "duration_format": "standard"
     }
 }
 

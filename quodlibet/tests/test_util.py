@@ -616,8 +616,12 @@ class Tformat_time_long(TestCase):
 
 class TFormatTimePreferred(TestCase):
 
-    def test_default_setting_is_long(s):
+    def test_default_setting_is_standard(s):
         s.assertEquals(config.DURATION.format, DurationFormat.STANDARD)
+
+    def test_raw_config_is_standard(s):
+        s.assertEquals(config.get('display', 'duration_format'),
+                       DurationFormat.STANDARD)
 
     def test_acts_like_long(s):
         s._fuzz_loop(format_time_preferred, f_t_l)
