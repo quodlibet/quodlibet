@@ -78,6 +78,11 @@ class SongSelectionInfo(GObject.Object):
         if self.__idle:
             GLib.source_remove(self.__idle)
 
+    def refresh(self):
+        songlist = self.__songlist
+        songs = songlist.get_selected_songs() or songlist.get_songs()
+        self.emit('changed', songs)
+
     def _update_songs(self, songs):
         """After making changes (filling the list) call this to
         skip any queued changes and emit the passed songs instead"""

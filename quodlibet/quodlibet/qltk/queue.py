@@ -105,7 +105,7 @@ class QueueExpander(Gtk.Expander):
         b.set_relief(Gtk.ReliefStyle.NONE)
         left.pack_start(b, False, False, 0)
 
-        count_label = Gtk.Label()
+        self.count_label = count_label = Gtk.Label()
         left.pack_start(count_label, False, True, 0)
 
         outer.pack_start(left, True, True, 0)
@@ -175,6 +175,9 @@ class QueueExpander(Gtk.Expander):
     @property
     def model(self):
         return self.queue.model
+
+    def refresh(self):
+        self.__update_count(self.model, None, self.count_label)
 
     def __update_state_icon(self, player, song, state_icon):
         if self.model.sourced:
