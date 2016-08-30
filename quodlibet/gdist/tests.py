@@ -28,7 +28,6 @@ class test_cmd(Command):
         ("exitfirst", "x", "stop after first failing test"),
         ("no-network", "n", "skip tests requiring a network connection"),
     ]
-    use_colors = sys.stderr.isatty() and os.name != "nt"
 
     def initialize_options(self):
         self.to_run = []
@@ -47,39 +46,19 @@ class test_cmd(Command):
         self.exitfirst = bool(self.exitfirst)
         self.no_network = bool(self.no_network)
 
-    @classmethod
-    def _red(cls, text):
-        from quodlibet.util.dprint import Colorise
-        return Colorise.red(text) if cls.use_colors else text
-
     def run(self):
-        mods = sys.modules.keys()
-        if "gi" in mods:
-            raise SystemExit("E: setup.py shouldn't depend on gi")
-
         import tests
 
-        main = False
-        if not self.suite or self.all:
-            main = True
-
-        subdirs = []
+        suite = self.suite
         if self.all:
-            test_path = tests.__path__[0]
-            for entry in os.listdir(test_path):
-                if os.path.isdir(os.path.join(test_path, entry)):
-                    subdirs.append(entry)
-        elif self.suite:
-            subdirs.append(self.suite)
+            suite = None
 
-        failures, errors, all_ = tests.unit(
-            self.to_run, main=main, subdirs=subdirs,
-            strict=self.strict, stop_first=self.exitfirst,
-            no_network=self.no_network)
-        if failures or errors:
-            raise SystemExit(self._red("%d test failure(s) and "
-                                       "%d test error(s) for %d tests."
-                             % (failures, errors, all_)))
+        status = tests.unit(run=self.to_run, suite=suite,
+                            strict=self.strict, exitfirst=self.exitfirst,
+                            network=(not self.no_network or self.all),
+                            quality=self.all)
+        if status != 0:
+            raise SystemExit(status)
 
 
 class quality_cmd(Command):
@@ -93,10 +72,11 @@ class quality_cmd(Command):
         pass
 
     def run(self):
-        cmd = self.reinitialize_command("test")
-        cmd.suite = "quality"
-        cmd.ensure_finalized()
-        cmd.run()
+        import tests
+
+        status = tests.unit(suite="quality", quality=True)
+        if status != 0:
+            raise SystemExit(status)
 
 
 class distcheck_cmd(sdist):

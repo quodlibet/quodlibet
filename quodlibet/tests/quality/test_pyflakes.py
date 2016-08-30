@@ -9,6 +9,8 @@ import os
 import sys
 import re
 
+import pytest
+
 try:
     from pyflakes.scripts import pyflakes
 except ImportError:
@@ -47,6 +49,7 @@ class FakeStream(object):
             raise Exception("\n" + "\n".join(self.lines))
 
 
+@pytest.mark.quality
 class TPyFlakes(TestCase):
 
     def __check_path(self, path):

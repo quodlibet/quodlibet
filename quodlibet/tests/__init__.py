@@ -3,9 +3,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import fnmatch
-import inspect
-from math import log
 import os
 import sys
 import unittest
@@ -13,8 +10,13 @@ import tempfile
 import shutil
 import atexit
 import subprocess
+
+try:
+    import pytest
+except ImportError:
+    raise SystemExit("pytest missing: sudo apt-get install python-pytest")
+
 from quodlibet.compat import PY3
-from quodlibet.util.dprint import Colorise, print_
 from quodlibet.util.path import fsnative, is_fsnative, xdg_get_cache_home
 from quodlibet.util.misc import environ
 from quodlibet import util
@@ -37,12 +39,6 @@ class TestCase(OrigTestCase):
 skip = unittest.skip
 skipUnless = unittest.skipUnless
 skipIf = unittest.skipIf
-_NO_NETWORK = False
-
-
-def skipUnlessNetwork(*args, **kwargs):
-    return skipIf(_NO_NETWORK, "no network")(*args, **kwargs)
-
 
 DATA_DIR = os.path.join(util.get_module_dir(), "data")
 assert is_fsnative(DATA_DIR)
@@ -106,68 +102,33 @@ def destroy_fake_app():
     app.cover_manager = None
 
 
-class Result(unittest.TestResult):
-    TOTAL_WIDTH = 80
-    TEST_RESULTS_WIDTH = 50
-    TEST_NAME_WIDTH = TOTAL_WIDTH - TEST_RESULTS_WIDTH - 3
-    MAJOR_SEPARATOR = '=' * TOTAL_WIDTH
-    MINOR_SEPARATOR = '-' * TOTAL_WIDTH
+def dbus_launch_user():
+    """Returns a dict with env vars, or an empty dict"""
 
-    CHAR_SUCCESS, CHAR_ERROR, CHAR_FAILURE = '+', 'E', 'F'
-
-    def __init__(self, test_name, num_tests, out=sys.stdout, failfast=False):
-        super(Result, self).__init__()
-        self.out = out
-        self.failfast = failfast
-        if hasattr(out, "flush"):
-            out.flush()
-        pref = '%s (%d): ' % (Colorise.bold(test_name), num_tests)
-        line = pref + " " * (self.TEST_NAME_WIDTH - len(test_name)
-                             - 7 - int(num_tests and log(num_tests, 10) or 0))
-        print_(line, end="")
-
-    def addSuccess(self, test):
-        unittest.TestResult.addSuccess(self, test)
-        print_(Colorise.green(self.CHAR_SUCCESS), end="")
-
-    def addError(self, test, err):
-        unittest.TestResult.addError(self, test, err)
-        print_(Colorise.red(self.CHAR_ERROR), end="")
-
-    def addFailure(self, test, err):
-        unittest.TestResult.addFailure(self, test, err)
-        print_(Colorise.red(self.CHAR_FAILURE), end="")
-
-    def printErrors(self):
-        succ = self.testsRun - (len(self.errors) + len(self.failures))
-        v = Colorise.bold("%3d" % succ)
-        cv = Colorise.green(v) if succ == self.testsRun else Colorise.red(v)
-        count = self.TEST_RESULTS_WIDTH - self.testsRun
-        print_((" " * count) + cv)
-        self.printErrorList('ERROR', self.errors)
-        self.printErrorList('FAIL', self.failures)
-
-    def printErrorList(self, flavour, errors):
-        for test, err in errors:
-            print_(self.MAJOR_SEPARATOR)
-            print_(Colorise.red("%s: %s" % (flavour, str(test))))
-            print_(self.MINOR_SEPARATOR)
-            # tracebacks can contain encoded paths, not sure
-            # what the right fix is here, so use repr
-            for line in err.splitlines():
-                print_(repr(line)[1:-1])
+    try:
+        out = subprocess.check_output([
+            "dbus-daemon", "--session", "--fork", "--print-address=1",
+            "--print-pid=1"])
+    except (subprocess.CalledProcessError, OSError):
+        return {}
+    else:
+        if PY3:
+            out = out.decode("utf-8")
+        addr, pid = out.splitlines()
+        return {"DBUS_SESSION_BUS_PID": pid, "DBUS_SESSION_BUS_ADDRESS": addr}
 
 
-class Runner(object):
+def dbus_kill_user(info):
+    """Kills the dbus daemon used for testing"""
 
-    def run(self, test, failfast=False):
-        suite = unittest.makeSuite(test)
-        if suite.countTestCases() == 0:
-            return 0, 0, 0
-        result = Result(test.__name__, len(suite._tests), failfast=failfast)
-        suite(result)
-        result.printErrors()
-        return len(result.failures), len(result.errors), len(suite._tests)
+    if not info:
+        return
+
+    try:
+        subprocess.check_call(
+            ["kill", "-9", info["DBUS_SESSION_BUS_PID"]])
+    except (subprocess.CalledProcessError, OSError):
+        pass
 
 
 _BUS_INFO = None
@@ -208,15 +169,8 @@ def init_test_environ():
 
     _BUS_INFO = None
     if os.name != "nt" and "DBUS_SESSION_BUS_ADDRESS" in environ:
-        try:
-            out = subprocess.check_output(["dbus-launch"])
-        except (subprocess.CalledProcessError, OSError):
-            pass
-        else:
-            if PY3:
-                out = out.decode("ascii")
-            _BUS_INFO = dict([l.split("=", 1) for l in out.splitlines()])
-            environ.update(_BUS_INFO)
+        _BUS_INFO = dbus_launch_user()
+        environ.update(_BUS_INFO)
 
     # Ideally nothing should touch the FS on import, but we do atm..
     # Get rid of all modules so QUODLIBET_USERDIR gets used everywhere.
@@ -239,12 +193,7 @@ def exit_test_environ():
     except EnvironmentError:
         pass
 
-    if _BUS_INFO:
-        try:
-            subprocess.check_call(
-                ["kill", "-9", _BUS_INFO["DBUS_SESSION_BUS_PID"]])
-        except (subprocess.CalledProcessError, OSError):
-            pass
+    dbus_kill_user(_BUS_INFO)
 
 
 # we have to do this on import so the tests work with other test runners
@@ -253,16 +202,9 @@ init_test_environ()
 atexit.register(exit_test_environ)
 
 
-def unit(run=[], filter_func=None, main=False, subdirs=None,
-               strict=False, stop_first=False, no_network=False):
-
-    global _NO_NETWORK
-
-    path = util.get_module_dir()
-    if subdirs is None:
-        subdirs = []
-
-    _NO_NETWORK = no_network
+def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
+         quality=False):
+    """Returns 0 if everything passed"""
 
     # make glib warnings fatal
     if strict:
@@ -272,46 +214,30 @@ def unit(run=[], filter_func=None, main=False, subdirs=None,
             GLib.LogLevelFlags.LEVEL_ERROR |
             GLib.LogLevelFlags.LEVEL_WARNING)
 
-    suites = []
+    args = []
 
-    def discover_tests(mod):
-        for k in vars(mod):
-            value = getattr(mod, k)
+    if run:
+        args.append("-k")
+        args.append(" or ".join(run))
 
-            if value is not TestCase and \
-                    inspect.isclass(value) and issubclass(value, TestCase):
-                suites.append(value)
+    skip_markers = []
 
-    if main:
-        for name in os.listdir(path):
-            if fnmatch.fnmatch(name, "test_*.py"):
-                mod = __import__(".".join([__name__, name[:-3]]), {}, {}, [])
-                discover_tests(getattr(mod, name[:-3]))
+    if not quality:
+        skip_markers.append("quality")
 
-    if main:
-        # include plugin tests by default
-        subdirs = (subdirs or []) + ["plugin"]
+    if not network:
+        skip_markers.append("network")
 
-    for subdir in subdirs:
-        sub_path = os.path.join(path, subdir)
-        for name in os.listdir(sub_path):
-            if fnmatch.fnmatch(name, "test_*.py"):
-                mod = __import__(
-                    ".".join([__name__, subdir, name[:-3]]), {}, {}, [])
-                discover_tests(getattr(getattr(mod, subdir), name[:-3]))
+    if skip_markers:
+        args.append("-m")
+        args.append(" and ".join(["not %s" % m for m in skip_markers]))
 
-    runner = Runner()
-    failures = errors = all_ = 0
-    use_suites = filter(filter_func, suites)
-    for test in sorted(use_suites, key=repr):
-        if (not run
-                or test.__name__ in run
-                or test.__module__[11:] in run):
-            df, de, num = runner.run(test, failfast=stop_first)
-            failures += df
-            errors += de
-            all_ += num
-            if stop_first and (df or de):
-                break
+    if exitfirst:
+        args.append("-x")
 
-    return failures, errors, all_
+    if suite is None:
+        args.append("tests")
+    else:
+        args.append(os.path.join("tests", suite))
+
+    return pytest.main(args=args)

@@ -39,6 +39,9 @@ baf089121710c36ce317d9f107d552a3c7ec14dfcaa9618b809c4b25ef775619  mutagen-$MUTAG
 1750556a9c797ec157ac837c531fef05f60a5595d2a1553c7d3f5be7bc085b70  pygi-aio-$PYGI_AIO_VER-setup.exe
 3ac291535bcf15fd5a15bcd29b066570e8d2a0cab4f3b92a2372f41aa09a4f48  python-2.7.12.msi
 ec447bcab906fe7c4dbd714a1dff1b00adcd20d0011968df1a740e6b1fb09cb5  python-musicbrainzngs-0.6.tar.gz
+12c18abb9a09a5b2802dba75c7a2d7d6c8c0f1258abd8243e7688415d87ad1d8  pytest-2.9.2.tar.gz
+a6501963c725fc2554dabfece8ae9a8fb5e149c0ac0a42fd2b02c5c1c57fc114  py-1.4.31.tar.gz
+f4945bf52ae49da0728fe730a33c18744803752fc948f154f29dc0c4f9f2f9cc  colorama-0.3.7.zip
 547c24748705ad4b6e3f3944f38d0416c5cdd2de6ebe3d65a1840bd2b82519a4  7z1602.msi
 8a94f6ff1ee9562a2216d2096b87d0e54a5eb5c9391874800e5032033a1c8e85  libmodplug-1.dll
 2b53c7bb3a92218f8ff197d259b7769754ec9a578561e69578739fcbdbb53da3  libgstdirectsoundsink.dll
@@ -60,9 +63,12 @@ ec447bcab906fe7c4dbd714a1dff1b00adcd20d0011968df1a740e6b1fb09cb5  python-musicbr
         wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstopus.dll
         wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstdirectsoundsink.dll
 
-        pip download --dest="$BIN" --no-binary=":all:" "mutagen==$MUTAGEN_VER"
-        pip download --dest="$BIN" --no-binary=":all:" "feedparser==5.2.1"
-        pip download --dest="$BIN" --no-binary=":all:" "certifi==2016.2.28"
+        pip download --dest="$BIN" --no-deps --no-binary=":all:" "mutagen==$MUTAGEN_VER"
+        pip download --dest="$BIN" --no-deps --no-binary=":all:" "feedparser==5.2.1"
+        pip download --dest="$BIN" --no-deps --no-binary=":all:" "certifi==2016.2.28"
+        pip download --dest="$BIN" --no-deps --no-binary=":all:" "pytest==2.9.2"
+        pip download --dest="$BIN" --no-deps --no-binary=":all:" "py==1.4.31"
+        pip download --dest="$BIN" --no-deps --no-binary=":all:" "colorama==0.3.7"
 
         # check again
         (cd "$BIN" && echo "$FILEHASHES" |  sha256sum --strict -c -) || exit
@@ -225,6 +231,10 @@ function install_pydeps {
     local PYTHON="$PYDIR"/python.exe
     (
     cd "$BUILD_ENV"/bin
+
+    wine $PYTHON -m pip install colorama-0.3.7.zip
+    wine $PYTHON -m pip install py-1.4.31.tar.gz
+    wine $PYTHON -m pip install pytest-2.9.2.tar.gz
     wine $PYTHON -m pip install "mutagen-$MUTAGEN_VER.tar.gz"
     wine $PYTHON -m pip install feedparser-5.2.1.zip
     wine $PYTHON -m pip install certifi-2016.2.28.tar.gz

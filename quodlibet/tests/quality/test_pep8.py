@@ -10,9 +10,12 @@ import glob
 import errno
 import subprocess
 
+import pytest
+
 from tests import TestCase
 
 
+@pytest.mark.quality
 class TPEP8(TestCase):
     # E12x popped up in pep8 1.4 compared to 1.2..
     # drop them once 1.4 is common enough
