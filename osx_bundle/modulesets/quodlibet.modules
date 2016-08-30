@@ -65,6 +65,7 @@
       <dep package="meta-gtk-osx-python-gtk3"/>
       <dep package="pyobjc"/>
       <dep package="certifi"/>
+      <dep package="pytest"/>
     </dependencies>
   </metamodule>
 
@@ -222,6 +223,23 @@
         version="1.0.1" md5sum="b461c526cb2a80ab302b4953ae950379"/>
     <dependencies>
     <dep package="setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="py">
+    <branch repo="pypi" checkoutdir="py-1.4.31" module="f4/9a/8dfda23f36600dd701c6722316ba8a3ab4b990261f83e7d3ffc6dfedf7ef/py-1.4.31.tar.gz"
+        version="1.4.31" md5sum="5d2c63c56dc3f2115ec35c066ecd582b"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="pytest">
+    <branch repo="pypi" checkoutdir="pytest-2.9.2" module="f0/ee/6e2522c968339dca7d9abfd5e71312abeeb5ee902e09b4daf44f07b2f907/pytest-2.9.2.tar.gz"
+        version="2.9.2" md5sum="b65c2944dfaa0efb62c0239afb424f5b"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    <dep package="py"/>
     </dependencies>
   </distutils>
 

@@ -5,15 +5,16 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
+import pytest
 from gi.repository import Gio, Soup, GLib
 
-from tests import TestCase, skipIf, skipUnlessNetwork
+from tests import TestCase, skipIf
 
 from quodlibet.util import is_linux, is_osx, get_ca_file
 from quodlibet.compat import urlopen, build_opener
 
 
-@skipUnlessNetwork
+@pytest.mark.network
 @skipIf(is_linux(), "not on linux")
 class Thttps(TestCase):
     """For Windows/OSX to check if we can create a TLS connection
