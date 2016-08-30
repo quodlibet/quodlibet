@@ -240,4 +240,4 @@ def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
     else:
         args.append(os.path.join("tests", suite))
 
-    pytest.main(args=args)
+    return pytest.main(args=args)
