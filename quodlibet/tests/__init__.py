@@ -170,6 +170,35 @@ class Runner(object):
         return len(result.failures), len(result.errors), len(suite._tests)
 
 
+def dbus_launch_user():
+    """Returns a dict with env vars, or an empty dict"""
+
+    try:
+        out = subprocess.check_output([
+            "dbus-daemon", "--session", "--fork", "--print-address=1",
+            "--print-pid=1"])
+    except (subprocess.CalledProcessError, OSError):
+        return {}
+    else:
+        if PY3:
+            out = out.decode("utf-8")
+        addr, pid = out.splitlines()
+        return {"DBUS_SESSION_BUS_PID": pid, "DBUS_SESSION_BUS_ADDRESS": addr}
+
+
+def dbus_kill_user(info):
+    """Kills the dbus daemon used for testing"""
+
+    if not info:
+        return
+
+    try:
+        subprocess.check_call(
+            ["kill", "-9", info["DBUS_SESSION_BUS_PID"]])
+    except (subprocess.CalledProcessError, OSError):
+        pass
+
+
 _BUS_INFO = None
 
 
@@ -208,15 +237,8 @@ def init_test_environ():
 
     _BUS_INFO = None
     if os.name != "nt" and "DBUS_SESSION_BUS_ADDRESS" in environ:
-        try:
-            out = subprocess.check_output(["dbus-launch"])
-        except (subprocess.CalledProcessError, OSError):
-            pass
-        else:
-            if PY3:
-                out = out.decode("ascii")
-            _BUS_INFO = dict([l.split("=", 1) for l in out.splitlines()])
-            environ.update(_BUS_INFO)
+        _BUS_INFO = dbus_launch_user()
+        environ.update(_BUS_INFO)
 
     # Ideally nothing should touch the FS on import, but we do atm..
     # Get rid of all modules so QUODLIBET_USERDIR gets used everywhere.
@@ -239,12 +261,7 @@ def exit_test_environ():
     except EnvironmentError:
         pass
 
-    if _BUS_INFO:
-        try:
-            subprocess.check_call(
-                ["kill", "-9", _BUS_INFO["DBUS_SESSION_BUS_PID"]])
-        except (subprocess.CalledProcessError, OSError):
-            pass
+    dbus_kill_user(_BUS_INFO)
 
 
 # we have to do this on import so the tests work with other test runners
