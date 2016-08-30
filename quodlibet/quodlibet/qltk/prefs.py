@@ -15,7 +15,7 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
-from quodlibet.config import RATINGS
+from quodlibet.config import RATINGS, DurationFormat, DURATION
 
 from quodlibet.qltk.ccb import ConfigCheckButton as CCB
 from quodlibet.qltk.data_editors import TagListEditor
@@ -27,7 +27,7 @@ from quodlibet.qltk.songlist import SongList, get_columns
 from quodlibet.qltk.window import UniqueWindow
 from quodlibet.qltk.x import Button, Align
 from quodlibet.qltk import Icons
-from quodlibet.util import copool
+from quodlibet.util import copool, format_time_preferred
 from quodlibet.util.dprint import print_d
 from quodlibet.util.library import emit_signal, get_scan_dirs, scan_library
 from quodlibet.util import connect_obj
@@ -65,8 +65,7 @@ class PreferencesWindow(UniqueWindow):
                         tooltip=_("When the playing song changes, "
                                   "scroll to it in the song list"))
                 vbox.pack_start(c, False, True, 0)
-                frame = qltk.Frame(_("Behavior"), child=vbox)
-                return frame
+                return qltk.Frame(_("Behavior"), child=vbox)
 
             def create_visible_columns_frame():
                 buttons = {}
@@ -228,27 +227,65 @@ class PreferencesWindow(UniqueWindow):
         name = "browser"
 
         def __init__(self):
+            def create_display_frame():
+                vbox = Gtk.VBox(spacing=6)
+                model = Gtk.ListStore(str, str)
+
+                def on_changed(combo):
+                    it = combo.get_active_iter()
+                    if it is None:
+                        return
+                    DURATION.format = model[it][0]
+                    app.window.songlist.info.refresh()
+                    app.window.qexpander.refresh()
+                    # TODO: refresh info windows ideally too (but see #2019)
+
+                def draw_duration(column, cell, model, it, data):
+                    df, example = model[it]
+                    cell.set_property('text', example)
+
+                for df in sorted(DurationFormat.values):
+                    # 4954s == longest ever CD, FWIW
+                    model.append([df, format_time_preferred(4954, df)])
+                duration = Gtk.ComboBox(model=model)
+                cell = Gtk.CellRendererText()
+                duration.pack_start(cell, True)
+                duration.set_cell_data_func(cell, draw_duration, None)
+                index = list(DurationFormat.values).index(DURATION.format)
+                duration.set_active(index)
+                duration.connect('changed', on_changed)
+                hbox = Gtk.HBox(spacing=6)
+                label = Gtk.Label(label=_("Duration totals") + ":",
+                                  use_underline=True)
+                label.set_mnemonic_widget(duration)
+                hbox.pack_start(label, False, True, 0)
+                hbox.pack_start(duration, False, True, 0)
+
+                vbox.pack_start(hbox, False, True, 0)
+                return qltk.Frame(_("Display"), child=vbox)
+
+            def create_search_frame():
+                vb = Gtk.VBox(spacing=6)
+                hb = Gtk.HBox(spacing=6)
+                l = Gtk.Label(label=_("_Global filter:"))
+                l.set_use_underline(True)
+                e = ValidatingEntry(Query.validator)
+                e.set_text(config.get("browsers", "background"))
+                e.connect('changed', self._entry, 'background', 'browsers')
+                e.set_tooltip_text(
+                    _("Apply this query in addition to all others"))
+                l.set_mnemonic_widget(e)
+                hb.pack_start(l, False, True, 0)
+                hb.pack_start(e, True, True, 0)
+                vb.pack_start(hb, False, True, 0)
+                # Translators: The heading of the preference group, no action
+                return qltk.Frame(C_("heading", "Search"), child=vb)
+
             super(PreferencesWindow.Browsers, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Browsers")
-
-            # Search
-            vb = Gtk.VBox(spacing=6)
-            hb = Gtk.HBox(spacing=6)
-            l = Gtk.Label(label=_("_Global filter:"))
-            l.set_use_underline(True)
-            e = ValidatingEntry(Query.validator)
-            e.set_text(config.get("browsers", "background"))
-            e.connect('changed', self._entry, 'background', 'browsers')
-            e.set_tooltip_text(_("Apply this query in addition to all others"))
-            l.set_mnemonic_widget(e)
-            hb.pack_start(l, False, True, 0)
-            hb.pack_start(e, True, True, 0)
-            vb.pack_start(hb, False, True, 0)
-
-            # Translators: The heading of the preference group, no action
-            f = qltk.Frame(C_("heading", "Search"), child=vb)
-            self.pack_start(f, False, True, 0)
+            self.pack_start(create_search_frame(), False, True, 0)
+            self.pack_start(create_display_frame(), False, True, 0)
 
             # Ratings
             vb = Gtk.VBox(spacing=6)
@@ -389,7 +426,8 @@ class PreferencesWindow(UniqueWindow):
                 child.show_all()
 
         def __toggled_gain(self, activator, widgets):
-            if app.player: # tests
+            if app.player:
+                # tests
                 app.player.reset_replaygain()
             for widget in widgets:
                 widget.set_sensitive(activator.get_active())

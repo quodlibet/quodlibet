@@ -12,11 +12,12 @@ import traceback
 import time
 
 from quodlibet.compat import text_type, PY2
-from quodlibet.config import HardCodedRatingsPrefs
+from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
 from quodlibet import config
 from quodlibet import util
 from quodlibet.util.dprint import print_exc, format_exception, extract_tb
-from quodlibet.util import format_time_long as f_t_l
+from quodlibet.util import format_time_long as f_t_l, format_time_preferred, \
+    format_time_display, format_time_seconds
 from quodlibet.util import re_escape
 from quodlibet.util.library import set_scan_dirs, get_scan_dirs
 from quodlibet.util.path import is_fsnative, fsnative2glib, glib2fsnative, \
@@ -611,6 +612,35 @@ class Tformat_time_long(TestCase):
 
     def test_limit(s):
         s.assertEquals(len(f_t_l(2 ** 31).split(", ")), 2)
+
+
+class TFormatTimePreferred(TestCase):
+
+    def test_default_setting_is_standard(s):
+        s.assertEquals(config.DURATION.format, DurationFormat.STANDARD)
+
+    def test_raw_config_is_standard(s):
+        s.assertEquals(config.get('display', 'duration_format'),
+                       DurationFormat.STANDARD)
+
+    def test_acts_like_long(s):
+        s._fuzz_loop(format_time_preferred, f_t_l)
+
+    def _fuzz_loop(s, f, f2):
+        x = 1
+        while x < 100000000:
+            s.assertEquals(f(x), f2(x))
+            x = x * 3 / 2 + 1
+
+    def test_acts_like_display(s):
+        def fmt_numeric(x):
+            return format_time_preferred(x, DurationFormat.NUMERIC)
+        s._fuzz_loop(fmt_numeric, format_time_display)
+
+    def test_seconds(s):
+        def fmt_seconds(x):
+            return format_time_preferred(x, DurationFormat.SECONDS)
+        s._fuzz_loop(fmt_seconds, format_time_seconds)
 
 
 class Tspawn(TestCase):

@@ -847,7 +847,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.songlist.connect('popup-menu', self.__songs_popup_menu)
         self.songlist.connect('columns-changed', self.__cols_changed)
         self.songlist.connect('columns-changed', self.__hide_headers)
-        self.songlist.info.connect("changed", self.__set_time)
+        self.songlist.info.connect("changed", self.__set_totals)
 
         lib = library.librarian
         connect_destroy(lib, 'changed', self.__song_changed, player)
@@ -1526,8 +1526,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             self.browser.filter_text(query.encode('utf-8'))
             self.browser.activate()
 
-    def __set_time(self, info, songs):
+    def __set_totals(self, info, songs):
         length = sum(song.get("~#length", 0) for song in songs)
         t = self.browser.status_text(count=len(songs),
-                                     time=util.format_time_long(length))
+                                     time=util.format_time_preferred(length))
         self.statusbar.set_default_text(t)

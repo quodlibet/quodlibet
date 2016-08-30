@@ -14,7 +14,7 @@ from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk
 
-from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.util import connect_obj, connect_destroy, format_time_preferred
 from quodlibet.qltk import Icons, gtk_version, add_css
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
@@ -105,7 +105,7 @@ class QueueExpander(Gtk.Expander):
         b.set_relief(Gtk.ReliefStyle.NONE)
         left.pack_start(b, False, False, 0)
 
-        count_label = Gtk.Label()
+        self.count_label = count_label = Gtk.Label()
         left.pack_start(count_label, False, True, 0)
 
         outer.pack_start(left, True, True, 0)
@@ -176,6 +176,9 @@ class QueueExpander(Gtk.Expander):
     def model(self):
         return self.queue.model
 
+    def refresh(self):
+        self.__update_count(self.model, None, self.count_label)
+
     def __update_state_icon(self, player, song, state_icon):
         if self.model.sourced:
             state_icon.play()
@@ -206,7 +209,7 @@ class QueueExpander(Gtk.Expander):
             text = ngettext("%(count)d song (%(time)s)",
                             "%(count)d songs (%(time)s)",
                             len(model)) % {
-                "count": len(model), "time": util.format_time_display(time)}
+                "count": len(model), "time": format_time_preferred(time)}
         lab.set_text(text)
 
     def __check_expand(self, model, path, iter, lab):

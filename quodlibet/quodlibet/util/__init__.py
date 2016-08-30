@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011,2013 Nick Boultbee
+#           2011-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import locale
 import os
 import random
 import re
@@ -388,6 +389,11 @@ def format_time_display(time):
     return format_time(time).replace(":", u"\u2236")
 
 
+def format_time_seconds(time):
+    time_str = locale.format("%d", time, grouping=True)
+    return ngettext("%s second", "%s seconds", time) % time_str
+
+
 def format_time_long(time, limit=2):
     """Turn a time value in seconds into x hours, x minutes, etc.
 
@@ -422,6 +428,21 @@ def format_time_long(time, limit=2):
         time_str = time_str[:limit]
 
     return ", ".join(time_str)
+
+
+def format_time_preferred(t, fmt=None):
+    """Returns duration formatted to user's preference"""
+    from quodlibet.config import DurationFormat, DURATION
+    fmt = fmt or DURATION.format
+
+    if fmt == DurationFormat.STANDARD:
+        return format_time_long(t, 2)
+    elif fmt == DurationFormat.NUMERIC:
+        return format_time_display(t)
+    elif fmt == DurationFormat.FULL:
+        return format_time_long(t, 5)
+    else:
+        return format_time_seconds(t)
 
 
 def capitalize(str):
