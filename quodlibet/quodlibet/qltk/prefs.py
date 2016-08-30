@@ -251,7 +251,7 @@ class PreferencesWindow(UniqueWindow):
                 cell = Gtk.CellRendererText()
                 duration.pack_start(cell, True)
                 duration.set_cell_data_func(cell, draw_duration, None)
-                index = list(DurationFormat.values).index(DURATION.format)
+                index = sorted(DurationFormat.values).index(DURATION.format)
                 duration.set_active(index)
                 duration.connect('changed', on_changed)
                 hbox = Gtk.HBox(spacing=6)
