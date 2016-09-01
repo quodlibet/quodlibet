@@ -48,6 +48,10 @@ def fsdecode(path, note=True):
     if isinstance(path, text_type):
         return path
 
+    # XXX: glib paths on Windows
+    if os.name == "nt" and isinstance(path, bytes):
+        path = path.decode("utf-8")
+
     return fsn2text(path)
 
 
