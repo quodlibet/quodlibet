@@ -7,27 +7,13 @@ import os
 import unittest
 from tests import TestCase
 
-from quodlibet.util.path import pathname2url_win32, iscommand, limit_path, \
+from quodlibet.util.path import iscommand, limit_path, \
     fsnative, is_fsnative, get_home_dir, uri_to_path, uri_from_path, \
     uri_is_valid
 from quodlibet.util import print_d
 
 is_win = os.name == "nt"
 path_set = bool(os.environ.get('PATH', False))
-
-
-class Tpathname2url(TestCase):
-    def test_win(self):
-        cases = {
-            r"c:\abc\def": "/c:/abc/def",
-            r"C:\a b\c.txt": "/C:/a%20b/c.txt",
-            r"\\xy\z.txt": "//xy/z.txt",
-            r"C:\a:b\c:d": "/C:/a%3Ab/c%3Ad",
-            r"\\server\share\foo": "//server/share/foo",
-            }
-        p2u = pathname2url_win32
-        for inp, should in cases.iteritems():
-            self.failUnlessEqual(p2u(inp), should)
 
 
 class Turi(TestCase):
@@ -43,7 +29,6 @@ class Turi(TestCase):
             self.assertEqual(path, fsnative(u"C:\\foo"))
 
     def test_uri_to_path_invalid(self):
-        self.assertRaises(ValueError, uri_to_path, "file://foo.txt")
         self.assertRaises(ValueError, uri_to_path, "http://example.com")
 
     def test_path_as_uri(self):
@@ -78,7 +63,7 @@ class Turi(TestCase):
         if os.name == "nt":
             self.assertEqual(
                 uri_from_path(u"\\\\server\\share\\path"),
-                u"file:////server/share/path")
+                u"file://server/share/path")
 
     def test_uri_is_valid(self):
         self.assertTrue(uri_is_valid(u"file:///foo"))

@@ -10,10 +10,10 @@ import tempfile
 import hashlib
 
 from gi.repository import GdkPixbuf, GLib
+from senf import fsn2uri_ascii
 
 import quodlibet
-from quodlibet.util.path import mtime, mkdir, pathname2url, \
-    xdg_get_cache_home, is_fsnative
+from quodlibet.util.path import mtime, mkdir, xdg_get_cache_home, is_fsnative
 from quodlibet.util import enum
 from quodlibet.qltk.image import scale
 
@@ -63,7 +63,7 @@ def get_cache_info(path, boundary):
     thumb_folder = get_thumbnail_folder()
     cache_dir = os.path.join(thumb_folder, size_name)
 
-    uri = "file://" + pathname2url(path)
+    uri = fsn2uri_ascii(path)
     thumb_name = hashlib.md5(uri).hexdigest() + ".png"
     thumb_path = os.path.join(cache_dir, thumb_name)
 
@@ -107,6 +107,8 @@ def get_thumbnail(path, boundary):
 
     Can raise GLib.GError. Thread-safe.
     """
+
+    assert is_fsnative(path)
 
     width, height = boundary
     new_from_file_at_size = GdkPixbuf.Pixbuf.new_from_file_at_size
@@ -155,7 +157,7 @@ def get_thumbnail(path, boundary):
 
     thumb_pb = new_from_file_at_size(path, thumb_size, thumb_size)
 
-    uri = "file://" + pathname2url(path)
+    uri = fsn2uri_ascii(path)
     mime = info.get_mime_types()[0]
     options = {
         "tEXt::Thumb::Image::Width": str(pw),

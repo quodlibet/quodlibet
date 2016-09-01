@@ -15,10 +15,10 @@ import codecs
 import shlex
 import urllib
 
-from senf import fsnative, path2fsn, bytes2fsn, fsn2bytes, fsn2text, text2fsn
+from senf import fsnative, path2fsn, bytes2fsn, fsn2bytes, fsn2text, \
+    text2fsn, fsn2uri_ascii, uri2fsn
 
-from quodlibet.compat import pathname2url, text_type, PY2, urlparse, \
-    url2pathname
+from quodlibet.compat import text_type, PY2, urlparse
 from quodlibet import senf
 from . import windows
 from .misc import environ
@@ -200,28 +200,6 @@ def find_mount_point(path):
     while not os.path.ismount(path):
         path = os.path.dirname(path)
     return path
-
-
-def pathname2url_win32(path):
-    # stdlib version raises IOError for more than one ':' which can appear
-    # using a virtual box shared folder and it inserts /// at the beginning
-    # but it should be /.
-
-    # windows paths should be unicode
-    if isinstance(path, unicode):
-        path = path.encode("utf-8")
-
-    quote = urllib.quote
-    if ":" not in path:
-        return quote("/".join(path.split("\\")))
-    drive, remain = path.split(":", 1)
-    return "/%s:%s" % (quote(drive), quote("/".join(remain.split("\\"))))
-
-if os.name == "nt":
-    pathname2url
-    pathname2url = pathname2url_win32
-else:
-    pathname2url
 
 
 def xdg_get_system_data_dirs():
@@ -460,14 +438,7 @@ def uri_from_path(path):
         str
     """
 
-    assert is_fsnative(path)
-
-    prefix = fsnative(u"file://")
-
-    if os.name == "nt":
-        return prefix + pathname2url(path.encode("utf-8"))
-    else:
-        return prefix + pathname2url(path)
+    return fsn2uri_ascii(path)
 
 
 def uri_is_valid(uri):
@@ -500,18 +471,4 @@ def uri_to_path(uri):
         fsnative
     """
 
-    if not isinstance(uri, bytes):
-        uri = uri.encode("ascii")
-
-    parsed = urlparse(uri)
-    scheme = parsed[0]
-    netloc = parsed[1]
-    path = parsed[2]
-
-    if scheme != b"file" or netloc:
-        raise ValueError("Not a file URI")
-    else:
-        if os.name == "nt":
-            return url2pathname(path).decode("utf-8")
-        else:
-            return url2pathname(path)
+    return uri2fsn(uri)
