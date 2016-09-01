@@ -10,16 +10,12 @@ import sys
 import locale
 from functools import wraps
 
+from senf import environ
+
 from . import windows
 
 
-if os.name == "nt":
-    environ = windows.WindowsEnviron()
-else:
-    environ = os.environ
-"""
-An environ dict which contains unicode under Windows and str everywhere else
-"""
+environ = environ
 
 
 if os.name == "nt":
