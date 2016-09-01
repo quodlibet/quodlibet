@@ -15,32 +15,16 @@ import codecs
 import shlex
 import urllib
 
+from senf import fsnative, path2fsn, bytes2fsn, fsn2bytes, fsn2text, text2fsn
+
 from quodlibet.compat import pathname2url, text_type, PY2, urlparse, \
     url2pathname
-from quodlibet.util.string import decode
+from quodlibet import senf
 from . import windows
-from .misc import environ, get_fs_encoding
+from .misc import environ
 
 if sys.platform == "darwin":
     from Foundation import NSString
-
-
-_FSCODING = get_fs_encoding()
-
-
-"""
-Path related functions like open, os.listdir have different behavior on win32
-
-- Passing a string calls the old non unicode win API.
-  In case of listdir this leads to "?" for >1byte chars and to
-  1 byte chars encoded using the fs encoding. -> DO NOT USE!
-
-- Passing a unicode object internally calls the windows unicode functions.
-  This will mostly lead to proper unicode paths (except expanduser).
-
-  And that's why QL is using unicode paths on win and encoded paths
-  everywhere else.
-"""
 
 
 def mkdir(dir_, *args):
@@ -55,132 +39,54 @@ def mkdir(dir_, *args):
             raise
 
 
-def fsdecode(s, note=True):
+def fsdecode(path, note=True):
     """Takes a native path and returns unicode for displaying it.
 
     Can not fail and can't be reversed.
     """
 
-    if isinstance(s, text_type):
-        return s
-    elif note:
-        return decode(s, _FSCODING)
-    else:
-        return s.decode(_FSCODING, 'replace')
+    if isinstance(path, text_type):
+        return path
+
+    return fsn2text(path)
 
 
 def fsencode(s):
     """Takes a `text_type` and returns a fsnative path"""
 
-    assert isinstance(s, text_type)
-    return fsnative(s)
+    return text2fsn(s)
 
 
-"""
-There exist 4 types of paths:
-
- * Python: bytes on Linux, unicode on Windows
- * GLib: bytes on Linux, utf-8 bytes on Windows
- * Serialized for the config: same as GLib
- * Python 2 filenames: bytes on Linux, mangled ASCII on Windows
-"""
-
-
-if sys.platform == "win32":
-    # We use FSCODING to save paths in files for example,
-    # so this should never change on Windows (like in glib)
-    assert _FSCODING == "utf-8"
-
-    fsnative_type = text_type
-
-    def is_fsnative(path):
-        """If path is a native path"""
-
-        return isinstance(path, fsnative_type)
-
-    def fsnative(path=u""):
-        """unicode -> native path"""
-
-        assert isinstance(path, text_type)
-        return path
-
-    def glib2fsnative(path):
-        """glib path -> native path"""
-
-        assert isinstance(path, bytes)
-        return path.decode("utf-8")
-
-    def fsnative2glib(path):
-        """native path -> glib path"""
-
-        assert isinstance(path, fsnative_type)
-        return path.encode("utf-8")
-
-    fsnative2bytes = fsnative2glib
-    """native path -> bytes
-
-    Can never fail.
-    """
-
-    bytes2fsnative = glib2fsnative
-    """bytes -> native path
-
-    Warning: This can fail (raise ValueError) only on Windows,
-    if the input wasn't produced by fsnative2bytes.
-    """
-else:
-    if PY2:
-        fsnative_type = bytes
-
-        def is_fsnative(path):
-            return isinstance(path, fsnative_type)
-
-        def fsnative(path=u""):
-            assert isinstance(path, text_type)
-            return path.encode(_FSCODING, 'replace')
-
-        def glib2fsnative(path):
-            assert isinstance(path, bytes)
-            return path
-
-        def fsnative2glib(path):
-            assert isinstance(path, fsnative_type)
-            return path
-
-        fsnative2bytes = fsnative2glib
-
-        bytes2fsnative = glib2fsnative
-    else:
-        fsnative_type = text_type
-
-        def is_fsnative(path):
-            return isinstance(path, fsnative_type)
-
-        def fsnative(path=u""):
-            assert isinstance(path, text_type)
-            return path
-
-        def glib2fsnative(path):
-            assert isinstance(path, text_type)
-            return path
-
-        def fsnative2glib(path):
-            assert isinstance(path, fsnative_type)
-            return path
-
-        def fsnative2bytes(path):
-            assert isinstance(path, fsnative_type)
-            return path.encode(_FSCODING, "surrogateescape")
-
-        def bytes2fsnative(path):
-            assert isinstance(path, bytes)
-            return path.decode(_FSCODING, "surrogateescape")
-
-
-py2fsnative = glib2fsnative
+py2fsnative = path2fsn
 """For a path from Python internals, like __path__, to fsnative.
 Under Windows+Py2 this doesn't return the real path if unicode is used.
 """
+
+
+def is_fsnative(path):
+    return isinstance(path, fsnative)
+
+
+def glib2fsnative(path):
+    if PY2:
+        return bytes2fsn(path, "utf-8")
+    else:
+        return path
+
+
+def fsnative2glib(path):
+    if PY2:
+        return fsn2bytes(path, "utf-8")
+    else:
+        return path
+
+
+def bytes2fsnative(data):
+    return bytes2fsn(data, "utf-8")
+
+
+def fsnative2bytes(path):
+    return fsn2bytes(path, "utf-8")
 
 
 def iscommand(s):
@@ -221,14 +127,9 @@ def listdir(path, hidden=False):
             if filt(basename)]
 
 
-if os.name == "nt":
-    getcwd = os.getcwdu
-    sep = os.sep.decode("ascii")
-    pathsep = os.pathsep.decode("ascii")
-else:
-    getcwd = os.getcwd
-    sep = os.sep
-    pathsep = os.pathsep
+getcwd = senf.getcwd
+sep = senf.sep
+pathsep = senf.pathsep
 
 
 def mtime(filename):

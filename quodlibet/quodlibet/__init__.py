@@ -18,6 +18,9 @@ if PY2:
     reload(sys)
     sys.setdefaultencoding("utf-8")
 
+from quodlibet import senf
+sys.modules["senf"] = senf
+
 from quodlibet import util
 from quodlibet.util import set_process_title, environ, cached_func
 from quodlibet.util import windows, is_osx, is_windows
