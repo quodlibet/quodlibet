@@ -17,7 +17,8 @@ import sys
 import ctypes
 
 from . import _winapi as winapi
-from ._compat import text_type, PY3, PY2, url2pathname, urlparse, quote
+from ._compat import text_type, PY3, PY2, url2pathname, urlparse, quote, \
+    unquote
 
 
 is_win = os.name == "nt"
@@ -345,6 +346,36 @@ def uri2fsn(uri):
             return fsnative(url2pathname(path))
 
 
+def _quote_path(path):
+    # RFC 2396
+    return quote(path, "/:@&=+$,")
+
+
+def _fixup_windows_uri(uri):
+    # For some reason UrlCreateFromPathW escapes some chars outside of
+    # ASCII and some not. The result can be interpreted by iexplorer,
+    # but the escape sequences represent unicode code points
+    # which is ambiguous with URI escape sequences representing bytes.
+    # So unquote and then quote and ignoring anything non-ascii
+
+    if PY3:
+        # latin-1 maps code points directly to bytes, which is what we want
+        uri = unquote(uri, "latin-1")
+    else:
+        # Python 2 does what we want by default
+        uri = unquote(uri)
+
+    result = u""
+    for c in uri:
+        try:
+            c = c.encode("ascii")
+        except UnicodeEncodeError:
+                result += c
+        else:
+            result += _quote_path(c)
+    return result
+
+
 def fsn2uri(path):
     """
     Args:
@@ -374,9 +405,9 @@ def fsn2uri(path):
             winapi.UrlCreateFromPathW(path, buf, ctypes.byref(length), flags)
         except WindowsError as e:
             raise ValueError(e)
-        return buf[:length.value]
+        return _fixup_windows_uri(buf[:length.value])
     else:
-        return "file://" + quote(path)
+        return "file://" + _quote_path(path)
 
 
 def fsn2uri_ascii(path):
@@ -395,21 +426,7 @@ def fsn2uri_ascii(path):
     will be encoded using utf-8 and then percent encoded.
     """
 
+    uri = fsn2uri(path)
     if is_win:
-        uri = fsn2uri(path)
-
-        def quoter(c):
-            try:
-                c.encode("ascii")
-            except ValueError:
-                return quote(c.encode("utf-8"))
-            else:
-                return c
-
-        uri = map(quoter, uri)
-        if PY2:
-            return u"".join(uri).encode("ascii")
-        else:
-            return "".join(uri)
-    else:
-        return fsn2uri(path)
+        uri = _quote_path(unquote(uri).encode("utf-8"))
+    return uri
