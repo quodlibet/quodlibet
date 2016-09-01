@@ -6,25 +6,13 @@
 # published by the Free Software Foundation
 
 import os
-import sys
 import locale
 from functools import wraps
 
-from senf import environ
-
-from . import windows
+from senf import environ, argv
 
 
-environ = environ
-
-
-if os.name == "nt":
-    argv = windows.get_win32_unicode_argv()
-else:
-    argv = sys.argv
-"""
-An argv list which contains unicode under Windows and str everywhere else
-"""
+environ, argv
 
 
 def cached_func(f):

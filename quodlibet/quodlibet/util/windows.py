@@ -8,14 +8,12 @@
 from __future__ import absolute_import
 
 import os
-import sys
 import ctypes
 
 if os.name == "nt":
     from . import winapi
     from .winapi import SHGFPType, CSIDLFlag, CSIDL, GUID, \
-        SHGetFolderPathW, S_OK, \
-        GetCommandLineW, CommandLineToArgvW, LocalFree, MAX_PATH, \
+        SHGetFolderPathW, S_OK, MAX_PATH, \
         KnownFolderFlag, FOLDERID, SHGetKnownFolderPath, CoTaskMemFree, \
         CoInitialize, IShellLinkW, CoCreateInstance, CLSID_ShellLink, \
         CLSCTX_INPROC_SERVER, IPersistFile
@@ -202,17 +200,3 @@ def get_link_target(path):
         pShellLinkW.Release()
 
     return ctypes.wstring_at(buffer_)
-
-
-def get_win32_unicode_argv():
-    """Returns a unicode version of sys.argv"""
-
-    argc = ctypes.c_int()
-    argv = CommandLineToArgvW(GetCommandLineW(), ctypes.byref(argc))
-    if not argv:
-        return []
-
-    res = argv[max(0, argc.value - len(sys.argv)):argc.value]
-
-    LocalFree(argv)
-    return res
