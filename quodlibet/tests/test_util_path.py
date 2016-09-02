@@ -5,12 +5,16 @@
 
 import os
 import unittest
-from tests import TestCase
+
+from senf import uri2fsn
 
 from quodlibet.util.path import iscommand, limit_path, \
-    fsnative, is_fsnative, get_home_dir, uri_to_path, uri_from_path, \
+    fsnative, is_fsnative, get_home_dir, uri_from_path, \
     uri_is_valid
 from quodlibet.util import print_d
+
+from . import TestCase
+
 
 is_win = os.name == "nt"
 path_set = bool(os.environ.get('PATH', False))
@@ -18,24 +22,24 @@ path_set = bool(os.environ.get('PATH', False))
 
 class Turi(TestCase):
 
-    def test_uri_to_path(self):
+    def test_uri2fsn(self):
         if os.name != "nt":
-            path = uri_to_path("file:///home/piman/cr%21azy")
+            path = uri2fsn("file:///home/piman/cr%21azy")
             self.assertTrue(is_fsnative(path))
             self.assertEqual(path, fsnative(u"/home/piman/cr!azy"))
         else:
-            path = uri_to_path("file:///C:/foo")
+            path = uri2fsn("file:///C:/foo")
             self.assertTrue(is_fsnative(path))
             self.assertEqual(path, fsnative(u"C:\\foo"))
 
-    def test_uri_to_path_invalid(self):
-        self.assertRaises(ValueError, uri_to_path, "http://example.com")
+    def test_uri2fsn_invalid(self):
+        self.assertRaises(ValueError, uri2fsn, "http://example.com")
 
     def test_path_as_uri(self):
         if os.name != "nt":
-            self.assertRaises(ValueError, uri_to_path, "/foo")
+            self.assertRaises(ValueError, uri2fsn, "/foo")
         else:
-            self.assertRaises(ValueError, uri_to_path, u"C:\\foo")
+            self.assertRaises(ValueError, uri2fsn, u"C:\\foo")
 
     def test_uri_from_path(self):
         if os.name != "nt":
@@ -55,7 +59,7 @@ class Turi(TestCase):
             paths = [u"/öäü.txt", u"//foo/bar", u"///foo/bar"]
 
         for source in paths:
-            path = uri_to_path(uri_from_path(fsnative(source)))
+            path = uri2fsn(uri_from_path(fsnative(source)))
             self.assertTrue(is_fsnative(path))
             self.assertEqual(path, fsnative(source))
 

@@ -444,17 +444,3 @@ def uri_is_valid(uri):
         return False
     else:
         return True
-
-
-def uri_to_path(uri):
-    """Takes a file URI and returns the path.
-
-    Args:
-        uri: Either bytes or text URI
-    Raises:
-        ValueError: in case the URI isn't a valid file URI
-    Returns:
-        fsnative
-    """
-
-    return uri2fsn(uri)

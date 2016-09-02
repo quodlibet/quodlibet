@@ -10,6 +10,7 @@ from quodlibet.compat import urlsplit
 import errno
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
+from senf import uri2fsn
 
 from quodlibet import formats
 from quodlibet import qltk
@@ -24,7 +25,7 @@ from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
 
 from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
-    glib2fsnative, fsnative, xdg_get_user_dirs, get_home_dir, uri_to_path
+    glib2fsnative, fsnative, xdg_get_user_dirs, get_home_dir
 from quodlibet.util import connect_obj
 
 
@@ -312,7 +313,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             uris = data.get_uris()
             if uris:
                 try:
-                    filename = uri_to_path(uris[0])
+                    filename = uri2fsn(uris[0])
                 except ValueError:
                     pass
                 else:

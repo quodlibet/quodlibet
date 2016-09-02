@@ -65,7 +65,9 @@ def control(command, arg=None, ignore_error=False):
 
 
 def process_arguments(argv):
-    from quodlibet.util.path import uri_is_valid, uri_to_path
+    from senf import uri2fsn
+
+    from quodlibet.util.path import uri_is_valid
     from quodlibet import util
     from quodlibet import const
 
@@ -217,7 +219,7 @@ def process_arguments(argv):
             queue("volume -")
         elif command == "enqueue" or command == "unqueue":
             try:
-                filename = uri_to_path(arg)
+                filename = uri2fsn(arg)
             except ValueError:
                 filename = arg
             queue(command, filename)
@@ -229,7 +231,7 @@ def process_arguments(argv):
                 queue("uri-received", arg)
             else:
                 try:
-                    filename = uri_to_path(arg)
+                    filename = uri2fsn(arg)
                 except ValueError:
                     filename = arg
                 filename = os.path.abspath(util.path.expanduser(arg))
