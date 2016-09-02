@@ -16,7 +16,7 @@ import shlex
 import urllib
 
 from senf import fsnative, path2fsn, bytes2fsn, fsn2bytes, fsn2text, \
-    text2fsn, fsn2uri_ascii, uri2fsn
+    text2fsn, fsn2uri_ascii, uri2fsn, expanduser
 
 from quodlibet.compat import text_type, PY2, urlparse
 from quodlibet import senf
@@ -169,20 +169,6 @@ def unescape_filename(s):
     if isinstance(s, unicode):
         s = s.encode("utf-8")
     return urllib.unquote(s).decode("utf-8")
-
-
-def expanduser(filename):
-    """needed because expanduser does not return wide character paths
-    on windows even if a unicode path gets passed.
-    """
-
-    if os.name == "nt":
-        profile = windows.get_profile_dir() or u""
-        if filename == "~":
-            return profile
-        if filename.startswith(u"~" + os.path.sep):
-            return os.path.join(profile, filename[2:])
-    return os.path.expanduser(filename)
 
 
 def unexpand(filename, HOME=expanduser("~")):
