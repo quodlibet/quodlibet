@@ -14,7 +14,7 @@ import os
 import shutil
 import time
 
-from senf import fsn2uri_ascii
+from senf import fsn2uri
 
 from quodlibet import util
 from quodlibet import config
@@ -352,7 +352,7 @@ class AudioFile(dict, ImageContainer):
                 try:
                     return self["~uri"]
                 except KeyError:
-                    return text_type(fsn2uri_ascii(self["~filename"]))
+                    return text_type(fsn2uri(self["~filename"]))
             elif key == "format":
                 return self.get("~format", self.format)
             elif key == "codec":

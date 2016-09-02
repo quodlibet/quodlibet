@@ -15,7 +15,7 @@ if os.name == "nt" or sys.platform == "darwin":
 import tempfile
 
 from gi.repository import Gtk, GdkPixbuf
-from senf import fsn2uri_ascii
+from senf import fsn2uri
 
 import dbus
 import dbus.service
@@ -644,7 +644,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
                 return "I'm an icon \o/"
         elif interface == MediaItem.IFACE:
             if name == "URLs":
-                return [fsn2uri_ascii(self.__f.name)]
+                return [fsn2uri(self.__f.name)]
             elif name == "MIMEType":
                 return "image/png"
             elif name == "Width" or name == "Height":

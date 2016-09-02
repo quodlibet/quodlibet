@@ -7,7 +7,7 @@ from quodlibet.util.path import mtime
 from tests import TestCase, NamedTemporaryFile
 
 from gi.repository import GdkPixbuf
-from senf import fsn2uri_ascii, getcwd
+from senf import fsn2uri, getcwd
 
 import os
 
@@ -96,7 +96,7 @@ class TThumb(TestCase):
         s.failUnlessEqual((thumb.get_width(), thumb.get_height()), (50, 3))
 
         #test the thumbnail filename
-        uri = fsn2uri_ascii(s.filename)
+        uri = fsn2uri(s.filename)
         name = hash.md5(uri).hexdigest() + ".png"
 
         path = thumbnails.get_thumbnail_folder()

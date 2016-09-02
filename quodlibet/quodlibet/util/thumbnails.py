@@ -10,7 +10,7 @@ import tempfile
 import hashlib
 
 from gi.repository import GdkPixbuf, GLib
-from senf import fsn2uri_ascii
+from senf import fsn2uri
 
 import quodlibet
 from quodlibet.util.path import mtime, mkdir, xdg_get_cache_home, is_fsnative
@@ -63,7 +63,7 @@ def get_cache_info(path, boundary):
     thumb_folder = get_thumbnail_folder()
     cache_dir = os.path.join(thumb_folder, size_name)
 
-    uri = fsn2uri_ascii(path)
+    uri = fsn2uri(path)
     thumb_name = hashlib.md5(uri).hexdigest() + ".png"
     thumb_path = os.path.join(cache_dir, thumb_name)
 
@@ -157,7 +157,7 @@ def get_thumbnail(path, boundary):
 
     thumb_pb = new_from_file_at_size(path, thumb_size, thumb_size)
 
-    uri = fsn2uri_ascii(path)
+    uri = fsn2uri(path)
     mime = info.get_mime_types()[0]
     options = {
         "tEXt::Thumb::Image::Width": str(pw),

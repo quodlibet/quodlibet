@@ -12,7 +12,7 @@ from .helper import dummy_path
 import os
 import shutil
 
-from senf import fsn2uri_ascii
+from senf import fsn2uri
 
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.library import SongLibrary
@@ -60,7 +60,7 @@ class TParsePlaylistMixin(object):
         h, name = mkstemp()
         os.close(h)
         target = os.path.join(DATA_DIR, "silence-44-s.ogg")
-        target = fsn2uri_ascii(target)
+        target = fsn2uri(target)
         target = self.prefix + target
         with open(name, "w") as f:
             f.write(target)

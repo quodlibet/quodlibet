@@ -23,7 +23,7 @@ import re
 
 import dbus
 from gi.repository import Gtk, GObject, GLib
-from senf import fsn2uri_ascii
+from senf import fsn2uri
 
 from quodlibet import config, qltk, app
 from quodlibet.plugins.events import EventPlugin
@@ -345,7 +345,7 @@ class Notify(EventPlugin):
         fileobj = app.cover_manager.get_cover(song)
         self._set_image_fileobj(fileobj)
         if fileobj:
-            return unicode(fsn2uri_ascii(fileobj.name))
+            return unicode(fsn2uri(fileobj.name))
         return u""
 
     def show_notification(self, song):

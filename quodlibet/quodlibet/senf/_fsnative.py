@@ -346,56 +346,27 @@ def uri2fsn(uri):
             return fsnative(url2pathname(path))
 
 
-def _quote_path(path):
-    # RFC 2396
-    return quote(path, "/:@&=+$,")
-
-
-def _fixup_windows_uri(uri):
-    # For some reason UrlCreateFromPathW escapes some chars outside of
-    # ASCII and some not. The result can be interpreted by iexplorer,
-    # but the escape sequences represent unicode code points
-    # which is ambiguous with URI escape sequences representing bytes.
-    # So unquote and then quote and ignoring anything non-ascii
-
-    if PY3:
-        # latin-1 maps code points directly to bytes, which is what we want
-        uri = unquote(uri, "latin-1")
-    else:
-        # Python 2 does what we want by default
-        uri = unquote(uri)
-
-    result = u""
-    for c in uri:
-        try:
-            c = c.encode("ascii")
-        except UnicodeEncodeError:
-                result += c
-        else:
-            result += _quote_path(c)
-    return result
-
-
 def fsn2uri(path):
     """
     Args:
         path (fsnative): The path to convert to an URI
     Returns:
-        `fsnative`
+        `str`: An ASCII only URI
     Raises:
         TypeError: If no `fsnative` was passed
         ValueError: If the path can't be converted
 
     Takes a `fsnative` path and returns a file URI.
 
-    On Windows this returns a Unicode URI. If you want an ASCII URI
-    use :func:`fsn2uri_ascii` instead.
-
-    The returned type is a subset of `fsnative`, it has the same type but
-    does not contains surrogates.
+    On Windows non-ASCII characters will be encoded using utf-8 and then
+    percent encoded.
     """
 
     path = _validate_fsnative(path)
+
+    def _quote_path(path):
+        # RFC 2396
+        return quote(path, "/:@&=+$,")
 
     if is_win:
         buf = ctypes.create_unicode_buffer(winapi.INTERNET_MAX_URL_LENGTH)
@@ -405,28 +376,18 @@ def fsn2uri(path):
             winapi.UrlCreateFromPathW(path, buf, ctypes.byref(length), flags)
         except WindowsError as e:
             raise ValueError(e)
-        return _fixup_windows_uri(buf[:length.value])
+        uri = buf[:length.value]
+
+        # For some reason UrlCreateFromPathW escapes some chars outside of
+        # ASCII and some not. Unquote and re-quote with utf-8.
+        if PY3:
+            # latin-1 maps code points directly to bytes, which is what we want
+            uri = unquote(uri, "latin-1")
+        else:
+            # Python 2 does what we want by default
+            uri = unquote(uri)
+
+        return _quote_path(uri.encode("utf-8"))
+
     else:
         return "file://" + _quote_path(path)
-
-
-def fsn2uri_ascii(path):
-    """
-    Args:
-        path (fsnative): The path to convert to an URI
-    Returns:
-        `str`: An ASCII only `str`
-    Raises:
-        TypeError: If no `fsnative` was passed
-        ValueError: If the path can't be converted
-
-    Takes a `fsnative` path and returns a file URI.
-
-    Like fsn2uri() but returns ASCII only. On Windows non-ASCII characters
-    will be encoded using utf-8 and then percent encoded.
-    """
-
-    uri = fsn2uri(path)
-    if is_win:
-        uri = _quote_path(unquote(uri).encode("utf-8"))
-    return uri

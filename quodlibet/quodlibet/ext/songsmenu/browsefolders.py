@@ -11,7 +11,7 @@ import sys
 import subprocess
 
 from gi.repository import Gtk
-from senf import fsn2uri_ascii
+from senf import fsn2uri
 
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 
@@ -87,7 +87,7 @@ def browse_folders_thunar(songs, display=""):
         # open each folder and select the first file we have selected
         for dirname, sub_songs in group_songs(songs).items():
             bus_iface.DisplayFolderAndSelect(
-                fsn2uri_ascii(dirname),
+                fsn2uri(dirname),
                 sub_songs[0]("~basename"),
                 display,
                 get_startup_id())
