@@ -5,7 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
 import locale
 from functools import wraps
 
@@ -51,22 +50,3 @@ def get_locale_encoding():
         encoding = _verify_encoding(encoding)
 
     return encoding
-
-
-@cached_func
-def get_fs_encoding():
-    """Returns the encoding used for paths by glib."""
-
-    if os.name == "nt":
-        return "utf-8"
-
-    # https://developer.gnome.org/glib/stable/glib-running.html
-    if "G_FILENAME_ENCODING" in os.environ:
-        fscoding = os.environ["G_FILENAME_ENCODING"].split(",")[0]
-        if fscoding == "@locale":
-            fscoding = get_locale_encoding()
-        return _verify_encoding(fscoding)
-    elif "G_BROKEN_FILENAMES" in os.environ:
-        return get_locale_encoding()
-    else:
-        return "utf-8"
