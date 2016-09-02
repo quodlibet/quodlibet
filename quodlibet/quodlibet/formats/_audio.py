@@ -14,10 +14,12 @@ import os
 import shutil
 import time
 
+from senf import fsn2uri_ascii
+
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, \
-    is_fsnative, normalize_path, fsnative, escape_filename, uri_from_path
+    is_fsnative, normalize_path, fsnative, escape_filename
 from quodlibet.util.string import encode, decode, isascii
 
 from quodlibet.util import iso639
@@ -350,7 +352,7 @@ class AudioFile(dict, ImageContainer):
                 try:
                     return self["~uri"]
                 except KeyError:
-                    return text_type(uri_from_path(self["~filename"]))
+                    return text_type(fsn2uri_ascii(self["~filename"]))
             elif key == "format":
                 return self.get("~format", self.format)
             elif key == "codec":

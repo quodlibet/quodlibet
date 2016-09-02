@@ -16,7 +16,7 @@ import shlex
 import urllib
 
 from senf import fsnative, path2fsn, bytes2fsn, fsn2bytes, fsn2text, \
-    text2fsn, fsn2uri_ascii, uri2fsn, expanduser
+    text2fsn, expanduser
 
 from quodlibet.compat import text_type, PY2, urlparse
 from quodlibet import senf
@@ -413,18 +413,6 @@ def get_home_dir():
         return windows.get_profile_dir()
     else:
         return expanduser("~")
-
-
-def uri_from_path(path):
-    """Takes a file path and returns an URI
-
-    The URI type is the same as for paths (unicode on Windows, bytes on Unix)
-
-    Returns:
-        str
-    """
-
-    return fsn2uri_ascii(path)
 
 
 def uri_is_valid(uri):

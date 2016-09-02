@@ -6,11 +6,10 @@
 import os
 import unittest
 
-from senf import uri2fsn
+from senf import uri2fsn, fsn2uri_ascii
 
 from quodlibet.util.path import iscommand, limit_path, \
-    fsnative, is_fsnative, get_home_dir, uri_from_path, \
-    uri_is_valid
+    fsnative, is_fsnative, get_home_dir, uri_is_valid
 from quodlibet.util import print_d
 
 from . import TestCase
@@ -41,16 +40,16 @@ class Turi(TestCase):
         else:
             self.assertRaises(ValueError, uri2fsn, u"C:\\foo")
 
-    def test_uri_from_path(self):
+    def test_fsn2uri_ascii(self):
         if os.name != "nt":
-            uri = uri_from_path(fsnative(u"/öäü.txt"))
+            uri = fsn2uri_ascii(fsnative(u"/öäü.txt"))
             self.assertEqual(uri, u"file:///%C3%B6%C3%A4%C3%BC.txt")
         else:
-            uri = uri_from_path(fsnative(u"C:\\öäü.txt"))
+            uri = fsn2uri_ascii(fsnative(u"C:\\öäü.txt"))
             self.assertEqual(
                 uri, "file:///C:/%C3%B6%C3%A4%C3%BC.txt")
             self.assertEqual(
-                uri_from_path(u"C:\\SomeDir\xe4"), "file:///C:/SomeDir%C3%A4")
+                fsn2uri_ascii(u"C:\\SomeDir\xe4"), "file:///C:/SomeDir%C3%A4")
 
     def test_roundtrip(self):
         if os.name == "nt":
@@ -59,14 +58,14 @@ class Turi(TestCase):
             paths = [u"/öäü.txt", u"//foo/bar", u"///foo/bar"]
 
         for source in paths:
-            path = uri2fsn(uri_from_path(fsnative(source)))
+            path = uri2fsn(fsn2uri_ascii(fsnative(source)))
             self.assertTrue(is_fsnative(path))
             self.assertEqual(path, fsnative(source))
 
     def test_win_unc_path(self):
         if os.name == "nt":
             self.assertEqual(
-                uri_from_path(u"\\\\server\\share\\path"),
+                fsn2uri_ascii(u"\\\\server\\share\\path"),
                 u"file://server/share/path")
 
     def test_uri_is_valid(self):

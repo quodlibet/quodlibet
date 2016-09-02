@@ -11,6 +11,7 @@ import sys
 import subprocess
 
 from gi.repository import Gtk
+from senf import fsn2uri_ascii
 
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 
@@ -23,7 +24,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
-from quodlibet.util.path import is_fsnative, uri_from_path
+from quodlibet.util.path import is_fsnative
 
 
 class BrowseError(Exception):
@@ -86,7 +87,7 @@ def browse_folders_thunar(songs, display=""):
         # open each folder and select the first file we have selected
         for dirname, sub_songs in group_songs(songs).items():
             bus_iface.DisplayFolderAndSelect(
-                uri_from_path(dirname),
+                fsn2uri_ascii(dirname),
                 sub_songs[0]("~basename"),
                 display,
                 get_startup_id())

@@ -13,6 +13,7 @@
 import os
 
 from gi.repository import Gtk, Gdk
+from senf import fsn2uri_ascii
 
 from quodlibet import config
 from quodlibet import formats
@@ -27,7 +28,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util import copool
 from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.dprint import print_d
-from quodlibet.util.path import normalize_path, uri_from_path
+from quodlibet.util.path import normalize_path
 from quodlibet.util import connect_obj
 
 
@@ -119,7 +120,7 @@ class FileSystem(Browser, Gtk.HBox):
             qltk.selection_set_songs(sel, songs)
         else:
             # External target (app) is delivered a list of URIS of songs
-            uris = list({uri_from_path(dir) for dir in dirs})
+            uris = list({fsn2uri_ascii(dir) for dir in dirs})
             print_d("Directories to drop: %s" % dirs)
             sel.set_uris(uris)
 
