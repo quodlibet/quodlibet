@@ -11,12 +11,12 @@ import os
 import traceback
 import re
 
-from senf import print_
+from senf import print_, path2fsn
 
 from quodlibet import const
 from quodlibet.compat import PY2
 from .environment import is_py2exe_window
-from .path import py2fsnative, fsdecode
+from .path import fsdecode
 from .string import decode
 from . import logging
 
@@ -204,7 +204,7 @@ def extract_tb(*args, **kwargs):
 
     result = []
     for filename, line_number, function_name, text in tp:
-        filename = py2fsnative(filename)
+        filename = path2fsn(filename)
         function_name = decode(function_name)
         text = decode(text)
         result.append((filename, line_number, function_name, text))

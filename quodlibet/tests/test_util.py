@@ -11,6 +11,8 @@ import threading
 import traceback
 import time
 
+from senf import getcwd
+
 from quodlibet.compat import text_type, PY2
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
 from quodlibet import config
@@ -25,7 +27,7 @@ from quodlibet.util.path import is_fsnative, fsnative2glib, glib2fsnative, \
     strip_win32_incompat_from_path, xdg_get_cache_home, environ, \
     xdg_get_data_home, unexpand, expanduser, xdg_get_user_dirs, \
     xdg_get_config_home, fsnative, bytes2fsnative, fsnative2bytes, \
-    get_temp_cover_file, mkdir, getcwd, mtime
+    get_temp_cover_file, mkdir, mtime
 from quodlibet.util.string import decode, encode, split_escape, join_escape
 from quodlibet.util.string.splitters import split_people, split_title, \
     split_album

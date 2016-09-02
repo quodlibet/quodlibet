@@ -7,7 +7,7 @@ from quodlibet.util.path import mtime
 from tests import TestCase, NamedTemporaryFile
 
 from gi.repository import GdkPixbuf
-from senf import fsn2uri_ascii
+from senf import fsn2uri_ascii, getcwd
 
 import os
 
@@ -17,7 +17,7 @@ except ImportError:
     import md5 as hash
 
 from quodlibet.util import thumbnails
-from quodlibet.util.path import is_fsnative, getcwd
+from quodlibet.util.path import is_fsnative
 
 
 class TThumb(TestCase):

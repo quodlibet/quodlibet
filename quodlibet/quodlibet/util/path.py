@@ -15,11 +15,10 @@ import codecs
 import shlex
 import urllib
 
-from senf import fsnative, path2fsn, bytes2fsn, fsn2bytes, fsn2text, \
-    text2fsn, expanduser
+from senf import fsnative, bytes2fsn, fsn2bytes, fsn2text, text2fsn, \
+    expanduser, sep
 
 from quodlibet.compat import text_type, PY2, urlparse
-from quodlibet import senf
 from . import windows
 from .misc import environ
 
@@ -59,12 +58,6 @@ def fsencode(s):
     """Takes a `text_type` and returns a fsnative path"""
 
     return text2fsn(s)
-
-
-py2fsnative = path2fsn
-"""For a path from Python internals, like __path__, to fsnative.
-Under Windows+Py2 this doesn't return the real path if unicode is used.
-"""
 
 
 def is_fsnative(path):
@@ -129,11 +122,6 @@ def listdir(path, hidden=False):
     return [join([path, basename])
             for basename in sorted(os.listdir(path))
             if filt(basename)]
-
-
-getcwd = senf.getcwd
-sep = senf.sep
-pathsep = senf.pathsep
 
 
 def mtime(filename):
