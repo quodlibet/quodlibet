@@ -6,19 +6,20 @@
 # published by the Free Software Foundation
 
 import xml.sax
+from senf import fsn2uri
 
 from quodlibet.formats import AudioFile
 
 from tests.helper import temp_filename
 from quodlibet.library.libraries import SongFileLibrary
-from quodlibet.util.path import find_mount_point, uri_from_path
+from quodlibet.util.path import find_mount_point
 from . import PluginTestCase
 
 
 def get_example_xml(song_path, rating, lastplayed):
 
-    song_uri = uri_from_path(song_path)
-    mount_uri = uri_from_path(find_mount_point(song_path))
+    song_uri = fsn2uri(song_path)
+    mount_uri = fsn2uri(find_mount_point(song_path))
 
     return """\
 <?xml version="1.0" standalone="yes"?>

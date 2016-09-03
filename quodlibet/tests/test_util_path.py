@@ -5,63 +5,51 @@
 
 import os
 import unittest
-from tests import TestCase
 
-from quodlibet.util.path import pathname2url_win32, iscommand, limit_path, \
-    fsnative, is_fsnative, get_home_dir, uri_to_path, uri_from_path, \
-    uri_is_valid
+from senf import uri2fsn, fsn2uri
+
+from quodlibet.util.path import iscommand, limit_path, \
+    fsnative, is_fsnative, get_home_dir, uri_is_valid
 from quodlibet.util import print_d
+
+from . import TestCase
+
 
 is_win = os.name == "nt"
 path_set = bool(os.environ.get('PATH', False))
 
 
-class Tpathname2url(TestCase):
-    def test_win(self):
-        cases = {
-            r"c:\abc\def": "/c:/abc/def",
-            r"C:\a b\c.txt": "/C:/a%20b/c.txt",
-            r"\\xy\z.txt": "//xy/z.txt",
-            r"C:\a:b\c:d": "/C:/a%3Ab/c%3Ad",
-            r"\\server\share\foo": "//server/share/foo",
-            }
-        p2u = pathname2url_win32
-        for inp, should in cases.iteritems():
-            self.failUnlessEqual(p2u(inp), should)
-
-
 class Turi(TestCase):
 
-    def test_uri_to_path(self):
+    def test_uri2fsn(self):
         if os.name != "nt":
-            path = uri_to_path("file:///home/piman/cr%21azy")
+            path = uri2fsn("file:///home/piman/cr%21azy")
             self.assertTrue(is_fsnative(path))
             self.assertEqual(path, fsnative(u"/home/piman/cr!azy"))
         else:
-            path = uri_to_path("file:///C:/foo")
+            path = uri2fsn("file:///C:/foo")
             self.assertTrue(is_fsnative(path))
             self.assertEqual(path, fsnative(u"C:\\foo"))
 
-    def test_uri_to_path_invalid(self):
-        self.assertRaises(ValueError, uri_to_path, "file://foo.txt")
-        self.assertRaises(ValueError, uri_to_path, "http://example.com")
+    def test_uri2fsn_invalid(self):
+        self.assertRaises(ValueError, uri2fsn, "http://example.com")
 
     def test_path_as_uri(self):
         if os.name != "nt":
-            self.assertRaises(ValueError, uri_to_path, "/foo")
+            self.assertRaises(ValueError, uri2fsn, "/foo")
         else:
-            self.assertRaises(ValueError, uri_to_path, u"C:\\foo")
+            self.assertRaises(ValueError, uri2fsn, u"C:\\foo")
 
-    def test_uri_from_path(self):
+    def test_fsn2uri(self):
         if os.name != "nt":
-            uri = uri_from_path(fsnative(u"/öäü.txt"))
+            uri = fsn2uri(fsnative(u"/öäü.txt"))
             self.assertEqual(uri, u"file:///%C3%B6%C3%A4%C3%BC.txt")
         else:
-            uri = uri_from_path(fsnative(u"C:\\öäü.txt"))
+            uri = fsn2uri(fsnative(u"C:\\öäü.txt"))
             self.assertEqual(
                 uri, "file:///C:/%C3%B6%C3%A4%C3%BC.txt")
             self.assertEqual(
-                uri_from_path(u"C:\\SomeDir\xe4"), "file:///C:/SomeDir%C3%A4")
+                fsn2uri(u"C:\\SomeDir\xe4"), "file:///C:/SomeDir%C3%A4")
 
     def test_roundtrip(self):
         if os.name == "nt":
@@ -70,15 +58,15 @@ class Turi(TestCase):
             paths = [u"/öäü.txt", u"//foo/bar", u"///foo/bar"]
 
         for source in paths:
-            path = uri_to_path(uri_from_path(fsnative(source)))
+            path = uri2fsn(fsn2uri(fsnative(source)))
             self.assertTrue(is_fsnative(path))
             self.assertEqual(path, fsnative(source))
 
     def test_win_unc_path(self):
         if os.name == "nt":
             self.assertEqual(
-                uri_from_path(u"\\\\server\\share\\path"),
-                u"file:////server/share/path")
+                fsn2uri(u"\\\\server\\share\\path"),
+                u"file://server/share/path")
 
     def test_uri_is_valid(self):
         self.assertTrue(uri_is_valid(u"file:///foo"))

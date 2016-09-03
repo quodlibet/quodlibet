@@ -7,12 +7,9 @@
 
 # Encoding magic. Show off the submenu stuff.
 
-import locale
-
 from gi.repository import Gtk
 
 from quodlibet.qltk import Icons
-from quodlibet.util import get_fs_encoding
 from quodlibet.plugins.editing import EditTagsPlugin
 
 ENCODINGS = """\
@@ -21,12 +18,6 @@ euc_jp euc_jis_2004 euc_jisx0213 euc_kr gb2312 gbk gb18030 iso2022_jp
 iso2022_kr iso8859_2 iso8859_3 iso8859_4 iso8859_5 iso8859_6 iso8859_7
 iso8859_8 iso8859_9 iso8859_10 iso8859_13 iso8859_14 iso8859_15 johab
 koi8_r koi8_u ptcp154 shift_jis utf_16_be utf_16_le""".split()
-
-FSCODING = get_fs_encoding()
-if FSCODING not in ENCODINGS + ["utf-8", "latin1"]:
-    ENCODINGS.append(FSCODING)
-if locale.getpreferredencoding() not in ENCODINGS + ["utf-8", "latin1"]:
-    ENCODINGS.append(FSCODING)
 
 
 class Iconv(EditTagsPlugin):

@@ -15,32 +15,15 @@ import codecs
 import shlex
 import urllib
 
-from quodlibet.compat import pathname2url, text_type, PY2, urlparse, \
-    url2pathname
-from quodlibet.util.string import decode
+from senf import fsnative, bytes2fsn, fsn2bytes, fsn2text, text2fsn, \
+    expanduser, sep, expandvars
+
+from quodlibet.compat import text_type, PY2, urlparse
 from . import windows
-from .misc import environ, get_fs_encoding
+from .misc import environ
 
 if sys.platform == "darwin":
     from Foundation import NSString
-
-
-_FSCODING = get_fs_encoding()
-
-
-"""
-Path related functions like open, os.listdir have different behavior on win32
-
-- Passing a string calls the old non unicode win API.
-  In case of listdir this leads to "?" for >1byte chars and to
-  1 byte chars encoded using the fs encoding. -> DO NOT USE!
-
-- Passing a unicode object internally calls the windows unicode functions.
-  This will mostly lead to proper unicode paths (except expanduser).
-
-  And that's why QL is using unicode paths on win and encoded paths
-  everywhere else.
-"""
 
 
 def mkdir(dir_, *args):
@@ -55,132 +38,52 @@ def mkdir(dir_, *args):
             raise
 
 
-def fsdecode(s, note=True):
+def fsdecode(path, note=True):
     """Takes a native path and returns unicode for displaying it.
 
     Can not fail and can't be reversed.
     """
 
-    if isinstance(s, text_type):
-        return s
-    elif note:
-        return decode(s, _FSCODING)
-    else:
-        return s.decode(_FSCODING, 'replace')
+    if isinstance(path, text_type):
+        return path
+
+    # XXX: glib paths on Windows
+    if os.name == "nt" and isinstance(path, bytes):
+        path = path.decode("utf-8")
+
+    return fsn2text(path)
 
 
 def fsencode(s):
     """Takes a `text_type` and returns a fsnative path"""
 
-    assert isinstance(s, text_type)
-    return fsnative(s)
+    return text2fsn(s)
 
 
-"""
-There exist 4 types of paths:
-
- * Python: bytes on Linux, unicode on Windows
- * GLib: bytes on Linux, utf-8 bytes on Windows
- * Serialized for the config: same as GLib
- * Python 2 filenames: bytes on Linux, mangled ASCII on Windows
-"""
+def is_fsnative(path):
+    return isinstance(path, fsnative)
 
 
-if sys.platform == "win32":
-    # We use FSCODING to save paths in files for example,
-    # so this should never change on Windows (like in glib)
-    assert _FSCODING == "utf-8"
-
-    fsnative_type = text_type
-
-    def is_fsnative(path):
-        """If path is a native path"""
-
-        return isinstance(path, fsnative_type)
-
-    def fsnative(path=u""):
-        """unicode -> native path"""
-
-        assert isinstance(path, text_type)
+def glib2fsnative(path):
+    if PY2:
+        return bytes2fsn(path, "utf-8")
+    else:
         return path
 
-    def glib2fsnative(path):
-        """glib path -> native path"""
 
-        assert isinstance(path, bytes)
-        return path.decode("utf-8")
-
-    def fsnative2glib(path):
-        """native path -> glib path"""
-
-        assert isinstance(path, fsnative_type)
-        return path.encode("utf-8")
-
-    fsnative2bytes = fsnative2glib
-    """native path -> bytes
-
-    Can never fail.
-    """
-
-    bytes2fsnative = glib2fsnative
-    """bytes -> native path
-
-    Warning: This can fail (raise ValueError) only on Windows,
-    if the input wasn't produced by fsnative2bytes.
-    """
-else:
+def fsnative2glib(path):
     if PY2:
-        fsnative_type = bytes
-
-        def is_fsnative(path):
-            return isinstance(path, fsnative_type)
-
-        def fsnative(path=u""):
-            assert isinstance(path, text_type)
-            return path.encode(_FSCODING, 'replace')
-
-        def glib2fsnative(path):
-            assert isinstance(path, bytes)
-            return path
-
-        def fsnative2glib(path):
-            assert isinstance(path, fsnative_type)
-            return path
-
-        fsnative2bytes = fsnative2glib
-
-        bytes2fsnative = glib2fsnative
+        return fsn2bytes(path, "utf-8")
     else:
-        fsnative_type = text_type
-
-        def is_fsnative(path):
-            return isinstance(path, fsnative_type)
-
-        def fsnative(path=u""):
-            assert isinstance(path, text_type)
-            return path
-
-        def glib2fsnative(path):
-            assert isinstance(path, text_type)
-            return path
-
-        def fsnative2glib(path):
-            assert isinstance(path, fsnative_type)
-            return path
-
-        def fsnative2bytes(path):
-            assert isinstance(path, fsnative_type)
-            return path.encode(_FSCODING, "surrogateescape")
-
-        def bytes2fsnative(path):
-            assert isinstance(path, bytes)
-            return path.decode(_FSCODING, "surrogateescape")
+        return path
 
 
-py2fsnative = glib2fsnative
-"""For a path from Python internals, like __path__, to fsnative.
-Under Windows+Py2 this doesn't return the real path if unicode is used.
-"""
+def bytes2fsnative(data):
+    return bytes2fsn(data, "utf-8")
+
+
+def fsnative2bytes(path):
+    return fsn2bytes(path, "utf-8")
 
 
 def iscommand(s):
@@ -221,16 +124,6 @@ def listdir(path, hidden=False):
             if filt(basename)]
 
 
-if os.name == "nt":
-    getcwd = os.getcwdu
-    sep = os.sep.decode("ascii")
-    pathsep = os.pathsep.decode("ascii")
-else:
-    getcwd = os.getcwd
-    sep = os.sep
-    pathsep = os.pathsep
-
-
 def mtime(filename):
     """Return the mtime of a file, or 0 if an error occurs."""
     try:
@@ -266,20 +159,6 @@ def unescape_filename(s):
     return urllib.unquote(s).decode("utf-8")
 
 
-def expanduser(filename):
-    """needed because expanduser does not return wide character paths
-    on windows even if a unicode path gets passed.
-    """
-
-    if os.name == "nt":
-        profile = windows.get_profile_dir() or u""
-        if filename == "~":
-            return profile
-        if filename.startswith(u"~" + os.path.sep):
-            return os.path.join(profile, filename[2:])
-    return os.path.expanduser(filename)
-
-
 def unexpand(filename, HOME=expanduser("~")):
     """Replace the user's home directory with ~/, if it appears at the
     start of the path name."""
@@ -295,28 +174,6 @@ def find_mount_point(path):
     while not os.path.ismount(path):
         path = os.path.dirname(path)
     return path
-
-
-def pathname2url_win32(path):
-    # stdlib version raises IOError for more than one ':' which can appear
-    # using a virtual box shared folder and it inserts /// at the beginning
-    # but it should be /.
-
-    # windows paths should be unicode
-    if isinstance(path, unicode):
-        path = path.encode("utf-8")
-
-    quote = urllib.quote
-    if ":" not in path:
-        return quote("/".join(path.split("\\")))
-    drive, remain = path.split(":", 1)
-    return "/%s:%s" % (quote(drive), quote("/".join(remain.split("\\"))))
-
-if os.name == "nt":
-    pathname2url
-    pathname2url = pathname2url_win32
-else:
-    pathname2url
 
 
 def xdg_get_system_data_dirs():
@@ -370,19 +227,6 @@ def xdg_get_config_home():
         return os.path.abspath(data_home)
     else:
         return os.path.join(os.path.expanduser("~"), ".config")
-
-
-def expandvars(path):
-    if os.name == "nt":
-        # XXX: monkey patch environ for unicode support
-        old_environ = os.environ
-        os.environ = environ
-        try:
-            return os.path.expandvars(path)
-        finally:
-            os.environ = old_environ
-    else:
-        return os.path.expandvars(path)
 
 
 def parse_xdg_user_dirs(data):
@@ -546,25 +390,6 @@ def get_home_dir():
         return expanduser("~")
 
 
-def uri_from_path(path):
-    """Takes a file path and returns an URI
-
-    The URI type is the same as for paths (unicode on Windows, bytes on Unix)
-
-    Returns:
-        str
-    """
-
-    assert is_fsnative(path)
-
-    prefix = fsnative(u"file://")
-
-    if os.name == "nt":
-        return prefix + pathname2url(path.encode("utf-8"))
-    else:
-        return prefix + pathname2url(path)
-
-
 def uri_is_valid(uri):
     """Returns True if the passed in text is a valid URI (file, http, etc.)
 
@@ -582,31 +407,3 @@ def uri_is_valid(uri):
         return False
     else:
         return True
-
-
-def uri_to_path(uri):
-    """Takes a file URI and returns the path.
-
-    Args:
-        uri: Either bytes or text URI
-    Raises:
-        ValueError: in case the URI isn't a valid file URI
-    Returns:
-        fsnative
-    """
-
-    if not isinstance(uri, bytes):
-        uri = uri.encode("ascii")
-
-    parsed = urlparse(uri)
-    scheme = parsed[0]
-    netloc = parsed[1]
-    path = parsed[2]
-
-    if scheme != b"file" or netloc:
-        raise ValueError("Not a file URI")
-    else:
-        if os.name == "nt":
-            return url2pathname(path).decode("utf-8")
-        else:
-            return url2pathname(path)

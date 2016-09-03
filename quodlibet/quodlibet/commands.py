@@ -9,13 +9,15 @@
 
 import os
 
+from senf import uri2fsn
+
 from quodlibet.util.string import split_escape
 
 from quodlibet import browsers
 
 from quodlibet.compat import cBytesIO as StringIO
 from quodlibet import util
-from quodlibet.util.path import fsnative, uri_to_path
+from quodlibet.util.path import fsnative
 from quodlibet.util import print_d, print_e
 
 from quodlibet.qltk.browser import LibraryBrowser
@@ -351,7 +353,7 @@ def _enqueue_files(app, value):
     songs = []
     for param in split_escape(value, ","):
         try:
-            song_path = uri_to_path(param)
+            song_path = uri2fsn(param)
         except ValueError:
             song_path = param
         if song_path in library:

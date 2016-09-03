@@ -12,11 +12,13 @@ from .helper import dummy_path
 import os
 import shutil
 
+from senf import fsn2uri
+
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.library import SongLibrary
 import quodlibet.config
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import fsnative2glib, mkdir, uri_from_path
+from quodlibet.util.path import fsnative2glib, mkdir
 from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
 from tests.test_browsers_search import SONGS, TSearchBar
@@ -58,7 +60,7 @@ class TParsePlaylistMixin(object):
         h, name = mkstemp()
         os.close(h)
         target = os.path.join(DATA_DIR, "silence-44-s.ogg")
-        target = uri_from_path(target)
+        target = fsn2uri(target)
         target = self.prefix + target
         with open(name, "w") as f:
             f.write(target)

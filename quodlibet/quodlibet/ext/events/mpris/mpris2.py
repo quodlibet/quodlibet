@@ -10,11 +10,11 @@ import tempfile
 
 import dbus
 import dbus.service
+from senf import fsn2uri
 
 from quodlibet import app
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
-from quodlibet.util.path import uri_from_path
 
 from .util import MPRISObject
 
@@ -245,7 +245,7 @@ value="false"/>
             is_temp = name.startswith(tempfile.gettempdir())
             # This doesn't work for embedded images.. the file gets unlinked
             # after loosing the file handle
-            metadata["mpris:artUrl"] = uri_from_path(name)
+            metadata["mpris:artUrl"] = fsn2uri(name)
 
         if not is_temp:
             self.__cover = None

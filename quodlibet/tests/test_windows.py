@@ -6,7 +6,6 @@
 # published by the Free Software Foundation
 
 import os
-import sys
 
 from tests import TestCase, DATA_DIR, skipUnless
 
@@ -57,29 +56,3 @@ class TWindows(TestCase):
     def test_get_link_target_non_exist(self):
         with self.assertRaises(WindowsError):
             windows.get_link_target(u"nopenope.lnk")
-
-    def test_environ(self):
-        env = windows.WindowsEnviron()
-        len_ = len(env)
-        env[u"FOO"] = u"bar"
-        self.assertEqual(len(env), len_ + 1)
-        self.assertEqual(env.get(u"FOO"), u"bar")
-        self.assertTrue("FOO" in repr(env))
-        self.assertEqual(len(list(env)), len(env))
-        del env[u"FOO"]
-
-    def test_environ_ascii(self):
-        env = windows.WindowsEnviron()
-        env["FOO"] = u"bar"
-        env["FOO"]
-        del env["FOO"]
-
-
-@skipUnless(os.name == "nt", "Wrong platform")
-class Tget_win32_unicode_argv(TestCase):
-
-    def test_main(self):
-        newargv = windows.get_win32_unicode_argv()
-        self.assertEqual(len(sys.argv), len(newargv))
-        if newargv:
-            self.assertTrue(isinstance(newargv[0], unicode))

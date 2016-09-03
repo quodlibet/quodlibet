@@ -9,12 +9,13 @@ import xml.sax
 from xml.sax.handler import ContentHandler
 
 from gi.repository import Gtk
+from senf import uri2fsn
 
 from quodlibet import app
 from quodlibet import util
 from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
-from quodlibet.util.path import expanduser, normalize_path, uri_to_path
+from quodlibet.util.path import expanduser, normalize_path
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -47,7 +48,7 @@ class RBDBContentHandler(ContentHandler):
             if len(current) > 1:
                 uri = current.pop("location", "")
                 try:
-                    filename = uri_to_path(uri)
+                    filename = uri2fsn(uri)
                 except ValueError:
                     return
 

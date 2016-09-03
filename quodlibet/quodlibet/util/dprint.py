@@ -9,14 +9,14 @@ import sys
 import time
 import os
 import traceback
-import ctypes
 import re
 
+from senf import print_, path2fsn
+
 from quodlibet import const
-from quodlibet.compat import text_type, PY2
-from .misc import get_locale_encoding
-from .environment import is_py2exe_window, is_windows
-from .path import py2fsnative, fsdecode
+from quodlibet.compat import PY2
+from .environment import is_py2exe_window
+from .path import fsdecode
 from .string import decode
 from . import logging
 
@@ -94,137 +94,6 @@ def strip_color(text):
     return _ANSI_ESC_RE.sub(u"", text)
 
 
-def print_(*objects, **kwargs):
-    """print_(*objects, sep=None, end=None, file=None, has_color=True)
-
-    objects can be valid paths or text (can be mixed).
-    If has_color is True the text can include ansi color codes.
-    """
-
-    file_ = kwargs.get("file", sys.stdout)
-
-    if is_windows() and file_ in (sys.__stdout__, sys.__stderr__):
-        _print_windows(*objects, **kwargs)
-    else:
-        _print_unix(*objects, **kwargs)
-
-
-def _print_unix(*objects, **kwargs):
-    """A print_() implementation for tests. Writes utf-8 or bytes.
-
-    Also used when stdout is replaced, for example in tests etc..
-    """
-
-    sep = kwargs.get("sep", " ")
-    end = kwargs.get("end", os.linesep)
-    file_ = kwargs.get("file", sys.stdout)
-    has_color = kwargs.get("has_color", True)
-
-    encoding = get_locale_encoding()
-
-    parts = []
-    for obj in objects:
-        if isinstance(obj, text_type):
-            if PY2:
-                obj = obj.encode(encoding, "replace")
-            else:
-                obj = obj.encode(encoding, "surrogateescape")
-        parts.append(obj)
-
-    if isinstance(sep, text_type):
-        sep = sep.encode(encoding, "replace")
-
-    if isinstance(end, text_type):
-        end = end.encode(encoding, "replace")
-
-    data = sep.join(parts) + end
-
-    if has_color and not file_.isatty():
-        data = strip_color(data)
-
-    file_ = getattr(file_, "buffer", file_)
-    file_.write(data)
-
-
-def _print_windows(*objects, **kwargs):
-    """The windows implementation of print_()"""
-
-    if is_py2exe_window():
-        return
-
-    sep = kwargs.get("sep", u" ")
-    end = kwargs.get("end", os.linesep)
-    file_ = kwargs.get("file", sys.stdout)
-    has_color = kwargs.get("has_color", True)
-
-    from quodlibet.util import winapi
-
-    if file_ is sys.__stdout__:
-        h = winapi.GetStdHandle(winapi.STD_OUTPUT_HANDLE)
-    elif file_ is sys.__stderr__:
-        h = winapi.GetStdHandle(winapi.STD_ERROR_HANDLE)
-    else:
-        raise AssertionError("only stdout/stderr supported")
-
-    if h == winapi.INVALID_HANDLE_VALUE:
-        return
-
-    # get the default value
-    info = winapi.PCONSOLE_SCREEN_BUFFER_INFO()
-    if not winapi.GetConsoleScreenBufferInfo(h, ctypes.byref(info)):
-        return
-
-    mapping = {
-        Color.NO_COLOR: info.wAttributes & 0xF,
-        Color.MAGENTA: (winapi.FOREGROUND_BLUE | winapi.FOREGROUND_RED |
-                        winapi.FOREGROUND_INTENSITY),
-        Color.BLUE: winapi.FOREGROUND_BLUE | winapi.FOREGROUND_INTENSITY,
-        Color.CYAN: (winapi.FOREGROUND_BLUE | winapi.FOREGROUND_GREEN |
-                     winapi.FOREGROUND_INTENSITY),
-        Color.WHITE: (winapi.FOREGROUND_BLUE | winapi.FOREGROUND_GREEN |
-                      winapi.FOREGROUND_RED | winapi.FOREGROUND_INTENSITY),
-        Color.YELLOW: (winapi.FOREGROUND_GREEN | winapi.FOREGROUND_RED |
-                       winapi.FOREGROUND_INTENSITY),
-        Color.GREEN: winapi.FOREGROUND_GREEN | winapi.FOREGROUND_INTENSITY,
-        Color.RED: winapi.FOREGROUND_RED | winapi.FOREGROUND_INTENSITY,
-        Color.BLACK: 0,
-        Color.GRAY: winapi.FOREGROUND_INTENSITY,
-    }
-
-    parts = []
-    for obj in objects:
-        if not isinstance(obj, text_type):
-            obj = obj.decode("utf-8")
-        parts.append(obj)
-
-    text = sep.join(parts) + end
-    assert isinstance(text, text_type)
-
-    fileno = file_.fileno()
-    file_.flush()
-
-    # try to force a utf-8 code page
-    old_cp = winapi.GetConsoleOutputCP()
-    encoding = "utf-8"
-    if winapi.SetConsoleOutputCP(65001) == 0:
-        encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
-        old_cp = None
-
-    if not has_color:
-        os.write(fileno, text.encode(encoding, 'replace'))
-    else:
-        bg = info.wAttributes & (~0xF)
-        for part in _ANSI_ESC_RE.split(text):
-            if part in mapping:
-                winapi.SetConsoleTextAttribute(h, mapping[part] | bg)
-            elif not _ANSI_ESC_RE.match(part):
-                os.write(fileno, part.encode(encoding, 'replace'))
-
-    # reset the code page to what we had before
-    if old_cp is not None:
-        winapi.SetConsoleOutputCP(old_cp)
-
-
 def frame_info(level=0):
     """Return a short string describing the current stack frame which can
     be used for debug messages.
@@ -300,8 +169,11 @@ def _print_message(string, custom_context, debug_only, prefix,
     else:
         string = info + " " + lines[0]
 
-    if not debug_only or const.DEBUG:
-        print_(string, file=sys.stderr)
+    if (not debug_only or const.DEBUG) and not is_py2exe_window():
+        file_ = sys.stderr
+        if not file_.isatty():
+            string = strip_color(string)
+        print_(string, file=file_)
 
     logging.log(strip_color(string), logging_category)
 
@@ -332,7 +204,7 @@ def extract_tb(*args, **kwargs):
 
     result = []
     for filename, line_number, function_name, text in tp:
-        filename = py2fsnative(filename)
+        filename = path2fsn(filename)
         function_name = decode(function_name)
         text = decode(text)
         result.append((filename, line_number, function_name, text))

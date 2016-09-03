@@ -9,6 +9,7 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, GLib, Gdk, GObject
+from senf import uri2fsn
 
 from quodlibet import app
 from quodlibet import config
@@ -29,7 +30,6 @@ from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column
 from quodlibet.util import connect_destroy
-from quodlibet.util.path import uri_to_path
 
 
 DND_QL, DND_URI_LIST = range(2)
@@ -276,7 +276,7 @@ class SongListDnDMixin(object):
         elif info == DND_URI_LIST:
             def to_filename(s):
                 try:
-                    return uri_to_path(s)
+                    return uri2fsn(s)
                 except ValueError:
                     return None
 

@@ -15,6 +15,7 @@ if os.name == "nt" or sys.platform == "darwin":
 import tempfile
 
 from gi.repository import Gtk, GdkPixbuf
+from senf import fsn2uri
 
 import dbus
 import dbus.service
@@ -23,7 +24,6 @@ from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
 from quodlibet.qltk import Icons
-from quodlibet.util.path import uri_from_path
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
 
@@ -644,7 +644,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
                 return "I'm an icon \o/"
         elif interface == MediaItem.IFACE:
             if name == "URLs":
-                return [uri_from_path(self.__f.name)]
+                return [fsn2uri(self.__f.name)]
             elif name == "MIMEType":
                 return "image/png"
             elif name == "Width" or name == "Height":
