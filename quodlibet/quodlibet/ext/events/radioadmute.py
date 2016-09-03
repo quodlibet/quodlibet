@@ -36,7 +36,7 @@ class RadioAdMute(EventPlugin):
     RE_SPAM = ["Sponsored Message\s+\([0-9]+\)",
             ]
 
-    SPAM = map(re_escape, SPAM) + RE_SPAM
+    SPAM = list(map(re_escape, SPAM)) + RE_SPAM
     SPAM = [re.compile(s, re.I) for s in SPAM]
 
     __old_volume = 0

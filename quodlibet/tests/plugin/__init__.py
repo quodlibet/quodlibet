@@ -9,7 +9,7 @@ import quodlibet
 from quodlibet import util
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.plugins import list_plugins, Plugin, PluginImportException
-from quodlibet.compat import PY3, iteritems
+from quodlibet.compat import iteritems
 
 from tests import TestCase, init_fake_app, destroy_fake_app
 
@@ -37,9 +37,6 @@ ms.rescan()
 # make sure plugins only raise expected errors
 for name, err in ms.failures.items():
     exc = err.exception
-    if PY3:
-        # FIXME: PY3PORT
-        continue
     assert issubclass(type(exc), (PluginImportException, ImportError)),\
         "%s shouldn't have raised a %s, but it did (%r)."\
         % (name, type(exc), exc)

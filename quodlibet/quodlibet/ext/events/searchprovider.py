@@ -60,7 +60,8 @@ def check_ini_installed():
     for path in get_gs_provider_files():
         try:
             with open(path, "rb") as handle:
-                if SearchProvider.BUS_NAME in handle.read():
+                data = handle.read().decode("utf-8", "replace")
+                if SearchProvider.BUS_NAME in data:
                     quodlibet_installed = True
                     break
         except EnvironmentError:

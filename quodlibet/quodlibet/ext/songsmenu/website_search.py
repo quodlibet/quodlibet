@@ -17,7 +17,7 @@ from quodlibet.util import website
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
 from quodlibet.util import connect_obj, print_w, print_d
 from quodlibet.util.path import uri_is_valid
-from urllib import quote_plus
+from quodlibet.compat import quote_plus
 
 from gi.repository import Gtk
 import os

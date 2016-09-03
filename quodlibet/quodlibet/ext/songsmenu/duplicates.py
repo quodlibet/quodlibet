@@ -378,7 +378,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     __cfg_cache = {}
 
     # Faster than a speeding bullet
-    __trans = string.maketrans("", "")
+    __trans = "".join(map(chr, range(256)))
 
     @classmethod
     def get_key_expression(cls):

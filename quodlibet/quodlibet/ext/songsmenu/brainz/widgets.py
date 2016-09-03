@@ -14,6 +14,7 @@ from quodlibet.util import path
 from quodlibet.qltk import Dialog, Icons
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
+from quodlibet.compat import iteritems, text_type
 
 from .query import QueryThread
 from .util import pconfig
@@ -286,8 +287,8 @@ def build_song_data(release, track):
 
     # finally, as musicbrainzngs returns str values if it's ascii, we force
     # everything to unicode now
-    for key, value in meta.iteritems():
-        meta[key] = unicode(value)
+    for key, value in iteritems(meta):
+        meta[key] = text_type(value)
 
     return meta
 
@@ -320,11 +321,11 @@ def apply_options(meta, year_only, albumartist, artistsort, musicbrainz,
 def apply_to_song(meta, song):
     """Applies the tags to a AudioFile instance"""
 
-    for key, value in meta.iteritems():
+    for key, value in iteritems(meta):
         if not value:
             song.remove(key)
         else:
-            assert isinstance(value, unicode)
+            assert isinstance(value, text_type)
             song[key] = value
 
 
