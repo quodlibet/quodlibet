@@ -41,6 +41,7 @@ from quodlibet.util import connect_obj, DeferredSignal
 from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
+from quodlibet.compat import cmp
 
 
 class AlbumTagCompletion(EntryWordCompletion):
@@ -75,8 +76,10 @@ def cmpa(a, b):
 
 def compare_title(a1, a2):
     # All albums should stay at the top
-    if (a1 and a2) is None:
-        return cmp(a1, a2)
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
     # Move albums without a title to the bottom
     if not a1.title:
         return 1
@@ -87,8 +90,10 @@ def compare_title(a1, a2):
 
 
 def compare_artist(a1, a2):
-    if (a1 and a2) is None:
-        return cmp(a1, a2)
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
     if not a1.title:
         return 1
     if not a2.title:
@@ -100,8 +105,10 @@ def compare_artist(a1, a2):
 
 
 def compare_date(a1, a2):
-    if (a1 and a2) is None:
-        return cmp(a1, a2)
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
     if not a1.title:
         return 1
     if not a2.title:
@@ -112,8 +119,10 @@ def compare_date(a1, a2):
 
 
 def compare_genre(a1, a2):
-    if (a1 and a2) is None:
-        return cmp(a1, a2)
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
     if not a1.title:
         return 1
     if not a2.title:
@@ -126,8 +135,10 @@ def compare_genre(a1, a2):
 
 
 def compare_rating(a1, a2):
-    if (a1 and a2) is None:
-        return cmp(a1, a2)
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
     if not a1.title:
         return 1
     if not a2.title:

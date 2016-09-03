@@ -88,7 +88,7 @@ def ListWrapper(songs):
             return None
         else:
             return SongWrapper(song)
-    return map(wrap, songs)
+    return [wrap(s) for s in songs]
 
 
 def check_wrapper_changed(library, parent, songs):

@@ -5,13 +5,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import itertools
-
 from gi.repository import Gtk
 
 from quodlibet.qltk.playorder import ORDERS
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util import print_d
+from quodlibet.compat import izip
 
 
 class PlaylistMux(object):
@@ -137,7 +136,7 @@ class TrackCurrentModel(ObjectStore):
         print_d("Setting %d songs." % len(songs))
 
         oldsong = self.last_current
-        for iter_, song in itertools.izip(self.iter_append_many(songs), songs):
+        for iter_, song in izip(self.iter_append_many(songs), songs):
             if song is oldsong:
                 self.__iter = iter_
 

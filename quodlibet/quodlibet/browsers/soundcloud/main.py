@@ -7,7 +7,7 @@
 
 from gi.repository import Gtk, Pango
 
-from quodlibet.compat import parse_qs, urlparse
+from quodlibet.compat import parse_qs, urlparse, iteritems
 from quodlibet import config, app
 from quodlibet import qltk
 from quodlibet import util
@@ -211,7 +211,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         scrolled_window.add(view)
         model = Gtk.ListStore(int, str, str, str, bool)
         filters = self.filters
-        for (i, (name, data)) in enumerate(filters.iteritems()):
+        for (i, (name, data)) in enumerate(iteritems(filters)):
             filter_type, icon, query, always = data
             enabled = always or self.online
             model.append(row=[filter_type, icon, name, query, enabled])

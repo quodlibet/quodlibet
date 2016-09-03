@@ -26,7 +26,7 @@ class PaneConfig(object):
 
     def __init__(self, row_pattern):
         parts = re.split(r"(?<!\\):", row_pattern)
-        parts = map(lambda p: p.replace(r"\:", ":"), parts)
+        parts = list(map(lambda p: p.replace(r"\:", ":"), parts))
 
         is_numeric = lambda s: s[:2] == "~#" and "~" not in s[2:]
         is_pattern = lambda s: '<' in s

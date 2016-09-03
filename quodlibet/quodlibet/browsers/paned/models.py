@@ -10,6 +10,7 @@ import re
 from quodlibet import util
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.collection import Collection
+from quodlibet.compat import iteritems
 
 
 class BaseEntry(Collection):
@@ -224,7 +225,7 @@ class PaneModel(ObjectStore):
                     collection[key] = (entry, hsort, bool(sort))
                     entry.songs.add(song)
 
-        items = sorted(collection.iteritems(),
+        items = sorted(iteritems(collection),
                        key=lambda s: s[1][1],
                        reverse=True)
 

@@ -30,12 +30,13 @@ if PY2:
     from functools import reduce
     reduce
     from operator import div as floordiv
-    from itertools import izip_longest
-    izip_longest
+    from itertools import izip_longest, izip
+    izip_longest, izip
 
     xrange = xrange
     long = long
     unichr = unichr
+    cmp = cmp
 
     getbyte = lambda b, i: b[i]
 
@@ -90,6 +91,8 @@ elif PY3:
     xrange = range
     long = int
     unichr = chr
+    cmp = lambda a, b: (a > b) - (a < b)
+    izip = zip
 
     getbyte = lambda b, i: b[i:i + 1]
 

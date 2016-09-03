@@ -50,10 +50,10 @@ class TPlaylistModel(TestCase):
         self.failUnless(self.pl.is_empty())
 
     def test_get(self):
-        self.assertEqual(self.pl.get(), range(10))
+        self.assertEqual(self.pl.get(), list(range(10)))
         self.pl.set(range(12))
         Gtk.main_iteration_do(False)
-        self.assertEqual(self.pl.get(), range(12))
+        self.assertEqual(self.pl.get(), list(range(12)))
 
     def test_next(self):
         self.pl.next()
@@ -124,9 +124,9 @@ class TPlaylistModel(TestCase):
         for i in range(5):
             numbers = [self.pl.current for i in range(10)
                        if self.pl.next() or True]
-            self.assertNotEqual(numbers, range(10))
+            self.assertNotEqual(numbers, list(range(10)))
             numbers.sort()
-            self.assertEqual(numbers, range(10))
+            self.assertEqual(numbers, list(range(10)))
             self.pl.next()
             self.assertEqual(self.pl.current, None)
 
@@ -149,7 +149,7 @@ class TPlaylistModel(TestCase):
         self.pl.repeat = True
         numbers = [self.pl.current for i in range(30)
                    if self.pl.next() or True]
-        allnums = range(10) * 3
+        allnums = list(range(10)) * 3
         allnums.sort()
         self.assertNotEqual(numbers, allnums)
         numbers.sort()
@@ -276,7 +276,7 @@ class TPlaylistMux(TestCase):
         do_events()
         self.failUnless(self.mux.current is None)
         songs = [self.next() for i in range(10)]
-        self.failUnlessEqual(songs, range(10))
+        self.failUnlessEqual(songs, list(range(10)))
         self.next()
         self.failUnless(self.mux.current is None)
 
@@ -285,7 +285,7 @@ class TPlaylistMux(TestCase):
         do_events()
         self.failUnless(self.mux.current is None)
         songs = [self.next() for i in range(10)]
-        self.failUnlessEqual(songs, range(10))
+        self.failUnlessEqual(songs, list(range(10)))
         self.next()
         self.failUnless(self.mux.current is None)
 
@@ -295,7 +295,7 @@ class TPlaylistMux(TestCase):
         do_events()
         self.failUnless(self.mux.current is None)
         songs = [self.next() for i in range(10)]
-        self.failUnlessEqual(songs, range(10))
+        self.failUnlessEqual(songs, list(range(10)))
         self.next()
         self.failUnless(self.mux.current is None)
 
@@ -395,7 +395,7 @@ class TPlaylistMux(TestCase):
 
     def test_queue(self):
         self.mux.enqueue(range(40))
-        self.failUnlessEqual(list(self.q.itervalues()), range(40))
+        self.failUnlessEqual(list(self.q.itervalues()), list(range(40)))
 
     def test_queue_move_entry(self):
         self.q.set(range(10))

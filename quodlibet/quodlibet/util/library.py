@@ -22,7 +22,7 @@ from quodlibet.util.path import bytes2fsnative, fsnative2bytes, fsnative
 
 
 def background_filter():
-    bg = config.get("browsers", "background").decode('utf-8')
+    bg = config.gettext("browsers", "background")
     if not bg:
         return
     try:

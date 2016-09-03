@@ -6,6 +6,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from functools import cmp_to_key
+
 from gi.repository import Gtk
 
 from quodlibet.browsers._base import DisplayPatternMixin
@@ -22,6 +24,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 from quodlibet.util.path import fsnative
 from quodlibet.util.collection import Album
+
 
 SONGS = [
     AudioFile({
@@ -74,9 +77,10 @@ class TAlbumSort(TestCase):
         return album
 
     def assertOrder(self, func, list_):
+        key = cmp_to_key(func)
         # sort twice for full line coverage of the compare function
-        reversed_ = list(sorted(list_, cmp=func, reverse=True))
-        sorted_ = list(sorted(list_, cmp=func))
+        reversed_ = list(sorted(list_, key=key, reverse=True))
+        sorted_ = list(sorted(list_, key=key))
         self.assertEqual(reversed_[::-1], sorted_)
         self.assertEqual(list_, sorted_)
 
