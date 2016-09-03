@@ -12,6 +12,7 @@
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
 
+import re
 import os
 
 from ._fsnative import path2fsn, fsnative, is_win
@@ -121,3 +122,25 @@ def expanduser(path):
             return path
     else:
         return path
+
+
+def expandvars(path):
+    """
+    Args:
+        path (pathlike): A path to expand
+    Returns:
+        `fsnative`
+
+    Like :func:`python:os.path.expandvars` but supports unicode under Windows
+    + Python 2 and always returns a `fsnative`.
+    """
+
+    path = path2fsn(path)
+
+    def repl_func(match):
+        return environ.get(match.group(1), match.group(0))
+
+    path = re.compile(r"\$(\w+)", flags=re.UNICODE).sub(repl_func, path)
+    if os.name == "nt":
+        path = re.sub(r"%([^%]+)%", repl_func, path)
+    return re.sub(r"\$\{([^\}]+)\}", repl_func, path)

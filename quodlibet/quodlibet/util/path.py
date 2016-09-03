@@ -16,7 +16,7 @@ import shlex
 import urllib
 
 from senf import fsnative, bytes2fsn, fsn2bytes, fsn2text, text2fsn, \
-    expanduser, sep
+    expanduser, sep, expandvars
 
 from quodlibet.compat import text_type, PY2, urlparse
 from . import windows
@@ -227,19 +227,6 @@ def xdg_get_config_home():
         return os.path.abspath(data_home)
     else:
         return os.path.join(os.path.expanduser("~"), ".config")
-
-
-def expandvars(path):
-    if os.name == "nt":
-        # XXX: monkey patch environ for unicode support
-        old_environ = os.environ
-        os.environ = environ
-        try:
-            return os.path.expandvars(path)
-        finally:
-            os.environ = old_environ
-    else:
-        return os.path.expandvars(path)
 
 
 def parse_xdg_user_dirs(data):

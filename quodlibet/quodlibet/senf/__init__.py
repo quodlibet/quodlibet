@@ -22,13 +22,13 @@ from ._fsnative import fsnative, path2fsn, fsn2text, fsn2bytes, \
     bytes2fsn, uri2fsn, fsn2uri, text2fsn
 from ._print import print_, input_
 from ._stdlib import sep, pathsep, curdir, pardir, altsep, extsep, devnull, \
-    defpath, getcwd, expanduser
+    defpath, getcwd, expanduser, expandvars
 from ._argv import argv
 from ._environ import environ, getenv, unsetenv, putenv
 from ._temp import mkstemp, gettempdir, gettempprefix, mkdtemp
 
 
-fsnative, print_, getcwd, getenv, unsetenv, putenv, environ, \
+fsnative, print_, getcwd, getenv, unsetenv, putenv, environ, expandvars, \
     path2fsn, fsn2text, fsn2bytes, bytes2fsn, uri2fsn, fsn2uri, mkstemp, \
     gettempdir, gettempprefix, mkdtemp, input_, expanduser, text2fsn
 
