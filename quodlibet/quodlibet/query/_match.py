@@ -318,7 +318,10 @@ class NumexprBinary(Numexpr):
         val = self.__expr.evaluate(data, time, use_date)
         val2 = self.__expr2.evaluate(data, time, use_date)
         if val is not None and val2 is not None:
-            return self.__op(val, val2)
+            try:
+                return self.__op(val, val2)
+            except ZeroDivisionError:
+                return val * float('inf')
         return None
 
     def __repr__(self):
