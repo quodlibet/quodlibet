@@ -424,6 +424,7 @@ class TQuery(TestCase):
         self.failUnless(Query("#(40 seconds < length/5 < 1 minute)")
                         .search(self.s1))
         self.failUnless(Query("#(2+3 * 5 = 17)").search(self.s1))
+        self.failUnless(Query("#(playcount / 0 > 0)").search(self.s1))
 
         self.failIf(Query("#(track + 1 != 13)").search(self.s2))
 
