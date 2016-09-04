@@ -90,8 +90,9 @@
     </dependencies>
   </autotools>
 
-   <!-- 10.5 has 7.16.3, which is too old for some things. Otherwise can be skipped. -->
+  <!-- 10.5 has 7.16.3, which is too old for some things, and also doesn't
+  provide a pkgconfig file. Otherwise can be skipped. -->
   <autotools id="libcurl" autogen-sh="configure">
-    <branch repo="curl.haxx.se" module="curl-7.28.0.tar.bz2" version="7.28.0" />
+    <branch repo="curl.haxx.se" module="curl-7.47.1.tar.bz2" version="7.47.1"/>
   </autotools>
 </moduleset>

@@ -45,7 +45,8 @@
   <autotools id="openssl" autogen-sh="Configure" autogenargs="shared"
              autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --openssldir=%(prefix)s/etc/ssl %(autogenargs)s"
              makeinstallargs="install_sw" supports-non-srcdir-builds="no">
-    <branch module="openssl-0.9.8zg.tar.gz" version="0.9.8zg" repo="openssl"/>
+    <branch module="openssl-1.0.2f.tar.gz" version="1.0.2f" repo="openssl"
+            hash="sha256:932b4ee4def2b434f85435d9e3e19ca8ba99ce9a065a61524b429a9d5e9b2e9c"/>
   </autotools>
 
   <!-- Rudely demands TeX to build documentation -->
@@ -193,7 +194,7 @@
       append_autogenargs('WebKit', '&#45;-enable-web-audio')
     -j1: Workaround for https://bugs.webkit.org/show_bug.cgi?id=140171
   -->
-  <autotools id="webkit1gtk3" autogen-sh="autoreconf" makeargs="-j1"
+  <autotools id="webkit1gtk3" autogen-sh="autoreconf"
              autogenargs="--enable-quartz-target --with-gtk=3.0 --disable-webkit2 --disable-credential-storage --disable-geolocation --disable-video --disable-web-audio CXXFLAGS='-std=gnu++11'">
     <branch repo="webkit.org" module="webkitgtk-2.4.9.tar.xz" version="2.4.9">
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/webkit-140167-disable-netscape-api.patch"

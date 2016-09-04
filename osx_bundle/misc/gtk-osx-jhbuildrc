@@ -291,14 +291,17 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
     #
     if architectures == ["i386"]:
         append_autogenargs("glib", "ac_cv_c_bigendian=no")
-        append_autogenargs("openssl", "darwin-i386-cc")
+        # The '#' on openssl is to stop jhbuild from appending any more autogen
+        # arguments such as --disable-Werror; they cause openssl to error out
+        append_autogenargs("openssl", "darwin-i386-cc #")
     elif architectures == ["x86_64"]:
+        conditions.add('64-bit')
         append_autogenargs("glib", "ac_cv_c_bigendian=no")
-        append_autogenargs("openssl", "darwin64-x86_64-cc")
+        append_autogenargs("openssl", "darwin64-x86_64-cc #")
     elif architectures == ["ppc"]:
         append_autogenargs("glib", "ac_cv_c_bigendian=yes")
         append_autogenargs("gmp", 'CFLAGS="-force_cpusubtype_ALL $CFLAGS"')
-        append_autogenargs("openssl", "darwin-ppc-cc")
+        append_autogenargs("openssl", "darwin-ppc-cc #")
 
     # For unknown reasons, iconv is not picked up correctly without this
     #
@@ -371,6 +374,7 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
     config_shell = os.path.join(prefix, 'bin', 'bash')
     if _osx_version < 11.0:
         skip.append('bash')
+        skip.append('openssl')  # openssl removed in El Capitan
     elif os.path.exists(config_shell):
         os.environ['CONFIG_SHELL'] = config_shell
 
@@ -414,6 +418,9 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
         module_extra_env["WebKit"] = {'CXXFLAGS':os.environ['CXXFLAGS'] +
                                   ' -stdlib=libstdc++'}
         append_autogenargs('babl', '--disable-sse')
+
+    # openssl doesn't understand DESTDIR, but luckily it has its own mechanism.
+    module_extra_env['openssl'] = {'INSTALL_PREFIX': os.path.join(prefix, '_jhbuild', 'root-openssl')}
 
     if xcodeversion >= 4.0 and target in ('10.6', '10.5', '10.4'):
         environ_append('LDFLAGS',
@@ -658,6 +665,19 @@ else:
 
 if not _ran_recursively and _gtk_osx_prompt_prefix:
     os.environ["JHBUILD_PROMPT"] = "[" + _gtk_osx_prompt_prefix + "] "
+
+#Bug 766738: Apple's python tries to install extensions in
+#/Library/Python, which requires sudo. Change that to the right place
+#inside prefix. Note that we need the installed python's version to
+#get the right directory name.
+
+if (not "python" in modules and
+    not os.path.exists(os.path.join(prefix, 'bin', 'python2'))):
+    _python_ver = 'python' + '.'.join([str(_x) for _x in sys.version_info[0:2]])
+    _python_install_path = os.path.join(prefix, 'lib',
+                                       _python_ver, 'site-packages')
+    append_autogenargs('libxml2',
+                       '--with-python-install-dir=' + _python_install_path)
 
 # Unset this so we don't mess with the check for not starting
 # recursively.
