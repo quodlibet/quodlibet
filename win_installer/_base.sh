@@ -21,8 +21,8 @@ QL_REPO_TEMP="$BUILD_ENV"/ql_temp
 QL_TEMP="$QL_REPO_TEMP"/quodlibet
 
 
-PYGI_AIO_VER="3.18.2_rev6"
-MUTAGEN_VER="1.34"
+PYGI_AIO_VER="3.18.2_rev9"
+MUTAGEN_VER="1.34.1"
 BUILD_VERSION="0"
 
 
@@ -31,21 +31,19 @@ function download_and_verify {
 
     local FILEHASHES="\
 cd2485472e41471632ed3029d44033ee420ad0b57111db95c240c9160a85831c  feedparser-5.2.1.zip
-5e8eccf95924658c97b990b50552addb64f55e1e3dfe4880456ac1f287dc79d0  certifi-2016.2.28.tar.gz
+f7708a42d86f29ccc7c8c4ff9d34a8d854d8d78eb2973d1f28406bb43d6b8919  certifi-2016.8.31.tar.gz
 d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-preview20141217.exe
-baf089121710c36ce317d9f107d552a3c7ec14dfcaa9618b809c4b25ef775619  mutagen-$MUTAGEN_VER.tar.gz
+aacd667ef1f4fa7b7c201f36b2a6eda1ead3c92331017601d8082af62a7ee461  mutagen-$MUTAGEN_VER.tar.gz
 8a4a86bd028793038a4b744281a4df436948f3d1941adcb68c07ba6e42fb6165  nsis-2.51-setup.exe
 610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c  py2exe-0.6.9.win32-py2.7.exe
-1750556a9c797ec157ac837c531fef05f60a5595d2a1553c7d3f5be7bc085b70  pygi-aio-$PYGI_AIO_VER-setup.exe
+69e1e2786e4bd49fcd85d7310b5dd716393a5b8152877d431bfc8f18b7677d73  pygi-aio-$PYGI_AIO_VER-setup.exe
 3ac291535bcf15fd5a15bcd29b066570e8d2a0cab4f3b92a2372f41aa09a4f48  python-2.7.12.msi
 ec447bcab906fe7c4dbd714a1dff1b00adcd20d0011968df1a740e6b1fb09cb5  python-musicbrainzngs-0.6.tar.gz
 12c18abb9a09a5b2802dba75c7a2d7d6c8c0f1258abd8243e7688415d87ad1d8  pytest-2.9.2.tar.gz
 a6501963c725fc2554dabfece8ae9a8fb5e149c0ac0a42fd2b02c5c1c57fc114  py-1.4.31.tar.gz
 f4945bf52ae49da0728fe730a33c18744803752fc948f154f29dc0c4f9f2f9cc  colorama-0.3.7.zip
 547c24748705ad4b6e3f3944f38d0416c5cdd2de6ebe3d65a1840bd2b82519a4  7z1602.msi
-8a94f6ff1ee9562a2216d2096b87d0e54a5eb5c9391874800e5032033a1c8e85  libmodplug-1.dll
-2b53c7bb3a92218f8ff197d259b7769754ec9a578561e69578739fcbdbb53da3  libgstdirectsoundsink.dll
-1eeedf2c29e0e7566217ba5a51aa1e3b73dfe173800fa71ac598470fbed3baf5  libgstopus.dll\
+8a94f6ff1ee9562a2216d2096b87d0e54a5eb5c9391874800e5032033a1c8e85  libmodplug-1.dll\
 "
 
     mkdir -p "$BIN"
@@ -60,12 +58,10 @@ f4945bf52ae49da0728fe730a33c18744803752fc948f154f29dc0c4f9f2f9cc  colorama-0.3.7
         wget -P "$BIN" -c http://downloads.sourceforge.net/sevenzip/7z1602.msi
         wget -P "$BIN" -c https://bitbucket.org/lazka/quodlibet/downloads/libmodplug-1.dll
         wget -c http://github.com/alastair/python-musicbrainzngs/archive/v0.6.tar.gz -O "$BIN"/python-musicbrainzngs-0.6.tar.gz
-        wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstopus.dll
-        wget -P "$BIN" -c http://bitbucket.org/lazka/quodlibet/downloads/libgstdirectsoundsink.dll
 
         pip download --dest="$BIN" --no-deps --no-binary=":all:" "mutagen==$MUTAGEN_VER"
         pip download --dest="$BIN" --no-deps --no-binary=":all:" "feedparser==5.2.1"
-        pip download --dest="$BIN" --no-deps --no-binary=":all:" "certifi==2016.2.28"
+        pip download --dest="$BIN" --no-deps --no-binary=":all:" "certifi==2016.8.31"
         pip download --dest="$BIN" --no-deps --no-binary=":all:" "pytest==2.9.2"
         pip download --dest="$BIN" --no-deps --no-binary=":all:" "py==1.4.31"
         pip download --dest="$BIN" --no-deps --no-binary=":all:" "colorama==0.3.7"
@@ -145,8 +141,8 @@ function extract_deps {
     for name in rtvc9-32 noarch; do
         for package in ATK Aerial Base Curl GCrypt GDK GDKPixbuf GSTPlugins \
             GSTPluginsExtra GSTPluginsMore GTK GnuTLS Graphene Gstreamer \
-            HarfBuzz IDN JPEG Jack LibAV OpenEXR OpenJPEG OpenSSL Orc Pango \
-            SQLite Soup StdCPP TIFF WebP; do
+            HarfBuzz Heimdal IDN JPEG Jack LibAV OpenEXR OpenJPEG OpenSSL Orc \
+            Pango SQLite Soup StdCPP TIFF WebP; do
         cp -RT "$PYGI"/"$name"/"$package"/gnome "$DEPS"
         done
     done
@@ -194,13 +190,6 @@ function setup_deps {
 
     # copy libmodplug
     cp "$BUILD_ENV/bin/libmodplug-1.dll" "$DEPS"
-
-    # copy old libgstopus
-    # https://github.com/quodlibet/quodlibet/issues/1511
-    cp "$BUILD_ENV/bin/libgstopus.dll" "$DEPS"/lib/gstreamer-1.0
-    # copy old libgstdirectsoundsink.dll (from 1.4 GStreamer)
-    # https://github.com/quodlibet/quodlibet/issues/1880
-    cp "$BUILD_ENV/bin/libgstdirectsoundsink.dll" "$DEPS"/lib/gstreamer-1.0
 }
 
 function install_python {
@@ -237,7 +226,7 @@ function install_pydeps {
     wine $PYTHON -m pip install pytest-2.9.2.tar.gz
     wine $PYTHON -m pip install "mutagen-$MUTAGEN_VER.tar.gz"
     wine $PYTHON -m pip install feedparser-5.2.1.zip
-    wine $PYTHON -m pip install certifi-2016.2.28.tar.gz
+    wine $PYTHON -m pip install certifi-2016.8.31.tar.gz
     wine $PYTHON -m pip install python-musicbrainzngs-0.6.tar.gz
     wine $PYTHON -m easy_install -Z py2exe-0.6.9.win32-py2.7.exe
     )
