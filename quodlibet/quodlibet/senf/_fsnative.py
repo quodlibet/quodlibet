@@ -25,6 +25,8 @@ is_win = os.name == "nt"
 is_unix = not is_win
 is_darwin = sys.platform == "darwin"
 
+_surrogatepass = "strict" if PY2 else "surrogatepass"
+
 
 def _fsnative(text):
     if not isinstance(text, text_type):
@@ -39,9 +41,9 @@ def _fsnative(text):
         # a mis-configured environment
         encoding = _encoding
         try:
-            path = text.encode(encoding)
+            path = text.encode(encoding, _surrogatepass)
         except UnicodeEncodeError:
-            path = text.encode("utf-8")
+            path = text.encode("utf-8", _surrogatepass)
         if PY3:
             return path.decode(_encoding, "surrogateescape")
         return path
@@ -165,7 +167,7 @@ def path2fsn(path):
     Args:
         path (pathlike): The path to convert
     Returns:
-        fsnative
+        `fsnative`
     Raises:
         TypeError: In case the type can't be converted to a `fsnative`
         ValueError: In case conversion fails
@@ -205,7 +207,7 @@ def fsn2text(path):
     Raises:
         TypeError: In case no `fsnative` has been passed
 
-    Converts a `fsnative` path to `text`.
+    Converts a `fsnative` path to `text` (without surrogates)
 
     This process is not reversible and should only be used for display
     purposes.
@@ -214,7 +216,8 @@ def fsn2text(path):
     path = _validate_fsnative(path)
 
     if is_win:
-        return path
+        return path.encode("utf-16-le", _surrogatepass).decode("utf-16-le",
+                                                               "replace")
     else:
         return path.decode(_encoding, "replace")
 
@@ -261,7 +264,7 @@ def fsn2bytes(path, encoding):
             raise ValueError("invalid encoding %r" % encoding)
 
         try:
-            return path.encode(encoding)
+            return path.encode(encoding, _surrogatepass)
         except LookupError:
             raise ValueError("invalid encoding %r" % encoding)
     else:
@@ -293,7 +296,7 @@ def bytes2fsn(data, encoding):
         if encoding is None:
             raise ValueError("invalid encoding %r" % encoding)
         try:
-            return data.decode(encoding)
+            return data.decode(encoding, _surrogatepass)
         except LookupError:
             raise ValueError("invalid encoding %r" % encoding)
     elif PY2:
@@ -387,7 +390,7 @@ def fsn2uri(path):
             # Python 2 does what we want by default
             uri = unquote(uri)
 
-        return _quote_path(uri.encode("utf-8"))
+        return _quote_path(uri.encode("utf-8", _surrogatepass))
 
     else:
         return "file://" + _quote_path(path)

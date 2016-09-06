@@ -177,3 +177,7 @@ WideCharToMultiByte = kernel32.WideCharToMultiByte
 WideCharToMultiByte.argtypes = [
     UINT, DWORD, LPCWSTR, ctypes.c_int, LPSTR, ctypes.c_int, LPCSTR, LPBOOL]
 WideCharToMultiByte.restpye = ctypes.c_int
+
+MoveFileW = kernel32.MoveFileW
+MoveFileW.argtypes = [LPCTSTR, LPCTSTR]
+MoveFileW.restype = BOOL
