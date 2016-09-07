@@ -16,7 +16,7 @@ import sys
 import os
 import ctypes
 
-from ._fsnative import _encoding, is_win, is_unix
+from ._fsnative import _encoding, is_win, is_unix, _surrogatepass
 from ._compat import text_type, PY2, PY3
 from ._winansi import AnsiState, ansi_split
 from . import _winapi as winapi
@@ -214,7 +214,7 @@ def _readline_windows():
                 return _readline_windows_fallback()
             raise ctypes.WinError()
         data = buf[:read.value * ctypes.sizeof(winapi.WCHAR)]
-        text += data.decode("utf-16-le", "replace")
+        text += data.decode("utf-16-le", _surrogatepass)
         if text.endswith(u"\r\n"):
             return text[:-2]
 
@@ -268,7 +268,8 @@ def _encode_codepage(codepage, text):
     if not text:
         return b""
 
-    size = len(text.encode("utf-16-le")) // ctypes.sizeof(winapi.WCHAR)
+    size = (len(text.encode("utf-16-le", _surrogatepass)) //
+            ctypes.sizeof(winapi.WCHAR))
 
     # get the required buffer size
     length = winapi.WideCharToMultiByte(

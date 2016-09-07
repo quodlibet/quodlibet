@@ -15,6 +15,7 @@
 import os
 import sys
 import ctypes
+import codecs
 
 from . import _winapi as winapi
 from ._compat import text_type, PY3, PY2, url2pathname, urlparse, quote, \
@@ -26,6 +27,29 @@ is_unix = not is_win
 is_darwin = sys.platform == "darwin"
 
 _surrogatepass = "strict" if PY2 else "surrogatepass"
+
+
+def _decode_surrogatepass(data, codec):
+    """Like data.decode(codec, 'surrogatepass') but makes utf-16-le work
+    on Python < 3.4 + Windows
+
+    https://bugs.python.org/issue27971
+
+    Raises UnicodeDecodeError, LookupError
+    """
+
+    try:
+        return data.decode(codec, _surrogatepass)
+    except UnicodeDecodeError:
+        if os.name == "nt" and sys.version_info[:2] < (3, 4) and \
+                codecs.lookup(codec).name == "utf-16-le":
+            buffer_ = ctypes.create_string_buffer(data + b"\x00\x00")
+            value = ctypes.wstring_at(buffer_, len(data) // 2)
+            if value.encode("utf-16-le", _surrogatepass) != data:
+                raise
+            return value
+        else:
+            raise
 
 
 def _fsnative(text):
@@ -91,12 +115,11 @@ def _create_fsnative(type_):
 
         The real returned type is:
 
-        - :obj:`python:unicode` under Python 2 + Windows
-        - :obj:`python:str` under Python 2 + Unix
-        - :obj:`python3:str` under Python 3 + Windows
-        - :obj:`python3:str` + ``surrogates`` (only containing code points
-          which can be encoded with the locale encoding) under Python 3 +
-          Unix
+        - Python 2 + Windows: :obj:`python:unicode` with ``surrogates``
+        - Python 2 + Unix: :obj:`python:str`
+        - Python 3 + Windows: :obj:`python3:str` with ``surrogates``
+        - Python 3 + Unix: :obj:`python3:str` with ``surrogates`` (only
+          containing code points which can be encoded with the locale encoding)
 
         Constructing a `fsnative` can't fail.
         """
@@ -207,10 +230,11 @@ def fsn2text(path):
     Raises:
         TypeError: In case no `fsnative` has been passed
 
-    Converts a `fsnative` path to `text` (without surrogates)
+    Converts a `fsnative` path to `text`.
 
     This process is not reversible and should only be used for display
     purposes.
+    Encoding with a Unicode encoding will always succeed with the result.
     """
 
     path = _validate_fsnative(path)
@@ -296,7 +320,7 @@ def bytes2fsn(data, encoding):
         if encoding is None:
             raise ValueError("invalid encoding %r" % encoding)
         try:
-            return data.decode(encoding, _surrogatepass)
+            return _decode_surrogatepass(data, encoding)
         except LookupError:
             raise ValueError("invalid encoding %r" % encoding)
     elif PY2:
