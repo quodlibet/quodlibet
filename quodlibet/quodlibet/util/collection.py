@@ -12,7 +12,7 @@ from __future__ import absolute_import
 import os
 import random
 
-from senf import fsnative
+from senf import fsnative, fsn2bytes, bytes2fsn
 
 from quodlibet import util
 from quodlibet import config
@@ -21,7 +21,6 @@ from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.compat import xrange, text_type
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
-from quodlibet.util.path import bytes2fsnative, fsnative2bytes
 from .collections import HashedList
 
 
@@ -530,7 +529,7 @@ class FileBackedPlaylist(Playlist):
                 for line in h:
                     assert library is not None
                     try:
-                        line = bytes2fsnative(line.rstrip())
+                        line = bytes2fsn(line.rstrip(), "utf-8")
                     except ValueError:
                         # decoding failed
                         continue
@@ -597,9 +596,9 @@ class FileBackedPlaylist(Playlist):
         with open(fn, "wb") as f:
             for song in self._list:
                 if isinstance(song, basestring):
-                    f.write(fsnative2bytes(song) + "\n")
+                    f.write(fsn2bytes(song, "utf-8") + "\n")
                 else:
-                    f.write(fsnative2bytes(song("~filename")) + "\n")
+                    f.write(fsn2bytes(song("~filename"), "utf-8") + "\n")
         if self._last_fn != fn:
             self.__delete_file(self._last_fn)
             self._last_fn = fn

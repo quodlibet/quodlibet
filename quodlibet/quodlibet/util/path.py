@@ -68,14 +68,6 @@ def fsnative2glib(path):
         return path
 
 
-def bytes2fsnative(data):
-    return bytes2fsn(data, "utf-8")
-
-
-def fsnative2bytes(path):
-    return fsn2bytes(path, "utf-8")
-
-
 def iscommand(s):
     """True if an executable file `s` exists in the user's path, or is a
     fully qualified and existing executable file."""
@@ -243,7 +235,7 @@ def parse_xdg_user_dirs(data):
         if len(values) != 1:
             continue
         paths[key] = os.path.normpath(
-            expandvars(bytes2fsnative(values[0])))
+            expandvars(bytes2fsn(values[0], "utf-8")))
 
     return paths
 

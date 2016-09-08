@@ -11,7 +11,7 @@ import threading
 import traceback
 import time
 
-from senf import getcwd, fsnative
+from senf import getcwd, fsnative, fsn2bytes, bytes2fsn
 
 from quodlibet.compat import text_type, PY2
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
@@ -26,8 +26,7 @@ from quodlibet.util.path import fsnative2glib, glib2fsnative, \
     parse_xdg_user_dirs, xdg_get_system_data_dirs, escape_filename, \
     strip_win32_incompat_from_path, xdg_get_cache_home, environ, \
     xdg_get_data_home, unexpand, expanduser, xdg_get_user_dirs, \
-    xdg_get_config_home, bytes2fsnative, fsnative2bytes, \
-    get_temp_cover_file, mkdir, mtime
+    xdg_get_config_home, get_temp_cover_file, mkdir, mtime
 from quodlibet.util.string import decode, encode, split_escape, join_escape
 from quodlibet.util.string.splitters import split_people, split_title, \
     split_album
@@ -843,7 +842,7 @@ class TPathHandling(TestCase):
         self.assertTrue(isinstance(v2, fsnative))
         self.assertEqual(v, v2)
 
-        v3 = bytes2fsnative(fsnative2bytes(v))
+        v3 = bytes2fsn(fsn2bytes(v, "utf-8"), "utf-8")
         self.assertTrue(isinstance(v3, fsnative))
         self.assertEqual(v, v3)
 
