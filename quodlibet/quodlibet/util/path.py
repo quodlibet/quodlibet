@@ -15,7 +15,7 @@ import codecs
 import shlex
 import urllib
 
-from senf import fsnative, bytes2fsn, fsn2bytes, fsn2text, text2fsn, \
+from senf import fsnative, bytes2fsn, fsn2bytes, fsn2text, \
     expanduser, sep, expandvars
 
 from quodlibet.compat import text_type, PY2, urlparse
@@ -52,12 +52,6 @@ def fsdecode(path, note=True):
         path = path.decode("utf-8")
 
     return fsn2text(path)
-
-
-def fsencode(s):
-    """Takes a `text_type` and returns a fsnative path"""
-
-    return text2fsn(s)
 
 
 def glib2fsnative(path):
