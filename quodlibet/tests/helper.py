@@ -12,9 +12,10 @@ import sys
 import shutil
 
 from gi.repository import Gtk, Gdk
+from senf import fsnative
 
 from quodlibet.qltk import find_widgets, get_primary_accel_mod
-from quodlibet.util.path import fsnative, normalize_path
+from quodlibet.util.path import normalize_path
 from quodlibet.compat import StringIO
 
 

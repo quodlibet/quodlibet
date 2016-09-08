@@ -7,6 +7,7 @@ from tests import TestCase
 from .helper import realized
 
 from gi.repository import Gtk
+from senf import fsnative
 
 from quodlibet import config
 
@@ -20,7 +21,6 @@ from quodlibet.browsers.paned.prefs import PreferencesButton
 from quodlibet.browsers.paned.pane import Pane
 from quodlibet.formats import AudioFile
 from quodlibet.util.collection import Collection
-from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 
 

@@ -5,6 +5,9 @@
 
 import shutil
 import os
+
+from senf import fsnative
+
 from quodlibet import config
 
 from tests import TestCase, mkdtemp
@@ -14,7 +17,6 @@ from quodlibet.util.collection import Album, Playlist, avg, bayesian_average, \
     FileBackedPlaylist
 from quodlibet.library.libraries import FileLibrary
 from quodlibet.util import format_rating
-from quodlibet.util.path import fsnative
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 

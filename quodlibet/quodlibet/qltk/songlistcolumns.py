@@ -12,13 +12,14 @@ import time
 import datetime
 
 from gi.repository import Gtk, Pango, GLib
+from senf import fsnative
 
 from quodlibet import util
 from quodlibet import config
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.qltk import add_css
-from quodlibet.util.path import fsdecode, unexpand, fsnative
+from quodlibet.util.path import fsdecode, unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS
 
 

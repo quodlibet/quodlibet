@@ -8,12 +8,13 @@
 import os
 import sys
 
+from senf import fsnative
+
 from tests import TestCase, DATA_DIR, mkstemp
 from .helper import capture_output, get_temp_copy
 
 from quodlibet import config
 from quodlibet import util
-from quodlibet.util.path import fsnative
 from quodlibet.formats import MusicFile
 from quodlibet.operon.main import main as operon_main
 

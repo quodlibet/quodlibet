@@ -7,8 +7,9 @@ from tests import TestCase
 
 import os
 
+from senf import fsnative
+
 from quodlibet.util.tagsfrompath import TagsFromPattern
-from quodlibet.util.path import fsnative
 
 
 class TTagsFromPattern(TestCase):

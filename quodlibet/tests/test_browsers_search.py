@@ -6,13 +6,13 @@
 from tests import TestCase
 
 from gi.repository import Gtk
+from senf import fsnative
 
 import quodlibet.browsers.search
 import quodlibet.config
 
 from quodlibet.browsers.search import SearchBar
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 
 # Don't sort yet, album_key makes it complicated...

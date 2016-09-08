@@ -5,11 +5,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from senf import fsnative
+
 from tests import TestCase
 
 from quodlibet.qltk.bookmarks import EditBookmarks, MenuItems
 from quodlibet.player.nullbe import NullPlayer
-from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary
 from quodlibet.formats import AudioFile
 from quodlibet import config

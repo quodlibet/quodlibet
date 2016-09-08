@@ -10,11 +10,13 @@
 
 import os
 
+from senf import fsnative
+
 from quodlibet import app
 from quodlibet import util
 from quodlibet import const
 from quodlibet import config
-from quodlibet.util.path import fsdecode, fsnative
+from quodlibet.util.path import fsdecode
 
 
 def main(argv):

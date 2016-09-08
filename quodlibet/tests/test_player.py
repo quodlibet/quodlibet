@@ -5,12 +5,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from senf import fsnative
+
 from tests import TestCase, skipUnless
 
 from quodlibet import player
 from quodlibet import library
 from quodlibet import config
-from quodlibet.util.path import fsnative
 from quodlibet.util import connect_obj
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.formats import AudioFile

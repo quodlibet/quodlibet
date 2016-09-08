@@ -9,6 +9,7 @@
 from functools import cmp_to_key
 
 from gi.repository import Gtk
+from senf import fsnative
 
 from quodlibet.browsers._base import DisplayPatternMixin
 from . import TestCase
@@ -22,7 +23,6 @@ from quodlibet.browsers.albums.main import (compare_title, compare_artist,
     compare_genre, compare_rating, compare_date)
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
-from quodlibet.util.path import fsnative
 from quodlibet.util.collection import Album
 
 

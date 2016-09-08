@@ -6,9 +6,9 @@
 from tests import TestCase
 
 from gi.repository import Gtk
+from senf import fsnative
 
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import fsnative
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.library import SongLibrary
 from quodlibet import config

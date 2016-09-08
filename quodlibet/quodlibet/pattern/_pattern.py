@@ -15,12 +15,11 @@ import os
 import re
 from re import Scanner
 
-from senf import sep
+from senf import sep, fsnative, expanduser
 
 from quodlibet import util
 from quodlibet.query import Query
 from quodlibet.compat import exec_, itervalues
-from quodlibet.util.path import expanduser, fsnative
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 from quodlibet.formats._audio import decode_value
 from quodlibet.compat import quote_plus

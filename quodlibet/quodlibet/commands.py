@@ -9,7 +9,7 @@
 
 import os
 
-from senf import uri2fsn
+from senf import uri2fsn, fsnative
 
 from quodlibet.util.string import split_escape
 
@@ -17,7 +17,6 @@ from quodlibet import browsers
 
 from quodlibet.compat import cBytesIO as StringIO
 from quodlibet import util
-from quodlibet.util.path import fsnative
 from quodlibet.util import print_d, print_e
 
 from quodlibet.qltk.browser import LibraryBrowser

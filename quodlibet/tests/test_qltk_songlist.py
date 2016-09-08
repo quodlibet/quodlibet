@@ -4,11 +4,11 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+from senf import fsnative
 
 from tests import TestCase
 
 from quodlibet.library import SongLibrary
-from quodlibet.util.path import fsnative
 from quodlibet.qltk.songlist import SongList, set_columns, get_columns, \
     header_tag_split, get_sort_tag
 from quodlibet.formats import AudioFile

@@ -9,6 +9,7 @@ import os
 import unicodedata
 
 from gi.repository import Gtk, Gdk
+from senf import fsnative
 
 import quodlibet
 from quodlibet import qltk
@@ -24,7 +25,7 @@ from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons, Button
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj, gdecode
-from quodlibet.util.path import fsdecode, fsnative
+from quodlibet.util.path import fsdecode
 from quodlibet.util.path import strip_win32_incompat_from_path
 
 

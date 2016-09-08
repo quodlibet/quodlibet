@@ -7,10 +7,11 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+from senf import fsnative
+
 from tests import TestCase
 from quodlibet import config
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
-from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 from quodlibet.formats import AudioFile
 

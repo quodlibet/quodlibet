@@ -5,10 +5,11 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
+from senf import fsnative
+
 from tests.plugin import PluginTestCase
 
 from quodlibet import config
-from quodlibet.util.path import fsnative
 from quodlibet.formats import AudioFile
 
 

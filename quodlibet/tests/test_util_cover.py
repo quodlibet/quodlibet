@@ -7,10 +7,12 @@
 import glob
 import os
 
+from senf import fsnative
+
 from quodlibet import config
 from quodlibet.formats import AudioFile
 from quodlibet.util.cover.manager import CoverManager
-from quodlibet.util.path import fsnative, normalize_path
+from quodlibet.util.path import normalize_path
 
 from tests import TestCase, DATA_DIR
 

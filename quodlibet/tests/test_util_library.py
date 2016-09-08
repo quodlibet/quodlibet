@@ -6,9 +6,11 @@
 # published by the Free Software Foundation
 
 import sys
+
+from senf import fsnative
+
 from quodlibet import config
 from quodlibet.util.library import split_scan_dirs, set_scan_dirs
-from quodlibet.util.path import fsnative
 
 from tests import TestCase
 

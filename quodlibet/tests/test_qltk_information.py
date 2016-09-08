@@ -3,11 +3,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from senf import fsnative
+
 from tests import TestCase, init_fake_app, destroy_fake_app
 
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
-from quodlibet.util.path import fsnative
 from quodlibet.qltk.information import Information
 import quodlibet.config
 
