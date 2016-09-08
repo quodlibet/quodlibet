@@ -7,7 +7,10 @@
 
 import os
 import re
-from quodlibet.util.path import fsdecode, is_fsnative
+
+from senf import fsnative
+
+from quodlibet.util.path import fsdecode
 from quodlibet.util import re_escape
 
 
@@ -53,7 +56,7 @@ class TagsFromPattern(object):
         return self.match_path(song["~filename"])
 
     def match_path(self, path):
-        assert is_fsnative(path)
+        assert isinstance(path, fsnative)
 
         tail = os.path.splitdrive(path)[-1]
 

@@ -7,7 +7,8 @@
 
 import os
 
-from quodlibet.util.path import fsnative, is_fsnative
+from senf import fsnative
+
 from quodlibet.compat import text_type
 
 from ._audio import AudioFile
@@ -29,7 +30,8 @@ class RemoteFile(AudioFile):
     def __getitem__(self, key):
         # we used to save them with the wrong type
         value = super(RemoteFile, self).__getitem__(key)
-        if key in ("~filename", "~mountpoint") and not is_fsnative(value):
+        if key in ("~filename", "~mountpoint") and \
+                not isinstance(value, fsnative):
             if os.name == "nt":
                 value = unicode(value)
             else:

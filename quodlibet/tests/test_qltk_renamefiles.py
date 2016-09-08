@@ -7,11 +7,12 @@ import os
 
 from tests import TestCase
 
+from senf import fsnative
+
 from quodlibet.qltk.renamefiles import (SpacesToUnderscores,
     StripWindowsIncompat)
 from quodlibet.qltk.renamefiles import StripDiacriticals, StripNonASCII
 from quodlibet.qltk.renamefiles import Lowercase
-from quodlibet.util.path import fsnative, is_fsnative
 
 
 class TFilter(TestCase):
@@ -28,7 +29,7 @@ class TFilterMixin(object):
         empty = fsnative(u"")
         v = self.c.filter(empty, empty)
         self.failUnlessEqual(v, empty)
-        self.failUnless(is_fsnative(v))
+        self.failUnless(isinstance(v, fsnative))
 
     def test_safe(self):
         empty = fsnative(u"")
@@ -56,13 +57,13 @@ class TStripWindowsIncompat(TFilter):
 
     def test_type(self):
         empty = fsnative(u"")
-        self.assertTrue(is_fsnative(self.c.filter(empty, empty)))
+        self.assertTrue(isinstance(self.c.filter(empty, empty), fsnative))
 
     def test_ends_with_dots_or_spaces(self):
         empty = fsnative(u"")
         v = self.c.filter(empty, fsnative(u'foo. . '))
         self.failUnlessEqual(v, fsnative(u"foo. ._"))
-        self.assertTrue(is_fsnative(v))
+        self.assertTrue(isinstance(v, fsnative))
 
         if os.name == "nt":
             self.failUnlessEqual(
@@ -81,7 +82,7 @@ class TStripDiacriticals(TFilter):
         out = fsnative(u"A test")
         v = self.c.filter(empty, test)
         self.failUnlessEqual(v, out)
-        self.failUnless(is_fsnative(v))
+        self.failUnless(isinstance(v, fsnative))
 
 
 class TStripNonASCII(TFilter):
@@ -93,7 +94,7 @@ class TStripNonASCII(TFilter):
         out = fsnative(u"foo _ _")
         v = self.c.filter(empty, in_)
         self.failUnlessEqual(v, out)
-        self.failUnless(is_fsnative(v))
+        self.failUnless(isinstance(v, fsnative))
 
 
 class TLowercase(TFilter):
@@ -104,8 +105,8 @@ class TLowercase(TFilter):
 
         v = self.c.filter(empty, fsnative(u"foobar baz"))
         self.failUnlessEqual(v, fsnative(u"foobar baz"))
-        self.failUnless(is_fsnative(v))
+        self.failUnless(isinstance(v, fsnative))
 
         v = self.c.filter(empty, fsnative(u"Foobar.BAZ"))
         self.failUnlessEqual(v, fsnative(u"foobar.baz"))
-        self.failUnless(is_fsnative(v))
+        self.failUnless(isinstance(v, fsnative))

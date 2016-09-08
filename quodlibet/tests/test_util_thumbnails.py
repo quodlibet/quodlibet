@@ -7,7 +7,7 @@ from quodlibet.util.path import mtime
 from tests import TestCase, NamedTemporaryFile
 
 from gi.repository import GdkPixbuf
-from senf import fsn2uri, getcwd
+from senf import fsn2uri, getcwd, fsnative
 
 import os
 
@@ -17,7 +17,6 @@ except ImportError:
     import md5 as hash
 
 from quodlibet.util import thumbnails
-from quodlibet.util.path import is_fsnative
 
 
 class TThumb(TestCase):
@@ -42,7 +41,7 @@ class TThumb(TestCase):
 
     def test_get_thumbnail_folder(self):
         path = thumbnails.get_thumbnail_folder()
-        self.assertTrue(is_fsnative(path))
+        self.assertTrue(isinstance(path, fsnative))
 
     def test_thumb_from_file(self):
         with open(self.filename, "rb") as h:

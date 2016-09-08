@@ -7,11 +7,11 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject
+from senf import fsnative
 
 from quodlibet import qltk
 from quodlibet import app
 from quodlibet.util import thumbnails, print_w
-from quodlibet.util.path import is_fsnative
 from quodlibet.qltk.image import pixbuf_from_file, \
     calc_scale_size, scale, add_border_widget, get_surface_for_pixbuf
 
@@ -116,7 +116,7 @@ class ResizeImage(Gtk.Bin):
             path = None
         else:
             path = fileobj.name
-            assert is_fsnative(path)
+            assert isinstance(path, fsnative)
 
         # XXX: Don't reload if the file path is the same.
         # Could prevent updates if fileobj.name isn't defined

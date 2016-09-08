@@ -10,10 +10,10 @@ import tempfile
 import hashlib
 
 from gi.repository import GdkPixbuf, GLib
-from senf import fsn2uri
+from senf import fsn2uri, fsnative
 
 import quodlibet
-from quodlibet.util.path import mtime, mkdir, xdg_get_cache_home, is_fsnative
+from quodlibet.util.path import mtime, mkdir, xdg_get_cache_home
 from quodlibet.util import enum
 from quodlibet.qltk.image import scale
 
@@ -49,7 +49,7 @@ def get_cache_info(path, boundary):
     thumb size is either 128 or 256
     """
 
-    assert is_fsnative(path)
+    assert isinstance(path, fsnative)
 
     width, height = boundary
 
@@ -82,7 +82,7 @@ def get_thumbnail_from_file(fileobj, boundary):
 
     try:
         path = fileobj.name
-        assert is_fsnative(path), path
+        assert isinstance(path, fsnative), path
         return get_thumbnail(path, boundary)
     except GLib.GError:
         try:
@@ -108,7 +108,7 @@ def get_thumbnail(path, boundary):
     Can raise GLib.GError. Thread-safe.
     """
 
-    assert is_fsnative(path)
+    assert isinstance(path, fsnative)
 
     width, height = boundary
     new_from_file_at_size = GdkPixbuf.Pixbuf.new_from_file_at_size

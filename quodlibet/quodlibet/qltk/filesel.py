@@ -10,7 +10,7 @@ from quodlibet.compat import urlsplit
 import errno
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
-from senf import uri2fsn
+from senf import uri2fsn, fsnative
 
 from quodlibet import formats
 from quodlibet import qltk
@@ -24,8 +24,8 @@ from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
 
-from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
-    glib2fsnative, fsnative, xdg_get_user_dirs, get_home_dir
+from quodlibet.util.path import fsdecode, listdir, \
+    glib2fsnative, xdg_get_user_dirs, get_home_dir
 from quodlibet.util import connect_obj
 
 
@@ -185,7 +185,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         super(DirectoryTree, self).__init__(model=model)
 
         if initial is not None:
-            assert is_fsnative(initial)
+            assert isinstance(initial, fsnative)
 
         column = TreeViewColumn(title=_("Folders"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -216,7 +216,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         for path in folders:
             niter = model.append(None, [path])
             if path is not None:
-                assert is_fsnative(path)
+                assert isinstance(path, fsnative)
                 model.append(niter, ["dummy"])
 
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -261,7 +261,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         return [model[p][0] for p in paths]
 
     def go_to(self, path_to_go):
-        assert is_fsnative(path_to_go)
+        assert isinstance(path_to_go, fsnative)
 
         # FIXME: what about non-normalized paths?
         model = self.get_model()
@@ -487,7 +487,7 @@ class FileSelector(Paned):
         self.__filter = filter
 
         if initial is not None:
-            assert is_fsnative(initial)
+            assert isinstance(initial, fsnative)
 
         if initial and os.path.isfile(initial):
             initial = os.path.dirname(initial)

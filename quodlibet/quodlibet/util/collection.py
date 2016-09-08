@@ -12,6 +12,8 @@ from __future__ import absolute_import
 import os
 import random
 
+from senf import fsnative
+
 from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
@@ -19,7 +21,7 @@ from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.compat import xrange, text_type
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
-from quodlibet.util.path import bytes2fsnative, is_fsnative, fsnative2bytes
+from quodlibet.util.path import bytes2fsnative, fsnative2bytes
 from .collections import HashedList
 
 
@@ -544,7 +546,7 @@ class FileBackedPlaylist(Playlist):
 
     @classmethod
     def new(cls, dir_, base=_("New Playlist"), library=None):
-        assert is_fsnative(dir_)
+        assert isinstance(dir_, fsnative)
 
         if not (dir_ and os.path.realpath(dir_)):
             raise ValueError("Invalid playlist directory %r" % (dir_,))
@@ -559,7 +561,7 @@ class FileBackedPlaylist(Playlist):
 
     @classmethod
     def from_songs(cls, dir_, songs, library=None):
-        assert is_fsnative(dir_)
+        assert isinstance(dir_, fsnative)
         title = cls.suggested_name_for(songs)
         playlist = cls.new(dir_, title, library)
         playlist.extend(songs)

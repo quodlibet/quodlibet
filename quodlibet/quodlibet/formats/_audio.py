@@ -14,12 +14,12 @@ import os
 import shutil
 import time
 
-from senf import fsn2uri
+from senf import fsn2uri, fsnative
 
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, \
-    is_fsnative, normalize_path, fsnative, escape_filename
+    normalize_path, escape_filename
 from quodlibet.util.string import encode, decode, isascii
 
 from quodlibet.util import iso639
@@ -177,7 +177,7 @@ class AudioFile(dict, ImageContainer):
         if key.startswith("~#"):
             assert isinstance(value, number_types)
         elif key in FILESYSTEM_TAGS:
-            assert is_fsnative(value)
+            assert isinstance(value, fsnative)
         else:
             value = text_type(value)
 
@@ -755,7 +755,7 @@ class AudioFile(dict, ImageContainer):
         elif "~filename" not in self:
             raise ValueError("Unknown filename!")
 
-        assert is_fsnative(self["~filename"])
+        assert isinstance(self["~filename"], fsnative)
 
         if self.is_file:
             self["~filename"] = normalize_path(

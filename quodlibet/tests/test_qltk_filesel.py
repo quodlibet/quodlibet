@@ -9,9 +9,11 @@ import os
 import sys
 sys.modules['dircache'] = os # cheat the dircache effects
 
+from senf import fsnative
+
 from quodlibet.qltk.filesel import DirectoryTree, FileSelector, get_drives
 from quodlibet.qltk.filesel import MainDirectoryTree, MainFileSelector
-from quodlibet.util.path import fsnative, is_fsnative, get_home_dir
+from quodlibet.util.path import get_home_dir
 import quodlibet.config
 
 
@@ -69,7 +71,7 @@ class TDirectoryTree(TestCase):
 
     def test_get_drives(self):
         for path in get_drives():
-            self.assertTrue(is_fsnative(path))
+            self.assertTrue(isinstance(path, fsnative))
 
 
 class TFileSelector(TestCase):

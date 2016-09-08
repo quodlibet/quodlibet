@@ -21,11 +21,13 @@ except ImportError:
     from configparser import RawConfigParser as ConfigParser, Error, \
         NoSectionError
 
+from senf import fsnative
+
 from quodlibet.compat import cBytesIO, PY2, text_type, StringIO
 from quodlibet.util import list_unique, print_d
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.string import join_escape, split_escape
-from quodlibet.util.path import is_fsnative, mkdir
+from quodlibet.util.path import mkdir
 
 
 # In newer RawConfigParser it is possible to replace the internal dict. The
@@ -307,7 +309,7 @@ class Config(object):
         Can raise EnvironmentError
         """
 
-        assert is_fsnative(filename)
+        assert isinstance(filename, fsnative)
 
         mkdir(os.path.dirname(filename))
 

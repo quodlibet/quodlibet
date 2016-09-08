@@ -60,10 +60,6 @@ def fsencode(s):
     return text2fsn(s)
 
 
-def is_fsnative(path):
-    return isinstance(path, fsnative)
-
-
 def glib2fsnative(path):
     if PY2:
         return bytes2fsn(path, "utf-8")
@@ -109,7 +105,7 @@ def listdir(path, hidden=False):
     If hidden is false, Unix-style hidden files are not returned.
     """
 
-    assert is_fsnative(path)
+    assert isinstance(path, fsnative)
 
     if hidden:
         filt = None
@@ -360,7 +356,7 @@ def limit_path(path, ellipsis=True):
     may apply, this covers the common case.
     """
 
-    assert is_fsnative(path)
+    assert isinstance(path, fsnative)
 
     main, ext = os.path.splitext(path)
     parts = main.split(sep)

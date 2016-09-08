@@ -7,8 +7,10 @@ from tests import TestCase, DATA_DIR
 
 import os
 
+from senf import fsnative
+
 from quodlibet import config
-from quodlibet.util.path import is_fsnative, fsnative, fsdecode
+from quodlibet.util.path import fsdecode
 from quodlibet.compat import PY2, text_type
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
@@ -332,12 +334,12 @@ class TAudioFile(TestCase):
     def test_lyric_filename(self):
         song = AudioFile()
         song["~filename"] = fsnative(u"filename")
-        self.assertTrue(is_fsnative(song.lyric_filename))
+        self.assertTrue(isinstance(song.lyric_filename, fsnative))
         song["title"] = u"Title"
         song["artist"] = u"Artist"
-        self.assertTrue(is_fsnative(song.lyric_filename))
+        self.assertTrue(isinstance(song.lyric_filename, fsnative))
         song["lyricist"] = u"Lyricist"
-        self.assertTrue(is_fsnative(song.lyric_filename))
+        self.assertTrue(isinstance(song.lyric_filename, fsnative))
 
     def test_sanitize(self):
         q = AudioFile(quux)

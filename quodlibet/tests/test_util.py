@@ -11,7 +11,7 @@ import threading
 import traceback
 import time
 
-from senf import getcwd
+from senf import getcwd, fsnative
 
 from quodlibet.compat import text_type, PY2
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
@@ -22,11 +22,11 @@ from quodlibet.util import format_time_long as f_t_l, format_time_preferred, \
     format_time_display, format_time_seconds
 from quodlibet.util import re_escape
 from quodlibet.util.library import set_scan_dirs, get_scan_dirs
-from quodlibet.util.path import is_fsnative, fsnative2glib, glib2fsnative, \
+from quodlibet.util.path import fsnative2glib, glib2fsnative, \
     parse_xdg_user_dirs, xdg_get_system_data_dirs, escape_filename, \
     strip_win32_incompat_from_path, xdg_get_cache_home, environ, \
     xdg_get_data_home, unexpand, expanduser, xdg_get_user_dirs, \
-    xdg_get_config_home, fsnative, bytes2fsnative, fsnative2bytes, \
+    xdg_get_config_home, bytes2fsnative, fsnative2bytes, \
     get_temp_cover_file, mkdir, mtime
 from quodlibet.util.string import decode, encode, split_escape, join_escape
 from quodlibet.util.string.splitters import split_people, split_title, \
@@ -61,7 +61,7 @@ class Tmkdir(TestCase):
 class Tgetcwd(TestCase):
 
     def test_Tgetcwd(self):
-        self.assertTrue(is_fsnative(getcwd()))
+        self.assertTrue(isinstance(getcwd(), fsnative))
 
 
 class Tmtime(TestCase):
@@ -780,12 +780,12 @@ class Tescape_filename(TestCase):
     def test_str(self):
         result = escape_filename("\x00\x01")
         self.assertEqual(result, "%00%01")
-        self.assertTrue(is_fsnative(result))
+        self.assertTrue(isinstance(result, fsnative))
 
     def test_unicode(self):
         result = escape_filename(u'abc\xe4')
         self.assertEqual(result, "abc%C3%A4")
-        self.assertTrue(is_fsnative(result))
+        self.assertTrue(isinstance(result, fsnative))
 
 
 @skipIf(is_win, "not on Windows")
@@ -837,14 +837,14 @@ class TPathHandling(TestCase):
 
     def test_main(self):
         v = fsnative(u"foo")
-        self.assertTrue(is_fsnative(v))
+        self.assertTrue(isinstance(v, fsnative))
 
         v2 = glib2fsnative(fsnative2glib(v))
-        self.assertTrue(is_fsnative(v2))
+        self.assertTrue(isinstance(v2, fsnative))
         self.assertEqual(v, v2)
 
         v3 = bytes2fsnative(fsnative2bytes(v))
-        self.assertTrue(is_fsnative(v3))
+        self.assertTrue(isinstance(v3, fsnative))
         self.assertEqual(v, v3)
 
 
@@ -853,7 +853,7 @@ class Tget_temp_cover_file(TestCase):
     def test_main(self):
         fobj = get_temp_cover_file(b"foobar")
         try:
-            self.assertTrue(is_fsnative(fobj.name))
+            self.assertTrue(isinstance(fobj.name, fsnative))
         finally:
             fobj.close()
 
@@ -1157,12 +1157,12 @@ class Tget_module_dir(TestCase):
 
     def test_self(self):
         path = util.get_module_dir()
-        self.assertTrue(is_fsnative(path))
+        self.assertTrue(isinstance(path, fsnative))
         self.assertTrue(os.path.exists(path))
 
     def test_other(self):
         path = util.get_module_dir(util)
-        self.assertTrue(is_fsnative(path))
+        self.assertTrue(isinstance(path, fsnative))
         self.assertTrue(os.path.exists(path))
 
 
@@ -1171,7 +1171,7 @@ class Tget_ca_file(TestCase):
     def test_main(self):
         path = util.get_ca_file()
         if path is not None:
-            self.assertTrue(is_fsnative(path))
+            self.assertTrue(isinstance(path, fsnative))
             self.assertTrue(os.path.exists(path))
 
 
@@ -1205,7 +1205,7 @@ class Textract_tb(TestCase):
             result = extract_tb(sys.exc_info()[2])
             self.assertTrue(isinstance(result, list))
             for fn, l, fu, text in result:
-                self.assertTrue(is_fsnative(fn))
+                self.assertTrue(isinstance(fn, fsnative))
                 self.assertTrue(isinstance(l, int))
                 self.assertTrue(isinstance(fu, text_type))
                 self.assertTrue(isinstance(text, text_type))

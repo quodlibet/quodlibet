@@ -6,10 +6,10 @@
 import os
 import unittest
 
-from senf import uri2fsn, fsn2uri
+from senf import uri2fsn, fsn2uri, fsnative
 
 from quodlibet.util.path import iscommand, limit_path, \
-    fsnative, is_fsnative, get_home_dir, uri_is_valid
+    get_home_dir, uri_is_valid
 from quodlibet.util import print_d
 
 from . import TestCase
@@ -24,11 +24,11 @@ class Turi(TestCase):
     def test_uri2fsn(self):
         if os.name != "nt":
             path = uri2fsn("file:///home/piman/cr%21azy")
-            self.assertTrue(is_fsnative(path))
+            self.assertTrue(isinstance(path, fsnative))
             self.assertEqual(path, fsnative(u"/home/piman/cr!azy"))
         else:
             path = uri2fsn("file:///C:/foo")
-            self.assertTrue(is_fsnative(path))
+            self.assertTrue(isinstance(path, fsnative))
             self.assertEqual(path, fsnative(u"C:\\foo"))
 
     def test_uri2fsn_invalid(self):
@@ -59,7 +59,7 @@ class Turi(TestCase):
 
         for source in paths:
             path = uri2fsn(fsn2uri(fsnative(source)))
-            self.assertTrue(is_fsnative(path))
+            self.assertTrue(isinstance(path, fsnative))
             self.assertEqual(path, fsnative(source))
 
     def test_win_unc_path(self):
@@ -81,7 +81,7 @@ class Turi(TestCase):
 class Tget_x_dir(TestCase):
 
     def test_get_home_dir(self):
-        self.assertTrue(is_fsnative(get_home_dir()))
+        self.assertTrue(isinstance(get_home_dir(), fsnative))
         self.assertTrue(os.path.isabs(get_home_dir()))
 
 
@@ -99,16 +99,16 @@ class Tlimit_path(TestCase):
 
         path = fsnative(u"foo%s.ext" % (u"x" * 300))
         new = limit_path(path, ellipsis=False)
-        self.assertTrue(is_fsnative(new))
+        self.assertTrue(isinstance(new, fsnative))
         self.assertEqual(len(new), 255)
         self.assertTrue(new.endswith(fsnative(u"xx.ext")))
 
         new = limit_path(path)
-        self.assertTrue(is_fsnative(new))
+        self.assertTrue(isinstance(new, fsnative))
         self.assertEqual(len(new), 255)
         self.assertTrue(new.endswith(fsnative(u"...ext")))
 
-        self.assertTrue(is_fsnative(limit_path(fsnative())))
+        self.assertTrue(isinstance(limit_path(fsnative()), fsnative))
         self.assertEqual(limit_path(fsnative()), fsnative())
 
 

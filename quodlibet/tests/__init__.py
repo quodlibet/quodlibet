@@ -16,8 +16,10 @@ try:
 except ImportError:
     raise SystemExit("pytest missing: sudo apt-get install python-pytest")
 
+from quodlibet.senf import fsnative
+
 from quodlibet.compat import PY3
-from quodlibet.util.path import fsnative, is_fsnative, xdg_get_cache_home
+from quodlibet.util.path import xdg_get_cache_home
 from quodlibet.util.misc import environ
 from quodlibet import util
 
@@ -41,14 +43,14 @@ skipUnless = unittest.skipUnless
 skipIf = unittest.skipIf
 
 DATA_DIR = os.path.join(util.get_module_dir(), "data")
-assert is_fsnative(DATA_DIR)
+assert isinstance(DATA_DIR, fsnative)
 _TEMP_DIR = None
 
 
 def _wrap_tempfile(func):
     def wrap(*args, **kwargs):
         if kwargs.get("dir") is None and _TEMP_DIR is not None:
-            assert is_fsnative(_TEMP_DIR)
+            assert isinstance(_TEMP_DIR, fsnative)
             kwargs["dir"] = _TEMP_DIR
         return func(*args, **kwargs)
     return wrap
@@ -59,13 +61,13 @@ NamedTemporaryFile = _wrap_tempfile(tempfile.NamedTemporaryFile)
 
 def mkdtemp(*args, **kwargs):
     path = _wrap_tempfile(tempfile.mkdtemp)(*args, **kwargs)
-    assert is_fsnative(path)
+    assert isinstance(path, fsnative)
     return path
 
 
 def mkstemp(*args, **kwargs):
     fd, filename = _wrap_tempfile(tempfile.mkstemp)(*args, **kwargs)
-    assert is_fsnative(filename)
+    assert isinstance(filename, fsnative)
     return (fd, filename)
 
 

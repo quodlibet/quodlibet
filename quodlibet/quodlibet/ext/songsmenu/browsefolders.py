@@ -11,7 +11,7 @@ import sys
 import subprocess
 
 from gi.repository import Gtk
-from senf import fsn2uri
+from senf import fsn2uri, fsnative
 
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 
@@ -24,7 +24,6 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
-from quodlibet.util.path import is_fsnative
 
 
 class BrowseError(Exception):
@@ -121,8 +120,8 @@ def show_files_win32(path, files):
     """
 
     assert os.name == "nt"
-    assert is_fsnative(path)
-    assert all(is_fsnative(f) for f in files)
+    assert isinstance(path, fsnative)
+    assert all(isinstance(f, fsnative) for f in files)
 
     from quodlibet.util.windows import open_folder_and_select_items
 

@@ -3,12 +3,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase
-
 import os
 
+from senf import fsnative
+
+from tests import TestCase
+
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import is_fsnative
 from quodlibet.pattern import (FileFromPattern, XMLFromPattern, Pattern,
     XMLFromMarkupPattern, ArbitraryExtensionFileFromPattern)
 
@@ -288,18 +289,18 @@ class _TFileFromPattern(_TPattern):
         if os.name == "nt":
             a = AudioFile({"title": "x" * 300, "~filename": u"C:\\f.mp3"})
             path = s._create(u'C:\\foobar\\ä<title>\\<title>').format(a)
-            assert is_fsnative(path)
+            assert isinstance(path, fsnative)
             s.failUnlessEqual(len(path), 3 + 6 + 1 + 255 + 1 + 255)
             path = s._create(u'äüö<title><title>').format(a)
-            assert is_fsnative(path)
+            assert isinstance(path, fsnative)
             s.failUnlessEqual(len(path), 255)
         else:
             a = AudioFile({"title": "x" * 300, "~filename": "/f.mp3"})
             path = s._create(u'/foobar/ä<title>/<title>').format(a)
-            assert is_fsnative(path)
+            assert isinstance(path, fsnative)
             s.failUnlessEqual(len(path), 1 + 6 + 1 + 255 + 1 + 255)
             path = s._create(u'äüö<title><title>').format(a)
-            assert is_fsnative(path)
+            assert isinstance(path, fsnative)
             s.failUnlessEqual(len(path), 255)
 
 

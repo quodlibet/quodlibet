@@ -10,12 +10,13 @@
 import os
 import contextlib
 import tempfile
+
+from senf import fsnative
+
 if os.name == "nt":
     from . import winapi
 else:
     import fcntl
-
-from .path import fsnative, is_fsnative
 
 
 def _windows_rename(source, dest):
@@ -53,7 +54,7 @@ def atomic_save(filename, mode):
         f.write(data)
     """
 
-    assert is_fsnative(filename)
+    assert isinstance(filename, fsnative)
 
     dir_ = os.path.dirname(filename)
     basename = os.path.basename(filename)
