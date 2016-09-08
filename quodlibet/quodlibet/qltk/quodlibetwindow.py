@@ -50,7 +50,7 @@ from quodlibet.qltk.about import AboutDialog
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util import connect_obj, print_d
-from quodlibet.util.path import glib2fsnative, get_home_dir
+from quodlibet.util.path import glib2fsn, get_home_dir
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
 from quodlibet.qltk.songlistcolumns import SongListColumn
@@ -1427,7 +1427,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             fns, do_watch = dialog.run()
             dialog.destroy()
             if fns:
-                fns = map(glib2fsnative, fns)
+                fns = map(glib2fsn, fns)
                 # scan them
                 self.last_dir = fns[0]
                 copool.add(self.__library.scan, fns, cofuncid="library",
@@ -1445,7 +1445,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
             fns = dialog.run()
             dialog.destroy()
             if fns:
-                fns = map(glib2fsnative, fns)
+                fns = map(glib2fsn, fns)
                 self.last_dir = os.path.dirname(fns[0])
                 for filename in map(os.path.realpath, fns):
                     self.__library.add_filename(filename)

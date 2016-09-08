@@ -54,14 +54,18 @@ def fsdecode(path, note=True):
     return fsn2text(path)
 
 
-def glib2fsnative(path):
+def glib2fsn(path):
+    """Takes a glib filename and returns a fsnative path"""
+
     if PY2:
         return bytes2fsn(path, "utf-8")
     else:
         return path
 
 
-def fsnative2glib(path):
+def fsn2glib(path):
+    """Takes a fsnative path and returns a glib filename"""
+
     if PY2:
         return fsn2bytes(path, "utf-8")
     else:
@@ -165,7 +169,7 @@ def xdg_get_system_data_dirs():
         from gi.repository import GLib
         dirs = []
         for dir_ in GLib.get_system_data_dirs():
-            dirs.append(glib2fsnative(dir_))
+            dirs.append(glib2fsn(dir_))
         return dirs
 
     data_dirs = os.getenv("XDG_DATA_DIRS")
@@ -178,7 +182,7 @@ def xdg_get_system_data_dirs():
 def xdg_get_cache_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsnative(GLib.get_user_cache_dir())
+        return glib2fsn(GLib.get_user_cache_dir())
 
     data_home = os.getenv("XDG_CACHE_HOME")
     if data_home:
@@ -190,7 +194,7 @@ def xdg_get_cache_home():
 def xdg_get_data_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsnative(GLib.get_user_data_dir())
+        return glib2fsn(GLib.get_user_data_dir())
 
     data_home = os.getenv("XDG_DATA_HOME")
     if data_home:
@@ -202,7 +206,7 @@ def xdg_get_data_home():
 def xdg_get_config_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsnative(GLib.get_user_config_dir())
+        return glib2fsn(GLib.get_user_config_dir())
 
     data_home = os.getenv("XDG_CONFIG_HOME")
     if data_home:

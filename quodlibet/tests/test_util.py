@@ -22,7 +22,7 @@ from quodlibet.util import format_time_long as f_t_l, format_time_preferred, \
     format_time_display, format_time_seconds
 from quodlibet.util import re_escape
 from quodlibet.util.library import set_scan_dirs, get_scan_dirs
-from quodlibet.util.path import fsnative2glib, glib2fsnative, \
+from quodlibet.util.path import fsn2glib, glib2fsn, \
     parse_xdg_user_dirs, xdg_get_system_data_dirs, escape_filename, \
     strip_win32_incompat_from_path, xdg_get_cache_home, environ, \
     xdg_get_data_home, unexpand, expanduser, xdg_get_user_dirs, \
@@ -838,7 +838,7 @@ class TPathHandling(TestCase):
         v = fsnative(u"foo")
         self.assertTrue(isinstance(v, fsnative))
 
-        v2 = glib2fsnative(fsnative2glib(v))
+        v2 = glib2fsn(fsn2glib(v))
         self.assertTrue(isinstance(v2, fsnative))
         self.assertEqual(v, v2)
 

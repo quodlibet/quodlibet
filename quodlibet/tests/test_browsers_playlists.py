@@ -18,7 +18,7 @@ from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.library import SongLibrary
 import quodlibet.config
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import fsnative2glib, mkdir
+from quodlibet.util.path import fsn2glib, mkdir
 from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
 from tests.test_browsers_search import SONGS, TSearchBar
@@ -48,7 +48,7 @@ class TParsePlaylistMixin(object):
         os.close(h)
         with open(name, "wb") as f:
             target = self.prefix
-            target += fsnative2glib(os.path.join(DATA_DIR, "silence-44-s.ogg"))
+            target += fsn2glib(os.path.join(DATA_DIR, "silence-44-s.ogg"))
             f.write(target)
         list = self.Parse(name)
         os.unlink(name)
