@@ -21,7 +21,7 @@ from quodlibet import util
 from quodlibet.query import Query
 from quodlibet.compat import exec_, itervalues
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
-from quodlibet.formats._audio import decode_value
+from quodlibet.formats._audio import decode_value, FILESYSTEM_TAGS
 from quodlibet.compat import quote_plus
 
 # Token types.
@@ -196,14 +196,16 @@ class PatternFormatter(object):
     class Dummy(dict):
 
         def __call__(self, key, *args):
+            if key in FILESYSTEM_TAGS:
+                return fsnative(u"_")
             if key[:2] == "~#" and "~" not in key[2:]:
                 return 0
             return u"_"
 
-        def comma(self, *args):
+        def comma(self, key, *args):
             return u"_"
 
-        def list_separate(self, *args):
+        def list_separate(self, key):
             return [u""]
 
     class SongProxy(object):

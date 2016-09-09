@@ -8,9 +8,8 @@
 import os
 import re
 
-from senf import fsnative
+from senf import fsnative, fsn2text
 
-from quodlibet.util.path import fsdecode
 from quodlibet.util import re_escape
 
 
@@ -65,7 +64,7 @@ class TagsFromPattern(object):
         sep = os.path.sep
         matchon = sep + sep.join(tail.split(sep)[-self.slashes:])
         # work on unicode
-        matchon = fsdecode(matchon, note=False)
+        matchon = fsn2text(matchon)
         match = self.pattern.search(matchon)
 
         # dicts for all!

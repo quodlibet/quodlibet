@@ -8,6 +8,7 @@
 import time
 
 from gi.repository import Gtk, Pango
+from senf import fsn2text
 
 from quodlibet import qltk
 from quodlibet import util
@@ -20,7 +21,7 @@ from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.qltk.x import Align
 from quodlibet.util import tag, connect_destroy
 from quodlibet.util.tags import readable
-from quodlibet.util.path import fsdecode, filesize, unexpand
+from quodlibet.util.path import filesize, unexpand
 
 
 def Label(label=None):
@@ -258,7 +259,7 @@ class OneSong(qltk.Notebook):
                 encoding = util.get_locale_encoding()
                 return timestr.decode(encoding)
 
-        fn = fsdecode(unexpand(song["~filename"]))
+        fn = fsn2text(unexpand(song["~filename"]))
         length = util.format_time_preferred(song.get("~#length", 0))
         size = util.format_size(
             song.get("~#filesize") or filesize(song["~filename"]))

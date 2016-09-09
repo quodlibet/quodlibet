@@ -10,6 +10,7 @@ import platform
 
 import mutagen
 from gi.repository import Gtk
+from senf import fsn2text
 
 import quodlibet
 from quodlibet import util
@@ -17,7 +18,7 @@ from quodlibet import qltk
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
 from quodlibet.qltk import get_top_parent, Align
-from quodlibet.util.path import unexpand, mkdir, fsdecode
+from quodlibet.util.path import unexpand, mkdir
 from quodlibet.util import connect_obj
 from quodlibet.util import logging, gdecode
 from quodlibet.util.dprint import format_exception, extract_tb
@@ -226,7 +227,7 @@ class ExceptionDialog(Gtk.Window):
 
         def cdf(column, cell, model, iter, data):
             row = model[iter]
-            filename = fsdecode(unexpand(row[0]))
+            filename = fsn2text(unexpand(row[0]))
             function = row[1]
             line = row[2]
             cell.set_property(

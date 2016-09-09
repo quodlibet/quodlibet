@@ -11,8 +11,9 @@
 import time
 import operator
 
+from senf import fsn2text, fsnative
+
 from quodlibet.compat import floordiv
-from quodlibet.util.path import fsdecode
 from quodlibet.util import parse_date
 from quodlibet.plugins.query import QUERY_HANDLER
 from quodlibet.plugins.query import QueryPluginError
@@ -479,7 +480,7 @@ class Tag(Node):
             if val is None:
                 # filename is the only real entry that's a path
                 if name == "filename":
-                    val = fsdecode(data.get("~filename", ""))
+                    val = fsn2text(data.get("~filename", fsnative()))
                 else:
                     val = data.get("~" + name, "")
 
@@ -491,7 +492,7 @@ class Tag(Node):
                 return True
 
         for name in self.__fs:
-            if self.res.search(fsdecode(data(name))):
+            if self.res.search(fsn2text(data(name))):
                 return True
 
         return False

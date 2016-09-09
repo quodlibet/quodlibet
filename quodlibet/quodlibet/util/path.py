@@ -15,10 +15,9 @@ import codecs
 import shlex
 import urllib
 
-from senf import fsnative, bytes2fsn, fsn2bytes, fsn2text, \
-    expanduser, sep, expandvars
+from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars
 
-from quodlibet.compat import text_type, PY2, urlparse
+from quodlibet.compat import PY2, urlparse
 from . import windows
 from .misc import environ
 
@@ -36,22 +35,6 @@ def mkdir(dir_, *args):
     except OSError as e:
         if e.errno != errno.EEXIST or not os.path.isdir(dir_):
             raise
-
-
-def fsdecode(path, note=True):
-    """Takes a native path and returns unicode for displaying it.
-
-    Can not fail and can't be reversed.
-    """
-
-    if isinstance(path, text_type):
-        return path
-
-    # XXX: glib paths on Windows
-    if os.name == "nt" and isinstance(path, bytes):
-        path = path.decode("utf-8")
-
-    return fsn2text(path)
 
 
 def glib2fsn(path):

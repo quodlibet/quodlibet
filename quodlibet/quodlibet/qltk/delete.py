@@ -16,6 +16,7 @@ Only use trash_files() or trash_songs() and TrashMenuItem().
 import os
 
 from gi.repository import Gtk
+from senf import fsn2text
 
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
@@ -23,7 +24,7 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.x import MenuItem, Align
-from quodlibet.util.path import fsdecode, unexpand
+from quodlibet.util.path import unexpand
 
 
 class FileListExpander(Gtk.Expander):
@@ -33,7 +34,7 @@ class FileListExpander(Gtk.Expander):
         super(FileListExpander, self).__init__(label=_("Files:"))
         self.set_resize_toplevel(True)
 
-        paths = [fsdecode(unexpand(p)) for p in paths]
+        paths = [fsn2text(unexpand(p)) for p in paths]
         lab = Gtk.Label(label="\n".join(paths))
         lab.set_alignment(0.0, 0.0)
         lab.set_selectable(True)

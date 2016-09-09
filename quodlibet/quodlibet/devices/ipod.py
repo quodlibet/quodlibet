@@ -9,6 +9,7 @@ import os
 import time
 
 from gi.repository import Gtk
+from senf import fsn2text
 
 from quodlibet import util
 from quodlibet import app
@@ -20,7 +21,7 @@ from quodlibet.formats import AudioFile
 
 
 # Wraps an itdb_track from libgpod in an AudioFile instance
-from quodlibet.util.path import fsdecode, mtime, filesize, fsn2glib
+from quodlibet.util.path import mtime, filesize, fsn2glib
 from quodlibet.util.string import decode, encode
 from quodlibet.util import print_w
 
@@ -267,7 +268,7 @@ class IPodDevice(Device):
                 continue
 
         track.filetype = encode(song('~format'))
-        track.comment = encode(fsdecode(song('~filename')))
+        track.comment = encode(fsn2text(song('~filename')))
 
         # Associate a cover with the track
         if self['covers']:

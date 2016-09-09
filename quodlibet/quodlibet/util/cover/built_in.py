@@ -9,8 +9,9 @@
 import os.path
 import re
 
+from senf import fsn2text
+
 from quodlibet.plugins.cover import CoverSourcePlugin
-from quodlibet.util.path import fsdecode
 from quodlibet.util.dprint import print_w
 from quodlibet import config
 
@@ -108,7 +109,7 @@ class FilesystemCover(CoverSourcePlugin):
                             fns.append((entry, sub_entry))
 
             for sub, fn in fns:
-                dec_lfn = fsdecode(fn, False).lower()
+                dec_lfn = fsn2text(fn).lower()
 
                 score = 0
                 # check for the album label number

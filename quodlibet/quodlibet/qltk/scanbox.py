@@ -10,12 +10,13 @@ import os
 
 from gi.repository import Gtk
 from gi.repository import Pango
+from senf import fsn2text
 
 from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import MenuItem, Button
 from quodlibet.qltk import Icons
-from quodlibet.util.path import fsdecode, unexpand, get_home_dir
+from quodlibet.util.path import unexpand, get_home_dir
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util import connect_obj
 
@@ -83,7 +84,7 @@ class ScanBox(Gtk.HBox):
         self.pack_start(sw, True, True, 0)
         self.pack_start(vbox, False, True, 0)
 
-        paths = map(fsdecode, get_scan_dirs())
+        paths = map(fsn2text, get_scan_dirs())
         for path in paths:
             model.append(row=[path])
 

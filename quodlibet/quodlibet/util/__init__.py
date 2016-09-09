@@ -25,6 +25,8 @@ try:
 except ImportError:
     fcntl = None
 
+from senf import fsnative
+
 from quodlibet.compat import reraise as py_reraise, PY2, text_type, \
     iteritems, reduce
 from quodlibet.util.path import iscommand
@@ -564,6 +566,7 @@ def pattern(pat, cap=True, esc=False, markup=False):
     """
 
     from quodlibet.pattern import Pattern, XMLFromPattern, XMLFromMarkupPattern
+    from quodlibet.formats import FILESYSTEM_TAGS
 
     class Fakesong(dict):
         cap = False
@@ -576,6 +579,8 @@ def pattern(pat, cap=True, esc=False, markup=False):
         list_separate = list
 
         def __call__(self, tag, *args):
+            if tag in FILESYSTEM_TAGS:
+                return fsnative(text_type(tag))
             return 0 if '~#' in tag[:2] else self.comma(tag)
 
     fakesong = Fakesong({'filename': tag('filename', cap)})

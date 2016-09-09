@@ -15,9 +15,11 @@ import shutil
 import subprocess
 import tempfile
 
+from senf import fsn2text
+
 from quodlibet import util
 from quodlibet.formats import EmbeddedImage, AudioFileError
-from quodlibet.util.path import mtime, fsdecode
+from quodlibet.util.path import mtime
 from quodlibet.pattern import Pattern, error as PatternError
 from quodlibet.util.tags import USER_TAGS, sortkey
 from quodlibet.util.tagsfrompath import TagsFromPattern
@@ -164,7 +166,7 @@ class EditCommand(Command):
             u"",
             u"#" * 80,
             u"# Lines that are empty or start with '#' will be ignored",
-            u"# File: %r" % fsdecode(song("~filename")),
+            u"# File: %r" % fsn2text(song("~filename")),
         ]
 
         return u"\n".join(lines)
@@ -686,7 +688,7 @@ class FillCommand(Command):
         rows = []
         for song in songs:
             match = pattern.match(song)
-            row = [fsdecode(song("~basename"))]
+            row = [fsn2text(song("~basename"))]
             for header in pattern.headers:
                 row.append(match.get(header, u""))
             rows.append(row)

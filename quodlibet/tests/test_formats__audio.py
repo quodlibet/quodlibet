@@ -7,10 +7,9 @@ from tests import TestCase, DATA_DIR
 
 import os
 
-from senf import fsnative
+from senf import fsnative, fsn2text
 
 from quodlibet import config
-from quodlibet.util.path import fsdecode
 from quodlibet.compat import PY2, text_type
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
@@ -723,7 +722,7 @@ class Tdecode_value(TestCase):
         self.assertEqual(decode_value("~#foo", "bar"), u"bar")
         self.assertTrue(isinstance(decode_value("~#foo", "bar"), text_type))
         path = fsnative(u"/foobar")
-        self.assertEqual(decode_value("~filename", path), fsdecode(path))
+        self.assertEqual(decode_value("~filename", path), fsn2text(path))
 
 
 class Treplay_gain(TestCase):

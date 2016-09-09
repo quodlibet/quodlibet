@@ -11,12 +11,11 @@ import os
 import traceback
 import re
 
-from senf import print_, path2fsn
+from senf import print_, path2fsn, fsn2text
 
 from quodlibet import const
 from quodlibet.compat import PY2
 from .environment import is_py2exe_window
-from .path import fsdecode
 from .string import decode
 from . import logging
 
@@ -182,14 +181,14 @@ def format_exc(*args, **kwargs):
     """Returns text_type"""
 
     # stack traces can contain byte paths under py2
-    return fsdecode(traceback.format_exc(*args, **kwargs))
+    return fsn2text(path2fsn(traceback.format_exc(*args, **kwargs)))
 
 
 def format_exception(*args, **kwargs):
     """Returns a list of text_type"""
 
     result_lines = traceback.format_exception(*args, **kwargs)
-    return [fsdecode(l) for l in result_lines]
+    return [fsn2text(path2fsn(l)) for l in result_lines]
 
 
 def extract_tb(*args, **kwargs):
@@ -226,7 +225,7 @@ def print_exc():
         filename, lineno, name, line = tp
         text = os.linesep.join(format_exc(0).splitlines()[1:])
         string = u"%s:%s:%s: %s" % (
-            fsdecode(os.path.basename(filename)), lineno, name, text)
+            fsn2text(path2fsn(os.path.basename(filename))), lineno, name, text)
 
     _print_message(string, None, False, "E", "red", "errors")
 

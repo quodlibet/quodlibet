@@ -8,6 +8,7 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, GObject, Pango
+from senf import fsn2text
 
 from quodlibet import qltk
 from quodlibet import config
@@ -20,7 +21,6 @@ from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.qltk.x import ScrolledWindow, ConfigRPaned
 from quodlibet.qltk.models import ObjectStore, ObjectModelSort
-from quodlibet.util.path import fsdecode
 from quodlibet.util import connect_destroy
 
 
@@ -31,7 +31,7 @@ class _ListEntry(object):
 
     @property
     def name(self):
-        return fsdecode(self.song("~basename"))
+        return fsn2text(self.song("~basename"))
 
 
 class SongProperties(qltk.Window, PersistentWindowMixin):

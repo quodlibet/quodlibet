@@ -14,11 +14,11 @@ import os
 import shutil
 import time
 
-from senf import fsn2uri, fsnative
+from senf import fsn2uri, fsnative, fsn2text, devnull
 
 from quodlibet import util
 from quodlibet import config
-from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, \
+from quodlibet.util.path import mkdir, mtime, expanduser, \
     normalize_path, escape_filename
 from quodlibet.util.string import encode, decode, isascii
 
@@ -80,7 +80,7 @@ def decode_value(tag, value):
     elif isinstance(value, float):
         return u"%.2f" % value
     elif tag in FILESYSTEM_TAGS:
-        return fsdecode(value)
+        return fsn2text(value)
     return text_type(value)
 
 
@@ -155,7 +155,7 @@ class AudioFile(dict, ImageContainer):
         elif tag == "artistsort":
             return artist_sort
         elif tag in FILESYSTEM_TAGS:
-            return lambda song: fsdecode(song(tag), note=False)
+            return lambda song: fsn2text(song(tag))
         elif tag.startswith("~#") and "~" not in tag[2:]:
             return lambda song: song(tag)
         return lambda song: human(song(tag))
@@ -542,7 +542,7 @@ class AudioFile(dict, ImageContainer):
         if "~" in key or key == "title":
             v = self(key, u"")
             if key in FILESYSTEM_TAGS:
-                v = fsdecode(v)
+                v = fsn2text(v)
         else:
             v = self.get(key, u"")
 
@@ -978,7 +978,7 @@ class AudioFile(dict, ImageContainer):
 
 # Looks like the real thing.
 DUMMY_SONG = AudioFile({
-    '~#length': 234, '~filename': '/dev/null',
+    '~#length': 234, '~filename': devnull,
     'artist': 'The Artist', 'album': 'An Example Album',
     'title': 'First Track', 'tracknumber': 1,
     'date': '2010-12-31',

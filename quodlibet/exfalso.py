@@ -10,13 +10,11 @@
 
 import os
 
-from senf import fsnative
-
 from quodlibet import app
 from quodlibet import util
 from quodlibet import const
 from quodlibet import config
-from quodlibet.util.path import fsdecode
+from quodlibet.senf import fsnative, argv
 
 
 def main(argv):
@@ -30,7 +28,6 @@ def main(argv):
         "Ex Falso", const.VERSION,
         _("an audio tag editor"), "[%s]" % _("directory"))
 
-    # FIXME: support unicode on Windows, sys.argv isn't good enough
     argv.append(os.path.abspath(fsnative(u".")))
     opts, args = opts.parse(argv[1:])
     args[0] = os.path.realpath(args[0])
@@ -52,8 +49,6 @@ def main(argv):
 
     from quodlibet.qltk.exfalsowindow import ExFalsoWindow
     dir_ = args[0]
-    if os.name == "nt":
-        dir_ = fsdecode(dir_)
     app.window = ExFalsoWindow(app.library, dir_)
     app.window.init_plugins()
 
@@ -73,4 +68,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    main(util.argv)
+    main(argv)

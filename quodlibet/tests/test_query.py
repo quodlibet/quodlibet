@@ -3,6 +3,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from senf import fsnative
+
 from tests import TestCase
 
 from quodlibet import config
@@ -157,16 +159,17 @@ class TQuery(TestCase):
         config.init()
         self.s1 = AudioFile(
             {"album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
-             "version": "cake mix", "~filename": "/dir1/foobar.ogg",
+             "version": "cake mix", "~filename": fsnative(u"/dir1/foobar.ogg"),
              "~#length": 224, "~#skipcount": 13, "~#playcount": 24,
              "date": "2007-05-24"})
         self.s2 = AudioFile(
             {"album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
-             "~filename": "/dir2/something.mp3", "tracknumber": "12/15"})
+             "~filename": fsnative(u"/dir2/something.mp3"),
+             "tracknumber": "12/15"})
 
         self.s3 = AudioFile(
             {"artist": "piman\nmu",
-             "~filename": "/test/\xc3\xb6\xc3\xa4\xc3\xbc/fo\xc3\xbc.ogg"})
+             "~filename": fsnative(u"/test/\xf6\xe4\xfc/fo\xfc.ogg")})
         self.s4 = AudioFile({"title": u"Ångström", "utf8": "Ångström"})
         self.s5 = AudioFile({"title": "oh&blahhh", "artist": "!ohno"})
 
@@ -185,7 +188,7 @@ class TQuery(TestCase):
             "<Query string=u'&(/bar/d)' type=QueryType.TEXT star=['foo']>")
 
     def test_2007_07_27_synth_search(self):
-        song = AudioFile({"~filename": "foo/64K/bar.ogg"})
+        song = AudioFile({"~filename": fsnative(u"foo/64K/bar.ogg")})
         query = Query("~dirname = !64K")
         self.failIf(query.search(song), "%r, %r" % (query, song))
 

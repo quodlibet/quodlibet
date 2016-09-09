@@ -7,8 +7,9 @@
 
 import os
 
+from senf import path2fsn, fsn2text
+
 from quodlibet.compat import getbyte, listkeys
-from quodlibet.util.path import fsdecode
 from ._audio import AudioFile, translate_errors
 
 extensions = [".spc"]
@@ -30,7 +31,8 @@ class SPCFile(AudioFile):
                     if len(data) == 210:
                         self.update(parse_id666(data))
 
-        self.setdefault("title", fsdecode(os.path.basename(filename)[:-4]))
+        self.setdefault(
+            "title", fsn2text(path2fsn(os.path.basename(filename)[:-4])))
         self.sanitize(filename)
 
     def write(self):

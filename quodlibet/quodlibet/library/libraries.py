@@ -19,6 +19,7 @@ import shutil
 import time
 
 from gi.repository import GObject
+from senf import fsn2text, expanduser
 
 from quodlibet.formats import MusicFile, AudioFileError
 from quodlibet.query import Query
@@ -31,8 +32,7 @@ from quodlibet import util
 from quodlibet import const
 from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.path import fsdecode, expanduser, unexpand, mkdir, \
-    normalize_path
+from quodlibet.util.path import unexpand, mkdir, normalize_path
 
 
 class Library(GObject.GObject, DictMixin):
@@ -717,7 +717,7 @@ class FileLibrary(PicklingLibrary):
 
         for fullpath in paths:
             print_d("Scanning %r." % fullpath, self)
-            desc = _("Scanning %s") % (unexpand(fsdecode(fullpath)))
+            desc = _("Scanning %s") % (unexpand(fsn2text(fullpath)))
             with Task(_("Library"), desc) as task:
                 if cofuncid:
                     task.copool(cofuncid)

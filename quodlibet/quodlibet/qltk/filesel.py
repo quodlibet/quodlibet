@@ -10,7 +10,7 @@ from quodlibet.compat import urlsplit
 import errno
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
-from senf import uri2fsn, fsnative
+from senf import uri2fsn, fsnative, fsn2text
 
 from quodlibet import formats
 from quodlibet import qltk
@@ -24,7 +24,7 @@ from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
 
-from quodlibet.util.path import fsdecode, listdir, \
+from quodlibet.util.path import listdir, \
     glib2fsn, xdg_get_user_dirs, get_home_dir
 from quodlibet.util import connect_obj
 
@@ -201,7 +201,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
             if value is not None:
-                text = fsdecode(os.path.basename(value) or value)
+                text = fsn2text(os.path.basename(value) or value)
                 cell.set_property('text', text)
 
         column.set_cell_data_func(render, cell_data)
@@ -518,7 +518,7 @@ class FileSelector(Paned):
 
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
-            cell.set_property('text', fsdecode(os.path.basename(value)))
+            cell.set_property('text', fsn2text(os.path.basename(value)))
 
         column.set_cell_data_func(render, cell_data)
 

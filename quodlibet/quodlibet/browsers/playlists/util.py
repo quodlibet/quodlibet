@@ -8,7 +8,7 @@
 import os
 
 from gi.repository import Gtk
-from senf import uri2fsn, fsnative
+from senf import uri2fsn, fsnative, fsn2text, path2fsn
 
 import quodlibet
 from quodlibet import formats, qltk
@@ -17,7 +17,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.util import escape
 from quodlibet.util.collection import FileBackedPlaylist
-from quodlibet.util.path import mkdir, fsdecode, uri_is_valid
+from quodlibet.util.path import mkdir, uri_is_valid
 
 
 # Directory for playlist files
@@ -52,8 +52,8 @@ class GetPlaylistName(GetStringDialog):
 
 
 def parse_m3u(filename, library=None):
-    plname = fsdecode(os.path.basename(
-        os.path.splitext(filename)[0]))
+    plname = fsn2text(path2fsn(os.path.basename(
+        os.path.splitext(filename)[0])))
 
     filenames = []
 
@@ -68,8 +68,8 @@ def parse_m3u(filename, library=None):
 
 
 def parse_pls(filename, name="", library=None):
-    plname = fsdecode(os.path.basename(
-        os.path.splitext(filename)[0]))
+    plname = fsn2text(path2fsn(os.path.basename(
+        os.path.splitext(filename)[0])))
 
     filenames = []
     with open(filename) as h:

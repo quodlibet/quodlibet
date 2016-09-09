@@ -8,7 +8,7 @@
 import os
 import wave
 
-from quodlibet.util.path import fsdecode
+from senf import fsn2text
 
 from ._audio import AudioFile, translate_errors
 
@@ -29,7 +29,7 @@ class WAVEFile(AudioFile):
 
     def sanitize(self, filename):
         super(WAVEFile, self).sanitize(filename)
-        self["title"] = fsdecode(os.path.splitext(
+        self["title"] = fsn2text(os.path.splitext(
             os.path.basename(self["~filename"]))[0])
 
     def write(self):

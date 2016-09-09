@@ -9,6 +9,7 @@ import re
 import os
 
 from gi.repository import Gtk
+from senf import fsn2text
 
 import quodlibet
 
@@ -26,7 +27,6 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons
-from quodlibet.util.path import fsdecode
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.util.string.splitters import split_value
 from quodlibet.util import connect_obj, gdecode
@@ -92,7 +92,7 @@ class ListEntry(object):
 
     @property
     def name(self):
-        return fsdecode(self.song("~basename"))
+        return fsn2text(self.song("~basename"))
 
 
 class TagsFromPath(Gtk.VBox):

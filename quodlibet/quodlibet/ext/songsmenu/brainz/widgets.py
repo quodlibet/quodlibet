@@ -8,9 +8,9 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, Pango
+from senf import fsn2text
 
 from quodlibet import util
-from quodlibet.util import path
 from quodlibet.qltk import Dialog, Icons
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
@@ -202,7 +202,7 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
     def __name_datafunc(self, col, cell, model, itr, data):
         song = model[itr][0]
         if song:
-            cell.set_property('text', path.fsdecode(song("~basename")))
+            cell.set_property('text', fsn2text(song("~basename")))
         else:
             cell.set_property('text', '')
 
@@ -335,7 +335,7 @@ def sort_key(song):
     by medium.
     """
 
-    return util.human_sort_key(path.fsdecode(song("~filename")))
+    return util.human_sort_key(fsn2text(song("~filename")))
 
 
 class SearchWindow(Dialog):

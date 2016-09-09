@@ -12,14 +12,14 @@ import time
 import datetime
 
 from gi.repository import Gtk, Pango, GLib
-from senf import fsnative
+from senf import fsnative, fsn2text
 
 from quodlibet import util
 from quodlibet import config
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.qltk import add_css
-from quodlibet.util.path import fsdecode, unexpand
+from quodlibet.util.path import unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS
 
 
@@ -313,7 +313,7 @@ class FSColumn(WideTextColumn):
         return values[0] if values else fsnative(u"")
 
     def _apply_value(self, model, iter_, cell, value):
-        cell.set_property('text', fsdecode(unexpand(value)))
+        cell.set_property('text', fsn2text(unexpand(value)))
 
 
 class PatternColumn(WideTextColumn):
