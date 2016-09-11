@@ -401,13 +401,20 @@ class NumericColumn(TextColumn):
         width = self.get_width()
         needed_width = max([self._get_min_width()] + self._texts.values())
         if width < needed_width:
-            self.set_fixed_width(needed_width)
-            self.set_min_width(needed_width)
-            self.queue_resize()
+            self._resize(needed_width)
         elif width - needed_width >= self._cell_width("0"):
-            self.set_fixed_width(needed_width)
-            self.set_max_width(needed_width)
-            self.queue_resize()
+            self._resize(needed_width)
+
+    def _resize(self, width):
+        # In case the treeview has no other expanding columns, setting the
+        # width will have no effect on the actual width. Calling queue_resize()
+        # in that case would result in an endless recalc loop. So stop here.
+        if width == self.get_fixed_width() and width == self.get_max_width():
+            return
+
+        self.set_fixed_width(width)
+        self.set_max_width(width)
+        self.queue_resize()
 
     def _recalc_width(self, path, text):
         self._texts[path[0]] = text
