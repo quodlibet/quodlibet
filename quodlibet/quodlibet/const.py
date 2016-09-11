@@ -158,6 +158,7 @@ Zack Weinberg
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
+Åka Sikrom (nb)
 Alexandre Passos (pt)
 Andreas Bertheussen (nb)
 Anton Shestakov (ru)
