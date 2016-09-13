@@ -6,6 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import urllib
 import urllib2
 import threading
@@ -16,11 +17,13 @@ from xml.dom import minidom
 from quodlibet.util import gi_require_versions
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import (PluginImportException, PluginConfig, ConfProp,
-    BoolConfProp, IntConfProp, FloatConfProp)
+    BoolConfProp, IntConfProp, FloatConfProp, PluginNotSupportedError)
 
 try:
     gi_require_versions("WebKit2", ["4.0", "3.0"])
 except ValueError as e:
+    if os.name == "nt":
+        raise PluginNotSupportedError
     raise PluginImportException("GObject Introspection: " + str(e))
 
 from gi.repository import WebKit2, Gtk, GLib

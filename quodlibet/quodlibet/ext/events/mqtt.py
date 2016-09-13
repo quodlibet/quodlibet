@@ -5,6 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
+import os
+
 from quodlibet.formats import AudioFile
 from quodlibet.util import monospace, escape
 from quodlibet.util.tags import _TAGS
@@ -14,7 +16,10 @@ _TOTAL_MQTT_ITEMS = 3
 try:
     import paho.mqtt.client as mqtt
 except ImportError as e:
-    from quodlibet.plugins import MissingModulePluginException
+    from quodlibet.plugins import MissingModulePluginException, \
+        PluginNotSupportedError
+    if os.name == "nt":
+        raise PluginNotSupportedError
     raise MissingModulePluginException('paho-mqtt')
 
 from gi.repository import Gtk
