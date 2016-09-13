@@ -9,7 +9,7 @@ import os
 import unicodedata
 
 from gi.repository import Gtk, Gdk
-from senf import fsnative, fsn2text
+from senf import fsn2text, text2fsn
 
 import quodlibet
 from quodlibet import qltk
@@ -26,7 +26,6 @@ from quodlibet.qltk import Icons, Button
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj, gdecode
 from quodlibet.util.path import strip_win32_incompat_from_path
-from quodlibet.compat import text_type
 
 
 NBP = os.path.join(quodlibet.get_user_dir(), "lists", "renamepatterns")
@@ -74,9 +73,8 @@ class StripDiacriticals(FilterCheckButton):
     _order = 1.2
 
     def filter(self, original, filename):
-        filename = fsn2text(filename)
-        return fsnative(filter(lambda s: not unicodedata.combining(s),
-                               unicodedata.normalize('NFKD', filename)))
+        return filter(lambda s: not unicodedata.combining(s),
+                      unicodedata.normalize('NFKD', filename))
 
 
 class StripNonASCII(FilterCheckButton):
@@ -86,9 +84,7 @@ class StripNonASCII(FilterCheckButton):
     _order = 1.3
 
     def filter(self, original, filename):
-        filename = fsn2text(filename)
-        return fsnative(
-            u"".join(map(lambda s: (s <= "~" and s) or u"_", filename)))
+        return u"".join(map(lambda s: (s <= "~" and s) or u"_", filename))
 
 
 class Lowercase(FilterCheckButton):
@@ -245,7 +241,7 @@ class RenameFiles(Gtk.VBox):
                 continue
 
             try:
-                library.rename(song, fsnative(new_name), changed=was_changed)
+                library.rename(song, text2fsn(new_name), changed=was_changed)
             except Exception:
                 util.print_exc()
                 if skip_all:
@@ -307,7 +303,7 @@ class RenameFiles(Gtk.VBox):
 
         # native paths
         orignames = [song["~filename"] for song in songs]
-        newnames = [pattern.format(song) for song in songs]
+        newnames = [fsn2text(pattern.format(song)) for song in songs]
         for f in self.filter_box.filters:
             if f.active:
                 newnames = f.filter_list(orignames, newnames)
@@ -315,11 +311,7 @@ class RenameFiles(Gtk.VBox):
         model.clear()
         for song, newname in zip(songs, newnames):
             entry = Entry(song)
-            if isinstance(newname, text_type):
-                # FIXME: why is newname not fsnative all the time?
-                entry.new_name = newname
-            else:
-                entry.new_name = fsn2text(newname)
+            entry.new_name = newname
             model.append(row=[entry])
 
         self.preview.set_sensitive(False)

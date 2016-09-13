@@ -317,6 +317,12 @@ class TFileFromPattern(_TFileFromPattern):
     def _create(self, string):
         return FileFromPattern(string)
 
+    def test_type(self):
+        pat = self._create('')
+        self.assertTrue(isinstance(pat.format(self.a), fsnative))
+        pat = self._create('<title>')
+        self.assertTrue(isinstance(pat.format(self.a), fsnative))
+
     def test_number_dot_title_dot(s):
         pat = s._create('<tracknumber>. <title>.')
         s.assertEquals(pat.format(s.a), '05. Title5..mp3')

@@ -423,7 +423,9 @@ class _FileFromPattern(PatternFormatter):
 
             if sep in value and not os.path.isabs(value):
                 raise ValueError("Pattern is not rooted")
-        return value
+            return value
+        else:
+            return fsnative(value)
 
 
 class _ArbitraryExtensionFileFromPattern(_FileFromPattern):
@@ -447,6 +449,8 @@ def replace_nt_seps(string):
 
 
 def FileFromPattern(string):
+    """Gives fsnative, not unicode"""
+
     return Pattern(replace_nt_seps(string), _FileFromPattern)
 
 
