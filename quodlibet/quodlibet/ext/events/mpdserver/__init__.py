@@ -13,9 +13,8 @@ if os.name == "nt":
     raise PluginNotSupportedError
 
 import socket
-import threading
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk
 
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
@@ -25,14 +24,15 @@ from quodlibet import config
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.util import print_w, print_d
+from quodlibet.util.thread import call_async, Cancellable
 
 from .main import MPDServer
 from .tcpserver import ServerError
 from .avahi import AvahiService, AvahiError
 
 
-def fill_ip(label):
-    """Fill Gtk.Label with the local IP. Can be called from a thread."""
+def fetch_local_ip():
+    """Returns a guess for the local IP"""
 
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -41,12 +41,7 @@ def fill_ip(label):
         s.close()
     except EnvironmentError:
         addr = "?.?.?.?"
-
-    def idle_fill():
-        if label.get_realized():
-            label.set_label(addr)
-
-    GLib.idle_add(idle_fill)
+    return addr
 
 
 DEFAULT_PORT = 6600
@@ -145,7 +140,9 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         label.set_label("...")
         table.attach(label, 1, 3, 0, 1)
 
-        threading.Thread(target=fill_ip, args=(label,)).start()
+        cancel = Cancellable()
+        label.connect("destroy", lambda *x: cancel.cancel())
+        call_async(fetch_local_ip, cancel, label.set_label)
 
         box = Gtk.VBox(spacing=12)
 
