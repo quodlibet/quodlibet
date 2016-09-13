@@ -31,8 +31,8 @@ from .tcpserver import ServerError
 from .avahi import AvahiService, AvahiError
 
 
-def fill_ip(entry):
-    """Fill GtkEntry with the local IP. Can be called from a thread."""
+def fill_ip(label):
+    """Fill Gtk.Label with the local IP. Can be called from a thread."""
 
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -43,8 +43,8 @@ def fill_ip(entry):
         addr = "?.?.?.?"
 
     def idle_fill():
-        if entry.get_realized():
-            entry.set_text(addr)
+        if label.get_realized():
+            label.set_label(addr)
 
     GLib.idle_add(idle_fill)
 
@@ -79,7 +79,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
 
         label = Gtk.Label(label=_("_Port:"), use_underline=True)
         label.set_alignment(0.0, 0.5)
-        table.attach(label, 0, 1, 0, 1,
+        table.attach(label, 0, 1, 1, 2,
                      xoptions=Gtk.AttachOptions.FILL |
                      Gtk.AttachOptions.SHRINK)
 
@@ -106,7 +106,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         entry.connect_after("activate", port_activate)
         entry.connect_after("focus-out-event", port_activate)
 
-        table.attach(entry, 1, 2, 0, 1)
+        table.attach(entry, 1, 2, 1, 2)
 
         port_revert = Gtk.Button()
         port_revert.add(Gtk.Image.new_from_icon_name(
@@ -118,11 +118,11 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
 
         port_revert.connect("clicked", port_revert_cb, entry)
         table.attach(
-            port_revert, 2, 3, 0, 1, xoptions=Gtk.AttachOptions.SHRINK)
+            port_revert, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.SHRINK)
 
         label = Gtk.Label(label=_("Local _IP:"), use_underline=True)
         label.set_alignment(0.0, 0.5)
-        table.attach(label, 0, 1, 1, 2,
+        table.attach(label, 0, 1, 0, 1,
                      xoptions=Gtk.AttachOptions.FILL |
                      Gtk.AttachOptions.SHRINK)
 
@@ -138,12 +138,14 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
 
         table.attach(entry, 1, 3, 2, 3)
 
-        entry = UndoEntry()
-        entry.set_text("...")
-        entry.set_editable(False)
-        table.attach(entry, 1, 3, 1, 2)
+        label = Gtk.Label()
+        label.set_padding(6, 6)
+        label.set_alignment(0.0, 0.5)
+        label.set_selectable(True)
+        label.set_label("...")
+        table.attach(label, 1, 3, 0, 1)
 
-        threading.Thread(target=fill_ip, args=(entry,)).start()
+        threading.Thread(target=fill_ip, args=(label,)).start()
 
         box = Gtk.VBox(spacing=12)
 
@@ -151,9 +153,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         clients.set_padding(6, 6)
         clients.set_markup(u"""\
 \u2022 <a href="https://play.google.com/store/apps/details?id=com.\
-namelessdev.mpdroid">MPDroid 1.06</a> (Android)<small>
-
-</small>\u2022 <a href="http://sonata.berlios.de/">Sonata 1.6</a> (Linux)\
+namelessdev.mpdroid">MPDroid</a> (Android)
 """)
         clients.set_alignment(0, 0)
 
