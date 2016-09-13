@@ -154,7 +154,7 @@ def main():
                 'py2exe': {
                     'packages': ('encodings, feedparser, quodlibet, '
                                  'HTMLParser, cairo, musicbrainzngs, shelve, '
-                                 'json, gi'),
+                                 'json, gi, bsddb, dbhash'),
                     'excludes': ['Tkconstants', 'Tkinter'],
                     'skip_archive': True,
                     'dist_dir': os.path.join('dist', 'bin'),
