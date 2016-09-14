@@ -954,18 +954,20 @@ class DragIconTreeView(BaseView):
 
 
 class MultiDragTreeView(BaseView):
-    """TreeView with multirow drag support:
+    """TreeView with multirow drag support.
 
-    - Selections don't change until button-release-event...
-    - Unless they're a Shift/Ctrl modification, then they happen immediately
-    - Drag icons include 3 rows/2 plus a "and more" count
+    Button press events which would result in a row getting unselected
+    get delayed until the next button release event.
+
+    This makes it possible to drag one or more selected rows without
+    changing the selection.
     """
 
     def __init__(self, *args, **kwargs):
         super(MultiDragTreeView, self).__init__(*args, **kwargs)
         self.connect('button-press-event', self.__button_press)
         self.connect('button-release-event', self.__button_release)
-        self.__pending_event = None
+        self.__pending_action = None
 
     def __button_press(self, view, event):
         if event.button == Gdk.BUTTON_PRIMARY:
@@ -977,35 +979,28 @@ class MultiDragTreeView(BaseView):
             path, col, cellx, celly = self.get_path_at_pos(x, y)
         except TypeError:
             return True
-        self.grab_focus()
         selection = self.get_selection()
         is_selected = selection.path_is_selected(path)
         mod_active = event.get_state() & (
             get_primary_accel_mod() | Gdk.ModifierType.SHIFT_MASK)
 
-        if is_selected and not mod_active:
-            self.__pending_event = [x, y]
+        if is_selected:
+            self.__pending_action = (path, col, mod_active)
             selection.set_select_function(lambda *args: False, None)
-        elif event.type == Gdk.EventType.BUTTON_PRESS:
-            self.__pending_event = None
+        else:
+            self.__pending_action = None
             selection.set_select_function(lambda *args: True, None)
 
     def __button_release(self, view, event):
-        if self.__pending_event:
+        if self.__pending_action:
+            path, col, single_unselect = self.__pending_action
             selection = self.get_selection()
             selection.set_select_function(lambda *args: True, None)
-            oldevent = self.__pending_event
-            self.__pending_event = None
-
-            x, y = map(int, [event.x, event.y])
-            if oldevent != [x, y]:
-                return True
-
-            try:
-                path, col, cellx, celly = self.get_path_at_pos(x, y)
-            except TypeError:
-                return True
-            self.set_cursor(path, col, 0)
+            if single_unselect:
+                selection.unselect_path(path)
+            else:
+                self.set_cursor(path, col, 0)
+            self.__pending_action = None
 
 
 class RCMTreeView(BaseView):

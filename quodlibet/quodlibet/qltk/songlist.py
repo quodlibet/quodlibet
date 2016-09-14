@@ -198,10 +198,18 @@ class SongListDnDMixin(object):
     """DnD support for the SongList class"""
 
     def setup_drop(self, library):
+        self.connect('drag-begin', self.__drag_begin)
         self.connect('drag-motion', self.__drag_motion)
         self.connect('drag-leave', self.__drag_leave)
         self.connect('drag-data-get', self.__drag_data_get)
         self.connect('drag-data-received', self.__drag_data_received, library)
+
+    def __drag_begin(self, *args):
+        ok, state = Gtk.get_current_event_state()
+        if ok and state & qltk.get_primary_accel_mod():
+            self.__force_copy = True
+        else:
+            self.__force_copy = False
 
     def enable_drop(self, by_row=True):
         targets = [
@@ -215,6 +223,7 @@ class SongListDnDMixin(object):
         self.drag_dest_set(Gtk.DestDefaults.ALL, targets,
                            Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
         self.__drop_by_row = by_row
+        self.__force_copy = False
 
     def disable_drop(self):
         targets = [
@@ -230,7 +239,8 @@ class SongListDnDMixin(object):
         if self.__drop_by_row:
             self.set_drag_dest(x, y)
             self.scroll_motion(x, y)
-            if Gtk.drag_get_source_widget(ctx) == self:
+            if Gtk.drag_get_source_widget(ctx) == self and \
+                    not self.__force_copy:
                 kind = Gdk.DragAction.MOVE
             else:
                 kind = Gdk.DragAction.COPY
@@ -272,7 +282,7 @@ class SongListDnDMixin(object):
         model = view.get_model()
         if info == DND_QL:
             filenames = qltk.selection_get_filenames(sel)
-            move = (Gtk.drag_get_source_widget(ctx) == view)
+            move = bool(ctx.get_selected_action() & Gdk.DragAction.MOVE)
         elif info == DND_URI_LIST:
             def to_filename(s):
                 try:
