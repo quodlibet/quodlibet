@@ -29,7 +29,7 @@ import unicodedata
 import sys
 
 from quodlibet.util import re_escape
-from quodlibet.compat import iteritems
+from quodlibet.compat import iteritems, urlopen
 
 
 _DIACRITIC_CACHE = {
@@ -133,7 +133,7 @@ _DIACRITIC_CACHE = {
 }
 
 # See misc/uca_decomps.py
-_UCA_DECOMPS = {
+_UCA_DECOMPS_CACHE = {
     u'AA': u'\ua732',
     u'AE': u'\xc6\u01e2\u01fc',
     u'AO': u'\ua734',
@@ -222,6 +222,48 @@ _UCA_DECOMPS = {
     u'\u057e\u0576': u'\ufb16',
     u'\u2c95\u2c81\u2c93': u'\u2ce4',
 }
+
+
+def get_decomps_mapping(regenerate=False):
+    """This takes the decomps.txt file of the Unicode UCA and gives us a cases
+    where a letter can be decomposed for collation and that mapping isn't in
+    NFKD.
+    """
+
+    if not regenerate:
+        return _UCA_DECOMPS_CACHE
+
+    mapping = {}
+
+    h = urlopen("http://unicode.org/Public/UCA/8.0.0/decomps.txt")
+    for line in h.read().splitlines():
+        if line.startswith("#"):
+            continue
+
+        to_uni = lambda x: unichr(int(x, 16))
+        is_letter = lambda x: unicodedata.category(x) in ("Lu", "Ll", "Lt")
+
+        cp, line = line.split(";", 1)
+        tag, line = line.split(";", 1)
+        decomp, line = line.split("#", 1)
+        decomp = map(to_uni, decomp.strip().split())
+        cp = to_uni(cp)
+
+        if not is_letter(cp):
+            continue
+
+        decomp = filter(is_letter, decomp)
+        simple = "".join(decomp)
+        if not simple:
+            continue
+
+        # skip anything we get from normalization
+        if unicodedata.normalize("NFKD", cp)[0] == simple:
+            continue
+
+        mapping[simple] = mapping.get(simple, "") + cp
+
+    return mapping
 
 
 def diacritic_for_letters(regenerate=False):
@@ -455,7 +497,7 @@ def re_replace_literals(text, mapping):
 _mapping = generate_re_mapping(diacritic_for_letters(regenerate=False))
 
 # add more from the UCA decomp dataset
-for cp, repl in iteritems(_UCA_DECOMPS):
+for cp, repl in iteritems(get_decomps_mapping(regenerate=False)):
     _mapping[cp] = _mapping.get(cp, u"") + repl
 
 
