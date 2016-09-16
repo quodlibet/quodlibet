@@ -9,7 +9,7 @@
 
 import os
 
-from gi.repository import Gtk, Gdk, GLib, Gio, GObject
+from gi.repository import Gtk, Gdk, GLib, Gio, GObject, Pango
 from senf import uri2fsn
 
 import quodlibet
@@ -407,6 +407,22 @@ class RepeatButton(Gtk.ToggleButton):
         self.connect('toggled', toggled_cb)
 
 
+class ModeBar(Gtk.Label):
+    def __init__(self, repeatmode, shufflemode):
+        super(ModeBar, self).__init__()
+
+        self.set_text(repeatmode, shufflemode)
+        self.set_ellipsize(Pango.EllipsizeMode.END)
+
+        self.show_all()
+
+    def set_text(self, repeatmode, shufflemode):
+        rm_text = "Repeat" if repeatmode else ""
+        sm_text = "Shuffle" if shufflemode else ""
+        conj = " and " if repeatmode and shufflemode else ""
+        super(ModeBar, self).set_text(sm_text + conj + rm_text)
+
+
 class QueueButton(Gtk.ToggleButton):
 
     def __init__(self):
@@ -436,11 +452,17 @@ class StatusBarBox(Gtk.HBox):
 
         self.order = order = PlayOrder(model, player)
         self.pack_start(order, False, True, 0)
+        shuffle = order._shuffle
+        shuffle.connect('toggled', self.__shuffle, model)
+        model.shuffle = shuffle.get_active()
 
         self.repeat = repeat = RepeatButton()
         self.pack_start(repeat, False, True, 0)
         repeat.connect('toggled', self.__repeat, model)
         model.repeat = repeat.get_active()
+
+        self.modebar = ModeBar(model.repeat, model.shuffle)
+        self.pack_start(self.modebar, False, True, 0)
 
         self.statusbar = StatusBar(TaskController.default_instance)
         self.pack_start(self.statusbar, True, True, 0)
@@ -453,6 +475,11 @@ class StatusBarBox(Gtk.HBox):
 
     def __repeat(self, button, model):
         model.repeat = button.get_active()
+        self.modebar.set_text(model.repeat, model.shuffle)
+
+    def __shuffle(self, button, model):
+        model.shuffle = button.get_active()
+        self.modebar.set_text(model.repeat, model.shuffle)
 
 
 class AppMenu(object):
