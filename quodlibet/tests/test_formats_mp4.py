@@ -86,6 +86,13 @@ class TMP4File(TestCase):
     def test_bitrate(self):
         self.assertEqual(self.song("~#bitrate"), 2)
 
+    def test_bpm_rounds(self):
+        self.song["bpm"] = "98.76"
+        self.song.write()
+        self.song.reload()
+        self.assertEqual(self.song("bpm"), "99")
+        self.assertEqual(self.song("~#bpm"), 99)
+
     def test_write(self):
         self.song.write()
 
