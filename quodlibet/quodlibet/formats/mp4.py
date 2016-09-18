@@ -124,7 +124,7 @@ class MP4File(AudioFile):
                 continue
             values = self.list(key)
             if name == "tmpo":
-                values = list(map(int, values))
+                values = list(map(lambda v: int(round(float(v))), values))
             elif name.startswith("----"):
                 values = list(map(lambda v: v.encode("utf-8"), values))
             audio[name] = values
