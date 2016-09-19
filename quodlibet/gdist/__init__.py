@@ -37,6 +37,7 @@ from gdist.docs import build_sphinx
 from gdist.scripts import build_scripts
 from gdist.tests import quality_cmd, distcheck_cmd, test_cmd
 from gdist.clean import clean
+from gdist.zsh_completions import install_zsh_completions
 
 
 class build(distutils_build):
@@ -77,6 +78,8 @@ class install(distutils_install):
          lambda self: self.distribution.has_dbus_services()),
         ("install_appdata",
          lambda self: self.distribution.has_appdata()),
+        ("install_zsh_completions",
+         lambda self: self.distribution.has_zsh_completions()),
     ]
 
     def initialize_options(self):
@@ -119,6 +122,7 @@ class GDistribution(Distribution):
     po_package = None
     search_provider = None
     coverage_options = {}
+    zsh_completions = []
 
     def __init__(self, *args, **kwargs):
         Distribution.__init__(self, *args, **kwargs)
@@ -136,6 +140,8 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("install_search_provider",
                                  install_search_provider)
         self.cmdclass.setdefault("install_appdata", install_appdata)
+        self.cmdclass.setdefault(
+            "install_zsh_completions", install_zsh_completions)
         self.cmdclass.setdefault("build", build)
         self.cmdclass.setdefault("install", install)
         self.cmdclass.setdefault("po_stats", po_stats)
@@ -163,6 +169,9 @@ class GDistribution(Distribution):
 
     def has_dbus_services(self):
         return not is_windows and not is_osx and bool(self.dbus_services)
+
+    def has_zsh_completions(self):
+        return not is_windows and bool(self.zsh_completions)
 
     def need_icon_install(self):
         return not is_windows and not is_osx

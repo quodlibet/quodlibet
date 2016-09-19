@@ -95,6 +95,9 @@ def main():
             "data/operon.1",
         ],
         "search_provider": "data/quodlibet-search-provider.ini",
+        "zsh_completions": [
+            ("data/quodlibet.zsh", "_quodlibet"),
+        ],
         "coverage_options": {
             "directory": "coverage",
         },
