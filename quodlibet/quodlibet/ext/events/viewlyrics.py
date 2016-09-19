@@ -63,6 +63,7 @@ class ViewLyrics(EventPlugin):
         If there are lyrics associated with `song`, load them into the
         lyrics viewer. Otherwise, hides the lyrics viewer.
         """
+        lyrics = None
         if song is not None:
             lyrics = song("~lyrics")
             if lyrics:
