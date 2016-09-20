@@ -260,7 +260,7 @@ class TAlbum(TestCase):
         config.quit()
 
 
-class TestPlaylistResource(object):
+class MockPlaylistResource(object):
     def __init__(self, pl):
         self.pl = pl
 
@@ -281,7 +281,7 @@ class TPlaylist(TestCase):
         return Playlist(name, lib)
 
     def wrap(self, name, lib=None):
-        return TestPlaylistResource(self.pl(name, lib))
+        return MockPlaylistResource(self.pl(name, lib))
 
     def test_equality(s):
         pl = s.pl("playlist")
