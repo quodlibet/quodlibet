@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012-2016 Ryan "ZDBioHazard" Turner <zdbiohazard2@gmail.com>
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -17,11 +18,6 @@ class PlaycountEqualizer(PlayOrderPlugin, PlayOrderShuffleMixin):
     PLUGIN_NAME = _("Playcount Equalizer")
     PLUGIN_DESC = _("Shuffle, preferring songs with fewer total plays.")
     PLUGIN_ICON = Icons.VIEW_REFRESH
-    PLUGIN_VERSION = "1.0"
-
-    # Select the previous track.
-    def previous(self, playlist, current):
-        return super(PlaycountEqualizer, self).previous(playlist, current)
 
     # Select the next track.
     def next(self, playlist, current):
