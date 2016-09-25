@@ -65,6 +65,7 @@
       <dep package="meta-gtk-osx-python-gtk3"/>
       <dep package="pyobjc"/>
       <dep package="certifi"/>
+      <dep package="dmgbuild"/>
     </dependencies>
   </metamodule>
 
