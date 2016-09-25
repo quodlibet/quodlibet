@@ -19,7 +19,7 @@
       href="https://github.com/"/>
 
   <repository type="tarball" name="sourceforge"
-          href="http://iweb.dl.sf.net/project/"/>
+      href="http://downloads.sourceforge.net/sourceforge/"/>
 
   <repository type="tarball" name="pypi"
               href="http://pypi.python.org/packages/"/>
