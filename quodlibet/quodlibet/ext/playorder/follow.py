@@ -6,25 +6,25 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-from quodlibet.plugins.playorder import PlayOrderPlugin, \
-    PlayOrderRememberedMixin, PlayOrderInOrderMixin
+from quodlibet.plugins.playorder import ShufflePlugin
+from quodlibet.qltk.playorder import OrderInOrder, OrderRemembered
 
 from quodlibet import app
 from quodlibet.qltk import Icons
 
 
-class FollowOrder(PlayOrderPlugin, PlayOrderRememberedMixin,
-    PlayOrderInOrderMixin):
+class FollowOrder(ShufflePlugin, OrderInOrder, OrderRemembered):
     PLUGIN_ID = "follow"
     PLUGIN_NAME = _("Follow Cursor")
     PLUGIN_ICON = Icons.GO_JUMP
-    PLUGIN_DESC = _("Playback follows your selection.")
+    PLUGIN_DESC = _("Playback follows your selection, "
+                    "or the next song in the list once exhausted.")
 
     __last_path = None
 
     def next(self, playlist, iter):
-        next_fallback = PlayOrderInOrderMixin.next(self, playlist, iter)
-        PlayOrderRememberedMixin.next(self, playlist, iter)
+        next_fallback = OrderInOrder.next(self, playlist, iter)
+        OrderRemembered.next(self, playlist, iter)
 
         selected = app.window.songlist.get_selected_songs()
         if not selected:

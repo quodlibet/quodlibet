@@ -10,21 +10,20 @@ Repeats a given track a configurable number of times
 Useful for musicians practising / working out songs...
 or maybe you just REALLY like your playlist.
 
-TODO: notification of play count? Non-shuffle? Integration with main UI?
+TODO: notification of play count?
 """
 
 from gi.repository import Gtk
 
-from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderShuffleMixin
+from quodlibet.plugins.playorder import RepeatPlugin
 from quodlibet.util.dprint import print_d
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.qltk import Icons
 
 
-class TrackRepeatOrder(PlayOrderPlugin,
-                       PlayOrderShuffleMixin, PluginConfigMixin):
+class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
     PLUGIN_ID = "track_repeat"
-    PLUGIN_NAME = _("Track Repeat")
+    PLUGIN_NAME = _("Repeat Each Track")
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_REPEAT
     PLUGIN_DESC = _("Shuffle songs, "
                     "but repeat every track a set number of times.")
@@ -70,13 +69,10 @@ class TrackRepeatOrder(PlayOrderPlugin,
         self.restart_counting()
         return super(TrackRepeatOrder, self).next(*args)
 
-    def previous(self, *args):
-        return super(TrackRepeatOrder, self).previous(*args)
-
     def set(self, playlist, iter):
         self.restart_counting()
         return super(TrackRepeatOrder, self).set(playlist, iter)
 
     def reset(self, playlist):
-        super(TrackRepeatOrder, self).reset(playlist)
         self.play_count = 0
+        return super(TrackRepeatOrder, self).reset(playlist)

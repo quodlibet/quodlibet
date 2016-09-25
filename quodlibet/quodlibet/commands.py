@@ -163,7 +163,7 @@ def _order(app, value):
     order = app.window.order
 
     if value in ["t", "toggle"]:
-        order.set_shuffle(not order.get_shuffle())
+        order.shuffled = not order.shuffled
         return
 
     try:
@@ -192,11 +192,11 @@ def _stop_after(app, value):
 def _repeat(app, value):
     repeat = app.window.repeat
     if value in ["0", "off"]:
-        repeat.set_active(False)
+        repeat.enabled = False
     elif value in ["1", "on"]:
-        repeat.set_active(True)
+        repeat.enabled = True
     elif value in ["t", "toggle"]:
-        repeat.set_active(not repeat.get_active())
+        repeat.enabled = not repeat.enabled
 
 
 @registry.register("seek", args=1)
@@ -393,7 +393,7 @@ def _status(app):
     strings.append(type(app.browser).__name__)
     strings.append("%0.3f" % player.volume)
     strings.append(window.order.get_active_name())
-    strings.append((window.repeat.get_active() and "on") or "off")
+    strings.append("on" if window.repeat.enabled else "off")
     progress = 0
     if player.info:
         length = player.info.get("~#length", 0)

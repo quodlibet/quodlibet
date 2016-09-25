@@ -61,22 +61,10 @@ class PlayOrderPlugin(quodlibet.qltk.playorder.Order):
     priority = quodlibet.qltk.playorder.Order.priority
 
 
-class PlayOrderRememberedMixin(quodlibet.qltk.playorder.OrderRemembered):
-    name = None
-    display_name = None
-    accelerated_name = None
-    priority = quodlibet.qltk.playorder.Order.priority
+class RepeatPlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Repeat):
+    pass
 
 
-class PlayOrderInOrderMixin(quodlibet.qltk.playorder.OrderInOrder):
-    name = None
-    display_name = None
-    accelerated_name = None
-    priority = quodlibet.qltk.playorder.Order.priority
+class ShufflePlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Reorder):
+    pass
 
-
-class PlayOrderShuffleMixin(quodlibet.qltk.playorder.OrderShuffle):
-    name = None
-    display_name = None
-    accelerated_name = None
-    priority = quodlibet.qltk.playorder.Order.priority

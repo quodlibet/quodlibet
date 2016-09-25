@@ -3,11 +3,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet.plugins.playorder import ShufflePlugin
 from quodlibet.qltk import Icons
-from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderInOrderMixin
+from quodlibet.qltk.playorder import OrderInOrder
 
 
-class ReverseOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
+class ReverseOrder(ShufflePlugin, OrderInOrder):
     PLUGIN_ID = "reverse"
     PLUGIN_NAME = _("Reverse")
     PLUGIN_ICON = Icons.MEDIA_SKIP_BACKWARD

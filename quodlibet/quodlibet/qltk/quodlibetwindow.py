@@ -35,7 +35,7 @@ from quodlibet.qltk.info import SongInfo
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.notif import StatusBar, TaskController
-from quodlibet.qltk.playorder import PlayOrder
+from quodlibet.qltk.playorder import PlayOrderWidget
 from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.prefs import PreferencesWindow
@@ -43,7 +43,7 @@ from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action
-from quodlibet.qltk.x import SymbolicIconImage, ToggleAction, RadioAction
+from quodlibet.qltk.x import ToggleAction, RadioAction
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem, CellRendererPixbuf
 from quodlibet.qltk import Icons
 from quodlibet.qltk.about import AboutDialog
@@ -80,13 +80,9 @@ class PlayerOptions(GObject.Object):
     }
 
     def __init__(self, window):
-        """windows is a QuodLibetWindow"""
+        """`window` is a QuodLibetWindow"""
 
         super(PlayerOptions, self).__init__()
-
-        self._repeat = window.repeat
-        self._rid = self._repeat.connect(
-            "toggled", lambda *x: self.notify("repeat"))
 
         self._stop_after = window.stop_after
         self._said = self._stop_after.connect(
@@ -105,9 +101,6 @@ class PlayerOptions(GObject.Object):
         self.destroy()
 
     def destroy(self):
-        if self._repeat:
-            self._repeat.disconnect(self._rid)
-            self._repeat = None
         if self._order:
             self._order.disconnect(self._oid)
             self._order = None
@@ -129,34 +122,38 @@ class PlayerOptions(GObject.Object):
         When `repeat` is True the current song will be replayed.
         """
 
-        return self._order.get_active_name() == "onesong"
+        # FIXME: Add OneSong repeat mode etc
+        return False
 
     @single.setter
     def single(self, value):
         if value and not self.single:
-            self._order.set_active_by_name("onesong")
+            # self._order.set_active_by_name("onesong")
+            pass
         elif not value and self.single:
-            self._order.set_active_by_name("inorder")
+            pass
 
     @property
     def random(self):
         """If a random based play order is active"""
 
-        return self._order.get_shuffle()
+        return self._order.shuffled
 
     @random.setter
     def random(self, value):
-        self._order.set_shuffle(value)
+        # raise NotImplementedError
+        pass
 
     @property
     def repeat(self):
         """If the playlist will be restarted if it ended"""
 
-        return self._repeat.get_active()
+        return self._order.repeated
 
     @repeat.setter
     def repeat(self, value):
-        self._repeat.set_active(value)
+        # raise NotImplementedError
+        pass
 
     @property
     def stop_after(self):
@@ -166,7 +163,7 @@ class PlayerOptions(GObject.Object):
 
     @stop_after.setter
     def stop_after(self, value):
-        self._stop_after.set_active(value)
+        pass
 
 
 class DockMenu(Gtk.Menu):
@@ -379,34 +376,6 @@ class TopBar(Gtk.Toolbar):
             library.albums.refresh(refresh_albums)
 
 
-class RepeatButton(Gtk.ToggleButton):
-
-    def __init__(self):
-        super(RepeatButton, self).__init__(
-            image=SymbolicIconImage(
-                "media-playlist-repeat", Gtk.IconSize.SMALL_TOOLBAR))
-
-        self.set_name("ql-repeat-button")
-        qltk.add_css(self, """
-            #ql-repeat-button {
-                padding: 0px;
-            }
-        """)
-        self.set_size_request(26, 26)
-
-        self.set_tooltip_text(_("Restart the playlist when finished"))
-
-        self.bind_config("settings", "repeat")
-
-    def bind_config(self, section, option):
-        self.set_active(config.getboolean(section, option))
-
-        def toggled_cb(*args):
-            config.set(section, option, self.get_active())
-
-        self.connect('toggled', toggled_cb)
-
-
 class QueueButton(Gtk.ToggleButton):
 
     def __init__(self):
@@ -431,17 +400,9 @@ class QueueButton(Gtk.ToggleButton):
 
 class StatusBarBox(Gtk.HBox):
 
-    def __init__(self, model, player, queue):
+    def __init__(self, play_order, queue):
         super(StatusBarBox, self).__init__(spacing=6)
-
-        self.order = order = PlayOrder(model, player)
-        self.pack_start(order, False, True, 0)
-
-        self.repeat = repeat = RepeatButton()
-        self.pack_start(repeat, False, True, 0)
-        repeat.connect('toggled', self.__repeat, model)
-        model.repeat = repeat.get_active()
-
+        self.pack_start(play_order, False, True, 0)
         self.statusbar = StatusBar(TaskController.default_instance)
         self.pack_start(self.statusbar, True, True, 0)
         queue_button = QueueButton()
@@ -450,10 +411,6 @@ class StatusBarBox(Gtk.HBox):
         queue_button.props.active = queue.props.visible
 
         self.pack_start(queue_button, False, True, 0)
-
-    def __repeat(self, button, model):
-        model.repeat = button.get_active()
-
 
 class AppMenu(object):
     """Implements a app menu proxy mirroring some main menu items
@@ -793,9 +750,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         self.__browserbox = Align(bottom=3)
         main_box.pack_start(self.__browserbox, True, True, 0)
 
-        statusbox = StatusBarBox(self.songlist.model, player, self.qexpander)
-        self.order = statusbox.order
-        self.repeat = statusbox.repeat
+        play_order = PlayOrderWidget(self.songlist.model, player)
+        statusbox = StatusBarBox(play_order, self.qexpander)
+        self.order = play_order
         self.statusbar = statusbox.statusbar
 
         main_box.pack_start(

@@ -48,9 +48,16 @@ INITIAL = {
         "queue_expanded": "false", # on or off
         "shufflequeue": "false", # on or off
         "sortby": "0album", # <reversed?>tagname, song list sort
-        "order": "inorder",
-        "order_shuffle": "shuffle",
+
+        # Repeat on or off
+        "repeat": "false",
+        # The Repeat (Order) to use
+        "repeat_mode": "repeat_song",
+
+        # Shuffle on or off
         "shuffle": "false",
+        # The Shuffle (Order) to use
+        "shuffle_mode": "random",
         "plugin_selection": "", # selected plugin in manager
         "column_widths": "", # column widths in c1,w1,c2,w2... format
         "column_expands": "",
@@ -97,9 +104,6 @@ INITIAL = {
 
         # rating symbol (hollow star)
         "rating_symbol_blank": "\xe2\x98\x86",
-
-        # probably belongs in memory
-        "repeat": "false",
 
         # Now deprecated: space-separated headers column
         #"headers": " ".join(const.DEFAULT_COLUMNS),
