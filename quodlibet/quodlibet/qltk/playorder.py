@@ -429,7 +429,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
                 label=order.accelerated_name,
                 use_underline=True,
                 group=group)
-            group.set_active(order.name == self.__current)
+            group.set_active(order == self.__current)
             group.connect("toggled", toggled_cb, order)
             menu.append(group)
         menu.show_all()

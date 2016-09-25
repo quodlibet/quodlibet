@@ -20,6 +20,8 @@ from quodlibet.util.dprint import print_d
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.qltk import Icons
 
+START_COUNT = 1
+
 
 class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
     PLUGIN_ID = "track_repeat"
@@ -29,8 +31,11 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
                     "but repeat every track a set number of times.")
     PLAY_EACH_DEFAULT = 2
 
+    START_COUNT = 1
+    """By the time this plugin is invoked, the song has already been played"""
+
     # Plays of the current song
-    play_count = 0
+    play_count = START_COUNT
 
     @classmethod
     def PluginPreferences(cls, parent):
@@ -52,22 +57,22 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
         return vb
 
     def restart_counting(self):
-        self.play_count = 0
+        self.play_count = START_COUNT
         print_d("Resetting play count")
 
     def next(self, playlist, iter):
-        self.play_count += 1
         play_each = int(self.config_get('play_each', self.PLAY_EACH_DEFAULT))
-        print_d("Play count now at %d/%d" % (self.play_count, play_each))
-        if self.play_count < play_each and iter is not None:
+        self.play_count += 1
+        if self.play_count <= play_each and iter is not None:
+            print_d("Play count now at %d/%d" % (self.play_count, play_each))
             return iter
         else:
             self.restart_counting()
-            return super(TrackRepeatOrder, self).next(playlist, iter)
+            return self.wrapped.next(playlist, iter)
 
-    def next_explicit(self, *args):
+    def next_explicit(self, playlist, iter):
         self.restart_counting()
-        return super(TrackRepeatOrder, self).next(*args)
+        return self.wrapped.next_explicit(playlist, iter)
 
     def set(self, playlist, iter):
         self.restart_counting()
