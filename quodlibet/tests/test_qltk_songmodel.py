@@ -10,8 +10,8 @@ from gi.repository import Gtk
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.formats import AudioFile
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
-from quodlibet.qltk.playorder import DEFAULT_SHUFFLE_ORDERS, Order, \
-    OrderShuffle, OrderWeighted, OrderInOrder, RepeatSongForever
+from quodlibet.qltk.playorder import Order, OrderShuffle, OrderWeighted, \
+    OrderInOrder, RepeatSongForever, RepeatListForever
 
 
 def do_events():
@@ -124,6 +124,7 @@ class TPlaylistModel(TestCase):
             self.assertEqual(sorted(history), list(range(10)))
             self.pl.next()
             self.assertEqual(self.pl.current, None)
+            self.pl.order.reset(self.pl)
 
     def test_weighted(self):
         self.pl.order = OrderWeighted()
@@ -147,11 +148,10 @@ class TPlaylistModel(TestCase):
             self.assertEqual(self.pl.current, old)
 
     def test_shuffle_repeat(self):
-        self.pl.order = RepeatSongForever(OrderShuffle())
-        numbers = [self.pl.current for i in range(30)
+        self.pl.order = RepeatListForever(OrderShuffle())
+        numbers = [self.pl.current for _ in range(30)
                    if self.pl.next() or True]
-        allnums = list(range(10)) * 3
-        allnums.sort()
+        allnums = sorted(list(range(10)) * 3)
         self.assertNotEqual(numbers, allnums)
         numbers.sort()
         self.assertEqual(numbers, allnums)

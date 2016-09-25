@@ -84,27 +84,24 @@ class Order(object):
 
 
 class Reorder(Order):
-    """Marker for all Orders that potentially reorder the playlist,
+    """Base class for all `Order`s that potentially reorder the playlist,
     and thus usually identify as a "shuffle" implementation."""
     pass
 
 
 class Repeat(Order):
-    """How to repeat.
-    The implementation is essentially a delegate pattern,
-    though."""
-        
+    """Repeat, in some way, over a supplied `Order`"""
+
     def __init__(self, wrapped):
         super(Repeat, self).__init__()
         assert isinstance(wrapped, Order)
         self.wrapped = wrapped
 
+    def next(self, playlist, iter):
+        raise NotImplementedError
+
     def set(self, playlist, iter):
         return self.wrapped.set(playlist, iter)
-
-    def next(self, playlist, iter):
-        """Override this"""
-        return self.wrapped.next(playlist, iter)
 
     def previous(self, playlist, iter):
         return self.wrapped.previous(playlist, iter)
@@ -118,11 +115,24 @@ class Repeat(Order):
 
 class RepeatSongForever(Repeat):
     name = "repeat_song"
-    display_name = _("Repeat this track forever")
-    accelerated_name = _("Repeat this track forever")
+    display_name = _("Repeat track")
+    accelerated_name = _("Repeat track")
 
     def next(self, playlist, iter):
         return iter
+
+
+class RepeatListForever(Repeat):
+    name = "repeat_all"
+    display_name = _("Repeat all")
+    accelerated_name = _("Repeat all")
+
+    def next(self, playlist, iter):
+        next = self.wrapped.next(playlist, iter)
+        if next:
+            return next
+        self.wrapped.reset(playlist)
+        return playlist.get_iter_first()
 
 
 class OrderInOrder(Order):
@@ -294,7 +304,7 @@ class PluggableOrders(Orders, PluginManager):
         self.remove(plugin.cls)
 
 DEFAULT_SHUFFLE_ORDERS = [OrderShuffle, OrderWeighted]
-DEFAULT_REPEAT_ORDERS = [RepeatSongForever]
+DEFAULT_REPEAT_ORDERS = [RepeatSongForever, RepeatListForever]
 
 
 class ToggledPlayOrderMenu(Gtk.Box):

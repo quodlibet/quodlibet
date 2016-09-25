@@ -412,6 +412,7 @@ class StatusBarBox(Gtk.HBox):
 
         self.pack_start(queue_button, False, True, 0)
 
+
 class AppMenu(object):
     """Implements a app menu proxy mirroring some main menu items
     to a new menu and exporting it on the session bus.

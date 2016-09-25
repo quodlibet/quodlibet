@@ -36,9 +36,10 @@ class TPlayOrderWidget(TestCase):
         self.failUnless(self.replaygain_profiles[2], ["album", "track"])
 
     def test_replay_gain(self):
+        self.po.shuffled = True
         self.po.shuffler = OrderWeighted
         self.failUnlessEqual(self.replaygain_profiles[2], ["track"])
-        self.po.shuffler.current = OrderInOrder
+        self.po.shuffled = False
         self.failUnlessEqual(self.replaygain_profiles[2], ["album", "track"])
 
     def test_get_name(self):
@@ -75,6 +76,7 @@ class TToggledPlayOrderMenu(TestCase):
                                          orders=self.orders,
                                          current_order=OrderShuffle,
                                          enabled=True)
+
     def tearDown(self):
         self.tpom.destroy()
 

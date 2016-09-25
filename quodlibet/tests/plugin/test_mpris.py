@@ -38,6 +38,7 @@ A2.sanitize()
 
 MAX_TIME = 3
 
+
 @skipUnless(dbus, "no dbus")
 class TMPRIS(PluginTestCase):
 
