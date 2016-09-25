@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-27 12:25+0200\n"
+"POT-Creation-Date: 2016-09-25 18:39+0200\n"
 "PO-Revision-Date: 2015-01-05 14:45+0800\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
@@ -1443,7 +1443,7 @@ msgid "_Cover size:"
 msgstr "Общий размер:"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:176
-#: ../quodlibet/ext/events/lyricswindow.py:332
+#: ../quodlibet/ext/events/lyricswindow.py:335
 msgid "Display"
 msgstr "Вид"
 
@@ -1735,47 +1735,47 @@ msgstr ""
 msgid "Outputs a Jabber User Tunes file to ~/.quodlibet/jabber."
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:197
+#: ../quodlibet/ext/events/lyricswindow.py:200
 #, fuzzy
 msgid "No active song"
 msgstr "%d композиция"
 
-#: ../quodlibet/ext/events/lyricswindow.py:213
+#: ../quodlibet/ext/events/lyricswindow.py:216
 msgid "No lyrics found"
 msgstr "Слова песни не найдены"
 
-#: ../quodlibet/ext/events/lyricswindow.py:225
+#: ../quodlibet/ext/events/lyricswindow.py:228
 msgid "Lyrics:"
 msgstr "Текст песни:"
 
-#: ../quodlibet/ext/events/lyricswindow.py:282
+#: ../quodlibet/ext/events/lyricswindow.py:285
 #, fuzzy
 msgid "_Zoom level:"
 msgstr "_Уровень:"
 
-#: ../quodlibet/ext/events/lyricswindow.py:300
+#: ../quodlibet/ext/events/lyricswindow.py:303
 msgid "URL:"
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:305
+#: ../quodlibet/ext/events/lyricswindow.py:308
 #, fuzzy
 msgid "Revert to default"
 msgstr "Сбросить на шаблон по умолчанию"
 
-#: ../quodlibet/ext/events/lyricswindow.py:320
+#: ../quodlibet/ext/events/lyricswindow.py:323
 msgid "Search via above URL if the lyrics couldn't be found in LyricsWikia."
 msgstr ""
 
-#: ../quodlibet/ext/events/lyricswindow.py:337
+#: ../quodlibet/ext/events/lyricswindow.py:340
 #, fuzzy
 msgid "Alternate search"
 msgstr "Очистить поле поиска"
 
-#: ../quodlibet/ext/events/lyricswindow.py:345
+#: ../quodlibet/ext/events/lyricswindow.py:348
 msgid "Lyrics Window"
 msgstr "Окно с текстом песни"
 
-#: ../quodlibet/ext/events/lyricswindow.py:346
+#: ../quodlibet/ext/events/lyricswindow.py:349
 msgid "Shows a window containing lyrics of the playing song."
 msgstr "Позволяет открыть отдельное окно с текстом песни."
 
@@ -1847,92 +1847,92 @@ msgstr "Скрывать главное окно при закрытии"
 msgid "Preferences"
 msgstr "Параметры"
 
-#: ../quodlibet/ext/events/mqtt.py:39
+#: ../quodlibet/ext/events/mqtt.py:44
 #: ../quodlibet/ext/events/telepathy_status.py:68
 msgid "paused"
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:44
+#: ../quodlibet/ext/events/mqtt.py:49
 #, python-format
 msgid "Accepts QL Patterns e.g. %s"
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:50
+#: ../quodlibet/ext/events/mqtt.py:55
 msgid "MQTT Publisher"
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:51
+#: ../quodlibet/ext/events/mqtt.py:56
 msgid "Publishes status messages to an MQTT topic."
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:116
+#: ../quodlibet/ext/events/mqtt.py:121
 msgid "Broker hostname"
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:116
+#: ../quodlibet/ext/events/mqtt.py:121
 msgid "broker hostname / IP"
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:118
+#: ../quodlibet/ext/events/mqtt.py:123
 msgid "Broker port"
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:118
+#: ../quodlibet/ext/events/mqtt.py:123
 msgid "broker port"
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:120
+#: ../quodlibet/ext/events/mqtt.py:125
 msgid "Topic"
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:122
+#: ../quodlibet/ext/events/mqtt.py:127
 #, fuzzy
 msgid "Playing Pattern"
 msgstr "Сохранённые шаблоны"
 
-#: ../quodlibet/ext/events/mqtt.py:124
+#: ../quodlibet/ext/events/mqtt.py:129
 msgid "Status text when a song is started."
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:126
+#: ../quodlibet/ext/events/mqtt.py:131
 #, fuzzy
 msgid "Paused Pattern"
 msgstr "Сохранённые шаблоны"
 
-#: ../quodlibet/ext/events/mqtt.py:128
+#: ../quodlibet/ext/events/mqtt.py:133
 msgid "Text when a song is paused."
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:130
+#: ../quodlibet/ext/events/mqtt.py:135
 #, fuzzy
 msgid "No-song Text"
 msgstr "%d композиция"
 
-#: ../quodlibet/ext/events/mqtt.py:132
+#: ../quodlibet/ext/events/mqtt.py:137
 msgid "Plain text for when there is no current song"
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:143
+#: ../quodlibet/ext/events/mqtt.py:148
 #, fuzzy
 msgid "MQTT Configuration"
 msgstr "Параметры воспроизведения"
 
-#: ../quodlibet/ext/events/mqtt.py:147
+#: ../quodlibet/ext/events/mqtt.py:152
 #, fuzzy
 msgid "Status Text"
 msgstr "Состояние"
 
-#: ../quodlibet/ext/events/mqtt.py:179
+#: ../quodlibet/ext/events/mqtt.py:184
 #, python-format
 msgid "Connected to broker at %(host)s:%(port)d"
 msgstr ""
 
-#: ../quodlibet/ext/events/mqtt.py:183
+#: ../quodlibet/ext/events/mqtt.py:188
 #, fuzzy, python-format
 msgid "Couldn't connect to %(host)s:%(port)d (%(msg)s"
 msgstr "Не удалось подключиться к %s"
 
-#: ../quodlibet/ext/events/mqtt.py:186
+#: ../quodlibet/ext/events/mqtt.py:191
 #, fuzzy
 msgid "Connection error"
 msgstr "Ошибка соединения"
