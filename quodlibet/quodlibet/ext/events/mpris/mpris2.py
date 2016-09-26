@@ -317,7 +317,7 @@ value="false"/>
             elif name == "Rate":
                 pass
             elif name == "Shuffle":
-                player_options.random = value
+                player_options.shuffle = value
             elif name == "Volume":
                 player.volume = value
 
@@ -362,7 +362,7 @@ value="false"/>
             elif name == "Rate":
                 return 1.0
             elif name == "Shuffle":
-                return player_options.random
+                return player_options.shuffle
             elif name == "Metadata":
                 return self.__get_metadata()
             elif name == "Volume":

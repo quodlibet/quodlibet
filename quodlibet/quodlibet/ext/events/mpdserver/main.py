@@ -287,7 +287,7 @@ class MPDService(object):
         self._options.repeat = value
 
     def random(self, value):
-        self._options.random = value
+        self._options.shuffle = value
 
     def single(self, value):
         self._options.single = value
@@ -321,7 +321,7 @@ class MPDService(object):
         status = [
             ("volume", int((app.player.volume ** (1.0 / 3.0)) * 100)),
             ("repeat", int(self._options.repeat)),
-            ("random", int(self._options.random)),
+            ("random", int(self._options.shuffle)),
             ("single", int(self._options.single)),
             ("consume", 0),
             ("playlist", self._pl_ver),
@@ -727,7 +727,7 @@ def _cmd_repeat(conn, service, args):
 def _cmd_random(conn, service, args):
     _verify_length(args, 1)
     value = _parse_bool(args[0])
-    service.random(value)
+    service.shuffle(value)
 
 
 @MPDConnection.Command("single")

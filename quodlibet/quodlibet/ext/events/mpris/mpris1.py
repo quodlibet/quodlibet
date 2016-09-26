@@ -76,7 +76,7 @@ class MPRIS1DummyTracklist(MPRISObject):
 
     @dbus.service.method(IFACE, in_signature="b")
     def SetRandom(self, value):
-        app.player_options.random = value
+        app.player_options.shuffle = value
 
 
 class MPRIS1Player(MPRISObject):
@@ -190,7 +190,7 @@ class MPRIS1Player(MPRISObject):
             play = 0 if not app.player.paused else 1
         else:
             play = 2
-        shuffle = app.player_options.random
+        shuffle = app.player_options.shuffle
         repeat_one = app.player_options.single
         repeat_all = app.player_options.repeat
 

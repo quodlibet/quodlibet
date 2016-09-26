@@ -92,8 +92,8 @@ class PlayerOptions(GObject.Object):
             self.notify("random")
             self.notify("single")
 
-        self._order = window.order
-        self._oid = self._order.connect("changed", order_changed)
+        self._order_widget = window.order
+        self._oid = self._order_widget.connect("changed", order_changed)
 
         window.connect("destroy", self._window_destroy)
 
@@ -101,9 +101,9 @@ class PlayerOptions(GObject.Object):
         self.destroy()
 
     def destroy(self):
-        if self._order:
-            self._order.disconnect(self._oid)
-            self._order = None
+        if self._order_widget:
+            self._order_widget.disconnect(self._oid)
+            self._order_widget = None
         if self._stop_after:
             self._stop_after.disconnect(self._said)
             self._stop_after = None
@@ -134,26 +134,24 @@ class PlayerOptions(GObject.Object):
             pass
 
     @property
-    def random(self):
-        """If a random based play order is active"""
+    def shuffle(self):
+        """If a shuffle-like (reordering) play order is active"""
 
-        return self._order.shuffled
+        return self._order_widget.shuffled
 
-    @random.setter
-    def random(self, value):
-        # raise NotImplementedError
-        pass
+    @shuffle.setter
+    def shuffle(self, value):
+        self._order_widget.shuffled = value
 
     @property
     def repeat(self):
-        """If the playlist will be restarted if it ended"""
+        """If the player is in some kind of repeat mode"""
 
-        return self._order.repeated
+        return self._order_widget.repeated
 
     @repeat.setter
     def repeat(self, value):
-        # raise NotImplementedError
-        pass
+        self._order_widget.repeated = value
 
     @property
     def stop_after(self):
@@ -163,7 +161,7 @@ class PlayerOptions(GObject.Object):
 
     @stop_after.setter
     def stop_after(self, value):
-        pass
+        self._stop_after.set_active(value)
 
 
 class DockMenu(Gtk.Menu):
