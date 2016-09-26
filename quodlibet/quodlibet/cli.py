@@ -7,6 +7,8 @@
 
 import os
 import sys
+
+from quodlibet import C_
 from quodlibet.util.dprint import print_, print_e
 from quodlibet.remote import Remote, RemoteError
 

@@ -117,8 +117,6 @@ def npgettext(context, singular, plural, n):
 
 
 builtins.__dict__["_"] = _
-builtins.__dict__["N_"] = N_
-builtins.__dict__["C_"] = C_
 
 _cli_initialized = False
 _initialized = False

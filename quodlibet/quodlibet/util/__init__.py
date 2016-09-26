@@ -531,6 +531,7 @@ def tag(name, cap=True):
     if not name:
         return _("Invalid tag")
     else:
+        from quodlibet import C_
         from quodlibet.util.tags import readable
         parts = map(readable, tagsplit(name))
         if cap:
