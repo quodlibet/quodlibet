@@ -11,6 +11,7 @@ from gi.repository import Gtk
 import mutagen
 
 import quodlibet
+from quodlibet import _
 from quodlibet.qltk import gtk_version, pygobject_version, get_backend_name
 from quodlibet import const
 from quodlibet import formats

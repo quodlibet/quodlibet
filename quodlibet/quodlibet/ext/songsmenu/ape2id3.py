@@ -8,6 +8,7 @@
 
 import mutagen.apev2
 
+from quodlibet import _
 from quodlibet.formats import AudioFileError
 from quodlibet.formats._apev2 import APEv2File
 from quodlibet.plugins.songshelpers import each_song, is_writable

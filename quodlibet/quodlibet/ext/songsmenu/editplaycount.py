@@ -8,6 +8,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.plugins.songshelpers import each_song, is_writable
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons

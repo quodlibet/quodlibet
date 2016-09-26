@@ -8,6 +8,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
 from quodlibet.plugins.songshelpers import any_song, has_bookmark

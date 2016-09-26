@@ -10,7 +10,7 @@ from gi.repository import Gtk
 
 from quodlibet.qltk.pluginwin import PluginWindow
 
-from quodlibet import ngettext
+from quodlibet import ngettext, _
 from quodlibet import qltk
 
 from quodlibet.util import print_exc, print_e, print_w

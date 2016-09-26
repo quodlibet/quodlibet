@@ -13,7 +13,7 @@ from gi.repository import Gtk
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet import ngettext
+from quodlibet import ngettext, _
 from quodlibet.browsers._base import FakeDisplayItem, EditDisplayPatternMixin
 from quodlibet.formats import PEOPLE
 from quodlibet.qltk import Button, Icons

@@ -10,7 +10,7 @@
 from gi.repository import Gtk, GObject, Pango
 from senf import fsn2text
 
-from quodlibet import ngettext
+from quodlibet import ngettext, _
 from quodlibet import qltk
 from quodlibet import config
 

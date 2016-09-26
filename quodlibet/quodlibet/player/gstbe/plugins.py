@@ -6,6 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.plugins.gstelement import GStreamerPlugin

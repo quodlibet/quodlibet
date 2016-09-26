@@ -11,6 +11,7 @@ import os
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet import config
 from quodlibet.qltk import Icons

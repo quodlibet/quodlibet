@@ -7,7 +7,7 @@
 
 from gi.repository import Gtk
 
-from quodlibet import ngettext
+from quodlibet import ngettext, _
 from quodlibet.qltk import get_top_parent, get_menu_item_top_parent
 from quodlibet.qltk.msg import WarningMessage
 from quodlibet.qltk.x import SeparatorMenuItem

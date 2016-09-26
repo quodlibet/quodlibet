@@ -7,6 +7,7 @@
 
 from gi.repository import Gtk, Pango
 
+from quodlibet import _
 from quodlibet.compat import parse_qs, urlparse, iteritems
 from quodlibet import config, app
 from quodlibet import qltk

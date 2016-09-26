@@ -10,7 +10,7 @@ import os
 from gi.repository import Gtk, Gdk
 
 import quodlibet
-from quodlibet import ngettext
+from quodlibet import ngettext, _
 from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk

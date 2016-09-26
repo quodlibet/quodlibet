@@ -39,6 +39,7 @@ from .environment import is_plasma, is_unity, is_enlightenment, \
     is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console, \
     is_py2exe_window
 from .enum import enum
+from .i18n import _, C_
 
 
 # pyflakes
@@ -531,7 +532,6 @@ def tag(name, cap=True):
     if not name:
         return _("Invalid tag")
     else:
-        from quodlibet import C_
         from quodlibet.util.tags import readable
         parts = map(readable, tagsplit(name))
         if cap:

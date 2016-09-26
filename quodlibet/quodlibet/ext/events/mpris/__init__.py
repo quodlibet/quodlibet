@@ -21,6 +21,7 @@ try:
 except ImportError:
     indicate = None
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import config
 from quodlibet import qltk

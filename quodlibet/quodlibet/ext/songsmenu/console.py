@@ -34,6 +34,7 @@ import traceback
 
 from gi.repository import Gtk, Pango, Gdk, GLib
 
+from quodlibet import _
 from quodlibet import const
 from quodlibet.qltk import Icons
 from quodlibet.compat import exec_

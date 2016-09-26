@@ -16,6 +16,7 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
 
 from quodlibet.query import Query
 from quodlibet.pattern import Pattern

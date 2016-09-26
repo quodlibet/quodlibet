@@ -14,6 +14,7 @@ from quodlibet import devices
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
+from quodlibet import _
 
 from quodlibet.browsers import Browser
 from quodlibet.formats import AudioFile

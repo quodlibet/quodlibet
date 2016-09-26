@@ -8,6 +8,7 @@
 
 import os
 
+from quodlibet import _
 from quodlibet import util, qltk
 from quodlibet.plugins.songshelpers import each_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin

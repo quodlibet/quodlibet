@@ -9,6 +9,7 @@ import contextlib
 
 from gi.repository import GObject, Gtk
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons

@@ -7,6 +7,8 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
+
 
 class GetPlayerDialog(Gtk.Dialog):
     def __init__(self, parent, players, current=0):

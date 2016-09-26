@@ -8,6 +8,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons

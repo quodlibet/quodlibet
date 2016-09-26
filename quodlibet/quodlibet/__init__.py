@@ -26,98 +26,18 @@ from quodlibet.util import set_process_title, environ, cached_func
 from quodlibet.util import windows, is_osx, is_windows
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
-    fixup_i18n_envvars
+    fixup_i18n_envvars, set_translation, _, C_, N_, ngettext, npgettext
 from quodlibet.util.dprint import print_d, print_e
 from quodlibet import const
 from quodlibet import build
 from quodlibet.const import MinVersions
-from quodlibet.compat import PY2, text_type, builtins
+from quodlibet.compat import PY2
 
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
                "gstreamer", "covers", "query"]
 
-
-_translations = GlibTranslations()
-
-
-def _(message):
-    """
-    Args:
-        message (text_type)
-    Returns:
-        text_type
-
-    Lookup the translation for message
-    """
-
-    return _translations.wrap_text(_translations.ugettext(message))
-
-
-def N_(message):
-    """
-    Args:
-        message (text_type)
-    Returns:
-        text_type
-
-    Only marks a string for translation
-    """
-
-    return text_type(message)
-
-
-def C_(context, message):
-    """
-    Args:
-        context (text_type)
-        message (text_type)
-    Returns:
-        text_type
-
-    Lookup the translation for message for a context
-    """
-
-    return _translations.wrap_text(
-        _translations.upgettext(context, message))
-
-
-def ngettext(singular, plural, n):
-    """
-    Args:
-        singular (text_type)
-        plural (text_type)
-        n (int)
-    Returns:
-        text_type
-
-    Returns the translation for a singular or plural form depending
-    on the value of n.
-    """
-
-    return _translations.wrap_text(
-        _translations.ungettext(singular, plural, n))
-
-
-def npgettext(context, singular, plural, n):
-    """
-    Args:
-        context (text_type)
-        singular (text_type)
-        plural (text_type)
-        n (int)
-    Returns:
-        text_type
-
-    Like ngettext, but with also depends on the context.
-    """
-
-    return _translations.wrap_text(
-        _translations.unpgettext(context, singular, plural, n))
-
-
-builtins.__dict__["_"] = _
-
+_, C_, N_, ngettext, npgettext
 _cli_initialized = False
 _initialized = False
 
@@ -565,8 +485,6 @@ def _init_dbus():
 def _init_gettext():
     """Call before using gettext helpers"""
 
-    global _translations
-
     set_i18n_envvars()
     fixup_i18n_envvars()
 
@@ -603,7 +521,7 @@ def _init_gettext():
 
     debug_text = environ.get("QUODLIBET_TEST_TRANS")
     t.set_debug_text(debug_text)
-    _translations = t
+    set_translation(t)
 
 
 def _init_python():

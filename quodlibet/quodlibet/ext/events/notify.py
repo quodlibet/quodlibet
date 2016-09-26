@@ -25,6 +25,7 @@ import dbus
 from gi.repository import Gtk, GObject, GLib
 from senf import fsn2uri
 
+from quodlibet import _
 from quodlibet import config, qltk, app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import XMLFromPattern

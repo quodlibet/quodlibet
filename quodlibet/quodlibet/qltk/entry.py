@@ -10,6 +10,7 @@ import math
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
+from quodlibet import _
 from quodlibet.qltk import is_accel, add_fake_accel
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons

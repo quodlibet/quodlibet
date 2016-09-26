@@ -7,6 +7,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.tags import MACHINE_TAGS
 from quodlibet.util import build_filter_query

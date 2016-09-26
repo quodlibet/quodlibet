@@ -8,7 +8,7 @@
 
 from quodlibet.plugins.playorder import PlayOrderPlugin, \
     PlayOrderRememberedMixin, PlayOrderInOrderMixin
-
+from quodlibet import _
 from quodlibet import app
 from quodlibet.qltk import Icons
 

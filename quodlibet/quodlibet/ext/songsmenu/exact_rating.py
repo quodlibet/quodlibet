@@ -9,6 +9,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet.plugins.songshelpers import any_song
 from quodlibet.qltk.getstring import GetStringDialog

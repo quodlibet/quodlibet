@@ -9,7 +9,7 @@ import sys
 
 from gi.repository import Gtk, Pango, Gdk
 
-from quodlibet import ngettext, C_
+from quodlibet import ngettext, C_, _
 from quodlibet import qltk
 from quodlibet import config
 from quodlibet import util

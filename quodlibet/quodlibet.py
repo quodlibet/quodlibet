@@ -12,6 +12,7 @@
 import sys
 import os
 
+from quodlibet import _
 from quodlibet.cli import process_arguments, exit_
 from quodlibet.util.dprint import print_d, print_, format_exc
 from quodlibet import util

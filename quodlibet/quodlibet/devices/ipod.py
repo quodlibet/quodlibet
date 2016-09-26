@@ -11,6 +11,7 @@ import time
 from gi.repository import Gtk
 from senf import fsn2text
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet import app
 

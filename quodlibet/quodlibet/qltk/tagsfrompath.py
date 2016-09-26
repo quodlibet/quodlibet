@@ -13,6 +13,7 @@ from senf import fsn2text
 
 import quodlibet
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util

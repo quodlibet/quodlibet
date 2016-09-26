@@ -12,6 +12,7 @@ from quodlibet import config
 from quodlibet import util
 from quodlibet import browsers
 from quodlibet import app
+from quodlibet import _
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import ScrolledWindow, Action

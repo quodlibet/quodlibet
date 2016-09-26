@@ -18,7 +18,7 @@ import os
 from gi.repository import Gtk
 from senf import fsn2text
 
-from quodlibet import ngettext
+from quodlibet import ngettext, _
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk import Icons

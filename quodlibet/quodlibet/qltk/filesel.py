@@ -15,6 +15,7 @@ from senf import uri2fsn, fsnative, fsn2text
 from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import windows
+from quodlibet import _
 
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.views import AllTreeView, RCMHintedTreeView, \

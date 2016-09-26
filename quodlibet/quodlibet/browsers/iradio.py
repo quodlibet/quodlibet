@@ -16,6 +16,7 @@ from gi.repository import Gtk, GLib, Pango
 from quodlibet.util.dprint import print_d
 
 import quodlibet
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import config

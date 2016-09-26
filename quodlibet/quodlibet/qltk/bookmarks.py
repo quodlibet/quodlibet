@@ -12,6 +12,7 @@ from gi.repository import Gtk, Pango
 
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
 
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj

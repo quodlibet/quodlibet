@@ -15,6 +15,7 @@ if not Gst.ElementFactory.find("chromaprint"):
 from .submit import FingerprintDialog
 from .util import get_api_key
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet import util
 from quodlibet.qltk import Button, Frame, Icons

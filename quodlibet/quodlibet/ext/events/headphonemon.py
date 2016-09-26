@@ -19,6 +19,7 @@ import subprocess
 
 from gi.repository import GLib, GObject
 
+from quodlibet import _
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.util import print_d
 from quodlibet import app

@@ -10,6 +10,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import is_writable, each_song, is_finite

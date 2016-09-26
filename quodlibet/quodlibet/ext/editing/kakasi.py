@@ -14,6 +14,7 @@ if os.name == "nt" or sys.platform == "darwin":
 
 from gi.repository import Gtk, GObject
 
+from quodlibet import _
 from quodlibet.plugins.editing import RenameFilesPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util import connect_obj

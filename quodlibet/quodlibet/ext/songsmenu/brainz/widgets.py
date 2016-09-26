@@ -10,7 +10,7 @@
 from gi.repository import Gtk, Pango
 from senf import fsn2text
 
-from quodlibet import ngettext
+from quodlibet import ngettext, _
 from quodlibet import util
 from quodlibet.qltk import Dialog, Icons
 from quodlibet.qltk.models import ObjectStore

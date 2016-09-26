@@ -22,7 +22,7 @@ from quodlibet import ngettext
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
-
+from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.query import Query
 from quodlibet.browsers._base import DisplayPatternMixin

@@ -7,6 +7,7 @@
 
 from gi.repository import Gst, Gtk, GObject
 
+from quodlibet import _
 from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk

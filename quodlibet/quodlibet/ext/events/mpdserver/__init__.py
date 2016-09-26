@@ -16,6 +16,7 @@ import socket
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import app

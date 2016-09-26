@@ -11,6 +11,7 @@ import os
 
 from gi.repository import Gio
 
+from quodlibet import _
 from quodlibet.qltk import Icons
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin

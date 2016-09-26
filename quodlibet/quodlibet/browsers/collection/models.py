@@ -6,7 +6,7 @@
 # published by the Free Software Foundation
 
 from quodlibet import util
-
+from quodlibet import _
 from quodlibet.pattern import XMLFromPattern
 from quodlibet.util.collection import Album
 from quodlibet.qltk.models import ObjectTreeStore, ObjectModelFilter

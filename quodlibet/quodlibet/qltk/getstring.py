@@ -8,9 +8,10 @@
 
 from gi.repository import Gtk, Gdk
 
-from quodlibet.qltk.entry import UndoEntry
+from quodlibet import _
 from quodlibet.qltk.window import Dialog
 from quodlibet.qltk import Icons
+from quodlibet.qltk.entry import UndoEntry
 
 
 class GetStringDialog(Dialog):

@@ -16,6 +16,7 @@ if os.name == "nt" or sys.platform == "darwin":
 from gi.repository import Gtk
 import dbus
 
+from quodlibet import _
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
 from quodlibet.qltk import Frame, Icons

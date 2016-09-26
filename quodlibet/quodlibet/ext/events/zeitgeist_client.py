@@ -27,6 +27,7 @@ except ImportError as e:
     raise (plugins.MissingModulePluginException("zeitgeist") if
            hasattr(plugins, "MissingModulePluginException") else e)
 
+from quodlibet import _
 from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.util import print_d

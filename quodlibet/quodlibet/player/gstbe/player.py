@@ -19,6 +19,7 @@ from quodlibet import const
 from quodlibet import config
 from quodlibet import util
 from quodlibet import app
+from quodlibet import _
 
 from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError, \
     MainRunnerAbortedError, MainRunnerTimeoutError, print_w, print_d, \

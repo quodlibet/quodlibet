@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import browsers
 from quodlibet.plugins.songshelpers import any_song, is_a_file

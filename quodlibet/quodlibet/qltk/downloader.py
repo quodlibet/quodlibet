@@ -12,7 +12,7 @@ from gi.repository import Gtk, Pango, GLib
 
 from quodlibet import qltk
 from quodlibet import util
-
+from quodlibet import _
 from quodlibet.util import connect_obj
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem

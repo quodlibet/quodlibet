@@ -17,6 +17,7 @@ import tempfile
 
 from senf import fsn2text
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet.formats import EmbeddedImage, AudioFileError
 from quodlibet.util.path import mtime

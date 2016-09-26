@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, GdkPixbuf
 import quodlibet
 from quodlibet import util
 from quodlibet import app
-
+from quodlibet import _
 from quodlibet.devices._base import Device
 from quodlibet.library import SongFileLibrary
 from quodlibet.pattern import FileFromPattern

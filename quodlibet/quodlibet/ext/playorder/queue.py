@@ -6,7 +6,7 @@
 # published by the Free Software Foundation.
 
 from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderInOrderMixin
-
+from quodlibet import _
 from quodlibet import app
 from quodlibet.qltk import Icons
 

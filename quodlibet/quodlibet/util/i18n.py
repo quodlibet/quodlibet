@@ -185,3 +185,87 @@ class GlibTranslations(gettext.GNUTranslations):
 
     def install(self, *args, **kwargs):
         raise NotImplementedError("We no longer do builtins")
+
+
+_translations = GlibTranslations()
+
+
+def set_translation(trans):
+    global _translations
+
+    _translations = trans
+
+
+def _(message):
+    """
+    Args:
+        message (text_type)
+    Returns:
+        text_type
+
+    Lookup the translation for message
+    """
+
+    return _translations.wrap_text(_translations.ugettext(message))
+
+
+def N_(message):
+    """
+    Args:
+        message (text_type)
+    Returns:
+        text_type
+
+    Only marks a string for translation
+    """
+
+    return text_type(message)
+
+
+def C_(context, message):
+    """
+    Args:
+        context (text_type)
+        message (text_type)
+    Returns:
+        text_type
+
+    Lookup the translation for message for a context
+    """
+
+    return _translations.wrap_text(
+        _translations.upgettext(context, message))
+
+
+def ngettext(singular, plural, n):
+    """
+    Args:
+        singular (text_type)
+        plural (text_type)
+        n (int)
+    Returns:
+        text_type
+
+    Returns the translation for a singular or plural form depending
+    on the value of n.
+    """
+
+    return _translations.wrap_text(
+        _translations.ungettext(singular, plural, n))
+
+
+def npgettext(context, singular, plural, n):
+    """
+    Args:
+        context (text_type)
+        singular (text_type)
+        plural (text_type)
+        n (int)
+    Returns:
+        text_type
+
+    Like ngettext, but with also depends on the context.
+    """
+
+    return _translations.wrap_text(
+        _translations.unpgettext(context, singular, plural, n))

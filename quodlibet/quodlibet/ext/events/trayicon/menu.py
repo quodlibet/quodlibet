@@ -8,6 +8,7 @@
 
 from gi.repository import GObject, Gtk
 
+from quodlibet import _
 from quodlibet import browsers
 from quodlibet import qltk
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
