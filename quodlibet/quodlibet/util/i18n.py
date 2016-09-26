@@ -10,7 +10,7 @@ import sys
 import gettext
 import locale
 
-from quodlibet.compat import builtins, text_type, PY2
+from quodlibet.compat import text_type, PY2
 
 
 def bcp47_to_language(code):
@@ -129,6 +129,7 @@ class GlibTranslations(gettext.GNUTranslations):
         self._catalog = {}
         self.plural = lambda n: n != 1
         gettext.GNUTranslations.__init__(self, fp)
+        self._debug_text = None
 
     def ugettext(self, message):
         # force unicode here since __contains__ (used in gettext) ignores
@@ -173,21 +174,14 @@ class GlibTranslations(gettext.GNUTranslations):
             return msgid
         return result
 
-    def install(self, unicode=False, debug_text=None):
-        if not unicode:
-            raise NotImplementedError
+    def set_debug_text(self, debug_text):
+        self._debug_text = debug_text
 
-        if debug_text is not None:
-            def wrap(f):
-                def g(*args, **kwargs):
-                    return debug_text + f(*args, **kwargs) + debug_text
-                return g
+    def wrap_text(self, value):
+        if self._debug_text is None:
+            return value
         else:
-            def wrap(f):
-                return f
+            return self._debug_text + value + self._debug_text
 
-        builtins.__dict__["_"] = wrap(self.ugettext)
-        builtins.__dict__["N_"] = wrap(type(u""))
-        builtins.__dict__["C_"] = wrap(self.upgettext)
-        builtins.__dict__["ngettext"] = wrap(self.ungettext)
-        builtins.__dict__["npgettext"] = wrap(self.unpgettext)
+    def install(self, *args, **kwargs):
+        raise NotImplementedError("We no longer do builtins")
