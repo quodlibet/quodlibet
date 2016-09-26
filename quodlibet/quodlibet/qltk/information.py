@@ -10,6 +10,7 @@ import time
 from gi.repository import Gtk, Pango
 from senf import fsn2text
 
+from quodlibet import ngettext
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app

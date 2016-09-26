@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 from quodlibet import app
+from quodlibet import ngettext
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk import Icons
 from quodlibet.util import copool

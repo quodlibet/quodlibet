@@ -14,6 +14,7 @@ import random
 
 from senf import fsnative, fsn2bytes, bytes2fsn
 
+from quodlibet import ngettext
 from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT

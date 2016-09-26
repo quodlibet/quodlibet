@@ -6,7 +6,7 @@
 # published by the Free Software Foundation
 
 from quodlibet.formats import AudioFile
-from quodlibet.util.dprint import print_d
+from quodlibet import print_d, ngettext
 
 from quodlibet import qltk
 

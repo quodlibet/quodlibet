@@ -9,7 +9,7 @@ from gi.repository import Gtk
 
 from quodlibet.util import format_time_display, format_time_long,\
     format_size, tag
-
+from quodlibet import ngettext
 from quodlibet import qltk
 from quodlibet.browsers._base import EditDisplayPatternMixin, FakeDisplayItem
 from quodlibet.qltk import Button, Icons

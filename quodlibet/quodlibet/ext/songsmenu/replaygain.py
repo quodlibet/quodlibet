@@ -14,7 +14,8 @@ from gi.repository import GObject
 from gi.repository import Pango
 from gi.repository import Gst
 from gi.repository import GLib
-from quodlibet import print_d
+
+from quodlibet import print_d, ngettext
 from quodlibet.plugins import PluginConfigMixin
 
 from quodlibet.browsers.collection.models import EMPTY

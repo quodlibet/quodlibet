@@ -8,6 +8,7 @@
 from gi.repository import Gtk, Pango
 
 from quodlibet import qltk
+from quodlibet import ngettext
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
 from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent, Icons

@@ -9,6 +9,7 @@ import os
 
 from gi.repository import Gtk, GObject, Pango
 
+from quodlibet import ngettext
 from quodlibet import config
 from quodlibet import formats
 from quodlibet import qltk
