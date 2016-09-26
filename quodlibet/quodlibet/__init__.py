@@ -301,7 +301,7 @@ def _init_gtk():
     gi.require_version("Pango", "1.0")
     gi.require_version('Soup', '2.4')
 
-    from gi.repository import Gtk, Gdk, Soup
+    from gi.repository import Gtk, Soup
     from quodlibet.qltk import ThemeOverrider, gtk_version
 
     # Work around missing annotation in older libsoup (Ubuntu 14.04 at least)
