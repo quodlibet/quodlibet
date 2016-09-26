@@ -401,6 +401,53 @@ def add_signal_watch(signal_action):
         unix_signal_add(GLib.PRIORITY_HIGH, signum, handler, signum)
 
 
+class ThemeOverrider(object):
+    """Allows registering global Gtk.StyleProviders for a specific theme.
+    They get activated when the theme gets active and removed when the theme
+    changes to something else.
+    """
+
+    def __init__(self):
+        self._providers = {}
+        self._active_providers = []
+        settings = Gtk.Settings.get_default()
+        settings.connect("notify::gtk-theme-name", self._on_theme_name_notify)
+        settings.notify("gtk-theme-name")
+
+    def register_provider(self, theme_name, provider):
+        """
+        Args:
+            theme_name (str): A gtk+ theme name e.g. "Adwaita" or empty to
+                apply to all themes
+            provider (Gtk.StyleProvider)
+        """
+
+        self._providers.setdefault(theme_name, []).append(provider)
+        settings = Gtk.Settings.get_default()
+        settings.notify("gtk-theme-name")
+
+    def _on_theme_name_notify(self, settings, gparam):
+
+        theme_name = settings.get_property(gparam.name)
+        wanted_providers = \
+            self._providers.get(theme_name, []) + self._providers.get("", [])
+
+        for provider in list(self._active_providers):
+            if provider not in wanted_providers:
+                Gtk.StyleContext.remove_provider_for_screen(
+                    Gdk.Screen.get_default(), provider)
+            self._active_providers.remove(provider)
+
+        for provider in wanted_providers:
+            if provider not in self._active_providers:
+                Gtk.StyleContext.add_provider_for_screen(
+                    Gdk.Screen.get_default(),
+                    provider,
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                )
+                self._active_providers.append(provider)
+
+
 from .msg import Message, ErrorMessage, WarningMessage
 from .x import Align, Button, ToggleButton, Notebook, SeparatorMenuItem, \
     WebImage, MenuItem, Frame, EntryCompletion

@@ -302,6 +302,7 @@ def _init_gtk():
     gi.require_version('Soup', '2.4')
 
     from gi.repository import Gtk, Gdk, Soup
+    from quodlibet.qltk import ThemeOverrider, gtk_version
 
     # Work around missing annotation in older libsoup (Ubuntu 14.04 at least)
     message = Soup.Message()
@@ -361,6 +362,8 @@ def _init_gtk():
         print_e("PyGObject is missing cairo support")
         exit(1)
 
+    css_override = ThemeOverrider()
+
     # CSS overrides
     if os.name == "nt":
         # somehow borders are missing under Windows & Gtk+3.14
@@ -370,11 +373,7 @@ def _init_gtk():
                 border: 1px solid @borders;
             }
         """)
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
+        css_override.register_provider("", style_provider)
 
     if sys.platform == "darwin":
         # fix duplicated shadows for popups with Gtk+3.14
@@ -391,11 +390,26 @@ def _init_gtk():
                 background-clip: border-box;
             }
             """)
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
+        css_override.register_provider("", style_provider)
+
+    if gtk_version[:2] >= (3, 20):
+        # https://bugzilla.gnome.org/show_bug.cgi?id=761435
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data("""
+            spinbutton, button {
+                min-height: 1.8rem;
+            }
+
+            .view button {
+                min-height: 2.0rem;
+            }
+
+            entry {
+                min-height: 2.4rem;
+            }
+        """)
+        css_override.register_provider("Adwaita", style_provider)
+        css_override.register_provider("HighContrast", style_provider)
 
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
