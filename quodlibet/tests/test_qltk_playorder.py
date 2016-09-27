@@ -15,7 +15,6 @@ from tests import TestCase
 class TPlayOrderWidget(TestCase):
 
     def setUp(self):
-        # quodlibet.plugins.init()
         quodlibet.config.init()
 
         self.order = None
