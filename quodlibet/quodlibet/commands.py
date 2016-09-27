@@ -158,23 +158,6 @@ def _volume(app, value):
     app.player.volume = min(1.0, max(0.0, volume))
 
 
-@registry.register("order", args=1)
-def _order(app, value):
-    order = app.window.order
-
-    if value in ["t", "toggle"]:
-        order.shuffled = not order.shuffled
-        return
-
-    try:
-        order.set_active_by_name(value.lower())
-    except ValueError:
-        try:
-            order.set_active_by_index(int(value))
-        except (ValueError, IndexError):
-            pass
-
-
 @registry.register("stop-after", args=1)
 def _stop_after(app, value):
     po = app.player_options
@@ -188,15 +171,27 @@ def _stop_after(app, value):
         raise CommandError("Invalid value %r" % value)
 
 
+@registry.register("shuffle", args=1)
+def _shuffle(app, value):
+    po = app.player_options
+    if value in ["0", "off"]:
+        po.shuffle = False
+    elif value in ["1", "on"]:
+        po.shuffle = True
+    elif value in ["t", "toggle"]:
+        po.shuffle = not po.shuffle
+
+
 @registry.register("repeat", args=1)
 def _repeat(app, value):
-    repeat = app.window.repeat
+    po = app.player_options
     if value in ["0", "off"]:
-        repeat.enabled = False
+        po.repeat = False
     elif value in ["1", "on"]:
-        repeat.enabled = True
+        print_d("Enabling repeat")
+        po.repeat = True
     elif value in ["t", "toggle"]:
-        repeat.enabled = not repeat.enabled
+        po.repeat = not po.repeat
 
 
 @registry.register("seek", args=1)
