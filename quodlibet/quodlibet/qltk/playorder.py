@@ -114,6 +114,10 @@ class Repeat(Order):
 
 
 class RepeatSongForever(Repeat):
+    """Repeats the same song forever (aka "repeat one").
+    Explicit next calls will "break out" of the repeat
+    which is probably what the user wanted"""
+
     name = "repeat_song"
     display_name = _("Repeat track")
     accelerated_name = _("Repeat track")
@@ -121,8 +125,13 @@ class RepeatSongForever(Repeat):
     def next(self, playlist, iter):
         return iter
 
+    def next_explicit(self, playlist, iter):
+        return self.wrapped.next_explicit(playlist, iter)
+
 
 class RepeatListForever(Repeat):
+    """Repeats the playlist forever once it's finished"""
+
     name = "repeat_all"
     display_name = _("Repeat all")
     accelerated_name = _("Repeat all")
@@ -322,7 +331,6 @@ class ToggledPlayOrderMenu(Gtk.Box):
     def __init__(self, icon_name, orders, current_order, enabled=False,
                  tooltip=None, arrow_down=False):
         """arrow_down -- the direction of the menu and arrow icon"""
-        print_d("Building new Toggler set to %r" % enabled)
         assert issubclass(current_order, Order)
         if current_order not in orders:
             raise ValueError("%s is not supported by %s"
@@ -345,10 +353,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         self.pack_start(toggle, True, True, 0)
 
         def forward_signal(*args):
-            if self.__inhibit:
-                print_d("NOT forwarding programmatic toggled signal...")
-            else:
-                print_d("Forwarding toggled signal...")
+            if not self.__inhibit:
                 self.emit("toggled")
 
         toggle.connect("toggled", forward_signal)
@@ -374,9 +379,9 @@ class ToggledPlayOrderMenu(Gtk.Box):
     @enabled.setter
     def enabled(self, value):
         """Set button to be active or inactive"""
-        print_d("Setting toggle %s to %s" % (self.__orders[0], value))
         self.__inhibit = True
         self._toggle_button.set_active(bool(value))
+        self.emit("toggled")
         self.__inhibit = False
 
     @property
@@ -512,7 +517,6 @@ class PlayOrderWidget(Gtk.HBox):
     @shuffled.setter
     def shuffled(self, enabled):
         self.__shuffle_widget.enabled = bool(enabled)
-        self.__compose_order()
 
     @property
     def repeated(self):
@@ -521,7 +525,6 @@ class PlayOrderWidget(Gtk.HBox):
     @repeated.setter
     def repeated(self, enabled):
         self.__repeat_widget.enabled = bool(enabled)
-        self.__compose_order()
 
     def __repeat_updated(self, widget, repeat_cls):
         if self.__inhibit:
@@ -540,14 +543,12 @@ class PlayOrderWidget(Gtk.HBox):
     def __shuffle_toggled(self, widget):
         if self.__inhibit:
             return
-        print_d("Shuffle toggled")
         config.set("memory", "shuffle", widget.enabled)
         self.__compose_order()
 
     def __repeat_toggled(self, widget):
         if self.__inhibit:
             return
-        print_d("Repeat toggled")
         config.set("memory", "repeat", widget.enabled)
         self.__compose_order()
 

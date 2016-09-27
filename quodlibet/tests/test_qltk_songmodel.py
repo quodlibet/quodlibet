@@ -144,36 +144,40 @@ class TPlaylistModel(TestCase):
         self.pl.order = RepeatSongForever(OrderShuffle())
         old = self.pl.current
         for i in range(5):
-            self.pl.next()
+            self.pl.next_ended()
             self.assertEqual(self.pl.current, old)
 
     def test_shuffle_repeat(self):
         self.pl.order = RepeatListForever(OrderShuffle())
         numbers = [self.pl.current for _ in range(30)
-                   if self.pl.next() or True]
+                   if self.pl.next_ended() or True]
         allnums = sorted(list(range(10)) * 3)
         self.assertNotEqual(numbers, allnums)
         numbers.sort()
         self.assertEqual(numbers, allnums)
 
-    # def test_onesong(self):
-    #     self.pl.go_to(3)
-    #     self.pl.order = ORDERS[3](self.pl)
-    #     self.failUnlessEqual(self.pl.current, 3)
-    #     self.pl.next()
-    #     self.failUnlessEqual(self.pl.current, 4)
-    #     self.pl.next_ended()
-    #     self.failUnlessEqual(self.pl.current, None)
-    #
-    # def test_onesong_repeat(self):
-    #     self.pl.go_to(3)
-    #     self.pl.order = ORDERS[3](self.pl)
-    #     self.pl.repeat = True
-    #     self.failUnlessEqual(self.pl.current, 3)
-    #     self.pl.next()
-    #     self.failUnlessEqual(self.pl.current, 4)
-    #     self.pl.next_ended()
-    #     self.failUnlessEqual(self.pl.current, 4)
+    def test_repeat_song_repeats_on_end(self):
+        self.pl.order = RepeatSongForever(OrderInOrder())
+        self.pl.go_to(3)
+        self.failUnlessEqual(self.pl.current, 3)
+        self.pl.next_ended()
+        self.failUnlessEqual(self.pl.current, 3)
+
+    def test_repeat_song_uses_underlying_on_explicit(self):
+        self.pl.order = RepeatSongForever(OrderInOrder())
+        self.pl.go_to(3)
+        self.pl.next()
+        self.failUnlessEqual(self.pl.current, 4)
+
+    def test_repeat_all_cycles_playlist(self):
+        self.pl.go_to(3)
+        self.pl.order = RepeatListForever(OrderInOrder())
+        self.failUnlessEqual(self.pl.current, 3)
+        self.pl.next()
+        self.failUnlessEqual(self.pl.current, 4)
+        for i in range(9):
+            self.pl.next_ended()
+        self.failUnlessEqual(self.pl.current, 3)
 
     def test_previous(self):
         self.pl.go_to(2)
