@@ -35,7 +35,7 @@ from quodlibet.qltk.info import SongInfo
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.notif import StatusBar, TaskController
-from quodlibet.qltk.playorder import PlayOrderWidget
+from quodlibet.qltk.playorder import PlayOrderWidget, RepeatSongForever
 from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.prefs import PreferencesWindow
@@ -68,7 +68,7 @@ class PlayerOptions(GObject.Object):
     """
 
     __gproperties__ = {
-        'random': (bool, '', '', False,
+        'shuffle': (bool, '', '', False,
                    GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
         'repeat': (bool, '', '', False,
                    GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
@@ -89,7 +89,7 @@ class PlayerOptions(GObject.Object):
             "toggled", lambda *x: self.notify("stop-after"))
 
         def order_changed(*args):
-            self.notify("random")
+            self.notify("shuffle")
             self.notify("single")
 
         self._order_widget = window.order
@@ -122,16 +122,17 @@ class PlayerOptions(GObject.Object):
         When `repeat` is True the current song will be replayed.
         """
 
-        # FIXME: Add OneSong repeat mode etc
-        return False
+        return (self._order_widget.repeated and
+                self._order_widget.repeater == RepeatSongForever)
 
     @single.setter
     def single(self, value):
         if value and not self.single:
-            # self._order.set_active_by_name("onesong")
+            self.repeat = True
+            self._order_widget.repeater = RepeatSongForever
             pass
         elif not value and self.single:
-            pass
+            self.repeat = False
 
     @property
     def shuffle(self):
@@ -151,6 +152,7 @@ class PlayerOptions(GObject.Object):
 
     @repeat.setter
     def repeat(self, value):
+        print_d("setting repeated to %s" % value)
         self._order_widget.repeated = value
 
     @property

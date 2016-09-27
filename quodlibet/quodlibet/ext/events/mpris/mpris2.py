@@ -108,7 +108,7 @@ value="false"/>
         self.__repeat_id = player_options.connect(
             "notify::repeat", self.__repeat_changed)
         self.__random_id = player_options.connect(
-            "notify::random", self.__random_changed)
+            "notify::shuffle", self.__shuffle_changed)
         self.__single_id = player_options.connect(
             "notify::single", self.__single_changed)
 
@@ -135,9 +135,8 @@ value="false"/>
     def __repeat_changed(self, *args):
         self.emit_properties_changed(self.PLAYER_IFACE, ["LoopStatus"])
 
-    def __random_changed(self, *args):
-        self.emit_properties_changed(self.PLAYER_IFACE,
-                                     ["Shuffle", "LoopStatus"])
+    def __shuffle_changed(self, *args):
+        self.emit_properties_changed(self.PLAYER_IFACE, ["Shuffle"])
 
     def __single_changed(self, *args):
         self.emit_properties_changed(self.PLAYER_IFACE, ["LoopStatus"])

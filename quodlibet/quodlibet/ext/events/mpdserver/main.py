@@ -152,7 +152,7 @@ class MPDService(object):
         def options_changed(*args):
             self.emit_changed("options")
 
-        self._options.connect("notify::random", options_changed)
+        self._options.connect("notify::shuffle", options_changed)
         self._options.connect("notify::repeat", options_changed)
         self._options.connect("notify::single", options_changed)
 

@@ -90,11 +90,10 @@ class MPRIS1Player(MPRISObject):
         super(MPRIS1Player, self).__init__(name, self.PATH)
 
         player_options = app.player_options
-        # FIXME: this
         self.__sigs = [
             player_options.connect("notify::repeat", self.__update_status),
             player_options.connect("notify::single", self.__update_status),
-            player_options.connect("notify::random", self.__update_status),
+            player_options.connect("notify::shuffle", self.__update_status),
         ]
 
         self.__lsig = app.librarian.connect(
