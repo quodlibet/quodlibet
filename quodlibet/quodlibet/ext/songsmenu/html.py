@@ -7,6 +7,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.qltk import Icons
 from quodlibet.util import tag, escape
 from quodlibet.qltk.songlist import get_columns

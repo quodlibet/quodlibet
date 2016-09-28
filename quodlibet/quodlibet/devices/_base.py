@@ -7,6 +7,7 @@
 
 import os
 
+from quodlibet import _
 import quodlibet.devices
 
 

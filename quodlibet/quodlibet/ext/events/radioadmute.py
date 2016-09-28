@@ -8,6 +8,7 @@
 
 import re
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.qltk import Icons
 from quodlibet.util import re_escape

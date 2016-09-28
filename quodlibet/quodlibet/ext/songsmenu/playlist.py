@@ -15,7 +15,7 @@ from gi.repository import Gtk
 from os.path import relpath
 
 from quodlibet.plugins.playlist import PlaylistPlugin
-
+from quodlibet import _
 from quodlibet import util, qltk
 from quodlibet.util.path import glib2fsn, get_home_dir
 from quodlibet.qltk.msg import ConfirmFileReplace

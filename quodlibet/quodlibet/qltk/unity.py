@@ -12,6 +12,7 @@ See the MPRIS plugin for sound menu integration.
 
 import gi
 
+from quodlibet import _
 from quodlibet.util import gi_require_versions
 
 

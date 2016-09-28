@@ -11,6 +11,7 @@ import re
 
 from senf import fsn2text
 
+from quodlibet import _
 from quodlibet.plugins.cover import CoverSourcePlugin
 from quodlibet.util.dprint import print_w
 from quodlibet import config

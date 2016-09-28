@@ -12,6 +12,7 @@ from gi.repository import Gtk
 from gi.repository import Pango
 from senf import fsn2text
 
+from quodlibet import _
 from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import MenuItem, Button

@@ -11,7 +11,7 @@ from gi.repository import Gtk, GLib, Pango, Gdk
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import config
-
+from quodlibet import _
 from quodlibet.browsers.albums import AlbumTagCompletion
 from quodlibet.browsers import Browser
 from quodlibet.query import Query

@@ -11,6 +11,7 @@ import sys
 
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import config
 from quodlibet import util

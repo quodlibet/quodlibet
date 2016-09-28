@@ -9,6 +9,7 @@
 import math
 import random
 
+from quodlibet import _
 from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderShuffleMixin
 from quodlibet.qltk import Icons
 

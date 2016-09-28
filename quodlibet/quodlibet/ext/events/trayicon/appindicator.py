@@ -16,6 +16,7 @@ except ValueError as e:
 from gi.repository import AppIndicator3, Gdk
 
 import quodlibet
+from quodlibet import _
 from quodlibet import app
 from quodlibet.util import is_plasma
 from quodlibet.pattern import Pattern

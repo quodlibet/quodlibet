@@ -10,6 +10,7 @@ import subprocess
 
 from gi.repository import GLib, Gst
 
+from quodlibet import _
 from quodlibet.util.string import decode
 from quodlibet.util import is_linux, is_windows
 from quodlibet.player import PlayerError

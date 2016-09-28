@@ -16,6 +16,7 @@ import time
 
 from senf import fsn2uri, fsnative, fsn2text, devnull
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, mtime, expanduser, \

@@ -14,6 +14,7 @@ from quodlibet.util.songwrapper import SongWrapper
 from quodlibet.qltk.songsmenu import ConfirmMultiSongInvoke
 
 import quodlibet
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet.pattern import Pattern

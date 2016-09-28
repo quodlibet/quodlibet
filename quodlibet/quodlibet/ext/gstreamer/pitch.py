@@ -9,6 +9,7 @@ import os
 
 from gi.repository import Gtk, GObject, Gst
 
+from quodlibet import _
 from quodlibet.plugins import PluginImportException, PluginNotSupportedError
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk

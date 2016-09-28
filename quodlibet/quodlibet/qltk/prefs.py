@@ -15,6 +15,7 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
+from quodlibet import C_, _
 from quodlibet.config import RATINGS, DurationFormat, DURATION
 
 from quodlibet.qltk.ccb import ConfigCheckButton as CCB

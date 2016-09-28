@@ -10,6 +10,7 @@
 
 import os
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import util
 from quodlibet import const

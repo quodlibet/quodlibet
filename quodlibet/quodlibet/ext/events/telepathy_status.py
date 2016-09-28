@@ -17,6 +17,7 @@ if os.name == "nt" or sys.platform == "darwin":
 import dbus
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet import util

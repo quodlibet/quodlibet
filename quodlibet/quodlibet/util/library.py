@@ -11,6 +11,7 @@ import sys
 
 from senf import fsn2bytes, bytes2fsn, fsnative
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import config
 from quodlibet.qltk.notif import Task

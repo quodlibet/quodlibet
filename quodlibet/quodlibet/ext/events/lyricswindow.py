@@ -14,6 +14,7 @@ import socket
 import Queue
 from xml.dom import minidom
 
+from quodlibet import _
 from quodlibet.util import gi_require_versions
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import (PluginImportException, PluginConfig, ConfProp,

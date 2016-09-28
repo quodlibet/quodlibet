@@ -12,6 +12,7 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
 
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.views import HintedTreeView

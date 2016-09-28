@@ -12,6 +12,7 @@ from gi.repository import Gtk, GObject, GLib
 
 import quodlibet
 from quodlibet import config
+from quodlibet import _
 
 from quodlibet.query import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave

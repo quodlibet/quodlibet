@@ -11,7 +11,7 @@ from senf import fsn2text
 
 from quodlibet import config
 from quodlibet import util
-
+from quodlibet import _
 from quodlibet.plugins import PluginHandler
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage

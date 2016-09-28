@@ -14,6 +14,7 @@ if os.name == "nt" or sys.platform == "darwin":
 
 import dbus
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin

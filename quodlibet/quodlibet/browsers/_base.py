@@ -13,6 +13,7 @@ from gi.repository import Gtk, GObject, GLib, Pango
 
 from quodlibet import app, qltk
 from quodlibet import util
+from quodlibet import ngettext, _
 from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox

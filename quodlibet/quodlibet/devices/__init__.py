@@ -16,6 +16,7 @@ from gi.repository import GObject
 from quodlibet.util.path import xdg_get_system_data_dirs
 
 import quodlibet
+from quodlibet import _
 from quodlibet.compat import iteritems
 from quodlibet import util
 from quodlibet.devices import _udev as udev

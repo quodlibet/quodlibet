@@ -7,6 +7,7 @@ import re
 
 from gi.repository import Gtk, GObject
 
+from quodlibet import _
 from quodlibet.plugins.editing import RenameFilesPlugin, TagsFromPathPlugin
 from quodlibet.util import connect_obj
 from quodlibet.qltk import Icons

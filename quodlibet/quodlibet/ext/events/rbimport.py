@@ -11,6 +11,7 @@ from xml.sax.handler import ContentHandler
 from gi.repository import Gtk
 from senf import uri2fsn
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import util
 from quodlibet.qltk import Icons

@@ -10,6 +10,7 @@ import stat
 import shlex
 import string
 
+from quodlibet import _
 from quodlibet.util.tags import MACHINE_TAGS, sortkey
 from quodlibet.util.dprint import print_, Colorise
 from quodlibet import util

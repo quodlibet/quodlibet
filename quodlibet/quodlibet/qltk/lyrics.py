@@ -16,6 +16,7 @@ import urllib
 
 from gi.repository import Gtk, GLib
 
+from quodlibet import _
 from quodlibet.formats import AudioFileError
 from quodlibet import qltk
 from quodlibet.qltk import Icons

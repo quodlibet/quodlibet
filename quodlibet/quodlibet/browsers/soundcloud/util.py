@@ -7,7 +7,7 @@
 
 from datetime import datetime
 
-from quodlibet import print_d
+from quodlibet import print_d, _
 from quodlibet.qltk import WebImage
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.util import enum

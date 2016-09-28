@@ -19,6 +19,7 @@ is used and not the release version.
 from gi.repository import Gtk
 
 import quodlibet
+from quodlibet import _
 from quodlibet.build import BUILD_TYPE
 from quodlibet.compat import text_type, urlopen
 from quodlibet.qltk.window import Dialog

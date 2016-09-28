@@ -20,6 +20,7 @@ try:
 except ImportError:
     dbus = None
 
+from quodlibet import _
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons

@@ -9,6 +9,7 @@ from gi.repository import Gtk
 from gi.repository import Pango
 import re
 
+from quodlibet import _
 from quodlibet import qltk, util
 from quodlibet.qltk.entry import UndoEntry, ValidatingEntry
 from quodlibet.qltk.views import RCMHintedTreeView, HintedTreeView

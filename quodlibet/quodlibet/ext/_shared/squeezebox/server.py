@@ -10,6 +10,7 @@ from telnetlib import Telnet
 import time
 import urllib
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.util.dprint import print_w, print_d, print_
 

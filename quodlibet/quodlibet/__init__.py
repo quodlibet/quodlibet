@@ -26,7 +26,7 @@ from quodlibet.util import set_process_title, environ, cached_func
 from quodlibet.util import windows, is_osx, is_windows
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
-    fixup_i18n_envvars
+    fixup_i18n_envvars, set_translation, _, C_, N_, ngettext, npgettext
 from quodlibet.util.dprint import print_d, print_e
 from quodlibet import const
 from quodlibet import build
@@ -37,9 +37,7 @@ from quodlibet.compat import PY2
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
                "gstreamer", "covers", "query"]
 
-
-GlibTranslations().install(unicode=True)
-
+_, C_, N_, ngettext, npgettext
 _cli_initialized = False
 _initialized = False
 
@@ -522,7 +520,8 @@ def _init_gettext():
         print_d("Translations loaded: %r" % unexpand(t.path))
 
     debug_text = environ.get("QUODLIBET_TEST_TRANS")
-    t.install(unicode=True, debug_text=debug_text)
+    t.set_debug_text(debug_text)
+    set_translation(t)
 
 
 def _init_python():

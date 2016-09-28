@@ -10,6 +10,7 @@
 
 import os
 
+from quodlibet import _
 from quodlibet import qltk, app
 from quodlibet.ext._shared.squeezebox.base import SqueezeboxPluginMixin
 from quodlibet.util.dprint import print_d

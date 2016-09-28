@@ -12,6 +12,7 @@
 
 from gi.repository import Gdk, GLib
 
+from quodlibet import _
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons
 from quodlibet.util import cached_property

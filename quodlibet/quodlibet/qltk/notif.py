@@ -29,6 +29,7 @@ Of course, right now it does none of these things.
 
 from gi.repository import Gtk, GLib, Pango
 
+from quodlibet import _
 from quodlibet.util import copool
 from quodlibet.qltk.x import SmallImageToggleButton, SmallImageButton, Align
 from quodlibet.qltk import Icons

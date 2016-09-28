@@ -20,6 +20,7 @@ from senf import fsn2uri
 import dbus
 import dbus.service
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
