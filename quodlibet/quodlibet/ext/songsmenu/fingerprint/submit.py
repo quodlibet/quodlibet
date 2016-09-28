@@ -7,6 +7,7 @@
 
 from gi.repository import Gtk, Pango, GLib
 
+from quodlibet import _
 from quodlibet.qltk import Button, Window
 from quodlibet.util import connect_obj, print_w
 

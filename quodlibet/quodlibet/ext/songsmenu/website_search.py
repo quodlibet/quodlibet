@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import quodlibet
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import Pattern

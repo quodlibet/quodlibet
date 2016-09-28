@@ -29,6 +29,7 @@ if os.name == "nt" or sys.platform == "darwin":
 import dbus
 import dbus.service
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.util.dbusutils import dbus_unicode_validate
 from quodlibet.plugins.events import EventPlugin

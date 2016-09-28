@@ -7,6 +7,7 @@
 
 import re
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.collection import Collection

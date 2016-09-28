@@ -10,7 +10,7 @@ from gi.repository import Gtk
 from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk
-
+from quodlibet import _
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import BaseView
 from quodlibet.qltk import Button, Icons

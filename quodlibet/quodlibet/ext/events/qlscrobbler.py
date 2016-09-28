@@ -28,6 +28,7 @@ except ImportError:
     from md5 import md5
 
 import quodlibet
+from quodlibet import _
 from quodlibet import const, app, util, qltk
 from quodlibet.pattern import Pattern
 from quodlibet.query import Query

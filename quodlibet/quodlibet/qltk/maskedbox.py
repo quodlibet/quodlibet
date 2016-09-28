@@ -8,6 +8,7 @@
 from gi.repository import Gtk, Pango
 from senf import fsn2text
 
+from quodlibet import ngettext, _
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import Icons

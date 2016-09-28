@@ -11,6 +11,7 @@ import os
 
 from gi.repository import Gtk, Gdk, Pango
 
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import SeparatorMenuItem, Align

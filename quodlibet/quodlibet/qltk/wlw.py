@@ -10,6 +10,7 @@ import time
 
 from gi.repository import Gtk, Pango, Gdk
 
+from quodlibet import _
 from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton
 from quodlibet import util
 

@@ -16,6 +16,7 @@ from threading import Thread
 from gi.repository import Gtk, GLib
 
 import quodlibet
+from quodlibet import _
 from quodlibet import config, util, qltk
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons

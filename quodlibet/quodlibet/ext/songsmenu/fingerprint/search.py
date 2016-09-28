@@ -12,6 +12,7 @@ from gi.repository import Gtk, Pango, Gdk
 from .analyze import FingerPrintPool
 from .acoustid import AcoustidLookupThread
 from .util import get_write_mb_tags, get_group_by_dir
+from quodlibet import _
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.window import Window

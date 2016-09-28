@@ -8,6 +8,7 @@
 from os import path
 from gi.repository import Soup
 
+from quodlibet import _
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
 from quodlibet.util.cover.http import HTTPDownloadMixin
 from quodlibet.util.path import escape_filename

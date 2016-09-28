@@ -8,6 +8,7 @@
 import sys
 from optparse import OptionParser
 
+from quodlibet import _
 from quodlibet.formats import MusicFile, AudioFileError
 from quodlibet.util import print_
 

@@ -13,6 +13,7 @@ import time
 from gi.repository import Gtk, GLib, Pango, Gdk
 
 import quodlibet
+from quodlibet import _
 from quodlibet import config
 from quodlibet import formats
 from quodlibet import qltk

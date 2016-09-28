@@ -8,6 +8,7 @@
 import os
 
 import quodlibet
+from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin

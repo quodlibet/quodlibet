@@ -8,6 +8,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet import config
 from quodlibet import qltk

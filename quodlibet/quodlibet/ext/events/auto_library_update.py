@@ -26,7 +26,7 @@ except ImportError as e:
            if hasattr(plugins, "MissingPluginDependencyException")
            else e)
 
-
+from quodlibet import _
 from quodlibet.util.dprint import print_d
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.util.library import get_scan_dirs

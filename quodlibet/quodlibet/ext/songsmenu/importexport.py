@@ -9,6 +9,7 @@
 from gi.repository import Gtk
 from os.path import splitext, extsep, dirname
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.songshelpers import each_song, is_writable, is_a_file, \
     is_finite

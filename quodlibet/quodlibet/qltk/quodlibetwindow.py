@@ -21,6 +21,7 @@ from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
+from quodlibet import _
 
 from quodlibet.update import UpdateDialog
 from quodlibet.formats.remote import RemoteFile

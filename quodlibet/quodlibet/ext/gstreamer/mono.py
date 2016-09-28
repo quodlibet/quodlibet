@@ -7,6 +7,7 @@
 
 from gi.repository import Gst
 
+from quodlibet import _
 from quodlibet.plugins.gstelement import GStreamerPlugin
 
 

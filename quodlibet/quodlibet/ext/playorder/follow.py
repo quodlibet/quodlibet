@@ -8,7 +8,7 @@
 
 from quodlibet.plugins.playorder import ShufflePlugin
 from quodlibet.qltk.playorder import OrderInOrder, OrderRemembered
-
+from quodlibet import _
 from quodlibet import app
 from quodlibet.qltk import Icons
 

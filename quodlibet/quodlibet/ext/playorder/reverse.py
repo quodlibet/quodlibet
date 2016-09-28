@@ -3,6 +3,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import _
 from quodlibet.plugins.playorder import ShufflePlugin
 from quodlibet.qltk import Icons
 from quodlibet.qltk.playorder import OrderInOrder

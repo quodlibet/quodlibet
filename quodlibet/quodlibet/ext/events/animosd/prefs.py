@@ -11,6 +11,7 @@
 
 from gi.repository import Gtk, Gdk
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
 from quodlibet.util import connect_obj

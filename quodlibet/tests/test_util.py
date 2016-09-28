@@ -13,6 +13,7 @@ import time
 
 from senf import getcwd, fsnative, fsn2bytes, bytes2fsn
 
+from quodlibet import _
 from quodlibet.compat import text_type, PY2
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
 from quodlibet import config

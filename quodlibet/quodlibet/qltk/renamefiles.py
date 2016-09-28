@@ -14,6 +14,7 @@ from senf import fsn2text, text2fsn
 import quodlibet
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
 
 from quodlibet.plugins import PluginManager
 from quodlibet.pattern import FileFromPattern

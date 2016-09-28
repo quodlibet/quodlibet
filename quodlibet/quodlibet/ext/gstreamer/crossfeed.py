@@ -13,6 +13,7 @@ if os.name == "nt":
 
 from gi.repository import Gtk, Gst, GObject
 
+from quodlibet import _
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk, plugins
 from quodlibet import config

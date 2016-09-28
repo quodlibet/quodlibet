@@ -9,6 +9,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import is_a_file, each_song

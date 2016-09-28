@@ -13,6 +13,7 @@ from tempfile import NamedTemporaryFile
 from gi.repository import Gtk, GLib, Pango, Gdk
 
 import quodlibet
+from quodlibet import _
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet.browsers import Browser

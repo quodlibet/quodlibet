@@ -39,6 +39,7 @@ from .environment import is_plasma, is_unity, is_enlightenment, \
     is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console, \
     is_py2exe_window
 from .enum import enum
+from .i18n import _, C_
 
 
 # pyflakes
@@ -391,6 +392,8 @@ def format_time_display(time):
 
 
 def format_time_seconds(time):
+    from quodlibet import ngettext
+
     time_str = locale.format("%d", time, grouping=True)
     return ngettext("%s second", "%s seconds", time) % time_str
 
@@ -401,6 +404,8 @@ def format_time_long(time, limit=2):
     `limit` limits the count of units used, so the result will be <= time.
     0 means no limit.
     """
+
+    from quodlibet import ngettext
 
     if time < 1:
         return _("No time information")

@@ -9,7 +9,7 @@ from gi.repository import Gtk, Gdk, GObject
 
 from quodlibet import config
 from quodlibet import qltk
-
+from quodlibet import _
 from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem
 from quodlibet.qltk.seekbutton import SeekButton

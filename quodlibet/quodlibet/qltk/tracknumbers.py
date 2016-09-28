@@ -10,7 +10,7 @@ from senf import fsn2text
 
 from quodlibet import qltk
 from quodlibet import util
-
+from quodlibet import _
 from quodlibet.formats import AudioFileError
 from quodlibet.qltk._editutils import OverwriteWarning, WriteFailedError
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn

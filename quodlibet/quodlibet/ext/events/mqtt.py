@@ -7,6 +7,7 @@
 
 import os
 
+from quodlibet import _
 from quodlibet.formats import AudioFile
 from quodlibet.util import monospace, escape
 from quodlibet.util.tags import _TAGS

@@ -10,22 +10,6 @@ We are currently working on porting to Python 3. See the `github issue
 That said, at the moment Python 2 does its job well.
 
 
-I'm using PyCharm and it can't resolve certain functions like ``print_d``. What should I do?
---------------------------------------------------------------------------------------------
-
-QL adds some commonly used functions to `__builtin__` which PyCharm can't
-resolve. You can remove the resulting warnings by adding the function names
-to the `Ignore references` list under `File > Settings > Project Settings >
-Inspections > Python > Unresolved references`.
-
-Add the following names to the list:
-
-* `_`
-* `Q_`
-* `N_`
-* `ngettext`
-
-
 Why don't you use SQLite for the song database?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

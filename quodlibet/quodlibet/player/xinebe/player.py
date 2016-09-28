@@ -7,6 +7,7 @@
 
 from gi.repository import GLib
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer

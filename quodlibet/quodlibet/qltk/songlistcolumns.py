@@ -14,6 +14,7 @@ import datetime
 from gi.repository import Gtk, Pango, GLib
 from senf import fsnative, fsn2text
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet import config
 from quodlibet.pattern import Pattern

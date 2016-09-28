@@ -19,6 +19,7 @@ from gi.repository import Gtk, Gdk, GLib
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
 

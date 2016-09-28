@@ -11,6 +11,7 @@ import shutil
 from gi.repository import Gtk
 
 import quodlibet
+from quodlibet import _
 from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin

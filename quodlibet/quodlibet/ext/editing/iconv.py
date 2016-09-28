@@ -9,6 +9,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.qltk import Icons
 from quodlibet.plugins.editing import EditTagsPlugin
 

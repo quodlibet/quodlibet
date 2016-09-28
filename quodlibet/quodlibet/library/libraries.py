@@ -21,6 +21,7 @@ import time
 from gi.repository import GObject
 from senf import fsn2text, expanduser
 
+from quodlibet import _
 from quodlibet.formats import MusicFile, AudioFileError
 from quodlibet.query import Query
 from quodlibet.compat import cBytesIO, pickle, itervalues

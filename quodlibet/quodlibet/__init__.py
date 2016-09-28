@@ -26,7 +26,7 @@ from quodlibet.util import set_process_title, environ, cached_func
 from quodlibet.util import windows, is_osx, is_windows
 from quodlibet.util.path import mkdir, unexpand
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
-    fixup_i18n_envvars
+    fixup_i18n_envvars, set_translation, _, C_, N_, ngettext, npgettext
 from quodlibet.util.dprint import print_d, print_e
 from quodlibet import const
 from quodlibet import build
@@ -37,9 +37,7 @@ from quodlibet.compat import PY2
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
                "gstreamer", "covers", "query"]
 
-
-GlibTranslations().install(unicode=True)
-
+_, C_, N_, ngettext, npgettext
 _cli_initialized = False
 _initialized = False
 
@@ -301,7 +299,8 @@ def _init_gtk():
     gi.require_version("Pango", "1.0")
     gi.require_version('Soup', '2.4')
 
-    from gi.repository import Gtk, Gdk, Soup
+    from gi.repository import Gtk, Soup
+    from quodlibet.qltk import ThemeOverrider, gtk_version
 
     # Work around missing annotation in older libsoup (Ubuntu 14.04 at least)
     message = Soup.Message()
@@ -361,6 +360,8 @@ def _init_gtk():
         print_e("PyGObject is missing cairo support")
         exit(1)
 
+    css_override = ThemeOverrider()
+
     # CSS overrides
     if os.name == "nt":
         # somehow borders are missing under Windows & Gtk+3.14
@@ -370,11 +371,7 @@ def _init_gtk():
                 border: 1px solid @borders;
             }
         """)
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
+        css_override.register_provider("", style_provider)
 
     if sys.platform == "darwin":
         # fix duplicated shadows for popups with Gtk+3.14
@@ -391,11 +388,26 @@ def _init_gtk():
                 background-clip: border-box;
             }
             """)
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
+        css_override.register_provider("", style_provider)
+
+    if gtk_version[:2] >= (3, 20):
+        # https://bugzilla.gnome.org/show_bug.cgi?id=761435
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data("""
+            spinbutton, button {
+                min-height: 1.8rem;
+            }
+
+            .view button {
+                min-height: 2.0rem;
+            }
+
+            entry {
+                min-height: 2.4rem;
+            }
+        """)
+        css_override.register_provider("Adwaita", style_provider)
+        css_override.register_provider("HighContrast", style_provider)
 
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
@@ -508,7 +520,8 @@ def _init_gettext():
         print_d("Translations loaded: %r" % unexpand(t.path))
 
     debug_text = environ.get("QUODLIBET_TEST_TRANS")
-    t.install(unicode=True, debug_text=debug_text)
+    t.set_debug_text(debug_text)
+    set_translation(t)
 
 
 def _init_python():

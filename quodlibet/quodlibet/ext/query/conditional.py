@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import _
 from quodlibet.plugins.query import QueryPlugin, QueryPluginError
 from quodlibet.query._parser import QueryParser
 

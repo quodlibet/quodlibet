@@ -8,6 +8,7 @@
 from gi.repository import Gtk
 from senf import fsn2text, path2fsn
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk.icons import Icons
 from quodlibet.qltk import get_top_parent

@@ -7,6 +7,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk import Icons
 from quodlibet.qltk.window import Dialog

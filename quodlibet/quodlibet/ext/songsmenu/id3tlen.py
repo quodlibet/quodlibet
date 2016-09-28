@@ -7,6 +7,7 @@
 
 from mutagen.id3 import ID3
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import util
 from quodlibet.formats._id3 import ID3File

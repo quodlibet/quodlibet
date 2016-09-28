@@ -9,6 +9,7 @@ from urllib import quote
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet.util import website
 from quodlibet.qltk.entry import Entry

@@ -10,6 +10,7 @@ import os
 
 from gi.repository import Gtk, Pango, GObject
 
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj

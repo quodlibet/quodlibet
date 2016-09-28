@@ -6,6 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import _
 from quodlibet.plugins.songshelpers import any_song
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.string.splitters import split_title, split_album

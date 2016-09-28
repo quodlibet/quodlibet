@@ -5,6 +5,7 @@
 
 from tests import TestCase
 
+from quodlibet import _
 from quodlibet.qltk.notif import Task, TaskController
 
 

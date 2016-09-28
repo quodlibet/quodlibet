@@ -10,6 +10,7 @@ import random
 
 from gi.repository import Gtk, GObject
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet.qltk import Icons

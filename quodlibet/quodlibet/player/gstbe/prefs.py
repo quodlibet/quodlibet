@@ -9,7 +9,7 @@
 from gi.repository import Gtk
 
 from quodlibet import config
-
+from quodlibet import _
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.x import Button

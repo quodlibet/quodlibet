@@ -11,6 +11,7 @@ from gi.repository import Gtk
 from senf import uri2fsn, fsnative, fsn2text, path2fsn
 
 import quodlibet
+from quodlibet import _
 from quodlibet import formats, qltk
 from quodlibet.qltk import Icons
 from quodlibet.qltk.getstring import GetStringDialog

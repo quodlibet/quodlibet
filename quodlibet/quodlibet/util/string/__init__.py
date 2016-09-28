@@ -28,6 +28,7 @@ def decode(s, charset="utf-8"):
     try:
         return s.decode(charset)
     except UnicodeError:
+        from quodlibet import _
         return s.decode(charset, "replace") + " " + _("[Invalid Encoding]")
 
 
@@ -37,6 +38,7 @@ def encode(s, charset="utf-8"):
     try:
         return s.encode(charset)
     except UnicodeError:
+        from quodlibet import _
         return (s + " " + _("[Invalid Encoding]")).encode(charset, "replace")
 
 

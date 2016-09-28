@@ -15,6 +15,7 @@ TODO: notification of play count?
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.plugins.playorder import RepeatPlugin
 from quodlibet.util.dprint import print_d
 from quodlibet.plugins import PluginConfigMixin
