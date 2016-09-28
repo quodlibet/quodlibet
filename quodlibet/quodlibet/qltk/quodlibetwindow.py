@@ -36,7 +36,8 @@ from quodlibet.qltk.info import SongInfo
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.notif import StatusBar, TaskController
-from quodlibet.qltk.playorder import PlayOrderWidget, RepeatSongForever
+from quodlibet.qltk.playorder import PlayOrderWidget, RepeatSongForever, \
+    RepeatListForever
 from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.prefs import PreferencesWindow
@@ -124,16 +125,16 @@ class PlayerOptions(GObject.Object):
         """
 
         return (self._order_widget.repeated and
-                self._order_widget.repeater == RepeatSongForever)
+                self._order_widget.repeater is RepeatSongForever)
 
     @single.setter
     def single(self, value):
-        if value and not self.single:
+        if value:
             self.repeat = True
             self._order_widget.repeater = RepeatSongForever
-            pass
-        elif not value and self.single:
+        else:
             self.repeat = False
+            self._order_widget.repeater = RepeatListForever
 
     @property
     def shuffle(self):
