@@ -11,7 +11,7 @@ from tests import TestCase, DATA_DIR, skipUnless
 
 from quodlibet.util.path import normalize_path
 from quodlibet.util import is_wine
-from quodlibet import windows
+from quodlibet.util import windows
 
 
 @skipUnless(os.name == "nt", "Wrong platform")
