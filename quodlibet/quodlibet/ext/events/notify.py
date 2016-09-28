@@ -40,6 +40,7 @@ DEFAULT_CONFIG = {
     "timeout": 4000,
     "show_notifications": "all",
     "show_only_when_unfocused": True,
+    "show_next_button": True,
 
     "titlepattern": "<artist|<artist> - ><title>",
     "bodypattern":
@@ -196,6 +197,14 @@ class PreferencesWidget(Gtk.VBox):
         focus_check.connect("toggled", self.on_checkbutton_toggled,
                             "show_only_when_unfocused")
         display_box.pack_start(focus_check, True, True, 0)
+
+        show_next = Gtk.CheckButton(
+            label=_("Show \"_Next\" button"),
+            use_underline=True)
+        show_next.set_active(get_conf_bool("show_next_button"))
+        show_next.connect("toggled", self.on_checkbutton_toggled,
+                            "show_next_button")
+        display_box.pack_start(show_next, True, True, 0)
 
         self.pack_start(display_frame, True, True, 0)
 
@@ -400,7 +409,7 @@ class Notify(EventPlugin):
                 body = strip_images(body)
 
         actions = []
-        if "actions" in caps:
+        if get_conf_bool("show_next_button") and "actions" in caps:
             actions = ["next", _("Next")]
 
         hints = {
