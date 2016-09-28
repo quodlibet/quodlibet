@@ -378,7 +378,6 @@ def _quit(app):
 @registry.register("status")
 def _status(app):
     player = app.player
-    window = app.window
     f = StringIO()
 
     if player.paused:
@@ -386,9 +385,10 @@ def _status(app):
     else:
         strings = ["playing"]
     strings.append(type(app.browser).__name__)
+    po = app.player_options
     strings.append("%0.3f" % player.volume)
-    strings.append(window.order.get_active_name())
-    strings.append("on" if window.repeat.enabled else "off")
+    strings.append("shuffle" if po.shuffle else "inorder")
+    strings.append("on" if po.repeat else "off")
     progress = 0
     if player.info:
         length = player.info.get("~#length", 0)
