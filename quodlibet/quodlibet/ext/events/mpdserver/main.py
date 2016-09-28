@@ -727,7 +727,7 @@ def _cmd_repeat(conn, service, args):
 def _cmd_random(conn, service, args):
     _verify_length(args, 1)
     value = _parse_bool(args[0])
-    service.shuffle(value)
+    service.random(value)
 
 
 @MPDConnection.Command("single")
