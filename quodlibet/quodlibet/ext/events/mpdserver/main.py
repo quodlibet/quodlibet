@@ -152,7 +152,7 @@ class MPDService(object):
         def options_changed(*args):
             self.emit_changed("options")
 
-        self._options.connect("notify::random", options_changed)
+        self._options.connect("notify::shuffle", options_changed)
         self._options.connect("notify::repeat", options_changed)
         self._options.connect("notify::single", options_changed)
 
@@ -287,7 +287,7 @@ class MPDService(object):
         self._options.repeat = value
 
     def random(self, value):
-        self._options.random = value
+        self._options.shuffle = value
 
     def single(self, value):
         self._options.single = value
@@ -321,7 +321,7 @@ class MPDService(object):
         status = [
             ("volume", int((app.player.volume ** (1.0 / 3.0)) * 100)),
             ("repeat", int(self._options.repeat)),
-            ("random", int(self._options.random)),
+            ("random", int(self._options.shuffle)),
             ("single", int(self._options.single)),
             ("consume", 0),
             ("playlist", self._pl_ver),

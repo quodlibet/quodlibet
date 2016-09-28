@@ -7,7 +7,7 @@
 
 from gi.repository import Gtk
 
-from quodlibet.qltk.playorder import ORDERS
+from quodlibet.qltk.playorder import OrderInOrder
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util import print_d
 from quodlibet.compat import izip
@@ -221,17 +221,14 @@ class PlaylistModel(TrackCurrentModel):
     """A play list model for song lists"""
 
     order = None
-    """The active play order"""
-
-    repeat = False
-    """If the playlist should be repeated after it ended"""
+    """The active `PlayOrder`"""
 
     sourced = False
     """True in case this model is the source of the currently playing song"""
 
-    def __init__(self):
+    def __init__(self, order_cls=OrderInOrder):
         super(PlaylistModel, self).__init__(object)
-        self.order = ORDERS[0](self)
+        self.order = order_cls()
 
         # The playorder plugins use paths atm to remember songs so
         # we need to reset them if the paths change somehow.
@@ -244,12 +241,14 @@ class PlaylistModel(TrackCurrentModel):
         """Switch to the next song"""
 
         iter_ = self.current_iter
+        print_d("Using %s.next_explicit() to get next song" % self.order)
         self.current_iter = self.order.next_explicit(self, iter_)
 
     def next_ended(self):
         """Switch to the next song (action comes from the user)"""
 
         iter_ = self.current_iter
+        print_d("Using %s.next_implicit() to get next song" % self.order)
         self.current_iter = self.order.next_implicit(self, iter_)
 
     def previous(self):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011,2013 Nick Boultbee
+#      2011,2013,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -74,9 +74,9 @@ class IndicatorMenu(Gtk.Menu):
         player_options = app.player_options
 
         shuffle = Gtk.CheckMenuItem(label=_("_Shuffle"), use_underline=True)
-        player_options.bind_property("random", shuffle, "active",
+        player_options.bind_property("shuffle", shuffle, "active",
                                      GObject.BindingFlags.BIDIRECTIONAL)
-        player_options.notify("random")
+        player_options.notify("shuffle")
 
         repeat = Gtk.CheckMenuItem(label=_("_Repeat"), use_underline=True)
         player_options.bind_property("repeat", repeat, "active",

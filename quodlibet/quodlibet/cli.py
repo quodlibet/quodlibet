@@ -77,8 +77,8 @@ def process_arguments(argv):
     controls = ["next", "previous", "play", "pause", "play-pause", "stop",
                 "hide-window", "show-window", "toggle-window",
                 "focus", "quit", "unfilter", "refresh", "force-previous"]
-    controls_opt = ["seek", "order", "repeat", "query", "volume", "filter",
-                    "set-rating", "set-browser", "open-browser", "random",
+    controls_opt = ["seek", "repeat", "query", "volume", "filter",
+                    "set-rating", "set-browser", "open-browser", "shuffle",
                     "song-list", "queue", "stop-after"]
 
     options = util.OptionParser(
@@ -119,8 +119,7 @@ def process_arguments(argv):
 
     for opt, help, arg in [
         ("seek", _("Seek within the playing song"), _("[+|-][HH:]MM:SS")),
-        ("order", _("Set or toggle the playback order"),
-            "[order]|toggle"),
+        ("shuffle", _("Set or toggle shuffle mode"), "[0|1|t"),
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
         ("volume", _("Set the volume"), "(+|-|)0..100"),
         ("query", _("Search your audio library"), _("query")),
@@ -176,8 +175,7 @@ def process_arguments(argv):
             return True
 
     validators = {
-        "order": ["0", "1", "t", "toggle", "inorder", "shuffle",
-                  "weighted", "onesong"].__contains__,
+        "shuffle": ["0", "1", "t", "on", "off", "toggle"].__contains__,
         "repeat": ["0", "1", "t", "on", "off", "toggle"].__contains__,
         "volume": is_vol,
         "seek": is_time,

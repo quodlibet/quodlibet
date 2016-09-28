@@ -10,7 +10,8 @@ from gi.repository import Gtk
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.formats import AudioFile
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
-from quodlibet.qltk.playorder import ORDERS, Order
+from quodlibet.qltk.playorder import Order, OrderShuffle, OrderWeighted, \
+    OrderInOrder, RepeatSongForever, RepeatListForever
 
 
 def do_events():
@@ -109,29 +110,24 @@ class TPlaylistModel(TestCase):
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 9)
 
-    def test_next_repeat(self):
-        self.pl.repeat = True
-        self.pl.go_to(3)
-        for i in range(9):
-            self.pl.next()
-        self.assertEqual(self.pl.current, 2)
-        for i in range(12):
-            self.pl.next()
-        self.assertEqual(self.pl.current, 4)
+    def test_next_at_end_finishes(self):
+        self.pl.go_to(9)
+        self.pl.next()
+        self.assertEqual(self.pl.current, None)
 
     def test_shuffle(self):
-        self.pl.order = ORDERS[1](self.pl)
+        self.pl.order = OrderShuffle()
         for i in range(5):
-            numbers = [self.pl.current for i in range(10)
+            history = [self.pl.current for _ in range(10)
                        if self.pl.next() or True]
-            self.assertNotEqual(numbers, list(range(10)))
-            numbers.sort()
-            self.assertEqual(numbers, list(range(10)))
+            self.assertNotEqual(history, list(range(10)))
+            self.assertEqual(sorted(history), list(range(10)))
             self.pl.next()
             self.assertEqual(self.pl.current, None)
+            self.pl.order.reset(self.pl)
 
     def test_weighted(self):
-        self.pl.order = ORDERS[2](self.pl)
+        self.pl.order = OrderWeighted()
         r0 = AudioFile({'~#rating': 0})
         r1 = AudioFile({'~#rating': 1})
         r2 = AudioFile({'~#rating': 2})
@@ -144,35 +140,44 @@ class TPlaylistModel(TestCase):
         self.assert_(songs.count(r2) > songs.count(r1))
         self.assert_(songs.count(r3) > songs.count(r2))
 
+    def test_shuffle_repeat_forever(self):
+        self.pl.order = RepeatSongForever(OrderShuffle())
+        old = self.pl.current
+        for i in range(5):
+            self.pl.next_ended()
+            self.assertEqual(self.pl.current, old)
+
     def test_shuffle_repeat(self):
-        self.pl.order = ORDERS[1](self.pl)
-        self.pl.repeat = True
-        numbers = [self.pl.current for i in range(30)
-                   if self.pl.next() or True]
-        allnums = list(range(10)) * 3
-        allnums.sort()
+        self.pl.order = RepeatListForever(OrderShuffle())
+        numbers = [self.pl.current for _ in range(30)
+                   if self.pl.next_ended() or True]
+        allnums = sorted(list(range(10)) * 3)
         self.assertNotEqual(numbers, allnums)
         numbers.sort()
         self.assertEqual(numbers, allnums)
 
-    def test_onesong(self):
+    def test_repeat_song_repeats_on_end(self):
+        self.pl.order = RepeatSongForever(OrderInOrder())
         self.pl.go_to(3)
-        self.pl.order = ORDERS[3](self.pl)
         self.failUnlessEqual(self.pl.current, 3)
-        self.pl.next()
-        self.failUnlessEqual(self.pl.current, 4)
         self.pl.next_ended()
-        self.failUnlessEqual(self.pl.current, None)
+        self.failUnlessEqual(self.pl.current, 3)
 
-    def test_onesong_repeat(self):
+    def test_repeat_song_uses_underlying_on_explicit(self):
+        self.pl.order = RepeatSongForever(OrderInOrder())
         self.pl.go_to(3)
-        self.pl.order = ORDERS[3](self.pl)
-        self.pl.repeat = True
+        self.pl.next()
+        self.failUnlessEqual(self.pl.current, 4)
+
+    def test_repeat_all_cycles_playlist(self):
+        self.pl.go_to(3)
+        self.pl.order = RepeatListForever(OrderInOrder())
         self.failUnlessEqual(self.pl.current, 3)
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 4)
-        self.pl.next_ended()
-        self.failUnlessEqual(self.pl.current, 4)
+        for i in range(9):
+            self.pl.next_ended()
+        self.failUnlessEqual(self.pl.current, 3)
 
     def test_previous(self):
         self.pl.go_to(2)
@@ -193,7 +198,7 @@ class TPlaylistModel(TestCase):
         self.failUnlessEqual(self.pl.current, 10)
 
     def test_go_to_order(self):
-        self.pl.order = ORDERS[1](self.pl)
+        self.pl.order = OrderShuffle()
         for i in range(5):
             self.pl.go_to(5)
             self.failUnlessEqual(self.pl.current, 5)
@@ -211,7 +216,7 @@ class TPlaylistModel(TestCase):
             def set_implicit(self, playlist, iter):
                 return playlist.iter_next(playlist.iter_next(iter))
 
-        self.pl.order = SetOrder(self.pl)
+        self.pl.order = SetOrder()
         self.failUnlessEqual(self.pl[self.pl.go_to(5, True)][0], 6)
         self.failUnlessEqual(self.pl[self.pl.go_to(5, False)][0], 7)
 
@@ -229,7 +234,7 @@ class TPlaylistModel(TestCase):
         self.failUnlessEqual(self.pl.current, 0)
 
     def test_reset_order(self):
-        self.pl.order = ORDERS[0](self.pl)
+        self.pl.order = OrderInOrder()
         self.pl.go_to(5)
         self.failUnlessEqual(self.pl.current, 5)
         self.pl.reset()
@@ -244,8 +249,7 @@ class TPlaylistModel(TestCase):
 
     def test_next_nosong_536(self):
         self.pl.go_to(1)
-        self.pl.repeat = True
-        self.pl.order = ORDERS[1](self.pl)
+        self.pl.order = OrderShuffle()
         self.pl.set([])
         Gtk.main_iteration_do(False)
         self.pl.next()
@@ -366,7 +370,7 @@ class TPlaylistMux(TestCase):
             self.pl.set([1])
             do_events()
             self.failUnless(self.mux.current is None)
-            self.q.order = ORDERS[1](self.pl)
+            self.q.order = OrderShuffle()
             self.failUnless(self.next() == 1)
             self.q.set([10, 11])
             do_events()

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -221,10 +222,7 @@ class QueueExpander(Gtk.Expander):
         self.queue.emit('drag-data-received', *args)
 
     def __queue_shuffle(self, button, model):
-        if not button.get_active():
-            model.order = OrderInOrder(model)
-        else:
-            model.order = OrderShuffle(model)
+        model.order = OrderShuffle() if button.get_active() else OrderInOrder()
 
     def __expand(self, cb, prop, clear):
         expanded = self.get_expanded()

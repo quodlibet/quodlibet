@@ -270,6 +270,11 @@ def add_css(widget, css):
     context.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
 
+def remove_padding(widget):
+    """Removes padding on supplied widget"""
+    return add_css(widget, " * { padding: 0px; } ")
+
+
 def is_wayland():
     # FIXME: Is there no better way?
     display = Gdk.Display.get_default()

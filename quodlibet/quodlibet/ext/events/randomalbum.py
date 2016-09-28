@@ -161,8 +161,8 @@ class RandomAlbum(EventPlugin):
         return [(score, name) for name, score in scores.items()]
 
     def plugin_on_song_started(self, song):
-        if (song is None and config.get("memory", "order") != "onesong" and
-            not app.player.paused):
+        one_song = app.player_options.single
+        if song is None and one_song and not app.player.paused:
             browser = app.window.browser
 
             if not browser.can_filter('album'):
