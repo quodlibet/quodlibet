@@ -12,7 +12,7 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align
 from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
-from quodlibet.util import connect_destroy
+from quodlibet.util import connect_destroy, print_d
 
 
 class WaveformSeekBar(Gtk.Box):
@@ -71,9 +71,9 @@ class WaveformSeekBar(Gtk.Box):
     def _on_bus_message(self, bus, message):
         if message.type == Gst.MessageType.ERROR:
             error, debug = message.parse_error()
-            quodlibet.print_d("Error received from element {name}: {error}".format(
+            print_d("Error received from element {name}: {error}".format(
                 name=message.src.get_name(), error=error))
-            quodlibet.print_d("Debugging information: {}".format(debug))
+            print_d("Debugging information: {}".format(debug))
         elif message.type == Gst.MessageType.ELEMENT:
             structure = message.get_structure()
             if(structure.get_name() == "level"):
@@ -85,7 +85,7 @@ class WaveformSeekBar(Gtk.Box):
                 self._rms_vals.append(rms)
             else:
                 # Shouldn't happen
-                quodlibet.print_d("Not Level")
+                print_d("Not Level")
         elif message.type == Gst.MessageType.EOS:
             self._pipeline.set_state(Gst.State.NULL)
             self._waveform_scale.update(self._rms_vals, self._player)
