@@ -212,6 +212,7 @@ def get_fg_color():
 
     return color
 
+
 def set_fg_color(color):
     config.set("plugins", __name__, color)
 
