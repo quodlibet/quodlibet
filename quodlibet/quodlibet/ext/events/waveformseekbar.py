@@ -71,9 +71,9 @@ class WaveformSeekBar(Gtk.Box):
     def _on_bus_message(self, bus, message):
         if message.type == Gst.MessageType.ERROR:
             error, debug = message.parse_error()
-            print("Error received from element {name}: {error}".format(
+            quodlibet.print_d("Error received from element {name}: {error}".format(
                 name=message.src.get_name(), error=error))
-            print("Debugging information: {}".format(debug))
+            quodlibet.print_d("Debugging information: {}".format(debug))
         elif message.type == Gst.MessageType.ELEMENT:
             structure = message.get_structure()
             if(structure.get_name() == "level"):
@@ -85,7 +85,7 @@ class WaveformSeekBar(Gtk.Box):
                 self._rms_vals.append(rms)
             else:
                 # Shouldn't happen
-                print("Not Level")
+                quodlibet.print_d("Not Level")
         elif message.type == Gst.MessageType.EOS:
             self._pipeline.set_state(Gst.State.NULL)
             self._waveform_scale.update(self._rms_vals, self._player)
@@ -149,7 +149,11 @@ class WaveformScale(Gtk.Widget):
     def do_draw(self, cr):
         # Paint the background
         context = self.get_style_context()
-        bg_color = context.get_background_color(Gtk.StateFlags.NORMAL)
+        context.save()
+        context.set_state(Gtk.StateFlags.NORMAL)
+        bg_color = context.get_background_color(context.get_state())
+        context.restore()
+
         cr.set_source_rgba(*list(bg_color))
         cr.paint()
         cr.set_line_width(2)
@@ -169,7 +173,10 @@ class WaveformScale(Gtk.Widget):
         elapsed_color = Gdk.RGBA()
         elapsed_color.parse(get_fg_color())
 
-        remaining_color = context.get_color(Gtk.StateFlags.SELECTED)
+        context.save()
+        context.set_state(Gtk.StateFlags.SELECTED)
+        remaining_color = context.get_color(context.get_state())
+        context.restore()
 
         # Draw the waveform
         for x in range(width):
