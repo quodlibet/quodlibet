@@ -96,6 +96,7 @@ Bruno Bergot
 Carlo Teubner
 Christine Spang
 Christoph Reiter
+Corentin Néau
 David Kågedal
 David Schneider
 Decklin Foster
