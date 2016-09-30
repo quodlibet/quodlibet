@@ -130,7 +130,7 @@ class WaveformSeekBar(Gtk.Box):
 class WaveformScale(Gtk.Widget):
     """ The waveform widget. """
 
-    __gtype_name__ = 'SimpleWidget'
+    __gtype_name__ = 'WaveformScale'
 
     _rms_vals = []
 
