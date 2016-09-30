@@ -115,6 +115,9 @@ class WaveformSeekBar(Gtk.Box):
             length = (player.info("~#length"))
             remaining = length - position
 
+            if length == 0:
+                return
+
             self._waveform_scale.set_position(position / length)
             self._elapsed_label.set_time(position)
             self._remaining_label.set_time(remaining)
