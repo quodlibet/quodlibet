@@ -175,7 +175,6 @@ class WaveformScale(Gtk.Widget):
         for x in range(width):
             fg_color = remaining_color
 
-
             if x < self.position * width:
                 fg_color = elapsed_color
 
