@@ -5,13 +5,11 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import contextlib
+from gi.repository import Gtk, Gdk, Gst
 
-from gi.repository import GObject, Gtk, Gdk, Gst
-
-from quodlibet import app, config
+from quodlibet import _, app, config
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import Icons, Align
+from quodlibet.qltk import Align
 from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.util import connect_destroy
@@ -53,7 +51,11 @@ class WaveformSeekBar(Gtk.Box):
         if hasattr(self, "_pipeline") and self._pipeline:
             self._pipeline.set_state(Gst.State.NULL)
 
-        command_template = 'filesrc location="{}" ! decodebin ! level name=audiolevel interval=100000000 post-messages=true ! fakesink sync=false'
+        command_template = """
+        filesrc location="{}"
+        ! decodebin
+        ! level name=audiolevel interval=100000000 post-messages=true
+        ! fakesink sync=false"""
         command = command_template.format(file)
         pipeline = Gst.parse_launch(command)
 
@@ -130,7 +132,7 @@ class WaveformSeekBar(Gtk.Box):
 class WaveformScale(Gtk.Widget):
     """ The waveform widget. """
 
-    __gtype_name__ = 'WaveformScale'
+    # __gtype_name__ = 'WaveformScale'
 
     _rms_vals = []
 
@@ -146,7 +148,8 @@ class WaveformScale(Gtk.Widget):
 
     def do_draw(self, cr):
         # Paint the background
-        bg_color = self.get_style_context().get_background_color(Gtk.StateFlags.NORMAL)
+        context = self.get_style_context()
+        bg_color = context.get_background_color(Gtk.StateFlags.NORMAL)
         cr.set_source_rgba(*list(bg_color))
         cr.paint()
         cr.set_line_width(2)
@@ -166,11 +169,15 @@ class WaveformScale(Gtk.Widget):
         elapsed_color = Gdk.RGBA()
         elapsed_color.parse(get_fg_color())
 
-        remaining_color = self.get_style_context().get_color(Gtk.StateFlags.SELECTED)
+        remaining_color = context.get_color(Gtk.StateFlags.SELECTED)
 
         # Draw the waveform
         for x in range(width):
-            fg_color = elapsed_color if x < self.position * width else remaining_color
+            fg_color = remaining_color
+
+
+            if x < self.position * width:
+                fg_color = elapsed_color
 
             cr.set_source_rgba(*list(fg_color))
 
