@@ -217,7 +217,7 @@ class WaveformScale(Gtk.EventBox):
 
         # Check if the user set a different color in the config
         elapsed_color_config = get_elapsed_color()
-        if Gdk.RGBA().parse(elapsed_color_config):
+        if elapsed_color_config and Gdk.RGBA().parse(elapsed_color_config):
             elapsed_color = Gdk.RGBA()
             elapsed_color.parse(elapsed_color_config)
 
