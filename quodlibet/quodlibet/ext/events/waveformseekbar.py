@@ -206,17 +206,20 @@ class WaveformScale(Gtk.EventBox):
     def do_draw(self, cr):
         context = self.get_style_context()
 
-        # Get background color
+        # Get colors
         context.save()
         context.set_state(Gtk.StateFlags.NORMAL)
         bg_color = context.get_background_color(context.get_state())
+        fg_color = context.get_color(context.get_state())
+        context.set_state(Gtk.StateFlags.LINK)
+        elapsed_color = context.get_color(context.get_state())
         context.restore()
 
-        # Get foreground color
-        context.save()
-        context.set_state(Gtk.StateFlags.SELECTED)
-        fg_color = context.get_color(context.get_state())
-        context.restore()
+        # Check if the user set a different color in the config
+        elapsed_color_config = get_elapsed_color()
+        if Gdk.RGBA().parse(elapsed_color_config):
+            elapsed_color = Gdk.RGBA()
+            elapsed_color.parse(elapsed_color_config)
 
         # Paint the background
         cr.set_source_rgba(*list(bg_color))
@@ -225,10 +228,6 @@ class WaveformScale(Gtk.EventBox):
         allocation = self.get_allocation()
         width = allocation.width
         height = allocation.height
-
-        # Get color from config
-        elapsed_color = Gdk.RGBA()
-        elapsed_color.parse(get_elapsed_color())
 
         if not self._placeholder and len(self._rms_vals) > 0:
             self.draw_waveform(cr, width, height, elapsed_color, fg_color)
@@ -247,8 +246,7 @@ class WaveformScale(Gtk.EventBox):
 
 
 def get_elapsed_color():
-    default = "#ff5522"
-    color = config.get("plugins", __name__, default)
+    color = config.get("plugins", __name__, None)
 
     return color
 
@@ -288,14 +286,18 @@ class WaveformSeekBarPlugin(EventPlugin):
             else:
                 # Reset text color
                 entry.override_color(Gtk.StateFlags.NORMAL, None)
-                set_elapsed_color(text)
+
+            set_elapsed_color(text)
 
         hbox = Gtk.HBox(spacing=6)
         hbox.set_border_width(6)
         hbox.pack_start(
-            Gtk.Label(label=_("Foreground Color:")), False, True, 0)
+            Gtk.Label(label=_("Override foreground color:")), False, True, 0)
         entry = Gtk.Entry()
-        entry.set_text(get_elapsed_color())
+
+        if get_elapsed_color():
+            entry.set_text(get_elapsed_color())
+
         entry.connect('changed', changed)
         hbox.pack_start(entry, True, True, 0)
         return hbox
