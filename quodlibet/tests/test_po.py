@@ -25,6 +25,13 @@ from gdist import gettextutil
 PODIR = os.path.join(os.path.dirname(quodlibet.__path__[0]), "po")
 
 
+class MissingTranslationsException(Exception):
+    def __init__(self, missing):
+        msg = ("No reference in POTFILES.in to: " +
+               ", ".join(missing))
+        super(MissingTranslationsException, self).__init__(msg)
+
+
 class TPOTFILESIN(TestCase):
 
     def test_missing(self):
@@ -33,9 +40,9 @@ class TPOTFILESIN(TestCase):
         except gettextutil.GettextError:
             return
 
-        result = gettextutil.get_missing(PODIR, "quodlibet")
-        if result:
-            raise Exception("\n".join(result))
+        results = gettextutil.get_missing(PODIR, "quodlibet")
+        if results:
+            raise MissingTranslationsException(results)
 
 
 @skipIf(polib is None, "polib not found")
