@@ -135,6 +135,9 @@ quodlibet/operon/base.py
 quodlibet/operon/commands.py
 quodlibet/operon/main.py
 quodlibet/operon/util.py
+quodlibet/order/__init__.py
+quodlibet/order/reorder.py
+quodlibet/order/repeat.py
 quodlibet/player/gstbe/player.py
 quodlibet/player/gstbe/plugins.py
 quodlibet/player/gstbe/prefs.py
