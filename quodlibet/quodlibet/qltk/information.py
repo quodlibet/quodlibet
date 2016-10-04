@@ -211,7 +211,7 @@ class OneSong(qltk.Notebook):
     def _library(self, song, box):
         def counter(i):
             return _("Never") if i == 0 \
-                else numeric_phrase("%(n)d time", "%(n)d times", i)
+                else numeric_phrase("%(n)d time", "%(n)d times", i, "n")
 
         def ftime(t):
             if t == 0:
