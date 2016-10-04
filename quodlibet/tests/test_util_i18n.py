@@ -2,14 +2,14 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-
+import locale
 import os
 
 from tests import TestCase
 from .helper import preserve_environ
 
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
-    set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang
+    set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, numeric_phrase
 
 
 class TGlibTranslations(TestCase):
@@ -73,3 +73,30 @@ class Tgettext(TestCase):
             os.environ["LANGUAGE"] = "en:de:en_FOO:nl"
             fixup_i18n_envvars()
             self.assertEqual(os.environ["LANGUAGE"], "en:C:de:en_FOO:C:nl")
+
+    def test_numeric_phrase(self):
+        actual = numeric_phrase("%d green bottle", "%d green bottles", 1)
+        self.failUnlessEqual(actual, "1 green bottle")
+
+        actual = numeric_phrase("%d green bottle", "%d green bottles", 1234)
+        self.failUnlessEqual(actual, "1,234 green bottles")
+
+    def test_numeric_phrase_locales(self):
+        try:
+            locale.setlocale(locale.LC_ALL, 'fr_FR.utf-8')
+            actual = numeric_phrase("%(bottles)d green bottle",
+                                    "%(bottles)d green bottles",
+                                    1234, "bottles")
+            self.failUnlessEqual(actual, "1 234 green bottles")
+        finally:
+            locale.setlocale(locale.LC_ALL, '')
+
+    def test_numeric_phrase_templated(self):
+        actual = numeric_phrase("%(bottles)d green bottle",
+                                "%(bottles)d green bottles", 1, "bottles")
+        self.failUnlessEqual(actual, "1 green bottle")
+
+        actual = numeric_phrase("%(bottles)d green bottle",
+                                "%(bottles)d green bottles", 1234, "bottles")
+
+        self.failUnlessEqual(actual, "1,234 green bottles")

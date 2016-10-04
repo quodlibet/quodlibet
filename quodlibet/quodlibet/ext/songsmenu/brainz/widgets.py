@@ -10,12 +10,13 @@
 from gi.repository import Gtk, Pango
 from senf import fsn2text
 
-from quodlibet import ngettext, _
+from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk import Dialog, Icons
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
 from quodlibet.compat import iteritems, text_type
+from quodlibet.util.i18n import numeric_phrase
 
 from .query import QueryThread
 from .util import pconfig
@@ -93,16 +94,14 @@ class ResultComboBox(Gtk.ComboBox):
             disc_count = release.disc_count
             track_count = release.track_count
 
-            discs_format = ngettext(
-                "%d disc", "%d discs", disc_count) % disc_count
-            tracks_format = ngettext(
-                "%d track", "%d tracks", track_count) % track_count
+            discs_text = numeric_phrase("%d disc", "%d discs", disc_count)
+            tracks_text = numeric_phrase("%d track", "%d tracks", track_count)
 
             markup = "<b>%s</b>\n%s - %s, %s (%s)" % (
                     util.escape(release.title),
                     util.escape(", ".join(artist_names)),
-                    util.escape(discs_format),
-                    util.escape(tracks_format),
+                    util.escape(discs_text),
+                    util.escape(tracks_text),
                     extra_info)
             cell.set_property('markup', markup)
 

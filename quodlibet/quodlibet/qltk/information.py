@@ -21,6 +21,7 @@ from quodlibet.qltk.lyrics import LyricsPane
 from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.qltk.x import Align
 from quodlibet.util import tag, connect_destroy
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import readable
 from quodlibet.util.path import filesize, unexpand
 
@@ -209,10 +210,8 @@ class OneSong(qltk.Notebook):
 
     def _library(self, song, box):
         def counter(i):
-            if i == 0:
-                return _("Never")
-            else:
-                return ngettext("%(n)d time", "%(n)d times", i) % {"n": i}
+            return _("Never") if i == 0 \
+                else numeric_phrase("%(n)d time", "%(n)d times", i)
 
         def ftime(t):
             if t == 0:

@@ -32,8 +32,9 @@ from quodlibet.qltk.x import Align, SeparatorMenuItem, ConfigRHPaned, \
     Button, SymbolicIconImage, MenuItem
 from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
 from quodlibet.qltk import Icons
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import mtime, normalize_path
-from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.util import connect_obj, connect_destroy, format_int_locale
 from quodlibet.update import UpdateDialog
 
 
@@ -225,7 +226,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
             count = len(model or [])
         else:
             count = len(rows)
-        label.set_text(ngettext("%d song", "%d songs", count) % count)
+        label.set_text(numeric_phrase("%d song", "%d songs", count))
 
         for row in rows:
             filename = model[row][0]
@@ -247,12 +248,13 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         elif len(files) == 1:
             self.set_title("%s - Ex Falso" % files[0].comma("title"))
         else:
+            params = ({'title': files[0].comma("title"),
+                       'count': format_int_locale(len(files) - 1)})
             self.set_title(
                 "%s - Ex Falso" %
-                (ngettext("%(title)s and %(count)d more",
-                          "%(title)s and %(count)d more",
-                          len(files) - 1) % (
-                {'title': files[0].comma("title"), 'count': len(files) - 1})))
+                (ngettext("%(title)s and %(count)s more",
+                          "%(title)s and %(count)s more", len(files) - 1)
+                 % params))
         self.__library.add(files)
         self.emit('changed', files)
 

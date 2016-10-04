@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -12,7 +13,7 @@ from gi.repository import Gtk, Pango, Gdk
 
 from quodlibet import _
 from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton
-from quodlibet import util
+from quodlibet.util import format_int_locale, format_time_display
 
 
 class WaitLoadBase(object):
@@ -54,18 +55,28 @@ class WaitLoadBase(object):
             self._cancel_button = None
             self._pause_button = None
 
-    def setup(self, count=0, text="", initial={}):
+    def setup(self, count=0, text="", initial=None):
         self.current = 0
         self.count = count
         self._text = text
         self.paused = False
         self.quit = False
         self._start_time = time.time()
+        initial = initial or {}
 
         initial.setdefault("total", self.count)
         initial.setdefault("current", self.current)
         initial.setdefault("remaining", _("Unknown"))
-        self._label.set_markup(self._text % initial)
+
+        def localeify(k, v):
+            foo = '%(' + k + ')d'
+            if foo in self._text:
+                self._text = self._text.replace(foo, '%(' + k + ')s')
+                return k, format_int_locale(int(v))
+            return k, v
+
+        localed = dict([localeify(k, v) for k, v in initial.iteritems()])
+        self._label.set_markup(self._text % localed)
         self._progress.set_fraction(0.0)
 
     def __pause_clicked(self, button):
@@ -89,12 +100,12 @@ class WaitLoadBase(object):
                 max(0, min(1, self.current / float(self.count))))
         else:
             self._progress.pulse()
-        values.setdefault("total", self.count)
-        values.setdefault("current", self.current)
+        values.setdefault("total", format_int_locale(self.count))
+        values.setdefault("current", format_int_locale(self.current))
         if self.count:
             t = (time.time() - self._start_time) / self.current
             remaining = math.ceil((self.count - self.current) * t)
-            values.setdefault("remaining", util.format_time_display(remaining))
+            values.setdefault("remaining", format_time_display(remaining))
         self._label.set_markup(self._text % values)
 
         while not self.quit and (self.paused or Gtk.events_pending()):
@@ -217,8 +228,7 @@ class WaitLoadBar(WaitLoadBase, Gtk.HBox):
 
     def step(self, **values):
         ret = super(WaitLoadBar, self).step(**values)
-        self._progress.set_text(_("%(current)d of %(all)d") % {
-            "current": self.current,
-            "all": self.count,
-        })
+        params = {"current": format_int_locale(self.current),
+                  "all": format_int_locale(self.count)}
+        self._progress.set_text(_("%(current)s of %(all)s") % params)
         return ret

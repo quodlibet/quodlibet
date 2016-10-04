@@ -34,6 +34,7 @@ from quodlibet.qltk.notif import Task
 from quodlibet.qltk import Icons, ErrorMessage, WarningMessage
 from quodlibet.util import copool, connect_destroy, sanitize_tags, \
     connect_obj, escape
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import uri_is_valid
 from quodlibet.util.string import decode, encode
 from quodlibet.util import print_w
@@ -936,8 +937,8 @@ class InternetRadio(Browser, util.InstanceTracker):
         self.view.scroll_to_cell(path, use_align=True, row_align=0.5)
 
     def status_text(self, count, time=None):
-        return (ngettext("%(count)d station", "%(count)d stations", count)
-                % {'count': count})
+        return numeric_phrase("%(count)d station", "%(count)d stations",
+                              count, 'count')
 
 
 from quodlibet import app

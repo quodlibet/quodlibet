@@ -20,7 +20,11 @@ class GettextError(Exception):
 
 
 # pgettext isn't included by default for Python
-XGETTEXT_ARGS = "--keyword=C_:1c,2 --keyword=npgettext:1c,2,3"
+_EXTRA_KEYWORDS = {"C_": "1c,2",
+                   "npgettext": "1c,2,3",
+                   "numeric_phrase": "1,2"}
+XGETTEXT_ARGS = " ".join("--keyword=%s:%s" % (k, v)
+                         for k, v in _EXTRA_KEYWORDS.iteritems())
 
 
 def update_pot(po_dir, package):

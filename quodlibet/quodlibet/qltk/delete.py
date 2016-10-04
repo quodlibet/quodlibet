@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2013 Nick Boultbee
+#           2013,2016 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,13 +18,14 @@ import os
 from gi.repository import Gtk
 from senf import fsn2text
 
-from quodlibet import ngettext, _
+from quodlibet import _
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.x import MenuItem, Align
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import unexpand
 
 
@@ -71,12 +72,9 @@ class DeleteDialog(WarningMessage):
         return cls(parent, paths, description)
 
     def __init__(self, parent, paths, description):
-        title = ngettext(
-            "Delete %(file_count)d file permanently?",
-            "Delete %(file_count)d files permanently?",
-            len(paths)) % {
-                "file_count": len(paths),
-            }
+        title = numeric_phrase("Delete %(file_count)d file permanently?",
+                               "Delete %(file_count)d files permanently?",
+                               len(paths), "file_count")
 
         super(DeleteDialog, self).__init__(
             get_top_parent(parent),
@@ -118,13 +116,9 @@ class TrashDialog(WarningMessage):
 
     def __init__(self, parent, paths, description):
 
-        title = ngettext(
-            "Move %(file_count)d file to the trash?",
-            "Move %(file_count)d files to the trash?",
-            len(paths)) % {
-                "file_count": len(paths),
-            }
-
+        title = numeric_phrase("Move %(file_count)d file to the trash?",
+                               "Move %(file_count)d files to the trash?",
+                               len(paths), "file_count")
         super(TrashDialog, self).__init__(
             get_top_parent(parent),
             title, description,

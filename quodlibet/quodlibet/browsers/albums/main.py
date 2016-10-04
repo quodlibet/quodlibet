@@ -14,6 +14,7 @@ import os
 
 from gi.repository import Gtk, Pango, Gdk, GLib, Gio
 
+from quodlibet.util.i18n import numeric_phrase
 from .prefs import Preferences, DEFAULT_PATTERN_TEXT
 from .models import AlbumModel, AlbumFilterModel, AlbumSortModel
 
@@ -466,9 +467,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
             album = model.get_album(iter_)
 
             if album is None:
-                text = "<b>%s</b>" % _("All Albums")
-                text += "\n" + ngettext("%d album", "%d albums",
-                        len(model) - 1) % (len(model) - 1)
+                text = "<b>%s</b>\n" % _("All Albums")
+                text += numeric_phrase("%d album", "%d albums", len(model) - 1)
                 markup = text
             else:
                 markup = self.display_pattern % album

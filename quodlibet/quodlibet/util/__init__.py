@@ -332,6 +332,18 @@ def parse_date(datestr):
     return time.mktime(time.strptime(datestr, frmt))
 
 
+def format_int_locale(value):
+    """Turn an integer into a grouped, locale-dependent string
+    e.g. 12345 -> "12,345" or "12.345" etc"""
+    return locale.format("%d", value, grouping=True)
+
+
+def format_float_locale(value, format=".2f"):
+    """Turn a float into a grouped, locale-dependent string
+    e.g. 12345.67 -> "12,345.67" or "12.345,67" etc"""
+    return locale.format(format, value, grouping=True)
+
+
 def format_rating(value, blank=True):
     """Turn a number into a sequence of rating symbols."""
 

@@ -25,7 +25,7 @@ from quodlibet.qltk.x import Frame
 from quodlibet.qltk import Icons, Dialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
-from quodlibet.util import cached_property, print_w, print_e
+from quodlibet.util import cached_property, print_w, print_e, format_int_locale
 
 __all__ = ['ReplayGain']
 
@@ -459,12 +459,12 @@ class RGDialog(Dialog):
         self.__fill_view(view, albums)
         num_to_process = sum(int(rga.should_process) for rga in self._todo)
         template = ngettext(
-            "There is <b>%(to-process)d</b> album to update (of %(all)d)",
-            "There are <b>%(to-process)d</b> albums to update (of %(all)d)",
+            "There is <b>%(to-process)s</b> album to update (of %(all)s)",
+            "There are <b>%(to-process)s</b> albums to update (of %(all)s)",
             num_to_process)
         info.set_markup(template % {
-            "to-process": num_to_process,
-            "all": len(self._todo),
+            "to-process": format_int_locale(num_to_process),
+            "all": format_int_locale(len(self._todo)),
         })
         self.connect("destroy", self.__destroy)
         self.connect('response', self.__response)

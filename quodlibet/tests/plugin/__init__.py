@@ -38,8 +38,8 @@ ms.rescan()
 for name, err in ms.failures.items():
     exc = err.exception
     assert issubclass(type(exc), (PluginImportException, ImportError)),\
-        "%s shouldn't have raised a %s, but it did (%r)."\
-        % (name, type(exc), exc)
+        "'%s' plugin shouldn't have raised a %s, but it did (%r)."\
+        % (name, type(exc).__name__, exc)
 
 plugins = {}
 modules = {}

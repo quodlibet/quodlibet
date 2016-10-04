@@ -36,6 +36,13 @@ class TWaitLoadWindow(TestCase):
         wlw.step()
         wlw.destroy()
 
+    def test_plurals(self):
+        wlw = WaitLoadWindow(None, 1234, "At %(current)d of %(total)d")
+        self.failUnlessEqual(wlw._label.get_text(), "At 0 of 1,234")
+        while wlw.current < 1000:
+            wlw.step()
+        self.failUnlessEqual(wlw._label.get_text(), "At 1,000 of 1,234")
+
     def test_connect(self):
         self.failUnlessEqual(2, self.parent.count)
         self.wlw.destroy()

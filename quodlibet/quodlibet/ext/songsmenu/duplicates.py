@@ -19,7 +19,7 @@ import unicodedata
 from gi.repository import Gtk, Pango
 
 from quodlibet import app
-from quodlibet import print_d, util, qltk, ngettext, _
+from quodlibet import print_d, util, qltk, _
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songshelpers import any_song, is_finite
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -30,6 +30,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import Icons, Button
 from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.util.i18n import numeric_phrase
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -286,8 +287,9 @@ class DuplicateDialog(Gtk.Window):
             return songlist.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __init__(self, model):
-        songs_text = ngettext("%d duplicate group", "%d duplicate groups",
-                len(model)) % len(model)
+        songs_text = numeric_phrase("%d duplicate group",
+                                    "%d duplicate groups",
+                                    len(model))
         super(DuplicateDialog, self).__init__()
         self.set_destroy_with_parent(True)
         self.set_title("Quod Libet - %s (%s)" % (Duplicates.PLUGIN_NAME,

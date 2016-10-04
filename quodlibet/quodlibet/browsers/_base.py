@@ -17,7 +17,8 @@ from quodlibet import ngettext, _
 from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
-from quodlibet.util import connect_obj, print_d
+from quodlibet.util import connect_obj, print_d, format_int_locale
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.library import background_filter
 
 
@@ -269,9 +270,8 @@ class Browser(Gtk.Box, Filter):
         return SongsMenu(library, songs, delete=True, items=items)
 
     def status_text(self, count, time=None):
-        tmpl = ngettext("%(count)d song (%(time)s)",
-                        "%(count)d songs (%(time)s)", count)
-        return tmpl % {'count': count, 'time': time}
+        tmpl = numeric_phrase("%d song", "%d songs", count)
+        return tmpl + " (%s)" % time
 
     replaygain_profiles = None
     """Replay Gain profiles for this browser."""
