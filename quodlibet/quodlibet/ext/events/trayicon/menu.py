@@ -8,6 +8,8 @@
 
 from gi.repository import GObject, Gtk
 
+from quodlibet.browsers.playlists.menu import PlaylistMenu
+
 from quodlibet import _
 from quodlibet import browsers
 from quodlibet import qltk
@@ -111,6 +113,9 @@ class IndicatorMenu(Gtk.Menu):
 
         self._info = MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
 
+        self._playlists_item = MenuItem(_("Play_lists"), Icons.LIST_ADD)
+        self._new_playlist_submenu_for(player.song)
+
         def on_information(*args):
             song = player.song
             window = Information(app.librarian, [song])
@@ -142,6 +147,7 @@ class IndicatorMenu(Gtk.Menu):
         self.append(safter)
         self.append(SeparatorMenuItem())
         self.append(rating)
+        self.append(self._playlists_item)
         self.append(self._props)
         self.append(self._info)
         self.append(SeparatorMenuItem())
@@ -183,6 +189,16 @@ class IndicatorMenu(Gtk.Menu):
         self._info.set_sensitive(song is not None)
         self._props.set_sensitive(song is not None)
         self._rating_item.set_songs([song])
+        self._new_playlist_submenu_for(song)
+
+    def _new_playlist_submenu_for(self, song):
+        submenu = self._playlists_item.get_submenu()
+        if submenu:
+            submenu.destroy()
+        playlist_menu = PlaylistMenu([song])
+        self._playlists_item.set_submenu(playlist_menu)
+        self._playlists_item.set_sensitive(bool(song) and song.can_add)
+        self._playlists_item.show_all()
 
     def _on_play_pause(self, menuitem, player):
         if player.song:
