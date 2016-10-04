@@ -12,7 +12,6 @@ from gi.repository import Gtk, GdkPixbuf
 from quodlibet import app
 
 from quodlibet import config
-from quodlibet.ext.events.trayicon.menu import IndicatorMenu
 from quodlibet.qltk import Icons
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 from tests import skipIf, TestCase
@@ -84,6 +83,7 @@ class TIndicatorMenu(TestCase):
         config.quit()
 
     def test_icons(self):
+        from quodlibet.ext.events.trayicon.menu import IndicatorMenu
         menu = IndicatorMenu(app)
         # Slightly lame way to assert here,
         # but it does the job and is not *too* brittle
