@@ -11,7 +11,7 @@ import random
 
 from quodlibet import _
 from quodlibet.plugins.playorder import ShufflePlugin
-from quodlibet.qltk.playorder import OrderRemembered
+from quodlibet.order import OrderRemembered
 from quodlibet.qltk import Icons
 
 

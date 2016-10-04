@@ -7,7 +7,7 @@
 # published by the Free Software Foundation.
 
 from quodlibet.plugins.playorder import ShufflePlugin
-from quodlibet.qltk.playorder import OrderInOrder, OrderRemembered
+from quodlibet.order import OrderInOrder, OrderRemembered
 from quodlibet import _
 from quodlibet import app
 from quodlibet.qltk import Icons
