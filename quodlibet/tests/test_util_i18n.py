@@ -5,7 +5,9 @@
 import locale
 import os
 
-from tests import TestCase, skipUnless
+import sys
+
+from tests import TestCase, skipIf
 from .helper import preserve_environ
 
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
@@ -81,8 +83,8 @@ class Tgettext(TestCase):
         actual = numeric_phrase("%d green bottle", "%d green bottles", 1234)
         self.failUnlessEqual(actual, "1,234 green bottles")
 
-    @skipUnless(os.name == "posix", "Locales don't exist "
-                                    "on Windows / OSX test systems")
+    @skipIf(os.name == "nt" or sys.platform == "darwin",
+            "Locales don't exist on Windows / OSX test systems")
     def test_numeric_phrase_locales(self):
         try:
             locale.setlocale(locale.LC_ALL, 'fr_FR.utf-8')
