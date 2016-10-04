@@ -73,6 +73,7 @@ class TTrayIcon(PluginTestCase):
             self.assertTrue(new)
 
 
+@skipIf(sys.platform == "darwin", "segfaults..")
 class TIndicatorMenu(TestCase):
     def setUp(self):
         config.init()
