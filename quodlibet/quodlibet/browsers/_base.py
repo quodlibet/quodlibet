@@ -13,11 +13,11 @@ from gi.repository import Gtk, GObject, GLib, Pango
 
 from quodlibet import app, qltk
 from quodlibet import util
-from quodlibet import ngettext, _
+from quodlibet import _
 from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
-from quodlibet.util import connect_obj, print_d, format_int_locale
+from quodlibet.util import connect_obj, print_d
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.library import background_filter
 

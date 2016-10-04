@@ -20,7 +20,6 @@ from quodlibet import _
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import config
-from quodlibet import ngettext
 
 from quodlibet.browsers import Browser
 from quodlibet.formats.remote import RemoteFile
