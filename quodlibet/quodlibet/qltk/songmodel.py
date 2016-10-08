@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -129,18 +130,14 @@ class TrackCurrentModel(ObjectStore):
     def set(self, songs):
         """Clear the model and add the passed songs"""
 
-        print_d("Clearing model.")
+        print_d("Filling view model with %d songs." % len(songs))
         self.clear()
         self.__iter = None
-
-        print_d("Setting %d songs." % len(songs))
 
         oldsong = self.last_current
         for iter_, song in izip(self.iter_append_many(songs), songs):
             if song is oldsong:
                 self.__iter = iter_
-
-        print_d("Done filling model.")
 
     def get(self):
         """A list of all contained songs"""

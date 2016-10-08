@@ -22,6 +22,7 @@ from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.compat import xrange, text_type
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
+from quodlibet.util.dprint import print_d
 from .collections import HashedList
 
 
@@ -362,13 +363,16 @@ class Playlist(Collection, Iterable):
     def extend(self, songs):
         self._list.extend(songs)
         self.finalize()
+        self._emit_changed(songs, msg="extend")
 
     def append(self, song):
         ret = self._list.append(song)
+        self._emit_changed([song], msg="append")
         self.finalize()
         return ret
 
     def clear(self):
+        self._emit_changed(self._list, msg="clear")
         del self._list[:]
         self.finalize()
 
@@ -394,6 +398,7 @@ class Playlist(Collection, Iterable):
 
     def __init__(self, name, library=None):
         super(Playlist, self).__init__()
+        self.__inhibit_library_signals = False
         self.__instances.append(self)
 
         if isinstance(name, text_type) and os.name != "nt":
@@ -434,18 +439,21 @@ class Playlist(Collection, Iterable):
         return new_name
 
     def add_songs(self, filenames, library):
-        changed = False
+        changed = []
         for i in range(len(self)):
             if isinstance(self[i], basestring) and self._list[i] in filenames:
-                self._list[i] = library[self._list[i]]
-                changed = True
-        return changed
+                song = library[self._list[i]]
+                self._list[i] = song
+                changed.append(song)
+        self._emit_changed(changed, msg="add")
+        return bool(changed)
 
     def remove_songs(self, songs, leave_dupes=False):
         """Removes `songs` from this playlist if they are there,
          removing only the first reference if `leave_dupes` is True
         """
-        changed = False
+        print_d("Remove %d song(s) from %s" % (len(songs), self.name))
+        changed = set()
         for song in songs:
             # TODO: document the "library.masked" business
             if self.library is not None and self.library.masked(song):
@@ -466,7 +474,22 @@ class Playlist(Collection, Iterable):
                     changed = True
         if changed:
             self.finalize()
+        self._emit_changed(songs, "remove_songs")
         return changed
+
+    @property
+    def inhibit(self):
+        return self.__inhibit_library_signals
+
+    @inhibit.setter
+    def inhibit(self, value):
+        self.__inhibit_library_signals = value
+
+    def _emit_changed(self, songs, msg=""):
+        if self.library and not self.inhibit:
+            print_d("Emitting changed (%s) for %d song(s) from playlist %s "
+                    % (msg, len(songs), self))
+            self.library.emit('changed', songs)
 
     def has_songs(self, songs):
         # TODO(rm): consider the "library.masked" business

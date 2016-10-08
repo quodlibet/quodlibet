@@ -5,6 +5,7 @@
 
 import shutil
 import os
+from collections import defaultdict
 
 from senf import fsnative
 
@@ -277,10 +278,33 @@ class TPlaylist(TestCase):
         Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
     ]
 
+    class FakeLib(object):
+
+        def __init__(self):
+            self.reset()
+
+        def emit(self, name, songs):
+            self.emitted[name].extend(songs)
+
+        def masked(self, songs):
+            return False
+
+        def reset(self):
+            self.emitted = defaultdict(list)
+
+        @property
+        def changed(self):
+            return self.emitted.get('changed', [])
+
+    FAKE_LIB = FakeLib()
+
+    def setUp(self):
+        self.FAKE_LIB.reset()
+
     def pl(self, name, lib=None):
         return Playlist(name, lib)
 
-    def wrap(self, name, lib=None):
+    def wrap(self, name, lib=FAKE_LIB):
         return MockPlaylistResource(self.pl(name, lib))
 
     def test_equality(s):
@@ -404,6 +428,23 @@ class TPlaylist(TestCase):
             s.failUnlessEqual(NUMERIC_SONGS[1:2], pl[1:2])
             s.failUnless(NUMERIC_SONGS[1] in pl)
 
+    def test_extend_signals(s):
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            s.failUnlessEqual(s.FAKE_LIB.changed, NUMERIC_SONGS)
+
+    def test_append_signals(s):
+        with s.wrap("playlist") as pl:
+            song = NUMERIC_SONGS[0]
+            pl.append(song)
+            s.failUnlessEqual(s.FAKE_LIB.changed, [song])
+
+    def test_clear_signals(s):
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            pl.clear()
+            s.failUnlessEqual(s.FAKE_LIB.changed, NUMERIC_SONGS * 2)
+
     def test_make(self):
         with self.wrap("Does not exist") as pl:
             self.failUnlessEqual(0, len(pl))
@@ -413,6 +454,8 @@ class TPlaylist(TestCase):
         with self.wrap("Foobar") as pl:
             pl.rename("Foo Quuxly")
             self.failUnlessEqual(pl.name, "Foo Quuxly")
+            # Rename should not fire signals
+            self.failIf(self.FAKE_LIB.changed)
 
     def test_rename_nothing(self):
         with self.wrap("Foobar") as pl:
@@ -463,6 +506,7 @@ class TPlaylist(TestCase):
 class TFileBackedPlaylist(TPlaylist):
 
     def setUp(self):
+        super(TFileBackedPlaylist, self).setUp()
         self.temp = mkdtemp()
         self.temp2 = mkdtemp()
 
