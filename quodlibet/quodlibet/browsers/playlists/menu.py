@@ -9,6 +9,7 @@ from gi.repository import Gtk, Pango
 
 from quodlibet import qltk
 from quodlibet import ngettext, _
+from quodlibet.browsers.paned import PanedBrowser
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
 from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent, Icons
@@ -44,6 +45,7 @@ class PlaylistMenu(Gtk.Menu):
         playlist = FileBackedPlaylist.new(PLAYLISTS, title)
         playlist.extend(songs)
         PlaylistsBrowser.changed(playlist)
+        PanedBrowser.set_all_panes()
 
     def _on_toggle_playlist_activate(self, item, playlist, songs):
         parent = get_menu_item_top_parent(item)
@@ -61,6 +63,7 @@ class PlaylistMenu(Gtk.Menu):
         else:
             playlist.extend(songs)
         PlaylistsBrowser.changed(playlist)
+        PanedBrowser.set_all_panes()
 
 
 class ConfirmMultipleSongsAction(qltk.Message):
