@@ -162,22 +162,27 @@ class CustomCommands(SongsMenuPlugin, PlaylistPlugin, PluginConfigMixin):
     COMS_FILE = os.path.join(
         quodlibet.get_user_dir(), 'lists', 'customcommands.json')
 
+    _commands = None
+    """Commands know to the class"""
+
     def __set_pat(self, name):
         self.com_index = name
 
     def get_data(self, key):
         """Gets the pattern for a given key"""
         try:
-            return self.commands[key]
+            return self.all_commands()[key]
         except (KeyError, TypeError):
             print_d("Invalid key %s" % key)
             return None
 
     @classmethod
     def edit_patterns(cls, button):
-        cls.commands = cls._get_saved_searches()
-        win = JSONBasedEditor(Command, cls.commands, filename=cls.COMS_FILE,
+        win = JSONBasedEditor(Command, cls.all_commands(),
+                              filename=cls.COMS_FILE,
                               title=_("Edit Custom Commands"))
+        # Cache busting
+        cls._commands = None
         win.show()
 
     @classmethod
@@ -194,7 +199,13 @@ class CustomCommands(SongsMenuPlugin, PlaylistPlugin, PluginConfigMixin):
         return hb
 
     @classmethod
-    def _get_saved_searches(cls):
+    def all_commands(cls):
+        if cls._commands is None:
+            cls._commands = cls._get_saved_commands()
+        return cls._commands
+
+    @classmethod
+    def _get_saved_commands(cls):
         filename = cls.COMS_FILE
         print_d("Loading saved commands from '%s'..." % filename)
         coms = None
@@ -215,14 +226,11 @@ class CustomCommands(SongsMenuPlugin, PlaylistPlugin, PluginConfigMixin):
         super(CustomCommands, self).__init__(*args, **kwargs)
         self.com_index = None
         self.unique_only = False
-        self.commands = {}
         submenu = Gtk.Menu()
-        self.commands = self._get_saved_searches()
-        for (name, c) in self.commands.items():
+        for (name, c) in self.all_commands().items():
             item = Gtk.MenuItem(label=name)
             connect_obj(item, 'activate', self.__set_pat, name)
             submenu.append(item)
-            # Add link to editor
 
         self.add_edit_item(submenu)
         if submenu.get_children():
