@@ -10,8 +10,6 @@
 
 from gi.repository import Gtk, GLib
 
-from quodlibet.util.dprint import print_d
-
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
