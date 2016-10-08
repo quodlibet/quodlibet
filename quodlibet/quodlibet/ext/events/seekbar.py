@@ -27,7 +27,7 @@ class SeekBar(Gtk.Box):
         self._elapsed_label = TimeLabel()
         self._remaining_label = TimeLabel()
         scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL)
-        scale.set_adjustment(Gtk.Adjustment.new(0, 0, 0, 3, 15, 0))
+        scale.set_adjustment(Gtk.Adjustment.new(0, 0, 0, 3, -15, 0))
         scale.set_draw_value(False)
         self._scale = scale
 
