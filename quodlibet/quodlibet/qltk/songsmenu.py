@@ -330,7 +330,7 @@ class SongsMenu(Gtk.Menu):
             except AttributeError as e:
                 print_w("Couldn't get Playlists menu: %s" % e)
             else:
-                b = qltk.MenuItem(_("Play_lists"), Icons.LIST_ADD)
+                b = qltk.MenuItem(_("Play_lists"), Icons.FOLDER_DRAG_ACCEPT)
                 b.set_sensitive(can_add and bool(songs))
                 b.set_submenu(submenu)
                 self.append(b)
@@ -358,11 +358,12 @@ class SongsMenu(Gtk.Menu):
             else:
                 if browsers.media.MediaDevices in browsers.browsers:
                     submenu = browsers.media.Menu(songs, library)
-                    b = qltk.MenuItem(_("_Copy to Device"), Icons.EDIT_COPY)
-                    b.set_sensitive(
-                        can_add and len(submenu) > 0 and bool(songs))
-                    b.set_submenu(submenu)
-                    self.append(b)
+                    b = qltk.MenuItem(_("_Copy to Device"),
+                                      Icons.MULTIMEDIA_PLAYER)
+                    if can_add and len(submenu) > 0 and bool(songs):
+                        b.set_sensitive(True)
+                        b.set_submenu(submenu)
+                        self.append(b)
 
         if remove or delete:
             self.separate()
@@ -400,7 +401,7 @@ class SongsMenu(Gtk.Menu):
 
         if edit:
             self.separate()
-            b = qltk.MenuItem(_("Edit _Tags"), Icons.DOCUMENT_PROPERTIES)
+            b = qltk.MenuItem(_("Edit _Tags"), Icons.EDIT)
             b.set_sensitive(bool(songs))
             if accels:
                 qltk.add_fake_accel(b, "<alt>Return")

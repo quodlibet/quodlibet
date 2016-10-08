@@ -74,7 +74,8 @@ class TSongsMenu(TestCase):
             queue=False, devices=True, remove=False, delete=False, edit=False,
             ratings=False)
         from quodlibet import browsers
-        if browsers.media.MediaDevices in browsers.browsers:
+        from quodlibet.browsers.media import MediaDevices
+        if MediaDevices in browsers.browsers and len(MediaDevices.devices()):
             self.failUnlessEqual(1, len(self.menu))
         else:
             self.failUnlessEqual(0, len(self.menu))

@@ -13,6 +13,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet.config import RATINGS
+from quodlibet.qltk import Icons
 from quodlibet.qltk import SeparatorMenuItem
 
 
@@ -33,12 +34,15 @@ class ConfirmRateMultipleDialog(qltk.Message):
         self.add_button(action_title, Gtk.ResponseType.YES)
 
 
-class RatingsMenuItem(Gtk.MenuItem):
+class RatingsMenuItem(Gtk.ImageMenuItem):
 
     def __init__(self, songs, library, label=_("_Rating")):
         super(RatingsMenuItem, self).__init__(label=label, use_underline=True)
         self._songs = songs
         ratings = {song("~#rating") for song in songs if song.has_rating}
+        image = Gtk.Image.new_from_icon_name(Icons.FAVORITE, Gtk.IconSize.MENU)
+        image.show()
+        self.set_image(image)
 
         submenu = Gtk.Menu()
         self.set_submenu(submenu)

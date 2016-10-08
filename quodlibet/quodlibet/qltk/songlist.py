@@ -373,7 +373,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
             b = qltk.MenuItem(
-                _("_Filter on %s") % util.tag(t, True), Icons.EDIT_SELECT_ALL)
+                _("_Filter on %s") % util.tag(t, True), Icons.EDIT_FIND)
             b.connect('activate', self.__filter_on, t, songs, browser)
             return b
 

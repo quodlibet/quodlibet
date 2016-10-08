@@ -102,7 +102,7 @@ class IndicatorMenu(Gtk.Menu):
 
         browse.set_submenu(browse_sub)
 
-        self._props = qltk.MenuItem(_("Edit _Tags"), Icons.DOCUMENT_PROPERTIES)
+        self._props = qltk.MenuItem(_("Edit _Tags"), Icons.EDIT)
 
         def on_properties(*args):
             song = player.song
@@ -113,7 +113,8 @@ class IndicatorMenu(Gtk.Menu):
 
         self._info = MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
 
-        self._playlists_item = MenuItem(_("Play_lists"), Icons.LIST_ADD)
+        self._playlists_item = MenuItem(_("Play_lists"),
+                                        Icons.FOLDER_DRAG_ACCEPT)
         self._new_playlist_submenu_for(player.song)
 
         def on_information(*args):

@@ -90,8 +90,10 @@ class TIndicatorMenu(TestCase):
         icons = [item.get_image().get_icon_name()[0]
                  for item in menu.get_children()
                  if isinstance(item, Gtk.ImageMenuItem)]
-        self.failUnless(Icons.LIST_ADD in icons)
+        self.failUnless(Icons.EDIT in icons)
+        self.failUnless(Icons.FOLDER_DRAG_ACCEPT in icons)
         self.failUnless(Icons.MEDIA_PLAYBACK_START in icons)
         self.failUnless(Icons.MEDIA_SKIP_FORWARD in icons)
         self.failUnless(Icons.MEDIA_SKIP_BACKWARD in icons)
         self.failUnless(Icons.APPLICATION_EXIT in icons)
+        self.failUnless(Icons.FAVORITE in icons)
