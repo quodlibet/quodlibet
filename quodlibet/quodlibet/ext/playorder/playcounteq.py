@@ -26,20 +26,22 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered):
     def next(self, playlist, current):
         super(PlaycountEqualizer, self).next(playlist, current)
 
-        songs = playlist.get()
-        # Don't try to search through an empty playlist.
-        if len(songs) <= 0:
+        remaining = self.remaining(playlist)
+
+        # Don't try to search through an empty / played playlist.
+        if len(remaining) <= 0:
             return None
 
         # Set-up the search information.
-        max_count = max([song('~#playcount') for song in songs])
-        weights = [max_count - song('~#playcount') for song in songs]
+        max_count = max([song('~#playcount') for song in remaining.values()])
+        weights = {i: max_count - song('~#playcount')
+                   for i, song in remaining.iteritems()}
         choice = int(max(1, math.ceil(sum(weights) * random.random())))
 
         # Search for a track.
-        for i, weight in enumerate(weights):
+        for i, weight in weights.iteritems():
             choice -= weight
             if choice <= 0:
                 return playlist.get_iter([i])
         else:  # This should only happen if all songs have equal play counts.
-            return playlist.get_iter([random.randint(0, len(songs) - 1)])
+            return playlist.get_iter([random.choice(remaining.keys())])

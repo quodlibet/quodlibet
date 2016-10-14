@@ -8,10 +8,9 @@ from tests import TestCase
 from gi.repository import Gtk
 
 from quodlibet.player.nullbe import NullPlayer
-from quodlibet.formats import AudioFile
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
-from quodlibet.qltk.playorder import Order, OrderShuffle, OrderWeighted, \
-    OrderInOrder, RepeatSongForever, RepeatListForever
+from quodlibet.qltk.playorder import Order, OrderShuffle, OrderInOrder, \
+    RepeatSongForever, RepeatListForever
 
 
 def do_events():
@@ -125,20 +124,6 @@ class TPlaylistModel(TestCase):
             self.pl.next()
             self.assertEqual(self.pl.current, None)
             self.pl.order.reset(self.pl)
-
-    def test_weighted(self):
-        self.pl.order = OrderWeighted()
-        r0 = AudioFile({'~#rating': 0})
-        r1 = AudioFile({'~#rating': 1})
-        r2 = AudioFile({'~#rating': 2})
-        r3 = AudioFile({'~#rating': 3})
-        self.pl.set([r0, r1, r2, r3])
-        Gtk.main_iteration_do(False)
-        songs = [self.pl.current for i in range(1000)
-                 if self.pl.next() or True]
-        self.assert_(songs.count(r1) > songs.count(r0))
-        self.assert_(songs.count(r2) > songs.count(r1))
-        self.assert_(songs.count(r3) > songs.count(r2))
 
     def test_shuffle_repeat_forever(self):
         self.pl.order = RepeatSongForever(OrderShuffle())

@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from quodlibet import _
+from quodlibet import _, print_d
 
 
 class Order(object):
@@ -102,6 +102,16 @@ class OrderRemembered(Order):
 
     def reset(self, playlist):
         del(self._played[:])
+
+    def remaining(self, playlist):
+        """Gets a map of all song indices to their song from the `playlist`
+        that haven't yet been played"""
+        all_indices = set(range(len(playlist)))
+        played = set(self._played)
+        print_d("Played %d of %d song(s)" % (len(self._played), len(playlist)))
+        remaining = list(all_indices.difference(played))
+        all_songs = playlist.get()
+        return {i: all_songs[i] for i in remaining}
 
 
 class OrderInOrder(Order):

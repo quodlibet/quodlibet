@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 from quodlibet import _
+from quodlibet import print_d
 from quodlibet.order import Order
 
 
@@ -61,4 +62,5 @@ class RepeatListForever(Repeat):
         if next:
             return next
         self.wrapped.reset(playlist)
+        print_d("Restarting songlist")
         return playlist.get_iter_first()

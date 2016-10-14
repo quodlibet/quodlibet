@@ -44,13 +44,17 @@ class OrderWeighted(Reorder, OrderRemembered):
 
     def next(self, playlist, iter):
         super(OrderWeighted, self).next(playlist, iter)
-        songs = playlist.get()
-        max_score = sum([song('~#rating') for song in songs])
-        choice = random.random() * max_score
+        remaining = self.remaining(playlist)
+
+        # Don't try to search through an empty / played playlist.
+        if len(remaining) <= 0:
+            return None
+
+        total_score = sum([song('~#rating') for song in remaining.values()])
+        choice = random.random() * total_score
         current = 0.0
-        for i, song in enumerate(songs):
+        for i, song in remaining.iteritems():
             current += song("~#rating")
             if current >= choice:
-                return playlist.get_iter((i,))
-        else:
-            return playlist.get_iter_first()
+                return playlist.get_iter([i])
+        raise ValueError
