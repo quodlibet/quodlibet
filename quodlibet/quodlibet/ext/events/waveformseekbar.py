@@ -1,15 +1,21 @@
 # -*- coding: utf-8 -*-
 # Copyright 2016 0x1777
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, Gdk, Gst
+from math import ceil, floor
 
-from quodlibet import _, app, config
+from quodlibet import _, app
+from quodlibet import print_w
+from quodlibet.plugins import PluginConfig, BoolConfProp, IntConfProp, \
+    ConfProp
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align
+from quodlibet.qltk import Icons
 from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.util import connect_destroy, print_d
@@ -49,9 +55,9 @@ class WaveformSeekBar(Gtk.Box):
         self._tracker.tick()
 
         if player.info:
-            self._create_waveform(player.info("~filename"))
+            self._create_waveform(player.info, CONFIG.data_size)
 
-    def _create_waveform(self, file):
+    def _create_waveform(self, song, points):
         # Close any existing pipelines to avoid warnings
         if hasattr(self, "_pipeline") and self._pipeline:
             self._pipeline.set_state(Gst.State.NULL)
@@ -59,9 +65,13 @@ class WaveformSeekBar(Gtk.Box):
         command_template = """
         filesrc location="{}"
         ! decodebin
-        ! level name=audiolevel interval=100000000 post-messages=true
+        ! level name=audiolevel interval={} post-messages=true
         ! fakesink sync=false"""
-        command = command_template.format(file)
+        interval = int(song("~#length") * 1E9 / points)
+        print_d("Computing data for each %.3f seconds" % (interval / 1E9))
+
+        filename = song("~filename").replace('"', '\\"')
+        command = command_template.format(filename, interval)
         pipeline = Gst.parse_launch(command)
 
         bus = pipeline.get_bus()
@@ -81,16 +91,16 @@ class WaveformSeekBar(Gtk.Box):
             print_d("Debugging information: {}".format(debug))
         elif message.type == Gst.MessageType.ELEMENT:
             structure = message.get_structure()
-            if(structure.get_name() == "level"):
-                rms_dB = structure.get_value("rms")
+            if structure.get_name() == "level":
+                rms_db = structure.get_value("rms")
                 # Calculate average of all channels (usually 2)
-                rms_dB_avg = sum(rms_dB) / len(rms_dB)
+                rms_db_avg = sum(rms_db) / len(rms_db)
                 # Normalize dB value to value between 0 and 1
-                rms = pow(10, (rms_dB_avg / 20))
+                rms = pow(10, (rms_db_avg / 20))
                 self._rms_vals.append(rms)
             else:
-                # Shouldn't happen
-                print_d("Not Level")
+                print_w("Got unexpected message of type {}"
+                        .format(message.type))
         elif message.type == Gst.MessageType.EOS:
             self._pipeline.set_state(Gst.State.NULL)
 
@@ -110,9 +120,9 @@ class WaveformSeekBar(Gtk.Box):
     def _on_player_seek(self, player, song, ms):
         self._update(player)
 
-    def _on_song_changed(self, library, song, player):
+    def _on_song_changed(self, library, songs, player):
         if player.info:
-            self._create_waveform(player.info("~filename"))
+            self._create_waveform(player.info, CONFIG.data_size)
 
         self._waveform_scale.set_placeholder(True)
         self._update(player)
@@ -126,13 +136,14 @@ class WaveformSeekBar(Gtk.Box):
     def _update(self, player):
         if player.info:
             # Position in ms, length in seconds
-            position = player.get_position() / 1000
-            length = (player.info("~#length"))
+            position = player.get_position() / 1000.0
+            length = player.info("~#length")
             remaining = length - position
 
             if length != 0:
                 self._waveform_scale.set_position(position / length)
             else:
+                print_d("Length reported as zero for %s" % player.info)
                 self._waveform_scale.set_position(0)
 
             self._elapsed_label.set_time(position)
@@ -163,6 +174,10 @@ class WaveformScale(Gtk.EventBox):
         self.set_size_request(40, 40)
         self.position = 0
 
+    @property
+    def width(self):
+        return self.get_allocation().width
+
     def set_placeholder(self, placeholder):
         self._placeholder = placeholder
 
@@ -172,28 +187,35 @@ class WaveformScale(Gtk.EventBox):
         self.queue_draw()
 
     def draw_waveform(self, cr, width, height, elapsed_color, remaining_color):
+        line_width = CONFIG.line_width
         value_count = len(self._rms_vals)
         max_value = max(self._rms_vals)
         ratio_width = value_count / float(width)
-        ratio_height = max_value / float(height)
+        ratio_height = max_value / float(height) * 2
+        half_height = height // 2
+        cr.set_line_width(line_width)
 
-        cr.set_line_width(2)
+        if line_width < 2:
+            # Default AA looks bad (and dimmer) for all 1px shapes.
+            cr.set_antialias(1)
 
-        for x in range(width):
-            fg_color = remaining_color
-
-            if x < self.position * width:
-                fg_color = elapsed_color
-
+        position_width = self.position * width
+        hw = line_width / 2.0
+        # Avoiding object lookups is slightly faster
+        data = self._rms_vals
+        for x in range(0, width, line_width):
+            fg_color = (elapsed_color if x < position_width
+                        else remaining_color)
             cr.set_source_rgba(*list(fg_color))
 
-            # The index of the closest rms value
-            i = int(x * ratio_width)
-            cr.move_to(x, height // 2)
-            # Draw line up and down
-            cr.line_to(x, height // 2 - self._rms_vals[i] / ratio_height * 0.5)
-            cr.line_to(x, height // 2 + self._rms_vals[i] / ratio_height * 0.5)
+            # Basic anti-aliasing / oversampling
+            u1 = max(0, int(floor((x - hw) * ratio_width)))
+            u2 = min(int(ceil((x + hw) * ratio_width)), len(data))
+            val = sum(data[u1:u2]) / (u2 - u1)
 
+            # Draw single line, ensuring 1px minimum
+            cr.move_to(x, half_height - val / ratio_height)
+            cr.line_to(x, ceil(half_height + val / ratio_height))
             cr.stroke()
 
     def draw_placeholder(self, cr, width, height, color):
@@ -216,7 +238,7 @@ class WaveformScale(Gtk.EventBox):
         context.restore()
 
         # Check if the user set a different color in the config
-        elapsed_color_config = get_elapsed_color()
+        elapsed_color_config = CONFIG.elapsed_color
         if elapsed_color_config and Gdk.RGBA().parse(elapsed_color_config):
             elapsed_color = Gdk.RGBA()
             elapsed_color.parse(elapsed_color_config)
@@ -245,14 +267,22 @@ class WaveformScale(Gtk.EventBox):
         self.position = position
 
 
-def get_elapsed_color():
-    color = config.get("plugins", __name__, None)
+class Config(object):
+    _config = PluginConfig(__name__)
 
-    return color
+    high_res = BoolConfProp(_config, "high_res", True)
+    elapsed_color = ConfProp(_config, "elapsed_color", "")
+    max_data_points = IntConfProp(_config, "max_data_points", 3000)
 
+    @property
+    def line_width(self):
+        return 1 if self.high_res else 2
 
-def set_elapsed_color(color):
-    config.set("plugins", __name__, color)
+    @property
+    def data_size(self):
+        return self.max_data_points / self.line_width
+
+CONFIG = Config()
 
 
 class WaveformSeekBarPlugin(EventPlugin):
@@ -260,6 +290,8 @@ class WaveformSeekBarPlugin(EventPlugin):
 
     PLUGIN_ID = "WaveformSeekBar"
     PLUGIN_NAME = _("Waveform Seek Bar")
+    PLUGIN_ICON = Icons.GO_JUMP
+    PLUGIN_CONFIG_SECTION = __name__
     PLUGIN_DESC = _(
         "A seekbar in the shape of the waveform of the current song.")
 
@@ -287,17 +319,30 @@ class WaveformSeekBarPlugin(EventPlugin):
                 # Reset text color
                 entry.override_color(Gtk.StateFlags.NORMAL, None)
 
-            set_elapsed_color(text)
+            CONFIG.elapsed_color = text
 
-        hbox = Gtk.HBox(spacing=6)
-        hbox.set_border_width(6)
-        hbox.pack_start(
-            Gtk.Label(label=_("Override foreground color:")), False, True, 0)
-        entry = Gtk.Entry()
+        vbox = Gtk.VBox(spacing=6)
 
-        if get_elapsed_color():
-            entry.set_text(get_elapsed_color())
+        def create_color():
+            hbox = Gtk.HBox(spacing=6)
+            hbox.set_border_width(6)
+            label = Gtk.Label(label=_("Override foreground color:"))
+            hbox.pack_start(label, False, True, 0)
+            entry = Gtk.Entry()
+            if CONFIG.elapsed_color:
+                entry.set_text(CONFIG.elapsed_color)
+            entry.connect('changed', changed)
+            hbox.pack_start(entry, True, True, 0)
+            return hbox
 
-        entry.connect('changed', changed)
-        hbox.pack_start(entry, True, True, 0)
-        return hbox
+        def create_resolution():
+            hbox = Gtk.HBox(spacing=6)
+            ccb = CONFIG._config.ConfigCheckButton(_("High Res"), "high_res",
+                                                   populate=True)
+            hbox.pack_start(ccb, True, True, 0)
+            return hbox
+
+        vbox.pack_start(create_color(), True, True, 0)
+        vbox.pack_start(create_resolution(), True, True, 0)
+
+        return vbox
