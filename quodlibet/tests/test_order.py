@@ -10,11 +10,11 @@ from quodlibet.order.reorder import OrderWeighted, OrderShuffle
 from quodlibet.qltk.songmodel import PlaylistModel
 from tests import TestCase
 
-
 r0 = AudioFile({'~#rating': 0})
 r1 = AudioFile({'~#rating': 0.33})
 r2 = AudioFile({'~#rating': 0.66})
 r3 = AudioFile({'~#rating': 1.0})
+
 
 class TOrderWeighted(TestCase):
 
