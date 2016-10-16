@@ -24,7 +24,7 @@ _EXTRA_KEYWORDS = {"C_": "1c,2",
                    "npgettext": "1c,2,3",
                    "numeric_phrase": "1,2"}
 XGETTEXT_ARGS = " ".join("--keyword=%s:%s" % (k, v)
-                         for k, v in _EXTRA_KEYWORDS.iteritems())
+                         for k, v in _EXTRA_KEYWORDS.items())
 
 
 def update_pot(po_dir, package):

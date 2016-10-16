@@ -356,7 +356,7 @@ def _init_gtk():
     if os.name == "nt":
         # somehow borders are missing under Windows & Gtk+3.14
         style_provider = Gtk.CssProvider()
-        style_provider.load_from_data("""
+        style_provider.load_from_data(b"""
             .menu {
                 border: 1px solid @borders;
             }
@@ -366,7 +366,7 @@ def _init_gtk():
     if sys.platform == "darwin":
         # fix duplicated shadows for popups with Gtk+3.14
         style_provider = Gtk.CssProvider()
-        style_provider.load_from_data("""
+        style_provider.load_from_data(b"""
             GtkWindow {
                 box-shadow: none;
             }
@@ -383,7 +383,7 @@ def _init_gtk():
     if gtk_version[:2] >= (3, 20):
         # https://bugzilla.gnome.org/show_bug.cgi?id=761435
         style_provider = Gtk.CssProvider()
-        style_provider.load_from_data("""
+        style_provider.load_from_data(b"""
             spinbutton, button {
                 min-height: 1.8rem;
             }
