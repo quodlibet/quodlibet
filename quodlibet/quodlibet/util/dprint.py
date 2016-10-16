@@ -125,11 +125,12 @@ def frame_info(level=0):
         # the first one could be the class
         cls = frame.f_locals[co_varnames[0]]
 
+        # If it's an instance get the class
+        if not hasattr(cls, '__name__'):
+            cls = cls.__class__
+
         # the arg has an attr that is named like the function
         if hasattr(cls, co_name):
-            # If it's an instance get the class
-            if not hasattr(cls, '__name__'):
-                cls = cls.__class__
             info = cls.__name__
 
     # else, get the module name
