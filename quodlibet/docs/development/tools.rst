@@ -54,6 +54,17 @@ Example output::
             ...
             ...
 
+SnakeViz
+^^^^^^^^
+
+ * https://jiffyclub.github.io/snakeviz/
+ * ``pip install snakeviz``
+
+::
+
+    python -m cProfile -o prof.out quodlibet.py
+    snakeviz prof.out
+
 
 Run Snake
 ^^^^^^^^^
