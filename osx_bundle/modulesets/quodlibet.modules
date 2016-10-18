@@ -180,8 +180,8 @@
   </autotools>
 
   <autotools id="adwaita-icon-theme" autogen-sh="configure">
-    <branch module="adwaita-icon-theme/3.18/adwaita-icon-theme-3.18.0.tar.xz"
-            version="3.18.0" hash="sha256:5e9ce726001fdd8ee93c394fdc3cdb9e1603bbed5b7c62df453ccf521ec50e58"/>
+    <branch module="adwaita-icon-theme/3.22/adwaita-icon-theme-3.22.0.tar.xz"
+            version="3.22.0" hash="sha256:c18bf6e26087d9819a962c77288b291efab25d0419b73d909dd771716a45dcb7"/>
     <dependencies>
       <dep package="librsvg"/>
       <dep package="hicolor-icon-theme"/>
@@ -219,6 +219,18 @@
     </after>
   </autotools>
 
+  <autotools id="gettext-tools" autogen-sh="configure"
+             autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-glib">
+    <branch repo="ftp.gnu.org" source-subdir="gettext-tools"
+            module="gettext/gettext-0.19.7.tar.xz" version="0.19.7"/>
+  </autotools>
+
+  <autotools id="gettext-runtime" autogen-sh="configure"
+	     autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp">
+    <branch repo="ftp.gnu.org" source-subdir="gettext-runtime"
+            module="gettext/gettext-0.19.7.tar.xz" version="0.19.7"/>
+  </autotools>
+
   <autotools id="gst-libav" supports-non-srcdir-builds="no"
     autogen-sh="configure"
     autogenargs="--enable-gpl --disable-tests --disable-mmx --with-libav-extra-configure='--disable-yasm'">
@@ -244,8 +256,8 @@
 
   <autotools id="glib" autogen-sh="autoreconf"
              autogenargs="--with-pcre=internal">
-    <branch module="glib/2.48/glib-2.48.2.tar.xz"  version="2.48.2"
-            hash="sha256:f25e751589cb1a58826eac24fbd4186cda4518af772806b666a3f91f66e6d3f4">
+    <branch module="glib/2.50/glib-2.50.1.tar.xz"  version="2.50.1"
+            hash="sha256:2ef87a78f37c1eb5b95f4cc95efd5b66f69afad9c9c0899918d04659cf6df7dd">
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/0001-Fix-g_get_monotonic_time-on-non-Intel-Darwin.patch" strip="1"/>
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug-724590-GSlice-slab_stack-corruption.patch" strip="1"/>
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/gio-in-reserved-in-gcc-48.patch" strip="1"/>
@@ -261,9 +273,8 @@
 
   <autotools id="gtk+-3.0" autogen-sh="autogen.sh"
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
-    <branch module="gtk+/3.18/gtk+-3.18.9.tar.xz" version="3.18.9"
-        hash="sha256:783d7f8b00f9b4224cc94d7da885a67598e711c2d6d79c9c873c6b203e83acbd">
-      <patch file="http://git.gnome.org/browse/gtk-osx/plain/patches/gtk-quartz-fix-pixelated-image-surfaces-in-retina-hidpi-.patch" strip="1"/>
+    <branch module="gtk+/3.22/gtk+-3.22.1.tar.xz" version="3.22.1"
+        hash="sha256:127c8c5cfc32681f9ab3cb542eb0d5c16c1c02faba68bf8fcac9a3cf278ef471">
     </branch>
     <dependencies>
         <dep package="glib"/>
@@ -348,8 +359,8 @@
   </autotools>
 
    <autotools id="pygobject3" autogenargs="--with-python=python2">
-    <branch version="3.20.1" module="pygobject/3.20/pygobject-3.20.1.tar.xz"
-        hash="sha256:3d261005d6fed6a92ac4c25f283792552f7dad865d1b7e0c03c2b84c04dbd745"/>
+    <branch version="3.22.0" module="pygobject/3.22/pygobject-3.22.0.tar.xz"
+        hash="sha256:08b29cfb08efc80f7a8630a2734dec65a99c1b59f1e5771c671d2e4ed8a5cbe7"/>
     <dependencies>
       <dep package="meta-gtk-osx-gtk3"/>
     </dependencies>
