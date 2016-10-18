@@ -2,6 +2,7 @@
 <!DOCTYPE moduleset SYSTEM "moduleset.dtd">
 <!-- :mode=xml:tabSize=4:indentSize=4:folding=explicit: -->
 <moduleset>
+  <include href="bootstrap.modules"/>
   <include href="gtk-osx.modules"/>
 
   <repository type="git" name="git.gnome.org"
