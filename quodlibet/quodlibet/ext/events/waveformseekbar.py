@@ -64,7 +64,7 @@ class WaveformSeekBar(Gtk.Box):
 
         command_template = """
         filesrc location="{}"
-        ! decodebin
+        ! decodebin ! audioconvert
         ! level name=audiolevel interval={} post-messages=true
         ! fakesink sync=false"""
         interval = int(song("~#length") * 1E9 / points)
