@@ -502,6 +502,26 @@ class TPlaylist(TestCase):
                             ("Playlist has un-detected duplicates: %s "
                              % "\n".join([str(s) for s in pl._list])))
 
+    def test_remove_leaving_duplicates(self):
+        with self.wrap("playlist") as pl:
+            pl.extend(self.TWO_SONGS)
+            [first, second] = self.TWO_SONGS
+            pl.extend(NUMERIC_SONGS + self.TWO_SONGS)
+            self.failUnlessEqual(len(self.FAKE_LIB.changed), 7)
+            self.FAKE_LIB.reset()
+            pl.remove_songs(self.TWO_SONGS, leave_dupes=True)
+            self.failUnless(first in pl)
+            self.failUnless(second in pl)
+            self.failIf(len(self.FAKE_LIB.changed))
+
+    def test_remove_fully(self):
+        with self.wrap("playlist") as pl:
+            pl.extend(self.TWO_SONGS * 2)
+            self.FAKE_LIB.reset()
+            pl.remove_songs(self.TWO_SONGS, leave_dupes=False)
+            self.failIf(len(pl))
+            self.failUnlessEqual(self.FAKE_LIB.changed, self.TWO_SONGS)
+
 
 class TFileBackedPlaylist(TPlaylist):
 

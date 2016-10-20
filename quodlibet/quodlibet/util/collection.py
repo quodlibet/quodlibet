@@ -445,15 +445,16 @@ class Playlist(Collection, Iterable):
                 song = library[self._list[i]]
                 self._list[i] = song
                 changed.append(song)
-        self._emit_changed(changed, msg="add")
+        if changed:
+            self._emit_changed(changed, msg="add")
         return bool(changed)
 
     def remove_songs(self, songs, leave_dupes=False):
         """Removes `songs` from this playlist if they are there,
          removing only the first reference if `leave_dupes` is True
         """
-        print_d("Remove %d song(s) from %s" % (len(songs), self.name))
-        changed = set()
+        print_d("Remove %d song(s) from %s?" % (len(songs), self.name))
+        changed = False
         for song in songs:
             # TODO: document the "library.masked" business
             if self.library is not None and self.library.masked(song):
@@ -467,14 +468,18 @@ class Playlist(Collection, Iterable):
             else:
                 while song in self._list:
                     self._list.remove(song)
-                    if leave_dupes:
-                        changed = True
-                        break
-                else:
                     changed = True
+                    if leave_dupes:
+                        break
+
+        def songs_gone():
+            return set(songs) - set(self._list)
+
         if changed:
             self.finalize()
-        self._emit_changed(songs, "remove_songs")
+            # Short-circuit logic will avoid the calculation
+            if not leave_dupes or songs_gone():
+                self._emit_changed(songs, "remove_songs")
         return changed
 
     @property
@@ -486,7 +491,7 @@ class Playlist(Collection, Iterable):
         self.__inhibit_library_signals = value
 
     def _emit_changed(self, songs, msg=""):
-        if self.library and not self.inhibit:
+        if self.library and not self.inhibit and songs:
             print_d("Emitting changed (%s) for %d song(s) from playlist %s "
                     % (msg, len(songs), self))
             self.library.emit('changed', songs)
