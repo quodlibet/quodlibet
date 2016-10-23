@@ -88,6 +88,10 @@ class Tgettext(TestCase):
     def test_numeric_phrase_locales(self):
         try:
             locale.setlocale(locale.LC_ALL, 'fr_FR.utf-8')
+        except locale.Error:
+            # fr_FR not installed
+            pass
+        else:
             actual = numeric_phrase("%(bottles)d green bottle",
                                     "%(bottles)d green bottles",
                                     1234, "bottles")
