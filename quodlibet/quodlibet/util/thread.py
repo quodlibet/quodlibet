@@ -7,7 +7,11 @@
 
 """Utils for executing things in a thread controlled from the main loop"""
 
-from multiprocessing.pool import ThreadPool
+from multiprocessing import cpu_count
+try:
+    from concurrent.futures import ThreadPoolExecutor
+except ImportError as e:
+    raise ImportError("python-futures is missing: %r" % e)
 
 from gi.repository import GLib
 
@@ -49,7 +53,12 @@ def _get_pool(priority):
     global _pools
 
     if not priority in _pools:
-        _pools[priority] = ThreadPool()
+        try:
+            cpus = cpu_count()
+        except NotImplementedError:
+            cpus = 2
+        max_workers = int(cpus * 1.5)
+        _pools[priority] = ThreadPoolExecutor(max_workers)
     return _pools[priority]
 
 
@@ -76,8 +85,10 @@ def _wrap_callback(priority, cancellable, callback):
             callback(result)
         return False
 
-    def callback_thread(result):
+    def callback_thread(future):
         global _prio_mapping
+
+        result = future.result()
 
         if not cancellable.is_cancelled():
             glib_priority = _prio_mapping[priority]
@@ -100,7 +111,8 @@ def _call_async(priority, function, cancellable, callback, args, kwargs):
     pool = _get_pool(priority)
     wrapped_func = _wrap_function(function, cancellable, args, kwargs)
     wrapped_callback = _wrap_callback(priority, cancellable, callback)
-    pool.apply_async(wrapped_func, callback=wrapped_callback)
+    future = pool.submit(wrapped_func)
+    future.add_done_callback(wrapped_callback)
 
 
 def terminate_all():
@@ -113,7 +125,7 @@ def terminate_all():
 
     for key, pool in _pools.items():
         del _pools[key]
-        pool.terminate()
+        pool.shutdown(wait=False)
 
 
 def call_async(function, cancellable, callback, args=None, kwargs=None):

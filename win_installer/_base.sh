@@ -30,6 +30,7 @@ function download_and_verify {
     # download all installers and check with sha256sum
 
     local FILEHASHES="\
+0542525145d5afc984c88f914a0c85c77527f65946617edb5274f72406f981df  futures-3.0.5.tar.gz
 cd2485472e41471632ed3029d44033ee420ad0b57111db95c240c9160a85831c  feedparser-5.2.1.zip
 f7708a42d86f29ccc7c8c4ff9d34a8d854d8d78eb2973d1f28406bb43d6b8919  certifi-2016.8.31.tar.gz
 d7e78da2251a35acd14a932280689c57ff9499a474a448ae86e6c43b882692dd  Git-1.9.5-preview20141217.exe
@@ -65,6 +66,7 @@ f4945bf52ae49da0728fe730a33c18744803752fc948f154f29dc0c4f9f2f9cc  colorama-0.3.7
         pip download --dest="$BIN" --no-deps --no-binary=":all:" "pytest==2.9.2"
         pip download --dest="$BIN" --no-deps --no-binary=":all:" "py==1.4.31"
         pip download --dest="$BIN" --no-deps --no-binary=":all:" "colorama==0.3.7"
+        pip download --dest="$BIN" --no-deps --no-binary=":all:" "futures==3.0.5"
 
         # check again
         (cd "$BIN" && echo "$FILEHASHES" |  sha256sum --strict -c -) || exit
@@ -221,6 +223,7 @@ function install_pydeps {
     (
     cd "$BUILD_ENV"/bin
 
+    wine $PYTHON -m pip install futures-3.0.5.tar.gz
     wine $PYTHON -m pip install colorama-0.3.7.zip
     wine $PYTHON -m pip install py-1.4.31.tar.gz
     wine $PYTHON -m pip install pytest-2.9.2.tar.gz

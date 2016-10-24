@@ -82,6 +82,7 @@
       <dep package="certifi"/>
       <dep package="pytest"/>
       <dep package="dmgbuild"/>
+      <dep package="futures"/>
     </dependencies>
   </metamodule>
 
@@ -372,6 +373,14 @@
   <distutils id="setuptools">
       <branch repo="pypi" checkoutdir="setuptools-0.6c11" module="source/s/setuptools/setuptools-0.6c11.tar.gz"
           version="0.6c11" md5sum="7df2a529a074f613b509fb44feefe74e"/>
+  </distutils>
+
+  <distutils id="futures">
+      <branch repo="pypi" checkoutdir="futures-3.0.5" module="55/db/97c1ca37edab586a1ae03d6892b6633d8eaa23b23ac40c7e5bbc55423c78/futures-3.0.5.tar.gz"
+          version="3.0.5" md5sum="ced2c365e518242512d7a398b515ff95"/>
+    <dependencies>
+      <dep package="setuptools"/>
+    </dependencies>
   </distutils>
 
   <distutils id="dmgbuild">

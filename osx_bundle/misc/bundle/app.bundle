@@ -162,6 +162,7 @@
   <data>${prefix}/lib/python2.7/site-packages/py</data>
   <data>${prefix}/lib/python2.7/site-packages/_pytest</data>
   <data>${prefix}/lib/python2.7/site-packages/pytest.py</data>
+  <data>${prefix}/lib/python2.7/site-packages/concurrent</data>
   <!-- pyObjC -->
   <data>${prefix}/lib/python2.7/distutils</data>
   <data>${prefix}/lib/python2.7/site-packages/pkg_resources.py</data>
