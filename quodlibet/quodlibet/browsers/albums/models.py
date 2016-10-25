@@ -5,14 +5,38 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import app
+from quodlibet.util.collection import Album
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort
 
 
 class AlbumItem(object):
 
+    cover = None
+    scanned = False
+
     def __init__(self, album):
         self.album = album
+
+    @property
+    def COVER_SIZE(self):
+        return Album.COVER_SIZE
+
+    def scan_cover(self, force=False, scale_factor=1,
+            callback=None, cancel=None):
+        if (self.scanned and not force) or not self.album or \
+                not self.album.songs:
+            return
+        self.scanned = True
+
+        def set_cover_cb(pixbuf):
+            self.cover = pixbuf
+            callback()
+
+        s = self.COVER_SIZE * scale_factor
+        app.cover_manager.get_pixbuf_many_async(
+            self.album.songs, s, s, cancel, set_cover_cb)
 
     def __repr__(self):
         return repr(self.album)
@@ -20,14 +44,17 @@ class AlbumItem(object):
 
 class AlbumModelMixin(object):
 
+    def get_items(self, paths):
+        items = []
+        for path in paths:
+            item = self.get_value(self.get_iter(path))
+            if item.album is None:
+                return [i for i in self.itervalues() if i.album is not None]
+            items.append(item)
+        return items
+
     def get_albums(self, paths):
-        values = [self.get_value(self.get_iter(p), 0).album for p in paths]
-        try:
-            values.remove(None)
-        except ValueError:
-            return values
-        else:
-            return [v.album for v in self.itervalues() if v.album]
+        return [i.album for i in self.get_items(paths)]
 
     def get_album(self, iter_):
         return self.get_value(iter_, 0).album

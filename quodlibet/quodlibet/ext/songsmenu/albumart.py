@@ -364,7 +364,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
                 except:
                     pass
 
-            app.cover_manager.cover_changed([self.song])
+            app.cover_manager.cover_changed([self.song._song])
 
         self.main_win.destroy()
 
