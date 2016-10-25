@@ -77,6 +77,7 @@ def cmpa(a, b):
 
 
 def compare_title(a1, a2):
+    a1, a2 = a1.album, a2.album
     # All albums should stay at the top
     if a1 is None:
         return -1
@@ -92,6 +93,7 @@ def compare_title(a1, a2):
 
 
 def compare_artist(a1, a2):
+    a1, a2 = a1.album, a2.album
     if a1 is None:
         return -1
     if a2 is None:
@@ -107,6 +109,7 @@ def compare_artist(a1, a2):
 
 
 def compare_date(a1, a2):
+    a1, a2 = a1.album, a2.album
     if a1 is None:
         return -1
     if a2 is None:
@@ -121,6 +124,7 @@ def compare_date(a1, a2):
 
 
 def compare_genre(a1, a2):
+    a1, a2 = a1.album, a2.album
     if a1 is None:
         return -1
     if a2 is None:
@@ -137,6 +141,7 @@ def compare_genre(a1, a2):
 
 
 def compare_rating(a1, a2):
+    a1, a2 = a1.album, a2.album
     if a1 is None:
         return -1
     if a2 is None:
@@ -711,12 +716,13 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     def list_albums(self):
         model = self.view.get_model()
-        return [row[0].key for row in model if row[0]]
+        return [row[0].album.key for row in model if row[0].album]
 
     def filter_albums(self, values):
         view = self.view
         self.__inhibit()
-        changed = view.select_by_func(lambda r: r[0] and r[0].key in values)
+        changed = view.select_by_func(
+            lambda r: r[0].album and r[0].album.key in values)
         self.__uninhibit()
         if changed:
             self.activate()
@@ -754,7 +760,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         else:
 
             def select_fun(row):
-                album = row[0]
+                album = row[0].album
                 if not album:  # all
                     return False
                 return album.str_key in keys
@@ -763,7 +769,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     def scroll(self, song):
         album_key = song.album_key
-        select = lambda r: r[0] and r[0].key == album_key
+        select = lambda r: r[0].album and r[0].album.key == album_key
         self.view.select_by_func(select, one=True)
 
     def __get_config_string(self):
