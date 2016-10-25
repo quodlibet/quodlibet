@@ -15,6 +15,7 @@ matrix:
       python: "3.4_with_system_site_packages"
       env: TYPE="linux" PYTHON="python3" APT_PACKAGES="quodlibet exfalso xvfb python3-mutagen python3-gi python3-gi-cairo python3-requests"
     - os: osx
+      osx_image: xcode6.4
       language: generic
       env: TYPE="osx" APT_PACKAGES=""
     - os: linux
