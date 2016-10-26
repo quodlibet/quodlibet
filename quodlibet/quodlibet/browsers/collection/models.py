@@ -8,7 +8,6 @@
 from quodlibet import util
 from quodlibet import _
 from quodlibet.pattern import XMLFromPattern
-from quodlibet.util.collection import Album
 from quodlibet.qltk.models import ObjectTreeStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort
 from quodlibet.compat import iteritems
@@ -25,6 +24,11 @@ UNKNOWN_PATTERN = "<b><i>%s</i></b>" % _("Unknown %s")
 MULTI_PATTERN = "<b><i>%s</i></b>" % _("Multiple %s Values")
 COUNT_PATTERN = " <span size='small' color='#777'>(%s)</span>"
 
+
+class AlbumNode(object):
+
+    def __init__(self, album):
+        self.album = album
 
 UnknownNode = object()
 MultiNode = object()
@@ -56,7 +60,8 @@ class CollectionModelMixin(object):
         """Returns the path for an album or None"""
 
         def func(model, path, iter_, result):
-            if model[iter_][0] is album:
+            item = model.get_value(iter_)
+            if getattr(item, "album", None) is album:
                 # pygobject bug: treepath only valid in callback,
                 # so make a copy
                 result[0] = path.copy()
@@ -73,13 +78,13 @@ class CollectionModelMixin(object):
     def get_albums_for_iter(self, iter_):
         obj = self.get_value(iter_)
 
-        if isinstance(obj, Album):
-            return {obj}
+        if isinstance(obj, AlbumNode):
+            return {obj.album}
 
         albums = set()
         for child_iter, value in self.iterrows(iter_):
-            if isinstance(value, Album):
-                albums.add(value)
+            if isinstance(value, AlbumNode):
+                albums.add(value.album)
             else:
                 albums.update(self.get_albums_for_iter(child_iter))
         return albums
@@ -88,16 +93,16 @@ class CollectionModelMixin(object):
         """Yields all albums below iter_"""
 
         for child_iter, value in self.iterrows(iter_):
-            if isinstance(value, Album):
-                yield value
+            if isinstance(value, AlbumNode):
+                yield value.album
             else:
                 for album in self.iter_albums(child_iter):
                     yield album
 
     def get_markup(self, tags, iter_):
         obj = self.get_value(iter_, 0)
-        if isinstance(obj, Album):
-            return PAT % obj
+        if isinstance(obj, AlbumNode):
+            return PAT % obj.album
 
         if isinstance(obj, basestring):
             markup = util.escape(obj)
@@ -113,8 +118,8 @@ class CollectionModelMixin(object):
 
     def get_album(self, iter_):
         obj = self.get_value(iter_, 0)
-        if isinstance(obj, Album):
-            return obj
+        if isinstance(obj, AlbumNode):
+            return obj.album
 
 
 class CollectionFilterModel(ObjectModelFilter, CollectionModelMixin):
@@ -144,7 +149,7 @@ class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
             # lowest level, add albums
             if isinstance(tree, list):
                 for album in tree:
-                    self.append(parent=iter_, row=[album])
+                    self.append(parent=iter_, row=[AlbumNode(album)])
                 return
 
             # move into existing nodes and remove them from tree
@@ -171,9 +176,9 @@ class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
             while child:
                 _remove_albums(albums, child)
                 obj = self[child][0]
-                if isinstance(obj, Album):
+                if isinstance(obj, AlbumNode):
                     # remove albums
-                    if obj in albums:
+                    if obj.album in albums:
                         if not self.remove(child):
                             child = None
                         continue
@@ -201,7 +206,7 @@ class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
                 while child:
                     row = self[child]
                     try:
-                        tree.remove(row[0])
+                        tree.remove(row[0].album)
                     except ValueError:
                         pass
                     else:

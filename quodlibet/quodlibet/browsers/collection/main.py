@@ -23,12 +23,11 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.image import scale, add_border_widget, \
     get_surface_for_pixbuf
 from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
-from quodlibet.util.collection import Album
 from quodlibet.util import connect_obj
 from quodlibet.util.library import background_filter
 
 from .models import (CollectionTreeStore, CollectionSortModel,
-    CollectionFilterModel, MultiNode, UnknownNode)
+    CollectionFilterModel, MultiNode, UnknownNode, AlbumNode)
 from .prefs import get_headers, Preferences
 
 
@@ -166,10 +165,10 @@ class CollectionBrowser(Browser, util.InstanceTracker):
                     t2 is MultiNode or t2 is UnknownNode:
                 return -cmp(t1, t2)
 
-            if not isinstance(t1, Album):
+            if not isinstance(t1, AlbumNode):
                 return cmp(util.human_sort_key(t1), util.human_sort_key(t2))
 
-            a1, a2 = t1, t2
+            a1, a2 = t1.album, t2.album
             return (cmp(a1.peoplesort and a1.peoplesort[0],
                         a2.peoplesort and a2.peoplesort[0]) or
                         cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
@@ -280,8 +279,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
             return f(obj) and b(obj)
 
         obj = model.get_value(iter_)
-        if isinstance(obj, Album):
-            return check_album(obj)
+        if isinstance(obj, AlbumNode):
+            return check_album(obj.album)
         else:
             for album in model.iter_albums(iter_):
                 if check_album(album):
@@ -317,7 +316,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def __play(self, view, path, col):
         model = view.get_model()
-        if isinstance(model[path][0], Album):
+        if isinstance(model[path][0], AlbumNode):
             self.songs_activated()
         else:
             if view.row_expanded(path):
