@@ -78,15 +78,6 @@ def main(argv):
 
     from quodlibet.qltk.songlist import SongList, get_columns
 
-    from quodlibet.util.collection import Album
-    try:
-        cover_size = config.getint("browsers", "cover_size")
-    except config.Error:
-        pass
-    else:
-        if cover_size > 0:
-            Album.COVER_SIZE = cover_size
-
     headers = get_columns()
     SongList.set_all_column_headers(headers)
 

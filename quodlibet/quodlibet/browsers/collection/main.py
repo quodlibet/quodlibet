@@ -20,15 +20,13 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
-from quodlibet.qltk.image import scale, add_border_widget, \
-    get_surface_for_pixbuf
+from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
-from quodlibet.util.collection import Album
 from quodlibet.util import connect_obj
 from quodlibet.util.library import background_filter
 
 from .models import (CollectionTreeStore, CollectionSortModel,
-    CollectionFilterModel, MultiNode, UnknownNode)
+    CollectionFilterModel, MultiNode, UnknownNode, AlbumNode)
 from .prefs import get_headers, Preferences
 
 
@@ -166,10 +164,10 @@ class CollectionBrowser(Browser, util.InstanceTracker):
                     t2 is MultiNode or t2 is UnknownNode:
                 return -cmp(t1, t2)
 
-            if not isinstance(t1, Album):
+            if not isinstance(t1, AlbumNode):
                 return cmp(util.human_sort_key(t1), util.human_sort_key(t2))
 
-            a1, a2 = t1, t2
+            a1, a2 = t1.album, t2.album
             return (cmp(a1.peoplesort and a1.peoplesort[0],
                         a2.peoplesort and a2.peoplesort[0]) or
                         cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
@@ -185,26 +183,21 @@ class CollectionBrowser(Browser, util.InstanceTracker):
             cell.markup = markup
             cell.set_property('markup', markup)
 
-        def get_scaled_cover(album):
-            # XXX: Cache this somewhere else
-            cover = None
-            if not hasattr(album, "_scaled_cover"):
-                scale_factor = self.get_scale_factor()
-                album.scan_cover(scale_factor=scale_factor)
-                if album.cover:
-                    s = 25 * scale_factor
-                    cover = scale(album.cover, (s, s))
-                    album._scaled_cover = cover
-            else:
-                cover = album._scaled_cover
-            return cover
+        def get_scaled_cover(item):
+            if item.scanned:
+                return item.cover
+
+            scale_factor = self.get_scale_factor()
+            item.scan_cover(scale_factor=scale_factor)
+            return item.cover
 
         def cell_data_pb(column, cell, model, iter_, data):
             album = model.get_album(iter_)
             if album is None:
                 cell.set_property('icon-name', Icons.FOLDER)
             else:
-                cover = get_scaled_cover(album)
+                item = model.get_value(iter_)
+                cover = get_scaled_cover(item)
                 if cover:
                     cover = add_border_widget(cover, view)
                     surface = get_surface_for_pixbuf(self, cover)
@@ -280,8 +273,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
             return f(obj) and b(obj)
 
         obj = model.get_value(iter_)
-        if isinstance(obj, Album):
-            return check_album(obj)
+        if isinstance(obj, AlbumNode):
+            return check_album(obj.album)
         else:
             for album in model.iter_albums(iter_):
                 if check_album(album):
@@ -317,7 +310,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def __play(self, view, path, col):
         model = view.get_model()
-        if isinstance(model[path][0], Album):
+        if isinstance(model[path][0], AlbumNode):
             self.songs_activated()
         else:
             if view.row_expanded(path):

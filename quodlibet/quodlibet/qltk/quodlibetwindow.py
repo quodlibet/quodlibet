@@ -367,15 +367,6 @@ class TopBar(Gtk.Toolbar):
 
     def __song_art_changed(self, player, songs, library):
         self.image.refresh()
-        refresh_albums = []
-        for song in songs:
-            # Album browser only (currently):
-            album = library.albums.get(song.album_key, None)
-            if album:
-                album.scan_cover(force=True)
-                refresh_albums.append(album)
-        if refresh_albums:
-            library.albums.refresh(refresh_albums)
 
 
 class QueueButton(Gtk.ToggleButton):

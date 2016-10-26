@@ -252,8 +252,6 @@ class Collection(object):
                 if rating is None:
                     return None
                 return util.format_rating(rating)
-            elif key == "cover":
-                return ((self.cover != type(self).cover) and "y") or None
             elif numkey == "filesize":
                 size = self.__get_value("~#" + key)
                 return None if size is None else util.format_size(size)
@@ -274,11 +272,6 @@ class Collection(object):
 class Album(Collection):
     """Like a `Collection` but adds cover scanning, some attributes for sorting
     and uses a set for the songs."""
-
-    COVER_SIZE = 48
-
-    cover = None
-    scanned = False
 
     @util.cached_property
     def peoplesort(self):
@@ -312,24 +305,6 @@ class Album(Collection):
         super(Album, self).finalize()
         self.__dict__.pop("peoplesort", None)
         self.__dict__.pop("genre", None)
-
-    def scan_cover(self, force=False, scale_factor=1,
-            callback=None, cancel=None):
-        if (self.scanned and not force) or not self.songs:
-            return
-        self.scanned = True
-
-        def set_cover_cb(pixbuf):
-            self.cover = pixbuf
-            callback()
-
-        from quodlibet import app
-        s = self.COVER_SIZE * scale_factor
-        if callback is not None:
-            app.cover_manager.get_pixbuf_many_async(
-                self.songs, s, s, cancel, set_cover_cb)
-        else:
-            self.cover = app.cover_manager.get_pixbuf_many(self.songs, s, s)
 
     def __repr__(self):
         return "Album(%s)" % repr(self.key)
