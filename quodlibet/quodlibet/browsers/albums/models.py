@@ -6,7 +6,7 @@
 # published by the Free Software Foundation
 
 from quodlibet import app
-from quodlibet.util.collection import Album
+from quodlibet import config
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort
 
@@ -21,7 +21,10 @@ class AlbumItem(object):
 
     @property
     def COVER_SIZE(self):
-        return Album.COVER_SIZE
+        size = config.getint("browsers", "cover_size")
+        if size <= 0:
+            size = 48
+        return size
 
     def scan_cover(self, force=False, scale_factor=1,
             callback=None, cancel=None):

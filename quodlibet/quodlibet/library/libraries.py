@@ -361,10 +361,6 @@ class AlbumLibrary(Library):
         self._csig = library.connect('changed', self.__changed)
         self.__added(library, library.values(), signal=False)
 
-    def refresh(self, items):
-        """Refresh albums after a manual change."""
-        self._changed(set(items))
-
     def load(self):
         # deprectated
         pass

@@ -233,7 +233,6 @@ class TAlbum(TestCase):
         failUnlessEq(album("~performer", "x"), song("~performer", "x"))
         failUnlessEq(album("~performersort", "x"), song("~performersort", "x"))
 
-        failUnlessEq(album("~cover", "x"), song("~cover", "x"))
         failUnlessEq(album("~rating", "x"), song("~rating", "x"))
 
         for p in PEOPLE:
