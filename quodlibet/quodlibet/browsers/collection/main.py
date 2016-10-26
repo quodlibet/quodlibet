@@ -20,8 +20,7 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
-from quodlibet.qltk.image import scale, add_border_widget, \
-    get_surface_for_pixbuf
+from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
 from quodlibet.util import connect_obj
 from quodlibet.util.library import background_filter
@@ -184,26 +183,21 @@ class CollectionBrowser(Browser, util.InstanceTracker):
             cell.markup = markup
             cell.set_property('markup', markup)
 
-        def get_scaled_cover(album):
-            # XXX: Cache this somewhere else
-            cover = None
-            if not hasattr(album, "_scaled_cover"):
-                scale_factor = self.get_scale_factor()
-                album.scan_cover(scale_factor=scale_factor)
-                if album.cover:
-                    s = 25 * scale_factor
-                    cover = scale(album.cover, (s, s))
-                    album._scaled_cover = cover
-            else:
-                cover = album._scaled_cover
-            return cover
+        def get_scaled_cover(item):
+            if item.scanned:
+                return item.cover
+
+            scale_factor = self.get_scale_factor()
+            item.scan_cover(scale_factor=scale_factor)
+            return item.cover
 
         def cell_data_pb(column, cell, model, iter_, data):
             album = model.get_album(iter_)
             if album is None:
                 cell.set_property('icon-name', Icons.FOLDER)
             else:
-                cover = get_scaled_cover(album)
+                item = model.get_value(iter_)
+                cover = get_scaled_cover(item)
                 if cover:
                     cover = add_border_widget(cover, view)
                     surface = get_surface_for_pixbuf(self, cover)
