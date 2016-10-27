@@ -16,7 +16,7 @@ from gi.repository import Gtk, Pango, Gdk, Gio
 
 from .prefs import Preferences, DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.albums.models import (AlbumModel,
-	AlbumFilterModel, AlbumSortModel, AlbumItem)
+    AlbumFilterModel, AlbumSortModel, AlbumItem)
 from quodlibet.browsers.albums.main import VisibleUpdate
 
 import quodlibet
@@ -43,6 +43,7 @@ from quodlibet.util.library import background_filter
 from quodlibet.util import connect_obj
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
+
 
 def get_cover_size():
     return AlbumItem(None).COVER_SIZE
@@ -233,7 +234,7 @@ class PreferencesButton(Gtk.HBox):
 
 
 class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
-				DisplayPatternMixin):
+                DisplayPatternMixin):
     __gsignals__ = Browser.__gsignals__
     __model = None
     __last_render = None
@@ -313,10 +314,10 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         self.view.set_column_spacing(config.getint("browsers",
             "column_spacing", 6))
         self.view.set_item_padding(config.getint("browsers",
-        	"item_padding", 6))
+            "item_padding", 6))
         self.view.set_has_tooltip(True)
         self.view.connect("query-tooltip", self._show_tooltip)
-        
+
         self.__bg_filter = background_filter()
         self.__filter = None
         model_filter.set_visible_func(self.__parse_query)
@@ -404,7 +405,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         self.pack_start(sw, True, True, 0)
 
         self.connect("destroy", self.__destroy)
-        
+
         self.enable_row_update(view, sw, self.view)
 
         self.connect('key-press-event', self.__key_pressed, library.librarian)
@@ -692,7 +693,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         if Query.is_parsable(text):
             self.__update_filter(entry, text, scroll_up=False, restore=True)
 
-        keys = config.get("browsers", "covergrid").split("\n")
+        keys = config.get("browsers", "covergrid", "").split("\n")
 
         # FIXME: If albums is "" then it could be either all albums or
         # no albums. If it's "" and some other stuff, assume no albums,
