@@ -8,7 +8,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GLib, Pango
+from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet import qltk
@@ -18,9 +18,8 @@ from quodlibet.browsers._base import FakeDisplayItem, EditDisplayPatternMixin
 from quodlibet.formats import PEOPLE
 from quodlibet.qltk import Button, Icons
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.util import format_rating, connect_obj
+from quodlibet.util import format_rating
 from quodlibet.util.i18n import numeric_phrase
-from quodlibet.qltk.textedit import PatternEditBox
 
 PEOPLE
 _SOME_PEOPLE = "\n".join([util.tag("artist"), util.tag("performer"),

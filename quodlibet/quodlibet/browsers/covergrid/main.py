@@ -12,11 +12,11 @@ from __future__ import absolute_import
 
 import os
 
-from gi.repository import Gtk, Pango, Gdk, GLib, Gio
+from gi.repository import Gtk, Pango, Gdk, Gio
 
-from quodlibet.util.i18n import numeric_phrase
 from .prefs import Preferences, DEFAULT_PATTERN_TEXT
-from quodlibet.browsers.albums.models import AlbumModel, AlbumFilterModel, AlbumSortModel, AlbumItem
+from quodlibet.browsers.albums.models import (AlbumModel,
+	AlbumFilterModel, AlbumSortModel, AlbumItem)
 from quodlibet.browsers.albums.main import VisibleUpdate
 
 import quodlibet
@@ -33,19 +33,16 @@ from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.songsmenu import SongsMenu
-from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk import Icons
-from quodlibet.util import copool, connect_destroy
+from quodlibet.util import connect_destroy
 from quodlibet.util.library import background_filter
-from quodlibet.util import connect_obj, DeferredSignal
-from quodlibet.util.collection import Album
+from quodlibet.util import connect_obj
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
-from quodlibet.pattern import XMLFromMarkupPattern
 
 def get_cover_size():
     return AlbumItem(None).COVER_SIZE
@@ -235,7 +232,8 @@ class PreferencesButton(Gtk.HBox):
         return compare_rating(a1, a2)
 
 
-class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixin):
+class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
+				DisplayPatternMixin):
     __gsignals__ = Browser.__gsignals__
     __model = None
     __last_render = None
@@ -269,7 +267,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
 
     @classmethod
     def toggle_text(klass):
-        on = config.getboolean("browsers", "album_text")
+        on = config.getboolean("browsers", "album_text", True)
         for covergrid in klass.instances():
             covergrid.__text_cells.set_visible(on)
             covergrid.view.queue_resize()
@@ -314,7 +312,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         self.view.set_row_spacing(config.getint("browsers", "row_spacing", 6))
         self.view.set_column_spacing(config.getint("browsers",
             "column_spacing", 6))
-        self.view.set_item_padding(config.getint("browsers", "item_padding", 6))
+        self.view.set_item_padding(config.getint("browsers",
+        	"item_padding", 6))
         self.view.set_has_tooltip(True)
         self.view.connect("query-tooltip", self._show_tooltip)
         
@@ -349,7 +348,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         view.set_cell_data_func(render, cell_data_pb, self._no_cover)
 
         self.__text_cells = render = Gtk.CellRendererText()
-        render.set_visible(config.getboolean("browsers", "album_text"))
+        render.set_visible(config.getboolean("browsers", "album_text", True))
         render.set_property('alignment', Pango.Alignment.CENTER)
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         view.pack_start(render, False)
@@ -664,7 +663,6 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         return not first
 
     def filter_albums(self, values):
-        view = self.view
         self.__inhibit()
         changed = self.select_by_func(
             lambda r: r[0].album and r[0].album.key in values)
