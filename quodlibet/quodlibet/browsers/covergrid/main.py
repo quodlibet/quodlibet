@@ -175,8 +175,10 @@ class CoverGrid(AlbumList):
     def _no_cover(self):
         """Returns a cairo surface representing a missing cover"""
 
-        cover_size = get_cover_size()
-        scale_factor = self.get_scale_factor()
+        mag = config.getfloat("browsers", "covergrid_magnification", 3.)
+
+        cover_size = get_cover_size() 
+        scale_factor = self.get_scale_factor() * mag
         pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
         return get_surface_for_pixbuf(self, pb)
 
@@ -208,9 +210,10 @@ class CoverGrid(AlbumList):
         self.__filter = None
         model_filter.set_visible_func(self.__parse_query)
 
+        mag = config.getfloat("browsers", "covergrid_magnification", 3.)
         render = Gtk.CellRendererPixbuf()
-        render.set_property('width', get_cover_size() + 8)
-        render.set_property('height', get_cover_size() + 8)
+        render.set_property('width', get_cover_size() * mag + 8)
+        render.set_property('height', get_cover_size() * mag + 8)
         view.pack_start(render, False)
 
         def cell_data_pb(view, cell, model, iter_, no_cover):
@@ -336,6 +339,7 @@ class CoverGrid(AlbumList):
         iter_ = filter_model.convert_iter_to_child_iter(iter_)
         iter_ = sort_model.convert_iter_to_child_iter(iter_)
         tref = Gtk.TreeRowReference.new(model, model.get_path(iter_))
+        mag = config.getfloat("browsers", "covergrid_magnification", 3.)
 
         def callback():
             path = tref.get_path()
@@ -345,7 +349,7 @@ class CoverGrid(AlbumList):
             self.queue_resize()
 
         item = model.get_value(iter_)
-        scale_factor = self.get_scale_factor()
+        scale_factor = self.get_scale_factor() * mag
         item.scan_cover(scale_factor=scale_factor,
                         callback=callback,
                         cancel=self._cover_cancel)
