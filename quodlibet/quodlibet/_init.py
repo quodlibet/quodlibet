@@ -245,7 +245,8 @@ def _init_g():
         for name in ["new_from_file_at_scale", "new_from_file_at_size",
                      "new_from_file"]:
             cls = GdkPixbuf.Pixbuf
-            setattr(cls, name, getattr(cls, name + "_utf8", name))
+            setattr(
+                cls, name, getattr(cls, name + "_utf8", getattr(cls, name)))
 
     # https://bugzilla.gnome.org/show_bug.cgi?id=670372
     if not hasattr(GdkPixbuf.Pixbuf, "savev"):
