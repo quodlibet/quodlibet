@@ -64,6 +64,19 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
                    lambda s: browser.toggle_text())
         vbox.pack_start(cb, False, True, 0)
 
+        def mag_changed(mag):
+        	config.set("browsers", "covergrid_magnification", mag.get_value())
+
+        mag_scale = Gtk.HScale(
+            adjustment=Gtk.Adjustment.new(config.getfloat("browsers", "covergrid_magnification", 3), 0., 10., .5, 5, 0))
+        mag_scale.set_tooltip_text(_("Cover Magnification"))
+        l = Gtk.Label(label=_("Cover Magnification"))
+        mag_scale.set_value_pos(Gtk.PositionType.RIGHT)
+        mag_scale.connect('value-changed', mag_changed)
+
+        vbox.pack_start(l, False, True, 0)
+        vbox.pack_start(mag_scale, False, True, 0)
+
         f = qltk.Frame(_("Options"), child=vbox)
         box.pack_start(f, False, True, 12)
 
