@@ -19,8 +19,7 @@ from quodlibet.browsers.albums.models import (AlbumModel,
     AlbumFilterModel, AlbumSortModel)
 from quodlibet.browsers.albums.main import (get_cover_size,
     AlbumTagCompletion, compare_artist, compare_date,
-    compare_genre, compare_rating, compare_title, VisibleUpdate,
-    AlbumList)
+    compare_genre, compare_rating, compare_title, AlbumList)
 
 import quodlibet
 from quodlibet import app
