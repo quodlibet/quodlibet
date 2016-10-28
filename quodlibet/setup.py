@@ -103,7 +103,7 @@ def main():
         },
     }
 
-    if os.name == 'nt':
+    if os.name == 'nt' and "py2exe" in sys.modules:
         def recursive_include_py2exe(dir_, pre, ext):
             all_ = []
             dir_ = os.path.join(dir_, pre)
