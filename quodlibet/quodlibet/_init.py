@@ -274,6 +274,7 @@ def _init_gtk():
     # cache in the windows installer for it to work... but for now revert.
     if is_windows():
         os.environ['PANGOCAIRO_BACKEND'] = 'win32'
+        os.environ["GTK_CSD"] = "0"
 
     # disable for consistency and trigger events seem a bit flaky here
     if is_osx():
