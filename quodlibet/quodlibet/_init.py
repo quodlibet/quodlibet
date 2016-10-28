@@ -139,6 +139,12 @@ def _init_python():
         # wine doesn't have certs which we use for testing.
         util.install_urllib2_ca_file()
 
+    if is_windows() and os.sep != "\\":
+        # In the MSYS2 console MSYSTEM is set, which breaks os.sep/os.path.sep
+        # If you hit this do a "setup.py clean -all" to get rid of the
+        # bytecode cache then start things with "MSYSTEM= ..."
+        raise AssertionError("MSYSTEM is set (%r)" % os.environ.get("MSYSTEM"))
+
 
 def _init_formats():
     from quodlibet.formats import init
