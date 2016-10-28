@@ -16,8 +16,11 @@ from gi.repository import Gtk, Pango, Gdk, Gio
 
 from .prefs import Preferences, DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.albums.models import (AlbumModel,
-    AlbumFilterModel, AlbumSortModel, AlbumItem)
-from quodlibet.browsers.albums.main import *
+    AlbumFilterModel, AlbumSortModel)
+from quodlibet.browsers.albums.main import (get_cover_size,
+    AlbumTagCompletion, compare_artist, compare_date,
+    compare_genre, compare_rating, compare_title, VisibleUpdate,
+    AlbumList)
 
 import quodlibet
 from quodlibet import app
@@ -28,8 +31,6 @@ from quodlibet import util
 from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.query import Query
-from quodlibet.browsers._base import DisplayPatternMixin
-from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.songsmenu import SongsMenu
@@ -44,8 +45,82 @@ from quodlibet.util import connect_obj
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 
-class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
-                DisplayPatternMixin):
+
+class PreferencesButton(Gtk.HBox):
+    def __init__(self, browser, model):
+        super(PreferencesButton, self).__init__()
+
+        sort_orders = [
+            (_("_Title"), self.__compare_title),
+            (_("_Artist"), self.__compare_artist),
+            (_("_Date"), self.__compare_date),
+            (_("_Genre"), self.__compare_genre),
+            (_("_Rating"), self.__compare_rating),
+        ]
+
+        menu = Gtk.Menu()
+
+        sort_item = Gtk.MenuItem(
+            label=_(u"Sort _by…"), use_underline=True)
+        sort_menu = Gtk.Menu()
+
+        active = config.getint('browsers', 'album_sort', 1)
+
+        item = None
+        for i, (label, func) in enumerate(sort_orders):
+            item = RadioMenuItem(group=item, label=label,
+                                 use_underline=True)
+            model.set_sort_func(100 + i, func)
+            if i == active:
+                model.set_sort_column_id(100 + i, Gtk.SortType.ASCENDING)
+                item.set_active(True)
+            item.connect("toggled",
+                         util.DeferredSignal(self.__sort_toggled_cb),
+                         model, i)
+            sort_menu.append(item)
+
+        sort_item.set_submenu(sort_menu)
+        menu.append(sort_item)
+
+        pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
+        menu.append(pref_item)
+        connect_obj(pref_item, "activate", Preferences, browser)
+
+        menu.show_all()
+
+        button = MenuButton(
+                SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
+                arrow=True)
+        button.set_menu(menu)
+        self.pack_start(button, True, True, 0)
+
+    def __sort_toggled_cb(self, item, model, num):
+        if item.get_active():
+            config.set("browsers", "album_sort", str(num))
+            model.set_sort_column_id(100 + num, Gtk.SortType.ASCENDING)
+
+    def __compare_title(self, model, i1, i2, data):
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_title(a1, a2)
+
+    def __compare_artist(self, model, i1, i2, data):
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_artist(a1, a2)
+
+    def __compare_date(self, model, i1, i2, data):
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_date(a1, a2)
+
+    def __compare_genre(self, model, i1, i2, data):
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_genre(a1, a2)
+
+    def __compare_rating(self, model, i1, i2, data):
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_rating(a1, a2)
+
+
+class CoverGrid(AlbumList):
     __gsignals__ = Browser.__gsignals__
     __model = None
     __last_render = None
@@ -56,6 +131,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
     name = _("Cover Grid")
     accelerated_name = _("_Cover Grid")
+    keys = ["CoverGrid"]
     priority = 4
 
     def pack(self, songpane):
@@ -106,7 +182,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         return get_surface_for_pixbuf(self, pb)
 
     def __init__(self, library):
-        super(CoverGrid, self).__init__(spacing=6)
+        Browser.__init__(self, spacing=6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
         self._register_instance()
