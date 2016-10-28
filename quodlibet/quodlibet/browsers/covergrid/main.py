@@ -160,6 +160,23 @@ class CoverGrid(AlbumList):
             covergrid.view.queue_resize()
 
     @classmethod
+    def update_mag(klass):
+        mag = config.getfloat("browsers", "covergrid_magnification", 3.)
+        for covergrid in klass.instances():
+            covergrid.__cover.set_property('width', get_cover_size() * mag + 8)
+            covergrid.__cover.set_property('height', get_cover_size() * mag + 8)
+            covergrid.view.queue_resize()
+            covergrid.redraw()
+
+    def redraw(self):
+        model = self.__model
+        for iter_, item in model.iterrows():
+            album = item.album
+            if album is not None:
+                item.scanned = False
+                model.row_changed(model.get_path(iter_), iter_)
+
+    @classmethod
     def _init_model(klass, library):
         klass.__model = AlbumModel(library)
         klass.__library = library
@@ -211,7 +228,7 @@ class CoverGrid(AlbumList):
         model_filter.set_visible_func(self.__parse_query)
 
         mag = config.getfloat("browsers", "covergrid_magnification", 3.)
-        render = Gtk.CellRendererPixbuf()
+        self.__cover = render = Gtk.CellRendererPixbuf()
         render.set_property('width', get_cover_size() * mag + 8)
         render.set_property('height', get_cover_size() * mag + 8)
         view.pack_start(render, False)
@@ -456,8 +473,10 @@ class CoverGrid(AlbumList):
 
     def __refresh_album(self, menuitem, view):
         albums = self.__get_selected_albums()
+        mag = config.getfloat("browsers", "covergrid_magnification", 3.)
+        scale_factor = self.get_scale_factor() * mag
         for album in albums:
-            album.scan_cover(True)
+            album.scan_cover(True, scale_factor=scale_factor)
         self._refresh_albums(albums)
 
     def __get_selected_items(self):

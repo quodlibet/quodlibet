@@ -65,7 +65,8 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         vbox.pack_start(cb, False, True, 0)
 
         def mag_changed(mag):
-        	config.set("browsers", "covergrid_magnification", mag.get_value())
+            config.set("browsers", "covergrid_magnification", mag.get_value())
+            browser.update_mag()
 
         mag_scale = Gtk.HScale(
             adjustment=Gtk.Adjustment.new(config.getfloat("browsers", "covergrid_magnification", 3), 0., 10., .5, 5, 0))
