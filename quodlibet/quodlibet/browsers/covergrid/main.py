@@ -164,7 +164,8 @@ class CoverGrid(AlbumList):
         mag = config.getfloat("browsers", "covergrid_magnification", 3.)
         for covergrid in klass.instances():
             covergrid.__cover.set_property('width', get_cover_size() * mag + 8)
-            covergrid.__cover.set_property('height', get_cover_size() * mag + 8)
+            covergrid.__cover.set_property('height',
+                get_cover_size() * mag + 8)
             covergrid.view.queue_resize()
             covergrid.redraw()
 
@@ -194,7 +195,7 @@ class CoverGrid(AlbumList):
 
         mag = config.getfloat("browsers", "covergrid_magnification", 3.)
 
-        cover_size = get_cover_size() 
+        cover_size = get_cover_size()
         scale_factor = self.get_scale_factor() * mag
         pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
         return get_surface_for_pixbuf(self, pb)

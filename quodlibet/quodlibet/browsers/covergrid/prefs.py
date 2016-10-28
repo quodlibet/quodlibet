@@ -69,7 +69,8 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
             browser.update_mag()
 
         mag_scale = Gtk.HScale(
-            adjustment=Gtk.Adjustment.new(config.getfloat("browsers", "covergrid_magnification", 3), 0., 10., .5, 5, 0))
+            adjustment=Gtk.Adjustment.new(config.getfloat("browsers",
+                "covergrid_magnification", 3), 0., 10., .5, 5, 0))
         mag_scale.set_tooltip_text(_("Cover Magnification"))
         l = Gtk.Label(label=_("Cover Magnification"))
         mag_scale.set_value_pos(Gtk.PositionType.RIGHT)
