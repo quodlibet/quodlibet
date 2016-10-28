@@ -368,22 +368,18 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         self.__bg_filter = background_filter()
 
         self.__inhibit()
-
-        # Don't filter on restore if there is nothing to filter
-        if not restore or self.__filter or self.__bg_filter:
-            model.refilter()
-
+        model.refilter()
         self.__uninhibit()
 
     def __parse_query(self, model, iter_, data):
         f, b = self.__filter, self.__bg_filter
+        album = model.get_album(iter_)
 
-        if f is None and b is None:
+        if f is None and b is None and album is not None:
             return True
         else:
-            album = model.get_album(iter_)
             if album is None:
-                return True
+                return config.getboolean("browsers", "covergrid_all", False)
             elif b is None:
                 return f(album)
             elif f is None:
@@ -394,7 +390,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     def __search_func(self, model, column, key, iter_, data):
         album = model.get_album(iter_)
         if album is None:
-            return True
+            return config.getboolean("browsers", "covergrid_all", False)
         key = key.decode('utf-8').lower()
         title = album.title.lower()
         if key in title:
@@ -506,9 +502,9 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         self.__search.set_text(text)
         if Query.is_parsable(text):
             self.__update_filter(self.__search, text)
-            self.__inhibit()
+            # self.__inhibit()
             #self.view.set_cursor((0,), None, False)
-            self.__uninhibit()
+            # self.__uninhibit()
             self.activate()
 
     def get_filter_text(self):

@@ -64,6 +64,13 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
                    lambda s: browser.toggle_text())
         vbox.pack_start(cb, False, True, 0)
 
+        cb2 = ConfigCheckButton(
+            _("Show \"All Albums\" Item"), "browsers", "covergrid_all")
+        cb2.set_active(config.getboolean("browsers", "covergrid_all", False))
+        cb2.connect('toggled',
+                   lambda s: browser.view.get_model().refilter())
+        vbox.pack_start(cb2, False, True, 0)
+
         def mag_changed(mag):
             config.set("browsers", "covergrid_magnification", mag.get_value())
             browser.update_mag()
