@@ -368,7 +368,15 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         self.__bg_filter = background_filter()
 
         self.__inhibit()
-        model.refilter()
+
+        # If we're hiding "All Albums", then there will always
+        # be something to filter ­— probably there's a better
+        # way to implement this
+        
+        if (not restore or self.__filter or self.__bg_filter) and (
+            config.getboolean("browsers", "covergrid_all", False)):
+            model.refilter()
+
         self.__uninhibit()
 
     def __parse_query(self, model, iter_, data):
