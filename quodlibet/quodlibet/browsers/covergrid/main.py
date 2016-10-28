@@ -19,7 +19,8 @@ from quodlibet.browsers.albums.models import (AlbumModel,
     AlbumFilterModel, AlbumSortModel)
 from quodlibet.browsers.albums.main import (get_cover_size,
     AlbumTagCompletion, compare_artist, compare_date,
-    compare_genre, compare_rating, compare_title, AlbumList)
+    compare_genre, compare_rating, compare_title, AlbumList,
+    PreferencesButton, VisibleUpdate)
 
 import quodlibet
 from quodlibet import app
@@ -29,6 +30,7 @@ from quodlibet import qltk
 from quodlibet import util
 from quodlibet import _
 from quodlibet.browsers import Browser
+from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.query import Query
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
@@ -45,9 +47,9 @@ from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 
 
-class PreferencesButton(Gtk.HBox):
+class PreferencesButton(PreferencesButton):
     def __init__(self, browser, model):
-        super(PreferencesButton, self).__init__()
+        Gtk.HBox.__init__(self)
 
         sort_orders = [
             (_("_Title"), self.__compare_title),
@@ -93,33 +95,9 @@ class PreferencesButton(Gtk.HBox):
         button.set_menu(menu)
         self.pack_start(button, True, True, 0)
 
-    def __sort_toggled_cb(self, item, model, num):
-        if item.get_active():
-            config.set("browsers", "album_sort", str(num))
-            model.set_sort_column_id(100 + num, Gtk.SortType.ASCENDING)
 
-    def __compare_title(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_title(a1, a2)
-
-    def __compare_artist(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_artist(a1, a2)
-
-    def __compare_date(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_date(a1, a2)
-
-    def __compare_genre(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_genre(a1, a2)
-
-    def __compare_rating(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_rating(a1, a2)
-
-
-class CoverGrid(AlbumList):
+class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
+                DisplayPatternMixin):
     __gsignals__ = Browser.__gsignals__
     __model = None
     __last_render = None
