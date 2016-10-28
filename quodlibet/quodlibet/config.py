@@ -66,7 +66,7 @@ INITIAL = {
         "query_text": "", # none/search bar text
         # panes in paned browser
         "panes":
-            "~people	<~year|[b][i]<~year>[/i][/b] - ><album>",
+            "~people    <~year|[b][i]<~year>[/i][/b] - ><album>",
         "pane_selection": "", # selected pane values
         "pane_wide_mode": "0", # browser orientation
         "background": "", # "global" filter for SearchBar
@@ -80,6 +80,7 @@ INITIAL = {
         "rating_confirm_multiple": "false", # confirm rating multiple songs
         "cover_size": "-1", # max cover height/width, <= 0 is default
         "search_limit": "false", # Show the limit widgets for SearchBar
+        "album_text": "1", # show text in covergrid view
     },
     # Kind of a dumping ground right now, should probably be
     # cleaned out later.

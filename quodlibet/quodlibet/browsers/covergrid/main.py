@@ -258,6 +258,7 @@ class CoverGrid(AlbumList):
         self.__text_cells = render = Gtk.CellRendererText()
         render.set_visible(config.getboolean("browsers", "album_text", True))
         render.set_property('alignment', Pango.Alignment.CENTER)
+        render.set_property('xalign', 0.5)
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         view.pack_start(render, False)
 
