@@ -142,6 +142,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             covergrid.__cover.set_property('width', get_cover_size() * mag + 8)
             covergrid.__cover.set_property('height',
                 get_cover_size() * mag + 8)
+            covergrid.view.set_item_width(get_cover_size() * mag + 8)
             covergrid.view.queue_resize()
             covergrid.redraw()
 
@@ -205,6 +206,9 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         model_filter.set_visible_func(self.__parse_query)
 
         mag = config.getfloat("browsers", "covergrid_magnification", 3.)
+
+        self.view.set_item_width(get_cover_size() * mag + 8)
+
         self.__cover = render = Gtk.CellRendererPixbuf()
         render.set_property('width', get_cover_size() * mag + 8)
         render.set_property('height', get_cover_size() * mag + 8)
@@ -372,8 +376,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         # If we're hiding "All Albums", then there will always
         # be something to filter ­— probably there's a better
         # way to implement this
-        
-        if (not restore or self.__filter or self.__bg_filter) and (
+
+        if (not restore or self.__filter or self.__bg_filter) or (not
             config.getboolean("browsers", "covergrid_all", False)):
             model.refilter()
 
