@@ -10,6 +10,7 @@ import tempfile
 import shutil
 import atexit
 import subprocess
+import locale
 
 try:
     import pytest
@@ -144,6 +145,13 @@ def init_test_environ():
     """
 
     global _TEMP_DIR, _BUS_INFO
+
+    # try to make things the same in case a different locale is active.
+    # LANG for gettext, setlocale for number formatting etc.
+    try:
+        environ["LANG"] = locale.setlocale(locale.LC_ALL, "en_US.utf8")
+    except locale.Error:
+        pass
 
     # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
