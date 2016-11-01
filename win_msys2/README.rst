@@ -14,15 +14,17 @@ Nothing works, this is just a start.
         mingw-w64-i686-python2-gobject mingw-w64-i686-python2-pip \
         mingw-w64-i686-libsoup
     
-    pacman -S mingw-w64-gstreamer mingw-w64-i686-gst-plugins-base \
-        mingw-w64-i686-gst-plugins-good mingw-w64-i686-libsrtp
+    pacman -S mingw-w64-i686-gstreamer mingw-w64-i686-gst-plugins-base \
+        mingw-w64-i686-gst-plugins-good mingw-w64-i686-libsrtp \
+        mingw-w64-i686-gst-plugins-bad mingw-w64-i686-gst-plugins-ugly
 
-    pip install mutagen futures feedparser certifi pytest
+    pip install mutagen futures feedparser certifi pytest pep8 pyflakes
     git clone https://github.com/quodlibet/quodlibet.git
 
+3) Apply this patch to gdk-pixbuf:
+   https://bugzilla.gnome.org/show_bug.cgi?id=773760
 4) ``cd ./quodlibet/quodlibet``
 5) ``MSYSTEM= ./setup.py test``
-6) Be sad that lots of tests fail... :(
 
 Notes:
 
