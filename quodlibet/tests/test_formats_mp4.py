@@ -9,7 +9,7 @@ import os
 import mutagen
 
 from quodlibet.compat import cBytesIO
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 from quodlibet.formats.mp4 import MP4File
 from quodlibet.formats._image import EmbeddedImage
 
@@ -21,7 +21,7 @@ from .helper import get_temp_copy
 class TMP4File(TestCase):
 
     def setUp(self):
-        self.f = get_temp_copy(os.path.join(DATA_DIR, 'test.m4a'))
+        self.f = get_temp_copy(get_data_path('test.m4a'))
         self.song = MP4File(self.f)
 
     def tearDown(self):
@@ -102,7 +102,7 @@ class TMP4File(TestCase):
         self.assertTrue("albumartist" in self.song.can_change())
 
     def test_invalid(self):
-        path = os.path.join(DATA_DIR, 'empty.xm')
+        path = get_data_path('empty.xm')
         self.assertTrue(os.path.exists(path))
         self.assertRaises(Exception, MP4File, path)
 

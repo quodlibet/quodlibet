@@ -5,15 +5,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
-
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 from quodlibet.formats.midi import MidiFile
 
 
 class TMidiFile(TestCase):
     def setUp(self):
-        self.song = MidiFile(os.path.join(DATA_DIR, 'test.mid'))
+        self.song = MidiFile(get_data_path('test.mid'))
 
     def test_length(self):
         self.failUnlessAlmostEqual(87, self.song("~#length", 0), 0)
@@ -32,7 +30,7 @@ class TMidiFile(TestCase):
         self.failIf(self.song.can_change("album"))
 
     def test_invalid(self):
-        path = os.path.join(DATA_DIR, 'empty.xm')
+        path = get_data_path('empty.xm')
         self.failUnlessRaises(Exception, MidiFile, path)
 
     def test_format_codec(self):

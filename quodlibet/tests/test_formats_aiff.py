@@ -5,16 +5,14 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
-
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 from quodlibet.formats.aiff import AIFFFile
 
 
 class TAIFFFile(TestCase):
 
     def setUp(self):
-        self.song = AIFFFile(os.path.join(DATA_DIR, 'test.aiff'))
+        self.song = AIFFFile(get_data_path('test.aiff'))
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 1.0, 1)

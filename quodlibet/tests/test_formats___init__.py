@@ -6,10 +6,9 @@
 # published by the Free Software Foundation
 
 import sys
-import os
 import pickle
 
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 from .helper import capture_output, temp_filename
 
 from quodlibet import formats
@@ -58,18 +57,18 @@ class TFormats(TestCase):
         self.assertFalse(formats.filter("foomp3"))
 
     def test_music_file(self):
-        path = os.path.join(DATA_DIR, 'silence-44-s.mp3')
+        path = get_data_path('silence-44-s.mp3')
         self.assertTrue(formats.MusicFile(path))
 
         # non existing
         with capture_output() as (stdout, stderr):
-            song = formats.MusicFile(os.path.join(DATA_DIR, "nope.mp3"))
+            song = formats.MusicFile(get_data_path("nope.mp3"))
             self.assertFalse(song)
             self.assertTrue(stderr.getvalue())
 
         # unknown extension
         with capture_output() as (stdout, stderr):
-            song = formats.MusicFile(os.path.join(DATA_DIR, "nope.xxx"))
+            song = formats.MusicFile(get_data_path("nope.xxx"))
             self.assertFalse(song)
             self.assertFalse(stderr.getvalue())
 

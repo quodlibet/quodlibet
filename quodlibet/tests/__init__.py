@@ -43,9 +43,14 @@ skip = unittest.skip
 skipUnless = unittest.skipUnless
 skipIf = unittest.skipIf
 
-DATA_DIR = os.path.join(util.get_module_dir(), "data")
-assert isinstance(DATA_DIR, fsnative)
+_DATA_DIR = os.path.join(util.get_module_dir(), "data")
+assert isinstance(_DATA_DIR, fsnative)
 _TEMP_DIR = None
+
+
+def get_data_path(filename):
+    assert isinstance(filename, str)
+    return os.path.join(_DATA_DIR, filename)
 
 
 def _wrap_tempfile(func):

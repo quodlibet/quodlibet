@@ -12,7 +12,7 @@ try:
 except ImportError:
     Gst = None
 
-from tests import TestCase, skipUnless, DATA_DIR
+from tests import TestCase, skipUnless, get_data_path
 
 try:
     from quodlibet.player.gstbe.util import GStreamerSink as Sink
@@ -264,7 +264,7 @@ class TGStreamerCodecs(TestCase):
         ]
 
         for file_ in files:
-            path = os.path.join(DATA_DIR, file_)
+            path = get_data_path(file_)
             song = MusicFile(path)
             if song is not None:
                 self._check(song)

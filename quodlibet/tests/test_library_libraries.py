@@ -12,7 +12,7 @@ from quodlibet import config
 from quodlibet.util import connect_obj
 from quodlibet.formats import AudioFile
 
-from tests import TestCase, DATA_DIR, mkstemp
+from tests import TestCase, get_data_path, mkstemp
 from .helper import capture_output, get_temp_copy
 
 from quodlibet.library.libraries import Library, PicklingMixin, SongLibrary, \
@@ -441,7 +441,7 @@ class TSongFileLibrary(TSongLibrary):
         self.failUnless(self.library.masked(new))
 
     def __get_file(self):
-        return get_temp_copy(os.path.join(DATA_DIR, 'empty.flac'))
+        return get_temp_copy(get_data_path('empty.flac'))
 
     def test_add_filename(self):
         config.init()

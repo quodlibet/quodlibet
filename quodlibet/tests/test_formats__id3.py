@@ -3,7 +3,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 
 import os
 
@@ -109,13 +109,13 @@ class TID3ImagesMixin(object):
 class TID3ImagesMP3(TID3ImagesBase, TID3ImagesMixin):
 
     KIND = MP3File
-    PATH = os.path.join(DATA_DIR, 'silence-44-s.mp3')
+    PATH = get_data_path('silence-44-s.mp3')
 
 
 class TID3ImagesAIFF(TID3ImagesBase, TID3ImagesMixin):
 
     KIND = AIFFFile
-    PATH = os.path.join(DATA_DIR, 'test.aiff')
+    PATH = get_data_path('test.aiff')
 
 
 class TID3FileBase(TestCase):
@@ -668,10 +668,10 @@ class TID3FileMixin(object):
 class TID3FileMP3(TID3FileBase, TID3FileMixin):
 
     KIND = MP3File
-    PATH = os.path.join(DATA_DIR, 'silence-44-s.mp3')
+    PATH = get_data_path('silence-44-s.mp3')
 
 
 class TID3FileAIFF(TID3FileBase, TID3FileMixin):
 
     KIND = AIFFFile
-    PATH = os.path.join(DATA_DIR, 'test.aiff')
+    PATH = get_data_path('test.aiff')

@@ -10,7 +10,7 @@ import shutil
 from gi.repository import Gtk
 from gi.repository import GdkPixbuf
 
-from tests import TestCase, mkdtemp, mkstemp, DATA_DIR
+from tests import TestCase, mkdtemp, mkstemp, get_data_path
 
 from quodlibet import config
 from quodlibet.plugins import Plugin
@@ -222,8 +222,8 @@ class TCoverManagerBuiltin(TestCase):
         pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 20, 20)
         pb.savev(self.cover2, "png", [], [])
 
-        self.file1 = get_temp_copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'))
-        self.file2 = get_temp_copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'))
+        self.file1 = get_temp_copy(get_data_path('silence-44-s.mp3'))
+        self.file2 = get_temp_copy(get_data_path('silence-44-s.mp3'))
 
         self.manager = CoverManager()
 

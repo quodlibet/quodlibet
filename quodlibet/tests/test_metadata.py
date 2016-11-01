@@ -3,7 +3,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import mkstemp, TestCase, DATA_DIR
+from tests import mkstemp, TestCase, get_data_path
 
 import os
 
@@ -15,7 +15,7 @@ from shutil import copyfileobj
 
 class TestMetaDataBase(TestCase):
 
-    base = os.path.join(DATA_DIR, "silence-44-s")
+    base = get_data_path("silence-44-s")
 
     def setUp(self):
         """Copy the base silent file to a temp name/location and load it"""

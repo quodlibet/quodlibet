@@ -7,7 +7,7 @@
 
 import os
 
-from tests import TestCase, DATA_DIR, skipUnless
+from tests import TestCase, get_data_path, skipUnless
 
 from quodlibet.util.path import normalize_path
 from quodlibet.util import is_wine
@@ -37,14 +37,14 @@ class TWindows(TestCase):
         self.assertTrue(d is None or isinstance(d, unicode))
 
     def test_get_link_target(self):
-        path = os.path.join(DATA_DIR, "test.lnk")
+        path = get_data_path("test.lnk")
         d = windows.get_link_target(path)
         self.assertTrue(isinstance(d, unicode))
         self.assertEqual(
             normalize_path(d), normalize_path(u"C:\Windows\explorer.exe"))
 
     def test_get_link_target_unicode(self):
-        path = os.path.join(DATA_DIR, "test2.lnk")
+        path = get_data_path("test2.lnk")
         d = windows.get_link_target(path)
         self.assertTrue(isinstance(d, unicode))
         if is_wine():

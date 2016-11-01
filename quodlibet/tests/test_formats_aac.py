@@ -11,7 +11,7 @@ from mutagen.aac import AAC
 
 from quodlibet.formats.aac import AACFile
 
-from . import TestCase, DATA_DIR, skipUnless
+from . import TestCase, get_data_path, skipUnless
 from .helper import get_temp_copy
 
 
@@ -20,7 +20,7 @@ class _TAACFile(TestCase):
     NAME = None
 
     def setUp(self):
-        self.f = get_temp_copy(os.path.join(DATA_DIR, self.NAME))
+        self.f = get_temp_copy(get_data_path(self.NAME))
         self.song = AACFile(self.f)
 
     def tearDown(self):
@@ -48,7 +48,7 @@ class _TAACFileMixin(object):
         self.assertTrue(self.song.can_multiple_values("title"))
 
     def test_invalid(self):
-        path = os.path.join(DATA_DIR, 'empty.xm')
+        path = get_data_path('empty.xm')
         self.assertTrue(os.path.exists(path))
         self.assertRaises(Exception, AACFile, path)
 

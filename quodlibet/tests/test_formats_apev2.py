@@ -3,7 +3,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import DATA_DIR, TestCase
+from tests import TestCase, get_data_path
 
 import os
 
@@ -111,7 +111,7 @@ class TAPEv2FileMixin(object):
 
 class TMPCFileAPEv2(TestCase, TAPEv2FileMixin):
     def setUp(self):
-        self.f = get_temp_copy(os.path.join(DATA_DIR, 'silence-44-s.mpc'))
+        self.f = get_temp_copy(get_data_path('silence-44-s.mpc'))
         self.s = MPCFile(self.f)
 
     def tearDown(self):
@@ -120,7 +120,7 @@ class TMPCFileAPEv2(TestCase, TAPEv2FileMixin):
 
 class TMAFile(TestCase, TAPEv2FileMixin):
     def setUp(self):
-        self.f = get_temp_copy(os.path.join(DATA_DIR, 'silence-44-s.ape'))
+        self.f = get_temp_copy(get_data_path('silence-44-s.ape'))
         self.s = MonkeysAudioFile(self.f)
 
     def tearDown(self):
@@ -135,7 +135,7 @@ class TMAFile(TestCase, TAPEv2FileMixin):
 class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 
     def setUp(self):
-        self.f = get_temp_copy(os.path.join(DATA_DIR, 'silence-44-s.wv'))
+        self.f = get_temp_copy(get_data_path('silence-44-s.wv'))
         self.s = WavpackFile(self.f)
 
     def tearDown(self):
@@ -150,7 +150,7 @@ class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 class TWvCoverArt(TestCase):
 
     def setUp(self):
-        self.f = get_temp_copy(os.path.join(DATA_DIR, 'coverart.wv'))
+        self.f = get_temp_copy(get_data_path('coverart.wv'))
         self.s = WavpackFile(self.f)
 
     def tearDown(self):

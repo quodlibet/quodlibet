@@ -3,7 +3,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 
 import os
 
@@ -49,7 +49,7 @@ bar_va = AudioFile({
     "performer": "Jay-Z"})
 
 quux = AudioFile({
-    "~filename": os.path.join(DATA_DIR, "asong.ogg"),
+    "~filename": get_data_path("asong.ogg"),
     "album": u"Quuxly"
     })
 
@@ -103,7 +103,8 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(quux("not a key", "foo"), "foo")
         self.failUnlessEqual(quux("artist"), "")
         self.failUnlessEqual(quux("~basename"), "asong.ogg")
-        self.failUnlessEqual(quux("~dirname"), DATA_DIR)
+        self.failUnlessEqual(
+            quux("~dirname"), os.path.dirname(quux("~filename")))
         self.failUnlessEqual(quux("title"), "asong.ogg [Unknown]")
 
         self.failUnlessEqual(bar_1_1("~#disc"), 1)
@@ -288,7 +289,7 @@ class TAudioFile(TestCase):
     def test_rename(self):
         old_fn = quux("~basename")
         new_fn = fsnative(u"anothersong.mp3")
-        dir = DATA_DIR
+        dir = os.path.dirname(get_data_path(""))
         self.failUnless(quux.exists())
         quux.rename(new_fn)
         self.failIf(os.path.exists(dir + old_fn),
@@ -311,7 +312,7 @@ class TAudioFile(TestCase):
             self.failUnlessRaises(
                 ValueError, quux.rename, fsnative(u"/dev/null"))
         self.failUnlessRaises(ValueError, quux.rename,
-                              os.path.join(DATA_DIR, "silence-44-s.ogg"))
+                              get_data_path("silence-44-s.ogg"))
 
     def test_website(self):
         song = AudioFile()
@@ -663,13 +664,13 @@ class TAudioFile(TestCase):
             self.failUnlessEqual(f("~uri"), "file:///%87%12.mp3")
 
     def test_reload(self):
-        audio = MusicFile(os.path.join(DATA_DIR, 'silence-44-s.mp3'))
+        audio = MusicFile(get_data_path('silence-44-s.mp3'))
         audio["title"] = u"foo"
         audio.reload()
         self.assertNotEqual(audio.get("title"), u"foo")
 
     def test_reload_fail(self):
-        audio = MusicFile(os.path.join(DATA_DIR, 'silence-44-s.mp3'))
+        audio = MusicFile(get_data_path('silence-44-s.mp3'))
         audio["title"] = u"foo"
         audio.sanitize(fsnative(u"/dev/null"))
         self.assertRaises(AudioFileError, audio.reload)

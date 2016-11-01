@@ -5,7 +5,7 @@
 
 import os
 
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 
 from quodlibet.formats import MusicFile, AudioFileError, EmbeddedImage
 
@@ -13,22 +13,22 @@ from .helper import get_temp_copy
 
 
 FILES = [
-    os.path.join(DATA_DIR, "empty.ogg"),
-    os.path.join(DATA_DIR, "empty.flac"),
-    os.path.join(DATA_DIR, "silence-44-s.mp3"),
-    os.path.join(DATA_DIR, "silence-44-s.mpc"),
-    os.path.join(DATA_DIR, "test.wma"),
-    os.path.join(DATA_DIR, "coverart.wv"),
-    os.path.join(DATA_DIR, "test.m4a"),
-    os.path.join(DATA_DIR, "empty.opus"),
-    os.path.join(DATA_DIR, "silence-44-s.tta"),
-    os.path.join(DATA_DIR, "empty.aac"),
-    os.path.join(DATA_DIR, "test.mid"),
-    os.path.join(DATA_DIR, "test.wav"),
-    os.path.join(DATA_DIR, "silence-44-s.ape"),
-    os.path.join(DATA_DIR, "test.vgm"),
-    os.path.join(DATA_DIR, "silence-44-s.spx"),
-    os.path.join(DATA_DIR, "test.spc"),
+    get_data_path("empty.ogg"),
+    get_data_path("empty.flac"),
+    get_data_path("silence-44-s.mp3"),
+    get_data_path("silence-44-s.mpc"),
+    get_data_path("test.wma"),
+    get_data_path("coverart.wv"),
+    get_data_path("test.m4a"),
+    get_data_path("empty.opus"),
+    get_data_path("silence-44-s.tta"),
+    get_data_path("empty.aac"),
+    get_data_path("test.mid"),
+    get_data_path("test.wav"),
+    get_data_path("silence-44-s.ape"),
+    get_data_path("test.vgm"),
+    get_data_path("silence-44-s.spx"),
+    get_data_path("test.spc"),
 ]
 
 

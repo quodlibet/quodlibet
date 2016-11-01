@@ -7,7 +7,7 @@
 
 import os
 
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 from quodlibet.formats.wav import WAVEFile
 from quodlibet.compat import text_type
 
@@ -15,7 +15,7 @@ from quodlibet.compat import text_type
 class TWAVEFile(TestCase):
 
     def setUp(self):
-        self.song = WAVEFile(os.path.join(DATA_DIR, 'test.wav'))
+        self.song = WAVEFile(get_data_path('test.wav'))
 
     def test_title_tag(self):
         self.assertEqual(self.song["title"], "test")
@@ -31,7 +31,7 @@ class TWAVEFile(TestCase):
         self.failUnless(self.song.can_change("artist"))
 
     def test_invalid(self):
-        path = os.path.join(DATA_DIR, 'empty.xm')
+        path = get_data_path('empty.xm')
         self.failUnless(os.path.exists(path))
         self.failUnlessRaises(Exception, WAVEFile, path)
 

@@ -5,8 +5,6 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-import os
-
 from gi.repository import Gtk
 import re
 import time
@@ -15,7 +13,7 @@ from quodlibet.formats import MusicFile
 from quodlibet.formats import AudioFile
 
 from tests.plugin import PluginTestCase
-from tests import DATA_DIR
+from tests import get_data_path
 
 
 class TReplayGain(PluginTestCase):
@@ -105,7 +103,7 @@ class TReplayGain(PluginTestCase):
         self.assertTrue(self.analysed, "Timed out")
 
     def test_analyze_sinewave(self):
-        song = MusicFile(os.path.join(DATA_DIR, "sine-110hz.flac"))
+        song = MusicFile(get_data_path("sine-110hz.flac"))
         self.failUnlessEqual(song("~#length"), 2)
         self.failIf(song("~replaygain_track_gain"))
 
@@ -122,7 +120,7 @@ class TReplayGain(PluginTestCase):
         self.failUnlessEqual(track_gain, song('~#replaygain_album_gain'))
 
     def test_analyze_silence(self):
-        song = MusicFile(os.path.join(DATA_DIR, "silence-44-s.ogg"))
+        song = MusicFile(get_data_path("silence-44-s.ogg"))
         self.failIf(song("~replaygain_track_gain"))
 
         self._analyse_song(song)
