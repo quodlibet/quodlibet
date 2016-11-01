@@ -145,6 +145,10 @@ def _init_python():
         # bytecode cache then start things with "MSYSTEM= ..."
         raise AssertionError("MSYSTEM is set (%r)" % os.environ.get("MSYSTEM"))
 
+    if is_windows():
+        # gdbm is broken under msys2, this makes shelve use another backend
+        sys.modules["gdbm"] = None
+
 
 def _init_formats():
     from quodlibet.formats import init
