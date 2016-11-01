@@ -12,7 +12,7 @@ from senf import fsnative
 
 from quodlibet.formats import AudioFile
 from quodlibet.util.cover.manager import CoverManager
-from quodlibet.util.path import normalize_path
+from quodlibet.util.path import normalize_path, path_equal
 
 from tests import TestCase, mkdtemp
 
@@ -60,15 +60,15 @@ class TCoverManager(TestCase):
 
     def test_labelid(self):
         self.song["labelid"] = "12345"
-        self.failUnlessEqual(os.path.abspath(self._find_cover(self.song).name),
-                             self.full_path("12345.jpg"))
+        assert path_equal(os.path.abspath(self._find_cover(self.song).name),
+                          self.full_path("12345.jpg"))
         del(self.song["labelid"])
 
     def test_regular(self):
         for fn in ["cover.png", "folder.jpg", "frontcover.jpg",
                    "front_folder_cover.gif", "jacket_cover.front.folder.jpeg"]:
             f = self.add_file(fn)
-            self.failUnlessEqual(
+            assert path_equal(
                 os.path.abspath(self._find_cover(self.song).name), f)
         self.test_labelid() # labelid must work with other files present
 
@@ -92,10 +92,10 @@ class TCoverManager(TestCase):
             cover = self._find_cover(song)
             if cover:
                 actual = os.path.abspath(cover.name)
-                self.failUnlessEqual(actual, f)
+                assert path_equal(actual, f)
             else:
                 # Here, no cover is better than the back...
-                self.failUnlessEqual(f, self.full_path("Quuxly - back.jpg"))
+                assert path_equal(f, self.full_path("Quuxly - back.jpg"))
 
     def test_embedded_special_cover_words(self):
         """Tests that words incidentally containing embedded "special" words
@@ -121,7 +121,7 @@ class TCoverManager(TestCase):
             cover = self._find_cover(song)
             if cover:
                 actual = os.path.abspath(cover.name)
-                self.failUnlessEqual(
+                assert path_equal(
                     actual, f, "\"%s\" should trump \"%s\"" % (f, actual))
             else:
                 self.failIf(should_find, msg="Couldn't find %s for %s" %
@@ -150,8 +150,8 @@ class TCoverManager(TestCase):
             self.failUnless(cover)
             actual = os.path.abspath(cover.name)
             cover.close()
-            self.failUnlessEqual(
-                    actual, f, "\"%s\" should trump \"%s\"" % (f, actual))
+            assert path_equal(
+                actual, f, "\"%s\" should trump \"%s\"" % (f, actual))
 
     def test_get_thumbnail(self):
         self.assertTrue(self.manager.get_pixbuf(self.song, 10, 10) is None)
