@@ -13,8 +13,12 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.window import Dialog
 
 
-# Choose folders and return them when run.
 class FolderChooser(Gtk.FileChooserDialog, Dialog):
+    """Choose folders and return them when run.
+
+    Note: works with glib paths
+    """
+
     def __init__(self, parent, title, initial_dir=None,
                  action=Gtk.FileChooserAction.SELECT_FOLDER):
         super(FolderChooser, self).__init__(
@@ -38,8 +42,9 @@ class FolderChooser(Gtk.FileChooserDialog, Dialog):
             return []
 
 
-# Choose files and return them when run.
 class FileChooser(FolderChooser):
+    """Choose files and return them when run."""
+
     def __init__(self, parent, title, filter=None, initial_dir=None):
         super(FileChooser, self).__init__(
             parent, title, initial_dir, Gtk.FileChooserAction.OPEN)

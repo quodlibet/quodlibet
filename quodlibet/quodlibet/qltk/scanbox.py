@@ -15,14 +15,22 @@ from senf import fsn2text
 from quodlibet import _
 from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.x import MenuItem, Button
 from quodlibet.qltk import Icons
-from quodlibet.util.path import unexpand, get_home_dir, glib2fsn
+from quodlibet.util.path import unexpand, get_home_dir, glib2fsn, fsn2glib
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util import connect_obj
 
 
 def get_init_select_dir():
+    """Returns a path which might be a good starting point when browsing
+    for a path for library scanning.
+
+    Returns:
+        fsnative
+    """
+
     scandirs = get_scan_dirs()
     if scandirs and os.path.isdir(scandirs[-1]):
         # start with last added directory
@@ -33,10 +41,11 @@ def get_init_select_dir():
 
 class ScanBox(Gtk.HBox):
     """A box for editing the Library's scan directories"""
+
     def __init__(self):
         super(ScanBox, self).__init__(spacing=6)
 
-        self.model = model = Gtk.ListStore(str)
+        self.model = model = ObjectStore()
         view = RCMHintedTreeView(model=model)
         view.set_fixed_height_mode(True)
         view.set_headers_visible(False)
@@ -58,9 +67,9 @@ class ScanBox(Gtk.HBox):
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
-        def cdf(column, cell, model, iter, data):
-            row = model[iter]
-            cell.set_property('text', unexpand(row[0]))
+        def cdf(column, cell, model, iter_, data):
+            path = model.get_value(iter_)
+            cell.set_property('text', fsn2text(unexpand(path)))
 
         column = Gtk.TreeViewColumn(None, render)
         column.set_cell_data_func(render, cdf)
@@ -85,8 +94,7 @@ class ScanBox(Gtk.HBox):
         self.pack_start(sw, True, True, 0)
         self.pack_start(vbox, False, True, 0)
 
-        paths = map(fsn2text, get_scan_dirs())
-        for path in paths:
+        for path in get_scan_dirs():
             model.append(row=[path])
 
         for child in self.get_children():
@@ -99,7 +107,7 @@ class ScanBox(Gtk.HBox):
         remove_button.set_sensitive(selection.count_selected_rows())
 
     def __save(self):
-        set_scan_dirs([glib2fsn(r[0]) for r in self.model])
+        set_scan_dirs(list(self.model.itervalues()))
 
     def __remove(self, view):
         view.remove_selection()
@@ -107,9 +115,10 @@ class ScanBox(Gtk.HBox):
 
     def __add(self, *args):
         initial = get_init_select_dir()
-        chooser = FolderChooser(self, _("Select Directories"), initial)
+        chooser = FolderChooser(
+            self, _("Select Directories"), fsn2glib(initial))
         fns = chooser.run()
         chooser.destroy()
         for fn in fns:
-            self.model.append(row=[fn])
+            self.model.append(row=[glib2fsn(fn)])
         self.__save()
