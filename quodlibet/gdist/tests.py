@@ -12,10 +12,9 @@ import os
 import sys
 import subprocess
 import tarfile
-
-from distutils.core import Command
 from distutils import dir_util
-from distutils.command.sdist import sdist
+
+from .util import Command, get_dist_class
 
 
 class test_cmd(Command):
@@ -77,6 +76,9 @@ class quality_cmd(Command):
         status = tests.unit(suite="quality", quality=True)
         if status != 0:
             raise SystemExit(status)
+
+
+sdist = get_dist_class("sdist")
 
 
 class distcheck_cmd(sdist):

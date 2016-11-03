@@ -9,7 +9,7 @@
 import os
 import subprocess
 
-from distutils.core import Command
+from .util import Command
 
 
 def update_icon_cache(*args):

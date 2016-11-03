@@ -16,12 +16,11 @@ import os
 import glob
 from subprocess import Popen, PIPE
 from tempfile import mkstemp
-
 from distutils.dep_util import newer
 from distutils.spawn import find_executable
-from distutils.core import Command
 from distutils.errors import DistutilsOptionError
 
+from .util import Command
 from . import gettextutil
 
 
