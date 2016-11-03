@@ -13,6 +13,7 @@ from quodlibet import config
 from quodlibet.util.library import split_scan_dirs, set_scan_dirs, \
     get_exclude_dirs, get_scan_dirs
 from quodlibet.util import is_windows
+from quodlibet.util.path import get_home_dir, unexpand
 
 from tests import TestCase
 
@@ -42,14 +43,14 @@ class Tlibrary_utils(TestCase):
             self.assertEquals(res, [STANDARD_PATH, GVFS_PATH])
 
     def test_get_exclude_dirs(self):
-        some_path = os.path.join(fsnative(u"~"), "foo")
+        some_path = os.path.join(unexpand(get_home_dir()), "foo")
         config.set('library', 'exclude', some_path)
         assert expanduser(some_path) in get_exclude_dirs()
 
         assert all([isinstance(p, fsnative) for p in get_exclude_dirs()])
 
     def test_get_scan_dirs(self):
-        some_path = os.path.join(fsnative(u"~"), "foo")
+        some_path = os.path.join(unexpand(get_home_dir()), "foo")
         config.set('settings', 'scan', some_path)
         assert expanduser(some_path) in get_scan_dirs()
 

@@ -727,7 +727,7 @@ class Tlibrary(TestCase):
     def test_basic(self):
         self.failIf(get_scan_dirs())
         if os.name == "nt":
-            set_scan_dirs([u"C:\\foo", u"D:\\bar", ""])
+            set_scan_dirs([u"C:\\foo", u"D:\\bar", u""])
             self.failUnlessEqual(get_scan_dirs(), [u"C:\\foo", u"D:\\bar"])
         else:
             set_scan_dirs(["foo", "bar", ""])

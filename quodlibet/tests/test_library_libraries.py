@@ -6,17 +6,18 @@
 from gi.repository import Gtk
 
 import os
+import shutil
 
 from quodlibet.formats import AudioFileError
 from quodlibet import config
 from quodlibet.util import connect_obj
 from quodlibet.formats import AudioFile
 
-from tests import TestCase, get_data_path, mkstemp
+from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipUnless
 from .helper import capture_output, get_temp_copy
 
 from quodlibet.library.libraries import Library, PicklingMixin, SongLibrary, \
-    FileLibrary, AlbumLibrary, SongFileLibrary
+    FileLibrary, AlbumLibrary, SongFileLibrary, iter_paths
 
 
 class Fake(int):
@@ -640,3 +641,55 @@ class TAlbumLibrarySignals(TestCase):
         for s in self._sigs:
             self.lib.disconnect(s)
         self.lib.destroy()
+
+
+class Titer_paths(TestCase):
+
+    def setUp(self):
+        self.root = mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.root)
+
+    def test_empty(self):
+        assert list(iter_paths(self.root)) == []
+
+    def test_one_file(self):
+        fd, name = mkstemp(dir=self.root)
+        os.close(fd)
+        assert list(iter_paths(self.root)) == [name]
+
+    def test_one_file_exclude(self):
+        fd, name = mkstemp(dir=self.root)
+        os.close(fd)
+        assert list(iter_paths(self.root, exclude=[self.root])) == []
+        assert list(iter_paths(self.root,
+                               exclude=[os.path.dirname(self.root)])) == []
+        assert list(iter_paths(self.root, exclude=[name])) == []
+        assert list(iter_paths(self.root, exclude=[name + "a"])) == [name]
+
+    @skipUnless(hasattr(os, "symlink"), "no symlink")
+    def test_with_dir_symlink(self):
+        child = mkdtemp(dir=self.root)
+        link = os.path.join(self.root, "foo")
+        os.symlink(child, link)
+        fd, name = mkstemp(dir=link)
+        os.close(fd)
+
+        assert name not in list(iter_paths(self.root))
+        assert list(iter_paths(link)) == list(iter_paths(child))
+
+        assert list(iter_paths(link, exclude=[link])) == []
+        assert list(iter_paths(child, exclude=[child])) == []
+        assert list(iter_paths(link, exclude=[child])) == []
+
+    @skipUnless(hasattr(os, "symlink"), "no symlink")
+    def test_with_file(self):
+        fd, name = mkstemp(dir=self.root)
+        os.close(fd)
+        link = os.path.join(self.root, "foo")
+        os.symlink(name, link)
+
+        assert list(iter_paths(self.root)) == [name, name]
+        assert list(iter_paths(self.root, exclude=[link])) == [name]
+        assert list(iter_paths(self.root, exclude=[name])) == []

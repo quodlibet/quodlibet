@@ -19,7 +19,7 @@ import shutil
 import time
 
 from gi.repository import GObject
-from senf import fsn2text
+from senf import fsn2text, fsnative
 
 from quodlibet import _
 from quodlibet.formats import MusicFile, AudioFileError
@@ -523,6 +523,40 @@ class SongLibrary(PicklingLibrary):
         return songs
 
 
+def iter_paths(root, exclude=[]):
+    """yields paths contained in root (symlinks dereferenced)
+
+    Any path starting with any of the path parts included in exclude
+    are ignored (before and after dereferencing symlinks)
+
+    Directory symlinks are not followed (except root itself)
+
+    Args:
+        root (fsnative)
+        exclude (List[fsnative])
+    Yields:
+        fsnative: absolute dereferenced paths
+    """
+
+    assert isinstance(root, fsnative)
+    assert all((isinstance(p, fsnative) for p in exclude))
+    assert os.path.abspath(root)
+
+    def skip(path):
+        # FIXME: normalize paths..
+        return any((path.startswith(p) for p in exclude))
+
+    for path, dnames, fnames in os.walk(root):
+        for filename in fnames:
+            fullfilename = os.path.join(path, filename)
+            if skip(fullfilename):
+                continue
+            fullfilename = os.path.realpath(fullfilename)
+            if skip(fullfilename):
+                continue
+            yield fullfilename
+
+
 class FileLibrary(PicklingLibrary):
     """A library containing items on a local(-ish) filesystem.
 
@@ -695,7 +729,6 @@ class FileLibrary(PicklingLibrary):
         raise NotImplementedError
 
     def scan(self, paths, exclude=[], cofuncid=None):
-        added = []
 
         def need_yield(last_yield=[0]):
             current = time.time()
@@ -711,42 +744,50 @@ class FileLibrary(PicklingLibrary):
                 return True
             return False
 
-        for fullpath in paths:
-            print_d("Scanning %r." % fullpath, self)
-            desc = _("Scanning %s") % (fsn2text(unexpand(fullpath)))
+        # first scan each path for new files
+        paths_to_load = []
+        for scan_path in paths:
+            print_d("Scanning %r." % scan_path)
+            desc = _("Scanning %s") % (fsn2text(unexpand(scan_path)))
             with Task(_("Library"), desc) as task:
                 if cofuncid:
                     task.copool(cofuncid)
-                if filter(fullpath.startswith, exclude):
-                    continue
-                for path, dnames, fnames in os.walk(fullpath):
-                    for filename in fnames:
-                        fullfilename = os.path.join(path, filename)
-                        if filter(fullfilename.startswith, exclude):
-                            continue
-                        if fullfilename not in self._contents:
-                            fullfilename = os.path.realpath(fullfilename)
-                            # skip unknown file extensions
-                            if not formats.filter(fullfilename):
-                                continue
-                            if filter(fullfilename.startswith, exclude):
-                                continue
-                            if fullfilename not in self._contents:
-                                item = self.add_filename(fullfilename, False)
-                                if item is not None:
-                                    added.append(item)
-                                    if len(added) > 100 or need_added():
-                                        self.add(added)
-                                        added = []
-                                        task.pulse()
-                                        yield
-                                if added and need_yield():
-                                    yield
-                if added:
-                    self.add(added)
-                    added = []
-                    task.pulse()
-                    yield True
+
+                for real_path in iter_paths(scan_path, exclude=exclude):
+                    if need_yield():
+                        task.pulse()
+                        yield
+                    # skip unknown file extensions
+                    if not formats.filter(real_path):
+                        continue
+                    # already loaded
+                    # FIXME: normalize
+                    if real_path in self._contents:
+                        continue
+                    paths_to_load.append(real_path)
+
+        yield
+
+        # then (try to) load all new files
+        with Task(_("Library"), _("Loading files")) as task:
+            if cofuncid:
+                task.copool(cofuncid)
+
+            added = []
+            for real_path in task.gen(paths_to_load):
+                item = self.add_filename(real_path, False)
+                if item is not None:
+                    added.append(item)
+                    if len(added) > 100 or need_added():
+                        self.add(added)
+                        added = []
+                        yield
+                if added and need_yield():
+                    yield
+            if added:
+                self.add(added)
+                added = []
+                yield True
 
     def get_content(self):
         """Return visible and masked items"""
