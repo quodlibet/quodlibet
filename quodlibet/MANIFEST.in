@@ -20,6 +20,7 @@ include data/*.zsh
 include data/README.rst
 include MANIFEST.in
 include quodlibet/senf/README.rst
+include *.py
 recursive-include docs *.py Makefile *.rst *.png *.ico *.svg
 prune docs/_build_guide
 prune docs/_build_all

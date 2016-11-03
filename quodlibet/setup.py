@@ -15,7 +15,7 @@ import sys
 import shutil
 import types
 
-from distutils.core import setup
+from setuptools import setup, find_packages
 from gdist import GDistribution
 
 
@@ -48,16 +48,6 @@ def main():
     else:
         version_string = ".".join(map(str, version))
 
-    # find all packages
-    package_path = "quodlibet"
-    packages = []
-    for root, dirnames, filenames in os.walk(package_path):
-        if "__init__.py" in filenames:
-            relpath = os.path.relpath(root, os.path.dirname(package_path))
-            package_name = relpath.replace(os.sep, ".")
-            packages.append(package_name)
-    assert packages
-
     setup_kwargs = {
         'distclass': GDistribution,
         'name': "quodlibet",
@@ -68,14 +58,22 @@ def main():
         'author_email': "quod-libet-development@googlegroups.com",
         'maintainer': "Steven Robertson and Christoph Reiter",
         'license': "GNU GPL v2",
-        'packages': packages,
+        'entry_points': {
+            "console_scripts": [
+                "operon=quodlibet.operon:main",
+            ],
+            "gui_scripts": [
+                "quodlibet=quodlibet.main:main",
+                "exfalso=quodlibet.exfalso:main",
+            ]
+        },
+        'packages': find_packages(exclude=("tests*", "gdist")),
         'package_data': {
             "quodlibet": [
                 "images/hicolor/*/*/*.png",
                 "images/hicolor/*/*/*.svg",
             ],
         },
-        'scripts': ["quodlibet.py", "exfalso.py", "operon.py"],
         'po_directory': "po",
         'po_package': "quodlibet",
         'shortcuts': ["data/quodlibet.desktop", "data/exfalso.desktop"],
@@ -128,6 +126,8 @@ def main():
 
         CMD_SUFFIX = "-cmd"
         GUI_TOOLS = ["quodlibet", "exfalso"]
+
+        setup_kwargs["scripts"] = ["quodlibet.py", "exfalso.py", "operon.py"]
 
         for gui_name in GUI_TOOLS:
             setup_kwargs.setdefault("windows", []).append({
