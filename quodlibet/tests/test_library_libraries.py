@@ -646,7 +646,8 @@ class TAlbumLibrarySignals(TestCase):
 class Titer_paths(TestCase):
 
     def setUp(self):
-        self.root = mkdtemp()
+        # on osx the temp folder returned is a symlink
+        self.root = os.path.realpath(mkdtemp())
 
     def tearDown(self):
         shutil.rmtree(self.root)
