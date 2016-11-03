@@ -5,16 +5,14 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import sys
-
 from senf import fsnative
 
 from quodlibet import config
 from quodlibet.util.library import split_scan_dirs, set_scan_dirs
+from quodlibet.util import is_windows
 
 from tests import TestCase
 
-ON_WINDOWS = sys.platform == "win32"
 
 STANDARD_PATH = fsnative(u"/home/user/Music")
 OTHER_PATH = fsnative(u"/opt/party")
@@ -25,16 +23,17 @@ GVFS_PATH_ESCAPED = fsnative(u"/run/user/12345/gvfs/smb-share"
 
 
 class Tsplit_scan_dirs(TestCase):
+
     def test_basic(self):
-        if ON_WINDOWS:
-            res = split_scan_dirs(r":Z:\foo:C:/windows:")
-            self.assertEquals(res, [r"Z:\foo", "C:/windows"])
+        if is_windows():
+            res = split_scan_dirs(u":Z:\\foo:C:/windows:")
+            self.assertEquals(res, [u"Z:\\foo", u"C:/windows"])
         else:
             res = split_scan_dirs(":%s:%s:" % (STANDARD_PATH, OTHER_PATH))
             self.assertEquals(res, [STANDARD_PATH, OTHER_PATH])
 
     def test_colon_paths(self):
-        if not ON_WINDOWS:
+        if not is_windows():
             res = split_scan_dirs(
                 ":%s:%s" % (STANDARD_PATH, GVFS_PATH_ESCAPED))
             self.assertEquals(res, [STANDARD_PATH, GVFS_PATH])
@@ -67,5 +66,5 @@ class Tset_scan_dirs(TestCase):
 
     def test_set_scan_dirs_colons(self):
         set_scan_dirs([STANDARD_PATH, GVFS_PATH])
-        expected = GVFS_PATH if ON_WINDOWS else GVFS_PATH_ESCAPED
+        expected = GVFS_PATH if is_windows() else GVFS_PATH_ESCAPED
         self.assertEqual(self.scan_dirs, "%s:%s" % (STANDARD_PATH, expected))

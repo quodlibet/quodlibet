@@ -17,7 +17,7 @@ from quodlibet.qltk.chooser import FolderChooser
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import MenuItem, Button
 from quodlibet.qltk import Icons
-from quodlibet.util.path import unexpand, get_home_dir
+from quodlibet.util.path import unexpand, get_home_dir, glib2fsn
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util import connect_obj
 
@@ -99,7 +99,7 @@ class ScanBox(Gtk.HBox):
         remove_button.set_sensitive(selection.count_selected_rows())
 
     def __save(self):
-        set_scan_dirs([r[0] for r in self.model])
+        set_scan_dirs([glib2fsn(r[0]) for r in self.model])
 
     def __remove(self, view):
         view.remove_selection()

@@ -7,7 +7,6 @@
 # published by the Free Software Foundation
 
 import re
-import sys
 
 from senf import fsn2bytes, bytes2fsn, fsnative
 
@@ -16,7 +15,7 @@ from quodlibet import app
 from quodlibet import config
 from quodlibet.qltk.notif import Task
 from quodlibet.util.dprint import print_d
-from quodlibet.util import copool
+from quodlibet.util import copool, is_windows
 
 from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
@@ -24,6 +23,16 @@ from quodlibet.util.string import split_escape, join_escape
 
 
 def background_filter():
+    """Returns a filter function for AudioFile or None if nothing should be
+    filtered.
+
+    The filter is meant to be used globally to hide songs from the main
+    library.
+
+    Returns:
+        function or None
+    """
+
     bg = config.gettext("browsers", "background")
     if not bg:
         return
@@ -33,23 +42,45 @@ def background_filter():
         pass
 
 
-def split_scan_dirs(s):
-    """Split the value of the "scan" setting, accounting for drive letters on
-    win32."""
-    if sys.platform == "win32":
-        return filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", s))
+def split_scan_dirs(joined_paths):
+    """Returns a list of paths
+
+    Args:
+        joined_paths (fsnative)
+    Return:
+        list
+    """
+
+    assert isinstance(joined_paths, fsnative)
+
+    if is_windows():
+        # we used to separate this config with ":", so this is tricky
+        return filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", joined_paths))
     else:
-        # See Issue 1413 - allow escaped colons
-        return filter(None, split_escape(s, ":"))
+        return filter(None, split_escape(joined_paths, ":"))
 
 
 def get_scan_dirs():
-    dirs = split_scan_dirs(config.get("settings", "scan"))
-    return [bytes2fsn(d, "utf-8") for d in dirs if d]
+    """Returns a list of paths which should be scanned
+
+    Returns:
+        list
+    """
+
+    joined_paths = bytes2fsn(config.get("settings", "scan"), "utf-8")
+    return split_scan_dirs(joined_paths)
 
 
 def set_scan_dirs(dirs):
-    if sys.platform == "win32":
+    """Saves a list of fs paths which should be scanned
+
+    Args:
+        list
+    """
+
+    assert all(isinstance(d, fsnative) for d in dirs)
+
+    if is_windows():
         joined = fsnative(u":").join(dirs)
     else:
         joined = join_escape(dirs, fsnative(u":"))
