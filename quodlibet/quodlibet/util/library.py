@@ -90,12 +90,14 @@ def set_scan_dirs(dirs):
 def scan_library(library, force):
     """Start the global library re-scan
 
-    If `force` is True, reload all existing valid items.
+    Args:
+        library (Library)
+        force (bool): if True, reload all existing valid items
     """
 
     paths = get_scan_dirs()
-    exclude = split_scan_dirs(config.get("library", "exclude"))
-    exclude = [bytes2fsn(e, "utf-8") for e in exclude]
+    exclude = split_scan_dirs(
+        bytes2fsn(config.get("library", "exclude"), "utf-8"))
     copool.add(library.rebuild, paths, force, exclude,
                cofuncid="library", funcid="library")
 
