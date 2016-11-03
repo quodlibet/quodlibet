@@ -12,7 +12,7 @@ import contextlib
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
 
-from quodlibet import _
+from quodlibet import _, print_e
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version, \
     menu_popup, get_primary_accel_mod
@@ -1122,6 +1122,11 @@ class HintedTreeView(BaseView):
             except AttributeError:
                 tvh = HintedTreeView.hints = TreeViewHints()
             tvh.connect_view(self)
+
+    def set_tooltip_text(self, *args, **kwargs):
+        print_e("Setting a tooltip on the view breaks tv hints. Set it"
+                " on the parent scrolled window instead")
+        return super(HintedTreeView, self).set_tooltip_text(*args, **kwargs)
 
     def supports_hints(self):
         """If the treeview hints support is enabled. Can be used to

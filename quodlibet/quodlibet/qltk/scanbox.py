@@ -49,8 +49,7 @@ class ScanBox(Gtk.HBox):
         view = RCMHintedTreeView(model=model)
         view.set_fixed_height_mode(True)
         view.set_headers_visible(False)
-        view.set_tooltip_text(_("Songs in the listed folders will be added "
-                                "to the library during a library refresh"))
+
         menu = Gtk.Menu()
         remove_item = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         menu.append(remove_item)
@@ -63,7 +62,8 @@ class ScanBox(Gtk.HBox):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
         sw.set_size_request(-1, max(sw.size_request().height, 80))
-
+        sw.set_tooltip_text(_("Songs in the listed folders will be added "
+                              "to the library during a library refresh"))
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
