@@ -8,7 +8,7 @@
 
 import re
 
-from senf import fsn2bytes, bytes2fsn, fsnative
+from senf import fsn2bytes, bytes2fsn, fsnative, expanduser
 
 from quodlibet import _
 from quodlibet import app
@@ -68,7 +68,7 @@ def get_scan_dirs():
     """
 
     joined_paths = bytes2fsn(config.get("settings", "scan"), "utf-8")
-    return split_scan_dirs(joined_paths)
+    return [expanduser(p) for p in split_scan_dirs(joined_paths)]
 
 
 def set_scan_dirs(dirs):
@@ -87,6 +87,18 @@ def set_scan_dirs(dirs):
     config.set("settings", "scan", fsn2bytes(joined, "utf-8"))
 
 
+def get_exclude_dirs():
+    """Returns a list of paths which should be ignored during scanning
+
+    Returns:
+        list
+    """
+
+    paths = split_scan_dirs(
+        bytes2fsn(config.get("library", "exclude"), "utf-8"))
+    return [expanduser(p) for p in paths]
+
+
 def scan_library(library, force):
     """Start the global library re-scan
 
@@ -96,8 +108,7 @@ def scan_library(library, force):
     """
 
     paths = get_scan_dirs()
-    exclude = split_scan_dirs(
-        bytes2fsn(config.get("library", "exclude"), "utf-8"))
+    exclude = get_exclude_dirs()
     copool.add(library.rebuild, paths, force, exclude,
                cofuncid="library", funcid="library")
 

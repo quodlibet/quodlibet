@@ -5,10 +5,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from senf import fsnative
+import os
+
+from senf import fsnative, expanduser
 
 from quodlibet import config
-from quodlibet.util.library import split_scan_dirs, set_scan_dirs
+from quodlibet.util.library import split_scan_dirs, set_scan_dirs, \
+    get_exclude_dirs, get_scan_dirs
 from quodlibet.util import is_windows
 
 from tests import TestCase
@@ -22,7 +25,7 @@ GVFS_PATH_ESCAPED = fsnative(u"/run/user/12345/gvfs/smb-share"
                               "\:server=12.23.34.45,share=/foo/bar/baz/path")
 
 
-class Tsplit_scan_dirs(TestCase):
+class Tlibrary_utils(TestCase):
 
     def test_basic(self):
         if is_windows():
@@ -38,14 +41,22 @@ class Tsplit_scan_dirs(TestCase):
                 ":%s:%s" % (STANDARD_PATH, GVFS_PATH_ESCAPED))
             self.assertEquals(res, [STANDARD_PATH, GVFS_PATH])
 
+    def test_get_exclude_dirs(self):
+        some_path = os.path.join(fsnative(u"~"), "foo")
+        config.set('library', 'exclude', some_path)
+        assert expanduser(some_path) in get_exclude_dirs()
+
+        assert all([isinstance(p, fsnative) for p in get_exclude_dirs()])
+
+    def test_get_scan_dirs(self):
+        some_path = os.path.join(fsnative(u"~"), "foo")
+        config.set('settings', 'scan', some_path)
+        assert expanduser(some_path) in get_scan_dirs()
+
+        assert all([isinstance(p, fsnative) for p in get_scan_dirs()])
+
 
 class Tset_scan_dirs(TestCase):
-
-    def setUp(self):
-        config.init()
-
-    def tearDown(self):
-        config.quit()
 
     @property
     def scan_dirs(self):

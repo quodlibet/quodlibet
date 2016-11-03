@@ -19,7 +19,7 @@ import shutil
 import time
 
 from gi.repository import GObject
-from senf import fsn2text, expanduser
+from senf import fsn2text
 
 from quodlibet import _
 from quodlibet.formats import MusicFile, AudioFileError
@@ -696,7 +696,6 @@ class FileLibrary(PicklingLibrary):
 
     def scan(self, paths, exclude=[], cofuncid=None):
         added = []
-        exclude = [expanduser(path) for path in exclude if path]
 
         def need_yield(last_yield=[0]):
             current = time.time()
@@ -714,11 +713,10 @@ class FileLibrary(PicklingLibrary):
 
         for fullpath in paths:
             print_d("Scanning %r." % fullpath, self)
-            desc = _("Scanning %s") % (unexpand(fsn2text(fullpath)))
+            desc = _("Scanning %s") % (fsn2text(unexpand(fullpath)))
             with Task(_("Library"), desc) as task:
                 if cofuncid:
                     task.copool(cofuncid)
-                fullpath = expanduser(fullpath)
                 if filter(fullpath.startswith, exclude):
                     continue
                 for path, dnames, fnames in os.walk(fullpath):
