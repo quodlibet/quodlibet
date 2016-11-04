@@ -165,7 +165,8 @@
   <data>${prefix}/lib/python2.7/site-packages/concurrent</data>
   <!-- pyObjC -->
   <data>${prefix}/lib/python2.7/distutils</data>
-  <data>${prefix}/lib/python2.7/site-packages/pkg_resources.py</data>
+  <data>${prefix}/lib/python2.7/site-packages/pkg_resources</data>
+  <data>${prefix}/lib/python2.7/site-packages/setuptools</data>
   <data>${prefix}/lib/python2.7/site-packages/AppKit</data>
   <data>${prefix}/lib/python2.7/site-packages/Cocoa</data>
   <data>${prefix}/lib/python2.7/site-packages/CoreFoundation</data>

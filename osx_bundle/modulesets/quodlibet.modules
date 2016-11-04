@@ -371,8 +371,8 @@
   </autotools>
 
   <distutils id="setuptools">
-      <branch repo="pypi" checkoutdir="setuptools-0.6c11" module="source/s/setuptools/setuptools-0.6c11.tar.gz"
-          version="0.6c11" md5sum="7df2a529a074f613b509fb44feefe74e"/>
+      <branch repo="pypi" checkoutdir="setuptools-28.7.1" module="1d/04/97e37cf85972ea19364c22db34ee8192db3876a80ed5bffd6413dcdabe2d/setuptools-28.7.1.tar.gz"
+          version="28.7.1" md5sum="263e2e3858187e8ea20b4db3ff8770bb"/>
   </distutils>
 
   <distutils id="futures">
