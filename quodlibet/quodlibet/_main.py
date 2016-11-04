@@ -270,7 +270,7 @@ def _main_setup_osx(window):
             "delete-event", lambda window, event: window.hide() or True)
 
 
-def main(window, before_quit=None):
+def run(window, before_quit=None):
     print_d("Entering quodlibet.main")
     from gi.repository import Gtk, Gdk
     from quodlibet._init import is_init

@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 # Copyright 2012,2013 Christoph Reiter
 #
@@ -11,9 +10,10 @@ import os
 
 from optparse import OptionParser
 
+import quodlibet
 from quodlibet import const
-
 from quodlibet.util.dprint import print_
+from quodlibet.senf import argv as sys_argv
 
 from .base import Command, CommandError
 from . import commands
@@ -39,7 +39,12 @@ def _print_help(main_cmd, parser, file=None):
     print_("\n".join(cl), file=file)
 
 
-def main(argv):
+def main(argv=None):
+    if argv is None:
+        argv = sys_argv
+
+    quodlibet.init_cli()
+
     main_cmd = os.path.basename(argv[0])
 
     # the main optparser

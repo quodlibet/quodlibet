@@ -12,7 +12,7 @@ import os
 import sys
 import urllib
 
-from distutils.core import Command
+from .util import Command
 
 
 class coverage_cmd(Command):

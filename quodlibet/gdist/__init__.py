@@ -12,32 +12,31 @@ This module contains a Distribution subclass (GDistribution) which
 implements build and install commands for operations related to
 Python GTK+ and GObject support. This includes installation
 of man pages and gettext/intltool support.
+
+Also supports setuptools but needs to be imported after setuptools
+(which does some monkey patching)
 """
 
 import os
 import sys
 
-try:
-    from py2exe import Distribution
-except ImportError:
-    from distutils.core import Distribution
+from .shortcuts import build_shortcuts, install_shortcuts
+from .man import install_man
+from .po import build_mo, install_mo, po_stats, update_po, create_po
+from .icons import install_icons
+from .search_provider import install_search_provider
+from .dbus_services import build_dbus_services, install_dbus_services
+from .appdata import build_appdata, install_appdata
+from .coverage import coverage_cmd
+from .docs import build_sphinx
+from .scripts import build_scripts
+from .tests import quality_cmd, distcheck_cmd, test_cmd
+from .clean import clean
+from .zsh_completions import install_zsh_completions
+from .util import get_dist_class, Distribution
 
-from distutils.command.build import build as distutils_build
-from distutils.command.install import install as distutils_install
 
-from gdist.shortcuts import build_shortcuts, install_shortcuts
-from gdist.man import install_man
-from gdist.po import build_mo, install_mo, po_stats, update_po, create_po
-from gdist.icons import install_icons
-from gdist.search_provider import install_search_provider
-from gdist.dbus_services import build_dbus_services, install_dbus_services
-from gdist.appdata import build_appdata, install_appdata
-from gdist.coverage import coverage_cmd
-from gdist.docs import build_sphinx
-from gdist.scripts import build_scripts
-from gdist.tests import quality_cmd, distcheck_cmd, test_cmd
-from gdist.clean import clean
-from gdist.zsh_completions import install_zsh_completions
+distutils_build = get_dist_class("build")
 
 
 class build(distutils_build):
@@ -57,6 +56,9 @@ class build(distutils_build):
         ("build_appdata",
          lambda self: self.distribution.has_appdata()),
     ]
+
+
+distutils_install = get_dist_class("install")
 
 
 class install(distutils_install):

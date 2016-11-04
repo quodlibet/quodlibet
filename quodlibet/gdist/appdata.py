@@ -13,7 +13,7 @@ AppData Specification: http://people.freedesktop.org/~hughsient/appdata/
 import os
 
 from distutils.dep_util import newer
-from distutils.core import Command
+from .util import Command
 
 
 class build_appdata(Command):

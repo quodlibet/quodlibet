@@ -12,10 +12,9 @@ import os
 import sys
 import subprocess
 import tarfile
-
-from distutils.core import Command
 from distutils import dir_util
-from distutils.command.sdist import sdist
+
+from .util import Command, get_dist_class
 
 
 class test_cmd(Command):
@@ -79,6 +78,9 @@ class quality_cmd(Command):
             raise SystemExit(status)
 
 
+sdist = get_dist_class("sdist")
+
+
 class distcheck_cmd(sdist):
     description = "run tests on a fresh sdist"
 
@@ -129,7 +131,7 @@ class distcheck_cmd(sdist):
         self.spawn([sys.executable, "setup.py", "build"])
         self.spawn([sys.executable, "setup.py", "build_sphinx"])
         self.spawn([sys.executable, "setup.py", "install",
-                    "--prefix", "../prefix", "--record", "../log.txt"])
+                    "--root", "../prefix", "--record", "../log.txt"])
         os.chdir(old_pwd)
 
     def run(self):

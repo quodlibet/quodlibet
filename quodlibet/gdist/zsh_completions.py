@@ -8,7 +8,7 @@
 
 import os
 
-from distutils.core import Command
+from .util import Command
 
 
 class install_zsh_completions(Command):

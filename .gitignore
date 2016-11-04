@@ -12,6 +12,7 @@
 *.tar.xz
 MANIFEST
 .DS_Store
+*.egg-info
 
 quodlibet/po/missing
 quodlibet/po/notexist
