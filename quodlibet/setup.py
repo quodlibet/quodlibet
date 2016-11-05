@@ -101,6 +101,12 @@ def main():
         },
     }
 
+    if os.name == "nt":
+        # cli variants for gui scripts
+        cs = setup_kwargs["entry_points"]["console_scripts"]
+        for line in setup_kwargs["entry_points"]["gui_scripts"]:
+            cs.append(line.replace("=", "-cmd=", 1))
+
     if os.name == 'nt' and "py2exe" in sys.modules:
         def recursive_include_py2exe(dir_, pre, ext):
             all_ = []
