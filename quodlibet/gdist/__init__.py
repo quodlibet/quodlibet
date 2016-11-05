@@ -88,6 +88,11 @@ class install(distutils_install):
         distutils_install.initialize_options(self)
         self.mandir = None
 
+    def finalize_options(self):
+        distutils_install.finalize_options(self)
+        # XXX: force setuptools to run this install (and our sub commands)
+        self.old_and_unmanageable = True
+
 
 is_windows = (os.name == "nt")
 is_osx = (sys.platform == "darwin")
