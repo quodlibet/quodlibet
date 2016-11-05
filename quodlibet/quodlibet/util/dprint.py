@@ -144,6 +144,30 @@ def frame_info(level=0):
     return info
 
 
+def _should_write_to_file(file_):
+    """In Windows UI mode we don't have a working stdout/stderr.
+    With Python 2 sys.stdout.fileno() returns a negative fd, with Python 3
+    sys.stdout is None.
+
+    When using py2exe we get a fd for a log file and have to look at
+    __stdout__ instead.
+    """
+
+    if is_py2exe_window():
+        if file_ is sys.stdout:
+            file_ = sys.__stdout__
+        elif file_ is sys.stderr:
+            file_ = sys.__stderr__
+
+    if file_ is None:
+        return False
+
+    try:
+        return file_.fileno() >= 0
+    except (IOError, AttributeError):
+        return True
+
+
 def _print_message(string, custom_context, debug_only, prefix,
                    color, logging_category, start_time=time.time()):
 
@@ -169,11 +193,12 @@ def _print_message(string, custom_context, debug_only, prefix,
     else:
         string = info + " " + lines[0]
 
-    if (not debug_only or const.DEBUG) and not is_py2exe_window():
+    if not debug_only or const.DEBUG:
         file_ = sys.stderr
-        if not file_.isatty():
-            string = strip_color(string)
-        print_(string, file=file_)
+        if _should_write_to_file(file_):
+            if not file_.isatty():
+                string = strip_color(string)
+            print_(string, file=file_)
 
     logging.log(strip_color(string), logging_category)
 
