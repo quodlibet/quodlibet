@@ -234,7 +234,7 @@ def extract_tb(*args, **kwargs):
     for filename, line_number, function_name, text in tp:
         filename = path2fsn(filename)
         function_name = decode(function_name)
-        text = decode(text)
+        text = decode(text or u"")
         result.append((filename, line_number, function_name, text))
     return result
 
