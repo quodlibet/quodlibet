@@ -47,6 +47,7 @@ create_root() {
 }
 
 install_deps() {
+
     build_pacman --noconfirm -S git mingw-w64-"${ARCH}"-gdk-pixbuf2 \
         mingw-w64-"${ARCH}"-librsvg \
         mingw-w64-"${ARCH}"-gtk3 mingw-w64-"${ARCH}"-"${PYTHON_ID}" \
@@ -58,22 +59,23 @@ install_deps() {
         mingw-w64-"${ARCH}"-gst-plugins-bad mingw-w64-"${ARCH}"-gst-libav \
         mingw-w64-"${ARCH}"-gst-plugins-ugly
 
+    # FIXME
+    build_pacman --noconfirm -U "${DIR}"/*.pkg.tar.xz
+
     build_pip install mutagen futures feedparser certifi pytest pep8 \
         pyflakes musicbrainzngs
 
     build_pacman --noconfirm -Rdd mingw-w64-"${ARCH}"-shared-mime-info \
         mingw-w64-"${ARCH}"-"${PYTHON_ID}"-pip mingw-w64-"${ARCH}"-ncurses \
         mingw-w64-"${ARCH}"-tk mingw-w64-"${ARCH}"-tcl \
-        mingw-w64-"${ARCH}"-opencv mingw-w64-"${ARCH}"-python3 \
-        mingw-w64-"${ARCH}"-daala-git mingw-w64-"${ARCH}"-SDL \
+        mingw-w64-"${ARCH}"-opencv mingw-w64-"${ARCH}"-daala-git \
         mingw-w64-"${ARCH}"-SDL2 mingw-w64-"${ARCH}"-libdvdcss \
         mingw-w64-"${ARCH}"-libdvdnav mingw-w64-"${ARCH}"-libdvdread \
         mingw-w64-"${ARCH}"-openexr mingw-w64-"${ARCH}"-openal \
-        mingw-w64-"${ARCH}"-openh264 mingw-w64-"${ARCH}"-ffmpeg \
-        mingw-w64-"${ARCH}"-libbluray mingw-w64-"${ARCH}"-gnome-common \
+        mingw-w64-"${ARCH}"-openh264 mingw-w64-"${ARCH}"-gnome-common \
         mingw-w64-"${ARCH}"-clutter  mingw-w64-"${ARCH}"-gsl \
         mingw-w64-"${ARCH}"-libvpx mingw-w64-"${ARCH}"-libcaca \
-        mingw-w64-"${ARCH}"-libwebp mingw-w64-"${ARCH}"-ffmpeg || true
+        mingw-w64-"${ARCH}"-libwebp || true
 
     if [ "${PYTHON_ID}" = "python2" ]; then
         build_pacman --noconfirm -Rdd mingw-w64-"${ARCH}"-python3 || true
@@ -128,8 +130,8 @@ post_install() {
 
     # set launcher icons
     # (copy things around since rcedit.exe can't handle paths)
-    cp "${REPO_CLONE}"/win_installer/misc/quodlibet.ico "${MINGW_ROOT}"/bin
-    cp "${REPO_CLONE}"/win_installer/misc/exfalso.ico "${MINGW_ROOT}"/bin
+    cp "${DIR}"/quodlibet.ico "${MINGW_ROOT}"/bin
+    cp "${DIR}"/exfalso.ico "${MINGW_ROOT}"/bin
     (cd "${MINGW_ROOT}"/bin &&
      "${BUILD_ROOT}"/rcedit.exe quodlibet.exe --set-icon quodlibet.ico)
     (cd "${MINGW_ROOT}"/bin &&
@@ -147,8 +149,9 @@ cleanup_install() {
         fi
     done
 
-    find "${MINGW_ROOT}"/bin -regextype "posix-extended" -name "*.exe" \
-        -a ! -iregex ".*/(quodlibet|exfalso|operon|python).*" -exec rm -f {} \;
+    find "${MINGW_ROOT}" -regextype "posix-extended" -name "*.exe" -a ! \
+        -iregex ".*/(quodlibet|exfalso|operon|python)[^/]*\\.exe" \
+        -exec rm -f {} \;
 
     rm -Rf "${MINGW_ROOT}"/libexec
     rm -Rf "${MINGW_ROOT}"/share/gtk-doc
@@ -214,10 +217,6 @@ cleanup_install() {
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstfaac.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstschro.dll
 
-    # FIXME: https://github.com/Alexpux/MINGW-packages/pull/1889
-    rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstchromaprint.dll
-    rm -f "${MINGW_ROOT}"/bin/libchromaprint.dll
-
     rm -f "${MINGW_ROOT}"/bin/libharfbuzz-icu-0.dll
     rm -f "${MINGW_ROOT}"/lib/python2.*/lib-dynload/_tkinter.pyd
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstcacasink.dll
@@ -262,13 +261,24 @@ cleanup_install() {
     find "${MINGW_ROOT}" -type d -empty -delete
 }
 
+build_installer() {
+    makensis win_installer.nsi
+}
+
 main() {
-    [[ -d "${BUILD_ROOT}" ]] && exit 1
+    # started from the wrong env -> switch
+    if [ $(echo "$MSYSTEM" | tr '[A-Z]' '[a-z]') != "$MINGW" ]; then
+        "/${MINGW}.exe" "$0"
+        exit $?
+    fi
+
+    [[ -d "${BUILD_ROOT}" ]] && (echo "${BUILD_ROOT} already exists"; exit 1)
     create_root
     install_deps
     install_quodlibet
     post_install
     cleanup_install
+    build_installer
 }
 
 main
