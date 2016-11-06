@@ -10,6 +10,7 @@ import sys
 import threading
 import traceback
 import time
+import logging
 
 from senf import getcwd, fsnative, fsn2bytes, bytes2fsn
 
@@ -18,7 +19,8 @@ from quodlibet.compat import text_type, PY2
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
 from quodlibet import config
 from quodlibet import util
-from quodlibet.util.dprint import print_exc, format_exception, extract_tb
+from quodlibet.util.dprint import print_exc, format_exception, extract_tb, \
+    PrintHandler
 from quodlibet.util import format_time_long as f_t_l, format_time_preferred, \
     format_time_display, format_time_seconds
 from quodlibet.util import re_escape
@@ -1183,6 +1185,24 @@ class Tprint_exc(TestCase):
         except:
             with capture_output():
                 print_exc()
+
+    def test_pass_exc_info(self):
+        try:
+            1 / 0
+        except:
+            with capture_output():
+                print_exc(exc_info=sys.exc_info(), context="foo")
+
+
+class TPrintHandler(TestCase):
+
+    def test_main(self):
+        handler = PrintHandler()
+        for level in range(0, 70, 10):
+            record = logging.LogRecord(
+                "foo", level, "a.py", 45, "bar", None, None)
+            with capture_output():
+                handler.handle(record)
 
 
 class Tformat_exception(TestCase):

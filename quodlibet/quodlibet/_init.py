@@ -10,6 +10,7 @@ import sys
 import gettext
 import locale
 import warnings
+import logging
 
 from senf import environ
 
@@ -19,7 +20,7 @@ from quodlibet.const import MinVersions
 from quodlibet.util import is_osx, is_windows
 from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars, set_translation
-from quodlibet.util.dprint import print_d, print_e
+from quodlibet.util.dprint import print_d, print_e, PrintHandler
 from quodlibet.util.path import unexpand
 
 from ._main import get_base_dir, is_release, get_image_dir
@@ -148,6 +149,8 @@ def _init_python():
     if is_windows():
         # gdbm is broken under msys2, this makes shelve use another backend
         sys.modules["gdbm"] = None
+
+    logging.getLogger().addHandler(PrintHandler())
 
 
 def _init_formats():

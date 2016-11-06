@@ -5,11 +5,14 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from __future__ import absolute_import
+
 import sys
 import time
 import os
 import traceback
 import re
+import logging
 
 from senf import print_, path2fsn, fsn2text
 
@@ -17,7 +20,7 @@ from quodlibet import const
 from quodlibet.compat import PY2
 from .environment import is_py2exe_window
 from .string import decode
-from . import logging
+from . import logging as ql_logging
 
 
 class Color(object):
@@ -200,21 +203,21 @@ def _print_message(string, custom_context, debug_only, prefix,
                 string = strip_color(string)
             print_(string, file=file_)
 
-    logging.log(strip_color(string), logging_category)
+    ql_logging.log(strip_color(string), logging_category)
 
 
-def format_exc(*args, **kwargs):
-    """Returns text_type"""
-
-    # stack traces can contain byte paths under py2
-    return fsn2text(path2fsn(traceback.format_exc(*args, **kwargs)))
-
-
-def format_exception(*args, **kwargs):
+def format_exception(etype, value, tb, limit=None):
     """Returns a list of text_type"""
 
-    result_lines = traceback.format_exception(*args, **kwargs)
+    result_lines = traceback.format_exception(etype, value, tb, limit)
     return [fsn2text(path2fsn(l)) for l in result_lines]
+
+
+def format_exc(limit=None):
+    """Returns text_type"""
+
+    etype, value, tb = sys.exc_info()
+    return u''.join(format_exception(etype, value, tb, limit))
 
 
 def extract_tb(*args, **kwargs):
@@ -236,24 +239,28 @@ def extract_tb(*args, **kwargs):
     return result
 
 
-def print_exc():
-    """Prints the stack trace of the current exception. Depending
-    on the configuration will either print a short summary or the whole
-    stacktrace.
+def print_exc(exc_info=None, context=None):
+    """Prints the stack trace of the current exception or the passed one.
+    Depending on the configuration will either print a short summary or the
+    whole stacktrace.
     """
 
+    if exc_info is None:
+        exc_info = sys.exc_info()
+
+    etype, value, tb = exc_info
+
     if const.DEBUG:
-        string = format_exc()
+        string = u"".join(format_exception(etype, value, tb))
     else:
         # try to get a short error message pointing at the cause of
         # the exception
-        tp = traceback.extract_tb(sys.exc_info()[2])[-1]
-        filename, lineno, name, line = tp
-        text = os.linesep.join(format_exc(0).splitlines()[1:])
+        filename, lineno, name, line = extract_tb(tb)[-1]
+        text = u"".join(format_exception(etype, value, tb, 0)[1:])
         string = u"%s:%s:%s: %s" % (
             fsn2text(path2fsn(os.path.basename(filename))), lineno, name, text)
 
-    _print_message(string, None, False, "E", "red", "errors")
+    _print_message(string, context, False, "E", "red", "errors")
 
 
 def print_d(string, context=None):
@@ -272,3 +279,20 @@ def print_e(string, context=None):
     """Print errors"""
 
     _print_message(string, context, False, "E", "red", "errors")
+
+
+class PrintHandler(logging.Handler):
+    """Converts logging records to our logging format"""
+
+    def emit(self, record):
+        print_func = {
+            'DEBUG': print_d, 'INFO': print_d, 'WARNING': print_w,
+            'ERROR': print_e, 'CRITICAL': print_e,
+        }.get(record.levelname, print_d)
+
+        exc_info = record.exc_info
+        context = "%s.%s" % (record.module, record.funcName)
+        record.exc_info = None
+        print_func(self.format(record), context=context)
+        if exc_info is not None:
+            print_exc(record.exc_info, context=context)
