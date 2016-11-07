@@ -235,8 +235,4 @@ class RandomAlbum(EventPlugin):
             app.player.paused = True
 
     def disabled_for_browser(self, browser):
-        if not browser.can_filter_albums():
-            return True
-        if browser == "Playlists":
-            return True
-        return False
+        return not browser.can_filter_albums() or browser == "Playlists"
