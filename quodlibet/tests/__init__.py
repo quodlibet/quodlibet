@@ -17,10 +17,9 @@ except ImportError:
     raise SystemExit("pytest missing: sudo apt-get install python-pytest")
 
 import quodlibet
-from quodlibet.senf import fsnative
+from quodlibet.senf import fsnative, path2fsn, environ
 from quodlibet.compat import PY3
 from quodlibet.util.path import xdg_get_cache_home
-from quodlibet.util.misc import environ
 from quodlibet import util
 
 from unittest import TestCase as OrigTestCase
@@ -48,8 +47,7 @@ _TEMP_DIR = None
 
 
 def get_data_path(filename):
-    assert isinstance(filename, str)
-    return os.path.join(_DATA_DIR, filename)
+    return os.path.join(_DATA_DIR, path2fsn(filename))
 
 
 def _wrap_tempfile(func):
