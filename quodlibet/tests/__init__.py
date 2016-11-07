@@ -148,13 +148,6 @@ def init_test_environ():
 
     global _TEMP_DIR, _BUS_INFO
 
-    # try to make things the same in case a different locale is active.
-    # LANG for gettext, setlocale for number formatting etc.
-    try:
-        environ["LANG"] = locale.setlocale(locale.LC_ALL, "en_US.utf8")
-    except locale.Error:
-        pass
-
     # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
 
@@ -186,6 +179,18 @@ def init_test_environ():
 
     quodlibet.init(no_translations=True, no_excepthook=True)
     quodlibet.app.name = "QL Tests"
+
+    # try to make things the same in case a different locale is active.
+    # LANG for gettext, setlocale for number formatting etc.
+    # Note: setlocale has to be called after Gtk.init()
+    try:
+        if os.name != "nt":
+            environ["LANG"] = locale.setlocale(locale.LC_ALL, "en_US.utf8")
+        else:
+            environ["LANG"] = "en_US.utf8"
+            locale.setlocale(locale.LC_ALL, "english")
+    except locale.Error:
+        pass
 
 
 def exit_test_environ():
