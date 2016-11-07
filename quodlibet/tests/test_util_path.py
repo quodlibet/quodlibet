@@ -128,6 +128,7 @@ class Tiscommand(TestCase):
         self.failIf(iscommand("X11"))
 
     @unittest.skipUnless(path_set, "Can only test with a valid $PATH")
+    @unittest.skipIf(is_win, "needs porting")
     def test_looks_in_path(self):
         path_dirs = set(os.environ['PATH'].split(os.path.pathsep))
         dirs = path_dirs - set(os.defpath.split(os.path.pathsep))
