@@ -4,7 +4,6 @@
 # published by the Free Software Foundation
 
 import os
-import sys
 import unittest
 import tempfile
 import shutil
@@ -17,8 +16,8 @@ try:
 except ImportError:
     raise SystemExit("pytest missing: sudo apt-get install python-pytest")
 
+import quodlibet
 from quodlibet.senf import fsnative
-
 from quodlibet.compat import PY3
 from quodlibet.util.path import xdg_get_cache_home
 from quodlibet.util.misc import environ
@@ -187,13 +186,6 @@ def init_test_environ():
         _BUS_INFO = dbus_launch_user()
         environ.update(_BUS_INFO)
 
-    # Ideally nothing should touch the FS on import, but we do atm..
-    # Get rid of all modules so QUODLIBET_USERDIR gets used everywhere.
-    for key in list(sys.modules.keys()):
-        if key.startswith('quodlibet'):
-            del(sys.modules[key])
-
-    import quodlibet
     quodlibet.init(no_translations=True, no_excepthook=True)
     quodlibet.app.name = "QL Tests"
 

@@ -128,14 +128,17 @@ def unescape_filename(s):
     return urllib.unquote(s).decode("utf-8")
 
 
-def unexpand(filename, HOME=expanduser("~")):
+def unexpand(filename):
     """Replace the user's home directory with ~/, if it appears at the
-    start of the path name."""
+    start of the path name.
+    """
+
     sub = (os.name == "nt" and "%USERPROFILE%") or "~"
-    if filename == HOME:
+    home = expanduser("~")
+    if filename == home:
         return sub
-    elif filename.startswith(HOME + os.path.sep):
-        filename = filename.replace(HOME, sub, 1)
+    elif filename.startswith(home + os.path.sep):
+        filename = filename.replace(home, sub, 1)
     return filename
 
 
