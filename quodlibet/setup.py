@@ -15,8 +15,7 @@ import sys
 import shutil
 import types
 
-from setuptools import setup, find_packages
-from gdist import GDistribution
+from gdist import GDistribution, setup
 
 
 def exec_module(path):
@@ -48,6 +47,15 @@ def main():
     else:
         version_string = ".".join(map(str, version))
 
+    package_path = "quodlibet"
+    packages = []
+    for root, dirnames, filenames in os.walk(package_path):
+        if "__init__.py" in filenames:
+            relpath = os.path.relpath(root, os.path.dirname(package_path))
+            package_name = relpath.replace(os.sep, ".")
+            packages.append(package_name)
+    assert packages
+
     setup_kwargs = {
         'distclass': GDistribution,
         'name': "quodlibet",
@@ -58,7 +66,7 @@ def main():
         'author_email': "quod-libet-development@googlegroups.com",
         'maintainer': "Steven Robertson and Christoph Reiter",
         'license': "GNU GPL v2",
-        'entry_points': {
+        'launchers': {
             "console_scripts": [
                 "operon=quodlibet.operon:main",
             ],
@@ -67,7 +75,7 @@ def main():
                 "exfalso=quodlibet.exfalso:main",
             ]
         },
-        'packages': find_packages(exclude=("tests*", "gdist")),
+        'packages': packages,
         'package_data': {
             "quodlibet": [
                 "images/hicolor/*/*/*.png",

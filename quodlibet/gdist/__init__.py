@@ -20,6 +20,8 @@ Also supports setuptools but needs to be imported after setuptools
 import os
 import sys
 
+from distutils.core import setup
+
 from .shortcuts import build_shortcuts, install_shortcuts
 from .man import install_man
 from .po import build_mo, install_mo, po_stats, update_po, create_po
@@ -29,11 +31,11 @@ from .dbus_services import build_dbus_services, install_dbus_services
 from .appdata import build_appdata, install_appdata
 from .coverage import coverage_cmd
 from .docs import build_sphinx
-from .scripts import build_scripts
 from .tests import quality_cmd, distcheck_cmd, test_cmd
 from .clean import clean
 from .zsh_completions import install_zsh_completions
 from .util import get_dist_class, Distribution
+from .launchers import build_launchers, install_launchers
 
 
 distutils_build = get_dist_class("build")
@@ -55,6 +57,7 @@ class build(distutils_build):
          lambda self: self.distribution.has_dbus_services()),
         ("build_appdata",
          lambda self: self.distribution.has_appdata()),
+        ("build_launchers", lambda self: self.distribution.need_launchers()),
     ]
 
 
@@ -82,6 +85,7 @@ class install(distutils_install):
          lambda self: self.distribution.has_appdata()),
         ("install_zsh_completions",
          lambda self: self.distribution.has_zsh_completions()),
+        ("install_launchers", lambda self: self.distribution.need_launchers()),
     ]
 
     def initialize_options(self):
@@ -126,6 +130,7 @@ class GDistribution(Distribution):
     search_provider = None
     coverage_options = {}
     zsh_completions = []
+    launchers = {}
 
     def __init__(self, *args, **kwargs):
         Distribution.__init__(self, *args, **kwargs)
@@ -133,7 +138,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("build_shortcuts", build_shortcuts)
         self.cmdclass.setdefault("build_dbus_services", build_dbus_services)
         self.cmdclass.setdefault("build_appdata", build_appdata)
-        self.cmdclass.setdefault("build_scripts", build_scripts)
+        self.cmdclass.setdefault("build_launchers", build_launchers)
         self.cmdclass.setdefault("install_icons", install_icons)
         self.cmdclass.setdefault("install_shortcuts", install_shortcuts)
         self.cmdclass.setdefault("install_dbus_services",
@@ -143,6 +148,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("install_search_provider",
                                  install_search_provider)
         self.cmdclass.setdefault("install_appdata", install_appdata)
+        self.cmdclass.setdefault("install_launchers", install_launchers)
         self.cmdclass.setdefault(
             "install_zsh_completions", install_zsh_completions)
         self.cmdclass.setdefault("build", build)
@@ -182,4 +188,8 @@ class GDistribution(Distribution):
     def need_search_provider(self):
         return not is_py2exe and not is_osx
 
-__all__ = ["GDistribution"]
+    def need_launchers(self):
+        return not is_py2exe
+
+
+__all__ = ["GDistribution", "setup"]
