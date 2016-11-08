@@ -97,14 +97,20 @@ class build_launchers(Command):
                 name, module, func = parse_entry(entry)
                 new_path = os.path.join(self.build_dir, name)
 
-                with open(new_path, "wb") as h:
-                    h.write(get_script_content(module, func, type_))
                 if os.name == "nt":
-                    with open(new_path + "-script.py", "wb") as h:
+                    if type_ == "cli":
+                        script_path = new_path + "-script.py"
+                    else:
+                        script_path = new_path + "-script.pyw"
+
+                    with open(script_path, "wb") as h:
                         h.write(get_script_content(module, func, type_))
 
                     with open(new_path + ".exe", "wb") as h:
                         h.write(get_launcher_content(type_))
+                else:
+                    with open(new_path, "wb") as h:
+                        h.write(get_script_content(module, func, type_))
 
 
 class install_launchers(Command):
