@@ -8,7 +8,7 @@
 import os
 import sys
 
-from senf import environ
+from senf import environ, path2fsn
 
 from quodlibet import util
 from quodlibet import const
@@ -128,7 +128,8 @@ def get_user_dir():
         USERDIR = environ['QUODLIBET_USERDIR']
 
     if build.BUILD_TYPE == u"windows-portable":
-        USERDIR = os.path.join(get_base_dir(), "..", "..", "..", "config")
+        USERDIR = os.path.normpath(os.path.join(
+            os.path.dirname(path2fsn(sys.executable)), "..", "..", "config"))
 
     # XXX: users shouldn't assume the dir is there, but we currently do in
     # some places
