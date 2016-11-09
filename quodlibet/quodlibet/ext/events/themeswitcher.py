@@ -9,7 +9,7 @@
 import warnings
 import os
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gio, GLib
 
 from quodlibet import _
 from quodlibet import qltk
@@ -107,6 +107,15 @@ class ThemeSwitcher(EventPlugin):
                 gtk_dir = os.path.join(theme_dir, dir_, "gtk-3.0")
                 if os.path.isdir(gtk_dir):
                     themes.add(dir_)
+
+        try:
+            resource_themes = Gio.resources_enumerate_children(
+                "/org/gtk/libgtk/theme", 0)
+        except GLib.GError:
+            pass
+        else:
+            themes.update([t.rstrip("/") for t in resource_themes])
+
         return themes
 
     def __set_theme(self, name):
