@@ -21,7 +21,7 @@ class TPEP8(TestCase):
     # drop them once 1.4 is common enough
     # E261: at least two spaces before inline comment
     IGNORE_ERROROS = ["E12", "E261", "E265", "E713", "W602", "E402", "E731",
-                      "W503"]
+                      "W503", "E741", "E305"]
 
     def _run(self, path, ignore=None):
         if ignore is None:
