@@ -6,6 +6,7 @@ import types
 
 dir_ = os.path.dirname(os.path.realpath(__file__))
 
+
 def exec_module(path):
     """Executes the Python file at `path` and returns it as the module"""
 
@@ -70,7 +71,7 @@ if const.BRANCH_NAME != "master":
     rst_prolog = """
 
 .. note::
-    There exists a newer version of this page and the content below may be 
+    There exists a newer version of this page and the content below may be
     outdated. See %s for the latest documentation.
 
 """ % (const.DOCS_LATEST)
