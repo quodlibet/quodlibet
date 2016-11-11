@@ -201,7 +201,7 @@ def _print_message(string, custom_context, debug_only, prefix,
         if _should_write_to_file(file_):
             if not file_.isatty():
                 string = strip_color(string)
-            print_(string, file=file_)
+            print_(string, file=file_, flush=True)
 
     ql_logging.log(strip_color(string), logging_category)
 
