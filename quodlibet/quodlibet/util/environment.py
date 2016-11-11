@@ -11,6 +11,7 @@ and under which environment.
 
 import os
 import sys
+import ctypes
 
 
 def _dbus_name_owned(name):
@@ -64,7 +65,15 @@ def is_windows():
 def is_wine():
     """If we are running under Wine"""
 
-    return is_windows() and "WINEDEBUG" in os.environ
+    if not is_windows():
+        return False
+
+    try:
+        ctypes.cdll.ntdll.wine_get_version
+    except AttributeError:
+        return False
+    else:
+        return True
 
 
 def is_osx():
