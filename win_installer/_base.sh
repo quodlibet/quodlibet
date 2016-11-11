@@ -168,7 +168,8 @@ function install_quodlibet {
      "${BUILD_ROOT}"/rcedit.exe exfalso.exe --set-icon exfalso.ico)
     rm "${MINGW_ROOT}"/bin/*.ico
 
-    QL_VERSION=$(build_python -c "import quodlibet.const;print quodlibet.const.VERSION,")
+    QL_VERSION=$(MSYSTEM= build_python -c \
+        "import quodlibet.const;print quodlibet.const.VERSION,")
     if [ "$1" = "master" ]
     then
         local GIT_REV=$(git rev-list --count HEAD)
