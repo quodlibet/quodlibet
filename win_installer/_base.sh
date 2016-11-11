@@ -187,7 +187,7 @@ function cleanup_install {
     done
 
     find "${MINGW_ROOT}" -regextype "posix-extended" -name "*.exe" -a ! \
-        -iregex ".*/(quodlibet|exfalso|operon|python)[^/]*\\.exe" \
+        -iregex ".*/(quodlibet|exfalso|operon|python|gspawn-)[^/]*\\.exe" \
         -exec rm -f {} \;
 
     rm -Rf "${MINGW_ROOT}"/libexec
