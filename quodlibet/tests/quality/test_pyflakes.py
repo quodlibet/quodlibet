@@ -52,7 +52,8 @@ class TPyFlakes(TestCase):
     def test_all(self):
         assert pyflakes is not None, "pyflakes is missing"
 
-        files = iter_py_files(os.path.dirname(quodlibet.__path__[0]))
+        files = iter_py_files(
+            os.path.dirname(os.path.abspath(quodlibet.__path__[0])))
         errors = check_files(files)
         if errors:
             raise Exception("\n".join(errors))
