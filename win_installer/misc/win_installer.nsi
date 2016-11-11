@@ -3,8 +3,10 @@
 ;Based on the NSIS Modern User Interface Start Menu Folder Example Script
 ;Written by Joost Verburg
 
+  Unicode true
+
   ;compression
-  SetCompressor /SOLID LZMA
+  SetCompressor /SOLID /FINAL lzma
 
   !define MULTIUSER_EXECUTIONLEVEL Highest
   !define MULTIUSER_MUI
@@ -53,7 +55,7 @@
 ;Pages
 
   !insertmacro MULTIUSER_PAGE_INSTALLMODE
-  !insertmacro MUI_PAGE_LICENSE "ql_temp\quodlibet\COPYING"
+  !insertmacro MUI_PAGE_LICENSE "quodlibet\quodlibet\COPYING"
   !insertmacro MUI_PAGE_DIRECTORY
   
   ;Start Menu Folder Page Configuration
@@ -137,7 +139,7 @@ Section "Dummy Section" SecDummy
 
   SetOutPath "$INSTDIR"
 
-  File /r "ql_temp\quodlibet\dist\*.*" 
+  File /r "mingw32\*.*" 
 
   ;Old installer wrote the path to HKCU only, delete it
   DeleteRegKey HKCU "Software\Quod Libet"
@@ -244,5 +246,3 @@ SectionEnd
 Function un.onInit
   !insertmacro MULTIUSER_UNINIT
 FunctionEnd
-
-
