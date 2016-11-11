@@ -32,7 +32,10 @@ Setting Up the MSYS2 Environment
 * Run ``cd quodlibet/win_installer`` to end up where this README exists.
 * Execute ``./bootstrap.sh`` to install all the needed dependencies.
 * Now go to the application source code ``cd ../quodlibet``
-* To run Quod Libet execute ``MSYSTEM= ./quodlibet.py``
+* To run Quod Libet execute ``./quodlibet.py``
+
+If you want to use py.test directly you have to unsed the MSYSTEM env var:
+``MSYSTEM= py.test tests/test_util.py``
 
 
 Creating an Installer

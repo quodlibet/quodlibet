@@ -9,6 +9,20 @@ import sys
 import os
 
 
+# MSYS2 defines MSYSTEM which changes os.sep/os.path.sep for the mingw
+# Python build. Unset here and restart.. (does not work for py.test etc.)
+# XXX: do this here since it gets executed by all scripts
+if os.name == "nt" and "MSYSTEM" in os.environ:
+    import subprocess
+    del os.environ["MSYSTEM"]
+    argv = []
+    for arg in [sys.executable] + sys.argv:
+        if os.path.exists(arg):
+            arg = arg.replace("/", "\\")
+        argv.append(arg)
+    sys.exit(subprocess.call(argv))
+
+
 class Version(tuple):
     """Represent the version of a dependency as a tuple"""
 
