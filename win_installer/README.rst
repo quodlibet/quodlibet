@@ -31,6 +31,7 @@ Setting Up the MSYS2 Environment
 * Run ``git clone https://github.com/quodlibet/quodlibet.git``
 * Run ``cd quodlibet/win_installer`` to end up where this README exists.
 * Execute ``./bootstrap.sh`` to install all the needed dependencies.
+* Now go to the application source code ``cd ../quodlibet``
 * To run Quod Libet execute ``MSYSTEM= ./quodlibet.py``
 
 
