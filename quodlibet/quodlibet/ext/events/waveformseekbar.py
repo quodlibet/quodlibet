@@ -63,16 +63,16 @@ class WaveformSeekBar(Gtk.Box):
             self._pipeline.set_state(Gst.State.NULL)
 
         command_template = """
-        filesrc location="{}"
+        filesrc name=fs
         ! decodebin ! audioconvert
         ! level name=audiolevel interval={} post-messages=true
         ! fakesink sync=false"""
         interval = int(song("~#length") * 1E9 / points)
         print_d("Computing data for each %.3f seconds" % (interval / 1E9))
 
-        filename = song("~filename").replace('"', '\\"')
-        command = command_template.format(filename, interval)
+        command = command_template.format(interval)
         pipeline = Gst.parse_launch(command)
+        pipeline.get_by_name("fs").set_property("location", song("~filename"))
 
         bus = pipeline.get_bus()
         self._bus_id = bus.connect("message", self._on_bus_message)
