@@ -6,11 +6,7 @@
 # as long as this notice is preserved. There is no warranty, either
 # express or implied, for this software.
 
-try:
-    from py2exe import Distribution
-except ImportError:
-    from distutils.core import Distribution
-
+from distutils.core import Distribution
 from distutils.core import Command
 
 

@@ -17,7 +17,6 @@ Also supports setuptools but needs to be imported after setuptools
 (which does some monkey patching)
 """
 
-import os
 import sys
 
 from distutils.core import setup
@@ -93,9 +92,7 @@ class install(distutils_install):
         self.mandir = None
 
 
-is_windows = (os.name == "nt")
 is_osx = (sys.platform == "darwin")
-is_py2exe = is_windows and ("py2exe" in sys.modules)
 
 
 class GDistribution(Distribution):
@@ -165,31 +162,31 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("clean", clean)
 
     def has_po(self):
-        return not is_py2exe and bool(self.po_directory)
+        return bool(self.po_directory)
 
     def has_shortcuts(self):
-        return not is_py2exe and not is_osx and bool(self.shortcuts)
+        return not is_osx and bool(self.shortcuts)
 
     def has_appdata(self):
-        return not is_py2exe and not is_osx and bool(self.appdata)
+        return not is_osx and bool(self.appdata)
 
     def has_man_pages(self):
-        return not is_py2exe and bool(self.man_pages)
+        return bool(self.man_pages)
 
     def has_dbus_services(self):
-        return not is_py2exe and not is_osx and bool(self.dbus_services)
+        return not is_osx and bool(self.dbus_services)
 
     def has_zsh_completions(self):
-        return not is_py2exe and bool(self.zsh_completions)
+        return bool(self.zsh_completions)
 
     def need_icon_install(self):
-        return not is_py2exe and not is_osx
+        return not is_osx
 
     def need_search_provider(self):
-        return not is_py2exe and not is_osx
+        return not is_osx
 
     def need_launchers(self):
-        return not is_py2exe
+        return True
 
 
 __all__ = ["GDistribution", "setup"]
