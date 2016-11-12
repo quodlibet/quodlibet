@@ -31,7 +31,7 @@
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\Quod Libet"
-  
+
   ;Get installation folder from registry if available
   ;InstallDirRegKey HKCU "${INSTDIR_KEY}" ""
   ;doesn't work with multi user -> see onInit..
@@ -57,22 +57,22 @@
   !insertmacro MULTIUSER_PAGE_INSTALLMODE
   !insertmacro MUI_PAGE_LICENSE "quodlibet\quodlibet\COPYING"
   !insertmacro MUI_PAGE_DIRECTORY
-  
+
   ;Start Menu Folder Page Configuration
-  !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Quod Libet" 
+  !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Quod Libet"
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
-  
+
   !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
-  
+
   !insertmacro MUI_PAGE_INSTFILES
-  
+
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
 
 ;--------------------------------
 ;Languages
- 
+
   !insertmacro MUI_LANGUAGE "English" ;first language is the default language
   !insertmacro MUI_LANGUAGE "Afrikaans"
   !insertmacro MUI_LANGUAGE "Albanian"
@@ -139,7 +139,7 @@ Section "Dummy Section" SecDummy
 
   SetOutPath "$INSTDIR"
 
-  File /r "mingw32\*.*" 
+  File /r "mingw32\*.*"
 
   ;Old installer wrote the path to HKCU only, delete it
   DeleteRegKey HKCU "Software\Quod Libet"
@@ -167,16 +167,74 @@ Section "Dummy Section" SecDummy
   WriteRegStr HKCR  "Directory\Background\shell\quodlibet" "Extended" ""
   WriteRegStr HKCR  "Directory\Background\shell\quodlibet\command" "" "$INSTDIR\bin\exfalso.exe $\"%V$\""
 
+  ; open with quodlibet.exe..
+  WriteRegStr HKCR "Applications\quodlibet.exe\shell\play\command" "" "$\"$INSTDIR\bin\quodlibet.exe$\" --run --play-file $\"%1$\""
+
+  ; open with dialog
+  ; generated using get_supported_types.py:
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".3g2" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".3gp" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".3gp2" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".669" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".aac" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".adif" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".adts" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".aif" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".aifc" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".aiff" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".amf" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".ams" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".ape" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".asf" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".dsm" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".far" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".flac" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".gdm" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".it" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".m4a" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".m4v" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".med" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mid" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mod" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mp+" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mp1" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mp2" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mp3" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mp4" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mpc" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mpeg" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mpg" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mt2" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".mtm" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".oga" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".ogg" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".oggflac" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".ogv" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".okt" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".opus" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".s3m" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".spc" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".spx" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".stm" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".tta" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".ult" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".vgm" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".wav" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".wma" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".wmv" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".wv" ""
+  WriteRegStr HKCR "Applications\quodlibet.exe\SupportedTypes" ".xm" ""
+
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\uninstall.exe"
-  
+
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-    
-    ;Create shortcuts
-    CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Quod Libet.lnk" "$INSTDIR\bin\quodlibet.exe"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Ex Falso.lnk" "$INSTDIR\bin\exfalso.exe"
-  
+
+  ;Create shortcuts
+  CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Quod Libet.lnk" "$INSTDIR\bin\quodlibet.exe"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Ex Falso.lnk" "$INSTDIR\bin\exfalso.exe"
+
   !insertmacro MUI_STARTMENU_WRITE_END
 
 SectionEnd
@@ -230,13 +288,14 @@ Section "Uninstall"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
 
   ; Remove folder association
-  DeleteRegKey HKCR "Directory\shell\quodlibet\command"
   DeleteRegKey HKCR "Directory\shell\quodlibet"
-  DeleteRegKey HKCR "Directory\Background\shell\quodlibet\command"
   DeleteRegKey HKCR "Directory\Background\shell\quodlibet"
 
   ;Old installer wrote the path to HKCU only, delete it
   DeleteRegKey HKCU "Software\Quod Libet"
+
+  ; Remove "open with.." data
+  DeleteRegKey HKCR "Applications\quodlibet.exe"
 
   DeleteRegKey SHCTX "${UNINST_KEY}"
   DeleteRegKey SHCTX "${INSTDIR_KEY}"
