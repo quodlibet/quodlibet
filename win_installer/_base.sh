@@ -50,7 +50,7 @@ function build_python {
 
 function install_pre_deps {
     pacman -S --needed p7zip git dos2unix mingw-w64-"${ARCH}"-nsis wget \
-        intltool
+        intltool mingw-w64-"${ARCH}"-binutils
 }
 
 function create_root {
