@@ -19,7 +19,7 @@ function main {
         mingw-w64-i686-gst-plugins-base \
         mingw-w64-i686-gst-plugins-good mingw-w64-i686-libsrtp \
         mingw-w64-i686-gst-plugins-bad mingw-w64-i686-gst-libav \
-        mingw-w64-i686-gst-plugins-ugly
+        mingw-w64-i686-gst-plugins-ugly intltool
 
     pip install certifi feedparser futures musicbrainzngs mutagen pep8 \
         pyflakes pytest
