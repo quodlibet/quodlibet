@@ -16,11 +16,6 @@ from quodlibet import qltk
 from quodlibet import config
 
 
-if os.name == "nt":
-    # https://github.com/quodlibet/quodlibet/issues/1534
-    raise PluginNotSupportedError("Crashes under Windows...")
-
-
 _PLUGIN_ID = "pitch"
 
 _SETTINGS = {
