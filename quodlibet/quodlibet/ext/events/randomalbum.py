@@ -165,7 +165,7 @@ class RandomAlbum(EventPlugin):
         if song is None and not one_song and not app.player.paused:
             browser = app.window.browser
 
-            if not browser.can_filter('album'):
+            if self.disabled_for_browser(browser):
                 return
 
             albumlib = app.library.albums
@@ -215,7 +215,7 @@ class RandomAlbum(EventPlugin):
 
     def change_album(self, album):
         browser = app.window.browser
-        if not browser.can_filter('album'):
+        if self.disabled_for_browser(browser):
             return
 
         if browser.can_filter_albums():
@@ -233,3 +233,6 @@ class RandomAlbum(EventPlugin):
             app.player.next()
         except AttributeError:
             app.player.paused = True
+
+    def disabled_for_browser(self, browser):
+        return not browser.can_filter_albums() or browser == "Playlists"
