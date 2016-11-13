@@ -7,6 +7,8 @@
 
 import os
 
+from senf import path2fsn, fsn2bytes, bytes2fsn
+
 from quodlibet.util import fifo, print_w
 from quodlibet import get_user_dir
 try:
@@ -73,8 +75,9 @@ class QuodLibetWinRemote(RemoteBase):
 
     @classmethod
     def send_message(cls, message):
+        data = fsn2bytes(path2fsn(message), "utf-8")
         try:
-            winpipe.write_pipe(cls._NAME, message)
+            winpipe.write_pipe(cls._NAME, data)
         except EnvironmentError as e:
             raise RemoteError(e)
 
@@ -88,7 +91,8 @@ class QuodLibetWinRemote(RemoteBase):
         self._server.stop()
 
     def _callback(self, data):
-        self._cmd_registry.handle_line(self._app, data)
+        message = bytes2fsn(data, "utf-8")
+        self._cmd_registry.handle_line(self._app, message)
 
 
 class QuodLibetUnixRemote(RemoteBase):

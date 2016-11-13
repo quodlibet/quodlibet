@@ -18,6 +18,8 @@ from gi.repository import GLib
 def write_pipe(pipe_name, data):
     """Writes the data to the pipe or raises EnvironmentError"""
 
+    assert isinstance(data, bytes)
+
     # XXX: otherwise many consecutive open fail, no idea..
     pipe_exists(pipe_name)
 
