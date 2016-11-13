@@ -12,5 +12,5 @@ if __name__ == "__main__":
 
     # these are for showing up in the openwith dialog
     for ext in sorted(loaders.keys()):
-        print('WriteRegStr HKCR '
-              '"Applications\quodlibet.exe\SupportedTypes" "%s" ""' % ext)
+        print('WriteRegStr HKLM "${QL_ASSOC_KEY}" '
+              '"%s" "${QL_ID}.assoc.ANY"' % ext)

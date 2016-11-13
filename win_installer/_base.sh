@@ -309,7 +309,7 @@ function build_installer {
     rm -f "$BUILDPY"
 
     cp misc/quodlibet.ico "${BUILD_ROOT}"
-    (cd "$BUILD_ROOT" && makensis -NOCD "${MISC}"/win_installer.nsi)
+    (cd "$BUILD_ROOT" && makensis -NOCD -DVERSION="$QL_VERSION" "${MISC}"/win_installer.nsi)
 
     mv "$BUILD_ROOT/quodlibet-LATEST.exe" "$DIR/quodlibet-$QL_VERSION-installer.exe"
 }
