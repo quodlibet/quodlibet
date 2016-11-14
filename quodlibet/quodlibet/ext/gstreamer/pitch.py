@@ -5,12 +5,10 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
-
 from gi.repository import Gtk, GObject, Gst
 
 from quodlibet import _
-from quodlibet.plugins import PluginImportException, PluginNotSupportedError
+from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
 from quodlibet import config
