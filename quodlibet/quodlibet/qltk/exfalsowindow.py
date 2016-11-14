@@ -31,6 +31,7 @@ from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Align, SeparatorMenuItem, ConfigRHPaned, \
     Button, SymbolicIconImage, MenuItem
 from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
+from quodlibet.qltk.msg import CancelRevertSave
 from quodlibet.qltk import Icons
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import mtime, normalize_path
@@ -178,7 +179,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
 
     def __pre_selection_changed(self, view, event, fs, nb):
         if self.__save:
-            resp = qltk.CancelRevertSave(self).run()
+            resp = CancelRevertSave(self).run()
             if resp == Gtk.ResponseType.YES:
                 self.__save.clicked()
             elif resp == Gtk.ResponseType.NO:

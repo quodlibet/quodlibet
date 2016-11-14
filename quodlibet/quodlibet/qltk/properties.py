@@ -22,6 +22,7 @@ from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.qltk.x import ScrolledWindow, ConfigRPaned
 from quodlibet.qltk.models import ObjectStore, ObjectModelSort
+from quodlibet.qltk.msg import CancelRevertSave
 from quodlibet.util import connect_destroy
 
 
@@ -187,7 +188,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
             if self.auto_save_on_change:
                 self.__save.clicked()
                 return
-            resp = qltk.CancelRevertSave(self).run()
+            resp = CancelRevertSave(self).run()
             if resp == Gtk.ResponseType.YES:
                 self.__save.clicked()
             elif resp == Gtk.ResponseType.NO:
