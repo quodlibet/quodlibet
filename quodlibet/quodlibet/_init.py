@@ -410,6 +410,10 @@ def _init_gtk():
             entry {
                 min-height: 2.4rem;
             }
+
+            entry.cell {
+                min-height: 0;
+            }
         """)
         css_override.register_provider("Adwaita", style_provider)
         css_override.register_provider("HighContrast", style_provider)
