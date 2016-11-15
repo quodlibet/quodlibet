@@ -25,7 +25,8 @@ else
     MINGW="mingw32"
 fi
 
-QL_VERSION="UNKNOWN"
+QL_VERSION="0.0.0"
+QL_VERSION_DESC="UNKNOWN"
 
 
 function set_build_root {
@@ -49,8 +50,8 @@ function build_python {
 }
 
 function install_pre_deps {
-    pacman -S --needed p7zip git dos2unix mingw-w64-"${ARCH}"-nsis wget \
-        intltool mingw-w64-"${ARCH}"-binutils
+    pacman -S --needed --noconfirm p7zip git dos2unix \
+        mingw-w64-"${ARCH}"-nsis wget intltool mingw-w64-"${ARCH}"-toolchain
 }
 
 function create_root {
@@ -150,32 +151,20 @@ function install_quodlibet {
 
     (cd "${REPO_CLONE}" && git checkout "$1") || exit 1
 
-    build_pacman -Sdd --force \
-        --noconfirm mingw-w64-"${ARCH}"-"${PYTHON_ID}"-setuptools
     build_python "${REPO_CLONE}"/quodlibet/setup.py install
 
-    # set launcher icons
-    # (copy things around since rcedit.exe can't handle paths)
-    wget "https://github.com/electron/node-rcedit/raw/73d4e74"`
-        `"b4b406d54410faa9211900cf2a4962df5/bin/rcedit.exe"
-    echo "42649d92e1bbb3af1186fb0ad063df9fcdc18e7b5f2ea8219"`
-        `"1ecc8fdfaffb0d8 rcedit.exe" | sha256sum.exe -c
-    mv "rcedit.exe" "${BUILD_ROOT}"
-    cp "${MISC}"/quodlibet.ico "${MINGW_ROOT}"/bin
-    cp "${MISC}"/exfalso.ico "${MINGW_ROOT}"/bin
-    (cd "${MINGW_ROOT}"/bin &&
-     "${BUILD_ROOT}"/rcedit.exe quodlibet.exe --set-icon quodlibet.ico)
-    (cd "${MINGW_ROOT}"/bin &&
-     "${BUILD_ROOT}"/rcedit.exe exfalso.exe --set-icon exfalso.ico)
-    rm "${MINGW_ROOT}"/bin/*.ico
+    # Create launchers
+    "${PYTHON_ID}" "${MISC}"/create-launcher.py \
+        "${QL_VERSION}" "${MINGW_ROOT}"/bin
 
     QL_VERSION=$(MSYSTEM= build_python -c \
         "import quodlibet.const;print quodlibet.const.VERSION,")
+    QL_VERSION_DESC=QL_VERSION
     if [ "$1" = "master" ]
     then
         local GIT_REV=$(git rev-list --count HEAD)
         local GIT_HASH=$(git rev-parse --short HEAD)
-        QL_VERSION="$QL_VERSION-rev$GIT_REV-$GIT_HASH"
+        QL_VERSION_DESC="$QL_VERSION-rev$GIT_REV-$GIT_HASH"
     fi
 }
 
@@ -290,9 +279,8 @@ function cleanup_install {
         -prune -exec rm -rf {} \;
 
     "${MINGW_ROOT}"/bin/"${PYTHON_ID}".exe -m compileall -q "${MINGW_ROOT}"
-    find "${MINGW_ROOT}" -name "*.py" -a ! -name "*-script.py*" \
-        -exec rm -f {} \;
-    find "${MINGW_ROOT}" -name "*-script.pyc" -exec rm -f {} \;
+    find "${MINGW_ROOT}" -name "*.py" -exec rm -f {} \;
+    find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
 
     "${MINGW_ROOT}"/bin/"${PYTHON_ID}".exe "${MISC}/depcheck.py"
 
@@ -309,9 +297,9 @@ function build_installer {
     rm -f "$BUILDPY"
 
     cp misc/quodlibet.ico "${BUILD_ROOT}"
-    (cd "$BUILD_ROOT" && makensis -NOCD -DVERSION="$QL_VERSION" "${MISC}"/win_installer.nsi)
+    (cd "$BUILD_ROOT" && makensis -NOCD -DVERSION="$QL_VERSION_DESC" "${MISC}"/win_installer.nsi)
 
-    mv "$BUILD_ROOT/quodlibet-LATEST.exe" "$DIR/quodlibet-$QL_VERSION-installer.exe"
+    mv "$BUILD_ROOT/quodlibet-LATEST.exe" "$DIR/quodlibet-$QL_VERSION_DESC-installer.exe"
 }
 
 function build_portable_installer {
@@ -323,7 +311,7 @@ function build_portable_installer {
     (cd $(dirname "$BUILDPY") && build_python -m compileall -q -f -l .)
     rm -f "$BUILDPY"
 
-    local PORTABLE="$DIR/quodlibet-$QL_VERSION-portable"
+    local PORTABLE="$DIR/quodlibet-$QL_VERSION_DESC-portable"
 
     rm -rf "$PORTABLE"
     mkdir "$PORTABLE"
