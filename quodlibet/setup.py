@@ -65,15 +65,6 @@ def main():
         'author_email': "quod-libet-development@googlegroups.com",
         'maintainer': "Steven Robertson and Christoph Reiter",
         'license': "GNU GPL v2",
-        'launchers': {
-            "console_scripts": [
-                "operon=quodlibet.operon:main",
-            ],
-            "gui_scripts": [
-                "quodlibet=quodlibet.main:main",
-                "exfalso=quodlibet.exfalso:main",
-            ]
-        },
         'packages': packages,
         'package_data': {
             "quodlibet": [
@@ -81,6 +72,11 @@ def main():
                 "images/hicolor/*/*/*.svg",
             ],
         },
+        'scripts': [
+            "quodlibet.py",
+            "exfalso.py",
+            "operon.py",
+        ],
         'po_directory': "po",
         'po_package': "quodlibet",
         'shortcuts': ["data/quodlibet.desktop", "data/exfalso.desktop"],
@@ -107,12 +103,6 @@ def main():
             "directory": "coverage",
         },
     }
-
-    if os.name == "nt":
-        # cli variants for gui scripts
-        cs = setup_kwargs["launchers"]["console_scripts"]
-        for line in setup_kwargs["launchers"]["gui_scripts"]:
-            cs.append(line.replace("=", "-cmd=", 1))
 
     setup(**setup_kwargs)
 
