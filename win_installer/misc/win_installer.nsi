@@ -152,6 +152,7 @@ Section "Install"
     ; Register a default entry for file extensions
     WriteRegStr HKLM "Software\Classes\${QL_ID}.assoc.ANY\shell\play\command" "" "$\"$QL_INST_BIN$\" --run --play-file $\"%1$\""
     WriteRegStr HKLM "Software\Classes\${QL_ID}.assoc.ANY\DefaultIcon" "" "$\"$QL_INST_BIN$\""
+    WriteRegStr HKLM "Software\Classes\${QL_ID}.assoc.ANY\shell\play" "FriendlyAppName" "${QL_NAME}"
 
     ; Add application entry
     WriteRegStr HKLM "Software\${QL_NAME}\${QL_ID}\Capabilities" "ApplicationDescription" "${QL_DESC}"
