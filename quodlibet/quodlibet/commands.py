@@ -213,11 +213,7 @@ def _seek(app, time):
 
 @registry.register("play-file", args=1)
 def _play_file(app, value):
-    filename = os.path.realpath(value)
-    song = app.library.add_filename(filename, add=False)
-    if song:
-        if app.player.go_to(song):
-            app.player.paused = False
+    app.window.open_file(value)
 
 
 @registry.register("toggle-window")

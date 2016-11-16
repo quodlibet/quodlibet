@@ -10,7 +10,7 @@
 import os
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GObject
-from senf import uri2fsn
+from senf import uri2fsn, fsnative
 
 import quodlibet
 
@@ -23,6 +23,7 @@ from quodlibet import util
 from quodlibet import app
 from quodlibet import _
 
+from quodlibet.qltk.appwindow import AppWindow
 from quodlibet.update import UpdateDialog
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.browser import LibraryBrowser, FilterMenu
@@ -664,7 +665,7 @@ class SongListPaned(RVPaned):
             config.set(section, option, str(self.get_relative()))
 
 
-class QuodLibetWindow(Window, PersistentWindowMixin):
+class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def __init__(self, library, player, headless=False, restore_cb=None):
         super(QuodLibetWindow, self).__init__(dialog=False)
@@ -677,6 +678,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         main_box = Gtk.VBox()
         self.add(main_box)
 
+        self.__player = player
         # create main menubar, load/restore accelerator groups
         self.__library = library
         ui = self.__create_menu(player, library)
@@ -850,8 +852,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin):
         quit_item = self.ui.get_widget('/Menu/File/Quit')
         quit_item.hide()
 
-    def get_osx_is_persistent(self):
+    def get_is_persistent(self):
         return True
+
+    def open_file(self, filename):
+        assert isinstance(filename, fsnative)
+
+        song = self.__library.add_filename(filename, add=False)
+        if song is not None:
+            if self.__player.go_to(song):
+                self.__player.paused = False
+            return True
+        else:
+            return False
 
     def __player_error(self, player, song, player_error):
         # it's modal, but mmkeys etc. can still trigger new ones

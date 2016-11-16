@@ -8,6 +8,7 @@
 import os
 
 from gi.repository import Gtk, GObject, Pango
+from senf import fsnative
 
 from quodlibet import ngettext, _
 from quodlibet import config
@@ -15,6 +16,7 @@ from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import app
 
+from quodlibet.qltk.appwindow import AppWindow
 from quodlibet.formats import AudioFileError
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.delete import trash_files, TrashMenuItem
@@ -39,7 +41,7 @@ from quodlibet.util import connect_obj, connect_destroy, format_int_locale
 from quodlibet.update import UpdateDialog
 
 
-class ExFalsoWindow(Window, PersistentWindowMixin):
+class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
 
     __gsignals__ = {
         'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
@@ -120,7 +122,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         l.set_ellipsize(Pango.EllipsizeMode.END)
         bbox.pack_start(l, True, True, 0)
 
-        fs = MainFileSelector()
+        self._fs = fs = MainFileSelector()
 
         vb.pack_start(fs, True, True, 0)
         vb.pack_start(Align(bbox, border=6), False, True, 0)
@@ -171,8 +173,16 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
     def set_as_osx_window(self, osx_app):
         osx_app.set_menu_bar(self._dummy_osx_menu_bar)
 
-    def get_osx_is_persistent(self):
+    def get_is_persistent(self):
         return False
+
+    def open_file(self, filename):
+        assert isinstance(filename, fsnative)
+
+        if not os.path.isdir(filename):
+            return False
+
+        self._fs.go_to(filename)
 
     def set_pending(self, button, *excess):
         self.__save = button
