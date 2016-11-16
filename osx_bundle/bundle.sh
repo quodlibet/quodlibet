@@ -55,8 +55,8 @@ find "$EXFALSO_PREFIX"/lib/python2.7 -name '*.py' -delete
 find "$QUODLIBET_PREFIX"/lib/python2.7 -name '*.py' -delete
 
 VERSION=$("$QUODLIBET"/Contents/MacOS/run -c "import sys;import quodlibet.const;sys.stdout.write(quodlibet.const.VERSION)")
-./misc/fixup_info.py "$QUODLIBET"/Contents/Info.plist "quodlibet" "Quod Libet" "$VERSION"
-./misc/fixup_info.py "$EXFALSO"/Contents/Info.plist "exfalso" "Ex Falso" "$VERSION"
+./misc/create_info.py "quodlibet" "$VERSION" > "$QUODLIBET"/Contents/Info.plist
+./misc/create_info.py "exfalso" "$VERSION" > "$EXFALSO"/Contents/Info.plist
 
 ./misc/list_content.py "$HOME/jhbuild_prefix" "$QUODLIBET" > "$QUODLIBET/Contents/Resources/content.txt"
 ./misc/list_content.py "$HOME/jhbuild_prefix" "$EXFALSO" > "$EXFALSO/Contents/Resources/content.txt"

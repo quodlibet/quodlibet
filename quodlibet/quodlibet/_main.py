@@ -261,6 +261,9 @@ def _main_setup_osx(window):
         def applicationDockMenu_(self, sender):
             return gtk_delegate.applicationDockMenu_(sender)
 
+        def application_openFile_(self, sender, filename):
+            return app.window.open_file(filename.encode("utf-8"))
+
     delegate = Delegate.alloc().init()
     delegate.retain()
     shared_app.setDelegate_(delegate)
