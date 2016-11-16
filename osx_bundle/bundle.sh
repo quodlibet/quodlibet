@@ -19,7 +19,7 @@ git clone ../ "$CLONE"
 if [ $# -eq 1 ]; then
     (cd "$CLONE"; git checkout "$1";)
 fi
-jhbuild run "$CLONE"/quodlibet/setup.py install --old-and-unmanageable --prefix="$APP_PREFIX" --record="$QL_OSXBUNDLE_BUNDLE_DEST"/_install_log.txt
+jhbuild run "$CLONE"/quodlibet/setup.py install --prefix="$APP_PREFIX" --record="$QL_OSXBUNDLE_BUNDLE_DEST"/_install_log.txt
 rm -Rf "$CLONE"
 
 # kill some useless files
