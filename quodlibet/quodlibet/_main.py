@@ -266,7 +266,7 @@ def _main_setup_osx(window):
     shared_app.setDelegate_(delegate)
 
     # QL shouldn't exit on window close, EF should
-    if window.get_osx_is_persistent():
+    if window.get_is_persistent():
         window.connect(
             "delete-event", lambda window, event: window.hide() or True)
 
