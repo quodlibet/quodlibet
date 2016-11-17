@@ -12,10 +12,9 @@ import os
 import sys
 import subprocess
 import tarfile
-
-from distutils.core import Command
 from distutils import dir_util
-from distutils.command.sdist import sdist
+
+from .util import Command, get_dist_class
 
 
 class test_cmd(Command):
@@ -26,8 +25,8 @@ class test_cmd(Command):
         ("strict", None, "make glib warnings / errors fatal"),
         ("all", None, "run all suites"),
         ("exitfirst", "x", "stop after first failing test"),
+        ("no-network", "n", "skip tests requiring a network connection"),
     ]
-    use_colors = sys.stderr.isatty() and os.name != "nt"
 
     def initialize_options(self):
         self.to_run = []
@@ -35,6 +34,7 @@ class test_cmd(Command):
         self.strict = False
         self.all = False
         self.exitfirst = False
+        self.no_network = False
 
     def finalize_options(self):
         if self.to_run:
@@ -43,39 +43,21 @@ class test_cmd(Command):
         self.all = bool(self.all)
         self.suite = self.suite and str(self.suite)
         self.exitfirst = bool(self.exitfirst)
-
-    @classmethod
-    def _red(cls, text):
-        from quodlibet.util.dprint import Colorise
-        return Colorise.red(text) if cls.use_colors else text
+        self.no_network = bool(self.no_network)
 
     def run(self):
-        mods = sys.modules.keys()
-        if "gi" in mods:
-            raise SystemExit("E: setup.py shouldn't depend on gi")
-
         import tests
 
-        main = False
-        if not self.suite or self.all:
-            main = True
-
-        subdirs = []
+        suite = self.suite
         if self.all:
-            test_path = tests.__path__[0]
-            for entry in os.listdir(test_path):
-                if os.path.isdir(os.path.join(test_path, entry)):
-                    subdirs.append(entry)
-        elif self.suite:
-            subdirs.append(self.suite)
+            suite = None
 
-        failures, errors, all_ = tests.unit(
-            self.to_run, main=main, subdirs=subdirs,
-            strict=self.strict, stop_first=self.exitfirst)
-        if failures or errors:
-            raise SystemExit(self._red("%d test failure(s) and "
-                                       "%d test error(s) for %d tests."
-                             % (failures, errors, all_)))
+        status = tests.unit(run=self.to_run, suite=suite,
+                            strict=self.strict, exitfirst=self.exitfirst,
+                            network=(not self.no_network or self.all),
+                            quality=self.all)
+        if status != 0:
+            raise SystemExit(status)
 
 
 class quality_cmd(Command):
@@ -89,10 +71,14 @@ class quality_cmd(Command):
         pass
 
     def run(self):
-        cmd = self.reinitialize_command("test")
-        cmd.suite = "quality"
-        cmd.ensure_finalized()
-        cmd.run()
+        import tests
+
+        status = tests.unit(suite="quality", quality=True)
+        if status != 0:
+            raise SystemExit(status)
+
+
+sdist = get_dist_class("sdist")
 
 
 class distcheck_cmd(sdist):
@@ -102,33 +88,25 @@ class distcheck_cmd(sdist):
         assert self.get_archive_files()
 
         # make sure MANIFEST.in includes all tracked files
-        if subprocess.call(["hg", "status"],
+        if subprocess.call(["git", "status"],
                            stdout=subprocess.PIPE,
                            stderr=subprocess.PIPE) == 0:
             # contains the packaged files after run() is finished
             included_files = self.filelist.files
             assert included_files
 
-            process = subprocess.Popen(["hg", "locate"],
-                                       stdout=subprocess.PIPE)
+            process = subprocess.Popen(
+                ["git", "ls-tree", "-r", "HEAD", "--name-only"],
+                stdout=subprocess.PIPE, universal_newlines=True)
             out, err = process.communicate()
             assert process.returncode == 0
 
-            tracked_files = []
-            for path in out.splitlines():
-                if not path.startswith("quodlibet" + os.sep):
-                    continue
-                path = path.split(os.sep, 1)[-1]
-                tracked_files.append(path)
+            tracked_files = out.splitlines()
 
-            diff = set(tracked_files) ^ set(included_files)
-            if diff:
-                print("#" * 80)
-                print("WARNING: MANFIFEST.in doesn't include all "
-                      "tracked files or includes non-tracked files")
-                for path in sorted(diff):
-                    print(path)
-                raise AssertionError
+            diff = set(tracked_files) - set(included_files)
+            assert not diff, (
+                "Not all tracked files included in tarball, check MANIFEST.in",
+                diff)
 
     def _check_dist(self):
         assert self.get_archive_files()
@@ -153,7 +131,7 @@ class distcheck_cmd(sdist):
         self.spawn([sys.executable, "setup.py", "build"])
         self.spawn([sys.executable, "setup.py", "build_sphinx"])
         self.spawn([sys.executable, "setup.py", "install",
-                    "--prefix", "../prefix", "--record", "../log.txt"])
+                    "--root", "../prefix", "--record", "../log.txt"])
         os.chdir(old_pwd)
 
     def run(self):

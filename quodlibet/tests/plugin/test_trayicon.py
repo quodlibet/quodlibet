@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013 Nick Boultbee
+# Copyright 2013, 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
@@ -7,10 +7,14 @@
 
 import sys
 
-from gi.repository import GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf
+
+from quodlibet import app
+
 from quodlibet import config
+from quodlibet.qltk import Icons
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
-from tests import skipIf
+from tests import skipIf, TestCase
 
 
 @skipIf(sys.platform == "darwin", "segfaults..")
@@ -66,3 +70,30 @@ class TTrayIcon(PluginTestCase):
             success, new = new_with_paused_emblem(pb)
             self.assertTrue(success)
             self.assertTrue(new)
+
+
+@skipIf(sys.platform == "darwin", "segfaults..")
+class TIndicatorMenu(TestCase):
+    def setUp(self):
+        config.init()
+        init_fake_app()
+
+    def tearDown(self):
+        destroy_fake_app()
+        config.quit()
+
+    def test_icons(self):
+        from quodlibet.ext.events.trayicon.menu import IndicatorMenu
+        menu = IndicatorMenu(app)
+        # Slightly lame way to assert here,
+        # but it does the job and is not *too* brittle
+        icons = [item.get_image().get_icon_name()[0]
+                 for item in menu.get_children()
+                 if isinstance(item, Gtk.ImageMenuItem)]
+        self.failUnless(Icons.EDIT in icons)
+        self.failUnless(Icons.FOLDER_DRAG_ACCEPT in icons)
+        self.failUnless(Icons.MEDIA_PLAYBACK_START in icons)
+        self.failUnless(Icons.MEDIA_SKIP_FORWARD in icons)
+        self.failUnless(Icons.MEDIA_SKIP_BACKWARD in icons)
+        self.failUnless(Icons.APPLICATION_EXIT in icons)
+        self.failUnless(Icons.FAVORITE in icons)

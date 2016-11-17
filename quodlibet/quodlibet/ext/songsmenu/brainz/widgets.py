@@ -8,12 +8,15 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, Pango
+from senf import fsn2text
 
+from quodlibet import _
 from quodlibet import util
-from quodlibet.util import path
 from quodlibet.qltk import Dialog, Icons
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
+from quodlibet.compat import iteritems, text_type
+from quodlibet.util.i18n import numeric_phrase
 
 from .query import QueryThread
 from .util import pconfig
@@ -84,22 +87,21 @@ class ResultComboBox(Gtk.ComboBox):
             extra_info = ", ".join(
                 filter(None, [util.escape(release.date),
                 util.escape(release.country),
-                util.escape(release.medium_format)]))
+                util.escape(release.medium_format),
+                util.escape(release.labelid)]))
 
             artist_names = [a.name for a in release.artists]
             disc_count = release.disc_count
             track_count = release.track_count
 
-            discs_format = ngettext(
-                "%d disc", "%d discs", disc_count) % disc_count
-            tracks_format = ngettext(
-                "%d track", "%d tracks", track_count) % track_count
+            discs_text = numeric_phrase("%d disc", "%d discs", disc_count)
+            tracks_text = numeric_phrase("%d track", "%d tracks", track_count)
 
             markup = "<b>%s</b>\n%s - %s, %s (%s)" % (
                     util.escape(release.title),
                     util.escape(", ".join(artist_names)),
-                    util.escape(discs_format),
-                    util.escape(tracks_format),
+                    util.escape(discs_text),
+                    util.escape(tracks_text),
                     extra_info)
             cell.set_property('markup', markup)
 
@@ -200,7 +202,7 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
     def __name_datafunc(self, col, cell, model, itr, data):
         song = model[itr][0]
         if song:
-            cell.set_property('text', path.fsdecode(song("~basename")))
+            cell.set_property('text', fsn2text(song("~basename")))
         else:
             cell.set_property('text', '')
 
@@ -260,8 +262,7 @@ def build_song_data(release, track):
     meta["album"] = release.title
     meta["date"] = release.date
     meta["musicbrainz_albumid"] = release.id
-    # we did write labelid before ngs, albumid supersedes it
-    meta["labelid"] = ""
+    meta["labelid"] = release.labelid
 
     if not release.is_single_artist and not release.is_various_artists:
         artists = release.artists
@@ -276,6 +277,7 @@ def build_song_data(release, track):
     meta["artist"] = join([a.name for a in track.artists])
     meta["artistsort"] = join([a.sort_name for a in track.artists])
     meta["musicbrainz_artistid"] = join([a.id for a in track.artists])
+    meta["musicbrainz_releasetrackid"] = track.id
 
     # clean up "redundant" data
     if meta["albumartist"] == meta["albumartistsort"]:
@@ -285,13 +287,14 @@ def build_song_data(release, track):
 
     # finally, as musicbrainzngs returns str values if it's ascii, we force
     # everything to unicode now
-    for key, value in meta.iteritems():
-        meta[key] = unicode(value)
+    for key, value in iteritems(meta):
+        meta[key] = text_type(value)
 
     return meta
 
 
-def apply_options(meta, year_only, albumartist, artistsort, musicbrainz):
+def apply_options(meta, year_only, albumartist, artistsort, musicbrainz,
+                  labelid):
     """Takes the tags extracted from musicbrainz and adjusts them according
     to the user preferences.
     """
@@ -311,15 +314,18 @@ def apply_options(meta, year_only, albumartist, artistsort, musicbrainz):
             if key.startswith("musicbrainz_"):
                 meta[key] = u""
 
+    if not labelid:
+        meta["labelid"] = ""
+
 
 def apply_to_song(meta, song):
     """Applies the tags to a AudioFile instance"""
 
-    for key, value in meta.iteritems():
+    for key, value in iteritems(meta):
         if not value:
             song.remove(key)
         else:
-            assert isinstance(value, unicode)
+            assert isinstance(value, text_type)
             song[key] = value
 
 
@@ -329,7 +335,7 @@ def sort_key(song):
     by medium.
     """
 
-    return util.human_sort_key(path.fsdecode(song("~filename")))
+    return util.human_sort_key(fsn2text(song("~filename")))
 
 
 class SearchWindow(Dialog):
@@ -421,11 +427,12 @@ class SearchWindow(Dialog):
         albumartist = pconfig.getboolean("albumartist")
         artistsort = pconfig.getboolean("artist_sort")
         musicbrainz = pconfig.getboolean("standard")
+        labelid = pconfig.getboolean("labelid2")
 
         for release, track, song in self.result_treeview.iter_tracks():
             meta = build_song_data(release, track)
             apply_options(
-                meta, year_only, albumartist, artistsort, musicbrainz)
+                meta, year_only, albumartist, artistsort, musicbrainz, labelid)
             apply_to_song(meta, song)
 
         self.destroy()

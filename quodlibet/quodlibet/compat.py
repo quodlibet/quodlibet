@@ -14,12 +14,13 @@ PY3 = not PY2
 if PY2:
     import __builtin__ as builtins
     builtins
-    from urlparse import urlparse, urlunparse, urlsplit
-    urlparse, urlunparse, urlsplit
-    from urllib import pathname2url, url2pathname, quote_plus, unquote_plus
-    pathname2url, url2pathname, quote_plus, unquote_plus
-    from urllib2 import urlopen
-    urlopen
+    from urlparse import urlparse, urlunparse, urlsplit, parse_qs
+    urlparse, urlunparse, urlsplit, parse_qs
+    from urllib import pathname2url, url2pathname, quote_plus, unquote_plus, \
+        urlencode
+    pathname2url, url2pathname, quote_plus, unquote_plus, urlencode
+    from urllib2 import urlopen, build_opener
+    urlopen, build_opener
     from cStringIO import StringIO as cBytesIO
     cBytesIO
     from StringIO import StringIO
@@ -29,9 +30,15 @@ if PY2:
     from functools import reduce
     reduce
     from operator import div as floordiv
+    from itertools import izip_longest, izip
+    izip_longest, izip
 
     xrange = xrange
     long = long
+    unichr = unichr
+    cmp = cmp
+
+    getbyte = lambda b, i: b[i]
 
     text_type = unicode
     string_types = (str, unicode)
@@ -40,6 +47,10 @@ if PY2:
 
     iteritems = lambda d: d.iteritems()
     itervalues = lambda d: d.itervalues()
+    iterkeys = lambda d: d.iterkeys()
+    listitems = lambda d: d.items()
+    listkeys = lambda d: d.keys()
+    listvalues = lambda d: d.values()
 
     def exec_(_code_, _globs_=None, _locs_=None):
         if _globs_ is None:
@@ -57,12 +68,13 @@ elif PY3:
     import builtins
     builtins
     from urllib.parse import urlparse, urlunparse, quote_plus, unquote_plus, \
-        urlsplit
-    urlparse, quote_plus, unquote_plus, urlunparse, urlsplit
+        urlsplit, parse_qs, urlencode
+    urlparse, quote_plus, unquote_plus, urlunparse, urlsplit, parse_qs,
+    urlencode
     from urllib.request import pathname2url, url2pathname
     pathname2url, url2pathname
-    from urllib.request import urlopen
-    urlopen
+    from urllib.request import urlopen, build_opener
+    urlopen, build_opener
     from io import BytesIO as cBytesIO
     cBytesIO
     from io import StringIO
@@ -73,9 +85,16 @@ elif PY3:
     reduce
     from operator import floordiv
     floordiv
+    from itertools import zip_longest as izip_longest
+    izip_longest
 
     xrange = range
     long = int
+    unichr = chr
+    cmp = lambda a, b: (a > b) - (a < b)
+    izip = zip
+
+    getbyte = lambda b, i: b[i:i + 1]
 
     text_type = str
     string_types = (str,)
@@ -84,6 +103,10 @@ elif PY3:
 
     iteritems = lambda d: iter(d.items())
     itervalues = lambda d: iter(d.values())
+    iterkeys = lambda d: iter(d.keys())
+    listitems = lambda d: list(d.items())
+    listkeys = lambda d: list(d.keys())
+    listvalues = lambda d: list(d.values())
 
     import builtins
     exec_ = getattr(builtins, "exec")

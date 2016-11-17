@@ -6,12 +6,13 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+from senf import fsn2text, path2fsn
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk.icons import Icons
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk.window import Dialog
-from quodlibet.util.path import fsdecode
 
 
 class Message(Gtk.MessageDialog, Dialog):
@@ -83,7 +84,7 @@ class ConfirmFileReplace(WarningMessage):
 
     def __init__(self, parent, path):
         title = _("File exists")
-        fn_format = "<b>%s</b>" % util.escape(fsdecode(path))
+        fn_format = "<b>%s</b>" % util.escape(fsn2text(path2fsn(path)))
         description = _("Replace %(file-name)s?") % {"file-name": fn_format}
 
         super(ConfirmFileReplace, self).__init__(

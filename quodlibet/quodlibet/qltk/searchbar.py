@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010-2011 Christoph Reiter, Steven Robertson
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,10 +12,10 @@ from gi.repository import Gtk, GObject, GLib
 
 import quodlibet
 from quodlibet import config
+from quodlibet import _
 
 from quodlibet.query import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
-from quodlibet.qltk.entry import QueryValidator
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import limit_songs, DeferredSignal, gdecode
@@ -36,9 +37,10 @@ class SearchBarBox(Gtk.HBox):
         'focus-out': (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 
-    timeout = 400
+    DEFAULT_TIMEOUT = 400
 
-    def __init__(self, filename=None, completion=None, accel_group=None):
+    def __init__(self, filename=None, completion=None, accel_group=None,
+                 timeout=DEFAULT_TIMEOUT, validator=Query.validator):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
@@ -46,11 +48,12 @@ class SearchBarBox(Gtk.HBox):
                 quodlibet.get_user_dir(), "lists", "queries")
 
         combo = ComboBoxEntrySave(filename, count=8,
-                validator=QueryValidator, title=_("Saved Searches"),
-                edit_title=_(u"Edit saved searches…"))
+                                  validator=validator,
+                                  title=_("Saved Searches"),
+                                  edit_title=_(u"Edit saved searches…"))
 
         self.__deferred_changed = DeferredSignal(
-            self.__filter_changed, timeout=self.timeout, owner=self)
+            self.__filter_changed, timeout=timeout, owner=self)
 
         self.__combo = combo
         entry = combo.get_child()
@@ -81,6 +84,13 @@ class SearchBarBox(Gtk.HBox):
 
         for child in self.get_children():
             child.show_all()
+
+    def set_enabled(self, enabled=True):
+        self.__entry.set_sensitive(enabled)
+        if enabled:
+            self.__uninhibit()
+        else:
+            self.__inhibit()
 
     def set_text(self, text):
         """Set the text without firing any signals"""

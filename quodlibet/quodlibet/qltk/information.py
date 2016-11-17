@@ -8,7 +8,9 @@
 import time
 
 from gi.repository import Gtk, Pango
+from senf import fsn2text
 
+from quodlibet import ngettext, _
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
@@ -19,8 +21,9 @@ from quodlibet.qltk.lyrics import LyricsPane
 from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.qltk.x import Align
 from quodlibet.util import tag, connect_destroy
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import readable
-from quodlibet.util.path import fsdecode, filesize, unexpand
+from quodlibet.util.path import filesize, unexpand
 
 
 def Label(label=None):
@@ -207,10 +210,8 @@ class OneSong(qltk.Notebook):
 
     def _library(self, song, box):
         def counter(i):
-            if i == 0:
-                return _("Never")
-            else:
-                return ngettext("%(n)d time", "%(n)d times", i) % {"n": i}
+            return _("Never") if i == 0 \
+                else numeric_phrase("%(n)d time", "%(n)d times", i, "n")
 
         def ftime(t):
             if t == 0:
@@ -258,8 +259,8 @@ class OneSong(qltk.Notebook):
                 encoding = util.get_locale_encoding()
                 return timestr.decode(encoding)
 
-        fn = fsdecode(unexpand(song["~filename"]))
-        length = util.format_time_long(song.get("~#length", 0))
+        fn = fsn2text(unexpand(song["~filename"]))
+        length = util.format_time_preferred(song.get("~#length", 0))
         size = util.format_size(
             song.get("~#filesize") or filesize(song["~filename"]))
         mtime = ftime(util.path.mtime(song["~filename"]))
@@ -347,7 +348,7 @@ class OneAlbum(qltk.Notebook):
                 len(songs)) % len(songs))
 
         text.append(", ".join(parts))
-        text.append(util.format_time_long(length))
+        text.append(util.format_time_preferred(length))
 
         if "location" in song:
             text.append(util.escape(song["location"]))
@@ -581,7 +582,7 @@ class ManySongs(qltk.Notebook):
         table.attach(Label(_("Total length:")), 0, 1, 0, 1,
                      xoptions=Gtk.AttachOptions.FILL)
         table.attach(
-            Label(util.format_time_long(length)), 1, 2, 0, 1)
+            Label(util.format_time_preferred(length)), 1, 2, 0, 1)
         table.attach(Label(_("Total size:")), 0, 1, 1, 2,
                      xoptions=Gtk.AttachOptions.FILL)
         table.attach(Label(util.format_size(size)), 1, 2, 1, 2)

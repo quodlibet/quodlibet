@@ -10,7 +10,9 @@ from hashlib import sha1
 
 from gi.repository import GObject
 
+from quodlibet.qltk import Icons
 from quodlibet.util.path import escape_filename, xdg_get_cache_home
+from quodlibet.util import print_w
 
 
 class CoverSourcePlugin(GObject.Object):
@@ -32,6 +34,7 @@ class CoverSourcePlugin(GObject.Object):
         'fetch-failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'search-complete': (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
+    PLUGIN_ICON = Icons.EMBLEM_DOWNLOADS
 
     embedded = False
     """Whether the source is an embedded one"""

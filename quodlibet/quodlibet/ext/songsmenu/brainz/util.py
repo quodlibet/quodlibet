@@ -18,6 +18,7 @@ def get_config():
     defaults.set("albumartist", True)
     defaults.set("artist_sort", False)
     defaults.set("standard", True)
+    defaults.set("labelid2", False)
 
     return pc
 

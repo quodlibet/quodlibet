@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,6 +12,7 @@ from quodlibet import config
 from quodlibet import util
 from quodlibet import browsers
 from quodlibet import app
+from quodlibet import _
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import ScrolledWindow, Action
@@ -20,30 +22,33 @@ from quodlibet.util.library import background_filter
 
 
 class FilterMenu(object):
-    _MENU = """
-        <ui>
+    MENU = """
+    <menu action='Filters'>
+        <menuitem action='FilterGenre' always-show-image='true'/>
+        <menuitem action='FilterArtist' always-show-image='true'/>
+        <menuitem action='FilterAlbum' always-show-image='true'/>
+        <separator/>
+        <menuitem action='RandomGenre' always-show-image='true'/>
+        <menuitem action='RandomArtist' always-show-image='true'/>
+        <menuitem action='RandomAlbum' always-show-image='true'/>
+        <separator/>
+        <menuitem action='All' always-show-image='true'/>
+        <menuitem action='PlayedRecently' always-show-image='true'/>
+        <menuitem action='AddedRecently' always-show-image='true'/>
+        <menuitem action='TopRated' always-show-image='true'/>
+    </menu>"""
+    __OUTER_MENU = """
+    <ui>
         <menubar name='Menu'>
-        <menu action='Filters'>
-          <menuitem action='FilterGenre' always-show-image='true'/>
-          <menuitem action='FilterArtist' always-show-image='true'/>
-          <menuitem action='FilterAlbum' always-show-image='true'/>
-          <separator/>
-          <menuitem action='RandomGenre' always-show-image='true'/>
-          <menuitem action='RandomArtist' always-show-image='true'/>
-          <menuitem action='RandomAlbum' always-show-image='true'/>
-          <separator/>
-          <menuitem action='All' always-show-image='true'/>
-          <menuitem action='PlayedRecently' always-show-image='true'/>
-          <menuitem action='AddedRecently' always-show-image='true'/>
-          <menuitem action='TopRated' always-show-image='true'/>
-        </menu>
+            %s
         </menubar>
-        </ui>"""
+    </ui>""" % MENU
 
     def __init__(self, library, player, ui=None):
         self._browser = None
         self._library = library
         self._player = player
+        self._standalone = not ui
 
         ag = Gtk.ActionGroup.new('QuodLibetFilterActions')
         for name, icon_name, label, cb in [
@@ -62,9 +67,9 @@ class FilterMenu(object):
             ag.add_action(action)
 
         for tag_, lab in [
-            ("genre", _("Filter on _Genre")),
-            ("artist", _("Filter on _Artist")),
-            ("album", _("Filter on Al_bum"))]:
+            ("genre", _("On Current _Genre(s)")),
+            ("artist", _("On Current _Artist(s)")),
+            ("album", _("On Current Al_bum"))]:
             act = Action(
                 name="Filter%s" % util.capitalize(tag_), label=lab,
                 icon_name=Icons.EDIT_SELECT_ALL)
@@ -80,17 +85,18 @@ class FilterMenu(object):
             act.connect('activate', self.__random, tag_)
             ag.add_action_with_accel(act, "<Primary>" + accel)
 
-        ui = ui or Gtk.UIManager()
+        if self._standalone:
+            ui = Gtk.UIManager()
+            ui.add_ui_from_string(self.__OUTER_MENU)
         ui.insert_action_group(ag, -1)
-        ui.add_ui_from_string(self._MENU)
         self._ui = ui
 
-        ui.get_widget("/Menu/Filters/TopRated").set_tooltip_text(
+        self._get_child_widget("TopRated").set_tooltip_text(
                 _("The 40 songs you've played most (more than 40 may "
                   "be chosen if there are ties)"))
 
         # https://git.gnome.org/browse/gtk+/commit/?id=b44df22895c79
-        menu_item = ui.get_widget("/Menu/Filters")
+        menu_item = self._get_child_widget('/Menu/Filters')
         if isinstance(menu_item, Gtk.ImageMenuItem):
             menu_item.set_image(None)
 
@@ -151,32 +157,33 @@ class FilterMenu(object):
     def _hide_menus(self):
         menus = {
             'genre': [
-                "/Menu/Filters/FilterGenre",
-                "/Menu/Filters/RandomGenre",
+                "FilterGenre",
+                "RandomGenre",
             ],
             'artist': [
-                "/Menu/Filters/FilterArtist",
-                "/Menu/Filters/RandomArtist",
+                "FilterArtist",
+                "RandomArtist",
             ],
             'album': [
-                "/Menu/Filters/FilterAlbum",
-                "/Menu/Filters/RandomAlbum",
+                "FilterAlbum",
+                "RandomAlbum",
             ],
             None: [
-                "/Menu/Filters/PlayedRecently",
-                "/Menu/Filters/AddedRecently",
-                "/Menu/Filters/TopRated",
-                "/Menu/Filters/All",
+                "PlayedRecently",
+                "AddedRecently",
+                "TopRated",
+                "All",
             ],
         }
 
-        for key, widgets in menus.items():
+        for key, widget_names in menus.items():
             if self._browser:
                 can_filter = self._browser.can_filter(key)
             else:
                 can_filter = False
-            for widget in widgets:
-                self._ui.get_widget(widget).set_property('visible', can_filter)
+            for name in widget_names:
+                self._get_child_widget(name).set_property('visible',
+                                                          can_filter)
 
     def set_browser(self, browser):
         self._browser = browser
@@ -184,17 +191,22 @@ class FilterMenu(object):
 
     def set_song(self, song):
         for wid in ["FilterAlbum", "FilterArtist", "FilterGenre"]:
-            self._ui.get_widget(
-                '/Menu/Filters/' + wid).set_sensitive(bool(song))
+            self._get_child_widget(wid).set_sensitive(bool(song))
 
         if song:
             for h in ['genre', 'artist', 'album']:
-                self._ui.get_widget(
-                    "/Menu/Filters/Filter%s" % h.capitalize()).set_sensitive(
-                    h in song)
+                widget = self._get_child_widget("Filter%s" % h.capitalize())
+                widget.set_sensitive(h in song)
+
+    def _get_child_widget(self, name=None):
+        path = '/Menu%s/Filters' % ('' if self._standalone else '/Browse')
+        if name:
+            path += "/" + name
+        return self._ui.get_widget(path)
 
     def get_widget(self):
-        return self._ui.get_widget("/Menu")
+        path = '/Menu' if self._standalone else '/Menu/Browse'
+        return self._ui.get_widget(path)
 
     def get_accel_group(self):
         return self._ui.get_accel_group()
@@ -242,7 +254,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.add(Gtk.VBox())
 
         view = SongList(library, update=True)
-        view.info.connect("changed", self.__set_time)
+        view.info.connect("changed", self.__set_totals)
         self.songlist = view
 
         sw = ScrolledWindow()
@@ -272,7 +284,6 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         filter_menu.get_widget().show()
 
         self.__statusbar = Gtk.Label()
-        self.__statusbar.set_text(_("No time information"))
         self.__statusbar.set_alignment(1.0, 0.5)
         self.__statusbar.set_padding(6, 3)
         self.__statusbar.set_ellipsize(Pango.EllipsizeMode.START)
@@ -335,9 +346,9 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             view.popup_menu(menu, 0, Gtk.get_current_event_time())
         return True
 
-    def __set_time(self, info, songs):
+    def __set_totals(self, info, songs):
         i = len(songs)
         length = sum(song.get("~#length", 0) for song in songs)
-        t = self.browser.statusbar(i) % {
-            'count': i, 'time': util.format_time_long(length)}
+        t = self.browser.status_text(count=i,
+                                     time=util.format_time_preferred(length))
         self.__statusbar.set_text(t)

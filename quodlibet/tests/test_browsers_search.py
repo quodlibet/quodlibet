@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase
 
 from gi.repository import Gtk
+from senf import fsnative
 
 import quodlibet.browsers.search
 import quodlibet.config
 
 from quodlibet.browsers.search import SearchBar
-from quodlibet.browsers.empty import EmptyBar
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 
 # Don't sort yet, album_key makes it complicated...
@@ -40,8 +43,8 @@ SONGS = [AudioFile({
                 "~filename": fsnative(u"/dev/sh")})]
 
 
-class TEmptyBar(TestCase):
-    Bar = EmptyBar
+class TSearchBar(TestCase):
+    Bar = SearchBar
 
     def setUp(self):
         quodlibet.config.init()
@@ -120,7 +123,3 @@ class TEmptyBar(TestCase):
         self.bar.destroy()
         quodlibet.browsers.search.library.destroy()
         quodlibet.config.quit()
-
-
-class TSearchBar(TEmptyBar):
-    Bar = SearchBar

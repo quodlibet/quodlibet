@@ -7,9 +7,11 @@
 
 import re
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.collection import Collection
+from quodlibet.compat import iteritems
 
 
 class BaseEntry(Collection):
@@ -124,7 +126,8 @@ class PaneModel(ObjectStore):
             return self.__key_cache[song]
         except KeyError:
             # We filter out empty values, so Unknown can be ""
-            self.__key_cache[song] = filter(None, self.config.format(song))
+            self.__key_cache[song] = filter(
+                lambda v: v[0], self.config.format(song))
             return self.__key_cache[song]
 
     def __human_sort_key(self, text, reg=re.compile('<.*?>')):
@@ -157,7 +160,7 @@ class PaneModel(ObjectStore):
         return s
 
     def get_keys(self, paths):
-        return set(self[p][0].key for p in paths)
+        return {self[p][0].key for p in paths}
 
     def remove_songs(self, songs, remove_if_empty):
         """Remove all songs from the entries.
@@ -207,16 +210,12 @@ class PaneModel(ObjectStore):
         unknown = UnknownEntry()
         human_sort = self.__human_sort_key
         for song in songs:
-            keys = self.get_format_keys(song)
-            if not keys:
+            items = self.get_format_keys(song)
+            if not items:
                 unknown.songs.add(song)
-            for ks in keys:
-                key = ks[0] if isinstance(ks, tuple) else ks
-                sort = ((ks[1] if ks[1] != "" else ks[0])
-                        if isinstance(ks, tuple) else ks)
-                srtp = isinstance(ks, tuple) and ks[1] != ""
+            for key, sort in items:
                 if key in collection:
-                    if srtp and not collection[key][2]: # first actual sort key
+                    if sort and not collection[key][2]: # first actual sort key
                         hsort = human_sort(sort)
                         collection[key][0].sort = hsort
                         collection[key] = (collection[key][0], hsort, True)
@@ -224,10 +223,10 @@ class PaneModel(ObjectStore):
                 else: # first key sets up sorting
                     hsort = human_sort(sort)
                     entry = SongsEntry(key, hsort)
-                    collection[key] = (entry, hsort, srtp)
+                    collection[key] = (entry, hsort, bool(sort))
                     entry.songs.add(song)
 
-        items = sorted(collection.iteritems(),
+        items = sorted(iteritems(collection),
                        key=lambda s: s[1][1],
                        reverse=True)
 
@@ -328,8 +327,8 @@ class PaneModel(ObjectStore):
         # fast path, use the keys since they are unique and only depend
         # on the tag in question.
         if tag in tags and len(tags) == 1:
-            return set(r.key for r in self.itervalues()
-                       if not isinstance(r, AllEntry))
+            return {r.key for r in self.itervalues()
+                    if not isinstance(r, AllEntry)}
 
         # For patterns/tied tags we have to make sure that filtering for
         # that key will return only songs that all have the specified value

@@ -29,6 +29,7 @@ if os.name == "nt" or sys.platform == "darwin":
 import dbus
 import dbus.service
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.util.dbusutils import dbus_unicode_validate
 from quodlibet.plugins.events import EventPlugin
@@ -60,7 +61,8 @@ def check_ini_installed():
     for path in get_gs_provider_files():
         try:
             with open(path, "rb") as handle:
-                if SearchProvider.BUS_NAME in handle.read():
+                data = handle.read().decode("utf-8", "replace")
+                if SearchProvider.BUS_NAME in data:
                     quodlibet_installed = True
                     break
         except EnvironmentError:
@@ -76,7 +78,7 @@ class GnomeSearchProvider(EventPlugin):
     PLUGIN_ID = "searchprovider"
     PLUGIN_NAME = _("GNOME Search Provider")
     PLUGIN_DESC = _("Allows GNOME Shell to search the library.")
-    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
+    PLUGIN_ICON = Icons.SYSTEM_SEARCH
 
     def enabled(self):
         self.obj = SearchProvider()

@@ -1,16 +1,23 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from gi.repository import Gtk
 
 import os
 import shutil
+
+from quodlibet.formats import AudioFileError
 from quodlibet import config
 from quodlibet.util import connect_obj
 from quodlibet.formats import AudioFile
 
-from tests import TestCase, DATA_DIR, mkstemp
-from .helper import capture_output
+from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipUnless
+from .helper import capture_output, get_temp_copy
 
-from quodlibet.library.libraries import *
+from quodlibet.library.libraries import Library, PicklingMixin, SongLibrary, \
+    FileLibrary, AlbumLibrary, SongFileLibrary, iter_paths
 
 
 class Fake(int):
@@ -411,7 +418,7 @@ class TSongFileLibrary(TSongLibrary):
             new = self.Fake(100)
 
             def error():
-                raise IOError
+                raise AudioFileError
             new.reload = error
             new._valid = False
             changed, removed = self.library._load_item(new)
@@ -435,10 +442,7 @@ class TSongFileLibrary(TSongLibrary):
         self.failUnless(self.library.masked(new))
 
     def __get_file(self):
-        fd, filename = mkstemp(".flac")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), filename)
-        return filename
+        return get_temp_copy(get_data_path('empty.flac'))
 
     def test_add_filename(self):
         config.init()
@@ -472,6 +476,17 @@ class TSongFileLibrary(TSongLibrary):
 
         finally:
             config.quit()
+
+    def test_contains_filename(self):
+        filename = self.__get_file()
+        try:
+            assert not self.library.contains_filename(filename)
+            assert self.library.add_filename(filename, add=False)
+            assert not self.library.contains_filename(filename)
+            assert self.library.add_filename(filename)
+            assert self.library.contains_filename(filename)
+        finally:
+            os.unlink(filename)
 
     def test_add_filename_normalize_path(self):
         if not os.name == "nt":
@@ -637,3 +652,71 @@ class TAlbumLibrarySignals(TestCase):
         for s in self._sigs:
             self.lib.disconnect(s)
         self.lib.destroy()
+
+
+class Titer_paths(TestCase):
+
+    def setUp(self):
+        # on osx the temp folder returned is a symlink
+        self.root = os.path.realpath(mkdtemp())
+
+    def tearDown(self):
+        shutil.rmtree(self.root)
+
+    def test_empty(self):
+        assert list(iter_paths(self.root)) == []
+
+    def test_one_file(self):
+        fd, name = mkstemp(dir=self.root)
+        os.close(fd)
+        assert list(iter_paths(self.root)) == [name]
+
+    def test_one_file_exclude(self):
+        fd, name = mkstemp(dir=self.root)
+        os.close(fd)
+        assert list(iter_paths(self.root, exclude=[self.root])) == []
+        assert list(iter_paths(self.root,
+                               exclude=[os.path.dirname(self.root)])) == []
+        assert list(iter_paths(self.root, exclude=[name])) == []
+        assert list(iter_paths(self.root, exclude=[name + "a"])) == [name]
+
+    @skipUnless(hasattr(os, "symlink"), "no symlink")
+    def test_with_dir_symlink(self):
+        child = mkdtemp(dir=self.root)
+        link = os.path.join(self.root, "foo")
+        os.symlink(child, link)
+        fd, name = mkstemp(dir=link)
+        os.close(fd)
+
+        assert name not in list(iter_paths(self.root))
+        assert list(iter_paths(link)) == list(iter_paths(child))
+
+        assert list(iter_paths(link, exclude=[link])) == []
+        assert list(iter_paths(child, exclude=[child])) == []
+        assert list(iter_paths(link, exclude=[child])) == []
+
+    @skipUnless(hasattr(os, "symlink"), "no symlink")
+    def test_with_file(self):
+        fd, name = mkstemp(dir=self.root)
+        os.close(fd)
+        link = os.path.join(self.root, "foo")
+        os.symlink(name, link)
+
+        assert list(iter_paths(self.root)) == [name, name]
+        assert list(iter_paths(self.root, exclude=[link])) == [name]
+        assert list(iter_paths(self.root, exclude=[name])) == []
+
+    def test_hidden_dir(self):
+        child = mkdtemp(dir=self.root, prefix=".")
+        fd, name = mkstemp(dir=child)
+        os.close(fd)
+        assert list(iter_paths(child)) == []
+        assert list(iter_paths(child, skip_hidden=False)) == [name]
+        assert list(iter_paths(self.root)) == []
+        assert list(iter_paths(self.root, skip_hidden=False)) == [name]
+
+    def test_hidden_file(self):
+        fd, name = mkstemp(dir=self.root, prefix=".")
+        os.close(fd)
+
+        assert list(iter_paths(self.root)) == []

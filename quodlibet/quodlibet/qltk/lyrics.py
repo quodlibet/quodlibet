@@ -16,10 +16,12 @@ import urllib
 
 from gi.repository import Gtk, GLib
 
+from quodlibet import _
+from quodlibet.formats import AudioFileError
 from quodlibet import qltk
 from quodlibet.qltk import Icons
 from quodlibet import util
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, print_w
 
 
 class LyricsPane(Gtk.VBox):
@@ -119,7 +121,10 @@ class LyricsPane(Gtk.VBox):
 
         # First, write back to the tags.
         song["lyrics"] = text.decode("utf-8")
-        song.write()
+        try:
+            song.write()
+        except AudioFileError:
+            util.print_exc()
 
         # Then, write to file.
         # TODO: write to file only if could not write to tags, otherwise delete
@@ -142,7 +147,10 @@ class LyricsPane(Gtk.VBox):
     def __delete(self, delete, song, save):
         # First, delete from the tags.
         song.remove("lyrics")
-        song.write()
+        try:
+            song.write()
+        except AudioFileError:
+            util.print_exc()
 
         # Then, delete the file.
         lyricname = song.lyric_filename

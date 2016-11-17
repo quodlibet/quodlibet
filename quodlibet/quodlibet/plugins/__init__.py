@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet import util
 from quodlibet.util.modulescanner import ModuleScanner
@@ -433,7 +434,7 @@ class PluginConfig(ConfigProxy):
     """A proxy for a Config object that can be used by plugins.
 
     Provides some methods of the Config class but doesn't need a
-    sections and prefixes the config option name.
+    section and prefixes the config option name.
     """
 
     def __init__(self, prefix, _config=None, _defaults=True):

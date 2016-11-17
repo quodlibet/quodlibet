@@ -34,6 +34,7 @@ class Paned(Gtk.Paned):
             add_css(self, """
                 GtkPaned {
                     border-width: 0;
+                    background: none;
                 }
             """)
             return
@@ -63,16 +64,19 @@ class RPaned(Paned):
         self.__alloced = False
         self.__relative = None
 
+    def _get_max(self):
+        alloc = self.get_allocation()
+        if self.get_orientation() == Gtk.Orientation.HORIZONTAL:
+            return alloc.width
+        else:
+            return alloc.height
+
     def set_relative(self, v):
         """Set the relative position of the separator, [0..1]."""
 
         if self.__alloced:
-            max_pos = self.get_property('max-position')
-            if not max_pos:
-                # no children
-                self.__relative = v
-                return
-            self.set_position(int(v * max_pos))
+            max_pos = self._get_max()
+            self.set_position(int(round(v * max_pos)))
         else:
             self.__relative = v
 
@@ -80,10 +84,7 @@ class RPaned(Paned):
         """Return the relative position of the separator, [0..1]."""
 
         if self.__alloced:
-            max_pos = self.get_property('max-position')
-            if not max_pos:
-                # no children
-                return self.__relative
+            max_pos = self._get_max()
             return (float(self.get_position()) / max_pos)
         elif self.__relative is not None:
             return self.__relative

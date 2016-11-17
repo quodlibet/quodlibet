@@ -7,6 +7,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.tags import MACHINE_TAGS
 from quodlibet.util import build_filter_query
@@ -79,16 +80,16 @@ class FilterAll(SongsMenuPlugin):
     PLUGIN_NAME = _("Filter on Any Tag")
     PLUGIN_DESC = _("Creates a search query based on "
                     "tags of the selected songs.")
-    PLUGIN_ICON = Icons.EDIT_SELECT_ALL
+    PLUGIN_ICON = Icons.EDIT_FIND
+    REQUIRES_ACTION = True
 
     def plugin_songs(self, songs):
         browser = self.plugin_window.browser
         if not browser.can_filter_text():
             return
 
-        keys = set()
-        for song in songs:
-            keys.update(song.realkeys())
+        keys = {key for song in songs
+                for key in song.realkeys()}
         keys.difference_update(MACHINE_TAGS)
 
         filters = {}

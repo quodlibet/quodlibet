@@ -12,6 +12,7 @@
 *.tar.xz
 MANIFEST
 .DS_Store
+*.egg-info
 
 quodlibet/po/missing
 quodlibet/po/notexist
@@ -34,11 +35,8 @@ quodlibet/dist/*
 .idea/*
 
 # Windows Installer
-win_installer/_bin
-win_installer/_build_env
-win_installer/_build_env_installer
-win_installer/_sdk
-win_installer/*.exe
+win_installer/_build_root
+win_installer/_rebuild_root
 
 # OS X Bundle
 osx_bundle/_home

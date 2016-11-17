@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
-#      2013-2014 Nick Boultbee
+#      2013-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,9 +8,12 @@
 
 from gi.repository import Gtk
 
+from quodlibet.qltk.pluginwin import PluginWindow
+
+from quodlibet import ngettext, _
 from quodlibet import qltk
 
-from quodlibet.util import print_exc
+from quodlibet.util import print_exc, print_e, print_w
 from quodlibet.qltk.msg import WarningMessage
 from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information
@@ -141,6 +144,10 @@ class SongsMenuPluginHandler(PluginHandler):
                 except:
                     print_exc()
                     item.destroy()
+            menu.append(SeparatorMenuItem())
+            prefs = Gtk.MenuItem(label=_("Configure Plugins…"))
+            prefs.connect("activate", lambda _: PluginWindow().show())
+            menu.append(prefs)
 
         else:
             menu = None
@@ -323,7 +330,7 @@ class SongsMenu(Gtk.Menu):
             except AttributeError as e:
                 print_w("Couldn't get Playlists menu: %s" % e)
             else:
-                b = qltk.MenuItem(_("Play_lists"), Icons.LIST_ADD)
+                b = qltk.MenuItem(_("Play_lists"), Icons.FOLDER_DRAG_ACCEPT)
                 b.set_sensitive(can_add and bool(songs))
                 b.set_submenu(submenu)
                 self.append(b)
@@ -351,17 +358,18 @@ class SongsMenu(Gtk.Menu):
             else:
                 if browsers.media.MediaDevices in browsers.browsers:
                     submenu = browsers.media.Menu(songs, library)
-                    b = qltk.MenuItem(_("_Copy to Device"), Icons.EDIT_COPY)
-                    b.set_sensitive(
-                        can_add and len(submenu) > 0 and bool(songs))
-                    b.set_submenu(submenu)
-                    self.append(b)
+                    b = qltk.MenuItem(_("_Copy to Device"),
+                                      Icons.MULTIMEDIA_PLAYER)
+                    if can_add and len(submenu) > 0 and bool(songs):
+                        b.set_sensitive(True)
+                        b.set_submenu(submenu)
+                        self.append(b)
 
         if remove or delete:
             self.separate()
 
         if remove:
-            b = qltk.MenuItem(_("_Remove from library"), Icons.LIST_REMOVE)
+            b = qltk.MenuItem(_("_Remove from Library"), Icons.LIST_REMOVE)
             if callable(remove):
                 b.connect('activate', lambda item: remove(songs))
             else:
@@ -376,8 +384,12 @@ class SongsMenu(Gtk.Menu):
             if callable(delete):
                 b = qltk.MenuItem(_("_Delete"), Icons.EDIT_DELETE)
                 b.connect('activate', lambda item: delete(songs))
+                if accels:
+                    qltk.add_fake_accel(b, "<Primary>Delete")
             else:
                 b = TrashMenuItem()
+                if accels:
+                    qltk.add_fake_accel(b, "<Primary>Delete")
 
                 def trash_cb(item):
                     parent = get_menu_item_top_parent(item)
@@ -389,7 +401,7 @@ class SongsMenu(Gtk.Menu):
 
         if edit:
             self.separate()
-            b = qltk.MenuItem(_("Edit _Tags"), Icons.DOCUMENT_PROPERTIES)
+            b = qltk.MenuItem(_("Edit _Tags"), Icons.EDIT)
             b.set_sensitive(bool(songs))
             if accels:
                 qltk.add_fake_accel(b, "<alt>Return")

@@ -24,9 +24,31 @@ class TDiacritics(TestCase):
         r = re_add_variants(u"aa")
         self.assertTrue(u"[" in r and u"]" in r and r.count(u"ä") == 2)
 
+    def test_re_replace_multi(self):
+        r = re_add_variants(u"ae")
+        self.assertEqual(r, u"([aàáâãäåāăąǎǟǡǻȁȃȧḁạảấầẩẫậắằẳẵặ]"
+                            u"[eèéêëēĕėęěȅȇȩḕḗḙḛḝẹẻẽếềểễệ]|[æǣǽ])")
+
+        r = re_add_variants(u"SS")
+        self.assertEqual(r, u"([SŚŜŞŠȘṠṢṤṦṨꞄ][SŚŜŞŠȘṠṢṤṦṨꞄ]|ẞ)")
+
+        r = re_add_variants(u"ss")
+        self.assertEqual(r, u"([sśŝşšșṡṣṥṧṩꞅ][sśŝşšșṡṣṥṧṩꞅ]|ß)")
+
+    def test_re_replace_multi_fixme(self):
+        # we don't handler overlapping sequences, so this doesn't match "LỺ"
+        r = re_add_variants(u"LLL")
+        self.assertEqual(r, u"([LĹĻĽḶḸḺḼŁ][LĹĻĽḶḸḺḼŁ]|Ỻ)[LĹĻĽḶḸḺḼŁ]")
+
+    def test_re_replace_multi_nested(self):
+        r = re_add_variants(u"(եւ)")
+        self.assertEqual(r, u"((եւ|և))")
+        r = re_add_variants(u"(եւ)+")
+        self.assertEqual(r, u"((եւ|և))+")
+
     def test_re_replace_escape(self):
         r = re_add_variants(u"n\\n")
-        self.assertEqual(r, u"[nñńņňǹṅṇṉṋ]\n")
+        self.assertEqual(r, u"[nñńņňǹṅṇṉṋŉ]\n")
 
     def test_construct_regexp(self):
         res = [

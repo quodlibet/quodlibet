@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2013 Nick Boultbee
+#           2013,2016 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -16,14 +16,17 @@ Only use trash_files() or trash_songs() and TrashMenuItem().
 import os
 
 from gi.repository import Gtk
+from senf import fsn2text
 
+from quodlibet import _
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.qltk.x import MenuItem, Align
-from quodlibet.util.path import fsdecode, unexpand
+from quodlibet.util.i18n import numeric_phrase
+from quodlibet.util.path import unexpand
 
 
 class FileListExpander(Gtk.Expander):
@@ -33,7 +36,7 @@ class FileListExpander(Gtk.Expander):
         super(FileListExpander, self).__init__(label=_("Files:"))
         self.set_resize_toplevel(True)
 
-        paths = [fsdecode(unexpand(p)) for p in paths]
+        paths = [fsn2text(unexpand(p)) for p in paths]
         lab = Gtk.Label(label="\n".join(paths))
         lab.set_alignment(0.0, 0.0)
         lab.set_selectable(True)
@@ -69,12 +72,9 @@ class DeleteDialog(WarningMessage):
         return cls(parent, paths, description)
 
     def __init__(self, parent, paths, description):
-        title = ngettext(
-            "Delete %(file_count)d file permanently?",
-            "Delete %(file_count)d files permanently?",
-            len(paths)) % {
-                "file_count": len(paths),
-            }
+        title = numeric_phrase("Delete %(file_count)d file permanently?",
+                               "Delete %(file_count)d files permanently?",
+                               len(paths), "file_count")
 
         super(DeleteDialog, self).__init__(
             get_top_parent(parent),
@@ -116,13 +116,9 @@ class TrashDialog(WarningMessage):
 
     def __init__(self, parent, paths, description):
 
-        title = ngettext(
-            "Move %(file_count)d file to the trash?",
-            "Move %(file_count)d files to the trash?",
-            len(paths)) % {
-                "file_count": len(paths),
-            }
-
+        title = numeric_phrase("Move %(file_count)d file to the trash?",
+                               "Move %(file_count)d files to the trash?",
+                               len(paths), "file_count")
         super(TrashDialog, self).__init__(
             get_top_parent(parent),
             title, description,

@@ -2,7 +2,7 @@
 #
 #    Duplicates songs plugin.
 #
-#    Copyright (C) 2012, 2011 Nick Boultbee
+#    Copyright (C) 2012, 2011, 2016 Nick Boultbee
 #
 #    Finds "duplicates" of songs selected by searching the library for
 #    others with the same user-configurable "key", presenting a browser-like
@@ -19,8 +19,9 @@ import unicodedata
 from gi.repository import Gtk, Pango
 
 from quodlibet import app
-from quodlibet import print_d, util, qltk
+from quodlibet import print_d, util, qltk, _
 from quodlibet.plugins import PluginConfigMixin
+from quodlibet.plugins.songshelpers import any_song, is_finite
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.edittags import AudioFileGroup
@@ -29,6 +30,7 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import Icons, Button
 from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.util.i18n import numeric_phrase
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -88,7 +90,6 @@ class DuplicateSongsView(RCMHintedTreeView):
                     print_d("Removing group %s" % group_row)
                     model.remove(group_row)
             else:
-                # print_w("Couldn't delete song %s" % song)
                 pass
 
     def _added(self, library, songs):
@@ -217,13 +218,12 @@ class DuplicatesTreeModel(Gtk.TreeStore):
             self.append(parent, self.__make_row(s))
 
     def go_to(self, song, explicit=False):
-        #print_d("Duplicates: told to go to %r" % song, context=self)
         self.__iter = None
         if isinstance(song, Gtk.TreeIter):
             self.__iter = song
             self.sourced = True
         elif not self.find_row(song):
-            print_d("Failed to find song", context=self)
+            print_d("Failed to find song")
         return self.__iter
 
     def remove(self, itr):
@@ -275,7 +275,7 @@ class DuplicateDialog(Gtk.Window):
     def __quit(self, widget=None, response=None):
         if response == Gtk.ResponseType.OK or \
                 response == Gtk.ResponseType.CLOSE:
-            print_d("Exiting plugin on user request...", self)
+            print_d("Exiting plugin on user request...")
         self.finished = True
         self.destroy()
         return
@@ -287,8 +287,9 @@ class DuplicateDialog(Gtk.Window):
             return songlist.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __init__(self, model):
-        songs_text = ngettext("%d duplicate group", "%d duplicate groups",
-                len(model)) % len(model)
+        songs_text = numeric_phrase("%d duplicate group",
+                                    "%d duplicate groups",
+                                    len(model))
         super(DuplicateDialog, self).__init__()
         self.set_destroy_with_parent(True)
         self.set_title("Quod Libet - %s (%s)" % (Duplicates.PLUGIN_NAME,
@@ -361,7 +362,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Duplicates'
     PLUGIN_NAME = _('Duplicates Browser')
     PLUGIN_DESC = _('Finds and displays similarly tagged versions of songs.')
-    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
+    PLUGIN_ICON = Icons.EDIT_SELECT_ALL
 
     MIN_GROUP_SIZE = 2
     _CFG_KEY_KEY = "key_expression"
@@ -372,12 +373,14 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     _CFG_REMOVE_PUNCTUATION = 'remove_punctuation'
     _CFG_CASE_INSENSITIVE = 'case_insensitive'
 
+    plugin_handles = any_song(is_finite)
+
     # Cached values
     key_expression = None
     __cfg_cache = {}
 
     # Faster than a speeding bullet
-    __trans = string.maketrans("", "")
+    __trans = "".join(map(chr, range(256)))
 
     @classmethod
     def get_key_expression(cls):
@@ -452,7 +455,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
         # Index all songs by our custom key
         # TODO: make this cache-friendly
-        print_d("Calculating duplicates...", self)
+        print_d("Calculating duplicates...")
         groups = {}
         for song in songs:
             key = self.get_key(song)

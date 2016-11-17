@@ -11,13 +11,17 @@ recursive-include tests *.py
 include gdist/*.py
 include data/*.desktop.in
 include data/*.ini
+include data/*.svg.in
 include data/*.service.in
 include data/*.appdata.xml.in
 include data/*.1
 include data/*.sh
+include data/*.zsh
 include data/README.rst
 include MANIFEST.in
-recursive-include docs *.py Makefile *.rst *.png
+include quodlibet/senf/README.rst
+include *.py
+recursive-include docs *.py Makefile *.rst *.png *.ico *.svg
 prune docs/_build_guide
 prune docs/_build_all
 prune docs/_rtd_theme*

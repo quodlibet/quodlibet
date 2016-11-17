@@ -23,7 +23,9 @@ import re
 
 import dbus
 from gi.repository import Gtk, GObject, GLib
+from senf import fsn2uri
 
+from quodlibet import _
 from quodlibet import config, qltk, app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import XMLFromPattern
@@ -31,9 +33,7 @@ from quodlibet.qltk.textedit import TextView, TextBuffer
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
-from quodlibet.util import unescape
-from quodlibet.util.uri import URI
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, unescape, print_w
 
 
 # configuration stuff
@@ -41,6 +41,7 @@ DEFAULT_CONFIG = {
     "timeout": 4000,
     "show_notifications": "all",
     "show_only_when_unfocused": True,
+    "show_next_button": True,
 
     "titlepattern": "<artist|<artist> - ><title>",
     "bodypattern":
@@ -198,6 +199,14 @@ class PreferencesWidget(Gtk.VBox):
                             "show_only_when_unfocused")
         display_box.pack_start(focus_check, True, True, 0)
 
+        show_next = Gtk.CheckButton(
+            label=_("Show \"_Next\" button"),
+            use_underline=True)
+        show_next.set_active(get_conf_bool("show_next_button"))
+        show_next.connect("toggled", self.on_checkbutton_toggled,
+                            "show_next_button")
+        display_box.pack_start(show_next, True, True, 0)
+
         self.pack_start(display_frame, True, True, 0)
 
         self.show_all()
@@ -346,8 +355,7 @@ class Notify(EventPlugin):
         fileobj = app.cover_manager.get_cover(song)
         self._set_image_fileobj(fileobj)
         if fileobj:
-            image_path = fileobj.name
-            return URI.frompath(image_path).decode("utf-8")
+            return unicode(fsn2uri(fileobj.name))
         return u""
 
     def show_notification(self, song):
@@ -402,7 +410,7 @@ class Notify(EventPlugin):
                 body = strip_images(body)
 
         actions = []
-        if "actions" in caps:
+        if get_conf_bool("show_next_button") and "actions" in caps:
             actions = ["next", _("Next")]
 
         hints = {

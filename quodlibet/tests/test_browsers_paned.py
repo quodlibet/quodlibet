@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase
 from .helper import realized
 
 from gi.repository import Gtk
+from senf import fsnative
 
 from quodlibet import config
 
@@ -16,7 +21,6 @@ from quodlibet.browsers.paned.prefs import PreferencesButton
 from quodlibet.browsers.paned.pane import Pane
 from quodlibet.formats import AudioFile
 from quodlibet.util.collection import Collection
-from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 
 
@@ -171,7 +175,7 @@ class TPaneConfig(TestCase):
         self.failUnlessEqual(p.title, "Last Played")
         self.failUnlessEqual(p.tags, {"~#lastplayed"})
 
-        self.failUnlessEqual(p.format(SONGS[0]), ["0"])
+        self.failUnlessEqual(p.format(SONGS[0]), [("0", "0")])
         self.failIf(p.has_markup)
 
     def test_tied(self):

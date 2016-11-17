@@ -14,6 +14,7 @@ from quodlibet import devices
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
+from quodlibet import _
 
 from quodlibet.browsers import Browser
 from quodlibet.formats import AudioFile
@@ -25,7 +26,7 @@ from quodlibet.qltk.delete import DeleteDialog
 from quodlibet.qltk.window import Dialog
 from quodlibet.qltk.x import Align, ScrolledWindow, Button, MenuItem
 from quodlibet.qltk import Icons
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, print_w
 
 
 class DeviceProperties(Dialog):

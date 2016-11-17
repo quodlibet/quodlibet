@@ -7,7 +7,8 @@
 
 from tests import TestCase
 
-from quodlibet.qltk.edittags import *
+from quodlibet.qltk.edittags import SplitValues, SplitDisc, SplitTitle, \
+    SplitArranger, AddTagDialog, AudioFileGroup
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
 import quodlibet.config

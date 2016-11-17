@@ -5,10 +5,10 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from senf import fsnative
 
 from tests.plugin import PluginTestCase
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import is_fsnative
 
 
 class TCovers(PluginTestCase):
@@ -20,11 +20,11 @@ class TCovers(PluginTestCase):
         # missing Soup
         if "lastfm-cover" in self.plugins:
             cls = self.plugins["lastfm-cover"].cls
-            self.assertTrue(is_fsnative(cls(song).cover_path))
-            self.assertTrue(is_fsnative(cls(song2).cover_path))
+            self.assertTrue(isinstance(cls(song).cover_path, fsnative))
+            self.assertTrue(isinstance(cls(song2).cover_path, fsnative))
 
         # missing Soup
         if "musicbrainz-cover" in self.plugins:
             cls = self.plugins["musicbrainz-cover"].cls
-            self.assertTrue(is_fsnative(cls(song).cover_path))
-            self.assertTrue(is_fsnative(cls(song2).cover_path))
+            self.assertTrue(isinstance(cls(song).cover_path, fsnative))
+            self.assertTrue(isinstance(cls(song2).cover_path, fsnative))

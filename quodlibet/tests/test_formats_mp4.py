@@ -6,23 +6,22 @@
 # published by the Free Software Foundation
 
 import os
-import shutil
 import mutagen
 
 from quodlibet.compat import cBytesIO
-from tests import TestCase, DATA_DIR, mkstemp
+from tests import TestCase, get_data_path
 from quodlibet.formats.mp4 import MP4File
 from quodlibet.formats._image import EmbeddedImage
 
 import mutagen.mp4
 
+from .helper import get_temp_copy
+
 
 class TMP4File(TestCase):
 
     def setUp(self):
-        fd, self.f = mkstemp(".m4a")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'test.m4a'), self.f)
+        self.f = get_temp_copy(get_data_path('test.m4a'))
         self.song = MP4File(self.f)
 
     def tearDown(self):
@@ -38,13 +37,23 @@ class TMP4File(TestCase):
         self.assertEqual(self.song("~format"), "MPEG-4")
 
     def test_codec(self):
-        if mutagen.version >= (1, 27):
-            self.assertEqual(self.song("~codec"), "AAC LC")
-        else:
-            self.assertEqual(self.song("~codec"), "MPEG-4")
+        self.assertEqual(self.song("~codec"), "AAC LC")
 
     def test_encoding(self):
         self.assertEqual(self.song("~encoding"), "FAAC 1.24")
+
+    def test_mb_release_track_id(self):
+        tag = mutagen.mp4.MP4(self.f)
+        tag["----:com.apple.iTunes:MusicBrainz Release Track Id"] = [b"foo"]
+        tag.save()
+        song = MP4File(self.f)
+        self.assertEqual(song("musicbrainz_releasetrackid"), u"foo")
+        song["musicbrainz_releasetrackid"] = u"bla"
+        song.write()
+        tag = mutagen.mp4.MP4(self.f)
+        self.assertEqual(
+            tag["----:com.apple.iTunes:MusicBrainz Release Track Id"],
+            [b"bla"])
 
     def test_basic(self):
         self._assert_tag_supported("title")
@@ -64,11 +73,25 @@ class TMP4File(TestCase):
         self._assert_tag_supported("mood")
         self._assert_tag_supported("conductor")
 
+    def test_replaygain_tags(self):
+        self._assert_tag_supported('replaygain_album_gain', '-5.67 dB')
+        self._assert_tag_supported('replaygain_album_peak', '1.0')
+        self._assert_tag_supported('replaygain_track_gain', '-5.67 dB')
+        self._assert_tag_supported('replaygain_track_peak', '1.0')
+        self._assert_tag_supported('replaygain_reference_loudness', '89 dB')
+
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.7079, 3)
 
     def test_bitrate(self):
         self.assertEqual(self.song("~#bitrate"), 2)
+
+    def test_bpm_rounds(self):
+        self.song["bpm"] = "98.76"
+        self.song.write()
+        self.song.reload()
+        self.assertEqual(self.song("bpm"), "99")
+        self.assertEqual(self.song("~#bpm"), 99)
 
     def test_write(self):
         self.song.write()
@@ -79,7 +102,7 @@ class TMP4File(TestCase):
         self.assertTrue("albumartist" in self.song.can_change())
 
     def test_invalid(self):
-        path = os.path.join(DATA_DIR, 'empty.xm')
+        path = get_data_path('empty.xm')
         self.assertTrue(os.path.exists(path))
         self.assertRaises(Exception, MP4File, path)
 
@@ -117,7 +140,7 @@ class TMP4File(TestCase):
         self.song.set_image(image)
         image = self.song.get_primary_image()
         self.assertTrue(image)
-        self.assertEqual(image.file.read(), "foo")
+        self.assertEqual(image.read(), b"foo")
         self.assertTrue(self.song.has_images)
 
     def test_can_change_images(self):

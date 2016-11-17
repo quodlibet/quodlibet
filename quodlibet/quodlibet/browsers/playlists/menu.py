@@ -7,7 +7,10 @@
 
 from gi.repository import Gtk, Pango
 
+from quodlibet import app
+
 from quodlibet import qltk
+from quodlibet import ngettext, _
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
 from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent, Icons
@@ -40,9 +43,9 @@ class PlaylistMenu(Gtk.Menu):
         title = GetPlaylistName(qltk.get_top_parent(parent)).run(title)
         if title is None:
             return
-        playlist = FileBackedPlaylist.new(PLAYLISTS, title)
+        playlist = FileBackedPlaylist.new(PLAYLISTS, title,
+                                          library=app.librarian)
         playlist.extend(songs)
-        PlaylistsBrowser.changed(playlist)
 
     def _on_toggle_playlist_activate(self, item, playlist, songs):
         parent = get_menu_item_top_parent(item)
@@ -59,7 +62,6 @@ class PlaylistMenu(Gtk.Menu):
             return
         else:
             playlist.extend(songs)
-        PlaylistsBrowser.changed(playlist)
 
 
 class ConfirmMultipleSongsAction(qltk.Message):

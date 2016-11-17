@@ -11,8 +11,11 @@ modules = []
 
 skip.append("libiconv")
 
-setup_sdk(target="10.6", sdk_version="native", architectures=[_default_arch])
+setup_sdk(target="10.9", sdk_version="native")
 
-_config_shell = os.environ.get("CONFIG_SHELL", "")
-if not os.path.exists(_config_shell):
-    os.environ.pop("CONFIG_SHELL", None)
+os.environ["GTLS_SYSTEM_CA_FILE"] = os.path.join(
+    prefix, "lib/python2.7/site-packages/certifi/cacert.pem")
+
+# Make sure we use the same shell in "jhbuild shell" as during building
+if os.environ.get("CONFIG_SHELL"):
+    os.environ["SHELL"] = os.environ.get("CONFIG_SHELL")

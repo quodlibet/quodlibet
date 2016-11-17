@@ -11,11 +11,13 @@
 import os
 import shutil
 
-from distutils.core import Command
-from distutils.command.clean import clean as distutils_clean
+from .util import get_dist_class
 
 
-class clean(distutils_clean, Command):
+distutils_clean = get_dist_class("clean")
+
+
+class clean(distutils_clean):
     """clean up output of 'build' commands
 
     GDistribution commands generate files that the normal distutils

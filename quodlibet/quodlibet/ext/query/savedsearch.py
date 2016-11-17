@@ -7,6 +7,7 @@
 
 import os.path
 
+from quodlibet import _
 from quodlibet.plugins.query import QueryPlugin, QueryPluginError
 from quodlibet.query import Query
 from quodlibet.query._match import error as QueryError

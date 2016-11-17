@@ -13,10 +13,12 @@ from gi.repository import Gtk, GObject, GLib, Pango
 
 from quodlibet import app, qltk
 from quodlibet import util
+from quodlibet import _
 from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.textedit import PatternEditBox
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, print_d
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.library import background_filter
 
 
@@ -75,11 +77,10 @@ class Filter(object):
         bg = background_filter()
         if bg:
             songs = filter(bg, library.itervalues())
-            tags = set()
-            for song in songs:
-                tags.update(song.list(tag))
-            return list(tags)
-        return library.tag_values(tag)
+            return list({value
+                         for song in songs
+                         for value in song.list(tag)})
+        return list(library.tag_values(tag))
 
     def unfilter(self):
         """Reset all filters and display the whole library."""
@@ -94,8 +95,7 @@ class Filter(object):
     def filter_on(self, songs, key):
         """Do filtering in the best way the browser can handle"""
         if key == "album" and self.can_filter_albums():
-            values = set()
-            values.update([s.album_key for s in songs])
+            values = {s.album_key for s in songs}
             self.filter_albums(values)
         elif self.can_filter_tag(key) or self.can_filter_text():
             values = set()
@@ -140,6 +140,7 @@ class Browser(Gtk.Box, Filter):
         'songs-selected':
         (GObject.SignalFlags.RUN_LAST, None, (object, object)),
         'songs-activated': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'uri-received': (GObject.SignalFlags.RUN_LAST, None, (str,))
     }
 
     name = _("Library Browser")
@@ -155,9 +156,6 @@ class Browser(Gtk.Box, Filter):
 
     priority = 100
     """Priority in the menu list (0 is first, higher numbers come later)"""
-
-    is_empty = False
-    """Whether the browser is usable or just the dummy/disabled one"""
 
     uses_main_library = True
     """Whether the browser has the main library as source"""
@@ -234,7 +232,7 @@ class Browser(Gtk.Box, Filter):
 
     can_reorder = False
     """If the song list should be reorderable. In case this is True
-    every time the song list gets reorderd the whole list of songs is
+    every time the song list gets reordered the whole list of songs is
     passed to reordered().
     """
 
@@ -271,9 +269,9 @@ class Browser(Gtk.Box, Filter):
 
         return SongsMenu(library, songs, delete=True, items=items)
 
-    def statusbar(self, i):
-        return ngettext(
-            "%(count)d song (%(time)s)", "%(count)d songs (%(time)s)", i)
+    def status_text(self, count, time=None):
+        tmpl = numeric_phrase("%d song", "%d songs", count)
+        return tmpl + " (%s)" % time
 
     replaygain_profiles = None
     """Replay Gain profiles for this browser."""

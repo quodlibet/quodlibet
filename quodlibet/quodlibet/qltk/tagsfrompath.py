@@ -9,13 +9,16 @@ import re
 import os
 
 from gi.repository import Gtk
+from senf import fsn2text
 
 import quodlibet
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
 
+from quodlibet.formats import AudioFileError
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk._editutils import FilterPluginBox, FilterCheckButton
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
@@ -25,7 +28,6 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons
-from quodlibet.util.path import fsdecode
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.util.string.splitters import split_value
 from quodlibet.util import connect_obj, gdecode
@@ -91,7 +93,7 @@ class ListEntry(object):
 
     @property
     def name(self):
-        return fsdecode(self.song("~basename"))
+        return fsn2text(self.song("~basename"))
 
 
 class TagsFromPath(Gtk.VBox):
@@ -305,7 +307,7 @@ class TagsFromPath(Gtk.VBox):
             if changed:
                 try:
                     song.write()
-                except:
+                except AudioFileError:
                     util.print_exc()
                     WriteFailedError(self, song).run()
                     library.reload(song, changed=was_changed)

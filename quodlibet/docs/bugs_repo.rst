@@ -20,7 +20,7 @@ We use the GitHub bug tracker:
 |github-logo| Git Repo
 ----------------------
 
-Quod Libet uses `Git <http://git-scm.com/>`_ for source
+Quod Libet uses `Git <https://git-scm.com/>`_ for source
 control and is hosted on `GitHub <https://github.com/>`_ as well
 as `Bitbucket <https://bitbucket.org/>`__:
 

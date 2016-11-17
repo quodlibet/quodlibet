@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-from tests import DATA_DIR, mkstemp, TestCase
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+from tests import TestCase, get_data_path
 
 import os
-import shutil
 
 import mutagen
 
@@ -13,6 +16,8 @@ from quodlibet.formats.monkeysaudio import MonkeysAudioFile
 from quodlibet.formats.mpc import MPCFile
 from quodlibet.formats.wavpack import WavpackFile
 from quodlibet.formats._image import APICType, EmbeddedImage
+
+from .helper import get_temp_copy
 
 
 class TAPEv2FileMixin(object):
@@ -58,7 +63,7 @@ class TAPEv2FileMixin(object):
 
     def test_binary_ignore(self):
         m = mutagen.apev2.APEv2(self.f)
-        m["foo"] = APEValue("bar", BINARY)
+        m["foo"] = APEValue(b"bar", BINARY)
         m.save()
         self.s.reload()
         self.failUnlessEqual(self.s.get("foo"), None)
@@ -106,9 +111,7 @@ class TAPEv2FileMixin(object):
 
 class TMPCFileAPEv2(TestCase, TAPEv2FileMixin):
     def setUp(self):
-        fd, self.f = mkstemp(".mpc")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mpc'), self.f)
+        self.f = get_temp_copy(get_data_path('silence-44-s.mpc'))
         self.s = MPCFile(self.f)
 
     def tearDown(self):
@@ -117,9 +120,7 @@ class TMPCFileAPEv2(TestCase, TAPEv2FileMixin):
 
 class TMAFile(TestCase, TAPEv2FileMixin):
     def setUp(self):
-        fd, self.f = mkstemp(".ape")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ape'), self.f)
+        self.f = get_temp_copy(get_data_path('silence-44-s.ape'))
         self.s = MonkeysAudioFile(self.f)
 
     def tearDown(self):
@@ -134,9 +135,7 @@ class TMAFile(TestCase, TAPEv2FileMixin):
 class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 
     def setUp(self):
-        fd, self.f = mkstemp(".wv")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.wv'), self.f)
+        self.f = get_temp_copy(get_data_path('silence-44-s.wv'))
         self.s = WavpackFile(self.f)
 
     def tearDown(self):
@@ -151,9 +150,7 @@ class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 class TWvCoverArt(TestCase):
 
     def setUp(self):
-        fd, self.f = mkstemp(".wv")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'coverart.wv'), self.f)
+        self.f = get_temp_copy(get_data_path('coverart.wv'))
         self.s = WavpackFile(self.f)
 
     def tearDown(self):
@@ -195,7 +192,7 @@ class TWvCoverArt(TestCase):
         images = self.s.get_images()
         self.assertEqual(len(images), 1)
         self.assertEqual(images[0].mime_type, "image/")
-        self.assertEqual(images[0].file.read(), "foo")
+        self.assertEqual(images[0].read(), b"foo")
 
     def test_set_image_no_tag(self):
         m = mutagen.apev2.APEv2(self.f)

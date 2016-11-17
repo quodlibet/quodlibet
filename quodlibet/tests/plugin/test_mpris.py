@@ -4,6 +4,7 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
+import time
 
 try:
     import dbus
@@ -11,12 +12,12 @@ except ImportError:
     dbus = None
 
 from gi.repository import Gtk
+from senf import fsnative
 
 from tests import skipUnless
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import fsnative
 from quodlibet import config
 from quodlibet import app
 
@@ -34,6 +35,8 @@ A2 = AudioFile(
          'artist': u'fooman\ufffe', '~#lastplayed': 1234, '~#rating': 1.0,
          '~filename': fsnative(u'/foo')})
 A2.sanitize()
+
+MAX_TIME = 3
 
 
 @skipUnless(dbus, "no dbus")
@@ -90,9 +93,12 @@ class TMPRIS(PluginTestCase):
     def _error(self, *args):
         self.failIf(args)
 
-    def _wait(self):
+    def _wait(self, msg=""):
+        start = time.time()
         while not self._replies:
             Gtk.main_iteration_do(False)
+            if time.time() - start > MAX_TIME:
+                self.fail("Timed out waiting for replies (%s)" % msg)
         return self._replies.pop(0)
 
     def test_main(self):
@@ -148,7 +154,7 @@ class TMPRIS(PluginTestCase):
 
         for key, value in props.iteritems():
             self._prop().Get(piface, key, **args)
-            resp = self._wait()[0]
+            resp = self._wait(msg="for key '%s'" % key)[0]
             self.failUnlessEqual(resp, value)
             self.failUnless(isinstance(resp, type(value)))
 

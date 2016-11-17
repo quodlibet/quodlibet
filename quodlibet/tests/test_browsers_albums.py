@@ -6,7 +6,10 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from functools import cmp_to_key
+
 from gi.repository import Gtk
+from senf import fsnative
 
 from quodlibet.browsers._base import DisplayPatternMixin
 from . import TestCase
@@ -15,13 +18,14 @@ from .helper import realized
 from quodlibet import config
 
 from quodlibet.browsers.albums import AlbumList
+from quodlibet.browsers.albums.models import AlbumItem
 from quodlibet.browsers.albums.prefs import Preferences, DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.albums.main import (compare_title, compare_artist,
     compare_genre, compare_rating, compare_date)
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
-from quodlibet.util.path import fsnative
 from quodlibet.util.collection import Album
+
 
 SONGS = [
     AudioFile({
@@ -71,12 +75,13 @@ class TAlbumSort(TestCase):
         song = AudioFile(dict_)
         album = Album(song)
         album.songs.add(song)
-        return album
+        return AlbumItem(album)
 
     def assertOrder(self, func, list_):
+        key = cmp_to_key(func)
         # sort twice for full line coverage of the compare function
-        reversed_ = list(sorted(list_, cmp=func, reverse=True))
-        sorted_ = list(sorted(list_, cmp=func))
+        reversed_ = list(sorted(list_, key=key, reverse=True))
+        sorted_ = list(sorted(list_, key=key))
         self.assertEqual(reversed_[::-1], sorted_)
         self.assertEqual(list_, sorted_)
 
@@ -85,7 +90,7 @@ class TAlbumSort(TestCase):
         b = self._get_album({"album": "b"})
         n = self._get_album({"album": ""})
 
-        self.assertOrder(compare_title, [None, a, b, n])
+        self.assertOrder(compare_title, [AlbumItem(None), a, b, n])
 
     def test_sort_artist(self):
         a = self._get_album({"album": "b", "artist": "x"})
@@ -93,7 +98,7 @@ class TAlbumSort(TestCase):
         c = self._get_album({"album": "a", "artist": ""})
         n = self._get_album({"album": ""})
 
-        self.assertOrder(compare_artist, [None, a, b, c, n])
+        self.assertOrder(compare_artist, [AlbumItem(None), a, b, c, n])
 
     def test_sort_genre(self):
         a = self._get_album({"album": "b", "genre": "x"})
@@ -101,7 +106,7 @@ class TAlbumSort(TestCase):
         c = self._get_album({"album": "a", "genre": ""})
         n = self._get_album({"album": ""})
 
-        self.assertOrder(compare_genre, [None, a, b, c, n])
+        self.assertOrder(compare_genre, [AlbumItem(None), a, b, c, n])
 
     def test_sort_date(self):
         a = self._get_album({"album": "b", "date": "1970"})
@@ -109,7 +114,7 @@ class TAlbumSort(TestCase):
         c = self._get_album({"album": "a", "date": ""})
         n = self._get_album({"album": ""})
 
-        self.assertOrder(compare_date, [None, a, b, c, n])
+        self.assertOrder(compare_date, [AlbumItem(None), a, b, c, n])
 
     def test_sort_rating(self):
         a = self._get_album({"album": "b", "~#rating": 0.5})
@@ -117,7 +122,7 @@ class TAlbumSort(TestCase):
         c = self._get_album({"album": "x", "~#rating": 0.0})
         n = self._get_album({"album": "", "~#rating": 0.25})
 
-        self.assertOrder(compare_rating, [None, a, b, c, n])
+        self.assertOrder(compare_rating, [AlbumItem(None), a, b, c, n])
 
 
 class TAlbumBrowser(TestCase):

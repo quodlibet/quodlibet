@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from gi.repository import Gtk
+from senf import fsnative
 
 from tests import TestCase
 
 from quodlibet.library import SongLibrary
-from quodlibet.util.path import fsnative
 from quodlibet.qltk.songlist import SongList, set_columns, get_columns, \
     header_tag_split, get_sort_tag
 from quodlibet.formats import AudioFile
@@ -175,7 +179,7 @@ class TSongList(TestCase):
 
         library = SongLibrary()
         library.librarian = SongLibrarian()
-        browser = browsers.get("EmptyBar")(library)
+        browser = browsers.get("SearchBar")(library)
 
         self.songlist.set_column_headers(["foo"])
 
@@ -220,6 +224,7 @@ class TSongList(TestCase):
         self.assertEqual(get_sort_tag("date"), "date")
         self.assertEqual(get_sort_tag("~artist~date"), "~artistsort~date")
         self.assertEqual(get_sort_tag("~date~artist"), "~date~artistsort")
+        self.assertEqual(get_sort_tag("composer"), "composersort")
 
     def tearDown(self):
         self.songlist.destroy()

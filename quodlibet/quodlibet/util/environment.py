@@ -11,36 +11,69 @@ and under which environment.
 
 import os
 import sys
+import ctypes
 
 
-def xdg_get_current_desktop():
-    """Returns a list of values present in XDG_CURRENT_DESKTOP
+def _dbus_name_owned(name):
+    """Returns True if the dbus name has an owner"""
 
-    https://www.freedesktop.org/software/systemd/man/pam_systemd.html
-    """
+    if not is_linux():
+        return False
 
-    value = os.environ.get("XDG_CURRENT_DESKTOP", "")
-    if not value:
-        return []
-    return value.split(":")
+    try:
+        import dbus
+    except ImportError:
+        return False
+
+    try:
+        bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
+        return bus.name_has_owner(name)
+    except dbus.DBusException:
+        return False
 
 
-def is_kde():
-    """If we are running under KDE/plasma"""
+def is_plasma():
+    """If we are running under plasma"""
 
-    return "KDE" in xdg_get_current_desktop()
+    return _dbus_name_owned("org.kde.plasmashell")
 
 
 def is_unity():
     """If we are running under Ubuntu/Unity"""
 
-    return "Unity" in xdg_get_current_desktop()
+    return _dbus_name_owned("com.canonical.Unity.Launcher")
+
+
+def is_enlightenment():
+    """If we are running under Enlightenment"""
+
+    return _dbus_name_owned("org.enlightenment.wm.service")
+
+
+def is_linux():
+    """If we are on Linux (or similar)"""
+
+    return not is_windows() and not is_osx()
 
 
 def is_windows():
     """If we are running under Windows or Wine"""
 
     return os.name == "nt"
+
+
+def is_wine():
+    """If we are running under Wine"""
+
+    if not is_windows():
+        return False
+
+    try:
+        ctypes.cdll.ntdll.wine_get_version
+    except AttributeError:
+        return False
+    else:
+        return True
 
 
 def is_osx():

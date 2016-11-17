@@ -16,6 +16,7 @@ from threading import Thread
 from gi.repository import Gtk, GLib
 
 import quodlibet
+from quodlibet import _
 from quodlibet import config, util, qltk
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
@@ -30,7 +31,7 @@ API_KEY = "f536cdadb4c2aec75ae15e2b719cb3a1"
 
 
 def log(msg):
-    print_d('[lastfmsync] %s' % msg)
+    util.print_d('[lastfmsync] %s' % msg)
 
 
 def apicall(method, **kwargs):
@@ -41,7 +42,7 @@ def apicall(method, **kwargs):
             'method': method,
             }
     real_args.update(kwargs)
-    url = ''.join(["http://ws.audioscrobbler.com/2.0/?",
+    url = ''.join(["https://ws.audioscrobbler.com/2.0/?",
                    urllib.urlencode(real_args)])
     log(url)
     uobj = urllib2.urlopen(url)
@@ -228,7 +229,7 @@ class LastFMSync(SongsMenuPlugin):
     PLUGIN_NAME = _("Last.fm Sync")
     PLUGIN_DESC = _("Updates your library's statistics from your "
                     "Last.fm profile.")
-    PLUGIN_ICON = Icons.VIEW_REFRESH
+    PLUGIN_ICON = Icons.EMBLEM_SHARED
 
     CACHE_PATH = os.path.join(quodlibet.get_user_dir(), "lastfmsync.db")
 

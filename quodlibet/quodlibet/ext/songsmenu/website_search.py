@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011, 2012, 2014 Nick Boultbee
+# Copyright 2011-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 import quodlibet
-from quodlibet import print_w, print_d, qltk
+from quodlibet import _
+from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -15,12 +16,12 @@ from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk import Icons
 from quodlibet.util import website
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
-from quodlibet.util import connect_obj
-from urllib import quote_plus
+from quodlibet.util import connect_obj, print_w, print_d
+from quodlibet.util.path import uri_is_valid
+from quodlibet.compat import quote_plus
 
 from gi.repository import Gtk
 import os
-from quodlibet.util.uri import URI
 
 
 class WebsiteSearch(SongsMenuPlugin):
@@ -29,26 +30,25 @@ class WebsiteSearch(SongsMenuPlugin):
     specific site look-up. The URLs are customisable using tag patterns.
     """
 
-    PLUGIN_ICON = Icons.DOCUMENT_OPEN
+    PLUGIN_ICON = Icons.APPLICATION_INTERNET
     PLUGIN_ID = "Website Search"
     PLUGIN_NAME = _("Website Search")
     PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
                     "Supports patterns e.g. %(pattern-example)s.") % {
                         "pattern-example":
-                            "http://google.com?q=<~artist~title>"}
+                            "https://google.com?q=<~artist~title>"}
 
     # Here are some starters...
-    # Sorry, PEP-8 : sometimes you're unrealistic
     DEFAULT_URL_PATS = [
         ("Google song search",
-            "http://google.com/search?q=<artist~title>"),
+            "https://google.com/search?q=<artist~title>"),
         ("Wikipedia (en) artist entry",
-            "http://wikipedia.org/wiki/<albumartist|<albumartist>|<artist>>"),
+            "https://wikipedia.org/wiki/<albumartist|<albumartist>|<artist>>"),
         ("Musicbrainz album listing",
-            "http://musicbrainz.org/<musicbrainz_albumid|release/"
+            "https://musicbrainz.org/<musicbrainz_albumid|release/"
             "<musicbrainz_albumid>|search?query=<album>&type=release>"),
         ("Discogs album search",
-            "http://www.discogs.com/search?type=release&artist="
+            "https://www.discogs.com/search?type=release&artist="
             "<albumartist|<albumartist>|<artist>>&title=<album>"),
         ("Youtube video search",
          "https://www.youtube.com/results?search_query=<artist~title>"),
@@ -69,9 +69,7 @@ class WebsiteSearch(SongsMenuPlugin):
             # TODO: some pattern validation too (that isn't slow)
             try:
                 p = Pattern(s)
-                u = URI(s)
-                return (p and u.netloc and
-                        u.scheme in ["http", "https", "ftp", "file"])
+                return (p and uri_is_valid(s))
             except ValueError:
                 return False
 
@@ -98,7 +96,7 @@ class WebsiteSearch(SongsMenuPlugin):
         # Failing all else...
         if not len(self._url_pats):
             print_d("No saved searches found in %s. Using defaults." %
-                    filename, context=self)
+                    filename)
             self._url_pats = self.DEFAULT_URL_PATS
 
     def __init__(self, *args, **kwargs):
@@ -112,7 +110,7 @@ class WebsiteSearch(SongsMenuPlugin):
             connect_obj(item, 'activate', self.__set_site, name)
             submenu.append(item)
         # Add link to editor
-        configure = Gtk.MenuItem(label=_(u"Configure searches…"))
+        configure = Gtk.MenuItem(label=_(u"Configure Searches…"))
         connect_obj(configure, 'activate', self.edit_patterns, configure)
         submenu.append(SeparatorMenuItem())
         submenu.append(configure)

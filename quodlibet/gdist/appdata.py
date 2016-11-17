@@ -13,7 +13,8 @@ AppData Specification: http://people.freedesktop.org/~hughsient/appdata/
 import os
 
 from distutils.dep_util import newer
-from distutils.core import Command
+from .util import Command
+from .gettextutil import intltool
 
 
 class build_appdata(Command):
@@ -43,9 +44,9 @@ class build_appdata(Command):
             if os.path.exists(appdata + ".in"):
                 fullpath = os.path.join(basepath, os.path.basename(appdata))
                 if newer(appdata + ".in", fullpath):
-                    self.spawn(["intltool-merge",
-                                "-x", self.po_directory,
-                                appdata + ".in", fullpath])
+                    self.spawn(
+                        intltool("merge", "-x", self.po_directory,
+                                 appdata + ".in", fullpath))
             else:
                 self.copy_file(appdata, os.path.join(basepath, appdata))
 

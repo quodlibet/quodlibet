@@ -11,6 +11,7 @@
 
 from gi.repository import Gtk, Gdk
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
 from quodlibet.util import connect_obj
@@ -179,6 +180,7 @@ class AnimOsdPrefs(Gtk.VBox):
 
         def build_text_widget():
             t = Gtk.Table(n_rows=2, n_columns=2)
+            t.props.expand = False
             t.set_col_spacings(6)
             t.set_row_spacings(3)
 
@@ -207,6 +209,7 @@ class AnimOsdPrefs(Gtk.VBox):
 
         def build_colors_widget():
             t = Gtk.Table(n_rows=2, n_columns=2)
+            t.props.expand = False
             t.set_col_spacings(6)
             t.set_row_spacings(3)
             b = Gtk.ColorButton(

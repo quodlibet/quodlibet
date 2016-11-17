@@ -12,7 +12,7 @@ The Paned Browser offers a convenient way to quickly drill down into a large
 music collection, by narrowing  selections in several stages. Some users 
 may find this reminiscent of `RhythmBox <http://www.rhythmbox.org>`_ or, 
 to some extent, `iTunes 
-<http://www.apple.com/uk/itunes/what-is/player.html>`_.
+<https://www.apple.com/uk/itunes/>`_.
 
 In Quod Libet though, you can have as many panes as you want, grouped by 
 any tags you want, for example the popular ''genre/artist/album'' and 
@@ -21,7 +21,7 @@ case you have a lot of multi-artist albums.
 
 The songlist is presented at the bottom, and the panes, which run from left 
 to right, are above. Clicking on an item (or items) in a pane will restrict 
-it to just songs matching those (e.g those artists, or dates, genres etc). 
+it to just songs matching those (e.g. those artists, or dates, genres etc). 
 This will update the counts and choices on the next pane, and the filtered 
 results will be updated automatically in the song list.
 

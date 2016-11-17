@@ -20,7 +20,20 @@ class GettextError(Exception):
 
 
 # pgettext isn't included by default for Python
-XGETTEXT_ARGS = "--keyword=C_:1c,2 --keyword=npgettext:1c,2,3"
+_EXTRA_KEYWORDS = {"C_": "1c,2",
+                   "npgettext": "1c,2,3",
+                   "numeric_phrase": "1,2"}
+XGETTEXT_ARGS = " ".join("--keyword=%s:%s" % (k, v)
+                         for k, v in _EXTRA_KEYWORDS.items())
+
+
+def intltool(*args):
+    command = args[0]
+    args = args[1:]
+    if os.name == "nt":
+        return ["perl", "/usr/bin/intltool-%s" % command] + list(args)
+    else:
+        return ["intltool-%s" % command] + list(args)
 
 
 def update_pot(po_dir, package):
@@ -35,9 +48,9 @@ def update_pot(po_dir, package):
     try:
         os.environ["XGETTEXT_ARGS"] = XGETTEXT_ARGS
         with open(os.devnull, 'wb') as devnull:
-            subprocess.check_call(["intltool-update", "--pot",
-                                   "--gettext-package", package],
-                                   stderr=devnull, stdout=devnull)
+            subprocess.check_call(
+                intltool("update", "--pot", "--gettext-package", package),
+                stderr=devnull, stdout=devnull)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
     finally:
@@ -59,9 +72,8 @@ def update_po(po_dir, package, lang_code, output_file=None):
     os.chdir(po_dir)
     try:
         os.environ["XGETTEXT_ARGS"] = XGETTEXT_ARGS
-        args = ["intltool-update", "--dist",
-                "--gettext-package", package,
-                lang_code]
+        args = intltool(
+            "update", "--dist", "--gettext-package", package, lang_code)
         if output_file is not None:
             args.extend(["--output-file", output_file])
         with open(os.devnull, 'wb') as devnull:
@@ -127,8 +139,7 @@ def get_missing(po_dir, package):
     try:
         with open(os.devnull, 'wb') as devnull:
             subprocess.check_call(
-                ["intltool-update", "--maintain",
-                 "--gettext-package", package],
+                intltool("update", "--maintain", "--gettext-package", package),
                 stderr=devnull, stdout=devnull)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
@@ -153,7 +164,7 @@ def _get_xgettext_version():
         raise GettextError(e)
 
     try:
-        return tuple(map(int, result.splitlines()[0].split()[-1].split(".")))
+        return tuple(map(int, result.splitlines()[0].split()[-1].split(b".")))
     except (IndexError, ValueError) as e:
         raise GettextError(e)
 
@@ -164,7 +175,7 @@ def check_version():
     Tries to include a helpful error message..
     """
 
-    if find_executable("intltool-update") is None:
+    if os.name != "nt" and find_executable("intltool-update") is None:
         raise GettextError("intltool-update missing")
 
     if find_executable("xgettext") is None:

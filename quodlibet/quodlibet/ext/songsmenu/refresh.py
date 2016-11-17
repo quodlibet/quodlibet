@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from quodlibet import app
+from quodlibet import _
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk import Icons
 from quodlibet.util import copool
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.util.i18n import numeric_phrase
 
 
 class RefreshSongs(SongsMenuPlugin):
@@ -24,7 +27,7 @@ class RefreshSongs(SongsMenuPlugin):
     def plugin_songs(self, songs):
 
         def check_songs():
-            desc = ngettext("%d song", "%d songs", len(songs)) % len(songs)
+            desc = numeric_phrase("%d song", "%d songs", len(songs))
             with Task(_("Rescan songs"), desc) as task:
                 task.copool(check_songs)
                 for i, song in enumerate(songs):

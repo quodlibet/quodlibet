@@ -6,11 +6,15 @@
 # published by the Free Software Foundation
 
 from quodlibet import config
+from quodlibet.util import print_d
 
 from ._base import MMKeysAction, MMKeysImportError
 
 
 def iter_backends():
+    if config.getboolean("settings", "disable_mmkeys"):
+        return
+
     try:
         from .gnome import GnomeBackend, MateBackend
     except MMKeysImportError:
@@ -27,19 +31,18 @@ def iter_backends():
         yield KeybinderBackend
 
     try:
-        from .pyhook import PyHookBackend
+        from .winhook import WinHookBackend
     except MMKeysImportError:
         pass
     else:
-        yield PyHookBackend
+        yield WinHookBackend
 
-    if config.getboolean("settings", "osx_mmkeys"):
-        try:
-            from .osx import OSXBackend
-        except MMKeysImportError:
-            pass
-        else:
-            yield OSXBackend
+    try:
+        from .osx import OSXBackend
+    except MMKeysImportError:
+        pass
+    else:
+        yield OSXBackend
 
 
 def find_active_backend():

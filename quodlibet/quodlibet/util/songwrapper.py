@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Michael Urman
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import _
+from quodlibet.util.dprint import print_d
+from quodlibet.formats import AudioFileError
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet.qltk.wlw import WritingWindow
@@ -85,7 +89,7 @@ def ListWrapper(songs):
             return None
         else:
             return SongWrapper(song)
-    return map(wrap, songs)
+    return [wrap(s) for s in songs]
 
 
 def check_wrapper_changed(library, parent, songs):
@@ -97,13 +101,14 @@ def check_wrapper_changed(library, parent, songs):
         for song in needs_write:
             try:
                 song._song.write()
-            except Exception:
+            except AudioFileError as e:
                 qltk.ErrorMessage(
                     None, _("Unable to edit song"),
                     _("Saving <b>%s</b> failed. The file "
                       "may be read-only, corrupted, or you "
                       "do not have permission to edit it.") %
                     util.escape(song('~basename'))).run()
+                print_d("Couldn't save song %s (%s)" % (song("~filename"), e))
 
             if win.step():
                 break

@@ -9,11 +9,13 @@ from gi.repository import Gtk
 from gi.repository import Pango
 import re
 
+from quodlibet import _
 from quodlibet import qltk, util
-from quodlibet.qltk.entry import UndoEntry, ValidatingEntry, QueryValidator
+from quodlibet.qltk.entry import UndoEntry, ValidatingEntry
 from quodlibet.qltk.views import RCMHintedTreeView, HintedTreeView
 from quodlibet.qltk.x import MenuItem, Button, Align
 from quodlibet.qltk import Icons
+from quodlibet.query import Query
 from quodlibet.util.json_data import JSONObjectDict
 from quodlibet.util import connect_obj
 from quodlibet.qltk.getstring import GetStringDialog
@@ -138,7 +140,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
             entry.set_numeric(True)
             callback = self.__changed_numeric_widget
         elif "pattern" in key:
-            entry = ValidatingEntry(validator=QueryValidator)
+            entry = ValidatingEntry(validator=Query.validator)
         else:
             entry = UndoEntry()
         entry.connect(signal or "changed",

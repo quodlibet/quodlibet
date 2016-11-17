@@ -5,34 +5,17 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
-import sys
 import locale
 from functools import wraps
 
-from . import windows
+from senf import environ, argv
 
 
-if os.name == "nt":
-    environ = windows.WindowsEnviron()
-else:
-    environ = os.environ
-"""
-An environ dict which contains unicode under Windows and str everywhere else
-"""
-
-
-if os.name == "nt":
-    argv = windows.get_win32_unicode_argv()
-else:
-    argv = sys.argv
-"""
-An argv list which contains unicode under Windows and str everywhere else
-"""
+environ, argv
 
 
 def cached_func(f):
-    """Decorateor which caches the return value of a function which
+    """Decorator which caches the return value of a function which
     doesn't take any input.
     """
 
@@ -67,22 +50,3 @@ def get_locale_encoding():
         encoding = _verify_encoding(encoding)
 
     return encoding
-
-
-@cached_func
-def get_fs_encoding():
-    """Returns the encoding used for paths by glib."""
-
-    if os.name == "nt":
-        return "utf-8"
-
-    # https://developer.gnome.org/glib/stable/glib-running.html
-    if "G_FILENAME_ENCODING" in os.environ:
-        fscoding = os.environ["G_FILENAME_ENCODING"].split(",")[0]
-        if fscoding == "@locale":
-            fscoding = get_locale_encoding()
-        return _verify_encoding(fscoding)
-    elif "G_BROKEN_FILENAMES" in os.environ:
-        return get_locale_encoding()
-    else:
-        return "utf-8"

@@ -5,11 +5,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from senf import fsnative
+
 from tests import TestCase
 
 import quodlibet
 from quodlibet import config
-from quodlibet.util.path import is_fsnative
+from quodlibet.const import Version
 
 
 class TQuodlibet(TestCase):
@@ -29,6 +31,24 @@ class TQuodlibet(TestCase):
         self.assertFalse(quodlibet.is_first_session("quodlibet"))
 
     def test_dirs(self):
-        self.assertTrue(is_fsnative(quodlibet.get_base_dir()))
-        self.assertTrue(is_fsnative(quodlibet.get_image_dir()))
-        self.assertTrue(is_fsnative(quodlibet.get_user_dir()))
+        self.assertTrue(isinstance(quodlibet.get_base_dir(), fsnative))
+        self.assertTrue(isinstance(quodlibet.get_image_dir(), fsnative))
+        self.assertTrue(isinstance(quodlibet.get_user_dir(), fsnative))
+
+    def test_get_build_description(self):
+        quodlibet.get_build_description()
+
+    def test_get_build_version(self):
+        ver = quodlibet.get_build_version()
+        self.assertTrue(isinstance(ver, tuple))
+
+
+class TVersion(TestCase):
+
+    def test_message(self):
+        v = Version("foo", 1, 2, message="bla")
+        self.assertRaises(ImportError, v.check, (1, 1))
+        try:
+            v.check((1, 1))
+        except ImportError as e:
+            self.assertTrue("bla" in str(e))

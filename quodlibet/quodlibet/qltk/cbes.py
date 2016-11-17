@@ -10,6 +10,7 @@ import os
 
 from gi.repository import Gtk, Pango, GObject
 
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
@@ -213,7 +214,6 @@ class StandaloneEditor(_KeyValueEditor):
                 self.model.prepend(
                     row=[lines.pop(1).strip(), lines.pop(0).strip()])
         if not len(self.model) and self.initial:
-            #print_d("None found - using defaults.", context=self)
             for (k, v) in self.initial:
                 self.model.append(row=[v.strip(), k.strip()])
 
@@ -288,9 +288,9 @@ class ComboBoxEntrySave(Gtk.ComboBox):
             self.__fill(filename, initial, edit_title)
 
         old_entry = self.get_child()
-        self.remove(old_entry)
         new_entry = entry.ValidatingEntry(validator)
         clone_css_classes(old_entry, new_entry)
+        old_entry.destroy()
         self.add(new_entry)
 
         connect_obj(self, 'destroy', self.set_model, None)

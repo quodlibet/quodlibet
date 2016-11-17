@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,6 +12,7 @@ from gi.repository import Gtk, Pango
 
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
 
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
@@ -39,9 +41,11 @@ def MenuItems(marks, player, seekable):
         l.set_alignment(0.0, 0.5)
         sizes.add_widget(l)
         hbox.pack_start(l, False, True, 0)
-        m = Gtk.Label(label=mark)
-        m.set_alignment(0.0, 0.5)
-        hbox.pack_start(m, True, True, 0)
+        text = Gtk.Label(mark)
+        text.set_max_width_chars(80)
+        text.set_ellipsize(Pango.EllipsizeMode.END)
+        text.set_alignment(0.0, 0.5)
+        hbox.pack_start(text, True, True, 0)
         i.show_all()
         items.append(i)
     return items

@@ -10,7 +10,7 @@ import sys
 import gettext
 import locale
 
-from quodlibet.compat import builtins, text_type, PY2
+from quodlibet.compat import text_type, PY2
 
 
 def bcp47_to_language(code):
@@ -62,11 +62,12 @@ def set_i18n_envvars():
     """
 
     if os.name == "nt":
-        import ctypes
-        k32 = ctypes.windll.kernel32
+        from quodlibet.util.winapi import GetUserDefaultUILanguage, \
+            GetSystemDefaultUILanguage
+
         langs = filter(None, map(locale.windows_locale.get,
-                                 [k32.GetUserDefaultUILanguage(),
-                                  k32.GetSystemDefaultUILanguage()]))
+                                 [GetUserDefaultUILanguage(),
+                                  GetSystemDefaultUILanguage()]))
         if langs:
             os.environ.setdefault('LANG', langs[0])
             os.environ.setdefault('LANGUAGE', ":".join(langs))
@@ -128,6 +129,7 @@ class GlibTranslations(gettext.GNUTranslations):
         self._catalog = {}
         self.plural = lambda n: n != 1
         gettext.GNUTranslations.__init__(self, fp)
+        self._debug_text = None
 
     def ugettext(self, message):
         # force unicode here since __contains__ (used in gettext) ignores
@@ -172,21 +174,133 @@ class GlibTranslations(gettext.GNUTranslations):
             return msgid
         return result
 
-    def install(self, unicode=False, debug_text=None):
-        if not unicode:
-            raise NotImplementedError
+    def set_debug_text(self, debug_text):
+        self._debug_text = debug_text
 
-        if debug_text is not None:
-            def wrap(f):
-                def g(*args, **kwargs):
-                    return debug_text + f(*args, **kwargs) + debug_text
-                return g
+    def wrap_text(self, value):
+        if self._debug_text is None:
+            return value
         else:
-            def wrap(f):
-                return f
+            return self._debug_text + value + self._debug_text
 
-        builtins.__dict__["_"] = wrap(self.ugettext)
-        builtins.__dict__["N_"] = wrap(type(u""))
-        builtins.__dict__["C_"] = wrap(self.upgettext)
-        builtins.__dict__["ngettext"] = wrap(self.ungettext)
-        builtins.__dict__["npgettext"] = wrap(self.unpgettext)
+    def install(self, *args, **kwargs):
+        raise NotImplementedError("We no longer do builtins")
+
+
+_translations = GlibTranslations()
+
+
+def set_translation(trans):
+    global _translations
+
+    _translations = trans
+
+
+def _(message):
+    """
+    Args:
+        message (text_type)
+    Returns:
+        text_type
+
+    Lookup the translation for message
+    """
+
+    return _translations.wrap_text(_translations.ugettext(message))
+
+
+def N_(message):
+    """
+    Args:
+        message (text_type)
+    Returns:
+        text_type
+
+    Only marks a string for translation
+    """
+
+    return text_type(message)
+
+
+def C_(context, message):
+    """
+    Args:
+        context (text_type)
+        message (text_type)
+    Returns:
+        text_type
+
+    Lookup the translation for message for a context
+    """
+
+    return _translations.wrap_text(
+        _translations.upgettext(context, message))
+
+
+def ngettext(singular, plural, n):
+    """
+    Args:
+        singular (text_type)
+        plural (text_type)
+        n (int)
+    Returns:
+        text_type
+
+    Returns the translation for a singular or plural form depending
+    on the value of n.
+    """
+
+    return _translations.wrap_text(
+        _translations.ungettext(singular, plural, n))
+
+
+def numeric_phrase(singular, plural, n, template_var=None):
+    """Returns a final locale-specific phrase with pluralisation if necessary
+    and grouping of the number.
+
+    This is added to custom gettext keywords to allow us to use as-is.
+
+    Args:
+        singular (text_type)
+        plural (text_type)
+        n (int)
+        template_var (text_type)
+    Returns:
+        text_type
+
+    For example,
+
+    ``numeric_phrase('Add %d song', 'Add %d songs', 12345)``
+    returns
+    `"Add 12,345 songs"`
+    (in `en_US` locale at least)
+    """
+    num_text = locale.format('%d', n, grouping=True)
+    if not template_var:
+        template_var = '%d'
+        replacement = '%s'
+        params = num_text
+    else:
+        template_var = '%(' + template_var + ')d'
+        replacement = '%(' + template_var + ')s'
+        params = dict()
+        params[template_var] = num_text
+    return (ngettext(singular.replace(template_var, replacement),
+            plural.replace(template_var, replacement), n) % params)
+
+
+def npgettext(context, singular, plural, n):
+    """
+    Args:
+        context (text_type)
+        singular (text_type)
+        plural (text_type)
+        n (int)
+    Returns:
+        text_type
+
+    Like ngettext, but with also depends on the context.
+    """
+
+    return _translations.wrap_text(
+        _translations.unpgettext(context, singular, plural, n))

@@ -9,8 +9,10 @@
 
 import shutil
 
+from quodlibet.util import enum
 from . import const
 from quodlibet.util.config import Config, Error
+from quodlibet.util import print_d, print_w
 from quodlibet.compat import PY2, iteritems
 
 # Some plugins can be enabled on first install
@@ -42,13 +44,20 @@ INITIAL = {
         "seek": "0", # last song position, in milliseconds
         "volume": "1.0", # internal volume, [0.0, 1.0]
         "browser": "PanedBrowser", # browser name
-        "songlist": "true", # on or off
         "queue": "false", # on or off
+        "queue_expanded": "false", # on or off
         "shufflequeue": "false", # on or off
         "sortby": "0album", # <reversed?>tagname, song list sort
-        "order": "inorder",
-        "order_shuffle": "shuffle",
+
+        # Repeat on or off
+        "repeat": "false",
+        # The Repeat (Order) to use
+        "repeat_mode": "repeat_song",
+
+        # Shuffle on or off
         "shuffle": "false",
+        # The Shuffle (Order) to use
+        "shuffle_mode": "random",
         "plugin_selection": "", # selected plugin in manager
         "column_widths": "", # column widths in c1,w1,c2,w2... format
         "column_expands": "",
@@ -68,7 +77,6 @@ INITIAL = {
         "collection_headers": "~people 0",
         "radio": "", # radio filter selection
         "rating_click": "true", # click to rate song, on/off
-        "rating_hotkeys": "true", # press number keys to rate song on/off
         "rating_confirm_multiple": "false", # confirm rating multiple songs
         "cover_size": "-1", # max cover height/width, <= 0 is default
         "search_limit": "false", # Show the limit widgets for SearchBar
@@ -97,9 +105,6 @@ INITIAL = {
         # rating symbol (hollow star)
         "rating_symbol_blank": "\xe2\x98\x86",
 
-        # probably belongs in memory
-        "repeat": "false",
-
         # Now deprecated: space-separated headers column
         #"headers": " ".join(const.DEFAULT_COLUMNS),
 
@@ -121,8 +126,8 @@ INITIAL = {
         # support sending them to the trash.
         "bypass_trash": "false",
 
-        # our implementation is buggy and disabled by default
-        "osx_mmkeys": "false",
+        # osx implementation might be buggy so let users disable it
+        "disable_mmkeys": "false",
     },
     "rename": {
         "spaces": "false",
@@ -153,10 +158,12 @@ INITIAL = {
         "default_tags": "", # e.g. "title,artist"
     },
     "albumart": {
-        "round": "true", # use rounded corners for artwork thumbnails
         "prefer_embedded": "false",
         "force_filename": "false",
         "filename": "folder.jpg",
+    },
+    "display": {
+        "duration_format": "standard"
     }
 }
 
@@ -201,7 +208,7 @@ def init(filename=None):
     global _filename
 
     if not _config.is_empty():
-        raise ValueError("config initialized twice without quitting")
+        _config.clear()
 
     _filename = filename
 
@@ -332,3 +339,23 @@ class HardCodedRatingsPrefs(RatingsPrefs):
 
 # Need an instance just for imports to work
 RATINGS = RatingsPrefs()
+
+
+@enum
+class DurationFormat(str):
+    NUMERIC, SECONDS = "numeric", "numeric-seconds"
+    STANDARD, FULL = "standard", "text-full"
+
+
+class DurationFormatPref(object):
+    @property
+    def format(self):
+        raw = get("display", "duration_format")
+        return DurationFormat.value_of(raw, DurationFormat.STANDARD)
+
+    @format.setter
+    def format(self, value):
+        set("display", "duration_format", value)
+
+
+DURATION = DurationFormatPref()

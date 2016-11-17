@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2016 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -11,7 +11,7 @@ from gi.repository import Gtk, GLib
 
 from quodlibet import config
 from quodlibet import qltk
-
+from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.query import Query
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
@@ -43,7 +43,7 @@ class PreferencesButton(Gtk.HBox):
 
 
 class SearchBar(Browser):
-    """Like EmptyBar, but the user can also enter a query manually"""
+    """A browser in which queries are parsed and used to filter results"""
 
     name = _("Search Library")
     accelerated_name = _("_Search Library")

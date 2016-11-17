@@ -5,13 +5,27 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
 import collections
+import subprocess
 
 from gi.repository import GLib, Gst
 
+from quodlibet import _
 from quodlibet.util.string import decode
+from quodlibet.util import is_linux, is_windows
 from quodlibet.player import PlayerError
+
+
+def pulse_is_running():
+    """Returns whether pulseaudio is running"""
+
+    try:
+        subprocess.check_call(["pulseaudio", "--check"])
+    except subprocess.CalledProcessError:
+        return False
+    except OSError:
+        return False
+    return True
 
 
 def link_many(elements):
@@ -53,10 +67,14 @@ def find_audio_sink():
     Returns (element, description) or raises PlayerError.
     """
 
-    if os.name == "nt":
+    if is_windows():
         sinks = [
             "directsoundsink",
             "autoaudiosink",
+        ]
+    elif is_linux() and pulse_is_running():
+        sinks = [
+            "pulsesink",
         ]
     else:
         sinks = [
@@ -70,7 +88,8 @@ def find_audio_sink():
         if element is not None:
             return (element, name)
     else:
-        raise PlayerError(_("No GStreamer audio sink found"))
+        details = " (%s)" % ", ".join(sinks) if sinks else ""
+        raise PlayerError(_("No GStreamer audio sink found") + details)
 
 
 def GStreamerSink(pipeline_desc):

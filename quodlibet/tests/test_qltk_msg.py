@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase
 
-from quodlibet.qltk.msg import *
+from quodlibet.qltk.msg import WarningMessage, ErrorMessage, \
+    CancelRevertSave, ConfirmFileReplace
 
 
 class TWarningMessage(TestCase):

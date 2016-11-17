@@ -6,21 +6,24 @@
 # published by the Free Software Foundation
 
 import os
+
 from gi.repository import Gtk
+from senf import uri2fsn, fsnative, fsn2text, path2fsn
 
 import quodlibet
+from quodlibet import _
 from quodlibet import formats, qltk
 from quodlibet.qltk import Icons
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.util import escape
 from quodlibet.util.collection import FileBackedPlaylist
-from quodlibet.util.path import mkdir, fsdecode, is_fsnative
-from quodlibet.util.uri import URI
+from quodlibet.util.path import mkdir, uri_is_valid
+
 
 # Directory for playlist files
 PLAYLISTS = os.path.join(quodlibet.get_user_dir(), "playlists")
-assert is_fsnative(PLAYLISTS)
+assert isinstance(PLAYLISTS, fsnative)
 if not os.path.isdir(PLAYLISTS):
     mkdir(PLAYLISTS)
 
@@ -50,8 +53,8 @@ class GetPlaylistName(GetStringDialog):
 
 
 def parse_m3u(filename, library=None):
-    plname = fsdecode(os.path.basename(
-        os.path.splitext(filename)[0]))
+    plname = fsn2text(path2fsn(os.path.basename(
+        os.path.splitext(filename)[0])))
 
     filenames = []
 
@@ -66,8 +69,8 @@ def parse_m3u(filename, library=None):
 
 
 def parse_pls(filename, name="", library=None):
-    plname = fsdecode(os.path.basename(
-        os.path.splitext(filename)[0]))
+    plname = fsn2text(path2fsn(os.path.basename(
+        os.path.splitext(filename)[0])))
 
     filenames = []
     with open(filename) as h:
@@ -93,9 +96,7 @@ def __parse_playlist(name, plfilename, files, library):
         _("Importing playlist.\n\n%(current)d/%(total)d songs added."))
     win.show()
     for i, filename in enumerate(files):
-        try:
-            uri = URI(filename)
-        except ValueError:
+        if not uri_is_valid(filename):
             if os.name == "nt":
                 filename = filename.decode("utf-8", "replace")
             # Plain filename.
@@ -106,17 +107,19 @@ def __parse_playlist(name, plfilename, files, library):
             else:
                 songs.append(formats.MusicFile(filename))
         else:
-            if uri.scheme == "file":
+            try:
+                filename = uri2fsn(filename)
+            except ValueError:
+                # Who knows! Hand it off to GStreamer.
+                songs.append(formats.remote.RemoteFile(filename))
+            else:
                 # URI-encoded local filename.
                 filename = os.path.realpath(os.path.join(
-                    os.path.dirname(plfilename), uri.filename))
+                    os.path.dirname(plfilename), filename))
                 if library and filename in library:
                     songs.append(library[filename])
                 else:
                     songs.append(formats.MusicFile(filename))
-            else:
-                # Who knows! Hand it off to GStreamer.
-                songs.append(formats.remote.RemoteFile(uri))
         if win.step():
             break
     win.destroy()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #    ReplayGain Album Analysis using gstreamer rganalysis element
 #    Copyright (C) 2005,2007,2009  Michael Urman
-#                         2012,14  Nick Boultbee
+#                  2012,2014,2016  Nick Boultbee
 #                            2013  Christoph Reiter
 #
 #    This program is free software; you can redistribute it and/or modify
@@ -14,7 +14,8 @@ from gi.repository import GObject
 from gi.repository import Pango
 from gi.repository import Gst
 from gi.repository import GLib
-from quodlibet import print_d
+
+from quodlibet import print_d, ngettext, _
 from quodlibet.plugins import PluginConfigMixin
 
 from quodlibet.browsers.collection.models import EMPTY
@@ -23,7 +24,8 @@ from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.x import Frame
 from quodlibet.qltk import Icons, Dialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.util import cached_property
+from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
+from quodlibet.util import cached_property, print_w, print_e, format_int_locale
 
 __all__ = ['ReplayGain']
 
@@ -150,6 +152,13 @@ class RGSong(object):
         write_to_song('replaygain_track_peak', '%.4f', self.peak)
         write_to_song('replaygain_album_gain', '%.2f dB', album_gain)
         write_to_song('replaygain_album_peak', '%.4f', album_peak)
+
+        # bs1770gain writes those and since we still do old replaygain
+        # just delete them so players use the defaults.
+        song.pop("replaygain_reference_loudness", None)
+        song.pop("replaygain_algorithm", None)
+        song.pop("replaygain_album_range", None)
+        song.pop("replaygain_track_range", None)
 
     @property
     def title(self):
@@ -450,12 +459,12 @@ class RGDialog(Dialog):
         self.__fill_view(view, albums)
         num_to_process = sum(int(rga.should_process) for rga in self._todo)
         template = ngettext(
-            "There is <b>%(to-process)d</b> album to update (of %(all)d)",
-            "There are <b>%(to-process)d</b> albums to update (of %(all)d)",
+            "There is <b>%(to-process)s</b> album to update (of %(all)s)",
+            "There are <b>%(to-process)s</b> albums to update (of %(all)s)",
             num_to_process)
         info.set_markup(template % {
-            "to-process": num_to_process,
-            "all": len(self._todo),
+            "to-process": format_int_locale(num_to_process),
+            "all": format_int_locale(len(self._todo)),
         })
         self.connect("destroy", self.__destroy)
         self.connect('response', self.__response)
@@ -568,8 +577,10 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_NAME = _('Replay Gain')
     PLUGIN_DESC = _('Analyzes and updates ReplayGain information, '
                     'using GStreamer. Results are grouped by album.')
-    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
+    PLUGIN_ICON = Icons.MULTIMEDIA_VOLUME_CONTROL
     CONFIG_SECTION = 'replaygain'
+
+    plugin_handles = each_song(is_finite, is_writable)
 
     def plugin_albums(self, albums):
         mode = self.config_get("process_if", UpdateMode.ALWAYS)
@@ -589,6 +600,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
 
         # Tabulate all settings for neatness
         table = Gtk.Table(n_rows=1, n_columns=2)
+        table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         rows = []

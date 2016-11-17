@@ -6,15 +6,15 @@
 # published by the Free Software Foundation
 
 import os
-import sys
 
-from tests import TestCase, DATA_DIR, skipUnless
+from tests import TestCase, get_data_path, skipUnless
 
 from quodlibet.util.path import normalize_path
-from quodlibet import windows
+from quodlibet.util import is_wine
+from quodlibet.util import windows
 
 
-@skipUnless(os.name == "nt", "Wrong platform", warn=False)
+@skipUnless(os.name == "nt", "Wrong platform")
 class TWindows(TestCase):
 
     def test_dir_funcs(self):
@@ -37,41 +37,22 @@ class TWindows(TestCase):
         self.assertTrue(d is None or isinstance(d, unicode))
 
     def test_get_link_target(self):
-        path = os.path.join(DATA_DIR, "test.lnk")
+        path = get_data_path("test.lnk")
         d = windows.get_link_target(path)
+        self.assertTrue(isinstance(d, unicode))
         self.assertEqual(
             normalize_path(d), normalize_path(u"C:\Windows\explorer.exe"))
-        self.assertTrue(isinstance(d, unicode))
 
-    def test_get_link_target_latin1(self):
-        path = os.path.join(DATA_DIR, "test2.lnk")
+    def test_get_link_target_unicode(self):
+        path = get_data_path("test2.lnk")
         d = windows.get_link_target(path)
-        # the second char is only not in latin-1
-        self.assertEqual(os.path.basename(d), u"\xe1??.txt")
         self.assertTrue(isinstance(d, unicode))
+        if is_wine():
+            # wine doesn't support unicode paths here..
+            self.assertEqual(os.path.basename(d), u"\xe1??.txt")
+        else:
+            self.assertEqual(os.path.basename(d), u"\xe1\U00016826.txt")
 
-    def test_environ(self):
-        env = windows.WindowsEnviron()
-        len_ = len(env)
-        env[u"FOO"] = u"bar"
-        self.assertEqual(len(env), len_ + 1)
-        self.assertEqual(env.get(u"FOO"), u"bar")
-        self.assertTrue("FOO" in repr(env))
-        self.assertEqual(len(list(env)), len(env))
-        del env[u"FOO"]
-
-    def test_environ_ascii(self):
-        env = windows.WindowsEnviron()
-        env["FOO"] = u"bar"
-        env["FOO"]
-        del env["FOO"]
-
-
-@skipUnless(os.name == "nt", "Wrong platform", warn=False)
-class Tget_win32_unicode_argv(TestCase):
-
-    def test_main(self):
-        newargv = windows.get_win32_unicode_argv()
-        self.assertEqual(len(sys.argv), len(newargv))
-        if newargv:
-            self.assertTrue(isinstance(newargv[0], unicode))
+    def test_get_link_target_non_exist(self):
+        with self.assertRaises(WindowsError):
+            windows.get_link_target(u"nopenope.lnk")

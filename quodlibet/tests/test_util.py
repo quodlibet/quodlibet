@@ -1,23 +1,41 @@
 # -*- coding: utf-8 -*-
-import uuid
-from quodlibet.config import HardCodedRatingsPrefs
-from quodlibet.util.path import *
-from quodlibet.util import re_escape
-from quodlibet.util.string import decode, encode, split_escape, join_escape
-from quodlibet.util.string.splitters import *
-from quodlibet.util.library import *
-from tests import TestCase, skipIf
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
 
+import uuid
 import tempfile
 import os
 import sys
 import threading
 import traceback
 import time
-from quodlibet import util
-from quodlibet import config
+import logging
+
+from senf import getcwd, fsnative, fsn2bytes, bytes2fsn
+
+from quodlibet import _
 from quodlibet.compat import text_type, PY2
-from quodlibet.util import format_time_long as f_t_l
+from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
+from quodlibet import config
+from quodlibet import util
+from quodlibet.util.dprint import print_exc, format_exception, extract_tb, \
+    PrintHandler
+from quodlibet.util import format_time_long as f_t_l, format_time_preferred, \
+    format_time_display, format_time_seconds
+from quodlibet.util import re_escape
+from quodlibet.util.library import set_scan_dirs, get_scan_dirs
+from quodlibet.util.path import fsn2glib, glib2fsn, \
+    parse_xdg_user_dirs, xdg_get_system_data_dirs, escape_filename, \
+    strip_win32_incompat_from_path, xdg_get_cache_home, environ, \
+    xdg_get_data_home, unexpand, expanduser, xdg_get_user_dirs, \
+    xdg_get_config_home, get_temp_cover_file, mkdir, mtime
+from quodlibet.util.string import decode, encode, split_escape, join_escape
+from quodlibet.util.string.splitters import split_people, split_title, \
+    split_album
+
+from . import TestCase, skipIf
+from .helper import capture_output
 
 
 is_win = os.name == "nt"
@@ -45,7 +63,7 @@ class Tmkdir(TestCase):
 class Tgetcwd(TestCase):
 
     def test_Tgetcwd(self):
-        self.assertTrue(is_fsnative(getcwd()))
+        self.assertTrue(isinstance(getcwd(), fsnative))
 
 
 class Tmtime(TestCase):
@@ -538,6 +556,10 @@ class Tpattern(TestCase):
     def test_complex_condition(self):
         self.assertEqual(util.pattern("<#(bitrate \> 150)|HQ|LQ>"), "LQ")
 
+    def test_escape_condition(self):
+        self.assertEqual(
+            util.pattern(r"<~filename=/\/adsad\/sadads/|BLA|BLU>"), "BLU")
+
 
 class Tformat_time_long(TestCase):
 
@@ -594,6 +616,35 @@ class Tformat_time_long(TestCase):
 
     def test_limit(s):
         s.assertEquals(len(f_t_l(2 ** 31).split(", ")), 2)
+
+
+class TFormatTimePreferred(TestCase):
+
+    def test_default_setting_is_standard(s):
+        s.assertEquals(config.DURATION.format, DurationFormat.STANDARD)
+
+    def test_raw_config_is_standard(s):
+        s.assertEquals(config.get('display', 'duration_format'),
+                       DurationFormat.STANDARD)
+
+    def test_acts_like_long(s):
+        s._fuzz_loop(format_time_preferred, f_t_l)
+
+    def _fuzz_loop(s, f, f2):
+        x = 1
+        while x < 100000000:
+            s.assertEquals(f(x), f2(x))
+            x = x * 3 / 2 + 1
+
+    def test_acts_like_display(s):
+        def fmt_numeric(x):
+            return format_time_preferred(x, DurationFormat.NUMERIC)
+        s._fuzz_loop(fmt_numeric, format_time_display)
+
+    def test_seconds(s):
+        def fmt_seconds(x):
+            return format_time_preferred(x, DurationFormat.SECONDS)
+        s._fuzz_loop(fmt_seconds, format_time_seconds)
 
 
 class Tspawn(TestCase):
@@ -678,7 +729,7 @@ class Tlibrary(TestCase):
     def test_basic(self):
         self.failIf(get_scan_dirs())
         if os.name == "nt":
-            set_scan_dirs([u"C:\\foo", u"D:\\bar", ""])
+            set_scan_dirs([u"C:\\foo", u"D:\\bar", u""])
             self.failUnlessEqual(get_scan_dirs(), [u"C:\\foo", u"D:\\bar"])
         else:
             set_scan_dirs(["foo", "bar", ""])
@@ -731,15 +782,15 @@ class Tescape_filename(TestCase):
     def test_str(self):
         result = escape_filename("\x00\x01")
         self.assertEqual(result, "%00%01")
-        self.assertTrue(is_fsnative(result))
+        self.assertTrue(isinstance(result, fsnative))
 
     def test_unicode(self):
         result = escape_filename(u'abc\xe4')
         self.assertEqual(result, "abc%C3%A4")
-        self.assertTrue(is_fsnative(result))
+        self.assertTrue(isinstance(result, fsnative))
 
 
-@skipIf(is_win)
+@skipIf(is_win, "not on Windows")
 class Tload_library(TestCase):
 
     def test_libc(self):
@@ -788,14 +839,14 @@ class TPathHandling(TestCase):
 
     def test_main(self):
         v = fsnative(u"foo")
-        self.assertTrue(is_fsnative(v))
+        self.assertTrue(isinstance(v, fsnative))
 
-        v2 = glib2fsnative(fsnative2glib(v))
-        self.assertTrue(is_fsnative(v2))
+        v2 = glib2fsn(fsn2glib(v))
+        self.assertTrue(isinstance(v2, fsnative))
         self.assertEqual(v, v2)
 
-        v3 = bytes2fsnative(fsnative2bytes(v))
-        self.assertTrue(is_fsnative(v3))
+        v3 = bytes2fsn(fsn2bytes(v, "utf-8"), "utf-8")
+        self.assertTrue(isinstance(v3, fsnative))
         self.assertEqual(v, v3)
 
 
@@ -804,7 +855,7 @@ class Tget_temp_cover_file(TestCase):
     def test_main(self):
         fobj = get_temp_cover_file(b"foobar")
         try:
-            self.assertTrue(is_fsnative(fobj.name))
+            self.assertTrue(isinstance(fobj.name, fsnative))
         finally:
             fobj.close()
 
@@ -1018,31 +1069,46 @@ class Tcached_property(TestCase):
         self.assertRaises(AssertionError, define_class)
 
 
+@util.enum
+class Foo(str):
+    FOO = "blah"
+    BAR = "not foo"
+    BAZ = "baz!"
+
+
 class Tenum(TestCase):
 
     def test_main(self):
 
         @util.enum
-        class Foo(int):
+        class IntFoo(int):
             FOO = 0
             BAR = 1
 
-        self.assertTrue(issubclass(Foo, int))
-        self.assertTrue(isinstance(Foo.BAR, Foo))
-        self.assertTrue(isinstance(Foo.FOO, Foo))
-        self.assertEqual(Foo.FOO, 0)
-        self.assertEqual(Foo.BAR, 1)
+        self.assertTrue(issubclass(IntFoo, int))
+        self.assertTrue(isinstance(IntFoo.BAR, IntFoo))
+        self.assertTrue(isinstance(IntFoo.FOO, IntFoo))
+        self.assertEqual(IntFoo.FOO, 0)
+        self.assertEqual(IntFoo.BAR, 1)
 
     def test_str(self):
-        @util.enum
-        class Foo(str):
-            FOO = "blah"
-            BAR = "foo"
-
         self.assertTrue(issubclass(Foo, str))
         self.assertTrue(isinstance(Foo.BAR, Foo))
         self.assertEqual(Foo.FOO, "blah")
         self.assertEqual(repr(Foo.BAR), "Foo.BAR")
+
+    def test_values(self):
+        self.assertEqual(Foo.values, {Foo.FOO, Foo.BAR, Foo.BAZ})
+
+    def test_value_of(self):
+        self.assertEqual(Foo.value_of("blah"), Foo.FOO)
+        self.assertEqual(Foo.value_of("baz!"), Foo.BAZ)
+
+    def test_value_of_raises_for_unknown(self):
+        self.assertRaises(ValueError, Foo.value_of, "??")
+
+    def test_value_of_uses_default(self):
+        self.assertEquals(Foo.value_of("??", "default"), "default")
 
 
 class Tlist_unique(TestCase):
@@ -1087,3 +1153,79 @@ class Tgdecode(TestCase):
             self.assertTrue(isinstance(util.gdecode(b"foo"), text_type))
         else:
             self.assertTrue(isinstance(util.gdecode(u"foo"), text_type))
+
+
+class Tget_module_dir(TestCase):
+
+    def test_self(self):
+        path = util.get_module_dir()
+        self.assertTrue(isinstance(path, fsnative))
+        self.assertTrue(os.path.exists(path))
+
+    def test_other(self):
+        path = util.get_module_dir(util)
+        self.assertTrue(isinstance(path, fsnative))
+        self.assertTrue(os.path.exists(path))
+
+
+class Tget_ca_file(TestCase):
+
+    def test_main(self):
+        path = util.get_ca_file()
+        if path is not None:
+            self.assertTrue(isinstance(path, fsnative))
+            self.assertTrue(os.path.exists(path))
+
+
+class Tprint_exc(TestCase):
+
+    def test_main(self):
+        try:
+            1 / 0
+        except:
+            with capture_output():
+                print_exc()
+
+    def test_pass_exc_info(self):
+        try:
+            1 / 0
+        except:
+            with capture_output():
+                print_exc(exc_info=sys.exc_info(), context="foo")
+
+
+class TPrintHandler(TestCase):
+
+    def test_main(self):
+        handler = PrintHandler()
+        for level in range(0, 70, 10):
+            record = logging.LogRecord(
+                "foo", level, "a.py", 45, "bar", None, None)
+            with capture_output():
+                handler.handle(record)
+
+
+class Tformat_exception(TestCase):
+
+    def test_main(self):
+        try:
+            1 / 0
+        except:
+            result = format_exception(*sys.exc_info())
+            self.assertTrue(isinstance(result, list))
+            self.assertTrue(all([isinstance(l, text_type) for l in result]))
+
+
+class Textract_tb(TestCase):
+
+    def test_main(self):
+        try:
+            1 / 0
+        except:
+            result = extract_tb(sys.exc_info()[2])
+            self.assertTrue(isinstance(result, list))
+            for fn, l, fu, text in result:
+                self.assertTrue(isinstance(fn, fsnative))
+                self.assertTrue(isinstance(l, int))
+                self.assertTrue(isinstance(fu, text_type))
+                self.assertTrue(isinstance(text, text_type))

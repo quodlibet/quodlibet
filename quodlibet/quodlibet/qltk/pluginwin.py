@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,10 +12,11 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
 
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.views import HintedTreeView
-from quodlibet.qltk.window import UniqueWindow
+from quodlibet.qltk.window import UniqueWindow, PersistentWindowMixin
 from quodlibet.qltk.entry import ClearEntry
 from quodlibet.qltk.x import Align, Paned, Button, ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
@@ -99,7 +101,7 @@ class PluginFilterCombo(Gtk.ComboBox):
 
     def refill(self, tags, no_tags):
         """Fill with a sequence of tags.
-        If no_tags is true display display the extra cetegory for it.
+        If no_tags is true display display the extra category for it.
         """
 
         active = max(self.get_active(), 0)
@@ -142,7 +144,7 @@ class PluginListView(HintedTreeView):
             plugin = model.get_value(iter_)
             pm = PluginManager.instance
             render.set_activatable(plugin.can_enable)
-            # if it can't be enabled because it's an always one kinda thing
+            # If it can't be enabled because it's an always-on kinda thing,
             # show it as enabled so it doesn't look broken.
             render.set_active(pm.enabled(plugin) or not plugin.can_enable)
 
@@ -165,6 +167,7 @@ class PluginListView(HintedTreeView):
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.set_property('xalign', 0.0)
+        render.set_padding(3, 3)
         column = Gtk.TreeViewColumn("name", render)
 
         def cell_data3(col, render, model, iter_, data):
@@ -271,14 +274,15 @@ class PluginPreferencesContainer(Gtk.VBox):
             frame.hide()
 
 
-class PluginWindow(UniqueWindow):
+class PluginWindow(UniqueWindow, PersistentWindowMixin):
     def __init__(self, parent=None):
         if self.is_not_unique():
             return
         super(PluginWindow, self).__init__()
         self.set_title(_("Plugins"))
-        self.set_default_size(655, 404)
+        self.set_default_size(700, 500)
         self.set_transient_for(parent)
+        self.enable_window_tracking("plugin_prefs")
 
         paned = Paned()
         vbox = Gtk.VBox()
@@ -325,7 +329,7 @@ class PluginWindow(UniqueWindow):
             refresh.set_focus_on_click(False)
             refresh.connect('clicked', self.__refresh, tv, pref_box, errors,
                             filter_combo)
-            bbox.pack_start(refresh, True, True, 0)
+            bbox.pack_start(Align(refresh, border=6), True, True, 0)
 
         vbox.pack_start(Align(fb, border=6, right=-6), False, True, 0)
         vbox.pack_start(sw, True, True, 0)

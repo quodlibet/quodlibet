@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#           2011-2013 Nick Boultbee
+#           2011-2013,2016 Nick Boultbee
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,14 +9,15 @@
 
 import os
 
+from senf import uri2fsn, fsnative
+
 from quodlibet.util.string import split_escape
 
 from quodlibet import browsers
 
 from quodlibet.compat import cBytesIO as StringIO
 from quodlibet import util
-from quodlibet.util.uri import URI
-from quodlibet.util.path import fsnative
+from quodlibet.util import print_d, print_e
 
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.properties import SongProperties
@@ -76,7 +77,7 @@ class CommandRegistry(object):
         if len(args) > argcount + optcount:
             raise CommandError("Too many arguments for %r" % name)
 
-        print_d("Running %r with params %r " % (cmd, args))
+        print_d("Running %r with params %s " % (cmd.__name__, args))
 
         try:
             return cmd(app, *args)
@@ -157,32 +158,40 @@ def _volume(app, value):
     app.player.volume = min(1.0, max(0.0, volume))
 
 
-@registry.register("order", args=1)
-def _order(app, value):
-    order = app.window.order
+@registry.register("stop-after", args=1)
+def _stop_after(app, value):
+    po = app.player_options
+    if value == "0":
+        po.stop_after = False
+    elif value == "1":
+        po.stop_after = True
+    elif value == "t":
+        po.stop_after = not po.stop_after
+    else:
+        raise CommandError("Invalid value %r" % value)
 
-    if value in ["t", "toggle"]:
-        order.set_shuffle(not order.get_shuffle())
-        return
 
-    try:
-        order.set_active_by_name(value.lower())
-    except ValueError:
-        try:
-            order.set_active_by_index(int(value))
-        except (ValueError, IndexError):
-            pass
+@registry.register("shuffle", args=1)
+def _shuffle(app, value):
+    po = app.player_options
+    if value in ["0", "off"]:
+        po.shuffle = False
+    elif value in ["1", "on"]:
+        po.shuffle = True
+    elif value in ["t", "toggle"]:
+        po.shuffle = not po.shuffle
 
 
 @registry.register("repeat", args=1)
 def _repeat(app, value):
-    repeat = app.window.repeat
+    po = app.player_options
     if value in ["0", "off"]:
-        repeat.set_active(False)
+        po.repeat = False
     elif value in ["1", "on"]:
-        repeat.set_active(True)
+        print_d("Enabling repeat")
+        po.repeat = True
     elif value in ["t", "toggle"]:
-        repeat.set_active(not repeat.get_active())
+        po.repeat = not po.repeat
 
 
 @registry.register("seek", args=1)
@@ -204,11 +213,7 @@ def _seek(app, time):
 
 @registry.register("play-file", args=1)
 def _play_file(app, value):
-    filename = os.path.realpath(value)
-    song = app.library.add_filename(filename, add=False)
-    if song:
-        if app.player.go_to(song):
-            app.player.paused = False
+    app.window.open_file(value)
 
 
 @registry.register("toggle-window")
@@ -247,8 +252,7 @@ def _set_rating(app, value):
 def _dump_browsers(app):
     f = StringIO()
     for i, b in enumerate(browsers.browsers):
-        if not b.is_empty:
-            f.write("%d. %s\n" % (i, browsers.name(b)))
+        f.write("%d. %s\n" % (i, browsers.name(b)))
     return f.getvalue()
 
 
@@ -339,7 +343,7 @@ def _enqueue_files(app, value):
     songs = []
     for param in split_escape(value, ","):
         try:
-            song_path = URI(param).filename
+            song_path = uri2fsn(param)
         except ValueError:
             song_path = param
         if song_path in library:
@@ -370,7 +374,6 @@ def _quit(app):
 @registry.register("status")
 def _status(app):
     player = app.player
-    window = app.window
     f = StringIO()
 
     if player.paused:
@@ -378,9 +381,10 @@ def _status(app):
     else:
         strings = ["playing"]
     strings.append(type(app.browser).__name__)
+    po = app.player_options
     strings.append("%0.3f" % player.volume)
-    strings.append(window.order.get_active_name())
-    strings.append((window.repeat.get_active() and "on") or "off")
+    strings.append("shuffle" if po.shuffle else "inorder")
+    strings.append("on" if po.repeat else "off")
     progress = 0
     if player.info:
         length = player.info.get("~#length", 0)
@@ -397,12 +401,8 @@ def _status(app):
 
 @registry.register("song-list", args=1)
 def _song_list(app, value):
-    window = app.window
-    if value.startswith("t"):
-        value = not window.song_scroller.get_property('visible')
-    else:
-        value = value not in ['0', 'off', 'false']
-    window.song_scroller.set_property('visible', value)
+    # deprecated
+    return
 
 
 @registry.register("queue", args=1)
@@ -465,3 +465,8 @@ def _print_playing(app, fstring="<artist~album~tracknumber~title>"):
         song.sanitize()
 
     return Pattern(fstring).format(song) + "\n"
+
+
+@registry.register("uri-received", args=1)
+def _uri_received(app, uri):
+    app.browser.emit("uri-received", uri)

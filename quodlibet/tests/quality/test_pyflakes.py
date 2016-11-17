@@ -1,69 +1,59 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013 Christoph Reiter
+# Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 import os
-import sys
-import re
+from concurrent.futures import ProcessPoolExecutor
+
+import pytest
+import quodlibet
+
+os.environ["PYFLAKES_NODOCTEST"] = "1"
+os.environ["PYFLAKES_BUILTINS"] = \
+    "unichr,unicode,long,basestring,xrange,cmp,execfile,reload"
 
 try:
     from pyflakes.scripts import pyflakes
 except ImportError:
     pyflakes = None
 
-from quodlibet.compat import PY3
-
-from tests import TestCase, skipUnless
-
-
-class FakeStream(object):
-    # skip these by default
-    BL = ["unable to detect undefined names"]
-    if PY3:
-        BL.append(
-            "undefined name '(unichr|unicode|long|basestring|xrange|cmp)'")
-
-    def __init__(self, blacklist=None):
-        self.lines = []
-        if blacklist is None:
-            blacklist = []
-        self.bl = self.BL[:] + blacklist
-
-    def write(self, text):
-        for p in self.bl:
-            if re.search(p, text):
-                return
-        text = text.strip()
-        if not text:
-            return
-        self.lines.append(text)
-
-    def check(self):
-        if self.lines:
-            raise Exception("\n" + "\n".join(self.lines))
+from tests import TestCase
+from tests.helper import capture_output
 
 
-@skipUnless(pyflakes, "pyflakes not found")
+def iter_py_files(root):
+    for base, dirs, files in os.walk(root):
+        for file_ in files:
+            path = os.path.join(base, file_)
+            if os.path.splitext(path)[1] == ".py":
+                yield path
+
+
+def _check_file(f):
+    with capture_output() as (o, e):
+        pyflakes.checkPath(f)
+    return o.getvalue().splitlines()
+
+
+def check_files(files, ignore=[]):
+    lines = []
+    with ProcessPoolExecutor(None) as pool:
+        for res in pool.map(_check_file, files):
+            lines.extend(res)
+    return sorted(lines)
+
+
+@pytest.mark.quality
 class TPyFlakes(TestCase):
 
-    def __check_path(self, path):
-        old_stdout = sys.stdout
-        stream = FakeStream()
-        try:
-            sys.stdout = stream
-            for dirpath, dirnames, filenames in os.walk(path):
-                for filename in filenames:
-                    if filename.endswith('.py'):
-                        pyflakes.checkPath(os.path.join(dirpath, filename))
-        finally:
-            sys.stdout = old_stdout
-        stream.check()
+    def test_all(self):
+        assert pyflakes is not None, "pyflakes is missing"
 
-    def test_core(self):
-        import quodlibet
-        path = quodlibet.__path__[0]
-        path = os.path.dirname(path)
-        self.__check_path(path)
+        files = iter_py_files(
+            os.path.dirname(os.path.abspath(quodlibet.__path__[0])))
+        errors = check_files(files)
+        if errors:
+            raise Exception("\n".join(errors))

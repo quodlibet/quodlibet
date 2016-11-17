@@ -6,11 +6,12 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, Pango
+from senf import fsn2text
 
+from quodlibet import ngettext, _
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import Icons
-from quodlibet.util.path import fsdecode
 from quodlibet.util import connect_obj
 
 
@@ -59,7 +60,7 @@ class MaskedBox(Gtk.HBox):
 
         def cdf(column, cell, model, iter, data):
             row = model[iter]
-            cell.set_property('text', fsdecode(row[0]))
+            cell.set_property('text', fsn2text(row[0]))
 
         def cdf_count(column, cell, model, iter, data):
             mount = model[iter][0]

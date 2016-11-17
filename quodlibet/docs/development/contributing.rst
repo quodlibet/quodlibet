@@ -32,12 +32,25 @@ Useful Links
 
 
 Writing a good bug report
-    Please follow the `bug report guidelines 
-    <https://github.com/quodlibet/quodlibet/blob/master/CONTRIBUTING.rst>`__. 
+    It helps the developers to format bugs in a standard way, with a short
+    summary as the Issue title, ideally:
+
+      1. **Steps to reproduce** (how the bug can be demonstrated again)
+      2. **Expected output** (what *should* happen)
+      3. **Actual output** (what *did* happen)
+
+    Also: the more logs, system details, and insight about the library / files
+    the better the chance of a speedy resolution.
 
     For more general tips see `"How to Report Bugs Effectively"
     <http://www.chiark.greenend.org.uk/~sgtatham/bugs.html>`_.
 
+Look through existing issues
+    Quod Libet is a mature project (in its second decade!), and there have been
+    a *lot* of features and bugs discussed over the years. It's probable that
+    what you're thinking has been discussed at some point, so please search
+    through existing open (and to a lesser extent closed) issues before
+    creating a new one. This reduces noise and saves the maintainers time.
 
 One bug per ticket
     Please do not create an item (ticket) in the issue tracker which contains
@@ -71,8 +84,9 @@ explaining how you envision it being implemented. Not only does this make
 your feature more likely to be supported, it allows others to enhance,
 generalize, and refine your ideas.
 
-As with bugs, please refrain from submitting multiple feature requests in
-the same issue. If you have related ideas, file them separately and mention
+As with bugs, please check for existing feature requests first and
+refrain from submitting multiple feature requests in the same issue.
+If you have related ideas, file them separately and mention
 the issue numbers of previous ideas.
 
 

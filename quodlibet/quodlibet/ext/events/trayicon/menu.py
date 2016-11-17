@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011,2013 Nick Boultbee
+#      2011,2013,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,11 +8,14 @@
 
 from gi.repository import GObject, Gtk
 
+from quodlibet.browsers.playlists.menu import PlaylistMenu
+
+from quodlibet import _
 from quodlibet import browsers
 from quodlibet import qltk
 from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
-from quodlibet.util import connect_obj, connect_destroy, is_kde
+from quodlibet.util import connect_obj, connect_destroy, is_plasma
 from quodlibet.qltk import Icons
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.information import Information
@@ -33,14 +36,17 @@ class IndicatorMenu(Gtk.Menu):
         self._app = app
         player = app.player
 
-        show_item_bottom = is_kde()
+        show_item_bottom = is_plasma()
         if add_show_item:
             show_item = Gtk.CheckMenuItem.new_with_mnemonic(
                 _("_Show %(application-name)s") % {
                     "application-name": app.name})
 
             def on_toggled(menuitem):
-                app.window.set_visible(menuitem.get_active())
+                if menuitem.get_active():
+                    app.present()
+                else:
+                    app.hide()
                 pconfig.set("window_visible", menuitem.get_active())
 
             self._toggle_id = show_item.connect("toggled", on_toggled)
@@ -70,27 +76,25 @@ class IndicatorMenu(Gtk.Menu):
         player_options = app.player_options
 
         shuffle = Gtk.CheckMenuItem(label=_("_Shuffle"), use_underline=True)
-        player_options.bind_property("random", shuffle, "active",
+        player_options.bind_property("shuffle", shuffle, "active",
                                      GObject.BindingFlags.BIDIRECTIONAL)
-        player_options.notify("random")
+        player_options.notify("shuffle")
 
         repeat = Gtk.CheckMenuItem(label=_("_Repeat"), use_underline=True)
         player_options.bind_property("repeat", repeat, "active",
                                      GObject.BindingFlags.BIDIRECTIONAL)
         player_options.notify("repeat")
 
-        safter = Gtk.CheckMenuItem(label=_("Stop _after this song"),
+        safter = Gtk.CheckMenuItem(label=_("Stop _After This Song"),
                                    use_underline=True)
         player_options.bind_property("stop-after", safter, "active",
                                      GObject.BindingFlags.BIDIRECTIONAL)
         player_options.notify("stop-after")
 
-        browse = qltk.MenuItem(_("_Browse Library"), Icons.EDIT_FIND)
+        browse = qltk.MenuItem(_("Open _Browser"), Icons.EDIT_FIND)
         browse_sub = Gtk.Menu()
 
         for Kind in browsers.browsers:
-            if Kind.is_empty:
-                continue
             i = Gtk.MenuItem(label=Kind.accelerated_name, use_underline=True)
             connect_obj(i,
                 'activate', LibraryBrowser.open, Kind, app.library, app.player)
@@ -98,7 +102,7 @@ class IndicatorMenu(Gtk.Menu):
 
         browse.set_submenu(browse_sub)
 
-        self._props = qltk.MenuItem(_("Edit _Tags"), Icons.DOCUMENT_PROPERTIES)
+        self._props = qltk.MenuItem(_("Edit _Tags"), Icons.EDIT)
 
         def on_properties(*args):
             song = player.song
@@ -108,6 +112,10 @@ class IndicatorMenu(Gtk.Menu):
         self._props.connect('activate', on_properties)
 
         self._info = MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
+
+        self._playlists_item = MenuItem(_("Play_lists"),
+                                        Icons.FOLDER_DRAG_ACCEPT)
+        self._new_playlist_submenu_for(player.song)
 
         def on_information(*args):
             song = player.song
@@ -140,6 +148,7 @@ class IndicatorMenu(Gtk.Menu):
         self.append(safter)
         self.append(SeparatorMenuItem())
         self.append(rating)
+        self.append(self._playlists_item)
         self.append(self._props)
         self.append(self._info)
         self.append(SeparatorMenuItem())
@@ -181,6 +190,16 @@ class IndicatorMenu(Gtk.Menu):
         self._info.set_sensitive(song is not None)
         self._props.set_sensitive(song is not None)
         self._rating_item.set_songs([song])
+        self._new_playlist_submenu_for(song)
+
+    def _new_playlist_submenu_for(self, song):
+        submenu = self._playlists_item.get_submenu()
+        if submenu:
+            submenu.destroy()
+        playlist_menu = PlaylistMenu([song])
+        self._playlists_item.set_submenu(playlist_menu)
+        self._playlists_item.set_sensitive(bool(song) and song.can_add)
+        self._playlists_item.show_all()
 
     def _on_play_pause(self, menuitem, player):
         if player.song:

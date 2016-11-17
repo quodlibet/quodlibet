@@ -20,6 +20,7 @@ except ImportError:
 from gi.repository import GLib
 
 from quodlibet.util.path import mkdir
+from quodlibet.util import print_d
 
 FIFO_TIMEOUT = 10
 """time in seconds until we give up writing/reading"""

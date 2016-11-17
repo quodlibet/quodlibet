@@ -49,18 +49,9 @@ in the git repo for further instructions.
 |windows-logo| Windows
 ----------------------
 
-On Windows we provide a special SDK package which includes all dependencies
-and tools for development. Check out the :ref:`Windows download section
-<windows>`.
+On Windows we use the `msys2 <https://msys2.github.io/>`__ environment for
+development.
 
-First extract the package and open a console in the sdk directory. Then
-
-#. run env.bat
-#. (first time only) run clone.bat
-#. cd quodlibet\\quodlibet
-#. python quodlibet.py
-
-If you want to build an installer yourself or change/add dependencies check
-out the `"win_installer"
+Check out the `win_installer
 <https://github.com/quodlibet/quodlibet/tree/master/win_installer>`__
 directory in the git repo for further instructions.

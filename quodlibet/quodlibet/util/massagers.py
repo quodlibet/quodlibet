@@ -8,6 +8,8 @@
 import locale
 import re
 
+from quodlibet import _
+
 from .iso639 import ISO_639_2
 
 

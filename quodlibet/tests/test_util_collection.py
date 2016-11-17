@@ -1,16 +1,23 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 import shutil
 import os
+from collections import defaultdict
+
+from senf import fsnative
+
 from quodlibet import config
 
 from tests import TestCase, mkdtemp
 from quodlibet.formats import AudioFile as Fakesong
-from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
+from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT, PEOPLE
 from quodlibet.util.collection import Album, Playlist, avg, bayesian_average, \
     FileBackedPlaylist
 from quodlibet.library.libraries import FileLibrary
 from quodlibet.util import format_rating
-from quodlibet.util.path import fsnative
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 
@@ -226,13 +233,12 @@ class TAlbum(TestCase):
         failUnlessEq(album("~performer", "x"), song("~performer", "x"))
         failUnlessEq(album("~performersort", "x"), song("~performersort", "x"))
 
-        failUnlessEq(album("~cover", "x"), song("~cover", "x"))
         failUnlessEq(album("~rating", "x"), song("~rating", "x"))
 
         for p in PEOPLE:
             failUnlessEq(album(p, "x"), song(p, "x"))
 
-        for p in INTERN_NUM_DEFAULT:
+        for p in NUMERIC_ZERO_DEFAULT:
             failUnlessEq(album(p, "x"), song(p, "x"))
 
     def test_methods(s):
@@ -254,7 +260,7 @@ class TAlbum(TestCase):
         config.quit()
 
 
-class TestPlaylistResource(object):
+class MockPlaylistResource(object):
     def __init__(self, pl):
         self.pl = pl
 
@@ -271,11 +277,34 @@ class TPlaylist(TestCase):
         Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
     ]
 
+    class FakeLib(object):
+
+        def __init__(self):
+            self.reset()
+
+        def emit(self, name, songs):
+            self.emitted[name].extend(songs)
+
+        def masked(self, songs):
+            return False
+
+        def reset(self):
+            self.emitted = defaultdict(list)
+
+        @property
+        def changed(self):
+            return self.emitted.get('changed', [])
+
+    FAKE_LIB = FakeLib()
+
+    def setUp(self):
+        self.FAKE_LIB.reset()
+
     def pl(self, name, lib=None):
         return Playlist(name, lib)
 
-    def wrap(self, name, lib=None):
-        return TestPlaylistResource(self.pl(name, lib))
+    def wrap(self, name, lib=FAKE_LIB):
+        return MockPlaylistResource(self.pl(name, lib))
 
     def test_equality(s):
         pl = s.pl("playlist")
@@ -398,6 +427,23 @@ class TPlaylist(TestCase):
             s.failUnlessEqual(NUMERIC_SONGS[1:2], pl[1:2])
             s.failUnless(NUMERIC_SONGS[1] in pl)
 
+    def test_extend_signals(s):
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            s.failUnlessEqual(s.FAKE_LIB.changed, NUMERIC_SONGS)
+
+    def test_append_signals(s):
+        with s.wrap("playlist") as pl:
+            song = NUMERIC_SONGS[0]
+            pl.append(song)
+            s.failUnlessEqual(s.FAKE_LIB.changed, [song])
+
+    def test_clear_signals(s):
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            pl.clear()
+            s.failUnlessEqual(s.FAKE_LIB.changed, NUMERIC_SONGS * 2)
+
     def test_make(self):
         with self.wrap("Does not exist") as pl:
             self.failUnlessEqual(0, len(pl))
@@ -407,6 +453,8 @@ class TPlaylist(TestCase):
         with self.wrap("Foobar") as pl:
             pl.rename("Foo Quuxly")
             self.failUnlessEqual(pl.name, "Foo Quuxly")
+            # Rename should not fire signals
+            self.failIf(self.FAKE_LIB.changed)
 
     def test_rename_nothing(self):
         with self.wrap("Foobar") as pl:
@@ -453,10 +501,31 @@ class TPlaylist(TestCase):
                             ("Playlist has un-detected duplicates: %s "
                              % "\n".join([str(s) for s in pl._list])))
 
+    def test_remove_leaving_duplicates(self):
+        with self.wrap("playlist") as pl:
+            pl.extend(self.TWO_SONGS)
+            [first, second] = self.TWO_SONGS
+            pl.extend(NUMERIC_SONGS + self.TWO_SONGS)
+            self.failUnlessEqual(len(self.FAKE_LIB.changed), 7)
+            self.FAKE_LIB.reset()
+            pl.remove_songs(self.TWO_SONGS, leave_dupes=True)
+            self.failUnless(first in pl)
+            self.failUnless(second in pl)
+            self.failIf(len(self.FAKE_LIB.changed))
+
+    def test_remove_fully(self):
+        with self.wrap("playlist") as pl:
+            pl.extend(self.TWO_SONGS * 2)
+            self.FAKE_LIB.reset()
+            pl.remove_songs(self.TWO_SONGS, leave_dupes=False)
+            self.failIf(len(pl))
+            self.failUnlessEqual(self.FAKE_LIB.changed, self.TWO_SONGS)
+
 
 class TFileBackedPlaylist(TPlaylist):
 
     def setUp(self):
+        super(TFileBackedPlaylist, self).setUp()
         self.temp = mkdtemp()
         self.temp2 = mkdtemp()
 
@@ -500,6 +569,21 @@ class TFileBackedPlaylist(TPlaylist):
         self.failIfEqual(p1.name, p2.name)
         p1.delete()
         p2.delete()
+
+    def test_rename_removes(self):
+        with self.wrap("foo") as pl:
+            pl.rename("bar")
+            self.failUnless(os.path.exists(os.path.join(self.temp, 'bar')))
+            self.failIf(os.path.exists(os.path.join(self.temp, 'foo')))
+
+    def test_rename_fails_if_file_exists(self):
+        with self.wrap("foo") as foo:
+            with self.wrap("bar") as bar:
+                try:
+                    foo.rename("bar")
+                    self.fail("Should have raised, %s exists" % bar.filename)
+                except ValueError:
+                    pass
 
     def test_masked_handling(self):
         if os.name == "nt":

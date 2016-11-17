@@ -6,13 +6,13 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
-from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from senf import fsnative
 
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from tests.plugin import PluginTestCase
 from quodlibet import config
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 
 SONGS = [

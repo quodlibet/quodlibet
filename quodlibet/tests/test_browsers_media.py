@@ -8,7 +8,7 @@
 from tests import TestCase
 
 from quodlibet import config
-from quodlibet.browsers.media import *
+from quodlibet.browsers.media import MediaDevices, DeviceProperties
 from quodlibet.library import SongLibrary
 
 

@@ -7,21 +7,32 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import is_wayland
+from quodlibet.qltk import is_wayland, Icons
 from quodlibet.qltk.window import Window
-from quodlibet.util import is_unity, is_osx, is_kde, print_exc
+from quodlibet.util import (is_unity, is_osx, is_plasma, is_enlightenment,
+                            print_exc, print_w, print_d)
 
 from .prefs import Preferences
 from .util import pconfig
 from .systemtray import SystemTray
 
 
+if is_osx():
+    # Works, but not without problems:
+    # https://github.com/quodlibet/quodlibet/issues/1870
+    # The dock menu is more useful so disable.
+    from quodlibet.plugins import PluginNotSupportedError
+    raise PluginNotSupportedError
+
+
 def get_indicator_impl():
     """Returns a BaseIndicator implementation depending on the environ"""
 
-    use_app_indicator = (is_unity() or is_wayland() or is_kde())
+    use_app_indicator = (is_unity() or is_wayland() or is_plasma() or
+                         is_enlightenment())
 
     print_d("use app indicator: %s" % use_app_indicator)
     if not use_app_indicator:
@@ -43,6 +54,7 @@ class TrayIconPlugin(EventPlugin):
     PLUGIN_ID = "Tray Icon"
     PLUGIN_NAME = _("Tray Icon")
     PLUGIN_DESC = _("Controls Quod Libet from the system tray.")
+    PLUGIN_ICON = Icons.USER_DESKTOP
 
     def enabled(self):
         impl = get_indicator_impl()

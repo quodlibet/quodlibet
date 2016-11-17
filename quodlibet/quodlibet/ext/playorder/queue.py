@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 # Copyright 2009 Steven Robertson
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderInOrderMixin
+from quodlibet.plugins.playorder import ShufflePlugin
+from quodlibet.qltk.playorder import OrderInOrder
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.qltk import Icons
 
 
-class QueueOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
+class QueueOrder(ShufflePlugin, OrderInOrder):
     PLUGIN_ID = "queue"
     PLUGIN_NAME = _("Queue Only")
     PLUGIN_ICON = Icons.MEDIA_SKIP_FORWARD

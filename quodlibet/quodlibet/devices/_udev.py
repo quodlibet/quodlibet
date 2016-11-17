@@ -13,7 +13,7 @@
 # The first API incompatible change (version bump) was introduced in 183
 # http://cgit.freedesktop.org/systemd/systemd/commit/?id=20bbd54f603994a3
 
-from quodlibet.util import load_library
+from quodlibet.util import load_library, print_d
 
 from ctypes import POINTER, Structure
 from ctypes import c_longlong, c_int, c_char_p, c_void_p, c_long, c_char

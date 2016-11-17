@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase
 from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn, \
     DragScroll, MultiDragTreeView, RCMTreeView, DragIconTreeView
 import quodlibet.config
+from quodlibet.util import is_windows
 from gi.repository import Gtk, Gdk
 
+from . import skipIf
 from .helper import send_key_click, visible, send_button_click, realized
 
 
@@ -254,6 +260,7 @@ class TDragScroll(TestCase):
         self.c = ScrollClass()
         _fill_view(self.c)
 
+    @skipIf(is_windows(), "fixme")
     def test_basic(self):
         self.c.scroll_motion(0, 0)
         self.c.scroll_motion(42, 42)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -17,6 +18,7 @@ def enum(cls):
             BAR = 1
 
     Result is an int subclass and all attributes are instances of it.
+    Each subclass has a property `values` referring to *all* known instances.
     """
 
     type_ = cls.__bases__[0]
@@ -31,12 +33,23 @@ def enum(cls):
             value_instance = new_type(value)
             setattr(new_type, key, value_instance)
             map_[value] = key
+    new_type.values = set(map_.keys())
+
+    def value_of(cls, s, default=None):
+        for v in cls.values:
+            if v == s:
+                return v
+        if default is not None:
+            return default
+        raise ValueError("Can't find %s (try %s)" % (s, cls.values))
+    new_type.value_of = classmethod(value_of)
 
     def repr_(self):
-        if self in map_:
-            return "%s.%s" % (type(self).__name__, map_[self])
-        else:
-            return "%s(%s)" % (type(self).__name__, self)
+        name = type(self).__name__
+        try:
+            return "%s.%s" % (name, map_[self])
+        except KeyError:
+            return "%s(%s)" % (name, self)
 
     setattr(new_type, "__repr__", repr_)
 

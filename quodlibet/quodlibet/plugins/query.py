@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 from quodlibet.plugins import PluginHandler, PluginManager
+from quodlibet.qltk import Icons
 
 
 class QueryPlugin(object):
@@ -46,6 +47,7 @@ class QueryPlugin(object):
     """
     search = None
     key = None
+    PLUGIN_ICON = Icons.EDIT_FIND
 
     def parse_body(self, body):
         return body

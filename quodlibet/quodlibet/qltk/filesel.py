@@ -10,11 +10,13 @@ from quodlibet.compat import urlsplit
 import errno
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
+from senf import uri2fsn, fsnative, fsn2text
 
 from quodlibet import formats
 from quodlibet import qltk
-from quodlibet import windows
+from quodlibet import _
 
+from quodlibet.util import windows
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.views import AllTreeView, RCMHintedTreeView, \
     MultiDragTreeView
@@ -23,9 +25,8 @@ from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
 
-from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
-    glib2fsnative, fsnative, xdg_get_user_dirs, get_home_dir
-from quodlibet.util.uri import URI
+from quodlibet.util.path import listdir, \
+    glib2fsn, xdg_get_user_dirs, get_home_dir
 from quodlibet.util import connect_obj
 
 
@@ -82,9 +83,16 @@ def _get_win_favorites():
 
         for entry in link_entries:
             if entry.endswith(".lnk"):
-                target = windows.get_link_target(os.path.join(links, entry))
-                if target is not None:
-                    folders.append(target)
+                try:
+                    target = windows.get_link_target(
+                        os.path.join(links, entry))
+                except WindowsError:
+                    pass
+                else:
+                    if target:
+                        # RecentPlaces.lnk resolves
+                        # to an empty string for example
+                        folders.append(target)
 
     # remove duplicated entries
     filtered = []
@@ -134,7 +142,7 @@ def get_drives():
         for mount in Gio.VolumeMonitor.get().get_mounts():
             path = mount.get_root().get_path()
             if path is not None:
-                paths.append(glib2fsnative(path))
+                paths.append(glib2fsn(path))
         paths.append("/")
         return paths
 
@@ -178,7 +186,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         super(DirectoryTree, self).__init__(model=model)
 
         if initial is not None:
-            assert is_fsnative(initial)
+            assert isinstance(initial, fsnative)
 
         column = TreeViewColumn(title=_("Folders"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -194,7 +202,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
             if value is not None:
-                text = fsdecode(os.path.basename(value) or value)
+                text = fsn2text(os.path.basename(value) or value)
                 cell.set_property('text', text)
 
         column.set_cell_data_func(render, cell_data)
@@ -209,7 +217,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         for path in folders:
             niter = model.append(None, [path])
             if path is not None:
-                assert is_fsnative(path)
+                assert isinstance(path, fsnative)
                 model.append(niter, ["dummy"])
 
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -232,7 +240,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         m = qltk.MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
         m.connect('activate', self.__refresh)
         menu.append(m)
-        m = qltk.MenuItem(_("_Select All Subfolders"), Icons.FOLDER)
+        m = qltk.MenuItem(_("_Select all Sub-Folders"), Icons.FOLDER)
         m.connect('activate', self.__expand)
         menu.append(m)
         menu.show_all()
@@ -254,7 +262,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         return [model[p][0] for p in paths]
 
     def go_to(self, path_to_go):
-        assert is_fsnative(path_to_go)
+        assert isinstance(path_to_go, fsnative)
 
         # FIXME: what about non-normalized paths?
         model = self.get_model()
@@ -306,7 +314,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             uris = data.get_uris()
             if uris:
                 try:
-                    filename = URI(uris[0]).filename
+                    filename = uri2fsn(uris[0])
                 except ValueError:
                     pass
                 else:
@@ -349,7 +357,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         if not dir_:
             return
 
-        dir_ = glib2fsnative(dir_)
+        dir_ = glib2fsn(dir_)
         fullpath = os.path.realpath(os.path.join(directory, dir_))
 
         try:
@@ -480,7 +488,7 @@ class FileSelector(Paned):
         self.__filter = filter
 
         if initial is not None:
-            assert is_fsnative(initial)
+            assert isinstance(initial, fsnative)
 
         if initial and os.path.isfile(initial):
             initial = os.path.dirname(initial)
@@ -511,7 +519,7 @@ class FileSelector(Paned):
 
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
-            cell.set_property('text', fsdecode(os.path.basename(value)))
+            cell.set_property('text', fsn2text(os.path.basename(value)))
 
         column.set_cell_data_func(render, cell_data)
 

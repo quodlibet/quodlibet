@@ -7,6 +7,7 @@
 
 from gi.repository import Gst, Gtk, GObject
 
+from quodlibet import _
 from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
@@ -104,7 +105,6 @@ class Compressor(GStreamerPlugin):
     PLUGIN_NAME = _("Audio Compressor")
     PLUGIN_DESC = _("Changes the amplitude of all samples above a specific "
                     "threshold with a specific ratio.")
-    PLUGIN_ICON = "audio-volume-high"
 
     @classmethod
     def setup_element(cls):

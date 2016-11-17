@@ -2,8 +2,6 @@ data/exfalso.appdata.xml.in
 data/exfalso.desktop.in
 data/quodlibet.appdata.xml.in
 data/quodlibet.desktop.in
-exfalso.py
-operon.py
 quodlibet/browsers/albums/main.py
 quodlibet/browsers/albums/prefs.py
 quodlibet/browsers/audiofeeds.py
@@ -11,7 +9,6 @@ quodlibet/browsers/_base.py
 quodlibet/browsers/collection/main.py
 quodlibet/browsers/collection/models.py
 quodlibet/browsers/collection/prefs.py
-quodlibet/browsers/empty.py
 quodlibet/browsers/filesystem.py
 quodlibet/browsers/__init__.py
 quodlibet/browsers/iradio.py
@@ -24,11 +21,15 @@ quodlibet/browsers/playlists/menu.py
 quodlibet/browsers/playlists/prefs.py
 quodlibet/browsers/playlists/util.py
 quodlibet/browsers/search.py
+quodlibet/browsers/soundcloud/main.py
+quodlibet/browsers/soundcloud/util.py
 quodlibet/cli.py
 quodlibet/devices/_base.py
 quodlibet/devices/__init__.py
 quodlibet/devices/ipod.py
 quodlibet/devices/storage.py
+quodlibet/exfalso.py
+quodlibet/ext/covers/artwork_url.py
 quodlibet/ext/covers/lastfm.py
 quodlibet/ext/covers/musicbrainz.py
 quodlibet/ext/editing/iconv.py
@@ -52,6 +53,7 @@ quodlibet/ext/events/lyricswindow.py
 quodlibet/ext/events/mediaserver.py
 quodlibet/ext/events/mpdserver/__init__.py
 quodlibet/ext/events/mpris/__init__.py
+quodlibet/ext/events/mqtt.py
 quodlibet/ext/events/notify.py
 quodlibet/ext/events/qlscrobbler.py
 quodlibet/ext/events/radioadmute.py
@@ -59,6 +61,7 @@ quodlibet/ext/events/randomalbum.py
 quodlibet/ext/events/rbimport.py
 quodlibet/ext/events/screensaver.py
 quodlibet/ext/events/searchprovider.py
+quodlibet/ext/events/seekbar.py
 quodlibet/ext/events/squeezebox_sync.py
 quodlibet/ext/events/synchronizedlyrics.py
 quodlibet/ext/events/telepathy_status.py
@@ -69,6 +72,7 @@ quodlibet/ext/events/trayicon/menu.py
 quodlibet/ext/events/trayicon/prefs.py
 quodlibet/ext/events/trayicon/systemtray.py
 quodlibet/ext/events/viewlyrics.py
+quodlibet/ext/events/waveformseekbar.py
 quodlibet/ext/events/write_cover.py
 quodlibet/ext/events/zeitgeist_client.py
 quodlibet/ext/gstreamer/compressor.py
@@ -80,6 +84,7 @@ quodlibet/ext/playlist/export_to_squeezebox.py
 quodlibet/ext/playlist/remove_duplicates.py
 quodlibet/ext/playlist/shuffle.py
 quodlibet/ext/playorder/follow.py
+quodlibet/ext/playorder/playcounteq.py
 quodlibet/ext/playorder/queue.py
 quodlibet/ext/playorder/reverse.py
 quodlibet/ext/playorder/track_repeat.py
@@ -114,7 +119,6 @@ quodlibet/ext/songsmenu/importexport.py
 quodlibet/ext/songsmenu/k3b.py
 quodlibet/ext/songsmenu/lastfmsync.py
 quodlibet/ext/songsmenu/makesorttags.py
-quodlibet/ext/songsmenu/openwith.py
 quodlibet/ext/songsmenu/playlist.py
 quodlibet/ext/songsmenu/refresh.py
 quodlibet/ext/songsmenu/replaygain.py
@@ -126,10 +130,14 @@ quodlibet/formats/__init__.py
 quodlibet/__init__.py
 quodlibet/library/__init__.py
 quodlibet/library/libraries.py
+quodlibet/main.py
 quodlibet/operon/base.py
 quodlibet/operon/commands.py
 quodlibet/operon/main.py
 quodlibet/operon/util.py
+quodlibet/order/__init__.py
+quodlibet/order/reorder.py
+quodlibet/order/repeat.py
 quodlibet/player/gstbe/player.py
 quodlibet/player/gstbe/plugins.py
 quodlibet/player/gstbe/prefs.py
@@ -171,6 +179,8 @@ quodlibet/qltk/ratingsmenu.py
 quodlibet/qltk/renamefiles.py
 quodlibet/qltk/scanbox.py
 quodlibet/qltk/searchbar.py
+quodlibet/qltk/seekbutton.py
+quodlibet/qltk/shortcuts.py
 quodlibet/qltk/songlistcolumns.py
 quodlibet/qltk/songlist.py
 quodlibet/qltk/songsmenu.py
@@ -182,6 +192,7 @@ quodlibet/qltk/unity.py
 quodlibet/qltk/views.py
 quodlibet/qltk/wlw.py
 quodlibet/qltk/x.py
+quodlibet/update.py
 quodlibet/util/collection.py
 quodlibet/util/cover/built_in.py
 quodlibet/util/dprint.py

@@ -31,10 +31,17 @@ class TimeTracker(GObject.GObject):
 
         self.__player = player
         self.__id = None
+        self.__stop = False
         self.__sigs = [
-            player.connect("paused", self.__paused),
-            player.connect("unpaused", self.__unpaused),
+            player.connect("paused", self.__paused, True),
+            player.connect("unpaused", self.__paused, False),
         ]
+        self.__paused(player, player.paused)
+
+    def tick(self):
+        """Emit a tick event"""
+
+        self.emit("tick")
 
     def destroy(self):
         for signal_id in self.__sigs:
@@ -51,18 +58,18 @@ class TimeTracker(GObject.GObject):
             self.__source_remove()
             return False
 
-        self.emit("tick")
+        self.tick()
         return True
 
-    def __paused(self, *args):
-        # By removing the timeout only in the callback we are safe from
-        # huge deviation caused by lots of pause/unpause actions.
-        self.__stop = True
-
-    def __unpaused(self, *args):
-        self.__stop = False
-        if self.__id is None:
-            self.__id = GLib.timeout_add_seconds(1, self.__update)
+    def __paused(self, player, paused):
+        if paused:
+            # By removing the timeout only in the callback we are safe from
+            # huge deviation caused by lots of pause/unpause actions.
+            self.__stop = True
+        else:
+            self.__stop = False
+            if self.__id is None:
+                self.__id = GLib.timeout_add_seconds(1, self.__update)
 
 
 class SongTracker(object):

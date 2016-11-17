@@ -33,7 +33,6 @@ Song Lists
 * :kbd:`Alt` + :kbd:`Return` - Open the tag editor for the selected song(s)
 * :kbd:`Primary` + :kbd:`Return` - Queue the selected song(s)
 * :kbd:`Primary` + :kbd:`F` - Show the inline search entry
-* :kbd:`Primary` + :kbd:`0`/:kbd:`1`/:kbd:`2`/:kbd:`4` - Rate the selected song(s) with 0-4 stars
 * :kbd:`Primary` + :kbd:`Left Click` on a column header - Add the column to the list of columns to sort by.
 
 

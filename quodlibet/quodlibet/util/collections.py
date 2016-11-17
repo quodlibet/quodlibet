@@ -194,7 +194,7 @@ class HashedList(MutableSequence):
             yield item
 
     def has_duplicates(self):
-        """Returns True if any item is contained more then once"""
+        """Returns True if any item is contained more than once"""
         return len(self._map) != len(self)
 
     def __repr__(self):

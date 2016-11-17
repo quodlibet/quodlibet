@@ -6,6 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
 import urllib
 import urllib2
 import threading
@@ -13,13 +14,17 @@ import socket
 import Queue
 from xml.dom import minidom
 
+from quodlibet import _
+from quodlibet.util import gi_require_versions
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import (PluginImportException, PluginConfig, ConfProp,
-    BoolConfProp, IntConfProp, FloatConfProp)
-import gi
+    BoolConfProp, IntConfProp, FloatConfProp, PluginNotSupportedError)
+
 try:
-    gi.require_version("WebKit2", "4.0")
+    gi_require_versions("WebKit2", ["4.0", "3.0"])
 except ValueError as e:
+    if os.name == "nt":
+        raise PluginNotSupportedError
     raise PluginImportException("GObject Introspection: " + str(e))
 
 from gi.repository import WebKit2, Gtk, GLib
@@ -32,7 +37,11 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.pattern import URLFromPattern
 
 
-LYRICS_WIKIA_URL = ("http://lyrics.wikia.com/api.php?client=QuodLibet"
+# for the mobile version
+USER_AGENT = ("Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) "
+             "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0"
+             "Chrome/43.0.2357.65 Mobile Safari/537.36")
+LYRICS_WIKIA_URL = ("https://lyrics.wikia.com/api.php?client=QuodLibet"
                     "&action=lyrics&func=getSong&artist=%s&song=%s&fmt=xml")
 DEFAULT_ALTERNATE_SEARCH_URL = ("https://duckduckgo.com/"
                                 "?q=lyrics+<artist|<artist>+-+><title>")
@@ -133,19 +142,33 @@ class LyricsWebViewWindow(Window):
         super(LyricsWebViewWindow, self).__init__(dialog=False)
         self.set_transient_for(app.window)
 
+        self.conf = conf
+        self.resize(conf.width, conf.height)
+        self.move(conf.x, conf.y)
+
         self._thread = LyricsWikiaSearchThread()
         self.connect("destroy", lambda *x: self._thread.stop())
 
-        sw = Gtk.ScrolledWindow()
-        self.add(sw)
+        self._scrolled_window = Gtk.ScrolledWindow()
+        self.add(self._scrolled_window)
+
+        self.current_song = None
+        self._reload_web_view()
+
+    def _reload_web_view(self, web_view=None):
+        if web_view is not None:
+            self._scrolled_window.remove(web_view)
 
         self._view = view = WebKit2.WebView()
+        self.set_zoom_level(self.conf.zoom_level)
+
+        # stop alert windows
+        view.connect('script-dialog', lambda *args: True)
+
+        view.connect('web-process-crashed', self._reload_web_view)
+
         settings = view.get_settings()
-        # for the mobile version
-        settings.set_property("user-agent",
-            ("Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) "
-             "AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0"
-             "Chrome/43.0.2357.65 Mobile Safari/537.36"))
+        settings.set_property("user-agent", USER_AGENT)
         settings.set_media_playback_requires_user_gesture(True)
 
         def scroll_tp_lyrics(view, load_event):
@@ -161,19 +184,18 @@ class LyricsWebViewWindow(Window):
 
         view.connect('load-changed', scroll_tp_lyrics)
 
-        sw.add(view)
-        sw.show_all()
+        self._scrolled_window.add(view)
+        self._scrolled_window.show_all()
 
-        self.conf = conf
-        self.set_zoom_level(conf.zoom_level)
-        self.resize(conf.width, conf.height)
-        self.move(conf.x, conf.y)
+        if self.current_song is not None:
+            self.set_song(self.current_song)
 
     def set_zoom_level(self, zoom_level):
         self._view.set_zoom_level(zoom_level)
 
     def set_song(self, song):
         """Display lyrics for the given song"""
+        self.current_song = song
 
         if song is None:
             message = _("No active song")
@@ -326,7 +348,7 @@ class LyricsWindow(EventPlugin):
     PLUGIN_ID = 'lyricswindow'
     PLUGIN_NAME = _('Lyrics Window')
     PLUGIN_DESC = _("Shows a window containing lyrics of the playing song.")
-    PLUGIN_ICON = Icons.EDIT_FIND
+    PLUGIN_ICON = Icons.APPLICATION_INTERNET
 
     _window = None
 

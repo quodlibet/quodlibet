@@ -7,9 +7,10 @@
 # express or implied, for this software.
 
 import os
-
 from distutils.dep_util import newer
-from distutils.core import Command
+
+from .util import Command
+from .gettextutil import intltool
 
 
 class build_shortcuts(Command):
@@ -43,9 +44,9 @@ class build_shortcuts(Command):
                 fullpath = os.path.join(basepath, os.path.basename(shortcut))
                 self.__check_po()
                 if newer(shortcut + ".in", fullpath):
-                    self.spawn(["intltool-merge",
-                                "-d", self.po_directory,
-                                shortcut + ".in", fullpath])
+                    self.spawn(
+                        intltool("merge", "-d", self.po_directory,
+                                 shortcut + ".in", fullpath))
             else:
                 self.copy_file(shortcut, os.path.join(basepath, shortcut))
 

@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase
 from .helper import visible
 
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, Entry, \
-    QueryValidator
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, Entry
+from quodlibet.query._query import Query
 import quodlibet.config
 
 
@@ -21,7 +25,7 @@ class TEntry(TestCase):
 class TValidatingEntry(TestCase):
     def setUp(self):
         quodlibet.config.init()
-        self.entry = ValidatingEntry(QueryValidator)
+        self.entry = ValidatingEntry(Query.validator)
 
     def test_changed_simple(self):
         self.entry.set_text("valid")

@@ -5,15 +5,13 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
-
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 from quodlibet.formats.vgm import VgmFile
 
 
 class TVgmFile(TestCase):
     def setUp(self):
-        self.song = VgmFile(os.path.join(DATA_DIR, 'test.vgm'))
+        self.song = VgmFile(get_data_path('test.vgm'))
 
     def test_length(self):
         self.failUnlessAlmostEqual(2.81, self.song("~#length", 0), 1)
@@ -32,7 +30,7 @@ class TVgmFile(TestCase):
         self.failIf(self.song.can_change("album"))
 
     def test_invalid(self):
-        path = os.path.join(DATA_DIR, 'empty.xm')
+        path = get_data_path('empty.xm')
         self.failUnlessRaises(Exception, VgmFile, path)
 
     def test_format_codec(self):

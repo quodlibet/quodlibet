@@ -1,18 +1,24 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
-from quodlibet.browsers.playlists.util import *
+from quodlibet.browsers.playlists.util import PLAYLISTS, parse_m3u, parse_pls
 from quodlibet.util.collection import FileBackedPlaylist
-from tests import TestCase, DATA_DIR, mkstemp, mkdtemp, _TEMP_DIR
+from tests import TestCase, get_data_path, mkstemp, mkdtemp, _TEMP_DIR
 from .helper import dummy_path
 
 import os
 import shutil
 
+from senf import fsn2uri
+
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.library import SongLibrary
 import quodlibet.config
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import fsnative2glib, mkdir
+from quodlibet.util.path import fsn2glib, mkdir
 from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
 from tests.test_browsers_search import SONGS, TSearchBar
@@ -42,7 +48,7 @@ class TParsePlaylistMixin(object):
         os.close(h)
         with open(name, "wb") as f:
             target = self.prefix
-            target += fsnative2glib(os.path.join(DATA_DIR, "silence-44-s.ogg"))
+            target += fsn2glib(get_data_path("silence-44-s.ogg"))
             f.write(target)
         list = self.Parse(name)
         os.unlink(name)
@@ -53,9 +59,8 @@ class TParsePlaylistMixin(object):
     def test_parse_onesong_uri(self):
         h, name = mkstemp()
         os.close(h)
-        target = os.path.join(DATA_DIR, "silence-44-s.ogg")
-        from quodlibet.util.uri import URI
-        target = URI.frompath(target)
+        target = get_data_path("silence-44-s.ogg")
+        target = fsn2uri(target)
         target = self.prefix + target
         with open(name, "w") as f:
             f.write(target)

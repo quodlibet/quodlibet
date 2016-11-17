@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna, Nick Boultbee
+# Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna
+#           2011-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -9,13 +10,14 @@ import sys
 
 from gi.repository import Gtk, Pango, Gdk
 
+from quodlibet import C_, _
 from quodlibet import qltk
-
 from quodlibet import config
 from quodlibet import util
 
 from quodlibet.util import massagers
 
+from quodlibet.formats import AudioFileError
 from quodlibet.qltk.completion import LibraryValueCompletion
 from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn
@@ -29,6 +31,7 @@ from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.qltk import Icons
 from quodlibet.plugins import PluginManager
 from quodlibet.util import connect_obj, gdecode
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
@@ -55,20 +58,20 @@ class Comment(object):
 
     def _paren(self):
         if self.shared:
-            return ngettext('missing from %d song',
-                            'missing from %d songs',
-                            self.missing) % self.missing
+            return numeric_phrase('missing from %d song',
+                                  'missing from %d songs',
+                                  self.missing)
         elif self.complete:
-            return ngettext('different across %d song',
-                            'different across %d songs',
-                            self.total) % self.total
+            return numeric_phrase('different across %d song',
+                                  'different across %d songs',
+                                  self.total)
         else:
-            d = ngettext('different across %d song',
-                          'different across %d songs',
-                          self.have) % self.have
-            m = ngettext('missing from %d song',
-                          'missing from %d songs',
-                          self.missing) % self.missing
+            d = numeric_phrase('different across %d song',
+                               'different across %d songs',
+                               self.have)
+            m = numeric_phrase('missing from %d song',
+                               'missing from %d songs',
+                               self.missing)
             return ", ".join([d, m])
 
     def is_special(self):
@@ -799,7 +802,7 @@ class EditTags(Gtk.VBox):
             if changed:
                 try:
                     song.write()
-                except:
+                except AudioFileError:
                     util.print_exc()
                     WriteFailedError(self, song).run()
                     library.reload(song, changed=was_changed)

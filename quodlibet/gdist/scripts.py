@@ -7,9 +7,12 @@
 # express or implied, for this software.
 
 import os
-
 from distutils.dep_util import newer
-from distutils.command.build_scripts import build_scripts as du_build_scripts
+
+from .util import get_dist_class
+
+
+du_build_scripts = get_dist_class("build_scripts")
 
 
 class build_scripts(du_build_scripts):

@@ -11,6 +11,7 @@ import os
 
 from gi.repository import Gtk, Gdk, Pango
 
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import SeparatorMenuItem, Align
@@ -107,7 +108,7 @@ class SongInfo(Gtk.EventBox):
         item.connect('activate', self._on_edit_display, player)
 
         songs = [player.song] if player.song else []
-        song_menu = SongsMenu(library, songs, remove=False,
+        song_menu = SongsMenu(library, songs, remove=False, delete=True,
                               accels=False, items=[[item]])
 
         song_menu.show_all()

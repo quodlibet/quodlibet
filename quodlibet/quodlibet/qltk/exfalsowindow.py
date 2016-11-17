@@ -8,12 +8,16 @@
 import os
 
 from gi.repository import Gtk, GObject, Pango
+from senf import fsnative
 
+from quodlibet import ngettext, _
 from quodlibet import config
 from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import app
 
+from quodlibet.qltk.appwindow import AppWindow
+from quodlibet.formats import AudioFileError
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.delete import trash_files, TrashMenuItem
 from quodlibet.qltk.edittags import EditTags
@@ -29,12 +33,15 @@ from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Align, SeparatorMenuItem, ConfigRHPaned, \
     Button, SymbolicIconImage, MenuItem
 from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
+from quodlibet.qltk.msg import CancelRevertSave
 from quodlibet.qltk import Icons
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import mtime, normalize_path
-from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.util import connect_obj, connect_destroy, format_int_locale
+from quodlibet.update import UpdateDialog
 
 
-class ExFalsoWindow(Window, PersistentWindowMixin):
+class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
 
     __gsignals__ = {
         'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
@@ -64,12 +71,6 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
 
         bbox = Gtk.HBox(spacing=6)
 
-        about = Gtk.Button()
-        about.add(Gtk.Image.new_from_icon_name(
-            Icons.HELP_ABOUT, Gtk.IconSize.BUTTON))
-        about.connect('clicked', self.__show_about)
-        bbox.pack_start(about, False, True, 0)
-
         def prefs_cb(*args):
             window = PreferencesWindow(self)
             window.show()
@@ -78,7 +79,28 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
             window = PluginWindow(self)
             window.show()
 
+        def about_cb(*args):
+            about = AboutDialog(self, app)
+            about.run()
+            about.destroy()
+
+        def update_cb(*args):
+            d = UpdateDialog(self)
+            d.run()
+            d.destroy()
+
         menu = Gtk.Menu()
+
+        about_item = MenuItem(_("_About"), Icons.HELP_ABOUT)
+        about_item.connect("activate", about_cb)
+        menu.append(about_item)
+
+        check_item = MenuItem(_("_Check for Updates…"), Icons.NETWORK_SERVER)
+        check_item.connect("activate", update_cb)
+        menu.append(check_item)
+
+        menu.append(SeparatorMenuItem())
+
         plugin_item = MenuItem(_("_Plugins"), Icons.SYSTEM_RUN)
         plugin_item.connect("activate", plugin_window_cb)
         menu.append(plugin_item)
@@ -86,6 +108,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
         pref_item.connect("activate", prefs_cb)
         menu.append(pref_item)
+
         menu.show_all()
 
         menu_button = MenuButton(
@@ -99,7 +122,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         l.set_ellipsize(Pango.EllipsizeMode.END)
         bbox.pack_start(l, True, True, 0)
 
-        fs = MainFileSelector()
+        self._fs = fs = MainFileSelector()
 
         vb.pack_start(fs, True, True, 0)
         vb.pack_start(Align(bbox, border=6), False, True, 0)
@@ -150,20 +173,23 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
     def set_as_osx_window(self, osx_app):
         osx_app.set_menu_bar(self._dummy_osx_menu_bar)
 
-    def get_osx_is_persistent(self):
+    def get_is_persistent(self):
         return False
 
-    def __show_about(self, widget):
-        about = AboutDialog(self, app)
-        about.run()
-        about.destroy()
+    def open_file(self, filename):
+        assert isinstance(filename, fsnative)
+
+        if not os.path.isdir(filename):
+            return False
+
+        self._fs.go_to(filename)
 
     def set_pending(self, button, *excess):
         self.__save = button
 
     def __pre_selection_changed(self, view, event, fs, nb):
         if self.__save:
-            resp = qltk.CancelRevertSave(self).run()
+            resp = CancelRevertSave(self).run()
             if resp == Gtk.ResponseType.YES:
                 self.__save.clicked()
             elif resp == Gtk.ResponseType.NO:
@@ -211,7 +237,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
             count = len(model or [])
         else:
             count = len(rows)
-        label.set_text(ngettext("%d song", "%d songs", count) % count)
+        label.set_text(numeric_phrase("%d song", "%d songs", count))
 
         for row in rows:
             filename = model[row][0]
@@ -222,7 +248,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
                 if song("~#mtime") + 1. < mtime(filename):
                     try:
                         song.reload()
-                    except Exception:
+                    except AudioFileError:
                         pass
                 files.append(song)
             else:
@@ -233,12 +259,13 @@ class ExFalsoWindow(Window, PersistentWindowMixin):
         elif len(files) == 1:
             self.set_title("%s - Ex Falso" % files[0].comma("title"))
         else:
+            params = ({'title': files[0].comma("title"),
+                       'count': format_int_locale(len(files) - 1)})
             self.set_title(
                 "%s - Ex Falso" %
-                (ngettext("%(title)s and %(count)d more",
-                          "%(title)s and %(count)d more",
-                          len(files) - 1) % (
-                {'title': files[0].comma("title"), 'count': len(files) - 1})))
+                (ngettext("%(title)s and %(count)s more",
+                          "%(title)s and %(count)s more", len(files) - 1)
+                 % params))
         self.__library.add(files)
         self.emit('changed', files)
 

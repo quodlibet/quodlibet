@@ -27,7 +27,7 @@ Performance Profiling
 cProfile
 ^^^^^^^^
 
- * http://docs.python.org/library/profile.html
+ * https://docs.python.org/2/library/profile.html
  * bundled with python
 
 ::
@@ -54,6 +54,17 @@ Example output::
             ...
             ...
 
+SnakeViz
+^^^^^^^^
+
+ * https://jiffyclub.github.io/snakeviz/
+ * ``pip install snakeviz``
+
+::
+
+    python -m cProfile -o prof.out quodlibet.py
+    snakeviz prof.out
+
 
 Run Snake
 ^^^^^^^^^
@@ -66,13 +77,13 @@ Run Snake
     python -m cProfile -o prof.out quodlibet.py
     runsnake  prof.out
 
-Example: http://www.google.at/search?q=runsnakerun&tbm=isch
+Example: https://www.google.at/search?q=runsnakerun&tbm=isch
 
 
 Gprof2Dot
 ^^^^^^^^^
 
- * http://code.google.com/p/jrfonseca/wiki/Gprof2Dot
+ * https://github.com/jrfonseca/gprof2dot
 
 ::
 
@@ -83,7 +94,7 @@ Gprof2Dot
 Line Profiler
 ^^^^^^^^^^^^^
 
- * http://packages.python.org/line_profiler/
+ * https://github.com/rkern/line_profiler
 
 ::
 

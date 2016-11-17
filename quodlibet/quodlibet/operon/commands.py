@@ -15,9 +15,12 @@ import shutil
 import subprocess
 import tempfile
 
+from senf import fsn2text
+
+from quodlibet import _
 from quodlibet import util
-from quodlibet.formats import EmbeddedImage
-from quodlibet.util.path import mtime, fsdecode
+from quodlibet.formats import EmbeddedImage, AudioFileError
+from quodlibet.util.path import mtime
 from quodlibet.pattern import Pattern, error as PatternError
 from quodlibet.util.tags import USER_TAGS, sortkey
 from quodlibet.util.tagsfrompath import TagsFromPattern
@@ -164,7 +167,7 @@ class EditCommand(Command):
             u"",
             u"#" * 80,
             u"# Lines that are empty or start with '#' will be ignored",
-            u"# File: %r" % fsdecode(song("~filename")),
+            u"# File: %r" % fsn2text(song("~filename")),
         ]
 
         return u"\n".join(lines)
@@ -516,7 +519,10 @@ class ImageSetCommand(Command):
                     })
 
         for song in songs:
-            song.set_image(image)
+            try:
+                song.set_image(image)
+            except AudioFileError as e:
+                raise CommandError(e)
 
 
 @Command.register
@@ -542,7 +548,10 @@ class ImageClearCommand(Command):
                     })
 
         for song in songs:
-            song.clear_images()
+            try:
+                song.clear_images()
+            except AudioFileError as e:
+                raise CommandError(e)
 
 
 @Command.register
@@ -680,7 +689,7 @@ class FillCommand(Command):
         rows = []
         for song in songs:
             match = pattern.match(song)
-            row = [fsdecode(song("~basename"))]
+            row = [fsn2text(song("~basename"))]
             for header in pattern.headers:
                 row.append(match.get(header, u""))
             rows.append(row)
@@ -738,7 +747,7 @@ class PrintCommand(Command):
         error = False
         for path in paths:
             try:
-                print_(pattern % self.load_song(path))
+                util.print_(pattern % self.load_song(path))
             except CommandError:
                 error = True
 

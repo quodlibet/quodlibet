@@ -13,7 +13,7 @@ from gi.repository import Gtk, GLib
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
-
+from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.formats import PEOPLE
 from quodlibet.query import Query
@@ -153,6 +153,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         for pane in self._panes:
             pane.add(songs)
             songs = filter(pane.matches, songs)
+        self.activate()
 
     def __removed(self, library, songs, remove_if_empty=True):
         songs = filter(self._filter, songs)
@@ -162,7 +163,6 @@ class PanedBrowser(Browser, util.InstanceTracker):
     def __changed(self, library, songs):
         self.__removed(library, songs, False)
         self.__added(library, songs)
-        self.__removed(library, [])
 
     def active_filter(self, song):
         # check with the search filter

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -17,7 +18,7 @@ from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
 
-from quodlibet.util import gdecode
+from quodlibet.util import gdecode, print_d, print_w
 
 
 def get_primary_accel_mod():
@@ -260,10 +261,18 @@ def add_css(widget, css):
     Can raise GLib.GError in case the css is invalid
     """
 
+    if not isinstance(css, bytes):
+        css = css.encode("utf-8")
+
     provider = Gtk.CssProvider()
     provider.load_from_data(css)
     context = widget.get_style_context()
     context.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+
+def remove_padding(widget):
+    """Removes padding on supplied widget"""
+    return add_css(widget, " * { padding: 0px; } ")
 
 
 def is_wayland():
@@ -350,6 +359,13 @@ def add_signal_watch(signal_action):
         else:
             return False
 
+    try:
+        import fcntl
+    except ImportError:
+        pass
+    else:
+        fcntl.fcntl(wfd, fcntl.F_SETFL, os.O_NONBLOCK)
+
     signal.set_wakeup_fd(wfd)
     io_add_watch(rfd, GLib.PRIORITY_HIGH,
                  GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
@@ -390,12 +406,63 @@ def add_signal_watch(signal_action):
         unix_signal_add(GLib.PRIORITY_HIGH, signum, handler, signum)
 
 
-# Legacy plugin/code support.
-from quodlibet.qltk.msg import *
-from quodlibet.qltk.x import *
-from quodlibet.qltk.icons import Icons
-from quodlibet.qltk.window import Window, UniqueWindow
+class ThemeOverrider(object):
+    """Allows registering global Gtk.StyleProviders for a specific theme.
+    They get activated when the theme gets active and removed when the theme
+    changes to something else.
+    """
 
-Window
-UniqueWindow
+    def __init__(self):
+        self._providers = {}
+        self._active_providers = []
+        settings = Gtk.Settings.get_default()
+        settings.connect("notify::gtk-theme-name", self._on_theme_name_notify)
+        settings.notify("gtk-theme-name")
+
+    def register_provider(self, theme_name, provider):
+        """
+        Args:
+            theme_name (str): A gtk+ theme name e.g. "Adwaita" or empty to
+                apply to all themes
+            provider (Gtk.StyleProvider)
+        """
+
+        self._providers.setdefault(theme_name, []).append(provider)
+        settings = Gtk.Settings.get_default()
+        settings.notify("gtk-theme-name")
+
+    def _on_theme_name_notify(self, settings, gparam):
+
+        theme_name = settings.get_property(gparam.name)
+        wanted_providers = \
+            self._providers.get(theme_name, []) + self._providers.get("", [])
+
+        for provider in list(self._active_providers):
+            if provider not in wanted_providers:
+                Gtk.StyleContext.remove_provider_for_screen(
+                    Gdk.Screen.get_default(), provider)
+            self._active_providers.remove(provider)
+
+        for provider in wanted_providers:
+            if provider not in self._active_providers:
+                Gtk.StyleContext.add_provider_for_screen(
+                    Gdk.Screen.get_default(),
+                    provider,
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                )
+                self._active_providers.append(provider)
+
+
+from .msg import Message, ErrorMessage, WarningMessage
+from .x import Align, Button, ToggleButton, Notebook, SeparatorMenuItem, \
+    WebImage, MenuItem, Frame, EntryCompletion
+from .icons import Icons
+from .window import Window, UniqueWindow, Dialog
+from .paned import ConfigRPaned, ConfigRHPaned
+
+Message, ErrorMessage, WarningMessage
+Align, Button, ToggleButton, Notebook, SeparatorMenuItem, \
+    WebImage, MenuItem, Frame, EntryCompletion
 Icons
+Window, UniqueWindow, Dialog
+ConfigRPaned, ConfigRHPaned

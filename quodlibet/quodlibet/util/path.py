@@ -15,31 +15,14 @@ import codecs
 import shlex
 import urllib
 
-from quodlibet.compat import pathname2url, text_type, PY2
-from quodlibet.util.string import decode
+from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars
+
+from quodlibet.compat import PY2, urlparse
 from . import windows
-from .misc import environ, get_fs_encoding
+from .misc import environ
 
 if sys.platform == "darwin":
     from Foundation import NSString
-
-
-_FSCODING = get_fs_encoding()
-
-
-"""
-Path related functions like open, os.listdir have different behavior on win32
-
-- Passing a string calls the old non unicode win API.
-  In case of listdir this leads to "?" for >1byte chars and to
-  1 byte chars encoded using the fs encoding. -> DO NOT USE!
-
-- Passing a unicode object internally calls the windows unicode functions.
-  This will mostly lead to proper unicode paths (except expanduser).
-
-  And that's why QL is using unicode paths on win and encoded paths
-  everywhere else.
-"""
 
 
 def mkdir(dir_, *args):
@@ -54,113 +37,22 @@ def mkdir(dir_, *args):
             raise
 
 
-def fsdecode(s, note=True):
-    """Takes a native path and returns unicode for displaying it.
-
-    Can not fail and can't be reversed.
-    """
-
-    if isinstance(s, unicode):
-        return s
-    elif note:
-        return decode(s, _FSCODING)
-    else:
-        return s.decode(_FSCODING, 'replace')
-
-
-"""
-There exist 3 types of paths:
-
- * Python: bytes on Linux, unicode on Windows
- * GLib: bytes on Linux, utf-8 bytes on Windows
- * Serialized for the config: same as GLib
-"""
-
-
-if sys.platform == "win32":
-    # We use FSCODING to save paths in files for example,
-    # so this should never change on Windows (like in glib)
-    assert _FSCODING == "utf-8"
-
-    def is_fsnative(path):
-        """If path is a native path"""
-
-        return isinstance(path, text_type)
-
-    def fsnative(path=u""):
-        """unicode -> native path"""
-
-        assert isinstance(path, text_type)
-        return path
-
-    def glib2fsnative(path):
-        """glib path -> native path"""
-
-        assert isinstance(path, bytes)
-        return path.decode("utf-8")
-
-    def fsnative2glib(path):
-        """native path -> glib path"""
-
-        assert isinstance(path, text_type)
-        return path.encode("utf-8")
-
-    fsnative2bytes = fsnative2glib
-    """native path -> bytes
-
-    Can never fail.
-    """
-
-    bytes2fsnative = glib2fsnative
-    """bytes -> native path
-
-    Warning: This can fail (raise ValueError) only on Windows,
-    if the input wasn't produced by fsnative2bytes.
-    """
-else:
+def glib2fsn(path):
+    """Takes a glib filename and returns a fsnative path"""
 
     if PY2:
-        def is_fsnative(path):
-            return isinstance(path, bytes)
-
-        def fsnative(path=u""):
-            assert isinstance(path, text_type)
-            return path.encode(_FSCODING, 'replace')
-
-        def glib2fsnative(path):
-            assert isinstance(path, bytes)
-            return path
-
-        def fsnative2glib(path):
-            assert isinstance(path, bytes)
-            return path
-
-        fsnative2bytes = fsnative2glib
-
-        bytes2fsnative = glib2fsnative
+        return bytes2fsn(path, "utf-8")
     else:
-        def is_fsnative(path):
-            return isinstance(path, text_type)
+        return path
 
-        def fsnative(path=u""):
-            assert isinstance(path, text_type)
-            return path
 
-        def glib2fsnative(path):
-            assert isinstance(path, text_type)
-            return path
+def fsn2glib(path):
+    """Takes a fsnative path and returns a glib filename"""
 
-        def fsnative2glib(path):
-            assert isinstance(path, text_type)
-            return path
-
-        def fsnative2bytes(path):
-            assert isinstance(path, text_type)
-            return path.encode(_FSCODING, "surrogateescape")
-
-        def bytes2fsnative(path):
-            assert isinstance(path, bytes)
-            return path.decode(_FSCODING, "surrogateescape")
+    if PY2:
+        return fsn2bytes(path, "utf-8")
+    else:
+        return path
 
 
 def iscommand(s):
@@ -186,7 +78,7 @@ def listdir(path, hidden=False):
     If hidden is false, Unix-style hidden files are not returned.
     """
 
-    assert is_fsnative(path)
+    assert isinstance(path, fsnative)
 
     if hidden:
         filt = None
@@ -199,16 +91,6 @@ def listdir(path, hidden=False):
     return [join([path, basename])
             for basename in sorted(os.listdir(path))
             if filt(basename)]
-
-
-if os.name == "nt":
-    getcwd = os.getcwdu
-    sep = os.sep.decode("ascii")
-    pathsep = os.pathsep.decode("ascii")
-else:
-    getcwd = os.getcwd
-    sep = os.sep
-    pathsep = os.pathsep
 
 
 def mtime(filename):
@@ -246,28 +128,17 @@ def unescape_filename(s):
     return urllib.unquote(s).decode("utf-8")
 
 
-def expanduser(filename):
-    """needed because expanduser does not return wide character paths
-    on windows even if a unicode path gets passed.
+def unexpand(filename):
+    """Replace the user's home directory with ~/, if it appears at the
+    start of the path name.
     """
 
-    if os.name == "nt":
-        profile = windows.get_profile_dir() or u""
-        if filename == "~":
-            return profile
-        if filename.startswith(u"~" + os.path.sep):
-            return os.path.join(profile, filename[2:])
-    return os.path.expanduser(filename)
-
-
-def unexpand(filename, HOME=expanduser("~")):
-    """Replace the user's home directory with ~/, if it appears at the
-    start of the path name."""
     sub = (os.name == "nt" and "%USERPROFILE%") or "~"
-    if filename == HOME:
+    home = expanduser("~")
+    if filename == home:
         return sub
-    elif filename.startswith(HOME + os.path.sep):
-        filename = filename.replace(HOME, sub, 1)
+    elif filename.startswith(home + os.path.sep):
+        filename = filename.replace(home, sub, 1)
     return filename
 
 
@@ -277,28 +148,6 @@ def find_mount_point(path):
     return path
 
 
-def pathname2url_win32(path):
-    # stdlib version raises IOError for more than one ':' which can appear
-    # using a virtual box shared folder and it inserts /// at the beginning
-    # but it should be /.
-
-    # windows paths should be unicode
-    if isinstance(path, unicode):
-        path = path.encode("utf-8")
-
-    quote = urllib.quote
-    if ":" not in path:
-        return quote("/".join(path.split("\\")))
-    drive, remain = path.split(":", 1)
-    return "/%s:%s" % (quote(drive), quote("/".join(remain.split("\\"))))
-
-if os.name == "nt":
-    pathname2url
-    pathname2url = pathname2url_win32
-else:
-    pathname2url
-
-
 def xdg_get_system_data_dirs():
     """http://standards.freedesktop.org/basedir-spec/latest/"""
 
@@ -306,7 +155,7 @@ def xdg_get_system_data_dirs():
         from gi.repository import GLib
         dirs = []
         for dir_ in GLib.get_system_data_dirs():
-            dirs.append(glib2fsnative(dir_))
+            dirs.append(glib2fsn(dir_))
         return dirs
 
     data_dirs = os.getenv("XDG_DATA_DIRS")
@@ -319,7 +168,7 @@ def xdg_get_system_data_dirs():
 def xdg_get_cache_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsnative(GLib.get_user_cache_dir())
+        return glib2fsn(GLib.get_user_cache_dir())
 
     data_home = os.getenv("XDG_CACHE_HOME")
     if data_home:
@@ -331,7 +180,7 @@ def xdg_get_cache_home():
 def xdg_get_data_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsnative(GLib.get_user_data_dir())
+        return glib2fsn(GLib.get_user_data_dir())
 
     data_home = os.getenv("XDG_DATA_HOME")
     if data_home:
@@ -343,26 +192,13 @@ def xdg_get_data_home():
 def xdg_get_config_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsnative(GLib.get_user_config_dir())
+        return glib2fsn(GLib.get_user_config_dir())
 
     data_home = os.getenv("XDG_CONFIG_HOME")
     if data_home:
         return os.path.abspath(data_home)
     else:
         return os.path.join(os.path.expanduser("~"), ".config")
-
-
-def expandvars(path):
-    if os.name == "nt":
-        # XXX: monkey patch environ for unicode support
-        old_environ = os.environ
-        os.environ = environ
-        try:
-            return os.path.expandvars(path)
-        finally:
-            os.environ = old_environ
-    else:
-        return os.path.expandvars(path)
 
 
 def parse_xdg_user_dirs(data):
@@ -389,7 +225,7 @@ def parse_xdg_user_dirs(data):
         if len(values) != 1:
             continue
         paths[key] = os.path.normpath(
-            expandvars(bytes2fsnative(values[0])))
+            expandvars(bytes2fsn(values[0], "utf-8")))
 
     return paths
 
@@ -496,7 +332,7 @@ def limit_path(path, ellipsis=True):
     may apply, this covers the common case.
     """
 
-    assert is_fsnative(path)
+    assert isinstance(path, fsnative)
 
     main, ext = os.path.splitext(path)
     parts = main.split(sep)
@@ -524,3 +360,42 @@ def get_home_dir():
         return windows.get_profile_dir()
     else:
         return expanduser("~")
+
+
+def ishidden(path):
+    """Returns if a directory/ file is considered hidden by the platform.
+
+    Hidden meaning the user should normally not be exposed to those files when
+    opening the parent directory in the default file manager using the default
+    settings.
+
+    Does not check if any of the parents are hidden.
+    In case the file/dir does not exist the result is implementation defined.
+
+    Args:
+        path (fsnative)
+    Returns:
+        bool
+    """
+
+    # TODO: win/osx
+    return os.path.basename(path).startswith(".")
+
+
+def uri_is_valid(uri):
+    """Returns True if the passed in text is a valid URI (file, http, etc.)
+
+    Returns:
+        bool
+    """
+
+    if not isinstance(uri, bytes):
+        uri = uri.encode("ascii")
+
+    parsed = urlparse(uri)
+    if not parsed.scheme or not len(parsed.scheme) > 1:
+        return False
+    elif not (parsed.netloc or parsed.path):
+        return False
+    else:
+        return True

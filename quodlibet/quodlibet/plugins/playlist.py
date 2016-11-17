@@ -6,11 +6,13 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+
+from quodlibet import ngettext, _
 from quodlibet.qltk import get_top_parent, get_menu_item_top_parent
 from quodlibet.qltk.msg import WarningMessage
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk import Icons
-from quodlibet.util import print_exc
+from quodlibet.util import print_exc, format_int_locale
 from quodlibet.util.dprint import print_d, print_e
 from quodlibet.plugins import PluginHandler, PluginManager
 from quodlibet.plugins.gui import MenuItemPlugin
@@ -24,9 +26,10 @@ class ConfirmMultiPlaylistInvoke(WarningMessage):
     RESPONSE_INVOKE = 1
 
     def __init__(self, parent, plugin_name, count):
-        title = ngettext("Run the plugin \"%(name)s\" on %(count)d playlist?",
-                         "Run the plugin \"%(name)s\" on %(count)d playlists?",
-                         count) % {"name": plugin_name, "count": count}
+        params = {"name": plugin_name, "count": format_int_locale(count)}
+        title = ngettext("Run the plugin \"%(name)s\" on %(count)s playlist?",
+                         "Run the plugin \"%(name)s\" on %(count)s playlists?",
+                         count) % params
 
         super(ConfirmMultiPlaylistInvoke, self).__init__(
             get_top_parent(parent),

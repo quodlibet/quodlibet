@@ -16,6 +16,13 @@ except ImportError:
     from quodlibet import plugins
     raise plugins.MissingModulePluginException("musicbrainzngs")
 
+
+# musicbrainzngs.get_url_by_id was added in version 0.5
+if not hasattr(musicbrainzngs, "get_url_by_id"):
+    from quodlibet import plugins
+    raise plugins.MissingModulePluginException("musicbrainzngs >= 0.5")
+
+
 from quodlibet import app
 from quodlibet import const
 from quodlibet import util
@@ -45,7 +52,8 @@ def _get_release(release_id):
 
     return musicbrainzngs.get_release_by_id(
         release_id,
-        includes=["recordings", "artists", "artist-credits"])["release"]
+        includes=["recordings", "artists", "artist-credits", "labels"]
+    )["release"]
 
 
 class Artist(object):
@@ -106,6 +114,13 @@ class Release(object):
 
     def __init__(self, mbrelease):
         self._mbrelease = mbrelease
+
+    @property
+    def labelid(self):
+        label_list = self._mbrelease.get("label-info-list", [])
+        if not label_list:
+            return u""
+        return label_list[0].get("catalog-number", u"")
 
     @property
     def id(self):

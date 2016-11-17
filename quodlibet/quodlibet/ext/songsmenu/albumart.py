@@ -6,7 +6,7 @@
 #                Jeremy Cantrell <jmcantrell@gmail.com>
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
-#           2011-2014 Nick Boultbee
+#           2011-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -25,16 +25,18 @@ from xml.dom import minidom
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 from quodlibet.plugins import PluginConfigMixin
+from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.util import format_size, print_exc
-from quodlibet.util.dprint import print_d
+from quodlibet.util.dprint import print_d, print_w
 
-from quodlibet import util, qltk, print_w, app
+from quodlibet import _
+from quodlibet import util, qltk, app
 from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.qltk.x import Paned, Align, Button
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
-from quodlibet.qltk.image import (set_renderer_from_pbosf, get_scale_factor,
-    get_pbosf_for_pixbuf, set_image_from_pbosf, scale, add_border_widget)
+from quodlibet.qltk.image import scale, add_border_widget, \
+    get_surface_for_pixbuf
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 
@@ -103,8 +105,8 @@ class AmazonParser(object):
 
         # Amazon now requires that all requests be signed.
         # I have built a webapp on AppEngine for this purpose. -- wm_eddie
-        # url = 'http://webservices.amazon.com/onca/xml'
-        url = 'http://qlwebservices.appspot.com/onca/xml'
+        # url = 'https://webservices.amazon.com/onca/xml'
+        url = 'https://qlwebservices.appspot.com/onca/xml'
 
         parameters = {
             'Service': 'AWSECommerceService',
@@ -179,7 +181,7 @@ class AmazonParser(object):
 
             cover['resolution'] = '%s x %s px' % (width, height)
 
-            cover['source'] = 'http://www.amazon.com'
+            cover['source'] = 'https://www.amazon.com'
 
             self.covers.append(cover)
 
@@ -217,7 +219,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.current_pixbuf = None
 
         self.image = Gtk.Image()
-        self.button = Button(_("_Save"), Icons.DOCUMENT_SAVE)
+        self.button = Button(_("_Save"), Icons.DOCUMENT_SAVE_AS)
         self.button.set_sensitive(False)
         self.button.connect('clicked', self.__save)
 
@@ -281,6 +283,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             self.name_combo.set_active(0)
 
         table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
+        table.props.expand = False
         table.set_row_spacing(0, 5)
         table.set_row_spacing(1, 5)
         table.set_col_spacing(0, 5)
@@ -361,7 +364,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
                 except:
                     pass
 
-            app.cover_manager.cover_changed([self.song])
+            app.cover_manager.cover_changed([self.song._song])
 
         self.main_win.destroy()
 
@@ -377,7 +380,9 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         pixbuf = loader.get_pixbuf()
 
         def idle_set():
-            set_image_from_pbosf(self.image, pixbuf)
+            if pixbuf is not None:
+                surface = get_surface_for_pixbuf(self, pixbuf)
+                self.image.set_from_surface(surface)
 
         GLib.idle_add(idle_set)
 
@@ -386,18 +391,16 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             return
         pixbuf = self.current_pixbuf
 
-        if not self.window_fit.get_active():
-            pbosf = pixbuf
-        else:
+        if self.window_fit.get_active():
             alloc = self.scrolled.get_allocation()
             width = alloc.width
             height = alloc.height
-            scale_factor = get_scale_factor(self)
+            scale_factor = self.get_scale_factor()
             boundary = (width * scale_factor, height * scale_factor)
             pixbuf = scale(pixbuf, boundary, scale_up=False)
-            pbosf = get_pbosf_for_pixbuf(self, pixbuf)
 
-        set_image_from_pbosf(self.image, pbosf)
+        surface = get_surface_for_pixbuf(self, pixbuf)
+        self.image.set_from_surface(surface)
 
     def __close(self, loader, *data):
         if self.stop_loading:
@@ -537,15 +540,15 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         img_col.pack_start(rend_pix, False)
 
         def cell_data_pb(column, cell, model, iter_, *args):
-            pbosf = model[iter_][0]
-            set_renderer_from_pbosf(cell, pbosf)
+            surface = model[iter_][0]
+            cell.set_property("surface", surface)
 
         img_col.set_cell_data_func(rend_pix, cell_data_pb, None)
         treeview.append_column(img_col)
 
         rend_pix.set_property('xpad', 2)
         rend_pix.set_property('ypad', 2)
-        border_width = get_scale_factor(self) * 2
+        border_width = self.get_scale_factor() * 2
         rend_pix.set_property('width', self.THUMB_SIZE + 4 + border_width)
         rend_pix.set_property('height', self.THUMB_SIZE + 4 + border_width)
 
@@ -682,18 +685,18 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
             pbloader.write(get_url(cover['thumbnail'])[0])
             pbloader.close()
 
-            scale_factor = get_scale_factor(self)
+            scale_factor = self.get_scale_factor()
             size = self.THUMB_SIZE * scale_factor - scale_factor * 2
             pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
                 GdkPixbuf.InterpType.BILINEAR)
-            pixbuf = add_border_widget(pixbuf, self, round=True)
-            thumb = get_pbosf_for_pixbuf(self, pixbuf)
+            pixbuf = add_border_widget(pixbuf, self)
+            surface = get_surface_for_pixbuf(self, pixbuf)
         except (GLib.GError, IOError):
             pass
         else:
             def append(data):
                 self.liststore.append(data)
-            GLib.idle_add(append, [thumb, cover])
+            GLib.idle_add(append, [surface, cover])
 
     def __search_callback(self, covers, progress):
         for cover in covers:
@@ -805,7 +808,7 @@ def get_size_of_url(url):
 engines = [
     {
         'class': AmazonParser,
-        'url': 'http://www.amazon.com/',
+        'url': 'https://www.amazon.com/',
         'replace': ' ',
         'config_id': 'amazon',
     },
@@ -819,12 +822,16 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Download Album Art'
     PLUGIN_NAME = _('Download Album Art')
     PLUGIN_DESC = _('Downloads album covers from various websites.')
-    PLUGIN_ICON = Icons.EDIT_FIND
+    PLUGIN_ICON = Icons.INSERT_IMAGE
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
+    REQUIRES_ACTION = True
+
+    plugin_handles = any_song(is_a_file)
 
     @classmethod
     def PluginPreferences(cls, window):
         table = Gtk.Table(n_rows=len(engines), n_columns=2)
+        table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         frame = qltk.Frame(_("Sources"), child=table)

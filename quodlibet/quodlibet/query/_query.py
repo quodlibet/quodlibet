@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#                2015 Nick Boultbee, 2016 Ryan Dellenbaugh
+#           2015-2016 Nick Boultbee,
+#                2016 Ryan Dellenbaugh
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -10,6 +11,7 @@ from . import _match as match
 from ._match import error, Node
 from ._parser import QueryParser
 from quodlibet.util import re_escape, enum, cached_property
+from quodlibet.compat import PY2, text_type
 
 
 @enum
@@ -22,10 +24,10 @@ class QueryType(int):
 class Query(Node):
 
     STAR = ["artist", "album", "title"]
-    """default tags to search in, use/extend and pass to Query()"""
+    """Default tags to search in, use/extend and pass to Query()"""
 
     error = error
-    """base error type"""
+    """Base error type"""
 
     type = None
     """The QueryType value: VALID or TEXT"""
@@ -34,13 +36,13 @@ class Query(Node):
     """The original string which was used to create this query"""
 
     stars = None
-    """list of default tags used"""
+    """List of default tags used"""
 
     def __init__(self, string, star=None, dumb_match_diacritics=True):
         """Parses the query string and returns a match object.
 
         star -- List of tags to look in if none are specified in the query.
-                You can add some by extending Query.START and pass it here.
+                Defaults to those specified in `STAR`.
 
         dumb_match_diacritics -- In case of text queries (QueryType.TEXT)
                                  try to match variants with diacritic marks.
@@ -56,12 +58,13 @@ class Query(Node):
             etc...
         """
 
-        #TODO dumb_match_diacritics
+        # TODO dumb_match_diacritics
 
         if star is None:
             star = self.STAR
 
-        if not isinstance(string, unicode):
+        if not isinstance(string, text_type):
+            assert PY2
             string = string.decode('utf-8')
 
         self.star = list(star)
@@ -71,7 +74,7 @@ class Query(Node):
         try:
             self._match = QueryParser(string, star=star).StartQuery()
             return
-        except error:
+        except self.error:
             pass
 
         if not set("#=").intersection(string):
@@ -85,7 +88,7 @@ class Query(Node):
                 self.type = QueryType.TEXT
                 self._match = QueryParser(string, star=star).StartQuery()
                 return
-            except error:
+            except self.error:
                 pass
 
         raise error('Query is not VALID or TEXT')
@@ -159,3 +162,17 @@ class Query(Node):
 
     def __neg__(self):
         return self._match.__neg__()
+
+    @classmethod
+    def validator(cls, string):
+        """Returns True/False for a query, None for a text only query"""
+
+        type_ = cls.get_type(string)
+        if type_ == QueryType.VALID:
+            # in case of an empty but valid query we say it's "text"
+            if cls.match_all(string):
+                return None
+            return True
+        elif type_ == QueryType.INVALID:
+            return False
+        return None

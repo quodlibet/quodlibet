@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
 
 import os
 import sys
@@ -9,7 +12,7 @@ try:
 except ImportError:
     Gst = None
 
-from tests import TestCase, skipUnless, DATA_DIR
+from tests import TestCase, skipUnless, get_data_path
 
 try:
     from quodlibet.player.gstbe.util import GStreamerSink as Sink
@@ -20,7 +23,7 @@ except ImportError:
     pass
 
 from quodlibet.player import PlayerError
-from quodlibet.util import sanitize_tags
+from quodlibet.util import sanitize_tags, print_w
 from quodlibet.formats import MusicFile
 from quodlibet.compat import long
 from quodlibet import config
@@ -261,7 +264,7 @@ class TGStreamerCodecs(TestCase):
         ]
 
         for file_ in files:
-            path = os.path.join(DATA_DIR, file_)
+            path = get_data_path(file_)
             song = MusicFile(path)
             if song is not None:
                 self._check(song)

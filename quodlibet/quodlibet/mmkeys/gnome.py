@@ -26,7 +26,6 @@ class GnomeBackend(MMKeysBackend):
         "Previous": MMKeysAction.PREV,
         "Play": MMKeysAction.PLAYPAUSE,
         "Pause": MMKeysAction.PAUSE,
-        "Next": MMKeysAction.NEXT,
         "Stop": MMKeysAction.STOP,
     }
     # TODO: Rewind, FastForward, Repeat, Shuffle

@@ -52,41 +52,30 @@ Release Checklist
 
 New Stable branch:
 
-    * setup.py update_po
-    * commit
-    * branch quodlibet-x.y
-    * change branch name in const.py, commit
-    * update NEWS, commit
-    * test OSX/Windows/Ubuntu/Buildbots
-    * setup.py distcheck
-    * finish NEWS, commit
-    * setup.py update_po, update version to (X, Y, 0), commit "release prep"
-    * Add tag "release-x.y.0", push tag
-    * create Windows builds; Create tarballs
-    * create checksums / signature, upload everything
-    * update version to (X, Y, 0, -1), commit "version bump"
-    * checkout master, update version to (X, Y + 1, -1),  commit "version bump"
-    * sync NEWS, Update downloads page
-    * Enable new version quodlibet-x.y in readthedocs
-      (make it available by building the master one)
-    * Write release mail
-    * update stable PPAs (ubuntu/debian/OBS)
-    * update unstable PPAs
-    * commit ppa script changes
-    * update buildbot config
+    * setup.py update_po; git commit
+    * git checkout -b quodlibet-x.y
+    * change branch name in const.py
+    * git commit; git push
+    * git checkout master
+    * version bump; git commit
+    * enable branch version @readthedocs
 
 New Stable release:
 
+    * git checkout quodlibet-x.y
     * cherry pick stuff from master
-    * update NEWS, commit
+    * update NEWS; git commit
     * test OSX/Windows/Ubuntu/Buildbots
     * setup.py distcheck
     * setup.py update_po, update version to (X, Y, Z), commit "release prep"
-    * add tag "release-x.y.z", push tag
+    * add tag "release-x.y.z"
+    * push tag
     * update version to (X, Y, Z, -1), commit "version bump"
     * cherry pick NEWS commit onto master
-    * create Windows builds; Create tarballs
-    * create checksums / signature, upload everything
+    * create Windows builds; create tarballs; create OSX dmgs
+    * create checksums / signature, upload everything (tarballs to the repo)
     * update downloads page on master
-    * write release mail
+    * run make linkcheck
     * update stable PPAs (ubuntu/debian/OBS)
+    * update appcast feeds in quodlibet.github.io
+    * write release mail

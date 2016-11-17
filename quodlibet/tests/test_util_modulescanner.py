@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase, mkdtemp
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
 
+import os
+import imp
+import sys
 import shutil
 import py_compile
 
-from quodlibet.util.modulescanner import *
-from quodlibet.util.importhelper import *
+from quodlibet.util.modulescanner import ModuleScanner
+from quodlibet.util.importhelper import get_importables, load_dir_modules
+
+from tests import TestCase, mkdtemp
 
 
 class TModuleScanner(TestCase):

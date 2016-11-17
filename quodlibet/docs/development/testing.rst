@@ -4,7 +4,7 @@
 Testing
 =======
 
-Quod Libet uses the CPython unittest framwork for testing. All testing related
+Quod Libet uses the CPython unittest framework for testing. All testing related
 code can be found under ``quodlibet/quodlibet/tests``.
 
 To run the full tests suite simply execute::

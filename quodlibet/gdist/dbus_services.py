@@ -8,7 +8,7 @@
 
 import os
 
-from distutils.core import Command
+from .util import Command
 
 
 class build_dbus_services(Command):
@@ -94,7 +94,7 @@ class install_dbus_services(Command):
             fullpath = os.path.join(basepath, service_name)
             (out, _) = self.copy_file(fullsrc, fullpath)
             self.outfiles.append(out)
-            _replace(fullpath, "@PREFIX@", self.exec_prefix)
+            _replace(fullpath, "@PREFIX@", self.exec_prefix or "")
 
 
 __all__ = ["build_dbus_services", "install_dbus_services"]

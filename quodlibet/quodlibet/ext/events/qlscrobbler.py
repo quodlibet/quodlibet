@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
 # version 0.11
-# (C) 2005-2012 by Joshua Kwan <joshk@triplehelix.org>,
+# (C) 2005-2016 by Joshua Kwan <joshk@triplehelix.org>,
 #                  Joe Wreschnig <piman@sacredchao.net>,
 #                  Franz Pletyz <fpletz@franz-pletz.org>,
 #                  Nicholas J. Michalek <djphazer@gmail.com>,
 #                  Steven Robertson <steven@strobe.cc>
 #                  Nick Boultbee <nick.boultbee@gmail.com>
-# Licensed under GPLv2. See Quod Libet's COPYING for more information.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
 
 from httplib import HTTPException
 import cPickle as pickle
@@ -25,12 +28,13 @@ except ImportError:
     from md5 import md5
 
 import quodlibet
+from quodlibet import _
 from quodlibet import const, app, util, qltk
 from quodlibet.pattern import Pattern
 from quodlibet.query import Query
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfig
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, QueryValidator
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
@@ -286,7 +290,7 @@ class QLSubmitQueue(object):
             self.quick_dialog(_("Wrong system time. Submissions may fail "
                             "until it is corrected."), Gtk.MessageType.ERROR)
         else:  # "FAILED"
-            self.quick_dialog(status, Gtk.MessageType.ERROR)
+            self.quick_dialog(util.escape(status), Gtk.MessageType.ERROR)
         self.changed()
         return False
 
@@ -454,6 +458,7 @@ class QLScrobbler(EventPlugin):
 
         # first frame
         table = Gtk.Table(n_rows=5, n_columns=2)
+        table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
@@ -522,6 +527,7 @@ class QLScrobbler(EventPlugin):
 
         # second frame
         table = Gtk.Table(n_rows=4, n_columns=2)
+        table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
@@ -560,7 +566,7 @@ class QLScrobbler(EventPlugin):
         row += 1
 
         # exclude filter
-        entry = ValidatingEntry(QueryValidator)
+        entry = ValidatingEntry(Query.validator)
         entry.set_text(plugin_config.get('exclude'))
         entry.set_tooltip_text(
                 _("Songs matching this filter will not be submitted."))

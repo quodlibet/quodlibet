@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2015 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,6 +8,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
@@ -64,6 +66,7 @@ class AdvancedPreferences(EventPlugin):
     PLUGIN_NAME = _("Advanced Preferences")
     PLUGIN_DESC = _("Allow to tweak advanced config settings.")
     PLUGIN_CAN_ENABLE = False
+    PLUGIN_ICON = Icons.PREFERENCES_SYSTEM
 
     def __init_defaults(self):
         self.__enabled = False
@@ -123,12 +126,6 @@ class AdvancedPreferences(EventPlugin):
                 "Disable popup windows (treeview hints)"))
 
         rows.append(
-            boolean_config(
-                "browsers", "rating_hotkeys",
-                "Rating Hotkeys:",
-                "Enable rating by pressing the 0-X keys"))
-
-        rows.append(
             int_config(
                 "browsers", "cover_size",
                 "Album Cover Size:",
@@ -137,9 +134,9 @@ class AdvancedPreferences(EventPlugin):
 
         rows.append(
             boolean_config(
-                "settings", "osx_mmkeys",
-                "OS X Multimedia Keys:",
-                "Enable experimental mmkeys support (restart required)"))
+                "settings", "disable_mmkeys",
+                "Disable Multimedia Keys:",
+                "(restart required)"))
 
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
@@ -149,6 +146,15 @@ class AdvancedPreferences(EventPlugin):
             table.attach(button, 2, 3, row, row + 1,
                          xoptions=Gtk.AttachOptions.SHRINK)
 
+        def on_click(button):
+            button.hide()
+            table.set_no_show_all(False)
+            table.show_all()
+
+        button = Gtk.Button(label=_("I know what I'm doing"))
+        button.connect("clicked", on_click)
+        vb.pack_start(button, True, True, 0)
         vb.pack_start(table, True, True, 0)
+        table.set_no_show_all(True)
 
         return vb

@@ -6,17 +6,15 @@
 # published by the Free Software Foundation
 
 from os import path
-import gi
-try:
-    gi.require_version("Soup", "2.4")
-except ValueError as e:
-    raise ImportError(e)
+
 from gi.repository import Soup
 
+from quodlibet import _
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
 from quodlibet.util.http import download_json
 from quodlibet.util.cover.http import HTTPDownloadMixin
 from quodlibet.util.path import escape_filename
+from quodlibet.util import print_d
 
 
 class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
@@ -43,7 +41,7 @@ class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
 
     @property
     def url(self):
-        _url = 'http://ws.audioscrobbler.com/2.0?method=album.getinfo&' + \
+        _url = 'https://ws.audioscrobbler.com/2.0?method=album.getinfo&' + \
                'api_key=107db6fd4c1c7f53b1526fafddab2c82&format=json&' +\
                '&artist={artist}&album={album}&mbid={mbid}'
         artist = Soup.URI.encode(self.song.get('artist', ''), None)

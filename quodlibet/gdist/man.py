@@ -13,7 +13,7 @@ Commands to install Unix man pages.
 
 import os
 
-from distutils.core import Command
+from .util import Command
 
 
 class install_man(Command):

@@ -14,14 +14,17 @@ import os
 
 from gi.repository import Gtk, Pango, Gdk, GLib, Gio
 
+from quodlibet.util.i18n import numeric_phrase
 from .prefs import Preferences, DEFAULT_PATTERN_TEXT
-from .models import AlbumModel, AlbumFilterModel, AlbumSortModel
+from .models import AlbumModel, AlbumFilterModel, AlbumSortModel, AlbumItem
 
 import quodlibet
+from quodlibet import app
+from quodlibet import ngettext
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
-
+from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.query import Query
 from quodlibet.browsers._base import DisplayPatternMixin
@@ -38,9 +41,13 @@ from quodlibet.qltk import Icons
 from quodlibet.util import copool, connect_destroy
 from quodlibet.util.library import background_filter
 from quodlibet.util import connect_obj, DeferredSignal
-from quodlibet.util.collection import Album
 from quodlibet.qltk.cover import get_no_cover_pixbuf
-from quodlibet.qltk.image import *
+from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
+from quodlibet.compat import cmp
+
+
+def get_cover_size():
+    return AlbumItem(None).COVER_SIZE
 
 
 class AlbumTagCompletion(EntryWordCompletion):
@@ -74,9 +81,12 @@ def cmpa(a, b):
 
 
 def compare_title(a1, a2):
+    a1, a2 = a1.album, a2.album
     # All albums should stay at the top
-    if (a1 and a2) is None:
-        return cmp(a1, a2)
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
     # Move albums without a title to the bottom
     if not a1.title:
         return 1
@@ -87,8 +97,11 @@ def compare_title(a1, a2):
 
 
 def compare_artist(a1, a2):
-    if (a1 and a2) is None:
-        return cmp(a1, a2)
+    a1, a2 = a1.album, a2.album
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
     if not a1.title:
         return 1
     if not a2.title:
@@ -100,8 +113,11 @@ def compare_artist(a1, a2):
 
 
 def compare_date(a1, a2):
-    if (a1 and a2) is None:
-        return cmp(a1, a2)
+    a1, a2 = a1.album, a2.album
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
     if not a1.title:
         return 1
     if not a2.title:
@@ -112,8 +128,11 @@ def compare_date(a1, a2):
 
 
 def compare_genre(a1, a2):
-    if (a1 and a2) is None:
-        return cmp(a1, a2)
+    a1, a2 = a1.album, a2.album
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
     if not a1.title:
         return 1
     if not a2.title:
@@ -126,8 +145,11 @@ def compare_genre(a1, a2):
 
 
 def compare_rating(a1, a2):
-    if (a1 and a2) is None:
-        return cmp(a1, a2)
+    a1, a2 = a1.album, a2.album
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
     if not a1.title:
         return 1
     if not a2.title:
@@ -331,7 +353,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
                 DisplayPatternMixin):
     __model = None
     __last_render = None
-    __last_render_pb = None
+    __last_render_surface = None
 
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
@@ -377,21 +399,14 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         klass.__model = AlbumModel(library)
         klass.__library = library
 
-    @classmethod
-    def _refresh_albums(klass, albums):
-        """We signal all other open album views that we changed something
-        (Only needed for the cover atm) so they redraw as well."""
-        if klass.__library:
-            klass.__library.albums.refresh(albums)
-
     @util.cached_property
     def _no_cover(self):
-        """Returns a cairo surface of pixbuf representing a missing cover"""
+        """Returns a cairo surface representing a missing cover"""
 
-        cover_size = Album.COVER_SIZE
-        scale_factor = get_scale_factor(self)
+        cover_size = get_cover_size()
+        scale_factor = self.get_scale_factor()
         pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
-        return get_pbosf_for_pixbuf(self, pb)
+        return get_surface_for_pixbuf(self, pb)
 
     def __init__(self, library):
         super(AlbumList, self).__init__(spacing=6)
@@ -418,29 +433,28 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         self.__cover_column = column = Gtk.TreeViewColumn("covers", render)
         column.set_visible(config.getboolean("browsers", "album_covers"))
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        column.set_fixed_width(Album.COVER_SIZE + 12)
-        render.set_property('height', Album.COVER_SIZE + 8)
-        render.set_property('width', Album.COVER_SIZE + 8)
+        column.set_fixed_width(get_cover_size() + 12)
+        render.set_property('height', get_cover_size() + 8)
+        render.set_property('width', get_cover_size() + 8)
 
         def cell_data_pb(column, cell, model, iter_, no_cover):
-            album = model.get_album(iter_)
+            item = model.get_value(iter_)
 
-            if album is None:
-                pixbuf = None
-            elif album.cover:
-                pixbuf = album.cover
-                round_ = config.getboolean("albumart", "round")
-                pixbuf = add_border_widget(pixbuf, self.view, round_)
-                pixbuf = get_pbosf_for_pixbuf(self, pixbuf)
+            if item.album is None:
+                surface = None
+            elif item.cover:
+                pixbuf = item.cover
+                pixbuf = add_border_widget(pixbuf, self.view)
+                surface = get_surface_for_pixbuf(self, pixbuf)
                 # don't cache, too much state has an effect on the result
-                self.__last_render_pb = None
+                self.__last_render_surface = None
             else:
-                pixbuf = no_cover
+                surface = no_cover
 
-            if self.__last_render_pb == pixbuf:
+            if self.__last_render_surface == surface:
                 return
-            self.__last_render_pb = pixbuf
-            set_renderer_from_pbosf(cell, pixbuf)
+            self.__last_render_surface = surface
+            cell.set_property("surface", surface)
 
         column.set_cell_data_func(render, cell_data_pb, self._no_cover)
         view.append_column(column)
@@ -455,9 +469,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
             album = model.get_album(iter_)
 
             if album is None:
-                text = "<b>%s</b>" % _("All Albums")
-                text += "\n" + ngettext("%d album", "%d albums",
-                        len(model) - 1) % (len(model) - 1)
+                text = "<b>%s</b>\n" % _("All Albums")
+                text += numeric_phrase("%d album", "%d albums", len(model) - 1)
                 markup = text
             else:
                 markup = self.display_pattern % album
@@ -510,7 +523,20 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
         self.connect('key-press-event', self.__key_pressed, library.librarian)
 
+        if app.cover_manager:
+            connect_destroy(
+                app.cover_manager, "cover-changed", self._cover_changed)
+
         self.show_all()
+
+    def _cover_changed(self, manager, songs):
+        model = self.__model
+        songs = set(songs)
+        for iter_, item in model.iterrows():
+            album = item.album
+            if album is not None and songs & album.songs:
+                item.scanned = False
+                model.row_changed(model.get_path(iter_), iter_)
 
     def __key_pressed(self, widget, event, librarian):
         if qltk.is_accel(event, "<Primary>I"):
@@ -528,8 +554,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         return False
 
     def _row_needs_update(self, model, iter_):
-        album = model.get_album(iter_)
-        return album is not None and not album.scanned
+        item = model.get_value(iter_)
+        return item.album is not None and not item.scanned
 
     def _update_row(self, filter_model, iter_):
         sort_model = filter_model.get_model()
@@ -543,11 +569,11 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
             if path is not None:
                 model.row_changed(path, model.get_iter(path))
 
-        album = model.get_album(iter_)
-        scale_factor = get_scale_factor(self)
-        album.scan_cover(scale_factor=scale_factor,
-                         callback=callback,
-                         cancel=self._cover_cancel)
+        item = model.get_value(iter_)
+        scale_factor = self.get_scale_factor()
+        item.scan_cover(scale_factor=scale_factor,
+                        callback=callback,
+                        cancel=self._cover_cancel)
 
     def __destroy(self, browser):
         self._cover_cancel.cancel()
@@ -631,10 +657,18 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __refresh_album(self, menuitem, view):
-        albums = self.__get_selected_albums()
-        for album in albums:
-            album.scan_cover(True)
-        self._refresh_albums(albums)
+        items = self.__get_selected_items()
+        for item in items:
+            item.scanned = False
+        model = self.view.get_model()
+        for iter_, item in model.iterrows():
+            if item in items:
+                model.row_changed(model.get_path(iter_), iter_)
+
+    def __get_selected_items(self):
+        selection = self.view.get_selection()
+        model, paths = selection.get_selected_rows()
+        return model.get_items(paths)
 
     def __get_selected_albums(self):
         selection = self.view.get_selection()
@@ -700,12 +734,13 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     def list_albums(self):
         model = self.view.get_model()
-        return [row[0].key for row in model if row[0]]
+        return [row[0].album.key for row in model if row[0].album]
 
     def filter_albums(self, values):
         view = self.view
         self.__inhibit()
-        changed = view.select_by_func(lambda r: r[0] and r[0].key in values)
+        changed = view.select_by_func(
+            lambda r: r[0].album and r[0].album.key in values)
         self.__uninhibit()
         if changed:
             self.activate()
@@ -743,7 +778,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         else:
 
             def select_fun(row):
-                album = row[0]
+                album = row[0].album
                 if not album:  # all
                     return False
                 return album.str_key in keys
@@ -752,7 +787,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     def scroll(self, song):
         album_key = song.album_key
-        select = lambda r: r[0] and r[0].key == album_key
+        select = lambda r: r[0].album and r[0].album.key == album_key
         self.view.select_by_func(select, one=True)
 
     def __get_config_string(self):

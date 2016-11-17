@@ -10,11 +10,11 @@ import tempfile
 
 import dbus
 import dbus.service
+from senf import fsn2uri
 
 from quodlibet import app
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
-from quodlibet.util.uri import URI
 
 from .util import MPRISObject
 
@@ -108,7 +108,7 @@ value="false"/>
         self.__repeat_id = player_options.connect(
             "notify::repeat", self.__repeat_changed)
         self.__random_id = player_options.connect(
-            "notify::random", self.__random_changed)
+            "notify::shuffle", self.__shuffle_changed)
         self.__single_id = player_options.connect(
             "notify::single", self.__single_changed)
 
@@ -135,9 +135,8 @@ value="false"/>
     def __repeat_changed(self, *args):
         self.emit_properties_changed(self.PLAYER_IFACE, ["LoopStatus"])
 
-    def __random_changed(self, *args):
-        self.emit_properties_changed(self.PLAYER_IFACE,
-                                     ["Shuffle", "LoopStatus"])
+    def __shuffle_changed(self, *args):
+        self.emit_properties_changed(self.PLAYER_IFACE, ["Shuffle"])
 
     def __single_changed(self, *args):
         self.emit_properties_changed(self.PLAYER_IFACE, ["LoopStatus"])
@@ -245,7 +244,7 @@ value="false"/>
             is_temp = name.startswith(tempfile.gettempdir())
             # This doesn't work for embedded images.. the file gets unlinked
             # after loosing the file handle
-            metadata["mpris:artUrl"] = str(URI.frompath(name))
+            metadata["mpris:artUrl"] = fsn2uri(name)
 
         if not is_temp:
             self.__cover = None
@@ -317,7 +316,7 @@ value="false"/>
             elif name == "Rate":
                 pass
             elif name == "Shuffle":
-                player_options.random = value
+                player_options.shuffle = value
             elif name == "Volume":
                 player.volume = value
 
@@ -362,7 +361,7 @@ value="false"/>
             elif name == "Rate":
                 return 1.0
             elif name == "Shuffle":
-                return player_options.random
+                return player_options.shuffle
             elif name == "Metadata":
                 return self.__get_metadata()
             elif name == "Volume":

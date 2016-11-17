@@ -1,16 +1,35 @@
 # -*- coding: utf-8 -*-
-# Constants used in various parts of QL, mostly strings.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+"""Constants used in various parts of QL, mostly strings."""
 
 import sys
 import os
 
 
+# MSYS2 defines MSYSTEM which changes os.sep/os.path.sep for the mingw
+# Python build. Unset here and restart.. (does not work for py.test etc.)
+# XXX: do this here since it gets executed by all scripts
+if os.name == "nt" and "MSYSTEM" in os.environ:
+    import subprocess
+    del os.environ["MSYSTEM"]
+    argv = []
+    for arg in [sys.executable] + sys.argv:
+        if os.path.exists(arg):
+            arg = arg.replace("/", "\\")
+        argv.append(arg)
+    sys.exit(subprocess.call(argv))
+
+
 class Version(tuple):
     """Represent the version of a dependency as a tuple"""
 
-    def __new__(cls, name, *args):
+    def __new__(cls, name, *args, **kwargs):
         inst = tuple.__new__(Version, args)
         inst.name = name
+        inst.message = kwargs.pop("message", "")
         return inst
 
     def human_version(self):
@@ -24,8 +43,9 @@ class Version(tuple):
 
         if self[0] == version_tuple[0] and version_tuple >= self:
             return
-        raise ImportError("%s %s required. %s found." % (
-            self.name, self, Version("", *version_tuple)))
+        message = " " + self.message if self.message else ""
+        raise ImportError("%s %s required. %s found.%s" % (
+            self.name, self, Version("", *version_tuple), message))
 
 
 class MinVersions(object):
@@ -33,13 +53,15 @@ class MinVersions(object):
 
     PYTHON2 = Version("Python2", 2, 7)
     PYTHON3 = Version("Python3", 3, 4)
-    MUTAGEN = Version("Mutagen", 1, 30)
+    MUTAGEN = Version("Mutagen", 1, 32,
+        message="Use the Quod Libet unstable PPAs/repos to get a newer "
+                "mutagen version.")
     GTK = Version("GTK+", 3, 10)
-    PYGOBJECT = Version("PyGObject", 3, 10)
+    PYGOBJECT = Version("PyGObject", 3, 12)
     GSTREAMER = Version("GStreamer", 1, 0)
 
 
-VERSION_TUPLE = Version("", 3, 6, -1)
+VERSION_TUPLE = Version("", 3, 8, -1)
 VERSION = str(VERSION_TUPLE)
 
 # entry point for the user guide / wiki
@@ -49,6 +71,7 @@ DOCS_LATEST = DOCS_BASE_URL % "latest"
 DOCS_BASE_URL %= BRANCH_NAME if BRANCH_NAME != "master" else "latest"
 ONLINE_HELP = DOCS_BASE_URL + "/guide/index.html"
 SEARCH_HELP = DOCS_BASE_URL + "/guide/searching.html"
+SHORTCUTS_HELP = DOCS_BASE_URL + "/guide/shortcuts.html"
 
 # Email used as default for reading/saving per-user data in tags, etc.
 EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
@@ -56,7 +79,7 @@ EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 # Displayed as registered / help email address
 SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
-MAIN_AUTHORS = """\
+MAIN_AUTHORS = u"""\
 Joe Wreschnig
 Michael Urman
 Iñigo Serna
@@ -66,9 +89,9 @@ Nick Boultbee""".split("\n")
 
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = """Copyright © 2004-2016 %s...""" % ", ".join(MAIN_AUTHORS)
+COPYRIGHT = u"""Copyright © 2004-2016 %s...""" % u", ".join(MAIN_AUTHORS)
 
-AUTHORS = sorted("""\
+AUTHORS = sorted(u"""\
 Alexandre Passos
 Alexey Bobyakov
 Alex Geoffrey Smith
@@ -82,10 +105,12 @@ Bastian Kleineidam
 Bastien Gorissen
 Benjamin Boutier
 Ben Zeigler
+Bernd Wechner
 Bruno Bergot
 Carlo Teubner
 Christine Spang
 Christoph Reiter
+Corentin Néau
 David Kågedal
 David Schneider
 Decklin Foster
@@ -100,6 +125,7 @@ Guillaume Chazarain
 Hans Scholze
 Iñigo Serna
 Jacob Lee
+Jakob Gahde
 Jan Arne Petersen
 Jan Path
 Javier Kohen
@@ -142,10 +168,12 @@ Tomasz Torcz
 Tshepang Lekhonkhobe
 Türerkan İnce
 Vasiliy Faronov
+Victoria Hayes
 Zack Weinberg
 """.strip().split("\n"))
 
-TRANSLATORS = sorted("""
+TRANSLATORS = sorted(u"""
+Åka Sikrom (nb)
 Alexandre Passos (pt)
 Andreas Bertheussen (nb)
 Anton Shestakov (ru)
@@ -173,6 +201,7 @@ Johám-Luís Miguéns Vila (es, gl, gl_ES, eu, pt)
 Jonas Slivka (lt)
 Joshua Kwan (fr)
 Luca Baraldi (it)
+Ludovic Druette (fr)
 Lukáš Lalinský (sk)
 Mathieu Morey (fr)
 Michal Nowikowski (pl)
@@ -199,7 +228,7 @@ Yasushi Iwata (ja)
 Сергей Федосеев (ru)
 """.strip().splitlines())
 
-ARTISTS = sorted("""\
+ARTISTS = sorted(u"""\
 Tobias
 Jakub Steiner
 Fabien Devaux

@@ -13,11 +13,13 @@ from gi.repository import Gtk
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
 from quodlibet.browsers._base import FakeDisplayItem, EditDisplayPatternMixin
 from quodlibet.formats import PEOPLE
 from quodlibet.qltk import Button, Icons
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import format_rating
+from quodlibet.util.i18n import numeric_phrase
 
 PEOPLE
 _SOME_PEOPLE = "\n".join([util.tag("artist"), util.tag("performer"),
@@ -36,8 +38,8 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         "date": "2010-10-31",
         "~length": util.format_time_display(6319),
         "~long-length": util.format_time_long(6319),
-        "~tracks": ngettext("%d track", "%d tracks", 5) % 5,
-        "~discs": ngettext("%d disc", "%d discs", 2) % 2,
+        "~tracks": numeric_phrase("%d track", "%d tracks", 5),
+        "~discs": numeric_phrase("%d disc", "%d discs", 2),
         "~#rating": 0.75,
         "album": _("An Example Album"),
         "~people": _SOME_PEOPLE + "..."})

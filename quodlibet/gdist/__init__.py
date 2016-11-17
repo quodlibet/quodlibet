@@ -12,31 +12,32 @@ This module contains a Distribution subclass (GDistribution) which
 implements build and install commands for operations related to
 Python GTK+ and GObject support. This includes installation
 of man pages and gettext/intltool support.
+
+Also supports setuptools but needs to be imported after setuptools
+(which does some monkey patching)
 """
 
-import os
 import sys
 
-try:
-    from py2exe import Distribution
-except ImportError:
-    from distutils.core import Distribution
+from distutils.core import setup
 
-from distutils.command.build import build as distutils_build
-from distutils.command.install import install as distutils_install
+from .shortcuts import build_shortcuts, install_shortcuts
+from .man import install_man
+from .po import build_mo, install_mo, po_stats, update_po, create_po
+from .icons import install_icons
+from .search_provider import install_search_provider
+from .dbus_services import build_dbus_services, install_dbus_services
+from .appdata import build_appdata, install_appdata
+from .coverage import coverage_cmd
+from .docs import build_sphinx
+from .scripts import build_scripts
+from .tests import quality_cmd, distcheck_cmd, test_cmd
+from .clean import clean
+from .zsh_completions import install_zsh_completions
+from .util import get_dist_class, Distribution
 
-from gdist.shortcuts import build_shortcuts, install_shortcuts
-from gdist.man import install_man
-from gdist.po import build_mo, install_mo, po_stats, update_po, create_po
-from gdist.icons import install_icons
-from gdist.search_provider import install_search_provider
-from gdist.dbus_services import build_dbus_services, install_dbus_services
-from gdist.appdata import build_appdata, install_appdata
-from gdist.coverage import coverage_cmd
-from gdist.docs import build_sphinx
-from gdist.scripts import build_scripts
-from gdist.tests import quality_cmd, distcheck_cmd, test_cmd
-from gdist.clean import clean
+
+distutils_build = get_dist_class("build")
 
 
 class build(distutils_build):
@@ -58,6 +59,9 @@ class build(distutils_build):
     ]
 
 
+distutils_install = get_dist_class("install")
+
+
 class install(distutils_install):
     """Override the default install with new subcommands."""
 
@@ -77,6 +81,8 @@ class install(distutils_install):
          lambda self: self.distribution.has_dbus_services()),
         ("install_appdata",
          lambda self: self.distribution.has_appdata()),
+        ("install_zsh_completions",
+         lambda self: self.distribution.has_zsh_completions()),
     ]
 
     def initialize_options(self):
@@ -84,7 +90,6 @@ class install(distutils_install):
         self.mandir = None
 
 
-is_windows = (os.name == "nt")
 is_osx = (sys.platform == "darwin")
 
 
@@ -119,6 +124,7 @@ class GDistribution(Distribution):
     po_package = None
     search_provider = None
     coverage_options = {}
+    zsh_completions = []
 
     def __init__(self, *args, **kwargs):
         Distribution.__init__(self, *args, **kwargs)
@@ -136,6 +142,8 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("install_search_provider",
                                  install_search_provider)
         self.cmdclass.setdefault("install_appdata", install_appdata)
+        self.cmdclass.setdefault(
+            "install_zsh_completions", install_zsh_completions)
         self.cmdclass.setdefault("build", build)
         self.cmdclass.setdefault("install", install)
         self.cmdclass.setdefault("po_stats", po_stats)
@@ -150,24 +158,28 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("clean", clean)
 
     def has_po(self):
-        return not is_windows and bool(self.po_directory)
+        return bool(self.po_directory)
 
     def has_shortcuts(self):
-        return not is_windows and not is_osx and bool(self.shortcuts)
+        return not is_osx and bool(self.shortcuts)
 
     def has_appdata(self):
-        return not is_windows and not is_osx and bool(self.appdata)
+        return not is_osx and bool(self.appdata)
 
     def has_man_pages(self):
-        return not is_windows and bool(self.man_pages)
+        return bool(self.man_pages)
 
     def has_dbus_services(self):
-        return not is_windows and not is_osx and bool(self.dbus_services)
+        return not is_osx and bool(self.dbus_services)
+
+    def has_zsh_completions(self):
+        return bool(self.zsh_completions)
 
     def need_icon_install(self):
-        return not is_windows and not is_osx
+        return not is_osx
 
     def need_search_provider(self):
-        return not is_windows and not is_osx
+        return not is_osx
 
-__all__ = ["GDistribution"]
+
+__all__ = ["GDistribution", "setup"]

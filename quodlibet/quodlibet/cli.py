@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,6 +7,8 @@
 
 import os
 import sys
+
+from quodlibet import C_, _
 from quodlibet.util.dprint import print_, print_e
 from quodlibet.remote import Remote, RemoteError
 
@@ -65,7 +67,9 @@ def control(command, arg=None, ignore_error=False):
 
 
 def process_arguments(argv):
-    from quodlibet.util.uri import URI
+    from senf import uri2fsn
+
+    from quodlibet.util.path import uri_is_valid
     from quodlibet import util
     from quodlibet import const
 
@@ -73,9 +77,9 @@ def process_arguments(argv):
     controls = ["next", "previous", "play", "pause", "play-pause", "stop",
                 "hide-window", "show-window", "toggle-window",
                 "focus", "quit", "unfilter", "refresh", "force-previous"]
-    controls_opt = ["seek", "order", "repeat", "query", "volume", "filter",
-                    "set-rating", "set-browser", "open-browser", "random",
-                    "song-list", "queue"]
+    controls_opt = ["seek", "repeat", "query", "volume", "filter",
+                    "set-rating", "set-browser", "open-browser", "shuffle",
+                    "song-list", "queue", "stop-after"]
 
     options = util.OptionParser(
         "Quod Libet", const.VERSION,
@@ -115,17 +119,18 @@ def process_arguments(argv):
 
     for opt, help, arg in [
         ("seek", _("Seek within the playing song"), _("[+|-][HH:]MM:SS")),
-        ("order", _("Set or toggle the playback order"),
-            "[order]|toggle"),
+        ("shuffle", _("Set or toggle shuffle mode"), "[0|1|t"),
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
         ("volume", _("Set the volume"), "(+|-|)0..100"),
         ("query", _("Search your audio library"), _("query")),
         ("play-file", _("Play a file"), C_("command", "filename")),
         ("set-rating", _("Rate the playing song"), "0.0..1.0"),
         ("set-browser", _("Set the current browser"), "BrowserName"),
+        ("stop-after", _("Stop after the playing song"), "0|1|t"),
         ("open-browser", _("Open a new browser"), "BrowserName"),
         ("queue", _("Show or hide the queue"), "on|off|t"),
-        ("song-list", _("Show or hide the main song list"), "on|off|t"),
+        ("song-list",
+            _("Show or hide the main song list (deprecated)"), "on|off|t"),
         ("random", _("Filter on a random value"), C_("command", "tag")),
         ("filter", _("Filter on a tag value"), _("tag=value")),
         ("enqueue", _("Enqueue a file or query"), "%s|%s" % (
@@ -170,12 +175,12 @@ def process_arguments(argv):
             return True
 
     validators = {
-        "order": ["0", "1", "t", "toggle", "inorder", "shuffle",
-                  "weighted", "onesong"].__contains__,
+        "shuffle": ["0", "1", "t", "on", "off", "toggle"].__contains__,
         "repeat": ["0", "1", "t", "on", "off", "toggle"].__contains__,
         "volume": is_vol,
         "seek": is_time,
         "set-rating": is_float,
+        "stop-after": ["0", "1", "t"].__contains__,
         }
 
     cmds_todo = []
@@ -214,18 +219,23 @@ def process_arguments(argv):
             queue("volume -")
         elif command == "enqueue" or command == "unqueue":
             try:
-                filename = URI(arg).filename
+                filename = uri2fsn(arg)
             except ValueError:
                 filename = arg
             queue(command, filename)
         elif command == "enqueue-files":
             queue(command, arg)
         elif command == "play-file":
-            try:
-                filename = URI(arg).filename
-            except ValueError:
+            if uri_is_valid(arg) and arg.startswith("quodlibet://"):
+                # TODO: allow handling of URIs without --play-file
+                queue("uri-received", arg)
+            else:
+                try:
+                    filename = uri2fsn(arg)
+                except ValueError:
+                    filename = arg
                 filename = os.path.abspath(util.path.expanduser(arg))
-            queue("play-file", filename)
+                queue("play-file", filename)
         elif command == "print-playing":
             try:
                 queue("print-playing", args[0])

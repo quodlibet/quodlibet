@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase, DATA_DIR
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+from tests import TestCase, get_data_path
 
 import os
 
+from senf import fsnative, fsn2text
+
 from quodlibet import config
-from quodlibet.util.path import is_fsnative, fsnative, fsdecode
-from quodlibet.compat import PY2
-from quodlibet.formats import AudioFile
-from quodlibet.formats._audio import INTERN_NUM_DEFAULT
-from quodlibet.formats import decode_value
+from quodlibet.compat import PY2, text_type
+from quodlibet.formats import AudioFile, types as format_types, AudioFileError
+from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
+from quodlibet.formats import decode_value, MusicFile
+
+from .helper import temp_filename
 
 
 bar_1_1 = AudioFile({
@@ -42,7 +49,7 @@ bar_va = AudioFile({
     "performer": "Jay-Z"})
 
 quux = AudioFile({
-    "~filename": os.path.join(DATA_DIR, "asong.ogg"),
+    "~filename": get_data_path("asong.ogg"),
     "album": u"Quuxly"
     })
 
@@ -96,7 +103,8 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(quux("not a key", "foo"), "foo")
         self.failUnlessEqual(quux("artist"), "")
         self.failUnlessEqual(quux("~basename"), "asong.ogg")
-        self.failUnlessEqual(quux("~dirname"), DATA_DIR)
+        self.failUnlessEqual(
+            quux("~dirname"), os.path.dirname(quux("~filename")))
         self.failUnlessEqual(quux("title"), "asong.ogg [Unknown]")
 
         self.failUnlessEqual(bar_1_1("~#disc"), 1)
@@ -181,6 +189,35 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_2_1.list_sort("~#track"),
                              [('1', '1')])
 
+    def test_list_sort_empty_sort(self):
+        # we don't want to care about empty sort values, make sure we ignore
+        # them
+        s = AudioFile({"artist": "x\ny\nz", "artistsort": "c\n\nd"})
+        self.assertEqual(
+            s.list_sort("artist"), [("x", "c"), ("y", "y"), ("z", "d")])
+
+    def test_list_sort_noexist(self):
+        self.failUnlessEqual(bar_1_1.list_sort("nopenopenope"), [])
+
+    def test_list_separate_noexist(self):
+        self.failUnlessEqual(bar_1_1.list_separate("nopenopenope"), [])
+
+    def test_list_sort_length_diff(self):
+        s = AudioFile({"artist": "a\nb", "artistsort": "c"})
+        self.assertEqual(s.list_sort("artist"), [("a", "c"), ("b", "b")])
+
+        s = AudioFile({"artist": "a\nb", "artistsort": "c\nd\ne"})
+        self.assertEqual(s.list_sort("artist"), [("a", "c"), ("b", "d")])
+
+        s = AudioFile({"artistsort": "c\nd\ne"})
+        self.assertEqual(s.list_sort("artist"), [])
+
+        s = AudioFile({"artist": "a\nb"})
+        self.assertEqual(s.list_sort("artist"), [("a", "a"), ("b", "b")])
+
+        s = AudioFile({})
+        self.assertEqual(s.list_sort("artist"), [])
+
     def test_list_separate(self):
         self.failUnlessEqual(bar_1_1.list_separate("title"),
                              [("A song", "A song")])
@@ -209,7 +246,7 @@ class TAudioFile(TestCase):
         self.failUnless(", " in bar_2_1.comma("artist"))
 
     def test_comma_filename(self):
-        self.assertTrue(isinstance(bar_1_1.comma("~filename"), unicode))
+        self.assertTrue(isinstance(bar_1_1.comma("~filename"), text_type))
 
     def test_exist(self):
         self.failIf(bar_2_1.exists())
@@ -252,7 +289,7 @@ class TAudioFile(TestCase):
     def test_rename(self):
         old_fn = quux("~basename")
         new_fn = fsnative(u"anothersong.mp3")
-        dir = DATA_DIR
+        dir = os.path.dirname(get_data_path(""))
         self.failUnless(quux.exists())
         quux.rename(new_fn)
         self.failIf(os.path.exists(dir + old_fn),
@@ -275,7 +312,7 @@ class TAudioFile(TestCase):
             self.failUnlessRaises(
                 ValueError, quux.rename, fsnative(u"/dev/null"))
         self.failUnlessRaises(ValueError, quux.rename,
-                              os.path.join(DATA_DIR, "silence-44-s.ogg"))
+                              get_data_path("silence-44-s.ogg"))
 
     def test_website(self):
         song = AudioFile()
@@ -297,12 +334,12 @@ class TAudioFile(TestCase):
     def test_lyric_filename(self):
         song = AudioFile()
         song["~filename"] = fsnative(u"filename")
-        self.assertTrue(is_fsnative(song.lyric_filename))
+        self.assertTrue(isinstance(song.lyric_filename, fsnative))
         song["title"] = u"Title"
         song["artist"] = u"Artist"
-        self.assertTrue(is_fsnative(song.lyric_filename))
+        self.assertTrue(isinstance(song.lyric_filename, fsnative))
         song["lyricist"] = u"Lyricist"
-        self.assertTrue(is_fsnative(song.lyric_filename))
+        self.assertTrue(isinstance(song.lyric_filename, fsnative))
 
     def test_sanitize(self):
         q = AudioFile(quux)
@@ -402,12 +439,12 @@ class TAudioFile(TestCase):
 
     def test_to_dump(self):
         dump = bar_1_1.to_dump()
-        num = len(set(bar_1_1.keys()) | INTERN_NUM_DEFAULT)
+        num = len(set(bar_1_1.keys()) | NUMERIC_ZERO_DEFAULT)
         self.failUnlessEqual(dump.count("\n"), num + 2)
         for key, value in bar_1_1.items():
             self.failUnless(key in dump)
             self.failUnless(value in dump)
-        for key in INTERN_NUM_DEFAULT:
+        for key in NUMERIC_ZERO_DEFAULT:
             self.failUnless(key in dump)
 
         n = AudioFile()
@@ -420,7 +457,7 @@ class TAudioFile(TestCase):
         b = AudioFile(bar_1_1)
         b["~#length"] = long(200000000000)
         dump = b.to_dump()
-        num = len(set(bar_1_1.keys()) | INTERN_NUM_DEFAULT)
+        num = len(set(bar_1_1.keys()) | NUMERIC_ZERO_DEFAULT)
         self.failUnlessEqual(dump.count("\n"), num + 2)
 
         n = AudioFile()
@@ -626,8 +663,56 @@ class TAudioFile(TestCase):
             f = AudioFile({"~filename": "/\x87\x12.mp3", "title": "linux"})
             self.failUnlessEqual(f("~uri"), "file:///%87%12.mp3")
 
+    def test_reload(self):
+        audio = MusicFile(get_data_path('silence-44-s.mp3'))
+        audio["title"] = u"foo"
+        audio.reload()
+        self.assertNotEqual(audio.get("title"), u"foo")
+
+    def test_reload_fail(self):
+        audio = MusicFile(get_data_path('silence-44-s.mp3'))
+        audio["title"] = u"foo"
+        audio.sanitize(fsnative(u"/dev/null"))
+        self.assertRaises(AudioFileError, audio.reload)
+        self.assertEqual(audio["title"], u"foo")
+
     def tearDown(self):
         os.unlink(quux["~filename"])
+
+
+class TAudioFormats(TestCase):
+
+    def setUp(self):
+        with temp_filename() as filename:
+            self.filename = filename
+
+    def test_load_non_exist(self):
+        for t in format_types:
+            if not t.is_file:
+                continue
+            self.assertRaises(AudioFileError, t, self.filename)
+
+    def test_write_non_existing(self):
+        for t in format_types:
+            if not t.is_file:
+                continue
+            instance = AudioFile.__new__(t)
+            instance.sanitize(self.filename)
+            try:
+                instance.write()
+            except AudioFileError:
+                pass
+
+    def test_reaload_non_existing(self):
+        for t in format_types:
+            if not t.is_file:
+                continue
+            instance = AudioFile.__new__(t)
+            instance.sanitize(self.filename)
+            try:
+                instance.reload()
+            except AudioFileError:
+                pass
 
 
 class Tdecode_value(TestCase):
@@ -636,9 +721,9 @@ class Tdecode_value(TestCase):
         self.assertEqual(decode_value("~#foo", 0.25), u"0.25")
         self.assertEqual(decode_value("~#foo", 4), u"4")
         self.assertEqual(decode_value("~#foo", "bar"), u"bar")
-        self.assertTrue(isinstance(decode_value("~#foo", "bar"), unicode))
+        self.assertTrue(isinstance(decode_value("~#foo", "bar"), text_type))
         path = fsnative(u"/foobar")
-        self.assertEqual(decode_value("~filename", path), fsdecode(path))
+        self.assertEqual(decode_value("~filename", path), fsn2text(path))
 
 
 class Treplay_gain(TestCase):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2014 Nick Boultbee
+#           2012-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -14,25 +14,27 @@ import os
 import shutil
 import time
 
+from senf import fsn2uri, fsnative, fsn2text, devnull
+
+from quodlibet import _
 from quodlibet import util
 from quodlibet import config
-from quodlibet.util.path import mkdir, fsdecode, mtime, expanduser, is_fsnative
-from quodlibet.util.path import normalize_path, fsnative, escape_filename
+from quodlibet.util.path import mkdir, mtime, expanduser, \
+    normalize_path, escape_filename
 from quodlibet.util.string import encode, decode, isascii
 
 from quodlibet.util import iso639
-from quodlibet.util.uri import URI
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
-from quodlibet.compat import iteritems, string_types, text_type, number_types
+from quodlibet.compat import iteritems, string_types, text_type, \
+    number_types, listitems, izip_longest, integer_types
 
 from ._image import ImageContainer
+from ._misc import AudioFileError, translate_errors
 
-try:
-    from itertools import izip_longest
-except ImportError:  # python3.x
-    izip = zip
+
+translate_errors
 
 MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
            "~#skipcount", "~#rating", "~bookmark"}
@@ -42,9 +44,17 @@ PEOPLE = ["artist", "albumartist", "author", "composer", "~performers",
           "originalartist", "lyricist", "arranger", "conductor"]
 """Sources of the ~people tag, most important first"""
 
-INTERN_NUM_DEFAULT = {"~#lastplayed", "~#laststarted", "~#playcount",
-                      "~#skipcount", "~#length", "~#bitrate", "~#filesize"}
-"""Default to 0"""
+TIME_TAGS = {"~#lastplayed", "~#laststarted", "~#added", "~#mtime"}
+"""Time in seconds since epoch, defaults to 0"""
+
+SIZE_TAGS = {"~#filesize"}
+"""Size in bytes, defaults to 0"""
+
+NUMERIC_ZERO_DEFAULT = {"~#skipcount", "~#playcount", "~#length", "~#bitrate"}
+"""Defaults to 0"""
+
+NUMERIC_ZERO_DEFAULT.update(TIME_TAGS)
+NUMERIC_ZERO_DEFAULT.update(SIZE_TAGS)
 
 FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname"}
 """Values are bytes in Linux instead of unicode"""
@@ -71,8 +81,8 @@ def decode_value(tag, value):
     elif isinstance(value, float):
         return u"%.2f" % value
     elif tag in FILESYSTEM_TAGS:
-        return fsdecode(value)
-    return unicode(value)
+        return fsn2text(value)
+    return text_type(value)
 
 
 class AudioFile(dict, ImageContainer):
@@ -91,21 +101,30 @@ class AudioFile(dict, ImageContainer):
     their description.
     """
 
-    # New tags received from the backend will update the song
     fill_metadata = False
-    # New song duration from the backend will update the song
+    """New tags received from the backend will update the song"""
+
     fill_length = False
-    # Container for multiple songs, while played new songs can start/end
+    """New song duration from the backend will update the song"""
+
     multisong = False
-    # Part of a multisong
+    """Is a container for multiple songs
+     i.e. while played new songs can start / end"""
+
     streamsong = False
-    # Can be added to the queue, playlists
+    """Is part of a multisong"""
+
     can_add = True
-    # Is a real file
+    """Can be added to the queue, playlists"""
+
     is_file = True
+    """Is a real (local) file"""
 
     format = "Unknown Audio File"
+    """The underlying file format"""
+
     mimes = []
+    """MIME types this class can represent"""
 
     def __song_key(self):
         return (self("~#disc"), self("~#track"),
@@ -137,7 +156,7 @@ class AudioFile(dict, ImageContainer):
         elif tag == "artistsort":
             return artist_sort
         elif tag in FILESYSTEM_TAGS:
-            return lambda song: fsdecode(song(tag), note=False)
+            return lambda song: fsn2text(song(tag))
         elif tag.startswith("~#") and "~" not in tag[2:]:
             return lambda song: song(tag)
         return lambda song: human(song(tag))
@@ -159,7 +178,7 @@ class AudioFile(dict, ImageContainer):
         if key.startswith("~#"):
             assert isinstance(value, number_types)
         elif key in FILESYSTEM_TAGS:
-            assert is_fsnative(value)
+            assert isinstance(value, fsnative)
         else:
             value = text_type(value)
 
@@ -203,9 +222,14 @@ class AudioFile(dict, ImageContainer):
         return self is not other
 
     def reload(self):
-        """Reload an audio file from disk. The caller is responsible for
-        handling any errors."""
+        """Reload an audio file from disk. If reloading fails nothing will
+        change.
 
+        Raises:
+            AudioFileError: if the file fails to load
+        """
+
+        backup = dict(self)
         fn = self["~filename"]
         saved = {}
         for key in self:
@@ -213,8 +237,13 @@ class AudioFile(dict, ImageContainer):
                 saved[key] = self[key]
         self.clear()
         self["~filename"] = fn
-        self.__init__(fn)
-        self.update(saved)
+        try:
+            self.__init__(fn)
+        except AudioFileError:
+            self.update(backup)
+            raise
+        else:
+            self.update(saved)
 
     def realkeys(self):
         """Returns a list of keys that are not internal, i.e. they don't
@@ -324,7 +353,7 @@ class AudioFile(dict, ImageContainer):
                 try:
                     return self["~uri"]
                 except KeyError:
-                    return URI.frompath(self["~filename"])
+                    return text_type(fsn2uri(self["~filename"]))
             elif key == "format":
                 return self.get("~format", self.format)
             elif key == "codec":
@@ -406,8 +435,8 @@ class AudioFile(dict, ImageContainer):
                 key = "~" + key
                 if key in self:
                     return self[key]
-                elif key in INTERN_NUM_DEFAULT:
-                    return dict.get(self, key, 0)
+                elif key in NUMERIC_ZERO_DEFAULT:
+                    return 0
                 else:
                     try:
                         val = self[key[2:]]
@@ -514,11 +543,11 @@ class AudioFile(dict, ImageContainer):
         if "~" in key or key == "title":
             v = self(key, u"")
             if key in FILESYSTEM_TAGS:
-                v = fsdecode(v)
+                v = fsn2text(v)
         else:
             v = self.get(key, u"")
 
-        if isinstance(v, (int, long, float)):
+        if isinstance(v, number_types):
             return v
         else:
             return v.replace("\n", ", ")
@@ -546,8 +575,12 @@ class AudioFile(dict, ImageContainer):
 
     def list_sort(self, key):
         """Like list but return display,sort pairs when appropriate
-        and work on all tags
+        and work on all tags.
+
+        In case no sort value exists the display one is returned. The sort
+        value is only an empty string if the display one is empty as well.
         """
+
         display = decode_value(key, self(key))
         display = display.split("\n") if display else []
         sort = []
@@ -557,10 +590,11 @@ class AudioFile(dict, ImageContainer):
             # it would be better to use something that doesn't fall back
             # to the key itself, but what?
             sort = sort.split("\n") if sort else []
+
         result = []
         for d, s in izip_longest(display, sort):
             if d is not None:
-                result.append((d, s if s is not None and s != "" else d))
+                result.append((d, (s if s is not None and s != "" else d)))
         return result
 
     def list_separate(self, key):
@@ -687,7 +721,7 @@ class AudioFile(dict, ImageContainer):
             elif c.startswith("//www."):
                 return "http:" + cont
         else:
-            text = "http://www.google.com/search?q="
+            text = "https://www.google.com/search?q="
             esc = lambda c: ord(c) > 127 and '%%%x' % ord(c) or c
             if "labelid" in self:
                 text += ''.join(map(esc, self["labelid"]))
@@ -704,14 +738,17 @@ class AudioFile(dict, ImageContainer):
 
     def sanitize(self, filename=None):
         """Fill in metadata defaults. Find ~mountpoint, ~#mtime, ~#filesize
-        and ~#added. Check for null bytes in tags."""
+        and ~#added. Check for null bytes in tags.
+
+        Does not raise.
+        """
 
         # Replace nulls with newlines, trimming zero-length segments
-        for key, val in self.items():
+        for key, val in listitems(self):
             if isinstance(val, string_types) and '\0' in val:
                 self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
             # Remove unnecessary defaults
-            if key in INTERN_NUM_DEFAULT and val == 0:
+            if key in NUMERIC_ZERO_DEFAULT and val == 0:
                 del self[key]
 
         if filename:
@@ -719,7 +756,7 @@ class AudioFile(dict, ImageContainer):
         elif "~filename" not in self:
             raise ValueError("Unknown filename!")
 
-        assert is_fsnative(self["~filename"])
+        assert isinstance(self["~filename"], fsnative)
 
         if self.is_file:
             self["~filename"] = normalize_path(
@@ -767,7 +804,7 @@ class AudioFile(dict, ImageContainer):
         for k in self.keys():
             enc_key = encode_key(k)
 
-            if isinstance(self[k], int) or isinstance(self[k], long):
+            if isinstance(self[k], integer_types):
                 s.append("%s=%d" % (enc_key, self[k]))
             elif isinstance(self[k], float):
                 s.append("%s=%f" % (enc_key, self[k]))
@@ -777,7 +814,7 @@ class AudioFile(dict, ImageContainer):
                         s.append("%s=%s" % (enc_key, v2))
                     else:
                         s.append("%s=%s" % (enc_key, encode(v2)))
-        for k in (INTERN_NUM_DEFAULT - set(self.keys())):
+        for k in (NUMERIC_ZERO_DEFAULT - set(self.keys())):
             enc_key = encode_key(k)
             s.append("%s=%d" % (enc_key, self.get(k, 0)))
         if "~#rating" not in self:
@@ -886,7 +923,12 @@ class AudioFile(dict, ImageContainer):
             return min(15, scale)
 
     def write(self):
-        """Write metadata back to the file."""
+        """Write metadata back to the file.
+
+        Raises:
+            AudioFileError: in case writing fails
+        """
+
         raise NotImplementedError
 
     @property
@@ -937,7 +979,7 @@ class AudioFile(dict, ImageContainer):
 
 # Looks like the real thing.
 DUMMY_SONG = AudioFile({
-    '~#length': 234, '~filename': '/dev/null',
+    '~#length': 234, '~filename': devnull,
     'artist': 'The Artist', 'album': 'An Example Album',
     'title': 'First Track', 'tracknumber': 1,
     'date': '2010-12-31',

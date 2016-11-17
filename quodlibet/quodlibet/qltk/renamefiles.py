@@ -9,10 +9,12 @@ import os
 import unicodedata
 
 from gi.repository import Gtk, Gdk
+from senf import fsn2text, text2fsn
 
 import quodlibet
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
 
 from quodlibet.plugins import PluginManager
 from quodlibet.pattern import FileFromPattern
@@ -24,7 +26,6 @@ from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons, Button
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj, gdecode
-from quodlibet.util.path import fsdecode, fsnative
 from quodlibet.util.path import strip_win32_incompat_from_path
 
 
@@ -73,9 +74,8 @@ class StripDiacriticals(FilterCheckButton):
     _order = 1.2
 
     def filter(self, original, filename):
-        filename = fsdecode(filename)
-        return fsnative(filter(lambda s: not unicodedata.combining(s),
-                               unicodedata.normalize('NFKD', filename)))
+        return filter(lambda s: not unicodedata.combining(s),
+                      unicodedata.normalize('NFKD', filename))
 
 
 class StripNonASCII(FilterCheckButton):
@@ -85,9 +85,7 @@ class StripNonASCII(FilterCheckButton):
     _order = 1.3
 
     def filter(self, original, filename):
-        filename = fsdecode(filename)
-        return fsnative(
-            u"".join(map(lambda s: (s <= "~" and s) or u"_", filename)))
+        return u"".join(map(lambda s: (s <= "~" and s) or u"_", filename))
 
 
 class Lowercase(FilterCheckButton):
@@ -115,7 +113,7 @@ class Entry(object):
 
     @property
     def name(self):
-        return fsdecode(self.song("~basename"))
+        return fsn2text(self.song("~basename"))
 
 
 class RenameFiles(Gtk.VBox):
@@ -244,7 +242,7 @@ class RenameFiles(Gtk.VBox):
                 continue
 
             try:
-                library.rename(song, fsnative(new_name), changed=was_changed)
+                library.rename(song, text2fsn(new_name), changed=was_changed)
             except Exception:
                 util.print_exc()
                 if skip_all:
@@ -297,7 +295,7 @@ class RenameFiles(Gtk.VBox):
                   "does not start from root. To avoid misnamed "
                   "folders, root your pattern by starting "
                   "it with / or ~/.") % (
-                util.escape(pattern))).run()
+                util.escape(pattern_text))).run()
             return
         else:
             if pattern:
@@ -306,7 +304,7 @@ class RenameFiles(Gtk.VBox):
 
         # native paths
         orignames = [song["~filename"] for song in songs]
-        newnames = [pattern.format(song) for song in songs]
+        newnames = [fsn2text(pattern.format(song)) for song in songs]
         for f in self.filter_box.filters:
             if f.active:
                 newnames = f.filter_list(orignames, newnames)
@@ -314,7 +312,7 @@ class RenameFiles(Gtk.VBox):
         model.clear()
         for song, newname in zip(songs, newnames):
             entry = Entry(song)
-            entry.new_name = fsdecode(newname)
+            entry.new_name = newname
             model.append(row=[entry])
 
         self.preview.set_sensitive(False)

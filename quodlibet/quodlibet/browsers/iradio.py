@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011 Joe Wreschnig, Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -12,7 +13,10 @@ import itertools
 
 from gi.repository import Gtk, GLib, Pango
 
+from quodlibet.util.dprint import print_d
+
 import quodlibet
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import config
@@ -26,10 +30,13 @@ from quodlibet.compat import reduce, urlopen
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.notif import Task
-from quodlibet.qltk import Icons
-from quodlibet.util import copool, connect_destroy, sanitize_tags, connect_obj
+from quodlibet.qltk import Icons, ErrorMessage, WarningMessage
+from quodlibet.util import copool, connect_destroy, sanitize_tags, \
+    connect_obj, escape
+from quodlibet.util.i18n import numeric_phrase
+from quodlibet.util.path import uri_is_valid
 from quodlibet.util.string import decode, encode
-from quodlibet.util.uri import URI
+from quodlibet.util import print_w
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.completion import LibraryTagCompletion
@@ -38,7 +45,7 @@ from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
 
 STATION_LIST_URL = \
-    "http://bitbucket.org/lazka/quodlibet/downloads/radiolist.bz2"
+    "https://bitbucket.org/lazka/quodlibet/downloads/radiolist.bz2"
 STATIONS_FAV = os.path.join(quodlibet.get_user_dir(), "stations")
 STATIONS_ALL = os.path.join(quodlibet.get_user_dir(), "stations_all")
 
@@ -165,7 +172,7 @@ def ParsePLS(file):
         count += 1
 
     if warnings:
-        qltk.WarningMessage(
+        WarningMessage(
             None, _("Unsupported file type"),
             _("Station lists can only contain locations of stations, "
               "not other station lists or playlists. The following locations "
@@ -196,7 +203,8 @@ def ParseM3U(fileobj):
 
 
 def add_station(uri):
-    """Fetches the URI content and extracts IRFiles"""
+    """Fetches the URI content and extracts IRFiles
+    Returns None in error, else a possibly filled list of stations"""
 
     irfs = []
     if isinstance(uri, unicode):
@@ -206,13 +214,17 @@ def add_station(uri):
         try:
             sock = urlopen(uri)
         except EnvironmentError as e:
+            print_d("Got %s from %s" % (uri, e))
             encoding = util.get_locale_encoding()
             try:
                 err = e.strerror.decode(encoding, 'replace')
-            except (TypeError, AttributeError):
+            except TypeError:
                 err = e.strerror[1].decode(encoding, 'replace')
-            qltk.ErrorMessage(None, _("Unable to add station"), err).run()
-            return []
+            except AttributeError:
+                # Give up and display the exception - may be useful HTTP info
+                err = str(e)
+            ErrorMessage(None, _("Unable to add station"), escape(err)).run()
+            return None
 
         if uri.lower().endswith(".pls"):
             irfs = ParsePLS(sock)
@@ -224,7 +236,7 @@ def add_station(uri):
         try:
             irfs = [IRFile(uri)]
         except ValueError as err:
-            qltk.ErrorMessage(None, _("Unable to add station"), err).run()
+            ErrorMessage(None, _("Unable to add station"), err).run()
 
     return irfs
 
@@ -340,11 +352,7 @@ class AddNewStation(GetStringDialog):
         for line in text.splitlines():
             line = line.strip()
 
-            try:
-                URI(line)
-            except ValueError:
-                pass
-            else:
+            if uri_is_valid(line):
                 return line
 
 
@@ -452,18 +460,7 @@ class QuestionBar(Gtk.InfoBar):
         content.add(label)
 
         self.add_button(_("_Load Stations"), self.RESPONSE_LOAD)
-
-        try:
-            self.set_show_close_button(True)
-        except AttributeError:
-            # < gtk3.10
-            action = self.get_action_area()
-            close_button = CloseButton()
-            close_button.show()
-            self.add_action_widget(close_button, Gtk.ResponseType.CLOSE)
-            # FIXME: doesn't seem to have any effect
-            action.set_child_packing(
-                close_button, False, True, 2, Gtk.PackType.START)
+        self.set_show_close_button(True)
 
     def __response(self, bar, response_id):
         if response_id == Gtk.ResponseType.CLOSE:
@@ -804,17 +801,19 @@ class InternetRadio(Browser, util.InstanceTracker):
 
     def __add_station(self, uri):
         irfs = add_station(uri)
-
+        if irfs is None:
+            # Error, rather than empty list
+            return
         if not irfs:
-            qltk.ErrorMessage(
+            ErrorMessage(
                 None, _("No stations found"),
                 _("No Internet radio stations were found at %s.") %
                 util.escape(uri)).run()
             return
 
-        irfs = filter(lambda station: station not in self.__fav_stations, irfs)
+        irfs = set(irfs) - set(self.__fav_stations)
         if not irfs:
-            qltk.WarningMessage(
+            WarningMessage(
                 None, _("Unable to add station"),
                 _("All stations listed are already in your library.")).run()
 
@@ -936,8 +935,9 @@ class InternetRadio(Browser, util.InstanceTracker):
         self.view.set_cursor(path)
         self.view.scroll_to_cell(path, use_align=True, row_align=0.5)
 
-    def statusbar(self, i):
-        return ngettext("%(count)d station", "%(count)d stations", i)
+    def status_text(self, count, time=None):
+        return numeric_phrase("%(count)d station", "%(count)d stations",
+                              count, 'count')
 
 
 from quodlibet import app

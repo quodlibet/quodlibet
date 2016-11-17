@@ -7,6 +7,7 @@
 
 from gi.repository import Gst
 
+from quodlibet import _
 from quodlibet.plugins.gstelement import GStreamerPlugin
 
 
@@ -14,7 +15,6 @@ class MonoDownmix(GStreamerPlugin):
     PLUGIN_ID = "mono"
     PLUGIN_NAME = _("Mono Downmix")
     PLUGIN_DESC = _("Downmixes audio channels to mono.")
-    PLUGIN_ICON = "audio-volume-high"
 
     priority = -1
 

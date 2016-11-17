@@ -19,8 +19,10 @@ import shutil
 import time
 
 from gi.repository import GObject
+from senf import fsn2text, fsnative
 
-from quodlibet.formats import MusicFile
+from quodlibet import _
+from quodlibet.formats import MusicFile, AudioFileError
 from quodlibet.query import Query
 from quodlibet.compat import cBytesIO, pickle, itervalues
 from quodlibet.qltk.notif import Task
@@ -31,8 +33,7 @@ from quodlibet import util
 from quodlibet import const
 from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.path import fsdecode, expanduser, unexpand, mkdir, \
-    normalize_path
+from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden
 
 
 class Library(GObject.GObject, DictMixin):
@@ -92,7 +93,7 @@ class Library(GObject.GObject, DictMixin):
             print_d("Changing %d items via librarian." % len(items), self)
             self.librarian.changed(items)
         else:
-            items = set(item for item in items if item in self)
+            items = {item for item in items if item in self}
             if not items:
                 return
             print_d("Changing %d items directly." % len(items), self)
@@ -170,7 +171,7 @@ class Library(GObject.GObject, DictMixin):
         already in the library.
         """
 
-        items = set(item for item in items if item not in self)
+        items = {item for item in items if item not in self}
         if not items:
             return items
 
@@ -188,7 +189,7 @@ class Library(GObject.GObject, DictMixin):
         Return the sequence of items actually removed.
         """
 
-        items = set(item for item in items if item in self)
+        items = {item for item in items if item in self}
         if not items:
             return items
 
@@ -360,10 +361,6 @@ class AlbumLibrary(Library):
         self._csig = library.connect('changed', self.__changed)
         self.__added(library, library.values(), signal=False)
 
-    def refresh(self, items):
-        """Refresh albums after a manual change."""
-        self._changed(set(items))
-
     def load(self):
         # deprectated
         pass
@@ -489,11 +486,9 @@ class SongLibrary(PicklingLibrary):
             self.albums.destroy()
 
     def tag_values(self, tag):
-        """Return a list of all values for the given tag."""
-        tags = set()
-        for song in self.itervalues():
-            tags.update(song.list(tag))
-        return list(tags)
+        """Return a set of all values for the given tag."""
+        return {value for song in self.itervalues()
+                for value in song.list(tag)}
 
     def rename(self, song, newname, changed=None):
         """Rename a song.
@@ -526,6 +521,50 @@ class SongLibrary(PicklingLibrary):
         if text != "":
             songs = filter(Query(text, star).search, songs)
         return songs
+
+
+def iter_paths(root, exclude=[], skip_hidden=True):
+    """yields paths contained in root (symlinks dereferenced)
+
+    Any path starting with any of the path parts included in exclude
+    are ignored (before and after dereferencing symlinks)
+
+    Directory symlinks are not followed (except root itself)
+
+    Args:
+        root (fsnative)
+        exclude (List[fsnative])
+        skip_hidden (bool): Ignore files which are hidden or where any
+            of the parent directories are hidden.
+    Yields:
+        fsnative: absolute dereferenced paths
+    """
+
+    assert isinstance(root, fsnative)
+    assert all((isinstance(p, fsnative) for p in exclude))
+    assert os.path.abspath(root)
+
+    def skip(path):
+        if skip_hidden and ishidden(path):
+            return True
+        # FIXME: normalize paths..
+        return any((path.startswith(p) for p in exclude))
+
+    if skip_hidden and ishidden(root):
+        return
+
+    for path, dnames, fnames in os.walk(root):
+        if skip_hidden:
+            dnames[:] = list(filter(
+                lambda d: not ishidden(os.path.join(path, d)), dnames))
+        for filename in fnames:
+            fullfilename = os.path.join(path, filename)
+            if skip(fullfilename):
+                continue
+            fullfilename = os.path.realpath(fullfilename)
+            if skip(fullfilename):
+                continue
+            yield fullfilename
 
 
 class FileLibrary(PicklingLibrary):
@@ -592,7 +631,7 @@ class FileLibrary(PicklingLibrary):
             if item.exists():
                 try:
                     item.reload()
-                except (Exception, EnvironmentError):
+                except AudioFileError:
                     print_d("Error reloading %r." % item.key, self)
                     util.print_exc()
                     return False, True
@@ -697,11 +736,19 @@ class FileLibrary(PicklingLibrary):
 
         Subclasses must override this to open the file correctly.
         """
+
+        raise NotImplementedError
+
+    def contains_filename(self, filename):
+        """Returns if a song for the passed filename is in the library.
+
+        Returns:
+            bool
+        """
+
         raise NotImplementedError
 
     def scan(self, paths, exclude=[], cofuncid=None):
-        added = []
-        exclude = [expanduser(path) for path in exclude if path]
 
         def need_yield(last_yield=[0]):
             current = time.time()
@@ -717,43 +764,49 @@ class FileLibrary(PicklingLibrary):
                 return True
             return False
 
-        for fullpath in paths:
-            print_d("Scanning %r." % fullpath, self)
-            desc = _("Scanning %s") % (unexpand(fsdecode(fullpath)))
+        # first scan each path for new files
+        paths_to_load = []
+        for scan_path in paths:
+            print_d("Scanning %r." % scan_path)
+            desc = _("Scanning %s") % (fsn2text(unexpand(scan_path)))
             with Task(_("Library"), desc) as task:
                 if cofuncid:
                     task.copool(cofuncid)
-                fullpath = expanduser(fullpath)
-                if filter(fullpath.startswith, exclude):
-                    continue
-                for path, dnames, fnames in os.walk(fullpath):
-                    for filename in fnames:
-                        fullfilename = os.path.join(path, filename)
-                        if filter(fullfilename.startswith, exclude):
-                            continue
-                        if fullfilename not in self._contents:
-                            fullfilename = os.path.realpath(fullfilename)
-                            # skip unknown file extensions
-                            if not formats.filter(fullfilename):
-                                continue
-                            if filter(fullfilename.startswith, exclude):
-                                continue
-                            if fullfilename not in self._contents:
-                                item = self.add_filename(fullfilename, False)
-                                if item is not None:
-                                    added.append(item)
-                                    if len(added) > 100 or need_added():
-                                        self.add(added)
-                                        added = []
-                                        task.pulse()
-                                        yield
-                                if added and need_yield():
-                                    yield
-                if added:
-                    self.add(added)
-                    added = []
-                    task.pulse()
-                    yield True
+
+                for real_path in iter_paths(scan_path, exclude=exclude):
+                    if need_yield():
+                        task.pulse()
+                        yield
+                    # skip unknown file extensions
+                    if not formats.filter(real_path):
+                        continue
+                    # already loaded
+                    if self.contains_filename(real_path):
+                        continue
+                    paths_to_load.append(real_path)
+
+        yield
+
+        # then (try to) load all new files
+        with Task(_("Library"), _("Loading files")) as task:
+            if cofuncid:
+                task.copool(cofuncid)
+
+            added = []
+            for real_path in task.gen(paths_to_load):
+                item = self.add_filename(real_path, False)
+                if item is not None:
+                    added.append(item)
+                    if len(added) > 100 or need_added():
+                        self.add(added)
+                        added = []
+                        yield
+                if added and need_yield():
+                    yield
+            if added:
+                self.add(added)
+                added = []
+                yield True
 
     def get_content(self):
         """Return visible and masked items"""
@@ -822,6 +875,10 @@ class SongFileLibrary(SongLibrary, FileLibrary):
     def __init__(self, name=None):
         print_d("Initializing SongFileLibrary \"%s\"." % name)
         super(SongFileLibrary, self).__init__(name)
+
+    def contains_filename(self, filename):
+        key = normalize_path(filename, True)
+        return key in self._contents
 
     def add_filename(self, filename, add=True):
         """Add a song to the library based on filename.

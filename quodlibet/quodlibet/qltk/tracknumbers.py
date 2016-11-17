@@ -6,17 +6,18 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+from senf import fsn2text
 
 from quodlibet import qltk
 from quodlibet import util
-
+from quodlibet import _
+from quodlibet.formats import AudioFileError
 from quodlibet.qltk._editutils import OverwriteWarning, WriteFailedError
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.x import Button
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons
-from quodlibet.util.path import fsdecode
 from quodlibet.util import connect_obj, gdecode
 
 
@@ -28,7 +29,7 @@ class Entry(object):
 
     @property
     def name(self):
-        return fsdecode(self.song("~basename"))
+        return fsn2text(self.song("~basename"))
 
 
 class TrackNumbers(Gtk.VBox):
@@ -164,7 +165,7 @@ class TrackNumbers(Gtk.VBox):
             song["tracknumber"] = track
             try:
                 song.write()
-            except:
+            except AudioFileError:
                 util.print_exc()
                 WriteFailedError(self, song).run()
                 library.reload(song, changed=was_changed)

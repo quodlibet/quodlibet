@@ -10,10 +10,11 @@ import struct
 import mutagen.asf
 
 from quodlibet.util.path import get_temp_cover_file
-from quodlibet.compat import iteritems
+from quodlibet.compat import iteritems, text_type
 
 from ._audio import AudioFile
 from ._image import EmbeddedImage, APICType
+from ._misc import AudioFileError, translate_errors
 
 
 class WMAFile(AudioFile):
@@ -44,16 +45,19 @@ class WMAFile(AudioFile):
         "WM/Mood": "mood",
         "WM/EncodedBy": "encodedby",
         "MusicBrainz/Track Id": "musicbrainz_trackid",
+        "MusicBrainz/Release Track Id": "musicbrainz_releasetrackid",
         "MusicBrainz/Album Id": "musicbrainz_albumid",
         "MusicBrainz/Artist Id": "musicbrainz_artistid",
         "MusicBrainz/Album Artist Id": "musicbrainz_albumartistid",
         "MusicBrainz/TRM Id": "musicbrainz_trmid",
         "MusicIP/PUID": "musicip_puid",
+        "MusicBrainz/Release Group Id": "musicbrainz_releasegroupid",
         "WM/Year": "date",
         "WM/OriginalArtist": "originalartist",
         "WM/OriginalAlbumTitle": "originalalbum",
         "WM/AlbumSortOrder": "albumsort",
         "WM/ArtistSortOrder": "artistsort",
+        "WM/AlbumArtistSortOrder": "albumartistsort",
         "WM/Genre": "genre",
         "WM/Publisher": "publisher",
         "WM/AuthorURL": "website",
@@ -90,24 +94,21 @@ class WMAFile(AudioFile):
 
     def __init__(self, filename, audio=None):
         if audio is None:
-            audio = mutagen.asf.ASF(filename)
+            with translate_errors():
+                audio = mutagen.asf.ASF(filename)
         info = audio.info
 
         self["~#length"] = info.length
         self["~#bitrate"] = int(info.bitrate / 1000)
 
-        try:
-            # mutagen 1.31+
-            type_, name, desc = info.codec_type, info.codec_name, \
-                info.codec_description
-        except AttributeError:
-            pass
-        else:
-            if type_:
-                self["~codec"] = type_
-            encoding = u"\n".join(filter(None, [name, desc]))
-            if encoding:
-                self["~encoding"] = encoding
+        type_, name, desc = info.codec_type, info.codec_name, \
+            info.codec_description
+
+        if type_:
+            self["~codec"] = type_
+        encoding = u"\n".join(filter(None, [name, desc]))
+        if encoding:
+            self["~encoding"] = encoding
 
         for name, values in audio.tags.items():
             if name == "WM/Picture":
@@ -116,11 +117,12 @@ class WMAFile(AudioFile):
                 name = self.__translate[name]
             except KeyError:
                 continue
-            self[name] = "\n".join(map(unicode, values))
+            self[name] = u"\n".join(map(text_type, values))
         self.sanitize(filename)
 
     def write(self):
-        audio = mutagen.asf.ASF(self["~filename"])
+        with translate_errors():
+            audio = mutagen.asf.ASF(self["~filename"])
         for key in self.__translate.keys():
             try:
                 del(audio[key])
@@ -133,7 +135,8 @@ class WMAFile(AudioFile):
             except KeyError:
                 continue
             audio.tags[name] = self.list(key)
-        audio.save()
+        with translate_errors():
+            audio.save()
         self.sanitize()
 
     def can_multiple_values(self, key=None):
@@ -189,28 +192,23 @@ class WMAFile(AudioFile):
     def clear_images(self):
         """Delete all embedded images"""
 
-        try:
+        with translate_errors():
             tag = mutagen.asf.ASF(self["~filename"])
-        except Exception:
-            return
-
-        tag.pop("WM/Picture", None)
-        tag.save()
+            tag.pop("WM/Picture", None)
+            tag.save()
 
         self.has_images = False
 
     def set_image(self, image):
         """Replaces all embedded images by the passed image"""
 
-        try:
+        with translate_errors():
             tag = mutagen.asf.ASF(self["~filename"])
-        except Exception:
-            return
 
         try:
-            imagedata = image.file.read()
-        except EnvironmentError:
-            return
+            imagedata = image.read()
+        except EnvironmentError as e:
+            raise AudioFileError(e)
 
         # thumbnail gets used in WMP..
         data = pack_image(image.mime_type, u"thumbnail",
@@ -218,7 +216,9 @@ class WMAFile(AudioFile):
 
         value = mutagen.asf.ASFValue(data, mutagen.asf.BYTEARRAY)
         tag["WM/Picture"] = [value]
-        tag.save()
+
+        with translate_errors():
+            tag.save()
 
         self.has_images = True
 
@@ -242,10 +242,10 @@ def unpack_image(data):
         raise ValueError(e)
     data = data[5:]
 
-    mime = ""
+    mime = b""
     while data:
         char, data = data[:2], data[2:]
-        if char == "\x00\x00":
+        if char == b"\x00\x00":
             break
         mime += char
     else:
@@ -253,10 +253,10 @@ def unpack_image(data):
 
     mime = mime.decode("utf-16-le")
 
-    description = ""
+    description = b""
     while data:
         char, data = data[:2], data[2:]
-        if char == "\x00\x00":
+        if char == b"\x00\x00":
             break
         description += char
     else:
@@ -275,13 +275,13 @@ def pack_image(mime, description, imagedata, type_):
 
     size = len(imagedata)
     data = struct.pack("<bi", type_, size)
-    data += mime.encode("utf-16-le") + "\x00\x00"
-    data += description.encode("utf-16-le") + "\x00\x00"
+    data += mime.encode("utf-16-le") + b"\x00\x00"
+    data += description.encode("utf-16-le") + b"\x00\x00"
     data += imagedata
 
     return data
 
 
-info = WMAFile
+loader = WMAFile
 types = [WMAFile]
 extensions = [".wma", ".asf", ".wmv"]

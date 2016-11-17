@@ -6,10 +6,9 @@
 # published by the Free Software Foundation
 
 import sys
-import os
 import pickle
 
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 from .helper import capture_output, temp_filename
 
 from quodlibet import formats
@@ -26,6 +25,7 @@ class TFormats(TestCase):
 
     def test_presence(self):
         self.failUnless(formats.aac)
+        self.failUnless(formats.aiff)
         self.failUnless(formats.midi)
         self.failUnless(formats.mod)
         self.failUnless(formats.monkeysaudio)
@@ -40,8 +40,8 @@ class TFormats(TestCase):
         self.failUnless(formats.wma)
         self.failUnless(formats.xiph)
 
-    def test_infos(self):
-        self.failUnless(formats._infos[".mp3"] is formats.mp3.MP3File)
+    def test_loaders(self):
+        self.failUnless(formats.loaders[".mp3"] is formats.mp3.MP3File)
 
     def test_migration(self):
         self.failUnless(formats.mp3 is sys.modules["quodlibet.formats.mp3"])
@@ -57,59 +57,31 @@ class TFormats(TestCase):
         self.assertFalse(formats.filter("foomp3"))
 
     def test_music_file(self):
-        path = os.path.join(DATA_DIR, 'silence-44-s.mp3')
+        path = get_data_path('silence-44-s.mp3')
         self.assertTrue(formats.MusicFile(path))
 
         # non existing
         with capture_output() as (stdout, stderr):
-            song = formats.MusicFile(os.path.join(DATA_DIR, "nope.mp3"))
+            song = formats.MusicFile(get_data_path("nope.mp3"))
             self.assertFalse(song)
-            self.assertTrue("Error" in stderr.getvalue())
+            self.assertTrue(stderr.getvalue())
 
         # unknown extension
         with capture_output() as (stdout, stderr):
-            song = formats.MusicFile(os.path.join(DATA_DIR, "nope.xxx"))
+            song = formats.MusicFile(get_data_path("nope.xxx"))
             self.assertFalse(song)
-            self.assertTrue("extension" in stderr.getvalue())
+            self.assertFalse(stderr.getvalue())
 
 
 class TPickle(TestCase):
 
-    # protocol 1 pickle of all types (created by test_pickle below)
-    PICKLE = (
-        b']q\x00(ccopy_reg\n_reconstructor\nq\x01(cquodlibet.formats.vgm\nVgm'
-        b'File\nq\x02c__builtin__\ndict\nq\x03}q\x04tq\x05Rq\x06h\x01(cquodli'
-        b'bet.formats.monkeysaudio\nMonkeysAudioFile\nq\x07h\x03}q\x08tq\tRq'
-        b'\nh\x01(cquodlibet.formats.mpc\nMPCFile\nq\x0bh\x03}q\x0ctq\rRq\x0eh'
-        b'\x01(cquodlibet.formats.aac\nAACFile\nq\x0fh\x03}q\x10tq\x11Rq'
-        b'\x12h\x01(cquodlibet.formats.midi\nMidiFile\nq\x13h\x03}q\x14'
-        b'tq\x15Rq\x16h\x01(cquodlibet.formats.wavpack\nWavpackFile\nq\x17'
-        b'h\x03}q\x18tq\x19Rq\x1ah\x01(cquodlibet.formats.trueaudio\nTrueAudio'
-        b'File\nq\x1bh\x03}q\x1ctq\x1dRq\x1eh\x01(cquodlibet.formats.mp4\nMP4'
-        b'File\nq\x1fh\x03}q tq!Rq"h\x01(cquodlibet.formats.xiph\nOggFLACFile'
-        b'\nq#h\x03}q$tq%Rq&h\x01(cquodlibet.formats.xiph\nOggSpeexFile\nq\'h'
-        b'\x03}q(tq)Rq*h\x01(cquodlibet.formats.xiph\nOggOpusFile\nq+h\x03}q,'
-        b'tq-Rq.h\x01(cquodlibet.formats.xiph\nOggFile\nq/h\x03}q0tq1Rq2h\x01'
-        b'(cquodlibet.formats.xiph\nFLACFile\nq3h\x03}q4tq5Rq6h\x01(cquodlibet'
-        b'.formats.xiph\nOggTheoraFile\nq7h\x03}q8tq9Rq:h\x01(cquodlibet.forma'
-        b'ts.wav\nWAVEFile\nq;h\x03}q<tq=Rq>h\x01(cquodlibet.formats.wma\nWMA'
-        b'File\nq?h\x03}q@tqARqBh\x01(cquodlibet.formats.spc\nSPCFile\nqCh\x03'
-        b'}qDtqERqFh\x01(cquodlibet.formats.mp3\nMP3File\nqGh\x03}qHtqIRqJh'
-        b'\x01(cquodlibet.formats.remote\nRemoteFile\nqKh\x03}qLtqMRqNh\x01(cq'
-        b'uodlibet.formats.mod\nModFile\nqOh\x03}qPtqQRqRe.')
-
-    def test_pickle(self):
+    def setUp(self):
         types = formats.types
         instances = []
         for t in types:
             instances.append(AudioFile.__new__(t))
 
-        with temp_filename() as filename:
-            with open(filename, "wb") as h:
-                pickle.dump(instances, h, 1)
-
-            with open(filename, "rb") as h:
-                self.assertEqual(len(pickle.load(h)), len(formats.types))
+        self.PICKLE = pickle.dumps(instances, 1)
 
     def test_unpickle(self):
         self.assertEqual(len(pickle.loads(self.PICKLE)), len(formats.types))

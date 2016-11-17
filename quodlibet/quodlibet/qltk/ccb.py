@@ -18,9 +18,13 @@ class ConfigCheckButton(Gtk.CheckButton):
     It is initialised to the current config value if `populate` is set True."""
 
     def __init__(self, label, section, option, populate=False, tooltip=None,
-                 default=True):
+                 default=None):
         super(ConfigCheckButton, self).__init__(label=label,
                                                 use_underline=True)
+
+        if default is None:
+            default = config._config.defaults.getboolean(section, option, True)
+
         if populate:
             self.set_active(config.getboolean(section, option, default))
         if tooltip:

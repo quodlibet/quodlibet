@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from quodlibet.formats import AudioFile
 from tests import TestCase, init_fake_app, destroy_fake_app
 from .helper import capture_output
@@ -71,6 +75,7 @@ class TCommands(TestCase):
         self.__send("set-rating 0.5")
         self.__send("show-window")
         self.__send("song-list 1")
+        self.__send("stop-after 1")
         self.__send("status")
         self.__send("toggle-window")
         self.__send("unqueue /dev/null")

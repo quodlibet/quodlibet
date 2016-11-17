@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 import os
 import sys
+
+from quodlibet.qltk import Icons
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
@@ -8,6 +14,7 @@ if os.name == "nt" or sys.platform == "darwin":
 
 from gi.repository import Gtk, GObject
 
+from quodlibet import _
 from quodlibet.plugins.editing import RenameFilesPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util import connect_obj
@@ -17,6 +24,7 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     PLUGIN_ID = "Kana/Kanji Simple Inverter"
     PLUGIN_NAME = _("Kana/Kanji Simple Inverter")
     PLUGIN_DESC = _("Converts kana/kanji to romaji before renaming.")
+    PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
     __gsignals__ = {
         "preview": (GObject.SignalFlags.RUN_LAST, None, ())

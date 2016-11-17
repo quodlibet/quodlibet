@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#                2012 Nick Boultbee
+#           2012,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -13,11 +13,12 @@
 import os
 
 from gi.repository import Gtk, Gdk
+from senf import fsn2uri
 
 from quodlibet import config
 from quodlibet import formats
 from quodlibet import qltk
-
+from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import MainDirectoryTree
@@ -27,7 +28,6 @@ from quodlibet.qltk import Icons
 from quodlibet.util import copool
 from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.dprint import print_d
-from quodlibet.util.uri import URI
 from quodlibet.util.path import normalize_path
 from quodlibet.util import connect_obj
 
@@ -120,8 +120,8 @@ class FileSystem(Browser, Gtk.HBox):
             qltk.selection_set_songs(sel, songs)
         else:
             # External target (app) is delivered a list of URIS of songs
-            uris = list({URI.frompath(dir) for dir in dirs})
-            print_d("Directories to drop: %s" % [u.filename for u in uris])
+            uris = list({fsn2uri(dir) for dir in dirs})
+            print_d("Directories to drop: %s" % dirs)
             sel.set_uris(uris)
 
     def can_filter_tag(self, key):
@@ -195,7 +195,7 @@ class FileSystem(Browser, Gtk.HBox):
 
         items.append([i])
         menu = SongsMenu(library, songs, remove=self.__remove_songs,
-                         delete=True, items=items)
+                         delete=True, queue=True, items=items)
         return menu
 
     def __add_songs(self, item, songs):

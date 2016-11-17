@@ -7,8 +7,9 @@
 
 import os
 
-from quodlibet.util.path import fsnative, is_fsnative
-from quodlibet.util.uri import URI
+from senf import fsnative
+
+from quodlibet.compat import text_type
 
 from ._audio import AudioFile
 
@@ -23,13 +24,14 @@ class RemoteFile(AudioFile):
     format = "Remote File"
 
     def __init__(self, uri):
-        self["~uri"] = str(URI(uri))
-        self.sanitize(fsnative(unicode(self["~uri"])))
+        self["~uri"] = text_type(uri)
+        self.sanitize(fsnative(self["~uri"]))
 
     def __getitem__(self, key):
         # we used to save them with the wrong type
         value = super(RemoteFile, self).__getitem__(key)
-        if key in ("~filename", "~mountpoint") and not is_fsnative(value):
+        if key in ("~filename", "~mountpoint") and \
+                not isinstance(value, fsnative):
             if os.name == "nt":
                 value = unicode(value)
             else:
@@ -53,7 +55,7 @@ class RemoteFile(AudioFile):
         return True
 
     def write(self):
-        raise TypeError("RemoteFiles do not support writing!")
+        pass
 
     def can_change(self, k=None):
         if k is None:
@@ -65,5 +67,5 @@ class RemoteFile(AudioFile):
     def key(self):
         return self["~uri"]
 
-info = RemoteFile
+loader = RemoteFile
 types = [RemoteFile]
