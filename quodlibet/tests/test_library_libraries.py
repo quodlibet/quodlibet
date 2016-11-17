@@ -477,6 +477,17 @@ class TSongFileLibrary(TSongLibrary):
         finally:
             config.quit()
 
+    def test_contains_filename(self):
+        filename = self.__get_file()
+        try:
+            assert not self.library.contains_filename(filename)
+            assert self.library.add_filename(filename, add=False)
+            assert not self.library.contains_filename(filename)
+            assert self.library.add_filename(filename)
+            assert self.library.contains_filename(filename)
+        finally:
+            os.unlink(filename)
+
     def test_add_filename_normalize_path(self):
         if not os.name == "nt":
             return

@@ -736,6 +736,16 @@ class FileLibrary(PicklingLibrary):
 
         Subclasses must override this to open the file correctly.
         """
+
+        raise NotImplementedError
+
+    def contains_filename(self, filename):
+        """Returns if a song for the passed filename is in the library.
+
+        Returns:
+            bool
+        """
+
         raise NotImplementedError
 
     def scan(self, paths, exclude=[], cofuncid=None):
@@ -771,8 +781,7 @@ class FileLibrary(PicklingLibrary):
                     if not formats.filter(real_path):
                         continue
                     # already loaded
-                    # FIXME: normalize
-                    if real_path in self._contents:
+                    if self.contains_filename(real_path):
                         continue
                     paths_to_load.append(real_path)
 
@@ -866,6 +875,10 @@ class SongFileLibrary(SongLibrary, FileLibrary):
     def __init__(self, name=None):
         print_d("Initializing SongFileLibrary \"%s\"." % name)
         super(SongFileLibrary, self).__init__(name)
+
+    def contains_filename(self, filename):
+        key = normalize_path(filename, True)
+        return key in self._contents
 
     def add_filename(self, filename, add=True):
         """Add a song to the library based on filename.
