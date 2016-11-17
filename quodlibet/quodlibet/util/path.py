@@ -362,6 +362,26 @@ def get_home_dir():
         return expanduser("~")
 
 
+def ishidden(path):
+    """Returns if a directory/ file is considered hidden by the platform.
+
+    Hidden meaning the user should normally not be exposed to those files when
+    opening the parent directory in the default file manager using the default
+    settings.
+
+    Does not check if any of the parents are hidden.
+    In case the file/dir does not exist the result is implementation defined.
+
+    Args:
+        path (fsnative)
+    Returns:
+        bool
+    """
+
+    # TODO: win/osx
+    return os.path.basename(path).startswith(".")
+
+
 def uri_is_valid(uri):
     """Returns True if the passed in text is a valid URI (file, http, etc.)
 

@@ -694,3 +694,18 @@ class Titer_paths(TestCase):
         assert list(iter_paths(self.root)) == [name, name]
         assert list(iter_paths(self.root, exclude=[link])) == [name]
         assert list(iter_paths(self.root, exclude=[name])) == []
+
+    def test_hidden_dir(self):
+        child = mkdtemp(dir=self.root, prefix=".")
+        fd, name = mkstemp(dir=child)
+        os.close(fd)
+        assert list(iter_paths(child)) == []
+        assert list(iter_paths(child, skip_hidden=False)) == [name]
+        assert list(iter_paths(self.root)) == []
+        assert list(iter_paths(self.root, skip_hidden=False)) == [name]
+
+    def test_hidden_file(self):
+        fd, name = mkstemp(dir=self.root, prefix=".")
+        os.close(fd)
+
+        assert list(iter_paths(self.root)) == []

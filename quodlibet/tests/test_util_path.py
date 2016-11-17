@@ -9,7 +9,7 @@ import unittest
 from senf import uri2fsn, fsn2uri, fsnative
 
 from quodlibet.util.path import iscommand, limit_path, \
-    get_home_dir, uri_is_valid
+    get_home_dir, uri_is_valid, ishidden
 from quodlibet.util import print_d
 
 from . import TestCase
@@ -17,6 +17,15 @@ from . import TestCase
 
 is_win = os.name == "nt"
 path_set = bool(os.environ.get('PATH', False))
+
+
+class Tishidden(TestCase):
+
+    def test_main(self):
+        assert ishidden(fsnative(u"."))
+        assert ishidden(fsnative(u"foo/.bar"))
+        assert not ishidden(fsnative(u".foo/bar"))
+        assert not ishidden(fsnative(u"foo"))
 
 
 class Turi(TestCase):

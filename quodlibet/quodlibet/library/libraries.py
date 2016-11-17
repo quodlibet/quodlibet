@@ -33,7 +33,7 @@ from quodlibet import util
 from quodlibet import const
 from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.path import unexpand, mkdir, normalize_path
+from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden
 
 
 class Library(GObject.GObject, DictMixin):
@@ -523,7 +523,7 @@ class SongLibrary(PicklingLibrary):
         return songs
 
 
-def iter_paths(root, exclude=[]):
+def iter_paths(root, exclude=[], skip_hidden=True):
     """yields paths contained in root (symlinks dereferenced)
 
     Any path starting with any of the path parts included in exclude
@@ -534,6 +534,8 @@ def iter_paths(root, exclude=[]):
     Args:
         root (fsnative)
         exclude (List[fsnative])
+        skip_hidden (bool): Ignore files which are hidden or where any
+            of the parent directories are hidden.
     Yields:
         fsnative: absolute dereferenced paths
     """
@@ -543,10 +545,18 @@ def iter_paths(root, exclude=[]):
     assert os.path.abspath(root)
 
     def skip(path):
+        if skip_hidden and ishidden(path):
+            return True
         # FIXME: normalize paths..
         return any((path.startswith(p) for p in exclude))
 
+    if skip_hidden and ishidden(root):
+        return
+
     for path, dnames, fnames in os.walk(root):
+        if skip_hidden:
+            dnames[:] = list(filter(
+                lambda d: not ishidden(os.path.join(path, d)), dnames))
         for filename in fnames:
             fullfilename = os.path.join(path, filename)
             if skip(fullfilename):
