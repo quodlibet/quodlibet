@@ -52,6 +52,7 @@ class WebsiteSearch(SongsMenuPlugin):
             "<albumartist|<albumartist>|<artist>>&title=<album>"),
         ("Youtube video search",
          "https://www.youtube.com/results?search_query=<artist~title>"),
+        ("Go to ~website", "<website>"),
     ]
     PATTERNS_FILE = os.path.join(
         quodlibet.get_user_dir(), 'lists', 'searchsites')
@@ -132,7 +133,9 @@ class WebsiteSearch(SongsMenuPlugin):
                     vals = song.comma(k)
                     if vals:
                         try:
-                            subs[k] = quote_plus(unicode(vals).encode('utf-8'))
+                            encoded = unicode(vals).encode('utf-8')
+                            subs[k] = (encoded if k == 'website'
+                                       else quote_plus(encoded))
                         # Dodgy unicode problems
                         except KeyError:
                             print_d("Problem with %s tag values: %r"
