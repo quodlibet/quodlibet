@@ -125,10 +125,6 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.show()
 
     @property
-    def auth_allowed(self):
-        return self.api_client.use_ssl
-
-    @property
     def online(self):
         return self.api_client.online
 
@@ -172,7 +168,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         but.add(icon if icon else Gtk.Label(tooltip))
 
         but.get_child().show()
-        but.set_sensitive(self.auth_allowed)
+        but.set_sensitive(True)
         but.show()
 
     def create_login_button(self):
