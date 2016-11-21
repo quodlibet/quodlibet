@@ -31,9 +31,12 @@ Now clone the git repository and start Quod Libet::
 |macosx-logo| OS X
 ------------------
 
-On OS X all the needed dependencies are included in :ref:`the provided bundle
-<macosx>` itself. The bundle contains a script which passes all arguments to
-the included Python with the right environment set up.
+On OS X all the needed dependencies are included in the provided bundle
+itself. Download the latest bundle, which is guaranteed to work with current
+git master: `QuodLibet-latest.dmg
+<https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg>`__. It
+contains a "run" script which passes all arguments to the included Python with
+the right environment set up.
 
 ::
 

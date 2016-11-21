@@ -14,7 +14,8 @@ For developing on Windows you have two choices.
 1) Just use an existing Quod Libet installation plus a git checkout:
 
    * Clone the git repo with some git client
-   * Install the latest version of Quod Libet
+   * Download and install the latest installer build:
+     https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe
    * Go to quodlibet.py in the git checkout and run
      ``%PROGRAMFILES(X86)%\Quod Libet\bin\python.exe quodlibet.py``.
 
