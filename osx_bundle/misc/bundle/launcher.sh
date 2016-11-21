@@ -41,6 +41,8 @@ fi
 export PYTHON="$bundle_contents/MacOS/python"
 export PYTHONHOME="$bundle_res"
 
+export GIO_MODULE_DIR="$bundle_lib/gio/modules"
+
 # GTLS_SYSTEM_CA_FILE sets the path in the gnutls backend of glib-networking
 # (the env var gets respected because we patch it.. not available upstream)
 export GTLS_SYSTEM_CA_FILE="$bundle_lib/python2.7/site-packages/certifi/cacert.pem"
