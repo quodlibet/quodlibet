@@ -89,7 +89,7 @@ class DefaultHTTPRequest(GObject.Object):
                                                      self.message.method))
             self.emit('sent', self.message)
         except GLib.GError as e:
-            print_w('Failed sending request to {0}'.format(self._uri))
+            print_w('Failed sending request to {0} ({1})'.format(self._uri, e))
             self.emit('send-failure', e)
 
     def provide_target(self, stream):
