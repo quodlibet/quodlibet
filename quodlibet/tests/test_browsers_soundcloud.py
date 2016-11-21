@@ -7,7 +7,7 @@ from unittest import TestCase
 
 import time
 
-from quodlibet.util import is_osx
+import quodlibet
 from quodlibet import config
 from quodlibet.browsers.soundcloud import query
 from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
@@ -79,17 +79,14 @@ class TestExtract(TestCase):
 
 class TestHttpsDefault(TestCase):
     def setUp(self):
-        config.init()
+        quodlibet.config.init()
 
     def tearDown(self):
-        config.quit()
+        quodlibet.config.quit()
 
-    def test_setup_default(self):
-        self.failUnless(SoundcloudApiClient().root.startswith('https://')
-                        or is_osx(), msg="API client should use HTTPS")
+    def test_setup(self):
+        self.failUnless(SoundcloudApiClient().root.startswith('https://'))
 
     def test_setup_overridden(self):
         config.set('browsers', 'soundcloud_use_ssl', False)
         self.failUnless(SoundcloudApiClient().root.startswith('http://'))
-        config.set('browsers', 'soundcloud_use_ssl', True)
-        self.failUnless(SoundcloudApiClient().root.startswith('https://'))
