@@ -7,7 +7,10 @@ from unittest import TestCase
 
 import time
 
+import quodlibet
+from quodlibet import config
 from quodlibet.browsers.soundcloud import query
+from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
 from quodlibet.browsers.soundcloud.query import SoundcloudQuery, convert_time
 
 from quodlibet import const
@@ -72,3 +75,18 @@ class TestExtract(TestCase):
         self.failUnlessEqual(terms[term], expected,
                              msg="terms[%s] wasn't %r. Full terms: %r"
                                  % (term, expected, terms))
+
+
+class TestHttpsDefault(TestCase):
+    def setUp(self):
+        quodlibet.config.init()
+
+    def tearDown(self):
+        quodlibet.config.quit()
+
+    def test_setup(self):
+        self.failUnless(SoundcloudApiClient().root.startswith('https://'))
+
+    def test_setup_overridden(self):
+        config.set('browsers', 'soundcloud_use_ssl', False)
+        self.failUnless(SoundcloudApiClient().root.startswith('http://'))

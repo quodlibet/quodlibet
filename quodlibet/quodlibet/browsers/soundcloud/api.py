@@ -9,6 +9,8 @@ from datetime import datetime
 
 from gi.repository import GObject, Gio, Soup
 
+from quodlibet.util import is_osx
+
 from quodlibet import util, config
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w, print_d
@@ -74,6 +76,8 @@ class SoundcloudApiClient(RestApi):
     __CLIENT_SECRET = 'ca2b69301bd1f73985a9b47224a2a239'
     __CLIENT_ID = '5acc74891941cfc73ec8ee2504be6617'
     API_ROOT = "https://api.soundcloud.com"
+    INSECURE_API_ROOT = "http://api.soundcloud.com"
+    CONFIG_KEY_SSL = 'soundcloud_use_ssl'
     REDIRECT_URI = 'https://quodlibet.github.io/callbacks/soundcloud.html'
     PAGE_SIZE = 150
     MIN_DURATION_SECS = 120
@@ -92,10 +96,20 @@ class SoundcloudApiClient(RestApi):
 
     def __init__(self, token=None):
         print_d("Starting Soundcloud API...")
-        super(SoundcloudApiClient, self).__init__(self.API_ROOT)
-        self.online = bool(token)
+        # Libsoup HTTPS failing on OSX: Issue #2106, #2107
+        self.use_ssl = config.getboolean('browsers', self.CONFIG_KEY_SSL,
+                                         not is_osx())
+        if not self.use_ssl:
+            print_w("Using insecure communication with Soundcloud (See #2106),"
+                    "so anonymous access only (QL config: %s)"
+                    % self.CONFIG_KEY_SSL)
+            self.access_token = None
+        else:
+            self.access_token = token
+        super(SoundcloudApiClient, self).__init__(self.API_ROOT if self.use_ssl
+                                                  else self.INSECURE_API_ROOT)
+        self.online = bool(self.access_token)
         self.username = None
-        self.access_token = token
 
     def _default_params(self):
         params = {'client_id': self.__CLIENT_ID}
@@ -104,6 +118,8 @@ class SoundcloudApiClient(RestApi):
         return params
 
     def authenticate_user(self):
+        if not self.use_ssl:
+            print_w("Not logging in whilst HTTPS is disabled")
         # create client object with app credentials
         if self.access_token:
             print_d("Ignoring saved Soundcloud token...")
