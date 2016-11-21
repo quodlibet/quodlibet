@@ -49,8 +49,8 @@ mv "$APP" "$QUODLIBET"
 echo 'BUILD_TYPE = u"osx-exfalso"' >> "$EXFALSO_PREFIX"/lib/python2.7/site-packages/quodlibet/build.py
 echo 'BUILD_TYPE = u"osx-quodlibet"' >> "$QUODLIBET_PREFIX"/lib/python2.7/site-packages/quodlibet/build.py
 
-jhbuild run python -m compileall -f "$EXFALSO_PREFIX"/lib/python2.7
-jhbuild run python -m compileall -f "$QUODLIBET_PREFIX"/lib/python2.7
+jhbuild run python -m compileall -d "" -f "$EXFALSO_PREFIX"/lib/python2.7
+jhbuild run python -m compileall -d "" -f "$QUODLIBET_PREFIX"/lib/python2.7
 find "$EXFALSO_PREFIX"/lib/python2.7 -name '*.py' -delete
 find "$QUODLIBET_PREFIX"/lib/python2.7 -name '*.py' -delete
 
