@@ -36,6 +36,7 @@ class TPlayer(TestCase):
     def setUp(self):
         config.init()
         config.set("player", "gst_pipeline", "fakesink")
+        config.set("settings", "xine_driver", "none")
         module = player.init_backend(self.NAME)
         lib = library.init()
         self.player = module.init(lib.librarian)
