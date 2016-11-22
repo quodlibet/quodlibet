@@ -16,7 +16,7 @@ from quodlibet.qltk.entry import Entry
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
-WIKI_URL = "https://%s.wikipedia.org/wiki/"
+WIKI_URL = "https://%s.wikipedia.org/wiki/Special:Search/"
 
 
 def get_lang():
