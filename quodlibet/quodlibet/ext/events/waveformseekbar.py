@@ -11,8 +11,8 @@ from math import ceil, floor
 
 from quodlibet import _, app
 from quodlibet import print_w
-from quodlibet.plugins import PluginConfigMixin,PluginConfig, BoolConfProp, IntConfProp, \
-    ConfProp
+from quodlibet.plugins import PluginConfig, BoolConfProp, IntConfProp, \
+    ConfProp, PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align
 from quodlibet.qltk import Icons
@@ -285,7 +285,7 @@ class Config(object):
 CONFIG = Config()
 
 
-class WaveformSeekBarPlugin(EventPlugin,PluginConfigMixin):
+class WaveformSeekBarPlugin(EventPlugin, PluginConfigMixin):
     """The plugin class."""
 
     PLUGIN_ID = "WaveformSeekBar"
@@ -294,7 +294,7 @@ class WaveformSeekBarPlugin(EventPlugin,PluginConfigMixin):
     PLUGIN_CONFIG_SECTION = __name__
     PLUGIN_DESC = _(
         "A seekbar in the shape of the waveform of the current song.")
-    
+
     DEFAULT_FGCOLOR = '#ff0000'
     CFG_FGCOLOR_KEY = "foregroundColor"
 
@@ -344,11 +344,11 @@ class WaveformSeekBarPlugin(EventPlugin,PluginConfigMixin):
         b = Gtk.ColorButton(rgba=c)
         t.attach(b, 1, 2, 1, 2)
         b.connect('color-set', cls._set_foreground_color)
-        
+
         vbox.pack_start(t, False, False, 0)
 
         return vbox
-    
+
     def _get_foreground_color(self):
         v = self.config_get(self.CFG_FGCOLOR_KEY, self.DEFAULT_FGCOLOR)
         return v[:3] + v[5:7] + v[9:11]
