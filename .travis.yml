@@ -7,13 +7,13 @@ matrix:
       dist: trusty
       language: python
       python: "2.7_with_system_site_packages"
-      env: TYPE="linux" PYTHON="python2" APT_PACKAGES="quodlibet exfalso xvfb python-faulthandler python-polib gettext intltool"
+      env: TYPE="linux" PYTHON="python2" APT_PACKAGES="quodlibet exfalso xvfb python-faulthandler python-polib gettext intltool libxine2-bin"
     - os: linux
       sudo: required
       dist: trusty
       language: python
       python: "3.4_with_system_site_packages"
-      env: TYPE="linux" PYTHON="python3" APT_PACKAGES="quodlibet exfalso xvfb python3-mutagen python3-gi python3-gi-cairo python3-polib gettext intltool"
+      env: TYPE="linux" PYTHON="python3" APT_PACKAGES="quodlibet exfalso xvfb python3-mutagen python3-gi python3-gi-cairo python3-polib gettext intltool libxine2-bin"
     - os: osx
       osx_image: xcode6.4
       language: generic
