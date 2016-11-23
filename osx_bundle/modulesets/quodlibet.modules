@@ -83,6 +83,8 @@
       <dep package="pytest"/>
       <dep package="dmgbuild"/>
       <dep package="futures"/>
+      <dep package="pycodestyle"/>
+      <dep package="pyflakes"/>
     </dependencies>
   </metamodule>
 
@@ -392,6 +394,22 @@
       <dep package="mac_alias"/>
       <dep package="ds_store"/>
       <dep package="pyobjc-framework-Quartz"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="pycodestyle">
+    <branch repo="pypi" checkoutdir="pycodestyle-2.2.0" module="43/9f/56e824b197398582b0c1aaaa2272560bc51f395fe3e45e1dd88de4bb24dc/pycodestyle-2.2.0.tar.gz"
+        version="2.2.0" md5sum="642c31fc2a72a55a4acdf8ac46d5fb64"/>
+    <dependencies>
+    <dep package="setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="pyflakes">
+    <branch repo="pypi" checkoutdir="pyflakes-1.3.0" module="9f/48/927b1bf3e15d3dadfcfafb505177a62cdabcb78cf7eac4f31f180d5b1e26/pyflakes-1.3.0.tar.gz"
+        version="1.3.0" md5sum="d66478aaff1d003ddc7fc1759a74e1e2"/>
+    <dependencies>
+    <dep package="setuptools"/>
     </dependencies>
   </distutils>
 
