@@ -140,7 +140,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     	vert = config.getboolean("browsers", "covergrid_vertical", True)
     	for covergrid in klass.instances():
             covergrid.songcontainer.set_orientation(
-            	Gtk.Orientation.VERTICAL if vert else Gtk.Orientation.HORIZONTAL)
+            	Gtk.Orientation.VERTICAL if vert\
+            	else Gtk.Orientation.HORIZONTAL)
 
     @classmethod
     def update_mag(klass):
