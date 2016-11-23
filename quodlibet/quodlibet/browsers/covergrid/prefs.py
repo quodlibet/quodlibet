@@ -71,6 +71,13 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
                    lambda s: browser.view.get_model().refilter())
         vbox.pack_start(cb2, False, True, 0)
 
+        cb3 = ConfigCheckButton(
+            _("Vertical Split"), "browsers", "covergrid_vertical")
+        cb3.set_active(config.getboolean("browsers", "covergrid_vertical", True))
+        cb3.connect('toggled',
+                   lambda s: browser.toggle_vert())
+        vbox.pack_start(cb3, False, True, 0)
+
         def mag_changed(mag):
             config.set("browsers", "covergrid_magnification", mag.get_value())
             browser.update_mag()
