@@ -100,11 +100,8 @@ Unstable Repo:
 |fedora-logo| Fedora
 --------------------
 
-Stable Repo:
-    `Fedora 20, 21, 22, 23 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
-
-Unstable Repo :
-    `Fedora 20, 21, 22, 23 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
+* `Fedora Stable Repo <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
+* `Fedora Unstable Repo <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
 
 For stable releases check out the `official
 repos <https://apps.fedoraproject.org/packages/quodlibet/overview/>`__ first -
@@ -116,11 +113,8 @@ they usually contain the latest release:
 |opensuse-logo| openSUSE
 ------------------------
 
-Stable Repo:
-    `openSUSE 13.1, 13.2, Tumbleweed, Leap 42.1 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
-
-Unstable Repo:
-    `openSUSE 13.2, Tumbleweed, Leap 42.1 <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
+* `openSUSE Stable Repo <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
+* `openSUSE Unstable Repo <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
 
 .. _arch:
 
@@ -143,9 +137,6 @@ Unstable:
 |windows-logo| Windows
 ----------------------
 
-Based on `pygi-aio <https://sourceforge.net/projects/pygobjectwin32/>`__ by `Tumagonx
-Zakkum <https://github.com/tumagonx>`__
-
 =========================== ============================== ================================================= ==========================================
 Release                     File                           SHA256                                            PGP
 =========================== ============================== ================================================= ==========================================
@@ -156,6 +147,8 @@ Quod Libet 3.6.1 (portable) quodlibet-3.6.1-portable.exe_  `SHA256 <quodlibet-3.
 Quod Libet 3.5.2            quodlibet-3.5.2-installer.exe_ `SHA256 <quodlibet-3.5.2-installer.exe.sha256_>`_ `SIG <quodlibet-3.5.2-installer.exe.sig_>`_
 Quod Libet 3.5.2 (portable) quodlibet-3.5.2-portable.exe_  `SHA256 <quodlibet-3.5.2-portable.exe.sha256_>`_  `SIG <quodlibet-3.5.2-portable.exe.sig_>`_
 =========================== ============================== ================================================= ==========================================
+
+The latest development installer: `quodlibet-latest-installer.exe <https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe>`__
 
 .. _quodlibet-3.7.1-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.7.1-portable.exe
 .. _quodlibet-3.7.1-portable.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.7.1-portable.exe.sha256
@@ -183,16 +176,11 @@ Quod Libet 3.5.2 (portable) quodlibet-3.5.2-portable.exe_  `SHA256 <quodlibet-3.
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet/downloads/>`__.
 
-There is also an SDK for developing under Windows: `quodlibet-3.6-win-sdk.tar.xz <https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.6-win-sdk.tar.xz>`__
-
 
 .. _macosx:
 
 |macosx-logo| Mac OS X
 ----------------------
-
-Based on the `OS X bundles <https://github.com/elelay/quodlibet-osx-bundle>`__
-created by `Eric Le Lay <https://github.com/elelay>`__
 
 =========================== ============================== ========================================== ==========================================
 Release                     Application Bundle             SHA256                                     PGP
@@ -204,6 +192,8 @@ Ex Falso 3.6.1              ExFalso-3.6.1.zip_             `SHA256 <ExFalso-3.6.
 Quod Libet 3.5.2-v2         QuodLibet-3.5.2-v2.zip_        `SHA256 <QuodLibet-3.5.2-v2.zip.sha256_>`_ `SIG <QuodLibet-3.5.2-v2.zip.sig_>`_
 Ex Falso 3.5.2-v2           ExFalso-3.5.2-v2.zip_          `SHA256 <ExFalso-3.5.2-v2.zip.sha256_>`_   `SIG <ExFalso-3.5.2-v2.zip.sig_>`_
 =========================== ============================== ========================================== ==========================================
+
+The latest development bundle: `QuodLibet-latest.dmg <https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg>`__
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet/downloads/>`__.
 
