@@ -57,8 +57,13 @@ linkcheck_ignore = [
 html_context = {
     'extra_css_files': [
         '//quodlibet.github.io/fonts/font-mfizz.css',
+        '_static/extra.css',
     ],
 }
+
+html_static_path = [
+    "extra.css",
+]
 
 html_theme_options = {
     "display_version": False,

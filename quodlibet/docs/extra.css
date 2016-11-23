@@ -1,0 +1,23 @@
+.wy-side-nav-search {
+    background-color: initial;
+}
+
+.wy-nav-top {
+    background-color: #404040;
+}
+
+.wy-side-nav-search input[type="text"] {
+    border-color: transparent;
+}
+
+.wy-nav-content {
+    margin: initial;
+}
+
+.rst-content div[role=navigation] {
+   font-size: 0.85em;
+}
+
+.rst-content div[role=navigation] hr {
+    margin-top: 6px;
+}
