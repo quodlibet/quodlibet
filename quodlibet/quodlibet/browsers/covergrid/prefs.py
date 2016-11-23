@@ -74,7 +74,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         cb3 = ConfigCheckButton(
             _("Vertical Split"), "browsers", "covergrid_vertical")
         cb3.set_active(config.getboolean("browsers",
-        	"covergrid_vertical", True))
+            "covergrid_vertical", True))
         cb3.connect('toggled',
                    lambda s: browser.toggle_vert())
         vbox.pack_start(cb3, False, True, 0)

@@ -137,11 +137,11 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
     @classmethod
     def toggle_vert(klass):
-    	vert = config.getboolean("browsers", "covergrid_vertical", True)
-    	for covergrid in klass.instances():
+        vert = config.getboolean("browsers", "covergrid_vertical", True)
+        for covergrid in klass.instances():
             covergrid.songcontainer.set_orientation(
-            	Gtk.Orientation.VERTICAL if vert\
-            	else Gtk.Orientation.HORIZONTAL)
+                Gtk.Orientation.VERTICAL if vert
+                else Gtk.Orientation.HORIZONTAL)
 
     @classmethod
     def update_mag(klass):
@@ -189,9 +189,9 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         Browser.__init__(self, spacing=6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.songcontainer = qltk.paned.ConfigRVPaned(
-        	"browsers", "covergrid_pos", 0.4)
+            "browsers", "covergrid_pos", 0.4)
         if not config.getboolean("browsers", "covergrid_vertical", True):
-        	self.songcontainer.set_orientation(Gtk.Orientation.HORIZONTAL)
+            self.songcontainer.set_orientation(Gtk.Orientation.HORIZONTAL)
 
         self._register_instance()
         if self.__model is None:
