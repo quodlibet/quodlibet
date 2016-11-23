@@ -11,15 +11,17 @@ import re
 from quodlibet.util import re_escape
 
 
-def split_value(s, splitters=["/", "&", ","]):
+def split_value(s, splitters=[u"/", u"&", u","]):
     """Splits a string. The first match in 'splitters' is used as the
-    separator; subsequent matches are intentionally ignored."""
+    separator; subsequent matches are intentionally ignored.
+    """
+
     if not splitters:
         return [s.strip()]
     values = s.split("\n")
     for spl in splitters:
         spl = re.compile(r"\b\s*%s\s*\b" % re_escape(spl), re.UNICODE)
-        if not filter(spl.search, values):
+        if not list(filter(spl.search, values)):
             continue
         new_values = []
         for v in values:

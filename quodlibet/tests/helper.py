@@ -200,7 +200,7 @@ def preserve_environ():
     yield
     # don't touch existing values as os.environ is broken for empty
     # keys on Windows: http://bugs.python.org/issue20658
-    for key, value in os.environ.items():
+    for key, value in list(os.environ.items()):
         if key not in old:
             del os.environ[key]
     for key, value in old.items():

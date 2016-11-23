@@ -9,6 +9,7 @@ import locale
 import re
 
 from quodlibet import _
+from quodlibet.compat import text_type
 
 from .iso639 import ISO_639_2
 
@@ -161,7 +162,7 @@ class PeakMassager(Massager):
         else:
             if f < 0 or f >= 2:
                 raise ValidationError
-            return unicode(f)
+            return text_type(f)
 
 
 @Massager._register
@@ -172,8 +173,8 @@ class MBIDMassager(Massager):
     error = _("MusicBrainz IDs must be in UUID format.")
 
     def validate(self, value):
-        value = value.encode('ascii', 'replace')
-        value = filter(str.isalnum, value.strip().lower())
+        value = value.encode('ascii', 'replace').decode("ascii")
+        value = u"".join(filter(text_type.isalnum, value.strip().lower()))
         try:
             int(value, 16)
         except ValueError:

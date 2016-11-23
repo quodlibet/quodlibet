@@ -14,7 +14,7 @@ from traceback import format_exception
 from quodlibet.util.path import mtime
 from quodlibet.util.importhelper import get_importables, load_module
 from quodlibet.util import print_d
-from quodlibet.compat import iteritems
+from quodlibet.compat import iteritems, listitems
 
 
 class Module(object):
@@ -106,7 +106,7 @@ class ModuleScanner(object):
         added = []
 
         # remove those that are gone and changed ones
-        for name, mod in self.__modules.items():
+        for name, mod in listitems(self.__modules):
             # not here anymore, remove
             if name not in info:
                 del self.__modules[name]
