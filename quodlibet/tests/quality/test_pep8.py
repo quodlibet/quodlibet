@@ -7,10 +7,11 @@
 
 import os
 import itertools
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 import pytest
 import quodlibet
+from quodlibet.util import is_wine
 
 from tests import TestCase
 from tests.helper import capture_output
@@ -22,6 +23,14 @@ except ImportError:
         import pycodestyle
     except ImportError:
         pycodestyle = None
+
+
+def create_pool():
+    if is_wine():
+        # ProcessPoolExecutor is broken under wine
+        return ThreadPoolExecutor(1)
+    else:
+        return ProcessPoolExecutor(None)
 
 
 def iter_py_files(root):
@@ -41,7 +50,7 @@ def _check_file(f, ignore):
 
 def check_files(files, ignore=[]):
     lines = []
-    with ProcessPoolExecutor(None) as pool:
+    with create_pool() as pool:
         for res in pool.map(_check_file, files, itertools.repeat(ignore)):
             lines.extend(res)
     return sorted(lines)
