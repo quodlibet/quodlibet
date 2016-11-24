@@ -29,7 +29,7 @@ import unicodedata
 import sys
 
 from quodlibet.util import re_escape
-from quodlibet.compat import iteritems, urlopen
+from quodlibet.compat import iteritems, urlopen, text_type
 
 
 _DIACRITIC_CACHE = {
@@ -487,7 +487,7 @@ def _construct_regexp(pattern, mapping):
 def re_replace_literals(text, mapping):
     """Raises NotImplementedError or re.error"""
 
-    assert isinstance(text, unicode)
+    assert isinstance(text, text_type)
 
     pattern = sre_parse.parse(text)
     return _construct_regexp(pattern, mapping)
@@ -514,6 +514,6 @@ def re_add_variants(text):
     case something is not supported NotImplementedError gets raised.
     """
 
-    assert isinstance(text, unicode)
+    assert isinstance(text, text_type)
 
     return re_replace_literals(text, _mapping)

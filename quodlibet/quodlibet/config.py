@@ -192,6 +192,8 @@ add_section = _config.add_section
 has_option = _config.has_option
 remove_option = _config.remove_option
 register_upgrade_function = _config.register_upgrade_function
+getbytes = _config.getbytes
+setbytes = _config.setbytes
 
 _filename = None
 """The filename last used for loading"""

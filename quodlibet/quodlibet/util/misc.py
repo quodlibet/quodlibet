@@ -50,3 +50,20 @@ def get_locale_encoding():
         encoding = _verify_encoding(encoding)
 
     return encoding
+
+
+def total_ordering(cls):
+    """Adds all possible ordering methods to a class.
+
+    Needs a working __eq__ and __lt__ and will supply the rest.
+    """
+
+    assert "__eq__" in cls.__dict__
+    assert "__lt__" in cls.__dict__
+
+    cls.__le__ = lambda self, other: self == other or self < other
+    cls.__gt__ = lambda self, other: not (self == other or self < other)
+    cls.__ge__ = lambda self, other: not self < other
+    cls.__ne__ = lambda self, other: not self.__eq__(other)
+
+    return cls

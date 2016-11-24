@@ -759,7 +759,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         self.view.handler_unblock(self.__sig)
 
     def restore(self):
-        text = config.get("browsers", "query_text").decode("utf-8")
+        text = config.gettext("browsers", "query_text")
         entry = self.__search
         entry.set_text(text)
 
