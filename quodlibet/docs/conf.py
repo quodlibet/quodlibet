@@ -70,6 +70,7 @@ html_theme_options = {
 }
 
 html_favicon = "favicon/favicon.ico"
+html_show_copyright = False
 
 # on a stable branch which isn't a release
 if const.BRANCH_NAME != "master":

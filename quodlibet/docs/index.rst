@@ -1,5 +1,4 @@
-A Music Library/Editor/Player
-=============================
+.. title:: A Music Library/Editor/Player
 
 .. image:: images/paned.png
     :align: right
@@ -25,12 +24,10 @@ happy with your favorite player and just want something that can handle
 tagging, Ex Falso is for you.
 
 
-Table of Contents
------------------
-
 .. toctree::
     :maxdepth: 1
     :titlesonly:
+    :hidden:
 
     screenshots
     changelog
