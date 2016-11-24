@@ -329,7 +329,7 @@ class Config(object):
                 raise
 
     def settext(self, section, option, value):
-        assert isinstance(value, text_type)
+        value = text_type(value)
 
         if PY2:
             value = value.encode("utf-8")

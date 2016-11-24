@@ -592,7 +592,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         self.view.handler_unblock(self.__sig)
 
     def restore(self):
-        text = config.get("browsers", "query_text").decode("utf-8")
+        text = config.gettext("browsers", "query_text")
         entry = self.__search
         entry.set_text(text)
 
@@ -600,7 +600,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         if Query.is_parsable(text):
             self.__update_filter(entry, text, scroll_up=False, restore=True)
 
-        keys = config.get("browsers", "covergrid", "").split("\n")
+        keys = config.gettext("browsers", "covergrid", "").split("\n")
 
         # FIXME: If albums is "" then it could be either all albums or
         # no albums. If it's "" and some other stuff, assume no albums,
@@ -640,9 +640,9 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
     def save(self):
         conf = self.__get_config_string()
-        config.set("browsers", "covergrid", conf)
-        text = self.__search.get_text().encode("utf-8")
-        config.set("browsers", "query_text", text)
+        config.settext("browsers", "covergrid", conf)
+        text = self.__search.get_text()
+        config.settext("browsers", "query_text", text)
 
     def __update_songs(self, selection):
         songs = self.__get_selected_songs(sort=False)

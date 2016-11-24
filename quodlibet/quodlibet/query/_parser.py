@@ -6,12 +6,15 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import codecs
 import re
 
 from . import _match as match
 from ._match import ParseError
 from ._diacritic import re_add_variants
 from quodlibet.util import re_escape
+from quodlibet.compat import text_type, PY3
+
 
 # Precompiled regexes
 TAG = re.compile(r'[~\w\s:]+')
@@ -295,8 +298,11 @@ class QueryParser(object):
 
     def str_to_re(self, string):
         """Convert plain string to escaped regexp that can be compiled"""
-        if isinstance(string, unicode):
+        if isinstance(string, text_type):
             string = string.encode('utf-8')
-        string = string.decode('string_escape')
+        if PY3:
+            string = codecs.escape_decode(string)[0]
+        else:
+            string = string.decode('string_escape')
         string = string.decode('utf-8')
         return "^%s$" % re_escape(string)

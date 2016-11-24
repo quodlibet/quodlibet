@@ -847,7 +847,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         return menu
 
     def restore(self):
-        text = config.get("browsers", "query_text").decode("utf-8")
+        text = config.gettext("browsers", "query_text")
         self.__searchbar.set_text(text)
         if Query.is_parsable(text):
             self.__filter_changed(self.__searchbar, text, restore=True)

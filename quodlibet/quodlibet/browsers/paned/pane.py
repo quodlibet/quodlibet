@@ -14,6 +14,7 @@ from quodlibet.qltk.views import AllTreeView, TreeViewColumnButton
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk import is_accel
 from quodlibet.util import connect_obj
+from quodlibet.compat import text_type
 
 from .models import PaneModel
 from .util import PaneConfig
@@ -119,7 +120,7 @@ class Pane(AllTreeView):
         return "<%s config=%r>" % (type(self).__name__, self.config)
 
     def parse_restore_string(self, config_value):
-        assert isinstance(config_value, unicode)
+        assert isinstance(config_value, text_type)
 
         values = config_value.split("\t")[:-1]
 

@@ -309,7 +309,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         return [self.library]
 
     def restore(self):
-        text = config.get("browsers", "query_text").decode("utf-8")
+        text = config.gettext("browsers", "query_text")
         self.__searchbar.set_text(text)
         self.__query_changed(None, text, restore=True)
 

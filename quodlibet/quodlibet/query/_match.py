@@ -13,7 +13,7 @@ import operator
 
 from senf import fsn2text, fsnative
 
-from quodlibet.compat import floordiv
+from quodlibet.compat import floordiv, text_type
 from quodlibet.util import parse_date
 from quodlibet.plugins.query import QUERY_HANDLER
 from quodlibet.plugins.query import QueryPluginError
@@ -34,7 +34,7 @@ class Node(object):
         raise NotImplementedError
 
     def filter(self, sequence):
-        return filter(self.search, sequence)
+        return [s for s in sequence if self.search(s)]
 
     def _unpack(self):
         return self
@@ -228,11 +228,7 @@ class NumexprTag(Numexpr):
     """Numeric tag"""
 
     def __init__(self, tag):
-        if isinstance(tag, unicode):
-            self._tag = tag.encode("utf-8")
-        else:
-            self._tag = tag
-
+        self._tag = tag
         self._ftag = "~#" + self._tag
 
     def evaluate(self, data, time, use_date):
@@ -484,11 +480,11 @@ class Tag(Node):
                 else:
                     val = data.get("~" + name, "")
 
-            if self.res.search(unicode(val)):
+            if self.res.search(text_type(val)):
                 return True
 
         for name in self.__intern:
-            if self.res.search(unicode(data(name))):
+            if self.res.search(text_type(data(name))):
                 return True
 
         for name in self.__fs:

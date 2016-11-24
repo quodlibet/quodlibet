@@ -278,37 +278,32 @@ class PanedBrowser(Browser, util.InstanceTracker):
         return []
 
     def save(self):
-        config.set("browsers", "query_text", self._get_text())
+        config.settext("browsers", "query_text", self._get_text())
 
         selected = []
         for pane in self._panes:
             selected.append(pane.get_restore_string())
 
-        to_save = u"\n".join(selected).encode("utf-8")
-        config.set("browsers", "pane_selection", to_save)
+        to_save = u"\n".join(selected)
+        config.settext("browsers", "pane_selection", to_save)
 
     def restore(self):
         try:
-            text = config.get("browsers", "query_text")
+            text = config.gettext("browsers", "query_text")
         except config.Error:
             pass
         else:
             self._set_text(text)
 
-        selected = config.get("browsers", "pane_selection")
+        selected = config.gettext("browsers", "pane_selection")
         if not selected:
-            return
-
-        try:
-            selected = selected.decode("utf-8")
-        except UnicodeDecodeError:
             return
 
         for pane, string in zip(self._panes, selected.split(u"\n")):
             pane.parse_restore_string(string)
 
     def finalize(self, restored):
-        config.set("browsers", "query_text", "")
+        config.settext("browsers", "query_text", u"")
         if not restored:
             self.fill_panes()
 

@@ -19,7 +19,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
-from quodlibet.compat import xrange, text_type
+from quodlibet.compat import xrange, text_type, number_types
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.dprint import print_d
@@ -123,7 +123,7 @@ class Collection(object):
 
     def comma(self, key):
         value = self.get(key)
-        return (value if isinstance(value, (int, float, long))
+        return (value if isinstance(value, number_types)
                 else value.replace("\n", ", "))
 
     def list(self, key):

@@ -18,6 +18,7 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.util import connect_obj, escape
+from quodlibet.compat import iteritems, iterkeys
 from .util import get_headers, save_headers
 
 
@@ -110,7 +111,7 @@ class PatternEditor(Gtk.VBox):
 
     @property
     def headers(self):
-        for button in self.__headers.iterkeys():
+        for button in iterkeys(self.__headers):
             if button.get_active():
                 if button == self.__custom:
                     model_headers = [row[0] for row in self.__model]
@@ -119,7 +120,7 @@ class PatternEditor(Gtk.VBox):
 
     @headers.setter
     def headers(self, new_headers):
-        for button, headers in self.__headers.iteritems():
+        for button, headers in iteritems(self.__headers):
             if headers == new_headers:
                 button.set_active(True)
                 button.emit("toggled")

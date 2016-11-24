@@ -320,9 +320,9 @@ class VisibleUpdate(object):
         start = start.get_indices()[0] - preload - 1
         end = end.get_indices()[0] + preload
 
-        vlist = range(end, start, -1)
-        top = vlist[:len(vlist) / 2]
-        bottom = vlist[len(vlist) / 2:]
+        vlist = list(range(end, start, -1))
+        top = vlist[:len(vlist) // 2]
+        bottom = vlist[len(vlist) // 2:]
         top.reverse()
 
         vlist_new = []
