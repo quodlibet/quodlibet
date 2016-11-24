@@ -15,6 +15,11 @@ from quodlibet.util.importhelper import get_importables, load_dir_modules
 from tests import TestCase, mkdtemp
 
 
+def py_compile_legacy(file_):
+    # so we get the same result on py2/3
+    py_compile.compile(file_, cfile=file_ + "c")
+
+
 class TModuleScanner(TestCase):
 
     def setUp(self):
@@ -79,10 +84,9 @@ class TModuleScanner(TestCase):
         h = self._create_mod("x1.py")
         h.write(b"test=24\n")
         h.close()
-        py_compile.compile(h.name)
+        py_compile_legacy(h.name)
         os.unlink(h.name)
-        assert ("x1.pyc" in os.listdir(self.d) or
-                "__pycache__" in os.listdir(self.d))
+        assert os.listdir(self.d) == ["x1.pyc"]
 
         mods = load_dir_modules(self.d, "qlfake")
         self.failUnlessEqual(len(mods), 0)
@@ -91,10 +95,9 @@ class TModuleScanner(TestCase):
         h = self._create_mod("x1.py")
         h.write(b"test=99\n")
         h.close()
-        py_compile.compile(h.name)
+        py_compile_legacy(h.name)
         os.unlink(h.name)
-        assert ("x1.pyc" in os.listdir(self.d) or
-                "__pycache__" in os.listdir(self.d))
+        assert os.listdir(self.d) == ["x1.pyc"]
 
         mods = load_dir_modules(self.d, "qlfake", load_compiled=True)
         self.failUnlessEqual(len(mods), 1)
@@ -104,7 +107,7 @@ class TModuleScanner(TestCase):
         h = self._create_mod("x1.py")
         h.write(b"test=99\n")
         h.close()
-        py_compile.compile(h.name)
+        py_compile_legacy(h.name)
         self.failUnlessEqual(set(os.listdir(self.d)), {"x1.pyc", "x1.py"})
 
         mods = load_dir_modules(self.d, "qlfake", load_compiled=True)
