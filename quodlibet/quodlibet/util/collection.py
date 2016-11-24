@@ -19,7 +19,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
-from quodlibet.compat import xrange, text_type, number_types
+from quodlibet.compat import xrange, text_type, number_types, string_types
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.dprint import print_d
@@ -369,7 +369,7 @@ class Playlist(Collection, Iterable):
 
     @property
     def songs(self):
-        return [s for s in self._list if not isinstance(s, basestring)]
+        return [s for s in self._list if not isinstance(s, string_types)]
 
     def __init__(self, name, library=None):
         super(Playlist, self).__init__()

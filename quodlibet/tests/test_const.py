@@ -30,7 +30,8 @@ class Tconst(TestCase):
         self.failIf(p.returncode)
 
         # only check for stable/dev branches, no feature branches
-        if branch == "master" or branch.startswith("quodlibet"):
+        if branch == b"master" or branch.startswith(b"quodlibet"):
+            branch = branch.decode("utf-8")
             self.failUnlessEqual(branch, const.BRANCH_NAME)
 
     def test_authors(self):

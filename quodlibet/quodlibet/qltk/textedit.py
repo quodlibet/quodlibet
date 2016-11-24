@@ -18,6 +18,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.pattern import XMLFromPattern, XMLFromMarkupPattern, \
     error as PatternError
 from quodlibet.util import connect_obj, gdecode
+from quodlibet.compat import text_type
 
 try:
     import gi
@@ -91,7 +92,7 @@ def validate_markup_pattern(text, alternative_markup=True, links=False):
         ValueError: In case the pattern isn't valid
     """
 
-    assert isinstance(text, unicode)
+    assert isinstance(text, text_type)
 
     f = AudioFile({"~filename": fsnative(u"dummy")})
 

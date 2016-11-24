@@ -9,7 +9,7 @@
 
 import os
 
-from senf import uri2fsn, fsnative
+from senf import uri2fsn, fsnative, fsn2text
 
 from quodlibet.util.string import split_escape
 
@@ -291,7 +291,7 @@ def _filter(app, value):
 @registry.register("query", args=1)
 def _query(app, value):
     if app.browser.can_filter_text():
-        app.browser.filter_text(value.decode("utf-8", "replace"))
+        app.browser.filter_text(fsn2text(value))
 
 
 @registry.register("unfilter")

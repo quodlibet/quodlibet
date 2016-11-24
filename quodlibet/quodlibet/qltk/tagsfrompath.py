@@ -69,7 +69,7 @@ class SplitTag(FilterCheckButton):
     _order = 1.2
 
     def filter(self, tag, value):
-        spls = config.get("editing", "split_on").decode('utf-8', 'replace')
+        spls = config.gettext("editing", "split_on")
         spls = spls.split()
         return "\n".join(split_value(value, spls))
 

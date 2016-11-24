@@ -31,7 +31,7 @@ def split_value(s, splitters=[u"/", u"&", u","]):
 
 
 def find_subtitle(title):
-    if isinstance(title, str):
+    if isinstance(title, bytes):
         title = title.decode('utf-8', 'replace')
     for pair in [u"[]", u"()", u"~~", u"--", u"\u301c\u301c", u'\uff08\uff09']:
         if pair[0] in title[:-1] and title.endswith(pair[1]):

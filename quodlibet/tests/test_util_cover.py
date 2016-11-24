@@ -8,11 +8,12 @@ import glob
 import os
 import shutil
 
-from senf import fsnative
+from senf import fsnative, bytes2fsn
 
 from quodlibet.formats import AudioFile
 from quodlibet.util.cover.manager import CoverManager
 from quodlibet.util.path import normalize_path, path_equal
+from quodlibet.compat import text_type
 
 from tests import TestCase, mkdtemp
 
@@ -76,8 +77,8 @@ class TCoverManager(TestCase):
         if os.name == "nt":
             return
 
-        f = self.add_file("\xff\xff\xff\xff - cover.jpg")
-        self.assertTrue(isinstance(self.song("album"), unicode))
+        f = self.add_file(bytes2fsn(b"\xff\xff\xff\xff - cover.jpg", None))
+        self.assertTrue(isinstance(self.song("album"), text_type))
         h = self._find_cover(self.song)
         self.assertEqual(h.name, normalize_path(f))
 
@@ -129,7 +130,7 @@ class TCoverManager(TestCase):
 
     def add_file(self, fn):
         f = self.full_path(fn)
-        open(f, "w").close()
+        open(f, "wb").close()
         return f
 
     def test_multiple_people(self):

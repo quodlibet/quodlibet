@@ -22,6 +22,7 @@ from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.qltk import add_css
 from quodlibet.util.path import unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS
+from quodlibet.compat import text_type, string_types, PY2
 
 
 def create_songlist_column(t):
@@ -283,8 +284,9 @@ class DateColumn(WideTextColumn):
             else:
                 format_ = "%x"
             stamp = time.localtime(stamp)
-            encoding = util.get_locale_encoding()
-            text = time.strftime(format_, stamp).decode(encoding)
+            text = time.strftime(format_, stamp)
+            if PY2:
+                text = text.decode(util.get_locale_encoding())
             cell.set_property('text', text)
 
 
@@ -374,7 +376,7 @@ class NumericColumn(TextColumn):
         if isinstance(value, float):
             text = u"%.2f" % round(value, 2)
         else:
-            text = unicode(value)
+            text = text_type(value)
 
         cell.set_property('text', text)
         self._recalc_width(model.get_path(iter_), text)
@@ -396,7 +398,7 @@ class NumericColumn(TextColumn):
         for key, value in self._texts.items():
             if not (start - 3) <= key <= (end + 3):
                 del self._texts[key]
-            elif isinstance(value, basestring):
+            elif isinstance(value, string_types):
                 self._texts[key] = self._cell_width(value)
 
         # resize if too small or way too big and above the minimum

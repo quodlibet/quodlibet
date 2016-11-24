@@ -626,10 +626,7 @@ def spawn(argv, stdout=False):
 
     from gi.repository import GLib
 
-    types = map(type, argv)
-    if not (min(types) == max(types) == str):
-        raise TypeError("executables and arguments must be str objects")
-    print_d("Running %r" % " ".join(argv))
+    print_d("Running %r" % argv)
     args = GLib.spawn_async(argv=argv, flags=GLib.SpawnFlags.SEARCH_PATH,
                             standard_output=stdout)
 

@@ -35,6 +35,7 @@ from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
+from quodlibet.compat import iteritems, string_types, text_type
 
 
 class Comment(object):
@@ -149,10 +150,10 @@ class AudioFileGroup(dict):
         self._can_change = can_change
 
         # collect comment representations
-        for tag, count in keys.iteritems():
+        for tag, count in iteritems(keys):
             first_value = first[tag]
-            if not isinstance(first_value, basestring):
-                first_value = unicode(first_value)
+            if not isinstance(first_value, string_types):
+                first_value = text_type(first_value)
             shared = all[tag]
             complete = count == total
             if shared and complete:
@@ -191,13 +192,11 @@ class SplitValues(Gtk.ImageMenuItem):
             label=_("Split into _Multiple Values"), use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        spls = config.gettext("editing", "split_on").split()
         self.set_sensitive(len(split_value(value, spls)) > 1)
 
     def activated(self, tag, value):
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        spls = config.gettext("editing", "split_on").split()
         return [(tag, v) for v in split_value(value, spls)]
 
 
@@ -228,13 +227,11 @@ class SplitTitle(Gtk.ImageMenuItem):
             label=_("Split _Version out of Title"), use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        spls = config.gettext("editing", "split_on").split()
         self.set_sensitive(bool(split_title(value, spls)[1]))
 
     def activated(self, tag, value):
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        spls = config.gettext("editing", "split_on").split()
         title, versions = split_title(value, spls)
         return [(tag, title)] + [("version", v) for v in versions]
 
@@ -247,13 +244,11 @@ class SplitPerson(Gtk.ImageMenuItem):
         super(SplitPerson, self).__init__(label=self.title, use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        spls = config.gettext("editing", "split_on").split()
         self.set_sensitive(bool(split_people(value, spls)[1]))
 
     def activated(self, tag, value):
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        spls = config.gettext("editing", "split_on").split()
         artist, others = split_people(value, spls)
         return [(tag, artist)] + [(self.needs[0], o) for o in others]
 

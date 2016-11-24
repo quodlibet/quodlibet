@@ -106,7 +106,7 @@ class FilterCheckButton(ConfigCheckButton):
         raise NotImplementedError
 
     def filter_list(self, origs, names):
-        return map(self.filter, origs, names)
+        return list(map(self.filter, origs, names))
 
     def __lt__(self, other):
         return (self._order, type(self).__name__) < \

@@ -194,7 +194,7 @@ class StandaloneEditor(_KeyValueEditor):
         if os.path.exists(filename):
             fileobj = open(filename, "rU")
             lines = list(fileobj.readlines())
-            for i in range(len(lines) / 2):
+            for i in range(len(lines) // 2):
                 ret.append((lines[i * 2 + 1].strip(), lines[i * 2].strip()))
         return ret
 
