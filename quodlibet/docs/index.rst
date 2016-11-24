@@ -1,8 +1,9 @@
 A Music Library/Editor/Player
 =============================
 
-.. image:: images/front.png
+.. image:: images/paned.png
     :align: right
+    :scale: 50 %
 
 **Quod Libet** is a `GTK+ <http://www.gtk.org/>`__-based **audio player**
 written in `Python <https://www.python.org/>`__, using the `Mutagen
