@@ -59,7 +59,7 @@ class ListCommand(Command):
         if not options.columns:
             order = nicks
         else:
-            order = map(str.strip, options.columns.split(","))
+            order = [n.strip() for n in options.columns.split(",")]
 
         song = self.load_song(path)
         tags = list_tags(song, machine=options.all, terse=options.terse)
@@ -93,7 +93,7 @@ class TagsCommand(Command):
         if not options.columns:
             order = nicks
         else:
-            order = map(str.strip, options.columns.split(","))
+            order = [n.strip() for n in options.columns.split(",")]
 
         tags = []
         for key in USER_TAGS:
@@ -472,7 +472,7 @@ class InfoCommand(Command):
         if not options.columns:
             order = nicks
         else:
-            order = map(str.strip, options.columns.split(","))
+            order = [n.strip() for n in options.columns.split(",")]
 
         if not options.terse:
             tags = []
