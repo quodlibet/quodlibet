@@ -54,6 +54,9 @@ if PY2:
     listkeys = lambda d: d.keys()
     listvalues = lambda d: d.values()
 
+    listfilter = filter
+    listmap = map
+
     def exec_(_code_, _globs_=None, _locs_=None):
         if _globs_ is None:
             frame = sys._getframe(1)
@@ -110,6 +113,9 @@ elif PY3:
     listitems = lambda d: list(d.items())
     listkeys = lambda d: list(d.keys())
     listvalues = lambda d: list(d.values())
+
+    listfilter = lambda *x: list(filter(*x))
+    listmap = lambda *x: list(map(*x))
 
     import builtins
     exec_ = getattr(builtins, "exec")

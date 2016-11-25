@@ -11,6 +11,7 @@ from quodlibet import _
 from quodlibet import config
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
+from quodlibet.util import decode
 
 from . import cdefs
 from .cdefs import XINE_PARAM_SPEED, XINE_PARAM_GAPLESS_SWITCH, xine_dispose, \
@@ -66,7 +67,7 @@ class XinePlaylistPlayer(BasePlayer):
 
         super(XinePlaylistPlayer, self).__init__()
         self.name = "xine"
-        self.version_info = "xine-lib: " + xine_get_version_string()
+        self.version_info = "xine-lib: " + decode(xine_get_version_string())
         self._volume = 1.0
         self._handle = XineHandle()
         self._supports_gapless = xine_check_version(1, 1, 1) == 1

@@ -112,8 +112,8 @@ class IRFile(RemoteFile):
         for tag in ["title", "artist", "~format"]:
             value = self.get(tag)
             if value is not None:
-                lines.append("%s=%s" % (tag, encode(value)))
-        return "\n".join(lines)
+                lines.append(encode(tag) + b"=" + encode(value))
+        return b"\n".join(lines)
 
     def can_change(self, k=None):
         if self.streamsong:

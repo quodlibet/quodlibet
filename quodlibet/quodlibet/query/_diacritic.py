@@ -29,7 +29,7 @@ import unicodedata
 import sys
 
 from quodlibet.util import re_escape
-from quodlibet.compat import iteritems, urlopen, text_type
+from quodlibet.compat import iteritems, urlopen, text_type, xrange, unichr
 
 
 _DIACRITIC_CACHE = {
@@ -380,6 +380,7 @@ def _construct_regexp(pattern, mapping):
     literals = []
 
     for op, av in pattern:
+        op = str(op).lower()
 
         if literals and op != "literal":
             parts.append(_fixup_literal_list(literals, mapping))
@@ -391,6 +392,7 @@ def _construct_regexp(pattern, mapping):
             literals.append(av)
             continue
         elif op == "category":
+            av = str(av).lower()
             cats = {
                 "category_word": u"\\w",
                 "category_not_word": u"\\W",
@@ -411,6 +413,7 @@ def _construct_regexp(pattern, mapping):
             in_parts = []
             for entry in av:
                 op, eav = entry
+                op = str(op).lower()
                 if op == "literal":
                     in_parts.append(_fixup_literal(eav, True, mapping))
                 else:
@@ -433,6 +436,7 @@ def _construct_regexp(pattern, mapping):
             if op == "min_repeat":
                 parts[-1] = parts[-1] + u"?"
         elif op == "at":
+            av = str(av).lower()
             ats = {
                 "at_beginning": u"^",
                 "at_end": u"$",

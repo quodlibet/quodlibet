@@ -143,7 +143,8 @@ class TSongLibrarian(TLibrarian):
         self.lib1.add(self.Frange(0, 30, 2))
         self.lib2.add(self.Frange(1, 30, 2))
         del(self.added[:])
-        self.failUnlessEqual(sorted(self.librarian.tag_values(20)), range(20))
+        self.failUnlessEqual(
+            sorted(self.librarian.tag_values(20)), list(range(20)))
         self.failUnlessEqual(sorted(self.librarian.tag_values(0)), [])
         self.failIf(self.changed or self.added or self.removed)
 

@@ -154,7 +154,7 @@ class SoundcloudApiClient(RestApi):
 
     @json_callback
     def _on_track_data(self, json):
-        songs = filter(None, [self._audiofile_for(r) for r in json])
+        songs = list(filter(None, [self._audiofile_for(r) for r in json]))
         self.emit('songs-received', songs)
 
     def get_favorites(self):

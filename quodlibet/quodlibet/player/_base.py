@@ -12,6 +12,7 @@ from gi.repository import GObject
 from quodlibet.formats import AudioFile
 from quodlibet.util import print_d
 from quodlibet import config
+from quodlibet.compat import listfilter
 
 
 class Equalizer(object):
@@ -124,7 +125,7 @@ class BasePlayer(GObject.GObject, Equalizer):
         """
 
         if self.song and config.getboolean("player", "replaygain"):
-            profiles = filter(None, self.replaygain_profiles)[0]
+            profiles = listfilter(None, self.replaygain_profiles)[0]
             fb_gain = config.getfloat("player", "fallback_gain")
             pa_gain = config.getfloat("player", "pre_amp_gain")
             scale = self.song.replay_gain(profiles, pa_gain, fb_gain)

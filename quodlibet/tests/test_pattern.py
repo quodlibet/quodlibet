@@ -227,10 +227,10 @@ class TPattern(_TPattern):
 
     def test_unicode_with_int(s):
         song = AudioFile({"tracknumber": "5/6",
-            "title": "\xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8')})
+            "title": b"\xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8')})
         pat = Pattern('<~#track>. <title>')
         s.assertEquals(pat.format(song),
-            "5. \xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8'))
+            b"5. \xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8'))
 
 
 class _TFileFromPattern(_TPattern):

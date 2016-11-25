@@ -28,7 +28,7 @@ from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 from quodlibet.compat import iteritems, string_types, text_type, \
-    number_types, listitems, izip_longest, integer_types
+    number_types, listitems, izip_longest, integer_types, PY3
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
@@ -831,22 +831,30 @@ class AudioFile(dict, ImageContainer):
         return b"\n".join(s)
 
     def from_dump(self, text):
-        """Parses the text created with to_dump and adds the found tags."""
+        """Parses the text created with to_dump and adds the found tags.
+
+        Args:
+            text (bytes)
+        """
 
         def decode_key(key):
             """str if ascii, otherwise decode using utf-8"""
+
+            if PY3:
+                return decode(key)
+
             try:
                 key.decode("ascii")
             except ValueError:
                 return decode(key)
             return key
 
-        for line in text.split("\n"):
+        for line in text.split(b"\n"):
             if not line:
                 continue
-            parts = line.split("=")
-            key = parts[0]
-            val = "=".join(parts[1:])
+            parts = line.split(b"=")
+            key = decode_key(parts[0])
+            val = b"=".join(parts[1:])
             if key == "~format":
                 pass
             elif key.startswith("~#"):
@@ -858,7 +866,7 @@ class AudioFile(dict, ImageContainer):
                     except ValueError:
                         pass
             else:
-                self.add(decode_key(key), decode(val))
+                self.add(key, decode(val))
 
     def change(self, key, old_value, new_value):
         """Change 'old_value' to 'new_value' for the given metadata key.

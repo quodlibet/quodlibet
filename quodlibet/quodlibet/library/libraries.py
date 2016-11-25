@@ -24,7 +24,6 @@ from senf import fsn2text, fsnative
 from quodlibet import _
 from quodlibet.formats import MusicFile, AudioFileError
 from quodlibet.query import Query
-from quodlibet.compat import cBytesIO, pickle, itervalues
 from quodlibet.qltk.notif import Task
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.collection import Album
@@ -34,6 +33,8 @@ from quodlibet import const
 from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden
+from quodlibet.compat import iteritems, iterkeys, itervalues, listkeys, \
+    listvalues, cBytesIO, pickle
 
 
 class Library(GObject.GObject, DictMixin):
@@ -114,10 +115,10 @@ class Library(GObject.GObject, DictMixin):
         return itervalues(self._contents)
 
     def iteritems(self):
-        return self._contents.iteritems()
+        return iteritems(self._contents)
 
     def iterkeys(self):
-        return self._contents.iterkeys()
+        return iterkeys(self._contents)
 
     def itervalues(self):
         return itervalues(self._contents)
@@ -139,8 +140,10 @@ class Library(GObject.GObject, DictMixin):
 
     def get_content(self):
         """All items including hidden ones for saving the library
-           (see FileLibrary with masked items)"""
-        return self.values()
+           (see FileLibrary with masked items)
+        """
+
+        return listvalues(self)
 
     def keys(self):
         return self._contents.keys()
@@ -436,7 +439,7 @@ class AlbumLibrary(Library):
                 changed.add(self._contents[key])
             else:  # key changed.. look for it in each album
                 to_add.append(song)
-                for key, album in self._contents.iteritems():
+                for key, album in iteritems(self._contents):
                     if song in album.songs:
                         album.songs.remove(song)
                         if not album.songs:
@@ -811,7 +814,7 @@ class FileLibrary(PicklingLibrary):
     def get_content(self):
         """Return visible and masked items"""
 
-        items = self.values()
+        items = listvalues(self)
         for masked in self._masked.values():
             items.extend(masked.values())
 
@@ -855,12 +858,12 @@ class FileLibrary(PicklingLibrary):
     def masked_mount_points(self):
         """List of mount points that contain masked items"""
 
-        return self._masked.keys()
+        return listkeys(self._masked)
 
     def get_masked(self, mount_point):
         """List of items for a mount point"""
 
-        return self._masked.get(mount_point, {}).values()
+        return listvalues(self._masked.get(mount_point, {}))
 
     def remove_masked(self, mount_point):
         """Remove all songs for a masked point"""
