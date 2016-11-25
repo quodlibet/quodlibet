@@ -8,7 +8,7 @@
 import os
 import sys
 
-from senf import fsnative
+from senf import fsnative, path2fsn
 
 from tests import TestCase, get_data_path, mkstemp
 from .helper import capture_output, get_temp_copy
@@ -19,10 +19,11 @@ from quodlibet.formats import MusicFile
 from quodlibet.operon.main import main as operon_main
 
 
-def call(args=None):
+def call(args):
+    args = [path2fsn(a) for a in args]
     with capture_output() as (out, err):
         try:
-            return_code = operon_main(["operon.py"] + args)
+            return_code = operon_main([path2fsn("operon.py")] + args)
         except SystemExit as e:
             return_code = e.code
 
@@ -39,7 +40,7 @@ class TOperonBase(TestCase):
         self.s2 = MusicFile(self.f2)
 
         fd, self.f3 = mkstemp(".mp3")
-        os.write(fd, "garbage")
+        os.write(fd, b"garbage")
         os.close(fd)
 
     def tearDown(self):

@@ -28,7 +28,7 @@ from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 from quodlibet.compat import iteritems, string_types, text_type, \
-    number_types, listitems, izip_longest, integer_types, PY3
+    number_types, listitems, izip_longest, integer_types, PY3, listfilter
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
@@ -249,7 +249,7 @@ class AudioFile(dict, ImageContainer):
         """Returns a list of keys that are not internal, i.e. they don't
         have '~' in them."""
 
-        return filter(lambda s: s[:1] != "~", self.keys())
+        return listfilter(lambda s: s[:1] != "~", self.keys())
 
     def prefixkeys(self, prefix):
         """Returns a list of dict keys that either match prefix or start

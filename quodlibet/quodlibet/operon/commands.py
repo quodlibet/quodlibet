@@ -24,6 +24,7 @@ from quodlibet.util.path import mtime
 from quodlibet.pattern import Pattern, error as PatternError
 from quodlibet.util.tags import USER_TAGS, sortkey
 from quodlibet.util.tagsfrompath import TagsFromPattern
+from quodlibet.compat import text_type, iteritems
 
 from .base import Command, CommandError
 from .util import print_terse_table, copy_mtime, list_tags, print_table, \
@@ -173,7 +174,7 @@ class EditCommand(Command):
         return u"\n".join(lines)
 
     def _text_to_song(self, text, song):
-        assert isinstance(text, unicode)
+        assert isinstance(text, text_type)
 
         # parse
         tags = {}
@@ -200,7 +201,7 @@ class EditCommand(Command):
                     self.log("Add %s=%s" % (key, value))
                     song.add(key, value)
 
-        for key, values in tags.iteritems():
+        for key, values in iteritems(tags):
             if not song.can_change(key):
                 raise CommandError(
                     "Can't change key '%(key-name)s'." % {"key-name": key})
@@ -240,10 +241,10 @@ class EditCommand(Command):
             try:
                 subprocess.check_call(editor_args + [path])
             except subprocess.CalledProcessError as e:
-                self.log(unicode(e))
+                self.log(text_type(e))
                 raise CommandError(_("Editing aborted"))
             except OSError as e:
-                self.log(unicode(e))
+                self.log(text_type(e))
                 raise CommandError(
                     _("Starting text editor '%(editor-name)s' failed.") % {
                         "editor-name": editor_args[0]})
@@ -285,8 +286,8 @@ class SetCommand(Command):
         if len(args) < 3:
             raise CommandError(_("Not enough arguments"))
 
-        tag = args[0]
-        value = args[1].decode("utf-8")
+        tag = fsn2text(args[0])
+        value = fsn2text(args[1])
         paths = args[2:]
 
         songs = []
@@ -425,8 +426,8 @@ class AddCommand(Command):
         if len(args) < 3:
             raise CommandError(_("Not enough arguments"))
 
-        tag = args[0]
-        value = args[1].decode("utf-8")
+        tag = fsn2text(args[0])
+        value = fsn2text(args[1])
         paths = args[2:]
 
         songs = []
@@ -477,14 +478,14 @@ class InfoCommand(Command):
             tags = []
             for key in ["~format", "~codec", "~encoding", "~length",
                         "~bitrate", "~filesize"]:
-                tags.append((util.tag(key), unicode(song.comma(key))))
+                tags.append((util.tag(key), text_type(song.comma(key))))
 
             print_table(tags, headers, nicks, order)
         else:
             tags = []
             for key in ["~format", "~codec", "~encoding", "~#length",
                         "~#bitrate", "~#filesize"]:
-                tags.append((key.lstrip("#~"), unicode(song(key))))
+                tags.append((key.lstrip("#~"), text_type(song(key))))
 
             print_terse_table(tags, nicks, order)
 
