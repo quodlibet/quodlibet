@@ -13,7 +13,6 @@ These classes are the most basic library classes. As such they are the
 least useful but most content-agnostic.
 """
 
-from pickle import Unpickler
 import os
 import shutil
 import time
@@ -28,13 +27,13 @@ from quodlibet.qltk.notif import Task
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
+from quodlibet.util.picklehelper import unpickle_loads
 from quodlibet import util
-from quodlibet import const
 from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden
 from quodlibet.compat import iteritems, iterkeys, itervalues, listkeys, \
-    listvalues, cBytesIO, pickle
+    listvalues, pickle
 
 
 class Library(GObject.GObject, DictMixin):
@@ -224,32 +223,29 @@ def dump_items(filename, items):
         pickle.dump(items, fileobj, 1)
 
 
-def unpickle_save(data, default, type_=dict):
-    """Unpickle a list of `type_` subclasses and skip items for which the
-    class is missing.
-
-    In case not just the class lookup fails, returns default.
+def unpickle_loads_save(data):
+    """unpickles the item list and if some class isn't found unpickle
+    as a dict and filter them out afterwards.
     """
 
-    class dummy(type_):
+    class dummy(dict):
         pass
 
-    class SaveUnpickler(Unpickler):
+    error_occured = []
 
-        def find_class(self, module, name):
-            try:
-                return Unpickler.find_class(self, module, name)
-            except (ImportError, AttributeError):
-                return dummy
+    def lookup_func(base, module, name):
+        try:
+            return base(module, name)
+        except (ImportError, AttributeError):
+            error_occured.append(True)
+            return dummy
 
-    fileobj = cBytesIO(data)
+    items = unpickle_loads(data, lookup_func)
 
-    try:
-        items = SaveUnpickler(fileobj).load()
-    except Exception:
-        return default
+    if error_occured:
+        items = [i for i in items if not isinstance(i, dummy)]
 
-    return [i for i in items if not isinstance(i, dummy)]
+    return items
 
 
 def load_items(filename, default=None):
@@ -262,23 +258,14 @@ def load_items(filename, default=None):
         default = []
 
     try:
-        fp = open(filename, "rb")
+        with open(filename, "rb") as fp:
+            data = fp.read()
     except EnvironmentError:
-        if const.DEBUG or os.path.exists(filename):
-            print_w("Couldn't load library from: %r" % filename)
-        return default
-
-    # pickle makes 1000 read syscalls for 6000 songs
-    # read the file into memory so that there are less
-    # context switches. saves 40% CPU time..
-    try:
-        data = fp.read()
-    except IOError:
-        fp.close()
+        print_w("Couldn't load library file from: %r" % filename)
         return default
 
     try:
-        items = pickle.loads(data)
+        items = unpickle_loads_save(data)
     except Exception:
         # there are too many ways this could fail
         util.print_exc()
@@ -289,10 +276,7 @@ def load_items(filename, default=None):
         except EnvironmentError:
             util.print_exc()
 
-        # try to skip items for which the class is missing
-        # XXX: we assume the items are dict subclasses here.. while nothing
-        # else does
-        items = unpickle_save(data, default)
+        return default
 
     return items
 

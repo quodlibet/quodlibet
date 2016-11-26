@@ -107,16 +107,16 @@ class TPickle(TestCase):
             dump_items(filename, instances)
             self.assertEqual(len(load_items(filename)), len(formats.types))
 
-    def test_unpickle_save(self):
-        from quodlibet.library.libraries import unpickle_save
+    def test_unpickle_loads_save(self):
+        from quodlibet.library.libraries import unpickle_loads_save
 
-        items = unpickle_save(self.PICKLE, [])
+        items = unpickle_loads_save(self.PICKLE)
         self.assertEqual(len(items), len(formats.types))
 
         broken = self.PICKLE.replace(b"SPCFile", b"FooFile")
-        items = unpickle_save(broken, [])
+        items = unpickle_loads_save(broken)
         self.assertEqual(len(items), len(formats.types) - 1)
 
         broken = self.PICKLE.replace(b"formats.spc", b"formats.foo")
-        items = unpickle_save(broken, [])
+        items = unpickle_loads_save(broken)
         self.assertEqual(len(items), len(formats.types) - 1)
