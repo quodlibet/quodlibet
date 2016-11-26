@@ -13,7 +13,6 @@
 # published by the Free Software Foundation
 
 from httplib import HTTPException
-import cPickle as pickle
 import os
 import threading
 import time
@@ -38,6 +37,7 @@ from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
+from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 
 SERVICES = {
@@ -154,24 +154,21 @@ class QLSubmitQueue(object):
         self.artpat = Pattern(config_get_artist_pattern())
 
         try:
-            disk_queue_file = open(self.DUMP, 'r')
-            disk_queue = pickle.load(disk_queue_file)
-            disk_queue_file.close()
+            with open(self.DUMP, 'rb') as disk_queue_file:
+                disk_queue = pickle_load(disk_queue_file)
             os.unlink(self.DUMP)
             self.queue += disk_queue
-        except Exception:
+        except (EnvironmentError, PickleError):
             pass
 
     @classmethod
     def dump_queue(klass):
         if klass.queue:
             try:
-                disk_queue_file = open(klass.DUMP, 'w')
-                pickle.dump(klass.queue, disk_queue_file)
-                disk_queue_file.close()
-            except IOError:
+                with open(klass.DUMP, 'wb') as disk_queue_file:
+                    pickle_dump(klass.queue, disk_queue_file)
+            except (EnvironmentError, PickleError):
                 pass
-        return 0
 
     def _check_config(self):
         user = plugin_config.get('username')

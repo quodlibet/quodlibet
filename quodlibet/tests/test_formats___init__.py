@@ -6,13 +6,13 @@
 # published by the Free Software Foundation
 
 import sys
-import pickle
 
 from tests import TestCase, get_data_path
 from .helper import capture_output
 
 from quodlibet import formats
 from quodlibet.formats import AudioFile, load_audio_files, dump_audio_files
+from quodlibet.util.picklehelper import pickle_dumps, pickle_loads
 from quodlibet import config
 
 
@@ -81,10 +81,10 @@ class TPickle(TestCase):
         for t in types:
             instances.append(AudioFile.__new__(t))
 
-        self.PICKLE = pickle.dumps(instances, 1)
+        self.PICKLE = pickle_dumps(instances, 1)
 
     def test_unpickle(self):
-        self.assertEqual(len(pickle.loads(self.PICKLE)), len(formats.types))
+        self.assertEqual(len(pickle_loads(self.PICKLE)), len(formats.types))
 
     def test_load_audio_files(self):
         assert len(load_audio_files(self.PICKLE)) == len(formats.types)

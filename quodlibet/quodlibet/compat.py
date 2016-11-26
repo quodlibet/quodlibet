@@ -26,8 +26,6 @@ if PY2:
     cBytesIO
     from StringIO import StringIO
     StringIO
-    import cPickle as pickle
-    pickle
     from functools import reduce
     reduce
     from operator import div as floordiv
@@ -84,8 +82,6 @@ elif PY3:
     cBytesIO
     from io import StringIO
     StringIO = StringIO
-    import pickle
-    pickle
     from functools import reduce
     reduce
     from operator import floordiv

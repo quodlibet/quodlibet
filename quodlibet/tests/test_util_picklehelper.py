@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-# Copyright 2015 Christoph Reiter
+# Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import pickle
-
 from tests import TestCase
 
 from quodlibet.compat import cBytesIO
-from quodlibet.util.picklehelper import pickle_load, pickle_loads, pickle_dumps
+from quodlibet.util.picklehelper import pickle_load, pickle_loads, \
+    pickle_dumps, pickle_dump, PicklingError, UnpicklingError
 
 
 class A(dict):
@@ -27,14 +26,14 @@ class Tpickle_load(TestCase):
         data = {b"foo": u"bar", u"quux": b"baz"}
 
         for protocol in [0, 1, 2]:
-            assert pickle_loads(pickle.dumps(data)) == data
-            assert pickle_load(cBytesIO(pickle.dumps(data))) == data
+            assert pickle_loads(pickle_dumps(data)) == data
+            assert pickle_load(cBytesIO(pickle_dumps(data))) == data
 
     def test_invalid(self):
-        with self.assertRaises(pickle.UnpicklingError):
+        with self.assertRaises(UnpicklingError):
             pickle_loads(b"")
 
-        with self.assertRaises(pickle.UnpicklingError):
+        with self.assertRaises(UnpicklingError):
             pickle_load(cBytesIO(b""))
 
     def test_switch_class(self):
@@ -44,7 +43,7 @@ class Tpickle_load(TestCase):
                 return B
             return base(module, name)
 
-        value = pickle_loads(pickle.dumps(A()), lookup_func)
+        value = pickle_loads(pickle_dumps(A()), lookup_func)
         assert isinstance(value, B)
 
     def test_pickle_dumps(self):
@@ -58,5 +57,21 @@ class Tpickle_load(TestCase):
             def __getstate__(self):
                 raise Exception
 
-        with self.assertRaises(pickle.PicklingError):
+        with self.assertRaises(PicklingError):
             pickle_dumps(A())
+
+    def test_pickle_dump(self):
+        f = cBytesIO()
+        pickle_dump(42, f)
+        assert pickle_loads(f.getvalue()) == 42
+
+    def test_protocols(self):
+        pickle_dumps(42, 0)
+        pickle_dumps(42, 1)
+        pickle_dumps(42, 2)
+
+        with self.assertRaises(ValueError):
+            pickle_dumps(42, -1)
+
+        with self.assertRaises(ValueError):
+            pickle_dumps(42, 3)

@@ -5,32 +5,62 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+"""One interface for pickle/cPickle for both Python 2/3"""
+
 from quodlibet.compat import cBytesIO, PY2
 
 if PY2:
     import cPickle
 import pickle
+from pickle import PicklingError, UnpicklingError, PickleError
 
 
-def pickle_dumps(*args, **kwargs):
+PickleError
+
+
+def pickle_dumps(obj, protocol=0):
     """Like pickle.dumps
 
     Raises:
         pickle.PicklingError
     """
 
+    if not 0 <= protocol <= 2:
+        raise ValueError("Only protocol 0, 1, 2 allowed")
+
     try:
         # pickle.PicklingError is not cPickle.PicklingError
         # so this makes sure we only raise pickle.PicklingError even if
         # we use cPickle
         if PY2:
-            return cPickle.dumps(*args, **kwargs)
+            return cPickle.dumps(obj, protocol)
         else:
-            return pickle.dumps(*args, **kwargs)
-    except pickle.PicklingError:
+            return pickle.dumps(obj, protocol)
+    except PicklingError:
         raise
     except Exception as e:
-        raise pickle.PicklingError(e)
+        raise PicklingError(e)
+
+
+def pickle_dump(obj, file, protocol=0):
+    """Like pickle.dump
+
+    Raises:
+        pickle.PicklingError
+    """
+
+    if not 0 <= protocol <= 2:
+        raise ValueError("Only protocol 0, 1, 2 allowed")
+
+    try:
+        if PY2:
+            return cPickle.dump(obj, file, protocol)
+        else:
+            return pickle.dump(obj, file, protocol)
+    except PicklingError:
+        raise
+    except Exception as e:
+        raise PicklingError(e)
 
 
 def pickle_load(file, lookup_func=None):
@@ -82,11 +112,11 @@ def pickle_load(file, lookup_func=None):
 
     try:
         return inst.load()
-    except pickle.UnpicklingError:
+    except UnpicklingError:
         raise
     except Exception as e:
         # unpickle can fail in many ways
-        raise pickle.UnpicklingError(e)
+        raise UnpicklingError(e)
 
 
 def pickle_loads(data, lookup_func=None):
