@@ -75,8 +75,7 @@ def get_colors(widget):
     context = widget.get_style_context()
     bg_color = context.get_background_color(Gtk.StateFlags.NORMAL)
     fg_color = context.get_color(Gtk.StateFlags.NORMAL)
-    link_color = context.get_color(Gtk.StateFlags.LINK)
-    return bg_color, fg_color, link_color
+    return bg_color, fg_color
 
 
 def SW():
