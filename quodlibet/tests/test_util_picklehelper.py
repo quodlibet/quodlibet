@@ -10,7 +10,7 @@ import pickle
 from tests import TestCase
 
 from quodlibet.compat import cBytesIO
-from quodlibet.util.picklehelper import unpickle_load, unpickle_loads
+from quodlibet.util.picklehelper import pickle_load, pickle_loads, pickle_dumps
 
 
 class A(dict):
@@ -21,21 +21,21 @@ class B(dict):
     pass
 
 
-class Tunpickle_load(TestCase):
+class Tpickle_load(TestCase):
 
-    def test_unpickle_load(self):
+    def test_pickle_load(self):
         data = {b"foo": u"bar", u"quux": b"baz"}
 
         for protocol in [0, 1, 2]:
-            assert unpickle_loads(pickle.dumps(data)) == data
-            assert unpickle_load(cBytesIO(pickle.dumps(data))) == data
+            assert pickle_loads(pickle.dumps(data)) == data
+            assert pickle_load(cBytesIO(pickle.dumps(data))) == data
 
     def test_invalid(self):
         with self.assertRaises(pickle.UnpicklingError):
-            unpickle_loads(b"")
+            pickle_loads(b"")
 
         with self.assertRaises(pickle.UnpicklingError):
-            unpickle_load(cBytesIO(b""))
+            pickle_load(cBytesIO(b""))
 
     def test_switch_class(self):
 
@@ -44,5 +44,19 @@ class Tunpickle_load(TestCase):
                 return B
             return base(module, name)
 
-        value = unpickle_loads(pickle.dumps(A()), lookup_func)
+        value = pickle_loads(pickle.dumps(A()), lookup_func)
         assert isinstance(value, B)
+
+    def test_pickle_dumps(self):
+        v = [u"foo", b"bar", 42]
+        for protocol in [0, 1, 2]:
+            assert pickle_loads(pickle_dumps(v)) == v
+
+    def test_pickle_dumps_fail(self):
+
+        class A(object):
+            def __getstate__(self):
+                raise Exception
+
+        with self.assertRaises(pickle.PicklingError):
+            pickle_dumps(A())

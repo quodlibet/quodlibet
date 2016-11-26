@@ -12,7 +12,28 @@ if PY2:
 import pickle
 
 
-def unpickle_load(file, lookup_func=None):
+def pickle_dumps(*args, **kwargs):
+    """Like pickle.dumps
+
+    Raises:
+        pickle.PicklingError
+    """
+
+    try:
+        # pickle.PicklingError is not cPickle.PicklingError
+        # so this makes sure we only raise pickle.PicklingError even if
+        # we use cPickle
+        if PY2:
+            return cPickle.dumps(*args, **kwargs)
+        else:
+            return pickle.dumps(*args, **kwargs)
+    except pickle.PicklingError:
+        raise
+    except Exception as e:
+        raise pickle.PicklingError(e)
+
+
+def pickle_load(file, lookup_func=None):
     """Allows unpickling with manual control over class lookup on both Python
     2 and Python 3.
 
@@ -68,8 +89,8 @@ def unpickle_load(file, lookup_func=None):
         raise pickle.UnpicklingError(e)
 
 
-def unpickle_loads(data, lookup_func=None):
-    """Like unpickle_load() but takes bytes instead of a file-like
+def pickle_loads(data, lookup_func=None):
+    """Like pickle_load() but takes bytes instead of a file-like
 
     Args:
         data (bytes)
@@ -87,4 +108,4 @@ def unpickle_loads(data, lookup_func=None):
         from io import BytesIO, BufferedReader
         f = BufferedReader(BytesIO(data))
 
-    return unpickle_load(f, lookup_func=lookup_func)
+    return pickle_load(f, lookup_func=lookup_func)

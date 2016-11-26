@@ -9,10 +9,10 @@ import sys
 import pickle
 
 from tests import TestCase, get_data_path
-from .helper import capture_output, temp_filename
+from .helper import capture_output
 
 from quodlibet import formats
-from quodlibet.formats import AudioFile
+from quodlibet.formats import AudioFile, load_audio_files, dump_audio_files
 from quodlibet import config
 
 
@@ -86,37 +86,26 @@ class TPickle(TestCase):
     def test_unpickle(self):
         self.assertEqual(len(pickle.loads(self.PICKLE)), len(formats.types))
 
-    def test_load_items(self):
-        from quodlibet.library.libraries import load_items
-
-        with temp_filename() as filename:
-            with open(filename, "wb") as h:
-                h.write(self.PICKLE)
-
-            self.assertEqual(len(load_items(filename)), len(formats.types))
+    def test_load_audio_files(self):
+        assert len(load_audio_files(self.PICKLE)) == len(formats.types)
 
     def test_dump_items(self):
-        from quodlibet.library.libraries import dump_items, load_items
-
         types = formats.types
         instances = []
         for t in types:
             instances.append(AudioFile.__new__(t))
 
-        with temp_filename() as filename:
-            dump_items(filename, instances)
-            self.assertEqual(len(load_items(filename)), len(formats.types))
+        data = dump_audio_files(instances)
+        assert len(load_audio_files(data)) == len(formats.types)
 
     def test_unpickle_loads_save(self):
-        from quodlibet.library.libraries import unpickle_loads_save
-
-        items = unpickle_loads_save(self.PICKLE)
+        items = load_audio_files(self.PICKLE)
         self.assertEqual(len(items), len(formats.types))
 
         broken = self.PICKLE.replace(b"SPCFile", b"FooFile")
-        items = unpickle_loads_save(broken)
+        items = load_audio_files(broken)
         self.assertEqual(len(items), len(formats.types) - 1)
 
         broken = self.PICKLE.replace(b"formats.spc", b"formats.foo")
-        items = unpickle_loads_save(broken)
+        items = load_audio_files(broken)
         self.assertEqual(len(items), len(formats.types) - 1)

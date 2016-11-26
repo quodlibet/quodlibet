@@ -265,6 +265,25 @@ class TPicklingMixin(TestCase):
     def setUp(self):
         self.library = self.Library()
 
+    def test_load_noexist(self):
+        fd, filename = mkstemp()
+        os.close(fd)
+        os.unlink(filename)
+        library = self.Library()
+        library.load(filename)
+        assert len(library) == 0
+
+    def test_load_invalid(self):
+        fd, filename = mkstemp()
+        os.write(fd, b"nope")
+        os.close(fd)
+        try:
+            library = self.Library()
+            library.load(filename)
+            assert len(library) == 0
+        finally:
+            os.unlink(filename)
+
     def test_save_load(self):
         fd, filename = mkstemp()
         os.close(fd)
