@@ -244,6 +244,16 @@ class TLibrary(TestCase):
         self.library.destroy()
 
 
+class FakeAudioFile(AudioFile):
+
+    def __init__(self, key):
+        self["~filename"] = key
+
+
+def FakeAudioFileRange(*args):
+    return list(map(FakeAudioFile, range(*args)))
+
+
 class TPicklingMixin(TestCase):
 
     class PicklingMockLibrary(PicklingMixin, Library):
@@ -260,7 +270,7 @@ class TPicklingMixin(TestCase):
                 self._contents[item.key] = item
 
     Library = PicklingMockLibrary
-    Frange = staticmethod(Frange)
+    Frange = staticmethod(FakeAudioFileRange)
 
     def setUp(self):
         self.library = self.Library()
@@ -288,13 +298,15 @@ class TPicklingMixin(TestCase):
         fd, filename = mkstemp()
         os.close(fd)
         try:
-            self.library.add(Frange(30))
+            self.library.add(self.Frange(30))
             self.library.save(filename)
 
             library = self.Library()
             library.load(filename)
-            self.failUnlessEqual(
-                sorted(self.library.items()), sorted(library.items()))
+            for (k, v), (k2, v2) in zip(
+                    sorted(self.library.items()), sorted(library.items())):
+                assert k == k2
+                assert v.key == v2.key
         finally:
             os.unlink(filename)
 
@@ -306,7 +318,7 @@ class TSongLibrary(TLibrary):
 
     def test_rename_dirty(self):
         self.library.dirty = False
-        song = FakeSong(10)
+        song = self.Fake(10)
         self.library.add([song])
         self.failUnless(self.library.dirty)
         self.library.dirty = False
@@ -314,7 +326,7 @@ class TSongLibrary(TLibrary):
         self.failUnless(self.library.dirty)
 
     def test_rename(self):
-        song = FakeSong(10)
+        song = self.Fake(10)
         self.library.add([song])
         self.library.rename(song, 20)
         while Gtk.events_pending():
@@ -325,7 +337,7 @@ class TSongLibrary(TLibrary):
         self.failUnlessEqual(song.key, 20)
 
     def test_rename_changed(self):
-        song = FakeSong(10)
+        song = self.Fake(10)
         self.library.add([song])
         changed = set()
         self.library.rename(song, 20, changed=changed)

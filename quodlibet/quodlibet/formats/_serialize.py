@@ -10,6 +10,7 @@
 import pickle
 
 from quodlibet.util.picklehelper import pickle_loads, pickle_dumps
+from ._audio import AudioFile
 
 
 class SerializationError(Exception):
@@ -29,17 +30,28 @@ def load_audio_files(data):
         SerializationError
     """
 
-    class dummy(dict):
-        pass
-
+    dummy = type("dummy", (dict,), {})
     error_occured = []
+    temp_type_cache = {}
 
     def lookup_func(base, module, name):
         try:
-            return base(module, name)
+            real_type = base(module, name)
         except (ImportError, AttributeError):
             error_occured.append(True)
             return dummy
+
+        if module.split(".")[0] not in ("quodlibet", "tests"):
+            return real_type
+
+        # return a straight dict subclass so that unpickle doesn't call
+        # our __setitem__. Further down we simply change the __class__
+        # to our real type.
+        if not real_type in temp_type_cache:
+            new_type = type(name, (dict,), {"real_type": real_type})
+            temp_type_cache[real_type] = new_type
+
+        return temp_type_cache[real_type]
 
     try:
         items = pickle_loads(data, lookup_func)
@@ -48,9 +60,16 @@ def load_audio_files(data):
 
     if error_occured:
         items = [i for i in items if not isinstance(i, dummy)]
+
         if not items:
             raise SerializationError(
                 "all class lookups failed. something is wrong")
+
+    try:
+        for i in items:
+            i.__class__ = i.real_type
+    except AttributeError as e:
+        raise SerializationError(e)
 
     return items
 
@@ -65,15 +84,9 @@ def dump_audio_files(item_list):
     """
 
     assert isinstance(item_list, list)
-
-    # While protocol 2 is usually faster it uses __setitem__
-    # for unpickle and we override it to clear the sort cache.
-    # This roundtrip makes it much slower, so we use protocol 1
-    # unpickle numbers (py2.7):
-    #   2: 0.66s / 2 + __set_item__: 1.18s / 1 + __set_item__: 0.72s
-    # see: http://bugs.python.org/issue826897
+    assert not item_list or isinstance(item_list[0], AudioFile)
 
     try:
-        return pickle_dumps(item_list, 1)
+        return pickle_dumps(item_list, 2)
     except pickle.PicklingError as e:
         raise SerializationError(e)

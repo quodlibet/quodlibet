@@ -11,8 +11,9 @@ from tests import TestCase, get_data_path
 from .helper import capture_output
 
 from quodlibet import formats
-from quodlibet.formats import AudioFile, load_audio_files, dump_audio_files
-from quodlibet.util.picklehelper import pickle_dumps, pickle_loads
+from quodlibet.formats import AudioFile, load_audio_files, dump_audio_files, \
+    SerializationError
+from quodlibet.util.picklehelper import pickle_dumps
 from quodlibet import config
 
 
@@ -79,33 +80,57 @@ class TPickle(TestCase):
         types = formats.types
         instances = []
         for t in types:
-            instances.append(AudioFile.__new__(t))
-
-        self.PICKLE = pickle_dumps(instances, 1)
-
-    def test_unpickle(self):
-        self.assertEqual(len(pickle_loads(self.PICKLE)), len(formats.types))
+            i = AudioFile.__new__(t)
+            # we want to pickle/unpickle everything, since historically
+            # these things ended up in the file
+            dict.__init__(
+                i, {b"foo": u"bar", u"quux": b"baz", "a": "b",
+                    u"b": 42, "c": 0.25})
+            instances.append(i)
+        self.instances = instances
 
     def test_load_audio_files(self):
-        assert len(load_audio_files(self.PICKLE)) == len(formats.types)
+        for protocol in [0, 1, 2]:
+            data = pickle_dumps(self.instances, protocol)
+            items = load_audio_files(data)
+            assert len(items) == len(formats.types)
+            assert all(isinstance(i, AudioFile) for i in items)
 
-    def test_dump_items(self):
-        types = formats.types
-        instances = []
-        for t in types:
-            instances.append(AudioFile.__new__(t))
+    def test_dump_audio_files(self):
+        data = dump_audio_files(self.instances)
+        items = load_audio_files(data)
 
-        data = dump_audio_files(instances)
-        assert len(load_audio_files(data)) == len(formats.types)
+        assert len(items) == len(self.instances)
+        for a, b in zip(items, self.instances):
+            for key in a:
+                assert b[key] == a[key]
+            for key in b:
+                assert b[key] == a[key]
 
-    def test_unpickle_loads_save(self):
-        items = load_audio_files(self.PICKLE)
-        self.assertEqual(len(items), len(formats.types))
+    def test_dump_empty(self):
+        data = dump_audio_files([])
+        assert load_audio_files(data) == []
 
-        broken = self.PICKLE.replace(b"SPCFile", b"FooFile")
-        items = load_audio_files(broken)
-        self.assertEqual(len(items), len(formats.types) - 1)
+    def test_load_audio_files_missing_class(self):
+        for protocol in [0, 1, 2]:
+            data = pickle_dumps(self.instances, protocol)
 
-        broken = self.PICKLE.replace(b"formats.spc", b"formats.foo")
-        items = load_audio_files(broken)
-        self.assertEqual(len(items), len(formats.types) - 1)
+            items = load_audio_files(data)
+            self.assertEqual(len(items), len(formats.types))
+            assert all(isinstance(i, AudioFile) for i in items)
+
+            broken = data.replace(b"SPCFile", b"FooFile")
+            items = load_audio_files(broken)
+            self.assertEqual(len(items), len(formats.types) - 1)
+            assert all(isinstance(i, AudioFile) for i in items)
+
+            broken = data.replace(b"formats.spc", b"formats.foo")
+            items = load_audio_files(broken)
+            self.assertEqual(len(items), len(formats.types) - 1)
+            assert all(isinstance(i, AudioFile) for i in items)
+
+    def test_unpickle_random_class(self):
+        for protocol in [0, 1, 2]:
+            data = pickle_dumps([42], protocol)
+            with self.assertRaises(SerializationError):
+                load_audio_files(data)
