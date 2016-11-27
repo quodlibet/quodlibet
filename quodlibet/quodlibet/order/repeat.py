@@ -40,8 +40,8 @@ class RepeatSongForever(Repeat):
     which is probably what the user wanted"""
 
     name = "repeat_song"
-    display_name = _("Repeat track")
-    accelerated_name = _("Repeat track")
+    display_name = _("Repeat this track")
+    accelerated_name = _("Repeat this track")
 
     def next(self, playlist, iter):
         return iter
