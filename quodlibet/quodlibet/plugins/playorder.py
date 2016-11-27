@@ -59,7 +59,7 @@ class PlayOrderPlugin(quodlibet.qltk.playorder.Order):
     name = None
     display_name = None
     accelerated_name = None
-    priority = quodlibet.qltk.playorder.Order.priority
+    priority = 200
 
 
 class RepeatPlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Repeat):

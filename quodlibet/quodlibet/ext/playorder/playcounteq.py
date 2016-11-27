@@ -10,6 +10,7 @@ import math
 import random
 
 from quodlibet import _
+from quodlibet.order.reorder import Reorder
 from quodlibet.plugins.playorder import ShufflePlugin
 from quodlibet.order import OrderRemembered
 from quodlibet.qltk import Icons
@@ -21,6 +22,8 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered):
     PLUGIN_DESC = _("Shuffle, preferring songs with fewer total plays.")
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_SHUFFLE
     display_name = "Prefer less played"
+
+    priority = Reorder.priority
 
     # Select the next track.
     def next(self, playlist, current):
