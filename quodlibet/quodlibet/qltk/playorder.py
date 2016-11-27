@@ -13,7 +13,8 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet.order import Order, OrderInOrder
 from quodlibet.order.reorder import OrderShuffle, OrderWeighted, Reorder
-from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, Repeat
+from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, \
+    Repeat, OneSong
 from quodlibet.qltk import Icons
 from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem
 from quodlibet.plugins import PluginManager
@@ -94,7 +95,7 @@ class PluggableOrders(Orders, PluginManager):
         self.remove(plugin.cls)
 
 DEFAULT_SHUFFLE_ORDERS = [OrderShuffle, OrderWeighted]
-DEFAULT_REPEAT_ORDERS = [RepeatSongForever, RepeatListForever]
+DEFAULT_REPEAT_ORDERS = [RepeatSongForever, RepeatListForever, OneSong]
 
 
 class ToggledPlayOrderMenu(Gtk.Box):

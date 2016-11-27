@@ -6,7 +6,9 @@
 from collections import defaultdict
 
 from quodlibet.formats import AudioFile
+from quodlibet.order import OrderInOrder
 from quodlibet.order.reorder import OrderWeighted, OrderShuffle
+from quodlibet.order.repeat import OneSong
 from quodlibet.qltk.songmodel import PlaylistModel
 from tests import TestCase
 
@@ -44,3 +46,13 @@ class TOrderShuffle(TestCase):
         for i in range(4, -1, -1):
             cur = order.next_explicit(pl, cur)
             self.failUnlessEqual(len(order.remaining(pl)), i)
+
+
+class TOrderOneSong(TestCase):
+
+    def test_remaining(self):
+        order = OneSong(OrderInOrder())
+        pl = PlaylistModel(OrderInOrder)
+        pl.set([r0, r1])
+        for i in range(2):
+            self.failUnlessEqual(order.next(pl, pl.current_iter), None)
