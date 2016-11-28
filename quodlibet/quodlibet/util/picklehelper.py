@@ -7,6 +7,8 @@
 
 """One interface for pickle/cPickle for both Python 2/3"""
 
+from io import BytesIO, BufferedReader
+
 from quodlibet.compat import cBytesIO, PY2
 
 if PY2:
@@ -108,6 +110,10 @@ def pickle_load(file, lookup_func=None):
         else:
             unpickler_type = pickle.Unpickler
 
+        # helps a lot, but only on py3
+        if isinstance(file, BytesIO):
+            file = BufferedReader(file)
+
         inst = unpickler_type(file, encoding="bytes")
 
     try:
@@ -131,11 +137,4 @@ def pickle_loads(data, lookup_func=None):
         pickle.UnpicklingError
     """
 
-    if PY2:
-        from cStringIO import StringIO
-        f = StringIO(data)
-    else:
-        from io import BytesIO, BufferedReader
-        f = BufferedReader(BytesIO(data))
-
-    return pickle_load(f, lookup_func=lookup_func)
+    return pickle_load(cBytesIO(data), lookup_func=lookup_func)
