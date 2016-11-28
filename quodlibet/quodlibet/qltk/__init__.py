@@ -19,6 +19,7 @@ from gi.repository import Gdk
 from gi.repository import GLib
 
 from quodlibet.util import gdecode, print_d, print_w
+from quodlibet.compat import text_type
 
 
 def get_primary_accel_mod():
@@ -49,7 +50,7 @@ def selection_set_songs(selection_data, songs):
 
     filenames = []
     for filename in (song["~filename"] for song in songs):
-        if isinstance(filename, unicode):
+        if isinstance(filename, text_type):
             # win32
             filename = filename.encode("utf-8")
         filenames.append(filename)

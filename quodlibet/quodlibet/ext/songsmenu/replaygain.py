@@ -26,6 +26,7 @@ from quodlibet.qltk import Icons, Dialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
 from quodlibet.util import cached_property, print_w, print_e, format_int_locale
+from quodlibet.compat import xrange
 
 __all__ = ['ReplayGain']
 

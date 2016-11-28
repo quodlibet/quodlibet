@@ -20,6 +20,7 @@ from quodlibet import _
 from quodlibet import app
 from quodlibet.util import is_plasma
 from quodlibet.pattern import Pattern
+from quodlibet.compat import xrange
 from .base import BaseIndicator
 from .util import pconfig
 from .menu import IndicatorMenu

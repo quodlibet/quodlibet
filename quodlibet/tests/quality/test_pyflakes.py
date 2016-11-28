@@ -10,11 +10,11 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 import pytest
 import quodlibet
+import quodlibet.compat
 from quodlibet.util import is_wine
 
 os.environ["PYFLAKES_NODOCTEST"] = "1"
-os.environ["PYFLAKES_BUILTINS"] = \
-    "unichr,unicode,long,basestring,xrange,cmp,execfile,reload"
+os.environ["PYFLAKES_BUILTINS"] = "execfile,reload"
 
 try:
     from pyflakes.scripts import pyflakes
@@ -63,6 +63,7 @@ class TPyFlakes(TestCase):
 
         files = iter_py_files(
             os.path.dirname(os.path.abspath(quodlibet.__path__[0])))
+        files = (f for f in files if not f.endswith("compat.py"))
         errors = check_files(files)
         if errors:
             raise Exception("\n".join(errors))

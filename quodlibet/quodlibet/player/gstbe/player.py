@@ -27,6 +27,7 @@ from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError, \
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.notif import Task
+from quodlibet.compat import text_type
 
 from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,
     GStreamerSink, link_many, bin_debug)
@@ -410,7 +411,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                         "mpg123audiodec": -2
                     }.get(f.get_name(), i)
                     return (i, f)
-                return zip(*sorted(map(set_prio, enumerate(factories))))[1]
+                return list(
+                    zip(*sorted(map(set_prio, enumerate(factories)))))[1]
 
             for e in iter_to_list(self.bin.iterate_recurse):
                 try:
@@ -775,7 +777,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.error = True
         self.paused = True
 
-        print_w(unicode(player_error))
+        print_w(text_type(player_error))
         self.emit('error', self.song, player_error)
         self._active_error = False
 

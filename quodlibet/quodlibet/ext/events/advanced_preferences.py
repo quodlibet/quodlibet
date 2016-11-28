@@ -14,6 +14,7 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.util.string import decode
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.compat import text_type
 
 
 def _config(section, option, label, tooltip, getter):
@@ -48,7 +49,7 @@ def text_config(section, option, label, tooltip):
 def boolean_config(section, option, label, tooltip):
 
     def getter(section, option):
-        return unicode(config.getboolean(section, option))
+        return text_type(config.getboolean(section, option))
 
     return _config(section, option, label, tooltip, getter)
 
@@ -56,7 +57,7 @@ def boolean_config(section, option, label, tooltip):
 def int_config(section, option, label, tooltip):
 
     def getter(section, option):
-        return unicode(config.getint(section, option))
+        return text_type(config.getint(section, option))
 
     return _config(section, option, label, tooltip, getter)
 

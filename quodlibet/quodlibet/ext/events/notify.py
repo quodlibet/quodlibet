@@ -34,6 +34,7 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, unescape, print_w
+from quodlibet.compat import text_type
 
 
 # configuration stuff
@@ -63,7 +64,7 @@ get_conf_int = lambda name: get_conf_value(name, "getint")
 
 
 def set_conf_value(name, value):
-    config.set("plugins", "notify_%s" % name, unicode(value))
+    config.set("plugins", "notify_%s" % name, text_type(value))
 
 
 class PreferencesWidget(Gtk.VBox):
@@ -355,7 +356,7 @@ class Notify(EventPlugin):
         fileobj = app.cover_manager.get_cover(song)
         self._set_image_fileobj(fileobj)
         if fileobj:
-            return unicode(fsn2uri(fileobj.name))
+            return text_type(fsn2uri(fileobj.name))
         return u""
 
     def show_notification(self, song):

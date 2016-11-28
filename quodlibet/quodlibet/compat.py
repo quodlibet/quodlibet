@@ -67,6 +67,16 @@ if PY2:
         exec("""exec _code_ in _globs_, _locs_""")
 
     exec("def reraise(tp, value, tb):\n raise tp, value, tb")
+
+    def swap_to_string(cls):
+        if "__str__" in cls.__dict__:
+            cls.__unicode__ = cls.__str__
+
+        if "__bytes__" in cls.__dict__:
+            cls.__str__ = cls.__bytes__
+
+        return cls
+
 elif PY3:
     import builtins
     builtins
@@ -118,3 +128,6 @@ elif PY3:
 
     def reraise(tp, value, tb):
         raise tp(value).with_traceback(tb)
+
+    def swap_to_string(cls):
+        return cls

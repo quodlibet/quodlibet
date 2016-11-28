@@ -10,6 +10,7 @@ import shlex
 
 from quodlibet import const
 from quodlibet.util import print_d, print_w
+from quodlibet.compat import text_type
 from .tcpserver import BaseTCPServer, BaseTCPConnection
 
 
@@ -507,7 +508,7 @@ class MPDConnection(BaseTCPConnection):
     def write_line(self, line):
         """Writes a line to the client"""
 
-        assert isinstance(line, unicode)
+        assert isinstance(line, text_type)
         self.log(u"<- " + repr(line))
 
         self._buf.extend(line.encode("utf-8", errors="replace") + "\n")
@@ -837,7 +838,7 @@ def _cmd_outputs(conn, service, args):
 @MPDConnection.Command("commands", permission=Permissions.PERMISSION_NONE)
 def _cmd_commands(conn, service, args):
     for name in conn.list_commands():
-        conn.write_line(u"command: " + unicode(name))
+        conn.write_line(u"command: " + text_type(name))
 
 
 @MPDConnection.Command("tagtypes")

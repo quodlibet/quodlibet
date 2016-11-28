@@ -19,7 +19,8 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
-from quodlibet.compat import xrange, text_type, number_types, string_types
+from quodlibet.compat import xrange, text_type, number_types, string_types, \
+    cmp
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.dprint import print_d
@@ -100,7 +101,7 @@ class Collection(object):
         if not self.songs:
             return default
         if key[:1] == "~" and "~" in key[1:]:
-            if not isinstance(default, basestring):
+            if not isinstance(default, string_types):
                 return default
             keys = util.tagsplit(key)
             v = map(self.__get_cached_value, keys)
@@ -111,7 +112,7 @@ class Collection(object):
                 return x
             v = map(default_funct, v)
             v = map(lambda x: (isinstance(x, float) and "%.2f" % x) or x, v)
-            v = map(lambda x: isinstance(x, basestring) and x or str(x), v)
+            v = map(lambda x: isinstance(x, string_types) and x or str(x), v)
             return connector.join(filter(None, v)) or default
         else:
             value = self.__get_cached_value(key)
@@ -416,7 +417,8 @@ class Playlist(Collection, Iterable):
     def add_songs(self, filenames, library):
         changed = []
         for i in range(len(self)):
-            if isinstance(self[i], basestring) and self._list[i] in filenames:
+            if isinstance(self[i], string_types) \
+                    and self._list[i] in filenames:
                 song = library[self._list[i]]
                 self._list[i] = song
                 changed.append(song)
@@ -599,7 +601,7 @@ class FileBackedPlaylist(Playlist):
         fn = self.filename
         with open(fn, "wb") as f:
             for song in self._list:
-                if isinstance(song, basestring):
+                if isinstance(song, string_types):
                     f.write(fsn2bytes(song, "utf-8") + "\n")
                 else:
                     f.write(fsn2bytes(song("~filename"), "utf-8") + "\n")

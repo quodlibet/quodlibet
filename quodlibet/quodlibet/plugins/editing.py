@@ -8,6 +8,7 @@
 from gi.repository import Gtk
 
 from quodlibet.util import connect_obj
+from quodlibet.compat import cmp
 
 
 class RenameFilesPlugin(object):

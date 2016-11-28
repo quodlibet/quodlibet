@@ -43,6 +43,8 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
+from quodlibet.compat import text_type
+
 
 STATION_LIST_URL = \
     "https://bitbucket.org/lazka/quodlibet/downloads/radiolist.bz2"
@@ -207,7 +209,7 @@ def add_station(uri):
     Returns None in error, else a possibly filled list of stations"""
 
     irfs = []
-    if isinstance(uri, unicode):
+    if isinstance(uri, text_type):
         uri = uri.encode('utf-8')
 
     if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):

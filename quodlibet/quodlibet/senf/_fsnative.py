@@ -182,6 +182,7 @@ def _get_encoding():
             return "ascii"
     return encoding
 
+
 _encoding = _get_encoding()
 
 
@@ -201,10 +202,10 @@ def path2fsn(path):
     # allow mbcs str on py2+win and bytes on py3
     if PY2:
         if is_win:
-            if isinstance(path, str):
+            if isinstance(path, bytes):
                 path = path.decode(_encoding)
         else:
-            if isinstance(path, unicode):
+            if isinstance(path, text_type):
                 path = path.encode(_encoding)
     else:
         path = getattr(os, "fspath", lambda x: x)(path)
@@ -343,7 +344,7 @@ def uri2fsn(uri):
     """
 
     if PY2:
-        if isinstance(uri, unicode):
+        if isinstance(uri, text_type):
             uri = uri.encode("utf-8")
         if not isinstance(uri, bytes):
             raise TypeError("uri needs to be ascii str or unicode")

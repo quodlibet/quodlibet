@@ -39,6 +39,7 @@ from quodlibet.qltk.image import scale, add_border_widget, \
     get_surface_for_pixbuf
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
+from quodlibet.compat import xrange
 
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \

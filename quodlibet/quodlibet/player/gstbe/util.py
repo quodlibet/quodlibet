@@ -14,7 +14,7 @@ from quodlibet import _
 from quodlibet.util.string import decode
 from quodlibet.util import is_linux, is_windows, gdecode
 from quodlibet.player import PlayerError
-from quodlibet.compat import text_type, number_types
+from quodlibet.compat import text_type, number_types, xrange
 
 
 def pulse_is_running():

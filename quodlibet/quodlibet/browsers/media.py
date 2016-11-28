@@ -27,6 +27,7 @@ from quodlibet.qltk.window import Dialog
 from quodlibet.qltk.x import Align, ScrolledWindow, Button, MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, print_w
+from quodlibet.compat import text_type
 
 
 class DeviceProperties(Dialog):
@@ -523,7 +524,7 @@ class MediaDevices(Browser, util.InstanceTracker):
                 self.__refresh_space(device)
             else:
                 msg = _("%s could not be copied.") % util.bold(label)
-                if type(status) == unicode:
+                if type(status) == text_type:
                     msg += "\n\n" + util.escape(status)
                 qltk.WarningMessage(self, _("Unable to copy song"), msg).run()
 
@@ -572,7 +573,7 @@ class MediaDevices(Browser, util.InstanceTracker):
                 self.__refresh_space(device)
             else:
                 msg = _("%s could not be deleted.") % util.bold(label)
-                if type(status) == unicode:
+                if type(status) == text_type:
                     msg += "\n\n%s" % status
                 qltk.WarningMessage(
                     self, _("Unable to delete song"), msg).run()

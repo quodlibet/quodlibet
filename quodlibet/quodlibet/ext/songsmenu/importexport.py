@@ -16,6 +16,7 @@ from quodlibet.plugins.songshelpers import each_song, is_writable, is_a_file, \
 from quodlibet.qltk import ErrorMessage, Icons
 from quodlibet.util.path import get_home_dir
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.compat import cmp
 
 __all__ = ['Export', 'Import']
 

@@ -25,6 +25,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.util.path import mtime, filesize, fsn2glib
 from quodlibet.util.string import decode, encode
 from quodlibet.util import print_w
+from quodlibet.compat import text_type
 
 
 class ConfirmDBCreate(WarningMessage):
@@ -72,7 +73,7 @@ class IPodSong(AudioFile):
                 self['~#' + key] = value
 
         try:
-            self["date"] = unicode(track.year)
+            self["date"] = text_type(track.year)
         except AttributeError:
             pass
 

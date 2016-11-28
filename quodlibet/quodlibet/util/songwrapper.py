@@ -12,6 +12,7 @@ from quodlibet.formats import AudioFileError
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.compat import cmp
 
 
 class SongWrapper(object):

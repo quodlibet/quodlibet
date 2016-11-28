@@ -18,6 +18,7 @@ from quodlibet.util.collection import Album, Playlist, avg, bayesian_average, \
     FileBackedPlaylist
 from quodlibet.library.libraries import FileLibrary
 from quodlibet.util import format_rating
+from quodlibet.compat import long
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 

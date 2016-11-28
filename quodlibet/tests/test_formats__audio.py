@@ -10,7 +10,7 @@ import os
 from senf import fsnative, fsn2text
 
 from quodlibet import config
-from quodlibet.compat import PY2, text_type
+from quodlibet.compat import PY2, text_type, long
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile

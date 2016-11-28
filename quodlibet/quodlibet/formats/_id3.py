@@ -253,7 +253,7 @@ class ID3File(AudioFile):
         return codecs
 
     def __distrust_latin1(self, text, encoding):
-        assert isinstance(text, unicode)
+        assert isinstance(text, text_type)
         if encoding == 0:
             text = text.encode('iso-8859-1')
             for codec in self.CODECS:

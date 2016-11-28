@@ -28,7 +28,7 @@ except ImportError:
 from senf import fsnative
 
 from quodlibet.compat import reraise as py_reraise, PY2, text_type, \
-    iteritems, reduce, number_types, long
+    iteritems, reduce, number_types, long, cmp
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import title
 

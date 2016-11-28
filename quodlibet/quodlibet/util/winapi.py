@@ -18,6 +18,8 @@ if os.name != "nt":
 import ctypes
 from ctypes import wintypes, cdll, windll, oledll
 
+from quodlibet.compat import long
+
 from .enum import enum
 
 

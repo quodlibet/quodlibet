@@ -125,7 +125,7 @@ def escape_filename(s):
 
 def unescape_filename(s):
     """Unescape a string in a manner suitable for a filename."""
-    if isinstance(s, unicode):
+    if isinstance(s, text_type):
         s = s.encode("utf-8")
     return unquote(s).decode("utf-8")
 

@@ -24,7 +24,7 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
-
+from quodlibet.compat import xrange
 from quodlibet.util.path import listdir, \
     glib2fsn, xdg_get_user_dirs, get_home_dir
 from quodlibet.util import connect_obj

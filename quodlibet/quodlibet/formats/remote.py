@@ -33,7 +33,7 @@ class RemoteFile(AudioFile):
         if key in ("~filename", "~mountpoint") and \
                 not isinstance(value, fsnative):
             if os.name == "nt":
-                value = unicode(value)
+                value = text_type(value)
             else:
                 value = value.encode("utf-8")
 

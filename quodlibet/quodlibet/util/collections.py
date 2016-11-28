@@ -10,6 +10,8 @@ from __future__ import absolute_import
 
 from collections import MutableSequence, defaultdict
 
+from quodlibet.compat import cmp
+
 
 class DictMixin(object):
     """Implement the dict API using keys() and __*item__ methods.
