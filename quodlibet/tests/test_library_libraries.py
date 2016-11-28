@@ -7,11 +7,13 @@ from gi.repository import Gtk
 
 import os
 import shutil
+from senf import fsnative
 
 from quodlibet.formats import AudioFileError
 from quodlibet import config
 from quodlibet.util import connect_obj
 from quodlibet.formats import AudioFile
+from quodlibet.compat import text_type
 
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipUnless
 from .helper import capture_output, get_temp_copy
@@ -46,7 +48,7 @@ class AlbumSong(AudioFile):
     based on a single number"""
     def __init__(self, num, album=None):
         super(AlbumSong, self).__init__()
-        self["~filename"] = "file_%d.mp3" % (num + 1)
+        self["~filename"] = fsnative(u"file_%d.mp3" % (num + 1))
         self["title"] = "Song %d" % (num + 1)
         self["artist"] = "Fakeman"
         if album is None:
@@ -247,7 +249,7 @@ class TLibrary(TestCase):
 class FakeAudioFile(AudioFile):
 
     def __init__(self, key):
-        self["~filename"] = key
+        self["~filename"] = fsnative(text_type(key))
 
 
 def FakeAudioFileRange(*args):
