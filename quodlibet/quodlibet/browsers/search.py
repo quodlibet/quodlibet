@@ -119,14 +119,10 @@ class SearchBar(Browser):
         self.activate()
 
     def save(self):
-        config.set("browsers", "query_text", self._get_text())
+        config.settext("browsers", "query_text", self._get_text())
 
     def restore(self):
-        try:
-            text = config.get("browsers", "query_text")
-        except config.Error:
-            return
-
+        text = config.gettext("browsers", "query_text")
         self._set_text(text)
 
     def finalize(self, restore):

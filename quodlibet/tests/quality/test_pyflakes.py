@@ -6,10 +6,11 @@
 # published by the Free Software Foundation
 
 import os
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 import pytest
 import quodlibet
+from quodlibet.util import is_wine
 
 os.environ["PYFLAKES_NODOCTEST"] = "1"
 os.environ["PYFLAKES_BUILTINS"] = \
@@ -22,6 +23,14 @@ except ImportError:
 
 from tests import TestCase
 from tests.helper import capture_output
+
+
+def create_pool():
+    if is_wine():
+        # ProcessPoolExecutor is broken under wine
+        return ThreadPoolExecutor(1)
+    else:
+        return ProcessPoolExecutor(None)
 
 
 def iter_py_files(root):
@@ -40,7 +49,7 @@ def _check_file(f):
 
 def check_files(files, ignore=[]):
     lines = []
-    with ProcessPoolExecutor(None) as pool:
+    with create_pool() as pool:
         for res in pool.map(_check_file, files):
             lines.extend(res)
     return sorted(lines)

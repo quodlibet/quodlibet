@@ -28,7 +28,7 @@ except ImportError:
 from senf import fsnative
 
 from quodlibet.compat import reraise as py_reraise, PY2, text_type, \
-    iteritems, reduce
+    iteritems, reduce, number_types, long
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import title
 
@@ -114,10 +114,10 @@ class OptionParser(object):
 
     def __longs(self):
         longs = []
-        for long, arg in self.__args.items():
-            longs.append(long + (arg and "=" or ""))
-        for long, canon in self.__translate_long.items():
-            longs.append(long + (self.__args[canon] and "=" or ""))
+        for long_, arg in self.__args.items():
+            longs.append(long_ + (arg and "=" or ""))
+        for long_, canon in self.__translate_long.items():
+            longs.append(long_ + (self.__args[canon] and "=" or ""))
         return longs
 
     def __format_help(self, opt, space):
@@ -626,10 +626,7 @@ def spawn(argv, stdout=False):
 
     from gi.repository import GLib
 
-    types = map(type, argv)
-    if not (min(types) == max(types) == str):
-        raise TypeError("executables and arguments must be str objects")
-    print_d("Running %r" % " ".join(argv))
+    print_d("Running %r" % argv)
     args = GLib.spawn_async(argv=argv, flags=GLib.SpawnFlags.SEARCH_PATH,
                             standard_output=stdout)
 
@@ -824,7 +821,7 @@ def sanitize_tags(tags, stream=False):
         key = key.lower()
         key = {"location": "website"}.get(key, key)
 
-        if isinstance(value, unicode):
+        if isinstance(value, text_type):
             lower = value.lower().strip()
 
             if key == "channel-mode":
@@ -878,7 +875,7 @@ def sanitize_tags(tags, stream=False):
         if not stream and key in ("title", "album", "artist", "date"):
             continue
 
-        if isinstance(value, (int, long, float)):
+        if isinstance(value, number_types):
             if not key.startswith("~#"):
                 key = "~#" + key
             san[key] = value
@@ -886,7 +883,7 @@ def sanitize_tags(tags, stream=False):
             if key.startswith("~#"):
                 key = key[2:]
 
-            if not isinstance(value, unicode):
+            if not isinstance(value, text_type):
                 continue
 
             value = value.strip()

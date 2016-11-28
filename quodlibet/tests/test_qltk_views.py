@@ -7,6 +7,7 @@ from tests import TestCase
 from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn, \
     DragScroll, MultiDragTreeView, RCMTreeView, DragIconTreeView
 import quodlibet.config
+from quodlibet.compat import xrange
 from quodlibet.util import is_windows
 from gi.repository import Gtk, Gdk
 

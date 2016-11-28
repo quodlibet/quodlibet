@@ -74,7 +74,7 @@ def split_message(data):
     args = []
     while data:
         if arg == 0:
-            index = data.find("\x00")
+            index = data.find(b"\x00")
             if index == 0:
                 arg = 1
                 data = data[1:]
@@ -87,11 +87,11 @@ def split_message(data):
             for l in elm.splitlines():
                 yield (l, None)
         elif arg == 1:
-            elm, data = data.split("\x00", 1)
+            elm, data = data.split(b"\x00", 1)
             args.append(elm)
             arg = 2
         elif arg == 2:
-            elm, data = data.split("\x00", 1)
+            elm, data = data.split(b"\x00", 1)
             args.append(elm)
             yield tuple(args)
             del args[:]

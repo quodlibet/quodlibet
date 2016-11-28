@@ -13,10 +13,21 @@ from quodlibet.util import enum
 from . import const
 from quodlibet.util.config import Config, Error
 from quodlibet.util import print_d, print_w
-from quodlibet.compat import PY2, iteritems
+from quodlibet.compat import PY2, iteritems, text_type
 
 # Some plugins can be enabled on first install
 AUTO_ENABLED_PLUGINS = ["Shuffle Playlist", "Remove Playlist Duplicates"]
+
+
+def _config_text(text):
+    # raw config values are utf-8 encoded on PY2, while they are unicode
+    # with surrogates on PY2. this makes initing the defaults work
+
+    assert isinstance(text, text_type)
+    if PY2:
+        return text.encode("utf-8")
+    return text
+
 
 # this defines the initial and default values
 INITIAL = {
@@ -103,10 +114,10 @@ INITIAL = {
         "bayesian_rating_factor": "0.0",
 
         # rating symbol (black star)
-        "rating_symbol_full": "\xe2\x98\x85",
+        "rating_symbol_full": _config_text(u'\u2605'),
 
         # rating symbol (hollow star)
-        "rating_symbol_blank": "\xe2\x98\x86",
+        "rating_symbol_blank": _config_text(u'\u2606'),
 
         # Now deprecated: space-separated headers column
         #"headers": " ".join(const.DEFAULT_COLUMNS),
@@ -192,6 +203,8 @@ add_section = _config.add_section
 has_option = _config.has_option
 remove_option = _config.remove_option
 register_upgrade_function = _config.register_upgrade_function
+getbytes = _config.getbytes
+setbytes = _config.setbytes
 
 _filename = None
 """The filename last used for loading"""

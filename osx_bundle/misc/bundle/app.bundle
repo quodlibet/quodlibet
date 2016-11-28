@@ -167,6 +167,8 @@
   <data>${prefix}/lib/python2.7/site-packages/_pytest</data>
   <data>${prefix}/lib/python2.7/site-packages/pytest.py</data>
   <data>${prefix}/lib/python2.7/site-packages/concurrent</data>
+  <data>${prefix}/lib/python2.7/site-packages/pycodestyle.py</data>
+  <data>${prefix}/lib/python2.7/site-packages/pyflakes</data>
   <!-- pyObjC -->
   <data>${prefix}/lib/python2.7/distutils</data>
   <data>${prefix}/lib/python2.7/site-packages/pkg_resources</data>

@@ -3,6 +3,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from senf import fsnative
+
 from quodlibet.formats import AudioFile
 from tests import TestCase, init_fake_app, destroy_fake_app
 from .helper import capture_output
@@ -28,7 +30,7 @@ class TCommands(TestCase):
         return registry.handle_line(app, command)
 
     def test_query(self):
-        self.__send(u"query foo")
+        self.__send(fsnative(u"query foo"))
         self.assertEqual(self.__send("print-query-text"), u"foo\n")
 
     def test_player(self):
@@ -64,7 +66,6 @@ class TCommands(TestCase):
         for window in Gtk.Window.list_toplevels():
             if isinstance(window, LibraryBrowser):
                 window.destroy()
-        self.__send("order shuffle")
         self.__send("properties")
         self.__send("queue 1")
         self.__send("quit")

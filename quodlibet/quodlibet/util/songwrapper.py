@@ -93,7 +93,7 @@ def ListWrapper(songs):
 
 
 def check_wrapper_changed(library, parent, songs):
-    needs_write = filter(lambda s: s._needs_write, songs)
+    needs_write = list(filter(lambda s: s._needs_write, songs))
 
     if needs_write:
         win = WritingWindow(parent, len(needs_write))

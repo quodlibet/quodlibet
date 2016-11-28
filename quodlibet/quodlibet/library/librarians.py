@@ -142,7 +142,7 @@ class SongLibrarian(Librarian):
 
     def tag_values(self, tag):
         """Return a set of all values for the given tag."""
-        return {value for lib in self.libraries.itervalues()
+        return {value for lib in itervalues(self.libraries)
                 for value in lib.tag_values(tag)}
 
     def rename(self, song, newname, changed=None):

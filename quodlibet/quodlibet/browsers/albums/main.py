@@ -320,9 +320,9 @@ class VisibleUpdate(object):
         start = start.get_indices()[0] - preload - 1
         end = end.get_indices()[0] + preload
 
-        vlist = range(end, start, -1)
-        top = vlist[:len(vlist) / 2]
-        bottom = vlist[len(vlist) / 2:]
+        vlist = list(range(end, start, -1))
+        top = vlist[:len(vlist) // 2]
+        bottom = vlist[len(vlist) // 2:]
         top.reverse()
 
         vlist_new = []
@@ -759,7 +759,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         self.view.handler_unblock(self.__sig)
 
     def restore(self):
-        text = config.get("browsers", "query_text").decode("utf-8")
+        text = config.gettext("browsers", "query_text")
         entry = self.__search
         entry.set_text(text)
 
@@ -767,7 +767,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         if Query.is_parsable(text):
             self.__update_filter(entry, text, scroll_up=False, restore=True)
 
-        keys = config.get("browsers", "albums").split("\n")
+        keys = config.gettext("browsers", "albums").split("\n")
 
         # FIXME: If albums is "" then it could be either all albums or
         # no albums. If it's "" and some other stuff, assume no albums,
@@ -809,9 +809,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     def save(self):
         conf = self.__get_config_string()
-        config.set("browsers", "albums", conf)
-        text = self.__search.get_text().encode("utf-8")
-        config.set("browsers", "query_text", text)
+        config.settext("browsers", "albums", conf)
+        text = self.__search.get_text()
+        config.settext("browsers", "query_text", text)
 
     def __update_songs(self, view, selection):
         songs = self.__get_selected_songs(sort=False)

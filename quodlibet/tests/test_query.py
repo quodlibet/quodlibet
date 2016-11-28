@@ -179,13 +179,13 @@ class TQuery(TestCase):
     def test_repr(self):
         query = Query("foo = bar", [])
         self.assertEqual(
-            repr(query),
-            "<Query string=u'foo = bar' type=QueryType.VALID star=[]>")
+            repr(query).replace("u'", "'"),
+            "<Query string='foo = bar' type=QueryType.VALID star=[]>")
 
         query = Query("bar", ["foo"])
         self.assertEqual(
-            repr(query),
-            "<Query string=u'&(/bar/d)' type=QueryType.TEXT star=['foo']>")
+            repr(query).replace("u'", "'"),
+            "<Query string='&(/bar/d)' type=QueryType.TEXT star=['foo']>")
 
     def test_2007_07_27_synth_search(self):
         song = AudioFile({"~filename": fsnative(u"foo/64K/bar.ogg")})
@@ -341,12 +341,14 @@ class TQuery(TestCase):
         tests = [inter | tag, tag | tag, neg | neg, tag | inter, neg | union,
             union | union, inter | inter, numcmp | numcmp, numcmp | union]
 
-        self.failIf(filter(lambda x: not isinstance(x, match.Union), tests))
+        self.failIf(
+            list(filter(lambda x: not isinstance(x, match.Union), tests)))
 
         tests = [inter & tag, tag & tag, neg & neg, tag & inter, neg & union,
             union & union, inter & inter, numcmp & numcmp, numcmp & inter]
 
-        self.failIf(filter(lambda x: not isinstance(x, match.Inter), tests))
+        self.failIf(
+            list(filter(lambda x: not isinstance(x, match.Inter), tests)))
 
         self.assertTrue(isinstance(-neg, match.Tag))
 

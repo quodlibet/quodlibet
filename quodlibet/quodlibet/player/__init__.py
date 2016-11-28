@@ -6,6 +6,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import importlib
+
 from quodlibet import util
 
 
@@ -56,7 +58,7 @@ def init_backend(backend_name):
     modulename = "quodlibet.player." + backend_name
 
     try:
-        backend = __import__(modulename, {}, {}, "quodlibet.player")
+        backend = importlib.import_module(modulename)
     except Exception as e:
         util.print_exc()
         util.reraise(PlayerError, str(e))

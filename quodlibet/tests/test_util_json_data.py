@@ -88,6 +88,8 @@ class TJsonData(TestCase):
         finally:
             os.unlink(filename)
 
+        jstr = jstr.decode("utf-8")
+
         # Check we have the right number of items
         self.failUnlessEqual(len(json.loads(jstr)), len(data))
 

@@ -458,7 +458,7 @@ class TAudioFile(TestCase):
         b["~#length"] = long(200000000000)
         dump = b.to_dump()
         num = len(set(bar_1_1.keys()) | NUMERIC_ZERO_DEFAULT)
-        self.failUnlessEqual(dump.count("\n"), num + 2)
+        self.failUnlessEqual(dump.count("\n"), num + 2, msg=dump)
 
         n = AudioFile()
         n.from_dump(dump)

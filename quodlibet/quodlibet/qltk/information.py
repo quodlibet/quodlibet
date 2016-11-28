@@ -24,6 +24,7 @@ from quodlibet.util import tag, connect_destroy
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import readable
 from quodlibet.util.path import filesize, unexpand
+from quodlibet.compat import PY3
 
 
 def Label(label=None):
@@ -218,8 +219,9 @@ class OneSong(qltk.Notebook):
                 return _("Unknown")
             else:
                 timestr = time.strftime("%c", time.localtime(t))
-                encoding = util.get_locale_encoding()
-                return timestr.decode(encoding)
+                if not PY3:
+                    timestr = timestr.decode(util.get_locale_encoding())
+                return timestr
 
         playcount = counter(song.get("~#playcount", 0))
         skipcount = counter(song.get("~#skipcount", 0))
@@ -256,8 +258,9 @@ class OneSong(qltk.Notebook):
                 return _("Unknown")
             else:
                 timestr = time.strftime("%c", time.localtime(t))
-                encoding = util.get_locale_encoding()
-                return timestr.decode(encoding)
+                if not PY3:
+                    timestr = timestr.decode(util.get_locale_encoding())
+                return timestr
 
         fn = fsn2text(unexpand(song["~filename"]))
         length = util.format_time_preferred(song.get("~#length", 0))
@@ -483,7 +486,7 @@ class OneArtist(qltk.Notebook):
 
         get_cover = app.cover_manager.get_cover
         covers = [(a, get_cover(s), s) for d, s, a in albums]
-        albums = map(format, albums)
+        albums = list(map(format, albums))
         if noalbum:
             albums.append(ngettext("%d song with no album",
                 "%d songs with no album", noalbum) % noalbum)
@@ -627,7 +630,7 @@ class Information(Window, PersistentWindowMixin):
         elif len(songs) == 1:
             self.add(OneSong(library, songs[0]))
         else:
-            tags = [(s.get("artist"), s.get("album")) for s in songs]
+            tags = [(s.get("artist", u""), s.get("album", u"")) for s in songs]
             artists, albums = zip(*tags)
             if min(albums) == max(albums) and albums[0]:
                 self.add(OneAlbum(songs))

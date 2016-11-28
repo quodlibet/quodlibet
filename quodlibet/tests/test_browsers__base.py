@@ -19,6 +19,7 @@ from quodlibet.formats import AudioFile
 from quodlibet import config
 from quodlibet.browsers import Browser
 from quodlibet.library import SongFileLibrary, SongLibrarian
+from quodlibet.compat import text_type
 
 
 SONGS = [
@@ -161,10 +162,12 @@ class TBrowserMixin(object):
         with realized(self.b):
             if self.b.can_filter_text():
                 self.assertEqual(self.b.get_filter_text(), u"")
-                self.assertTrue(isinstance(self.b.get_filter_text(), unicode))
+                self.assertTrue(
+                    isinstance(self.b.get_filter_text(), text_type))
                 self.b.filter_text(u"foo")
                 self.assertEqual(self.b.get_filter_text(), u"foo")
-                self.assertTrue(isinstance(self.b.get_filter_text(), unicode))
+                self.assertTrue(
+                    isinstance(self.b.get_filter_text(), text_type))
 
     def test_filter_albums(self):
         with realized(self.b):
@@ -204,11 +207,11 @@ class DummyDPM(DisplayPatternMixin):
 
 
 class TDisplayPatternMixin(TestCase):
-    TEST_PATTERN = "<~name>: <artist|<artist>|?> [b]<~length>[/b]"
+    TEST_PATTERN = u"<~name>: <artist|<artist>|?> [b]<~length>[/b]"
 
     def setUp(self):
         with open(DummyDPM._PATTERN_FN, "wb") as f:
-            f.write(self.TEST_PATTERN + "\n")
+            f.write(self.TEST_PATTERN.encode("utf-8") + b"\n")
 
     @classmethod
     def tearDownClass(cls):

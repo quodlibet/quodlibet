@@ -33,7 +33,7 @@ class TagsFromPattern(object):
                     piece = "<QUOD_LIBET_DUMMY_%d>" % dummies_found
                 pieces[i] = '(?P%s%s)' % (piece, override.get(piece, '.+?'))
                 if "QUOD_LIBET" not in piece:
-                    self.headers.append(piece[1:-1].encode("ascii", "replace"))
+                    self.headers.append(piece[1:-1])
             else:
                 pieces[i] = re_escape(piece)
 

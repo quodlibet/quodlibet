@@ -96,7 +96,7 @@ class TThumb(TestCase):
 
         #test the thumbnail filename
         uri = fsn2uri(s.filename)
-        name = hash.md5(uri).hexdigest() + ".png"
+        name = hash.md5(uri.encode("ascii")).hexdigest() + ".png"
 
         path = thumbnails.get_thumbnail_folder()
         path = os.path.join(path, "normal", name)

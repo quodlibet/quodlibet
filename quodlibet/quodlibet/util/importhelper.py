@@ -78,7 +78,7 @@ def get_importables(folder, include_compiled=False):
             continue
         if not first and any((is_init(n) for n in names)):
             yield (basename(root), root,
-                   filter(is_ok, [join(root, name) for name in names]))
+                   list(filter(is_ok, [join(root, name) for name in names])))
         else:
             for name in filter(is_ok, names):
                 yield (splitext(name)[0], join(root, name), [join(root, name)])

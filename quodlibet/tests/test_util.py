@@ -143,11 +143,11 @@ class Tformat_rating(TestCase):
         self.failUnlessEqual(util.format_rating(0.8), "11110")
         self.failUnlessEqual(util.format_rating(1.0), "11111")
         # A bit arbitrary, but standard behaviour
-        self.failUnlessEqual(util.format_rating(0.5), "11100")
+        self.failUnlessEqual(util.format_rating(0.51), "11100")
         # Test rounding down...
         self.failUnlessEqual(util.format_rating(0.6), "11100")
         # Test rounding up...
-        self.failUnlessEqual(util.format_rating(0.9), "11111")
+        self.failUnlessEqual(util.format_rating(0.91), "11111")
         # You never know...
         self.failUnlessEqual(util.format_rating(3.0), "11111")
         self.failUnlessEqual(util.format_rating(-0.5), "00000")
@@ -174,12 +174,12 @@ class Tpango(TestCase):
 
 class Tre_esc(TestCase):
     def test_empty(self):
-        self.failUnlessEqual(re_escape(""), "")
-        self.assertTrue(isinstance(re_escape(""), bytes))
+        self.failUnlessEqual(re_escape(b""), b"")
+        self.assertTrue(isinstance(re_escape(b""), bytes))
 
     def test_empty_unicode(self):
         self.failUnlessEqual(re_escape(u""), u"")
-        self.assertTrue(isinstance(re_escape(u""), unicode))
+        self.assertTrue(isinstance(re_escape(u""), text_type))
 
     def test_safe(self):
         self.failUnlessEqual(re_escape("fo o"), "fo o")
@@ -194,22 +194,22 @@ class Tre_esc(TestCase):
 
 class Tdecode(TestCase):
     def test_empty(self):
-        self.failUnlessEqual(decode(""), "")
+        self.failUnlessEqual(decode(b""), "")
 
     def test_safe(self):
-        self.failUnlessEqual(decode("foo!"), "foo!")
+        self.failUnlessEqual(decode(b"foo!"), "foo!")
 
     def test_invalid(self):
         self.failUnlessEqual(
-            decode("fo\xde"), u'fo\ufffd [Invalid Encoding]')
+            decode(b"fo\xde"), u'fo\ufffd [Invalid Encoding]')
 
 
 class Tencode(TestCase):
     def test_empty(self):
-        self.failUnlessEqual(encode(""), "")
+        self.failUnlessEqual(encode(""), b"")
 
     def test_unicode(self):
-        self.failUnlessEqual(encode(u"abcde"), "abcde")
+        self.failUnlessEqual(encode(u"abcde"), b"abcde")
 
 
 class Tcapitalize(TestCase):
@@ -658,11 +658,6 @@ class Tspawn(TestCase):
         from gi.repository import GLib
         self.failUnlessRaises(GLib.GError, util.spawn, ["not a command"])
 
-    def test_types(self):
-        if is_win:
-            return
-        self.failUnlessRaises(TypeError, util.spawn, [u"ls"])
-
     def test_get_output(self):
         if is_win:
             return
@@ -697,20 +692,20 @@ class Txdg_dirs(TestCase):
         xdg_get_user_dirs()
 
     def test_parse_xdg_user_dirs(self):
-        data = '# foo\nBLA="$HOME/blah"\n'
+        data = b'# foo\nBLA="$HOME/blah"\n'
         vars_ = parse_xdg_user_dirs(data)
-        self.assertTrue("BLA" in vars_)
+        self.assertTrue(b"BLA" in vars_)
         expected = os.path.join(environ.get("HOME", ""), "blah")
-        self.assertEqual(vars_["BLA"], expected)
+        self.assertEqual(vars_[b"BLA"], expected)
 
-        vars_ = parse_xdg_user_dirs('BLA="$HOME/"')
-        self.assertTrue("BLA" in vars_)
-        self.assertEqual(vars_["BLA"], environ.get("HOME", ""))
+        vars_ = parse_xdg_user_dirs(b'BLA="$HOME/"')
+        self.assertTrue(b"BLA" in vars_)
+        self.assertEqual(vars_[b"BLA"], environ.get("HOME", ""))
 
         # some invalid
-        self.assertFalse(parse_xdg_user_dirs("foo"))
-        self.assertFalse(parse_xdg_user_dirs("foo=foo bar"))
-        self.assertFalse(parse_xdg_user_dirs("foo='foo"))
+        self.assertFalse(parse_xdg_user_dirs(b"foo"))
+        self.assertFalse(parse_xdg_user_dirs(b"foo=foo bar"))
+        self.assertFalse(parse_xdg_user_dirs(b"foo='foo"))
 
     def test_on_windows(self):
         self.assertTrue(xdg_get_system_data_dirs())
@@ -816,15 +811,15 @@ class Tload_library(TestCase):
 class Tstrip_win32_incompat_from_path(TestCase):
 
     def test_types(self):
-        v = strip_win32_incompat_from_path("")
-        self.assertTrue(isinstance(v, bytes))
-        v = strip_win32_incompat_from_path("foo")
-        self.assertTrue(isinstance(v, bytes))
+        v = strip_win32_incompat_from_path(fsnative(u""))
+        self.assertTrue(isinstance(v, fsnative))
+        v = strip_win32_incompat_from_path(fsnative(u"foo"))
+        self.assertTrue(isinstance(v, fsnative))
 
         v = strip_win32_incompat_from_path(u"")
-        self.assertTrue(isinstance(v, unicode))
+        self.assertTrue(isinstance(v, text_type))
         v = strip_win32_incompat_from_path(u"foo")
-        self.assertTrue(isinstance(v, unicode))
+        self.assertTrue(isinstance(v, text_type))
 
     def test_basic(self):
         if is_win:
@@ -885,37 +880,37 @@ class Tsplit_escape(TestCase):
             self.assertEqual(split_escape(*inargs), out)
 
     def test_types(self):
-        parts = split_escape("\xff:\xff", ":")
-        self.assertEqual(parts, ["\xff", "\xff"])
+        parts = split_escape(b"\xff:\xff", b":")
+        self.assertEqual(parts, [b"\xff", b"\xff"])
         self.assertTrue(isinstance(parts[0], bytes))
 
         parts = split_escape(u"a:b", u":")
         self.assertEqual(parts, [u"a", u"b"])
-        self.assertTrue(all(isinstance(p, unicode) for p in parts))
+        self.assertTrue(all(isinstance(p, text_type) for p in parts))
 
         parts = split_escape(u"", u":")
         self.assertEqual(parts, [u""])
-        self.assertTrue(all(isinstance(p, unicode) for p in parts))
+        self.assertTrue(all(isinstance(p, text_type) for p in parts))
 
         parts = split_escape(u":", u":")
         self.assertEqual(parts, [u"", u""])
-        self.assertTrue(all(isinstance(p, unicode) for p in parts))
+        self.assertTrue(all(isinstance(p, text_type) for p in parts))
 
     def test_join_escape_types(self):
-        self.assertEqual(join_escape([], ":"), "")
-        self.assertTrue(isinstance(join_escape([], ":"), bytes))
-        self.assertTrue(isinstance(join_escape([], u":"), unicode))
-        self.assertEqual(join_escape(["\xff", "\xff"], ":"), "\xff:\xff")
+        self.assertEqual(join_escape([], b":"), b"")
+        self.assertTrue(isinstance(join_escape([], b":"), bytes))
+        self.assertTrue(isinstance(join_escape([], u":"), text_type))
+        self.assertEqual(join_escape([b"\xff", b"\xff"], b":"), b"\xff:\xff")
         self.assertEqual(join_escape([u'\xe4', u'\xe4'], ":"), u'\xe4:\xe4')
 
     def test_join_escape(self):
-        self.assertEqual(join_escape([":"], ":"), "\\:")
-        self.assertEqual(join_escape(["\\:", ":"], ":"), "\\\\\\::\\:")
+        self.assertEqual(join_escape([b":"], b":"), b"\\:")
+        self.assertEqual(join_escape([b"\\:", b":"], b":"), b"\\\\\\::\\:")
 
     def test_roundtrip(self):
-        values = ["\\:", ":"]
-        joined = join_escape(values, ":")
-        self.assertEqual(split_escape(joined, ":"), values)
+        values = [b"\\:", b":"]
+        joined = join_escape(values, b":")
+        self.assertEqual(split_escape(joined, b":"), values)
 
 
 class TMainRunner(TestCase):

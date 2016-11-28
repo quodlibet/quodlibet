@@ -169,7 +169,7 @@ class FSInterface(object):
     def __started(self, player, song):
         if song:
             try:
-                with open(self.path, "w") as f:
+                with open(self.path, "wb") as f:
                     f.write(song.to_dump())
             except EnvironmentError:
                 pass

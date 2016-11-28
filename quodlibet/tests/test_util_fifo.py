@@ -28,12 +28,12 @@ class Tsplit_message(TestCase):
 
         # mixed
         self.assertEqual(func(b"foo\x00a\x00/dev\x00"),
-                         [("foo", None), ("a", "/dev")])
+                         [(b"foo", None), (b"a", b"/dev")])
         self.assertEqual(func(b"\x00a\x00/dev\x00foo"),
-                         [("a", "/dev"), ("foo", None)])
+                         [(b"a", b"/dev"), (b"foo", None)])
         self.assertEqual(func(b"\x00a\x00/dev\x00foo\x00b\x00/arg\x00bla"),
-                         [("a", "/dev"), ("foo", None), ("b", "/arg"),
-                          ("bla", None)])
+                         [(b"a", b"/dev"), (b"foo", None), (b"b", b"/arg"),
+                          (b"bla", None)])
 
         # inval
-        self.assertRaises(ValueError, func, "foo\x00bar")
+        self.assertRaises(ValueError, func, b"foo\x00bar")

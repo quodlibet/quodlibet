@@ -74,8 +74,8 @@ class StripDiacriticals(FilterCheckButton):
     _order = 1.2
 
     def filter(self, original, filename):
-        return filter(lambda s: not unicodedata.combining(s),
-                      unicodedata.normalize('NFKD', filename))
+        return u"".join(filter(lambda s: not unicodedata.combining(s),
+                               unicodedata.normalize('NFKD', filename)))
 
 
 class StripNonASCII(FilterCheckButton):

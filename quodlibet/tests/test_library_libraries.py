@@ -26,7 +26,7 @@ class Fake(int):
 
 
 def Frange(*args):
-    return map(Fake, range(*args))
+    return list(map(Fake, range(*args)))
 
 
 class FakeSong(Fake):
@@ -83,15 +83,15 @@ class FakeSongFile(FakeSong):
 
 # Custom range functions, to generate lists of song-like objects
 def FSFrange(*args):
-    return map(FakeSongFile, range(*args))
+    return list(map(FakeSongFile, range(*args)))
 
 
 def FSrange(*args):
-    return map(FakeSong, range(*args))
+    return list(map(FakeSong, range(*args)))
 
 
 def ASrange(*args):
-    return map(AlbumSong, range(*args))
+    return list(map(AlbumSong, range(*args)))
 
 
 class TLibrary(TestCase):
@@ -207,8 +207,10 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        self.failUnlessEqual(sorted(self.library.keys()), range(100, 120))
-        self.failUnlessEqual(sorted(self.library.iterkeys()), range(100, 120))
+        self.failUnlessEqual(
+            sorted(self.library.keys()), list(range(100, 120)))
+        self.failUnlessEqual(
+            sorted(self.library.iterkeys()), list(range(100, 120)))
 
     def test_values(self):
         items = []
@@ -216,8 +218,9 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        self.failUnlessEqual(sorted(self.library.values()), range(20))
-        self.failUnlessEqual(sorted(self.library.itervalues()), range(20))
+        self.failUnlessEqual(sorted(self.library.values()), list(range(20)))
+        self.failUnlessEqual(
+            sorted(self.library.itervalues()), list(range(20)))
 
     def test_items(self):
         items = []
@@ -225,7 +228,7 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        expected = zip(range(100, 120), range(20))
+        expected = list(zip(range(100, 120), range(20)))
         self.failUnlessEqual(sorted(self.library.items()), expected)
         self.failUnlessEqual(sorted(self.library.iteritems()), expected)
 
@@ -313,7 +316,8 @@ class TSongLibrary(TLibrary):
     def test_tag_values(self):
         self.library.add(self.Frange(30))
         del(self.added[:])
-        self.failUnlessEqual(sorted(self.library.tag_values(10)), range(10))
+        self.failUnlessEqual(
+            sorted(self.library.tag_values(10)), list(range(10)))
         self.failUnlessEqual(sorted(self.library.tag_values(0)), [])
         self.failIf(self.changed or self.added or self.removed)
 
@@ -374,7 +378,7 @@ class TFileLibrary(TLibrary):
         new = self.Fake(200)
         new._mounted = True
         self.library._load_init([new])
-        self.failUnlessEqual(self.library.values(), [new])
+        self.failUnlessEqual(list(self.library.values()), [new])
 
     def test_reload(self):
         new = self.Fake(200)

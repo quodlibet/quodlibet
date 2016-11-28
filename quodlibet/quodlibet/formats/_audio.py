@@ -28,7 +28,7 @@ from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 from quodlibet.compat import iteritems, string_types, text_type, \
-    number_types, listitems, izip_longest, integer_types
+    number_types, listitems, izip_longest, integer_types, PY3, listfilter
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
@@ -249,7 +249,7 @@ class AudioFile(dict, ImageContainer):
         """Returns a list of keys that are not internal, i.e. they don't
         have '~' in them."""
 
-        return filter(lambda s: s[:1] != "~", self.keys())
+        return listfilter(lambda s: s[:1] != "~", self.keys())
 
     def prefixkeys(self, prefix):
         """Returns a list of dict keys that either match prefix or start
@@ -795,7 +795,11 @@ class AudioFile(dict, ImageContainer):
             self["~#mtime"] = 0
 
     def to_dump(self):
-        """A string of 'key=value' lines, similar to vorbiscomment output."""
+        """A string of 'key=value' lines, similar to vorbiscomment output.
+
+        Returns:
+            bytes
+        """
 
         def encode_key(k):
             return encode(k) if isinstance(k, text_type) else k
@@ -803,43 +807,54 @@ class AudioFile(dict, ImageContainer):
         s = []
         for k in self.keys():
             enc_key = encode_key(k)
+            assert isinstance(enc_key, bytes)
 
             if isinstance(self[k], integer_types):
-                s.append("%s=%d" % (enc_key, self[k]))
+                l = enc_key + encode("=%d" % self[k])
+                s.append(l)
             elif isinstance(self[k], float):
-                s.append("%s=%f" % (enc_key, self[k]))
+                l = enc_key + encode("=%f" % self[k])
+                s.append(l)
             else:
                 for v2 in self.list(k):
-                    if isinstance(v2, str):
-                        s.append("%s=%s" % (enc_key, v2))
-                    else:
-                        s.append("%s=%s" % (enc_key, encode(v2)))
+                    if not isinstance(v2, bytes):
+                        v2 = encode(v2)
+                    s.append(enc_key + b"=" + v2)
         for k in (NUMERIC_ZERO_DEFAULT - set(self.keys())):
             enc_key = encode_key(k)
-            s.append("%s=%d" % (enc_key, self.get(k, 0)))
+            l = enc_key + encode("=%d" % self.get(k, 0))
+            s.append(l)
         if "~#rating" not in self:
-            s.append("~#rating=%f" % self("~#rating"))
-        s.append("~format=%s" % self.format)
-        s.append("")
-        return "\n".join(s)
+            s.append(encode("~#rating=%f" % self("~#rating")))
+        s.append(encode("~format=%s" % self.format))
+        s.append(b"")
+        return b"\n".join(s)
 
     def from_dump(self, text):
-        """Parses the text created with to_dump and adds the found tags."""
+        """Parses the text created with to_dump and adds the found tags.
+
+        Args:
+            text (bytes)
+        """
 
         def decode_key(key):
             """str if ascii, otherwise decode using utf-8"""
+
+            if PY3:
+                return decode(key)
+
             try:
                 key.decode("ascii")
             except ValueError:
                 return decode(key)
             return key
 
-        for line in text.split("\n"):
+        for line in text.split(b"\n"):
             if not line:
                 continue
-            parts = line.split("=")
-            key = parts[0]
-            val = "=".join(parts[1:])
+            parts = line.split(b"=")
+            key = decode_key(parts[0])
+            val = b"=".join(parts[1:])
             if key == "~format":
                 pass
             elif key.startswith("~#"):
@@ -851,7 +866,7 @@ class AudioFile(dict, ImageContainer):
                     except ValueError:
                         pass
             else:
-                self.add(decode_key(key), decode(val))
+                self.add(key, decode(val))
 
     def change(self, key, old_value, new_value):
         """Change 'old_value' to 'new_value' for the given metadata key.

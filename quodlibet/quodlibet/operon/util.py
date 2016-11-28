@@ -8,7 +8,6 @@
 import os
 import stat
 import shlex
-import string
 
 from quodlibet import _
 from quodlibet.util.tags import MACHINE_TAGS, sortkey
@@ -72,7 +71,7 @@ def print_table(rows, headers, nicks, order):
 
     header = []
     for i, h in enumerate(rows.pop(0)):
-        header.append(string.ljust(h, widths[i], " "))
+        header.append(h.ljust(widths[i], " "))
     line_width = len("   ".join(header)) + 2
     header = [Colorise.bold(h) for h in header]
     header_line = " " + (" %s " % Colorise.gray("|")).join(header)

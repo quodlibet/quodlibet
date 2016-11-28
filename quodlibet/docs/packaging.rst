@@ -68,9 +68,6 @@ Optional Runtime Dependencies
     * Enables the DBus interface
     * Multimedia key support under GNOME
 
-**pyhook** (Windows only):
-    * Multimedia key support under Windows
-
 **libkeybinder-3.0** + **typelib**:
     * Multimedia key support under non Gnome setups
 
@@ -147,3 +144,13 @@ For user documentation ``setup.py build_sphinx`` can be used to create the
 HTML user guide and put it in the build directory in the ``sphinx``
 subdirectory. This is not part of the default build process and requires
 **sphinx**.
+
+
+Testing Dependencies
+--------------------
+
+* The build dependencies
+* **pytest**
+* **pyflakes**
+* **pep8/pycodestyle**
+* **polib**

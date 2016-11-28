@@ -17,8 +17,9 @@ if PY2:
     from urlparse import urlparse, urlunparse, urlsplit, parse_qs
     urlparse, urlunparse, urlsplit, parse_qs
     from urllib import pathname2url, url2pathname, quote_plus, unquote_plus, \
-        urlencode
-    pathname2url, url2pathname, quote_plus, unquote_plus, urlencode
+        urlencode, quote, unquote
+    pathname2url, url2pathname, quote_plus, unquote_plus, urlencode, quote, \
+        unquote
     from urllib2 import urlopen, build_opener
     urlopen, build_opener
     from cStringIO import StringIO as cBytesIO
@@ -39,6 +40,7 @@ if PY2:
     cmp = cmp
 
     getbyte = lambda b, i: b[i]
+    iterbytes = lambda b: iter(b)
 
     text_type = unicode
     string_types = (str, unicode)
@@ -51,6 +53,9 @@ if PY2:
     listitems = lambda d: d.items()
     listkeys = lambda d: d.keys()
     listvalues = lambda d: d.values()
+
+    listfilter = filter
+    listmap = map
 
     def exec_(_code_, _globs_=None, _locs_=None):
         if _globs_ is None:
@@ -68,9 +73,9 @@ elif PY3:
     import builtins
     builtins
     from urllib.parse import urlparse, urlunparse, quote_plus, unquote_plus, \
-        urlsplit, parse_qs, urlencode
-    urlparse, quote_plus, unquote_plus, urlunparse, urlsplit, parse_qs,
-    urlencode
+        urlsplit, parse_qs, urlencode, quote, unquote
+    urlparse, quote_plus, unquote_plus, urlunparse, urlsplit, parse_qs, \
+        urlencode, quote, unquote
     from urllib.request import pathname2url, url2pathname
     pathname2url, url2pathname
     from urllib.request import urlopen, build_opener
@@ -95,6 +100,7 @@ elif PY3:
     izip = zip
 
     getbyte = lambda b, i: b[i:i + 1]
+    iterbytes = lambda b: (bytes([v]) for v in b)
 
     text_type = str
     string_types = (str,)
@@ -107,6 +113,9 @@ elif PY3:
     listitems = lambda d: list(d.items())
     listkeys = lambda d: list(d.keys())
     listvalues = lambda d: list(d.values())
+
+    listfilter = lambda *x: list(filter(*x))
+    listmap = lambda *x: list(map(*x))
 
     import builtins
     exec_ = getattr(builtins, "exec")

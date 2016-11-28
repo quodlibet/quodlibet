@@ -13,11 +13,10 @@ import errno
 import tempfile
 import codecs
 import shlex
-import urllib
 
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars
 
-from quodlibet.compat import PY2, urlparse
+from quodlibet.compat import PY2, urlparse, text_type, quote, unquote
 from . import windows
 from .misc import environ
 
@@ -115,17 +114,20 @@ def escape_filename(s):
     Takes unicode or str and returns a fsnative path.
     """
 
-    if isinstance(s, unicode):
+    if isinstance(s, text_type):
         s = s.encode("utf-8")
 
-    return fsnative(urllib.quote(s, safe="").decode("utf-8"))
+    quoted = quote(s, safe="")
+    if PY2:
+        quoted = quoted.decode("utf-8")
+    return fsnative(quoted)
 
 
 def unescape_filename(s):
     """Unescape a string in a manner suitable for a filename."""
     if isinstance(s, unicode):
         s = s.encode("utf-8")
-    return urllib.unquote(s).decode("utf-8")
+    return unquote(s).decode("utf-8")
 
 
 def unexpand(filename):
@@ -160,7 +162,7 @@ def xdg_get_system_data_dirs():
 
     data_dirs = os.getenv("XDG_DATA_DIRS")
     if data_dirs:
-        return map(os.path.abspath, data_dirs.split(":"))
+        return list(map(os.path.abspath, data_dirs.split(":")))
     else:
         return ("/usr/local/share/", "/usr/share/")
 
@@ -207,25 +209,29 @@ def parse_xdg_user_dirs(data):
     The paths depend on the content of os.environ while calling this function.
     See http://www.freedesktop.org/wiki/Software/xdg-user-dirs/
 
+    Args:
+        data (bytes)
+
     Can't fail (but might return garbage).
     """
-    paths = {}
 
+    assert isinstance(data, bytes)
+
+    paths = {}
     for line in data.splitlines():
-        if line.startswith("#"):
+        if line.startswith(b"#"):
             continue
-        parts = line.split("=", 1)
+        parts = line.split(b"=", 1)
         if len(parts) <= 1:
             continue
         key = parts[0]
         try:
-            values = shlex.split(parts[1])
+            values = shlex.split(bytes2fsn(parts[1], "utf-8"))
         except ValueError:
             continue
         if len(values) != 1:
             continue
-        paths[key] = os.path.normpath(
-            expandvars(bytes2fsn(values[0], "utf-8")))
+        paths[key] = os.path.normpath(expandvars(values[0]))
 
     return paths
 

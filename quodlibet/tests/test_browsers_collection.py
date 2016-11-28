@@ -16,6 +16,8 @@ from quodlibet.browsers.collection.prefs import save_headers, get_headers, \
     PatternEditor
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
+from quodlibet.compat import listvalues
+
 
 SONGS = [
     AudioFile({"album": "one", "artist": "piman", "~filename": "/dev/null"}),
@@ -85,7 +87,7 @@ class TCollectionAlbums(TestCase):
     def test_utils(self):
         model = CollectionTreeStore()
         model.set_albums([("~people", 0)], self.albums)
-        a = self.albums.values()
+        a = listvalues(self.albums)
         a.sort(key=lambda x: x.key)
 
         path = model.get_path_for_album(a[0])

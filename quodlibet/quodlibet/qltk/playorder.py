@@ -13,9 +13,11 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet.order import Order, OrderInOrder
 from quodlibet.order.reorder import OrderShuffle, OrderWeighted, Reorder
-from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, Repeat
+from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, \
+    Repeat, OneSong
 from quodlibet.qltk import Icons
-from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem
+from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem, \
+    SeparatorMenuItem
 from quodlibet.plugins import PluginManager
 from quodlibet.util.dprint import print_w, print_d
 
@@ -59,9 +61,6 @@ class Orders(GObject.Object):
     def __contains__(self, y):
         return self.items.__contains__(y)
 
-    def sorted(self):
-        return sorted(self.items, key=lambda k: (k.priority, k.name))
-
     def __str__(self):
         return "<%s of %s>" % (type(self).__name__, self.items)
 
@@ -94,7 +93,7 @@ class PluggableOrders(Orders, PluginManager):
         self.remove(plugin.cls)
 
 DEFAULT_SHUFFLE_ORDERS = [OrderShuffle, OrderWeighted]
-DEFAULT_REPEAT_ORDERS = [RepeatSongForever, RepeatListForever]
+DEFAULT_REPEAT_ORDERS = [RepeatSongForever, RepeatListForever, OneSong]
 
 
 class ToggledPlayOrderMenu(Gtk.Box):
@@ -210,7 +209,15 @@ class ToggledPlayOrderMenu(Gtk.Box):
 
         menu = Gtk.Menu()
         group = None
-        for order in self.__orders:
+        prev_priority = None
+
+        def ui_sorted(items):
+            return sorted(items, key=lambda k: (k.priority, k.display_name))
+
+        for order in ui_sorted(self.__orders):
+            if prev_priority and order.priority > prev_priority:
+                menu.append(SeparatorMenuItem())
+            prev_priority = order.priority
             group = RadioMenuItem(
                 label=order.accelerated_name,
                 use_underline=True,

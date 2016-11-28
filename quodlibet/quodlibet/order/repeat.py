@@ -40,8 +40,8 @@ class RepeatSongForever(Repeat):
     which is probably what the user wanted"""
 
     name = "repeat_song"
-    display_name = _("Repeat track")
-    accelerated_name = _("Repeat track")
+    display_name = _("Repeat this track")
+    accelerated_name = _("Repeat this track")
 
     def next(self, playlist, iter):
         return iter
@@ -64,3 +64,16 @@ class RepeatListForever(Repeat):
         self.wrapped.reset(playlist)
         print_d("Restarting songlist")
         return playlist.get_iter_first()
+
+
+class OneSong(Repeat):
+    """Stops after the current song"""
+
+    name = "one_song"
+    display_name = _("One Song")
+    accelerated_name = _("One Song")
+    priority = 400
+
+    def next(self, playlist, iter):
+        print_d("Ending songlist.")
+        return None

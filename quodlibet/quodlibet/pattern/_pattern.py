@@ -22,7 +22,7 @@ from quodlibet.query import Query
 from quodlibet.compat import exec_, itervalues
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 from quodlibet.formats._audio import decode_value, FILESYSTEM_TAGS
-from quodlibet.compat import quote_plus
+from quodlibet.compat import quote_plus, text_type
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -404,7 +404,7 @@ class _FileFromPattern(PatternFormatter):
 
     def _post(self, value, song, keep_extension=True):
         if value:
-            assert isinstance(value, unicode)
+            assert isinstance(value, text_type)
             value = fsnative(value)
 
             if keep_extension:
@@ -415,7 +415,7 @@ class _FileFromPattern(PatternFormatter):
                     value += ext.lower()
 
             if os.name == "nt":
-                assert isinstance(value, unicode)
+                assert isinstance(value, text_type)
                 value = strip_win32_incompat_from_path(value)
 
             value = expanduser(value)

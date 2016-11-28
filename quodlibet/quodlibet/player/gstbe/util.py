@@ -12,8 +12,9 @@ from gi.repository import GLib, Gst
 
 from quodlibet import _
 from quodlibet.util.string import decode
-from quodlibet.util import is_linux, is_windows
+from quodlibet.util import is_linux, is_windows, gdecode
 from quodlibet.player import PlayerError
+from quodlibet.compat import text_type, number_types
 
 
 def pulse_is_running():
@@ -107,7 +108,7 @@ def GStreamerSink(pipeline_desc):
         try:
             pipe = [Gst.parse_launch(e) for e in pipeline_desc.split('!')]
         except GLib.GError as e:
-            message = e.message.decode("utf-8")
+            message = gdecode(e.message)
             raise PlayerError(_("Invalid GStreamer output pipeline"), message)
 
     if pipe:
@@ -176,14 +177,14 @@ def parse_gstreamer_taglist(tags):
             if not isinstance(value, list):
                 value = [value]
             for val in value:
-                if not isinstance(val, unicode):
+                if not isinstance(val, text_type):
                     continue
                 split = val.split("=", 1)
-                sub_key = decode(split[0])
+                sub_key = split[0]
                 val = split[-1]
                 if sub_key in merged:
                     sub_val = merged[sub_key]
-                    if not isinstance(sub_val, unicode):
+                    if not isinstance(sub_val, text_type):
                         continue
                     if val not in sub_val.split("\n"):
                         merged[sub_key] += "\n" + val
@@ -193,15 +194,15 @@ def parse_gstreamer_taglist(tags):
             value = value.to_iso8601_string()
             merged[key] = value
         else:
-            if isinstance(value, (int, long, float)):
+            if isinstance(value, number_types):
                 merged[key] = value
                 continue
 
-            if isinstance(value, str):
+            if isinstance(value, bytes):
                 value = decode(value)
 
-            if not isinstance(value, unicode):
-                value = unicode(value)
+            if not isinstance(value, text_type):
+                value = text_type(value)
 
             if key in merged:
                 merged[key] += "\n" + value

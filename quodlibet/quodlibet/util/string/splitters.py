@@ -11,15 +11,17 @@ import re
 from quodlibet.util import re_escape
 
 
-def split_value(s, splitters=["/", "&", ","]):
+def split_value(s, splitters=[u"/", u"&", u","]):
     """Splits a string. The first match in 'splitters' is used as the
-    separator; subsequent matches are intentionally ignored."""
+    separator; subsequent matches are intentionally ignored.
+    """
+
     if not splitters:
         return [s.strip()]
     values = s.split("\n")
     for spl in splitters:
         spl = re.compile(r"\b\s*%s\s*\b" % re_escape(spl), re.UNICODE)
-        if not filter(spl.search, values):
+        if not list(filter(spl.search, values)):
             continue
         new_values = []
         for v in values:
@@ -29,7 +31,7 @@ def split_value(s, splitters=["/", "&", ","]):
 
 
 def find_subtitle(title):
-    if isinstance(title, str):
+    if isinstance(title, bytes):
         title = title.decode('utf-8', 'replace')
     for pair in [u"[]", u"()", u"~~", u"--", u"\u301c\u301c", u'\uff08\uff09']:
         if pair[0] in title[:-1] and title.endswith(pair[1]):

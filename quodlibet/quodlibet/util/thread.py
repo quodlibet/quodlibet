@@ -123,7 +123,7 @@ def terminate_all():
 
     global _pools
 
-    for key, pool in _pools.items():
+    for key, pool in list(_pools.items()):
         del _pools[key]
         pool.shutdown(wait=False)
 

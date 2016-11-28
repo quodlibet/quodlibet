@@ -32,7 +32,7 @@ class Tsplit_value(TestCase):
             ["Andromeda", "the Band"])
 
     def test_unicode_wordboundry(self):
-        val = '\xe3\x81\x82&\xe3\x81\x84'.decode('utf-8')
+        val = b'\xe3\x81\x82&\xe3\x81\x84'.decode('utf-8')
         self.failUnlessEqual(split_value(val), val.split("&"))
 
 

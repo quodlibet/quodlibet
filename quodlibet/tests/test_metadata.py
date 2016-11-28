@@ -22,7 +22,7 @@ class TestMetaDataBase(TestCase):
 
         config.init()
         fd, self.filename = mkstemp(suffix=self.ext, text=False)
-        dst = os.fdopen(fd, 'w')
+        dst = os.fdopen(fd, 'wb')
         src = open(self.base + self.ext, 'rb')
         copyfileobj(src, dst)
         dst.close()

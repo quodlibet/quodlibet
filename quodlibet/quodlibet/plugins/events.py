@@ -14,6 +14,7 @@ from quodlibet.plugins import PluginHandler
 from quodlibet.util.songwrapper import SongWrapper, ListWrapper
 from quodlibet.util.songwrapper import check_wrapper_changed
 from quodlibet.util import connect_obj
+from quodlibet.compat import itervalues
 
 
 class EventPlugin(object):
@@ -96,7 +97,7 @@ class EventPluginHandler(PluginHandler):
                 args[0] = SongWrapper(args[0])
             elif isinstance(args[0], (set, list)):
                 args[0] = ListWrapper(args[0])
-        for plugin in self.__plugins.itervalues():
+        for plugin in itervalues(self.__plugins):
             method_name = 'plugin_on_' + event.replace('-', '_')
             handler = getattr(plugin, method_name, None)
             if handler is not None:

@@ -15,6 +15,7 @@ from quodlibet import _
 from quodlibet.browsers.albums import AlbumTagCompletion
 from quodlibet.browsers import Browser
 from quodlibet.query import Query
+from quodlibet.compat import cmp
 
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
@@ -338,7 +339,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         return True
 
     def filter_albums(self, album_keys):
-        albums = filter(None, [self.__albums.get(k) for k in album_keys])
+        albums = [a for a in
+                  [self.__albums.get(k) for k in album_keys] if a is not None]
         if albums:
             self.view.select_album(albums[0], unselect=True)
         for album in albums[1:]:

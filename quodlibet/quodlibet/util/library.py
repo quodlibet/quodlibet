@@ -55,9 +55,10 @@ def split_scan_dirs(joined_paths):
 
     if is_windows():
         # we used to separate this config with ":", so this is tricky
-        return filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", joined_paths))
+        return list(
+            filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", joined_paths)))
     else:
-        return filter(None, split_escape(joined_paths, ":"))
+        return list(filter(None, split_escape(joined_paths, ":")))
 
 
 def get_scan_dirs():
@@ -67,7 +68,7 @@ def get_scan_dirs():
         list
     """
 
-    joined_paths = bytes2fsn(config.get("settings", "scan"), "utf-8")
+    joined_paths = bytes2fsn(config.getbytes("settings", "scan"), "utf-8")
     return [expanduser(p) for p in split_scan_dirs(joined_paths)]
 
 
@@ -84,7 +85,7 @@ def set_scan_dirs(dirs):
         joined = fsnative(u":").join(dirs)
     else:
         joined = join_escape(dirs, fsnative(u":"))
-    config.set("settings", "scan", fsn2bytes(joined, "utf-8"))
+    config.setbytes("settings", "scan", fsn2bytes(joined, "utf-8"))
 
 
 def get_exclude_dirs():
@@ -95,7 +96,7 @@ def get_exclude_dirs():
     """
 
     paths = split_scan_dirs(
-        bytes2fsn(config.get("library", "exclude"), "utf-8"))
+        bytes2fsn(config.getbytes("library", "exclude"), "utf-8"))
     return [expanduser(p) for p in paths]
 
 

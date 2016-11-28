@@ -112,8 +112,8 @@ class IRFile(RemoteFile):
         for tag in ["title", "artist", "~format"]:
             value = self.get(tag)
             if value is not None:
-                lines.append("%s=%s" % (tag, encode(value)))
-        return "\n".join(lines)
+                lines.append(encode(tag) + b"=" + encode(value))
+        return b"\n".join(lines)
 
     def can_change(self, k=None):
         if self.streamsong:
@@ -847,7 +847,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         return menu
 
     def restore(self):
-        text = config.get("browsers", "query_text").decode("utf-8")
+        text = config.gettext("browsers", "query_text")
         self.__searchbar.set_text(text)
         if Query.is_parsable(text):
             self.__filter_changed(self.__searchbar, text, restore=True)
