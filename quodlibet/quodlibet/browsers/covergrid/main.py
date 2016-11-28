@@ -289,7 +289,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         view.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
-        view.connect("drag-data-get", self.__drag_data_get) #NOT WORKING
+        view.connect("drag-data-get", self.__drag_data_get) # NOT WORKING
         connect_obj(view, 'button-press-event', self.__popup, view, library)
 
         self.accelerators = Gtk.AccelGroup()
