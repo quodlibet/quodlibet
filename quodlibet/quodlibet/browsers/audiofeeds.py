@@ -19,7 +19,6 @@ from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.compat import pickle
 from quodlibet.browsers import Browser
 from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
@@ -32,6 +31,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, print_w
 from quodlibet.util.path import get_home_dir
 from quodlibet.qltk.x import ScrolledWindow, Align, Button, MenuItem
+from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 
 FEEDS = os.path.join(quodlibet.get_user_dir(), "feeds")
@@ -260,15 +260,15 @@ class AudioFeeds(Browser):
     def write(klass):
         feeds = [row[0] for row in klass.__feeds]
         with open(FEEDS, "wb") as f:
-            pickle.dump(feeds, f, pickle.HIGHEST_PROTOCOL)
+            pickle_dump(feeds, f, 2)
 
     @classmethod
     def init(klass, library):
         uris = set()
         try:
             with open(FEEDS, "rb") as fileobj:
-                feeds = pickle.load(fileobj)
-        except (pickle.PickleError, EnvironmentError, EOFError):
+                feeds = pickle_load(fileobj)
+        except (PickleError, EnvironmentError):
             pass
         else:
             for feed in feeds:

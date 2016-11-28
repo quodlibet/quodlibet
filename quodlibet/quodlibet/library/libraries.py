@@ -13,7 +13,6 @@ These classes are the most basic library classes. As such they are the
 least useful but most content-agnostic.
 """
 
-from pickle import Unpickler
 import os
 import shutil
 import time
@@ -22,19 +21,19 @@ from gi.repository import GObject
 from senf import fsn2text, fsnative
 
 from quodlibet import _
-from quodlibet.formats import MusicFile, AudioFileError
+from quodlibet.formats import MusicFile, AudioFileError, load_audio_files, \
+    dump_audio_files, SerializationError
 from quodlibet.query import Query
 from quodlibet.qltk.notif import Task
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
 from quodlibet import util
-from quodlibet import const
 from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden
 from quodlibet.compat import iteritems, iterkeys, itervalues, listkeys, \
-    listvalues, cBytesIO, pickle
+    listvalues
 
 
 class Library(GObject.GObject, DictMixin):
@@ -205,81 +204,22 @@ class Library(GObject.GObject, DictMixin):
         return items
 
 
-def dump_items(filename, items):
-    """Pickle items to disk.
-
-    Doesn't handle exceptions.
-    """
-
-    dirname = os.path.dirname(filename)
-    mkdir(dirname)
-
-    with atomic_save(filename, "wb") as fileobj:
-        # While protocol 2 is usually faster it uses __setitem__
-        # for unpickle and we override it to clear the sort cache.
-        # This roundtrip makes it much slower, so we use protocol 1
-        # unpickle numbers (py2.7):
-        #   2: 0.66s / 2 + __set_item__: 1.18s / 1 + __set_item__: 0.72s
-        # see: http://bugs.python.org/issue826897
-        pickle.dump(items, fileobj, 1)
-
-
-def unpickle_save(data, default, type_=dict):
-    """Unpickle a list of `type_` subclasses and skip items for which the
-    class is missing.
-
-    In case not just the class lookup fails, returns default.
-    """
-
-    class dummy(type_):
-        pass
-
-    class SaveUnpickler(Unpickler):
-
-        def find_class(self, module, name):
-            try:
-                return Unpickler.find_class(self, module, name)
-            except (ImportError, AttributeError):
-                return dummy
-
-    fileobj = cBytesIO(data)
-
-    try:
-        items = SaveUnpickler(fileobj).load()
-    except Exception:
-        return default
-
-    return [i for i in items if not isinstance(i, dummy)]
-
-
-def load_items(filename, default=None):
+def _load_items(filename):
     """Load items from disk.
 
     In case of an error returns default or an empty list.
     """
 
-    if default is None:
-        default = []
-
     try:
-        fp = open(filename, "rb")
+        with open(filename, "rb") as fp:
+            data = fp.read()
     except EnvironmentError:
-        if const.DEBUG or os.path.exists(filename):
-            print_w("Couldn't load library from: %r" % filename)
-        return default
-
-    # pickle makes 1000 read syscalls for 6000 songs
-    # read the file into memory so that there are less
-    # context switches. saves 40% CPU time..
-    try:
-        data = fp.read()
-    except IOError:
-        fp.close()
-        return default
+        print_w("Couldn't load library file from: %r" % filename)
+        return []
 
     try:
-        items = pickle.loads(data)
-    except Exception:
+        items = load_audio_files(data)
+    except SerializationError:
         # there are too many ways this could fail
         util.print_exc()
 
@@ -289,10 +229,7 @@ def load_items(filename, default=None):
         except EnvironmentError:
             util.print_exc()
 
-        # try to skip items for which the class is missing
-        # XXX: we assume the items are dict subclasses here.. while nothing
-        # else does
-        items = unpickle_save(data, default)
+        return []
 
     return items
 
@@ -311,7 +248,7 @@ class PicklingMixin(object):
         self.filename = filename
         print_d("Loading contents of %r." % filename, self)
 
-        items = load_items(filename)
+        items = _load_items(filename)
 
         # this loads all items without checking their validity, but makes
         # sure that non-mounted items are masked
@@ -328,7 +265,12 @@ class PicklingMixin(object):
         print_d("Saving contents to %r." % filename, self)
 
         try:
-            dump_items(filename, self.get_content())
+            dirname = os.path.dirname(filename)
+            mkdir(dirname)
+            with atomic_save(filename, "wb") as fileobj:
+                fileobj.write(dump_audio_files(self.get_content()))
+                # unhandled SerializationError, shouldn't happen -> better
+                # not replace the library file with nothing
         except EnvironmentError:
             print_w("Couldn't save library to path: %r" % filename)
         else:

@@ -14,7 +14,7 @@ import os
 import shutil
 import time
 
-from senf import fsn2uri, fsnative, fsn2text, devnull
+from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn
 
 from quodlibet import _
 from quodlibet import util
@@ -170,15 +170,12 @@ class AudioFile(dict, ImageContainer):
         pass
 
     def __setitem__(self, key, value):
-        if not self.__dict__:
-            # unpickle case.. we can't fail
-            dict.__setitem__(self, key, value)
-            return
-
         if key.startswith("~#"):
-            assert isinstance(value, number_types)
+            if not isinstance(value, number_types):
+                raise TypeError
         elif key in FILESYSTEM_TAGS:
-            assert isinstance(value, fsnative)
+            if not isinstance(value, fsnative):
+                raise TypeError
         else:
             value = text_type(value)
 
@@ -190,8 +187,7 @@ class AudioFile(dict, ImageContainer):
 
     def __delitem__(self, key):
         dict.__delitem__(self, key)
-        if not self.__dict__:
-            return
+
         pop = self.__dict__.pop
         pop("album_key", None)
         pop("sort_key", None)
@@ -857,6 +853,8 @@ class AudioFile(dict, ImageContainer):
             val = b"=".join(parts[1:])
             if key == "~format":
                 pass
+            elif key in FILESYSTEM_TAGS:
+                self.add(key, bytes2fsn(val, "utf-8"))
             elif key.startswith("~#"):
                 try:
                     self.add(key, int(val))

@@ -440,7 +440,7 @@ class TAudioFile(TestCase):
     def test_to_dump(self):
         dump = bar_1_1.to_dump()
         num = len(set(bar_1_1.keys()) | NUMERIC_ZERO_DEFAULT)
-        self.failUnlessEqual(dump.count("\n"), num + 2)
+        self.failUnlessEqual(dump.count(b"\n"), num + 2)
         for key, value in bar_1_1.items():
             self.failUnless(key in dump)
             self.failUnless(value in dump)
@@ -449,7 +449,8 @@ class TAudioFile(TestCase):
 
         n = AudioFile()
         n.from_dump(dump)
-        self.failUnless(set(dump.split("\n")) == set(n.to_dump().split("\n")))
+        self.failUnless(
+            set(dump.split(b"\n")) == set(n.to_dump().split(b"\n")))
 
     def test_to_dump_long(self):
         if not PY2:
