@@ -14,7 +14,7 @@ import os
 import shutil
 import time
 
-from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn
+from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 
 from quodlibet import _
 from quodlibet import util
@@ -175,7 +175,7 @@ class AudioFile(dict, ImageContainer):
                 raise TypeError
         elif key in FILESYSTEM_TAGS:
             if not isinstance(value, fsnative):
-                raise TypeError
+                value = path2fsn(value)
         else:
             value = text_type(value)
 
