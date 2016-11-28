@@ -8,13 +8,66 @@
 """Code for serializing AudioFile instances"""
 
 import pickle
+from senf import bytes2fsn, fsn2bytes
 
 from quodlibet.util.picklehelper import pickle_loads, pickle_dumps
+from quodlibet.util import is_windows
+from quodlibet.compat import PY3, text_type
 from ._audio import AudioFile
 
 
 class SerializationError(Exception):
     pass
+
+
+def _py2_to_py3(items):
+    assert PY3
+
+    for i in items:
+        l = list(i.items())
+        i.clear()
+        for k, v in l:
+            if isinstance(k, bytes):
+                k = k.decode("utf-8", "replace")
+            else:
+                # strip surrogates
+                try:
+                    k.encode("utf-8")
+                except UnicodeEncodeError:
+                    k = k.encode("utf-8", "replace").decode("utf-8")
+
+            if k == "~filename" or k == "~mountpoint":
+                if isinstance(v, bytes):
+                    v = bytes2fsn(v, None)
+            elif isinstance(v, text_type):
+                # strip surrogates
+                try:
+                    v.encode("utf-8")
+                except UnicodeEncodeError:
+                    v = v.encode("utf-8", "replace").decode("utf-8")
+
+            i[k] = v
+
+    return items
+
+
+def _py3_to_py2(items):
+    assert PY3
+
+    if not is_windows():
+        new_list = []
+        for i in items:
+            type_ = i.__class__
+            inst = dict.__new__(type_)
+            dict.__init__(inst, i)
+            dict.__setitem__(
+                inst, "~filename", fsn2bytes(inst["~filename"], None))
+            dict.__setitem__(
+                inst, "~mountpoint", fsn2bytes(inst["~mountpoint"], None))
+            new_list.append(inst)
+        return new_list
+    else:
+        return items
 
 
 def load_audio_files(data):
@@ -65,6 +118,9 @@ def load_audio_files(data):
             raise SerializationError(
                 "all class lookups failed. something is wrong")
 
+    if PY3:
+        items = _py2_to_py3(items)
+
     try:
         for i in items:
             i.__class__ = i.real_type
@@ -85,6 +141,9 @@ def dump_audio_files(item_list):
 
     assert isinstance(item_list, list)
     assert not item_list or isinstance(item_list[0], AudioFile)
+
+    if PY3:
+        item_list = _py3_to_py2(item_list)
 
     try:
         return pickle_dumps(item_list, 2)
