@@ -99,9 +99,9 @@ class LastFMSyncCache(object):
                     # values are whether we still need to fetch the chart
                     fro, to = map(lambda s: int(chart[s]), ('from', 'to'))
 
-                    # If the chart is older than the register date of the user,
-                    # don't download it. (so the download doesn't start with ~2005
-                    # every time.)
+                    # If the chart is older than the register date of the
+                    # user, don't download it. (So the download doesn't start
+                    # with ~2005 every time.)
                     if to < self.registered:
                         continue
 
