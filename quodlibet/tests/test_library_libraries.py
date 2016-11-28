@@ -13,7 +13,7 @@ from quodlibet.formats import AudioFileError
 from quodlibet import config
 from quodlibet.util import connect_obj
 from quodlibet.formats import AudioFile
-from quodlibet.compat import text_type
+from quodlibet.compat import text_type, iteritems, iterkeys, itervalues
 
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipUnless
 from .helper import capture_output, get_temp_copy
@@ -212,7 +212,7 @@ class TLibrary(TestCase):
         self.failUnlessEqual(
             sorted(self.library.keys()), list(range(100, 120)))
         self.failUnlessEqual(
-            sorted(self.library.iterkeys()), list(range(100, 120)))
+            sorted(iterkeys(self.library)), list(range(100, 120)))
 
     def test_values(self):
         items = []
@@ -222,7 +222,7 @@ class TLibrary(TestCase):
         self.library.add(items)
         self.failUnlessEqual(sorted(self.library.values()), list(range(20)))
         self.failUnlessEqual(
-            sorted(self.library.itervalues()), list(range(20)))
+            sorted(itervalues(self.library)), list(range(20)))
 
     def test_items(self):
         items = []
@@ -232,7 +232,7 @@ class TLibrary(TestCase):
         self.library.add(items)
         expected = list(zip(range(100, 120), range(20)))
         self.failUnlessEqual(sorted(self.library.items()), expected)
-        self.failUnlessEqual(sorted(self.library.iteritems()), expected)
+        self.failUnlessEqual(sorted(iteritems(self.library)), expected)
 
     def test_has_key(self):
         self.failIf(self.library.has_key(10))
@@ -597,8 +597,8 @@ class TAlbumLibrary(TestCase):
         self.failUnless(self.library.has_key(key))
 
     def test_misc_collection(self):
-        self.failUnless(self.library.itervalues())
-        self.failUnless(self.library.iteritems())
+        self.failUnless(itervalues(self.library))
+        self.failUnless(iteritems(self.library))
 
     def test_items(self):
         self.failUnlessEqual(len(self.library.items()), 3)

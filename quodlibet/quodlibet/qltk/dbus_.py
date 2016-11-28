@@ -14,6 +14,7 @@ from quodlibet.util import dbusutils
 from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
 from quodlibet.formats import decode_value
+from quodlibet.compat import itervalues
 
 
 class DBusHandler(dbus.service.Object):
@@ -115,6 +116,6 @@ class DBusHandler(dbus.service.Object):
             except Query.error:
                 pass
             else:
-                return [self.__dict(s) for s in self.library.itervalues()
+                return [self.__dict(s) for s in itervalues(self.library)
                         if results(s)]
         return None

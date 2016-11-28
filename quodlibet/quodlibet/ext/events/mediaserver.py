@@ -27,6 +27,7 @@ from quodlibet.pattern import Pattern
 from quodlibet.qltk import Icons
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
+from quodlibet.compat import iteritems, itervalues
 
 BASE_PATH = "/org/gnome/UPnP/MediaServer2"
 BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
@@ -417,8 +418,8 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         dbus.service.FallbackObject.__init__(self, bus, self.PATH)
 
         self.__library = library
-        self.__map = dict((id(v), v) for v in self.__library.itervalues())
-        self.__reverse = dict((v, k) for k, v in self.__map.iteritems())
+        self.__map = dict((id(v), v) for v in itervalues(self.__library))
+        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
 
         self.__song = DummySongObject(self)
 
@@ -495,8 +496,8 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         self.__library = library.albums
         self.__library.load()
 
-        self.__map = dict((id(v), v) for v in self.__library.itervalues())
-        self.__reverse = dict((v, k) for k, v in self.__map.iteritems())
+        self.__map = dict((id(v), v) for v in itervalues(self.__library))
+        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
 
         signals = [
             ("changed", self.__albums_changed),

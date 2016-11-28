@@ -21,6 +21,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util.path import unexpand, get_home_dir, glib2fsn, fsn2glib
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util import connect_obj
+from quodlibet.compat import itervalues
 
 
 def get_init_select_dir():
@@ -107,7 +108,7 @@ class ScanBox(Gtk.HBox):
         remove_button.set_sensitive(selection.count_selected_rows())
 
     def __save(self):
-        set_scan_dirs(list(self.model.itervalues()))
+        set_scan_dirs(list(itervalues(self.model)))
 
     def __remove(self, view):
         view.remove_selection()

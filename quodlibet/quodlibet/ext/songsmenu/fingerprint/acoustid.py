@@ -19,6 +19,7 @@ from xml.dom.minidom import parseString
 from gi.repository import GLib
 
 from quodlibet.util import print_w
+from quodlibet.compat import iteritems
 from .util import get_api_key, GateKeeper
 
 
@@ -116,7 +117,7 @@ class AcoustidSubmissionThread(threading.Thread):
             }
 
             tuples = []
-            for key, value in track.iteritems():
+            for key, value in iteritems(track):
                 # this also dismisses 0.. which should be ok here.
                 if not value:
                     continue

@@ -11,7 +11,7 @@ from gi.repository import Gtk
 
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort, ObjectTreeStore
-from quodlibet.compat import cmp, xrange
+from quodlibet.compat import cmp, xrange, itervalues
 
 
 class _TObjectStoreMixin(object):
@@ -165,11 +165,11 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
     def test_itervalues(self):
         m = ObjectStore()
         m.insert_many(0, range(10))
-        self.failUnlessEqual(list(range(10)), list(m.itervalues()))
+        self.failUnlessEqual(list(range(10)), list(itervalues(m)))
 
     def test_itervalues_empty(self):
         m = ObjectStore()
-        self.assertEqual(list(m.itervalues()), [])
+        self.assertEqual(list(itervalues(m)), [])
 
     def test_iterrows(self):
         m = ObjectStore()

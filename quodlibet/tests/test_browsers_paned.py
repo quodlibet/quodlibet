@@ -22,6 +22,7 @@ from quodlibet.browsers.paned.pane import Pane
 from quodlibet.formats import AudioFile
 from quodlibet.util.collection import Collection
 from quodlibet.library import SongLibrary, SongLibrarian
+from quodlibet.compat import itervalues
 
 
 SONGS = [
@@ -399,7 +400,7 @@ class TPaneModel(TestCase):
             self._verify_model(m)
 
         self.assertEqual(len(m), len(m2))
-        for e1, e2 in zip(m.itervalues(), m2.itervalues()):
+        for e1, e2 in zip(itervalues(m), itervalues(m2)):
             self.assertEqual(e1.key, e2.key)
 
         m3 = PaneModel(conf)
@@ -408,7 +409,7 @@ class TPaneModel(TestCase):
             self._verify_model(m)
 
         self.assertEqual(len(m), len(m3))
-        for e1, e2 in zip(m.itervalues(), m3.itervalues()):
+        for e1, e2 in zip(itervalues(m), itervalues(m3)):
             self.assertEqual(e1.key, e2.key)
 
     def test_add_unknown_first(self):

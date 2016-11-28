@@ -36,7 +36,7 @@ from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
 from quodlibet.compat import iteritems, string_types, text_type, listkeys, \
-    listmap
+    listmap, itervalues
 
 
 class Comment(object):
@@ -716,7 +716,7 @@ class EditTags(Gtk.VBox):
         added = {}
         renamed = {}
 
-        for entry in model.itervalues():
+        for entry in itervalues(model):
             if entry.edited and not (entry.deleted or entry.renamed):
                 if entry.origvalue is not None:
                     l = updated.setdefault(entry.tag, [])
@@ -749,7 +749,7 @@ class EditTags(Gtk.VBox):
                     break
 
             changed = False
-            for key, values in updated.iteritems():
+            for key, values in iteritems(updated):
                 for (new_value, old_value) in values:
                     if song.can_change(key):
                         if old_value is None:
@@ -758,13 +758,13 @@ class EditTags(Gtk.VBox):
                             song.change(key, old_value.text, new_value.text)
                         changed = True
 
-            for key, values in added.iteritems():
+            for key, values in iteritems(added):
                 for value in values:
                     if song.can_change(key):
                         song.add(key, value.text)
                         changed = True
 
-            for key, values in deleted.iteritems():
+            for key, values in iteritems(deleted):
                 for value in values:
                     if not value.shared:
                         # In case it isn't shared we don't know the actual
@@ -778,7 +778,7 @@ class EditTags(Gtk.VBox):
                         changed = True
 
             save_rename = []
-            for new_tag, values in renamed.iteritems():
+            for new_tag, values in iteritems(renamed):
                 for old_tag, new_value, old_value in values:
                     if (song.can_change(new_tag) and old_tag in song):
                         if not new_value.is_special():

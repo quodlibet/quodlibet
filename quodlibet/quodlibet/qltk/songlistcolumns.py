@@ -22,7 +22,8 @@ from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.qltk import add_css
 from quodlibet.util.path import unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS
-from quodlibet.compat import text_type, string_types, PY2, listvalues
+from quodlibet.compat import text_type, string_types, PY2, listvalues, \
+    listitems
 
 
 def create_songlist_column(t):
@@ -395,7 +396,7 @@ class NumericColumn(TextColumn):
         end = end[0]
 
         # compute the cell width for all drawn cells in range +/- 3
-        for key, value in self._texts.items():
+        for key, value in listitems(self._texts):
             if not (start - 3) <= key <= (end + 3):
                 del self._texts[key]
             elif isinstance(value, string_types):

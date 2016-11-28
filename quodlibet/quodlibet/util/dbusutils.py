@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 import dbus
 import dbus.service
 
-from quodlibet.compat import unichr, text_type, PY3
+from quodlibet.compat import unichr, text_type, PY3, iteritems
 
 
 def dbus_unicode_validate(text):
@@ -172,7 +172,7 @@ class DBusIntrospectable(object):
     def Introspect(self):
         parts = []
         parts.append("<node>")
-        for iface, intros in self.__ispec.iteritems():
+        for iface, intros in iteritems(self.__ispec):
             parts.append("<interface name=\"%s\">" % iface)
             parts.extend(intros)
             parts.append("</interface>")
@@ -283,7 +283,7 @@ class DBusProperty(object):
                 raise ValueError("Property %s not registered" % prop)
             combos.setdefault(iface, []).append(prop)
 
-        for iface, props in combos.iteritems():
+        for iface, props in iteritems(combos):
             values = {}
             inval = []
             for prop in props:

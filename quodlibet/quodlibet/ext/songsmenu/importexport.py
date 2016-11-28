@@ -16,7 +16,7 @@ from quodlibet.plugins.songshelpers import each_song, is_writable, is_a_file, \
 from quodlibet.qltk import ErrorMessage, Icons
 from quodlibet.util.path import get_home_dir
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.compat import cmp
+from quodlibet.compat import cmp, iteritems
 
 __all__ = ['Export', 'Import']
 
@@ -161,7 +161,7 @@ class Import(SongsMenuPlugin):
             return
 
         for song, meta, name in zip(songs, metadata, names):
-            for key, values in meta.iteritems():
+            for key, values in iteritems(meta):
                 if append and key in song:
                     values = song.list(key) + values
                 song[key] = '\n'.join(values)

@@ -10,7 +10,7 @@ import shlex
 
 from quodlibet import const
 from quodlibet.util import print_d, print_w
-from quodlibet.compat import text_type
+from quodlibet.compat import text_type, iteritems
 from .tcpserver import BaseTCPServer, BaseTCPConnection
 
 
@@ -209,7 +209,7 @@ class MPDService(object):
 
     def flush_idle(self):
         flushed = []
-        for conn, subs in self._idle_subscriptions.iteritems():
+        for conn, subs in iteritems(self._idle_subscriptions):
             # figure out which subsystems to report for each connection
             queued = self._idle_queue[conn]
             if subs:
@@ -234,7 +234,7 @@ class MPDService(object):
         self._idle_subscriptions.pop(connection, None)
 
     def emit_changed(self, subsystem):
-        for conn, subs in self._idle_queue.iteritems():
+        for conn, subs in iteritems(self._idle_queue):
             subs.add(subsystem)
         self.flush_idle()
 

@@ -11,7 +11,7 @@ from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.collection import Collection
-from quodlibet.compat import iteritems
+from quodlibet.compat import iteritems, itervalues
 
 
 class BaseEntry(Collection):
@@ -151,7 +151,7 @@ class PaneModel(ObjectStore):
 
         first_path = paths[0]
         if isinstance(self[first_path][0], AllEntry):
-            for entry in self.itervalues():
+            for entry in itervalues(self):
                 s.update(entry.songs)
         else:
             for path in paths:
@@ -327,13 +327,13 @@ class PaneModel(ObjectStore):
         # fast path, use the keys since they are unique and only depend
         # on the tag in question.
         if tag in tags and len(tags) == 1:
-            return {r.key for r in self.itervalues()
+            return {r.key for r in itervalues(self)
                     if not isinstance(r, AllEntry)}
 
         # For patterns/tied tags we have to make sure that filtering for
         # that key will return only songs that all have the specified value
         values = set()
-        for entry in self.itervalues():
+        for entry in itervalues(self):
             if isinstance(entry, AllEntry):
                 continue
 
@@ -357,10 +357,10 @@ class PaneModel(ObjectStore):
         # Like with self.list we can select all matching keys if the tag
         # is our only tag
         if len(tags) == 1 and tag in tags:
-            return [e.key for e in self.itervalues() if e.key in values]
+            return [e.key for e in itervalues(self) if e.key in values]
 
         keys = []
-        for entry in self.itervalues():
+        for entry in itervalues(self):
             if isinstance(entry, SongsEntry):
                 for value in values:
                     if entry.all_have(tag, value):

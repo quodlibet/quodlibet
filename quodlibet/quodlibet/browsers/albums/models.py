@@ -9,6 +9,7 @@ from quodlibet import app
 from quodlibet import config
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort
+from quodlibet.compat import itervalues
 
 
 class AlbumItem(object):
@@ -52,7 +53,7 @@ class AlbumModelMixin(object):
         for path in paths:
             item = self.get_value(self.get_iter(path))
             if item.album is None:
-                return [i for i in self.itervalues() if i.album is not None]
+                return [i for i in itervalues(self) if i.album is not None]
             items.append(item)
         return items
 
@@ -77,7 +78,7 @@ class AlbumModel(ObjectStore, AlbumModelMixin):
         ]
 
         self.append(row=[AlbumItem(None)])
-        self.append_many((AlbumItem(a) for a in albums.itervalues()))
+        self.append_many((AlbumItem(a) for a in itervalues(albums)))
 
     def refresh_all(self):
         """Trigger redraws for all rows"""

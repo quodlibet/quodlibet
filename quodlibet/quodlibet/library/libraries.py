@@ -432,7 +432,7 @@ class SongLibrary(PicklingLibrary):
 
     def tag_values(self, tag):
         """Return a set of all values for the given tag."""
-        return {value for song in self.itervalues()
+        return {value for song in itervalues(self)
                 for value in song.list(tag)}
 
     def rename(self, song, newname, changed=None):
@@ -789,7 +789,7 @@ class FileLibrary(PicklingLibrary):
     def mask(self, point):
         print_d("Masking %r." % point, self)
         removed = {}
-        for item in self.itervalues():
+        for item in itervalues(self):
             if item.mountpoint == point:
                 removed[item.key] = item
         if removed:
