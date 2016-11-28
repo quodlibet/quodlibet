@@ -56,7 +56,7 @@ NUMERIC_ZERO_DEFAULT = {"~#skipcount", "~#playcount", "~#length", "~#bitrate"}
 NUMERIC_ZERO_DEFAULT.update(TIME_TAGS)
 NUMERIC_ZERO_DEFAULT.update(SIZE_TAGS)
 
-FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname"}
+FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname", "~mountpoint"}
 """Values are bytes in Linux instead of unicode"""
 
 SORT_TO_TAG = dict([(v, k) for (k, v) in iteritems(TAG_TO_SORT)])

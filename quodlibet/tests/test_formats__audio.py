@@ -341,6 +341,13 @@ class TAudioFile(TestCase):
         song["lyricist"] = u"Lyricist"
         self.assertTrue(isinstance(song.lyric_filename, fsnative))
 
+    def test_mountpoint(self):
+        song = AudioFile()
+        song["~filename"] = fsnative(u"filename")
+        song.sanitize()
+        assert isinstance(song["~mountpoint"], fsnative)
+        assert isinstance(song.comma("~mointpoint"), text_type)
+
     def test_sanitize(self):
         q = AudioFile(quux)
         b = AudioFile(bar_1_1)
