@@ -763,7 +763,7 @@ class AudioFile(dict, ImageContainer):
                 head, tail = os.path.split(head)
                 # Prevent infinite loop without a fully-qualified filename
                 # (the unit tests use these).
-                head = head or "/"
+                head = head or fsnative(u"/")
                 if os.path.ismount(head):
                     self["~mountpoint"] = head
         else:
