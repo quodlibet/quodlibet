@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010 Steven Robertson
+#           2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -63,6 +64,7 @@ class LastFMSyncCache(object):
     def __init__(self, username):
         self.username = username
         self.lastupdated = None
+        self.registered = None
         self.charts = {}
         self.songs = {}
 
@@ -83,6 +85,10 @@ class LastFMSyncCache(object):
         try:
             # Last.fm updates their charts weekly; we only poll for new
             # charts if it's been more than a day since the last poll
+            if not self.registered:
+                resp = apicall('user.getinfo', user=self.username)
+                self.registered = int(resp['user']['registered']['unixtime'])
+
             now = time.time()
             if not self.lastupdated or self.lastupdated + (24 * 60 * 60) < now:
                 prog(_("Updating chart list."), 0)
@@ -92,6 +98,13 @@ class LastFMSyncCache(object):
                     # Charts keys are 2-tuple (from_timestamp, to_timestamp);
                     # values are whether we still need to fetch the chart
                     fro, to = map(lambda s: int(chart[s]), ('from', 'to'))
+
+                    # If the chart is older than the register date of the
+                    # user, don't download it. (So the download doesn't start
+                    # with ~2005 every time.)
+                    if to < self.registered:
+                        continue
+
                     self.charts.setdefault((fro, to), True)
                 self.lastupdated = now
             elif not filter(None, self.charts.values()):
