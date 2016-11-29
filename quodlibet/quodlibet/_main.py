@@ -16,7 +16,6 @@ from quodlibet import build
 from quodlibet.util import cached_func, windows, set_process_title
 from quodlibet.util.dprint import print_d
 from quodlibet.util.path import mkdir
-from quodlibet.compat import PY2
 
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
@@ -120,9 +119,6 @@ def get_user_dir():
         USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
     else:
         USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
-
-    if not PY2:
-        USERDIR += "_py3"
 
     if 'QUODLIBET_USERDIR' in environ:
         USERDIR = environ['QUODLIBET_USERDIR']
