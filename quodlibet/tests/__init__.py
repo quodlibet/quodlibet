@@ -184,15 +184,7 @@ def init_test_environ():
     # LANG for gettext, setlocale for number formatting etc.
     # Note: setlocale has to be called after Gtk.init()
     if os.name != "nt":
-        for loc in ["C.UTF-8", "en_US.utf8"]:
-            try:
-                environ["LANG"] = locale.setlocale(locale.LC_ALL, loc)
-            except locale.Error as err:
-                pass
-            else:
-                break
-        else:
-            raise err
+        environ["LANG"] = locale.setlocale(locale.LC_ALL, "en_US.utf8")
     else:
         environ["LANG"] = "en_US.utf8"
         locale.setlocale(locale.LC_ALL, "english")
