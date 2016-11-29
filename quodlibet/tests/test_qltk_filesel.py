@@ -11,10 +11,27 @@ sys.modules['dircache'] = os # cheat the dircache effects
 
 from senf import fsnative
 
-from quodlibet.qltk.filesel import DirectoryTree, FileSelector, get_drives
-from quodlibet.qltk.filesel import MainDirectoryTree, MainFileSelector
+from quodlibet.qltk.filesel import DirectoryTree, FileSelector, get_drives, \
+    MainDirectoryTree, MainFileSelector, get_gtk_bookmarks, parse_gtk_bookmarks
 from quodlibet.util.path import get_home_dir
 import quodlibet.config
+from quodlibet.util import is_windows
+
+
+class Tget_gtk_bookmarks(TestCase):
+
+    def test_main(self):
+        paths = get_gtk_bookmarks()
+        assert all(isinstance(p, fsnative) for p in paths)
+
+    def test_parse(self):
+        if is_windows():
+            return
+
+        data = (b'file:///foo/bar\nfile:///home/user\n'
+                b'file:///home/user/Downloads Downloads\n')
+        paths = parse_gtk_bookmarks(data)
+        assert all(isinstance(p, fsnative) for p in paths)
 
 
 class TDirectoryTree(TestCase):

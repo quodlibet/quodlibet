@@ -20,10 +20,11 @@ from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.compat import xrange, text_type, number_types, string_types, \
-    cmp
+    swap_to_string
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.dprint import print_d
+from quodlibet.util.misc import total_ordering
 from .collections import HashedList
 
 
@@ -311,6 +312,8 @@ class Album(Collection):
         return "Album(%s)" % repr(self.key)
 
 
+@swap_to_string
+@total_ordering
 class Playlist(Collection, Iterable):
     """A Playlist is a `Collection` that has list-like features
     Songs can appear more than once.
@@ -502,16 +505,22 @@ class Playlist(Collection, Iterable):
         random.shuffle(self._list)
         self.write()
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
         try:
-            return cmp(self.name, other.name)
+            return self.name == other.name
         except AttributeError:
-            return -1
+            return False
+
+    def __lt__(self, other):
+        try:
+            return self.name < other.name
+        except AttributeError:
+            return False
 
     def __str__(self):
         songs_text = (ngettext("%d song", "%d songs", len(self.songs))
                       % len(self.songs))
-        return "\"%s\" (%s)" % (self.name, songs_text)
+        return u"\"%s\" (%s)" % (self.name, songs_text)
 
 
 class FileBackedPlaylist(Playlist):

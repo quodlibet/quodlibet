@@ -39,6 +39,7 @@ from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import mtime, normalize_path
 from quodlibet.util import connect_obj, connect_destroy, format_int_locale
 from quodlibet.update import UpdateDialog
+from quodlibet.compat import listfilter
 
 
 class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
@@ -253,7 +254,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
                 files.append(song)
             else:
                 files.append(formats.MusicFile(filename))
-        files = filter(None, files)
+        files = listfilter(None, files)
         if len(files) == 0:
             self.set_title("Ex Falso")
         elif len(files) == 1:

@@ -101,7 +101,10 @@ class CoverSourcePlugin(GObject.Object):
         """
         key = sha1()
         # Should be fine as long as the same interpreter is used.
-        key.update(repr(self.song.album_key))
+        data = repr(self.song.album_key)
+        if not isinstance(data, bytes):
+            data = data.encode("utf-8")
+        key.update(data)
         return escape_filename(key.hexdigest())
 
     @property

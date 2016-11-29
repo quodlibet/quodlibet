@@ -77,6 +77,8 @@ if PY2:
 
         return cls
 
+    escape_decode = lambda b: b.decode("string-escape")
+
 elif PY3:
     import builtins
     builtins
@@ -98,6 +100,7 @@ elif PY3:
     floordiv
     from itertools import zip_longest as izip_longest
     izip_longest
+    import codecs
 
     xrange = range
     long = int
@@ -131,3 +134,5 @@ elif PY3:
 
     def swap_to_string(cls):
         return cls
+
+    escape_decode = lambda b: codecs.escape_decode(b)[0]

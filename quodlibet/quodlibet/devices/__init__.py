@@ -12,6 +12,7 @@ try:
 except ImportError:
     import configparser as ConfigParser
 
+from senf import fsn2bytes, path2fsn
 from gi.repository import GObject
 from quodlibet.util.path import xdg_get_system_data_dirs
 
@@ -22,7 +23,7 @@ from quodlibet import util
 from quodlibet.devices import _udev as udev
 from quodlibet.util.importhelper import load_dir_modules
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.compat import text_type
+from quodlibet.compat import text_type, escape_decode
 
 try:
     import dbus
@@ -161,14 +162,14 @@ def get_devices_from_path(udev_ctx, path):
     Either returns a non empty list or raises EnvironmentError.
     """
 
-    path = path.encode("ascii")
+    path = fsn2bytes(path2fsn(path), None)
     enum = udev.UdevEnumerate.new(udev_ctx)
 
     if not enum:
         raise EnvironmentError
 
     # only match the device we want
-    if enum.add_match_property("DEVNAME", path) != 0:
+    if enum.add_match_property(b"DEVNAME", path) != 0:
         enum.unref()
         raise EnvironmentError
 
@@ -204,7 +205,7 @@ def get_devices_from_path(udev_ctx, path):
         for e in entry:
             name = e.get_name()
             value = e.get_value()
-            attrs[name] = value.decode("string-escape")
+            attrs[name] = escape_decode(value)
         device_attrs.append(attrs)
 
     # the first device owns its parents
@@ -213,8 +214,15 @@ def get_devices_from_path(udev_ctx, path):
     return device_attrs
 
 
-def dbus_barray_to_str(array):
-    return b"".join(map(bytes, array)).rstrip(b"\x00")
+def dbus_barray_to_bytes(array):
+    """
+    Args:
+        array (dbus.Array[dbus.Byte])
+    Returns:
+        bytes
+    """
+
+    return bytes(bytearray(array)).split(b"\x00", 1)[0]
 
 
 class UDisks2Manager(DeviceManager):
@@ -274,7 +282,7 @@ class UDisks2Manager(DeviceManager):
             # I think this shouldn't happen, but check anyway
             return
 
-        dev_path = dbus_barray_to_str(block["Device"])
+        dev_path = dbus_barray_to_bytes(block["Device"])
         print_d("Found device: %r" % dev_path)
 
         media_player_id = get_media_player_id(self._udev, dev_path)
@@ -312,7 +320,7 @@ class UDisks2Manager(DeviceManager):
         except dbus.DBusException:
             paths = []
         else:
-            paths = [dbus_barray_to_str(v) for v in array]
+            paths = [dbus_barray_to_bytes(v) for v in array]
 
         if paths:
             return paths[0]
@@ -320,7 +328,7 @@ class UDisks2Manager(DeviceManager):
 
     def get_block_device(self, path):
         block = self._blocks[path]
-        return dbus_barray_to_str(block["Device"])
+        return dbus_barray_to_bytes(block["Device"])
 
     def eject(self, path):
         # first try to unmount

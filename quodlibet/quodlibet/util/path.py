@@ -14,7 +14,8 @@ import tempfile
 import codecs
 import shlex
 
-from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars
+from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
+    fsn2text, text2fsn
 
 from quodlibet.compat import PY2, urlparse, text_type, quote, unquote
 from . import windows
@@ -111,23 +112,29 @@ def filesize(filename):
 def escape_filename(s):
     """Escape a string in a manner suitable for a filename.
 
-    Takes unicode or str and returns a fsnative path.
+    Args:
+        s (text_type)
+    Returns:
+        fsnative
     """
 
-    if isinstance(s, text_type):
-        s = s.encode("utf-8")
-
-    quoted = quote(s, safe="")
-    if PY2:
-        quoted = quoted.decode("utf-8")
-    return fsnative(quoted)
+    s = text_type(s)
+    s = fsn2bytes(text2fsn(s), "utf-8")
+    return quote(s, safe=b"")
 
 
 def unescape_filename(s):
-    """Unescape a string in a manner suitable for a filename."""
-    if isinstance(s, text_type):
-        s = s.encode("utf-8")
-    return unquote(s).decode("utf-8")
+    """Unescape a string in a manner suitable for a filename.
+
+    Args:
+        filename (fsnative)
+    Returns:
+        text_type
+    """
+
+    assert isinstance(s, fsnative)
+
+    return fsn2text(unquote(s))
 
 
 def unexpand(filename):
