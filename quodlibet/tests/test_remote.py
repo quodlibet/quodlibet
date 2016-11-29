@@ -3,6 +3,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from senf import fsn2bytes
+
 from . import TestCase
 from .helper import temp_filename
 
@@ -32,7 +34,7 @@ class TUnixRemote(TestCase):
         with temp_filename() as fn:
             mock = Mock(resp=b"resp")
             remote = QuodLibetUnixRemote(None, mock)
-            remote._callback(b"\x00foo\x00%s\x00" % fn)
+            remote._callback(b"\x00foo\x00%s\x00" % fsn2bytes(fn, "utf-8"))
             self.assertEqual(mock.lines, [b"foo"])
             with open(fn, "rb") as h:
                 self.assertEqual(h.read(), b"resp")

@@ -74,7 +74,7 @@ class TAlbum(TestCase):
         album = Album(songs[0])
         album.songs = set(songs)
 
-        s.failUnlessEqual(album.comma("~artist~dummy"), "a - e, d")
+        s.failUnlessEqual(album.comma("~artist~dummy"), "a - d, e")
 
     def test_tied_num_tags(s):
         songs = [
@@ -87,9 +87,9 @@ class TAlbum(TestCase):
         album.songs = set(songs)
 
         s.failUnlessEqual(album.comma("~foo~~s~~~"), "")
-        s.failUnlessEqual(album.comma("~#length~dummy"), "12 - e, d")
-        s.failUnlessEqual(album.comma("~#rating~dummy"), "0.50 - e, d")
-        s.failUnlessEqual(album.comma("~#length:sum~dummy"), "12 - e, d")
+        s.failUnlessEqual(album.comma("~#length~dummy"), "12 - d, e")
+        s.failUnlessEqual(album.comma("~#rating~dummy"), "0.50 - d, e")
+        s.failUnlessEqual(album.comma("~#length:sum~dummy"), "12 - d, e")
         s.failUnlessEqual(album.comma("~#dummy2"), 5)
         s.failUnlessEqual(album.comma("~#dummy3"), "")
 

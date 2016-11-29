@@ -540,7 +540,7 @@ class FloatConfProp(ConfProp):
 def str_to_color_tuple(s):
     """Raises ValueError"""
 
-    lst = map(float, s.split())
+    lst = [float(p) for p in s.split()]
     while len(lst) < 4:
         lst.append(0.0)
     return tuple(lst)

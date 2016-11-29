@@ -12,9 +12,10 @@ from quodlibet.formats import AudioFileError
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.compat import cmp
+from quodlibet.util.misc import total_ordering
 
 
+@total_ordering
 class SongWrapper(object):
     __slots__ = ['_song', '_updated', '_needs_write']
 
@@ -54,11 +55,11 @@ class SongWrapper(object):
         else:
             return super(SongWrapper, self).__setattr__(attr, value)
 
-    def __cmp__(self, other):
-        try:
-            return cmp(self._song, other._song)
-        except:
-            return cmp(self._song, other)
+    def __eq__(self, other):
+        return self._song == other._song
+
+    def __lt__(self, other):
+        return self._song < other._song
 
     def __getitem__(self, *args):
         return self._song.__getitem__(*args)

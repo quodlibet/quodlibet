@@ -8,7 +8,7 @@
 import os
 
 from gi.repository import Gtk
-from senf import uri2fsn, fsnative, fsn2text, path2fsn
+from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn
 
 import quodlibet
 from quodlibet import _
@@ -61,10 +61,13 @@ def parse_m3u(filename, library=None):
     with open(filename, "rb") as h:
         for line in h:
             line = line.strip()
-            if line.startswith("#"):
+            if line.startswith(b"#"):
                 continue
             else:
-                filenames.append(line)
+                try:
+                    filenames.append(bytes2fsn(line, "utf-8"))
+                except ValueError:
+                    continue
     return __parse_playlist(plname, filename, filenames, library)
 
 

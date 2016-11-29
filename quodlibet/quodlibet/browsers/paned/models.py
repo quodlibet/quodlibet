@@ -11,7 +11,7 @@ from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.collection import Collection
-from quodlibet.compat import iteritems, itervalues
+from quodlibet.compat import iteritems, listfilter
 
 
 class BaseEntry(Collection):
@@ -21,7 +21,7 @@ class BaseEntry(Collection):
 
         self.songs = set(songs or [])
         self.key = key # not used for sorting!
-        self.sort = ""
+        self.sort = tuple()
 
     def all_have(self, tag, value):
         """Check if all songs have tag `tag` set to `value`"""
@@ -80,7 +80,7 @@ class SongsEntry(BaseEntry):
 class UnknownEntry(SongsEntry):
 
     def __init__(self, songs=None):
-        super(UnknownEntry, self).__init__("", "", songs)
+        super(UnknownEntry, self).__init__("", tuple(), songs)
 
     def get_text(self, config):
         return True, "<b>%s</b>" % _("Unknown")
@@ -126,7 +126,7 @@ class PaneModel(ObjectStore):
             return self.__key_cache[song]
         except KeyError:
             # We filter out empty values, so Unknown can be ""
-            self.__key_cache[song] = filter(
+            self.__key_cache[song] = listfilter(
                 lambda v: v[0], self.config.format(song))
             return self.__key_cache[song]
 
@@ -151,7 +151,7 @@ class PaneModel(ObjectStore):
 
         first_path = paths[0]
         if isinstance(self[first_path][0], AllEntry):
-            for entry in itervalues(self):
+            for entry in self.itervalues():
                 s.update(entry.songs)
         else:
             for path in paths:
@@ -327,13 +327,13 @@ class PaneModel(ObjectStore):
         # fast path, use the keys since they are unique and only depend
         # on the tag in question.
         if tag in tags and len(tags) == 1:
-            return {r.key for r in itervalues(self)
+            return {r.key for r in self.itervalues()
                     if not isinstance(r, AllEntry)}
 
         # For patterns/tied tags we have to make sure that filtering for
         # that key will return only songs that all have the specified value
         values = set()
-        for entry in itervalues(self):
+        for entry in self.itervalues():
             if isinstance(entry, AllEntry):
                 continue
 
@@ -357,10 +357,10 @@ class PaneModel(ObjectStore):
         # Like with self.list we can select all matching keys if the tag
         # is our only tag
         if len(tags) == 1 and tag in tags:
-            return [e.key for e in itervalues(self) if e.key in values]
+            return [e.key for e in self.itervalues() if e.key in values]
 
         keys = []
-        for entry in itervalues(self):
+        for entry in self.itervalues():
             if isinstance(entry, SongsEntry):
                 for value in values:
                     if entry.all_have(tag, value):

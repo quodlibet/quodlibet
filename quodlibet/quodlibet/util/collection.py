@@ -20,7 +20,7 @@ from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.compat import xrange, text_type, number_types, string_types, \
-    swap_to_string
+    swap_to_string, listmap
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.dprint import print_d
@@ -113,7 +113,8 @@ class Collection(object):
                 return x
             v = map(default_funct, v)
             v = map(lambda x: (isinstance(x, float) and "%.2f" % x) or x, v)
-            v = map(lambda x: isinstance(x, string_types) and x or str(x), v)
+            v = map(
+                lambda x: isinstance(x, string_types) and x or text_type(x), v)
             return connector.join(filter(None, v)) or default
         else:
             value = self.__get_cached_value(key)
@@ -266,8 +267,8 @@ class Collection(object):
             for value in song.list(key):
                 result[value] = result.get(value, 0) - 1
 
-        values = map(lambda x: x[0],
-                     sorted(result.items(), key=lambda x: x[1]))
+        values = listmap(lambda x: x[0],
+                     sorted(result.items(), key=lambda x: (x[1], x[0])))
         return "\n".join(values) if values else None
 
 

@@ -7,7 +7,7 @@ from tests import TestCase, get_data_path
 
 import os
 
-from senf import fsnative, fsn2text
+from senf import fsnative, fsn2text, bytes2fsn
 
 from quodlibet import config
 from quodlibet.compat import PY2, text_type, long
@@ -432,10 +432,10 @@ class TAudioFile(TestCase):
         num = len(set(bar_1_1.keys()) | NUMERIC_ZERO_DEFAULT)
         self.failUnlessEqual(dump.count(b"\n"), num + 2)
         for key, value in bar_1_1.items():
-            self.failUnless(key in dump)
-            self.failUnless(value in dump)
+            self.failUnless(key.encode("utf-8") in dump)
+            self.failUnless(value.encode("utf-8") in dump)
         for key in NUMERIC_ZERO_DEFAULT:
-            self.failUnless(key in dump)
+            self.failUnless(key.encode("utf-8") in dump)
 
         n = AudioFile()
         n.from_dump(dump)
@@ -651,7 +651,10 @@ class TAudioFile(TestCase):
             f = AudioFile({"~filename": u"/\xf6\xe4.mp3", "title": "win"})
             self.failUnlessEqual(f("~uri"), "file:///%C3%B6%C3%A4.mp3")
         else:
-            f = AudioFile({"~filename": "/\x87\x12.mp3", "title": "linux"})
+            f = AudioFile({
+                "~filename": bytes2fsn(b"/\x87\x12.mp3", None),
+                "title": "linux",
+            })
             self.failUnlessEqual(f("~uri"), "file:///%87%12.mp3")
 
     def test_reload(self):

@@ -16,6 +16,7 @@ from quodlibet.util import print_exc, format_int_locale
 from quodlibet.util.dprint import print_d, print_e
 from quodlibet.plugins import PluginHandler, PluginManager
 from quodlibet.plugins.gui import MenuItemPlugin
+from quodlibet.compat import listfilter
 
 
 class ConfirmMultiPlaylistInvoke(WarningMessage):
@@ -130,7 +131,7 @@ class PlaylistPluginHandler(PluginHandler):
                 except:
                     print_e("Couldn't initialise playlist plugin %s: " % Kind)
                     print_exc()
-        items = filter(lambda i: i.initialized, items)
+        items = listfilter(lambda i: i.initialized, items)
 
         if items:
             menu.append(SeparatorMenuItem())
@@ -202,7 +203,7 @@ class PlaylistPluginHandler(PluginHandler):
             except Exception:
                 print_exc()
             else:
-                if max(ret):
+                if any(ret):
                     return
         if callable(plugin.plugin_playlists):
             try:

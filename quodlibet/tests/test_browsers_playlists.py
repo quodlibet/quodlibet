@@ -12,13 +12,13 @@ from .helper import dummy_path
 import os
 import shutil
 
-from senf import fsn2uri
+from senf import fsn2uri, fsn2bytes
 
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.library import SongLibrary
 import quodlibet.config
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import fsn2glib, mkdir
+from quodlibet.util.path import mkdir
 from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
 from tests.test_browsers_search import SONGS, TSearchBar
@@ -48,7 +48,7 @@ class TParsePlaylistMixin(object):
         os.close(h)
         with open(name, "wb") as f:
             target = self.prefix
-            target += fsn2glib(get_data_path("silence-44-s.ogg"))
+            target += fsn2bytes(get_data_path("silence-44-s.ogg"), "utf-8")
             f.write(target)
         list = self.Parse(name)
         os.unlink(name)
@@ -60,9 +60,9 @@ class TParsePlaylistMixin(object):
         h, name = mkstemp()
         os.close(h)
         target = get_data_path("silence-44-s.ogg")
-        target = fsn2uri(target)
+        target = fsn2uri(target).encode("ascii")
         target = self.prefix + target
-        with open(name, "w") as f:
+        with open(name, "wb") as f:
             f.write(target)
         list = self.Parse(name)
         os.unlink(name)
@@ -73,12 +73,12 @@ class TParsePlaylistMixin(object):
 
 class TParseM3U(TParsePlaylist, TParsePlaylistMixin):
     Parse = staticmethod(parse_m3u)
-    prefix = ""
+    prefix = b""
 
 
 class TParsePLS(TParsePlaylist, TParsePlaylistMixin):
     Parse = staticmethod(parse_pls)
-    prefix = "File1="
+    prefix = b"File1="
 
 
 class TPlaylistIntegration(TestCase):
