@@ -314,23 +314,6 @@ class TAudioFile(TestCase):
         self.failUnlessRaises(ValueError, quux.rename,
                               get_data_path("silence-44-s.ogg"))
 
-    def test_website(self):
-        song = AudioFile()
-        song["comment"] = "www.foo"
-        song["contact"] = "eh@foo.org"
-        self.failUnlessEqual(song.website(), "www.foo")
-        song["contact"] = "https://www.foo.org"
-        self.failUnlessEqual(song.website(), "https://www.foo.org")
-        song["website"] = "foo\nhttps://another.com"
-        self.failUnlessEqual(song.website(), "foo")
-
-        song = AudioFile({"artist": "Artist", "album": "Album"})
-        for value in song.values():
-            self.failUnless(value in song.website())
-        song["labelid"] = "QL-12345"
-        self.failIf(song["artist"] in song.website())
-        self.failUnless(song["labelid"] in song.website())
-
     def test_lyric_filename(self):
         song = AudioFile()
         song["~filename"] = fsnative(u"filename")

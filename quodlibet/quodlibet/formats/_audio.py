@@ -703,35 +703,6 @@ class AudioFile(dict, ImageContainer):
 
         self.sanitize(newname)
 
-    def website(self):
-        """Look for a URL in the audio metadata, or a Google search
-        if no URL can be found."""
-
-        if "website" in self:
-            return self.list("website")[0]
-        for cont in self.list("contact") + self.list("comment"):
-            c = cont.lower()
-            if (c.startswith("http://") or c.startswith("https://") or
-                    c.startswith("www.")):
-                return cont
-            elif c.startswith("//www."):
-                return "http:" + cont
-        else:
-            text = "https://www.google.com/search?q="
-            esc = lambda c: ord(c) > 127 and '%%%x' % ord(c) or c
-            if "labelid" in self:
-                text += ''.join(map(esc, self["labelid"]))
-            else:
-                artist = util.escape("+".join(self("artist").split()))
-                album = util.escape("+".join(self("album").split()))
-                artist = encode(artist)
-                album = encode(album)
-                artist = "%22" + ''.join(map(esc, artist)) + "%22"
-                album = "%22" + ''.join(map(esc, album)) + "%22"
-                text += artist + "+" + album
-            text += "&ie=UTF8"
-            return text
-
     def sanitize(self, filename=None):
         """Fill in metadata defaults. Find ~mountpoint, ~#mtime, ~#filesize
         and ~#added. Check for null bytes in tags.
