@@ -56,6 +56,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         self.set_transient_for(qltk.get_top_parent(browser))
         # Do this config-driven setup at instance-time
         self._PREVIEW_ITEM["~rating"] = format_rating(0.75)
+        self.mag_lock = False
 
         box = Gtk.VBox(spacing=6)
         vbox = Gtk.VBox(spacing=6)
@@ -82,7 +83,16 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         vbox.pack_start(cb3, False, True, 0)
 
         # Redraws the covers only when the user releases the slider
+        def mag_button_press(*_):
+            self.mag_lock = True
+
         def mag_button_release(mag, _):
+            self.mag_lock = False
+            mag_changed(mag)
+
+        def mag_changed(mag):
+            if self.mag_lock:
+                return
             newmag = mag.get_value()
             oldmag = config.getfloat("browsers", "covergrid_magnification", 3.)
             if newmag == oldmag:
@@ -96,11 +106,13 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         mag_scale = Gtk.HScale(
             adjustment=Gtk.Adjustment.new(config.getfloat("browsers",
-                "covergrid_magnification", 3), 0., 10., .5, 5, 0))
+                "covergrid_magnification", 3), 0., 10., .5, .5, 0))
         mag_scale.set_tooltip_text(_("Cover Magnification"))
         l = Gtk.Label(label=_("Cover Magnification"))
         mag_scale.set_value_pos(Gtk.PositionType.RIGHT)
+        mag_scale.connect('button-press-event', mag_button_press)
         mag_scale.connect('button-release-event', mag_button_release)
+        mag_scale.connect('value-changed', mag_changed)
 
         vbox.pack_start(l, False, True, 0)
         vbox.pack_start(mag_scale, False, True, 0)
