@@ -81,6 +81,9 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         def mag_changed(mag):
             config.set("browsers", "covergrid_magnification", mag.get_value())
+
+        # Only redraws the covers when the user releases the slider
+        def mag_button_release(*_):
             browser.update_mag()
 
         mag_scale = Gtk.HScale(
@@ -90,6 +93,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         l = Gtk.Label(label=_("Cover Magnification"))
         mag_scale.set_value_pos(Gtk.PositionType.RIGHT)
         mag_scale.connect('value-changed', mag_changed)
+        mag_scale.connect('button-release-event', mag_button_release)
 
         vbox.pack_start(l, False, True, 0)
         vbox.pack_start(mag_scale, False, True, 0)
