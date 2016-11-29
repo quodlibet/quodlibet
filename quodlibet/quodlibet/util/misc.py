@@ -67,3 +67,20 @@ def total_ordering(cls):
     cls.__ne__ = lambda self, other: not self.__eq__(other)
 
     return cls
+
+
+def hashable(cls):
+    """Makes sure the class is hashable.
+
+    Needs a working __eq__ and __hash__ and will add a __ne__.
+    """
+
+    # py2
+    assert "__hash__" in cls.__dict__
+    # py3
+    assert cls.__dict__["__hash__"] is not None
+    assert "__eq__" in cls.__dict__
+
+    cls.__ne__ = lambda self, other: not self.__eq__(other)
+
+    return cls

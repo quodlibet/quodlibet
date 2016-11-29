@@ -632,7 +632,8 @@ class TID3FileMixin(object):
 
         # abuse mutagen a bit, and get some utf-8 in with the wrong encoding
         f = mutagen.File(self.filename)
-        f.tags.add(mutagen.id3.TPE1(encoding=0, text=x.encode("utf-8")))
+        f.tags.add(mutagen.id3.TPE1(
+            encoding=0, text=x.encode("utf-8").decode("latin-1")))
         f.save()
 
         # back to utf-8

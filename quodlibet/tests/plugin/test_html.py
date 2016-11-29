@@ -46,7 +46,7 @@ class THTMLExport(PluginTestCase):
 
     def test_export(self):
         text = self.to_html(SONGS)
-        self.failUnless(u"\xf6\xe4\xfc".encode("utf-8") in text)
+        self.failUnless(u"\xf6\xe4\xfc" in text)
 
     def tearDown(self):
         config.quit()

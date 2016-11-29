@@ -10,7 +10,7 @@ import mutagen.id3
 
 from quodlibet import config, const, print_d
 from quodlibet import util
-from quodlibet.compat import iteritems, text_type, listvalues
+from quodlibet.compat import iteritems, text_type, listvalues, PY2
 from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import isascii
@@ -226,10 +226,17 @@ class ID3File(AudioFile):
     def __validate_name(self, k):
         """Returns a ascii string or None if the key isn't supported"""
 
-        if not (k and "=" not in k and "~" not in k
-                and k.encode("ascii", "replace") == k):
+        if not k or "=" in k or "~" in k:
             return
-        return k.encode("ascii")
+
+        if not (k and "=" not in k and "~" not in k
+                and k.encode("ascii", "replace").decode("ascii") == k):
+            return
+
+        if PY2:
+            return k.encode("ascii")
+        else:
+            return k
 
     def __process_rg(self, frame):
         if frame.channel == 1:

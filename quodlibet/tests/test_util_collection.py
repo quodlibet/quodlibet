@@ -452,8 +452,9 @@ class TPlaylist(TestCase):
 
     def test_rename_working(self):
         with self.wrap("Foobar") as pl:
+            assert pl.name == "Foobar"
             pl.rename("Foo Quuxly")
-            self.failUnlessEqual(pl.name, "Foo Quuxly")
+            assert pl.name == "Foo Quuxly"
             # Rename should not fire signals
             self.failIf(self.FAKE_LIB.changed)
 

@@ -24,7 +24,10 @@ def _py2_to_py3(items):
     assert PY3
 
     for i in items:
-        l = list(i.items())
+        try:
+            l = list(i.items())
+        except AttributeError:
+            raise SerializationError
         i.clear()
         for k, v in l:
             if isinstance(k, bytes):
@@ -60,23 +63,29 @@ def _py3_to_py2(items):
             type_ = i.__class__
             inst = dict.__new__(type_)
             dict.__init__(inst, i)
-            dict.__setitem__(
-                inst, "~filename", fsn2bytes(inst["~filename"], None))
-            dict.__setitem__(
-                inst, "~mountpoint", fsn2bytes(inst["~mountpoint"], None))
+            if "~filename" in inst:
+                dict.__setitem__(
+                    inst, "~filename", fsn2bytes(inst["~filename"], None))
+            if "~mountpoint" in inst:
+                dict.__setitem__(
+                    inst, "~mountpoint", fsn2bytes(inst["~mountpoint"], None))
             new_list.append(inst)
         return new_list
     else:
         return items
 
 
-def load_audio_files(data):
+def load_audio_files(data, sanitize=True):
     """unpickles the item list and if some class isn't found unpickle
     as a dict and filter them out afterwards.
 
     In case everything gets filtered out will raise SerializationError
     (because then likely something larger went wrong)
 
+    Args:
+        data (bytes)
+        sanitize (bool): if the dict key/value types should be converted,
+            either to be usable from py3 or to convert to newer types
     Returns:
         List[AudioFile]
     Raises:
@@ -118,7 +127,7 @@ def load_audio_files(data):
             raise SerializationError(
                 "all class lookups failed. something is wrong")
 
-    if PY3:
+    if PY3 and sanitize:
         items = _py2_to_py3(items)
 
     try:

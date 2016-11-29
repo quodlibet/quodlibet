@@ -53,7 +53,7 @@ class AlbumModelMixin(object):
         for path in paths:
             item = self.get_value(self.get_iter(path))
             if item.album is None:
-                return [i for i in itervalues(self) if i.album is not None]
+                return [i for i in self.itervalues() if i.album is not None]
             items.append(item)
         return items
 

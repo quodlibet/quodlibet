@@ -11,7 +11,6 @@ from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
 from quodlibet.qltk.playorder import Order, OrderShuffle, OrderInOrder, \
     RepeatSongForever, RepeatListForever
-from quodlibet.compat import itervalues
 
 
 def do_events():
@@ -385,7 +384,7 @@ class TPlaylistMux(TestCase):
 
     def test_queue(self):
         self.mux.enqueue(range(40))
-        self.failUnlessEqual(list(itervalues(self.q)), list(range(40)))
+        self.failUnlessEqual(list(self.q.itervalues()), list(range(40)))
 
     def test_queue_move_entry(self):
         self.q.set(range(10))

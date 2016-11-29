@@ -42,12 +42,12 @@ class TSourceEncoding(TestCase):
                 match = None
                 for i, line in enumerate(h):
                     # https://www.python.org/dev/peps/pep-0263/
-                    match = match or re.search("coding[:=]\s*([-\w.]+)", line)
+                    match = match or re.search(b"coding[:=]\s*([-\w.]+)", line)
                     if i >= 2:
                         break
                 if match:
                     match = match.group(1)
-                self.assertEqual(match, "utf-8",
+                self.assertEqual(match, b"utf-8",
                                  msg="%s has no utf-8 source encoding set\n"
                                      "Insert:\n# -*- coding: utf-8 -*-" % path)
 
@@ -87,15 +87,16 @@ copies or substantial portions of the Software""",
     def test_main(self):
         missing = []
         for path in iter_py_paths():
-            header = ""
+            header = b""
             with open(path, "rb") as h:
                 for line in h:
                     line = line.strip()
-                    if not line.startswith("#"):
+                    if not line.startswith(b"#"):
                         break
-                    header += line.lstrip("# ") + "\n"
+                    header += line.lstrip(b"# ") + b"\n"
 
-            norm = " ".join(header.strip().split())
+            norm = b" ".join(header.strip().split())
+            norm = norm.decode("utf-8")
             maybe_license = norm.rstrip(".")
             for license_ in self.ALLOWED:
                 if maybe_license.endswith(license_):
@@ -132,7 +133,7 @@ class TStockIcons(TestCase):
             with open(path, "rb") as h:
                 if path.endswith(("icons.py", "test_source.py")):
                     continue
-                data = h.read()
+                data = h.read().decode("utf-8")
                 for r in res:
                     match = r.search(data)
                     if match:

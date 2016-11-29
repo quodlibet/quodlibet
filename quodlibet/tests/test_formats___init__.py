@@ -98,7 +98,7 @@ class TPickle(TestCase):
 
     def test_dump_audio_files(self):
         data = dump_audio_files(self.instances)
-        items = load_audio_files(data)
+        items = load_audio_files(data, sanitize=False)
 
         assert len(items) == len(self.instances)
         for a, b in zip(items, self.instances):

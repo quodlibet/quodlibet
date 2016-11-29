@@ -24,7 +24,7 @@ from quodlibet.compat import xrange, text_type, number_types, string_types, \
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.dprint import print_d
-from quodlibet.util.misc import total_ordering
+from quodlibet.util.misc import total_ordering, hashable
 from .collections import HashedList
 
 
@@ -312,6 +312,7 @@ class Album(Collection):
         return "Album(%s)" % repr(self.key)
 
 
+@hashable
 @swap_to_string
 @total_ordering
 class Playlist(Collection, Iterable):
@@ -380,9 +381,7 @@ class Playlist(Collection, Iterable):
         self.__inhibit_library_signals = False
         self.__instances.append(self)
 
-        if isinstance(name, text_type) and os.name != "nt":
-            name = name.encode('utf-8')
-
+        name = text_type(name)
         if not name:
             raise ValueError("Playlists must have a name")
         self.name = name
@@ -412,7 +411,10 @@ class Playlist(Collection, Iterable):
 
     def _validated_name(self, new_name):
         """Returns a transformed (or not) name, or raises a `ValueError`
-        if the name is not allowed"""
+        if the name is not allowed
+        """
+
+        new_name = text_type(new_name)
         if not new_name:
             raise ValueError(_("Playlists must have a name"))
         return new_name
@@ -517,6 +519,9 @@ class Playlist(Collection, Iterable):
         except AttributeError:
             return False
 
+    def __hash__(self):
+        return id(self)
+
     def __str__(self):
         songs_text = (ngettext("%d song", "%d songs", len(self.songs))
                       % len(self.songs))
@@ -530,7 +535,9 @@ class FileBackedPlaylist(Playlist):
     unquote = staticmethod(unescape_filename)
 
     def __init__(self, dir, name, library=None, validate=False):
+        assert isinstance(dir, fsnative)
         super(FileBackedPlaylist, self).__init__(name, library)
+
         self.dir = dir
         if validate:
             self.name = self._validated_name(name)
@@ -588,9 +595,9 @@ class FileBackedPlaylist(Playlist):
 
     def _validated_name(self, new_name):
         new_name = super(FileBackedPlaylist, self)._validated_name(new_name)
-        if isinstance(new_name, text_type):
-            new_name = new_name.encode('utf-8')
-        if os.path.exists(os.path.join(self.dir, self.quote(new_name))):
+        basename = self.quote(new_name)
+        path = os.path.join(self.dir, basename)
+        if os.path.exists(path):
             raise ValueError(
                     _("A playlist named %s already exists.") % new_name)
         return new_name
@@ -611,9 +618,9 @@ class FileBackedPlaylist(Playlist):
         with open(fn, "wb") as f:
             for song in self._list:
                 if isinstance(song, string_types):
-                    f.write(fsn2bytes(song, "utf-8") + "\n")
+                    f.write(fsn2bytes(song, "utf-8") + b"\n")
                 else:
-                    f.write(fsn2bytes(song("~filename"), "utf-8") + "\n")
+                    f.write(fsn2bytes(song("~filename"), "utf-8") + b"\n")
         if self._last_fn != fn:
             self.__delete_file(self._last_fn)
             self._last_fn = fn

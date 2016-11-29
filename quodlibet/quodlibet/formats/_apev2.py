@@ -166,9 +166,8 @@ class APEv2File(AudioFile):
 
         primary = None
         for key, value in iteritems(tag):
+            primary = (key, value)
             cover_type = get_cover_type(key, value)
-            if cover_type is not None:
-                primary = primary or (key, value)
             if cover_type == APICType.COVER_FRONT:
                 break
 

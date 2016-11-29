@@ -46,6 +46,8 @@ def list_spec_properties(spec):
     'emit' can be true/false/invalidates (see dbus spec)
     """
 
+    if not isinstance(spec, bytes):
+        spec = spec.encode("utf-8")
     assert isinstance(spec, bytes)
 
     ANNOTATION_EMITS = "org.freedesktop.DBus.Property.EmitsChangedSignal"
@@ -76,6 +78,10 @@ def list_spec_properties(spec):
 
 def filter_property_spec(spec, wl=None, bl=None):
     """Remove properties based on a white list or black list."""
+
+    if not isinstance(spec, bytes):
+        spec = spec.encode("utf-8")
+    assert isinstance(spec, bytes)
 
     if wl and bl:
         raise ValueError
