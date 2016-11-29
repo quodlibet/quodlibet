@@ -3,6 +3,7 @@
 #           2009-2010 Steven Robertson
 #      2012,2013,2016 Nick Boultbee
 #           2009-2013 Christoph Reiter
+#                2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -20,6 +21,7 @@ from quodlibet.qltk import Button, Icons
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import format_rating
 from quodlibet.util.i18n import numeric_phrase
+from quodlibet.util.dprint import print_d
 
 PEOPLE
 _SOME_PEOPLE = "\n".join([util.tag("artist"), util.tag("performer"),
@@ -79,11 +81,17 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
                    lambda s: browser.toggle_vert())
         vbox.pack_start(cb3, False, True, 0)
 
-        def mag_changed(mag):
+        # Redraws the covers only when the user releases the slider
+        def mag_button_release(mag, _):
+            newmag = mag.get_value()
+            oldmag = config.getfloat("browsers", "covergrid_magnification", 3.)
+            if newmag == oldmag:
+                print_d("Covergrid magnification haven't changed: {0}"
+                        .format(newmag))
+                return
+            print_d('Covergrid magnification update from {0} to {1}'
+                    .format(oldmag, newmag))
             config.set("browsers", "covergrid_magnification", mag.get_value())
-
-        # Only redraws the covers when the user releases the slider
-        def mag_button_release(*_):
             browser.update_mag()
 
         mag_scale = Gtk.HScale(
@@ -92,7 +100,6 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         mag_scale.set_tooltip_text(_("Cover Magnification"))
         l = Gtk.Label(label=_("Cover Magnification"))
         mag_scale.set_value_pos(Gtk.PositionType.RIGHT)
-        mag_scale.connect('value-changed', mag_changed)
         mag_scale.connect('button-release-event', mag_button_release)
 
         vbox.pack_start(l, False, True, 0)
