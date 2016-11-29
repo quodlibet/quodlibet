@@ -120,7 +120,10 @@ def escape_filename(s):
 
     s = text_type(s)
     s = fsn2bytes(text2fsn(s), "utf-8")
-    return quote(s, safe=b"")
+    s = quote(s, safe=b"")
+    if isinstance(s, text_type):
+        s = s.encode("ascii")
+    return bytes2fsn(s, "utf-8")
 
 
 def unescape_filename(s):
