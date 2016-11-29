@@ -4,8 +4,7 @@
 # published by the Free Software Foundation
 import locale
 import os
-
-import sys
+import contextlib
 
 from tests import TestCase, skipIf
 from .helper import preserve_environ
@@ -49,6 +48,34 @@ class TGlibTranslations(TestCase):
         self.assertTrue(isinstance(t, text_type))
 
 
+def has_locale(loc):
+    try:
+        with set_locale(loc):
+            pass
+    except locale.Error:
+        return False
+    else:
+        return True
+
+
+@contextlib.contextmanager
+def set_locale(loc):
+    """
+    with set_locale('fr_FR.utf-8'):
+        do_something()
+
+    Raises:
+        locale.Error
+    """
+
+    old_loc = locale.setlocale(locale.LC_ALL)
+    locale.setlocale(locale.LC_ALL, loc)
+    try:
+        yield
+    finally:
+        locale.setlocale(locale.LC_ALL, old_loc)
+
+
 class Tgettext(TestCase):
 
     def test_bcp47(self):
@@ -84,21 +111,13 @@ class Tgettext(TestCase):
         actual = numeric_phrase("%d green bottle", "%d green bottles", 1234)
         self.failUnlessEqual(actual, "1,234 green bottles")
 
-    @skipIf(os.name == "nt" or sys.platform == "darwin",
-            "Locales don't exist on Windows / OSX test systems")
+    @skipIf(not has_locale('fr_FR.utf-8'), "locale missing")
     def test_numeric_phrase_locales(self):
-        try:
-            locale.setlocale(locale.LC_ALL, 'fr_FR.utf-8')
-        except locale.Error:
-            # fr_FR not installed
-            pass
-        else:
+        with set_locale('fr_FR.utf-8'):
             actual = numeric_phrase("%(bottles)d green bottle",
                                     "%(bottles)d green bottles",
                                     1234, "bottles")
             self.failUnlessEqual(actual, "1 234 green bottles")
-        finally:
-            locale.setlocale(locale.LC_ALL, '')
 
     def test_numeric_phrase_templated(self):
         actual = numeric_phrase("%(bottles)d green bottle",
