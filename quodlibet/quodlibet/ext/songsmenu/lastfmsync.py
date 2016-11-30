@@ -64,7 +64,7 @@ class LastFMSyncCache(object):
     def __init__(self, username):
         self.username = username
         self.lastupdated = None
-        self.registered = None
+        self.registered = 0
         self.charts = {}
         self.songs = {}
 
@@ -85,7 +85,7 @@ class LastFMSyncCache(object):
         try:
             # Last.fm updates their charts weekly; we only poll for new
             # charts if it's been more than a day since the last poll
-            if not self.registered:
+            if self.registered == 0:
                 resp = apicall('user.getinfo', user=self.username)
                 self.registered = int(resp['user']['registered']['unixtime'])
 
