@@ -94,6 +94,23 @@ class PreferencesButton(PreferencesButton):
         self.pack_start(button, True, True, 0)
 
 
+class IconView(Gtk.IconView):
+    # XXX: disable height for width etc. Speeds things up and doesn't seem
+    # to break anyhting in a scrolled window
+
+    def do_get_preferred_width_for_height(self, height):
+        return (1, 1)
+
+    def do_get_preferred_width(self):
+        return (1, 1)
+
+    def do_get_preferred_height(self):
+        return (1, 1)
+
+    def do_get_preferred_height_for_width(self, width):
+        return (1, 1)
+
+
 class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
                 DisplayPatternMixin):
     __gsignals__ = Browser.__gsignals__
@@ -203,7 +220,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         sw.set_shadow_type(Gtk.ShadowType.IN)
         model_sort = AlbumSortModel(model=self.__model)
         model_filter = AlbumFilterModel(child_model=model_sort)
-        self.view = view = Gtk.IconView(model_filter)
+        self.view = view = IconView(model_filter)
         #view.set_item_width(get_cover_size() + 12)
         self.view.set_row_spacing(config.getint("browsers", "row_spacing", 6))
         self.view.set_column_spacing(config.getint("browsers",
