@@ -7,6 +7,7 @@ from tests import TestCase, mkstemp, mkdtemp
 
 import os
 import sys
+import shutil
 
 from quodlibet import player
 from quodlibet.library import SongLibrarian
@@ -29,9 +30,7 @@ class TEventPlugins(TestCase):
 
     def tearDown(self):
         self.pm.quit()
-        for f in os.listdir(self.tempdir):
-            os.remove(os.path.join(self.tempdir, f))
-        os.rmdir(self.tempdir)
+        shutil.rmtree(self.tempdir)
 
     def create_plugin(self, name='', funcs=None):
         fd, fn = mkstemp(suffix='.py', text=True, dir=self.tempdir)

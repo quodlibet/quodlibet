@@ -34,7 +34,7 @@ class TUnixRemote(TestCase):
         with temp_filename() as fn:
             mock = Mock(resp=b"resp")
             remote = QuodLibetUnixRemote(None, mock)
-            remote._callback(b"\x00foo\x00%s\x00" % fsn2bytes(fn, "utf-8"))
+            remote._callback(b"\x00foo\x00" + fsn2bytes(fn, "utf-8") + b"\x00")
             self.assertEqual(mock.lines, [b"foo"])
             with open(fn, "rb") as h:
                 self.assertEqual(h.read(), b"resp")
