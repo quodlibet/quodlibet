@@ -8,15 +8,13 @@
 import json
 import collections
 import threading
-import Queue
-import StringIO
 import gzip
 from xml.dom.minidom import parseString
 
 from gi.repository import GLib
 
 from quodlibet.util import print_w
-from quodlibet.compat import iteritems, urlencode
+from quodlibet.compat import iteritems, urlencode, Queue, cBytesIO
 from quodlibet.util.urllib import urlopen, Request
 from .util import get_api_key, GateKeeper
 
@@ -62,7 +60,7 @@ class AcoustidSubmissionThread(threading.Thread):
         })
 
         urldata = "&".join([basedata] + map(urlencode, urldata))
-        obj = StringIO.StringIO()
+        obj = cBytesIO()
         gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
         urldata = obj.getvalue()
 
@@ -299,7 +297,7 @@ class AcoustidLookupThread(threading.Thread):
         req_data.append("meta=releases+recordings+tracks+sources")
 
         urldata = "&".join(req_data)
-        obj = StringIO.StringIO()
+        obj = cBytesIO()
         gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
         urldata = obj.getvalue()
 

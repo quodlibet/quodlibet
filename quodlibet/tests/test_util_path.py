@@ -143,8 +143,9 @@ class Tiscommand(TestCase):
         dirs = path_dirs - set(os.defpath.split(os.path.pathsep))
         for d in dirs:
             if os.path.isdir(d):
-                for file_path in os.listdir(d):
-                    if os.access(os.path.join(d, file_path), os.X_OK):
-                        print_d("Testing %s" % file_path)
-                        self.failUnless(iscommand(file_path))
+                for file_path in sorted(os.listdir(d)):
+                    p = os.path.join(d, file_path)
+                    if os.path.isfile(p) and os.access(p, os.X_OK):
+                        print_d("Testing %s" % p)
+                        self.failUnless(iscommand(p), msg=p)
                         return

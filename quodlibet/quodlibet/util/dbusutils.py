@@ -183,7 +183,7 @@ class DBusIntrospectable(object):
             parts.extend(intros)
             parts.append("</interface>")
         parts.append("</node>")
-        return "\n".join(parts)
+        return ("\n".join(parts)).encode("utf-8")
 
 
 class DBusProperty(object):

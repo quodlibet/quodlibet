@@ -17,7 +17,6 @@ import time
 import threading
 import gzip
 
-from cStringIO import StringIO
 from xml.dom import minidom
 
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
@@ -38,7 +37,7 @@ from quodlibet.qltk.image import scale, add_border_widget, \
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util.urllib import urlopen, Request
-from quodlibet.compat import xrange, urlencode
+from quodlibet.compat import xrange, urlencode, cBytesIO
 
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
@@ -78,7 +77,7 @@ def get_url(url, post={}, get={}):
     # unzip the response if needed
     data = url_sock.read()
     if url_sock.headers.get("content-encoding", "") == "gzip":
-        data = gzip.GzipFile(fileobj=StringIO(data)).read()
+        data = gzip.GzipFile(fileobj=cBytesIO(data)).read()
     url_sock.close()
 
     return data, enc
@@ -447,7 +446,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         if not raw_data:
             pbloader.connect('area-updated', self.__update)
 
-            data_store = StringIO()
+            data_store = cBytesIO()
 
             try:
                 request = Request(url)

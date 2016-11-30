@@ -5,8 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from urllib import quote
-
 from gi.repository import Gtk
 
 from quodlibet import _
@@ -15,6 +13,7 @@ from quodlibet.util import website
 from quodlibet.qltk.entry import Entry
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.compat import quote
 
 WIKI_URL = "https://%s.wikipedia.org/wiki/Special:Search/"
 

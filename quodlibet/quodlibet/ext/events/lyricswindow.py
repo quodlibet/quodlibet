@@ -8,7 +8,6 @@
 
 import os
 import threading
-import Queue
 from xml.dom import minidom
 
 from quodlibet import _
@@ -32,7 +31,7 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.window import Window
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.pattern import URLFromPattern
-from quodlibet.compat import quote
+from quodlibet.compat import quote, Queue
 from quodlibet.util.urllib import urlopen
 
 
@@ -60,7 +59,7 @@ class LyricsWikiaSearchThread(threading.Thread):
     def __init__(self):
         super(LyricsWikiaSearchThread, self).__init__()
         self.daemon = True
-        self._queue = Queue.Queue()
+        self._queue = Queue()
         self._stopped = False
         self._current = None
 
