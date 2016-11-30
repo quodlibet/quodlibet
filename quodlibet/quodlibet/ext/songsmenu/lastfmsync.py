@@ -61,10 +61,12 @@ def config_get(key, default=None):
 
 class LastFMSyncCache(object):
     """Stores the Last.fm charts for a particular user."""
+
+    registered = 0
+    lastupdated = None
+
     def __init__(self, username):
         self.username = username
-        self.lastupdated = None
-        self.registered = None
         self.charts = {}
         self.songs = {}
 
