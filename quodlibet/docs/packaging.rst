@@ -71,9 +71,6 @@ Optional Runtime Dependencies
 **libkeybinder-3.0** + **typelib**:
     * Multimedia key support under non Gnome setups
 
-**libgpod4** (the shared library, no Python bindings):
-    * iPod support
-
 **libgtksourceview-3** + **typelib**:
     * Undo/Redo support for multiline text fields
 

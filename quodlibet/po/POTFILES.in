@@ -28,7 +28,6 @@ quodlibet/browsers/soundcloud/util.py
 quodlibet/cli.py
 quodlibet/devices/_base.py
 quodlibet/devices/__init__.py
-quodlibet/devices/ipod.py
 quodlibet/devices/storage.py
 quodlibet/exfalso.py
 quodlibet/ext/covers/artwork_url.py
