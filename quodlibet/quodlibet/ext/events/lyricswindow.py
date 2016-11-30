@@ -7,10 +7,7 @@
 # published by the Free Software Foundation
 
 import os
-import urllib
-import urllib2
 import threading
-import socket
 import Queue
 from xml.dom import minidom
 
@@ -35,6 +32,8 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.window import Window
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.pattern import URLFromPattern
+from quodlibet.compat import quote
+from quodlibet.util.urllib import urlopen
 
 
 # for the mobile version
@@ -49,8 +48,8 @@ DEFAULT_ALTERNATE_SEARCH_URL = ("https://duckduckgo.com/"
 
 def create_api_search_url(song):
     artist, title = song("artist"), song("title")
-    artist = urllib.quote(artist.encode('utf-8'))
-    title = urllib.quote(title.encode('utf-8'))
+    artist = quote(artist.encode('utf-8'))
+    title = quote(title.encode('utf-8'))
 
     return LYRICS_WIKIA_URL % (artist, title)
 
@@ -100,8 +99,8 @@ class LyricsWikiaSearchThread(threading.Thread):
 
         fetch_url = create_api_search_url(song)
         try:
-            response = urllib2.urlopen(fetch_url, timeout=self.TIMEOUT)
-        except (urllib2.URLError, socket.timeout):
+            response = urlopen(fetch_url, timeout=self.TIMEOUT)
+        except EnvironmentError:
             return
 
         try:

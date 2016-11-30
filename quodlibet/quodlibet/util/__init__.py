@@ -34,7 +34,8 @@ from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
-from .misc import environ, argv, cached_func, get_locale_encoding
+from .misc import environ, argv, cached_func, get_locale_encoding, \
+    get_module_dir, get_ca_file
 from .environment import is_plasma, is_unity, is_enlightenment, \
     is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console, \
     is_py2exe_window
@@ -46,7 +47,7 @@ from .i18n import _, C_
 environ, argv, cached_func, get_locale_encoding, enum,
 print_w, print_exc, is_plasma, is_unity, is_enlightenment,
 is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console,
-is_py2exe_window
+is_py2exe_window, get_module_dir, get_ca_file
 
 
 if PY2:
@@ -1189,59 +1190,3 @@ def reraise(tp, value, tb=None):
     if tb is None:
         tb = sys.exc_info()[2]
     py_reraise(tp, value, tb)
-
-
-def get_module_dir(module=None):
-    """Returns the absolute path of a module. If no module is given
-    the one this is called from is used.
-    """
-
-    if module is None:
-        file_path = sys._getframe(1).f_globals["__file__"]
-    else:
-        file_path = getattr(module, "__file__")
-    if is_windows():
-        file_path = file_path.decode(sys.getfilesystemencoding())
-    return os.path.dirname(os.path.realpath(file_path))
-
-
-def get_ca_file():
-    """A path to a CA file or None.
-
-    Depends whether we use certifi or the system trust store
-    on the current platform.
-    """
-
-    if is_linux():
-        return None
-
-    import certifi
-
-    return os.path.join(get_module_dir(certifi), "cacert.pem")
-
-
-def install_urllib2_ca_file():
-    """Makes urllib2.urlopen and urllib2.build_opener use the ca file
-    returned by get_ca_file()
-    """
-
-    try:
-        import ssl
-    except ImportError:
-        return
-
-    import urllib2
-
-    base = urllib2.HTTPSHandler
-
-    class MyHandler(base):
-
-        def __init__(self, debuglevel=0, context=None):
-            ca_file = get_ca_file()
-            if context is None and ca_file is not None:
-                context = ssl.create_default_context(
-                    purpose=ssl.Purpose.SERVER_AUTH,
-                    cafile=ca_file)
-            base.__init__(self, debuglevel, context)
-
-    urllib2.HTTPSHandler = MyHandler

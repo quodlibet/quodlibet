@@ -17,8 +17,6 @@ import time
 import threading
 import gzip
 
-import urllib
-import urllib2
 from cStringIO import StringIO
 from xml.dom import minidom
 
@@ -39,7 +37,8 @@ from quodlibet.qltk.image import scale, add_border_widget, \
     get_surface_for_pixbuf
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
-from quodlibet.compat import xrange
+from quodlibet.util.urllib import urlopen, Request
+from quodlibet.compat import xrange, urlencode
 
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
@@ -57,23 +56,23 @@ def get_encoding_from_socket(socket):
 
 
 def get_url(url, post={}, get={}):
-    post_params = urllib.urlencode(post)
-    get_params = urllib.urlencode(get)
+    post_params = urlencode(post)
+    get_params = urlencode(get)
     if get:
         get_params = '?' + get_params
 
     # add post, get data and headers
     url = '%s%s' % (url, get_params)
     if post_params:
-        request = urllib2.Request(url, post_params)
+        request = Request(url, post_params)
     else:
-        request = urllib2.Request(url)
+        request = Request(url)
 
     # for discogs
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
 
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     enc = get_encoding_from_socket(url_sock)
 
     # unzip the response if needed
@@ -86,10 +85,10 @@ def get_url(url, post={}, get={}):
 
 
 def get_encoding(url):
-    request = urllib2.Request(url)
+    request = Request(url)
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     return get_encoding_from_socket(url_sock)
 
 
@@ -451,10 +450,10 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             data_store = StringIO()
 
             try:
-                request = urllib2.Request(url)
+                request = Request(url)
                 request.add_header('User-Agent', USER_AGENT)
-                url_sock = urllib2.urlopen(request)
-            except urllib2.HTTPError:
+                url_sock = urlopen(request)
+            except EnvironmentError:
                 print_w(_("[albumart] HTTP Error: %s") % url)
             else:
                 while not self.stop_loading:
@@ -797,10 +796,10 @@ class CoverSearch(object):
 
 #------------------------------------------------------------------------------
 def get_size_of_url(url):
-    request = urllib2.Request(url)
+    request = Request(url)
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     size = url_sock.headers.get('content-length')
     url_sock.close()
     return format_size(int(size)) if size else ''

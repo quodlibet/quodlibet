@@ -8,9 +8,6 @@
 import json
 import collections
 import threading
-import urllib
-import urllib2
-import socket
 import Queue
 import StringIO
 import gzip
@@ -19,7 +16,8 @@ from xml.dom.minidom import parseString
 from gi.repository import GLib
 
 from quodlibet.util import print_w
-from quodlibet.compat import iteritems
+from quodlibet.compat import iteritems, urlencode
+from quodlibet.util.urllib import urlopen, Request
 from .util import get_api_key, GateKeeper
 
 
@@ -57,13 +55,13 @@ class AcoustidSubmissionThread(threading.Thread):
 
         self.__done += len(urldata)
 
-        basedata = urllib.urlencode({
+        basedata = urlencode({
             "format": "xml",
             "client": APP_KEY,
             "user": get_api_key(),
         })
 
-        urldata = "&".join([basedata] + map(urllib.urlencode, urldata))
+        urldata = "&".join([basedata] + map(urlencode, urldata))
         obj = StringIO.StringIO()
         gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
         urldata = obj.getvalue()
@@ -72,12 +70,12 @@ class AcoustidSubmissionThread(threading.Thread):
             "Content-Encoding": "gzip",
             "Content-type": "application/x-www-form-urlencoded"
         }
-        req = urllib2.Request(self.URL, urldata, headers)
+        req = Request(self.URL, urldata, headers)
 
         error = None
         try:
-            response = urllib2.urlopen(req, timeout=self.TIMEOUT)
-        except (urllib2.URLError, socket.timeout) as e:
+            response = urlopen(req, timeout=self.TIMEOUT)
+        except EnvironmentError as e:
             error = "urllib error: " + str(e)
         else:
             xml = response.read()
@@ -285,7 +283,7 @@ class AcoustidLookupThread(threading.Thread):
 
     def __process(self, results):
         req_data = []
-        req_data.append(urllib.urlencode({
+        req_data.append(urlencode({
             "format": "json",
             "client": APP_KEY,
             "batch": "1",
@@ -293,7 +291,7 @@ class AcoustidLookupThread(threading.Thread):
 
         for i, result in enumerate(results):
             postfix = ".%d" % i
-            req_data.append(urllib.urlencode({
+            req_data.append(urlencode({
                 "duration" + postfix: str(int(round(result.length))),
                 "fingerprint" + postfix: result.chromaprint,
             }))
@@ -309,13 +307,13 @@ class AcoustidLookupThread(threading.Thread):
             "Content-Encoding": "gzip",
             "Content-type": "application/x-www-form-urlencoded"
         }
-        req = urllib2.Request(self.URL, urldata, headers)
+        req = Request(self.URL, urldata, headers)
 
         releases = {}
         error = ""
         try:
-            response = urllib2.urlopen(req, timeout=self.TIMEOUT)
-        except (urllib2.URLError, socket.timeout) as e:
+            response = urlopen(req, timeout=self.TIMEOUT)
+        except EnvironmentError as e:
             error = "urllib error: " + str(e)
         else:
             try:

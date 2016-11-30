@@ -12,12 +12,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from httplib import HTTPException
 import os
 import threading
 import time
-import urllib
-import urllib2
 
 from gi.repository import Gtk, GLib
 
@@ -38,6 +35,8 @@ from quodlibet.qltk.msg import Message
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
+from quodlibet.compat import urlencode
+from quodlibet.util.urllib import urlopen
 
 
 SERVICES = {
@@ -248,8 +247,8 @@ class QLSubmitQueue(object):
         print_d("Sending handshake to service.")
 
         try:
-            resp = urllib2.urlopen(url)
-        except (IOError, HTTPException):
+            resp = urlopen(url)
+        except EnvironmentError:
             if show_dialog:
                 self.quick_dialog(
                     _("Could not contact service '%s'.") %
@@ -292,10 +291,10 @@ class QLSubmitQueue(object):
         return False
 
     def _check_submit(self, url, data):
-        data_str = urllib.urlencode(data)
+        data_str = urlencode(data)
         try:
-            resp = urllib2.urlopen(url, data_str)
-        except (IOError, HTTPException):
+            resp = urlopen(url, data_str)
+        except EnvironmentError:
             print_d("Audioscrobbler server not responding, will try later.")
             return False
 

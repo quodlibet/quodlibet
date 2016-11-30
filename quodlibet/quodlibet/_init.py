@@ -14,7 +14,6 @@ import logging
 
 from senf import environ
 
-from quodlibet import util
 from quodlibet.compat import PY2
 from quodlibet.const import MinVersions
 from quodlibet.util import is_osx, is_windows
@@ -22,6 +21,7 @@ from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars, set_translation
 from quodlibet.util.dprint import print_d, print_e, PrintHandler
 from quodlibet.util.path import unexpand
+from quodlibet.util.urllib import install_urllib2_ca_file
 
 from ._main import get_base_dir, is_release, get_image_dir
 
@@ -133,12 +133,12 @@ def _init_python():
         # We build our own openssl on OSX and need to make sure that
         # our own ca file is used in all cases as the non-system openssl
         # doesn't use the system certs
-        util.install_urllib2_ca_file()
+        install_urllib2_ca_file()
 
     if is_windows():
         # Not really needed on Windows as pygi-aio seems to work fine, but
         # wine doesn't have certs which we use for testing.
-        util.install_urllib2_ca_file()
+        install_urllib2_ca_file()
 
     if is_windows() and os.sep != "\\":
         # In the MSYS2 console MSYSTEM is set, which breaks os.sep/os.path.sep

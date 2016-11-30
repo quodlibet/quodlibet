@@ -7,7 +7,6 @@
 # published by the Free Software Foundation
 
 import os
-import urllib
 from tempfile import NamedTemporaryFile
 
 from gi.repository import Gtk, GLib, Pango, Gdk
@@ -36,6 +35,7 @@ from quodlibet.util import connect_obj
 from quodlibet.util.path import get_home_dir
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.collection import FileBackedPlaylist
+from quodlibet.util.urllib import urlopen
 
 from .util import parse_m3u, parse_pls, PLAYLISTS, ConfirmRemovePlaylistDialog
 
@@ -386,7 +386,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             name = name or os.path.basename(uri) or _("New Playlist")
             uri = uri.encode('utf-8')
             try:
-                sock = urllib.urlopen(uri)
+                sock = urlopen(uri)
                 f = NamedTemporaryFile()
                 f.write(sock.read())
                 f.flush()

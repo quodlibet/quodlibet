@@ -5,10 +5,15 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
+import sys
 import locale
 from functools import wraps
 
 from senf import environ, argv
+
+
+from .environment import is_windows, is_linux
 
 
 environ, argv
@@ -84,3 +89,32 @@ def hashable(cls):
     cls.__ne__ = lambda self, other: not self.__eq__(other)
 
     return cls
+
+
+def get_module_dir(module=None):
+    """Returns the absolute path of a module. If no module is given
+    the one this is called from is used.
+    """
+
+    if module is None:
+        file_path = sys._getframe(1).f_globals["__file__"]
+    else:
+        file_path = getattr(module, "__file__")
+    if is_windows():
+        file_path = file_path.decode(sys.getfilesystemencoding())
+    return os.path.dirname(os.path.realpath(file_path))
+
+
+def get_ca_file():
+    """A path to a CA file or None.
+
+    Depends whether we use certifi or the system trust store
+    on the current platform.
+    """
+
+    if is_linux():
+        return None
+
+    import certifi
+
+    return os.path.join(get_module_dir(certifi), "cacert.pem")

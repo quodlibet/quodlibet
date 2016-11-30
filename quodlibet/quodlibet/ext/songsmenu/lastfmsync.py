@@ -8,8 +8,6 @@
 
 import os
 import shelve
-import urllib
-import urllib2
 import time
 from datetime import date
 from threading import Thread
@@ -22,6 +20,8 @@ from quodlibet import config, util, qltk
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.compat import urlencode
+from quodlibet.util.urllib import urlopen
 
 try:
     import json
@@ -44,9 +44,9 @@ def apicall(method, **kwargs):
             }
     real_args.update(kwargs)
     url = ''.join(["https://ws.audioscrobbler.com/2.0/?",
-                   urllib.urlencode(real_args)])
+                   urlencode(real_args)])
     log(url)
-    uobj = urllib2.urlopen(url)
+    uobj = urlopen(url)
     resp = json.load(uobj)
     if 'error' in resp:
         errmsg = 'Last.fm API error: %s' % resp.get('message', '')
@@ -121,7 +121,7 @@ class LastFMSyncCache(object):
                 args = {'user': self.username, 'from': fro, 'to': to}
                 try:
                     resp = apicall('user.getweeklytrackchart', **args)
-                except urllib2.HTTPError as err:
+                except EnvironmentError as err:
                     msg = "HTTP error %d, retrying in %d seconds."
                     log(msg % (err.code, 15))
                     for i in range(15, 0, -1):
