@@ -11,6 +11,7 @@ from .helper import preserve_environ
 
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
     set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, numeric_phrase
+from quodlibet.util import is_osx
 from quodlibet.compat import text_type
 
 
@@ -49,6 +50,9 @@ class TGlibTranslations(TestCase):
 
 
 def has_locale(loc):
+    if is_osx():
+        return False
+
     try:
         with set_locale(loc):
             pass
