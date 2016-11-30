@@ -1,6 +1,4 @@
 matrix:
-  allow_failures:
-    - python: "3.4_with_system_site_packages"
   include:
     - os: linux
       sudo: required
