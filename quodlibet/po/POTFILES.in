@@ -33,6 +33,7 @@ quodlibet/exfalso.py
 quodlibet/ext/covers/artwork_url.py
 quodlibet/ext/covers/lastfm.py
 quodlibet/ext/covers/musicbrainz.py
+quodlibet/ext/covers/discogs.py
 quodlibet/ext/editing/iconv.py
 quodlibet/ext/editing/kakasi.py
 quodlibet/ext/editing/resub.py
