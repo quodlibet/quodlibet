@@ -8,7 +8,6 @@
 # published by the Free Software Foundation
 
 import os
-import sys
 import signal
 
 import gi
@@ -17,9 +16,9 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
+from senf import fsn2bytes, bytes2fsn
 
 from quodlibet.util import gdecode, print_d, print_w
-from quodlibet.compat import text_type
 
 
 def get_primary_accel_mod():
@@ -50,13 +49,9 @@ def selection_set_songs(selection_data, songs):
 
     filenames = []
     for filename in (song["~filename"] for song in songs):
-        if isinstance(filename, text_type):
-            # win32
-            filename = filename.encode("utf-8")
-        filenames.append(filename)
-
+        filenames.append(fsn2bytes(filename, "utf-8"))
     type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
-    selection_data.set(type_, 8, "\x00".join(filenames))
+    selection_data.set(type_, 8, b"\x00".join(filenames))
 
 
 def selection_get_filenames(selection_data):
@@ -67,11 +62,8 @@ def selection_get_filenames(selection_data):
     data_type = selection_data.get_data_type()
     assert data_type.name() == "text/x-quodlibet-songs"
 
-    items = selection_data.get_data().split("\x00")
-    if sys.platform == "win32":
-        return [item.decode("utf-8") for item in items]
-    else:
-        return items
+    items = selection_data.get_data().split(b"\x00")
+    return [bytes2fsn(i, "utf-8") for i in items]
 
 
 def get_top_parent(widget):

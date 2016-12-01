@@ -6,7 +6,9 @@
 from tests import TestCase
 
 from gi.repository import Gtk, Gdk
+from senf import fsnative, fsn2bytes
 
+from quodlibet.formats import AudioFile
 from quodlibet import qltk
 from quodlibet import util
 
@@ -94,3 +96,30 @@ class TQltk(TestCase):
         menu = Gtk.Menu()
         menu.append(item)
         self.assertTrue(qltk.get_menu_item_top_parent(item) is None)
+
+
+class MockSelData(object):
+    # Gtk.SelectionData is missing a constructor
+
+    def set(self, type, format, data):
+        self.type = type
+        self.format = format
+        self.data = data
+
+    def get_data_type(self):
+        return self.type
+
+    def get_data(self):
+        return self.data
+
+
+class Tselection_data(TestCase):
+
+    def test_selection_set_songs(self):
+        song = AudioFile()
+        song["~filename"] = fsnative(u"foo")
+        sel = MockSelData()
+        qltk.selection_set_songs(sel, [song])
+        assert sel.data == fsn2bytes(fsnative(u"foo"), "utf-8")
+
+        assert qltk.selection_get_filenames(sel) == [fsnative(u"foo")]
