@@ -321,7 +321,7 @@ def run(window, before_quit=None):
 
     # set QUODLIBET_START_PERF to measure startup time until the
     # windows is first shown.
-    if "QUODLIBET_START_PERF" in os.environ:
+    if "QUODLIBET_START_PERF" in environ:
         window.connect("draw", Gtk.main_quit)
         Gtk.main()
         sys.exit()

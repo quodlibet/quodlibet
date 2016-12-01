@@ -25,7 +25,7 @@ try:
 except ImportError:
     fcntl = None
 
-from senf import fsnative
+from senf import fsnative, environ, argv
 
 from quodlibet.compat import reraise as py_reraise, PY2, text_type, \
     iteritems, reduce, number_types, long, cmp
@@ -34,7 +34,7 @@ from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
-from .misc import environ, argv, cached_func, get_locale_encoding, \
+from .misc import cached_func, get_locale_encoding, \
     get_module_dir, get_ca_file
 from .environment import is_plasma, is_unity, is_enlightenment, \
     is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console, \
@@ -44,7 +44,7 @@ from .i18n import _, C_
 
 
 # pyflakes
-environ, argv, cached_func, get_locale_encoding, enum,
+cached_func, get_locale_encoding, enum,
 print_w, print_exc, is_plasma, is_unity, is_enlightenment,
 is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console,
 is_py2exe_window, get_module_dir, get_ca_file
@@ -136,7 +136,7 @@ class OptionParser(object):
             l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
         s = _("Usage: %(program)s %(usage)s") % {
-            "program": sys.argv[0],
+            "program": argv[0],
             "usage": self.__usage if self.__usage else _("[options]"),
         }
         s += "\n"
@@ -173,7 +173,7 @@ class OptionParser(object):
 
     def parse(self, args=None):
         if args is None:
-            args = sys.argv[1:]
+            args = argv[1:]
         from getopt import getopt, GetoptError
         try:
             opts, args = getopt(args, self.__shorts(), self.__longs())
@@ -190,7 +190,7 @@ class OptionParser(object):
                 text.append(
                     _("%r is not a unique prefix.") % s.split()[1])
             if "help" in self.__args:
-                text.append(_("Try %s --help.") % sys.argv[0])
+                text.append(_("Try %s --help.") % argv[0])
 
             print_e("\n".join(text))
             raise SystemExit(True)
@@ -992,13 +992,12 @@ def load_library(names, shared=True):
         # make sure it's either empty or contains /usr/lib.
         # (jhbuild sets it for example). Otherwise ctypes can't
         # find libc (bug?)
-        if "DYLD_FALLBACK_LIBRARY_PATH" in os.environ:
-            paths = os.environ["DYLD_FALLBACK_LIBRARY_PATH"]
+        if "DYLD_FALLBACK_LIBRARY_PATH" in environ:
+            paths = environ["DYLD_FALLBACK_LIBRARY_PATH"]
             paths = paths.split(os.pathsep)
             if "/usr/lib" not in paths:
                 paths.append("/usr/lib")
-                os.environ["DYLD_FALLBACK_LIBRARY_PATH"] = \
-                    os.pathsep.join(paths)
+                environ["DYLD_FALLBACK_LIBRARY_PATH"] = os.pathsep.join(paths)
 
     errors = []
     for name in names:

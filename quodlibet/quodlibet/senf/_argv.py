@@ -15,9 +15,10 @@
 import sys
 import ctypes
 import collections
+from functools import total_ordering
 
-from ._compat import PY2
-from ._fsnative import is_win, _fsn2legacy
+from ._compat import PY2, string_types
+from ._fsnative import is_win, _fsn2legacy, path2fsn
 from . import _winapi as winapi
 
 
@@ -47,7 +48,8 @@ def _get_win_argv():
     return res
 
 
-class Argv(collections.MutableSequence, list):
+@total_ordering
+class Argv(collections.MutableSequence):
     """List[`fsnative`]: Like `sys.argv` but contains unicode
     keys and values under Windows + Python 2.
 
@@ -64,11 +66,19 @@ class Argv(collections.MutableSequence, list):
         return self._argv[index]
 
     def __setitem__(self, index, value):
+        if isinstance(value, string_types):
+            value = path2fsn(value)
+
         self._argv[index] = value
-        try:
-            sys.argv[index] = _fsn2legacy(value)
-        except IndexError:
-            pass
+
+        if sys.argv is not self._argv:
+            try:
+                if isinstance(value, string_types):
+                    sys.argv[index] = _fsn2legacy(value)
+                else:
+                    sys.argv[index] = [_fsn2legacy(path2fsn(v)) for v in value]
+            except IndexError:
+                pass
 
     def __delitem__(self, index):
         del self._argv[index]
@@ -77,12 +87,23 @@ class Argv(collections.MutableSequence, list):
         except IndexError:
             pass
 
+    def __eq__(self, other):
+        return self._argv == other
+
+    def __lt__(self, other):
+        return self._argv < other
+
     def __len__(self):
         return len(self._argv)
 
+    def __repr__(self):
+        return repr(self._argv)
+
     def insert(self, index, value):
+        value = path2fsn(value)
         self._argv.insert(index, value)
-        sys.argv.insert(index, _fsn2legacy(value))
+        if sys.argv is not self._argv:
+            sys.argv.insert(index, _fsn2legacy(value))
 
 
 argv = Argv()

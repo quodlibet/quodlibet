@@ -216,7 +216,7 @@ def xdg_get_config_home():
 def parse_xdg_user_dirs(data):
     """Parses xdg-user-dirs and returns a dict of keys and paths.
 
-    The paths depend on the content of os.environ while calling this function.
+    The paths depend on the content of environ while calling this function.
     See http://www.freedesktop.org/wiki/Software/xdg-user-dirs/
 
     Args:
