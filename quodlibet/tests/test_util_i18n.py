@@ -3,8 +3,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 import locale
-import os
 import contextlib
+
+from senf import environ
 
 from tests import TestCase, skipIf
 from .helper import preserve_environ
@@ -104,9 +105,9 @@ class Tgettext(TestCase):
 
     def test_fixup_i18n_envvars(self):
         with preserve_environ():
-            os.environ["LANGUAGE"] = "en:de:en_FOO:nl"
+            environ["LANGUAGE"] = "en:de:en_FOO:nl"
             fixup_i18n_envvars()
-            self.assertEqual(os.environ["LANGUAGE"], "en:C:de:en_FOO:C:nl")
+            self.assertEqual(environ["LANGUAGE"], "en:C:de:en_FOO:C:nl")
 
     def test_numeric_phrase(self):
         actual = numeric_phrase("%d green bottle", "%d green bottles", 1)
