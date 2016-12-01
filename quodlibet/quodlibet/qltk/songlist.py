@@ -31,7 +31,7 @@ from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column
 from quodlibet.util import connect_destroy
-from quodlibet.compat import xrange, string_types, iteritems
+from quodlibet.compat import xrange, string_types, iteritems, listfilter
 
 
 DND_QL, DND_URI_LIST = range(2)
@@ -292,7 +292,7 @@ class SongListDnDMixin(object):
                 except ValueError:
                     return None
 
-            filenames = filter(None, map(to_filename, sel.get_uris()))
+            filenames = listfilter(None, map(to_filename, sel.get_uris()))
             move = False
         else:
             Gtk.drag_finish(ctx, False, False, etime)
@@ -305,7 +305,7 @@ class SongListDnDMixin(object):
             elif filename not in library:
                 to_add.append(library.librarian[filename])
         library.add(to_add)
-        songs = filter(None, map(library.get, filenames))
+        songs = listfilter(None, map(library.get, filenames))
         if not songs:
             Gtk.drag_finish(ctx, bool(not filenames), False, etime)
             return
