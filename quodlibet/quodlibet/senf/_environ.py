@@ -17,7 +17,7 @@ import ctypes
 import collections
 
 from ._compat import text_type, PY2
-from ._fsnative import path2fsn, is_win
+from ._fsnative import path2fsn, is_win, _fsn2legacy
 from . import _winapi as winapi
 
 
@@ -116,7 +116,9 @@ def read_windows_environ():
 
 class Environ(collections.MutableMapping):
     """Dict[`fsnative`, `fsnative`]: Like `os.environ` but contains unicode
-    keys and values under Windows + Python 2
+    keys and values under Windows + Python 2.
+
+    Any changes made will be forwarded to `os.environ`.
     """
 
     def __init__(self):
@@ -138,6 +140,12 @@ class Environ(collections.MutableMapping):
         value = path2fsn(value)
 
         if is_win and PY2:
+            # this calls putenv, so do it first and replace later
+            try:
+                os.environ[_fsn2legacy(key)] = _fsn2legacy(value)
+            except OSError:
+                raise ValueError
+
             try:
                 set_windows_env_var(key, value)
             except WindowsError:
@@ -155,6 +163,11 @@ class Environ(collections.MutableMapping):
             try:
                 del_windows_env_var(key)
             except WindowsError:
+                pass
+
+            try:
+                del os.environ[_fsn2legacy(key)]
+            except KeyError:
                 pass
 
         del self._env[key]

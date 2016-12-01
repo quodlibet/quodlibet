@@ -14,17 +14,21 @@
 
 import sys
 import ctypes
+import collections
 
 from ._compat import PY2
-from ._fsnative import is_unix
+from ._fsnative import is_win, _fsn2legacy
 from . import _winapi as winapi
 
 
-def create_argv():
-    """Returns a unicode argv under Windows and standard sys.argv otherwise"""
+def _get_win_argv():
+    """Returns a unicode argv under Windows and standard sys.argv otherwise
 
-    if is_unix or not PY2:
-        return sys.argv
+    Returns:
+        List[`fsnative`]
+    """
+
+    assert is_win
 
     argc = ctypes.c_int()
     try:
@@ -43,4 +47,42 @@ def create_argv():
     return res
 
 
-argv = create_argv()
+class Argv(collections.MutableSequence, list):
+    """List[`fsnative`]: Like `sys.argv` but contains unicode
+    keys and values under Windows + Python 2.
+
+    Any changes made will be forwarded to `sys.argv`.
+    """
+
+    def __init__(self):
+        if PY2 and is_win:
+            self._argv = _get_win_argv()
+        else:
+            self._argv = sys.argv
+
+    def __getitem__(self, index):
+        return self._argv[index]
+
+    def __setitem__(self, index, value):
+        self._argv[index] = value
+        try:
+            sys.argv[index] = _fsn2legacy(value)
+        except IndexError:
+            pass
+
+    def __delitem__(self, index):
+        del self._argv[index]
+        try:
+            del sys.argv[index]
+        except IndexError:
+            pass
+
+    def __len__(self):
+        return len(self._argv)
+
+    def insert(self, index, value):
+        self._argv.insert(index, value)
+        sys.argv.insert(index, _fsn2legacy(value))
+
+
+argv = Argv()

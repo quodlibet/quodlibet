@@ -52,6 +52,22 @@ def _decode_surrogatepass(data, codec):
             raise
 
 
+def _fsn2legacy(path):
+    """Takes a fsnative path and returns a path that can be put into os.environ
+    or sys.argv. Might result in a mangled path on Python2 + Windows.
+    Can't fail.
+
+    Args:
+        path (fsnative)
+    Returns:
+        str
+    """
+
+    if PY2 and is_win:
+        return path.encode(_encoding, "replace")
+    return path
+
+
 def _fsnative(text):
     if not isinstance(text, text_type):
         raise TypeError("%r needs to be a text type (%r)" % (text, text_type))
@@ -222,29 +238,37 @@ def path2fsn(path):
     return path
 
 
-def fsn2text(path):
+def fsn2text(path, strict=False):
     """
     Args:
         path (fsnative): The path to convert
+        strict (bool): Fail in case the conversion is not reversible
     Returns:
         `text`
     Raises:
         TypeError: In case no `fsnative` has been passed
+        ValueError: In case ``strict`` was True and the conversion failed
 
     Converts a `fsnative` path to `text`.
 
-    This process is not reversible and should only be used for display
-    purposes.
+    Can be used to pass a path to some unicode API, like for example a GUI
+    toolkit.
+
+    If ``strict`` is True the conversion will fail in case it is not
+    reversible. This can be useful for converting program arguments that are
+    supposed to be text and erroring out in case they are not.
+
     Encoding with a Unicode encoding will always succeed with the result.
     """
 
     path = _validate_fsnative(path)
+    errors = "strict" if strict else "replace"
 
     if is_win:
         return path.encode("utf-16-le", _surrogatepass).decode("utf-16-le",
-                                                               "replace")
+                                                               errors)
     else:
-        return path.decode(_encoding, "replace")
+        return path.decode(_encoding, errors)
 
 
 def text2fsn(text):
