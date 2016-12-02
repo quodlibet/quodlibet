@@ -7,11 +7,12 @@
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
 #           2011-2016 Nick Boultbee
+#                2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-
+import json
 import os
 import time
 import threading
@@ -185,6 +186,101 @@ class AmazonParser(object):
             self.covers.append(cover)
 
     def start(self, query, limit=10):
+        """Start the search and returns the covers"""
+
+        self.page_count = 0
+        self.covers = []
+        self.limit = limit
+        self.__parse_page(1, query)
+
+        if len(self.covers) < limit:
+            for page in xrange(2, self.page_count + 1):
+                self.__parse_page(page, query)
+                if len(self.covers) >= limit:
+                    break
+
+        return self.covers
+
+
+class DiscogsParser(object):
+    """A class for searching covers from Amazon"""
+
+    def __init__(self):
+        self.page_count = 0
+        self.covers = []
+        self.limit = 0
+        self.creds = {'key': 'aWfZGjHQvkMcreUECGAp',
+                      'secret': 'VlORkklpdvAwJMwxUjNNSgqicjuizJAl'}
+
+    def __parse_page(self, page, query):
+        """Gets all item tags and calls the item parsing function for each"""
+
+        url = 'https://api.discogs.com/database/search'
+
+        parameters = {
+            'type': 'release',
+            # 'artist': '',
+            # 'release_title': '',
+            'q': query,
+            'page': page,
+            'per_page': 100,
+        }
+
+        _params = dict(parameters.items() + self.creds.items())
+        data, enc = get_url(url, get=_params)
+        json_dict = json.loads(data)
+
+        # TODO: rate limiting
+
+        pages = json_dict.get('pagination', {}).get('pages', 0)
+        if pages != 0:
+            self.page_count = int(pages)
+        else:
+            return
+
+        items = json_dict.get('results', {})
+        for item in items:
+            self.__parse_item(item)
+            if len(self.covers) >= self.limit:
+                break
+
+    def __parse_item(self, item):
+        """Extract all information and add the covers to the list."""
+
+        thumbnail = item.get('thumb', '')
+        if thumbnail is None:
+            print_d("Release doesn't have a cover")
+            return
+
+        res_url = item.get('resource_url', '')
+        data, enc = get_url(res_url, get=self.creds)
+        json_dict = json.loads(data)
+
+        images = json_dict.get('images', [])
+
+        for _, image in enumerate(images):
+
+            type = image.get('type', '')
+            if type != 'primary':
+                print_d('Cover is not primary: {0}'.format(type))
+                continue
+
+            cover = {'source': 'https://www.discogs.com',
+                     'name': item.get('title', ''),
+                     'thumbnail': image.get('uri150', thumbnail),
+                     'cover': image.get('uri', '')}
+
+            cover['size'] = get_size_of_url(cover['cover'])
+
+            width = image.get('width', 0)
+            height = image.get('height', 0)
+            cover['resolution'] = '%s x %s px' % (width, height)
+
+            self.covers.append(cover)
+            if len(self.covers) >= self.limit:
+                break
+
+    def start(self, query, limit=5):
         """Start the search and returns the covers"""
 
         self.page_count = 0
@@ -810,6 +906,12 @@ engines = [
         'url': 'https://www.amazon.com/',
         'replace': ' ',
         'config_id': 'amazon',
+    },
+    {
+        'class': DiscogsParser,
+        'url': 'https://www.discogs.com/',
+        'replace': ' ',
+        'config_id': 'discogs',
     },
 ]
 #------------------------------------------------------------------------------
