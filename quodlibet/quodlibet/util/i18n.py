@@ -12,7 +12,7 @@ import locale
 
 from senf import environ
 
-from quodlibet.compat import text_type, PY2
+from quodlibet.compat import text_type, PY2, listfilter
 
 
 def bcp47_to_language(code):
@@ -67,9 +67,9 @@ def set_i18n_envvars():
         from quodlibet.util.winapi import GetUserDefaultUILanguage, \
             GetSystemDefaultUILanguage
 
-        langs = filter(None, map(locale.windows_locale.get,
-                                 [GetUserDefaultUILanguage(),
-                                  GetSystemDefaultUILanguage()]))
+        langs = listfilter(None, map(locale.windows_locale.get,
+                                     [GetUserDefaultUILanguage(),
+                                      GetSystemDefaultUILanguage()]))
         if langs:
             environ.setdefault('LANG', langs[0])
             environ.setdefault('LANGUAGE', ":".join(langs))

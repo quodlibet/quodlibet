@@ -10,10 +10,10 @@ import sys
 import locale
 from functools import wraps
 
-from senf import environ, argv
+from senf import environ, argv, path2fsn
 
 
-from .environment import is_windows, is_linux
+from .environment import is_linux
 
 
 environ, argv
@@ -100,8 +100,7 @@ def get_module_dir(module=None):
         file_path = sys._getframe(1).f_globals["__file__"]
     else:
         file_path = getattr(module, "__file__")
-    if is_windows():
-        file_path = file_path.decode(sys.getfilesystemencoding())
+    file_path = path2fsn(file_path)
     return os.path.dirname(os.path.realpath(file_path))
 
 
