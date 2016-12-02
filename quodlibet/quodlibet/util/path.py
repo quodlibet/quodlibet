@@ -17,8 +17,9 @@ import shlex
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
     fsn2text, text2fsn
 
-from quodlibet.compat import PY2, urlparse, text_type, quote, unquote
+from quodlibet.compat import PY2, urlparse, text_type, quote, unquote, PY3
 from . import windows
+from .environment import is_windows
 from .misc import environ
 
 if sys.platform == "darwin":
@@ -154,8 +155,19 @@ def unexpand(filename):
     return filename
 
 
+if PY3 and is_windows():
+    def ismount(path):
+        # this can raise on py3+win, but we don't care
+        try:
+            return os.path.ismount(path)
+        except OSError:
+            return False
+else:
+    ismount = os.path.ismount
+
+
 def find_mount_point(path):
-    while not os.path.ismount(path):
+    while not ismount(path):
         path = os.path.dirname(path)
     return path
 

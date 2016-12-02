@@ -31,7 +31,8 @@ from quodlibet.util.collections import DictMixin
 from quodlibet import util
 from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden
+from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, \
+    ismount
 from quodlibet.compat import iteritems, iterkeys, itervalues, listkeys, \
     listvalues
 
@@ -538,7 +539,7 @@ class FileLibrary(PicklingLibrary):
             mountpoint = item.mountpoint
 
             if mountpoint not in mounts:
-                is_mounted = os.path.ismount(mountpoint)
+                is_mounted = ismount(mountpoint)
                 mounts[mountpoint] = is_mounted
                 # at least one not mounted, make sure masked has an entry
                 if not is_mounted:
@@ -642,7 +643,7 @@ class FileLibrary(PicklingLibrary):
         if cofuncid:
             task.copool(cofuncid)
         for i, (point, items) in task.list(enumerate(self._masked.items())):
-            if os.path.ismount(point):
+            if ismount(point):
                 self._contents.update(items)
                 del(self._masked[point])
                 self.emit('added', items.values())

@@ -20,7 +20,7 @@ from quodlibet import _
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, mtime, expanduser, \
-    normalize_path, escape_filename
+    normalize_path, escape_filename, ismount
 from quodlibet.util.string import encode, decode, isascii
 
 from quodlibet.util import iso639
@@ -653,7 +653,7 @@ class AudioFile(dict, ImageContainer):
     def mounted(self):
         """Return true if the disk the file is on is mounted, or
         the file is not on a disk."""
-        return os.path.ismount(self.get("~mountpoint", "/"))
+        return ismount(self.get("~mountpoint", "/"))
 
     def can_multiple_values(self, key=None):
         """If no arguments are given, return a list of tags that can
@@ -735,7 +735,7 @@ class AudioFile(dict, ImageContainer):
                 # Prevent infinite loop without a fully-qualified filename
                 # (the unit tests use these).
                 head = head or fsnative(u"/")
-                if os.path.ismount(head):
+                if ismount(head):
                     self["~mountpoint"] = head
         else:
             self["~mountpoint"] = fsnative(u"/")

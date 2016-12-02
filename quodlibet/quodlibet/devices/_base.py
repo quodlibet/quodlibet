@@ -9,6 +9,7 @@ import os
 
 from quodlibet import _
 import quodlibet.devices
+from quodlibet.util.path import ismount
 
 
 class Device(dict):
@@ -74,7 +75,7 @@ class Device(dict):
     def is_connected(self):
         """Should return True if the device is connected."""
 
-        return os.path.ismount(self.mountpoint)
+        return ismount(self.mountpoint)
 
     def eject(self):
         """Eject the device, should return True on success. If the eject
