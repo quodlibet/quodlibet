@@ -160,13 +160,13 @@ def strip_pot_date(path):
     done = False
     lines = []
     for line in open(path, "rb"):
-        if not done and line.startswith('"POT-Creation-Date:'):
+        if not done and line.startswith(b'"POT-Creation-Date:'):
             done = True
             continue
         lines.append(line)
 
     with open(path, "wb") as h:
-        h.write("".join(lines))
+        h.write(b"".join(lines))
 
 
 class build_mo(Command):

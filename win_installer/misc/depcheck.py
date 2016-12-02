@@ -46,6 +46,7 @@ SYSTEM_LIBS = ['advapi32.dll',
 def get_dependencies(filename):
     deps = []
     data = subprocess.check_output(["objdump", "-p", filename])
+    data = data.decode("utf-8")
     for line in data.splitlines():
         line = line.strip()
         if line.startswith("DLL Name:"):
@@ -73,12 +74,12 @@ def get_things_to_delete(root):
                     all_libs.add(lib)
                     needed.add(lib)
                     if not find_lib(root, lib):
-                        print "MISSING:", path, lib
+                        print("MISSING:", path, lib)
 
     for lib in get_required_by_typelibs():
         needed.add(lib)
         if not find_lib(root, lib):
-            print "MISSING:", path, lib
+            print("MISSING:", path, lib)
 
     # get rid of things not in the search path,
     # maybe loaded through other means?
@@ -93,7 +94,7 @@ def main():
     libs = get_things_to_delete(sys.prefix)
     while libs:
         for l in libs:
-            print "DELETE:", l
+            print("DELETE:", l)
             os.unlink(l)
         libs = get_things_to_delete(sys.prefix)
 
