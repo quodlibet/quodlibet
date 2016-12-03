@@ -34,6 +34,8 @@ class WaveformSeekBar(Gtk.Box):
         self._remaining_label = TimeLabel()
         self._waveform_scale = WaveformScale()
 
+        self.__id = None
+
         self.pack_start(Align(self._elapsed_label, border=6), False, True, 0)
         self.pack_start(self._waveform_scale, True, True, 0)
         self.pack_start(Align(self._remaining_label, border=6), False, True, 0)
@@ -43,9 +45,12 @@ class WaveformSeekBar(Gtk.Box):
 
         connect_destroy(player, 'seek', self._on_player_seek)
         connect_destroy(player, 'song-ended', self._on_song_ended)
-        connect_destroy(player, 'unpaused', self._on_song_unpaused)
+        connect_destroy(player, 'paused', self._on_song_paused, True)
+        connect_destroy(player, 'unpaused', self._on_song_paused, False)
         connect_destroy(player, 'notify::seekable', self._on_seekable_changed)
         connect_destroy(library, 'changed', self._on_song_changed, player)
+
+        self.connect('destroy', self._on_destroy)
 
         self._update(player)
 
@@ -116,8 +121,21 @@ class WaveformSeekBar(Gtk.Box):
         self._waveform_scale.set_placeholder(True)
         self._update(player)
 
-    def _on_song_unpaused(self, player):
-        self._timeout_add(player)
+    def _on_song_paused(self, player, paused):
+        if paused:
+            self._source_remove()
+            return
+
+        if self.__id is None:
+            self.__id = self._timeout_add(player)
+
+    def _on_destroy(self, *args):
+        self._source_remove()
+
+    def _source_remove(self):
+        if self.__id is not None:
+            GLib.source_remove(self.__id)
+            self.__id = None
 
     def _timeout_add(self, player):
         # update for every "elapsed" pixel
@@ -127,12 +145,15 @@ class WaveformSeekBar(Gtk.Box):
 
         print_d("update_freq = {0} ms".format(update_freq))
 
-        GLib.timeout_add(update_freq, self._update_callback, player, wf_width)
+        return GLib.timeout_add(update_freq,
+                                self._update_callback,
+                                player,
+                                wf_width)
 
     def _update_callback(self, player, waveform_width):
         # recalculate update_freq if the width changed
         if self._waveform_scale.width != waveform_width:
-            self._timeout_add(player)
+            self.__id = self._timeout_add(player)
             return False
 
         self._update(player)
