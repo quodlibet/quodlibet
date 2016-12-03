@@ -76,18 +76,21 @@ def parse_pls(filename, name="", library=None):
         os.path.splitext(filename)[0])))
 
     filenames = []
-    with open(filename) as h:
+    with open(filename, "rb") as h:
         for line in h:
             line = line.strip()
-            if not line.lower().startswith("file"):
+            if not line.lower().startswith(b"file"):
                 continue
             else:
                 try:
-                    line = line[line.index("=") + 1:].strip()
+                    line = line[line.index(b"=") + 1:].strip()
                 except ValueError:
                     pass
                 else:
-                    filenames.append(line)
+                    try:
+                        filenames.append(bytes2fsn(line, "utf-8"))
+                    except ValueError:
+                        continue
     return __parse_playlist(plname, filename, filenames, library)
 
 
@@ -100,8 +103,6 @@ def __parse_playlist(name, plfilename, files, library):
     win.show()
     for i, filename in enumerate(files):
         if not uri_is_valid(filename):
-            if os.name == "nt":
-                filename = filename.decode("utf-8", "replace")
             # Plain filename.
             filename = os.path.realpath(os.path.join(
                 os.path.dirname(plfilename), filename))
