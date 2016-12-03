@@ -258,7 +258,7 @@ class DiscogsParser(object):
 
         images = json_dict.get('images', [])
 
-        for _, image in enumerate(images):
+        for i, image in enumerate(images):
 
             type = image.get('type', '')
             if type != 'primary':
