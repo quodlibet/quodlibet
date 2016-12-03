@@ -17,8 +17,8 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align
 from quodlibet.qltk import Icons
 from quodlibet.qltk.seekbutton import TimeLabel
-from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.util import connect_destroy, print_d
+from gi.repository import GLib
 
 
 class WaveformSeekBar(Gtk.Box):
@@ -41,18 +41,13 @@ class WaveformSeekBar(Gtk.Box):
         for child in self.get_children():
             child.show_all()
 
-        self._tracker = TimeTracker(player)
-        self._tracker.connect('tick', self._on_tick, player)
-
         connect_destroy(player, 'seek', self._on_player_seek)
-        connect_destroy(player, 'song-started', self._on_song_started)
         connect_destroy(player, 'song-ended', self._on_song_ended)
+        connect_destroy(player, 'unpaused', self._on_song_unpaused)
         connect_destroy(player, 'notify::seekable', self._on_seekable_changed)
         connect_destroy(library, 'changed', self._on_song_changed, player)
 
-        self.connect('destroy', self._on_destroy)
         self._update(player)
-        self._tracker.tick()
 
         if player.info:
             self._create_waveform(player.info, CONFIG.data_size)
@@ -108,12 +103,6 @@ class WaveformSeekBar(Gtk.Box):
                 self._waveform_scale.reset(self._rms_vals, self._player)
                 self._waveform_scale.set_placeholder(False)
 
-    def _on_destroy(self, *args):
-        self._tracker.destroy()
-
-    def _on_tick(self, tracker, player):
-        self._update(player)
-
     def _on_seekable_changed(self, player, *args):
         self._update(player)
 
@@ -127,8 +116,27 @@ class WaveformSeekBar(Gtk.Box):
         self._waveform_scale.set_placeholder(True)
         self._update(player)
 
-    def _on_song_started(self, player, song):
+    def _on_song_unpaused(self, player):
+        self._timeout_add(player)
+
+    def _timeout_add(self, player):
+        # update for every "elapsed" pixel
+        wf_width = self._waveform_scale.width  # pixel
+        song_length = player.info("~#length")  # ms
+        update_freq = int(song_length * 1000 / wf_width)
+
+        print_d("update_freq = {0} ms".format(update_freq))
+
+        GLib.timeout_add(update_freq, self._update_callback, player, wf_width)
+
+    def _update_callback(self, player, waveform_width):
+        # recalculate update_freq if the width changed
+        if self._waveform_scale.width != waveform_width:
+            self._timeout_add(player)
+            return False
+
         self._update(player)
+        return not player.paused
 
     def _on_song_ended(self, player, song, ended):
         self._update(player)
