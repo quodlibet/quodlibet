@@ -1,4 +1,6 @@
 matrix:
+  allow_failures:
+    - env: TYPE="windows" PYTHON="python3" APT_PACKAGES="wine xvfb p7zip-full"
   include:
     - os: linux
       sudo: required
@@ -20,7 +22,12 @@ matrix:
       language: generic
       sudo: required
       dist: trusty
-      env: TYPE="windows" APT_PACKAGES="wine xvfb p7zip-full"
+      env: TYPE="windows" PYTHON="python2" APT_PACKAGES="wine xvfb p7zip-full"
+    - os: linux
+      language: generic
+      sudo: required
+      dist: trusty
+      env: TYPE="windows" PYTHON="python3" APT_PACKAGES="wine xvfb p7zip-full"
 
 install:
  - if [ "$APT_PACKAGES" != "" ]; then sudo dpkg --add-architecture i386; fi
@@ -30,8 +37,9 @@ install:
  - if [ "$TYPE" == "linux" ]; then travis_retry pip install --upgrade pep8 pyflakes; fi
  - if [ "$TYPE" == "osx" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg; fi
  - if [ "$TYPE" == "osx" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg; fi
- - if [ "$TYPE" == "windows" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe; fi
- - if [ "$TYPE" == "windows" ]; then 7z x -o_temp quodlibet-latest-installer.exe > /dev/null; fi
+ - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python2" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe -O win-inst.exe; fi
+ - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python3" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer-py3.exe -O win-inst.exe; fi
+ - if [ "$TYPE" == "windows" ]; then 7z x -o_temp win-inst.exe > /dev/null; fi
  - if [ "$TYPE" == "windows" ]; then mv $(dirname _temp/*/bin) _win_inst; fi
 
 script:
@@ -40,5 +48,6 @@ script:
  - if [ "$TYPE" == "linux" ]; then xvfb-run -a $PYTHON ./setup.py quality; fi
  - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run setup.py test; fi
  - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run setup.py quality; fi
- - if [ "$TYPE" == "windows" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/python.exe ./setup.py test; fi
- - if [ "$TYPE" == "windows" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/python.exe ./setup.py quality; fi
+ - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python2" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe ./setup.py test; fi
+ - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python2" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe ./setup.py quality; fi
+ - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python3" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe -m pytest --assert=plain tests; fi
