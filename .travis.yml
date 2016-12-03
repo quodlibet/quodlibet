@@ -1,6 +1,4 @@
 matrix:
-  allow_failures:
-    - env: TYPE="windows" PYTHON="python3" APT_PACKAGES="wine xvfb p7zip-full"
   include:
     - os: linux
       sudo: required
