@@ -603,7 +603,8 @@ class TAudioFile(TestCase):
             a.sort_by_func("~basename")(a)
         else:
             # windows
-            a["~filename"] = "/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg".decode("latin-1")
+            a["~filename"] = \
+                b"/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg".decode("latin-1")
             a.sort_by_func("~filename")(a)
             a.sort_by_func("~basename")(a)
             a.sort_by_func("~dirname")(a)

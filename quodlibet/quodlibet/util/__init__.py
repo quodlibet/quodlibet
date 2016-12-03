@@ -330,7 +330,10 @@ def parse_date(datestr):
     except IndexError:
         raise ValueError
 
-    return time.mktime(time.strptime(datestr, frmt))
+    try:
+        return time.mktime(time.strptime(datestr, frmt))
+    except OverflowError as e:
+        raise ValueError(e)
 
 
 def format_int_locale(value):
