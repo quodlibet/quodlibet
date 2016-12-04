@@ -349,7 +349,7 @@ class AudioFile(dict, ImageContainer):
                 try:
                     return self["~uri"]
                 except KeyError:
-                    return text_type(fsn2uri(self["~filename"]))
+                    return fsn2uri(self["~filename"])
             elif key == "format":
                 return self.get("~format", self.format)
             elif key == "codec":

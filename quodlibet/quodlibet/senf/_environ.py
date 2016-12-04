@@ -17,7 +17,7 @@ import ctypes
 import collections
 
 from ._compat import text_type, PY2
-from ._fsnative import path2fsn, is_win, _fsn2legacy
+from ._fsnative import path2fsn, is_win, _fsn2legacy, fsnative
 from . import _winapi as winapi
 
 
@@ -105,6 +105,7 @@ def read_windows_environ():
             key, value = entry.split(u"=", 1)
         except ValueError:
             continue
+        key = _norm_key(key)
         dict_[key] = value
 
     status = winapi.FreeEnvironmentStringsW(res)
@@ -112,6 +113,13 @@ def read_windows_environ():
         raise ctypes.WinError()
 
     return dict_
+
+
+def _norm_key(key):
+    assert isinstance(key, fsnative)
+    if is_win:
+        key = key.upper()
+    return key
 
 
 class Environ(collections.MutableMapping):
@@ -132,11 +140,11 @@ class Environ(collections.MutableMapping):
         self._env = env
 
     def __getitem__(self, key):
-        key = path2fsn(key)
+        key = _norm_key(path2fsn(key))
         return self._env[key]
 
     def __setitem__(self, key, value):
-        key = path2fsn(key)
+        key = _norm_key(path2fsn(key))
         value = path2fsn(value)
 
         if is_win and PY2:
@@ -157,7 +165,7 @@ class Environ(collections.MutableMapping):
             raise ValueError
 
     def __delitem__(self, key):
-        key = path2fsn(key)
+        key = _norm_key(path2fsn(key))
 
         if is_win and PY2:
             try:

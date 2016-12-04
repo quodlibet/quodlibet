@@ -403,7 +403,7 @@ def fsn2uri(path):
     Args:
         path (fsnative): The path to convert to an URI
     Returns:
-        `str`: An ASCII only URI
+        `text`: An ASCII only URI
     Raises:
         TypeError: If no `fsnative` was passed
         ValueError: If the path can't be converted
@@ -418,7 +418,10 @@ def fsn2uri(path):
 
     def _quote_path(path):
         # RFC 2396
-        return quote(path, "/:@&=+$,")
+        path = quote(path, "/:@&=+$,")
+        if PY2:
+            path = path.decode("ascii")
+        return path
 
     if is_win:
         buf = ctypes.create_unicode_buffer(winapi.INTERNET_MAX_URL_LENGTH)
@@ -442,4 +445,4 @@ def fsn2uri(path):
         return _quote_path(uri.encode("utf-8", _surrogatepass))
 
     else:
-        return "file://" + _quote_path(path)
+        return u"file://" + _quote_path(path)

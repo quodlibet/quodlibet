@@ -356,7 +356,7 @@ class Notify(EventPlugin):
         fileobj = app.cover_manager.get_cover(song)
         self._set_image_fileobj(fileobj)
         if fileobj:
-            return text_type(fsn2uri(fileobj.name))
+            return fsn2uri(fileobj.name)
         return u""
 
     def show_notification(self, song):
