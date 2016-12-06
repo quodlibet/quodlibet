@@ -171,10 +171,16 @@ def _fsnative(text):
             path = text.encode(encoding, _surrogatepass)
         except UnicodeEncodeError:
             path = text.encode("utf-8", _surrogatepass)
+
+        if b"\x00" in path:
+            path = path.replace(b"\x00", fsn2bytes(_fsnative(u"\uFFFD"), None))
+
         if PY3:
             return path.decode(_encoding, "surrogateescape")
         return path
     else:
+        if u"\x00" in text:
+            text = text.replace(u"\x00", u"\uFFFD")
         return text
 
 
@@ -218,13 +224,21 @@ def _create_fsnative(type_):
 
         The real returned type is:
 
-        - Python 2 + Windows: :obj:`python:unicode` with ``surrogates``
-        - Python 2 + Unix: :obj:`python:str`
-        - Python 3 + Windows: :obj:`python3:str` with ``surrogates``
-        - Python 3 + Unix: :obj:`python3:str` with ``surrogates`` (only
-          containing code points which can be encoded with the locale encoding)
+        - **Python 2 + Windows:** :obj:`python:unicode`, with ``surrogates``,
+          without ``null``
+        - **Python 2 + Unix:** :obj:`python:str`, without ``null``
+        - **Python 3 + Windows:** :obj:`python3:str`, with ``surrogates``,
+          without ``null``
+        - **Python 3 + Unix:** :obj:`python3:str`, with ``surrogates``, without
+          ``null``, without code points not encodable with the locale encoding
 
         Constructing a `fsnative` can't fail.
+
+        Passing a `fsnative` to :func:`open` will never lead to `ValueError`
+        or `TypeError`.
+
+        Any operation on `fsnative` can also use the `str` type, as long as
+        the `str` only contains ASCII and no NULL.
         """
 
         def __new__(cls, text=u""):
@@ -258,16 +272,24 @@ def _validate_fsnative(path):
         raise TypeError("path needs to be %s, not %s" % (
             fsnative_type.__name__, type(path).__name__))
 
-    if PY3 and is_unix:
-        try:
-            return path.encode(_encoding, "surrogateescape")
-        except UnicodeEncodeError:
-            # This look more like ValueError, but raising only one error
-            # makes things simpler... also one could say str + surrogates
-            # is its own type
-            raise TypeError("path contained Unicode code points not valid in"
-                            "the current path encoding. To create a valid "
-                            "path from Unicode use text2fsn()")
+    if is_unix:
+        if PY3:
+            try:
+                path = path.encode(_encoding, "surrogateescape")
+            except UnicodeEncodeError:
+                # This look more like ValueError, but raising only one error
+                # makes things simpler... also one could say str + surrogates
+                # is its own type
+                raise TypeError(
+                    "path contained Unicode code points not valid in"
+                    "the current path encoding. To create a valid "
+                    "path from Unicode use text2fsn()")
+
+        if b"\x00" in path:
+            raise TypeError("fsnative can't contain nulls")
+    else:
+        if u"\x00" in path:
+            raise TypeError("fsnative can't contain nulls")
 
     return path
 
@@ -310,14 +332,23 @@ def path2fsn(path):
         else:
             if isinstance(path, text_type):
                 path = path.encode(_encoding)
+        if "\x00" in path:
+            raise ValueError("embedded null")
     else:
         path = getattr(os, "fspath", lambda x: x)(path)
         if isinstance(path, bytes):
+            if b"\x00" in path:
+                raise ValueError("embedded null")
             path = path.decode(_encoding, "surrogateescape")
         elif is_unix and isinstance(path, str):
             # make sure we can encode it and this is not just some random
             # unicode string
-            path.encode(_encoding, "surrogateescape")
+            data = path.encode(_encoding, "surrogateescape")
+            if b"\x00" in data:
+                raise ValueError("embedded null")
+        else:
+            if u"\x00" in path:
+                raise ValueError("embedded null")
 
     if not isinstance(path, fsnative_type):
         raise TypeError("path needs to be %s", fsnative_type.__name__)
@@ -437,13 +468,19 @@ def bytes2fsn(data, encoding):
         if encoding is None:
             raise ValueError("invalid encoding %r" % encoding)
         try:
-            return _bytes2winpath(data, encoding)
+            path = _bytes2winpath(data, encoding)
         except LookupError:
             raise ValueError("invalid encoding %r" % encoding)
-    elif PY2:
-        return data
+        if u"\x00" in path:
+            raise ValueError("contains nulls")
+        return path
     else:
-        return data.decode(_encoding, "surrogateescape")
+        if b"\x00" in data:
+            raise ValueError("contains nulls")
+        if PY2:
+            return data
+        else:
+            return data.decode(_encoding, "surrogateescape")
 
 
 def uri2fsn(uri):
@@ -482,12 +519,16 @@ def uri2fsn(uri):
             path = "\\\\" + path
         if PY2:
             path = path.decode("utf-8")
+        if u"\x00" in path:
+            raise ValueError("embedded null")
         return path
     else:
-        if PY2:
-            return url2pathname(path)
-        else:
-            return fsnative(url2pathname(path))
+        path = url2pathname(path)
+        if "\x00" in path:
+            raise ValueError("embedded null")
+        if PY3:
+            path = fsnative(path)
+        return path
 
 
 def fsn2uri(path):

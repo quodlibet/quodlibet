@@ -15,7 +15,7 @@ import codecs
 import shlex
 
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
-    fsn2text, text2fsn
+    fsn2text
 
 from quodlibet.compat import PY2, urlparse, text_type, quote, unquote, PY3
 from . import windows
@@ -120,8 +120,7 @@ def escape_filename(s):
     """
 
     s = text_type(s)
-    s = fsn2bytes(text2fsn(s), "utf-8")
-    s = quote(s, safe=b"")
+    s = quote(s.encode("utf-8"), safe=b"")
     if isinstance(s, text_type):
         s = s.encode("ascii")
     return bytes2fsn(s, "utf-8")
