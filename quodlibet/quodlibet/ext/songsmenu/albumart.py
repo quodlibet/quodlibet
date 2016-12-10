@@ -747,7 +747,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         self.search = search = CoverSearch(self.__search_callback)
 
         for eng in engines:
-            if self.config_get(CONFIG_ENG_PREFIX + eng['config_id'], True):
+            if self.config_get_bool(
+                    CONFIG_ENG_PREFIX + eng['config_id'], True):
                 search.add_engine(eng['class'], eng['replace'])
 
         search.start(text)
