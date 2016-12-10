@@ -110,7 +110,7 @@ class TPickle(TestCase):
             u"int": 42,
             b"float": 1.25,
         })
-        data = dump_audio_files([i])
+        data = pickle_dumps([i], 1)
         items = load_audio_files(data, sanitize=True)
         i = items[0]
 
