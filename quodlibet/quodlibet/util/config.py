@@ -313,6 +313,9 @@ class Config(object):
         Don't pass unicode, encode first.
         """
 
+        if PY3 and isinstance(value, bytes):
+            raise TypeError("use setbytes")
+
         # RawConfigParser only allows string values but doesn't
         # scream if they are not (and it only fails before the
         # first config save..)

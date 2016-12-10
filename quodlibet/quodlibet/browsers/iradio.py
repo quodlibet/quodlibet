@@ -911,8 +911,8 @@ class InternetRadio(Browser, util.InstanceTracker):
         return True
 
     def save(self):
-        text = self.__searchbar.get_text().encode("utf-8")
-        config.set("browsers", "query_text", text)
+        text = self.__searchbar.get_text()
+        config.settext("browsers", "query_text", text)
 
         selection = self.view.get_selection()
         model, rows = selection.get_selected_rows()

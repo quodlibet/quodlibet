@@ -345,8 +345,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             return False
 
     def save(self):
-        text = self.__searchbar.get_text().encode("utf-8")
-        config.set("browsers", "query_text", text)
+        text = self.__searchbar.get_text()
+        config.settext("browsers", "query_text", text)
         self.api_client.save_token()
 
     def _refresh_online_filters(self):
