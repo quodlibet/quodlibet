@@ -191,13 +191,7 @@ def _create_fsnative(type_):
     class meta(type):
 
         def __instancecheck__(self, instance):
-            # XXX: invalid str on Unix + Py3 still returns True here, but
-            # might fail when passed to fsnative API. We could be more strict
-            # here and call _validate_fsnative(), but then we could
-            # have a value not being an instance of fsnative, while its type
-            # is still a subclass of fsnative.. and this is enough magic
-            # already.
-            return isinstance(instance, type_)
+            return _typecheck_fsnative(instance)
 
         def __subclasscheck__(self, subclass):
             return issubclass(subclass, type_)
@@ -253,7 +247,33 @@ fsnative_type = text_type if is_win or PY3 else bytes
 fsnative = _create_fsnative(fsnative_type)
 
 
-def _validate_fsnative(path):
+def _typecheck_fsnative(path):
+    """
+    Args:
+        path (object)
+    Returns:
+        bool: if path is a fsnative
+    """
+
+    if not isinstance(path, fsnative_type):
+        return False
+
+    if PY3 or is_win:
+        if u"\x00" in path:
+            return False
+
+        if is_unix and not _is_unicode_encoding:
+            try:
+                path.encode(_encoding, "surrogateescape")
+            except UnicodeEncodeError:
+                return False
+    elif b"\x00" in path:
+        return False
+
+    return True
+
+
+def _fsn2native(path):
     """
     Args:
         path (fsnative)
@@ -277,6 +297,7 @@ def _validate_fsnative(path):
             try:
                 path = path.encode(_encoding, "surrogateescape")
             except UnicodeEncodeError:
+                assert not _is_unicode_encoding
                 # This look more like ValueError, but raising only one error
                 # makes things simpler... also one could say str + surrogates
                 # is its own type
@@ -300,15 +321,17 @@ def _get_encoding():
     encoding = sys.getfilesystemencoding()
     if encoding is None:
         if is_darwin:
-            return "utf-8"
+            encoding = "utf-8"
         elif is_win:
-            return "mbcs"
+            encoding = "mbcs"
         else:
-            return "ascii"
+            encoding = "ascii"
+    encoding = _normalize_codec(encoding)
     return encoding
 
 
 _encoding = _get_encoding()
+_is_unicode_encoding = _encoding.startswith("utf")
 
 
 def path2fsn(path):
@@ -379,7 +402,8 @@ def fsn2text(path, strict=False):
     Encoding with a Unicode encoding will always succeed with the result.
     """
 
-    path = _validate_fsnative(path)
+    path = _fsn2native(path)
+
     errors = "strict" if strict else "replace"
 
     if is_win:
@@ -429,7 +453,7 @@ def fsn2bytes(path, encoding):
     <https://simonsapin.github.io/wtf-8/>`__.
     """
 
-    path = _validate_fsnative(path)
+    path = _fsn2native(path)
 
     if is_win:
         if encoding is None:
@@ -547,7 +571,7 @@ def fsn2uri(path):
     percent encoded.
     """
 
-    path = _validate_fsnative(path)
+    path = _fsn2native(path)
 
     def _quote_path(path):
         # RFC 2396
