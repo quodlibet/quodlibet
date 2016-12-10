@@ -41,7 +41,14 @@ def _py2_to_py3(items):
 
             if k == "~filename" or k == "~mountpoint":
                 if isinstance(v, bytes):
-                    v = bytes2fsn(v, None)
+                    try:
+                        v = bytes2fsn(v, "utf-8")
+                    except ValueError:
+                        # just in case, only on Windows
+                        assert is_windows()
+                        v = v.decode("utf-8", "replace")
+            elif isinstance(v, bytes):
+                v = v.decode("utf-8", "replace")
             elif isinstance(v, text_type):
                 # strip surrogates
                 try:
