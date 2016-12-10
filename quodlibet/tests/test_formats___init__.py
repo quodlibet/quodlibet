@@ -102,6 +102,8 @@ class TPickle(TestCase):
 
         assert len(items) == len(self.instances)
         for a, b in zip(items, self.instances):
+            a = dict(a)
+            b = dict(b)
             for key in a:
                 assert b[key] == a[key]
             for key in b:

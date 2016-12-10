@@ -243,7 +243,7 @@ class POMixin(object):
             if line.strip().startswith(b"#"):
                 continue
             self.failIf(b"\xc2\xb7" in line,
-                        "Broken GTranslator copy/paste in %s:\n%s" % (
+                        "Broken GTranslator copy/paste in %s:\n%r" % (
                 self.lang, line))
 
     def test_gtk_stock_items(self):
