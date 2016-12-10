@@ -7,12 +7,15 @@
 
 import sys
 
+from senf import fsnative
+
 from tests import TestCase, get_data_path
 from .helper import capture_output
 
 from quodlibet import formats
 from quodlibet.formats import AudioFile, load_audio_files, dump_audio_files, \
     SerializationError
+from quodlibet.compat import PY3
 from quodlibet.util.picklehelper import pickle_dumps
 from quodlibet import config
 
@@ -95,6 +98,31 @@ class TPickle(TestCase):
             items = load_audio_files(data)
             assert len(items) == len(formats.types)
             assert all(isinstance(i, AudioFile) for i in items)
+
+    def test_sanitized_py3(self):
+        i = AudioFile.__new__(list(formats.types)[0])
+        # this is something that old py2 versions could pickle
+        dict.__init__(i, {
+            b"bytes": b"bytes",
+            u"unicode": u"unicode",
+            b"~filename": b"somefile",
+            u"~mountpoint": u"somemount",
+            u"int": 42,
+            b"float": 1.25,
+        })
+        data = dump_audio_files([i])
+        items = load_audio_files(data, sanitize=True)
+        i = items[0]
+
+        if not PY3:
+            return
+
+        assert i["bytes"] == "bytes"
+        assert i["unicode"] == "unicode"
+        assert isinstance(i["~filename"], fsnative)
+        assert isinstance(i["~mountpoint"], fsnative)
+        assert i["int"] == 42
+        assert i["float"] == 1.25
 
     def test_dump_audio_files(self):
         data = dump_audio_files(self.instances)
