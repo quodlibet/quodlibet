@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-10 11:49+0100\n"
-"PO-Revision-Date: 2016-08-21 14:30+0200\n"
+"PO-Revision-Date: 2016-12-10 21:30+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -38,7 +38,7 @@ msgid ""
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 msgstr ""
 "Obsługiwane formaty plików: Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
-"IT, MusePack, WavPack, MPEG-4 AAC, Monkey's Audio, WMA, SPC, MIDI."
+"IT, MusePack, WavPack, MPEG-4 AAC, Monkey’s Audio, WMA, SPC, MIDI."
 
 #: ../data/exfalso.desktop.in.h:1
 msgid "Audio tag editor"
@@ -143,9 +143,8 @@ msgstr[2] "Ponownie wczytaj o_kładki albumów"
 #: ../quodlibet/browsers/iradio.py:852 ../quodlibet/browsers/paned/main.py:292
 #: ../quodlibet/browsers/paned/main.py:298 ../quodlibet/browsers/search.py:125
 #: ../quodlibet/browsers/soundcloud/main.py:312 ../quodlibet/util/library.py:36
-#, fuzzy
 msgid "browsers"
-msgstr "Przeglądarki"
+msgstr "przeglądarki"
 
 #: ../quodlibet/browsers/albums/prefs.py:28
 #: ../quodlibet/browsers/collection/models.py:17
@@ -255,7 +254,7 @@ msgstr "Kanały dźwiękowe"
 
 #: ../quodlibet/browsers/audiofeeds.py:225
 msgid "_Audio Feeds"
-msgstr "Kanały _dźwiękowe"
+msgstr "_Kanały dźwiękowe"
 
 #: ../quodlibet/browsers/audiofeeds.py:306
 #: ../quodlibet/browsers/audiofeeds.py:312
@@ -406,7 +405,7 @@ msgstr "Wiele wartości %s"
 #: ../quodlibet/browsers/collection/prefs.py:66
 #: ../quodlibet/browsers/paned/prefs.py:50
 msgid "_Custom"
-msgstr "_Własne"
+msgstr "_Niestandardowe"
 
 #. Remove button
 #: ../quodlibet/browsers/collection/prefs.py:94
@@ -449,39 +448,33 @@ msgid "_Apply"
 msgstr "_Zastosuj"
 
 #: ../quodlibet/browsers/covergrid/main.py:124
-#, fuzzy
 msgid "Cover Grid"
-msgstr "Rozmiar _okładki:"
+msgstr "Siatka okładek"
 
 #: ../quodlibet/browsers/covergrid/main.py:125
-#, fuzzy
 msgid "_Cover Grid"
-msgstr "Rozmiar _okładki:"
+msgstr "_Siatka okładek"
 
 #: ../quodlibet/browsers/covergrid/prefs.py:54
-#, fuzzy
 msgid "Cover Grid Preferences"
-msgstr "Zaawansowane preferencje"
+msgstr "Preferencje siatki okładek"
 
 #: ../quodlibet/browsers/covergrid/prefs.py:64
-#, fuzzy
 msgid "Show album _text"
-msgstr "Wyświetlanie o_kładek albumów"
+msgstr "_Wyświetlanie tekstów albumów"
 
 #: ../quodlibet/browsers/covergrid/prefs.py:71
-#, fuzzy
 msgid "Show \"All Albums\" Item"
-msgstr "Wszystkie albumy"
+msgstr "Wyświetlanie elementu „Wszystkie albumy”"
 
 #: ../quodlibet/browsers/covergrid/prefs.py:78
 msgid "Vertical Split"
-msgstr ""
+msgstr "Podział w pionie"
 
 #: ../quodlibet/browsers/covergrid/prefs.py:110
 #: ../quodlibet/browsers/covergrid/prefs.py:111
-#, fuzzy
 msgid "Cover Magnification"
-msgstr "_Powiadomienia"
+msgstr "Powiększanie okładek"
 
 #: ../quodlibet/browsers/filesystem.py:39
 msgid "File System"
@@ -1017,7 +1010,7 @@ msgstr "Wyloguj z serwisu %s"
 
 #: ../quodlibet/browsers/soundcloud/main.py:395
 msgid "Enter code…"
-msgstr "Wprowadź kod…"
+msgstr "Kod…"
 
 #: ../quodlibet/browsers/soundcloud/main.py:396
 #, python-format
@@ -1030,7 +1023,7 @@ msgstr "Upoważnienie serwisu SoundCloud"
 
 #: ../quodlibet/browsers/soundcloud/util.py:87
 msgid "Enter Soundcloud auth code:"
-msgstr "Proszę wprowadzić kod upoważnienia serwisu SoundCloud:"
+msgstr "Kod upoważnienia serwisu SoundCloud:"
 
 #: ../quodlibet/cli.py:50
 msgid "Quod Libet is not running (add '--run' to start it)"
@@ -1155,9 +1148,8 @@ msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][GG∶]MM∶SS"
 
 #: ../quodlibet/cli.py:121
-#, fuzzy
 msgid "Set or toggle shuffle mode"
-msgstr "Przełącza tryb losowy"
+msgstr "Ustawia lub przełącza tryb losowy"
 
 #: ../quodlibet/cli.py:122
 msgid "Turn repeat off, on, or toggle it"
@@ -1341,14 +1333,12 @@ msgid "Downloads covers from MusicBrainz's cover art archive."
 msgstr "Pobiera okładki z archiwum serwisu MusicBrainz."
 
 #: ../quodlibet/ext/covers/discogs.py:25
-#, fuzzy
 msgid "Discogs Cover Source"
-msgstr "Źródło okładek serwisu Last.fm"
+msgstr "Źródło okładek serwisu Discogs"
 
 #: ../quodlibet/ext/covers/discogs.py:26
-#, fuzzy
 msgid "Downloads covers from Discogs."
-msgstr "Pobiera okładki z różnych stron WWW."
+msgstr "Pobiera okładki z serwisu Discogs."
 
 #: ../quodlibet/ext/editing/iconv.py:26
 msgid "Convert Encodings"
@@ -1646,7 +1636,7 @@ msgstr "Korektor graficzny"
 
 #: ../quodlibet/ext/events/equalizer.py:96
 msgid "Controls the tone of your music with an equalizer."
-msgstr "Kontroluje brzmienie muzyki za pomocą korektora graficznego."
+msgstr "Steruje brzmieniem muzyki za pomocą korektora graficznego."
 
 #: ../quodlibet/ext/events/equalizer.py:128
 msgid "The current backend does not support equalization."
@@ -1673,7 +1663,7 @@ msgstr "%.1f dB"
 #: ../quodlibet/ext/events/equalizer.py:185
 #: ../quodlibet/ext/gstreamer/crossfeed.py:37
 msgid "Custom"
-msgstr "Własne"
+msgstr "Niestandardowe"
 
 #: ../quodlibet/ext/events/equalizer.py:192
 msgid "_Clear"
@@ -1819,7 +1809,7 @@ msgid ""
 "Allows remote control of Quod Libet using an MPD Client. Streaming, playlist "
 "and library management are not supported."
 msgstr ""
-"Zdalnie steruje programem Quod Libet używając klienta MPD. Odtwarzanie "
+"Zdalnie steruje programem Quod Libet za pomocą klienta MPD. Odtwarzanie "
 "strumieniowe, listy odtwarzania i zarządzanie kolekcją nie są obsługiwane."
 
 #: ../quodlibet/ext/events/mpdserver/__init__.py:76
@@ -1851,8 +1841,8 @@ msgid ""
 "Allows control of Quod Libet using the MPRIS 1.0/2.0 D-Bus Interface "
 "Specification."
 msgstr ""
-"Steruje programem Quod Libet używając specyfikacji interfejsu D-Bus MPRIS "
-"1.0/2.0."
+"Steruje programem Quod Libet za pomocą specyfikacji interfejsu MPRIS 1.0/2.0 "
+"usługi D-Bus."
 
 #: ../quodlibet/ext/events/mpris/__init__.py:45
 #: ../quodlibet/ext/events/trayicon/prefs.py:29
@@ -1994,7 +1984,7 @@ msgstr "Tylko, jeśli główne _okno nie jest aktywne"
 
 #: ../quodlibet/ext/events/notify.py:204
 msgid "Show \"_Next\" button"
-msgstr ""
+msgstr "Przycisk „_Następny”"
 
 #: ../quodlibet/ext/events/notify.py:236
 msgid "Connection Error"
@@ -2318,7 +2308,7 @@ msgstr "Czcionka"
 
 #: ../quodlibet/ext/events/synchronizedlyrics.py:90
 msgid "Size (px):"
-msgstr "Rozmiar (w pikselach):"
+msgstr "Rozmiar (w pikselach):"
 
 #: ../quodlibet/ext/events/telepathy_status.py:62
 msgid "Telepathy Status Messages"
@@ -2403,7 +2393,7 @@ msgstr "Steruje programem Quod Libet z obszaru powiadamiania."
 #: ../quodlibet/ext/events/trayicon/menu.py:42
 #, python-format
 msgid "_Show %(application-name)s"
-msgstr "_Wyświetlanie programu %(application-name)s"
+msgstr "_Okno programu %(application-name)s"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:62
 #: ../quodlibet/qltk/quodlibetwindow.py:180
@@ -2503,21 +2493,20 @@ msgid "_Lyrics"
 msgstr "_Tekst utworu"
 
 #: ../quodlibet/ext/events/waveformseekbar.py:292
-#, fuzzy
 msgid "Waveform Seek Bar"
-msgstr "Alternatywny pasek przewijania"
+msgstr "Pasek przewijania w kształcie fali"
 
 #: ../quodlibet/ext/events/waveformseekbar.py:296
 msgid "A seekbar in the shape of the waveform of the current song."
-msgstr ""
+msgstr "Pasek przewijania w kształcie fali obecnego utwotu."
 
 #: ../quodlibet/ext/events/waveformseekbar.py:329
 msgid "Override foreground color:"
-msgstr ""
+msgstr "Zastąpienie koloru czcionki:"
 
 #: ../quodlibet/ext/events/waveformseekbar.py:340
 msgid "High Res"
-msgstr ""
+msgstr "Wysoka rozdzielczość"
 
 #: ../quodlibet/ext/events/write_cover.py:32
 msgid "Picture Saver"
@@ -2623,7 +2612,7 @@ msgstr "Najbliżej do amplitunerów CORDA Jana Meiera (mała zmiana)"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:37
 msgid "Custom settings"
-msgstr "Własne ustawienia"
+msgstr "Niestandardowe ustawienia"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:158
 msgid "Crossfeed"
@@ -2695,7 +2684,7 @@ msgstr "Tonacja/prędkość dźwięku"
 
 #: ../quodlibet/ext/gstreamer/pitch.py:90
 msgid "Controls the pitch of an audio stream."
-msgstr "Kontroluje tonację strumienia dźwiękowego."
+msgstr "Steruje tonacją strumienia dźwiękowego."
 
 #: ../quodlibet/ext/playlist/export_to_squeezebox.py:23
 msgid "Export to Squeezebox"
@@ -2760,6 +2749,8 @@ msgstr "Podążanie za kursorem"
 msgid ""
 "Playback follows your selection, or the next song in the list once exhausted."
 msgstr ""
+"Odtwarzanie podąża za zaznaczeniem lub następnym utworem na liście po "
+"wyczerpaniu zaznaczonych."
 
 #: ../quodlibet/ext/playorder/playcounteq.py:22
 msgid "Playcount Equalizer"
@@ -2790,7 +2781,7 @@ msgstr "Odwraca kolejność odtwarzania utworów."
 
 #: ../quodlibet/ext/playorder/track_repeat.py:30
 msgid "Repeat Each Track"
-msgstr ""
+msgstr "Powtarzanie każdej ścieżki"
 
 #: ../quodlibet/ext/playorder/track_repeat.py:32
 msgid "Shuffle songs, but repeat every track a set number of times."
@@ -2811,8 +2802,8 @@ msgid ""
 "Chooses the query to match based on a condition query. Syntax is '@(if: "
 "condition, then, else)'."
 msgstr ""
-"Wybiera zapytanie do dopasowania w oparciu o zapytanie warunkowe. Składnia: "
-"„@(if: condition, then, else)”."
+"Wybiera zapytanie do dopasowania na podstawie zapytania warunkowego. "
+"Składnia: „@(if: condition, then, else)”."
 
 #: ../quodlibet/ext/query/pythonexpression.py:14
 msgid "Python Query"
@@ -3031,7 +3022,7 @@ msgstr "Wyszukiwanie w serwisie MusicBrainz"
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:26
 msgid "Re-tags an album based on a MusicBrainz search."
 msgstr ""
-"Ponownie nadaje etykiety albumu w oparciu o wyszukiwanie w serwisie "
+"Ponownie nadaje etykiety albumu na podstawie wyszukiwania w serwisie "
 "MusicBrainz."
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:50
@@ -3175,7 +3166,7 @@ msgid ""
 "of '{PARAM}' in your command will have the value prompted for when run"
 msgstr ""
 "Jeśli podano, to parametr, którego wystąpienia w poleceniu będą zastępowane "
-"wartością podaną przez użytkownika, np. używając „PARAM” wszystkie kopie "
+"wartością podaną przez użytkownika, np. za pomocą „PARAM” wszystkie kopie "
 "„{PARAM}” w poleceniu będą prosiły o podanie wartości podczas wykonywania"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:55
@@ -3223,21 +3214,21 @@ msgstr "Wartość dla %s?"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:131
 msgid "Custom Commands"
-msgstr "Własne polecenia"
+msgstr "Niestandardowe polecenia"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:132
 msgid ""
 "Runs custom commands (in batches if required) on songs using any of their "
 "tags."
 msgstr ""
-"Wykonuje własne polecenia (wsadowo, jeśli trzeba) na utworach używając ich "
-"etykiet."
+"Wykonuje niestandardowe polecenia (wsadowo, jeśli trzeba) na utworach za "
+"pomocą ich etykiet."
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:183
 #: ../quodlibet/ext/songsmenu/custom_commands.py:193
 #: ../quodlibet/ext/songsmenu/custom_commands.py:243
 msgid "Edit Custom Commands"
-msgstr "Modyfikuj własne polcenia"
+msgstr "Modyfikuj niestandardowe polecenia"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:194
 msgid ""
@@ -3250,7 +3241,7 @@ msgstr ""
 #: ../quodlibet/ext/songsmenu/custom_commands.py:274
 #, python-format
 msgid "Unable to run custom command %s"
-msgstr "Nie można wykonać własnego polecenia %s"
+msgstr "Nie można wykonać niestandardowego polecenia %s"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:291
 #, python-format
@@ -3373,7 +3364,7 @@ msgstr "Umożliwia ustawianie oceny utworu jako liczby."
 
 #: ../quodlibet/ext/songsmenu/exact_rating.py:36
 msgid "Please give your desired rating on a scale from 0.0 to 1.0"
-msgstr "Proszę podać ocenę na skali od 0.0 do 1.0"
+msgstr "Proszę podać ocenę na skali od 0,0 do 1,0"
 
 #: ../quodlibet/ext/songsmenu/filterall.py:80
 msgid "Filter on Any Tag"
@@ -3382,7 +3373,7 @@ msgstr "Filtrowanie dowolnej etykiety"
 #: ../quodlibet/ext/songsmenu/filterall.py:81
 msgid "Creates a search query based on tags of the selected songs."
 msgstr ""
-"Tworzy zapytanie wyszukiwania w oparciu o etykiety zaznaczonych utworów."
+"Tworzy zapytanie wyszukiwania na podstawie etykiet zaznaczonych utworów."
 
 #: ../quodlibet/ext/songsmenu/filterbrowser.py:19
 msgid "Filter on Directory"
@@ -3410,7 +3401,7 @@ msgid ""
 "Generates acoustic fingerprints using chromaprint and submits them to "
 "acoustid.org."
 msgstr ""
-"Tworzy odciski akustyczne używając programu chromaprint i wysyła je do "
+"Tworzy odciski akustyczne za pomocą programu chromaprint i wysyła je do "
 "serwisu acoustid.org."
 
 #: ../quodlibet/ext/songsmenu/fingerprint/__init__.py:60
@@ -3676,7 +3667,7 @@ msgstr "Ponownie skanuj utwory"
 
 #: ../quodlibet/ext/songsmenu/refresh.py:23
 msgid "Checks for file changes and reloads / removes the songs if needed."
-msgstr "Sprawdza zmiany plików i wczytuje ponownie/usuwa je w razie potrzeby."
+msgstr "Wyszukuje zmiany plików i wczytuje ponownie/usuwa je w razie potrzeby."
 
 #: ../quodlibet/ext/songsmenu/refresh.py:31
 msgid "Rescan songs"
@@ -3699,12 +3690,12 @@ msgid "Peak"
 msgstr "Szczyt"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:463
-#, fuzzy, python-format
+#, python-format
 msgid "There is <b>%(to-process)s</b> album to update (of %(all)s)"
 msgid_plural "There are <b>%(to-process)s</b> albums to update (of %(all)s)"
-msgstr[0] "<b>%(to-process)d</b> album do zaktualizowania (z %(all)d)"
-msgstr[1] "<b>%(to-process)d</b> albumy do zaktualizowania (z %(all)d)"
-msgstr[2] "<b>%(to-process)d</b> albumów do zaktualizowania (z %(all)d)"
+msgstr[0] "<b>%(to-process)s</b> album do zaktualizowania (z %(all)s)"
+msgstr[1] "<b>%(to-process)s</b> albumy do zaktualizowania (z %(all)s)"
+msgstr[2] "<b>%(to-process)s</b> albumów do zaktualizowania (z %(all)s)"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:578
 msgid "Replay Gain"
@@ -3767,7 +3758,7 @@ msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. %(pattern-example)s."
 msgstr ""
-"Przeszukuje wybraną stronę WWW używając dowolnych etykiet utworów.\n"
+"Przeszukuje wybraną stronę WWW za pomocą dowolnych etykiet utworów.\n"
 "Obsługuje wzorce, np. %(pattern-example)s."
 
 #: ../quodlibet/ext/songsmenu/website_search.py:78
@@ -3820,7 +3811,7 @@ msgstr "Kolekcja"
 
 #: ../quodlibet/library/libraries.py:642
 msgid "Checking mount points"
-msgstr "Sprawdzanie punktów montowania"
+msgstr "Wyszukiwanie punktów montowania"
 
 #: ../quodlibet/library/libraries.py:652
 msgid "Scanning library"
@@ -3832,9 +3823,8 @@ msgid "Scanning %s"
 msgstr "Skanowanie %s"
 
 #: ../quodlibet/library/libraries.py:737
-#, fuzzy
 msgid "Loading files"
-msgstr "Zapisanie się nie powiodło"
+msgstr "Wczytywanie plików"
 
 #: ../quodlibet/main.py:146
 msgid "Audio Backend Failed to Load"
@@ -4017,11 +4007,11 @@ msgstr "Ścieżka, do której zapisywać obrazy (domyślnie katalog roboczy)"
 
 #: ../quodlibet/operon/commands.py:633
 msgid "Rename files based on tags"
-msgstr "Zmienia nazwy plików w oparciu o etykiety"
+msgstr "Zmienia nazwy plików na podstawie etykiet"
 
 #: ../quodlibet/operon/commands.py:648
 msgid "Fill tags based on the file path"
-msgstr "Wypełnia etykiety w oparciu o ścieżki plików"
+msgstr "Wypełnia etykiety na podstawie ścieżek plików"
 
 #: ../quodlibet/operon/commands.py:698 ../quodlibet/qltk/information.py:295
 #: ../quodlibet/qltk/properties.py:84 ../quodlibet/qltk/renamefiles.py:174
@@ -4035,11 +4025,11 @@ msgstr "Wypełnia numery ścieżek dla wszystkich plików"
 
 #: ../quodlibet/operon/commands.py:725
 msgid "Print tags based on the given pattern"
-msgstr "Wyświetla etykiety w oparciu o podany wzorzec"
+msgstr "Wyświetla etykiety na podstawie podanego wzorca"
 
 #: ../quodlibet/operon/commands.py:762
 msgid "Display help information"
-msgstr "Wyświetla informacje pomocy"
+msgstr "Wyświetla informacje o pomocy"
 
 #: ../quodlibet/operon/util.py:40
 #, python-format
@@ -4060,26 +4050,24 @@ msgid "_In Order"
 msgstr "_W kolejności"
 
 #: ../quodlibet/order/reorder.py:23
-#, fuzzy
 msgid "Random"
-msgstr "_Losowanie"
+msgstr "Losowo"
 
 #: ../quodlibet/order/reorder.py:24 ../quodlibet/qltk/queue.py:125
 msgid "_Random"
-msgstr "_Losowanie"
+msgstr "_Losowo"
 
 #: ../quodlibet/order/reorder.py:39 ../quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
-msgstr ""
+msgstr "Preferowanie wyżej ocenionych"
 
 #: ../quodlibet/order/repeat.py:43 ../quodlibet/order/repeat.py:44
 msgid "Repeat this track"
-msgstr ""
+msgstr "Powtarzanie tej ścieżki"
 
 #: ../quodlibet/order/repeat.py:57 ../quodlibet/order/repeat.py:58
-#, fuzzy
 msgid "Repeat all"
-msgstr "Powta_rzanie"
+msgstr "Powtarzanie wszystkich"
 
 #: ../quodlibet/order/repeat.py:73 ../quodlibet/order/repeat.py:74
 msgid "One Song"
@@ -4165,8 +4153,8 @@ msgid ""
 "The audio device %r was not found. Check your Xine settings in ~/.quodlibet/"
 "config."
 msgstr ""
-"Nie odnaleziono urządzenia dźwiękowego %r. Proszę sprawdzić ustawienia "
-"programu Xine w ~/.quodlibet/config."
+"Nie odnaleziono urządzenia dźwiękowego %r. Proszę sprawdzić poprawność "
+"ustawień programu Xine w ~/.quodlibet/config."
 
 #: ../quodlibet/plugins/__init__.py:62
 #, python-brace-format
@@ -4180,12 +4168,12 @@ msgid "Couldn't find GStreamer element '{element}'."
 msgstr "Nie można odnaleźć elementu biblioteki GStreamer „{element}”."
 
 #: ../quodlibet/plugins/playlist.py:31
-#, fuzzy, python-format
+#, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)s playlist?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)s playlists?"
-msgstr[0] "Uruchomić wtyczkę „%(name)s” na %(count)d liście odtwarzania?"
-msgstr[1] "Uruchomić wtyczkę „%(name)s” na %(count)d listach odtwarzania?"
-msgstr[2] "Uruchomić wtyczkę „%(name)s” na %(count)d listach odtwarzania?"
+msgstr[0] "Uruchomić wtyczkę „%(name)s” na %(count)s liście odtwarzania?"
+msgstr[1] "Uruchomić wtyczkę „%(name)s” na %(count)s listach odtwarzania?"
+msgstr[2] "Uruchomić wtyczkę „%(name)s” na %(count)s listach odtwarzania?"
 
 #: ../quodlibet/plugins/playlist.py:42 ../quodlibet/qltk/songsmenu.py:46
 #: ../quodlibet/qltk/songsmenu.py:74
@@ -4490,9 +4478,8 @@ msgstr "Rozdziel na _wiele wartości"
 #: ../quodlibet/qltk/edittags.py:231 ../quodlibet/qltk/edittags.py:235
 #: ../quodlibet/qltk/edittags.py:248 ../quodlibet/qltk/edittags.py:252
 #: ../quodlibet/qltk/tagsfrompath.py:73
-#, fuzzy
 msgid "editing"
-msgstr "Modyfikowanie etykiet"
+msgstr "modyfikowanie"
 
 #: ../quodlibet/qltk/edittags.py:211
 msgid "Split Disc out of _Album"
@@ -4657,12 +4644,12 @@ msgid "_Plugins"
 msgstr "_Wtyczki"
 
 #: ../quodlibet/qltk/exfalsowindow.py:267
-#, fuzzy, python-format
+#, python-format
 msgid "%(title)s and %(count)s more"
 msgid_plural "%(title)s and %(count)s more"
-msgstr[0] "%(title)s i %(count)d więcej"
-msgstr[1] "%(title)s i %(count)d więcej"
-msgstr[2] "%(title)s i %(count)d więcej"
+msgstr[0] "%(title)s i %(count)s więcej"
+msgstr[1] "%(title)s i %(count)s więcej"
+msgstr[2] "%(title)s i %(count)s więcej"
 
 #: ../quodlibet/qltk/exfalsowindow.py:279
 msgid "Ex Falso Preferences"
@@ -4964,9 +4951,8 @@ msgid "Toggle shuffle mode"
 msgstr "Przełącza tryb losowy"
 
 #: ../quodlibet/qltk/playorder.py:270
-#, fuzzy
 msgid "Toggle repeat mode"
-msgstr "Przełącza tryb losowy"
+msgstr "Przełącza tryb powtarzania"
 
 #: ../quodlibet/qltk/pluginwin.py:33
 msgid "Plugin Errors"
@@ -5085,7 +5071,7 @@ msgstr "Modyfikuj kolumny"
 
 #: ../quodlibet/qltk/prefs.py:259
 msgid "Duration totals"
-msgstr ""
+msgstr "Całkowity czas trwania"
 
 #: ../quodlibet/qltk/prefs.py:271
 msgid "_Global filter:"
@@ -5224,7 +5210,7 @@ msgstr "Zapisywanie ocen i _liczby odtworzeń"
 
 #: ../quodlibet/qltk/prefs.py:560
 msgid "_Email:"
-msgstr "_E-mail:"
+msgstr "Adres _e-mail:"
 
 #: ../quodlibet/qltk/prefs.py:562
 msgid "Ratings and play counts will be set for this email address"
@@ -5266,7 +5252,7 @@ msgstr "_Skanuj kolekcję"
 
 #: ../quodlibet/qltk/prefs.py:652 ../quodlibet/qltk/quodlibetwindow.py:1157
 msgid "Check for changes in your library"
-msgstr "Sprawdza zmiany w kolekcji"
+msgstr "Wyszukuje zmiany w kolekcji"
 
 #: ../quodlibet/qltk/prefs.py:657
 msgid "Re_build Library"
@@ -5562,7 +5548,7 @@ msgstr "Modyfikuj zapisane wyszukiwania…"
 
 #: ../quodlibet/qltk/searchbar.py:74
 msgid "Search your library, using free text or QL queries"
-msgstr "Przeszukuje kolekcję, używając zwykłego tekstu lub zapytań programu QL"
+msgstr "Przeszukuje kolekcję za pomocą zwykłego tekstu lub zapytań programu QL"
 
 #: ../quodlibet/qltk/searchbar.py:129
 msgid "Search after _typing"
@@ -5843,9 +5829,9 @@ msgstr ""
 "(pozostało: %(remaining)s)"
 
 #: ../quodlibet/qltk/wlw.py:234
-#, fuzzy, python-format
+#, python-format
 msgid "%(current)s of %(all)s"
-msgstr "%(current)d z %(all)d"
+msgstr "%(current)s z %(all)s"
 
 #: ../quodlibet/update.py:94
 msgid "Checking for Updates"
@@ -5941,12 +5927,12 @@ msgid "%d kbps"
 msgstr "%d kb/s"
 
 #: ../quodlibet/util/__init__.py:414
-#, fuzzy, python-format
+#, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
-msgstr[0] "%d sekunda"
-msgstr[1] "%d sekundy"
-msgstr[2] "%d sekund"
+msgstr[0] "%s sekunda"
+msgstr[1] "%s sekundy"
+msgstr[2] "%s sekund"
 
 #: ../quodlibet/util/__init__.py:427
 msgid "No time information"
@@ -6166,7 +6152,7 @@ msgstr "wersja"
 
 #: ../quodlibet/util/tags.py:95
 msgid "website"
-msgstr "witryna"
+msgstr "strona WWW"
 
 #: ../quodlibet/util/tags.py:97
 msgid "album artist"
@@ -6332,65 +6318,3 @@ msgstr "porządkowanie"
 #: ../quodlibet/util/tags.py:262
 msgid "roles"
 msgstr "role"
-
-#~ msgid "Set or toggle the playback order"
-#~ msgstr "Ustawia lub przełącza kolejność odtwarzania"
-
-#~ msgid "Uninitialized iPod"
-#~ msgstr "Niezainicjowane urządzenie iPod"
-
-#~ msgid "Do you want to create an empty database on this iPod?"
-#~ msgstr "Utworzyć pustą bazę danych na tym urządzeniu iPod?"
-
-#~ msgid "_Create Database"
-#~ msgstr "_Utwórz bazę danych"
-
-#~ msgid "_Volume Gain (dB):"
-#~ msgstr "W_zmocnienie (dB):"
-
-#~ msgid "Combine tags with _multiple values"
-#~ msgstr "Łączenie etykiet z wielo_ma wartościami"
-
-#~ msgid "Model:"
-#~ msgstr "Model:"
-
-#~ msgid "Capacity:"
-#~ msgstr "Pojemność:"
-
-#~ msgid "Firmware:"
-#~ msgstr "Oprogramowanie sprzętowe:"
-
-#~ msgid "Removing orphaned iPod track"
-#~ msgstr "Usuwanie osieroconej ścieżki z urządzenia iPod"
-
-#~ msgid "Saving iPod database…"
-#~ msgstr "Zapisywanie bazy danych urządzenia iPod…"
-
-#~ msgid "Unable to save iPod database"
-#~ msgstr "Nie można zapisać bazy danych urządzenia iPod"
-
-#~ msgid "Could not find libgpod, iPod support disabled."
-#~ msgstr ""
-#~ "Nie można odnaleźć biblioteki libgpod. Obsługa urządzeń iPod została "
-#~ "wyłączona."
-
-#~ msgid "Playback follows your selection."
-#~ msgstr "Odtwarza zgodnie z zaznaczeniem."
-
-#~ msgid "Track Repeat"
-#~ msgstr "Powtarzanie ścieżki"
-
-#~ msgid "Shuffle"
-#~ msgstr "Losowo"
-
-#~ msgid "Weighted"
-#~ msgstr "Ważone"
-
-#~ msgid "_Weighted"
-#~ msgstr "_Ważone"
-
-#~ msgid "_One Song"
-#~ msgstr "P_ojedynczo"
-
-#~ msgid "Restart the playlist when finished"
-#~ msgstr "Odtwarza od początku listy po odtworzeniu wszystkich utworów"
