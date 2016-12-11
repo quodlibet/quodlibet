@@ -93,6 +93,15 @@ class TMP4File(TestCase):
         self.assertEqual(self.song("bpm"), "99")
         self.assertEqual(self.song("~#bpm"), 99)
 
+    def test_empty_disk_trkn(self):
+        for key in ["trkn", "disk"]:
+            tag = mutagen.mp4.MP4(self.f)
+            tag[key] = []
+            tag.save()
+            tag = mutagen.mp4.MP4(self.f)
+            assert tag[key] == []
+            self.song.reload()
+
     def test_write(self):
         self.song.write()
 
