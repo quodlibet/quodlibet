@@ -614,6 +614,16 @@ class TAudioFile(TestCase):
             a.sort_by_func("~basename")(a)
             a.sort_by_func("~dirname")(a)
 
+    def test_sort_key_defaults(self):
+        AF = AudioFile
+        assert AF().sort_key == AF({"tracknumber": "1"}).sort_key
+        assert AF().sort_key == AF({"tracknumber": "1/1"}).sort_key
+        assert AF().sort_key < AF({"tracknumber": "2/2"}).sort_key
+
+        assert AF().sort_key == AF({"discnumber": "1"}).sort_key
+        assert AF().sort_key == AF({"discnumber": "1/1"}).sort_key
+        assert AF().sort_key < AF({"discnumber": "2/2"}).sort_key
+
     def test_sort_cache(self):
         copy = AudioFile(bar_1_1)
 

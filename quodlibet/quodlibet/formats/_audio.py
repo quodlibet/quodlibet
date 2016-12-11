@@ -127,7 +127,7 @@ class AudioFile(dict, ImageContainer):
     """MIME types this class can represent"""
 
     def __song_key(self):
-        return (self("~#disc"), self("~#track"),
+        return (self("~#disc", 1), self("~#track", 1),
             human(self("artistsort")),
             self.get("musicbrainz_artistid", ""),
             human(self.get("title", "")),
