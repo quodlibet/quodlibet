@@ -46,6 +46,5 @@ script:
  - if [ "$TYPE" == "linux" ]; then xvfb-run -a $PYTHON ./setup.py quality; fi
  - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS setup.py test; fi
  - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run setup.py quality; fi
- - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python2" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe $PYARGS ./setup.py test; fi
- - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python2" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe ./setup.py quality; fi
- - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python3" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe $PYARGS -m pytest --assert=plain tests; fi
+ - if [ "$TYPE" == "windows" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe $PYARGS ./setup.py test; fi
+ - if [ "$TYPE" == "windows" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe ./setup.py quality; fi
