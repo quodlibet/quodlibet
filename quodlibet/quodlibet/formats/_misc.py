@@ -119,6 +119,9 @@ def MusicFile(filename):
         except AudioFileError:
             print_w("Error loading %r" % filename)
             util.print_exc()
+        except:
+            print_w("Error loading %r" % filename)
+            raise
 
 
 def filter(filename):
