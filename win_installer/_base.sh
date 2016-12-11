@@ -109,7 +109,7 @@ mutagen==1.35
 pep8==1.7.0
 py==1.4.31
 pyflakes==1.3.0
-pytest==3.0.3
+pytest==3.0.5
 "
 
     build_pip install --no-deps --no-binary ":all:" --upgrade \
