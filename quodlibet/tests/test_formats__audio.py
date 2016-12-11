@@ -248,6 +248,11 @@ class TAudioFile(TestCase):
     def test_comma_filename(self):
         self.assertTrue(isinstance(bar_1_1.comma("~filename"), text_type))
 
+    def test_comma_mountpoint(self):
+        assert not bar_1_1("~mountpoint")
+        assert isinstance(bar_1_1.comma("~mountpoint"), text_type)
+        assert bar_1_1.comma("~mountpoint") == u""
+
     def test_exist(self):
         self.failIf(bar_2_1.exists())
         self.failUnless(quux.exists())
