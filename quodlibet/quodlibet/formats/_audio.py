@@ -537,9 +537,10 @@ class AudioFile(dict, ImageContainer):
         """
 
         if "~" in key or key == "title":
-            v = self(key, u"")
             if key in FILESYSTEM_TAGS:
-                v = fsn2text(v)
+                v = fsn2text(self(key, fsnative()))
+            else:
+                v = self(key, u"")
         else:
             v = self.get(key, u"")
 
