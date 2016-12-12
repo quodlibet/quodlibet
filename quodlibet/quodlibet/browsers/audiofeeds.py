@@ -165,7 +165,7 @@ class Feed(list):
                                 formats.filter(enclosure.url)):
                             uri = enclosure.url.encode('ascii', 'replace')
                             try:
-                                size = enclosure.length
+                                size = float(enclosure.length)
                             except AttributeError:
                                 size = 0
                             entries.append((uri, entry, size))
