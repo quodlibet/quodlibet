@@ -10,7 +10,7 @@ import os
 from senf import fsnative, fsn2text, bytes2fsn
 
 from quodlibet import config
-from quodlibet.compat import PY2, text_type, long
+from quodlibet.compat import PY2, text_type, long, listkeys, PY3
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile
@@ -92,6 +92,26 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_1_1("~#discs"), 2)
         self.failIf(bar_1_2("~#discs"))
         self.failIf(bar_2_1("~#tracks"))
+
+    def test_setitem_keys(self):
+        af = AudioFile()
+        af[u"foo"] = u"bar"
+        assert "foo" in af
+        assert isinstance(listkeys(af)[0], str)
+        af.clear()
+        af[u"öäü"] = u"bar"
+        assert u"öäü" in af
+        assert isinstance(listkeys(af)[0], text_type)
+
+        with self.assertRaises(TypeError):
+            af[42] = u"foo"
+
+        if PY3:
+            with self.assertRaises(TypeError):
+                af[b"foo"] = u"bar"
+        else:
+            with self.assertRaises(ValueError):
+                af[b"\xff"] = u"bar"
 
     def test_call(self):
         # real keys should lookup the same
