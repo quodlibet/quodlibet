@@ -170,6 +170,27 @@ class AudioFile(dict, ImageContainer):
         pass
 
     def __setitem__(self, key, value):
+        # validate key
+        if PY3:
+            if not isinstance(key, text_type):
+                raise TypeError("key has to be str")
+        else:
+            if isinstance(key, text_type):
+                # we try to save keys as encoded ASCII to save memory
+                # under PY2. Everything else besides ASCII combined with
+                # unicode breaks hashing even if the default encoding
+                # it utf-8.
+                try:
+                    key = key.encode("ascii")
+                except UnicodeEncodeError:
+                    pass
+            elif isinstance(key, bytes):
+                # make sure we set ascii keys only
+                key.decode("ascii")
+            else:
+                raise TypeError("key needs to be unicode or ASCII str")
+
+        # validate value
         if key.startswith("~#"):
             if not isinstance(value, number_types):
                 raise TypeError
