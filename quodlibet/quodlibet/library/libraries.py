@@ -540,6 +540,14 @@ class FileLibrary(PicklingLibrary):
 
             if mountpoint not in mounts:
                 is_mounted = ismount(mountpoint)
+
+                # In case mountpoint is mounted through autofs we need to
+                # access a sub path for it to mount
+                # https://github.com/quodlibet/quodlibet/issues/2146
+                if not is_mounted:
+                    item.exists()
+                    is_mounted = ismount(mountpoint)
+
                 mounts[mountpoint] = is_mounted
                 # at least one not mounted, make sure masked has an entry
                 if not is_mounted:
