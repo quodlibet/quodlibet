@@ -111,7 +111,7 @@ class TPickle(TestCase):
             b"float": 1.25,
         })
         data = pickle_dumps([i], 1)
-        items = load_audio_files(data, sanitize=True)
+        items = load_audio_files(data, process=True)
         i = items[0]
 
         if not PY3:
@@ -125,8 +125,8 @@ class TPickle(TestCase):
         assert i["float"] == 1.25
 
     def test_dump_audio_files(self):
-        data = dump_audio_files(self.instances)
-        items = load_audio_files(data, sanitize=False)
+        data = dump_audio_files(self.instances, process=False)
+        items = load_audio_files(data, process=False)
 
         assert len(items) == len(self.instances)
         for a, b in zip(items, self.instances):
@@ -136,6 +136,14 @@ class TPickle(TestCase):
                 assert b[key] == a[key]
             for key in b:
                 assert b[key] == a[key]
+
+    def test_save_ascii_keys_as_bytes_on_py3(self):
+        i = AudioFile.__new__(list(formats.types)[0])
+        dict.__setitem__(i, u"foo", u"bar")
+        data = dump_audio_files([i], process=True)
+        if PY3:
+            items = load_audio_files(data, process=False)
+            assert isinstance(list(items[0].keys())[0], bytes)
 
     def test_dump_empty(self):
         data = dump_audio_files([])

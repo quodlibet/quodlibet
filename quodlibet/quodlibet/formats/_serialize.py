@@ -64,25 +64,24 @@ def _py2_to_py3(items):
 def _py3_to_py2(items):
     assert PY3
 
-    if not is_windows():
-        new_list = []
-        for i in items:
-            type_ = i.__class__
-            inst = dict.__new__(type_)
-            dict.__init__(inst, i)
-            if "~filename" in inst:
-                dict.__setitem__(
-                    inst, "~filename", fsn2bytes(inst["~filename"], None))
-            if "~mountpoint" in inst:
-                dict.__setitem__(
-                    inst, "~mountpoint", fsn2bytes(inst["~mountpoint"], None))
-            new_list.append(inst)
-        return new_list
-    else:
-        return items
+    is_win = is_windows()
+
+    new_list = []
+    for i in items:
+        inst = dict.__new__(i.__class__)
+        for key, value in i.items():
+            if key in ("~filename", "~mountpoint") and not is_win:
+                value = fsn2bytes(value, None)
+            try:
+                key = key.encode("ascii")
+            except UnicodeEncodeError:
+                pass
+            dict.__setitem__(inst, key, value)
+        new_list.append(inst)
+    return new_list
 
 
-def load_audio_files(data, sanitize=True):
+def load_audio_files(data, process=True):
     """unpickles the item list and if some class isn't found unpickle
     as a dict and filter them out afterwards.
 
@@ -91,7 +90,7 @@ def load_audio_files(data, sanitize=True):
 
     Args:
         data (bytes)
-        sanitize (bool): if the dict key/value types should be converted,
+        process (bool): if the dict key/value types should be converted,
             either to be usable from py3 or to convert to newer types
     Returns:
         List[AudioFile]
@@ -134,7 +133,7 @@ def load_audio_files(data, sanitize=True):
             raise SerializationError(
                 "all class lookups failed. something is wrong")
 
-    if PY3 and sanitize:
+    if PY3 and process:
         items = _py2_to_py3(items)
 
     try:
@@ -146,7 +145,7 @@ def load_audio_files(data, sanitize=True):
     return items
 
 
-def dump_audio_files(item_list):
+def dump_audio_files(item_list, process=True):
     """Pickles a list of AudioFiles
 
     Returns:
@@ -158,7 +157,7 @@ def dump_audio_files(item_list):
     assert isinstance(item_list, list)
     assert not item_list or isinstance(item_list[0], AudioFile)
 
-    if PY3:
+    if PY3 and process:
         item_list = _py3_to_py2(item_list)
 
     try:
