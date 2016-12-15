@@ -50,6 +50,8 @@ class TDUniSearch(TestCase):
         r = re_add_variants(u'"')
         assert "”" in r
         assert "“" in r
+        r = re_add_variants(u'\\*')
+        assert re.match(r, "*")
 
     def test_re_replace_multi_fixme(self):
         # we don't handler overlapping sequences, so this doesn't match "LỺ"

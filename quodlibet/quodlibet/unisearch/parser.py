@@ -39,11 +39,7 @@ def _fixup_literal(literal, in_seq, mapping):
 
 
 def _fixup_literal_list(literals, mapping):
-    # FIXME: this should not escape before replacing
-    u = re_escape("".join(map(unichr, literals)))
-
-    if not mapping:
-        return u
+    u = u"".join(map(unichr, literals))
 
     # longest matches first, we will handle contained ones in the replacement
     # function
@@ -64,7 +60,15 @@ def _fixup_literal_list(literals, mapping):
             return "(%s|%s)" % (all_, multi)
         return all_
 
-    return re.sub(reg, replace_func, u)
+    new = u""
+    pos = 0
+    for match in re.finditer(reg, u):
+        new += re_escape(u[pos:match.start()])
+        new += replace_func(match)
+        pos = match.end()
+    new += re_escape(u[pos:])
+
+    return new
 
 
 def _fixup_not_literal(literal, mapping):
