@@ -11,7 +11,7 @@ import re
 
 from . import _match as match
 from ._match import ParseError
-from ._diacritic import re_add_variants
+from quodlibet.unisearch import re_add_variants
 from quodlibet.util import re_escape
 from quodlibet.compat import text_type, PY3
 

@@ -10,11 +10,12 @@ import unicodedata
 
 from tests import TestCase
 
-from quodlibet.query._diacritic import re_add_variants, \
-    diacritic_for_letters, re_replace_literals
+from quodlibet.unisearch import re_add_variants
+from quodlibet.unisearch.db import diacritic_for_letters
+from quodlibet.unisearch.parser import re_replace_literals
 
 
-class TDiacritics(TestCase):
+class TDUniSearch(TestCase):
 
     def test_mapping(self):
         cache = diacritic_for_letters(False)
