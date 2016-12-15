@@ -5,18 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-"""
-Ways to let ASCII characters match other unicode characters which
-can be decomposed into one ASCII character and one or more combining
-diacritic marks. This allows to match e.g. "Múm" using "Mum".
-
-re_add_variants(u"Mum") =>
-    u"[MḾṀṂ][uùúûüũūŭůűųưǔǖǘǚǜȕȗṳṵṷṹṻụủứừửữự][mḿṁṃ]"
-
-This is also called Asymmetric Search:
-    http://unicode.org/reports/tr10/#Asymmetric_Search
-"""
-
 import re
 import sre_parse
 import unicodedata
@@ -30,7 +18,7 @@ from .db import get_replacement_mapping
 def _fixup_literal(literal, in_seq, mapping):
     u = unichr(literal)
     if u in mapping:
-        u = u + mapping[u]
+        u = u + u"".join(mapping[u])
     need_seq = len(u) > 1
     u = re_escape(u)
     if need_seq and not in_seq:
@@ -52,7 +40,7 @@ def _fixup_literal_list(literals, mapping):
         for c in text:
             all_ += _fixup_literal(ord(c), False, mapping)
         if len(text) > 1:
-            multi = mapping[text]
+            multi = u"".join(mapping[text])
             if len(multi) > 1:
                 multi = "[%s]" % re_escape(multi)
             else:
@@ -74,7 +62,7 @@ def _fixup_literal_list(literals, mapping):
 def _fixup_not_literal(literal, mapping):
     u = unichr(literal)
     if u in mapping:
-        u = u + mapping[u]
+        u = u + u"".join(mapping[u])
     u = re_escape(u)
     return u"[^%s]" % u
 
@@ -84,7 +72,7 @@ def _fixup_range(start, end, mapping):
     for i in xrange(start, end + 1):
         u = unichr(i)
         if u in mapping:
-            extra.append(re_escape(mapping[u]))
+            extra.append(re_escape(u"".join(mapping[u])))
     start = re_escape(unichr(start))
     end = re_escape(unichr(end))
     return u"%s%s-%s" % ("".join(extra), start, end)

@@ -403,15 +403,19 @@ def get_replacement_mapping():
     in the value.
     """
 
+    mapping = {}
+
     # use _DIACRITIC_CACHE and create a lookup table
-    mapping = generate_re_mapping(diacritic_for_letters(regenerate=False))
+    for cp, repl in iteritems(
+            generate_re_mapping(diacritic_for_letters(regenerate=False))):
+        mapping.setdefault(cp, []).extend(repl)
 
     # add more from the UCA decomp dataset
     for cp, repl in iteritems(get_decomps_mapping(regenerate=False)):
-        mapping[cp] = mapping.get(cp, u"") + repl
+        mapping.setdefault(cp, []).extend(repl)
 
     # and some punctuation
     for cp, repl in iteritems(get_punctuation_mapping(regenerate=False)):
-        mapping[cp] = mapping.get(cp, u"") + repl
+        mapping.setdefault(cp, []).extend(repl)
 
     return mapping
