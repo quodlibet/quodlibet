@@ -35,6 +35,16 @@ class TDiacritics(TestCase):
         r = re_add_variants(u"ss")
         self.assertEqual(r, u"([sśŝşšșṡṣṥṧṩꞅ][sśŝşšșṡṣṥṧṩꞅ]|ß)")
 
+    def test_punct(self):
+        r = re_add_variants(u"'")
+        assert "`" in r
+        assert "'" in r
+        r = re_add_variants(u"''")
+        assert "\"" in r
+        r = re_add_variants(u'"')
+        assert "”" in r
+        assert "“" in r
+
     def test_re_replace_multi_fixme(self):
         # we don't handler overlapping sequences, so this doesn't match "LỺ"
         r = re_add_variants(u"LLL")
@@ -52,6 +62,9 @@ class TDiacritics(TestCase):
 
     def test_construct_regexp(self):
         res = [
+            (u"\\.", None),
+            (u"..", None),
+            (u"\\.", None),
             (u"^a\aa[ha-z]k{1,3}h*h+h?(x|yy)(a+b|cd)$", None),
             (u"(?=Asimov)", None),
             (u"(?!Asimov)", None),

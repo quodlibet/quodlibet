@@ -224,6 +224,53 @@ _UCA_DECOMPS_CACHE = {
 }
 
 
+_PUNCT_CONFUSABLES_CACHE = {
+    u'!': u'\uff01\u01c3\u2d51',
+    u'!!': u'\u203c',
+    u'!?': u'\u2049',
+    u'"': (u'\u1cd3\uff02\u201c\u201d\u201f\u2033\u2036\u3003\u05f4\u02dd'
+           u'\u02ba\u02f6\u02ee\u05f2'),
+    u'&': u'\ua778',
+    u"'": (u'\u055d\uff07\u2018\u2019\u201b\u2032\u2035\u055a\u05f3`\u1fef'
+           u'\uff40\xb4\u0384\u1ffd\u1fbd\u1fbf\u1ffe\u02b9\u0374\u02c8\u02ca'
+           u'\u02cb\u02f4\u02bb\u02bd\u02bc\u02be\ua78c\u05d9\u07f4\u07f5'
+           u'\u144a\u16cc'),
+    u"''": (u'\u1cd3"\uff02\u201c\u201d\u201f\u2033\u2036\u3003\u05f4\u02dd'
+            u'\u02ba\u02f6\u02ee\u05f2'),
+    u"'''": u'\u2034\u2037',
+    u"''''": u'\u2057',
+    u'(': u'\uff3b\u2768\u2772\u3014\ufd3e',
+    u'((': u'\u2e28',
+    u')': u'\uff3d\u2769\u2773\u3015\ufd3f',
+    u'))': u'\u2e29',
+    u'*': u'\u204e\u066d\u2217\U0001031f',
+    u',': u'\u060d\u066b\u201a\xb8\ua4f9',
+    u'-': (u'\u2010\u2011\u2012\u2013\ufe58\u06d4\u2043\u02d7\u2212\u2796'
+           u'\u2cba'),
+    u'-.': u'\ua4fe',
+    u'.': u'\U0001d16d\u2024\u0701\u0702\ua60e\U00010a50\u0660\u06f0\ua4f8',
+    u'.,': u'\ua4fb',
+    u'..': u'\u2025\ua4fa',
+    u'...': u'\u2026',
+    u'/': (u'\u1735\u2041\u2215\u2044\u2571\u27cb\u29f8\U0001d23a\u31d3\u3033'
+           u'\u2cc6\u30ce\u4e3f\u2f03'),
+    u'//': u'\u2afd',
+    u'///': u'\u2afb',
+    u':': (u'\u0903\u0a83\uff1a\u0589\u0703\u0704\u16ec\ufe30\u1803\u1809'
+           u'\u205a\u05c3\u02f8\ua789\u2236\u02d0\ua4fd'),
+    u';': u'\u037e',
+    u'?': u'\u0294\u0241\u097d\u13ae\ua6eb',
+    u'?!': u'\u2048',
+    u'??': u'\u2047',
+    u'\\': (u'\uff3c\ufe68\u2216\u27cd\u29f5\u29f9\U0001d20f\U0001d23b\u31d4'
+            u'\u4e36\u2f02'),
+    u'\\\\': u'\u2cf9\u244a',
+    u'_': u'\u07fa\ufe4d\ufe4e\ufe4f',
+    u'{': u'\u2774\U0001d114',
+    u'}': u'\u2775',
+}
+
+
 def get_decomps_mapping(regenerate=False):
     """This takes the decomps.txt file of the Unicode UCA and gives us a cases
     where a letter can be decomposed for collation and that mapping isn't in
@@ -262,6 +309,58 @@ def get_decomps_mapping(regenerate=False):
             continue
 
         mapping[simple] = mapping.get(simple, "") + cp
+
+    return mapping
+
+
+def get_punctuation_mapping(regenerate=False):
+    """This takes the unicode confusables set and extracts punctuation
+    which looks similar to one or more ASCII punctuation.
+
+    e.g. ' --> ＇
+
+    """
+
+    if not regenerate:
+        return _PUNCT_CONFUSABLES_CACHE
+
+    h = urlopen("http://www.unicode.org/Public/security/9.0.0/confusables.txt")
+    data = h.read()
+    mapping = {}
+    for line in data.decode("utf-8-sig").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith(u"#"):
+            continue
+
+        char, repls = line.split(";", 2)[:2]
+        char = char.strip()
+        repls = repls.split()
+        to_uni = lambda x: unichr(int(x, 16))
+        char = to_uni(char)
+        repls = [to_uni(r) for r in repls]
+
+        def is_ascii(char):
+            try:
+                char.encode("ascii")
+            except UnicodeEncodeError:
+                return False
+            return True
+
+        def is_punct(char):
+            return unicodedata.category(char).startswith("P")
+
+        if all(is_ascii(c) and is_punct(c) for c in repls) and char:
+            repls = u"".join(repls)
+            mapping[repls] = mapping.get(repls, u"") + char
+
+    # if any of the equal chars is also ascii + punct we can replace
+    # it aswell
+    for ascii_, uni in mapping.items():
+        also_ascii = [c for c in uni if is_ascii(c) and is_punct(c)]
+        for c in also_ascii:
+            mapping[c] = uni.replace(c, u"")
 
     return mapping
 
@@ -327,6 +426,7 @@ def _fixup_literal(literal, in_seq, mapping):
 
 
 def _fixup_literal_list(literals, mapping):
+    # FIXME: this should not escape before replacing
     u = re_escape("".join(map(unichr, literals)))
 
     if not mapping:
@@ -502,6 +602,10 @@ _mapping = generate_re_mapping(diacritic_for_letters(regenerate=False))
 
 # add more from the UCA decomp dataset
 for cp, repl in iteritems(get_decomps_mapping(regenerate=False)):
+    _mapping[cp] = _mapping.get(cp, u"") + repl
+
+# and some punctuation
+for cp, repl in iteritems(get_punctuation_mapping(regenerate=False)):
     _mapping[cp] = _mapping.get(cp, u"") + repl
 
 
