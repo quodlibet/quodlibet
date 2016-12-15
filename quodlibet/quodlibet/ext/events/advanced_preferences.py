@@ -13,21 +13,23 @@ from quodlibet import config
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.util.string import decode
+from quodlibet.util import gdecode
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.compat import text_type
 
 
 def _config(section, option, label, tooltip, getter):
     def on_changed(entry, *args):
-        config.set(section, option, entry.get_text())
+        config.settext(section, option, gdecode(entry.get_text()))
 
     entry = UndoEntry()
     entry.set_tooltip_text(tooltip)
-    entry.set_text(decode(config.get(section, option)))
+    entry.set_text(config.gettext(section, option))
     entry.connect("changed", on_changed)
 
     def on_reverted(*args):
         config.reset(section, option)
-        entry.set_text(decode(config.get(section, option)))
+        entry.set_text(config.gettext(section, option))
 
     revert = Gtk.Button()
     revert.add(Gtk.Image.new_from_icon_name(
@@ -48,7 +50,7 @@ def text_config(section, option, label, tooltip):
 def boolean_config(section, option, label, tooltip):
 
     def getter(section, option):
-        return unicode(config.getboolean(section, option))
+        return text_type(config.getboolean(section, option))
 
     return _config(section, option, label, tooltip, getter)
 
@@ -56,7 +58,7 @@ def boolean_config(section, option, label, tooltip):
 def int_config(section, option, label, tooltip):
 
     def getter(section, option):
-        return unicode(config.getint(section, option))
+        return text_type(config.getint(section, option))
 
     return _config(section, option, label, tooltip, getter)
 

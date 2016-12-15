@@ -6,13 +6,17 @@
 # published by the Free Software Foundation
 
 import sys
-import pickle
+
+from senf import fsnative
 
 from tests import TestCase, get_data_path
-from .helper import capture_output, temp_filename
+from .helper import capture_output
 
 from quodlibet import formats
-from quodlibet.formats import AudioFile
+from quodlibet.formats import AudioFile, load_audio_files, dump_audio_files, \
+    SerializationError
+from quodlibet.compat import PY3
+from quodlibet.util.picklehelper import pickle_dumps
 from quodlibet import config
 
 
@@ -79,44 +83,92 @@ class TPickle(TestCase):
         types = formats.types
         instances = []
         for t in types:
-            instances.append(AudioFile.__new__(t))
+            i = AudioFile.__new__(t)
+            # we want to pickle/unpickle everything, since historically
+            # these things ended up in the file
+            dict.__init__(
+                i, {b"foo": u"bar", u"quux": b"baz", "a": "b",
+                    u"b": 42, "c": 0.25})
+            instances.append(i)
+        self.instances = instances
 
-        self.PICKLE = pickle.dumps(instances, 1)
+    def test_load_audio_files(self):
+        for protocol in [0, 1, 2]:
+            data = pickle_dumps(self.instances, protocol)
+            items = load_audio_files(data)
+            assert len(items) == len(formats.types)
+            assert all(isinstance(i, AudioFile) for i in items)
 
-    def test_unpickle(self):
-        self.assertEqual(len(pickle.loads(self.PICKLE)), len(formats.types))
+    def test_sanitized_py3(self):
+        i = AudioFile.__new__(list(formats.types)[0])
+        # this is something that old py2 versions could pickle
+        dict.__init__(i, {
+            b"bytes": b"bytes",
+            u"unicode": u"unicode",
+            b"~filename": b"somefile",
+            u"~mountpoint": u"somemount",
+            u"int": 42,
+            b"float": 1.25,
+        })
+        data = pickle_dumps([i], 1)
+        items = load_audio_files(data, process=True)
+        i = items[0]
 
-    def test_load_items(self):
-        from quodlibet.library.libraries import load_items
+        if not PY3:
+            return
 
-        with temp_filename() as filename:
-            with open(filename, "wb") as h:
-                h.write(self.PICKLE)
+        assert i["bytes"] == "bytes"
+        assert i["unicode"] == "unicode"
+        assert isinstance(i["~filename"], fsnative)
+        assert isinstance(i["~mountpoint"], fsnative)
+        assert i["int"] == 42
+        assert i["float"] == 1.25
 
-            self.assertEqual(len(load_items(filename)), len(formats.types))
+    def test_dump_audio_files(self):
+        data = dump_audio_files(self.instances, process=False)
+        items = load_audio_files(data, process=False)
 
-    def test_dump_items(self):
-        from quodlibet.library.libraries import dump_items, load_items
+        assert len(items) == len(self.instances)
+        for a, b in zip(items, self.instances):
+            a = dict(a)
+            b = dict(b)
+            for key in a:
+                assert b[key] == a[key]
+            for key in b:
+                assert b[key] == a[key]
 
-        types = formats.types
-        instances = []
-        for t in types:
-            instances.append(AudioFile.__new__(t))
+    def test_save_ascii_keys_as_bytes_on_py3(self):
+        i = AudioFile.__new__(list(formats.types)[0])
+        dict.__setitem__(i, u"foo", u"bar")
+        data = dump_audio_files([i], process=True)
+        if PY3:
+            items = load_audio_files(data, process=False)
+            assert isinstance(list(items[0].keys())[0], bytes)
 
-        with temp_filename() as filename:
-            dump_items(filename, instances)
-            self.assertEqual(len(load_items(filename)), len(formats.types))
+    def test_dump_empty(self):
+        data = dump_audio_files([])
+        assert load_audio_files(data) == []
 
-    def test_unpickle_save(self):
-        from quodlibet.library.libraries import unpickle_save
+    def test_load_audio_files_missing_class(self):
+        for protocol in [0, 1, 2]:
+            data = pickle_dumps(self.instances, protocol)
 
-        items = unpickle_save(self.PICKLE, [])
-        self.assertEqual(len(items), len(formats.types))
+            items = load_audio_files(data)
+            self.assertEqual(len(items), len(formats.types))
+            assert all(isinstance(i, AudioFile) for i in items)
 
-        broken = self.PICKLE.replace(b"SPCFile", b"FooFile")
-        items = unpickle_save(broken, [])
-        self.assertEqual(len(items), len(formats.types) - 1)
+            broken = data.replace(b"SPCFile", b"FooFile")
+            items = load_audio_files(broken)
+            self.assertEqual(len(items), len(formats.types) - 1)
+            assert all(isinstance(i, AudioFile) for i in items)
 
-        broken = self.PICKLE.replace(b"formats.spc", b"formats.foo")
-        items = unpickle_save(broken, [])
-        self.assertEqual(len(items), len(formats.types) - 1)
+            broken = data.replace(b"formats.spc", b"formats.foo")
+            items = load_audio_files(broken)
+            self.assertEqual(len(items), len(formats.types) - 1)
+            assert all(isinstance(i, AudioFile) for i in items)
+
+    def test_unpickle_random_class(self):
+        for protocol in [0, 1, 2]:
+            data = pickle_dumps([42], protocol)
+            with self.assertRaises(SerializationError):
+                load_audio_files(data)

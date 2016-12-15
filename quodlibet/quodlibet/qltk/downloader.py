@@ -6,7 +6,6 @@
 # published by the Free Software Foundation
 
 import os
-import urllib
 
 from gi.repository import Gtk, Pango, GLib
 
@@ -17,6 +16,7 @@ from quodlibet.util import connect_obj
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem
 from quodlibet.qltk import Icons
+from quodlibet.util.urllib import urlopen
 
 
 class DownloadWindow(qltk.UniqueWindow):
@@ -105,7 +105,7 @@ class DownloadWindow(qltk.UniqueWindow):
             if started >= 2:
                 break
             if self.downloads[iter][2] == 0:
-                url = urllib.urlopen(self.downloads[iter][3])
+                url = urlopen(self.downloads[iter][3])
                 sock = url.fp._sock
                 sock.setblocking(0)
                 self.downloads[iter][0] = sock

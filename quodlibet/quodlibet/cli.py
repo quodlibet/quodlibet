@@ -6,7 +6,8 @@
 # published by the Free Software Foundation
 
 import os
-import sys
+
+from senf import fsn2text, uri2fsn
 
 from quodlibet import C_, _
 from quodlibet.util.dprint import print_, print_e
@@ -67,8 +68,6 @@ def control(command, arg=None, ignore_error=False):
 
 
 def process_arguments(argv):
-    from senf import uri2fsn
-
     from quodlibet.util.path import uri_is_valid
     from quodlibet import util
     from quodlibet import const
@@ -201,7 +200,7 @@ def process_arguments(argv):
         elif command in controls_opt:
             if command in validators and not validators[command](arg):
                 print_e(_("Invalid argument for '%s'.") % command)
-                print_e(_("Try %s --help.") % sys.argv[0])
+                print_e(_("Try %s --help.") % fsn2text(argv[0]))
                 exit_(True, notify_startup=True)
             else:
                 queue(command, arg)

@@ -94,6 +94,23 @@ class PreferencesButton(PreferencesButton):
         self.pack_start(button, True, True, 0)
 
 
+class IconView(Gtk.IconView):
+    # XXX: disable height for width etc. Speeds things up and doesn't seem
+    # to break anyhting in a scrolled window
+
+    def do_get_preferred_width_for_height(self, height):
+        return (1, 1)
+
+    def do_get_preferred_width(self):
+        return (1, 1)
+
+    def do_get_preferred_height(self):
+        return (1, 1)
+
+    def do_get_preferred_height_for_width(self, width):
+        return (1, 1)
+
+
 class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
                 DisplayPatternMixin):
     __gsignals__ = Browser.__gsignals__
@@ -203,7 +220,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         sw.set_shadow_type(Gtk.ShadowType.IN)
         model_sort = AlbumSortModel(model=self.__model)
         model_filter = AlbumFilterModel(child_model=model_sort)
-        self.view = view = Gtk.IconView(model_filter)
+        self.view = view = IconView(model_filter)
         #view.set_item_width(get_cover_size() + 12)
         self.view.set_row_spacing(config.getint("browsers", "row_spacing", 6))
         self.view.set_column_spacing(config.getint("browsers",
@@ -289,8 +306,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         view.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
-        view.connect("drag-data-get", self.__drag_data_get)
-        connect_obj(view, 'popup-menu', self.__popup, view, library)
+        view.connect("drag-data-get", self.__drag_data_get) # NOT WORKING
+        connect_obj(view, 'button-press-event', self.__popup, view, library)
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
@@ -470,12 +487,13 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         return True
 
     def __refresh_album(self, menuitem, view):
-        albums = self.__get_selected_albums()
-        mag = config.getfloat("browsers", "covergrid_magnification", 3.)
-        scale_factor = self.get_scale_factor() * mag
-        for album in albums:
-            album.scan_cover(True, scale_factor=scale_factor)
-        self._refresh_albums(albums)
+        items = self.__get_selected_items()
+        for item in items:
+            item.scanned = False
+        model = self.view.get_model()
+        for iter_, item in model.iterrows():
+            if item in items:
+                model.row_changed(model.get_path(iter_), iter_)
 
     def __get_selected_items(self):
         model = self.view.get_model()

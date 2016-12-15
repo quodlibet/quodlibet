@@ -87,12 +87,13 @@ class MP4File(AudioFile):
 
         for key, values in audio.items():
             if key in self.__tupletranslate:
-                name = self.__tupletranslate[key]
-                cur, total = values[0]
-                if total:
-                    self[name] = u"%d/%d" % (cur, total)
-                else:
-                    self[name] = text_type(cur)
+                if values:
+                    name = self.__tupletranslate[key]
+                    cur, total = values[0]
+                    if total:
+                        self[name] = u"%d/%d" % (cur, total)
+                    else:
+                        self[name] = text_type(cur)
             elif key in self.__translate:
                 name = self.__translate[key]
                 if key == "tmpo":

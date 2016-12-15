@@ -29,6 +29,11 @@ QL_VERSION="0.0.0"
 QL_VERSION_DESC="UNKNOWN"
 
 
+function set_python_version {
+    PYTHON_VERSION="$1"
+    PYTHON_ID="python${PYTHON_VERSION}"
+}
+
 function set_build_root {
     BUILD_ROOT="$1"
     REPO_CLONE="${BUILD_ROOT}"/quodlibet
@@ -47,6 +52,14 @@ function build_pip {
 
 function build_python {
     "${BUILD_ROOT}"/"${MINGW}"/bin/"${PYTHON_ID}".exe "$@"
+}
+
+function build_compileall {
+    if [ "${PYTHON_VERSION}" = "2" ]; then
+        build_python -m compileall "$@"
+    else
+        build_python -m compileall -b "$@"
+    fi
 }
 
 function install_pre_deps {
@@ -79,6 +92,7 @@ function install_deps {
         mingw-w64-"${ARCH}"-librsvg \
         mingw-w64-"${ARCH}"-gtk3 mingw-w64-"${ARCH}"-"${PYTHON_ID}" \
         mingw-w64-"${ARCH}"-"${PYTHON_ID}"-gobject \
+        mingw-w64-"${ARCH}"-"${PYTHON_ID}"-cairo \
         mingw-w64-"${ARCH}"-"${PYTHON_ID}"-pip \
         mingw-w64-"${ARCH}"-libsoup mingw-w64-"${ARCH}"-gstreamer \
         mingw-w64-"${ARCH}"-gst-plugins-base \
@@ -90,17 +104,21 @@ function install_deps {
 certifi==2016.9.26
 colorama==0.3.7
 feedparser==5.2.1
-futures==3.0.5
 musicbrainzngs==0.6
 mutagen==1.35
 pep8==1.7.0
 py==1.4.31
 pyflakes==1.3.0
-pytest==3.0.3
+pytest==3.0.5
 "
 
     build_pip install --no-deps --no-binary ":all:" --upgrade \
         --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr ["\\n"] [" "])
+
+    if [ "${PYTHON_ID}" = "python2" ]; then
+        build_pip install --no-deps --no-binary ":all:" --upgrade \
+            --force-reinstall "futures==3.0.5"
+    fi
 
     build_pacman --noconfirm -Rdd mingw-w64-"${ARCH}"-shared-mime-info \
         mingw-w64-"${ARCH}"-"${PYTHON_ID}"-pip mingw-w64-"${ARCH}"-ncurses \
@@ -127,7 +145,7 @@ pytest==3.0.3
     # (hacky... but I don't understand the win/unix path translation magic)
     GDK_PIXBUF_PREFIX=$(cd "${BUILD_ROOT}" && \
         /"${MINGW}"/bin/"${PYTHON_ID}".exe \
-        -c "import os; print os.getcwd()")"/${MINGW}"
+        -c "import os; print(os.getcwd())")"/${MINGW}"
     loaders_cache="${MINGW_ROOT}"/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
     sed -i "s|$GDK_PIXBUF_PREFIX|..|g" "$loaders_cache"
 
@@ -158,7 +176,7 @@ function install_quodlibet {
         "${QL_VERSION}" "${MINGW_ROOT}"/bin
 
     QL_VERSION=$(MSYSTEM= build_python -c \
-        "import quodlibet.const;print quodlibet.const.VERSION,")
+        "import quodlibet.const; import sys; sys.stdout.write(quodlibet.const.VERSION)")
     QL_VERSION_DESC=QL_VERSION
     if [ "$1" = "master" ]
     then
@@ -245,8 +263,14 @@ function cleanup_install {
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstschro.dll
 
     rm -f "${MINGW_ROOT}"/bin/libharfbuzz-icu-0.dll
-    rm -f "${MINGW_ROOT}"/lib/python2.*/lib-dynload/_tkinter.pyd
+    rm -f "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/lib-dynload/_tkinter*
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstcacasink.dll
+
+    if [ "${PYTHON_VERSION}" = "2" ]; then
+        rm -Rf "${MINGW_ROOT}"/lib/python3.*
+    else
+        rm -Rf "${MINGW_ROOT}"/lib/python2.*
+    fi
 
     find "${MINGW_ROOT}" -name "*.a" -exec rm -f {} \;
     find "${MINGW_ROOT}" -name "*.whl" -exec rm -f {} \;
@@ -265,6 +289,7 @@ function cleanup_install {
     find "${MINGW_ROOT}"/bin -name "*-config" -exec rm -f {} \;
     find "${MINGW_ROOT}"/bin -name "easy_install*" -exec rm -f {} \;
     find "${MINGW_ROOT}" -regex ".*/bin/[^.]+" -exec rm -f {} \;
+    find "${MINGW_ROOT}" -regex ".*/bin/[^.]+\\.[0-9]+" -exec rm -f {} \;
 
     find "${MINGW_ROOT}" -name "gtk30-properties.mo" -exec rm -rf {} \;
     find "${MINGW_ROOT}" -name "gettext-tools.mo" -exec rm -rf {} \;
@@ -278,11 +303,14 @@ function cleanup_install {
     find "${MINGW_ROOT}"/lib/"${PYTHON_ID}".* -type d -name "*_test*" \
         -prune -exec rm -rf {} \;
 
-    "${MINGW_ROOT}"/bin/"${PYTHON_ID}".exe -m compileall -q "${MINGW_ROOT}"
+    find "${MINGW_ROOT}"/bin -name "*.pyo" -exec rm -f {} \;
+    find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
+    build_compileall -q "${MINGW_ROOT}"
     find "${MINGW_ROOT}" -name "*.py" -exec rm -f {} \;
     find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
+    find "${MINGW_ROOT}" -type d -name "__pycache__" -prune -exec rm -rf {} \;
 
-    "${MINGW_ROOT}"/bin/"${PYTHON_ID}".exe "${MISC}/depcheck.py"
+    build_python "${MISC}/depcheck.py"
 
     find "${MINGW_ROOT}" -type d -empty -delete
 }
@@ -293,7 +321,7 @@ function build_installer {
     echo 'BUILD_TYPE = u"windows"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
     (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
-    (cd $(dirname "$BUILDPY") && build_python -m compileall -q -f -l .)
+    (cd $(dirname "$BUILDPY") && build_compileall -q -f -l .)
     rm -f "$BUILDPY"
 
     cp misc/quodlibet.ico "${BUILD_ROOT}"
@@ -308,7 +336,7 @@ function build_portable_installer {
     echo 'BUILD_TYPE = u"windows-portable"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
     (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
-    (cd $(dirname "$BUILDPY") && build_python -m compileall -q -f -l .)
+    (cd $(dirname "$BUILDPY") && build_compileall -q -f -l .)
     rm -f "$BUILDPY"
 
     local PORTABLE="$DIR/quodlibet-$QL_VERSION_DESC-portable"

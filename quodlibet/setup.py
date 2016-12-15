@@ -24,7 +24,7 @@ def exec_module(path):
     if sys.version_info[0] == 2:
         execfile(path, globals_)
     else:
-        with open(path) as h:
+        with open(path, encoding="utf-8") as h:
             exec(h.read(), globals_)
     module = types.ModuleType("")
     module.__dict__.update(globals_)

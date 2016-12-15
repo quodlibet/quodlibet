@@ -10,7 +10,11 @@ from __future__ import absolute_import
 
 import os
 import sys
-import urllib
+
+try:
+    from urllib import pathname2url
+except:
+    from urllib.request import pathname2url
 
 from .util import Command
 
@@ -66,6 +70,6 @@ class coverage_cmd(Command):
 
         dest = os.path.abspath(self.options["directory"])
         index = os.path.join(dest, "index.html")
-        index_url = urllib.pathname2url(index)
+        index_url = pathname2url(index)
 
         print("Coverage summary: file://%s" % index_url)

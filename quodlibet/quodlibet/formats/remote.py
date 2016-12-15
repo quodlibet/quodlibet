@@ -5,9 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
-
-from senf import fsnative
+from senf import fsnative, path2fsn
 
 from quodlibet.compat import text_type
 
@@ -32,10 +30,7 @@ class RemoteFile(AudioFile):
         value = super(RemoteFile, self).__getitem__(key)
         if key in ("~filename", "~mountpoint") and \
                 not isinstance(value, fsnative):
-            if os.name == "nt":
-                value = unicode(value)
-            else:
-                value = value.encode("utf-8")
+            value = path2fsn(value)
 
         return value
 

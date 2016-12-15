@@ -9,7 +9,6 @@ import os
 import stat
 import sys
 import errno
-import urllib
 import time
 import shutil
 
@@ -18,6 +17,7 @@ from os.path import isdir, basename, exists, splitext
 
 from quodlibet import config
 from quodlibet.util.path import find_mount_point, xdg_get_data_home
+from quodlibet.compat import pathname2url
 
 
 class TrashError(EnvironmentError):
@@ -126,7 +126,7 @@ def trash_free_desktop(path):
     del_date = time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime())
 
     data = "[Trash Info]\n"
-    data += "Path=%s\n" % urllib.pathname2url(norm_path)
+    data += "Path=%s\n" % pathname2url(norm_path)
     data += "DeletionDate=%s\n" % del_date
     os.write(info_fd, data)
     os.close(info_fd)

@@ -7,19 +7,17 @@
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
 #           2011-2016 Nick Boultbee
+#                2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-
+import json
 import os
 import time
 import threading
 import gzip
 
-import urllib
-import urllib2
-from cStringIO import StringIO
 from xml.dom import minidom
 
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
@@ -39,6 +37,8 @@ from quodlibet.qltk.image import scale, add_border_widget, \
     get_surface_for_pixbuf
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
+from quodlibet.util.urllib import urlopen, Request
+from quodlibet.compat import xrange, urlencode, cBytesIO
 
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
@@ -56,39 +56,39 @@ def get_encoding_from_socket(socket):
 
 
 def get_url(url, post={}, get={}):
-    post_params = urllib.urlencode(post)
-    get_params = urllib.urlencode(get)
+    post_params = urlencode(post)
+    get_params = urlencode(get)
     if get:
         get_params = '?' + get_params
 
     # add post, get data and headers
     url = '%s%s' % (url, get_params)
     if post_params:
-        request = urllib2.Request(url, post_params)
+        request = Request(url, post_params)
     else:
-        request = urllib2.Request(url)
+        request = Request(url)
 
     # for discogs
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
 
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     enc = get_encoding_from_socket(url_sock)
 
     # unzip the response if needed
     data = url_sock.read()
     if url_sock.headers.get("content-encoding", "") == "gzip":
-        data = gzip.GzipFile(fileobj=StringIO(data)).read()
+        data = gzip.GzipFile(fileobj=cBytesIO(data)).read()
     url_sock.close()
 
     return data, enc
 
 
 def get_encoding(url):
-    request = urllib2.Request(url)
+    request = Request(url)
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     return get_encoding_from_socket(url_sock)
 
 
@@ -186,6 +186,101 @@ class AmazonParser(object):
             self.covers.append(cover)
 
     def start(self, query, limit=10):
+        """Start the search and returns the covers"""
+
+        self.page_count = 0
+        self.covers = []
+        self.limit = limit
+        self.__parse_page(1, query)
+
+        if len(self.covers) < limit:
+            for page in xrange(2, self.page_count + 1):
+                self.__parse_page(page, query)
+                if len(self.covers) >= limit:
+                    break
+
+        return self.covers
+
+
+class DiscogsParser(object):
+    """A class for searching covers from Amazon"""
+
+    def __init__(self):
+        self.page_count = 0
+        self.covers = []
+        self.limit = 0
+        self.creds = {'key': 'aWfZGjHQvkMcreUECGAp',
+                      'secret': 'VlORkklpdvAwJMwxUjNNSgqicjuizJAl'}
+
+    def __parse_page(self, page, query):
+        """Gets all item tags and calls the item parsing function for each"""
+
+        url = 'https://api.discogs.com/database/search'
+
+        parameters = {
+            'type': 'release',
+            # 'artist': '',
+            # 'release_title': '',
+            'q': query,
+            'page': page,
+            'per_page': 100,
+        }
+
+        _params = dict(parameters.items() + self.creds.items())
+        data, enc = get_url(url, get=_params)
+        json_dict = json.loads(data)
+
+        # TODO: rate limiting
+
+        pages = json_dict.get('pagination', {}).get('pages', 0)
+        if pages != 0:
+            self.page_count = int(pages)
+        else:
+            return
+
+        items = json_dict.get('results', {})
+        for item in items:
+            self.__parse_item(item)
+            if len(self.covers) >= self.limit:
+                break
+
+    def __parse_item(self, item):
+        """Extract all information and add the covers to the list."""
+
+        thumbnail = item.get('thumb', '')
+        if thumbnail is None:
+            print_d("Release doesn't have a cover")
+            return
+
+        res_url = item.get('resource_url', '')
+        data, enc = get_url(res_url, get=self.creds)
+        json_dict = json.loads(data)
+
+        images = json_dict.get('images', [])
+
+        for i, image in enumerate(images):
+
+            type = image.get('type', '')
+            if type != 'primary':
+                print_d('Cover is not primary: {0}'.format(type))
+                continue
+
+            cover = {'source': 'https://www.discogs.com',
+                     'name': item.get('title', ''),
+                     'thumbnail': image.get('uri150', thumbnail),
+                     'cover': image.get('uri', '')}
+
+            cover['size'] = get_size_of_url(cover['cover'])
+
+            width = image.get('width', 0)
+            height = image.get('height', 0)
+            cover['resolution'] = '%s x %s px' % (width, height)
+
+            self.covers.append(cover)
+            if len(self.covers) >= self.limit:
+                break
+
+    def start(self, query, limit=5):
         """Start the search and returns the covers"""
 
         self.page_count = 0
@@ -447,13 +542,13 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         if not raw_data:
             pbloader.connect('area-updated', self.__update)
 
-            data_store = StringIO()
+            data_store = cBytesIO()
 
             try:
-                request = urllib2.Request(url)
+                request = Request(url)
                 request.add_header('User-Agent', USER_AGENT)
-                url_sock = urllib2.urlopen(request)
-            except urllib2.HTTPError:
+                url_sock = urlopen(request)
+            except EnvironmentError:
                 print_w(_("[albumart] HTTP Error: %s") % url)
             else:
                 while not self.stop_loading:
@@ -652,7 +747,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         self.search = search = CoverSearch(self.__search_callback)
 
         for eng in engines:
-            if self.config_get(CONFIG_ENG_PREFIX + eng['config_id'], True):
+            if self.config_get_bool(
+                    CONFIG_ENG_PREFIX + eng['config_id'], True):
                 search.add_engine(eng['class'], eng['replace'])
 
         search.start(text)
@@ -796,10 +892,10 @@ class CoverSearch(object):
 
 #------------------------------------------------------------------------------
 def get_size_of_url(url):
-    request = urllib2.Request(url)
+    request = Request(url)
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     size = url_sock.headers.get('content-length')
     url_sock.close()
     return format_size(int(size)) if size else ''
@@ -811,6 +907,12 @@ engines = [
         'url': 'https://www.amazon.com/',
         'replace': ' ',
         'config_id': 'amazon',
+    },
+    {
+        'class': DiscogsParser,
+        'url': 'https://www.discogs.com/',
+        'replace': ' ',
+        'config_id': 'discogs',
     },
 ]
 #------------------------------------------------------------------------------

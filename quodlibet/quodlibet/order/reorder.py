@@ -9,6 +9,7 @@ import random
 
 from quodlibet import _
 from quodlibet.order import Order, OrderRemembered
+from quodlibet.compat import iteritems
 
 
 class Reorder(Order):
@@ -21,8 +22,6 @@ class OrderShuffle(Reorder, OrderRemembered):
     name = "random"
     display_name = _("Random")
     accelerated_name = _("_Random")
-    is_shuffle = True
-    priority = 1
 
     def next(self, playlist, iter):
         super(OrderShuffle, self).next(playlist, iter)
@@ -39,8 +38,6 @@ class OrderWeighted(Reorder, OrderRemembered):
     name = "weighted"
     display_name = _("Prefer higher rated")
     accelerated_name = _("Prefer higher rated")
-    is_shuffle = True
-    priority = 2
 
     def next(self, playlist, iter):
         super(OrderWeighted, self).next(playlist, iter)
@@ -53,7 +50,7 @@ class OrderWeighted(Reorder, OrderRemembered):
         total_score = sum([song('~#rating') for song in remaining.values()])
         choice = random.random() * total_score
         current = 0.0
-        for i, song in remaining.iteritems():
+        for i, song in iteritems(remaining):
             current += song("~#rating")
             if current >= choice:
                 return playlist.get_iter([i])

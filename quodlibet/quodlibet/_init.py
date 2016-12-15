@@ -12,9 +12,8 @@ import locale
 import warnings
 import logging
 
-from senf import environ
+from senf import environ, argv
 
-from quodlibet import util
 from quodlibet.compat import PY2
 from quodlibet.const import MinVersions
 from quodlibet.util import is_osx, is_windows
@@ -22,6 +21,7 @@ from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
     fixup_i18n_envvars, set_translation
 from quodlibet.util.dprint import print_d, print_e, PrintHandler
 from quodlibet.util.path import unexpand
+from quodlibet.util.urllib import install_urllib2_ca_file
 
 from ._main import get_base_dir, is_release, get_image_dir
 
@@ -133,22 +133,23 @@ def _init_python():
         # We build our own openssl on OSX and need to make sure that
         # our own ca file is used in all cases as the non-system openssl
         # doesn't use the system certs
-        util.install_urllib2_ca_file()
+        install_urllib2_ca_file()
 
     if is_windows():
         # Not really needed on Windows as pygi-aio seems to work fine, but
         # wine doesn't have certs which we use for testing.
-        util.install_urllib2_ca_file()
+        install_urllib2_ca_file()
 
     if is_windows() and os.sep != "\\":
         # In the MSYS2 console MSYSTEM is set, which breaks os.sep/os.path.sep
         # If you hit this do a "setup.py clean -all" to get rid of the
         # bytecode cache then start things with "MSYSTEM= ..."
-        raise AssertionError("MSYSTEM is set (%r)" % os.environ.get("MSYSTEM"))
+        raise AssertionError("MSYSTEM is set (%r)" % environ.get("MSYSTEM"))
 
     if is_windows():
         # gdbm is broken under msys2, this makes shelve use another backend
         sys.modules["gdbm"] = None
+        sys.modules["_gdbm"] = None
 
     logging.getLogger().addHandler(PrintHandler())
 
@@ -280,12 +281,12 @@ def _init_gtk():
     # in 100% CPU under win7 revert it. Maybe we need to update the
     # cache in the windows installer for it to work... but for now revert.
     if is_windows():
-        os.environ['PANGOCAIRO_BACKEND'] = 'win32'
-        os.environ["GTK_CSD"] = "0"
+        environ['PANGOCAIRO_BACKEND'] = 'win32'
+        environ["GTK_CSD"] = "0"
 
     # disable for consistency and trigger events seem a bit flaky here
     if is_osx():
-        os.environ["GTK_OVERLAY_SCROLLING"] = "0"
+        environ["GTK_OVERLAY_SCROLLING"] = "0"
 
     # make sure GdkX11 doesn't get used under Windows
     if os.name == "nt":
@@ -320,10 +321,9 @@ def _init_gtk():
         Soup.Message.set_request = new_set_request
 
     # PyGObject doesn't fail anymore when init fails, so do it ourself
-    initialized, argv = Gtk.init_check(sys.argv)
+    initialized, argv[:] = Gtk.init_check(argv)
     if not initialized:
         raise SystemExit("Gtk.init failed")
-    sys.argv = list(argv)
 
     # include our own icon theme directory
     theme = Gtk.IconTheme.get_default()
@@ -459,14 +459,12 @@ def _init_gst():
     from gi.repository import GLib
 
     try:
-        ok, argv = Gst.init_check(sys.argv)
+        ok, argv[:] = Gst.init_check(argv)
     except GLib.GError:
         print_e("Failed to initialize GStreamer")
         # Uninited Gst segfaults: make sure no one can use it
         sys.modules["gi.repository.Gst"] = None
     else:
-        sys.argv = argv
-
         # monkey patching ahead
         _fix_gst_leaks()
 

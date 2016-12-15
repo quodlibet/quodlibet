@@ -1136,7 +1136,7 @@ class Tenviron(TestCase):
     def test_main(self):
         for v in util.environ.values():
             if os.name == "nt":
-                self.assertTrue(isinstance(v, unicode))
+                self.assertTrue(isinstance(v, text_type))
             else:
                 self.assertTrue(isinstance(v, str))
 

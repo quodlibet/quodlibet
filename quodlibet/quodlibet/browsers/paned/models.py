@@ -11,7 +11,7 @@ from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.collection import Collection
-from quodlibet.compat import iteritems
+from quodlibet.compat import iteritems, listfilter
 
 
 class BaseEntry(Collection):
@@ -21,7 +21,7 @@ class BaseEntry(Collection):
 
         self.songs = set(songs or [])
         self.key = key # not used for sorting!
-        self.sort = ""
+        self.sort = tuple()
 
     def all_have(self, tag, value):
         """Check if all songs have tag `tag` set to `value`"""
@@ -80,7 +80,7 @@ class SongsEntry(BaseEntry):
 class UnknownEntry(SongsEntry):
 
     def __init__(self, songs=None):
-        super(UnknownEntry, self).__init__("", "", songs)
+        super(UnknownEntry, self).__init__("", tuple(), songs)
 
     def get_text(self, config):
         return True, "<b>%s</b>" % _("Unknown")
@@ -126,7 +126,7 @@ class PaneModel(ObjectStore):
             return self.__key_cache[song]
         except KeyError:
             # We filter out empty values, so Unknown can be ""
-            self.__key_cache[song] = filter(
+            self.__key_cache[song] = listfilter(
                 lambda v: v[0], self.config.format(song))
             return self.__key_cache[song]
 

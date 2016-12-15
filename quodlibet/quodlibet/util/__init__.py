@@ -25,16 +25,17 @@ try:
 except ImportError:
     fcntl = None
 
-from senf import fsnative
+from senf import fsnative, environ, argv
 
 from quodlibet.compat import reraise as py_reraise, PY2, text_type, \
-    iteritems, reduce, number_types, long
+    iteritems, reduce, number_types, long, cmp
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
-from .misc import environ, argv, cached_func, get_locale_encoding
+from .misc import cached_func, get_locale_encoding, \
+    get_module_dir, get_ca_file
 from .environment import is_plasma, is_unity, is_enlightenment, \
     is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console, \
     is_py2exe_window
@@ -43,10 +44,10 @@ from .i18n import _, C_
 
 
 # pyflakes
-environ, argv, cached_func, get_locale_encoding, enum,
+cached_func, get_locale_encoding, enum,
 print_w, print_exc, is_plasma, is_unity, is_enlightenment,
 is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console,
-is_py2exe_window
+is_py2exe_window, get_module_dir, get_ca_file
 
 
 if PY2:
@@ -135,7 +136,7 @@ class OptionParser(object):
             l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
         s = _("Usage: %(program)s %(usage)s") % {
-            "program": sys.argv[0],
+            "program": argv[0],
             "usage": self.__usage if self.__usage else _("[options]"),
         }
         s += "\n"
@@ -172,7 +173,7 @@ class OptionParser(object):
 
     def parse(self, args=None):
         if args is None:
-            args = sys.argv[1:]
+            args = argv[1:]
         from getopt import getopt, GetoptError
         try:
             opts, args = getopt(args, self.__shorts(), self.__longs())
@@ -189,7 +190,7 @@ class OptionParser(object):
                 text.append(
                     _("%r is not a unique prefix.") % s.split()[1])
             if "help" in self.__args:
-                text.append(_("Try %s --help.") % sys.argv[0])
+                text.append(_("Try %s --help.") % argv[0])
 
             print_e("\n".join(text))
             raise SystemExit(True)
@@ -329,7 +330,10 @@ def parse_date(datestr):
     except IndexError:
         raise ValueError
 
-    return time.mktime(time.strptime(datestr, frmt))
+    try:
+        return time.mktime(time.strptime(datestr, frmt))
+    except OverflowError as e:
+        raise ValueError(e)
 
 
 def format_int_locale(value):
@@ -991,13 +995,12 @@ def load_library(names, shared=True):
         # make sure it's either empty or contains /usr/lib.
         # (jhbuild sets it for example). Otherwise ctypes can't
         # find libc (bug?)
-        if "DYLD_FALLBACK_LIBRARY_PATH" in os.environ:
-            paths = os.environ["DYLD_FALLBACK_LIBRARY_PATH"]
+        if "DYLD_FALLBACK_LIBRARY_PATH" in environ:
+            paths = environ["DYLD_FALLBACK_LIBRARY_PATH"]
             paths = paths.split(os.pathsep)
             if "/usr/lib" not in paths:
                 paths.append("/usr/lib")
-                os.environ["DYLD_FALLBACK_LIBRARY_PATH"] = \
-                    os.pathsep.join(paths)
+                environ["DYLD_FALLBACK_LIBRARY_PATH"] = os.pathsep.join(paths)
 
     errors = []
     for name in names:
@@ -1189,59 +1192,3 @@ def reraise(tp, value, tb=None):
     if tb is None:
         tb = sys.exc_info()[2]
     py_reraise(tp, value, tb)
-
-
-def get_module_dir(module=None):
-    """Returns the absolute path of a module. If no module is given
-    the one this is called from is used.
-    """
-
-    if module is None:
-        file_path = sys._getframe(1).f_globals["__file__"]
-    else:
-        file_path = getattr(module, "__file__")
-    if is_windows():
-        file_path = file_path.decode(sys.getfilesystemencoding())
-    return os.path.dirname(os.path.realpath(file_path))
-
-
-def get_ca_file():
-    """A path to a CA file or None.
-
-    Depends whether we use certifi or the system trust store
-    on the current platform.
-    """
-
-    if is_linux():
-        return None
-
-    import certifi
-
-    return os.path.join(get_module_dir(certifi), "cacert.pem")
-
-
-def install_urllib2_ca_file():
-    """Makes urllib2.urlopen and urllib2.build_opener use the ca file
-    returned by get_ca_file()
-    """
-
-    try:
-        import ssl
-    except ImportError:
-        return
-
-    import urllib2
-
-    base = urllib2.HTTPSHandler
-
-    class MyHandler(base):
-
-        def __init__(self, debuglevel=0, context=None):
-            ca_file = get_ca_file()
-            if context is None and ca_file is not None:
-                context = ssl.create_default_context(
-                    purpose=ssl.Purpose.SERVER_AUTH,
-                    cafile=ca_file)
-            base.__init__(self, debuglevel, context)
-
-    urllib2.HTTPSHandler = MyHandler

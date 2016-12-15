@@ -94,7 +94,10 @@ class install_dbus_services(Command):
             fullpath = os.path.join(basepath, service_name)
             (out, _) = self.copy_file(fullsrc, fullpath)
             self.outfiles.append(out)
-            _replace(fullpath, "@PREFIX@", self.exec_prefix or "")
+            prefix = self.exec_prefix or ""
+            if not isinstance(prefix, bytes):
+                prefix = prefix.encode("utf-8")
+            _replace(fullpath, b"@PREFIX@", prefix)
 
 
 __all__ = ["build_dbus_services", "install_dbus_services"]

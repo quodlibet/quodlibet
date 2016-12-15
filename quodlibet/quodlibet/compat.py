@@ -26,13 +26,13 @@ if PY2:
     cBytesIO
     from StringIO import StringIO
     StringIO
-    import cPickle as pickle
-    pickle
     from functools import reduce
     reduce
     from operator import div as floordiv
     from itertools import izip_longest, izip
     izip_longest, izip
+    from Queue import Queue
+    Queue
 
     xrange = xrange
     long = long
@@ -69,6 +69,18 @@ if PY2:
         exec("""exec _code_ in _globs_, _locs_""")
 
     exec("def reraise(tp, value, tb):\n raise tp, value, tb")
+
+    def swap_to_string(cls):
+        if "__str__" in cls.__dict__:
+            cls.__unicode__ = cls.__str__
+
+        if "__bytes__" in cls.__dict__:
+            cls.__str__ = cls.__bytes__
+
+        return cls
+
+    escape_decode = lambda b: b.decode("string-escape")
+
 elif PY3:
     import builtins
     builtins
@@ -84,14 +96,15 @@ elif PY3:
     cBytesIO
     from io import StringIO
     StringIO = StringIO
-    import pickle
-    pickle
     from functools import reduce
     reduce
     from operator import floordiv
     floordiv
     from itertools import zip_longest as izip_longest
     izip_longest
+    import codecs
+    from queue import Queue
+    Queue
 
     xrange = range
     long = int
@@ -122,3 +135,26 @@ elif PY3:
 
     def reraise(tp, value, tb):
         raise tp(value).with_traceback(tb)
+
+    def swap_to_string(cls):
+        return cls
+
+    escape_decode = lambda b: codecs.escape_decode(b)[0]
+
+
+# taken from six
+def add_metaclass(metaclass):
+    """Class decorator for creating a class with a metaclass."""
+
+    def wrapper(cls):
+        orig_vars = cls.__dict__.copy()
+        slots = orig_vars.get('__slots__')
+        if slots is not None:
+            if isinstance(slots, str):
+                slots = [slots]
+            for slots_var in slots:
+                orig_vars.pop(slots_var)
+        orig_vars.pop('__dict__', None)
+        orig_vars.pop('__weakref__', None)
+        return metaclass(cls.__name__, cls.__bases__, orig_vars)
+    return wrapper

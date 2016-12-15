@@ -11,7 +11,7 @@
 
 from gi.repository import GLib
 
-from quodlibet.compat import PY2
+from quodlibet.compat import PY2, listkeys
 
 
 class _Routine(object):
@@ -113,7 +113,7 @@ class CoPool(object):
     def remove_all(self):
         """Stop all running routines."""
 
-        for funcid in self.__routines.keys():
+        for funcid in listkeys(self.__routines):
             self.remove(funcid)
 
     def pause(self, funcid):

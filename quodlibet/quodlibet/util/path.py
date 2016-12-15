@@ -14,10 +14,12 @@ import tempfile
 import codecs
 import shlex
 
-from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars
+from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
+    fsn2text
 
-from quodlibet.compat import PY2, urlparse, text_type, quote, unquote
+from quodlibet.compat import PY2, urlparse, text_type, quote, unquote, PY3
 from . import windows
+from .environment import is_windows
 from .misc import environ
 
 if sys.platform == "darwin":
@@ -111,23 +113,31 @@ def filesize(filename):
 def escape_filename(s):
     """Escape a string in a manner suitable for a filename.
 
-    Takes unicode or str and returns a fsnative path.
+    Args:
+        s (text_type)
+    Returns:
+        fsnative
     """
 
+    s = text_type(s)
+    s = quote(s.encode("utf-8"), safe=b"")
     if isinstance(s, text_type):
-        s = s.encode("utf-8")
-
-    quoted = quote(s, safe="")
-    if PY2:
-        quoted = quoted.decode("utf-8")
-    return fsnative(quoted)
+        s = s.encode("ascii")
+    return bytes2fsn(s, "utf-8")
 
 
 def unescape_filename(s):
-    """Unescape a string in a manner suitable for a filename."""
-    if isinstance(s, unicode):
-        s = s.encode("utf-8")
-    return unquote(s).decode("utf-8")
+    """Unescape a string in a manner suitable for a filename.
+
+    Args:
+        filename (fsnative)
+    Returns:
+        text_type
+    """
+
+    assert isinstance(s, fsnative)
+
+    return fsn2text(unquote(s))
 
 
 def unexpand(filename):
@@ -144,8 +154,19 @@ def unexpand(filename):
     return filename
 
 
+if PY3 and is_windows():
+    def ismount(path):
+        # this can raise on py3+win, but we don't care
+        try:
+            return os.path.ismount(path)
+        except OSError:
+            return False
+else:
+    ismount = os.path.ismount
+
+
 def find_mount_point(path):
-    while not os.path.ismount(path):
+    while not ismount(path):
         path = os.path.dirname(path)
     return path
 
@@ -206,7 +227,7 @@ def xdg_get_config_home():
 def parse_xdg_user_dirs(data):
     """Parses xdg-user-dirs and returns a dict of keys and paths.
 
-    The paths depend on the content of os.environ while calling this function.
+    The paths depend on the content of environ while calling this function.
     See http://www.freedesktop.org/wiki/Software/xdg-user-dirs/
 
     Args:

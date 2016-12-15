@@ -12,6 +12,8 @@ from quodlibet.qltk import Icons
 from quodlibet.util import tag, escape
 from quodlibet.qltk.songlist import get_columns
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.compat import text_type
+
 
 HTML = '''<html>
 <head><title>Quod Libet Playlist</title>
@@ -53,7 +55,7 @@ def to_html(songs):
             col = {"~#rating": "~rating", "~#length": "~length"}.get(
                 col, col)
             s += '\n<td>%s</td>' % (
-                escape(unicode(song.comma(col))) or '&nbsp;')
+                escape(text_type(song.comma(col))) or '&nbsp;')
         s += '</tr>'
         songs_s += s
 

@@ -166,7 +166,7 @@ class NamedPipeServer(threading.Thread):
         self._stopped = True
         try:
             with open(self._filename, "wb") as h:
-                h.write("stop!")
+                h.write(b"stop!")
         except EnvironmentError:
             pass
 

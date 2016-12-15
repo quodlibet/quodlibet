@@ -12,7 +12,7 @@ from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.util.dprint import print_d
 from quodlibet.util.config import ConfigProxy
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.compat import itervalues, iteritems, listkeys
+from quodlibet.compat import itervalues, iteritems, listkeys, string_types
 
 
 def init(folders=None, disable_plugins=False):
@@ -150,7 +150,7 @@ class Plugin(object):
     @property
     def tags(self):
         tags = getattr(self.cls, "PLUGIN_TAGS", [])
-        if isinstance(tags, basestring):
+        if isinstance(tags, string_types):
             tags = [tags]
         return tags
 
@@ -540,7 +540,7 @@ class FloatConfProp(ConfProp):
 def str_to_color_tuple(s):
     """Raises ValueError"""
 
-    lst = map(float, s.split())
+    lst = [float(p) for p in s.split()]
     while len(lst) < 4:
         lst.append(0.0)
     return tuple(lst)

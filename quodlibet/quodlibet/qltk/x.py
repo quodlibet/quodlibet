@@ -15,7 +15,7 @@ from gi.repository import Gtk, GObject, GLib, Gio, GdkPixbuf
 from quodlibet.util.dprint import print_d
 
 from quodlibet import util
-from quodlibet.compat import urlopen
+from quodlibet.compat import urlopen, xrange
 from quodlibet.util import print_w
 from quodlibet.util.thread import call_async, Cancellable
 from quodlibet.qltk import add_css, is_accel, gtk_version

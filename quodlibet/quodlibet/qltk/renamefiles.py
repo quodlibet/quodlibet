@@ -27,6 +27,7 @@ from quodlibet.qltk import Icons, Button
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj, gdecode
 from quodlibet.util.path import strip_win32_incompat_from_path
+from quodlibet.compat import itervalues
 
 
 NBP = os.path.join(quodlibet.get_user_dir(), "lists", "renamepatterns")
@@ -234,7 +235,7 @@ class RenameFiles(Gtk.VBox):
         skip_all = False
         self.view.freeze_child_notify()
 
-        for entry in model.itervalues():
+        for entry in itervalues(model):
             song = entry.song
             new_name = entry.new_name
             old_name = entry.name
@@ -282,7 +283,7 @@ class RenameFiles(Gtk.VBox):
     def __preview(self, songs):
         model = self.view.get_model()
         if songs is None:
-            songs = [e.song for e in model.itervalues()]
+            songs = [e.song for e in itervalues(model)]
 
         pattern_text = gdecode(self.combo.get_child().get_text())
 

@@ -10,7 +10,11 @@ from __future__ import absolute_import
 
 from collections import MutableSequence, defaultdict
 
+from quodlibet.compat import listkeys
+from .misc import total_ordering
 
+
+@total_ordering
 class DictMixin(object):
     """Implement the dict API using keys() and __*item__ methods.
 
@@ -54,7 +58,7 @@ class DictMixin(object):
         return iter(self.items())
 
     def clear(self):
-        for key in self.keys():
+        for key in listkeys(self):
             del self[key]
 
     def pop(self, key, *args):
@@ -72,7 +76,7 @@ class DictMixin(object):
 
     def popitem(self):
         try:
-            key = self.keys()[0]
+            key = listkeys(self)[0]
             return key, self.pop(key)
         except IndexError:
             raise KeyError("dictionary is empty")
@@ -105,11 +109,11 @@ class DictMixin(object):
     def __repr__(self):
         return repr(dict(self.items()))
 
-    def __cmp__(self, other):
-        if other is None:
-            return 1
-        else:
-            return cmp(dict(self.items()), other)
+    def __eq__(self, other):
+        return dict(self.items()) == other
+
+    def __lt__(self, other):
+        return dict(self.items()) < other
 
     __hash__ = object.__hash__
 

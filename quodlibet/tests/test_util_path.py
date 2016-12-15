@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from senf import uri2fsn, fsn2uri, fsnative
+from senf import uri2fsn, fsn2uri, fsnative, environ
 
 from quodlibet.util.path import iscommand, limit_path, \
     get_home_dir, uri_is_valid, ishidden
@@ -16,7 +16,7 @@ from . import TestCase
 
 
 is_win = os.name == "nt"
-path_set = bool(os.environ.get('PATH', False))
+path_set = bool(environ.get('PATH', False))
 
 
 class Tishidden(TestCase):
@@ -139,12 +139,13 @@ class Tiscommand(TestCase):
     @unittest.skipUnless(path_set, "Can only test with a valid $PATH")
     @unittest.skipIf(is_win, "needs porting")
     def test_looks_in_path(self):
-        path_dirs = set(os.environ['PATH'].split(os.path.pathsep))
+        path_dirs = set(environ['PATH'].split(os.path.pathsep))
         dirs = path_dirs - set(os.defpath.split(os.path.pathsep))
         for d in dirs:
             if os.path.isdir(d):
-                for file_path in os.listdir(d):
-                    if os.access(os.path.join(d, file_path), os.X_OK):
-                        print_d("Testing %s" % file_path)
-                        self.failUnless(iscommand(file_path))
+                for file_path in sorted(os.listdir(d)):
+                    p = os.path.join(d, file_path)
+                    if os.path.isfile(p) and os.access(p, os.X_OK):
+                        print_d("Testing %s" % p)
+                        self.failUnless(iscommand(p), msg=p)
                         return

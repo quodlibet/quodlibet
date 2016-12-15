@@ -10,6 +10,7 @@ source "$DIR"/_base.sh
 
 function main {
     local GIT_TAG=${1:-"master"}
+    local PYTHON_VERSION=${2:-"2"}
 
     [[ -d "${BUILD_ROOT}" ]] && (echo "${BUILD_ROOT} already exists"; exit 1)
 
@@ -19,6 +20,7 @@ function main {
         exit $?
     fi
 
+    set_python_version "$PYTHON_VERSION"
     install_pre_deps
     create_root
     install_deps
@@ -28,4 +30,4 @@ function main {
     build_portable_installer
 }
 
-main "$1";
+main "$@";

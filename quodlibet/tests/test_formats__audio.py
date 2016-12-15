@@ -7,10 +7,10 @@ from tests import TestCase, get_data_path
 
 import os
 
-from senf import fsnative, fsn2text
+from senf import fsnative, fsn2text, bytes2fsn
 
 from quodlibet import config
-from quodlibet.compat import PY2, text_type
+from quodlibet.compat import PY2, text_type, long, listkeys, PY3
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile
@@ -92,6 +92,26 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_1_1("~#discs"), 2)
         self.failIf(bar_1_2("~#discs"))
         self.failIf(bar_2_1("~#tracks"))
+
+    def test_setitem_keys(self):
+        af = AudioFile()
+        af[u"foo"] = u"bar"
+        assert "foo" in af
+        assert isinstance(listkeys(af)[0], str)
+        af.clear()
+        af[u"öäü"] = u"bar"
+        assert u"öäü" in af
+        assert isinstance(listkeys(af)[0], text_type)
+
+        with self.assertRaises(TypeError):
+            af[42] = u"foo"
+
+        if PY3:
+            with self.assertRaises(TypeError):
+                af[b"foo"] = u"bar"
+        else:
+            with self.assertRaises(ValueError):
+                af[b"\xff"] = u"bar"
 
     def test_call(self):
         # real keys should lookup the same
@@ -248,6 +268,11 @@ class TAudioFile(TestCase):
     def test_comma_filename(self):
         self.assertTrue(isinstance(bar_1_1.comma("~filename"), text_type))
 
+    def test_comma_mountpoint(self):
+        assert not bar_1_1("~mountpoint")
+        assert isinstance(bar_1_1.comma("~mountpoint"), text_type)
+        assert bar_1_1.comma("~mountpoint") == u""
+
     def test_exist(self):
         self.failIf(bar_2_1.exists())
         self.failUnless(quux.exists())
@@ -314,23 +339,6 @@ class TAudioFile(TestCase):
         self.failUnlessRaises(ValueError, quux.rename,
                               get_data_path("silence-44-s.ogg"))
 
-    def test_website(self):
-        song = AudioFile()
-        song["comment"] = "www.foo"
-        song["contact"] = "eh@foo.org"
-        self.failUnlessEqual(song.website(), "www.foo")
-        song["contact"] = "https://www.foo.org"
-        self.failUnlessEqual(song.website(), "https://www.foo.org")
-        song["website"] = "foo\nhttps://another.com"
-        self.failUnlessEqual(song.website(), "foo")
-
-        song = AudioFile({"artist": "Artist", "album": "Album"})
-        for value in song.values():
-            self.failUnless(value in song.website())
-        song["labelid"] = "QL-12345"
-        self.failIf(song["artist"] in song.website())
-        self.failUnless(song["labelid"] in song.website())
-
     def test_lyric_filename(self):
         song = AudioFile()
         song["~filename"] = fsnative(u"filename")
@@ -340,6 +348,13 @@ class TAudioFile(TestCase):
         self.assertTrue(isinstance(song.lyric_filename, fsnative))
         song["lyricist"] = u"Lyricist"
         self.assertTrue(isinstance(song.lyric_filename, fsnative))
+
+    def test_mountpoint(self):
+        song = AudioFile()
+        song["~filename"] = fsnative(u"filename")
+        song.sanitize()
+        assert isinstance(song["~mountpoint"], fsnative)
+        assert isinstance(song.comma("~mointpoint"), text_type)
 
     def test_sanitize(self):
         q = AudioFile(quux)
@@ -440,16 +455,17 @@ class TAudioFile(TestCase):
     def test_to_dump(self):
         dump = bar_1_1.to_dump()
         num = len(set(bar_1_1.keys()) | NUMERIC_ZERO_DEFAULT)
-        self.failUnlessEqual(dump.count("\n"), num + 2)
+        self.failUnlessEqual(dump.count(b"\n"), num + 2)
         for key, value in bar_1_1.items():
-            self.failUnless(key in dump)
-            self.failUnless(value in dump)
+            self.failUnless(key.encode("utf-8") in dump)
+            self.failUnless(value.encode("utf-8") in dump)
         for key in NUMERIC_ZERO_DEFAULT:
-            self.failUnless(key in dump)
+            self.failUnless(key.encode("utf-8") in dump)
 
         n = AudioFile()
         n.from_dump(dump)
-        self.failUnless(set(dump.split("\n")) == set(n.to_dump().split("\n")))
+        self.failUnless(
+            set(dump.split(b"\n")) == set(n.to_dump().split(b"\n")))
 
     def test_to_dump_long(self):
         if not PY2:
@@ -612,10 +628,21 @@ class TAudioFile(TestCase):
             a.sort_by_func("~basename")(a)
         else:
             # windows
-            a["~filename"] = "/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg".decode("latin-1")
+            a["~filename"] = \
+                b"/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg".decode("latin-1")
             a.sort_by_func("~filename")(a)
             a.sort_by_func("~basename")(a)
             a.sort_by_func("~dirname")(a)
+
+    def test_sort_key_defaults(self):
+        AF = AudioFile
+        assert AF().sort_key == AF({"tracknumber": "1"}).sort_key
+        assert AF().sort_key == AF({"tracknumber": "1/1"}).sort_key
+        assert AF().sort_key < AF({"tracknumber": "2/2"}).sort_key
+
+        assert AF().sort_key == AF({"discnumber": "1"}).sort_key
+        assert AF().sort_key == AF({"discnumber": "1/1"}).sort_key
+        assert AF().sort_key < AF({"discnumber": "2/2"}).sort_key
 
     def test_sort_cache(self):
         copy = AudioFile(bar_1_1)
@@ -660,7 +687,10 @@ class TAudioFile(TestCase):
             f = AudioFile({"~filename": u"/\xf6\xe4.mp3", "title": "win"})
             self.failUnlessEqual(f("~uri"), "file:///%C3%B6%C3%A4.mp3")
         else:
-            f = AudioFile({"~filename": "/\x87\x12.mp3", "title": "linux"})
+            f = AudioFile({
+                "~filename": bytes2fsn(b"/\x87\x12.mp3", None),
+                "title": "linux",
+            })
             self.failUnlessEqual(f("~uri"), "file:///%87%12.mp3")
 
     def test_reload(self):

@@ -43,6 +43,8 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
+from quodlibet.compat import text_type, iteritems, iterkeys
+
 
 STATION_LIST_URL = \
     "https://bitbucket.org/lazka/quodlibet/downloads/radiolist.bz2"
@@ -207,7 +209,7 @@ def add_station(uri):
     Returns None in error, else a possibly filled list of stations"""
 
     irfs = []
-    if isinstance(uri, unicode):
+    if isinstance(uri, text_type):
         uri = uri.encode('utf-8')
 
     if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):
@@ -689,7 +691,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         # keep at most 2 URLs for each group
         stations = []
-        for key, sub in groups.iteritems():
+        for key, sub in iteritems(groups):
             sub.sort(key=lambda s: s.get("~#listenerpeak", 0), reverse=True)
             stations.extend(sub[:2])
 
@@ -706,11 +708,11 @@ class InternetRadio(Browser, util.InstanceTracker):
         # update the libraries
         stations = dict(((s.key, s) for s in stations))
         # don't add ones that are in the fav list
-        for fav in self.__fav_stations.iterkeys():
+        for fav in iterkeys(self.__fav_stations):
             stations.pop(fav, None)
 
         # separate
-        o, n = set(self.__stations.iterkeys()), set(stations)
+        o, n = set(iterkeys(self.__stations)), set(stations)
         to_add, to_change, to_remove = n - o, o & n, o - n
         del o, n
 
@@ -721,7 +723,7 @@ class InternetRadio(Browser, util.InstanceTracker):
             # clear everything except stats
             AudioFile.reload(old)
             # add new metadata except stats
-            for k in (x for x in new.iterkeys() if x not in MIGRATE):
+            for k in (x for x in iterkeys(new) if x not in MIGRATE):
                 old[k] = new[k]
 
         to_add = [stations.pop(k) for k in to_add]
@@ -909,8 +911,8 @@ class InternetRadio(Browser, util.InstanceTracker):
         return True
 
     def save(self):
-        text = self.__searchbar.get_text().encode("utf-8")
-        config.set("browsers", "query_text", text)
+        text = self.__searchbar.get_text()
+        config.settext("browsers", "query_text", text)
 
         selection = self.view.get_selection()
         model, rows = selection.get_selected_rows()

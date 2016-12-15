@@ -10,7 +10,9 @@ import sys
 import gettext
 import locale
 
-from quodlibet.compat import text_type, PY2
+from senf import environ
+
+from quodlibet.compat import text_type, PY2, listfilter
 
 
 def bcp47_to_language(code):
@@ -65,22 +67,22 @@ def set_i18n_envvars():
         from quodlibet.util.winapi import GetUserDefaultUILanguage, \
             GetSystemDefaultUILanguage
 
-        langs = filter(None, map(locale.windows_locale.get,
-                                 [GetUserDefaultUILanguage(),
-                                  GetSystemDefaultUILanguage()]))
+        langs = listfilter(None, map(locale.windows_locale.get,
+                                     [GetUserDefaultUILanguage(),
+                                      GetSystemDefaultUILanguage()]))
         if langs:
-            os.environ.setdefault('LANG', langs[0])
-            os.environ.setdefault('LANGUAGE', ":".join(langs))
+            environ.setdefault('LANG', langs[0])
+            environ.setdefault('LANGUAGE', ":".join(langs))
     elif sys.platform == "darwin":
         from AppKit import NSLocale
         locale_id = NSLocale.currentLocale().localeIdentifier()
         lang = osx_locale_id_to_lang(locale_id)
-        os.environ.setdefault('LANG', lang)
+        environ.setdefault('LANG', lang)
 
         preferred_langs = NSLocale.preferredLanguages()
         if preferred_langs:
             languages = map(bcp47_to_language, preferred_langs)
-            os.environ.setdefault('LANGUAGE', ":".join(languages))
+            environ.setdefault('LANGUAGE', ":".join(languages))
     else:
         return
 
@@ -96,7 +98,7 @@ def fixup_i18n_envvars():
     """
 
     try:
-        langs = os.environ["LANGUAGE"].split(":")
+        langs = environ["LANGUAGE"].split(":")
     except KeyError:
         return
 
@@ -109,7 +111,7 @@ def fixup_i18n_envvars():
         if lang.startswith("en") and len(langs) > 1:
             sanitized.append("C")
 
-    os.environ["LANGUAGE"] = ":".join(sanitized)
+    environ["LANGUAGE"] = ":".join(sanitized)
 
 
 class GlibTranslations(gettext.GNUTranslations):

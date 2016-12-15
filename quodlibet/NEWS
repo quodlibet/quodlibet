@@ -4,7 +4,7 @@
 Packaging Changes:
   * `futures <https://pypi.python.org/pypi/futures>`__ required
     (usually called python-futures or python2-futures in distros)
-
+  * **libgpod4** is no longer used
 
 
 .. _release-3.7.1:

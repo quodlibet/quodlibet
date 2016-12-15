@@ -12,13 +12,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from httplib import HTTPException
-import cPickle as pickle
 import os
 import threading
 import time
-import urllib
-import urllib2
 
 from gi.repository import Gtk, GLib
 
@@ -38,6 +34,9 @@ from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
+from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
+from quodlibet.compat import urlencode
+from quodlibet.util.urllib import urlopen
 
 
 SERVICES = {
@@ -154,24 +153,21 @@ class QLSubmitQueue(object):
         self.artpat = Pattern(config_get_artist_pattern())
 
         try:
-            disk_queue_file = open(self.DUMP, 'r')
-            disk_queue = pickle.load(disk_queue_file)
-            disk_queue_file.close()
+            with open(self.DUMP, 'rb') as disk_queue_file:
+                disk_queue = pickle_load(disk_queue_file)
             os.unlink(self.DUMP)
             self.queue += disk_queue
-        except Exception:
+        except (EnvironmentError, PickleError):
             pass
 
     @classmethod
     def dump_queue(klass):
         if klass.queue:
             try:
-                disk_queue_file = open(klass.DUMP, 'w')
-                pickle.dump(klass.queue, disk_queue_file)
-                disk_queue_file.close()
-            except IOError:
+                with open(klass.DUMP, 'wb') as disk_queue_file:
+                    pickle_dump(klass.queue, disk_queue_file)
+            except (EnvironmentError, PickleError):
                 pass
-        return 0
 
     def _check_config(self):
         user = plugin_config.get('username')
@@ -251,8 +247,8 @@ class QLSubmitQueue(object):
         print_d("Sending handshake to service.")
 
         try:
-            resp = urllib2.urlopen(url)
-        except (IOError, HTTPException):
+            resp = urlopen(url)
+        except EnvironmentError:
             if show_dialog:
                 self.quick_dialog(
                     _("Could not contact service '%s'.") %
@@ -295,10 +291,10 @@ class QLSubmitQueue(object):
         return False
 
     def _check_submit(self, url, data):
-        data_str = urllib.urlencode(data)
+        data_str = urlencode(data)
         try:
-            resp = urllib2.urlopen(url, data_str)
-        except (IOError, HTTPException):
+            resp = urlopen(url, data_str)
+        except EnvironmentError:
             print_d("Audioscrobbler server not responding, will try later.")
             return False
 

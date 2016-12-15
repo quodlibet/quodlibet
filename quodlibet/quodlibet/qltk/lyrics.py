@@ -12,7 +12,6 @@
 
 import os
 import threading
-import urllib
 
 from gi.repository import Gtk, GLib
 
@@ -22,6 +21,8 @@ from quodlibet import qltk
 from quodlibet.qltk import Icons
 from quodlibet import util
 from quodlibet.util import connect_obj, print_w
+from quodlibet.compat import quote
+from quodlibet.util.urllib import urlopen
 
 
 class LyricsPane(Gtk.VBox):
@@ -75,7 +76,7 @@ class LyricsPane(Gtk.VBox):
     def __add(self, add, song):
         artist = song.comma('artist').encode('utf-8')
 
-        util.website("http://lyricwiki.org/%s" % (urllib.quote(artist)))
+        util.website("http://lyricwiki.org/%s" % (quote(artist)))
 
     def __refresh(self, refresh, add, buffer, song):
         buffer.set_text(_(u"Searching for lyrics…"))
@@ -90,11 +91,11 @@ class LyricsPane(Gtk.VBox):
         title = song.comma("title")
 
         try:
-            sock = urllib.urlopen(
+            sock = urlopen(
                 "http://lyricwiki.org/api.php?"
                 "client=QuodLibet&func=getSong&artist=%s&song=%s&fmt=text" % (
-                urllib.quote(artist.encode('utf-8')),
-                urllib.quote(title.encode('utf-8'))))
+                quote(artist.encode('utf-8')),
+                quote(title.encode('utf-8'))))
             text = sock.read()
         except Exception as err:
             encoding = util.get_locale_encoding()

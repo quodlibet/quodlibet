@@ -24,6 +24,7 @@ from quodlibet.qltk import get_top_parent, get_menu_item_top_parent, Icons
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
+from quodlibet.compat import listfilter
 
 
 class ConfirmMultiSongInvoke(WarningMessage):
@@ -118,7 +119,7 @@ class SongsMenuPluginHandler(PluginHandler):
         kinds = self.__plugins
         kinds.sort(key=lambda plugin: plugin.PLUGIN_ID)
         for Kind in kinds:
-            usable = max([callable(getattr(Kind, s)) for s in attrs])
+            usable = any(callable(getattr(Kind, s)) for s in attrs)
             if usable:
                 try:
                     items.append(Kind(songs, library))
@@ -126,7 +127,7 @@ class SongsMenuPluginHandler(PluginHandler):
                     print_e("Couldn't initialise song plugin %s. Stack trace:"
                             % Kind)
                     print_exc()
-        items = filter(lambda i: i.initialized, items)
+        items = listfilter(lambda i: i.initialized, items)
 
         if items:
             menu = Gtk.Menu()
@@ -211,7 +212,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 except Exception:
                     print_exc()
                 else:
-                    if max(ret):
+                    if any(ret):
                         return
             if callable(plugin.plugin_songs):
                 try:
@@ -244,7 +245,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 except Exception:
                     print_exc()
                 else:
-                    if max(ret):
+                    if any(ret):
                         return
             if callable(plugin.plugin_albums):
                 try:

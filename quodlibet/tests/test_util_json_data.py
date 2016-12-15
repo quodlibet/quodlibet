@@ -59,7 +59,7 @@ class TJsonData(TestCase):
         self.failUnlessEqual(blah.name, 'blah')
         exp = {"name": "blah", "pattern": None, "wibble": False}
         self.failUnlessEqual(exp, dict(blah.data))
-        self.failUnlessEqual(json.dumps(exp), blah.json)
+        self.failUnlessEqual(exp, json.loads(blah.json))
 
     def test_from_invalid_json(self):
         # Invalid JSON

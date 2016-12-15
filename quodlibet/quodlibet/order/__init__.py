@@ -11,12 +11,23 @@ from quodlibet import _, print_d
 
 class Order(object):
     """Base class for all play orders"""
+
     name = "unknown_order"
+    """The name by which this order is known"""
+
     display_name = _("Unknown")
+    """The (translated) display name"""
+
     accelerated_name = _("_Unknown")
+    """The (translated) display name with (optional) accelerators"""
+
     replaygain_profiles = ["track"]
-    is_shuffle = False
+    """The ReplayGain mode(s) to use with this order.
+    Shuffled ones typically prefer track modes"""
+
     priority = 100
+    """The priority relative to other orders of its type.
+    Larger numbers typically appear lower in lists."""
 
     def __init__(self):
         """Must have a zero-arg constructor"""
