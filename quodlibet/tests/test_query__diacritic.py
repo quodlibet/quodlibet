@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import re
+import unicodedata
 
 from tests import TestCase
 
@@ -19,6 +20,10 @@ class TDiacritics(TestCase):
         cache = diacritic_for_letters(False)
         new = diacritic_for_letters(True)
         self.assertEqual(sorted(cache.items()), sorted(new.items()))
+
+    def test_normalize_input(self):
+        assert re.match(
+            re_add_variants(unicodedata.normalize("NFD", u"ö")), u"ö")
 
     def test_re_replace(self):
         r = re_add_variants(u"aa")

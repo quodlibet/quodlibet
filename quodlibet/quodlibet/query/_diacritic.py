@@ -624,4 +624,5 @@ def re_add_variants(text):
 
     assert isinstance(text, text_type)
 
+    text = unicodedata.normalize("NFC", text)
     return re_replace_literals(text, _mapping)
