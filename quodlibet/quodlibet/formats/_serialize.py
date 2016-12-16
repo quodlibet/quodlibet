@@ -8,7 +8,7 @@
 """Code for serializing AudioFile instances"""
 
 import pickle
-from senf import bytes2fsn, fsn2bytes
+from senf import bytes2fsn, fsn2bytes, fsnative
 
 from quodlibet.util.picklehelper import pickle_loads, pickle_dumps
 from quodlibet.util import is_windows
@@ -81,6 +81,52 @@ def _py3_to_py2(items):
     return new_list
 
 
+def _py2_to_py2(items):
+    # for weren't always so strict about the types in AudioFile.__setitem__
+    # This tries to fix things.
+
+    assert not PY3
+    fsn_type = type(fsnative())
+
+    fixups = []
+    for i in items:
+        try:
+            it = i.iteritems()
+        except AttributeError:
+            raise SerializationError
+        for k, v in it:
+            if k in ("~filename", "~mountpoint"):
+                if not isinstance(v, fsn_type):
+                    # use utf-8 here since we can't be sure that the environ
+                    # is the same as before
+                    if isinstance(v, text_type):
+                        v = v.encode("utf-8", "replace")
+                    else:
+                        v = v.decode("utf-8", "replace")
+                    fixups.append((i, k, v))
+            elif k[:2] == "~#":
+                try:
+                    v + 0
+                except:
+                    try:
+                        fixups.append((i, k, int(v)))
+                    except:
+                        try:
+                            fixups.append((i, k, float(v)))
+                        except:
+                            fixups.append((i, k, 0))
+            elif not isinstance(v, text_type):
+                if isinstance(v, bytes):
+                    fixups.append((i, k, v.decode("utf-8", "replace")))
+                else:
+                    fixups.append((i, k, text_type(v)))
+
+    for item, key, value in fixups:
+        item[key] = value
+
+    return items
+
+
 def load_audio_files(data, process=True):
     """unpickles the item list and if some class isn't found unpickle
     as a dict and filter them out afterwards.
@@ -133,8 +179,11 @@ def load_audio_files(data, process=True):
             raise SerializationError(
                 "all class lookups failed. something is wrong")
 
-    if PY3 and process:
-        items = _py2_to_py3(items)
+    if process:
+        if PY3:
+            items = _py2_to_py3(items)
+        else:
+            items = _py2_to_py2(items)
 
     try:
         for i in items:
