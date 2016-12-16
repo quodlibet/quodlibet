@@ -10,9 +10,9 @@ import unicodedata
 
 from tests import TestCase
 
-from quodlibet.unisearch import re_add_variants
+from quodlibet.unisearch import compile
 from quodlibet.unisearch.db import diacritic_for_letters
-from quodlibet.unisearch.parser import re_replace_literals
+from quodlibet.unisearch.parser import re_replace_literals, re_add_variants
 
 
 class TUniSearch(TestCase):
@@ -121,3 +121,46 @@ class TUniSearch(TestCase):
         assert u"ø" in re_add_variants(u"o")
         assert u"Ø" in re_add_variants(u"O")
         assert re_add_variants(u"[^f]") == u"[^fḟꝼ]"
+
+
+class TCompileMatch(TestCase):
+
+    def test_basics_default(self):
+        assert compile(u"foo")(u"foo")
+        assert compile(u"foo")(u"fooo")
+        assert not compile(u"foo")(u"fo")
+
+    def test_ignore_case(self):
+        assert compile(u"foo", ignore_case=True)(u"Foo")
+        assert not compile(u"foo", ignore_case=False)(u"Foo")
+
+    def test_assert_dot_all(self):
+        assert compile(u"a.b", dot_all=True)(u"a\nb")
+        assert not compile(u"a.b", dot_all=False)(u"a\nb")
+        assert compile(u"a.b", dot_all=False)(u"a b")
+
+    def test_unicode_equivalence(self):
+        assert compile(u"\u212B")(u"\u00C5")
+        assert compile(u"\u00C5")(u"\u212B")
+        assert compile(u"A\u030a")(u"\u00C5")
+        assert compile(u"A\u030a")(u"\u212B")
+        assert compile(u"o\u0308")(u"o\u0308")
+        assert compile(u"o\u0308")(u"\xf6")
+        assert compile(u"\xf6")(u"o\u0308")
+
+    def test_assert_asym(self):
+        assert compile(u"o", asym=True)(u"ö")
+        assert not compile(u"o", asym=False)(u"ö")
+
+    def test_assert_asym_unicode_equivalence(self):
+        assert compile(u"A", asym=True)(u"\u00C5")
+        assert compile(u"A\u030a", asym=True)(u"\u212B")
+        assert compile(u"\u00C5", asym=True)(u"\u212B")
+        assert compile(u"\u212B", asym=True)(u"\u00C5")
+
+    def test_invalid(self):
+        with self.assertRaises(ValueError):
+            compile(u"(F", asym=False)
+
+        with self.assertRaises(ValueError):
+            compile(u"(F", asym=True)

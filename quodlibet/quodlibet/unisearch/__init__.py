@@ -19,7 +19,7 @@ The goal is to make searching easy using a english keyboard without any
 knowledge of other languages.
 """
 
-from .parser import re_add_variants
+from .parser import compile
 
 
-re_add_variants
+compile

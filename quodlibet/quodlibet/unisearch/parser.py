@@ -9,6 +9,7 @@ import re
 import sre_parse
 import unicodedata
 
+from quodlibet import print_d
 from quodlibet.util import re_escape
 from quodlibet.compat import text_type, xrange, unichr
 
@@ -253,3 +254,48 @@ def re_add_variants(text):
 
     text = unicodedata.normalize("NFC", text)
     return re_replace_literals(text, get_replacement_mapping())
+
+
+def compile(pattern, ignore_case=True, dot_all=False, asym=False):
+    """
+    Args:
+        pattern (text_type): a unicode regex
+        ignore_case (bool): if case shouuld be ignored when matching
+        dot_all (bool): if "." should match newlines
+        asym (bool): if ascii should match similar looking unicode chars
+    Returns:
+        A callable which will return True if the pattern is contained in
+        the passed text.
+    Raises:
+        ValueError: In case the regex is invalid
+    """
+
+    assert isinstance(pattern, text_type)
+
+    pattern = unicodedata.normalize("NFC", pattern)
+
+    if asym:
+        try:
+            pattern = re_add_variants(pattern)
+        except NotImplementedError:
+            # too complex, just skip this step
+            print_d("regex not supported: %s" % pattern)
+        except re.error as e:
+            raise ValueError(e)
+
+    mods = re.MULTILINE | re.UNICODE
+    if ignore_case:
+        mods |= re.IGNORECASE
+    if dot_all:
+        mods |= re.DOTALL
+
+    try:
+        reg = re.compile(pattern, mods)
+    except re.error as e:
+        raise ValueError(e)
+    normalize = unicodedata.normalize
+
+    def search(text):
+        return reg.search(normalize("NFC", text))
+
+    return search

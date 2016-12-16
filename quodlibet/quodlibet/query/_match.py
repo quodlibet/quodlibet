@@ -13,6 +13,7 @@ import operator
 
 from senf import fsn2text, fsnative
 
+from quodlibet.unisearch import compile
 from quodlibet.compat import floordiv, text_type
 from quodlibet.util import parse_date
 from quodlibet.plugins.query import QUERY_HANDLER
@@ -47,6 +48,25 @@ class Node(object):
 
     def __neg__(self):
         return Neg(self._unpack())
+
+
+class Regex(Node):
+
+    def __init__(self, pattern, mod_string):
+        self.pattern = text_type(pattern)
+        self.mod_string = text_type(mod_string)
+
+        ignore_case = "c" not in self.mod_string or "i" in self.mod_string
+        dot_all = "s" in self.mod_string
+        asym = "d" in self.mod_string
+        try:
+            self.search = compile(self.pattern, ignore_case, dot_all, asym)
+        except ValueError:
+            raise ParseError(
+                "The regular expression /%s/ is invalid." % self.pattern)
+
+    def __repr__(self):
+        return "<Regex pattern=%s mod=%s>" % (self.pattern, self.mod_string)
 
 
 class True_(Node):
@@ -471,6 +491,8 @@ class Tag(Node):
                 self._names.append(name)
 
     def search(self, data):
+        search = self.res.search
+
         for name in self._names:
             val = data.get(name)
             if val is None:
@@ -480,15 +502,15 @@ class Tag(Node):
                 else:
                     val = data.get("~" + name, "")
 
-            if self.res.search(text_type(val)):
+            if search(text_type(val)):
                 return True
 
         for name in self.__intern:
-            if self.res.search(text_type(data(name))):
+            if search(text_type(data(name))):
                 return True
 
         for name in self.__fs:
-            if self.res.search(fsn2text(data(name))):
+            if search(fsn2text(data(name))):
                 return True
 
         return False

@@ -11,7 +11,6 @@ import re
 
 from . import _match as match
 from ._match import ParseError
-from quodlibet.unisearch import re_add_variants
 from quodlibet.util import re_escape
 from quodlibet.compat import text_type, PY3
 
@@ -269,28 +268,11 @@ class QueryParser(object):
 
     def RegexpMods(self, regex):
         """Consume regexp modifiers from tokens and compile provided regexp
-        with them."""
+        with them.
+        """
+
         mod_string = self.expect_re(MODIFIERS)
-        mods = re.MULTILINE | re.UNICODE | re.IGNORECASE
-        if "c" in mod_string:
-            mods &= ~re.IGNORECASE
-        if "i" in mod_string:
-            mods |= re.IGNORECASE
-        if "s" in mod_string:
-            mods |= re.DOTALL
-        if "l" in mod_string:
-            mods = (mods & ~re.UNICODE) | re.LOCALE
-        if "d" in mod_string:
-            try:
-                regex = re_add_variants(regex)
-            except re.error:
-                raise ParseError("The regular expression was invalid")
-            except NotImplementedError:
-                raise ParseError("The regular expression was is not supported")
-        try:
-            return re.compile(regex, mods)
-        except re.error:
-            raise ParseError("The regular expression /%s/ is invalid." % regex)
+        return match.Regex(regex, mod_string)
 
     def Star(self, outer=False):
         """Rule for value that matches all visible tags"""
