@@ -15,7 +15,7 @@ from quodlibet.unisearch.db import diacritic_for_letters
 from quodlibet.unisearch.parser import re_replace_literals
 
 
-class TDUniSearch(TestCase):
+class TUniSearch(TestCase):
 
     def test_mapping(self):
         cache = diacritic_for_letters(False)
@@ -32,14 +32,14 @@ class TDUniSearch(TestCase):
 
     def test_re_replace_multi(self):
         r = re_add_variants(u"ae")
-        self.assertEqual(r, u"([aàáâãäåāăąǎǟǡǻȁȃȧḁạảấầẩẫậắằẳẵặ]"
+        self.assertEqual(r, u"(?:[aàáâãäåāăąǎǟǡǻȁȃȧḁạảấầẩẫậắằẳẵặ]"
                             u"[eèéêëēĕėęěȅȇȩḕḗḙḛḝẹẻẽếềểễệ]|[æǣǽ])")
 
         r = re_add_variants(u"SS")
-        self.assertEqual(r, u"([SŚŜŞŠȘṠṢṤṦṨꞄ][SŚŜŞŠȘṠṢṤṦṨꞄ]|ẞ)")
+        self.assertEqual(r, u"(?:[SŚŜŞŠȘṠṢṤṦṨꞄ][SŚŜŞŠȘṠṢṤṦṨꞄ]|ẞ)")
 
         r = re_add_variants(u"ss")
-        self.assertEqual(r, u"([sśŝşšșṡṣṥṧṩꞅ][sśŝşšșṡṣṥṧṩꞅ]|ß)")
+        self.assertEqual(r, u"(?:[sśŝşšșṡṣṥṧṩꞅ][sśŝşšșṡṣṥṧṩꞅ]|ß)")
 
     def test_punct(self):
         r = re_add_variants(u"'")
@@ -56,13 +56,13 @@ class TDUniSearch(TestCase):
     def test_re_replace_multi_fixme(self):
         # we don't handler overlapping sequences, so this doesn't match "LỺ"
         r = re_add_variants(u"LLL")
-        self.assertEqual(r, u"([LĹĻĽḶḸḺḼŁ][LĹĻĽḶḸḺḼŁ]|Ỻ)[LĹĻĽḶḸḺḼŁ]")
+        self.assertEqual(r, u"(?:[LĹĻĽḶḸḺḼŁ][LĹĻĽḶḸḺḼŁ]|Ỻ)[LĹĻĽḶḸḺḼŁ]")
 
     def test_re_replace_multi_nested(self):
         r = re_add_variants(u"(եւ)")
-        self.assertEqual(r, u"((եւ|և))")
+        self.assertEqual(r, u"((?:եւ|և))")
         r = re_add_variants(u"(եւ)+")
-        self.assertEqual(r, u"((եւ|և))+")
+        self.assertEqual(r, u"((?:եւ|և))+")
 
     def test_re_replace_escape(self):
         r = re_add_variants(u"n\\n")
@@ -91,6 +91,9 @@ class TDUniSearch(TestCase):
             (u"\\$\\.\\^\\[\\]\\:\\-\\+\\?\\\\", None),
             (u"[^a][^ab]", None),
             (u"[ab][abc]", None),
+            (u"[.]", u"\\."),
+            (u"[^a-z]", None),
+            (u"[^a-z\w]", None),
         ]
 
         for r, o in res:
@@ -105,11 +108,16 @@ class TDUniSearch(TestCase):
                           u"(?P<quote>['\"]).*?(?P=quote)", {})
 
     def test_seq(self):
-        self.assertEqual(re_add_variants(u"[x-y]"), u"[ẋẍýÿŷȳẏẙỳỵỷỹx-y]")
-        self.assertEqual(re_add_variants(u"[f-gm]"), u"[ḟꝼĝğġģǧǵḡᵹf-gmḿṁṃ]")
+        assert re_add_variants(u"[x-y]") == u"[ẋẍýÿŷȳẏẙỳỵỷỹx-y]"
+        assert re_add_variants(u"[f-gm]") == u"[ḟꝼĝğġģǧǵḡᵹf-gmḿṁṃ]"
+        assert re_add_variants(u"[^m]") == u"[^mḿṁṃ]"
+        assert re_add_variants(u"[^m-m\w]") == u"[^ḿṁṃm-m\w]"
+        assert re_add_variants(u"[^m-m]") == "[^ḿṁṃm-m]"
+        assert re_add_variants(u"[^ö]") == u"[^ö]"
+        assert re_add_variants(u"[LLL]") == u"[LĹĻĽḶḸḺḼŁ]"
 
     def test_literal(self):
-        self.assertEqual(re_add_variants(u"f"), u"[fḟꝼ]")
-        self.assertTrue(u"ø" in re_add_variants(u"o"))
-        self.assertTrue(u"Ø" in re_add_variants(u"O"))
-        self.assertEqual(re_add_variants(u"[^f]"), u"[^fḟꝼ]")
+        assert re_add_variants(u"f") == u"[fḟꝼ]"
+        assert u"ø" in re_add_variants(u"o")
+        assert u"Ø" in re_add_variants(u"O")
+        assert re_add_variants(u"[^f]") == u"[^fḟꝼ]"

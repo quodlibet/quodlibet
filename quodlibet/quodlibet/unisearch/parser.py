@@ -45,7 +45,7 @@ def _fixup_literal_list(literals, mapping):
                 multi = "[%s]" % re_escape(multi)
             else:
                 multi = re_escape(multi)
-            return "(%s|%s)" % (all_, multi)
+            return "(?:%s|%s)" % (all_, multi)
         return all_
 
     new = u""
@@ -61,10 +61,7 @@ def _fixup_literal_list(literals, mapping):
 
 def _fixup_not_literal(literal, mapping):
     u = unichr(literal)
-    if u in mapping:
-        u = u + u"".join(mapping[u])
-    u = re_escape(u)
-    return u"[^%s]" % u
+    return u"[^%s]" % u"".join(re_escape(u + u"".join(mapping.get(u, []))))
 
 
 def _fixup_range(start, end, mapping):
@@ -73,29 +70,83 @@ def _fixup_range(start, end, mapping):
         u = unichr(i)
         if u in mapping:
             extra.append(re_escape(u"".join(mapping[u])))
+
     start = re_escape(unichr(start))
     end = re_escape(unichr(end))
     return u"%s%s-%s" % ("".join(extra), start, end)
+
+
+def _merge_literals(pattern):
+    done = []
+    current = []
+
+    for op, av in pattern:
+        op = str(op).lower()
+        if op == "literal":
+            current.append(av)
+        else:
+            if current:
+                done.append(("literals", tuple(current)))
+                current = []
+            done.append((op, av))
+    if current:
+        done.append(("literals", tuple(current)))
+
+    return done
+
+
+def _construct_in(pattern, mapping):
+    negate = False
+    parts = []
+    for op, av in _merge_literals(pattern):
+        op = str(op).lower()
+
+        if op == "range":
+            start, end = av
+            parts.append(_fixup_range(start, end, mapping))
+        elif op == "literals":
+            expanded = []
+            for c in av:
+                v = _fixup_literal(c, True, mapping)
+                if v not in expanded:
+                    expanded.append(v)
+            parts.extend(expanded)
+        elif op == "negate":
+            negate = True
+        elif op == "category":
+            av = str(av).lower()
+            cats = {
+                "category_word": u"\\w",
+                "category_not_word": u"\\W",
+                "category_digit": u"\\d",
+                "category_not_digit": u"\\D",
+                "category_space": u"\\s",
+                "category_not_space": u"\\S",
+            }
+            try:
+                parts.append(cats[av])
+            except KeyError:
+                raise NotImplementedError(av)
+        else:
+            raise NotImplementedError(op)
+
+    return "[%s%s]" % ("^" if negate else "", u"".join(parts))
 
 
 def _construct_regexp(pattern, mapping):
     """Raises NotImplementedError"""
 
     parts = []
-    literals = []
 
-    for op, av in pattern:
+    for op, av in _merge_literals(pattern):
         op = str(op).lower()
 
-        if literals and op != "literal":
-            parts.append(_fixup_literal_list(literals, mapping))
-            del literals[:]
+        assert op != "literal"
 
         if op == "not_literal":
             parts.append(_fixup_not_literal(av, mapping))
-        elif op == "literal":
-            literals.append(av)
-            continue
+        elif op == "literals":
+            parts.append(_fixup_literal_list(av, mapping))
         elif op == "category":
             av = str(av).lower()
             cats = {
@@ -112,21 +163,8 @@ def _construct_regexp(pattern, mapping):
                 raise NotImplementedError(av)
         elif op == "any":
             parts.append(u".")
-        elif op == "negate":
-            parts.append(u"^")
         elif op == "in":
-            in_parts = []
-            for entry in av:
-                op, eav = entry
-                op = str(op).lower()
-                if op == "literal":
-                    in_parts.append(_fixup_literal(eav, True, mapping))
-                else:
-                    in_parts.append(_construct_regexp([entry], mapping))
-            parts.append(u"[%s]" % (u"".join(in_parts)))
-        elif op == "range":
-            start, end = av
-            parts.append(_fixup_range(start, end, mapping))
+            parts.append(_construct_in(av, mapping))
         elif op == "max_repeat" or op == "min_repeat":
             min_, max_, pad = av
             pad = _construct_regexp(pad, mapping)
@@ -185,10 +223,6 @@ def _construct_regexp(pattern, mapping):
             parts.append(u"%s" % (u"|".join(branches)))
         else:
             raise NotImplementedError(op)
-
-    if literals:
-        parts.append(_fixup_literal_list(literals, mapping))
-        del literals[:]
 
     return u"".join(parts)
 
