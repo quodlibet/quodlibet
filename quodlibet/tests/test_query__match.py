@@ -6,9 +6,27 @@
 from tests import TestCase
 
 from quodlibet.query._match import numexprUnit, ParseError, NumexprTag
-from quodlibet.query._match import NumexprNow, numexprTagOrSpecial
+from quodlibet.query._match import NumexprNow, numexprTagOrSpecial, Inter,\
+    True_, Neg
 from quodlibet.util import parse_date
 from quodlibet.formats import AudioFile
+
+
+class TQueryInter(TestCase):
+
+    def test_main(self):
+        q = Inter([])
+        assert q.filter([1]) == [1]
+        q = Inter([True_()])
+        assert q.filter([1]) == [1]
+        q = Inter([True_(), True_()])
+        assert q.filter([1]) == [1]
+        q = Inter([True_(), Neg(True_())])
+        assert q.filter([1]) == []
+        q = Inter([Neg(True_()), True_()])
+        assert q.filter([1]) == []
+        q = Inter([Neg(True_())])
+        assert q.filter([1]) == []
 
 
 class TQueryMatch(TestCase):

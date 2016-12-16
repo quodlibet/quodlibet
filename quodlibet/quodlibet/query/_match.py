@@ -135,6 +135,14 @@ class Inter(Node):
                 return False
         return True
 
+    def filter(self, sequence):
+        current = sequence
+        for re in self.res:
+            current = filter(re.search, current)
+        if not isinstance(current, list):
+            current = list(current)
+        return current
+
     def __repr__(self):
         return "<Inter %r>" % self.res
 
