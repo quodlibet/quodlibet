@@ -504,9 +504,8 @@ class Tag(Node):
         for name in self._names:
             val = data.get(name)
             if val is None:
-                # filename is the only real entry that's a path
-                if name == "filename":
-                    val = fsn2text(data.get("~filename", fsnative()))
+                if name in ("filename", "mountpoint"):
+                    val = fsn2text(data.get("~" + name, fsnative()))
                 else:
                     val = data.get("~" + name, "")
 

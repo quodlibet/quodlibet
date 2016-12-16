@@ -167,9 +167,11 @@ class TQuery(TestCase):
              "~filename": fsnative(u"/dir2/something.mp3"),
              "tracknumber": "12/15"})
 
-        self.s3 = AudioFile(
-            {"artist": "piman\nmu",
-             "~filename": fsnative(u"/test/\xf6\xe4\xfc/fo\xfc.ogg")})
+        self.s3 = AudioFile({
+            "artist": "piman\nmu",
+            "~filename": fsnative(u"/test/\xf6\xe4\xfc/fo\xfc.ogg"),
+            "~mountpoint": fsnative(u"/bla/\xf6\xe4\xfc/fo\xfc"),
+        })
         self.s4 = AudioFile({"title": u"Ångström", "utf8": "Ångström"})
         self.s5 = AudioFile({"title": "oh&blahhh", "artist": "!ohno"})
 
@@ -389,6 +391,10 @@ class TQuery(TestCase):
     def test_filename_utf8_fallback(self):
         self.failUnless(Query(u"filename=foü.ogg").search(self.s3))
         self.failUnless(Query(u"filename=öä").search(self.s3))
+
+    def test_mountpoint_utf8_fallback(self):
+        self.failUnless(Query(u"mountpoint=foü").search(self.s3))
+        self.failUnless(Query(u"mountpoint=öä").search(self.s3))
 
     def test_star_numeric(self):
         self.assertRaises(ValueError, Query, u"foobar", star=["~#mtime"])
