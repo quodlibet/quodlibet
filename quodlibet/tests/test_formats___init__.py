@@ -15,7 +15,7 @@ from .helper import capture_output
 from quodlibet import formats
 from quodlibet.formats import AudioFile, load_audio_files, dump_audio_files, \
     SerializationError
-from quodlibet.compat import PY3
+from quodlibet.compat import PY3, long
 from quodlibet.util.picklehelper import pickle_dumps
 from quodlibet import config
 
@@ -123,6 +123,57 @@ class TPickle(TestCase):
         assert isinstance(i["~mountpoint"], fsnative)
         assert i["int"] == 42
         assert i["float"] == 1.25
+
+    def test_sanitize_py2_normal(self):
+        if PY3:
+            return
+
+        af = AudioFile({
+            b"foo": u"bar",
+            u"öäü": u"bla",
+            "~#num": 1,
+            "~#num2": long(2),
+            "~#num3": 1.25,
+            "~filename": fsnative(u"filename"),
+            "~mountpoint": fsnative(u"mount"),
+            "~somethingdifferent": u"hello",
+        })
+
+        data = dump_audio_files([af])
+        new = load_audio_files(data)
+        assert dict(new[0]) == dict(af)
+
+    def test_sanitize_py2_fixup(self):
+        if PY3:
+            return
+
+        old = AudioFile({
+            b"foo": b"bar",
+            u"öäü": b"bla",
+            "~#num": u"1",
+            "~#num2": u"1.25",
+            "~#num3": u"bla",
+            "~filename": u"text",
+            "~mountpoint": b"bytes",
+            "~somethingdifferent": b"hello",
+        })
+
+        fixed = {
+            b"foo": u"bar",
+            u"öäü": u"bla",
+            "~#num": 1,
+            "~#num2": 1.25,
+            "~#num3": 0,
+            "~filename": fsnative(u"text"),
+            "~mountpoint": fsnative(u"bytes"),
+            "~somethingdifferent": u"hello",
+        }
+
+        data = dump_audio_files([old])
+        new = load_audio_files(data)
+        assert dict(new[0]) == fixed
+        for v1, v2 in zip(sorted(new[0].values()), sorted(fixed.values())):
+            assert type(v1) is type(v2)
 
     def test_dump_audio_files(self):
         data = dump_audio_files(self.instances, process=False)
