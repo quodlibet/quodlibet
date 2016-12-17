@@ -397,6 +397,10 @@ class TQuery(TestCase):
         self.failUnless(Query(u"mountpoint=foü").search(self.s3))
         self.failUnless(Query(u"mountpoint=öä").search(self.s3))
 
+    def test_mountpoint_no_value(self):
+        af = AudioFile({"~filename": fsnative(u"foo")})
+        assert not Query(u"~mountpoint=bla").search(af)
+
     def test_star_numeric(self):
         self.assertRaises(ValueError, Query, u"foobar", star=["~#mtime"])
 
