@@ -76,12 +76,13 @@ def decode_value(tag, value):
     Not reversible.
     """
 
-    if isinstance(value, text_type):
-        return value
-    elif isinstance(value, float):
-        return u"%.2f" % value
-    elif tag in FILESYSTEM_TAGS:
+    if tag in FILESYSTEM_TAGS:
         return fsn2text(value)
+    elif tag[:2] == "~#":
+        if isinstance(value, float):
+            return u"%.2f" % value
+        else:
+            return text_type(value)
     return text_type(value)
 
 

@@ -755,6 +755,14 @@ class Tdecode_value(TestCase):
         path = fsnative(u"/foobar")
         self.assertEqual(decode_value("~filename", path), fsn2text(path))
 
+    def test_path(self):
+        try:
+            path = bytes2fsn(b"\xff\xff", "utf-8")
+        except ValueError:
+            return
+
+        assert decode_value("~filename", path) == fsn2text(path)
+
 
 class Treplay_gain(TestCase):
 

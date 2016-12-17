@@ -22,7 +22,7 @@ from quodlibet.query import Query
 from quodlibet.compat import exec_, itervalues
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 from quodlibet.formats._audio import decode_value, FILESYSTEM_TAGS
-from quodlibet.compat import quote_plus, text_type
+from quodlibet.compat import quote_plus, text_type, number_types
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -221,7 +221,8 @@ class PatternFormatter(object):
 
         def comma(self, key):
             value = self.__song.comma(key)
-            value = decode_value(key, value)
+            if isinstance(value, number_types):
+                value = decode_value(key, value)
             if self.__formatter:
                 return self.__formatter(key, value)
             return value
