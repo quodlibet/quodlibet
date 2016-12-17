@@ -127,6 +127,12 @@ class AudioFile(dict, ImageContainer):
     mimes = []
     """MIME types this class can represent"""
 
+    def __init__(self, default=tuple(), **kwargs):
+        for key, value in dict(default).items():
+            self[key] = value
+        for key, value in kwargs.items():
+            self[key] = value
+
     def __song_key(self):
         return (self("~#disc", 1), self("~#track", 1),
             human(self("artistsort")),

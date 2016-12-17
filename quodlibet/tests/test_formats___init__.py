@@ -147,7 +147,8 @@ class TPickle(TestCase):
         if PY3:
             return
 
-        old = AudioFile({
+        old = dict.__new__(AudioFile)
+        dict.__init__(old, {
             b"foo": b"bar",
             u"öäü": b"bla",
             "~#num": u"1",
