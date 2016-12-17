@@ -471,11 +471,13 @@ class Tag(Node):
                 self._names.append(name)
 
     def search(self, data):
+        fs_default = fsnative()
+
         for name in self._names:
             val = data.get(name)
             if val is None:
                 if name in ("filename", "mountpoint"):
-                    val = fsn2text(data.get("~" + name, fsnative()))
+                    val = fsn2text(data.get("~" + name, fs_default))
                 else:
                     val = data.get("~" + name, "")
 
@@ -487,7 +489,7 @@ class Tag(Node):
                 return True
 
         for name in self.__fs:
-            if self.res.search(fsn2text(data(name))):
+            if self.res.search(fsn2text(data(name, fs_default))):
                 return True
 
         return False
