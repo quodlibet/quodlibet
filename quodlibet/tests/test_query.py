@@ -158,22 +158,23 @@ class TQuery(TestCase):
     def setUp(self):
         config.init()
         self.s1 = AudioFile(
-            {"album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
-             "version": "cake mix", "~filename": fsnative(u"/dir1/foobar.ogg"),
+            {"album": u"I Hate: Tests", "artist": u"piman", "title": u"Quuxly",
+             "version": u"cake mix",
+             "~filename": fsnative(u"/dir1/foobar.ogg"),
              "~#length": 224, "~#skipcount": 13, "~#playcount": 24,
-             "date": "2007-05-24"})
+             "date": u"2007-05-24"})
         self.s2 = AudioFile(
-            {"album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
+            {"album": u"Foo the Bar", "artist": u"mu", "title": u"Rockin' Out",
              "~filename": fsnative(u"/dir2/something.mp3"),
-             "tracknumber": "12/15"})
+             "tracknumber": u"12/15"})
 
         self.s3 = AudioFile({
-            "artist": "piman\nmu",
+            "artist": u"piman\nmu",
             "~filename": fsnative(u"/test/\xf6\xe4\xfc/fo\xfc.ogg"),
             "~mountpoint": fsnative(u"/bla/\xf6\xe4\xfc/fo\xfc"),
         })
-        self.s4 = AudioFile({"title": u"Ångström", "utf8": "Ångström"})
-        self.s5 = AudioFile({"title": "oh&blahhh", "artist": "!ohno"})
+        self.s4 = AudioFile({"title": u"Ångström", "utf8": u"Ångström"})
+        self.s5 = AudioFile({"title": u"oh&blahhh", "artist": u"!ohno"})
 
     def tearDown(self):
         config.quit()

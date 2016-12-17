@@ -734,6 +734,7 @@ class AudioFile(dict, ImageContainer):
 
         # Replace nulls with newlines, trimming zero-length segments
         for key, val in listitems(self):
+            self[key] = val
             if isinstance(val, string_types) and '\0' in val:
                 self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
             # Remove unnecessary defaults

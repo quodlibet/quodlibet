@@ -507,13 +507,13 @@ class Tag(Node):
                 if name in ("filename", "mountpoint"):
                     val = fsn2text(data.get("~" + name, fsnative()))
                 else:
-                    val = data.get("~" + name, "")
+                    val = data.get("~" + name, u"")
 
-            if search(text_type(val)):
+            if search(val):
                 return True
 
         for name in self.__intern:
-            if search(text_type(data(name))):
+            if search(data(name)):
                 return True
 
         for name in self.__fs:
