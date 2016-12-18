@@ -673,7 +673,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         self.__destroyed = False
         self.__update_title(player)
-        self.set_default_size(550, 450)
+        self.set_default_size(600, 480)
 
         main_box = Gtk.VBox()
         self.add(main_box)
