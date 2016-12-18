@@ -61,6 +61,11 @@ class TAudioFile(TestCase):
         config.RATINGS = config.HardCodedRatingsPrefs()
         open(quux["~filename"], "w").close()
 
+    def test_format_type(self):
+        for t in format_types:
+            i = AudioFile.__new__(t)
+            assert isinstance(i("~format"), text_type)
+
     def test_sort(self):
         l = [quux, bar_1_2, bar_2_1, bar_1_1]
         l.sort()
