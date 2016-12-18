@@ -657,7 +657,13 @@ class BaseView(Gtk.TreeView):
 
         self.connect("button-release-event", on_button_release_event)
 
+    def do_key_press_event(self, event):
+        if is_accel(event, "space", "KP_Space"):
+            return False
+        return Gtk.TreeView.do_key_press_event(self, event)
+
     def __key_pressed(self, view, event):
+
         def get_first_selected():
             selection = self.get_selection()
             model, paths = selection.get_selected_rows()

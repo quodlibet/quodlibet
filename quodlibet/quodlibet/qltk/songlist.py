@@ -664,7 +664,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                 window = Information(librarian, songs, self)
                 window.show()
             return True
-        elif qltk.is_accel(event, "space") and player is not None:
+        elif qltk.is_accel(event, "space", "KP_Space") and player is not None:
             player.paused = not player.paused
             return True
         return False
