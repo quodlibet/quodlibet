@@ -127,7 +127,7 @@ class SongsMenuPluginHandler(PluginHandler):
                     print_e("Couldn't initialise song plugin %s. Stack trace:"
                             % Kind)
                     print_exc()
-        items = listfilter(lambda i: i.initialized, items)
+        items = [i for i in items if i.initialized]
 
         if items:
             menu = Gtk.Menu()

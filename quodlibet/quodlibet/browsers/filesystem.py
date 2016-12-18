@@ -20,6 +20,7 @@ from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import _
 from quodlibet.browsers import Browser
+from quodlibet.compat import listfilter
 from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import MainDirectoryTree
 from quodlibet.qltk.songsmenu import SongsMenu
@@ -106,7 +107,7 @@ class FileSystem(Browser, Gtk.HBox):
         for songs in self.__find_songs(view.get_selection()):
             pass
         if tid == self.TARGET_QL:
-            cant_add = filter(lambda s: not s.can_add, songs)
+            cant_add = listfilter(lambda s: not s.can_add, songs)
             if cant_add:
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self), _("Unable to copy songs"),

@@ -916,7 +916,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         window = qltk.get_top_parent(self)
         filter_ = window.browser.active_filter
         if callable(filter_):
-            self.add_songs(filter(filter_, songs))
+            self.add_songs(listfilter(filter_, songs))
 
     def __song_removed(self, librarian, songs, player):
         # The player needs to be called first so it can ge the next song

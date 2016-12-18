@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from quodlibet import util
+from quodlibet.compat import listfilter
 from quodlibet.util.importhelper import load_dir_modules
 
 from ._base import Browser
@@ -45,7 +47,7 @@ def init():
 
     def is_browser(Kind):
         return isinstance(Kind, type) and issubclass(Kind, Browser)
-    browsers = list(filter(is_browser, browsers))
+    browsers = listfilter(is_browser, browsers)
 
     if not browsers:
         raise SystemExit("No browsers found!")

@@ -411,9 +411,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, iters = self.__view.get_selection().get_selected_rows()
-        songs = []
-        for iter in filter(lambda i: i, iters):
-            songs += list(model[iter][0])
+        songs = [model[itr][0] for itr in iters if itr]
         if tid == 0:
             qltk.selection_set_songs(sel, songs)
         else:

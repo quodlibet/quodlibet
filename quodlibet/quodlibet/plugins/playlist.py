@@ -131,7 +131,7 @@ class PlaylistPluginHandler(PluginHandler):
                 except:
                     print_e("Couldn't initialise playlist plugin %s: " % Kind)
                     print_exc()
-        items = listfilter(lambda i: i.initialized, items)
+        items = [i for i in items if i.initialized]
 
         if items:
             menu.append(SeparatorMenuItem())
