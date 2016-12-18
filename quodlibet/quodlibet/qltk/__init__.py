@@ -216,6 +216,13 @@ def is_accel(event, *accels):
     any of accelerator strings.
 
     example: is_accel(event, "<shift><ctrl>z")
+
+    Args:
+        *accels: one ore more `str`
+    Returns:
+        bool
+    Raises:
+        ValueError: in case any of the accels could not be parsed
     """
 
     assert accels
@@ -233,6 +240,8 @@ def is_accel(event, *accels):
 
     for accel in accels:
         accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
+        if accel_keyval == 0 and accel_mod == 0:
+            raise ValueError("Invalid accel: %s" % accel)
 
         # If the accel contains non default modifiers matching will
         # never work and since no one should use them, complain

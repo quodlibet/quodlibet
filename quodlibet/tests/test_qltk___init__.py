@@ -50,6 +50,11 @@ class TQltk(TestCase):
         self.failUnless(qltk.is_accel(e, "<ctrl>Return", "b"))
         self.failIf(qltk.is_accel(e, "a", "b"))
 
+    def test_is_accel_invalid(self):
+        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
+        with self.assertRaises(ValueError):
+            qltk.is_accel(e, "NOPE")
+
     def test_is_accel_primary(self):
         e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
         e.keyval = Gdk.KEY_Return
