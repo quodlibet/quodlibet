@@ -425,7 +425,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                 player, 'error', lambda *x: self.__redraw_current())
 
         self.connect('button-press-event', self.__button_press, librarian)
-        self.connect('key-press-event', self.__key_press, librarian)
+        self.connect('key-press-event', self.__key_press, librarian, player)
 
         self.setup_drop(library)
         self.disable_drop()
@@ -640,7 +640,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             song["~#rating"] = value
         librarian.changed(songs)
 
-    def __key_press(self, songlist, event, librarian):
+    def __key_press(self, songlist, event, librarian, player):
         if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
             self.__enqueue(self.get_selected_songs())
             return True
@@ -663,6 +663,9 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             if songs:
                 window = Information(librarian, songs, self)
                 window.show()
+            return True
+        elif qltk.is_accel(event, "space") and player is not None:
+            player.paused = not player.paused
             return True
         return False
 
