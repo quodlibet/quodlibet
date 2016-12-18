@@ -64,7 +64,7 @@ class Turi(TestCase):
         if os.name == "nt":
             paths = [u"C:\\öäü.txt"]
         else:
-            paths = [u"/öäü.txt", u"//foo/bar", u"///foo/bar"]
+            paths = [u"/öäü.txt", u"/a/foo/bar", u"/a/b/foo/bar"]
 
         for source in paths:
             path = uri2fsn(fsn2uri(fsnative(source)))
