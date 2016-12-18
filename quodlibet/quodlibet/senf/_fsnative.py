@@ -19,7 +19,7 @@ import codecs
 
 from . import _winapi as winapi
 from ._compat import text_type, PY3, PY2, url2pathname, urlparse, quote, \
-    unquote
+    unquote, urlunparse
 
 
 is_win = os.name == "nt"
@@ -535,10 +535,15 @@ def uri2fsn(uri):
     path = parsed.path
 
     if scheme != "file":
-        raise ValueError("Not a file URI")
+        raise ValueError("Not a file URI: %r" % uri)
+
+    if not path:
+        raise ValueError("Invalid file URI: %r" % uri)
+
+    uri = urlunparse(parsed)[7:]
 
     if is_win:
-        path = url2pathname(netloc + path)
+        path = url2pathname(uri)
         if netloc:
             path = "\\\\" + path
         if PY2:
@@ -547,7 +552,7 @@ def uri2fsn(uri):
             raise ValueError("embedded null")
         return path
     else:
-        path = url2pathname(path)
+        path = url2pathname(uri)
         if "\x00" in path:
             raise ValueError("embedded null")
         if PY3:

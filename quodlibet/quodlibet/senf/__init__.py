@@ -33,7 +33,7 @@ fsnative, print_, getcwd, getenv, unsetenv, putenv, environ, expandvars, \
     gettempdir, gettempprefix, mkdtemp, input_, expanduser, text2fsn
 
 
-version = (1, 2, 1)
+version = (1, 2, 2)
 """Tuple[`int`, `int`, `int`]: The version tuple (major, minor, micro)"""
 
 
