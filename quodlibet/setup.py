@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright 2010-2015 Christoph Reiter
 #           2015 Nick Boultbee
