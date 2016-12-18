@@ -147,6 +147,7 @@ class TAudioFile(TestCase):
     def test_filesize(self):
         self.failUnlessEqual(bar_1_2("~filesize"), "1.00 MB")
         self.failUnlessEqual(bar_1_2("~#filesize"), 1024 ** 2)
+        assert isinstance(bar_1_2("~filesize"), text_type)
 
     def test_bitrate(self):
         self.assertEqual(bar_1_2("~#bitrate"), 128)

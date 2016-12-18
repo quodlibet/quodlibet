@@ -345,7 +345,9 @@ class Tdate_key(TestCase):
 class Tformat_size(TestCase):
     def t_dict(self, d):
         for key, value in d.items():
-            self.failUnlessEqual(util.format_size(key), value)
+            formatted = util.format_size(key)
+            self.failUnlessEqual(formatted, value)
+            assert isinstance(formatted, text_type)
 
     def test_bytes(self):
         self.t_dict({0: "0 B", 1: "1 B", 1023: "1023 B"})
