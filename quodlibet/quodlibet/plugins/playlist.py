@@ -16,7 +16,6 @@ from quodlibet.util import print_exc, format_int_locale
 from quodlibet.util.dprint import print_d, print_e
 from quodlibet.plugins import PluginHandler, PluginManager
 from quodlibet.plugins.gui import MenuItemPlugin
-from quodlibet.compat import listfilter
 
 
 class ConfirmMultiPlaylistInvoke(WarningMessage):

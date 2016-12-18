@@ -24,7 +24,6 @@ from quodlibet.qltk import get_top_parent, get_menu_item_top_parent, Icons
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
-from quodlibet.compat import listfilter
 
 
 class ConfirmMultiSongInvoke(WarningMessage):
