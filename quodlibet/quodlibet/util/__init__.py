@@ -366,22 +366,28 @@ def format_bitrate(value):
 
 
 def format_size(size):
-    """Turn an integer size value into something human-readable."""
+    """Turn an integer size value into something human-readable.
+
+    Args:
+        size (int): size in bytes
+    Returns:
+        text_type
+    """
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)
     if size >= 1024 ** 3:
-        return "%.1f GB" % (float(size) / (1024 ** 3))
+        return u"%.1f GB" % (float(size) / (1024 ** 3))
     elif size >= 1024 ** 2 * 100:
-        return "%.0f MB" % (float(size) / (1024 ** 2))
+        return u"%.0f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 ** 2 * 10:
-        return "%.1f MB" % (float(size) / (1024 ** 2))
+        return u"%.1f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 ** 2:
-        return "%.2f MB" % (float(size) / (1024 ** 2))
+        return u"%.2f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 * 10:
-        return "%d KB" % int(size / 1024)
+        return u"%d KB" % int(size / 1024)
     elif size >= 1024:
-        return "%.2f KB" % (float(size) / 1024)
+        return u"%.2f KB" % (float(size) / 1024)
     else:
-        return "%d B" % size
+        return u"%d B" % size
 
 
 def format_time(time):
