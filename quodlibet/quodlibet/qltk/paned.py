@@ -23,6 +23,8 @@ class Paned(Gtk.Paned):
             add_css(self, """
                 paned separator {
                     border-width: 0;
+                    min-height: 5px;
+                    min-width: 5px;
                     background-image: none;
                 }
             """)
