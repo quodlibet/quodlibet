@@ -1032,8 +1032,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             column.set_reorderable(True)
             self.append_column(column)
 
-        self.columns_autosize()
         self.set_sort_orders(old_sort)
+        self.columns_autosize()
 
         self.handler_unblock(self.__csig)
 
