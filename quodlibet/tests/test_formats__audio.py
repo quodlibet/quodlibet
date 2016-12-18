@@ -13,7 +13,8 @@ from quodlibet import config
 from quodlibet.compat import PY2, text_type, long, listkeys, PY3
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
-from quodlibet.formats import decode_value, MusicFile
+from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
+from quodlibet.util.tags import _TAGS as TAGS
 
 from .helper import temp_filename
 
@@ -65,6 +66,24 @@ class TAudioFile(TestCase):
         for t in format_types:
             i = AudioFile.__new__(t)
             assert isinstance(i("~format"), text_type)
+
+    def test_tag_text_types(self):
+        for t in format_types:
+            i = AudioFile.__new__(t)
+            i["~filename"] = fsnative(u"foo")
+            for tag in TAGS.values():
+                name = tag.name
+                # brute force
+                variants = [
+                    name, "~" + name, name + "sort", "~" + name + "sort",
+                    name + ":role", "~" + name + ":role",
+                    "~" + name + "sort:role", name + "sort:role",
+                ]
+                for name in variants:
+                    if name in FILESYSTEM_TAGS:
+                        assert isinstance(i(name, fsnative()), fsnative)
+                    else:
+                        assert isinstance(i(name), text_type)
 
     def test_sort(self):
         l = [quux, bar_1_2, bar_2_1, bar_1_1]
