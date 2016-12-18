@@ -7,7 +7,6 @@
 # express or implied, for this software.
 
 import os
-from distutils.dep_util import newer
 
 from .util import get_dist_class
 
@@ -19,10 +18,14 @@ class build_scripts(du_build_scripts):
     description = "copy scripts to build directory"
 
     def run(self):
-        self.mkpath(self.build_dir)
+        du_build_scripts.run(self)
+
+        # remove ".py"
         for script in self.scripts:
-            newpath = os.path.join(self.build_dir, os.path.basename(script))
-            if newpath.lower().endswith(".py"):
-                newpath = newpath[:-3]
-            if newer(script, newpath) or self.force:
-                self.copy_file(script, newpath)
+            outfile = os.path.join(self.build_dir, os.path.basename(script))
+            new = os.path.splitext(outfile)[0]
+            try:
+                os.unlink(new)
+            except OSError:
+                pass
+            self.move_file(outfile, new)
