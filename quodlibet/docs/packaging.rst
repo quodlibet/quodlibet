@@ -117,9 +117,6 @@ plugin from loading.
 **rygel**:
     * The uPnP media server
 
-**Zeitgeist Python bindings**:
-    * For the zeitgeist plugin
-
 **pynotify**:
     * For the auto library update plugin
 
