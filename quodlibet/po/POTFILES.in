@@ -76,7 +76,6 @@ quodlibet/ext/events/trayicon/systemtray.py
 quodlibet/ext/events/viewlyrics.py
 quodlibet/ext/events/waveformseekbar.py
 quodlibet/ext/events/write_cover.py
-quodlibet/ext/events/zeitgeist_client.py
 quodlibet/ext/gstreamer/compressor.py
 quodlibet/ext/gstreamer/crossfeed.py
 quodlibet/ext/gstreamer/karaoke.py
