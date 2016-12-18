@@ -10,15 +10,16 @@ import shutil
 import atexit
 import subprocess
 import locale
+from quodlibet.compat import PY3
 
 try:
     import pytest
 except ImportError:
-    raise SystemExit("pytest missing: sudo apt-get install python-pytest")
+    module = "python3-pytest" if PY3 else "python-pytest"
+    raise SystemExit("pytest missing: sudo apt-get install %s" % module)
 
 import quodlibet
 from quodlibet.senf import fsnative, path2fsn, environ
-from quodlibet.compat import PY3
 from quodlibet.util.path import xdg_get_cache_home
 from quodlibet import util
 
