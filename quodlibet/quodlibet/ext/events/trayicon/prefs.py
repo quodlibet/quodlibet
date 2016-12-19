@@ -15,6 +15,7 @@ from quodlibet import qltk
 from quodlibet.qltk import Icons
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.entry import UndoEntry
+from quodlibet.util import gdecode
 from .util import pconfig
 
 
@@ -89,7 +90,7 @@ class Preferences(Gtk.VBox):
             child.show_all()
 
     def __changed_entry(self, entry, label, frame):
-        text = entry.get_text().decode("utf-8")
+        text = gdecode(entry.get_text())
 
         if app.player.info is None:
             text = _("Not playing")

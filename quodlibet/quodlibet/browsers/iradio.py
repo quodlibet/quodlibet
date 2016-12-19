@@ -329,7 +329,7 @@ def parse_taglist(data):
             key = "~#listenerpeak"
             value = int(value)
 
-        if isinstance(value, str):
+        if isinstance(value, bytes):
             value = value.decode("utf-8")
             if value not in station.list(key):
                 station.add(key, value)
