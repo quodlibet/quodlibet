@@ -777,7 +777,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.error = True
         self.paused = True
 
-        print_w(text_type(player_error))
+        print_w(player_error)
         self.emit('error', self.song, player_error)
         self._active_error = False
 

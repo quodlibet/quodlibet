@@ -211,7 +211,7 @@ def preserve_environ():
 @contextlib.contextmanager
 def capture_output():
     """
-    with capture_output as (stdout, stderr):
+    with capture_output() as (stdout, stderr):
         some_action()
     print stdout.getvalue(), stderr.getvalue()
     """

@@ -14,10 +14,10 @@ import traceback
 import re
 import logging
 
-from senf import print_, path2fsn, fsn2text, environ
+from senf import print_, path2fsn, fsn2text, environ, fsnative
 
 from quodlibet import const
-from quodlibet.compat import PY2
+from quodlibet.compat import PY2, text_type
 from .environment import is_py2exe_window, is_windows
 from .string import decode
 from . import logging as ql_logging
@@ -186,6 +186,9 @@ def _supports_ansi_escapes(file):
 
 def _print_message(string, custom_context, debug_only, prefix,
                    color, logging_category, start_time=time.time()):
+
+    if not isinstance(string, (text_type, fsnative)):
+        string = text_type(string)
 
     context = frame_info(2)
 

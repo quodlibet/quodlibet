@@ -93,7 +93,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
             try:
                 port_num = int(entry.get_text())
             except ValueError as e:
-                print_w(str(e))
+                print_w(e)
             else:
                 if get_port_num() != port_num:
                     set_port_num(port_num)
@@ -175,7 +175,7 @@ namelessdev.mpdroid">MPDroid</a> (Android)
         try:
             self._server.start()
         except ServerError as e:
-            print_w(str(e))
+            print_w(e)
 
     def _disable_server(self):
         print_d("Stopping MPD server")
@@ -189,7 +189,7 @@ namelessdev.mpdroid">MPDroid</a> (Android)
         try:
             self._avahi.register(app.name, port_num, "_mpd._tcp")
         except AvahiError as e:
-            print_w(str(e))
+            print_w(e)
 
     def enabled(self):
         self._enable_server()

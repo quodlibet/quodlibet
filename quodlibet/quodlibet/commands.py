@@ -78,7 +78,7 @@ class CommandRegistry(object):
         try:
             return self.run(app, command, *args)
         except CommandError as e:
-            print_e(str(e))
+            print_e(e)
         except:
             util.print_exc()
 
