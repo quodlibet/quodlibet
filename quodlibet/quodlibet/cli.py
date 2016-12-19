@@ -87,6 +87,7 @@ def process_arguments(argv):
 
     options.add("print-playing", help=_("Print the playing song and exit"))
     options.add("start-playing", help=_("Begin playing immediately"))
+    options.add("start-hidden", help=_("Don't show any windows on start"))
 
     for opt, help in [
         ("next", _("Jump to next song")),
@@ -245,6 +246,8 @@ def process_arguments(argv):
         elif command == "print-query-text":
             queue(command)
         elif command == "start-playing":
+            actions.append(command)
+        elif command == "start-hidden":
             actions.append(command)
         elif command == "no-plugins":
             actions.append(command)

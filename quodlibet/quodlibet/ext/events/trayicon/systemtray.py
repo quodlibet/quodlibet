@@ -17,7 +17,6 @@ from quodlibet import config
 from quodlibet import util
 from quodlibet.pattern import Pattern
 from quodlibet.qltk import Icons
-from quodlibet.qltk.window import Window
 from quodlibet.util.thumbnails import scale
 
 from .base import BaseIndicator
@@ -121,7 +120,6 @@ class SystemTray(BaseIndicator):
         self._icon.connect('scroll-event', self.__scroll)
         self._icon.connect('button-press-event', self.__button_middle)
 
-        self.__w_sig_show = app.window.connect('show', self.__window_show)
         self.__w_sig_del = app.window.connect('delete-event',
                                               self.__window_delete)
 
@@ -143,10 +141,6 @@ class SystemTray(BaseIndicator):
 
         self.__emb_sig = GLib.idle_add(add_timeout)
 
-        if sys.platform != "darwin":
-            if not pconfig.getboolean("window_visible"):
-                Window.prevent_inital_show(True)
-
     def remove(self):
         """Hides the tray icon and frees all resources.
 
@@ -161,7 +155,6 @@ class SystemTray(BaseIndicator):
             self.__emb_sig = None
         self.__icon_theme.disconnect(self.__theme_sig)
         self.__icon_theme = None
-        app.window.disconnect(self.__w_sig_show)
         app.window.disconnect(self.__w_sig_del)
         self._icon.set_visible(False)
         self._icon = None
@@ -277,12 +270,8 @@ class SystemTray(BaseIndicator):
             return True
         return False
 
-    def __window_show(self, win, *args):
-        pconfig.set("window_visible", True)
-
     def __hide_window(self):
         app.hide()
-        pconfig.set("window_visible", False)
 
     def __show_window(self):
         app.present()

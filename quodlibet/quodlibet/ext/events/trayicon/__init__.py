@@ -11,12 +11,10 @@ from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import is_wayland, Icons
-from quodlibet.qltk.window import Window
 from quodlibet.util import (is_unity, is_osx, is_plasma, is_enlightenment,
                             print_exc, print_w, print_d)
 
 from .prefs import Preferences
-from .util import pconfig
 from .systemtray import SystemTray
 
 
@@ -62,9 +60,6 @@ class TrayIconPlugin(EventPlugin):
         self._tray.set_song(app.player.song)
         self._tray.set_info_song(app.player.info)
         self._tray.set_paused(app.player.paused)
-
-        if not is_osx() and not pconfig.getboolean("window_visible"):
-            Window.prevent_inital_show(True)
 
     def disabled(self):
         self._tray.remove()

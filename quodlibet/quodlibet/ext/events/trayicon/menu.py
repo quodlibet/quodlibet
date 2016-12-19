@@ -21,8 +21,6 @@ from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 
-from .util import pconfig
-
 
 class IndicatorMenu(Gtk.Menu):
 
@@ -47,7 +45,6 @@ class IndicatorMenu(Gtk.Menu):
                     app.present()
                 else:
                     app.hide()
-                pconfig.set("window_visible", menuitem.get_active())
 
             self._toggle_id = show_item.connect("toggled", on_toggled)
 

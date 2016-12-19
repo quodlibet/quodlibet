@@ -131,6 +131,7 @@ def main(argv=None):
     from quodlibet.qltk.quodlibetwindow import QuodLibetWindow, PlayerOptions
     # Call exec_commands after the window is restored, but make sure
     # it's after the mainloop has started so everything is set up.
+
     app.window = window = QuodLibetWindow(
         library, player,
         restore_cb=lambda:
@@ -139,7 +140,7 @@ def main(argv=None):
     app.player_options = PlayerOptions(window)
 
     from quodlibet.qltk.debugwindow import MinExceptionDialog
-    from quodlibet.qltk.window import on_first_map
+    from quodlibet.qltk.window import on_first_map, Window
     if backend_traceback is not None:
         def show_backend_error(window):
             d = MinExceptionDialog(window,
@@ -186,6 +187,9 @@ def main(argv=None):
 
     if "start-playing" in startup_actions:
         player.paused = False
+
+    if "start-hidden" in startup_actions:
+        Window.prevent_inital_show(True)
 
     # restore browser windows
     from quodlibet.qltk.browser import LibraryBrowser

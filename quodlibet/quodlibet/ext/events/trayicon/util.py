@@ -26,7 +26,6 @@ def _get_plugin_config():
     pconfig.defaults.set("window_hide", True)
     pconfig.defaults.set("tooltip", DEFAULT_PATTERN)
     pconfig.defaults.set("modifier_swap", False)
-    pconfig.defaults.set("window_visible", True)
 
     return pconfig
 

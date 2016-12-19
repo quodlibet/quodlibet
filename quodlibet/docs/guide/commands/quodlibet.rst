@@ -112,6 +112,9 @@ OPTIONS
 --show-window
     Show main window
 
+--start-hidden
+    Don't show any windows on start
+
 --start-playing
     Begin playing immediately
 
