@@ -10,7 +10,7 @@ import sys
 import gettext
 import locale
 
-from senf import environ
+from senf import environ, path2fsn, fsn2text
 
 from quodlibet.compat import text_type, PY2, listfilter
 
@@ -196,6 +196,33 @@ def set_translation(trans):
     global _translations
 
     _translations = trans
+
+
+def get_available_languages(domain):
+    """Returns a list of available translations for a given gettext domain.
+
+    Args:
+        domain (str)
+    Returns:
+        List[text_type]
+    """
+
+    locale_dir = gettext.bindtextdomain(domain)
+    if locale_dir is None:
+        return []
+
+    try:
+        entries = os.listdir(locale_dir)
+    except OSError:
+        return []
+
+    langs = []
+    for lang in entries:
+        mo_path = os.path.join(
+            locale_dir, lang, "LC_MESSAGES", "%s.mo" % domain)
+        if os.path.exists(mo_path):
+            langs.append(fsn2text(path2fsn(lang)))
+    return langs
 
 
 def _(message):

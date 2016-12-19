@@ -11,7 +11,8 @@ from tests import TestCase, skipIf
 from .helper import preserve_environ
 
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
-    set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, numeric_phrase
+    set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, \
+    numeric_phrase, get_available_languages
 from quodlibet.util import is_osx
 from quodlibet.compat import text_type
 
@@ -82,6 +83,9 @@ def set_locale(loc):
 
 
 class Tgettext(TestCase):
+
+    def test_get_languages(self):
+        assert isinstance(get_available_languages("quodlibet"), list)
 
     def test_bcp47(self):
         self.assertEqual(bcp47_to_language("zh-Hans"), "zh_CN")
