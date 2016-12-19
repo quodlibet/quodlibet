@@ -99,7 +99,7 @@ class DownloadWindow(qltk.UniqueWindow):
             return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __start_next(self):
-        started = len(filter(lambda row: row[2] != 0, self.downloads))
+        started = len([r for r in self.downloads if r[2] != 0])
         iter = self.downloads.get_iter_first()
         while iter is not None:
             if started >= 2:

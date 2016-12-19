@@ -5,9 +5,12 @@
 
 from tests import TestCase
 
-from quodlibet.browsers.audiofeeds import AudioFeeds
+from gi.repository import Gtk
+from quodlibet.browsers.audiofeeds import AudioFeeds, AddFeedDialog
 from quodlibet.library import SongLibrary
 import quodlibet.config
+
+TEST_URL = u"https://a@b:foo.example.com?bar=baz&quxx#anchor"
 
 
 class TAudioFeeds(TestCase):
@@ -23,4 +26,17 @@ class TAudioFeeds(TestCase):
     def tearDown(self):
         self.bar.destroy()
         self.library.destroy()
+        quodlibet.config.quit()
+
+
+class TAddFeedDialog(TestCase):
+    def setUp(self):
+        quodlibet.config.init()
+
+    def test_add_feed_takes_uri(self):
+        parent = Gtk.Window()
+        ret = AddFeedDialog(parent).run(text=TEST_URL, test=True)
+        self.failUnlessEqual(ret.uri, TEST_URL)
+
+    def tearDown(self):
         quodlibet.config.quit()

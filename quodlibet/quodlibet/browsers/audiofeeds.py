@@ -20,6 +20,7 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.browsers import Browser
+from quodlibet.compat import listfilter, text_type
 from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.downloader import DownloadWindow
@@ -135,7 +136,8 @@ class Feed(list):
     def parse(self):
         try:
             doc = feedparser.parse(self.uri)
-        except:
+        except Exception as e:
+            print_w("Couldn't parse feed: %s (%s)" % (self.uri, e))
             return False
 
         try:
@@ -163,7 +165,9 @@ class Feed(list):
                         if ("audio" in enclosure.type or
                                 "ogg" in enclosure.type or
                                 formats.filter(enclosure.url)):
-                            uri = enclosure.url.encode('ascii', 'replace')
+                            uri = enclosure.url
+                            if not isinstance(uri, text_type):
+                                uri = uri.decode('utf-8')
                             try:
                                 size = float(enclosure.length)
                             except AttributeError:
@@ -207,12 +211,13 @@ class AddFeedDialog(GetStringDialog):
             _("Enter the location of an audio feed:"),
             button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
-    def run(self):
-        uri = super(AddFeedDialog, self).run()
+    def run(self, text='', test=False):
+        uri = super(AddFeedDialog, self).run(text=text, test=test)
         if uri:
-            return Feed(uri.encode('ascii', 'replace'))
-        else:
-            return None
+            if not isinstance(uri, text_type):
+                uri = uri.decode('utf-8')
+            return Feed(uri)
+        return None
 
 
 class AudioFeeds(Browser):
@@ -307,11 +312,10 @@ class AudioFeeds(Browser):
             item.connect('activate', self.__download, songs[0]("~uri"))
             item.set_sensitive(not songs[0].is_file)
         else:
-            songs = filter(lambda s: not s.is_file, songs)
-            uris = [song("~uri") for song in songs]
+            uris = [song("~uri") for song in songs if not song.is_file]
             item = qltk.MenuItem(_(u"_Download…"), Icons.NETWORK_WORKGROUP)
             item.connect('activate', self.__download_many, uris)
-            item.set_sensitive(bool(songs))
+            item.set_sensitive(bool(uris))
 
         items.append([item])
         menu = SongsMenu(library, songs, items=items)
@@ -456,7 +460,7 @@ class AudioFeeds(Browser):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
 
-        # XXX: keep the menu arround
+        # XXX: keep the menu around
         self.__menu = menu
 
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
@@ -465,7 +469,7 @@ class AudioFeeds(Browser):
         AudioFeeds.write()
 
     def __refresh(self, feeds):
-        changed = filter(Feed.parse, feeds)
+        changed = listfilter(Feed.parse, feeds)
         AudioFeeds.changed(changed)
 
     def activate(self):
