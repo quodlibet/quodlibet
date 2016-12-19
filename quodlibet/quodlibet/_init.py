@@ -105,12 +105,12 @@ def _init_gettext():
 
     if os.path.isdir(localedir):
         print_d("Using local localedir: %r" % unexpand(localedir))
+        gettext.bindtextdomain("quodlibet", localedir)
     else:
         localedir = gettext.bindtextdomain("quodlibet")
 
     try:
-        t = gettext.translation("quodlibet", localedir,
-            class_=GlibTranslations)
+        t = gettext.translation("quodlibet", class_=GlibTranslations)
     except IOError:
         print_d("No translation found in %r" % unexpand(localedir))
         t = GlibTranslations()
