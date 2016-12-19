@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2006 - Steve Frécinaux
+#               2016 - Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,7 +38,7 @@ from gi.repository import Gtk, Pango, Gdk, GLib
 from quodlibet import _
 from quodlibet import const
 from quodlibet.qltk import Icons
-from quodlibet.compat import exec_
+from quodlibet.compat import exec_, PY2
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.collection import Collection
 from quodlibet.util import print_
@@ -77,8 +78,8 @@ class ConsoleWindow(Gtk.Window):
                 'app': app})
         self.add(console)
 
-        acces_string = _("You can access the following objects by default:")
-        acces_string += "\\n".join([
+        access_string = _("You can access the following objects by default:")
+        access_string += "\\n".join([
                         "",
                         "  %5s: SongWrapper objects",
                         "  %5s: Song dictionaries",
@@ -89,12 +90,14 @@ class ConsoleWindow(Gtk.Window):
 
         dir_string = _("Your current working directory is:")
 
+        if PY2:
+            console.eval("from __future__ import print_function", False)
         console.eval("import mutagen", False)
         console.eval("import os", False)
-        console.eval("print \"Python: %s / Quod Libet: %s\"" %
+        console.eval("print(\"Python: %s / Quod Libet: %s\")" %
                      (sys.version.split()[0], const.VERSION), False)
-        console.eval("print \"%s\"" % acces_string, False)
-        console.eval("print \"%s \"+ os.getcwd()" % dir_string, False)
+        console.eval("print(\"%s\")" % access_string, False)
+        console.eval("print(\"%s \"+ os.getcwd())" % dir_string, False)
 
         console.connect("destroy", lambda *x: self.destroy())
 
