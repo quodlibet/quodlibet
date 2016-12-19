@@ -126,7 +126,7 @@ def main(argv=None):
                 pass
             else:
                 if resp is not None:
-                    print_(resp, end="")
+                    print_(resp, end="", flush=True)
 
     from quodlibet.qltk.quodlibetwindow import QuodLibetWindow, PlayerOptions
     # Call exec_commands after the window is restored, but make sure

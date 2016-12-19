@@ -9,7 +9,6 @@ import os
 import errno
 import signal
 import stat
-import tempfile
 
 try:
     import fcntl
@@ -18,6 +17,7 @@ except ImportError:
     fcntl = None
 
 from gi.repository import GLib
+from senf import mkstemp, fsn2bytes
 
 from quodlibet.util.path import mkdir
 from quodlibet.util import print_d
@@ -28,6 +28,8 @@ FIFO_TIMEOUT = 10
 
 def _write_fifo(fifo_path, data):
     """Writes the data to the fifo or raises EnvironmentError"""
+
+    assert isinstance(data, bytes)
 
     # this will raise if the fifo doesn't exist or there is no reader
     try:
@@ -67,8 +69,15 @@ def split_message(data):
     Newline seperated commands without a return fifo path.
     and "NULL<command>NULL<fifo-path>NULL"
 
-    Raises ValueError
+    Args:
+        data (bytes)
+    Returns:
+        Tuple[bytes, bytes]
+    Raises:
+        ValueError
     """
+
+    assert isinstance(data, bytes)
 
     arg = 0
     args = []
@@ -81,7 +90,7 @@ def split_message(data):
                 continue
             if index == -1:
                 elm = data
-                data = ""
+                data = b""
             else:
                 elm, data = data[:index], data[index:]
             for l in elm.splitlines():
@@ -99,18 +108,29 @@ def split_message(data):
 
 
 def write_fifo(fifo_path, data):
-    """Writes the data to the fifo and returns a response
-    or raises EnvironmentError.
+    """Writes the data to the fifo and returns a response.
+
+    Args:
+        fifo_path (pathlike)
+        data (bytes)
+    Returns:
+        bytes
+    Raises:
+        EnvironmentError: In case of timeout and other errors
     """
 
-    fd, filename = tempfile.mkstemp()
+    assert isinstance(data, bytes)
+
+    fd, filename = mkstemp()
     try:
         os.close(fd)
         os.unlink(filename)
         # mkfifo fails if the file exists, so this is safe.
         os.mkfifo(filename, 0o600)
 
-        _write_fifo(fifo_path, "\x00" + data + "\x00" + filename + "\x00")
+        _write_fifo(
+            fifo_path,
+            b"\x00" + data + b"\x00" + fsn2bytes(filename, None) + b"\x00")
 
         try:
             signal.signal(signal.SIGALRM, lambda: "" + 2)
@@ -128,6 +148,14 @@ def write_fifo(fifo_path, data):
 
 
 def fifo_exists(fifo_path):
+    """Returns whether a fifo exists to which we can write to.
+
+    Args:
+        fifo_path (pathlike)
+    Returns:
+        bool
+    """
+
     # https://github.com/quodlibet/quodlibet/issues/1131
     # FIXME: There is a race where control() creates a new file
     # instead of writing to the FIFO, confusing the next QL instance.
@@ -149,18 +177,30 @@ class FIFO(object):
     """Creates and reads from a FIFO"""
 
     def __init__(self, path, callback):
+        """
+        Aargs:
+            path (pathlike)
+            callback (Callable[[bytes], None])
+        """
+
         self._callback = callback
         self._path = path
 
     def open(self):
         """Create the fifo and listen to it.
 
-        Might raise FIFOError in case another process is already using it.
+        Raises:
+            FIFOError in case another process is already using it.
         """
 
         self._open(False, None)
 
     def destroy(self):
+        """After destroy() the callback will no longer be called
+        and the fifo can no longer be used. Can be called multiple
+        times.
+        """
+
         if self._id is not None:
             GLib.source_remove(self._id)
             self._id = None
@@ -203,7 +243,7 @@ class FIFO(object):
             break
 
         try:
-            f = os.fdopen(fifo, "r", 4096)
+            f = os.fdopen(fifo, "rb", 4096)
         except OSError:
             pass
 

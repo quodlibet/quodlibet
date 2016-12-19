@@ -13,6 +13,7 @@ from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet import app
+from quodlibet.compat import text_type
 
 from quodlibet.commands import registry
 
@@ -27,10 +28,11 @@ class TCommands(TestCase):
         config.quit()
 
     def __send(self, command):
+        command = fsnative(text_type(command))
         return registry.handle_line(app, command)
 
     def test_query(self):
-        self.__send(fsnative(u"query foo"))
+        self.__send(u"query foo")
         self.assertEqual(self.__send("print-query-text"), u"foo\n")
 
     def test_player(self):

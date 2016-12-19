@@ -63,7 +63,7 @@ def control(command, arg=None, ignore_error=False):
         exit_(str(e), notify_startup=True)
     else:
         if response is not None:
-            print_(response, end="")
+            print_(response, end="", flush=True)
         exit_(notify_startup=True)
 
 

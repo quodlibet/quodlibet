@@ -9,13 +9,13 @@
 
 import os
 
-from senf import uri2fsn, fsnative, fsn2text
+from senf import uri2fsn, fsnative, fsn2text, text2fsn
 
 from quodlibet.util.string import split_escape
 
 from quodlibet import browsers
 
-from quodlibet.compat import cBytesIO as StringIO, listfilter
+from quodlibet.compat import listfilter, text_type
 from quodlibet import util
 from quodlibet.util import print_d, print_e
 
@@ -35,7 +35,19 @@ class CommandRegistry(object):
         self._commands = {}
 
     def register(self, name, args=0, optional=0):
-        """Register a new command function"""
+        """Register a new command function
+
+        The functions gets zero or more arguments as `fsnative`
+        and should return `None` or `fsnative`. In case an error
+        occured the command should raise `CommandError`.
+
+        Args:
+            name (str): the command name
+            args (int): amount of required arguments
+            optional (int): amoutn of additional optional arguments
+        Returns:
+            Callable
+        """
 
         def wrap(func):
             self._commands[name] = (func, args, optional)
@@ -46,14 +58,22 @@ class CommandRegistry(object):
         """Parses a command line and executes the command.
 
         Can not fail.
+
+        Args:
+            app (Application)
+            line (fsnative)
+        Returns:
+            fsnative or None
         """
+
+        assert isinstance(line, fsnative)
 
         # only one arg supported atm
         parts = line.split(" ", 1)
         command = parts[0]
         args = parts[1:]
 
-        print_d("command: %s(*%r)" % (command, args))
+        print_d("command: %r(*%r)" % (command, args))
 
         try:
             return self.run(app, command, *args)
@@ -80,9 +100,23 @@ class CommandRegistry(object):
         print_d("Running %r with params %s " % (cmd.__name__, args))
 
         try:
-            return cmd(app, *args)
+            result = cmd(app, *args)
         except CommandError as e:
             raise CommandError("%s: %s" % (name, str(e)))
+        else:
+            if result is not None and not isinstance(result, fsnative):
+                raise CommandError(
+                    "%s: returned %r which is not fsnative" % (name, result))
+            return result
+
+
+def arg2text(arg):
+    """Like fsn2text but is strict by default and raises CommandError"""
+
+    try:
+        return fsn2text(arg, strict=True)
+    except ValueError as e:
+        raise CommandError(e)
 
 
 registry = CommandRegistry()
@@ -240,6 +274,8 @@ def _set_rating(app, value):
     if not song:
         return
 
+    value = arg2text(value)
+
     try:
         song["~#rating"] = max(0.0, min(1.0, float(value)))
     except (ValueError, TypeError):
@@ -250,10 +286,10 @@ def _set_rating(app, value):
 
 @registry.register("dump-browsers")
 def _dump_browsers(app):
-    f = StringIO()
+    response = u""
     for i, b in enumerate(browsers.browsers):
-        f.write("%d. %s\n" % (i, browsers.name(b)))
-    return f.getvalue()
+        response += u"%d. %s\n" % (i, browsers.name(b))
+    return text2fsn(response)
 
 
 @registry.register("set-browser", args=1)
@@ -264,6 +300,8 @@ def _set_browser(app, value):
 
 @registry.register("open-browser", args=1)
 def _open_browser(app, value):
+    value = arg2text(value)
+
     try:
         Kind = browsers.get(value)
     except ValueError:
@@ -273,25 +311,30 @@ def _open_browser(app, value):
 
 @registry.register("random", args=1)
 def _random(app, tag):
+    tag = arg2text(tag)
     if app.browser.can_filter(tag):
         app.browser.filter_random(tag)
 
 
 @registry.register("filter", args=1)
 def _filter(app, value):
+    value = arg2text(value)
+
     try:
-        tag, values = value.split('=', 1)
-        values = [v.decode("utf-8", "replace") for v in values.split("\x00")]
+        tag, value = value.split('=', 1)
     except ValueError:
         raise CommandError("invalid argument")
-    if app.browser.can_filter(tag) and values:
-        app.browser.filter(tag, values)
+
+    if app.browser.can_filter(tag):
+        app.browser.filter(tag, [value])
 
 
 @registry.register("query", args=1)
 def _query(app, value):
+    value = arg2text(value)
+
     if app.browser.can_filter_text():
-        app.browser.filter_text(fsn2text(value))
+        app.browser.filter_text(value)
 
 
 @registry.register("unfilter")
@@ -305,13 +348,15 @@ def _properties(app, value=None):
     player = app.player
     window = app.window
 
-    if value:
+    if value is not None:
+        value = arg2text(value)
         if value in library:
             songs = [library[value]]
         else:
             songs = library.query(value)
     else:
         songs = [player.song]
+
     songs = listfilter(None, songs)
 
     if songs:
@@ -328,7 +373,7 @@ def _enqueue(app, value):
     elif os.path.isfile(value):
         songs = [library.add_filename(os.path.realpath(value))]
     else:
-        songs = library.query(value)
+        songs = library.query(arg2text(value))
     songs.sort()
     playlist.enqueue(songs)
 
@@ -362,7 +407,7 @@ def _unqueue(app, value):
     if value in library:
         songs = [library[value]]
     else:
-        songs = library.query(value)
+        songs = library.query(arg2text(value))
     playlist.unqueue(songs)
 
 
@@ -374,7 +419,6 @@ def _quit(app):
 @registry.register("status")
 def _status(app):
     player = app.player
-    f = StringIO()
 
     if player.paused:
         strings = ["paused"]
@@ -391,12 +435,9 @@ def _status(app):
         if length:
             progress = player.get_position() / (length * 1000.0)
     strings.append("%0.3f" % progress)
-    f.write(" ".join(strings) + "\n")
-    try:
-        f.write(app.browser.status + "\n")
-    except AttributeError:
-        pass
-    return f.getvalue()
+    status = u" ".join(strings) + u"\n"
+
+    return text2fsn(status)
 
 
 @registry.register("song-list", args=1)
@@ -408,6 +449,8 @@ def _song_list(app, value):
 @registry.register("queue", args=1)
 def _queue(app, value):
     window = app.window
+    value = arg2text(value)
+
     if value.startswith("t"):
         value = not window.qexpander.get_property('visible')
     else:
@@ -418,19 +461,19 @@ def _queue(app, value):
 @registry.register("dump-playlist")
 def _dump_playlist(app):
     window = app.window
-    f = StringIO()
+    uris = []
     for song in window.playlist.pl.get():
-        f.write(song("~uri") + "\n")
-    return f.getvalue()
+        uris.append(song("~uri"))
+    return text2fsn(u"\n".join(uris) + u"\n")
 
 
 @registry.register("dump-queue")
 def _dump_queue(app):
     window = app.window
-    f = StringIO()
+    uris = []
     for song in window.playlist.q.get():
-        f.write(song("~uri") + "\n")
-    return f.getvalue()
+        uris.append(song("~uri"))
+    return text2fsn(u"\n".join(uris) + u"\n")
 
 
 @registry.register("refresh")
@@ -444,6 +487,7 @@ def _print_query(app, query):
     See Issue 716
     """
 
+    query = arg2text(query)
     songs = app.library.query(query)
     return "\n".join([song("~filename") for song in songs]) + "\n"
 
@@ -451,22 +495,28 @@ def _print_query(app, query):
 @registry.register("print-query-text")
 def _print_query_text(app):
     if app.browser.can_filter_text():
-        return app.browser.get_filter_text() + "\n"
+        return text2fsn(text_type(app.browser.get_filter_text()) + u"\n")
 
 
 @registry.register("print-playing", optional=1)
-def _print_playing(app, fstring="<artist~album~tracknumber~title>"):
+def _print_playing(app, fstring=None):
     from quodlibet.formats import AudioFile
     from quodlibet.pattern import Pattern
+
+    if fstring is None:
+        fstring = u"<artist~album~tracknumber~title>"
+    else:
+        fstring = arg2text(fstring)
 
     song = app.player.info
     if song is None:
         song = AudioFile({"~filename": fsnative(u"/")})
         song.sanitize()
 
-    return Pattern(fstring).format(song) + "\n"
+    return text2fsn(Pattern(fstring).format(song) + u"\n")
 
 
 @registry.register("uri-received", args=1)
 def _uri_received(app, uri):
+    uri = arg2text(uri)
     app.browser.emit("uri-received", uri)
