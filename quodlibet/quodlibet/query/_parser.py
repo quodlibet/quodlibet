@@ -27,7 +27,7 @@ REGEXP = re.compile(r'([^/\\]|\\.)*')
 SINGLE_STRING = re.compile(r"([^'\\]|\\.)*")
 DOUBLE_STRING = re.compile(r'([^"\\]|\\.)*')
 MODIFIERS = re.compile(r'[cisld]*')
-TEXT = re.compile(r'[^=)|&#/<>!@,]+')
+TEXT = re.compile(r'[^,)]+')
 DATE = re.compile(r'\d{4}(-\d{1,2}(-\d{1,2})?)?')
 
 
@@ -265,12 +265,16 @@ class QueryParser(object):
             if outer:
                 # Hack to force plain text parsing for top level free text
                 raise ParseError('Free text not allowed at top level of query')
-            return self.RegexpMods(self.expect_re(TEXT))
 
-    def RegexpMods(self, regex):
+            return self.RegexpMods(re_escape(self.expect_re(TEXT)), False)
+
+    def RegexpMods(self, regex, mods=True):
         """Consume regexp modifiers from tokens and compile provided regexp
         with them."""
-        mod_string = self.expect_re(MODIFIERS)
+        if mods:
+            mod_string = self.expect_re(MODIFIERS)
+        else:
+            mod_string = u""
         mods = re.MULTILINE | re.UNICODE | re.IGNORECASE
         if "c" in mod_string:
             mods &= ~re.IGNORECASE
