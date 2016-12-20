@@ -882,7 +882,7 @@ class CoverSearch(object):
                 part = part.replace(stri, replace)
 
             p_split = part.split()
-            p_split.sort(lambda x, y: len(y) - len(x))
+            p_split.sort(key=len, reverse=True)
             p_split = p_split[:max(len(p_split) / 4, max(4 - len(p_split), 2))]
 
             new_query += ' '.join(p_split) + ' '
