@@ -297,7 +297,7 @@ def get_available_languages(domain):
     except OSError:
         return []
 
-    langs = []
+    langs = [u"C"]
     for lang in entries:
         mo_path = os.path.join(
             locale_dir, lang, "LC_MESSAGES", "%s.mo" % domain)
