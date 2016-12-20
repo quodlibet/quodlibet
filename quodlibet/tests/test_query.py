@@ -214,6 +214,12 @@ class TQuery(TestCase):
         self.failUnless(f(self.s1))
         self.failUnless(f(self.s2))
 
+    def test_re_escape(self):
+        af = AudioFile({"foo": "\""})
+        assert Query('foo="\\""').search(af)
+        af = AudioFile({"foo": "/"})
+        assert Query('foo=/\\//').search(af)
+
     def test_not(self):
         for s in ["album = !hate", "artist = !pi"]:
             self.failIf(Query(s).search(self.s1))
