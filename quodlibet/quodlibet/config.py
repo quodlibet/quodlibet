@@ -142,6 +142,9 @@ INITIAL = {
 
         # osx implementation might be buggy so let users disable it
         "disable_mmkeys": "false",
+
+        # the UI language to use, empty means system default
+        "language": "",
     },
     "rename": {
         "spaces": "false",

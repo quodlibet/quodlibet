@@ -31,9 +31,9 @@ quodlibet/devices/__init__.py
 quodlibet/devices/storage.py
 quodlibet/exfalso.py
 quodlibet/ext/covers/artwork_url.py
+quodlibet/ext/covers/discogs.py
 quodlibet/ext/covers/lastfm.py
 quodlibet/ext/covers/musicbrainz.py
-quodlibet/ext/covers/discogs.py
 quodlibet/ext/editing/iconv.py
 quodlibet/ext/editing/kakasi.py
 quodlibet/ext/editing/resub.py
@@ -51,6 +51,7 @@ quodlibet/ext/events/headphonemon.py
 quodlibet/ext/events/inhibit.py
 quodlibet/ext/events/iradiolog.py
 quodlibet/ext/events/jep118.py
+quodlibet/ext/events/language.py
 quodlibet/ext/events/lyricswindow.py
 quodlibet/ext/events/mediaserver.py
 quodlibet/ext/events/mpdserver/__init__.py
