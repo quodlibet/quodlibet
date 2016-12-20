@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Pango
 
 from quodlibet import _
 from quodlibet import config
@@ -50,6 +50,7 @@ class LanguagePreference(EventPlugin):
             render.set_property("markup", text)
 
         render = Gtk.CellRendererText()
+        render.props.ellipsize = Pango.EllipsizeMode.END
         combo.pack_start(render, True)
         combo.set_cell_data_func(render, cell_func)
 
@@ -65,7 +66,10 @@ class LanguagePreference(EventPlugin):
         box.pack_start(combo, False, False, 0)
         box.pack_start(
             Gtk.Label(
-                _("A restart is required for any changes to take effect")),
+                label=_(
+                    "A restart is required for any changes to take effect"),
+                wrap=True,
+                xalign=0),
             False, False, 0)
 
         return box
