@@ -14,6 +14,7 @@ from senf import environ, argv, fsn2text
 
 from quodlibet.compat import PY2
 from quodlibet.const import MinVersions
+from quodlibet import config
 from quodlibet.util import is_osx, is_windows, i18n
 from quodlibet.util.dprint import print_d, print_e, PrintHandler
 from quodlibet.util.urllib import install_urllib2_ca_file
@@ -54,7 +55,7 @@ def is_init():
     return _initialized
 
 
-def init(no_translations=False, no_excepthook=False):
+def init(no_translations=False, no_excepthook=False, config_file=None):
     """This needs to be called before any API can be used.
     Might raise in case of an error.
 
@@ -66,7 +67,7 @@ def init(no_translations=False, no_excepthook=False):
     if _initialized:
         return
 
-    init_cli(no_translations=no_translations)
+    init_cli(no_translations=no_translations, config_file=config_file)
     _init_gtk()
     _init_gtk_debug(no_excepthook=no_excepthook)
     _init_gst()
@@ -79,9 +80,13 @@ def _init_gettext(no_translations=False):
     """Call before using gettext helpers"""
 
     if no_translations:
-        i18n.init(u"C")
+        language = u"C"
     else:
-        i18n.init()
+        language = config.gettext("settings", "language")
+        if not language:
+            language = None
+
+    i18n.init(language)
 
     # Use the locale dir in ../build/share/locale if there is one
     base_dir = get_base_dir()
@@ -135,7 +140,7 @@ def _init_formats():
     init()
 
 
-def init_cli(no_translations=False):
+def init_cli(no_translations=False, config_file=None):
     """This needs to be called before any API can be used.
     Might raise in case of an error.
 
@@ -147,10 +152,10 @@ def init_cli(no_translations=False):
     if _cli_initialized:
         return
 
-    from quodlibet import config
-
     _init_python()
     config.init_defaults()
+    if config_file is not None:
+        config.init(config_file)
     _init_gettext(no_translations)
     _init_formats()
     _init_g()

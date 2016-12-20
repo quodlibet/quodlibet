@@ -21,7 +21,9 @@ def main(argv=None):
         argv = sys_argv
 
     import quodlibet
-    quodlibet.init()
+
+    config_file = os.path.join(quodlibet.get_user_dir(), "config")
+    quodlibet.init(config_file=config_file)
 
     from quodlibet.qltk import add_signal_watch, Icons
     add_signal_watch(app.quit)
@@ -33,8 +35,6 @@ def main(argv=None):
     argv.append(os.path.abspath(fsnative(u".")))
     opts, args = opts.parse(argv[1:])
     args[0] = os.path.realpath(args[0])
-
-    config.init(os.path.join(quodlibet.get_user_dir(), "config"))
 
     app.name = "Ex Falso"
     app.id = "exfalso"

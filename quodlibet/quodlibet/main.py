@@ -23,7 +23,8 @@ def main(argv=None):
 
     import quodlibet
 
-    quodlibet.init_cli()
+    config_file = os.path.join(quodlibet.get_user_dir(), "config")
+    quodlibet.init_cli(config_file=config_file)
 
     try:
         # we want basic commands not to import gtk (doubles process time)
@@ -48,8 +49,6 @@ def main(argv=None):
     app.name = "Quod Libet"
     app.id = "quodlibet"
     quodlibet.set_application_info(Icons.QUODLIBET, app.id, app.name)
-
-    config.init(os.path.join(quodlibet.get_user_dir(), "config"))
 
     library_path = os.path.join(quodlibet.get_user_dir(), "songs")
 
