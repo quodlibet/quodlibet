@@ -179,6 +179,11 @@ class TQuery(TestCase):
     def tearDown(self):
         config.quit()
 
+    def test_basic_tag(self):
+        assert Query("album=foo").search(self.s2)
+        assert not Query("album=.").search(self.s2)
+        assert Query("album=/./").search(self.s2)
+
     def test_repr(self):
         query = Query("foo = bar", [])
         self.assertEqual(

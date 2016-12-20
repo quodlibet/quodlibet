@@ -29,7 +29,7 @@ class TestExtract(TestCase):
         const.DEBUG = False
 
     def test_extract_single_tag(self):
-        self.verify("artist=jay-z", {"jay-z"})
+        self.verify("artist=jay z", {"jay z"})
 
     def test_extract_unsupported(self):
         try:
