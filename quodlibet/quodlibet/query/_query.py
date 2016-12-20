@@ -38,14 +38,11 @@ class Query(Node):
     stars = None
     """List of default tags used"""
 
-    def __init__(self, string, star=None, dumb_match_diacritics=True):
+    def __init__(self, string, star=None):
         """Parses the query string and returns a match object.
 
         star -- List of tags to look in if none are specified in the query.
                 Defaults to those specified in `STAR`.
-
-        dumb_match_diacritics -- In case of text queries (QueryType.TEXT)
-                                 try to match variants with diacritic marks.
 
         This parses the query language as well as some tagless shortcuts:
             "foo bar" ->  &(star1,star2=foo,star1,star2=bar)
@@ -57,8 +54,6 @@ class Query(Node):
             "!(foo, bar)" -> !star1,star2=(foo, bar)
             etc...
         """
-
-        # TODO dumb_match_diacritics
 
         if star is None:
             star = self.STAR
@@ -78,9 +73,7 @@ class Query(Node):
             pass
 
         if not set("#=").intersection(string):
-            parts = ["/%s/" % re_escape(s) for s in string.split()]
-            if dumb_match_diacritics:
-                parts = [p + "d" for p in parts]
+            parts = ["/%s/d" % re_escape(s) for s in string.split()]
             string = "&(" + ",".join(parts) + ")"
             self.string = string
 

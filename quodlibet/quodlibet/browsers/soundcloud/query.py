@@ -47,10 +47,8 @@ SUPPORTED = set(_QL_TO_SC.keys()) | {"rating"}
 
 class SoundcloudQuery(Query):
 
-    def __init__(self, string, star=None, dumb_match_diacritics=False,
-                 clock=time.time):
-        super(SoundcloudQuery, self).__init__(string, star,
-                                              dumb_match_diacritics)
+    def __init__(self, string, star=None, clock=time.time):
+        super(SoundcloudQuery, self).__init__(string, star)
         self._clock = clock
         self.terms = self._extract_terms(self._match)
 
