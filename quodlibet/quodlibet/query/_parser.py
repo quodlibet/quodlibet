@@ -265,7 +265,7 @@ class QueryParser(object):
                 # Hack to force plain text parsing for top level free text
                 raise ParseError('Free text not allowed at top level of query')
 
-            return match.Regex(re_escape(self.expect_re(TEXT)), u"")
+            return match.Regex(re_escape(self.expect_re(TEXT)), u"d")
 
     def RegexpMods(self, regex):
         """Consume regexp modifiers from tokens and compile provided regexp

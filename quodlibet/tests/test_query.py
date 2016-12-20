@@ -416,7 +416,7 @@ class TQuery(TestCase):
         self.assertRaises(ValueError, Query, u"foobar", star=["~#mtime"])
 
     def test_match_diacriticals_explcit(self):
-        self.failIf(Query(u'title=angstrom').search(self.s4))
+        assert Query(u'title=angstrom').search(self.s4)
         self.failIf(Query(u'title="Ångstrom"').search(self.s4))
         self.failUnless(Query(u'title="Ångstrom"d').search(self.s4))
         self.failUnless(Query(u'title=Ångström').search(self.s4))
