@@ -215,16 +215,9 @@ def add_station(uri):
     if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):
         try:
             sock = urlopen(uri)
-        except EnvironmentError as e:
-            print_d("Got %s from %s" % (uri, e))
-            encoding = util.get_locale_encoding()
-            try:
-                err = e.strerror.decode(encoding, 'replace')
-            except TypeError:
-                err = e.strerror[1].decode(encoding, 'replace')
-            except AttributeError:
-                # Give up and display the exception - may be useful HTTP info
-                err = str(e)
+        except EnvironmentError as err:
+            err = text_type(err)
+            print_d("Got %s from %s" % (uri, err))
             ErrorMessage(None, _("Unable to add station"), escape(err)).run()
             return None
 

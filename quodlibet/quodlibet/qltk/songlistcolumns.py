@@ -22,8 +22,7 @@ from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.qltk import add_css
 from quodlibet.util.path import unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS
-from quodlibet.compat import text_type, string_types, PY2, listvalues, \
-    listitems
+from quodlibet.compat import text_type, string_types, listvalues, listitems
 
 
 def create_songlist_column(t):
@@ -286,8 +285,6 @@ class DateColumn(WideTextColumn):
                 format_ = "%x"
             stamp = time.localtime(stamp)
             text = time.strftime(format_, stamp)
-            if PY2:
-                text = text.decode(util.get_locale_encoding())
             cell.set_property('text', text)
 
 

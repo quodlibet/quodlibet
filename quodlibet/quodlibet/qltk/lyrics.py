@@ -20,8 +20,8 @@ from quodlibet.formats import AudioFileError
 from quodlibet import qltk
 from quodlibet.qltk import Icons
 from quodlibet import util
-from quodlibet.util import connect_obj, print_w
-from quodlibet.compat import quote
+from quodlibet.util import connect_obj
+from quodlibet.compat import quote, text_type
 from quodlibet.util.urllib import urlopen
 
 
@@ -98,12 +98,8 @@ class LyricsPane(Gtk.VBox):
                 quote(title.encode('utf-8'))))
             text = sock.read()
         except Exception as err:
-            encoding = util.get_locale_encoding()
-            try:
-                err = err.strerror.decode(encoding, 'replace')
-            except:
-                err = _("Unable to download lyrics.")
-            GLib.idle_add(buffer.set_text, err)
+            util.print_exc()
+            GLib.idle_add(buffer.set_text, text_type(err))
             return
 
         sock.close()
@@ -133,15 +129,15 @@ class LyricsPane(Gtk.VBox):
         lyricname = song.lyric_filename
         try:
             os.makedirs(os.path.dirname(lyricname))
-        except EnvironmentError as err:
+        except EnvironmentError:
+            util.print_exc()
             pass
 
         try:
             with open(lyricname, "w") as f:
                 f.write(text)
-        except EnvironmentError as err:
-            encoding = util.get_locale_encoding()
-            print_w(err.strerror.decode(encoding, "replace"))
+        except EnvironmentError:
+            util.print_exc()
         delete.set_sensitive(True)
         save.set_sensitive(False)
 

@@ -13,7 +13,6 @@ from glob import glob
 from gi.repository import Gtk, GLib, GdkPixbuf
 
 import quodlibet
-from quodlibet import util
 from quodlibet import app
 from quodlibet import _
 from quodlibet.devices._base import Device
@@ -22,6 +21,7 @@ from quodlibet.pattern import FileFromPattern
 from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.util.path import (mtime, escape_filename,
     strip_win32_incompat_from_path)
+from quodlibet.compat import text_type
 
 CACHE = os.path.join(quodlibet.get_user_dir(), 'cache')
 
@@ -126,8 +126,7 @@ class StorageDevice(Device):
             self.__library.add([song])
             return song
         except (OSError, IOError, GLib.GError) as exc:
-            encoding = util.get_locale_encoding()
-            return str(exc).decode(encoding, 'replace')
+            return text_type(exc)
 
     def delete(self, parent_widget, song):
         try:
@@ -149,8 +148,7 @@ class StorageDevice(Device):
 
             return True
         except (OSError, IOError) as exc:
-            encoding = util.get_locale_encoding()
-            return str(exc).decode(encoding, 'replace')
+            return text_type(exc)
 
     def cleanup(self, wlb, action):
         self.__save_library()
