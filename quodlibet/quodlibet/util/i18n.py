@@ -10,8 +10,10 @@ import sys
 import gettext
 import locale
 
-from senf import environ, path2fsn, fsn2text
+from senf import environ, path2fsn, fsn2text, text2fsn
 
+from quodlibet.util.path import unexpand
+from quodlibet.util.dprint import print_d
 from quodlibet.compat import text_type, PY2, listfilter
 
 
@@ -189,13 +191,92 @@ class GlibTranslations(gettext.GNUTranslations):
         raise NotImplementedError("We no longer do builtins")
 
 
-_translations = GlibTranslations()
+_initialized = False
+_debug_text = None
+_translations = {
+    "quodlibet": GlibTranslations(),
+}
 
 
-def set_translation(trans):
-    global _translations
+def set_debug_text(debug_text=None):
+    """
+    Args:
+        debug_text (text_type or None): text to add to all translations
+    """
 
-    _translations = trans
+    global _debug_text, _translations
+
+    _debug_text = debug_text
+    for trans in _translations.values():
+        trans.set_debug_text(debug_text)
+
+
+def register_translation(domain, localedir=None):
+    """Register a translation domain
+
+    Args:
+        domain (str): the gettext domain
+        localedir (pathlike): A directory used for translations, if it doesn't
+            exist the system one will be used.
+    Returns:
+        GlibTranslations
+    """
+
+    global _debug_text, _translations, _initialized
+
+    assert _initialized
+
+    if localedir is not None and os.path.isdir(localedir):
+        print_d("Using local localedir: %r" % unexpand(localedir))
+        gettext.bindtextdomain(domain, localedir)
+    else:
+        localedir = gettext.bindtextdomain(domain)
+
+    try:
+        t = gettext.translation(domain, class_=GlibTranslations)
+    except IOError:
+        print_d("No translation found in %r" % unexpand(localedir))
+        t = GlibTranslations()
+    else:
+        print_d("Translations loaded: %r" % unexpand(t.path))
+
+    t.set_debug_text(_debug_text)
+    _translations[domain] = t
+    return t
+
+
+def init(language=None):
+    """Call this sometime at start before any register_translation()
+    and before any gettext using libraries are loaded.
+
+    Args:
+        language (text_type or None): Either a language to use or None for the
+            system derived default.
+    """
+
+    global _initialized
+
+    set_i18n_envvars()
+    fixup_i18n_envvars()
+
+    print_d("LANGUAGE: %r" % environ.get("LANGUAGE"))
+    print_d("LANG: %r" % environ.get("LANG"))
+
+    try:
+        locale.setlocale(locale.LC_ALL, '')
+    except locale.Error:
+        pass
+
+    # XXX: these are our most user facing APIs, make sre they are not loaded
+    # before we set the language. For GLib this is too late..
+    assert "gi.repository.Gtk" not in sys.modules
+    assert "gi.repository.Gst" not in sys.modules
+
+    if language is not None:
+        environ["LANGUAGE"] = text2fsn(language)
+        print_d("LANGUAGE: %r" % environ.get("LANGUAGE"))
+
+    _initialized = True
 
 
 def get_available_languages(domain):
@@ -235,7 +316,8 @@ def _(message):
     Lookup the translation for message
     """
 
-    return _translations.wrap_text(_translations.ugettext(message))
+    t = _translations["quodlibet"]
+    return t.wrap_text(t.ugettext(message))
 
 
 def N_(message):
@@ -262,8 +344,8 @@ def C_(context, message):
     Lookup the translation for message for a context
     """
 
-    return _translations.wrap_text(
-        _translations.upgettext(context, message))
+    t = _translations["quodlibet"]
+    return t.wrap_text(t.upgettext(context, message))
 
 
 def ngettext(singular, plural, n):
@@ -279,8 +361,8 @@ def ngettext(singular, plural, n):
     on the value of n.
     """
 
-    return _translations.wrap_text(
-        _translations.ungettext(singular, plural, n))
+    t = _translations["quodlibet"]
+    return t.wrap_text(t.ungettext(singular, plural, n))
 
 
 def numeric_phrase(singular, plural, n, template_var=None):
@@ -331,5 +413,5 @@ def npgettext(context, singular, plural, n):
     Like ngettext, but with also depends on the context.
     """
 
-    return _translations.wrap_text(
-        _translations.unpgettext(context, singular, plural, n))
+    t = _translations["quodlibet"]
+    return t.wrap_text(t.unpgettext(context, singular, plural, n))

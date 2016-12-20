@@ -44,8 +44,6 @@ QUODLIBET_TEST_TRANS
 QUODLIBET_DEBUG
     When in the environment gives the same result as if ``--debug`` was passed.
 
-QUODLIBET_NO_TRANS
-    When in the environment disables translations
 
 QUODLIBET_BACKEND
     Can be set to the audio backend, overriding the value present in the main

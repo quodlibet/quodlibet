@@ -5,9 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import gettext
-
-from .i18n import GlibTranslations
+from .i18n import register_translation
 
 
 # Based on https://pkg-isocodes.alioth.debian.org/
@@ -529,12 +527,8 @@ ISO_639_2 = _ISO_639_2.keys()
 
 def _gettext(name, cache=[]):
     if not cache:
-        try:
-            t = gettext.translation("iso_639", class_=GlibTranslations)
-        except IOError:
-            cache.append(lambda x: x)
-        else:
-            cache.append(t.gettext)
+        t = register_translation("iso_639")
+        cache.append(lambda s: t.wrap_text(t.gettext(s)))
     return cache[0](name)
 
 

@@ -7,20 +7,15 @@
 
 import os
 import sys
-import gettext
-import locale
 import warnings
 import logging
 
-from senf import environ, argv
+from senf import environ, argv, fsn2text
 
 from quodlibet.compat import PY2
 from quodlibet.const import MinVersions
-from quodlibet.util import is_osx, is_windows
-from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
-    fixup_i18n_envvars, set_translation
+from quodlibet.util import is_osx, is_windows, i18n
 from quodlibet.util.dprint import print_d, print_e, PrintHandler
-from quodlibet.util.path import unexpand
 from quodlibet.util.urllib import install_urllib2_ca_file
 
 from ._main import get_base_dir, is_release, get_image_dir
@@ -80,19 +75,13 @@ def init(no_translations=False, no_excepthook=False):
     _initialized = True
 
 
-def _init_gettext():
+def _init_gettext(no_translations=False):
     """Call before using gettext helpers"""
 
-    set_i18n_envvars()
-    fixup_i18n_envvars()
-
-    print_d("LANGUAGE: %r" % environ.get("LANGUAGE"))
-    print_d("LANG: %r" % environ.get("LANG"))
-
-    try:
-        locale.setlocale(locale.LC_ALL, '')
-    except locale.Error:
-        pass
+    if no_translations:
+        i18n.init(u"C")
+    else:
+        i18n.init()
 
     # Use the locale dir in ../build/share/locale if there is one
     base_dir = get_base_dir()
@@ -103,23 +92,10 @@ def _init_gettext():
         localedir = os.path.join(
             base_dir, "..", "..", "share", "locale")
 
-    if os.path.isdir(localedir):
-        print_d("Using local localedir: %r" % unexpand(localedir))
-        gettext.bindtextdomain("quodlibet", localedir)
-    else:
-        localedir = gettext.bindtextdomain("quodlibet")
-
-    try:
-        t = gettext.translation("quodlibet", class_=GlibTranslations)
-    except IOError:
-        print_d("No translation found in %r" % unexpand(localedir))
-        t = GlibTranslations()
-    else:
-        print_d("Translations loaded: %r" % unexpand(t.path))
-
+    i18n.register_translation("quodlibet", localedir)
     debug_text = environ.get("QUODLIBET_TEST_TRANS")
-    t.set_debug_text(debug_text)
-    set_translation(t)
+    if debug_text is not None:
+        i18n.set_debug_text(fsn2text(debug_text))
 
 
 def _init_python():
@@ -175,8 +151,7 @@ def init_cli(no_translations=False):
 
     _init_python()
     config.init_defaults()
-    if not no_translations and "QUODLIBET_NO_TRANS" not in environ:
-        _init_gettext()
+    _init_gettext(no_translations)
     _init_formats()
     _init_g()
 
