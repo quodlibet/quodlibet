@@ -149,6 +149,9 @@ class UpdateDialog(Dialog):
             Gtk.Label(label=text, use_markup=True, wrap=True,
                       justify=Gtk.Justification.CENTER))
 
+        button = self.get_widget_for_response(Gtk.ResponseType.CANCEL)
+        button.set_label(_("_Close"))
+
     def _set_widget(self, widget):
         old = self._stack.get_visible_child()
         self._stack.add(widget)
