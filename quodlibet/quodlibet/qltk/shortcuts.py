@@ -89,5 +89,10 @@ def show_shortcuts(parent):
         window.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         window.set_modal(True)
         window.show()
+        # XXX: The windows does some weird size changes on start which confuses
+        # window placement. This fixes the jumping around and wrong position
+        # with some WMs and under Windows.
+        window.hide()
+        window.show()
     else:
         util.website(const.SHORTCUTS_HELP)
