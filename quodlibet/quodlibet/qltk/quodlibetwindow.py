@@ -1059,7 +1059,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         act = Action(name="Shortcuts", label=_("_Keyboard Shortcuts"))
         act.connect('activate', self.__keyboard_shortcuts)
-        ag.add_action_with_accel(act, "<Primary><Shift>question")
+        ag.add_action_with_accel(act, "<Primary>question")
 
         act = Action(name="About", label=_("_About"),
                      icon_name=Icons.HELP_ABOUT)
