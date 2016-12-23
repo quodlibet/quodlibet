@@ -10,6 +10,7 @@ import os
 import contextlib
 import sys
 import shutil
+import locale
 
 from gi.repository import Gtk, Gdk
 from senf import fsnative, environ
@@ -24,6 +25,27 @@ def dummy_path(path):
     if os.name == "nt":
         return normalize_path(u"z:\\" + path.replace(u"/", u"\\"))
     return path
+
+
+@contextlib.contextmanager
+def locale_numeric_conv(
+        decimal_point=".", grouping=[3, 3, 0], thousands_sep=","):
+    """Temporarely change number formatting conventions.
+
+    By default this uses en_US conventions.
+    """
+
+    # XXX: locale internals
+    override = locale._override_localeconv
+    old = override.copy()
+    try:
+        override["decimal_point"] = decimal_point
+        override["grouping"] = grouping
+        override["thousands_sep"] = thousands_sep
+        yield
+    finally:
+        override.clear()
+        override.update(old)
 
 
 def _send_key_click_event(widget, **kwargs):

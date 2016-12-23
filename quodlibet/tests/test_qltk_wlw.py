@@ -4,6 +4,7 @@
 # published by the Free Software Foundation
 
 from tests import TestCase
+from .helper import locale_numeric_conv
 
 from gi.repository import Gtk
 
@@ -37,11 +38,12 @@ class TWaitLoadWindow(TestCase):
         wlw.destroy()
 
     def test_plurals(self):
-        wlw = WaitLoadWindow(None, 1234, "At %(current)d of %(total)d")
-        self.failUnlessEqual(wlw._label.get_text(), "At 0 of 1,234")
-        while wlw.current < 1000:
-            wlw.step()
-        self.failUnlessEqual(wlw._label.get_text(), "At 1,000 of 1,234")
+        with locale_numeric_conv():
+            wlw = WaitLoadWindow(None, 1234, "At %(current)d of %(total)d")
+            self.failUnlessEqual(wlw._label.get_text(), "At 0 of 1,234")
+            while wlw.current < 1000:
+                wlw.step()
+            self.failUnlessEqual(wlw._label.get_text(), "At 1,000 of 1,234")
 
     def test_connect(self):
         self.failUnlessEqual(2, self.parent.count)

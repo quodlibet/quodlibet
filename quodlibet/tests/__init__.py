@@ -184,11 +184,14 @@ def init_test_environ():
     # try to make things the same in case a different locale is active.
     # LANG for gettext, setlocale for number formatting etc.
     # Note: setlocale has to be called after Gtk.init()
-    if os.name != "nt":
-        environ["LANG"] = locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
-    else:
-        environ["LANG"] = "en_US.utf8"
-        locale.setlocale(locale.LC_ALL, "english")
+    try:
+        if os.name != "nt":
+            environ["LANG"] = locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
+        else:
+            environ["LANG"] = "en_US.utf8"
+            locale.setlocale(locale.LC_ALL, "english")
+    except locale.Error:
+        pass
 
 
 def exit_test_environ():

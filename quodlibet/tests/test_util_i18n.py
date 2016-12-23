@@ -2,18 +2,15 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-import locale
-import contextlib
 
 from senf import environ
 
-from tests import TestCase, skipIf
-from .helper import preserve_environ
+from tests import TestCase
+from .helper import preserve_environ, locale_numeric_conv
 
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
     set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, \
     numeric_phrase, get_available_languages
-from quodlibet.util import is_osx
 from quodlibet.compat import text_type
 
 
@@ -51,37 +48,6 @@ class TGlibTranslations(TestCase):
         self.assertTrue(isinstance(t, text_type))
 
 
-def has_locale(loc):
-    if is_osx():
-        return False
-
-    try:
-        with set_locale(loc):
-            pass
-    except locale.Error:
-        return False
-    else:
-        return True
-
-
-@contextlib.contextmanager
-def set_locale(loc):
-    """
-    with set_locale('fr_FR.utf-8'):
-        do_something()
-
-    Raises:
-        locale.Error
-    """
-
-    old_loc = locale.setlocale(locale.LC_ALL)
-    locale.setlocale(locale.LC_ALL, loc)
-    try:
-        yield
-    finally:
-        locale.setlocale(locale.LC_ALL, old_loc)
-
-
 class Tgettext(TestCase):
 
     def test_get_languages(self):
@@ -117,12 +83,13 @@ class Tgettext(TestCase):
         actual = numeric_phrase("%d green bottle", "%d green bottles", 1)
         self.failUnlessEqual(actual, "1 green bottle")
 
-        actual = numeric_phrase("%d green bottle", "%d green bottles", 1234)
-        self.failUnlessEqual(actual, "1,234 green bottles")
+        with locale_numeric_conv():
+            actual = numeric_phrase(
+                "%d green bottle", "%d green bottles", 1234)
+            self.failUnlessEqual(actual, "1,234 green bottles")
 
-    @skipIf(not has_locale('fr_FR.utf-8'), "locale missing")
     def test_numeric_phrase_locales(self):
-        with set_locale('fr_FR.utf-8'):
+        with locale_numeric_conv(thousands_sep=" "):
             actual = numeric_phrase("%(bottles)d green bottle",
                                     "%(bottles)d green bottles",
                                     1234, "bottles")
@@ -133,7 +100,9 @@ class Tgettext(TestCase):
                                 "%(bottles)d green bottles", 1, "bottles")
         self.failUnlessEqual(actual, "1 green bottle")
 
-        actual = numeric_phrase("%(bottles)d green bottle",
-                                "%(bottles)d green bottles", 1234, "bottles")
+        with locale_numeric_conv():
+            actual = numeric_phrase("%(bottles)d green bottle",
+                                    "%(bottles)d green bottles",
+                                    1234, "bottles")
 
-        self.failUnlessEqual(actual, "1,234 green bottles")
+            self.failUnlessEqual(actual, "1,234 green bottles")
