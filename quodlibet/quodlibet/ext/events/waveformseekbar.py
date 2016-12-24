@@ -174,6 +174,8 @@ class WaveformScale(Gtk.EventBox):
         super(WaveformScale, self).__init__(*args, **kwds)
         self.set_size_request(40, 40)
         self.position = 0
+        self.override_background_color(
+            Gtk.StateFlags.NORMAL, Gdk.RGBA(alpha=0))
 
     @property
     def width(self):
@@ -263,6 +265,7 @@ class WaveformScale(Gtk.EventBox):
             ratio = event.x / self.get_allocation().width
             length = self._player.info("~#length")
             self._player.seek(ratio * length * 1000)
+            return True
 
     def set_position(self, position):
         self.position = position
