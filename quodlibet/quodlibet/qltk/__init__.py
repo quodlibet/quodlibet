@@ -15,10 +15,39 @@ gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk
 from gi.repository import Gdk
-from gi.repository import GLib
+from gi.repository import GLib, GObject
 from senf import fsn2bytes, bytes2fsn
 
 from quodlibet.util import gdecode, print_d, print_w
+
+
+def get_fg_highlight_color(widget):
+    """Returns a color useable for highlighting things on top of the standard
+    background color.
+
+    Args:
+        widget (Gtk.Widget)
+    Returns:
+        Gdk.RGBA
+    """
+
+    context = widget.get_style_context()
+    if hasattr(Gtk.StateFlags, "LINK"):
+        # gtk+ >=3.12
+        context.save()
+        context.set_state(Gtk.StateFlags.LINK)
+        color = context.get_color(context.get_state())
+        context.restore()
+    else:
+        value = GObject.Value()
+        value.init(Gdk.Color)
+        value.set_boxed(None)
+        context.get_style_property("link-color", value)
+        color = Gdk.RGBA()
+        old_color = value.get_boxed()
+        if old_color is not None:
+            color.parse(old_color.to_string())
+    return color
 
 
 def get_primary_accel_mod():
