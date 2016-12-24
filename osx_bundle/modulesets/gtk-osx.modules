@@ -83,6 +83,8 @@
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug-724590-GSlice-slab_stack-corruption.patch" strip="1"/>
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/gio-in-reserved-in-gcc-48.patch" strip="1"/>
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug747146-Build-cocoanotification-only-if-supported.patch" strip="1"/>
+      <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/glib-gint64-long-long.patch" strip="1"/>
+      <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/glib-bug-772454-disable-kqueue.patch" strip="1"/>
     </branch>
     <dependencies>
         <dep package="libffi"/>
@@ -103,9 +105,11 @@
             module="xorg/individual/util/util-macros-1.19.0.tar.bz2"/>
   </autotools>
 
-  <!-- There is no stable release yet that works here, so use master -->
+  <!-- There is no stable release yet that works here, but commit
+       06fd4a27 breaks the build for gtk-osx, tag v1.3.1 builds
+       fine. -->
   <autotools id="libepoxy">
-    <branch repo="github" module="anholt/libepoxy"/>
+    <branch repo="github" module="anholt/libepoxy" revision="v1.3.1"/>
     <dependencies>
       <dep package="xorg-util-macros"/>
     </dependencies>
@@ -116,6 +120,7 @@
             version="1.48.0"
             hash="sha256:fa275aaccdbfc91ec0bc9a6fd0562051acdba731e7d584b64a277fec60e75877">
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/girscanner-objc.patch" strip="1"/>
+            <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/gi_cairo_library_path.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="glib"/>
@@ -211,8 +216,8 @@
 
   <autotools id="gtk+-3.0" autogen-sh="autogen.sh"
              autogenargs="--enable-quartz-backend --enable-quartz-relocation">
-    <branch module="gtk+/3.20/gtk+-3.20.3.tar.xz" version="3.20.3"
-            hash="sha256:3834f3bf23b260b3e5ebfea41102e2026a8af29e36c3620edf4a5cf05e82f694">
+    <branch module="gtk+/3.20/gtk+-3.20.9.tar.xz" version="3.20.9"
+            hash="sha256:83a609ba2f3424b5509e73967c49c67833af466d6f91081b24ee5c64fce6ac17">
     </branch>
     <dependencies>
       <dep package="glib"/>

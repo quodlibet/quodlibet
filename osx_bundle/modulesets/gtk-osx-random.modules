@@ -405,7 +405,8 @@ Libglade itself is deprecated. This is the last release. -->
 
   <autotools id="gtkspell3" autogen-sh="configure">
     <branch module="gtkspell/gtkspell3-3.0.7.tar.gz" repo="sourceforge"
-	    version="3.0.7">
+            version="3.0.7">
+      <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/0001-Enable-use-of-XDG_DATA_DIRS-for-locating-iso-code-fi.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="enchant"/>
@@ -458,9 +459,8 @@ Libglade itself is deprecated. This is the last release. -->
   </autotools>
 
   <autotools id="guile2" autogen-sh="configure">
-    <branch repo="ftp.gnu.org" module="guile/guile-2.0.11.tar.gz"
-	    version="2.0.11">
-      <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/guile20-align-fix.patch" strip="1"/>
+    <branch repo="ftp.gnu.org" module="guile/guile-2.0.12.tar.gz"
+	    version="2.0.12">
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/guild-shell.patch" strip="1"/>
     </branch>
     <dependencies>
