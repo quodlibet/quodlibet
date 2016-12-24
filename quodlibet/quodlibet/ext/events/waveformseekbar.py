@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2016 0x1777
 #           2016 Nick Boultbee
+#           2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -17,8 +18,8 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align
 from quodlibet.qltk import Icons
 from quodlibet.qltk.seekbutton import TimeLabel
-from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.util import connect_destroy, print_d
+from gi.repository import GLib
 
 
 class WaveformSeekBar(Gtk.Box):
@@ -34,6 +35,8 @@ class WaveformSeekBar(Gtk.Box):
         self._remaining_label = TimeLabel()
         self._waveform_scale = WaveformScale()
 
+        self.__id = None
+
         self.pack_start(Align(self._elapsed_label, border=6), False, True, 0)
         self.pack_start(self._waveform_scale, True, True, 0)
         self.pack_start(Align(self._remaining_label, border=6), False, True, 0)
@@ -41,18 +44,16 @@ class WaveformSeekBar(Gtk.Box):
         for child in self.get_children():
             child.show_all()
 
-        self._tracker = TimeTracker(player)
-        self._tracker.connect('tick', self._on_tick, player)
-
         connect_destroy(player, 'seek', self._on_player_seek)
-        connect_destroy(player, 'song-started', self._on_song_started)
         connect_destroy(player, 'song-ended', self._on_song_ended)
+        connect_destroy(player, 'paused', self._on_song_paused, True)
+        connect_destroy(player, 'unpaused', self._on_song_paused, False)
         connect_destroy(player, 'notify::seekable', self._on_seekable_changed)
         connect_destroy(library, 'changed', self._on_song_changed, player)
 
         self.connect('destroy', self._on_destroy)
+
         self._update(player)
-        self._tracker.tick()
 
         if player.info:
             self._create_waveform(player.info, CONFIG.data_size)
@@ -108,12 +109,6 @@ class WaveformSeekBar(Gtk.Box):
                 self._waveform_scale.reset(self._rms_vals, self._player)
                 self._waveform_scale.set_placeholder(False)
 
-    def _on_destroy(self, *args):
-        self._tracker.destroy()
-
-    def _on_tick(self, tracker, player):
-        self._update(player)
-
     def _on_seekable_changed(self, player, *args):
         self._update(player)
 
@@ -127,8 +122,47 @@ class WaveformSeekBar(Gtk.Box):
         self._waveform_scale.set_placeholder(True)
         self._update(player)
 
-    def _on_song_started(self, player, song):
+    def _on_song_paused(self, player, paused):
+        if paused:
+            self._source_remove()
+            return
+
+        if self.__id is None:
+            self.__id = self._timeout_add(player)
+
+    def _on_destroy(self, *args):
+        self._source_remove()
+
+    def _source_remove(self):
+        if self.__id is not None:
+            GLib.source_remove(self.__id)
+            self.__id = None
+
+    def _timeout_add(self, player):
+        # update for every "elapsed" pixel
+        wf_width = self._waveform_scale.width  # pixel
+        song_length = player.info("~#length")  # ms
+        render_speed = int(CONFIG.render_speed)
+        update_freq = int(song_length * 1000 * render_speed / wf_width)
+
+        print_d("update_freq = {0} ms, render_speed = {1}"
+                .format(update_freq, render_speed))
+
+        return GLib.timeout_add(update_freq,
+                                self._update_callback,
+                                player,
+                                wf_width,
+                                render_speed)
+
+    def _update_callback(self, player, waveform_width, render_speed):
+        # recalculate update_freq if the width or render speed changed
+        if (self._waveform_scale.width != waveform_width
+                or CONFIG.render_speed != render_speed):
+            self.__id = self._timeout_add(player)
+            return False
+
         self._update(player)
+        return not player.paused
 
     def _on_song_ended(self, player, song, ended):
         self._update(player)
@@ -273,6 +307,7 @@ class Config(object):
     high_res = BoolConfProp(_config, "high_res", True)
     elapsed_color = ConfProp(_config, "elapsed_color", "")
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
+    render_speed = IntConfProp(_config, "render_speed", 2)
 
     @property
     def line_width(self):
@@ -306,14 +341,13 @@ class WaveformSeekBarPlugin(EventPlugin):
         del self._bar
 
     def PluginPreferences(self, parent):
-        red = Gdk.RGBA()
-        red.parse("#ff0000")
-
-        def changed(entry):
+        def color_changed(entry):
             text = entry.get_text()
 
             if not Gdk.RGBA().parse(text):
                 # Invalid color, make text red
+                red = Gdk.RGBA()
+                red.parse("#ff0000")
                 entry.override_color(Gtk.StateFlags.NORMAL, red)
             else:
                 # Reset text color
@@ -321,7 +355,8 @@ class WaveformSeekBarPlugin(EventPlugin):
 
             CONFIG.elapsed_color = text
 
-        vbox = Gtk.VBox(spacing=6)
+        def update_render_speed(scale):
+            CONFIG.render_speed = scale.get_value()
 
         def create_color():
             hbox = Gtk.HBox(spacing=6)
@@ -331,7 +366,7 @@ class WaveformSeekBarPlugin(EventPlugin):
             entry = Gtk.Entry()
             if CONFIG.elapsed_color:
                 entry.set_text(CONFIG.elapsed_color)
-            entry.connect('changed', changed)
+            entry.connect('changed', color_changed)
             hbox.pack_start(entry, True, True, 0)
             return hbox
 
@@ -342,7 +377,28 @@ class WaveformSeekBarPlugin(EventPlugin):
             hbox.pack_start(ccb, True, True, 0)
             return hbox
 
+        def create_render_speed():
+            scalebox = Gtk.VBox(spacing=6)
+
+            scale = Gtk.HScale(adjustment=Gtk.Adjustment.new(
+                CONFIG.render_speed, 1, 10, 1, 1, 0))
+            scale.set_digits(0)
+            scale.set_value_pos(Gtk.PositionType.RIGHT)
+            scale.connect('value-changed', update_render_speed)
+            scale.set_tooltip_text(
+                _("Seekbar render speed (lower is faster"))
+
+            label = Gtk.Label(
+                label=_("Seekbar render speed (lower is faster)"))
+
+            scalebox.pack_start(label, False, True, 0)
+            scalebox.pack_start(scale, False, True, 0)
+            return scalebox
+
+        vbox = Gtk.VBox(spacing=6)
+
         vbox.pack_start(create_color(), True, True, 0)
         vbox.pack_start(create_resolution(), True, True, 0)
+        vbox.pack_start(create_render_speed(), True, True, 0)
 
         return vbox
