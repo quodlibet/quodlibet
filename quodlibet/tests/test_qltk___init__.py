@@ -17,6 +17,12 @@ class TQltk(TestCase):
     def test_none(self):
         self.failUnless(qltk.get_top_parent(None) is None)
 
+    def test_get_fg_highlight_color(self):
+        widget = Gtk.Button()
+        color = qltk.get_fg_highlight_color(widget)
+        assert color is not None
+        assert isinstance(color, Gdk.RGBA)
+
     def test_gtp(self):
         w = Gtk.Window()
         l = Gtk.Label()

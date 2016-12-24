@@ -18,6 +18,7 @@ from quodlibet.qltk import Align
 from quodlibet.qltk import Icons
 from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
+from quodlibet.qltk import get_fg_highlight_color
 from quodlibet.util import connect_destroy, print_d
 
 
@@ -233,9 +234,9 @@ class WaveformScale(Gtk.EventBox):
         context.set_state(Gtk.StateFlags.NORMAL)
         bg_color = context.get_background_color(context.get_state())
         fg_color = context.get_color(context.get_state())
-        context.set_state(Gtk.StateFlags.LINK)
-        elapsed_color = context.get_color(context.get_state())
         context.restore()
+
+        elapsed_color = get_fg_highlight_color(self)
 
         # Check if the user set a different color in the config
         elapsed_color_config = CONFIG.elapsed_color
