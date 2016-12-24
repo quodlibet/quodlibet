@@ -226,6 +226,7 @@ Yasushi Iwata (ja)
 Николай Прокошенко (ru)
 Ростислав "zbrox" Райков (bg)
 Сергей Федосеев (ru)
+scootergrisen (da)
 """.strip().splitlines())
 
 ARTISTS = sorted(u"""\
