@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-26 14:32+0100\n"
-"PO-Revision-Date: 2016-12-26 15:24+0100\n"
+"PO-Revision-Date: 2016-12-26 17:42+0100\n"
 "Last-Translator: Marek Suchánek <marek.suchanek@protonmail.com>\n"
 "Language-Team: Czech (Czech Republic)\n"
 "Language: cs_CZ\n"
@@ -1305,349 +1305,338 @@ msgstr "adresář"
 
 #: ../quodlibet/ext/covers/artwork_url.py:19
 msgid "Artwork URL Cover Source"
-msgstr ""
+msgstr "URL zdroj přebalů alb"
 
 #: ../quodlibet/ext/covers/artwork_url.py:20
 msgid ""
 "Downloads covers linked to by the artwork_url tag.This works with the "
 "Soundcloud browser."
 msgstr ""
+"Stahuje přebaly uvedené ve značce artwork_url. Toto funguje s prohlížečem "
+"Soundcloud."
 
 #: ../quodlibet/ext/covers/discogs.py:25
-#, fuzzy
 msgid "Discogs Cover Source"
-msgstr "ID skladby na MusicBrainz"
+msgstr "Zdroj přebalů Discogs"
 
 #: ../quodlibet/ext/covers/discogs.py:26
 msgid "Downloads covers from Discogs."
-msgstr ""
+msgstr "Stahuje přebaly z Discogs."
 
 #: ../quodlibet/ext/covers/lastfm.py:22
 msgid "Last.fm Cover Source"
-msgstr ""
+msgstr "Zdroj přebalů Last.fm"
 
 #: ../quodlibet/ext/covers/lastfm.py:23
 msgid "Downloads covers from Last.fm's cover art archive."
-msgstr ""
+msgstr "Stahuje přebaly z archivu přebalů na Last.fm."
 
 #: ../quodlibet/ext/covers/musicbrainz.py:19
-#, fuzzy
 msgid "MusicBrainz Cover Source"
-msgstr "ID skladby na MusicBrainz"
+msgstr "Zdroj přebalů MusicBrainz"
 
 #: ../quodlibet/ext/covers/musicbrainz.py:20
 msgid "Downloads covers from MusicBrainz's cover art archive."
-msgstr ""
+msgstr "Stahuje přebaly z archivu přebalů na MusicBrainz."
 
 #: ../quodlibet/ext/editing/iconv.py:26
-#, fuzzy
 msgid "Convert Encodings"
-msgstr "[Neplatné kódování]"
+msgstr "Převést kódování"
 
 #: ../quodlibet/ext/editing/iconv.py:27
 msgid "Fixes misinterpreted tag value encodings in the tag editor."
-msgstr ""
+msgstr "Opraví v editoru značek chybně interpretovaná kódování znaků."
 
 #: ../quodlibet/ext/editing/iconv.py:33
 msgid "_Convert Encoding…"
-msgstr ""
+msgstr "_Převést kódování…"
 
 #: ../quodlibet/ext/editing/kakasi.py:25
 msgid "Kana/Kanji Simple Inverter"
-msgstr ""
+msgstr "Jednoduchý převaděč písma kana/kanji"
 
 #: ../quodlibet/ext/editing/kakasi.py:26
 msgid "Converts kana/kanji to romaji before renaming."
-msgstr ""
+msgstr "Před přejmenováním převede kana/kanji na romaji."
 
 #: ../quodlibet/ext/editing/kakasi.py:35
 msgid "Romanize _Japanese text"
-msgstr ""
+msgstr "Romanizovat _japonský text"
 
 #: ../quodlibet/ext/editing/kakasi.py:63
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr ""
+msgstr "Nelze nalézt „Jednoduchý převaděč písma kana/kanji“ (kakasi)."
 
 #: ../quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
-msgstr ""
+msgstr "Nahrazení regulérních výrazů"
 
 #: ../quodlibet/ext/editing/resub.py:19
 msgid ""
 "Allows arbitrary regex substitutions (s///) when tagging or renaming files."
 msgstr ""
+"Umožňuje při značkování a přejmenování souborů libovolné regexové nahrazení "
+"(s///)"
 
 #: ../quodlibet/ext/editing/titlecase.py:20
-#, fuzzy
 msgid "Title Case"
-msgstr "_Název"
+msgstr "Název kapitálkami"
 
 #: ../quodlibet/ext/editing/titlecase.py:21
-#, fuzzy
 msgid "Title-cases tag values in the tag editor."
-msgstr "Editor tagů"
+msgstr "Ve značkách převede počáteční písmena na kapitálky."
 
 #: ../quodlibet/ext/editing/titlecase.py:40
-#, fuzzy
 msgid "Title-_case Value"
-msgstr "_Tagy Kapitálkami"
+msgstr "Převést název na _kapitálky"
 
 #: ../quodlibet/ext/editing/titlecase.py:51
 msgid "Allow _ALL-CAPS in tags"
-msgstr ""
+msgstr "Povolit ve značkách _VELKÝ TEXT"
 
 #: ../quodlibet/ext/editing/titlecase.py:52
 msgid "_Human title case"
-msgstr ""
+msgstr "_Lidské kapitálky v názvu"
 
 #: ../quodlibet/ext/editing/titlecase.py:53
 msgid ""
 "Uses common English rules for title casing, as in \"Dark Night of the Soul\""
 msgstr ""
+"Pro kapitálky použije běžná anglická pravidla, jako např. „Dark Night of the "
+"Soul“"
 
 #: ../quodlibet/ext/events/advanced_preferences.py:68
-#, fuzzy
 msgid "Advanced Preferences"
-msgstr "Nastavení prohlížeče s panely"
+msgstr "Pokročilé možnosti"
 
 #: ../quodlibet/ext/events/advanced_preferences.py:69
 msgid "Allow to tweak advanced config settings."
-msgstr ""
+msgstr "Zpřístupnit pokročilou konfiguraci."
 
 #: ../quodlibet/ext/events/advanced_preferences.py:156
 msgid "I know what I'm doing"
-msgstr ""
+msgstr "Vím, co dělám"
 
 #: ../quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
-msgstr ""
+msgstr "Animovaná upozornění (OSD)"
 
 #: ../quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
-msgstr ""
+msgstr "Ukáže na obrazovce informace o nové skladbě."
 
 #: ../quodlibet/ext/events/animosd/prefs.py:153
 msgid "Top of screen"
-msgstr ""
+msgstr "Horní část obrazovky"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:154
 msgid "Middle of screen"
-msgstr ""
+msgstr "Střed obrazovky"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:155
 msgid "Bottom of screen"
-msgstr ""
+msgstr "Dolní část obrazovky"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:158
 msgid "_Position:"
-msgstr ""
+msgstr "_Poloha:"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:171
-#, fuzzy
 msgid "_Cover size:"
-msgstr "Celková velikost"
+msgstr "_Velikost přebalu:"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:177
 #: ../quodlibet/ext/events/lyricswindow.py:334 ../quodlibet/qltk/prefs.py:266
 #, fuzzy
 msgid "Display"
-msgstr "Zobrazení alba"
+msgstr "Zobrazit"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:190
 msgid "_Font:"
-msgstr ""
+msgstr "Pí_smo:"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:195
 msgid "Left"
-msgstr ""
+msgstr "Vlevo"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:196
 msgid "Center"
-msgstr ""
+msgstr "Uprostřed"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:197
-#, fuzzy
 msgid "Right"
-msgstr "_Váha"
+msgstr "Vpravo"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:200
 msgid "_Align text:"
-msgstr ""
+msgstr "_Zarovnat text:"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:206
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:217
 msgid "_Text:"
-msgstr ""
+msgstr "_Text:"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:227
 msgid "_Fill:"
-msgstr ""
+msgstr "_Vyplnit:"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:232
 #: ../quodlibet/ext/events/synchronizedlyrics.py:63
 msgid "Colors"
-msgstr ""
+msgstr "Barvy"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:240
 msgid "_Shadows"
-msgstr ""
+msgstr "_Stíny"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:241
-#, fuzzy
 msgid "_Outline"
-msgstr "_Výstupní roura:"
+msgstr "_Ohraničení"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:242
 msgid "Rou_nded Corners"
-msgstr ""
+msgstr "Za_kulacené rohy"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:258
 msgid "_Delay:"
-msgstr ""
+msgstr "Zpož_dění:"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:264
 msgid "Effects"
-msgstr ""
+msgstr "Efekty"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:270
-#, fuzzy
 msgid "Ed_it Display Pattern…"
-msgstr "Upravit zobrazení"
+msgstr "_Upravit předlohu textu…"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:274
-#, fuzzy
 msgid "Preview"
-msgstr "_Náhled"
+msgstr "Náhled"
 
 #: ../quodlibet/ext/events/auto_library_update.py:136
 msgid "Automatic Library Update"
-msgstr ""
+msgstr "Automatická aktualizace knihovny"
 
 #: ../quodlibet/ext/events/auto_library_update.py:137
 #, python-format
 msgid "Keeps your library up to date with inotify. Requires %s."
-msgstr ""
+msgstr "Udržuje knihovnu aktuální pomocí inotify. Vyžaduje %s."
 
 #: ../quodlibet/ext/events/automask.py:22
-#, fuzzy
 msgid "Automatic Masking"
-msgstr "Auto_maticky"
+msgstr "Automatické maskování"
 
 #: ../quodlibet/ext/events/automask.py:23
 msgid ""
 "Automatically masks and unmasks drives when they are unmounted or mounted."
-msgstr ""
+msgstr "Automaticky maskuje a demaskuje zařízení při připojení a odpojení."
 
 #: ../quodlibet/ext/events/autorating.py:15
-#, fuzzy
 msgid "Automatic Rating"
-msgstr "Auto_maticky"
+msgstr "Automatické hodnocení"
 
 #: ../quodlibet/ext/events/autorating.py:16
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux by Brian Nelson."
 msgstr ""
+"Automaticky hodnotí skladby, když je přehrajete nebo přeskočíte. Používá se "
+"k tomu „akcelerovaný“ algoritmus z vux od Briana Nelsona."
 
 #: ../quodlibet/ext/events/clock.py:24
 msgid "Alarm Clock"
-msgstr ""
+msgstr "Budík"
 
 #: ../quodlibet/ext/events/clock.py:25
 msgid "Wakes you up with loud music."
-msgstr ""
+msgstr "Probudí vás hlasitou hudbou."
 
 #: ../quodlibet/ext/events/clock.py:119
 msgid "Lullaby"
-msgstr ""
+msgstr "Ukolébavka"
 
 #: ../quodlibet/ext/events/clock.py:120
 msgid "Fades out and pauses your music."
-msgstr ""
+msgstr "Zeslabí hudba do ticha a pozastaví ji."
 
 #: ../quodlibet/ext/events/equalizer.py:25
 msgid "Flat"
-msgstr ""
+msgstr "Plochý"
 
 #: ../quodlibet/ext/events/equalizer.py:26
 msgid "Live"
-msgstr ""
+msgstr "Živý"
 
 #: ../quodlibet/ext/events/equalizer.py:28
 msgid "Full Bass & Treble"
-msgstr ""
+msgstr "Plný bas a výšky"
 
 #: ../quodlibet/ext/events/equalizer.py:31
 msgid "Club"
-msgstr ""
+msgstr "Klub"
 
 #: ../quodlibet/ext/events/equalizer.py:33
 msgid "Large Hall"
-msgstr ""
+msgstr "Posluchárna"
 
 #: ../quodlibet/ext/events/equalizer.py:35
 msgid "Party"
-msgstr ""
+msgstr "Večírek"
 
 #: ../quodlibet/ext/events/equalizer.py:39
 msgid "Soft"
-msgstr ""
+msgstr "Jemný"
 
 #: ../quodlibet/ext/events/equalizer.py:41
 msgid "Full Bass"
-msgstr ""
+msgstr "Plný bas"
 
 #: ../quodlibet/ext/events/equalizer.py:47
-#, fuzzy
 msgid "Reggae"
-msgstr "Reggaeton"
+msgstr "Reggae"
 
 #: ../quodlibet/ext/events/equalizer.py:49
 msgid "Headphones"
-msgstr ""
+msgstr "Sluchátka"
 
 #: ../quodlibet/ext/events/equalizer.py:52
-#, fuzzy
 msgid "Soft Rock"
-msgstr "Rock"
+msgstr "Soft rock"
 
 #: ../quodlibet/ext/events/equalizer.py:54
 msgid "Full Treble"
-msgstr ""
+msgstr "Plné výšky"
 
 #: ../quodlibet/ext/events/equalizer.py:57
 msgid "Dance"
-msgstr ""
+msgstr "Taneční"
 
 #: ../quodlibet/ext/events/equalizer.py:61
 msgid "Techno"
-msgstr ""
+msgstr "Techno"
 
 #: ../quodlibet/ext/events/equalizer.py:63
 msgid "Ska"
-msgstr ""
+msgstr "Ska"
 
 #: ../quodlibet/ext/events/equalizer.py:65
 msgid "Laptop"
-msgstr ""
+msgstr "Notebook"
 
 #: ../quodlibet/ext/events/equalizer.py:95
 msgid "Equalizer"
-msgstr ""
+msgstr "Ekvalizér"
 
 #: ../quodlibet/ext/events/equalizer.py:96
 msgid "Controls the tone of your music with an equalizer."
-msgstr ""
+msgstr "Řídí tón hudby pomocí ekvalizéru."
 
 #: ../quodlibet/ext/events/equalizer.py:128
-#, fuzzy
 msgid "The current backend does not support equalization."
-msgstr ""
-"Současná obslužná aplikace nepodporuje URL, prohlížeč audio zdrojů je "
-"zakázán."
+msgstr "Současný obslužný program nepodporuje ekvalizéry."
 
 #: ../quodlibet/ext/events/equalizer.py:134
 #, python-format
@@ -1663,30 +1652,28 @@ msgstr ""
 
 #: ../quodlibet/ext/events/equalizer.py:166
 #: ../quodlibet/ext/gstreamer/crossfeed.py:118
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f dB"
-msgstr "%.1f vteřin"
+msgstr "%.1f dB"
 
 #: ../quodlibet/ext/events/equalizer.py:185
 #: ../quodlibet/ext/gstreamer/crossfeed.py:37
-#, fuzzy
 msgid "Custom"
-msgstr "_Vlastní"
+msgstr "Vlastní"
 
 #: ../quodlibet/ext/events/equalizer.py:192
-#, fuzzy
 msgid "_Clear"
-msgstr "_Vyčistit Chyby"
+msgstr "_Vyčistit"
 
 #: ../quodlibet/ext/events/gajim_status.py:28
 msgid "Gajim Status Message"
-msgstr ""
+msgstr "Stavová zpráva Gajim"
 
 #: ../quodlibet/ext/events/gajim_status.py:29
 msgid ""
 "Changes Gajim status message according to what you are currently listening "
 "to."
-msgstr ""
+msgstr "Mění stavovou zprávu Gajim podle toho, co právě posloucháte."
 
 #: ../quodlibet/ext/events/gajim_status.py:144
 msgid ""
