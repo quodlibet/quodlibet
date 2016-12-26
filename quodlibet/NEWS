@@ -10,9 +10,78 @@ Packaging Changes:
 ------------------
 
 Packaging Changes:
-  * `futures <https://pypi.python.org/pypi/futures>`__ required
-    (usually called python-futures or python2-futures in distros)
+  * `concurrent.futures <https://pypi.python.org/pypi/futures>`__ required
+    (usually called python-futures, python-concurrent.futures or
+    python2-futures in distros)
   * **libgpod4** is no longer used
+  * Testing now requires py.test
+  * Installs a new zsh completion file
+
+General:
+  * Preferences: Add option for changing the duration display format
+    :pr:`2021` :bug:`1727` :bug:`1967` (:user:`Nick Boultbee <declension>`)
+  * Locale dependend number formatting :bug:`2018`
+    (:user:`Nick Boultbee <declension>`)
+  * Fix updates across browsers on changes to ~playlists :bug:`2017`
+    (:user:`Nick Boultbee <declension>`)
+  * Don't wake up when idle :pr:`2068` :bug:`2067`
+  * Covergrid Browser :bug:`241` :pr:`2071` :pr:`2115` :pr:`2125` :bug:`2110`
+    :pr:`2130` (:user:`brunob`, :user:`Joel Ong <darthoctopus>`,
+    :user:`knockoutMice`)
+  * Play order updates :pr:`2043` :bug:`2059` :bug:`2121` :bug:`2123`
+    :pr:`2125` (:user:`Nick Boultbee <declension>`)
+  * Search: Fix error when query divides by 0 :pr:`2025` (:user:`faubiguy`)
+  * Fix crash on tag edit abort :bug:`2081`
+  * Library scan: ingore hidden files :bug:`2074`
+  * Remove iPod support
+  * Log the filename in case something crashes :bug:`2143`
+  * MP4: Handle empty trkn/disk :bug:`2143`
+  * Library: support autofs mounts :bug:`2146`
+  * Various small GTK+/Ubuntu theme related updates
+  * Fix crash when parsing feeds :pr:`2144`
+    (:user:`Peter Schwede <pschwede>`)
+  * Song list: ctrl+drag will now force a song copy :bug:`1952`
+  * MP4: round bpm to nearest int. :bug:`2028`
+    (:user:`Nick Boultbee <declension>`)
+  * Basic zsh completion
+
+Translation Updates:
+  * Polish :pr:`2141` (:user:`Piotr Drąg <piotrdrag>`)
+  * Norwegian Bokmål :pr:`2031` :pr:`2064` (:user:`Åka Sikrom <akrosikam>`)
+
+Plugins:
+  * Discogs Cover Source :pr:`2136` (:user:`knockoutMice`)
+  * Add register-date filter to lastfmsync plugin :pr:`2127`
+    (:user:`knockoutMice`)
+  * Wikipedia plugin - search instead of direct URL :pr:`2112` (:user:`urielz`)
+  * Notification plugin: add option to mask 'Next' :bug:`2026` :pr:`2045`
+    (:user:`Corentin Néau <weyfonk>`)
+  * Waveform seek bar :pr:`2046` (:user:`0x1777`)
+  * Add playlists to tray menu :bug:`2006` (:user:`Nick Boultbee <declension>`)
+  * Random album plugin fixes :pr:`2085` (:user:`draxil`)
+  * Some Auto Library Update plugin fixes :bug:`1315`
+    (:user:`Nick Boultbee <declension>`)
+  * Seek bar plugin: invert scrolling directions :pr:`2052`
+    (:user:`Corentin Néau <weyfonk>`)
+
+Windows:
+  * Switch to msys2 :bug:`1718`
+  * Allow opening audio files with quodlibet.exe :bug:`1607`
+  * Enable pitch plugin again :bug:`1534`
+  * Windows regressions: crossfeed plugin missing (will be back in the
+    next version)
+
+macOS:
+  * Allow opening audio files with the bundle
+  * Really (really..) fix TLS :pr:`2108` :bug:`2107`
+
+Development:
+  * Tests: switch to pytest as the main test runner
+  * Tests: ``setup.py quality`` speedups
+  * Tests: All tests pass now on Python 3 under Linux and Windows
+  * All magic builtins gone :pr:`2044`
+  * macOS bundle and Windows installer include everything required for running
+    the test suite.
 
 
 .. _release-3.7.1:
@@ -78,7 +147,7 @@ Tagging:
 
 Plugins:
   * lyricswindow: Restart WebKit when crashed :pr:`1923` (:user:`CreamyCookie`)
-  * lyricswindow: Prevent alert windows. :pr:`1927` (:user:`CreamyCookie`)
+  * lyricswindow: Prevent alert windows. :bug:`1927` (:user:`CreamyCookie`)
   * tray icon: Improve unity detection :bug:`1999`
   * musicbrainz: Add option to write labelid. :bug:`1929`
   * musicbrainz: Write musicbrainz release track ids :pr:`1992`
