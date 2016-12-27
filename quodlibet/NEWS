@@ -31,7 +31,7 @@ General:
   * Play order (shuffle / repeat) rewrite to be more modularised / powerful
     :pr:`2043` :bug:`2059` :bug:`2121` :bug:`2123` :pr:`2125`
     (:user:`Nick Boultbee <declension>`)
-  * Improvements / additions to Information window :pr:`2119` :bug `1558`
+  * Improvements / additions to Information window :pr:`2119` :bug:`1558`
     (:user:`Nick Boultbee <declension>`)
   * Search: Fix error when query divides by 0 :pr:`2025` (:user:`faubiguy`)
   * Fix crash on tag edit abort :bug:`2081`
@@ -52,6 +52,8 @@ General:
 Translation Updates:
   * Polish :pr:`2141` (:user:`Piotr Drąg <piotrdrag>`)
   * Norwegian Bokmål :pr:`2031` :pr:`2064` (:user:`Åka Sikrom <akrosikam>`)
+  * Danish :pr:`2169` (:user:`scootergrisen`)
+  * Czech :pr:`2173` (:user:`Marek Suchánek <mrksu>`)
 
 Plugins:
   * Discogs Cover Source :pr:`2136` (:user:`knockoutMice`)
