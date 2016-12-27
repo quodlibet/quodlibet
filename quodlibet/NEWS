@@ -20,7 +20,7 @@ Packaging Changes:
 General:
   * Preferences: Add option for changing the duration display format
     :pr:`2021` :bug:`1727` :bug:`1967` (:user:`Nick Boultbee <declension>`)
-  * Locale dependend number formatting :bug:`2018`
+  * Locale-dependent number formatting :bug:`2018`
     (:user:`Nick Boultbee <declension>`)
   * Fix updates across browsers on changes to ~playlists :bug:`2017`
     (:user:`Nick Boultbee <declension>`)
@@ -28,11 +28,14 @@ General:
   * Covergrid Browser :bug:`241` :pr:`2071` :pr:`2115` :pr:`2125` :bug:`2110`
     :pr:`2130` (:user:`brunob`, :user:`Joel Ong <darthoctopus>`,
     :user:`knockoutMice`)
-  * Play order updates :pr:`2043` :bug:`2059` :bug:`2121` :bug:`2123`
-    :pr:`2125` (:user:`Nick Boultbee <declension>`)
+  * Play order (shuffle / repeat) rewrite to be more modularised / powerful
+    :pr:`2043` :bug:`2059` :bug:`2121` :bug:`2123` :pr:`2125`
+    (:user:`Nick Boultbee <declension>`)
+  * Improvements / additions to Information window :pr:`2119` :bug `1558`
+    (:user:`Nick Boultbee <declension>`)
   * Search: Fix error when query divides by 0 :pr:`2025` (:user:`faubiguy`)
   * Fix crash on tag edit abort :bug:`2081`
-  * Library scan: ingore hidden files :bug:`2074`
+  * Library scan: ignore hidden files :bug:`2074`
   * Remove iPod support
   * Log the filename in case something crashes :bug:`2143`
   * MP4: Handle empty trkn/disk :bug:`2143`
@@ -43,6 +46,7 @@ General:
   * Song list: ctrl+drag will now force a song copy :bug:`1952`
   * MP4: round bpm to nearest int. :bug:`2028`
     (:user:`Nick Boultbee <declension>`)
+  * Songsmenu icons improved (:user:`Nick Boultbee <declension>`)
   * Basic zsh completion
 
 Translation Updates:
@@ -56,9 +60,11 @@ Plugins:
   * Wikipedia plugin - search instead of direct URL :pr:`2112` (:user:`urielz`)
   * Notification plugin: add option to mask 'Next' :bug:`2026` :pr:`2045`
     (:user:`Corentin Néau <weyfonk>`)
-  * Waveform seek bar :pr:`2046` (:user:`0x1777`)
+  * Waveform seek bar :pr:`2046` (:user:`0x1777`),
+    related performance improvements (:user:`Nick Boultbee <declension>`)
   * Add playlists to tray menu :bug:`2006` (:user:`Nick Boultbee <declension>`)
   * Random album plugin fixes :pr:`2085` (:user:`draxil`)
+  * Custom commands: minor improvements (:user:`Nick Boultbee <declension>`)
   * Some Auto Library Update plugin fixes :bug:`1315`
     (:user:`Nick Boultbee <declension>`)
   * Seek bar plugin: invert scrolling directions :pr:`2052`
@@ -76,7 +82,8 @@ macOS:
   * Really (really..) fix TLS :pr:`2108` :bug:`2107`
 
 Development:
-  * Tests: switch to pytest as the main test runner
+  * Tests: switch to `pytest <http://docs.pytest.org/en/latest/>`__
+    as the main test runner
   * Tests: ``setup.py quality`` speedups
   * Tests: All tests pass now on Python 3 under Linux and Windows
   * All magic builtins gone :pr:`2044`
