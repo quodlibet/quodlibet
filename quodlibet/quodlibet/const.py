@@ -227,6 +227,7 @@ Yasushi Iwata (ja)
 Ростислав "zbrox" Райков (bg)
 Сергей Федосеев (ru)
 scootergrisen (da)
+Marek Suchánek (cs)
 """.strip().splitlines())
 
 ARTISTS = sorted(u"""\
