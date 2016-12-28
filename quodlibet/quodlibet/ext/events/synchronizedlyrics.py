@@ -143,7 +143,6 @@ as the track.')
         app.window.get_child().pack_start(self.scrolled_window, False, True, 0)
         app.window.get_child().reorder_child(self.scrolled_window, 2)
 
-        self.textview.set_name("syncLyricsWindow")
         self._style_lyrics_window()
 
         self.adjustment.set_value(0)
@@ -162,7 +161,7 @@ as the track.')
 
     def _style_lyrics_window(self):
         qltk.add_css(self.textview, """
-            #syncLyricsWindow {{
+            * {{
                 background-color: {0};
                 color: {1};
                 font-size: {2}px;
