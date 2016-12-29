@@ -140,15 +140,23 @@ Unstable:
 =========================== ============================== ================================================= ==========================================
 Release                     File                           SHA256                                            PGP
 =========================== ============================== ================================================= ==========================================
+Quod Libet 3.8.0            quodlibet-3.8.0-installer.exe_ `SHA256 <quodlibet-3.8.0-installer.exe.sha256_>`_ `SIG <quodlibet-3.8.0-installer.exe.sig_>`_
+Quod Libet 3.8.0 (portable) quodlibet-3.8.0-portable.exe_  `SHA256 <quodlibet-3.8.0-portable.exe.sha256_>`_  `SIG <quodlibet-3.8.0-portable.exe.sig_>`_
 Quod Libet 3.7.1            quodlibet-3.7.1-installer.exe_ `SHA256 <quodlibet-3.7.1-installer.exe.sha256_>`_ `SIG <quodlibet-3.7.1-installer.exe.sig_>`_
 Quod Libet 3.7.1 (portable) quodlibet-3.7.1-portable.exe_  `SHA256 <quodlibet-3.7.1-portable.exe.sha256_>`_  `SIG <quodlibet-3.7.1-portable.exe.sig_>`_
 Quod Libet 3.6.1            quodlibet-3.6.1-installer.exe_ `SHA256 <quodlibet-3.6.1-installer.exe.sha256_>`_ `SIG <quodlibet-3.6.1-installer.exe.sig_>`_
 Quod Libet 3.6.1 (portable) quodlibet-3.6.1-portable.exe_  `SHA256 <quodlibet-3.6.1-portable.exe.sha256_>`_  `SIG <quodlibet-3.6.1-portable.exe.sig_>`_
-Quod Libet 3.5.2            quodlibet-3.5.2-installer.exe_ `SHA256 <quodlibet-3.5.2-installer.exe.sha256_>`_ `SIG <quodlibet-3.5.2-installer.exe.sig_>`_
-Quod Libet 3.5.2 (portable) quodlibet-3.5.2-portable.exe_  `SHA256 <quodlibet-3.5.2-portable.exe.sha256_>`_  `SIG <quodlibet-3.5.2-portable.exe.sig_>`_
 =========================== ============================== ================================================= ==========================================
 
 The latest development installer: `quodlibet-latest-installer.exe <https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe>`__
+
+.. _quodlibet-3.8.0-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.8.0-portable.exe
+.. _quodlibet-3.8.0-portable.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.8.0-portable.exe.sha256
+.. _quodlibet-3.8.0-portable.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.8.0-portable.exe.sig
+
+.. _quodlibet-3.8.0-installer.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.8.0-installer.exe
+.. _quodlibet-3.8.0-installer.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.8.0-installer.exe.sha256
+.. _quodlibet-3.8.0-installer.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.8.0-installer.exe.sig
 
 .. _quodlibet-3.7.1-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.7.1-portable.exe
 .. _quodlibet-3.7.1-portable.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.7.1-portable.exe.sha256
@@ -165,14 +173,6 @@ The latest development installer: `quodlibet-latest-installer.exe <https://bitbu
 .. _quodlibet-3.6.1-installer.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.6.1-installer.exe
 .. _quodlibet-3.6.1-installer.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.6.1-installer.exe.sha256
 .. _quodlibet-3.6.1-installer.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.6.1-installer.exe.sig
-
-.. _quodlibet-3.5.2-portable.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-portable.exe
-.. _quodlibet-3.5.2-portable.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-portable.exe.sha256
-.. _quodlibet-3.5.2-portable.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-portable.exe.sig
-
-.. _quodlibet-3.5.2-installer.exe: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-installer.exe
-.. _quodlibet-3.5.2-installer.exe.sha256: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-installer.exe.sha256
-.. _quodlibet-3.5.2-installer.exe.sig: https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.5.2-installer.exe.sig
 
 For old releases see the `full file listing <https://bitbucket.org/lazka/quodlibet/downloads/>`__.
 
