@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nb\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-10 11:49+0100\n"
+"POT-Creation-Date: 2016-12-29 15:51+0100\n"
 "PO-Revision-Date: 2016-10-15 06:23+0200\n"
 "Last-Translator: Åka Sikrom <a4 æt hush dåt com>\n"
 "Language-Team: Norwegian Bokmål\n"
@@ -220,7 +220,7 @@ msgstr "_Lukk"
 #: ../quodlibet/browsers/audiofeeds.py:149
 #: ../quodlibet/browsers/paned/models.py:86
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: ../quodlibet/formats/_audio.py:456 ../quodlibet/order/__init__.py:18
+#: ../quodlibet/formats/_audio.py:477 ../quodlibet/order/__init__.py:18
 #: ../quodlibet/qltk/information.py:219 ../quodlibet/qltk/information.py:229
 #: ../quodlibet/qltk/information.py:258 ../quodlibet/qltk/wlw.py:70
 msgid "Unknown"
@@ -374,7 +374,7 @@ msgstr[1] "%d låter"
 
 #: ../quodlibet/browsers/_base.py:402 ../quodlibet/browsers/_base.py:407
 #: ../quodlibet/qltk/tagsfrompath.py:194 ../quodlibet/qltk/textedit.py:141
-#: ../quodlibet/util/__init__.py:617
+#: ../quodlibet/util/__init__.py:623
 msgid "Invalid pattern"
 msgstr "Ugyldig mønster"
 
@@ -2481,19 +2481,19 @@ msgstr "Viser sangtekster under låtliste i hovedvindu automatisk."
 msgid "_Lyrics"
 msgstr "Sa_ngtekst"
 
-#: ../quodlibet/ext/events/waveformseekbar.py:292
+#: ../quodlibet/ext/events/waveformseekbar.py:296
 msgid "Waveform Seek Bar"
 msgstr "Lydbølge-søkelinje"
 
-#: ../quodlibet/ext/events/waveformseekbar.py:296
+#: ../quodlibet/ext/events/waveformseekbar.py:300
 msgid "A seekbar in the shape of the waveform of the current song."
 msgstr "Søkelinje som former seg etter lydbølge av gjeldende låt."
 
-#: ../quodlibet/ext/events/waveformseekbar.py:329
+#: ../quodlibet/ext/events/waveformseekbar.py:333
 msgid "Override foreground color:"
 msgstr "Overstyr forgrunnsfarge:"
 
-#: ../quodlibet/ext/events/waveformseekbar.py:340
+#: ../quodlibet/ext/events/waveformseekbar.py:344
 msgid "High Res"
 msgstr ""
 
@@ -3784,27 +3784,27 @@ msgstr ""
 "Åpner nettleservindu med Wikipedia-artikkel om artisten for spillende album."
 
 #. then (try to) load all new files
-#: ../quodlibet/library/libraries.py:642 ../quodlibet/library/libraries.py:652
-#: ../quodlibet/library/libraries.py:718 ../quodlibet/library/libraries.py:737
+#: ../quodlibet/library/libraries.py:650 ../quodlibet/library/libraries.py:660
+#: ../quodlibet/library/libraries.py:726 ../quodlibet/library/libraries.py:745
 #: ../quodlibet/qltk/information.py:253 ../quodlibet/qltk/prefs.py:638
 #: ../quodlibet/util/library.py:124
 msgid "Library"
 msgstr "Bibliotek"
 
-#: ../quodlibet/library/libraries.py:642
+#: ../quodlibet/library/libraries.py:650
 msgid "Checking mount points"
 msgstr "Kontrollerer monteringspunkter"
 
-#: ../quodlibet/library/libraries.py:652
+#: ../quodlibet/library/libraries.py:660
 msgid "Scanning library"
 msgstr "Søker gjennom bibliotek"
 
-#: ../quodlibet/library/libraries.py:717
+#: ../quodlibet/library/libraries.py:725
 #, python-format
 msgid "Scanning %s"
 msgstr "Søker gjennom %s"
 
-#: ../quodlibet/library/libraries.py:737
+#: ../quodlibet/library/libraries.py:745
 #, fuzzy
 msgid "Loading files"
 msgstr "Lagring mislyktes"
@@ -4535,7 +4535,7 @@ msgstr "Valgte filer støtter ikke at <b>%s</b> har flere enn én verdi."
 
 #. Can't add the new tag.
 #: ../quodlibet/qltk/edittags.py:689 ../quodlibet/qltk/edittags.py:856
-#: ../quodlibet/qltk/tagsfrompath.py:212 ../quodlibet/util/__init__.py:549
+#: ../quodlibet/qltk/tagsfrompath.py:212 ../quodlibet/util/__init__.py:555
 #: ../quodlibet/util/tags.py:229
 msgid "Invalid tag"
 msgstr "Ugyldig tagg"
@@ -5887,46 +5887,46 @@ msgstr "%r er ikke et unikt prefiks."
 msgid "%d kbps"
 msgstr "%d kbps"
 
-#: ../quodlibet/util/__init__.py:414
+#: ../quodlibet/util/__init__.py:420
 #, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] "%s sekund"
 msgstr[1] "%s sekunder"
 
-#: ../quodlibet/util/__init__.py:427
+#: ../quodlibet/util/__init__.py:433
 msgid "No time information"
 msgstr "Ingen tidsinformasjon"
 
-#: ../quodlibet/util/__init__.py:430
+#: ../quodlibet/util/__init__.py:436
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d sekund"
 msgstr[1] "%d sekunder"
 
-#: ../quodlibet/util/__init__.py:431
+#: ../quodlibet/util/__init__.py:437
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minutt"
 msgstr[1] "%d minutter"
 
-#: ../quodlibet/util/__init__.py:432
+#: ../quodlibet/util/__init__.py:438
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d time"
 msgstr[1] "%d timer"
 
-#: ../quodlibet/util/__init__.py:433
+#: ../quodlibet/util/__init__.py:439
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d dag"
 msgstr[1] "%d dager"
 
-#: ../quodlibet/util/__init__.py:434
+#: ../quodlibet/util/__init__.py:440
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -5937,7 +5937,7 @@ msgstr[1] "%d år"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "titlecase?".
-#: ../quodlibet/util/__init__.py:558
+#: ../quodlibet/util/__init__.py:564
 msgctxt "check"
 msgid "titlecase?"
 msgstr "kontroller|tittelversaler"

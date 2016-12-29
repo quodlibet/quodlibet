@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-10 11:49+0100\n"
+"POT-Creation-Date: 2016-12-29 15:51+0100\n"
 "PO-Revision-Date: 2015-01-05 14:45+0800\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
@@ -220,7 +220,7 @@ msgstr ""
 #: ../quodlibet/browsers/audiofeeds.py:149
 #: ../quodlibet/browsers/paned/models.py:86
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: ../quodlibet/formats/_audio.py:456 ../quodlibet/order/__init__.py:18
+#: ../quodlibet/formats/_audio.py:477 ../quodlibet/order/__init__.py:18
 #: ../quodlibet/qltk/information.py:219 ../quodlibet/qltk/information.py:229
 #: ../quodlibet/qltk/information.py:258 ../quodlibet/qltk/wlw.py:70
 msgid "Unknown"
@@ -376,7 +376,7 @@ msgstr[2] "%d композиций"
 
 #: ../quodlibet/browsers/_base.py:402 ../quodlibet/browsers/_base.py:407
 #: ../quodlibet/qltk/tagsfrompath.py:194 ../quodlibet/qltk/textedit.py:141
-#: ../quodlibet/util/__init__.py:617
+#: ../quodlibet/util/__init__.py:623
 msgid "Invalid pattern"
 msgstr "Некорректный шаблон"
 
@@ -2507,19 +2507,19 @@ msgstr "Показывает текст песни под списком ком�
 msgid "_Lyrics"
 msgstr "_Текст песни"
 
-#: ../quodlibet/ext/events/waveformseekbar.py:292
+#: ../quodlibet/ext/events/waveformseekbar.py:296
 msgid "Waveform Seek Bar"
 msgstr ""
 
-#: ../quodlibet/ext/events/waveformseekbar.py:296
+#: ../quodlibet/ext/events/waveformseekbar.py:300
 msgid "A seekbar in the shape of the waveform of the current song."
 msgstr ""
 
-#: ../quodlibet/ext/events/waveformseekbar.py:329
+#: ../quodlibet/ext/events/waveformseekbar.py:333
 msgid "Override foreground color:"
 msgstr ""
 
-#: ../quodlibet/ext/events/waveformseekbar.py:340
+#: ../quodlibet/ext/events/waveformseekbar.py:344
 msgid "High Res"
 msgstr ""
 
@@ -3816,27 +3816,27 @@ msgid ""
 msgstr "Позволяет открыть веб-браузер со статьёй об альбоме на Википедии."
 
 #. then (try to) load all new files
-#: ../quodlibet/library/libraries.py:642 ../quodlibet/library/libraries.py:652
-#: ../quodlibet/library/libraries.py:718 ../quodlibet/library/libraries.py:737
+#: ../quodlibet/library/libraries.py:650 ../quodlibet/library/libraries.py:660
+#: ../quodlibet/library/libraries.py:726 ../quodlibet/library/libraries.py:745
 #: ../quodlibet/qltk/information.py:253 ../quodlibet/qltk/prefs.py:638
 #: ../quodlibet/util/library.py:124
 msgid "Library"
 msgstr "Фонотека"
 
-#: ../quodlibet/library/libraries.py:642
+#: ../quodlibet/library/libraries.py:650
 msgid "Checking mount points"
 msgstr "Проверка точек монтирования"
 
-#: ../quodlibet/library/libraries.py:652
+#: ../quodlibet/library/libraries.py:660
 msgid "Scanning library"
 msgstr "Сканирование фонотеки"
 
-#: ../quodlibet/library/libraries.py:717
+#: ../quodlibet/library/libraries.py:725
 #, python-format
 msgid "Scanning %s"
 msgstr "Сканирование %s"
 
-#: ../quodlibet/library/libraries.py:737
+#: ../quodlibet/library/libraries.py:745
 #, fuzzy
 msgid "Loading files"
 msgstr "Сохранить не удалось"
@@ -4584,7 +4584,7 @@ msgstr ""
 
 #. Can't add the new tag.
 #: ../quodlibet/qltk/edittags.py:689 ../quodlibet/qltk/edittags.py:856
-#: ../quodlibet/qltk/tagsfrompath.py:212 ../quodlibet/util/__init__.py:549
+#: ../quodlibet/qltk/tagsfrompath.py:212 ../quodlibet/util/__init__.py:555
 #: ../quodlibet/util/tags.py:229
 msgid "Invalid tag"
 msgstr "Недопустимый тег"
@@ -5973,7 +5973,7 @@ msgstr "%r — не уникальный префикс."
 msgid "%d kbps"
 msgstr "%d Кбит/с"
 
-#: ../quodlibet/util/__init__.py:414
+#: ../quodlibet/util/__init__.py:420
 #, fuzzy, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
@@ -5981,11 +5981,11 @@ msgstr[0] "%d секунда"
 msgstr[1] "%d секунды"
 msgstr[2] "%d секунд"
 
-#: ../quodlibet/util/__init__.py:427
+#: ../quodlibet/util/__init__.py:433
 msgid "No time information"
 msgstr "Нет информации о времени"
 
-#: ../quodlibet/util/__init__.py:430
+#: ../quodlibet/util/__init__.py:436
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -5993,7 +5993,7 @@ msgstr[0] "%d секунда"
 msgstr[1] "%d секунды"
 msgstr[2] "%d секунд"
 
-#: ../quodlibet/util/__init__.py:431
+#: ../quodlibet/util/__init__.py:437
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -6001,7 +6001,7 @@ msgstr[0] "%d минута"
 msgstr[1] "%d минуты"
 msgstr[2] "%d минут"
 
-#: ../quodlibet/util/__init__.py:432
+#: ../quodlibet/util/__init__.py:438
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -6009,7 +6009,7 @@ msgstr[0] "%d час"
 msgstr[1] "%d часа"
 msgstr[2] "%d часов"
 
-#: ../quodlibet/util/__init__.py:433
+#: ../quodlibet/util/__init__.py:439
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -6017,7 +6017,7 @@ msgstr[0] "%d день"
 msgstr[1] "%d дня"
 msgstr[2] "%d дней"
 
-#: ../quodlibet/util/__init__.py:434
+#: ../quodlibet/util/__init__.py:440
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -6029,7 +6029,7 @@ msgstr[2] "%d лет"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something other than "titlecase?".
-#: ../quodlibet/util/__init__.py:558
+#: ../quodlibet/util/__init__.py:564
 #, fuzzy
 msgctxt "check"
 msgid "titlecase?"
