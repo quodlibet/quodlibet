@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-26 14:32+0100\n"
-"PO-Revision-Date: 2016-12-29 01:50+0100\n"
+"PO-Revision-Date: 2016-12-29 03:16+0100\n"
 "Last-Translator: Marek Suchánek <marek.suchanek@protonmail.com>\n"
 "Language-Team: Czech (Czech Republic)\n"
 "Language: cs_CZ\n"
@@ -4648,7 +4648,7 @@ msgstr "Složku nelze smazat"
 #: ../quodlibet/qltk/info.py:41
 #, python-format
 msgid "by %s"
-msgstr "podle %s"
+msgstr "od %s"
 
 #: ../quodlibet/qltk/info.py:42 ../quodlibet/qltk/information.py:167
 #: ../quodlibet/qltk/information.py:448
