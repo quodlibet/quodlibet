@@ -4,10 +4,11 @@
 Packaging Changes:
   * **python-zeitgeist** no longer used
 
+
 .. _release-3.8.0:
 
-3.8.0 (????-??-??)
-------------------
+3.8.0 (2016-12-29) - Maybe it'll land somewhere cool eventually
+---------------------------------------------------------------
 
 Packaging Changes:
   * `concurrent.futures <https://pypi.python.org/pypi/futures>`__ required
