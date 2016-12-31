@@ -2,11 +2,14 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-
+from quodlibet import qltk
 from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.playlists.util import PLAYLISTS, parse_m3u, parse_pls
+from quodlibet.qltk.songlist import DND_QL
+from quodlibet.senf import fsnative
 from quodlibet.util.collection import FileBackedPlaylist
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, _TEMP_DIR
+from tests.gtk_helpers import MockSelData
 from .helper import dummy_path
 
 import os
@@ -253,3 +256,11 @@ class TPlaylistsBrowser(TSearchBar):
         pattern_text = self.bar.display_pattern_text
         self.failUnlessEqual(pattern_text, DEFAULT_PATTERN_TEXT)
         self.failUnless("<~name>" in pattern_text)
+
+    def test_drag_data_get(self):
+        b = self.bar
+        song = AudioFile()
+        song["~filename"] = fsnative(u"foo")
+        sel = MockSelData()
+        qltk.selection_set_songs(sel, [song])
+        b._drag_data_get(None, None, sel, DND_QL, None)

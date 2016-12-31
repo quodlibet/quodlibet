@@ -19,6 +19,7 @@ from quodlibet.browsers import Browser
 from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.browsers.playlists.prefs import Preferences, \
     DEFAULT_PATTERN_TEXT
+from quodlibet.compat import listfilter
 from quodlibet.formats import AudioFile
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 from quodlibet.qltk.completion import LibraryTagCompletion
@@ -249,7 +250,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         view.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets[:2],
                              Gdk.DragAction.COPY)
         view.connect('drag-data-received', self.__drag_data_received, library)
-        view.connect('drag-data-get', self.__drag_data_get)
+        view.connect('drag-data-get', self._drag_data_get)
         view.connect('drag-motion', self.__drag_motion)
         view.connect('drag-leave', self.__drag_leave)
 
@@ -358,7 +359,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         model = view.get_model()
         if tid == DND_QL:
             filenames = qltk.selection_get_filenames(sel)
-            songs = filter(None, map(library.get, filenames))
+            songs = listfilter(None, [library.get(f) for f in filenames])
             if not songs:
                 Gtk.drag_finish(ctx, False, False, etime)
                 return
@@ -409,9 +410,12 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                     _("Quod Libet can only import playlists in the M3U "
                       "and PLS formats.")).run()
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime):
+    def _drag_data_get(self, view, ctx, sel, tid, etime):
         model, iters = self.__view.get_selection().get_selected_rows()
-        songs = [model[itr][0] for itr in iters if itr]
+        songs = []
+        for itr in iters:
+            if itr:
+                songs += model[itr][0].songs
         if tid == 0:
             qltk.selection_set_songs(sel, songs)
         else:
@@ -432,7 +436,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         if itr is None:
             return
         songs = list(model[itr][0])
-        songs = filter(lambda s: isinstance(s, AudioFile), songs)
+        songs = [s for s in songs if isinstance(s, AudioFile)]
         menu = SongsMenu(library, songs,
                          playlists=False, remove=False,
                          ratings=False)
@@ -500,8 +504,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def _get_playlist_songs(self):
         model, iter = self.__view.get_selection().get_selected()
         songs = iter and list(model[iter][0]) or []
-        songs = filter(lambda s: isinstance(s, AudioFile), songs)
-        return songs
+        return [s for s in songs if isinstance(s, AudioFile)]
 
     def can_filter_text(self):
         return True

@@ -11,6 +11,7 @@ from senf import fsnative, fsn2bytes
 from quodlibet.formats import AudioFile
 from quodlibet import qltk
 from quodlibet import util
+from tests.gtk_helpers import MockSelData
 
 
 class TQltk(TestCase):
@@ -107,21 +108,6 @@ class TQltk(TestCase):
         menu = Gtk.Menu()
         menu.append(item)
         self.assertTrue(qltk.get_menu_item_top_parent(item) is None)
-
-
-class MockSelData(object):
-    # Gtk.SelectionData is missing a constructor
-
-    def set(self, type, format, data):
-        self.type = type
-        self.format = format
-        self.data = data
-
-    def get_data_type(self):
-        return self.type
-
-    def get_data(self):
-        return self.data
 
 
 class Tselection_data(TestCase):
