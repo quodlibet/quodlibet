@@ -1392,7 +1392,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             fns, do_watch = dialog.run()
             dialog.destroy()
             if fns:
-                fns = map(glib2fsn, fns)
+                fns = list(map(glib2fsn, fns))
                 # scan them
                 self.last_dir = fns[0]
                 copool.add(self.__library.scan, fns, cofuncid="library",
@@ -1410,7 +1410,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             fns = dialog.run()
             dialog.destroy()
             if fns:
-                fns = map(glib2fsn, fns)
+                fns = list(map(glib2fsn, fns))
                 self.last_dir = os.path.dirname(fns[0])
                 for filename in map(os.path.realpath, fns):
                     self.__library.add_filename(filename)

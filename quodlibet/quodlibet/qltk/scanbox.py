@@ -108,7 +108,7 @@ class ScanBox(Gtk.HBox):
         remove_button.set_sensitive(selection.count_selected_rows())
 
     def __save(self):
-        set_scan_dirs(list(itervalues(self.model)))
+        set_scan_dirs(list(self.model.itervalues()))
 
     def __remove(self, view):
         view.remove_selection()
