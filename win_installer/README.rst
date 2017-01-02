@@ -35,7 +35,7 @@ Setting Up the MSYS2 Environment
 * Now go to the application source code ``cd ../quodlibet``
 * To run Quod Libet execute ``./quodlibet.py``
 
-If you want to use py.test directly you have to unsed the MSYSTEM env var:
+If you want to use py.test directly you have to used the MSYSTEM env var:
 ``MSYSTEM= py.test tests/test_util.py``
 
 
