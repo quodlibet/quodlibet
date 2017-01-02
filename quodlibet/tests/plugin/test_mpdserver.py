@@ -102,6 +102,19 @@ class TMPDCommands(PluginTestCase):
         destroy_fake_app()
         config.quit()
 
+    def test_currentsong_length(self):
+        app.player.go_to(AudioFile({
+            "~filename": fsnative(),
+            "~#length": 12.25,
+        }))
+
+        response = self._cmd(b"currentsong\n")
+        assert b"Time: 12\n" in response
+
+    def test_tagtypes(self):
+        response = self._cmd(b"tagtypes\n")
+        assert b"Time\n" not in response
+
     def test_commands(self):
         skip = ["close", "idle", "noidle"]
         cmds = [c for c in self.conn.list_commands() if c not in skip]

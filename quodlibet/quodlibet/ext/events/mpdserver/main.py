@@ -52,14 +52,12 @@ TAG_MAPPING = [
     (u"AlbumArtistSort", "albumartistsort"),
     (u"Title", "title"),
     (u"Track", "tracknumber"),
-    (u"Name", ""),
     (u"Genre", "genre"),
     (u"Date", "~year"),
     (u"Composer", "composer"),
     (u"Performer", "performer"),
     (u"Comment", "commend"),
     (u"Disc", "discnumber"),
-    (u"Time", "~#length"),
     (u"Name", "~basename"),
     (u"MUSICBRAINZ_ARTISTID", "musicbrainz_artistid"),
     (u"MUSICBRAINZ_ALBUMID", "musicbrainz_albumid"),
@@ -73,15 +71,7 @@ def format_tags(song):
 
     lines = []
     for mpd_key, ql_key in TAG_MAPPING:
-        if not ql_key:
-            continue
-
-        if ql_key.startswith("~#"):
-            value = song(ql_key, None)
-            if value is not None:
-                value = str(value)
-        else:
-            value = song.comma(ql_key) or None
+        value = song.comma(ql_key) or None
 
         if value is not None:
             lines.append(u"%s: %s" % (mpd_key, value))
@@ -359,6 +349,7 @@ class MPDService(object):
         parts = []
         parts.append(u"file: %s" % info("~filename"))
         parts.append(format_tags(info))
+        parts.append(u"Time: %d" % int(info("~#length")))
         parts.append(u"Pos: %d" % 0)
         parts.append(u"Id: %d" % self._get_id(info))
 
@@ -846,8 +837,7 @@ def _cmd_commands(conn, service, args):
 @MPDConnection.Command("tagtypes")
 def _cmd_tagtypes(conn, service, args):
     for mpd_key, ql_key in TAG_MAPPING:
-        if ql_key:
-            conn.write_line(mpd_key)
+        conn.write_line(mpd_key)
 
 
 @MPDConnection.Command("lsinfo")
