@@ -152,6 +152,8 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         clients.set_markup(u"""\
 \u2022 <a href="https://play.google.com/store/apps/details?id=com.\
 namelessdev.mpdroid">MPDroid</a> (Android)
+\u2022 <a href="https://play.google.com/store/apps/details?id=org.\
+gateshipone.malp">M.A.L.P.</a> (Android)
 """)
         clients.set_alignment(0, 0)
 
