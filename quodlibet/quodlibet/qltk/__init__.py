@@ -448,7 +448,7 @@ class ThemeOverrider(object):
         self._active_providers = []
         settings = Gtk.Settings.get_default()
         settings.connect("notify::gtk-theme-name", self._on_theme_name_notify)
-        settings.notify("gtk-theme-name")
+        self._update_providers()
 
     def register_provider(self, theme_name, provider):
         """
@@ -459,12 +459,12 @@ class ThemeOverrider(object):
         """
 
         self._providers.setdefault(theme_name, []).append(provider)
+        self._update_providers()
+
+    def _update_providers(self):
         settings = Gtk.Settings.get_default()
-        settings.notify("gtk-theme-name")
 
-    def _on_theme_name_notify(self, settings, gparam):
-
-        theme_name = settings.get_property(gparam.name)
+        theme_name = settings.get_property("gtk-theme-name")
         wanted_providers = \
             self._providers.get(theme_name, []) + self._providers.get("", [])
 
@@ -482,6 +482,9 @@ class ThemeOverrider(object):
                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
                 )
                 self._active_providers.append(provider)
+
+    def _on_theme_name_notify(self, settings, gparam):
+        self._update_providers()
 
 
 from .msg import Message, ErrorMessage, WarningMessage
