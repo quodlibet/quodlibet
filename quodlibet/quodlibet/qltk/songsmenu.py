@@ -338,7 +338,7 @@ class SongsMenu(Gtk.Menu):
             b = qltk.MenuItem(_("Add to _Queue"), Icons.LIST_ADD)
 
             def enqueue_cb(item, songs):
-                songs = filter(lambda s: s.can_add, songs)
+                songs = [s for s in songs if s.can_add]
                 if songs:
                     from quodlibet import app
                     app.window.playlist.enqueue(songs)

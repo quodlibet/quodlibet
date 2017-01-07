@@ -95,12 +95,12 @@ def ListWrapper(songs):
 
 
 def check_wrapper_changed(library, parent, songs):
-    needs_write = list(filter(lambda s: s._needs_write, songs))
+    need_write = [s for s in songs if s._needs_write]
 
-    if needs_write:
-        win = WritingWindow(parent, len(needs_write))
+    if need_write:
+        win = WritingWindow(parent, len(need_write))
         win.show()
-        for song in needs_write:
+        for song in need_write:
             try:
                 song._song.write()
             except AudioFileError as e:

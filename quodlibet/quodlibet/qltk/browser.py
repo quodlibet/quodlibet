@@ -13,6 +13,7 @@ from quodlibet import util
 from quodlibet import browsers
 from quodlibet import app
 from quodlibet import _
+from quodlibet.compat import listfilter
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import ScrolledWindow, Action
@@ -314,7 +315,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         if browser.background:
             bg = background_filter()
             if bg:
-                songs = filter(bg, songs)
+                songs = listfilter(bg, songs)
         self.songlist.set_songs(songs, sorted)
 
     def __enqueue(self, view, path, column, player):

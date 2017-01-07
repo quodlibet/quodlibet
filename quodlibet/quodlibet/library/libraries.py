@@ -34,7 +34,7 @@ from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, \
     ismount
 from quodlibet.compat import iteritems, iterkeys, itervalues, listkeys, \
-    listvalues
+    listvalues, listfilter
 
 
 class Library(GObject.GObject, DictMixin):
@@ -465,7 +465,7 @@ class SongLibrary(PicklingLibrary):
 
         songs = self.values()
         if text != "":
-            songs = filter(Query(text, star).search, songs)
+            songs = listfilter(Query(text, star).search, songs)
         return songs
 
 

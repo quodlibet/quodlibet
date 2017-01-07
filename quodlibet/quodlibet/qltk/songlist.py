@@ -670,7 +670,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         return False
 
     def __enqueue(self, songs):
-        songs = filter(lambda s: s.can_add, songs)
+        songs = [s for s in songs if s.can_add]
         if songs:
             from quodlibet import app
             app.window.playlist.enqueue(songs)
@@ -749,6 +749,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
     def _sort_songs(self, songs):
         """Sort passed songs in place based on the column sort orders"""
 
+        songs = list(songs)
         last_tag = None
         last_order = None
         first = True
