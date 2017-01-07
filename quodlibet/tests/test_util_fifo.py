@@ -6,7 +6,8 @@
 # published by the Free Software Foundation
 
 from quodlibet import print_d
-from tests import TestCase
+from quodlibet.util import is_windows
+from tests import TestCase, skipIf
 
 from quodlibet.util.fifo import split_message, FIFO, fifo_exists, write_fifo
 from tests.helper import temp_filename
@@ -41,6 +42,7 @@ class Tsplit_message(TestCase):
         self.assertRaises(ValueError, func, b"foo\x00bar")
 
 
+@skipIf(is_windows(), "not on Windows")
 class TFIFO(TestCase):
 
     def test_creation_destruction(self):
