@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -9,6 +10,8 @@ import os
 import errno
 import signal
 import stat
+
+from quodlibet import print_e
 
 try:
     import fcntl
@@ -27,11 +30,11 @@ FIFO_TIMEOUT = 10
 
 
 def _write_fifo(fifo_path, data):
-    """Writes the data to the fifo or raises EnvironmentError"""
+    """Writes the data to the FIFO or raises `EnvironmentError`"""
 
     assert isinstance(data, bytes)
 
-    # this will raise if the fifo doesn't exist or there is no reader
+    # This will raise if the FIFO doesn't exist or there is no reader
     try:
         fifo = os.open(fifo_path, os.O_WRONLY | os.O_NONBLOCK)
     except OSError:
@@ -63,10 +66,10 @@ def _write_fifo(fifo_path, data):
 
 
 def split_message(data):
-    """Split incoming data in pairs of (command, fifo path or None)
+    """Split incoming data in pairs of (command, FIFO path or `None`)
 
     This supports two data formats:
-    Newline seperated commands without a return fifo path.
+    Newline-separated commands without a return FIFO path.
     and "NULL<command>NULL<fifo-path>NULL"
 
     Args:
@@ -108,7 +111,7 @@ def split_message(data):
 
 
 def write_fifo(fifo_path, data):
-    """Writes the data to the fifo and returns a response.
+    """Writes the data to the FIFO and returns a response.
 
     Args:
         fifo_path (pathlike)
@@ -148,7 +151,7 @@ def write_fifo(fifo_path, data):
 
 
 def fifo_exists(fifo_path):
-    """Returns whether a fifo exists to which we can write to.
+    """Returns whether a FIFO exists (and is writeable).
 
     Args:
         fifo_path (pathlike)
@@ -178,7 +181,7 @@ class FIFO(object):
 
     def __init__(self, path, callback):
         """
-        Aargs:
+        Args:
             path (pathlike)
             callback (Callable[[bytes], None])
         """
@@ -187,7 +190,7 @@ class FIFO(object):
         self._path = path
 
     def open(self):
-        """Create the fifo and listen to it.
+        """Create the FIFO and listen to it.
 
         Raises:
             FIFOError in case another process is already using it.
@@ -197,7 +200,7 @@ class FIFO(object):
 
     def destroy(self):
         """After destroy() the callback will no longer be called
-        and the fifo can no longer be used. Can be called multiple
+        and the FIFO can no longer be used. Can be called multiple
         times.
         """
 
@@ -235,7 +238,7 @@ class FIFO(object):
                     continue
                 if ignore_lock:
                     break
-                # OSX doesn't support fifo locking, so check errno
+                # OSX doesn't support FIFO locking, so check errno
                 if e.errno == errno.EWOULDBLOCK:
                     raise FIFOError("fifo already locked")
                 else:
@@ -244,13 +247,13 @@ class FIFO(object):
 
         try:
             f = os.fdopen(fifo, "rb", 4096)
-        except OSError:
-            pass
-
-        self._id = qltk.io_add_watch(
-            f, GLib.PRIORITY_DEFAULT,
-            GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
-            self._process, *args)
+        except OSError as e:
+            print_e("Couldn't open FIFO (%s)" % e)
+        else:
+            self._id = qltk.io_add_watch(
+                f, GLib.PRIORITY_DEFAULT,
+                GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
+                self._process, *args)
 
     def _process(self, source, condition, *args):
         if condition in (GLib.IO_ERR, GLib.IO_HUP):

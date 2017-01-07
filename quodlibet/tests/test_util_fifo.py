@@ -5,9 +5,11 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import print_d
 from tests import TestCase
 
-from quodlibet.util.fifo import split_message
+from quodlibet.util.fifo import split_message, FIFO, fifo_exists, write_fifo
+from tests.helper import temp_filename
 
 
 class Tsplit_message(TestCase):
@@ -37,3 +39,26 @@ class Tsplit_message(TestCase):
 
         # inval
         self.assertRaises(ValueError, func, b"foo\x00bar")
+
+
+class TFIFO(TestCase):
+
+    def test_creation_destruction(self):
+
+        def cb(bs, _):
+            print_d(bs)
+
+        with temp_filename() as fn:
+            fifo = FIFO(fn, cb)
+            self.failIf(fifo_exists(fifo._path))
+            fifo.open()
+            self.failUnless(fifo_exists(fifo._path))
+        # Should *not* error if file is gone
+        fifo.destroy()
+
+    def test_unwriteable_location(self):
+        fifo = FIFO("/dev/not-here", None)
+        fifo.open()
+        with self.assertRaises(OSError):
+            write_fifo(fifo._path, "foobar".encode())
+        fifo.destroy()
