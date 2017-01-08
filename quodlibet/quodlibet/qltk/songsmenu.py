@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
-#      2013-2016 Nick Boultbee
+#      2013-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -325,8 +325,14 @@ class SongsMenu(Gtk.Menu):
             # FIXME: Two things are now importing browsers, so we need
             # some kind of inversion of control here.
             from quodlibet.browsers.playlists.menu import PlaylistMenu
+            from quodlibet.browsers.playlists import PlaylistsBrowser
             try:
-                submenu = PlaylistMenu(songs)
+                submenu = PlaylistMenu(songs, PlaylistsBrowser.playlists(),
+                                       librarian)
+
+                def on_new(widget, playlist):
+                    PlaylistsBrowser.changed(playlist)
+                submenu.connect('new', on_new)
             except AttributeError as e:
                 print_w("Couldn't get Playlists menu: %s" % e)
             else:
