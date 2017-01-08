@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#      2011,2013,2016 Nick Boultbee
+#           2011-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,6 +8,7 @@
 
 from gi.repository import GObject, Gtk
 
+from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.menu import PlaylistMenu
 
 from quodlibet import _
@@ -196,7 +197,12 @@ class IndicatorMenu(Gtk.Menu):
         submenu = self._playlists_item.get_submenu()
         if submenu:
             submenu.destroy()
-        playlist_menu = PlaylistMenu([song])
+        playlist_menu = PlaylistMenu([song], PlaylistsBrowser.playlists(),
+                                     self._app.librarian)
+
+        def on_new(widget, playlist):
+            PlaylistsBrowser.changed(playlist)
+        playlist_menu.connect('new', on_new)
         self._playlists_item.set_submenu(playlist_menu)
         self._playlists_item.set_sensitive(bool(song) and song.can_add)
         self._playlists_item.show_all()
