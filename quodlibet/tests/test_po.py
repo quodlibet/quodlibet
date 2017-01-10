@@ -18,7 +18,6 @@ except ImportError:
 import quodlibet
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import human_title
-from quodlibet.util import print_w
 from gdist import gettextutil
 
 
@@ -267,11 +266,10 @@ class POMixin(object):
                 '"%s" - "%s" (%s)' % (e.msgid, e.msgstr, format_occurrences(e))
                 for e in fails
             ]
-            for message in messages:
-                print_w(message)
+
             self.fail(
-                "One or more messages did not pass (%s).\n"
-                "Please check the warning messages above." % reason)
+                "One or more messages did not pass (%s).\n%s" % (
+                    reason, "\n".join(messages)))
 
     def test_original_punctuation_present(self):
         if polib is None:
