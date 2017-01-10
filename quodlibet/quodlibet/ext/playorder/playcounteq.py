@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012-2016 Ryan "ZDBioHazard" Turner <zdbiohazard2@gmail.com>
-#                2016 Nick Boultbee
+#           2016-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -22,7 +22,7 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered):
     PLUGIN_NAME = _("Playcount Equalizer")
     PLUGIN_DESC = _("Shuffle, preferring songs with fewer total plays.")
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_SHUFFLE
-    display_name = "Prefer less played"
+    display_name = _("Prefer less played")
 
     priority = Reorder.priority
 
