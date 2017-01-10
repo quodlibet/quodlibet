@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 3.8\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-06 13:37+0100\n"
-"PO-Revision-Date: 2017-01-10 20:33+0100\n"
+"PO-Revision-Date: 2017-01-10 21:08+0100\n"
 "Last-Translator: Rüdiger Arp <ruediger@gmx.net>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
 "Language: de_DE\n"
@@ -6330,7 +6330,7 @@ msgstr "Vollst. Dateiname"
 
 #: ../quodlibet/util/tags.py:152
 msgid "mount point"
-msgstr "Mount-Punkt"
+msgstr "Einhängepunkt"
 
 #: ../quodlibet/util/tags.py:154
 msgid "people"
