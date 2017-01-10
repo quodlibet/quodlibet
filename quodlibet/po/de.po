@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 3.8\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-06 13:37+0100\n"
-"PO-Revision-Date: 2017-01-09 22:58+0100\n"
+"PO-Revision-Date: 2017-01-10 20:33+0100\n"
 "Last-Translator: Rüdiger Arp <ruediger@gmx.net>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
 "Language: de_DE\n"
@@ -1372,7 +1372,7 @@ msgstr "_Japanischen Text romanisieren"
 
 #: ../quodlibet/ext/editing/kakasi.py:63
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr "»Kanji Kana Simple Inverter« (kakasi) wurde nicht gefunden"
+msgstr "»Kanji Kana Simple Inverter« (kakasi) wurde nicht gefunden."
 
 #: ../quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
@@ -2883,7 +2883,7 @@ msgstr "Passwort:"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:130
 msgid "Library directory the server connects to."
-msgstr "Bibliotheksverzeichnis, mit dem sich der Server verbindet"
+msgstr "Bibliotheksverzeichnis, mit dem sich der Server verbindet."
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:132
 msgid "Library path:"
@@ -5300,7 +5300,9 @@ msgstr "Bibliothek neu auf_bauen"
 
 #: ../quodlibet/qltk/prefs.py:660
 msgid "Reload all songs in your library. This can take a long time."
-msgstr "Alle Titel in der Bibliothek neu laden (dauert möglicherweise lange)"
+msgstr ""
+"Alle Titel in der Bibliothek neu laden. Dieser Vorgang dauert möglicherweise "
+"lange."
 
 #: ../quodlibet/qltk/prefs.py:670
 msgid "Scan Directories"
@@ -5725,7 +5727,7 @@ msgstr "Listenspalten zur _Produktion"
 
 #: ../quodlibet/qltk/songlist.py:1112
 msgid "_Customize Headers…"
-msgstr "Listenspalten _anpassen ..."
+msgstr "Listenspalten _anpassen …"
 
 #: ../quodlibet/qltk/songlist.py:1117
 msgid "_Expand Column"
@@ -6127,9 +6129,8 @@ msgid "conductors"
 msgstr "Dirigenten"
 
 #: ../quodlibet/util/tags.py:79
-#, fuzzy
 msgid "conducting"
-msgstr "dirigiert"
+msgstr "Dirigat"
 
 #: ../quodlibet/util/tags.py:80
 msgid "contact"
