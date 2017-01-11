@@ -115,6 +115,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
                 return row[0]
 
     def _new_item(self, button):
+        # Translators: New Command/Entry/Item/...
         current_name = name = _("New %s") % self.name
         n = 2
         while True:
