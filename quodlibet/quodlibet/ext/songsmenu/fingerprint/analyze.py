@@ -76,7 +76,7 @@ class FingerPrintPipeline(object):
                 }.get(f.get_name(), i)
                 return (i, f)
 
-            return zip(*sorted(map(set_prio, enumerate(factories))))[1]
+            return list(zip(*sorted(map(set_prio, enumerate(factories)))))[1]
 
         self._dec_id2 = decode.connect("autoplug-sort", sort_decoders)
 

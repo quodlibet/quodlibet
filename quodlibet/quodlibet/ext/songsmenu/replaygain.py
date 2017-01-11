@@ -244,7 +244,7 @@ class ReplayGainPipeline(GObject.Object):
                 i, f = x
                 i = {"mad": -1, "mpg123audiodec": -2}.get(f.get_name(), i)
                 return (i, f)
-            return zip(*sorted(map(set_prio, enumerate(factories))))[1]
+            return list(zip(*sorted(map(set_prio, enumerate(factories)))))[1]
 
         self.decode.connect("autoplug-sort", sort_decoders)
 
