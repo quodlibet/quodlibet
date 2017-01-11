@@ -31,8 +31,8 @@ if PY2:
     from operator import div as floordiv
     from itertools import izip_longest, izip
     izip_longest, izip
-    from Queue import Queue
-    Queue
+    import Queue as queue
+    queue
 
     xrange = xrange
     long = long
@@ -103,8 +103,8 @@ elif PY3:
     from itertools import zip_longest as izip_longest
     izip_longest
     import codecs
-    from queue import Queue
-    Queue
+    import queue
+    queue
 
     xrange = range
     long = int

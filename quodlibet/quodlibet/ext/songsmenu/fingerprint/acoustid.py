@@ -14,7 +14,7 @@ from xml.dom.minidom import parseString
 from gi.repository import GLib
 
 from quodlibet.util import print_w
-from quodlibet.compat import iteritems, urlencode, Queue, cBytesIO
+from quodlibet.compat import iteritems, urlencode, queue, cBytesIO
 from quodlibet.util.urllib import urlopen, Request
 from .util import get_api_key, GateKeeper
 
@@ -262,7 +262,7 @@ class AcoustidLookupThread(threading.Thread):
     def __init__(self, progress_cb):
         super(AcoustidLookupThread, self).__init__()
         self.__progress_cb = progress_cb
-        self.__queue = Queue.Queue()
+        self.__queue = queue.Queue()
         self.__stopped = False
         self.start()
 
@@ -340,7 +340,7 @@ class AcoustidLookupThread(threading.Thread):
                 timeout = 0.5 / len(results)
                 try:
                     results.append(self.__queue.get(timeout=timeout))
-                except Queue.Empty:
+                except queue.Empty:
                     break
 
             if self.__stopped:
