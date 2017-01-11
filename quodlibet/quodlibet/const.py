@@ -228,6 +228,7 @@ Yasushi Iwata (ja)
 Сергей Федосеев (ru)
 scootergrisen (da)
 Marek Suchánek (cs)
+Till Berger (de)
 """.strip().splitlines())
 
 ARTISTS = sorted(u"""\
