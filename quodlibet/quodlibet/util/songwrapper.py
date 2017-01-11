@@ -12,9 +12,10 @@ from quodlibet.formats import AudioFileError
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.util.misc import total_ordering
+from quodlibet.util.misc import total_ordering, hashable
 
 
+@hashable
 @total_ordering
 class SongWrapper(object):
     __slots__ = ['_song', '_updated', '_needs_write']
@@ -54,6 +55,9 @@ class SongWrapper(object):
             return setattr(self._song, attr, value)
         else:
             return super(SongWrapper, self).__setattr__(attr, value)
+
+    def __hash__(self):
+        return hash(self._song)
 
     def __eq__(self, other):
         return self._song == other._song

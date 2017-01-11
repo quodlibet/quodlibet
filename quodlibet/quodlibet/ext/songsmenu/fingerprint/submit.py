@@ -157,7 +157,7 @@ class FingerprintDialog(Window):
     def __show_final_stats(self):
         all_ = len(self.__songs)
         results = self.__fp_results.values()
-        to_send = len(filter(can_submit, results))
+        to_send = len(list(filter(can_submit, results)))
         self.__label_song.set_text(
             _("Done. %(to-send)d/%(all)d songs to submit.") % {
                 "to-send": to_send, "all": all_})
@@ -178,7 +178,7 @@ class FingerprintDialog(Window):
         self.__label.set_markup("<b>%s</b>" % _("Submitting fingerprints:"))
         self.__set_fraction(0)
         self.__acoustid_thread = AcoustidSubmissionThread(
-            filter(can_submit, self.__fp_results.values()),
+            list(filter(can_submit, self.__fp_results.values())),
             self.__acoustid_update, self.__acoustid_done)
 
     def __acoustid_update(self, progress):
