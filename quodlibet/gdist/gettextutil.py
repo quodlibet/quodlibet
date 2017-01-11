@@ -19,12 +19,37 @@ class GettextError(Exception):
     pass
 
 
-# pgettext isn't included by default for Python
-_EXTRA_KEYWORDS = {"C_": "1c,2",
-                   "npgettext": "1c,2,3",
-                   "numeric_phrase": "1,2"}
-XGETTEXT_ARGS = " ".join("--keyword=%s:%s" % (k, v)
-                         for k, v in _EXTRA_KEYWORDS.items())
+def _get_xgettext_args():
+    # pgettext isn't included by default for Python for example
+    EXTRA_KEYWORDS = {
+        "_": "",
+        "N_": "",
+        "C_": "1c,2",
+        "NC_": "1c,2",
+        "Q_": "",
+        "pgettext": "1c,2",
+        "npgettext": "1c,2,3",
+        "numeric_phrase": "1,2",
+        "dgettext": "2",
+        "ngettext": "1,2",
+        "dngettext": "2,3",
+    }
+
+    # The lone -k disables default xgettext keywords
+    args = ["-k"]
+
+    # There are still some keywords defined by intltool-update which we can't
+    # change, but they shouldn't conflict with anything.
+
+    for name, spec in EXTRA_KEYWORDS.items():
+        if spec:
+            args.append("--keyword=%s:%s" % (name, spec))
+        else:
+            args.append("--keyword=%s" % name)
+
+    return args
+
+XGETTEXT_ARGS = " ".join(_get_xgettext_args())
 
 
 def intltool(*args):
