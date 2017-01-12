@@ -214,11 +214,12 @@ class WaveformScale(Gtk.EventBox):
             # Basic anti-aliasing / oversampling
             u1 = max(0, int(floor((x - hw) * ratio_width)))
             u2 = min(int(ceil((x + hw) * ratio_width)), len(data))
-            val = sum(data[u1:u2]) / (u2 - u1)
+            val = (sum(data[u1:u2]) / (ratio_height * (u2 - u1))
+                   if u1 != u2 else 0.5)
 
             # Draw single line, ensuring 1px minimum
-            cr.move_to(x, half_height - val / ratio_height)
-            cr.line_to(x, ceil(half_height + val / ratio_height))
+            cr.move_to(x, half_height - val)
+            cr.line_to(x, ceil(half_height + val))
             cr.stroke()
 
     def draw_placeholder(self, cr, width, height, color):
