@@ -76,7 +76,7 @@ _TAGS = dict((t.name, t) for t in [
     T("artist", "us", _("artist"), _("artists")),
     T("author", "u", _("author"), _("authors")),
     T("composer", "us", _("composer"), _("composers"), _("composition")),
-    # Translators: conducting as in conduction a musical performance
+    # Translators: conducting as in conducting a musical performance
     T("conductor", "u", _("conductor"), _("conductors"), _("conducting")),
     T("contact", "u", _("contact")),
     T("copyright", "u", _("copyright")),
