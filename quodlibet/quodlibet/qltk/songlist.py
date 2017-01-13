@@ -749,7 +749,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
     def _sort_songs(self, songs):
         """Sort passed songs in place based on the column sort orders"""
 
-        songs = list(songs)
         last_tag = None
         last_order = None
         first = True
