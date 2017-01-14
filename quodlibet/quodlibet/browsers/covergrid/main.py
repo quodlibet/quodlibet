@@ -307,7 +307,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         view.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
         view.connect("drag-data-get", self.__drag_data_get) # NOT WORKING
-        connect_obj(view, 'button-press-event', self.__rightclick, view, library)
+        connect_obj(view, 'button-press-event',
+            self.__rightclick, view, library)
         connect_obj(view, 'popup-menu', self.__popup, view, library)
 
         self.accelerators = Gtk.AccelGroup()
@@ -453,9 +454,9 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
                 view.unselect_all()
             view.select_path(current_path)
             self.__popup(view, library)
-            
+
     def __popup(self, view, library):
-        
+
         albums = self.__get_selected_albums()
         songs = self.__get_songs_from_albums(albums)
 
@@ -469,7 +470,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         menu = SongsMenu(library, songs, items=[items])
         menu.show_all()
-        menu.popup(None, None, None, Gdk.BUTTON_SECONDARY, 
+        menu.popup(None, None, None, Gdk.BUTTON_SECONDARY,
             Gtk.get_current_event_time(),
             Gtk.get_current_event_time())
 
