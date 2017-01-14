@@ -470,8 +470,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         menu = SongsMenu(library, songs, items=[items])
         menu.show_all()
-        menu.popup(None, None, None, Gdk.BUTTON_SECONDARY,
-            Gtk.get_current_event_time(),
+        menu.popup(None, None, None, None,
+            Gdk.BUTTON_SECONDARY,
             Gtk.get_current_event_time())
 
     def _show_tooltip(self, widget, x, y, keyboard_tip, tooltip):
