@@ -43,6 +43,7 @@ from quodlibet.util.library import background_filter
 from quodlibet.util import connect_obj
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
+from quodlibet.qltk import popup_menu_at_widget
 
 
 class PreferencesButton(PreferencesButton):
@@ -470,7 +471,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         menu = SongsMenu(library, songs, items=[items])
         menu.show_all()
-        menu.popup(None, None, None, None,
+        popup_menu_at_widget(menu, view,
             Gdk.BUTTON_SECONDARY,
             Gtk.get_current_event_time())
 
