@@ -307,7 +307,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         view.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
         view.connect("drag-data-get", self.__drag_data_get) # NOT WORKING
-        connect_obj(view, 'button-press-event', self.__popup, view, library)
+        connect_obj(view, 'button-press-event', self.__rightclick, view, library)
+        connect_obj(view, 'popup-menu', self.__popup, view, library)
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
@@ -443,7 +444,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
                     return False
         return True
 
-    def __popup(self, view, event, library):
+    def __rightclick(self, view, event, library):
         x = int(event.x)
         y = int(event.y)
         current_path = view.get_path_at_pos(x, y)
@@ -451,21 +452,26 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             if not view.path_is_selected(current_path):
                 view.unselect_all()
             view.select_path(current_path)
-            albums = self.__get_selected_albums()
-            songs = self.__get_songs_from_albums(albums)
+            self.__popup(view, library)
+            
+    def __popup(self, view, library):
+        
+        albums = self.__get_selected_albums()
+        songs = self.__get_songs_from_albums(albums)
 
-            items = []
-            num = len(albums)
-            button = MenuItem(
-                ngettext("Reload album _cover", "Reload album _covers", num),
-                Icons.VIEW_REFRESH)
-            button.connect('activate', self.__refresh_album, view)
-            items.append(button)
+        items = []
+        num = len(albums)
+        button = MenuItem(
+            ngettext("Reload album _cover", "Reload album _covers", num),
+            Icons.VIEW_REFRESH)
+        button.connect('activate', self.__refresh_album, view)
+        items.append(button)
 
-            menu = SongsMenu(library, songs, items=[items])
-            menu.show_all()
-            menu.popup(None, None, None, event.button, event.time,
-                Gtk.get_current_event_time())
+        menu = SongsMenu(library, songs, items=[items])
+        menu.show_all()
+        menu.popup(None, None, None, Gdk.BUTTON_SECONDARY, 
+            Gtk.get_current_event_time(),
+            Gtk.get_current_event_time())
 
     def _show_tooltip(self, widget, x, y, keyboard_tip, tooltip):
         w = self.scrollwin.get_hadjustment().get_value()
