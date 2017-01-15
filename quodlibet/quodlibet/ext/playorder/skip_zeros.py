@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 
 from quodlibet import _, print_d, qltk
 from quodlibet.order import OrderInOrder
@@ -24,10 +24,8 @@ class SkipZeros(ShufflePlugin, OrderInOrder, PluginConfigMixin):
                     "a non-empty 'skip' tag unless they are explicitly "
                     "played.")
 
-
     _CFG_SKIP_BY_RATING = 'skip_by_rating'
     _CFG_SKIP_BY_TAG = 'skip_by_tag'
-
 
     @classmethod
     def PluginPreferences(self, window):
@@ -37,7 +35,8 @@ class SkipZeros(ShufflePlugin, OrderInOrder, PluginConfigMixin):
         # Matching Option
         toggles = [
             (self._CFG_SKIP_BY_RATING, _("Skip Songs with _Rating of Zero")),
-            (self._CFG_SKIP_BY_TAG, _("Skip Songs with a Non-Empty 'skip' _Tag")),
+            (self._CFG_SKIP_BY_TAG,
+             _("Skip Songs with a Non-Empty 'skip' _Tag")),
         ]
         vb2 = Gtk.VBox(spacing=6)
         for key, label in toggles:
@@ -51,7 +50,6 @@ class SkipZeros(ShufflePlugin, OrderInOrder, PluginConfigMixin):
         vb.show_all()
         return vb
 
-
     def next(self, playlist, current):
         next = super(SkipZeros, self).next(playlist, current)
 
@@ -60,7 +58,6 @@ class SkipZeros(ShufflePlugin, OrderInOrder, PluginConfigMixin):
 
         return next
 
-
     def previous(self, playlist, current):
         previous = super(SkipZeros, self).previous(playlist, current)
 
@@ -68,7 +65,6 @@ class SkipZeros(ShufflePlugin, OrderInOrder, PluginConfigMixin):
             previous = super(SkipZeros, self).previous(playlist, current)
 
         return previous
-
 
     def shouldSkip(self, playlist, song_iter):
         song_index = playlist.get_path(song_iter).get_indices()[0]
@@ -79,9 +75,9 @@ class SkipZeros(ShufflePlugin, OrderInOrder, PluginConfigMixin):
         if self.config_get_bool(self._CFG_SKIP_BY_RATING) and rating <= 0:
             shouldSkip = True
             print_d("Rating is %f; skipping..." % (rating))
-        elif self.config_get_bool(self._CFG_SKIP_BY_TAG) and song("skip") <> '':
+        elif self.config_get_bool(self._CFG_SKIP_BY_TAG) and \
+             song("skip") != '':
             shouldSkip = True
             print_d("Skip tag present; skipping...")
 
         return shouldSkip
-
