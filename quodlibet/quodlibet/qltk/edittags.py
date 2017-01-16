@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2011-2016 Nick Boultbee
+#           2011-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -126,7 +126,7 @@ class AudioFileGroup(dict):
             if real_keys_only:
                 iter_func = song.iterrealitems
             else:
-                iter_func = song.iteritems
+                iter_func = song.items
 
             for comment, val in iter_func():
                 keys[comment] = keys.get(comment, 0) + 1
