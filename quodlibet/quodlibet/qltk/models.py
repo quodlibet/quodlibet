@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013, 2014 Christoph Reiter
-#                 2015 Nick Boultbee
+#           2015, 2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -67,6 +67,10 @@ class _ModelMixin(object):
         while iter_:
             yield getv(iter_)
             iter_ = inext(iter_)
+
+    def values(self):
+        """Largely for PY2 -> PY3 compatibility"""
+        return list(self.itervalues())
 
     def iterrows(self, iter_=None):
         """Yields (iter, value) tuples"""
