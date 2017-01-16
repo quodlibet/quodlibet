@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2013,2016 Nick Boultbee
+#           2013-2017 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -19,6 +19,7 @@ from gi.repository import Gtk
 from senf import fsn2text
 
 from quodlibet import _
+from quodlibet import print_w
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk import Icons
@@ -159,7 +160,8 @@ def _do_trash_songs(parent, songs, librarian):
         filename = song("~filename")
         try:
             trash.trash(filename)
-        except trash.TrashError:
+        except trash.TrashError as e:
+            print_w("Couldn't trash file (%s)" % e)
             failed.append(song)
         else:
             ok.append(song)

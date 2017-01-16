@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011 Christoph Reiter
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -18,6 +19,10 @@ from os.path import isdir, basename, exists, splitext
 from quodlibet import config
 from quodlibet.util.path import find_mount_point, xdg_get_data_home
 from quodlibet.compat import pathname2url
+
+_TRASH_TMPL = """[Trash Info]
+Path={path}
+DeletionDate={date}"""
 
 
 class TrashError(EnvironmentError):
@@ -125,10 +130,8 @@ def trash_free_desktop(path):
 
     del_date = time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime())
 
-    data = "[Trash Info]\n"
-    data += "Path=%s\n" % pathname2url(norm_path)
-    data += "DeletionDate=%s\n" % del_date
-    os.write(info_fd, data)
+    data = _TRASH_TMPL.format(path=pathname2url(norm_path), date=del_date)
+    os.write(info_fd, data.encode())
     os.close(info_fd)
 
     target_path = join(files, name)

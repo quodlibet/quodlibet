@@ -257,7 +257,7 @@ def temp_filename(*args, **kwargs):
     """Creates an empty file and removes it when done.
 
         with temp_filename() as filename:
-            with open(filename) as h:
+            with open(filename, 'w') as h:
                 h.write("foo")
             do_stuff(filename)
     """

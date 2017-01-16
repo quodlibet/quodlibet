@@ -8,10 +8,11 @@
 import os
 import sys
 
-from tests import TestCase
+from quodlibet.util import is_windows
+from tests import TestCase, skipIf, mkstemp
 
 from quodlibet import config
-from quodlibet.util.trash import use_trash
+from quodlibet.util.trash import use_trash, trash
 
 
 class Ttrash(TestCase):
@@ -63,3 +64,12 @@ class Ttrash(TestCase):
         finally:
             os.name = old_os_name
             sys.platform = old_sys_platform
+
+    @skipIf(is_windows(), reason="Trash not supported on Windows")
+    def test_trash_removes_file(self):
+        filename = mkstemp()[1]
+        with open(filename, "w") as f:
+            f.write("\n")
+        self.failUnless(os.path.exists(filename))
+        trash(filename)
+        self.failIf(os.path.exists(filename))
