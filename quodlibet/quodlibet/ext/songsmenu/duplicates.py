@@ -2,7 +2,7 @@
 #
 #    Duplicates songs plugin.
 #
-#    Copyright (C) 2012, 2011, 2016 Nick Boultbee
+#    Copyright (C) 2011-2017 Nick Boultbee
 #
 #    Finds "duplicates" of songs selected by searching the library for
 #    others with the same user-configurable "key", presenting a browser-like
@@ -31,7 +31,7 @@ from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import Icons, Button
 from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.util.i18n import numeric_phrase
-from quodlibet.compat import text_type
+from quodlibet.compat import text_type, PY2
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -193,7 +193,6 @@ class DuplicatesTreeModel(Gtk.TreeStore):
     def add_to_existing_group(self, key, song):
         """Tries to add a song to an existing group. Returns None if not able
         """
-        #print_d("Trying to add %s to group \"%s\"" % (song("~filename"), key))
         for parent in self:
             if key == parent[0]:
                 print_d("Found group", self)
@@ -381,7 +380,10 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     __cfg_cache = {}
 
     # Faster than a speeding bullet
-    __trans = "".join(map(chr, range(256)))
+    if PY2:
+        __trans = "".join(map(chr, range(256)))
+    else:
+        __trans = str.maketrans({ord(k): None for k in string.punctuation})
 
     @classmethod
     def get_key_expression(cls):
@@ -434,18 +436,20 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
     @staticmethod
     def remove_accents(s):
-        return filter(lambda c: not unicodedata.combining(c),
-                      unicodedata.normalize('NFKD', text_type(s)))
+        return "".join(c for c in unicodedata.normalize('NFKD', text_type(s))
+                       if not unicodedata.combining(c))
 
     @classmethod
     def get_key(cls, song):
-        key = song(cls.get_key_expression())
+        key = str(song(cls.get_key_expression()))
         if cls.config_get_bool(cls._CFG_REMOVE_DIACRITICS):
             key = cls.remove_accents(key)
         if cls.config_get_bool(cls._CFG_CASE_INSENSITIVE):
             key = key.lower()
         if cls.config_get_bool(cls._CFG_REMOVE_PUNCTUATION):
-            key = str(key).translate(cls.__trans, string.punctuation)
+            key = (key.translate(cls.__trans, string.punctuation) if PY2
+                   else key.translate(cls.__trans))
+
         if cls.config_get_bool(cls._CFG_REMOVE_WHITESPACE):
             key = "_".join(key.split())
         return key
@@ -456,7 +460,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
         # Index all songs by our custom key
         # TODO: make this cache-friendly
-        print_d("Calculating duplicates...")
+        print_d("Calculating duplicates for %d song(s)..." % len(songs))
         groups = {}
         for song in songs:
             key = self.get_key(song)
