@@ -6,15 +6,17 @@
 # published by the Free Software Foundation
 
 import os
-import urllib
 
 from gi.repository import Gtk, Pango, GLib
 
 from quodlibet import qltk
 from quodlibet import util
-
+from quodlibet import _
 from quodlibet.util import connect_obj
 from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk.x import MenuItem
+from quodlibet.qltk import Icons
+from quodlibet.util.urllib import urlopen
 
 
 class DownloadWindow(qltk.UniqueWindow):
@@ -89,7 +91,7 @@ class DownloadWindow(qltk.UniqueWindow):
         if model:
             iters = map(model.get_iter, paths)
             menu = Gtk.Menu()
-            item = Gtk.ImageMenuItem(Gtk.STOCK_STOP)
+            item = MenuItem(_("_Stop"), Icons.PROCESS_STOP)
             connect_obj(item, 'activate', self.__stop_download, iters)
             menu.append(item)
             menu.connect('selection-done', lambda m: m.destroy())
@@ -97,13 +99,13 @@ class DownloadWindow(qltk.UniqueWindow):
             return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __start_next(self):
-        started = len(filter(lambda row: row[2] != 0, self.downloads))
+        started = len([r for r in self.downloads if r[2] != 0])
         iter = self.downloads.get_iter_first()
         while iter is not None:
             if started >= 2:
                 break
             if self.downloads[iter][2] == 0:
-                url = urllib.urlopen(self.downloads[iter][3])
+                url = urlopen(self.downloads[iter][3])
                 sock = url.fp._sock
                 sock.setblocking(0)
                 self.downloads[iter][0] = sock
@@ -139,7 +141,7 @@ class DownloadWindow(qltk.UniqueWindow):
         return True
 
     def _download(self, source, target):
-        fileobj = file(target, "wb")
+        fileobj = open(target, "wb")
         self.downloads.append(row=[None, fileobj, 0, source])
         self.__start_next()
 

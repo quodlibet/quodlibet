@@ -16,13 +16,11 @@ import os
 import glob
 from subprocess import Popen, PIPE
 from tempfile import mkstemp
-import shutil
-
 from distutils.dep_util import newer
-from distutils.util import change_root
 from distutils.spawn import find_executable
-from distutils.core import Command
+from distutils.errors import DistutilsOptionError
 
+from .util import Command
 from . import gettextutil
 
 
@@ -32,21 +30,32 @@ class po_stats(Command):
     user_options = []
 
     def initialize_options(self):
-        pass
+        self.po_directory = None
+        self.po_files = None
 
     def finalize_options(self):
         self.po_directory = self.distribution.po_directory
+        self.po_package = self.distribution.po_package
         self.po_files = glob.glob(os.path.join(self.po_directory, "*.po"))
 
     def run(self):
-        self.run_command("update_po")
+        gettextutil.update_pot(self.po_directory, self.po_package)
+
         res = []
         for po in self.po_files:
             language = os.path.basename(po).split(".")[0]
-            p = Popen(["msgfmt", "--statistics", po], stdout=PIPE, stderr=PIPE)
-            output = p.communicate()[1]
-            res.append((language, output))
-        del p
+
+            fd, temp_path = mkstemp(".po")
+            try:
+                os.close(fd)
+                gettextutil.update_po(self.po_directory, self.po_package,
+                                      language, output_file=temp_path)
+                proc = Popen(["msgfmt", "-o", "/dev/null", "--statistics",
+                              temp_path], stdout=PIPE, stderr=PIPE)
+                output = proc.communicate()[1]
+                res.append((language, output))
+            finally:
+                os.remove(temp_path)
 
         stats = []
         for po, r in res:
@@ -57,11 +66,11 @@ class po_stats(Command):
             stats.append((po, trans, fuzzy, untrans))
 
         stats.sort(key=lambda x: x[1], reverse=True)
-        print "#" * 30
+        print("#" * 30)
         for po, trans, fuzzy, untrans in stats:
             all_ = float(trans + fuzzy + untrans) / 100
-            print ("%5s: %3d%% (+%2d%% fuzzy)" %
-                   (po, trans / all_, fuzzy / all_))
+            print("%5s: %3d%% (+%2d%% fuzzy)" %
+                  (po, trans / all_, fuzzy / all_))
 
 
 class update_po(Command):
@@ -105,22 +114,44 @@ class update_po(Command):
             self._update_po(po)
             return
 
-        infilename = os.path.join(self.po_directory, "POTFILES.in")
-        with open(infilename, "rb") as h:
-            infiles = h.read().splitlines()
-
-        # if any of the in files is newer than the pot, update the pot
-        for filename in infiles:
-            if newer(filename, self.pot_file):
-                self._update_pot()
-                break
-        else:
-            print "not pot update"
+        self._update_pot()
 
         # if the pot file is newer than any of the po files, update that po
         for po in self.po_files:
             if newer(self.pot_file, po):
                 self._update_po(po)
+
+
+class create_po(Command):
+
+    description = "create a new po file"
+    user_options = [
+        ("lang=", None, "create <lang>.po"),
+    ]
+
+    def initialize_options(self):
+        self.po_directory = None
+        self.lang = None
+
+    def finalize_options(self):
+        self.po_directory = self.distribution.po_directory
+        self.po_package = self.distribution.po_package
+        self.pot_file = os.path.join(
+            self.po_directory, self.po_package + ".pot")
+        if not self.lang:
+            raise DistutilsOptionError("no --lang= given")
+
+    def run(self):
+        try:
+            gettextutil.check_version()
+        except gettextutil.GettextError as e:
+            raise SystemExit(e)
+
+        gettextutil.update_pot(self.po_directory, self.po_package)
+        path = gettextutil.create_po(
+            self.po_directory, self.po_package, self.lang)
+        gettextutil.update_po(self.po_directory, self.po_package, self.lang)
+        print("Created %r" % os.path.abspath(path))
 
 
 def strip_pot_date(path):
@@ -129,13 +160,13 @@ def strip_pot_date(path):
     done = False
     lines = []
     for line in open(path, "rb"):
-        if not done and line.startswith('"POT-Creation-Date:'):
+        if not done and line.startswith(b'"POT-Creation-Date:'):
             done = True
             continue
         lines.append(line)
 
     with open(path, "wb") as h:
-        h.write("".join(lines))
+        h.write(b"".join(lines))
 
 
 class build_mo(Command):
@@ -149,33 +180,23 @@ class build_mo(Command):
     user_options = []
 
     def initialize_options(self):
-        self.skip_po_update = None
         self.build_base = None
         self.po_package = None
         self.po_files = None
-        self.pot_file = None
 
     def finalize_options(self):
         self.po_directory = self.distribution.po_directory
         self.po_package = self.distribution.po_package
         self.set_undefined_options('build', ('build_base', 'build_base'))
-        self.set_undefined_options(
-            'build', ('skip_po_update', 'skip_po_update'))
         self.po_files = glob.glob(os.path.join(self.po_directory, "*.po"))
-        self.pot_file = os.path.join(
-            self.po_directory, self.po_package + ".pot")
 
     def run(self):
         if find_executable("msgfmt") is None:
             raise SystemExit("Error: 'gettext' not found.")
 
-        # It's OK to skip po update for building release tarballs, since
-        # things are updated right before release...
-        if not self.skip_po_update:
-            self.run_command("update_po")
+        gettextutil.update_pot(self.po_directory, self.po_package)
 
         basepath = os.path.join(self.build_base, 'share', 'locale')
-
         for po in self.po_files:
             language = os.path.basename(po).split(".")[0]
             fullpath = os.path.join(basepath, language, "LC_MESSAGES")
@@ -187,7 +208,8 @@ class build_mo(Command):
                 fd, temp_path = mkstemp(".po")
                 try:
                     os.close(fd)
-                    shutil.copy(po, temp_path)
+                    gettextutil.update_po(self.po_directory, self.po_package,
+                                          language, output_file=temp_path)
                     strip_pot_date(temp_path)
                     self.spawn(["msgfmt", "-o", destpath, temp_path])
                 finally:
@@ -207,16 +229,14 @@ class install_mo(Command):
     def initialize_options(self):
         self.skip_build = None
         self.build_base = None
-        self.install_base = None
-        self.root = None
+        self.install_dir = None
         self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options('build', ('build_base', 'build_base'))
         self.set_undefined_options(
             'install',
-            ('root', 'root'),
-            ('install_base', 'install_base'),
+            ('install_data', 'install_dir'),
             ('skip_build', 'skip_build'))
 
     def get_outputs(self):
@@ -226,9 +246,7 @@ class install_mo(Command):
         if not self.skip_build:
             self.run_command('build_mo')
         src = os.path.join(self.build_base, "share", "locale")
-        dest = os.path.join(self.install_base, "share", "locale")
-        if self.root is not None:
-            dest = change_root(self.root, dest)
+        dest = os.path.join(self.install_dir, "share", "locale")
         out = self.copy_tree(src, dest)
         self.outfiles.extend(out)
 

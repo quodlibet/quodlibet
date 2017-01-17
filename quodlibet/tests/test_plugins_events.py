@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase, mkstemp, mkdtemp
 
 import os
 import sys
+import shutil
 
 from quodlibet import player
 from quodlibet.library import SongLibrarian
@@ -16,7 +21,7 @@ class TEventPlugins(TestCase):
         self.tempdir = mkdtemp()
         self.pm = PluginManager(folders=[self.tempdir])
         self.lib = SongLibrarian()
-        self.player = player.init("nullbe").init(self.lib)
+        self.player = player.init_player("nullbe", self.lib)
         self.handler = EventPluginHandler(
             librarian=self.lib, player=self.player)
         self.pm.register_handler(self.handler)
@@ -25,9 +30,7 @@ class TEventPlugins(TestCase):
 
     def tearDown(self):
         self.pm.quit()
-        for f in os.listdir(self.tempdir):
-            os.remove(os.path.join(self.tempdir, f))
-        os.rmdir(self.tempdir)
+        shutil.rmtree(self.tempdir)
 
     def create_plugin(self, name='', funcs=None):
         fd, fn = mkstemp(suffix='.py', text=True, dir=self.tempdir)

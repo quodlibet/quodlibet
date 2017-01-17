@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2007 Joe Wreschnig
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -58,25 +59,18 @@ class PlayOrderPlugin(quodlibet.qltk.playorder.Order):
     name = None
     display_name = None
     accelerated_name = None
-    priority = quodlibet.qltk.playorder.Order.priority
+    priority = 200
 
 
-class PlayOrderRememberedMixin(quodlibet.qltk.playorder.OrderRemembered):
-    name = None
-    display_name = None
-    accelerated_name = None
-    priority = quodlibet.qltk.playorder.Order.priority
+class RepeatPlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Repeat):
+    """Repeat plugins add new ways to repeat an existing,
+    possibly shuffled playlist.
+
+    Note that they must delegate to the underlying `Order` (typically a
+     `Reorder`) in order for the UI to function as intended"""
+    pass
 
 
-class PlayOrderInOrderMixin(quodlibet.qltk.playorder.OrderInOrder):
-    name = None
-    display_name = None
-    accelerated_name = None
-    priority = quodlibet.qltk.playorder.Order.priority
-
-
-class PlayOrderShuffleMixin(quodlibet.qltk.playorder.OrderShuffle):
-    name = None
-    display_name = None
-    accelerated_name = None
-    priority = quodlibet.qltk.playorder.Order.priority
+class ShufflePlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Reorder):
+    """Shuffle plugins add new ways to reorder a given song list"""
+    pass

@@ -9,9 +9,9 @@ import re
 
 from quodlibet import config
 from quodlibet import util
+from quodlibet.compat import text_type
 
 from quodlibet.pattern import XMLFromMarkupPattern as XMLFromPattern
-from quodlibet.pattern import pattern_from_markup
 
 
 class PaneConfig(object):
@@ -27,7 +27,7 @@ class PaneConfig(object):
 
     def __init__(self, row_pattern):
         parts = re.split(r"(?<!\\):", row_pattern)
-        parts = map(lambda p: p.replace(r"\:", ":"), parts)
+        parts = list(map(lambda p: p.replace(r"\:", ":"), parts))
 
         is_numeric = lambda s: s[:2] == "~#" and "~" not in s[2:]
         is_pattern = lambda s: '<' in s
@@ -37,7 +37,7 @@ class PaneConfig(object):
         cat = parts[0]
 
         if is_pattern(cat):
-            title = util.pattern(pattern_from_markup(cat), esc=True)
+            title = util.pattern(cat, esc=True, markup=True)
             try:
                 pc = XMLFromPattern(cat)
             except ValueError:
@@ -50,7 +50,10 @@ class PaneConfig(object):
             tags = util.tagsplit(cat)
             has_markup = False
             if is_numeric(cat):
-                format = lambda song: [unicode(f_round(song(cat)))]
+
+                def format(song):
+                    v = text_type(f_round(song(cat)))
+                    return [(v, v)]
             else:
                 format = lambda song: song.list_separate(cat)
 
@@ -62,7 +65,7 @@ class PaneConfig(object):
             format_display = pd.format
         else:
             if is_numeric(disp):
-                format_display = lambda coll: unicode(f_round(coll(disp)))
+                format_display = lambda coll: text_type(f_round(coll(disp)))
             else:
                 format_display = lambda coll: util.escape(coll.comma(disp))
 

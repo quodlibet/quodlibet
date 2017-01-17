@@ -6,16 +6,20 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+from senf import fsn2text
 
 from quodlibet import qltk
 from quodlibet import util
-
+from quodlibet import _
+from quodlibet.formats import AudioFileError
 from quodlibet.qltk._editutils import OverwriteWarning, WriteFailedError
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.qltk.x import Button
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.util.path import fsdecode
-from quodlibet.util import connect_obj
+from quodlibet.qltk import Icons
+from quodlibet.util import connect_obj, gdecode
+from quodlibet.compat import text_type, itervalues
 
 
 class Entry(object):
@@ -26,7 +30,7 @@ class Entry(object):
 
     @property
     def name(self):
-        return fsdecode(self.song("~basename"))
+        return fsn2text(self.song("~basename"))
 
 
 class TrackNumbers(Gtk.VBox):
@@ -56,7 +60,7 @@ class TrackNumbers(Gtk.VBox):
         label_total.set_mnemonic_widget(spin_total)
         hbox_total.pack_start(label_total, True, True, 0)
         hbox_total.pack_start(spin_total, True, True, 0)
-        preview = qltk.Button(_("_Preview"), Gtk.STOCK_CONVERT)
+        preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
 
         hbox2.pack_start(hbox_start, True, False, 0)
         hbox2.pack_start(hbox_total, True, False, 0)
@@ -68,7 +72,8 @@ class TrackNumbers(Gtk.VBox):
         self.pack_start(hbox2, False, True, 0)
 
         render = Gtk.CellRendererText()
-        column = TreeViewColumn(_('File'), render)
+        column = TreeViewColumn(title=_('File'))
+        column.pack_start(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_file(column, cell, model, iter_, data):
@@ -80,7 +85,8 @@ class TrackNumbers(Gtk.VBox):
         view.append_column(column)
         render = Gtk.CellRendererText()
         render.set_property('editable', True)
-        column = TreeViewColumn(_('Track'), render)
+        column = TreeViewColumn(title=_('Track'))
+        column.pack_start(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_track(column, cell, model, iter_, data):
@@ -100,11 +106,11 @@ class TrackNumbers(Gtk.VBox):
         bbox = Gtk.HButtonBox()
         bbox.set_spacing(6)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save = save
         connect_obj(save,
             'clicked', self.__save_files, prop, model, library)
-        revert = Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
+        revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
         self.revert = revert
         bbox.pack_start(revert, True, True, 0)
         bbox.pack_start(save, True, True, 0)
@@ -134,7 +140,7 @@ class TrackNumbers(Gtk.VBox):
         path = Gtk.TreePath.new_from_string(path)
         row = model[path]
         entry = row[0]
-        new = new.decode("utf-8")
+        new = gdecode(new)
         if entry.tracknumber != new:
             entry.tracknumber = new
             preview.set_sensitive(True)
@@ -145,7 +151,7 @@ class TrackNumbers(Gtk.VBox):
         win = WritingWindow(parent, len(model))
         was_changed = set()
         all_done = False
-        for entry in model.itervalues():
+        for entry in itervalues(model):
             song, track = entry.song, entry.tracknumber
             if song.get("tracknumber") == track:
                 win.step()
@@ -160,7 +166,7 @@ class TrackNumbers(Gtk.VBox):
             song["tracknumber"] = track
             try:
                 song.write()
-            except:
+            except AudioFileError:
                 util.print_exc()
                 WriteFailedError(self, song).run()
                 library.reload(song, changed=was_changed)
@@ -183,7 +189,7 @@ class TrackNumbers(Gtk.VBox):
             if total:
                 s = u"%d/%d" % (row.path.get_indices()[0] + start, total)
             else:
-                s = unicode(row.path.get_indices()[0] + start)
+                s = text_type(row.path.get_indices()[0] + start)
             entry = row[0]
             entry.tracknumber = s
             model.row_changed(row.path, row.iter)
@@ -193,7 +199,7 @@ class TrackNumbers(Gtk.VBox):
 
     def __update(self, songs, total, model, save, revert):
         if songs is None:
-            songs = [e.song for e in model.itervalues()]
+            songs = [e.song for e in itervalues(model)]
         else:
             songs = list(songs)
 

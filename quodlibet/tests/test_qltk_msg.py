@@ -1,26 +1,24 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase, AbstractTestCase
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
 
-from quodlibet.qltk.msg import *
+from tests import TestCase
+
+from quodlibet.qltk.msg import WarningMessage, ErrorMessage, \
+    CancelRevertSave, ConfirmFileReplace
 
 
-class _TMessage(AbstractTestCase):
-    def setUp(self):
-        self.win = self.Kind(None, "title", "description")
+class TWarningMessage(TestCase):
 
     def test_ctr(self):
-        pass
-
-    def tearDown(self):
-        self.win.destroy()
+        WarningMessage(None, "title", "description").destroy()
 
 
-class TWarningMessage(_TMessage):
-    Kind = WarningMessage
+class TErrorMessage(TestCase):
 
-
-class TErrorMessage(_TMessage):
-    Kind = ErrorMessage
+    def test_ctr(self):
+        ErrorMessage(None, "title", "description").destroy()
 
 
 class TCancelRevertSave(TestCase):

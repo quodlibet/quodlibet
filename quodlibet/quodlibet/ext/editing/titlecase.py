@@ -7,7 +7,9 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import util
+from quodlibet.qltk import Icons
 from quodlibet.plugins.editing import EditTagsPlugin
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.util.string.titlecase import _humanise
@@ -17,7 +19,7 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
     PLUGIN_ID = "Title Case"
     PLUGIN_NAME = _("Title Case")
     PLUGIN_DESC = _("Title-cases tag values in the tag editor.")
-    PLUGIN_ICON = Gtk.STOCK_SPELL_CHECK
+    PLUGIN_ICON = Icons.TOOLS_CHECK_SPELLING
     CONFIG_SECTION = "titlecase"
 
     # Issue 753: Allow all caps (as before).
@@ -37,7 +39,8 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
         super(TitleCase, self).__init__(
             label=_("Title-_case Value"), use_underline=True)
         self.set_image(
-            Gtk.Image.new_from_stock(Gtk.STOCK_EDIT, Gtk.IconSize.MENU))
+            Gtk.Image.new_from_icon_name(Icons.TOOLS_CHECK_SPELLING,
+                                         Gtk.IconSize.MENU))
         self.set_sensitive(self.process_tag(value) != value)
 
     @classmethod

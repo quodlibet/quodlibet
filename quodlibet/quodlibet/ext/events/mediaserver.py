@@ -15,16 +15,19 @@ if os.name == "nt" or sys.platform == "darwin":
 import tempfile
 
 from gi.repository import Gtk, GdkPixbuf
+from senf import fsn2uri
 
 import dbus
 import dbus.service
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
-from quodlibet.util.uri import URI
+from quodlibet.qltk import Icons
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
+from quodlibet.compat import iteritems, itervalues
 
 BASE_PATH = "/org/gnome/UPnP/MediaServer2"
 BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
@@ -35,7 +38,7 @@ class MediaServer(EventPlugin):
     PLUGIN_NAME = _("UPnP AV Media Server")
     PLUGIN_DESC = _("Exposes all albums to the Rygel UPnP Media Server "
                     "through the MediaServer2 D-Bus interface.")
-    PLUGIN_ICON = Gtk.STOCK_CONNECT
+    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def enabled(self):
         try:
@@ -415,8 +418,8 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         dbus.service.FallbackObject.__init__(self, bus, self.PATH)
 
         self.__library = library
-        self.__map = dict((id(v), v) for v in self.__library.itervalues())
-        self.__reverse = dict((v, k) for k, v in self.__map.iteritems())
+        self.__map = dict((id(v), v) for v in itervalues(self.__library))
+        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
 
         self.__song = DummySongObject(self)
 
@@ -427,7 +430,8 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
             ("removed", self.__songs_removed),
             ("added", self.__songs_added),
         ]
-        self.__sigs = map(lambda (s, f): self.__library.connect(s, f), signals)
+        self.__sigs = map(
+            lambda x: self.__library.connect(x[0], x[1]), signals)
 
     def __songs_changed(self, lib, songs):
         # We don't know what changed, so get all properties
@@ -492,15 +496,16 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         self.__library = library.albums
         self.__library.load()
 
-        self.__map = dict((id(v), v) for v in self.__library.itervalues())
-        self.__reverse = dict((v, k) for k, v in self.__map.iteritems())
+        self.__map = dict((id(v), v) for v in itervalues(self.__library))
+        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
 
         signals = [
             ("changed", self.__albums_changed),
             ("removed", self.__albums_removed),
             ("added", self.__albums_added),
         ]
-        self.__sigs = map(lambda (s, f): self.__library.connect(s, f), signals)
+        self.__sigs = map(
+            lambda x: self.__library.connect(x[0], x[1]), signals)
 
         self.__dummy = DummyAlbumObject(self)
 
@@ -641,7 +646,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
                 return "I'm an icon \o/"
         elif interface == MediaItem.IFACE:
             if name == "URLs":
-                return [URI.frompath(self.__f.name)]
+                return [fsn2uri(self.__f.name)]
             elif name == "MIMEType":
                 return "image/png"
             elif name == "Width" or name == "Height":

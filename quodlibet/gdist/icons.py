@@ -9,8 +9,7 @@
 import os
 import subprocess
 
-from distutils.util import change_root
-from distutils.core import Command
+from .util import Command
 
 
 def update_icon_cache(*args):
@@ -35,25 +34,21 @@ class install_icons(Command):
     """Copy app icons to hicolor/pixmaps and update the global cache"""
 
     user_options = []
-    root = None
-    prefix = None
 
     def initialize_options(self):
+        self.install_dir = None
         self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options('install',
-                                   ('root', 'root'),
-                                   ('install_base', 'prefix'))
+                                   ('install_data', 'install_dir'))
 
     def get_outputs(self):
         return self.outfiles
 
     def run(self):
         # install into hicolor icon theme
-        basepath = os.path.join(self.prefix, 'share', 'icons', 'hicolor')
-        if self.root is not None:
-            basepath = change_root(self.root, basepath)
+        basepath = os.path.join(self.install_dir, 'share', 'icons', 'hicolor')
 
         local = os.path.join("quodlibet", "images", "hicolor")
 
@@ -71,9 +66,6 @@ class install_icons(Command):
         update_icon_cache(basepath)
 
         # install png versions to /usr/share/pixmaps
-        basepath = os.path.join(self.prefix, 'share', 'pixmaps')
-        if self.root is not None:
-            basepath = change_root(self.root, basepath)
-
+        basepath = os.path.join(self.install_dir, 'share', 'pixmaps')
         out = self.copy_tree(png, basepath)
         self.outfiles.extend(out)

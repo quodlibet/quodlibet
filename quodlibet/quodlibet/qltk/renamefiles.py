@@ -9,10 +9,12 @@ import os
 import unicodedata
 
 from gi.repository import Gtk, Gdk
+from senf import fsn2text, text2fsn
 
-from quodlibet import const
+import quodlibet
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
 
 from quodlibet.plugins import PluginManager
 from quodlibet.pattern import FileFromPattern
@@ -21,10 +23,21 @@ from quodlibet.qltk._editutils import EditingPluginHandler
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.models import ObjectStore
+from quodlibet.qltk import Icons, Button
 from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.util import connect_obj
-from quodlibet.util.path import fsdecode, fsnative
+from quodlibet.util import connect_obj, gdecode
 from quodlibet.util.path import strip_win32_incompat_from_path
+from quodlibet.compat import itervalues
+
+
+NBP = os.path.join(quodlibet.get_user_dir(), "lists", "renamepatterns")
+NBP_EXAMPLES = """\
+<tracknumber>. <title>
+<tracknumber|<tracknumber>. ><title>
+<tracknumber> - <title>
+<tracknumber> - <artist> - <title>
+/path/<artist> - <album>/<tracknumber>. <title>
+/path/<artist>/<album>/<tracknumber> - <title>"""
 
 
 class SpacesToUnderscores(FilterCheckButton):
@@ -62,8 +75,7 @@ class StripDiacriticals(FilterCheckButton):
     _order = 1.2
 
     def filter(self, original, filename):
-        filename = fsdecode(filename)
-        return fsnative(filter(lambda s: not unicodedata.combining(s),
+        return u"".join(filter(lambda s: not unicodedata.combining(s),
                                unicodedata.normalize('NFKD', filename)))
 
 
@@ -74,9 +86,7 @@ class StripNonASCII(FilterCheckButton):
     _order = 1.3
 
     def filter(self, original, filename):
-        filename = fsdecode(filename)
-        return fsnative(
-            u"".join(map(lambda s: (s <= "~" and s) or u"_", filename)))
+        return u"".join(map(lambda s: (s <= "~" and s) or u"_", filename))
 
 
 class Lowercase(FilterCheckButton):
@@ -104,7 +114,7 @@ class Entry(object):
 
     @property
     def name(self):
-        return fsdecode(self.song("~basename"))
+        return fsn2text(self.song("~basename"))
 
 
 class RenameFiles(Gtk.VBox):
@@ -122,13 +132,13 @@ class RenameFiles(Gtk.VBox):
         self.set_border_width(12)
 
         hbox = Gtk.HBox(spacing=6)
-        cbes_defaults = const.NBP_EXAMPLES.split("\n")
-        self.combo = ComboBoxEntrySave(const.NBP, cbes_defaults,
+        cbes_defaults = NBP_EXAMPLES.split("\n")
+        self.combo = ComboBoxEntrySave(NBP, cbes_defaults,
             title=_("Path Patterns"),
             edit_title=_(u"Edit saved patterns…"))
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
-        self.preview = qltk.Button(_("_Preview"), Gtk.STOCK_CONVERT)
+        self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
         hbox.pack_start(self.preview, False, True, 0)
         self.pack_start(hbox, False, True, 0)
@@ -153,7 +163,7 @@ class RenameFiles(Gtk.VBox):
         self.pack_start(filter_box, False, True, 0)
 
         # Save button
-        self.save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        self.save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
@@ -161,7 +171,8 @@ class RenameFiles(Gtk.VBox):
         self.pack_start(bbox, False, True, 0)
 
         render = Gtk.CellRendererText()
-        column = TreeViewColumn(_('File'), render)
+        column = TreeViewColumn(title=_('File'))
+        column.pack_start(render, True)
 
         def cell_data_file(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
@@ -174,7 +185,8 @@ class RenameFiles(Gtk.VBox):
 
         render = Gtk.CellRendererText()
         render.set_property('editable', True)
-        column = TreeViewColumn(_('New Name'), render)
+        column = TreeViewColumn(title=_('New Name'))
+        column.pack_start(render, True)
 
         def cell_data_new_name(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
@@ -208,7 +220,7 @@ class RenameFiles(Gtk.VBox):
         path = Gtk.TreePath.new_from_string(path)
         model = self.view.get_model()
         entry = model[path][0]
-        new = new.decode("utf-8")
+        new = gdecode(new)
         if entry.new_name != new:
             entry.new_name = new
             self.preview.set_sensitive(True)
@@ -223,7 +235,7 @@ class RenameFiles(Gtk.VBox):
         skip_all = False
         self.view.freeze_child_notify()
 
-        for entry in model.itervalues():
+        for entry in itervalues(model):
             song = entry.song
             new_name = entry.new_name
             old_name = entry.name
@@ -231,15 +243,12 @@ class RenameFiles(Gtk.VBox):
                 continue
 
             try:
-                library.rename(song, fsnative(new_name), changed=was_changed)
+                library.rename(song, text2fsn(new_name), changed=was_changed)
             except Exception:
                 util.print_exc()
                 if skip_all:
                     continue
                 RESPONSE_SKIP_ALL = 1
-                buttons = (_("Ignore _All Errors"), RESPONSE_SKIP_ALL,
-                           Gtk.STOCK_STOP, Gtk.ResponseType.CANCEL,
-                           _("_Continue"), Gtk.ResponseType.OK)
                 msg = qltk.Message(
                     Gtk.MessageType.ERROR, win, _("Unable to rename file"),
                     _("Renaming <b>%(old-name)s</b> to <b>%(new-name)s</b> "
@@ -250,7 +259,10 @@ class RenameFiles(Gtk.VBox):
                         "new-name": util.escape(new_name),
                       },
                     buttons=Gtk.ButtonsType.NONE)
-                msg.add_buttons(*buttons)
+                msg.add_button(_("Ignore _All Errors"), RESPONSE_SKIP_ALL)
+                msg.add_icon_button(_("_Stop"), Icons.PROCESS_STOP,
+                                    Gtk.ResponseType.CANCEL)
+                msg.add_button(_("_Continue"), Gtk.ResponseType.OK)
                 msg.set_default_response(Gtk.ResponseType.OK)
                 resp = msg.run()
                 skip_all |= (resp == RESPONSE_SKIP_ALL)
@@ -271,9 +283,9 @@ class RenameFiles(Gtk.VBox):
     def __preview(self, songs):
         model = self.view.get_model()
         if songs is None:
-            songs = [e.song for e in model.itervalues()]
+            songs = [e.song for e in itervalues(model)]
 
-        pattern_text = self.combo.get_child().get_text().decode("utf-8")
+        pattern_text = gdecode(self.combo.get_child().get_text())
 
         try:
             pattern = FileFromPattern(pattern_text)
@@ -284,16 +296,16 @@ class RenameFiles(Gtk.VBox):
                   "does not start from root. To avoid misnamed "
                   "folders, root your pattern by starting "
                   "it with / or ~/.") % (
-                util.escape(pattern))).run()
+                util.escape(pattern_text))).run()
             return
         else:
             if pattern:
                 self.combo.prepend_text(pattern_text)
-                self.combo.write(const.NBP)
+                self.combo.write(NBP)
 
         # native paths
         orignames = [song["~filename"] for song in songs]
-        newnames = [pattern.format(song) for song in songs]
+        newnames = [fsn2text(pattern.format(song)) for song in songs]
         for f in self.filter_box.filters:
             if f.active:
                 newnames = f.filter_list(orignames, newnames)
@@ -301,7 +313,7 @@ class RenameFiles(Gtk.VBox):
         model.clear()
         for song, newname in zip(songs, newnames):
             entry = Entry(song)
-            entry.new_name = fsdecode(newname)
+            entry.new_name = newname
             model.append(row=[entry])
 
         self.preview.set_sensitive(False)

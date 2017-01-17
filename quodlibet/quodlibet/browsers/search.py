@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2016 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -11,8 +11,8 @@ from gi.repository import Gtk, GLib
 
 from quodlibet import config
 from quodlibet import qltk
-
-from quodlibet.browsers._base import Browser
+from quodlibet import _
+from quodlibet.browsers import Browser
 from quodlibet.query import Query
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.completion import LibraryTagCompletion
@@ -20,6 +20,7 @@ from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.searchbar import LimitSearchBarBox
 from quodlibet.qltk.x import Align, SymbolicIconImage
+from quodlibet.qltk import Icons
 
 
 class PreferencesButton(Gtk.HBox):
@@ -35,21 +36,19 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
             arrow=True)
         button.set_menu(menu)
         self.pack_start(button, True, True, 0)
 
 
-class SearchBar(Gtk.VBox, Browser):
-    """Like EmptyBar, but the user can also enter a query manually"""
-
-    __gsignals__ = Browser.__gsignals__
+class SearchBar(Browser):
+    """A browser in which queries are parsed and used to filter results"""
 
     name = _("Search Library")
     accelerated_name = _("_Search Library")
+    keys = ["SearchBar"]
     priority = 1
-    in_menu = True
 
     def pack(self, songpane):
         container = Gtk.VBox(spacing=6)
@@ -64,6 +63,7 @@ class SearchBar(Gtk.VBox, Browser):
     def __init__(self, library):
         super(SearchBar, self).__init__()
         self.set_spacing(6)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
 
         self._query = None
         self._library = library
@@ -119,14 +119,10 @@ class SearchBar(Gtk.VBox, Browser):
         self.activate()
 
     def save(self):
-        config.set("browsers", "query_text", self._get_text())
+        config.settext("browsers", "query_text", self._get_text())
 
     def restore(self):
-        try:
-            text = config.get("browsers", "query_text")
-        except config.Error:
-            return
-
+        text = config.gettext("browsers", "query_text")
         self._set_text(text)
 
     def finalize(self, restore):
@@ -138,6 +134,9 @@ class SearchBar(Gtk.VBox, Browser):
     def filter_text(self, text):
         self._set_text(text)
         self.activate()
+
+    def get_filter_text(self):
+        return self._get_text()
 
     def unfilter(self):
         self.filter_text("")

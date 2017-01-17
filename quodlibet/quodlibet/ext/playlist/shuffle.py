@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import _
 from quodlibet.plugins.playlist import PlaylistPlugin
+from quodlibet.qltk import Icons
 
 
 class Shuffle(PlaylistPlugin):
     PLUGIN_ID = "Shuffle Playlist"
     PLUGIN_NAME = _("Shuffle Playlist")
     PLUGIN_DESC = _("Randomly shuffles a playlist.")
-    PLUGIN_ICON = 'gtk-execute'
+    PLUGIN_ICON = Icons.MEDIA_PLAYLIST_SHUFFLE
 
     def plugin_playlist(self, playlist):
         playlist.shuffle()

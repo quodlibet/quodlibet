@@ -9,7 +9,7 @@
 from gi.repository import Gtk
 
 from quodlibet import formats, config, print_d
-from quodlibet.util import copool, massagers
+from quodlibet.util import copool, gdecode, massagers
 from quodlibet.util.tags import MACHINE_TAGS
 
 
@@ -30,7 +30,7 @@ class EntryWordCompletion(Gtk.EntryCompletion):
     def __match_filter(self, completion, entrytext, iter, data):
         model = completion.get_model()
         entry = self.get_entry()
-        entrytext = entrytext.decode('utf-8')
+        entrytext = gdecode(entrytext)
         if entry is None:
             return False
         cursor = entry.get_position()
@@ -59,7 +59,7 @@ class EntryWordCompletion(Gtk.EntryCompletion):
         cursor = entry.get_position()
 
         text = entry.get_text()
-        text = text.decode('utf-8')
+        text = gdecode(text)
         left, f = max(
             [(text.rfind(c, 0, cursor), c) for c in self.leftsep])
         if left == -1:
@@ -166,12 +166,11 @@ class LibraryValueCompletion(Gtk.EntryCompletion):
         model = self.get_model()
         model.clear()
         yield True
+
         # Issue 439: pre-fill with valid values if available
-        if tag in massagers.tags:
-            values = massagers.tags[tag].options
-        else:
-            values = []
-        values = sorted(set(values + library.tag_values(tag)))
+        values = massagers.get_options(tag)
+
+        values = sorted(set(values) | library.tag_values(tag))
         self.set_minimum_key_length(int(len(values) > 100))
         yield True
         for count, value in enumerate(values):

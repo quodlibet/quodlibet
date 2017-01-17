@@ -12,7 +12,6 @@ import time
 from gi.repository import GObject, GLib
 
 from quodlibet import config
-from quodlibet import const
 
 
 class TimeTracker(GObject.GObject):
@@ -32,10 +31,17 @@ class TimeTracker(GObject.GObject):
 
         self.__player = player
         self.__id = None
+        self.__stop = False
         self.__sigs = [
-            player.connect("paused", self.__paused),
-            player.connect("unpaused", self.__unpaused),
+            player.connect("paused", self.__paused, True),
+            player.connect("unpaused", self.__paused, False),
         ]
+        self.__paused(player, player.paused)
+
+    def tick(self):
+        """Emit a tick event"""
+
+        self.emit("tick")
 
     def destroy(self):
         for signal_id in self.__sigs:
@@ -52,18 +58,18 @@ class TimeTracker(GObject.GObject):
             self.__source_remove()
             return False
 
-        self.emit("tick")
+        self.tick()
         return True
 
-    def __paused(self, *args):
-        # By removing the timeout only in the callback we are safe from
-        # huge deviation caused by lots of pause/unpause actions.
-        self.__stop = True
-
-    def __unpaused(self, *args):
-        self.__stop = False
-        if self.__id is None:
-            self.__id = GLib.timeout_add_seconds(1, self.__update)
+    def __paused(self, player, paused):
+        if paused:
+            # By removing the timeout only in the callback we are safe from
+            # huge deviation caused by lots of pause/unpause actions.
+            self.__stop = True
+        else:
+            self.__stop = False
+            if self.__id is None:
+                self.__id = GLib.timeout_add_seconds(1, self.__update)
 
 
 class SongTracker(object):
@@ -143,7 +149,8 @@ class SongTracker(object):
 class FSInterface(object):
     """Provides a file in ~/.quodlibet to indicate what song is playing."""
 
-    def __init__(self, player):
+    def __init__(self, path, player):
+        self.path = path
         self._player = player
         self._ids = [
             player.connect('song-started', self.__started),
@@ -155,22 +162,20 @@ class FSInterface(object):
             self._player.disconnect(id_)
 
         try:
-            os.unlink(const.CURRENT)
+            os.unlink(self.path)
         except EnvironmentError:
             pass
 
     def __started(self, player, song):
         if song:
             try:
-                f = file(const.CURRENT, "w")
+                with open(self.path, "wb") as f:
+                    f.write(song.to_dump())
             except EnvironmentError:
                 pass
-            else:
-                f.write(song.to_dump())
-                f.close()
 
     def __ended(self, player, song, stopped):
         try:
-            os.unlink(const.CURRENT)
+            os.unlink(self.path)
         except EnvironmentError:
             pass

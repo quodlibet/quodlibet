@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase, AbstractTestCase, skipIf
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+from tests import TestCase, skipIf
 from tests.helper import ListWithUnused as L
 
 import os
@@ -20,6 +24,13 @@ from gdist import gettextutil
 PODIR = os.path.join(os.path.dirname(quodlibet.__path__[0]), "po")
 
 
+class MissingTranslationsException(Exception):
+    def __init__(self, missing):
+        msg = ("No reference in POTFILES.in to: " +
+               ", ".join(missing))
+        super(MissingTranslationsException, self).__init__(msg)
+
+
 class TPOTFILESIN(TestCase):
 
     def test_missing(self):
@@ -28,9 +39,9 @@ class TPOTFILESIN(TestCase):
         except gettextutil.GettextError:
             return
 
-        result = gettextutil.get_missing(PODIR, "quodlibet")
-        if result:
-            raise Exception(result)
+        results = gettextutil.get_missing(PODIR, "quodlibet")
+        if results:
+            raise MissingTranslationsException(results)
 
 
 @skipIf(polib is None, "polib not found")
@@ -55,7 +66,7 @@ class TPot(TestCase):
 
     def test_multiple_format_placeholders(self):
         fails = []
-        reg = re.compile(r"((?<!%)%[sbcdoxXneEfFgGn]|\{\})")
+        reg = re.compile(r"((?<!%)%[sbcdoxXneEfFgG]|\{\})")
         for entry in self.pot:
             if len(reg.findall(entry.msgid)) > 1:
                 fails.append(entry)
@@ -125,7 +136,8 @@ class TPot(TestCase):
             Hello,world - missing whitespace
         """
         fails = []
-        regex = re.compile(r'\s[.,:;!?](?![a-z])|[a-z][,:;][a-zA-Z]')
+        regex = re.compile(r'\s[.,:;!?](?![a-z])|'
+                           r'[a-z](?<!people)[,:;][a-zA-Z]')
 
         for entry in self.pot:
             if regex.findall(entry.msgid):
@@ -212,12 +224,14 @@ class TPot(TestCase):
         self.conclude(fails, "leading or trailing spaces")
 
 
-class PO(AbstractTestCase):
+class POMixin(object):
+
     def test_pos(self):
         if not iscommand("msgfmt"):
             return
 
-        self.failIf(os.system("msgfmt -c po/%s.po > /dev/null" % self.lang))
+        po_path = os.path.join(PODIR, "%s.po" % self.lang)
+        self.failIf(os.system("msgfmt -c %s > /dev/null" % po_path))
         try:
             os.unlink("messages.mo")
         except OSError:
@@ -225,25 +239,24 @@ class PO(AbstractTestCase):
 
     def test_gtranslator_blows_goats(self):
         for line in open(os.path.join(PODIR, "%s.po" % self.lang), "rb"):
-            if line.strip().startswith("#"):
+            if line.strip().startswith(b"#"):
                 continue
-            self.failIf("\xc2\xb7" in line,
-                        "Broken GTranslator copy/paste in %s:\n%s" % (
+            self.failIf(b"\xc2\xb7" in line,
+                        "Broken GTranslator copy/paste in %s:\n%r" % (
                 self.lang, line))
 
     def test_gtk_stock_items(self):
         for line in open(os.path.join(PODIR, "%s.po" % self.lang), "rb"):
-            if line.strip().startswith('msgstr "gtk-'):
+            if line.strip().startswith(b'msgstr "gtk-'):
                 parts = line.strip().split()
                 value = parts[1].strip('"')[4:]
                 self.failIf(value and value not in [
-                    'media-next', 'media-previous', 'media-play',
-                    'media-pause'],
+                    b'media-next', b'media-previous', b'media-play',
+                    b'media-pause'],
                             "Invalid stock translation in %s\n%s" % (
                     self.lang, line))
 
     def conclude(self, fails, reason):
-        from quodlibet import print_w
         if fails:
             def format_occurrences(e):
                 occurences = [(self.lang + ".po", e.linenum)]
@@ -253,11 +266,10 @@ class PO(AbstractTestCase):
                 '"%s" - "%s" (%s)' % (e.msgid, e.msgstr, format_occurrences(e))
                 for e in fails
             ]
-            for message in messages:
-                print_w(message)
+
             self.fail(
-                "One or more messages did not pass (%s).\n"
-                "Please check the warning messages above." % reason)
+                "One or more messages did not pass (%s).\n%s" % (
+                    reason, "\n".join(messages)))
 
     def test_original_punctuation_present(self):
         if polib is None:
@@ -304,6 +316,6 @@ class PO(AbstractTestCase):
 
 for fn in glob.glob(os.path.join(PODIR, "*.po")):
     lang = os.path.basename(fn)[:-3]
-    testcase = type('PO.' + lang, (PO,), {})
+    testcase = type('PO.' + lang, (TestCase, POMixin), {})
     testcase.lang = lang
     globals()['PO.' + lang] = testcase

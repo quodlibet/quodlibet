@@ -7,11 +7,13 @@
 
 import os
 
+import quodlibet
+from quodlibet import _
 from quodlibet import util
-from quodlibet.const import USERDIR
+from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
-outfile = os.path.join(USERDIR, "jabber")
+outfile = os.path.join(quodlibet.get_user_dir(), "jabber")
 format = """\
 <tune xmlns='http://jabber.org/protocol/tune'>
  <artist>%s</artist>
@@ -26,26 +28,22 @@ class JEP118(EventPlugin):
     PLUGIN_ID = "JEP-118"
     PLUGIN_NAME = _("JEP-118")
     PLUGIN_DESC = _("Outputs a Jabber User Tunes file to ~/.quodlibet/jabber.")
-    PLUGIN_ICON = 'gtk-save'
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def plugin_on_song_started(self, song):
         if song is None:
             try:
-                f = file(outfile, "w")
-                f.write("<tune xmlns='http://jabber.org/protocol/tune'/>")
+                with open(outfile, "w") as f:
+                    f.write("<tune xmlns='http://jabber.org/protocol/tune'/>")
             except EnvironmentError:
                 pass
-            else:
-                f.close()
         else:
             try:
-                f = file(outfile, "wb")
-                f.write(format % (
-                    util.escape(song.comma("artist")),
-                    util.escape(song.comma("title")),
-                    util.escape(song.comma("album")),
-                    song("~#track", 0), song.get("~#length", 0)))
+                with open(outfile, "wb") as f:
+                    f.write(format % (
+                        util.escape(song.comma("artist")),
+                        util.escape(song.comma("title")),
+                        util.escape(song.comma("album")),
+                        song("~#track", 0), song.get("~#length", 0)))
             except EnvironmentError:
                 pass
-            else:
-                f.close()

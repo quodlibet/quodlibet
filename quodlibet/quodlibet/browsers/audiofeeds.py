@@ -5,7 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import cPickle as pickle
 import os
 import sys
 import threading
@@ -13,25 +12,30 @@ import time
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 
+import quodlibet
+from quodlibet import _
 from quodlibet import config
-from quodlibet import const
 from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.browsers._base import Browser
-from quodlibet.formats._audio import AudioFile
+from quodlibet.browsers import Browser
+from quodlibet.compat import listfilter, text_type
+from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.downloader import DownloadWindow
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.util import connect_obj
-from quodlibet.qltk.x import ScrolledWindow, Align, Button
+from quodlibet.qltk import Icons
+from quodlibet.util import connect_obj, print_w
+from quodlibet.util.path import get_home_dir
+from quodlibet.qltk.x import ScrolledWindow, Align, Button, MenuItem
+from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 
-FEEDS = os.path.join(const.USERDIR, "feeds")
+FEEDS = os.path.join(quodlibet.get_user_dir(), "feeds")
 DND_URI_LIST, DND_MOZ_URL = range(2)
 
 # Migration path for pickle
@@ -132,7 +136,8 @@ class Feed(list):
     def parse(self):
         try:
             doc = feedparser.parse(self.uri)
-        except:
+        except Exception as e:
+            print_w("Couldn't parse feed: %s (%s)" % (self.uri, e))
             return False
 
         try:
@@ -160,9 +165,11 @@ class Feed(list):
                         if ("audio" in enclosure.type or
                                 "ogg" in enclosure.type or
                                 formats.filter(enclosure.url)):
-                            uri = enclosure.url.encode('ascii', 'replace')
+                            uri = enclosure.url
+                            if not isinstance(uri, text_type):
+                                uri = uri.decode('utf-8')
                             try:
-                                size = enclosure.length
+                                size = float(enclosure.length)
                             except AttributeError:
                                 size = 0
                             entries.append((uri, entry, size))
@@ -202,19 +209,18 @@ class AddFeedDialog(GetStringDialog):
         super(AddFeedDialog, self).__init__(
             qltk.get_top_parent(parent), _("New Feed"),
             _("Enter the location of an audio feed:"),
-            okbutton=Gtk.STOCK_ADD)
+            button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
-    def run(self):
-        uri = super(AddFeedDialog, self).run()
+    def run(self, text='', test=False):
+        uri = super(AddFeedDialog, self).run(text=text, test=test)
         if uri:
-            return Feed(uri.encode('ascii', 'replace'))
-        else:
-            return None
+            if not isinstance(uri, text_type):
+                uri = uri.decode('utf-8')
+            return Feed(uri)
+        return None
 
 
-class AudioFeeds(Browser, Gtk.VBox):
-    __gsignals__ = Browser.__gsignals__
-
+class AudioFeeds(Browser):
     __feeds = Gtk.ListStore(object)  # unread
 
     headers = ("title artist performer ~people album date website language "
@@ -222,10 +228,11 @@ class AudioFeeds(Browser, Gtk.VBox):
 
     name = _("Audio Feeds")
     accelerated_name = _("_Audio Feeds")
+    keys = ["AudioFeeds"]
     priority = 20
     uses_main_library = False
 
-    __last_folder = const.HOME
+    __last_folder = get_home_dir()
 
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "audiofeeds_pos", 0.4)
@@ -257,20 +264,29 @@ class AudioFeeds(Browser, Gtk.VBox):
     @classmethod
     def write(klass):
         feeds = [row[0] for row in klass.__feeds]
-        f = file(FEEDS, "wb")
-        pickle.dump(feeds, f, pickle.HIGHEST_PROTOCOL)
-        f.close()
+        with open(FEEDS, "wb") as f:
+            pickle_dump(feeds, f, 2)
 
     @classmethod
     def init(klass, library):
+        uris = set()
         try:
-            feeds = pickle.load(file(FEEDS, "rb"))
-        except (pickle.PickleError, EnvironmentError, EOFError):
+            with open(FEEDS, "rb") as fileobj:
+                feeds = pickle_load(fileobj)
+        except (PickleError, EnvironmentError):
             pass
         else:
             for feed in feeds:
+                if feed.uri in uris:
+                    continue
                 klass.__feeds.append(row=[feed])
+                uris.add(feed.uri)
         GLib.idle_add(klass.__do_check)
+
+    @classmethod
+    def reload(klass, library):
+        klass.__feeds = Gtk.ListStore(object)  # unread
+        klass.init(library)
 
     @classmethod
     def __do_check(klass):
@@ -292,15 +308,14 @@ class AudioFeeds(Browser, Gtk.VBox):
 
     def Menu(self, songs, library, items):
         if len(songs) == 1:
-            item = qltk.MenuItem(_(u"_Download…"), Gtk.STOCK_CONNECT)
+            item = qltk.MenuItem(_(u"_Download…"), Icons.NETWORK_WORKGROUP)
             item.connect('activate', self.__download, songs[0]("~uri"))
             item.set_sensitive(not songs[0].is_file)
         else:
-            songs = filter(lambda s: not s.is_file, songs)
-            uris = [song("~uri") for song in songs]
-            item = qltk.MenuItem(_(u"_Download…"), Gtk.STOCK_CONNECT)
+            uris = [song("~uri") for song in songs if not song.is_file]
+            item = qltk.MenuItem(_(u"_Download…"), Icons.NETWORK_WORKGROUP)
             item.connect('activate', self.__download_many, uris)
-            item.set_sensitive(bool(songs))
+            item.set_sensitive(bool(uris))
 
         items.append([item])
         menu = SongsMenu(library, songs, items=items)
@@ -309,9 +324,9 @@ class AudioFeeds(Browser, Gtk.VBox):
     def __download_many(self, activator, sources):
         chooser = Gtk.FileChooserDialog(
             title=_("Download Files"), parent=qltk.get_top_parent(self),
-            action=Gtk.FileChooserAction.CREATE_FOLDER,
-            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                     Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+            action=Gtk.FileChooserAction.CREATE_FOLDER)
+        chooser.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        chooser.add_button(_("_Save"), Gtk.ResponseType.OK)
         chooser.set_current_folder(self.__last_folder)
         resp = chooser.run()
         if resp == Gtk.ResponseType.OK:
@@ -330,9 +345,9 @@ class AudioFeeds(Browser, Gtk.VBox):
     def __download(self, activator, source):
         chooser = Gtk.FileChooserDialog(
             title=_("Download File"), parent=qltk.get_top_parent(self),
-            action=Gtk.FileChooserAction.SAVE,
-            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                     Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+            action=Gtk.FileChooserAction.SAVE)
+        chooser.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        chooser.add_button(_("_Save"), Gtk.ResponseType.OK)
         chooser.set_current_folder(self.__last_folder)
         name = os.path.basename(source)
         if name:
@@ -347,6 +362,7 @@ class AudioFeeds(Browser, Gtk.VBox):
 
     def __init__(self, library):
         super(AudioFeeds, self).__init__(spacing=6)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
 
         self.__view = view = AllTreeView()
         self.__render = render = Gtk.CellRendererText()
@@ -363,7 +379,7 @@ class AudioFeeds(Browser, Gtk.VBox):
         swin.add(view)
         self.pack_start(swin, True, True, 0)
 
-        new = Button(_("_New"), Gtk.STOCK_ADD, Gtk.IconSize.MENU)
+        new = Button(_("_New"), Icons.LIST_ADD, Gtk.IconSize.MENU)
         new.connect('clicked', self.__new_feed)
         view.get_selection().connect('changed', self.__changed)
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -431,8 +447,8 @@ class AudioFeeds(Browser, Gtk.VBox):
     def __popup_menu(self, view):
         model, paths = view.get_selection().get_selected_rows()
         menu = Gtk.Menu()
-        refresh = Gtk.ImageMenuItem(Gtk.STOCK_REFRESH, use_stock=True)
-        delete = Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True)
+        refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
+        delete = MenuItem(_("_Delete"), Icons.EDIT_DELETE)
 
         connect_obj(refresh,
             'activate', self.__refresh, [model[p][0] for p in paths])
@@ -444,7 +460,7 @@ class AudioFeeds(Browser, Gtk.VBox):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
 
-        # XXX: keep the menu arround
+        # XXX: keep the menu around
         self.__menu = menu
 
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
@@ -453,7 +469,7 @@ class AudioFeeds(Browser, Gtk.VBox):
         AudioFeeds.write()
 
     def __refresh(self, feeds):
-        changed = filter(Feed.parse, feeds)
+        changed = listfilter(Feed.parse, feeds)
         AudioFeeds.changed(changed)
 
     def activate(self):

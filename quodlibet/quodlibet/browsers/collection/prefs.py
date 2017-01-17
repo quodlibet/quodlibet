@@ -10,15 +10,17 @@ from gi.repository import Gtk
 from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk
-
+from quodlibet import _
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import BaseView
+from quodlibet.qltk import Button, Icons
 from quodlibet.util import connect_obj
+from quodlibet.compat import iteritems, iterkeys
 
 
 def get_headers():
     result = []
-    headers = config.get("browsers", "collection_headers", "")
+    headers = config.get("browsers", "collection_headers")
     for h in headers.splitlines():
         values = h.split()
         if len(values) != 2:
@@ -85,11 +87,11 @@ class PatternEditor(Gtk.HBox):
 
         ctrl_box = Gtk.VBox(spacing=6)
 
-        add = Gtk.Button(stock=Gtk.STOCK_ADD)
+        add = Button(_("_Add"), Icons.LIST_ADD)
         ctrl_box.pack_start(add, False, True, 0)
         add.connect('clicked', self.__add, model, cb)
 
-        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         ctrl_box.pack_start(remove, False, True, 0)
         remove.connect('clicked', self.__remove, view)
 
@@ -131,7 +133,7 @@ class PatternEditor(Gtk.HBox):
 
     @property
     def headers(self):
-        for button in self.__headers.iterkeys():
+        for button in iterkeys(self.__headers):
             if button.get_active():
                 if button == self.__custom:
                     model_headers = [(row[0], row[1]) for row in self.__model]
@@ -140,7 +142,7 @@ class PatternEditor(Gtk.HBox):
 
     @headers.setter
     def headers(self, new_headers):
-        for button, headers in self.__headers.iteritems():
+        for button, headers in iteritems(self.__headers):
             if headers == new_headers:
                 button.set_active(True)
                 button.emit("toggled")
@@ -183,17 +185,17 @@ class Preferences(qltk.UniqueWindow):
         self.set_default_size(350, 225)
         self.set_border_width(12)
 
-        self.set_title(_("Album Collection Preferences") + " - Quod Libet")
+        self.set_title(_("Album Collection Preferences"))
 
         vbox = Gtk.VBox(spacing=12)
 
         editor = PatternEditor()
         editor.headers = get_headers()
 
-        apply = Gtk.Button(stock=Gtk.STOCK_APPLY)
+        apply = Button(_("_Apply"))
         connect_obj(apply, "clicked", self.__apply, editor, False)
 
-        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+        cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda x: self.destroy())
 
         box = Gtk.HButtonBox()

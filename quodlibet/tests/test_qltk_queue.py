@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
 
-from gi.repository import Gtk
+from tests import TestCase
 
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.queue import QueueExpander, PlaybackStatusIcon
@@ -13,7 +15,7 @@ class TQueueExpander(TestCase):
     def setUp(self):
         quodlibet.config.init()
         player = NullPlayer()
-        self.queue = QueueExpander(Gtk.CheckMenuItem(), SongLibrary(), player)
+        self.queue = QueueExpander(SongLibrary(), player)
 
     def test_ctr(self):
         pass

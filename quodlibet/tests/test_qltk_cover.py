@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 import os
 
 from gi.repository import Gtk, GdkPixbuf, Gdk
 
 from tests import TestCase, mkstemp, init_fake_app, destroy_fake_app
 from quodlibet import config
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.qltk.cover import (CoverImage, BigCenteredImage, ResizeImage,
     get_no_cover_pixbuf)
 

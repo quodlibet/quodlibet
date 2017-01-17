@@ -9,11 +9,13 @@ import xml.sax
 from xml.sax.handler import ContentHandler
 
 from gi.repository import Gtk
+from senf import uri2fsn
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import util
+from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
-from quodlibet.util.uri import URI
 from quodlibet.util.path import expanduser, normalize_path
 from quodlibet.plugins.events import EventPlugin
 
@@ -47,14 +49,11 @@ class RBDBContentHandler(ContentHandler):
             if len(current) > 1:
                 uri = current.pop("location", "")
                 try:
-                    p_uri = URI(uri)
+                    filename = uri2fsn(uri)
                 except ValueError:
                     return
 
-                if not p_uri.is_filename:
-                    return
-
-                self._process_song(normalize_path(p_uri.filename), current)
+                self._process_song(normalize_path(filename), current)
 
     def _process_song(self, path, stats):
         song = self._library.get(path, None)
@@ -127,6 +126,7 @@ class RBImport(EventPlugin):
     PLUGIN_ID = "rbimport"
     PLUGIN_NAME = _("Rhythmbox Import")
     PLUGIN_DESC = _("Imports ratings and song statistics from Rhythmbox.")
+    PLUGIN_ICON = Icons.DOCUMENT_OPEN
 
     def PluginPreferences(self, *args):
         button = Gtk.Button(label=_("Start Import"))

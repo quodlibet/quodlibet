@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase, mkstemp
 
 import os
@@ -15,13 +19,11 @@ class TComboBoxEntrySave(TestCase):
         quodlibet.config.init()
         h, self.fname = mkstemp()
         os.close(h)
-        f = file(self.fname, "w")
-        f.write(self.memory)
-        f.close()
+        with open(self.fname, "w") as f:
+            f.write(self.memory)
 
-        f = file(self.fname + ".saved", "w")
-        f.write(self.saved)
-        f.close()
+        with open(self.fname + ".saved", "w") as f:
+            f.write(self.saved)
         self.cbes = ComboBoxEntrySave(self.fname, count=2)
         self.cbes2 = ComboBoxEntrySave(self.fname, count=2)
 
@@ -74,8 +76,8 @@ class TComboBoxEntrySave(TestCase):
 
     def test_save(self):
         self.cbes.write()
-        self.failUnlessEqual(self.memory, file(self.fname).read())
-        self.failUnlessEqual(self.saved, file(self.fname + ".saved").read())
+        self.failUnlessEqual(self.memory, open(self.fname).read())
+        self.failUnlessEqual(self.saved, open(self.fname + ".saved").read())
 
     def test_set_text_then_prepend(self):
         self.cbes.get_child().set_text("foobar")
@@ -99,10 +101,10 @@ class TStandaloneEditor(TestCase):
         quodlibet.config.init()
         h, self.fname = mkstemp()
         os.close(h)
-        f = file(self.fname + ".saved", "w")
-        f.write(
-            "%s\n%s\n" % (self.TEST_KV_DATA[0][1], self.TEST_KV_DATA[0][0]))
-        f.close()
+        with open(self.fname + ".saved", "w") as f:
+            f.write(
+                "%s\n%s\n" % (self.TEST_KV_DATA[0][1],
+                              self.TEST_KV_DATA[0][0]))
         self.sae = StandaloneEditor(self.fname, "test", None, None)
 
     def test_constructor(self):

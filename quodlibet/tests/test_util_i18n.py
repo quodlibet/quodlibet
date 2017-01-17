@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
-import os
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+from senf import environ
 
 from tests import TestCase
-from helper import preserve_environ
+from .helper import preserve_environ, locale_numeric_conv
 
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
-    set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang
+    set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, \
+    numeric_phrase, get_available_languages
+from quodlibet.compat import text_type
 
 
 class TGlibTranslations(TestCase):
@@ -16,33 +22,36 @@ class TGlibTranslations(TestCase):
     def test_ugettext(self):
         t = self.t.ugettext("foo")
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
     def test_ungettext(self):
         t = self.t.ungettext("foo", "bar", 1)
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
         t = self.t.ungettext("foo", "bar", 2)
         self.assertEqual(t, "bar")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
     def test_upgettext(self):
         t = self.t.upgettext("ctx", "foo")
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
     def test_unpgettext(self):
         t = self.t.unpgettext("ctx", "foo", "bar", 1)
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
         t = self.t.unpgettext("ctx", "foo", "bar", 2)
         self.assertEqual(t, "bar")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
 
 class Tgettext(TestCase):
+
+    def test_get_languages(self):
+        assert isinstance(get_available_languages("quodlibet"), list)
 
     def test_bcp47(self):
         self.assertEqual(bcp47_to_language("zh-Hans"), "zh_CN")
@@ -66,6 +75,34 @@ class Tgettext(TestCase):
 
     def test_fixup_i18n_envvars(self):
         with preserve_environ():
-            os.environ["LANGUAGE"] = "en:de:en_FOO:nl"
+            environ["LANGUAGE"] = "en:de:en_FOO:nl"
             fixup_i18n_envvars()
-            self.assertEqual(os.environ["LANGUAGE"], "en:C:de:en_FOO:C:nl")
+            self.assertEqual(environ["LANGUAGE"], "en:C:de:en_FOO:C:nl")
+
+    def test_numeric_phrase(self):
+        actual = numeric_phrase("%d green bottle", "%d green bottles", 1)
+        self.failUnlessEqual(actual, "1 green bottle")
+
+        with locale_numeric_conv():
+            actual = numeric_phrase(
+                "%d green bottle", "%d green bottles", 1234)
+            self.failUnlessEqual(actual, "1,234 green bottles")
+
+    def test_numeric_phrase_locales(self):
+        with locale_numeric_conv(thousands_sep=" "):
+            actual = numeric_phrase("%(bottles)d green bottle",
+                                    "%(bottles)d green bottles",
+                                    1234, "bottles")
+            self.failUnlessEqual(actual, "1 234 green bottles")
+
+    def test_numeric_phrase_templated(self):
+        actual = numeric_phrase("%(bottles)d green bottle",
+                                "%(bottles)d green bottles", 1, "bottles")
+        self.failUnlessEqual(actual, "1 green bottle")
+
+        with locale_numeric_conv():
+            actual = numeric_phrase("%(bottles)d green bottle",
+                                    "%(bottles)d green bottles",
+                                    1234, "bottles")
+
+            self.failUnlessEqual(actual, "1,234 green bottles")

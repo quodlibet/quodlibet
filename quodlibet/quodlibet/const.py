@@ -1,20 +1,36 @@
 # -*- coding: utf-8 -*-
-# Constants used in various parts of QL, mostly strings.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+"""Constants used in various parts of QL, mostly strings."""
 
 import sys
 import os
-import locale
 
-from . import windows
+
+# MSYS2 defines MSYSTEM which changes os.sep/os.path.sep for the mingw
+# Python build. Unset here and restart.. (does not work for py.test etc.)
+# XXX: do this here since it gets executed by all scripts
+if os.name == "nt" and "MSYSTEM" in os.environ:
+    import subprocess
+    del os.environ["MSYSTEM"]
+    argv = []
+    for arg in [sys.executable] + sys.argv:
+        if os.path.exists(arg):
+            arg = arg.replace("/", "\\")
+        argv.append(arg)
+    sys.exit(subprocess.call(argv))
 
 
 class Version(tuple):
     """Represent the version of a dependency as a tuple"""
 
-    def __new__(cls, *args):
-        # Support tuple or varargs instantiation
-        value = args[0] if len(args) == 1 else args
-        return tuple.__new__(Version, value)
+    def __new__(cls, name, *args, **kwargs):
+        inst = tuple.__new__(Version, args)
+        inst.name = name
+        inst.message = kwargs.pop("message", "")
+        return inst
 
     def human_version(self):
         return ".".join(map(str, self))
@@ -22,49 +38,31 @@ class Version(tuple):
     def __str__(self):
         return self.human_version()
 
+    def check(self, version_tuple):
+        """Raises ImportError if the version isn't supported"""
+
+        if self[0] == version_tuple[0] and version_tuple >= self:
+            return
+        message = " " + self.message if self.message else ""
+        raise ImportError("%s %s required. %s found.%s" % (
+            self.name, self, Version("", *version_tuple), message))
+
 
 class MinVersions(object):
     """Dependency requirements for Quod Libet / Ex Falso"""
-    PYTHON = Version(2, 7)
-    MUTAGEN = Version(1, 22)
 
-VERSION_TUPLE = Version(3, 3, -1)
+    PYTHON2 = Version("Python2", 2, 7)
+    PYTHON3 = Version("Python3", 3, 4)
+    MUTAGEN = Version("Mutagen", 1, 32,
+        message="Use the Quod Libet unstable PPAs/repos to get a newer "
+                "mutagen version.")
+    GTK = Version("GTK+", 3, 10)
+    PYGOBJECT = Version("PyGObject", 3, 12)
+    GSTREAMER = Version("GStreamer", 1, 0)
+
+
+VERSION_TUPLE = Version("", 3, 9, -1)
 VERSION = str(VERSION_TUPLE)
-
-if os.name == "nt":
-    file_path = __file__.decode(sys.getfilesystemencoding())
-    BASEDIR = os.path.dirname(os.path.realpath(file_path))
-    HOME = windows.get_personal_dir()
-    USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
-    environ = windows.WindowsEnviron()
-else:
-    BASEDIR = os.path.dirname(os.path.realpath(__file__))
-    HOME = os.path.expanduser("~")
-    USERDIR = os.path.join(HOME, ".quodlibet")
-    environ = os.environ
-
-if 'QUODLIBET_USERDIR' in environ:
-    USERDIR = environ['QUODLIBET_USERDIR']
-
-IMAGEDIR = os.path.join(BASEDIR, "images")
-
-# XXX: Exec conf.py in this directory, used to override const globals
-# e.g. for setting USERDIR for the Windows portable version
-# Note: execfile doesn't handle unicode paths on windows, so encode.
-# (this doesn't use the old win api in case of str compared to os.*)
-_CONF_PATH = os.path.join(BASEDIR, "conf.py")
-if os.name == "nt":
-    _CONF_PATH = _CONF_PATH.encode(sys.getfilesystemencoding())
-try:
-    execfile(_CONF_PATH)
-except IOError:
-    pass
-
-CONTROL = os.path.join(USERDIR, "control")
-CONFIG = os.path.join(USERDIR, "config")
-CURRENT = os.path.join(USERDIR, "current")
-LIBRARY = os.path.join(USERDIR, "songs")
-LOGDIR = os.path.join(USERDIR, "logs")
 
 # entry point for the user guide / wiki
 BRANCH_NAME = "master"
@@ -73,14 +71,15 @@ DOCS_LATEST = DOCS_BASE_URL % "latest"
 DOCS_BASE_URL %= BRANCH_NAME if BRANCH_NAME != "master" else "latest"
 ONLINE_HELP = DOCS_BASE_URL + "/guide/index.html"
 SEARCH_HELP = DOCS_BASE_URL + "/guide/searching.html"
+SHORTCUTS_HELP = DOCS_BASE_URL + "/guide/shortcuts.html"
 
 # Email used as default for reading/saving per-user data in tags, etc.
-EMAIL = environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
+EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 
 # Displayed as registered / help email address
 SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
-MAIN_AUTHORS = """\
+MAIN_AUTHORS = u"""\
 Joe Wreschnig
 Michael Urman
 Iñigo Serna
@@ -90,27 +89,33 @@ Nick Boultbee""".split("\n")
 
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = """Copyright © 2004-2015 %s...""" % ", ".join(MAIN_AUTHORS)
+COPYRIGHT = u"""Copyright © 2004-2016 %s...""" % u", ".join(MAIN_AUTHORS)
 
-AUTHORS = sorted("""\
+AUTHORS = sorted(u"""\
 Alexandre Passos
 Alexey Bobyakov
 Alex Geoffrey Smith
 Anders Carlsson
 Andreas Bombe
+Andrew Chadwick
 Anton Shestakov
 Ari Pollak
 Aymeric Mansoux
 Bastian Kleineidam
 Bastien Gorissen
+Benjamin Boutier
 Ben Zeigler
+Bernd Wechner
+Bruno Bergot
 Carlo Teubner
 Christine Spang
 Christoph Reiter
+Corentin Néau
 David Kågedal
 David Schneider
 Decklin Foster
 Eduardo Gonzalez
+Eric Casteleijn
 Erich Schubert
 Eric Le Lay
 Federico Pelloni
@@ -120,6 +125,7 @@ Guillaume Chazarain
 Hans Scholze
 Iñigo Serna
 Jacob Lee
+Jakob Gahde
 Jan Arne Petersen
 Jan Path
 Javier Kohen
@@ -130,6 +136,7 @@ Johannes Marbach
 Johannes Rohrer
 Joschka Fischer
 Josh Lee
+Joshua Homan
 Joshua Kwan
 Lalo Martins
 Lee Willis
@@ -149,8 +156,10 @@ Philipp Weis
 Quincy John Hamilton
 Remi Vanicat
 Robert Muth
+Ryan Turner
 Sebastian Thürrschmidt
 Simonas Kazlauskas
+Simon Larsen
 Steven Robertson
 Thomas Vogt
 Tobias Wolf
@@ -159,10 +168,12 @@ Tomasz Torcz
 Tshepang Lekhonkhobe
 Türerkan İnce
 Vasiliy Faronov
+Victoria Hayes
 Zack Weinberg
 """.strip().split("\n"))
 
-TRANSLATORS = sorted("""
+TRANSLATORS = sorted(u"""
+Åka Sikrom (nb)
 Alexandre Passos (pt)
 Andreas Bertheussen (nb)
 Anton Shestakov (ru)
@@ -190,12 +201,14 @@ Johám-Luís Miguéns Vila (es, gl, gl_ES, eu, pt)
 Jonas Slivka (lt)
 Joshua Kwan (fr)
 Luca Baraldi (it)
+Ludovic Druette (fr)
 Lukáš Lalinský (sk)
 Mathieu Morey (fr)
 Michal Nowikowski (pl)
 Mugurel Tudor (ro)
 Mykola Lynnyk (uk)
 Naglis Jonaitis (lt)
+Nathan Follens (nl)
 Nick Boultbee (fr, en_GB)
 Olivier Gambier (fr)
 Piarres Beobide (eu)
@@ -213,9 +226,12 @@ Yasushi Iwata (ja)
 Николай Прокошенко (ru)
 Ростислав "zbrox" Райков (bg)
 Сергей Федосеев (ru)
+scootergrisen (da)
+Marek Suchánek (cs)
+Till Berger (de)
 """.strip().splitlines())
 
-ARTISTS = sorted("""\
+ARTISTS = sorted(u"""\
 Tobias
 Jakub Steiner
 Fabien Devaux
@@ -225,48 +241,4 @@ Fabien Devaux
 DEFAULT_COLUMNS = "~#track ~people ~title~version ~album~discsubtitle " \
                   "~#length".split()
 
-TBP = os.path.join(USERDIR, "lists", "tagpatterns")
-TBP_EXAMPLES = """\
-<tracknumber>. <title>
-<tracknumber> - <title>
-<tracknumber> - <artist> - <title>
-<artist> - <album>/<tracknumber>. <title>
-<artist>/<album>/<tracknumber> - <title>"""
-
-NBP = os.path.join(USERDIR, "lists", "renamepatterns")
-NBP_EXAMPLES = """\
-<tracknumber>. <title>
-<tracknumber|<tracknumber>. ><title>
-<tracknumber> - <title>
-<tracknumber> - <artist> - <title>
-/path/<artist> - <album>/<tracknumber>. <title>
-/path/<artist>/<album>/<tracknumber> - <title>"""
-
-DEBUG = ("--debug" in sys.argv or "QUODLIBET_DEBUG" in environ)
-
-try:
-    ENCODING = locale.getpreferredencoding()
-except locale.Error:
-    ENCODING = "utf-8"
-else:
-    # python on macports can return a bugs result (empty string)
-    try:
-        u"".encode(ENCODING)
-    except LookupError:
-        ENCODING = "utf-8"
-
-if os.name == "nt":
-    FSCODING = "utf-8"
-else:
-    # http://developer.gnome.org/doc/API/2.0/glib/glib-running.html
-    if "G_FILENAME_ENCODING" in environ:
-        FSCODING = environ["G_FILENAME_ENCODING"].split(",")[0]
-        if FSCODING == "@locale":
-            FSCODING = ENCODING
-    elif "G_BROKEN_FILENAMES" in environ:
-        FSCODING = ENCODING
-    else:
-        FSCODING = "utf-8"
-
-del(os)
-del(locale)
+DEBUG = ("--debug" in sys.argv or "QUODLIBET_DEBUG" in os.environ)

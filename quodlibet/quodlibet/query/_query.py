@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#                2015 Nick Boultbee
+#           2015-2016 Nick Boultbee,
+#                2016 Ryan Dellenbaugh
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,12 +9,13 @@
 
 from . import _match as match
 from ._match import error, Node
-from ._parser import QueryLexer, QueryParser
+from ._parser import QueryParser
 from quodlibet.util import re_escape, enum, cached_property
+from quodlibet.compat import PY2, text_type
 
 
 @enum
-class QueryType(object):
+class QueryType(int):
     TEXT = 0
     VALID = 1
     INVALID = 2
@@ -22,10 +24,10 @@ class QueryType(object):
 class Query(Node):
 
     STAR = ["artist", "album", "title"]
-    """default tags to search in, use/extend and pass to Query()"""
+    """Default tags to search in, use/extend and pass to Query()"""
 
     error = error
-    """base error type"""
+    """Base error type"""
 
     type = None
     """The QueryType value"""
@@ -34,16 +36,13 @@ class Query(Node):
     """The original string which was used to create this query"""
 
     stars = None
-    """list of default tags used"""
+    """List of default tags used"""
 
-    def __init__(self, string, star=None, dumb_match_diacritics=True):
+    def __init__(self, string, star=None):
         """Parses the query string and returns a match object.
 
         star -- List of tags to look in if none are specified in the query.
-                You can add some by extending Query.START and pass it here.
-
-        dumb_match_diacritics -- In case of text queries (QueryType.TEXT)
-                                 try to match variants with diacritic marks.
+                Defaults to those specified in `STAR`.
 
         This parses the query language as well as some tagless shortcuts:
             "foo bar" ->  &(star1,star2=foo,star1,star2=bar)
@@ -59,37 +58,43 @@ class Query(Node):
         if star is None:
             star = self.STAR
 
-        if not isinstance(string, unicode):
+        if not isinstance(string, text_type):
+            assert PY2
             string = string.decode('utf-8')
 
         self.star = list(star)
         self.string = string
 
+        self.type = QueryType.VALID
         try:
-            self.type = QueryType.VALID
-            self._match = QueryParser(QueryLexer(string)).StartStarQuery(star)
+            self._match = QueryParser(string, star=star).StartQuery()
             return
-        except error:
+        except self.error:
             pass
 
-        # normal string, put it in a intersection to get a value list
         if not set("#=").intersection(string):
-            parts = ["/%s/" % re_escape(s) for s in string.split()]
-            if dumb_match_diacritics:
-                parts = [p + "d" for p in parts]
+            parts = ["/%s/d" % re_escape(s) for s in string.split()]
             string = "&(" + ",".join(parts) + ")"
             self.string = string
 
             try:
                 self.type = QueryType.TEXT
-                self._match = QueryParser(
-                    QueryLexer(string)).StartStarQuery(star)
+                self._match = QueryParser(string, star=star).StartQuery()
                 return
-            except error:
+            except self.error:
                 pass
 
-        self.type = QueryType.VALID
-        self._match = QueryParser(QueryLexer(string)).StartQuery()
+        raise error('Query is not VALID or TEXT')
+
+    @classmethod
+    def StrictQueryMatcher(cls, string):
+        """Returns a Matcher for a strict, valid (non-freetext) Query,
+           or `None` if this fails.
+        """
+        try:
+            return QueryParser(string).StartQuery()
+        except error:
+            return None
 
     def __repr__(self):
         return "<Query string=%r type=%r star=%r>" % (
@@ -150,3 +155,17 @@ class Query(Node):
 
     def __neg__(self):
         return self._match.__neg__()
+
+    @classmethod
+    def validator(cls, string):
+        """Returns True/False for a query, None for a text only query"""
+
+        type_ = cls.get_type(string)
+        if type_ == QueryType.VALID:
+            # in case of an empty but valid query we say it's "text"
+            if cls.match_all(string):
+                return None
+            return True
+        elif type_ == QueryType.INVALID:
+            return False
+        return None

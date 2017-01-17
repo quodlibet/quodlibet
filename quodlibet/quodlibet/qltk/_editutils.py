@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2006 Joe Wreschnig, Michael Urman, Iñigo Serna
 #                2014 Nick Boultbee
-#                2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, GObject
+from senf import fsn2text
 
 from quodlibet import config
 from quodlibet import util
-
+from quodlibet import _
 from quodlibet.plugins import PluginHandler
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
-from quodlibet.qltk.x import Button
-from quodlibet.util.path import fsdecode
+from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 
 
@@ -27,7 +26,7 @@ class OverwriteWarning(WarningMessage):
     def __init__(self, parent, song):
         title = _("Tag may not be accurate")
 
-        fn_format = "<b>%s</b>" % util.escape(fsdecode(song("~basename")))
+        fn_format = "<b>%s</b>" % util.escape(fsn2text(song("~basename")))
         description = _("%(file-name)s changed while the program was running. "
             "Saving without refreshing your library may "
             "overwrite other changes to the song.") % {"file-name": fn_format}
@@ -35,10 +34,9 @@ class OverwriteWarning(WarningMessage):
         super(OverwriteWarning, self).__init__(
             parent, title, description, buttons=Gtk.ButtonsType.NONE)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        save_button = Button(_("_Save"), "document-save")
-        save_button.show()
-        self.add_action_widget(save_button, self.RESPONSE_SAVE)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
+                             self.RESPONSE_SAVE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
 
@@ -47,7 +45,7 @@ class WriteFailedError(ErrorMessage):
     def __init__(self, parent, song):
         title = _("Unable to save song")
 
-        fn_format = "<b>%s</b>" % util.escape(fsdecode(song("~basename")))
+        fn_format = "<b>%s</b>" % util.escape(fsn2text(song("~basename")))
         description = _("Saving %(file-name)s failed. The file may be "
             "read-only, corrupted, or you do not have "
             "permission to edit it.") % {"file-name": fn_format}
@@ -108,7 +106,7 @@ class FilterCheckButton(ConfigCheckButton):
         raise NotImplementedError
 
     def filter_list(self, origs, names):
-        return map(self.filter, origs, names)
+        return list(map(self.filter, origs, names))
 
     def __lt__(self, other):
         return (self._order, type(self).__name__) < \

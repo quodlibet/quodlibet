@@ -11,11 +11,13 @@
 import os
 import shutil
 
-from distutils.core import Command
-from distutils.command.clean import clean as distutils_clean
+from .util import get_dist_class
 
 
-class clean(distutils_clean, Command):
+distutils_clean = get_dist_class("clean")
+
+
+class clean(distutils_clean):
     """clean up output of 'build' commands
 
     GDistribution commands generate files that the normal distutils
@@ -26,6 +28,9 @@ class clean(distutils_clean, Command):
 
     def initialize_options(self):
         distutils_clean.initialize_options(self)
+        self.shortcuts = None
+        self.po_package = None
+        self.po_directory = None
 
     def finalize_options(self):
         distutils_clean.finalize_options(self)
@@ -66,6 +71,12 @@ class clean(distutils_clean, Command):
         for base in ["coverage", "build", "dist"]:
             if os.path.isdir(base):
                 shutil.rmtree(base)
+
+        # docs
+        for entry in os.listdir("docs"):
+            path = os.path.join("docs", entry)
+            if entry.startswith("_") and os.path.isdir(path):
+                shutil.rmtree(path)
 
         try:
             os.remove("MANIFEST")

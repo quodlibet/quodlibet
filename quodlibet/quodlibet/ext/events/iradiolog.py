@@ -5,8 +5,10 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk import Icons
 
 
 class IRadioLog(EventPlugin):
@@ -14,7 +16,7 @@ class IRadioLog(EventPlugin):
     PLUGIN_NAME = _("Internet Radio Log")
     PLUGIN_DESC = _("Records the last 10 songs played on radio stations, "
                     "and lists them in the seek context menu.")
-    PLUGIN_ICON = 'gtk-edit'
+    PLUGIN_ICON = Icons.EDIT
 
     def plugin_on_song_started(self, song):
         if song is None:

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013 Christoph Reiter, Nick Boultbee
+# Copyright 2013 Christoph Reiter
+#     2013, 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,10 +8,14 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import app
+from quodlibet import util
+from quodlibet.plugins.songshelpers import any_song, has_writable_image
 from quodlibet.qltk.x import MenuItem
+from quodlibet.qltk import Icons
 from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.formats._image import EmbeddedImage
+from quodlibet.formats import EmbeddedImage, AudioFileError
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
@@ -18,7 +23,10 @@ class EditEmbedded(SongsMenuPlugin):
     PLUGIN_ID = "embedded_edit"
     PLUGIN_NAME = _("Edit Embedded Images")
     PLUGIN_DESC = _("Removes or replaces embedded images.")
-    PLUGIN_ICON = Gtk.STOCK_EDIT
+    PLUGIN_ICON = Icons.INSERT_IMAGE
+
+    plugin_handles = any_song(has_writable_image)
+    """if any song supports editing, we are active"""
 
     def __init__(self, songs, *args, **kwargs):
         super(EditEmbedded, self).__init__(songs, *args, **kwargs)
@@ -33,7 +41,10 @@ class EditEmbedded(SongsMenuPlugin):
 
         for song in songs:
             if song.has_images and song.can_change_images:
-                song.clear_images()
+                try:
+                    song.clear_images()
+                except AudioFileError:
+                    util.print_exc()
 
             if win.step():
                 break
@@ -52,7 +63,10 @@ class EditEmbedded(SongsMenuPlugin):
                     path = fileobj.name
                     image = EmbeddedImage.from_path(path)
                     if image:
-                        song.set_image(image)
+                        try:
+                            song.set_image(image)
+                        except AudioFileError:
+                            util.print_exc()
 
             if win.step():
                 break
@@ -61,11 +75,11 @@ class EditEmbedded(SongsMenuPlugin):
         self.plugin_finish()
 
     def __map(self, menu, songs):
-        remove_item = MenuItem(_("_Remove all images"), "edit-delete")
+        remove_item = MenuItem(_("_Remove all Images"), "edit-delete")
         remove_item.connect('activate', self.__remove_images, songs)
         menu.append(remove_item)
 
-        set_item = MenuItem(_("_Embed current image"), "edit-paste")
+        set_item = MenuItem(_("_Embed Current Image"), "edit-paste")
         set_item.connect('activate', self.__set_image, songs)
         menu.append(set_item)
 
@@ -77,10 +91,3 @@ class EditEmbedded(SongsMenuPlugin):
 
     def plugin_songs(self, songs):
         return True
-
-    def plugin_handles(self, songs):
-        # if any song supports editing, we are active
-        for song in songs:
-            if song.can_change_images:
-                return True
-        return False

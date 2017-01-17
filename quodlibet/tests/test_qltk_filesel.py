@@ -1,23 +1,45 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase, mkdtemp
 
 import os
 import sys
 sys.modules['dircache'] = os # cheat the dircache effects
 
-from quodlibet.qltk.filesel import DirectoryTree, FileSelector, get_drives
-from quodlibet.qltk.filesel import MainDirectoryTree, MainFileSelector
-from quodlibet.util.path import fsnative, is_fsnative
-from quodlibet import const
+from senf import fsnative
+
+from quodlibet.qltk.filesel import DirectoryTree, FileSelector, get_drives, \
+    MainDirectoryTree, MainFileSelector, get_gtk_bookmarks, parse_gtk_bookmarks
+from quodlibet.util.path import get_home_dir
 import quodlibet.config
+from quodlibet.util import is_windows
+
+
+class Tget_gtk_bookmarks(TestCase):
+
+    def test_main(self):
+        paths = get_gtk_bookmarks()
+        assert all(isinstance(p, fsnative) for p in paths)
+
+    def test_parse(self):
+        if is_windows():
+            return
+
+        data = (b'file:///foo/bar\nfile:///home/user\n'
+                b'file:///home/user/Downloads Downloads\n')
+        paths = parse_gtk_bookmarks(data)
+        assert all(isinstance(p, fsnative) for p in paths)
 
 
 class TDirectoryTree(TestCase):
 
     if os.name == "nt":
-        ROOTS = [const.HOME, u"C:\\"]
+        ROOTS = [get_home_dir(), u"C:\\"]
     else:
-        ROOTS = [const.HOME, "/"]
+        ROOTS = [get_home_dir(), "/"]
 
     def setUp(self):
         quodlibet.config.init()
@@ -26,9 +48,9 @@ class TDirectoryTree(TestCase):
         quodlibet.config.quit()
 
     def test_initial(self):
-        paths = ["/", const.HOME, "/usr/bin"]
+        paths = ["/", get_home_dir(), "/usr/bin"]
         if os.name == "nt":
-            paths = [u"C:\\", const.HOME]
+            paths = [u"C:\\", get_home_dir()]
 
         for path in paths:
             dirlist = DirectoryTree(path, folders=self.ROOTS)
@@ -66,7 +88,7 @@ class TDirectoryTree(TestCase):
 
     def test_get_drives(self):
         for path in get_drives():
-            self.assertTrue(is_fsnative(path))
+            self.assertTrue(isinstance(path, fsnative))
 
 
 class TFileSelector(TestCase):

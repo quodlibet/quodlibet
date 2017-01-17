@@ -13,8 +13,8 @@ from gi.repository import Gtk, GLib
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
-
-from quodlibet.browsers._base import Browser
+from quodlibet import _
+from quodlibet.browsers import Browser
 from quodlibet.formats import PEOPLE
 from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
@@ -29,16 +29,15 @@ from .util import get_headers
 from .pane import Pane
 
 
-class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
+class PanedBrowser(Browser, util.InstanceTracker):
     """A Browser enabling "drilling down" of tracks by successive
     selections in multiple tag pattern panes (e.g. Genre / People / Album ).
     It presents available values (and track counts) for each pane's tag
     """
 
-    __gsignals__ = Browser.__gsignals__
-
     name = _("Paned Browser")
     accelerated_name = _("_Paned Browser")
+    keys = ["Paned", "PanedBrowser"]
     priority = 3
 
     def pack(self, songpane):
@@ -67,10 +66,11 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         super(PanedBrowser, self).__init__()
         self._register_instance()
 
-        self._filter = None
+        self._filter = lambda s: False
         self._library = library
 
         self.set_spacing(6)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
 
         completion = LibraryTagCompletion(library.librarian)
         self.accelerators = Gtk.AccelGroup()
@@ -83,7 +83,7 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         align = Align(sbb, left=6, right=6, top=6)
         self.pack_start(align, False, True, 0)
 
-        keyval, mod = Gtk.accelerator_parse("<control>Home")
+        keyval, mod = Gtk.accelerator_parse("<Primary>Home")
         self.accelerators.connect(keyval, mod, 0, self.__select_all)
         select = Gtk.Button(label=_("Select _All"), use_underline=True)
         select.connect('clicked', self.__select_all)
@@ -137,6 +137,9 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
     def filter_text(self, text):
         self._set_text(text)
         self.activate()
+
+    def get_filter_text(self):
+        return self._get_text()
 
     def __select_all(self, *args):
         self._panes[-1].inhibit()
@@ -231,13 +234,13 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
     def __get_filter_pane(self, key):
         """Get the best pane for filtering etc."""
 
-        canditates = []
+        candidates = []
         for pane in self._panes:
             if (key in pane.tags or
                     (key in PEOPLE and "~people" in pane.tags)):
-                canditates.append((len(pane.tags), pane))
-        canditates.sort()
-        return (canditates and canditates[0][1]) or None
+                candidates.append((len(pane.tags), pane))
+        candidates.sort()
+        return (candidates and candidates[0][1]) or None
 
     def can_filter_tag(self, tag):
         return (self.__get_filter_pane(tag) is not None)
@@ -275,37 +278,32 @@ class PanedBrowser(Gtk.VBox, Browser, util.InstanceTracker):
         return []
 
     def save(self):
-        config.set("browsers", "query_text", self._get_text())
+        config.settext("browsers", "query_text", self._get_text())
 
         selected = []
         for pane in self._panes:
             selected.append(pane.get_restore_string())
 
-        to_save = u"\n".join(selected).encode("utf-8")
-        config.set("browsers", "pane_selection", to_save)
+        to_save = u"\n".join(selected)
+        config.settext("browsers", "pane_selection", to_save)
 
     def restore(self):
         try:
-            text = config.get("browsers", "query_text")
+            text = config.gettext("browsers", "query_text")
         except config.Error:
             pass
         else:
             self._set_text(text)
 
-        selected = config.get("browsers", "pane_selection")
+        selected = config.gettext("browsers", "pane_selection")
         if not selected:
-            return
-
-        try:
-            selected = selected.decode("utf-8")
-        except UnicodeDecodeError:
             return
 
         for pane, string in zip(self._panes, selected.split(u"\n")):
             pane.parse_restore_string(string)
 
     def finalize(self, restored):
-        config.set("browsers", "query_text", "")
+        config.settext("browsers", "query_text", u"")
         if not restored:
             self.fill_panes()
 

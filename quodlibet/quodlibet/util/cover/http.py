@@ -7,6 +7,7 @@
 from gi.repository import Gio, GLib
 
 from quodlibet.util.http import HTTPRequest
+from quodlibet.util import print_w
 
 
 class HTTPDownloadMixin(object):

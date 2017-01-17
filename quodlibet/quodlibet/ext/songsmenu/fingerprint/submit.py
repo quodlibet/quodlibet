@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011,2013 Christoph Reiter
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,8 +8,10 @@
 
 from gi.repository import Gtk, Pango, GLib
 
+from quodlibet import _
+from quodlibet.compat import listfilter
 from quodlibet.qltk import Button, Window
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, print_w
 
 from .acoustid import AcoustidSubmissionThread
 from .analyze import FingerPrintPool
@@ -79,10 +82,10 @@ class FingerprintDialog(Window):
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         bbox.set_spacing(6)
-        self.__submit = submit = Button(_("_Submit"), Gtk.STOCK_APPLY)
+        self.__submit = submit = Button(_("_Submit"))
         submit.set_sensitive(False)
         submit.connect('clicked', self.__submit_cb)
-        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+        cancel = Button(_("_Cancel"))
         connect_obj(cancel, 'clicked', self.__cancel_cb, pool)
         bbox.pack_start(submit, True, True, 0)
         bbox.pack_start(cancel, True, True, 0)
@@ -105,7 +108,7 @@ class FingerprintDialog(Window):
     def __update_stats(self):
         all_ = len(self.__songs)
         results = self.__fp_results.values()
-        to_send = len(filter(can_submit, results))
+        to_send = len(listfilter(can_submit, results))
         valid_fp = len(results)
         got_mbid, got_meta = get_stats(results)
 
@@ -154,7 +157,7 @@ class FingerprintDialog(Window):
     def __show_final_stats(self):
         all_ = len(self.__songs)
         results = self.__fp_results.values()
-        to_send = len(filter(can_submit, results))
+        to_send = len(list(filter(can_submit, results)))
         self.__label_song.set_text(
             _("Done. %(to-send)d/%(all)d songs to submit.") % {
                 "to-send": to_send, "all": all_})
@@ -175,7 +178,7 @@ class FingerprintDialog(Window):
         self.__label.set_markup("<b>%s</b>" % _("Submitting fingerprints:"))
         self.__set_fraction(0)
         self.__acoustid_thread = AcoustidSubmissionThread(
-            filter(can_submit, self.__fp_results.values()),
+            list(filter(can_submit, self.__fp_results.values())),
             self.__acoustid_update, self.__acoustid_done)
 
     def __acoustid_update(self, progress):

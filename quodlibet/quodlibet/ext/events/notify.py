@@ -23,16 +23,18 @@ import re
 
 import dbus
 from gi.repository import Gtk, GObject, GLib
+from senf import fsn2uri
 
+from quodlibet import _
 from quodlibet import config, qltk, app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import XMLFromPattern
 from quodlibet.qltk.textedit import TextView, TextBuffer
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
-from quodlibet.util import unescape
-from quodlibet.util.uri import URI
-from quodlibet.util import connect_obj
+from quodlibet.qltk import Icons
+from quodlibet.util import connect_obj, unescape, print_w
+from quodlibet.compat import text_type
 
 
 # configuration stuff
@@ -40,6 +42,7 @@ DEFAULT_CONFIG = {
     "timeout": 4000,
     "show_notifications": "all",
     "show_only_when_unfocused": True,
+    "show_next_button": True,
 
     "titlepattern": "<artist|<artist> - ><title>",
     "bodypattern":
@@ -61,7 +64,7 @@ get_conf_int = lambda name: get_conf_value(name, "getint")
 
 
 def set_conf_value(name, value):
-    config.set("plugins", "notify_%s" % name, unicode(value))
+    config.set("plugins", "notify_%s" % name, text_type(value))
 
 
 class PreferencesWidget(Gtk.VBox):
@@ -91,8 +94,8 @@ class PreferencesWidget(Gtk.VBox):
                      Gtk.AttachOptions.SHRINK)
 
         title_revert = Gtk.Button()
-        title_revert.add(Gtk.Image.new_from_stock(
-            Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
+        title_revert.add(Gtk.Image.new_from_icon_name(
+            Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
         title_revert.set_tooltip_text(_("Revert to default pattern"))
         connect_obj(title_revert,
             "clicked", title_entry.set_text, DEFAULT_CONFIG["titlepattern"])
@@ -120,8 +123,8 @@ class PreferencesWidget(Gtk.VBox):
         table.attach(body_label, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.SHRINK)
 
         body_revert = Gtk.Button()
-        body_revert.add(Gtk.Image.new_from_stock(
-                        Gtk.STOCK_REVERT_TO_SAVED, Gtk.IconSize.MENU))
+        body_revert.add(Gtk.Image.new_from_icon_name(
+                        Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
         body_revert.set_tooltip_text(_("Revert to default pattern"))
         connect_obj(body_revert,
             "clicked", body_textbuffer.set_text, DEFAULT_CONFIG["bodypattern"])
@@ -132,7 +135,7 @@ class PreferencesWidget(Gtk.VBox):
 
         # preview button
         preview_button = qltk.Button(
-            _("_Show notification"), Gtk.STOCK_EXECUTE)
+            _("_Show notification"), Icons.SYSTEM_RUN)
         preview_button.set_sensitive(app.player.info is not None)
         preview_button.connect("clicked", self.on_preview_button_clicked)
         self.qlplayer_connected_signals = [
@@ -197,6 +200,14 @@ class PreferencesWidget(Gtk.VBox):
                             "show_only_when_unfocused")
         display_box.pack_start(focus_check, True, True, 0)
 
+        show_next = Gtk.CheckButton(
+            label=_("Show \"_Next\" button"),
+            use_underline=True)
+        show_next.set_active(get_conf_bool("show_next_button"))
+        show_next.connect("toggled", self.on_checkbutton_toggled,
+                            "show_next_button")
+        display_box.pack_start(show_next, True, True, 0)
+
         self.pack_start(display_frame, True, True, 0)
 
         self.show_all()
@@ -239,7 +250,7 @@ class Notify(EventPlugin):
     PLUGIN_ID = "Notify"
     PLUGIN_NAME = _("Song Notifications")
     PLUGIN_DESC = _("Displays a notification when the song changes.")
-    PLUGIN_ICON = Gtk.STOCK_DIALOG_INFO
+    PLUGIN_ICON = Icons.DIALOG_INFORMATION
 
     DBUS_NAME = "org.freedesktop.Notifications"
     DBUS_IFACE = "org.freedesktop.Notifications"
@@ -345,8 +356,7 @@ class Notify(EventPlugin):
         fileobj = app.cover_manager.get_cover(song)
         self._set_image_fileobj(fileobj)
         if fileobj:
-            image_path = fileobj.name
-            return URI.frompath(image_path).decode("utf-8")
+            return fsn2uri(fileobj.name)
         return u""
 
     def show_notification(self, song):
@@ -401,7 +411,7 @@ class Notify(EventPlugin):
                 body = strip_images(body)
 
         actions = []
-        if "actions" in caps:
+        if get_conf_bool("show_next_button") and "actions" in caps:
             actions = ["next", _("Next")]
 
         hints = {

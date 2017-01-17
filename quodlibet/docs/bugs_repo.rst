@@ -1,14 +1,8 @@
-.. |git-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/git.png
-   :height: 16
-   :width: 16
-
-.. |bug-logo| image:: http://bitbucket.org/lazka/quodlibet-files/raw/default/icons/bug.png
-   :height: 16
-   :width: 16
-
 ======================
 Bug Tracker / Git Repo
 ======================
+
+.. include:: icons.rst
 
 .. _bugtracker:
 
@@ -23,10 +17,10 @@ We use the GitHub bug tracker:
 
 .. _gitrepo:
 
-|git-logo| Git Repo
--------------------
+|github-logo| Git Repo
+----------------------
 
-Quod Libet uses `Git <http://git-scm.com/>`_ for source
+Quod Libet uses `Git <https://git-scm.com/>`_ for source
 control and is hosted on `GitHub <https://github.com/>`_ as well
 as `Bitbucket <https://bitbucket.org/>`__:
 

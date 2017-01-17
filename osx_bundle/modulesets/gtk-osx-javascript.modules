@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE moduleset SYSTEM "moduleset.dtd">
+<?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
+<moduleset>
+
+  <repository type="tarball" name="ftp.gnome.org" default="yes"
+              href="http://ftp.gnome.org/pub/GNOME/sources/"/>
+  <repository type="tarball" name="mozilla" href="ftp://ftp.mozilla.org/pub/"/>
+
+  <metamodule id="meta-gtk-osx-javascript">
+    <dependencies>
+      <dep package="gjs"/>
+    </dependencies>
+    <after>
+      <dep package="meta-gtk-osx-gtk3"/>
+      <dep package="meta-gtk-osx-bootstrap"/>
+    </after>
+  </metamodule>
+
+  <autotools id="gjs" autogenargs="--enable-installed-tests">
+    <branch version="1.42.0" module="gjs/1.42/gjs-1.42.0.tar.xz"
+            hash="sha256:0c9afb7d5be6ead5b68059596f08eb7c3902b1676ee9c8846aa8df09647dba13">
+      <patch strip="1"
+             file="https://git.gnome.org/browse/gtk-osx/plain/patches/gjs-Bug-737701-Don-t-error-out-on-missing-cairo-xlib.pc.patch"/>
+      <patch strip="1"
+             file="https://git.gnome.org/browse/gtk-osx/plain/patches/gjs-Bug-737702-Use-R-instead-of-rpath.patch"/>
+      <patch strip="1"
+             file="https://git.gnome.org/browse/gtk-osx/plain/patches/gjs-Bug-740696-Use-m4-directory-for-macros.patch"/>
+    </branch>
+    <dependencies>
+      <dep package="gobject-introspection"/>
+      <dep package="js24"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="js24" autogen-sh="configure"
+             autogenargs="--with-system-nspr --with-system-zlib --enable-system-ffi --enable-threadsafe">
+    <branch repo="mozilla" module="js/mozjs-24.2.0.tar.bz2" version="24.2.0"
+            checkoutdir="js24-24.2.0" source-subdir="js/src"
+            hash="sha1:ce779081cc11bd0c871c6f303fc4a0091cf4fe66"/>
+    <dependencies>
+      <dep package="libffi"/>
+      <dep package="nspr"/>
+    </dependencies>
+    <after>
+      <dep package="python"/>
+      <dep package="zlib"/>
+    </after>
+  </autotools>
+
+  <autotools id="nspr" autogen-sh="mozilla/nsprpub/configure"
+             autogenargs="--enable-64bit" check-target="false">
+    <branch repo="mozilla" version="4.9.2"
+            module="nspr/releases/v4.9.2/src/nspr-4.9.2.tar.gz">
+      <patch file="nspr.autogen.patch" strip="1"/>
+      <patch file="nspr.config_64bits.patch" strip="1"/>
+      <patch file="nspr.hostcompiler.patch" strip="1"/>
+    </branch>
+  </autotools>
+
+</moduleset>

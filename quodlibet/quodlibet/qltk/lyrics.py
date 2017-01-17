@@ -12,14 +12,17 @@
 
 import os
 import threading
-import urllib
 
 from gi.repository import Gtk, GLib
 
-from quodlibet import const
+from quodlibet import _
+from quodlibet.formats import AudioFileError
 from quodlibet import qltk
+from quodlibet.qltk import Icons
 from quodlibet import util
 from quodlibet.util import connect_obj
+from quodlibet.compat import quote, text_type
+from quodlibet.util.urllib import urlopen
 
 
 class LyricsPane(Gtk.VBox):
@@ -31,19 +34,18 @@ class LyricsPane(Gtk.VBox):
         view = Gtk.TextView()
         sw = Gtk.ScrolledWindow()
         sw.add(view)
-        refresh = qltk.Button(_("_Download"), Gtk.STOCK_CONNECT)
-        save = Gtk.Button(stock=Gtk.STOCK_SAVE)
-        delete = Gtk.Button(stock=Gtk.STOCK_DELETE)
-        add = Gtk.Button(stock=Gtk.STOCK_EDIT)
+        refresh = qltk.Button(_("_Download"))
+        save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
+        delete = qltk.Button(_("_Delete"), Icons.EDIT_DELETE)
+        add = qltk.Button(_("_Edit"), Icons.EDIT)
         view.set_wrap_mode(Gtk.WrapMode.WORD)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        lyricname = song.lyric_filename
         buffer = view.get_buffer()
 
         refresh.connect('clicked', self.__refresh, add, buffer, song)
-        save.connect('clicked', self.__save, lyricname, buffer, delete)
-        delete.connect('clicked', self.__delete, lyricname, save)
+        save.connect('clicked', self.__save, song, buffer, delete)
+        delete.connect('clicked', self.__delete, song, save)
         add.connect('clicked', self.__add, song)
 
         sw.set_shadow_type(Gtk.ShadowType.IN)
@@ -59,8 +61,10 @@ class LyricsPane(Gtk.VBox):
         save.set_sensitive(False)
         add.set_sensitive(True)
 
-        if os.path.exists(lyricname):
-            buffer.set_text(file(lyricname).read())
+        lyrics = song("~lyrics")
+
+        if lyrics:
+            buffer.set_text(lyrics)
         else:
             #buffer.set_text(_("No lyrics found.\n\nYou can click the "
             #                  "Download button to have Quod Libet search "
@@ -72,7 +76,7 @@ class LyricsPane(Gtk.VBox):
     def __add(self, add, song):
         artist = song.comma('artist').encode('utf-8')
 
-        util.website("http://lyricwiki.org/%s" % (urllib.quote(artist)))
+        util.website("http://lyricwiki.org/%s" % (quote(artist)))
 
     def __refresh(self, refresh, add, buffer, song):
         buffer.set_text(_(u"Searching for lyrics…"))
@@ -87,18 +91,15 @@ class LyricsPane(Gtk.VBox):
         title = song.comma("title")
 
         try:
-            sock = urllib.urlopen(
+            sock = urlopen(
                 "http://lyricwiki.org/api.php?"
                 "client=QuodLibet&func=getSong&artist=%s&song=%s&fmt=text" % (
-                urllib.quote(artist.encode('utf-8')),
-                urllib.quote(title.encode('utf-8'))))
+                quote(artist.encode('utf-8')),
+                quote(title.encode('utf-8'))))
             text = sock.read()
-        except Exception, err:
-            try:
-                err = err.strerror.decode(const.ENCODING, 'replace')
-            except:
-                err = _("Unable to download lyrics.")
-            GLib.idle_add(buffer.set_text, err)
+        except Exception as err:
+            util.print_exc()
+            GLib.idle_add(buffer.set_text, text_type(err))
             return
 
         sock.close()
@@ -111,24 +112,45 @@ class LyricsPane(Gtk.VBox):
             GLib.idle_add(buffer.set_text, text)
             GLib.idle_add(refresh.set_sensitive, True)
 
-    def __save(self, save, lyricname, buffer, delete):
+    def __save(self, save, song, buffer, delete):
+        start, end = buffer.get_bounds()
+        text = buffer.get_text(start, end, True)
+
+        # First, write back to the tags.
+        song["lyrics"] = text.decode("utf-8")
+        try:
+            song.write()
+        except AudioFileError:
+            util.print_exc()
+
+        # Then, write to file.
+        # TODO: write to file only if could not write to tags, otherwise delete
+        # the file.
+        lyricname = song.lyric_filename
         try:
             os.makedirs(os.path.dirname(lyricname))
-        except EnvironmentError, err:
+        except EnvironmentError:
+            util.print_exc()
             pass
 
         try:
-            f = file(lyricname, "w")
-        except EnvironmentError, err:
-            print_w(err.strerror.decode(const.ENCODING, "replace"))
-        else:
-            start, end = buffer.get_bounds()
-            f.write(buffer.get_text(start, end, True))
-            f.close()
+            with open(lyricname, "w") as f:
+                f.write(text)
+        except EnvironmentError:
+            util.print_exc()
         delete.set_sensitive(True)
         save.set_sensitive(False)
 
-    def __delete(self, delete, lyricname, save):
+    def __delete(self, delete, song, save):
+        # First, delete from the tags.
+        song.remove("lyrics")
+        try:
+            song.write()
+        except AudioFileError:
+            util.print_exc()
+
+        # Then, delete the file.
+        lyricname = song.lyric_filename
         try:
             os.unlink(lyricname)
         except EnvironmentError:

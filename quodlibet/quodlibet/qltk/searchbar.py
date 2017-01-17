@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010-2011 Christoph Reiter, Steven Robertson
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -9,15 +10,15 @@ import os
 
 from gi.repository import Gtk, GObject, GLib
 
+import quodlibet
 from quodlibet import config
-from quodlibet import const
+from quodlibet import _
 
 from quodlibet.qltk.cbes import ComboBoxEntrySave
-from quodlibet.qltk.entry import QueryValidator
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.query import QueryType
-from quodlibet.util import limit_songs, DeferredSignal
+from quodlibet.util import limit_songs, DeferredSignal, gdecode
 
 
 class SearchBarBox(Gtk.HBox):
@@ -36,21 +37,23 @@ class SearchBarBox(Gtk.HBox):
         'focus-out': (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 
-    timeout = 400
+    DEFAULT_TIMEOUT = 400
 
     def __init__(self, filename=None, completion=None, accel_group=None,
-                 validator=QueryValidator):
+                 timeout=DEFAULT_TIMEOUT, validator=Query.validator):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
-            filename = os.path.join(const.USERDIR, "lists", "queries")
+            filename = os.path.join(
+                quodlibet.get_user_dir(), "lists", "queries")
 
         combo = ComboBoxEntrySave(filename, count=8,
-                validator=validator, title=_("Saved Searches"),
-                edit_title=_(u"Edit saved searches…"))
+                                  validator=validator,
+                                  title=_("Saved Searches"),
+                                  edit_title=_(u"Edit saved searches…"))
 
         self.__deferred_changed = DeferredSignal(
-            self.__filter_changed, timeout=self.timeout, owner=self)
+            self.__filter_changed, timeout=timeout, owner=self)
 
         self.validator = validator
         self.__combo = combo
@@ -76,12 +79,19 @@ class SearchBarBox(Gtk.HBox):
         self.pack_start(combo, True, True, 0)
 
         if accel_group:
-            key, mod = Gtk.accelerator_parse("<ctrl>L")
+            key, mod = Gtk.accelerator_parse("<Primary>L")
             accel_group.connect(key, mod, 0,
                     lambda *x: entry.mnemonic_activate(True))
 
         for child in self.get_children():
             child.show_all()
+
+    def set_enabled(self, enabled=True):
+        self.__entry.set_sensitive(enabled)
+        if enabled:
+            self.__uninhibit()
+        else:
+            self.__inhibit()
 
     def set_text(self, text):
         """Set the text without firing any signals"""
@@ -96,7 +106,7 @@ class SearchBarBox(Gtk.HBox):
     def get_text(self):
         """Get the active text as unicode"""
 
-        return self.__entry.get_text().decode("utf-8")
+        return gdecode(self.__entry.get_text())
 
     def _is_parsable(self, text):
         return text and self.validator(text) != QueryType.INVALID

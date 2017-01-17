@@ -5,11 +5,12 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
+from senf import fsnative
+
 from tests.plugin import PluginTestCase
 
 from quodlibet import config
-from quodlibet.util.path import fsnative
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 
 
 SONGS = [
@@ -45,7 +46,7 @@ class THTMLExport(PluginTestCase):
 
     def test_export(self):
         text = self.to_html(SONGS)
-        self.failUnless(u"\xf6\xe4\xfc".encode("utf-8") in text)
+        self.failUnless(u"\xf6\xe4\xfc" in text)
 
     def tearDown(self):
         config.quit()

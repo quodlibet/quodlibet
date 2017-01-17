@@ -8,6 +8,7 @@
 from tests.helper import ListWithUnused as L
 from tests.plugin import PluginTestCase
 from quodlibet.util.string.titlecase import human_title
+from quodlibet.compat import iteritems
 
 
 class TPluginStyle(PluginTestCase):
@@ -38,7 +39,7 @@ class TPluginStyle(PluginTestCase):
             'This is a test')
         fails = []
 
-        for pid, plugin in self.plugins.iteritems():
+        for pid, plugin in iteritems(self.plugins):
             if not hasattr(plugin.cls, 'PLUGIN_NAME'):
                 fails.append((plugin, None, REASON_ABSENT))
                 continue
@@ -57,7 +58,7 @@ class TPluginStyle(PluginTestCase):
         skip_plugins = L('pickle_test')
         fails = []
 
-        for pid, plugin in self.plugins.iteritems():
+        for pid, plugin in iteritems(self.plugins):
             if pid in skip_plugins:
                 continue
             if not hasattr(plugin.cls, 'PLUGIN_DESC'):

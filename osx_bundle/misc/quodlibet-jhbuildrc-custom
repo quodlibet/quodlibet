@@ -1,0 +1,21 @@
+# This gets copied to $HOME/.jhbuildrc-custom and gets included by the gtk-osx
+# provided ``.jhbuildrc`` file
+
+import os
+
+checkoutroot = os.path.expanduser("~/jhbuild_checkoutroot")
+prefix = os.path.expanduser("~/jhbuild_prefix")
+modulesets_dir = os.environ["QL_OSXBUNDLE_MODULESETS_DIR"]
+moduleset = ["quodlibet"]
+modules = []
+
+skip.append("libiconv")
+
+setup_sdk(target="10.9", sdk_version="native")
+
+os.environ["GTLS_SYSTEM_CA_FILE"] = os.path.join(
+    prefix, "lib/python2.7/site-packages/certifi/cacert.pem")
+
+# Make sure we use the same shell in "jhbuild shell" as during building
+if os.environ.get("CONFIG_SHELL"):
+    os.environ["SHELL"] = os.environ.get("CONFIG_SHELL")

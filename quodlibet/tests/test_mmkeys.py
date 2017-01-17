@@ -1,17 +1,24 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
 
-from gi.repository import Gtk
+from tests import TestCase, init_fake_app, destroy_fake_app
 
-from quodlibet.player.nullbe import NullPlayer
+from quodlibet import app
 from quodlibet.mmkeys import MMKeysHandler, iter_backends
 
 
 class TMmKeys(TestCase):
 
+    def setUp(self):
+        init_fake_app()
+
+    def tearDown(self):
+        destroy_fake_app()
+
     def test_handler(self):
-        win = Gtk.Window()
-        handler = MMKeysHandler("Foo", win, NullPlayer())
+        handler = MMKeysHandler(app)
         handler.quit()
 
     def test_backends(self):

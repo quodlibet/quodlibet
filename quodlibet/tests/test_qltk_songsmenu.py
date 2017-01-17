@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+from senf import fsnative
+
 from tests import TestCase
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
-from quodlibet.util.path import fsnative
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet import config
+from quodlibet.compat import text_type
 import quodlibet.player
 
 
@@ -13,13 +19,13 @@ class TSongsMenu(TestCase):
     def setUp(self):
         config.init()
         self.library = SongLibrary()
-        backend = quodlibet.player.init("nullbe")
+        backend = quodlibet.player.init_backend("nullbe")
         self.device = backend.init(self.library)
 
         self.songs = [AudioFile({"title": x}) for x in
                       ["song1", "song2", "song3"]]
         for song in self.songs:
-            song.sanitize(fsnative(unicode(song["title"])))
+            song.sanitize(fsnative(text_type(song["title"])))
 
     def test_empty(self):
         self.menu = SongsMenu(self.library, self.songs, plugins=False,
@@ -69,7 +75,8 @@ class TSongsMenu(TestCase):
             queue=False, devices=True, remove=False, delete=False, edit=False,
             ratings=False)
         from quodlibet import browsers
-        if browsers.media.MediaDevices in browsers.browsers:
+        from quodlibet.browsers.media import MediaDevices
+        if MediaDevices in browsers.browsers and len(MediaDevices.devices()):
             self.failUnlessEqual(1, len(self.menu))
         else:
             self.failUnlessEqual(0, len(self.menu))

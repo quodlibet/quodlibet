@@ -11,23 +11,23 @@ from gi.repository import Gtk, GLib, Pango, Gdk
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import config
-
+from quodlibet import _
 from quodlibet.browsers.albums import AlbumTagCompletion
-from quodlibet.browsers._base import Browser
+from quodlibet.browsers import Browser
 from quodlibet.query import Query
+from quodlibet.compat import cmp
 
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.image import (get_scale_factor, get_pbosf_for_pixbuf,
-    set_renderer_from_pbosf, scale, add_border_widget)
+from quodlibet.qltk import Icons
+from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
-from quodlibet.util.collection import Album
 from quodlibet.util import connect_obj
 from quodlibet.util.library import background_filter
 
 from .models import (CollectionTreeStore, CollectionSortModel,
-    CollectionFilterModel, MultiNode, UnknownNode)
+    CollectionFilterModel, MultiNode, UnknownNode, AlbumNode)
 from .prefs import get_headers, Preferences
 
 
@@ -73,11 +73,10 @@ class CollectionView(AllTreeView):
         return albums
 
 
-class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
-    __gsignals__ = Browser.__gsignals__
-
+class CollectionBrowser(Browser, util.InstanceTracker):
     name = _("Album Collection")
     accelerated_name = _("Album _Collection")
+    keys = ["AlbumCollection", "CollectionBrowser"]
     priority = 5
 
     __model = None
@@ -138,6 +137,8 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
 
     def __init__(self, library):
         super(CollectionBrowser, self).__init__(spacing=6)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
+
         self._register_instance()
         if self.__model is None:
             self._init_model(library)
@@ -164,10 +165,10 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
                     t2 is MultiNode or t2 is UnknownNode:
                 return -cmp(t1, t2)
 
-            if not isinstance(t1, Album):
+            if not isinstance(t1, AlbumNode):
                 return cmp(util.human_sort_key(t1), util.human_sort_key(t2))
 
-            a1, a2 = t1, t2
+            a1, a2 = t1.album, t2.album
             return (cmp(a1.peoplesort and a1.peoplesort[0],
                         a2.peoplesort and a2.peoplesort[0]) or
                         cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
@@ -183,34 +184,27 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
             cell.markup = markup
             cell.set_property('markup', markup)
 
-        def get_scaled_cover(album):
-            # XXX: Cache this somewhere else
-            cover = None
-            if not hasattr(album, "_scaled_cover"):
-                scale_factor = get_scale_factor(self)
-                album.scan_cover(scale_factor=scale_factor)
-                if album.cover:
-                    s = 25 * scale_factor
-                    cover = scale(album.cover, (s, s))
-                    album._scaled_cover = cover
-            else:
-                cover = album._scaled_cover
-            return cover
+        def get_scaled_cover(item):
+            if item.scanned:
+                return item.cover
+
+            scale_factor = self.get_scale_factor()
+            item.scan_cover(scale_factor=scale_factor)
+            return item.cover
 
         def cell_data_pb(column, cell, model, iter_, data):
             album = model.get_album(iter_)
             if album is None:
-                cell.set_property('stock_id', Gtk.STOCK_DIRECTORY)
+                cell.set_property('icon-name', Icons.FOLDER)
             else:
-                cover = get_scaled_cover(album)
+                item = model.get_value(iter_)
+                cover = get_scaled_cover(item)
                 if cover:
-                    round_ = config.getboolean("albumart", "round")
-                    cover = add_border_widget(
-                        cover, view, cell, round=round_)
-                    pbosf = get_pbosf_for_pixbuf(self, cover)
-                    set_renderer_from_pbosf(cell, pbosf)
+                    cover = add_border_widget(cover, view)
+                    surface = get_surface_for_pixbuf(self, cover)
+                    cell.set_property("surface", surface)
                 else:
-                    cell.set_property('stock_id', Gtk.STOCK_CDROM)
+                    cell.set_property('icon-name', Icons.MEDIA_OPTICAL)
 
         imgrender = Gtk.CellRendererPixbuf()
         render = Gtk.CellRendererText()
@@ -228,7 +222,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         hbox = Gtk.HBox(spacing=6)
 
         prefs = Gtk.Button()
-        prefs.add(SymbolicIconImage("emblem-system", Gtk.IconSize.MENU))
+        prefs.add(SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU))
         prefs.connect('clicked', lambda *x: Preferences(self))
 
         search = SearchBarBox(completion=AlbumTagCompletion(),
@@ -280,8 +274,8 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
             return f(obj) and b(obj)
 
         obj = model.get_value(iter_)
-        if isinstance(obj, Album):
-            return check_album(obj)
+        if isinstance(obj, AlbumNode):
+            return check_album(obj.album)
         else:
             for album in model.iter_albums(iter_):
                 if check_album(album):
@@ -317,7 +311,7 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
 
     def __play(self, view, path, col):
         model = view.get_model()
-        if isinstance(model[path][0], Album):
+        if isinstance(model[path][0], AlbumNode):
             self.songs_activated()
         else:
             if view.row_expanded(path):
@@ -345,7 +339,8 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         return True
 
     def filter_albums(self, album_keys):
-        albums = filter(None, [self.__albums.get(k) for k in album_keys])
+        albums = [a for a in
+                  [self.__albums.get(k) for k in album_keys] if a is not None]
         if albums:
             self.view.select_album(albums[0], unselect=True)
         for album in albums[1:]:
@@ -359,6 +354,9 @@ class CollectionBrowser(Browser, Gtk.VBox, util.InstanceTracker):
         if Query.is_parsable(text):
             self.__update_filter(self.__search, text)
             self.activate()
+
+    def get_filter_text(self):
+        return self.__search.get_text()
 
     def unfilter(self):
         pass

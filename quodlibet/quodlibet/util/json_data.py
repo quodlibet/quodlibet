@@ -9,9 +9,13 @@ from __future__ import absolute_import
 
 import json
 from collections import namedtuple
+
 from quodlibet.util.dprint import print_d, print_w
+from quodlibet.util.misc import total_ordering
+from quodlibet.compat import PY3
 
 
+@total_ordering
 class JSONObject(object):
     """
     Base class for simple, named data objects
@@ -60,8 +64,11 @@ class JSONObject(object):
     def json(self):
         return json.dumps(dict(self.data))
 
-    def __cmp__(self, other):
-        return cmp(self.data, other.data)
+    def __eq__(self, other):
+        return self.data == other.data
+
+    def __lt__(self, other):
+        return self.data < other.data
 
     def __str__(self):
         return "<%s '%s' with %s>" % (self.__class__.__name__,
@@ -129,6 +136,8 @@ class JSONObjectDict(dict):
         except AttributeError:
             raise
         json_str = json.dumps(obj_dict, indent=4)
+        if PY3:
+            json_str = json_str.encode("utf-8")
         if filename:
             try:
                 with open(filename, "wb") as f:

@@ -23,7 +23,7 @@ To translate, you'll want to have intltool, gettext and git installed::
 
 
 For translating itself you need a PO editor like `Poedit 
-<http://www.poedit.net/>`_::
+<https://poedit.net/>`_::
 
     apt-get install poedit
 
@@ -45,15 +45,18 @@ To translate current trunk, update to the default branch::
 
     $ git checkout master
 
-Create the POT file and update translations::
+You can find the translation file for your chosen language in::
 
-    $ ./setup.py build_mo
+    ./po/<lang>.po
 
+In case there's not already a translation for your language, create one::
 
-In case there's not already a translation for your language::
+    $ ./setup.py create_po --lang=<mylang>
 
-    $ msginit -i po/quodlibet.pot -l po/<mylang>
+Create the POT file and update translations so all new strings that were added
+since the last translation update get included::
 
+    $ ./setup.py update_po --lang=<mylang>
 
 Now start translating...
 

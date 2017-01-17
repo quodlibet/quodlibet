@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Michael Urman
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -8,12 +9,19 @@
 from gi.repository import Gtk
 from os.path import splitext, extsep, dirname
 
+from quodlibet import _
 from quodlibet import app
-from quodlibet.qltk import ErrorMessage
-from quodlibet.const import HOME as lastfolder
+from quodlibet.plugins.songshelpers import each_song, is_writable, is_a_file, \
+    is_finite
+from quodlibet.qltk import ErrorMessage, Icons
+from quodlibet.util.path import get_home_dir
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.compat import cmp, iteritems
 
 __all__ = ['Export', 'Import']
+
+
+lastfolder = get_home_dir()
 
 
 def filechooser(save, title):
@@ -21,9 +29,10 @@ def filechooser(save, title):
         title=(save and "Export %s Metadata to ..." or
                "Import %s Metadata from ...") % title,
         action=(save and Gtk.FileChooserAction.SAVE or
-                Gtk.FileChooserAction.OPEN),
-        buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
-                 Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT))
+                Gtk.FileChooserAction.OPEN))
+
+    chooser.add_button(_("_OK"), Gtk.ResponseType.ACCEPT)
+    chooser.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
 
     for name, pattern in [('Tag files (*.tags)', '*.tags'),
                           ('All Files', '*')]:
@@ -41,7 +50,10 @@ class Export(SongsMenuPlugin):
     PLUGIN_ID = "ExportMeta"
     PLUGIN_NAME = _("Export Metadata")
     PLUGIN_DESC = _("Exports metadata of selected songs as a .tags file.")
-    PLUGIN_ICON = 'gtk-save'
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE_AS
+    REQUIRES_ACTION = True
+
+    plugin_handles = each_song(is_finite)
 
     def plugin_album(self, songs):
 
@@ -79,7 +91,10 @@ class Import(SongsMenuPlugin):
     PLUGIN_ID = "ImportMeta"
     PLUGIN_NAME = _("Import Metadata")
     PLUGIN_DESC = _("Imports metadata for selected songs from a .tags file.")
-    PLUGIN_ICON = 'gtk-open'
+    PLUGIN_ICON = Icons.DOCUMENT_OPEN
+    REQUIRES_ACTION = True
+
+    plugin_handles = each_song(is_writable, is_a_file)
 
     # Note: the usage of plugin_album here is sometimes NOT what you want. It
     # supports fixing up tags on several already-known albums just by walking
@@ -146,7 +161,7 @@ class Import(SongsMenuPlugin):
             return
 
         for song, meta, name in zip(songs, metadata, names):
-            for key, values in meta.iteritems():
+            for key, values in iteritems(meta):
                 if append and key in song:
                     values = song.list(key) + values
                 song[key] = '\n'.join(values)

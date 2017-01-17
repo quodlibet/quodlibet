@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011-2013 Christoph Reiter
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -7,7 +8,9 @@
 
 import re
 
+from quodlibet import _
 from quodlibet import app
+from quodlibet.qltk import Icons
 from quodlibet.util import re_escape
 from quodlibet.plugins.events import EventPlugin
 
@@ -17,6 +20,7 @@ class RadioAdMute(EventPlugin):
     PLUGIN_NAME = _("Mute Radio Ads")
     PLUGIN_DESC = _("Mutes output while radio advertisements are playing.\n"
                     "Stations: di.fm.")
+    PLUGIN_ICON = Icons.AUDIO_VOLUME_MUTED
 
     SPAM = ["www.webex.co.uk",
             "di.fm/premium",
@@ -33,7 +37,7 @@ class RadioAdMute(EventPlugin):
     RE_SPAM = ["Sponsored Message\s+\([0-9]+\)",
             ]
 
-    SPAM = map(re_escape, SPAM) + RE_SPAM
+    SPAM = list(map(re_escape, SPAM)) + RE_SPAM
     SPAM = [re.compile(s, re.I) for s in SPAM]
 
     __old_volume = 0

@@ -6,7 +6,8 @@
 # published by the Free Software Foundation
 
 from mutagen.trueaudio import TrueAudio
-from quodlibet.formats._id3 import ID3File
+
+from ._id3 import ID3File
 
 
 class TrueAudioFile(ID3File):
@@ -14,6 +15,9 @@ class TrueAudioFile(ID3File):
     mimes = ["audio/x-tta"]
     Kind = TrueAudio
 
-info = TrueAudioFile
+    def _parse_info(self, info):
+        self["~#length"] = info.length
+
+loader = TrueAudioFile
 types = [TrueAudioFile]
 extensions = [".tta"]

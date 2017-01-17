@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase
-from helper import visible
+from .helper import visible
 
 from gi.repository import Gtk
+from senf import devnull
 
 from quodlibet.qltk.songlistcolumns import create_songlist_column
-from quodlibet.qltk.models import ObjectStore
-from quodlibet.formats._audio import AudioFile
+from quodlibet.qltk.songmodel import PlaylistModel
+from quodlibet.formats import AudioFile
 import quodlibet.config
 
 
@@ -19,9 +24,9 @@ class TSongListColumns(TestCase):
 
     def _render_column(self, column, **kwargs):
         view = Gtk.TreeView()
-        model = ObjectStore()
+        model = PlaylistModel()
         view.set_model(model)
-        song = AudioFile({"~filename": "/dev/null", "~#rating": 0.6666})
+        song = AudioFile({"~filename": devnull, "~#rating": 0.6666})
         song.update(kwargs)
         model.append(row=[song])
         view.append_column(column)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2006 - Steve Frécinaux
+#               2016 - Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,11 +21,12 @@
 #     Copyright (C), 1998 James Henstridge <james@daa.com.au>
 #     Copyright (C), 2005 Adam Hooper <adamh@densi.com>
 # Bits from gedit Python Console Plugin
-#     Copyrignt (C), 2005 Raphaël Slinckx
+#     Copyright (C), 2005 Raphaël Slinckx
 
 # PythonConsole taken from totem
 # Plugin parts:
 # Copyright 2009,2010,2013 Christoph Reiter
+#                     2016 Nick Boultbee
 
 
 import sys
@@ -33,15 +35,20 @@ import traceback
 
 from gi.repository import Gtk, Pango, Gdk, GLib
 
+from quodlibet import _
 from quodlibet import const
+from quodlibet.qltk import Icons
+from quodlibet.compat import exec_, PY2
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.util.collection import Collection
+from quodlibet.util import print_
 
 
 class PyConsole(SongsMenuPlugin):
     PLUGIN_ID = 'Python Console'
     PLUGIN_NAME = _('Python Console')
     PLUGIN_DESC = _('Interactive Python console.')
-    PLUGIN_ICON = 'gtk-execute'
+    PLUGIN_ICON = Icons.UTILITIES_TERMINAL
 
     def plugin_songs(self, songs):
         win = ConsoleWindow(songs)
@@ -56,8 +63,10 @@ class ConsoleWindow(Gtk.Window):
 
         files = [song('~filename') for song in songs]
         song_dicts = [song._song for song in songs]
+        collection = Collection()
+        collection.songs = song_dicts
 
-        self.set_size_request(600, 400)
+        self.set_size_request(700, 500)
 
         from quodlibet import app
         console = PythonConsole(
@@ -65,31 +74,36 @@ class ConsoleWindow(Gtk.Window):
                 'songs': songs,
                 'files': files,
                 'sdict': song_dicts,
+                'col': collection,
                 'app': app})
         self.add(console)
 
-        acces_string = _("You can access the following objects by default:")
-        acces_string += ("\\n"
-            "  '%s' (SongWrapper objects)\\n"
-            "  '%s' (Song dictionaries)\\n"
-            "  '%s' (Filename list)\\n"
-            "  '%s' (Application instance)") % (
-            "songs", "sdict", "files", "app")
+        access_string = _("You can access the following objects by default:")
+        access_string += "\\n".join([
+                        "",
+                        "  %5s: SongWrapper objects",
+                        "  %5s: Song dictionaries",
+                        "  %5s: Filename list",
+                        "  %5s: Songs Collection",
+                        "  %5s: Application instance"]) % (
+                           "songs", "sdict", "files", "col", "app")
 
         dir_string = _("Your current working directory is:")
 
+        if PY2:
+            console.eval("from __future__ import print_function", False)
         console.eval("import mutagen", False)
         console.eval("import os", False)
-        console.eval("print \"Python: %s / Quod Libet: %s\"" %
-            (sys.version.split()[0], const.VERSION), False)
-        console.eval("print \"%s\"" % acces_string, False)
-        console.eval("print \"%s \"+ os.getcwd()" % dir_string, False)
+        console.eval("print(\"Python: %s / Quod Libet: %s\")" %
+                     (sys.version.split()[0], const.VERSION), False)
+        console.eval("print(\"%s\")" % access_string, False)
+        console.eval("print(\"%s \"+ os.getcwd())" % dir_string, False)
 
         console.connect("destroy", lambda *x: self.destroy())
 
 
 class PythonConsole(Gtk.ScrolledWindow):
-    def __init__(self, namespace={}, destroy_cb=None):
+    def __init__(self, namespace=None, destroy_cb=None):
         Gtk.ScrolledWindow.__init__(self)
 
         self.destroy_cb = destroy_cb
@@ -110,7 +124,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         self.command.set_property("foreground", "blue")
 
         self.__spaces_pattern = re.compile(r'^\s+')
-        self.namespace = namespace
+        self.namespace = namespace or {}
 
         self.block_command = False
 
@@ -138,11 +152,11 @@ class PythonConsole(Gtk.ScrolledWindow):
         event_state = event.state & modifier_mask
 
         if event.keyval == Gdk.KEY_d and \
-                event_state == Gdk.ModifierType.CONTROL_MASK:
+                        event_state == Gdk.ModifierType.CONTROL_MASK:
             self.destroy()
 
         elif event.keyval == Gdk.KEY_Return and \
-                event_state == Gdk.ModifierType.CONTROL_MASK:
+                        event_state == Gdk.ModifierType.CONTROL_MASK:
             # Get the command
             buffer = view.get_buffer()
             inp_mark = buffer.get_mark("input")
@@ -158,7 +172,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             cur = buffer.get_end_iter()
             buffer.move_mark(inp_mark, cur)
 
-            # Keep indentation of precendent line
+            # Keep indentation of preceding line
             spaces = re.match(self.__spaces_pattern, line)
             if spaces is not None:
                 buffer.insert(cur, line[spaces.start():spaces.end()])
@@ -188,8 +202,8 @@ class PythonConsole(Gtk.ScrolledWindow):
 
             cur_strip = self.current_command.rstrip()
 
-            if cur_strip.endswith(":") \
-            or (self.current_command[-2:] != "\n\n" and self.block_command):
+            if (cur_strip.endswith(":") or
+                (self.current_command[-2:] != "\n\n" and self.block_command)):
                 # Unfinished block command
                 self.block_command = True
                 com_mark = "... "
@@ -227,8 +241,8 @@ class PythonConsole(Gtk.ScrolledWindow):
             return True
 
         elif event.keyval == Gdk.KEY_KP_Left or \
-                event.keyval == Gdk.KEY_Left or \
-                event.keyval == Gdk.KEY_BackSpace:
+                        event.keyval == Gdk.KEY_Left or \
+                        event.keyval == Gdk.KEY_BackSpace:
             buffer = view.get_buffer()
             inp = buffer.get_iter_at_mark(buffer.get_mark("input"))
             cur = buffer.get_iter_at_mark(buffer.get_insert())
@@ -275,13 +289,13 @@ class PythonConsole(Gtk.ScrolledWindow):
     def history_up(self):
         if self.history_pos > 0:
             self.history[self.history_pos] = self.get_command_line()
-            self.history_pos = self.history_pos - 1
+            self.history_pos -= 1
             self.set_command_line(self.history[self.history_pos])
 
     def history_down(self):
         if self.history_pos < len(self.history) - 1:
             self.history[self.history_pos] = self.get_command_line()
-            self.history_pos = self.history_pos + 1
+            self.history_pos += 1
             self.set_command_line(self.history[self.history_pos])
 
     def scroll_to_end(self):
@@ -329,9 +343,9 @@ class PythonConsole(Gtk.ScrolledWindow):
             try:
                 r = eval(command, self.namespace, self.namespace)
                 if r is not None:
-                    print repr(r)
+                    print_(repr(r))
             except SyntaxError:
-                exec command in self.namespace
+                exec_(command, self.namespace)
         except:
             if hasattr(sys, 'last_type') and sys.last_type == SystemExit:
                 self.destroy()
@@ -345,6 +359,7 @@ class PythonConsole(Gtk.ScrolledWindow):
 class OutFile(object):
     """A fake output file object. It sends output to a TK test widget,
     and if asked for a file number, returns one set on instance creation"""
+
     def __init__(self, console, fn, tag):
         self.fn = fn
         self.console = console

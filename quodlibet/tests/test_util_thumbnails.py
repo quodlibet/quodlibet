@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from quodlibet.util.path import mtime
 from tests import TestCase, NamedTemporaryFile
 
 from gi.repository import GdkPixbuf
+from senf import fsn2uri, getcwd, fsnative
 
 import os
 
@@ -12,7 +17,6 @@ except ImportError:
     import md5 as hash
 
 from quodlibet.util import thumbnails
-from quodlibet.util.path import pathname2url, is_fsnative, getcwd
 
 
 class TThumb(TestCase):
@@ -37,7 +41,7 @@ class TThumb(TestCase):
 
     def test_get_thumbnail_folder(self):
         path = thumbnails.get_thumbnail_folder()
-        self.assertTrue(is_fsnative(path))
+        self.assertTrue(isinstance(path, fsnative))
 
     def test_thumb_from_file(self):
         with open(self.filename, "rb") as h:
@@ -91,8 +95,8 @@ class TThumb(TestCase):
         s.failUnlessEqual((thumb.get_width(), thumb.get_height()), (50, 3))
 
         #test the thumbnail filename
-        uri = "file://" + pathname2url(s.filename)
-        name = hash.md5(uri).hexdigest() + ".png"
+        uri = fsn2uri(s.filename)
+        name = hash.md5(uri.encode("ascii")).hexdigest() + ".png"
 
         path = thumbnails.get_thumbnail_folder()
         path = os.path.join(path, "normal", name)

@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase, mkstemp
 
 import os
 
 from quodlibet import config
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.songwrapper import SongWrapper, ListWrapper
+from quodlibet.plugins import PluginConfig
 
 
 class TSongWrapper(TestCase):
@@ -39,7 +44,7 @@ class TSongWrapper(TestCase):
                  for i in range(10)]
         songs.reverse()
         songs.sort()
-        self.failUnlessEqual([s("~#track") for s in songs], range(10))
+        self.failUnlessEqual([s("~#track") for s in songs], list(range(10)))
 
     def test_needs_write_yes(self):
         self.failIf(self.wrap._needs_write)
@@ -73,9 +78,6 @@ class TSongWrapper(TestCase):
     def test_realkeys(self):
         self.failUnlessEqual(self.pwrap.realkeys(), self.psong.realkeys())
 
-    def test_website(self):
-        self.failUnlessEqual(self.pwrap.website(), self.psong.website())
-
     def test_can_change(self):
         for key in ["~foo", "title", "whee", "a test", "foo=bar", ""]:
             self.failUnlessEqual(
@@ -91,7 +93,8 @@ class TSongWrapper(TestCase):
 
     def test_dicty(self):
         self.failUnlessEqual(self.pwrap.keys(), self.psong.keys())
-        self.failUnlessEqual(self.pwrap.values(), self.psong.values())
+        self.failUnlessEqual(
+            list(self.pwrap.values()), list(self.psong.values()))
         self.failUnlessEqual(self.pwrap.items(), self.psong.items())
 
     def test_mtime(self):
@@ -140,3 +143,22 @@ class TListWrapper(TestCase):
         wrapped = ListWrapper([None, None])
         self.failUnless(len(wrapped) == 2)
         self.failUnlessEqual(wrapped, [None, None])
+
+
+class TPluginConfig(TestCase):
+
+    def setUp(self):
+        config.init()
+
+    def tearDown(self):
+        config.quit()
+
+    def test_mapping(self):
+        c = PluginConfig("some")
+        c.set("foo", "bar")
+        self.assertEqual(config.get("plugins", "some_foo"), "bar")
+
+    def test_defaults(self):
+        c = PluginConfig("some")
+        c.defaults.set("hm", "mh")
+        self.assertEqual(c.get("hm"), "mh")

@@ -8,6 +8,7 @@
 import os
 from gi.repository import Gtk, GLib
 
+from quodlibet import _
 from quodlibet import print_d, app, config
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.qltk import Message

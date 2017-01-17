@@ -6,36 +6,39 @@
 #                Jeremy Cantrell <jmcantrell@gmail.com>
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
-#           2011-2014 Nick Boultbee
+#           2011-2016 Nick Boultbee
+#                2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-
+import json
 import os
 import time
 import threading
 import gzip
 
-import urllib
-import urllib2
-from cStringIO import StringIO
 from xml.dom import minidom
 
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 from quodlibet.plugins import PluginConfigMixin
+from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.util import format_size, print_exc
-from quodlibet.util.dprint import print_d
+from quodlibet.util.dprint import print_d, print_w
 
-from quodlibet import util, qltk, print_w, app
+from quodlibet import _
+from quodlibet import util, qltk, app
 from quodlibet.qltk.msg import ConfirmFileReplace
-from quodlibet.qltk.x import Paned, Align
+from quodlibet.qltk.x import Paned, Align, Button
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.image import (set_renderer_from_pbosf, get_scale_factor,
-    get_pbosf_for_pixbuf, set_image_from_pbosf, scale, add_border_widget)
+from quodlibet.qltk import Icons
+from quodlibet.qltk.image import scale, add_border_widget, \
+    get_surface_for_pixbuf
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
+from quodlibet.util.urllib import urlopen, Request
+from quodlibet.compat import xrange, urlencode, cBytesIO
 
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
@@ -53,39 +56,39 @@ def get_encoding_from_socket(socket):
 
 
 def get_url(url, post={}, get={}):
-    post_params = urllib.urlencode(post)
-    get_params = urllib.urlencode(get)
+    post_params = urlencode(post)
+    get_params = urlencode(get)
     if get:
         get_params = '?' + get_params
 
     # add post, get data and headers
     url = '%s%s' % (url, get_params)
     if post_params:
-        request = urllib2.Request(url, post_params)
+        request = Request(url, post_params)
     else:
-        request = urllib2.Request(url)
+        request = Request(url)
 
     # for discogs
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
 
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     enc = get_encoding_from_socket(url_sock)
 
     # unzip the response if needed
     data = url_sock.read()
     if url_sock.headers.get("content-encoding", "") == "gzip":
-        data = gzip.GzipFile(fileobj=StringIO(data)).read()
+        data = gzip.GzipFile(fileobj=cBytesIO(data)).read()
     url_sock.close()
 
     return data, enc
 
 
 def get_encoding(url):
-    request = urllib2.Request(url)
+    request = Request(url)
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     return get_encoding_from_socket(url_sock)
 
 
@@ -102,8 +105,8 @@ class AmazonParser(object):
 
         # Amazon now requires that all requests be signed.
         # I have built a webapp on AppEngine for this purpose. -- wm_eddie
-        # url = 'http://webservices.amazon.com/onca/xml'
-        url = 'http://qlwebservices.appspot.com/onca/xml'
+        # url = 'https://webservices.amazon.com/onca/xml'
+        url = 'https://qlwebservices.appspot.com/onca/xml'
 
         parameters = {
             'Service': 'AWSECommerceService',
@@ -178,11 +181,106 @@ class AmazonParser(object):
 
             cover['resolution'] = '%s x %s px' % (width, height)
 
-            cover['source'] = 'http://www.amazon.com'
+            cover['source'] = 'https://www.amazon.com'
 
             self.covers.append(cover)
 
     def start(self, query, limit=10):
+        """Start the search and returns the covers"""
+
+        self.page_count = 0
+        self.covers = []
+        self.limit = limit
+        self.__parse_page(1, query)
+
+        if len(self.covers) < limit:
+            for page in xrange(2, self.page_count + 1):
+                self.__parse_page(page, query)
+                if len(self.covers) >= limit:
+                    break
+
+        return self.covers
+
+
+class DiscogsParser(object):
+    """A class for searching covers from Amazon"""
+
+    def __init__(self):
+        self.page_count = 0
+        self.covers = []
+        self.limit = 0
+        self.creds = {'key': 'aWfZGjHQvkMcreUECGAp',
+                      'secret': 'VlORkklpdvAwJMwxUjNNSgqicjuizJAl'}
+
+    def __parse_page(self, page, query):
+        """Gets all item tags and calls the item parsing function for each"""
+
+        url = 'https://api.discogs.com/database/search'
+
+        parameters = {
+            'type': 'release',
+            # 'artist': '',
+            # 'release_title': '',
+            'q': query,
+            'page': page,
+            'per_page': 100,
+        }
+
+        _params = dict(parameters.items() + self.creds.items())
+        data, enc = get_url(url, get=_params)
+        json_dict = json.loads(data)
+
+        # TODO: rate limiting
+
+        pages = json_dict.get('pagination', {}).get('pages', 0)
+        if pages != 0:
+            self.page_count = int(pages)
+        else:
+            return
+
+        items = json_dict.get('results', {})
+        for item in items:
+            self.__parse_item(item)
+            if len(self.covers) >= self.limit:
+                break
+
+    def __parse_item(self, item):
+        """Extract all information and add the covers to the list."""
+
+        thumbnail = item.get('thumb', '')
+        if thumbnail is None:
+            print_d("Release doesn't have a cover")
+            return
+
+        res_url = item.get('resource_url', '')
+        data, enc = get_url(res_url, get=self.creds)
+        json_dict = json.loads(data)
+
+        images = json_dict.get('images', [])
+
+        for i, image in enumerate(images):
+
+            type = image.get('type', '')
+            if type != 'primary':
+                print_d('Cover is not primary: {0}'.format(type))
+                continue
+
+            cover = {'source': 'https://www.discogs.com',
+                     'name': item.get('title', ''),
+                     'thumbnail': image.get('uri150', thumbnail),
+                     'cover': image.get('uri', '')}
+
+            cover['size'] = get_size_of_url(cover['cover'])
+
+            width = image.get('width', 0)
+            height = image.get('height', 0)
+            cover['resolution'] = '%s x %s px' % (width, height)
+
+            self.covers.append(cover)
+            if len(self.covers) >= self.limit:
+                break
+
+    def start(self, query, limit=5):
         """Start the search and returns the covers"""
 
         self.page_count = 0
@@ -216,11 +314,11 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.current_pixbuf = None
 
         self.image = Gtk.Image()
-        self.button = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        self.button = Button(_("_Save"), Icons.DOCUMENT_SAVE_AS)
         self.button.set_sensitive(False)
         self.button.connect('clicked', self.__save)
 
-        close_button = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close_button = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close_button.connect('clicked', lambda x: self.main_win.destroy())
 
         self.window_fit = self.ConfigCheckButton(_('Fit image to _window'),
@@ -280,6 +378,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             self.name_combo.set_active(0)
 
         table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
+        table.props.expand = False
         table.set_row_spacing(0, 5)
         table.set_row_spacing(1, 5)
         table.set_col_spacing(0, 5)
@@ -360,7 +459,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
                 except:
                     pass
 
-            app.cover_manager.cover_changed([self.song])
+            app.cover_manager.cover_changed([self.song._song])
 
         self.main_win.destroy()
 
@@ -376,7 +475,9 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         pixbuf = loader.get_pixbuf()
 
         def idle_set():
-            set_image_from_pbosf(self.image, pixbuf)
+            if pixbuf is not None:
+                surface = get_surface_for_pixbuf(self, pixbuf)
+                self.image.set_from_surface(surface)
 
         GLib.idle_add(idle_set)
 
@@ -385,18 +486,16 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             return
         pixbuf = self.current_pixbuf
 
-        if not self.window_fit.get_active():
-            pbosf = pixbuf
-        else:
+        if self.window_fit.get_active():
             alloc = self.scrolled.get_allocation()
             width = alloc.width
             height = alloc.height
-            scale_factor = get_scale_factor(self)
+            scale_factor = self.get_scale_factor()
             boundary = (width * scale_factor, height * scale_factor)
             pixbuf = scale(pixbuf, boundary, scale_up=False)
-            pbosf = get_pbosf_for_pixbuf(self, pixbuf)
 
-        set_image_from_pbosf(self.image, pbosf)
+        surface = get_surface_for_pixbuf(self, pixbuf)
+        self.image.set_from_surface(surface)
 
     def __close(self, loader, *data):
         if self.stop_loading:
@@ -443,13 +542,13 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         if not raw_data:
             pbloader.connect('area-updated', self.__update)
 
-            data_store = StringIO()
+            data_store = cBytesIO()
 
             try:
-                request = urllib2.Request(url)
+                request = Request(url)
                 request.add_header('User-Agent', USER_AGENT)
-                url_sock = urllib2.urlopen(request)
-            except urllib2.HTTPError:
+                url_sock = urlopen(request)
+            except EnvironmentError:
                 print_w(_("[albumart] HTTP Error: %s") % url)
             else:
                 while not self.stop_loading:
@@ -508,7 +607,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         self.search_lock = False
 
         self.set_title(_('Album Art Downloader'))
-        self.set_icon_name(Gtk.STOCK_FIND)
+        self.set_icon_name(Icons.EDIT_FIND)
         self.set_default_size(800, 550)
 
         image = CoverArea(self, songs[0])
@@ -536,15 +635,15 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         img_col.pack_start(rend_pix, False)
 
         def cell_data_pb(column, cell, model, iter_, *args):
-            pbosf = model[iter_][0]
-            set_renderer_from_pbosf(cell, pbosf)
+            surface = model[iter_][0]
+            cell.set_property("surface", surface)
 
         img_col.set_cell_data_func(rend_pix, cell_data_pb, None)
         treeview.append_column(img_col)
 
         rend_pix.set_property('xpad', 2)
         rend_pix.set_property('ypad', 2)
-        border_width = get_scale_factor(self) * 2
+        border_width = self.get_scale_factor() * 2
         rend_pix.set_property('width', self.THUMB_SIZE + 4 + border_width)
         rend_pix.set_property('height', self.THUMB_SIZE + 4 + border_width)
 
@@ -584,7 +683,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         sw_list.add(treeview)
 
         self.search_field = Gtk.Entry()
-        self.search_button = Gtk.Button(stock=Gtk.STOCK_FIND)
+        self.search_button = Button(_("_Search"), Icons.EDIT_FIND)
         self.search_button.connect('clicked', self.start_search)
         self.search_field.connect('activate', self.start_search)
 
@@ -648,7 +747,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         self.search = search = CoverSearch(self.__search_callback)
 
         for eng in engines:
-            if self.config_get(CONFIG_ENG_PREFIX + eng['config_id'], True):
+            if self.config_get_bool(
+                    CONFIG_ENG_PREFIX + eng['config_id'], True):
                 search.add_engine(eng['class'], eng['replace'])
 
         search.start(text)
@@ -681,18 +781,18 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
             pbloader.write(get_url(cover['thumbnail'])[0])
             pbloader.close()
 
-            scale_factor = get_scale_factor(self)
+            scale_factor = self.get_scale_factor()
             size = self.THUMB_SIZE * scale_factor - scale_factor * 2
             pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
                 GdkPixbuf.InterpType.BILINEAR)
-            pixbuf = add_border_widget(pixbuf, self, None, round=True)
-            thumb = get_pbosf_for_pixbuf(self, pixbuf)
+            pixbuf = add_border_widget(pixbuf, self)
+            surface = get_surface_for_pixbuf(self, pixbuf)
         except (GLib.GError, IOError):
             pass
         else:
             def append(data):
                 self.liststore.append(data)
-            GLib.idle_add(append, [thumb, cover])
+            GLib.idle_add(append, [surface, cover])
 
     def __search_callback(self, covers, progress):
         for cover in covers:
@@ -782,7 +882,7 @@ class CoverSearch(object):
                 part = part.replace(stri, replace)
 
             p_split = part.split()
-            p_split.sort(lambda x, y: len(y) - len(x))
+            p_split.sort(key=len, reverse=True)
             p_split = p_split[:max(len(p_split) / 4, max(4 - len(p_split), 2))]
 
             new_query += ' '.join(p_split) + ' '
@@ -792,10 +892,10 @@ class CoverSearch(object):
 
 #------------------------------------------------------------------------------
 def get_size_of_url(url):
-    request = urllib2.Request(url)
+    request = Request(url)
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     size = url_sock.headers.get('content-length')
     url_sock.close()
     return format_size(int(size)) if size else ''
@@ -804,9 +904,15 @@ def get_size_of_url(url):
 engines = [
     {
         'class': AmazonParser,
-        'url': 'http://www.amazon.com/',
+        'url': 'https://www.amazon.com/',
         'replace': ' ',
         'config_id': 'amazon',
+    },
+    {
+        'class': DiscogsParser,
+        'url': 'https://www.discogs.com/',
+        'replace': ' ',
+        'config_id': 'discogs',
     },
 ]
 #------------------------------------------------------------------------------
@@ -818,12 +924,16 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Download Album Art'
     PLUGIN_NAME = _('Download Album Art')
     PLUGIN_DESC = _('Downloads album covers from various websites.')
-    PLUGIN_ICON = Gtk.STOCK_FIND
+    PLUGIN_ICON = Icons.INSERT_IMAGE
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
+    REQUIRES_ACTION = True
+
+    plugin_handles = any_song(is_a_file)
 
     @classmethod
     def PluginPreferences(cls, window):
         table = Gtk.Table(n_rows=len(engines), n_columns=2)
+        table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         frame = qltk.Frame(_("Sources"), child=table)

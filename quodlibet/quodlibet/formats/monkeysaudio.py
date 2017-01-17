@@ -7,18 +7,20 @@
 
 from mutagen.monkeysaudio import MonkeysAudio
 
-from quodlibet.formats._apev2 import APEv2File
+from ._audio import translate_errors
+from ._apev2 import APEv2File
 
 
 class MonkeysAudioFile(APEv2File):
     format = "Monkey's Audio"
 
     def __init__(self, filename):
-        audio = MonkeysAudio(filename)
+        with translate_errors():
+            audio = MonkeysAudio(filename)
         super(MonkeysAudioFile, self).__init__(filename, audio)
         self["~#length"] = int(audio.info.length)
         self.sanitize(filename)
 
-info = MonkeysAudioFile
+loader = MonkeysAudioFile
 types = [MonkeysAudioFile]
 extensions = [".ape"]

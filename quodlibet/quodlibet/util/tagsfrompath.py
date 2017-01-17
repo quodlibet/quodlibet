@@ -7,7 +7,9 @@
 
 import os
 import re
-from quodlibet.util.path import fsdecode, is_fsnative
+
+from senf import fsnative, fsn2text
+
 from quodlibet.util import re_escape
 
 
@@ -31,7 +33,7 @@ class TagsFromPattern(object):
                     piece = "<QUOD_LIBET_DUMMY_%d>" % dummies_found
                 pieces[i] = '(?P%s%s)' % (piece, override.get(piece, '.+?'))
                 if "QUOD_LIBET" not in piece:
-                    self.headers.append(piece[1:-1].encode("ascii", "replace"))
+                    self.headers.append(piece[1:-1])
             else:
                 pieces[i] = re_escape(piece)
 
@@ -53,7 +55,7 @@ class TagsFromPattern(object):
         return self.match_path(song["~filename"])
 
     def match_path(self, path):
-        assert is_fsnative(path)
+        assert isinstance(path, fsnative)
 
         tail = os.path.splitdrive(path)[-1]
 
@@ -62,7 +64,7 @@ class TagsFromPattern(object):
         sep = os.path.sep
         matchon = sep + sep.join(tail.split(sep)[-self.slashes:])
         # work on unicode
-        matchon = fsdecode(matchon, note=False)
+        matchon = fsn2text(matchon)
         match = self.pattern.search(matchon)
 
         # dicts for all!

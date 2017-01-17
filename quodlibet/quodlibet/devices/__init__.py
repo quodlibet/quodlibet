@@ -7,24 +7,32 @@
 # published by the Free Software Foundation
 
 import os
-import ConfigParser
-from os.path import dirname, basename
-from quodlibet.util.dprint import print_d, print_w
+try:
+    import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
 
+from senf import fsn2bytes, path2fsn
 from gi.repository import GObject
 from quodlibet.util.path import xdg_get_system_data_dirs
+
+import quodlibet
+from quodlibet import _
+from quodlibet.compat import iteritems
+from quodlibet import util
+from quodlibet.devices import _udev as udev
+from quodlibet.util.importhelper import load_dir_modules
+from quodlibet.util.dprint import print_d, print_w
+from quodlibet.compat import text_type, escape_decode
 
 try:
     import dbus
 except ImportError:
-    print_w(_("Could not import %s, which is needed for "
-        "device support.") % "dbus-python")
+    if not util.is_osx() and not util.is_windows():
+        print_w(_("Could not import %s, which is needed for "
+            "device support.") % "dbus-python")
     dbus = None
 
-from quodlibet import const
-from quodlibet import util
-from quodlibet.devices import _udev as udev
-from quodlibet.util.importhelper import load_dir_modules
 
 devices = []
 
@@ -32,8 +40,8 @@ devices = []
 def init_devices():
     global devices
 
-    load_pyc = os.name == 'nt'
-    modules = load_dir_modules(dirname(__file__),
+    load_pyc = util.is_windows() or util.is_osx()
+    modules = load_dir_modules(util.get_module_dir(),
                                package=__package__,
                                load_compiled=load_pyc)
 
@@ -43,20 +51,21 @@ def init_devices():
         except AttributeError:
             print_w("%r doesn't contain any devices." % mod.__name__)
 
-    devices.sort()
+    devices.sort(key=lambda d: repr(d))
 
-init_devices()
 
-DEVICES = os.path.join(const.USERDIR, "devices")
+if not util.is_osx() and not util.is_windows():
+    init_devices()
+
+DEVICES = os.path.join(quodlibet.get_user_dir(), "devices")
 
 config = ConfigParser.RawConfigParser()
 config.read(DEVICES)
 
 
 def write():
-    f = file(DEVICES, 'w')
-    config.write(f)
-    f.close()
+    with open(DEVICES, 'w') as f:
+        config.write(f)
 
 
 # Return a constructor for a device given by a string
@@ -153,14 +162,14 @@ def get_devices_from_path(udev_ctx, path):
     Either returns a non empty list or raises EnvironmentError.
     """
 
-    path = path.encode("ascii")
+    path = fsn2bytes(path2fsn(path), None)
     enum = udev.UdevEnumerate.new(udev_ctx)
 
     if not enum:
         raise EnvironmentError
 
     # only match the device we want
-    if enum.add_match_property("DEVNAME", path) != 0:
+    if enum.add_match_property(b"DEVNAME", path) != 0:
         enum.unref()
         raise EnvironmentError
 
@@ -196,7 +205,7 @@ def get_devices_from_path(udev_ctx, path):
         for e in entry:
             name = e.get_name()
             value = e.get_value()
-            attrs[name] = value.decode("string-escape")
+            attrs[name] = escape_decode(value)
         device_attrs.append(attrs)
 
     # the first device owns its parents
@@ -205,8 +214,15 @@ def get_devices_from_path(udev_ctx, path):
     return device_attrs
 
 
-def dbus_barray_to_str(array):
-    return b"".join(map(bytes, array)).rstrip(b"\x00")
+def dbus_barray_to_bytes(array):
+    """
+    Args:
+        array (dbus.Array[dbus.Byte])
+    Returns:
+        bytes
+    """
+
+    return bytes(bytearray(array)).split(b"\x00", 1)[0]
 
 
 class UDisks2Manager(DeviceManager):
@@ -266,7 +282,7 @@ class UDisks2Manager(DeviceManager):
             # I think this shouldn't happen, but check anyway
             return
 
-        dev_path = dbus_barray_to_str(block["Device"])
+        dev_path = dbus_barray_to_bytes(block["Device"])
         print_d("Found device: %r" % dev_path)
 
         media_player_id = get_media_player_id(self._udev, dev_path)
@@ -277,7 +293,7 @@ class UDisks2Manager(DeviceManager):
 
         device_id = drive["Id"]
 
-        dev = self.create_device(object_path, unicode(device_id), protocols)
+        dev = self.create_device(object_path, text_type(device_id), protocols)
         icon_name = block["HintIconName"]
         if icon_name:
             dev.icon = icon_name
@@ -285,7 +301,7 @@ class UDisks2Manager(DeviceManager):
 
     def discover(self):
         objects = self._interface.GetManagedObjects()
-        for object_path, interfaces_and_properties in objects.iteritems():
+        for object_path, interfaces_and_properties in iteritems(objects):
             self._update_interfaces(object_path, interfaces_and_properties)
         self._check_interfaces()
 
@@ -304,7 +320,7 @@ class UDisks2Manager(DeviceManager):
         except dbus.DBusException:
             paths = []
         else:
-            paths = [dbus_barray_to_str(v) for v in array]
+            paths = [dbus_barray_to_bytes(v) for v in array]
 
         if paths:
             return paths[0]
@@ -312,7 +328,7 @@ class UDisks2Manager(DeviceManager):
 
     def get_block_device(self, path):
         block = self._blocks[path]
-        return dbus_barray_to_str(block["Device"])
+        return dbus_barray_to_bytes(block["Device"])
 
     def eject(self, path):
         # first try to unmount
@@ -363,7 +379,7 @@ class UDisks2Manager(DeviceManager):
         if self.FS_IFACE in interfaces or self.BLOCK_IFACE in interfaces:
             # if any of our needed interfaces goes away, remove the device
             if object_path in self._devices:
-                self.emit("removed", unicode(object_path))
+                self.emit("removed", text_type(object_path))
                 dev = self._devices[object_path]
                 dev.close()
                 del self._devices[object_path]
@@ -425,167 +441,6 @@ def get_media_player_protocols(media_player_id):
     return []
 
 
-class UDisks1Manager(DeviceManager):
-
-    def __init__(self):
-        bus_name = "org.freedesktop.UDisks"
-        interface = "org.freedesktop.UDisks"
-        path = "/org/freedesktop/UDisks"
-
-        super(UDisks1Manager, self).__init__(bus_name)
-
-        error = False
-
-        try:
-            udev.init()
-        except OSError:
-            print_w("UDisks: " + _("Could not find '%s'.") % "libudev")
-            error = True
-        else:
-            self.__udev = udev.Udev.new()
-
-        if get_mpi_dir() is None:
-            print_w("UDisks: " + _("Could not find '%s'.")
-                    % "media-player-info")
-            error = True
-
-        if error:
-            raise LookupError
-
-        obj = self._system_bus.get_object(bus_name, path)
-        self.__interface = dbus.Interface(obj, interface)
-
-        self.__devices = {}
-        self.__interface.connect_to_signal('DeviceAdded', self.__device_added)
-        self.__interface.connect_to_signal('DeviceRemoved',
-            self.__device_removed)
-
-    def __get_dev_prop_interface(self, path):
-        bus_name = "org.freedesktop.UDisks"
-        obj = self._system_bus.get_object(bus_name, path)
-        return dbus.Interface(obj, "org.freedesktop.DBus.Properties")
-
-    def __get_dev_interface(self, path):
-        bus_name = "org.freedesktop.UDisks"
-        obj = self._system_bus.get_object(bus_name, path)
-        return dbus.Interface(obj, "org.freedesktop.UDisks.Device")
-
-    def __get_dev_property(self, interface, property):
-        return interface.Get("org.freedesktop.DBus.Properties", property)
-
-    def __get_device_id(self, path):
-        """A unique device id"""
-
-        prop_if = self.__get_dev_prop_interface(path)
-        dev_id = self.__get_dev_property(prop_if, 'device-file-by-id')[0]
-        dev_id = basename(dev_id)
-
-        return dev_id.replace("-", "_").replace(":", "_")
-
-    def __device_added(self, path):
-        dev = self.__build_dev(path)
-        if dev:
-            self.__devices[path] = dev
-            self.emit("added", dev)
-
-    def __device_removed(self, path):
-        # only forward removed events if we have handled the device
-        if path not in self.__devices:
-            return
-        self.emit("removed", path)
-        dev = self.__devices[path]
-        dev.close()
-        del self.__devices[path]
-
-    def discover(self):
-        paths = self.__interface.EnumerateDevices()
-        for path in paths:
-            self.__device_added(path)
-
-    def __get_parent_disk_path(self, path):
-        prop_if = self.__get_dev_prop_interface(path)
-        prop_get = self.__get_dev_property
-        if not prop_get(prop_if, "device-is-partition"):
-            return path
-        return prop_get(prop_if, "partition-slave")
-
-    def eject(self, path):
-        dev_if = self.__get_dev_interface(path)
-        parent_path = self.__get_parent_disk_path(path)
-        parent_if = self.__get_dev_interface(parent_path)
-        try:
-            dev_if.FilesystemUnmount([])
-            parent_if.DriveEject([])
-            return True
-        except dbus.DBusException:
-            return False
-
-    def get_name(self, path):
-        prop_if = self.__get_dev_prop_interface(path)
-        prop_get = self.__get_dev_property
-
-        num = ""
-        if prop_get(prop_if, 'device-is-partition'):
-            num = str(prop_get(prop_if, 'partition-number'))
-            parent_path = prop_get(prop_if, 'partition-slave')
-            prop_if = self.__get_dev_prop_interface(parent_path)
-
-        vendor = prop_get(prop_if, 'drive-vendor')
-        name = prop_get(prop_if, 'drive-model')
-        return " ".join([vendor, name, num]).strip()
-
-    def get_mountpoint(self, path):
-        """/media/myplayer"""
-        prop_if = self.__get_dev_prop_interface(path)
-        prop_get = self.__get_dev_property
-        if prop_get(prop_if, 'device-is-mounted'):
-            return str(prop_get(prop_if, 'device-mount-paths')[0])
-        return ''
-
-    def get_block_device(self, path):
-        """/dev/sda for example"""
-        prop_if = self.__get_dev_prop_interface(path)
-        return str(self.__get_dev_property(prop_if, 'device-file'))
-
-    def __build_dev(self, path):
-        """Return the right device instance by determining the
-        supported AccessProtocol"""
-        prop_if = self.__get_dev_prop_interface(path)
-        prop_get = self.__get_dev_property
-
-        #filter out useless devices
-        if not (prop_get(prop_if, 'device-is-drive')
-                or prop_get(prop_if, 'device-is-partition')) \
-                or prop_get(prop_if, 'device-is-system-internal') \
-                or prop_get(prop_if, 'device-is-partition-table') \
-                or not prop_get(prop_if, 'device-is-media-available'):
-            return
-
-        #filter out empty partitions (issue 422)
-        #http://www.win.tue.nl/~aeb/partitions/partition_types-1.html
-        if prop_get(prop_if, 'device-is-partition') and \
-                prop_get(prop_if, 'partition-scheme') == "mbr" and \
-                int(prop_get(prop_if, 'partition-type'), 16) == 0:
-            return
-
-        # ask libudev if the device is a media player
-        # and get supported protocols if any
-        devpath = self.get_block_device(path)
-        media_player_id = get_media_player_id(self.__udev, devpath)
-        if not media_player_id:
-            return
-        protocols = get_media_player_protocols(media_player_id)
-
-        # unique id
-        device_id = self.__get_device_id(path)
-
-        dev = self.create_device(path, device_id, protocols)
-        icon = prop_get(prop_if, 'device-presentation-icon-name')
-        if dev and icon:
-            dev.icon = icon
-        return dev
-
-
 def init():
     global device_manager
     if not dbus:
@@ -599,13 +454,6 @@ def init():
         print_d(try_text % "UDisks2")
         try:
             device_manager = UDisks2Manager()
-        except (LookupError, dbus.DBusException):
-            pass
-
-    if device_manager is None:
-        print_d(try_text % "UDisks1")
-        try:
-            device_manager = UDisks1Manager()
         except (LookupError, dbus.DBusException):
             pass
 

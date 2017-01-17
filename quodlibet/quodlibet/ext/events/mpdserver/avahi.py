@@ -12,6 +12,8 @@ try:
 except ImportError:
     dbus = None
 
+from quodlibet.util import print_d
+
 
 def alternative_service_name(name):
     if "#" in name:

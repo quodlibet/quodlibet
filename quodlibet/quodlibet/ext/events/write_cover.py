@@ -10,14 +10,16 @@ import shutil
 
 from gi.repository import Gtk
 
+import quodlibet
+from quodlibet import _
 from quodlibet import app
 from quodlibet import config
-from quodlibet.const import USERDIR
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk import Icons
 
 
 def get_path():
-    out = os.path.join(USERDIR, "current.cover")
+    out = os.path.join(quodlibet.get_user_dir(), "current.cover")
     return config.get("plugins", __name__, out)
 
 
@@ -29,7 +31,7 @@ class PictureSaver(EventPlugin):
     PLUGIN_ID = "Picture Saver"
     PLUGIN_NAME = _("Picture Saver")
     PLUGIN_DESC = _("Saves the cover image of the current song to a file.")
-    PLUGIN_ICON = Gtk.STOCK_SAVE
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def plugin_on_song_started(self, song):
         outfile = get_path()
@@ -46,9 +48,8 @@ class PictureSaver(EventPlugin):
                 except EnvironmentError:
                     pass
             else:
-                f = file(outfile, "wb")
-                f.write(cover.read())
-                f.close()
+                with open(outfile, "wb") as f:
+                    f.write(cover.read())
 
     def PluginPreferences(self, parent):
         def changed(entry):

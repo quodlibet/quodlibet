@@ -7,9 +7,13 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
+from quodlibet.qltk import Icons
 from quodlibet.util import tag, escape
 from quodlibet.qltk.songlist import get_columns
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.compat import text_type
+
 
 HTML = '''<html>
 <head><title>Quod Libet Playlist</title>
@@ -51,7 +55,7 @@ def to_html(songs):
             col = {"~#rating": "~rating", "~#length": "~length"}.get(
                 col, col)
             s += '\n<td>%s</td>' % (
-                escape(unicode(song.comma(col))) or '&nbsp;')
+                escape(text_type(song.comma(col))) or '&nbsp;')
         s += '</tr>'
         songs_s += s
 
@@ -62,7 +66,8 @@ class ExportToHTML(SongsMenuPlugin):
     PLUGIN_ID = "Export to HTML"
     PLUGIN_NAME = _("Export to HTML")
     PLUGIN_DESC = _("Exports the selected song list to HTML.")
-    PLUGIN_ICON = Gtk.STOCK_CONVERT
+    REQUIRES_ACTION = True
+    PLUGIN_ICON = Icons.TEXT_HTML
 
     def plugin_songs(self, songs):
         if not songs:
@@ -70,9 +75,9 @@ class ExportToHTML(SongsMenuPlugin):
 
         chooser = Gtk.FileChooserDialog(
             title="Export to HTML",
-            action=Gtk.FileChooserAction.SAVE,
-            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
-                     Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT))
+            action=Gtk.FileChooserAction.SAVE)
+        chooser.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
+        chooser.add_button(_("_OK"), Gtk.ResponseType.ACCEPT)
         chooser.set_default_response(Gtk.ResponseType.ACCEPT)
         resp = chooser.run()
         if resp != Gtk.ResponseType.ACCEPT:

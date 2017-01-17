@@ -5,7 +5,7 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.qltk.cover import ALBUM_ART_PLUGIN_ID
 from tests.plugin import PluginTestCase
 

@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from tests import TestCase
 
 from quodlibet.library import SongLibrary
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.browsers.iradio import InternetRadio, IRFile, QuestionBar
 import quodlibet.config
 
@@ -24,6 +28,10 @@ class TInternetRadio(TestCase):
     def test_can_filter(self):
         self.assertTrue(self.bar.can_filter("foo"))
         self.assertTrue(self.bar.can_filter_text())
+
+    def test_status_bar_text(self):
+        self.assertEqual(self.bar.status_text(1), "1 station")
+        self.assertEqual(self.bar.status_text(101, 123), "101 stations")
 
     def tearDown(self):
         self.bar.destroy()

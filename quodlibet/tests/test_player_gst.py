@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
 
 import os
 import sys
@@ -9,7 +12,7 @@ try:
 except ImportError:
     Gst = None
 
-from tests import TestCase, skipUnless, DATA_DIR
+from tests import TestCase, skipUnless, get_data_path
 
 try:
     from quodlibet.player.gstbe.util import GStreamerSink as Sink
@@ -20,8 +23,9 @@ except ImportError:
     pass
 
 from quodlibet.player import PlayerError
-from quodlibet.util import sanitize_tags
+from quodlibet.util import sanitize_tags, print_w
 from quodlibet.formats import MusicFile
+from quodlibet.compat import long, text_type
 from quodlibet import config
 
 
@@ -101,25 +105,26 @@ class TGstreamerTagList(TestCase):
 
         l["foo"] = u"äöü"
         parsed = parse_gstreamer_taglist(l)
-        self.assertTrue(isinstance(parsed["foo"], unicode))
+        self.assertTrue(isinstance(parsed["foo"], text_type))
         self.assertTrue(u"äöü" in parsed["foo"].split("\n"))
 
         l["foo"] = u"äöü".encode("utf-8")
         parsed = parse_gstreamer_taglist(l)
-        self.assertTrue(isinstance(parsed["foo"], unicode))
+        self.assertTrue(isinstance(parsed["foo"], text_type))
         self.assertTrue(u"äöü" in parsed["foo"].split("\n"))
 
         l["bar"] = 1.2
         self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], 1.2)
 
-        l["bar"] = 9L
+        l["bar"] = long(9)
         self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], 9)
 
         l["bar"] = 9
         self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], 9)
 
         l["bar"] = Gst.TagList() # some random gst instance
-        self.failUnless(isinstance(parse_gstreamer_taglist(l)["bar"], unicode))
+        self.failUnless(
+            isinstance(parse_gstreamer_taglist(l)["bar"], text_type))
         self.failUnless("GstTagList" in parse_gstreamer_taglist(l)["bar"])
 
     def test_sanitize(self):
@@ -194,9 +199,6 @@ class TGstreamerTagList(TestCase):
         self.failUnless("2" in l)
         self.failUnless("3" in l)
 
-        # parse_gstreamer_taglist should only return unicode
-        self.failIf(sanitize_tags({"foo": "bar"}))
-
 
 @skipUnless(Gst, "GStreamer missing")
 class TGStreamerCodecs(TestCase):
@@ -249,6 +251,7 @@ class TGStreamerCodecs(TestCase):
             "empty.ogg",
             "empty.opus",
             "silence-44-s.mpc",
+            "silence-44-s.sv8.mpc",
             "silence-44-s.tta",
             "test.mid",
             "test.spc",
@@ -259,7 +262,7 @@ class TGStreamerCodecs(TestCase):
         ]
 
         for file_ in files:
-            path = os.path.join(DATA_DIR, file_)
+            path = get_data_path(file_)
             song = MusicFile(path)
             if song is not None:
                 self._check(song)

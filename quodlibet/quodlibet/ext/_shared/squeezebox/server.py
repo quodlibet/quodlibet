@@ -8,9 +8,11 @@
 import socket
 from telnetlib import Telnet
 import time
-import urllib
 
-from quodlibet import print_w, print_d, print_, app
+from quodlibet import _
+from quodlibet import app
+from quodlibet.util.dprint import print_w, print_d, print_
+from quodlibet.compat import quote, unquote
 
 
 class SqueezeboxException(Exception):
@@ -103,7 +105,7 @@ class SqueezeboxServer(object):
                 print_w("Too many Squeezebox failures. Disconnecting")
                 self.is_connected = False
             return None
-        response = raw_response if raw else urllib.unquote(raw_response)
+        response = raw_response if raw else unquote(raw_response)
         if self._debug:
             print_("<<<< \"%s\"" % (response,))
         return response[len(line) - 1:] if line.endswith("?")\
@@ -116,7 +118,7 @@ class SqueezeboxServer(object):
         pairs = self.__request("players 0 99", True).split(" ")
 
         def demunge(string):
-            s = urllib.unquote(string)
+            s = unquote(string)
             cpos = s.index(":")
             return (s[0:cpos], s[cpos + 1:])
 
@@ -167,26 +169,26 @@ class SqueezeboxServer(object):
 
     def playlist_play(self, path):
         """Play song immediately"""
-        self.player_request("playlist play %s" % (urllib.quote(path)))
+        self.player_request("playlist play %s" % (quote(path)))
 
     def playlist_add(self, path):
-        self.player_request("playlist add %s" % (urllib.quote(path)), False)
+        self.player_request("playlist add %s" % (quote(path)), False)
 
     def playlist_save(self, name):
-        self.player_request("playlist save %s" % (urllib.quote(name)), False)
+        self.player_request("playlist save %s" % (quote(name)), False)
 
     def playlist_clear(self):
         self.player_request("playlist clear", False)
 
     def playlist_resume(self, name, resume, wipe=False):
         cmd = ("playlist resume %s noplay:%d wipePlaylist:%d"
-               % (urllib.quote(name), int(not resume), int(wipe)))
+               % (quote(name), int(not resume), int(wipe)))
         self.player_request(cmd, want_reply=False)
 
     def change_song(self, path):
         """Queue up a song"""
         self.player_request("playlist clear")
-        self.player_request("playlist insert %s" % (urllib.quote(path)))
+        self.player_request("playlist insert %s" % (quote(path)))
 
     def seek_to(self, ms):
         """Seeks the current song to `ms` milliseconds from start"""

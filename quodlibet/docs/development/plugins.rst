@@ -72,8 +72,8 @@ Tips:
 
 * The best way to find out what is possible is to read the documentation of 
   the `plugin base classes
-  <https://bitbucket.org/lazka/quodlibet/src/default/quodlibet/quodlibet/plugins>`_ .
+  <https://github.com/quodlibet/quodlibet/tree/master/quodlibet/quodlibet/plugins>`_ .
 
 * The easiest way to get started creating a new plugin is to look for `existing plugins
-  <https://bitbucket.org/lazka/quodlibet/src/default/quodlibet/quodlibet/ext/>`_ that do 
+  <https://github.com/quodlibet/quodlibet/tree/master/quodlibet/quodlibet/ext>`_ that do
   something similar to what you want.

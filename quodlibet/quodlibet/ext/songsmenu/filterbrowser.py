@@ -5,11 +5,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk
-
+from quodlibet import _
 from quodlibet import app
 from quodlibet import browsers
+from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.qltk.browser import LibraryBrowser
+from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
@@ -17,7 +18,9 @@ class FilterBrowser(SongsMenuPlugin):
     PLUGIN_ID = 'filterbrowser'
     PLUGIN_NAME = _('Filter on Directory')
     PLUGIN_DESC = _("Filters on directory in a new browser window.")
-    PLUGIN_ICON = Gtk.STOCK_INDEX
+    PLUGIN_ICON = Icons.EDIT_SELECT_ALL
+
+    plugin_songs = any_song(is_a_file)
 
     def plugin_songs(self, songs):
         tag = "~dirname"

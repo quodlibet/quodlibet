@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,14 +12,15 @@ from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
 
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk.views import HintedTreeView
-from quodlibet.qltk.window import UniqueWindow
+from quodlibet.qltk.window import UniqueWindow, PersistentWindowMixin
 from quodlibet.qltk.entry import ClearEntry
-from quodlibet.qltk.x import Align, Paned, Button
+from quodlibet.qltk.x import Align, Paned, Button, ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
-from quodlibet.qltk import icons
+from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 
 
@@ -28,7 +30,7 @@ class PluginErrorWindow(UniqueWindow):
             return
         super(PluginErrorWindow, self).__init__()
 
-        self.set_title(_("Plugin Errors") + " - Quod Libet")
+        self.set_title(_("Plugin Errors"))
         self.set_border_width(12)
         self.set_transient_for(parent)
         self.set_default_size(520, 300)
@@ -63,7 +65,7 @@ class PluginErrorWindow(UniqueWindow):
 
         if not self.has_close_button():
             vbox2 = Gtk.VBox(spacing=12)
-            close = Button(_("_Close"), icons.WINDOW_CLOSE)
+            close = Button(_("_Close"), Icons.WINDOW_CLOSE)
             close.connect('clicked', lambda *x: self.destroy())
             b = Gtk.HButtonBox()
             b.set_layout(Gtk.ButtonBoxStyle.END)
@@ -99,7 +101,7 @@ class PluginFilterCombo(Gtk.ComboBox):
 
     def refill(self, tags, no_tags):
         """Fill with a sequence of tags.
-        If no_tags is true display display the extra cetegory for it.
+        If no_tags is true display display the extra category for it.
         """
 
         active = max(self.get_active(), 0)
@@ -141,7 +143,10 @@ class PluginListView(HintedTreeView):
         def cell_data(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
             pm = PluginManager.instance
-            render.set_active(pm.enabled(plugin))
+            render.set_activatable(plugin.can_enable)
+            # If it can't be enabled because it's an always-on kinda thing,
+            # show it as enabled so it doesn't look broken.
+            render.set_active(pm.enabled(plugin) or not plugin.can_enable)
 
         render.connect('toggled', self.__toggled)
         column = Gtk.TreeViewColumn("enabled", render)
@@ -152,11 +157,8 @@ class PluginListView(HintedTreeView):
 
         def cell_data2(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
-            icon = plugin.icon or Gtk.STOCK_EXECUTE
-            if Gtk.stock_lookup(icon):
-                render.set_property('stock-id', icon)
-            else:
-                render.set_property('icon-name', icon)
+            icon = plugin.icon or Icons.SYSTEM_RUN
+            render.set_property('icon-name', icon)
 
         column = Gtk.TreeViewColumn("image", render)
         column.set_cell_data_func(render, cell_data2)
@@ -165,6 +167,7 @@ class PluginListView(HintedTreeView):
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.set_property('xalign', 0.0)
+        render.set_padding(3, 3)
         column = Gtk.TreeViewColumn("name", render)
 
         def cell_data3(col, render, model, iter_, data):
@@ -259,7 +262,7 @@ class PluginPreferencesContainer(Gtk.VBox):
                     frame.hide()
                 else:
                     if isinstance(prefs, Gtk.Window):
-                        b = Gtk.Button(stock=Gtk.STOCK_PREFERENCES)
+                        b = Button(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
                         connect_obj(b, 'clicked', Gtk.Window.show, prefs)
                         connect_obj(b, 'destroy', Gtk.Window.destroy, prefs)
                         frame.add(b)
@@ -271,20 +274,20 @@ class PluginPreferencesContainer(Gtk.VBox):
             frame.hide()
 
 
-class PluginWindow(UniqueWindow):
+class PluginWindow(UniqueWindow, PersistentWindowMixin):
     def __init__(self, parent=None):
         if self.is_not_unique():
             return
         super(PluginWindow, self).__init__()
-        self.set_title(_("Plugins") + " - Quod Libet")
-        self.set_border_width(12)
-        self.set_default_size(655, 404)
+        self.set_title(_("Plugins"))
+        self.set_default_size(700, 500)
         self.set_transient_for(parent)
+        self.enable_window_tracking("plugin_prefs")
 
         paned = Paned()
-        vbox = Gtk.VBox(spacing=6)
+        vbox = Gtk.VBox()
 
-        sw = Gtk.ScrolledWindow()
+        sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
 
         model = ObjectStore()
@@ -313,26 +316,27 @@ class PluginWindow(UniqueWindow):
 
         bbox = Gtk.HBox(homogeneous=True, spacing=12)
 
-        errors = qltk.Button(_("Show _Errors"), Gtk.STOCK_DIALOG_WARNING)
+        errors = qltk.Button(_("Show _Errors"), Icons.DIALOG_WARNING)
         errors.set_focus_on_click(False)
         errors.connect('clicked', self.__show_errors)
-        bbox.pack_start(errors, True, True, 0)
+        errors.set_no_show_all(True)
+        bbox.pack_start(Align(errors, border=6, right=-6), True, True, 0)
 
         pref_box = PluginPreferencesContainer()
 
         if const.DEBUG:
-            refresh = Gtk.Button(stock=Gtk.STOCK_REFRESH)
+            refresh = qltk.Button(_("_Refresh"), Icons.VIEW_REFRESH)
             refresh.set_focus_on_click(False)
             refresh.connect('clicked', self.__refresh, tv, pref_box, errors,
                             filter_combo)
-            bbox.pack_start(refresh, True, True, 0)
+            bbox.pack_start(Align(refresh, border=6), True, True, 0)
 
-        vbox.pack_start(fb, False, True, 0)
+        vbox.pack_start(Align(fb, border=6, right=-6), False, True, 0)
         vbox.pack_start(sw, True, True, 0)
         vbox.pack_start(bbox, False, True, 0)
-        paned.pack1(vbox, True, False)
+        paned.pack1(vbox, False, False)
 
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
         bb_align = Align(halign=Gtk.Align.END, valign=Gtk.Align.END)
         bb = Gtk.HButtonBox()
@@ -350,7 +354,7 @@ class PluginWindow(UniqueWindow):
         if not self.has_close_button():
             right_box.pack_start(bb_align, True, True, 0)
 
-        paned.pack2(Align(right_box, left=6), True, False)
+        paned.pack2(Align(right_box, border=12), True, False)
         paned.set_position(250)
 
         self.add(paned)
@@ -379,7 +383,7 @@ class PluginWindow(UniqueWindow):
             plugin_tags = plugin.tags
             tag, flag = tag
             pm = PluginManager.instance
-            enabled = pm.enabled(plugin)
+            enabled = pm.enabled(plugin) or not plugin.can_enable
             if flag == ComboType.NO and plugin_tags or \
                 flag == ComboType.TAG and not tag in plugin_tags or \
                 flag == ComboType.EN and not enabled or \
@@ -393,7 +397,7 @@ class PluginWindow(UniqueWindow):
         return False
 
     def __destroy(self, *args):
-        config.write(const.CONFIG)
+        config.save()
 
     def __selection_changed(self, selection, container):
         model, iter_ = selection.get_selected()
@@ -434,7 +438,7 @@ class PluginWindow(UniqueWindow):
         if not len(pm.plugins):
             prefs.set_no_plugins()
 
-        errors.set_sensitive(bool(pm.failures))
+        errors.set_visible(bool(pm.failures))
 
     def __refresh(self, activator, view, prefs, errors, combo):
         pm = PluginManager.instance

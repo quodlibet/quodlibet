@@ -7,7 +7,7 @@
 
 from tests import TestCase
 
-from quodlibet.qltk.controls import PlayControls, ReplayGainMenu, SeekBar
+from quodlibet.qltk.controls import PlayControls, VolumeMenu
 from quodlibet.qltk.controls import Volume
 from quodlibet.library import SongLibrary
 from quodlibet.player.nullbe import NullPlayer
@@ -27,12 +27,8 @@ class TControls(TestCase):
         w = PlayControls(self.p, self.l)
         w.destroy()
 
-    def test_replaygain(self):
-        w = ReplayGainMenu(self.p)
-        w.destroy()
-
-    def test_seekbar(self):
-        w = SeekBar(self.p, self.l)
+    def test_volumemenu(self):
+        w = VolumeMenu(self.p)
         w.destroy()
 
     def test_volume(self):

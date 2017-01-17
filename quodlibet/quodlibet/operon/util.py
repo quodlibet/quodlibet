@@ -8,8 +8,8 @@
 import os
 import stat
 import shlex
-import string
 
+from quodlibet import _
 from quodlibet.util.tags import MACHINE_TAGS, sortkey
 from quodlibet.util.dprint import print_, Colorise
 from quodlibet import util
@@ -71,7 +71,7 @@ def print_table(rows, headers, nicks, order):
 
     header = []
     for i, h in enumerate(rows.pop(0)):
-        header.append(string.ljust(h, widths[i], " "))
+        header.append(h.ljust(widths[i], " "))
     line_width = len("   ".join(header)) + 2
     header = [Colorise.bold(h) for h in header]
     header_line = " " + (" %s " % Colorise.gray("|")).join(header)
@@ -121,10 +121,10 @@ def get_editor_args(fallback_command="nano"):
     Can't fail, but the result might not be a valid/existing command.
     """
 
-    if "VISUAL" in os.environ:
-        editor = os.environ["VISUAL"]
-    elif "EDITOR" in os.environ:
-        editor = os.environ["EDITOR"]
+    if "VISUAL" in util.environ:
+        editor = util.environ["VISUAL"]
+    elif "EDITOR" in util.environ:
+        editor = util.environ["EDITOR"]
     else:
         editor = fallback_command
 

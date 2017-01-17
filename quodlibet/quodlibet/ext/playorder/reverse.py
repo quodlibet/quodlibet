@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
-from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderInOrderMixin
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+from quodlibet import _
+from quodlibet.plugins.playorder import ShufflePlugin
+from quodlibet.qltk import Icons
+from quodlibet.qltk.playorder import OrderInOrder
 
 
-class ReverseOrder(PlayOrderPlugin, PlayOrderInOrderMixin):
+class ReverseOrder(ShufflePlugin, OrderInOrder):
     PLUGIN_ID = "reverse"
     PLUGIN_NAME = _("Reverse")
-    PLUGIN_ICON = "gtk-refresh"
+    PLUGIN_ICON = Icons.MEDIA_SKIP_BACKWARD
     PLUGIN_DESC = _("Reverses the play order of songs.")
 
     def previous(self, playlist, iter):

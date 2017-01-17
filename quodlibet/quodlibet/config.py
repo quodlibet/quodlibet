@@ -9,11 +9,25 @@
 
 import shutil
 
-import const
+from quodlibet.util import enum
+from . import const
 from quodlibet.util.config import Config, Error
+from quodlibet.util import print_d, print_w
+from quodlibet.compat import PY2, iteritems, text_type
 
 # Some plugins can be enabled on first install
 AUTO_ENABLED_PLUGINS = ["Shuffle Playlist", "Remove Playlist Duplicates"]
+
+
+def _config_text(text):
+    # raw config values are utf-8 encoded on PY2, while they are unicode
+    # with surrogates on PY2. this makes initing the defaults work
+
+    assert isinstance(text, text_type)
+    if PY2:
+        return text.encode("utf-8")
+    return text
+
 
 # this defines the initial and default values
 INITIAL = {
@@ -27,7 +41,7 @@ INITIAL = {
         "pre_amp_gain": "0.0",
         "backend": "gstbe",
         "gst_pipeline": "",
-        "gst_buffer": "1.5", # stream buffer duration in seconds
+        "gst_buffer": "3", # stream buffer duration in seconds
         "gst_device": "",
         "gst_disable_gapless": "false",
     },
@@ -41,13 +55,20 @@ INITIAL = {
         "seek": "0", # last song position, in milliseconds
         "volume": "1.0", # internal volume, [0.0, 1.0]
         "browser": "PanedBrowser", # browser name
-        "songlist": "true", # on or off
         "queue": "false", # on or off
+        "queue_expanded": "false", # on or off
         "shufflequeue": "false", # on or off
         "sortby": "0album", # <reversed?>tagname, song list sort
-        "order": "inorder",
-        "order_shuffle": "shuffle",
+
+        # Repeat on or off
+        "repeat": "false",
+        # The Repeat (Order) to use
+        "repeat_mode": "repeat_song",
+
+        # Shuffle on or off
         "shuffle": "false",
+        # The Shuffle (Order) to use
+        "shuffle_mode": "random",
         "plugin_selection": "", # selected plugin in manager
         "column_widths": "", # column widths in c1,w1,c2,w2... format
         "column_expands": "",
@@ -56,7 +77,7 @@ INITIAL = {
         "query_text": "", # none/search bar text
         # panes in paned browser
         "panes":
-            "~people	<~year|[b][i]<~year>[/i][/b] - ><album>",
+            "~people\t<~year|[b][i]<~year>[/i][/b] - ><album>",
         "pane_selection": "", # selected pane values
         "pane_wide_mode": "0", # browser orientation
         "background": "", # "global" filter for SearchBar
@@ -70,6 +91,9 @@ INITIAL = {
         "rating_confirm_multiple": "false", # confirm rating multiple songs
         "cover_size": "-1", # max cover height/width, <= 0 is default
         "search_limit": "false", # Show the limit widgets for SearchBar
+        "album_text": "1", # show text in covergrid view
+        "covergrid_magnification": "3.0", # show text in covergrid view
+        "covergrid_all": "0", # show "all albums" in covergrid view
     },
     # Kind of a dumping ground right now, should probably be
     # cleaned out later.
@@ -90,13 +114,10 @@ INITIAL = {
         "bayesian_rating_factor": "0.0",
 
         # rating symbol (black star)
-        "rating_symbol_full": "\xe2\x98\x85",
+        "rating_symbol_full": _config_text(u'\u2605'),
 
         # rating symbol (hollow star)
-        "rating_symbol_blank": "\xe2\x98\x86",
-
-        # probably belongs in memory
-        "repeat": "false",
+        "rating_symbol_blank": _config_text(u'\u2606'),
 
         # Now deprecated: space-separated headers column
         #"headers": " ".join(const.DEFAULT_COLUMNS),
@@ -114,6 +135,16 @@ INITIAL = {
         # tags which get searched in addition to the ones present in the
         # song list, separate with ","
         "search_tags": "",
+
+        # If set to "true" allow directly deleting files, even on systems that
+        # support sending them to the trash.
+        "bypass_trash": "false",
+
+        # osx implementation might be buggy so let users disable it
+        "disable_mmkeys": "false",
+
+        # the UI language to use, empty means system default
+        "language": "",
     },
     "rename": {
         "spaces": "false",
@@ -144,10 +175,12 @@ INITIAL = {
         "default_tags": "", # e.g. "title,artist"
     },
     "albumart": {
-        "round": "true", # use rounded corners for artwork thumbnails
         "prefer_embedded": "false",
         "force_filename": "false",
         "filename": "folder.jpg",
+    },
+    "display": {
+        "duration_format": "standard"
     }
 }
 
@@ -157,6 +190,7 @@ _config = Config(version=0)
 
 options = _config.options
 get = _config.get
+gettext = _config.gettext
 getboolean = _config.getboolean
 getint = _config.getint
 getfloat = _config.getfloat
@@ -165,28 +199,37 @@ setstringlist = _config.setstringlist
 getlist = _config.getlist
 setlist = _config.setlist
 set = _config.set
-setdefault = _config.setdefault
+settext = _config.settext
 write = _config.write
 reset = _config.reset
 add_section = _config.add_section
 has_option = _config.has_option
 remove_option = _config.remove_option
 register_upgrade_function = _config.register_upgrade_function
+getbytes = _config.getbytes
+setbytes = _config.setbytes
+
+_filename = None
+"""The filename last used for loading"""
 
 
-def init(filename=None, initial=None):
+def init_defaults():
+    """Fills in the defaults, so they are guaranteed to be available"""
+
+    _config.defaults.clear()
+    for section, values in iteritems(INITIAL):
+        _config.defaults.add_section(section)
+        for key, value in iteritems(values):
+            _config.defaults.set(section, key, value)
+
+
+def init(filename=None):
+    global _filename
+
     if not _config.is_empty():
-        raise ValueError(
-            "config initialized twice without quitting: %r"
-            % _config.sections())
+        _config.clear()
 
-    if initial is None:
-        initial = INITIAL
-
-    for section, values in initial.iteritems():
-        _config.add_section(section)
-        for key, value in values.iteritems():
-            _config.set_inital(section, key, value)
+    _filename = filename
 
     if filename is not None:
         try:
@@ -201,8 +244,18 @@ def init(filename=None, initial=None):
                 pass
 
 
-def save(filename):
-    """Writes the active config to filename, ignoring all possible errors"""
+def save(filename=None):
+    """Writes the active config to filename, ignoring all possible errors.
+
+    If not filename is given the one used for loading is used.
+    """
+
+    global _filename
+
+    if filename is None:
+        filename = _filename
+        if filename is None:
+            return
 
     print_d("Writing config...")
     try:
@@ -290,14 +343,38 @@ class RatingsPrefs(object):
 
     @staticmethod
     def __get_symbol(variant="full"):
-        return get("settings", "rating_symbol_%s" % variant).decode("utf-8")
+        return gettext("settings", "rating_symbol_%s" % variant)
 
 
 class HardCodedRatingsPrefs(RatingsPrefs):
     number = int(INITIAL["settings"]["ratings"])
     default = float(INITIAL["settings"]["default_rating"])
-    blank_symbol = INITIAL["settings"]["rating_symbol_blank"].decode("utf-8")
-    full_symbol = INITIAL["settings"]["rating_symbol_full"].decode("utf-8")
+    blank_symbol = INITIAL["settings"]["rating_symbol_blank"]
+    full_symbol = INITIAL["settings"]["rating_symbol_full"]
+    if PY2:
+        blank_symbol = blank_symbol.decode("utf-8")
+        full_symbol = full_symbol.decode("utf-8")
+
 
 # Need an instance just for imports to work
 RATINGS = RatingsPrefs()
+
+
+@enum
+class DurationFormat(str):
+    NUMERIC, SECONDS = "numeric", "numeric-seconds"
+    STANDARD, FULL = "standard", "text-full"
+
+
+class DurationFormatPref(object):
+    @property
+    def format(self):
+        raw = get("display", "duration_format")
+        return DurationFormat.value_of(raw, DurationFormat.STANDARD)
+
+    @format.setter
+    def format(self, value):
+        set("display", "duration_format", value)
+
+
+DURATION = DurationFormatPref()

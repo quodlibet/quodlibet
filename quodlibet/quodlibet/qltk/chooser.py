@@ -7,18 +7,27 @@
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import Icons
+from quodlibet.qltk.window import Dialog
 
 
-# Choose folders and return them when run.
-class FolderChooser(Gtk.FileChooserDialog):
+class FolderChooser(Gtk.FileChooserDialog, Dialog):
+    """Choose folders and return them when run.
+
+    Note: works with glib paths
+    """
+
     def __init__(self, parent, title, initial_dir=None,
                  action=Gtk.FileChooserAction.SELECT_FOLDER):
         super(FolderChooser, self).__init__(
             title=title, transient_for=get_top_parent(parent), action=action)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        self.add_button(Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Open"), Icons.DOCUMENT_OPEN,
+                             Gtk.ResponseType.OK)
+
         if initial_dir:
             self.set_current_folder(initial_dir)
         self.set_local_only(True)
@@ -33,8 +42,9 @@ class FolderChooser(Gtk.FileChooserDialog):
             return []
 
 
-# Choose files and return them when run.
 class FileChooser(FolderChooser):
+    """Choose files and return them when run."""
+
     def __init__(self, parent, title, filter=None, initial_dir=None):
         super(FileChooser, self).__init__(
             parent, title, initial_dir, Gtk.FileChooserAction.OPEN)

@@ -8,16 +8,14 @@
 import json
 import collections
 import threading
-import urllib
-import urllib2
-import socket
-import Queue
-import StringIO
 import gzip
 from xml.dom.minidom import parseString
 
 from gi.repository import GLib
 
+from quodlibet.util import print_w
+from quodlibet.compat import iteritems, urlencode, queue, cBytesIO
+from quodlibet.util.urllib import urlopen, Request
 from .util import get_api_key, GateKeeper
 
 
@@ -26,7 +24,7 @@ gatekeeper = GateKeeper(requests_per_sec=3)
 
 
 class AcoustidSubmissionThread(threading.Thread):
-    URL = "http://api.acoustid.org/v2/submit"
+    URL = "https://api.acoustid.org/v2/submit"
     SONGS_PER_SUBMISSION = 50
     TIMEOUT = 10.0
 
@@ -55,14 +53,14 @@ class AcoustidSubmissionThread(threading.Thread):
 
         self.__done += len(urldata)
 
-        basedata = urllib.urlencode({
+        basedata = urlencode({
             "format": "xml",
             "client": APP_KEY,
             "user": get_api_key(),
         })
 
-        urldata = "&".join([basedata] + map(urllib.urlencode, urldata))
-        obj = StringIO.StringIO()
+        urldata = "&".join([basedata] + map(urlencode, urldata))
+        obj = cBytesIO()
         gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
         urldata = obj.getvalue()
 
@@ -70,12 +68,12 @@ class AcoustidSubmissionThread(threading.Thread):
             "Content-Encoding": "gzip",
             "Content-type": "application/x-www-form-urlencoded"
         }
-        req = urllib2.Request(self.URL, urldata, headers)
+        req = Request(self.URL, urldata, headers)
 
         error = None
         try:
-            response = urllib2.urlopen(req, timeout=self.TIMEOUT)
-        except (urllib2.URLError, socket.timeout) as e:
+            response = urlopen(req, timeout=self.TIMEOUT)
+        except EnvironmentError as e:
             error = "urllib error: " + str(e)
         else:
             xml = response.read()
@@ -115,7 +113,7 @@ class AcoustidSubmissionThread(threading.Thread):
             }
 
             tuples = []
-            for key, value in track.iteritems():
+            for key, value in iteritems(track):
                 # this also dismisses 0.. which should be ok here.
                 if not value:
                     continue
@@ -257,14 +255,14 @@ def parse_acoustid_response(json_data):
 
 
 class AcoustidLookupThread(threading.Thread):
-    URL = "http://api.acoustid.org/v2/lookup"
+    URL = "https://api.acoustid.org/v2/lookup"
     MAX_SONGS_PER_SUBMISSION = 5
     TIMEOUT = 10.0
 
     def __init__(self, progress_cb):
         super(AcoustidLookupThread, self).__init__()
         self.__progress_cb = progress_cb
-        self.__queue = Queue.Queue()
+        self.__queue = queue.Queue()
         self.__stopped = False
         self.start()
 
@@ -283,7 +281,7 @@ class AcoustidLookupThread(threading.Thread):
 
     def __process(self, results):
         req_data = []
-        req_data.append(urllib.urlencode({
+        req_data.append(urlencode({
             "format": "json",
             "client": APP_KEY,
             "batch": "1",
@@ -291,7 +289,7 @@ class AcoustidLookupThread(threading.Thread):
 
         for i, result in enumerate(results):
             postfix = ".%d" % i
-            req_data.append(urllib.urlencode({
+            req_data.append(urlencode({
                 "duration" + postfix: str(int(round(result.length))),
                 "fingerprint" + postfix: result.chromaprint,
             }))
@@ -299,7 +297,7 @@ class AcoustidLookupThread(threading.Thread):
         req_data.append("meta=releases+recordings+tracks+sources")
 
         urldata = "&".join(req_data)
-        obj = StringIO.StringIO()
+        obj = cBytesIO()
         gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
         urldata = obj.getvalue()
 
@@ -307,13 +305,13 @@ class AcoustidLookupThread(threading.Thread):
             "Content-Encoding": "gzip",
             "Content-type": "application/x-www-form-urlencoded"
         }
-        req = urllib2.Request(self.URL, urldata, headers)
+        req = Request(self.URL, urldata, headers)
 
         releases = {}
         error = ""
         try:
-            response = urllib2.urlopen(req, timeout=self.TIMEOUT)
-        except (urllib2.URLError, socket.timeout) as e:
+            response = urlopen(req, timeout=self.TIMEOUT)
+        except EnvironmentError as e:
             error = "urllib error: " + str(e)
         else:
             try:
@@ -342,7 +340,7 @@ class AcoustidLookupThread(threading.Thread):
                 timeout = 0.5 / len(results)
                 try:
                     results.append(self.__queue.get(timeout=timeout))
-                except Queue.Empty:
+                except queue.Empty:
                     break
 
             if self.__stopped:

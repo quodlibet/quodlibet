@@ -2,29 +2,18 @@
 #
 # View Lyrics: a Quod Libet plugin for viewing lyrics.
 # Copyright (C) 2008, 2011, 2012 Vasiliy Faronov <vfaronov@gmail.com>
-#                           2013 Nick Boultbee
+#                     2013, 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 2
 # as published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You can get a copy of the GNU General Public License at:
-# http://www.gnu.org/licenses/gpl-2.0.html
-
-
-"""Provides the `ViewLyrics` plugin for viewing lyrics in the main window."""
-
-import os
 
 from gi.repository import Gtk, Gdk
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk import Icons
 
 
 class ViewLyrics(EventPlugin):
@@ -32,7 +21,9 @@ class ViewLyrics(EventPlugin):
 
     PLUGIN_ID = 'View Lyrics'
     PLUGIN_NAME = _('View Lyrics')
-    PLUGIN_DESC = _('Displays lyrics beneath the song list.')
+    PLUGIN_DESC = _('Automatically displays lyrics '
+                    'beneath the song list in the main window.')
+    PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     def enabled(self):
         self.expander = Gtk.Expander(label=_("_Lyrics"), use_underline=True)
@@ -73,12 +64,15 @@ class ViewLyrics(EventPlugin):
         If there are lyrics associated with `song`, load them into the
         lyrics viewer. Otherwise, hides the lyrics viewer.
         """
-        if (song is not None) and os.path.exists(song.lyric_filename):
-            with open(song.lyric_filename, 'r') as lyric_file:
-                self.textbuffer.set_text(lyric_file.read())
-            self.adjustment.set_value(0)    # Scroll to the top.
-            self.expander.show()
-        else:
+        lyrics = None
+        if song is not None:
+            lyrics = song("~lyrics")
+            if lyrics:
+                self.textbuffer.set_text(lyrics)
+                self.adjustment.set_value(0)    # Scroll to the top.
+                self.expander.show()
+
+        if not lyrics:
             self.expander.hide()
 
     def key_press_event_cb(self, widget, event):

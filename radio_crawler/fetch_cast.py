@@ -79,7 +79,7 @@ def main():
     peak_missing = set(peak_missing) - failed_uris
 
     # XXX: fetch_stream_infos is the same for each root url
-    peak_missing = set([get_root(uri) for uri in peak_missing])
+    peak_missing = {get_root(uri) for uri in peak_missing}
     peak_missing = set(peak_missing) - parse_failed_uris
     
 

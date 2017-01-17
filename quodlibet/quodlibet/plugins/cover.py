@@ -10,7 +10,9 @@ from hashlib import sha1
 
 from gi.repository import GObject
 
+from quodlibet.qltk import Icons
 from quodlibet.util.path import escape_filename, xdg_get_cache_home
+from quodlibet.util import print_w
 
 
 class CoverSourcePlugin(GObject.Object):
@@ -32,6 +34,7 @@ class CoverSourcePlugin(GObject.Object):
         'fetch-failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'search-complete': (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
+    PLUGIN_ICON = Icons.EMBLEM_DOWNLOADS
 
     embedded = False
     """Whether the source is an embedded one"""
@@ -98,7 +101,10 @@ class CoverSourcePlugin(GObject.Object):
         """
         key = sha1()
         # Should be fine as long as the same interpreter is used.
-        key.update(repr(self.song.album_key))
+        data = repr(self.song.album_key)
+        if not isinstance(data, bytes):
+            data = data.encode("utf-8")
+        key.update(data)
         return escape_filename(key.hexdigest())
 
     @property

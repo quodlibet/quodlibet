@@ -9,6 +9,7 @@ from tests.plugin import PluginTestCase
 
 
 class TTestPlugins(PluginTestCase):
+
     def test_pickle(self):
         plugin = self.plugins["pickle_test"].cls
         instance = plugin()

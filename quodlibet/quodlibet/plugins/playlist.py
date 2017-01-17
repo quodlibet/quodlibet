@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Nick Boultbee
+# Copyright 2013-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+
+from quodlibet import ngettext, _
 from quodlibet.qltk import get_top_parent, get_menu_item_top_parent
 from quodlibet.qltk.msg import WarningMessage
-from quodlibet.qltk.x import SeparatorMenuItem, Button
-from quodlibet.util import print_exc
+from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.qltk import Icons
+from quodlibet.util import print_exc, format_int_locale
 from quodlibet.util.dprint import print_d, print_e
 from quodlibet.plugins import PluginHandler, PluginManager
 from quodlibet.plugins.gui import MenuItemPlugin
@@ -23,19 +26,19 @@ class ConfirmMultiPlaylistInvoke(WarningMessage):
     RESPONSE_INVOKE = 1
 
     def __init__(self, parent, plugin_name, count):
-        title = ngettext("Run the plugin \"%(name)s\" on %(count)d playlist?",
-                         "Run the plugin \"%(name)s\" on %(count)d playlists?",
-                         count) % {"name": plugin_name, "count": count}
+        params = {"name": plugin_name, "count": format_int_locale(count)}
+        title = ngettext("Run the plugin \"%(name)s\" on %(count)s playlist?",
+                         "Run the plugin \"%(name)s\" on %(count)s playlists?",
+                         count) % params
 
         super(ConfirmMultiPlaylistInvoke, self).__init__(
             get_top_parent(parent),
             title, "",
             buttons=Gtk.ButtonsType.NONE)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        delete_button = Button(_("_Run Plugin"), Gtk.STOCK_EXECUTE)
-        delete_button.show()
-        self.add_action_widget(delete_button, self.RESPONSE_INVOKE)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(
+            _("_Run Plugin"), Icons.SYSTEM_RUN, self.RESPONSE_INVOKE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
     @classmethod
@@ -58,15 +61,15 @@ class PlaylistPlugin(MenuItemPlugin):
     All matching provided callables on a single object are called in the
     above order if they match until one returns a true value.
 
-    The single_ variant is only called if a single song/album is selected.
+    The `single_` variant is only called if a single song/album is selected.
 
-    The singular tense is called once for each selected playlist, but the
-    plural tense is called with a list of playlists
+    The singular version is called once for each selected playlist, but the
+    plural version is called with a list of playlists.
 
     Returning `True` from these signifies a change was made and the UI /
     library should update; otherwise this isn't guaranteed.
 
-    Currently (01/2014) only the singular forms are actually supported in
+    Currently (01/2016) only the singular forms are actually supported in
     the UI, but this won't always be the case.
 
     To make your plugin insensitive if unsupported playlists are selected,
@@ -83,7 +86,7 @@ class PlaylistPlugin(MenuItemPlugin):
     plugin_playlist = None
     plugin_playlists = None
 
-    def __init__(self, playlists, library):
+    def __init__(self, playlists=None, library=None):
         super(PlaylistPlugin, self).__init__()
         self._library = library
 
@@ -100,13 +103,11 @@ class PlaylistPluginHandler(PluginHandler):
         PluginManager.instance.register_handler(self)
 
     def __init__(self, confirmer=None):
-        """custom confirmer mainly for testing"""
+        """Takes an optional `confirmer`, mainly for testing"""
 
         self.__plugins = []
-        if confirmer is None:
-            self._confirm_multiple = ConfirmMultiPlaylistInvoke.confirm
-        else:
-            self._confirm_multiple = confirmer
+        self._confirm_multiple = (confirmer or
+                                  ConfirmMultiPlaylistInvoke.confirm)
 
     def populate_menu(self, menu, library, browser, playlists):
         """Appends items onto `menu` for each enabled playlist plugin,
@@ -129,7 +130,7 @@ class PlaylistPluginHandler(PluginHandler):
                 except:
                     print_e("Couldn't initialise playlist plugin %s: " % Kind)
                     print_exc()
-        items = filter(lambda i: i.initialized, items)
+        items = [i for i in items if i.initialized]
 
         if items:
             menu.append(SeparatorMenuItem())
@@ -201,7 +202,7 @@ class PlaylistPluginHandler(PluginHandler):
             except Exception:
                 print_exc()
             else:
-                if max(ret):
+                if any(ret):
                     return
         if callable(plugin.plugin_playlists):
             try:

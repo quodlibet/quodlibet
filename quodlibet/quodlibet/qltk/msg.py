@@ -6,14 +6,16 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk
+from senf import fsn2text, path2fsn
 
+from quodlibet import _
 from quodlibet import util
+from quodlibet.qltk.icons import Icons
 from quodlibet.qltk import get_top_parent
-from quodlibet.qltk.x import Button
-from quodlibet.util.path import fsdecode
+from quodlibet.qltk.window import Dialog
 
 
-class Message(Gtk.MessageDialog):
+class Message(Gtk.MessageDialog, Dialog):
     """A message dialog that destroys itself after it is run, uses
     markup, and defaults to an 'OK' button."""
 
@@ -34,7 +36,7 @@ class Message(Gtk.MessageDialog):
         return resp
 
 
-class CancelRevertSave(Gtk.MessageDialog):
+class CancelRevertSave(Gtk.MessageDialog, Dialog):
     def __init__(self, parent):
         title = _("Discard tag changes?")
         description = _("Tags have been changed but not saved. Save these "
@@ -46,9 +48,13 @@ class CancelRevertSave(Gtk.MessageDialog):
             transient_for=parent, flags=0,
             message_type=Gtk.MessageType.WARNING,
             buttons=Gtk.ButtonsType.NONE)
-        self.add_buttons(Gtk.STOCK_SAVE, Gtk.ResponseType.YES,
-                         Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_REVERT_TO_SAVED, Gtk.ResponseType.NO)
+
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
+                             Gtk.ResponseType.YES)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Revert"), Icons.DOCUMENT_REVERT,
+                             Gtk.ResponseType.NO)
+
         self.set_default_response(Gtk.ResponseType.NO)
         self.set_markup(text)
 
@@ -78,14 +84,13 @@ class ConfirmFileReplace(WarningMessage):
 
     def __init__(self, parent, path):
         title = _("File exists")
-        fn_format = "<b>%s</b>" % util.escape(fsdecode(path))
+        fn_format = "<b>%s</b>" % util.escape(fsn2text(path2fsn(path)))
         description = _("Replace %(file-name)s?") % {"file-name": fn_format}
 
         super(ConfirmFileReplace, self).__init__(
             parent, title, description, buttons=Gtk.ButtonsType.NONE)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        save_button = Button(_("_Replace File"), "document-save")
-        save_button.show()
-        self.add_action_widget(save_button, self.RESPONSE_REPLACE)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Replace File"), Icons.DOCUMENT_SAVE,
+                             self.RESPONSE_REPLACE)
         self.set_default_response(Gtk.ResponseType.CANCEL)

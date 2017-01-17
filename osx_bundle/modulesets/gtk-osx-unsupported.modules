@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE moduleset SYSTEM "moduleset.dtd">
+<?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
+<moduleset>
+  <repository type="tarball" name="ftp.gnome.org" default="yes"
+              href="http://ftp.gnome.org/pub/GNOME/sources/"/>
+  <repository type='tarball' name='ftp.gnupg.org' href="ftp://ftp.gnupg.org/" />
+  <repository type="tarball" name="iso-codes"
+	      href="http://pkg-isocodes.alioth.debian.org/downloads/"/>
+  <repository type='tarball' name='libproxy.google.com'
+              href='http://libproxy.googlecode.com/files/'/>
+  <repository type="tarball" name="curl.haxx.se"
+              href="http://curl.haxx.se/download/"/>
+  <repository type="tarball" name="p11-glue"
+              href="http://p11-glue.freedesktop.org/releases/"/>
+
+  <metamodule id="meta-gtk-osx-unsupported">
+    <dependencies>
+      <dep package="gnome-mime-data"/>
+      <dep package="iso-codes"/>
+    </dependencies>
+  </metamodule>
+
+  <autotools id="gnome-mime-data" autogen-sh="configure">
+   <branch module="gnome-mime-data/2.18/gnome-mime-data-2.18.0.tar.bz2"
+           version="2.18.0" md5sum="541858188f80090d12a33b5a7c34d42c"/>
+    <dependencies>
+      <dep package="glib"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="iso-codes" autogen-sh="configure">
+    <branch module="iso-codes-3.57.tar.xz" version="3.57"
+	    repo="iso-codes"/>
+  </autotools>
+
+  <autotools id="p11-kit" autogen-sh="configure"
+             autogenargs="--without-trust-paths">
+    <branch repo="p11-glue" version="0.22.1"
+	    module="p11-kit-0.22.1.tar.gz">
+      <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/p11-kit-dirfd.patch"
+       strip="1"/>
+    </branch>
+    <dependencies>
+      <dep package="libtasn1"/>
+    </dependencies>
+  </autotools>
+
+  <cmake id='libproxy' cmakeargs="-DWITH_PYTHON=OFF">
+    <branch version='0.4.10' module='libproxy-0.4.10.tar.gz'
+            repo='libproxy.google.com'>
+    </branch>
+    <dependencies>
+    </dependencies>
+  </cmake>
+
+  <autotools id="libgnome-keyring" autogenargs="--disable-tests"
+	     autogen-sh="configure">
+    <branch module="libgnome-keyring/3.6/libgnome-keyring-3.6.0.tar.xz"
+	    version="3.6.0" hash="sha256:6dca37fb7b37f800f498031ffe303a567410bec09a9bdd877a18865dafcc9830">
+    </branch>
+    <dependencies>
+      <dep package="glib"/>
+      <dep package="libgcrypt"/>
+      <dep package="libtasn1"/>
+      <dep package="dbus"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="libgpg-error" autogen-sh="autogen.sh"
+             autogenargs="--disable-doc"
+             autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s  %(autogenargs)s">
+    <branch repo="ftp.gnupg.org" version="1.17"
+            module="gcrypt/libgpg-error/libgpg-error-1.17.tar.bz2">
+            <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/libgpg-error-cflags-for-cc-for-build.patch"
+       strip="1"/>
+    </branch>
+  </autotools>
+
+  <autotools id="libgcrypt" autogen-sh="configure"
+             autogenargs="--disable-asm --disable-doc"
+             autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s  %(autogenargs)s">
+    <branch repo="ftp.gnupg.org" version="1.6.3"
+            module="gcrypt/libgcrypt/libgcrypt-1.6.3.tar.bz2">
+            <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/libgcrypt-cflags-for-cc-for-build.patch"
+       strip="1"/>
+    </branch>
+    <dependencies>
+      <dep package="libgpg-error" />
+    </dependencies>
+  </autotools>
+
+  <!-- 10.5 has 7.16.3, which is too old for some things, and also doesn't
+  provide a pkgconfig file. Otherwise can be skipped. -->
+  <autotools id="libcurl" autogen-sh="configure">
+    <branch repo="curl.haxx.se" module="curl-7.47.1.tar.bz2" version="7.47.1"/>
+  </autotools>
+</moduleset>

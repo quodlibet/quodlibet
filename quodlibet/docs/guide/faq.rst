@@ -1,261 +1,215 @@
 Frequently Asked Questions
 ==========================
 
-Installation
-------------
 
-**Does Quod Libet require GNOME?**
+Why don't all my songs appear in the song list when searching for them?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    No, but we recommend you install the GNOME libraries and Python
-    bindings when using Quod Libet. If they are installed, Quod Libet will
-    use your default GNOME audio options.
+Do you have a global filter in use? Check the *Browsers* tab in *Preferences*.
 
 
-**I'm running Gentoo, and...**
+Why do my MP3 files have the wrong length?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    We are not the first line of support for `Gentoo Linux
-    <http://gentoo.org/>`_. If you are running Gentoo and experience
-    problems, file a bug on the Gentoo bug tracking system at
-    http://bugs.gentoo.org.
+The ID3 standard defines the ``TLEN`` frame. If an MP3 has an ID3 tag
+which contains a ``TLEN`` frame, Quod Libet will use it. You can remove
+possibly incorrect ``TLEN`` frames from your MP3 files using the "Fix MP3
+Duration" plugin or the ``mid3v2`` tool::
 
+    $ mid3v2 --delete-frames=TLEN filename.mp3
 
-General
--------
+If there are variable bit-rate (VBR) files, there may be errors in the
+frames themselves leading to an incorrectly computed length separate
+from any tags. You can fix this problem with various tools, e.g.
+`mp3val <http://mp3val.sourceforge.net/>`_::
 
-**Why don't all my songs appear in the song list when I select their artist
-/ album / genre or search for them?**
+    $ sudo apt-get install mp3val
+    $ mp3val -f filename.mp3
 
-    Do you have a global filter in use? Check the *Browsers* tab in *Music*
-    → *Preferences*.
 
+Whenever I type a space, Quod Libet pauses
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Why can't I double-click a song in GNOME to play in Quod Libet?**
+Users of some keyboard layouts, including the popular French
+Alternative, may hit this bug. In these layouts, the spacebar sends a
+non-breaking space character, which GTK+ interprets as
+``<control>space``. This is a `known bug in GTK
+<https://bugzilla.gnome.org/show_bug.cgi?id=541466>`__. You can work
+around it by changing your keyboard layout to send a regular space, or
+by changing the keybinding for play/pause using the method above.
 
-    You can! File association is more to do with the file manager you're
-    using. If you're using GNOME, right-click on the audio file in Nautilus
-    and select 'Properties'. Go to the 'Open with' tab, then select the
-    'Add' button. In the 'Use custom command' text field add the following:
 
-        ``quodlibet --play-file %F``
+How do I add custom / unusual tags to the columns in the song list?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    and then click 'add'. Now you can select 'quodlibet' from the list of
-    programs to open that file. Double-click the file and Quod Libet will
-    start to play it.
+1. Refer to :ref:`editing tags<EditingTags>` if you need to add any custom
+   tags.
+2. Right-click the song list header bar and select *Customize Headers* from
+   the context menu (or click *Preferences* from the main menu and select
+   *Song List*)
+3. In the *Others* field, click *Edit*, then *Add*, and enter the custom tag
+   name, remembering that they are case-sensitive.
 
-    Note this will *only work is Quod Libet is currently running*, though a
-    workaround is to make a script that starts ``quodlibet`` first (only
-    one instance is ever loaded unless in dev mode).
+Lesser-known (but useful) tags here might include ``~#playcount``,
+``~#skipcount``, ``~#bitrate`` or ``~playlists``.
 
 
-**My filenames with special characters (ú, ç, はあ, etc.) don't appear
-properly**
+How do I use a different soundcard with Quod Libet?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Unless told otherwise Quod Libet assumes your filesystem is using UTF-8
-    filenames (this is a standard assumption for GTK+ applications). To
-    tell it otherwise, ``export G_FILENAME_ENCODING="iso-8859-1"` (or
-    whatever value you need) in your ``~/.bashrc`` or other appropriate
-    place. You can also use the magic value `@locale` to use the default
-    character encoding for your locale.
+See the chapter on configuring the AudioBackends in the user's guide.
 
 
-**Why do my MP3 files have the wrong length?**
+Why does Quod Libet sort my songs out of order?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    The ID3 standard defines the ``TLEN`` frame. If an MP3 has an ID3 tag
-    which contains a ``TLEN`` frame, Quod Libet will use it. You can remove
-    incorrect ``TLEN`` frames from your MP3 files by running:
+Music metadata, like music, comes in many languages, and sorting
+multi-language text is hard to do. It depends on your language as well
+as the text being sorted, and often is still not well-defined.
+`Unicode Technical Standard #10 <http://www.unicode.org/reports/tr10/>`_
+outlines an algorithm to sort multi-language text, but even then it
+needs ordinal data for each character for each language. We don't know
+of any Python implementations of it, and any implementation we use
+would have to be fast since we compare thousands of strings when sorting.
 
-    ::
 
-        $ mid3v2 --delete-frames=TLEN filename.mp3
+I have two albums with the same name which are merged in the Album List
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Tag them with different ``albumartist`` tags. You can also use
+``musicbrainz_albumid`` tags, which several other taggers and our "MusicBrainz
+Lookup" plugin can write.
 
-    If there are variable bit-rate (VBR) files, there may be errors in the
-    frames themselves leading to an incorrectly computed length separate
-    from any tags. You can fix this problem with various tools, e.g.
-    `mp3val <http://mp3val.sourceforge.net/>`_:
 
-    ::
+I have two discs of the same album, and they don't get merged in the Album List
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        $ mp3val -f filename.mp3
+Make sure they have the same name (i.e. without "(disc x)" on the end). If
+they are still not merged, they have different `albumartist`, `labelid` or
+``musicbrainz_albumid`` tags. If they have different label ID tags, delete the
+incorrect one. If they have different MusicBrainz album ID tags, add a
+``labelid`` tag that is the same for both albums.
 
 
-**I want keyboard shortcuts to change browsers (or anything else)**
+Can I show more than 0 to 4 notes when rating songs?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Put ``gtk-can-change-accels = 1`` in ``~/.gtkrc-2.0`` (and restart Quod
-    Libet). Then hover the mouse over the menu item you want to set an
-    accelerator for, and press that key.
+Close Quod Libet; in ``~/.quodlibet/config`` find the ``ratings = 4``
+line. Change it to ``ratings = however many ratings you want``. It's
+best if the value divides 100 evenly; multiples of 2 and 5 are good.
+You will need to use the ratings right-click menu to set ratings above 4.
 
-    When using GNOME this setting can be toggled in *Menus and Toolbars* in
-    the GNOME settings.
 
+How can I hide incomplete albums from the Album View?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Whenever I type a space, Quod Libet pauses**
+One way is to enter ``#(tracks > 5)`` into the search box above the
+album list - this will only show albums with greater than 5 tracks.
 
-    Users of some keyboard layouts, including the popular French
-    Alternative, may hit this bug. In these layouts, the spacebar sends a
-    non-breaking space character, which GTK+ interprets as
-    ``<control>space``. This is a `known bug in GTK
-    <https://bugzilla.gnome.org/show_bug.cgi?id=541466>`__. You can work
-    around it by changing your keyboard layout to send a regular space, or
-    by changing the keybinding for play/pause using the method above.
 
+How can I list my tracks based on their ratings?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Player
-------
+Right-click somewhere on the headers bar (below the search bar), select
+"Track Headers" from the menu and add "Ratings". Now if you click
+"Ratings" on the headers bar your tracks will be sorted based on their
+ratings.
 
-**How do I add the play count or skip count to the columns in the song list?**
 
-    Add the ``~#playcount`` and/or ``~#skipcount`` tags to the song header
-    list (in the "Others" field).
+How is album art handled?
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
+There are many ways users like to keep their album art, and Quod Libet
+supports graphics (primarily `.jpg` but `.gif` and `.png` also) in these ways:
 
-**How do I use a different soundcard with Quod Libet?**
+* Files in the *album* directory with fixed names eg ``folder.jpg``,
+  ``cover.jpg``, ``front.png``
+* A file containing the ``labelid`` (eg *COCX-32760 cover.jpg*)
+* Files of certain other names linked to a
+  given album in a shared directory:
+  ``<musicbrainz_albumid>.ext`` or ``<artist> - <title>.ext``
+* Sub-folders of certain names (``covers/`` or ``<labelid>/``)
+  with compatible images in them.
+* Embedded cover art in the file itself (incomplete support
+  in some formats).
 
-    See the chapter on configuring the AudioBackends in the user's guide.
+There are fuzzy-matching algorithms to try to determine the most
+specific match if multiple of the above exist.
 
+If you're adding new album art, the *Album Art downloader* plugin
+allows you to do so easily and is compatible with the above.
 
-**Why does Quod Libet sort my songs out of order?**
 
-    Music metadata, like music, comes in many languages, and sorting
-    multi-language text is hard to do. It depends on your language as well
-    as the text being sorted, and often is still not well-defined.
-    `Unicode Technical Standard #10 <http://www.unicode.org/reports/tr10/>`_
-    outlines an algorithm to sort multi-language text, but even then it
-    needs ordinal data for each character for each language. We don't know
-    of any Python implementations of it, and any implementation we use
-    would have to be fast since we compare thousands of strings when sorting.
+Why do songs disappear from my playlists?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+This is due to the way the library works, and that playlists entries are based
+on filename. One of several things might have happened, before a re-scan of
+the library (on start-up or otherwise)
 
-**I have two albums with the same name, and they sort out of order/get
-merged in the Album List**
+* The songs have been renamed, moved, or their directory moved.
+  Note this includes using *Rename Files* from the tag editor.
+* A removable (mounted) media device - USB disk, network share,
+  internet folder or whatever is/was no longer available
+  (at the time of refresh).
 
-    Tag them with different ``labelid`` tags (it's best if you use the
-    actual label catalog ID, but if you can't find it you can also just use
-    any different values). You can also use ``musicbrainz_albumid`` tags,
-    which several other taggers can write.
+Note if you're using the Auto Library Update this will happen immediately
+(There are ideas to improve this: Issue 961).
 
 
-**I have two discs of the same album, and they don't get merged in the
-Album List.**
+Can QL read my ID3 tags encoded in euc-kr / cp1251 / windows-1252 etc?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Make sure they have the same name (i.e. without "(disc x)" on the end).
-    If they are still not merged, they have different `labelid` or
-    ``musicbrainz_albumid`` tags. If they have different label ID tags,
-    delete the incorrect one. If they have different MusicBrainz album ID
-    tags, add a ``labelid`` tag that is the same for both albums.
+You can define a custom list of encodings to check. UTF-8 is always tried
+first, and Latin-1 is always tried last. To make your own list, close QL, open
+up ``~/.quodlibet/config``, and find the ``id3encoding`` option. You can enter
+any valid encodings here, separated by spaces, and they will be tried in
+order. If you have files already imported into your library with incorrect
+tags, you'll need to reload them.
 
+Quod Libet saves ID3 tags in UTF-8 or UTF-16.
 
-**Can I show more than 0 to 4 notes when rating songs?**
 
-    Close Quod Libet; in ``~/.quodlibet/config`` find the ``ratings = 4``
-    line. Change it to ``ratings = however many ratings you want``. It's
-    best if the value divides 100 evenly; multiples of 2 and 5 are good.
-    You will need to use the ratings right-click menu to set ratings above 4.
+What does the name mean?
+~~~~~~~~~~~~~~~~~~~~~~~~
 
+*Quodlibet* or *Quod libet* is Latin for "whatever you please" or "whatever
+you want", which is the kind of attitude we want to convey with QL: you
+control how you fiddle with your music. A *quodlibet* is also a type of
+musical composition, an improvisation by several players or vocalists at once,
+which is a pretty accurate description of QL's development.
 
-**How can I hide incomplete albums from the Album View?**
+*Ex falso quodlibet*, or "from a falsehood, whatever you please" is one of the
+properties of material implication (*if/then*) in classical logics; in
+standard notation it can be written as ``∀A (⊥ → A)``.
 
-    One way is to enter ``#(tracks > 5)`` into the search box above the
-    album list - this will only show albums with greater than than 5 tracks.
+Finally, the initial directory imported into Subversion was named `ql`,
+because I was experimenting with a syntax for a _q_uery _l_anguage.
 
 
-**How can I list my tracks based on their ratings?**
+Where do the release names come from?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Right-click somewhere on the headers bar (below the search bar), select
-    "Track Headers" from the menu and add "Ratings". Now if you click
-    "Ratings" on the headers bar your tracks will be sorted based on their
-    ratings.
+`Daily Dinosaur Comics <http://www.qwantz.com/>`_ at the time of the release.
 
 
-**How is album art handled?**
+I like <my favorite player>, so I won't use Quod Libet!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    There are many ways users like to keep their album art, and Quod Libet
-    supports graphics (primarily `.jpg` but `.gif` and `.png` also) in
-    these ways:
+Okay. We think Quod Libet beats other players in the areas where it counts
+(where exactly it does count is undecided; 'tag editing', 'massive libraries',
+and 'regexp searching' have all been cited); we didn't like the other players.
+If you do, continue using them. You still might want to check out Ex Falso,
+since while there's an awful lot of media players out there, there are far
+fewer choices for tag editors. You could also :ref:`help us make Quod Libet
+better <Contribute>`.
 
-     * Files in the *album* directory with fixed names eg ``folder.jpg``,
-       ``cover.jpg``, ``front.png``
-     * A file containing the ``labelid`` (eg *COCX-32760 cover.jpg*)
-     * Files of certain other names linked to a
-       given album in a shared directory:
-       ``<musicbrainz_albumid>.ext`` or ``<artist> - <title>.ext``
-     * Sub-folders of certain names (``covers/`` or ``<labelid>/``)
-       with compatible images in them.
-     * Embedded cover art in the file itself (incomplete support
-       in some formats).
 
-    There are fuzzy-matching algorithms to try to determine the most
-    specific match if multiple of the above exist.
+Changing the volume in Quod Libet changes the master volume!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    If you're adding new album art, the *Album Art downloader* plugin
-    allows you to do so easily and is compatible with the above.
-
-
-**Why do songs disappear from my playlists?**
-
-    This is due to the way the library works, and that playlists entries
-    are based on filename. One of several things might have happened,
-    before a re-scan of the library (on start-up or otherwise)
-
-     * The songs have been renamed, moved, or their directory moved.
-       Note this includes using *Rename Files* from the tag editor.
-     * A removable (mounted) media device - USB disk, network share,
-       internet folder or whatever is/was no longer available
-       (at the time of refresh).
-
-    Note if you're using the Auto Library Update this will happen
-    immediately (There are ideas to improve this: Issue 961).
-
-
-Tag Editing
------------
-
-**I have a lot of ID3 tags in euc-kr/cp1251/windows-1252/latin-1024/insert
-favorite encoding here; can QL read them?**
-
-    You can define a custom list of encodings to check. UTF-8 is always
-    tried first, and Latin-1 is always tried last. To make your own list,
-    close QL, open up ``~/.quodlibet/config``, and find the ``id3encoding``
-    option. You can enter any valid encodings here, separated by spaces,
-    and they will be tried in order. If you have files already imported
-    into your library with incorrect tags, you'll need to reload them.
-
-    Quod Libet saves ID3 tags in UTF-8 or UTF-16.
-
-
-Other stuff
------------
-
-**What does the name mean?**
-
-    *Quodlibet* or *Quod libet* is Latin for "whatever you please" or
-    "whatever you want", which is the kind of attitude we want to convey
-    with QL: you control how you fiddle with your music. A *quodlibet* is
-    also a type of musical composition, an improvisation by several players
-    or vocalists at once, which is a pretty accurate description of QL's
-    development.
-
-    *Ex falso quodlibet*, or "from a falsehood, whatever you please" is one
-    of the properties of material implication (*if/then*) in classical
-    logics; in standard notation it can be written as ``∀A (⊥ → A)``.
-
-    Finally, the initial directory imported into Subversion was named `ql`,
-    because I was experimenting with a syntax for a _q_uery _l_anguage.
-
-
-**Where do the release names come from?**
-
-    `Daily Dinosaur Comics <http://www.qwantz.com/>`_ at the time of the
-    release.
-
-
-**I like <my favorite player>, so I won't use Quod Libet!**
-
-    Okay. We think Quod Libet beats other players in the areas where it
-    counts (where exactly it does count is undecided; 'tag editing',
-    'massive libraries', and 'regexp searching' have all been cited); we
-    didn't like the other players. If you do, continue using them. You
-    still might want to check out Ex Falso, since while there's an awful
-    lot of media players out there, there are far fewer choices for tag
-    editors. You could also :ref:`help us make Quod Libet better
-    <Contribute>`.
+Since 3.5 Quod Libet will control the PulseAudio stream volume directly (same
+as the application slider in ``pavucontrol``) which might have an effect on
+the master volume and vice versa. To restore the old behavior disable
+``flat-volumes`` mode in PulseAudio. See ``man pulse-daemon.conf`` for more
+information.

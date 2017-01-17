@@ -5,10 +5,16 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet import config
+from quodlibet.util import print_d
+
 from ._base import MMKeysAction, MMKeysImportError
 
 
 def iter_backends():
+    if config.getboolean("settings", "disable_mmkeys"):
+        return
+
     try:
         from .gnome import GnomeBackend, MateBackend
     except MMKeysImportError:
@@ -25,11 +31,11 @@ def iter_backends():
         yield KeybinderBackend
 
     try:
-        from .pyhook import PyHookBackend
+        from .winhook import WinHookBackend
     except MMKeysImportError:
         pass
     else:
-        yield PyHookBackend
+        yield WinHookBackend
 
     try:
         from .osx import OSXBackend
@@ -52,11 +58,11 @@ class MMKeysHandler(object):
     events to actions on the player backend.
     """
 
-    def __init__(self, app_name, window, player):
+    def __init__(self, app):
         self._backend = None
-        self._window = window
-        self._player = player
-        self._app_name = app_name
+        self._window = app.window
+        self._player = app.player
+        self._app_name = app.name
 
     def start(self):
         kind = find_active_backend()
