@@ -48,4 +48,4 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered):
             if choice <= 0:
                 return playlist.get_iter([i])
         else:  # This should only happen if all songs have equal play counts.
-            return playlist.get_iter([random.choice(remaining.keys())])
+            return playlist.get_iter([random.choice(list(remaining.keys()))])
