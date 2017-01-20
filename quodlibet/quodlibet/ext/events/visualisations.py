@@ -40,7 +40,6 @@ class ProjectM(EventPlugin):
     DEFAULT_EXEC = 'projectM-pulseaudio'
 
     def __init__(self):
-        super().__init__()
         self._pid = None
 
     def enabled(self):
