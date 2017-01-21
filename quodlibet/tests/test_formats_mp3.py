@@ -39,4 +39,5 @@ class TMP3File(TestCase):
     def test_encoding(self):
         self.assertEqual(self.song("~encoding"), "")
         self.assertEqual(self.song2("~encoding"), "")
-        self.assertEqual(self.song3("~encoding"), "LAME 3.99.1+\nVBR")
+        assert self.song3("~encoding") in [
+            "LAME 3.99.1+\nVBR", "LAME 3.99.1+\nVBR\n-V 2"]

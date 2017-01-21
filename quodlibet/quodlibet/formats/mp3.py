@@ -25,7 +25,9 @@ class MP3File(ID3File):
 
         encoder, brm = info.encoder_info, info.bitrate_mode
         brm = {1: u"CBR", 2: u"VBR", 3: u"ABR"}.get(brm, u"")
-        encoding = u"\n".join(filter(None, [encoder, brm]))
+        # encoder_settings is 1.37+
+        settings = getattr(info, "encoder_settings", u"")
+        encoding = u"\n".join(filter(None, [encoder, brm, settings]))
         if encoding:
             self["~encoding"] = encoding
 
