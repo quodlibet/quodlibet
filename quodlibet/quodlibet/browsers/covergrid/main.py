@@ -43,6 +43,7 @@ from quodlibet.util.library import background_filter
 from quodlibet.util import connect_obj
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
+from quodlibet.qltk import popup_menu_at_widget
 
 
 class PreferencesButton(PreferencesButton):
@@ -307,7 +308,9 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         view.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
         view.connect("drag-data-get", self.__drag_data_get) # NOT WORKING
-        connect_obj(view, 'button-press-event', self.__popup, view, library)
+        connect_obj(view, 'button-press-event',
+            self.__rightclick, view, library)
+        connect_obj(view, 'popup-menu', self.__popup, view, library)
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
@@ -432,7 +435,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         album = model.get_album(iter_)
         if album is None:
             return config.getboolean("browsers", "covergrid_all", False)
-        key = key.decode('utf-8').lower()
+        key = util.gdecode(key).lower()
         title = album.title.lower()
         if key in title:
             return False
@@ -443,7 +446,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
                     return False
         return True
 
-    def __popup(self, view, event, library):
+    def __rightclick(self, view, event, library):
         x = int(event.x)
         y = int(event.y)
         current_path = view.get_path_at_pos(x, y)
@@ -451,21 +454,26 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             if not view.path_is_selected(current_path):
                 view.unselect_all()
             view.select_path(current_path)
-            albums = self.__get_selected_albums()
-            songs = self.__get_songs_from_albums(albums)
+            self.__popup(view, library)
 
-            items = []
-            num = len(albums)
-            button = MenuItem(
-                ngettext("Reload album _cover", "Reload album _covers", num),
-                Icons.VIEW_REFRESH)
-            button.connect('activate', self.__refresh_album, view)
-            items.append(button)
+    def __popup(self, view, library):
 
-            menu = SongsMenu(library, songs, items=[items])
-            menu.show_all()
-            menu.popup(None, None, None, event.button, event.time,
-                Gtk.get_current_event_time())
+        albums = self.__get_selected_albums()
+        songs = self.__get_songs_from_albums(albums)
+
+        items = []
+        num = len(albums)
+        button = MenuItem(
+            ngettext("Reload album _cover", "Reload album _covers", num),
+            Icons.VIEW_REFRESH)
+        button.connect('activate', self.__refresh_album, view)
+        items.append(button)
+
+        menu = SongsMenu(library, songs, items=[items])
+        menu.show_all()
+        popup_menu_at_widget(menu, view,
+            Gdk.BUTTON_SECONDARY,
+            Gtk.get_current_event_time())
 
     def _show_tooltip(self, widget, x, y, keyboard_tip, tooltip):
         w = self.scrollwin.get_hadjustment().get_value()
