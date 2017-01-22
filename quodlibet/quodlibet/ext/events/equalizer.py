@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010 Steven Robertson
 #           2012 Christoph Reiter
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -85,7 +86,8 @@ def interp_bands(src_band, target_band, src_gain):
 
 def get_config():
     try:
-        return map(float, config.get('plugins', 'equalizer_levels').split(','))
+        eq_levels_str = config.get('plugins', 'equalizer_levels')
+        return [float(s) for s in eq_levels_str.split(',')]
     except (config.Error, ValueError):
         return []
 
@@ -143,7 +145,7 @@ class Equalizer(EventPlugin):
         def set_band(adj, idx):
             levels[idx] = adj.get_value()
             config.set('plugins', 'equalizer_levels',
-                       ','.join(map(str, levels)))
+                       ','.join(str(lv) for lv in levels))
             self.apply()
 
         adjustments = []
