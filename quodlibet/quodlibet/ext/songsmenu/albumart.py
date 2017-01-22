@@ -6,7 +6,7 @@
 #                Jeremy Cantrell <jmcantrell@gmail.com>
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
-#           2011-2016 Nick Boultbee
+#           2011-2017 Nick Boultbee
 #                2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
@@ -14,6 +14,7 @@
 # published by the Free Software Foundation
 import json
 import os
+import re
 import time
 import threading
 import gzip
@@ -22,6 +23,7 @@ from xml.dom import minidom
 
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern
+from quodlibet.pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.util import format_size, print_exc
@@ -40,12 +42,14 @@ from quodlibet.util.path import iscommand
 from quodlibet.util.urllib import urlopen, Request
 from quodlibet.compat import xrange, urlencode, cBytesIO
 
-
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
     "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
 
 PLUGIN_CONFIG_SECTION = 'cover'
 CONFIG_ENG_PREFIX = 'engine_'
+
+SEARCH_PATTERN = Pattern(
+    '<albumartist|<albumartist>|<artist>> - <album|<album>|<title>>')
 
 
 def get_encoding_from_socket(socket):
@@ -55,9 +59,9 @@ def get_encoding_from_socket(socket):
     return (enc and enc[0]) or "utf-8"
 
 
-def get_url(url, post={}, get={}):
-    post_params = urlencode(post)
-    get_params = urlencode(get)
+def get_url(url, post=None, get=None):
+    post_params = urlencode(post or {})
+    get_params = urlencode(get or {})
     if get:
         get_params = '?' + get_params
 
@@ -80,8 +84,11 @@ def get_url(url, post={}, get={}):
     if url_sock.headers.get("content-encoding", "") == "gzip":
         data = gzip.GzipFile(fileobj=cBytesIO(data)).read()
     url_sock.close()
-
-    return data, enc
+    content_type = url_sock.headers.get('Content-Type', '').split(';', 1)[0]
+    domain = re.compile('\w+://([^/]+)/').search(url).groups(0)[0]
+    print_d("Got %s data from %s" % (content_type, domain))
+    return (data if content_type.startswith('image')
+            else data.decode(enc))
 
 
 def get_encoding(url):
@@ -121,7 +128,7 @@ class AmazonParser(object):
             # ...so use the gnome.org one
             'AssociateTag': 'gnomestore-20',
         }
-        data, enc = get_url(url, get=parameters)
+        data = get_url(url, get=parameters)
         dom = minidom.parseString(data)
 
         pages = dom.getElementsByTagName('TotalPages')
@@ -226,8 +233,8 @@ class DiscogsParser(object):
             'per_page': 100,
         }
 
-        _params = dict(parameters.items() + self.creds.items())
-        data, enc = get_url(url, get=_params)
+        parameters.update(self.creds)
+        data = get_url(url, get=parameters)
         json_dict = json.loads(data)
 
         # TODO: rate limiting
@@ -253,7 +260,7 @@ class DiscogsParser(object):
             return
 
         res_url = item.get('resource_url', '')
-        data, enc = get_url(res_url, get=self.creds)
+        data = get_url(res_url, get=self.creds)
         json_dict = json.loads(data)
 
         images = json_dict.get('images', [])
@@ -262,15 +269,14 @@ class DiscogsParser(object):
 
             type = image.get('type', '')
             if type != 'primary':
-                print_d('Cover is not primary: {0}'.format(type))
                 continue
 
+            uri = image.get('uri', '')
             cover = {'source': 'https://www.discogs.com',
                      'name': item.get('title', ''),
                      'thumbnail': image.get('uri150', thumbnail),
-                     'cover': image.get('uri', '')}
-
-            cover['size'] = get_size_of_url(cover['cover'])
+                     'cover': uri,
+                     'size': get_size_of_url(uri)}
 
             width = image.get('width', 0)
             height = image.get('height', 0)
@@ -434,8 +440,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         save_format = self.name_combo.get_active_text()
         # Allow use of patterns in creating cover filenames
-        pattern = ArbitraryExtensionFileFromPattern(
-            save_format.decode("utf-8"))
+        pattern = ArbitraryExtensionFileFromPattern(save_format)
         filename = pattern.format(self.song)
         print_d("Using '%s' as filename based on %s" % (filename, save_format))
         file_path = os.path.join(self.dirname, filename)
@@ -711,13 +716,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         left_vbox.pack_start(self.progress, False, True, 0)
 
-        if songs[0]('albumartist'):
-            text = songs[0]('albumartist')
-        else:
-            text = songs[0]('artist')
-
-        text += ' - ' + songs[0]('album')
-
+        song = songs[0]
+        text = SEARCH_PATTERN.format(song)
         self.set_text(text)
         self.start_search()
 
@@ -778,7 +778,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
     def __add_cover_to_list(self, cover):
         try:
             pbloader = GdkPixbuf.PixbufLoader()
-            pbloader.write(get_url(cover['thumbnail'])[0])
+            pbloader.write(get_url(cover['thumbnail']))
             pbloader.close()
 
             scale_factor = self.get_scale_factor()
