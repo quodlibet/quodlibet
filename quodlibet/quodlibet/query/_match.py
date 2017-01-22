@@ -16,8 +16,6 @@ from senf import fsn2text, fsnative
 from quodlibet.unisearch import compile
 from quodlibet.compat import floordiv, text_type
 from quodlibet.util import parse_date
-from quodlibet.plugins.query import QUERY_HANDLER
-from quodlibet.plugins.query import QueryPluginError
 from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 
 
@@ -549,6 +547,9 @@ class Extension(Node):
     fails to parse the body"""
 
     def __init__(self, name, body):
+        # pulls in gtk+
+        from quodlibet.plugins.query import QUERY_HANDLER, QueryPluginError
+
         self.__name = name
         self.__valid = True
         self.__body = body
