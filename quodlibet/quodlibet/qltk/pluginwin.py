@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#                2016 Nick Boultbee
+#           2016-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -14,13 +14,13 @@ from quodlibet import qltk
 from quodlibet import util
 from quodlibet import _
 
-from quodlibet.plugins import PluginManager
+from quodlibet.plugins import PluginManager, plugin_enabled
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import UniqueWindow, PersistentWindowMixin
 from quodlibet.qltk.entry import ClearEntry
 from quodlibet.qltk.x import Align, Paned, Button, ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, is_accel
 from quodlibet.util import connect_obj
 
 
@@ -178,11 +178,26 @@ class PluginListView(HintedTreeView):
         column.set_expand(True)
         self.append_column(column)
 
+    def do_key_press_event(self, event):
+        if is_accel(event, "space", "KP_Space"):
+            selection = self.get_selection()
+            fmodel, fiter = selection.get_selected()
+            plugin = fmodel.get_value(fiter)
+            if plugin.can_enable:
+                self._emit_toggled(fmodel.get_path(fiter),
+                                   not plugin_enabled(plugin))
+            self.get_model().iter_changed(fiter)
+        else:
+            Gtk.TreeView.do_key_press_event(self, event)
+
     def __toggled(self, render, path):
         render.set_active(not render.get_active())
+        self._emit_toggled(path, render.get_active())
+
+    def _emit_toggled(self, path, value):
         model = self.get_model()
         iter_ = model.get_iter(path)
-        self.emit("plugin-toggled", model, iter_, render.get_active())
+        self.emit("plugin-toggled", model, iter_, value)
 
     def select_by_plugin_id(self, plugin_id):
 
@@ -382,8 +397,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         if tag:
             plugin_tags = plugin.tags
             tag, flag = tag
-            pm = PluginManager.instance
-            enabled = pm.enabled(plugin) or not plugin.can_enable
+            enabled = plugin_enabled(plugin)
             if flag == ComboType.NO and plugin_tags or \
                 flag == ComboType.TAG and not tag in plugin_tags or \
                 flag == ComboType.EN and not enabled or \
