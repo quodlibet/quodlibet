@@ -64,13 +64,6 @@ Unstable PPA (14.04+):
         $ sudo add-apt-repository ppa:lazka/dumpingplace
 
 
-To remove the PPAs and revert back to the old version::
-
-    $ sudo apt-get install ppa-purge
-    $ sudo ppa-purge ppa:lazka/ppa
-    $ sudo ppa-purge ppa:lazka/dumpingplace
-
-
 .. _debian:
 
 |debian-logo| Debian
