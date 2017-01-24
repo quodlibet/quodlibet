@@ -122,6 +122,7 @@ quodlibet/ext/songsmenu/importexport.py
 quodlibet/ext/songsmenu/k3b.py
 quodlibet/ext/songsmenu/lastfmsync.py
 quodlibet/ext/songsmenu/makesorttags.py
+quodlibet/ext/songsmenu/migratemetadata.py
 quodlibet/ext/songsmenu/playlist.py
 quodlibet/ext/songsmenu/refresh.py
 quodlibet/ext/songsmenu/replaygain.py
