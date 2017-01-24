@@ -514,7 +514,7 @@ msgstr "Radio Internet"
 
 #: ../quodlibet/browsers/iradio.py:252
 msgid "Downloading station list"
-msgstr "Télécharger la liste de station"
+msgstr "Télécharger la liste des stations"
 
 #: ../quodlibet/browsers/iradio.py:348
 msgid "New Station"
