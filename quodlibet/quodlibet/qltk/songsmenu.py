@@ -8,6 +8,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet.compat import listvalues
 from quodlibet.qltk.pluginwin import PluginWindow
 
 from quodlibet import ngettext, _
@@ -161,7 +162,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 albums[key] = []
             albums[key].append(song)
 
-        albums = albums.values()
+        albums = listvalues(albums)
         for album in albums:
             album.sort()
         return albums
