@@ -176,6 +176,7 @@ TRANSLATORS = sorted(u"""
 Åka Sikrom (nb)
 Alexandre Passos (pt)
 Andreas Bertheussen (nb)
+Olivier Humbert (fr)
 Anton Shestakov (ru)
 Bastian Kleineidam (de)
 Bastien Gorissen (fr)
