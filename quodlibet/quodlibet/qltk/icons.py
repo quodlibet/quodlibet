@@ -57,6 +57,7 @@ class Icons(str):
     DRIVE_REMOVABLE_MEDIA = "drive-removable-media"
     EDIT_CLEAR = "edit-clear"  # "_Clear"
     EDIT_COPY = "edit-copy"  # "_Copy"
+    EDIT_PASTE = "edit-paste"  # "_Paste"
     EDIT_DELETE = "edit-delete"  # "_Delete"
     EDIT_FIND = "edit-find"  # "_Find"
     EDIT_FIND_REPLACE = "edit-find-replace"  # "Find and _Replace"

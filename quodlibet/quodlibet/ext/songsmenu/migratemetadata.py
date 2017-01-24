@@ -13,6 +13,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.formats._audio import MIGRATE
 from quodlibet.util.tags import readable
 from quodlibet.qltk import Icons
+from quodlibet.qltk.window import Dialog
 
 
 # This global info variable is where the song metadata
@@ -33,13 +34,16 @@ class MetadataCopier(SongsMenuPlugin):
         global songinfo
 
         # Create a dialog.
-        dlg = Gtk.Dialog(title=_("Migrate Metadata"),
-                         flags=(Gtk.DialogFlags.MODAL |
-                                Gtk.DialogFlags.DESTROY_WITH_PARENT),
-                         buttons=(Icons.EDIT_COPY, Gtk.ResponseType.OK,
-                                  Icons.EDIT_PASTE, Gtk.ResponseType.APPLY))
+        dlg = Dialog(title=_("Migrate Metadata"),
+                     transient_for=self.plugin_window,
+                     flags=(Gtk.DialogFlags.MODAL |
+                            Gtk.DialogFlags.DESTROY_WITH_PARENT))
         dlg.set_border_width(4)
         dlg.vbox.set_spacing(4)
+
+        dlg.add_icon_button(_("_Copy"), Icons.EDIT_COPY, Gtk.ResponseType.OK)
+        dlg.add_icon_button(
+            _("_Paste"), Icons.EDIT_PASTE, Gtk.ResponseType.APPLY)
 
         # Default to the "Copy" button when the songsinfo
         # list is empty, default to "Paste" button otherwise.
