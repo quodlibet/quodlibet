@@ -420,7 +420,7 @@ msgstr ""
 
 #: ../quodlibet/browsers/collection/prefs.py:188
 msgid "Album Collection Preferences"
-msgstr "Préférences de la collection d'album"
+msgstr "Préférences de la collection d'albums"
 
 #: ../quodlibet/browsers/collection/prefs.py:195
 #: ../quodlibet/browsers/paned/prefs.py:203
@@ -452,7 +452,7 @@ msgstr "Montrer les _textes des albums"
 
 #: ../quodlibet/browsers/covergrid/prefs.py:71
 msgid "Show \"All Albums\" Item"
-msgstr "Monter tous les éléments \"Tous les albums\""
+msgstr "Montrer l'élément \"Tous les albums\""
 
 #: ../quodlibet/browsers/covergrid/prefs.py:78
 msgid "Vertical Split"
@@ -763,7 +763,7 @@ msgstr "Re_nommer"
 #: ../quodlibet/browsers/media.py:461
 #, python-format
 msgid "%(used-size)s used, %(free-size)s available"
-msgstr "%(taille-utilisée)s utilisé(es), %(taille-libre)s disponible(s)"
+msgstr "%(used-size)s utilisé(es), %(free-size)s disponible(s)"
 
 #: ../quodlibet/browsers/media.py:479
 #, python-format
@@ -910,7 +910,7 @@ msgstr[1] ""
 #: ../quodlibet/browsers/playlists/menu.py:79
 #, python-format
 msgid "Confirm action for playlist \"%s\""
-msgstr "Confirmez l'action pour liste de lecture\"%s\""
+msgstr "Confirmez l'action pour la liste de lecture \"%s\""
 
 #: ../quodlibet/browsers/playlists/prefs.py:21
 msgid "empty"
