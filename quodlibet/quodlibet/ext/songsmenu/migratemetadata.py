@@ -9,6 +9,7 @@ import math
 
 from gi.repository import Gtk
 
+from quodlibet import _, ngettext
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.formats._audio import MIGRATE
 from quodlibet.util.tags import readable
