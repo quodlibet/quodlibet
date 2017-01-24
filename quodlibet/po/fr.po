@@ -1,12 +1,14 @@
 # translation of fr.po to Français
 # Olivier Gambier <dev@viapanda.com>, 2006.
+# Ludovic DRUETTE <ludovicdruette@gmail.com>, 2016.
+# Olivier Humbert <trebmuh@tuxfamily.org>, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-10 11:49+0100\n"
-"PO-Revision-Date: 2016-05-04 15:34+0200\n"
-"Last-Translator: Ludovic DRUETTE <ludovicdruette@gmail.com>\n"
+"PO-Revision-Date: 2017-01-24 01:06+0100\n"
+"Last-Translator: Olivier Humbert <trebmuh@tuxfamily.org>\n"
 "Language-Team: Français\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -83,9 +85,8 @@ msgstr "_Notation"
 
 #: ../quodlibet/browsers/albums/main.py:178
 #: ../quodlibet/browsers/covergrid/main.py:63
-#, fuzzy
 msgid "Sort _by…"
-msgstr "_Trier par..."
+msgstr "_Trier par…"
 
 #: ../quodlibet/browsers/albums/main.py:199
 #: ../quodlibet/browsers/covergrid/main.py:84
@@ -133,9 +134,8 @@ msgstr[1] "Recharger les _jaquettes des albums"
 #: ../quodlibet/browsers/iradio.py:852 ../quodlibet/browsers/paned/main.py:292
 #: ../quodlibet/browsers/paned/main.py:298 ../quodlibet/browsers/search.py:125
 #: ../quodlibet/browsers/soundcloud/main.py:312 ../quodlibet/util/library.py:36
-#, fuzzy
 msgid "browsers"
-msgstr "Navigateurs"
+msgstr "navigateurs"
 
 #: ../quodlibet/browsers/albums/prefs.py:28
 #: ../quodlibet/browsers/collection/models.py:17
@@ -166,9 +166,8 @@ msgstr[1] "%d disques"
 
 #: ../quodlibet/browsers/albums/prefs.py:44
 #: ../quodlibet/browsers/covergrid/prefs.py:46
-#, fuzzy
 msgid "An Example Album"
-msgstr "Tous les albums"
+msgstr "Un exemple d'album"
 
 #: ../quodlibet/browsers/albums/prefs.py:52
 msgid "Album List Preferences"
@@ -184,9 +183,8 @@ msgstr "Inclure les personnes dans la _recherche"
 
 #: ../quodlibet/browsers/albums/prefs.py:71
 #: ../quodlibet/browsers/covergrid/prefs.py:120
-#, fuzzy
 msgid "Options"
-msgstr "[options]"
+msgstr "Options"
 
 #: ../quodlibet/browsers/albums/prefs.py:74
 #: ../quodlibet/browsers/covergrid/prefs.py:123
@@ -236,7 +234,6 @@ msgstr "Saisissez l'adresse d'un flux audio."
 #: ../quodlibet/qltk/cbes.py:55 ../quodlibet/qltk/data_editors.py:310
 #: ../quodlibet/qltk/edittags.py:288 ../quodlibet/qltk/edittags.py:488
 #: ../quodlibet/qltk/quodlibetwindow.py:1347 ../quodlibet/qltk/scanbox.py:80
-#, fuzzy
 msgid "_Add"
 msgstr "_Ajouter"
 
@@ -250,9 +247,8 @@ msgstr "_Flux audio"
 
 #: ../quodlibet/browsers/audiofeeds.py:306
 #: ../quodlibet/browsers/audiofeeds.py:312
-#, fuzzy
 msgid "_Download…"
-msgstr "_Télécharger"
+msgstr "_Télécharger…"
 
 #: ../quodlibet/browsers/audiofeeds.py:322
 msgid "Download Files"
@@ -319,30 +315,28 @@ msgstr "Impossible d'importer le flux"
 
 #: ../quodlibet/browsers/audiofeeds.py:439
 #: ../quodlibet/browsers/audiofeeds.py:495
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
 "audio feed."
 msgstr ""
-"<b>%s</b> n'a pas pu être ajouté. Le serveur est peut-être en dérangement ou "
+"%s n'a pas pu être ajouté. Le serveur est peut-être en dérangement ou "
 "la ressource n'est pas un flux audio."
 
 #. refresh button
 #: ../quodlibet/browsers/audiofeeds.py:446 ../quodlibet/browsers/media.py:217
 #: ../quodlibet/browsers/media.py:386 ../quodlibet/qltk/filesel.py:259
 #: ../quodlibet/qltk/pluginwin.py:328
-#, fuzzy
 msgid "_Refresh"
-msgstr "Rafraîchir la bibliothèque"
+msgstr "_Rafraîchir"
 
 #: ../quodlibet/browsers/audiofeeds.py:447
 #: ../quodlibet/browsers/playlists/main.py:451
 #: ../quodlibet/browsers/playlists/util.py:43 ../quodlibet/qltk/delete.py:142
 #: ../quodlibet/qltk/filesel.py:256 ../quodlibet/qltk/lyrics.py:39
 #: ../quodlibet/qltk/maskedbox.py:28 ../quodlibet/qltk/songsmenu.py:386
-#, fuzzy
 msgid "_Delete"
-msgstr "Supprimer les fichiers"
+msgstr "_Supprimer"
 
 #: ../quodlibet/browsers/audiofeeds.py:511
 #, python-format
@@ -383,14 +377,14 @@ msgid "Album _Collection"
 msgstr ""
 
 #: ../quodlibet/browsers/collection/models.py:24
-#, fuzzy, python-format
+#, python-format
 msgid "Unknown %s"
-msgstr "Inconnu(e)"
+msgstr "Inconnu(e) %s"
 
 #: ../quodlibet/browsers/collection/models.py:25
-#, fuzzy, python-format
+#, python-format
 msgid "Multiple %s Values"
-msgstr "Séparer en _plusieurs valeurs"
+msgstr "%s multiples valeurs"
 
 #: ../quodlibet/browsers/collection/prefs.py:66
 #: ../quodlibet/browsers/paned/prefs.py:50
@@ -410,9 +404,8 @@ msgstr "_Autre"
 #: ../quodlibet/qltk/edittags.py:634 ../quodlibet/qltk/maskedbox.py:48
 #: ../quodlibet/qltk/maskedbox.py:88 ../quodlibet/qltk/queue.py:313
 #: ../quodlibet/qltk/scanbox.py:55 ../quodlibet/qltk/scanbox.py:82
-#, fuzzy
 msgid "_Remove"
-msgstr "Supprimer les doublons"
+msgstr "Supp_rimer"
 
 #: ../quodlibet/browsers/collection/prefs.py:122
 #: ../quodlibet/ext/songsmenu/filterall.py:34
@@ -426,9 +419,8 @@ msgid "Merge"
 msgstr ""
 
 #: ../quodlibet/browsers/collection/prefs.py:188
-#, fuzzy
 msgid "Album Collection Preferences"
-msgstr "Préférences de l'affichage liste d'albums"
+msgstr "Préférences de la collection d'album"
 
 #: ../quodlibet/browsers/collection/prefs.py:195
 #: ../quodlibet/browsers/paned/prefs.py:203
@@ -455,14 +447,12 @@ msgid "Cover Grid Preferences"
 msgstr "Préférences du navigateur à panneaux"
 
 #: ../quodlibet/browsers/covergrid/prefs.py:64
-#, fuzzy
 msgid "Show album _text"
-msgstr "Montrer les _jaquettes des albums"
+msgstr "Montrer les _textes des albums"
 
 #: ../quodlibet/browsers/covergrid/prefs.py:71
-#, fuzzy
 msgid "Show \"All Albums\" Item"
-msgstr "Tous les albums"
+msgstr "Monter tous les éléments \"Tous les albums\""
 
 #: ../quodlibet/browsers/covergrid/prefs.py:78
 msgid "Vertical Split"
@@ -523,9 +513,8 @@ msgid "Internet Radio"
 msgstr "Radio Internet"
 
 #: ../quodlibet/browsers/iradio.py:252
-#, fuzzy
 msgid "Downloading station list"
-msgstr "Télécharger les fichiers"
+msgstr "Télécharger la liste de station"
 
 #: ../quodlibet/browsers/iradio.py:348
 msgid "New Station"
@@ -668,33 +657,28 @@ msgid "Rock"
 msgstr ""
 
 #: ../quodlibet/browsers/iradio.py:458
-#, fuzzy
 msgid "Would you like to load a list of popular radio stations?"
-msgstr "Voulez-vous charger une liste de webradios populaires ?"
+msgstr "Voulez-vous charger une liste de stations de radios populaires ?"
 
 #: ../quodlibet/browsers/iradio.py:464
-#, fuzzy
 msgid "_Load Stations"
-msgstr "_Nouvelle radio internet"
+msgstr "_Charger les stations"
 
 #: ../quodlibet/browsers/iradio.py:481
 msgid "_Internet Radio"
 msgstr "_Radio Internet"
 
 #: ../quodlibet/browsers/iradio.py:547
-#, fuzzy
 msgid "_New Station…"
-msgstr "Nouvelle radio Internet"
+msgstr "_Nouvelle station…"
 
 #: ../quodlibet/browsers/iradio.py:550
-#, fuzzy
 msgid "_Update Stations"
-msgstr "_Nouvelle radio internet"
+msgstr "_Mise à jour des stations"
 
 #: ../quodlibet/browsers/iradio.py:577
-#, fuzzy
 msgid "All Stations"
-msgstr "Nouvelle radio Internet"
+msgstr "Toutes les stations"
 
 #. TODO: support for ~#rating=!None etc (#1940)
 #: ../quodlibet/browsers/iradio.py:581
@@ -747,7 +731,6 @@ msgid "Not mounted"
 msgstr "Pas monté"
 
 #: ../quodlibet/browsers/media.py:55
-#, fuzzy
 msgid "Mount point:"
 msgstr "Point de montage :"
 
@@ -769,9 +752,8 @@ msgid "_Eject"
 msgstr "_Éjecter"
 
 #: ../quodlibet/browsers/media.py:360
-#, fuzzy
 msgid "_Properties"
-msgstr "Propriétés"
+msgstr "_Propriétés"
 
 #: ../quodlibet/browsers/media.py:365
 #: ../quodlibet/browsers/playlists/main.py:458
@@ -779,19 +761,19 @@ msgid "_Rename"
 msgstr "Re_nommer"
 
 #: ../quodlibet/browsers/media.py:461
-#, fuzzy, python-format
+#, python-format
 msgid "%(used-size)s used, %(free-size)s available"
-msgstr "<b>%s</b> utilisé(s), <b>%s</b> disponible(s)"
+msgstr "%(taille-utilisée)s utilisé(es), %(taille-libre)s disponible(s)"
 
 #: ../quodlibet/browsers/media.py:479
-#, fuzzy, python-format
+#, python-format
 msgid "%s is not connected."
-msgstr "<b>%s</b> n'est pas connecté."
+msgstr "%s n'est pas connecté."
 
 #: ../quodlibet/browsers/media.py:499
-#, fuzzy, python-format
+#, python-format
 msgid "Copying %(song)s"
-msgstr "Copie de <b>%(song)s</b>"
+msgstr "Copie de %(song)s"
 
 #: ../quodlibet/browsers/media.py:513 ../quodlibet/browsers/media.py:529
 msgid "Unable to copy song"
@@ -802,43 +784,41 @@ msgid "There is not enough free space for this song."
 msgstr "Il n'y a pas assez de place pour cette chanson"
 
 #: ../quodlibet/browsers/media.py:526
-#, fuzzy, python-format
+#, python-format
 msgid "%s could not be copied."
-msgstr "<b>%s</b> n'a pas pu être copié."
+msgstr "%s n'a pas pu être copié."
 
 #: ../quodlibet/browsers/media.py:545
 msgid "Unable to delete songs"
 msgstr "Impossible de supprimer les chansons"
 
 #: ../quodlibet/browsers/media.py:557
-#, fuzzy, python-format
+#, python-format
 msgid "Deleting %(song)s"
-msgstr "Suppression de <b>%(song)s</b>"
+msgstr "Suppression de %(song)s"
 
 #: ../quodlibet/browsers/media.py:575
-#, fuzzy, python-format
+#, python-format
 msgid "%s could not be deleted."
-msgstr "<b>%s</b> ne peut pas être supprimé."
+msgstr "%s ne peut pas être supprimé."
 
 #: ../quodlibet/browsers/media.py:579
 msgid "Unable to delete song"
 msgstr "Impossible de supprimer la chanson"
 
 #: ../quodlibet/browsers/media.py:594
-#, fuzzy, python-format
+#, python-format
 msgid "Ejecting %s failed."
-msgstr "L'éjection de <b>%s</b> a échoué."
+msgstr "L'éjection de %s a échoué."
 
 #: ../quodlibet/browsers/media.py:597
 msgid "Unable to eject device"
 msgstr "Impossible d'éjecter le périphérique"
 
 #: ../quodlibet/browsers/media.py:603
-#, fuzzy
 msgid "No device backend, Media Devices browser disabled."
 msgstr ""
-"Impossible de se connecter à un gestionnaire de périphérique, désactivation "
-"du navigateur de Périphériques Multimédias."
+"Pas de périphérique, désactivation du navigateur de périphériques de média."
 
 #: ../quodlibet/browsers/paned/main.py:38 ../quodlibet/qltk/shortcuts.py:44
 msgid "Paned Browser"
@@ -913,9 +893,8 @@ msgid "Import Playlist"
 msgstr "Importer une liste de lecture"
 
 #: ../quodlibet/browsers/playlists/menu.py:23
-#, fuzzy
 msgid "_New Playlist…"
-msgstr "_Créer une liste de lecture..."
+msgstr "_Nouvelle liste de lecture…"
 
 #: ../quodlibet/browsers/playlists/menu.py:75
 #, fuzzy, python-format
@@ -929,28 +908,25 @@ msgstr[1] ""
 "Voulez-vous continuer?"
 
 #: ../quodlibet/browsers/playlists/menu.py:79
-#, fuzzy, python-format
+#, python-format
 msgid "Confirm action for playlist \"%s\""
-msgstr "Confirmez la suppression de la liste de lecture"
+msgstr "Confirmez l'action pour liste de lecture\"%s\""
 
 #: ../quodlibet/browsers/playlists/prefs.py:21
 msgid "empty"
 msgstr "Vide"
 
 #: ../quodlibet/browsers/playlists/prefs.py:39
-#, fuzzy
 msgid "Example Playlist"
-msgstr "Créer une liste de lecture"
+msgstr "Exemple de liste de lecture"
 
 #: ../quodlibet/browsers/playlists/prefs.py:47
-#, fuzzy
 msgid "Playlist Browser Preferences"
-msgstr "Préférences du navigateur à panneaux"
+msgstr "Préférences du navigateur de liste de lecture"
 
 #: ../quodlibet/browsers/playlists/prefs.py:52
-#, fuzzy
 msgid "Playlist display"
-msgstr "Listes de lecture"
+msgstr "Affichage de liste de lecture"
 
 #: ../quodlibet/browsers/playlists/util.py:33
 #, fuzzy, python-format
@@ -995,13 +971,12 @@ msgid "_Search Library"
 msgstr "_Rechercher dans la bibliothèque"
 
 #: ../quodlibet/browsers/soundcloud/main.py:38
-#, fuzzy
 msgid "Soundcloud Browser"
-msgstr "Navigateur à panneaux"
+msgstr "Navigateur Soundcloud"
 
 #: ../quodlibet/browsers/soundcloud/main.py:39
 msgid "Sound_cloud"
-msgstr ""
+msgstr "Sound_cloud"
 
 #: ../quodlibet/browsers/soundcloud/main.py:59
 #: ../quodlibet/qltk/searchbar.py:73
@@ -1011,12 +986,11 @@ msgstr "Rechercher"
 #: ../quodlibet/browsers/soundcloud/main.py:136
 #, python-format
 msgid "Go to %s"
-msgstr ""
+msgstr "Aller à %s"
 
 #: ../quodlibet/browsers/soundcloud/main.py:380
-#, fuzzy
 msgid "Connected"
-msgstr "endroit"
+msgstr "Connecté"
 
 #: ../quodlibet/browsers/soundcloud/main.py:381
 #, python-format
@@ -1091,9 +1065,8 @@ msgid "Toggle play/pause mode"
 msgstr "Basculer entre le mode lecture et pause"
 
 #: ../quodlibet/cli.py:99
-#, fuzzy
 msgid "Stop playback"
-msgstr "Commencer la lecture"
+msgstr "Arrêter la lecture"
 
 #: ../quodlibet/cli.py:100
 msgid "Turn up volume"
