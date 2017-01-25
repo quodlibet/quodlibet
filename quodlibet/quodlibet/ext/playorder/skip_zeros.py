@@ -34,14 +34,17 @@ class SkipZeros(ShufflePlugin, OrderInOrder, PluginConfigMixin):
 
         # Matching Option
         toggles = [
-            (self._CFG_SKIP_BY_RATING, _("Skip Songs with _Rating of Zero")),
+            (self._CFG_SKIP_BY_RATING,
+             _("Skip Songs with _Rating of Zero"),
+             True),
             (self._CFG_SKIP_BY_TAG,
-             _("Skip Songs with a Non-Empty 'skip' _Tag")),
+             _("Skip Songs with a Non-Empty 'skip' _Tag"),
+             False),
         ]
         vb2 = Gtk.VBox(spacing=6)
-        for key, label in toggles:
+        for key, label, default in toggles:
             ccb = ConfigCheckButton(label, 'plugins', self._config_key(key))
-            ccb.set_active(self.config_get_bool(key))
+            ccb.set_active(self.config_get_bool(key, default))
             vb2.pack_start(ccb, True, True, 0)
 
         frame = qltk.Frame(label=_("Skipping options"), child=vb2)
