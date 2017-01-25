@@ -53,7 +53,7 @@ class SkipZeros(ShufflePlugin, OrderInOrder, PluginConfigMixin):
     def next(self, playlist, current):
         next = super(SkipZeros, self).next(playlist, current)
 
-        while next is not None and self.shouldSkip(playlist, next):
+        while next is not None and self.should_skip(playlist, next):
             next = super(SkipZeros, self).next(playlist, next)
 
         return next
@@ -61,23 +61,23 @@ class SkipZeros(ShufflePlugin, OrderInOrder, PluginConfigMixin):
     def previous(self, playlist, current):
         previous = super(SkipZeros, self).previous(playlist, current)
 
-        while previous is not None and self.shouldSkip(playlist, previous):
+        while previous is not None and self.should_skip(playlist, previous):
             previous = super(SkipZeros, self).previous(playlist, current)
 
         return previous
 
-    def shouldSkip(self, playlist, song_iter):
-        song_index = playlist.get_path(song_iter).get_indices()[0]
-        song = playlist.get()[song_index]
+    def should_skip(self, playlist, song_iter):
+        song = playlist.get_value(song_iter)
         rating = song("~#rating")
 
-        shouldSkip = False
-        if self.config_get_bool(self._CFG_SKIP_BY_RATING) and rating <= 0:
-            shouldSkip = True
+        should_skip = False
+        if (self.config_get_bool(self._CFG_SKIP_BY_RATING)
+            and song.has_rating and rating <= 0):
+            should_skip = True
             print_d("Rating is %f; skipping..." % (rating))
-        elif self.config_get_bool(self._CFG_SKIP_BY_TAG) and \
-             song("skip") != '':
-            shouldSkip = True
+        elif (self.config_get_bool(self._CFG_SKIP_BY_TAG)
+            and song("skip")):
+            should_skip = True
             print_d("Skip tag present; skipping...")
 
-        return shouldSkip
+        return should_skip
