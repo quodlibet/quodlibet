@@ -13,6 +13,7 @@ import os
 import traceback
 import re
 import logging
+import errno
 
 from senf import print_, path2fsn, fsn2text, environ, fsnative
 
@@ -217,7 +218,17 @@ def _print_message(string, custom_context, debug_only, prefix,
         if _should_write_to_file(file_):
             if not _supports_ansi_escapes(file_):
                 string = strip_color(string)
-            print_(string, file=file_, flush=True)
+            try:
+                print_(string, file=file_, flush=True)
+            except (IOError, OSError) as e:
+                if e.errno == errno.EIO:
+                    # When we are started in a terminal with --debug and the
+                    # terminal gets closed we lose stdio/err before we stop
+                    # printing debug message, resulting in EIO and aborting the
+                    # exit process -> Just ignore it.
+                    pass
+                else:
+                    raise
 
     ql_logging.log(strip_color(string), logging_category)
 
