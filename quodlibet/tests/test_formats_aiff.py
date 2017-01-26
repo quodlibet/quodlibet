@@ -27,3 +27,6 @@ class TAIFFFile(TestCase):
         self.assertEqual(self.song("artist"), "artist")
         self.assertEqual(self.song("album"), "album")
         self.assertEqual(self.song("genre"), "genre")
+
+    def test_channels(self):
+        assert self.song("~#channels") == 1

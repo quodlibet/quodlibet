@@ -57,6 +57,9 @@ class _TAACFileMixin(object):
         self.assertEqual(self.song("~codec"), "AAC")
         self.assertEqual(self.song("~encoding"), "")
 
+    def test_channels(self):
+        assert self.song("~#channels") == 2
+
 
 @skipUnless(AAC, "too old mutagen")
 class TADTSFile(_TAACFile, _TAACFileMixin):

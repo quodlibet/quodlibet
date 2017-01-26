@@ -22,6 +22,7 @@ class MP3File(ID3File):
         self["~#length"] = info.length
         self["~#bitrate"] = int(info.bitrate / 1000)
         self["~format"] = u"MP%d" % info.layer
+        self["~#channels"] = info.channels
 
         encoder, brm = info.encoder_info, info.bitrate_mode
         brm = {1: u"CBR", 2: u"VBR", 3: u"ABR"}.get(brm, u"")

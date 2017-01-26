@@ -66,6 +66,9 @@ class TVCFileMixin(object):
         song = type(self.song)(self.filename)
         self.failUnlessEqual(song["~#rating"], 0.2)
 
+    def test_channels(self):
+        assert self.song("~#channels") == 2
+
     def test_deletes_rating(self):
         config.set("editing", "save_email", "foo@bar.org")
         self.song["~#rating"] = 0.2
@@ -602,6 +605,9 @@ class TOggOpusFile(TVCFile, TVCFileMixin):
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.6847, 3)
         self.failUnless("opusenc" in self.song("encoder"))
+
+    def test_channels(self):
+        assert self.song("~#channels") == 2
 
     def test_format_codec(self):
         self.assertEqual(self.song("~format"), "Ogg Opus")

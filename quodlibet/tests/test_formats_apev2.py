@@ -131,6 +131,9 @@ class TMAFile(TestCase, TAPEv2FileMixin):
         self.assertEqual(self.s("~codec"), "Monkey's Audio")
         self.assertEqual(self.s("~encoding"), "")
 
+    def test_channels(self):
+        assert self.s("~#channels") == 2
+
 
 class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 

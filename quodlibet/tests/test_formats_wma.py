@@ -52,6 +52,11 @@ class TWMAFile(TestCase):
         self.assertAlmostEqual(self.song2("~#length"), 3.684, 3)
         self.assertAlmostEqual(self.song3("~#length"), 11.38, 2)
 
+    def test_channels(self):
+        assert self.song("~#channels") == 2
+        assert self.song2("~#channels") == 2
+        assert self.song3("~#channels") == 1
+
     def test_bitrate(self):
         self.assertEqual(self.song("~#bitrate"), 64)
         self.assertEqual(self.song2("~#bitrate"), 38)

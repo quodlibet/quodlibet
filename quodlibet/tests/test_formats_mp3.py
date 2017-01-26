@@ -16,6 +16,11 @@ class TMP3File(TestCase):
         self.song2 = MP3File(get_data_path('test.mp2'))
         self.song3 = MP3File(get_data_path('lame.mp3'))
 
+    def test_channels(self):
+        assert self.song("~#channels") == 2
+        assert self.song2("~#channels") == 1
+        assert self.song3("~#channels") == 2
+
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.0, 1)
         self.assertAlmostEqual(self.song2("~#length"), 1.764, 3)

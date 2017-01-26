@@ -17,6 +17,9 @@ class TWavpackFile(TestCase):
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.68471, 3)
 
+    def test_channels(self):
+        assert self.song("~#channels") == 2
+
     def test_bitrate(self):
         self.failUnlessEqual(self.song("~#bitrate"), 76)
 

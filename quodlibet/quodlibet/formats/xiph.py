@@ -43,6 +43,10 @@ class MutagenVCFile(AudioFile):
             self["~#bitrate"] = int(audio.info.bitrate / 1000)
         except AttributeError:
             pass
+        try:
+            self["~#channels"] = audio.info.channels
+        except AttributeError:
+            pass
         if audio.tags and audio.tags.vendor:
             self["~encoding"] = audio.tags.vendor
         # mutagen keys are lower cased

@@ -84,6 +84,8 @@ class MP4File(AudioFile):
         self["~codec"] = getattr(audio.info, "codec_description", u"AAC")
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
+        if audio.info.channels:
+            self["~#channels"] = audio.info.channels
 
         for key, values in audio.items():
             if key in self.__tupletranslate:

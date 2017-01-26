@@ -24,6 +24,9 @@ class TWAVEFile(TestCase):
     def test_length(self):
         self.failUnlessAlmostEqual(self.song("~#length"), 0.227, 2)
 
+    def test_channels(self):
+        assert self.song("~#channels") == 1
+
     def test_write(self):
         self.song.write()
 
