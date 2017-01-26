@@ -88,6 +88,7 @@ Numeric Tags
  * ``~#added``: The date the song was added to the library
  * ``~#bitrate``: The bitrate of the song, in kilo bits per second
  * ``~#disc``: The disc number of the song (the first half of the ``discnumber`` tag)
+ * ``~#channels``: The channel count
  * ``~#discs``: The total number of discs in this song's collection
  * ``~#filesize``: The size in bytes of this song
  * ``~#lastplayed``: The time this song was last played through
