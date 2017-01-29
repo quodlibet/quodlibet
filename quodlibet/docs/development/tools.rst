@@ -124,7 +124,7 @@ Example output::
 strace
 ^^^^^^
 
- * http://linux.die.net/man/1/strace
+ * https://linux.die.net/man/1/strace
 
 ::
 

@@ -6,7 +6,7 @@ Soundcloud Browser
 Overview
 --------
 
-This browser lets you interact with `Soundcloud <http://soundcloud.com>`_
+This browser lets you interact with `Soundcloud <https://soundcloud.com>`_
 and play tracks from the millions on offer.
 Where possible it aims to keep the look and feel as familiar and integrated to
 the Quod Libet experience as possible.

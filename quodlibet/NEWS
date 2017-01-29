@@ -2187,7 +2187,7 @@ Windows
    manual page for instructions on using it. This should let ALSA users
    use software mixing.
  * ID3 APIC (embedded picture) support.
- * VorbisGain (http://sjeng.org/vorbisgain.html) support.
+ * VorbisGain (https://sjeng.org/vorbisgain.html) support.
  * A context menu for common operations was added to the properties dialog.
  * Tag values can be set from filename patterns, or vice-versa.
  * Dates can be saved in MP3s now.

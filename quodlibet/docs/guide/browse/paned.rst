@@ -84,7 +84,7 @@ Using Markup
 ^^^^^^^^^^^^
 
 Also it's possible to change text emphasis using the `Pango markup language 
-<http://library.gnome.org/devel/pango/unstable/PangoMarkupFormat.html>`_
+<https://developer.gnome.org/pango/unstable/PangoMarkupFormat.html>`_
 
 
 =========================================================== =================================
