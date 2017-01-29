@@ -177,7 +177,7 @@ function install_quodlibet {
 
     QL_VERSION=$(MSYSTEM= build_python -c \
         "import quodlibet.const; import sys; sys.stdout.write(quodlibet.const.VERSION)")
-    QL_VERSION_DESC=QL_VERSION
+    QL_VERSION_DESC="$QL_VERSION"
     if [ "$1" = "master" ]
     then
         local GIT_REV=$(git rev-list --count HEAD)
