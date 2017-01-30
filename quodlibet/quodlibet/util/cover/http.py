@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -54,4 +55,7 @@ class HTTPDownloadMixin(object):
         gfile.delete_async(GLib.PRIORITY_DEFAULT, None, deleted, None)
 
     def _download_failure(self, request, exception):
-        self.fail(exception.message or ' '.join(exception.args))
+        try:
+            self.fail(exception.message or ' '.join(exception.args))
+        except AttributeError:
+            self.fail("Download error (%s)" % exception)
