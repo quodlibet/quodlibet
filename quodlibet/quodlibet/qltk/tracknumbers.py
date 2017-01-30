@@ -203,8 +203,9 @@ class TrackNumbers(Gtk.VBox):
         else:
             songs = list(songs)
 
-        songs.sort(
-            key=lambda song: (song("~#track"), song("~basename"), song))
+        def sort_key(song):
+            return song("~#track", 0), song("~basename"), song
+        songs.sort(key=sort_key)
 
         model.clear()
         total.set_value(len(songs))
