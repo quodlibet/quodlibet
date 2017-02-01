@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, Pango, GObject
+from gi.repository import Gtk, Pango, GObject, GdkPixbuf
 
 from quodlibet import config
 from quodlibet import const
@@ -15,6 +15,14 @@ from quodlibet import util
 from quodlibet import _
 
 from quodlibet.plugins import PluginManager, plugin_enabled
+from quodlibet.plugins.cover import CoverSourcePlugin
+from quodlibet.plugins.editing import EditTagsPlugin
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.plugins.gstelement import GStreamerPlugin
+from quodlibet.plugins.playlist import PlaylistPlugin
+from quodlibet.plugins.playorder import PlayOrderPlugin
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk.image import get_surface_for_pixbuf
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import UniqueWindow, PersistentWindowMixin
 from quodlibet.qltk.entry import ClearEntry
@@ -80,22 +88,22 @@ class PluginErrorWindow(UniqueWindow):
         self.get_child().show_all()
 
 
-class ComboType(object):
+class EnabledType(object):
     TAG, ALL, NO, DIS, EN, SEP = range(6)
 
 
-class PluginFilterCombo(Gtk.ComboBox):
+class PluginEnabledFilterCombo(Gtk.ComboBox):
 
     def __init__(self):
         combo_store = Gtk.ListStore(str, int)
-        super(PluginFilterCombo, self).__init__(model=combo_store)
+        super(PluginEnabledFilterCombo, self).__init__(model=combo_store)
 
         cell = Gtk.CellRendererText()
         self.pack_start(cell, True)
         self.add_attribute(cell, "text", 0)
 
         def combo_sep(model, iter_, data):
-            return model[iter_][1] == ComboType.SEP
+            return model[iter_][1] == EnabledType.SEP
 
         self.set_row_separator_func(combo_sep, None)
 
@@ -107,23 +115,66 @@ class PluginFilterCombo(Gtk.ComboBox):
         active = max(self.get_active(), 0)
         combo_store = self.get_model()
         combo_store.clear()
-        combo_store.append([_("All"), ComboType.ALL])
-        combo_store.append(["", ComboType.SEP])
-        combo_store.append([_("Enabled"), ComboType.EN])
-        combo_store.append([_("Disabled"), ComboType.DIS])
+        combo_store.append([_("All"), EnabledType.ALL])
+        combo_store.append(["", EnabledType.SEP])
+        combo_store.append([_("Enabled"), EnabledType.EN])
+        combo_store.append([_("Disabled"), EnabledType.DIS])
         if tags:
-            combo_store.append(["", ComboType.SEP])
+            combo_store.append(["", EnabledType.SEP])
             for tag in sorted(tags):
-                combo_store.append([tag, ComboType.TAG])
+                combo_store.append([tag, EnabledType.TAG])
             if no_tags:
-                combo_store.append([_("No category"), ComboType.NO])
+                combo_store.append([_("No category"), EnabledType.NO])
         self.set_active(active)
 
-    def get_active_tag(self):
+    def get_active_row(self):
         iter_ = self.get_active_iter()
         if iter_:
             model = self.get_model()
             return list(model[iter_])
+
+
+class PluginTypeFilterCombo(Gtk.ComboBox):
+
+    def __init__(self):
+        combo_store = Gtk.ListStore(str, object)
+        super(PluginTypeFilterCombo, self).__init__(model=combo_store)
+
+        cell = Gtk.CellRendererText()
+        self.pack_start(cell, True)
+        self.add_attribute(cell, "text", 0)
+
+        def combo_sep(model, iter_, data):
+            return model[iter_][1] is None
+
+        self.set_row_separator_func(combo_sep, None)
+        self.__refill()
+
+    def __refill(self):
+        """Fill with plugin types"""
+
+        active = max(self.get_active(), 0)
+        combo_store = self.get_model()
+        combo_store.clear()
+        combo_store.append([_("All"), object])
+        combo_store.append(["", None])
+        for name, cls in sorted([
+                [_("Songs"), SongsMenuPlugin],
+                [_("Playlists"), PlaylistPlugin],
+                [_("Events"), EventPlugin],
+                [_("Play Order"), PlayOrderPlugin],
+                [_("Editing"), EditTagsPlugin],
+                [_("Effects"), GStreamerPlugin],
+                [_("Covers"), CoverSourcePlugin]]):
+            combo_store.append([name, cls])
+
+        self.set_active(active)
+
+    def get_active_type(self):
+        iter_ = self.get_active_iter()
+        if iter_:
+            model = self.get_model()
+            return model[iter_][1]
 
 
 class PluginListView(HintedTreeView):
@@ -139,6 +190,7 @@ class PluginListView(HintedTreeView):
         self.set_headers_visible(False)
 
         render = Gtk.CellRendererToggle()
+        render.set_padding(3, 3)
 
         def cell_data(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
@@ -154,13 +206,24 @@ class PluginListView(HintedTreeView):
         self.append_column(column)
 
         render = Gtk.CellRendererPixbuf()
+        render.set_padding(3, 3)
 
         def cell_data2(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
             icon = plugin.icon or Icons.SYSTEM_RUN
             render.set_property('icon-name', icon)
 
+            theme = Gtk.IconTheme.get_default()
+            width = height = 32
+            icon_info = theme.lookup_icon(icon, max(width, height), 0)
+            filename = icon_info.get_filename()
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filename,
+                                                            width, height)
+            surface = get_surface_for_pixbuf(self, pixbuf)
+            render.set_property("surface", surface)
+
         column = Gtk.TreeViewColumn("image", render)
+        column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         column.set_cell_data_func(render, cell_data2)
         self.append_column(column)
 
@@ -295,7 +358,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
             return
         super(PluginWindow, self).__init__()
         self.set_title(_("Plugins"))
-        self.set_default_size(700, 500)
+        self.set_default_size(800, 500)
         self.set_transient_for(parent)
         self.enable_window_tracking("plugin_prefs")
 
@@ -316,9 +379,13 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         fb = Gtk.HBox(spacing=6)
 
-        filter_combo = PluginFilterCombo()
-        filter_combo.connect("changed", lambda s: filter_model.refilter())
-        fb.pack_start(filter_combo, False, True, 0)
+        enabled_combo = PluginEnabledFilterCombo()
+        enabled_combo.connect("changed", lambda s: filter_model.refilter())
+        fb.pack_start(enabled_combo, False, True, 0)
+
+        type_combo = PluginTypeFilterCombo()
+        type_combo.connect("changed", lambda s: filter_model.refilter())
+        fb.pack_start(type_combo, False, True, 0)
 
         filter_entry = ClearEntry()
         filter_entry.connect("changed", lambda s: filter_model.refilter())
@@ -327,7 +394,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         sw.add(tv)
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.set_size_request(200, -1)
+        sw.set_size_request(350, -1)
 
         bbox = Gtk.HBox(homogeneous=True, spacing=12)
 
@@ -343,7 +410,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
             refresh = qltk.Button(_("_Refresh"), Icons.VIEW_REFRESH)
             refresh.set_focus_on_click(False)
             refresh.connect('clicked', self.__refresh, tv, pref_box, errors,
-                            filter_combo)
+                            enabled_combo, type_combo)
             bbox.pack_start(Align(refresh, border=6), True, True, 0)
 
         vbox.pack_start(Align(fb, border=6, right=-6), False, True, 0)
@@ -374,11 +441,11 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         self.add(paned)
 
-        self.__refill(tv, pref_box, errors, filter_combo)
+        self.__refill(tv, pref_box, errors, enabled_combo)
 
         self.connect('destroy', self.__destroy)
         filter_model.set_visible_func(
-            self.__filter, (filter_entry, filter_combo))
+            self.__filter, (filter_entry, enabled_combo, type_combo))
 
         self.get_child().show_all()
         filter_entry.grab_focus()
@@ -387,28 +454,31 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         tv.select_by_plugin_id(restore_id)
 
     def __filter(self, model, iter_, data):
+        """Filter a single row"""
         plugin = model.get_value(iter_)
         if not plugin:
             return False
 
-        entry, combo = data
+        entry, state_combo, type_combo = data
 
-        tag = combo.get_active_tag()
-        if tag:
+        plugin_type = type_combo.get_active_type()
+        if not issubclass(plugin.cls, plugin_type):
+            return False
+
+        tag_row = state_combo.get_active_row()
+        if tag_row:
             plugin_tags = plugin.tags
-            tag, flag = tag
+            tag, flag = tag_row
             enabled = plugin_enabled(plugin)
-            if flag == ComboType.NO and plugin_tags or \
-                flag == ComboType.TAG and not tag in plugin_tags or \
-                flag == ComboType.EN and not enabled or \
-                flag == ComboType.DIS and enabled:
+            if (flag == EnabledType.NO and plugin_tags or
+                    flag == EnabledType.TAG and tag not in plugin_tags or
+                    flag == EnabledType.EN and not enabled or
+                    flag == EnabledType.DIS and enabled):
                 return False
 
         filter_ = entry.get_text().lower()
-        if not filter_ or filter_ in plugin.name.lower() or \
-                filter_ in (plugin.description or "").lower():
-            return True
-        return False
+        return (not filter_ or filter_ in plugin.name.lower()
+                or filter_ in (plugin.description or "").lower())
 
     def __destroy(self, *args):
         config.save()
@@ -433,13 +503,13 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         riter = model.convert_iter_to_child_iter(iter_)
         rmodel.row_changed(rmodel.get_path(riter), riter)
 
-    def __refill(self, view, prefs, errors, combo):
+    def __refill(self, view, prefs, errors, state_combo):
         pm = PluginManager.instance
 
         # refill plugin list
         view.refill(pm.plugins)
 
-        # get all tags and refill combobox
+        # get all tags and refill tag-based (state) combobox
         tags = set()
         no_tags = False
         for plugin in pm.plugins:
@@ -447,18 +517,17 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
                 no_tags = True
             tags.update(plugin.tags)
 
-        combo.refill(tags, no_tags)
+        state_combo.refill(tags, no_tags)
 
         if not len(pm.plugins):
             prefs.set_no_plugins()
 
         errors.set_visible(bool(pm.failures))
 
-    def __refresh(self, activator, view, prefs, errors, combo):
+    def __refresh(self, activator, view, prefs, errors, state_combo):
         pm = PluginManager.instance
         pm.rescan()
-
-        self.__refill(view, prefs, errors, combo)
+        self.__refill(view, prefs, errors, state_combo)
 
     def __show_errors(self, activator):
         pm = PluginManager.instance
