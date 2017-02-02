@@ -22,7 +22,6 @@ from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.plugins.playorder import PlayOrderPlugin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk.image import get_surface_for_pixbuf
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import UniqueWindow, PersistentWindowMixin
 from quodlibet.qltk.entry import ClearEntry
