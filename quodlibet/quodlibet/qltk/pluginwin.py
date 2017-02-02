@@ -212,15 +212,7 @@ class PluginListView(HintedTreeView):
             plugin = model.get_value(iter_)
             icon = plugin.icon or Icons.SYSTEM_RUN
             render.set_property('icon-name', icon)
-
-            theme = Gtk.IconTheme.get_default()
-            width = height = 24
-            icon_info = theme.lookup_icon(icon, max(width, height), 0)
-            filename = icon_info.get_filename()
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filename,
-                                                            width, height)
-            surface = get_surface_for_pixbuf(self, pixbuf)
-            render.set_property("surface", surface)
+            render.set_property('stock-size', Gtk.IconSize.LARGE_TOOLBAR)
 
         column = Gtk.TreeViewColumn("image", render)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
