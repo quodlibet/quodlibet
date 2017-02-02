@@ -385,7 +385,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         sw.add(tv)
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.set_size_request(350, -1)
+        sw.set_size_request(400, -1)
 
         bbox = Gtk.HBox(homogeneous=True, spacing=12)
 
@@ -401,7 +401,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
             refresh = qltk.Button(_("_Refresh"), Icons.VIEW_REFRESH)
             refresh.set_focus_on_click(False)
             refresh.connect('clicked', self.__refresh, tv, pref_box, errors,
-                            enabled_combo, type_combo)
+                            enabled_combo)
             bbox.pack_start(Align(refresh, border=6), True, True, 0)
 
         vbox.pack_start(Align(fb, border=6, right=-6), False, True, 0)
