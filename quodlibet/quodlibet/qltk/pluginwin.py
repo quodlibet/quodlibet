@@ -206,7 +206,7 @@ class PluginListView(HintedTreeView):
         self.append_column(column)
 
         render = Gtk.CellRendererPixbuf()
-        render.set_padding(3, 3)
+        render.set_padding(2, 2)
 
         def cell_data2(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
@@ -214,7 +214,7 @@ class PluginListView(HintedTreeView):
             render.set_property('icon-name', icon)
 
             theme = Gtk.IconTheme.get_default()
-            width = height = 32
+            width = height = 24
             icon_info = theme.lookup_icon(icon, max(width, height), 0)
             filename = icon_info.get_filename()
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filename,
@@ -230,7 +230,7 @@ class PluginListView(HintedTreeView):
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.set_property('xalign', 0.0)
-        render.set_padding(3, 3)
+        render.set_padding(2, 2)
         column = Gtk.TreeViewColumn("name", render)
 
         def cell_data3(col, render, model, iter_, data):
