@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, Pango, GObject, GdkPixbuf
+from gi.repository import Gtk, Pango, GObject
 
 from quodlibet import config
 from quodlibet import const
