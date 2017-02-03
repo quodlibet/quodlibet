@@ -12,6 +12,7 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
+
 import json
 import os
 import re
@@ -40,7 +41,7 @@ from quodlibet.qltk.image import scale, add_border_widget, \
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util.urllib import urlopen, Request
-from quodlibet.compat import xrange, urlencode, cBytesIO
+from quodlibet.compat import urlencode, cBytesIO
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
     "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
@@ -136,7 +137,7 @@ class AmazonParser(object):
             self.page_count = int(pages[0].firstChild.data)
 
         items = dom.getElementsByTagName('Item')
-
+        print_d("Amazon: got %d search result(s)" % len(items))
         for item in items:
             self.__parse_item(item)
             if len(self.covers) >= self.limit:
@@ -192,7 +193,7 @@ class AmazonParser(object):
 
             self.covers.append(cover)
 
-    def start(self, query, limit=10):
+    def start(self, query, limit=5):
         """Start the search and returns the covers"""
 
         self.page_count = 0
@@ -201,7 +202,7 @@ class AmazonParser(object):
         self.__parse_page(1, query)
 
         if len(self.covers) < limit:
-            for page in xrange(2, self.page_count + 1):
+            for page in range(1, self.page_count + 1):
                 self.__parse_page(page, query)
                 if len(self.covers) >= limit:
                     break
@@ -226,11 +227,10 @@ class DiscogsParser(object):
 
         parameters = {
             'type': 'release',
-            # 'artist': '',
-            # 'release_title': '',
             'q': query,
             'page': page,
-            'per_page': 100,
+            # Assume that not all results are useful
+            'per_page': self.limit * 2,
         }
 
         parameters.update(self.creds)
@@ -240,12 +240,12 @@ class DiscogsParser(object):
         # TODO: rate limiting
 
         pages = json_dict.get('pagination', {}).get('pages', 0)
-        if pages != 0:
-            self.page_count = int(pages)
-        else:
+        if not pages:
             return
+        self.page_count = int(pages)
 
         items = json_dict.get('results', {})
+        print_d("Discogs: got %d search result(s)" % len(items))
         for item in items:
             self.__parse_item(item)
             if len(self.covers) >= self.limit:
@@ -286,7 +286,7 @@ class DiscogsParser(object):
             if len(self.covers) >= self.limit:
                 break
 
-    def start(self, query, limit=5):
+    def start(self, query, limit=3):
         """Start the search and returns the covers"""
 
         self.page_count = 0
@@ -295,7 +295,7 @@ class DiscogsParser(object):
         self.__parse_page(1, query)
 
         if len(self.covers) < limit:
-            for page in xrange(2, self.page_count + 1):
+            for page in range(1, self.page_count + 1):
                 self.__parse_page(page, query)
                 if len(self.covers) >= limit:
                     break
@@ -746,7 +746,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         self.search = search = CoverSearch(self.__search_callback)
 
-        for eng in engines:
+        for eng in ENGINES:
             if self.config_get_bool(
                     CONFIG_ENG_PREFIX + eng['config_id'], True):
                 search.add_engine(eng['class'], eng['replace'])
@@ -821,7 +821,6 @@ class CoverSearch(object):
 
         self.callback = wrap
         self.finished = 0
-        self.overall_limit = 7
 
     def add_engine(self, engine, query_replace):
         """Adds a new search engine, query_replace is the string with which
@@ -855,7 +854,7 @@ class CoverSearch(object):
         clean_query = self.__cleanup_query(query, replace)
         result = []
         try:
-            result = engine().start(clean_query, self.overall_limit)
+            result = engine().start(clean_query)
         except Exception:
             print_w("[AlbumArt] %s: %r" % (engine.__name__, query))
             print_exc()
@@ -883,14 +882,14 @@ class CoverSearch(object):
 
             p_split = part.split()
             p_split.sort(key=len, reverse=True)
-            p_split = p_split[:max(len(p_split) / 4, max(4 - len(p_split), 2))]
+            end = max(int(len(p_split) / 4), max(4 - len(p_split), 2))
+            p_split = p_split[:end]
 
             new_query += ' '.join(p_split) + ' '
 
         return new_query.rstrip()
 
 
-#------------------------------------------------------------------------------
 def get_size_of_url(url):
     request = Request(url)
     request.add_header('Accept-Encoding', 'gzip')
@@ -900,8 +899,8 @@ def get_size_of_url(url):
     url_sock.close()
     return format_size(int(size)) if size else ''
 
-#------------------------------------------------------------------------------
-engines = [
+
+ENGINES = [
     {
         'class': AmazonParser,
         'url': 'https://www.amazon.com/',
@@ -915,7 +914,6 @@ engines = [
         'config_id': 'discogs',
     },
 ]
-#------------------------------------------------------------------------------
 
 
 class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
@@ -932,13 +930,13 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def PluginPreferences(cls, window):
-        table = Gtk.Table(n_rows=len(engines), n_columns=2)
+        table = Gtk.Table(n_rows=len(ENGINES), n_columns=2)
         table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         frame = qltk.Frame(_("Sources"), child=table)
 
-        for i, eng in enumerate(sorted(engines, key=lambda x: x["url"])):
+        for i, eng in enumerate(sorted(ENGINES, key=lambda x: x["url"])):
             check = cls.ConfigCheckButton(
                 eng['config_id'].title(),
                 CONFIG_ENG_PREFIX + eng['config_id'],
