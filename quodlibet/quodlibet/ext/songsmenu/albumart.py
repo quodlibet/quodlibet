@@ -104,7 +104,7 @@ class AmazonParser(object):
     """A class for searching covers from Amazon"""
 
     def __init__(self):
-        self.page_count = 0
+        self.page_count = 1
         self.covers = []
         self.limit = 0
 
@@ -199,13 +199,13 @@ class AmazonParser(object):
         self.page_count = 0
         self.covers = []
         self.limit = limit
-        self.__parse_page(1, query)
+        page = 1
 
-        if len(self.covers) < limit:
-            for page in range(1, self.page_count + 1):
-                self.__parse_page(page, query)
-                if len(self.covers) >= limit:
-                    break
+        while len(self.covers) < limit:
+            self.__parse_page(page, query)
+            if page >= self.page_count:
+                break
+            page += 1
 
         return self.covers
 
@@ -292,13 +292,12 @@ class DiscogsParser(object):
         self.page_count = 0
         self.covers = []
         self.limit = limit
-        self.__parse_page(1, query)
-
-        if len(self.covers) < limit:
-            for page in range(1, self.page_count + 1):
-                self.__parse_page(page, query)
-                if len(self.covers) >= limit:
-                    break
+        page = 1
+        while len(self.covers) < limit:
+            self.__parse_page(page, query)
+            if page < self.page_count:
+                break
+            page += 1
 
         return self.covers
 
