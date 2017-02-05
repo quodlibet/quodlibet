@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2009 Steven Robertson
-#           2016 Nick Boultbee
+#        2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -18,8 +18,10 @@ class QueueOrder(ShufflePlugin, OrderInOrder):
     PLUGIN_ID = "queue"
     PLUGIN_NAME = _("Queue Only")
     PLUGIN_ICON = Icons.MEDIA_SKIP_FORWARD
-    PLUGIN_DESC = _("Limits playing of songs to the queue. Double-click on "
-                    "any song to enqueue it.")
+    PLUGIN_DESC = _("Limits playing of songs to the queue. "
+                    "Select this play order in the main window, "
+                    "then double-clicking any song will enqueue it "
+                    "instead of playing.")
 
     def next(self, playlist, iter):
         return None
