@@ -12,6 +12,7 @@ import os
 from gi.repository import Gtk, Gdk, Pango
 
 from quodlibet import _
+from quodlibet import print_w
 from quodlibet import qltk
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import SeparatorMenuItem, Align
@@ -131,9 +132,10 @@ class SongInfo(Gtk.EventBox):
         else:
             try:
                 with open(self._pattern_filename, "wb") as h:
-                    h.write(self._pattern.encode("utf-8") + "\n")
-            except EnvironmentError:
-                pass
+                    h.write(self._pattern.encode("utf-8") + b"\n")
+            except EnvironmentError as e:
+                print_w("Couldn't save display pattern '%s' (%s)"
+                        % (self._pattern, e))
         self._compiled = XMLFromMarkupPattern(self._pattern)
         self._update_info(player)
 
