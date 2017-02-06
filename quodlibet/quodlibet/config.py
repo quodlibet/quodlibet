@@ -164,8 +164,12 @@ INITIAL = {
         "default_max_plugin_invocations": 30,
     },
     "editing": {
-        "split_on": "/ & ,", # words to split on
-        "id3encoding": "", # ID3 encodings to try
+        # characters to split tags on
+        "split_on": "/ & ,",
+
+        # ID3 encodings to try
+        "id3encoding": "",
+
         "human_title_case": "true",
         "save_to_songs": "true",
         "save_email": const.EMAIL,
