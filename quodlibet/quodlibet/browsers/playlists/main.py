@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
-#    2012 - 2016 Nick Boultbee
+#    2012 - 2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -152,7 +152,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         remove = qltk.MenuItem(_("_Remove from Playlist"), Icons.LIST_REMOVE)
         qltk.add_fake_accel(remove, "Delete")
         connect_obj(remove, 'activate', self.__remove, iters, model)
-        playlist_iter = self.__view.get_selection().get_selected()[1]
+        playlist_iter = self.__selected_playlists()[1]
         remove.set_sensitive(bool(playlist_iter))
         items.append([remove])
         menu = super(PlaylistsBrowser, self).Menu(songs, library, items)
@@ -283,7 +283,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __key_pressed(self, widget, event):
         if qltk.is_accel(event, "Delete"):
-            model, iter = self.__view.get_selection().get_selected()
+            model, iter = self.__selected_playlists()
             if not iter:
                 return False
 
@@ -295,14 +295,14 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                     model.convert_iter_to_child_iter(iter))
             return True
         elif qltk.is_accel(event, "F2"):
-            model, iter = self.__view.get_selection().get_selected()
+            model, iter = self.__selected_playlists()
             if iter:
                 self._start_rename(model.get_path(iter))
             return True
         return False
 
     def __check_current(self, model, path, iter):
-        model, citer = self.__view.get_selection().get_selected()
+        model, citer = self.__selected_playlists()
         if citer and model.get_path(citer) == path:
             songlist = qltk.get_top_parent(self).songlist
             self.activate(resort=not songlist.is_sorted())
@@ -328,7 +328,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             for it in iters:
                 smodel.remove(it)
 
-        model, iter = self.__view.get_selection().get_selected()
+        model, iter = self.__selected_playlists()
         if iter:
             playlist = model[iter][0]
             removals = [song_at(iter_remove) for iter_remove in iters]
@@ -502,7 +502,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         return self.__lists.get_model()
 
     def _get_playlist_songs(self):
-        model, iter = self.__view.get_selection().get_selected()
+        model, iter = self.__selected_playlists()
         songs = iter and list(model[iter][0]) or []
         return [s for s in songs if isinstance(s, AudioFile)]
 
@@ -531,7 +531,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 and (self._query is None or self._query.search(song)))
 
     def save(self):
-        model, iter = self.__view.get_selection().get_selected()
+        model, iter = self.__selected_playlists()
         name = iter and model[iter][0].name or ""
         config.set("browsers", "playlist", name)
         text = self.get_filter_text()
@@ -542,7 +542,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.model.append(row=[playlist])
         self._select_playlist(playlist, scroll=True)
 
-        model, iter = self.__view.get_selection().get_selected()
+        model, iter = self.__selected_playlists()
         path = model.get_path(iter)
         GLib.idle_add(self._start_rename, path)
 
@@ -608,7 +608,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.__view.iter_select_by_func(lambda r: song in r[0])
 
     def reordered(self, songs):
-        model, iter = self.__view.get_selection().get_selected()
+        model, iter = self.__selected_playlists()
         playlist = None
         if iter:
             playlist = model[iter][0]
@@ -618,6 +618,10 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             GLib.idle_add(self._select_playlist, playlist)
         if playlist:
             self.changed(playlist, refresh=False)
+
+    def __selected_playlists(self):
+        """Returns a tuple of (model, iter) for the current playlist(s)"""
+        return self.__view.get_selection().get_selected()
 
 
 class PreferencesButton(Gtk.HBox):
