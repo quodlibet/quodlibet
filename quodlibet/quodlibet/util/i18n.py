@@ -229,11 +229,11 @@ def register_translation(domain, localedir=None):
     if localedir is not None and os.path.isdir(localedir):
         print_d("Using local localedir: %r" % unexpand(localedir))
         gettext.bindtextdomain(domain, localedir)
-    else:
-        localedir = gettext.bindtextdomain(domain)
+
+    localedir = gettext.bindtextdomain(domain)
 
     try:
-        t = gettext.translation(domain, class_=GlibTranslations)
+        t = gettext.translation(domain, localedir, class_=GlibTranslations)
     except IOError:
         print_d("No translation found in %r" % unexpand(localedir))
         t = GlibTranslations()
