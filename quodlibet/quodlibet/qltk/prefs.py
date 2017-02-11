@@ -584,7 +584,8 @@ class PreferencesWindow(UniqueWindow):
             e.set_text(config.get("editing", "split_on"))
             e.connect('changed', self.__changed, 'editing', 'split_on')
             e.set_tooltip_text(
-                _("A list of separators to use when splitting tag values. "
+                _("A set of separators to use when splitting tag values "
+                  "in the tag editor. "
                   "The list is space-separated"))
 
             def do_revert_split(button, section, option):
