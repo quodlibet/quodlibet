@@ -331,19 +331,23 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         model, iter = self.__selected_playlists()
         if iter:
             playlist = model[iter][0]
-            removals = [song_at(iter_remove) for iter_remove in iters]
+            # A {iter: song} dict, exhausting `iters` once.
+            removals = {iter_remove: song_at(iter_remove)
+                        for iter_remove in iters}
+            if not removals:
+                print_w("No songs selected to remove")
+                return
             if self._query is None or not self.get_filter_text():
                 # Calling playlist.remove_songs(songs) won't remove the
                 # right ones if there are duplicates
-                remove_from_model(iters, smodel)
+                remove_from_model(removals.keys(), smodel)
                 self.__rebuild_playlist_from_songs_model(playlist, smodel)
                 # Emit manually
-                self.library.emit('changed', removals)
+                self.library.emit('changed', removals.values())
             else:
-                print_d("Removing %d song(s) from %s"
-                        % (len(removals), playlist))
-                playlist.remove_songs(removals, True)
+                playlist.remove_songs(removals.values(), True)
                 remove_from_model(iters, smodel)
+            print_d("Removed %d song(s) from %s" % (len(removals), playlist))
             self.changed(playlist)
             self.activate()
 

@@ -2,13 +2,18 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
+
+from gi.repository import Gdk, Gtk
+
+from quodlibet import app
 from quodlibet import qltk
 from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.playlists.util import PLAYLISTS, parse_m3u, parse_pls
 from quodlibet.qltk.songlist import DND_QL
 from quodlibet.senf import fsnative
 from quodlibet.util.collection import FileBackedPlaylist
-from tests import TestCase, get_data_path, mkstemp, mkdtemp, _TEMP_DIR
+from tests import TestCase, get_data_path, mkstemp, mkdtemp, _TEMP_DIR, \
+    init_fake_app, destroy_fake_app
 from tests.gtk_helpers import MockSelData
 from .helper import dummy_path
 
@@ -179,6 +184,8 @@ class TPlaylistsBrowser(TSearchBar):
 
         mkdir(PLAYLISTS)
 
+        init_fake_app()
+
         self.lib = quodlibet.browsers.playlists.library = SongLibrary()
         self.lib.librarian = SongLibrarian()
         all_songs = SONGS + [self.ANOTHER_SONG]
@@ -206,6 +213,7 @@ class TPlaylistsBrowser(TSearchBar):
         self.lib.destroy()
         shutil.rmtree(PLAYLISTS)
         PlaylistsBrowser.deinit(self.lib)
+        destroy_fake_app()
 
     def test_saverestore(self):
         # Flush previous signals, etc. Hmm.
@@ -264,3 +272,28 @@ class TPlaylistsBrowser(TSearchBar):
         sel = MockSelData()
         qltk.selection_set_songs(sel, [song])
         b._drag_data_get(None, None, sel, DND_QL, None)
+
+    def test_deletion(self):
+        def a_delete_event():
+            ev = Gdk.Event()
+            ev.type = Gdk.EventType.KEY_PRESS
+            ev.keyval, accel_mod = Gtk.accelerator_parse("Delete")
+            ev.state = Gtk.accelerator_get_default_mod_mask() & accel_mod
+            return ev
+
+        b = self.bar
+        self._fake_browser_pack(b)
+        event = a_delete_event()
+        # This is selected in setUp()
+        first_pl = b.playlists()[0]
+        app.window.songlist.set_songs(first_pl)
+        app.window.songlist.select_by_func(lambda x: True,
+                                           scroll=False, one=True)
+        original_length = len(first_pl)
+        ret = b.key_pressed(event)
+        self.failUnless(ret, msg="Didn't simulate a delete keypress")
+        self.failUnlessEqual(len(first_pl), original_length - 1)
+
+    @staticmethod
+    def _fake_browser_pack(b):
+        app.window.get_child().pack_start(b, True, True, 0)
