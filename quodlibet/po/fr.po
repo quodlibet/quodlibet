@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-13 22:01+0100\n"
+"PO-Revision-Date: 2017-02-13 22:06+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -4559,7 +4559,7 @@ msgstr ""
 #: ../quodlibet/qltk/edittags.py:508
 msgctxt "edittags"
 msgid "_Revert"
-msgstr "Annule_r"
+msgstr "_Rétablir"
 
 #. Translators: Save button in the tag editor
 #: ../quodlibet/qltk/edittags.py:513
