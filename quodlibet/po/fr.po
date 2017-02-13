@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-13 20:51+0100\n"
+"PO-Revision-Date: 2017-02-13 21:16+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -47,7 +47,7 @@ msgstr "Éditeur d'étiquettes audio (tags)"
 
 #: ../data/quodlibet.appdata.xml.in.h:1 ../data/quodlibet.desktop.in.h:2
 msgid "Listen to, browse, or edit your audio collection"
-msgstr "Ecouter, parcourir ou éditer votre collection musicale"
+msgstr "Écouter, parcourir ou éditer votre collection musicale"
 
 #: ../data/quodlibet.appdata.xml.in.h:2
 msgid ""
@@ -89,7 +89,7 @@ msgstr "_Genre"
 #: ../quodlibet/browsers/covergrid/main.py:58 ../quodlibet/qltk/prefs.py:58
 #: ../quodlibet/qltk/ratingsmenu.py:39
 msgid "_Rating"
-msgstr "_Notation"
+msgstr "Évaluation"
 
 #: ../quodlibet/browsers/albums/main.py:178
 #: ../quodlibet/browsers/covergrid/main.py:64
@@ -457,7 +457,7 @@ msgstr "Séparer verticalement"
 #: ../quodlibet/browsers/covergrid/prefs.py:110
 #: ../quodlibet/browsers/covergrid/prefs.py:111
 msgid "Cover Magnification"
-msgstr "Echelle de la jaquette"
+msgstr "Échelle de la jaquette"
 
 #: ../quodlibet/browsers/filesystem.py:40
 msgid "File System"
@@ -1167,7 +1167,7 @@ msgstr "nom de fichier"
 
 #: ../quodlibet/cli.py:127
 msgid "Rate the playing song"
-msgstr "Noter le titre en cours de lecture"
+msgstr "Évaluer le titre en cours de lecture"
 
 #: ../quodlibet/cli.py:128
 msgid "Set the current browser"
@@ -1529,13 +1529,15 @@ msgstr ""
 
 #: ../quodlibet/ext/events/autorating.py:15
 msgid "Automatic Rating"
-msgstr "Notation automatique"
+msgstr "Évaluation automatique"
 
 #: ../quodlibet/ext/events/autorating.py:16
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux by Brian Nelson."
 msgstr ""
+"Évaluer automatiquement les titres, selon qu'il sont joués ou passés. Cette "
+"méthode utilise l'algorithme 'accéléré' de vux par Brian Nelson."
 
 #: ../quodlibet/ext/events/clock.py:24
 msgid "Alarm Clock"
@@ -2229,7 +2231,7 @@ msgstr "L'importation a échoué"
 #: ../quodlibet/ext/events/rbimport.py:119
 #, python-format
 msgid "Successfully imported ratings and statistics for %d songs"
-msgstr ""
+msgstr "Évaluations et statistiques de %d titres importés avec succès."
 
 #: ../quodlibet/ext/events/rbimport.py:127
 msgid "Rhythmbox Import"
@@ -2456,7 +2458,7 @@ msgstr "Éditer les étique_ttes"
 #: ../quodlibet/ext/events/trayicon/menu.py:112
 #: ../quodlibet/qltk/quodlibetwindow.py:974 ../quodlibet/qltk/songsmenu.py:424
 msgid "_Information"
-msgstr "_Information"
+msgstr "_Informations"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:114
 #: ../quodlibet/qltk/songsmenu.py:340
@@ -2544,7 +2546,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/write_cover.py:32
 msgid "Picture Saver"
-msgstr "Economiseur d'écran"
+msgstr "Économiseur d'écran"
 
 #: ../quodlibet/ext/events/write_cover.py:33
 msgid "Saves the cover image of the current song to a file."
@@ -2949,7 +2951,7 @@ msgstr "_Nom de fichier"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:457
 msgid "Saving failed"
-msgstr "Echec de l'enregistrement"
+msgstr "Échec de l'enregistrement"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:458
 #, python-format
@@ -3360,15 +3362,15 @@ msgstr "Supprimer les doublons"
 
 #: ../quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
-msgstr "Définir la notation exacte"
+msgstr "Évaluer avec précision"
 
 #: ../quodlibet/ext/songsmenu/exact_rating.py:24
 msgid "Allows setting the rating of songs with a number."
-msgstr ""
+msgstr "Permet d'évaluer un titre en utilisant un nombre."
 
 #: ../quodlibet/ext/songsmenu/exact_rating.py:36
 msgid "Please give your desired rating on a scale from 0.0 to 1.0"
-msgstr ""
+msgstr "Veuillez évaluer en utilisant une échelle allant de 0.0 à 1.0"
 
 #: ../quodlibet/ext/songsmenu/filterall.py:80
 #, fuzzy
@@ -3601,9 +3603,8 @@ msgid "Sync complete."
 msgstr "Synchronisation terminée."
 
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:149
-#, fuzzy
 msgid "Error during sync"
-msgstr "Erreur au chargement de %r"
+msgstr "Erreur durant la synchronisation"
 
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:214
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:244
@@ -4089,7 +4090,7 @@ msgstr "_Aléatoire"
 
 #: ../quodlibet/order/reorder.py:39 ../quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
-msgstr ""
+msgstr "Préférer les meilleures évaluations"
 
 #: ../quodlibet/order/repeat.py:43 ../quodlibet/order/repeat.py:44
 msgid "Repeat this track"
@@ -4101,7 +4102,7 @@ msgstr "Tout répéter"
 
 #: ../quodlibet/order/repeat.py:73 ../quodlibet/order/repeat.py:74
 msgid "One Song"
-msgstr "Une chanson"
+msgstr "Un titre"
 
 #: ../quodlibet/player/gstbe/player.py:98
 msgid "Stream"
@@ -4755,7 +4756,7 @@ msgstr "Aucun titre"
 #: ../quodlibet/qltk/information.py:121 ../quodlibet/qltk/information.py:338
 #: ../quodlibet/qltk/information.py:471 ../quodlibet/qltk/information.py:531
 msgid "Information"
-msgstr "Information"
+msgstr "Informations"
 
 #: ../quodlibet/qltk/information.py:126
 msgid "Lyrics"
@@ -4811,7 +4812,7 @@ msgstr "sauté"
 
 #: ../quodlibet/qltk/information.py:258 ../quodlibet/util/tags.py:156
 msgid "rating"
-msgstr "notation"
+msgstr "évaluation"
 
 #: ../quodlibet/qltk/information.py:287
 msgid "path"
@@ -5127,9 +5128,7 @@ msgstr "Confirmer les notations _multiples"
 #: ../quodlibet/qltk/prefs.py:295
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
-msgstr ""
-"Demander une confirmation avant de changer la notation de plusieurs chansons "
-"en une fois"
+msgstr "Demander confirmation avant d'évaluer plusieurs chansons à la fois"
 
 #: ../quodlibet/qltk/prefs.py:298
 msgid "Enable _one-click ratings"
@@ -5137,7 +5136,7 @@ msgstr "Activer les n_otations en un clic"
 
 #: ../quodlibet/qltk/prefs.py:300
 msgid "Enable rating by clicking on the rating column in the song list"
-msgstr "Activer la notation par un clic dans la colonne des titres"
+msgstr "Activer l'évaluation par un clic dans la colonne évaluation des titres"
 
 #: ../quodlibet/qltk/prefs.py:306 ../quodlibet/qltk/prefs.py:616
 msgid "Ratings"
@@ -5211,11 +5210,11 @@ msgstr "Ajustement du volume par Replay Gain"
 
 #: ../quodlibet/qltk/prefs.py:450
 msgid "_Default rating:"
-msgstr "Notation par _défaut :"
+msgstr "Évaluation par _défaut :"
 
 #: ../quodlibet/qltk/prefs.py:493
 msgid "Rating _scale:"
-msgstr "Echelle de _notation :"
+msgstr "Échelle d'évaluation :"
 
 #: ../quodlibet/qltk/prefs.py:542
 msgid ""
@@ -5450,7 +5449,7 @@ msgstr "Surveiller les modifications sur ce dossier"
 #: ../quodlibet/qltk/ratingsmenu.py:24
 #, python-format
 msgid "Are you sure you want to change the rating of all %d songs?"
-msgstr "Êtes-vous certain de changer la notation de ces %d chansons."
+msgstr "Êtes-vous certain de modifier l'évaluation de ces %d chansons."
 
 #: ../quodlibet/qltk/ratingsmenu.py:26
 msgid "The saved ratings will be removed"
@@ -5459,15 +5458,15 @@ msgstr "Les notations enregistrées seront supprimées"
 #: ../quodlibet/qltk/ratingsmenu.py:27
 #, python-format
 msgid "The rating of all selected songs will be changed to '%s'"
-msgstr "La notation des titres sélectionnés sera transformée en '%s'"
+msgstr "L'évaluation des titres sélectionnés sera transformée en '%s'"
 
 #: ../quodlibet/qltk/ratingsmenu.py:56 ../quodlibet/qltk/ratingsmenu.py:92
 msgid "_Remove Rating"
-msgstr "Supprime_r les notations"
+msgstr "Supprime_r les évaluations"
 
 #: ../quodlibet/qltk/ratingsmenu.py:79
 msgid "Change _Rating"
-msgstr "Modifie_r la notation"
+msgstr "Modifie_r l'évaluation"
 
 #: ../quodlibet/qltk/renamefiles.py:44
 msgid "Replace spaces with _underscores"
@@ -5740,7 +5739,7 @@ msgstr "_Copier sur le périphérique"
 
 #: ../quodlibet/qltk/songsmenu.py:379
 msgid "_Remove from Library"
-msgstr "Supp_rimer de la bibliothèqye"
+msgstr "Supp_rimer de la bibliothèque"
 
 #: ../quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
