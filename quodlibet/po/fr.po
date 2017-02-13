@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-13 21:30+0100\n"
+"PO-Revision-Date: 2017-02-13 22:01+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1137,7 +1137,7 @@ msgstr "[+|-][HH:]MM:SS"
 
 #: ../quodlibet/cli.py:122
 msgid "Set or toggle shuffle mode"
-msgstr "Activer ou désactiver le mode lecture aléatoire"
+msgstr "Activer ou désactiver le mode de mélange"
 
 #: ../quodlibet/cli.py:123
 msgid "Turn repeat off, on, or toggle it"
@@ -1309,7 +1309,7 @@ msgstr ""
 
 #: ../quodlibet/ext/covers/discogs.py:25
 msgid "Discogs Cover Source"
-msgstr "Jaquettes depuis Discologs"
+msgstr "Jaquettes depuis Discogs"
 
 #: ../quodlibet/ext/covers/discogs.py:26
 msgid "Downloads covers from Discogs."
@@ -1934,7 +1934,7 @@ msgstr "motif"
 
 #: ../quodlibet/ext/events/mqtt.py:134
 msgid "Text when a song is paused."
-msgstr "Texte affiché quand la lecture est en pause"
+msgstr "Texte affiché quand un titre est en pause"
 
 #: ../quodlibet/ext/events/mqtt.py:136
 #, fuzzy
@@ -2435,7 +2435,7 @@ msgstr "Suivant"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:76
 msgid "_Shuffle"
-msgstr "Lecture _Aléatoire"
+msgstr "Mélanger"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:81
 msgid "_Repeat"
@@ -2762,11 +2762,11 @@ msgstr ""
 
 #: ../quodlibet/ext/playlist/shuffle.py:15
 msgid "Shuffle Playlist"
-msgstr "Lecture aléatoire des titres"
+msgstr "Mélanger la liste de lecture"
 
 #: ../quodlibet/ext/playlist/shuffle.py:16
 msgid "Randomly shuffles a playlist."
-msgstr "Lire les titres de manière aléatoire."
+msgstr "Mélange aléatoirement les titres d'une liste de lecture"
 
 #: ../quodlibet/ext/playorder/follow.py:18
 msgid "Follow Cursor"
@@ -2814,7 +2814,8 @@ msgstr "Répéter chaque piste"
 
 #: ../quodlibet/ext/playorder/track_repeat.py:32
 msgid "Shuffle songs, but repeat every track a set number of times."
-msgstr "Lecture aléatoire, en répétant chaque piste un nombre donné de fois."
+msgstr ""
+"Mélange les titres, mais en répétant chaque piste un certain nombre de fois."
 
 #: ../quodlibet/ext/playorder/track_repeat.py:51
 msgid "Number of times to play each song:"
@@ -3059,7 +3060,7 @@ msgstr ""
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:53
 msgid "Write _standard MusicBrainz tags"
-msgstr "Écrire les balises standard MusicBrainz"
+msgstr "Écrire les étiquettes standard MusicBrainz"
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:54
 msgid "Write \"labelid\" tag"
@@ -4039,7 +4040,7 @@ msgstr ""
 
 #: ../quodlibet/operon/commands.py:633
 msgid "Rename files based on tags"
-msgstr "Renommer les fichiers à partir des balises"
+msgstr "Renommer les fichiers à partir des étiquettes"
 
 #: ../quodlibet/operon/commands.py:648
 msgid "Fill tags based on the file path"
@@ -4350,15 +4351,15 @@ msgstr "(Inconnu[e])"
 
 #: ../quodlibet/qltk/data_editors.py:355
 msgid "Tag expression"
-msgstr "Expression de l'étiquette"
+msgstr "Motif d'étiquette"
 
 #: ../quodlibet/qltk/data_editors.py:382
 msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "Expression dans l'étiquette, c'est-à-dire people:nom ou ~album~année."
+msgstr "Motif d'étiquette, c'est-à-dire people:nom ou ~album~année."
 
 #: ../quodlibet/qltk/data_editors.py:383
 msgid "Enter new tag"
-msgstr "Saisir un"
+msgstr "Saisir une nouvelle étiquette"
 
 #: ../quodlibet/qltk/debugwindow.py:46
 msgid "Error Details"
@@ -4405,7 +4406,7 @@ msgid ""
 "The selected songs will be removed from the library and their files deleted "
 "from disk."
 msgstr ""
-"Les fichiers sélectionnés seront supprimés de la bibliothèque et leurs "
+"Les titres sélectionnés seront supprimés de la bibliothèque et leurs "
 "fichiers supprimés du disque."
 
 #: ../quodlibet/qltk/delete.py:72
@@ -4428,7 +4429,7 @@ msgid ""
 "The selected songs will be removed from the library and their files moved to "
 "the trash."
 msgstr ""
-"Les fichiers sélectionnés seront supprimés de la bibliothèque et leurs "
+"Les titres sélectionnés seront supprimés de la bibliothèque et leurs "
 "fichiers déplacés vers la corbeille."
 
 #: ../quodlibet/qltk/delete.py:115
@@ -5727,7 +5728,7 @@ msgstr[1] "Lancer le plugin \"%(name)s\" sur les albums %(count)d ?"
 
 #: ../quodlibet/qltk/songsmenu.py:149
 msgid "Configure Plugins…"
-msgstr "Configurer les plugins …"
+msgstr "Configurer les greffons …"
 
 #: ../quodlibet/qltk/songsmenu.py:345
 msgid "Add to _Queue"
