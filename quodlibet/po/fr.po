@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-13 17:52+0100\n"
+"PO-Revision-Date: 2017-02-13 18:19+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -601,7 +601,7 @@ msgstr ""
 
 #: ../quodlibet/browsers/iradio.py:384
 msgid "News"
-msgstr "Nouvelles"
+msgstr ""
 
 #: ../quodlibet/browsers/iradio.py:385
 msgid "Schlager"
@@ -653,7 +653,7 @@ msgstr ""
 
 #: ../quodlibet/browsers/iradio.py:451
 msgid "Would you like to load a list of popular radio stations?"
-msgstr "Voulez-vous charger une liste de stations de radios populaires ?"
+msgstr "Souhaitez-vous charger une liste de stations de radios populaires ?"
 
 #: ../quodlibet/browsers/iradio.py:457
 msgid "_Load Stations"
@@ -1186,9 +1186,8 @@ msgid "Show or hide the queue"
 msgstr "Montrer ou cacher la file"
 
 #: ../quodlibet/cli.py:133
-#, fuzzy
 msgid "Show or hide the main song list (deprecated)"
-msgstr "Montrer ou cacher la liste principale des chansons"
+msgstr "Montrer ou cacher la liste principale des titres (abandonné)"
 
 #: ../quodlibet/cli.py:134
 msgid "Filter on a random value"
@@ -1221,7 +1220,7 @@ msgstr "nom de fichier"
 
 #: ../quodlibet/cli.py:140
 msgid "Print filenames of results of query to stdout"
-msgstr ""
+msgstr "Afficher le résultat des requêtes en utilisant stdout"
 
 #: ../quodlibet/cli.py:142
 msgid "Unqueue a file or query"
@@ -1295,13 +1294,15 @@ msgstr "répertoire"
 
 #: ../quodlibet/ext/covers/artwork_url.py:19
 msgid "Artwork URL Cover Source"
-msgstr ""
+msgstr "URL des sources de jaquettes"
 
 #: ../quodlibet/ext/covers/artwork_url.py:20
 msgid ""
 "Downloads covers linked to by the artwork_url tag.This works with the "
 "Soundcloud browser."
 msgstr ""
+"Télécharge la jaquette liée à l'étiquette artwork_url. Cela fonctionne "
+"également dans le navigateur SounCloud."
 
 #: ../quodlibet/ext/covers/discogs.py:25
 msgid "Discogs Cover Source"
@@ -1623,7 +1624,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/equalizer.py:132
 msgid "The current backend does not support equalization."
-msgstr ""
+msgstr "Le gestionnaire de périphérique ne supporte pas d'équalisateur."
 
 #: ../quodlibet/ext/events/equalizer.py:138
 #, python-format
@@ -1635,7 +1636,7 @@ msgstr "%.1f kHz"
 #: ../quodlibet/ext/gstreamer/karaoke.py:95
 #, python-format
 msgid "%d Hz"
-msgstr ""
+msgstr "%d Hz"
 
 #: ../quodlibet/ext/events/equalizer.py:173
 #: ../quodlibet/ext/gstreamer/crossfeed.py:118
@@ -1659,7 +1660,7 @@ msgstr "en ligne"
 
 #: ../quodlibet/ext/events/gajim_status.py:28
 msgid "offline"
-msgstr ""
+msgstr "non-connecté"
 
 #: ../quodlibet/ext/events/gajim_status.py:29
 msgid "chat"
@@ -1712,18 +1713,16 @@ msgid "Statuses for which message will be changed"
 msgstr ""
 
 #: ../quodlibet/ext/events/headphonemon.py:156
-#, fuzzy
 msgid "Pause on Headphone Unplug"
-msgstr "Mettre en pause quand le casque audio est débranché"
+msgstr "Suspendre la lecture quand le casque audio est débranché"
 
 #: ../quodlibet/ext/events/headphonemon.py:157
-#, fuzzy
 msgid ""
 "Pauses in case headphones get unplugged and unpauses in case they get "
 "plugged in again."
 msgstr ""
-"Mettre en pause quand un casque est débranché et rejouer quand il est "
-"rebranché"
+"Suspendre la lecture quand le casque audio est débranché et la reprendre dès "
+"qu'il est rebranché."
 
 #: ../quodlibet/ext/events/inhibit.py:41
 msgid "Inhibit Screensaver"
@@ -1738,15 +1737,16 @@ msgid "Music is playing"
 msgstr "La musique est en cours de lecture"
 
 #: ../quodlibet/ext/events/iradiolog.py:16
-#, fuzzy
 msgid "Internet Radio Log"
-msgstr "Radio Internet"
+msgstr "Logs radio Internet"
 
 #: ../quodlibet/ext/events/iradiolog.py:17
 msgid ""
 "Records the last 10 songs played on radio stations, and lists them in the "
 "seek context menu."
 msgstr ""
+"Enregister les 10 derniers titres joués sur les stations radio, et les "
+"lister dans le menu contextuel."
 
 #: ../quodlibet/ext/events/jep118.py:29
 msgid "JEP-118"
@@ -2248,7 +2248,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/screensaver.py:26
 msgid "Pauses playback while the GNOME screensaver is active."
-msgstr ""
+msgstr "Suspendre la lecture quand l'économiseur d'écran Gnome s'affiche."
 
 #: ../quodlibet/ext/events/searchprovider.py:73
 msgid "No GNOME Shell search provider for Quod Libet installed."
@@ -2256,7 +2256,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/searchprovider.py:79
 msgid "GNOME Search Provider"
-msgstr ""
+msgstr "Fournisseur de recherche Gnome"
 
 #: ../quodlibet/ext/events/searchprovider.py:80
 msgid "Allows GNOME Shell to search the library."
@@ -2264,13 +2264,14 @@ msgstr ""
 
 #: ../quodlibet/ext/events/seekbar.py:122
 msgid "Alternative Seek Bar"
-msgstr ""
+msgstr "Barre d'avancement alternative"
 
 #: ../quodlibet/ext/events/seekbar.py:123
 msgid ""
 "Alternative seek bar which is always visible and spans the whole window "
 "width."
 msgstr ""
+"Barre d'avancement alternative, visible sur toute la largeur de la fenêtre."
 
 #: ../quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
@@ -2540,7 +2541,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/write_cover.py:32
 msgid "Picture Saver"
-msgstr ""
+msgstr "Economiseur d'écran"
 
 #: ../quodlibet/ext/events/write_cover.py:33
 msgid "Saves the cover image of the current song to a file."
@@ -5958,8 +5959,8 @@ msgstr "%d kbps"
 #, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
-msgstr[0] "%d secondes"
-msgstr[1] "%d secondes"
+msgstr[0] "%s secondes"
+msgstr[1] "%s secondes"
 
 #: ../quodlibet/util/__init__.py:431
 msgid "No time information"
