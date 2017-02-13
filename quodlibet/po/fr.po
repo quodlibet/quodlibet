@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-13 21:16+0100\n"
+"PO-Revision-Date: 2017-02-13 21:30+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -5123,7 +5123,7 @@ msgstr "Navigateurs"
 
 #: ../quodlibet/qltk/prefs.py:293
 msgid "Confirm _multiple ratings"
-msgstr "Confirmer les notations _multiples"
+msgstr "Confirmer les évaluations _multiples"
 
 #: ../quodlibet/qltk/prefs.py:295
 msgid ""
@@ -5140,7 +5140,7 @@ msgstr "Activer l'évaluation par un clic dans la colonne évaluation des titres
 
 #: ../quodlibet/qltk/prefs.py:306 ../quodlibet/qltk/prefs.py:616
 msgid "Ratings"
-msgstr "Notations"
+msgstr "Evaluations"
 
 #. Filename choice algorithm config
 #: ../quodlibet/qltk/prefs.py:312
@@ -5453,7 +5453,7 @@ msgstr "Êtes-vous certain de modifier l'évaluation de ces %d chansons."
 
 #: ../quodlibet/qltk/ratingsmenu.py:26
 msgid "The saved ratings will be removed"
-msgstr "Les notations enregistrées seront supprimées"
+msgstr "Les évaluations enregistrées seront supprimées"
 
 #: ../quodlibet/qltk/ratingsmenu.py:27
 #, python-format
@@ -5731,7 +5731,7 @@ msgstr "Configurer les plugins …"
 
 #: ../quodlibet/qltk/songsmenu.py:345
 msgid "Add to _Queue"
-msgstr "A_jouter à la file"
+msgstr "A_jouter à la file de lecture"
 
 #: ../quodlibet/qltk/songsmenu.py:368
 msgid "_Copy to Device"
