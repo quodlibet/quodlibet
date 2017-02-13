@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-13 18:19+0100\n"
+"PO-Revision-Date: 2017-02-13 18:22+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -768,7 +768,7 @@ msgstr "%s n'est pas connecté."
 #: ../quodlibet/browsers/media.py:499
 #, python-format
 msgid "Copying %(song)s"
-msgstr "Copie de %(titre)s"
+msgstr "Copie de %(song)s"
 
 #: ../quodlibet/browsers/media.py:513 ../quodlibet/browsers/media.py:529
 msgid "Unable to copy song"
