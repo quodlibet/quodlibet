@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-13 18:56+0100\n"
+"PO-Revision-Date: 2017-02-13 19:12+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -776,7 +776,7 @@ msgstr "Impossible de copier le titre"
 
 #: ../quodlibet/browsers/media.py:514
 msgid "There is not enough free space for this song."
-msgstr "Espace insuffisant pour ce titre"
+msgstr "Espace libre insuffisant pour ce titre"
 
 #: ../quodlibet/browsers/media.py:526
 #, python-format
@@ -1930,7 +1930,7 @@ msgstr "motif"
 
 #: ../quodlibet/ext/events/mqtt.py:134
 msgid "Text when a song is paused."
-msgstr ""
+msgstr "Texte affiché quand la lecture est en pause"
 
 #: ../quodlibet/ext/events/mqtt.py:136
 #, fuzzy
@@ -2999,9 +2999,8 @@ msgid "Done"
 msgstr "Fait."
 
 #: ../quodlibet/ext/songsmenu/albumart.py:922
-#, fuzzy
 msgid "Download Album Art"
-msgstr "Jaquettes d'Album"
+msgstr "Télécharger des illustrations"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:923
 msgid "Downloads album covers from various websites."
@@ -3176,7 +3175,7 @@ msgstr "commande"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:46
 msgid "The shell command syntax to run"
-msgstr ""
+msgstr "Syntaxe de la commande à lancer"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:48
 msgid "parameter"
@@ -3675,8 +3674,8 @@ msgstr ""
 #, python-format
 msgid "There is %d stored track."
 msgid_plural "There are %d stored tracks."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d piste est stockée."
+msgstr[1] "%d pistes sont stockées."
 
 #: ../quodlibet/ext/songsmenu/playlist.py:31
 #, fuzzy
@@ -4409,10 +4408,12 @@ msgid ""
 "The selected songs will be removed from the library and their files deleted "
 "from disk."
 msgstr ""
+"Les fichiers sélectionnés seront supprimés de la bibliothèque et leurs "
+"fichiers supprimés du disque."
 
 #: ../quodlibet/qltk/delete.py:72
 msgid "The selected files will be deleted from disk."
-msgstr ""
+msgstr "Les fichiers sélectionnés seront supprimés du disque."
 
 #: ../quodlibet/qltk/delete.py:76
 #, python-format
@@ -4430,10 +4431,12 @@ msgid ""
 "The selected songs will be removed from the library and their files moved to "
 "the trash."
 msgstr ""
+"Les fichiers sélectionnés seront supprimés de la bibliothèque et leurs "
+"fichiers déplacés vers la corbeille."
 
 #: ../quodlibet/qltk/delete.py:115
 msgid "The selected files will be moved to the trash."
-msgstr ""
+msgstr "Les fichiers sélectionnés seront supprimés de la corbeille."
 
 #: ../quodlibet/qltk/delete.py:120
 #, python-format
@@ -4927,7 +4930,7 @@ msgstr "Vous allez supprimer %d chanson."
 
 #: ../quodlibet/qltk/maskedbox.py:21
 msgid "The selected songs will be removed from the library."
-msgstr ""
+msgstr "Les titres sélectionnés seront supprimés de la bibliothèque."
 
 #: ../quodlibet/qltk/maskedbox.py:44
 msgid "Unhide"
@@ -5149,7 +5152,7 @@ msgstr "Notations"
 #. Filename choice algorithm config
 #: ../quodlibet/qltk/prefs.py:312
 msgid "Prefer _embedded art"
-msgstr ""
+msgstr "Préférer les illustrations incorporées aux fichiers"
 
 #: ../quodlibet/qltk/prefs.py:314
 msgid ""
