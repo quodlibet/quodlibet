@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-13 18:22+0100\n"
+"PO-Revision-Date: 2017-02-13 18:56+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -133,7 +133,7 @@ msgstr[1] "%d albums"
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Recharger la _jaquettes de l'album"
-msgstr[1] "Recharger les _jaquettes des albums"
+msgstr[1] "Recharger les _jaquettes de l'album"
 
 #: ../quodlibet/browsers/albums/prefs.py:28
 #: ../quodlibet/browsers/collection/models.py:17
@@ -1109,7 +1109,7 @@ msgstr "Imprimer la liste de lecture"
 
 #: ../quodlibet/cli.py:112
 msgid "Print the contents of the queue"
-msgstr "Imprimer le contenu de la file "
+msgstr "Imprimer le contenu de la file d'attente"
 
 #: ../quodlibet/cli.py:113
 msgid "Print the active text query"
@@ -1183,7 +1183,7 @@ msgstr "Démarrer un nouveau navigateur"
 
 #: ../quodlibet/cli.py:131
 msgid "Show or hide the queue"
-msgstr "Montrer ou cacher la file"
+msgstr "Montrer ou cacher la file d'attente"
 
 #: ../quodlibet/cli.py:133
 msgid "Show or hide the main song list (deprecated)"
@@ -1208,11 +1208,13 @@ msgstr "étiquette=valeur"
 
 #: ../quodlibet/cli.py:136
 msgid "Enqueue a file or query"
-msgstr "Mettre un fichier ou le résultat d'une recherche dans la file"
+msgstr ""
+"Mettre un fichier ou le résultat d'une recherche dans la file d'attente"
 
 #: ../quodlibet/cli.py:138
 msgid "Enqueue comma-separated files"
-msgstr "Mettre des fichiers séparés par un point-virgule dans la file"
+msgstr ""
+"Mettre des fichiers séparés par un point-virgule dans la file d'attente"
 
 #: ../quodlibet/cli.py:139 ../quodlibet/util/tags.py:147
 msgid "filename"
@@ -1224,7 +1226,7 @@ msgstr "Afficher le résultat des requêtes en utilisant stdout"
 
 #: ../quodlibet/cli.py:142
 msgid "Unqueue a file or query"
-msgstr "Enlever un fichier ou le résultat d'une recherche de la file"
+msgstr "Enlever un fichier ou le résultat d'une recherche de la file d'attente"
 
 #: ../quodlibet/cli.py:203
 #, python-format
@@ -1301,7 +1303,7 @@ msgid ""
 "Downloads covers linked to by the artwork_url tag.This works with the "
 "Soundcloud browser."
 msgstr ""
-"Télécharge la jaquette liée à l'étiquette artwork_url. Cela fonctionne "
+"Télécharge les jaquettes liée à l'étiquette artwork_url. Fonctionne "
 "également dans le navigateur SounCloud."
 
 #: ../quodlibet/ext/covers/discogs.py:25
@@ -1318,15 +1320,16 @@ msgstr "Jaquettes depuis Last.fm"
 
 #: ../quodlibet/ext/covers/lastfm.py:23
 msgid "Downloads covers from Last.fm's cover art archive."
-msgstr "Télécharger les jaquettes depuis les archives Last.fm dédiées."
+msgstr "Télécharger les jaquettes depuis les archives d'illustration Last.fm."
 
 #: ../quodlibet/ext/covers/musicbrainz.py:19
 msgid "MusicBrainz Cover Source"
-msgstr "Jaquette depuis MusicBrainz"
+msgstr "Source d'illustration MusicBrainz"
 
 #: ../quodlibet/ext/covers/musicbrainz.py:20
 msgid "Downloads covers from MusicBrainz's cover art archive."
-msgstr "Télécharger les jaquettes depuis les archives MusicBrainz dédiées."
+msgstr ""
+"Télécharger les jaquettes depuis les archives d'illustration MusicBrainz."
 
 #: ../quodlibet/ext/editing/iconv.py:26
 msgid "Convert Encodings"
@@ -1403,7 +1406,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/advanced_preferences.py:156
 msgid "I know what I'm doing"
-msgstr ""
+msgstr "Je confirme comprendre ce que je fais"
 
 #: ../quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
@@ -1415,19 +1418,19 @@ msgstr ""
 
 #: ../quodlibet/ext/events/animosd/prefs.py:153
 msgid "Top of screen"
-msgstr ""
+msgstr "Haut d'écran"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:154
 msgid "Middle of screen"
-msgstr ""
+msgstr "Milieu d'écran"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:155
 msgid "Bottom of screen"
-msgstr ""
+msgstr "Bas d'écran"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:158
 msgid "_Position:"
-msgstr ""
+msgstr "_Position"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:171
 msgid "_Cover size:"
@@ -2688,7 +2691,7 @@ msgstr ""
 
 #: ../quodlibet/ext/gstreamer/mono.py:17
 msgid "Downmixes audio channels to mono."
-msgstr ""
+msgstr "Mixer les canaux audio vers un seul canal mono"
 
 #: ../quodlibet/ext/gstreamer/pitch.py:20
 msgid "R_ate:"
@@ -3002,7 +3005,7 @@ msgstr "Jaquettes d'Album"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:923
 msgid "Downloads album covers from various websites."
-msgstr ""
+msgstr "Téléchargement de jaquettes d'album depuis plusieurs sites Web."
 
 #: ../quodlibet/ext/songsmenu/albumart.py:936
 msgid "Sources"
@@ -3059,7 +3062,7 @@ msgstr ""
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:53
 msgid "Write _standard MusicBrainz tags"
-msgstr ""
+msgstr "Ecrire les balises standard MusicBrainz"
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:54
 msgid "Write \"labelid\" tag"
@@ -5042,9 +5045,7 @@ msgstr "_Sauter à la chanson courante automatiquement"
 
 #: ../quodlibet/qltk/prefs.py:66
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr ""
-"Quand la chanson jouée change, défiler jusqu'à elle dans la liste des "
-"chansons"
+msgstr "Défiler jusqu'au titre, dès qu'il est joué"
 
 #: ../quodlibet/qltk/prefs.py:69
 msgid "Behavior"
@@ -5060,7 +5061,7 @@ msgstr "_Éditer …"
 
 #: ../quodlibet/qltk/prefs.py:91
 msgid "Add or remove additional column headers"
-msgstr ""
+msgstr "Ajouter ou supprimer des colonnes supplémentaires"
 
 #: ../quodlibet/qltk/prefs.py:101
 msgid "Visible Columns"
@@ -5071,13 +5072,12 @@ msgid "Title includes _version"
 msgstr "Le titre contient la _version"
 
 #: ../quodlibet/qltk/prefs.py:106
-#, fuzzy
 msgid "Artist includes all _people"
-msgstr "Inclure les personnes dans la _recherche"
+msgstr "L'artiste contient toutes les personnes"
 
 #: ../quodlibet/qltk/prefs.py:108
 msgid "Album includes _disc subtitle"
-msgstr "L'album contient la sous-titre du _disque"
+msgstr "L'album contient le sous-titre du _disque"
 
 #: ../quodlibet/qltk/prefs.py:110
 msgid "Filename includes _folder"
@@ -5090,6 +5090,8 @@ msgstr "Préférences des colonnes"
 #: ../quodlibet/qltk/prefs.py:129
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr ""
+"Appliquer la configuration courante à la liste de titres, en ajoutant les "
+"nouvelles colonnes à la fin"
 
 #: ../quodlibet/qltk/prefs.py:142 ../quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
@@ -5906,7 +5908,7 @@ msgstr "Recharger la _jaquettes de l'album"
 
 #: ../quodlibet/util/cover/built_in.py:27
 msgid "Uses covers embedded into audio files."
-msgstr ""
+msgstr "Utilise les jaquettes inclues dans les fichiers audio."
 
 #: ../quodlibet/util/cover/built_in.py:49
 #, fuzzy
@@ -6030,7 +6032,7 @@ msgstr "Les pics ReplayGain doivent être saisis au format 'x.yy'."
 #: ../quodlibet/util/massagers.py:173
 msgid "MusicBrainz IDs must be in UUID format."
 msgstr ""
-"Les identificateurs de pistes MusicBrainz doivent être dans le format UUID."
+"Les identifiants de piste MusicBrainz doivent être dans le format UUID."
 
 #. Translators: Leave "official", "promotional", and "bootleg"
 #. untranslated. They are the three possible literal values.
@@ -6236,37 +6238,32 @@ msgstr "pays de publication"
 #. We can't do that because of existing libraries, so use a new
 #. musicbrainz_releastrackid instead.
 #: ../quodlibet/util/tags.py:120
-#, fuzzy
 msgid "MusicBrainz recording ID"
-msgstr "Identifiant MusicBrainz - piste "
+msgstr "Identifiant MusicBrainz d'enregistrement"
 
 #: ../quodlibet/util/tags.py:121
-#, fuzzy
 msgid "MusicBrainz release track ID"
-msgstr "Identifiant MusicBrainz - piste "
+msgstr "Identifiant MusicBrainz de piste"
 
 #: ../quodlibet/util/tags.py:122
-#, fuzzy
 msgid "MusicBrainz release ID"
-msgstr "Identifiant MusicBrainz - piste "
+msgstr "Identifiant MusicBrainz de parution "
 
 #: ../quodlibet/util/tags.py:123
-#, fuzzy
 msgid "MusicBrainz artist ID"
-msgstr "Identifiant MusicBrainz - artiste"
+msgstr "Identifiant MusicBrainz d'artiste"
 
 #: ../quodlibet/util/tags.py:124
-#, fuzzy
 msgid "MusicBrainz release artist ID"
-msgstr "Identifiant MusicBrainz - piste "
+msgstr "Identifiant MusicBrainz d'artiste dans la parution"
 
 #: ../quodlibet/util/tags.py:125
 msgid "MusicBrainz TRM ID"
-msgstr "Identifiant MusicBrainz - trm"
+msgstr "Identifiant MusicBrainz de TRM"
 
 #: ../quodlibet/util/tags.py:126
 msgid "MusicIP PUID"
-msgstr "Identifiant MusicBrainz - puid"
+msgstr "MusicIP PUID"
 
 #: ../quodlibet/util/tags.py:127
 msgid "MusicBrainz album status"
@@ -6277,9 +6274,8 @@ msgid "MusicBrainz album type"
 msgstr "Type MusicBrainz de l'album"
 
 #: ../quodlibet/util/tags.py:129
-#, fuzzy
 msgid "MusicBrainz release group ID"
-msgstr "Identifiant MusicBrainz - piste "
+msgstr "Identifiant MusicBrainz groupe de parutions "
 
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: ../quodlibet/util/tags.py:132
