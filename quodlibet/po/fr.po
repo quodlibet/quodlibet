@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-14 18:16+0100\n"
+"PO-Revision-Date: 2017-02-14 18:39+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1829,6 +1829,8 @@ msgid ""
 "Exposes all albums to the Rygel UPnP Media Server through the MediaServer2 D-"
 "Bus interface."
 msgstr ""
+"Rendre disponible les albums via le serveur de média UPnP Rygel, en "
+"utilisant l'interface D-Bus MediaServer2."
 
 #: ../quodlibet/ext/events/mpdserver/__init__.py:61
 msgid "MPD Server"
@@ -1839,6 +1841,8 @@ msgid ""
 "Allows remote control of Quod Libet using an MPD Client. Streaming, playlist "
 "and library management are not supported."
 msgstr ""
+"Permet de contrôler Quod Libet en utilisant un client MPD. Le streaming, les "
+"files de lecture et la gestion de la bibliothèque ne sont pas supportés."
 
 #: ../quodlibet/ext/events/mpdserver/__init__.py:76
 msgid "_Port:"
@@ -1869,6 +1873,8 @@ msgid ""
 "Allows control of Quod Libet using the MPRIS 1.0/2.0 D-Bus Interface "
 "Specification."
 msgstr ""
+"Autoriser le contrôle de Quod Libet selon les spécifications de l'interface "
+"D-Bus MPRIS 1.0/2.0."
 
 #: ../quodlibet/ext/events/mpris/__init__.py:45
 #: ../quodlibet/ext/events/trayicon/prefs.py:30
@@ -3003,7 +3009,7 @@ msgid ""
 "after conversion."
 msgstr ""
 "Convertit des étiquettes APEv2 en étiquettes ID3v2. Les étiquettes APEv2 "
-"seront supprimées après conversion."
+"sont supprimées après conversion."
 
 #: ../quodlibet/ext/songsmenu/bookmarks.py:23
 msgid "Go to Bookmark"
@@ -3280,9 +3286,8 @@ msgid "Remove _Whitespace"
 msgstr "Supprimer les espaces"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:421
-#, fuzzy
 msgid "Remove _Diacritics"
-msgstr "Supprimer les doublons"
+msgstr "Supprimer les caractères spéciaux"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:422
 msgid "Remove _Punctuation"
@@ -3299,9 +3304,8 @@ msgstr ""
 #. Create a dialog.
 #: ../quodlibet/ext/songsmenu/editplaycount.py:19
 #: ../quodlibet/ext/songsmenu/editplaycount.py:41
-#, fuzzy
 msgid "Edit Playcount"
-msgstr "Éditer l'affiche des informations"
+msgstr "Modifier le compteur de lectures"
 
 #: ../quodlibet/ext/songsmenu/editplaycount.py:20
 msgid ""
@@ -3747,9 +3751,8 @@ msgid "Existing Tags"
 msgstr "Etiquettes existantes"
 
 #: ../quodlibet/ext/songsmenu/splitting.py:31
-#, fuzzy
 msgid "Split Tags"
-msgstr "Éditer les étiquettes"
+msgstr "Scinder les étiquettes"
 
 #: ../quodlibet/ext/songsmenu/splitting.py:32
 msgid ""
@@ -3758,9 +3761,8 @@ msgid ""
 msgstr ""
 
 #: ../quodlibet/ext/songsmenu/splitting.py:56
-#, fuzzy
 msgid "Split Album"
-msgstr "Tous les albums"
+msgstr "Scinder l'album"
 
 #: ../quodlibet/ext/songsmenu/splitting.py:57
 msgid "Split out disc number."
