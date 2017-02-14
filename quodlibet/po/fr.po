@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-13 23:02+0100\n"
+"PO-Revision-Date: 2017-02-14 09:39+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1321,16 +1321,16 @@ msgstr "Jaquettes depuis Last.fm"
 
 #: ../quodlibet/ext/covers/lastfm.py:23
 msgid "Downloads covers from Last.fm's cover art archive."
-msgstr "Télécharger les jaquettes depuis les archives d'illustration Last.fm."
+msgstr "Télécharger les jaquettes depuis les archives d'illustrations Last.fm."
 
 #: ../quodlibet/ext/covers/musicbrainz.py:19
 msgid "MusicBrainz Cover Source"
-msgstr "Source d'illustration MusicBrainz"
+msgstr "Source d'illustrations MusicBrainz"
 
 #: ../quodlibet/ext/covers/musicbrainz.py:20
 msgid "Downloads covers from MusicBrainz's cover art archive."
 msgstr ""
-"Télécharger les jaquettes depuis les archives d'illustration MusicBrainz."
+"Télécharger les jaquettes depuis les archives d'illustrations MusicBrainz."
 
 #: ../quodlibet/ext/editing/iconv.py:26
 msgid "Convert Encodings"
@@ -1410,11 +1410,11 @@ msgstr "Je confirme comprendre ce que je fais"
 
 #: ../quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
-msgstr ""
+msgstr "Incrustation d'informations"
 
 #: ../quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
-msgstr ""
+msgstr "Affiche des information à l'écran dès qu'un nouveau titre est lu."
 
 #: ../quodlibet/ext/events/animosd/prefs.py:153
 msgid "Top of screen"
@@ -1459,7 +1459,7 @@ msgstr "Droite"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:200
 msgid "_Align text:"
-msgstr "_Aligner le texte :"
+msgstr "_Alignement :"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:206
 msgid "Text"
@@ -1471,7 +1471,7 @@ msgstr "_Texte :"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:227
 msgid "_Fill:"
-msgstr "Remplir :"
+msgstr "Remplissage :"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:232
 #: ../quodlibet/ext/events/synchronizedlyrics.py:63
@@ -1480,15 +1480,15 @@ msgstr "Couleurs"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:240
 msgid "_Shadows"
-msgstr "Ombre_s"
+msgstr "Ombré"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:241
 msgid "_Outline"
-msgstr "S_ouligner"
+msgstr "S_ouligné"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:242
 msgid "Rou_nded Corners"
-msgstr ""
+msgstr "Coins arrondis"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:258
 msgid "_Delay:"
@@ -1682,7 +1682,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/gajim_status.py:32
 msgid "invisible"
-msgstr ""
+msgstr "invisible"
 
 #: ../quodlibet/ext/events/gajim_status.py:37
 msgid "Gajim Status Message"
@@ -2161,7 +2161,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/randomalbum.py:38
 msgid "Rated higher"
-msgstr ""
+msgstr "Mieux évalué"
 
 #: ../quodlibet/ext/events/randomalbum.py:39
 msgid "Played more often"
@@ -2551,19 +2551,19 @@ msgstr "Fichier :"
 
 #: ../quodlibet/ext/gstreamer/compressor.py:20
 msgid "_Threshold:"
-msgstr ""
+msgstr "Seuil :"
 
 #: ../quodlibet/ext/gstreamer/compressor.py:21
 msgid "Threshold until the filter is activated"
-msgstr ""
+msgstr "Niveau en deçà duquel le filtre est activé"
 
 #: ../quodlibet/ext/gstreamer/compressor.py:22
 msgid "R_atio:"
-msgstr ""
+msgstr "Ratio :"
 
 #: ../quodlibet/ext/gstreamer/compressor.py:22
 msgid "Compression ratio"
-msgstr ""
+msgstr "Ratio de compression"
 
 #: ../quodlibet/ext/gstreamer/compressor.py:74
 #: ../quodlibet/ext/gstreamer/karaoke.py:91
@@ -2573,7 +2573,7 @@ msgstr ""
 
 #: ../quodlibet/ext/gstreamer/compressor.py:105
 msgid "Audio Compressor"
-msgstr ""
+msgstr "Compresseur audio"
 
 #: ../quodlibet/ext/gstreamer/compressor.py:106
 msgid ""
@@ -2677,7 +2677,7 @@ msgstr "Supprimer les paroles dans l'audio"
 
 #: ../quodlibet/ext/gstreamer/mono.py:16
 msgid "Mono Downmix"
-msgstr ""
+msgstr "Mixage Mono"
 
 #: ../quodlibet/ext/gstreamer/mono.py:17
 msgid "Downmixes audio channels to mono."
@@ -2685,7 +2685,7 @@ msgstr "Mixer les canaux audio vers un seul canal mono"
 
 #: ../quodlibet/ext/gstreamer/pitch.py:20
 msgid "R_ate:"
-msgstr ""
+msgstr "T_aux :"
 
 #: ../quodlibet/ext/gstreamer/pitch.py:21
 msgid "_Tempo:"
@@ -2693,12 +2693,11 @@ msgstr ""
 
 #: ../quodlibet/ext/gstreamer/pitch.py:22
 msgid "_Pitch:"
-msgstr ""
+msgstr "_Tonalité :"
 
 #: ../quodlibet/ext/gstreamer/pitch.py:89
-#, fuzzy
 msgid "Audio Pitch / Speed"
-msgstr "Flux audio"
+msgstr "Tonalité / Vitesse Audio"
 
 #: ../quodlibet/ext/gstreamer/pitch.py:90
 #, fuzzy
@@ -2790,11 +2789,11 @@ msgstr ""
 
 #: ../quodlibet/ext/playorder/reverse.py:14
 msgid "Reverse"
-msgstr "Dans le sens inverse"
+msgstr "Inverser"
 
 #: ../quodlibet/ext/playorder/reverse.py:16
 msgid "Reverses the play order of songs."
-msgstr "Jouer les titres dans le sens inverse."
+msgstr "Inverser l'ordre dans lequel les titres sont joués."
 
 #: ../quodlibet/ext/playorder/track_repeat.py:30
 msgid "Repeat Each Track"
@@ -2996,13 +2995,15 @@ msgstr "Sources"
 
 #: ../quodlibet/ext/songsmenu/ape2id3.py:26
 msgid "APEv2 to ID3v2"
-msgstr ""
+msgstr "APEv2 vers ID3v2"
 
 #: ../quodlibet/ext/songsmenu/ape2id3.py:27
 msgid ""
 "Converts your APEv2 tags to ID3v2 tags. This will delete the APEv2 tags "
 "after conversion."
 msgstr ""
+"Convertit des étiquettes APEv2 en étiquettes ID3v2. Les étiquettes EPEv2 "
+"sont supprimées après conversion."
 
 #: ../quodlibet/ext/songsmenu/bookmarks.py:23
 msgid "Go to Bookmark"
@@ -3010,7 +3011,7 @@ msgstr "Aller aux signets"
 
 #: ../quodlibet/ext/songsmenu/bookmarks.py:24
 msgid "Manages bookmarks in the selected files."
-msgstr ""
+msgstr "Gère les signets des fichiers sélectionnés."
 
 #: ../quodlibet/ext/songsmenu/bookmarks.py:63
 #: ../quodlibet/qltk/seekbutton.py:244
@@ -3369,11 +3370,12 @@ msgstr ""
 
 #: ../quodlibet/ext/songsmenu/fingerprint/__init__.py:30
 msgid "Acoustic Fingerprint Lookup"
-msgstr ""
+msgstr "Rechercher à partir d'une empreinte accoustique"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/__init__.py:31
 msgid "Looks up song metadata through acoustic fingerprinting."
 msgstr ""
+"Recherche les méta-données d'un titre en utilisant l'empreinte Acoustid"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/__init__.py:51
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:41
@@ -3385,28 +3387,32 @@ msgid ""
 "Generates acoustic fingerprints using chromaprint and submits them to "
 "acoustid.org."
 msgstr ""
+"Génère une empreinte acoustique en utilisant Chromaprint et la soumet à "
+"Acoustid.org"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/__init__.py:60
 msgid "API Key Missing"
-msgstr ""
+msgstr "Clé API manquante"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/__init__.py:61
 msgid ""
 "You have to specify an acoustid.org API key in the plugin preferences before "
 "you can submit fingerprints."
 msgstr ""
+"Pour soumettre des empreintes, vous devez au préalable saisir votre clé API "
+"dans les préférences du greffon."
 
 #: ../quodlibet/ext/songsmenu/fingerprint/__init__.py:75
 msgid "Request API key"
-msgstr ""
+msgstr "Demander une clé API"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/__init__.py:82
 msgid "API _key:"
-msgstr ""
+msgstr "Clé API :"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/__init__.py:89
 msgid "AcoustID Web Service"
-msgstr ""
+msgstr "Service Web AcoustID"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:36
 #: ../quodlibet/qltk/downloader.py:67
@@ -3415,11 +3421,11 @@ msgstr "Dans la file de lecture"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:38
 msgid "Analyzing"
-msgstr ""
+msgstr "En cours d'analyse"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:40
 msgid "Lookup"
-msgstr ""
+msgstr "Recherche"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:116
 msgid "Write"
@@ -3427,7 +3433,7 @@ msgstr "Écrire"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:144
 msgid "Status"
-msgstr ""
+msgstr "Etat"
 
 #. Translators: album release ID
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:158
@@ -3541,7 +3547,8 @@ msgstr "Exporter les méta-données"
 
 #: ../quodlibet/ext/songsmenu/importexport.py:52
 msgid "Exports metadata of selected songs as a .tags file."
-msgstr "Exporter les méta-données des titres sélectionnés vers fichier .tags."
+msgstr ""
+"Exporter les méta-données des titres sélectionnés vers un fichier .tags."
 
 #: ../quodlibet/ext/songsmenu/importexport.py:92
 msgid "Import Metadata"
@@ -5344,7 +5351,7 @@ msgstr "Afficha_ge"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:988
 msgid "_Browse"
-msgstr "Naviguer"
+msgstr "Navigation"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:989
 msgid "_Control"
