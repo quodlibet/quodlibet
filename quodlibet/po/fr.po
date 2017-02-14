@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-14 09:39+0100\n"
+"PO-Revision-Date: 2017-02-14 12:32+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1061,7 +1061,7 @@ msgstr "Basculer entre le mode lecture et pause"
 
 #: ../quodlibet/cli.py:100
 msgid "Stop playback"
-msgstr "Stopper la lecture"
+msgstr "Arrêter la lecture"
 
 #: ../quodlibet/cli.py:101
 msgid "Turn up volume"
@@ -1175,7 +1175,7 @@ msgstr "Définir le navigateur courant"
 
 #: ../quodlibet/cli.py:129
 msgid "Stop after the playing song"
-msgstr "Stopper à la fin du titre en cours de lecture"
+msgstr "Arrêter après ce titre"
 
 #: ../quodlibet/cli.py:130
 msgid "Open a new browser"
@@ -1776,7 +1776,7 @@ msgstr "Valeurs systèmes par défaut"
 
 #: ../quodlibet/ext/events/language.py:70
 msgid "A restart is required for any changes to take effect"
-msgstr ""
+msgstr "Pour appliquer les changements, un redémarrage est nécessaire"
 
 #: ../quodlibet/ext/events/lyricswindow.py:199
 msgid "No active song"
@@ -2114,7 +2114,7 @@ msgstr "Motif du _titre"
 
 #: ../quodlibet/ext/events/qlscrobbler.py:531
 msgid "Exclude _filter:"
-msgstr ""
+msgstr "_Filtre d'exclusion :"
 
 #: ../quodlibet/ext/events/qlscrobbler.py:549
 msgid ""
@@ -2437,7 +2437,7 @@ msgstr "_Répéter"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:86
 msgid "Stop _After This Song"
-msgstr "Stopper _après ce titre"
+msgstr "_Arrêter après ce titre"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:92
 #: ../quodlibet/qltk/quodlibetwindow.py:1011
@@ -3460,7 +3460,7 @@ msgstr ""
 
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:49
 msgid "Generating fingerprints:"
-msgstr ""
+msgstr "En cours de génération des empreintes :"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:63
 msgid "_Details"
@@ -3621,7 +3621,7 @@ msgstr ""
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:45
 msgid "_Copy"
-msgstr ""
+msgstr "_Copier"
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:47
 msgid "_Paste"
@@ -4463,7 +4463,7 @@ msgstr "Taille"
 #: ../quodlibet/qltk/downloader.py:94 ../quodlibet/qltk/renamefiles.py:263
 #: ../quodlibet/qltk/wlw.py:50
 msgid "_Stop"
-msgstr "_Stopper"
+msgstr "Arrêter"
 
 #: ../quodlibet/qltk/edittags.py:63 ../quodlibet/qltk/edittags.py:74
 #, python-format
@@ -5355,7 +5355,7 @@ msgstr "Navigation"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:989
 msgid "_Control"
-msgstr "_Contrôle"
+msgstr "Lecture"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Help"
@@ -5379,7 +5379,7 @@ msgstr "Modifier les signets"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1055
 msgid "Stop After This Song"
-msgstr "Stopper après ce titre"
+msgstr "Arrêter après ce titre"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1061
 msgid "_Keyboard Shortcuts"
