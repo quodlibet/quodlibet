@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-14 18:08+0100\n"
+"PO-Revision-Date: 2017-02-14 18:16+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -2161,31 +2161,31 @@ msgstr ""
 
 #: ../quodlibet/ext/events/randomalbum.py:38
 msgid "Rated higher"
-msgstr "Mieux évalué"
+msgstr "Le mieux évalué"
 
 #: ../quodlibet/ext/events/randomalbum.py:39
 msgid "Played more often"
-msgstr ""
+msgstr "Le plus joué"
 
 #: ../quodlibet/ext/events/randomalbum.py:40
 msgid "Skipped more often"
-msgstr ""
+msgstr "Le plus sauté"
 
 #: ../quodlibet/ext/events/randomalbum.py:41
 msgid "Played more recently"
-msgstr ""
+msgstr "Joué récemment"
 
 #: ../quodlibet/ext/events/randomalbum.py:42
 msgid "Started more recently"
-msgstr ""
+msgstr "Lancé récemment"
 
 #: ../quodlibet/ext/events/randomalbum.py:43
 msgid "Added more recently"
-msgstr "Ajouté très récemment"
+msgstr "Ajouté récemment"
 
 #: ../quodlibet/ext/events/randomalbum.py:44
 msgid "Longer albums"
-msgstr "Albums plus longs"
+msgstr "Albums les plus longs"
 
 #: ../quodlibet/ext/events/randomalbum.py:83
 msgid "seconds before starting next album"
@@ -4779,7 +4779,7 @@ msgstr "joué"
 
 #: ../quodlibet/qltk/information.py:257 ../quodlibet/util/tags.py:151
 msgid "skips"
-msgstr "sauté"
+msgstr "sauts"
 
 #: ../quodlibet/qltk/information.py:258 ../quodlibet/util/tags.py:156
 msgid "rating"
