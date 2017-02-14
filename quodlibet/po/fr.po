@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-14 12:32+0100\n"
+"PO-Revision-Date: 2017-02-14 17:08+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1414,7 +1414,7 @@ msgstr "Incrustation d'informations"
 
 #: ../quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
-msgstr "Affiche des information à l'écran dès qu'un nouveau titre est lu."
+msgstr "Afficher les informations concernant un titre dès qu'il est modifié."
 
 #: ../quodlibet/ext/events/animosd/prefs.py:153
 msgid "Top of screen"
@@ -3002,8 +3002,8 @@ msgid ""
 "Converts your APEv2 tags to ID3v2 tags. This will delete the APEv2 tags "
 "after conversion."
 msgstr ""
-"Convertit des étiquettes APEv2 en étiquettes ID3v2. Les étiquettes EPEv2 "
-"sont supprimées après conversion."
+"Convertit des étiquettes APEv2 en étiquettes ID3v2. Les étiquettes APEv2 "
+"seront supprimées après conversion."
 
 #: ../quodlibet/ext/songsmenu/bookmarks.py:23
 msgid "Go to Bookmark"
