@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-14 17:44+0100\n"
+"PO-Revision-Date: 2017-02-14 18:08+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1339,6 +1339,8 @@ msgstr "Transcoder"
 #: ../quodlibet/ext/editing/iconv.py:27
 msgid "Fixes misinterpreted tag value encodings in the tag editor."
 msgstr ""
+"Corriger dans l'éditeur d'étiquettes les étiquettes comportant des erreurs "
+"d'encodage."
 
 #: ../quodlibet/ext/editing/iconv.py:33
 msgid "_Convert Encoding…"
@@ -1362,7 +1364,7 @@ msgstr ""
 
 #: ../quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
-msgstr ""
+msgstr "Substitution Regex"
 
 #: ../quodlibet/ext/editing/resub.py:19
 msgid ""
@@ -1371,17 +1373,15 @@ msgstr ""
 
 #: ../quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
-msgstr ""
+msgstr "Casse du titre"
 
 #: ../quodlibet/ext/editing/titlecase.py:21
-#, fuzzy
 msgid "Title-cases tag values in the tag editor."
-msgstr "Éditeur d'étiquettes audio (tags)"
+msgstr ""
 
 #: ../quodlibet/ext/editing/titlecase.py:40
-#, fuzzy
 msgid "Title-_case Value"
-msgstr "Mettre une _majuscule aux valeurs résultantes"
+msgstr ""
 
 #: ../quodlibet/ext/editing/titlecase.py:51
 msgid "Allow _ALL-CAPS in tags"
@@ -1395,6 +1395,8 @@ msgstr ""
 msgid ""
 "Uses common English rules for title casing, as in \"Dark Night of the Soul\""
 msgstr ""
+"Modifier le titre selon les règles typographiques britanniques (majuscule à "
+"chaque nom), en écrivant par exemple \"Dark Night of the Soul\""
 
 #: ../quodlibet/ext/events/advanced_preferences.py:68
 msgid "Advanced Preferences"
@@ -1732,7 +1734,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/inhibit.py:41
 msgid "Inhibit Screensaver"
-msgstr ""
+msgstr "Désactiver l'économiseur d'écran"
 
 #: ../quodlibet/ext/events/inhibit.py:42
 msgid "Prevents the GNOME screensaver from activating while a song is playing."
@@ -1816,8 +1818,7 @@ msgstr "Fenêtre des paroles"
 
 #: ../quodlibet/ext/events/lyricswindow.py:348
 msgid "Shows a window containing lyrics of the playing song."
-msgstr ""
-"Afficher une fenêtre contenant les paroles du titre en cours de lecture."
+msgstr "Afficher les paroles du titre en cours de lecture dans un fenêtre."
 
 #: ../quodlibet/ext/events/mediaserver.py:38
 msgid "UPnP AV Media Server"
@@ -2260,14 +2261,14 @@ msgstr ""
 
 #: ../quodlibet/ext/events/seekbar.py:122
 msgid "Alternative Seek Bar"
-msgstr "Barre d'avancement alternative"
+msgstr "Barre de progression alternative"
 
 #: ../quodlibet/ext/events/seekbar.py:123
 msgid ""
 "Alternative seek bar which is always visible and spans the whole window "
 "width."
 msgstr ""
-"Barre d'avancement alternative, visible sur toute la largeur de la fenêtre."
+"Barre de progression alternative, visible sur toute la largeur de la fenêtre."
 
 #: ../quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
@@ -2297,8 +2298,8 @@ msgstr "Paroles synchronisées"
 #: ../quodlibet/ext/events/synchronizedlyrics.py:35
 msgid "Shows synchronized lyrics from .lrc file with same name as the track."
 msgstr ""
-"Afficher les paroles de manière synchronisées en utilisant un fichier .lrc "
-"de même nom que la piste"
+"Afficher les paroles de manière synchronisée avec l'audio, en utilisant un "
+"fichier .lrc de même nom que la piste."
 
 #: ../quodlibet/ext/events/synchronizedlyrics.py:66
 msgid "Text:"
@@ -3027,7 +3028,7 @@ msgstr "Recherche MusicBrainz"
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:26
 msgid "Re-tags an album based on a MusicBrainz search."
-msgstr "Étiqueter l'album à nouveau, sur la base de la recherche MusicBrainz."
+msgstr "Étiqueter l'album à nouveau, en utilisant MusicBrainz."
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:50
 msgid "Only use year for \"date\" tag"
@@ -3524,7 +3525,7 @@ msgstr "Exporter les titres sélectionnés vers HTML."
 
 #: ../quodlibet/ext/songsmenu/id3tlen.py:21
 msgid "Fix MP3 Duration"
-msgstr "Réparer la durée du MP3"
+msgstr "Corriger la durée du MP3"
 
 #: ../quodlibet/ext/songsmenu/id3tlen.py:22
 msgid ""
@@ -3697,7 +3698,7 @@ msgstr ""
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:418
 msgid "Progress"
-msgstr "Avancement"
+msgstr "Progression"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:433
 msgid "Gain"
