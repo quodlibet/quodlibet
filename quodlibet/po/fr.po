@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-14 18:39+0100\n"
+"PO-Revision-Date: 2017-02-15 00:35+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1137,7 +1137,7 @@ msgstr "[+|-][HH:]MM:SS"
 
 #: ../quodlibet/cli.py:122
 msgid "Set or toggle shuffle mode"
-msgstr "Activer ou désactiver le mode de mélange"
+msgstr "Activer ou désactiver la lecture aléatoire"
 
 #: ../quodlibet/cli.py:123
 msgid "Turn repeat off, on, or toggle it"
@@ -1222,7 +1222,7 @@ msgstr "nom de fichier"
 
 #: ../quodlibet/cli.py:140
 msgid "Print filenames of results of query to stdout"
-msgstr "Afficher le résultat des requêtes en utilisant stdout"
+msgstr "Afficher les résultats de la requête sur la sortie standard stdout"
 
 #: ../quodlibet/cli.py:142
 msgid "Unqueue a file or query"
@@ -2746,7 +2746,7 @@ msgstr ""
 msgid "Are you sure you want to remove %d duplicate song?"
 msgid_plural "Are you sure you want to remove %d duplicate songs?"
 msgstr[0] "Confirmer la suppression du titre %d en doublon ?"
-msgstr[1] "Confirmer la suppression des %d titre en doublon ?"
+msgstr[1] "Confirmer la suppression des %d titres en doublon ?"
 
 #: ../quodlibet/ext/playlist/remove_duplicates.py:52
 #, python-format
@@ -4047,7 +4047,7 @@ msgstr "Afficher des informations d'aide"
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr ""
-"'%(column-id)s' n'est pas un nom valide pour la colone (%(all-column-ids)s)."
+"'%(column-id)s' n'est pas un nom valide pour la colonne (%(all-column-ids)s)."
 
 #: ../quodlibet/order/__init__.py:21
 msgid "_Unknown"
@@ -4273,8 +4273,8 @@ msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
 msgstr ""
-"Les 40 chansons que vous avez le plus jouées (plus de 40 peuvent être "
-"choisies en cas d'égalité)"
+"Les 40 titres les plus joués (plus de 40 peuvent être choisis en cas "
+"d'égalité)"
 
 #: ../quodlibet/qltk/cbes.py:48 ../quodlibet/qltk/edittags.py:311
 msgid "_Value:"
@@ -4362,9 +4362,9 @@ msgstr ""
 "enregistré dans <b >%(dump-path)s</b>, qui nous aidera à trouver la cause du "
 "problème. Veuillez ouvrir un ticket d'incident à  %(new-issue-url)s et "
 "attachez-y ce fichier ou son contenu. Ce fichier peut contenir certaines "
-"informations vous identifiant, telles qu'une liste de chansons récemment "
-"écoutées. Si ceci est inacceptable, envoyez à la place <b>"
-"%(mini-dump-path)s</b> accompagné d'une description détaillée du problème."
+"informations vous identifiant, telles qu'une liste de titres récemment "
+"écoutés. Si ceci est inacceptable, envoyez à la place <b>%(mini-dump-path)s</"
+"b> accompagné d'une description détaillée du problème."
 
 #: ../quodlibet/qltk/debugwindow.py:176
 msgid ""
@@ -4468,15 +4468,15 @@ msgstr "Arrêter"
 #, python-format
 msgid "missing from %d song"
 msgid_plural "missing from %d songs"
-msgstr[0] "manquant dans %d chanson"
-msgstr[1] "manquant dans %d chansons"
+msgstr[0] "manquant dans %d titre"
+msgstr[1] "manquant dans %d titres"
 
 #: ../quodlibet/qltk/edittags.py:67 ../quodlibet/qltk/edittags.py:71
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
-msgstr[0] "différent parmi %d chanson"
-msgstr[1] "différent dans les %d chansons"
+msgstr[0] "différent parmi %d titre"
+msgstr[1] "différent dans les %d titres"
 
 #: ../quodlibet/qltk/edittags.py:193
 msgid "Split into _Multiple Values"
@@ -4608,11 +4608,11 @@ msgid ""
 msgstr ""
 "%(file-name)s semble avoir été modifié pendant le fonctionnement du "
 "programme. Enregistrer maintenant sans réactualiser votre bibliothèque "
-"pourrait écraser d'autres modifications à la chanson."
+"pourrait écraser d'autres modifications appliquées au titre."
 
 #: ../quodlibet/qltk/_editutils.py:46
 msgid "Unable to save song"
-msgstr "Impossible de sauvegarder la chanson"
+msgstr "Impossible d'enregistrer le titre"
 
 #: ../quodlibet/qltk/_editutils.py:49
 #, python-format
@@ -4720,7 +4720,7 @@ msgstr "Modifi_er l'affichage…"
 
 #: ../quodlibet/qltk/information.py:105
 msgid "No songs are selected."
-msgstr "Aucune chanson n'est sélectionnée."
+msgstr "Aucun titre n'est sélectionné."
 
 #: ../quodlibet/qltk/information.py:106
 msgid "No Songs"
@@ -4842,8 +4842,8 @@ msgstr "Liste de pistes"
 #, python-format
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
-msgstr[0] "%d chanson sans album"
-msgstr[1] "%d chansons sans album"
+msgstr[0] "%d titre sans album"
+msgstr[1] "%d titres sans album"
 
 #: ../quodlibet/qltk/information.py:508
 msgid "Selected Discography"
@@ -4853,8 +4853,8 @@ msgstr "Discographie sélectionnée"
 #, python-format
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
-msgstr[0] "%d chanson sans artiste"
-msgstr[1] "%d chansons sans artiste"
+msgstr[0] "%d titre sans artiste"
+msgstr[1] "%d titres sans artiste"
 
 #: ../quodlibet/qltk/information.py:586 ../quodlibet/util/tags.py:74
 msgid "albums"
@@ -4886,7 +4886,7 @@ msgstr "_Éditer"
 #. "yourself and click save."))
 #: ../quodlibet/qltk/lyrics.py:73 ../quodlibet/qltk/lyrics.py:109
 msgid "No lyrics found for this song."
-msgstr "Des paroles n'ont pas été trouvées pour cette chanson."
+msgstr "Ce titre ne contient aucune parole."
 
 #: ../quodlibet/qltk/lyrics.py:82
 msgid "Searching for lyrics…"
@@ -4949,7 +4949,7 @@ msgstr "%d tâches en cours"
 
 #: ../quodlibet/qltk/playorder.py:254
 msgid "Toggle shuffle mode"
-msgstr "Basculer le mode Mélanger"
+msgstr "Basculer le mode lecture aléatoire"
 
 #: ../quodlibet/qltk/playorder.py:270
 msgid "Toggle repeat mode"
@@ -5098,7 +5098,7 @@ msgstr "Confirmer les évaluations _multiples"
 #: ../quodlibet/qltk/prefs.py:295
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
-msgstr "Demander confirmation avant d'évaluer plusieurs chansons à la fois"
+msgstr "Demander confirmation avant d'évaluer plusieurs titres à la fois"
 
 #: ../quodlibet/qltk/prefs.py:298
 msgid "Enable _one-click ratings"
@@ -5152,7 +5152,7 @@ msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr ""
-"Si aucune information de Replay Gain n'est disponible pour une chanson, "
+"Si aucune information de Replay Gain n'est disponible pour un titre, "
 "multiplier le volume par cette valeur"
 
 #: ../quodlibet/qltk/prefs.py:376
@@ -5163,7 +5163,7 @@ msgstr "Gain par _défaut (dB) :"
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
-"Multiplier le volume pour toutes les chansons par cette valeur, tant que le "
+"Multiplier le volume pour tous les titres par cette valeur, tant que le "
 "résultat ne sature pas"
 
 #: ../quodlibet/qltk/prefs.py:390
@@ -5214,7 +5214,7 @@ msgstr ""
 
 #: ../quodlibet/qltk/prefs.py:577
 msgid "Auto-save tag changes"
-msgstr "Sauvegarder les changements "
+msgstr "Enregistrer automatiquement les changements "
 
 #: ../quodlibet/qltk/prefs.py:579
 msgid "Save changes to tags without confirmation when editing multiple files"
@@ -5254,8 +5254,8 @@ msgstr "Re_charger la bibliothèque"
 #: ../quodlibet/qltk/prefs.py:661
 msgid "Reload all songs in your library. This can take a long time."
 msgstr ""
-"Recharger toutes les chansons de votre bibliothèque  Cette opération peut "
-"durer un certain temps."
+"Recharger tous les titres de votre bibliothèque  Cette opération peut durer "
+"un certain temps."
 
 #: ../quodlibet/qltk/prefs.py:671
 msgid "Scan Directories"
@@ -5282,14 +5282,14 @@ msgstr "_file de lecture"
 
 #: ../quodlibet/qltk/queue.py:104
 msgid "Remove all songs from the queue"
-msgstr "Supprimer toutes les chansons de la file de lecture"
+msgstr "Supprimer tous les titres de la file de lecture"
 
 #: ../quodlibet/qltk/queue.py:211
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
-msgstr[0] "%(count)d chanson (%(time)s)"
-msgstr[1] "%(count)d chansons (%(time)s)"
+msgstr[0] "%(count)d titre (%(time)s)"
+msgstr[1] "%(count)d titres (%(time)s)"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:196
 msgid "_Browse Library"
@@ -5321,7 +5321,7 @@ msgstr "Configurer"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:955
 msgid "Unable to add songs"
-msgstr "Impossible d'ajouter les chansons"
+msgstr "Impossible d'ajouter les titres"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:956
 #: ../quodlibet/qltk/quodlibetwindow.py:1358
@@ -5419,7 +5419,7 @@ msgstr "Surveiller les modifications sur ce dossier"
 #: ../quodlibet/qltk/ratingsmenu.py:24
 #, python-format
 msgid "Are you sure you want to change the rating of all %d songs?"
-msgstr "Confirmer la modification de l'évaluation de ces %d chansons."
+msgstr "Confirmer la modification de l'évaluation de ces %d titres ?"
 
 #: ../quodlibet/qltk/ratingsmenu.py:26
 msgid "The saved ratings will be removed"
@@ -5812,7 +5812,7 @@ msgstr "et %d de plus …"
 
 #: ../quodlibet/qltk/wlw.py:200
 msgid "Saving the songs you changed."
-msgstr "Sauvegarde des chansons que vous avez modifiées."
+msgstr "Enregistrement en cours des titres que vous avez modifiées."
 
 #: ../quodlibet/qltk/wlw.py:201
 #, python-format
@@ -5820,7 +5820,7 @@ msgid ""
 "%(current)d/%(total)d songs saved\n"
 "(%(remaining)s remaining)"
 msgstr ""
-"%(current)d/%(total)d chansons sauvées\n"
+"%(current)d/%(total)d titres enregistrés\n"
 "(%(remaining)s restantes)"
 
 #: ../quodlibet/qltk/wlw.py:234
@@ -6011,7 +6011,7 @@ msgstr "La langue doit être au format ISO 639-2 avec trois caractères"
 
 #: ../quodlibet/util/songwrapper.py:112
 msgid "Unable to edit song"
-msgstr "Impossible d'éditer la chanson"
+msgstr "Impossible d'éditer le titre"
 
 #: ../quodlibet/util/songwrapper.py:113
 #, python-format
