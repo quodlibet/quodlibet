@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-15 00:35+0100\n"
+"PO-Revision-Date: 2017-02-15 00:44+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1222,7 +1222,7 @@ msgstr "nom de fichier"
 
 #: ../quodlibet/cli.py:140
 msgid "Print filenames of results of query to stdout"
-msgstr "Afficher les résultats de la requête sur la sortie standard stdout"
+msgstr "Afficher les résultats de la requête dans la sortie standard stdout"
 
 #: ../quodlibet/cli.py:142
 msgid "Unqueue a file or query"
@@ -4475,7 +4475,7 @@ msgstr[1] "manquant dans %d titres"
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
-msgstr[0] "différent parmi %d titre"
+msgstr[0] "différent dans le titre %d"
 msgstr[1] "différent dans les %d titres"
 
 #: ../quodlibet/qltk/edittags.py:193
@@ -5254,7 +5254,7 @@ msgstr "Re_charger la bibliothèque"
 #: ../quodlibet/qltk/prefs.py:661
 msgid "Reload all songs in your library. This can take a long time."
 msgstr ""
-"Recharger tous les titres de votre bibliothèque  Cette opération peut durer "
+"Recharger tous les titres de votre bibliothèque. Cette opération peut durer "
 "un certain temps."
 
 #: ../quodlibet/qltk/prefs.py:671
@@ -5812,7 +5812,7 @@ msgstr "et %d de plus …"
 
 #: ../quodlibet/qltk/wlw.py:200
 msgid "Saving the songs you changed."
-msgstr "Enregistrement en cours des titres que vous avez modifiées."
+msgstr "Enregistrement en cours des titres modifés."
 
 #: ../quodlibet/qltk/wlw.py:201
 #, python-format
