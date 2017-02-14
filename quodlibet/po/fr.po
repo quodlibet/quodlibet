@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-14 17:08+0100\n"
+"PO-Revision-Date: 2017-02-14 17:44+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1592,7 +1592,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/equalizer.py:50
 msgid "Headphones"
-msgstr ""
+msgstr "Écouteurs"
 
 #: ../quodlibet/ext/events/equalizer.py:53
 msgid "Soft Rock"
@@ -1934,9 +1934,8 @@ msgid "Text when a song is paused."
 msgstr "Texte affiché quand un titre est en pause"
 
 #: ../quodlibet/ext/events/mqtt.py:136
-#, fuzzy
 msgid "No-song Text"
-msgstr "%d chanson"
+msgstr ""
 
 #: ../quodlibet/ext/events/mqtt.py:138
 msgid "Plain text for when there is no current song"
@@ -2736,11 +2735,11 @@ msgid "Removes duplicate entries in a playlist."
 msgstr ""
 
 #: ../quodlibet/ext/playlist/remove_duplicates.py:49
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to remove %d duplicate song?"
 msgid_plural "Are you sure you want to remove %d duplicate songs?"
-msgstr[0] "Vous allez supprimer %d chanson."
-msgstr[1] "Vous allez supprimer %d chanson."
+msgstr[0] "Confirmer la suppression du titre %d en doublon ?"
+msgstr[1] "Confirmer la suppression des %d titre en doublon ?"
 
 #: ../quodlibet/ext/playlist/remove_duplicates.py:52
 #, python-format
@@ -3855,7 +3854,7 @@ msgstr ""
 #: ../quodlibet/operon/base.py:70
 #, python-format
 msgid "Failed to load file: %r"
-msgstr ""
+msgstr "Impossible de charger le fichier : %r"
 
 #: ../quodlibet/operon/commands.py:37
 msgid "List tags"
@@ -3992,9 +3991,9 @@ msgid ""
 msgstr ""
 
 #: ../quodlibet/operon/commands.py:509
-#, fuzzy, python-format
+#, python-format
 msgid "Failed to load image file: %r"
-msgstr "Impossible de renommer le fichier"
+msgstr "Impossible de charger le fichier image : %r"
 
 #: ../quodlibet/operon/commands.py:516 ../quodlibet/operon/commands.py:545
 #, python-format
@@ -4042,9 +4041,10 @@ msgid "Display help information"
 msgstr "Afficher des informations d'aide"
 
 #: ../quodlibet/operon/util.py:40
-#, fuzzy, python-format
+#, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
-msgstr "<b>%s</b> n'est pas un chemin valide."
+msgstr ""
+"'%(column-id)s' n'est pas un nom valide pour la colone (%(all-column-ids)s)."
 
 #: ../quodlibet/order/__init__.py:21
 msgid "_Unknown"
@@ -4104,9 +4104,9 @@ msgid "Media format: %(format-description)s"
 msgstr ""
 
 #: ../quodlibet/player/gstbe/plugins.py:35
-#, fuzzy, python-format
+#, python-format
 msgid "GStreamer plugin '%(name)s' could not be initialized"
-msgstr "Le canal de sortie n'a pas pu être initialisée."
+msgstr "Le greffon GStreamer '%(name)s' n'a pas pu être lancé correctement"
 
 #: ../quodlibet/player/gstbe/prefs.py:25
 #, fuzzy
@@ -4323,7 +4323,7 @@ msgstr "Nouveau %s"
 
 #: ../quodlibet/qltk/data_editors.py:218
 msgid "(unknown)"
-msgstr "(Inconnu[e])"
+msgstr "(Inconnu)"
 
 #: ../quodlibet/qltk/data_editors.py:355
 msgid "Tag expression"
@@ -4346,7 +4346,7 @@ msgid "Error Occurred"
 msgstr "Une erreur est survenue"
 
 #: ../quodlibet/qltk/debugwindow.py:160
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "An exception has occured in Quod Libet. A dump file has been saved to <b >"
 "%(dump-path)s</b> that will help us debug the crash. Please file a new issue "
@@ -4356,16 +4356,12 @@ msgid ""
 "%(mini-dump-path)s</b> instead with a description of what you were doing."
 msgstr ""
 "Une exception est survenue dans Quod Libet. Un fichier de débuggage a été "
-"sauvé dans <b>%s</b>, il nous aidera à trouver la cause du problème. "
-"Veuillez remplir un rapport de bug à http://code.google.com/p/quodlibet/"
-"issues/list et attachez-y ce fichier ou son contenu. Ce fichier peut "
-"contenir certaines informations vous identifiant, telles qu'une liste de "
-"chansons récemment écoutées. Si ceci est inacceptable, envoyez à la place <b>"
-"%s</b> accompagné d'une description de ce que vous faisiez au moment où ce "
-"message est apparu.\n"
-"\n"
-"Quod Libet est maintenant peut-être instable. Il est recommandé de fermer et "
-"redémarrer l'application. Votre librairie va être sauvegardée."
+"enregistré dans <b >%(dump-path)s</b>, qui nous aidera à trouver la cause du "
+"problème. Veuillez ouvrir un ticket d'incident à  %(new-issue-url)s et "
+"attachez-y ce fichier ou son contenu. Ce fichier peut contenir certaines "
+"informations vous identifiant, telles qu'une liste de chansons récemment "
+"écoutées. Si ceci est inacceptable, envoyez à la place <b>"
+"%(mini-dump-path)s</b> accompagné d'une description détaillée du problème."
 
 #: ../quodlibet/qltk/debugwindow.py:176
 msgid ""
@@ -4433,9 +4429,9 @@ msgid "Unable to move to trash"
 msgstr "Impossible à déplacer vers la corbeille"
 
 #: ../quodlibet/qltk/delete.py:174 ../quodlibet/qltk/delete.py:206
-#, fuzzy
 msgid "Moving one or more files to the trash failed."
-msgstr "L'éjection de <b>%s</b> a échoué."
+msgstr ""
+"Le déplacement d'un ou de plusieurs fichiers vers la corbeille a échoué."
 
 #: ../quodlibet/qltk/delete.py:216 ../quodlibet/qltk/delete.py:250
 #, python-format
@@ -4602,16 +4598,14 @@ msgid "Tag may not be accurate"
 msgstr "L'étiquette peut ne pas être correcte"
 
 #: ../quodlibet/qltk/_editutils.py:30
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
 msgstr ""
-"<b>%s</b> semble avoir été changée pendant le fonctionnement du programme. "
-"Sauvegarder maintenant sans réactualiser votre bibliothèque pourrait écraser "
-"d'autres modifications à la chanson.\n"
-"\n"
-"Sauvegarder tout de même cette étiquette?"
+"%(file-name)s semble avoir été modifié pendant le fonctionnement du "
+"programme. Enregistrer maintenant sans réactualiser votre bibliothèque "
+"pourrait écraser d'autres modifications à la chanson."
 
 #: ../quodlibet/qltk/_editutils.py:46
 msgid "Unable to save song"
@@ -4896,9 +4890,8 @@ msgid "Searching for lyrics…"
 msgstr "Recherche de paroles ..."
 
 #: ../quodlibet/qltk/maskedbox.py:20
-#, fuzzy
 msgid "Are you sure you want to remove all songs?"
-msgstr "Vous allez supprimer %d chanson."
+msgstr "Confirmer la suppression de tous les titres ?"
 
 #: ../quodlibet/qltk/maskedbox.py:21
 msgid "The selected songs will be removed from the library."
@@ -5423,7 +5416,7 @@ msgstr "Surveiller les modifications sur ce dossier"
 #: ../quodlibet/qltk/ratingsmenu.py:24
 #, python-format
 msgid "Are you sure you want to change the rating of all %d songs?"
-msgstr "Êtes-vous certain de modifier l'évaluation de ces %d chansons."
+msgstr "Confirmer la modification de l'évaluation de ces %d chansons."
 
 #: ../quodlibet/qltk/ratingsmenu.py:26
 msgid "The saved ratings will be removed"
