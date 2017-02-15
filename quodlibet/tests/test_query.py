@@ -213,7 +213,6 @@ class TQuery(TestCase):
         not_val_time = (time.time() - t1)
         self.assertAlmostEqual(ineq_time, not_val_time, places=1)
 
-
     def test_repr(self):
         query = Query("foo = bar", [])
         self.assertEqual(
