@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-15 00:44+0100\n"
+"PO-Revision-Date: 2017-02-15 01:03+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -2238,6 +2238,7 @@ msgstr "Importation Rhythmbox"
 #: ../quodlibet/ext/events/rbimport.py:128
 msgid "Imports ratings and song statistics from Rhythmbox."
 msgstr ""
+"Importer les évaluations et les statistiques des titres depuis Rythmbox."
 
 #: ../quodlibet/ext/events/rbimport.py:132
 msgid "Start Import"
@@ -2675,7 +2676,7 @@ msgstr ""
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:105
 msgid "Karaoke"
-msgstr ""
+msgstr "Karaoké"
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:106
 msgid "Removes main vocals from audio."
@@ -2856,11 +2857,11 @@ msgstr "Impossible de se connecter à %s"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:110
 msgid "Hostname:"
-msgstr ""
+msgstr "Nom d'hôte :"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:116
 msgid "Port:"
-msgstr ""
+msgstr "Port :"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:121
 msgid "Username:"
@@ -2886,7 +2887,7 @@ msgstr "_Vérifier la configuration"
 #. Server settings Frame
 #: ../quodlibet/ext/_shared/squeezebox/base.py:147
 msgid "Squeezebox Server"
-msgstr ""
+msgstr "Serveur Squeezebox"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:150
 msgid "Debug"
@@ -2895,11 +2896,11 @@ msgstr "Débug"
 #: ../quodlibet/ext/_shared/squeezebox/server.py:26
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
-msgstr ""
+msgstr "Serveur Squeezebox à l'adresse {hostname}:{port}"
 
 #: ../quodlibet/ext/_shared/squeezebox/server.py:28
 msgid "unidentified Squeezebox server"
-msgstr ""
+msgstr "serveur Squeezebox non-identifié"
 
 #: ../quodlibet/ext/_shared/squeezebox/server.py:37
 #, python-format
@@ -2915,13 +2916,15 @@ msgstr ""
 #: ../quodlibet/ext/songsmenu/importexport.py:34
 #: ../quodlibet/qltk/getstring.py:21
 msgid "_OK"
-msgstr ""
+msgstr "_OK"
 
 #: ../quodlibet/ext/_shared/squeezebox/util.py:26
 msgid ""
 "Found Squeezebox server.\n"
 "Please choose the player"
 msgstr ""
+"Serveur Squeezbox trouvé.\n"
+"Veuillez sélectionner le lecteur"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:329
 msgid "Fit image to _window"
@@ -3295,7 +3298,7 @@ msgstr "Supprimer la ponctuation"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:423
 msgid "Case _Insensitive"
-msgstr ""
+msgstr "Insensible à la casse"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:431
 msgid "Matching options"
@@ -3442,7 +3445,7 @@ msgstr "Etat"
 #. Translators: album release ID
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:158
 msgid "Release"
-msgstr ""
+msgstr "Publication"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:290
 msgid "Write MusicBrainz tags"
@@ -3539,7 +3542,7 @@ msgstr ""
 
 #: ../quodlibet/ext/songsmenu/ifp.py:20
 msgid "Send to iFP"
-msgstr "Envoyer à iFP"
+msgstr "Envoyer vers iFP"
 
 #: ../quodlibet/ext/songsmenu/ifp.py:21
 msgid "Uploads songs to an iRiver iFP device."
