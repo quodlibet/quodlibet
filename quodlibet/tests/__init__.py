@@ -42,6 +42,13 @@ skip = unittest.skip
 skipUnless = unittest.skipUnless
 skipIf = unittest.skipIf
 
+
+def is_ci():
+    """Guesses if this is being run in (Travis, maybe other) CI.
+       See https://docs.travis-ci.com/user/environment-variables
+    """
+    return os.environ.get('CI', "").lower() == 'true'
+
 _DATA_DIR = os.path.join(util.get_module_dir(), "data")
 assert isinstance(_DATA_DIR, fsnative)
 _TEMP_DIR = None

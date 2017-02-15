@@ -11,7 +11,7 @@ from quodlibet.compat import xrange
 from quodlibet.formats import AudioFile
 from quodlibet.query import Query, QueryType
 from quodlibet.query import _match as match
-from tests import TestCase, skip
+from tests import TestCase, skip, is_ci, skipIf
 
 
 class TQuery_is_valid(TestCase):
@@ -201,6 +201,7 @@ class TQuery(TestCase):
         us = (time.time() - t) * 1000000 / ((i + 1) * 4)
         print("Blended Query searches average %.0f μs" % us)
 
+    @skipIf(is_ci(), reason="For local testing only")
     def test_inequality_equalish_performance(self):
         t0 = time.time()
         repeats = 2000
