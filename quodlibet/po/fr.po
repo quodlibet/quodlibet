@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-15 09:37+0100\n"
+"PO-Revision-Date: 2017-02-15 10:19+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -2375,9 +2375,8 @@ msgid "Theme Switcher"
 msgstr "Changer de thème"
 
 #: ../quodlibet/ext/events/themeswitcher.py:26
-#, fuzzy
 msgid "Changes the active GTK+ theme."
-msgstr "Change le thème GTK+ actuel."
+msgstr "Permet de changer de thème GTK+."
 
 #: ../quodlibet/ext/events/themeswitcher.py:49
 msgid "_Theme:"
@@ -2602,19 +2601,19 @@ msgstr "Préréglage du filtre"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:26
 msgid "_Frequency cut:"
-msgstr ""
+msgstr "Coupe de_Fréquence :"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:26
 msgid "Low-pass filter cut frequency"
-msgstr ""
+msgstr "Coupe des fréquences en utilisant un filtre passe bas"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:27
 msgid "Feed _level:"
-msgstr ""
+msgstr "Niveau d'entrée :"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:27
 msgid "Feed level"
-msgstr ""
+msgstr "Niveau d'entrée"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:31
 msgid "Default"
@@ -2646,13 +2645,15 @@ msgstr "Configuration personnalisée"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:158
 msgid "Crossfeed"
-msgstr ""
+msgstr "Crossfeed"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:159
 msgid ""
 "Mixes the left and right channel in a way that simulates a speaker setup "
 "while using headphones, or to adjust for early Stereo recordings."
 msgstr ""
+"Mixe les deux canaux à la manière du réglage d'un casque audio, ou pour "
+"ajuster le son des anciens enregistrements audio."
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:20
 msgid "Filter _band:"
@@ -2660,7 +2661,7 @@ msgstr "Filtrer sur le groupe"
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:21
 msgid "The Frequency band of the filter"
-msgstr ""
+msgstr "La largeur de bande du filtre"
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:22
 msgid "Filter _width:"
@@ -2668,7 +2669,7 @@ msgstr "Filtrer sur la taille"
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:23
 msgid "The Frequency width of the filter"
-msgstr ""
+msgstr "La largeur de fréquence du filtre"
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:24
 msgid "_Level:"
@@ -2838,6 +2839,8 @@ msgid ""
 "Use Python expressions in queries. Syntax is '@(python: expression)'. The "
 "variable 's' is the song being matched."
 msgstr ""
+"Utiliser dans les requêtes des expression Python. La syntaxe est '@(python: "
+"expression)'. La variables 's' contient le titre analysé."
 
 #: ../quodlibet/ext/query/savedsearch.py:19
 msgid "Include Saved Search"
@@ -2852,7 +2855,7 @@ msgstr ""
 #: ../quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
 msgid "Squeezebox OK. Using the only player (%s)."
-msgstr ""
+msgstr "Queezebox OK. Utilisation de (%s)."
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:86
 #, python-format
@@ -2861,11 +2864,11 @@ msgstr "Impossible de se connecter à %s"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:110
 msgid "Hostname:"
-msgstr ""
+msgstr "Nom d'hôte"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:116
 msgid "Port:"
-msgstr ""
+msgstr "Port :"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:121
 msgid "Username:"
@@ -2877,7 +2880,7 @@ msgstr "Mot de passe :"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:130
 msgid "Library directory the server connects to."
-msgstr ""
+msgstr "Répertoire la bibliothèque auquel le serveur se connecte."
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:132
 msgid "Library path:"
@@ -2891,7 +2894,7 @@ msgstr "_Vérifier la configuration"
 #. Server settings Frame
 #: ../quodlibet/ext/_shared/squeezebox/base.py:147
 msgid "Squeezebox Server"
-msgstr ""
+msgstr "Serveur Squeezebox"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:150
 msgid "Debug"
@@ -2900,33 +2903,35 @@ msgstr "Débug"
 #: ../quodlibet/ext/_shared/squeezebox/server.py:26
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
-msgstr ""
+msgstr "Serveur Sqeezebox à l'adresse {hostname}:{port}"
 
 #: ../quodlibet/ext/_shared/squeezebox/server.py:28
 msgid "unidentified Squeezebox server"
-msgstr ""
+msgstr "Serveur Squeezebox inconnu"
 
 #: ../quodlibet/ext/_shared/squeezebox/server.py:37
 #, python-format
 msgid "unidentified Squeezebox player: %r"
-msgstr ""
+msgstr "lecteur Squeezebox non-identifié : %r"
 
 #: ../quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
-msgstr ""
+msgstr "Sélectionner un lecteur Squeezebox"
 
 #: ../quodlibet/ext/_shared/squeezebox/util.py:20
 #: ../quodlibet/ext/songsmenu/html.py:80
 #: ../quodlibet/ext/songsmenu/importexport.py:34
 #: ../quodlibet/qltk/getstring.py:21
 msgid "_OK"
-msgstr ""
+msgstr "_OK"
 
 #: ../quodlibet/ext/_shared/squeezebox/util.py:26
 msgid ""
 "Found Squeezebox server.\n"
 "Please choose the player"
 msgstr ""
+"Serveur Squeezebox trouvé.\n"
+"Veuillez sélectionner le lecteur"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:329
 msgid "Fit image to _window"
@@ -2957,7 +2962,7 @@ msgstr "Impossible d'enregistrer  \"%s\"."
 #: ../quodlibet/ext/songsmenu/albumart.py:556
 #, python-format
 msgid "[albumart] HTTP Error: %s"
-msgstr ""
+msgstr "[albumart] Erreur HTTP : %s"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:613
 msgid "Album Art Downloader"
@@ -2966,7 +2971,7 @@ msgstr "Téléchargement de jaquettes"
 #: ../quodlibet/ext/songsmenu/albumart.py:666
 #, python-format
 msgid "from %(source)s"
-msgstr ""
+msgstr "depuis %(source)s"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:669
 #, python-format
@@ -3263,16 +3268,15 @@ msgstr "Replier / Déplier tout"
 #: ../quodlibet/ext/songsmenu/duplicates.py:347
 #, python-format
 msgid "Duplicate key expression is '%s'"
-msgstr ""
+msgstr "L'expression de la clé dupliquée est '%s'"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:363
-#, fuzzy
 msgid "Duplicates Browser"
-msgstr "Désactiver le navigateur"
+msgstr "Navigateur de doublons"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:364
 msgid "Finds and displays similarly tagged versions of songs."
-msgstr ""
+msgstr "Recherche et affiche les titres ayant des étiquettes similaires"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:408
 msgid ""
@@ -3302,7 +3306,7 @@ msgstr "Supprimer la ponctuation"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:423
 msgid "Case _Insensitive"
-msgstr ""
+msgstr "Non-sensible à la casse"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:431
 msgid "Matching options"
@@ -3332,7 +3336,7 @@ msgstr "Nombre de lectures"
 
 #: ../quodlibet/ext/songsmenu/editplaycount.py:69
 msgid "Skip Count"
-msgstr ""
+msgstr "Comptage du nombre de fois où un titre est sauté"
 
 #: ../quodlibet/ext/songsmenu/embedded.py:24
 msgid "Edit Embedded Images"
@@ -3370,6 +3374,8 @@ msgstr "Filtrer sur la valeur d'une étiquette"
 #: ../quodlibet/ext/songsmenu/filterall.py:81
 msgid "Creates a search query based on tags of the selected songs."
 msgstr ""
+"Créé une requête de recherche à partir des étiquettes des titres "
+"sélectionnés."
 
 #: ../quodlibet/ext/songsmenu/filterbrowser.py:19
 msgid "Filter on Directory"
@@ -3377,7 +3383,7 @@ msgstr "Filtrer sur le répertoire"
 
 #: ../quodlibet/ext/songsmenu/filterbrowser.py:20
 msgid "Filters on directory in a new browser window."
-msgstr ""
+msgstr "Filtrer sur le répertoire dans un nouvelle fenêtre de navigation"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/__init__.py:30
 msgid "Acoustic Fingerprint Lookup"
@@ -3617,7 +3623,7 @@ msgstr "Nom d'_utilisateur :"
 
 #: ../quodlibet/ext/songsmenu/makesorttags.py:36
 msgid "Create Sort Tags"
-msgstr ""
+msgstr "Créé des étiquettes de tri"
 
 #: ../quodlibet/ext/songsmenu/makesorttags.py:37
 msgid "Converts album and artist names to sort names, poorly."
@@ -3930,7 +3936,7 @@ msgstr "Montrer les modifications sans les appliquer"
 
 #: ../quodlibet/operon/commands.py:119
 msgid "Skip tags that can't be written"
-msgstr ""
+msgstr "Sauter les étiquettes qui ne peuvent pas être écrites"
 
 #: ../quodlibet/operon/commands.py:139
 #, python-format
@@ -3978,12 +3984,12 @@ msgstr "Supprimer toutes les étiquettes"
 
 #: ../quodlibet/operon/commands.py:326
 msgid "Can't combine '--all' with '--regexp'"
-msgstr ""
+msgstr "Impossible de combiner '--all' avec '--regexp'"
 
 #: ../quodlibet/operon/commands.py:360
 #, python-format
 msgid "Can't remove %r from %r"
-msgstr ""
+msgstr "Impossible de supprimer %r de %r"
 
 #: ../quodlibet/operon/commands.py:373
 msgid "Remove a tag value"
@@ -4002,6 +4008,8 @@ msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
 msgstr ""
+"Transforme l'image fournie en image embarquée et supprimer toutes les autres "
+"images embarquées"
 
 #: ../quodlibet/operon/commands.py:509
 #, python-format
