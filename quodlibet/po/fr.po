@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-15 11:08+0100\n"
+"PO-Revision-Date: 2017-02-15 11:25+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1909,19 +1909,19 @@ msgstr ""
 
 #: ../quodlibet/ext/events/mqtt.py:122
 msgid "Broker hostname"
-msgstr ""
+msgstr "Nom d'hôte de l'intermédiaire"
 
 #: ../quodlibet/ext/events/mqtt.py:122
 msgid "broker hostname / IP"
-msgstr ""
+msgstr "Nom d'hôte / IP de l'intermédiaire"
 
 #: ../quodlibet/ext/events/mqtt.py:124
 msgid "Broker port"
-msgstr ""
+msgstr "Port de l'intermédiaire"
 
 #: ../quodlibet/ext/events/mqtt.py:124
 msgid "broker port"
-msgstr ""
+msgstr "Port de l'intermédiaire"
 
 #: ../quodlibet/ext/events/mqtt.py:126
 msgid "Topic"
@@ -1964,7 +1964,7 @@ msgstr "Texte indiquant le statut"
 #: ../quodlibet/ext/events/mqtt.py:185
 #, python-format
 msgid "Connected to broker at %(host)s:%(port)d"
-msgstr ""
+msgstr "Connecté à l'intermédiaire à l'adresse : %(host)s:%(port)d"
 
 #: ../quodlibet/ext/events/mqtt.py:189
 #, python-format
@@ -1977,7 +1977,7 @@ msgstr "Erreur de connexion"
 
 #: ../quodlibet/ext/events/notify.py:80
 msgid "Notification text"
-msgstr ""
+msgstr "Texte de la notification"
 
 #: ../quodlibet/ext/events/notify.py:88
 msgid "_Title:"
@@ -2551,7 +2551,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/waveformseekbar.py:345
 msgid "High Res"
-msgstr ""
+msgstr "Haute résolution"
 
 #: ../quodlibet/ext/events/write_cover.py:32
 msgid "Picture Saver"
@@ -2679,11 +2679,11 @@ msgstr "La largeur de fréquence du filtre"
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:24
 msgid "_Level:"
-msgstr ""
+msgstr "Niveau :"
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:24
 msgid "Level of the effect"
-msgstr ""
+msgstr "Niveau de l'effet"
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:105
 msgid "Karaoke"
@@ -2707,7 +2707,7 @@ msgstr "T_aux :"
 
 #: ../quodlibet/ext/gstreamer/pitch.py:21
 msgid "_Tempo:"
-msgstr ""
+msgstr "Tempo :"
 
 #: ../quodlibet/ext/gstreamer/pitch.py:22
 msgid "_Pitch:"
@@ -2828,7 +2828,7 @@ msgstr "Nombre de répétitions pour chaque titre :"
 
 #: ../quodlibet/ext/query/conditional.py:15
 msgid "Conditional Query"
-msgstr ""
+msgstr "Requêtes conditionnelle"
 
 #: ../quodlibet/ext/query/conditional.py:16
 msgid ""
@@ -3115,17 +3115,17 @@ msgstr "Résultats <i>(cliquer-déplacer pour trier)</i>"
 
 #: ../quodlibet/ext/songsmenu/brainz/widgets.py:447
 msgid "Please enter a query."
-msgstr ""
+msgstr "Veuillez saisir une requête."
 
 #: ../quodlibet/ext/songsmenu/brainz/widgets.py:465
 #: ../quodlibet/ext/songsmenu/brainz/widgets.py:496
 msgid "Error encountered. Please retry."
-msgstr ""
+msgstr "Des erreurs ont été rencontrées. Veuillez recommencer."
 
 #: ../quodlibet/ext/songsmenu/brainz/widgets.py:472
 #: ../quodlibet/ext/songsmenu/brainz/widgets.py:488
 msgid "Loading result…"
-msgstr ""
+msgstr "Chargement des résultats"
 
 #: ../quodlibet/ext/songsmenu/brainz/widgets.py:475
 msgid "No results found."
@@ -3145,7 +3145,7 @@ msgstr "Impossible d'ouvrir les dossiers"
 
 #: ../quodlibet/ext/songsmenu/browsefolders.py:173
 msgid "No program available to open folders."
-msgstr ""
+msgstr "Aucun programme disponible pour ouvrir les dossiers."
 
 #: ../quodlibet/ext/songsmenu/console.py:49
 msgid "Python Console"
@@ -3153,11 +3153,11 @@ msgstr "Console Python"
 
 #: ../quodlibet/ext/songsmenu/console.py:50
 msgid "Interactive Python console."
-msgstr ""
+msgstr "Console interactive Python."
 
 #: ../quodlibet/ext/songsmenu/console.py:81
 msgid "You can access the following objects by default:"
-msgstr ""
+msgstr "Par défaut, vous avez accès aux objets suivants :"
 
 #: ../quodlibet/ext/songsmenu/console.py:91
 msgid "Your current working directory is:"
@@ -3173,7 +3173,7 @@ msgstr "nom"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:44
 msgid "The name of this command"
-msgstr ""
+msgstr "Le nom de cette commande"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:46
 msgid "command"
@@ -3216,7 +3216,7 @@ msgstr ""
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:65
 msgid "max args"
-msgstr ""
+msgstr "Nombre maximum d'arguments"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:66
 msgid ""
@@ -3249,7 +3249,7 @@ msgstr ""
 #: ../quodlibet/ext/songsmenu/custom_commands.py:193
 #: ../quodlibet/ext/songsmenu/custom_commands.py:243
 msgid "Edit Custom Commands"
-msgstr ""
+msgstr "Editer une commande personnalisée"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:194
 msgid ""
@@ -3318,7 +3318,7 @@ msgstr "Non-sensible à la casse"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:431
 msgid "Matching options"
-msgstr ""
+msgstr "Options de correspondance"
 
 #. Create a dialog.
 #: ../quodlibet/ext/songsmenu/editplaycount.py:19
@@ -3462,7 +3462,7 @@ msgstr "Etat"
 #. Translators: album release ID
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:158
 msgid "Release"
-msgstr ""
+msgstr "Publication"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:290
 msgid "Write MusicBrainz tags"
@@ -4060,12 +4060,14 @@ msgstr "Supprimer toutes les images incorporées"
 #: ../quodlibet/operon/commands.py:562
 #, python-format
 msgid "Extract embedded images to %(filepath)s"
-msgstr ""
+msgstr "Extraire les images embarquées dans %(filepath)s"
 
 #: ../quodlibet/operon/commands.py:574
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr ""
+"Chemin dans lequel les images sont sauvegardée (par défaut dans le "
+"répertoire en cours)"
 
 #: ../quodlibet/operon/commands.py:633
 msgid "Rename files based on tags"
@@ -4073,7 +4075,7 @@ msgstr "Renommer les fichiers à partir des étiquettes"
 
 #: ../quodlibet/operon/commands.py:648
 msgid "Fill tags based on the file path"
-msgstr ""
+msgstr "Étiqueter en se basant le chemin de fichier "
 
 #: ../quodlibet/operon/commands.py:698 ../quodlibet/qltk/information.py:305
 #: ../quodlibet/qltk/properties.py:84 ../quodlibet/qltk/renamefiles.py:174
@@ -4145,7 +4147,7 @@ msgstr "Mise en mémoire tampon"
 
 #: ../quodlibet/player/gstbe/player.py:319
 msgid "Could not create GStreamer pipeline"
-msgstr ""
+msgstr "Impossible de créer une association GStreamer"
 
 #: ../quodlibet/player/gstbe/player.py:560
 msgid "No GStreamer element found to handle media format"
@@ -4288,7 +4290,7 @@ msgstr "_Ajouté(s) récemment"
 
 #: ../quodlibet/qltk/browser.py:61
 msgid "_Top 40"
-msgstr ""
+msgstr "_Top 40"
 
 #: ../quodlibet/qltk/browser.py:63
 msgid "All _Songs"
@@ -4441,8 +4443,8 @@ msgstr "Les fichiers sélectionnés seront supprimés du disque."
 #, python-format
 msgid "Delete %(file_count)d file permanently?"
 msgid_plural "Delete %(file_count)d files permanently?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Supprimer %(file_count)d fichier de manière permanente ?"
+msgstr[1] "Supprimer %(file_count)d fichiers de manière permanente ?"
 
 #: ../quodlibet/qltk/delete.py:91
 msgid "_Delete Files"
