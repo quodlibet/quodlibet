@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-15 01:17+0100\n"
+"PO-Revision-Date: 2017-02-15 09:37+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1370,6 +1370,8 @@ msgstr "Substitution Regex"
 msgid ""
 "Allows arbitrary regex substitutions (s///) when tagging or renaming files."
 msgstr ""
+"Autorise les substitutions regex (//s) durant l'étiquetage ou le renommage "
+"des fichiers."
 
 #: ../quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -1404,7 +1406,7 @@ msgstr "Préférences avancées"
 
 #: ../quodlibet/ext/events/advanced_preferences.py:69
 msgid "Allow to tweak advanced config settings."
-msgstr ""
+msgstr "Permet un réglage fin des paramètres de configuration"
 
 #: ../quodlibet/ext/events/advanced_preferences.py:156
 msgid "I know what I'm doing"
@@ -1738,7 +1740,7 @@ msgstr "Désactiver l'économiseur d'écran"
 
 #: ../quodlibet/ext/events/inhibit.py:42
 msgid "Prevents the GNOME screensaver from activating while a song is playing."
-msgstr ""
+msgstr "Désactive l'économiseur d'écran durant la lecture d'un titre."
 
 #: ../quodlibet/ext/events/inhibit.py:51
 msgid "Music is playing"
@@ -1807,6 +1809,8 @@ msgstr "Rétablir les valeurs par défaut"
 #: ../quodlibet/ext/events/lyricswindow.py:322
 msgid "Search via above URL if the lyrics couldn't be found in LyricsWikia."
 msgstr ""
+"Effectuer une recherche en utilisant l'URL ci-dessous si les paroles n'ont "
+"pu être trouvées dans LyricsWika."
 
 #: ../quodlibet/ext/events/lyricswindow.py:339
 msgid "Alternate search"
@@ -1997,11 +2001,11 @@ msgstr "Afficher les notifications"
 
 #: ../quodlibet/ext/events/notify.py:162
 msgid "Only on <i>_manual</i> song changes"
-msgstr ""
+msgstr "Si le titre est modifié <i>_manuellement</i>"
 
 #: ../quodlibet/ext/events/notify.py:170
 msgid "Only on <i>_automatic</i> song changes"
-msgstr ""
+msgstr "Si le titre est modifié <i>_automatiquement</i>"
 
 #: ../quodlibet/ext/events/notify.py:178
 msgid "On <i>a_ll</i> song changes"
@@ -2238,6 +2242,7 @@ msgstr "Importation Rhythmbox"
 #: ../quodlibet/ext/events/rbimport.py:128
 msgid "Imports ratings and song statistics from Rhythmbox."
 msgstr ""
+"Importe les évaluations et les statistiques des titres à partir de Rhythmbox."
 
 #: ../quodlibet/ext/events/rbimport.py:132
 msgid "Start Import"
@@ -2263,7 +2268,7 @@ msgstr "Fournisseur de recherche Gnome"
 
 #: ../quodlibet/ext/events/searchprovider.py:80
 msgid "Allows GNOME Shell to search the library."
-msgstr ""
+msgstr "Permet à GNOME Shell d'effectuer des recherches dans la bibliothèque."
 
 #: ../quodlibet/ext/events/seekbar.py:122
 msgid "Alternative Seek Bar"
@@ -2435,7 +2440,7 @@ msgstr "Suivant"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:76
 msgid "_Shuffle"
-msgstr "Mélanger"
+msgstr "Lire aléatoirement"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:81
 msgid "_Repeat"
@@ -2727,7 +2732,7 @@ msgstr "Exporter la liste de lecture vers Squeezebox"
 
 #: ../quodlibet/ext/playlist/export_to_squeezebox.py:74
 msgid "Playlist name (will overwrite existing)"
-msgstr ""
+msgstr "Le nom de la liste de lecture (écrase le nom précédent)"
 
 #: ../quodlibet/ext/playlist/export_to_squeezebox.py:91
 msgid "Export to Squeezebox playlist"
@@ -2755,11 +2760,11 @@ msgstr ""
 
 #: ../quodlibet/ext/playlist/shuffle.py:15
 msgid "Shuffle Playlist"
-msgstr "Mélanger la liste de lecture"
+msgstr "Lecture aléatoire"
 
 #: ../quodlibet/ext/playlist/shuffle.py:16
 msgid "Randomly shuffles a playlist."
-msgstr "Mélange aléatoirement les titres d'une liste de lecture"
+msgstr "Joue aléatoirement les titres d'une liste de lecture"
 
 #: ../quodlibet/ext/playorder/follow.py:18
 msgid "Follow Cursor"
@@ -2808,7 +2813,7 @@ msgstr "Répéter chaque piste"
 #: ../quodlibet/ext/playorder/track_repeat.py:32
 msgid "Shuffle songs, but repeat every track a set number of times."
 msgstr ""
-"Mélange les titres, mais en répétant chaque piste un certain nombre de fois."
+"Lire aléatoirement, mais en répétant chaque piste un certain nombre de fois."
 
 #: ../quodlibet/ext/playorder/track_repeat.py:51
 msgid "Number of times to play each song:"
@@ -3038,15 +3043,17 @@ msgstr "Étiqueter l'album à nouveau, en utilisant MusicBrainz."
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:50
 msgid "Only use year for \"date\" tag"
-msgstr ""
+msgstr "Indiquer uniquement l'année dans l'étiquette \"date\""
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:51
 msgid "Write \"_albumartist\" when needed"
 msgstr ""
+"Utiliser l'étiquette \"_albumartist\" (artiste auteur de l'album) si "
+"nécessaire"
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:52
 msgid "Write sort tags for artist names"
-msgstr ""
+msgstr "Trier les noms des artistes avant de les enregistrer dans l'étiquette"
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:53
 msgid "Write _standard MusicBrainz tags"
@@ -3054,7 +3061,7 @@ msgstr "Écrire les étiquettes standard MusicBrainz"
 
 #: ../quodlibet/ext/songsmenu/brainz/__init__.py:54
 msgid "Write \"labelid\" tag"
-msgstr ""
+msgstr "Ecrire l'étiquette \"labelid\" (référence de l'étiquette)"
 
 #: ../quodlibet/ext/songsmenu/brainz/widgets.py:129
 #: ../quodlibet/qltk/downloader.py:52
@@ -3461,6 +3468,8 @@ msgid ""
 "Write album related tags and try to reduce the number of different album "
 "releases"
 msgstr ""
+"Ecrire les étiquettes concernant l'album en essayant de réduire le nombre de "
+"parutions différentes de l'album."
 
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:49
 msgid "Generating fingerprints:"
@@ -3561,6 +3570,7 @@ msgstr "Importer les méta-données"
 #: ../quodlibet/ext/songsmenu/importexport.py:93
 msgid "Imports metadata for selected songs from a .tags file."
 msgstr ""
+"Importe les méta-data des titres sélectionnés à partir d'un fichier .tags."
 
 #: ../quodlibet/ext/songsmenu/k3b.py:23
 msgid "Burn CD"
@@ -3698,7 +3708,7 @@ msgstr "Rescanner les titres"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:362
 msgid "ReplayGain Analyzer"
-msgstr ""
+msgstr "Analyseur ReplayGain"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:418
 msgid "Progress"
@@ -3721,7 +3731,7 @@ msgstr[1] ""
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:578
 msgid "Replay Gain"
-msgstr ""
+msgstr "Replay Gain"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:579
 msgid ""
@@ -4002,6 +4012,8 @@ msgstr "Impossible de charger le fichier image : %r"
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr ""
+"L'édition de l'image %(file_name)s au format (%(file_format)s) n'est pas "
+"supporté par le logiciel"
 
 #: ../quodlibet/operon/commands.py:532
 msgid "Remove all embedded images"
@@ -4314,9 +4326,8 @@ msgid "_Mute"
 msgstr "_Met"
 
 #: ../quodlibet/qltk/controls.py:122
-#, fuzzy
 msgid "_Replay Gain Mode"
-msgstr "Ajustement du volume par Replay Gain"
+msgstr "Mode Replay Gain"
 
 #. Translators: New Command/Entry/Item/...
 #: ../quodlibet/qltk/data_editors.py:119
@@ -4529,6 +4540,8 @@ msgid ""
 "Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
 "Gain tags"
 msgstr ""
+"Accéder à toutes les étiquettes, y compris celles générées automatiquement, "
+"comme par exemple les étiquettes MusicBrainz ou Replay Gain."
 
 #. Translators: Revert button in the tag editor
 #: ../quodlibet/qltk/edittags.py:508
