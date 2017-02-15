@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-15 10:44+0100\n"
+"PO-Revision-Date: 2017-02-15 11:02+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -2143,7 +2143,7 @@ msgstr "Les titres correspondant à cette recherche ne seront pas soumis."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:576
 msgid "_Offline mode (don't submit anything)"
-msgstr ""
+msgstr "M_ode non-connecté (ne rien soumettre)"
 
 #: ../quodlibet/ext/events/qlscrobbler.py:580
 msgid "Submission"
@@ -2819,7 +2819,7 @@ msgstr ""
 
 #: ../quodlibet/ext/playorder/track_repeat.py:51
 msgid "Number of times to play each song:"
-msgstr ""
+msgstr "Nombre de répétitions pour chaque titre :"
 
 #: ../quodlibet/ext/query/conditional.py:15
 msgid "Conditional Query"
@@ -3520,7 +3520,7 @@ msgstr "Titres à soumettre :"
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:162
 #, python-format
 msgid "Done. %(to-send)d/%(all)d songs to submit."
-msgstr ""
+msgstr "Fait. %(to-send)d/%(all)d titres à soumettre."
 
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:178
 msgid "Submitting fingerprints:"
@@ -3539,6 +3539,8 @@ msgid ""
 "Update modified tags in files. This will ensure play counts and ratings are "
 "up to date."
 msgstr ""
+"Mettre à jour les étiquettes dans les fichiers. C'est la certitude que le "
+"compteur de lecture et les évaluations sont à jour."
 
 #: ../quodlibet/ext/songsmenu/html.py:67
 msgid "Export to HTML"
@@ -3566,7 +3568,7 @@ msgstr "Envoyer à iFP"
 
 #: ../quodlibet/ext/songsmenu/ifp.py:21
 msgid "Uploads songs to an iRiver iFP device."
-msgstr ""
+msgstr "Envoyer des titres vers un périphérique iRiver iFP."
 
 #: ../quodlibet/ext/songsmenu/importexport.py:51
 msgid "Export Metadata"
@@ -3601,7 +3603,7 @@ msgstr ""
 #. No charts to fetch, no update scheduled.
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:114
 msgid "Already up-to-date."
-msgstr ""
+msgstr "Bien à jour."
 
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:121
 #, python-format
@@ -3619,11 +3621,13 @@ msgstr "Erreur durant la synchronisation"
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:214
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:244
 msgid "Last.fm Sync"
-msgstr ""
+msgstr "Synchronisation Last.fm"
 
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:245
 msgid "Updates your library's statistics from your Last.fm profile."
 msgstr ""
+"Met à jour les statistique de votre bibliothèque à partir de votre profil "
+"Last.fm."
 
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:293
 msgid "_Username:"
@@ -3636,6 +3640,8 @@ msgstr "Créé des étiquettes de tri"
 #: ../quodlibet/ext/songsmenu/makesorttags.py:37
 msgid "Converts album and artist names to sort names, poorly."
 msgstr ""
+"Convertit les noms d'albums et d'artistes vers les noms de tri, sans "
+"adaptation."
 
 #. Create a dialog.
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:29
@@ -3645,7 +3651,7 @@ msgstr "Migrer les méta-données"
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:32
 msgid "Copies the quodlibet-specific metadata between songs."
-msgstr ""
+msgstr "Ajoute les métadata propres à Quodlibet dans les fichiers des titres."
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:45
 msgid "_Copy"
@@ -3665,6 +3671,8 @@ msgstr "Information"
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:79
 msgid "Map tracks by disc and track number"
 msgstr ""
+"Se baser sur le numéro de disque et le numéro de piste pour établir des "
+"correspondances"
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:80
 msgid ""
@@ -3715,6 +3723,8 @@ msgstr "Rescanner les titres"
 #: ../quodlibet/ext/songsmenu/refresh.py:23
 msgid "Checks for file changes and reloads / removes the songs if needed."
 msgstr ""
+"Vérifie si un fichier a été modifié et le recharge ou le supprime si "
+"nécessaire."
 
 #: ../quodlibet/ext/songsmenu/refresh.py:31
 msgid "Rescan songs"
@@ -3730,11 +3740,11 @@ msgstr "Progression"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:433
 msgid "Gain"
-msgstr ""
+msgstr "Gain"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:448
 msgid "Peak"
-msgstr ""
+msgstr "Peak"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:463
 #, python-format
@@ -3755,15 +3765,15 @@ msgstr ""
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:617
 msgid "always"
-msgstr ""
+msgstr "toujours"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:618
 msgid "if <b>any</b> RG tags are missing"
-msgstr ""
+msgstr "si <b>une ou plusieurs étiquettes</b> RG sont absentes"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:620
 msgid "if <b>album</b> RG tags are missing"
-msgstr ""
+msgstr "si <b>toutes les étiquettes<b> RG sont absentes"
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:637
 msgid "_Process albums:"
@@ -3882,6 +3892,8 @@ msgstr "Impossible de charger le gestionnaire audio"
 msgid ""
 "Loading the audio backend '%(name)s' failed. Audio playback will be disabled."
 msgstr ""
+"Le chargement du périphérique audio '%(name)s' a échoué. La sortie audio est "
+"désactivée."
 
 #: ../quodlibet/operon/base.py:70
 #, python-format
@@ -3915,7 +3927,7 @@ msgstr "Lister également les étiquettes programmables"
 #: ../quodlibet/operon/commands.py:502 ../quodlibet/operon/commands.py:537
 #: ../quodlibet/operon/commands.py:579
 msgid "Not enough arguments"
-msgstr ""
+msgstr "Pas assez d'arguments"
 
 #: ../quodlibet/operon/commands.py:53 ../quodlibet/operon/commands.py:88
 #: ../quodlibet/operon/commands.py:125 ../quodlibet/operon/commands.py:216
@@ -3939,7 +3951,7 @@ msgstr "Lister les étiquettes courantes"
 
 #: ../quodlibet/operon/commands.py:112
 msgid "Copy tags from one file to another"
-msgstr ""
+msgstr "Recopier les étiquettes d'un fichier vers un autre"
 
 #: ../quodlibet/operon/commands.py:117 ../quodlibet/operon/commands.py:158
 #: ../quodlibet/operon/commands.py:283 ../quodlibet/operon/commands.py:318
