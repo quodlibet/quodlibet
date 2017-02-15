@@ -38,7 +38,8 @@ for classical music or songs by `The Smiths
 
 While these searches are easy to type in, they depend on the visible columns
 and the active browser, also the last one might exclude some songs which
-happen to contain "smiths" in their album title.
+happen to contain "smiths" in their album title
+- see below for how to perform more targeted searching.
 
 
 Searching a Specific Tag
@@ -52,6 +53,12 @@ To search a specific tag, use a search like::
 The search terms can't use quotes (``"``), slashes (``/``), hashes (``#``),
 pipes (``|``), ampersands (``&``), or bangs (``!``); these characters have
 special meanings for advanced searches.
+
+In QL 3.9 onwards, you can also use `!=` to search for things not equal:
+
+    artist != delerium
+    genre != /.+ Jazz/
+
 
 You can also search :ref:internal tags <InternalTags>, e.g.
 
@@ -78,6 +85,7 @@ You can put a ``c`` after the last " to make the search case-sensitive::
 
     artist = "BoA"c
     artist = "Boa"c
+    artist != "Boa"c
 
 Combining Tag Searches
 ----------------------
@@ -102,6 +110,9 @@ using ``!``::
     genre = !Audiobook
 
 is probably a good idea when playing your whole library on shuffle.
+Note again that in QL 3.9 onwards you can use the alternative syntax of
+
+    genre != Audiobook
 
 
 Numeric Searches
@@ -170,7 +181,7 @@ web, and useful online regex testers (such as `Regex Pal <http://www.regexpal
 
 Some examples:
 
- * ``artist = !/\sRice/``
+ * ``artist = !/\sRice/`` (or in 3.9+: ``artist != /\sRice/``)
 
 or using the default tags
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2016 Ryan Dellenbaugh
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -115,12 +116,16 @@ class QueryParser(object):
         elif self.accept('@'):
             return self.Extension()
         try:
-            # Equals and Star can begin the same, so try Equals first then
-            # backtrack and try Star on failure
+            # Equals, NotEquals and Star can begin the same,
+            # so try in order, backtracking on failure (with Star last)
             index = self.index
             return self.Equals()
         except ParseError:
             self.index = index
+            try:
+                return self.NotEquals()
+            except ParseError:
+                self.index = index
             return self.Star(outer=outer)
 
     def Negation(self, rule):
@@ -238,6 +243,15 @@ class QueryParser(object):
         self.expect('=')
         value = self.Value()
         return match.Tag(tags, value)
+
+    def NotEquals(self):
+        """Rule for 'tag!=value' queries"""
+        tags = self.match_list(lambda: self.expect_re(TAG))
+        tags = [tag.strip() for tag in tags]
+        self.expect('!')
+        self.expect('=')
+        value = self.Value()
+        return match.Neg(match.Tag(tags, value))
 
     def Value(self, outer=False):
         """Rule for value. Either a regexp, quoted string, boolean combination
