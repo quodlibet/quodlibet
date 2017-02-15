@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-15 01:03+0100\n"
+"PO-Revision-Date: 2017-02-15 01:17+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -2238,7 +2238,6 @@ msgstr "Importation Rhythmbox"
 #: ../quodlibet/ext/events/rbimport.py:128
 msgid "Imports ratings and song statistics from Rhythmbox."
 msgstr ""
-"Importer les évaluations et les statistiques des titres depuis Rythmbox."
 
 #: ../quodlibet/ext/events/rbimport.py:132
 msgid "Start Import"
@@ -2279,7 +2278,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
-msgstr ""
+msgstr "Synchronisation Squeezebox"
 
 #: ../quodlibet/ext/events/squeezebox_sync.py:29
 msgid ""
@@ -2676,7 +2675,7 @@ msgstr ""
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:105
 msgid "Karaoke"
-msgstr "Karaoké"
+msgstr ""
 
 #: ../quodlibet/ext/gstreamer/karaoke.py:106
 msgid "Removes main vocals from audio."
@@ -2857,11 +2856,11 @@ msgstr "Impossible de se connecter à %s"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:110
 msgid "Hostname:"
-msgstr "Nom d'hôte :"
+msgstr ""
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:116
 msgid "Port:"
-msgstr "Port :"
+msgstr ""
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:121
 msgid "Username:"
@@ -2887,7 +2886,7 @@ msgstr "_Vérifier la configuration"
 #. Server settings Frame
 #: ../quodlibet/ext/_shared/squeezebox/base.py:147
 msgid "Squeezebox Server"
-msgstr "Serveur Squeezebox"
+msgstr ""
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:150
 msgid "Debug"
@@ -2896,11 +2895,11 @@ msgstr "Débug"
 #: ../quodlibet/ext/_shared/squeezebox/server.py:26
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
-msgstr "Serveur Squeezebox à l'adresse {hostname}:{port}"
+msgstr ""
 
 #: ../quodlibet/ext/_shared/squeezebox/server.py:28
 msgid "unidentified Squeezebox server"
-msgstr "serveur Squeezebox non-identifié"
+msgstr ""
 
 #: ../quodlibet/ext/_shared/squeezebox/server.py:37
 #, python-format
@@ -2916,15 +2915,13 @@ msgstr ""
 #: ../quodlibet/ext/songsmenu/importexport.py:34
 #: ../quodlibet/qltk/getstring.py:21
 msgid "_OK"
-msgstr "_OK"
+msgstr ""
 
 #: ../quodlibet/ext/_shared/squeezebox/util.py:26
 msgid ""
 "Found Squeezebox server.\n"
 "Please choose the player"
 msgstr ""
-"Serveur Squeezbox trouvé.\n"
-"Veuillez sélectionner le lecteur"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:329
 msgid "Fit image to _window"
@@ -3298,7 +3295,7 @@ msgstr "Supprimer la ponctuation"
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:423
 msgid "Case _Insensitive"
-msgstr "Insensible à la casse"
+msgstr ""
 
 #: ../quodlibet/ext/songsmenu/duplicates.py:431
 msgid "Matching options"
@@ -3445,7 +3442,7 @@ msgstr "Etat"
 #. Translators: album release ID
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:158
 msgid "Release"
-msgstr "Publication"
+msgstr ""
 
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:290
 msgid "Write MusicBrainz tags"
@@ -3542,7 +3539,7 @@ msgstr ""
 
 #: ../quodlibet/ext/songsmenu/ifp.py:20
 msgid "Send to iFP"
-msgstr "Envoyer vers iFP"
+msgstr "Envoyer à iFP"
 
 #: ../quodlibet/ext/songsmenu/ifp.py:21
 msgid "Uploads songs to an iRiver iFP device."
@@ -4314,7 +4311,7 @@ msgstr "Mode _Album"
 #. Translators: player state, no action
 #: ../quodlibet/qltk/controls.py:116
 msgid "_Mute"
-msgstr ""
+msgstr "_Met"
 
 #: ../quodlibet/qltk/controls.py:122
 #, fuzzy
@@ -4905,11 +4902,11 @@ msgstr "Les titres sélectionnés seront supprimés de la bibliothèque."
 
 #: ../quodlibet/qltk/maskedbox.py:44
 msgid "Unhide"
-msgstr ""
+msgstr "Réafficher"
 
 #: ../quodlibet/qltk/maskedbox.py:86
 msgid "_Unhide"
-msgstr ""
+msgstr "Réafficher"
 
 #: ../quodlibet/qltk/msg.py:41
 msgid "Discard tag changes?"
@@ -4943,7 +4940,7 @@ msgstr "_Remplacer le fichier"
 
 #: ../quodlibet/qltk/notif.py:182
 msgid "Active tasks"
-msgstr ""
+msgstr "Tâches actives"
 
 #: ../quodlibet/qltk/notif.py:188
 #, python-format
@@ -5222,6 +5219,8 @@ msgstr "Enregistrer automatiquement les changements "
 #: ../quodlibet/qltk/prefs.py:579
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr ""
+"Enregistrer les étiquettes modifées sans confirmation lorsque plusieurs "
+"fichiers sont édités en même temps"
 
 #: ../quodlibet/qltk/prefs.py:587
 msgid ""
