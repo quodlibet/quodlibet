@@ -13,9 +13,9 @@
 #    published by the Free Software Foundation.
 #
 
-import string
 import unicodedata
 
+import sys
 from gi.repository import Gtk, Pango
 
 from quodlibet import app
@@ -31,7 +31,7 @@ from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import Icons, Button
 from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.util.i18n import numeric_phrase
-from quodlibet.compat import text_type, PY2
+from quodlibet.compat import text_type, xrange, unichr
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -379,11 +379,10 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     key_expression = None
     __cfg_cache = {}
 
-    # Faster than a speeding bullet
-    if PY2:
-        __trans = "".join(map(chr, range(256)))
-    else:
-        __trans = str.maketrans({ord(k): None for k in string.punctuation})
+    __remove_punctuation_trans = tbl = dict.fromkeys(
+        i for i in xrange(sys.maxunicode)
+        if unicodedata.category(unichr(i)).startswith('P'))
+    """Lookup all Unicode punctuation, and remove it"""
 
     @classmethod
     def get_key_expression(cls):
@@ -441,15 +440,13 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def get_key(cls, song):
-        key = str(song(cls.get_key_expression()))
+        key = song(cls.get_key_expression())
         if cls.config_get_bool(cls._CFG_REMOVE_DIACRITICS):
             key = cls.remove_accents(key)
         if cls.config_get_bool(cls._CFG_CASE_INSENSITIVE):
             key = key.lower()
         if cls.config_get_bool(cls._CFG_REMOVE_PUNCTUATION):
-            key = (key.translate(cls.__trans, string.punctuation) if PY2
-                   else key.translate(cls.__trans))
-
+            key = (key.translate(cls.__remove_punctuation_trans))
         if cls.config_get_bool(cls._CFG_REMOVE_WHITESPACE):
             key = "_".join(key.split())
         return key
@@ -465,6 +462,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         for song in songs:
             key = self.get_key(song)
             if key and key in groups:
+                print_d("Found duplicate based on '%s'" % key)
                 groups[key].add(song._song)
             elif key:
                 groups[key] = {song._song}
