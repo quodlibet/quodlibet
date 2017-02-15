@@ -3,7 +3,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, skipIf
+from tests import TestCase, skipUnless
 from tests.helper import ListWithUnused as L
 
 import os
@@ -44,7 +44,7 @@ class TPOTFILESIN(TestCase):
             raise MissingTranslationsException(results)
 
 
-@skipIf(polib is None, "polib not found")
+@skipUnless(polib, "polib not found")
 class TPot(TestCase):
 
     @classmethod
