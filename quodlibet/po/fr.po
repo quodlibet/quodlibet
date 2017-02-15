@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-15 10:19+0100\n"
+"PO-Revision-Date: 2017-02-15 10:44+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1025,7 +1025,7 @@ msgstr "[option]"
 
 #: ../quodlibet/cli.py:88
 msgid "Print the playing song and exit"
-msgstr "Imprimer le titre en cours de lecture et quitter"
+msgstr "Afficher le titre en cours de lecture et quitter"
 
 #: ../quodlibet/cli.py:89
 msgid "Begin playing immediately"
@@ -1105,15 +1105,15 @@ msgstr "Lister les navigateurs disponibles"
 
 #: ../quodlibet/cli.py:111
 msgid "Print the current playlist"
-msgstr "Imprimer la liste de lecture"
+msgstr "Afficher la liste de lecture"
 
 #: ../quodlibet/cli.py:112
 msgid "Print the contents of the queue"
-msgstr "Imprimer le contenu de la file de lecture"
+msgstr "Afficher le contenu de la file de lecture"
 
 #: ../quodlibet/cli.py:113
 msgid "Print the active text query"
-msgstr "Imrpimer la requête texte en cours"
+msgstr "Afficher le texte de la recherche en cours"
 
 #: ../quodlibet/cli.py:114
 msgid "Start without plugins"
@@ -1985,7 +1985,7 @@ msgstr "_Titre :"
 
 #: ../quodlibet/ext/events/notify.py:99 ../quodlibet/ext/events/notify.py:128
 msgid "Revert to default pattern"
-msgstr ""
+msgstr "Rétablir le motif par défaut"
 
 #: ../quodlibet/ext/events/notify.py:118
 msgid "_Body:"
@@ -2030,7 +2030,7 @@ msgstr "Impossible de se connecter au démon de notification."
 
 #: ../quodlibet/ext/events/notify.py:251
 msgid "Song Notifications"
-msgstr ""
+msgstr "Notifications de titre"
 
 #: ../quodlibet/ext/events/notify.py:252
 msgid "Displays a notification when the song changes."
@@ -2168,6 +2168,9 @@ msgid ""
 "Starts a random album when your playlist reaches its end. It requires that "
 "your active browser supports filtering by album."
 msgstr ""
+"Lance la lecture d'un album au hasard lorsque votre liste de lecture se "
+"termine. Nécessite que le navigateur en cours d'utilisation supporte le "
+"filtrage par album."
 
 #: ../quodlibet/ext/events/randomalbum.py:38
 msgid "Rated higher"
@@ -2476,18 +2479,16 @@ msgid "_Quit"
 msgstr "_Quitter"
 
 #: ../quodlibet/ext/events/trayicon/prefs.py:42
-#, fuzzy
 msgid "Scroll wheel adjusts volume"
-msgstr "La mollette de la souris change le volume"
+msgstr "La molette de la souris ajuste le volume"
 
 #: ../quodlibet/ext/events/trayicon/prefs.py:48
-#, fuzzy
 msgid "Scroll wheel changes song"
-msgstr "La molette de la souris change la musique"
+msgstr "La molete de la souris permet de passer d'une musique à l'autre"
 
 #: ../quodlibet/ext/events/trayicon/prefs.py:54
 msgid "Scroll _Wheel"
-msgstr ""
+msgstr "Molette de la souris"
 
 #: ../quodlibet/ext/events/trayicon/prefs.py:82
 msgid "Tooltip Display"
@@ -2745,7 +2746,7 @@ msgstr "Supprimer les doublons dans la liste de lecture"
 
 #: ../quodlibet/ext/playlist/remove_duplicates.py:21
 msgid "Removes duplicate entries in a playlist."
-msgstr ""
+msgstr "Supprime les doublons dans une liste de lecture."
 
 #: ../quodlibet/ext/playlist/remove_duplicates.py:49
 #, python-format
@@ -3105,7 +3106,7 @@ msgstr "R_echercher"
 
 #: ../quodlibet/ext/songsmenu/brainz/widgets.py:391
 msgid "Results <i>(drag to reorder)</i>"
-msgstr ""
+msgstr "Résultats <i>(cliquer-déplacer pour trier)</i>"
 
 #: ../quodlibet/ext/songsmenu/brainz/widgets.py:447
 msgid "Please enter a query."
@@ -3236,6 +3237,8 @@ msgid ""
 "Runs custom commands (in batches if required) on songs using any of their "
 "tags."
 msgstr ""
+"Lance des commanded personnalisée (par lots si nécessaire) sur des titres à "
+"partir de leurs étiquettes."
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:183
 #: ../quodlibet/ext/songsmenu/custom_commands.py:193
@@ -3343,9 +3346,8 @@ msgid "Edit Embedded Images"
 msgstr "Editer les images incorporées"
 
 #: ../quodlibet/ext/songsmenu/embedded.py:25
-#, fuzzy
 msgid "Removes or replaces embedded images."
-msgstr "Supprimer les doublons"
+msgstr "Supprime ou remplace les images embarquées."
 
 #: ../quodlibet/ext/songsmenu/embedded.py:78
 msgid "_Remove all Images"
@@ -3494,6 +3496,10 @@ msgid ""
 "Songs either need a <i><b>musicbrainz_trackid</b></i>, or <i><b>artist</b></"
 "i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
 msgstr ""
+"Pour être soumis, les titres doivent comporter des étiquettes avec un "
+"identifiant de piste MusicBrainz <i><b>trackid</b></i>, ou un identifiant "
+"<i><b>artist</b></i> (artiste) / <i><b>title</b></i> (titre)/ <i><b>album</"
+"b></i>."
 
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:118
 msgid "Fingerprints:"
@@ -3501,7 +3507,7 @@ msgstr "Empreintes :"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:120
 msgid "Songs with MBIDs:"
-msgstr ""
+msgstr "Titres comportant un identifiant MBIDs :"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:122
 msgid "Songs with sufficient tags:"
@@ -3551,6 +3557,8 @@ msgid ""
 "Removes TLEN frames from ID3 tags which can be the cause for invalid song "
 "durations."
 msgstr ""
+"Supprime les trames TLEN des étiquettes ID3, qui peuvent être sources "
+"d'erreurs dans le calcul de la durée."
 
 #: ../quodlibet/ext/songsmenu/ifp.py:20
 msgid "Send to iFP"
@@ -3759,7 +3767,7 @@ msgstr ""
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:637
 msgid "_Process albums:"
-msgstr ""
+msgstr "Appliquer aux albums :"
 
 #. Server settings Frame
 #: ../quodlibet/ext/songsmenu/replaygain.py:649
@@ -3768,21 +3776,23 @@ msgstr "Etiquettes existantes"
 
 #: ../quodlibet/ext/songsmenu/splitting.py:31
 msgid "Split Tags"
-msgstr "Scinder les étiquettes"
+msgstr "Séparer les étiquettes"
 
 #: ../quodlibet/ext/songsmenu/splitting.py:32
 msgid ""
 "Splits the disc number from the album and the version from the title at the "
 "same time."
 msgstr ""
+"Séparer en une seule opération le numéro de disque de l'album et la version "
+"du titre."
 
 #: ../quodlibet/ext/songsmenu/splitting.py:56
 msgid "Split Album"
-msgstr "Scinder l'album"
+msgstr "Séparer l'album"
 
 #: ../quodlibet/ext/songsmenu/splitting.py:57
 msgid "Split out disc number."
-msgstr ""
+msgstr "Séparer les numéros de disque."
 
 #: ../quodlibet/ext/songsmenu/website_search.py:35
 msgid "Website Search"
@@ -3794,6 +3804,9 @@ msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. %(pattern-example)s."
 msgstr ""
+"Lance une recherche parmi les sites de votre choix, selon n'importe quelle "
+"étiquette.\n"
+"Supporte les motifs, par exemple %(pattern-example)s."
 
 #: ../quodlibet/ext/songsmenu/website_search.py:78
 msgid "Search URL patterns"
@@ -3882,7 +3895,7 @@ msgstr "Lister les étiquettes"
 #: ../quodlibet/operon/commands.py:42 ../quodlibet/operon/commands.py:81
 #: ../quodlibet/operon/commands.py:455
 msgid "Print terse output"
-msgstr ""
+msgstr "Afficher en sortie des informations détaillées"
 
 #: ../quodlibet/operon/commands.py:44 ../quodlibet/operon/commands.py:83
 #: ../quodlibet/operon/commands.py:457
@@ -3954,7 +3967,7 @@ msgstr "Modifications annulées"
 #: ../quodlibet/operon/commands.py:249
 #, python-format
 msgid "Starting text editor '%(editor-name)s' failed."
-msgstr ""
+msgstr "Le lancement de l'éditeur de texte '%(editor-name)s' a échoué."
 
 #: ../quodlibet/operon/commands.py:254
 msgid "No changes detected"
@@ -4057,7 +4070,7 @@ msgstr ""
 
 #: ../quodlibet/operon/commands.py:725
 msgid "Print tags based on the given pattern"
-msgstr ""
+msgstr "Afficher les étiquettes selon un motif donné"
 
 #: ../quodlibet/operon/commands.py:762
 msgid "Display help information"
@@ -4201,8 +4214,8 @@ msgstr ""
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)s playlist?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)s playlists?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Lancer le greffon \"%(name)s\" sur la liste %(count)d ?"
+msgstr[1] "Lancer le greffon \"%(name)s\" sur les listes %(count)d ?"
 
 #: ../quodlibet/plugins/playlist.py:41 ../quodlibet/qltk/songsmenu.py:46
 #: ../quodlibet/qltk/songsmenu.py:74
@@ -4518,14 +4531,12 @@ msgid "Split _Performer out of Artist"
 msgstr "Séparer l'intér_prète de l'artiste"
 
 #: ../quodlibet/qltk/edittags.py:270
-#, fuzzy
 msgid "Split _Performer out of Title"
-msgstr "Séparer l'intér_prète de l'artiste"
+msgstr "Séparer l'intér_prète du titre"
 
 #: ../quodlibet/qltk/edittags.py:276
-#, fuzzy
 msgid "Split _Originalartist out of Title"
-msgstr "Séparer la _version du titre"
+msgstr "Séparer l'artiste d'origine (Originalartist) du titre"
 
 #: ../quodlibet/qltk/edittags.py:283
 msgid "Add a Tag"
