@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-15 11:02+0100\n"
+"PO-Revision-Date: 2017-02-15 11:08+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -2056,14 +2056,15 @@ msgid "Authentication failed: invalid URL."
 msgstr "Authentification impossible: URL invalide"
 
 #: ../quodlibet/ext/events/qlscrobbler.py:277
-#, fuzzy, python-format
+#, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
 msgstr ""
-"Authentification impossible: Nom d'utilisateur '%s' ou mot de passe invalide"
+"Authentication failed: nom d'utilisateur invalide '%s' ou mauvais mot de "
+"passe."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:282
 msgid "Client is banned. Contact the author."
-msgstr ""
+msgstr "Le client a été banni. Veuillez contacter l'auteur."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:286
 msgid "Wrong system time. Submissions may fail until it is corrected."
@@ -2131,11 +2132,15 @@ msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
 msgstr ""
+"Le motif utilisé pour formater un artiste avant soumission. Laisser vide "
+"pour la valeur par défaut."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:559
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
+"Le motif utilisé pour formater un titre avant soumission. Laisser vide pour "
+"la valeur par défaut."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:568
 msgid "Songs matching this filter will not be submitted."
@@ -5173,7 +5178,7 @@ msgstr "Nom de l'image fixe :"
 
 #: ../quodlibet/qltk/prefs.py:321
 msgid "The single image filename to use if selected"
-msgstr ""
+msgstr "Le nom de fichier de l'image à utiliser si sélectionné"
 
 #: ../quodlibet/qltk/prefs.py:327
 msgid "The album art image file to use when forced"
@@ -5825,6 +5830,7 @@ msgid ""
 msgstr ""
 "Le motif saisi est invalide. Assurez-vous d'avoir saisi &lt; et &gt; comme "
 "\\&lt; et \\&gt; et que vos étiquettes sont judicieuses.\n"
+"\n"
 "%s"
 
 #: ../quodlibet/qltk/textedit.py:158
@@ -6016,10 +6022,9 @@ msgstr[1] "%d années"
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
 #: ../quodlibet/util/__init__.py:562
-#, fuzzy
 msgctxt "check"
 msgid "titlecase?"
-msgstr "no_capitalize"
+msgstr ""
 
 #: ../quodlibet/util/massagers.py:115
 msgid ""
