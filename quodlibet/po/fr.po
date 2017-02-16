@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-15 11:25+0100\n"
+"PO-Revision-Date: 2017-02-16 14:40+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -476,7 +476,7 @@ msgstr "Impossible de copier les titres"
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Impossible de copier les fichiers sélectionnés vers des listes de titres ou "
-"dans la file de lecture."
+"dans la file d'attente"
 
 #: ../quodlibet/browsers/filesystem.py:189
 msgid "_Add to Library"
@@ -1109,7 +1109,7 @@ msgstr "Afficher la liste de lecture"
 
 #: ../quodlibet/cli.py:112
 msgid "Print the contents of the queue"
-msgstr "Afficher le contenu de la file de lecture"
+msgstr "Afficher le contenu de la file d'attente"
 
 #: ../quodlibet/cli.py:113
 msgid "Print the active text query"
@@ -1183,7 +1183,7 @@ msgstr "Démarrer un nouveau navigateur"
 
 #: ../quodlibet/cli.py:131
 msgid "Show or hide the queue"
-msgstr "Afficher ou cacher la file de lecture"
+msgstr "Afficher ou cacher la file d'attente"
 
 #: ../quodlibet/cli.py:133
 msgid "Show or hide the main song list (deprecated)"
@@ -1209,12 +1209,12 @@ msgstr "étiquette=valeur"
 #: ../quodlibet/cli.py:136
 msgid "Enqueue a file or query"
 msgstr ""
-"Mettre un fichier ou le résultat d'une recherche dans la file de lecture"
+"Mettre un fichier ou le résultat d'une recherche dans la file d'attente"
 
 #: ../quodlibet/cli.py:138
 msgid "Enqueue comma-separated files"
 msgstr ""
-"Mettre des fichiers séparés par un point-virgule dans la file de lecture"
+"Mettre des fichiers séparés par un point-virgule dans la file d'attente"
 
 #: ../quodlibet/cli.py:139 ../quodlibet/util/tags.py:147
 msgid "filename"
@@ -1226,8 +1226,7 @@ msgstr "Afficher les résultats de la requête dans la sortie standard stdout"
 
 #: ../quodlibet/cli.py:142
 msgid "Unqueue a file or query"
-msgstr ""
-"Enlever un fichier ou le résultat d'une recherche de la file de lecture"
+msgstr "Enlever un fichier ou le résultat d'une recherche de la file d'attente"
 
 #: ../quodlibet/cli.py:203
 #, python-format
@@ -2797,7 +2796,7 @@ msgstr "Préférer les moins lus"
 
 #: ../quodlibet/ext/playorder/queue.py:19
 msgid "Queue Only"
-msgstr "Uniquement en file de lecture"
+msgstr "Uniquement en file d'attente"
 
 #: ../quodlibet/ext/playorder/queue.py:21
 msgid ""
@@ -3441,7 +3440,7 @@ msgstr "Service Web AcoustID"
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:36
 #: ../quodlibet/qltk/downloader.py:67
 msgid "Queued"
-msgstr "Dans la file de lecture"
+msgstr "Dans la file d'attente"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:38
 msgid "Analyzing"
@@ -3819,8 +3818,7 @@ msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. %(pattern-example)s."
 msgstr ""
-"Lance une recherche parmi les sites de votre choix, selon n'importe quelle "
-"étiquette.\n"
+"Rechercher sur les sites de votre choix, selon n'importe quelle étiquette.\n"
 "Supporte les motifs, par exemple %(pattern-example)s."
 
 #: ../quodlibet/ext/songsmenu/website_search.py:78
@@ -4233,8 +4231,8 @@ msgstr ""
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)s playlist?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)s playlists?"
-msgstr[0] "Lancer le greffon \"%(name)s\" sur la liste %(count)d ?"
-msgstr[1] "Lancer le greffon \"%(name)s\" sur les listes %(count)d ?"
+msgstr[0] "Lancer le greffon \"%(name)s\" sur la liste %(count)s ?"
+msgstr[1] "Lancer le greffon \"%(name)s\" sur les listes %(count)s ?"
 
 #: ../quodlibet/plugins/playlist.py:41 ../quodlibet/qltk/songsmenu.py:46
 #: ../quodlibet/qltk/songsmenu.py:74
@@ -5331,11 +5329,11 @@ msgstr "Propriétés"
 
 #: ../quodlibet/qltk/queue.py:98
 msgid "_Queue"
-msgstr "_file de lecture"
+msgstr "_file d'attente"
 
 #: ../quodlibet/qltk/queue.py:104
 msgid "Remove all songs from the queue"
-msgstr "Supprimer tous les titres de la file de lecture"
+msgstr "Supprimer tous les titres de la file d'attente"
 
 #: ../quodlibet/qltk/queue.py:211
 #, python-format
@@ -5350,7 +5348,7 @@ msgstr "_Parcourir la bibliothèque"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:393
 msgid "Toggle queue visibility"
-msgstr "Basculer la visibilité de la file de lecture"
+msgstr "Basculer la visibilité de la file d'attente"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:514
 msgid "Playback Error"
@@ -5596,8 +5594,8 @@ msgstr "Éditer les recherches sauvegardées..."
 #: ../quodlibet/qltk/searchbar.py:74
 msgid "Search your library, using free text or QL queries"
 msgstr ""
-"Lancer une recherche dans votre bibliothèque, en utilisant un texte libre ou "
-"des requêtes QL"
+"Rechercher dans votre bibliothèque, en utilisant un texte libre ou des "
+"requêtes QL"
 
 #: ../quodlibet/qltk/searchbar.py:129
 msgid "Search after _typing"
@@ -5651,7 +5649,7 @@ msgstr "Ouvrir le gestionnaire d'étiquettes des titres sélectionnés"
 
 #: ../quodlibet/qltk/shortcuts.py:28
 msgid "Queue the selected songs"
-msgstr "Placer en file de lecture les titres sélectionnés"
+msgstr "Placer en file d'attente les titres sélectionnés"
 
 #: ../quodlibet/qltk/shortcuts.py:29
 msgid "Delete the selected songs"
@@ -5738,15 +5736,15 @@ msgstr "Déplier la colonne"
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
-msgstr[0] "Lancer le greffon \"%(name)s\" sur la piste %(count)d ?"
-msgstr[1] "Lancer le greffon \"%(name)s\" sur les pistes %(count)d ?"
+msgstr[0] "Lancer le greffon \"%(name)s\" sur la piste %(count)s ?"
+msgstr[1] "Lancer le greffon \"%(name)s\" sur les pistes %(count)s ?"
 
 #: ../quodlibet/qltk/songsmenu.py:64
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
-msgstr[0] "Lancer le plugin \"%(name)s\" sur l'album %(count)d ?"
-msgstr[1] "Lancer le plugin \"%(name)s\" sur les albums %(count)d ?"
+msgstr[0] "Lancer le greffon \"%(name)s\" sur l'album %(count)s ?"
+msgstr[1] "Lancer le greffon \"%(name)s\" sur les albums %(count)s ?"
 
 #: ../quodlibet/qltk/songsmenu.py:149
 msgid "Configure Plugins…"
@@ -5754,7 +5752,7 @@ msgstr "Configurer les greffons …"
 
 #: ../quodlibet/qltk/songsmenu.py:345
 msgid "Add to _Queue"
-msgstr "A_jouter à la file de lecture"
+msgstr "A_jouter à la file d'attente"
 
 #: ../quodlibet/qltk/songsmenu.py:368
 msgid "_Copy to Device"
@@ -5921,7 +5919,7 @@ msgstr "Une liste de lecture appelée %s existe déjà."
 
 #: ../quodlibet/util/cover/built_in.py:26
 msgid "Embedded album covers"
-msgstr "Jaquettes embarquées dans l'album"
+msgstr "jaquettes embarquées dans les étiquettes/titres"
 
 #: ../quodlibet/util/cover/built_in.py:27
 msgid "Uses covers embedded into audio files."
