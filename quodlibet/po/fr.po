@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-13 11:53+0100\n"
-"PO-Revision-Date: 2017-02-16 14:40+0100\n"
+"PO-Revision-Date: 2017-02-17 10:45+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
 "Language: fr\n"
@@ -1386,7 +1386,7 @@ msgstr ""
 
 #: ../quodlibet/ext/editing/titlecase.py:51
 msgid "Allow _ALL-CAPS in tags"
-msgstr ""
+msgstr "Autoriser les titres entièrement en MAJUSCULES"
 
 #: ../quodlibet/ext/editing/titlecase.py:52
 msgid "_Human title case"
@@ -2071,13 +2071,15 @@ msgstr ""
 
 #: ../quodlibet/ext/events/qlscrobbler.py:351
 msgid "AudioScrobbler Submission"
-msgstr ""
+msgstr "Soumission à AudioScrobbler"
 
 #: ../quodlibet/ext/events/qlscrobbler.py:352
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
 msgstr ""
+"Client Audioscrobbler pour Last.fm, Libre.fm et autres services "
+"Audioscrobbler."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:450
 msgid "Authentication successful."
@@ -2275,7 +2277,7 @@ msgstr "Fournisseur de recherche Gnome"
 
 #: ../quodlibet/ext/events/searchprovider.py:80
 msgid "Allows GNOME Shell to search the library."
-msgstr "Permet à GNOME Shell d'effectuer des recherches dans la bibliothèque."
+msgstr "Autoriser GNOME Shell à effectuer des recherches dans la bibliothèque."
 
 #: ../quodlibet/ext/events/seekbar.py:122
 msgid "Alternative Seek Bar"
@@ -2394,9 +2396,8 @@ msgid "Default Theme"
 msgstr "Theme natif"
 
 #: ../quodlibet/ext/events/themeswitcher.py:66
-#, fuzzy
 msgid "Prefer dark theme version"
-msgstr "Utiliser la version sombre (si possible)"
+msgstr "Préférer la version sombre du thème"
 
 #: ../quodlibet/ext/events/trayicon/appindicator.py:77
 #: ../quodlibet/ext/events/trayicon/prefs.py:96
@@ -2505,6 +2506,8 @@ msgstr "Voir les paroles"
 #: ../quodlibet/ext/events/viewlyrics.py:24
 msgid "Automatically displays lyrics beneath the song list in the main window."
 msgstr ""
+"Affiche automatiquement les paroles sous la liste des titres dans la fenêtre "
+"principale."
 
 #: ../quodlibet/ext/events/viewlyrics.py:29
 msgid "_Lyrics"
@@ -2606,7 +2609,7 @@ msgstr "Préréglage du filtre"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:26
 msgid "_Frequency cut:"
-msgstr "Coupe de_Fréquence :"
+msgstr "Coupe de _Fréquence :"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:26
 msgid "Low-pass filter cut frequency"
@@ -2731,6 +2734,10 @@ msgid ""
 "both share a directory structure. Shares configuration with Squeezebox Sync "
 "plugin."
 msgstr ""
+"Exporter une liste de lecture en temps réel vers l'appareil Squeezebox, à "
+"condition que QuodLibet et Squeezebox partagent la même structure de "
+"fichier. Permet de partager une configuration avec le greffon de partage "
+"Squeezebox Sync."
 
 #: ../quodlibet/ext/playlist/export_to_squeezebox.py:73
 msgid "Export playlist to Squeezebox"
@@ -3667,9 +3674,8 @@ msgstr "Coller"
 
 #. Create the tag table.
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:57
-#, fuzzy
 msgid "Information to copy/paste"
-msgstr "Information"
+msgstr "Informations vers copier/coller"
 
 #. Create the indexing box.
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:79
@@ -3766,6 +3772,8 @@ msgid ""
 "Analyzes and updates ReplayGain information, using GStreamer. Results are "
 "grouped by album."
 msgstr ""
+"Analyse et met à jour les informations de ReplayGain, en utilisant "
+"GStreamer. Les résultats sont regroupés par album."
 
 #: ../quodlibet/ext/songsmenu/replaygain.py:617
 msgid "always"
@@ -4083,7 +4091,7 @@ msgstr "Fichier"
 
 #: ../quodlibet/operon/commands.py:706
 msgid "Fill tracknumbers for all files"
-msgstr ""
+msgstr "Remplir les numéros de pistes pour tous les fichiers"
 
 #: ../quodlibet/operon/commands.py:725
 msgid "Print tags based on the given pattern"
@@ -4296,15 +4304,15 @@ msgstr "Tous les titres"
 
 #: ../quodlibet/qltk/browser.py:71
 msgid "On Current _Genre(s)"
-msgstr ""
+msgstr "Genre(s) en cours"
 
 #: ../quodlibet/qltk/browser.py:72
 msgid "On Current _Artist(s)"
-msgstr ""
+msgstr "Artiste(s) en cours"
 
 #: ../quodlibet/qltk/browser.py:73
 msgid "On Current Al_bum"
-msgstr ""
+msgstr "Album(s) en cours"
 
 #: ../quodlibet/qltk/browser.py:81
 msgid "Random _Genre"
@@ -4464,8 +4472,8 @@ msgstr "Les fichiers sélectionnés seront supprimés de la corbeille."
 #, python-format
 msgid "Move %(file_count)d file to the trash?"
 msgid_plural "Move %(file_count)d files to the trash?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Déplacer %(file_count)d fichier vers la corbeille ?"
+msgstr[1] "Déplacer %(file_count)d fichiers vers la corbeille ?"
 
 #: ../quodlibet/qltk/delete.py:134 ../quodlibet/qltk/delete.py:141
 msgid "_Move to Trash"
@@ -5599,7 +5607,7 @@ msgstr ""
 
 #: ../quodlibet/qltk/searchbar.py:129
 msgid "Search after _typing"
-msgstr "Rechercher après avoir _tapé"
+msgstr "Rechercher après avoir _tapé au clavier"
 
 #: ../quodlibet/qltk/searchbar.py:132
 msgid "Show search results after the user stops typing."
