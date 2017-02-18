@@ -32,7 +32,6 @@ from quodlibet.compat import iteritems
 from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,
     GStreamerSink, link_many, bin_debug)
 from .plugins import GStreamerPluginHandler
-from .prefs import GstPlayerPreferences
 
 STATE_CHANGE_TIMEOUT = Gst.SECOND * 4
 
@@ -167,14 +166,12 @@ def sink_state_is_valid(sink):
 
 class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
-    def PlayerPreferences(self):
-        return GstPlayerPreferences(self, const.DEBUG)
-
-    def __init__(self, librarian=None):
+    def __init__(self, librarian=None, preview=False):
         GStreamerPluginHandler.__init__(self)
         BasePlayer.__init__(self)
 
         self._librarian = librarian
+        self._preview = preview
 
         self.version_info = "GStreamer: %s" % fver(Gst.version())
         self._pipeline_desc = None
@@ -269,7 +266,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # reset error state
         self.error = False
 
-        pipeline = config.get("player", "gst_pipeline")
+        pipeline_prefix = "_preview" if self._preview else ""
+        pipeline = config.get("player", "gst_pipeline" + pipeline_prefix)
         try:
             pipeline, self._pipeline_desc = GStreamerSink(pipeline)
         except PlayerError as e:
@@ -940,11 +938,3 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         except GLib.GError:
             return False
         return True
-
-
-def init(librarian):
-    # Enable error messages by default
-    if Gst.debug_get_default_threshold() == Gst.DebugLevel.NONE:
-        Gst.debug_set_default_threshold(Gst.DebugLevel.ERROR)
-
-    return GStreamerPlayer(librarian)

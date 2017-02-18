@@ -21,7 +21,7 @@ class TEventPlugins(TestCase):
         self.tempdir = mkdtemp()
         self.pm = PluginManager(folders=[self.tempdir])
         self.lib = SongLibrarian()
-        self.player = player.init_player("nullbe", self.lib)
+        self.player = player.init_backend("nullbe", self.lib).get_player()
         self.handler = EventPluginHandler(
             librarian=self.lib, player=self.player)
         self.pm.register_handler(self.handler)

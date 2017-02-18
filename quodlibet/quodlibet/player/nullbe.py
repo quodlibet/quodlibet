@@ -5,6 +5,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from quodlibet.player._base import Backend
 from quodlibet.player._base import BasePlayer
 from quodlibet.player import PlayerError
 
@@ -98,5 +99,19 @@ class NullPlayer(BasePlayer):
         return True
 
 
+class NullBackend(Backend):
+
+    def __init__(self, librarian=None):
+        Backend.__init__(self, librarian)
+
+        self._librarian = librarian
+
+    def get_player(self):
+        return NullPlayer(self._librarian)
+
+    def get_preview_player(self):
+        return NullPlayer(self._librarian)
+
+
 def init(librarian):
-    return NullPlayer(librarian)
+    return NullBackend(librarian)

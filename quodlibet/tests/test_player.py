@@ -37,9 +37,9 @@ class TPlayer(TestCase):
         config.init()
         config.set("player", "gst_pipeline", "fakesink")
         config.set("settings", "xine_driver", "none")
-        module = player.init_backend(self.NAME)
         lib = library.init()
-        self.player = module.init(lib.librarian)
+        module = player.init_backend(self.NAME, lib.librarian)
+        self.player = module.get_player()
         source = PlaylistModel()
         source.set(FILES)
 
@@ -253,7 +253,7 @@ class TNullPlayer(TPlayer, TPlayerMixin):
 
 has_xine = True
 try:
-    player.init_backend("xinebe")
+    player.init_backend("xinebe", None)
 except player.PlayerError:
     has_xine = False
 
@@ -270,7 +270,7 @@ class TXinePlayer(TPlayer, TPlayerMixin):
 
 has_gstbe = True
 try:
-    player.init_backend("gstbe")
+    player.init_backend("gstbe", None)
 except player.PlayerError:
     has_gstbe = False
 

@@ -23,7 +23,7 @@ class TQuodLibetWindow(TestCase):
 
     def test_window(self):
         lib = library.init()
-        pl = player.init_player("nullbe", lib.librarian)
+        pl = player.init_backend("nullbe", lib.librarian).get_player()
         window = QuodLibetWindow(lib, pl, headless=True)
         window.destroy()
 
