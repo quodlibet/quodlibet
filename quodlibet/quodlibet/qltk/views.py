@@ -174,8 +174,12 @@ class TreeViewHints(Gtk.Window):
                     self.__undisplay(send_leave=False)
                     return False
 
-        # hide if any modifier is active
-        if event.get_state() & Gtk.accelerator_get_default_mod_mask():
+        # hide if any modifier is active.
+        # when pressing super under GS we get mod4 instead of super, not sure
+        # why.., so add that too
+        mask = Gtk.accelerator_get_default_mod_mask() | \
+            Gdk.ModifierType.MOD4_MASK
+        if event.get_state() & mask:
             self.__undisplay()
             return False
 
