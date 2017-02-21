@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2016 Nick Boultbee
+#           2012-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -294,16 +294,19 @@ class AudioFile(dict, ImageContainer):
         return ((k, v) for (k, v) in iteritems(self) if k[:1] != "~")
 
     def __call__(self, key, default=u"", connector=" - "):
-        """Return a key, synthesizing it if necessary. A default value
-        may be given (like dict.get); the default default is an empty
-        unicode string (even if the tag is numeric).
+        """Return the value(s) for a key, synthesizing if necessary.
+        Multiple values for a key are delimited by newlines.
 
-        If a tied tag ('a~b') is requested, the 'connector' keyword
+        A default value may be given (like `dict.get`);
+        the default default is an empty unicode string
+        (even if the tag is numeric).
+
+        If a tied tag ('a~b') is requested, the `connector` keyword
         argument may be used to specify what it is tied with.
         In case the tied tag contains numeric and file path tags, the result
         will still be a unicode string.
 
-        For details on tied tags, see the documentation for util.tagsplit.
+        For details on tied tags, see the documentation for `util.tagsplit`.
         """
 
         if key[:1] == "~":
