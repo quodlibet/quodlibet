@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014, 2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -108,8 +108,8 @@ class SqueezeboxServer(object):
         response = (raw_response if raw else unquote(raw_response)).strip()
         if self._debug:
             print_("<<<< \"%s\"" % (response,))
-        return response[len(line) - 1:] if line.endswith("?")\
-            else response[len(line) + 1:]
+        return (response[len(line) - 1:] if line.endswith("?")
+                else response[len(line) + 1:])
 
     def get_players(self):
         """ Returns (and caches) a list of the Squeezebox players available"""
