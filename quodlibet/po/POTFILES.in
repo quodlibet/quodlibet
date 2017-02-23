@@ -127,6 +127,7 @@ quodlibet/ext/songsmenu/playlist.py
 quodlibet/ext/songsmenu/refresh.py
 quodlibet/ext/songsmenu/replaygain.py
 quodlibet/ext/songsmenu/splitting.py
+quodlibet/ext/songsmenu/tapbpm.py
 quodlibet/ext/songsmenu/website_search.py
 quodlibet/ext/songsmenu/wikipedia.py
 quodlibet/formats/_audio.py
