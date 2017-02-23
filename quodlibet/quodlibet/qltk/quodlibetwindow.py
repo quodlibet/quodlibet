@@ -666,6 +666,35 @@ class SongListPaned(RVPaned):
             config.set(section, option, str(self.get_relative()))
 
 
+class SeekBarProvider(object):
+
+    def create_seekbar_widget(self, player, librarian):
+        """Creates a new seek bar.
+        """
+
+        if not hasattr(self, '_seekbars'):
+            self._seekbars = []
+
+        seekbar = self.do_create_seekbar_widget(player, librarian)
+        self._seekbars.append(seekbar)
+        seekbar.show()
+        return seekbar
+
+    def destroy_seekbar_widgets(self):
+        """Destroy all the created seek bars.
+        """
+
+        for seekbar in self._seekbars:
+            seekbar.destroy()
+        del self._seekbars
+
+    def do_create_seekbar_widget(self, player, librarian):
+        """Actually instantiate a new seek bar.
+        """
+
+        raise NotImplementedError
+
+
 class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def __init__(self, library, player, headless=False, restore_cb=None):
@@ -826,14 +855,16 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         self.enable_window_tracking("quodlibet")
 
-    def set_seekbar_widget(self, widget):
-        """Add an alternative seek bar widget.
+    def set_seekbar_provider(self, provider):
+        """Set the seek bar widget provider.
 
         Args:
-            widget (Gtk.Widget): a new widget or None to remove the current one
+            provider (SeekBarProvider):
+                a new provider or None to remove the current one
         """
 
-        self.top_bar.set_seekbar_widget(widget)
+        self.top_bar.set_seekbar_widget(
+            provider.create_seekbar_widget(app.player, app.librarian))
 
     def set_as_osx_window(self, osx_app):
         assert osx_app

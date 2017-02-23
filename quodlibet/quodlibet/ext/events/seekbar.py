@@ -13,6 +13,7 @@ from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons
+from quodlibet.qltk.quodlibetwindow import SeekBarProvider
 from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.qltk import Align
@@ -125,11 +126,15 @@ class SeekBarPlugin(EventPlugin):
     PLUGIN_ICON = Icons.GO_JUMP
 
     def enabled(self):
-        self._bar = SeekBar(app.player, app.librarian)
-        self._bar.show()
-        app.window.set_seekbar_widget(self._bar)
+        self._provider = SeekBarProviderImpl()
+        app.window.set_seekbar_provider(self._provider)
 
     def disabled(self):
-        app.window.set_seekbar_widget(None)
-        self._bar.destroy()
-        del self._bar
+        self._provider.destroy_seekbar_widgets()
+        del self._provider
+
+
+class SeekBarProviderImpl(SeekBarProvider):
+
+    def do_create_seekbar_widget(self, player, librarian):
+        return SeekBar(player, librarian)

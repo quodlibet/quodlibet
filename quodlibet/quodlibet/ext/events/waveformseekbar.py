@@ -17,6 +17,7 @@ from quodlibet.plugins import PluginConfig, IntConfProp, \
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align
 from quodlibet.qltk import Icons
+from quodlibet.qltk.quodlibetwindow import SeekBarProvider
 from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.qltk import get_fg_highlight_color
@@ -398,14 +399,12 @@ class WaveformSeekBarPlugin(EventPlugin):
         "A seekbar in the shape of the waveform of the current song.")
 
     def enabled(self):
-        self._bar = WaveformSeekBar(app.player, app.librarian)
-        self._bar.show()
-        app.window.set_seekbar_widget(self._bar)
+        self._provider = SeekBarProviderImpl()
+        app.window.set_seekbar_provider(self._provider)
 
     def disabled(self):
-        app.window.set_seekbar_widget(None)
-        self._bar.destroy()
-        del self._bar
+        self._provider.destroy_seekbar_widgets()
+        del self._provider
 
     def PluginPreferences(self, parent):
         red = Gdk.RGBA()
@@ -440,3 +439,9 @@ class WaveformSeekBarPlugin(EventPlugin):
         vbox.pack_start(create_color(), True, True, 0)
 
         return vbox
+
+
+class SeekBarProviderImpl(SeekBarProvider):
+
+    def do_create_seekbar_widget(self, player, librarian):
+        return WaveformSeekBar(player, librarian)
