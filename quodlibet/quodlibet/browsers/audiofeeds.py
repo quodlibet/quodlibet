@@ -483,10 +483,9 @@ class AudioFeeds(Browser):
         refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
         delete = MenuItem(_("_Delete"), Icons.EDIT_DELETE)
 
-        connect_obj(refresh,
-            'activate', self.__refresh, [model[p][0] for p in paths])
-        connect_obj(delete,
-            'activate', map, model.remove, map(model.get_iter, paths))
+        connect_obj(refresh, 'activate',
+                    self.__refresh, [model[p][0] for p in paths])
+        connect_obj(delete, 'activate', self.__remove_paths, model, paths)
 
         menu.append(refresh)
         menu.append(delete)
@@ -504,6 +503,10 @@ class AudioFeeds(Browser):
     def __refresh(self, feeds):
         changed = listfilter(Feed.parse, feeds)
         AudioFeeds.changed(changed)
+
+    def __remove_paths(self, model, paths):
+        for path in paths:
+            model.remove(model.get_iter(path))
 
     def activate(self):
         self.__changed(self.__view.get_selection())
