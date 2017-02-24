@@ -12,7 +12,7 @@ from math import ceil, floor
 from quodlibet import _, app
 from quodlibet import print_w
 from quodlibet.plugins import PluginConfig, BoolConfProp, IntConfProp, \
-    ConfProp
+    ConfProp, PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align
 from quodlibet.qltk import Icons
@@ -290,7 +290,7 @@ class Config(object):
 CONFIG = Config()
 
 
-class WaveformSeekBarPlugin(EventPlugin):
+class WaveformSeekBarPlugin(EventPlugin, PluginConfigMixin):
     """The plugin class."""
 
     PLUGIN_ID = "WaveformSeekBar"
@@ -299,6 +299,9 @@ class WaveformSeekBarPlugin(EventPlugin):
     PLUGIN_CONFIG_SECTION = __name__
     PLUGIN_DESC = _(
         "A seekbar in the shape of the waveform of the current song.")
+
+    DEFAULT_FGCOLOR = '#ff0000'
+    CFG_FGCOLOR_KEY = "foregroundColor"
 
     def enabled(self):
         self._bar = WaveformSeekBar(app.player, app.librarian)
@@ -310,7 +313,7 @@ class WaveformSeekBarPlugin(EventPlugin):
         self._bar.destroy()
         del self._bar
 
-    def PluginPreferences(self, parent):
+    def PluginPreferences(cls, parent):
         red = Gdk.RGBA()
         red.parse("#ff0000")
 
@@ -328,26 +331,33 @@ class WaveformSeekBarPlugin(EventPlugin):
 
         vbox = Gtk.VBox(spacing=6)
 
-        def create_color():
-            hbox = Gtk.HBox(spacing=6)
-            hbox.set_border_width(6)
-            label = Gtk.Label(label=_("Override foreground color:"))
-            hbox.pack_start(label, False, True, 0)
-            entry = Gtk.Entry()
-            if CONFIG.elapsed_color:
-                entry.set_text(CONFIG.elapsed_color)
-            entry.connect('changed', changed)
-            hbox.pack_start(entry, True, True, 0)
-            return hbox
+        t = Gtk.Table(n_rows=2, n_columns=3, homogeneous=True)
+        h = Gtk.Label(label=_("High resolution waveform:"))
+        h.set_alignment(xalign=0.0, yalign=0.5)
+        t.attach(h, 0, 1, 0, 1)
 
-        def create_resolution():
-            hbox = Gtk.HBox(spacing=6)
-            ccb = CONFIG._config.ConfigCheckButton(_("High Res"), "high_res",
-                                                   populate=True)
-            hbox.pack_start(ccb, True, True, 0)
-            return hbox
+        ccb = CONFIG._config.ConfigCheckButton(_(""), "high_res",
+                                       populate=True)
+        t.attach(ccb, 1, 2, 0, 1)
 
-        vbox.pack_start(create_color(), True, True, 0)
-        vbox.pack_start(create_resolution(), True, True, 0)
+        l = Gtk.Label(label=_("Override foreground color:"))
+        l.set_alignment(xalign=0.0, yalign=0.5)
+        t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
+
+        c = Gdk.RGBA()
+        c.parse(cls._get_foreground_color())
+        b = Gtk.ColorButton(rgba=c)
+        t.attach(b, 1, 2, 1, 2)
+        b.connect('color-set', cls._set_foreground_color)
+
+        vbox.pack_start(t, False, False, 0)
 
         return vbox
+
+    def _get_foreground_color(self):
+        v = self.config_get(self.CFG_FGCOLOR_KEY, self.DEFAULT_FGCOLOR)
+        return v[:3] + v[5:7] + v[9:11]
+
+    def _set_foreground_color(self, button):
+        self.config_set(self.CFG_FGCOLOR_KEY, button.get_color().to_string())
+        CONFIG.elapsed_color = button.get_color().to_string()
