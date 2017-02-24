@@ -199,7 +199,7 @@ class WaveformScale(Gtk.EventBox):
 
         value_count = len(self._rms_vals)
         max_value = max(self._rms_vals)
-        ratio_width = value_count / float(width) / pixel_ratio
+        ratio_width = value_count / (float(width) * pixel_ratio - 1)
         ratio_height = max_value / half_height
 
         cr.set_line_width(line_width)
@@ -221,8 +221,9 @@ class WaveformScale(Gtk.EventBox):
             val = (sum(data[u1:u2]) / (ratio_height * (u2 - u1))
                    if u1 != u2 else 0.0)
 
-            cr.move_to(x / pixel_ratio, half_height - val)
-            cr.line_to(x / pixel_ratio, half_height + val)
+            hx = x / pixel_ratio + hw
+            cr.move_to(hx, half_height - val)
+            cr.line_to(hx, half_height + val)
             cr.stroke()
 
     def draw_placeholder(self, cr, width, height, color):
@@ -231,13 +232,14 @@ class WaveformScale(Gtk.EventBox):
         line_width = 1.0 / pixel_ratio
 
         half_height = self.compute_half_height(height, pixel_ratio)
+        hw = line_width / 2.0
 
         cr.set_line_width(line_width)
         cr.set_line_cap(cairo.LINE_CAP_ROUND)
         cr.set_line_join(cairo.LINE_JOIN_ROUND)
         cr.set_source_rgba(*list(color))
-        cr.move_to(0, half_height)
-        cr.line_to(width, half_height)
+        cr.move_to(hw, half_height)
+        cr.line_to(width - hw, half_height)
         cr.stroke()
 
     @staticmethod
