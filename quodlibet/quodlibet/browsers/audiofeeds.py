@@ -22,7 +22,7 @@ from quodlibet import qltk
 from quodlibet import util
 
 from quodlibet.browsers import Browser
-from quodlibet.compat import listfilter, text_type, build_opener
+from quodlibet.compat import listfilter, text_type, build_opener, PY2
 from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.downloader import DownloadWindow
@@ -222,9 +222,10 @@ class Feed(list):
         opener = build_opener(feedparser._FeedURLHandler())
         try:
             result = opener.open(req)
-            content_type = result.headers.get('Content-Type', "???")
+            content_type = result.headers.get('Content-Type', "Unknown type")
+            status = result.code if PY2 else result.status
             print_d("Pre-check: %s returned %s in %s" %
-                    (self.uri, result.status, content_type))
+                    (self.uri, status, content_type))
             if content_type not in feedparser.ACCEPT_HEADER:
                 print_w("Unusable content: %s. Perhaps %s is not a feed?" %
                         (content_type, self.uri))
