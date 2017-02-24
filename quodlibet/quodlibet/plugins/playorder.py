@@ -26,6 +26,12 @@ class PlayOrderPlugin(quodlibet.qltk.playorder.Order):
 
     """
 
+    # Note these values unset the base versions, as the plugin handler logic
+    # does some auto-setting of these, based on PLUGIN_NAME, if they're None
+    name = None
+    display_name = None
+    accelerated_name = None
+
     priority = 200
     """Plugins default to lower priority than built-ins"""
 
