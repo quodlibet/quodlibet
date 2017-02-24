@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gdk, Gtk
 
 from quodlibet import _
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -27,6 +27,7 @@ class TapBpmPanel(Gtk.VBox):
 
         box = Gtk.HBox()
         box.set_spacing(6)
+        # TRANSLATORS: BPM mean "beats per minute"
         box.pack_start(Gtk.Label(_("BPM:")), False, True, 0)
         self.bpm_label = Gtk.Label(_("n/a"))
         self.bpm_label.set_xalign(0.5)
@@ -40,6 +41,7 @@ class TapBpmPanel(Gtk.VBox):
 
         self.tap_btn = Gtk.Button(label=_("Tap"))
         self.tap_btn.connect('button-press-event', self.tap)
+        self.tap_btn.connect('key-press-event', self.key_tap)
         self.pack_start(self.tap_btn, True, True, 0)
 
         self.init_tap()
@@ -48,9 +50,6 @@ class TapBpmPanel(Gtk.VBox):
         self.show_all()
 
     def update(self):
-        GObject.idle_add(self.do_update)
-
-    def do_update(self):
         has_new_bpm = self.floating_bpm != self.original_bpm
 
         self.dialog.set_response_sensitive(Gtk.ResponseType.OK, has_new_bpm)
@@ -61,9 +60,21 @@ class TapBpmPanel(Gtk.VBox):
         else:
             self.bpm_label.set_text(_("n/a"))
 
+        # Give focus back to the tap button even if reset was pressed
+        self.tap_btn.grab_focus()
+
     def tap(self, widget, event):
         self.count_tap(event.time)
         self.update()
+
+    def key_tap(self, widget, event):
+        if event.keyval != Gdk.KEY_space \
+                and event.keyval != Gdk.KEY_Return:
+            return False
+
+        self.count_tap(event.time)
+        self.update()
+        return True
 
     def reset(self):
         self.init_tap()
@@ -182,12 +193,11 @@ class TapBpm(SongsMenuPlugin):
         window.present()
 
     def response(self, win, response):
+        if response == Gtk.ResponseType.OK:
+            # Save metadata
+            self._panel.save()
+
         self._window.hide()
         self._window.destroy()
         del self._window
-
-        if response != Gtk.ResponseType.OK:
-            return
-
-        # Save metadata
-        self._panel.save()
+        del self._panel
