@@ -192,22 +192,19 @@ class WaveformScale(Gtk.EventBox):
 
     def draw_waveform(self, cr, width, height, elapsed_color, remaining_color):
         scale_factor = self.get_scale_factor()
-        hidpi = scale_factor > 1
         pixel_ratio = float(scale_factor)
         line_width = 1.0 / pixel_ratio
+
+        half_height = self.compute_half_height(height, pixel_ratio)
 
         value_count = len(self._rms_vals)
         max_value = max(self._rms_vals)
         ratio_width = value_count / float(width) / pixel_ratio
-        ratio_height = max_value / float(height) * 2
-        half_height = height // 2
+        ratio_height = max_value / half_height
+
         cr.set_line_width(line_width)
         cr.set_line_cap(cairo.LINE_CAP_ROUND)
         cr.set_line_join(cairo.LINE_JOIN_ROUND)
-
-        if not hidpi:
-            # Default AA looks bad (and dimmer) for all 1px shapes.
-            cr.set_antialias(1)
 
         position_width = self.position * width * pixel_ratio
         hw = line_width / 2.0
@@ -224,21 +221,32 @@ class WaveformScale(Gtk.EventBox):
             val = (sum(data[u1:u2]) / (ratio_height * (u2 - u1))
                    if u1 != u2 else 0.0)
 
-            if 2 * val < line_width:
-                # Draw single line, ensuring line_width height at minimum
-                cr.move_to(x / pixel_ratio, half_height)
-                cr.line_to(x / pixel_ratio, half_height)
-            else:
-                cr.move_to(x / pixel_ratio, half_height - val)
-                cr.line_to(x / pixel_ratio, half_height + val)
+            cr.move_to(x / pixel_ratio, half_height - val)
+            cr.line_to(x / pixel_ratio, half_height + val)
             cr.stroke()
 
     def draw_placeholder(self, cr, width, height, color):
-        cr.set_line_width(2)
+        scale_factor = self.get_scale_factor()
+        pixel_ratio = float(scale_factor)
+        line_width = 1.0 / pixel_ratio
+
+        half_height = self.compute_half_height(height, pixel_ratio)
+
+        cr.set_line_width(line_width)
+        cr.set_line_cap(cairo.LINE_CAP_ROUND)
+        cr.set_line_join(cairo.LINE_JOIN_ROUND)
         cr.set_source_rgba(*list(color))
-        cr.move_to(0, height // 2)
-        cr.line_to(width, height // 2)
+        cr.move_to(0, half_height)
+        cr.line_to(width, half_height)
         cr.stroke()
+
+    @staticmethod
+    def compute_half_height(height, pixel_ratio):
+        # Ensure half_height is in the middle of a pixel (c.f. Cairo's FAQ)
+        height_px = int(height * pixel_ratio)
+        half_height = \
+            (height_px if height_px % 2 else height_px - 1) / pixel_ratio / 2
+        return half_height
 
     def do_draw(self, cr):
         context = self.get_style_context()
