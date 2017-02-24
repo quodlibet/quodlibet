@@ -1,0 +1,38 @@
+# -*- coding: utf-8 -*-
+# Copyright 2016 Christoph Reiter
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
+from gi.repository import Gdk
+
+from quodlibet import _
+from quodlibet import app
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk import Icons
+
+
+class ToggleMenuBarPlugin(EventPlugin):
+    PLUGIN_ID = "ToggleMenuBar"
+    PLUGIN_NAME = _("Toggle Menu Bar")
+    PLUGIN_DESC = _("Toggle the menu bar by pressing the Alt key.")
+    PLUGIN_ICON = Icons.EDIT
+
+    def enabled(self):
+        window = app.window
+
+        # Maybe this should be made directly accessible
+        menubar = window.get_children()[0].get_children()[0]
+
+        # Menu bar visibility toggle
+        def toggle_menubar(widget, event):
+            if event.state == Gdk.ModifierType.MOD1_MASK:
+                menubar.set_visible(not menubar.get_visible())
+
+        self._handler = window.connect('key_release_event', toggle_menubar)
+
+    def disabled(self):
+        window = app.window
+        window.disconnect(self._handler)
+        del self._handler
