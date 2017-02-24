@@ -114,6 +114,7 @@ Corentin Néau
 David Kågedal
 David Schneider
 Decklin Foster
+Didier Villevalois
 Eduardo Gonzalez
 Eric Casteleijn
 Erich Schubert
