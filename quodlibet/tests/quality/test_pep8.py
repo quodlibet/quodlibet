@@ -61,7 +61,7 @@ def check_files(files, ignore=[]):
 @pytest.mark.quality
 class TPEP8(TestCase):
     IGNORE = ["E12", "E261", "E265", "E713", "W602", "E402", "E731",
-              "W503", "E741", "E305", "W601"]
+              "W503", "E741", "E305", "W601", "E722"]
 
     def test_all(self):
         assert pycodestyle is not None, "pep8/pycodestyle is missing"
