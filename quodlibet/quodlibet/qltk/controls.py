@@ -138,8 +138,7 @@ class VolumeMenu(Gtk.Menu):
 
     def __changed(self, item, player, profile):
         if item.get_active():
-            player.replaygain_profiles[0] = profile
-            player.reset_replaygain()
+            player.update_replaygain_profile(0, profile)
 
     def popup(self, *args):
         gain = config.getboolean("player", "replaygain")

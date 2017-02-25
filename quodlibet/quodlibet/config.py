@@ -203,6 +203,7 @@ setstringlist = _config.setstringlist
 getlist = _config.getlist
 setlist = _config.setlist
 set = _config.set
+unset = _config.unset
 settext = _config.settext
 write = _config.write
 reset = _config.reset
