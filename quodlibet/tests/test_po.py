@@ -22,6 +22,7 @@ from gdist import gettextutil
 
 
 PODIR = os.path.join(os.path.dirname(quodlibet.__path__[0]), "po")
+PODIR_WRITEABLE = os.access(PODIR, os.W_OK)
 
 
 class MissingTranslationsException(Exception):
@@ -45,6 +46,7 @@ class TPOTFILESIN(TestCase):
 
 
 @skipUnless(polib, "polib not found")
+@skipUnless(PODIR_WRITEABLE, "intltool-update requires a writeable po dir :(")
 class TPot(TestCase):
 
     @classmethod
@@ -231,7 +233,8 @@ class POMixin(object):
             return
 
         po_path = os.path.join(PODIR, "%s.po" % self.lang)
-        self.failIf(os.system("msgfmt -c %s > /dev/null" % po_path))
+        self.failIf(os.system(
+            "msgfmt -c -o /dev/null %s > /dev/null" % po_path))
         try:
             os.unlink("messages.mo")
         except OSError:
