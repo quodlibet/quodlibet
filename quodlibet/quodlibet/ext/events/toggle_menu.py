@@ -23,16 +23,34 @@ class ToggleMenuBarPlugin(EventPlugin):
         window = app.window
 
         # Maybe this should be made directly accessible
-        menubar = window.get_children()[0].get_children()[0]
+        self._menubar = window.get_children()[0].get_children()[0]
+
+        # Initially set hidden
+        self._menubar.set_visible(False)
 
         # Menu bar visibility toggle
         def toggle_menubar(widget, event):
+            # Test for the Alt key
             if event.state == Gdk.ModifierType.MOD1_MASK:
-                menubar.set_visible(not menubar.get_visible())
+                self._menubar.set_visible(not self._menubar.get_visible())
+                # Select the menu bar if visible
+                if self._menubar.get_visible():
+                    self._menubar.select_first(False)
+                    self._menubar.deselect()
 
-        self._handler = window.connect('key_release_event', toggle_menubar)
+        self._key_release_handler = \
+            window.connect('key_release_event', toggle_menubar)
+
+        # Menu bar hide after deactivation
+        def hide_menubar(widget):
+            self._menubar.set_visible(False)
+
+        self._deactivate_handler = \
+            self._menubar.connect('deactivate', hide_menubar)
 
     def disabled(self):
         window = app.window
-        window.disconnect(self._handler)
-        del self._handler
+        window.disconnect(self._key_release_handler)
+        del self._key_release_handler
+        self._menubar.disconnect(self._deactivate_handler)
+        del self._deactivate_handler
