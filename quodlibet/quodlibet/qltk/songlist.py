@@ -272,7 +272,7 @@ class SongListDnDMixin(object):
 
             qltk.selection_set_songs(sel, songs)
             if ctx.get_actions() & Gdk.DragAction.MOVE:
-                self.__drag_iters = map(model.get_iter, paths)
+                self.__drag_iters = list(map(model.get_iter, paths))
             else:
                 self.__drag_iters = []
         else:
