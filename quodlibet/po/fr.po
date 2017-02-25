@@ -5744,15 +5744,15 @@ msgstr "Déplier la colonne"
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
-msgstr[0] "Lancer le greffon \"%(name)s\" sur la piste %(count)s ?"
-msgstr[1] "Lancer le greffon \"%(name)s\" sur les pistes %(count)s ?"
+msgstr[0] "Lancer le greffon \"%(name)s\" sur la piste %(count)d ?"
+msgstr[1] "Lancer le greffon \"%(name)s\" sur les pistes %(count)d ?"
 
 #: ../quodlibet/qltk/songsmenu.py:64
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
-msgstr[0] "Lancer le greffon \"%(name)s\" sur l'album %(count)s ?"
-msgstr[1] "Lancer le greffon \"%(name)s\" sur les albums %(count)s ?"
+msgstr[0] "Lancer le greffon \"%(name)s\" sur l'album %(count)d ?"
+msgstr[1] "Lancer le greffon \"%(name)s\" sur les albums %(count)d ?"
 
 #: ../quodlibet/qltk/songsmenu.py:149
 msgid "Configure Plugins…"
