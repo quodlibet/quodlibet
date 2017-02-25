@@ -12,7 +12,7 @@ import traceback
 import time
 import logging
 
-from senf import getcwd, fsnative, fsn2bytes, bytes2fsn
+from senf import getcwd, fsnative, fsn2bytes, bytes2fsn, mkdtemp
 
 from quodlibet import _
 from quodlibet.compat import text_type, PY2
@@ -50,14 +50,20 @@ class Tmkdir(TestCase):
 
     def test_manydeep(self):
         self.failUnless(not os.path.isdir("nonext"))
-        mkdir("nonext/test/test2/test3")
+        t = mkdtemp()
+        path = os.path.join(t, "nonext", "test", "test2", "test3")
+        mkdir(path)
         try:
-            self.failUnless(os.path.isdir("nonext/test/test2/test3"))
+            self.failUnless(os.path.isdir(path))
         finally:
-            os.rmdir("nonext/test/test2/test3")
-            os.rmdir("nonext/test/test2")
-            os.rmdir("nonext/test")
-            os.rmdir("nonext")
+            os.rmdir(path)
+            path = os.path.dirname(path)
+            os.rmdir(path)
+            path = os.path.dirname(path)
+            os.rmdir(path)
+            path = os.path.dirname(path)
+            os.rmdir(path)
+            os.rmdir(t)
 
 
 class Tgetcwd(TestCase):
@@ -753,10 +759,12 @@ class TNormalizePath(TestCase):
         os.close(f)
         path = norm(path)
 
+        link_dir = mkdtemp()
         link = None
         if not is_win:
-            link = str(uuid.uuid4())
+            link = os.path.join(link_dir, str(uuid.uuid4()))
             os.symlink(path, link)
+
         try:
             self.failUnlessEqual(norm(path, canonicalise=True), path)
             self.failUnlessEqual(norm(os.path.join(path, "foo", ".."), True),
@@ -772,6 +780,7 @@ class TNormalizePath(TestCase):
             if link:
                 os.remove(link)
             os.remove(path)
+            os.rmdir(link_dir)
 
 
 class Tescape_filename(TestCase):

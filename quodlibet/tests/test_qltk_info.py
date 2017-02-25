@@ -8,11 +8,13 @@ import os
 from quodlibet import app
 from tests import TestCase, destroy_fake_app, init_fake_app
 
+from senf import mkstemp
+
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.info import SongInfo
 from quodlibet.library import SongLibrary
 
-FILENAME = "test-pattern"
+
 SOME_PATTERN = "foo\n[big]<title>[/big] - <artist>"
 
 
@@ -23,18 +25,21 @@ class FakePatternEdit(object):
 
 
 class TSongInfo(TestCase):
+
     def setUp(self):
         init_fake_app()
-        self.info = SongInfo(SongLibrary(), NullPlayer(), FILENAME)
+        fd, self.filename = mkstemp()
+        os.close(fd)
+        self.info = SongInfo(SongLibrary(), NullPlayer(), self.filename)
 
     def test_save(self):
         fake_edit = FakePatternEdit()
         self.info._on_set_pattern(None, fake_edit, app.player)
-        with open(FILENAME, "r") as f:
+        with open(self.filename, "r") as f:
             contents = f.read()
             self.failUnlessEqual(contents, SOME_PATTERN + "\n")
-        os.unlink(FILENAME)
 
     def tearDown(self):
         destroy_fake_app()
         self.info.destroy()
+        os.unlink(self.filename)
