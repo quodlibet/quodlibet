@@ -604,11 +604,47 @@ class PreferencesWindow(UniqueWindow):
             vbox.pack_start(hb, False, True, 0)
             return vbox
 
+        def tag_display_vbox(self):
+            """Returns a new VBox containing all global tag display"""
+            vbox = Gtk.VBox(spacing=6)
+            hb = Gtk.HBox(spacing=6)
+            e = UndoEntry()
+            e.set_text(config.get("settings", "window_title_pattern"))
+            e.connect("changed", self.__changed,
+                      "settings", "window_title_pattern")
+            e.set_tooltip_text(
+                _("A tied tags pattern for the main window title."))
+
+            def do_revert_pattern(button, section, option):
+                config.reset(section, option)
+                e.set_text(config.get(section, option))
+
+            pattern_revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
+            pattern_revert.connect("clicked", do_revert_pattern,
+                                 "settings", "window_title_pattern")
+
+            def do_apply_pattern(entry):
+                app.window.update_title()
+
+            e.connect("changed", do_apply_pattern)
+
+            l = Gtk.Label(label=_("Window _title:"))
+            l.set_use_underline(True)
+            l.set_mnemonic_widget(e)
+            hb.pack_start(l, False, True, 0)
+            hb.pack_start(e, True, True, 0)
+            hb.pack_start(pattern_revert, False, True, 0)
+            vbox.pack_start(hb, False, True, 0)
+            return vbox
+
         def __init__(self):
             super(PreferencesWindow.Tagging, self).__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Tags")
             self._songs = []
+
+            f = qltk.Frame(_("Tag Display"), child=(self.tag_display_vbox()))
+            self.pack_start(f, False, True, 0)
 
             f = qltk.Frame(_("Tag Editing"), child=(self.tag_editing_vbox()))
             self.pack_start(f, False, True, 0)
