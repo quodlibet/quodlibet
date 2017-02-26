@@ -34,7 +34,7 @@ class WaveformSeekBar(Gtk.Box):
 
         self._elapsed_label = TimeLabel()
         self._remaining_label = TimeLabel()
-        self._waveform_scale = WaveformScale()
+        self._waveform_scale = WaveformScale(player)
 
         self.pack_start(Align(self._elapsed_label, border=6), False, True, 0)
         self.pack_start(self._waveform_scale, True, True, 0)
@@ -42,6 +42,8 @@ class WaveformSeekBar(Gtk.Box):
 
         for child in self.get_children():
             child.show_all()
+
+        self._waveform_scale.connect('size-allocate', self._update_redraw_interval)
 
         self._tracker = TimeTracker(player)
         self._tracker.connect('tick', self._on_tick, player)
@@ -54,7 +56,6 @@ class WaveformSeekBar(Gtk.Box):
 
         self.connect('destroy', self._on_destroy)
         self._update(player)
-        self._tracker.tick()
 
         if player.info:
             self._create_waveform(player.info, CONFIG.max_data_points)
@@ -107,8 +108,15 @@ class WaveformSeekBar(Gtk.Box):
             self._pipeline.set_state(Gst.State.NULL)
 
             if self._player.info:
-                self._waveform_scale.reset(self._rms_vals, self._player)
+                self._waveform_scale.reset(self._rms_vals)
                 self._waveform_scale.set_placeholder(False)
+                self._update_redraw_interval()
+
+    def _update_redraw_interval(self, *args):
+        if self._player.info:
+            # Must be recomputed when size is changed
+            interval = self._waveform_scale.compute_redraw_interval()
+            self._tracker.set_interval(interval)
 
     def _on_destroy(self, *args):
         self._tracker.destroy()
@@ -120,14 +128,14 @@ class WaveformSeekBar(Gtk.Box):
         self._update(player)
 
     def _on_player_seek(self, player, song, ms):
-        self._update(player)
+        self._update(player, True)
 
     def _on_song_changed(self, library, songs, player):
         if player.info:
             self._create_waveform(player.info, CONFIG.max_data_points)
 
         self._waveform_scale.set_placeholder(True)
-        self._update(player)
+        self._update(player, True)
 
     def _on_song_started(self, player, song):
         self._update(player)
@@ -135,7 +143,7 @@ class WaveformSeekBar(Gtk.Box):
     def _on_song_ended(self, player, song, ended):
         self._update(player)
 
-    def _update(self, player):
+    def _update(self, player, full_redraw=False):
         if player.info:
             # Position in ms, length in seconds
             position = player.get_position() / 1000.0
@@ -154,6 +162,12 @@ class WaveformSeekBar(Gtk.Box):
             self._elapsed_label.set_disabled(not player.seekable)
 
             self.set_sensitive(player.seekable)
+
+            if position == 0 or full_redraw:
+                self._waveform_scale.queue_draw()
+            else:
+                (x, y, w, h) = self._waveform_scale.compute_redraw_area()
+                self._waveform_scale.queue_draw_area(x, y, w, h)
         else:
             self._waveform_scale.set_placeholder(True)
             self._remaining_label.set_disabled(True)
@@ -161,7 +175,7 @@ class WaveformSeekBar(Gtk.Box):
 
             self.set_sensitive(player.seekable)
 
-        self._waveform_scale.queue_draw()
+            self._waveform_scale.queue_draw()
 
 
 class WaveformScale(Gtk.EventBox):
@@ -171,8 +185,9 @@ class WaveformScale(Gtk.EventBox):
     _player = None
     _placeholder = True
 
-    def __init__(self, *args, **kwds):
-        super(WaveformScale, self).__init__(*args, **kwds)
+    def __init__(self, player):
+        super(WaveformScale, self).__init__()
+        self._player = player
         self.set_size_request(40, 40)
         self.position = 0
         self.override_background_color(
@@ -185,10 +200,34 @@ class WaveformScale(Gtk.EventBox):
     def set_placeholder(self, placeholder):
         self._placeholder = placeholder
 
-    def reset(self, rms_vals, player):
+    def reset(self, rms_vals):
         self._rms_vals = rms_vals
-        self._player = player
         self.queue_draw()
+
+    def compute_redraw_interval(self):
+        allocation = self.get_allocation()
+        width = allocation.width
+
+        scale_factor = self.get_scale_factor()
+        pixel_ratio = float(scale_factor)
+
+        # Compute the coarsest time interval for redraws
+        length = self._player.info("~#length")
+        return length * 1000 / (width * pixel_ratio - 1)
+
+    def compute_redraw_area(self):
+        allocation = self.get_allocation()
+        width = allocation.width
+        height = allocation.height
+
+        scale_factor = self.get_scale_factor()
+        pixel_ratio = float(scale_factor)
+        line_width = 1.0 / pixel_ratio
+
+        # Compute the thinnest rectangle to redraw
+        position_x = self.position * width
+        return max(0.0, position_x - line_width), 0.0, \
+               min(width, position_x + line_width), height
 
     def draw_waveform(self, cr, width, height, elapsed_color, remaining_color):
         scale_factor = self.get_scale_factor()
@@ -210,7 +249,21 @@ class WaveformScale(Gtk.EventBox):
         hw = line_width / 2.0
         # Avoiding object lookups is slightly faster
         data = self._rms_vals
-        for x in range(0, int(width * pixel_ratio), 1):
+
+        # There can't be more than one clip rectangle, due to the draws queued
+        # But handle the other case anyway
+        rectangle_list = cr.copy_clip_rectangle_list()
+        (cx, cy, cw, ch) = rectangle_list[0]
+        if len(rectangle_list) > 1:
+            for i in range(1, len(rectangle_list), 1):
+                (ox, oy, ow, oh) = rectangle_list[i]
+                (cx, cy, cw, ch) = \
+                    (min(cx, ox), min(cy, oy), max(cw, ow), max(ch, oh))
+
+        # Use that clip rectangle to redraw only what is necessary
+        for x in range(int(floor(cx * pixel_ratio)),
+                       int(ceil((cx + cw) * pixel_ratio)), 1):
+
             fg_color = (elapsed_color if x < position_width
                         else remaining_color)
             cr.set_source_rgba(*list(fg_color))
