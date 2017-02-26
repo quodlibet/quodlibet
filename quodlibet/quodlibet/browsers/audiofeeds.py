@@ -12,6 +12,7 @@ import threading
 import time
 
 from gi.repository import Gtk, GLib, Pango, Gdk
+import feedparser
 
 import quodlibet
 from quodlibet import _
@@ -20,6 +21,7 @@ from quodlibet import formats
 from quodlibet import print_d
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import app
 
 from quodlibet.browsers import Browser
 from quodlibet.compat import listfilter, text_type, build_opener, PY2
@@ -545,15 +547,8 @@ class AudioFeeds(Browser):
             self.__view.select_by_func(lambda r: r[0].name in names)
 
 browsers = []
-try:
-    import feedparser
-except ImportError:
-    print_w(_("Could not import %s. Audio Feeds browser disabled.")
-            % "python-feedparser")
+if not app.player or app.player.can_play_uri("http://"):
+    browsers = [AudioFeeds]
 else:
-    from quodlibet import app
-    if not app.player or app.player.can_play_uri("http://"):
-        browsers = [AudioFeeds]
-    else:
-        print_w(_("The current audio backend does not support URLs, "
-                  "Audio Feeds browser disabled."))
+    print_w(_("The current audio backend does not support URLs, "
+              "Audio Feeds browser disabled."))

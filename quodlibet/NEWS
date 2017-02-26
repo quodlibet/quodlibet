@@ -3,6 +3,7 @@
 
 Packaging Changes:
   * **python-zeitgeist** no longer used
+  * **python-feedparser** required (no longer optional)
 
 
 .. _release-3.8.1:
