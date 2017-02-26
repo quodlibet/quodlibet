@@ -83,7 +83,8 @@ class TConfig(TestCase):
         conf.set("player", "backend", "foo")
         self.assertEqual(conf.get("player", "backend"), "foo")
         conf.reset("player", "backend")
-        self.assertEqual(conf.get("player", "backend"), "blah")
+        conf.defaults.set("player", "backend", "blah_new")
+        self.assertEqual(conf.get("player", "backend"), "blah_new")
 
     def test_initial_after_set(self):
         conf = Config()
