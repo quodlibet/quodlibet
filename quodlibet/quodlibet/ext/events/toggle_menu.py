@@ -53,4 +53,5 @@ class ToggleMenuBarPlugin(EventPlugin):
         window.disconnect(self._key_release_handler)
         del self._key_release_handler
         self._menubar.disconnect(self._deactivate_handler)
+        self._menubar.set_visible(True)
         del self._deactivate_handler
