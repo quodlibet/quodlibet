@@ -24,7 +24,7 @@ from quodlibet.util import gdecode, print_d, print_w
 def show_uri(label, uri):
     """Shows a uri. The uri can be anything handled by GIO or a quodlibet
     specific one.
-    
+
     Currently handled quodlibet uris:
         - ql:plugins:<plugin id>
 
@@ -44,6 +44,7 @@ def show_uri(label, uri):
     else:
         from quodlibet import app
         return Gtk.show_uri_on_window(app.window, uri, 0)
+
 
 def get_fg_highlight_color(widget):
     """Returns a color useable for highlighting things on top of the standard

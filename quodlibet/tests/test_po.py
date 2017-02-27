@@ -139,7 +139,11 @@ class TPot(TestCase):
         """
         fails = []
         regex = re.compile(r'\s[.,:;!?](?![a-z])|'
-                           r'[a-z](?<!people)[,:;][a-zA-Z]')
+                           r'[a-z]'
+                           r'(?<!people)'
+                           r'(?<!ql)'
+                           r'(?<!plugins)'
+                           r'[,:;][a-zA-Z]')
 
         for entry in self.pot:
             if regex.findall(entry.msgid):
