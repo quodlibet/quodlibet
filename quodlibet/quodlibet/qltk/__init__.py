@@ -21,6 +21,30 @@ from senf import fsn2bytes, bytes2fsn
 from quodlibet.util import gdecode, print_d, print_w
 
 
+def show_uri(label, uri):
+    """Shows a uri. The uri can be anything handled by GIO or a quodlibet
+    specific one.
+    
+    Currently handled quodlibet uris:
+        - ql:plugins:<plugin id>
+
+    Args:
+        label (str)
+        uri (str) the uri to show
+    Returns:
+        True on success, False on error
+    """
+
+    if uri.startswith("ql:"):
+        if uri.startswith("ql:plugins:"):
+            from .pluginwin import PluginWindow
+            return PluginWindow().move_to(uri[len("ql:plugins:"):])
+        else:
+            return False
+    else:
+        from quodlibet import app
+        return Gtk.show_uri_on_window(app.window, uri, 0)
+
 def get_fg_highlight_color(widget):
     """Returns a color useable for highlighting things on top of the standard
     background color.

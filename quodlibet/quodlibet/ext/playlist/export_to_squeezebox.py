@@ -23,7 +23,10 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_NAME = _(u"Export to Squeezebox")
     PLUGIN_DESC = _("Dynamically exports a playlist to Logitech Squeezebox "
                     "playlist, provided both share a directory structure. "
-                    "Shares configuration with Squeezebox Sync plugin.")
+                    "Shares configuration with "
+                    "<a href=\"ql:plugins:Squeezebox Output\">"
+                    "Squeezebox Sync plugin"
+                    "</a>.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
     ELLIPSIZE_NAME = True
     _PERSIST_FUDGE = 100
