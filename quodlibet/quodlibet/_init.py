@@ -38,14 +38,6 @@ def _init_gtk_debug(no_excepthook):
     if not no_excepthook:
         GLib.idle_add(_override_exceptions)
 
-    # faulthandler gives a python stacktrace on segfaults..
-    try:
-        import faulthandler
-    except ImportError:
-        pass
-    else:
-        faulthandler.enable()
-
 
 def is_init():
     """Returns if init() was called"""
