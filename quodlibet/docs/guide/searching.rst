@@ -208,14 +208,14 @@ Now you can search anything!
 Reusing queries
 ---------------
 
-Complex queries can be splitted into simpler ones.  Also, a query can be reused 
-in other ones.  In this way it is easier to change and administer your searches.
+Complex queries can be split into simpler ones.  Also, a query can be reused 
+in other ones.  This way it is easier to change and administer your searches.
 
 In order to do so, the ``Include Saved Search`` plugin must be activated.  
 If you create a saved search named ``Unrated`` you can search for unrated songs from the Beatles
 like this:
 
-``@(saved: Unrated) AND Beatles``
+``&(@(saved: Unrated), Beatles)``
 
 For creating saved searches, use the "Edit saved searches..." item in the drop-down 
 at the right of the query text box.
