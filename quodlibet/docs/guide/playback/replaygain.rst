@@ -55,7 +55,7 @@ There are two configuration options available:
 
 *Fall-back gain* is the volume adjustment that gets used for songs with no 
 replay gain tags (which have not been analyzed). Most audio files are 
-rather high volume these days and the difference between a 89db song and an 
+rather high volume these days and the difference between an 89db song and an 
 unadjusted song can be quite high (e.g. >9dB). So to avoid a sudden volume 
 jump, try setting this value to the average gain adjustment in your library.
 

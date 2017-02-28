@@ -19,7 +19,7 @@ Contributors
 
 Email addresses of contributors have been removed; when available they can 
 be found in the source archive. All copyright notices in the archive 
-supercede any here.
+supersede any here.
 
 
 Authors

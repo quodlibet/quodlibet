@@ -68,7 +68,7 @@ In addition to checking if a tag value is empty, the "if" expression can also
 contain a value comparison using the same syntax as the :ref:`search
 <Searching>`:
 
-    ``<sometag=test|the value was test|it was sonething different>``
+    ``<sometag=test|the value was test|it was something different>``
 
 or more complex ones (note the needed escaping):
 
