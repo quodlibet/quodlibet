@@ -7,11 +7,12 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gtk, Gdk, Gst
+import cairo
 from math import ceil, floor
 
 from quodlibet import _, app
 from quodlibet import print_w
-from quodlibet.plugins import PluginConfig, BoolConfProp, IntConfProp, \
+from quodlibet.plugins import PluginConfig, IntConfProp, \
     ConfProp
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align
@@ -56,7 +57,7 @@ class WaveformSeekBar(Gtk.Box):
         self._tracker.tick()
 
         if player.info:
-            self._create_waveform(player.info, CONFIG.data_size)
+            self._create_waveform(player.info, CONFIG.max_data_points)
 
     def _create_waveform(self, song, points):
         # Close any existing pipelines to avoid warnings
@@ -123,7 +124,7 @@ class WaveformSeekBar(Gtk.Box):
 
     def _on_song_changed(self, library, songs, player):
         if player.info:
-            self._create_waveform(player.info, CONFIG.data_size)
+            self._create_waveform(player.info, CONFIG.max_data_points)
 
         self._waveform_scale.set_placeholder(True)
         self._update(player)
@@ -190,23 +191,26 @@ class WaveformScale(Gtk.EventBox):
         self.queue_draw()
 
     def draw_waveform(self, cr, width, height, elapsed_color, remaining_color):
-        line_width = CONFIG.line_width
+        scale_factor = self.get_scale_factor()
+        pixel_ratio = float(scale_factor)
+        line_width = 1.0 / pixel_ratio
+
+        half_height = self.compute_half_height(height, pixel_ratio)
+
         value_count = len(self._rms_vals)
         max_value = max(self._rms_vals)
-        ratio_width = value_count / float(width)
-        ratio_height = max_value / float(height) * 2
-        half_height = height // 2
+        ratio_width = value_count / (float(width) * pixel_ratio - 1)
+        ratio_height = max_value / half_height
+
         cr.set_line_width(line_width)
+        cr.set_line_cap(cairo.LINE_CAP_ROUND)
+        cr.set_line_join(cairo.LINE_JOIN_ROUND)
 
-        if line_width < 2:
-            # Default AA looks bad (and dimmer) for all 1px shapes.
-            cr.set_antialias(1)
-
-        position_width = self.position * width
+        position_width = self.position * width * pixel_ratio
         hw = line_width / 2.0
         # Avoiding object lookups is slightly faster
         data = self._rms_vals
-        for x in range(0, width, line_width):
+        for x in range(0, int(width * pixel_ratio), 1):
             fg_color = (elapsed_color if x < position_width
                         else remaining_color)
             cr.set_source_rgba(*list(fg_color))
@@ -215,19 +219,36 @@ class WaveformScale(Gtk.EventBox):
             u1 = max(0, int(floor((x - hw) * ratio_width)))
             u2 = min(int(ceil((x + hw) * ratio_width)), len(data))
             val = (sum(data[u1:u2]) / (ratio_height * (u2 - u1))
-                   if u1 != u2 else 0.5)
+                   if u1 != u2 else 0.0)
 
-            # Draw single line, ensuring 1px minimum
-            cr.move_to(x, half_height - val)
-            cr.line_to(x, ceil(half_height + val))
+            hx = x / pixel_ratio + hw
+            cr.move_to(hx, half_height - val)
+            cr.line_to(hx, half_height + val)
             cr.stroke()
 
     def draw_placeholder(self, cr, width, height, color):
-        cr.set_line_width(2)
+        scale_factor = self.get_scale_factor()
+        pixel_ratio = float(scale_factor)
+        line_width = 1.0 / pixel_ratio
+
+        half_height = self.compute_half_height(height, pixel_ratio)
+        hw = line_width / 2.0
+
+        cr.set_line_width(line_width)
+        cr.set_line_cap(cairo.LINE_CAP_ROUND)
+        cr.set_line_join(cairo.LINE_JOIN_ROUND)
         cr.set_source_rgba(*list(color))
-        cr.move_to(0, height // 2)
-        cr.line_to(width, height // 2)
+        cr.move_to(hw, half_height)
+        cr.line_to(width - hw, half_height)
         cr.stroke()
+
+    @staticmethod
+    def compute_half_height(height, pixel_ratio):
+        # Ensure half_height is in the middle of a pixel (c.f. Cairo's FAQ)
+        height_px = int(height * pixel_ratio)
+        half_height = \
+            (height_px if height_px % 2 else height_px - 1) / pixel_ratio / 2
+        return half_height
 
     def do_draw(self, cr):
         context = self.get_style_context()
@@ -275,17 +296,8 @@ class WaveformScale(Gtk.EventBox):
 class Config(object):
     _config = PluginConfig(__name__)
 
-    high_res = BoolConfProp(_config, "high_res", True)
     elapsed_color = ConfProp(_config, "elapsed_color", "")
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
-
-    @property
-    def line_width(self):
-        return 1 if self.high_res else 2
-
-    @property
-    def data_size(self):
-        return self.max_data_points / self.line_width
 
 CONFIG = Config()
 
@@ -340,14 +352,6 @@ class WaveformSeekBarPlugin(EventPlugin):
             hbox.pack_start(entry, True, True, 0)
             return hbox
 
-        def create_resolution():
-            hbox = Gtk.HBox(spacing=6)
-            ccb = CONFIG._config.ConfigCheckButton(_("High Res"), "high_res",
-                                                   populate=True)
-            hbox.pack_start(ccb, True, True, 0)
-            return hbox
-
         vbox.pack_start(create_color(), True, True, 0)
-        vbox.pack_start(create_resolution(), True, True, 0)
 
         return vbox
