@@ -57,8 +57,8 @@ before_script:
 
 script:
  - cd quodlibet
- - if [ "$TYPE" == "linux" ]; then docker exec "$(cat ../container_id)" xvfb-run -a $PYTHON $PYARGS ./setup.py test; fi
- - if [ "$TYPE" == "linux" ]; then docker exec "$(cat ../container_id)" xvfb-run -a $PYTHON ./setup.py quality; fi
+ - if [ "$TYPE" == "linux" ]; then docker exec "$(cat ../container_id)" $PYTHON $PYARGS ./setup.py test; fi
+ - if [ "$TYPE" == "linux" ]; then docker exec "$(cat ../container_id)" $PYTHON ./setup.py quality; fi
  - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS setup.py test; fi
  - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run setup.py quality; fi
  - if [ "$TYPE" == "windows" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe $PYARGS ./setup.py test; fi

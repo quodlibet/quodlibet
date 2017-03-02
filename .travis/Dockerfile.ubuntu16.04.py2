@@ -19,13 +19,14 @@ RUN apt-get install --no-install-recommends -y \
     python-pytest \
     python-pip \
     python-faulthandler \
+    python-setuptools \
     xvfb \
     gettext \
     intltool \
     libxine2 \
     dbus-x11 
 
-RUN pip install --upgrade pycodestyle pyflakes
+RUN pip install --upgrade pycodestyle pyflakes xvfbwrapper
 
 RUN useradd -ms /bin/bash user
 

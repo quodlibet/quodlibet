@@ -18,13 +18,14 @@ RUN apt-get install --no-install-recommends -y \
     python3-polib \
     python3-pytest \
     python3-pip \
+    python3-setuptools \
     xvfb \
     gettext \
     intltool \
     libxine2 \
     dbus-x11 
 
-RUN pip3 install --upgrade pycodestyle pyflakes
+RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper
 
 RUN useradd -ms /bin/bash user
 
