@@ -13,6 +13,7 @@ from quodlibet import _
 from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem
 from quodlibet.qltk.seekbutton import SeekButton
+from quodlibet.util.dprint import print_e
 
 
 class Volume(Gtk.VolumeButton):
@@ -141,8 +142,13 @@ class VolumeMenu(Gtk.Menu):
             item.show()
 
     def __set_mode(self, player, mode):
-        player.replaygain_profiles[0] = \
-            next(m for m in self.__modes if m[0] == mode)[2]
+        selected_mode = next((m for m in self.__modes if m[0] == mode), None)
+        if selected_mode is None:
+            print_e("Invalid selected replaygain mode: %r" % mode)
+            selected_mode = self.__modes[0]
+            print_e("Falling back to replaygain mode: %r" % selected_mode[0])
+
+        player.replaygain_profiles[0] = selected_mode[2]
         player.reset_replaygain()
 
     def __changed(self, item, player, mode):
