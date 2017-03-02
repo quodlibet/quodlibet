@@ -100,6 +100,7 @@ class BasePlayer(GObject.GObject, Equalizer):
 
     def __init__(self, *args, **kwargs):
         super(BasePlayer, self).__init__()
+        self.reload_replaygain_profiles()
 
     def destroy(self):
         """Free resources"""
@@ -110,6 +111,21 @@ class BasePlayer(GObject.GObject, Equalizer):
         self._source = None
 
         self._destroy()
+
+    def reload_replaygain_profiles(self):
+        for index in range(0, 2, 1):
+            profile_key = "replaygain_profile_" + str(index)
+            self.replaygain_profiles[index] = \
+                config.getstringlist("memory", profile_key, None)
+
+    def update_replaygain_profile(self, index, profile):
+        self.replaygain_profiles[index] = profile
+        profile_key = "replaygain_profile_" + str(index)
+        if profile is not None:
+            config.setstringlist("memory", profile_key, profile)
+        else:
+            config.unset("memory", profile_key)
+        self.reset_replaygain()
 
     def calc_replaygain_volume(self, volume):
         """Returns a new float volume for the given volume.
@@ -133,15 +149,12 @@ class BasePlayer(GObject.GObject, Equalizer):
             scale = 1
         return volume * scale
 
-    def _reset_replaygain(self):
-        self.volume = self.volume
-
     def reset_replaygain(self):
         """Call in case something affecting the replaygain adjustment has
         changed to change the output volume
         """
 
-        self._reset_replaygain()
+        self.volume = self.volume
 
     @property
     def has_external_volume(self):

@@ -1219,8 +1219,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         container = self.browser.__container = self.browser.pack(self.songpane)
 
-        player.replaygain_profiles[1] = self.browser.replaygain_profiles
-        player.reset_replaygain()
+        player.update_replaygain_profile(1, self.browser.replaygain_profiles)
         self.__browserbox.add(container)
         container.show()
         self._filter_menu.set_browser(self.browser)

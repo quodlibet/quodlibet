@@ -331,6 +331,15 @@ class Config(object):
             else:
                 raise
 
+    def unset(self, section, option):
+        """Unsets the option.
+        """
+
+        try:
+            self._config.remove_option(section, option)
+        except NoSectionError:
+            pass
+
     def settext(self, section, option, value):
         value = text_type(value)
 

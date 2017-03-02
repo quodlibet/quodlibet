@@ -349,8 +349,8 @@ class PlayOrderWidget(Gtk.HBox):
         print_d("Updating %s order to %s"
                 % (type(self.__playlist).__name__, self.order))
         self.__playlist.order = self.order
-        self.__player.replaygain_profiles[2] = shuffler.replaygain_profiles
-        self.__player.reset_replaygain()
+        self.__player \
+            .update_replaygain_profile(2, shuffler.replaygain_profiles)
         if self.order != old_order:
             self.emit('changed')
 

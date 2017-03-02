@@ -23,6 +23,9 @@ class TPlayOrderWidget(TestCase):
         self.reset_replaygain = lambda: None
         self.po = PlayOrderWidget(self, self)
 
+    def update_replaygain_profile(self, index, profile):
+        self.replaygain_profiles[index] = profile
+
     def tearDown(self):
         self.po.destroy()
         # quodlibet.plugins.quit()
