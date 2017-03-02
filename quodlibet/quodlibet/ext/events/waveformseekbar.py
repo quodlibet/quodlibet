@@ -43,10 +43,14 @@ class WaveformSeekBar(Gtk.Box):
         for child in self.get_children():
             child.show_all()
 
-        self._waveform_scale.connect('size-allocate', self._update_redraw_interval)
+        self._waveform_scale.connect('size-allocate',
+                                     self._update_redraw_interval)
 
-        self._tracker = TimeTracker(player)
-        self._tracker.connect('tick', self._on_tick, player)
+        self._label_tracker = TimeTracker(player)
+        self._label_tracker.connect('tick', self._on_tick_label, player)
+
+        self._redraw_tracker = TimeTracker(player)
+        self._redraw_tracker.connect('tick', self._on_tick_waveform, player)
 
         connect_destroy(player, 'seek', self._on_player_seek)
         connect_destroy(player, 'song-started', self._on_song_started)
@@ -116,16 +120,27 @@ class WaveformSeekBar(Gtk.Box):
         if self._player.info:
             # Must be recomputed when size is changed
             interval = self._waveform_scale.compute_redraw_interval()
-            self._tracker.set_interval(interval)
+            self._redraw_tracker.set_interval(interval)
 
     def _on_destroy(self, *args):
-        self._tracker.destroy()
+        self._label_tracker.destroy()
+        self._redraw_tracker.destroy()
 
-    def _on_tick(self, tracker, player):
-        self._update(player)
+    def _on_tick_label(self, tracker, player):
+        self._update_label(player)
+
+    def _on_tick_waveform(self, tracker, player):
+        self._update_waveform(player)
 
     def _on_seekable_changed(self, player, *args):
-        self._update(player)
+        if player.info:
+            self._elapsed_label.set_disabled(not player.seekable)
+            self._remaining_label.set_disabled(not player.seekable)
+            self.set_sensitive(player.seekable)
+        else:
+            self._remaining_label.set_disabled(True)
+            self._elapsed_label.set_disabled(True)
+            self.set_sensitive(False)
 
     def _on_player_seek(self, player, song, ms):
         self._update(player, True)
@@ -144,24 +159,34 @@ class WaveformSeekBar(Gtk.Box):
         self._update(player)
 
     def _update(self, player, full_redraw=False):
+        self._update_label(player)
+        self._update_waveform(player, full_redraw)
+
+    def _update_label(self, player):
         if player.info:
             # Position in ms, length in seconds
             position = player.get_position() / 1000.0
             length = player.info("~#length")
             remaining = length - position
 
+            self._elapsed_label.set_time(position)
+            self._remaining_label.set_time(remaining)
+        else:
+            self._remaining_label.set_disabled(True)
+            self._elapsed_label.set_disabled(True)
+            self.set_sensitive(False)
+
+    def _update_waveform(self, player, full_redraw=False):
+        if player.info:
+            # Position in ms, length in seconds
+            position = player.get_position() / 1000.0
+            length = player.info("~#length")
+
             if length != 0:
                 self._waveform_scale.set_position(position / length)
             else:
                 print_d("Length reported as zero for %s" % player.info)
                 self._waveform_scale.set_position(0)
-
-            self._elapsed_label.set_time(position)
-            self._remaining_label.set_time(remaining)
-            self._remaining_label.set_disabled(not player.seekable)
-            self._elapsed_label.set_disabled(not player.seekable)
-
-            self.set_sensitive(player.seekable)
 
             if position == 0 or full_redraw:
                 self._waveform_scale.queue_draw()
@@ -170,11 +195,6 @@ class WaveformSeekBar(Gtk.Box):
                 self._waveform_scale.queue_draw_area(x, y, w, h)
         else:
             self._waveform_scale.set_placeholder(True)
-            self._remaining_label.set_disabled(True)
-            self._elapsed_label.set_disabled(True)
-
-            self.set_sensitive(player.seekable)
-
             self._waveform_scale.queue_draw()
 
 
