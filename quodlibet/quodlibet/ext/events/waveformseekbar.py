@@ -133,14 +133,7 @@ class WaveformSeekBar(Gtk.Box):
         self._update_waveform(player)
 
     def _on_seekable_changed(self, player, *args):
-        if player.info:
-            self._elapsed_label.set_disabled(not player.seekable)
-            self._remaining_label.set_disabled(not player.seekable)
-            self.set_sensitive(player.seekable)
-        else:
-            self._remaining_label.set_disabled(True)
-            self._elapsed_label.set_disabled(True)
-            self.set_sensitive(False)
+        self._update_label(player)
 
     def _on_player_seek(self, player, song, ms):
         self._update(player, True)
@@ -171,6 +164,10 @@ class WaveformSeekBar(Gtk.Box):
 
             self._elapsed_label.set_time(position)
             self._remaining_label.set_time(remaining)
+
+            self._elapsed_label.set_disabled(not player.seekable)
+            self._remaining_label.set_disabled(not player.seekable)
+            self.set_sensitive(player.seekable)
         else:
             self._remaining_label.set_disabled(True)
             self._elapsed_label.set_disabled(True)
