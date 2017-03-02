@@ -18,6 +18,11 @@ except ImportError:
     module = "python3-pytest" if PY3 else "python-pytest"
     raise SystemExit("pytest missing: sudo apt-get install %s" % module)
 
+try:
+    import xvfbwrapper
+except ImportError:
+    xvfbwrapper = None
+
 import quodlibet
 from quodlibet.senf import fsnative, path2fsn, environ
 from quodlibet.util.path import xdg_get_cache_home
@@ -145,6 +150,7 @@ def dbus_kill_user(info):
 
 
 _BUS_INFO = None
+_VDISPLAY = None
 
 
 def init_test_environ():
@@ -154,7 +160,7 @@ def init_test_environ():
     any resources created.
     """
 
-    global _TEMP_DIR, _BUS_INFO
+    global _TEMP_DIR, _BUS_INFO, _VDISPLAY
 
     # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
@@ -180,6 +186,10 @@ def init_test_environ():
     # set to new default
     environ.pop("XDG_DATA_HOME", None)
 
+    if xvfbwrapper is not None:
+        _VDISPLAY = xvfbwrapper.Xvfb()
+        _VDISPLAY.start()
+
     _BUS_INFO = None
     if os.name != "nt" and "DBUS_SESSION_BUS_ADDRESS" in environ:
         _BUS_INFO = dbus_launch_user()
@@ -204,7 +214,7 @@ def init_test_environ():
 def exit_test_environ():
     """Call after init_test_environ() and all tests are finished"""
 
-    global _TEMP_DIR, _BUS_INFO
+    global _TEMP_DIR, _BUS_INFO, _VDISPLAY
 
     try:
         shutil.rmtree(_TEMP_DIR)
@@ -212,6 +222,10 @@ def exit_test_environ():
         pass
 
     dbus_kill_user(_BUS_INFO)
+
+    if _VDISPLAY is not None:
+        _VDISPLAY.stop()
+        _VDISPLAY = None
 
 
 # we have to do this on import so the tests work with other test runners

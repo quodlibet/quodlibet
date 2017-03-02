@@ -24,7 +24,7 @@ RUN apt-get install --no-install-recommends -y \
     libxine2 \
     dbus-x11 
 
-RUN pip3 install --upgrade pycodestyle pyflakes
+RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper
 
 RUN useradd -ms /bin/bash user
 
