@@ -207,6 +207,7 @@ class WaveformScale(Gtk.EventBox):
         self._player = player
         self.set_size_request(40, 40)
         self.position = 0
+        self._last_drawn_position = 0
         self.override_background_color(
             Gtk.StateFlags.NORMAL, Gdk.RGBA(alpha=0))
 
@@ -242,8 +243,9 @@ class WaveformScale(Gtk.EventBox):
         line_width = 1.0 / pixel_ratio
 
         # Compute the thinnest rectangle to redraw
+        last_position_x = self._last_drawn_position * width
         position_x = self.position * width
-        return max(0.0, position_x - line_width), 0.0, \
+        return max(0.0, last_position_x), 0.0, \
                min(width, position_x + line_width), height
 
     def draw_waveform(self, cr, width, height, elapsed_color, remaining_color):
@@ -295,6 +297,8 @@ class WaveformScale(Gtk.EventBox):
             cr.move_to(hx, half_height - val)
             cr.line_to(hx, half_height + val)
             cr.stroke()
+
+        self._last_drawn_position = self.position
 
     def draw_placeholder(self, cr, width, height, color):
         scale_factor = self.get_scale_factor()
