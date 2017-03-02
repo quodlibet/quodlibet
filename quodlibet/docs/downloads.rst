@@ -58,7 +58,7 @@ Stable Repo (14.04+):
         $ sudo add-apt-repository ppa:lazka/ppa
 
 
-Unstable PPA (14.04+):
+Unstable PPA (16.04+):
     ::
 
         $ sudo add-apt-repository ppa:lazka/dumpingplace

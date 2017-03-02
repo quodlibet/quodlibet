@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM debian:jessie-backports
 
 ENV LANG C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE 1
