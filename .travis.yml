@@ -17,6 +17,18 @@ matrix:
       services: docker
       dist: trusty
       language: generic
+      env: TYPE="linux" PYTHON="python2" PYARGS="-R" APT_PACKAGES="" DOCKER_FILE=".travis/Dockerfile.debian8.py2"
+    - os: linux
+      sudo: required
+      services: docker
+      dist: trusty
+      language: generic
+      env: TYPE="linux" PYTHON="python3" PYARGS="-R -bb" APT_PACKAGES="" DOCKER_FILE=".travis/Dockerfile.debian8.py3"
+    - os: linux
+      sudo: required
+      services: docker
+      dist: trusty
+      language: generic
       env: TYPE="linux" PYTHON="python2" PYARGS="-R" APT_PACKAGES="" DOCKER_FILE=".travis/Dockerfile.ubuntu16.04.py2"
     - os: linux
       sudo: required
