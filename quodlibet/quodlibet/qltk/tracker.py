@@ -85,10 +85,9 @@ class TimeTracker(GObject.GObject):
                 # The application is already woke up every seconds
                 # so synchronize to it by calling timeout_add_seconds(...)
                 # if the requested tracker interval is exactly 1 second.
-                if self.__interval == 1000:
-                    self.__id = GLib.timeout_add_seconds(1, self.__update)
-                else:
-                    self.__id = GLib.timeout_add(self.__interval, self.__update)
+                self.__id = GLib.timeout_add_seconds(1, self.__update) \
+                    if self.__interval == 1000 \
+                    else GLib.timeout_add(self.__interval, self.__update)
 
 
 class SongTracker(object):
