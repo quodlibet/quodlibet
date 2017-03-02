@@ -19,6 +19,7 @@ RUN apt-get install --no-install-recommends -y \
     python-pytest \
     python-pip \
     python-faulthandler \
+    python-setuptools \
     xvfb \
     gettext \
     intltool \
