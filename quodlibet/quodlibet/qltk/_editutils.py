@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2006 Joe Wreschnig, Michael Urman, Iñigo Serna
 #                2014 Nick Boultbee
+#                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -146,26 +147,19 @@ class FilterPluginBox(Gtk.VBox):
         for filt in filters:
             filt.connect('preview', lambda *x: self.emit("preview"))
 
-        sw = Gtk.ScrolledWindow()
-        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-
         vbox = Gtk.VBox()
+        expander.add(vbox)
 
         plugin_handler.connect(
             "changed", self.__refresh_plugins, vbox, expander)
 
-        sw.add_with_viewport(vbox)
-        self.pack_start(sw, False, True, 0)
-
-        sw.set_no_show_all(True)
-        expander.connect("notify::expanded", self.__notify_expanded, sw)
+        expander.connect("notify::expanded", self.__notify_expanded, vbox)
         expander.set_expanded(False)
 
         for child in self.get_children():
             child.show()
 
         plugin_handler.changed()
-        sw.hide()
 
     def __notify_expanded(self, expander, event, vbox):
         vbox.set_property('visible', expander.get_property('expanded'))
