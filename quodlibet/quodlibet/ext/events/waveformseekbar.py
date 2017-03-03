@@ -136,7 +136,7 @@ class WaveformSeekBar(Gtk.Box):
         self._update_label(player)
 
     def _on_player_seek(self, player, song, ms):
-        self._update(player, True)
+        self._update(player)
 
     def _on_song_changed(self, library, songs, player):
         if player.info:
@@ -245,8 +245,8 @@ class WaveformScale(Gtk.EventBox):
         # Compute the thinnest rectangle to redraw
         last_position_x = self._last_drawn_position * width
         position_x = self.position * width
-        x = max(0.0, last_position_x)
-        w = max(line_width * 10, min(width, position_x - last_position_x))
+        x = max(0.0, min(last_position_x, position_x) - line_width * 5)
+        w = min(width, abs(position_x - last_position_x) + line_width * 10)
         return x, 0.0, w, height
 
     def draw_waveform(self, cr, width, height, elapsed_color, remaining_color):
