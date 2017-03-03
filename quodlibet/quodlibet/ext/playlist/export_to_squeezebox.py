@@ -12,7 +12,7 @@ from quodlibet import qltk
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk import Icons
 from quodlibet.qltk.getstring import GetStringDialog
-from quodlibet.util import copool
+from quodlibet.util import copool, link
 from quodlibet.util.dprint import print_d
 from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.ext._shared.squeezebox.base import SqueezeboxPluginMixin
@@ -23,10 +23,9 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_NAME = _(u"Export to Squeezebox")
     PLUGIN_DESC = _("Dynamically exports a playlist to Logitech Squeezebox "
                     "playlist, provided both share a directory structure. "
-                    "Shares configuration with "
-                    "<a href=\"ql:plugins:Squeezebox Output\">"
-                    "Squeezebox Sync plugin"
-                    "</a>.")
+                    "Shares configuration with ") + \
+                  link("quodlibet:///prefs/plugins/Squeezebox Output",
+                       _("Squeezebox Sync plugin"))
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
     ELLIPSIZE_NAME = True
     _PERSIST_FUDGE = 100

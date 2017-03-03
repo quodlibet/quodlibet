@@ -238,6 +238,10 @@ def italic(string):
     return "<i>%s</i>" % string
 
 
+def link(url, string):
+    return "<a href=\"%s\">%s</a>" % (url, string)
+
+
 def parse_time(timestr, err=object()):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
 
