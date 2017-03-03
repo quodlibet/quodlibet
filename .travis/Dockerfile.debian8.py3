@@ -4,7 +4,7 @@ ENV LANG C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV CI true
 
-RUN echo "deb http://ppa.launchpad.net/lazka/dumpingplace/ubuntu trusty main" >> /etc/apt/sources.list
+RUN echo "deb http://ppa.launchpad.net/lazka/dumpingplace/ubuntu xenial main" >> /etc/apt/sources.list
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5806C7C4
 
