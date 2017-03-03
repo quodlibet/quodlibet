@@ -245,8 +245,9 @@ class WaveformScale(Gtk.EventBox):
         # Compute the thinnest rectangle to redraw
         last_position_x = self._last_drawn_position * width
         position_x = self.position * width
-        return max(0.0, last_position_x), 0.0, \
-               min(width, position_x + line_width), height
+        x = max(0.0, last_position_x)
+        w = max(line_width * 10, min(width, position_x - last_position_x))
+        return x, 0.0, w, height
 
     def draw_waveform(self, cr, width, height, elapsed_color, remaining_color):
         scale_factor = self.get_scale_factor()
