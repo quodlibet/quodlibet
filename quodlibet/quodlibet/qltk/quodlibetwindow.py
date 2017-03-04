@@ -1255,9 +1255,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         if player.info in songs:
             self.__update_title(player)
 
-    def update_title(self):
-        self.__update_title(self.__player)
-
     def __update_title(self, player):
         song = player.info
         title = "Quod Libet"
