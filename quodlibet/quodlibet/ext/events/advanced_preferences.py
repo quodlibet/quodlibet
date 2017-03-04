@@ -140,6 +140,13 @@ class AdvancedPreferences(EventPlugin):
                 "Disable Multimedia Keys:",
                 "(restart required)"))
 
+        rows.append(
+            text_config(
+                "settings", "window_title_pattern",
+                "Rating Symbol (Blank):",
+                ("A tied tags pattern for the main window title."
+                 "(restart required)")))
+
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
             table.attach(label, 0, 1, row, row + 1,

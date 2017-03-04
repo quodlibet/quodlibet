@@ -145,6 +145,9 @@ INITIAL = {
 
         # the UI language to use, empty means system default
         "language": "",
+
+        # the pattern for the main window title
+        "window_title_pattern": "~title~version~~people",
     },
     "rename": {
         "spaces": "false",
