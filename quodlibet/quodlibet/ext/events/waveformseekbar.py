@@ -88,7 +88,7 @@ class WaveformSeekBar(Gtk.Box):
         pipeline.set_state(Gst.State.PLAYING)
 
         self._pipeline = pipeline
-        self._rms_vals = []
+        self._new_rms_vals = []
 
     def _on_bus_message(self, bus, message):
         if message.type == Gst.MessageType.ERROR:
@@ -104,17 +104,21 @@ class WaveformSeekBar(Gtk.Box):
                 rms_db_avg = sum(rms_db) / len(rms_db)
                 # Normalize dB value to value between 0 and 1
                 rms = pow(10, (rms_db_avg / 20))
-                self._rms_vals.append(rms)
+                self._new_rms_vals.append(rms)
             else:
                 print_w("Got unexpected message of type {}"
                         .format(message.type))
         elif message.type == Gst.MessageType.EOS:
             self._pipeline.set_state(Gst.State.NULL)
 
-            if self._player.info:
+            # Only update the waveform if it has changed
+            if self._player.info and self._rms_vals != self._new_rms_vals:
+                self._rms_vals = self._new_rms_vals
                 self._waveform_scale.reset(self._rms_vals)
                 self._waveform_scale.set_placeholder(False)
                 self._update_redraw_interval()
+            else:
+                del self._new_rms_vals
 
     def _update_redraw_interval(self, *args):
         if self._player.info:
@@ -139,14 +143,20 @@ class WaveformSeekBar(Gtk.Box):
         self._update(player)
 
     def _on_song_changed(self, library, songs, player):
+        # Check that the currently playing song has changed
+        if player.info and player.info in songs:
+            # Trigger a re-computation of the waveform
+            self._create_waveform(player.info, CONFIG.max_data_points)
+            # Only update the label if some tag value changed
+            self._update_label(player)
+
+    def _on_song_started(self, player, song):
         if player.info:
+            # Trigger a re-computation of the waveform
             self._create_waveform(player.info, CONFIG.max_data_points)
 
         self._waveform_scale.set_placeholder(True)
         self._update(player, True)
-
-    def _on_song_started(self, player, song):
-        self._update(player)
 
     def _on_song_ended(self, player, song, ended):
         self._update(player)
