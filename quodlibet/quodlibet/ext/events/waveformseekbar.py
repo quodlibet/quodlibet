@@ -34,7 +34,7 @@ class WaveformSeekBar(Gtk.Box):
 
         self._elapsed_label = TimeLabel()
         self._remaining_label = TimeLabel()
-        self._waveform_scale = WaveformScale()
+        self._waveform_scale = WaveformScale(player)
 
         self.pack_start(Align(self._elapsed_label, border=6), False, True, 0)
         self.pack_start(self._waveform_scale, True, True, 0)
@@ -43,8 +43,14 @@ class WaveformSeekBar(Gtk.Box):
         for child in self.get_children():
             child.show_all()
 
-        self._tracker = TimeTracker(player)
-        self._tracker.connect('tick', self._on_tick, player)
+        self._waveform_scale.connect('size-allocate',
+                                     self._update_redraw_interval)
+
+        self._label_tracker = TimeTracker(player)
+        self._label_tracker.connect('tick', self._on_tick_label, player)
+
+        self._redraw_tracker = TimeTracker(player)
+        self._redraw_tracker.connect('tick', self._on_tick_waveform, player)
 
         connect_destroy(player, 'seek', self._on_player_seek)
         connect_destroy(player, 'song-started', self._on_song_started)
@@ -54,7 +60,6 @@ class WaveformSeekBar(Gtk.Box):
 
         self.connect('destroy', self._on_destroy)
         self._update(player)
-        self._tracker.tick()
 
         if player.info:
             self._create_waveform(player.info, CONFIG.max_data_points)
@@ -83,7 +88,7 @@ class WaveformSeekBar(Gtk.Box):
         pipeline.set_state(Gst.State.PLAYING)
 
         self._pipeline = pipeline
-        self._rms_vals = []
+        self._new_rms_vals = []
 
     def _on_bus_message(self, bus, message):
         if message.type == Gst.MessageType.ERROR:
@@ -99,48 +104,90 @@ class WaveformSeekBar(Gtk.Box):
                 rms_db_avg = sum(rms_db) / len(rms_db)
                 # Normalize dB value to value between 0 and 1
                 rms = pow(10, (rms_db_avg / 20))
-                self._rms_vals.append(rms)
+                self._new_rms_vals.append(rms)
             else:
                 print_w("Got unexpected message of type {}"
                         .format(message.type))
         elif message.type == Gst.MessageType.EOS:
             self._pipeline.set_state(Gst.State.NULL)
 
-            if self._player.info:
-                self._waveform_scale.reset(self._rms_vals, self._player)
+            # Only update the waveform if it has changed
+            if self._player.info and self._rms_vals != self._new_rms_vals:
+                self._rms_vals = self._new_rms_vals
+                self._waveform_scale.reset(self._rms_vals)
                 self._waveform_scale.set_placeholder(False)
+                self._update_redraw_interval()
+            else:
+                del self._new_rms_vals
+
+    def _update_redraw_interval(self, *args):
+        if self._player.info:
+            # Must be recomputed when size is changed
+            interval = self._waveform_scale.compute_redraw_interval()
+            self._redraw_tracker.set_interval(interval)
 
     def _on_destroy(self, *args):
-        self._tracker.destroy()
+        self._label_tracker.destroy()
+        self._redraw_tracker.destroy()
 
-    def _on_tick(self, tracker, player):
-        self._update(player)
+    def _on_tick_label(self, tracker, player):
+        self._update_label(player)
+
+    def _on_tick_waveform(self, tracker, player):
+        self._update_waveform(player)
 
     def _on_seekable_changed(self, player, *args):
-        self._update(player)
+        self._update_label(player)
 
     def _on_player_seek(self, player, song, ms):
         self._update(player)
 
     def _on_song_changed(self, library, songs, player):
+        # Check that the currently playing song has changed
+        if player.info and player.info in songs:
+            # Trigger a re-computation of the waveform
+            self._create_waveform(player.info, CONFIG.max_data_points)
+            # Only update the label if some tag value changed
+            self._update_label(player)
+
+    def _on_song_started(self, player, song):
         if player.info:
+            # Trigger a re-computation of the waveform
             self._create_waveform(player.info, CONFIG.max_data_points)
 
         self._waveform_scale.set_placeholder(True)
-        self._update(player)
-
-    def _on_song_started(self, player, song):
-        self._update(player)
+        self._update(player, True)
 
     def _on_song_ended(self, player, song, ended):
         self._update(player)
 
-    def _update(self, player):
+    def _update(self, player, full_redraw=False):
+        self._update_label(player)
+        self._update_waveform(player, full_redraw)
+
+    def _update_label(self, player):
         if player.info:
             # Position in ms, length in seconds
             position = player.get_position() / 1000.0
             length = player.info("~#length")
             remaining = length - position
+
+            self._elapsed_label.set_time(position)
+            self._remaining_label.set_time(remaining)
+
+            self._elapsed_label.set_disabled(not player.seekable)
+            self._remaining_label.set_disabled(not player.seekable)
+            self.set_sensitive(player.seekable)
+        else:
+            self._remaining_label.set_disabled(True)
+            self._elapsed_label.set_disabled(True)
+            self.set_sensitive(False)
+
+    def _update_waveform(self, player, full_redraw=False):
+        if player.info:
+            # Position in ms, length in seconds
+            position = player.get_position() / 1000.0
+            length = player.info("~#length")
 
             if length != 0:
                 self._waveform_scale.set_position(position / length)
@@ -148,20 +195,14 @@ class WaveformSeekBar(Gtk.Box):
                 print_d("Length reported as zero for %s" % player.info)
                 self._waveform_scale.set_position(0)
 
-            self._elapsed_label.set_time(position)
-            self._remaining_label.set_time(remaining)
-            self._remaining_label.set_disabled(not player.seekable)
-            self._elapsed_label.set_disabled(not player.seekable)
-
-            self.set_sensitive(player.seekable)
+            if position == 0 or full_redraw:
+                self._waveform_scale.queue_draw()
+            else:
+                (x, y, w, h) = self._waveform_scale.compute_redraw_area()
+                self._waveform_scale.queue_draw_area(x, y, w, h)
         else:
             self._waveform_scale.set_placeholder(True)
-            self._remaining_label.set_disabled(True)
-            self._elapsed_label.set_disabled(True)
-
-            self.set_sensitive(player.seekable)
-
-        self._waveform_scale.queue_draw()
+            self._waveform_scale.queue_draw()
 
 
 class WaveformScale(Gtk.EventBox):
@@ -171,10 +212,12 @@ class WaveformScale(Gtk.EventBox):
     _player = None
     _placeholder = True
 
-    def __init__(self, *args, **kwds):
-        super(WaveformScale, self).__init__(*args, **kwds)
+    def __init__(self, player):
+        super(WaveformScale, self).__init__()
+        self._player = player
         self.set_size_request(40, 40)
         self.position = 0
+        self._last_drawn_position = 0
         self.override_background_color(
             Gtk.StateFlags.NORMAL, Gdk.RGBA(alpha=0))
 
@@ -185,10 +228,36 @@ class WaveformScale(Gtk.EventBox):
     def set_placeholder(self, placeholder):
         self._placeholder = placeholder
 
-    def reset(self, rms_vals, player):
+    def reset(self, rms_vals):
         self._rms_vals = rms_vals
-        self._player = player
         self.queue_draw()
+
+    def compute_redraw_interval(self):
+        allocation = self.get_allocation()
+        width = allocation.width
+
+        scale_factor = self.get_scale_factor()
+        pixel_ratio = float(scale_factor)
+
+        # Compute the coarsest time interval for redraws
+        length = self._player.info("~#length")
+        return length * 1000 / (width * pixel_ratio - 1)
+
+    def compute_redraw_area(self):
+        allocation = self.get_allocation()
+        width = allocation.width
+        height = allocation.height
+
+        scale_factor = self.get_scale_factor()
+        pixel_ratio = float(scale_factor)
+        line_width = 1.0 / pixel_ratio
+
+        # Compute the thinnest rectangle to redraw
+        last_position_x = self._last_drawn_position * width
+        position_x = self.position * width
+        x = max(0.0, min(last_position_x, position_x) - line_width * 5)
+        w = min(width, abs(position_x - last_position_x) + line_width * 10)
+        return x, 0.0, w, height
 
     def draw_waveform(self, cr, width, height, elapsed_color, remaining_color):
         scale_factor = self.get_scale_factor()
@@ -210,7 +279,21 @@ class WaveformScale(Gtk.EventBox):
         hw = line_width / 2.0
         # Avoiding object lookups is slightly faster
         data = self._rms_vals
-        for x in range(0, int(width * pixel_ratio), 1):
+
+        # There can't be more than one clip rectangle, due to the draws queued
+        # But handle the other case anyway
+        rectangle_list = cr.copy_clip_rectangle_list()
+        (cx, cy, cw, ch) = rectangle_list[0]
+        if len(rectangle_list) > 1:
+            for i in range(1, len(rectangle_list), 1):
+                (ox, oy, ow, oh) = rectangle_list[i]
+                (cx, cy, cw, ch) = \
+                    (min(cx, ox), min(cy, oy), max(cw, ow), max(ch, oh))
+
+        # Use that clip rectangle to redraw only what is necessary
+        for x in range(int(floor(cx * pixel_ratio)),
+                       int(ceil((cx + cw) * pixel_ratio)), 1):
+
             fg_color = (elapsed_color if x < position_width
                         else remaining_color)
             cr.set_source_rgba(*list(fg_color))
@@ -225,6 +308,8 @@ class WaveformScale(Gtk.EventBox):
             cr.move_to(hx, half_height - val)
             cr.line_to(hx, half_height + val)
             cr.stroke()
+
+        self._last_drawn_position = self.position
 
     def draw_placeholder(self, cr, width, height, color):
         scale_factor = self.get_scale_factor()
