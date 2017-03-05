@@ -4,8 +4,9 @@
 Testing
 =======
 
-Quod Libet uses the CPython unittest framework for testing. All testing related
-code can be found under ``quodlibet/quodlibet/tests``.
+Quod Libet uses the CPython unittest framework for testing and `pytest
+<http://docs.pytest.org>`__ as a test runner. All testing related code can be
+found under ``quodlibet/quodlibet/tests``.
 
 To run the full tests suite simply execute::
 
@@ -32,6 +33,17 @@ class names to setup.py via the ``--to-run`` option. For example::
 Similarly the coverage report can also be generated for a subset of tests::
 
     ./setup.py coverage --to-run=TMP3File,TAPICType
+
+Selecting by class name can take a long time because it needs to import all
+tests first. To speed things up you can just use pytest directly::
+
+    py.test tests/test_formats_mp3.py
+    py.test tests/test_formats*
+    py.test tests/test_formats_mp3.py::TMP3File
+
+Some helpful ``py.test`` options are ``-s`` for not hiding stdout and ``-x``
+for stopping on the first error. For more information check out
+http://docs.pytest.org/en/latest/usage.html
 
 
 Abort on First Error

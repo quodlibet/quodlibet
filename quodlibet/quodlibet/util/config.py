@@ -123,7 +123,7 @@ class Config(object):
 
         assert self.defaults is not None
 
-        self.set(section, option, self.defaults.get(section, option))
+        self._config.remove_option(section, option)
 
     def options(self, section):
         """Returns a list of options available in the specified section."""

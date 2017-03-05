@@ -15,7 +15,7 @@ from quodlibet.util import connect_obj, is_windows
 from quodlibet.formats import AudioFile
 from quodlibet.compat import text_type, iteritems, iterkeys, itervalues
 
-from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipUnless
+from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipIf
 from .helper import capture_output, get_temp_copy
 
 from quodlibet.library.libraries import Library, PicklingMixin, SongLibrary, \
@@ -717,7 +717,7 @@ class Titer_paths(TestCase):
         assert list(iter_paths(self.root, exclude=[name])) == []
         assert list(iter_paths(self.root, exclude=[name + "a"])) == [name]
 
-    @skipUnless(not is_windows(), "no symlink")
+    @skipIf(is_windows(), "no symlink")
     def test_with_dir_symlink(self):
         child = mkdtemp(dir=self.root)
         link = os.path.join(self.root, "foo")
@@ -732,7 +732,7 @@ class Titer_paths(TestCase):
         assert list(iter_paths(child, exclude=[child])) == []
         assert list(iter_paths(link, exclude=[child])) == []
 
-    @skipUnless(not is_windows(), "no symlink")
+    @skipIf(is_windows(), "no symlink")
     def test_with_file(self):
         fd, name = mkstemp(dir=self.root)
         os.close(fd)

@@ -7,7 +7,7 @@ from tests import TestCase, get_data_path
 
 import os
 
-from senf import fsnative, fsn2text, bytes2fsn
+from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
 
 from quodlibet import config
 from quodlibet.compat import PY2, text_type, long, listkeys, PY3
@@ -15,6 +15,7 @@ from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
 from quodlibet.util.tags import _TAGS as TAGS
+from quodlibet.util.path import normalize_path
 
 from .helper import temp_filename
 
@@ -49,18 +50,25 @@ bar_va = AudioFile({
     "albumartist": "Various Artists",
     "performer": "Jay-Z"})
 
-quux = AudioFile({
-    "~filename": get_data_path("asong.ogg"),
-    "album": u"Quuxly"
-    })
-
 num_call = AudioFile({"custom": "0.3"})
 
 
 class TAudioFile(TestCase):
+
     def setUp(self):
         config.RATINGS = config.HardCodedRatingsPrefs()
-        open(quux["~filename"], "w").close()
+        fd, filename = mkstemp()
+        os.close(fd)
+        self.quux = AudioFile({
+            "~filename": normalize_path(filename, True),
+            "album": u"Quuxly"
+        })
+
+    def tearDown(self):
+        try:
+            os.unlink(self.quux["~filename"])
+        except EnvironmentError:
+            pass
 
     def test_format_type(self):
         for t in format_types:
@@ -86,22 +94,24 @@ class TAudioFile(TestCase):
                         assert isinstance(i(name), text_type)
 
     def test_sort(self):
-        l = [quux, bar_1_2, bar_2_1, bar_1_1]
+        l = [self.quux, bar_1_2, bar_2_1, bar_1_1]
         l.sort()
-        self.assertEqual(l, [bar_1_1, bar_1_2, bar_2_1, quux])
-        self.assertEqual(quux, quux)
+        self.assertEqual(l, [bar_1_1, bar_1_2, bar_2_1, self.quux])
+        self.assertEqual(self.quux, self.quux)
         self.assertEqual(bar_1_1, bar_1_1)
         self.assertNotEqual(bar_2_1, bar_1_2)
 
     def test_realkeys(self):
-        self.failIf("artist" in quux.realkeys())
-        self.failIf("~filename" in quux.realkeys())
-        self.failUnless("album" in quux.realkeys())
+        self.failIf("artist" in self.quux.realkeys())
+        self.failIf("~filename" in self.quux.realkeys())
+        self.failUnless("album" in self.quux.realkeys())
 
     def test_iterrealitems(self):
-        self.assertEqual(
-            list(quux.iterrealitems()),
-            [('album', u'Quuxly')])
+        af = AudioFile({
+            "~filename": fsnative(u"foo"),
+            "album": u"Quuxly"
+        })
+        assert list(af.iterrealitems()) == [('album', u'Quuxly')]
 
     def test_language(self):
         self.assertEqual(bar_va("~language"), "German\nEnglish")
@@ -143,13 +153,15 @@ class TAudioFile(TestCase):
             self.failUnlessEqual(bar_1_1[key], bar_1_1(key))
 
         # fake/generated key checks
-        self.failIf(quux("not a key"))
-        self.failUnlessEqual(quux("not a key", "foo"), "foo")
-        self.failUnlessEqual(quux("artist"), "")
-        self.failUnlessEqual(quux("~basename"), "asong.ogg")
-        self.failUnlessEqual(
-            quux("~dirname"), os.path.dirname(quux("~filename")))
-        self.failUnlessEqual(quux("title"), "asong.ogg [Unknown]")
+        af = AudioFile()
+        self.failIf(af("not a key"))
+        self.failUnlessEqual(af("not a key", "foo"), "foo")
+        self.failUnlessEqual(af("artist"), "")
+
+        assert self.quux("~basename")
+        assert self.quux("~dirname") == os.path.dirname(self.quux("~filename"))
+        assert self.quux("title") == \
+            "%s [Unknown]" % fsn2text(self.quux("~basename"))
 
         self.failUnlessEqual(bar_1_1("~#disc"), 1)
         self.failUnlessEqual(bar_1_2("~#disc"), 1)
@@ -178,7 +190,8 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_1_1("~#originalyear", 1999), 1999)
 
     def test_call_people(self):
-        self.failUnlessEqual(quux("~people"), "")
+        af = AudioFile()
+        self.failUnlessEqual(af("~people"), "")
         self.failUnlessEqual(bar_1_1("~people"), "Foo")
         self.failUnlessEqual(bar_1_2("~people"), "Lali-ho!")
         self.failUnlessEqual(bar_2_1("~people"), "Foo\nI have two artists")
@@ -187,7 +200,7 @@ class TAudioFile(TestCase):
                              "Foo\nI have two artists\nVarious Artists\nJay-Z")
 
     def test_call_multiple(self):
-        for song in [quux, bar_1_1, bar_2_1]:
+        for song in [self.quux, bar_1_1, bar_2_1]:
             self.failUnlessEqual(song("~~people"), song("~people"))
             self.failUnlessEqual(song("~title~people"), song("title"))
             self.failUnlessEqual(
@@ -207,9 +220,10 @@ class TAudioFile(TestCase):
         for key in bar_1_1.realkeys():
             self.failUnlessEqual(bar_1_1.list(key), [bar_1_1(key)])
 
-        self.failUnlessEqual(quux.list("artist"), [])
-        self.failUnlessEqual(quux.list("title"), [quux("title")])
-        self.failUnlessEqual(quux.list("not a key"), [])
+        af = AudioFile({"~filename": fsnative(u"foo")})
+        self.failUnlessEqual(af.list("artist"), [])
+        self.failUnlessEqual(af.list("title"), [af("title")])
+        self.failUnlessEqual(af.list("not a key"), [])
 
         self.failUnlessEqual(len(bar_2_1.list("artist")), 2)
         self.failUnlessEqual(bar_2_1.list("artist"),
@@ -221,10 +235,11 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(bar_1_1.list_sort("artist"),
                              [("Foo", "Foo")])
 
-        self.failUnlessEqual(quux.list_sort("artist"), [])
-        self.failUnlessEqual(quux.list_sort("title"),
-                             [(quux("title"), quux("title"))])
-        self.failUnlessEqual(quux.list_sort("not a key"), [])
+        af = AudioFile({"~filename": fsnative(u"foo")})
+        self.failUnlessEqual(af.list_sort("artist"), [])
+        self.failUnlessEqual(af.list_sort("title"),
+                             [(af("title"), af("title"))])
+        self.failUnlessEqual(af.list_sort("not a key"), [])
 
         self.failUnlessEqual(bar_1_2.list_sort("title"),
                              [("Perhaps another", "Perhaps another")])
@@ -300,11 +315,12 @@ class TAudioFile(TestCase):
 
     def test_exist(self):
         self.failIf(bar_2_1.exists())
-        self.failUnless(quux.exists())
+        self.failUnless(self.quux.exists())
 
     def test_valid(self):
         self.failIf(bar_2_1.valid())
 
+        quux = self.quux
         quux["~#mtime"] = 0
         self.failIf(quux.valid())
         quux["~#mtime"] = os.path.getmtime(quux["~filename"])
@@ -319,50 +335,59 @@ class TAudioFile(TestCase):
         self.failUnless(quux.valid())
 
     def test_can_change(self):
-        self.failIf(quux.can_change("~foobar"))
-        self.failIf(quux.can_change("=foobar"))
-        self.failIf(quux.can_change("foo=bar"))
-        self.failIf(quux.can_change(""))
-        self.failUnless(quux.can_change("foo bar"))
+        af = AudioFile()
+        self.failIf(af.can_change("~foobar"))
+        self.failIf(af.can_change("=foobar"))
+        self.failIf(af.can_change("foo=bar"))
+        self.failIf(af.can_change(""))
+        self.failUnless(af.can_change("foo bar"))
 
     def test_is_writable(self):
-        self.assertTrue(quux.is_writable())
-        os.chmod(quux["~filename"], 0o444)
-        self.assertFalse(quux.is_writable())
-        os.chmod(quux["~filename"], 0o644)
-        self.assertTrue(quux.is_writable())
+        self.assertTrue(self.quux.is_writable())
+        os.chmod(self.quux["~filename"], 0o444)
+        self.assertFalse(self.quux.is_writable())
+        os.chmod(self.quux["~filename"], 0o644)
+        self.assertTrue(self.quux.is_writable())
 
     def test_can_multiple_values(self):
-        self.assertEqual(quux.can_multiple_values(), True)
-        self.assertTrue(quux.can_multiple_values("artist"))
+        af = AudioFile()
+        self.assertEqual(af.can_multiple_values(), True)
+        self.assertTrue(af.can_multiple_values("artist"))
 
     def test_rename(self):
-        old_fn = quux("~basename")
-        new_fn = fsnative(u"anothersong.mp3")
-        dir = os.path.dirname(get_data_path(""))
-        self.failUnless(quux.exists())
-        quux.rename(new_fn)
-        self.failIf(os.path.exists(dir + old_fn),
-                    "%s already exists" % (dir + old_fn))
-        self.failUnless(quux.exists())
-        quux.rename(old_fn)
-        self.failIf(os.path.exists(dir + new_fn))
-        self.failUnless(quux.exists())
+        old_fn = self.quux["~filename"]
 
-        # move out of parent dir and back
-        quux.rename(fsnative(u"/tmp/more_test_data"))
-        self.failIf(os.path.exists(dir + old_fn))
-        self.failUnless(quux.exists())
-        quux.rename(dir + old_fn)
-        self.failUnless(quux.exists())
+        fd, new_fn = mkstemp()
+        os.close(fd)
+        os.unlink(new_fn)
+
+        assert self.quux.exists()
+        self.quux.rename(new_fn)
+        assert not os.path.exists(old_fn)
+        assert self.quux.exists()
+        self.quux.rename(old_fn)
+        assert not os.path.exists(new_fn)
+        assert self.quux.exists()
+
+    def test_rename_other_dir(self):
+        old_fn = self.quux["~filename"]
+        new_dir = mkdtemp()
+        self.quux.rename(os.path.join(new_dir, "foo"))
+        assert not os.path.exists(old_fn)
+        assert self.quux.exists()
+        self.quux.rename(old_fn)
+        assert self.quux.exists()
+        os.rmdir(new_dir)
 
     def test_rename_to_existing(self):
-        quux.rename(quux("~basename"))
+        self.quux.rename(self.quux("~filename"))
         if os.name != "nt":
             self.failUnlessRaises(
-                ValueError, quux.rename, fsnative(u"/dev/null"))
-        self.failUnlessRaises(ValueError, quux.rename,
-                              get_data_path("silence-44-s.ogg"))
+                ValueError, self.quux.rename, fsnative(u"/dev/null"))
+
+        with temp_filename() as new_file:
+            with self.assertRaises(ValueError):
+                self.quux.rename(new_file)
 
     def test_lyric_filename(self):
         song = AudioFile()
@@ -382,7 +407,7 @@ class TAudioFile(TestCase):
         assert isinstance(song.comma("~mointpoint"), text_type)
 
     def test_sanitize(self):
-        q = AudioFile(quux)
+        q = AudioFile(self.quux)
         b = AudioFile(bar_1_1)
         q.sanitize()
         b.pop('~filename')
@@ -730,9 +755,6 @@ class TAudioFile(TestCase):
         audio.sanitize(fsnative(u"/dev/null"))
         self.assertRaises(AudioFileError, audio.reload)
         self.assertEqual(audio["title"], u"foo")
-
-    def tearDown(self):
-        os.unlink(quux["~filename"])
 
 
 class TAudioFormats(TestCase):

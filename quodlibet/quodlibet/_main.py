@@ -16,6 +16,7 @@ from quodlibet import build
 from quodlibet.util import cached_func, windows, set_process_title
 from quodlibet.util.dprint import print_d
 from quodlibet.util.path import mkdir
+from quodlibet.util import faulthandling
 
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
@@ -272,7 +273,7 @@ def _main_setup_osx(window):
 
 def run(window, before_quit=None):
     print_d("Entering quodlibet.main")
-    from gi.repository import Gtk, Gdk
+    from gi.repository import Gtk, Gdk, GLib
     from quodlibet._init import is_init
 
     assert is_init()
@@ -319,6 +320,17 @@ def run(window, before_quit=None):
         # if we don't show a window, startup isn't completed, so call manually
         Gdk.notify_startup_complete()
 
+    try:
+        faulthandling.enable(os.path.join(get_user_dir(), "faultdump"))
+        crash_message = faulthandling.check_and_clear_error()
+    except IOError:
+        util.print_exc()
+    else:
+        if crash_message is not None:
+            def trigger_crash_exception():
+                raise Exception(crash_message)
+            GLib.idle_add(trigger_crash_exception)
+
     # set QUODLIBET_START_PERF to measure startup time until the
     # windows is first shown.
     if "QUODLIBET_START_PERF" in environ:
@@ -327,6 +339,8 @@ def run(window, before_quit=None):
         sys.exit()
     else:
         Gtk.main()
+
+    faulthandling.disable()
 
     print_d("Gtk.main() done.")
 

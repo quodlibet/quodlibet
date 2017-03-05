@@ -69,6 +69,7 @@ quodlibet/ext/events/squeezebox_sync.py
 quodlibet/ext/events/synchronizedlyrics.py
 quodlibet/ext/events/telepathy_status.py
 quodlibet/ext/events/themeswitcher.py
+quodlibet/ext/events/toggle_menu.py
 quodlibet/ext/events/trayicon/appindicator.py
 quodlibet/ext/events/trayicon/__init__.py
 quodlibet/ext/events/trayicon/menu.py
@@ -127,6 +128,7 @@ quodlibet/ext/songsmenu/playlist.py
 quodlibet/ext/songsmenu/refresh.py
 quodlibet/ext/songsmenu/replaygain.py
 quodlibet/ext/songsmenu/splitting.py
+quodlibet/ext/songsmenu/tapbpm.py
 quodlibet/ext/songsmenu/website_search.py
 quodlibet/ext/songsmenu/wikipedia.py
 quodlibet/formats/_audio.py

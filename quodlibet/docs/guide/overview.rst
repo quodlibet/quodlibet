@@ -116,7 +116,7 @@ Besides the active browser in the main window, you can open as many
 different browser windows as you want by selecting one under *Browse* >
 *Open Browser* or in the tray icon plugin context menu.
 
-In an separate browser, double-clicking a song will result in it being
+In a separate browser, double-clicking a song will result in it being
 added to the queue rather than played immediately (as per the main browser).
 
 See the :ref:`Browsers Guide <Browse>` for full details on browsers and the

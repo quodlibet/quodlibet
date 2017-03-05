@@ -13,6 +13,7 @@ from quodlibet import _
 from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem
 from quodlibet.qltk.seekbutton import SeekButton
+from quodlibet.util.dprint import print_e
 
 
 class Volume(Gtk.VolumeButton):
@@ -123,6 +124,10 @@ class VolumeMenu(Gtk.Menu):
         self.append(item)
         item.show()
 
+        # Set replaygain mode as saved in configuration
+        replaygain_mode = config.gettext("player", "replaygain_mode", "auto")
+        self.__set_mode(player, replaygain_mode)
+
         rg = Gtk.Menu()
         rg.show()
         item.set_submenu(rg)
@@ -131,15 +136,25 @@ class VolumeMenu(Gtk.Menu):
             item = RadioMenuItem(group=item, label=title,
                                  use_underline=True)
             rg.append(item)
-            item.connect("toggled", self.__changed, player, profile)
-            if player.replaygain_profiles[0] == profile:
+            item.connect("toggled", self.__changed, player, mode)
+            if replaygain_mode == mode:
                 item.set_active(True)
             item.show()
 
-    def __changed(self, item, player, profile):
+    def __set_mode(self, player, mode):
+        selected_mode = next((m for m in self.__modes if m[0] == mode), None)
+        if selected_mode is None:
+            print_e("Invalid selected replaygain mode: %r" % mode)
+            selected_mode = self.__modes[0]
+            print_e("Falling back to replaygain mode: %r" % selected_mode[0])
+
+        player.replaygain_profiles[0] = selected_mode[2]
+        player.reset_replaygain()
+
+    def __changed(self, item, player, mode):
         if item.get_active():
-            player.replaygain_profiles[0] = profile
-            player.reset_replaygain()
+            config.settext("player", "replaygain_mode", mode)
+            self.__set_mode(player, mode)
 
     def popup(self, *args):
         gain = config.getboolean("player", "replaygain")

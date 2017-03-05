@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,16 +12,19 @@ import threading
 import time
 
 from gi.repository import Gtk, GLib, Pango, Gdk
+import feedparser
 
 import quodlibet
 from quodlibet import _
 from quodlibet import config
 from quodlibet import formats
+from quodlibet import print_d
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import app
 
 from quodlibet.browsers import Browser
-from quodlibet.compat import listfilter, text_type
+from quodlibet.compat import listfilter, text_type, build_opener, PY2
 from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.downloader import DownloadWindow
@@ -135,6 +139,9 @@ class Feed(list):
 
     def parse(self):
         try:
+            if not self._check_feed():
+                return False
+
             doc = feedparser.parse(self.uri)
         except Exception as e:
             print_w("Couldn't parse feed: %s (%s)" % (self.uri, e))
@@ -143,6 +150,7 @@ class Feed(list):
         try:
             album = doc.channel.title
         except AttributeError:
+            print_w("No channel title in %s" % doc)
             return False
 
         if album:
@@ -158,6 +166,7 @@ class Feed(list):
 
         entries = []
         uris = set()
+        print_d("Found %d entries in channel" % len(doc.entries))
         for entry in doc.entries:
             try:
                 for enclosure in entry.enclosures:
@@ -178,14 +187,14 @@ class Feed(list):
                     except AttributeError:
                         pass
             except AttributeError:
-                pass
+                print_d("No enclosures found in %s" % entry)
 
         for entry in list(self):
             if entry["~uri"] not in uris:
                 self.remove(entry)
             else:
                 uris.remove(entry["~uri"])
-
+        print_d("Successfully got %d episodes in channel" % len(entries))
         entries.reverse()
         for uri, entry, size in entries:
             if uri in uris:
@@ -196,12 +205,38 @@ class Feed(list):
                 song["album"] = self.name
                 try:
                     self.__fill_af(entry, song)
-                except:
-                    pass
+                except Exception as e:
+                    print_d("Couldn't convert %s to AudioFile (%s)" % (uri, e))
                 else:
                     self.insert(0, song)
         self.__lastgot = time.time()
         return bool(uris)
+
+    def _check_feed(self):
+        """Validate stream a bit - failing fast where possible.
+
+           Constructs an equivalent(ish) HEAD request,
+           without re-writing feedparser completely.
+           (it never times out if reading from a stream - see #2257)"""
+        req = feedparser._build_urllib2_request(
+            self.uri, feedparser.USER_AGENT, None, None, None, None, {})
+        req.method = "HEAD"
+        opener = build_opener(feedparser._FeedURLHandler())
+        try:
+            result = opener.open(req)
+            content_type = result.headers.get('Content-Type', "Unknown type")
+            status = result.code if PY2 else result.status
+            print_d("Pre-check: %s returned %s in %s" %
+                    (self.uri, status, content_type))
+            if content_type not in feedparser.ACCEPT_HEADER:
+                print_w("Unusable content: %s. Perhaps %s is not a feed?" %
+                        (content_type, self.uri))
+                return False
+            # No real need to check HTTP Status - errors are very unlikely
+            # to be a usable content type, and we should always try to parse
+        finally:
+            opener.close()
+        return True
 
 
 class AddFeedDialog(GetStringDialog):
@@ -450,10 +485,9 @@ class AudioFeeds(Browser):
         refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
         delete = MenuItem(_("_Delete"), Icons.EDIT_DELETE)
 
-        connect_obj(refresh,
-            'activate', self.__refresh, [model[p][0] for p in paths])
-        connect_obj(delete,
-            'activate', map, model.remove, map(model.get_iter, paths))
+        connect_obj(refresh, 'activate',
+                    self.__refresh, [model[p][0] for p in paths])
+        connect_obj(delete, 'activate', self.__remove_paths, model, paths)
 
         menu.append(refresh)
         menu.append(delete)
@@ -471,6 +505,10 @@ class AudioFeeds(Browser):
     def __refresh(self, feeds):
         changed = listfilter(Feed.parse, feeds)
         AudioFeeds.changed(changed)
+
+    def __remove_paths(self, model, paths):
+        for path in paths:
+            model.remove(model.get_iter(path))
 
     def activate(self):
         self.__changed(self.__view.get_selection())
@@ -509,15 +547,8 @@ class AudioFeeds(Browser):
             self.__view.select_by_func(lambda r: r[0].name in names)
 
 browsers = []
-try:
-    import feedparser
-except ImportError:
-    print_w(_("Could not import %s. Audio Feeds browser disabled.")
-            % "python-feedparser")
+if not app.player or app.player.can_play_uri("http://"):
+    browsers = [AudioFeeds]
 else:
-    from quodlibet import app
-    if not app.player or app.player.can_play_uri("http://"):
-        browsers = [AudioFeeds]
-    else:
-        print_w(_("The current audio backend does not support URLs, "
-                  "Audio Feeds browser disabled."))
+    print_w(_("The current audio backend does not support URLs, "
+              "Audio Feeds browser disabled."))

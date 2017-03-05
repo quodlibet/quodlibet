@@ -266,6 +266,7 @@ def is_accel(event, *accels):
         keyval = ord(chr(keyval).lower())
 
     default_mod = Gtk.accelerator_get_default_mod_mask()
+    keymap = Gdk.Keymap.get_default()
 
     for accel in accels:
         accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
@@ -278,6 +279,11 @@ def is_accel(event, *accels):
         if non_default:
             print_w("Accelerator '%s' contains a non default modifier '%s'." %
                 (accel, Gtk.accelerator_name(0, non_default) or ""))
+
+        # event.state contains the real mod mask + the virtual one, while
+        # we usually pass only virtual one as text. This adds the real one
+        # so they match in the end.
+        accel_mod = keymap.map_virtual_modifiers(accel_mod)[1]
 
         # Remove everything except default modifiers and compare
         if (accel_keyval, accel_mod) == (keyval, event.state & default_mod):
