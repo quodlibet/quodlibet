@@ -24,7 +24,6 @@ from quodlibet.plugins.playorder import PlayOrderPlugin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import UniqueWindow, PersistentWindowMixin
-from quodlibet.qltk.entry import ClearEntry
 from quodlibet.qltk.x import Align, Paned, Button, ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk import Icons, is_accel
@@ -349,12 +348,12 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
             return
         super(PluginWindow, self).__init__()
         self.set_title(_("Plugins"))
-        self.set_default_size(800, 500)
+        self.set_default_size(700, 500)
         self.set_transient_for(parent)
         self.enable_window_tracking("plugin_prefs")
 
-        paned = Paned()
-        vbox = Gtk.VBox()
+        paned = Paned(margin=6)
+        vbox = Gtk.VBox(spacing=6, margin=3)
 
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
@@ -372,28 +371,29 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         enabled_combo = PluginEnabledFilterCombo()
         enabled_combo.connect("changed", lambda s: filter_model.refilter())
+        enabled_combo.set_tooltip_text("Filter by plugin state / tag")
         fb.pack_start(enabled_combo, False, True, 0)
 
         type_combo = PluginTypeFilterCombo()
         type_combo.connect("changed", lambda s: filter_model.refilter())
+        type_combo.set_tooltip_text("Filter by plugin type")
         fb.pack_start(type_combo, False, True, 0)
 
-        filter_entry = ClearEntry()
+        filter_entry = Gtk.SearchEntry()
+        filter_entry.set_tooltip_text("Filter by plugin name or description")
         filter_entry.connect("changed", lambda s: filter_model.refilter())
-        filter_entry.enable_clear_button()
-        fb.pack_start(filter_entry, True, True, 0)
 
         sw.add(tv)
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.set_size_request(400, -1)
+        sw.set_size_request(300, -1)
 
-        bbox = Gtk.HBox(homogeneous=True, spacing=12)
+        bbox = Gtk.HBox(homogeneous=True, spacing=6, margin=3)
 
         errors = qltk.Button(_("Show _Errors"), Icons.DIALOG_WARNING)
         errors.set_focus_on_click(False)
         errors.connect('clicked', self.__show_errors)
         errors.set_no_show_all(True)
-        bbox.pack_start(Align(errors, border=6, right=-6), True, True, 0)
+        bbox.pack_start(errors, True, True, 0)
 
         pref_box = PluginPreferencesContainer()
 
@@ -402,9 +402,14 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
             refresh.set_focus_on_click(False)
             refresh.connect('clicked', self.__refresh, tv, pref_box, errors,
                             enabled_combo)
-            bbox.pack_start(Align(refresh, border=6), True, True, 0)
+            bbox.pack_start(refresh, True, True, 0)
 
-        vbox.pack_start(Align(fb, border=6, right=-6), False, True, 0)
+        filter_box = Gtk.VBox(spacing=6, margin=6)
+        filter_box.pack_start(fb, False, True, 0)
+        filter_box.pack_start(filter_entry, False, True, 0)
+        frame = Gtk.Frame(label=_("Filters"))
+        frame.add(filter_box)
+        vbox.pack_start(frame, False, False, 3)
         vbox.pack_start(sw, True, True, 0)
         vbox.pack_start(bbox, False, True, 0)
         paned.pack1(vbox, False, False)
