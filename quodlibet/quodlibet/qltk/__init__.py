@@ -27,7 +27,7 @@ def show_uri(label, uri):
     specific one.
 
     Currently handled quodlibet uris:
-        - ql:plugins:<plugin id>
+        - quodlibet:///prefs/plugins/<plugin id>
 
     Args:
         label (str)
