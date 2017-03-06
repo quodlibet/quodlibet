@@ -80,6 +80,7 @@ INITIAL = {
             "~people\t<~year|[b][i]<~year>[/i][/b] - ><album>",
         "pane_selection": "", # selected pane values
         "pane_wide_mode": "0", # browser orientation
+        "equal_pane_width": "true", # equal pane width in paned browser
         "background": "", # "global" filter for SearchBar
         "albums": "", # album list
         "album_sort": "0", # album sorting mode, default is title
@@ -94,6 +95,9 @@ INITIAL = {
         "album_text": "1", # show text in covergrid view
         "covergrid_magnification": "3.0", # show text in covergrid view
         "covergrid_all": "0", # show "all albums" in covergrid view
+    },
+    # width of paneds in the paned browser
+    "browser_paned_widths": {
     },
     # Kind of a dumping ground right now, should probably be
     # cleaned out later.

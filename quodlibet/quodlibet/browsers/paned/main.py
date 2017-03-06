@@ -3,6 +3,7 @@
 #           2009,2010 Steven Robertson
 #           2009-2013 Christoph Reiter
 #           2011,2013 Nick Boultbee
+#                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -193,12 +194,9 @@ class PanedBrowser(Browser, util.InstanceTracker):
             pane.scroll(song)
 
     def refresh_panes(self):
-        hbox = self.main_box.get_child1()
-        if hbox:
-            hbox.destroy()
-
-        hbox = Gtk.HBox(spacing=6)
-        hbox.set_homogeneous(True)
+        paned = self.main_box.get_child1()
+        if paned:
+            paned.destroy()
 
         # Fill in the pane list. The last pane reports back to us.
         self._panes = [self]
@@ -207,6 +205,18 @@ class PanedBrowser(Browser, util.InstanceTracker):
             self._panes.insert(0, pane)
         self._panes.pop()  # remove self
 
+        # remove saved widths of old paneds to avoid new paneds (having
+        # the same id) getting old lengths
+        options = config.options("browser_paned_widths")
+        for option in options[len(self._panes) - 1:]:
+            config.remove_option("browser_paned_widths", option)
+
+        # root_paned will be the root of a nested paned structure.
+        # if we have three panes - p1, p2 and p3 - root_paned will
+        # eventually look like this: Paned(p1, Paned(p2, p3))
+        root_paned = qltk.ConfigRHPaned("browser_paned_widths", "0", 0.5)
+
+        curr_paned = root_paned
         for pane in self._panes:
             pane.connect('row-activated',
                          lambda *x: self.songs_activated())
@@ -214,10 +224,21 @@ class PanedBrowser(Browser, util.InstanceTracker):
             sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
             sw.set_shadow_type(Gtk.ShadowType.IN)
             sw.add(pane)
-            hbox.pack_start(sw, True, True, 0)
 
-        self.main_box.pack1(hbox, True, False)
-        hbox.show_all()
+            # the last pane should not be nested
+            if pane is self._panes[-1]:
+                curr_paned.pack2(sw, True, False)
+                break
+
+            curr_paned.pack1(sw, True, False)
+            tmp_paned = qltk.ConfigRHPaned("browser_paned_widths",
+                                           str(self._panes.index(pane) + 1),
+                                           0.5)
+            curr_paned.pack2(tmp_paned, True, False)
+            curr_paned = tmp_paned
+
+        root_paned.show_all()
+        self.main_box.pack1(root_paned, True, False)
 
         self.__star = {}
         for p in self._panes:
@@ -230,6 +251,35 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self._panes[-1].inhibit()
         self.activate()
         self._panes[-1].uninhibit()
+
+    def make_pane_widths_equal(self):
+        paneds = self.get_paneds()
+
+        # the relative paned widths must be equal to the reciprocal (1/i) of
+        # their respective indices (i) in reverse order (from right to left)
+        # to make the pane widths equal.
+        for i, paned in enumerate(reversed(paneds)):
+            width = min(1.0 / (i + 1), 0.5)
+            paned.set_relative(width)
+
+    def get_paneds(self):
+        """Get all paneds in a flat, ordered list.
+
+        Does not include the outermost paned with the song pane.
+        """
+        root_paned = self.main_box.get_child1()
+        paneds = [root_paned]
+
+        # gather all the paneds in the nested structure
+        curr_paned = root_paned
+        while True:
+            child = curr_paned.get_child2()
+            if type(child) is qltk.ConfigRHPaned:
+                paneds.append(child)
+                curr_paned = child
+            else:
+                break
+        return paneds
 
     def __get_filter_pane(self, key):
         """Get the best pane for filtering etc."""
