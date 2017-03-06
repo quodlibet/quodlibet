@@ -44,8 +44,12 @@ def show_uri(label, uri):
         else:
             return __show_quodlibet_uri(parsed)
     else:
-        from quodlibet import app
-        return Gtk.show_uri_on_window(app.window, uri, 0)
+        # Gtk.show_uri_on_window exists since 3.22
+        if hasattr(Gtk, "show_uri_on_window"):
+            from quodlibet.qltk import get_top_parent
+            return Gtk.show_uri_on_window(get_top_parent(label), uri, 0)
+        else:
+            return Gtk.show_uri(None, uri, 0)
 
 
 def __show_quodlibet_uri(uri):
