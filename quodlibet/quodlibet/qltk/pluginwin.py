@@ -353,8 +353,9 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         self.set_transient_for(parent)
         self.enable_window_tracking("plugin_prefs")
 
-        paned = Paned(margin=6)
-        vbox = Gtk.VBox(spacing=6, margin=3)
+        paned = Paned()
+        vbox = Gtk.VBox()
+        vbox.set_property("margin-top", 3)
 
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
@@ -386,9 +387,9 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         sw.add(tv)
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.set_size_request(250, -1)
+        sw.set_size_request(300, -1)
 
-        bbox = Gtk.HBox(homogeneous=True, spacing=6, margin=3)
+        bbox = Gtk.HBox(homogeneous=True, spacing=6, margin=6)
 
         errors = qltk.Button(_("Show _Errors"), Icons.DIALOG_WARNING)
         errors.set_focus_on_click(False)
@@ -405,7 +406,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
                             enabled_combo)
             bbox.pack_start(refresh, True, True, 0)
 
-        filter_box = Gtk.VBox(spacing=6)
+        filter_box = Gtk.VBox(spacing=6, margin=6)
         filter_box.pack_start(fb, False, True, 0)
         filter_box.pack_start(filter_entry, False, True, 0)
         vbox.pack_start(filter_box, False, False, 0)
