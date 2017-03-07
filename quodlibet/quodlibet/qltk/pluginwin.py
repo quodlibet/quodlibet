@@ -386,7 +386,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         sw.add(tv)
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.set_size_request(300, -1)
+        sw.set_size_request(250, -1)
 
         bbox = Gtk.HBox(homogeneous=True, spacing=6, margin=3)
 
@@ -405,12 +405,10 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
                             enabled_combo)
             bbox.pack_start(refresh, True, True, 0)
 
-        filter_box = Gtk.VBox(spacing=6, margin=6)
+        filter_box = Gtk.VBox(spacing=6)
         filter_box.pack_start(fb, False, True, 0)
         filter_box.pack_start(filter_entry, False, True, 0)
-        frame = Gtk.Frame(label=_("Filters"))
-        frame.add(filter_box)
-        vbox.pack_start(frame, False, False, 3)
+        vbox.pack_start(filter_box, False, False, 0)
         vbox.pack_start(sw, True, True, 0)
         vbox.pack_start(bbox, False, True, 0)
         paned.pack1(vbox, False, False)
