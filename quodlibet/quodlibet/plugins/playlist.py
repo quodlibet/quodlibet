@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2016 Nick Boultbee
+# Copyright 2013-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -80,7 +80,8 @@ class PlaylistPlugin(MenuItemPlugin):
     All of this is managed by the constructor, so
     make sure it gets called if you override it (you shouldn't have to).
 
-    TODO: A way to inherit from both PlaylistPlugin and SongsMenuPlugin
+    Note: If inheriting both `PlaylistPlugin` and `SongsMenuPlugin`,
+          it (currently) needs to be done in that order.
     """
     plugin_single_playlist = None
     plugin_playlist = None
@@ -89,7 +90,7 @@ class PlaylistPlugin(MenuItemPlugin):
     def __init__(self, playlists=None, library=None):
         super(PlaylistPlugin, self).__init__()
         self._library = library
-
+        self._playlists = playlists or []
         self.set_sensitive(bool(self.plugin_handles(playlists)))
 
     def plugin_handles(self, playlists):
@@ -126,7 +127,7 @@ class PlaylistPluginHandler(PluginHandler):
             usable = any([callable(getattr(Kind, s)) for s in attrs])
             if usable:
                 try:
-                    items.append(Kind(playlists, library))
+                    items.append(Kind(playlists=playlists, library=library))
                 except:
                     print_e("Couldn't initialise playlist plugin %s: " % Kind)
                     print_exc()
