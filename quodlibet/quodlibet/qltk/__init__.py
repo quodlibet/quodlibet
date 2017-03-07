@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
-#           2016 Nick Boultbee
+#          2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -55,6 +55,7 @@ def show_uri(label, uri):
 def __show_quodlibet_uri(uri):
     if uri.path.startswith("/prefs/plugins/"):
         from .pluginwin import PluginWindow
+        print_d("Showing plugin prefs resulting from URI (%s)" % (uri, ))
         return PluginWindow().move_to(uri.path[len("/prefs/plugins/"):])
     else:
         return False

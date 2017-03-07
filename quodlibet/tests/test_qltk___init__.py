@@ -10,7 +10,9 @@ from senf import fsnative, fsn2bytes
 
 from quodlibet.formats import AudioFile
 from quodlibet import qltk
+from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet import util
+from quodlibet.plugins import PluginManager
 from tests.gtk_helpers import MockSelData
 
 
@@ -108,6 +110,13 @@ class TQltk(TestCase):
         menu = Gtk.Menu()
         menu.append(item)
         self.assertTrue(qltk.get_menu_item_top_parent(item) is None)
+
+    def test_show_uri_with_existing_window(self):
+        PluginManager.instance = PluginManager()
+        # Force an instance
+        PluginWindow()
+        qltk.show_uri("foo", "quodlibet:///prefs/plugins/Squeezebox Output")
+        # TODO: proper assertions, etc
 
 
 class Tselection_data(TestCase):
