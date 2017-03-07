@@ -223,7 +223,13 @@ class ClearEntryMixin(object):
         self.set_icon_from_gicon(Gtk.EntryIconPosition.SECONDARY, gicon)
         self.connect("icon-release", self.__clear)
 
+    def clear(self):
+        self.__do_clear()
+
     def __clear(self, button, *args):
+        self.__do_clear()
+
+    def __do_clear(self):
         # TODO: don't change the order.. we connect to clear and remove all
         # timeouts added for text change in the searchbar
         self.delete_text(0, -1)
