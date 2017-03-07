@@ -36,7 +36,7 @@ class WebsiteSearch(SongsMenuPlugin):
     PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
                     "Supports patterns e.g. %(pattern-example)s.") % {
                         "pattern-example":
-                            "https://google.com?q=<~artist~title>"}
+                            "https://google.com?q=&lt;~artist~title&gt;"}
 
     # Here are some starters...
     DEFAULT_URL_PATS = [

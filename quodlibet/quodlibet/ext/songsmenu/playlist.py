@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2009 Christoph Reiter
-#      2014,2016 Nick Boultbee
+#      2014-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -26,7 +26,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 lastfolder = get_home_dir()
 
 
-class PlaylistExport(SongsMenuPlugin, PlaylistPlugin):
+class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
     PLUGIN_ID = 'Playlist Export'
     PLUGIN_NAME = _('Export as Playlist')
     PLUGIN_DESC = _('Exports songs to an M3U or PLS playlist.')

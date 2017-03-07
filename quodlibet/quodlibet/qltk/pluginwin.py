@@ -26,7 +26,7 @@ from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import UniqueWindow, PersistentWindowMixin
 from quodlibet.qltk.x import Align, Paned, Button, ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
-from quodlibet.qltk import Icons, is_accel
+from quodlibet.qltk import Icons, is_accel, show_uri
 from quodlibet.util import connect_obj
 
 
@@ -311,8 +311,9 @@ class PluginPreferencesContainer(Gtk.VBox):
             text = "<big><b>%s</b></big>" % name
             if plugin.description:
                 text += "<span font='4'>\n\n</span>"
-                text += util.escape(plugin.description)
+                text += plugin.description
             label.set_markup(text)
+            label.connect("activate-link", show_uri)
 
         frame = self.prefs
 
@@ -361,7 +362,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         model = ObjectStore()
         filter_model = ObjectModelFilter(child_model=model)
 
-        tv = PluginListView()
+        self._list_view = tv = PluginListView()
         tv.set_model(filter_model)
         tv.set_rules_hint(True)
 
@@ -488,6 +489,17 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         plugin = model.get_value(iter_)
         config.set("memory", "plugin_selection", plugin.id)
         container.set_plugin(plugin)
+
+    def move_to(self, plugin_id):
+        def selector(r):
+            return r[0].id == plugin_id
+
+        if self._list_view.select_by_func(selector):
+            return True
+        else:
+            self._filter_combo.set_active(0)
+            self._filter_entry.clear()
+            return self._list_view.select_by_func(selector)
 
     def __plugin_toggled(self, tv, model, iter_, enabled):
         plugin = model.get_value(iter_)

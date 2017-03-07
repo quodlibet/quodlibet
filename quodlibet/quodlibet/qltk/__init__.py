@@ -19,6 +19,45 @@ from gi.repository import GLib, GObject
 from senf import fsn2bytes, bytes2fsn
 
 from quodlibet.util import gdecode, print_d, print_w
+from quodlibet.compat import urlparse
+
+
+def show_uri(label, uri):
+    """Shows a uri. The uri can be anything handled by GIO or a quodlibet
+    specific one.
+
+    Currently handled quodlibet uris:
+        - quodlibet:///prefs/plugins/<plugin id>
+
+    Args:
+        label (str)
+        uri (str) the uri to show
+    Returns:
+        True on success, False on error
+    """
+
+    parsed = urlparse(uri)
+    if parsed.scheme == "quodlibet":
+        if parsed.netloc != "":
+            print_w("Unknown QuodLibet URL format (%s)" % uri)
+            return False
+        else:
+            return __show_quodlibet_uri(parsed)
+    else:
+        # Gtk.show_uri_on_window exists since 3.22
+        if hasattr(Gtk, "show_uri_on_window"):
+            from quodlibet.qltk import get_top_parent
+            return Gtk.show_uri_on_window(get_top_parent(label), uri, 0)
+        else:
+            return Gtk.show_uri(None, uri, 0)
+
+
+def __show_quodlibet_uri(uri):
+    if uri.path.startswith("/prefs/plugins/"):
+        from .pluginwin import PluginWindow
+        return PluginWindow().move_to(uri.path[len("/prefs/plugins/"):])
+    else:
+        return False
 
 
 def get_fg_highlight_color(widget):

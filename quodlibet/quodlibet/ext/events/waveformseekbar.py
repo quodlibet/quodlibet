@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2016 0x1777
 #           2016 Nick Boultbee
+#           2017 Didier Villevalois
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -68,6 +69,7 @@ class WaveformSeekBar(Gtk.Box):
         # Close any existing pipelines to avoid warnings
         if hasattr(self, "_pipeline") and self._pipeline:
             self._pipeline.set_state(Gst.State.NULL)
+            self._clean_pipeline()
 
         command_template = """
         filesrc name=fs
@@ -110,6 +112,7 @@ class WaveformSeekBar(Gtk.Box):
                         .format(message.type))
         elif message.type == Gst.MessageType.EOS:
             self._pipeline.set_state(Gst.State.NULL)
+            self._clean_pipeline()
 
             # Only update the waveform if it has changed
             if self._player.info and self._rms_vals != self._new_rms_vals:
@@ -119,6 +122,15 @@ class WaveformSeekBar(Gtk.Box):
                 self._update_redraw_interval()
             else:
                 del self._new_rms_vals
+
+    def _clean_pipeline(self):
+        if self._bus_id:
+            bus = self._pipeline.get_bus()
+            bus.remove_signal_watch()
+            bus.disconnect(self._bus_id)
+            self._bus_id = None
+        if self._pipeline:
+            self._pipeline = None
 
     def _update_redraw_interval(self, *args):
         if self._player.info:
