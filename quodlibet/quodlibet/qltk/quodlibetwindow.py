@@ -1141,7 +1141,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                 LibraryBrowser.open(Kind, library, player)
 
             act.connect('activate', browser_activate, Kind)
-            ag.add_action_with_accel(act, "<Primary><alt>%d" % ((index + 1) % 10,))
+            ag.add_action_with_accel(act,
+                                     "<Primary><alt>%d" % ((index + 1) % 10,))
 
         ui = Gtk.UIManager()
         ui.insert_action_group(ag, -1)
