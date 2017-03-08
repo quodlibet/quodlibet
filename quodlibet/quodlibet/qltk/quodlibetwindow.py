@@ -2,6 +2,7 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
 #           2012-2016 Nick Boultbee
+#           2017 Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -1132,13 +1133,16 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         for Kind in browsers.browsers:
             action = "Browser" + Kind.__name__
             label = Kind.accelerated_name
+            name = browsers.name(Kind)
+            index = browsers.index(name)
             act = Action(name=action, label=label)
 
             def browser_activate(action, Kind):
                 LibraryBrowser.open(Kind, library, player)
 
             act.connect('activate', browser_activate, Kind)
-            ag.add_action_with_accel(act, None)
+            ag.add_action_with_accel(act,
+                                     "<Primary><alt>%d" % ((index + 1) % 10,))
 
         ui = Gtk.UIManager()
         ui.insert_action_group(ag, -1)
