@@ -25,9 +25,6 @@ class ExportToFolder(PlaylistPlugin):
         _("Exports a playlist by copying files to a folder.")
     PLUGIN_ICON = Icons.FOLDER
     ELLIPSIZE_NAME = True
-    _PERSIST_FUDGE = 100
-
-    TEMP_PLAYLIST = "_quodlibet"
 
     def __copy_songs(self, task, songs, directory):
         """Generator for copool to copy songs to the folder"""
