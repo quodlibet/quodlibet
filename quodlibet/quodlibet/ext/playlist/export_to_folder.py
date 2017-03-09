@@ -9,6 +9,7 @@ from gi.repository import Gtk
 
 from quodlibet import _
 from quodlibet.pattern import FileFromPattern
+from quodlibet.plugins import PluginConfig, ConfProp
 from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.qltk import Icons
 from quodlibet.qltk.notif import Task
@@ -79,6 +80,16 @@ class ExportToFolderDialog(Dialog):
         self.get_child().show_all()
 
 
+class Config(object):
+    _config = PluginConfig(__name__)
+
+    DEFAULT_PATTERN = "<artist> - <title>"
+
+    default_pattern = ConfProp(_config, "default_pattern", DEFAULT_PATTERN)
+
+CONFIG = Config()
+
+
 class ExportToFolder(PlaylistPlugin):
     PLUGIN_ID = "ExportToFolder"
     PLUGIN_NAME = _(u"Export Playlist to Folder")
@@ -86,8 +97,6 @@ class ExportToFolder(PlaylistPlugin):
         _("Exports a playlist by copying files to a folder.")
     PLUGIN_ICON = Icons.FOLDER
     REQUIRES_ACTION = True
-
-    DEFAULT_PATTERN = "<artist> - <title>"
 
     def __copy_songs(self, task, songs, directory, pattern):
         """Generator for copool to copy songs to the folder"""
@@ -118,7 +127,7 @@ class ExportToFolder(PlaylistPlugin):
         copyfile(filename, "%s/%04d - %s" % (directory, index, new_name))
 
     def plugin_playlist(self, playlist):
-        pattern_text = self.DEFAULT_PATTERN
+        pattern_text = CONFIG.default_pattern
         dialog = ExportToFolderDialog(self.plugin_window, pattern_text)
         if dialog.run() == Gtk.ResponseType.OK:
             directory = dialog.directory_chooser.get_filename()
@@ -131,3 +140,26 @@ class ExportToFolder(PlaylistPlugin):
                        funcid="export-playlist-folder")
 
         dialog.destroy()
+
+    @classmethod
+    def PluginPreferences(self, parent):
+        def changed(entry):
+            CONFIG.default_pattern = entry.get_text()
+
+        vbox = Gtk.VBox(spacing=6)
+
+        def create_pattern():
+            hbox = Gtk.HBox(spacing=6)
+            hbox.set_border_width(6)
+            label = Gtk.Label(label=_("Default filename pattern:"))
+            hbox.pack_start(label, False, True, 0)
+            entry = Gtk.Entry()
+            if CONFIG.default_pattern:
+                entry.set_text(CONFIG.default_pattern)
+            entry.connect('changed', changed)
+            hbox.pack_start(entry, True, True, 0)
+            return hbox
+
+        vbox.pack_start(create_pattern(), True, True, 0)
+
+        return vbox
