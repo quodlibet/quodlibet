@@ -8,14 +8,75 @@
 from gi.repository import Gtk
 
 from quodlibet import _
+from quodlibet.pattern import FileFromPattern
 from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.qltk import Icons
 from quodlibet.qltk.notif import Task
+from quodlibet.qltk.window import Dialog
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
 
-import os
 from shutil import copyfile
+
+
+class ExportToFolderDialog(Dialog):
+    """A dialog to collect export settings"""
+
+    def __init__(self, parent, pattern):
+        super(ExportToFolderDialog, self).__init__(
+            title=_("Export Playlist to Folder"),
+            transient_for=parent, use_header_bar=True)
+
+        self.set_default_size(400, -1)
+        self.set_resizable(True)
+        self.set_border_width(6)
+        self.vbox.set_spacing(6)
+
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_button(_("_Export"), Gtk.ResponseType.OK)
+        self.set_default_response(Gtk.ResponseType.OK)
+
+        box = Gtk.VBox(spacing=6)
+
+        destination_label = Gtk.Label(_("Destination folder:"))
+        destination_label.set_line_wrap(True)
+        destination_label.set_xalign(0.0)
+        box.pack_start(destination_label, True, True, 0)
+
+        frame = Gtk.Frame()
+        self.directory_chooser = \
+            Gtk.FileChooserWidget(action=Gtk.FileChooserAction.SELECT_FOLDER)
+        self.directory_chooser.set_select_multiple(False)
+        self.directory_chooser.set_border_width(1)
+        frame.add(self.directory_chooser)
+        frame.set_shadow_type(Gtk.ShadowType.IN)
+        frame.set_border_width(0)
+        box.pack_start(frame, True, True, 0)
+
+        pattern_label = Gtk.Label(_("Filename pattern:"))
+        pattern_label.set_line_wrap(True)
+        pattern_label.set_xalign(0.0)
+        box.pack_start(pattern_label, True, True, 0)
+
+        self.pattern_entry = Gtk.Entry(text=pattern)
+        box.pack_start(self.pattern_entry, True, True, 0)
+
+        self.vbox.pack_start(box, True, True, 0)
+
+        self.set_response_sensitive(Gtk.ResponseType.OK, False)
+
+        def changed(*args):
+            has_directory = self.directory_chooser.get_filename() is not None
+            self.set_response_sensitive(Gtk.ResponseType.OK, has_directory)
+
+            pattern_text = self.pattern_entry.get_text()
+            has_pattern = pattern_text != ""
+            self.set_response_sensitive(Gtk.ResponseType.OK, has_pattern)
+
+        self.directory_chooser.connect("selection-changed", changed)
+        self.pattern_entry.connect("changed", changed)
+
+        self.get_child().show_all()
 
 
 class ExportToFolder(PlaylistPlugin):
@@ -24,9 +85,11 @@ class ExportToFolder(PlaylistPlugin):
     PLUGIN_DESC = \
         _("Exports a playlist by copying files to a folder.")
     PLUGIN_ICON = Icons.FOLDER
-    ELLIPSIZE_NAME = True
+    REQUIRES_ACTION = True
 
-    def __copy_songs(self, task, songs, directory):
+    DEFAULT_PATTERN = "<artist> - <title>"
+
+    def __copy_songs(self, task, songs, directory, pattern):
         """Generator for copool to copy songs to the folder"""
         self.__cancel = False
         total = len(songs)
@@ -38,7 +101,7 @@ class ExportToFolder(PlaylistPlugin):
                 self.__cancel = False
                 break
             # Actually do the copy
-            self._copy_file(song, directory, i + 1)
+            self._copy_file(song, directory, i + 1, pattern)
             task.update(float(i) / total)
             yield True
         print_d("Finished export to directory.")
@@ -48,25 +111,23 @@ class ExportToFolder(PlaylistPlugin):
         """Tell the copool to stop copying songs"""
         self.__cancel = True
 
-    def _copy_file(self, song, directory, index):
+    def _copy_file(self, song, directory, index, pattern):
         filename = song["~filename"]
         print_d("Copying %s." % filename)
-        basename = os.path.basename(filename)
-        copyfile(filename, "%s/%04d - %s" % (directory, index, basename))
+        new_name = pattern.format(song)
+        copyfile(filename, "%s/%04d - %s" % (directory, index, new_name))
 
     def plugin_playlist(self, playlist):
-        dialog = Gtk.FileChooserDialog(
-            _("Select Export Destination Folder"),
-            self.plugin_window,
-            Gtk.FileChooserAction.SELECT_FOLDER)
-        dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        dialog.add_button(_("_Export"), Gtk.ResponseType.OK)
-        dialog.set_default_response(Gtk.ResponseType.OK)
+        pattern_text = self.DEFAULT_PATTERN
+        dialog = ExportToFolderDialog(self.plugin_window, pattern_text)
         if dialog.run() == Gtk.ResponseType.OK:
-            directory = dialog.get_filename()
+            directory = dialog.directory_chooser.get_filename()
+            pattern = FileFromPattern(dialog.pattern_entry.get_text())
+
             task = Task("Export", _("Export Playlist to Folder"),
                         stop=self.__cancel_copy)
-            copool.add(self.__copy_songs, task, playlist.songs, directory,
+            copool.add(self.__copy_songs, task,
+                       playlist.songs, directory, pattern,
                        funcid="export-playlist-folder")
 
         dialog.destroy()
