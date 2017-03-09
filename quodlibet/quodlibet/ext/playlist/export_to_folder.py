@@ -38,7 +38,7 @@ class ExportToFolder(PlaylistPlugin):
                 self.__cancel = False
                 break
             # Actually do the copy
-            self._copy_file(song, directory, i)
+            self._copy_file(song, directory, i + 1)
             task.update(float(i) / total)
             yield True
         print_d("Finished export to directory.")
