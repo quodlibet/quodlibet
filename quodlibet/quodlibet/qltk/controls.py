@@ -236,6 +236,30 @@ class PlayPauseButton(Gtk.Button):
             player.paused = not self.get_active()
 
 
+class PreviousSongButton(Gtk.Button):
+
+    def __init__(self, player, relief=Gtk.ReliefStyle.NONE):
+        super(PreviousSongButton, self).__init__(relief=relief)
+        self.add(SymbolicIconImage("media-skip-backward",
+                                   Gtk.IconSize.LARGE_TOOLBAR))
+        self.connect('clicked', self.__clicked, player)
+
+    def __clicked(self, button, player):
+        player.previous()
+
+
+class NextSongButton(Gtk.Button):
+
+    def __init__(self, player, relief=Gtk.ReliefStyle.NONE):
+        super(NextSongButton, self).__init__(relief=relief)
+        self.add(SymbolicIconImage("media-skip-forward",
+                                   Gtk.IconSize.LARGE_TOOLBAR))
+        self.connect('clicked', self.__clicked, player)
+
+    def __clicked(self, button, player):
+        player.next()
+
+
 class PlayControls(Gtk.VBox):
 
     def __init__(self, player, library):
@@ -245,17 +269,13 @@ class PlayControls(Gtk.VBox):
         upper.set_row_spacings(3)
         upper.set_col_spacings(3)
 
-        prev = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
-        prev.add(SymbolicIconImage("media-skip-backward",
-                                   Gtk.IconSize.LARGE_TOOLBAR))
+        prev = PreviousSongButton(player)
         upper.attach(prev, 0, 1, 0, 1)
 
         play = PlayPauseButton(player)
         upper.attach(play, 1, 2, 0, 1)
 
-        next_ = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
-        next_.add(SymbolicIconImage("media-skip-forward",
-                                    Gtk.IconSize.LARGE_TOOLBAR))
+        next_ = NextSongButton(player)
         upper.attach(next_, 2, 3, 0, 1)
 
         lower = Gtk.Table(n_rows=1, n_columns=3, homogeneous=True)
@@ -281,12 +301,3 @@ class PlayControls(Gtk.VBox):
 
         self.pack_start(upper, False, True, 0)
         self.pack_start(lower, False, True, 0)
-
-        connect_obj(prev, 'clicked', self.__previous, player)
-        connect_obj(next_, 'clicked', self.__next, player)
-
-    def __previous(self, player):
-        player.previous()
-
-    def __next(self, player):
-        player.next()
