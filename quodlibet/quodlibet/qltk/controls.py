@@ -165,18 +165,27 @@ class VolumeMenu(Gtk.Menu):
 
 class PlayPauseButton(Gtk.Button):
 
-    __gsignals__ = {
-        'toggled': (GObject.SignalFlags.RUN_LAST, None, tuple()),
-    }
+    def __init__(self, player, relief=Gtk.ReliefStyle.NONE):
+        super(PlayPauseButton, self).__init__(relief=relief)
 
-    def __init__(self):
-        super(PlayPauseButton, self).__init__(relief=Gtk.ReliefStyle.NONE)
+        self.__player = player
+
         self._pause_image = SymbolicIconImage("media-playback-pause",
                                                Gtk.IconSize.LARGE_TOOLBAR)
         self._play_image = SymbolicIconImage("media-playback-start",
                                              Gtk.IconSize.LARGE_TOOLBAR)
         self._set_active(False)
-        self.connect("clicked", self._on_clicked)
+        self._clicked_id = self.connect('clicked', self._on_clicked)
+
+        self.add_events(Gdk.EventMask.SCROLL_MASK)
+        self.connect('scroll-event', self.__scroll, player)
+
+        connect_destroy(
+            player, 'song-started', self.__song_started)
+        connect_destroy(
+            player, 'paused', self.__on_set_paused_unpaused, False)
+        connect_destroy(
+            player, 'unpaused', self.__on_set_paused_unpaused, True)
 
     def _on_clicked(self, *args):
         self.set_active(not self.get_active())
@@ -191,7 +200,7 @@ class PlayPauseButton(Gtk.Button):
             self.add(self._play_image)
         self.get_child().show()
 
-        self.emit("toggled")
+        self.__playpause(self.__player)
 
     def set_active(self, is_active):
         if self.get_active() == is_active:
@@ -200,6 +209,31 @@ class PlayPauseButton(Gtk.Button):
 
     def get_active(self):
         return self.get_child() is self._pause_image
+
+    def __on_set_paused_unpaused(self, player, state):
+        # block to prevent a signal cycle in case the paused signal and state
+        # get out of sync (shouldn't happen.. but)
+        self.handler_block(self._clicked_id)
+        self.set_active(state)
+        self.handler_unblock(self._clicked_id)
+
+    def __scroll(self, button, event, player):
+        if event.direction in [Gdk.ScrollDirection.UP,
+                               Gdk.ScrollDirection.LEFT]:
+            player.previous()
+        elif event.direction in [Gdk.ScrollDirection.DOWN,
+                                 Gdk.ScrollDirection.RIGHT]:
+            player.next()
+
+    def __song_started(self, player, song):
+        self.set_active(not player.paused)
+
+    def __playpause(self, player):
+        if self.get_active() and player.song is None:
+            player.reset()
+            self.set_active(not player.paused)
+        else:
+            player.paused = not self.get_active()
 
 
 class PlayControls(Gtk.VBox):
@@ -216,7 +250,7 @@ class PlayControls(Gtk.VBox):
                                    Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(prev, 0, 1, 0, 1)
 
-        play = PlayPauseButton()
+        play = PlayPauseButton(player)
         upper.attach(play, 1, 2, 0, 1)
 
         next_ = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
@@ -249,41 +283,7 @@ class PlayControls(Gtk.VBox):
         self.pack_start(lower, False, True, 0)
 
         connect_obj(prev, 'clicked', self.__previous, player)
-        self._toggle_id = play.connect('toggled', self.__playpause, player)
-        play.add_events(Gdk.EventMask.SCROLL_MASK)
-        connect_obj(play, 'scroll-event', self.__scroll, player)
         connect_obj(next_, 'clicked', self.__next, player)
-        connect_destroy(
-            player, 'song-started', self.__song_started, next_, play)
-        connect_destroy(
-            player, 'paused', self.__on_set_paused_unpaused, play, False)
-        connect_destroy(
-            player, 'unpaused', self.__on_set_paused_unpaused, play, True)
-
-    def __on_set_paused_unpaused(self, player, button, state):
-        # block to prevent a signal cycle in case the paused signal and state
-        # get out of sync (shouldn't happen.. but)
-        button.handler_block(self._toggle_id)
-        button.set_active(state)
-        button.handler_unblock(self._toggle_id)
-
-    def __scroll(self, player, event):
-        if event.direction in [Gdk.ScrollDirection.UP,
-                               Gdk.ScrollDirection.LEFT]:
-            player.previous()
-        elif event.direction in [Gdk.ScrollDirection.DOWN,
-                                 Gdk.ScrollDirection.RIGHT]:
-            player.next()
-
-    def __song_started(self, player, song, next, play):
-        play.set_active(not player.paused)
-
-    def __playpause(self, button, player):
-        if button.get_active() and player.song is None:
-            player.reset()
-            button.set_active(not player.paused)
-        else:
-            player.paused = not button.get_active()
 
     def __previous(self, player):
         player.previous()
