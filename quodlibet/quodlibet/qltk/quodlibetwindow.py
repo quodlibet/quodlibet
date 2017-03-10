@@ -297,10 +297,10 @@ class MainSongList(SongList):
 
 
 class TopBar(Gtk.Toolbar):
-    def __init__(self, parent, player, library):
+    def __init__(self, parent, player, library, player_controls):
         super(TopBar, self).__init__()
 
-        if not util.is_linux() or not util.is_gnome():
+        if player_controls:
             # play controls
             control_item = Gtk.ToolItem()
             self.insert(control_item, 0)
@@ -673,22 +673,23 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.__player = player
         self.__library = library
 
-        if util.is_linux() and util.is_gnome():
-            self._header_bar = header_bar = self.use_header_bar()
+        self._header_bar = self.use_header_bar() \
+            if util.is_linux() and util.is_gnome() else None
 
+        if self._header_bar:
             # Previous, Play/Pause, Next
             box = Gtk.HBox()
             box.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED)
             box.add(PreviousSongButton(player, relief=Gtk.ReliefStyle.NORMAL))
             box.add(PlayPauseButton(player, relief=Gtk.ReliefStyle.NORMAL))
             box.add(NextSongButton(player, relief=Gtk.ReliefStyle.NORMAL))
-            header_bar.pack_start(box)
+            self._header_bar.pack_start(box)
 
             # Volume
             volume = Volume(player, relief=Gtk.ReliefStyle.NORMAL)
-            header_bar.pack_end(volume)
+            self._header_bar.pack_end(volume)
 
-            header_bar.show_all()
+            self._header_bar.show_all()
 
         # create main menubar, load/restore accelerator groups
         ui = self.__create_menu(player, library)
@@ -749,7 +750,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.playlist = PlaylistMux(
             player, self.qexpander.model, self.songlist.model)
 
-        top_bar = TopBar(self, player, library)
+        top_bar = TopBar(self, player, library, not self._header_bar)
         main_box.pack_start(top_bar, False, True, 0)
         self.top_bar = top_bar
 
@@ -1273,7 +1274,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         if song:
             tag = config.gettext("settings", "window_title_pattern")
             subtitle = song.comma(tag)
-            if util.is_linux() and util.is_gnome():
+            if self._header_bar:
                 self._header_bar.set_subtitle(subtitle)
             else:
                 title = subtitle + " - " + title
