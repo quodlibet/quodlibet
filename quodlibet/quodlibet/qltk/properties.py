@@ -62,9 +62,11 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         paned = ConfigRPaned("memory", "quodlibet_properties_pos", 0.4)
         notebook = qltk.Notebook()
         notebook.props.scrollable = True
+
+        from quodlibet.browsers.playlists.panel import PlaylistPanel
         pages = []
         pages.extend([Ctr(self, library) for Ctr in
-                      [EditTags, TagsFromPath, RenameFiles]])
+                      [EditTags, TagsFromPath, RenameFiles, PlaylistPanel]])
         if len(songs) > 1:
             pages.append(TrackNumbers(self, library))
         for page in pages:
