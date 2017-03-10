@@ -17,10 +17,10 @@ from quodlibet.util.dprint import print_e
 
 
 class Volume(Gtk.VolumeButton):
-    def __init__(self, player):
-        super(Volume, self).__init__(size=Gtk.IconSize.MENU, use_symbolic=True)
+    def __init__(self, player, relief=Gtk.ReliefStyle.NONE):
+        super(Volume, self).__init__(size=Gtk.IconSize.MENU, use_symbolic=True,
+                                     relief=relief)
 
-        self.set_relief(Gtk.ReliefStyle.NORMAL)
         self.set_adjustment(Gtk.Adjustment.new(0, 0, 1, 0.05, 0.1, 0))
 
         popup = self.get_popup()
@@ -40,6 +40,11 @@ class Volume(Gtk.VolumeButton):
         self.connect('popup-menu', self.__popup, replaygain_menu)
         connect_obj(self, 'button-press-event', self.__volume_button_press,
                     replaygain_menu, player)
+
+        # only restore the volume in case it is managed locally, otherwise
+        # this could affect the system volume
+        if not player.has_external_volume:
+            player.volume = config.getfloat("memory", "volume")
 
     def __popup(self, widget, menu):
         time = Gtk.get_current_event_time()
@@ -77,6 +82,8 @@ class Volume(Gtk.VolumeButton):
         self.handler_block(self._id)
         self.set_value(player.volume ** (1.0 / 3.0))
         self.handler_unblock(self._id)
+
+        config.set("memory", "volume", str(player.volume))
 
     def __mute_notify(self, player, prop):
         self._update_mute(player)
@@ -283,7 +290,6 @@ class PlayControls(Gtk.VBox):
         lower.set_col_spacings(3)
 
         self.volume = Volume(player)
-        self.volume.set_relief(Gtk.ReliefStyle.NONE)
         lower.attach(self.volume, 0, 1, 0, 1)
 
         # XXX: Adwaita defines a different padding for GtkVolumeButton

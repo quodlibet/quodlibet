@@ -302,16 +302,7 @@ class TopBar(Gtk.Toolbar):
         # play controls
         control_item = Gtk.ToolItem()
         self.insert(control_item, 0)
-        t = PlayControls(player, library.librarian)
-        self.volume = t.volume
-
-        # only restore the volume in case it is managed locally, otherwise
-        # this could affect the system volume
-        if not player.has_external_volume:
-            player.volume = config.getfloat("memory", "volume")
-
-        connect_destroy(player, "notify::volume", self._on_volume_changed)
-        control_item.add(t)
+        control_item.add(PlayControls(player, library.librarian))
 
         self.insert(Gtk.SeparatorToolItem(), 1)
 
@@ -361,9 +352,6 @@ class TopBar(Gtk.Toolbar):
 
         if widget:
             self._pattern_box.pack_start(widget, False, True, 0)
-
-    def _on_volume_changed(self, player, *args):
-        config.set("memory", "volume", str(player.volume))
 
     def __new_song(self, player, song):
         self.image.set_song(song)
