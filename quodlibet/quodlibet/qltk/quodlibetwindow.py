@@ -30,7 +30,8 @@ from quodlibet.update import UpdateDialog
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.browser import LibraryBrowser, FilterMenu
 from quodlibet.qltk.chooser import FolderChooser, FileChooser
-from quodlibet.qltk.controls import PlayControls
+from quodlibet.qltk.controls import PlayControls,\
+    PreviousSongButton, NextSongButton, PlayPauseButton, Volume
 from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.bookmarks import EditBookmarks
@@ -299,12 +300,13 @@ class TopBar(Gtk.Toolbar):
     def __init__(self, parent, player, library):
         super(TopBar, self).__init__()
 
-        # play controls
-        control_item = Gtk.ToolItem()
-        self.insert(control_item, 0)
-        control_item.add(PlayControls(player, library.librarian))
+        if not util.is_linux() or not util.is_gnome():
+            # play controls
+            control_item = Gtk.ToolItem()
+            self.insert(control_item, 0)
+            control_item.add(PlayControls(player, library.librarian))
 
-        self.insert(Gtk.SeparatorToolItem(), 1)
+            self.insert(Gtk.SeparatorToolItem(), 1)
 
         info_item = Gtk.ToolItem()
         self.insert(info_item, 2)
@@ -669,8 +671,26 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.add(main_box)
 
         self.__player = player
-        # create main menubar, load/restore accelerator groups
         self.__library = library
+
+        if util.is_linux() and util.is_gnome():
+            self._header_bar = header_bar = self.use_header_bar()
+
+            # Previous, Play/Pause, Next
+            box = Gtk.HBox()
+            box.get_style_context().add_class(Gtk.STYLE_CLASS_LINKED)
+            box.add(PreviousSongButton(player, relief=Gtk.ReliefStyle.NORMAL))
+            box.add(PlayPauseButton(player, relief=Gtk.ReliefStyle.NORMAL))
+            box.add(NextSongButton(player, relief=Gtk.ReliefStyle.NORMAL))
+            header_bar.pack_start(box)
+
+            # Volume
+            volume = Volume(player, relief=Gtk.ReliefStyle.NORMAL)
+            header_bar.pack_end(volume)
+
+            header_bar.show_all()
+
+        # create main menubar, load/restore accelerator groups
         ui = self.__create_menu(player, library)
         accel_group = ui.get_accel_group()
         self.add_accel_group(accel_group)
@@ -1252,7 +1272,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         title = "Quod Libet"
         if song:
             tag = config.gettext("settings", "window_title_pattern")
-            title = song.comma(tag) + " - " + title
+            subtitle = song.comma(tag)
+            if util.is_linux() and util.is_gnome():
+                self._header_bar.set_subtitle(subtitle)
+            else:
+                title = subtitle + " - " + title
         self.set_title(title)
 
     def __song_started(self, player, song):

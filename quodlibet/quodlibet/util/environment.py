@@ -32,6 +32,12 @@ def _dbus_name_owned(name):
         return False
 
 
+def is_gnome():
+    """If we are running under Gnome"""
+
+    return not is_plasma() and not is_unity() and not is_enlightenment()
+
+
 def is_plasma():
     """If we are running under plasma"""
 
