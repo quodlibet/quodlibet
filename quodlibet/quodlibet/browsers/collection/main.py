@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010, 2012-2014 Christoph Reiter
+#                      2017 Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -225,10 +226,11 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         prefs.add(SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU))
         prefs.connect('clicked', lambda *x: Preferences(self))
 
+        self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
                               accel_group=self.accelerators)
-
         search.connect('query-changed', self.__update_filter)
+        connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
 
         hbox.pack_start(search, True, True, 0)
