@@ -1264,7 +1264,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         title = "Quod Libet"
         if song:
             tag = config.gettext("settings", "window_title_pattern")
-            title = song.comma(tag) + " - " + title
+            if tag:
+                title = song.comma(tag) + " - " + title
         self.set_title(title)
 
     def __song_started(self, player, song):
