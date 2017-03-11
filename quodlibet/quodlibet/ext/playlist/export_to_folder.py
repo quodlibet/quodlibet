@@ -12,6 +12,7 @@ from quodlibet.pattern import FileFromPattern
 from quodlibet.plugins import PluginConfig, ConfProp
 from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.qltk import Icons
+from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk.window import Dialog
 from quodlibet.util import copool
@@ -45,8 +46,8 @@ class ExportToFolderDialog(Dialog):
         box.pack_start(destination_label, True, True, 0)
 
         frame = Gtk.Frame()
-        self.directory_chooser = \
-            Gtk.FileChooserWidget(action=Gtk.FileChooserAction.SELECT_FOLDER)
+        self.directory_chooser = Gtk.FileChooserWidget(
+            action=Gtk.FileChooserAction.SELECT_FOLDER)
         self.directory_chooser.set_select_multiple(False)
         self.directory_chooser.set_border_width(1)
         frame.add(self.directory_chooser)
@@ -59,7 +60,8 @@ class ExportToFolderDialog(Dialog):
         pattern_label.set_xalign(0.0)
         box.pack_start(pattern_label, True, True, 0)
 
-        self.pattern_entry = Gtk.Entry(text=pattern)
+        self.pattern_entry = UndoEntry()
+        self.pattern_entry.set_text(pattern)
         box.pack_start(self.pattern_entry, True, True, 0)
 
         self.vbox.pack_start(box, True, True, 0)
@@ -71,7 +73,7 @@ class ExportToFolderDialog(Dialog):
             self.set_response_sensitive(Gtk.ResponseType.OK, has_directory)
 
             pattern_text = self.pattern_entry.get_text()
-            has_pattern = pattern_text != ""
+            has_pattern = bool(pattern_text)
             self.set_response_sensitive(Gtk.ResponseType.OK, has_pattern)
 
         self.directory_chooser.connect("selection-changed", changed)
@@ -83,7 +85,7 @@ class ExportToFolderDialog(Dialog):
 class Config(object):
     _config = PluginConfig(__name__)
 
-    DEFAULT_PATTERN = "<artist> - <title>"
+    DEFAULT_PATTERN = "<artist~title>"
 
     default_pattern = ConfProp(_config, "default_pattern", DEFAULT_PATTERN)
 
@@ -153,7 +155,7 @@ class ExportToFolder(PlaylistPlugin):
             hbox.set_border_width(6)
             label = Gtk.Label(label=_("Default filename pattern:"))
             hbox.pack_start(label, False, True, 0)
-            entry = Gtk.Entry()
+            entry = UndoEntry()
             if CONFIG.default_pattern:
                 entry.set_text(CONFIG.default_pattern)
             entry.connect('changed', changed)
