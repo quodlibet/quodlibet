@@ -9,8 +9,8 @@ from gi.repository import Gtk, Pango
 
 from quodlibet import _
 from quodlibet import qltk
-from quodlibet.browsers.playlists.menu import ConfirmMultipleSongsAction
 from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
+from quodlibet.browsers.playlists.util import toggle_playlist
 from quodlibet.qltk import Icons, get_top_parent
 from quodlibet.qltk.edittags import AudioFileGroup
 from quodlibet.qltk.models import ObjectStore
@@ -144,18 +144,7 @@ class PlaylistPanel(Gtk.VBox):
 
         songs = self.__songinfo.songs
 
-        has_some, has_all = playlist.has_songs(songs)
-        if has_all:
-            playlist.remove_songs(songs)
-        elif has_some:
-            resp = ConfirmMultipleSongsAction(get_top_parent(self._parent),
-                                              playlist, songs).run()
-            if resp == ConfirmMultipleSongsAction.REMOVE:
-                playlist.remove_songs(songs)
-            elif resp == ConfirmMultipleSongsAction.ADD:
-                playlist.extend(songs)
-        else:
-            playlist.extend(songs)
+        toggle_playlist(get_top_parent(self._parent), playlist, songs)
 
         self._update_browser(playlist)
 

@@ -7,10 +7,11 @@
 
 from gi.repository import Gtk, Pango, GObject
 
-from quodlibet import ngettext, _
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
-from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent, Icons
+from quodlibet.browsers.playlists.util import toggle_playlist
+from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent
 from quodlibet.util.collection import Playlist, FileBackedPlaylist
 
 
@@ -60,38 +61,4 @@ class PlaylistMenu(Gtk.Menu):
 
     def _on_toggle_playlist_activate(self, item, playlist, songs):
         parent = get_menu_item_top_parent(item)
-
-        has_some, has_all = playlist.has_songs(songs)
-        if has_all:
-            playlist.remove_songs(songs)
-        elif has_some:
-            resp = ConfirmMultipleSongsAction(parent, playlist, songs).run()
-            if resp == ConfirmMultipleSongsAction.REMOVE:
-                playlist.remove_songs(songs)
-            elif resp == ConfirmMultipleSongsAction.ADD:
-                playlist.extend(songs)
-            return
-        else:
-            playlist.extend(songs)
-
-
-class ConfirmMultipleSongsAction(qltk.Message):
-    """Dialog to ask the user what to do when selecting a playlist
-       for multiple songs with a mix of inclusion"""
-
-    ADD, REMOVE = range(2)
-
-    def __init__(self, parent, playlist, songs):
-
-        desc = ngettext("What do you want to do with that %d song?",
-                        "What do you want to do with those %d songs?",
-                        len(songs)) % len(songs)
-
-        title = _("Confirm action for playlist \"%s\"") % playlist.name
-        super(ConfirmMultipleSongsAction, self).__init__(
-            Gtk.MessageType.QUESTION, parent, title, desc,
-            Gtk.ButtonsType.NONE)
-
-        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Add"), Icons.LIST_ADD, self.ADD)
-        self.add_icon_button(_("_Remove"), Icons.LIST_REMOVE, self.REMOVE)
+        toggle_playlist(parent, playlist, songs)

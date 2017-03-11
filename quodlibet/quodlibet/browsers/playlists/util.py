@@ -11,7 +11,7 @@ from gi.repository import Gtk
 from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn
 
 import quodlibet
-from quodlibet import _
+from quodlibet import ngettext, _
 from quodlibet import formats, qltk
 from quodlibet.qltk import Icons
 from quodlibet.qltk.getstring import GetStringDialog
@@ -129,3 +129,42 @@ def __parse_playlist(name, plfilename, files, library):
     win.destroy()
     playlist.extend(filter(None, songs))
     return playlist
+
+
+def toggle_playlist(parent, playlist, songs):
+    """Toggles a playlist on the specified songs, opening a dialog to confirm
+       the action in case there is a mix of inclusion"""
+
+    has_some, has_all = playlist.has_songs(songs)
+    if has_all:
+        playlist.remove_songs(songs)
+    elif has_some:
+        resp = ConfirmMultipleSongsAction(parent, playlist, songs).run()
+        if resp == ConfirmMultipleSongsAction.REMOVE:
+            playlist.remove_songs(songs)
+        elif resp == ConfirmMultipleSongsAction.ADD:
+            playlist.extend(songs)
+    else:
+        playlist.extend(songs)
+
+
+class ConfirmMultipleSongsAction(qltk.Message):
+    """Dialog to ask the user what to do when selecting a playlist
+       for multiple songs with a mix of inclusion"""
+
+    ADD, REMOVE = range(2)
+
+    def __init__(self, parent, playlist, songs):
+
+        desc = ngettext("What do you want to do with that %d song?",
+                        "What do you want to do with those %d songs?",
+                        len(songs)) % len(songs)
+
+        title = _("Confirm action for playlist \"%s\"") % playlist.name
+        super(ConfirmMultipleSongsAction, self).__init__(
+            Gtk.MessageType.QUESTION, parent, title, desc,
+            Gtk.ButtonsType.NONE)
+
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Add"), Icons.LIST_ADD, self.ADD)
+        self.add_icon_button(_("_Remove"), Icons.LIST_REMOVE, self.REMOVE)
