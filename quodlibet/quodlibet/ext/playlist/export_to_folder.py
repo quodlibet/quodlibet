@@ -43,7 +43,7 @@ class ExportToFolderDialog(Dialog):
         destination_label = Gtk.Label(_("Destination folder:"))
         destination_label.set_line_wrap(True)
         destination_label.set_xalign(0.0)
-        box.pack_start(destination_label, True, True, 0)
+        box.pack_start(destination_label, False, False, 0)
 
         frame = Gtk.Frame()
         self.directory_chooser = Gtk.FileChooserWidget(
@@ -58,11 +58,11 @@ class ExportToFolderDialog(Dialog):
         pattern_label = Gtk.Label(_("Filename pattern:"))
         pattern_label.set_line_wrap(True)
         pattern_label.set_xalign(0.0)
-        box.pack_start(pattern_label, True, True, 0)
+        box.pack_start(pattern_label, False, False, 0)
 
         self.pattern_entry = UndoEntry()
         self.pattern_entry.set_text(pattern)
-        box.pack_start(self.pattern_entry, True, True, 0)
+        box.pack_start(self.pattern_entry, False, False, 0)
 
         self.vbox.pack_start(box, True, True, 0)
 
