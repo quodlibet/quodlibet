@@ -68,10 +68,10 @@ be freely used, distributed, and/or modified, in any form and for any
 purpose, as long as this notice is preserved. There is no warranty, either
 express or implied, for this software
 """, """
-This program is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2, or (at your
-option) any later version.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 """, """
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
