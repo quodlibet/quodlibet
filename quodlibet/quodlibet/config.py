@@ -96,9 +96,6 @@ INITIAL = {
         "covergrid_magnification": "3.0", # show text in covergrid view
         "covergrid_all": "0", # show "all albums" in covergrid view
     },
-    # width of paneds in the paned browser
-    "browser_paned_widths": {
-    },
     # Kind of a dumping ground right now, should probably be
     # cleaned out later.
     "settings": {
