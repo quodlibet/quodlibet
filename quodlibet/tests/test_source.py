@@ -20,7 +20,10 @@ def iter_py_paths():
     import quodlibet
     root = os.path.dirname(quodlibet.__path__[0])
 
-    skip = [os.path.join(root, "docs")]
+    skip = [
+        os.path.join(root, "docs"),
+        os.path.join(root, "quodlibet", "optpackages"),
+    ]
     for dirpath, dirnames, filenames in os.walk(root):
         if any((dirpath.startswith(s + os.sep) or s == dirpath)
                for s in skip):
