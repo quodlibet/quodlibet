@@ -117,7 +117,7 @@ pytest==3.0.5
 
     if [ "${PYTHON_ID}" = "python2" ]; then
         build_pip install --no-deps --no-binary ":all:" --upgrade \
-            --force-reinstall "futures==3.0.5"
+            --force-reinstall "futures==3.0.5" "faulthandler==2.4"
     fi
 
     build_pacman --noconfirm -Rdd mingw-w64-"${ARCH}"-shared-mime-info \

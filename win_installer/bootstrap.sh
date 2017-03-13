@@ -18,7 +18,7 @@ function install_python_packages {
         pyflakes pytest
 
     if [ "$1" = "2" ]; then
-        pip$1 install futures
+        pip$1 install --no-binary ":all:" futures faulthandler
     fi
 
 }
