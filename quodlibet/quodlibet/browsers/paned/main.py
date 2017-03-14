@@ -3,6 +3,7 @@
 #           2009,2010 Steven Robertson
 #           2009-2013 Christoph Reiter
 #           2011,2013 Nick Boultbee
+#                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -23,6 +24,7 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.x import ScrolledWindow, Align
 from quodlibet.util.library import background_filter
 from quodlibet.util import connect_destroy
+from quodlibet.qltk.paned import ConfigMultiRHPaned
 
 from .prefs import PreferencesButton
 from .util import get_headers
@@ -102,6 +104,8 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self.main_box = qltk.ConfigRPaned("browsers", "panedbrowser_pos", 0.4)
         self.pack_start(self.main_box, True, True, 0)
 
+        self.multi_paned = ConfigMultiRHPaned("browsers",
+                                              "panedbrowser_pane_widths")
         self.refresh_panes()
 
         for child in self.get_children():
@@ -113,14 +117,13 @@ class PanedBrowser(Browser, util.InstanceTracker):
     def set_wide_mode(self, do_wide):
         hor = Gtk.Orientation.HORIZONTAL
         ver = Gtk.Orientation.VERTICAL
-        panes = self.main_box.get_child1()
 
         if do_wide:
             self.main_box.props.orientation = hor
-            panes.props.orientation = ver
+            self.multi_paned.change_orientation(horizontal=False)
         else:
             self.main_box.props.orientation = ver
-            panes.props.orientation = hor
+            self.multi_paned.change_orientation(horizontal=True)
 
     def _get_text(self):
         return self._sb_box.get_text()
@@ -193,31 +196,29 @@ class PanedBrowser(Browser, util.InstanceTracker):
             pane.scroll(song)
 
     def refresh_panes(self):
-        hbox = self.main_box.get_child1()
-        if hbox:
-            hbox.destroy()
-
-        hbox = Gtk.HBox(spacing=6)
-        hbox.set_homogeneous(True)
+        self.multi_paned.destroy()
 
         # Fill in the pane list. The last pane reports back to us.
         self._panes = [self]
         for header in reversed(get_headers()):
             pane = Pane(self._library, header, self._panes[0])
+            pane.connect('row-activated',
+                         lambda *x: self.songs_activated())
             self._panes.insert(0, pane)
         self._panes.pop()  # remove self
 
+        # Put the panes in scrollable windows
+        sws = []
         for pane in self._panes:
-            pane.connect('row-activated',
-                         lambda *x: self.songs_activated())
             sw = ScrolledWindow()
             sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
             sw.set_shadow_type(Gtk.ShadowType.IN)
             sw.add(pane)
-            hbox.pack_start(sw, True, True, 0)
+            sws.append(sw)
 
-        self.main_box.pack1(hbox, True, False)
-        hbox.show_all()
+        self.multi_paned.set_widgets(sws)
+        self.multi_paned.show_all()
+        self.main_box.pack1(self.multi_paned.get_paned(), True, False)
 
         self.__star = {}
         for p in self._panes:
@@ -230,6 +231,9 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self._panes[-1].inhibit()
         self.activate()
         self._panes[-1].uninhibit()
+
+    def make_pane_widths_equal(self):
+        self.multi_paned.make_pane_widths_equal()
 
     def __get_filter_pane(self, key):
         """Get the best pane for filtering etc."""
