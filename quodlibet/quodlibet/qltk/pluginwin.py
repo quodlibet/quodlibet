@@ -375,15 +375,18 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         enabled_combo.connect("changed", lambda s: filter_model.refilter())
         enabled_combo.set_tooltip_text("Filter by plugin state / tag")
         fb.pack_start(enabled_combo, False, True, 0)
+        self._enabled_combo = enabled_combo
 
         type_combo = PluginTypeFilterCombo()
         type_combo.connect("changed", lambda s: filter_model.refilter())
         type_combo.set_tooltip_text("Filter by plugin type")
         fb.pack_start(type_combo, False, True, 0)
+        self._type_combo = type_combo
 
         filter_entry = Gtk.SearchEntry()
         filter_entry.set_tooltip_text("Filter by plugin name or description")
         filter_entry.connect("changed", lambda s: filter_model.refilter())
+        self._filter_entry = filter_entry
 
         sw.add(tv)
         sw.set_shadow_type(Gtk.ShadowType.IN)
@@ -489,6 +492,13 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         config.set("memory", "plugin_selection", plugin.id)
         container.set_plugin(plugin)
 
+    def unfilter(self):
+        """Clears all filters applied to the list"""
+
+        self._enabled_combo.set_active(0)
+        self._type_combo.set_active(0)
+        self._filter_entry.set_text(u"")
+
     def move_to(self, plugin_id):
         def selector(r):
             return r[0].id == plugin_id
@@ -496,8 +506,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         if self._list_view.select_by_func(selector):
             return True
         else:
-            self._filter_combo.set_active(0)
-            self._filter_entry.clear()
+            self.unfilter()
             return self._list_view.select_by_func(selector)
 
     def __plugin_toggled(self, tv, model, iter_, enabled):
