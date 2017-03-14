@@ -8,7 +8,6 @@
 from gi.repository import GLib
 
 from quodlibet import _
-from quodlibet import config
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.util.string import decode
@@ -329,13 +328,3 @@ class XinePlaylistPlayer(BasePlayer):
             if uri.startswith(plugin.lower()):
                 return True
         return False
-
-
-def init(librarian):
-    """May raise PlayerError"""
-
-    try:
-        driver = config.get("settings", "xine_driver")
-    except:
-        driver = None
-    return XinePlaylistPlayer(driver, librarian)

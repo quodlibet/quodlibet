@@ -18,7 +18,7 @@ try:
     from quodlibet.player.gstbe.util import GStreamerSink as Sink
     from quodlibet.player.gstbe.util import parse_gstreamer_taglist
     from quodlibet.player.gstbe.util import find_audio_sink
-    from quodlibet.player.gstbe.prefs import GstPlayerPreferences
+    from quodlibet.player.gstbe.prefs import GstBackendPreferences
 except ImportError:
     pass
 
@@ -47,7 +47,7 @@ class TGstPlayerPrefs(TestCase):
         config.quit()
 
     def test_main(self):
-        widget = GstPlayerPreferences(None, True)
+        widget = GstBackendPreferences(None, True)
         widget.destroy()
 
 

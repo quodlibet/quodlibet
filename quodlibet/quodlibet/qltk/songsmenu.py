@@ -278,7 +278,8 @@ class SongsMenu(Gtk.Menu):
 
     def __init__(self, library, songs, plugins=True, playlists=True,
                  queue=True, devices=True, remove=True, delete=False,
-                 edit=True, ratings=True, items=None, accels=True):
+                 edit=True, ratings=True, items=None, accels=True,
+                 preview=True):
         super(SongsMenu, self).__init__()
 
         # The library may actually be a librarian; if it is, use it,
@@ -341,6 +342,25 @@ class SongsMenu(Gtk.Menu):
                 b.set_sensitive(can_add and bool(songs))
                 b.set_submenu(submenu)
                 self.append(b)
+
+        from quodlibet import app
+        if preview and app.preview_player:
+            # Add a pre-listen menu item
+            b = qltk.MenuItem(_("_Pre-listen"), Icons.MEDIA_PLAYBACK_START)
+
+            def prelisten_cb(item, songs):
+                songs = [s for s in songs if s.can_add]
+                if songs:
+                    from quodlibet import app
+                    app.preview_playlist.set(songs)
+                    app.preview_player.next()
+
+            b.connect('activate', prelisten_cb, songs)
+            if accels:
+                qltk.add_fake_accel(b, "<shift>Return")
+            self.append(b)
+            b.set_sensitive(can_add and bool(songs))
+
         if queue:
             b = qltk.MenuItem(_("Add to _Queue"), Icons.LIST_ADD)
 

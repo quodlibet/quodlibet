@@ -357,9 +357,9 @@ class PreferencesWindow(UniqueWindow):
             self.title = _("Playback")
 
             # player backend
-            if app.player and hasattr(app.player, 'PlayerPreferences'):
-                player_prefs = app.player.PlayerPreferences()
-                f = qltk.Frame(_("Output Configuration"), child=player_prefs)
+            if app.backend and hasattr(app.backend, 'BackendPreferences'):
+                backend_prefs = app.backend.BackendPreferences()
+                f = qltk.Frame(_("Output Configuration"), child=backend_prefs)
                 self.pack_start(f, False, True, 0)
 
             # replaygain
