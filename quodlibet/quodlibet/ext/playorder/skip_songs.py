@@ -68,6 +68,9 @@ class SkipZeros(ShufflePlugin, OrderInOrder):
     def _should_skip(self, playlist, song_iter):
         song = playlist.get_value(song_iter)
 
+        if not song.has_rating:
+            return False
+
         rating = song("~#rating")
         threshold = pconfig.getfloat("threshold")
 
