@@ -4,13 +4,13 @@
 # published by the Free Software Foundation
 
 from gi.repository import Gdk, Gtk
+from senf import fsnative, fsn2uri, fsn2bytes
 
 from quodlibet import app
 from quodlibet import qltk
 from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.playlists.util import PLAYLISTS, parse_m3u, parse_pls
 from quodlibet.qltk.songlist import DND_QL
-from quodlibet.senf import fsnative
 from quodlibet.util.collection import FileBackedPlaylist
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, _TEMP_DIR, \
     init_fake_app, destroy_fake_app
@@ -19,8 +19,6 @@ from .helper import dummy_path
 
 import os
 import shutil
-
-from senf import fsn2uri, fsn2bytes
 
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.library import SongLibrary

@@ -17,9 +17,6 @@ if PY2:
 from ._import import install_redirect_import_hook
 install_redirect_import_hook()
 
-from . import senf
-sys.modules["senf"] = senf
-
 from .util.i18n import _, C_, N_, ngettext, npgettext
 from .util.dprint import print_d, print_e, print_w
 from ._init import init_cli, init

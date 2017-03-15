@@ -7,13 +7,13 @@
 
 import sys
 import os
-
 from optparse import OptionParser
+
+from senf import argv as sys_argv
 
 import quodlibet
 from quodlibet import const
 from quodlibet.util.dprint import print_
-from quodlibet.senf import argv as sys_argv
 
 from .base import Command, CommandError
 from . import commands

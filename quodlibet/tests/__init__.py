@@ -23,8 +23,9 @@ try:
 except ImportError:
     xvfbwrapper = None
 
+from senf import fsnative, path2fsn, environ
+
 import quodlibet
-from quodlibet.senf import fsnative, path2fsn, environ
 from quodlibet.util.path import xdg_get_cache_home
 from quodlibet import util
 

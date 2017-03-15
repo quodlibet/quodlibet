@@ -56,3 +56,7 @@ def install_redirect_import_hook():
     import_hook = RedirectImportHook(
         "quodlibet.optpackages", ["raven", "contextlib2"])
     sys.meta_path.insert(0, import_hook)
+
+    import_hook = RedirectImportHook(
+        "quodlibet.packages", ["senf"])
+    sys.meta_path.insert(0, import_hook)
