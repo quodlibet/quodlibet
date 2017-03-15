@@ -14,6 +14,9 @@ if PY2:
     reload(sys)
     sys.setdefaultencoding("utf-8")
 
+from ._import import install_redirect_import_hook
+install_redirect_import_hook()
+
 from . import senf
 sys.modules["senf"] = senf
 

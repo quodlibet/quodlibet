@@ -16,7 +16,7 @@ from quodlibet.compat import PY2
 from quodlibet.const import MinVersions
 from quodlibet import config
 from quodlibet.util import is_osx, is_windows, i18n
-from quodlibet.util.dprint import print_d, print_e, PrintHandler
+from quodlibet.util.dprint import print_e, PrintHandler
 from quodlibet.util.urllib import install_urllib2_ca_file
 
 from ._main import get_base_dir, is_release, get_image_dir
@@ -27,16 +27,9 @@ _initialized = False
 
 
 def _init_gtk_debug(no_excepthook):
-    from gi.repository import GLib
-    from quodlibet.qltk.debugwindow import excepthook
+    from quodlibet.errorreport import enable_errorhook
 
-    print_d("Initializing debugging extensions")
-
-    def _override_exceptions():
-        print_d("Enabling custom exception handler.")
-        sys.excepthook = excepthook
-    if not no_excepthook:
-        GLib.idle_add(_override_exceptions)
+    enable_errorhook(not no_excepthook)
 
 
 def is_init():
