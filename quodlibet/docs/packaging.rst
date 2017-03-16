@@ -36,6 +36,7 @@ The following software is needed to start Ex Falso or Quod Libet.
 * **libsoup** (>= 2.44)
 * On OS X only: **PyObjC**
 * **feedparser**
+* **faulthandler**
 
 For icons a complete **icon theme** is needed, preferably with symbolic icons. 
 For example **adwaita-icon-theme** or the older **gnome-icon-theme** + 
