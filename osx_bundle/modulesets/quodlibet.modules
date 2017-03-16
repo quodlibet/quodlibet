@@ -85,6 +85,7 @@
       <dep package="futures"/>
       <dep package="pycodestyle"/>
       <dep package="pyflakes"/>
+      <dep package="faulthandler"/>
     </dependencies>
   </metamodule>
 
@@ -528,6 +529,14 @@
     <dep package="pyobjc-core"/>
     <dep package="pyobjc-framework-Cocoa"/>
     <dep package="pyobjc-framework-Quartz"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="faulthandler">
+    <branch repo="pypi" checkoutdir="faulthandler-2.4" module="30/22/d65d1357a98ef5d28e1fd316f23a307c953d459d0239807b3e4350345d18/faulthandler-2.4.tar.gz"
+        version="2.4" md5sum="110960933b0902334e8804eb4ea20750"/>
+    <dependencies>
+    <dep package="setuptools"/>
     </dependencies>
   </distutils>
 

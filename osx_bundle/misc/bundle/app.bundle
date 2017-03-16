@@ -230,6 +230,9 @@
   <binary>
     ${prefix}/lib/python2.7/site-packages/Quartz/QuickLookUI/*.so
   </binary>
+  <binary>
+    ${prefix}/lib/python2.7/site-packages/faulthandler.so
+  </binary>
 
   <data>
     ${prefix}/lib/girepository-1.0
