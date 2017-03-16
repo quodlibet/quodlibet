@@ -29,6 +29,7 @@ quodlibet/cli.py
 quodlibet/devices/_base.py
 quodlibet/devices/__init__.py
 quodlibet/devices/storage.py
+quodlibet/errorreport/ui.py
 quodlibet/exfalso.py
 quodlibet/ext/covers/artwork_url.py
 quodlibet/ext/covers/discogs.py
@@ -63,7 +64,6 @@ quodlibet/ext/events/radioadmute.py
 quodlibet/ext/events/randomalbum.py
 quodlibet/ext/events/rbimport.py
 quodlibet/ext/events/screensaver.py
-quodlibet/ext/playorder/skip_songs.py
 quodlibet/ext/events/searchprovider.py
 quodlibet/ext/events/seekbar.py
 quodlibet/ext/events/squeezebox_sync.py
@@ -93,6 +93,7 @@ quodlibet/ext/playorder/follow.py
 quodlibet/ext/playorder/playcounteq.py
 quodlibet/ext/playorder/queue.py
 quodlibet/ext/playorder/reverse.py
+quodlibet/ext/playorder/skip_songs.py
 quodlibet/ext/playorder/track_repeat.py
 quodlibet/ext/query/conditional.py
 quodlibet/ext/query/pythonexpression.py
@@ -162,7 +163,6 @@ quodlibet/qltk/cbes.py
 quodlibet/qltk/chooser.py
 quodlibet/qltk/controls.py
 quodlibet/qltk/data_editors.py
-quodlibet/qltk/debugwindow.py
 quodlibet/qltk/delete.py
 quodlibet/qltk/downloader.py
 quodlibet/qltk/edittags.py

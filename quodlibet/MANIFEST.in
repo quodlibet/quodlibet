@@ -19,9 +19,10 @@ include data/*.sh
 include data/*.zsh
 include data/README.rst
 include MANIFEST.in
-include quodlibet/senf/README.rst
+include quodlibet/packages/README.rst
 include *.py
 recursive-include docs *.py Makefile *.rst *.png *.ico *.svg *.css
 prune docs/_build_guide
 prune docs/_build_all
 prune docs/_rtd_theme*
+prune quodlibet/optpackages

@@ -85,6 +85,7 @@
       <dep package="futures"/>
       <dep package="pycodestyle"/>
       <dep package="pyflakes"/>
+      <dep package="faulthandler"/>
     </dependencies>
   </metamodule>
 
@@ -259,12 +260,13 @@
 
   <autotools id="glib" autogen-sh="autoreconf"
              autogenargs="--with-pcre=internal">
-    <branch module="glib/2.50/glib-2.50.1.tar.xz"  version="2.50.1"
-            hash="sha256:2ef87a78f37c1eb5b95f4cc95efd5b66f69afad9c9c0899918d04659cf6df7dd">
+    <branch module="glib/2.51/glib-2.51.5.tar.xz"  version="2.51.5"
+            hash="sha256:fec5483099c8309c4b4c06cd88eb37f464f0f4642bdc225344cd497fe25abe75">
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/0001-Fix-g_get_monotonic_time-on-non-Intel-Darwin.patch" strip="1"/>
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug-724590-GSlice-slab_stack-corruption.patch" strip="1"/>
       <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/gio-in-reserved-in-gcc-48.patch" strip="1"/>
-      <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/0001-Bug747146-Build-cocoanotification-only-if-supported.patch" strip="1"/>
+      <patch file="https://bug734946.bugzilla-attachments.gnome.org/attachment.cgi?id=347983" strip="1"/>
+      <patch file="https://bug734946.bugzilla-attachments.gnome.org/attachment.cgi?id=347989" strip="1"/>
     </branch>
     <dependencies>
         <dep package="libffi"/>
@@ -276,8 +278,10 @@
 
   <autotools id="gtk+-3.0" autogen-sh="autogen.sh"
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
-    <branch module="gtk+/3.22/gtk+-3.22.5.tar.xz" version="3.22.5"
-        hash="sha256:693fa0ac643c59ccd51db99cabe476b4e0a41fd4f0c3c8b3e3ef38f94b2e7334">
+    <branch module="gtk+/3.22/gtk+-3.22.10.tar.xz" version="3.22.10"
+        hash="sha256:352a90b3d09256d597cb2768ee5d685285ccc284ff22adf19df16753a829c554">
+        <patch file="https://bug780019.bugzilla-attachments.gnome.org/attachment.cgi?id=347944" strip="1"/>
+        <patch file="https://bug734946.bugzilla-attachments.gnome.org/attachment.cgi?id=347950" strip="1"/>
     </branch>
     <dependencies>
         <dep package="glib"/>
@@ -528,6 +532,14 @@
     <dep package="pyobjc-core"/>
     <dep package="pyobjc-framework-Cocoa"/>
     <dep package="pyobjc-framework-Quartz"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="faulthandler">
+    <branch repo="pypi" checkoutdir="faulthandler-2.4" module="30/22/d65d1357a98ef5d28e1fd316f23a307c953d459d0239807b3e4350345d18/faulthandler-2.4.tar.gz"
+        version="2.4" md5sum="110960933b0902334e8804eb4ea20750"/>
+    <dependencies>
+    <dep package="setuptools"/>
     </dependencies>
   </distutils>
 

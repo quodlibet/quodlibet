@@ -9,7 +9,7 @@ import os
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 import pytest
-import quodlibet
+
 from quodlibet.compat import PY3
 from quodlibet.util import is_wine, is_windows
 
@@ -24,6 +24,8 @@ except ImportError:
 from tests import TestCase
 from tests.helper import capture_output
 
+from .util import iter_project_py_files
+
 
 def create_pool():
     if is_wine() or (PY3 and is_windows()):
@@ -32,14 +34,6 @@ def create_pool():
         return ThreadPoolExecutor(1)
     else:
         return ProcessPoolExecutor(None)
-
-
-def iter_py_files(root):
-    for base, dirs, files in os.walk(root):
-        for file_ in files:
-            path = os.path.join(base, file_)
-            if os.path.splitext(path)[1] == ".py":
-                yield path
 
 
 def _check_file(f):
@@ -62,8 +56,7 @@ class TPyFlakes(TestCase):
     def test_all(self):
         assert pyflakes is not None, "pyflakes is missing"
 
-        files = iter_py_files(
-            os.path.dirname(os.path.abspath(quodlibet.__path__[0])))
+        files = iter_project_py_files()
         files = (f for f in files if not f.endswith("compat.py"))
         errors = check_files(files)
         if errors:

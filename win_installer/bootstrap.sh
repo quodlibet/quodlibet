@@ -2,8 +2,9 @@
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 set -e
 
@@ -18,7 +19,7 @@ function install_python_packages {
         pyflakes pytest
 
     if [ "$1" = "2" ]; then
-        pip$1 install futures
+        pip$1 install --no-binary ":all:" futures faulthandler
     fi
 
 }

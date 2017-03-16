@@ -2,8 +2,9 @@
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """
 Deletes unneeded DLLs and checks DLL dependencies.
@@ -39,7 +40,7 @@ SYSTEM_LIBS = ['advapi32.dll',
     "msvcr71.dll", "msvcr80.dll", "msvcrt.dll", "ole32.dll", "oleaut32.dll",
     "opengl32.dll", "rpcrt4.dll", "setupapi.dll", "shell32.dll", "user32.dll",
     "usp10.dll", "winmm.dll", "winspool.drv", "wldap32.dll", "ws2_32.dll",
-    "wsock32.dll",
+    "wsock32.dll", "shlwapi.dll"
 ]
 
 

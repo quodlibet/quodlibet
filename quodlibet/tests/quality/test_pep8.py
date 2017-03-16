@@ -5,17 +5,18 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
 import itertools
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 import pytest
-import quodlibet
+
 from quodlibet.compat import PY3
 from quodlibet.util import is_wine, is_windows
 
 from tests import TestCase
 from tests.helper import capture_output
+
+from .util import iter_project_py_files
 
 try:
     import pep8 as pycodestyle
@@ -33,14 +34,6 @@ def create_pool():
         return ThreadPoolExecutor(1)
     else:
         return ProcessPoolExecutor(None)
-
-
-def iter_py_files(root):
-    for base, dirs, files in os.walk(root):
-        for file_ in files:
-            path = os.path.join(base, file_)
-            if os.path.splitext(path)[1] == ".py":
-                yield path
 
 
 def _check_file(f, ignore):
@@ -66,8 +59,7 @@ class TPEP8(TestCase):
     def test_all(self):
         assert pycodestyle is not None, "pep8/pycodestyle is missing"
 
-        files = iter_py_files(
-            os.path.dirname(os.path.abspath(quodlibet.__path__[0])))
+        files = iter_project_py_files()
         errors = check_files(files, ignore=self.IGNORE)
         if errors:
             raise Exception("\n".join(errors))
