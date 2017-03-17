@@ -11,7 +11,7 @@
 import os
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GObject
-from senf import uri2fsn, fsnative
+from senf import uri2fsn, fsnative, path2fsn
 
 import quodlibet
 
@@ -29,7 +29,8 @@ from quodlibet.qltk.appwindow import AppWindow
 from quodlibet.update import UpdateDialog
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.browser import LibraryBrowser, FilterMenu
-from quodlibet.qltk.chooser import FolderChooser, FileChooser
+from quodlibet.qltk.chooser import choose_folders, choose_files, \
+    create_chooser_filter
 from quodlibet.qltk.controls import PlayControls
 from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.getstring import GetStringDialog
@@ -53,9 +54,8 @@ from quodlibet.qltk.x import SeparatorMenuItem, MenuItem, CellRendererPixbuf
 from quodlibet.qltk import Icons
 from quodlibet.qltk.about import AboutDialog
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
-from quodlibet.util.library import get_scan_dirs, set_scan_dirs
+from quodlibet.util.library import get_scan_dirs
 from quodlibet.util import connect_obj, print_d
-from quodlibet.util.path import glib2fsn, get_home_dir
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
 from quodlibet.qltk.songlistcolumns import SongListColumn
@@ -671,7 +671,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def __init__(self, library, player, headless=False, restore_cb=None):
         super(QuodLibetWindow, self).__init__(dialog=False)
-        self.last_dir = get_home_dir()
 
         self.__destroyed = False
         self.__update_title(player)
@@ -1368,57 +1367,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                     self.__library.add([RemoteFile(name)])
 
     def open_chooser(self, action):
-        last_dir = self.last_dir
-        if not os.path.exists(last_dir):
-            last_dir = get_home_dir()
-
-        class MusicFolderChooser(FolderChooser):
-            def __init__(self, parent, init_dir):
-                super(MusicFolderChooser, self).__init__(
-                    parent, _("Add Music"), init_dir)
-
-                cb = Gtk.CheckButton(_("Watch this folder for new songs"))
-                # enable if no folders are being watched
-                cb.set_active(not get_scan_dirs())
-                cb.show()
-                self.set_extra_widget(cb)
-
-            def run(self):
-                fns = super(MusicFolderChooser, self).run()
-                cb = self.get_extra_widget()
-                return fns, cb.get_active()
-
-        class MusicFileChooser(FileChooser):
-            def __init__(self, parent, init_dir):
-                super(MusicFileChooser, self).__init__(
-                    parent, _("Add Music"), formats.filter, init_dir)
-
         if action.get_name() == "AddFolders":
-            dialog = MusicFolderChooser(self, last_dir)
-            fns, do_watch = dialog.run()
-            dialog.destroy()
+            fns = choose_folders(self, _("Add Music"), _("_Add Folders"))
             if fns:
-                fns = list(map(glib2fsn, fns))
                 # scan them
-                self.last_dir = fns[0]
                 copool.add(self.__library.scan, fns, cofuncid="library",
                            funcid="library")
-
-                # add them as library scan directory
-                if do_watch:
-                    dirs = get_scan_dirs()
-                    for fn in fns:
-                        if fn not in dirs:
-                            dirs.append(fn)
-                    set_scan_dirs(dirs)
         else:
-            dialog = MusicFileChooser(self, last_dir)
-            fns = dialog.run()
-            dialog.destroy()
+            patterns = ["*" + path2fsn(k) for k in formats.loaders.keys()]
+            choose_filter = create_chooser_filter(_("Music Files"), patterns)
+            fns = choose_files(
+                self, _("Add Music"), _("_Add Files"), choose_filter)
             if fns:
-                fns = list(map(glib2fsn, fns))
-                self.last_dir = os.path.dirname(fns[0])
-                for filename in map(os.path.realpath, fns):
+                for filename in fns:
                     self.__library.add_filename(filename)
 
     def __songs_popup_menu(self, songlist):
