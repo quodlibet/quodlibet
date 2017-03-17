@@ -76,6 +76,8 @@ def _run_chooser(parent, chooser):
 
     if _response is not None:
         response = _response
+        while Gtk.events_pending():
+            Gtk.main_iteration()
     else:
         response = chooser.run()
 
