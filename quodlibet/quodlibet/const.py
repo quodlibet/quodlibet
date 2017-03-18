@@ -122,6 +122,7 @@ Eric Le Lay
 Federico Pelloni
 Felix Krull
 Florian Demmer
+Fredrik Strupe
 Guillaume Chazarain
 Hans Scholze
 Iñigo Serna
@@ -168,6 +169,7 @@ Tomasz Miasko
 Tomasz Torcz
 Tshepang Lekhonkhobe
 Türerkan İnce
+Uriel Zajaczkovski
 Vasiliy Faronov
 Victoria Hayes
 Zack Weinberg
