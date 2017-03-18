@@ -224,9 +224,10 @@ class Feed(list):
         opener = build_opener(feedparser._FeedURLHandler())
         try:
             result = opener.open(req)
-            content_type = result.headers.get('Content-Type', "Unknown type")
+            ct_hdr = result.headers.get('Content-Type', "Unknown type")
+            content_type = ct_hdr.split(';')[0]
             status = result.code if PY2 else result.status
-            print_d("Pre-check: %s returned %s in %s" %
+            print_d("Pre-check: %s returned %s with content type '%s'" %
                     (self.uri, status, content_type))
             if content_type not in feedparser.ACCEPT_HEADER:
                 print_w("Unusable content: %s. Perhaps %s is not a feed?" %
