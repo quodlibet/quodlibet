@@ -37,7 +37,8 @@ NBP_EXAMPLES = """\
 <tracknumber> - <title>
 <tracknumber> - <artist> - <title>
 /path/<artist> - <album>/<tracknumber>. <title>
-/path/<artist>/<album>/<tracknumber> - <title>"""
+/path/<artist>/<album>/<tracknumber> - <title>
+~/<albumartist|<albumartist>|<artist>>/(<~year>) <album>/<tracknumber|<tracknumber> - ><title>"""
 
 
 class SpacesToUnderscores(FilterCheckButton):
