@@ -54,7 +54,7 @@ The search terms can't use quotes (``"``), slashes (``/``), hashes (``#``),
 pipes (``|``), ampersands (``&``), or bangs (``!``); these characters have
 special meanings for advanced searches.
 
-In QL 3.9 onwards, you can also use `!=` to search for things not equal:
+In QL 3.9 onwards, you can also use `!=` to search for things not equal::
 
     artist != delerium
     genre != /.+ Jazz/
@@ -110,7 +110,7 @@ using ``!``::
     genre = !Audiobook
 
 is probably a good idea when playing your whole library on shuffle.
-Note again that in QL 3.9 onwards you can use the alternative syntax of
+Note again that in QL 3.9 onwards you can use the alternative syntax of::
 
     genre != Audiobook
 
