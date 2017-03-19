@@ -17,13 +17,18 @@ import errno
 import re
 import atexit
 
-import faulthandler
+try:
+    import faulthandler
+except ImportError:
+    faulthandler = None
+
 
 from quodlibet.compat import text_type
 from quodlibet.util.dprint import print_exc
 
 
 _fileobj = None
+_enabled = False
 
 
 class FaultHandlerCrash(Exception):
@@ -70,10 +75,15 @@ def enable(path):
         IOError: In case the location is not writable
     """
 
-    global _fileobj
+    global _fileobj, _enabled
 
     if _fileobj is not None:
         raise Exception("already enabled")
+
+    _enabled = True
+
+    if faulthandler is None:
+        return
 
     try:
         _fileobj = open(path, "rb+")
@@ -90,7 +100,10 @@ def disable():
     Does not raise.
     """
 
-    global _fileobj
+    global _fileobj, _enabled
+
+    assert _enabled
+    _enabled = False
 
     if _fileobj is None:
         return
@@ -107,7 +120,8 @@ def disable():
 
 @atexit.register
 def _at_exit():
-    disable()
+    if _enabled:
+        disable()
 
 
 def raise_and_clear_error():
@@ -120,7 +134,9 @@ def raise_and_clear_error():
         FaultHandlerCrash
     """
 
-    global _fileobj
+    global _fileobj, _enabled
+
+    assert _enabled
 
     if _fileobj is None:
         return
