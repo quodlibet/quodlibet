@@ -30,7 +30,7 @@ png16: $(QL_SOURCE) $(EF_SOURCE)
 
 png24: $(QL_SOURCE) $(EF_SOURCE)
 	inkscape $(QL_SOURCE) --export-png 24x24/apps/$(QL_DEST) -w 24 -h 24 ;
-	inkscape $(EF_SOURCE) --export-png 24x24/apps/$(EF_DEST) -w 24 -h 24
+	inkscape $(EF_SOURCE) --export-png 24x24/apps/$(EF_DEST) -w 24 -h 24 ;
 	inkscape $(QL_SYM_SOURCE) --export-png 24x24/apps/$(QL_SYM_DEST) \
 		-w 24 -h 24 ;
 	inkscape $(EF_SYM_SOURCE) --export-png 24x24/apps/$(EF_SYM_DEST) \
@@ -40,7 +40,7 @@ png24: $(QL_SOURCE) $(EF_SOURCE)
 
 png32: $(QL_SOURCE) $(EL_SOURCE)
 	inkscape $(QL_SOURCE) --export-png 32x32/apps/$(QL_DEST) -w 32 -h 32 ;
-	inkscape $(EF_SOURCE) --export-png 32x32/apps/$(EF_DEST) -w 32 -h 32
+	inkscape $(EF_SOURCE) --export-png 32x32/apps/$(EF_DEST) -w 32 -h 32 ;
 	inkscape $(QL_SYM_SOURCE) --export-png 32x32/apps/$(QL_SYM_DEST) \
 		-w 32 -h 32 ;
 	inkscape $(EF_SYM_SOURCE) --export-png 32x32/apps/$(EF_SYM_DEST) \
@@ -50,7 +50,7 @@ png32: $(QL_SOURCE) $(EL_SOURCE)
 
 png48: $(QL_SOURCE) $(EF_SOURCE)
 	inkscape $(QL_SOURCE) --export-png 48x48/apps/$(QL_DEST) -w 48 -h 48 ;
-	inkscape $(EF_SOURCE) --export-png 48x48/apps/$(EF_DEST) -w 48 -h 48
+	inkscape $(EF_SOURCE) --export-png 48x48/apps/$(EF_DEST) -w 48 -h 48 ;
 	inkscape $(QL_SYM_SOURCE) --export-png 48x48/apps/$(QL_SYM_DEST) \
 		-w 48 -h 48 ;
 	inkscape $(EF_SYM_SOURCE) --export-png 48x48/apps/$(EF_SYM_DEST) \
@@ -60,7 +60,7 @@ png48: $(QL_SOURCE) $(EF_SOURCE)
 
 png64: $(QL_SOURCE) $(EF_SOURCE)
 	inkscape $(QL_SOURCE) --export-png 64x64/apps/$(QL_DEST) -w 64 -h 64 ;
-	inkscape $(EF_SOURCE) --export-png 64x64/apps/$(EF_DEST) -w 64 -h 64
+	inkscape $(EF_SOURCE) --export-png 64x64/apps/$(EF_DEST) -w 64 -h 64 ;
 	inkscape $(QL_SYM_SOURCE) --export-png 64x64/apps/$(QL_SYM_DEST) \
 		-w 64 -h 64 ;
 	inkscape $(EF_SYM_SOURCE) --export-png 64x64/apps/$(EF_SYM_DEST) \
