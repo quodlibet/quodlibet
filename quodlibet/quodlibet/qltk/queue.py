@@ -215,6 +215,10 @@ class QueueExpander(Gtk.Expander):
 
     def __clear_queue(self, activator):
         self.model.clear()
+        stop_queue = config.getboolean("memory",
+                                       "queue_stop_after_empty",
+                                       False)
+        app.player_options.stop_after = stop_queue
 
     def __motion(self, wid, context, x, y, time):
         Gdk.drag_status(context, Gdk.DragAction.COPY, time)
