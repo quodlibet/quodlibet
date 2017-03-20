@@ -22,7 +22,7 @@ from quodlibet import util
 from quodlibet.formats import EmbeddedImage, AudioFileError
 from quodlibet.util.path import mtime
 from quodlibet.pattern import Pattern, error as PatternError
-from quodlibet.util.tags import USER_TAGS, sortkey
+from quodlibet.util.tags import USER_TAGS, sortkey, MACHINE_TAGS
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.compat import text_type, iteritems
 
@@ -82,6 +82,8 @@ class TagsCommand(Command):
         p.add_option("-c", "--columns", action="store", type="string",
                      help=_("Columns to display and order in terse mode (%s)")
                      % "tag,desc")
+        p.add_option("-a", "--all", action="store_true",
+                     help=_("Also list programmatic tags"))
 
     def _execute(self, options, args):
         if len(args) != 0:
@@ -95,8 +97,12 @@ class TagsCommand(Command):
         else:
             order = [n.strip() for n in options.columns.split(",")]
 
+        tag_names = list(USER_TAGS)
+        if options.all:
+            tag_names.extend(MACHINE_TAGS)
+
         tags = []
-        for key in USER_TAGS:
+        for key in tag_names:
             tags.append((key, util.tag(key)))
         tags.sort()
 
