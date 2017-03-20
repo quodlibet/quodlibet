@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #                2016 Nick Boultbee
+#                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -15,6 +16,7 @@ from quodlibet import ngettext, _
 from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk
+from quodlibet import app
 
 from quodlibet.util import connect_obj, connect_destroy, format_time_preferred
 from quodlibet.qltk import Icons, gtk_version, add_css
@@ -121,16 +123,27 @@ class QueueExpander(Gtk.Expander):
         outer.pack_start(close_button, False, False, 6)
         self.set_label_fill(True)
 
-        cb = ConfigCheckButton(
-            _("_Random"), "memory", "shufflequeue")
-        cb.connect('toggled', self.__queue_shuffle, self.queue.model)
-        cb.set_active(config.getboolean("memory", "shufflequeue"))
-        cb.set_no_show_all(True)
-        left.pack_start(cb, False, True, 0)
+        rand_checkbox = ConfigCheckButton(
+                _("_Random"), "memory", "shufflequeue")
+        rand_checkbox.connect('toggled',
+                              self.__queue_shuffle,
+                              self.queue.model)
+        rand_checkbox.set_active(config.getboolean("memory", "shufflequeue"))
+        rand_checkbox.set_no_show_all(True)
+        left.pack_start(rand_checkbox, False, True, 0)
+
+        stop_checkbox = ConfigCheckButton(
+            _("Stop After Empty"), "memory", "queue_stop_after_empty")
+        stop_checkbox.set_active(config.getboolean("memory",
+                                                   "queue_stop_after_empty",
+                                                   False))
+        stop_checkbox.set_no_show_all(True)
+        left.pack_start(stop_checkbox, False, True, 0)
 
         self.set_label_widget(outer)
         self.add(sw)
-        connect_obj(self, 'notify::expanded', self.__expand, cb, b)
+        connect_obj(self, 'notify::expanded', self.__expand, rand_checkbox, b)
+        connect_obj(self, 'notify::expanded', self.__expand, stop_checkbox, b)
 
         targets = [
             ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
@@ -147,7 +160,8 @@ class QueueExpander(Gtk.Expander):
         self.queue.model.connect_after('row-deleted',
             util.DeferredSignal(self.__update_count), count_label)
 
-        connect_obj(self, 'notify::visible', self.__visible, cb, b)
+        connect_obj(self, 'notify::visible', self.__visible, rand_checkbox, b)
+        connect_obj(self, 'notify::visible', self.__visible, stop_checkbox, b)
         self.__update_count(self.model, None, count_label)
 
         connect_destroy(
@@ -158,6 +172,9 @@ class QueueExpander(Gtk.Expander):
         connect_destroy(
             player, 'unpaused', self.__update_state_icon_pause,
             state_icon, False)
+
+        connect_destroy(
+            player, 'song-started', self.__update_queue_stop, self.queue.model)
 
         # to make the children clickable if mapped
         # ....no idea why, but works
@@ -223,6 +240,13 @@ class QueueExpander(Gtk.Expander):
 
     def __queue_shuffle(self, button, model):
         model.order = OrderShuffle() if button.get_active() else OrderInOrder()
+
+    def __update_queue_stop(self, player, song, model):
+        enabled = config.getboolean("memory", "queue_stop_after_empty", False)
+        if enabled:
+            songs_left = len(model.get())
+            # Enable stop_after if this is the last song
+            app.player_options.stop_after = (songs_left == 1)
 
     def __expand(self, cb, prop, clear):
         expanded = self.get_expanded()
