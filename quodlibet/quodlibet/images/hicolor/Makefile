@@ -1,82 +1,116 @@
 QL_SOURCE=scalable/apps/quodlibet.svg
 QL_DEST=quodlibet.png
 
-QL_SYM_SOURCE=scalable/apps/quodlibet-symbolic.svg
-QL_SYM_DEST=quodlibet-symbolic.png
-
-QL_MISSING_COVER_SOURCE=scalable/status/quodlibet-missing-cover.svg
-QL_MISSING_COVER_DEST=quodlibet-missing-cover.png
-
 EF_SOURCE=scalable/apps/exfalso.svg
 EF_DEST=exfalso.png
 
-EF_SYM_SOURCE=scalable/apps/exfalso-symbolic.svg
-EF_SYM_DEST=exfalso-symbolic.png
+QL_MC_SOURCE=scalable/status/quodlibet-missing-cover.svg
+QL_MC_DEST=quodlibet-missing-cover.png
 
-APPS_DIR=16x16/apps 24x24/apps 32x32/apps 48x48/apps 64x64/apps
-STATUS_DIR=16x16/status 24x24/status 32x32/status 48x48/status 64x64/status
+PNG16_APPS_DIR=16x16/apps
+PNG16_STATUS_DIR=16x16/status
+PNG16_QL_DEST=$(PNG16_APPS_DIR)/$(QL_DEST)
+PNG16_EF_DEST=$(PNG16_APPS_DIR)/$(EF_DEST)
+PNG16_MC_DEST=$(PNG16_STATUS_DIR)/$(QL_MC_DEST)
 
-all: mkdestdir png16 png24 png32 png48 png64
+PNG24_APPS_DIR=24x24/apps
+PNG24_STATUS_DIR=24x24/status
+PNG24_QL_DEST=$(PNG24_APPS_DIR)/$(QL_DEST)
+PNG24_EF_DEST=$(PNG24_APPS_DIR)/$(EF_DEST)
+PNG24_MC_DEST=$(PNG24_STATUS_DIR)/$(QL_MC_DEST)
 
-png16: $(QL_SOURCE) $(EF_SOURCE)
-	inkscape $(QL_SOURCE) --export-png 16x16/apps/$(QL_DEST) -w 16 -h 16 ;
-	inkscape $(EF_SOURCE) --export-png 16x16/apps/$(EF_DEST) -w 16 -h 16 ;
-	inkscape $(QL_SYM_SOURCE) --export-png 16x16/apps/$(QL_SYM_DEST) \
-		-w 16 -h 16 ;
-	inkscape $(EF_SYM_SOURCE) --export-png 16x16/apps/$(EF_SYM_DEST) \
-		-w 16 -h 16 ;
-	inkscape $(QL_MISSING_COVER_SOURCE) \
-		--export-png 16x16/status/$(QL_MISSING_COVER_DEST) -w 16 -h 16
+PNG32_APPS_DIR=32x32/apps
+PNG32_STATUS_DIR=32x32/status
+PNG32_QL_DEST=$(PNG32_APPS_DIR)/$(QL_DEST)
+PNG32_EF_DEST=$(PNG32_APPS_DIR)/$(EF_DEST)
+PNG32_MC_DEST=$(PNG32_STATUS_DIR)/$(QL_MC_DEST)
 
-png24: $(QL_SOURCE) $(EF_SOURCE)
-	inkscape $(QL_SOURCE) --export-png 24x24/apps/$(QL_DEST) -w 24 -h 24 ;
-	inkscape $(EF_SOURCE) --export-png 24x24/apps/$(EF_DEST) -w 24 -h 24 ;
-	inkscape $(QL_SYM_SOURCE) --export-png 24x24/apps/$(QL_SYM_DEST) \
-		-w 24 -h 24 ;
-	inkscape $(EF_SYM_SOURCE) --export-png 24x24/apps/$(EF_SYM_DEST) \
-		-w 24 -h 24 ;
-	inkscape $(QL_MISSING_COVER_SOURCE) \
-		--export-png 24x24/status/$(QL_MISSING_COVER_DEST) -w 24 -h 24
+PNG48_APPS_DIR=48x48/apps
+PNG48_STATUS_DIR=48x48/status
+PNG48_QL_DEST=$(PNG48_APPS_DIR)/$(QL_DEST)
+PNG48_EF_DEST=$(PNG48_APPS_DIR)/$(EF_DEST)
+PNG48_MC_DEST=$(PNG48_STATUS_DIR)/$(QL_MC_DEST)
 
-png32: $(QL_SOURCE) $(EL_SOURCE)
-	inkscape $(QL_SOURCE) --export-png 32x32/apps/$(QL_DEST) -w 32 -h 32 ;
-	inkscape $(EF_SOURCE) --export-png 32x32/apps/$(EF_DEST) -w 32 -h 32 ;
-	inkscape $(QL_SYM_SOURCE) --export-png 32x32/apps/$(QL_SYM_DEST) \
-		-w 32 -h 32 ;
-	inkscape $(EF_SYM_SOURCE) --export-png 32x32/apps/$(EF_SYM_DEST) \
-		-w 32 -h 32 ;
-	inkscape $(QL_MISSING_COVER_SOURCE) \
-		--export-png 32x32/status/$(QL_MISSING_COVER_DEST) -w 32 -h 32
+PNG64_APPS_DIR=64x64/apps
+PNG64_STATUS_DIR=64x64/status
+PNG64_QL_DEST=$(PNG64_APPS_DIR)/$(QL_DEST)
+PNG64_EF_DEST=$(PNG64_APPS_DIR)/$(EF_DEST)
+PNG64_MC_DEST=$(PNG64_STATUS_DIR)/$(QL_MC_DEST)
 
-png48: $(QL_SOURCE) $(EF_SOURCE)
-	inkscape $(QL_SOURCE) --export-png 48x48/apps/$(QL_DEST) -w 48 -h 48 ;
-	inkscape $(EF_SOURCE) --export-png 48x48/apps/$(EF_DEST) -w 48 -h 48 ;
-	inkscape $(QL_SYM_SOURCE) --export-png 48x48/apps/$(QL_SYM_DEST) \
-		-w 48 -h 48 ;
-	inkscape $(EF_SYM_SOURCE) --export-png 48x48/apps/$(EF_SYM_DEST) \
-		-w 48 -h 48 ;
-	inkscape $(QL_MISSING_COVER_SOURCE) \
-		--export-png 48x48/status/$(QL_MISSING_COVER_DEST) -w 48 -h 48
 
-png64: $(QL_SOURCE) $(EF_SOURCE)
-	inkscape $(QL_SOURCE) --export-png 64x64/apps/$(QL_DEST) -w 64 -h 64 ;
-	inkscape $(EF_SOURCE) --export-png 64x64/apps/$(EF_DEST) -w 64 -h 64 ;
-	inkscape $(QL_SYM_SOURCE) --export-png 64x64/apps/$(QL_SYM_DEST) \
-		-w 64 -h 64 ;
-	inkscape $(EF_SYM_SOURCE) --export-png 64x64/apps/$(EF_SYM_DEST) \
-		-w 64 -h 64 ;
-	inkscape $(QL_MISSING_COVER_SOURCE) \
-		--export-png 64x64/status/$(QL_MISSING_COVER_DEST) -w 64 -h 64
+all: png16 png24 png32 png48 png64
 
-mkdestdir: mkappsdir mkstatusdir
+png16: $(PNG16_QL_DEST) $(PNG16_EF_DEST) $(PNG16_MC_DEST)
 
-mkappsdir:
-	mkdir -p $(APPS_DIR)
+png24: $(PNG24_QL_DEST) $(PNG24_EF_DEST) $(PNG24_MC_DEST)
 
-mkstatusdir:
-	mkdir -p $(STATUS_DIR)
+png32: $(PNG32_QL_DEST) $(PNG32_EF_DEST) $(PNG32_MC_DEST)
+
+png48: $(PNG48_QL_DEST) $(PNG48_EF_DEST) $(PNG48_MC_DEST)
+
+png64: $(PNG64_QL_DEST) $(PNG64_EF_DEST) $(PNG64_MC_DEST)
+
+$(PNG16_QL_DEST): $(QL_SOURCE)
+	mkdir -p $(PNG16_APPS_DIR) && \
+	inkscape $(QL_SOURCE) --export-png $(PNG16_QL_DEST) -w 16 -h 16 ;
+
+$(PNG16_EF_DEST): $(EF_SOURCE)
+	mkdir -p $(PNG16_APPS_DIR) && \
+	inkscape $(EF_SOURCE) --export-png $(PNG16_EF_DEST) -w 16 -h 16 ;
+
+$(PNG16_MC_DEST): $(MC_SOURCE)
+	mkdir -p $(PNG16_STATUS_DIR) && \
+	inkscape $(QL_MC_SOURCE) --export-png $(PNG16_MC_DEST) -w 16 -h 16 ;
+
+$(PNG24_QL_DEST): $(QL_SOURCE)
+	mkdir -p $(PNG24_APPS_DIR) && \
+	inkscape $(QL_SOURCE) --export-png $(PNG24_QL_DEST) -w 24 -h 24 ;
+
+$(PNG24_EF_DEST): $(EF_SOURCE)
+	mkdir -p $(PNG24_APPS_DIR) && \
+	inkscape $(EF_SOURCE) --export-png $(PNG24_EF_DEST) -w 24 -h 24 ;
+
+$(PNG24_MC_DEST): $(MC_SOURCE)
+	mkdir -p $(PNG24_STATUS_DIR) && \
+	inkscape $(QL_MC_SOURCE) --export-png $(PNG24_MC_DEST) -w 24 -h 24 ;
+
+$(PNG32_QL_DEST): $(QL_SOURCE)
+	mkdir -p $(PNG32_APPS_DIR) && \
+	inkscape $(QL_SOURCE) --export-png $(PNG32_QL_DEST) -w 32 -h 32 ;
+
+$(PNG32_EF_DEST): $(EF_SOURCE)
+	mkdir -p $(PNG32_APPS_DIR) && \
+	inkscape $(EF_SOURCE) --export-png $(PNG32_EF_DEST) -w 32 -h 32 ;
+
+$(PNG32_MC_DEST): $(MC_SOURCE)
+	mkdir -p $(PNG32_STATUS_DIR) && \
+	inkscape $(QL_MC_SOURCE) --export-png $(PNG32_MC_DEST) -w 32 -h 32 ;
+
+$(PNG48_QL_DEST): $(QL_SOURCE)
+	mkdir -p $(PNG48_APPS_DIR) && \
+	inkscape $(QL_SOURCE) --export-png $(PNG48_QL_DEST) -w 48 -h 48 ;
+
+$(PNG48_EF_DEST): $(EF_SOURCE)
+	mkdir -p $(PNG48_APPS_DIR) && \
+	inkscape $(EF_SOURCE) --export-png $(PNG48_EF_DEST) -w 48 -h 48 ;
+
+$(PNG48_MC_DEST): $(MC_SOURCE)
+	mkdir -p $(PNG48_STATUS_DIR) && \
+	inkscape $(QL_MC_SOURCE) --export-png $(PNG48_MC_DEST) -w 48 -h 48 ;
+
+$(PNG64_QL_DEST): $(QL_SOURCE)
+	mkdir -p $(PNG64_APPS_DIR) && \
+	inkscape $(QL_SOURCE) --export-png $(PNG64_QL_DEST) -w 64 -h 64 ;
+
+$(PNG64_EF_DEST): $(EF_SOURCE)
+	mkdir -p $(PNG64_APPS_DIR) && \
+	inkscape $(EF_SOURCE) --export-png $(PNG64_EF_DEST) -w 64 -h 64 ;
+
+$(PNG64_MC_DEST): $(MC_SOURCE)
+	mkdir -p $(PNG64_STATUS_DIR) && \
+	inkscape $(QL_MC_SOURCE) --export-png $(PNG64_MC_DEST) -w 64 -h 64 ;
 
 .PHONY: clean
 
 clean:
-	rm -R 16x16 24x24 32x32 48x48 64x64
+	rm -f -R ./16x16
