@@ -218,7 +218,8 @@ class QueueExpander(Gtk.Expander):
         stop_queue = config.getboolean("memory",
                                        "queue_stop_after_empty",
                                        False)
-        app.player_options.stop_after = stop_queue
+        if stop_queue:
+            app.player_options.stop_after = True
 
     def __motion(self, wid, context, x, y, time):
         Gdk.drag_status(context, Gdk.DragAction.COPY, time)
@@ -247,10 +248,10 @@ class QueueExpander(Gtk.Expander):
 
     def __update_queue_stop(self, player, song, model):
         enabled = config.getboolean("memory", "queue_stop_after_empty", False)
-        if enabled:
-            songs_left = len(model.get())
+        songs_left = len(model.get())
+        if enabled and songs_left == 1:
             # Enable stop_after if this is the last song
-            app.player_options.stop_after = (songs_left == 1)
+            app.player_options.stop_after = True
 
     def __expand(self, cb, prop, clear):
         expanded = self.get_expanded()
