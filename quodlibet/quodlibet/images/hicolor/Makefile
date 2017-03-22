@@ -113,4 +113,4 @@ $(PNG64_MC_DEST): $(MC_SOURCE)
 .PHONY: clean
 
 clean:
-	rm -f -R ./16x16
+	rm -f -R ./16x16 ./24x24 ./32x32 ./48x48 ./64x64
