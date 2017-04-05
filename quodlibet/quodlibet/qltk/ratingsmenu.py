@@ -46,15 +46,17 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
 
         submenu = Gtk.Menu()
         self.set_submenu(submenu)
+        self._rating_menu_items = []
         for i in RATINGS.all:
             text = "%0.2f\t%s" % (i, util.format_rating(i))
             itm = Gtk.CheckMenuItem(label=text)
-            is_selected = i in ratings
-            itm.set_active(is_selected)
+            itm.rating = i
             submenu.append(itm)
+            self._rating_menu_items.append(itm)
             itm.connect('activate', self._on_rating_change, i, library)
         reset = Gtk.MenuItem(label=_("_Remove Rating"), use_underline=True)
         reset.connect('activate', self._on_rating_remove, library)
+        self._select_ratings()
 
         submenu.append(SeparatorMenuItem())
         submenu.append(reset)
@@ -63,6 +65,15 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
     def set_songs(self, songs):
         """Set a new set of songs affected by the rating menu"""
         self._songs = songs
+        self._select_ratings()
+
+    def _select_ratings(self):
+        ratings = {song("~#rating") for song in self._songs if song and song.has_rating}
+
+        for menu_item in self._rating_menu_items:
+            rating_val = menu_item.rating
+            selected = rating_val in ratings
+            menu_item.set_active(selected)
 
     def _on_rating_change(self, menuitem, value, library):
         self.set_rating(value, self._songs, library)
