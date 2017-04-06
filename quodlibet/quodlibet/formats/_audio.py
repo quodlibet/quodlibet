@@ -304,10 +304,10 @@ class AudioFile(dict, ImageContainer):
         If a tied tag ('a~b') is requested, the `connector` keyword
         argument may be used to specify what it is tied with.
         In case the tied tag contains numeric and file path tags, the result
-        will still be a unicode string. 
+        will still be a unicode string.
         The `joiner` keyword specifies how multiple *values* will be joined
         within that tied tag output, e.g.
-            ~people~title = "Kanye West, Jay Z - New Day" 
+            ~people~title = "Kanye West, Jay Z - New Day"
 
         For details on tied tags, see the documentation for `util.tagsplit`.
         """
