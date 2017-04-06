@@ -205,8 +205,6 @@ class TAudioFile(TestCase):
             self.failUnlessEqual(song("~title~people"), song("title"))
             self.failUnlessEqual(
                 song("~title~~people"), song("~title~artist"))
-            self.failUnlessEqual(
-                song("~title~~#tracks"), song("~title~~#tracks"))
 
     def test_tied_filename_numeric(self):
         self.assertEqual(
