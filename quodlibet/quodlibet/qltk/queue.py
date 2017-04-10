@@ -133,9 +133,9 @@ class QueueExpander(Gtk.Expander):
         left.pack_start(rand_checkbox, False, True, 0)
 
         stop_checkbox = ConfigCheckButton(
-            _("Stop After Empty"), "memory", "queue_stop_after_empty")
+            _("Stop Once Empty"), "memory", "queue_stop_once_empty")
         stop_checkbox.set_active(config.getboolean("memory",
-                                                   "queue_stop_after_empty",
+                                                   "queue_stop_once_empty",
                                                    False))
         stop_checkbox.set_no_show_all(True)
         left.pack_start(stop_checkbox, False, True, 0)
@@ -216,7 +216,7 @@ class QueueExpander(Gtk.Expander):
     def __clear_queue(self, activator):
         self.model.clear()
         stop_queue = config.getboolean("memory",
-                                       "queue_stop_after_empty",
+                                       "queue_stop_once_empty",
                                        False)
         if stop_queue:
             app.player_options.stop_after = True
@@ -247,7 +247,7 @@ class QueueExpander(Gtk.Expander):
         model.order = OrderShuffle() if button.get_active() else OrderInOrder()
 
     def __update_queue_stop(self, player, song, model):
-        enabled = config.getboolean("memory", "queue_stop_after_empty", False)
+        enabled = config.getboolean("memory", "queue_stop_once_empty", False)
         songs_left = len(model.get())
         if enabled and songs_left == 1:
             # Enable stop_after if this is the last song
