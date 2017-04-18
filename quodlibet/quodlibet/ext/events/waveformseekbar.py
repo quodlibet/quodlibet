@@ -452,11 +452,11 @@ class WaveformSeekBarPlugin(EventPlugin):
             label_section.set_markup("<b>" + _("Waveform Colors") + "</b>")
             table.attach(label_section, 0, 1, 0, 1)
 
-            label_fc = Gtk.Label(label=_("Elapsed color: "))
+            label_fc = Gtk.Label(label=_("Elapsed color:"))
             label_fc.set_alignment(xalign=1.0, yalign=0.5)
             table.attach(label_fc, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
 
-            label_bc = Gtk.Label(label=_("Remaining color: "))
+            label_bc = Gtk.Label(label=_("Remaining color:"))
             label_bc.set_alignment(xalign=1.0, yalign=0.5)
             table.attach(label_bc, 0, 1, 2, 3, xoptions=Gtk.AttachOptions.FILL)
 
@@ -464,7 +464,7 @@ class WaveformSeekBarPlugin(EventPlugin):
             if CONFIG.elapsed_color:
                 e_color.parse(CONFIG.elapsed_color)
             else:
-                e_color = Gdk.RGBA(255,0,0) # default elapsed color (red)
+                e_color = Gdk.RGBA(255 ,0 ,0) # default elapsed color (red)
             e_button = Gtk.ColorButton(rgba=e_color)
             table.attach(e_button, 1, 3, 1, 2)
             e_button.connect('color-set', elapsed_changed)
@@ -473,7 +473,7 @@ class WaveformSeekBarPlugin(EventPlugin):
             if CONFIG.remaining_color:
                 r_color.parse(CONFIG.remaining_color)
             else:
-                r_color = Gdk.RGBA(0,0,0) # default remaining color (black)
+                r_color = Gdk.RGBA(0 ,0 ,0) # default remaining color (black)
             r_button = Gtk.ColorButton(rgba=r_color)
             table.attach(r_button, 1, 3, 2, 3)
             r_button.connect('color-set', remaining_changed)
@@ -485,7 +485,7 @@ class WaveformSeekBarPlugin(EventPlugin):
 
         def rgba_to_hex(cc):
             """Return hexadecimal string for :class:`Gdk.RGBA` `color`."""
-            return "#{0:02x}{1:02x}{2:02x}".format(int(cc.red  * 255/65535),
+            return "#{0:02x}{1:02x}{2:02x}".format(int(cc.red * 255 / 65535),
                    int(cc.green * 255/65535),
                    int(cc.blue * 255/65535))
 
