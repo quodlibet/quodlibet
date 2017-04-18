@@ -58,6 +58,7 @@ INITIAL = {
         "queue": "false", # on or off
         "queue_expanded": "false", # on or off
         "shufflequeue": "false", # on or off
+        "queue_stop_once_empty": "false", # on or off
         "sortby": "0album", # <reversed?>tagname, song list sort
 
         # Repeat on or off

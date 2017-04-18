@@ -735,4 +735,5 @@ class PreferencesWindow(UniqueWindow):
     def __destroy(self):
         config.save()
         if self.current_scan_dirs != get_scan_dirs():
+            print_d("Library paths have changed, re-scanning...")
             scan_library(app.library, force=False)

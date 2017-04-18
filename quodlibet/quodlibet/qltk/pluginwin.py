@@ -26,8 +26,13 @@ from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import UniqueWindow, PersistentWindowMixin
 from quodlibet.qltk.x import Align, Paned, Button, ScrolledWindow
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
+from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons, is_accel, show_uri
 from quodlibet.util import connect_obj
+
+
+class UndoSearchEntry(Gtk.SearchEntry, UndoEntry):
+    pass
 
 
 class PluginErrorWindow(UniqueWindow):
@@ -97,6 +102,7 @@ class PluginEnabledFilterCombo(Gtk.ComboBox):
         super(PluginEnabledFilterCombo, self).__init__(model=combo_store)
 
         cell = Gtk.CellRendererText()
+        cell.props.ellipsize = Pango.EllipsizeMode.END
         self.pack_start(cell, True)
         self.add_attribute(cell, "text", 0)
 
@@ -139,6 +145,7 @@ class PluginTypeFilterCombo(Gtk.ComboBox):
         super(PluginTypeFilterCombo, self).__init__(model=combo_store)
 
         cell = Gtk.CellRendererText()
+        cell.props.ellipsize = Pango.EllipsizeMode.END
         self.pack_start(cell, True)
         self.add_attribute(cell, "text", 0)
 
@@ -374,25 +381,24 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         enabled_combo = PluginEnabledFilterCombo()
         enabled_combo.connect("changed", lambda s: filter_model.refilter())
         enabled_combo.set_tooltip_text("Filter by plugin state / tag")
-        fb.pack_start(enabled_combo, False, True, 0)
+        fb.pack_start(enabled_combo, True, True, 0)
         self._enabled_combo = enabled_combo
 
         type_combo = PluginTypeFilterCombo()
         type_combo.connect("changed", lambda s: filter_model.refilter())
         type_combo.set_tooltip_text("Filter by plugin type")
-        fb.pack_start(type_combo, False, True, 0)
+        fb.pack_start(type_combo, True, True, 0)
         self._type_combo = type_combo
 
-        filter_entry = Gtk.SearchEntry()
+        filter_entry = UndoSearchEntry()
         filter_entry.set_tooltip_text("Filter by plugin name or description")
         filter_entry.connect("changed", lambda s: filter_model.refilter())
         self._filter_entry = filter_entry
 
         sw.add(tv)
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.set_size_request(300, -1)
 
-        bbox = Gtk.HBox(homogeneous=True, spacing=6, margin=6)
+        bbox = Gtk.HBox(homogeneous=True, spacing=6)
 
         errors = qltk.Button(_("Show _Errors"), Icons.DIALOG_WARNING)
         errors.set_focus_on_click(False)
@@ -409,12 +415,12 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
                             enabled_combo)
             bbox.pack_start(refresh, True, True, 0)
 
-        filter_box = Gtk.VBox(spacing=6, margin=6)
+        filter_box = Gtk.VBox(spacing=6)
         filter_box.pack_start(fb, False, True, 0)
         filter_box.pack_start(filter_entry, False, True, 0)
-        vbox.pack_start(filter_box, False, False, 0)
+        vbox.pack_start(Align(filter_box, border=6, right=-6), False, False, 0)
         vbox.pack_start(sw, True, True, 0)
-        vbox.pack_start(bbox, False, True, 0)
+        vbox.pack_start(Align(bbox, border=6, right=-6), False, True, 0)
         paned.pack1(vbox, False, False)
 
         close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
@@ -436,7 +442,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
             right_box.pack_start(bb_align, True, True, 0)
 
         paned.pack2(Align(right_box, border=12), True, False)
-        paned.set_position(250)
+        paned.set_position(275)
 
         self.add(paned)
 

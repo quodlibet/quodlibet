@@ -293,7 +293,7 @@ class AudioFile(dict, ImageContainer):
     def iterrealitems(self):
         return ((k, v) for (k, v) in iteritems(self) if k[:1] != "~")
 
-    def __call__(self, key, default=u"", connector=" - "):
+    def __call__(self, key, default=u"", connector=" - ", joiner=', '):
         """Return the value(s) for a key, synthesizing if necessary.
         Multiple values for a key are delimited by newlines.
 
@@ -305,6 +305,9 @@ class AudioFile(dict, ImageContainer):
         argument may be used to specify what it is tied with.
         In case the tied tag contains numeric and file path tags, the result
         will still be a unicode string.
+        The `joiner` keyword specifies how multiple *values* will be joined
+        within that tied tag output, e.g.
+            ~people~title = "Kanye West, Jay Z - New Day"
 
         For details on tied tags, see the documentation for `util.tagsplit`.
         """
@@ -314,8 +317,13 @@ class AudioFile(dict, ImageContainer):
             if "~" in key:
                 real_key = "~" + key
                 values = []
-                for v in map(self.__call__, util.tagsplit(real_key)):
-                    v = decode_value(real_key, v)
+                sub_tags = util.tagsplit(real_key)
+                # If it's genuinely a tied tag (not ~~people etc), we want
+                # to delimit the multi-values separately from the tying
+                j = joiner if len(sub_tags) > 1 else "\n"
+                for t in sub_tags:
+                    vs = [decode_value(real_key, v) for v in (self.list(t))]
+                    v = j.join(vs)
                     if v:
                         values.append(v)
                 return connector.join(values) or default
@@ -582,7 +590,7 @@ class AudioFile(dict, ImageContainer):
 
     def list(self, key):
         """Get all values of a tag, as a list. Synthetic tags are supported,
-        but will be slower. Numeric tags are not supported.
+        but will be slower. Numeric tags will give their one value.
 
         For file path keys the returned list might contain path items
         (non-unicode).
@@ -592,11 +600,11 @@ class AudioFile(dict, ImageContainer):
         """
 
         if "~" in key or key == "title":
-            v = self(key, connector="\n")
+            v = self(key)
             if v == "":
                 return []
             else:
-                return v.split("\n")
+                return v.split("\n") if isinstance(v, text_type) else [v]
         else:
             v = self.get(key)
             return [] if v is None else v.split("\n")

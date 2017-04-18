@@ -31,9 +31,9 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem, SymbolicIconImage
 from quodlibet.qltk import Icons
+from quodlibet.qltk.chooser import choose_files, create_chooser_filter
 from quodlibet.query import Query
 from quodlibet.util import connect_obj
-from quodlibet.util.path import get_home_dir
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.collection import FileBackedPlaylist
 from quodlibet.util.urllib import urlopen
@@ -572,23 +572,15 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             self._select_playlist(playlist, scroll=True)
 
     def __import(self, activator, library):
-        filt = lambda fn: fn.endswith(".pls") or fn.endswith(".m3u")
-        from quodlibet.qltk.chooser import FileChooser
-        chooser = FileChooser(self, _("Import Playlist"), filt, get_home_dir())
-        files = chooser.run()
-        chooser.destroy()
-        for filename in files:
+        cf = create_chooser_filter(_("Playlists"), ["*.pls", "*.m3u"])
+        fns = choose_files(self, _("Import Playlist"), _("_Import"), cf)
+        for filename in fns:
             if filename.endswith(".m3u"):
                 playlist = parse_m3u(filename, library=library)
             elif filename.endswith(".pls"):
                 playlist = parse_pls(filename, library=library)
             else:
-                qltk.ErrorMessage(
-                    qltk.get_top_parent(self),
-                    _("Unable to import playlist"),
-                    _("Quod Libet can only import playlists in the M3U "
-                      "and PLS formats.")).run()
-                return
+                continue
             self.changed(playlist)
             library.add(playlist)
 

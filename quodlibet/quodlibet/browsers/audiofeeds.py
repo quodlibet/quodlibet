@@ -34,8 +34,8 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, print_w
-from quodlibet.util.path import get_home_dir
 from quodlibet.qltk.x import ScrolledWindow, Align, Button, MenuItem
+from quodlibet.qltk.chooser import choose_target_file, choose_target_folder
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 
@@ -224,9 +224,10 @@ class Feed(list):
         opener = build_opener(feedparser._FeedURLHandler())
         try:
             result = opener.open(req)
-            content_type = result.headers.get('Content-Type', "Unknown type")
+            ct_hdr = result.headers.get('Content-Type', "Unknown type")
+            content_type = ct_hdr.split(';')[0]
             status = result.code if PY2 else result.status
-            print_d("Pre-check: %s returned %s in %s" %
+            print_d("Pre-check: %s returned %s with content type '%s'" %
                     (self.uri, status, content_type))
             if content_type not in feedparser.ACCEPT_HEADER:
                 print_w("Unusable content: %s. Perhaps %s is not a feed?" %
@@ -266,8 +267,6 @@ class AudioFeeds(Browser):
     keys = ["AudioFeeds"]
     priority = 20
     uses_main_library = False
-
-    __last_folder = get_home_dir()
 
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "audiofeeds_pos", 0.4)
@@ -357,43 +356,21 @@ class AudioFeeds(Browser):
         return menu
 
     def __download_many(self, activator, sources):
-        chooser = Gtk.FileChooserDialog(
-            title=_("Download Files"), parent=qltk.get_top_parent(self),
-            action=Gtk.FileChooserAction.CREATE_FOLDER)
-        chooser.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        chooser.add_button(_("_Save"), Gtk.ResponseType.OK)
-        chooser.set_current_folder(self.__last_folder)
-        resp = chooser.run()
-        if resp == Gtk.ResponseType.OK:
-            target = chooser.get_filename()
-            if target:
-                type(self).__last_folder = os.path.dirname(target)
-                for i, source in enumerate(sources):
-                    base = os.path.basename(source)
-                    if not base:
-                        base = ("file%d" % i) + (
-                            os.path.splitext(source)[1] or ".audio")
-                    fulltarget = os.path.join(target, base)
-                    DownloadWindow.download(source, fulltarget, self)
-        chooser.destroy()
+        target = choose_target_folder(self, _("Download Files"), _("_Save"))
+        if target is not None:
+            for i, source in enumerate(sources):
+                base = os.path.basename(source)
+                if not base:
+                    base = ("file%d" % i) + (
+                        os.path.splitext(source)[1] or ".audio")
+                fulltarget = os.path.join(target, base)
+                DownloadWindow.download(source, fulltarget, self)
 
     def __download(self, activator, source):
-        chooser = Gtk.FileChooserDialog(
-            title=_("Download File"), parent=qltk.get_top_parent(self),
-            action=Gtk.FileChooserAction.SAVE)
-        chooser.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        chooser.add_button(_("_Save"), Gtk.ResponseType.OK)
-        chooser.set_current_folder(self.__last_folder)
         name = os.path.basename(source)
-        if name:
-            chooser.set_current_name(name)
-        resp = chooser.run()
-        if resp == Gtk.ResponseType.OK:
-            target = chooser.get_filename()
-            if target:
-                type(self).__last_folder = os.path.dirname(target)
-                DownloadWindow.download(source, target, self)
-        chooser.destroy()
+        target = choose_target_file(self, _("Download File"), _("_Save"), name)
+        if target is not None:
+            DownloadWindow.download(source, target, self)
 
     def __init__(self, library):
         super(AudioFeeds, self).__init__(spacing=6)

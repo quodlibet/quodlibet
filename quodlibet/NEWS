@@ -4,7 +4,6 @@
 Packaging Changes:
   * **python-zeitgeist** no longer used
   * **python-feedparser** required (no longer optional)
-  * **python-faulthandler** required
   * **GTK+ 3.14** required (was 3.10)
   * **PyGObject 3.14** required (was 3.12)
   * **GStreamer 1.4** required (was 1.2)

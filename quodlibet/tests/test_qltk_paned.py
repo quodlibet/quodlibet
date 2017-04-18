@@ -23,6 +23,8 @@ class TRPaned(object):
         p = self.Kind()
         p.set_relative(0.25)
         self.failUnlessEqual(p.get_relative(), 0.25)
+        self.assertRaises(ValueError, p.set_relative, 2.0)
+        self.assertRaises(ValueError, p.set_relative, -2.0)
 
     def test_visible_no_setup(self):
         p = self.Kind()

@@ -205,8 +205,6 @@ class TAudioFile(TestCase):
             self.failUnlessEqual(song("~title~people"), song("title"))
             self.failUnlessEqual(
                 song("~title~~people"), song("~title~artist"))
-            self.failUnlessEqual(
-                song("~title~~#tracks"), song("~title~~#tracks"))
 
     def test_tied_filename_numeric(self):
         self.assertEqual(
@@ -228,6 +226,14 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(len(bar_2_1.list("artist")), 2)
         self.failUnlessEqual(bar_2_1.list("artist"),
                              bar_2_1["artist"].split("\n"))
+
+    def test_list_tied_tags(self):
+        expected = ["%s - %s" % (bar_1_1("artist"), bar_1_1("title"))]
+        self.failUnlessEqual(bar_1_1.list("~artist~title"), expected)
+
+    def test_list_multiple_tied_tags(self):
+        expected = ["%s - %s" % (bar_2_1.comma("artist"), bar_2_1("title"))]
+        self.failUnlessEqual(bar_2_1.list("~artist~title"), expected)
 
     def test_list_sort(self):
         self.failUnlessEqual(bar_1_1.list_sort("title"),
@@ -299,6 +305,9 @@ class TAudioFile(TestCase):
         self.assertEqual(res, [(u'1', u'1'), (u'Foo', u'Foosort'),
                                (u'I have two artists', u'I have two artists'),
                                (u'does not/exist', u'does not/exist')])
+
+    def test_list_numeric(self):
+        self.assertEqual(bar_1_2.list('~#bitrate'), [128])
 
     def test_comma(self):
         for key in bar_1_1.realkeys():

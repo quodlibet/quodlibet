@@ -468,6 +468,17 @@ class TOperonTags(TOperonBase):
         self.check_true(["tags", "-t", "-ctag, desc"], True, False)
         self.check_false(["tags", "-t", "-cfoo"], False, True)
 
+    def test_output(self):
+        o, e = self.check_true(["tags"], True, False)
+        assert not e
+        assert "tracknumber" in o
+        assert "replaygain_album_gain" not in o
+
+        o, e = self.check_true(["tags", "-a"], True, False)
+        assert not e
+        assert "tracknumber" in o
+        assert "replaygain_album_gain" in o
+
 
 class TOperonImageExtract(TOperonBase):
     # [--dry-run] [--primary] [-d <destination>] <file> [<files>]

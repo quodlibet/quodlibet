@@ -77,6 +77,9 @@ class RPaned(Paned):
     def set_relative(self, v):
         """Set the relative position of the separator, [0..1]."""
 
+        if v < 0 or v > 1:
+            raise ValueError("v must be in [0..1]")
+
         if self.__alloced:
             max_pos = self._get_max()
             self.set_position(int(round(v * max_pos)))
@@ -87,13 +90,15 @@ class RPaned(Paned):
         """Return the relative position of the separator, [0..1]."""
 
         if self.__alloced:
-            max_pos = self._get_max()
-            return (float(self.get_position()) / max_pos)
-        elif self.__relative is not None:
+            rel = float(self.get_position()) / self._get_max()
+            if 0 <= rel <= 1:
+                return rel
+
+        if self.__relative is not None:
             return self.__relative
-        else:
-            # before first alloc and set_relative not called
-            return 0.5
+
+        # before first alloc and set_relative not called
+        return 0.5
 
     def do_size_allocate(self, *args):
         ret = Gtk.HPaned.do_size_allocate(self, *args)
