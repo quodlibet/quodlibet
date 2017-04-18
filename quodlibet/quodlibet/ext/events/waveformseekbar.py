@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2016 0x1777
 #           2016 Nick Boultbee
-#           2017 Didier Villevalois
+#           2017 Didier Villevalois, Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -271,7 +271,7 @@ class WaveformScale(Gtk.EventBox):
         w = min(width, abs(position_x - last_position_x) + line_width * 10)
         return x, 0.0, w, height
 
-    def draw_waveform(self, cr, width, height, elapsed_color, remaining_color):
+    def draw_waveform(self, cr, width, height, elapsed_color, fg_color):
         scale_factor = self.get_scale_factor()
         pixel_ratio = float(scale_factor)
         line_width = 1.0 / pixel_ratio
@@ -306,9 +306,9 @@ class WaveformScale(Gtk.EventBox):
         for x in range(int(floor(cx * pixel_ratio)),
                        int(ceil((cx + cw) * pixel_ratio)), 1):
 
-            fg_color = (elapsed_color if x < position_width
-                        else remaining_color)
-            cr.set_source_rgba(*list(fg_color))
+            remaining_color = (elapsed_color if x < position_width
+                        else fg_color)
+            cr.set_source_rgba(*list(remaining_color))
 
             # Basic anti-aliasing / oversampling
             u1 = max(0, int(floor((x - hw) * ratio_width)))
@@ -354,7 +354,7 @@ class WaveformScale(Gtk.EventBox):
         context.save()
         context.set_state(Gtk.StateFlags.NORMAL)
         bg_color = context.get_background_color(context.get_state())
-        fg_color = context.get_color(context.get_state())
+        remaining_color = context.get_color(context.get_state())
         context.restore()
 
         elapsed_color = get_fg_highlight_color(self)
@@ -365,6 +365,11 @@ class WaveformScale(Gtk.EventBox):
             elapsed_color = Gdk.RGBA()
             elapsed_color.parse(elapsed_color_config)
 
+        remaining_color_config = CONFIG.remaining_color
+        if remaining_color_config and Gdk.RGBA().parse(remaining_color_config):
+            remaining_color = Gdk.RGBA()
+            remaining_color.parse(remaining_color_config)
+
         # Paint the background
         cr.set_source_rgba(*list(bg_color))
         cr.paint()
@@ -374,9 +379,9 @@ class WaveformScale(Gtk.EventBox):
         height = allocation.height
 
         if not self._placeholder and len(self._rms_vals) > 0:
-            self.draw_waveform(cr, width, height, elapsed_color, fg_color)
+            self.draw_waveform(cr, width, height, elapsed_color, remaining_color)
         else:
-            self.draw_placeholder(cr, width, height, fg_color)
+            self.draw_placeholder(cr, width, height, remaining_color)
 
     def do_button_press_event(self, event):
         # Left mouse button
@@ -394,6 +399,7 @@ class Config(object):
     _config = PluginConfig(__name__)
 
     elapsed_color = ConfProp(_config, "elapsed_color", "")
+    remaining_color = ConfProp(_config, "remaining_color", "")
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
 
 CONFIG = Config()
@@ -420,35 +426,67 @@ class WaveformSeekBarPlugin(EventPlugin):
         del self._bar
 
     def PluginPreferences(self, parent):
-        red = Gdk.RGBA()
-        red.parse("#ff0000")
-
-        def changed(entry):
-            text = entry.get_text()
-
-            if not Gdk.RGBA().parse(text):
-                # Invalid color, make text red
-                entry.override_color(Gtk.StateFlags.NORMAL, red)
-            else:
-                # Reset text color
-                entry.override_color(Gtk.StateFlags.NORMAL, None)
-
-            CONFIG.elapsed_color = text
 
         vbox = Gtk.VBox(spacing=6)
 
-        def create_color():
+        def elapsed_changed(e_button):
+            col_rgb = e_button.get_color()
+            col_hex = rgba_to_hex(col_rgb)
+            CONFIG.elapsed_color = col_hex
+
+        def remaining_changed(r_button):
+            col_rgb = r_button.get_color()
+            col_hex = rgba_to_hex(col_rgb)
+            CONFIG.remaining_color = col_hex
+
+        def color_preferences():
+
             hbox = Gtk.HBox(spacing=6)
             hbox.set_border_width(6)
-            label = Gtk.Label(label=_("Override foreground color:"))
-            hbox.pack_start(label, False, True, 0)
-            entry = Gtk.Entry()
+
+            table = Gtk.Table(n_rows=3, n_columns=3, homogeneous=True)
+            table.set_col_spacings(6)
+            table.set_row_spacings(3)
+
+            label_section = Gtk.Label()
+            label_section.set_markup("<b>" + _("Waveform Colors") + "</b>")
+            table.attach(label_section, 0, 1, 0, 1)
+
+            label_fc = Gtk.Label(label=_("Elapsed color: "))
+            label_fc.set_alignment(xalign=1.0, yalign=0.5)
+            table.attach(label_fc, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
+
+            label_bc = Gtk.Label(label=_("Remaining color: "))
+            label_bc.set_alignment(xalign=1.0, yalign=0.5)
+            table.attach(label_bc, 0, 1, 2, 3, xoptions=Gtk.AttachOptions.FILL)
+
+            e_color = Gdk.RGBA()
             if CONFIG.elapsed_color:
-                entry.set_text(CONFIG.elapsed_color)
-            entry.connect('changed', changed)
-            hbox.pack_start(entry, True, True, 0)
+                e_color.parse(CONFIG.elapsed_color)
+            else:
+                e_color = Gdk.RGBA(255,0,0) # default elapsed color (red)
+            e_button = Gtk.ColorButton(rgba=e_color)
+            table.attach(e_button, 1, 3, 1, 2)
+            e_button.connect('color-set', elapsed_changed)
+
+            r_color = Gdk.RGBA()
+            if CONFIG.remaining_color:
+                r_color.parse(CONFIG.remaining_color)
+            else:
+                r_color = Gdk.RGBA(0,0,0) # default remaining color (black)
+            r_button = Gtk.ColorButton(rgba=r_color)
+            table.attach(r_button, 1, 3, 2, 3)
+            r_button.connect('color-set', remaining_changed)
+
+            hbox.pack_start(table, False, True, 0)
             return hbox
 
-        vbox.pack_start(create_color(), True, True, 0)
+        vbox.pack_start(color_preferences(), True, True, 0)
+
+        def rgba_to_hex(cc):
+            """Return hexadecimal string for :class:`Gdk.RGBA` `color`."""
+            return "#{0:02x}{1:02x}{2:02x}".format(int(cc.red  * 255/65535),
+                   int(cc.green * 255/65535),
+                   int(cc.blue * 255/65535))
 
         return vbox
