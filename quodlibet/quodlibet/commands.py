@@ -439,6 +439,11 @@ def _status(app):
 
     return text2fsn(status)
 
+@registry.register("get-position", args=0)
+def _get_position(app):
+    player = app.player
+    position = player.get_position()
+    return position
 
 @registry.register("song-list", args=1)
 def _song_list(app, value):
