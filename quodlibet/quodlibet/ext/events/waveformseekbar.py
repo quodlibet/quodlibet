@@ -379,7 +379,8 @@ class WaveformScale(Gtk.EventBox):
         height = allocation.height
 
         if not self._placeholder and len(self._rms_vals) > 0:
-            self.draw_waveform(cr, width, height, elapsed_color, remaining_color)
+            self.draw_waveform(cr, width, height, elapsed_color,
+                remaining_color)
         else:
             self.draw_placeholder(cr, width, height, remaining_color)
 
@@ -464,7 +465,7 @@ class WaveformSeekBarPlugin(EventPlugin):
             if CONFIG.elapsed_color:
                 e_color.parse(CONFIG.elapsed_color)
             else:
-                e_color = Gdk.RGBA(255 ,0 ,0) # default elapsed color (red)
+                e_color = Gdk.RGBA(255, 0, 0) # default elapsed color (red)
             e_button = Gtk.ColorButton(rgba=e_color)
             table.attach(e_button, 1, 3, 1, 2)
             e_button.connect('color-set', elapsed_changed)
@@ -473,7 +474,7 @@ class WaveformSeekBarPlugin(EventPlugin):
             if CONFIG.remaining_color:
                 r_color.parse(CONFIG.remaining_color)
             else:
-                r_color = Gdk.RGBA(0 ,0 ,0) # default remaining color (black)
+                r_color = Gdk.RGBA(0, 0, 0) # default remaining color (black)
             r_button = Gtk.ColorButton(rgba=r_color)
             table.attach(r_button, 1, 3, 2, 3)
             r_button.connect('color-set', remaining_changed)
@@ -486,7 +487,7 @@ class WaveformSeekBarPlugin(EventPlugin):
         def rgba_to_hex(cc):
             """Return hexadecimal string for :class:`Gdk.RGBA` `color`."""
             return "#{0:02x}{1:02x}{2:02x}".format(int(cc.red * 255 / 65535),
-                   int(cc.green * 255/65535),
-                   int(cc.blue * 255/65535))
+                   int(cc.green * 255 / 65535),
+                   int(cc.blue * 255 / 65535))
 
         return vbox
