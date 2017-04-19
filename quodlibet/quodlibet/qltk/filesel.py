@@ -6,7 +6,7 @@
 # published by the Free Software Foundation
 
 import os
-from quodlibet.compat import urlsplit
+from quodlibet.compat import urlsplit, unquote_plus
 import errno
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
@@ -548,6 +548,11 @@ class FileSelector(Paned):
         filelist.set_search_equal_func(search_func, False)
         filelist.set_search_column(0)
 
+        # Allow to drag and drop files from outside
+        filelist.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.COPY)
+        filelist.drag_dest_add_uri_targets()
+        filelist.connect('drag-data-received', self.__file_dropped)
+
         self.__sig = filelist.get_selection().connect(
             'changed', self.__changed)
 
@@ -627,6 +632,14 @@ class FileSelector(Paned):
 
         fselect.handler_unblock(self.__sig)
         fselect.emit('changed')
+
+    def __file_dropped(self, widget, drag_context,
+                       x, y, data, info, time):
+        uris = data.get_uris()
+        # Convert URI to normal path
+        folder_path = urlsplit(uris[0]).path
+        folder_path = unquote_plus(folder_path)
+        self.go_to(folder_path)
 
 
 def _get_main_folders():
