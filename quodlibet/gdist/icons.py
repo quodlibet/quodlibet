@@ -66,20 +66,24 @@ class install_icons(Command):
 
         local = os.path.join("quodlibet", "images", "hicolor")
 
-        scalable = os.path.join(local, "scalable", "apps")
-        scalable_dst = os.path.join(basepath, "scalable", "apps")
-        out = self.copy_tree(scalable, scalable_dst)
-        self.outfiles.extend(out)
+        # copy all "apps" images
+        for entry in os.listdir(local):
+            source = os.path.join(local, entry, "apps")
+            dest = os.path.join(basepath, entry, "apps")
+            out = self.mkpath(dest)
+            self.outfiles.extend(out or [])
 
-        png = os.path.join(local, "64x64", "apps")
-        png_dst = os.path.join(basepath, "64x64", "apps")
-        out = self.copy_tree(png, png_dst)
-        self.outfiles.extend(out)
+            for image in os.listdir(source):
+                if os.path.splitext(image)[-1] in (".png", ".svg"):
+                    file_path = os.path.join(source, image)
+                    (out, _) = self.copy_file(file_path, dest)
+                    self.outfiles.append(out)
 
         # this fails during packaging.. so ignore the outcome
         update_icon_cache(basepath)
 
         # install png versions to /usr/share/pixmaps
+        png = os.path.join(local, "64x64", "apps")
         basepath = os.path.join(self.install_dir, 'share', 'pixmaps')
         out = self.copy_tree(png, basepath)
         self.outfiles.extend(out)
