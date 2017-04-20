@@ -1,44 +1,48 @@
-QL_SOURCE=scalable/apps/quodlibet.svg
+THEME=hicolor
+
+QL_SOURCE=$(THEME)/scalable/apps/quodlibet.svg
 QL_DEST=quodlibet.png
 
-EF_SOURCE=scalable/apps/exfalso.svg
+EF_SOURCE=$(THEME)/scalable/apps/exfalso.svg
 EF_DEST=exfalso.png
 
-QL_MC_SOURCE=scalable/status/quodlibet-missing-cover.svg
+QL_MC_SOURCE=$(THEME)/scalable/status/quodlibet-missing-cover.svg
 QL_MC_DEST=quodlibet-missing-cover.png
 
-PNG16_APPS_DIR=16x16/apps
-PNG16_STATUS_DIR=16x16/status
+PNG16_APPS_DIR=$(THEME)/16x16/apps
+PNG16_STATUS_DIR=$(THEME)/16x16/status
 PNG16_QL_DEST=$(PNG16_APPS_DIR)/$(QL_DEST)
 PNG16_EF_DEST=$(PNG16_APPS_DIR)/$(EF_DEST)
 PNG16_MC_DEST=$(PNG16_STATUS_DIR)/$(QL_MC_DEST)
 
-PNG24_APPS_DIR=24x24/apps
-PNG24_STATUS_DIR=24x24/status
+PNG24_APPS_DIR=$(THEME)/24x24/apps
+PNG24_STATUS_DIR=$(THEME)/24x24/status
 PNG24_QL_DEST=$(PNG24_APPS_DIR)/$(QL_DEST)
 PNG24_EF_DEST=$(PNG24_APPS_DIR)/$(EF_DEST)
 PNG24_MC_DEST=$(PNG24_STATUS_DIR)/$(QL_MC_DEST)
 
-PNG32_APPS_DIR=32x32/apps
-PNG32_STATUS_DIR=32x32/status
+PNG32_APPS_DIR=$(THEME)/32x32/apps
+PNG32_STATUS_DIR=$(THEME)/32x32/status
 PNG32_QL_DEST=$(PNG32_APPS_DIR)/$(QL_DEST)
 PNG32_EF_DEST=$(PNG32_APPS_DIR)/$(EF_DEST)
 PNG32_MC_DEST=$(PNG32_STATUS_DIR)/$(QL_MC_DEST)
 
-PNG48_APPS_DIR=48x48/apps
-PNG48_STATUS_DIR=48x48/status
+PNG48_APPS_DIR=$(THEME)/48x48/apps
+PNG48_STATUS_DIR=$(THEME)/48x48/status
 PNG48_QL_DEST=$(PNG48_APPS_DIR)/$(QL_DEST)
 PNG48_EF_DEST=$(PNG48_APPS_DIR)/$(EF_DEST)
 PNG48_MC_DEST=$(PNG48_STATUS_DIR)/$(QL_MC_DEST)
 
-PNG64_APPS_DIR=64x64/apps
-PNG64_STATUS_DIR=64x64/status
+PNG64_APPS_DIR=$(THEME)/64x64/apps
+PNG64_STATUS_DIR=$(THEME)/64x64/status
 PNG64_QL_DEST=$(PNG64_APPS_DIR)/$(QL_DEST)
 PNG64_EF_DEST=$(PNG64_APPS_DIR)/$(EF_DEST)
 PNG64_MC_DEST=$(PNG64_STATUS_DIR)/$(QL_MC_DEST)
 
+SYMBOLIC_SRC=$(wildcard $(THEME)/scalable/apps/*.svg.in)
+SYMBOLIC_TARGET=$(SYMBOLIC_SRC:.svg.in=.svg)
 
-all: png16 png24 png32 png48 png64
+all: png16 png24 png32 png48 png64 $(SYMBOLIC_TARGET)
 
 png16: $(PNG16_QL_DEST) $(PNG16_EF_DEST) $(PNG16_MC_DEST)
 
@@ -49,6 +53,14 @@ png32: $(PNG32_QL_DEST) $(PNG32_EF_DEST) $(PNG32_MC_DEST)
 png48: $(PNG48_QL_DEST) $(PNG48_EF_DEST) $(PNG48_MC_DEST)
 
 png64: $(PNG64_QL_DEST) $(PNG64_EF_DEST) $(PNG64_MC_DEST)
+
+$(SYMBOLIC_TARGET): $(SYMBOLIC_SRC)
+	cp $(@:.svg=.svg.in) "_temp.svg"
+	inkscape -f "_temp.svg" --verb=EditSelectAll \
+		--verb=SelectionUnGroup --verb=StrokeToPath --verb=SelectionUnion \
+		--verb=FileVacuum \
+		--verb=FileSave --verb=FileClose --verb=FileQuit
+	mv "_temp.svg" "$@"
 
 $(PNG16_QL_DEST): $(QL_SOURCE)
 	mkdir -p $(PNG16_APPS_DIR) && \
@@ -113,4 +125,5 @@ $(PNG64_MC_DEST): $(MC_SOURCE)
 .PHONY: clean
 
 clean:
-	rm -f -R ./16x16 ./24x24 ./32x32 ./48x48 ./64x64
+	rm -f -R $(THEME)/16x16 $(THEME)/24x24 $(THEME)/32x32 $(THEME)/48x48 \
+		$(THEME)/64x64 $(SYMBOLIC_TARGET)
