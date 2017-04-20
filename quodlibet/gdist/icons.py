@@ -81,9 +81,3 @@ class install_icons(Command):
 
         # this fails during packaging.. so ignore the outcome
         update_icon_cache(basepath)
-
-        # install png versions to /usr/share/pixmaps
-        png = os.path.join(local, "64x64", "apps")
-        basepath = os.path.join(self.install_dir, 'share', 'pixmaps')
-        out = self.copy_tree(png, basepath)
-        self.outfiles.extend(out)
