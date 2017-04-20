@@ -171,6 +171,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.library = library
         super(PlaylistsBrowser, self).__init__(spacing=6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
+        self._library = library
         self.__render = self.__create_cell_renderer()
         self.__view = view = self.__create_playlists_view(self.__render)
         self.__embed_in_scrolledwin(view)
@@ -490,7 +491,12 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
         text = self.get_filter_text()
         # TODO: remove static dependency on Query
-        if Query.is_parsable(text):
+        selection = self.__view.get_selection()
+        model, paths = selection.get_selected_rows()
+        playlist_selected = paths and paths[0]
+        if not playlist_selected and not text:
+            songs = filter(lambda s: isinstance(s, AudioFile), self._library)
+        elif Query.is_parsable(text):
             self._query = Query(text, SongList.star)
             songs = self._query.filter(songs)
         GLib.idle_add(self.songs_selected, songs, resort)
