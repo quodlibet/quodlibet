@@ -167,7 +167,7 @@ class WaveformSeekBar(Gtk.Box):
             # Trigger a re-computation of the waveform
             self._create_waveform(player.info, CONFIG.max_data_points)
 
-        self._waveform_scale.set_placeholder(True)
+        self._waveform_scale.set_placeholder(False)
         self._update(player, True)
 
     def _on_song_ended(self, player, song, ended):
