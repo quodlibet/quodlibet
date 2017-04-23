@@ -209,8 +209,6 @@ def add_station(uri):
     Returns None in error, else a possibly filled list of stations"""
 
     irfs = []
-    if isinstance(uri, text_type):
-        uri = uri.encode('utf-8')
 
     if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):
         try:
