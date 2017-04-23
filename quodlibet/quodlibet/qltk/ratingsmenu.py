@@ -39,7 +39,6 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
     def __init__(self, songs, library, label=_("_Rating")):
         super(RatingsMenuItem, self).__init__(label=label, use_underline=True)
         self._songs = songs
-        ratings = {song("~#rating") for song in songs if song.has_rating}
         image = Gtk.Image.new_from_icon_name(Icons.FAVORITE, Gtk.IconSize.MENU)
         image.show()
         self.set_image(image)
@@ -52,7 +51,8 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
             itm = Gtk.CheckMenuItem(label=text)
             itm.rating = i
             submenu.append(itm)
-            handler = itm.connect('toggled', self._on_rating_change, i, library)
+            handler = itm.connect(
+                'toggled', self._on_rating_change, i, library)
             self._rating_menu_items.append((itm, handler))
         reset = Gtk.MenuItem(label=_("_Remove Rating"), use_underline=True)
         reset.connect('activate', self._on_rating_remove, library)
@@ -68,7 +68,8 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
         self._select_ratings()
 
     def _select_ratings(self):
-        ratings = [song("~#rating") for song in self._songs if song and song.has_rating]
+        ratings = [song("~#rating") for song in self._songs
+                   if song and song.has_rating]
         song_count = len(self._songs)
         for (menu_item, handler) in self._rating_menu_items:
             rating_val = menu_item.rating
