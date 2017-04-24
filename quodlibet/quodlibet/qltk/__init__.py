@@ -160,20 +160,24 @@ def get_menu_item_top_parent(widget):
     return get_top_parent(widget)
 
 
-def find_widgets(container, type_):
-    """Given a container, find all children that are a subclass of type_
+def find_widgets(widget, type_):
+    """Given a widget, find all children that are a subclass of type_
     (including itself)
-    """
 
-    assert isinstance(container, Gtk.Container)
+    Args:
+        widget (Gtk.Widget)
+        type_ (type)
+    Returns:
+        List[Gtk.Widget]
+    """
 
     found = []
 
-    if isinstance(container, type_):
-        found.append(container)
+    if isinstance(widget, type_):
+        found.append(widget)
 
-    for child in container.get_children():
-        if isinstance(child, Gtk.Container):
+    if isinstance(widget, Gtk.Container):
+        for child in widget.get_children():
             found.extend(find_widgets(child, type_))
 
     return found

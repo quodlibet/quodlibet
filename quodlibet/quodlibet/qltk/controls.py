@@ -20,6 +20,11 @@ class Volume(Gtk.VolumeButton):
     def __init__(self, player):
         super(Volume, self).__init__(size=Gtk.IconSize.MENU, use_symbolic=True)
 
+        # https://bugzilla.gnome.org/show_bug.cgi?id=781605
+        scales = qltk.find_widgets(self.get_popup(), Gtk.Scale)
+        if scales:
+            scales[0].props.round_digits = -1
+
         self.set_relief(Gtk.ReliefStyle.NORMAL)
         self.set_adjustment(Gtk.Adjustment.new(0, 0, 1, 0.05, 0.1, 0))
 
