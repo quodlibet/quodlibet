@@ -440,9 +440,9 @@ class WaveformSeekBarPlugin(EventPlugin):
             col_hex = rgba_to_hex(col_rgb)
             CONFIG.remaining_color = col_hex
 
-        def default_colors(button_def,r_button,e_button):
-            e_button.set_color(Gdk.Color(65535,0,0))
-            r_button.set_color(Gdk.Color(0,0,0))
+        def default_colors(button_def, r_button, e_button):
+            e_button.set_color(Gdk.Color(65535, 0, 0))
+            r_button.set_color(Gdk.Color(0, 0, 0))
             CONFIG.elapsed_color = '#ff0000'
             CONFIG.remaining_color = '#000000'
 
@@ -486,8 +486,9 @@ class WaveformSeekBarPlugin(EventPlugin):
             r_button.connect('color-set', remaining_changed)
 
             button_def = Gtk.Button("Default colors")
-            button_def.connect("clicked", default_colors,r_button,e_button)
-            table.attach(button_def, 0, 1, 4, 5, xoptions=Gtk.AttachOptions.FILL)
+            button_def.connect("clicked", default_colors, r_button, e_button)
+            table.attach(button_def, 0, 1, 4, 5,
+                xoptions=Gtk.AttachOptions.FILL)
 
             hbox.pack_start(table, False, True, 0)
             return hbox
@@ -501,4 +502,3 @@ class WaveformSeekBarPlugin(EventPlugin):
                    int(cc.blue * 255 / 65535))
 
         return vbox
-        
