@@ -132,8 +132,8 @@ msgstr[1] "%d albums"
 #: ../quodlibet/browsers/covergrid/main.py:467
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
-msgstr[0] "Recharger la _jaquettes de l'album"
-msgstr[1] "Recharger les _jaquettes de l'album"
+msgstr[0] "Recharger la _pochette de l'album"
+msgstr[1] "Recharger les _pochettes de l'album"
 
 #: ../quodlibet/browsers/albums/prefs.py:28
 #: ../quodlibet/browsers/collection/models.py:17
@@ -173,7 +173,7 @@ msgstr "Préférences de l'affichage liste d'albums"
 
 #: ../quodlibet/browsers/albums/prefs.py:61
 msgid "Show album _covers"
-msgstr "Montrer les _jaquettes des albums"
+msgstr "Montrer les _pochettes des albums"
 
 #: ../quodlibet/browsers/albums/prefs.py:67
 msgid "Inline _search includes people"
@@ -432,15 +432,15 @@ msgstr "_Appliquer"
 
 #: ../quodlibet/browsers/covergrid/main.py:125
 msgid "Cover Grid"
-msgstr "Mur de jaquettes"
+msgstr "Mur de pochettes"
 
 #: ../quodlibet/browsers/covergrid/main.py:126
 msgid "_Cover Grid"
-msgstr "Mur de jaquettes"
+msgstr "Mur de pochettes"
 
 #: ../quodlibet/browsers/covergrid/prefs.py:54
 msgid "Cover Grid Preferences"
-msgstr "Préférences du mur de jaquettes"
+msgstr "Préférences du mur de pochettes"
 
 #: ../quodlibet/browsers/covergrid/prefs.py:64
 msgid "Show album _text"
@@ -457,7 +457,7 @@ msgstr "Séparer verticalement"
 #: ../quodlibet/browsers/covergrid/prefs.py:110
 #: ../quodlibet/browsers/covergrid/prefs.py:111
 msgid "Cover Magnification"
-msgstr "Échelle de la jaquette"
+msgstr "Échelle de la pochette"
 
 #: ../quodlibet/browsers/filesystem.py:40
 msgid "File System"
@@ -1280,11 +1280,11 @@ msgstr "Motif du nom de _fichier :"
 
 #: ../quodlibet/devices/storage.py:61
 msgid "Copy _album covers"
-msgstr "Copier les jaquettes des _albums"
+msgstr "Copier les pochettes des _albums"
 
 #: ../quodlibet/devices/storage.py:65
 msgid "_Remove unused covers and directories"
-msgstr "Enleve_r les jaquettes et les dossiers inutilisés"
+msgstr "Enleve_r les pochettes et les dossiers inutilisés"
 
 #: ../quodlibet/exfalso.py:33
 msgid "an audio tag editor"
@@ -1296,31 +1296,31 @@ msgstr "répertoire"
 
 #: ../quodlibet/ext/covers/artwork_url.py:19
 msgid "Artwork URL Cover Source"
-msgstr "URL des sources de jaquettes"
+msgstr "URL des sources de pochettes"
 
 #: ../quodlibet/ext/covers/artwork_url.py:20
 msgid ""
 "Downloads covers linked to by the artwork_url tag.This works with the "
 "Soundcloud browser."
 msgstr ""
-"Télécharge les jaquettes liée à l'étiquette artwork_url. Fonctionne "
+"Télécharge les pochettes liée à l'étiquette artwork_url. Fonctionne "
 "également dans le navigateur SounCloud."
 
 #: ../quodlibet/ext/covers/discogs.py:25
 msgid "Discogs Cover Source"
-msgstr "Jaquettes depuis Discogs"
+msgstr "Pochettes depuis Discogs"
 
 #: ../quodlibet/ext/covers/discogs.py:26
 msgid "Downloads covers from Discogs."
-msgstr "Télécharger les jaquettes depuis Discogs."
+msgstr "Télécharger les pochettes depuis Discogs."
 
 #: ../quodlibet/ext/covers/lastfm.py:22
 msgid "Last.fm Cover Source"
-msgstr "Jaquettes depuis Last.fm"
+msgstr "Pochettes depuis Last.fm"
 
 #: ../quodlibet/ext/covers/lastfm.py:23
 msgid "Downloads covers from Last.fm's cover art archive."
-msgstr "Télécharger les jaquettes depuis les archives d'illustrations Last.fm."
+msgstr "Télécharger les pochettes depuis les archives d'illustrations Last.fm."
 
 #: ../quodlibet/ext/covers/musicbrainz.py:19
 msgid "MusicBrainz Cover Source"
@@ -1329,7 +1329,7 @@ msgstr "Source d'illustrations MusicBrainz"
 #: ../quodlibet/ext/covers/musicbrainz.py:20
 msgid "Downloads covers from MusicBrainz's cover art archive."
 msgstr ""
-"Télécharger les jaquettes depuis les archives d'illustrations MusicBrainz."
+"Télécharger les pochettes depuis les archives d'illustrations MusicBrainz."
 
 #: ../quodlibet/ext/editing/iconv.py:26
 msgid "Convert Encodings"
@@ -1437,7 +1437,7 @@ msgstr "_Position"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:171
 msgid "_Cover size:"
-msgstr "Taille de la jaquette :"
+msgstr "Taille de la pochette :"
 
 #: ../quodlibet/ext/events/animosd/prefs.py:177
 #: ../quodlibet/ext/events/lyricswindow.py:334 ../quodlibet/qltk/prefs.py:266
@@ -2561,7 +2561,7 @@ msgstr "Économiseur d'écran"
 
 #: ../quodlibet/ext/events/write_cover.py:33
 msgid "Saves the cover image of the current song to a file."
-msgstr "Enregistrer la jaquette du titre courant dans un fichier."
+msgstr "Enregistrer la pochette du titre courant dans un fichier."
 
 #: ../quodlibet/ext/events/write_cover.py:66
 msgid "File:"
@@ -2978,7 +2978,7 @@ msgstr "[albumart] Erreur HTTP : %s"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:613
 msgid "Album Art Downloader"
-msgstr "Téléchargement de jaquettes"
+msgstr "Téléchargement de pochettes"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:666
 #, python-format
@@ -3015,7 +3015,7 @@ msgstr "Télécharger des illustrations"
 
 #: ../quodlibet/ext/songsmenu/albumart.py:923
 msgid "Downloads album covers from various websites."
-msgstr "Téléchargement de jaquettes d'album depuis plusieurs sites Web."
+msgstr "Téléchargement de pochettes d'album depuis plusieurs sites Web."
 
 #: ../quodlibet/ext/songsmenu/albumart.py:936
 msgid "Sources"
@@ -5194,7 +5194,7 @@ msgstr ""
 
 #: ../quodlibet/qltk/prefs.py:336
 msgid "Album Art"
-msgstr "Jaquettes d'Album"
+msgstr "Pochettes d'album"
 
 #: ../quodlibet/qltk/prefs.py:357
 msgid "Playback"
@@ -5927,15 +5927,15 @@ msgstr "Une liste de lecture appelée %s existe déjà."
 
 #: ../quodlibet/util/cover/built_in.py:26
 msgid "Embedded album covers"
-msgstr "jaquettes embarquées dans les étiquettes/titres"
+msgstr "Pochettes embarquées dans les étiquettes/titres"
 
 #: ../quodlibet/util/cover/built_in.py:27
 msgid "Uses covers embedded into audio files."
-msgstr "Utilise les jaquettes inclues dans les fichiers audio."
+msgstr "Utilise les pochettes inclues dans les fichiers audio."
 
 #: ../quodlibet/util/cover/built_in.py:49
 msgid "Filesystem cover"
-msgstr "Jaquette dans fichier"
+msgstr "Pochette dans fichier"
 
 #: ../quodlibet/util/cover/built_in.py:50
 msgid ""
@@ -6535,7 +6535,7 @@ msgstr "rôles"
 #, fuzzy
 #~ msgid "Round the corners of album artwork thumbnail images."
 #~ msgstr ""
-#~ "Arrondir les coins des jaquettes d'album. Peut nécessiter un redémarrage "
+#~ "Arrondir les coins des pochettes d'album. Peut nécessiter un redémarrage "
 #~ "pour prendre effet."
 
 #~ msgid "Re_fresh Library"
