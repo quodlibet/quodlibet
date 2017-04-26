@@ -2489,7 +2489,7 @@ msgstr "La molette de la souris ajuste le volume"
 
 #: ../quodlibet/ext/events/trayicon/prefs.py:48
 msgid "Scroll wheel changes song"
-msgstr "La molete de la souris permet de passer d'une musique à l'autre"
+msgstr "La molete de la souris permet de passer d'un titre à un autre"
 
 #: ../quodlibet/ext/events/trayicon/prefs.py:54
 msgid "Scroll _Wheel"
