@@ -57,6 +57,7 @@ from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs
 from quodlibet.util import connect_obj, print_d
 from quodlibet.util.library import background_filter, scan_library
+from quodlibet.util.path import uri_is_valid
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
 from quodlibet.qltk.songlistcolumns import SongListColumn
 
@@ -1352,7 +1353,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             _("Enter the location of an audio file:"),
             button_label=_("_Add"), button_icon=Icons.LIST_ADD).run()
         if name:
-            if not util.uri_is_valid(name):
+            if not uri_is_valid(name):
                 ErrorMessage(
                     self, _("Unable to add location"),
                     _("%s is not a valid location.") % (
