@@ -6,7 +6,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import locale
 import os
 import random
 import re
@@ -34,18 +33,18 @@ from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
-from .misc import cached_func, get_module_dir, get_ca_file
+from .misc import cached_func, get_module_dir, get_ca_file, get_locale_encoding
 from .environment import is_plasma, is_unity, is_enlightenment, \
     is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console, \
     is_py2exe_window
 from .enum import enum
-from .i18n import _, C_
+from .i18n import _, C_, locale_format
 
 
 # pyflakes
 cached_func, enum, print_w, print_exc, is_plasma, is_unity, is_enlightenment,
 is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console,
-is_py2exe_window, get_module_dir, get_ca_file
+is_py2exe_window, get_module_dir, get_ca_file, get_locale_encoding
 
 
 if PY2:
@@ -336,14 +335,16 @@ def parse_date(datestr):
 
 def format_int_locale(value):
     """Turn an integer into a grouped, locale-dependent string
-    e.g. 12345 -> "12,345" or "12.345" etc"""
-    return locale.format("%d", value, grouping=True)
+    e.g. 12345 -> "12,345" or "12.345" etc
+    """
+    return locale_format("%d", value, grouping=True)
 
 
-def format_float_locale(value, format=".2f"):
+def format_float_locale(value, format="%.2f"):
     """Turn a float into a grouped, locale-dependent string
-    e.g. 12345.67 -> "12,345.67" or "12.345,67" etc"""
-    return locale.format(format, value, grouping=True)
+    e.g. 12345.67 -> "12,345.67" or "12.345,67" etc
+    """
+    return locale_format(format, value, grouping=True)
 
 
 def format_rating(value, blank=True):
@@ -414,7 +415,7 @@ def format_time_display(time):
 def format_time_seconds(time):
     from quodlibet import ngettext
 
-    time_str = locale.format("%d", time, grouping=True)
+    time_str = format_int_locale(time)
     return ngettext("%s second", "%s seconds", time) % time_str
 
 

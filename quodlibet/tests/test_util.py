@@ -35,7 +35,7 @@ from quodlibet.util.string.splitters import split_people, split_title, \
     split_album
 
 from . import TestCase, skipIf
-from .helper import capture_output
+from .helper import capture_output, locale_numeric_conv
 
 
 is_win = os.name == "nt"
@@ -79,6 +79,28 @@ class Tmtime(TestCase):
     def test_bad(self):
         self.failIf(os.path.exists("/dev/doesnotexist"))
         self.failUnlessEqual(mtime("/dev/doesnotexist"), 0)
+
+
+class Tget_locale_encoding(TestCase):
+
+    def test_main(self):
+        assert isinstance(util.get_locale_encoding(), str)
+
+
+class Tformat_locale(TestCase):
+
+    def test_format_int_locale(self):
+        assert isinstance(util.format_int_locale(1024), text_type)
+
+    def test_format_float_locale(self):
+        assert isinstance(util.format_float_locale(1024.1024), text_type)
+
+    def test_format_time_seconds(self):
+        assert isinstance(util.format_time_seconds(1024), text_type)
+
+        with locale_numeric_conv():
+            assert format_time_seconds(1024) == "1,024 seconds"
+            assert format_time_seconds(1) == "1 second"
 
 
 class Tunexpand(TestCase):

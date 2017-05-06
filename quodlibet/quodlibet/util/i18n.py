@@ -16,6 +16,17 @@ from quodlibet.util.path import unexpand
 from quodlibet.util.dprint import print_d
 from quodlibet.compat import text_type, PY2, listfilter
 
+from .misc import get_locale_encoding
+
+
+def locale_format(format, val, *args, **kwargs):
+    """Like locale.format but returns text"""
+
+    result = locale.format(format, val, *args, **kwargs)
+    if isinstance(result, bytes):
+        result = result.decode(get_locale_encoding(), "replace")
+    return result
+
 
 def bcp47_to_language(code):
     """Takes a BCP 47 language identifier and returns a value suitable for the
