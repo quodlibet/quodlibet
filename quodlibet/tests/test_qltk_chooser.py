@@ -12,10 +12,12 @@ from senf import fsnative, getcwd
 from quodlibet.qltk.chooser import choose_files, get_current_dir, \
     set_current_dir, choose_folders, create_chooser_filter, \
     choose_target_file, choose_target_folder, with_response
+from quodlibet.qltk import gtk_version
 
-from . import TestCase
+from . import TestCase, skipIf
 
 
+@skipIf(gtk_version < (3, 16, 0), "crashy on older gtk+")
 class Tchooser(TestCase):
 
     def test_choose_files(self):
