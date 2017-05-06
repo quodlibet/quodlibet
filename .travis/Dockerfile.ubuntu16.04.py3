@@ -25,7 +25,9 @@ RUN apt-get install --no-install-recommends -y \
     libxine2 \
     dbus-x11 
 
-RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper pytest-faulthandler
+RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper
+
+RUN pip3 install pytest-faulthandler
 
 RUN useradd -ms /bin/bash user
 
