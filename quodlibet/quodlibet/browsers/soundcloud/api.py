@@ -241,7 +241,7 @@ class SoundcloudApiClient(RestApi):
             song.update(title=r.title,
                         artist=r.user["username"],
                         website=r.permalink_url,
-                        genre="\n".join(r.genre and r.genre.split(",") or []))
+                        genre=u"\n".join(r.genre and r.genre.split(",") or []))
             if dl:
                 song.update(format=r.original_format)
                 song["~#bitrate"] = r.original_content_size * 8 / r.duration
