@@ -654,7 +654,7 @@ class FileLibrary(PicklingLibrary):
             if ismount(point):
                 self._contents.update(items)
                 del(self._masked[point])
-                self.emit('added', items.values())
+                self.emit('added', listvalues(items))
                 yield True
 
         task = Task(_("Library"), _("Scanning library"))
