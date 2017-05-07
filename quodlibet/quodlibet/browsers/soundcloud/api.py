@@ -41,6 +41,8 @@ class RestApi(GObject.Object):
         args.update(kwargs)
         msg = Soup.Message.new('POST', self._url(path))
         post_body = urlencode(args)
+        if not isinstance(post_body, bytes):
+            post_body = post_body.encode("ascii")
         msg.set_request('application/x-www-form-urlencoded',
                         Soup.MemoryUse.COPY, post_body)
         download_json(msg, self._cancellable, callback, None)
@@ -50,6 +52,8 @@ class RestApi(GObject.Object):
         args.update(kwargs)
         msg = Soup.Message.new('PUT', self._url(path))
         body = urlencode(args)
+        if not isinstance(body, bytes):
+            body = body.encode("ascii")
         msg.set_request('application/x-www-form-urlencoded',
                         Soup.MemoryUse.COPY, body)
         download_json(msg, self._cancellable, callback, None)
@@ -60,6 +64,8 @@ class RestApi(GObject.Object):
         # Turns out the SC API doesn't mind body arguments for DELETEs,
         # and as it's neater and slightly more secure, let's do that.
         body = urlencode(args)
+        if not isinstance(body, bytes):
+            body = body.encode("ascii")
         msg = Soup.Message.new('DELETE', self._url(path))
         msg.set_request('application/x-www-form-urlencoded',
                         Soup.MemoryUse.COPY, body)
