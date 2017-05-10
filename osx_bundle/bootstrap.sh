@@ -20,5 +20,4 @@ git clone git://git.gnome.org/jhbuild "$QL_OSXBUNDLE_JHBUILD_DEST"
 cp misc/gtk-osx-jhbuildrc "$HOME/.jhbuildrc"
 cp misc/quodlibet-jhbuildrc-custom "$HOME/.jhbuildrc-custom"
 git clone git://git.gnome.org/gtk-mac-bundler "$QL_OSXBUNDLE_BUNDLER_DEST"
-(cd "$QL_OSXBUNDLE_BUNDLER_DEST" && patch -p1 < "$DIR/misc/bundler_debug.patch")
 (cd "$QL_OSXBUNDLE_BUNDLER_DEST" && make install)

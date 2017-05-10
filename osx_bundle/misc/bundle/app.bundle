@@ -260,7 +260,7 @@
   <!-- Copy in the themes data. You may want to trim this to save space
        in your bundle. -->
   <data>
-    ${prefix}/share/themes/Adwaita
+    ${prefix}/share/themes/Default
   </data>
 
   <data>
