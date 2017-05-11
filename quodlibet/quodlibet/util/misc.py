@@ -47,7 +47,7 @@ def get_locale_encoding():
     """Returns the encoding defined by the locale"""
 
     try:
-        encoding = locale.getpreferredencoding()
+        encoding = locale.getpreferredencoding(False)
     except locale.Error:
         encoding = "utf-8"
     else:
