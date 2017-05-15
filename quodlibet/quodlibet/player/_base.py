@@ -252,7 +252,7 @@ class BasePlayer(GObject.GObject, Equalizer):
         If force is True always go back.
         """
 
-        if force or self.get_position() < 1500:
+        if force or self.get_position() < 1500 or not self.seekable:
             self._source.previous()
             self._end(True)
         else:
