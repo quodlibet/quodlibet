@@ -114,14 +114,14 @@ class WaveformSeekBar(Gtk.Box):
             self._pipeline.set_state(Gst.State.NULL)
             self._clean_pipeline()
 
-            # Only update the waveform if it has changed
-            if self._player.info and self._rms_vals != self._new_rms_vals:
-                self._rms_vals = self._new_rms_vals
-                self._waveform_scale.reset(self._rms_vals)
-                self._waveform_scale.set_placeholder(False)
-                self._update_redraw_interval()
-            else:
-                del self._new_rms_vals
+            # Update the waveform with the new data
+            self._rms_vals = self._new_rms_vals
+            self._waveform_scale.reset(self._rms_vals)
+            self._waveform_scale.set_placeholder(False)
+            self._update_redraw_interval()
+
+            # Clear temporary reference to the waveform data
+            del self._new_rms_vals
 
     def _clean_pipeline(self):
         if self._bus_id:
