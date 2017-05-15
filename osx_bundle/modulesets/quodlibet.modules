@@ -481,6 +481,7 @@
       <dep package="libxml2"/>
       <dep package="libxslt"/>
       <dep package="itstool"/>
+      <dep package="intltool"/>
     </dependencies>
   </autotools>
 
