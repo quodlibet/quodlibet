@@ -13,6 +13,7 @@ import os
 
 from gi.repository import GLib
 import mutagen
+import cairo
 
 import quodlibet
 from quodlibet import app
@@ -51,6 +52,7 @@ def get_sentry():
     sentry.add_tag("gtk_version", fver(gtk_version))
     sentry.add_tag("gtk_backend", get_backend_name())
     sentry.add_tag("pygobject_version", fver(pygobject_version))
+    sentry.add_tag("pycairo_version", fver(cairo.version_info))
     sentry.add_tag("platform", platform.platform())
 
     return sentry
