@@ -65,7 +65,7 @@ VERSION_TUPLE = Version("", 3, 9, -1)
 VERSION = str(VERSION_TUPLE)
 
 # entry point for the user guide / wiki
-BRANCH_NAME = "master"
+BRANCH_NAME = "quodlibet-3.9"
 DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/%s"
 DOCS_LATEST = DOCS_BASE_URL % "latest"
 DOCS_BASE_URL %= BRANCH_NAME if BRANCH_NAME != "master" else "latest"
