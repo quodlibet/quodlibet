@@ -40,7 +40,7 @@ SYSTEM_LIBS = ['advapi32.dll',
     "msvcr71.dll", "msvcr80.dll", "msvcrt.dll", "ole32.dll", "oleaut32.dll",
     "opengl32.dll", "rpcrt4.dll", "setupapi.dll", "shell32.dll", "user32.dll",
     "usp10.dll", "winmm.dll", "winspool.drv", "wldap32.dll", "ws2_32.dll",
-    "wsock32.dll", "shlwapi.dll"
+    "wsock32.dll", "shlwapi.dll", "gdiplus.dll",
 ]
 
 
