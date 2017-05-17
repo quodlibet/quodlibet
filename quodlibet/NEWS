@@ -10,6 +10,8 @@ Packaging Changes:
   * **GTK+ 3.14** required (was 3.10)
   * **PyGObject 3.14** required (was 3.12)
   * **GStreamer 1.4** required (was 1.2)
+  * No longer installs icons to "/usr/share/pixmaps"
+  * Installs more icons into "/usr/share/icons/hicolor/" theme
 
 Translation Updates:
   * Czech :pr:`2175` (:user:`Marek Suchánek <mrksu>`)
@@ -54,6 +56,8 @@ Fixes:
   * gstbe: increase default buffer duration. :bug:`2191`
   * macOS: Fix meta key for accelerators not working :bug:`2271`
   * Fix error in case stdout gets closed before QL :bug:`2205`
+  * Fix icon size of app menu embedded in gnome-shell decoration :bug:`2320`
+    :pr:`2334` (:user:`Vimalan Reddy <redvimo>`)
 
 Plugins:
   * Windows: Enable crossfeed plugin
