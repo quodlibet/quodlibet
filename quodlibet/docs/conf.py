@@ -28,7 +28,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.extlinks']
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'Quod Libet'
-copyright = u"2004-2016 %s and more" % ", ".join(const.MAIN_AUTHORS)
+copyright = u""
 exclude_patterns = ['_build', '_build_all', 'README.rst', '**/README.rst']
 html_theme = "sphinx_rtd_theme"
 

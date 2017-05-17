@@ -33,7 +33,3 @@ class Tconst(TestCase):
         if branch == b"master" or branch.startswith(b"quodlibet"):
             branch = branch.decode("utf-8")
             self.failUnlessEqual(branch, const.BRANCH_NAME)
-
-    def test_authors(self):
-        # Noting that <= is subset operator on sets...
-        self.assertLessEqual(set(const.MAIN_AUTHORS), set(const.AUTHORS))

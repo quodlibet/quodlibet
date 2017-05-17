@@ -79,17 +79,9 @@ EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 # Displayed as registered / help email address
 SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
-MAIN_AUTHORS = u"""\
-Joe Wreschnig
-Michael Urman
-Iñigo Serna
-Steven Robertson
-Christoph Reiter
-Nick Boultbee""".split("\n")
-
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = u"""Copyright © 2004-2016 %s...""" % u", ".join(MAIN_AUTHORS)
+COPYRIGHT = u"Copyright 2004-2017"
 
 AUTHORS = sorted(u"""\
 Alexandre Passos
