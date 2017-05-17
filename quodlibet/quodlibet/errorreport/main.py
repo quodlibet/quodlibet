@@ -50,7 +50,7 @@ def get_sentry():
     sentry.add_tag("python_version", platform.python_version())
     sentry.add_tag("gtk_version", fver(gtk_version))
     sentry.add_tag("gtk_backend", get_backend_name())
-    sentry.add_tag("pygobject_backend", fver(pygobject_version))
+    sentry.add_tag("pygobject_version", fver(pygobject_version))
     sentry.add_tag("platform", platform.platform())
 
     return sentry
