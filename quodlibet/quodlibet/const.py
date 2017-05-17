@@ -165,6 +165,12 @@ Uriel Zajaczkovski
 Vasiliy Faronov
 Victoria Hayes
 Zack Weinberg
+Vimalan Reddy
+Jason Heard
+David Pérez Carmona
+Jakub Wilk
+IBBoard@github
+CreamyCookie@github
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
@@ -222,9 +228,10 @@ Yasushi Iwata (ja)
 Николай Прокошенко (ru)
 Ростислав "zbrox" Райков (bg)
 Сергей Федосеев (ru)
-scootergrisen (da)
+scootergrisen@github (da)
 Marek Suchánek (cs)
 Till Berger (de)
+Jean-Michel Pouré (fr)
 """.strip().splitlines())
 
 ARTISTS = sorted(u"""\
