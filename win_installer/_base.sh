@@ -56,9 +56,9 @@ function build_python {
 
 function build_compileall {
     if [ "${PYTHON_VERSION}" = "2" ]; then
-        build_python -m compileall "$@"
+        MSYSTEM= build_python -m compileall "$@"
     else
-        build_python -m compileall -b "$@"
+        MSYSTEM= build_python -m compileall -b "$@"
     fi
 }
 
@@ -305,7 +305,7 @@ function cleanup_install {
 
     find "${MINGW_ROOT}"/bin -name "*.pyo" -exec rm -f {} \;
     find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
-    build_compileall -q "${MINGW_ROOT}"
+    build_compileall -d "" -f -q "${MINGW_ROOT}"
     find "${MINGW_ROOT}" -name "*.py" -exec rm -f {} \;
     find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
     find "${MINGW_ROOT}" -type d -name "__pycache__" -prune -exec rm -rf {} \;
@@ -321,7 +321,7 @@ function build_installer {
     echo 'BUILD_TYPE = u"windows"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
     (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
-    (cd $(dirname "$BUILDPY") && build_compileall -q -f -l .)
+    (cd $(dirname "$BUILDPY") && build_compileall -d "" -q -f -l .)
     rm -f "$BUILDPY"
 
     cp misc/quodlibet.ico "${BUILD_ROOT}"
@@ -336,7 +336,7 @@ function build_portable_installer {
     echo 'BUILD_TYPE = u"windows-portable"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
     (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
-    (cd $(dirname "$BUILDPY") && build_compileall -q -f -l .)
+    (cd $(dirname "$BUILDPY") && build_compileall -d "" -q -f -l .)
     rm -f "$BUILDPY"
 
     local PORTABLE="$DIR/quodlibet-$QL_VERSION_DESC-portable"
