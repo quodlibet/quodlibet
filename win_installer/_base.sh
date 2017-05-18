@@ -186,9 +186,26 @@ function install_quodlibet {
         local GIT_HASH=$(git rev-parse --short HEAD)
         QL_VERSION_DESC="$QL_VERSION-rev$GIT_REV-$GIT_HASH"
     fi
+
+    build_compileall -d "" -f -q "${MINGW_ROOT}"
 }
 
-function cleanup_install {
+function cleanup_before {
+    rm -Rf "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/test
+    rm -f "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/lib-dynload/_tkinter*
+    find "${MINGW_ROOT}"/lib/"${PYTHON_ID}".* -type d -name "test*" \
+        -prune -exec rm -rf {} \;
+
+    find "${MINGW_ROOT}"/lib/"${PYTHON_ID}".* -type d -name "*_test*" \
+        -prune -exec rm -rf {} \;
+
+    find "${MINGW_ROOT}"/bin -name "*.pyo" -exec rm -f {} \;
+    find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
+    build_compileall -d "" -f -q "${MINGW_ROOT}"
+    find "${MINGW_ROOT}" -name "*.py" -exec rm -f {} \;
+}
+
+function cleanup_after {
     # delete translations we don't support
     for d in "${MINGW_ROOT}"/share/locale/*/LC_MESSAGES; do
         if [ ! -f "${d}"/quodlibet.mo ]; then
@@ -240,7 +257,6 @@ function cleanup_install {
     find "${MINGW_ROOT}"/share/glib-2.0 -type f ! \
         -name "*.compiled" -exec rm -f {} \;
 
-    rm -Rf "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/test
     rm -Rf "${MINGW_ROOT}"/lib/cmake
     rm -Rf "${MINGW_ROOT}"/lib/gettext
     rm -Rf "${MINGW_ROOT}"/lib/gtk-3.0
@@ -264,7 +280,6 @@ function cleanup_install {
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstschro.dll
 
     rm -f "${MINGW_ROOT}"/bin/libharfbuzz-icu-0.dll
-    rm -f "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/lib-dynload/_tkinter*
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstcacasink.dll
 
     if [ "${PYTHON_VERSION}" = "2" ]; then
@@ -298,16 +313,6 @@ function cleanup_install {
     find "${MINGW_ROOT}" -name "old_root.pem" -exec rm -rf {} \;
     find "${MINGW_ROOT}" -name "weak.pem" -exec rm -rf {} \;
 
-    find "${MINGW_ROOT}"/lib/"${PYTHON_ID}".* -type d -name "test*" \
-        -prune -exec rm -rf {} \;
-
-    find "${MINGW_ROOT}"/lib/"${PYTHON_ID}".* -type d -name "*_test*" \
-        -prune -exec rm -rf {} \;
-
-    find "${MINGW_ROOT}"/bin -name "*.pyo" -exec rm -f {} \;
-    find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
-    build_compileall -d "" -f -q "${MINGW_ROOT}"
-    find "${MINGW_ROOT}" -name "*.py" -exec rm -f {} \;
     find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
     find "${MINGW_ROOT}" -type d -name "__pycache__" -prune -exec rm -rf {} \;
 

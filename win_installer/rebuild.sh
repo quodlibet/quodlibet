@@ -26,8 +26,9 @@ function main {
     install_pre_deps
     create_root
     extract_installer "$INSTALLER_PATH"
+    cleanup_before
     install_quodlibet "$GIT_TAG"
-    cleanup_install
+    cleanup_after
     build_installer
     build_portable_installer
 }
