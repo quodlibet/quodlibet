@@ -20,6 +20,7 @@ Translation Updates:
   * Czech :bug:`2209` (:user:`Honza Hejzl <welblaud>`)
   * Norwegian Bokmål :pr:`2232` :pr:`2354` (:user:`Åka Sikrom <akrosikam>`)
   * French :pr:`2240` (:user:`Jean-Michel Pouré <kellogsgit>`)
+  * German :pr:`2388` (:user:`Till Berger <Mellthas>`)
 
 General:
   * Windows: Use native file choosers :pr:`2324`
