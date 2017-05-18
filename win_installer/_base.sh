@@ -101,15 +101,15 @@ function install_deps {
         mingw-w64-"${ARCH}"-gst-plugins-ugly
 
     PIP_REQUIREMENTS="\
-certifi==2016.9.26
+certifi==2017.4.17
 colorama==0.3.7
 feedparser==5.2.1
 musicbrainzngs==0.6
-mutagen==1.35
-pep8==1.7.0
-py==1.4.31
-pyflakes==1.3.0
-pytest==3.0.5
+mutagen==1.37
+pycodestyle==2.3.1
+py==1.4.33
+pyflakes==1.5.0
+pytest==3.0.7
 "
 
     build_pip install --no-deps --no-binary ":all:" --upgrade \
