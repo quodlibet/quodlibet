@@ -150,7 +150,9 @@ pytest==3.0.7
     sed -i "s|$GDK_PIXBUF_PREFIX|..|g" "$loaders_cache"
 
     # remove the large png icons, they should be used rarely and svg works fine
+    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/512x512"
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/256x256"
+    rm -Rf "${MINGW_ROOT}/share/icons/hicolor/256x256"
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/96x96"
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/48x48"
     "${MINGW_ROOT}"/bin/gtk-update-icon-cache-3.0.exe \
@@ -220,7 +222,6 @@ function cleanup_install {
     rm -Rf "${MINGW_ROOT}"/share/ffmpeg
     rm -Rf "${MINGW_ROOT}"/share/vala
     rm -Rf "${MINGW_ROOT}"/share/readline
-    rm -Rf "${MINGW_ROOT}"/share/icons/Adwaita/cursors
     rm -Rf "${MINGW_ROOT}"/share/xml
     rm -Rf "${MINGW_ROOT}"/share/bash-completion
     rm -Rf "${MINGW_ROOT}"/share/common-lisp
