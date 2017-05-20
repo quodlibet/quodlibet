@@ -66,10 +66,8 @@ class WaveformSeekBar(Gtk.Box):
             self._create_waveform(player.info, CONFIG.max_data_points)
 
     def _create_waveform(self, song, points):
-        # Close any existing pipelines to avoid warnings
-        if hasattr(self, "_pipeline") and self._pipeline:
-            self._pipeline.set_state(Gst.State.NULL)
-            self._clean_pipeline()
+        # Close any existing pipeline to avoid leaks
+        self._clean_pipeline()
 
         command_template = """
         filesrc name=fs
@@ -111,7 +109,6 @@ class WaveformSeekBar(Gtk.Box):
                 print_w("Got unexpected message of type {}"
                         .format(message.type))
         elif message.type == Gst.MessageType.EOS:
-            self._pipeline.set_state(Gst.State.NULL)
             self._clean_pipeline()
 
             # Update the waveform with the new data
@@ -124,21 +121,24 @@ class WaveformSeekBar(Gtk.Box):
             del self._new_rms_vals
 
     def _clean_pipeline(self):
-        if self._bus_id:
-            bus = self._pipeline.get_bus()
-            bus.remove_signal_watch()
-            bus.disconnect(self._bus_id)
-            self._bus_id = None
-        if self._pipeline:
-            self._pipeline = None
+        if hasattr(self, "_pipeline") and self._pipeline:
+            self._pipeline.set_state(Gst.State.NULL)
+            if self._bus_id:
+                bus = self._pipeline.get_bus()
+                bus.remove_signal_watch()
+                bus.disconnect(self._bus_id)
+                self._bus_id = None
+            if self._pipeline:
+                self._pipeline = None
 
     def _update_redraw_interval(self, *args):
-        if self._player.info:
+        if self._player.info and self.is_visible():
             # Must be recomputed when size is changed
             interval = self._waveform_scale.compute_redraw_interval()
             self._redraw_tracker.set_interval(interval)
 
     def _on_destroy(self, *args):
+        self._clean_pipeline()
         self._label_tracker.destroy()
         self._redraw_tracker.destroy()
 
