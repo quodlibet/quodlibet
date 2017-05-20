@@ -132,7 +132,7 @@ class WaveformSeekBar(Gtk.Box):
                 self._pipeline = None
 
     def _update_redraw_interval(self, *args):
-        if self._player.info:
+        if self._player.info and self.is_visible():
             # Must be recomputed when size is changed
             interval = self._waveform_scale.compute_redraw_interval()
             self._redraw_tracker.set_interval(interval)
