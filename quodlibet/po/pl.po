@@ -1,5 +1,5 @@
 # Polish translation for quodlibet.
-# Copyright © 2005-2016 the quodlibet authors.
+# Copyright © 2005-2017 the quodlibet authors.
 # This file is distributed under the same license as the quodlibet package.
 #
 msgid ""
@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-17 18:58+0200\n"
-"PO-Revision-Date: 2016-12-10 21:30+0100\n"
+"PO-Revision-Date: 2017-05-20 01:18+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -850,7 +850,7 @@ msgstr "Preferencje przeglądarki panelowej"
 
 #: ../quodlibet/browsers/paned/prefs.py:204
 msgid "Equal pane width"
-msgstr ""
+msgstr "Równa szerokość paneli"
 
 #: ../quodlibet/browsers/playlists/main.py:48
 #: ../quodlibet/browsers/playlists/main.py:575
@@ -1037,7 +1037,7 @@ msgstr "Natychmiast rozpoczyna odtwarzanie"
 
 #: ../quodlibet/cli.py:90
 msgid "Don't show any windows on start"
-msgstr ""
+msgstr "Bez wyświetlania okien po uruchomieniu"
 
 #: ../quodlibet/cli.py:93
 msgid "Jump to next song"
@@ -1291,7 +1291,6 @@ msgid "_Remove unused covers and directories"
 msgstr "_Usuwanie nieużywanych okładek i katalogów"
 
 #: ../quodlibet/errorreport/ui.py:60
-#, fuzzy
 msgid "An Error Occurred"
 msgstr "Wystąpił błąd"
 
@@ -1301,30 +1300,28 @@ msgid ""
 "restarted. Submitting an error report will only take a few seconds and would "
 "help us a lot."
 msgstr ""
+"Można zignorować ten błąd, ale program może być niestabilny do ponownego "
+"uruchomienia. Wysłanie błędu zajmie tylko kilka sekund i bardzo nam pomoże."
 
 #: ../quodlibet/errorreport/ui.py:72
 msgid "File Bug Report"
-msgstr ""
+msgstr "Zgłoś błąd"
 
 #: ../quodlibet/errorreport/ui.py:74 ../quodlibet/errorreport/ui.py:90
-#, fuzzy
 msgid "Submit Error Report"
-msgstr "port brokera"
+msgstr "Wyślij błąd"
 
 #: ../quodlibet/errorreport/ui.py:75
-#, fuzzy
 msgid "Quit Program"
-msgstr "_Program:"
+msgstr "Zakończ program"
 
 #: ../quodlibet/errorreport/ui.py:76
-#, fuzzy
 msgid "Ignore Error"
-msgstr "_Ignorowanie wszystkich błędów"
+msgstr "Zignoruj błąd"
 
 #: ../quodlibet/errorreport/ui.py:80
-#, fuzzy
 msgid "Error details:"
-msgstr "Szczegóły błędu"
+msgstr "Informacje o błędzie:"
 
 #: ../quodlibet/errorreport/ui.py:92
 msgid ""
@@ -1332,25 +1329,27 @@ msgid ""
 "party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
 "You can review the data before sending it below."
 msgstr ""
+"Różne informacje o błędzie i systemie zostaną wysłane do serwisu "
+"internetowego niezależnego od programu Quod Libet (<a href='https://www."
+"sentry.io'>www.sentry.io</a>). Poniżej można przejrzeć dane przed wysłaniem."
 
 #: ../quodlibet/errorreport/ui.py:100
 msgid ""
 "(optional) Please provide a short description of what happened when the "
 "error occurred:"
-msgstr ""
+msgstr "(opcjonalne) Proszę podać krótki opis okoliczności wystąpienia błędu:"
 
 #: ../quodlibet/errorreport/ui.py:109
 msgid "_Send"
-msgstr ""
+msgstr "_Wyślij"
 
 #: ../quodlibet/errorreport/ui.py:115
-#, fuzzy
 msgid "Short description…"
-msgstr "opis"
+msgstr "Krótki opis…"
 
 #: ../quodlibet/errorreport/ui.py:118
 msgid "Data to be sent:"
-msgstr ""
+msgstr "Dane do wysłania:"
 
 #: ../quodlibet/exfalso.py:34
 msgid "an audio tag editor"
@@ -1455,7 +1454,7 @@ msgstr "Dozwolenie _WIELKICH LITER w etykietach"
 
 #: ../quodlibet/ext/editing/titlecase.py:52
 msgid "_Human title case"
-msgstr "_Ludzka wartość Jak w Tytule"
+msgstr "_Angielska wartość Jak w Tytule"
 
 #: ../quodlibet/ext/editing/titlecase.py:53
 msgid ""
@@ -1469,9 +1468,8 @@ msgid "Advanced Preferences"
 msgstr "Zaawansowane preferencje"
 
 #: ../quodlibet/ext/events/advanced_preferences.py:70
-#, fuzzy
 msgid "Allow editing of advanced config settings."
-msgstr "Umożliwia dostosowywanie zaawansowanych ustawień konfiguracji."
+msgstr "Umożliwia modyfikowanie zaawansowanych ustawień konfiguracji."
 
 #: ../quodlibet/ext/events/advanced_preferences.py:162
 msgid "I know what I'm doing"
@@ -1698,6 +1696,9 @@ msgid ""
 "Controls the tone of your music with an equalizer.\n"
 "Click or use keys to customise levels (right-click resets the band)."
 msgstr ""
+"Steruje brzmieniem muzyki za pomocą korektora graficznego.\n"
+"Można kliknąć lub użyć klawiszy, aby dostosować poziomy (kliknięcie prawym "
+"przyciskiem myszy przywraca dane pasmo)."
 
 #: ../quodlibet/ext/events/equalizer.py:132
 msgid "The current backend does not support equalization."
@@ -1706,20 +1707,20 @@ msgstr "Obecny mechanizm nie obsługuje korektora graficznego."
 #: ../quodlibet/ext/events/equalizer.py:138
 #, python-format
 msgid "%.1f kHz"
-msgstr "%.1f kHz"
+msgstr "%.1f kHz"
 
 #: ../quodlibet/ext/events/equalizer.py:139
 #: ../quodlibet/ext/gstreamer/crossfeed.py:93
 #: ../quodlibet/ext/gstreamer/karaoke.py:95
 #, python-format
 msgid "%d Hz"
-msgstr "%d Hz"
+msgstr "%d Hz"
 
 #: ../quodlibet/ext/events/equalizer.py:173
 #: ../quodlibet/ext/gstreamer/crossfeed.py:112
 #, python-format
 msgid "%.1f dB"
-msgstr "%.1f dB"
+msgstr "%.1f dB"
 
 #: ../quodlibet/ext/events/equalizer.py:192
 #: ../quodlibet/ext/gstreamer/crossfeed.py:31
@@ -1733,27 +1734,27 @@ msgstr "Wy_czyść"
 #. Translators: statuses relating to Instant Messenger apps
 #: ../quodlibet/ext/events/gajim_status.py:27
 msgid "online"
-msgstr ""
+msgstr "dostępny"
 
 #: ../quodlibet/ext/events/gajim_status.py:28
 msgid "offline"
-msgstr ""
+msgstr "rozłączony"
 
 #: ../quodlibet/ext/events/gajim_status.py:29
 msgid "chat"
-msgstr ""
+msgstr "rozmowny"
 
 #: ../quodlibet/ext/events/gajim_status.py:30
 msgid "away"
-msgstr ""
+msgstr "nieobecny"
 
 #: ../quodlibet/ext/events/gajim_status.py:31
 msgid "xa"
-msgstr ""
+msgstr "zajęty"
 
 #: ../quodlibet/ext/events/gajim_status.py:32
 msgid "invisible"
-msgstr ""
+msgstr "niewidoczny"
 
 #: ../quodlibet/ext/events/gajim_status.py:37
 msgid "Gajim Status Message"
@@ -1781,9 +1782,8 @@ msgstr ""
 "kont."
 
 #: ../quodlibet/ext/events/gajim_status.py:160
-#, fuzzy
 msgid "Add '[paused]'"
-msgstr "wstrzymano"
+msgstr "Dodanie „[wstrzymano]”"
 
 #: ../quodlibet/ext/events/gajim_status.py:163
 msgid "If checked, '[paused]' will be added to status message on pause."
@@ -1792,11 +1792,8 @@ msgstr ""
 "podczas wstrzymania."
 
 #: ../quodlibet/ext/events/gajim_status.py:187
-#, fuzzy
 msgid "Statuses for which message will be changed"
-msgstr ""
-"Stany, dla których wiadomość stanu\n"
-"będzie zmieniana"
+msgstr "Stany, dla których wiadomość będzie zmieniana"
 
 #: ../quodlibet/ext/events/headphonemon.py:156
 msgid "Pause on Headphone Unplug"
@@ -1843,22 +1840,20 @@ msgid "Outputs a Jabber User Tunes file to ~/.quodlibet/jabber."
 msgstr "Wypisuje plik „Jabber User Tunes” do ~/.quodlibet/jabber."
 
 #: ../quodlibet/ext/events/language.py:21
-#, fuzzy
 msgid "Change Language"
-msgstr "Zmień _oceny"
+msgstr "Zmiana języka"
 
 #: ../quodlibet/ext/events/language.py:22
 msgid "Change the user interface language."
-msgstr ""
+msgstr "Zmienia język interfejsu użytkownika."
 
 #: ../quodlibet/ext/events/language.py:43
-#, fuzzy
 msgid "System Default"
-msgstr "Domyślne"
+msgstr "Domyślny systemu"
 
 #: ../quodlibet/ext/events/language.py:70
 msgid "A restart is required for any changes to take effect"
-msgstr ""
+msgstr "Wymagane jest ponowne uruchomienie, aby uwzględnić zmiany"
 
 #: ../quodlibet/ext/events/lyricswindow.py:199
 msgid "No active song"
@@ -2486,11 +2481,11 @@ msgstr "Ciemny motyw"
 
 #: ../quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
-msgstr ""
+msgstr "Przełączanie paska menu"
 
 #: ../quodlibet/ext/events/toggle_menu.py:19
 msgid "Toggle the menu bar by pressing the Alt key."
-msgstr ""
+msgstr "Przełącza pasek menu przez naciśnięcie klawisza Alt."
 
 #: ../quodlibet/ext/events/trayicon/appindicator.py:77
 #: ../quodlibet/ext/events/trayicon/prefs.py:98
@@ -2609,16 +2604,16 @@ msgstr "_Tekst utworu"
 
 #: ../quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
-msgstr ""
+msgstr "Uruchamianie wizualizacji"
 
 #: ../quodlibet/ext/events/visualisations.py:38
 msgid "Launch external visualisations."
-msgstr ""
+msgstr "Uruchamia zewnętrzne wizualizacje."
 
 #: ../quodlibet/ext/events/visualisations.py:55
 #, python-format
 msgid "Couldn't run visualisations using '%s'"
-msgstr ""
+msgstr "Nie można uruchomić wizualizacji za pomocą „%s”"
 
 #: ../quodlibet/ext/events/visualisations.py:57
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:44
@@ -2627,11 +2622,11 @@ msgstr "Błąd"
 
 #: ../quodlibet/ext/events/visualisations.py:76
 msgid "Visualiser executable:"
-msgstr ""
+msgstr "Plik wykonywalny wizualizacji:"
 
 #: ../quodlibet/ext/events/visualisations.py:91
 msgid "Reload"
-msgstr ""
+msgstr "Wczytaj ponownie"
 
 #: ../quodlibet/ext/events/waveformseekbar.py:406
 msgid "Waveform Seek Bar"
@@ -2818,48 +2813,43 @@ msgstr "Steruje tonacją strumienia dźwiękowego."
 #: ../quodlibet/ext/playlist/export_to_folder.py:29
 #: ../quodlibet/ext/playlist/export_to_folder.py:97
 #: ../quodlibet/ext/playlist/export_to_folder.py:138
-#, fuzzy
 msgid "Export Playlist to Folder"
-msgstr "Eksport listy odtwarzania do urządzenia Squeezebox"
+msgstr "Eksport listy odtwarzania do katalogu"
 
 #: ../quodlibet/ext/playlist/export_to_folder.py:38
-#, fuzzy
 msgid "_Export"
-msgstr "Za_importuj"
+msgstr "Wy_eksportuj"
 
 #: ../quodlibet/ext/playlist/export_to_folder.py:43
-#, fuzzy
 msgid "Destination folder:"
-msgstr "Nie odnaleziono żadnych stacji"
+msgstr "Katalog docelowy:"
 
 #: ../quodlibet/ext/playlist/export_to_folder.py:58
-#, fuzzy
 msgid "Filename pattern:"
-msgstr "_Wzorzec nazw plików:"
+msgstr "Wzorzec nazw plików:"
 
 #: ../quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
-msgstr ""
+msgstr "Eksportuje listę odtwarzania przez skopiowanie plików do katalogu."
 
 #: ../quodlibet/ext/playlist/export_to_folder.py:156
-#, fuzzy
 msgid "Default filename pattern:"
-msgstr "_Wzorzec nazw plików:"
+msgstr "Domyślny wzorzec nazw plików:"
 
 #: ../quodlibet/ext/playlist/export_to_squeezebox.py:23
 msgid "Export to Squeezebox"
 msgstr "Wyeksportuj do Squeezebox"
 
 #: ../quodlibet/ext/playlist/export_to_squeezebox.py:25
-#, fuzzy
 msgid ""
 "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
 "both share a directory structure. Shares configuration with <a href="
 "\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync plugin</a>."
 msgstr ""
-"Dynamicznie eksportuje listy odtwarzania do listy odtwarzania urządzenia "
+"Dynamicznie eksportuje listę odtwarzania do listy odtwarzania urządzenia "
 "Logitech Squeezebox, jeśli oba używają takiej samej struktury katalogów. "
-"Używa konfiguracji wtyczki synchronizacji z urządzeniem Squeezebox."
+"Używa konfiguracji <a href=\"quodlibet:///prefs/plugins/Squeezebox Output"
+"\">wtyczki synchronizacji z urządzeniem Squeezebox</a>."
 
 #: ../quodlibet/ext/playlist/export_to_squeezebox.py:79
 msgid "Export playlist to Squeezebox"
@@ -2922,22 +2912,21 @@ msgid "Shuffle, preferring songs with fewer total plays."
 msgstr "Losuje kolejność, preferując utwory z mniejszą liczbą odtworzeń."
 
 #: ../quodlibet/ext/playorder/playcounteq.py:25
-#, fuzzy
 msgid "Prefer less played"
-msgstr "Preferowanie wyżej ocenionych"
+msgstr "Preferowanie rzadziej odtwarzanych"
 
 #: ../quodlibet/ext/playorder/queue.py:19
 msgid "Queue Only"
 msgstr "Tylko kolejka"
 
 #: ../quodlibet/ext/playorder/queue.py:21
-#, fuzzy
 msgid ""
 "Limits playing of songs to the queue. Select this play order in the main "
 "window, then double-clicking any song will enqueue it instead of playing."
 msgstr ""
-"Ogranicza odtwarzanie utworów do kolejki. Podwójne kliknięcie utworu dodaje "
-"go do kolejki."
+"Ogranicza odtwarzanie utworów do kolejki. Wybranie tej kolejności "
+"odtwarzania w głównym oknie, a następnie podwójne kliknięcie utworu doda go "
+"do kolejki."
 
 #: ../quodlibet/ext/playorder/reverse.py:14
 msgid "Reverse"
@@ -2948,14 +2937,13 @@ msgid "Reverses the play order of songs."
 msgstr "Odwraca kolejność odtwarzania utworów."
 
 #: ../quodlibet/ext/playorder/skip_songs.py:25
-#, fuzzy
 msgid "Skip Songs"
-msgstr "Liczba pominięć"
+msgstr "Pomijanie utworów"
 
 #: ../quodlibet/ext/playorder/skip_songs.py:27
 msgid ""
 "Playback skips over songs with a rating equal or below a given threshold."
-msgstr ""
+msgstr "Odtwarzanie pomija utwory z oceną równą lub niższą niż podany próg."
 
 #: ../quodlibet/ext/playorder/track_repeat.py:30
 msgid "Repeat Each Track"
@@ -3408,13 +3396,12 @@ msgid "Edit Custom Commands"
 msgstr "Modyfikuj niestandardowe polecenia"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:199
-#, fuzzy
 msgid ""
 "Supports QL patterns\n"
 "eg <tt>&lt;~artist~title&gt;</tt>"
 msgstr ""
 "Obsługuje wzorce QL\n"
-"np. <tt><~artist~title></tt>"
+"np. <tt>&lt;~artist~title&gt;</tt>"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:283
 #, python-format
@@ -3812,32 +3799,30 @@ msgstr ""
 #. Create a dialog.
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:29
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:38
-#, fuzzy
 msgid "Migrate Metadata"
-msgstr "Eksport metadanych"
+msgstr "Migracja metadanych"
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:32
 msgid "Copies the quodlibet-specific metadata between songs."
-msgstr ""
+msgstr "Kopiuje metadane programu Quod Libet między utworami."
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:45
 msgid "_Copy"
-msgstr ""
+msgstr "S_kopiuj"
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:47
 msgid "_Paste"
-msgstr ""
+msgstr "Wk_lej"
 
 #. Create the tag table.
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:57
-#, fuzzy
 msgid "Information to copy/paste"
-msgstr "Informacje"
+msgstr "Informacje do skopiowania/wklejenia"
 
 #. Create the indexing box.
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:79
 msgid "Map tracks by disc and track number"
-msgstr ""
+msgstr "Mapowanie ścieżek według numerów płyty i ścieżki"
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:80
 msgid ""
@@ -3847,14 +3832,19 @@ msgid ""
 "<b>Note:</b> this must be enabled when metadata is copied for track "
 "information to be stored."
 msgstr ""
+"Należy to włączyć, kiedy ma być wykonana migracja z jednego albumu do "
+"drugiego, dopasowując numery płyty i ścieżki.\n"
+"\n"
+"<b>Uwaga:</b> musi to zostać włączone, kiedy metadane są kopiowane, aby "
+"przechować informacje o ścieżce."
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:96
 #, python-format
 msgid "There is %d stored track."
 msgid_plural "There are %d stored tracks."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Jest %d przechowywana ścieżka."
+msgstr[1] "Są %d przechowywane ścieżki."
+msgstr[2] "Jest %d przechowywanych ścieżek."
 
 #: ../quodlibet/ext/songsmenu/playlist.py:31
 msgid "Export as Playlist"
@@ -3972,32 +3962,29 @@ msgstr "Rozdziela numer płyty."
 #. TRANSLATORS: BPM mean "beats per minute"
 #: ../quodlibet/ext/songsmenu/tapbpm.py:31
 msgid "BPM:"
-msgstr ""
+msgstr "Uderzenia na minutę:"
 
 #: ../quodlibet/ext/songsmenu/tapbpm.py:32
 #: ../quodlibet/ext/songsmenu/tapbpm.py:61
 msgid "n/a"
-msgstr ""
+msgstr "Nie dotyczy"
 
 #: ../quodlibet/ext/songsmenu/tapbpm.py:36
-#, fuzzy
 msgid "Reset"
-msgstr "_Ustawienie:"
+msgstr "Przywróć"
 
 #: ../quodlibet/ext/songsmenu/tapbpm.py:42
-#, fuzzy
 msgid "Tap"
-msgstr "Etykieta"
+msgstr "Wystukaj"
 
 #: ../quodlibet/ext/songsmenu/tapbpm.py:172
 #: ../quodlibet/ext/songsmenu/tapbpm.py:179
 msgid "Tap BPM"
-msgstr ""
+msgstr "Wystukiwanie uderzeń na minutę"
 
 #: ../quodlibet/ext/songsmenu/tapbpm.py:173
-#, fuzzy
 msgid "Tap BPM for the selected song."
-msgstr "Otwarcie edytora etykiet dla zaznaczonych utworów"
+msgstr "Wystukuje uderzenia na minutę zaznaczonego utworu."
 
 #: ../quodlibet/ext/songsmenu/website_search.py:35
 msgid "Website Search"
@@ -4356,7 +4343,7 @@ msgstr "_Potok wyjściowy:"
 #: ../quodlibet/player/gstbe/prefs.py:43
 #, python-format
 msgid "%.1f seconds"
-msgstr "%.1f s"
+msgstr "%.1f s"
 
 #: ../quodlibet/player/gstbe/prefs.py:57
 msgid "_Buffer duration:"
@@ -4827,7 +4814,7 @@ msgstr "_O programie"
 #: ../quodlibet/qltk/exfalsowindow.py:99
 #: ../quodlibet/qltk/quodlibetwindow.py:1088
 msgid "_Check for Updates…"
-msgstr "_Wyszukaj aktualizacje…"
+msgstr "Wy_szukaj aktualizacje…"
 
 #: ../quodlibet/qltk/exfalsowindow.py:105
 #: ../quodlibet/qltk/quodlibetwindow.py:1021 ../quodlibet/qltk/songsmenu.py:304
@@ -4896,12 +4883,12 @@ msgstr " %s"
 #: ../quodlibet/qltk/information.py:448
 #, python-format
 msgid "Disc %s"
-msgstr "Płyta %s"
+msgstr "%s. płyta"
 
 #: ../quodlibet/qltk/info.py:44 ../quodlibet/qltk/information.py:172
 #, python-format
 msgid "Track %s"
-msgstr "Ścieżka %s"
+msgstr "%s. ścieżka"
 
 #: ../quodlibet/qltk/info.py:108
 msgid "_Edit Display…"
@@ -4979,7 +4966,7 @@ msgstr "ocena"
 
 #: ../quodlibet/qltk/information.py:287
 msgid "path"
-msgstr ""
+msgstr "ścieżka"
 
 #: ../quodlibet/qltk/information.py:288 ../quodlibet/util/tags.py:154
 msgid "length"
@@ -5011,7 +4998,7 @@ msgstr "zmodyfikowano"
 
 #: ../quodlibet/qltk/information.py:331
 msgid "Additional"
-msgstr ""
+msgstr "Dodatkowe"
 
 #: ../quodlibet/qltk/information.py:383
 #, python-format
@@ -5166,22 +5153,19 @@ msgstr "Brak kategorii"
 
 #: ../quodlibet/qltk/pluginwin.py:169
 msgid "Events"
-msgstr ""
+msgstr "Wydarzenia"
 
 #: ../quodlibet/qltk/pluginwin.py:170
-#, fuzzy
 msgid "Play Order"
-msgstr "W kolejności"
+msgstr "Kolejność odtwarzania"
 
 #: ../quodlibet/qltk/pluginwin.py:171
-#, fuzzy
 msgid "Editing"
-msgstr "modyfikowanie"
+msgstr "Modyfikowanie"
 
 #: ../quodlibet/qltk/pluginwin.py:173
-#, fuzzy
 msgid "Covers"
-msgstr "Rozmiar _okładki:"
+msgstr "Okładki"
 
 #: ../quodlibet/qltk/pluginwin.py:309
 msgid "No plugins found."
@@ -5436,13 +5420,12 @@ msgstr ""
 "plików"
 
 #: ../quodlibet/qltk/prefs.py:587
-#, fuzzy
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
 "list is space-separated"
 msgstr ""
-"Lista separatorów do użycia podczas rozdzielania wartości etykiet. Lista "
-"jest rozdzielana spacjami"
+"Zestaw separatorów do użycia podczas rozdzielania wartości etykiet "
+"w edytorze etykiet. Lista jest rozdzielana spacjami"
 
 #: ../quodlibet/qltk/prefs.py:610
 msgid "Tags"
@@ -5498,12 +5481,11 @@ msgstr "_Kolejka"
 
 #: ../quodlibet/qltk/queue.py:126
 msgid "Stop Once Empty"
-msgstr ""
+msgstr "Zatrzymanie po ukończeniu"
 
 #: ../quodlibet/qltk/queue.py:130
-#, fuzzy
 msgid "_Clear Queue"
-msgstr "Wy_czyść"
+msgstr "Wy_czyść kolejkę"
 
 #: ../quodlibet/qltk/queue.py:242
 #, python-format
@@ -5635,19 +5617,16 @@ msgid "Add Music"
 msgstr "Dodaj muzykę"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1372 ../quodlibet/qltk/scanbox.py:99
-#, fuzzy
 msgid "_Add Folders"
-msgstr "_Dodaj katalog…"
+msgstr "_Dodaj katalogi"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1379
-#, fuzzy
 msgid "Music Files"
-msgstr "Odtwarzacz muzyki"
+msgstr "Pliki muzyczne"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1381
-#, fuzzy
 msgid "_Add Files"
-msgstr "_Dodaj plik…"
+msgstr "_Dodaj pliki"
 
 #: ../quodlibet/qltk/ratingsmenu.py:24
 #, python-format
@@ -6150,7 +6129,7 @@ msgstr "%r nie jest unikalnym przedrostkiem."
 #: ../quodlibet/util/__init__.py:364
 #, python-format
 msgid "%d kbps"
-msgstr "%d kb/s"
+msgstr "%d kb/s"
 
 #: ../quodlibet/util/__init__.py:419
 #, python-format
@@ -6541,9 +6520,8 @@ msgid "playlists"
 msgstr "listy odtwarzania"
 
 #: ../quodlibet/util/tags.py:166
-#, fuzzy
 msgid "channel count"
-msgstr "Konto"
+msgstr "liczba kanałów"
 
 #. Translators: e.g. "artist (sort)"
 #: ../quodlibet/util/tags.py:256
@@ -6554,73 +6532,3 @@ msgstr "porządkowanie"
 #: ../quodlibet/util/tags.py:264
 msgid "roles"
 msgstr "role"
-
-#~ msgid "browsers"
-#~ msgstr "przeglądarki"
-
-#~ msgid "Could not import %s. Audio Feeds browser disabled."
-#~ msgstr ""
-#~ "Nie można zaimportować %s. Przeglądarka kanałów dźwiękowych została "
-#~ "wyłączona."
-
-#~ msgid "Controls the tone of your music with an equalizer."
-#~ msgstr "Steruje brzmieniem muzyki za pomocą korektora graficznego."
-
-#~ msgid "tooltip"
-#~ msgstr "podpowiedź"
-
-#~ msgid "High Res"
-#~ msgstr "Wysoka rozdzielczość"
-
-#~ msgid "Event Logging"
-#~ msgstr "Zapisywanie zdarzeń w dzienniku"
-
-#~ msgid "Sends song events to the Zeitgeist event logging service."
-#~ msgstr "Wysyła zdarzenia utworów do usługi Zeitgeist."
-
-#~ msgid "Audio Backend Failed to Load"
-#~ msgstr "Wczytanie mechanizmu dźwięku się nie powiodło"
-
-#~ msgid ""
-#~ "Loading the audio backend '%(name)s' failed. Audio playback will be "
-#~ "disabled."
-#~ msgstr ""
-#~ "Wczytanie mechanizmu dźwięku „%(name)s” się nie powiodło. Odtwarzanie "
-#~ "dźwięku będzie wyłączone."
-
-#~ msgid "_Open"
-#~ msgstr "_Otwórz"
-
-#~ msgid ""
-#~ "An exception has occured in Quod Libet. A dump file has been saved to <b >"
-#~ "%(dump-path)s</b> that will help us debug the crash. Please file a new "
-#~ "issue at %(new-issue-url)sand attach this file or include its contents. "
-#~ "This file may contain some identifying information about you or your "
-#~ "system, such as a list of recent files played. If this is unacceptable, "
-#~ "send <b>%(mini-dump-path)s</b> instead with a description of what you "
-#~ "were doing."
-#~ msgstr ""
-#~ "Wystąpił wyjątek w programie Quod Libet. Plik zrzutu został zapisany w <b>"
-#~ "%(dump-path)s</b>, co pomoże programistom debugować awarię. Prosimy "
-#~ "zgłosić nowy błąd pod adresem %(new-issue-url)s i załączyć ten plik lub "
-#~ "dołączyć jego zawartość. Ten plik może zawierać pewne informacje "
-#~ "identyfikacyjne o użytkowniku lub systemie, takie jak lista ostatnio "
-#~ "odtwarzanych plików. Jeśli nie jest to akceptowalne, to prosimy "
-#~ "o wysłanie <b>%(mini-dump-path)s</b> zamiast tego, razem z opisem "
-#~ "wykonywanych czynności."
-
-#~ msgid ""
-#~ "Quod Libet may now be unstable. Closing it and restarting is recommended. "
-#~ "Your library will be saved."
-#~ msgstr ""
-#~ "Program Quod Libet może być teraz niestabilny. Zalecane jest jego "
-#~ "zamknięcie i ponowne uruchomienie. Kolekcja zostanie zapisana."
-
-#~ msgid "Unable to download lyrics."
-#~ msgstr "Nie można pobrać tekstu utworu."
-
-#~ msgid "Remove all songs from the queue"
-#~ msgstr "Usuwa wszystkie utwory z kolejki"
-
-#~ msgid "Watch this folder for new songs"
-#~ msgstr "Śledzenie zmian w tym katalogu"
