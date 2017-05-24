@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-17 18:58+0200\n"
+"POT-Creation-Date: 2017-05-24 22:05+0200\n"
 "PO-Revision-Date: 2015-09-14 22:31+0300\n"
 "Last-Translator: Dimitris Papageorgiou <dipap@gmx.com>\n"
 "Language-Team: Greek\n"
@@ -3457,15 +3457,15 @@ msgstr "Σύμπτυξη / Ανάπτυξη όλων"
 msgid "Duplicate key expression is '%s'"
 msgstr "Το πρότυπο για το κλειδί διπλοτύπων είναι '%s'"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:363
+#: ../quodlibet/ext/songsmenu/duplicates.py:372
 msgid "Duplicates Browser"
 msgstr "Αναζήτηση Διπλότυπων"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:364
+#: ../quodlibet/ext/songsmenu/duplicates.py:373
 msgid "Finds and displays similarly tagged versions of songs."
 msgstr "Εύρεση παρόμοιων εκδόσεων τραγουδιών."
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:407
+#: ../quodlibet/ext/songsmenu/duplicates.py:411
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
@@ -3473,31 +3473,31 @@ msgstr ""
 "Δέχεται εκφράσεις QL όπως <tt>~artist~title</tt> ή <tt>musicbrainz_track_id</"
 "tt>"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:409
+#: ../quodlibet/ext/songsmenu/duplicates.py:413
 msgid "_Group duplicates by:"
 msgstr "_Ομαδοποίηση διπλοτύπων με βάση:"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:414
+#: ../quodlibet/ext/songsmenu/duplicates.py:418
 msgid "Duplicate Key"
 msgstr "Κλειδί Διπλοτύπων"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:419
+#: ../quodlibet/ext/songsmenu/duplicates.py:423
 msgid "Remove _Whitespace"
 msgstr "Διαγραφή _Κενών"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:420
+#: ../quodlibet/ext/songsmenu/duplicates.py:424
 msgid "Remove _Diacritics"
 msgstr "Διαγραφή _Διακριτικών Σημείων"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:421
+#: ../quodlibet/ext/songsmenu/duplicates.py:425
 msgid "Remove _Punctuation"
 msgstr "Διαγραφή _Στίξης"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:422
+#: ../quodlibet/ext/songsmenu/duplicates.py:426
 msgid "Case _Insensitive"
 msgstr "Αγνόησε διαφορές πεζών/Κεφαλαίων"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:430
+#: ../quodlibet/ext/songsmenu/duplicates.py:434
 msgid "Matching options"
 msgstr "Επιλογές ταιριάσματος"
 

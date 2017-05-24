@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-17 18:58+0200\n"
+"POT-Creation-Date: 2017-05-24 22:05+0200\n"
 "PO-Revision-Date: 2012-12-07 17:22+0300\n"
 "Last-Translator: Naglis Jonaitis <njonaitis@gmail.com>\n"
 "Language-Team: Lithuanian (http://www.transifex.net/projects/p/quodlibet/"
@@ -3470,50 +3470,50 @@ msgstr ""
 msgid "Duplicate key expression is '%s'"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:363
+#: ../quodlibet/ext/songsmenu/duplicates.py:372
 #, fuzzy
 msgid "Duplicates Browser"
 msgstr "Išjungti naršyklę"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:364
+#: ../quodlibet/ext/songsmenu/duplicates.py:373
 msgid "Finds and displays similarly tagged versions of songs."
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:407
+#: ../quodlibet/ext/songsmenu/duplicates.py:411
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:409
+#: ../quodlibet/ext/songsmenu/duplicates.py:413
 msgid "_Group duplicates by:"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:414
+#: ../quodlibet/ext/songsmenu/duplicates.py:418
 #, fuzzy
 msgid "Duplicate Key"
 msgstr "Pašalinti pasikartojančias dainas"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:419
+#: ../quodlibet/ext/songsmenu/duplicates.py:423
 #, fuzzy
 msgid "Remove _Whitespace"
 msgstr "Pašalinti pasikartojančias dainas"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:420
+#: ../quodlibet/ext/songsmenu/duplicates.py:424
 #, fuzzy
 msgid "Remove _Diacritics"
 msgstr "Pašalinti pasikartojančias dainas"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:421
+#: ../quodlibet/ext/songsmenu/duplicates.py:425
 #, fuzzy
 msgid "Remove _Punctuation"
 msgstr "Pašalinti pasikartojančias dainas"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:422
+#: ../quodlibet/ext/songsmenu/duplicates.py:426
 msgid "Case _Insensitive"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:430
+#: ../quodlibet/ext/songsmenu/duplicates.py:434
 msgid "Matching options"
 msgstr ""
 

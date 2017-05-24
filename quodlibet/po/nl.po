@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-17 18:58+0200\n"
+"POT-Creation-Date: 2017-05-24 22:05+0200\n"
 "PO-Revision-Date: 2016-01-14 15:39+0100\n"
 "Last-Translator: Nathan Follens <nthn@unseen.is>\n"
 "Language-Team: Nederlands <en@li.org>\n"
@@ -3466,15 +3466,15 @@ msgstr "Alles samenvouwen / uitvouwen"
 msgid "Duplicate key expression is '%s'"
 msgstr "Dubbele sleutelexpressie is '%s'"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:363
+#: ../quodlibet/ext/songsmenu/duplicates.py:372
 msgid "Duplicates Browser"
 msgstr "Duplicatenbrowser"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:364
+#: ../quodlibet/ext/songsmenu/duplicates.py:373
 msgid "Finds and displays similarly tagged versions of songs."
 msgstr "Zoekt en toont gelijkaardig getagde versies van nummers."
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:407
+#: ../quodlibet/ext/songsmenu/duplicates.py:411
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
@@ -3482,31 +3482,31 @@ msgstr ""
 "QL tag-expressies zoals <tt>~artist~title</tt> of <tt>musicbrainz_track_id</"
 "tt> worden aanvaard"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:409
+#: ../quodlibet/ext/songsmenu/duplicates.py:413
 msgid "_Group duplicates by:"
 msgstr "Duplicaten _groeperen op:"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:414
+#: ../quodlibet/ext/songsmenu/duplicates.py:418
 msgid "Duplicate Key"
 msgstr "Dubbele sleutel"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:419
+#: ../quodlibet/ext/songsmenu/duplicates.py:423
 msgid "Remove _Whitespace"
 msgstr "_Witruimte verwijderen"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:420
+#: ../quodlibet/ext/songsmenu/duplicates.py:424
 msgid "Remove _Diacritics"
 msgstr "_Diakritische tekens verwijderen"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:421
+#: ../quodlibet/ext/songsmenu/duplicates.py:425
 msgid "Remove _Punctuation"
 msgstr "_Leestekens verwijderen"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:422
+#: ../quodlibet/ext/songsmenu/duplicates.py:426
 msgid "Case _Insensitive"
 msgstr "N_iet hoofdlettergevoelig"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:430
+#: ../quodlibet/ext/songsmenu/duplicates.py:434
 msgid "Matching options"
 msgstr "Bijpassende opties"
 

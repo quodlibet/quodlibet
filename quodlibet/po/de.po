@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 3.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-16 19:27+0200\n"
+"POT-Creation-Date: 2017-05-24 22:05+0200\n"
 "PO-Revision-Date: 2017-05-18 19:03+0200\n"
 "Last-Translator: Till Berger <till@mellthas.de>\n"
 "Language-Team: GERMAN <LL@li.org>\n"
@@ -3458,15 +3458,15 @@ msgstr "Alle einklappen/ausklappen"
 msgid "Duplicate key expression is '%s'"
 msgstr "Schlüsselausdruck für Duplikate ist »%s«"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:363
+#: ../quodlibet/ext/songsmenu/duplicates.py:372
 msgid "Duplicates Browser"
 msgstr "Duplikatbrowser"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:364
+#: ../quodlibet/ext/songsmenu/duplicates.py:373
 msgid "Finds and displays similarly tagged versions of songs."
 msgstr "Findet ähnlich getaggte Versionen von Titeln und zeigt diese an."
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:407
+#: ../quodlibet/ext/songsmenu/duplicates.py:411
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
@@ -3474,31 +3474,31 @@ msgstr ""
 "Akzeptiert QL-Tagausdrücke wie <tt>~artist~title</tt> oder "
 "<tt>musicbrainz_track_id</tt>"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:409
+#: ../quodlibet/ext/songsmenu/duplicates.py:413
 msgid "_Group duplicates by:"
 msgstr "Duplikate _gruppieren nach:"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:414
+#: ../quodlibet/ext/songsmenu/duplicates.py:418
 msgid "Duplicate Key"
 msgstr "Duplikatschlüssel"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:419
+#: ../quodlibet/ext/songsmenu/duplicates.py:423
 msgid "Remove _Whitespace"
 msgstr "_Leerräume entfernen"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:420
+#: ../quodlibet/ext/songsmenu/duplicates.py:424
 msgid "Remove _Diacritics"
 msgstr "_Diakritische Zeichen entfernen"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:421
+#: ../quodlibet/ext/songsmenu/duplicates.py:425
 msgid "Remove _Punctuation"
 msgstr "_Interpunktion entfernen"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:422
+#: ../quodlibet/ext/songsmenu/duplicates.py:426
 msgid "Case _Insensitive"
 msgstr "Groß-/Kleinschreibung _nicht beachten"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:430
+#: ../quodlibet/ext/songsmenu/duplicates.py:434
 msgid "Matching options"
 msgstr "Optionen für die Übereinstimmung"
 

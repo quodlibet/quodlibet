@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-17 18:58+0200\n"
+"POT-Creation-Date: 2017-05-24 22:05+0200\n"
 "PO-Revision-Date: 2017-02-17 10:45+0100\n"
 "Last-Translator: Jean-Michel Pouré <jm@poure.com>\n"
 "Language-Team: français <>\n"
@@ -3399,45 +3399,45 @@ msgstr "Replier / Déplier tout"
 msgid "Duplicate key expression is '%s'"
 msgstr "L'expression de la clé dupliquée est '%s'"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:363
+#: ../quodlibet/ext/songsmenu/duplicates.py:372
 msgid "Duplicates Browser"
 msgstr "Navigateur de doublons"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:364
+#: ../quodlibet/ext/songsmenu/duplicates.py:373
 msgid "Finds and displays similarly tagged versions of songs."
 msgstr "Recherche et affiche les titres ayant des étiquettes similaires"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:407
+#: ../quodlibet/ext/songsmenu/duplicates.py:411
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
 msgstr ""
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:409
+#: ../quodlibet/ext/songsmenu/duplicates.py:413
 msgid "_Group duplicates by:"
 msgstr "Regrouper les doublons par :"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:414
+#: ../quodlibet/ext/songsmenu/duplicates.py:418
 msgid "Duplicate Key"
 msgstr "Clé en double"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:419
+#: ../quodlibet/ext/songsmenu/duplicates.py:423
 msgid "Remove _Whitespace"
 msgstr "Supprimer les espaces"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:420
+#: ../quodlibet/ext/songsmenu/duplicates.py:424
 msgid "Remove _Diacritics"
 msgstr "Supprimer les caractères spéciaux"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:421
+#: ../quodlibet/ext/songsmenu/duplicates.py:425
 msgid "Remove _Punctuation"
 msgstr "Supprimer la ponctuation"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:422
+#: ../quodlibet/ext/songsmenu/duplicates.py:426
 msgid "Case _Insensitive"
 msgstr "Non-sensible à la casse"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:430
+#: ../quodlibet/ext/songsmenu/duplicates.py:434
 msgid "Matching options"
 msgstr "Options de correspondance"
 
@@ -6539,8 +6539,8 @@ msgstr "rôles"
 #~ "du problème. Veuillez ouvrir un ticket d'incident à  %(new-issue-url)s et "
 #~ "attachez-y ce fichier ou son contenu. Ce fichier peut contenir certaines "
 #~ "informations vous identifiant, telles qu'une liste de titres récemment "
-#~ "écoutés. Si ceci est inacceptable, envoyez à la place <b>"
-#~ "%(mini-dump-path)s</b> accompagné d'une description détaillée du problème."
+#~ "écoutés. Si ceci est inacceptable, envoyez à la place <b>%(mini-dump-"
+#~ "path)s</b> accompagné d'une description détaillée du problème."
 
 #~ msgid "Remove all songs from the queue"
 #~ msgstr "Supprimer tous les titres de la file d'attente"

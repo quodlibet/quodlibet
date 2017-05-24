@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-17 18:58+0200\n"
+"POT-Creation-Date: 2017-05-24 22:05+0200\n"
 "PO-Revision-Date: 2017-01-08 00:00+0000\n"
 "Last-Translator: scootergrisen\n"
 "Language-Team: Danish\n"
@@ -3406,15 +3406,15 @@ msgstr "Sammenfold/udfold alle"
 msgid "Duplicate key expression is '%s'"
 msgstr "Duplikeret nøgle-udtryk er '%s'"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:363
+#: ../quodlibet/ext/songsmenu/duplicates.py:372
 msgid "Duplicates Browser"
 msgstr "Duplikerer browser"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:364
+#: ../quodlibet/ext/songsmenu/duplicates.py:373
 msgid "Finds and displays similarly tagged versions of songs."
 msgstr "Finder og viser lignende taggede versioner af sange."
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:407
+#: ../quodlibet/ext/songsmenu/duplicates.py:411
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
@@ -3422,31 +3422,31 @@ msgstr ""
 "Accepterer QL-tag-udtryk såsom <tt>~artist~title</tt> eller "
 "<tt>musicbrainz_track_id</tt>"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:409
+#: ../quodlibet/ext/songsmenu/duplicates.py:413
 msgid "_Group duplicates by:"
 msgstr "_Gruppér duplikater efter:"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:414
+#: ../quodlibet/ext/songsmenu/duplicates.py:418
 msgid "Duplicate Key"
 msgstr "Duplikér nøgle"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:419
+#: ../quodlibet/ext/songsmenu/duplicates.py:423
 msgid "Remove _Whitespace"
 msgstr "Fjern _blanktegn"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:420
+#: ../quodlibet/ext/songsmenu/duplicates.py:424
 msgid "Remove _Diacritics"
 msgstr "Fjern _diakritiske"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:421
+#: ../quodlibet/ext/songsmenu/duplicates.py:425
 msgid "Remove _Punctuation"
 msgstr "Fjern _tegnsætning"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:422
+#: ../quodlibet/ext/songsmenu/duplicates.py:426
 msgid "Case _Insensitive"
 msgstr "Der skelnes _ikke mellem store og små bogstaver"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:430
+#: ../quodlibet/ext/songsmenu/duplicates.py:434
 msgid "Matching options"
 msgstr "Sammenhørende valgmuligheder"
 
@@ -6544,8 +6544,8 @@ msgstr "roller"
 #~ "Opret venligst et nyt issue hos %(new-issue-url)s og vedhæft denne fil "
 #~ "eller inkluder dens indhold. Denne fil kan indeholde information som "
 #~ "identificerer dig eller dit system, såsom en liste med nyligt afspillede "
-#~ "filer. Hvis dette er uaccaptabelt, så send i stedet <b>"
-#~ "%(mini-dump-path)s</b> med en beskrivelse af hvad du gjorde."
+#~ "filer. Hvis dette er uaccaptabelt, så send i stedet <b>%(mini-dump-"
+#~ "path)s</b> med en beskrivelse af hvad du gjorde."
 
 #~ msgid ""
 #~ "Quod Libet may now be unstable. Closing it and restarting is recommended. "
