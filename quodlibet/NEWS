@@ -1,7 +1,7 @@
 .. _release-3.9.0:
 
-3.9.0 (????-??-??)
-------------------
+3.9.0 (2017-05-24) - If you can whistle, you can do this too
+------------------------------------------------------------
 
 Packaging Changes:
   * **python-zeitgeist** no longer used
