@@ -16,8 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Language: da_DK\n"
-"X-Source-Language: C\n"
 
 #: ../data/exfalso.appdata.xml.in.h:1 ../data/exfalso.desktop.in.h:2
 msgid "Edit tags in your audio files"
@@ -6489,64 +6487,3 @@ msgstr "slags"
 #: ../quodlibet/util/tags.py:264
 msgid "roles"
 msgstr "roller"
-
-#~ msgid "browsers"
-#~ msgstr "browsere"
-
-#~ msgid "Could not import %s. Audio Feeds browser disabled."
-#~ msgstr "Kunne ikke importere %s. Lyd-feeds-browser deaktiveret."
-
-#~ msgid "Controls the tone of your music with an equalizer."
-#~ msgstr "Styrer tonen af din musik med en equalizer."
-
-#~ msgid "settings"
-#~ msgstr "indstillinger"
-
-#~ msgid "tooltip"
-#~ msgstr "værktøjstip"
-
-#~ msgid "High Res"
-#~ msgstr "Høj opløsning"
-
-#~ msgid "Audio Backend Failed to Load"
-#~ msgstr "Indlæsning af lyd-backend fejlede"
-
-#~ msgid ""
-#~ "Loading the audio backend '%(name)s' failed. Audio playback will be "
-#~ "disabled."
-#~ msgstr ""
-#~ "Indlæses af lyd-backend '%(name)s' fejlede. Lydafspilning vil blive "
-#~ "deaktiveret."
-
-#~ msgid "_Open"
-#~ msgstr "_Åbn"
-
-#~ msgid ""
-#~ "An exception has occured in Quod Libet. A dump file has been saved to <b "
-#~ ">%(dump-path)s</b> that will help us debug the crash. Please file a new "
-#~ "issue at %(new-issue-url)sand attach this file or include its contents. "
-#~ "This file may contain some identifying information about you or your "
-#~ "system, such as a list of recent files played. If this is unacceptable, "
-#~ "send <b>%(mini-dump-path)s</b> instead with a description of what you "
-#~ "were doing."
-#~ msgstr ""
-#~ "Der er opstået en undtagelse i Quod Libet. En dump-fil er blevet gemt i "
-#~ "<b >%(dump-path)s</b> som vil hjælpe os med at fejlrette nedbruddet. "
-#~ "Opret venligst et nyt issue hos %(new-issue-url)s og vedhæft denne fil "
-#~ "eller inkluder dens indhold. Denne fil kan indeholde information som "
-#~ "identificerer dig eller dit system, såsom en liste med nyligt afspillede "
-#~ "filer. Hvis dette er uaccaptabelt, så send i stedet "
-#~ "<b>%(mini-dump-path)s</b> med en beskrivelse af hvad du gjorde."
-
-#~ msgid ""
-#~ "Quod Libet may now be unstable. Closing it and restarting is recommended. "
-#~ "Your library will be saved."
-#~ msgstr ""
-#~ "Quod Libet kan nu være ustabil. Det anbefales at lukke og genstarte den. "
-#~ "Dit bibliotek vil blive gemt."
-
-#~ msgid "Remove all songs from the queue"
-#~ msgstr "Fjern alle sange fra køen"
-
-#~ msgid "Watch this folder for new songs"
-#~ msgstr "Overvåg denne mappe for nye sange"
