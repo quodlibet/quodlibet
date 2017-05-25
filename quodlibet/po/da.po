@@ -1782,7 +1782,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/gajim_status.py:187
 msgid "Statuses for which message will be changed"
-msgstr "Statuser for hvilken meddelelser der ændres"
+msgstr "Statusser for hvilken meddelelser der ændres"
 
 #: ../quodlibet/ext/events/headphonemon.py:156
 msgid "Pause on Headphone Unplug"
