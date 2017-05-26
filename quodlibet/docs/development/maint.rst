@@ -52,7 +52,6 @@ Release Checklist
 
 New Stable branch:
 
-    * setup.py update_po; git commit
     * git checkout -b quodlibet-x.y
     * change branch name in const.py
     * git commit; git push
@@ -67,7 +66,7 @@ New Stable release:
     * update NEWS; git commit
     * test OSX/Windows/Ubuntu/Buildbots
     * setup.py distcheck
-    * setup.py update_po, update version to (X, Y, Z), commit "release prep"
+    * update version to (X, Y, Z), commit "release prep"
     * add tag "release-x.y.z"
     * push tag
     * update version to (X, Y, Z, -1), commit "version bump"
