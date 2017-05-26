@@ -8,7 +8,6 @@ from tests.helper import ListWithUnused as L
 
 import os
 import re
-import glob
 
 try:
     import polib
@@ -52,8 +51,8 @@ class TPot(TestCase):
     @classmethod
     def setUpClass(cls):
         gettextutil.check_version()
-        pot_path = gettextutil.update_pot(PODIR, "quodlibet")
-        cls.pot = polib.pofile(pot_path)
+        with gettextutil.create_pot(PODIR, "quodlibet") as pot_path:
+            cls.pot = polib.pofile(pot_path)
 
     def conclude(self, fails, reason):
         if fails:
@@ -317,8 +316,7 @@ class POMixin(object):
         self.conclude(fails, "ending punctuation missing")
 
 
-for fn in glob.glob(os.path.join(PODIR, "*.po")):
-    lang = os.path.basename(fn)[:-3]
+for lang in gettextutil.list_languages(PODIR):
     testcase = type('PO.' + lang, (TestCase, POMixin), {})
     testcase.lang = lang
     globals()['PO.' + lang] = testcase

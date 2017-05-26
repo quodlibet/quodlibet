@@ -25,7 +25,9 @@
 """
 
 import os
+import glob
 import subprocess
+import contextlib
 from distutils.spawn import find_executable
 
 
@@ -75,11 +77,10 @@ def intltool(*args):
         return ["intltool-%s" % command] + list(args)
 
 
-def update_pot(po_dir, package):
+def _update_pot(po_dir, package):
     """Regenerate the pot file in po_dir
 
-        Returns the path to the pot file
-    or raise GettextError
+    Returns the path to the pot file or raise GettextError
     """
 
     old_dir = os.getcwd()
@@ -96,6 +97,24 @@ def update_pot(po_dir, package):
         os.chdir(old_dir)
 
     return os.path.join(po_dir, package + ".pot")
+
+
+@contextlib.contextmanager
+def create_pot(po_dir, package):
+    """Temporarily creates a .pot file in po_dir"""
+
+    path = _update_pot(po_dir, package)
+    try:
+        yield path
+    finally:
+        os.unlink(path)
+
+
+def list_languages(po_dir):
+    """Returns a list of available language codes"""
+
+    po_files = glob.glob(os.path.join(po_dir, "*.po"))
+    return sorted([os.path.basename(po[:-3]) for po in po_files])
 
 
 def update_po(po_dir, package, lang_code, output_file=None):
