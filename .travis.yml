@@ -34,20 +34,20 @@ matrix:
       sudo: required
       dist: trusty
       env: TYPE="windows" PYTHON="python2" PYARGS="-R" APT_PACKAGES="wine xvfb p7zip-full"
-    - os: linux
-      language: generic
-      sudo: required
-      dist: trusty
-      env: TYPE="windows" PYTHON="python3" PYARGS="-R -bb" APT_PACKAGES="wine xvfb p7zip-full"
+#    - os: linux
+#      language: generic
+#      sudo: required
+#      dist: trusty
+#      env: TYPE="windows" PYTHON="python3" PYARGS="-R -bb" APT_PACKAGES="wine xvfb p7zip-full"
 
 install:
  - if [ "$APT_PACKAGES" != "" ]; then sudo dpkg --add-architecture i386; fi
  - if [ "$APT_PACKAGES" != "" ]; then sudo apt-get update -q || true; fi
  - if [ "$APT_PACKAGES" != "" ]; then travis_retry sudo apt-get install -y $(echo $APT_PACKAGES); fi
  - if [ "$TYPE" == "linux" ]; then docker build -t myimage -f "$DOCKER_FILE" .; fi
- - if [ "$TYPE" == "osx" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg; fi
- - if [ "$TYPE" == "osx" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg; fi
- - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python2" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe -O win-inst.exe; fi
+ - if [ "$TYPE" == "osx" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-3.9.0.dmg; fi
+ - if [ "$TYPE" == "osx" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-3.9.0.dmg; fi
+ - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python2" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-3.9.0-installer.exe -O win-inst.exe; fi
  - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python3" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer-py3.exe -O win-inst.exe; fi
  - if [ "$TYPE" == "windows" ]; then 7z x -o_temp win-inst.exe > /dev/null; fi
  - if [ "$TYPE" == "windows" ]; then mv $(dirname _temp/*/bin) _win_inst; fi
