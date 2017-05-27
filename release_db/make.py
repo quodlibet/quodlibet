@@ -15,7 +15,8 @@ from urllib.request import urlopen
 import feedparser
 
 
-GITHUB = "https://github.com/quodlibet/quodlibet/releases/download/release-%(version)s/"
+GITHUB = ("https://github.com/quodlibet/quodlibet/releases/download/"
+          "release-%(version)s/")
 
 OSX_QL = "osx-quodlibet"
 OSX_EF = "osx-exfalso"
@@ -30,6 +31,16 @@ BUILD_TYPE_TITLES = {
     WIN_PORT: "Quod Libet / Ex Falso (Windows Portable)",
     TARBALL: "Quod Libet / Ex Falso",
 }
+
+
+BUILD_TYPE_SHORT_TITLES = {
+    OSX_QL: "Quod Libet %(version)s",
+    OSX_EF: "Ex Falso %(version)s",
+    WIN: "Quod Libet %(version)s",
+    WIN_PORT: "Quod Libet %(version)s (portable)",
+    TARBALL: "Quod Libet %(version)s",
+}
+
 
 RELEASES = [
     {
@@ -174,13 +185,26 @@ RELEASES = [
 
 class Build:
 
-    def __init__(self, type, build_version, url, hash_url, sig_url, size):
+    def __init__(self, type, version, build_version, url, hash_url, sig_url,
+                 size):
         self.type = type
+        self.version = version
         self.build_version = build_version
         self.url = url
         self.hash_url = hash_url
         self.sig_url = sig_url
         self.size = size
+
+    @property
+    def name(self):
+        return BUILD_TYPE_SHORT_TITLES[self.type] % {
+            "version": self.version_desc}
+
+    @property
+    def version_desc(self):
+        if self.build_version == "0":
+            return self.version
+        return self.version + "v%d" % (int(self.build_version) + 1, )
 
     def __repr__(self):
         return ("<Build type=%(type)s build_version=%(build_version)s "
@@ -237,7 +261,8 @@ def get_releases():
             for i, url in reversed(list(enumerate(urls))):
                 build_version = str(i)
                 url = url % r
-                builds.append(Build(type, build_version, url, None, None, 0))
+                builds.append(
+                    Build(type, version, build_version, url, None, None, 0))
         releases.append(Release(version, date, builds))
         all_builds.extend(builds)
 
@@ -285,6 +310,28 @@ def release_date(date):
                          time.strptime(date, "%Y-%m-%d"))
 
 
+def get_latest_builds(releases, build_type):
+    """Returns the latest builds for each major versions, newest first"""
+
+    builds = []
+    versions_seen = set()
+    for release in releases:
+        for build in release.builds:
+            if build.type == build_type:
+                break
+        else:
+            continue
+
+        vkey = tuple(release.version.split(".")[:2])
+        if vkey in versions_seen:
+            continue
+        versions_seen.add(vkey)
+
+        builds.append(build)
+
+    return builds
+
+
 def appcast_build(releases):
     feeds = {}
 
@@ -303,11 +350,10 @@ def appcast_build(releases):
                 if build.type != build_type:
                     continue
 
-                version_desc = release.version
-                version_key = release.version
+                version_desc = build.version_desc
 
+                version_key = release.version
                 if build.build_version != "0":
-                    version_desc += " (v%d)" % (int(build.build_version) + 1, )
                     version_key += "." + build.build_version
 
                 os_id = os_mapping[build.type]
@@ -325,7 +371,8 @@ def appcast_build(releases):
 
         result = APPCAST_TEMPLATE % {
             "title": title,
-            "link": "https://quodlibet.readthedocs.io/en/latest/downloads.html",
+            "link":
+                "https://quodlibet.readthedocs.io/en/latest/downloads.html",
             "items": "".join(items),
         }
 
@@ -335,13 +382,47 @@ def appcast_build(releases):
     return feeds
 
 
+def get_download_tables(releases):
+
+    tables = {}
+
+    for build_type in BUILD_TYPE_TITLES.keys():
+        text = """\
+.. list-table::
+    :header-rows: 1
+
+    * - Release
+      - File
+      - SHA256
+      - PGP
+"""
+        for build in get_latest_builds(releases, build_type)[:3]:
+            text += """\
+    * - %s
+      - `%s <%s>`__
+      - `SHA256 <%s>`__
+      - `SIG <%s>`__
+""" % (build.name, build.url.rsplit("/")[-1],
+                build.url, build.hash_url, build.sig_url)
+
+        tables[build_type] = text
+
+    return tables
+
+
 def main(argv):
     releases = get_releases()
+
+    path = os.path.join("..", "quodlibet", "docs", "tables")
+    for build_type, table in get_download_tables(releases).items():
+        with open(os.path.join(path, build_type.replace("-", "_") + ".rst"),
+                  "w", encoding="utf-8") as h:
+            h.write(table)
 
     os.mkdir("appcast")
     for build_type, feed in appcast_build(releases).items():
         with open(os.path.join("appcast", build_type + ".rss"),
-                "w", encoding="utf-8") as h:
+                  "w", encoding="utf-8") as h:
             h.write(feed)
 
 
