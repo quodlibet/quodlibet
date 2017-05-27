@@ -66,7 +66,7 @@ Plugins:
   * Add a plugin to export a playlist to a folder :pr:`2307`
     (:user:`Didier Villevalois <ptitjes>`)
   * Add skip by rating plugin :pr:`2201` (:user:`Jason Heard <101100>`)
-  * Advanced Prefaulthandlerfs: add a configuration for the window title pattern :pr:`2272`
+  * Advanced Prefs: add a configuration for the window title pattern :pr:`2272`
     (:user:`Didier Villevalois <ptitjes>`)
   * waveformseekbar: add hidpi detection :pr:`2261`
     (:user:`Didier Villevalois <ptitjes>`)
