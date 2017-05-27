@@ -24,25 +24,28 @@ All files are signed with the following key: `0EBF 782C 5D53 F7E5 FB02  A667 46B
 |source-logo| Release Tarballs
 ------------------------------
 
-========================== =============================== ================================================== ============================================
-Release                    File                            SHA256                                             PGP
-========================== =============================== ================================================== ============================================
-Quod Libet 3.9.0           quodlibet-3.9.0.tar.gz_         `SHA256 <quodlibet-3.9.0.tar.gz.sha256_>`_         `SIG <quodlibet-3.9.0.tar.gz.sig_>`_
-Quod Libet 3.8.1           quodlibet-3.8.1.tar.gz_         `SHA256 <quodlibet-3.8.1.tar.gz.sha256_>`_         `SIG <quodlibet-3.8.1.tar.gz.sig_>`_
-Quod Libet 3.7.1           quodlibet-3.7.1.tar.gz_         `SHA256 <quodlibet-3.7.1.tar.gz.sha256_>`_         `SIG <quodlibet-3.7.1.tar.gz.sig_>`_
-========================== =============================== ================================================== ============================================
+.. list-table::
+    :header-rows: 1
 
-.. _quodlibet-3.9.0.tar.gz: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0.tar.gz
-.. _quodlibet-3.9.0.tar.gz.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0.tar.gz.sha256
-.. _quodlibet-3.9.0.tar.gz.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0.tar.gz.sig
+    * - Release
+      - File
+      - SHA256
+      - PGP
 
-.. _quodlibet-3.8.1.tar.gz: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1.tar.gz
-.. _quodlibet-3.8.1.tar.gz.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1.tar.gz.sha256
-.. _quodlibet-3.8.1.tar.gz.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1.tar.gz.sig
+    * - Quod Libet 3.9.0
+      - `quodlibet-3.9.0.tar.gz <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0.tar.gz>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0.tar.gz.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0.tar.gz.sig>`__
 
-.. _quodlibet-3.7.1.tar.gz: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1.tar.gz
-.. _quodlibet-3.7.1.tar.gz.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1.tar.gz.sha256
-.. _quodlibet-3.7.1.tar.gz.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1.tar.gz.sig
+    * - Quod Libet 3.8.1
+      - `quodlibet-3.8.1.tar.gz <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1.tar.gz>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1.tar.gz.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1.tar.gz.sig>`__
+
+    * - Quod Libet 3.7.1
+      - `quodlibet-3.7.1.tar.gz <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1.tar.gz>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1.tar.gz.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1.tar.gz.sig>`__
 
 For old releases see the `full file listing <https://github.com/quodlibet/quodlibet/releases>`__.
 
@@ -98,7 +101,7 @@ Unstable Repo:
 
 For stable releases check out the `official
 repos <https://apps.fedoraproject.org/packages/quodlibet/overview/>`__ first -
-they usually contain the latest release:
+they usually contain the latest release.
 
 
 .. _opensuse:
@@ -130,42 +133,41 @@ Unstable:
 |windows-logo| Windows
 ----------------------
 
-=========================== ============================== ================================================= ==========================================
-Release                     File                           SHA256                                            PGP
-=========================== ============================== ================================================= ==========================================
-Quod Libet 3.9.0            quodlibet-3.9.0-installer.exe_ `SHA256 <quodlibet-3.9.0-installer.exe.sha256_>`_ `SIG <quodlibet-3.9.0-installer.exe.sig_>`_
-Quod Libet 3.9.0 (portable) quodlibet-3.9.0-portable.exe_  `SHA256 <quodlibet-3.9.0-portable.exe.sha256_>`_  `SIG <quodlibet-3.9.0-portable.exe.sig_>`_
-Quod Libet 3.8.1            quodlibet-3.8.1-installer.exe_ `SHA256 <quodlibet-3.8.1-installer.exe.sha256_>`_ `SIG <quodlibet-3.8.1-installer.exe.sig_>`_
-Quod Libet 3.8.1 (portable) quodlibet-3.8.1-portable.exe_  `SHA256 <quodlibet-3.8.1-portable.exe.sha256_>`_  `SIG <quodlibet-3.8.1-portable.exe.sig_>`_
-Quod Libet 3.7.1            quodlibet-3.7.1-installer.exe_ `SHA256 <quodlibet-3.7.1-installer.exe.sha256_>`_ `SIG <quodlibet-3.7.1-installer.exe.sig_>`_
-Quod Libet 3.7.1 (portable) quodlibet-3.7.1-portable.exe_  `SHA256 <quodlibet-3.7.1-portable.exe.sha256_>`_  `SIG <quodlibet-3.7.1-portable.exe.sig_>`_
-=========================== ============================== ================================================= ==========================================
 
-The latest development installer: `quodlibet-latest-installer.exe <https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe>`__
+.. list-table::
+    :header-rows: 1
 
-.. _quodlibet-3.9.0-portable.exe: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-portable.exe
-.. _quodlibet-3.9.0-portable.exe.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-portable.exe.sha256
-.. _quodlibet-3.9.0-portable.exe.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-portable.exe.sig
+    * - Release
+      - File
+      - SHA256
+      - PGP
 
-.. _quodlibet-3.9.0-installer.exe: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-installer.exe
-.. _quodlibet-3.9.0-installer.exe.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-installer.exe.sha256
-.. _quodlibet-3.9.0-installer.exe.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-installer.exe.sig
+    * - Quod Libet 3.9.0
+      - `quodlibet-3.9.0-installer.exe <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-installer.exe>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-installer.exe.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-installer.exe.sig>`__
+    * - Quod Libet 3.9.0 (portable)
+      - `quodlibet-3.9.0-portable.exe <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-portable.exe>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-portable.exe.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/quodlibet-3.9.0-portable.exe.sig>`__
 
-.. _quodlibet-3.8.1-portable.exe: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-portable.exe
-.. _quodlibet-3.8.1-portable.exe.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-portable.exe.sha256
-.. _quodlibet-3.8.1-portable.exe.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-portable.exe.sig
+    * - Quod Libet 3.8.1
+      - `quodlibet-3.8.1-installer.exe <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-installer.exe>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-installer.exe.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-installer.exe.sig>`__
+    * - Quod Libet 3.8.1 (portable)
+      - `quodlibet-3.8.1-portable.exe <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-portable.exe>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-portable.exe.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-portable.exe.sig>`__
 
-.. _quodlibet-3.8.1-installer.exe: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-installer.exe
-.. _quodlibet-3.8.1-installer.exe.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-installer.exe.sha256
-.. _quodlibet-3.8.1-installer.exe.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/quodlibet-3.8.1-installer.exe.sig
-
-.. _quodlibet-3.7.1-portable.exe: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-portable.exe
-.. _quodlibet-3.7.1-portable.exe.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-portable.exe.sha256
-.. _quodlibet-3.7.1-portable.exe.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-portable.exe.sig
-
-.. _quodlibet-3.7.1-installer.exe: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-installer.exe
-.. _quodlibet-3.7.1-installer.exe.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-installer.exe.sha256
-.. _quodlibet-3.7.1-installer.exe.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-installer.exe.sig
+    * - Quod Libet 3.7.1
+      - `quodlibet-3.7.1-installer.exe <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-installer.exe>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-installer.exe.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-installer.exe.sig>`__
+    * - Quod Libet 3.7.1 (portable)
+      - `quodlibet-3.7.1-portable.exe <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-portable.exe>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-portable.exe.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/quodlibet-3.7.1-portable.exe.sig>`__
 
 For old releases see the `full file listing <https://github.com/quodlibet/quodlibet/releases>`__.
 
@@ -175,41 +177,41 @@ For old releases see the `full file listing <https://github.com/quodlibet/quodli
 |macosx-logo| Mac OS X
 ----------------------
 
-=========================== ============================== ========================================== ==========================================
-Release                     Application Bundle             SHA256                                     PGP
-=========================== ============================== ========================================== ==========================================
-Quod Libet 3.9.0            QuodLibet-3.9.0.dmg_           `SHA256 <QuodLibet-3.9.0.dmg.sha256_>`_    `SIG <QuodLibet-3.9.0.dmg.sig_>`_
-Ex Falso 3.9.0              ExFalso-3.9.0.dmg_             `SHA256 <ExFalso-3.9.0.dmg.sha256_>`_      `SIG <ExFalso-3.9.0.dmg.sig_>`_
-Quod Libet 3.8.1            QuodLibet-3.8.1.dmg_           `SHA256 <QuodLibet-3.8.1.dmg.sha256_>`_    `SIG <QuodLibet-3.8.1.dmg.sig_>`_
-Ex Falso 3.8.1              ExFalso-3.8.1.dmg_             `SHA256 <ExFalso-3.8.1.dmg.sha256_>`_      `SIG <ExFalso-3.8.1.dmg.sig_>`_
-Quod Libet 3.7.1            QuodLibet-3.7.1.dmg_           `SHA256 <QuodLibet-3.7.1.dmg.sha256_>`_    `SIG <QuodLibet-3.7.1.dmg.sig_>`_
-Ex Falso 3.7.1              ExFalso-3.7.1.dmg_             `SHA256 <ExFalso-3.7.1.dmg.sha256_>`_      `SIG <ExFalso-3.7.1.dmg.sig_>`_
-=========================== ============================== ========================================== ==========================================
+.. list-table::
+    :header-rows: 1
+
+    * - Release
+      - File
+      - SHA256
+      - PGP
+
+    * - Quod Libet 3.9.0
+      - `QuodLibet-3.9.0.dmg <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/QuodLibet-3.9.0.dmg>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/QuodLibet-3.9.0.dmg.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/QuodLibet-3.9.0.dmg.sig>`__
+    * - Ex Falso 3.9.0
+      - `ExFalso-3.9.0.dmg <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/ExFalso-3.9.0.dmg>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/ExFalso-3.9.0.dmg.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/ExFalso-3.9.0.dmg.sig>`__
+
+    * - Quod Libet 3.8.1
+      - `QuodLibet-3.8.1.dmg <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/QuodLibet-3.8.1.dmg>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/QuodLibet-3.8.1.dmg.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/QuodLibet-3.8.1.dmg.sig>`__
+    * - Ex Falso 3.8.1
+      - `ExFalso-3.8.1.dmg <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/ExFalso-3.8.1.dmg>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/ExFalso-3.8.1.dmg.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/ExFalso-3.8.1.dmg.sig>`__
+
+    * - Quod Libet 3.7.1
+      - `QuodLibet-3.7.1.dmg <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/QuodLibet-3.7.1.dmg>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/QuodLibet-3.7.1.dmg.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/QuodLibet-3.7.1.dmg.sig>`__
+    * - Ex Falso 3.7.1
+      - `ExFalso-3.7.1.dmg <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/ExFalso-3.7.1.dmg>`__
+      - `SHA256 <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/ExFalso-3.7.1.dmg.sha256>`__
+      - `SIG <https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/ExFalso-3.7.1.dmg.sig>`__
 
 The latest development bundle: `QuodLibet-latest.dmg <https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg>`__
 
 For old releases see the `full file listing <https://github.com/quodlibet/quodlibet/releases>`__.
-
-.. _QuodLibet-3.9.0.dmg: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/QuodLibet-3.9.0.dmg
-.. _QuodLibet-3.9.0.dmg.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/QuodLibet-3.9.0.dmg.sha256
-.. _QuodLibet-3.9.0.dmg.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/QuodLibet-3.9.0.dmg.sig
-
-.. _ExFalso-3.9.0.dmg: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/ExFalso-3.9.0.dmg
-.. _ExFalso-3.9.0.dmg.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/ExFalso-3.9.0.dmg.sha256
-.. _ExFalso-3.9.0.dmg.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.9.0/ExFalso-3.9.0.dmg.sig
-
-.. _QuodLibet-3.8.1.dmg: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/QuodLibet-3.8.1.dmg
-.. _QuodLibet-3.8.1.dmg.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/QuodLibet-3.8.1.dmg.sha256
-.. _QuodLibet-3.8.1.dmg.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/QuodLibet-3.8.1.dmg.sig
-
-.. _ExFalso-3.8.1.dmg: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/ExFalso-3.8.1.dmg
-.. _ExFalso-3.8.1.dmg.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/ExFalso-3.8.1.dmg.sha256
-.. _ExFalso-3.8.1.dmg.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.8.1/ExFalso-3.8.1.dmg.sig
-
-.. _QuodLibet-3.7.1.dmg: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/QuodLibet-3.7.1.dmg
-.. _QuodLibet-3.7.1.dmg.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/QuodLibet-3.7.1.dmg.sha256
-.. _QuodLibet-3.7.1.dmg.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/QuodLibet-3.7.1.dmg.sig
-
-.. _ExFalso-3.7.1.dmg: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/ExFalso-3.7.1.dmg
-.. _ExFalso-3.7.1.dmg.sha256: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/ExFalso-3.7.1.dmg.sha256
-.. _ExFalso-3.7.1.dmg.sig: https://github.com/quodlibet/quodlibet/releases/download/release-3.7.1/ExFalso-3.7.1.dmg.sig
