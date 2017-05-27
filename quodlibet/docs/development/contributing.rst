@@ -43,7 +43,7 @@ Writing a good bug report
     the better the chance of a speedy resolution.
 
     For more general tips see `"How to Report Bugs Effectively"
-    <http://www.chiark.greenend.org.uk/~sgtatham/bugs.html>`_.
+    <https://www.chiark.greenend.org.uk/~sgtatham/bugs.html>`_.
 
 Look through existing issues
     Quod Libet is a mature project (in its second decade!), and there have been

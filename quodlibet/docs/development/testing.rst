@@ -43,7 +43,7 @@ tests first. To speed things up you can just use pytest directly::
 
 Some helpful ``py.test`` options are ``-s`` for not hiding stdout and ``-x``
 for stopping on the first error. For more information check out
-http://docs.pytest.org/en/latest/usage.html
+https://docs.pytest.org/en/latest/usage.html
 
 
 Abort on First Error
