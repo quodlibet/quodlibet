@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quodlibet 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-17 18:58+0200\n"
+"POT-Creation-Date: 2017-05-25 10:32+0200\n"
 "PO-Revision-Date: 2017-01-08 00:00+0000\n"
 "Last-Translator: scootergrisen\n"
 "Language-Team: Danish\n"
@@ -33,8 +33,8 @@ msgstr ""
 
 #: ../data/exfalso.appdata.xml.in.h:3 ../data/quodlibet.appdata.xml.in.h:3
 msgid ""
-"Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
-"IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
+"Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, "
+"MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 msgstr ""
 "Understøttede filformater inkludere Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, "
 "MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
@@ -225,10 +225,11 @@ msgstr "Indtast placeringen af et lyd-feed:"
 #: ../quodlibet/browsers/collection/prefs.py:90
 #: ../quodlibet/browsers/iradio.py:341 ../quodlibet/browsers/paned/prefs.py:78
 #: ../quodlibet/browsers/playlists/menu.py:96
-#: ../quodlibet/browsers/playlists/util.py:52 ../quodlibet/qltk/bookmarks.py:62
-#: ../quodlibet/qltk/cbes.py:55 ../quodlibet/qltk/data_editors.py:311
-#: ../quodlibet/qltk/edittags.py:288 ../quodlibet/qltk/edittags.py:488
-#: ../quodlibet/qltk/quodlibetwindow.py:1354 ../quodlibet/qltk/scanbox.py:61
+#: ../quodlibet/browsers/playlists/util.py:52
+#: ../quodlibet/qltk/bookmarks.py:62 ../quodlibet/qltk/cbes.py:55
+#: ../quodlibet/qltk/data_editors.py:311 ../quodlibet/qltk/edittags.py:288
+#: ../quodlibet/qltk/edittags.py:488 ../quodlibet/qltk/quodlibetwindow.py:1354
+#: ../quodlibet/qltk/scanbox.py:61
 msgid "_Add"
 msgstr "_Tilføj"
 
@@ -412,15 +413,16 @@ msgstr "_Anvend"
 #: ../quodlibet/ext/songsmenu/lastfmsync.py:215
 #: ../quodlibet/ext/songsmenu/playlist.py:50
 #: ../quodlibet/ext/songsmenu/replaygain.py:364
-#: ../quodlibet/ext/songsmenu/tapbpm.py:181 ../quodlibet/plugins/playlist.py:39
-#: ../quodlibet/qltk/chooser.py:184 ../quodlibet/qltk/chooser.py:205
-#: ../quodlibet/qltk/chooser.py:229 ../quodlibet/qltk/chooser.py:253
-#: ../quodlibet/qltk/delete.py:90 ../quodlibet/qltk/delete.py:133
-#: ../quodlibet/qltk/edittags.py:287 ../quodlibet/qltk/_editutils.py:38
-#: ../quodlibet/qltk/getstring.py:28 ../quodlibet/qltk/maskedbox.py:27
-#: ../quodlibet/qltk/msg.py:54 ../quodlibet/qltk/msg.py:93
-#: ../quodlibet/qltk/ratingsmenu.py:33 ../quodlibet/qltk/songsmenu.py:45
-#: ../quodlibet/qltk/songsmenu.py:73 ../quodlibet/update.py:94
+#: ../quodlibet/ext/songsmenu/tapbpm.py:181
+#: ../quodlibet/plugins/playlist.py:39 ../quodlibet/qltk/chooser.py:184
+#: ../quodlibet/qltk/chooser.py:205 ../quodlibet/qltk/chooser.py:229
+#: ../quodlibet/qltk/chooser.py:253 ../quodlibet/qltk/delete.py:90
+#: ../quodlibet/qltk/delete.py:133 ../quodlibet/qltk/edittags.py:287
+#: ../quodlibet/qltk/_editutils.py:38 ../quodlibet/qltk/getstring.py:28
+#: ../quodlibet/qltk/maskedbox.py:27 ../quodlibet/qltk/msg.py:54
+#: ../quodlibet/qltk/msg.py:93 ../quodlibet/qltk/ratingsmenu.py:33
+#: ../quodlibet/qltk/songsmenu.py:45 ../quodlibet/qltk/songsmenu.py:73
+#: ../quodlibet/update.py:94
 msgid "_Cancel"
 msgstr "_Annuller"
 
@@ -817,8 +819,8 @@ msgstr "_Rude-browser"
 msgid "Select _All"
 msgstr "Vælg _alle"
 
-#: ../quodlibet/browsers/paned/models.py:104 ../quodlibet/qltk/pluginwin.py:122
-#: ../quodlibet/qltk/pluginwin.py:164
+#: ../quodlibet/browsers/paned/models.py:104
+#: ../quodlibet/qltk/pluginwin.py:122 ../quodlibet/qltk/pluginwin.py:164
 msgid "All"
 msgstr "Alle"
 
@@ -841,7 +843,7 @@ msgstr "Præferencer for rude-browser"
 
 #: ../quodlibet/browsers/paned/prefs.py:204
 msgid "Equal pane width"
-msgstr ""
+msgstr "Ens rudebredde"
 
 #: ../quodlibet/browsers/playlists/main.py:48
 #: ../quodlibet/browsers/playlists/main.py:575
@@ -1279,7 +1281,6 @@ msgid "_Remove unused covers and directories"
 msgstr "_Fjern ubrugte covere og mapper"
 
 #: ../quodlibet/errorreport/ui.py:60
-#, fuzzy
 msgid "An Error Occurred"
 msgstr "Der opstod en fejl"
 
@@ -1289,30 +1290,29 @@ msgid ""
 "restarted. Submitting an error report will only take a few seconds and would "
 "help us a lot."
 msgstr ""
+"Du kan ignorere denne fejl, men programmet kan være ustabilt indtil det "
+"genstartes. Indsendelse af fejlrapport vil kun tage nogle få sekunder og kan "
+"hjælpe os meget."
 
 #: ../quodlibet/errorreport/ui.py:72
 msgid "File Bug Report"
-msgstr ""
+msgstr "Opret fejlrapport"
 
 #: ../quodlibet/errorreport/ui.py:74 ../quodlibet/errorreport/ui.py:90
-#, fuzzy
 msgid "Submit Error Report"
-msgstr "mægler-port"
+msgstr "Indsend fejlrapport"
 
 #: ../quodlibet/errorreport/ui.py:75
-#, fuzzy
 msgid "Quit Program"
-msgstr "_Program:"
+msgstr "Afslut program"
 
 #: ../quodlibet/errorreport/ui.py:76
-#, fuzzy
 msgid "Ignore Error"
-msgstr "Ignorer _alle fejl"
+msgstr "Ignorer fejl"
 
 #: ../quodlibet/errorreport/ui.py:80
-#, fuzzy
 msgid "Error details:"
-msgstr "Fejldetaljer"
+msgstr "Fejldetaljer:"
 
 #: ../quodlibet/errorreport/ui.py:92
 msgid ""
@@ -1320,25 +1320,29 @@ msgid ""
 "party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
 "You can review the data before sending it below."
 msgstr ""
+"Diverse detaljer om fejlen og dit system vil blive sendt til en tredjeparts "
+"online-tjeneste (<a href='https://www.sentry.io'>www.sentry.io</a>). Du kan "
+"gennemgå dataene nedenfor inden de sendes."
 
 #: ../quodlibet/errorreport/ui.py:100
 msgid ""
 "(optional) Please provide a short description of what happened when the "
 "error occurred:"
 msgstr ""
+"(valgfri) Giv venligst en kort beskrivelse af hvad der skete da fejlen "
+"opstod:"
 
 #: ../quodlibet/errorreport/ui.py:109
 msgid "_Send"
-msgstr ""
+msgstr "_Send"
 
 #: ../quodlibet/errorreport/ui.py:115
-#, fuzzy
 msgid "Short description…"
-msgstr "beskrivelse"
+msgstr "Kort beskrivelse…"
 
 #: ../quodlibet/errorreport/ui.py:118
 msgid "Data to be sent:"
-msgstr ""
+msgstr "Data som sendes:"
 
 #: ../quodlibet/exfalso.py:34
 msgid "an audio tag editor"
@@ -1455,9 +1459,8 @@ msgid "Advanced Preferences"
 msgstr "Avancerede præferencer"
 
 #: ../quodlibet/ext/events/advanced_preferences.py:70
-#, fuzzy
 msgid "Allow editing of advanced config settings."
-msgstr "Tillad finjustering af avancerede konfigurationsindstillinger."
+msgstr "Tillad redigering af avancerede konfigurationsindstillinger."
 
 #: ../quodlibet/ext/events/advanced_preferences.py:162
 msgid "I know what I'm doing"
@@ -1683,6 +1686,9 @@ msgid ""
 "Controls the tone of your music with an equalizer.\n"
 "Click or use keys to customise levels (right-click resets the band)."
 msgstr ""
+"Styrer tonen af din musik med en equalizer.\n"
+"Klik eller brug taster for at tilpasse niveauer (højreklik for at nulstille "
+"båndet)."
 
 #: ../quodlibet/ext/events/equalizer.py:132
 msgid "The current backend does not support equalization."
@@ -1718,27 +1724,27 @@ msgstr "_Ryd"
 #. Translators: statuses relating to Instant Messenger apps
 #: ../quodlibet/ext/events/gajim_status.py:27
 msgid "online"
-msgstr ""
+msgstr "online"
 
 #: ../quodlibet/ext/events/gajim_status.py:28
 msgid "offline"
-msgstr ""
+msgstr "offline"
 
 #: ../quodlibet/ext/events/gajim_status.py:29
 msgid "chat"
-msgstr ""
+msgstr "chat"
 
 #: ../quodlibet/ext/events/gajim_status.py:30
 msgid "away"
-msgstr ""
+msgstr "væk"
 
 #: ../quodlibet/ext/events/gajim_status.py:31
 msgid "xa"
-msgstr ""
+msgstr "xa"
 
 #: ../quodlibet/ext/events/gajim_status.py:32
 msgid "invisible"
-msgstr ""
+msgstr "usynlig"
 
 #: ../quodlibet/ext/events/gajim_status.py:37
 msgid "Gajim Status Message"
@@ -1766,9 +1772,8 @@ msgstr ""
 "er specificeret, skiftes statusmeddelelse for alle kontoer."
 
 #: ../quodlibet/ext/events/gajim_status.py:160
-#, fuzzy
 msgid "Add '[paused]'"
-msgstr "sat på pause"
+msgstr "Tilføj '[sat på pause]'"
 
 #: ../quodlibet/ext/events/gajim_status.py:163
 msgid "If checked, '[paused]' will be added to status message on pause."
@@ -1776,11 +1781,8 @@ msgstr ""
 "Hvis tilvalgt, tilføjes '[sat på pause]' til statusmeddelelse ved pause."
 
 #: ../quodlibet/ext/events/gajim_status.py:187
-#, fuzzy
 msgid "Statuses for which message will be changed"
-msgstr ""
-"Statuser for hvilken statusmeddelelse\n"
-"der ændres"
+msgstr "Statusser for hvilken meddelelser der ændres"
 
 #: ../quodlibet/ext/events/headphonemon.py:156
 msgid "Pause on Headphone Unplug"
@@ -1890,8 +1892,8 @@ msgstr "UPnP AV-medieserver"
 
 #: ../quodlibet/ext/events/mediaserver.py:39
 msgid ""
-"Exposes all albums to the Rygel UPnP Media Server through the MediaServer2 D-"
-"Bus interface."
+"Exposes all albums to the Rygel UPnP Media Server through the MediaServer2 "
+"D-Bus interface."
 msgstr ""
 "Eksponerer alle album til Rygel UPnP-medieserveren gennem D-Bus-grænsefladen "
 "til MediaServer2."
@@ -2138,8 +2140,8 @@ msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
 msgstr ""
-"Audioscrobbler-klient til Last.fm, Libre.fm og andre Audioscrobbler-"
-"tjenester."
+"Audioscrobbler-klient til Last.fm, Libre.fm og andre "
+"Audioscrobbler-tjenester."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:450
 msgid "Authentication successful."
@@ -2462,11 +2464,11 @@ msgstr "Foretræk version med mørkt tema"
 
 #: ../quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
-msgstr ""
+msgstr "Menulinje til/fra"
 
 #: ../quodlibet/ext/events/toggle_menu.py:19
 msgid "Toggle the menu bar by pressing the Alt key."
-msgstr ""
+msgstr "Menulinje til/fra ved tryk på Alt-tasten."
 
 #: ../quodlibet/ext/events/trayicon/appindicator.py:77
 #: ../quodlibet/ext/events/trayicon/prefs.py:98
@@ -2584,16 +2586,16 @@ msgstr "_Sangtekster"
 
 #: ../quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
-msgstr ""
+msgstr "Start visualiseringer"
 
 #: ../quodlibet/ext/events/visualisations.py:38
 msgid "Launch external visualisations."
-msgstr ""
+msgstr "Start eksterne visualiseringer."
 
 #: ../quodlibet/ext/events/visualisations.py:55
 #, python-format
 msgid "Couldn't run visualisations using '%s'"
-msgstr ""
+msgstr "Kunne ikke køre visualiseringer ved brug af '%s'"
 
 #: ../quodlibet/ext/events/visualisations.py:57
 #: ../quodlibet/ext/songsmenu/fingerprint/search.py:44
@@ -2602,11 +2604,11 @@ msgstr "Fejl"
 
 #: ../quodlibet/ext/events/visualisations.py:76
 msgid "Visualiser executable:"
-msgstr ""
+msgstr "Visualiserer-eksekverbar:"
 
 #: ../quodlibet/ext/events/visualisations.py:91
 msgid "Reload"
-msgstr ""
+msgstr "Genindlæs"
 
 #: ../quodlibet/ext/events/waveformseekbar.py:406
 msgid "Waveform Seek Bar"
@@ -2794,48 +2796,44 @@ msgstr "Styrer tonehøjden af en lydstrøm."
 #: ../quodlibet/ext/playlist/export_to_folder.py:29
 #: ../quodlibet/ext/playlist/export_to_folder.py:97
 #: ../quodlibet/ext/playlist/export_to_folder.py:138
-#, fuzzy
 msgid "Export Playlist to Folder"
-msgstr "Eksportér spilleliste til Squeezebox"
+msgstr "Eksportér spilleliste til mappe"
 
 #: ../quodlibet/ext/playlist/export_to_folder.py:38
-#, fuzzy
 msgid "_Export"
-msgstr "_Importér"
+msgstr "_Eksportér"
 
 #: ../quodlibet/ext/playlist/export_to_folder.py:43
-#, fuzzy
 msgid "Destination folder:"
-msgstr "Ingen stationer fundet"
+msgstr "Destinationsmappe:"
 
 #: ../quodlibet/ext/playlist/export_to_folder.py:58
-#, fuzzy
 msgid "Filename pattern:"
-msgstr "_Filnavn-mønster:"
+msgstr "Filnavn-mønster:"
 
 #: ../quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
-msgstr ""
+msgstr "Eksporterer en spilleliste ved at kopiere filer til en mappe."
 
 #: ../quodlibet/ext/playlist/export_to_folder.py:156
-#, fuzzy
 msgid "Default filename pattern:"
-msgstr "_Filnavn-mønster:"
+msgstr "Standardfilnavn-mønster:"
 
 #: ../quodlibet/ext/playlist/export_to_squeezebox.py:23
 msgid "Export to Squeezebox"
 msgstr "Eksportér til Squeezebox"
 
 #: ../quodlibet/ext/playlist/export_to_squeezebox.py:25
-#, fuzzy
 msgid ""
 "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
-"both share a directory structure. Shares configuration with <a href="
-"\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync plugin</a>."
+"both share a directory structure. Shares configuration with <a "
+"href=\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync "
+"plugin</a>."
 msgstr ""
 "Eksporterer dynamisk en spilleliste til Logitech Squeezebox-spilleliste, "
-"forudsat at begge deler en mappestruktur. Deler konfiguration med Squeezebox-"
-"synkronisering-plugin."
+"forudsat at begge deler en mappestruktur. Deler konfiguration med <a "
+"href=\"quodlibet:///prefs/plugins/Squeezebox "
+"Output\">Squeezebox-synkronisering-plugin</a>."
 
 #: ../quodlibet/ext/playlist/export_to_squeezebox.py:79
 msgid "Export playlist to Squeezebox"
@@ -2895,22 +2893,21 @@ msgid "Shuffle, preferring songs with fewer total plays."
 msgstr "Bland, foretræk sange med færre samlet afspilninger."
 
 #: ../quodlibet/ext/playorder/playcounteq.py:25
-#, fuzzy
 msgid "Prefer less played"
-msgstr "Foretræk højere bedømmelse"
+msgstr "Foretræk færre afspilninger"
 
 #: ../quodlibet/ext/playorder/queue.py:19
 msgid "Queue Only"
 msgstr "Sæt kun i kø"
 
 #: ../quodlibet/ext/playorder/queue.py:21
-#, fuzzy
 msgid ""
 "Limits playing of songs to the queue. Select this play order in the main "
 "window, then double-clicking any song will enqueue it instead of playing."
 msgstr ""
-"Begrænser afspilning af sange til køen. Dobbeltklik på en sang for at sætte "
-"den i kø."
+"Begrænser afspilning af sange til køen. Vælg denne afspilningsrækkefølge i "
+"hovedvinduet, så vil dobbeltklik på en sang sætte den i kø i stedet for at "
+"afspille den."
 
 #: ../quodlibet/ext/playorder/reverse.py:14
 msgid "Reverse"
@@ -2921,14 +2918,15 @@ msgid "Reverses the play order of songs."
 msgstr "Vender om på afspilningsrækkefølgen af sange."
 
 #: ../quodlibet/ext/playorder/skip_songs.py:25
-#, fuzzy
 msgid "Skip Songs"
-msgstr "Antal overspring"
+msgstr "Spring over sange"
 
 #: ../quodlibet/ext/playorder/skip_songs.py:27
 msgid ""
 "Playback skips over songs with a rating equal or below a given threshold."
 msgstr ""
+"Afspilning springer over sange med en bedømmelse som er det samme som eller "
+"under den givne tærskel."
 
 #: ../quodlibet/ext/playorder/track_repeat.py:30
 msgid "Repeat Each Track"
@@ -3377,13 +3375,12 @@ msgid "Edit Custom Commands"
 msgstr "Rediger brugerdefinerede kommandoer"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:199
-#, fuzzy
 msgid ""
 "Supports QL patterns\n"
 "eg <tt>&lt;~artist~title&gt;</tt>"
 msgstr ""
 "Understøtter QL-mønstre.\n"
-"F.eks. <tt><~artist~title></tt>"
+"F.eks. <tt>&lt;~artist~title&gt;</tt>"
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:283
 #, python-format
@@ -3406,15 +3403,15 @@ msgstr "Sammenfold/udfold alle"
 msgid "Duplicate key expression is '%s'"
 msgstr "Duplikeret nøgle-udtryk er '%s'"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:363
+#: ../quodlibet/ext/songsmenu/duplicates.py:372
 msgid "Duplicates Browser"
 msgstr "Duplikerer browser"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:364
+#: ../quodlibet/ext/songsmenu/duplicates.py:373
 msgid "Finds and displays similarly tagged versions of songs."
 msgstr "Finder og viser lignende taggede versioner af sange."
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:407
+#: ../quodlibet/ext/songsmenu/duplicates.py:411
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
@@ -3422,31 +3419,31 @@ msgstr ""
 "Accepterer QL-tag-udtryk såsom <tt>~artist~title</tt> eller "
 "<tt>musicbrainz_track_id</tt>"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:409
+#: ../quodlibet/ext/songsmenu/duplicates.py:413
 msgid "_Group duplicates by:"
 msgstr "_Gruppér duplikater efter:"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:414
+#: ../quodlibet/ext/songsmenu/duplicates.py:418
 msgid "Duplicate Key"
 msgstr "Duplikér nøgle"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:419
+#: ../quodlibet/ext/songsmenu/duplicates.py:423
 msgid "Remove _Whitespace"
 msgstr "Fjern _blanktegn"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:420
+#: ../quodlibet/ext/songsmenu/duplicates.py:424
 msgid "Remove _Diacritics"
 msgstr "Fjern _diakritiske"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:421
+#: ../quodlibet/ext/songsmenu/duplicates.py:425
 msgid "Remove _Punctuation"
 msgstr "Fjern _tegnsætning"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:422
+#: ../quodlibet/ext/songsmenu/duplicates.py:426
 msgid "Case _Insensitive"
 msgstr "Der skelnes _ikke mellem store og små bogstaver"
 
-#: ../quodlibet/ext/songsmenu/duplicates.py:430
+#: ../quodlibet/ext/songsmenu/duplicates.py:434
 msgid "Matching options"
 msgstr "Sammenhørende valgmuligheder"
 
@@ -3632,8 +3629,9 @@ msgstr "_Indsend"
 
 #: ../quodlibet/ext/songsmenu/fingerprint/submit.py:115
 msgid ""
-"Songs either need a <i><b>musicbrainz_trackid</b></i>, or <i><b>artist</b></"
-"i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
+"Songs either need a <i><b>musicbrainz_trackid</b></i>, or "
+"<i><b>artist</b></i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get "
+"submitted."
 msgstr ""
 "Sange skal enten have et <i><b>musicbrainz_trackid</b></i>- eller "
 "<i><b>artist</b></i>/<i><b>title</b></i>/<i><b>album</b></i>-tags for at "
@@ -3778,32 +3776,30 @@ msgstr "Konverterer album- og kunstnernavne til sorteringsnavne, dårligt."
 #. Create a dialog.
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:29
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:38
-#, fuzzy
 msgid "Migrate Metadata"
-msgstr "Eksportér metadata"
+msgstr "Migrér metadata"
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:32
 msgid "Copies the quodlibet-specific metadata between songs."
-msgstr ""
+msgstr "Kopierer de quodlibet-specifikke metadata mellem sange."
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:45
 msgid "_Copy"
-msgstr ""
+msgstr "_Kopiér"
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:47
 msgid "_Paste"
-msgstr ""
+msgstr "_Indsæt"
 
 #. Create the tag table.
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:57
-#, fuzzy
 msgid "Information to copy/paste"
-msgstr "Information"
+msgstr "Information til kopiér/indsæt"
 
 #. Create the indexing box.
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:79
 msgid "Map tracks by disc and track number"
-msgstr ""
+msgstr "Kortlæg spor efter disk- og spornummer"
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:80
 msgid ""
@@ -3813,13 +3809,18 @@ msgid ""
 "<b>Note:</b> this must be enabled when metadata is copied for track "
 "information to be stored."
 msgstr ""
+"Aktivér dette når du vil migrere metadata fra et album til et andet alt i "
+"mens disk- og spornumrene passer sammen.\n"
+"\n"
+"<b>Bemærk:</b> dette skal være aktiveret når metadata kopieres for at "
+"sporinformation vil blive lagret."
 
 #: ../quodlibet/ext/songsmenu/migratemetadata.py:96
 #, python-format
 msgid "There is %d stored track."
 msgid_plural "There are %d stored tracks."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Der er %d lagret spor."
+msgstr[1] "Der er %d lagrede spor."
 
 #: ../quodlibet/ext/songsmenu/playlist.py:31
 msgid "Export as Playlist"
@@ -3938,32 +3939,29 @@ msgstr "Opdel disknummer."
 #. TRANSLATORS: BPM mean "beats per minute"
 #: ../quodlibet/ext/songsmenu/tapbpm.py:31
 msgid "BPM:"
-msgstr ""
+msgstr "BPM:"
 
 #: ../quodlibet/ext/songsmenu/tapbpm.py:32
 #: ../quodlibet/ext/songsmenu/tapbpm.py:61
 msgid "n/a"
-msgstr ""
+msgstr "utilgængelig"
 
 #: ../quodlibet/ext/songsmenu/tapbpm.py:36
-#, fuzzy
 msgid "Reset"
-msgstr "_Forudindstilling:"
+msgstr "Nulstil"
 
 #: ../quodlibet/ext/songsmenu/tapbpm.py:42
-#, fuzzy
 msgid "Tap"
-msgstr "Tag"
+msgstr "Tryk"
 
 #: ../quodlibet/ext/songsmenu/tapbpm.py:172
 #: ../quodlibet/ext/songsmenu/tapbpm.py:179
 msgid "Tap BPM"
-msgstr ""
+msgstr "Tap BPM"
 
 #: ../quodlibet/ext/songsmenu/tapbpm.py:173
-#, fuzzy
 msgid "Tap BPM for the selected song."
-msgstr "Åbn tag-editoren for de valgte sange"
+msgstr "Tap BPM for den valgt sang."
 
 #: ../quodlibet/ext/songsmenu/website_search.py:35
 msgid "Website Search"
@@ -4351,11 +4349,11 @@ msgstr "Kan ikke oprette lyd-output"
 #: ../quodlibet/player/xinebe/player.py:91
 #, python-format
 msgid ""
-"The audio device %r was not found. Check your Xine settings in ~/.quodlibet/"
-"config."
+"The audio device %r was not found. Check your Xine settings in "
+"~/.quodlibet/config."
 msgstr ""
-"Lydenheden %r blev ikke fundet. Tjek dine Xine-indstillinger i ~/.quodlibet/"
-"config."
+"Lydenheden %r blev ikke fundet. Tjek dine Xine-indstillinger i "
+"~/.quodlibet/config."
 
 #: ../quodlibet/plugins/__init__.py:62
 #, python-brace-format
@@ -5120,22 +5118,19 @@ msgstr "Ingen kategori"
 
 #: ../quodlibet/qltk/pluginwin.py:169
 msgid "Events"
-msgstr ""
+msgstr "Begivenheder"
 
 #: ../quodlibet/qltk/pluginwin.py:170
-#, fuzzy
 msgid "Play Order"
-msgstr "I rækkefølge"
+msgstr "Afspilningsrækkefølge"
 
 #: ../quodlibet/qltk/pluginwin.py:171
-#, fuzzy
 msgid "Editing"
-msgstr "redigering"
+msgstr "Redigering"
 
 #: ../quodlibet/qltk/pluginwin.py:173
-#, fuzzy
 msgid "Covers"
-msgstr "_Coverstørrelse:"
+msgstr "Covere"
 
 #: ../quodlibet/qltk/pluginwin.py:309
 msgid "No plugins found."
@@ -5355,8 +5350,8 @@ msgstr "Bedømmelses_skalering:"
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
 "0 means a conventional average, higher values mean that albums with few "
-"tracks will have less extreme ratings. Changing this value triggers a re-"
-"calculation for all albums."
+"tracks will have less extreme ratings. Changing this value triggers a "
+"re-calculation for all albums."
 msgstr ""
 "Bayesian Average factor (C) til indsamlende bedømmelser.\n"
 "0 betyder et konventionelt gennemsnit, højere værdier betyder at albums med "
@@ -5389,13 +5384,12 @@ msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr "Gem ændringer til tags uden bekræftelse når flere filer redigeres"
 
 #: ../quodlibet/qltk/prefs.py:587
-#, fuzzy
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
 "list is space-separated"
 msgstr ""
-"En liste med separatorer som skal bruges når tag-værdier opdeles. Listen er "
-"mellemrumssepareret"
+"Et sæt af separatorer som skal bruges når tag-værdier opdeles i "
+"tag-editoren. Listen er mellemrumssepareret"
 
 #: ../quodlibet/qltk/prefs.py:610
 msgid "Tags"
@@ -5450,12 +5444,11 @@ msgstr "_Kø"
 
 #: ../quodlibet/qltk/queue.py:126
 msgid "Stop Once Empty"
-msgstr ""
+msgstr "Stop når tom"
 
 #: ../quodlibet/qltk/queue.py:130
-#, fuzzy
 msgid "_Clear Queue"
-msgstr "_Ryd"
+msgstr "_Ryd kø"
 
 #: ../quodlibet/qltk/queue.py:242
 #, python-format
@@ -5587,19 +5580,16 @@ msgid "Add Music"
 msgstr "Tilføj musik"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1372 ../quodlibet/qltk/scanbox.py:99
-#, fuzzy
 msgid "_Add Folders"
-msgstr "_Tilføj en mappe…"
+msgstr "_Tilføj mapper"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1379
-#, fuzzy
 msgid "Music Files"
-msgstr "Musikafspiller"
+msgstr "Musikfiler"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1381
-#, fuzzy
 msgid "_Add Files"
-msgstr "_Tilføj en fil…"
+msgstr "_Tilføj filer"
 
 #: ../quodlibet/qltk/ratingsmenu.py:24
 #, python-format
@@ -6161,8 +6151,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"Datoen skal indtastes i formaterne 'YYYY', 'YYYY-MM-DD' eller 'YYYY-MM-DD HH:"
-"MM:SS'."
+"Datoen skal indtastes i formaterne 'YYYY', 'YYYY-MM-DD' eller 'YYYY-MM-DD "
+"HH:MM:SS'."
 
 #: ../quodlibet/util/massagers.py:130
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
@@ -6302,11 +6292,11 @@ msgstr "sted"
 
 #: ../quodlibet/util/tags.py:91
 msgid "lyricist"
-msgstr "Tekstforfatter"
+msgstr "tekstforfatter"
 
 #: ../quodlibet/util/tags.py:91
 msgid "lyricists"
-msgstr "Tekstforfattere"
+msgstr "tekstforfattere"
 
 #: ../quodlibet/util/tags.py:91
 msgid "lyrics"
@@ -6485,9 +6475,8 @@ msgid "playlists"
 msgstr "spillelister"
 
 #: ../quodlibet/util/tags.py:166
-#, fuzzy
 msgid "channel count"
-msgstr "Konto"
+msgstr "antal kanaler"
 
 #. Translators: e.g. "artist (sort)"
 #: ../quodlibet/util/tags.py:256
@@ -6498,64 +6487,3 @@ msgstr "slags"
 #: ../quodlibet/util/tags.py:264
 msgid "roles"
 msgstr "roller"
-
-#~ msgid "browsers"
-#~ msgstr "browsere"
-
-#~ msgid "Could not import %s. Audio Feeds browser disabled."
-#~ msgstr "Kunne ikke importere %s. Lyd-feeds-browser deaktiveret."
-
-#~ msgid "Controls the tone of your music with an equalizer."
-#~ msgstr "Styrer tonen af din musik med en equalizer."
-
-#~ msgid "settings"
-#~ msgstr "indstillinger"
-
-#~ msgid "tooltip"
-#~ msgstr "værktøjstip"
-
-#~ msgid "High Res"
-#~ msgstr "Høj opløsning"
-
-#~ msgid "Audio Backend Failed to Load"
-#~ msgstr "Indlæsning af lyd-backend fejlede"
-
-#~ msgid ""
-#~ "Loading the audio backend '%(name)s' failed. Audio playback will be "
-#~ "disabled."
-#~ msgstr ""
-#~ "Indlæses af lyd-backend '%(name)s' fejlede. Lydafspilning vil blive "
-#~ "deaktiveret."
-
-#~ msgid "_Open"
-#~ msgstr "_Åbn"
-
-#~ msgid ""
-#~ "An exception has occured in Quod Libet. A dump file has been saved to <b >"
-#~ "%(dump-path)s</b> that will help us debug the crash. Please file a new "
-#~ "issue at %(new-issue-url)sand attach this file or include its contents. "
-#~ "This file may contain some identifying information about you or your "
-#~ "system, such as a list of recent files played. If this is unacceptable, "
-#~ "send <b>%(mini-dump-path)s</b> instead with a description of what you "
-#~ "were doing."
-#~ msgstr ""
-#~ "Der er opstået en undtagelse i Quod Libet. En dump-fil er blevet gemt i "
-#~ "<b >%(dump-path)s</b> som vil hjælpe os med at fejlrette nedbruddet. "
-#~ "Opret venligst et nyt issue hos %(new-issue-url)s og vedhæft denne fil "
-#~ "eller inkluder dens indhold. Denne fil kan indeholde information som "
-#~ "identificerer dig eller dit system, såsom en liste med nyligt afspillede "
-#~ "filer. Hvis dette er uaccaptabelt, så send i stedet <b>"
-#~ "%(mini-dump-path)s</b> med en beskrivelse af hvad du gjorde."
-
-#~ msgid ""
-#~ "Quod Libet may now be unstable. Closing it and restarting is recommended. "
-#~ "Your library will be saved."
-#~ msgstr ""
-#~ "Quod Libet kan nu være ustabil. Det anbefales at lukke og genstarte den. "
-#~ "Dit bibliotek vil blive gemt."
-
-#~ msgid "Remove all songs from the queue"
-#~ msgstr "Fjern alle sange fra køen"
-
-#~ msgid "Watch this folder for new songs"
-#~ msgstr "Overvåg denne mappe for nye sange"
