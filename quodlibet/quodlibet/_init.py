@@ -383,6 +383,22 @@ def _init_gtk():
         css_override.register_provider("Adwaita", style_provider)
         css_override.register_provider("HighContrast", style_provider)
 
+    if gtk_version[:2] >= (3, 22):
+        # Hack to get some grab handle like thing for panes
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data(b"""
+            paned.vertical >separator {
+                -gtk-icon-source: -gtk-icontheme("view-more-symbolic");
+                -gtk-icon-transform: rotate(90deg) scaleX(0.1) scaleY(3);
+            }
+
+            paned.horizontal >separator {
+                -gtk-icon-source: -gtk-icontheme("view-more-symbolic");
+                -gtk-icon-transform: rotate(0deg) scaleX(0.1) scaleY(3);
+            }
+        """)
+        css_override.register_provider("", style_provider)
+
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
 
