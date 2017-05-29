@@ -660,14 +660,14 @@ class TAudioFile(TestCase):
 
     def test_album_key(self):
         album_key_tests = [
-            ({}, ((), (), '')),
-            ({'album': 'foo'}, (('foo',), (), '')),
-            ({'labelid': 'foo'}, ((), (), 'foo')),
-            ({'musicbrainz_albumid': 'foo'}, ((), (), 'foo')),
-            ({'album': 'foo', 'labelid': 'bar'}, (('foo',), (), 'bar')),
+            ({}, ((), (), '','/dir')),
+            ({'album': 'foo'}, (('foo',), (), '','/dir')),
+            ({'labelid': 'foo'}, ((), (), 'foo','/dir')),
+            ({'musicbrainz_albumid': 'foo'}, ((), (), 'foo','/dir')),
+            ({'album': 'foo', 'labelid': 'bar'}, (('foo',), (), 'bar','/dir')),
             ({'album': 'foo', 'labelid': 'bar', 'musicbrainz_albumid': 'quux'},
-                (('foo',), (), 'bar')),
-            ({'albumartist': 'a'}, ((), ('a',), '')),
+                (('foo',), (), 'bar','/dir')),
+            ({'albumartist': 'a'}, ((), ('a',), '','/dir')),
             ]
         for tags, expected in album_key_tests:
             afile = AudioFile(**tags)
