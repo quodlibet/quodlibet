@@ -397,7 +397,7 @@ def numeric_phrase(singular, plural, n, template_var=None):
     `"Add 12,345 songs"`
     (in `en_US` locale at least)
     """
-    num_text = locale.format('%d', n, grouping=True)
+    num_text = locale_format('%d', n, grouping=True)
     if not template_var:
         template_var = '%d'
         replacement = '%s'
