@@ -16,6 +16,7 @@ from quodlibet import _
 from quodlibet import config
 from quodlibet.qltk import get_top_parent
 from quodlibet.util.path import fsn2glib, glib2fsn, get_home_dir
+from quodlibet.util import is_windows
 
 
 def _get_chooser(accept_label, cancel_label):
@@ -30,6 +31,10 @@ def _get_chooser(accept_label, cancel_label):
     if hasattr(Gtk, "FileChooserNative"):
         FileChooser = Gtk.FileChooserNative
     else:
+        FileChooser = Gtk.FileChooserDialog
+
+    # FIXME: https://github.com/quodlibet/quodlibet/issues/2406
+    if is_windows():
         FileChooser = Gtk.FileChooserDialog
 
     chooser = FileChooser()
