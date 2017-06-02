@@ -10,7 +10,7 @@ Downloads
    \             |fedora-logo| :ref:`Fedora <fedora>`             |opensuse-logo| :ref:`openSUSE <opensuse>`
    \             |arch-logo| :ref:`Arch Linux <arch>`
 **Windows:**     |windows-logo| :ref:`Windows <windows>`
-**Mac OS X:**    |macosx-logo| :ref:`Mac OS X <macosx>`
+**macOS:**       |macosx-logo| :ref:`macOS <macosx>`
 **Development:** |source-logo| :ref:`Release Tarballs <tarballs>`
 ================ ================================================ ==========================================
 
@@ -121,8 +121,8 @@ For old releases see the `full file listing <https://github.com/quodlibet/quodli
 
 .. _macosx:
 
-|macosx-logo| Mac OS X
-----------------------
+|macosx-logo| macOS
+-------------------
 
 .. include:: tables/osx_quodlibet.rst
 
