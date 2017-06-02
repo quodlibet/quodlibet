@@ -128,6 +128,4 @@ For old releases see the `full file listing <https://github.com/quodlibet/quodli
 
 .. include:: tables/osx_exfalso.rst
 
-The latest development bundle: `QuodLibet-latest.dmg <https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg>`__
-
 For old releases see the `full file listing <https://github.com/quodlibet/quodlibet/releases>`__.
