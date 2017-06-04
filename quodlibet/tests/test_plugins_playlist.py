@@ -19,12 +19,11 @@ from quodlibet.plugins import PluginManager, Plugin
 from tests.helper import capture_output
 
 MAX_PLAYLISTS = 50
-DIR = mkdtemp()
-TEST_PLAYLIST = Playlist(DIR, "foo")
+TEST_PLAYLIST = Playlist("foo")
 
 
 def generate_playlists(n):
-    return [Playlist(DIR, "Playlist %d" % x) for x in range(n)]
+    return [Playlist("Playlist %d" % x) for x in range(n)]
 
 
 class TPlaylistPlugins(TestCase):

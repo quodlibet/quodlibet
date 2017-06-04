@@ -328,8 +328,7 @@ class SongsMenu(Gtk.Menu):
             from quodlibet.browsers.playlists.menu import PlaylistMenu
             from quodlibet.browsers.playlists import PlaylistsBrowser
             try:
-                submenu = PlaylistMenu(songs, PlaylistsBrowser.playlists(),
-                                       librarian)
+                submenu = PlaylistMenu(songs, PlaylistsBrowser.playlists())
 
                 def on_new(widget, playlist):
                     PlaylistsBrowser.changed(playlist)

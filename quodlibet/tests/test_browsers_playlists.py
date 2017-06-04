@@ -21,7 +21,7 @@ import os
 import shutil
 
 from quodlibet.browsers.playlists import PlaylistsBrowser
-from quodlibet.library import SongLibrary
+from quodlibet.library import SongFileLibrary
 import quodlibet.config
 from quodlibet.formats import AudioFile
 from quodlibet.util.path import mkdir
@@ -184,7 +184,7 @@ class TPlaylistsBrowser(TSearchBar):
 
         init_fake_app()
 
-        self.lib = quodlibet.browsers.playlists.library = SongLibrary()
+        self.lib = quodlibet.browsers.playlists.library = SongFileLibrary()
         self.lib.librarian = SongLibrarian()
         all_songs = SONGS + [self.ANOTHER_SONG]
         for af in all_songs:

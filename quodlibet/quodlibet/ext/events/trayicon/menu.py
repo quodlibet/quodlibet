@@ -194,8 +194,7 @@ class IndicatorMenu(Gtk.Menu):
         submenu = self._playlists_item.get_submenu()
         if submenu:
             submenu.destroy()
-        playlist_menu = PlaylistMenu([song], PlaylistsBrowser.playlists(),
-                                     self._app.librarian)
+        playlist_menu = PlaylistMenu([song], PlaylistsBrowser.playlists())
 
         def on_new(widget, playlist):
             PlaylistsBrowser.changed(playlist)
