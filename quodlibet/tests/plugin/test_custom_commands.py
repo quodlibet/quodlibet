@@ -42,7 +42,7 @@ class TCustomCommands(PluginTestCase):
         ed.destroy()
 
     def test_playlist_plugin(self):
-        pl = Playlist("foo", library=app.librarian)
+        pl = Playlist("foo", library=app.library)
         pl.extend([AudioFile({"~filename": "/dev/null"})])
         self.called_pl = None
         self.called_songs = None

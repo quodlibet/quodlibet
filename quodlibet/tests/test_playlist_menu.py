@@ -45,7 +45,7 @@ class TPlaylistMenu(TestCase):
                         msg="Failing, don't want to delete %s" % PLAYLISTS)
         try:
             os.mkdir(PLAYLISTS)
-        except IOError:
+        except EnvironmentError:
             pass
         quodlibet.config.init()
         self.lib = FileLibrary()
@@ -65,7 +65,7 @@ class TPlaylistMenu(TestCase):
 
     def test__on_new_playlist_activate(self):
         main = qltk.MenuItem('Menu')
-        menu = StubbedPlaylistMenu(self.SONGS, [], self.lib)
+        menu = StubbedPlaylistMenu(self.SONGS, [])
         menu.connect('new', self._on_new)
         main.set_submenu(menu)
 
