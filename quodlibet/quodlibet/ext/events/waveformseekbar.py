@@ -253,7 +253,7 @@ class WaveformScale(Gtk.EventBox):
 
         # Compute the coarsest time interval for redraws
         length = self._player.info("~#length")
-        return length * 1000 / (width * pixel_ratio - 1)
+        return length * 1000 / max(width * pixel_ratio, 1)
 
     def compute_redraw_area(self):
         allocation = self.get_allocation()
@@ -272,6 +272,8 @@ class WaveformScale(Gtk.EventBox):
         return x, 0.0, w, height
 
     def draw_waveform(self, cr, width, height, elapsed_color, remaining_color):
+        if width == 0 or height == 0:
+            return
         scale_factor = self.get_scale_factor()
         pixel_ratio = float(scale_factor)
         line_width = 1.0 / pixel_ratio
@@ -280,7 +282,7 @@ class WaveformScale(Gtk.EventBox):
 
         value_count = len(self._rms_vals)
         max_value = max(self._rms_vals)
-        ratio_width = value_count / (float(width) * pixel_ratio - 1)
+        ratio_width = value_count / (float(width) * pixel_ratio)
         ratio_height = max_value / half_height
 
         cr.set_line_width(line_width)
@@ -324,6 +326,8 @@ class WaveformScale(Gtk.EventBox):
         self._last_drawn_position = self.position
 
     def draw_placeholder(self, cr, width, height, color):
+        if width == 0 or height == 0:
+            return
         scale_factor = self.get_scale_factor()
         pixel_ratio = float(scale_factor)
         line_width = 1.0 / pixel_ratio

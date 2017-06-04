@@ -6,8 +6,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from unittest import expectedFailure
-
 from tests.plugin import PluginTestCase
 from tests.helper import visible
 
@@ -23,7 +21,6 @@ class TWaveformSeekBar(PluginTestCase):
     def tearDown(self):
         del self.mod
 
-    @expectedFailure
     def test_main(self):
         WaveformScale = self.mod.WaveformScale
 
