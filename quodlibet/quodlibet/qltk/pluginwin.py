@@ -379,18 +379,19 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         enabled_combo = PluginEnabledFilterCombo()
         enabled_combo.connect("changed", lambda s: filter_model.refilter())
-        enabled_combo.set_tooltip_text("Filter by plugin state / tag")
+        enabled_combo.set_tooltip_text(_("Filter by plugin state / tag"))
         fb.pack_start(enabled_combo, True, True, 0)
         self._enabled_combo = enabled_combo
 
         type_combo = PluginTypeFilterCombo()
         type_combo.connect("changed", lambda s: filter_model.refilter())
-        type_combo.set_tooltip_text("Filter by plugin type")
+        type_combo.set_tooltip_text(_("Filter by plugin type"))
         fb.pack_start(type_combo, True, True, 0)
         self._type_combo = type_combo
 
         filter_entry = UndoSearchEntry()
-        filter_entry.set_tooltip_text("Filter by plugin name or description")
+        filter_entry.set_tooltip_text(
+            _("Filter by plugin name or description"))
         filter_entry.connect("changed", lambda s: filter_model.refilter())
         self._filter_entry = filter_entry
 
