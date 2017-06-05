@@ -78,7 +78,7 @@ def process_arguments(argv):
                 "focus", "quit", "unfilter", "refresh", "force-previous"]
     controls_opt = ["seek", "repeat", "query", "volume", "filter",
                     "set-rating", "set-browser", "open-browser", "shuffle",
-                    "song-list", "queue", "stop-after"]
+                    "song-list", "queue", "stop-after", "random"]
 
     options = util.OptionParser(
         "Quod Libet", const.VERSION,
