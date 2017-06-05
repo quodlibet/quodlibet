@@ -252,7 +252,7 @@ class QueueExpander(Gtk.Expander):
         self.queue.emit('drag-data-received', *args)
 
     def __queue_shuffle(self, button):
-        self.set_shuffled(button.active)
+        self.set_shuffled(button.get_active())
 
     def set_shuffled(self, is_shuffled):
         self.queue.model.order = (OrderShuffle() if is_shuffled
