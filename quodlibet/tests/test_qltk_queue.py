@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-
+from quodlibet.order.reorder import OrderShuffle
 from tests import TestCase
 
 from quodlibet.player.nullbe import NullPlayer
@@ -26,6 +26,13 @@ class TQueueExpander(TestCase):
         widget.stop()
         widget.pause()
         widget.pause()
+
+    def test_random_at_startup(self):
+        self.failIf(isinstance(self.queue.model.order, OrderShuffle))
+        quodlibet.config.set("memory", "shufflequeue", True)
+        self.queue = self.queue = QueueExpander(SongLibrary(), NullPlayer())
+        # See issue #2411
+        self.failUnless(isinstance(self.queue.model.order, OrderShuffle))
 
     def tearDown(self):
         self.queue.destroy()
