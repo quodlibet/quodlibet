@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#                2016 Nick Boultbee
+#           2016-2017 Nick Boultbee
 #                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
@@ -117,9 +117,8 @@ class QueueExpander(Gtk.Expander):
 
         rand_checkbox = ConfigCheckMenuItem(
                 _("_Random"), "memory", "shufflequeue", populate=True)
-        rand_checkbox.connect('toggled',
-                              self.__queue_shuffle,
-                              self.queue.model)
+        rand_checkbox.connect('toggled', self.__queue_shuffle)
+        self.set_shuffled(rand_checkbox.get_active())
         menu.append(rand_checkbox)
 
         stop_checkbox = ConfigCheckMenuItem(
@@ -252,8 +251,12 @@ class QueueExpander(Gtk.Expander):
     def __drag_data_received(self, expander, *args):
         self.queue.emit('drag-data-received', *args)
 
-    def __queue_shuffle(self, button, model):
-        model.order = OrderShuffle() if button.get_active() else OrderInOrder()
+    def __queue_shuffle(self, button):
+        self.set_shuffled(button.active)
+
+    def set_shuffled(self, is_shuffled):
+        self.queue.model.order = (OrderShuffle() if is_shuffled
+                                  else OrderInOrder())
 
     def __update_queue_stop(self, player, song, model):
         enabled = config.getboolean("memory", "queue_stop_once_empty", False)
@@ -273,10 +276,6 @@ class QueueExpander(Gtk.Expander):
 
         menu_button.set_property('visible', expanded)
         config.set("memory", "queue_expanded", str(expanded))
-
-    def __visible(self, cb, prop, clear):
-        value = self.get_property('visible')
-        config.set("memory", "queue", str(value))
 
 
 class QueueModel(PlaylistModel):
