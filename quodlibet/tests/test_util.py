@@ -491,8 +491,8 @@ class Tsplit_people(TestCase):
 
     def test_cover(self):
         self.failUnlessEqual(
-            split_people("Pyscho Killer [Talking Heads Cover]"),
-            ("Pyscho Killer", ["Talking Heads"]))
+            split_people("Psycho Killer [Talking Heads Cover]"),
+            ("Psycho Killer", ["Talking Heads"]))
 
 
 class Ttag(TestCase):
