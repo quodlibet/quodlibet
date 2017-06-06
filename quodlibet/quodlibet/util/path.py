@@ -412,12 +412,19 @@ def ishidden(path):
 def uri_is_valid(uri):
     """Returns True if the passed in text is a valid URI (file, http, etc.)
 
+    Args:
+        uri(text or bytes)
     Returns:
         bool
     """
 
-    if not isinstance(uri, bytes):
-        uri = uri.encode("ascii")
+    try:
+        if isinstance(uri, bytes):
+            uri.decode("ascii")
+        elif not isinstance(uri, bytes):
+            uri = uri.encode("ascii")
+    except ValueError:
+        return False
 
     parsed = urlparse(uri)
     if not parsed.scheme or not len(parsed.scheme) > 1:
