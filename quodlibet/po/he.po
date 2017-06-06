@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-24 22:05+0200\n"
+"POT-Creation-Date: 2017-06-06 13:45+0200\n"
 "PO-Revision-Date: 2013-07-20 22:34+0100\n"
 "Last-Translator: \n"
 "Language-Team: Hebrew\n"
@@ -197,7 +197,7 @@ msgstr "תצוגת אלבום"
 #: ../quodlibet/qltk/bookmarks.py:101 ../quodlibet/qltk/cbes.py:93
 #: ../quodlibet/qltk/data_editors.py:99 ../quodlibet/qltk/data_editors.py:324
 #: ../quodlibet/qltk/exfalsowindow.py:297 ../quodlibet/qltk/pluginwin.py:79
-#: ../quodlibet/qltk/pluginwin.py:427 ../quodlibet/qltk/prefs.py:707
+#: ../quodlibet/qltk/pluginwin.py:428 ../quodlibet/qltk/prefs.py:707
 #: ../quodlibet/qltk/textedit.py:164 ../quodlibet/update.py:148
 msgid "_Close"
 msgstr ""
@@ -296,7 +296,7 @@ msgstr ""
 #. refresh button
 #: ../quodlibet/browsers/audiofeeds.py:462 ../quodlibet/browsers/media.py:217
 #: ../quodlibet/browsers/media.py:386 ../quodlibet/qltk/filesel.py:259
-#: ../quodlibet/qltk/pluginwin.py:413
+#: ../quodlibet/qltk/pluginwin.py:414
 #, fuzzy
 msgid "_Refresh"
 msgstr "_רענן ספרית שירים"
@@ -305,7 +305,7 @@ msgstr "_רענן ספרית שירים"
 #: ../quodlibet/browsers/playlists/main.py:457
 #: ../quodlibet/browsers/playlists/util.py:43 ../quodlibet/qltk/delete.py:143
 #: ../quodlibet/qltk/filesel.py:256 ../quodlibet/qltk/lyrics.py:39
-#: ../quodlibet/qltk/maskedbox.py:28 ../quodlibet/qltk/songsmenu.py:392
+#: ../quodlibet/qltk/maskedbox.py:28 ../quodlibet/qltk/songsmenu.py:391
 #, fuzzy
 msgid "_Delete"
 msgstr "מחק קבצים"
@@ -322,7 +322,7 @@ msgstr "דפדפן הספריה"
 
 #: ../quodlibet/browsers/_base.py:274 ../quodlibet/ext/songsmenu/refresh.py:30
 #: ../quodlibet/qltk/exfalsowindow.py:241 ../quodlibet/qltk/information.py:542
-#: ../quodlibet/qltk/maskedbox.py:68 ../quodlibet/util/collection.py:527
+#: ../quodlibet/qltk/maskedbox.py:68 ../quodlibet/util/collection.py:531
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -369,7 +369,7 @@ msgstr "_חופשי"
 #: ../quodlibet/qltk/data_editors.py:301 ../quodlibet/qltk/data_editors.py:314
 #: ../quodlibet/qltk/data_editors.py:322 ../quodlibet/qltk/edittags.py:494
 #: ../quodlibet/qltk/edittags.py:634 ../quodlibet/qltk/maskedbox.py:48
-#: ../quodlibet/qltk/maskedbox.py:88 ../quodlibet/qltk/queue.py:350
+#: ../quodlibet/qltk/maskedbox.py:88 ../quodlibet/qltk/queue.py:349
 #: ../quodlibet/qltk/scanbox.py:36 ../quodlibet/qltk/scanbox.py:63
 #, fuzzy
 msgid "_Remove"
@@ -417,8 +417,8 @@ msgstr ""
 #: ../quodlibet/ext/songsmenu/playlist.py:50
 #: ../quodlibet/ext/songsmenu/replaygain.py:364
 #: ../quodlibet/ext/songsmenu/tapbpm.py:181 ../quodlibet/plugins/playlist.py:39
-#: ../quodlibet/qltk/chooser.py:184 ../quodlibet/qltk/chooser.py:205
-#: ../quodlibet/qltk/chooser.py:229 ../quodlibet/qltk/chooser.py:253
+#: ../quodlibet/qltk/chooser.py:189 ../quodlibet/qltk/chooser.py:210
+#: ../quodlibet/qltk/chooser.py:234 ../quodlibet/qltk/chooser.py:258
 #: ../quodlibet/qltk/delete.py:90 ../quodlibet/qltk/delete.py:133
 #: ../quodlibet/qltk/edittags.py:287 ../quodlibet/qltk/_editutils.py:38
 #: ../quodlibet/qltk/getstring.py:28 ../quodlibet/qltk/maskedbox.py:27
@@ -881,7 +881,7 @@ msgstr "יי_בא"
 
 #: ../quodlibet/browsers/playlists/main.py:391
 #: ../quodlibet/browsers/playlists/util.py:50
-#: ../quodlibet/util/collection.py:570
+#: ../quodlibet/util/collection.py:574
 msgid "New Playlist"
 msgstr "רשימת ניגון חדשה"
 
@@ -2563,17 +2563,17 @@ msgid "Open _Browser"
 msgstr "תצוגת חלוניות"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:103
-#: ../quodlibet/qltk/quodlibetwindow.py:1031 ../quodlibet/qltk/songsmenu.py:411
+#: ../quodlibet/qltk/quodlibetwindow.py:1031 ../quodlibet/qltk/songsmenu.py:410
 msgid "Edit _Tags"
 msgstr "ע_רוך תגיות"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:112
-#: ../quodlibet/qltk/quodlibetwindow.py:975 ../quodlibet/qltk/songsmenu.py:424
+#: ../quodlibet/qltk/quodlibetwindow.py:975 ../quodlibet/qltk/songsmenu.py:423
 msgid "_Information"
 msgstr "מי_דע"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:114
-#: ../quodlibet/qltk/songsmenu.py:340
+#: ../quodlibet/qltk/songsmenu.py:339
 #, fuzzy
 msgid "Play_lists"
 msgstr "רשימות ניגון"
@@ -2648,15 +2648,15 @@ msgstr ""
 msgid "Reload"
 msgstr ""
 
-#: ../quodlibet/ext/events/waveformseekbar.py:406
+#: ../quodlibet/ext/events/waveformseekbar.py:410
 msgid "Waveform Seek Bar"
 msgstr ""
 
-#: ../quodlibet/ext/events/waveformseekbar.py:410
+#: ../quodlibet/ext/events/waveformseekbar.py:414
 msgid "A seekbar in the shape of the waveform of the current song."
 msgstr ""
 
-#: ../quodlibet/ext/events/waveformseekbar.py:443
+#: ../quodlibet/ext/events/waveformseekbar.py:447
 msgid "Override foreground color:"
 msgstr ""
 
@@ -5217,7 +5217,19 @@ msgstr "לא נמצאו הרחבות"
 msgid "Plugins"
 msgstr "הר_חבות"
 
-#: ../quodlibet/qltk/pluginwin.py:402
+#: ../quodlibet/qltk/pluginwin.py:382
+msgid "Filter by plugin state / tag"
+msgstr ""
+
+#: ../quodlibet/qltk/pluginwin.py:388
+msgid "Filter by plugin type"
+msgstr ""
+
+#: ../quodlibet/qltk/pluginwin.py:394
+msgid "Filter by plugin name or description"
+msgstr ""
+
+#: ../quodlibet/qltk/pluginwin.py:403
 msgid "Show _Errors"
 msgstr "הצג שגיא_ות"
 
@@ -5513,7 +5525,7 @@ msgstr "סר_וק ספריות"
 msgid "Hidden Songs"
 msgstr "ללא שירים"
 
-#: ../quodlibet/qltk/properties.py:158 ../quodlibet/util/collection.py:398
+#: ../quodlibet/qltk/properties.py:158 ../quodlibet/util/collection.py:402
 #, fuzzy, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -5528,16 +5540,16 @@ msgstr "מאפיינים"
 msgid "_Queue"
 msgstr "_סדר השמעה"
 
-#: ../quodlibet/qltk/queue.py:126
+#: ../quodlibet/qltk/queue.py:125
 msgid "Stop Once Empty"
 msgstr ""
 
-#: ../quodlibet/qltk/queue.py:130
+#: ../quodlibet/qltk/queue.py:129
 #, fuzzy
 msgid "_Clear Queue"
 msgstr "שגיאות בהרחבות"
 
-#: ../quodlibet/qltk/queue.py:242
+#: ../quodlibet/qltk/queue.py:241
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
@@ -5980,15 +5992,15 @@ msgstr[1] ""
 msgid "Configure Plugins…"
 msgstr "_צבע תנאי חיפוש"
 
-#: ../quodlibet/qltk/songsmenu.py:345
+#: ../quodlibet/qltk/songsmenu.py:344
 msgid "Add to _Queue"
 msgstr "הו_סף לסדר ההשמעה"
 
-#: ../quodlibet/qltk/songsmenu.py:368
+#: ../quodlibet/qltk/songsmenu.py:367
 msgid "_Copy to Device"
 msgstr "ה_עתק להתקן שמע חיצוני"
 
-#: ../quodlibet/qltk/songsmenu.py:379
+#: ../quodlibet/qltk/songsmenu.py:378
 #, fuzzy
 msgid "_Remove from Library"
 msgstr "ה_סר מרשימת הניגון"
@@ -6135,11 +6147,11 @@ msgid ""
 "Visit the <a href='%(url)s'>website</a>"
 msgstr ""
 
-#: ../quodlibet/util/collection.py:420
+#: ../quodlibet/util/collection.py:424
 msgid "Playlists must have a name"
 msgstr ""
 
-#: ../quodlibet/util/collection.py:603
+#: ../quodlibet/util/collection.py:607
 #, python-format
 msgid "A playlist named %s already exists."
 msgstr "רשימת ניגון בשם %s כבר קיימת"

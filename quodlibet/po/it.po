@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.22\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-24 22:05+0200\n"
+"POT-Creation-Date: 2017-06-06 13:45+0200\n"
 "PO-Revision-Date: 2013-10-17 12:18+0100\n"
 "Last-Translator: Luca Baraldi <luca.baraldi+quodlibet@gmail.com>\n"
 "Language-Team: Italian\n"
@@ -194,7 +194,7 @@ msgstr "Mostra Album"
 #: ../quodlibet/qltk/bookmarks.py:101 ../quodlibet/qltk/cbes.py:93
 #: ../quodlibet/qltk/data_editors.py:99 ../quodlibet/qltk/data_editors.py:324
 #: ../quodlibet/qltk/exfalsowindow.py:297 ../quodlibet/qltk/pluginwin.py:79
-#: ../quodlibet/qltk/pluginwin.py:427 ../quodlibet/qltk/prefs.py:707
+#: ../quodlibet/qltk/pluginwin.py:428 ../quodlibet/qltk/prefs.py:707
 #: ../quodlibet/qltk/textedit.py:164 ../quodlibet/update.py:148
 msgid "_Close"
 msgstr ""
@@ -293,7 +293,7 @@ msgstr ""
 #. refresh button
 #: ../quodlibet/browsers/audiofeeds.py:462 ../quodlibet/browsers/media.py:217
 #: ../quodlibet/browsers/media.py:386 ../quodlibet/qltk/filesel.py:259
-#: ../quodlibet/qltk/pluginwin.py:413
+#: ../quodlibet/qltk/pluginwin.py:414
 #, fuzzy
 msgid "_Refresh"
 msgstr "A_ggiorna la Libreria"
@@ -302,7 +302,7 @@ msgstr "A_ggiorna la Libreria"
 #: ../quodlibet/browsers/playlists/main.py:457
 #: ../quodlibet/browsers/playlists/util.py:43 ../quodlibet/qltk/delete.py:143
 #: ../quodlibet/qltk/filesel.py:256 ../quodlibet/qltk/lyrics.py:39
-#: ../quodlibet/qltk/maskedbox.py:28 ../quodlibet/qltk/songsmenu.py:392
+#: ../quodlibet/qltk/maskedbox.py:28 ../quodlibet/qltk/songsmenu.py:391
 #, fuzzy
 msgid "_Delete"
 msgstr "Elimina i File"
@@ -321,7 +321,7 @@ msgstr "Esplora la Libreria"
 
 #: ../quodlibet/browsers/_base.py:274 ../quodlibet/ext/songsmenu/refresh.py:30
 #: ../quodlibet/qltk/exfalsowindow.py:241 ../quodlibet/qltk/information.py:542
-#: ../quodlibet/qltk/maskedbox.py:68 ../quodlibet/util/collection.py:527
+#: ../quodlibet/qltk/maskedbox.py:68 ../quodlibet/util/collection.py:531
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -368,7 +368,7 @@ msgstr "_Personalizzato"
 #: ../quodlibet/qltk/data_editors.py:301 ../quodlibet/qltk/data_editors.py:314
 #: ../quodlibet/qltk/data_editors.py:322 ../quodlibet/qltk/edittags.py:494
 #: ../quodlibet/qltk/edittags.py:634 ../quodlibet/qltk/maskedbox.py:48
-#: ../quodlibet/qltk/maskedbox.py:88 ../quodlibet/qltk/queue.py:350
+#: ../quodlibet/qltk/maskedbox.py:88 ../quodlibet/qltk/queue.py:349
 #: ../quodlibet/qltk/scanbox.py:36 ../quodlibet/qltk/scanbox.py:63
 #, fuzzy
 msgid "_Remove"
@@ -416,8 +416,8 @@ msgstr ""
 #: ../quodlibet/ext/songsmenu/playlist.py:50
 #: ../quodlibet/ext/songsmenu/replaygain.py:364
 #: ../quodlibet/ext/songsmenu/tapbpm.py:181 ../quodlibet/plugins/playlist.py:39
-#: ../quodlibet/qltk/chooser.py:184 ../quodlibet/qltk/chooser.py:205
-#: ../quodlibet/qltk/chooser.py:229 ../quodlibet/qltk/chooser.py:253
+#: ../quodlibet/qltk/chooser.py:189 ../quodlibet/qltk/chooser.py:210
+#: ../quodlibet/qltk/chooser.py:234 ../quodlibet/qltk/chooser.py:258
 #: ../quodlibet/qltk/delete.py:90 ../quodlibet/qltk/delete.py:133
 #: ../quodlibet/qltk/edittags.py:287 ../quodlibet/qltk/_editutils.py:38
 #: ../quodlibet/qltk/getstring.py:28 ../quodlibet/qltk/maskedbox.py:27
@@ -885,7 +885,7 @@ msgstr "_Importa"
 
 #: ../quodlibet/browsers/playlists/main.py:391
 #: ../quodlibet/browsers/playlists/util.py:50
-#: ../quodlibet/util/collection.py:570
+#: ../quodlibet/util/collection.py:574
 msgid "New Playlist"
 msgstr "Nuova Scaletta"
 
@@ -2584,17 +2584,17 @@ msgid "Open _Browser"
 msgstr "Apri un nuovo browser"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:103
-#: ../quodlibet/qltk/quodlibetwindow.py:1031 ../quodlibet/qltk/songsmenu.py:411
+#: ../quodlibet/qltk/quodlibetwindow.py:1031 ../quodlibet/qltk/songsmenu.py:410
 msgid "Edit _Tags"
 msgstr "Modifica _Tag"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:112
-#: ../quodlibet/qltk/quodlibetwindow.py:975 ../quodlibet/qltk/songsmenu.py:424
+#: ../quodlibet/qltk/quodlibetwindow.py:975 ../quodlibet/qltk/songsmenu.py:423
 msgid "_Information"
 msgstr "_Informazioni"
 
 #: ../quodlibet/ext/events/trayicon/menu.py:114
-#: ../quodlibet/qltk/songsmenu.py:340
+#: ../quodlibet/qltk/songsmenu.py:339
 #, fuzzy
 msgid "Play_lists"
 msgstr "Scalette"
@@ -2666,15 +2666,15 @@ msgstr ""
 msgid "Reload"
 msgstr ""
 
-#: ../quodlibet/ext/events/waveformseekbar.py:406
+#: ../quodlibet/ext/events/waveformseekbar.py:410
 msgid "Waveform Seek Bar"
 msgstr ""
 
-#: ../quodlibet/ext/events/waveformseekbar.py:410
+#: ../quodlibet/ext/events/waveformseekbar.py:414
 msgid "A seekbar in the shape of the waveform of the current song."
 msgstr ""
 
-#: ../quodlibet/ext/events/waveformseekbar.py:443
+#: ../quodlibet/ext/events/waveformseekbar.py:447
 msgid "Override foreground color:"
 msgstr ""
 
@@ -5249,7 +5249,19 @@ msgstr "Nessun plugin trovato."
 msgid "Plugins"
 msgstr "_Plugin"
 
-#: ../quodlibet/qltk/pluginwin.py:402
+#: ../quodlibet/qltk/pluginwin.py:382
+msgid "Filter by plugin state / tag"
+msgstr ""
+
+#: ../quodlibet/qltk/pluginwin.py:388
+msgid "Filter by plugin type"
+msgstr ""
+
+#: ../quodlibet/qltk/pluginwin.py:394
+msgid "Filter by plugin name or description"
+msgstr ""
+
+#: ../quodlibet/qltk/pluginwin.py:403
 msgid "Show _Errors"
 msgstr "Mostra _Errori"
 
@@ -5547,7 +5559,7 @@ msgstr "Esamina le _Cartelle"
 msgid "Hidden Songs"
 msgstr "Nessun Brano"
 
-#: ../quodlibet/qltk/properties.py:158 ../quodlibet/util/collection.py:398
+#: ../quodlibet/qltk/properties.py:158 ../quodlibet/util/collection.py:402
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -5562,16 +5574,16 @@ msgstr "Proprietà"
 msgid "_Queue"
 msgstr "Co_da"
 
-#: ../quodlibet/qltk/queue.py:126
+#: ../quodlibet/qltk/queue.py:125
 msgid "Stop Once Empty"
 msgstr ""
 
-#: ../quodlibet/qltk/queue.py:130
+#: ../quodlibet/qltk/queue.py:129
 #, fuzzy
 msgid "_Clear Queue"
 msgstr "_Pulisci gli Errori"
 
-#: ../quodlibet/qltk/queue.py:242
+#: ../quodlibet/qltk/queue.py:241
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
@@ -6018,15 +6030,15 @@ msgstr[1] ""
 msgid "Configure Plugins…"
 msgstr "_Colora il termini cercati"
 
-#: ../quodlibet/qltk/songsmenu.py:345
+#: ../quodlibet/qltk/songsmenu.py:344
 msgid "Add to _Queue"
 msgstr "Metti in _Coda"
 
-#: ../quodlibet/qltk/songsmenu.py:368
+#: ../quodlibet/qltk/songsmenu.py:367
 msgid "_Copy to Device"
 msgstr "Copia sul dispositivo"
 
-#: ../quodlibet/qltk/songsmenu.py:379
+#: ../quodlibet/qltk/songsmenu.py:378
 #, fuzzy
 msgid "_Remove from Library"
 msgstr "_Rimuovi dalla Scaletta"
@@ -6175,11 +6187,11 @@ msgid ""
 "Visit the <a href='%(url)s'>website</a>"
 msgstr ""
 
-#: ../quodlibet/util/collection.py:420
+#: ../quodlibet/util/collection.py:424
 msgid "Playlists must have a name"
 msgstr ""
 
-#: ../quodlibet/util/collection.py:603
+#: ../quodlibet/util/collection.py:607
 #, python-format
 msgid "A playlist named %s already exists."
 msgstr "Esiste già una scaletta chiamata %s."
