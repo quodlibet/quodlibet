@@ -86,6 +86,9 @@ class Turi(TestCase):
         self.assertFalse(uri_is_valid(u"test"))
         self.assertFalse(uri_is_valid(u""))
 
+        assert not uri_is_valid(u"file:///öäü")
+        assert not uri_is_valid(u"file:///öäü".encode("utf-8"))
+
 
 class Tget_x_dir(TestCase):
 
