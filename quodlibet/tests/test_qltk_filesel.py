@@ -4,6 +4,7 @@
 # published by the Free Software Foundation
 
 from tests import TestCase, mkdtemp
+from quodlibet.util.i18n import GlibTranslations
 
 import os
 import sys
@@ -32,6 +33,12 @@ class Tget_gtk_bookmarks(TestCase):
                 b'file:///home/user/Downloads Downloads\n')
         paths = parse_gtk_bookmarks(data)
         assert all(isinstance(p, fsnative) for p in paths)
+
+
+def __(message):
+    """See `quodlibet._`. Avoids triggering PO scanners"""
+    t = GlibTranslations()
+    return t.wrap_text(t.ugettext(message))
 
 
 class TDirectoryTree(TestCase):
@@ -89,6 +96,35 @@ class TDirectoryTree(TestCase):
     def test_get_drives(self):
         for path in get_drives():
             self.assertTrue(isinstance(path, fsnative))
+
+    def test_popup(self):
+        dt = DirectoryTree(None, folders=self.ROOTS)
+        menu = dt._create_menu()
+        dt._popup_menu(menu)
+        children = menu.get_children()
+        self.failUnlessEqual(len(children), 4)
+        delete = children[1]
+        self.failUnlessEqual(delete.get_label(), __("_Delete"))
+        self.failUnless(delete.get_sensitive())
+
+    def test_multiple_selections(self):
+        dt = DirectoryTree(None, folders=self.ROOTS)
+        menu = dt._create_menu()
+        dt._popup_menu(menu)
+        children = menu.get_children()
+        select_sub = children[3]
+        self.failUnless("sub-folders" in select_sub.get_label().lower())
+        self.failUnless(select_sub.get_sensitive())
+        sel = dt.get_selection()
+        model = dt.get_model()
+        for it, pth in model.iterrows(None):
+            sel.select_iter(it)
+        self.failUnless(select_sub.get_sensitive(),
+                        msg="Select All should work for multiple")
+        self.failIf(children[0].get_sensitive(),
+                    msg="New Folder should be disabled for multiple")
+        self.failUnless(children[3].get_sensitive(),
+                        msg="Refresh should be enabled for multiple")
 
 
 class TFileSelector(TestCase):
