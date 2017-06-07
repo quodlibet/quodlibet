@@ -277,7 +277,7 @@ class SongsMenu(Gtk.Menu):
         PluginManager.instance.register_handler(cls.plugins)
 
     def __init__(self, library, songs, plugins=True, playlists=True,
-                 queue=True, devices=True, remove=True, delete=False,
+                 queue=True, remove=True, delete=False,
                  edit=True, ratings=True, items=None, accels=True):
         super(SongsMenu, self).__init__()
 
@@ -354,22 +354,6 @@ class SongsMenu(Gtk.Menu):
                 qltk.add_fake_accel(b, "<Primary>Return")
             self.append(b)
             b.set_sensitive(can_add and bool(songs))
-
-        if devices:
-            from quodlibet import browsers
-            try:
-                browsers.media
-            except AttributeError:
-                pass
-            else:
-                if browsers.media.MediaDevices in browsers.browsers:
-                    submenu = browsers.media.Menu(songs, library)
-                    b = qltk.MenuItem(_("_Copy to Device"),
-                                      Icons.MULTIMEDIA_PLAYER)
-                    if can_add and len(submenu) > 0 and bool(songs):
-                        b.set_sensitive(True)
-                        b.set_submenu(submenu)
-                        self.append(b)
 
         if remove or delete:
             self.separate()
