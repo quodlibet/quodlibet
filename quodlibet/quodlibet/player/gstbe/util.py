@@ -20,6 +20,16 @@ from quodlibet.compat import text_type, number_types, xrange
 def pulse_is_running():
     """Returns whether pulseaudio is running"""
 
+    # If we have a pulsesink we can get the server presence through
+    # setting the ready state
+    element = Gst.ElementFactory.make("pulsesink", None)
+    if element is not None:
+        element.set_state(Gst.State.READY)
+        res = element.get_state(0)[0]
+        element.set_state(Gst.State.NULL)
+        return res != Gst.StateChangeReturn.FAILURE
+
+    # In case we don't have it call the pulseaudio binary
     try:
         subprocess.check_call(["pulseaudio", "--check"])
     except subprocess.CalledProcessError:
