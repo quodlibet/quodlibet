@@ -442,22 +442,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             assert element is not None, pipeline
             bufbin.add(element)
 
-        PIPELINE_ERROR = PlayerError(_("Could not create GStreamer pipeline"))
-
         if len(pipeline) > 1:
             if not link_many(pipeline):
                 print_w("Linking the GStreamer pipeline failed")
-                self._error(PIPELINE_ERROR)
+                self._error(
+                    PlayerError(_("Could not create GStreamer pipeline")))
                 return False
-
-        # Test to ensure output pipeline can preroll
-        bufbin.set_state(Gst.State.READY)
-        result, state, pending = bufbin.get_state(timeout=STATE_CHANGE_TIMEOUT)
-        if result == Gst.StateChangeReturn.FAILURE:
-            bufbin.set_state(Gst.State.NULL)
-            print_w("Prerolling the GStreamer pipeline failed")
-            self._error(PIPELINE_ERROR)
-            return False
 
         # see if the sink provides a volume property, if yes, use it
         sink_element = pipeline[-1]
