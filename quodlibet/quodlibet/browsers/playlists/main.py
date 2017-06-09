@@ -401,7 +401,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                     playlist = parse_m3u(f.name, library=library)
                 else:
                     raise IOError
-                library.add_filename(playlist)
+                library.add(playlist.songs)
                 if name:
                     playlist.rename(name)
                 self.changed(playlist)
