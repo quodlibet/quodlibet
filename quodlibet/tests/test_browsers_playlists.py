@@ -295,10 +295,11 @@ class TPlaylistsBrowser(TSearchBar):
         pl = FileBackedPlaylist(_TEMP_DIR, pl_name, None)
         pl.extend(SONGS)
         pl.write()
-        new_name = os.path.splitext(text2fsn(pl.name))[0] + '.m3u'
-        os.rename(pl.filename, new_name)
-        self.bar._import_playlists([new_name], self.lib)
-        os.unlink(new_name)
+        new_fn = os.path.splitext(pl.name)[0] + '.m3u'
+        new_path = text2fsn(os.path.join(pl.dir, new_fn))
+        os.rename(pl.filename, new_path)
+        self.bar._import_playlists([new_path], self.lib)
+        os.unlink(new_path)
         pls = self.bar.playlists()
         self.failUnlessEqual(len(pls), 3)
         # Leading underscore makes it always the last entry
