@@ -34,8 +34,6 @@ from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,
 from .plugins import GStreamerPluginHandler
 from .prefs import GstPlayerPreferences
 
-STATE_CHANGE_TIMEOUT = Gst.SECOND * 4
-
 
 const.MinVersions.GSTREAMER.check(Gst.version())
 
@@ -102,16 +100,12 @@ class BufferingWrapper(object):
 
         # state management
         if inhibit:
-            # save the current state
-            status, state, pending = self.bin.get_state(
-                timeout=STATE_CHANGE_TIMEOUT)
-            if status == Gst.StateChangeReturn.SUCCESS and \
-                    state == Gst.State.PLAYING:
+            # save the current wanted state
+            status, state, pending = self.bin.get_state(0)
+            if pending == Gst.State.VOID_PENDING:
                 self._wanted_state = state
             else:
-                # no idea, at least don't play
-                self._wanted_state = Gst.State.PAUSED
-
+                self._wanted_state = pending
             self.bin.set_state(Gst.State.PAUSED)
         else:
             # restore the old state
@@ -574,7 +568,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if self.bin:
             self.bin.set_state(Gst.State.NULL)
-            self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)
             # BufferingWrapper cleanup
             self.bin.destroy()
             self.bin = None
