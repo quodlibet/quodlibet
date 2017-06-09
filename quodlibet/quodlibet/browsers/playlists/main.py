@@ -38,7 +38,8 @@ from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.collection import FileBackedPlaylist
 from quodlibet.util.urllib import urlopen
 
-from .util import parse_m3u, parse_pls, PLAYLISTS, ConfirmRemovePlaylistDialog
+from .util import parse_m3u, parse_pls, PLAYLISTS,\
+    ConfirmRemovePlaylistDialog, _name_for
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
@@ -388,7 +389,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             else:
                 Gtk.drag_finish(ctx, False, False, etime)
                 return
-            name = name or os.path.basename(uri) or _("New Playlist")
+            name = _name_for(name or os.path.basename(uri))
             uri = uri.encode('utf-8')
             try:
                 sock = urlopen(uri)

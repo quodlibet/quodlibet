@@ -10,13 +10,14 @@ from senf import fsnative, fsn2uri, fsn2bytes
 from quodlibet import app
 from quodlibet import qltk
 from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
-from quodlibet.browsers.playlists.util import PLAYLISTS, parse_m3u, parse_pls
+from quodlibet.browsers.playlists.util import PLAYLISTS, parse_m3u, \
+    parse_pls, _name_for
 from quodlibet.qltk.songlist import DND_QL
 from quodlibet.util.collection import FileBackedPlaylist
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, _TEMP_DIR, \
     init_fake_app, destroy_fake_app
 from tests.gtk_helpers import MockSelData
-from .helper import dummy_path
+from .helper import dummy_path, __
 
 import os
 import shutil
@@ -296,3 +297,13 @@ class TPlaylistsBrowser(TSearchBar):
     @staticmethod
     def _fake_browser_pack(b):
         app.window.get_child().pack_start(b, True, True, 0)
+
+
+class TPlaylistUtils(TestCase):
+
+    def test_naming(self):
+        self.failUnlessEqual(_name_for('/foo/bar.m3u'), 'bar')
+        self.failUnlessEqual(_name_for('/foo/Will.I.Am.m3u'), 'Will.I.Am')
+
+    def test_naming_default(self):
+        self.failUnlessEqual(_name_for(''), __('New Playlist'))

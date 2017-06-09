@@ -5,7 +5,7 @@
 # (at your option) any later version.
 
 from tests import TestCase, mkdtemp
-from quodlibet.util.i18n import GlibTranslations
+from tests.helper import __
 
 import os
 import sys
@@ -34,12 +34,6 @@ class Tget_gtk_bookmarks(TestCase):
                 b'file:///home/user/Downloads Downloads\n')
         paths = parse_gtk_bookmarks(data)
         assert all(isinstance(p, fsnative) for p in paths)
-
-
-def __(message):
-    """See `quodlibet._`. Avoids triggering PO scanners"""
-    t = GlibTranslations()
-    return t.wrap_text(t.ugettext(message))
 
 
 class TDirectoryTree(TestCase):

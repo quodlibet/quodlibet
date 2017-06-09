@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014-2016 Nick Boultbee
+# Copyright 2014-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -53,8 +53,7 @@ class GetPlaylistName(GetStringDialog):
 
 
 def parse_m3u(filename, library=None):
-    plname = fsn2text(path2fsn(os.path.basename(
-        os.path.splitext(filename)[0])))
+    pl_name = _name_for(filename)
 
     filenames = []
 
@@ -68,12 +67,11 @@ def parse_m3u(filename, library=None):
                     filenames.append(bytes2fsn(line, "utf-8"))
                 except ValueError:
                     continue
-    return __parse_playlist(plname, filename, filenames, library)
+    return __create_playlist(pl_name, filename, filenames, library)
 
 
-def parse_pls(filename, name="", library=None):
-    plname = fsn2text(path2fsn(os.path.basename(
-        os.path.splitext(filename)[0])))
+def parse_pls(filename, library=None):
+    pl_name = _name_for(filename)
 
     filenames = []
     with open(filename, "rb") as h:
@@ -91,10 +89,10 @@ def parse_pls(filename, name="", library=None):
                         filenames.append(bytes2fsn(line, "utf-8"))
                     except ValueError:
                         continue
-    return __parse_playlist(plname, filename, filenames, library)
+    return __create_playlist(pl_name, filename, filenames, library)
 
 
-def __parse_playlist(name, plfilename, files, library):
+def __create_playlist(name, pl_filename, files, library):
     playlist = FileBackedPlaylist.new(PLAYLISTS, name, library=library)
     songs = []
     win = WaitLoadWindow(
@@ -104,12 +102,7 @@ def __parse_playlist(name, plfilename, files, library):
     for i, filename in enumerate(files):
         if not uri_is_valid(filename):
             # Plain filename.
-            filename = os.path.realpath(os.path.join(
-                os.path.dirname(plfilename), filename))
-            if library and filename in library:
-                songs.append(library[filename])
-            else:
-                songs.append(formats.MusicFile(filename))
+            songs.append(_af_for(filename, library, pl_filename))
         else:
             try:
                 filename = uri2fsn(filename)
@@ -118,14 +111,27 @@ def __parse_playlist(name, plfilename, files, library):
                 songs.append(formats.remote.RemoteFile(filename))
             else:
                 # URI-encoded local filename.
-                filename = os.path.realpath(os.path.join(
-                    os.path.dirname(plfilename), filename))
-                if library and filename in library:
-                    songs.append(library[filename])
-                else:
-                    songs.append(formats.MusicFile(filename))
+                songs.append(_af_for(filename, library, pl_filename))
         if win.step():
             break
     win.destroy()
     playlist.extend(filter(None, songs))
     return playlist
+
+
+def _af_for(filename, library, pl_filename):
+    full_path = os.path.join(os.path.dirname(pl_filename), filename)
+    filename = os.path.realpath(full_path)
+    if library:
+        try:
+            return library[filename]
+        except KeyError:
+            pass
+    return formats.MusicFile(filename)
+
+
+def _name_for(filename):
+    if not filename:
+        return _("New Playlist")
+    name = os.path.basename(os.path.splitext(filename)[0])
+    return fsn2text(path2fsn(name))

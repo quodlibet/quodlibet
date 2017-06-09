@@ -14,6 +14,8 @@ import locale
 import errno
 
 from gi.repository import Gtk, Gdk
+
+from quodlibet.util.i18n import GlibTranslations
 from senf import fsnative, environ
 
 from quodlibet.qltk import find_widgets, get_primary_accel_mod
@@ -318,3 +320,9 @@ class ListWithUnused(object):
         if self.unused:
             from quodlibet import print_w
             print_w('ListWithUnused has unused items: %s' % self.unused)
+
+
+def __(message):
+    """See `quodlibet._`. Avoids triggering PO scanners"""
+    t = GlibTranslations()
+    return t.wrap_text(t.ugettext(message))
