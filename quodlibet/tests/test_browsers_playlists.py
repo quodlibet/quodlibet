@@ -296,7 +296,7 @@ class TPlaylistsBrowser(TSearchBar):
         pl.extend(SONGS)
         pl.write()
         new_fn = os.path.splitext(pl.name)[0] + '.m3u'
-        new_path = text2fsn(os.path.join(pl.dir, new_fn))
+        new_path = os.path.join(pl.dir, new_fn)
         os.rename(pl.filename, new_path)
         self.bar._import_playlists([new_path], self.lib)
         os.unlink(new_path)
