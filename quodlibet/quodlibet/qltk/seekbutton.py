@@ -302,7 +302,7 @@ class SeekButton(HSlider):
         return True
 
     def __seeked(self, player, song, ms):
-        self.scale.set_value(ms // 1000)
+        self.scale.set_value(ms / 1000.)
 
     def __scroll(self, widget, event, player):
         self.__lock = True
@@ -328,7 +328,7 @@ class SeekButton(HSlider):
         # When the song is paused GStreamer returns < 1 for position
         # queries, so if it's paused just ignore it.
         if not (player.paused or self.__lock):
-            position = player.get_position() // 1000
+            position = player.get_position() / 1000.
             if (not self.__seekable and
                 position > self.scale.get_adjustment().get_upper()):
                 self.scale.set_range(0, position)
