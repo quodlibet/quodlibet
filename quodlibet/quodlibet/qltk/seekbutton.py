@@ -302,9 +302,7 @@ class SeekButton(HSlider):
         return True
 
     def __seeked(self, player, song, ms):
-        # If it's not paused, we'll grab it in our next update.
-        if player.paused:
-            self.scale.set_value(ms // 1000)
+        self.scale.set_value(ms // 1000)
 
     def __scroll(self, widget, event, player):
         self.__lock = True

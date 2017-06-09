@@ -166,25 +166,35 @@ def sink_state_is_valid(sink):
 
 
 class Seeker(object):
-    """Manages seeking and position reporting for a pipeline"""
+    """Manages async seeking and position reporting for a pipeline.
+
+    You have to call destroy() before it gets gc'd
+    """
 
     def __init__(self, playbin, player):
         self._player = player
         self._playbin = playbin
 
         self._last_position = 0
+        self._seek_requests = []
         self._active_seeks = []
         self._seekable = False
 
         bus = playbin.get_bus()
         bus.add_signal_watch()
         self._bus_id = bus.connect('message', self._on_message)
+        player.notify("seekable")
 
     @property
     def seekable(self):
+        """If the current stream is seekable"""
+
         return self._seekable
 
     def destroy(self):
+        """This needs to be called before it gets GC'ed"""
+
+        del self._seek_requests[:]
         del self._active_seeks[:]
 
         if self._bus_id:
@@ -196,7 +206,58 @@ class Seeker(object):
         self._player = None
         self._playbin = None
 
-    def refresh_seekable(self):
+    def set_position(self, pos):
+        """Set the position. Async and might not succeed.
+
+        Args:
+            pos (int): position in milliseconds
+        """
+
+        pos = max(0, int(pos))
+        self._last_position = pos
+
+        # We need at least a paused state to seek, if there is non active
+        # or pending, request one async.
+        res, next_state, pending = self._playbin.get_state(timeout=0)
+        if pending != Gst.State.VOID_PENDING:
+            next_state = pending
+        if next_state < Gst.State.PAUSED:
+            self._playbin.set_state(Gst.State.PAUSED)
+
+        self._set_position(self._player.song, pos)
+
+    def get_position(self):
+        """Get the position
+
+        Returns:
+            int: the position in milliseconds
+        """
+
+        # While we are actively seeking return the last wanted position.
+        # query_position() returns 0 while in this state
+        if self._seek_requests or self._active_seeks:
+            return self._last_position
+
+        ok, p = self._playbin.query_position(Gst.Format.TIME)
+        if ok:
+            p //= Gst.MSECOND
+            # During stream seeking querying the position fails.
+            # Better return the last valid one instead of 0.
+            self._last_position = p
+
+        return self._last_position
+
+    def reset(self):
+        """In case the underlying stream has changed, call this to
+        abort any pending seeking actions and update the seekable state
+        """
+
+        self._last_position = 0
+        del self._seek_requests[:]
+        del self._active_seeks[:]
+        self._refresh_seekable()
+
+    def _refresh_seekable(self):
         query = Gst.Query.new_seeking(Gst.Format.TIME)
         if self._playbin.query(query):
             seekable = query.parse_seeking()[1]
@@ -219,47 +280,30 @@ class Seeker(object):
             if message.src is self._playbin.bin:
                 new_state = message.parse_state_changed()[1]
                 if new_state >= Gst.State.PAUSED:
-                    self.refresh_seekable()
+                    self._refresh_seekable()
 
-    def set_position(self, pos):
-        # ensure any pending state changes have completed and we have
-        # at least paused state, so we can seek
-        state = self._playbin.get_state(timeout=STATE_CHANGE_TIMEOUT)[1]
-        if state < Gst.State.PAUSED:
-            self._playbin.set_state(Gst.State.PAUSED)
-            self._playbin.get_state(timeout=STATE_CHANGE_TIMEOUT)
+                    seeks_todo = self._seek_requests[:]
+                    del self._seek_requests[:]
+                    for (song, pos) in seeks_todo:
+                        if song is self._player.song:
+                            self._set_position(song, pos)
 
-        pos = max(0, int(pos))
-        gst_time = pos * Gst.MSECOND
+    def _set_position(self, song, pos):
         event = Gst.Event.new_seek(
             1.0, Gst.Format.TIME, Gst.SeekFlags.FLUSH,
-            Gst.SeekType.SET, gst_time, Gst.SeekType.NONE, 0)
+            Gst.SeekType.SET, pos * Gst.MSECOND, Gst.SeekType.NONE, 0)
+
         if self._playbin.send_event(event):
             # to get a good estimate for when get_position fails
-            self._last_position = pos
             # For cases where we get the position directly after
             # a seek and the seek is not done, GStreamer returns
             # a valid 0 position. To prevent this we try to emit seek only
             # after it is done. Every flushing seek will trigger
             # an async_done message on the bus, so we queue the seek
             # event here and emit in the bus message callback.
-            self._active_seeks.append((self._player.song, pos))
-
-    def get_position(self):
-        p = self._last_position
-        if self._player.song is not None:
-            # While we are actively seeking return the last wanted position.
-            # query_position() returns 0 while in this state
-            if self._active_seeks:
-                return self._active_seeks[-1][1]
-
-            ok, p = self._playbin.query_position(Gst.Format.TIME)
-            if ok:
-                p //= Gst.MSECOND
-                # During stream seeking querying the position fails.
-                # Better return the last valid one instead of 0.
-                self._last_position = p
-        return p
+            self._active_seeks.append((song, pos))
+        else:
+            self._seek_requests.append((song, pos))
 
 
 class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
@@ -536,6 +580,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if self._seeker is not None:
             self._seeker.destroy()
             self._seeker = None
+            self.notify("seekable")
 
         if self.bin:
             self.bin.set_state(Gst.State.NULL)
@@ -904,7 +949,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._in_gapless_transition = False
 
         if self._seeker is not None:
-            self._seeker.refresh_seekable()
+            # we could have a gapless transition to a non-seekable -> update
+            self._seeker.reset()
 
     def __tag(self, tags, librarian):
         if self.song and self.song.multisong:
