@@ -274,22 +274,23 @@ class Seeker(object):
     def _on_message(self, bus, message):
         if message.type == Gst.MessageType.ASYNC_DONE:
             # we only get one ASYNC_DONE for multiple seeks, so flush all
-            while self._active_seeks:
-                song, pos = self._active_seeks[0]
+
+            if self._active_seeks:
+                song, pos = self._active_seeks[-1]
                 if song is self._player.song:
                     self._player.emit("seek", song, pos)
-                self._active_seeks.pop(0)
+                del self._active_seeks[:]
         elif message.type == Gst.MessageType.STATE_CHANGED:
             if message.src is self._playbin.bin:
                 new_state = message.parse_state_changed()[1]
                 if new_state >= Gst.State.PAUSED:
                     self._refresh_seekable()
 
-                    seeks_todo = self._seek_requests[:]
-                    del self._seek_requests[:]
-                    for (song, pos) in seeks_todo:
+                    if self._seek_requests:
+                        song, pos = self._seek_requests[-1]
                         if song is self._player.song:
                             self._set_position(song, pos)
+                        del self._seek_requests[:]
 
     def _set_position(self, song, pos):
         event = Gst.Event.new_seek(

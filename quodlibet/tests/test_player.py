@@ -92,10 +92,11 @@ class TPlayerMixin(object):
             return
 
         events = []
+        during_events = []
 
         def on_seek(player, song, pos):
-            events.append((song, pos))
-            assert player.get_position() == pos
+            events.append(pos)
+            during_events.append(player.get_position())
 
         self.player.connect("seek", on_seek)
 
@@ -114,7 +115,9 @@ class TPlayerMixin(object):
         self.player.sync(10)
         assert self.player.get_position() == 50
 
-        assert events == [(REAL_FILE, 100), (REAL_FILE, 150), (REAL_FILE, 50)]
+        # some backends merge requests and only emit once
+        assert events in ([100, 150, 50], [100, 50])
+        assert events == during_events
 
     def test_song_start(self):
         self.assertFalse(self.player.song)
