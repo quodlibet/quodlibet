@@ -572,6 +572,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self._import_playlists(fns, library)
 
     def _import_playlists(self, fns, library):
+        added = 0
         for filename in fns:
             name = _name_for(filename)
             with open(filename, "r") as f:
@@ -584,6 +585,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                     continue
             self.changed(playlist)
             library.add(playlist)
+            added += 1
+        return added
 
     def restore(self):
         try:

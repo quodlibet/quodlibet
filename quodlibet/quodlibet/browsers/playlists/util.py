@@ -69,18 +69,17 @@ def parse_pls(filelike, pl_name, library=None):
         line = line.strip()
         if not line.lower().startswith("file"):
             continue
-        try:
-            line = line[line.index("=") + 1:].strip()
-            __attempt_add(line, filenames)
-        except ValueError:
-            pass
+        fn = line[line.index("=") + 1:].strip()
+        __attempt_add(fn, filenames)
     return __create_playlist(pl_name, _dir_for(filelike), filenames, library)
 
 
-def __attempt_add(filename_bytes, filenames):
+def __attempt_add(filename, filenames):
     try:
-        filenames.append(bytes2fsn(filename_bytes.encode('utf-8'), 'utf-8'))
-    except ValueError:
+        filenames.append(bytes2fsn(filename.encode('utf-8'), 'utf-8'))
+        print("Added '%s'" % filename)
+    except ValueError as e:
+        print("Couldn't add filename '%s' (%s)" % (filename, e))
         return
 
 
