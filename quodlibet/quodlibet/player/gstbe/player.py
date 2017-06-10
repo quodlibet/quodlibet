@@ -232,9 +232,13 @@ class Seeker(object):
             int: the position in milliseconds
         """
 
-        # While we are actively seeking return the last wanted position.
-        # query_position() returns 0 while in this state
-        if not self._active_seeks:
+        if self._seek_requests:
+            self._last_position = self._seek_requests[-1][1]
+        elif self._active_seeks:
+            self._last_position = self._active_seeks[-1][1]
+        else:
+            # While we are actively seeking return the last wanted position.
+            # query_position() returns 0 while in this state
             ok, p = self._playbin.query_position(Gst.Format.TIME)
             if ok:
                 p //= Gst.MSECOND
@@ -271,10 +275,10 @@ class Seeker(object):
         if message.type == Gst.MessageType.ASYNC_DONE:
             # we only get one ASYNC_DONE for multiple seeks, so flush all
             while self._active_seeks:
-                song, pos = self._active_seeks.pop(0)
+                song, pos = self._active_seeks[0]
                 if song is self._player.song:
-                    self._last_position = pos
                     self._player.emit("seek", song, pos)
+                self._active_seeks.pop(0)
         elif message.type == Gst.MessageType.STATE_CHANGED:
             if message.src is self._playbin.bin:
                 new_state = message.parse_state_changed()[1]
@@ -293,13 +297,6 @@ class Seeker(object):
             Gst.SeekType.SET, pos * Gst.MSECOND, Gst.SeekType.NONE, 0)
 
         if self._playbin.send_event(event):
-            # to get a good estimate for when get_position fails
-            # For cases where we get the position directly after
-            # a seek and the seek is not done, GStreamer returns
-            # a valid 0 position. To prevent this we try to emit seek only
-            # after it is done. Every flushing seek will trigger
-            # an async_done message on the bus, so we queue the seek
-            # event here and emit in the bus message callback.
             self._active_seeks.append((song, pos))
         else:
             self._seek_requests.append((song, pos))

@@ -104,13 +104,13 @@ class TPlayerMixin(object):
 
         assert self.player.get_position() == 0
         self.player.seek(100)
-        assert self.player.get_position() in (0, 100)
+        assert self.player.get_position() == 100
         self.player.sync(10)
         assert self.player.get_position() == 100
         self.player.seek(150)
-        assert self.player.get_position() in (100, 150)
+        assert self.player.get_position() == 150
         self.player.seek(50)
-        assert self.player.get_position() in (100, 150, 50)
+        assert self.player.get_position() == 50
         self.player.sync(10)
         assert self.player.get_position() == 50
 
