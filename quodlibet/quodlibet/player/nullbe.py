@@ -66,9 +66,10 @@ class NullPlayer(BasePlayer):
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
+
+        self._position = pos
         if self.song:
             self.emit('seek', self.song, pos)
-        self._position = pos
 
     def _end(self, stopped, next_song=None):
         # We need to set self.song to None before calling our signal

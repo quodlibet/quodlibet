@@ -208,6 +208,13 @@ class BasePlayer(GObject.GObject, Equalizer):
 
         raise NotImplementedError
 
+    def sync(self, timeout):
+        """Tries to finish any pending operations. Mainly for testing.
+        timeout in seconds.
+        """
+
+        pass
+
     def get_position(self):
         """The current position in milliseconds"""
 

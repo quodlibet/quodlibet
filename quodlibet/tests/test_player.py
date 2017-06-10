@@ -8,7 +8,7 @@
 
 from senf import fsnative
 
-from tests import TestCase, skipUnless
+from tests import TestCase, skipUnless, get_data_path
 
 from quodlibet import player
 from quodlibet import library
@@ -29,6 +29,9 @@ for file_ in FILES:
     file_.sanitize()
 
 UNKNOWN_FILE = FILES.pop(-1)
+
+REAL_FILE = AudioFile({"~filename": get_data_path("empty.ogg")})
+REAL_FILE.sanitize()
 
 
 class TPlayer(TestCase):
@@ -82,6 +85,36 @@ class TPlayer(TestCase):
 
 
 class TPlayerMixin(object):
+
+    def test_seek_signal(self):
+        # TODO: make this work with xinebe
+        if isinstance(self, TXinePlayer):
+            return
+
+        events = []
+
+        def on_seek(player, song, pos):
+            events.append((song, pos))
+            assert player.get_position() == pos
+
+        self.player.connect("seek", on_seek)
+
+        self.player.go_to(REAL_FILE)
+        self.player.sync(10)
+
+        assert self.player.get_position() == 0
+        self.player.seek(100)
+        assert self.player.get_position() in (0, 100)
+        self.player.sync(10)
+        assert self.player.get_position() == 100
+        self.player.seek(150)
+        assert self.player.get_position() in (100, 150)
+        self.player.seek(50)
+        assert self.player.get_position() in (100, 150, 50)
+        self.player.sync(10)
+        assert self.player.get_position() == 50
+
+        assert events == [(REAL_FILE, 100), (REAL_FILE, 150), (REAL_FILE, 50)]
 
     def test_song_start(self):
         self.assertFalse(self.player.song)

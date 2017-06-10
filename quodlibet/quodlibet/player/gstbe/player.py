@@ -208,7 +208,6 @@ class Seeker(object):
         """
 
         pos = max(0, int(pos))
-        self._last_position = pos
 
         # We need at least a paused state to seek, if there is non active
         # or pending, request one async.
@@ -229,15 +228,13 @@ class Seeker(object):
 
         # While we are actively seeking return the last wanted position.
         # query_position() returns 0 while in this state
-        if self._seek_requests or self._active_seeks:
-            return self._last_position
-
-        ok, p = self._playbin.query_position(Gst.Format.TIME)
-        if ok:
-            p //= Gst.MSECOND
-            # During stream seeking querying the position fails.
-            # Better return the last valid one instead of 0.
-            self._last_position = p
+        if not self._active_seeks:
+            ok, p = self._playbin.query_position(Gst.Format.TIME)
+            if ok:
+                p //= Gst.MSECOND
+                # During stream seeking querying the position fails.
+                # Better return the last valid one instead of 0.
+                self._last_position = p
 
         return self._last_position
 
@@ -266,9 +263,11 @@ class Seeker(object):
 
     def _on_message(self, bus, message):
         if message.type == Gst.MessageType.ASYNC_DONE:
-            if self._active_seeks:
+            # we only get one ASYNC_DONE for multiple seeks, so flush all
+            while self._active_seeks:
                 song, pos = self._active_seeks.pop(0)
                 if song is self._player.song:
+                    self._last_position = pos
                     self._player.emit("seek", song, pos)
         elif message.type == Gst.MessageType.STATE_CHANGED:
             if message.src is self._playbin.bin:
@@ -885,6 +884,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if self.__init_pipeline():
             self._seeker.set_position(pos)
+
+    def sync(self, timeout):
+        if self.bin is not None:
+            self.bin.get_state(Gst.SECOND * timeout)
+            # we have some logic in the main loop, so iterate there
+            while GLib.MainContext.default().iteration(False):
+                pass
 
     def _end(self, stopped, next_song=None):
         print_d("End song")
