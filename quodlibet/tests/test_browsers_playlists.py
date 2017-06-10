@@ -5,7 +5,7 @@
 # (at your option) any later version.
 
 from gi.repository import Gdk, Gtk
-from senf import fsnative, fsn2uri, fsn2bytes, text2fsn
+from senf import fsnative, fsn2uri, fsn2bytes
 
 from quodlibet import app
 from quodlibet import qltk
@@ -298,7 +298,7 @@ class TPlaylistsBrowser(TSearchBar):
         new_fn = os.path.splitext(pl.name)[0] + '.m3u'
         new_path = os.path.join(pl.dir, new_fn)
         os.rename(pl.filename, new_path)
-        self.bar._import_playlists([new_path], self.lib)
+        self.bar._import_plcd ..aylists([new_path], self.lib)
         os.unlink(new_path)
         pls = self.bar.playlists()
         self.failUnlessEqual(len(pls), 3)

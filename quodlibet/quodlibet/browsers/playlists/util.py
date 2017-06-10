@@ -11,7 +11,7 @@ from gi.repository import Gtk
 from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn
 
 import quodlibet
-from quodlibet import _
+from quodlibet import _, print_d
 from quodlibet import formats, qltk
 from quodlibet.compat import listfilter
 from quodlibet.qltk import Icons
@@ -86,6 +86,7 @@ def __attempt_add(filename_bytes, filenames):
 
 def __create_playlist(name, source_dir, files, library):
     playlist = FileBackedPlaylist.new(PLAYLISTS, name, library=library)
+    print_d("Created playlist %s" % playlist)
     songs = []
     win = WaitLoadWindow(
         None, len(files),
