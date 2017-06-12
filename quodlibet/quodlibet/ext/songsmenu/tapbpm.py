@@ -184,7 +184,7 @@ class TapBpm(SongsMenuPlugin):
 
         window.set_default_size(300, 100)
         window.set_border_width(6)
-        window.connect('response', self.response)
+        self.__resp_sig = window.connect('response', self.response)
 
         self._panel = TapBpmPanel(window, song)
         window.vbox.pack_start(self._panel, False, True, 0)
@@ -197,7 +197,6 @@ class TapBpm(SongsMenuPlugin):
             # Save metadata
             self._panel.save()
 
-        self._window.hide()
-        self._window.destroy()
-        del self._window
-        del self._panel
+        win.hide()
+        win.disconnect(self.__resp_sig)
+        win.destroy()
