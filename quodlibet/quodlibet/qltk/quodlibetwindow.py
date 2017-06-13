@@ -49,7 +49,7 @@ from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action
-from quodlibet.qltk.x import ToggleAction, RadioAction
+from quodlibet.qltk.x import ToggleAction, RadioAction, HighlightToggleButton
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem, CellRendererPixbuf
 from quodlibet.qltk import Icons
 from quodlibet.qltk.about import AboutDialog
@@ -373,7 +373,7 @@ class TopBar(Gtk.Toolbar):
         self.image.refresh()
 
 
-class QueueButton(Gtk.ToggleButton):
+class QueueButton(HighlightToggleButton):
 
     def __init__(self):
         # XXX: view-list isn't part of the fdo spec, so fall back t justify..
