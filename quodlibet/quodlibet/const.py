@@ -53,7 +53,7 @@ class MinVersions(object):
 
     PYTHON2 = Version("Python2", 2, 7)
     PYTHON3 = Version("Python3", 3, 4)
-    MUTAGEN = Version("Mutagen", 1, 32,
+    MUTAGEN = Version("Mutagen", 1, 34,
         message="Use the Quod Libet unstable PPAs/repos to get a newer "
                 "mutagen version.")
     GTK = Version("GTK+", 3, 14)
