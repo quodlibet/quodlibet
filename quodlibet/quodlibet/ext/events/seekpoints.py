@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-
-#This is free and unencumbered software released into the public domain.
+# This is free and unencumbered software released into the public domain.
 #
-#Anyone is free to copy, modify, publish, use, compile, sell, or
-#distribute this software, either in source code form or as a compiled
-#binary, for any purpose, commercial or non-commercial, and by any
-#means.
+# Anyone is free to copy, modify, publish, use, compile, sell, or
+# distribute this software, either in source code form or as a compiled
+# binary, for any purpose, commercial or non-commercial, and by any
+# means.
 #
-#For more information, please refer to <http://unlicense.org>
+# For more information, please refer to <http://unlicense.org>
 
 from gi.repository import Gtk
 from quodlibet import _, app
@@ -23,7 +22,7 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
     """The plugin class."""
 
     PLUGIN_ID = "Seekpoints"
-    PLUGIN_NAME = _("Seekpoint bookmarks")
+    PLUGIN_NAME = _("Seekpoint Bookmarks")
     PLUGIN_ICON = Icons.GO_JUMP
     PLUGIN_CONFIG_SECTION = __name__
     PLUGIN_DESC = _(
