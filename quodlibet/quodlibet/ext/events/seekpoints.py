@@ -9,15 +9,15 @@
 #
 #For more information, please refer to <http://unlicense.org>
 
-from gi.repository import GLib, Gtk
+from gi.repository import Gtk
 from quodlibet import _, app
-from quodlibet.qltk.entry import UndoEntry
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet import qltk
 from quodlibet.plugins.songshelpers import has_bookmark
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons
+from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.tracker import TimeTracker
+
 
 class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
     """The plugin class."""
@@ -73,13 +73,13 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
             self._try_destroy_tracker()
             return
 
-        time = app.player.get_position()//1000
+        time = app.player.get_position() // 1000
         if self._SeekPoint_B <= time:
             self._seek(app.player.info("~#length"))
 
     def _get_SeekPoints(self):
         if not app.player.song:
-            return None,None
+            return None, None
 
         marks = []
         if has_bookmark(app.player.song):
@@ -91,7 +91,7 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
                                            self.DEFAULT_A_TEXT)
         SeekPoint_B_text = self.config_get(self.CFG_SEEKPOINT_B_TEXT,
                                            self.DEFAULT_B_TEXT)
-        for time,mark in marks:
+        for time, mark in marks:
             if mark == SeekPoint_A_text:
                 SeekPoint_A = time
             elif mark == SeekPoint_B_text:
@@ -100,7 +100,7 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
         return SeekPoint_A, SeekPoint_B
 
     def _seek(self, seconds):
-        app.player.seek(seconds*1000)
+        app.player.seek(seconds * 1000)
 
     def PluginPreferences(self, parent):
         vb = Gtk.VBox(spacing=12)
@@ -120,7 +120,6 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
         hb.pack_start(lbl, False, True, 0)
         hb.pack_start(entry, True, True, 0)
         vb.pack_start(hb, True, True, 0)
-
 
         # Bookmark name to use for point B
         hb = Gtk.HBox(spacing=6)
