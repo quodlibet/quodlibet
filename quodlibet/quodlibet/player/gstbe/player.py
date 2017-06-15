@@ -918,7 +918,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         # Then, set up the next song.
         self.song = self.info = current
-        self.emit('song-started', self.song)
 
         print_d("Next song")
         if self.song is not None:
@@ -945,6 +944,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if self._seeker is not None:
             # we could have a gapless transition to a non-seekable -> update
             self._seeker.reset()
+
+        self.emit('song-started', self.song)
 
     def __tag(self, tags, librarian):
         if self.song and self.song.multisong:

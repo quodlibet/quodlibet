@@ -82,6 +82,7 @@ class NullPlayer(BasePlayer):
         current = self._source.current if next_song is None else next_song
 
         # Then, set up the next song.
+        self._position = 0
         self.song = self.info = current
         self.emit('song-started', self.song)
 
@@ -91,7 +92,6 @@ class NullPlayer(BasePlayer):
         if not self.paused and song is None:
             self.emit("unpaused")
 
-        self._position = 0
         # seekable might change if we change to None, so notify just in case
         self.notify("seekable")
 

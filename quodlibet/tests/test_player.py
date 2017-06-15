@@ -86,9 +86,12 @@ class TPlayer(TestCase):
 
 class TPlayerMixin(object):
 
-    def test_seek_signal(self):
+    def _can_sync(self):
         # TODO: make this work with xinebe
-        if isinstance(self, TXinePlayer):
+        return not isinstance(self, TXinePlayer)
+
+    def test_seek_signal(self):
+        if not self._can_sync():
             return
 
         events = []
@@ -118,6 +121,19 @@ class TPlayerMixin(object):
         # some backends merge requests and only emit once
         assert events in ([100, 150, 50], [100, 50])
         assert events == during_events
+
+    def test_seek_in_song_started(self):
+        if not self._can_sync():
+            return
+
+        def on_started(player, song):
+            assert player.get_position() == 0
+            player.seek(100)
+
+        self.player.connect("song-started", on_started)
+        self.player.go_to(REAL_FILE)
+        self.player.sync(10)
+        assert self.player.get_position() == 100
 
     def test_song_start(self):
         self.assertFalse(self.player.song)
