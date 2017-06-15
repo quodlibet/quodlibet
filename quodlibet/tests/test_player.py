@@ -126,6 +126,12 @@ class TPlayerMixin(object):
         if not self._can_sync():
             return
 
+        from gi.repository import Gst
+
+        # doesn't work on debian 8, maybe a GStreamer bug
+        if Gst.version()[:2] < (1, 6):
+            return
+
         def on_started(player, song):
             assert player.get_position() == 0
             player.seek(100)
