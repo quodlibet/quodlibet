@@ -10,6 +10,7 @@
 import os
 
 from gi.repository import Gtk, Gdk, Pango
+from senf import bytes2fsn, fsn2bytes
 
 import quodlibet
 from quodlibet import ngettext, _
@@ -18,7 +19,7 @@ from quodlibet import util
 from quodlibet import qltk
 from quodlibet import app
 
-from quodlibet.util import connect_destroy, format_time_preferred
+from quodlibet.util import connect_destroy, format_time_preferred, print_exc
 from quodlibet.qltk import Icons, gtk_version, add_css
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
@@ -320,22 +321,42 @@ class PlayQueue(SongList):
 
     def __fill(self, library):
         try:
-            with open(QUEUE, "rU") as f:
-                filenames = f.readlines()
+            with open(QUEUE, "rb") as f:
+                lines = f.readlines()
         except EnvironmentError:
-            pass
-        else:
-            filenames = map(str.strip, filenames)
-            if library.librarian:
-                library = library.librarian
-            songs = filter(None, map(library.get, filenames))
-            for song in songs:
-                self.model.append([song])
+            return
+
+        filenames = []
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                filename = bytes2fsn(line, "utf-8")
+            except ValueError:
+                print_exc()
+                continue
+            filenames.append(filename)
+
+        if library.librarian:
+            library = library.librarian
+        songs = filter(None, map(library.get, filenames))
+        for song in songs:
+            self.model.append([song])
 
     def __write(self, widget, model):
-        filenames = "\n".join([row[0]["~filename"] for row in model])
-        with open(QUEUE, "w") as f:
-            f.write(filenames)
+        filenames = [row[0]["~filename"] for row in model]
+        try:
+            with open(QUEUE, "wb") as f:
+                for filename in filenames:
+                    try:
+                        line = fsn2bytes(filename, "utf-8")
+                    except ValueError:
+                        print_exc()
+                        continue
+                    f.write(line + b"\n")
+        except EnvironmentError:
+            print_exc()
 
     def __popup(self, widget, library):
         songs = self.get_selected_songs()
