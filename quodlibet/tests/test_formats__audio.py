@@ -892,7 +892,7 @@ class Treplay_gain(TestCase):
             self.song.replay_gain(["album", "track"]), radio_rg)
 
     def test_numeric_rg_tags(self):
-        """"Tests fully-numeric (ie no "db") RG tags.  See Issue 865"""
+        """Tests fully-numeric (ie no "db") RG tags.  See Issue 865"""
         self.failUnless(self.song("replaygain_album_gain"), "-1.00 db")
         for key, exp in self.rg_data.items():
             # Hack the nasties off and produce the "real" expected value
