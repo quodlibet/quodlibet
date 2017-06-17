@@ -8,6 +8,7 @@ import os
 
 import quodlibet
 from quodlibet import util
+from quodlibet.util import get_module_dir
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.plugins import list_plugins, Plugin, PluginImportException
 from quodlibet.compat import iteritems
@@ -20,7 +21,7 @@ init_fake_app, destroy_fake_app
 # Nasty hack to allow importing of plugins...
 PLUGIN_DIRS = []
 
-root = os.path.join(quodlibet.__path__[0], "ext")
+root = os.path.join(get_module_dir(quodlibet), "ext")
 for entry in os.listdir(root):
     if entry.startswith("_"):
         continue

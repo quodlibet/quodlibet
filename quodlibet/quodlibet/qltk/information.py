@@ -87,7 +87,8 @@ def Frame(name, widget):
 
 
 def Table(rows):
-    t = Gtk.Table(n_rows=rows, n_columns=2)
+    # Gtk.Table doesn't allow 0 rows
+    t = Gtk.Table(n_rows=max(rows, 1), n_columns=2)
     t.set_col_spacings(6)
     t.set_row_spacings(6)
     t.set_homogeneous(False)

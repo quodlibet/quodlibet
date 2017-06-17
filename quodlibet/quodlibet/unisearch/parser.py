@@ -194,6 +194,13 @@ def _construct_regexp(pattern, mapping):
             except KeyError:
                 raise NotImplementedError(av)
         elif op == "subpattern":
+            # Python 3.6 extended this
+            # https://bugs.python.org/issue433028
+            if len(av) == 4:
+                if av[1:3] == (0, 0):
+                    av = [av[0], av[-1]]
+                else:
+                    raise NotImplementedError(op, av)
             group, pad = av
             pad = _construct_regexp(pad, mapping)
             if group is None:

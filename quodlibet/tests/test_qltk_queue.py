@@ -4,16 +4,43 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import os
+
 from quodlibet.order.reorder import OrderShuffle
 from tests import TestCase
 
 from quodlibet.player.nullbe import NullPlayer
-from quodlibet.qltk.queue import QueueExpander, PlaybackStatusIcon
+from quodlibet.formats import DUMMY_SONG
+from quodlibet.qltk.queue import QueueExpander, PlaybackStatusIcon, \
+    PlayQueue, QUEUE
 from quodlibet.library import SongLibrary
 import quodlibet.config
 
 
+class TPlayQueue(TestCase):
+
+    def test_save_restore(self):
+        player = NullPlayer()
+        lib = SongLibrary()
+        lib.librarian = None
+        lib.add([DUMMY_SONG])
+
+        try:
+            os.unlink(QUEUE)
+        except OSError:
+            pass
+
+        q = PlayQueue(lib, player)
+        q.get_model().append(row=[DUMMY_SONG])
+        q.destroy()
+
+        q = PlayQueue(lib, player)
+        model = q.get_model()
+        assert model.values()[0] is DUMMY_SONG
+
+
 class TQueueExpander(TestCase):
+
     def setUp(self):
         quodlibet.config.init()
         player = NullPlayer()

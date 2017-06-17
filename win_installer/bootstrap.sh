@@ -35,7 +35,8 @@ function main {
         mingw-w64-i686-gst-plugins-base \
         mingw-w64-i686-gst-plugins-good mingw-w64-i686-libsrtp \
         mingw-w64-i686-gst-plugins-bad mingw-w64-i686-gst-libav \
-        mingw-w64-i686-gst-plugins-ugly intltool
+        mingw-w64-i686-gst-plugins-ugly intltool \
+        base-devel mingw-w64-i686-toolchain
 
     install_python_packages 2
     install_python_packages 3

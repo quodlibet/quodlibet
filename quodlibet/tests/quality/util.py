@@ -9,6 +9,7 @@
 import os
 
 import quodlibet
+from quodlibet.util import get_module_dir
 
 
 def iter_py_files(root):
@@ -20,7 +21,7 @@ def iter_py_files(root):
 
 
 def iter_project_py_files():
-    root = os.path.dirname(os.path.abspath(quodlibet.__path__[0]))
+    root = os.path.dirname(get_module_dir(quodlibet))
     skip = [
         os.path.join(root, "quodlibet", "optpackages"),
     ]
