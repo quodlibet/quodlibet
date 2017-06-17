@@ -318,6 +318,6 @@ class POMixin(object):
 
 
 for lang in gettextutil.list_languages(PODIR):
-    testcase = type('PO.' + lang, (TestCase, POMixin), {})
+    testcase = type('PO.' + str(lang), (TestCase, POMixin), {})
     testcase.lang = lang
     globals()['PO.' + lang] = testcase
