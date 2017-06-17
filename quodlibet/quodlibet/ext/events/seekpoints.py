@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
-# This is free and unencumbered software released into the public domain.
-#
-# Anyone is free to copy, modify, publish, use, compile, sell, or
-# distribute this software, either in source code form or as a compiled
-# binary, for any purpose, commercial or non-commercial, and by any
-# means.
-#
-# For more information, please refer to <http://unlicense.org>
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 from quodlibet import _, app
@@ -38,7 +34,7 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
     DEFAULT_B_TEXT = "B"
 
     def enabled(self):
-        self._SeekPoint_A, self._SeekPoint_B = self._get_SeekPoints()
+        self._seekpoint_A, self._seekpoint_B = self._get_seekpoints()
         self._try_create_tracker(force=True)
 
     def disabled(self):
@@ -58,25 +54,35 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
             self._tracker.destroy()
             self._tracker_is_enabled = False
 
-    # Seeks to point A if it exists
     def plugin_on_song_started(self, song):
+        """Seeks to point A if it exists, and also tries to
+           restart/recreate the tracker in case it was stopped/destroyed
+           previously.
+        """
         self._try_create_tracker()
-        self._SeekPoint_A, self._SeekPoint_B = self._get_SeekPoints()
-        if not self._SeekPoint_A:
+        self._seekpoint_A, self._seekpoint_B = self._get_seekpoints()
+        if not self._seekpoint_A:
             return
-        self._seek(self._SeekPoint_A)
+        self._seek(self._seekpoint_A)
 
     # Finishes track after point B has been reached, if it exists
     def _on_tick(self, tracker):
-        if not self._SeekPoint_B:
+        """Temporarily stops/destroys the tracker in case there is no
+           B-seekpoint, otherwise checks whether the current position
+           is past that point each tick.
+        """
+        if not self._seekpoint_B:
             self._try_destroy_tracker()
             return
 
         time = app.player.get_position() // 1000
-        if self._SeekPoint_B <= time:
+        if self._seekpoint_B <= time:
             self._seek(app.player.info("~#length"))
 
-    def _get_SeekPoints(self):
+    def _get_seekpoints(self):
+        """Reads seekpoint-names from config, which are compared to the
+           bookmark-names of the current track to get timestamps (if any).
+        """
         if not app.player.song:
             return None, None
 
@@ -84,19 +90,26 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
         if has_bookmark(app.player.song):
             marks = app.player.song.bookmarks
 
-        SeekPoint_A = None
-        SeekPoint_B = None
-        SeekPoint_A_text = self.config_get(self.CFG_SEEKPOINT_A_TEXT,
+        seekpoint_A = None
+        seekpoint_B = None
+        seekpoint_A_name = self.config_get(self.CFG_SEEKPOINT_A_TEXT,
                                            self.DEFAULT_A_TEXT)
-        SeekPoint_B_text = self.config_get(self.CFG_SEEKPOINT_B_TEXT,
+        seekpoint_B_name = self.config_get(self.CFG_SEEKPOINT_B_TEXT,
                                            self.DEFAULT_B_TEXT)
         for time, mark in marks:
-            if mark == SeekPoint_A_text:
-                SeekPoint_A = time
-            elif mark == SeekPoint_B_text:
-                SeekPoint_B = time
+            if mark == seekpoint_A_name:
+                seekpoint_A = time
+            elif mark == seekpoint_B_name:
+                seekpoint_B = time
 
-        return SeekPoint_A, SeekPoint_B
+        # if seekpoints are not properly ordered (or identical), the track
+        # will likely endlessly seek when looping tracks, so discard B
+        # (maybe raise an exception for the plugin list?).
+        if (seekpoint_A is not None) and (seekpoint_B is not None):
+            if seekpoint_A >= seekpoint_B:
+                return seekpoint_A, None
+
+        return seekpoint_A, seekpoint_B
 
     def _seek(self, seconds):
         app.player.seek(seconds * 1000)
