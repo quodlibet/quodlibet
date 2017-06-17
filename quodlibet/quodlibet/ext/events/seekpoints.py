@@ -35,44 +35,26 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
 
     def enabled(self):
         self._seekpoint_A, self._seekpoint_B = self._get_seekpoints()
-        self._try_create_tracker(force=True)
+        self._tracker = TimeTracker(app.player)
+        self._tracker.connect('tick', self._on_tick)
 
     def disabled(self):
-        self._try_destroy_tracker()
-
-    def _try_create_tracker(self, force=False):
-        """Create the tracker if it does not exist,
-           or if forced to, like at plugin enable"""
-        if force or not self._tracker_is_enabled:
-            self._tracker = TimeTracker(app.player)
-            self._tracker.connect('tick', self._on_tick)
-            self._tracker_is_enabled = True
-
-    def _try_destroy_tracker(self):
-        """Destroy the tracker if it exists"""
-        if self._tracker_is_enabled:
-            self._tracker.destroy()
-            self._tracker_is_enabled = False
+        self._tracker.destroy()
 
     def plugin_on_song_started(self, song):
-        """Seeks to point A if it exists, and also tries to
-           restart/recreate the tracker in case it was stopped/destroyed
-           previously.
+        """Seeks to point A if it exists, and also fetches the bookmarks of the
+           current track that matches the seekpoint names set in config.
         """
-        self._try_create_tracker()
         self._seekpoint_A, self._seekpoint_B = self._get_seekpoints()
         if not self._seekpoint_A:
             return
         self._seek(self._seekpoint_A)
 
-    # Finishes track after point B has been reached, if it exists
     def _on_tick(self, tracker):
-        """Temporarily stops/destroys the tracker in case there is no
-           B-seekpoint, otherwise checks whether the current position
-           is past that point each tick.
+        """Checks whether the current position is past point B if it exists,
+           and if it is -- seek to the end of the track.
         """
         if not self._seekpoint_B:
-            self._try_destroy_tracker()
             return
 
         time = app.player.get_position() // 1000
