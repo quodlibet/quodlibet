@@ -122,7 +122,7 @@ class SubmitErrorDialog(Gtk.MessageDialog):
         self.get_widget_for_response(Gtk.ResponseType.CANCEL).grab_focus()
 
     def get_comment(self):
-        """"Returns the user provided error description
+        """Returns the user provided error description
 
         Returns
             text_Type

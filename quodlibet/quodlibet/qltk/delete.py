@@ -53,7 +53,7 @@ class FileListExpander(Gtk.Expander):
 class DeleteDialog(WarningMessage):
 
     RESPONSE_DELETE = 1
-    """"Return value of DeleteDialog.run() in case the passed files
+    """Return value of DeleteDialog.run() in case the passed files
     should be deleted"""
 
     @classmethod
@@ -96,7 +96,7 @@ class DeleteDialog(WarningMessage):
 class TrashDialog(WarningMessage):
 
     RESPONSE_TRASH = 1
-    """"Return value of TrashDialog.run() in case the passed files
+    """Return value of TrashDialog.run() in case the passed files
     should be moved to the trash"""
 
     @classmethod
