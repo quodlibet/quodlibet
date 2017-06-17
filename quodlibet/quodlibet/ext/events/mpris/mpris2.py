@@ -6,6 +6,7 @@
 # published by the Free Software Foundation.
 
 import time
+import math
 import tempfile
 
 import dbus
@@ -319,7 +320,7 @@ value="false"/>
             elif name == "Shuffle":
                 player_options.shuffle = value
             elif name == "Volume":
-                player.volume = value
+                player.volume = math.pow(value, 3.0 / 1.0)
 
     def get_property(self, interface, name):
         player = app.player
@@ -366,7 +367,7 @@ value="false"/>
             elif name == "Metadata":
                 return self.__get_metadata()
             elif name == "Volume":
-                return player.volume
+                return math.pow(player.volume, 1.0 / 3.0)
             elif name == "Position":
                 return player.get_position() * 1000
             elif name == "MinimumRate":
