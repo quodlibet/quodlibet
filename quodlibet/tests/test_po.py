@@ -15,12 +15,13 @@ except ImportError:
     polib = None
 
 import quodlibet
+from quodlibet.util import get_module_dir
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import human_title
 from gdist import gettextutil
 
 
-PODIR = os.path.join(os.path.dirname(quodlibet.__path__[0]), "po")
+PODIR = os.path.join(os.path.dirname(get_module_dir(quodlibet)), "po")
 PODIR_WRITEABLE = os.access(PODIR, os.W_OK)
 
 

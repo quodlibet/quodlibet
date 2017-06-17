@@ -12,6 +12,8 @@ import pprint
 
 from gi.repository import Gtk
 
+from quodlibet.util import get_module_dir
+
 from tests import TestCase
 
 
@@ -19,7 +21,7 @@ def iter_py_paths():
     """Iterates over all Python source files that are part of Quod Libet"""
 
     import quodlibet
-    root = os.path.dirname(quodlibet.__path__[0])
+    root = os.path.dirname(get_module_dir(quodlibet))
 
     skip = [
         os.path.join(root, "docs"),
