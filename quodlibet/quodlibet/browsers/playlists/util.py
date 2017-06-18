@@ -8,7 +8,7 @@
 import os
 
 from gi.repository import Gtk
-from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn
+from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 import quodlibet
 from quodlibet import _, print_d
@@ -57,7 +57,7 @@ def parse_m3u(filelike, pl_name, library=None):
     filenames = []
     for line in filelike:
         line = line.strip()
-        if line.startswith("#"):
+        if line.startswith(b"#"):
             continue
         __attempt_add(line, filenames)
     return __create_playlist(pl_name, _dir_for(filelike), filenames, library)
@@ -67,19 +67,17 @@ def parse_pls(filelike, pl_name, library=None):
     filenames = []
     for line in filelike:
         line = line.strip()
-        if not line.lower().startswith("file"):
+        if not line.lower().startswith(b"file"):
             continue
-        fn = line[line.index("=") + 1:].strip()
+        fn = line[line.index(b"=") + 1:].strip()
         __attempt_add(fn, filenames)
     return __create_playlist(pl_name, _dir_for(filelike), filenames, library)
 
 
 def __attempt_add(filename, filenames):
     try:
-        filenames.append(bytes2fsn(filename.encode('utf-8'), 'utf-8'))
-        print("Added '%s'" % filename)
-    except ValueError as e:
-        print("Couldn't add filename '%s' (%s)" % (filename, e))
+        filenames.append(bytes2fsn(filename, 'utf-8'))
+    except ValueError:
         return
 
 
@@ -111,15 +109,16 @@ def __create_playlist(name, source_dir, files, library):
     return playlist
 
 
-def _af_for(filename, library, pl_dir=None):
+def _af_for(filename, library, pl_dir):
     full_path = os.path.join(pl_dir, filename)
     filename = os.path.realpath(full_path)
+
+    af = None
     if library:
-        try:
-            return library[filename]
-        except KeyError:
-            pass
-    return formats.MusicFile(filename)
+        af = library.get_filename(filename)
+    if af is None:
+        af = formats.MusicFile(filename)
+    return af
 
 
 def _name_for(filename):
@@ -131,7 +130,7 @@ def _name_for(filename):
 
 def _dir_for(filelike):
     try:
-        return os.path.dirname(filelike.name)
+        return os.path.dirname(text2fsn(filelike.name))
     except AttributeError:
         # Probably a URL
-        return ''
+        return text2fsn(u'')

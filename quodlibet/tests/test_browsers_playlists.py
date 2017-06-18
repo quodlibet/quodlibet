@@ -5,7 +5,7 @@
 # (at your option) any later version.
 
 from gi.repository import Gdk, Gtk
-from senf import fsnative, fsn2uri, fsn2bytes
+from senf import fsnative, fsn2uri, fsn2bytes, text2fsn
 
 from quodlibet import app
 from quodlibet import qltk
@@ -55,7 +55,7 @@ class TParsePlaylistMixin(object):
                 target = self.prefix
                 target += fsn2bytes(get_data_path("silence-44-s.ogg"), "utf-8")
                 af.write(target)
-            with open(name) as f:
+            with open(name, "rb") as f:
                 pl = self.Parse(f, name)
         self.failUnlessEqual(len(pl), 1)
         self.failUnlessEqual(pl[0]("title"), "Silence")
@@ -68,7 +68,7 @@ class TParsePlaylistMixin(object):
         with temp_filename() as name:
             with open(name, "wb") as f:
                 f.write(target)
-            with open(name) as f:
+            with open(name, "rb") as f:
                 pl = self.Parse(f, name)
         self.failUnlessEqual(len(pl), 1)
         self.failUnlessEqual(pl[0]("title"), "Silence")
@@ -291,11 +291,11 @@ class TPlaylistsBrowser(TSearchBar):
         self.failUnlessEqual(len(first_pl), original_length - 1)
 
     def test_import(self):
-        pl_name = "_€3 œufs à Noël"
+        pl_name = u"_€3 œufs à Noël"
         pl = FileBackedPlaylist(_TEMP_DIR, pl_name, None)
         pl.extend(SONGS)
         pl.write()
-        new_fn = os.path.splitext(pl.name)[0] + '.m3u'
+        new_fn = os.path.splitext(text2fsn(pl.name))[0] + '.m3u'
         new_path = os.path.join(pl.dir, new_fn)
         os.rename(pl.filename, new_path)
         added = self.bar._import_playlists([new_path], self.lib)
