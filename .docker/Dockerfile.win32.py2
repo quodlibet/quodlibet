@@ -29,5 +29,6 @@ ENV WINEDEBUG -all
 RUN echo '#!/bin/bash\n(rm -Rf "$WINEPREFIX" && xvfb-run -a wine /home/user/_win_inst/bin/python.exe "$@")' > python2
 
 RUN chmod a+x python2
+RUN ln -s python2 python
 
 ENV PATH /home/user:$PATH

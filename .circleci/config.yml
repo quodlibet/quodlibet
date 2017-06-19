@@ -16,37 +16,37 @@ jobs:
     environment:
       - PYARGS: "-R"
       - PYTHON: "python2"
-      - DOCKER_FILE: ".travis/Dockerfile.debian8.py2"
+      - DOCKER_FILE: ".docker/Dockerfile.debian8.py2"
     <<: *defaults
   job.debian8.py3:
     environment:
       - PYARGS: "-R -bb"
       - PYTHON: "python3"
-      - DOCKER_FILE: ".travis/Dockerfile.debian8.py3"
+      - DOCKER_FILE: ".docker/Dockerfile.debian8.py3"
     <<: *defaults
   job.ubuntu16.04.py2:
     environment:
       - PYARGS: "-R"
       - PYTHON: "python2"
-      - DOCKER_FILE: ".travis/Dockerfile.ubuntu16.04.py2"
+      - DOCKER_FILE: ".docker/Dockerfile.ubuntu16.04.py2"
     <<: *defaults
   job.ubuntu16.04.py3:
     environment:
       - PYARGS: "-R -bb"
       - PYTHON: "python3"
-      - DOCKER_FILE: ".travis/Dockerfile.ubuntu16.04.py3"
+      - DOCKER_FILE: ".docker/Dockerfile.ubuntu16.04.py3"
     <<: *defaults
   job.win32.py2:
     environment:
       - PYARGS: "-R"
       - PYTHON: "python2"
-      - DOCKER_FILE: ".travis/Dockerfile.win32.py2"
+      - DOCKER_FILE: ".docker/Dockerfile.win32.py2"
     <<: *defaults
   job.win32.py3:
     environment:
       - PYARGS: "-R"
       - PYTHON: "python3"
-      - DOCKER_FILE: ".travis/Dockerfile.win32.py3"
+      - DOCKER_FILE: ".docker/Dockerfile.win32.py3"
     <<: *defaults
 
 workflows:
