@@ -256,6 +256,9 @@ def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
 
     args = []
 
+    if is_ci():
+        args.extend(["-p", "no:cacheprovider"])
+
     if run:
         args.append("-k")
         args.append(" or ".join(run))

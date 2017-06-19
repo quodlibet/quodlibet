@@ -8,6 +8,7 @@ defaults: &defaults
     - run: docker run --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --detach myimage bash > container_id
     - run: docker exec "$(cat container_id)" $PYTHON $PYARGS ./setup.py test
     - run: docker exec "$(cat container_id)" $PYTHON $PYARGS ./setup.py quality
+    - run: docker stop "$(cat container_id)"
 
 version: 2
 jobs:
@@ -35,11 +36,25 @@ jobs:
       - PYTHON: "python3"
       - DOCKER_FILE: ".travis/Dockerfile.ubuntu16.04.py3"
     <<: *defaults
+  job.win32.py2:
+    environment:
+      - PYARGS: "-R"
+      - PYTHON: "python2"
+      - DOCKER_FILE: ".travis/Dockerfile.win32.py2"
+    <<: *defaults
+  job.win32.py3:
+    environment:
+      - PYARGS: "-R"
+      - PYTHON: "python3"
+      - DOCKER_FILE: ".travis/Dockerfile.win32.py3"
+    <<: *defaults
 
 workflows:
   version: 2
   build_and_test:
     jobs:
+      - job.win32.py2
+      - job.win32.py3
       - job.debian8.py2
       - job.debian8.py3
       - job.ubuntu16.04.py2
