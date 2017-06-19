@@ -13,7 +13,7 @@ RUN dpkg --add-architecture i386
 RUN apt-get update
 
 RUN apt-get install -y \
-    wine wine32 xvfb xauth \
+    wine wine32 xvfb \
     wget ca-certificates \
     p7zip-full
 
@@ -27,7 +27,8 @@ ENV WINEPREFIX /home/user/_wineprefix
 ENV WINEDEBUG -all
 
 RUN echo '#!/bin/bash\n(rm -Rf "$WINEPREFIX" && xvfb-run -a wine /home/user/_win_inst/bin/python3.exe "$@")' > python3
+RUN echo '#!/bin/bash\n python3 -m pytest "$@"' > py.test-3
 
-RUN chmod a+x python3
+RUN chmod a+x python3 py.test-3
 
 ENV PATH /home/user:$PATH
