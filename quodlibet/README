@@ -16,3 +16,6 @@ https://quodlibet.readthedocs.org/en/latest/development/overview.html
 
 .. image:: https://travis-ci.org/quodlibet/quodlibet.svg?branch=master
     :target: https://travis-ci.org/quodlibet/quodlibet
+
+.. image:: https://circleci.com/gh/quodlibet/quodlibet.svg?style=shield
+    :target: https://circleci.com/gh/quodlibet/quodlibet
