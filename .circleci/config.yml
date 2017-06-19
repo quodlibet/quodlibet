@@ -1,0 +1,46 @@
+defaults: &defaults
+  working_directory: ~/workdir
+  machine: true
+  steps:
+    - checkout
+    - run: docker info
+    - run: docker build -t myimage -f "$DOCKER_FILE" .
+    - run: docker run --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --detach myimage bash > container_id
+    - run: docker exec "$(cat container_id)" $PYTHON $PYARGS ./setup.py test
+    - run: docker exec "$(cat container_id)" $PYTHON $PYARGS ./setup.py quality
+
+version: 2
+jobs:
+  job.debian8.py2:
+    environment:
+      - PYARGS: "-R"
+      - PYTHON: "python2"
+      - DOCKER_FILE: ".travis/Dockerfile.debian8.py2"
+    <<: *defaults
+  job.debian8.py3:
+    environment:
+      - PYARGS: "-R -bb"
+      - PYTHON: "python3"
+      - DOCKER_FILE: ".travis/Dockerfile.debian8.py3"
+    <<: *defaults
+  job.ubuntu16.04.py2:
+    environment:
+      - PYARGS: "-R"
+      - PYTHON: "python2"
+      - DOCKER_FILE: ".travis/Dockerfile.ubuntu16.04.py2"
+    <<: *defaults
+  job.ubuntu16.04.py3:
+    environment:
+      - PYARGS: "-R -bb"
+      - PYTHON: "python3"
+      - DOCKER_FILE: ".travis/Dockerfile.ubuntu16.04.py3"
+    <<: *defaults
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - job.debian8.py2
+      - job.debian8.py3
+      - job.ubuntu16.04.py2
+      - job.ubuntu16.04.py3
