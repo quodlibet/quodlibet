@@ -8,7 +8,7 @@
 import os
 
 from gi.repository import Gtk
-from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn, text2fsn
+from senf import uri2fsn, fsnative, fsn2text, path2fsn, text2fsn
 
 import quodlibet
 from quodlibet import _, print_d, print_w
