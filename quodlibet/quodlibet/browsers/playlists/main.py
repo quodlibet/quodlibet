@@ -575,7 +575,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         added = 0
         for filename in fns:
             name = _name_for(filename)
-            with open(filename, "rb") as f:
+            with open(filename, "r") as f:
                 if filename.endswith(".m3u"):
                     playlist = parse_m3u(f, name, library=library)
                 elif filename.endswith(".pls"):

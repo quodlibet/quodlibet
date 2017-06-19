@@ -11,9 +11,9 @@ from gi.repository import Gtk
 from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 import quodlibet
-from quodlibet import _, print_d
+from quodlibet import _, print_d, print_w
 from quodlibet import formats, qltk
-from quodlibet.compat import listfilter
+from quodlibet.compat import listfilter, text_type
 from quodlibet.qltk import Icons
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.wlw import WaitLoadWindow
@@ -57,7 +57,7 @@ def parse_m3u(filelike, pl_name, library=None):
     filenames = []
     for line in filelike:
         line = line.strip()
-        if line.startswith(b"#"):
+        if line.startswith("#"):
             continue
         __attempt_add(line, filenames)
     return __create_playlist(pl_name, _dir_for(filelike), filenames, library)
@@ -67,18 +67,18 @@ def parse_pls(filelike, pl_name, library=None):
     filenames = []
     for line in filelike:
         line = line.strip()
-        if not line.lower().startswith(b"file"):
+        if not line.lower().startswith("file"):
             continue
-        fn = line[line.index(b"=") + 1:].strip()
+        fn = line[line.index("=") + 1:].strip()
         __attempt_add(fn, filenames)
     return __create_playlist(pl_name, _dir_for(filelike), filenames, library)
 
 
 def __attempt_add(filename, filenames):
     try:
-        filenames.append(bytes2fsn(filename, 'utf-8'))
-    except ValueError:
-        return
+        filenames.append(text2fsn(text_type(filename)))
+    except ValueError as e:
+        print_w("Couldn't add playlist item '%s' (%s)" % (filename, e))
 
 
 def __create_playlist(name, source_dir, files, library):
