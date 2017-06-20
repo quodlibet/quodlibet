@@ -834,6 +834,10 @@ class SongFileLibrary(SongLibrary, FileLibrary):
         key = normalize_path(filename, True)
         return key in self._contents
 
+    def get_filename(self, filename):
+        key = normalize_path(filename, True)
+        return self._contents.get(key)
+
     def add_filename(self, filename, add=True):
         """Add a song to the library based on filename.
 

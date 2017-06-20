@@ -37,11 +37,11 @@ SONGS = [AudioFile({
                 "labelid": "65432-1",
                 "~filename": fsnative(u"/dev/random")}),
          AudioFile({
-                "title": "five",
+                "title": "five € and a £",
                 "artist": "shell",
                 "album": "don't stop",
                 "labelid": "12345-6",
-                "~filename": fsnative(u"/dev/sh")})]
+                "~filename": fsnative(u"/tmp/five € and £!")})]
 
 
 class TSearchBar(TestCase):

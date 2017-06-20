@@ -7,7 +7,6 @@
 # published by the Free Software Foundation
 
 import os
-from tempfile import NamedTemporaryFile
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 
@@ -393,18 +392,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             uri = uri.encode('utf-8')
             try:
                 sock = urlopen(uri)
-                f = NamedTemporaryFile()
-                f.write(sock.read())
-                f.flush()
                 if uri.lower().endswith('.pls'):
-                    playlist = parse_pls(f.name, library=library)
+                    playlist = parse_pls(sock, name, library=library)
                 elif uri.lower().endswith('.m3u'):
-                    playlist = parse_m3u(f.name, library=library)
+                    playlist = parse_m3u(sock, name, library=library)
                 else:
                     raise IOError
                 library.add(playlist.songs)
-                if name:
-                    playlist.rename(name)
                 self.changed(playlist)
                 Gtk.drag_finish(ctx, True, False, etime)
             except IOError:
@@ -575,15 +569,24 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __import(self, activator, library):
         cf = create_chooser_filter(_("Playlists"), ["*.pls", "*.m3u"])
         fns = choose_files(self, _("Import Playlist"), _("_Import"), cf)
+        self._import_playlists(fns, library)
+
+    def _import_playlists(self, fns, library):
+        added = 0
         for filename in fns:
-            if filename.endswith(".m3u"):
-                playlist = parse_m3u(filename, library=library)
-            elif filename.endswith(".pls"):
-                playlist = parse_pls(filename, library=library)
-            else:
-                continue
+            name = _name_for(filename)
+            with open(filename, "rb") as f:
+                if filename.endswith(".m3u"):
+                    playlist = parse_m3u(f, name, library=library)
+                elif filename.endswith(".pls"):
+                    playlist = parse_pls(f, name, library=library)
+                else:
+                    print_w("Unsupported playlist type for '%s'" % filename)
+                    continue
             self.changed(playlist)
             library.add(playlist)
+            added += 1
+        return added
 
     def restore(self):
         try:
