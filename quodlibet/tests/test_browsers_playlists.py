@@ -55,7 +55,7 @@ class TParsePlaylistMixin(object):
                 target = self.prefix
                 target += fsn2bytes(get_data_path("silence-44-s.ogg"), "utf-8")
                 af.write(target)
-            with open(name, "r") as f:
+            with open(name, "rb") as f:
                 pl = self.Parse(f, name)
         self.failUnlessEqual(len(pl), 1)
         self.failUnlessEqual(pl[0]("title"), "Silence")
@@ -68,7 +68,7 @@ class TParsePlaylistMixin(object):
         with temp_filename() as name:
             with open(name, "wb") as f:
                 f.write(target)
-            with open(name, "r") as f:
+            with open(name, "rb") as f:
                 pl = self.Parse(f, name)
         self.failUnlessEqual(len(pl), 1)
         self.failUnlessEqual(pl[0]("title"), "Silence")
