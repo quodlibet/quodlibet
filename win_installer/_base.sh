@@ -102,18 +102,16 @@ function install_deps {
         mingw-w64-"${ARCH}"-gst-plugins-base \
         mingw-w64-"${ARCH}"-gst-plugins-good mingw-w64-"${ARCH}"-libsrtp \
         mingw-w64-"${ARCH}"-gst-plugins-bad mingw-w64-"${ARCH}"-gst-libav \
-        mingw-w64-"${ARCH}"-gst-plugins-ugly
+        mingw-w64-"${ARCH}"-gst-plugins-ugly \
+        mingw-w64-"${ARCH}"-"${PYTHON_ID}"-pytest \
+        mingw-w64-"${ARCH}"-"${PYTHON_ID}"-certifi \
 
     PIP_REQUIREMENTS="\
-certifi==2017.4.17
-colorama==0.3.7
 feedparser==5.2.1
 musicbrainzngs==0.6
-mutagen==1.37
+mutagen==1.38
 pycodestyle==2.3.1
-py==1.4.33
 pyflakes==1.5.0
-pytest==3.0.7
 "
 
     build_pip install --no-deps --no-binary ":all:" --upgrade \
@@ -285,6 +283,8 @@ function cleanup_after {
 
     rm -f "${MINGW_ROOT}"/bin/libharfbuzz-icu-0.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstcacasink.dll
+    rm -f "${MINGW_ROOT}"/bin/libgstopencv-1.0-0.dll
+    rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstopencv.dll
 
     if [ "${PYTHON_VERSION}" = "2" ]; then
         rm -Rf "${MINGW_ROOT}"/lib/python3.*

@@ -13,10 +13,11 @@ function install_python_packages {
         mingw-w64-i686-python$1 \
         mingw-w64-i686-python$1-gobject \
         mingw-w64-i686-python$1-cairo \
-        mingw-w64-i686-python$1-pip
+        mingw-w64-i686-python$1-pip \
+        mingw-w64-i686-python$1-pytest \
+        mingw-w64-i686-python$1-certifi \
 
-    pip$1 install certifi feedparser musicbrainzngs mutagen pep8 \
-        pyflakes pytest
+    pip$1 install feedparser musicbrainzngs mutagen pep8 pyflakes
 
     if [ "$1" = "2" ]; then
         pip$1 install --no-binary ":all:" futures faulthandler
