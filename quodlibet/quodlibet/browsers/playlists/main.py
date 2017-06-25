@@ -258,7 +258,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         view.connect('row-activated', lambda *x: self.songs_activated())
         view.connect('popup-menu', self.__popup_menu, library)
         view.get_selection().connect('changed', self.activate)
-        model = view.get_model()
+        #model = view.get_model()
         #s = model.connect('row-changed', self.__check_current)
         #connect_obj(self, 'destroy', model.disconnect, s)
         self.connect('key-press-event', self.__key_pressed)
@@ -365,7 +365,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         playlist.inhibit = False
 
     def __get_name_of_current_selected_playlist(self):
-        model,iter = self.__selected_playlists()
+        model, iter = self.__selected_playlists()
         path = model.get_path(iter)
         playlist = model[path][0]
         return playlist
