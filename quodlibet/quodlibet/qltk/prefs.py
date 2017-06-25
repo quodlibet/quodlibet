@@ -102,6 +102,9 @@ class PreferencesWindow(UniqueWindow):
                 return qltk.Frame(_("Visible Columns"), child=vbox), buttons
 
             def create_columns_prefs_frame():
+                vb = Gtk.VBox(spacing=6)
+
+                # CheckButtons
                 tiv = Gtk.CheckButton(label=_("Title includes _version"),
                                       use_underline=True)
                 aio = Gtk.CheckButton(label=_("Artist includes all _people"),
@@ -121,7 +124,51 @@ class PreferencesWindow(UniqueWindow):
                 t.attach(aip, 0, 1, 1, 2)
                 t.attach(aio, 1, 2, 0, 1)
                 t.attach(fip, 1, 2, 1, 2)
-                return qltk.Frame(_("Column Preferences"), child=t)
+
+                # Ellipsis ComboBox
+                def draw_ellipsis_mode(column, cell, model, it, data):
+                    num = model[it][0]
+                    mapping = {
+                        1: _('Beginning:  ...ic/artist/track.mp3'),
+                        2: _('Middle:  /home/user...track.mp3'),
+                        3: _('End:  /home/user/Music/ar...')}
+                    cell.set_property('text', mapping[num])
+
+                def ellipsis_mode_changed(combo, model):
+                    it = combo.get_active_iter()
+                    if it is None:
+                        return
+                    config.set('settings', 'ellipsizing_mode',
+                               str(model[it][0]))
+
+                hb = Gtk.HBox(spacing=6)
+
+                model = Gtk.ListStore(int)
+                ellipsis_combo = Gtk.ComboBox(model=model)
+                ellipsis_lab = Gtk.Label(label=_("_Filepath ellipsis mode:"))
+                ellipsis_lab.set_use_underline(True)
+                ellipsis_lab.set_alignment(0, 0.5)
+
+                cell = Gtk.CellRendererText()
+                ellipsis_combo.pack_start(cell, False)
+                num = int(config.get('settings', 'ellipsizing_mode'))
+                for mode in [1, 2, 3]:
+                    it = model.append(row=[mode])
+                    if mode == num:
+                        ellipsis_combo.set_active_iter(it)
+
+                ellipsis_combo.set_cell_data_func(cell, draw_ellipsis_mode,
+                                                  None)
+                ellipsis_combo.connect('changed', ellipsis_mode_changed, model)
+
+                ellipsis_lab.set_mnemonic_widget(ellipsis_combo)
+                hb.pack_start(ellipsis_lab, False, True, 0)
+                hb.pack_start(ellipsis_combo, True, True, 0)
+
+                # Combine in one frame
+                vb.pack_start(t, True, True, 0)
+                vb.pack_start(hb, True, True, 0)
+                return qltk.Frame(_("Column Preferences"), child=vb)
 
             def create_apply_button():
                 vbox = Gtk.VBox(spacing=12)
