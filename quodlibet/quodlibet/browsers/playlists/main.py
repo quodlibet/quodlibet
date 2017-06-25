@@ -259,8 +259,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         view.connect('popup-menu', self.__popup_menu, library)
         view.get_selection().connect('changed', self.activate)
         model = view.get_model()
-        s = model.connect('row-changed', self.__check_current)
-        connect_obj(self, 'destroy', model.disconnect, s)
+        #s = model.connect('row-changed', self.__check_current)
+        #connect_obj(self, 'destroy', model.disconnect, s)
         self.connect('key-press-event', self.__key_pressed)
 
     def __create_cell_renderer(self):
@@ -301,11 +301,18 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             return True
         return False
 
+    # Does not seem to be used for anything but row-changes to
+    # playlists? Breaks a lot of stuff in current implementation
+    # (on track change, clears selection, causes the playlist to
+    # scroll despite jump config being off, if a playlist contains
+    # duplicate tracks it skips to the last instance, ... )
+    """
     def __check_current(self, model, path, iter):
         model, citer = self.__selected_playlists()
         if citer and model.get_path(citer) == path:
             songlist = qltk.get_top_parent(self).songlist
             self.activate(resort=not songlist.is_sorted())
+    """
 
     def __drag_motion(self, view, ctx, x, y, time):
         targets = [t.name() for t in ctx.list_targets()]
@@ -357,6 +364,12 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         playlist.extend([row[0] for row in smodel])
         playlist.inhibit = False
 
+    def __get_name_of_current_selected_playlist(self):
+        model,iter = self.__selected_playlists()
+        path = model.get_path(iter)
+        playlist = model[path][0]
+        return playlist
+
     def __drag_data_received(self, view, ctx, x, y, sel, tid, etime, library):
         # TreeModelSort doesn't support GtkTreeDragDestDrop.
         view.emit_stop_by_name('drag-data-received')
@@ -378,6 +391,12 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 playlist.extend(songs)
             self.changed(playlist)
             Gtk.drag_finish(ctx, True, False, etime)
+            # Cause a refresh to the dragged-to playlist if it is selected
+            # so that the dragged (duplicate) track(s) appears
+            if playlist is self.__get_name_of_current_selected_playlist():
+                model, plist_iter = self.__selected_playlists()
+                songlist = qltk.get_top_parent(self).songlist
+                self.activate(resort=not songlist.is_sorted())
         else:
             if tid == DND_URI_LIST:
                 uri = sel.get_uris()[0]
