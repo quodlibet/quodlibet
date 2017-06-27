@@ -142,27 +142,6 @@ pyflakes==1.5.0
 
     build_pacman --noconfirm -R $(build_pacman -Qdtq)
     build_pacman -S --noconfirm mingw-w64-"${ARCH}"-"${PYTHON_ID}"-setuptools
-
-    # make loader loading relocatable
-    # (hacky... but I don't understand the win/unix path translation magic)
-    GDK_PIXBUF_PREFIX=$(cd "${BUILD_ROOT}" && \
-        /"${MINGW}"/bin/"${PYTHON_ID}".exe \
-        -c "import os; print(os.getcwd())")"/${MINGW}"
-    loaders_cache="${MINGW_ROOT}"/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
-    sed -i "s|$GDK_PIXBUF_PREFIX|..|g" "$loaders_cache"
-
-    # remove the large png icons, they should be used rarely and svg works fine
-    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/512x512"
-    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/256x256"
-    rm -Rf "${MINGW_ROOT}/share/icons/hicolor/256x256"
-    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/96x96"
-    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/48x48"
-    "${MINGW_ROOT}"/bin/gtk-update-icon-cache-3.0.exe \
-        "${MINGW_ROOT}"/share/icons/Adwaita
-
-    # we installed our app icons into hicolor
-    "${MINGW_ROOT}"/bin/gtk-update-icon-cache-3.0.exe \
-        "${MINGW_ROOT}"/share/icons/hicolor
 }
 
 function install_quodlibet {
@@ -193,6 +172,23 @@ function install_quodlibet {
 }
 
 function cleanup_before {
+    # these all have svg variants
+    find "${MINGW_ROOT}"/share/icons -name "*.symbolic.png" -exec rm -f {} \;
+
+    # remove some larger ones
+    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/512x512"
+    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/256x256"
+    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/96x96"
+    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/48x48"
+    "${MINGW_ROOT}"/bin/gtk-update-icon-cache-3.0.exe \
+        "${MINGW_ROOT}"/share/icons/Adwaita
+
+    # remove some gtk demo icons
+    find "${MINGW_ROOT}"/share/icons/hicolor -name "gtk3-*" -exec rm -f {} \;
+    "${MINGW_ROOT}"/bin/gtk-update-icon-cache-3.0.exe \
+        "${MINGW_ROOT}"/share/icons/hicolor
+
+    # python related, before installing quodlibet
     rm -Rf "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/test
     rm -f "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/lib-dynload/_tkinter*
     find "${MINGW_ROOT}"/lib/"${PYTHON_ID}".* -type d -name "test*" \
@@ -249,6 +245,11 @@ function cleanup_after {
     rm -Rf "${MINGW_ROOT}"/share/libcaca
     rm -Rf "${MINGW_ROOT}"/share/gettext
     rm -Rf "${MINGW_ROOT}"/share/gst-plugins-base
+    rm -Rf "${MINGW_ROOT}"/share/gst-plugins-bad
+    rm -Rf "${MINGW_ROOT}"/share/libgpg-error
+    rm -Rf "${MINGW_ROOT}"/share/p11-kit
+    rm -Rf "${MINGW_ROOT}"/share/pki
+    rm -Rf "${MINGW_ROOT}"/share/thumbnailers
     rm -Rf "${MINGW_ROOT}"/share/gtk-3.0
     rm -Rf "${MINGW_ROOT}"/share/nghttp2
     rm -Rf "${MINGW_ROOT}"/share/themes
@@ -264,7 +265,9 @@ function cleanup_after {
     rm -Rf "${MINGW_ROOT}"/lib/gtk-3.0
     rm -Rf "${MINGW_ROOT}"/lib/mpg123
     rm -Rf "${MINGW_ROOT}"/lib/p11-kit
+    rm -Rf "${MINGW_ROOT}"/lib/pkcs11
     rm -Rf "${MINGW_ROOT}"/lib/ruby
+    rm -Rf "${MINGW_ROOT}"/lib/engines
 
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstvpx.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstdaala.dll
@@ -313,6 +316,9 @@ function cleanup_after {
 
     find "${MINGW_ROOT}" -name "gtk30-properties.mo" -exec rm -rf {} \;
     find "${MINGW_ROOT}" -name "gettext-tools.mo" -exec rm -rf {} \;
+    find "${MINGW_ROOT}" -name "libexif-12.mo" -exec rm -rf {} \;
+    find "${MINGW_ROOT}" -name "xz.mo" -exec rm -rf {} \;
+    find "${MINGW_ROOT}" -name "libgpg-error.mo" -exec rm -rf {} \;
 
     find "${MINGW_ROOT}" -name "old_root.pem" -exec rm -rf {} \;
     find "${MINGW_ROOT}" -name "weak.pem" -exec rm -rf {} \;
