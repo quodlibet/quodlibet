@@ -11,8 +11,7 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 import pytest
 
-from quodlibet.compat import PY3
-from quodlibet.util import is_wine, is_windows
+from quodlibet.util import is_wine
 
 os.environ["PYFLAKES_NODOCTEST"] = "1"
 os.environ["PYFLAKES_BUILTINS"] = "execfile,reload"
@@ -29,9 +28,8 @@ from .util import iter_project_py_files
 
 
 def create_pool():
-    if is_wine() or (PY3 and is_windows()):
-        # ProcessPoolExecutor is broken under wine, and under py3+msys2
-        # https://github.com/Alexpux/MINGW-packages/issues/837
+    if is_wine():
+        # ProcessPoolExecutor is broken under wine
         return ThreadPoolExecutor(1)
     else:
         return ProcessPoolExecutor(None)
