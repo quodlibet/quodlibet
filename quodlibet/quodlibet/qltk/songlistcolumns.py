@@ -279,14 +279,23 @@ class DateColumn(WideTextColumn):
             except (OverflowError, ValueError, OSError):
                 text = u""
             else:
-                today = datetime.datetime.now().date()
-                days = (today - date).days
-                if days == 0:
-                    format_ = "%X"
-                elif days < 7:
-                    format_ = "%A"
+                format_setting = config.gettext("settings",
+                                      "datecolumn_timestamp_format")
+
+                # use default behaviour-format
+                if not format_setting:
+                    today = datetime.datetime.now().date()
+                    days = (today - date).days
+                    if days == 0:
+                        format_ = "%X"
+                    elif days < 7:
+                        format_ = "%A"
+                    else:
+                        format_ = "%x"
+                # use format from Advanced Preferences
                 else:
-                    format_ = "%x"
+                    format_ = format_setting
+
                 stamp = time.localtime(stamp)
                 text = time.strftime(format_, stamp)
             cell.set_property('text', text)

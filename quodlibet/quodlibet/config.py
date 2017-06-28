@@ -150,6 +150,9 @@ INITIAL = {
 
         # the pattern for the main window title
         "window_title_pattern": "~title~version~~people",
+
+        # the format of the timestamps in DateColumn
+        "datecolumn_timestamp_format": "",
     },
     "rename": {
         "spaces": "false",
