@@ -53,6 +53,7 @@ def convert_options(settings, defaults=None):
     options.setdefault('repos', getopt('repos'))
     options.setdefault('environment', getopt('environment'))
     options.setdefault('ignore_exceptions', getopt('ignore_exceptions'))
+    options.setdefault('sample_rate', getopt('sample_rate'))
 
     transport = getopt('transport') or options.get('transport')
     if isinstance(transport, string_types):
