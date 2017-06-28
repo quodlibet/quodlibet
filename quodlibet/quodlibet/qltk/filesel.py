@@ -237,7 +237,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             niter = model.append(None, [path])
             if path is not None:
                 assert isinstance(path, fsnative)
-                model.append(niter, ["dummy"])
+                model.append(niter, [fsnative(u"dummy")])
 
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.connect(
