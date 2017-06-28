@@ -115,6 +115,9 @@ class Tunexpand(TestCase):
         else:
             self.failUnlessEqual(path, "~")
 
+    def test_only_profile_case(self):
+        assert isinstance(unexpand(expanduser(fsnative(u"~"))), fsnative)
+
     def test_base_trailing(self):
         path = unexpand(self.d + os.path.sep)
         self.failUnlessEqual(path, self.u + os.path.sep)

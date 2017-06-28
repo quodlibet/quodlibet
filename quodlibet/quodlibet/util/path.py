@@ -141,11 +141,16 @@ def unescape_filename(s):
 
 
 def unexpand(filename):
-    """Replace the user's home directory with ~/, if it appears at the
-    start of the path name.
+    """Replace the user's home directory with ~ or %USERPROFILE%, if it
+    appears at the start of the path name.
+
+    Args:
+        filename (fsnative): The file path
+    Returns:
+        fsnative: The path with the home directory replaced
     """
 
-    sub = (os.name == "nt" and "%USERPROFILE%") or "~"
+    sub = (os.name == "nt" and fsnative(u"%USERPROFILE%")) or fsnative(u"~")
     home = expanduser("~")
     if filename == home:
         return sub
