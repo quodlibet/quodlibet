@@ -551,8 +551,9 @@ class RGDialog(Dialog):
 
     def __done(self, pipeline, album):
         self._done.append(album)
-        if self._todo:
-            pipeline.start(self._todo.pop(0))
+        next_album = self.get_next_album()
+        if next_album:
+            pipeline.start(next_album)
         self.__update_view_for(album)
 
     def __update_view_for(self, album):
