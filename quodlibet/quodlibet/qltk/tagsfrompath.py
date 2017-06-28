@@ -150,7 +150,7 @@ class TagsFromPath(Gtk.VBox):
         self.pack_start(filter_box, False, True, 0)
 
         # Save button
-        self.save = qltk.Button(_("Save"), Icons.DOCUMENT_SAVE)
+        self.save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
