@@ -892,10 +892,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     def sync(self, timeout):
         if self.bin is not None:
-            self.bin.get_state(Gst.SECOND * timeout)
-            # we have some logic in the main loop, so iterate there
-            while GLib.MainContext.default().iteration(False):
-                pass
+            # XXX: This is flaky, try multiple times
+            for i in range(5):
+                self.bin.get_state(Gst.SECOND * timeout)
+                # we have some logic in the main loop, so iterate there
+                while GLib.MainContext.default().iteration(False):
+                    pass
 
     def _end(self, stopped, next_song=None):
         print_d("End song")
