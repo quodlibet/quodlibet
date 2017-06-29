@@ -282,8 +282,11 @@ class DateColumn(WideTextColumn):
                 format_setting = config.gettext("settings",
                                       "datecolumn_timestamp_format")
 
+                # use format configured in Advanced Preferences
+                if format_setting:
+                    format_ = format_setting
                 # use default behaviour-format
-                if not format_setting:
+                else:
                     today = datetime.datetime.now().date()
                     days = (today - date).days
                     if days == 0:
@@ -292,9 +295,6 @@ class DateColumn(WideTextColumn):
                         format_ = "%A"
                     else:
                         format_ = "%x"
-                # use format from Advanced Preferences
-                else:
-                    format_ = format_setting
 
                 stamp = time.localtime(stamp)
                 text = time.strftime(format_, stamp)
