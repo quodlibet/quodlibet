@@ -214,8 +214,6 @@ INITIAL = {
         # the format of the timestamps in DateColumn
         "datecolumn_timestamp_format": "",
 
-        # the ellipsizing mode to use for SongColumn filepaths
-        # "1" Start, "2" Middle, "3" End
         "ellipsizing_mode": "2",
     },
 
