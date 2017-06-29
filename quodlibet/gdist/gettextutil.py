@@ -83,18 +83,14 @@ def _update_pot(po_dir, package):
     Returns the path to the pot file or raise GettextError
     """
 
-    old_dir = os.getcwd()
-    os.chdir(po_dir)
     try:
         os.environ["XGETTEXT_ARGS"] = XGETTEXT_ARGS
         with open(os.devnull, 'wb') as devnull:
             subprocess.check_call(
                 intltool("update", "--pot", "--gettext-package", package),
-                stderr=devnull, stdout=devnull)
+                stderr=devnull, stdout=devnull, cwd=po_dir)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
-    finally:
-        os.chdir(old_dir)
 
     return os.path.join(po_dir, package + ".pot")
 
@@ -126,8 +122,6 @@ def update_po(po_dir, package, lang_code, output_file=None):
     or raise GettextError
     """
 
-    old_dir = os.getcwd()
-    os.chdir(po_dir)
     try:
         os.environ["XGETTEXT_ARGS"] = XGETTEXT_ARGS
         args = intltool(
@@ -135,11 +129,10 @@ def update_po(po_dir, package, lang_code, output_file=None):
         if output_file is not None:
             args.extend(["--output-file", output_file])
         with open(os.devnull, 'wb') as devnull:
-            subprocess.check_call(args, stderr=devnull, stdout=devnull)
+            subprocess.check_call(
+                args, stderr=devnull, stdout=devnull, cwd=po_dir)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
-    finally:
-        os.chdir(old_dir)
 
     if output_file is not None:
         return output_file
@@ -185,8 +178,6 @@ def get_missing(po_dir, package):
 
     missing_path = os.path.join(po_dir, "missing")
 
-    old_dir = os.getcwd()
-    os.chdir(po_dir)
     try:
         os.remove(missing_path)
     except OSError:
@@ -198,7 +189,7 @@ def get_missing(po_dir, package):
         with open(os.devnull, 'wb') as devnull:
             subprocess.check_call(
                 intltool("update", "--maintain", "--gettext-package", package),
-                stderr=devnull, stdout=devnull)
+                stderr=devnull, stdout=devnull, cwd=po_dir)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
     else:
@@ -207,8 +198,6 @@ def get_missing(po_dir, package):
                 result = h.read()
         except IOError:
             result = ""
-    finally:
-        os.chdir(old_dir)
 
     return result.splitlines()
 
