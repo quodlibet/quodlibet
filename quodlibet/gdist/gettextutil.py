@@ -68,11 +68,19 @@ def _get_xgettext_args():
 XGETTEXT_ARGS = " ".join(_get_xgettext_args())
 
 
+def cyg2winpath(path):
+    assert os.name == "nt"
+    win_path = subprocess.check_output(
+        ["cygpath.exe", "-m" if os.sep == "/" else "-w", "--", path])
+    return win_path.decode("utf-8").strip()
+
+
 def intltool(*args):
     command = args[0]
     args = args[1:]
     if os.name == "nt":
-        return ["perl", "/usr/bin/intltool-%s" % command] + list(args)
+        return [cyg2winpath("/usr/bin/perl"),
+                "/usr/bin/intltool-%s" % command] + list(args)
     else:
         return ["intltool-%s" % command] + list(args)
 
