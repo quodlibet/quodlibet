@@ -16,6 +16,7 @@ from quodlibet.formats import AudioFile
 import quodlibet.config
 
 import datetime
+import time
 
 
 class TSongListColumns(TestCase):
@@ -95,9 +96,9 @@ class TSongListColumns(TestCase):
 
         d = datetime.datetime(year=1999, month=5, day=1,
                               hour=23, minute=11, second=59)
-
+        stamp = int(time.mktime(d.timetuple()))
         column = create_songlist_column("~#added")
-        text = self._render_column(column, **{"~#added": int(d.timestamp())})
+        text = self._render_column(column, **{"~#added": stamp})
         self.assertEqual(text, "19990501 23:11:59 PLAINTEXT")
 
     def test_nonconfigured_datecol_format(self):
