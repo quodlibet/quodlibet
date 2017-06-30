@@ -4,7 +4,7 @@ defaults: &defaults
   steps:
     - checkout
     - run: docker info
-    - run: docker build -t myimage -f "$DOCKER_FILE" .
+    - run: .circleci/retry docker build -t myimage -f "$DOCKER_FILE" .
     - run: docker run --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --detach myimage bash > container_id
     - run: docker exec "$(cat container_id)" $PYTHON $PYARGS ./setup.py test
     - run: docker exec "$(cat container_id)" $PYTHON $PYARGS ./setup.py quality
