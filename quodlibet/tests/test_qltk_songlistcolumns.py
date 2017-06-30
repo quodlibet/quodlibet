@@ -102,6 +102,17 @@ class TSongListColumns(TestCase):
         self.assertEqual(text, "19990501 23:11:59 PLAINTEXT")
 
     def test_nonconfigured_datecol_format(self):
+        # make sure config option is unset by default
         text = quodlibet.config.gettext("settings",
                                         "datecolumn_timestamp_format")
         self.assertEqual(text, "")
+
+        # make sure unset config option does not result in the
+        # behaviour for testcase for set option above
+        d = datetime.datetime(year=1999, month=5, day=1,
+                              hour=23, minute=11, second=59)
+        stamp = int(time.mktime(d.timetuple()))
+        column = create_songlist_column("~#added")
+        text = self._render_column(column, **{"~#added": stamp})
+        self.assertNotEqual(text, "19990501 23:11:59 PLAINTEXT")
+
