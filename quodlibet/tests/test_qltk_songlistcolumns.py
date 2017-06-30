@@ -115,4 +115,3 @@ class TSongListColumns(TestCase):
         column = create_songlist_column("~#added")
         text = self._render_column(column, **{"~#added": stamp})
         self.assertNotEqual(text, "19990501 23:11:59 PLAINTEXT")
-
