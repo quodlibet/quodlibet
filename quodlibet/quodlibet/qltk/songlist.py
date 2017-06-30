@@ -121,20 +121,8 @@ class SongSelectionInfo(GObject.Object):
 def get_columns():
     """Gets the list of songlist column headings"""
 
-    if config.has_option("settings", "columns"):
-        columns = config.getstringlist(
-            "settings", "columns", const.DEFAULT_COLUMNS)
-    else:
-        # migrate old settings
-        try:
-            columns = config.get("settings", "headers").split()
-        except config.Error:
-            columns = const.DEFAULT_COLUMNS
-        else:
-            config.remove_option("settings", "headers")
-            set_columns(columns)
-            config.setstringlist("settings", "columns", columns)
-
+    columns = config.getstringlist("settings", "columns",
+                                   const.DEFAULT_COLUMNS)
     if "~current" in columns:
         columns.remove("~current")
     return columns

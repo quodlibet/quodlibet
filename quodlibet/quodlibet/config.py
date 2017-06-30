@@ -184,12 +184,8 @@ INITIAL = {
         # rating symbol (hollow star)
         "rating_symbol_blank": _config_text(u'\u2606'),
 
-        # Now deprecated: space-separated headers column
-        #"headers": " ".join(const.DEFAULT_COLUMNS),
-
-        # 2.6: this gets migrated from headers entry in code.
-        # TODO: re-instate columns here in > 2.6 or once most have migrated
-        #"columns": ",".join(const.DEFAULT_COLUMNS),
+        # Comma-separated columns to display in the song list
+        "columns": ",".join(const.DEFAULT_COLUMNS),
 
         # hack to disable hints, see bug #526
         "disable_hints": "false",
