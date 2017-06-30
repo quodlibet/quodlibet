@@ -10,6 +10,7 @@ defaults: &defaults
         command: |
           echo "$DOCKERIMAGE" > _cache_key_file
           grep "BRANCH_NAME =" quodlibet/quodlibet/const.py >> _cache_key_file
+          cat _cache_key_file
     - restore_cache:
         key: cache-{{ checksum "_cache_key_file" }}
     - run: ls -l _ci_cache || true
