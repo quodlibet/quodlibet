@@ -158,7 +158,7 @@
             version="0.51.0"
             hash="md5:12e517cac2b57a0121cda351570f1e63"/>
     <dependencies>
-        <dep package="gettext-no-glib"/>
+        <dep package="gettext-tools"/>
     </dependencies>
   </autotools>
 
@@ -378,26 +378,23 @@
       <patch file="patches/python2-setup.py-remove-hardcoded.diff" strip="1"/>"/>
     </branch>
     <dependencies>
-      <dep package="gettext"/>
+      <dep package="gettext-runtime"/>
       <dep package="readline"/>
       <dep package="openssl-1.0"/>
       <dep package="libxml2"/>
     </dependencies>
   </autotools>
 
-  <autotools id="gettext-no-glib" autogen-sh="configure"
+  <autotools id="gettext-tools" autogen-sh="configure"
              autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-glib">
-    <branch repo="ftp.gnu.org" source-subdir="gettext-no-glib"
+    <branch repo="ftp.gnu.org" source-subdir="gettext-tools"
             module="gettext/gettext-0.19.7.tar.xz" version="0.19.7"/>
   </autotools>
 
-  <autotools id="gettext" autogen-sh="configure"
+  <autotools id="gettext-runtime" autogen-sh="configure"
          autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp">
-    <branch repo="ftp.gnu.org" source-subdir="gettext"
+    <branch repo="ftp.gnu.org" source-subdir="gettext-runtime"
             module="gettext/gettext-0.19.7.tar.xz" version="0.19.7"/>
-    <dependencies>
-      <dep package="gettext-no-glib"/>
-    </dependencies>
   </autotools>
 
   <autotools id="gst-libav" supports-non-srcdir-builds="no"
@@ -419,7 +416,7 @@
     </branch>
     <dependencies>
         <dep package="libffi"/>
-        <dep package="gettext-no-glib"/>
+        <dep package="gettext-runtime"/>
         <dep package="gtk-doc"/>
         <dep package="libffi"/>
         <dep package="zlib"/>
@@ -442,7 +439,6 @@
         <patch file="patches/0002-Revert-Replace-NSScreen-userSpaceScaleFactor-depreca.patch" strip="1"/>
     </branch>
     <dependencies>
-        <dep package="gettext"/>
         <dep package="glib2"/>
         <dep package="pango"/>
         <dep package="atk"/>
