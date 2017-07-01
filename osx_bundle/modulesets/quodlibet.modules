@@ -6,8 +6,6 @@
       href="git://git.gnome.org/"/>
   <repository type="tarball" name="git.gnome.org/browse"
       href="http://git.gnome.org/browse/"/>
-  <repository type="tarball" name="effbot"
-              href="http://effbot.org/downloads/"/>
   <repository type="tarball" name="github-tar"
       href="https://github.com/"/>
   <repository type="tarball" name="sourceforge"
@@ -26,8 +24,6 @@
               href="https://bitbucket.org/mpyne/game-music-emu/downloads/"/>
   <repository type="tarball" name="soundtouch"
               href="http://www.surina.net/soundtouch/"/>
-  <repository type="tarball" name="entropywave"
-          href="http://code.entropywave.com/download/"/>
   <repository type="tarball" name="xiph"
           href="http://downloads.xiph.org/releases/"/>
   <repository type="tarball" name="ftp.gnutls.org"
@@ -63,7 +59,6 @@
               href="ftp://sourceware.org/pub/"/>
   <repository type="tarball" name="freedesktop"
               href="ftp://ftp.freedesktop.org/pub/"/>
-  <repository type="git" name="github" href="git://github.com/"/>
   <repository type="tarball" name="itstool" href="http://files.itstool.org/"/>
   <repository type="tarball" name="ragel"
               href="http://www.colm.net/files/ragel/"/>
@@ -88,19 +83,19 @@
 
   <metamodule id="quodlibet">
     <dependencies>
-      <dep package="gstreamer-1.0"/>
-      <dep package="gst-plugins-base-1.0"/>
-      <dep package="gst-plugins-good-1.0"/>
-      <dep package="gst-plugins-ugly-1.0"/>
-      <dep package="gst-plugins-bad-1.0"/>
+      <dep package="gstreamer"/>
+      <dep package="gst-plugins-base"/>
+      <dep package="gst-plugins-good"/>
+      <dep package="gst-plugins-ugly"/>
+      <dep package="gst-plugins-bad"/>
       <dep package="gst-libav"/>
       <dep package="mutagen" />
       <dep package="feedparser" />
       <dep package="musicbrainzngs" />
-      <dep package="gtk+-3.0"/>
-      <dep package="py2cairo"/>
-      <dep package="pygobject3"/>
-      <dep package="gtk-mac-integration-python"/>
+      <dep package="gtk3"/>
+      <dep package="python2-cairo"/>
+      <dep package="python2-gobject"/>
+      <dep package="gtk-mac-integration"/>
       <dep package="pyobjc"/>
       <dep package="certifi"/>
       <dep package="pytest"/>
@@ -163,7 +158,7 @@
             version="0.51.0"
             hash="md5:12e517cac2b57a0121cda351570f1e63"/>
     <dependencies>
-        <dep package="gettext-tools"/>
+        <dep package="gettext-no-glib"/>
     </dependencies>
   </autotools>
 
@@ -239,7 +234,7 @@
     <dependencies>
       <dep package="libcroco"/>
       <dep package="freetype"/>
-      <dep package="gdk-pixbuf"/>
+      <dep package="gdk-pixbuf2"/>
     </dependencies>
   </autotools>
 
@@ -301,7 +296,7 @@
     <dependencies>
       <dep package="freetype-no-harfbuzz"/>
       <dep package="ragel"/>
-      <dep package="glib"/>
+      <dep package="glib2"/>
       <dep package="cairo"/>
     </dependencies>
   </autotools>
@@ -320,7 +315,7 @@
     </dependencies>
   </autotools>
 
-  <autotools id="liborc" autogen-sh="configure">
+  <autotools id="orc" autogen-sh="configure">
     <branch repo="gstreamer" module="orc/orc-0.4.26.tar.xz" version="0.4.26"
             hash="sha256:7d52fa80ef84988359c3434e1eea302d077a08987abdde6905678ebcad4fa649"/>
   </autotools>
@@ -364,7 +359,7 @@
   </autotools>
 
   <!-- INSTALL_PREFIX because it doesn't ue DESTDIR and LIBS="" to skip installing static libs -->
-  <autotools id="openssl" autogen-sh="Configure" autogenargs="shared zlib-dynamic"
+  <autotools id="openssl-1.0" autogen-sh="Configure" autogenargs="shared zlib-dynamic"
              autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --openssldir=%(prefix)s/etc/ssl %(autogenargs)s"
              makeinstallargs="INSTALL_PREFIX=$JHBUILD_PREFIX/_jhbuild/root-openssl LIBS= install_sw"
              supports-parallel-builds="no">
@@ -372,7 +367,7 @@
     hash="sha256:6b3977c61f2aedf0f96367dcfb5c6e578cf37e7b8d913b4ecb6643c3cb88d8c0"/>
   </autotools>
 
-  <autotools id="python" autogenargs="--enable-shared"
+  <autotools id="python2" autogenargs="--enable-shared"
          autogen-sh="configure" supports-non-srcdir-builds="no">
     <branch repo="python"
         module="2.7.12/Python-2.7.12.tar.xz" version="2.7.12"
@@ -383,23 +378,26 @@
       <patch file="patches/python2-setup.py-remove-hardcoded.diff" strip="1"/>"/>
     </branch>
     <dependencies>
-      <dep package="gettext-runtime"/>
+      <dep package="gettext"/>
       <dep package="readline"/>
-      <dep package="openssl"/>
+      <dep package="openssl-1.0"/>
       <dep package="libxml2"/>
     </dependencies>
   </autotools>
 
-  <autotools id="gettext-tools" autogen-sh="configure"
+  <autotools id="gettext-no-glib" autogen-sh="configure"
              autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-glib">
-    <branch repo="ftp.gnu.org" source-subdir="gettext-tools"
+    <branch repo="ftp.gnu.org" source-subdir="gettext-no-glib"
             module="gettext/gettext-0.19.7.tar.xz" version="0.19.7"/>
   </autotools>
 
-  <autotools id="gettext-runtime" autogen-sh="configure"
+  <autotools id="gettext" autogen-sh="configure"
          autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp">
-    <branch repo="ftp.gnu.org" source-subdir="gettext-runtime"
+    <branch repo="ftp.gnu.org" source-subdir="gettext"
             module="gettext/gettext-0.19.7.tar.xz" version="0.19.7"/>
+    <dependencies>
+      <dep package="gettext-no-glib"/>
+    </dependencies>
   </autotools>
 
   <autotools id="gst-libav" supports-non-srcdir-builds="no"
@@ -409,19 +407,19 @@
     module="gst-libav/gst-libav-${version}.tar.xz"
     hash="sha256:55d7823fdf63195de991adfef32db4b8a8bef3cafa46115a951e590dc18a5077"/>
     <dependencies>
-        <dep package="gstreamer-1.0"/>
-        <dep package="gst-plugins-base-1.0"/>
+        <dep package="gstreamer"/>
+        <dep package="gst-plugins-base"/>
     </dependencies>
   </autotools>
 
-  <autotools id="glib" autogen-sh="autoreconf"
+  <autotools id="glib2" autogen-sh="autoreconf"
              autogenargs="--with-pcre=internal">
     <branch module="glib/2.52/glib-2.52.2.tar.xz"  version="2.52.2"
             hash="sha256:f00e5d9e2a2948b1da25fcba734a6b7a40f556de8bc9f528a53f6569969ac5d0">
     </branch>
     <dependencies>
         <dep package="libffi"/>
-        <dep package="gettext-runtime"/>
+        <dep package="gettext-no-glib"/>
         <dep package="gtk-doc"/>
         <dep package="libffi"/>
         <dep package="zlib"/>
@@ -432,23 +430,24 @@
     <branch module="atk/2.24/atk-${version}.tar.xz" version="2.24.0"
             hash="sha256:bb2daa9a808c73a7a79d2983f333e0ba74be42fc51e3ba1faf2551a636487a49"/>
     <dependencies>
-      <dep package="glib"/>
+      <dep package="glib2"/>
       <dep package="gobject-introspection"/>
     </dependencies>
   </autotools>
 
-  <autotools id="gtk+-3.0" autogen-sh="autogen.sh"
+  <autotools id="gtk3" autogen-sh="autogen.sh"
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
     <branch module="gtk+/3.22/gtk+-3.22.12.tar.xz" version="3.22.12"
         hash="sha256:84fae0cefb6a11ee2b4e86b8ac42fe46a3d30b4ad16661d5fc51e8ae03e2a98c">
         <patch file="patches/0002-Revert-Replace-NSScreen-userSpaceScaleFactor-depreca.patch" strip="1"/>
     </branch>
     <dependencies>
-        <dep package="glib"/>
+        <dep package="gettext"/>
+        <dep package="glib2"/>
         <dep package="pango"/>
         <dep package="atk"/>
         <dep package="cairo"/>
-        <dep package="gdk-pixbuf"/>
+        <dep package="gdk-pixbuf2"/>
         <dep package="gobject-introspection"/>
         <dep package="libepoxy"/>
     </dependencies>
@@ -502,14 +501,14 @@
             hash="sha256:24748140456c42360b07b2c77a1a2e1216d07c056632079557cd4e815b9d01c9">
     </branch>
     <dependencies>
-      <dep package="glib"/>
+      <dep package="glib2"/>
       <dep package="cairo"/>
       <dep package="gobject-introspection"/>
       <dep package="freetype"/>
      </dependencies>
   </autotools>
 
-  <autotools id="gdk-pixbuf" autogen-sh="configure">
+  <autotools id="gdk-pixbuf2" autogen-sh="configure">
     <branch module="gdk-pixbuf/2.34/gdk-pixbuf-2.34.0.tar.xz" version="2.34.0"
             hash="sha256:d55e5b383ee219bd0e23bf6ed4427d56a7db5379729a6e3e0a0e0eba9a8d8879"/>
     <dependencies>
@@ -527,13 +526,13 @@
       <patch file="patches/gi-make-shared-library-in-cairo-1.0.gir-an-absolute-pat.patch" strip="1"/>
     </branch>
     <dependencies>
-      <dep package="glib"/>
+      <dep package="glib2"/>
       <dep package="cairo"/>
-      <dep package="python"/>
+      <dep package="python2"/>
     </dependencies>
   </autotools>
 
-  <distutils id="py2cairo">
+  <distutils id="python2-cairo">
     <branch repo="github-tar"
             version="1.13.1"
             module="pygobject/pycairo/releases/download/v${version}/pycairo-${version}.tar.gz"
@@ -541,14 +540,14 @@
             hash="sha256:d8f58de67ddd01eda9e5112de57599b7d0154d71c9474821e98866c228794641"/>
   </distutils>
 
-   <autotools id="pygobject3" autogenargs="--with-python=python2">
+   <autotools id="python2-gobject" autogenargs="--with-python=python2">
     <branch version="3.25.1" module="pygobject/3.25/pygobject-${version}.tar.xz"
         hash="sha256:8728bb27078f7ee45c431ccbc237a58fb6d6eb1b7a0668bbe29eb107267bd736"/>
     <dependencies>
-      <dep package="py2cairo"/>
+      <dep package="python2-cairo"/>
       <dep package="gobject-introspection"/>
-      <dep package="glib"/>
-      <dep package="python"/>
+      <dep package="glib2"/>
+      <dep package="python2"/>
     </dependencies>
   </autotools>
 
@@ -719,27 +718,27 @@
     </dependencies>
   </distutils>
 
-  <autotools id="gst-plugins-base-1.0" autogenargs="--disable-tests --disable-x --disable-xvideo --disable-gtk-doc" supports-non-srcdir-builds="no"
+  <autotools id="gst-plugins-base" autogenargs="--disable-tests --disable-x --disable-xvideo --disable-gtk-doc" supports-non-srcdir-builds="no"
     makeargs="ERROR_CFLAGS=" autogen-sh="configure">
     <branch repo="gstreamer" module="gst-plugins-base/gst-plugins-base-${version}.tar.xz"
             version="1.12.1" hash="sha256:0cce9fadb574a840b3c9d31b69faf57aad6c5543c3b134a7b935de866c9e0465"/>
     <dependencies>
-      <dep package="gstreamer-1.0"/>
-      <dep package="liborc"/>
+      <dep package="gstreamer"/>
+      <dep package="orc"/>
       <dep package="libogg"/>
       <dep package="libvorbis"/>
-      <dep package="libopus"/>
+      <dep package="opus"/>
     </dependencies>
   </autotools>
 
-  <autotools id="gst-plugins-good-1.0" autogenargs="-- --disable-tests --disable-x --disable-xvideo --disable-osx-video --disable-gtk-doc" supports-non-srcdir-builds="no">
+  <autotools id="gst-plugins-good" autogenargs="-- --disable-tests --disable-x --disable-xvideo --disable-osx-video --disable-gtk-doc" supports-non-srcdir-builds="no">
     <branch repo="gstreamer" module="gst-plugins-good/gst-plugins-good-${version}.tar.xz"
             version="1.12.1" hash="sha256:121e8e46a7f0e622f09ec9be012607b89d737dd72d48b0f2f0680821ae2cf54b"/>
     <dependencies>
-      <dep package="gstreamer-1.0"/>
-      <dep package="gst-plugins-base-1.0"/>
-      <dep package="libspeex"/>
-      <dep package="libflac"/>
+      <dep package="gstreamer"/>
+      <dep package="gst-plugins-base"/>
+      <dep package="speex"/>
+      <dep package="flac"/>
       <dep package="libsoup"/>
       <dep package="wavpack"/>
     </dependencies>
@@ -752,7 +751,7 @@
     </branch>
   </autotools>
 
-  <autotools id="gst-plugins-bad-1.0" supports-non-srcdir-builds="no"
+  <autotools id="gst-plugins-bad" supports-non-srcdir-builds="no"
              autogenargs="HAVE_CXX=yes
     --disable-accurip
     --disable-adpcmdec
@@ -827,10 +826,10 @@
             module="gst-plugins-bad/gst-plugins-bad-${version}.tar.xz"
             hash="sha256:7def8049d1c44e50199023159dfada60af58fd503ef58a020b79044bda705b97"/>
     <dependencies>
-      <dep package="gstreamer-1.0"/>
-      <dep package="gst-plugins-base-1.0"/>
+      <dep package="gstreamer"/>
+      <dep package="gst-plugins-base"/>
       <dep package="faad2"/>
-      <dep package="bs2b"/>
+      <dep package="libbs2b"/>
       <dep package="chromaprint"/>
       <dep package="soundtouch"/>
       <dep package="libgme"/>
@@ -856,24 +855,24 @@
         </branch>
   </autotools>
 
-  <autotools id="gst-plugins-ugly-1.0" autogenargs="--disable-tests --disable-gtk-doc" supports-non-srcdir-builds="no"
+  <autotools id="gst-plugins-ugly" autogenargs="--disable-tests --disable-gtk-doc" supports-non-srcdir-builds="no"
     makeargs="ERROR_CFLAGS=">
     <branch repo="gstreamer" module="gst-plugins-ugly/gst-plugins-ugly-${version}.tar.xz"
             version="1.10.4" hash="sha256:6386c77ca8459cba431ed0b63da780c7062c7cc48055d222024d8eaf198ffa59"/>
     <dependencies>
-      <dep package="gstreamer-1.0"/>
+      <dep package="gstreamer"/>
       <dep package="gst-plugins-base-1.0"/>
-      <dep package="libmpg123"/>
+      <dep package="mpg123"/>
     </dependencies>
   </autotools>
 
-  <autotools id="gstreamer-1.0" autogenargs="--disable-tests --disable-gtk-doc" supports-non-srcdir-builds="no"
+  <autotools id="gstreamer" autogenargs="--disable-tests --disable-gtk-doc" supports-non-srcdir-builds="no"
     makeargs="ERROR_CFLAGS=">
     <branch repo="gstreamer" module="gstreamer/gstreamer-${version}.tar.xz"
             version="1.12.1" hash="sha256:9044b9d8b3ff44457fa9e36faa59c56684b587b34dee449bfe15ec0c32a3a6d2">
     </branch>
     <dependencies>
-      <dep package="glib"/>
+      <dep package="glib2"/>
       <dep package="gobject-introspection"/>
       <dep package="bison"/>
     </dependencies>
@@ -889,7 +888,7 @@
         repo="xiph" version="1.3.5" hash="sha256:54f94a9527ff0a88477be0a71c0bab09a4c3febe0ed878b24824906cd4b0e1d1"/>
   </autotools>
 
-  <autotools id="libspeex" autogen-sh="configure">
+  <autotools id="speex" autogen-sh="configure">
     <branch module="speex/speex-1.2.0.tar.gz"
         repo="xiph" version="1.2.0" hash="sha256:eaae8af0ac742dc7d542c9439ac72f1f385ce838392dc849cae4536af9210094"/>
     <dependencies>
@@ -897,13 +896,13 @@
     </dependencies>
   </autotools>
 
-  <autotools id="libmpg123"  autogen-sh="configure">
+  <autotools id="mpg123"  autogen-sh="configure">
       <branch module="mpg123-1.24.0.tar.bz2"
           repo="mpg123" version="1.24.0" hash="sha256:55fb169a7711938f5df0497d1ffe28419fbef50011dc01d00b216379e6a2256c">
       </branch>
   </autotools>
 
-  <autotools id="libflac"  autogen-sh="autoreconf" autogenargs="--disable-silent-rules --disable-xmms-plugin" makeargs="OBJ_FORMAT=macho">
+  <autotools id="flac"  autogen-sh="autoreconf" autogenargs="--disable-silent-rules --disable-xmms-plugin" makeargs="OBJ_FORMAT=macho">
     <branch module="flac/flac-1.3.1.tar.xz"
         repo="xiph" version="1.3.1" hash="sha256:4773c0099dba767d963fd92143263be338c48702172e8754b9bc5103efe1c56c"/>
     <dependencies>
@@ -919,7 +918,7 @@
     </branch>
   </autotools>
 
-  <autotools id="bs2b" autogen-sh="autoreconf"
+  <autotools id="libbs2b" autogen-sh="autoreconf"
              autogenargs="">
     <branch repo="sourceforge" version="3.1.0"
             module="bs2b/libbs2b/3.1.0/libbs2b-3.1.0.tar.gz">
@@ -927,7 +926,7 @@
     </branch>
   </autotools>
 
-  <autotools id="libopus" autogen-sh="configure" autogenargs="--disable-doc">
+  <autotools id="opus" autogen-sh="configure" autogenargs="--disable-doc">
     <branch module="opus/opus-1.1.4.tar.gz"
         repo="xiph" version="1.1.4" hash="sha256:9122b6b380081dd2665189f97bfd777f04f92dc3ab6698eea1dbb27ad59d8692"/>
   </autotools>
@@ -936,7 +935,7 @@
     <branch repo="ftp.gnome.org" module="libsoup/2.58/libsoup-${version}.tar.xz"
             version="2.58.1" hash="sha256:62c669f557de745b7b20ba9d5b74d839c95e4c9cea1a5ab7f3da5531a1aeefb9" />
     <dependencies>
-      <dep package="glib"/>
+      <dep package="glib2"/>
       <dep package="glib-networking"/>
       <dep package="gobject-introspection"/>
       <dep package="sqlite"/>
@@ -983,7 +982,7 @@
         repo="xmlsoft.org"
         hash="sha256:ffb911191e509b966deb55de705387f14156e1a56b21824357cdf0053233633c"/>
     <dependencies>
-      <dep package="python" />
+      <dep package="python2" />
     </dependencies>
   </autotools>
 
@@ -996,15 +995,15 @@
     </dependencies>
   </autotools>
 
-  <autotools id="gtk-mac-integration-python" autogen-sh="configure"
+  <autotools id="gtk-mac-integration" autogen-sh="configure"
              autogenargs="--enable-python">
     <branch module="gtk-mac-integration/2.0/gtk-mac-integration-2.0.8.tar.xz"
             version="2.0.8"
             hash="sha256:74fce9dbc5efe4e3d07a20b24796be1b1d6c3ac10a0ee6b1f1d685c809071b79">
     </branch>
     <dependencies>
-        <dep package="gtk+-3.0"/>
-        <dep package="pygobject3"/>
+        <dep package="gtk3"/>
+        <dep package="python2-gobject"/>
     </dependencies>
   </autotools>
 
