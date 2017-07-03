@@ -118,7 +118,16 @@ def get_user_dir():
     if os.name == "nt":
         USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
     else:
-        USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
+        if 'XDG_CONFIG_DIR' in environ:
+            USERDIR = os.path.join(environ['XDG_CONFIG_HOME'], "quodlibet")
+        else:
+            USERDIR = os.path.join(os.path.expanduser("~"), ".config/quodlibet")
+
+        if not os.path.exists(USERDIR):
+            tmp = os.path.join(os.path.expanduser("~"), ".quodlibet")
+            if os.path.exists(tmp):
+                USERDIR = tmp
+
 
     if 'QUODLIBET_USERDIR' in environ:
         USERDIR = environ['QUODLIBET_USERDIR']
