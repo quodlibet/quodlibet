@@ -777,6 +777,14 @@ class TNormalizePath(TestCase):
         finally:
             os.rmdir(name)
 
+    def test_types(self):
+        from quodlibet.util.path import normalize_path
+
+        assert isinstance(normalize_path(fsnative(u"foo"), False), fsnative)
+        assert isinstance(normalize_path("foo", False), fsnative)
+        assert isinstance(normalize_path(fsnative(u"foo"), True), fsnative)
+        assert isinstance(normalize_path("foo", True), fsnative)
+
     def test_canonicalise(self):
         from quodlibet.util.path import normalize_path as norm
 

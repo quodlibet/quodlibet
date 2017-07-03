@@ -15,7 +15,7 @@ import codecs
 import shlex
 
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
-    fsn2text
+    fsn2text, path2fsn
 
 from quodlibet.compat import PY2, urlparse, text_type, quote, unquote, PY3
 from . import windows
@@ -315,14 +315,18 @@ def strip_win32_incompat_from_path(string):
 
 def _normalize_darwin_path(filename, canonicalise=False):
 
+    filename = path2fsn(filename)
+
     if canonicalise:
         filename = os.path.realpath(filename)
     filename = os.path.normpath(filename)
 
-    decoded = filename.decode("utf-8", "quodlibet-osx-path-decode")
+    data = fsn2bytes(filename, "utf-8")
+    decoded = data.decode("utf-8", "quodlibet-osx-path-decode")
 
     try:
-        return NSString.fileSystemRepresentation(decoded)
+        return bytes2fsn(
+            NSString.fileSystemRepresentation(decoded), "utf-8")
     except ValueError:
         return filename
 
@@ -332,6 +336,7 @@ def _normalize_path(filename, canonicalise=False):
     If `canonicalise` is True, dereference symlinks etc
     by calling `os.path.realpath`
     """
+    filename = path2fsn(filename)
     if canonicalise:
         filename = os.path.realpath(filename)
     filename = os.path.normpath(filename)
