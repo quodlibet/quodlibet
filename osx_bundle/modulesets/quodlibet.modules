@@ -10,14 +10,12 @@
       href="https://github.com/"/>
   <repository type="tarball" name="sourceforge"
           href="http://downloads.sourceforge.net/sourceforge/"/>
-  <repository type="tarball" name="pypi"
-              href="http://pypi.python.org/packages/"/>
+  <repository type="tarball" name="pypi.org"
+              href="https://pypi.org/packages/source/"/>
   <repository type="tarball" name="cairographics"
               href="http://cairographics.org/releases/"/>
   <repository type='tarball' name='ftp.gnu.org' href="ftp://ftp.gnu.org/gnu/"/>
   <repository type='tarball' name='ftp.gnupg.org' href="ftp://ftp.gnupg.org/" />
-  <repository type="tarball" name="mutagen"
-              href="https://bitbucket.org/lazka/mutagen/downloads/"/>
   <repository type="tarball" name="chromaprint"
               href="https://bitbucket.org/acoustid/chromaprint/downloads/"/>
   <repository type="tarball" name="libgme"
@@ -26,6 +24,8 @@
               href="http://www.surina.net/soundtouch/"/>
   <repository type="tarball" name="xiph"
           href="http://downloads.xiph.org/releases/"/>
+  <repository type="tarball" name="mozilla"
+          href="https://archive.mozilla.org/pub/"/>
   <repository type="tarball" name="ftp.gnutls.org"
           href="ftp://ftp.gnutls.org/"/>
   <repository type="tarball" name="gstreamer"
@@ -47,8 +47,6 @@
               href="http://www.freedesktop.org/software/harfbuzz/release/"/>
   <repository type="tarball" name="icon-theme"
           href="http://icon-theme.freedesktop.org/releases/"/>
-  <repository type="tarball" name="jpeg"
-          href="http://www.ijg.org/files/"/>
   <repository type="tarball" name="xmlsoft.org"
           href="ftp://xmlsoft.org/libxml2/"/>
   <repository type="tarball" name="pkgconfig"
@@ -70,64 +68,92 @@
               href="http://launchpad.net/intltool/trunk/"/>
   <repository type="tarball" name="tango.freedesktop.org"
               href="http://tango.freedesktop.org/releases/"/>
+  <repository type="tarball" name="nasm"
+              href="http://www.nasm.us/pub/nasm/releasebuilds/"/>
 
   <metamodule id="meta-bootstrap">
     <dependencies>
-        <dep package="cmake"/>
-        <dep package="automake"/>
-        <dep package="intltool"/>
-        <dep package="pkg-config"/>
-        <dep package="libtool"/>
+      <dep package="automake"/>
+      <dep package="cmake"/>
+      <dep package="intltool"/>
+      <dep package="libtool"/>
+      <dep package="pkg-config"/>
     </dependencies>
   </metamodule>
 
   <metamodule id="quodlibet">
     <dependencies>
-      <dep package="gstreamer"/>
+      <dep package="adwaita-icon-theme"/>
+      <dep package="dmgbuild"/>
+      <dep package="gst-libav"/>
+      <dep package="gst-plugins-bad"/>
       <dep package="gst-plugins-base"/>
       <dep package="gst-plugins-good"/>
       <dep package="gst-plugins-ugly"/>
-      <dep package="gst-plugins-bad"/>
-      <dep package="gst-libav"/>
-      <dep package="mutagen" />
-      <dep package="feedparser" />
-      <dep package="musicbrainzngs" />
+      <dep package="gstreamer"/>
+      <dep package="gtk-mac-integration"/>
       <dep package="gtk3"/>
       <dep package="python2-cairo"/>
+      <dep package="python2-certifi"/>
+      <dep package="python2-faulthandler"/>
+      <dep package="python2-feedparser"/>
+      <dep package="python2-futures"/>
       <dep package="python2-gobject"/>
-      <dep package="gtk-mac-integration"/>
-      <dep package="pyobjc"/>
-      <dep package="certifi"/>
-      <dep package="pytest"/>
-      <dep package="dmgbuild"/>
-      <dep package="futures"/>
-      <dep package="pycodestyle"/>
-      <dep package="pyflakes"/>
-      <dep package="faulthandler"/>
+      <dep package="python2-musicbrainzngs"/>
+      <dep package="python2-mutagen"/>
+      <dep package="python2-pycodestyle"/>
+      <dep package="python2-pyflakes"/>
+      <dep package="python2-pyobjc"/>
+      <dep package="python2-pytest"/>
+    </dependencies>
+  </metamodule>
+
+  <metamodule id="quodlibet-py3">
+    <dependencies>
       <dep package="adwaita-icon-theme"/>
+      <dep package="dmgbuild"/>
+      <dep package="gst-libav"/>
+      <dep package="gst-plugins-bad"/>
+      <dep package="gst-plugins-base"/>
+      <dep package="gst-plugins-good"/>
+      <dep package="gst-plugins-ugly"/>
+      <dep package="gstreamer"/>
+      <dep package="gtk-mac-integration"/>
+      <dep package="gtk3"/>
+      <dep package="python-cairo"/>
+      <dep package="python-certifi"/>
+      <dep package="python-feedparser"/>
+      <dep package="python-gobject"/>
+      <dep package="python-musicbrainzngs"/>
+      <dep package="python-mutagen"/>
+      <dep package="python-pycodestyle"/>
+      <dep package="python-pyflakes"/>
+      <dep package="python-pyobjc"/>
+      <dep package="python-pytest"/>
     </dependencies>
   </metamodule>
 
   <autotools id="cmake" autogen-sh="bootstrap"
              autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s">
-    <branch repo="cmake" module="v3.2/cmake-3.2.1.tar.gz" version="3.2.1">
-      <patch file="patches/cmake-libnetwork.patch" strip="1"/>
-    </branch>
+    <branch repo="cmake" module="v3.8/cmake-${version}.tar.gz" version="3.8.2"/>
   </autotools>
 
   <autotools id="pkg-config" autogen-sh="configure"
              autogenargs="--with-internal-glib">
     <branch repo="pkgconfig"
-            module="pkg-config-0.28.tar.gz" version="0.28"/>
+            module="pkg-config-${version}.tar.gz" version="0.29.2"
+            hash="sha256:6fc69c01688c9458a57eb9a1664c9aba372ccda420a02bf4429fe610e7e7d591"/>
   </autotools>
 
   <autotools id="m4" autogen-sh="configure" bootstrap="true">
     <branch repo="ftp.gnu.org"
-            module="m4/m4-1.4.17.tar.xz" version="1.4.17"/>
+            module="m4/m4-${version}.tar.xz" version="1.4.18"
+            hash="sha256:f2c1e86ca0a404ff281631bdc8377638992744b175afb806e25871a24a934e07"/>
   </autotools>
 
   <autotools id="xz" autogen-sh="configure" bootstrap="true">
-    <branch repo="tukaani.org" module="xz/xz-5.2.1.tar.bz2" version="5.2.1"/>
+    <branch repo="tukaani.org" module="xz/xz-${version}.tar.bz2" version="5.2.3"
+            hash="sha256:fd9ca16de1052aac899ad3495ad20dfa906c27b4a5070102a2ec35ca3a4740c1"/>
   </autotools>
 
   <autotools id="autoconf" autogen-sh="configure" bootstrap="true">
@@ -158,7 +184,7 @@
             version="0.51.0"
             hash="md5:12e517cac2b57a0121cda351570f1e63"/>
     <dependencies>
-        <dep package="gettext-tools"/>
+        <dep package="gettext"/>
     </dependencies>
   </autotools>
 
@@ -169,8 +195,9 @@
   </autotools>
 
   <autotools id="readline" autogen-sh="configure">
-    <branch repo="ftp.gnu.org" module="readline/readline-6.3.tar.gz"
-      version="6.3">
+    <branch repo="ftp.gnu.org" module="readline/readline-${version}.tar.gz"
+      version="7.0"
+      hash="sha256:750d437185286f40a369e1e4f4764eda932b9459b5ec9a731628393dd3d32334">
     </branch>
   </autotools>
 
@@ -178,7 +205,7 @@
     <branch module="itstool/itstool-2.0.2.tar.bz2" version="2.0.2"
             repo="itstool"/>
     <dependencies>
-      <dep package="libxml2-python"/>
+      <dep package="libxml2-python2"/>
     </dependencies>
   </autotools>
 
@@ -187,11 +214,6 @@
     <branch repo="sourceforge" version="1.2.11"
             module="libpng/zlib-${version}.tar.xz"
             hash="sha256:4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066"/>
-  </autotools>
-
-  <autotools id="libpng" autogenargs="--enable-shared" autogen-sh="configure">
-    <branch version="1.6.17" module="libpng/libpng-1.6.17.tar.xz"
-            repo="sourceforge" md5sum="430a9b76b78533235cd4b9b26ce75c7e"/>
   </autotools>
 
   <autotools id="libffi" autogenargs="--disable-builddir"
@@ -210,27 +232,29 @@
 
   <autotools id="cairo"  autogen-sh="configure"
              autogenargs="--enable-pdf --enable-quartz --disable-xlib --without-x">
-    <branch module="cairo-${version}.tar.xz"  version="1.14.8"
+    <branch module="cairo-${version}.tar.xz"  version="1.14.10"
             repo="cairographics"
-            hash="sha256:d1f2d98ae9a4111564f6de4e013d639cf77155baf2556582295a0f00a9bc5e20">
+            hash="sha256:7e87878658f2c9951a14fc64114d4958c0e65ac47530b8ac3078b2ce41b66a09">
     </branch>
     <dependencies>
       <dep package="libpng"/>
       <dep package="pixman"/>
       <dep package="freetype-no-harfbuzz"/>
       <dep package="fontconfig"/>
+      <dep package="gettext"/>
+      <dep package="glib2"/>
     </dependencies>
   </autotools>
 
   <autotools id="libpng" autogenargs="--enable-shared" autogen-sh="configure">
-    <branch version="1.6.29" module="libpng/libpng-1.6.29.tar.xz"
+    <branch version="1.6.30" module="libpng/libpng-${version}.tar.xz"
             repo="sourceforge"
-            hash="sha256:4245b684e8fe829ebb76186327bb37ce5a639938b219882b53d64bd3cfc5f239"/>
+            hash="sha256:267c332ffff70cc599d3929207869f698798f1df143aa5f9597b007c14353666"/>
   </autotools>
 
   <autotools id="librsvg" autogenargs="--disable-Bsymbolic">
-    <branch module="librsvg/2.40/librsvg-2.40.16.tar.xz" version="2.40.16"
-        hash="sha256:d48bcf6b03fa98f07df10332fb49d8c010786ddca6ab34cbba217684f533ff2e"/>
+    <branch module="librsvg/2.40/librsvg-${version}.tar.xz" version="2.40.17"
+        hash="sha256:e6f6c5cbecc405bb945c7cd15061276035ae3173bbb3bb25e8a916779c7f69cc"/>
     <dependencies>
       <dep package="libcroco"/>
       <dep package="freetype"/>
@@ -268,20 +292,32 @@
             hash="sha256:9cc45ac3318c31212ea2d8cb99e64020732393ee7630fa6c1810af5f987033cc"/>
   </autotools>
 
-  <autotools id="libjpeg" autogen-sh="configure">
-    <branch module="jpegsrc.v9b.tar.gz" version="9b"
-            repo="jpeg"
-            checkoutdir="jpeg-9b"
-            hash="sha256:240fd398da741669bf3c90366f58452ea59041cacc741a489b99f2f6a0bad052">
+  <autotools id="nasm" autogen-sh="configure"
+             makeinstallargs="INSTALLROOT=$JHBUILD_PREFIX/_jhbuild/root-nasm install">
+    <branch module="${version}/nasm-${version}.tar.xz" version="2.13.01"
+            repo="nasm"
+            checkoutdir="nasm-${version}"
+            hash="sha256:aa0213008f0433ecbe07bb628506a5c4be8079be20fc3532a5031fd639db9a5e">
     </branch>
+  </autotools>
+
+  <autotools id="libjpeg-turbo" autogen-sh="configure">
+    <branch module="libjpeg-turbo/${version}/libjpeg-turbo-${version}.tar.gz" version="1.5.1"
+            repo="sourceforge"
+            checkoutdir="libjpeg-turbo-${version}"
+            hash="sha256:41429d3d253017433f66e3d472b8c7d998491d2f41caa7306b8d9a6f2a2c666c">
+    </branch>
+    <dependencies>
+      <dep package="nasm"/>
+    </dependencies>
   </autotools>
 
   <autotools id="freetype-no-harfbuzz" autogen-sh="configure"
              skip-autogen="never"
              autogenargs="--without-bzip2 --without-harfbuzz">
-    <branch module="freetype/freetype-2.7.1.tar.gz" version="2.7.1"
+    <branch module="freetype/freetype-${version}.tar.gz" version="2.8"
             repo="sourceforge"
-            hash="sha256:162ef25aa64480b1189cdb261228e6c5c44f212aac4b4621e28cf2157efb59f5">
+            hash="sha256:33a28fabac471891d0523033e99c0005b95e5618dc8ffa7fa47f9dadcacb1c9b">
     </branch>
     <dependencies>
       <dep package="zlib"/>
@@ -290,7 +326,7 @@
 
   <autotools id="harfbuzz" autogen-sh="configure"
              autogenargs="--with-coretext --with-freetype --with-cairo --with-glib">
-    <branch repo="harfbuzz" module="harfbuzz-1.4.6.tar.bz2" version="1.4.6"
+    <branch repo="harfbuzz" module="harfbuzz-${version}.tar.bz2" version="1.4.6"
             hash="sha256:21a78b81cd20cbffdb04b59ac7edfb410e42141869f637ae1d6778e74928d293">
     </branch>
     <dependencies>
@@ -302,29 +338,30 @@
   </autotools>
 
   <autotools id="xorg-util-macros">
-    <branch repo="freedesktop" version="1.19.0"
-            module="xorg/individual/util/util-macros-1.19.0.tar.bz2"/>
+    <branch repo="freedesktop" version="1.19.1"
+            module="xorg/individual/util/util-macros-${version}.tar.bz2"
+            hash="sha256:18d459400558f4ea99527bc9786c033965a3db45bf4c6a32eefdc07aa9e306a6"/>
   </autotools>
 
   <autotools id="libepoxy" autogen-sh="configure">
-    <branch repo="github-tar" version="1.4.2"
+    <branch repo="github-tar" version="1.4.3"
             module="anholt/libepoxy/releases/download/${version}/libepoxy-${version}.tar.xz"
-            hash="sha256:bea6fdec3d10939954495da898d872ee836b75c35699074cbf02a64fcb80d5b3"/>
+            hash="sha256:0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6"/>
     <dependencies>
       <dep package="xorg-util-macros"/>
     </dependencies>
   </autotools>
 
   <autotools id="orc" autogen-sh="configure">
-    <branch repo="gstreamer" module="orc/orc-0.4.26.tar.xz" version="0.4.26"
+    <branch repo="gstreamer" module="orc/orc-${version}.tar.xz" version="0.4.26"
             hash="sha256:7d52fa80ef84988359c3434e1eea302d077a08987abdde6905678ebcad4fa649"/>
   </autotools>
 
   <autotools id="fontconfig" autogen-sh="autoreconf"
          autogenargs="--disable-docs">
-    <branch repo="fontconfig" version="2.12.1"
-            module="fontconfig-2.12.1.tar.bz2"
-            hash="sha256:b449a3e10c47e1d1c7a6ec6e2016cca73d3bd68fbbd4f0ae5cc6b573f7d6c7f3"/>
+    <branch repo="fontconfig" version="2.12.3"
+            module="fontconfig-${version}.tar.bz2"
+            hash="sha256:bd24bf6602731a11295c025909d918180e98385625182d3b999fd6f1ab34f8bd"/>
     <dependencies>
       <dep package="freetype-no-harfbuzz"/>
     </dependencies>
@@ -332,13 +369,14 @@
 
   <autotools id="freetype" autogen-sh="configure" skip-autogen="never"
          autogenargs="--without-bzip2 --with-harfbuzz">
-    <branch module="freetype/freetype-2.7.1.tar.gz" version="2.7.1"
+    <branch module="freetype/freetype-${version}.tar.gz" version="2.8"
             repo="sourceforge"
-            hash="sha256:162ef25aa64480b1189cdb261228e6c5c44f212aac4b4621e28cf2157efb59f5">
+            hash="sha256:33a28fabac471891d0523033e99c0005b95e5618dc8ffa7fa47f9dadcacb1c9b">
     </branch>
     <dependencies>
       <dep package="harfbuzz"/>
       <dep package="zlib"/>
+      <dep package="freetype-no-harfbuzz"/>
     </dependencies>
   </autotools>
 
@@ -346,6 +384,9 @@
     <branch repo="ftp.gnu.org" module="bison/bison-3.0.4.tar.xz"
             version="3.0.4"
             hash="sha256:a72428c7917bdf9fa93cb8181c971b6e22834125848cf1d03ce10b1bb0716fe1"/>
+    <dependencies>
+      <dep package="gettext"/>
+    </dependencies>
   </autotools>
 
   <autotools id="adwaita-icon-theme" autogen-sh="configure">
@@ -359,42 +400,51 @@
   </autotools>
 
   <!-- INSTALL_PREFIX because it doesn't ue DESTDIR and LIBS="" to skip installing static libs -->
-  <autotools id="openssl-1.0" autogen-sh="Configure" autogenargs="shared zlib-dynamic"
+  <autotools id="openssl" autogen-sh="Configure" autogenargs="shared zlib-dynamic"
              autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --openssldir=%(prefix)s/etc/ssl %(autogenargs)s"
              makeinstallargs="INSTALL_PREFIX=$JHBUILD_PREFIX/_jhbuild/root-openssl LIBS= install_sw"
-             supports-parallel-builds="no">
-    <branch module="openssl-${version}.tar.gz" version="1.0.2k" repo="openssl"
-    hash="sha256:6b3977c61f2aedf0f96367dcfb5c6e578cf37e7b8d913b4ecb6643c3cb88d8c0"/>
+             supports-parallel-builds="no" >
+    <branch module="openssl-1.0.2l.tar.gz" version="1.0.2.l" repo="openssl"
+    hash="sha256:ce07195b659e75f4e1db43552860070061f156a98bb37b672b101ba6e3ddf30c"/>
   </autotools>
 
   <autotools id="python2" autogenargs="--enable-shared"
          autogen-sh="configure" supports-non-srcdir-builds="no">
     <branch repo="python"
-        module="2.7.12/Python-2.7.12.tar.xz" version="2.7.12"
-        hash="sha256:d7837121dd5652a05fef807c361909d255d173280c4e1a4ded94d73d80a1f978">
+        module="${version}/Python-${version}.tar.xz" version="2.7.13"
+        hash="sha256:35d543986882f78261f97787fd3e06274bfa6df29fac9b4a94f73930ff98f731">
       <patch file="patches/python2-test_grammar.py-typo.patch" strip="1"/>
-      <patch file="patches/python2-linkflags.patch" strip="1"/>"/>
-      <patch file="patches/python2-setup.py-disabled_modules.diff" strip="1"/>"/>
-      <patch file="patches/python2-setup.py-remove-hardcoded.diff" strip="1"/>"/>
+      <patch file="patches/python2-linkflags.patch" strip="1"/>
+      <patch file="patches/python2-setup.py-disabled_modules.diff" strip="1"/>
+      <patch file="patches/python2-setup.py-remove-hardcoded.diff" strip="1"/>
     </branch>
     <dependencies>
-      <dep package="gettext-runtime"/>
+      <dep package="gettext"/>
       <dep package="readline"/>
-      <dep package="openssl-1.0"/>
+      <dep package="openssl"/>
       <dep package="libxml2"/>
     </dependencies>
   </autotools>
 
-  <autotools id="gettext-tools" autogen-sh="configure"
-             autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-glib">
-    <branch repo="ftp.gnu.org" source-subdir="gettext-tools"
-            module="gettext/gettext-0.19.7.tar.xz" version="0.19.7"/>
+  <autotools id="python" autogenargs="--enable-shared --without-ensurepip"
+         autogen-sh="configure" supports-non-srcdir-builds="no">
+    <branch repo="python"
+        module="${version}/Python-${version}.tar.xz" version="3.6.1"
+        hash="sha256:a01810ddfcec216bcdb357a84bfaafdfaa0ca42bbdaa4cb7ff74f5a9961e4041">
+    </branch>
+    <dependencies>
+      <dep package="gettext"/>
+      <dep package="readline"/>
+      <dep package="openssl"/>
+      <dep package="libxml2"/>
+    </dependencies>
   </autotools>
 
-  <autotools id="gettext-runtime" autogen-sh="configure"
-         autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp">
-    <branch repo="ftp.gnu.org" source-subdir="gettext-runtime"
-            module="gettext/gettext-0.19.7.tar.xz" version="0.19.7"/>
+  <autotools id="gettext" autogen-sh="configure"
+             autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-libxml --with-included-libcroco --with-included-glib">
+    <branch repo="ftp.gnu.org"
+            module="gettext/gettext-${version}.tar.xz" version="0.19.8.1"
+            hash="sha256:105556dbc5c3fbbc2aa0edb46d22d055748b6f5c7cd7a8d99f8e7eb84e938be4"/>
   </autotools>
 
   <autotools id="gst-libav" supports-non-srcdir-builds="no"
@@ -411,12 +461,12 @@
 
   <autotools id="glib2" autogen-sh="autoreconf"
              autogenargs="--with-pcre=internal">
-    <branch module="glib/2.52/glib-2.52.2.tar.xz"  version="2.52.2"
-            hash="sha256:f00e5d9e2a2948b1da25fcba734a6b7a40f556de8bc9f528a53f6569969ac5d0">
+    <branch module="glib/2.52/glib-${version}.tar.xz"  version="2.52.3"
+            hash="sha256:25ee7635a7c0fcd4ec91cbc3ae07c7f8f5ce621d8183511f414ded09e7e4e128">
     </branch>
     <dependencies>
         <dep package="libffi"/>
-        <dep package="gettext-runtime"/>
+        <dep package="gettext"/>
         <dep package="gtk-doc"/>
         <dep package="libffi"/>
         <dep package="zlib"/>
@@ -434,9 +484,11 @@
 
   <autotools id="gtk3" autogen-sh="autogen.sh"
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
-    <branch module="gtk+/3.22/gtk+-3.22.12.tar.xz" version="3.22.12"
-        hash="sha256:84fae0cefb6a11ee2b4e86b8ac42fe46a3d30b4ad16661d5fc51e8ae03e2a98c">
+    <branch module="gtk+/3.22/gtk+-${version}.tar.xz" version="3.22.16"
+        hash="sha256:3e0c3ad01f3c8c5c9b1cc1ae00852bd55164c8e5a9c1f90ba5e07f14f175fe2c">
+        <patch file="patches/0001-Revert-Save-Changes-Bug-781118-gtk-3.22.12-quartz-ba.patch" strip="1"/>
         <patch file="patches/0002-Revert-Replace-NSScreen-userSpaceScaleFactor-depreca.patch" strip="1"/>
+        <patch file="patches/gtk3-fix-build.patch" strip="1"/>
     </branch>
     <dependencies>
         <dep package="glib2"/>
@@ -457,17 +509,17 @@
 
   <autotools id="sqlite" autogenargs="--disable-tcl --enable-threadsafe"
          autogen-sh="configure">
-    <branch module="2016/sqlite-autoconf-3140100.tar.gz" version='3.14.1'
+    <branch module="2017/sqlite-autoconf-3190300.tar.gz" version='3.19.3'
         repo="sqlite"
-        hash="sha256:bc7182476900017becb81565ecea7775d46ab747a97281aa610f4f45881c47a6"/>
+        hash="sha256:06129c03dced9f87733a8cba408871bd60673b8f93b920ba8d815efab0a06301"/>
   </autotools>
 
   <autotools id="libtiff" autogen-sh="configure" autogenargs="--without-x">
-    <branch version="4.0.7" module="libtiff/tiff-${version}.tar.gz"
+    <branch version="4.0.8" module="libtiff/tiff-${version}.tar.gz"
         repo="libtiff"
-        hash="sha256:9f43a2cfb9589e5cecaa66e16bf87f814c945f22df7ba600d63aac4632c4f019"/>
+        hash="sha256:59d7a5a8ccd92059913f246877db95a2918e6c04fb9d43fd74e5c3390dac2910"/>
     <dependencies>
-      <dep package="libjpeg"/>
+      <dep package="libjpeg-turbo"/>
     </dependencies>
   </autotools>
 
@@ -493,8 +545,8 @@
   </autotools>
 
  <autotools id="pango"  autogen-sh="autoreconf">
-    <branch version="1.40.5" module="pango/1.40/pango-${version}.tar.xz"
-            hash="sha256:24748140456c42360b07b2c77a1a2e1216d07c056632079557cd4e815b9d01c9">
+    <branch version="1.40.6" module="pango/1.40/pango-${version}.tar.xz"
+            hash="sha256:ca152b7383a1e9f7fd74ae96023dc6770dc5043414793bfe768ff06b6759e573">
     </branch>
     <dependencies>
       <dep package="glib2"/>
@@ -505,12 +557,12 @@
   </autotools>
 
   <autotools id="gdk-pixbuf2" autogen-sh="configure">
-    <branch module="gdk-pixbuf/2.34/gdk-pixbuf-2.34.0.tar.xz" version="2.34.0"
-            hash="sha256:d55e5b383ee219bd0e23bf6ed4427d56a7db5379729a6e3e0a0e0eba9a8d8879"/>
+    <branch module="gdk-pixbuf/2.36/gdk-pixbuf-2.36.6.tar.xz" version="2.36.6"
+            hash="sha256:455eb90c09ed1b71f95f3ebfe1c904c206727e0eeb34fc94e5aaf944663a820c"/>
     <dependencies>
       <dep package="libtiff"/>
       <dep package="libpng"/>
-      <dep package="libjpeg"/>
+      <dep package="libjpeg-turbo"/>
       <dep package="gobject-introspection"/>
     </dependencies>
   </autotools>
@@ -530,15 +582,24 @@
 
   <distutils id="python2-cairo">
     <branch repo="github-tar"
-            version="1.13.1"
+            version="1.13.3"
             module="pygobject/pycairo/releases/download/v${version}/pycairo-${version}.tar.gz"
-            checkoutdir="pycairo-python2-${version}"
-            hash="sha256:d8f58de67ddd01eda9e5112de57599b7d0154d71c9474821e98866c228794641"/>
+            checkoutdir="python2-pycairo-${version}"
+            hash="sha256:2f2ae1acdc7197e4df58e458a0279de206f989972edfe06d54e99d9e5b839938"/>
+  </distutils>
+
+  <distutils id="python-cairo" python3="1">
+    <branch repo="github-tar"
+            version="1.13.3"
+            module="pygobject/pycairo/releases/download/v${version}/pycairo-${version}.tar.gz"
+            checkoutdir="python-pycairo-${version}"
+            hash="sha256:2f2ae1acdc7197e4df58e458a0279de206f989972edfe06d54e99d9e5b839938"/>
   </distutils>
 
    <autotools id="python2-gobject" autogenargs="--with-python=python2">
     <branch version="3.25.1" module="pygobject/3.25/pygobject-${version}.tar.xz"
-        hash="sha256:8728bb27078f7ee45c431ccbc237a58fb6d6eb1b7a0668bbe29eb107267bd736"/>
+            checkoutdir="python2-gobject-${version}"
+            hash="sha256:8728bb27078f7ee45c431ccbc237a58fb6d6eb1b7a0668bbe29eb107267bd736"/>
     <dependencies>
       <dep package="python2-cairo"/>
       <dep package="gobject-introspection"/>
@@ -547,170 +608,364 @@
     </dependencies>
   </autotools>
 
-  <distutils id="setuptools">
-      <branch repo="pypi" checkoutdir="setuptools-28.7.1" module="1d/04/97e37cf85972ea19364c22db34ee8192db3876a80ed5bffd6413dcdabe2d/setuptools-28.7.1.tar.gz"
-          version="28.7.1" md5sum="263e2e3858187e8ea20b4db3ff8770bb"/>
+   <autotools id="python-gobject" autogenargs="--with-python=python3">
+    <branch version="3.25.1" module="pygobject/3.25/pygobject-${version}.tar.xz"
+            checkoutdir="python-gobject-${version}"
+            hash="sha256:8728bb27078f7ee45c431ccbc237a58fb6d6eb1b7a0668bbe29eb107267bd736"/>
+    <dependencies>
+      <dep package="python-cairo"/>
+      <dep package="gobject-introspection"/>
+      <dep package="glib2"/>
+      <dep package="python"/>
+    </dependencies>
+  </autotools>
+
+  <distutils id="python2-setuptools">
+    <branch repo="pypi.org"
+            module="s/setuptools/setuptools-${version}.zip"
+            version="36.0.1"
+            checkoutdir="python2-setuptools-${version}"
+            hash="sha256:e17c4687fddd6d70a6604ac0ad25e33324cec71b5137267dd5c45e103c4b288a"/>
+    <dependencies>
+      <dep package="python2"/>
+    </dependencies>
   </distutils>
 
-  <distutils id="futures">
-      <branch repo="pypi" checkoutdir="futures-3.0.5" module="55/db/97c1ca37edab586a1ae03d6892b6633d8eaa23b23ac40c7e5bbc55423c78/futures-3.0.5.tar.gz"
-          version="3.0.5" md5sum="ced2c365e518242512d7a398b515ff95"/>
+  <distutils id="python-setuptools" python3="1">
+    <branch repo="pypi.org"
+            module="s/setuptools/setuptools-${version}.zip"
+            version="36.0.1"
+            checkoutdir="python-setuptools-${version}"
+            hash="sha256:e17c4687fddd6d70a6604ac0ad25e33324cec71b5137267dd5c45e103c4b288a"/>
     <dependencies>
-      <dep package="setuptools"/>
+      <dep package="python"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python2-futures">
+      <branch repo="pypi.org" checkoutdir="python2-futures-${version}" module="f/futures/futures-${version}.tar.gz"
+              version="3.1.1" md5sum="77f261ab86cc78efa2c5fe7be27c3ec8"/>
+    <dependencies>
+      <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
   <distutils id="dmgbuild">
-    <branch repo="pypi" checkoutdir="dmgbuild-1.1.0" module="4b/12/a97aeae9b91dbf97cde1c06587db2ad9e056cd966de61c60009b04c2f9b4/dmgbuild-1.1.0.tar.gz"
-        version="1.1.0" md5sum="bcccf26bcd1a73c57be77ff4a6301551"/>
+    <branch repo="pypi.org" checkoutdir="dmgbuild-${version}" module="d/dmgbuild/dmgbuild-${version}.tar.gz"
+            version="1.3.0" md5sum="5ea2a41f2f43e30edec0c7c2a48d95d7"/>
     <dependencies>
-      <dep package="setuptools"/>
-      <dep package="six"/>
-      <dep package="mac_alias"/>
-      <dep package="ds_store"/>
-      <dep package="pyobjc-framework-Quartz"/>
+      <dep package="python2-setuptools"/>
+      <dep package="python2-six"/>
+      <dep package="python2-mac_alias"/>
+      <dep package="python2-ds_store"/>
+      <dep package="python2-pyobjc-framework-Quartz"/>
     </dependencies>
   </distutils>
 
-  <distutils id="pycodestyle">
-    <branch repo="pypi" checkoutdir="pycodestyle-2.2.0" module="43/9f/56e824b197398582b0c1aaaa2272560bc51f395fe3e45e1dd88de4bb24dc/pycodestyle-2.2.0.tar.gz"
-        version="2.2.0" md5sum="642c31fc2a72a55a4acdf8ac46d5fb64"/>
+  <distutils id="python2-pycodestyle">
+    <branch repo="pypi.org"
+            checkoutdir="python2-pycodestyle-${version}"
+            module="p/pycodestyle/pycodestyle-${version}.tar.gz"
+            version="2.3.1"
+            hash="sha256:682256a5b318149ca0d2a9185d365d8864a768a28db66a84a2ea946bcc426766"/>
     <dependencies>
-    <dep package="setuptools"/>
+      <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="pyflakes">
-    <branch repo="pypi" checkoutdir="pyflakes-1.3.0" module="9f/48/927b1bf3e15d3dadfcfafb505177a62cdabcb78cf7eac4f31f180d5b1e26/pyflakes-1.3.0.tar.gz"
-        version="1.3.0" md5sum="d66478aaff1d003ddc7fc1759a74e1e2"/>
+  <distutils id="python-pycodestyle" python3="1">
+    <branch repo="pypi.org"
+            checkoutdir="python-pycodestyle-${version}"
+            module="p/pycodestyle/pycodestyle-${version}.tar.gz"
+            version="2.3.1"
+            hash="sha256:682256a5b318149ca0d2a9185d365d8864a768a28db66a84a2ea946bcc426766"/>
     <dependencies>
-    <dep package="setuptools"/>
+      <dep package="python-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="six">
-    <branch repo="pypi" checkoutdir="six-1.10.0" module="b3/b2/238e2590826bfdd113244a40d9d3eb26918bd798fc187e2360a8367068db/six-1.10.0.tar.gz"
-        version="1.10.0" md5sum="34eed507548117b2ab523ab14b2f8b55"/>
+  <distutils id="python2-pyflakes">
+    <branch repo="pypi.org"
+            checkoutdir="python2-pyflakes-${version}" module="p/pyflakes/pyflakes-${version}.tar.gz"
+            version="1.5.0"
+            hash="sha256:aa0d4dff45c0cc2214ba158d29280f8fa1129f3e87858ef825930845146337f4"/>
     <dependencies>
-    <dep package="setuptools"/>
+      <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="mac_alias">
-    <branch repo="pypi" checkoutdir="mac_alias-1.1.0" module="a6/f2/360810459fa97d20c45327d287c468e34930205912e7159c483359b03551/mac_alias-1.1.0.tar.gz"
-        version="1.1.0" md5sum="ad364059987b16ef10e0c1cdaf9877f1"/>
+  <distutils id="python-pyflakes" python3="1">
+    <branch repo="pypi.org"
+            checkoutdir="python-pyflakes-${version}" module="p/pyflakes/pyflakes-${version}.tar.gz"
+            version="1.5.0"
+            hash="sha256:aa0d4dff45c0cc2214ba158d29280f8fa1129f3e87858ef825930845146337f4"/>
     <dependencies>
-    <dep package="setuptools"/>
+      <dep package="python-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="biplist">
-    <branch repo="pypi" checkoutdir="biplist-1.0.1" module="c4/30/c2a6f5f082c55aaa6bd683943c8ff79270eed145597b8dc253fb97b0dc17/biplist-1.0.1.tar.gz"
-        version="1.0.1" md5sum="b461c526cb2a80ab302b4953ae950379"/>
+  <distutils id="python2-six">
+    <branch repo="pypi.org" checkoutdir="python2-six-${version}"
+            module="s/six/six-${version}.tar.gz"
+            version="1.10.0"
+            hash="sha256:105f8d68616f8248e24bf0e9372ef04d3cc10104f1980f54d57b2ce73a5ad56a"/>
     <dependencies>
-    <dep package="setuptools"/>
+      <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="py">
-    <branch repo="pypi" checkoutdir="py-1.4.31" module="f4/9a/8dfda23f36600dd701c6722316ba8a3ab4b990261f83e7d3ffc6dfedf7ef/py-1.4.31.tar.gz"
-        version="1.4.31" md5sum="5d2c63c56dc3f2115ec35c066ecd582b"/>
+  <distutils id="python2-mac_alias">
+    <branch repo="pypi.org"
+            checkoutdir="python2-mac_alias-${version}" module="m/mac_alias/mac_alias-${version}.tar.gz"
+            version="2.0.1"
+            hash="sha256:d2f974dd0972a70af6b8ff3b50ad165982bdba49ad8bcc47a58b28b9cc20ec34"/>
     <dependencies>
-    <dep package="setuptools"/>
+      <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="pytest">
-    <branch repo="pypi" checkoutdir="pytest-2.9.2" module="f0/ee/6e2522c968339dca7d9abfd5e71312abeeb5ee902e09b4daf44f07b2f907/pytest-2.9.2.tar.gz"
-        version="2.9.2" md5sum="b65c2944dfaa0efb62c0239afb424f5b"/>
+  <distutils id="python2-biplist">
+    <branch repo="pypi.org"
+            checkoutdir="python2-biplist-${version}" module="b/biplist/biplist-${version}.tar.gz"
+            version="1.0.2"
+            hash="sha256:d2f974dd0972a70af6b8ff3b50ad165982bdba49ad8bcc47a58b28b9cc20ec34"/>
     <dependencies>
-    <dep package="setuptools"/>
-    <dep package="py"/>
+      <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="ds_store">
-    <branch repo="pypi" checkoutdir="ds_store-1.0.1" module="a8/4b/4f8b1dff01bd93ea0ffbf3006818e2a34a2a2d62ec774cff734c736dc10a/ds_store-1.0.1.tar.gz"
-        version="1.0.1" md5sum="3ec322188a0304959e17cddf402ea8c9"/>
+  <distutils id="python2-py">
+    <branch repo="pypi.org"
+            checkoutdir="python2-py-${version}" module="p/py/py-${version}.tar.gz"
+            version="1.4.34"
+            hash="sha256:0f2d585d22050e90c7d293b6451c83db097df77871974d90efd5a30dc12fcde3"/>
     <dependencies>
-    <dep package="setuptools"/>
-    <dep package="six"/>
-    <dep package="biplist"/>
+      <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="certifi">
-    <branch repo="pypi" checkoutdir="certifi-2017.4.17" module="dd/0e/1e3b58c861d40a9ca2d7ea4ccf47271d4456ae4294c5998ad817bd1b4396/certifi-2017.4.17.tar.gz"
-        version="2017.4.17" md5sum="db40445044feda1437ce3ccd5fc28a57"/>
-  </distutils>
-
-  <distutils id="feedparser">
-    <branch repo="pypi" checkoutdir="feedparser-5.2.1" module="source/f/feedparser/feedparser-5.2.1.tar.bz2"
-        version="5.2.1"/>
+  <distutils id="python-py" python3="1">
+    <branch repo="pypi.org"
+            checkoutdir="python-py-${version}" module="p/py/py-${version}.tar.gz"
+            version="1.4.34"
+            hash="sha256:0f2d585d22050e90c7d293b6451c83db097df77871974d90efd5a30dc12fcde3"/>
     <dependencies>
-    <dep package="setuptools"/>
+      <dep package="python-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="mutagen">
-    <branch repo="mutagen" checkoutdir="mutagen-1.37" module="mutagen-1.37.tar.gz"
-        version="1.37" hash="sha256:539553d3f1ffd890c74f64b819750aef0316933d162c09798c9e7eaf334ae760"/>
+  <distutils id="python2-pytest">
+    <branch repo="pypi.org"
+            checkoutdir="python2-pytest-${version}"
+            module="p/pytest/pytest-${version}.tar.gz"
+            version="3.1.2"
+            hash="sha256:795ec29fbba70b22a593691ce8bcd4bdde2dc96e8099731f73c7d8bb3ce879bf"/>
     <dependencies>
-    <dep package="setuptools"/>
+      <dep package="python2-setuptools"/>
+      <dep package="python2-py"/>
     </dependencies>
   </distutils>
 
-  <distutils id="musicbrainzngs">
-    <branch repo="github-tar" checkoutdir="musicbrainzngs-0.6" module="alastair/python-musicbrainzngs/archive/v0.6.tar.gz"
-        version="0.6"/>
+  <distutils id="python-pytest" python3="1">
+    <branch repo="pypi.org"
+            checkoutdir="python-pytest-${version}"
+            module="p/pytest/pytest-${version}.tar.gz"
+            version="3.1.2"
+            hash="sha256:795ec29fbba70b22a593691ce8bcd4bdde2dc96e8099731f73c7d8bb3ce879bf"/>
     <dependencies>
-    <dep package="setuptools"/>
+      <dep package="python-setuptools"/>
+      <dep package="python-py"/>
     </dependencies>
   </distutils>
 
-  <distutils id="pyobjc-core">
-    <branch repo="pypi" checkoutdir="pyobjc-core-3.1.1" module="source/p/pyobjc-core/pyobjc-core-3.1.1.tar.gz"
-        version="3.1.1" md5sum="e071bc40a3341a97d2c91c49fc3783cb"/>
+  <distutils id="python2-ds_store">
+    <branch repo="pypi.org"
+            checkoutdir="python2-ds_store-${version}" module="d/ds_store/ds_store-${version}.tar.gz"
+            version="1.1.0"
+            hash="sha256:2381e7cec7dd4c0b7f59165377ab3f9ae039f4b12b6ed2f20f80bbf6e4b17e0f"/>
     <dependencies>
-    <dep package="setuptools"/>
+      <dep package="python2-setuptools"/>
+      <dep package="python2-six"/>
+      <dep package="python2-biplist"/>
     </dependencies>
   </distutils>
 
-  <distutils id="pyobjc-framework-Cocoa">
-    <branch repo="pypi" checkoutdir="pyobjc-framework-Cocoa-3.1.1" module="source/p/pyobjc-framework-Cocoa/pyobjc-framework-Cocoa-3.1.1.tar.gz"
-        version="3.1.1" md5sum="2832205d33d88ea53289563bd61771cf"/>
+  <distutils id="python2-certifi">
+    <branch repo="pypi.org"
+          checkoutdir="python2-certifi-${version}"
+            module="c/certifi/certifi-${version}.tar.gz"
+            version="2017.4.17"
+            hash="sha256:f7527ebf7461582ce95f7a9e03dd141ce810d40590834f4ec20cddd54234c10a"/>
+  </distutils>
+
+  <distutils id="python-certifi" python3="1">
+    <branch repo="pypi.org"
+          checkoutdir="python-certifi-${version}"
+            module="c/certifi/certifi-${version}.tar.gz"
+            version="2017.4.17"
+            hash="sha256:f7527ebf7461582ce95f7a9e03dd141ce810d40590834f4ec20cddd54234c10a"/>
+  </distutils>
+
+  <distutils id="python2-feedparser">
+    <branch repo="pypi.org" module="f/feedparser/feedparser-${version}.tar.bz2"
+            checkoutdir="python2-feedparser-${version}"
+            version="5.2.1"/>
     <dependencies>
-    <dep package="setuptools"/>
-    <dep package="pyobjc-core"/>
+      <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="pyobjc-framework-Quartz">
-    <branch repo="pypi" checkoutdir="pyobjc-framework-Quartz-3.1.1" module="source/p/pyobjc-framework-Quartz/pyobjc-framework-Quartz-3.1.1.tar.gz"
-        version="3.1.1" md5sum="fadebaecc17338bad9aa1ae45c7fae77"/>
+  <distutils id="python-feedparser" python3="1">
+    <branch repo="pypi.org" module="f/feedparser/feedparser-${version}.tar.bz2"
+            checkoutdir="python-feedparser-${version}"
+            version="5.2.1"/>
     <dependencies>
-    <dep package="setuptools"/>
-    <dep package="pyobjc-core"/>
-    <dep package="pyobjc-framework-Cocoa"/>
+      <dep package="python-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="pyobjc">
-    <branch repo="pypi" checkoutdir="pyobjc-3.1.1" module="source/p/pyobjc/pyobjc-3.1.1.tar.gz"
-        version="3.1.1" md5sum="36b8265a332c3b2f59c1fc7f23bcafa5"/>
+  <distutils id="python2-mutagen">
+    <branch repo="pypi.org" checkoutdir="python2-mutagen-${version}" module="m/mutagen/mutagen-${version}.tar.gz"
+            version="1.38" hash="sha256:23990f70ae678c7b8df3fd59e2adbefa5fe392c36da8c71d2254b21c6cd78766"/>
     <dependencies>
-    <dep package="setuptools"/>
-    <dep package="pyobjc-core"/>
-    <dep package="pyobjc-framework-Cocoa"/>
-    <dep package="pyobjc-framework-Quartz"/>
+    <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="faulthandler">
-    <branch repo="pypi" checkoutdir="faulthandler-2.4" module="30/22/d65d1357a98ef5d28e1fd316f23a307c953d459d0239807b3e4350345d18/faulthandler-2.4.tar.gz"
-        version="2.4" md5sum="110960933b0902334e8804eb4ea20750"/>
+  <distutils id="python-mutagen" python3="1">
+    <branch repo="pypi.org" checkoutdir="python-mutagen-${version}" module="m/mutagen/mutagen-${version}.tar.gz"
+            version="1.38" hash="sha256:23990f70ae678c7b8df3fd59e2adbefa5fe392c36da8c71d2254b21c6cd78766"/>
     <dependencies>
-    <dep package="setuptools"/>
+      <dep package="python-setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python2-musicbrainzngs">
+    <branch repo="github-tar"
+            checkoutdir="python2-musicbrainzngs-${version}"
+            module="alastair/python-musicbrainzngs/archive/v${version}.tar.gz"
+            version="0.6"/>
+    <dependencies>
+      <dep package="python2-setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python-musicbrainzngs" python3="1">
+    <branch repo="github-tar"
+            checkoutdir="python-musicbrainzngs-${version}"
+            module="alastair/python-musicbrainzngs/archive/v${version}.tar.gz"
+            version="0.6"/>
+    <dependencies>
+      <dep package="python-setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python2-pyobjc-core">
+    <branch repo="pypi.org"
+            checkoutdir="python2-pyobjc-core-${version}"
+            module="p/pyobjc-core/pyobjc-core-${version}.tar.gz"
+            version="3.2.1"
+            hash="sha256:848163845921e5a61e069ea42bab06ac73278f5a09b4e9cedd6a3eac6712ff2c"/>
+    <dependencies>
+      <dep package="python2-setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python-pyobjc-core" python3="1">
+    <branch repo="pypi.org"
+            checkoutdir="python-pyobjc-core-${version}"
+            module="p/pyobjc-core/pyobjc-core-${version}.tar.gz"
+            version="3.2.1"
+            hash="sha256:848163845921e5a61e069ea42bab06ac73278f5a09b4e9cedd6a3eac6712ff2c"/>
+    <dependencies>
+      <dep package="python-setuptools"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python2-pyobjc-framework-Cocoa">
+    <branch repo="pypi.org"
+            checkoutdir="python2-pyobjc-framework-Cocoa-${version}"
+            module="p/pyobjc-framework-Cocoa/pyobjc-framework-Cocoa-${version}.tar.gz"
+            version="3.2.1"
+            hash="sha256:8215a528b552588f0024df03ef1c5f8edfa245301888c384f5b8c231f4c89431"/>
+    <dependencies>
+      <dep package="python2-setuptools"/>
+      <dep package="python2-pyobjc-core"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python-pyobjc-framework-Cocoa" python3="1">
+    <branch repo="pypi.org"
+            checkoutdir="python-pyobjc-framework-Cocoa-${version}"
+            module="p/pyobjc-framework-Cocoa/pyobjc-framework-Cocoa-${version}.tar.gz"
+            version="3.2.1"
+            hash="sha256:8215a528b552588f0024df03ef1c5f8edfa245301888c384f5b8c231f4c89431"/>
+    <dependencies>
+      <dep package="python-setuptools"/>
+      <dep package="python-pyobjc-core"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python2-pyobjc-framework-Quartz">
+    <branch repo="pypi.org"
+            checkoutdir="python2-pyobjc-framework-Quartz-${version}"
+            module="p/pyobjc-framework-Quartz/pyobjc-framework-Quartz-${version}.tar.gz"
+            version="3.2.1"
+            hash="sha256:328f6c3f2431be139fa54c166190d3cd4e1bae78243c7d0ace9a7be3fa3088ad"/>
+    <dependencies>
+      <dep package="python2-setuptools"/>
+      <dep package="python2-pyobjc-core"/>
+      <dep package="python2-pyobjc-framework-Cocoa"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python-pyobjc-framework-Quartz" python3="1">
+    <branch repo="pypi.org"
+            checkoutdir="python-pyobjc-framework-Quartz-${version}"
+            module="p/pyobjc-framework-Quartz/pyobjc-framework-Quartz-${version}.tar.gz"
+            version="3.2.1"
+            hash="sha256:328f6c3f2431be139fa54c166190d3cd4e1bae78243c7d0ace9a7be3fa3088ad"/>
+    <dependencies>
+      <dep package="python-setuptools"/>
+      <dep package="python-pyobjc-core"/>
+      <dep package="python-pyobjc-framework-Cocoa"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python2-pyobjc">
+    <branch repo="pypi.org"
+            checkoutdir="python2-pyobjc-${version}"
+            module="p/pyobjc/pyobjc-${version}.tar.gz"
+            version="3.2.1"
+            hash="sha256:6cf373bf68f4f5e2cbc0ba7bc073e5f1b879f7454dcdcb8b07105512c37804ac"/>
+    <dependencies>
+      <dep package="python2-setuptools"/>
+      <dep package="python2-pyobjc-core"/>
+      <dep package="python2-pyobjc-framework-Cocoa"/>
+      <dep package="python2-pyobjc-framework-Quartz"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python-pyobjc" python3="1">
+    <branch repo="pypi.org"
+            checkoutdir="python-pyobjc-${version}"
+            module="p/pyobjc/pyobjc-${version}.tar.gz"
+            version="3.2.1"
+            hash="sha256:6cf373bf68f4f5e2cbc0ba7bc073e5f1b879f7454dcdcb8b07105512c37804ac"/>
+    <dependencies>
+    <dep package="python-setuptools"/>
+    <dep package="python-pyobjc-core"/>
+    <dep package="python-pyobjc-framework-Cocoa"/>
+    <dep package="python-pyobjc-framework-Quartz"/>
+    </dependencies>
+  </distutils>
+
+  <distutils id="python2-faulthandler">
+    <branch repo="pypi.org" checkoutdir="faulthandler-${version}"
+            module="f/faulthandler/faulthandler-${version}.tar.gz"
+            version="2.6" md5sum="7ba7d707fe8f084e35f4f4b72b1f4b4d"/>
+    <dependencies>
+    <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
@@ -737,13 +992,14 @@
       <dep package="flac"/>
       <dep package="libsoup"/>
       <dep package="wavpack"/>
+      <dep package="libjpeg-turbo"/>
     </dependencies>
   </autotools>
 
   <autotools id="wavpack" autogen-sh="configure">
     <branch module="wavpack-${version}.tar.bz2"
-            repo="wavpack" version="4.80.0"
-            hash="sha256:79182ea75f7bd1ca931ed230062b435fde4a4c2e0dbcad048007bd1ef1e66be9">
+            repo="wavpack" version="5.1.0"
+            hash="sha256:1939627d5358d1da62bc6158d63f7ed12905552f3a799c799ee90296a7612944">
     </branch>
   </autotools>
 
@@ -834,8 +1090,8 @@
 
   <!-- CMAKE_INSTALL_NAME_DIR is needed to get an absolute path for the install name (otool -D) -->
   <cmake id="chromaprint" cmakeargs="-DCMAKE_BUILD_TYPE=Release -DBUILD_FRAMEWORK=OFF -DCMAKE_INSTALL_NAME_DIR='${prefix}/lib'">
-        <branch repo="chromaprint" checkoutdir="chromaprint-1.3.1" module="chromaprint-1.3.1.tar.gz"
-            version="1.3.1" hash="sha256:8f95a011e6fe3a75281520daa9376b7f028300e20a5be9af08ef9c851d4bb581">
+        <branch repo="chromaprint" checkoutdir="chromaprint-${version}" module="chromaprint-${version}.tar.gz"
+            version="1.4.2" hash="sha256:989609a7e841dd75b34ee793bd1d049ce99a8f0d444b3cea39d57c3e5d26b4d4">
         </branch>
   </cmake>
 
@@ -854,10 +1110,10 @@
   <autotools id="gst-plugins-ugly" autogenargs="--disable-tests --disable-gtk-doc" supports-non-srcdir-builds="no"
     makeargs="ERROR_CFLAGS=">
     <branch repo="gstreamer" module="gst-plugins-ugly/gst-plugins-ugly-${version}.tar.xz"
-            version="1.10.4" hash="sha256:6386c77ca8459cba431ed0b63da780c7062c7cc48055d222024d8eaf198ffa59"/>
+            version="1.12.1" hash="sha256:8fc2123d059713a34fa5d0a26641fb8158f52f6766633d2db7a661adc88e1069"/>
     <dependencies>
       <dep package="gstreamer"/>
-      <dep package="gst-plugins-base-1.0"/>
+      <dep package="gst-plugins-base"/>
       <dep package="mpg123"/>
     </dependencies>
   </autotools>
@@ -893,14 +1149,15 @@
   </autotools>
 
   <autotools id="mpg123"  autogen-sh="configure">
-      <branch module="mpg123-1.24.0.tar.bz2"
-          repo="mpg123" version="1.24.0" hash="sha256:55fb169a7711938f5df0497d1ffe28419fbef50011dc01d00b216379e6a2256c">
+      <branch module="mpg123-${version}.tar.bz2"
+          repo="mpg123" version="1.25.0"
+          hash="sha256:552e3e1db045e00f474252917007795ac295863fc8b13891859b3382d2f24e48">
       </branch>
   </autotools>
 
   <autotools id="flac"  autogen-sh="autoreconf" autogenargs="--disable-silent-rules --disable-xmms-plugin" makeargs="OBJ_FORMAT=macho">
-    <branch module="flac/flac-1.3.1.tar.xz"
-        repo="xiph" version="1.3.1" hash="sha256:4773c0099dba767d963fd92143263be338c48702172e8754b9bc5103efe1c56c"/>
+    <branch module="flac/flac-${version}.tar.xz"
+        repo="xiph" version="1.3.2" hash="sha256:91cfc3ed61dc40f47f050a109b08610667d73477af6ef36dcad31c31a4a8d53f"/>
     <dependencies>
       <dep package="libogg"/>
     </dependencies>
@@ -923,8 +1180,9 @@
   </autotools>
 
   <autotools id="opus" autogen-sh="configure" autogenargs="--disable-doc">
-    <branch module="opus/opus-1.1.4.tar.gz"
-        repo="xiph" version="1.1.4" hash="sha256:9122b6b380081dd2665189f97bfd777f04f92dc3ab6698eea1dbb27ad59d8692"/>
+    <branch module="opus/opus-${version}.tar.gz"
+        repo="mozilla" version="1.2.1"
+        hash="sha256:cfafd339ccd9c5ef8d6ab15d7e1a412c054bf4cb4ecbbbcc78c12ef2def70732"/>
   </autotools>
 
   <autotools id="libsoup" autogen-sh="configure" autogenargs="--disable-more-warnings --disable-silent-rules --without-gnome --enable-introspection --disable-vala">
@@ -948,14 +1206,16 @@
     </branch>
     <dependencies>
       <dep package="gnutls"/>
+      <dep package="gettext"/>
+      <dep package="glib2"/>
     </dependencies>
   </autotools>
 
   <autotools id="gnutls" autogen-sh="configure"
          autogenargs="--with-libgcrypt --without-p11-kit">
-    <branch repo="ftp.gnutls.org" version="3.5.11"
+    <branch repo="ftp.gnutls.org" version="3.5.13"
             module="gcrypt/gnutls/v3.5/gnutls-${version}.tar.xz"
-            hash="sha256:51765cc5579e250da77fbd7871507c517d01b15353cc40af7b67e9ec7b6fe28f"/>
+            hash="sha256:79f5480ad198dad5bc78e075f4a40c4a315a1b2072666919d2d05a08aec13096"/>
     <dependencies>
       <dep package="nettle" />
       <dep package="libgcrypt" />
@@ -972,13 +1232,14 @@
         hash="sha256:ffb911191e509b966deb55de705387f14156e1a56b21824357cdf0053233633c"/>
   </autotools>
 
-  <autotools id="libxml2-python" autogen-sh="configure"
+  <autotools id="libxml2-python2" autogen-sh="configure"
              autogenargs='--libdir="$JHBUILD_LIBDIR" --with-python'>
     <branch version="2.9.4" module="libxml2-2.9.4.tar.gz"
         repo="xmlsoft.org"
         hash="sha256:ffb911191e509b966deb55de705387f14156e1a56b21824357cdf0053233633c"/>
     <dependencies>
       <dep package="python2" />
+      <dep package="libxml2"/>
     </dependencies>
   </autotools>
 
@@ -1000,20 +1261,21 @@
     <dependencies>
         <dep package="gtk3"/>
         <dep package="python2-gobject"/>
+        <dep package="python-gobject"/>
     </dependencies>
   </autotools>
 
   <autotools id="libtasn1" supports-non-srcdir-builds="no"
          autogen-sh="configure">
-    <branch repo="ftp.gnu.org" version="4.10"
+    <branch repo="ftp.gnu.org" version="4.12"
         module="libtasn1/libtasn1-${version}.tar.gz"
-        hash="sha256:681a4d9a0d259f2125713f2e5766c5809f151b3a1392fd91390f780b4b8f5a02"/>
+        hash="sha256:6753da2e621257f33f5b051cc114d417e5206a0818fe0b1ecfd6153f70934753"/>
   </autotools>
 
   <autotools id="libgcrypt" autogen-sh="configure" autogenargs="--disable-asm --disable-avx-support --disable-avx2-support ">
-    <branch repo='ftp.gnupg.org' version="1.7.6"
+    <branch repo='ftp.gnupg.org' version="1.7.8"
         module="gcrypt/libgcrypt/libgcrypt-${version}.tar.bz2"
-        hash="sha256:626aafee84af9d2ce253d2c143dc1c0902dda045780cc241f39970fc60be05bc">
+        hash="sha256:948276ea47e6ba0244f36a17b51dcdd52cfd1e664b0a1ac3bc82134fb6cec199">
     </branch>
     <dependencies>
       <dep package="libgpg-error" />

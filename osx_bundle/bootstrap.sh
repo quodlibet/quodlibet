@@ -11,8 +11,7 @@ rm -Rf "$HOME/.local"
 rm -f "$HOME/.jhbuildrc"
 rm -f "$HOME/.jhbuildrc-custom"
 
-# https://git.gnome.org/browse/gtk-osx/tree/jhbuild-revision
-JHBUILD_REVISION="7c8d34736c3804"
+JHBUILD_REVISION="fe1552ad15999f023b01bc009dabb1b1956cd9ac"
 
 mkdir -p "$HOME"
 git clone git://git.gnome.org/jhbuild "$QL_OSXBUNDLE_JHBUILD_DEST"

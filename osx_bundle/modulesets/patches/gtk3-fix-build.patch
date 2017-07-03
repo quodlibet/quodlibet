@@ -1,0 +1,17 @@
+diff --git a/gtk/gtkclipboard-quartz.c b/gtk/gtkclipboard-quartz.c
+index fec31f5..2b0b098 100644
+--- a/gtk/gtkclipboard-quartz.c
++++ b/gtk/gtkclipboard-quartz.c
+@@ -1253,3 +1253,12 @@ gtk_clipboard_get_selection (GtkClipboard *clipboard)
+
+   return clipboard->selection;
+ }
++
++GtkClipboard *
++gtk_clipboard_get_default (GdkDisplay *display)
++{
++  g_return_val_if_fail (display != NULL, NULL);
++  g_return_val_if_fail (GDK_IS_DISPLAY (display), NULL);
++
++  return gtk_clipboard_get_for_display (display, GDK_SELECTION_CLIPBOARD);
++}

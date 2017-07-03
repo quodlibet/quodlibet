@@ -32,7 +32,7 @@ def get_moduleset_versions():
         branch = x.find("branch")
         if branch is not None:
             versions[x.attrib["id"]] = branch.attrib["version"]
-    versions.pop("gtk-osx-docbook")
+    versions.pop("gtk-osx-docbook", None)
 
     # verify repos while at it
     repos = set()
@@ -56,8 +56,10 @@ def fix_name(name):
         name = "freetype"
     if name == "freetype":
         name = "freetype2"
-    if name == "gettext-no-glib":
-        name = "gettext"
+    if name == "openssl":
+        name = "openssl-1.0"
+    if name == "libxml2-python2":
+        name = "libxml2"
     return name
 
 
@@ -102,11 +104,16 @@ def _fetch_version(name):
             url = "https://aur.archlinux.org/packages/%s" % result["Name"]
             return {arch_name: (result["Version"].rsplit("-", 1)[0], url)}
 
+    if arch_name.startswith(("python-", "python2-")):
+        pypi_name = arch_name.split("-", 1)[-1]
+    else:
+        pypi_name = arch_name
+
     client = ServerProxy('https://pypi.python.org/pypi')
-    releases = client.package_releases(arch_name)
+    releases = client.package_releases(pypi_name)
     if releases:
         return {arch_name: (
-            releases[0], "https://pypi.python.org/pypi/%s" % arch_name)}
+            releases[0], "https://pypi.python.org/pypi/%s" % pypi_name)}
 
     r = requests.get(
         "http://ftp.gnome.org/pub/GNOME/sources/%s/cache.json" % arch_name)
@@ -114,6 +121,15 @@ def _fetch_version(name):
         return {arch_name: (list(r.json()[2].values())[0][-1], "")}
 
     return {}
+
+
+def is_maybe_newer(a, b):
+    try:
+        return tuple(map(int, a.split("."))) > tuple(map(int, b.split(".")))
+    except (ValueError, TypeError):
+        pass
+
+    return a != b
 
 
 def main():
@@ -131,11 +147,13 @@ def main():
         if arch_name in arch_versions:
             arch_version, arch_url = arch_versions[arch_name]
             arch_version = arch_version.split("+", 1)[0]
+            if arch_name == "readline":
+                arch_version = ".".join(arch_version.split(".")[:2])
         else:
             arch_version = "???"
             arch_url = ""
 
-        if arch_version != version:
+        if is_maybe_newer(arch_version, version):
             print("%-30s %-20s %-20s %s" % (
                 name, version, arch_version, arch_url))
 
