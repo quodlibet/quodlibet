@@ -14,22 +14,44 @@ set -e
 source env.sh
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
+function jhbuild_compileall {
+    if [ "${PYTHONVER}" = "2" ]; then
+        jhbuild run "$PYTHON" -m compileall "$@"
+    else
+        jhbuild run "$PYTHON" -m compileall -b "$@"
+    fi
+}
 
 function main {
     local GIT_TAG=${1:-"master"}
 
+    PYTHONVER=${2:-"2"}
+    PYTHON="python${PYTHONVER}"
+    PYTHONID="python"$(jhbuild run "${PYTHON}" -c \
+        "import sys;sys.stdout.write('.'.join(map(str, sys.version_info[:2])))")
+
+    export QL_PYTHON="$PYTHON"
+    export QL_PYTHONID="$PYTHONID"
     jhbuild run gtk-mac-bundler misc/bundle/app.bundle
 
     APP="$QL_OSXBUNDLE_BUNDLE_DEST/Application.app"
     APP_PREFIX="$APP"/Contents/Resources
 
     # kill some useless files
-    rm -f "$APP_PREFIX"/lib/python2.7/config/libpython2.7.a
-    rm -Rf "$APP_PREFIX"/lib/python2.7/*/test
     rm -f "$APP"/Contents/MacOS/_launcher-bin
     rm -Rf "$APP_PREFIX"/include/
-    find "$APP_PREFIX"/lib/python2.7 -name '*.pyo' -delete
-    find "$APP_PREFIX"/lib/python2.7 -name '*.pyc' -delete
+
+    # Python stdlib bytecode and test files
+    find "$APP_PREFIX"/lib/"$PYTHONID" -name '*.pyo' -delete
+    find "$APP_PREFIX"/lib/"$PYTHONID" -name '*.pyc' -delete
+    find "$APP_PREFIX"/lib/"$PYTHONID" -name '*.a' -delete
+    find "$APP_PREFIX"/lib/"$PYTHONID" -name '*.whl' -delete
+    rm -Rf "$APP_PREFIX"/lib/"$PYTHONID"/*/test
+    rm -Rf "${APP_PREFIX}"/lib/"${PYTHONID}"/test
+    find "${APP_PREFIX}"/lib/"${PYTHON_ID}" -type d -name "test*" \
+        -prune -exec rm -rf {} \;
+    find "${APP_PREFIX}"/lib/"${PYTHON_ID}" -type d -name "*_test*" \
+        -prune -exec rm -rf {} \;
 
     # remove some larger icon theme files
     rm -Rf "${APP_PREFIX}/share/icons/Adwaita/cursors"
@@ -40,19 +62,21 @@ function main {
     jhbuild run gtk-update-icon-cache "${APP_PREFIX}/share/icons/Adwaita"
 
     # compile the stdlib
-    jhbuild run python -m compileall -d "" -f "$APP_PREFIX"/lib/python2.7
+    jhbuild_compileall -d "" -f "$APP_PREFIX"/lib/"$PYTHONID"
     # delete stdlib source
-    find "$APP_PREFIX"/lib/python2.7 -name '*.py' -delete
+    find "$APP_PREFIX"/lib/"$PYTHONID" -name '*.py' -delete
 
     # clone this repo and install into the bundle
     CLONE="$QL_OSXBUNDLE_BUNDLE_DEST"/_temp_clone
     git clone ../ "$CLONE"
     (cd "$CLONE"; git checkout "$GIT_TAG")
-    jhbuild run "$CLONE"/quodlibet/setup.py install --prefix="$APP_PREFIX" \
+    jhbuild run "$PYTHON" "$CLONE"/quodlibet/setup.py install \
+        --prefix="$APP_PREFIX" \
         --record="$QL_OSXBUNDLE_BUNDLE_DEST"/_install_log.txt
     rm -Rf "$CLONE"
 
-    jhbuild run python ./misc/prune_translations.py "$APP_PREFIX"/share/locale
+    jhbuild run "$PYTHON" ./misc/prune_translations.py \
+        "$APP_PREFIX"/share/locale
 
     # create launchers
     (cd "$APP"/Contents/MacOS/ && ln -s _launcher quodlibet)
@@ -60,6 +84,9 @@ function main {
     (cd "$APP"/Contents/MacOS/ && ln -s _launcher operon)
     (cd "$APP"/Contents/MacOS/ && ln -s _launcher run)
     (cd "$APP"/Contents/MacOS/ && ln -s _launcher gst-plugin-scanner)
+
+    # remove empty directories
+    find "$APP_PREFIX" -type d -empty -delete
 
     EXFALSO="$QL_OSXBUNDLE_BUNDLE_DEST/ExFalso.app"
     EXFALSO_PREFIX="$EXFALSO"/Contents/Resources
@@ -70,14 +97,14 @@ function main {
     mv "$APP" "$QUODLIBET"
 
     echo 'BUILD_TYPE = u"osx-exfalso"' >> \
-        "$EXFALSO_PREFIX"/lib/python2.7/site-packages/quodlibet/build.py
+        "$EXFALSO_PREFIX"/lib/"$PYTHONID"/site-packages/quodlibet/build.py
     echo 'BUILD_TYPE = u"osx-quodlibet"' >> \
-        "$QUODLIBET_PREFIX"/lib/python2.7/site-packages/quodlibet/build.py
+        "$QUODLIBET_PREFIX"/lib/"$PYTHONID"/site-packages/quodlibet/build.py
 
     # force compile again to get relative paths in pyc files and for the
     # modified files
-    jhbuild run python -m compileall -d "" -f "$EXFALSO_PREFIX"/lib/python2.7
-    jhbuild run python -m compileall -d "" -f "$QUODLIBET_PREFIX"/lib/python2.7
+    jhbuild_compileall -d "" -f "$EXFALSO_PREFIX"/lib/"$PYTHONID"
+    jhbuild_compileall -d "" -f "$QUODLIBET_PREFIX"/lib/"$PYTHONID"
 
     VERSION=$("$QUODLIBET"/Contents/MacOS/run -c \
         "import sys, quodlibet.const;sys.stdout.write(quodlibet.const.VERSION)")
@@ -90,6 +117,10 @@ function main {
         "$QUODLIBET" > "$QUODLIBET/Contents/Resources/content.txt"
     jhbuild run python ./misc/list_content.py "$HOME/jhbuild_prefix" \
         "$EXFALSO" > "$EXFALSO/Contents/Resources/content.txt"
+
+    if [ "${PYTHONVER}" = "3" ]; then
+        VERSION="$VERSION-Py3"
+    fi
 
     DMG_SETTINGS="misc/dmg_settings.py"
     jhbuild run dmgbuild -s "$DMG_SETTINGS" -D app="$QUODLIBET" \

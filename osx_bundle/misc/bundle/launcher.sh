@@ -30,15 +30,13 @@ export GI_TYPELIB_PATH="$bundle_lib/girepository-1.0"
 export GST_PLUGIN_SYSTEM_PATH="$bundle_lib/gstreamer-1.0"
 export GST_PLUGIN_SCANNER="$bundle_contents/MacOS/gst-plugin-scanner"
 
-export G_MESSAGES_DEBUG=all
-
 # Strip out the argument added by the OS.
 if /bin/expr "x$1" : '^x-psn_' > /dev/null; then
     shift 1
 fi
 
 #Set $PYTHON to point inside the bundle
-export PYTHON="$bundle_contents/MacOS/python"
+export PYTHON=$(echo "$bundle_contents/MacOS/python"*)
 export PYTHONHOME="$bundle_res"
 
 export GIO_MODULE_DIR="$bundle_lib/gio/modules"
