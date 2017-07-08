@@ -117,7 +117,9 @@ def get_user_dir():
 
     if os.name == "nt":
         USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
-    elif not is_osx():
+    elif is_osx():
+        USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
+    else:
         USERDIR = os.path.join(xdg_get_config_home(), "quodlibet")
 
         if not os.path.exists(USERDIR):
