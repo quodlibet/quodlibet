@@ -171,6 +171,7 @@ David Pérez Carmona
 Jakub Wilk
 IBBoard@github
 CreamyCookie@github
+Sauyon Lee
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
