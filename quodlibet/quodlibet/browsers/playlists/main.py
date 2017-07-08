@@ -258,9 +258,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         view.connect('row-activated', lambda *x: self.songs_activated())
         view.connect('popup-menu', self.__popup_menu, library)
         view.get_selection().connect('changed', self.activate)
-        #model = view.get_model()
-        #s = model.connect('row-changed', self.__check_current)
-        #connect_obj(self, 'destroy', model.disconnect, s)
         self.connect('key-press-event', self.__key_pressed)
 
     def __create_cell_renderer(self):
@@ -300,19 +297,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 self._start_rename(model.get_path(iter))
             return True
         return False
-
-    # Does not seem to be used for anything but row-changes to
-    # playlists? Breaks a lot of stuff in current implementation
-    # (on track change, clears selection, causes the playlist to
-    # scroll despite jump config being off, if a playlist contains
-    # duplicate tracks it skips to the last instance, ... )
-    """
-    def __check_current(self, model, path, iter):
-        model, citer = self.__selected_playlists()
-        if citer and model.get_path(citer) == path:
-            songlist = qltk.get_top_parent(self).songlist
-            self.activate(resort=not songlist.is_sorted())
-    """
 
     def __drag_motion(self, view, ctx, x, y, time):
         targets = [t.name() for t in ctx.list_targets()]
