@@ -240,6 +240,13 @@ def format_exception(etype, value, tb, limit=None):
     return [fsn2text(path2fsn(l)) for l in result_lines]
 
 
+def format_exception_only(etype, value):
+    """Returns a list of text_type"""
+
+    result_lines = traceback.format_exception_only(etype, value)
+    return [fsn2text(path2fsn(l)) for l in result_lines]
+
+
 def format_exc(limit=None):
     """Returns text_type"""
 
@@ -282,10 +289,16 @@ def print_exc(exc_info=None, context=None):
     else:
         # try to get a short error message pointing at the cause of
         # the exception
-        filename, lineno, name, line = extract_tb(tb)[-1]
-        text = u"".join(format_exception(etype, value, tb, 0)[1:])
-        string = u"%s:%s:%s: %s" % (
-            fsn2text(path2fsn(os.path.basename(filename))), lineno, name, text)
+        text = u"".join(format_exception_only(etype, value))
+        try:
+            filename, lineno, name, line = extract_tb(tb)[-1]
+        except IndexError:
+            # no stack
+            string = text
+        else:
+            string = u"%s:%s:%s: %s" % (
+                fsn2text(path2fsn(os.path.basename(filename))),
+                lineno, name, text)
 
     _print_message(string, context, False, "E", "red", "errors")
 
