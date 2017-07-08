@@ -24,6 +24,8 @@ def iter_project_py_files():
     root = os.path.dirname(get_module_dir(quodlibet))
     skip = [
         os.path.join(root, "quodlibet", "optpackages"),
+        os.path.join(root, "build"),
+        os.path.join(root, "dist"),
     ]
     for path in iter_py_files(root):
         if any((path.startswith(s + os.sep) or s == path)
