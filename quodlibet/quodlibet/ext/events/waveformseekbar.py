@@ -155,12 +155,14 @@ class WaveformSeekBar(Gtk.Box):
         self._update(player)
 
     def _on_song_changed(self, library, songs, player):
+        if not player.info:
+            return
         if not player.info.is_file:
             print_d("%s is not a local file, skipping waveform calculation."
                     % player.info("~filename"))
             return
         # Check that the currently playing song has changed
-        if player.info and player.info in songs:
+        if player.info in songs:
             # Trigger a re-computation of the waveform
             self._create_waveform(player.info, CONFIG.max_data_points)
             # Only update the label if some tag value changed
