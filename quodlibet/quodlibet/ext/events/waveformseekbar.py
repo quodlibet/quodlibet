@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2016 0x1777
-#           2016 Nick Boultbee
+#        2016-17 Nick Boultbee
 #           2017 Didier Villevalois
 #
 # This program is free software; you can redistribute it and/or modify
@@ -155,6 +155,10 @@ class WaveformSeekBar(Gtk.Box):
         self._update(player)
 
     def _on_song_changed(self, library, songs, player):
+        if not player.info.is_file:
+            print_d("%s is not a local file, skipping waveform calculation."
+                    % player.info("~filename"))
+            return
         # Check that the currently playing song has changed
         if player.info and player.info in songs:
             # Trigger a re-computation of the waveform
@@ -163,7 +167,7 @@ class WaveformSeekBar(Gtk.Box):
             self._update_label(player)
 
     def _on_song_started(self, player, song):
-        if player.info:
+        if player.info and player.info.is_file:
             # Trigger a re-computation of the waveform
             self._create_waveform(player.info, CONFIG.max_data_points)
 
