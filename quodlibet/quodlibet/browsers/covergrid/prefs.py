@@ -75,11 +75,11 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         vbox.pack_start(cb2, False, True, 0)
 
         cb3 = ConfigCheckButton(
-            _("Vertical Split"), "browsers", "covergrid_vertical")
+            _("Wide Mode"), "browsers", "covergrid_wide")
         cb3.set_active(config.getboolean("browsers",
-            "covergrid_vertical", True))
+            "covergrid_wide", False))
         cb3.connect('toggled',
-                   lambda s: browser.toggle_vert())
+                   lambda s: browser.toggle_wide())
         vbox.pack_start(cb3, False, True, 0)
 
         # Redraws the covers only when the user releases the slider
