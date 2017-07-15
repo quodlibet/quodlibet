@@ -212,6 +212,10 @@ class TMultiDragTreeView(TestCase):
             send_button_click(self.c, Gdk.BUTTON_PRIMARY)
             send_button_click(self.c, Gdk.BUTTON_PRIMARY, primary=True)
 
+    def test_select_sequence(self):
+        with visible(self.c):
+            send_key_click(self.c, '<Primary><Shift>Left')
+
 
 class TRCMTreeView(TestCase):
 

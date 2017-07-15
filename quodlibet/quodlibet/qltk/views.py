@@ -988,7 +988,7 @@ class MultiDragTreeView(BaseView):
     def __block_selection(self, event):
         def ctrl_shift(*args):
             selection, model, path, a, b = args
-            print(self.__previous_selected_path,'-->',path)
+            #print(self.__previous_selected_path,'-->',path)
             if self.__ctrl_shift_in_progress:
                 return True
             else:
