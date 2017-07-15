@@ -997,15 +997,17 @@ class MultiDragTreeView(BaseView):
                 # (because even select_range seems to call ctrl_shift,
                 # I suppose it is still active at this point?)
                 if self.__previous_selected_path:
-                   self.__ctrl_shift_in_progress = True
-                   selection.select_range(self.__previous_selected_path, path)
+                    self.__ctrl_shift_in_progress = True
+                    selection.select_range(self.__previous_selected_path, path)
 
-                   self.__ctrl_shift_in_progress = False
-                   # False to not toggle last element
-                   return False
-            self.__previous_selected_path = path
-            return True
+                    self.__ctrl_shift_in_progress = False
 
+                    #not sure how necessary it is to set it here too
+                    self.__previous_selected_path = path
+                    # False to not toggle last element
+                    return False
+                self.__previous_selected_path = path
+                return True
         x, y = map(int, [event.x, event.y])
         try:
             path, col, cellx, celly = self.get_path_at_pos(x, y)
