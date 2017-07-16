@@ -30,7 +30,7 @@ def _fill_view(view):
     column.add_attribute(title, "text", 0)
     view.append_column(column)
     for x in xrange(100):
-        model.append(row=["foo_{}".format(x)])
+        model.append(row=["foo"])
     view.set_model(model)
     return model
 
