@@ -1001,7 +1001,6 @@ class MultiDragTreeView(BaseView):
                     selection.select_range(self.__previous_selected_path, path)
 
                     self.__ctrl_shift_in_progress = False
-
                     #not sure how necessary it is to set it here too
                     self.__previous_selected_path = path
                     # False to not toggle last element
