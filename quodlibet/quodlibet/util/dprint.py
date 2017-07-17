@@ -171,7 +171,7 @@ def _supports_ansi_escapes(file):
 
     if is_windows():
         # mintty
-        return environ.get("TERM", "") == "xterm"
+        return environ.get("TERM", "").startswith("xterm")
 
     return False
 
