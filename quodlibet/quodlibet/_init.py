@@ -78,7 +78,6 @@ def _init_gettext(no_translations=False):
     localedir = os.path.dirname(base_dir)
     localedir = os.path.join(localedir, "build", "share", "locale")
     if not os.path.isdir(localedir) and os.name == "nt":
-        # py2exe case
         localedir = os.path.join(
             base_dir, "..", "..", "share", "locale")
 

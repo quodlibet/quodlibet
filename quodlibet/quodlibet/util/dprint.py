@@ -19,7 +19,7 @@ from senf import print_, path2fsn, fsn2text, environ, fsnative
 
 from quodlibet import const
 from quodlibet.compat import PY2, text_type
-from .environment import is_py2exe_window, is_windows
+from .environment import is_windows
 from .string import decode
 from . import logging as ql_logging
 
@@ -152,16 +152,7 @@ def _should_write_to_file(file_):
     """In Windows UI mode we don't have a working stdout/stderr.
     With Python 2 sys.stdout.fileno() returns a negative fd, with Python 3
     sys.stdout is None.
-
-    When using py2exe we get a fd for a log file and have to look at
-    __stdout__ instead.
     """
-
-    if is_py2exe_window():
-        if file_ is sys.stdout:
-            file_ = sys.__stdout__
-        elif file_ is sys.stderr:
-            file_ = sys.__stderr__
 
     if file_ is None:
         return False
@@ -180,7 +171,7 @@ def _supports_ansi_escapes(file):
 
     if is_windows():
         # mintty
-        return environ.get("TERM", "") == "xterm"
+        return environ.get("TERM", "").startswith("xterm")
 
     return False
 
