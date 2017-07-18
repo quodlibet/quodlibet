@@ -95,13 +95,6 @@ class ConfirmationPrompt(WarningMessage):
                              self.RESPONSE_INVOKE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
-    @classmethod
-    def confirm(cls, parent, plugin_name, count):
-        """Returns if the action was confirmed"""
-
-        resp = cls(parent, plugin_name, count).run()
-        return resp == cls.RESPONSE_INVOKE
-
 
 class ConfirmFileReplace(WarningMessage):
 
