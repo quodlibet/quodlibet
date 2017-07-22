@@ -162,7 +162,7 @@ as the track.')
         self.scrolled_window.destroy()
 
     def _style_lyrics_window(self):
-        self.scrolled_window.set_size_request(-1, 2*self._get_font_size())
+        self.scrolled_window.set_size_request(-1, 2 * self._get_font_size())
         qltk.add_css(self.textview, """
             * {{
                 background-color: {0};
