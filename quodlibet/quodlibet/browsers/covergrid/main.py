@@ -380,7 +380,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             if path is not None:
                 model.row_changed(path, model.get_iter(path))
             # XXX: icon view seems to ignore row_changed signals for pixbufs..
-            self.queue_resize()
+            self.queue_draw()
 
         item = model.get_value(iter_)
         scale_factor = self.get_scale_factor() * mag
