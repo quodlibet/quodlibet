@@ -91,7 +91,7 @@ class MMKeysHandler(object):
 
         player = self._player
         if action == MMKeysAction.PREV:
-            player.previous()
+            player.previous(force=True)
         elif action == MMKeysAction.NEXT:
             player.next()
         elif action == MMKeysAction.STOP:
