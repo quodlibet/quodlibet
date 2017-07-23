@@ -78,6 +78,24 @@ class WarningMessage(Message):
             Gtk.MessageType.WARNING, *args, **kwargs)
 
 
+class ConfirmationPrompt(WarningMessage):
+    """Dialog to confirm actions, given a parent, title, description, and
+       OK-button text"""
+
+    RESPONSE_INVOKE = 1
+
+    def __init__(self, parent, title, description, ok_button_text):
+        super(ConfirmationPrompt, self).__init__(
+            get_top_parent(parent),
+            title, description,
+            buttons=Gtk.ButtonsType.NONE)
+
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(ok_button_text, Icons.SYSTEM_RUN,
+                             self.RESPONSE_INVOKE)
+        self.set_default_response(Gtk.ResponseType.CANCEL)
+
+
 class ConfirmFileReplace(WarningMessage):
 
     RESPONSE_REPLACE = 1

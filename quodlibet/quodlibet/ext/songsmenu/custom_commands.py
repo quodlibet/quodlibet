@@ -11,7 +11,7 @@ import os
 
 from quodlibet.util.songwrapper import SongWrapper
 
-from quodlibet.qltk.songsmenu import ConfirmMultiSongInvoke
+from quodlibet.qltk.songsmenu import confirm_multi_song_invoke
 
 import quodlibet
 from quodlibet import _
@@ -267,7 +267,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         if self.com_index:
             com = self.get_data(self.com_index)
             if len(songs) > com.warn_threshold:
-                if not ConfirmMultiSongInvoke.confirm(
+                if not confirm_multi_song_invoke(
                         self, com.name, len(songs)):
                     print_d("User decided not to run on %d songs" % len(songs))
                     return

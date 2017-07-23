@@ -15,7 +15,7 @@ from quodlibet import ngettext, _
 from quodlibet import qltk
 
 from quodlibet.util import print_exc, print_e, print_w
-from quodlibet.qltk.msg import WarningMessage
+from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
@@ -27,60 +27,26 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
 
 
-class ConfirmMultiSongInvoke(WarningMessage):
+def confirm_multi_song_invoke(parent, plugin_name, count):
     """Dialog to confirm invoking a plugin with X songs in case X is high"""
-
-    RESPONSE_INVOKE = 1
-
-    def __init__(self, parent, plugin_name, count):
-        title = ngettext("Run the plugin \"%(name)s\" on %(count)d song?",
-                         "Run the plugin \"%(name)s\" on %(count)d songs?",
-                         count) % {"name": plugin_name, "count": count}
-
-        super(ConfirmMultiSongInvoke, self).__init__(
-            get_top_parent(parent),
-            title, "",
-            buttons=Gtk.ButtonsType.NONE)
-
-        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Run Plugin"), Icons.SYSTEM_RUN,
-                             self.RESPONSE_INVOKE)
-        self.set_default_response(Gtk.ResponseType.CANCEL)
-
-    @classmethod
-    def confirm(cls, parent, plugin_name, count):
-        """Returns if the action was confirmed"""
-
-        resp = cls(parent, plugin_name, count).run()
-        return resp == cls.RESPONSE_INVOKE
+    title = ngettext("Run the plugin \"%(name)s\" on %(count)d song?",
+                     "Run the plugin \"%(name)s\" on %(count)d songs?",
+                     count) % {"name": plugin_name, "count": count}
+    description = ""
+    ok_text = _("_Run Plugin")
+    prompt = ConfirmationPrompt(parent, title, description, ok_text).run()
+    return prompt == ConfirmationPrompt.RESPONSE_INVOKE
 
 
-class ConfirmMultiAlbumInvoke(WarningMessage):
+def confirm_multi_album_invoke(parent, plugin_name, count):
     """Dialog to confirm invoking a plugin with X albums in case X is high"""
-
-    RESPONSE_INVOKE = 1
-
-    def __init__(self, parent, plugin_name, count):
-        title = ngettext("Run the plugin \"%(name)s\" on %(count)d album?",
-                         "Run the plugin \"%(name)s\" on %(count)d albums?",
-                         count) % {'name': plugin_name, 'count': count}
-
-        super(ConfirmMultiAlbumInvoke, self).__init__(
-            get_top_parent(parent),
-            title, "",
-            buttons=Gtk.ButtonsType.NONE)
-
-        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Run Plugin"), Icons.SYSTEM_RUN,
-                             self.RESPONSE_INVOKE)
-        self.set_default_response(Gtk.ResponseType.CANCEL)
-
-    @classmethod
-    def confirm(cls, parent, plugin_name, count):
-        """Returns if the action was confirmed"""
-
-        resp = cls(parent, plugin_name, count).run()
-        return resp == cls.RESPONSE_INVOKE
+    title = ngettext("Run the plugin \"%(name)s\" on %(count)d album?",
+                     "Run the plugin \"%(name)s\" on %(count)d albums?",
+                     count) % {"name": plugin_name, "count": count}
+    description = ""
+    ok_text = _("_Run Plugin")
+    prompt = ConfirmationPrompt(parent, title, description, ok_text).run()
+    return prompt == ConfirmationPrompt.RESPONSE_INVOKE
 
 
 class SongsMenuPluginHandler(PluginHandler):
@@ -90,11 +56,11 @@ class SongsMenuPluginHandler(PluginHandler):
 
         self.__plugins = []
 
-        self._confirm_multiple_songs = ConfirmMultiSongInvoke.confirm
+        self._confirm_multiple_songs = confirm_multi_song_invoke
         if song_confirmer is not None:
             self._confirm_multiple_songs = song_confirmer
 
-        self._confirm_multiple_albums = ConfirmMultiAlbumInvoke.confirm
+        self._confirm_multiple_albums = confirm_multi_album_invoke
         if album_confirmer is not None:
             self._confirm_multiple_albums = album_confirmer
 
@@ -280,7 +246,6 @@ class SongsMenu(Gtk.Menu):
                  queue=True, remove=True, delete=False,
                  edit=True, ratings=True, items=None, accels=True):
         super(SongsMenu, self).__init__()
-
         # The library may actually be a librarian; if it is, use it,
         # otherwise find the real librarian.
         librarian = getattr(library, 'librarian', library)
