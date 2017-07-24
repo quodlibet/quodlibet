@@ -57,6 +57,12 @@ jobs:
       - PYTHON: "python3"
       - DOCKERIMAGE: "ubuntu16.04.py3"
     <<: *defaults
+  job.ubuntu17.10.py3:
+    environment:
+      - PYARGS: "-R -bb"
+      - PYTHON: "python3"
+      - DOCKERIMAGE: "ubuntu16.04.py3"
+    <<: *defaults
   job.win32.py2:
     environment:
       - PYARGS: "-R"
