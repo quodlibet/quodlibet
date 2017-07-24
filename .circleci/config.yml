@@ -61,7 +61,7 @@ jobs:
     environment:
       - PYARGS: "-R -bb"
       - PYTHON: "python3"
-      - DOCKERIMAGE: "ubuntu16.04.py3"
+      - DOCKERIMAGE: "ubuntu17.10.py3"
     <<: *defaults
   job.win32.py2:
     environment:
@@ -86,3 +86,4 @@ workflows:
       - job.debian8.py3
       - job.ubuntu16.04.py2
       - job.ubuntu16.04.py3
+      - job.ubuntu17.10.py3
