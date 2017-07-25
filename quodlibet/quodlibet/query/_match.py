@@ -269,7 +269,10 @@ class NumexprTag(Numexpr):
         else:
             num = data(self._ftag, None)
         if num is not None:
-            if self._ftag in TIME_TAGS:
+            # Strip aggregate function from tag
+            func_start = self._ftag.find(":")
+            tag = self._ftag[:func_start] if func_start >= 0 else self._ftag
+            if tag in TIME_TAGS:
                 num = time - num
             return round(num, 2)
         return None
