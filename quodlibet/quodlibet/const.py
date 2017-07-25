@@ -172,6 +172,7 @@ Jakub Wilk
 IBBoard@github
 CreamyCookie@github
 Sauyon Lee
+Thomas Leberbauer
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
