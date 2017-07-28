@@ -15,7 +15,8 @@ import re
 import logging
 import errno
 
-from senf import print_, path2fsn, fsn2text, environ, fsnative
+from senf import print_, path2fsn, fsn2text, environ, fsnative, \
+    supports_ansi_escape_codes
 
 from quodlibet import const
 from quodlibet.compat import PY2, text_type
@@ -163,19 +164,6 @@ def _should_write_to_file(file_):
         return True
 
 
-def _supports_ansi_escapes(file):
-    """If one should pass ansi escape sequences to the file"""
-
-    if file.isatty():
-        return True
-
-    if is_windows():
-        # mintty
-        return environ.get("TERM", "").startswith("xterm")
-
-    return False
-
-
 def _print_message(string, custom_context, debug_only, prefix,
                    color, logging_category, start_time=time.time()):
 
@@ -207,7 +195,7 @@ def _print_message(string, custom_context, debug_only, prefix,
     if not debug_only or const.DEBUG:
         file_ = sys.stderr
         if _should_write_to_file(file_):
-            if not _supports_ansi_escapes(file_):
+            if not supports_ansi_escape_codes(file_.fileno()):
                 string = strip_color(string)
             try:
                 print_(string, file=file_, flush=True)
