@@ -198,7 +198,6 @@ class FallbackHTTPRequest(DefaultHTTPRequest):
             return # redirection, wait for another emission of got-headers
         self.istream = Gio.MemoryInputStream.new()
         self.message.connect('got-chunk', self._chunk)
-        print_d('Sent request to {0}'.format(self._uri))
         self.emit('sent', self.message)
 
     def _chunk(self, message, buffer):

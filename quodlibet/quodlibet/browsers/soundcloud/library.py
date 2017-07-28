@@ -50,6 +50,7 @@ class SoundcloudLibrary(SongLibrary):
     def _on_songs_received(self, client, songs):
         new = len(self.add(songs))
         print_d("Got %d songs (%d new)." % (len(songs), new))
+        self.emit('changed', songs)
 
     def _on_comments_received(self, client, track_id, comments):
         def bookmark_for(com):

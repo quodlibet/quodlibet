@@ -68,8 +68,8 @@ class TSoundcloudLibrary(TestCase):
         def get_tracks(self, query):
             self._on_track_data(None, [TRACK], None)
 
-        def __init__(self, token=None):
-            super(TSoundcloudLibrary.FakeClient, self).__init__(token)
+        def __init__(self):
+            super(TSoundcloudLibrary.FakeClient, self).__init__()
 
         def authenticate_user(self):
             pass

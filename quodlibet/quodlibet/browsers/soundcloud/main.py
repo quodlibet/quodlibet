@@ -8,7 +8,7 @@
 from gi.repository import Gtk, Pango
 
 from quodlibet import _
-from quodlibet.compat import parse_qs, urlparse, iteritems
+from quodlibet.compat import parse_qs, urlparse
 from quodlibet import config, app
 from quodlibet import qltk
 from quodlibet import util
@@ -55,24 +55,27 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     @classmethod
     def _init(klass, library):
         klass.__librarian = library.librarian
-        klass.filters = {
-            _("Search"): (FilterType.SEARCH,
-                          Icons.EDIT_FIND,
-                          "",
-                          True),
+        klass.filters = [
+            (_("Search"), (FilterType.SEARCH,
+                           Icons.EDIT_FIND,
+                           "",
+                           True)),
             # TODO: support for ~#rating=!None etc (#1940)
-            _("Favorites"): (FilterType.FAVORITES,
-                             Icons.FAVORITE,
-                             "#(rating = 1.0)",
-                             False),
-        }
-        token = config.get("browsers", "soundcloud_token", default=None)
+            (_("Favorites"), (FilterType.FAVORITES,
+                              Icons.FAVORITE,
+                              "#(rating = 1.0)",
+                              False)),
+            (_("My tracks"), (FilterType.MINE,
+                              Icons.MEDIA_RECORD,
+                              "soundcloud_user_id=%s",
+                              False)),
+        ]
         try:
             if klass.library:
                 return
         except AttributeError:
             pass
-        klass.api_client = SoundcloudApiClient(token)
+        klass.api_client = SoundcloudApiClient()
         klass.library = SoundcloudLibrary(klass.api_client, app.player)
 
     @classmethod
@@ -106,9 +109,10 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.connect('uri-received', self.__handle_incoming_uri)
         self.__auth_sig = self.api_client.connect('authenticated',
                                                   self.__on_authenticated)
+        connect_destroy(self.library, 'changed', self.__changed)
         self.login_state = (State.LOGGED_IN if self.online
                             else State.LOGGED_OUT)
-        self._create_searchbar(library)
+        self._create_searchbar(self.library)
         vbox = Gtk.VBox()
         vbox.pack_start(self._create_footer(), False, False, 6)
         vbox.pack_start(self._create_category_widget(), True, True, 0)
@@ -212,9 +216,9 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         scrolled_window.add(view)
         model = Gtk.ListStore(int, str, str, str, bool)
         filters = self.filters
-        for (i, (name, data)) in enumerate(iteritems(filters)):
+        for (i, (name, data)) in enumerate(filters):
             filter_type, icon, query, always = data
-            enabled = always or self.online
+            enabled = always
             model.append(row=[filter_type, icon, name, query, enabled])
             if i + 1 < len(filters):
                 model.append(row=[FilterType.SEP, None, "", None, False])
@@ -268,6 +272,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         if not paths:
             return
         row = model[paths[0]]
+        query_text = row[self.ModelIndex.QUERY]
         filter_type = row[self.ModelIndex.TYPE]
 
         if filter_type == FilterType.SEARCH:
@@ -276,8 +281,12 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             print_d("Getting favorites...")
             self.api_client.get_favorites()
             self.__searchbar.set_enabled(False)
+        elif filter_type == FilterType.MINE:
+            print_d("Getting user tracks...")
+            self.api_client.get_my_tracks()
+            self.__searchbar.set_enabled(False)
+            query_text = query_text % self.api_client.user_id
 
-        query_text = row[self.ModelIndex.QUERY]
         self.__searchbar.set_text(query_text)
         self.activate()
 
@@ -290,6 +299,10 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     def unpack(self, container, songpane):
         self._songs_box.remove(songpane)
         container.remove(self)
+
+    def __changed(self, library, songs):
+        print_d("Updating view")
+        self.activate()
 
     def __query_changed(self, bar, text, restore=False):
         try:
@@ -347,12 +360,12 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     def save(self):
         text = self.__searchbar.get_text()
         config.settext("browsers", "query_text", text)
-        self.api_client.save_token()
+        self.api_client.save_auth()
 
     def _refresh_online_filters(self):
         model = self.view.get_model()
         # TODO: less hard-coding of these
-        for path in [2]:
+        for path in [2, 4]:
             model.row_changed(path, model.get_iter(path))
 
     def __handle_incoming_uri(self, obj, uri):
