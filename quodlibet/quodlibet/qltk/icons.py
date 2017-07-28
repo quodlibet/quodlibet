@@ -88,6 +88,7 @@ class Icons(str):
     MEDIA_PLAYBACK_STOP = "media-playback-stop"  # "_Stop"
     MEDIA_PLAYLIST_REPEAT = "media-playlist-repeat"
     MEDIA_PLAYLIST_SHUFFLE = "media-playlist-shuffle"
+    MEDIA_RECORD = "media-record"
     MEDIA_SKIP_BACKWARD = "media-skip-backward"  # "Pre_vious"
     MEDIA_SKIP_FORWARD = "media-skip-forward"  # "_Next"
     MULTIMEDIA_PLAYER = "multimedia-player"
