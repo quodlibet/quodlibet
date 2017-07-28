@@ -27,8 +27,8 @@ if os.name != "nt":
     _winapi = object()
 
 from ._fsnative import fsnative, path2fsn, fsn2text, fsn2bytes, \
-    bytes2fsn, uri2fsn, fsn2uri, text2fsn
-from ._print import print_, input_
+    bytes2fsn, uri2fsn, fsn2uri, text2fsn, fsn2norm
+from ._print import print_, input_, supports_ansi_escape_codes
 from ._stdlib import sep, pathsep, curdir, pardir, altsep, extsep, devnull, \
     defpath, getcwd, expanduser, expandvars
 from ._argv import argv
@@ -38,10 +38,11 @@ from ._temp import mkstemp, gettempdir, gettempprefix, mkdtemp
 
 fsnative, print_, getcwd, getenv, unsetenv, putenv, environ, expandvars, \
     path2fsn, fsn2text, fsn2bytes, bytes2fsn, uri2fsn, fsn2uri, mkstemp, \
-    gettempdir, gettempprefix, mkdtemp, input_, expanduser, text2fsn
+    gettempdir, gettempprefix, mkdtemp, input_, expanduser, text2fsn, \
+    supports_ansi_escape_codes, fsn2norm
 
 
-version = (1, 2, 2)
+version = (1, 3, 0)
 """Tuple[`int`, `int`, `int`]: The version tuple (major, minor, micro)"""
 
 
