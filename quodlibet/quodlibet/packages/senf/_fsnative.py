@@ -410,6 +410,7 @@ def path2fsn(path):
             data = path.encode(_encoding, "surrogateescape")
             if b"\x00" in data:
                 raise ValueError("embedded null")
+            path = fsn2norm(path)
         else:
             if u"\x00" in path:
                 raise ValueError("embedded null")
