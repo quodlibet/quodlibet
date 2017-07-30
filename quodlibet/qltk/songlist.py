@@ -799,14 +799,9 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             model.append_many(songs)
             return
 
-        # FIXME: Replace with something fast
-        old_songs = self.get_songs()
-        old_songs.extend(songs)
-
-        self._sort_songs(old_songs)
-
-        for index, song in sorted(zip(map(old_songs.index, songs), songs)):
-            model.insert(index, row=[song])
+        for song in songs:
+            insert_iter = self.__find_song_position(song)
+            model.insert_before(insert_iter, row=[song])
 
     def set_songs(self, songs, sorted=False, scroll=True, scroll_select=False):
         """Fill the song list.
