@@ -126,8 +126,8 @@ class AmazonParser(object):
             'ItemPage': page,
             # This specifies where the money goes and needed since 1.11.2011
             # (What a good reason to break API..)
-            # ...so use the gnome.org one
-            'AssociateTag': 'gnomestore-20',
+            # ...so use the eff.org one: https://www.eff.org/helpout
+            'AssociateTag': 'electronicfro-20',
         }
         data = get_url(url, get=parameters)
         dom = minidom.parseString(data)
