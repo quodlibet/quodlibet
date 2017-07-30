@@ -750,16 +750,24 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
     def _sort_songs(self, songs):
         """Sort passed songs in place based on the column sort orders"""
 
+        order = self.get_sort_orders()
+        if not order:
+            return
+        for key, reverse in self.__get_song_sort_key_func(order):
+            songs.sort(key=key, reverse=reverse)
+
+    def __get_song_sort_key_func(self, order):
         last_tag = None
         last_order = None
         first = True
-        for tag, reverse in self.get_sort_orders():
+        key_func = []
+        for tag, reverse in order:
             tag = get_sort_tag(tag)
 
             # always sort using the default sort key first
             if first:
                 first = False
-                songs.sort(key=lambda s: s.sort_key, reverse=reverse)
+                key_func.append((lambda s: s.sort_key, reverse))
                 last_order = reverse
                 last_tag = ""
 
@@ -770,10 +778,11 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             last_tag = tag
 
             if tag == "":
-                songs.sort(key=lambda s: s.sort_key, reverse=reverse)
+                key_func.append((lambda s: s.sort_key, reverse))
             else:
                 sort_func = AudioFile.sort_by_func(tag)
-                songs.sort(key=sort_func, reverse=reverse)
+                key_func.append((sort_func, reverse))
+        return key_func
 
     def add_songs(self, songs):
         """Add songs to the list in the right order and position"""
@@ -898,16 +907,75 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         selection.selected_foreach(func, None)
         return songs
 
+    def __find_song_position(self, song):
+        """Finds the appropriate position of a song in a sorted song list.
+
+        Returns iter of the song after the given song according to the current
+        sort order.
+
+        Returns None if the correct position is at the end of the song list.
+        """
+
+        model = self.get_model()
+        order = self.get_sort_orders()
+        sort_key_func = list(enumerate(reversed(
+                self.__get_song_sort_key_func(order))))
+        song_sort_keys = [key(song) for i, (key, r) in sort_key_func]
+        i = 0
+        j = len(model)
+        while i < j:
+            mid = (i + j) // 2
+            other_song_iter = model.iter_nth_child(None, mid)
+            other_song = model.get_value(other_song_iter)
+            song_is_lower = False
+            for i, (key, reverse) in sort_key_func:
+                other_key = key(other_song)
+                is_lower = song_sort_keys[i] < other_key
+                is_greater = song_sort_keys[i] > other_key
+                if not reverse and is_lower or reverse and is_greater:
+                    song_is_lower = True
+                    break
+                if not reverse and is_greater or reverse and is_lower:
+                    break
+            if song_is_lower:
+                j = mid
+            else:
+                i = mid + 1
+        if i < len(model):
+            return model.iter_nth_child(None, i)
+        return None
+
+    def __find_iters_in_selection(self, songs):
+        model, rows = self.get_selection().get_selected_rows()
+        rows = rows or []
+        iters = [model[r].iter for r in rows if model[r][0] in songs]
+        complete = len(iters) == len(songs)
+        return (iters, complete)
+
     def __song_updated(self, librarian, songs):
         """Only update rows that are currently displayed.
         Warning: This makes the row-changed signal useless.
         """
 
+        model = self.get_model()
+        if self.is_sorted():
+            iters, complete = self.__find_iters_in_selection(songs)
+            if not complete:
+                iters = model.find_all(songs)
+
+            rows = [Gtk.TreeRowReference.new(model, model.get_path(i))
+                    for i in iters]
+
+            for row in rows:
+                iter = model.get_iter(row.get_path())
+                song = model.get_value(iter)
+                insert_iter = self.__find_song_position(song)
+                model.move_before(iter, insert_iter)
+
         vrange = self.get_visible_range()
         if vrange is None:
             return
         (start,), (end,) = vrange
-        model = self.get_model()
         for path in range(start, end + 1):
             row = model[path]
             if row[0] in songs:
@@ -927,22 +995,22 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             for song in songs:
                 player.remove(song)
 
+        model = self.get_model()
+
         # The selected songs are removed from the library and should
         # be removed from the view.
 
-        if not len(self.get_model()):
+        if not len(model):
             return
 
         songs = set(songs)
 
         # search in the selection first
         # speeds up common case: select songs and remove them
-        model, rows = self.get_selection().get_selected_rows()
-        rows = rows or []
-        iters = [model[r].iter for r in rows if model[r][0] in songs]
+        iters, complete = self.__find_iters_in_selection(songs)
 
         # if not all songs were in the selection, search the whole view
-        if len(iters) != len(songs):
+        if not complete:
             iters = model.find_all(songs)
 
         self.remove_iters(iters)
