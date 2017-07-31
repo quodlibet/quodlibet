@@ -188,6 +188,15 @@ class RenameFiles(Gtk.VBox):
         moveart_box.pack_start(self.moveart_overwrite, False, True, 0)
         self.pack_start(moveart_box, False, True, 0)
 
+        # remove empty
+        removeemptydirs_box = Gtk.VBox()
+        self.removeemptydirs = ConfigCheckButton(
+             _('_Remove empty directories'),
+             "rename", "removeemptydirs", populate=True)
+        self.removeemptydirs.show()
+        removeemptydirs_box.pack_start(self.removeemptydirs, False, True, 0)
+        self.pack_start(removeemptydirs_box, False, True, 0)
+
         # Save button
         self.save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
@@ -262,6 +271,7 @@ class RenameFiles(Gtk.VBox):
         self.view.freeze_child_notify()
         moveart = config.getboolean("rename", "moveart")
         moveart_sets = {}
+        removeemptydirs = config.getboolean("rename", "removeemptydirs")
 
         for entry in itervalues(model):
             if entry.new_name is None:
@@ -308,6 +318,15 @@ class RenameFiles(Gtk.VBox):
 
             if moveart:
                 self.__moveart(moveart_sets, old_pathfile, new_pathfile, song)
+
+            if removeemptydirs:
+                path_old = os.path.dirname(old_pathfile)
+                if not os.listdir(path_old):
+                    try:
+                        os.rmdir(path_old)
+                        print_d("Removed empty directory: %r" % path_old, self)
+                    except Exception:
+                        util.print_exc()
 
             if win.step():
                 break

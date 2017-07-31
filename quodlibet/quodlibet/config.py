@@ -217,6 +217,7 @@ INITIAL = {
         "ascii": "false",
         "moveart": "false",
         "moveart_overwrite": "false",
+        "removeemptydirs": "false",
     },
 
     "tagsfrompath": {
