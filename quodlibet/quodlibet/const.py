@@ -234,6 +234,7 @@ scootergrisen@github (da)
 Marek Suchánek (cs)
 Till Berger (de)
 Jean-Michel Pouré (fr)
+Kristian Laakkonen (fi)
 """.strip().splitlines())
 
 ARTISTS = sorted(u"""\
