@@ -331,6 +331,9 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.window_fit.connect('toggled', self.__scale_pixbuf)
 
         self.name_combo = Gtk.ComboBoxText()
+        self.name_combo.set_tooltip_text(
+             _("See '[plugins] cover_filenames' config entry " +
+               "for image filename strings"))
 
         self.cmd = qltk.entry.ValidatingEntry(iscommand)
 
@@ -349,30 +352,33 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         self.cmd.set_text(self.config_get('edit_cmd', 'gimp'))
 
-        # Create the filename combo box
-        fn_list = ['cover.jpg', 'folder.jpg', '.folder.jpg']
-
+        # populate the filename combo box
+        fn_list = self.config_get_stringlist('filenames',
+                      ["cover.jpg", "folder.jpg", ".folder.jpg"])
         # Issue 374 - add dynamic file names
+        fn_dynlist = []
         artist = song("artist")
         alartist = song("albumartist")
         album = song("album")
         labelid = song("labelid")
         if album:
-            fn_list.append("<album>.jpg")
+            fn_dynlist.append("<album>.jpg")
             if alartist:
-                fn_list.append("<albumartist> - <album>.jpg")
+                fn_dynlist.append("<albumartist> - <album>.jpg")
             else:
-                fn_list.append("<artist> - <album>.jpg")
+                fn_dynlist.append("<artist> - <album>.jpg")
         else:
             print_w(u"No album for \"%s\". Could be difficult "
                     u"finding art…" % song("~filename"))
             title = song("title")
             if title and artist:
-                fn_list.append("<artist> - <title>.jpg")
+                fn_dynlist.append("<artist> - <title>.jpg")
         if labelid:
-            fn_list.append("<labelid>.jpg")
+            fn_dynlist.append("<labelid>.jpg")
+        # merge unique
+        fn_list.extend(s for s in fn_dynlist if s not in fn_list)
 
-        set_fn = self.config_get('fn', fn_list[0])
+        set_fn = self.config_get('filename', fn_list[0])
 
         for i, fn in enumerate(fn_list):
                 self.name_combo.append_text(fn)
@@ -381,6 +387,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         if self.name_combo.get_active() < 0:
             self.name_combo.set_active(0)
+        self.config_set('filename', self.name_combo.get_active_text())
 
         table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
         table.props.expand = False
@@ -469,7 +476,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
     def __save_config(self, widget):
         self.config_set('edit_cmd', self.cmd.get_text())
-        self.config_set('fn', self.name_combo.get_active_text())
+        self.config_set('filename', self.name_combo.get_active_text())
 
     def __update(self, loader, *data):
         """Update the picture while it's loading"""

@@ -494,6 +494,12 @@ class PluginConfigMixin(object):
         return config.getboolean(PM.CONFIG_SECTION, cls._config_key(name),
                                  default)
 
+    @classmethod
+    def config_get_stringlist(cls, name, default=False):
+        """Gets a config string list for this plugin"""
+        return config.getstringlist(PM.CONFIG_SECTION, cls._config_key(name),
+                                 default)
+
     def config_entry_changed(self, entry, key):
         """React to a change in an gtk.Entry (by saving it to config)"""
         if entry.get_property('sensitive'):
