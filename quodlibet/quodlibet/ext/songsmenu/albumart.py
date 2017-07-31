@@ -295,7 +295,7 @@ class DiscogsParser(object):
         page = 1
         while len(self.covers) < limit:
             self.__parse_page(page, query)
-            if page < self.page_count:
+            if page >= self.page_count:
                 break
             page += 1
 
