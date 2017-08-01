@@ -693,21 +693,57 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         sw_list.set_shadow_type(Gtk.ShadowType.IN)
         sw_list.add(treeview)
 
-        self.search_field = Gtk.Entry()
+        search_labelraw = Gtk.Label('raw')
+        search_labelraw.set_alignment(xalign=1.0, yalign=0.5)
+        self.search_fieldraw = Gtk.Entry()
+        self.search_fieldraw.connect('activate', self.start_search)
+        self.search_fieldraw.connect('changed', self.__searchfieldchanged)
+        search_labelclean = Gtk.Label('clean')
+        search_labelclean.set_alignment(xalign=1.0, yalign=0.5)
+        self.search_fieldclean = Gtk.Label()
+        self.search_fieldclean.set_can_focus(False)
+        self.search_fieldclean.set_alignment(xalign=0.0, yalign=0.5)
+
+        self.search_radioraw = Gtk.RadioButton(group=None, label=None)
+        self.search_radioraw.connect("toggled", self.__searchtypetoggled,
+                                     "raw")
+        self.search_radioclean = Gtk.RadioButton(group=self.search_radioraw,
+                                                 label=None)
+        self.search_radioclean.connect("toggled", self.__searchtypetoggled,
+                                       "clean")
+        #note: set_active(False) appears to have no effect
+        #self.search_radioraw.set_active(
+        #    self.config_get_bool('searchraw', False))
+        if self.config_get_bool('searchraw', False):
+            self.search_radioraw.set_active(True)
+        else:
+            self.search_radioclean.set_active(True)
+
         self.search_button = Button(_("_Search"), Icons.EDIT_FIND)
         self.search_button.connect('clicked', self.start_search)
-        self.search_field.connect('activate', self.start_search)
+        search_button_box = Gtk.Alignment()
+        search_button_box.set(1, 0, 0, 0)
+        search_button_box.add(self.search_button)
+
+        search_table = Gtk.Table(rows=3, columns=4, homogeneous=False)
+        search_table.attach(search_labelraw, 0, 1, 0, 1,
+                            xoptions=Gtk.AttachOptions.FILL, xpadding=6)
+        search_table.attach(self.search_radioraw, 1, 2, 0, 1,
+                            xoptions=0, xpadding=0)
+        search_table.attach(self.search_fieldraw, 2, 4, 0, 1)
+        search_table.attach(search_labelclean, 0, 1, 1, 2,
+                            xoptions=Gtk.AttachOptions.FILL, xpadding=6)
+        search_table.attach(self.search_radioclean, 1, 2, 1, 2,
+                            xoptions=0, xpadding=0)
+        search_table.attach(self.search_fieldclean, 2, 4, 1, 2, xpadding=4)
+        search_table.attach(search_button_box, 3, 4, 2, 3)
 
         widget_space = 5
-
-        search_hbox = Gtk.HBox(spacing=widget_space)
-        search_hbox.pack_start(self.search_field, True, True, 0)
-        search_hbox.pack_start(self.search_button, False, True, 0)
 
         self.progress = Gtk.ProgressBar()
 
         left_vbox = Gtk.VBox(spacing=widget_space)
-        left_vbox.pack_start(search_hbox, False, True, 0)
+        left_vbox.pack_start(search_table, False, True, 0)
         left_vbox.pack_start(sw_list, True, True, 0)
 
         hpaned = Paned()
@@ -722,10 +758,15 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         left_vbox.pack_start(self.progress, False, True, 0)
 
+        self.connect('destroy', self.__save_config)
+
         song = songs[0]
         text = SEARCH_PATTERN.format(song)
         self.set_text(text)
         self.start_search()
+
+    def __save_config(self, widget):
+        self.config_set('searchraw', self.search_radioraw.get_active())
 
     def __drag_data_get(self, view, ctx, sel, tid, etime, treeselection):
         model, iter = treeselection.get_selected()
@@ -734,10 +775,19 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         cover = model.get_value(iter, 1)
         sel.set_uris([cover['cover']])
 
+    def __searchfieldchanged(self, *data):
+        search = data[0].get_text()
+        clean = cleanup_query(search, ' ')
+        self.search_fieldclean.set_text('<b>' + clean + '</b>')
+        self.search_fieldclean.set_use_markup(True)
+
+    def __searchtypetoggled(self, *data):
+        self.config_set('searchraw', self.search_radioraw.get_active())
+
     def start_search(self, *data):
         """Start the search using the text from the text entry"""
 
-        text = self.search_field.get_text()
+        text = self.search_fieldraw.get_text()
         if not text or self.search_lock:
             return
 
@@ -757,7 +807,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
                     CONFIG_ENG_PREFIX + eng['config_id'], True):
                 search.add_engine(eng['class'], eng['replace'])
 
-        search.start(text)
+        raw = self.search_radioraw.get_active()
+        search.start(text, raw)
 
         # Focus the list
         self.treeview.grab_focus()
@@ -770,8 +821,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
     def set_text(self, text):
         """set the text and move the cursor to the end"""
 
-        self.search_field.set_text(text)
-        self.search_field.emit('move-cursor', Gtk.MovementStep.BUFFER_ENDS,
+        self.search_fieldraw.set_text(text)
+        self.search_fieldraw.emit('move-cursor', Gtk.MovementStep.BUFFER_ENDS,
             0, False)
 
     def __select_callback(self, selection, image):
@@ -839,13 +890,13 @@ class CoverSearch(object):
 
         self._stop = True
 
-    def start(self, query):
+    def start(self, query, raw):
         """Start search. The callback function will be called after each of
         the search engines has finished."""
 
         for engine, replace in self.engine_list:
             thr = threading.Thread(target=self.__search_thread,
-                                   args=(engine, query, replace))
+                                   args=(engine, query, replace, raw))
             thr.setDaemon(True)
             thr.start()
 
@@ -853,14 +904,17 @@ class CoverSearch(object):
         if not len(self.engine_list):
             GLib.idle_add(self.callback, [], 1)
 
-    def __search_thread(self, engine, query, replace):
+    def __search_thread(self, engine, query, replace, raw):
         """Creates searching threads which call the callback function after
         they are finished"""
 
-        clean_query = self.__cleanup_query(query, replace)
+        search = query if raw else cleanup_query(query, replace)
+
+        print_d("[AlbumArt] running search %r on engine %s" %
+                (search, engine.__name__))
         result = []
         try:
-            result = engine().start(clean_query)
+            result = engine().start(search)
         except Exception:
             print_w("[AlbumArt] %s: %r" % (engine.__name__, query))
             print_exc()
@@ -870,30 +924,31 @@ class CoverSearch(object):
         progress = float(self.finished) / len(self.engine_list)
         GLib.idle_add(self.callback, result, progress)
 
-    def __cleanup_query(self, query, replace):
-        """split up at '-', remove some chars, only keep the longest words..
-        more false positives but much better results"""
 
-        query = query.lower()
-        if query.startswith("the "):
-            query = query[4:]
+def cleanup_query(query, replace):
+    """split up at '-', remove some chars, only keep the longest words..
+    more false positives but much better results"""
 
-        split = query.split('-')
-        replace_str = ('+', '&', ',', '.', '!', '´',
-                       '\'', ':', ' and ', '(', ')')
-        new_query = ''
-        for part in split:
-            for stri in replace_str:
-                part = part.replace(stri, replace)
+    query = query.lower()
+    if query.startswith("the "):
+        query = query[4:]
 
-            p_split = part.split()
-            p_split.sort(key=len, reverse=True)
-            end = max(int(len(p_split) / 4), max(4 - len(p_split), 2))
-            p_split = p_split[:end]
+    split = query.split('-')
+    replace_str = ('+', '&', ',', '.', '!', '´',
+                   '\'', ':', ' and ', '(', ')')
+    new_query = ''
+    for part in split:
+        for stri in replace_str:
+            part = part.replace(stri, replace)
 
-            new_query += ' '.join(p_split) + ' '
+        p_split = part.split()
+        p_split.sort(key=len, reverse=True)
+        end = max(int(len(p_split) / 4), max(4 - len(p_split), 2))
+        p_split = p_split[:end]
 
-        return new_query.rstrip()
+        new_query += ' '.join(p_split) + ' '
+
+    return new_query.rstrip()
 
 
 def get_size_of_url(url):
