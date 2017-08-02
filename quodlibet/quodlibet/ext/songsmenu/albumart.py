@@ -52,6 +52,8 @@ CONFIG_ENG_PREFIX = 'engine_'
 SEARCH_PATTERN = Pattern(
     '<albumartist|<albumartist>|<artist>> - <album|<album>|<title>>')
 
+REQUEST_LIMIT_MAX = 15
+
 
 def get_encoding_from_socket(socket):
     content_type = socket.headers.get("Content-Type", "")
@@ -719,6 +721,19 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         else:
             self.search_radioclean.set_active(True)
 
+        search_labelresultsmax = Gtk.Label('limit')
+        search_labelresultsmax.set_alignment(xalign=1.0, yalign=0.5)
+        search_labelresultsmax.set_tooltip_text(
+             _("Per engine 'at best' results limit"))
+        search_adjresultsmax = Gtk.Adjustment(
+            value=int(self.config_get("resultsmax", 3)), lower=1,
+            upper=REQUEST_LIMIT_MAX, step_incr=1,
+            page_incr=0, page_size=0)
+        self.search_spinresultsmax = Gtk.SpinButton(
+            adjustment=search_adjresultsmax, climb_rate=0.2, digits=0)
+        self.search_spinresultsmax.set_alignment(xalign=0.5)
+        self.search_spinresultsmax.set_can_focus(False)
+
         self.search_button = Button(_("_Search"), Icons.EDIT_FIND)
         self.search_button.connect('clicked', self.start_search)
         search_button_box = Gtk.Alignment()
@@ -736,6 +751,10 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         search_table.attach(self.search_radioclean, 1, 2, 1, 2,
                             xoptions=0, xpadding=0)
         search_table.attach(self.search_fieldclean, 2, 4, 1, 2, xpadding=4)
+        search_table.attach(search_labelresultsmax, 0, 2, 2, 3,
+                            xoptions=Gtk.AttachOptions.FILL, xpadding=6)
+        search_table.attach(self.search_spinresultsmax, 2, 3, 2, 3,
+                            xoptions=Gtk.AttachOptions.FILL, xpadding=0)
         search_table.attach(search_button_box, 3, 4, 2, 3)
 
         widget_space = 5
@@ -767,6 +786,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
     def __save_config(self, widget):
         self.config_set('searchraw', self.search_radioraw.get_active())
+        self.config_set('resultsmax',
+                        self.search_spinresultsmax.get_value_as_int())
 
     def __drag_data_get(self, view, ctx, sel, tid, etime, treeselection):
         model, iter = treeselection.get_selected()
@@ -808,7 +829,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
                 search.add_engine(eng['class'], eng['replace'])
 
         raw = self.search_radioraw.get_active()
-        search.start(text, raw)
+        limit = self.search_spinresultsmax.get_value_as_int()
+        search.start(text, raw, limit)
 
         # Focus the list
         self.treeview.grab_focus()
@@ -890,13 +912,13 @@ class CoverSearch(object):
 
         self._stop = True
 
-    def start(self, query, raw):
+    def start(self, query, raw, limit):
         """Start search. The callback function will be called after each of
         the search engines has finished."""
 
         for engine, replace in self.engine_list:
             thr = threading.Thread(target=self.__search_thread,
-                                   args=(engine, query, replace, raw))
+                                   args=(engine, query, replace, raw, limit))
             thr.setDaemon(True)
             thr.start()
 
@@ -904,7 +926,7 @@ class CoverSearch(object):
         if not len(self.engine_list):
             GLib.idle_add(self.callback, [], 1)
 
-    def __search_thread(self, engine, query, replace, raw):
+    def __search_thread(self, engine, query, replace, raw, limit):
         """Creates searching threads which call the callback function after
         they are finished"""
 
@@ -914,7 +936,7 @@ class CoverSearch(object):
                 (search, engine.__name__))
         result = []
         try:
-            result = engine().start(search)
+            result = engine().start(search, limit)
         except Exception:
             print_w("[AlbumArt] %s: %r" % (engine.__name__, query))
             print_exc()
