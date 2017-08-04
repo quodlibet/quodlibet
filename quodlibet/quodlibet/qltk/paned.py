@@ -183,7 +183,7 @@ class MultiRPaned(object):
 
         return self._root_paned
 
-    def make_pane_widths_equal(self):
+    def make_pane_sizes_equal(self):
         paneds = self._get_paneds()
 
         # the relative paned widths must be equal to the reciprocal (1/i) of

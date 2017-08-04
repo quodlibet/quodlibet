@@ -237,7 +237,7 @@ class Preferences(qltk.UniqueWindow):
             browser.set_all_panes()
 
         if equal_width.get_active():
-            browser.make_pane_widths_equal()
+            browser.make_pane_sizes_equal()
 
         if close:
             self.destroy()

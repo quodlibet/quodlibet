@@ -164,7 +164,7 @@ class TPanedBrowser(TestCase):
     def test_make_pane_widths_equal(self):
         config.set("browsers", "panes", "artist\talbum\t~year\t~#track")
         self.bar.set_all_panes()
-        self.bar.make_pane_widths_equal()
+        self.bar.make_pane_sizes_equal()
         paneds = self.bar.multi_paned._get_paneds()
 
         self.failUnlessAlmostEqual(paneds[0].get_relative(), 1.0 / 4.0)

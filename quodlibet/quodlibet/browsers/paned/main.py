@@ -243,8 +243,8 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self.activate()
         self._panes[-1].uninhibit()
 
-    def make_pane_widths_equal(self):
-        self.multi_paned.make_pane_widths_equal()
+    def make_pane_sizes_equal(self):
+        self.multi_paned.make_pane_sizes_equal()
 
     def __get_filter_pane(self, key):
         """Get the best pane for filtering etc."""

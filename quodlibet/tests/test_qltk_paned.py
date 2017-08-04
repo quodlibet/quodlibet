@@ -131,11 +131,11 @@ class TMultiRPaned(object):
         self.assertIs(sws[1], sub_paned.get_child1())
         self.assertIs(sws[2], sub_paned.get_child2())
 
-    def test_make_pane_widths_equal(self):
+    def test_make_pane_sizes_equal(self):
         p = self.Kind()
         sws = [Gtk.ScrolledWindow() for _ in range(4)]
         p.set_widgets(sws)
-        p.make_pane_widths_equal()
+        p.make_pane_sizes_equal()
 
         paneds = p._get_paneds()
         self.failUnlessAlmostEqual(paneds[0].get_relative(), 1.0 / 4.0)
