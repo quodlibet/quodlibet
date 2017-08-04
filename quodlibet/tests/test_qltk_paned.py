@@ -153,7 +153,7 @@ class TMultiRPaned(object):
             horizontal_opposite = False
 
         p.change_orientation(horizontal=horizontal_opposite)
-        for paned in p._get_paneds():
+        for paned in p.get_paneds():
             self.assertIs(paned.props.orientation, opposite)
 
     def test_destroy(self):
@@ -183,7 +183,7 @@ class TConfigMultiRPaned(object):
         sws = [Gtk.ScrolledWindow() for _ in range(3)]
         p.set_widgets(sws)
 
-        paneds = p._get_paneds()
+        paneds = p.get_paneds()
         paneds[0].set_relative(0.4)
         paneds[1].set_relative(0.6)
         p.save_widths()

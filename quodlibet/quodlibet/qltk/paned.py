@@ -184,7 +184,7 @@ class MultiRPaned(object):
         return self._root_paned
 
     def make_pane_sizes_equal(self):
-        paneds = self._get_paneds()
+        paneds = self.get_paneds()
 
         # the relative paned widths must be equal to the reciprocal (1/i) of
         # their respective indices (i) in reverse order (from right to left)
@@ -201,7 +201,7 @@ class MultiRPaned(object):
         hor = Gtk.Orientation.HORIZONTAL
         ver = Gtk.Orientation.VERTICAL
 
-        for paned in self._get_paneds():
+        for paned in self.get_paneds():
             paned.props.orientation = hor if horizontal else ver
 
     def destroy(self):
@@ -211,7 +211,7 @@ class MultiRPaned(object):
     def show_all(self):
         self._root_paned.show_all()
 
-    def _get_paneds(self):
+    def get_paneds(self):
         """Get all internal paneds in a flat, ordered list."""
 
         paneds = [self._root_paned]
@@ -246,7 +246,7 @@ class ConfigMultiRPaned(MultiRPaned):
 
     def set_widgets(self, widgets):
         super(ConfigMultiRPaned, self).set_widgets(widgets)
-        paneds = self._get_paneds()
+        paneds = self.get_paneds()
 
         # Connect all paneds
         for paned in paneds:
@@ -257,7 +257,7 @@ class ConfigMultiRPaned(MultiRPaned):
     def save_widths(self):
         """Save all current paned widths."""
 
-        paneds = self._get_paneds()
+        paneds = self.get_paneds()
         if len(paneds) == 1 and not paneds[0].get_child1():
             # If there's only one pane (i.e. the only paned has just one
             # child), do not save the paned width, as this will cause
@@ -273,7 +273,7 @@ class ConfigMultiRPaned(MultiRPaned):
         """Restore pane widths from the config."""
 
         widths = config.getstringlist(self.section, self.option, [])
-        paneds = self._get_paneds()
+        paneds = self.get_paneds()
 
         if not widths:
             # If no widths are saved, save the current widths
