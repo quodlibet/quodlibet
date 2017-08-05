@@ -280,6 +280,11 @@ def temp_filename(*args, **kwargs):
             raise
 
 
+def relatively_close(x, y, tolerance=0.01):
+    """Returns True if x is within tolerance of y, else returns False"""
+    return abs(x - y) <= tolerance * max(abs(x), abs(y))
+
+
 def get_temp_copy(path):
     """Returns a copy of the file with the same extension"""
 

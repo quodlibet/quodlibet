@@ -11,7 +11,7 @@ from quodlibet.qltk.paned import RVPaned, RHPaned, ConfigRVPaned, \
 from quodlibet import config
 
 from . import TestCase
-from .helper import visible
+from .helper import visible, relatively_close
 
 
 class TRPaned(object):
@@ -92,7 +92,7 @@ class TConfigRPaned(TestCase):
         self.failUnlessAlmostEqual(config_value, 0.10, 2)
 
 
-class TMultiRPaned(object):
+class TMultiPaned(object):
     Kind = None
 
     def test_set_widgets(self):
@@ -135,12 +135,27 @@ class TMultiRPaned(object):
         p = self.Kind()
         sws = [Gtk.ScrolledWindow() for _ in range(4)]
         p.set_widgets(sws)
-        p.make_pane_sizes_equal()
 
-        paneds = p._get_paneds()
-        self.failUnlessAlmostEqual(paneds[0].get_relative(), 1.0 / 4.0)
-        self.failUnlessAlmostEqual(paneds[1].get_relative(), 1.0 / 3.0)
-        self.failUnlessAlmostEqual(paneds[2].get_relative(), 1.0 / 2.0)
+        size = 500
+        with visible(p.get_paned(), size, size):
+            p.make_pane_sizes_equal()
+
+            paneds = p.get_paneds()
+
+            if isinstance(p.PANED(), RPaned):
+                self.failUnlessAlmostEqual(
+                    paneds[0].get_relative(), 1.0 / 4.0, 2)
+                self.failUnlessAlmostEqual(
+                    paneds[1].get_relative(), 1.0 / 3.0, 2)
+                self.failUnlessAlmostEqual(
+                    paneds[2].get_relative(), 1.0 / 2.0, 2)
+            else:
+                self.failUnless(
+                    relatively_close(paneds[0].get_position(), size / 4))
+                self.failUnless(
+                    relatively_close(paneds[1].get_position(), size / 4))
+                self.failUnless(
+                    relatively_close(paneds[2].get_position(), size / 4))
 
     def test_change_orientation(self):
         p = self.Kind()
@@ -160,11 +175,11 @@ class TMultiRPaned(object):
         self.Kind().destroy()
 
 
-class TMultiRHPaned(TestCase, TMultiRPaned):
+class TMultiRHPaned(TestCase, TMultiPaned):
     Kind = MultiRHPaned
 
 
-class TMultiRVPaned(TestCase, TMultiRPaned):
+class TMultiRVPaned(TestCase, TMultiPaned):
     Kind = MultiRVPaned
 
 

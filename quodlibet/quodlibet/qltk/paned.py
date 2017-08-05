@@ -139,7 +139,7 @@ class ConfigRVPaned(ConfigRPaned):
     ORIENTATION = Gtk.Orientation.VERTICAL
 
 
-class MultiRPaned(object):
+class MultiPaned(object):
     """A Paned that supports an unlimited number of panes."""
 
     # The Paned type (horizontal or vertical)
@@ -150,7 +150,7 @@ class MultiRPaned(object):
 
         if self.PANED is None:
             explanation = ("PANED is None. Do not directly"
-                           "instantiate MultiRPaned, use"
+                           "instantiate MultiPaned, use"
                            "one of its subclasses.")
             raise AttributeError(explanation)
 
@@ -192,8 +192,18 @@ class MultiRPaned(object):
         # from zero- to one-indexed, and +1 for compensating that the last
         # paned contains two panes
         for i, paned in enumerate(reversed(paneds)):
-            width = min(1.0 / (i + 2), 0.5)
-            paned.set_relative(width)
+            proportion = min(1.0 / (i + 2), 0.5)
+            if isinstance(paned, RPaned):
+                # relative
+                paned.set_relative(proportion)
+            else:
+                # absolute
+                if paned.ORIENTATION == Gtk.Orientation.HORIZONTAL:
+                    paned.set_position(
+                        paned.get_allocation().width * proportion)
+                else:
+                    paned.set_position(
+                        paned.get_allocation().height * proportion)
 
     def change_orientation(self, horizontal):
         """Change the orientation of the paned."""
@@ -229,23 +239,23 @@ class MultiRPaned(object):
         return paneds
 
 
-class MultiRHPaned(MultiRPaned):
+class MultiRHPaned(MultiPaned):
     PANED = RHPaned
 
 
-class MultiRVPaned(MultiRPaned):
+class MultiRVPaned(MultiPaned):
     PANED = RVPaned
 
 
-class ConfigMultiRPaned(MultiRPaned):
+class ConfigMultiPaned(MultiPaned):
 
     def __init__(self, section, option):
-        super(ConfigMultiRPaned, self).__init__()
+        super(ConfigMultiPaned, self).__init__()
         self.section = section
         self.option = option
 
     def set_widgets(self, widgets):
-        super(ConfigMultiRPaned, self).set_widgets(widgets)
+        super(ConfigMultiPaned, self).set_widgets(widgets)
         paneds = self.get_paneds()
 
         # Connect all paneds
@@ -298,9 +308,9 @@ class ConfigMultiRPaned(MultiRPaned):
         self.save_widths()
 
 
-class ConfigMultiRHPaned(ConfigMultiRPaned):
+class ConfigMultiRHPaned(ConfigMultiPaned):
     PANED = RHPaned
 
 
-class ConfigMultiRVPaned(ConfigMultiRPaned):
+class ConfigMultiRVPaned(ConfigMultiPaned):
     PANED = RVPaned
