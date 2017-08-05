@@ -120,7 +120,7 @@ class TMultiPaned(object):
         self.assertIs(sws[0], paned.get_child1())
         self.assertIs(sws[1], paned.get_child2())
 
-        # 3 wigets
+        # 3 widgets
         sws = [Gtk.ScrolledWindow() for _ in range(3)]
         p.set_widgets(sws)
 
