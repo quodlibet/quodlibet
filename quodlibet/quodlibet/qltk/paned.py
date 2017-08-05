@@ -154,7 +154,7 @@ class MultiPaned(object):
                            "one of its subclasses.")
             raise AttributeError(explanation)
 
-    def set_widgets(self, widgets):
+    def set_widgets(self, widgets, packing=[(True, False)]):
         """Put a list of widgets in separate panes."""
 
         # root_paned will be the root of a nested paned structure.
@@ -163,19 +163,23 @@ class MultiPaned(object):
         self._root_paned = self.PANED()
 
         curr_paned = self._root_paned
-        for widget in widgets:
+        for i, widget in enumerate(widgets):
             # the last widget completes the last paned
+
+            pack_expand = packing[min(i, len(packing) - 1)][0]
+            pack_fill = packing[min(i, len(packing) - 1)][1]
+
             if widget is widgets[-1]:
-                curr_paned.pack2(widget, True, False)
+                curr_paned.pack2(widget, pack_expand, pack_fill)
                 break
-            curr_paned.pack1(widget, True, False)
+            curr_paned.pack1(widget, pack_expand, pack_fill)
 
             # the second last widget ends the nesting
             if widget is widgets[-2]:
                 continue
 
             tmp_paned = self.PANED()
-            curr_paned.pack2(tmp_paned, True, False)
+            curr_paned.pack2(tmp_paned, pack_expand, pack_fill)
             curr_paned = tmp_paned
 
     def get_paned(self):
