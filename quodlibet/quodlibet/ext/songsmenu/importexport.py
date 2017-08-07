@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Michael Urman
-#           2016 Nick Boultbee
+#        2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -16,7 +16,7 @@ from quodlibet.plugins.songshelpers import each_song, is_writable, is_a_file, \
 from quodlibet.qltk import ErrorMessage, Icons
 from quodlibet.util.path import get_home_dir
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.compat import cmp, iteritems
+from quodlibet.compat import iteritems
 
 __all__ = ['Export', 'Import']
 
@@ -46,6 +46,10 @@ def filechooser(save, title):
     return chooser
 
 
+def sort_key_for(s):
+    return s('~#track'), s('~basename'), s
+
+
 class Export(SongsMenuPlugin):
     PLUGIN_ID = "ExportMeta"
     PLUGIN_NAME = _("Export Metadata")
@@ -56,11 +60,7 @@ class Export(SongsMenuPlugin):
     plugin_handles = each_song(is_finite)
 
     def plugin_album(self, songs):
-
-        songs.sort(lambda a, b: cmp(a('~#track'), b('~#track')) or
-                                cmp(a('~basename'), b('~basename')) or
-                                cmp(a, b))
-
+        songs.sort(key=sort_key_for)
         chooser = filechooser(save=True, title=songs[0]('album'))
         resp = chooser.run()
         fn = chooser.get_filename()
@@ -110,9 +110,7 @@ class Import(SongsMenuPlugin):
     # and comment out the songs.sort line for safety.
     def plugin_album(self, songs):
 
-        songs.sort(lambda a, b: cmp(a('~#track'), b('~#track')) or
-                                cmp(a('~basename'), b('~basename')) or
-                                cmp(a, b))
+        songs.sort(key=sort_key_for)
 
         chooser = filechooser(save=False, title=songs[0]('album'))
         box = Gtk.HBox()
@@ -155,9 +153,9 @@ class Import(SongsMenuPlugin):
 
         if not (len(songs) == len(metadata) == len(names)):
             ErrorMessage(None, "Songs mismatch",
-                        "There are %(select)d songs selected, but %(meta)d "
-                        "songs in the file. Aborting." %
-                        dict(select=len(songs), meta=len(metadata))).run()
+                         "There are %(select)d songs selected, but %(meta)d "
+                         "songs in the file. Aborting." %
+                         dict(select=len(songs), meta=len(metadata))).run()
             return
 
         for song, meta, name in zip(songs, metadata, names):
