@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2016 Nick Boultbee
+#           2011-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -27,7 +27,7 @@ except ImportError:
 from senf import fsnative, environ, argv
 
 from quodlibet.compat import reraise as py_reraise, PY2, text_type, \
-    iteritems, reduce, number_types, long, cmp
+    iteritems, reduce, number_types, long
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import title
 
@@ -940,15 +940,10 @@ def limit_songs(songs, max, weight_by_ratings=False):
         return songs
     else:
         if weight_by_ratings:
-            def choose(r1, r2):
-                if r1 or r2:
-                    return cmp(random.random(), r1 / (r1 + r2))
-                else:
-                    return random.randint(-1, 1)
-
-            def rating(song):
-                return song("~#rating")
-            songs.sort(cmp=choose, key=rating)
+            def rating_weighted_random(song):
+                # Apply even (random : higher rating) weighting
+                return (1 - song("~#rating")) * (1 + random.random())
+            songs.sort(key=rating_weighted_random)
         else:
             random.shuffle(songs)
         return songs[:max]
