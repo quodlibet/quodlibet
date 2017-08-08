@@ -51,6 +51,8 @@ as the track.')
 
     _currentLrc = ""
     _start_clearing_from = 0
+    textview = None
+    scrolled_window = None
 
     def PluginPreferences(cls, window):
         vb = Gtk.VBox(spacing=6)
@@ -159,9 +161,13 @@ as the track.')
         self._clear_timers()
         GLib.source_remove(self._syncTimer)
         self.textview.destroy()
+        self.textview = None
         self.scrolled_window.destroy()
+        self.scrolled_window = None
 
     def _style_lyrics_window(self):
+        if self.scrolled_window is None:
+            return
         self.scrolled_window.set_size_request(-1, 2 * self._get_font_size())
         qltk.add_css(self.textview, """
             * {{
