@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2017 Fredrik Strupe
+#           2017 Fredrik Strupe, Pete Beardmore
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@ class Paned(Gtk.Paned):
     def __init__(self, *args, **kwargs):
         super(Paned, self).__init__(*args, **kwargs)
         self.ensure_wide_handle()
+        self.root = self
 
     def ensure_wide_handle(self):
         if gtk_version >= (3, 19):
@@ -120,6 +121,210 @@ class RVPaned(RPaned):
     ORIENTATION = Gtk.Orientation.VERTICAL
 
 
+class XPaned(Paned):
+    """A Paned with addition support for expander widget children."""
+
+    ORIENTATION = None
+
+    def __init__(self, *args, **kwargs):
+        if self.ORIENTATION is not None:
+            kwargs["orientation"] = self.ORIENTATION
+        super(XPaned, self).__init__(*args, **kwargs)
+
+        self.connect('button-release-event', self.__button_release)
+        self.connect('check_resize', self.__check_resize)
+
+        self.__disablenotify_id = None
+
+        self.__panelocks = []
+        self.__updating = False
+        self.__resizing = False
+
+    def __button_release(self, *data):
+        for w in self.__panelocks:
+            alloc = w.get_size_request()
+            size = 0
+            if self.ORIENTATION == Gtk.Orientation.VERTICAL:
+                size = alloc[1]
+                w.set_size_request(-1, size)
+            else:
+                size = alloc[0]
+                w.set_size_request(size, -1)
+#            print_d("%r | resetting locked size %d" % (w.id, size))
+        del self.__panelocks
+        self.__panelocks = []
+
+    def panelocks(self, widget, has=True):
+        widgets = []
+        if isinstance(widget.get_child1(), XPaned):
+            children = self.panelocks(widget.get_child1(), has)
+            if children:
+                widgets.extend(children)
+        elif widget.get_child1() and \
+                 hasattr(widget.get_child1(), "panelock") == has:
+            widgets.append(widget.get_child1())
+        if isinstance(widget.get_child2(), XPaned):
+            children = self.panelocks(widget.get_child2(), has)
+            if children:
+                widgets.extend(children)
+        elif widget.get_child2() and \
+                 hasattr(widget.get_child2(), "panelock") == has:
+            widgets.append(widget.get_child2())
+        return widgets
+
+    def update(self, widget):
+        """Pass the widget whose pane needs updating."""
+
+        self.__updating = True
+
+        if not isinstance(widget, Gtk.Expander):
+            return
+
+        # lock other non-expander or expanded widgets
+        widgets = self.panelocks(self.root)
+        for w in (w for w in widgets
+            if w is not widget
+                 and (not isinstance(w, Gtk.Expander) or w.get_expanded())):
+            # widget already changed. use stored if available
+            size = w.panelock.size
+#            print_d("%r | setting size request: %d" % (w.id, size))
+            if self.ORIENTATION == Gtk.Orientation.VERTICAL:
+                w.set_size_request(-1, size)
+            else:
+                w.set_size_request(size, -1)
+
+        expanded = widget.get_expanded()
+
+        # set up parent pane(s) position-set
+        parent = self
+        while parent:
+            if isinstance(parent, Gtk.Paned):
+                parent.props.position_set = expanded
+            parent = parent.get_parent()
+
+        if expanded:
+            # widget size changed. use stored if available
+            size = 0
+            try:
+                size = widget.panelock.size
+            except:
+                req = widget.get_requisition()
+                size = req.height if \
+                           self.ORIENTATION == Gtk.Orientation.VERTICAL\
+                           else req.width
+#            print_d("%r | restoring size: %d" % (widget.id, size))
+            if self.ORIENTATION == Gtk.Orientation.VERTICAL:
+                widget.set_size_request(-1, size)
+            else:
+                widget.set_size_request(size, -1)
+        else:
+            # ensure parent pane(s) are not using position-set
+            parent = self
+            while parent:
+                if isinstance(parent, Gtk.Paned):
+                    parent.props.position_set = False
+                parent = parent.get_parent()
+
+            title_size = widget.style_get_property('expander-size') +\
+                         widget.style_get_property('expander-spacing')
+            if widget.get_label_widget():
+                alloc = widget.get_label_widget().get_allocation()
+                if self.ORIENTATION == Gtk.Orientation.VERTICAL:
+                    title_size = max(title_size, alloc.height)
+                else:
+                    title_size = max(title_size, alloc.width)
+            if self.ORIENTATION == Gtk.Orientation.VERTICAL:
+                widget.set_size_request(-1, title_size + 5)
+            else:
+                widget.set_size_request(title_size + 5, -1)
+
+        p = widget
+        while p is not self.root:
+            p = p.get_parent()
+            p.check_resize()
+
+        self.__updating = False
+
+    def do_size_allocate(self, *args):
+        # clear size requests to allow shrinking
+        Gtk.HPaned.do_size_allocate(self, *args)
+
+        if not self.__updating:
+
+            if not self.__panelocks:
+                widgets = self.panelocks(self.root)
+                for w in widgets:
+                    if isinstance(w, Gtk.Expander) and not w.get_expanded():
+                        continue
+#                    print_d("%r | adding to panelocks, size: %d"
+#                            % (w.id, w.panelock.size))
+                    self.__panelocks.append(w)
+#                    print_d("%r | setting parent pane(s) to respect "
+#                            "handle position" % w.id)
+                    parent = self
+                    while parent:
+                        if isinstance(parent, Gtk.Paned):
+                            parent.props.position_set = True
+                        parent = parent.get_parent()
+
+#                    print_d("%r | clearing size request" % w.id)
+                    w.set_size_request(-1, -1)
+
+    def __check_resize(self, data, *args):
+
+        if self.__resizing:
+            return
+
+        def handle_cb(pane, param):
+            widget = self.get_child1()
+            if isinstance(widget, Gtk.Expander):
+                title_size = widget.style_get_property('expander-size') +\
+                             widget.style_get_property('expander-spacing')
+                if widget.get_label_widget():
+                    alloc = widget.get_label_widget().get_allocation()
+                    if self.ORIENTATION == Gtk.Orientation.VERTICAL:
+                        title_size = max(title_size, alloc.height)
+                    else:
+                        title_size = max(title_size, alloc.width)
+                self.set_position(title_size + 5)
+            return True
+
+        widget = self.get_child1()
+        if isinstance(widget, Gtk.Expander):
+            widget.get_parent().queue_draw()
+
+            expanded = widget.get_expanded()
+            if not expanded:
+                # refresh expandable
+                self.__resizing = True
+                widgets = self.panelocks(self.root, False)
+                for w in widgets:
+                    if w.get_parent() is not widget.get_parent():
+                        w.get_parent().check_resize()
+                self.__resizing = False
+
+                # add handle lock
+                if self.__disablenotify_id:
+                    if self.handler_is_connected(self.__disablenotify_id):
+                        return
+
+                self.__disablenotify_id = self.connect("notify", handle_cb)
+            else:
+                # remove handle lock
+                if self.__disablenotify_id:
+                    if self.handler_is_connected(self.__disablenotify_id):
+                        self.handler_disconnect(self.__disablenotify_id)
+                    self.__disablenotify_id = None
+
+
+class XHPaned(XPaned):
+    ORIENTATION = Gtk.Orientation.HORIZONTAL
+
+
+class XVPaned(XPaned):
+    ORIENTATION = Gtk.Orientation.VERTICAL
+
+
 class ConfigRPaned(RPaned):
     def __init__(self, section, option, default, *args, **kwargs):
         super(ConfigRPaned, self).__init__(*args, **kwargs)
@@ -179,6 +384,8 @@ class MultiPaned(object):
                 continue
 
             tmp_paned = self.PANED()
+            tmp_paned.root = self._root_paned
+
             curr_paned.pack2(tmp_paned, pack_expand, pack_fill)
             curr_paned = tmp_paned
 
@@ -251,6 +458,14 @@ class MultiRVPaned(MultiPaned):
     PANED = RVPaned
 
 
+class MultiXHPaned(MultiPaned):
+    PANED = XHPaned
+
+
+class MultiXVPaned(MultiPaned):
+    PANED = XVPaned
+
+
 class ConfigMultiPaned(MultiPaned):
 
     def __init__(self, section, option):
@@ -318,3 +533,27 @@ class ConfigMultiRHPaned(ConfigMultiPaned):
 
 class ConfigMultiRVPaned(ConfigMultiPaned):
     PANED = RVPaned
+
+
+class PaneLock(object):
+    """XPaned helper to allow easy identification of child widgets that want
+    to lock their parent pane size
+    """
+
+    def __init__(self, id, orientation, default_size=0):
+        self.id = id
+        self.size = self.default_size = default_size
+        self.orientation = orientation
+        self.updating = False
+
+    def size_allocate(self, allocation):
+
+        alloc_size = allocation.height \
+            if self.orientation == Gtk.Orientation.VERTICAL \
+            else allocation.width
+
+        if alloc_size > self.default_size:
+            self.size = alloc_size
+
+#            print_d("%s | size_allocate event. storing height: %d" %
+#                    (self.id, self.size))
