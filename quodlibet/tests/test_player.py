@@ -203,10 +203,10 @@ class TPlayerMixin(object):
 
     def test_reset(self):
         self.player.go_to(None)
-        self.player.reset()
+        self.player._reset()
         self.assertEqual(self.player.song, FILES[0])
         self.player.next()
-        self.player.reset()
+        self.player._reset()
         self.assertEqual(self.player.song, FILES[0])
 
     def test_equalizer(self):
@@ -262,6 +262,28 @@ class TPlayerMixin(object):
         self.player.volume = 0.5
         self.player.next()
         self.assertEqual(self.player.volume, 0.5)
+
+    def test_play(self):
+        assert self.player.song is None
+        assert self.player.paused
+        self.player.play()
+        assert not self.player.paused
+        song = self.player.song
+        assert song is not None
+        self.player.play()
+        assert not self.player.paused
+        assert self.player.song is song
+
+    def test_playpause(self):
+        assert self.player.song is None
+        assert self.player.paused
+        self.player.playpause()
+        assert not self.player.paused
+        song = self.player.song
+        assert song is not None
+        self.player.playpause()
+        assert self.player.paused
+        assert self.player.song is song
 
 
 class TNullPlayer(TPlayer, TPlayerMixin):

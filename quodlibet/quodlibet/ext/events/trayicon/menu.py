@@ -204,7 +204,4 @@ class IndicatorMenu(Gtk.Menu):
         self._playlists_item.show_all()
 
     def _on_play_pause(self, menuitem, player):
-        if player.song:
-            player.paused ^= True
-        else:
-            player.reset()
+        player.playpause()

@@ -1285,10 +1285,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             self.__jump_to_current(False)
 
     def __play_pause(self, *args):
-        if app.player.song is None:
-            app.player.reset()
-        else:
-            app.player.paused ^= True
+        app.player.playpause()
 
     def __jump_to_current(self, explicit, force_scroll=False):
         """Select/scroll to the current playing song in the playlist.
@@ -1406,7 +1403,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             window.show()
 
     def __browser_activate(self, browser):
-        app.player.reset()
+        app.player.go_to(None)
+        app.player.play()
 
     def __browser_cb(self, browser, songs, sorted, library, player):
         if browser.background:

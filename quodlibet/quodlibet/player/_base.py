@@ -235,7 +235,27 @@ class BasePlayer(GObject.GObject, Equalizer):
         self.paused = True
         self.seek(0)
 
-    def reset(self):
+    def play(self):
+        """If a song is active then unpause else reset the source and start
+        playing.
+        """
+
+        if self.song is None:
+            self._reset()
+        else:
+            self.paused = False
+
+    def playpause(self):
+        """If a song is active then toogle the pause mode else reset the
+        source and start playing.
+        """
+
+        if self.song is None:
+            self._reset()
+        else:
+            self.paused ^= True
+
+    def _reset(self):
         """Reset the source and start playing if possible"""
 
         self._source.reset()

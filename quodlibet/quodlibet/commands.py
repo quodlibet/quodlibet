@@ -144,18 +144,12 @@ def _pause(app):
 
 @registry.register("play")
 def _play(app):
-    player = app.player
-    if player.song:
-        player.paused = False
+    app.player.play()
 
 
 @registry.register("play-pause")
 def _play_pause(app):
-    player = app.player
-    if player.song is None:
-        player.reset()
-    else:
-        player.paused ^= True
+    app.player.playpause()
 
 
 @registry.register("stop")

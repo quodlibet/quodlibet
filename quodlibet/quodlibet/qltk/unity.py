@@ -54,10 +54,7 @@ def init(desktop_id, player):
     main.child_append(play_pause)
 
     def play_pause_cb(item, timestamp):
-        if player.song is None:
-            player.reset()
-        else:
-            player.paused ^= True
+        player.playpause()
 
     play_pause.connect("item-activated", play_pause_cb)
 

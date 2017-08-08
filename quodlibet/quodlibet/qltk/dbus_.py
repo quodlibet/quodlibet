@@ -95,17 +95,11 @@ class DBusHandler(dbus.service.Object):
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def Play(self):
-        if self._player.song is None:
-            self._player.reset()
-        else:
-            self._player.paused = False
+        self._player.play()
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def PlayPause(self):
-        if self._player.song is None:
-            self._player.reset()
-        else:
-            self._player.paused ^= True
+        self._player.playpause()
         return self._player.paused
 
     @dbus.service.method('net.sacredchao.QuodLibet', in_signature='s')
