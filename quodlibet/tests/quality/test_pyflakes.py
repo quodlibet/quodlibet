@@ -12,9 +12,10 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 import pytest
 
 from quodlibet.util import is_wine
+from .util import iter_project_py_files, setup_cfg
 
 os.environ["PYFLAKES_NODOCTEST"] = "1"
-os.environ["PYFLAKES_BUILTINS"] = "execfile,reload"
+os.environ["PYFLAKES_BUILTINS"] = ",".join(setup_cfg.builtins)
 
 try:
     from pyflakes.scripts import pyflakes
@@ -23,8 +24,6 @@ except ImportError:
 
 from tests import TestCase
 from tests.helper import capture_output
-
-from .util import iter_project_py_files
 
 
 def create_pool():
