@@ -243,7 +243,7 @@ atexit.register(exit_test_environ)
 
 
 def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
-         quality=False):
+         quality=True):
     """Returns 0 if everything passed"""
 
     # make glib warnings fatal

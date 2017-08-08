@@ -28,7 +28,6 @@ defaults: &defaults
     - run: docker image load -i "_ci_cache/$DOCKERIMAGE"
     - run: docker run --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --detach "$DOCKERIMAGE" bash > container_id
     - run: docker exec "$(cat container_id)" $PYTHON $PYARGS ./setup.py test
-    - run: docker exec "$(cat container_id)" $PYTHON $PYARGS ./setup.py quality
     - run: docker stop "$(cat container_id)"
 
 version: 2

@@ -18,4 +18,3 @@ install:
 script:
  - cd quodlibet
  - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS setup.py test; fi
- - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run setup.py quality; fi

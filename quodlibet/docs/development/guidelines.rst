@@ -34,9 +34,6 @@ We try to keep Quod Libet's code in pretty good shape; when submitting a
 patch, it's much easier to get it included quickly if you run through this
 checklist of common-sense code quality items. Make sure your patch:
 
-* Is `PEP 8 <https://www.python.org/dev/peps/pep-0008/>`_ compliant and 
-  doesn't generate new `pyflakes <https://pypi.python.org/pypi/pyflakes>`__ 
-  warnings. You can test this by executing ``./setup.py quality``
 * Passes existing tests. You can test this by executing ``./setup.py test``
 * Is commented.
 * Adds your name to the copyright header of every file you touch.

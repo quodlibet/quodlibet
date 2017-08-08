@@ -40,6 +40,7 @@ class test_cmd(Command):
         ("all", None, "run all suites"),
         ("exitfirst", "x", "stop after first failing test"),
         ("no-network", "n", "skip tests requiring a network connection"),
+        ("no-quality", "n", "skip tests for code quality"),
     ]
 
     def initialize_options(self):
@@ -49,6 +50,7 @@ class test_cmd(Command):
         self.all = False
         self.exitfirst = False
         self.no_network = False
+        self.no_quality = False
 
     def finalize_options(self):
         if self.to_run:
@@ -58,6 +60,7 @@ class test_cmd(Command):
         self.suite = self.suite and str(self.suite)
         self.exitfirst = bool(self.exitfirst)
         self.no_network = bool(self.no_network)
+        self.no_quality = bool(self.no_quality)
 
     def run(self):
         import tests
@@ -69,7 +72,7 @@ class test_cmd(Command):
         status = tests.unit(run=self.to_run, suite=suite,
                             strict=self.strict, exitfirst=self.exitfirst,
                             network=(not self.no_network or self.all),
-                            quality=self.all)
+                            quality=(not self.no_quality or self.all))
         if status != 0:
             raise SystemExit(status)
 
@@ -145,7 +148,6 @@ class distcheck_cmd(sdist):
         old_pwd = os.getcwd()
         os.chdir(extract_dir)
         self.spawn([sys.executable, "setup.py", "test"])
-        self.spawn([sys.executable, "setup.py", "quality"])
         self.spawn([sys.executable, "setup.py", "build"])
         self.spawn([sys.executable, "setup.py", "build_sphinx"])
         self.spawn([sys.executable, "setup.py", "install",
