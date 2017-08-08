@@ -21,11 +21,21 @@ from quodlibet.util import print_w
 from quodlibet.util.thread import call_async, Cancellable
 from quodlibet.qltk import add_css, is_accel, gtk_version
 
-from .paned import Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, \
-    ConfigRHPaned, ConfigRVPaned
+from .paned import Paned, RHPaned, RVPaned, \
+                   XHPaned, XVPaned, \
+                   ConfigRHPaned, ConfigRVPaned, \
+                   MultiRHPaned, MultiRVPaned, \
+                   MultiXHPaned, MultiXVPaned, \
+                   ConfigMultiRHPaned, ConfigMultiRVPaned, \
+                   PaneLock
 
-
-Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, ConfigRHPaned, ConfigRVPaned
+Paned, RHPaned, RVPaned
+XHPaned, XVPaned
+ConfigRHPaned, ConfigRVPaned
+MultiRHPaned, MultiRVPaned
+MultiXHPaned, MultiXVPaned
+ConfigMultiRHPaned, ConfigMultiRVPaned
+PaneLock
 
 
 class ScrolledWindow(Gtk.ScrolledWindow):
