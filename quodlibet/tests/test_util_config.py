@@ -87,6 +87,13 @@ class TConfig(TestCase):
         conf.defaults.set("player", "backend", "blah_new")
         self.assertEqual(conf.get("player", "backend"), "blah_new")
 
+    def test_reset_no_section(self):
+        conf = Config()
+        conf.defaults.add_section("player")
+        conf.defaults.set("player", "backend", "blah")
+        conf.reset("player", "backend")
+        assert conf.get("player", "backend") == "blah"
+
     def test_initial_after_set(self):
         conf = Config()
         conf.add_section("player")
