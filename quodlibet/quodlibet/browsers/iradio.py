@@ -257,8 +257,8 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
 
         decomp = bz2.BZ2Decompressor()
 
-        data = ""
-        temp = ""
+        data = b""
+        temp = b""
         read = 0
         while temp or not data:
             read += len(temp)
@@ -301,17 +301,20 @@ def parse_taglist(data):
     stations = []
     station = None
 
-    for l in data.split("\n"):
-        key = l.split("=")[0]
-        value = l.split("=", 1)[1]
-        if key == "uri":
+    for l in data.split(b"\n"):
+        if not l:
+            continue
+        key = l.split(b"=")[0]
+        value = l.split(b"=", 1)[1]
+        if key == b"uri":
             if station:
                 stations.append(station)
             station = IRFile(value)
             continue
 
+        key = decode(key)
         value = decode(value)
-        san = sanitize_tags({key: value}, stream=True).items()
+        san = list(sanitize_tags({key: value}, stream=True).items())
         if not san:
             continue
 
@@ -320,8 +323,10 @@ def parse_taglist(data):
             key = "~#listenerpeak"
             value = int(value)
 
-        if isinstance(value, bytes):
-            value = value.decode("utf-8")
+        if not station:
+            continue
+
+        if isinstance(value, text_type):
             if value not in station.list(key):
                 station.add(key, value)
         else:
@@ -690,7 +695,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         all_ = [self.filters.query(k) for k in self.filters.keys()]
         assert all_
         anycat_filter = reduce(lambda x, y: x | y, all_)
-        stations = filter(anycat_filter.search, stations)
+        stations = list(filter(anycat_filter.search, stations))
 
         # remove listenerpeak
         for s in stations:
