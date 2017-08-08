@@ -306,14 +306,14 @@ def parse_taglist(data):
             continue
         key = l.split(b"=")[0]
         value = l.split(b"=", 1)[1]
-        if key == b"uri":
+        key = decode(key)
+        value = decode(value)
+        if key == "uri":
             if station:
                 stations.append(station)
             station = IRFile(value)
             continue
 
-        key = decode(key)
-        value = decode(value)
         san = list(sanitize_tags({key: value}, stream=True).items())
         if not san:
             continue
