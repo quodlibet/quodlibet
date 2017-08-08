@@ -407,8 +407,8 @@ def numeric_phrase(singular, plural, n, template_var=None):
         replacement = '%(' + template_var + ')s'
         params = dict()
         params[template_var] = num_text
-    return (ngettext(singular.replace(template_var, replacement),
-            plural.replace(template_var, replacement), n) % params)
+    return (ngettext(singular, plural, n).replace(template_var, replacement) %
+            params)
 
 
 def npgettext(context, singular, plural, n):
