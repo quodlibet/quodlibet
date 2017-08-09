@@ -23,9 +23,10 @@ RUN apt-get install --no-install-recommends -y \
     gettext \
     intltool \
     libxine2 \
-    dbus-x11 
+    dbus-x11 \
+    curl
 
-RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper
+RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper coverage
 
 RUN useradd -ms /bin/bash user
 
