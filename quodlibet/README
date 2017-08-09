@@ -25,3 +25,6 @@ https://quodlibet.readthedocs.org/en/latest/development/overview.html
 
 .. image:: https://circleci.com/gh/quodlibet/quodlibet.svg?style=shield
     :target: https://circleci.com/gh/quodlibet/quodlibet
+
+.. image:: https://codecov.io/gh/quodlibet/quodlibet/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/quodlibet/quodlibet

@@ -46,3 +46,4 @@ osx_bundle/_jhbuild
 
 # coverage.py html report
 quodlibet/coverage/*
+.coverage
