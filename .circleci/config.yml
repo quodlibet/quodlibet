@@ -30,7 +30,7 @@ defaults: &defaults
             docker exec -e COVERAGE_FILE=/tmp/.coverage "$(cat container_id)" $PYTHON $PYARGS -m coverage run --branch ./setup.py test
             docker exec "$(cat container_id)" curl https://codecov.io/bash -o /tmp/codecov
             docker exec -e COVERAGE_FILE=/tmp/.coverage "$(cat container_id)" $PYTHON -m coverage xml -o /tmp/coverage.xml
-            docker exec "$(cat container_id)" bash /tmp/codecov -y ../.codecov.yml -f /tmp/coverage.xml
+            docker exec "$(cat container_id)" bash /tmp/codecov -R "/home/user/app" -f /tmp/coverage.xml
           else
             docker exec "$(cat container_id)" $PYTHON $PYARGS ./setup.py test
           fi;
