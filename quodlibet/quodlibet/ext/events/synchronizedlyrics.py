@@ -36,7 +36,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 as the track.')
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
-    SYNC_PERIOD = 3000
+    SYNC_PERIOD = 10000
 
     DEFAULT_BGCOLOR = '#343428282C2C'
     DEFAULT_TXTCOLOR = '#FFFFFFFFFFFF'
@@ -94,7 +94,7 @@ as the track.')
         l.set_alignment(xalign=1.0, yalign=0.5)
         t.attach(l, 0, 1, 4, 5, xoptions=Gtk.AttachOptions.FILL)
 
-        a = Gtk.Adjustment.new(cls._get_font_size(), 6, 36, 1, 3, 0)
+        a = Gtk.Adjustment.new(cls._get_font_size(), 10, 72, 2, 3, 0)
         s = Gtk.SpinButton(adjustment=a)
         s.set_numeric(True)
         s.set_text(str(cls._get_font_size()))
@@ -168,13 +168,13 @@ as the track.')
     def _style_lyrics_window(self):
         if self.scrolled_window is None:
             return
-        self.scrolled_window.set_size_request(-1, 2 * self._get_font_size())
+        self.scrolled_window.set_size_request(-1, 1.6 * self._get_font_size())
         qltk.add_css(self.textview, """
             * {{
                 background-color: {0};
                 color: {1};
                 font-size: {2}px;
-                font-weight: bold;
+                padding: 0.2em;
             }}
         """.format(self._get_background_color(), self._get_text_color(),
                    self._get_font_size()))
@@ -237,6 +237,7 @@ as the track.')
         del tmp_dict
 
     def _set_timers(self):
+        print_d("Setting timers")
         if len(self._timers) == 0:
             cur_time = self._cur_position()
             cur_idx = self._greater(self._lines, cur_time)
