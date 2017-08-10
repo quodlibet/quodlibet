@@ -233,7 +233,7 @@ as the track.')
                     tmp_dict[t] = words
                 compressed = []
 
-        keys = tmp_dict.keys()
+        keys = list(tmp_dict.keys())
         keys.sort()
         for key in keys:
             self._lines.append((key, tmp_dict[key]))
