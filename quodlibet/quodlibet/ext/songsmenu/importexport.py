@@ -6,8 +6,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import os
+
 from gi.repository import Gtk
-from os.path import splitext, extsep, dirname
+from os.path import splitext, dirname
+
+from senf import fsn2bytes, extsep
 
 from quodlibet import _
 from quodlibet import app
@@ -73,18 +77,25 @@ class Export(SongsMenuPlugin):
 
         global lastfolder
         lastfolder = dirname(fn)
-        out = open(fn, 'w')
 
+        export_metadata(songs, fn)
+
+
+def export_metadata(songs, target_path):
+    """Raises OSError/IOError"""
+
+    with open(target_path, 'wb') as out:
         for song in songs:
-            print>>out, str(song('~basename'))
-            keys = song.keys()
-            keys.sort()
-            for key in keys:
+            out.write(fsn2bytes(song('~basename'), "utf-8"))
+            out.write(os.linesep.encode("utf-8"))
+
+            for key in sorted(song.keys()):
                 if key.startswith('~'):
                     continue
                 for val in song.list(key):
-                    print>>out, '%s=%s' % (key, val.encode('utf-8'))
-            print>>out
+                    line = '%s=%s' % (key, val)
+                    out.write(line.encode("utf-8"))
+                    out.write(os.linesep.encode("utf-8"))
 
 
 class Import(SongsMenuPlugin):
