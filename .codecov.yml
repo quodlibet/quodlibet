@@ -1,1 +1,4 @@
 comment: false
+
+fixes:
+  - "::quodlibet/"
