@@ -447,7 +447,7 @@ class AudioFile(dict, ImageContainer):
                 # If there are no embedded lyrics, try to read them from
                 # the external file.
                 try:
-                    fileobj = open(self.lyric_filename, "rU")
+                    fileobj = open(self.lyric_filename, "rUb")
                 except EnvironmentError:
                     return default
                 else:

@@ -15,7 +15,7 @@ from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
 from quodlibet.util.tags import _TAGS as TAGS
-from quodlibet.util.path import normalize_path
+from quodlibet.util.path import normalize_path, mkdir
 
 from .helper import temp_filename
 
@@ -408,6 +408,19 @@ class TAudioFile(TestCase):
         song["lyricist"] = u"Lyricist"
         self.assertTrue(isinstance(song.lyric_filename, fsnative))
 
+    def test_lyrics_from_file(self):
+        with temp_filename() as filename:
+            instance = AudioFile(artist='artist😬', title='title: again')
+            instance.sanitize(filename)
+            lyrics = "blah!\nblasé 😬\n"
+            lyrics_dir = os.path.dirname(instance.lyric_filename)
+            mkdir(lyrics_dir)
+            with open(instance.lyric_filename, "w") as lf:
+                lf.write(lyrics)
+            self.failUnlessEqual(instance("~lyrics"), lyrics)
+            os.remove(instance.lyric_filename)
+            os.rmdir(lyrics_dir)
+
     def test_mountpoint(self):
         song = AudioFile()
         song["~filename"] = fsnative(u"filename")
@@ -789,7 +802,7 @@ class TAudioFormats(TestCase):
             except AudioFileError:
                 pass
 
-    def test_reaload_non_existing(self):
+    def test_reload_non_existing(self):
         for t in format_types:
             if not t.is_file:
                 continue
