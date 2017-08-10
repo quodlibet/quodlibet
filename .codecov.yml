@@ -3,6 +3,8 @@ comment: false
 fixes:
   - "::quodlibet/"
 
-status:
-  project: false
-  patch: false
+coverage:
+  status:
+    project: false
+    patch: false
+    changes: false
