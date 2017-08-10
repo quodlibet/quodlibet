@@ -2,3 +2,7 @@ comment: false
 
 fixes:
   - "::quodlibet/"
+
+status:
+  project: false
+  patch: false
