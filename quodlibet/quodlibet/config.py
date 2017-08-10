@@ -98,6 +98,9 @@ INITIAL = {
         "column_widths": "",
 
         "column_expands": "",
+
+        # pane order
+        "pane_order": "playbar,main",
     },
 
     "browsers": {

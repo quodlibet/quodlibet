@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014, 2016 Nick Boultbee
+# Copyright 2014, 2016-2017 Nick Boultbee
 #                 2015 Christoph Reiter
+#                 2017 Pete Beardmore
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +17,8 @@ from gi.repository import Gtk
 
 class UserInterfacePlugin(object):
     """Plugins that provide a (Gtk+ Widget)
-    to display as a side bar (currently) in the main Quod Libet Window.
+    to display as a either side bar or widget bar (currently) in the
+    main Quod Libet Window.
 
     These can be combined well with an EventPlugin to listen for
     current song or selection changes.
@@ -30,31 +32,55 @@ class UserInterfacePlugin(object):
         """If defined, returns a Gtk.Box to populate the sidebar"""
         pass
 
+    def create_widgetbar(self):
+        """If defined, returns a Gtk.Box to populate the widgetbar"""
+        pass
+
 
 class UserInterfacePluginHandler(PluginHandler):
     def __init__(self):
 
         self.__plugins = {}
         self.__sidebars = {}
+        self.__widgetbars = {}
 
     def plugin_handle(self, plugin):
         return issubclass(plugin.cls, UserInterfacePlugin)
 
     def plugin_enable(self, plugin):
         self.__plugins[plugin.cls] = pl_obj = plugin.get_instance()
-        sidebar = pl_obj.create_sidebar()
-        app.window.hide_side_book()
-        if sidebar:
-            print_d("Enabling sidebar for %s" % plugin.cls)
-            self.__sidebars[plugin] = app.window.add_sidebar(
-                sidebar, name=plugin.name)
-            sidebar.show_all()
+
+        # sidebars
+        if hasattr(pl_obj, 'create_sidebar'):
+            sidebar = pl_obj.create_sidebar()
+            app.window.hide_side_book()
+            if sidebar:
+                print_d("Enabling sidebar for %s" % plugin.cls)
+                self.__sidebars[plugin] = app.window.add_sidebar(
+                    sidebar, name=plugin.name)
+                sidebar.show_all()
+
+        # widgetbars
+        if hasattr(pl_obj, 'create_widgetbar'):
+            widgetbar = pl_obj.create_widgetbar()
+            if widgetbar:
+                print_d("Enabling widgetbar for %s" % plugin.cls)
+                self.__widgetbars[plugin] = widgetbar
+                app.window.add_widgetbar(widgetbar)
+                widgetbar.show_all()
 
     def plugin_disable(self, plugin):
-        widget = self.__sidebars.get(plugin)
-        if widget:
-            print_d("Removing sidebar %s" % widget)
-            app.window.remove_sidebar(widget)
+
+        if plugin in self.__sidebars:
+            sidebar = self.__sidebars.get(plugin)
+            if sidebar:
+                print_d("Removing sidebar %s" % sidebar)
+                app.window.remove_sidebar(sidebar)
+        elif plugin in self.__widgetbars:
+            widgetbar = self.__widgetbars.get(plugin)
+            if widgetbar:
+                print_d("Removing widgetbar %s" % widgetbar)
+                app.window.remove_widgetbar(plugin.id)
         self.__plugins.pop(plugin.cls)
 
 

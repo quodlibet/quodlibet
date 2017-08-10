@@ -99,6 +99,7 @@ class Icons(str):
     PREFERENCES_SYSTEM = "preferences-system"  # "_Preferences"
     PREFERENCES_DESKTOP_SCREENSAVER = "preferences-desktop-screensaver"
     PREFERENCES_DESKTOP_THEME = "preferences-desktop-theme"
+    PREFERENCES_PLUGIN = "preferences-plugin"
     PROCESS_STOP = "process-stop"  # "_Stop"
     SYSTEM_RUN = "system-run"  # "_Execute"
     SYSTEM_SEARCH = "system-search"

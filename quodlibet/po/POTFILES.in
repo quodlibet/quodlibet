@@ -195,6 +195,7 @@ quodlibet/qltk/tracker.py
 quodlibet/qltk/tracknumbers.py
 quodlibet/qltk/unity.py
 quodlibet/qltk/views.py
+quodlibet/qltk/widgetbar.py
 quodlibet/qltk/wlw.py
 quodlibet/qltk/x.py
 quodlibet/update.py

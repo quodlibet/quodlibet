@@ -552,6 +552,15 @@ class FloatConfProp(ConfProp):
         return self._conf.getfloat(self._name)
 
 
+class StringListConfProp(ConfProp):
+
+    def __get__(self, *args, **kwargs):
+        return self._conf.getstringlist(self._name)
+
+    def __set__(self, obj, value):
+        self._conf.setstringlist(self._name, value)
+
+
 def str_to_color_tuple(s):
     """Raises ValueError"""
 

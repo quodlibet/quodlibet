@@ -11,6 +11,7 @@
 
 import os
 
+from itertools import groupby
 from gi.repository import Gtk, Gdk, GLib, Gio, GObject
 from senf import uri2fsn, fsnative, path2fsn
 
@@ -45,12 +46,14 @@ from quodlibet.qltk.notif import StatusBar, TaskController
 from quodlibet.qltk.playorder import PlayOrderWidget, RepeatSongForever, \
     RepeatListForever
 from quodlibet.qltk.pluginwin import PluginWindow
+from quodlibet.plugins import PluginManager
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
-from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action
+from quodlibet.qltk.x import RVPaned, MultiXVPaned, PaneLock,\
+                             Align, ScrolledWindow, Action
 from quodlibet.qltk.x import ToggleAction, RadioAction, HighlightToggleButton
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem, CellRendererPixbuf
 from quodlibet.qltk import Icons
@@ -299,8 +302,13 @@ class MainSongList(SongList):
 
 
 class TopBar(Gtk.Toolbar):
-    def __init__(self, parent, player, library):
+    def __init__(self, id, parent, player, library):
         super(TopBar, self).__init__()
+
+        self.id = id
+        self.panelock = PaneLock(self.id, Gtk.Orientation.VERTICAL, 0)
+        self.panelock.size = config.getint("memory", self.id + "_size", 0)
+        self.set_size_request(-1, self.panelock.size)
 
         # play controls
         control_item = Gtk.ToolItem()
@@ -357,6 +365,13 @@ class TopBar(Gtk.Toolbar):
         context = self.get_style_context()
         context.add_class("primary-toolbar")
 
+        self.connect('size_allocate', self.__size_allocate)
+        self.connect("destroy", self.__destroy)
+
+    def __size_allocate(self, widget, allocation):
+        if self.get_realized():
+            self.panelock.size_allocate(allocation)
+
     def set_seekbar_widget(self, widget):
         children = self._pattern_box.get_children()
         if len(children) > 1:
@@ -373,6 +388,12 @@ class TopBar(Gtk.Toolbar):
 
     def __song_art_changed(self, player, songs, library):
         self.image.refresh()
+
+    def __destroy(self, *args):
+        self.__save()
+
+    def __save(self):
+        config.set("memory", self.id + "_size", self.panelock.size)
 
 
 class QueueButton(HighlightToggleButton):
@@ -744,16 +765,26 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.playlist = PlaylistMux(
             player, self.qexpander.model, self.songlist.model)
 
-        top_bar = TopBar(self, player, library)
-        main_box.pack_start(top_bar, False, True, 0)
+        # ui elements set
+        self.uielements = {}
+
+        top_bar = TopBar('playbar', self, player, library)
         self.top_bar = top_bar
+        self.uielements['playbar'] = top_bar
 
-        self.__browserbox = Align(bottom=3)
-        self.__paned = paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
-        paned.pack1(self.__browserbox, resize=True)
-        # We'll pack2 when necessary (when the first sidebar plugin is set up)
+        # nested paneds supporting config read/write and expander widget bars
+        self.__multipaned = MultiXVPaned()
 
-        main_box.pack_start(paned, True, True, 0)
+        # box for 'dynamic' paneds
+        self.__dynelements_box = Align()
+        main_box.pack_start(self.__dynelements_box, True, True, 4)
+
+        # browser / sidebar
+        self.__browserbox = Gtk.VBox()
+        self.__browserpaned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
+        self.__browserpaned.pack1(self.__browserbox, resize=True)
+        # pack2 when the first sidebar plugin is set up
+        self.uielements['main'] = self.__browserpaned
 
         play_order = PlayOrderWidget(self.songlist.model, player)
         statusbox = StatusBarBox(play_order, self.qexpander)
@@ -761,11 +792,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.statusbar = statusbox.statusbar
 
         main_box.pack_start(
-            Align(statusbox, border=3, top=-3),
-            False, True, 0)
+            Align(statusbox, border=6), False, False, 0)
 
         self.songpane = SongListPaned(self.song_scroller, self.qexpander)
-        self.songpane.show_all()
 
         try:
             orders = []
@@ -778,8 +807,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         self.browser = None
         self.ui = ui
-
-        main_box.show_all()
 
         self._playback_error_dialog = None
         connect_destroy(player, 'song-started', self.__song_started)
@@ -834,6 +861,98 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         self.enable_window_tracking("quodlibet")
 
+        self.update_ui()
+
+    def update_ui(self):
+
+        uielements = self.get_uielements()
+
+        # unparent all ui elements
+        if self.__dynelements_box.get_children():
+            for w in uielements:
+                parent = w.get_parent()
+                if parent:
+                    parent.remove(w)
+            self.__dynelements_box.remove(
+                self.__dynelements_box.get_children()[0])
+
+        # add ui elements to multipane
+        print_d("adding %d widgets to multipane" % len(uielements))
+        self.__multipaned.set_widgets(uielements, [(False, False)])
+
+        # ensure initial panelocks
+        for w in uielements:
+            if hasattr(w, 'panelock') and not (isinstance(w, Gtk.Expander)
+                                               and not w.get_expanded()):
+                print_d("%r | setting panelock size: %d" %
+                            (w.id, w.panelock.size))
+                if w.panelock.orientation == Gtk.Orientation.VERTICAL:
+                    w.set_size_request(-1, w.panelock.size)
+                else:
+                    w.set_size_request(w.panelock.size, -1)
+                w.get_parent().queue_resize()
+
+        # expand browser only, implicitly meaning any pane in which it nests
+        w = self.uielements['main']
+        while w.get_parent():
+            p = w.get_parent()
+            if isinstance(p, Gtk.Paned):
+                if w == p.get_child1():
+                    p.remove(w)
+                    p.pack1(w, True, False)
+                else:
+                    p.remove(w)
+                    p.pack2(w, True, False)
+            w = p
+
+        self.__dynelements_box.add(self.__multipaned.get_paned())
+
+        self.show_all()
+
+    def get_uielements(self):
+
+        order = config.getstringlist('memory', 'pane_order') # default only
+
+        widgetbars = self.widgetbars_enabled
+        if widgetbars:
+            order = config.getstringlist('plugins', 'widgetbars_pane_order')
+
+        if 'main' not in order:
+            order = ['main'] + order
+
+        # remove dupes, maintain order
+        order = [s for s, _ in groupby(
+                    sorted(order, key=lambda s: order.index(s)))]
+
+        self.uielements_ordered = \
+            [self.uielements[key] for key in order
+                if key in self.uielements.keys()]
+
+        if widgetbars:
+            # keep 'missing'
+            extra = [key for key in self.uielements.keys()
+                    if key not in order]
+            order.extend(extra)
+
+            self.uielements_ordered.extend(
+                [val for key, val in self.uielements.items()
+                    if key in extra])
+
+        print_d("%d ui elements live:" % len(self.uielements_ordered))
+        for w in self.uielements_ordered:
+            print_d("%r" % w)
+
+        return self.uielements_ordered
+
+    @property
+    def widgetbars_enabled(self):
+        pm = PluginManager.instance
+        if not pm:
+            return False
+        widgetbars_plugin =\
+            next((p for p in pm.plugins if p.id == "widgetbars"), None)
+        return widgetbars_plugin and pm.enabled(widgetbars_plugin)
+
     def hide_side_book(self):
         self.side_book.hide()
 
@@ -852,17 +971,36 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.side_book.remove_page(self.side_book.page_num(widget))
         if self.side_book_empty:
             print_d("Hiding sidebar")
-            self.__paned.remove(self.__paned.get_children()[1])
+            self.__browserpaned.remove(self.__browserpaned.get_children()[1])
 
     def add_sidebar_to_layout(self, widget):
         print_d("Recreating sidebar")
         align = Align(widget, top=6, bottom=3)
-        self.__paned.pack2(align, shrink=True)
+        self.__browserpaned.pack2(align, shrink=True)
         align.show_all()
 
     @property
     def side_book_empty(self):
         return not self.side_book.get_children()
+
+    def add_widgetbar(self, widgetbar):
+
+        # check pool
+        if widgetbar.id in self.uielements.keys():
+            del self.uielements[widgetbar.id]
+
+        # add new
+        self.uielements[widgetbar.id] = widgetbar
+        self.update_ui()
+
+        return widgetbar
+
+    def remove_widgetbar(self, id):
+        if id in self.uielements.keys():
+            del self.uielements[id]
+            self.update_ui()
+            return True
+        return False
 
     def set_seekbar_widget(self, widget):
         """Add an alternative seek bar widget.
@@ -1262,8 +1400,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.reset_replaygain()
-        self.__browserbox.add(container)
+        self.__browserbox.pack_start(container, True, True, 3)
         container.show()
+
         self._filter_menu.set_browser(self.browser)
         self.__hide_headers()
 

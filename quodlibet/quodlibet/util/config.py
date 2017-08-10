@@ -477,7 +477,8 @@ class ConfigProxy(object):
 
         # methods starting with a section arg
         for name in ["get", "set", "getboolean", "getint", "getfloat",
-                     "reset", "settext", "gettext", "getbytes", "setbytes"]:
+                     "reset", "settext", "gettext", "getbytes", "setbytes",
+                     "getstringlist", "setstringlist"]:
             setattr(cls, name, get_func(name))
 
 ConfigProxy._init_wrappers()
