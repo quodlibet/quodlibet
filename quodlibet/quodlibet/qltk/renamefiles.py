@@ -350,10 +350,17 @@ class RenameFiles(Gtk.VBox):
         if path_old in art_sets.keys():
             images = art_sets[path_old]
         else:
-            art_sets[path_old] = images
+            def glob_escape(s):
+                for c in ['[', '*', '?']:
+                    s = s.replace(c, '[' + c + ']')
+                return s
+
             # generate art set for path
+            art_sets[path_old] = images
+            path_old_escaped = glob_escape(path_old)
             for suffix in self.IMAGE_EXTENSIONS:
-                images.extend(glob.glob(os.path.join(path_old, "*." + suffix)))
+                images.extend(glob.glob(os.path.join(path_old_escaped,
+                                                     "*." + suffix)))
         if len(images) > 0:
             # set not empty yet, (re)process
             filenames = config.getstringlist("albumart", "filenames")
