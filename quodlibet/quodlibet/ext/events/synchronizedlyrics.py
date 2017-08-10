@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
-#               2016 Nick Boultbee
+#            2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -49,7 +49,7 @@ as the track.')
     _lines = []
     _timers = []
 
-    _currentLrc = ""
+    _current_lrc = ""
     _start_clearing_from = 0
     textview = None
     scrolled_window = None
@@ -62,9 +62,9 @@ as the track.')
         t.set_col_spacings(6)
         t.set_row_spacings(3)
 
-        clrSection = Gtk.Label()
-        clrSection.set_markup("<b>" + _("Colors") + "</b>")
-        t.attach(clrSection, 0, 2, 0, 1)
+        clr_section = Gtk.Label()
+        clr_section.set_markup("<b>" + _("Colors") + "</b>")
+        t.attach(clr_section, 0, 2, 0, 1)
 
         l = Gtk.Label(label=_("Text:"))
         l.set_alignment(xalign=1.0, yalign=0.5)
@@ -86,9 +86,9 @@ as the track.')
         t.attach(b, 1, 2, 2, 3)
         b.connect('color-set', cls._set_background_color)
 
-        fontSection = Gtk.Label()
-        fontSection.set_markup("<b>" + _("Font") + "</b>")
-        t.attach(fontSection, 0, 2, 3, 4)
+        font_section = Gtk.Label()
+        font_section.set_markup("<b>" + _("Font") + "</b>")
+        t.attach(font_section, 0, 2, 3, 4)
 
         l = Gtk.Label(label=_("Size (px):"))
         l.set_alignment(xalign=1.0, yalign=0.5)
@@ -124,8 +124,8 @@ as the track.')
         self.config_set(self.CFG_BGCOLOR_KEY, button.get_color().to_string())
         self._style_lyrics_window()
 
-    def _set_font_size(self, sButton):
-        self.config_set(self.CFG_FONTSIZE_KEY, sButton.get_value_as_int())
+    def _set_font_size(self, button):
+        self.config_set(self.CFG_FONTSIZE_KEY, button.get_value_as_int())
         self._style_lyrics_window()
 
     def enabled(self):
@@ -135,7 +135,7 @@ as the track.')
         self.adjustment = self.scrolled_window.get_vadjustment()
 
         self.textview = Gtk.TextView()
-        self.textbuffer = self.textview.get_buffer()
+        self.text_buffer = self.textview.get_buffer()
         self.textview.set_editable(False)
         self.textview.set_cursor_visible(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
@@ -153,13 +153,13 @@ as the track.')
 
         self.scrolled_window.show()
 
-        self._syncTimer = GLib.timeout_add(self.SYNC_PERIOD, self._sync)
+        self._sync_timer = GLib.timeout_add(self.SYNC_PERIOD, self._sync)
         self._build_data()
         self._timer_control()
 
     def disabled(self):
         self._clear_timers()
-        GLib.source_remove(self._syncTimer)
+        GLib.source_remove(self._sync_timer)
         self.textview.destroy()
         self.textview = None
         self.scrolled_window.destroy()
@@ -183,52 +183,48 @@ as the track.')
         return app.player.get_position()
 
     def _build_data(self):
-        self.textbuffer.set_text("")
+        self.text_buffer.set_text("")
         if app.player.song is not None:
             # check in same location as track
-            trackName = app.player.song.get("~filename")
-            newLrc = os.path.splitext(trackName)[0] + ".lrc"
-            print_d("Checking for lyrics file %s" % newLrc)
-            if self._currentLrc != newLrc:
+            track_name = app.player.song.get("~filename")
+            new_lrc = os.path.splitext(track_name)[0] + ".lrc"
+            print_d("Checking for lyrics file %s" % new_lrc)
+            if self._current_lrc != new_lrc:
                 self._lines = []
-                if os.path.exists(newLrc):
-                    print_d("Found lyrics: %s" % newLrc)
-                    self._parse_lrc_file(newLrc)
-            self._currentLrc = newLrc
+                if os.path.exists(new_lrc):
+                    print_d("Found lyrics file: %s" % new_lrc)
+                    self._parse_lrc_file(new_lrc)
+            self._current_lrc = new_lrc
 
     def _parse_lrc_file(self, filename):
-        rawFile = ""
-        with open(filename, 'r') as lrcfile:
-            rawFile = lrcfile.read()
-
-        rawFile = rawFile.replace("\n", "")
+        with open(filename, 'r') as f:
+            raw_file = f.read()
+        raw_file = raw_file.replace("\n", "")
         begin = 0
-        keepReading = len(rawFile) != 0
+        keep_reading = len(raw_file) != 0
         tmp_dict = {}
         compressed = []
-        while keepReading:
-            lyricsLine = ""
-            nextFind = rawFile.find("[", begin + 1)
-            if(nextFind == -1):
-                keepReading = False
-                lyricsLine = rawFile[begin:]
+        while keep_reading:
+            next_find = raw_file.find("[", begin + 1)
+            if next_find == -1:
+                keep_reading = False
+                line = raw_file[begin:]
             else:
-                lyricsLine = rawFile[begin:nextFind]
-            begin = nextFind
+                line = raw_file[begin:next_find]
+            begin = next_find
 
             # parse lyricsLine
-            if not lyricsLine[1].isdigit():
+            if not line[1].isdigit():
                 continue
-            closeBracket = lyricsLine.find("]")
-            timeObject = datetime.strptime(lyricsLine[1:closeBracket],
-                                           '%M:%S.%f')
-            timeStamp = (timeObject.minute * 60000 + timeObject.second * 1000 +
-                         timeObject.microsecond / 1000)
-            words = lyricsLine[closeBracket + 1:]
-            if words == "":
-                compressed.append(timeStamp)
+            close_bracket = line.find("]")
+            t = datetime.strptime(line[1:close_bracket], '%M:%S.%f')
+            timestamp = (t.minute * 60000 + t.second * 1000 +
+                         t.microsecond / 1000)
+            words = line[close_bracket + 1:]
+            if not words:
+                compressed.append(timestamp)
             else:
-                tmp_dict[timeStamp] = words
+                tmp_dict[timestamp] = words
                 for t in compressed:
                     tmp_dict[t] = words
                 compressed = []
@@ -242,18 +238,18 @@ as the track.')
 
     def _set_timers(self):
         if len(self._timers) == 0:
-            curTime = self._cur_position()
-            curIndex = self._greater(self._lines, curTime)
-            if curIndex != -1:
-                while (curIndex < len(self._lines) and
-                       self._lines[curIndex][0] < curTime + self.SYNC_PERIOD):
+            cur_time = self._cur_position()
+            cur_idx = self._greater(self._lines, cur_time)
+            if cur_idx != -1:
+                while (cur_idx < len(self._lines) and
+                       self._lines[cur_idx][0] < cur_time + self.SYNC_PERIOD):
 
-                    timeStamp = self._lines[curIndex][0]
-                    lyricsLine = self._lines[curIndex][1]
-                    timerId = GLib.timeout_add(timeStamp - curTime, self._show,
-                                               lyricsLine)
-                    self._timers.append((timeStamp, timerId))
-                    curIndex += 1
+                    timestamp = self._lines[cur_idx][0]
+                    line = self._lines[cur_idx][1]
+                    tid = GLib.timeout_add(timestamp - cur_time, self._show,
+                                           line)
+                    self._timers.append((timestamp, tid))
+                    cur_idx += 1
 
     def _sync(self):
         if not app.player.paused:
@@ -269,15 +265,13 @@ as the track.')
         return False
 
     def _clear_timers(self):
-        curIndex = self._start_clearing_from
-        while curIndex < len(self._timers):
-            GLib.source_remove(self._timers[curIndex][1])
-            curIndex += 1
+        for ts, tid in self._timers[self._start_clearing_from:]:
+            GLib.source_remove(tid)
         self._timers = []
         self._start_clearing_from = 0
 
     def _show(self, line):
-        self.textbuffer.set_text(line)
+        self.text_buffer.set_text(line)
         self._start_clearing_from += 1
         print_d("♪ %s ♪" % line.strip())
         return False
