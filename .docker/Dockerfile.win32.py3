@@ -15,7 +15,8 @@ RUN apt-get update
 RUN apt-get install -y \
     wine wine32 xvfb \
     wget ca-certificates \
-    p7zip-full
+    p7zip-full \
+    git
 
 USER user
 
