@@ -6,7 +6,7 @@
 from tests import TestCase, get_data_path
 
 import os
-
+import io
 from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
 
 from quodlibet import config
@@ -410,15 +410,15 @@ class TAudioFile(TestCase):
 
     def test_lyrics_from_file(self):
         with temp_filename() as filename:
-            instance = AudioFile(artist='artist😬', title='title: again')
-            instance.sanitize(filename)
+            af = AudioFile(artist='Motörhead', title='this: again')
+            af.sanitize(filename)
             lyrics = "blah!\nblasé 😬\n"
-            lyrics_dir = os.path.dirname(instance.lyric_filename)
+            lyrics_dir = os.path.dirname(af.lyric_filename)
             mkdir(lyrics_dir)
-            with open(instance.lyric_filename, "w") as lf:
-                lf.write(lyrics)
-            self.failUnlessEqual(instance("~lyrics"), lyrics)
-            os.remove(instance.lyric_filename)
+            with io.open(af.lyric_filename, "w", encoding='utf-8') as lf:
+                lf.write(text_type(lyrics))
+            self.failUnlessEqual(af("~lyrics"), lyrics)
+            os.remove(af.lyric_filename)
             os.rmdir(lyrics_dir)
 
     def test_mountpoint(self):
