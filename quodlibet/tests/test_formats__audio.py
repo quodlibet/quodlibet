@@ -417,7 +417,8 @@ class TAudioFile(TestCase):
             mkdir(lyrics_dir)
             with io.open(af.lyric_filename, "w", encoding='utf-8') as lf:
                 lf.write(text_type(lyrics))
-            self.failUnlessEqual(af("~lyrics"), lyrics)
+            self.failUnlessEqual(af("~lyrics").splitlines(),
+                                 lyrics.splitlines())
             os.remove(af.lyric_filename)
             os.rmdir(lyrics_dir)
 
