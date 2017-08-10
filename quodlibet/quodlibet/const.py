@@ -173,6 +173,7 @@ IBBoard@github
 CreamyCookie@github
 Sauyon Lee
 Thomas Leberbauer
+Kristian Laakkonen
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
