@@ -132,6 +132,7 @@ quodlibet/ext/songsmenu/splitting.py
 quodlibet/ext/songsmenu/tapbpm.py
 quodlibet/ext/songsmenu/website_search.py
 quodlibet/ext/songsmenu/wikipedia.py
+quodlibet/ext/ui/widgetbars.py
 quodlibet/formats/_audio.py
 quodlibet/formats/__init__.py
 quodlibet/__init__.py
