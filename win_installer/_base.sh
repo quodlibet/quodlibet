@@ -112,6 +112,7 @@ musicbrainzngs==0.6
 mutagen==1.38
 pycodestyle==2.3.1
 pyflakes==1.5.0
+coverage==4.4.1
 "
 
     build_pip install --no-deps --no-binary ":all:" --upgrade \
