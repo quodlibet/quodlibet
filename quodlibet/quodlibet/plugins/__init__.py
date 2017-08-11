@@ -6,6 +6,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from gi.repository import GObject
+
 from quodlibet import _
 from quodlibet import config
 from quodlibet import util
@@ -193,7 +195,7 @@ class PluginHandler(object):
         raise NotImplementedError
 
 
-class PluginManager(object):
+class PluginManager(GObject.GObject):
     """
     The manager takes care of plugin loading/reloading. Interested plugin
     handlers can register them self to get called when plugins get enabled
@@ -227,6 +229,12 @@ class PluginManager(object):
     CONFIG_OPTION = "active_plugins"
 
     instance = None  # default instance
+
+    __gsignals__ = {
+        # model, iter, enabled
+        "plugin-toggled": (GObject.SignalFlags.RUN_LAST, None,
+                           (object, bool))
+    }
 
     def __init__(self, folders=None):
         """folders is a list of paths that will be scanned for plugins.
@@ -352,6 +360,7 @@ class PluginManager(object):
                     instance.disabled()
                 except Exception:
                     util.print_exc()
+            self.emit("plugin-toggled", plugin, True)
         else:
             print_d("Enable %r" % plugin.id)
             obj = plugin.get_instance()
@@ -363,6 +372,7 @@ class PluginManager(object):
             for handler in plugin.handlers:
                 handler.plugin_enable(plugin)
             self.__enabled.add(plugin.id)
+            self.emit("plugin-toggled", plugin, False)
 
     @property
     def failures(self):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Michael Urman, Joe Wreschnig
 #           2014, 2017 Nick Boultbee
+#           2017 Pete Beardmore
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,6 +13,7 @@ from gi.repository import GObject
 from quodlibet.util.dprint import print_e
 
 from quodlibet.plugins import PluginHandler
+from quodlibet.library.librarians import SongLibrarian
 
 from quodlibet.util.songwrapper import SongWrapper, ListWrapper
 from quodlibet.util.songwrapper import check_wrapper_changed
@@ -60,6 +62,9 @@ class EventPlugin(object):
         """Called when the selection in main songlist changes"""
         pass
 
+    def plugin_on_plugin_toggled(self, plugin, enabled):
+        pass
+
     PLUGIN_INSTANCE = True
 
     def enabled(self):
@@ -98,7 +103,8 @@ def _map_signals(obj, prefix="plugin_on_", blacklist=None):
 
 class EventPluginHandler(PluginHandler):
 
-    def __init__(self, librarian=None, player=None, songlist=None):
+    def __init__(self, librarian=None, player=None,
+                 songlist=None, pluginmanager=None):
         if librarian:
             sigs = _map_signals(librarian, blacklist=("notify",))
             for event, handle in sigs:
@@ -119,17 +125,28 @@ class EventPluginHandler(PluginHandler):
                 self.__invoke(self.librarian, "songs_selected", songs)
             songlist.connect("selection-changed", __selection_changed_cb)
 
+        if pluginmanager:
+            def __plugin_toggled_cb(pluginmanager, plugin, enabled):
+                self.__invoke(None, "plugin-toggled", plugin, enabled)
+            pluginmanager.connect("plugin-toggled", __plugin_toggled_cb)
+
         self.librarian = librarian
         self.__plugins = {}
         self.__sidebars = {}
 
-    def __invoke(self, librarian, event, *args):
+    def __invoke(self, target, event, *args):
         args = list(args)
-        if args and args[0]:
-            if isinstance(args[0], dict):
-                args[0] = SongWrapper(args[0])
-            elif isinstance(args[0], (set, list)):
-                args[0] = ListWrapper(args[0])
+
+        # prep args
+        if isinstance(target, SongLibrarian):
+            librarian = target
+            if args and args[0]:
+                if isinstance(args[0], dict):
+                    args[0] = SongWrapper(args[0])
+                elif isinstance(args[0], (set, list)):
+                    args[0] = ListWrapper(args[0])
+
+        # look for overrides in handled plugins
         for plugin in listvalues(self.__plugins):
             method_name = 'plugin_on_' + event.replace('-', '_')
             handler = getattr(plugin, method_name, None)
@@ -137,6 +154,7 @@ class EventPluginHandler(PluginHandler):
             def overridden(obj, name):
                 return name in type(obj).__dict__
 
+            # call override
             if overridden(plugin, method_name):
                 try:
                     handler(*args)
@@ -145,13 +163,14 @@ class EventPluginHandler(PluginHandler):
                             (method_name, type(plugin)))
                     errorhook()
 
-        if event not in ["removed", "changed"] and args:
-            from quodlibet import app
-            songs = args[0]
-            if not isinstance(songs, (set, list)):
-                songs = [songs]
-            songs = filter(None, songs)
-            check_wrapper_changed(librarian, app.window, songs)
+        if isinstance(target, SongLibrarian):
+            if event not in ["removed", "changed"] and args:
+                from quodlibet import app
+                songs = args[0]
+                if not isinstance(songs, (set, list)):
+                    songs = [songs]
+                songs = filter(None, songs)
+                check_wrapper_changed(librarian, app.window, songs)
 
     def plugin_handle(self, plugin):
         return issubclass(plugin.cls, EventPlugin)

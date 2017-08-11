@@ -46,6 +46,7 @@ def main(argv=None):
     from quodlibet import config
     from quodlibet import browsers
     from quodlibet import util
+    from quodlibet.plugins import PluginManager
 
     app.name = "Quod Libet"
     app.description = _("Music player and music library manager")
@@ -143,8 +144,9 @@ def main(argv=None):
 
     from quodlibet.plugins.events import EventPluginHandler
     from quodlibet.plugins.gui import UserInterfacePluginHandler
-    pm.register_handler(EventPluginHandler(library.librarian, player,
-                                           app.window.songlist))
+    pm.register_handler(
+        EventPluginHandler(library.librarian, player,
+                           app.window.songlist, PluginManager.instance))
     pm.register_handler(UserInterfacePluginHandler())
 
     from quodlibet.mmkeys import MMKeysHandler
