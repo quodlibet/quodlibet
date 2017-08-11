@@ -16,7 +16,8 @@ RUN apt-get install -y \
     wine wine32 xvfb \
     wget ca-certificates \
     p7zip-full \
-    git
+    git \
+    curl
 
 USER user
 
