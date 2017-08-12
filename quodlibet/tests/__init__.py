@@ -195,7 +195,7 @@ def init_test_environ():
         _VDISPLAY.start()
 
     _BUS_INFO = None
-    if os.name != "nt" and "DBUS_SESSION_BUS_ADDRESS" in environ:
+    if os.name != "nt" and sys.platform != "darwin":
         _BUS_INFO = dbus_launch_user()
         environ.update(_BUS_INFO)
 
