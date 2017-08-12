@@ -90,8 +90,8 @@ class FingerprintDialog(Window):
         submit.connect('clicked', self.__submit_cb)
         cancel = Button(_("_Cancel"))
         connect_obj(cancel, 'clicked', self.__cancel_cb, pool)
-        bbox.pack_start(submit, True, True, 0)
         bbox.pack_start(cancel, True, True, 0)
+        bbox.pack_start(submit, True, True, 0)
 
         outer_box.pack_start(box, True, True, 0)
         outer_box.pack_start(bbox, False, True, 0)
