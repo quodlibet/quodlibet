@@ -17,4 +17,6 @@ install:
 
 script:
  - cd quodlibet
- - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS setup.py test; fi
+ - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS -m coverage run --branch setup.py test; fi
+ - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS -m coverage xml; fi
+ - if [ "$TYPE" == "osx" ]; then bash <(curl -s https://codecov.io/bash); fi
