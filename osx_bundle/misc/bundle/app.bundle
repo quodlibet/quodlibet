@@ -32,6 +32,7 @@
   <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/cairo/*.so</binary>
   <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/*.so</binary>
   <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/gi/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/coverage/*.so</binary>
   <binary>${prefix}/libexec/gstreamer-1.0/gst-plugin-scanner</binary>
   <data dest="${bundle}/Contents/Resources/exfalso.icns">${project}/exfalso.icns</data>
   <data dest="${bundle}/Contents/Resources/quodlibet.icns">${project}/quodlibet.icns</data>
