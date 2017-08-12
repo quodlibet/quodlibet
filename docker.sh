@@ -35,5 +35,5 @@ then
     exit 0
 fi
 
-sudo docker build --tag "$IMAGENAME" --file "$DOCKERFILE" .
+sudo docker build --build-arg HOST_USER_ID="$UID" --tag "$IMAGENAME" --file "$DOCKERFILE" .
 sudo docker run --rm --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --interactive "$IMAGENAME" bash

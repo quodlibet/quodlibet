@@ -29,7 +29,9 @@ RUN apt-get install --no-install-recommends -y \
 
 RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper coverage
 
-RUN useradd -ms /bin/bash user
+ARG HOST_USER_ID=5555
+ENV HOST_USER_ID ${HOST_USER_ID}
+RUN useradd -u $HOST_USER_ID -ms /bin/bash user
 
 USER user
 WORKDIR /home/user

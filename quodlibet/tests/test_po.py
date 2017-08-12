@@ -22,7 +22,6 @@ from gdist import gettextutil
 
 
 PODIR = os.path.join(os.path.dirname(get_module_dir(quodlibet)), "po")
-PODIR_WRITEABLE = os.access(PODIR, os.W_OK)
 
 
 class MissingTranslationsException(Exception):
@@ -46,7 +45,6 @@ class TPOTFILESIN(TestCase):
 
 
 @skipUnless(polib, "polib not found")
-@skipUnless(PODIR_WRITEABLE, "intltool-update requires a writeable po dir :(")
 class TPot(TestCase):
 
     @classmethod

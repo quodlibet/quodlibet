@@ -4,7 +4,9 @@ ENV LANG C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV CI true
 
-RUN useradd -ms /bin/bash user
+ARG HOST_USER_ID=5555
+ENV HOST_USER_ID ${HOST_USER_ID}
+RUN useradd -u $HOST_USER_ID -ms /bin/bash user
 
 WORKDIR /home/user
 
