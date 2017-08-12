@@ -104,6 +104,7 @@ class AcoustidSubmissionThread(threading.Thread):
                 "bitrate": song("~#bitrate"),
                 "fileformat": song("~format"),
                 "mbid": song("musicbrainz_trackid"),
+                "track": song("title"),
                 "artist": song.list("artist"),
                 "album": song("album"),
                 "albumartist": song("albumartist"),
