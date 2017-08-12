@@ -1014,6 +1014,7 @@
       <dep package="libsoup"/>
       <dep package="wavpack"/>
       <dep package="libjpeg-turbo"/>
+      <dep package="gdk-pixbuf2"/>
     </dependencies>
   </autotools>
 
