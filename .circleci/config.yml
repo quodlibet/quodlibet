@@ -14,7 +14,7 @@ defaults: &defaults
     - run:
         command: |
           if [ ! -f "_ci_cache/$DOCKERIMAGE" ]; then
-          .circleci/retry docker build -t "$DOCKERIMAGE" -f ".docker/Dockerfile.$DOCKERIMAGE" .;
+          .circleci/retry docker build --build-arg HOST_USER_ID="$UID" -t "$DOCKERIMAGE" -f ".docker/Dockerfile.$DOCKERIMAGE" .;
           mkdir -p _ci_cache;
           docker image save "$DOCKERIMAGE" -o "_ci_cache/$DOCKERIMAGE";
           fi;
@@ -24,13 +24,16 @@ defaults: &defaults
           - _ci_cache
     - run: docker image load -i "_ci_cache/$DOCKERIMAGE"
     - run: docker run $(bash <(curl -s https://codecov.io/env)) --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --detach "$DOCKERIMAGE" bash > container_id
+    - run: docker exec "$(cat container_id)" $PYTHON $PYARGS -m coverage run --branch ./setup.py test
     - run:
         command: |
-          docker exec -e COVERAGE_FILE=/tmp/.coverage "$(cat container_id)" $PYTHON $PYARGS -m coverage run --branch ./setup.py test
-          docker exec "$(cat container_id)" curl https://codecov.io/bash -o /tmp/codecov
-          docker exec -e COVERAGE_FILE=/tmp/.coverage "$(cat container_id)" $PYTHON -m coverage xml -o /tmp/coverage.xml
-          docker exec "$(cat container_id)" bash /tmp/codecov -R "/home/user/app" -f /tmp/coverage.xml
-    - run: docker stop "$(cat container_id)"
+          docker exec "$(cat container_id)" $PYTHON -m coverage xml
+          docker exec "$(cat container_id)" curl https://codecov.io/bash -o _codecov
+          docker exec "$(cat container_id)" bash _codecov
+        when: always
+    - run:
+        command: docker stop "$(cat container_id)"
+        when: always
 
 version: 2
 jobs:
