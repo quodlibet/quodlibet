@@ -17,7 +17,7 @@ from quodlibet.util.path import escape_filename
 class ArtworkUrlCover(CoverSourcePlugin, HTTPDownloadMixin):
     PLUGIN_ID = "artwork-url-cover"
     PLUGIN_NAME = _("Artwork URL Cover Source")
-    PLUGIN_DESC = _("Downloads covers linked to by the artwork_url tag."
+    PLUGIN_DESC = _("Downloads covers linked to by the artwork_url tag. "
                     "This works with the Soundcloud browser.")
 
     @classmethod
