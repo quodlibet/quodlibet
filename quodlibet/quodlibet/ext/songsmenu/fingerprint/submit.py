@@ -39,7 +39,7 @@ class FingerprintDialog(Window):
         super(FingerprintDialog, self).__init__()
         self.set_border_width(12)
         self.set_title(_("Submit Acoustic Fingerprints"))
-        self.set_default_size(300, 0)
+        self.set_default_size(450, 0)
 
         outer_box = Gtk.VBox(spacing=12)
 
@@ -60,7 +60,10 @@ class FingerprintDialog(Window):
 
         self.__stats = stats = Gtk.Label()
         stats.set_alignment(0, 0.5)
+        stats.set_line_wrap(True)
+        stats.set_size_request(426, -1)
         expand = Gtk.Expander.new_with_mnemonic(_("_Details"))
+        expand.set_resize_toplevel(True)
         expand.add(stats)
 
         def expand_cb(expand, *args):
@@ -87,8 +90,8 @@ class FingerprintDialog(Window):
         submit.connect('clicked', self.__submit_cb)
         cancel = Button(_("_Cancel"))
         connect_obj(cancel, 'clicked', self.__cancel_cb, pool)
-        bbox.pack_start(submit, True, True, 0)
         bbox.pack_start(cancel, True, True, 0)
+        bbox.pack_start(submit, True, True, 0)
 
         outer_box.pack_start(box, True, True, 0)
         outer_box.pack_start(bbox, False, True, 0)

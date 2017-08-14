@@ -59,9 +59,9 @@ class AcoustidSubmissionThread(threading.Thread):
             "user": get_api_key(),
         })
 
-        urldata = "&".join([basedata] + map(urlencode, urldata))
+        urldata = "&".join([basedata] + list(map(urlencode, urldata)))
         obj = cBytesIO()
-        gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
+        gzip.GzipFile(fileobj=obj, mode="wb").write(urldata.encode())
         urldata = obj.getvalue()
 
         headers = {
@@ -104,6 +104,7 @@ class AcoustidSubmissionThread(threading.Thread):
                 "bitrate": song("~#bitrate"),
                 "fileformat": song("~format"),
                 "mbid": song("musicbrainz_trackid"),
+                "track": song("title"),
                 "artist": song.list("artist"),
                 "album": song("album"),
                 "albumartist": song("albumartist"),
@@ -298,7 +299,7 @@ class AcoustidLookupThread(threading.Thread):
 
         urldata = "&".join(req_data)
         obj = cBytesIO()
-        gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
+        gzip.GzipFile(fileobj=obj, mode="wb").write(urldata.encode())
         urldata = obj.getvalue()
 
         headers = {
@@ -316,7 +317,7 @@ class AcoustidLookupThread(threading.Thread):
         else:
             try:
                 data = response.read()
-                data = json.loads(data)
+                data = json.loads(data.decode())
             except ValueError as e:
                 error = str(e)
             else:
