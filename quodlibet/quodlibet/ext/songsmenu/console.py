@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2006 - Steve Frécinaux
-#               2016 - Nick Boultbee
+#            2016-17 - Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,8 +26,10 @@ import traceback
 
 from gi.repository import Gtk, Pango, Gdk, GLib
 
-from quodlibet import _
+from quodlibet import _, app, ngettext
 from quodlibet import const
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.plugins.gui import UserInterfacePlugin
 from quodlibet.qltk import Icons
 from quodlibet.compat import exec_, PY2
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -38,58 +40,85 @@ from quodlibet.util import print_
 class PyConsole(SongsMenuPlugin):
     PLUGIN_ID = 'Python Console'
     PLUGIN_NAME = _('Python Console')
-    PLUGIN_DESC = _('Interactive Python console.')
+    PLUGIN_DESC = _('Interactive Python console. Opens a new window.')
     PLUGIN_ICON = Icons.UTILITIES_TERMINAL
 
     def plugin_songs(self, songs):
-        win = ConsoleWindow(songs)
+        desc = ngettext("%d song", "%d songs", len(songs)) % len(songs)
+        win = ConsoleWindow(create_console(songs), title=desc)
         win.set_icon_name(self.PLUGIN_ICON)
-        win.set_title(self.PLUGIN_DESC + " (Quod Libet)")
+        win.set_title(_("{plugin_name} for {songs} ({app})").format(
+            plugin_name=self.PLUGIN_DESC.strip('.'), songs=desc, app=app.name))
         win.show_all()
 
 
+class PyConsoleSidebar(EventPlugin, UserInterfacePlugin):
+    PLUGIN_ID = 'Python Console Sidebar'
+    PLUGIN_NAME = _('Python Console Sidebar')
+    PLUGIN_DESC = _('Interactive Python console sidebar, '
+                    'that follows the selected songs in the main window.')
+    PLUGIN_ICON = Icons.UTILITIES_TERMINAL
+
+    def enabled(self):
+        self.console = create_console()
+
+    def plugin_on_songs_selected(self, songs):
+        self.console.namespace = namespace_for(songs)
+
+    def create_sidebar(self):
+        frame = Gtk.Frame()
+        frame.show_all()
+        self.sidebar = frame
+        self.sidebar.add(self.console)
+        self.sidebar.show_all()
+        return frame
+
+
+def create_console(songs=None):
+    console = PythonConsole(namespace_for(songs)) if songs else PythonConsole()
+    access_string = _("You can access the following objects by default:")
+    access_string += "\\n".join([
+                    "",
+                    "  %5s: SongWrapper objects",
+                    "  %5s: Song dictionaries",
+                    "  %5s: Filename list",
+                    "  %5s: Songs Collection",
+                    "  %5s: Application instance"]) % (
+                       "songs", "sdict", "files", "col", "app")
+
+    dir_string = _("Your current working directory is:")
+
+    if PY2:
+        console.eval("from __future__ import print_function", False)
+    console.eval("import mutagen", False)
+    console.eval("import os", False)
+    console.eval("print(\"Python: %s / Quod Libet: %s\")" %
+                 (sys.version.split()[0], const.VERSION), False)
+    console.eval("print(\"%s\")" % access_string, False)
+    console.eval("print(\"%s \"+ os.getcwd())" % dir_string, False)
+    return console
+
+
+def namespace_for(song_wrappers):
+    files = [song('~filename') for song in song_wrappers]
+    song_dicts = [song._song for song in song_wrappers]
+    collection = Collection()
+    collection.songs = song_dicts
+    return {
+        'songs': song_wrappers,
+        'files': files,
+        'sdict': song_dicts,
+        'col': collection,
+        'app': app}
+
+
 class ConsoleWindow(Gtk.Window):
-    def __init__(self, songs):
+    def __init__(self, console, title=None):
         Gtk.Window.__init__(self)
-
-        files = [song('~filename') for song in songs]
-        song_dicts = [song._song for song in songs]
-        collection = Collection()
-        collection.songs = song_dicts
-
-        self.set_size_request(700, 500)
-
-        from quodlibet import app
-        console = PythonConsole(
-            namespace={
-                'songs': songs,
-                'files': files,
-                'sdict': song_dicts,
-                'col': collection,
-                'app': app})
+        if title:
+            self.set_title(title)
         self.add(console)
-
-        access_string = _("You can access the following objects by default:")
-        access_string += "\\n".join([
-                        "",
-                        "  %5s: SongWrapper objects",
-                        "  %5s: Song dictionaries",
-                        "  %5s: Filename list",
-                        "  %5s: Songs Collection",
-                        "  %5s: Application instance"]) % (
-                           "songs", "sdict", "files", "col", "app")
-
-        dir_string = _("Your current working directory is:")
-
-        if PY2:
-            console.eval("from __future__ import print_function", False)
-        console.eval("import mutagen", False)
-        console.eval("import os", False)
-        console.eval("print(\"Python: %s / Quod Libet: %s\")" %
-                     (sys.version.split()[0], const.VERSION), False)
-        console.eval("print(\"%s\")" % access_string, False)
-        console.eval("print(\"%s \"+ os.getcwd())" % dir_string, False)
-
+        self.set_size_request(700, 500)
         console.connect("destroy", lambda *x: self.destroy())
 
 

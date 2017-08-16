@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2012-2016 Nick Boultbee
+#           2012-2017 Nick Boultbee
 #           2017 Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,7 @@ from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
 from quodlibet import _
+from quodlibet.qltk.paned import ConfigRHPaned
 from quodlibet.compat import listfilter
 
 from quodlibet.qltk.appwindow import AppWindow
@@ -679,6 +680,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         main_box = Gtk.VBox()
         self.add(main_box)
+        self.side_book = qltk.Notebook()
+        self.side_book.set_size_request(400, -1)
 
         self.__player = player
         # create main menubar, load/restore accelerator groups
@@ -746,7 +749,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.top_bar = top_bar
 
         self.__browserbox = Align(bottom=3)
-        main_box.pack_start(self.__browserbox, True, True, 0)
+        paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
+        paned.pack2(self.side_book, shrink=True)
+        paned.pack1(self.__browserbox)
+
+        main_box.pack_start(paned, True, True, 0)
 
         play_order = PlayOrderWidget(self.songlist.model, player)
         statusbox = StatusBarBox(play_order, self.qexpander)
@@ -826,6 +833,20 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.connect("destroy", self.__destroy)
 
         self.enable_window_tracking("quodlibet")
+
+    def add_sidebar(self, box, name):
+        vbox = Gtk.Box(margin=6)
+        vbox.pack_start(box, True, True, 0)
+        vbox.show()
+        self.side_book.append_page(vbox, label=name)
+        self.side_book.set_tab_detachable(vbox, False)
+        self.side_book.show_all()
+        return vbox
+
+    def remove_sidebar(self, widget):
+        self.side_book.remove_page(self.side_book.page_num(widget))
+        if not self.side_book.get_children():
+            self.side_book.hide()
 
     def set_seekbar_widget(self, widget):
         """Add an alternative seek bar widget.

@@ -42,7 +42,7 @@ class SongSelectionInfo(GObject.Object):
     Songs which get included in the status bar summary.
 
     The `changed` signal gets fired after any of the songs in the
-    selection or the selection it self has changed.
+    selection or the selection itself has changed.
     The signal is async.
 
     Two selection states:
