@@ -69,7 +69,7 @@ class RestApi(GObject.Object):
         msg = Soup.Message.new('DELETE', self._url(path))
         msg.set_request('application/x-www-form-urlencoded',
                         Soup.MemoryUse.COPY, body)
-        download(msg, self._cancellable, callback, None, try_decode=False)
+        download(msg, self._cancellable, callback, None, try_decode=True)
 
     def _url(self, path, args=None):
         path = "%s%s" % (self.root, path)
