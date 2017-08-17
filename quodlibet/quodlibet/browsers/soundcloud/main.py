@@ -181,8 +181,14 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             state = self.login_state
             if state == State.LOGGED_IN:
                 self.api_client.log_out()
-                self.login_state = State.LOGGED_OUT
+                # Reset the selection, lest it get stuck...
+                sel = self.view.get_selection()
+                sel.unselect_all()
+                first_path = self.view.get_model()[0].path.copy()
+                self.view.set_cursor(first_path)
+                sel.select_path(first_path)
                 self._refresh_online_filters()
+                self.login_state = State.LOGGED_OUT
             elif state == State.LOGGING_IN:
                 dialog = EnterAuthCodeDialog(app.window)
                 value = dialog.run(clipboard=True)
@@ -238,7 +244,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
 
         def cdf(column, cell, model, iter_, user_data):
-            on = (self.online or
+            on = (self.login_state == State.LOGGED_IN or
                   model[iter_][self.ModelIndex.ALWAYS_ENABLE])
             cell.set_sensitive(on)
         column.set_cell_data_func(render, cdf)
@@ -252,7 +258,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         selection = view.get_selection()
 
         def select_func(sel, model, path, value):
-            return (self.online or
+            return (self.login_state == State.LOGGED_IN or
                     model[model.get_iter(path)][self.ModelIndex.ALWAYS_ENABLE])
 
         selection.set_select_function(select_func)
