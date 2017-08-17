@@ -215,7 +215,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         if self.__model is None:
             self._init_model(library)
 
-        self._cover_cancel = Gio.Cancellable.new()
+        self._cover_cancel = Gio.Cancellable()
 
         self.scrollwin = sw = ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)

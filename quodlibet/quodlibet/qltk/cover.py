@@ -240,7 +240,7 @@ class CoverImage(Gtk.EventBox):
         self.set_image(None)
         if self.__cancellable:
             self.__cancellable.cancel()
-        cancellable = self.__cancellable = Gio.Cancellable.new()
+        cancellable = self.__cancellable = Gio.Cancellable()
 
         if song:
             def cb(success, result):

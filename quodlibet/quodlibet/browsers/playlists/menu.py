@@ -30,7 +30,7 @@ class PlaylistMenu(Gtk.Menu):
 
         for playlist in playlists:
             name = playlist.name
-            i = Gtk.CheckMenuItem(name)
+            i = Gtk.CheckMenuItem(label=name)
             some, all = playlist.has_songs(songs)
             i.set_active(some)
             i.set_inconsistent(some and not all)

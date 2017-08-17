@@ -52,24 +52,24 @@ class Thttps(TestCase):
 
     def test_gio(self):
         for url in self.GOOD:
-            client = Gio.SocketClient.new()
+            client = Gio.SocketClient()
             client.set_tls(True)
             client.connect_to_uri(url, 443, None).close()
 
         for url in self.BAD:
             with self.assertRaises(GLib.GError):
-                client = Gio.SocketClient.new()
+                client = Gio.SocketClient()
                 client.set_tls(True)
                 client.connect_to_uri(url, 443, None).close()
 
     def test_soup(self):
         for url in self.GOOD:
-            session = Soup.Session.new()
+            session = Soup.Session()
             request = session.request_http("get", url)
             request.send(None).close()
 
         for url in self.BAD:
             with self.assertRaises(GLib.GError):
-                session = Soup.Session.new()
+                session = Soup.Session()
                 request = session.request_http("get", url)
                 request.send(None).close()

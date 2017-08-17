@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
-#           2016 Nick Boultbee
+#        2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -54,7 +54,7 @@ class DefaultHTTPRequest(GObject.Object):
         if message is None:
             raise ValueError('Message may not be None')
 
-        inner_cancellable = Gio.Cancellable.new()
+        inner_cancellable = Gio.Cancellable()
         super(DefaultHTTPRequest, self).__init__(message=message,
                                                  cancellable=inner_cancellable)
         if cancellable is not None:
@@ -196,7 +196,7 @@ class FallbackHTTPRequest(DefaultHTTPRequest):
             return self.emit('send-failure', Exception('Cancelled'))
         if 300 <= message.get_property('status-code') < 400:
             return # redirection, wait for another emission of got-headers
-        self.istream = Gio.MemoryInputStream.new()
+        self.istream = Gio.MemoryInputStream()
         self.message.connect('got-chunk', self._chunk)
         self.emit('sent', self.message)
 
@@ -261,11 +261,11 @@ def download_json(message, cancellable, callback, data):
 
 if hasattr(Soup.Session, 'send_finish'):
     # We're using Soup >= 2.44
-    session = Soup.Session.new()
+    session = Soup.Session()
     HTTPRequest = DefaultHTTPRequest
 else:
     print_d('Using fallback HTTPRequest implementation. libsoup is too old')
-    session = Soup.SessionAsync.new()
+    session = Soup.SessionAsync()
     HTTPRequest = FallbackHTTPRequest
 
 ua_string = "Quodlibet/{0} (+{1})".format(VERSION, WEBSITE)
