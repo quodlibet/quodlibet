@@ -30,7 +30,7 @@ from quodlibet import _, app, ngettext
 from quodlibet import const
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins.gui import UserInterfacePlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, add_css, Align
 from quodlibet.compat import exec_, PY2
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.collection import Collection
@@ -66,12 +66,10 @@ class PyConsoleSidebar(EventPlugin, UserInterfacePlugin):
         self.console.namespace = namespace_for(songs)
 
     def create_sidebar(self):
-        frame = Gtk.Frame()
-        frame.show_all()
-        self.sidebar = frame
-        self.sidebar.add(self.console)
+        align = Align(self.console)
+        self.sidebar = align
         self.sidebar.show_all()
-        return frame
+        return align
 
 
 def create_console(songs=None):
@@ -128,8 +126,9 @@ class PythonConsole(Gtk.ScrolledWindow):
 
         self.destroy_cb = destroy_cb
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self.set_shadow_type(Gtk.ShadowType.IN)
+        self.set_shadow_type(Gtk.ShadowType.NONE)
         self.view = Gtk.TextView()
+        add_css(self, "* { background-color: white; padding: 6px; } ")
         self.view.modify_font(Pango.font_description_from_string('Monospace'))
         self.view.set_editable(True)
         self.view.set_wrap_mode(Gtk.WrapMode.CHAR)
