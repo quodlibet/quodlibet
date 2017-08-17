@@ -13,7 +13,7 @@ from gi.repository import Gtk, Gdk
 from quodlibet import _, print_d, app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins.gui import UserInterfacePlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, add_css
 
 
 class ViewLyrics(EventPlugin, UserInterfacePlugin):
@@ -40,7 +40,8 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.textview.connect('key-press-event', self.key_press_event_cb)
-        self.scrolled_window.add_with_viewport(self.textview)
+        add_css(self.textview, "* { padding: 6px; }")
+        self.scrolled_window.add(self.textview)
         self.textview.show()
 
         self.scrolled_window.show()
@@ -50,7 +51,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         # starts playing (see plugin_on_song_started).
 
     def create_sidebar(self):
-        vbox = Gtk.VBox(margin=6)
+        vbox = Gtk.VBox(margin=0)
         vbox.pack_start(self.scrolled_window, True, True, 0)
         vbox.show_all()
         return vbox
