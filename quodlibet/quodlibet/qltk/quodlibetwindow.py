@@ -52,7 +52,7 @@ from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action
 from quodlibet.qltk.x import ToggleAction, RadioAction, HighlightToggleButton
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem, CellRendererPixbuf
-from quodlibet.qltk import Icons, add_css
+from quodlibet.qltk import Icons
 from quodlibet.qltk.about import AboutDialog
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs
@@ -681,7 +681,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         main_box = Gtk.VBox()
         self.add(main_box)
         self.side_book = qltk.Notebook()
-        add_css(self.side_book, "notebook { background-color:white; }")
         self.side_book.set_size_request(400, -1)
 
         self.__player = player
@@ -750,10 +749,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.top_bar = top_bar
 
         self.__browserbox = Align(bottom=3)
-        self.paned = paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
-        side_book_box = Align(self.side_book, top=6, bottom=3)
-        paned.pack2(side_book_box, shrink=True)
+        self.__paned = paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
         paned.pack1(self.__browserbox, resize=True)
+        # We'll pack2 when necessary (when the first sidebar plugin is set up)
 
         main_box.pack_start(paned, True, True, 0)
 
@@ -843,6 +841,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         vbox = Gtk.Box(margin=0)
         vbox.pack_start(box, True, True, 0)
         vbox.show()
+        if self.side_book_empty:
+            self.add_sidebar_to_layout(self.side_book)
         self.side_book.append_page(vbox, label=name)
         self.side_book.set_tab_detachable(vbox, False)
         self.side_book.show_all()
@@ -850,8 +850,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def remove_sidebar(self, widget):
         self.side_book.remove_page(self.side_book.page_num(widget))
-        if not self.side_book.get_children():
-            self.side_book.hide()
+        if self.side_book_empty:
+            print_d("Hiding sidebar")
+            self.__paned.remove(self.__paned.get_children()[1])
+
+    def add_sidebar_to_layout(self, widget):
+        print_d("Recreating sidebar")
+        align = Align(widget, top=6, bottom=3)
+        self.__paned.pack2(align, shrink=True)
+        align.show_all()
+
+    @property
+    def side_book_empty(self):
+        return not self.side_book.get_children()
 
     def set_seekbar_widget(self, widget):
         """Add an alternative seek bar widget.
