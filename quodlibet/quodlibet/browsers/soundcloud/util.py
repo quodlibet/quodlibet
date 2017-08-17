@@ -76,7 +76,7 @@ class State(int):
 
 @enum
 class FilterType(int):
-    SEP, SEARCH, FAVORITES, MINE = range(4)
+    SEARCH, FAVORITES, MINE = range(3)
 
 
 class EnterAuthCodeDialog(GetStringDialog):

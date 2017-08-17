@@ -220,12 +220,6 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             filter_type, icon, query, always = data
             enabled = always
             model.append(row=[filter_type, icon, name, query, enabled])
-            if i + 1 < len(filters):
-                model.append(row=[FilterType.SEP, None, "", None, False])
-
-        def is_separator(model, iter_, data):
-            return model[iter_][self.ModelIndex.TYPE] == FilterType.SEP
-        view.set_row_separator_func(is_separator, None)
 
         def search_func(model, column, key, iter, data):
             return key.lower() not in model[iter][column].lower()
@@ -364,9 +358,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
     def _refresh_online_filters(self):
         model = self.view.get_model()
-        # TODO: less hard-coding of these
-        for path in [2, 4]:
-            model.row_changed(path, model.get_iter(path))
+        for row in model:
+            model.row_changed(row.path, model.get_iter(row.path))
 
     def __handle_incoming_uri(self, obj, uri):
         if not PROCESS_QL_URLS:
