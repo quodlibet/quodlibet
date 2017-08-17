@@ -50,7 +50,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         # starts playing (see plugin_on_song_started).
 
     def create_sidebar(self):
-        vbox = Gtk.VBox()
+        vbox = Gtk.VBox(margin=6)
         vbox.pack_start(self.scrolled_window, True, True, 0)
         vbox.show_all()
         return vbox

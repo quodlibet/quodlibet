@@ -42,6 +42,7 @@ class UserInterfacePluginHandler(PluginHandler):
     def plugin_enable(self, plugin):
         self.__plugins[plugin.cls] = pl_obj = plugin.get_instance()
         sidebar = pl_obj.create_sidebar()
+        app.window.hide_side_book()
         if sidebar:
             print_d("Enabling sidebar for %s" % plugin.cls)
             self.__sidebars[plugin] = app.window.add_sidebar(

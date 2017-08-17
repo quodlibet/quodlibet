@@ -52,7 +52,7 @@ from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action
 from quodlibet.qltk.x import ToggleAction, RadioAction, HighlightToggleButton
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem, CellRendererPixbuf
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, add_css
 from quodlibet.qltk.about import AboutDialog
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs
@@ -681,6 +681,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         main_box = Gtk.VBox()
         self.add(main_box)
         self.side_book = qltk.Notebook()
+        add_css(self.side_book, "notebook { background-color:white; }")
         self.side_book.set_size_request(400, -1)
 
         self.__player = player
@@ -749,9 +750,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.top_bar = top_bar
 
         self.__browserbox = Align(bottom=3)
-        paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
-        paned.pack2(self.side_book, shrink=True)
-        paned.pack1(self.__browserbox)
+        self.paned = paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
+        side_book_box = Align(self.side_book, top=6, bottom=3)
+        paned.pack2(side_book_box, shrink=True)
+        paned.pack1(self.__browserbox, resize=True)
 
         main_box.pack_start(paned, True, True, 0)
 
@@ -834,8 +836,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         self.enable_window_tracking("quodlibet")
 
+    def hide_side_book(self):
+        self.side_book.hide()
+
     def add_sidebar(self, box, name):
-        vbox = Gtk.Box(margin=6)
+        vbox = Gtk.Box(margin=0)
         vbox.pack_start(box, True, True, 0)
         vbox.show()
         self.side_book.append_page(vbox, label=name)
