@@ -16,6 +16,7 @@ Plugin Types
 Event Plugins
     * Are instantiated as long as they are enabled or QL is running. They get
       notified when songs start, get added etc.
+    * Can also (3.10+) listen to selection changes in the main songlist.
     * Example: Last.fm scrobbler that watches what you play and sends the 
       information to last.fm.
 
@@ -28,9 +29,13 @@ GStreamer Plugins
       fly.
     * Example: Tempo adjustment to play music/audio books faster.
 
-Play Order Plugins
+Play Order: Shuffle Plugins
     * Can decide which song to play next or what happens if you select one. 
-    * Example: Follow cursor, which plays the selected song next.
+    * Example: weighted shuffle, which prefers higher rated songs.
+
+Play Order: Repeat Plugins:
+    * How to repeat the songs
+    * Example: repeat each song a set number of times
 
 Songs Menu Plugins
     * Can be accessed through the play list context menu and get passed all 
@@ -50,8 +55,10 @@ Cover Source Plugins
 Creating a new Plugin
 ^^^^^^^^^^^^^^^^^^^^^
 
-#. Create a file ``myplugin.py`` and place it under ``~/.quodlibet/plugins`` 
-   (create the folder if needed)
+#. Create a file ``myplugin.py`` and place it under ``~/.quodlibet/plugins``
+   (create the folder if needed). Alternatively (better),
+   if you are running from source, put it in ``quodlibet/ext`` under a
+   directory according to its plugin type.
 
 #. Write the following into the file::
 
