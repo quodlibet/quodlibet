@@ -13,8 +13,9 @@ from quodlibet.qltk.pluginwin import PluginWindow
 
 from quodlibet import ngettext, _
 from quodlibet import qltk
+from quodlibet.errorreport import errorhook
 
-from quodlibet.util import print_exc, print_e, print_w
+from quodlibet.util import print_e, print_w
 from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information
@@ -92,7 +93,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 except:
                     print_e("Couldn't initialise song plugin %s. Stack trace:"
                             % Kind)
-                    print_exc()
+                    errorhook()
         items = [i for i in items if i.initialized]
 
         if items:
@@ -109,7 +110,7 @@ class SongsMenuPluginHandler(PluginHandler):
                         item.connect(
                             'activate', self.__on_activate, item, *args)
                 except:
-                    print_exc()
+                    errorhook()
                     item.destroy()
             menu.append(SeparatorMenuItem())
             prefs = Gtk.MenuItem(label=_("Configure Plugins…"))
@@ -144,7 +145,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 try:
                     plugin = plugin(songs, library)
                 except Exception:
-                    print_exc()
+                    errorhook()
                 else:
                     self.__handle(plugin, plugin, library, songs, parent)
                 return
@@ -162,7 +163,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 try:
                     ret = plugin.plugin_single_song(songs[0])
                 except Exception:
-                    print_exc()
+                    errorhook()
                 else:
                     if ret:
                         return
@@ -176,7 +177,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 try:
                     ret = map(plugin.plugin_song, songs)
                 except Exception:
-                    print_exc()
+                    errorhook()
                 else:
                     if any(ret):
                         return
@@ -184,7 +185,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 try:
                     ret = plugin.plugin_songs(songs)
                 except Exception:
-                    print_exc()
+                    errorhook()
                 else:
                     if ret:
                         return
@@ -201,7 +202,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 try:
                     ret = plugin.plugin_single_album(albums[0])
                 except Exception:
-                    print_exc()
+                    errorhook()
                 else:
                     if ret:
                         return
@@ -209,7 +210,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 try:
                     ret = map(plugin.plugin_album, albums)
                 except Exception:
-                    print_exc()
+                    errorhook()
                 else:
                     if any(ret):
                         return
@@ -217,7 +218,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 try:
                     ret = plugin.plugin_albums(albums)
                 except Exception:
-                    print_exc()
+                    errorhook()
                 else:
                     if ret:
                         return
