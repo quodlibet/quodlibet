@@ -10,13 +10,13 @@ from gi.repository import GObject
 
 from quodlibet.util.dprint import print_e
 
-from quodlibet import util
 from quodlibet.plugins import PluginHandler
 
 from quodlibet.util.songwrapper import SongWrapper, ListWrapper
 from quodlibet.util.songwrapper import check_wrapper_changed
 from quodlibet.util import connect_obj
-from quodlibet.compat import itervalues
+from quodlibet.compat import listvalues
+from quodlibet.errorreport import errorhook
 
 
 class EventPlugin(object):
@@ -129,7 +129,7 @@ class EventPluginHandler(PluginHandler):
                 args[0] = SongWrapper(args[0])
             elif isinstance(args[0], (set, list)):
                 args[0] = ListWrapper(args[0])
-        for plugin in itervalues(self.__plugins):
+        for plugin in listvalues(self.__plugins):
             method_name = 'plugin_on_' + event.replace('-', '_')
             handler = getattr(plugin, method_name, None)
 
@@ -142,7 +142,7 @@ class EventPluginHandler(PluginHandler):
                 except Exception:
                     print_e("Error during %s on %s" %
                             (method_name, type(plugin)))
-                    util.print_exc()
+                    errorhook()
 
         if event not in ["removed", "changed"] and args:
             from quodlibet import app
