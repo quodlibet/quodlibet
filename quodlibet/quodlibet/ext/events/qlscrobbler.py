@@ -15,13 +15,9 @@
 import os
 import threading
 import time
+from hashlib import md5
 
 from gi.repository import Gtk, GLib
-
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5
 
 import quodlibet
 from quodlibet import _
