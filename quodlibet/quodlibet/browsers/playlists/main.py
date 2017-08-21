@@ -392,7 +392,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 Gtk.drag_finish(ctx, False, False, etime)
                 return
             name = _name_for(name or os.path.basename(uri))
-            uri = uri.encode('utf-8')
             try:
                 sock = urlopen(uri)
                 if uri.lower().endswith('.pls'):
