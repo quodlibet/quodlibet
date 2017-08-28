@@ -94,7 +94,7 @@ class False_(Node):
         return False
 
     def filter(self, list_):
-        return list(list_)
+        return []
 
     def __repr__(self):
         return "<False>"
