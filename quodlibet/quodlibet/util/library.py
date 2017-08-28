@@ -36,12 +36,9 @@ def background_filter():
     bg = config.gettext("browsers", "background")
     if not bg:
         return
-    try:
-        query = Query(bg, SongList.star)
-        if query.is_parsable:
-            return query.search
-    except Query.error:
-        pass
+    query = Query(bg, SongList.star)
+    if query.is_parsable:
+        return query.search
 
 
 def split_scan_dirs(joined_paths):
