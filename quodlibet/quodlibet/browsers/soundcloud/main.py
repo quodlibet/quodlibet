@@ -334,10 +334,10 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
     def filter_text(self, text):
         self.__searchbar.set_text(text)
-        if SoundcloudQuery.is_parsable(text):
+        if SoundcloudQuery(text).is_parsable:
             self.activate()
         else:
-            print_w("Not parseable: %s" % text)
+            print_d("Not parsable: %s" % text)
 
     def get_filter_text(self):
         return self.__searchbar.get_text()

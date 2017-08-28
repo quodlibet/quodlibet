@@ -487,8 +487,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
         text = self.get_filter_text()
         # TODO: remove static dependency on Query
-        if Query.is_parsable(text):
-            self._query = Query(text, SongList.star)
+        query = Query(text, SongList.star)
+        if query.is_parsable:
+            self._query = query
             songs = self._query.filter(songs)
         GLib.idle_add(self.songs_selected, songs, resort)
 

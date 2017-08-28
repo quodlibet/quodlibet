@@ -282,9 +282,10 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def __update_filter(self, entry, text):
         self.__filter = None
-        if not Query.match_all(text):
-            tags = self.__model.tags + ["album"]
-            self.__filter = Query(text, star=tags).search
+        tags = self.__model.tags + ["album"]
+        query = Query(text, star=tags)
+        if not query.matches_all:
+            self.__filter = query.search
         self.__bg_filter = background_filter()
 
         self.view.get_model().refilter()
@@ -349,7 +350,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def filter_text(self, text):
         self.__search.set_text(text)
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__update_filter(self.__search, text)
             self.activate()
 

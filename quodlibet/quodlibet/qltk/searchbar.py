@@ -141,7 +141,7 @@ class SearchBarBox(Gtk.HBox):
             return
 
         text = self.get_text().strip()
-        if text and Query.is_parsable(text):
+        if text and Query(text).is_parsable:
             # Adding the active text to the model triggers a changed signal
             # (get_active is no longer -1), so inhibit
             self.__inhibit()
@@ -152,7 +152,7 @@ class SearchBarBox(Gtk.HBox):
     def __filter_changed(self, *args):
         self.__deferred_changed.abort()
         text = self.get_text()
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             GLib.idle_add(self.emit, 'query-changed', text)
 
     def __text_changed(self, *args):
