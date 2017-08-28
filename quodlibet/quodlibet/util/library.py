@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2017 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #     Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -37,7 +37,9 @@ def background_filter():
     if not bg:
         return
     try:
-        return Query(bg, SongList.star).search
+        query = Query(bg, SongList.star)
+        if query.is_parsable:
+            return query.search
     except Query.error:
         pass
 

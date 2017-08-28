@@ -847,7 +847,7 @@ class InternetRadio(Browser, util.InstanceTracker):
     def restore(self):
         text = config.gettext("browsers", "query_text")
         self.__searchbar.set_text(text)
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__filter_changed(self.__searchbar, text, restore=True)
 
         keys = config.get("browsers", "radio").splitlines()
@@ -880,7 +880,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
     def filter_text(self, text):
         self.__searchbar.set_text(text)
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__filter_changed(self.__searchbar, text)
             self.activate()
 
