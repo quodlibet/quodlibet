@@ -56,7 +56,7 @@ class SoundcloudQuery(Query):
         except self.error as e:
             print_d("Couldn't use query: %s" % e)
             self.type = QueryType.INVALID
-            self.terms = []
+            self.terms = {}
 
     def _extract_terms(self, node):
         """ Return a dict of sets keyed on API search term,
