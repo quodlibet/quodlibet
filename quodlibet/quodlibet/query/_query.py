@@ -8,6 +8,7 @@
 # published by the Free Software Foundation
 
 from quodlibet import print_d
+from quodlibet.util.dprint import frame_info
 from . import _match as match
 from ._match import error, Node, False_
 from ._parser import QueryParser
@@ -55,7 +56,8 @@ class Query(Node):
             "!(foo, bar)" -> !star1,star2=(foo, bar)
             etc...
         """
-        print_d("Creating query %s" % string)
+        print_d("Creating query \"%s\", called from %s"
+                % (string, frame_info(1)))
         if star is None:
             star = self.STAR
 

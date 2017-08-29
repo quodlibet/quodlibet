@@ -536,7 +536,8 @@ class InternetRadio(Browser, util.InstanceTracker):
         completion = LibraryTagCompletion(self.__stations)
         self.accelerators = Gtk.AccelGroup()
         self.__searchbar = search = SearchBarBox(completion=completion,
-                                                 accel_group=self.accelerators)
+                                                 accel_group=self.accelerators,
+                                                 star=self.STAR)
         search.connect('query-changed', self.__filter_changed)
 
         menu = Gtk.Menu()

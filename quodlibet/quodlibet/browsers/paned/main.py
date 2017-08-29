@@ -2,7 +2,7 @@
 # Copyright 2004-2008 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009,2010 Steven Robertson
 #           2009-2013 Christoph Reiter
-#           2011,2013 Nick Boultbee
+#           2011-2017 Nick Boultbee
 #                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
@@ -182,6 +182,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
     def activate(self):
         star = dict.fromkeys(SongList.star)
         star.update(self.__star)
+        # TODO: get query from SearchBarBox (but with dynamic star)
         query = Query(self._get_text(), star.keys())
         if query.is_parsable:
             self._filter = query.search

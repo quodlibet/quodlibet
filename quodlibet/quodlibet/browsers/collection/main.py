@@ -223,8 +223,10 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         prefs.connect('clicked', lambda *x: Preferences(self))
 
         self.accelerators = Gtk.AccelGroup()
+        tags = self.__model.tags + ["album"]
         search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators)
+                              accel_group=self.accelerators,
+                              star=tags)
         search.connect('query-changed', self.__update_filter)
         connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
@@ -282,8 +284,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def __update_filter(self, entry, text):
         self.__filter = None
-        tags = self.__model.tags + ["album"]
-        query = Query(text, star=tags)
+        query = self.__search.query
         if not query.matches_all:
             self.__filter = query.search
         self.__bg_filter = background_filter()

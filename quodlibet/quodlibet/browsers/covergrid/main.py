@@ -121,6 +121,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
+    STAR = ["~people", "album"]
 
     name = _("Cover Grid")
     accelerated_name = _("_Cover Grid")
@@ -314,7 +315,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators)
+                              accel_group=self.accelerators,
+                              star=self.STAR)
         search.connect('query-changed', self.__update_filter)
         connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
@@ -399,7 +401,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         model = self.view.get_model()
 
         self.__filter = None
-        query = Query(text, star=["~people", "album"])
+        query = self.__search.query
         if not query.matches_all:
             self.__filter = query.search
         self.__bg_filter = background_filter()
