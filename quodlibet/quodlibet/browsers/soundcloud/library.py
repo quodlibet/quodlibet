@@ -34,12 +34,11 @@ class SoundcloudLibrary(SongLibrary):
     def query_with_refresh(self, text, sort=None, star=STAR):
         """Queries Soundcloud for some (more) relevant results, then filters"""
         current = self._contents.values()
-        try:
-            query = SoundcloudQuery(text, star=star)
-            self.client.get_tracks(query.terms)
-        except SoundcloudQuery.error as e:
-            print_w("Couldn't filter for query '%s' (%s)" % (text, e))
+
+        query = SoundcloudQuery(text, star=star)
+        if not query.is_parsable:
             return current
+        self.client.get_tracks(query.terms)
         filtered = query.filter(current)
         print_d("Filtered %d results to %d" % (len(current), len(filtered)))
         return filtered

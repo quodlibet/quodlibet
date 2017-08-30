@@ -40,7 +40,8 @@ class SearchBarBox(Gtk.HBox):
     DEFAULT_TIMEOUT = 400
 
     def __init__(self, filename=None, completion=None, accel_group=None,
-                 timeout=DEFAULT_TIMEOUT, validator=Query.validator):
+                 timeout=DEFAULT_TIMEOUT, validator=Query.validator,
+                 star=None):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
@@ -62,13 +63,14 @@ class SearchBarBox(Gtk.HBox):
         if completion:
             entry.set_completion(completion)
 
+        self._star = star
+        self.query = None
         self.__sig = combo.connect('text-changed', self.__text_changed)
 
         entry.connect('clear', self.__filter_changed)
         entry.connect('backspace', self.__text_changed)
         entry.connect('populate-popup', self.__menu)
         entry.connect('activate', self.__filter_changed)
-        entry.connect('activate', self.__save_search)
         entry.connect('focus-out-event', self.__save_search)
 
         entry.set_placeholder_text(_("Search"))
@@ -93,11 +95,16 @@ class SearchBarBox(Gtk.HBox):
         """Set the text without firing any signals"""
 
         self.__deferred_changed.abort()
+        self._update_query_from(text)
 
         # deactivate all signals and change the entry text
         self.__inhibit()
         self.__entry.set_text(text)
         self.__uninhibit()
+
+    def _update_query_from(self, text):
+        # TODO: remove tight coupling to Query
+        self.query = Query(text, star=self._star)
 
     def get_text(self):
         """Get the active text as unicode"""
@@ -145,7 +152,7 @@ class SearchBarBox(Gtk.HBox):
             return
 
         text = self.get_text().strip()
-        if self._is_parsable(text):
+        if text and self.query.is_parsable:
             # Adding the active text to the model triggers a changed signal
             # (get_active is no longer -1), so inhibit
             self.__inhibit()
@@ -156,8 +163,10 @@ class SearchBarBox(Gtk.HBox):
     def __filter_changed(self, *args):
         self.__deferred_changed.abort()
         text = self.get_text()
-        if self._is_parsable(text):
+        self._update_query_from(text)
+        if self.query.is_parsable:
             GLib.idle_add(self.emit, 'query-changed', text)
+            self.__save_search(args[0:1], args[1:])
 
     def __text_changed(self, *args):
         if not self.__entry.is_sensitive():

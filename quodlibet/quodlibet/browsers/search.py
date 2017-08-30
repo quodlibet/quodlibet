@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2016 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2017 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -13,11 +13,9 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import _
 from quodlibet.browsers import Browser
-from quodlibet.query import Query
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.searchbar import LimitSearchBarBox
 from quodlibet.qltk.x import Align, SymbolicIconImage
 from quodlibet.qltk import Icons
@@ -101,13 +99,8 @@ class SearchBar(Browser):
         qltk.get_top_parent(widget).songlist.grab_focus()
 
     def _get_songs(self):
-        text = self._get_text()
-        try:
-            self._query = Query(text, star=SongList.star)
-        except Query.error:
-            pass
-        else:
-            return self._query.filter(self._library)
+        self._query = self._sb_box.query
+        return self._query.filter(self._library) if self._query else None
 
     def activate(self):
         songs = self._get_songs()

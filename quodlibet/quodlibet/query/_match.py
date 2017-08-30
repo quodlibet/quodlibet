@@ -2,7 +2,7 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2011 Christoph Reiter
 #           2016 Ryan Dellenbaugh
-#           2016 Nick Boultbee
+#        2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -85,6 +85,26 @@ class True_(Node):
     def __and__(self, other):
         other = other._unpack()
         return other
+
+
+class False_(Node):
+    """Always False"""
+
+    def search(self, data):
+        return False
+
+    def filter(self, list_):
+        return []
+
+    def __repr__(self):
+        return "<False>"
+
+    def __or__(self, other):
+        other = other._unpack()
+        return other
+
+    def __and__(self, other):
+        return self
 
 
 class Union(Node):

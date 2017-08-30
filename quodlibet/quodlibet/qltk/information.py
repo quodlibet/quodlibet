@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#                2016 Nick Boultbee
+#           2016-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -308,22 +308,22 @@ class OneSong(qltk.Notebook):
     def _additional(self, song, box):
         if "website" not in song and "comment" not in song:
             return
-        data = []
+        markup_data = []
 
         if "comment" in song:
             comments = song.list("comment")
-            markups = ["<i>%s</i>" % c for c in comments]
-            data.append(("comment", markups))
+            markups = ["<i>%s</i>" % util.escape(c) for c in comments]
+            markup_data.append(("comment", markups))
 
         if "website" in song:
             markups = ["<a href=\"%(url)s\">%(text)s</a>" %
                        {"text": util.escape(website),
                         "url": util.escape(website)}
                        for website in song.list("website")]
-            data.append(("website", markups))
+            markup_data.append(("website", markups))
 
         table = Table(1)
-        for i, (key, markups) in enumerate(data):
+        for i, (key, markups) in enumerate(markup_data):
             title = readable(key, plural=len(markups) > 1)
             lab = Label(markup=util.capitalize(util.escape(title) + ":"))
             table.attach(lab, 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL)

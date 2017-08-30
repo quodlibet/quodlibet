@@ -31,7 +31,6 @@ from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem, SymbolicIconImage
 from quodlibet.qltk import Icons
 from quodlibet.qltk.chooser import choose_files, create_chooser_filter
-from quodlibet.query import Query
 from quodlibet.util import connect_obj
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.collection import FileBackedPlaylist
@@ -180,10 +179,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self._sb_box = self.__create_searchbar(library)
         self._main_box = self.__create_box()
         self.show_all()
-        self._query = None
 
         for child in self.get_children():
             child.show_all()
+
+    @property
+    def _query(self):
+        return self._sb_box.query
 
     def __destroy(self, *args):
         del self._sb_box
@@ -197,7 +199,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.accelerators = Gtk.AccelGroup()
         completion = LibraryTagCompletion(library.librarian)
         sbb = SearchBarBox(completion=completion,
-                           accel_group=self.accelerators)
+                           accel_group=self.accelerators, star=SongList.star)
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
         return sbb
@@ -484,12 +486,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def activate(self, widget=None, resort=True):
         songs = self._get_playlist_songs()
-
-        text = self.get_filter_text()
-        # TODO: remove static dependency on Query
-        if Query.is_parsable(text):
-            self._query = Query(text, SongList.star)
-            songs = self._query.filter(songs)
+        query = self._sb_box.query
+        if query and query.is_parsable:
+            songs = query.filter(songs)
         GLib.idle_add(self.songs_selected, songs, resort)
 
     @classmethod
