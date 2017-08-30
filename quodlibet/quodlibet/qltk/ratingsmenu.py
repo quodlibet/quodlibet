@@ -39,22 +39,24 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
     def __init__(self, songs, library, label=_("_Rating")):
         super(RatingsMenuItem, self).__init__(label=label, use_underline=True)
         self._songs = songs
-        ratings = {song("~#rating") for song in songs if song.has_rating}
         image = Gtk.Image.new_from_icon_name(Icons.FAVORITE, Gtk.IconSize.MENU)
         image.show()
         self.set_image(image)
 
         submenu = Gtk.Menu()
         self.set_submenu(submenu)
+        self._rating_menu_items = []
         for i in RATINGS.all:
             text = "%0.2f\t%s" % (i, util.format_rating(i))
             itm = Gtk.CheckMenuItem(label=text)
-            is_selected = i in ratings
-            itm.set_active(is_selected)
+            itm.rating = i
             submenu.append(itm)
-            itm.connect('activate', self._on_rating_change, i, library)
+            handler = itm.connect(
+                'toggled', self._on_rating_change, i, library)
+            self._rating_menu_items.append((itm, handler))
         reset = Gtk.MenuItem(label=_("_Remove Rating"), use_underline=True)
         reset.connect('activate', self._on_rating_remove, library)
+        self._select_ratings()
 
         submenu.append(SeparatorMenuItem())
         submenu.append(reset)
@@ -63,6 +65,23 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
     def set_songs(self, songs):
         """Set a new set of songs affected by the rating menu"""
         self._songs = songs
+        self._select_ratings()
+
+    def _select_ratings(self):
+        ratings = [song("~#rating") for song in self._songs
+                   if song and song.has_rating]
+        song_count = len(self._songs)
+        for (menu_item, handler) in self._rating_menu_items:
+            rating_val = menu_item.rating
+            rated_count = ratings.count(rating_val)
+            menu_item.handler_block(handler)
+            if rated_count == 0:
+                menu_item.set_active(False)
+            elif rated_count == song_count:
+                menu_item.set_active(True)
+            else:
+                menu_item.set_inconsistent(True)
+            menu_item.handler_unblock(handler)
 
     def _on_rating_change(self, menuitem, value, library):
         self.set_rating(value, self._songs, library)

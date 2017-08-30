@@ -188,15 +188,12 @@ class TSongList(TestCase):
         sel.select_all()
         self.assertTrue(self.songlist.Menu("foo", browser, library))
 
-    def test_get_columns_migrates(self):
+    def test_get_columns_migrated(self):
         self.failIf(config.get("settings", "headers", None))
-        self.failIf(config.get("settings", "columns", None))
-
-        headers = "~album ~#replaygain_track_gain foobar"
-        config.set("settings", "headers", headers)
-        columns = get_columns()
-        self.failUnlessEqual(columns, ["~album", "~#replaygain_track_gain",
-                                       "foobar"])
+        columns = "~album,~#replaygain_track_gain,foobar"
+        config.set("settings", "columns", columns)
+        self.failUnlessEqual(get_columns(),
+                             ["~album", "~#replaygain_track_gain", "foobar"])
         self.failIf(config.get("settings", "headers", None))
 
     def test_get_set_columns(self):

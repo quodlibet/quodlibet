@@ -262,7 +262,12 @@ class ID3File(AudioFile):
     def __distrust_latin1(self, text, encoding):
         assert isinstance(text, text_type)
         if encoding == 0:
-            text = text.encode('iso-8859-1')
+            try:
+                text = text.encode('iso-8859-1')
+            except UnicodeEncodeError:
+                # mutagen might give us text not matching the encoding
+                # https://github.com/quodlibet/mutagen/issues/307
+                return text
             for codec in self.CODECS:
                 try:
                     text = text.decode(codec)

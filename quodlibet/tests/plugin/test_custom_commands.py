@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012, 2016 Nick Boultbee
+# Copyright 2012-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet import app
 from quodlibet.formats._audio import AudioFile
@@ -42,7 +43,7 @@ class TCustomCommands(PluginTestCase):
         ed.destroy()
 
     def test_playlist_plugin(self):
-        pl = Playlist("foo", library=app.librarian)
+        pl = Playlist("foo", library=app.library)
         pl.extend([AudioFile({"~filename": "/dev/null"})])
         self.called_pl = None
         self.called_songs = None
@@ -51,7 +52,7 @@ class TCustomCommands(PluginTestCase):
             self.called_pl = playlist
             self.called_songs = songs
 
-        plugin = self.plugin()
+        plugin = self.plugin(playlists=[pl])
         plugin._handle_songs = proxy
         # Test that as a Playlist plugin it delegates correctly
         plugin.plugin_playlist(pl)
@@ -63,7 +64,7 @@ class TCustomCommands(PluginTestCase):
         plugin = self.plugin()
         self.failUnless(plugin._commands)
         # Hack the commands without the plugin noticing
-        fake = {"foo": "bar"}
+        fake = {"songs": Command(name="bar")}
         self.plugin._commands = fake
         # Try again, to make sure it hasn't reloaded
         plugin = self.plugin()

@@ -145,8 +145,8 @@ value="false"/>
     def __seeked(self, player, song, ms):
         self.Seeked(ms * 1000)
 
-    def __library_changed(self, library, song):
-        if song and song is not app.player.info:
+    def __library_changed(self, library, songs):
+        if not songs or app.player.info not in songs:
             return
         self.emit_properties_changed(self.PLAYER_IFACE, ["Metadata"])
 
@@ -182,18 +182,11 @@ value="false"/>
 
     @dbus.service.method(PLAYER_IFACE)
     def Play(self):
-        if app.player.song is None:
-            app.player.reset()
-        else:
-            app.player.paused = False
+        app.player.play()
 
     @dbus.service.method(PLAYER_IFACE)
     def PlayPause(self):
-        player = app.player
-        if player.song is None:
-            player.reset()
-        else:
-            player.paused ^= True
+        app.player.playpause()
 
     @dbus.service.method(PLAYER_IFACE)
     def Stop(self):

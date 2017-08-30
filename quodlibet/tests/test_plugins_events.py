@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from tests import TestCase, mkstemp, mkdtemp
 
@@ -10,9 +11,10 @@ import sys
 import shutil
 
 from quodlibet import player
-from quodlibet.library import SongLibrarian
+from quodlibet.library import SongLibrarian, SongLibrary
 from quodlibet.plugins import PluginManager
 from quodlibet.plugins.events import EventPluginHandler
+from quodlibet.qltk.songlist import SongList
 
 
 class TEventPlugins(TestCase):
@@ -21,9 +23,12 @@ class TEventPlugins(TestCase):
         self.tempdir = mkdtemp()
         self.pm = PluginManager(folders=[self.tempdir])
         self.lib = SongLibrarian()
+        lib = SongLibrary()
+        lib.librarian = self.lib
+        self.songlist = SongList(library=lib)
         self.player = player.init_player("nullbe", self.lib)
         self.handler = EventPluginHandler(
-            librarian=self.lib, player=self.player)
+            librarian=self.lib, player=self.player, songlist=self.songlist)
         self.pm.register_handler(self.handler)
         self.pm.rescan()
         self.assertEquals(self.pm.plugins, [])
@@ -80,3 +85,13 @@ class TEventPlugins(TestCase):
         self.lib.emit("changed", [None])
         self.failUnlessEqual([("plugin_on_changed", ([None],))],
                              self._get_calls(plugin))
+
+    def test_songs_selected(self):
+        self.create_plugin(name='Name', funcs=["plugin_on_songs_selected"])
+        self.pm.rescan()
+        self.assertEquals(len(self.pm.plugins), 1)
+        plugin = self.pm.plugins[0]
+        self.pm.enable(plugin, True)
+        self.songlist.emit("selection-changed", self.songlist.get_selection())
+        self.failUnlessEqual(self._get_calls(plugin),
+                             [("plugin_on_songs_selected", ([], ))])

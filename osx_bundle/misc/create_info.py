@@ -40,7 +40,7 @@ if __name__ == "__main__":
                     CFBundleTypeExtensions=[
                         "3g2", "3gp", "3gp2", "669", "aac", "adif",
                         "adts", "aif", "aifc", "aiff", "amf", "ams",
-                        "ape", "asf", "dsm", "far", "flac", "gdm",
+                        "ape", "asf", "dsf", "dsm", "far", "flac", "gdm",
                         "it", "m4a", "m4v", "med", "mid", "mod", "mp+",
                         "mp1", "mp2", "mp3", "mp4", "mpc", "mpeg",
                         "mpg", "mt2", "mtm", "oga", "ogg", "oggflac",

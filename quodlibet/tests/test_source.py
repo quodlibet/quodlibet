@@ -2,14 +2,17 @@
 # Copyright 2014, 2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import re
 import pprint
 
 from gi.repository import Gtk
+
+from quodlibet.util import get_module_dir
 
 from tests import TestCase
 
@@ -18,9 +21,12 @@ def iter_py_paths():
     """Iterates over all Python source files that are part of Quod Libet"""
 
     import quodlibet
-    root = os.path.dirname(quodlibet.__path__[0])
+    root = os.path.dirname(get_module_dir(quodlibet))
 
-    skip = [os.path.join(root, "docs")]
+    skip = [
+        os.path.join(root, "docs"),
+        os.path.join(root, "quodlibet", "optpackages"),
+    ]
     for dirpath, dirnames, filenames in os.walk(root):
         if any((dirpath.startswith(s + os.sep) or s == dirpath)
                for s in skip):
@@ -54,37 +60,52 @@ class TSourceEncoding(TestCase):
 
 class TLicense(TestCase):
 
-    ALLOWED = ["""This program is free software; you can redistribute it \
-and/or modify it under the terms of the GNU General Public License version 2 \
-as published by the Free Software Foundation""",
-               """This program is free software; you can redistribute it \
-and/or modify it under the terms of version 2 of the GNU General Public \
-License as published by the Free Software Foundation""",
-               """This software and accompanying documentation, if any, may \
-be freely used, distributed, and/or modified, in any form and for any \
-purpose, as long as this notice is preserved. There is no warranty, either \
-express or implied, for this software""",
-               """This program is free software; you can redistribute it \
-and/or modify it under the terms of the GNU General Public License as \
-published by the Free Software Foundation; either version 2, or (at your \
-option) any later version. This program is distributed in the hope that it \
-will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty o\
-f MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General \
-Public License for more details. You should have received a copy of the \
-GNU General Public License along with this program; if not, write to the \
-Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, \
-MA 02111-1307, USA""",
-"""Permission is hereby granted, free of charge, to any person obtaining \
-a copy of this software and associated documentation files (the "Software"), \
-to deal in the Software without restriction, including without limitation \
-the rights to use, copy, modify, merge, publish, distribute, sublicense, \
-and/or sell copies of the Software, and to permit persons to whom the \
-Software is furnished to do so, subject to the following conditions: The \
-above copyright notice and this permission notice shall be included in all \
-copies or substantial portions of the Software""",
+    ALLOWED = ["""
+This program is free software; you can redistribute it
+and/or modify it under the terms of the GNU General Public License version 2
+as published by the Free Software Foundation
+""", """
+This program is free software; you can redistribute it
+and/or modify it under the terms of version 2 of the GNU General Public
+License as published by the Free Software Foundation
+""", """
+This software and accompanying documentation, if any, may
+be freely used, distributed, and/or modified, in any form and for any
+purpose, as long as this notice is preserved. There is no warranty, either
+express or implied, for this software
+""", """
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+""", """
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+""",
 ]
 
     def test_main(self):
+        allowed = []
+        for license in self.ALLOWED:
+            allowed.append("".join(license.split()))
+
+        found = set()
         missing = []
         for path in iter_py_paths():
             header = b""
@@ -95,18 +116,18 @@ copies or substantial portions of the Software""",
                         break
                     header += line.lstrip(b"# ") + b"\n"
 
-            norm = b" ".join(header.strip().split())
+            norm = b"".join(header.split())
             norm = norm.decode("utf-8")
-            maybe_license = norm.rstrip(".")
-            for license_ in self.ALLOWED:
-                if maybe_license.endswith(license_):
-                    maybe_license = license_
-                    break
 
-            if maybe_license not in self.ALLOWED:
+            for license_ in allowed:
+                if license_ in norm:
+                    found.add(license_)
+                    break
+            else:
                 missing.append(path)
 
         self.assertFalse(missing, msg="Missing license: %r" % missing)
+        assert len(allowed) == len(found)
 
 
 class TStockIcons(TestCase):

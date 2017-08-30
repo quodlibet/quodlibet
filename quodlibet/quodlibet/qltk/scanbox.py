@@ -6,37 +6,19 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
-
 from gi.repository import Gtk
 from gi.repository import Pango
 from senf import fsn2text
 
 from quodlibet import _
-from quodlibet.qltk.chooser import FolderChooser
+from quodlibet.qltk.chooser import choose_folders
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.x import MenuItem, Button
 from quodlibet.qltk import Icons
-from quodlibet.util.path import unexpand, get_home_dir, glib2fsn, fsn2glib
+from quodlibet.util.path import unexpand
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util import connect_obj
-
-
-def get_init_select_dir():
-    """Returns a path which might be a good starting point when browsing
-    for a path for library scanning.
-
-    Returns:
-        fsnative
-    """
-
-    scandirs = get_scan_dirs()
-    if scandirs and os.path.isdir(scandirs[-1]):
-        # start with last added directory
-        return scandirs[-1]
-    else:
-        return get_home_dir()
 
 
 class ScanBox(Gtk.HBox):
@@ -114,11 +96,7 @@ class ScanBox(Gtk.HBox):
         self.__save()
 
     def __add(self, *args):
-        initial = get_init_select_dir()
-        chooser = FolderChooser(
-            self, _("Select Directories"), fsn2glib(initial))
-        fns = chooser.run()
-        chooser.destroy()
+        fns = choose_folders(self, _("Select Directories"), _("_Add Folders"))
         for fn in fns:
-            self.model.append(row=[glib2fsn(fn)])
+            self.model.append(row=[fn])
         self.__save()

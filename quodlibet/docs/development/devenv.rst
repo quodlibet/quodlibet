@@ -52,7 +52,7 @@ in the git repo for further instructions.
 |windows-logo| Windows
 ----------------------
 
-On Windows we use the `msys2 <https://msys2.github.io/>`__ environment for
+On Windows we use the `msys2 <http://www.msys2.org/>`__ environment for
 development.
 
 Check out the `win_installer

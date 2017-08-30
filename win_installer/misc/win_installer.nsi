@@ -1,8 +1,9 @@
 ; Copyright 2016 Christoph Reiter
 ;
 ; This program is free software; you can redistribute it and/or modify
-; it under the terms of the GNU General Public License version 2 as
-; published by the Free Software Foundation.
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation; either version 2 of the License, or
+; (at your option) any later version.
 
 Unicode true
 
@@ -175,6 +176,7 @@ Section "Install"
     WriteRegStr HKLM "${QL_ASSOC_KEY}" ".ams" "${QL_ID}.assoc.ANY"
     WriteRegStr HKLM "${QL_ASSOC_KEY}" ".ape" "${QL_ID}.assoc.ANY"
     WriteRegStr HKLM "${QL_ASSOC_KEY}" ".asf" "${QL_ID}.assoc.ANY"
+    WriteRegStr HKLM "${QL_ASSOC_KEY}" ".dsf" "${QL_ID}.assoc.ANY"
     WriteRegStr HKLM "${QL_ASSOC_KEY}" ".dsm" "${QL_ID}.assoc.ANY"
     WriteRegStr HKLM "${QL_ASSOC_KEY}" ".far" "${QL_ID}.assoc.ANY"
     WriteRegStr HKLM "${QL_ASSOC_KEY}" ".flac" "${QL_ID}.assoc.ANY"

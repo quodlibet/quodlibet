@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012,2014 Christoph Reiter
-#                2014 Nick Boultbee
+#           2014,2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -415,10 +415,7 @@ class PersistentWindowMixin(object):
 
 
 class _Unique(object):
-    """A mixin for the window class to get a one instance per class window.
-    The is_not_unique method will return True if the window
-    is already there.
-    """
+    """A mixin for window-like classes to ensure one instance per class. """
 
     __window = None
 
@@ -426,9 +423,9 @@ class _Unique(object):
         window = klass.__window
         if window is None:
             return super(_Unique, klass).__new__(klass, *args, **kwargs)
-        #Look for widgets in the args, if there is one and it has
-        #a new top level window, reparent and reposition the window.
-        widgets = filter(lambda x: isinstance(x, Gtk.Widget), args)
+        # Look for widgets in the args, if there is one and it has
+        # a new top level window, re-parent and reposition the window.
+        widgets = [w for w in args if isinstance(w, Gtk.Widget)]
         if widgets:
             parent = window.get_transient_for()
             new_parent = get_top_parent(widgets[0])
@@ -441,6 +438,7 @@ class _Unique(object):
 
     @classmethod
     def is_not_unique(klass):
+        """Returns True if a window instance already exists."""
         return bool(klass.__window)
 
     def __init__(self, *args, **kwargs):

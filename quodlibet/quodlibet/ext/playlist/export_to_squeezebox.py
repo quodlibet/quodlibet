@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014, 2016 Nick Boultbee
+# Copyright 2014-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from threading import Thread
 
 from quodlibet import _
+from quodlibet import app
 from quodlibet import qltk
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk import Icons
@@ -21,20 +21,32 @@ from quodlibet.ext._shared.squeezebox.base import SqueezeboxPluginMixin
 class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = "Export to Squeezebox Playlist"
     PLUGIN_NAME = _(u"Export to Squeezebox")
-    PLUGIN_DESC = _("Dynamically exports a playlist to Logitech Squeezebox "
-                    "playlist, provided both share a directory structure. "
-                    "Shares configuration with Squeezebox Sync plugin.")
+    PLUGIN_DESC = \
+        _("Dynamically exports a playlist to Logitech Squeezebox "
+          "playlist, provided both share a directory structure. "
+          "Shares configuration with "
+          "<a href=\"quodlibet:///prefs/plugins/Squeezebox Output\">"
+          "Squeezebox Sync plugin"
+          "</a>.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
     ELLIPSIZE_NAME = True
+    _PERSIST_FUDGE = 100
 
     TEMP_PLAYLIST = "_quodlibet"
 
     def __add_songs(self, task, songs, name):
         """Generator for copool to add songs to the temp playlist"""
-        print_d("Backing up current Squeezebox playlist")
+        print_d("Backing up current Squeezebox playlist."
+                "This can take a while if your current playlist is big...")
         self.__cancel = False
+        # Arbitrarily assign playlist operations a value of 2 * addition
+        task_total = float(len(songs) + 2 * self._PERSIST_FUDGE + 3 * 2)
         self.server.playlist_save(self.TEMP_PLAYLIST)
+        task.update(self._PERSIST_FUDGE / task_total)
+        yield True
         self.server.playlist_clear()
+        task.update((self._PERSIST_FUDGE + 2.0) // task_total)
+        yield True
         # Check if we're currently playing.
         stopped = self.server.is_stopped()
         total = len(songs)
@@ -46,19 +58,13 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
                 self.__cancel = False
                 break
             # Actually do the (slow) call
-            worker = Thread(target=self.server.playlist_add,
-                            args=(self.get_sb_path(song),))
-            worker.daemon = True
-            worker.start()
-            worker.join(timeout=3)
-            #self.server.playlist_add(self.get_path(song))
-            task.update(float(i) / total)
+            self.server.playlist_add(self.get_sb_path(song))
+            task.update(float(i) / task_total)
             yield True
         print_d("Saving Squeezebox playlist \"%s\"" % name)
-        task.pulse()
         self.server.playlist_save(name)
+        task.update((task_total - 2) / task_total)
         yield True
-        task.pulse()
         # Resume if we actually stopped
         self.server.playlist_resume(self.TEMP_PLAYLIST, not stopped, True)
         task.finish()
@@ -80,7 +86,7 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
         self.init_server()
         if not self.server.is_connected:
             qltk.ErrorMessage(
-                None,
+                app.window,
                 _("Error finding Squeezebox server"),
                 _("Error finding %s. Please check settings") %
                 self.server.config

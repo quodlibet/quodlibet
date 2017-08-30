@@ -5,12 +5,6 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
-
-if os.name == "nt":
-    from quodlibet.plugins import PluginNotSupportedError
-    raise PluginNotSupportedError
-
 from gi.repository import Gtk, Gst, GObject
 
 from quodlibet import _

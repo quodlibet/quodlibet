@@ -654,7 +654,7 @@ class FileLibrary(PicklingLibrary):
             if ismount(point):
                 self._contents.update(items)
                 del(self._masked[point])
-                self.emit('added', items.values())
+                self.emit('added', listvalues(items))
                 yield True
 
         task = Task(_("Library"), _("Scanning library"))
@@ -833,6 +833,10 @@ class SongFileLibrary(SongLibrary, FileLibrary):
     def contains_filename(self, filename):
         key = normalize_path(filename, True)
         return key in self._contents
+
+    def get_filename(self, filename):
+        key = normalize_path(filename, True)
+        return self._contents.get(key)
 
     def add_filename(self, filename, add=True):
         """Add a song to the library based on filename.

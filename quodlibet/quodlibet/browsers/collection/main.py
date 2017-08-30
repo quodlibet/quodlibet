@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010, 2012-2014 Christoph Reiter
+#                      2017 Uriel Zajaczkovski
+#                      2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
-
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 
@@ -27,7 +28,7 @@ from quodlibet.util import connect_obj
 from quodlibet.util.library import background_filter
 
 from .models import (CollectionTreeStore, CollectionSortModel,
-    CollectionFilterModel, MultiNode, UnknownNode, AlbumNode)
+                     CollectionFilterModel, AlbumNode, _ORDERING)
 from .prefs import get_headers, Preferences
 
 
@@ -154,16 +155,12 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         model_filter.set_visible_func(self.__parse_query)
         view.set_model(model_filter)
 
-        def sort(model, i1, i2, data):
+        def cmp_rows(model, i1, i2, data):
             t1, t2 = model[i1][0], model[i2][0]
-            if t1 is None or t2 is None:
-                # FIXME: why?
-                return 0
-
-            # FIXME: order this deterministically
-            if t1 is MultiNode or t1 is UnknownNode or \
-                    t2 is MultiNode or t2 is UnknownNode:
-                return -cmp(t1, t2)
+            pos1 = _ORDERING.get(t1, 0)
+            pos2 = _ORDERING.get(t2, 0)
+            if pos1 or pos2:
+                return cmp(pos1, pos2)
 
             if not isinstance(t1, AlbumNode):
                 return cmp(util.human_sort_key(t1), util.human_sort_key(t2))
@@ -171,10 +168,10 @@ class CollectionBrowser(Browser, util.InstanceTracker):
             a1, a2 = t1.album, t2.album
             return (cmp(a1.peoplesort and a1.peoplesort[0],
                         a2.peoplesort and a2.peoplesort[0]) or
-                        cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
-                        cmp((a1.sort, a1.key), (a2.sort, a2.key)))
+                    cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
+                    cmp((a1.sort, a1.key), (a2.sort, a2.key)))
 
-        model_sort.set_sort_func(0, sort)
+        model_sort.set_sort_func(0, cmp_rows)
         model_sort.set_sort_column_id(0, Gtk.SortType.ASCENDING)
 
         column = Gtk.TreeViewColumn("albums")
@@ -225,10 +222,11 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         prefs.add(SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU))
         prefs.connect('clicked', lambda *x: Preferences(self))
 
+        self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
                               accel_group=self.accelerators)
-
         search.connect('query-changed', self.__update_filter)
+        connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
 
         hbox.pack_start(search, True, True, 0)

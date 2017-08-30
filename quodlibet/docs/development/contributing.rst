@@ -43,7 +43,7 @@ Writing a good bug report
     the better the chance of a speedy resolution.
 
     For more general tips see `"How to Report Bugs Effectively"
-    <http://www.chiark.greenend.org.uk/~sgtatham/bugs.html>`_.
+    <https://www.chiark.greenend.org.uk/~sgtatham/bugs.html>`_.
 
 Look through existing issues
     Quod Libet is a mature project (in its second decade!), and there have been
@@ -97,11 +97,32 @@ Help us :ref:`translate Quod Libet into other languages<Translating>`.
 You don't need to know how to program in Python to do it.
 
 
-Submitting patches
+Getting started as a developer on Quod Libet
+--------------------------------------------
+
+On an long-standing project it can be daunting helping out for the first time.
+The `newcomer-friendly tag<https://github.com/quodlibet/quodlibet/issues?q=is%3Aopen+is%3Aissue+label%3Anewcomer-friendly>`_
+has been added to (some) issues to indicate where the existing developers
+feel there is an opportunity to help out without too much background (or risk).
+See the discussion around this in `Issue 2516 <https://github.com/quodlibet/quodlibet/issues/2516>`_
+
+The other area perfect for newcomers is in the rich
+:ref:`plugins ecosystem <PluginDev>` - at time of writing QL has >80 plugins.
+These require less knowledge of Python, GTK+ and the QL architecture / codebase.
+
+It's best to examine existing (and past) PRs, keep an eye on the mailing list,
+and especially the Github issues list.
+Reading the unit / integration tests is usually instructive too.
+IRC can be a good place for more immediate questions.
+
+
+Submitting changes
 ------------------
 
 Patches are always welcome, and should be in the form of a pull request or by 
-attaching a patch.
+attaching a patch to the issue.
+Please work on existing issues where possible (there are a lot),
+or at the very least make sure there is an accompanying issue for your PR.
 
 If you follow the :ref:`CodingGuidelines` it will be much easier to get your 
 changes included quickly.

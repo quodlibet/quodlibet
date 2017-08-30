@@ -2,8 +2,9 @@
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source "$DIR"/_base.sh
@@ -25,8 +26,9 @@ function main {
     install_pre_deps
     create_root
     extract_installer "$INSTALLER_PATH"
+    cleanup_before
     install_quodlibet "$GIT_TAG"
-    cleanup_install
+    cleanup_after
     build_installer
     build_portable_installer
 }

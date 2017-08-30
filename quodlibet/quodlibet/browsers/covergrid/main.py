@@ -154,12 +154,12 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             covergrid.view.queue_resize()
 
     @classmethod
-    def toggle_vert(klass):
-        vert = config.getboolean("browsers", "covergrid_vertical", True)
+    def toggle_wide(klass):
+        wide = config.getboolean("browsers", "covergrid_wide", False)
         for covergrid in klass.instances():
             covergrid.songcontainer.set_orientation(
-                Gtk.Orientation.VERTICAL if vert
-                else Gtk.Orientation.HORIZONTAL)
+                Gtk.Orientation.HORIZONTAL if wide
+                else Gtk.Orientation.VERTICAL)
 
     @classmethod
     def update_mag(klass):
@@ -208,14 +208,14 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.songcontainer = qltk.paned.ConfigRVPaned(
             "browsers", "covergrid_pos", 0.4)
-        if not config.getboolean("browsers", "covergrid_vertical", True):
+        if config.getboolean("browsers", "covergrid_wide", False):
             self.songcontainer.set_orientation(Gtk.Orientation.HORIZONTAL)
 
         self._register_instance()
         if self.__model is None:
             self._init_model(library)
 
-        self._cover_cancel = Gio.Cancellable.new()
+        self._cover_cancel = Gio.Cancellable()
 
         self.scrollwin = sw = ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
@@ -377,7 +377,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             if path is not None:
                 model.row_changed(path, model.get_iter(path))
             # XXX: icon view seems to ignore row_changed signals for pixbufs..
-            self.queue_resize()
+            self.queue_draw()
 
         item = model.get_value(iter_)
         scale_factor = self.get_scale_factor() * mag

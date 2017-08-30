@@ -8,11 +8,10 @@ Overview
     :scale: 50%
     :align: right
 
-The Paned Browser offers a convenient way to quickly drill down into a large 
-music collection, by narrowing  selections in several stages. Some users 
-may find this reminiscent of `RhythmBox <http://www.rhythmbox.org>`_ or, 
-to some extent, `iTunes 
-<https://www.apple.com/uk/itunes/>`_.
+The Paned Browser offers a convenient way to quickly drill down into a large
+music collection, by narrowing  selections in several stages. Some users may
+find this reminiscent of `RhythmBox <https://wiki.gnome.org/Apps/Rhythmbox>`_
+or, to some extent, `iTunes <https://www.apple.com/uk/itunes/>`_.
 
 In Quod Libet though, you can have as many panes as you want, grouped by 
 any tags you want, for example the popular ''genre/artist/album'' and 
@@ -84,7 +83,7 @@ Using Markup
 ^^^^^^^^^^^^
 
 Also it's possible to change text emphasis using the `Pango markup language 
-<http://library.gnome.org/devel/pango/unstable/PangoMarkupFormat.html>`_
+<https://developer.gnome.org/pango/unstable/PangoMarkupFormat.html>`_
 
 
 =========================================================== =================================

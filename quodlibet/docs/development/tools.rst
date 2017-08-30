@@ -124,7 +124,7 @@ Example output::
 strace
 ^^^^^^
 
- * http://linux.die.net/man/1/strace
+ * https://linux.die.net/man/1/strace
 
 ::
 
@@ -146,7 +146,7 @@ Example output::
 IOProfiler
 ^^^^^^^^^^
 
- * http://code.google.com/p/ioapps/wiki/ioprofiler
+ * https://code.google.com/archive/p/ioapps/wikis/ioprofiler.wiki
  * strace GUI
  * Shows read/write to files (how many reads/writes per file, which parts of the files were affected)
 
@@ -158,4 +158,4 @@ IOProfiler
     # open OUT_FILE.bin
 
 
-Example: http://code.google.com/p/ioapps/wiki/IOProfilerScreenshots
+Example: https://code.google.com/archive/p/ioapps/wikis/IOProfilerScreenshots.wiki

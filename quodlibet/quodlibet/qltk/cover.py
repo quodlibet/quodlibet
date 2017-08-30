@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2017 Joe Wreschnig, Michael Urman, Iñigo Serna,
 # Christoph Reiter, Nick Boultbee, Simonas Kazlauskas
 #
 # This program is free software; you can redistribute it and/or modify
@@ -80,7 +80,7 @@ class BigCenteredImage(qltk.Window):
 
 
 def get_no_cover_pixbuf(width, height, scale_factor=1):
-    """A no cover pixbux at max width x height"""
+    """A no-cover pixbuf at maximum width x height"""
 
     # win32 workaround: https://bugzilla.gnome.org/show_bug.cgi?id=721062
 
@@ -240,7 +240,7 @@ class CoverImage(Gtk.EventBox):
         self.set_image(None)
         if self.__cancellable:
             self.__cancellable.cancel()
-        cancellable = self.__cancellable = Gio.Cancellable.new()
+        cancellable = self.__cancellable = Gio.Cancellable()
 
         if song:
             def cb(success, result):

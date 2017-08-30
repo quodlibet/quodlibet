@@ -297,11 +297,7 @@ class SystemTray(BaseIndicator):
             self.__play_pause()
 
     def __play_pause(self, *args):
-        player = app.player
-        if player.song:
-            player.paused ^= True
-        else:
-            player.reset()
+        app.player.playpause()
 
     def __scroll(self, widget, event):
         state = event.get_state()

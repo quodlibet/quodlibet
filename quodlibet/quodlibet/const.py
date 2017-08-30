@@ -53,15 +53,15 @@ class MinVersions(object):
 
     PYTHON2 = Version("Python2", 2, 7)
     PYTHON3 = Version("Python3", 3, 4)
-    MUTAGEN = Version("Mutagen", 1, 32,
+    MUTAGEN = Version("Mutagen", 1, 34,
         message="Use the Quod Libet unstable PPAs/repos to get a newer "
                 "mutagen version.")
-    GTK = Version("GTK+", 3, 10)
-    PYGOBJECT = Version("PyGObject", 3, 12)
-    GSTREAMER = Version("GStreamer", 1, 0)
+    GTK = Version("GTK+", 3, 14)
+    PYGOBJECT = Version("PyGObject", 3, 14)
+    GSTREAMER = Version("GStreamer", 1, 4)
 
 
-VERSION_TUPLE = Version("", 3, 9, -1)
+VERSION_TUPLE = Version("", 3, 10, -1)
 VERSION = str(VERSION_TUPLE)
 
 # entry point for the user guide / wiki
@@ -79,17 +79,9 @@ EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 # Displayed as registered / help email address
 SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
-MAIN_AUTHORS = u"""\
-Joe Wreschnig
-Michael Urman
-Iñigo Serna
-Steven Robertson
-Christoph Reiter
-Nick Boultbee""".split("\n")
-
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = u"""Copyright © 2004-2016 %s...""" % u", ".join(MAIN_AUTHORS)
+COPYRIGHT = u"Copyright 2004-2017"
 
 AUTHORS = sorted(u"""\
 Alexandre Passos
@@ -114,6 +106,7 @@ Corentin Néau
 David Kågedal
 David Schneider
 Decklin Foster
+Didier Villevalois
 Eduardo Gonzalez
 Eric Casteleijn
 Erich Schubert
@@ -121,6 +114,7 @@ Eric Le Lay
 Federico Pelloni
 Felix Krull
 Florian Demmer
+Fredrik Strupe
 Guillaume Chazarain
 Hans Scholze
 Iñigo Serna
@@ -167,15 +161,26 @@ Tomasz Miasko
 Tomasz Torcz
 Tshepang Lekhonkhobe
 Türerkan İnce
+Uriel Zajaczkovski
 Vasiliy Faronov
 Victoria Hayes
 Zack Weinberg
+Vimalan Reddy
+Jason Heard
+David Pérez Carmona
+Jakub Wilk
+IBBoard@github
+CreamyCookie@github
+Sauyon Lee
+Thomas Leberbauer
+Kristian Laakkonen
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
 Åka Sikrom (nb)
 Alexandre Passos (pt)
 Andreas Bertheussen (nb)
+Olivier Humbert (fr)
 Anton Shestakov (ru)
 Bastian Kleineidam (de)
 Bastien Gorissen (fr)
@@ -226,9 +231,11 @@ Yasushi Iwata (ja)
 Николай Прокошенко (ru)
 Ростислав "zbrox" Райков (bg)
 Сергей Федосеев (ru)
-scootergrisen (da)
+scootergrisen@github (da)
 Marek Suchánek (cs)
 Till Berger (de)
+Jean-Michel Pouré (fr)
+Kristian Laakkonen (fi)
 """.strip().splitlines())
 
 ARTISTS = sorted(u"""\

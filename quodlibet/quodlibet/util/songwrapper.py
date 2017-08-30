@@ -60,10 +60,14 @@ class SongWrapper(object):
         return hash(self._song)
 
     def __eq__(self, other):
-        return self._song == other._song
+        if hasattr(other, '_song'):
+            other = other._song
+        return self._song == other
 
     def __lt__(self, other):
-        return self._song < other._song
+        if hasattr(other, '_song'):
+            other = other._song
+        return self._song < other
 
     def __getitem__(self, *args):
         return self._song.__getitem__(*args)

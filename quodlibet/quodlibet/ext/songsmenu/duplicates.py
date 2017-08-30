@@ -13,9 +13,9 @@
 #    published by the Free Software Foundation.
 #
 
-import string
 import unicodedata
 
+import sys
 from gi.repository import Gtk, Pango
 
 from quodlibet import app
@@ -29,9 +29,9 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import Icons, Button
-from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.util import connect_obj, connect_destroy, cached_func
 from quodlibet.util.i18n import numeric_phrase
-from quodlibet.compat import text_type, PY2
+from quodlibet.compat import text_type, xrange, unichr
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -60,8 +60,7 @@ class DuplicateSongsView(RCMHintedTreeView):
             return
 
         menu = SongsMenu(
-            library, songs, delete=True, plugins=False,
-            devices=False, playlists=False)
+            library, songs, delete=True, plugins=False, playlists=False)
         menu.show_all()
         return menu
 
@@ -358,6 +357,15 @@ class DuplicateDialog(Gtk.Window):
         self.show_all()
 
 
+@cached_func
+def _remove_punctuation_trans():
+    """Lookup all Unicode punctuation, and remove it"""
+
+    return dict.fromkeys(
+        i for i in xrange(sys.maxunicode)
+        if unicodedata.category(unichr(i)).startswith('P'))
+
+
 class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Duplicates'
     PLUGIN_NAME = _('Duplicates Browser')
@@ -378,12 +386,6 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     # Cached values
     key_expression = None
     __cfg_cache = {}
-
-    # Faster than a speeding bullet
-    if PY2:
-        __trans = "".join(map(chr, range(256)))
-    else:
-        __trans = str.maketrans({ord(k): None for k in string.punctuation})
 
     @classmethod
     def get_key_expression(cls):
@@ -441,15 +443,13 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def get_key(cls, song):
-        key = str(song(cls.get_key_expression()))
+        key = song(cls.get_key_expression())
         if cls.config_get_bool(cls._CFG_REMOVE_DIACRITICS):
             key = cls.remove_accents(key)
         if cls.config_get_bool(cls._CFG_CASE_INSENSITIVE):
             key = key.lower()
         if cls.config_get_bool(cls._CFG_REMOVE_PUNCTUATION):
-            key = (key.translate(cls.__trans, string.punctuation) if PY2
-                   else key.translate(cls.__trans))
-
+            key = (key.translate(_remove_punctuation_trans()))
         if cls.config_get_bool(cls._CFG_REMOVE_WHITESPACE):
             key = "_".join(key.split())
         return key
@@ -465,6 +465,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         for song in songs:
             key = self.get_key(song)
             if key and key in groups:
+                print_d("Found duplicate based on '%s'" % key)
                 groups[key].add(song._song)
             elif key:
                 groups[key] = {song._song}

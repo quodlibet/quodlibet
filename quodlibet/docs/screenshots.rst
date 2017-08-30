@@ -9,10 +9,20 @@ Screenshots
     The paned browser, providing a customizable hierarchy of filters for finding your music
 
 
-.. figure:: images/album.png
+.. figure:: images/album-list-2017-08.png
     :scale: 50%
 
     The album browser, giving a visual anchor for a large library
+
+.. figure:: images/covergrid-plus-waveform-2017-08.png
+    :scale: 50%
+
+    The cover grid browser, giving an even more visual anchor for libraries
+
+.. figure:: images/soundcloud-browser-2017-08.png
+    :scale: 50%
+
+    The Soundcloud browser.
 
 
 .. figure:: images/queue_2browsers.png

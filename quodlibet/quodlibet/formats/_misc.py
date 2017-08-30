@@ -45,8 +45,7 @@ def translate_errors():
         yield
     except AudioFileError:
         raise
-    except (mutagen.MutagenError, IOError) as e:
-        # old mutagen raised IOError
+    except mutagen.MutagenError as e:
         reraise(AudioFileError, e)
     except Exception as e:
         reraise(MutagenBug, e)

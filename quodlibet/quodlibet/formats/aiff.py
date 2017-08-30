@@ -21,6 +21,7 @@ class AIFFFile(ID3File):
     def _parse_info(self, info):
         self["~#length"] = info.length
         self["~#bitrate"] = int(info.bitrate / 1000)
+        self["~#channels"] = info.channels
 
 
 loader = AIFFFile

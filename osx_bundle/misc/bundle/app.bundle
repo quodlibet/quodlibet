@@ -1,272 +1,56 @@
-<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<?xml version="1.0" standalone="no"?>
 <app-bundle>
-
   <meta>
-    <!-- Where to pick up the GTK+ installation, icon themes,
-         etc. Note that "${env:JHBUILD_PREFIX}" is evaluated to the
-         value of the environment variable JHBUILD_PREFIX. You can
-         define additional prefixes and refer to them in paths
-         throughout this file on the form "${prefix:name}". This is
-         useful for installing certain libraries or even the
-         application itself separately. Note that JHBUILD_PREFIX is
-         defined by jhbuild, so it you are not using jhbuild you can
-         either define your own or just hardcode the path here.
-    -->
     <prefix name="default">${env:JHBUILD_PREFIX}</prefix>
-
-    <!-- The project directory is the default location of the created
-         app. If you leave out the path, the current directory is
-         used. Note the usage of an environment variable here again.
-    -->
     <destination overwrite="yes">${env:QL_OSXBUNDLE_BUNDLE_DEST}</destination>
-
-    <!-- Comment this out to keep the install names in binaries.  -->
     <run-install-name-tool/>
-
-    <!--A launcher script is pretty much mandatory here so that we can
-         set $PYTHON to point to the python in the bundle.
-    -->
     <launcher-script>${project}/launcher.sh</launcher-script >
-
-     <!-- Indicate the active gtk version to use. This is needed only
-         for gtk+-3.0 projects. -->
     <gtk>gtk+-3.0</gtk>
- </meta>
-
-  <!-- The special macro "${project}" refers to the directory where
-       this bundle file is located. The application name and bundle
-       identifier are taken from the plist file.
-  -->
+  </meta>
+  <binary dest="${bundle}/Contents/MacOS">${prefix}/bin/${env:QL_PYTHON}</binary>
+  <binary>${prefix}/lib/${gtkdir}/${pkg:${gtk}:gtk_binary_version}/immodules/*.so</binary>
+  <binary>${prefix}/lib/${gtkdir}/${pkg:${gtk}:gtk_binary_version}/printbackends/*.so</binary>
+  <binary>${prefix}/lib/gdk-pixbuf-2.0/2.10.0/loaders/*.so</binary>
+  <binary>${prefix}/lib/gio/modules/*.so</binary>
+  <binary>${prefix}/lib/gstreamer-1.0/*.so</binary>
+  <binary>${prefix}/lib/libgst*.dylib</binary>
+  <binary>${prefix}/lib/libgtk-${gtkversion}.dylib</binary>
+  <binary>${prefix}/lib/libgtkmacintegration-gtk3.dylib</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/lib-dynload/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/AppKit/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/CoreFoundation/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Foundation/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/CoreGraphics/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/CoreVideo/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/ImageIO/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/ImageKit/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/PDFKit/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/QuartzComposer/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/QuartzCore/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/QuartzFilters/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/QuickLookUI/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/cairo/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/gi/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/coverage/*.so</binary>
+  <binary>${prefix}/libexec/gstreamer-1.0/gst-plugin-scanner</binary>
+  <data dest="${bundle}/Contents/Resources/exfalso.icns">${project}/exfalso.icns</data>
+  <data dest="${bundle}/Contents/Resources/quodlibet.icns">${project}/quodlibet.icns</data>
+  <data>${prefix}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache</data>
+  <data>${prefix}/lib/girepository-1.0</data>
+  <data>${prefix}/lib/${env:QL_PYTHONID}</data>
+  <data>${prefix}/share/glib-2.0/schemas</data>
+  <data>${prefix}/share/themes/Default</data>
+  <data>${prefix}/share/themes/Mac</data>
+  <icon-theme icons="all">Adwaita</icon-theme>
   <plist>${project}/Info.plist</plist>
-
- <!-- This is mandatory, and the result gets named to the appname from
-      Info.plist with bin tacked on the end, in this example,
-      PyGtkDemo-bin. Bunlder won't let us use the one from $project,
-      so we use the original and ignore it. If your original will work
-      in the bundle, you can use this instead.-->
- <main-binary>
-     ${prefix}/bin/python
-  </main-binary>
-
-  <!-- We need to pack our own Python to avoid compatibility problems. -->
-  <binary dest="${bundle}/Contents/MacOS">
-    ${prefix}/bin/python
-  </binary>
-
-  <!-- Gtk+ is required by python modules which aren't searched for
-       dependencies, so we have to pull it in explicitly. It will
-       bring Pango and Cairo with it. Note the use of ${gtkversion},
-       which expands to either 2.0 or 3.0, depending on which value of
-       gtk is specified.-->
-  <binary>
-    ${prefix}/lib/libgtk-${gtkversion}.dylib
-  </binary>
-  <binary>
-    ${prefix}/lib/libgtkmacintegration-gtk3.dylib
-  </binary>
-
-  <!-- Copy in the input methods. Dunno if they actually work with
-       OSX. Note the ${gtkdir} macro, which expands to the correct
-       library subdirectory for the specified gtk version. -->
-  <binary>
-    ${prefix}/lib/${gtkdir}/${pkg:${gtk}:gtk_binary_version}/immodules/*.so
-  </binary>
-
-  <!-- And the print backends -->
-  <binary>
-    ${prefix}/lib/${gtkdir}/${pkg:${gtk}:gtk_binary_version}/printbackends/*.so
-  </binary>
-
-<!-- Starting with 2.24, gdk-pixbuf installs into its own directory. -->
-  <data>
-    ${prefix}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
-  </data>
-  <binary>
-    ${prefix}/lib/gdk-pixbuf-2.0/2.10.0/loaders/*.so
-  </binary>
-
-  <binary>
-    ${prefix}/lib/gio/modules/*.so
-  </binary>
-
-  <!-- gstreamer plugins -->
-  <binary>
-  	${prefix}/lib/gstreamer-1.0/*.so
-  </binary>
-  <!-- references
-    http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gst-running.html
-    http://gstreamer-devel.966125.n4.nabble.com/gst-inspect-not-finding-plugin-loader-helper-binary-td3761397.html
-   -->
-  <binary>
-  	${prefix}/libexec/gstreamer-1.0/gst-plugin-scanner
-  </binary>
-  
-  
-  <!-- Translation filenames, one for each program or library that you
-       want to copy in to the bundle. The "dest" attribute is
-       optional, as usual. Bundler will find all translations of that
-       library/program under the indicated directory and copy them.-->
-  <translations name="atk10">
-    ${prefix}/share/locale
-  </translations>
-  <translations name="gdk-pixbuf">
-    ${prefix}/share/locale
-  </translations>
-  <translations name="glib20">
-    ${prefix}/share/locale
-  </translations>
-  <translations name="gst-plugins-base-1.0">
-    ${prefix}/share/locale
-  </translations>
-  <translations name="gst-plugins-good-1.0">
-    ${prefix}/share/locale
-  </translations>
-  <translations name="gst-plugins-ugly-1.0">
-    ${prefix}/share/locale
-  </translations>
-  <translations name="gstreamer-1.0">
-    ${prefix}/share/locale
-  </translations>
-  <translations name="gtk30">
-    ${prefix}/share/locale
-  </translations>
-
-  <!-- Be careful, only to pick required python modules  -->
-  
-  <!-- standard install minus unused -->
-  <data>
-  ${prefix}/lib/python2.7/*.py
-  </data>
-  <data>${prefix}/lib/python2.7/bsddb</data>
-  <data>${prefix}/lib/python2.7/compiler</data>
-  <data>${prefix}/lib/python2.7/config</data>
-  <data>${prefix}/lib/python2.7/ctypes</data>
-  <data>${prefix}/lib/python2.7/curses</data>
-  <data>${prefix}/lib/python2.7/email</data>
-  <data>${prefix}/lib/python2.7/encodings</data>
-  <data>${prefix}/lib/python2.7/hotshot</data>
-  <data>${prefix}/lib/python2.7/importlib</data>
-  <data>${prefix}/lib/python2.7/json</data>
-  <data>${prefix}/lib/python2.7/lib-dynload</data>
-  <data>${prefix}/lib/python2.7/logging</data>
-  <data>${prefix}/lib/python2.7/multiprocessing</data>
-  <data>${prefix}/lib/python2.7/plat-darwin</data>
-  <data>${prefix}/lib/python2.7/plat-mac</data>
-  <data>${prefix}/lib/python2.7/sqlite3</data>
-  <data>${prefix}/lib/python2.7/unittest</data>
-  <data>${prefix}/lib/python2.7/wsgiref</data>
-  <data>${prefix}/lib/python2.7/xml</data>
-  <!-- only required extra modules (no dbus, for instance) -->
-  <data>${prefix}/lib/python2.7/site-packages/feedparser.py</data>
-  <data>${prefix}/lib/python2.7/site-packages/cairo</data>
-  <data>${prefix}/lib/python2.7/site-packages/gi</data>
-  <data>${prefix}/lib/python2.7/site-packages/musicbrainzngs</data>
-  <data>${prefix}/lib/python2.7/site-packages/mutagen</data>
-  <data>${prefix}/lib/python2.7/site-packages/certifi</data>
-  <data>${prefix}/lib/python2.7/site-packages/py</data>
-  <data>${prefix}/lib/python2.7/site-packages/_pytest</data>
-  <data>${prefix}/lib/python2.7/site-packages/pytest.py</data>
-  <data>${prefix}/lib/python2.7/site-packages/concurrent</data>
-  <data>${prefix}/lib/python2.7/site-packages/pycodestyle.py</data>
-  <data>${prefix}/lib/python2.7/site-packages/pyflakes</data>
-  <!-- pyObjC -->
-  <data>${prefix}/lib/python2.7/distutils</data>
-  <data>${prefix}/lib/python2.7/site-packages/pkg_resources</data>
-  <data>${prefix}/lib/python2.7/site-packages/setuptools</data>
-  <data>${prefix}/lib/python2.7/site-packages/AppKit</data>
-  <data>${prefix}/lib/python2.7/site-packages/Cocoa</data>
-  <data>${prefix}/lib/python2.7/site-packages/CoreFoundation</data>
-  <data>${prefix}/lib/python2.7/site-packages/Foundation</data>
-  <data>${prefix}/lib/python2.7/site-packages/objc</data>
-  <data>${prefix}/lib/python2.7/site-packages/Quartz</data>
-
-
-  <binary>
-    ${prefix}/lib/python2.7/lib-dynload/*.so
-  </binary>
-  
-  <!-- every bundled .so must have its dynamic links rewritten to point to the bundle.
-       Can't specify site-packages/*/*.so, so list them based on the output of postproc.sh.
-    -->
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/cairo/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/gi/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/AppKit/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/CoreFoundation/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/Foundation/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/Quartz/CoreGraphics/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/Quartz/CoreVideo/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/Quartz/ImageIO/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/Quartz/ImageKit/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/Quartz/PDFKit/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/Quartz/QuartzComposer/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/Quartz/QuartzCore/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/Quartz/QuartzFilters/*.so
-  </binary>
-  <binary>
-    ${prefix}/lib/python2.7/site-packages/Quartz/QuickLookUI/*.so
-  </binary>
-
-  <data>
-    ${prefix}/lib/girepository-1.0
-  </data>
-  <binary>
-    ${prefix}/lib/libgst*.dylib
-  </binary>
-  
-  <data>
-    ${prefix}/include/python2.7
-  </data>
-
-  <data>
-    ${prefix}/share/glib-2.0/schemas
-  </data>
-
-  <data dest="${bundle}/Contents/Resources/quodlibet.icns">
-    ${project}/quodlibet.icns
-  </data>
-
-  <data dest="${bundle}/Contents/Resources/exfalso.icns">
-    ${project}/exfalso.icns
-  </data>
-   
-  <!-- Copy in the themes data. You may want to trim this to save space
-       in your bundle. -->
-  <data>
-    ${prefix}/share/themes/Adwaita
-  </data>
-
-  <data>
-    ${prefix}/share/themes/Mac
-  </data>
-
-  <!-- must say all to get icons at bottom left of paned browser -->
-  <icon-theme icons="all">
-    Adwaita
-  </icon-theme>
-
+  <translations name="atk10">${prefix}/share/locale</translations>
+  <translations name="gdk-pixbuf">${prefix}/share/locale</translations>
+  <translations name="glib20">${prefix}/share/locale</translations>
+  <translations name="gst-plugins-base-1.0">${prefix}/share/locale</translations>
+  <translations name="gst-plugins-good-1.0">${prefix}/share/locale</translations>
+  <translations name="gst-plugins-ugly-1.0">${prefix}/share/locale</translations>
+  <translations name="gstreamer-1.0">${prefix}/share/locale</translations>
+  <translations name="gtk30">${prefix}/share/locale</translations>
+  <main-binary>${prefix}/bin/${env:QL_PYTHON}</main-binary>
 </app-bundle>

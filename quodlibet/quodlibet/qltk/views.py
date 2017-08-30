@@ -174,8 +174,10 @@ class TreeViewHints(Gtk.Window):
                     self.__undisplay(send_leave=False)
                     return False
 
-        # hide if any modifier is active
-        if event.get_state() & Gtk.accelerator_get_default_mod_mask():
+        # hide if any modifier is active.
+        mask = Gtk.accelerator_get_default_mod_mask()
+        mask = Gdk.Keymap.get_default().map_virtual_modifiers(mask)[1]
+        if event.get_state() & mask:
             self.__undisplay()
             return False
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson
-#           2011-2016 Nick Boultbee
+#           2011-2017 Nick Boultbee
 #           2013      Christoph Reiter
 #           2014      Jan Path
 #
@@ -584,7 +584,8 @@ class PreferencesWindow(UniqueWindow):
             e.set_text(config.get("editing", "split_on"))
             e.connect('changed', self.__changed, 'editing', 'split_on')
             e.set_tooltip_text(
-                _("A list of separators to use when splitting tag values. "
+                _("A set of separators to use when splitting tag values "
+                  "in the tag editor. "
                   "The list is space-separated"))
 
             def do_revert_split(button, section, option):
@@ -625,7 +626,7 @@ class PreferencesWindow(UniqueWindow):
             config.set(section, name, str(entry.get_value()))
             print_d("Signalling \"changed\" to entire library. Hold tight...")
             # Cache over clicks
-            self._songs = self._songs or app.library.values()
+            self._songs = self._songs or list(app.library.values())
             copool.add(emit_signal, self._songs, funcid="library changed",
                        name=_("Updating for new ratings"))
 
@@ -734,4 +735,5 @@ class PreferencesWindow(UniqueWindow):
     def __destroy(self):
         config.save()
         if self.current_scan_dirs != get_scan_dirs():
+            print_d("Library paths have changed, re-scanning...")
             scan_library(app.library, force=False)

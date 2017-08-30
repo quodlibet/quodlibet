@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
-#           2016 Nick Boultbee
+#          2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -19,6 +19,46 @@ from gi.repository import GLib, GObject
 from senf import fsn2bytes, bytes2fsn
 
 from quodlibet.util import gdecode, print_d, print_w
+from quodlibet.compat import urlparse
+
+
+def show_uri(label, uri):
+    """Shows a uri. The uri can be anything handled by GIO or a quodlibet
+    specific one.
+
+    Currently handled quodlibet uris:
+        - quodlibet:///prefs/plugins/<plugin id>
+
+    Args:
+        label (str)
+        uri (str) the uri to show
+    Returns:
+        True on success, False on error
+    """
+
+    parsed = urlparse(uri)
+    if parsed.scheme == "quodlibet":
+        if parsed.netloc != "":
+            print_w("Unknown QuodLibet URL format (%s)" % uri)
+            return False
+        else:
+            return __show_quodlibet_uri(parsed)
+    else:
+        # Gtk.show_uri_on_window exists since 3.22
+        if hasattr(Gtk, "show_uri_on_window"):
+            from quodlibet.qltk import get_top_parent
+            return Gtk.show_uri_on_window(get_top_parent(label), uri, 0)
+        else:
+            return Gtk.show_uri(None, uri, 0)
+
+
+def __show_quodlibet_uri(uri):
+    if uri.path.startswith("/prefs/plugins/"):
+        from .pluginwin import PluginWindow
+        print_d("Showing plugin prefs resulting from URI (%s)" % (uri, ))
+        return PluginWindow().move_to(uri.path[len("/prefs/plugins/"):])
+    else:
+        return False
 
 
 def get_fg_highlight_color(widget):
@@ -120,20 +160,24 @@ def get_menu_item_top_parent(widget):
     return get_top_parent(widget)
 
 
-def find_widgets(container, type_):
-    """Given a container, find all children that are a subclass of type_
+def find_widgets(widget, type_):
+    """Given a widget, find all children that are a subclass of type_
     (including itself)
-    """
 
-    assert isinstance(container, Gtk.Container)
+    Args:
+        widget (Gtk.Widget)
+        type_ (type)
+    Returns:
+        List[Gtk.Widget]
+    """
 
     found = []
 
-    if isinstance(container, type_):
-        found.append(container)
+    if isinstance(widget, type_):
+        found.append(widget)
 
-    for child in container.get_children():
-        if isinstance(child, Gtk.Container):
+    if isinstance(widget, Gtk.Container):
+        for child in widget.get_children():
             found.extend(find_widgets(child, type_))
 
     return found
@@ -266,6 +310,7 @@ def is_accel(event, *accels):
         keyval = ord(chr(keyval).lower())
 
     default_mod = Gtk.accelerator_get_default_mod_mask()
+    keymap = Gdk.Keymap.get_default()
 
     for accel in accels:
         accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
@@ -278,6 +323,11 @@ def is_accel(event, *accels):
         if non_default:
             print_w("Accelerator '%s' contains a non default modifier '%s'." %
                 (accel, Gtk.accelerator_name(0, non_default) or ""))
+
+        # event.state contains the real mod mask + the virtual one, while
+        # we usually pass only virtual one as text. This adds the real one
+        # so they match in the end.
+        accel_mod = keymap.map_virtual_modifiers(accel_mod)[1]
 
         # Remove everything except default modifiers and compare
         if (accel_keyval, accel_mod) == (keyval, event.state & default_mod):

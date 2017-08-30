@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2016 Nick Boultbee
+#           2012-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -16,7 +16,7 @@ import time
 
 from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 
-from quodlibet import _
+from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, mtime, expanduser, \
@@ -293,17 +293,23 @@ class AudioFile(dict, ImageContainer):
     def iterrealitems(self):
         return ((k, v) for (k, v) in iteritems(self) if k[:1] != "~")
 
-    def __call__(self, key, default=u"", connector=" - "):
-        """Return a key, synthesizing it if necessary. A default value
-        may be given (like dict.get); the default default is an empty
-        unicode string (even if the tag is numeric).
+    def __call__(self, key, default=u"", connector=" - ", joiner=', '):
+        """Return the value(s) for a key, synthesizing if necessary.
+        Multiple values for a key are delimited by newlines.
 
-        If a tied tag ('a~b') is requested, the 'connector' keyword
+        A default value may be given (like `dict.get`);
+        the default default is an empty unicode string
+        (even if the tag is numeric).
+
+        If a tied tag ('a~b') is requested, the `connector` keyword
         argument may be used to specify what it is tied with.
         In case the tied tag contains numeric and file path tags, the result
         will still be a unicode string.
+        The `joiner` keyword specifies how multiple *values* will be joined
+        within that tied tag output, e.g.
+            ~people~title = "Kanye West, Jay Z - New Day"
 
-        For details on tied tags, see the documentation for util.tagsplit.
+        For details on tied tags, see the documentation for `util.tagsplit`.
         """
 
         if key[:1] == "~":
@@ -311,8 +317,13 @@ class AudioFile(dict, ImageContainer):
             if "~" in key:
                 real_key = "~" + key
                 values = []
-                for v in map(self.__call__, util.tagsplit(real_key)):
-                    v = decode_value(real_key, v)
+                sub_tags = util.tagsplit(real_key)
+                # If it's genuinely a tied tag (not ~~people etc), we want
+                # to delimit the multi-values separately from the tying
+                j = joiner if len(sub_tags) > 1 else "\n"
+                for t in sub_tags:
+                    vs = [decode_value(real_key, v) for v in (self.list(t))]
+                    v = j.join(vs)
                     if v:
                         values.append(v)
                 return connector.join(values) or default
@@ -435,11 +446,13 @@ class AudioFile(dict, ImageContainer):
 
                 # If there are no embedded lyrics, try to read them from
                 # the external file.
+                fn = self.lyric_filename
                 try:
-                    fileobj = open(self.lyric_filename, "rU")
+                    fileobj = open(fn, "rUb")
                 except EnvironmentError:
                     return default
                 else:
+                    print_d("Reading lyrics from %s" % fn)
                     return fileobj.read().decode("utf-8", "replace")
             elif key == "filesize":
                 return util.format_size(self("~#filesize", 0))
@@ -579,7 +592,7 @@ class AudioFile(dict, ImageContainer):
 
     def list(self, key):
         """Get all values of a tag, as a list. Synthetic tags are supported,
-        but will be slower. Numeric tags are not supported.
+        but will be slower. Numeric tags will give their one value.
 
         For file path keys the returned list might contain path items
         (non-unicode).
@@ -589,11 +602,11 @@ class AudioFile(dict, ImageContainer):
         """
 
         if "~" in key or key == "title":
-            v = self(key, connector="\n")
+            v = self(key)
             if v == "":
                 return []
             else:
-                return v.split("\n")
+                return v.split("\n") if isinstance(v, text_type) else [v]
         else:
             v = self.get(key)
             return [] if v is None else v.split("\n")

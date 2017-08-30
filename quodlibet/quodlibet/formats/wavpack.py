@@ -20,6 +20,7 @@ class WavpackFile(APEv2File):
             audio = WavPack(filename)
         super(WavpackFile, self).__init__(filename, audio)
         self["~#length"] = audio.info.length
+        self["~#channels"] = audio.info.channels
         self.sanitize(filename)
 
 loader = WavpackFile

@@ -2,6 +2,7 @@
 # Copyright 2005-2010   Joshua Kwan <joshk@triplehelix.org>,
 #                       Michael Ball <michael.ball@gmail.com>,
 #                       Steven Robertson <steven@strobe.cc>
+#                2017   Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -342,7 +343,7 @@ class SearchWindow(Dialog):
 
     def __init__(self, parent, album):
         self.album = album
-        self.album.sort(key=lambda s: sort_key(s))
+        self.album.sort(key=sort_key)
 
         self._resultlist = ObjectStore()
         self._releasecache = {}

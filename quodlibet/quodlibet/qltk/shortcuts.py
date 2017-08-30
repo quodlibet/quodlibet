@@ -38,7 +38,7 @@ SHORTCUTS = [
     ]),
     (_("Text Entries"), [
         ("<Primary>Z",
-         _("Collapses the element or select the parent element")),
+         _("Undo the last change")),
         ("<Primary><Shift>Z", _("Redo the last undone change")),
     ]),
     (_("Paned Browser"), [

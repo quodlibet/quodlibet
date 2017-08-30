@@ -78,15 +78,12 @@ class XinePlaylistPlayer(BasePlayer):
         self._supports_gapless = xine_check_version(1, 1, 1) == 1
         self._event_queue = None
 
-        if not isinstance(driver, bytes):
-            driver = driver.encode("utf-8")
-
         self._new_stream(driver)
         self._librarian = librarian
         self._destroyed = False
 
     def _new_stream(self, driver):
-        assert isinstance(driver, bytes)
+        assert driver is None or isinstance(driver, bytes)
         self._audio_port = self._handle.open_audio_driver(driver, None)
         if not self._audio_port:
             raise PlayerError(
@@ -335,7 +332,7 @@ def init(librarian):
     """May raise PlayerError"""
 
     try:
-        driver = config.get("settings", "xine_driver")
+        driver = config.getbytes("settings", "xine_driver")
     except:
         driver = None
     return XinePlaylistPlayer(driver, librarian)

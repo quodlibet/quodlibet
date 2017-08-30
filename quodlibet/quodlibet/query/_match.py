@@ -16,8 +16,6 @@ from senf import fsn2text, fsnative
 from quodlibet.unisearch import compile
 from quodlibet.compat import floordiv, text_type
 from quodlibet.util import parse_date
-from quodlibet.plugins.query import QUERY_HANDLER
-from quodlibet.plugins.query import QueryPluginError
 from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 
 
@@ -271,7 +269,10 @@ class NumexprTag(Numexpr):
         else:
             num = data(self._ftag, None)
         if num is not None:
-            if self._ftag in TIME_TAGS:
+            # Strip aggregate function from tag
+            func_start = self._ftag.find(":")
+            tag = self._ftag[:func_start] if func_start >= 0 else self._ftag
+            if tag in TIME_TAGS:
                 num = time - num
             return round(num, 2)
         return None
@@ -549,6 +550,9 @@ class Extension(Node):
     fails to parse the body"""
 
     def __init__(self, name, body):
+        # pulls in gtk+
+        from quodlibet.plugins.query import QUERY_HANDLER, QueryPluginError
+
         self.__name = name
         self.__valid = True
         self.__body = body

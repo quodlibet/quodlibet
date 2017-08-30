@@ -100,6 +100,8 @@ class WMAFile(AudioFile):
 
         self["~#length"] = info.length
         self["~#bitrate"] = int(info.bitrate / 1000)
+        if info.channels:
+            self["~#channels"] = info.channels
 
         type_, name, desc = info.codec_type, info.codec_name, \
             info.codec_description

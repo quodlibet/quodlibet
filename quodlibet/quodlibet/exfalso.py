@@ -8,12 +8,13 @@
 
 import os
 
+from senf import fsnative, argv as sys_argv
+
 from quodlibet import _
 from quodlibet import app
 from quodlibet import util
 from quodlibet import const
 from quodlibet import config
-from quodlibet.senf import fsnative, argv as sys_argv
 
 
 def main(argv=None):

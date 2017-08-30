@@ -1,17 +1,33 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Christoph Reiter
+# Copyright 2015-2017 Christoph Reiter
 #
-# This software and accompanying documentation, if any, may be freely
-# used, distributed, and/or modified, in any form and for any purpose,
-# as long as this notice is preserved. There is no warranty, either
-# express or implied, for this software.
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """So we don't have to touch intltool directly
 (and maybe can get rid of it one day)
 """
 
 import os
+import glob
 import subprocess
+import contextlib
 from distutils.spawn import find_executable
 
 
@@ -52,36 +68,57 @@ def _get_xgettext_args():
 XGETTEXT_ARGS = " ".join(_get_xgettext_args())
 
 
+def cyg2winpath(path):
+    assert os.name == "nt"
+    win_path = subprocess.check_output(
+        ["cygpath.exe", "-m" if os.sep == "/" else "-w", "--", path])
+    return win_path.decode("utf-8").strip()
+
+
 def intltool(*args):
     command = args[0]
     args = args[1:]
     if os.name == "nt":
-        return ["perl", "/usr/bin/intltool-%s" % command] + list(args)
+        return [cyg2winpath("/usr/bin/perl"),
+                "/usr/bin/intltool-%s" % command] + list(args)
     else:
         return ["intltool-%s" % command] + list(args)
 
 
-def update_pot(po_dir, package):
+def _update_pot(po_dir, package):
     """Regenerate the pot file in po_dir
 
-        Returns the path to the pot file
-    or raise GettextError
+    Returns the path to the pot file or raise GettextError
     """
 
-    old_dir = os.getcwd()
-    os.chdir(po_dir)
     try:
         os.environ["XGETTEXT_ARGS"] = XGETTEXT_ARGS
         with open(os.devnull, 'wb') as devnull:
             subprocess.check_call(
                 intltool("update", "--pot", "--gettext-package", package),
-                stderr=devnull, stdout=devnull)
+                stderr=devnull, stdout=devnull, cwd=po_dir)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
-    finally:
-        os.chdir(old_dir)
 
     return os.path.join(po_dir, package + ".pot")
+
+
+@contextlib.contextmanager
+def create_pot(po_dir, package):
+    """Temporarily creates a .pot file in po_dir"""
+
+    path = _update_pot(po_dir, package)
+    try:
+        yield path
+    finally:
+        os.unlink(path)
+
+
+def list_languages(po_dir):
+    """Returns a list of available language codes"""
+
+    po_files = glob.glob(os.path.join(po_dir, "*.po"))
+    return sorted([os.path.basename(po[:-3]) for po in po_files])
 
 
 def update_po(po_dir, package, lang_code, output_file=None):
@@ -93,8 +130,6 @@ def update_po(po_dir, package, lang_code, output_file=None):
     or raise GettextError
     """
 
-    old_dir = os.getcwd()
-    os.chdir(po_dir)
     try:
         os.environ["XGETTEXT_ARGS"] = XGETTEXT_ARGS
         args = intltool(
@@ -102,11 +137,10 @@ def update_po(po_dir, package, lang_code, output_file=None):
         if output_file is not None:
             args.extend(["--output-file", output_file])
         with open(os.devnull, 'wb') as devnull:
-            subprocess.check_call(args, stderr=devnull, stdout=devnull)
+            subprocess.check_call(
+                args, stderr=devnull, stdout=devnull, cwd=po_dir)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
-    finally:
-        os.chdir(old_dir)
 
     if output_file is not None:
         return output_file
@@ -152,8 +186,6 @@ def get_missing(po_dir, package):
 
     missing_path = os.path.join(po_dir, "missing")
 
-    old_dir = os.getcwd()
-    os.chdir(po_dir)
     try:
         os.remove(missing_path)
     except OSError:
@@ -165,7 +197,7 @@ def get_missing(po_dir, package):
         with open(os.devnull, 'wb') as devnull:
             subprocess.check_call(
                 intltool("update", "--maintain", "--gettext-package", package),
-                stderr=devnull, stdout=devnull)
+                stderr=devnull, stdout=devnull, cwd=po_dir)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
     else:
@@ -174,8 +206,6 @@ def get_missing(po_dir, package):
                 result = h.read()
         except IOError:
             result = ""
-    finally:
-        os.chdir(old_dir)
 
     return result.splitlines()
 

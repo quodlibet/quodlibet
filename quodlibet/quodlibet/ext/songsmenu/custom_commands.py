@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012-2016 Nick Boultbee
+# Copyright 2012-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -11,7 +11,7 @@ import os
 
 from quodlibet.util.songwrapper import SongWrapper
 
-from quodlibet.qltk.songsmenu import ConfirmMultiSongInvoke
+from quodlibet.qltk.songsmenu import confirm_multi_song_invoke
 
 import quodlibet
 from quodlibet import _
@@ -68,8 +68,8 @@ class Command(JSONObject):
     }
 
     def __init__(self, name=None, command=None, pattern="<~filename>",
-                 unique=False, playlist=False, parameter=None,
-                 max_args=10000, warn_threshold=50):
+                 unique=False, parameter=None, max_args=10000,
+                 warn_threshold=50):
         JSONObject.__init__(self, name)
         self.command = str(command or "")
         self.pattern = str(pattern)
@@ -120,11 +120,16 @@ class Command(JSONObject):
             util.spawn(com_words + args[:max])
             args = args[max:]
 
+    @property
+    def playlists_only(self):
+        return ("~playlistname" in self.pattern
+                or "playlistindex" in self.pattern)
+
     def __str__(self):
         return 'Command: "{command} {pattern}"'.format(**dict(self.data))
 
 
-class CustomCommands(SongsMenuPlugin, PlaylistPlugin, PluginConfigMixin):
+class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
 
     PLUGIN_ICON = Icons.APPLICATION_UTILITIES
     PLUGIN_ID = "CustomCommands"
@@ -163,7 +168,7 @@ class CustomCommands(SongsMenuPlugin, PlaylistPlugin, PluginConfigMixin):
         quodlibet.get_user_dir(), 'lists', 'customcommands.json')
 
     _commands = None
-    """Commands know to the class"""
+    """Commands known to the class"""
 
     def __set_pat(self, name):
         self.com_index = name
@@ -190,9 +195,9 @@ class CustomCommands(SongsMenuPlugin, PlaylistPlugin, PluginConfigMixin):
         hb = Gtk.HBox(spacing=3)
         hb.set_border_width(0)
 
-        button = qltk.Button(_("Edit Custom Commands") + "...", Icons.EDIT)
-        button.set_tooltip_markup(util.escape(_("Supports QL patterns\neg "
-                                                "<tt><~artist~title></tt>")))
+        button = qltk.Button(_("Edit Custom Commands") + "…", Icons.EDIT)
+        button.set_tooltip_markup(_("Supports QL patterns\neg "
+                                    "<tt>&lt;~artist~title&gt;</tt>"))
         button.connect("clicked", cls.edit_patterns)
         hb.pack_start(button, True, True, 0)
         hb.show_all()
@@ -218,18 +223,22 @@ class CustomCommands(SongsMenuPlugin, PlaylistPlugin, PluginConfigMixin):
         # Failing all else...
         if not coms:
             print_d("No commands found in %s. Using defaults." % filename)
-            coms = dict([(c.name, c) for c in cls.DEFAULT_COMS])
+            coms = {c.name: c for c in cls.DEFAULT_COMS}
         print_d("Loaded commands: %s" % coms.keys())
         return coms
 
     def __init__(self, *args, **kwargs):
-        super(CustomCommands, self).__init__(*args, **kwargs)
+        super(CustomCommands, self).__init__(**kwargs)
+        pl_mode = hasattr(self, '_playlists') and bool(len(self._playlists))
         self.com_index = None
         self.unique_only = False
         submenu = Gtk.Menu()
-        for (name, c) in self.all_commands().items():
+        for name, c in self.all_commands().items():
             item = Gtk.MenuItem(label=name)
             connect_obj(item, 'activate', self.__set_pat, name)
+            if pl_mode and not c.playlists_only:
+                continue
+            item.set_sensitive(c.playlists_only == pl_mode)
             submenu.append(item)
 
         self.add_edit_item(submenu)
@@ -240,7 +249,7 @@ class CustomCommands(SongsMenuPlugin, PlaylistPlugin, PluginConfigMixin):
 
     @classmethod
     def add_edit_item(cls, submenu):
-        config = Gtk.MenuItem(label=_("Edit Custom Commands") + "...")
+        config = Gtk.MenuItem(label=_("Edit Custom Commands") + "…")
         connect_obj(config, 'activate', cls.edit_patterns, config)
         config.set_sensitive(not JSONBasedEditor.is_not_unique())
         submenu.append(SeparatorMenuItem())
@@ -258,7 +267,7 @@ class CustomCommands(SongsMenuPlugin, PlaylistPlugin, PluginConfigMixin):
         if self.com_index:
             com = self.get_data(self.com_index)
             if len(songs) > com.warn_threshold:
-                if not ConfirmMultiSongInvoke.confirm(
+                if not confirm_multi_song_invoke(
                         self, com.name, len(songs)):
                     print_d("User decided not to run on %d songs" % len(songs))
                     return

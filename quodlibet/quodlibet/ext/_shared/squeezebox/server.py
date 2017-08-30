@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014, 2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -63,8 +63,8 @@ class SqueezeboxServer(object):
                 if self._debug:
                     print_d("Trying %s..." % self.config)
                 self.telnet = Telnet(hostname, port, self._TIMEOUT)
-            except socket.error:
-                print_d("Couldn't talk to %s" % (self.config,))
+            except socket.error as e:
+                print_d("Couldn't talk to %s (%s)" % (self.config, e))
             else:
                 result = self.__request("login %s %s" % (user, password))
                 if result != (6 * '*'):
@@ -94,10 +94,10 @@ class SqueezeboxServer(object):
         if self._debug:
             print_(">>>> \"%s\"" % line)
         try:
-            self.telnet.write(line + "\n")
+            self.telnet.write((line + "\n").encode('utf-8'))
             if not want_reply:
                 return None
-            raw_response = self.telnet.read_until("\n").strip()
+            raw_response = self.telnet.read_until(b"\n").decode('utf-8')
         except socket.error as e:
             print_w("Couldn't communicate with squeezebox (%s)" % e)
             self.failures += 1
@@ -105,11 +105,11 @@ class SqueezeboxServer(object):
                 print_w("Too many Squeezebox failures. Disconnecting")
                 self.is_connected = False
             return None
-        response = raw_response if raw else unquote(raw_response)
+        response = (raw_response if raw else unquote(raw_response)).strip()
         if self._debug:
             print_("<<<< \"%s\"" % (response,))
-        return response[len(line) - 1:] if line.endswith("?")\
-            else response[len(line) + 1:]
+        return (response[len(line) - 1:] if line.endswith("?")
+                else response[len(line) + 1:])
 
     def get_players(self):
         """ Returns (and caches) a list of the Squeezebox players available"""
@@ -120,10 +120,10 @@ class SqueezeboxServer(object):
         def demunge(string):
             s = unquote(string)
             cpos = s.index(":")
-            return (s[0:cpos], s[cpos + 1:])
+            return s[0:cpos], s[cpos + 1:]
 
         # Do a meaningful URL-unescaping and tuplification for all values
-        pairs = map(demunge, pairs)
+        pairs = [demunge(p) for p in pairs]
 
         # First element is always count
         count = int(pairs.pop(0)[1])

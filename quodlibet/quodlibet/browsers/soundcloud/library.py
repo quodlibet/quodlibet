@@ -10,7 +10,7 @@ from quodlibet.browsers.soundcloud.query import SoundcloudQuery
 from quodlibet import config
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.library.libraries import SongLibrary
-from quodlibet.util import cached_property
+from quodlibet.util import cached_property, print_exc
 
 
 class SoundcloudLibrary(SongLibrary):
@@ -50,13 +50,19 @@ class SoundcloudLibrary(SongLibrary):
     def _on_songs_received(self, client, songs):
         new = len(self.add(songs))
         print_d("Got %d songs (%d new)." % (len(songs), new))
+        self.emit('changed', songs)
 
     def _on_comments_received(self, client, track_id, comments):
         def bookmark_for(com):
             text = "\"%s\" --%s" % (com['body'], com['user']['username'])
             return max(0, int((com.get('timestamp') or 0) / 1000.0)), text
 
-        song = self.song_by_track_id(track_id)
+        try:
+            song = self.song_by_track_id(track_id)
+        except KeyError:
+            # https://github.com/quodlibet/quodlibet/issues/2410
+            print_exc()
+            return
         song.bookmarks = [bookmark_for(c) for c in comments]
 
     def song_by_track_id(self, track_id):

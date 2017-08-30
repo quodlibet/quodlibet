@@ -19,6 +19,7 @@ class MonkeysAudioFile(APEv2File):
             audio = MonkeysAudio(filename)
         super(MonkeysAudioFile, self).__init__(filename, audio)
         self["~#length"] = int(audio.info.length)
+        self["~#channels"] = audio.info.channels
         self.sanitize(filename)
 
 loader = MonkeysAudioFile

@@ -29,14 +29,22 @@ class TimeTracker(GObject.GObject):
     def __init__(self, player):
         super(TimeTracker, self).__init__()
 
+        self.__interval = 1000
         self.__player = player
         self.__id = None
         self.__stop = False
+        self.__reset = False
         self.__sigs = [
             player.connect("paused", self.__paused, True),
             player.connect("unpaused", self.__paused, False),
         ]
         self.__paused(player, player.paused)
+
+    def set_interval(self, interval):
+        """Update the resolution in milliseconds"""
+
+        self.__interval = interval
+        self.__reset = True
 
     def tick(self):
         """Emit a tick event"""
@@ -58,6 +66,11 @@ class TimeTracker(GObject.GObject):
             self.__source_remove()
             return False
 
+        if self.__reset:
+            self.__reset = False
+            self.__source_remove()
+            self.__paused(self.__player, self.__player.paused)
+
         self.tick()
         return True
 
@@ -69,7 +82,12 @@ class TimeTracker(GObject.GObject):
         else:
             self.__stop = False
             if self.__id is None:
-                self.__id = GLib.timeout_add_seconds(1, self.__update)
+                # The application is already woke up every seconds
+                # so synchronize to it by calling timeout_add_seconds(...)
+                # if the requested tracker interval is exactly 1 second.
+                self.__id = GLib.timeout_add_seconds(1, self.__update) \
+                    if self.__interval == 1000 \
+                    else GLib.timeout_add(self.__interval, self.__update)
 
 
 class SongTracker(object):

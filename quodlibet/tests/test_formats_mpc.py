@@ -2,8 +2,9 @@
 # Copyright 2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
@@ -20,6 +21,10 @@ class TMPCFile(TestCase):
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 0.065306, 3)
         self.assertAlmostEqual(self.song2("~#length"), 3.684716, 3)
+
+    def test_channels(self):
+        assert self.song("~#channels") == 2
+        assert self.song2("~#channels") == 2
 
     def test_bitrate(self):
         self.failUnlessEqual(self.song("~#bitrate"), 239)

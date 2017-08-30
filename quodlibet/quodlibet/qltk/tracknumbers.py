@@ -15,7 +15,7 @@ from quodlibet.formats import AudioFileError
 from quodlibet.qltk._editutils import OverwriteWarning, WriteFailedError
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.qltk.x import Button
+from quodlibet.qltk.x import Button, Align
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, gdecode
@@ -38,38 +38,42 @@ class TrackNumbers(Gtk.VBox):
         super(TrackNumbers, self).__init__(spacing=6)
         self.title = _("Track Numbers")
         self.set_border_width(12)
-        hbox2 = Gtk.HBox(spacing=12)
 
-        hbox_start = Gtk.HBox(spacing=3)
-        label_start = Gtk.Label(label=_("Start fro_m:"))
+        label_start = Gtk.Label(label=_("Start fro_m:"), halign=Gtk.Align.END)
         label_start.set_use_underline(True)
         spin_start = Gtk.SpinButton()
         spin_start.set_range(0, 999)
         spin_start.set_increments(1, 10)
         spin_start.set_value(1)
         label_start.set_mnemonic_widget(spin_start)
-        hbox_start.pack_start(label_start, True, True, 0)
-        hbox_start.pack_start(spin_start, True, True, 0)
 
-        hbox_total = Gtk.HBox(spacing=3)
-        label_total = Gtk.Label(label=_("_Total tracks:"))
+        label_total = Gtk.Label(
+            label=_("_Total tracks:"), halign=Gtk.Align.END)
         label_total.set_use_underline(True)
         spin_total = Gtk.SpinButton()
         spin_total.set_range(0, 999)
         spin_total.set_increments(1, 10)
         label_total.set_mnemonic_widget(spin_total)
-        hbox_total.pack_start(label_total, True, True, 0)
-        hbox_total.pack_start(spin_total, True, True, 0)
+
         preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
 
-        hbox2.pack_start(hbox_start, True, False, 0)
-        hbox2.pack_start(hbox_total, True, False, 0)
-        hbox2.pack_start(preview, False, True, 0)
+        grid = Gtk.Grid(row_spacing=4, column_spacing=4)
+        grid.add(label_start)
+        grid.attach_next_to(
+            spin_start, label_start, Gtk.PositionType.RIGHT, 1, 1)
+        grid.attach_next_to(
+            label_total, label_start, Gtk.PositionType.BOTTOM, 1, 1)
+        grid.attach_next_to(
+            spin_total, label_total, Gtk.PositionType.RIGHT, 1, 1)
+        grid.attach_next_to(
+            Align(preview, halign=Gtk.Align.END),
+            spin_start, Gtk.PositionType.RIGHT, 1, 1)
+        preview.props.hexpand = True
 
         model = ObjectStore()
         view = HintedTreeView(model=model)
 
-        self.pack_start(hbox2, False, True, 0)
+        self.pack_start(grid, False, True, 0)
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_('File'))
@@ -203,8 +207,9 @@ class TrackNumbers(Gtk.VBox):
         else:
             songs = list(songs)
 
-        songs.sort(
-            key=lambda song: (song("~#track"), song("~basename"), song))
+        def sort_key(song):
+            return song("~#track", 0), song("~basename"), song
+        songs.sort(key=sort_key)
 
         model.clear()
         total.set_value(len(songs))

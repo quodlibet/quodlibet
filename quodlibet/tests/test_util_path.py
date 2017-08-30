@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import unittest
@@ -85,6 +86,9 @@ class Turi(TestCase):
         self.assertFalse(uri_is_valid(u"/bla"))
         self.assertFalse(uri_is_valid(u"test"))
         self.assertFalse(uri_is_valid(u""))
+
+        assert not uri_is_valid(u"file:///öäü")
+        assert not uri_is_valid(u"file:///öäü".encode("utf-8"))
 
 
 class Tget_x_dir(TestCase):

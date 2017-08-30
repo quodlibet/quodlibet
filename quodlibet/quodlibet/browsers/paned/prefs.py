@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #           2015 Nick Boultbee
+#           2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -16,7 +17,7 @@ from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.x import SymbolicIconImage, MenuItem, Button
 from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk.ccb import ConfigCheckMenuItem
+from quodlibet.qltk.ccb import ConfigCheckMenuItem, ConfigCheckButton
 from quodlibet.util import connect_obj, escape
 from quodlibet.compat import iteritems, iterkeys
 from .util import get_headers, save_headers
@@ -200,16 +201,23 @@ class Preferences(qltk.UniqueWindow):
         editor = PatternEditor()
         editor.headers = get_headers()
 
+        equal_width = ConfigCheckButton(_("Equal pane width"),
+                                        "browsers",
+                                        "equal_pane_width",
+                                        populate=True)
+
         apply_ = Button(_("_Apply"))
-        connect_obj(apply_, "clicked", self.__apply, editor, browser, False)
+        connect_obj(apply_, "clicked", self.__apply, editor,
+                    browser, False, equal_width)
 
         cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda x: self.destroy())
 
         box = Gtk.HButtonBox()
         box.set_spacing(6)
-        box.set_layout(Gtk.ButtonBoxStyle.END)
-        box.pack_start(apply_, True, True, 0)
+        box.set_layout(Gtk.ButtonBoxStyle.EDGE)
+        box.pack_start(equal_width, True, True, 0)
+        box.pack_start(apply_, False, False, 0)
         self.use_header_bar()
         if not self.has_close_button():
             box.pack_start(cancel, True, True, 0)
@@ -222,10 +230,13 @@ class Preferences(qltk.UniqueWindow):
         cancel.grab_focus()
         self.get_child().show_all()
 
-    def __apply(self, editor, browser, close):
+    def __apply(self, editor, browser, close, equal_width):
         if editor.headers != get_headers():
             save_headers(editor.headers)
             browser.set_all_panes()
+
+        if equal_width.get_active():
+            browser.make_pane_widths_equal()
 
         if close:
             self.destroy()

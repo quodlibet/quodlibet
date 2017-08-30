@@ -6,12 +6,11 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-import os
 import threading
 from xml.dom import minidom
 
 from quodlibet import _
-from quodlibet.util import gi_require_versions
+from quodlibet.util import gi_require_versions, is_windows, is_osx
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import (PluginImportException, PluginConfig, ConfProp,
     BoolConfProp, IntConfProp, FloatConfProp, PluginNotSupportedError)
@@ -19,7 +18,7 @@ from quodlibet.plugins import (PluginImportException, PluginConfig, ConfProp,
 try:
     gi_require_versions("WebKit2", ["4.0", "3.0"])
 except ValueError as e:
-    if os.name == "nt":
+    if is_windows() or is_osx():
         raise PluginNotSupportedError
     raise PluginImportException("GObject Introspection: " + str(e))
 

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from senf import fsnative
 
@@ -29,7 +30,7 @@ class TSongsMenu(TestCase):
 
     def test_empty(self):
         self.menu = SongsMenu(self.library, self.songs, plugins=False,
-                              playlists=False, queue=False, devices=False,
+                              playlists=False, queue=False,
                               remove=False, delete=False, edit=False,
                               ratings=False)
         self.failUnlessEqual(0, len(self.menu))
@@ -40,7 +41,7 @@ class TSongsMenu(TestCase):
     def test_playlists(self):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=True,
-            queue=False, devices=False, remove=False, delete=False, edit=False,
+            queue=False, remove=False, delete=False, edit=False,
             ratings=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failUnless(self.menu.get_children()[0].props.sensitive)
@@ -48,7 +49,7 @@ class TSongsMenu(TestCase):
         self.songs[0].can_add = False
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=True,
-            queue=False, devices=False, remove=False, delete=False, edit=False,
+            queue=False, remove=False, delete=False, edit=False,
             ratings=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failIf(self.menu.get_children()[0].props.sensitive)
@@ -56,7 +57,7 @@ class TSongsMenu(TestCase):
     def test_queue(self):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
-            queue=True, devices=False, remove=False, delete=False, edit=False,
+            queue=True, remove=False, delete=False, edit=False,
             ratings=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failUnless(self.menu.get_children()[0].props.sensitive)
@@ -64,27 +65,15 @@ class TSongsMenu(TestCase):
         self.songs[0].can_add = False
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
-            queue=True, devices=False, remove=False, delete=False, edit=False,
+            queue=True, remove=False, delete=False, edit=False,
             ratings=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failIf(self.menu.get_children()[0].props.sensitive)
 
-    def test_devices(self):
-        self.menu = SongsMenu(
-            self.library, self.songs, plugins=False, playlists=False,
-            queue=False, devices=True, remove=False, delete=False, edit=False,
-            ratings=False)
-        from quodlibet import browsers
-        from quodlibet.browsers.media import MediaDevices
-        if MediaDevices in browsers.browsers and len(MediaDevices.devices()):
-            self.failUnlessEqual(1, len(self.menu))
-        else:
-            self.failUnlessEqual(0, len(self.menu))
-
     def test_remove(self):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
-            queue=False, devices=False, remove=True, delete=False, edit=False,
+            queue=False, remove=True, delete=False, edit=False,
             ratings=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failIf(self.menu.get_children()[0].props.sensitive)
@@ -93,7 +82,7 @@ class TSongsMenu(TestCase):
         self.library.add(self.songs)
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
-            queue=False, devices=False, remove=True, delete=False, edit=False,
+            queue=False, remove=True, delete=False, edit=False,
             ratings=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failUnless(self.menu.get_children()[0].props.sensitive)
@@ -101,7 +90,7 @@ class TSongsMenu(TestCase):
     def test_delete(self):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
-            queue=False, devices=False, remove=False, delete=True, edit=False,
+            queue=False, remove=False, delete=True, edit=False,
             ratings=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failUnless(self.menu.get_children()[0].props.sensitive)
@@ -109,7 +98,7 @@ class TSongsMenu(TestCase):
         self.songs[0].is_file = False
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
-            queue=False, devices=False, remove=False, delete=True, edit=False,
+            queue=False, remove=False, delete=True, edit=False,
             ratings=False)
         self.failUnlessEqual(1, len(self.menu))
         self.failIf(self.menu.get_children()[0].props.sensitive)

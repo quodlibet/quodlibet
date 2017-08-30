@@ -7,6 +7,7 @@
 
 import os
 import sys
+import locale
 from functools import wraps
 
 from senf import environ, argv, path2fsn
@@ -31,6 +32,29 @@ def cached_func(f):
             res.append(f())
         return res[0]
     return wrapper
+
+
+def _verify_encoding(encoding):
+    try:
+        u"".encode(encoding)
+    except LookupError:
+        encoding = "utf-8"
+    return encoding
+
+
+@cached_func
+def get_locale_encoding():
+    """Returns the encoding defined by the locale"""
+
+    try:
+        encoding = locale.getpreferredencoding(False)
+    except locale.Error:
+        encoding = "utf-8"
+    else:
+        # python on macports can return a bugs result (empty string)
+        encoding = _verify_encoding(encoding)
+
+    return encoding
 
 
 def total_ordering(cls):

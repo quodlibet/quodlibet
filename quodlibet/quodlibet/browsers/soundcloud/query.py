@@ -41,6 +41,7 @@ _QL_TO_SC = {
     'artist': ('q', None),
     'title': ('q', None),
     'comments': ('q', None),
+    'soundcloud_user_id': ('user_id', None)
 }
 SUPPORTED = set(_QL_TO_SC.keys()) | {"rating"}
 

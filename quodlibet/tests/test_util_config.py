@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 from tests import TestCase, mkstemp
@@ -83,7 +84,15 @@ class TConfig(TestCase):
         conf.set("player", "backend", "foo")
         self.assertEqual(conf.get("player", "backend"), "foo")
         conf.reset("player", "backend")
-        self.assertEqual(conf.get("player", "backend"), "blah")
+        conf.defaults.set("player", "backend", "blah_new")
+        self.assertEqual(conf.get("player", "backend"), "blah_new")
+
+    def test_reset_no_section(self):
+        conf = Config()
+        conf.defaults.add_section("player")
+        conf.defaults.set("player", "backend", "blah")
+        conf.reset("player", "backend")
+        assert conf.get("player", "backend") == "blah"
 
     def test_initial_after_set(self):
         conf = Config()

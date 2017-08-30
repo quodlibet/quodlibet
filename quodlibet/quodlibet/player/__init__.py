@@ -61,8 +61,7 @@ def init_backend(backend_name):
 
     try:
         backend = importlib.import_module(modulename)
-    except Exception as e:
-        util.print_exc()
+    except ImportError as e:
         util.reraise(PlayerError, str(e))
     else:
         return backend

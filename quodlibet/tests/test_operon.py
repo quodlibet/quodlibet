@@ -2,8 +2,9 @@
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
@@ -467,6 +468,17 @@ class TOperonTags(TOperonBase):
         self.check_true(["tags", "-t", "-cdesc,tag"], True, False)
         self.check_true(["tags", "-t", "-ctag, desc"], True, False)
         self.check_false(["tags", "-t", "-cfoo"], False, True)
+
+    def test_output(self):
+        o, e = self.check_true(["tags"], True, False)
+        assert not e
+        assert "tracknumber" in o
+        assert "replaygain_album_gain" not in o
+
+        o, e = self.check_true(["tags", "-a"], True, False)
+        assert not e
+        assert "tracknumber" in o
+        assert "replaygain_album_gain" in o
 
 
 class TOperonImageExtract(TOperonBase):

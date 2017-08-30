@@ -206,10 +206,7 @@ class MPRIS1Player(MPRISObject):
 
     @dbus.service.method(IFACE)
     def Pause(self):
-        if app.player.song is None:
-            app.player.reset()
-        else:
-            app.player.paused ^= True
+        app.player.paused = True
 
     @dbus.service.method(IFACE)
     def Stop(self):
@@ -217,14 +214,7 @@ class MPRIS1Player(MPRISObject):
 
     @dbus.service.method(IFACE)
     def Play(self):
-        player = app.player
-        if player.song is None:
-            player.reset()
-        else:
-            if player.paused:
-                player.paused = False
-            else:
-                player.seek(0)
+        app.player.play()
 
     @dbus.service.method(IFACE, in_signature="b")
     def Repeat(self, value):

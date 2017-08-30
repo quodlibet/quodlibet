@@ -6,6 +6,7 @@
 # published by the Free Software Foundation
 
 import os
+import io
 
 import quodlibet
 from quodlibet import _
@@ -33,13 +34,13 @@ class JEP118(EventPlugin):
     def plugin_on_song_started(self, song):
         if song is None:
             try:
-                with open(outfile, "w") as f:
+                with io.open(outfile, "w", encoding="utf-8") as f:
                     f.write("<tune xmlns='http://jabber.org/protocol/tune'/>")
             except EnvironmentError:
                 pass
         else:
             try:
-                with open(outfile, "wb") as f:
+                with io.open(outfile, "w", encoding="utf-8") as f:
                     f.write(format % (
                         util.escape(song.comma("artist")),
                         util.escape(song.comma("title")),

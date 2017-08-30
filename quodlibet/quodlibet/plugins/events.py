@@ -10,13 +10,13 @@ from gi.repository import GObject
 
 from quodlibet.util.dprint import print_e
 
-from quodlibet import util
 from quodlibet.plugins import PluginHandler
 
 from quodlibet.util.songwrapper import SongWrapper, ListWrapper
 from quodlibet.util.songwrapper import check_wrapper_changed
 from quodlibet.util import connect_obj
-from quodlibet.compat import itervalues
+from quodlibet.compat import listvalues
+from quodlibet.errorreport import errorhook
 
 
 class EventPlugin(object):
@@ -53,6 +53,10 @@ class EventPlugin(object):
         pass
 
     def plugin_on_error(self, song, error):
+        pass
+
+    def plugin_on_songs_selected(self, songs):
+        """Called when the selection in main songlist changes"""
         pass
 
     PLUGIN_INSTANCE = True
@@ -93,7 +97,7 @@ def _map_signals(obj, prefix="plugin_on_", blacklist=None):
 
 class EventPluginHandler(PluginHandler):
 
-    def __init__(self, librarian=None, player=None):
+    def __init__(self, librarian=None, player=None, songlist=None):
         if librarian:
             sigs = _map_signals(librarian, blacklist=("notify",))
             for event, handle in sigs:
@@ -108,7 +112,15 @@ class EventPluginHandler(PluginHandler):
                     self.__invoke(librarian, args[-1], *args[:-1])
                 connect_obj(player, event, cb_handler, librarian, event)
 
+        if songlist:
+            def __selection_changed_cb(songlist, selection):
+                songs = songlist.get_selected_songs()
+                self.__invoke(self.librarian, "songs_selected", songs)
+            songlist.connect("selection-changed", __selection_changed_cb)
+
+        self.librarian = librarian
         self.__plugins = {}
+        self.__sidebars = {}
 
     def __invoke(self, librarian, event, *args):
         args = list(args)
@@ -117,7 +129,7 @@ class EventPluginHandler(PluginHandler):
                 args[0] = SongWrapper(args[0])
             elif isinstance(args[0], (set, list)):
                 args[0] = ListWrapper(args[0])
-        for plugin in itervalues(self.__plugins):
+        for plugin in listvalues(self.__plugins):
             method_name = 'plugin_on_' + event.replace('-', '_')
             handler = getattr(plugin, method_name, None)
 
@@ -130,7 +142,7 @@ class EventPluginHandler(PluginHandler):
                 except Exception:
                     print_e("Error during %s on %s" %
                             (method_name, type(plugin)))
-                    util.print_exc()
+                    errorhook()
 
         if event not in ["removed", "changed"] and args:
             from quodlibet import app

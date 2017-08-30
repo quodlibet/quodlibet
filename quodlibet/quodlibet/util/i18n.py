@@ -16,6 +16,17 @@ from quodlibet.util.path import unexpand
 from quodlibet.util.dprint import print_d
 from quodlibet.compat import text_type, PY2, listfilter
 
+from .misc import get_locale_encoding
+
+
+def locale_format(format, val, *args, **kwargs):
+    """Like locale.format but returns text"""
+
+    result = locale.format(format, val, *args, **kwargs)
+    if isinstance(result, bytes):
+        result = result.decode(get_locale_encoding(), "replace")
+    return result
+
 
 def bcp47_to_language(code):
     """Takes a BCP 47 language identifier and returns a value suitable for the
@@ -229,11 +240,11 @@ def register_translation(domain, localedir=None):
     if localedir is not None and os.path.isdir(localedir):
         print_d("Using local localedir: %r" % unexpand(localedir))
         gettext.bindtextdomain(domain, localedir)
-    else:
-        localedir = gettext.bindtextdomain(domain)
+
+    localedir = gettext.bindtextdomain(domain)
 
     try:
-        t = gettext.translation(domain, class_=GlibTranslations)
+        t = gettext.translation(domain, localedir, class_=GlibTranslations)
     except IOError:
         print_d("No translation found in %r" % unexpand(localedir))
         t = GlibTranslations()
@@ -386,7 +397,7 @@ def numeric_phrase(singular, plural, n, template_var=None):
     `"Add 12,345 songs"`
     (in `en_US` locale at least)
     """
-    num_text = locale.format('%d', n, grouping=True)
+    num_text = locale_format('%d', n, grouping=True)
     if not template_var:
         template_var = '%d'
         replacement = '%s'
@@ -396,8 +407,8 @@ def numeric_phrase(singular, plural, n, template_var=None):
         replacement = '%(' + template_var + ')s'
         params = dict()
         params[template_var] = num_text
-    return (ngettext(singular.replace(template_var, replacement),
-            plural.replace(template_var, replacement), n) % params)
+    return (ngettext(singular, plural, n).replace(template_var, replacement) %
+            params)
 
 
 def npgettext(context, singular, plural, n):

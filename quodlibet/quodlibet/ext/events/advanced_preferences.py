@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2015 Christoph Reiter
-#           2016 Nick Boultbee
+#        2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -18,12 +18,13 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.compat import text_type
 
 
-def _config(section, option, label, tooltip, getter):
+def _config(section, option, label, tooltip=None, getter=None):
     def on_changed(entry, *args):
         config.settext(section, option, gdecode(entry.get_text()))
 
     entry = UndoEntry()
-    entry.set_tooltip_text(tooltip)
+    if tooltip:
+        entry.set_tooltip_text(tooltip)
     entry.set_text(config.gettext(section, option))
     entry.connect("changed", on_changed)
 
@@ -39,7 +40,7 @@ def _config(section, option, label, tooltip, getter):
     return (Gtk.Label(label=label), entry, revert)
 
 
-def text_config(section, option, label, tooltip):
+def text_config(section, option, label, tooltip=None):
 
     def getter(section, option):
         return decode(config.get(section, option))
@@ -66,7 +67,7 @@ def int_config(section, option, label, tooltip):
 class AdvancedPreferences(EventPlugin):
     PLUGIN_ID = "Advanced Preferences"
     PLUGIN_NAME = _("Advanced Preferences")
-    PLUGIN_DESC = _("Allow to tweak advanced config settings.")
+    PLUGIN_DESC = _("Allow editing of advanced config settings.")
     PLUGIN_CAN_ENABLE = False
     PLUGIN_ICON = Icons.PREFERENCES_SYSTEM
 
@@ -91,7 +92,7 @@ class AdvancedPreferences(EventPlugin):
         rows.append(
             text_config(
                 "editing", "id3encoding",
-                "ID3 Encodings:",
+                "ID3 encodings:",
                 ("ID3 encodings separated by spaces. "
                  "UTF-8 is always tried first, and Latin-1 "
                  "is always tried last.")))
@@ -99,21 +100,19 @@ class AdvancedPreferences(EventPlugin):
         rows.append(
             text_config(
                 "settings", "search_tags",
-                "Search Tags:",
+                "Search tags:",
                 ("Tags which get searched in addition to "
-                 "the ones present in the song list, separate with \",\"")))
+                 "the ones present in the song list. Separate with \",\"")))
 
         rows.append(
             text_config(
                 "settings", "rating_symbol_full",
-                "Rating Symbol (Full):",
-                ""))
+                "Rating symbol (full):"))
 
         rows.append(
             text_config(
                 "settings", "rating_symbol_blank",
-                "Rating Symbol (Blank):",
-                ""))
+                "Rating symbol (blank):"))
 
         rows.append(
             text_config(
@@ -124,21 +123,28 @@ class AdvancedPreferences(EventPlugin):
         rows.append(
             boolean_config(
                 "settings", "disable_hints",
-                "Disable Hints:",
+                "Disable hints:",
                 "Disable popup windows (treeview hints)"))
 
         rows.append(
             int_config(
                 "browsers", "cover_size",
-                "Album Cover Size:",
+                "Album cover size:",
                 ("Size of the album cover images in the album list browser "
                  "(restart required)")))
 
         rows.append(
             boolean_config(
                 "settings", "disable_mmkeys",
-                "Disable Multimedia Keys:",
+                "Disable multimedia keys:",
                 "(restart required)"))
+
+        rows.append(
+            text_config(
+                "settings", "window_title_pattern",
+                "Main window title:",
+                ("A (tied) tag for the main window title, e.g. ~title~~people "
+                 "(restart required)")))
 
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)

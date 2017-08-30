@@ -1,50 +1,22 @@
 matrix:
   include:
-    - os: linux
-      sudo: required
-      dist: trusty
-      language: python
-      python: "2.7_with_system_site_packages"
-      env: TYPE="linux" PYTHON="python2" PYARGS="-R" APT_PACKAGES="quodlibet exfalso xvfb python-faulthandler python-polib gettext intltool libxine2"
-    - os: linux
-      sudo: required
-      dist: trusty
-      language: python
-      python: "3.4_with_system_site_packages"
-      env: TYPE="linux" PYTHON="python3" PYARGS="-R -bb" APT_PACKAGES="quodlibet exfalso xvfb python3-mutagen python3-gi python3-gi-cairo python3-polib gettext intltool libxine2 python3-musicbrainzngs"
     - os: osx
       osx_image: xcode6.4
       language: generic
       env: TYPE="osx" PYTHON="python2" PYARGS="-R" APT_PACKAGES=""
-    - os: linux
+    - os: osx
+      osx_image: xcode6.4
       language: generic
-      sudo: required
-      dist: trusty
-      env: TYPE="windows" PYTHON="python2" PYARGS="-R" APT_PACKAGES="wine xvfb p7zip-full"
-    - os: linux
-      language: generic
-      sudo: required
-      dist: trusty
-      env: TYPE="windows" PYTHON="python3" PYARGS="-R -bb" APT_PACKAGES="wine xvfb p7zip-full"
+      env: TYPE="osx" PYTHON="python3" PYARGS="-R -bb" APT_PACKAGES=""
 
 install:
- - if [ "$APT_PACKAGES" != "" ]; then sudo dpkg --add-architecture i386; fi
- - if [ "$APT_PACKAGES" != "" ]; then travis_retry sudo add-apt-repository -y ppa:lazka/dumpingplace; fi
- - if [ "$APT_PACKAGES" != "" ]; then sudo apt-get update -q || true; fi
- - if [ "$APT_PACKAGES" != "" ]; then travis_retry sudo apt-get install -y $(echo $APT_PACKAGES); fi
- - if [ "$TYPE" == "linux" ]; then travis_retry pip install --upgrade pep8 pyflakes; fi
- - if [ "$TYPE" == "osx" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg; fi
- - if [ "$TYPE" == "osx" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg; fi
- - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python2" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe -O win-inst.exe; fi
- - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python3" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer-py3.exe -O win-inst.exe; fi
- - if [ "$TYPE" == "windows" ]; then 7z x -o_temp win-inst.exe > /dev/null; fi
- - if [ "$TYPE" == "windows" ]; then mv $(dirname _temp/*/bin) _win_inst; fi
+ - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python2" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg; fi
+ - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python2" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg; fi
+ - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python3" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest-Py3.dmg; fi
+ - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python3" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-latest-Py3.dmg; fi
 
 script:
  - cd quodlibet
- - if [ "$TYPE" == "linux" ]; then xvfb-run -a $PYTHON $PYARGS ./setup.py test; fi
- - if [ "$TYPE" == "linux" ]; then xvfb-run -a $PYTHON ./setup.py quality; fi
- - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS setup.py test; fi
- - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run setup.py quality; fi
- - if [ "$TYPE" == "windows" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe $PYARGS ./setup.py test; fi
- - if [ "$TYPE" == "windows" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe ./setup.py quality; fi
+ - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS -m coverage run --branch setup.py test; fi
+ - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS -m coverage xml; fi
+ - if [ "$TYPE" == "osx" ]; then bash <(curl -s https://codecov.io/bash); fi

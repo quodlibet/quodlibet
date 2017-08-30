@@ -17,6 +17,7 @@ is used and not the release version.
 """
 
 from gi.repository import Gtk
+import feedparser
 
 import quodlibet
 from quodlibet import _
@@ -55,12 +56,6 @@ def fetch_versions(build_type, timeout=5.0):
 
     Raises UpdateError
     """
-
-    # TODO: we currently don't depend on feedparser.. maybe we should?
-    try:
-        import feedparser
-    except ImportError as error:
-        raise UpdateError(error)
 
     try:
         content = urlopen(

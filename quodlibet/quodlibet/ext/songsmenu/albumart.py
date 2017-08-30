@@ -6,14 +6,16 @@
 #                Jeremy Cantrell <jmcantrell@gmail.com>
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
-#           2011-2016 Nick Boultbee
+#           2011-2017 Nick Boultbee
 #                2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
+
 import json
 import os
+import re
 import time
 import threading
 import gzip
@@ -22,6 +24,7 @@ from xml.dom import minidom
 
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern
+from quodlibet.pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.util import format_size, print_exc
@@ -38,14 +41,16 @@ from quodlibet.qltk.image import scale, add_border_widget, \
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util.urllib import urlopen, Request
-from quodlibet.compat import xrange, urlencode, cBytesIO
-
+from quodlibet.compat import urlencode, cBytesIO
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
     "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
 
 PLUGIN_CONFIG_SECTION = 'cover'
 CONFIG_ENG_PREFIX = 'engine_'
+
+SEARCH_PATTERN = Pattern(
+    '<albumartist|<albumartist>|<artist>> - <album|<album>|<title>>')
 
 
 def get_encoding_from_socket(socket):
@@ -55,9 +60,9 @@ def get_encoding_from_socket(socket):
     return (enc and enc[0]) or "utf-8"
 
 
-def get_url(url, post={}, get={}):
-    post_params = urlencode(post)
-    get_params = urlencode(get)
+def get_url(url, post=None, get=None):
+    post_params = urlencode(post or {})
+    get_params = urlencode(get or {})
     if get:
         get_params = '?' + get_params
 
@@ -80,8 +85,11 @@ def get_url(url, post={}, get={}):
     if url_sock.headers.get("content-encoding", "") == "gzip":
         data = gzip.GzipFile(fileobj=cBytesIO(data)).read()
     url_sock.close()
-
-    return data, enc
+    content_type = url_sock.headers.get('Content-Type', '').split(';', 1)[0]
+    domain = re.compile('\w+://([^/]+)/').search(url).groups(0)[0]
+    print_d("Got %s data from %s" % (content_type, domain))
+    return (data if content_type.startswith('image')
+            else data.decode(enc))
 
 
 def get_encoding(url):
@@ -96,7 +104,7 @@ class AmazonParser(object):
     """A class for searching covers from Amazon"""
 
     def __init__(self):
-        self.page_count = 0
+        self.page_count = 1
         self.covers = []
         self.limit = 0
 
@@ -118,10 +126,10 @@ class AmazonParser(object):
             'ItemPage': page,
             # This specifies where the money goes and needed since 1.11.2011
             # (What a good reason to break API..)
-            # ...so use the gnome.org one
-            'AssociateTag': 'gnomestore-20',
+            # ...so use the eff.org one: https://www.eff.org/helpout
+            'AssociateTag': 'electronicfro-20',
         }
-        data, enc = get_url(url, get=parameters)
+        data = get_url(url, get=parameters)
         dom = minidom.parseString(data)
 
         pages = dom.getElementsByTagName('TotalPages')
@@ -129,7 +137,7 @@ class AmazonParser(object):
             self.page_count = int(pages[0].firstChild.data)
 
         items = dom.getElementsByTagName('Item')
-
+        print_d("Amazon: got %d search result(s)" % len(items))
         for item in items:
             self.__parse_item(item)
             if len(self.covers) >= self.limit:
@@ -185,19 +193,19 @@ class AmazonParser(object):
 
             self.covers.append(cover)
 
-    def start(self, query, limit=10):
+    def start(self, query, limit=5):
         """Start the search and returns the covers"""
 
         self.page_count = 0
         self.covers = []
         self.limit = limit
-        self.__parse_page(1, query)
+        page = 1
 
-        if len(self.covers) < limit:
-            for page in xrange(2, self.page_count + 1):
-                self.__parse_page(page, query)
-                if len(self.covers) >= limit:
-                    break
+        while len(self.covers) < limit:
+            self.__parse_page(page, query)
+            if page >= self.page_count:
+                break
+            page += 1
 
         return self.covers
 
@@ -219,26 +227,25 @@ class DiscogsParser(object):
 
         parameters = {
             'type': 'release',
-            # 'artist': '',
-            # 'release_title': '',
             'q': query,
             'page': page,
-            'per_page': 100,
+            # Assume that not all results are useful
+            'per_page': self.limit * 2,
         }
 
-        _params = dict(parameters.items() + self.creds.items())
-        data, enc = get_url(url, get=_params)
+        parameters.update(self.creds)
+        data = get_url(url, get=parameters)
         json_dict = json.loads(data)
 
         # TODO: rate limiting
 
         pages = json_dict.get('pagination', {}).get('pages', 0)
-        if pages != 0:
-            self.page_count = int(pages)
-        else:
+        if not pages:
             return
+        self.page_count = int(pages)
 
         items = json_dict.get('results', {})
+        print_d("Discogs: got %d search result(s)" % len(items))
         for item in items:
             self.__parse_item(item)
             if len(self.covers) >= self.limit:
@@ -253,7 +260,7 @@ class DiscogsParser(object):
             return
 
         res_url = item.get('resource_url', '')
-        data, enc = get_url(res_url, get=self.creds)
+        data = get_url(res_url, get=self.creds)
         json_dict = json.loads(data)
 
         images = json_dict.get('images', [])
@@ -262,15 +269,14 @@ class DiscogsParser(object):
 
             type = image.get('type', '')
             if type != 'primary':
-                print_d('Cover is not primary: {0}'.format(type))
                 continue
 
+            uri = image.get('uri', '')
             cover = {'source': 'https://www.discogs.com',
                      'name': item.get('title', ''),
                      'thumbnail': image.get('uri150', thumbnail),
-                     'cover': image.get('uri', '')}
-
-            cover['size'] = get_size_of_url(cover['cover'])
+                     'cover': uri,
+                     'size': get_size_of_url(uri)}
 
             width = image.get('width', 0)
             height = image.get('height', 0)
@@ -280,19 +286,18 @@ class DiscogsParser(object):
             if len(self.covers) >= self.limit:
                 break
 
-    def start(self, query, limit=5):
+    def start(self, query, limit=3):
         """Start the search and returns the covers"""
 
         self.page_count = 0
         self.covers = []
         self.limit = limit
-        self.__parse_page(1, query)
-
-        if len(self.covers) < limit:
-            for page in xrange(2, self.page_count + 1):
-                self.__parse_page(page, query)
-                if len(self.covers) >= limit:
-                    break
+        page = 1
+        while len(self.covers) < limit:
+            self.__parse_page(page, query)
+            if page < self.page_count:
+                break
+            page += 1
 
         return self.covers
 
@@ -434,8 +439,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         save_format = self.name_combo.get_active_text()
         # Allow use of patterns in creating cover filenames
-        pattern = ArbitraryExtensionFileFromPattern(
-            save_format.decode("utf-8"))
+        pattern = ArbitraryExtensionFileFromPattern(save_format)
         filename = pattern.format(self.song)
         print_d("Using '%s' as filename based on %s" % (filename, save_format))
         file_path = os.path.join(self.dirname, filename)
@@ -711,13 +715,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         left_vbox.pack_start(self.progress, False, True, 0)
 
-        if songs[0]('albumartist'):
-            text = songs[0]('albumartist')
-        else:
-            text = songs[0]('artist')
-
-        text += ' - ' + songs[0]('album')
-
+        song = songs[0]
+        text = SEARCH_PATTERN.format(song)
         self.set_text(text)
         self.start_search()
 
@@ -746,7 +745,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         self.search = search = CoverSearch(self.__search_callback)
 
-        for eng in engines:
+        for eng in ENGINES:
             if self.config_get_bool(
                     CONFIG_ENG_PREFIX + eng['config_id'], True):
                 search.add_engine(eng['class'], eng['replace'])
@@ -778,7 +777,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
     def __add_cover_to_list(self, cover):
         try:
             pbloader = GdkPixbuf.PixbufLoader()
-            pbloader.write(get_url(cover['thumbnail'])[0])
+            pbloader.write(get_url(cover['thumbnail']))
             pbloader.close()
 
             scale_factor = self.get_scale_factor()
@@ -821,7 +820,6 @@ class CoverSearch(object):
 
         self.callback = wrap
         self.finished = 0
-        self.overall_limit = 7
 
     def add_engine(self, engine, query_replace):
         """Adds a new search engine, query_replace is the string with which
@@ -855,7 +853,7 @@ class CoverSearch(object):
         clean_query = self.__cleanup_query(query, replace)
         result = []
         try:
-            result = engine().start(clean_query, self.overall_limit)
+            result = engine().start(clean_query)
         except Exception:
             print_w("[AlbumArt] %s: %r" % (engine.__name__, query))
             print_exc()
@@ -883,14 +881,14 @@ class CoverSearch(object):
 
             p_split = part.split()
             p_split.sort(key=len, reverse=True)
-            p_split = p_split[:max(len(p_split) / 4, max(4 - len(p_split), 2))]
+            end = max(int(len(p_split) / 4), max(4 - len(p_split), 2))
+            p_split = p_split[:end]
 
             new_query += ' '.join(p_split) + ' '
 
         return new_query.rstrip()
 
 
-#------------------------------------------------------------------------------
 def get_size_of_url(url):
     request = Request(url)
     request.add_header('Accept-Encoding', 'gzip')
@@ -900,8 +898,8 @@ def get_size_of_url(url):
     url_sock.close()
     return format_size(int(size)) if size else ''
 
-#------------------------------------------------------------------------------
-engines = [
+
+ENGINES = [
     {
         'class': AmazonParser,
         'url': 'https://www.amazon.com/',
@@ -915,7 +913,6 @@ engines = [
         'config_id': 'discogs',
     },
 ]
-#------------------------------------------------------------------------------
 
 
 class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
@@ -932,13 +929,13 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def PluginPreferences(cls, window):
-        table = Gtk.Table(n_rows=len(engines), n_columns=2)
+        table = Gtk.Table(n_rows=len(ENGINES), n_columns=2)
         table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         frame = qltk.Frame(_("Sources"), child=table)
 
-        for i, eng in enumerate(sorted(engines, key=lambda x: x["url"])):
+        for i, eng in enumerate(sorted(ENGINES, key=lambda x: x["url"])):
             check = cls.ConfigCheckButton(
                 eng['config_id'].title(),
                 CONFIG_ENG_PREFIX + eng['config_id'],

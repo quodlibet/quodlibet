@@ -3,12 +3,11 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from tests import TestCase, skipIf
+from tests import TestCase, skipUnless
 from tests.helper import ListWithUnused as L
 
 import os
 import re
-import glob
 
 try:
     import polib
@@ -16,12 +15,13 @@ except ImportError:
     polib = None
 
 import quodlibet
+from quodlibet.util import get_module_dir
 from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import human_title
 from gdist import gettextutil
 
 
-PODIR = os.path.join(os.path.dirname(quodlibet.__path__[0]), "po")
+PODIR = os.path.join(os.path.dirname(get_module_dir(quodlibet)), "po")
 
 
 class MissingTranslationsException(Exception):
@@ -44,14 +44,14 @@ class TPOTFILESIN(TestCase):
             raise MissingTranslationsException(results)
 
 
-@skipIf(polib is None, "polib not found")
+@skipUnless(polib, "polib not found")
 class TPot(TestCase):
 
     @classmethod
     def setUpClass(cls):
         gettextutil.check_version()
-        pot_path = gettextutil.update_pot(PODIR, "quodlibet")
-        cls.pot = polib.pofile(pot_path)
+        with gettextutil.create_pot(PODIR, "quodlibet") as pot_path:
+            cls.pot = polib.pofile(pot_path)
 
     def conclude(self, fails, reason):
         if fails:
@@ -231,7 +231,8 @@ class POMixin(object):
             return
 
         po_path = os.path.join(PODIR, "%s.po" % self.lang)
-        self.failIf(os.system("msgfmt -c %s > /dev/null" % po_path))
+        self.failIf(os.system(
+            "msgfmt -c -o /dev/null %s > /dev/null" % po_path))
         try:
             os.unlink("messages.mo")
         except OSError:
@@ -314,8 +315,7 @@ class POMixin(object):
         self.conclude(fails, "ending punctuation missing")
 
 
-for fn in glob.glob(os.path.join(PODIR, "*.po")):
-    lang = os.path.basename(fn)[:-3]
-    testcase = type('PO.' + lang, (TestCase, POMixin), {})
+for lang in gettextutil.list_languages(PODIR):
+    testcase = type('PO.' + str(lang), (TestCase, POMixin), {})
     testcase.lang = lang
     globals()['PO.' + lang] = testcase

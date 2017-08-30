@@ -16,7 +16,7 @@ from quodlibet.compat import PY2
 from quodlibet.const import MinVersions
 from quodlibet import config
 from quodlibet.util import is_osx, is_windows, i18n
-from quodlibet.util.dprint import print_d, print_e, PrintHandler
+from quodlibet.util.dprint import print_e, PrintHandler
 from quodlibet.util.urllib import install_urllib2_ca_file
 
 from ._main import get_base_dir, is_release, get_image_dir
@@ -27,24 +27,9 @@ _initialized = False
 
 
 def _init_gtk_debug(no_excepthook):
-    from gi.repository import GLib
-    from quodlibet.qltk.debugwindow import excepthook
+    from quodlibet.errorreport import enable_errorhook
 
-    print_d("Initializing debugging extensions")
-
-    def _override_exceptions():
-        print_d("Enabling custom exception handler.")
-        sys.excepthook = excepthook
-    if not no_excepthook:
-        GLib.idle_add(_override_exceptions)
-
-    # faulthandler gives a python stacktrace on segfaults..
-    try:
-        import faulthandler
-    except ImportError:
-        pass
-    else:
-        faulthandler.enable()
+    enable_errorhook(not no_excepthook)
 
 
 def is_init():
@@ -93,7 +78,6 @@ def _init_gettext(no_translations=False):
     localedir = os.path.dirname(base_dir)
     localedir = os.path.join(localedir, "build", "share", "locale")
     if not os.path.isdir(localedir) and os.name == "nt":
-        # py2exe case
         localedir = os.path.join(
             base_dir, "..", "..", "share", "locale")
 
@@ -268,10 +252,6 @@ def _init_gtk():
     if is_osx():
         environ["GTK_OVERLAY_SCROLLING"] = "0"
 
-    # make sure GdkX11 doesn't get used under Windows
-    if os.name == "nt":
-        sys.modules["gi.repository.GdkX11"] = None
-
     try:
         # not sure if this is available under Windows
         gi.require_version("GdkX11", "3.0")
@@ -397,6 +377,22 @@ def _init_gtk():
         """)
         css_override.register_provider("Adwaita", style_provider)
         css_override.register_provider("HighContrast", style_provider)
+
+    if gtk_version[:2] >= (3, 18):
+        # Hack to get some grab handle like thing for panes
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data(b"""
+            GtkPaned.vertical, paned.vertical >separator {
+                -gtk-icon-source: -gtk-icontheme("view-more-symbolic");
+                -gtk-icon-transform: rotate(90deg) scaleX(0.1) scaleY(3);
+            }
+
+            GtkPaned.horizontal, paned.horizontal >separator {
+                -gtk-icon-source: -gtk-icontheme("view-more-symbolic");
+                -gtk-icon-transform: rotate(0deg) scaleX(0.1) scaleY(3);
+            }
+        """)
+        css_override.register_provider("", style_provider)
 
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)

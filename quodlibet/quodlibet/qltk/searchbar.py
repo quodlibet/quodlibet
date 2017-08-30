@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010-2011 Christoph Reiter, Steven Robertson
-#                2016 Nick Boultbee
+#           2016-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -88,10 +88,6 @@ class SearchBarBox(Gtk.HBox):
 
     def set_enabled(self, enabled=True):
         self.__entry.set_sensitive(enabled)
-        if enabled:
-            self.__uninhibit()
-        else:
-            self.__inhibit()
 
     def set_text(self, text):
         """Set the text without firing any signals"""
@@ -164,6 +160,8 @@ class SearchBarBox(Gtk.HBox):
             GLib.idle_add(self.emit, 'query-changed', text)
 
     def __text_changed(self, *args):
+        if not self.__entry.is_sensitive():
+            return
         # the combobox has an active entry selected -> no timeout
         # todo: we need a timeout when the selection changed because
         # of keyboard input (up/down arrows)

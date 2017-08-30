@@ -2,15 +2,16 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
+import time
 
 from senf import fsnative
 
-from tests import TestCase
-
 from quodlibet import config
+from quodlibet.compat import xrange
+from quodlibet.formats import AudioFile
 from quodlibet.query import Query, QueryType
 from quodlibet.query import _match as match
-from quodlibet.formats import AudioFile
+from tests import TestCase, skip
 
 
 class TQuery_is_valid(TestCase):
@@ -183,6 +184,35 @@ class TQuery(TestCase):
         assert Query("album=foo").search(self.s2)
         assert not Query("album=.").search(self.s2)
         assert Query("album=/./").search(self.s2)
+
+    def test_inequality(self):
+        self.failUnless(Query("album!=foo").search(self.s1))
+        self.failIf(Query("album!=foo").search(self.s2))
+
+    @skip("Enable for basic benchmarking of Query")
+    def test_inequality_performance(self):
+        t = time.time()
+        for i in xrange(500):
+            # Native assert is a bit lighter...
+            assert Query("album!=foo the bar").search(self.s1)
+            assert Query("album=foo the bar").search(self.s2)
+            assert Query("foo the bar").search(self.s2)
+            assert not Query("foo the bar").search(self.s1)
+        us = (time.time() - t) * 1000000 / ((i + 1) * 4)
+        print("Blended Query searches average %.0f μs" % us)
+
+    @skip("Enable for basic benchmarking of Query")
+    def test_inequality_equalish_performance(self):
+        t0 = time.time()
+        repeats = 2000
+        for i in xrange(repeats):
+            assert Query("album!=foo the bar").search(self.s1)
+        ineq_time = (time.time() - t0)
+        t1 = time.time()
+        for i in xrange(repeats):
+            assert Query("album=!foo the bar").search(self.s1)
+        not_val_time = (time.time() - t1)
+        self.assertAlmostEqual(ineq_time, not_val_time, places=1)
 
     def test_repr(self):
         query = Query("foo = bar", [])

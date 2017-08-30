@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2013 Nick Boultbee
+#           2011-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -23,10 +23,7 @@ def split_value(s, splitters=[u"/", u"&", u","]):
         spl = re.compile(r"\b\s*%s\s*\b" % re_escape(spl), re.UNICODE)
         if not list(filter(spl.search, values)):
             continue
-        new_values = []
-        for v in values:
-            new_values.extend([st.strip() for st in spl.split(v)])
-        return new_values
+        return [st.strip() for v in values for st in spl.split(v)]
     return values
 
 
@@ -37,10 +34,9 @@ def find_subtitle(title):
         if pair[0] in title[:-1] and title.endswith(pair[1]):
             r = len(pair[1])
             l = title[0:-r].rindex(pair[0])
-            if l != 0:
+            if l:
                 subtitle = title[l + len(pair[0]):-r]
-                title = title[:l]
-                return title.rstrip(), subtitle
+                return title[:l].rstrip(), subtitle
     else:
         return title, None
 
@@ -68,10 +64,10 @@ def split_people(s, splitters=["/", "&", ","]):
                     i = [p.lower() for p in parts].index(feat)
                     orig = " ".join(parts[:i])
                     others = " ".join(parts[i + 1:])
-                    return (orig, split_value(others, splitters))
+                    return orig, split_value(others, splitters)
                 except (ValueError, IndexError):
                     pass
-        return (s, [])
+        return s, []
     else:
         old = subtitle
         # TODO: allow multiple substitutions across types, maybe
@@ -81,7 +77,7 @@ def split_people(s, splitters=["/", "&", ","]):
                 # Only change once
                 break
         values = split_value(subtitle, splitters)
-        return (title.strip(), values)
+        return title.strip(), values
 
 
 def split_album(s):
@@ -91,15 +87,15 @@ def split_album(s):
         if len(parts) > 2:
             lower = parts[-2].lower()
             if "disc" in lower or "disk" in lower:
-                return (" ".join(parts[:-2]), parts[-1])
-        return (s, None)
+                return " ".join(parts[:-2]), parts[-1]
+        return s, None
     else:
         parts = disc.split()
         if (len(parts) == 2 and
                 parts[0].lower() in ["disc", "disk", "cd", "vol", "vol."]):
             try:
-                return (name, parts[1])
-            except:
-                return (s, None)
+                return name, parts[1]
+            except IndexError:
+                return s, None
         else:
-            return (s, None)
+            return s, None

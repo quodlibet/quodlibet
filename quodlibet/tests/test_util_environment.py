@@ -2,13 +2,13 @@
 # Copyright 2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from tests import TestCase
 
-from quodlibet.util import is_unity, is_windows, is_osx, is_py2exe, \
-    is_py2exe_console, is_py2exe_window
+from quodlibet.util import is_unity, is_windows, is_osx
 
 
 class TUtilEnvironment(TestCase):
@@ -17,15 +17,8 @@ class TUtilEnvironment(TestCase):
         self.assertTrue(isinstance(is_unity(), bool))
         self.assertTrue(isinstance(is_windows(), bool))
         self.assertTrue(isinstance(is_osx(), bool))
-        self.assertTrue(isinstance(is_py2exe(), bool))
-        self.assertTrue(isinstance(is_py2exe_console(), bool))
-        self.assertTrue(isinstance(is_py2exe_window(), bool))
 
     def test_constrains(self):
-        if is_py2exe():
-            self.assertEqual(is_py2exe_console(), not is_py2exe_window())
-            self.assertTrue(is_windows())
-
         if is_windows():
             self.assertFalse(is_osx())
 

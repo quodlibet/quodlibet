@@ -421,6 +421,13 @@ class PluginManager(object):
 PM = PluginManager
 
 
+def plugin_enabled(plugin):
+    """Returns true if the plugin is enabled (or "always" enabled)"""
+    pm = PluginManager.instance
+    enabled = pm.enabled(plugin) or not plugin.can_enable
+    return enabled
+
+
 def get_config_option(plugin_cls, option):
     try:
         prefix = plugin_cls.CONFIG_SECTION

@@ -136,7 +136,7 @@ class AnimOsdPrefs(Gtk.VBox):
             monitor_cnt = Gdk.Screen.get_default().get_n_monitors()
             if monitor_cnt > 1:
                 adj = Gtk.Adjustment(value=self.Conf.monitor, lower=0,
-                                     upper=monitor_cnt - 1, step_incr=1)
+                                     upper=monitor_cnt - 1, step_increment=1)
                 monitor = Gtk.SpinButton(adjustment=adj)
                 monitor.set_numeric(True)
                 monitor.connect('value-changed', change_monitor)

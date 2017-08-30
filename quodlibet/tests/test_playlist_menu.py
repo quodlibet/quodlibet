@@ -2,8 +2,9 @@
 # Copyright 2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
@@ -45,7 +46,7 @@ class TPlaylistMenu(TestCase):
                         msg="Failing, don't want to delete %s" % PLAYLISTS)
         try:
             os.mkdir(PLAYLISTS)
-        except IOError:
+        except EnvironmentError:
             pass
         quodlibet.config.init()
         self.lib = FileLibrary()
@@ -65,7 +66,7 @@ class TPlaylistMenu(TestCase):
 
     def test__on_new_playlist_activate(self):
         main = qltk.MenuItem('Menu')
-        menu = StubbedPlaylistMenu(self.SONGS, [], self.lib)
+        menu = StubbedPlaylistMenu(self.SONGS, [])
         menu.connect('new', self._on_new)
         main.set_submenu(menu)
 

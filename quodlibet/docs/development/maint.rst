@@ -52,30 +52,31 @@ Release Checklist
 
 New Stable branch:
 
-    * setup.py update_po; git commit
     * git checkout -b quodlibet-x.y
-    * change branch name in const.py
-    * git commit; git push
+    * Change branch name in const.py to "quodlibet-x.y"
+    * git commit -m "new stable branch
+    * git push
     * git checkout master
-    * version bump; git commit
-    * enable branch version @readthedocs
+    * Update version to (X, Y + 1, -1)
+    * git commit -m "version bump"
+    * Enable branch version @readthedocs
 
 New Stable release:
 
     * git checkout quodlibet-x.y
-    * cherry pick stuff from master
-    * update NEWS; git commit
-    * test OSX/Windows/Ubuntu/Buildbots
+    * Cherry pick stuff from master
+    * Update NEWS
+    * git commit -m "update NEWS"
     * setup.py distcheck
-    * setup.py update_po, update version to (X, Y, Z), commit "release prep"
-    * add tag "release-x.y.z"
-    * push tag
-    * update version to (X, Y, Z, -1), commit "version bump"
-    * cherry pick NEWS commit onto master
-    * create Windows builds; create tarballs; create OSX dmgs
-    * create checksums / signature, upload everything (tarballs to the repo)
-    * update downloads page on master
-    * run make linkcheck
-    * update stable PPAs (ubuntu/debian/OBS)
-    * update appcast feeds in quodlibet.github.io
-    * write release mail
+    * Update version to (X, Y, Z)
+    * git commit -m "release prep"
+    * git tag release-x.y.z
+    * git push origin release-x.y.z
+    * Update version to (X, Y, Z, -1)
+    * git commit -m "version bump"
+    * Cherry pick NEWS commit onto master
+    * Create Windows builds / tarballs / macOS dmgs
+    * Create checksums / signature, attach everything to the github tag
+    * Update release_db/make.py; run ./release_db/update.sh
+    * Update stable PPAs (ubuntu/debian/OBS)
+    * Write release mail

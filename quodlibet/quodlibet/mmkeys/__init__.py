@@ -16,11 +16,12 @@ def iter_backends():
         return
 
     try:
-        from .gnome import GnomeBackend, MateBackend
+        from .gnome import GnomeBackend, GnomeBackendOldName, MateBackend
     except MMKeysImportError:
         pass
     else:
         yield GnomeBackend
+        yield GnomeBackendOldName
         yield MateBackend
 
     try:
@@ -90,21 +91,15 @@ class MMKeysHandler(object):
 
         player = self._player
         if action == MMKeysAction.PREV:
-            player.previous()
+            player.previous(force=True)
         elif action == MMKeysAction.NEXT:
             player.next()
         elif action == MMKeysAction.STOP:
             player.stop()
         elif action == MMKeysAction.PLAY:
-            if player.song is None:
-                player.reset()
-            else:
-                player.paused = False
+            player.play()
         elif action == MMKeysAction.PLAYPAUSE:
-            if player.song is None:
-                player.reset()
-            else:
-                player.paused ^= True
+            player.playpause()
         elif action == MMKeysAction.PAUSE:
             player.paused = True
         else:

@@ -51,6 +51,8 @@ class AlbumNode(object):
 
 UnknownNode = object()
 MultiNode = object()
+_ORDERING = {t: (x + 1) for x, t in enumerate([MultiNode, UnknownNode, None])}
+"""The ordering score by instance of singleton / "special" values"."""
 
 
 def build_tree(tags, albums, cache=None):
