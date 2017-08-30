@@ -6,8 +6,9 @@
 
 from gi.repository import Gtk
 
-from quodlibet.qltk.paned import RVPaned, RHPaned, ConfigRVPaned, \
-        MultiRVPaned, MultiRHPaned, ConfigMultiRVPaned, ConfigMultiRHPaned
+from quodlibet.qltk.paned import RPaned, RVPaned, RHPaned, ConfigRVPaned, \
+        MultiRVPaned, MultiRHPaned, ConfigMultiRVPaned, ConfigMultiRHPaned, \
+        XHPaned, XVPaned, MultiXHPaned, MultiXVPaned
 from quodlibet import config
 
 from . import TestCase
@@ -66,6 +67,47 @@ class RHPaned(TestCase, TRPaned):
 
 class RVPaned(TestCase, TRPaned):
     Kind = RVPaned
+
+
+class TXPaned(object):
+    Kind = None
+
+    def test_ctr(self):
+        self.Kind().destroy()
+
+    def test_handle_collapse(self):
+        p = self.Kind()
+
+        exp1 = Gtk.Expander()
+        d1 = 100 if p.ORIENTATION == Gtk.Orientation.HORIZONTAL else -1
+        d2 = -1 if p.ORIENTATION == Gtk.Orientation.HORIZONTAL else 100
+        exp1.set_size_request(d1, d2)
+
+        exp2 = Gtk.Expander()
+        d1 = 100 if p.ORIENTATION == Gtk.Orientation.HORIZONTAL else -1
+        d2 = -1 if p.ORIENTATION == Gtk.Orientation.HORIZONTAL else 100
+        exp2.set_size_request(d1, d2)
+
+        p.add1(exp1)
+        p.add2(exp2)
+
+        with visible(p, 300, 200):
+            title_size = exp1.style_get_property('expander-size') +\
+                         exp1.style_get_property('expander-spacing')
+
+            exp1.set_expanded(False)
+            p.update(exp1)
+
+            handle_position = p.get_position()
+            self.failUnlessAlmostEqual(handle_position, title_size + 5)
+
+
+class XHPaned(TestCase, TXPaned):
+    Kind = XHPaned
+
+
+class XVPaned(TestCase, TXPaned):
+    Kind = XVPaned
 
 
 class TConfigRPaned(TestCase):
@@ -151,11 +193,11 @@ class TMultiPaned(object):
                     paneds[2].get_relative(), 1.0 / 2.0, 2)
             else:
                 self.failUnless(
-                    relatively_close(paneds[0].get_position(), size / 4))
+                    relatively_close(paneds[0].get_position(), size / 4, 0.02))
                 self.failUnless(
-                    relatively_close(paneds[1].get_position(), size / 4))
+                    relatively_close(paneds[1].get_position(), size / 4, 0.02))
                 self.failUnless(
-                    relatively_close(paneds[2].get_position(), size / 4))
+                    relatively_close(paneds[2].get_position(), size / 4, 0.02))
 
     def test_change_orientation(self):
         p = self.Kind()
@@ -181,6 +223,106 @@ class TMultiRHPaned(TestCase, TMultiPaned):
 
 class TMultiRVPaned(TestCase, TMultiPaned):
     Kind = MultiRVPaned
+
+
+class TMultiXHPaned(TestCase, TMultiPaned):
+    Kind = MultiXHPaned
+
+
+class TMultiXVPaned(TestCase, TMultiPaned):
+    Kind = MultiXVPaned
+
+    def test_sizing(self):
+
+        def _widgets(count):
+            orientation = self.Kind().PANED().ORIENTATION
+            d1 = 100 if orientation == Gtk.Orientation.HORIZONTAL else -1
+            d2 = -1 if orientation == Gtk.Orientation.HORIZONTAL else 100
+            ws = [Gtk.Expander() for _ in range(count)]
+            for w in ws:
+                w.set_expanded(False)
+                w.set_size_request(d1, d2)
+            return ws
+
+        def _repack(w):
+            # expand single pane only, implicitly its parents too
+            while w.get_parent():
+                p = w.get_parent()
+                if isinstance(p, Gtk.Paned):
+                    if w == p.get_child1():
+                        p.remove(w)
+                        p.pack1(w, True, False)
+                    else:
+                        p.remove(w)
+                        p.pack2(w, True, False)
+                w = p
+
+        title_size = Gtk.Expander().style_get_property('expander-size') +\
+                     Gtk.Expander().style_get_property('expander-spacing')
+        handle_size = self.Kind().PANED().style_get_property('handle-size')
+
+        # 2 widgets, bottom expandable
+        p = self.Kind()
+        exps = _widgets(2)
+        p.set_widgets(exps, [(False, False)])
+        exp = exps[1]
+        exp.set_expanded(True)
+        _repack(exp)
+
+        with visible(p.get_paned(), 400, 400):
+            for w in [w for w in exps if w is not exp]:
+                w.get_parent().update(w)
+
+            self.failUnlessEqual(
+                exp.get_allocation().height,
+                p.get_paned().get_allocation().height -
+                (title_size + 5 + handle_size))
+
+        # 3 widgets, top expandable
+        p = self.Kind()
+        exps = _widgets(3)
+        p.set_widgets(exps, [(False, False)])
+        exp = exps[0]
+        exp.set_expanded(True)
+        _repack(exp)
+        with visible(p.get_paned(), 400, 400):
+
+            exp.get_parent().update(exp)
+            self.failUnlessEqual(
+                exp.get_allocation().height,
+                p.get_paned().get_allocation().height - 2 *
+                (100 + handle_size))
+
+            for w in [w for w in exps if w is not exp]:
+                w.get_parent().update(w)
+
+            self.failUnless(relatively_close(
+                exp.get_allocation().height,
+                p.get_paned().get_allocation().height - 2 *
+                (title_size + 5 + handle_size)))
+
+        # 4 widgets, 2nd expandable
+        p = self.Kind()
+        exps = _widgets(4)
+        p.set_widgets(exps, [(False, False)])
+        exp = exps[1]
+        exp.set_expanded(True)
+        _repack(exp)
+        with visible(p.get_paned(), 400, 400):
+
+            exp.get_parent().update(exp)
+            self.failUnlessEqual(
+                exp.get_allocation().height,
+                p.get_paned().get_allocation().height - 3 *
+                (100 + handle_size))
+
+            for w in [w for w in exps if w is not exp]:
+                w.get_parent().update(w)
+
+            self.failUnless(relatively_close(
+                exp.get_allocation().height,
+                p.get_paned().get_allocation().height - 3 *
+                (title_size + 5 + handle_size)))
 
 
 class TConfigMultiRPaned(object):
