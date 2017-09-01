@@ -595,8 +595,8 @@ class WaveformSeekBarPlugin(EventPlugin):
                            hover_color_changed)
         vbox.pack_start(box, True, True, 0)
 
-        box = create_color(_("Override remaining color:"), CONFIG.remaining_color,
-                           remaining_color_changed)
+        box = create_color(_("Override remaining color:"),
+                           CONFIG.remaining_color, remaining_color_changed)
         vbox.pack_start(box, True, True, 0)
 
         return vbox
