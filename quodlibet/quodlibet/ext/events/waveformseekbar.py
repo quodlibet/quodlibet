@@ -191,8 +191,12 @@ class WaveformSeekBar(Gtk.Box):
 
     def _update_label(self, player):
         if player.info:
-            # Position in ms, length in seconds
-            position = player.get_position() / 1000.0
+            if self._hovering:
+                # Show the position pointed by the mouse
+                position = self._waveform_scale.get_mouse_position()
+            else:
+                # Show the position of the player (converted in seconds)
+                position = player.get_position() / 1000.0
             length = player.info("~#length")
             remaining = length - position
 
@@ -229,7 +233,7 @@ class WaveformSeekBar(Gtk.Box):
             self._waveform_scale.queue_draw()
 
     def _on_mouse_hover(self, _, event):
-        self._waveform_scale.set_mouse_position(event.x)
+        self._waveform_scale.set_mouse_x_position(event.x)
 
         if self._hovering:
             (x, y, w, h) = self._waveform_scale.compute_hover_redraw_area()
@@ -237,12 +241,15 @@ class WaveformSeekBar(Gtk.Box):
         else:
             self._waveform_scale.queue_draw()
 
+        self._update_label(self._player)
         self._hovering = True
 
     def _on_mouse_leave(self, _, event):
-        self._waveform_scale.set_mouse_position(-1)
+        self._waveform_scale.set_mouse_x_position(-1)
         self._waveform_scale.queue_draw()
+
         self._hovering = False
+        self._update_label(self._player)
 
 
 class WaveformScale(Gtk.EventBox):
@@ -455,8 +462,15 @@ class WaveformScale(Gtk.EventBox):
     def set_position(self, position):
         self.position = position
 
-    def set_mouse_position(self, mouse_position):
+    def set_mouse_x_position(self, mouse_position):
+        """Set the horizontal position of the mouse in pixel"""
         self.mouse_position = mouse_position
+
+    def get_mouse_position(self):
+        """Return the position of the song pointed by the mouse in seconds"""
+        ratio = self.mouse_position / self.get_allocation().width
+        length = self._player.info("~#length")
+        return ratio * length
 
 
 class Config(object):
