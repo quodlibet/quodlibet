@@ -429,7 +429,7 @@ class WaveformScale(Gtk.EventBox):
         context.save()
         context.set_state(Gtk.StateFlags.NORMAL)
         bg_color = context.get_background_color(context.get_state())
-        fg_color = context.get_color(context.get_state())
+        remaining_color = context.get_color(context.get_state())
         context.restore()
 
         elapsed_color = get_fg_highlight_color(self)
@@ -440,22 +440,29 @@ class WaveformScale(Gtk.EventBox):
             elapsed_color = Gdk.RGBA()
             elapsed_color.parse(elapsed_color_config)
 
-        # Check if the user set a different hover color in the config
+        # Check if the user set a different remaining color in the config
+        remaining_color_config = CONFIG.remaining_color
+        if remaining_color_config and Gdk.RGBA().parse(remaining_color_config):
+            remaining_color = Gdk.RGBA()
+            remaining_color.parse(remaining_color_config)
+
+        # Check if the user set a hover color in the config
         hover_color_config = CONFIG.hover_color
         if hover_color_config and Gdk.RGBA().parse(hover_color_config):
             hover_color = Gdk.RGBA()
             hover_color.parse(hover_color_config)
         else:
             # Generate default hover_color by blending elapsed_color and
-            # fg_color
+            # remaining_color
             opacity = 0.4
             r = (opacity * elapsed_color.alpha * elapsed_color.red +
-                 (1 - opacity) * fg_color.alpha * fg_color.red)
+                 (1 - opacity) * remaining_color.alpha * remaining_color.red)
             g = (opacity * elapsed_color.alpha * elapsed_color.green +
-                 (1 - opacity) * fg_color.alpha * fg_color.green)
+                 (1 - opacity) * remaining_color.alpha * remaining_color.green)
             b = (opacity * elapsed_color.alpha * elapsed_color.blue +
-                 (1 - opacity) * fg_color.alpha * fg_color.blue)
-            a = opacity * elapsed_color.alpha + (1 - opacity) * fg_color.alpha
+                 (1 - opacity) * remaining_color.alpha * remaining_color.blue)
+            a = (opacity * elapsed_color.alpha +
+                 (1 - opacity) * remaining_color.alpha)
             hover_color = Gdk.RGBA(r, g, b, a)
 
         # Paint the background
@@ -468,9 +475,9 @@ class WaveformScale(Gtk.EventBox):
 
         if not self._placeholder and len(self._rms_vals) > 0:
             self.draw_waveform(cr, width, height, elapsed_color,
-                               hover_color, fg_color)
+                               hover_color, remaining_color)
         else:
-            self.draw_placeholder(cr, width, height, fg_color)
+            self.draw_placeholder(cr, width, height, remaining_color)
 
     def do_button_press_event(self, event):
         # Left mouse button
@@ -506,6 +513,7 @@ class Config(object):
 
     elapsed_color = ConfProp(_config, "elapsed_color", "")
     hover_color = ConfProp(_config, "hover_color", "")
+    remaining_color = ConfProp(_config, "remaining_color", "")
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
 
 CONFIG = Config()
@@ -555,6 +563,11 @@ class WaveformSeekBarPlugin(EventPlugin):
 
             CONFIG.hover_color = entry.get_text()
 
+        def remaining_color_changed(entry):
+            validate_color(entry)
+
+            CONFIG.remaining_color = entry.get_text()
+
         vbox = Gtk.VBox(spacing=6)
 
         def create_color(label_text, color, callback):
@@ -575,6 +588,10 @@ class WaveformSeekBarPlugin(EventPlugin):
 
         box = create_color(_("Override hover color:"), CONFIG.hover_color,
                            hover_color_changed)
+        vbox.pack_start(box, True, True, 0)
+
+        box = create_color(_("Override remaining color:"), CONFIG.remaining_color,
+                           remaining_color_changed)
         vbox.pack_start(box, True, True, 0)
 
         return vbox
