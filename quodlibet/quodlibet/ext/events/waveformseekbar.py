@@ -14,6 +14,7 @@ from math import ceil, floor
 
 from quodlibet import _, app
 from quodlibet import print_w
+from quodlibet import util
 from quodlibet.plugins import PluginConfig, IntConfProp, \
     ConfProp
 from quodlibet.plugins.events import EventPlugin
@@ -171,6 +172,7 @@ class WaveformSeekBar(Gtk.Box):
         if player.info in songs:
             # Trigger a re-computation of the waveform
             self._create_waveform(player.info, CONFIG.max_data_points)
+            self._resize_labels(player.info)
             # Only update the label if some tag value changed
             self._update_label(player)
 
@@ -178,6 +180,7 @@ class WaveformSeekBar(Gtk.Box):
         if player.info and player.info.is_file:
             # Trigger a re-computation of the waveform
             self._create_waveform(player.info, CONFIG.max_data_points)
+            self._resize_labels(player.info)
 
         self._waveform_scale.set_placeholder(True)
         self._update(player, True)
@@ -250,6 +253,20 @@ class WaveformSeekBar(Gtk.Box):
 
         self._hovering = False
         self._update_label(self._player)
+
+    def _resize_labels(self, song):
+        length = util.format_time_display(song("~#length"))
+
+        # Get the width needed to display the length of the song (the text
+        # displayed in the labels will always be shorter than that)
+        layout = self._remaining_label.get_layout()
+        layout.set_text(length, -1)
+        width, height = layout.get_pixel_size()
+
+        # Set it as the minimum width of the labels to prevent them from
+        # changing width
+        self._remaining_label.set_size_request(width, -1)
+        self._elapsed_label.set_size_request(width, -1)
 
 
 class WaveformScale(Gtk.EventBox):
