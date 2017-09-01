@@ -2,6 +2,7 @@
 # Copyright 2016 0x1777
 #        2016-17 Nick Boultbee
 #           2017 Didier Villevalois
+#           2017 Muges
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -32,6 +33,7 @@ class WaveformSeekBar(Gtk.Box):
 
         self._player = player
         self._rms_vals = []
+        self._hovering = False
 
         self._elapsed_label = TimeLabel()
         self._remaining_label = TimeLabel()
@@ -46,6 +48,10 @@ class WaveformSeekBar(Gtk.Box):
 
         self._waveform_scale.connect('size-allocate',
                                      self._update_redraw_interval)
+        self._waveform_scale.connect('motion-notify-event',
+                                     self._on_mouse_hover)
+        self._waveform_scale.connect('leave-notify-event',
+                                     self._on_mouse_leave)
 
         self._label_tracker = TimeTracker(player)
         self._label_tracker.connect('tick', self._on_tick_label, player)
@@ -222,6 +228,22 @@ class WaveformSeekBar(Gtk.Box):
             self._waveform_scale.set_placeholder(True)
             self._waveform_scale.queue_draw()
 
+    def _on_mouse_hover(self, _, event):
+        self._waveform_scale.set_mouse_position(event.x)
+
+        if self._hovering:
+            (x, y, w, h) = self._waveform_scale.compute_hover_redraw_area()
+            self._waveform_scale.queue_draw_area(x, y, w, h)
+        else:
+            self._waveform_scale.queue_draw()
+
+        self._hovering = True
+
+    def _on_mouse_leave(self, _, event):
+        self._waveform_scale.set_mouse_position(-1)
+        self._waveform_scale.queue_draw()
+        self._hovering = False
+
 
 class WaveformScale(Gtk.EventBox):
     """The waveform widget."""
@@ -238,6 +260,10 @@ class WaveformScale(Gtk.EventBox):
         self._last_drawn_position = 0
         self.override_background_color(
             Gtk.StateFlags.NORMAL, Gdk.RGBA(alpha=0))
+
+        self.mouse_position = -1
+        self._last_mouse_position = -1
+        self.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
 
     @property
     def width(self):
@@ -262,6 +288,16 @@ class WaveformScale(Gtk.EventBox):
         return length * 1000 / max(width * pixel_ratio, 1)
 
     def compute_redraw_area(self):
+        width = self.width
+        last_position_x = self._last_drawn_position * width
+        position_x = self.position * width
+        return self._compute_redraw_area_between(last_position_x, position_x)
+
+    def compute_hover_redraw_area(self):
+        return self._compute_redraw_area_between(self._last_mouse_position,
+                                                 self.mouse_position)
+
+    def _compute_redraw_area_between(self, x1, x2):
         allocation = self.get_allocation()
         width = allocation.width
         height = allocation.height
@@ -271,13 +307,12 @@ class WaveformScale(Gtk.EventBox):
         line_width = 1.0 / pixel_ratio
 
         # Compute the thinnest rectangle to redraw
-        last_position_x = self._last_drawn_position * width
-        position_x = self.position * width
-        x = max(0.0, min(last_position_x, position_x) - line_width * 5)
-        w = min(width, abs(position_x - last_position_x) + line_width * 10)
+        x = max(0.0, min(x1, x2) - line_width * 5)
+        w = min(width, abs(x2 - x1) + line_width * 10)
         return x, 0.0, w, height
 
-    def draw_waveform(self, cr, width, height, elapsed_color, remaining_color):
+    def draw_waveform(self, cr, width, height, elapsed_color, hover_color,
+                      remaining_color):
         if width == 0 or height == 0:
             return
         scale_factor = self.get_scale_factor()
@@ -296,6 +331,11 @@ class WaveformScale(Gtk.EventBox):
         cr.set_line_join(cairo.LINE_JOIN_ROUND)
 
         position_width = self.position * width * pixel_ratio
+        mouse_position = (
+            self.mouse_position if self.mouse_position >= 0
+            else position_width
+        )
+
         hw = line_width / 2.0
         # Avoiding object lookups is slightly faster
         data = self._rms_vals
@@ -314,8 +354,11 @@ class WaveformScale(Gtk.EventBox):
         for x in range(int(floor(cx * pixel_ratio)),
                        int(ceil((cx + cw) * pixel_ratio)), 1):
 
-            fg_color = (elapsed_color if x < position_width
-                        else remaining_color)
+            fg_color = hover_color
+            if x < position_width and x < mouse_position:
+                fg_color = elapsed_color
+            elif x >= position_width and x >= mouse_position:
+                fg_color = remaining_color
             cr.set_source_rgba(*list(fg_color))
 
             # Basic anti-aliasing / oversampling
@@ -330,6 +373,7 @@ class WaveformScale(Gtk.EventBox):
             cr.stroke()
 
         self._last_drawn_position = self.position
+        self._last_mouse_position = self.mouse_position
 
     def draw_placeholder(self, cr, width, height, color):
         if width == 0 or height == 0:
@@ -375,6 +419,17 @@ class WaveformScale(Gtk.EventBox):
             elapsed_color = Gdk.RGBA()
             elapsed_color.parse(elapsed_color_config)
 
+        # Generate default hover_color by blending elapsed_color and fg_color
+        opacity = 0.4
+        r = (opacity * elapsed_color.alpha * elapsed_color.red +
+             (1 - opacity) * fg_color.alpha * fg_color.red)
+        g = (opacity * elapsed_color.alpha * elapsed_color.green +
+             (1 - opacity) * fg_color.alpha * fg_color.green)
+        b = (opacity * elapsed_color.alpha * elapsed_color.blue +
+             (1 - opacity) * fg_color.alpha * fg_color.blue)
+        a = opacity * elapsed_color.alpha + (1 - opacity) * fg_color.alpha
+        hover_color = Gdk.RGBA(r, g, b, a)
+
         # Paint the background
         cr.set_source_rgba(*list(bg_color))
         cr.paint()
@@ -384,7 +439,8 @@ class WaveformScale(Gtk.EventBox):
         height = allocation.height
 
         if not self._placeholder and len(self._rms_vals) > 0:
-            self.draw_waveform(cr, width, height, elapsed_color, fg_color)
+            self.draw_waveform(cr, width, height, elapsed_color,
+                               hover_color, fg_color)
         else:
             self.draw_placeholder(cr, width, height, fg_color)
 
@@ -398,6 +454,9 @@ class WaveformScale(Gtk.EventBox):
 
     def set_position(self, position):
         self.position = position
+
+    def set_mouse_position(self, mouse_position):
+        self.mouse_position = mouse_position
 
 
 class Config(object):
