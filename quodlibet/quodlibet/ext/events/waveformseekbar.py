@@ -272,6 +272,8 @@ class WaveformScale(Gtk.EventBox):
         self._last_mouse_position = -1
         self.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
 
+        self._seeking = False
+
     @property
     def width(self):
         return self.get_allocation().width
@@ -281,6 +283,7 @@ class WaveformScale(Gtk.EventBox):
 
     def reset(self, rms_vals):
         self._rms_vals = rms_vals
+        self._seeking = False
         self.queue_draw()
 
     def compute_redraw_interval(self):
@@ -342,6 +345,9 @@ class WaveformScale(Gtk.EventBox):
             self.mouse_position if self.mouse_position >= 0
             else position_width
         )
+
+        if self._seeking:
+            position_width = mouse_position
 
         hw = line_width / 2.0
         # Avoiding object lookups is slightly faster
@@ -454,9 +460,16 @@ class WaveformScale(Gtk.EventBox):
     def do_button_press_event(self, event):
         # Left mouse button
         if event.button == 1 and self._player:
+            self._seeking = True
+            self.queue_draw()
+
+    def do_button_release_event(self, event):
+        # Left mouse button
+        if event.button == 1 and self._player:
             ratio = event.x / self.get_allocation().width
             length = self._player.info("~#length")
             self._player.seek(ratio * length * 1000)
+            self._seeking = False
             return True
 
     def set_position(self, position):
