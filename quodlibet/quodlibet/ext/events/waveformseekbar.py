@@ -255,6 +255,11 @@ class WaveformSeekBar(Gtk.Box):
         self._update_label(self._player)
 
     def _resize_labels(self, song):
+        """Resize the labels to make sure there is enough space to display the
+        length of the songs.
+
+        This prevents the waveform from changing size when the position changes
+        from 9:59 to 10:00 for example."""
         length = util.format_time_display(song("~#length"))
 
         # Get the width needed to display the length of the song (the text
