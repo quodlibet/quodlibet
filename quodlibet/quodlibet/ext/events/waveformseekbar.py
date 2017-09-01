@@ -353,37 +353,28 @@ class WaveformScale(Gtk.EventBox):
         # Avoiding object lookups is slightly faster
         data = self._rms_vals
 
-        # There can't be more than one clip rectangle, due to the draws queued
-        # But handle the other case anyway
-        rectangle_list = cr.copy_clip_rectangle_list()
-        (cx, cy, cw, ch) = rectangle_list[0]
-        if len(rectangle_list) > 1:
-            for i in range(1, len(rectangle_list), 1):
-                (ox, oy, ow, oh) = rectangle_list[i]
-                (cx, cy, cw, ch) = \
-                    (min(cx, ox), min(cy, oy), max(cw, ow), max(ch, oh))
+        # Use the clip rectangles to redraw only what is necessary
+        for (cx, cy, cw, ch) in cr.copy_clip_rectangle_list():
+            for x in range(int(floor(cx * pixel_ratio)),
+                           int(ceil((cx + cw) * pixel_ratio)), 1):
 
-        # Use that clip rectangle to redraw only what is necessary
-        for x in range(int(floor(cx * pixel_ratio)),
-                       int(ceil((cx + cw) * pixel_ratio)), 1):
+                fg_color = hover_color
+                if x < position_width and x < mouse_position:
+                    fg_color = elapsed_color
+                elif x >= position_width and x >= mouse_position:
+                    fg_color = remaining_color
+                cr.set_source_rgba(*list(fg_color))
 
-            fg_color = hover_color
-            if x < position_width and x < mouse_position:
-                fg_color = elapsed_color
-            elif x >= position_width and x >= mouse_position:
-                fg_color = remaining_color
-            cr.set_source_rgba(*list(fg_color))
+                # Basic anti-aliasing / oversampling
+                u1 = max(0, int(floor((x - hw) * ratio_width)))
+                u2 = min(int(ceil((x + hw) * ratio_width)), len(data))
+                val = (sum(data[u1:u2]) / (ratio_height * (u2 - u1))
+                       if u1 != u2 else 0.0)
 
-            # Basic anti-aliasing / oversampling
-            u1 = max(0, int(floor((x - hw) * ratio_width)))
-            u2 = min(int(ceil((x + hw) * ratio_width)), len(data))
-            val = (sum(data[u1:u2]) / (ratio_height * (u2 - u1))
-                   if u1 != u2 else 0.0)
-
-            hx = x / pixel_ratio + hw
-            cr.move_to(hx, half_height - val)
-            cr.line_to(hx, half_height + val)
-            cr.stroke()
+                hx = x / pixel_ratio + hw
+                cr.move_to(hx, half_height - val)
+                cr.line_to(hx, half_height + val)
+                cr.stroke()
 
         self._last_drawn_position = self.position
         self._last_mouse_position = self.mouse_position
@@ -426,22 +417,28 @@ class WaveformScale(Gtk.EventBox):
 
         elapsed_color = get_fg_highlight_color(self)
 
-        # Check if the user set a different color in the config
+        # Check if the user set a different elapsed color in the config
         elapsed_color_config = CONFIG.elapsed_color
         if elapsed_color_config and Gdk.RGBA().parse(elapsed_color_config):
             elapsed_color = Gdk.RGBA()
             elapsed_color.parse(elapsed_color_config)
 
-        # Generate default hover_color by blending elapsed_color and fg_color
-        opacity = 0.4
-        r = (opacity * elapsed_color.alpha * elapsed_color.red +
-             (1 - opacity) * fg_color.alpha * fg_color.red)
-        g = (opacity * elapsed_color.alpha * elapsed_color.green +
-             (1 - opacity) * fg_color.alpha * fg_color.green)
-        b = (opacity * elapsed_color.alpha * elapsed_color.blue +
-             (1 - opacity) * fg_color.alpha * fg_color.blue)
-        a = opacity * elapsed_color.alpha + (1 - opacity) * fg_color.alpha
-        hover_color = Gdk.RGBA(r, g, b, a)
+        # Check if the user set a different hover color in the config
+        hover_color_config = CONFIG.hover_color
+        if hover_color_config and Gdk.RGBA().parse(hover_color_config):
+            hover_color = Gdk.RGBA()
+            hover_color.parse(hover_color_config)
+        else:
+            # Generate default hover_color by blending elapsed_color and fg_color
+            opacity = 0.4
+            r = (opacity * elapsed_color.alpha * elapsed_color.red +
+                 (1 - opacity) * fg_color.alpha * fg_color.red)
+            g = (opacity * elapsed_color.alpha * elapsed_color.green +
+                 (1 - opacity) * fg_color.alpha * fg_color.green)
+            b = (opacity * elapsed_color.alpha * elapsed_color.blue +
+                 (1 - opacity) * fg_color.alpha * fg_color.blue)
+            a = opacity * elapsed_color.alpha + (1 - opacity) * fg_color.alpha
+            hover_color = Gdk.RGBA(r, g, b, a)
 
         # Paint the background
         cr.set_source_rgba(*list(bg_color))
@@ -490,6 +487,7 @@ class Config(object):
     _config = PluginConfig(__name__)
 
     elapsed_color = ConfProp(_config, "elapsed_color", "")
+    hover_color = ConfProp(_config, "hover_color", "")
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
 
 CONFIG = Config()
@@ -519,7 +517,7 @@ class WaveformSeekBarPlugin(EventPlugin):
         red = Gdk.RGBA()
         red.parse("#ff0000")
 
-        def changed(entry):
+        def validate_color(entry):
             text = entry.get_text()
 
             if not Gdk.RGBA().parse(text):
@@ -529,22 +527,36 @@ class WaveformSeekBarPlugin(EventPlugin):
                 # Reset text color
                 entry.override_color(Gtk.StateFlags.NORMAL, None)
 
-            CONFIG.elapsed_color = text
+        def elapsed_color_changed(entry):
+            validate_color(entry)
+
+            CONFIG.elapsed_color = entry.get_text()
+
+        def hover_color_changed(entry):
+            validate_color(entry)
+
+            CONFIG.hover_color = entry.get_text()
 
         vbox = Gtk.VBox(spacing=6)
 
-        def create_color():
+        def create_color(label_text, color, callback):
             hbox = Gtk.HBox(spacing=6)
             hbox.set_border_width(6)
-            label = Gtk.Label(label=_("Override foreground color:"))
+            label = Gtk.Label(label=label_text)
             hbox.pack_start(label, False, True, 0)
             entry = Gtk.Entry()
-            if CONFIG.elapsed_color:
-                entry.set_text(CONFIG.elapsed_color)
-            entry.connect('changed', changed)
+            if color:
+                entry.set_text(color)
+            entry.connect('changed', callback)
             hbox.pack_start(entry, True, True, 0)
             return hbox
 
-        vbox.pack_start(create_color(), True, True, 0)
+        box = create_color(_("Override foreground color:"), CONFIG.elapsed_color,
+                           elapsed_color_changed)
+        vbox.pack_start(box, True, True, 0)
+
+        box = create_color(_("Override hover color:"), CONFIG.hover_color,
+                           hover_color_changed)
+        vbox.pack_start(box, True, True, 0)
 
         return vbox
