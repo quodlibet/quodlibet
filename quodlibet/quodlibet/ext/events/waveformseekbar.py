@@ -446,7 +446,8 @@ class WaveformScale(Gtk.EventBox):
             hover_color = Gdk.RGBA()
             hover_color.parse(hover_color_config)
         else:
-            # Generate default hover_color by blending elapsed_color and fg_color
+            # Generate default hover_color by blending elapsed_color and
+            # fg_color
             opacity = 0.4
             r = (opacity * elapsed_color.alpha * elapsed_color.red +
                  (1 - opacity) * fg_color.alpha * fg_color.red)
@@ -568,8 +569,8 @@ class WaveformSeekBarPlugin(EventPlugin):
             hbox.pack_start(entry, True, True, 0)
             return hbox
 
-        box = create_color(_("Override foreground color:"), CONFIG.elapsed_color,
-                           elapsed_color_changed)
+        box = create_color(_("Override foreground color:"),
+                           CONFIG.elapsed_color, elapsed_color_changed)
         vbox.pack_start(box, True, True, 0)
 
         box = create_color(_("Override hover color:"), CONFIG.hover_color,
