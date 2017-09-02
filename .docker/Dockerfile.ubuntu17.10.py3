@@ -20,7 +20,7 @@ RUN apt-get install --no-install-recommends -y \
     python3-pytest \
     python3-pip \
     python3-setuptools \
-    python-pyparsing \
+    python3-pyparsing \
     xvfb \
     gettext \
     intltool \
