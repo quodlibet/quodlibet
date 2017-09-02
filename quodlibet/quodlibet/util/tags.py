@@ -206,7 +206,7 @@ e.g. album
 NUMERIC_TAGS = [t.name for t in _TAGS.values() if t.numeric]
 """A sequence of numeric tags"""
 
-TAG_ROLES = dict([(n, t.role) for (n, t) in _TAGS.iteritems() if t.role])
+TAG_ROLES = dict([(n, t.role) for (n, t) in _TAGS.items() if t.role])
 """A mapping from tags to their translated role description.
 e.g. conductor -> conducting
 """

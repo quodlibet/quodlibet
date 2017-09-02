@@ -1,4 +1,10 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
+# Copyright    2014-2017 Nick Boultbee
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from quodlibet import print_d
 from quodlibet.query import QueryType
 from tests import TestCase
@@ -29,7 +35,7 @@ class TMQL(TestCase):
                               "genre", "comment", "~dirname", "genre",
                               "performer", "originalartist"])
                 print_d("Reformatted={%s}" % m.pp_query.transformString(expr))
-            except ParseError, pe:
+            except ParseError as pe:
                 self.fail("{%s} died unexpectedly (%s)" % (expr, pe))
             else:
                 self.assertEquals(expected, m.search(song),

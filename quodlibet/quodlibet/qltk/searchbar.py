@@ -17,7 +17,7 @@ from quodlibet import _
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.query import QueryType
+from quodlibet.query import QueryType, Query
 from quodlibet.util import limit_songs, DeferredSignal, gdecode
 
 

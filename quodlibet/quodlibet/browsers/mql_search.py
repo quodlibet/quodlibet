@@ -9,9 +9,9 @@ import os
 
 from gi.repository import Gtk, GLib
 
-from quodlibet import const
-from quodlibet import qltk
+from quodlibet import _, get_user_dir
 from quodlibet.browsers.search import SearchBar
+from quodlibet.compat import listvalues
 
 from quodlibet.qltk import Align
 from quodlibet.qltk.completion import LibraryTagCompletion
@@ -21,7 +21,7 @@ from quodlibet.query.mql import Mql, ParseError
 from quodlibet.util.collection import Collection
 from quodlibet.util.dprint import print_d, print_w
 
-QUERIES = os.path.join(const.USERDIR, "lists", "queries")
+QUERIES = os.path.join(get_user_dir(), "lists", "queries")
 
 AGGREGATES = {
     'MB': ('~#filesize', 1024 * 1024),
@@ -43,6 +43,7 @@ class MqlBrowser(SearchBar):
 
     name = _("MQL Browser")
     accelerated_name = _("_MQL Browser")
+    keys = ["MqlSearch"]
     priority = 1
     in_menu = True
 
@@ -57,10 +58,10 @@ class MqlBrowser(SearchBar):
         self.accelerators = Gtk.AccelGroup()
 
         sbb = MqlSearchBarBox(completion=completion,
-                              validator=Mql.is_valid,
+                              validator=Mql.validator,
                               accel_group=self.accelerators)
-        sbb.connect('query-changed', self.__text_parse)
-        sbb.connect('focus-out', self.__focus)
+        sbb.connect('query-changed', self._text_parse)
+        sbb.connect('focus-out', self._focus)
         self.add_label(sbb)
         self._sb_box = sbb
         self.connect('destroy', self.__destroy)
@@ -73,21 +74,9 @@ class MqlBrowser(SearchBar):
         label = Gtk.Label(label="MQL:")
         label.set_use_underline(True)
         label.set_mnemonic_widget(sbb)
-        hbox.pack_start(label, False, True, 6)
+        hbox.pack_start(label, False, False, 6)
         hbox.pack_start(align, True, True, 0)
-        self.pack_start(hbox, False, True, 0)
-
-    def __text_parse(self, bar, text):
-        self.activate()
-
-    def __focus(self, widget, *args):
-        qltk.get_top_parent(widget).songlist.grab_focus()
-
-    def pack(self, songpane):
-        container = Gtk.VBox(spacing=6)
-        container.pack_start(self, False, True, 0)
-        container.pack_start(songpane, True, True, 0)
-        return container
+        self.pack_start(hbox, True, True, 0)
 
     def _get_songs(self):
         collection = Collection()
@@ -95,12 +84,12 @@ class MqlBrowser(SearchBar):
         text = self._get_text()
         if not text:
             print_d("empty search")
-            collection.songs = self._library.values()
+            collection.songs = listvalues(self._library)
             self._query = None
         else:
             try:
                 print_d("Building parser for \"%s\"" % text)
-                #print_d(self.mql.parse(self._text))
+                # print_d(self.mql.parse(self._text))
                 tags = SongList.star
                 print_d("Setting up MQL parser with %s" % tags)
                 self._query = mql_query = Mql(text, star=tags)
@@ -145,7 +134,7 @@ class MqlBrowser(SearchBar):
                         collection.songs.append(song)
                 print_d("Chose %d songs from library of %d."
                         % (len(collection.songs), len(self._library)))
-            except ParseError, e:
+            except ParseError as e:
                 print_w("Parse error: " + str(e))
         return collection.songs
 
