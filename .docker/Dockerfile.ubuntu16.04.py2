@@ -20,6 +20,7 @@ RUN apt-get install --no-install-recommends -y \
     python-pip \
     python-faulthandler \
     python-setuptools \
+    python-pyparsing \
     xvfb \
     gettext \
     intltool \
