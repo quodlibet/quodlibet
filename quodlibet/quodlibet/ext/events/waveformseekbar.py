@@ -364,7 +364,7 @@ class WaveformScale(Gtk.EventBox):
 
         position_width = self.position * width * pixel_ratio
         mouse_position = (
-            self.mouse_position if self.mouse_position >= 0
+            self.mouse_position * scale_factor if self.mouse_position >= 0
             else position_width
         )
 
