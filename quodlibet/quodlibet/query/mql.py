@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# Copyright 2011-12, 2014-15 Nick Boultbee
+# Copyright 2011-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -19,6 +19,7 @@ except ImportError:
     raise MissingModulePluginException("pyparsing")
 
 import re
+import sre_constants
 from quodlibet import print_d, print_w
 from quodlibet.query import _match as match, Query, QueryType
 from quodlibet.query._match import ParseError as QlParseError, False_, \
@@ -115,7 +116,7 @@ class Mql(Query):
     # Loose definition of numeric value (note: allows 1.2.3. 12:14)
     NUM_VAL = Word(nums, nums + '.:')("NUM_VAL") + Optional(UNITS)
     # TODO: support for regex escaping e.g. /\/home\/[^\/]+\/dir/
-    REGEX = Literal("/") + Regex("[^\/]*")("REGEX") + Literal("/")
+    REGEX = Literal("/") + Regex(r"[^/]*")("REGEX") + Literal("/")
     LIST_ = Suppress("[") + Optional(delimitedList(VALUE)) + Suppress("]")
 
     # Tag-related
@@ -151,11 +152,7 @@ class Mql(Query):
 
         self.string = string
         if star is None:
-            # Ugh. This feels wrong, but other models don't need to know
-            # STAR for validity, so the validator doesn't (currently) pass it
-            print_d("Using default STAR for %s" % string)
             star = SongList.star
-            #star = self.STAR
 
         if not isinstance(string, text_type):
             string = string.decode('utf-8')
@@ -260,10 +257,14 @@ class Mql(Query):
         self._limit = Mql.Limit(str(tokens.NUM_VAL), tokens.UNITS or "SONGS")
 
     def handle_equality(self, string, location, tokens):
-        matcher = Tag(tokens.REGEX, [tokens.TAG])
-        if tokens.OPERATOR == Mql.NEQ:
-            matcher = match.Neg(matcher)
-        self.push(matcher)
+        try:
+            matcher = Tag(tokens.REGEX, [tokens.TAG])
+        except sre_constants.error as e:
+            raise ParseError("Invalid Regex: %s" % e)
+        else:
+            if tokens.OPERATOR == Mql.NEQ:
+                matcher = match.Neg(matcher)
+            self.push(matcher)
 
     def handle_excluded_equality(self, string, location, tokens):
 
@@ -308,11 +309,11 @@ class Mql(Query):
 
     def handle_bare_regex(self, string, location, tokens):
         try:
-            # print_d("Handling bare regex %s" % tokens.REGEX)
             matcher = Tag(tokens.REGEX, self.star)
         except Exception:
             raise ParseError("Invalid regex: %s" % tokens.REGEX)
-        self.push(matcher)
+        else:
+            self.push(matcher)
 
     def handle_no_tag_val(self, string, location, tokens):
         try:
@@ -320,3 +321,8 @@ class Mql(Query):
         except Exception as e:
             raise ParseError("Invalid tag: %s (%r)" % (tokens.TAG, e))
         self.push(matcher)
+
+    @classmethod
+    def validator(cls, string):
+        query = cls(string)
+        return query.type == QueryType.VALID

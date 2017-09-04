@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012, 2014 Nick Boultbee
+# Copyright 2012-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -58,7 +58,7 @@ class MqlBrowser(SearchBar):
         self.accelerators = Gtk.AccelGroup()
 
         sbb = MqlSearchBarBox(completion=completion,
-                              validator=Mql.validator,
+                              query_class=Mql,
                               accel_group=self.accelerators)
         sbb.connect('query-changed', self._text_parse)
         sbb.connect('focus-out', self._focus)
@@ -88,8 +88,6 @@ class MqlBrowser(SearchBar):
             self._query = None
         else:
             try:
-                print_d("Building parser for \"%s\"" % text)
-                # print_d(self.mql.parse(self._text))
                 tags = SongList.star
                 print_d("Setting up MQL parser with %s" % tags)
                 self._query = mql_query = Mql(text, star=tags)
@@ -116,7 +114,7 @@ class MqlBrowser(SearchBar):
                             tag, mul = AGGREGATES[lim.units]
                             delta = song(tag)
                         else:
-                            # Some cardinality tings
+                            # Some cardinality stuff
                             vals = collection.list(tag)
                             new_vals = song.list(tag)
                             if not new_vals:

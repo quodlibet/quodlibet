@@ -40,7 +40,7 @@ class SearchBarBox(Gtk.HBox):
     DEFAULT_TIMEOUT = 400
 
     def __init__(self, filename=None, completion=None, accel_group=None,
-                 timeout=DEFAULT_TIMEOUT, validator=Query.validator,
+                 timeout=DEFAULT_TIMEOUT, query_class=Query,
                  star=None):
         super(SearchBarBox, self).__init__(spacing=6)
 
@@ -49,14 +49,14 @@ class SearchBarBox(Gtk.HBox):
                 quodlibet.get_user_dir(), "lists", "queries")
 
         combo = ComboBoxEntrySave(filename, count=8,
-                                  validator=validator,
+                                  validator=query_class.validator,
                                   title=_("Saved Searches"),
                                   edit_title=_(u"Edit saved searches…"))
 
         self.__deferred_changed = DeferredSignal(
             self.__filter_changed, timeout=timeout, owner=self)
 
-        self.validator = validator
+        self.query_class = query_class
         self.__combo = combo
         entry = combo.get_child()
         self.__entry = entry
@@ -103,8 +103,7 @@ class SearchBarBox(Gtk.HBox):
         self.__uninhibit()
 
     def _update_query_from(self, text):
-        # TODO: remove tight coupling to Query
-        self.query = Query(text, star=self._star)
+        self.query = self.query_class(text, star=self._star)
 
     def get_text(self):
         """Get the active text as unicode"""
@@ -112,7 +111,7 @@ class SearchBarBox(Gtk.HBox):
         return gdecode(self.__entry.get_text())
 
     def _is_parsable(self, text):
-        return text and self.validator(text) != QueryType.INVALID
+        return text and self.query_class.validator(text) != QueryType.INVALID
 
     def changed(self):
         """Triggers a filter-changed signal if the current text

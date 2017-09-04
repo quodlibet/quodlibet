@@ -147,7 +147,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         completion = LibraryTagCompletion(library)
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=completion,
-                              validator=SoundcloudQuery.validator,
+                              query_class=SoundcloudQuery,
                               accel_group=self.accelerators,
                               timeout=3000)
         self.__searchbar = search
@@ -306,7 +306,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
     def __query_changed(self, bar, text, restore=False):
         try:
-            self.__filter = SoundcloudQuery(text, self.STAR)
+            self.__filter = self.__searchbar.query
             self.library.query_with_refresh(text)
         except SoundcloudQuery.error as e:
             print_d("Couldn't parse query: %s" % e)
