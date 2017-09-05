@@ -13,7 +13,8 @@ from gi.repository import Gtk, Gdk
 from quodlibet import _, print_d, app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins.gui import UserInterfacePlugin
-from quodlibet.qltk import Icons, add_css
+from quodlibet.qltk import Icons, add_css, Button
+from quodlibet.qltk.information import Information
 
 
 class ViewLyrics(EventPlugin, UserInterfacePlugin):
@@ -41,14 +42,18 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.textview.connect('key-press-event', self.key_press_event_cb)
         add_css(self.textview, "* { padding: 6px; }")
-        self.scrolled_window.add(self.textview)
+        vbox = Gtk.VBox()
+        vbox.pack_start(self.textview, True, True, 0)
+        self._edit_button = Button("Edit Lyrics", Icons.EDIT)
+        hbox = Gtk.HBox()
+        hbox.pack_end(self._edit_button, False, False, 3)
+        vbox.pack_start(hbox, False, False, 3)
+        self.scrolled_window.add(vbox)
         self.textview.show()
 
         self.scrolled_window.show()
         self.plugin_on_song_started(app.player.info)
-
-        # We don't show the expander here because it will be shown when a song
-        # starts playing (see plugin_on_song_started).
+        self._sig = None
 
     def create_sidebar(self):
         vbox = Gtk.VBox(margin=0)
@@ -81,6 +86,16 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
                 end = self.textbuffer.get_end_iter()
                 self.textbuffer.remove_all_tags(start, end)
                 self.textbuffer.apply_tag(self._italics, start, end)
+
+            def edit(widget):
+                print_d("Launching lyrics editor for %s" % song("~filename"))
+                information = Information(app.librarian, [song._song])
+                information.get_child()._switch_to_lyrics()
+                information.show()
+
+            if self._sig:
+                self._edit_button.disconnect(self._sig)
+            self._sig = self._edit_button.connect('clicked', edit)
 
     def key_press_event_cb(self, widget, event):
         """Handles up/down "key-press-event" in the lyrics view."""

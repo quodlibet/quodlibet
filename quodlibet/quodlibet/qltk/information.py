@@ -135,6 +135,9 @@ class OneSong(qltk.Notebook):
 
         connect_destroy(library, 'changed', self.__check_changed, vbox, song)
 
+    def _switch_to_lyrics(self):
+        self.set_current_page(1)
+
     def __check_changed(self, library, songs, vbox, song):
         if song in songs:
             for c in vbox.get_children():
