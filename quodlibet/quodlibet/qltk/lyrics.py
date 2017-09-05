@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Eduardo Gonzalez, Joe Wreschnig
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -15,7 +16,8 @@ import threading
 
 from gi.repository import Gtk, GLib
 
-from quodlibet import _
+from quodlibet import _, print_d, print_w
+from quodlibet.errorreport import errorhook
 from quodlibet.formats import AudioFileError
 from quodlibet import qltk
 from quodlibet.qltk import Icons
@@ -109,37 +111,40 @@ class LyricsPane(Gtk.VBox):
                 buffer.set_text, _("No lyrics found for this song."))
             return
         else:
-            GLib.idle_add(buffer.set_text, text)
+            GLib.idle_add(buffer.set_text, text.decode('utf-8'))
             GLib.idle_add(refresh.set_sensitive, True)
 
     def __save(self, save, song, buffer, delete):
         start, end = buffer.get_bounds()
         text = buffer.get_text(start, end, True)
+        self._save_lyrics(song, text)
+        delete.set_sensitive(True)
+        save.set_sensitive(False)
 
-        # First, write back to the tags.
-        song["lyrics"] = text.decode("utf-8")
+    def _save_lyrics(self, song, text):
+        # First, try writing to the tags.
+        song["lyrics"] = (text.decode("utf-8") if isinstance(text, bytes)
+                          else text)
         try:
             song.write()
-        except AudioFileError:
-            util.print_exc()
+        except AudioFileError as e:
+            print_w("Couldn't write embedded lyrics (%s)" % e)
+            self._save_to_file(song, text)
+        else:
+            self._delete_file(song.lyric_filename)
 
-        # Then, write to file.
-        # TODO: write to file only if could not write to tags, otherwise delete
-        # the file.
+    def _save_to_file(self, song, text):
         lyricname = song.lyric_filename
         try:
-            os.makedirs(os.path.dirname(lyricname))
+            os.makedirs(os.path.dirname(lyricname), exist_ok=True)
         except EnvironmentError:
-            util.print_exc()
-            pass
-
+            errorhook()
         try:
             with open(lyricname, "w") as f:
                 f.write(text)
+            print_d("Saved lyrics to file (%s)" % lyricname)
         except EnvironmentError:
-            util.print_exc()
-        delete.set_sensitive(True)
-        save.set_sensitive(False)
+            errorhook()
 
     def __delete(self, delete, song, save):
         # First, delete from the tags.
@@ -149,16 +154,19 @@ class LyricsPane(Gtk.VBox):
         except AudioFileError:
             util.print_exc()
 
-        # Then, delete the file.
-        lyricname = song.lyric_filename
-        try:
-            os.unlink(lyricname)
-        except EnvironmentError:
-            pass
-        lyricname = os.path.dirname(lyricname)
-        try:
-            os.rmdir(lyricname)
-        except EnvironmentError:
-            pass
+        self._delete_file(song.lyric_filename)
         delete.set_sensitive(False)
         save.set_sensitive(True)
+
+    def _delete_file(self, filename):
+        try:
+            os.unlink(filename)
+            print_d("Removed lyrics file '%s'" % filename)
+        except EnvironmentError:
+            pass
+        lyric_dir = os.path.dirname(filename)
+        try:
+            os.rmdir(lyric_dir)
+            print_d("Removed lyrics directory '%s'" % lyric_dir)
+        except EnvironmentError:
+            pass
