@@ -363,10 +363,7 @@ class WaveformScale(Gtk.EventBox):
         cr.set_line_join(cairo.LINE_JOIN_ROUND)
 
         position_width = self.position * width * pixel_ratio
-        mouse_position = (
-            self.mouse_position * scale_factor if self.mouse_position >= 0
-            else position_width
-        )
+        mouse_position = self.mouse_position * scale_factor
 
         if self._seeking:
             position_width = mouse_position
@@ -380,11 +377,18 @@ class WaveformScale(Gtk.EventBox):
             for x in range(int(floor(cx * pixel_ratio)),
                            int(ceil((cx + cw) * pixel_ratio)), 1):
 
-                fg_color = hover_color
-                if x < position_width and x < mouse_position:
-                    fg_color = elapsed_color
-                elif x >= position_width and x >= mouse_position:
-                    fg_color = remaining_color
+                if mouse_position >= 0:
+                    # The mouse is hovering the seekbar
+                    fg_color = (hover_color if x < mouse_position
+                                else remaining_color)
+
+                    # Draw a line of width scale_factor at the current position
+                    if position_width - scale_factor <= x < position_width:
+                        fg_color = elapsed_color
+                else:
+                    fg_color = (elapsed_color if x < position_width
+                                else remaining_color)
+
                 cr.set_source_rgba(*list(fg_color))
 
                 # Basic anti-aliasing / oversampling
