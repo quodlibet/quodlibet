@@ -182,9 +182,14 @@ class XPaned(Paned):
 
         # lock other non-expander or expanded widgets
         widgets = self.panelocks(self.root)
-        for w in (w for w in widgets
-            if w is not widget
-                 and (not isinstance(w, Gtk.Expander) or w.get_expanded())):
+        for w in widgets:
+            if w is widget:
+                # ignore as this is the widget we're targetting to update!
+                continue
+            if isinstance(w, Gtk.Expander) and not w.get_expanded():
+                # ignore collapsed expanders
+                continue
+
             # widget already changed. use stored if available
             size = w.panelock.size
 #            print_d("%r | setting size request: %d" % (w.id, size))
