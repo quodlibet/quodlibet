@@ -20,7 +20,7 @@ from quodlibet.util.path import mkdir, xdg_get_config_home, xdg_get_cache_home
 
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
-               "gstreamer", "covers", "query", "ui"]
+               "gstreamer", "covers", "query"]
 
 
 class Application(object):

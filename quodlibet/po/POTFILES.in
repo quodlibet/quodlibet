@@ -77,6 +77,7 @@ quodlibet/ext/events/viewlyrics.py
 quodlibet/ext/events/visualisations.py
 quodlibet/ext/events/waveformseekbar.py
 quodlibet/ext/events/weblyrics.py
+quodlibet/ext/events/widgetbars.py
 quodlibet/ext/events/write_cover.py
 quodlibet/ext/gstreamer/compressor.py
 quodlibet/ext/gstreamer/crossfeed.py
@@ -132,7 +133,6 @@ quodlibet/ext/songsmenu/splitting.py
 quodlibet/ext/songsmenu/tapbpm.py
 quodlibet/ext/songsmenu/website_search.py
 quodlibet/ext/songsmenu/wikipedia.py
-quodlibet/ext/ui/widgetbars.py
 quodlibet/formats/_audio.py
 quodlibet/formats/__init__.py
 quodlibet/__init__.py
