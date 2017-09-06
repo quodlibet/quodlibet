@@ -15,6 +15,7 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins.gui import UserInterfacePlugin
 from quodlibet.qltk import Icons, add_css, Button
 from quodlibet.qltk.information import Information
+from quodlibet.util.songwrapper import SongWrapper
 
 
 class ViewLyrics(EventPlugin, UserInterfacePlugin):
@@ -73,7 +74,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         """
         lyrics = None
         if song is not None:
-            print_d("Attempting to load lyrics for %s" % song("~filename"))
+            print_d("Looking for lyrics for %s" % song("~filename"))
             lyrics = song("~lyrics")
             if lyrics:
                 self.textbuffer.set_text(lyrics)
@@ -96,6 +97,14 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
             if self._sig:
                 self._edit_button.disconnect(self._sig)
             self._sig = self._edit_button.connect('clicked', edit)
+
+    def plugin_on_changed(self, songs):
+        cur = app.player.info
+        fn = cur("~filename")
+        for s in songs:
+            if s("~filename") == fn:
+                print_d("Active song changed, reloading lyrics")
+                self.plugin_on_song_started(SongWrapper(cur))
 
     def key_press_event_cb(self, widget, event):
         """Handles up/down "key-press-event" in the lyrics view."""

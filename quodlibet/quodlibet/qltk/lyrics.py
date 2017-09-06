@@ -14,7 +14,7 @@ import threading
 
 from gi.repository import Gtk
 
-from quodlibet import _, print_d, print_w
+from quodlibet import _, print_d, print_w, app
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet.compat import quote
@@ -96,6 +96,8 @@ class LyricsPane(Gtk.VBox):
             print_w("Couldn't write embedded lyrics (%s)" % e)
             self._save_to_file(song, text)
         else:
+            print_d("Wrote embedded lyrics into %s" % song("~filename"))
+            app.librarian.emit('changed', [song])
             self._delete_file(song.lyric_filename)
 
     def _save_to_file(self, song, text):
