@@ -681,7 +681,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         main_box = Gtk.VBox()
         self.add(main_box)
         self.side_book = qltk.Notebook()
-        self.side_book.set_size_request(400, -1)
 
         self.__player = player
         # create main menubar, load/restore accelerator groups
