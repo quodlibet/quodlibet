@@ -868,13 +868,13 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         ui_elements = self.get_ui_elements()
 
         # unparent all ui elements
-        if self.__dyn_elements_box.get_children():
+        dyn_elements = self.__dyn_elements_box.get_children()
+        if dyn_elements:
             for w in ui_elements:
                 parent = w.get_parent()
                 if parent:
                     parent.remove(w)
-            self.__dyn_elements_box.remove(
-                self.__dyn_elements_box.get_children()[0])
+            self.__dyn_elements_box.remove(dyn_elements[0])
 
         # add ui elements to multipane
         print_d("adding %d widgets to multipane" % len(ui_elements))
