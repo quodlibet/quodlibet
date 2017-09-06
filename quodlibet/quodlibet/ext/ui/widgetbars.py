@@ -36,7 +36,6 @@ class WidgetBars(EventPlugin):
     PLUGIN_ID = "widgetbars"
     PLUGIN_NAME = _("WidgetBars")
     PLUGIN_DESC = _("Control plugin for WidgetBars.")
-    PLUGIN_CONFIG_SECTION = __name__
     PLUGIN_ICON = Icons.PREFERENCES_PLUGIN
 
     def enabled(self):
