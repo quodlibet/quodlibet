@@ -946,6 +946,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     @property
     def widgetbars_enabled(self):
+        """Returns True if the 'WidgetBars' plugin is currently enabled"""
         pm = PluginManager.instance
         if not pm:
             return False
