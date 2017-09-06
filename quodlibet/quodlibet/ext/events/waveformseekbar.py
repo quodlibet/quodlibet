@@ -365,9 +365,6 @@ class WaveformScale(Gtk.EventBox):
         position_width = self.position * width * pixel_ratio
         mouse_position = self.mouse_position * scale_factor
 
-        if self._seeking:
-            position_width = mouse_position
-
         hw = line_width / 2.0
         # Avoiding object lookups is slightly faster
         data = self._rms_vals
@@ -377,7 +374,11 @@ class WaveformScale(Gtk.EventBox):
             for x in range(int(floor(cx * pixel_ratio)),
                            int(ceil((cx + cw) * pixel_ratio)), 1):
 
-                if mouse_position >= 0:
+                if self._seeking and mouse_position >= 0:
+                    # The user is seeking
+                    fg_color = (elapsed_color if x < mouse_position
+                                else remaining_color)
+                elif mouse_position >= 0:
                     # The mouse is hovering the seekbar
                     fg_color = (hover_color if x < mouse_position
                                 else remaining_color)
@@ -501,6 +502,7 @@ class WaveformScale(Gtk.EventBox):
             length = self._player.info("~#length")
             self._player.seek(ratio * length * 1000)
             self._seeking = False
+            self.queue_draw()
             return True
 
     def set_position(self, position):
