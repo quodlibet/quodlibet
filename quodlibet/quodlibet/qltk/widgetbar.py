@@ -107,8 +107,7 @@ class WidgetBar(Gtk.Expander):
     def __preferences(self):
         plugins_window = PluginWindow(get_top_parent(self))
         plugins_window.show()
-        if id:
-            plugins_window.move_to(self.id)
+        plugins_window.move_to(self.id)
 
     def __expand(self, widget, prop, menu_button):
         expanded = self.get_expanded()
