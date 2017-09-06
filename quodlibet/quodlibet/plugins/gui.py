@@ -51,23 +51,21 @@ class UserInterfacePluginHandler(PluginHandler):
         self.__plugins[plugin.cls] = pl_obj = plugin.get_instance()
 
         # sidebars
-        if hasattr(pl_obj, 'create_sidebar'):
-            sidebar = pl_obj.create_sidebar()
-            app.window.hide_side_book()
-            if sidebar:
-                print_d("Enabling sidebar for %s" % plugin.cls)
-                self.__sidebars[plugin] = app.window.add_sidebar(
-                    sidebar, name=plugin.name)
-                sidebar.show_all()
+        sidebar = pl_obj.create_sidebar()
+        app.window.hide_side_book()
+        if sidebar:
+            print_d("Enabling sidebar for %s" % plugin.cls)
+            self.__sidebars[plugin] = app.window.add_sidebar(
+                sidebar, name=plugin.name)
+            sidebar.show_all()
 
         # widgetbars
-        if hasattr(pl_obj, 'create_widgetbar'):
-            widgetbar = pl_obj.create_widgetbar()
-            if widgetbar:
-                print_d("Enabling widgetbar for %s" % plugin.cls)
-                self.__widgetbars[plugin] = widgetbar
-                app.window.add_widgetbar(widgetbar)
-                widgetbar.show_all()
+        widgetbar = pl_obj.create_widgetbar()
+        if widgetbar:
+            print_d("Enabling widgetbar for %s" % plugin.cls)
+            self.__widgetbars[plugin] = widgetbar
+            app.window.add_widgetbar(widgetbar)
+            widgetbar.show_all()
 
     def plugin_disable(self, plugin):
 
