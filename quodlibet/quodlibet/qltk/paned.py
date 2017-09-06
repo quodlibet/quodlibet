@@ -254,26 +254,27 @@ class XPaned(Paned):
         # clear size requests to allow shrinking
         Gtk.HPaned.do_size_allocate(self, *args)
 
-        if not self.__updating:
+        if self.__updating:
+            return
 
-            if not self.__panelocks:
-                widgets = self.panelocks(self.root)
-                for w in widgets:
-                    if isinstance(w, Gtk.Expander) and not w.get_expanded():
-                        continue
-#                    print_d("%r | adding to panelocks, size: %d"
-#                            % (w.id, w.panelock.size))
-                    self.__panelocks.append(w)
-#                    print_d("%r | setting parent pane(s) to respect "
-#                            "handle position" % w.id)
-                    parent = self
-                    while parent:
-                        if isinstance(parent, Gtk.Paned):
-                            parent.props.position_set = True
-                        parent = parent.get_parent()
+        if not self.__panelocks:
+            widgets = self.panelocks(self.root)
+            for w in widgets:
+                if isinstance(w, Gtk.Expander) and not w.get_expanded():
+                    continue
+#                print_d("%r | adding to panelocks, size: %d"
+#                        % (w.id, w.panelock.size))
+                self.__panelocks.append(w)
+#                print_d("%r | setting parent pane(s) to respect "
+#                        "handle position" % w.id)
+                parent = self
+                while parent:
+                    if isinstance(parent, Gtk.Paned):
+                        parent.props.position_set = True
+                    parent = parent.get_parent()
 
-#                    print_d("%r | clearing size request" % w.id)
-                    w.set_size_request(-1, -1)
+#                print_d("%r | clearing size request" % w.id)
+                w.set_size_request(-1, -1)
 
     def __check_resize(self, data, *args):
 
