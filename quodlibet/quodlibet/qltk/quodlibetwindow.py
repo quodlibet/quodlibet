@@ -941,9 +941,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                 [val for key, val in self.ui_elements.items()
                     if key in extra])
 
-        print_d("%d ui elements live:" % len(self.ui_elements_ordered))
-        for w in self.ui_elements_ordered:
-            print_d("%r" % w)
+        print_d("%d ui elements live:\n%s" %
+                    (len(self.ui_elements_ordered),
+                     '\n'.join(list(
+                         map(lambda s: s[0] + ' | ' + str(s[1]),
+                             list(zip(order, self.ui_elements_ordered)))))))
 
         return self.ui_elements_ordered
 
