@@ -8,7 +8,7 @@
 from quodlibet import app
 from quodlibet import config
 from quodlibet.formats import AudioFile
-from quodlibet.plugins import PM, get_config_option
+from quodlibet.plugins import PM
 from quodlibet.util.songwrapper import SongWrapper
 from tests import init_fake_app, destroy_fake_app
 from tests.plugin import PluginTestCase
@@ -44,7 +44,7 @@ class TDuplicates(PluginTestCase):
             # Get the actual values, don't hard-code here (kinda)
             cfg_name = getattr(self.mod.Duplicates, "_CFG_%s" % name)
             config.set(PM.CONFIG_SECTION,
-                       get_config_option(self.kind, cfg_name),
+                       self.kind._get_config_option(cfg_name),
                        True)
 
     # TODO: proper logic tests...
