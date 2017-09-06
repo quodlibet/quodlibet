@@ -881,16 +881,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.__multipaned.set_widgets(ui_elements, [(False, False)])
 
         # ensure initial panelocks
+        def lockable(widget):
+            return hasattr(widget, 'panelock') and \
+                not (isinstance(w, Gtk.Expander) and not w.get_expanded())
+
         for w in ui_elements:
-            if hasattr(w, 'panelock') and not (isinstance(w, Gtk.Expander)
-                                               and not w.get_expanded()):
-                print_d("%r | setting panelock size: %d" %
-                            (w.id, w.panelock.size))
-                if w.panelock.orientation == Gtk.Orientation.VERTICAL:
-                    w.set_size_request(-1, w.panelock.size)
-                else:
-                    w.set_size_request(w.panelock.size, -1)
-                w.get_parent().queue_resize()
+            if not lockable(w):
+                continue
+            print_d("%r | setting panelock size: %d" % (w.id, w.panelock.size))
+            if w.panelock.orientation == Gtk.Orientation.VERTICAL:
+                w.set_size_request(-1, w.panelock.size)
+            else:
+                w.set_size_request(w.panelock.size, -1)
+            w.get_parent().queue_resize()
 
         # expand browser only, implicitly meaning any pane in which it nests
         w = self.ui_elements['main']
