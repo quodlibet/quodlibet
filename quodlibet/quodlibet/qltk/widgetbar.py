@@ -21,6 +21,22 @@ from gi.repository import Gtk
 
 
 class WidgetBar(Gtk.Expander):
+    """A horizontally scrollable collapsible container intended for use by
+    feature rich plugins requiring horizontal segments of space in the main UI.
+
+    This container comprises 'box_left|box|box_right' accessible widget
+    sections, with the center 'box' widget scrollable. It also features with a
+    close button, and a preferences menu intended to be extended/overridden.
+
+    These widgets are compatible with the main UI's 'dynamic elements'
+    container, a MultiXVPaned. Developers should implement their
+    UserInterfacePlugins overriding 'create_widgetbar' to return a (populated!)
+    WidgetBar instance. Control of its position in the UI is currently only
+    configurable via the 'WidgetBars' plugin dialog (or the
+    '[plugins] widgetbars_pane_order' .config option
+
+    TODO: generalise to allow better re-orientation of sections.
+    """
 
     def __init__(self, id):
         super(WidgetBar, self).__init__(spacing=1)
