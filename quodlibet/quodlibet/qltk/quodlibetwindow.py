@@ -766,25 +766,25 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             player, self.qexpander.model, self.songlist.model)
 
         # ui elements set
-        self.uielements = {}
+        self.ui_elements = {}
 
         top_bar = TopBar('playbar', self, player, library)
         self.top_bar = top_bar
-        self.uielements['playbar'] = top_bar
+        self.ui_elements['playbar'] = top_bar
 
         # nested paneds supporting config read/write and expander widget bars
         self.__multipaned = MultiXVPaned()
 
         # box for 'dynamic' paneds
-        self.__dynelements_box = Align()
-        main_box.pack_start(self.__dynelements_box, True, True, 4)
+        self.__dyn_elements_box = Align()
+        main_box.pack_start(self.__dyn_elements_box, True, True, 4)
 
         # browser / sidebar
-        self.__browserbox = Gtk.VBox()
-        self.__browserpaned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
-        self.__browserpaned.pack1(self.__browserbox, resize=True)
+        self.__browser_box = Gtk.VBox()
+        self.__browser_paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
+        self.__browser_paned.pack1(self.__browser_box, resize=True)
         # pack2 when the first sidebar plugin is set up
-        self.uielements['main'] = self.__browserpaned
+        self.ui_elements['main'] = self.__browser_paned
 
         play_order = PlayOrderWidget(self.songlist.model, player)
         statusbox = StatusBarBox(play_order, self.qexpander)
@@ -865,23 +865,23 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def update_ui(self):
 
-        uielements = self.get_uielements()
+        ui_elements = self.get_ui_elements()
 
         # unparent all ui elements
-        if self.__dynelements_box.get_children():
-            for w in uielements:
+        if self.__dyn_elements_box.get_children():
+            for w in ui_elements:
                 parent = w.get_parent()
                 if parent:
                     parent.remove(w)
-            self.__dynelements_box.remove(
-                self.__dynelements_box.get_children()[0])
+            self.__dyn_elements_box.remove(
+                self.__dyn_elements_box.get_children()[0])
 
         # add ui elements to multipane
-        print_d("adding %d widgets to multipane" % len(uielements))
-        self.__multipaned.set_widgets(uielements, [(False, False)])
+        print_d("adding %d widgets to multipane" % len(ui_elements))
+        self.__multipaned.set_widgets(ui_elements, [(False, False)])
 
         # ensure initial panelocks
-        for w in uielements:
+        for w in ui_elements:
             if hasattr(w, 'panelock') and not (isinstance(w, Gtk.Expander)
                                                and not w.get_expanded()):
                 print_d("%r | setting panelock size: %d" %
@@ -893,7 +893,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                 w.get_parent().queue_resize()
 
         # expand browser only, implicitly meaning any pane in which it nests
-        w = self.uielements['main']
+        w = self.ui_elements['main']
         while w.get_parent():
             p = w.get_parent()
             if isinstance(p, Gtk.Paned):
@@ -905,11 +905,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                     p.pack2(w, True, False)
             w = p
 
-        self.__dynelements_box.add(self.__multipaned.get_paned())
+        self.__dyn_elements_box.add(self.__multipaned.get_paned())
 
         self.show_all()
 
-    def get_uielements(self):
+    def get_ui_elements(self):
 
         order = config.getstringlist('memory', 'pane_order') # default only
 
@@ -924,25 +924,25 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         order = [s for s, _ in groupby(
                     sorted(order, key=lambda s: order.index(s)))]
 
-        self.uielements_ordered = \
-            [self.uielements[key] for key in order
-                if key in self.uielements.keys()]
+        self.ui_elements_ordered = \
+            [self.ui_elements[key] for key in order
+                if key in self.ui_elements.keys()]
 
         if widgetbars:
             # keep 'missing'
-            extra = [key for key in self.uielements.keys()
+            extra = [key for key in self.ui_elements.keys()
                     if key not in order]
             order.extend(extra)
 
-            self.uielements_ordered.extend(
-                [val for key, val in self.uielements.items()
+            self.ui_elements_ordered.extend(
+                [val for key, val in self.ui_elements.items()
                     if key in extra])
 
-        print_d("%d ui elements live:" % len(self.uielements_ordered))
-        for w in self.uielements_ordered:
+        print_d("%d ui elements live:" % len(self.ui_elements_ordered))
+        for w in self.ui_elements_ordered:
             print_d("%r" % w)
 
-        return self.uielements_ordered
+        return self.ui_elements_ordered
 
     @property
     def widgetbars_enabled(self):
@@ -971,12 +971,12 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.side_book.remove_page(self.side_book.page_num(widget))
         if self.side_book_empty:
             print_d("Hiding sidebar")
-            self.__browserpaned.remove(self.__browserpaned.get_children()[1])
+            self.__browser_paned.remove(self.__browser_paned.get_children()[1])
 
     def add_sidebar_to_layout(self, widget):
         print_d("Recreating sidebar")
         align = Align(widget, top=6, bottom=3)
-        self.__browserpaned.pack2(align, shrink=True)
+        self.__browser_paned.pack2(align, shrink=True)
         align.show_all()
 
     @property
@@ -986,18 +986,18 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
     def add_widgetbar(self, widgetbar):
 
         # check pool
-        if widgetbar.id in self.uielements.keys():
-            del self.uielements[widgetbar.id]
+        if widgetbar.id in self.ui_elements.keys():
+            del self.ui_elements[widgetbar.id]
 
         # add new
-        self.uielements[widgetbar.id] = widgetbar
+        self.ui_elements[widgetbar.id] = widgetbar
         self.update_ui()
 
         return widgetbar
 
     def remove_widgetbar(self, id):
-        if id in self.uielements.keys():
-            del self.uielements[id]
+        if id in self.ui_elements.keys():
+            del self.ui_elements[id]
             self.update_ui()
             return True
         return False
@@ -1400,7 +1400,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.reset_replaygain()
-        self.__browserbox.pack_start(container, True, True, 3)
+        self.__browser_box.pack_start(container, True, True, 3)
         container.show()
 
         self._filter_menu.set_browser(self.browser)
