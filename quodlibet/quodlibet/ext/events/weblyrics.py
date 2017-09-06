@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
 #           2015 Joschua Gandert
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -9,11 +10,12 @@
 import threading
 from xml.dom import minidom
 
-from quodlibet import _
+from quodlibet import _, print_d
+from quodlibet.plugins.gui import UserInterfacePlugin
 from quodlibet.util import gi_require_versions, is_windows, is_osx
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import (PluginImportException, PluginConfig, ConfProp,
-    BoolConfProp, IntConfProp, FloatConfProp, PluginNotSupportedError)
+    BoolConfProp, FloatConfProp, PluginNotSupportedError)
 
 try:
     gi_require_versions("WebKit2", ["4.0", "3.0"])
@@ -24,10 +26,9 @@ except ValueError as e:
 
 from gi.repository import WebKit2, Gtk, GLib
 
-from quodlibet import app, qltk
+from quodlibet import qltk
 from quodlibet.util import escape, cached_property, connect_obj
-from quodlibet.qltk import Icons
-from quodlibet.qltk.window import Window
+from quodlibet.qltk import Icons, Align
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.pattern import URLFromPattern
 from quodlibet.compat import quote, queue
@@ -133,28 +134,22 @@ class LyricsWikiaSearchThread(threading.Thread):
             self.__idle(song, cb, result)
 
 
-class LyricsWebViewWindow(Window):
+class LyricsWebView(Gtk.ScrolledWindow):
 
     def __init__(self, conf):
-        super(LyricsWebViewWindow, self).__init__(dialog=False)
-        self.set_transient_for(app.window)
-
+        print_d("Creating Lyrics web view")
+        super(LyricsWebView, self).__init__()
         self.conf = conf
-        self.resize(conf.width, conf.height)
-        self.move(conf.x, conf.y)
 
         self._thread = LyricsWikiaSearchThread()
         self.connect("destroy", lambda *x: self._thread.stop())
-
-        self._scrolled_window = Gtk.ScrolledWindow()
-        self.add(self._scrolled_window)
 
         self.current_song = None
         self._reload_web_view()
 
     def _reload_web_view(self, web_view=None):
         if web_view is not None:
-            self._scrolled_window.remove(web_view)
+            self.remove(web_view)
 
         self._view = view = WebKit2.WebView()
         self.set_zoom_level(self.conf.zoom_level)
@@ -168,10 +163,9 @@ class LyricsWebViewWindow(Window):
         settings.set_property("user-agent", USER_AGENT)
         settings.set_media_playback_requires_user_gesture(True)
 
-        def scroll_tp_lyrics(view, load_event):
+        def scroll_to_lyrics(view, load_event):
             if load_event != WebKit2.LoadEvent.COMMITTED:
                 return
-
             view.run_javascript("""
                 document.addEventListener('DOMContentLoaded', function() {
                     var box = document.getElementsByClassName('lyricbox')[0];
@@ -179,10 +173,10 @@ class LyricsWebViewWindow(Window):
                 }, false);
             """, None, None, None)
 
-        view.connect('load-changed', scroll_tp_lyrics)
+        view.connect('load-changed', scroll_to_lyrics)
 
-        self._scrolled_window.add(view)
-        self._scrolled_window.show_all()
+        self.add(view)
+        self.show_all()
 
         if self.current_song is not None:
             self.set_song(self.current_song)
@@ -197,7 +191,6 @@ class LyricsWebViewWindow(Window):
         if song is None:
             message = _("No active song")
             self._set_html(message)
-            self._set_title(message)
             return
 
         self._thread.search_song(song, self._callback)
@@ -217,13 +210,8 @@ class LyricsWebViewWindow(Window):
                 self._view.load_uri(url)
             else:
                 self._set_html(message, song("~artist~title"))
-            self._set_title(message)
         else:
             self._view.load_uri(page)
-            self._set_title(song("title"))
-
-    def _set_title(self, message):
-        self.set_title(_("Lyrics:") + " " + message)
 
 
 def get_config(prefix):
@@ -236,10 +224,6 @@ def get_config(prefix):
         alternate_search_enabled = BoolConfProp(plugin_conf,
             "alternate_search_enabled", True)
         zoom_level = FloatConfProp(plugin_conf, "zoom_level", 1.4)
-        width = IntConfProp(plugin_conf, "width", 500)
-        height = IntConfProp(plugin_conf, "height", 500)
-        x = IntConfProp(plugin_conf, "x", 0)
-        y = IntConfProp(plugin_conf, "y", 0)
 
     return LyricsWindowConfig()
 
@@ -341,48 +325,40 @@ class LyricsWindowPrefs(Gtk.VBox):
         self.pack_start(frame, False, True, 0)
 
 
-class LyricsWindow(EventPlugin):
-    PLUGIN_ID = 'lyricswindow'
-    PLUGIN_NAME = _('Lyrics Window')
-    PLUGIN_DESC = _("Shows a window containing lyrics of the playing song.")
+class WebLyrics(EventPlugin, UserInterfacePlugin):
+    PLUGIN_ID = 'WebLyrics'
+    CONFIG_SECTION = "lyricswindow"
+    PLUGIN_NAME = _('Web Lyrics')
+    PLUGIN_DESC = _("Shows a sidebar containing online lyrics "
+                    "of the playing song.")
     PLUGIN_ICON = Icons.APPLICATION_INTERNET
 
-    _window = None
+    _pane = None
 
     def _destroy(self, *args):
-        self._window = None
+        self._pane = None
 
     def enabled(self):
-        if self._window is None:
-            self._open_webview_window()
-
-    def disabled(self):
-        if self._window is not None:
-            self._window.close()
+        if self._pane is None:
+            self._pane = self._create_sw()
 
     @cached_property
     def Conf(self):
-        return get_config(self.PLUGIN_ID)
+        return get_config(self.CONFIG_SECTION)
 
     def PluginPreferences(self, parent):
         return LyricsWindowPrefs(self)
 
-    def _save_window_size_and_position(self, *args):
-        window = self._window
-        if window is not None:
-            conf = self.Conf
-            conf.width, conf.height = window.get_size()
-            conf.x, conf.y = window.get_position()
+    def _create_sw(self):
+        sw = LyricsWebView(self.Conf)
+        sw.show()
+        sw.connect("destroy", self._destroy)
+        return sw
 
-    def _open_webview_window(self):
-        window = LyricsWebViewWindow(self.Conf)
-        window.show()
-        window.connect("destroy", self._destroy)
-        window.connect("configure-event", self._save_window_size_and_position)
-        self._window = window
-        return window
+    def create_sidebar(self):
+        return Align(self._pane)
 
     def plugin_on_song_started(self, song):
-        window = self._window
-        if window is not None:
-            window.set_song(song)
+        pane = self._pane
+        if pane is not None:
+            pane.set_song(song)
