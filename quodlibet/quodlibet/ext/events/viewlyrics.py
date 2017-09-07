@@ -82,11 +82,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
                 self.textview.show()
             else:
                 title = _("No lyrics found for\n %s") % song("~basename")
-                self.textbuffer.set_text(title)
-                start = self.textbuffer.get_start_iter()
-                end = self.textbuffer.get_end_iter()
-                self.textbuffer.remove_all_tags(start, end)
-                self.textbuffer.apply_tag(self._italics, start, end)
+                self._set_italicised(title)
 
             def edit(widget):
                 print_d("Launching lyrics editor for %s" % song("~filename"))
@@ -98,13 +94,23 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
                 self._edit_button.disconnect(self._sig)
             self._sig = self._edit_button.connect('clicked', edit)
 
+    def _set_italicised(self, title):
+        self.textbuffer.set_text(title)
+        start = self.textbuffer.get_start_iter()
+        end = self.textbuffer.get_end_iter()
+        self.textbuffer.remove_all_tags(start, end)
+        self.textbuffer.apply_tag(self._italics, start, end)
+
     def plugin_on_changed(self, songs):
         cur = app.player.info
-        fn = cur("~filename")
-        for s in songs:
-            if s("~filename") == fn:
-                print_d("Active song changed, reloading lyrics")
-                self.plugin_on_song_started(SongWrapper(cur))
+        if cur:
+            fn = cur("~filename")
+            for s in songs:
+                if s("~filename") == fn:
+                    print_d("Active song changed, reloading lyrics")
+                    self.plugin_on_song_started(SongWrapper(cur))
+        else:
+            self._set_italicised(_("No active song"))
 
     def key_press_event_cb(self, widget, event):
         """Handles up/down "key-press-event" in the lyrics view."""
