@@ -280,9 +280,22 @@ def temp_filename(*args, **kwargs):
             raise
 
 
-def relatively_close(x, y, tolerance=0.01):
-    """Returns True if x is within tolerance of y, else returns False"""
-    return abs(x - y) <= tolerance * max(abs(x), abs(y))
+def relatively_close_test(x, y, tolerance=0.01):
+    """Returns a tuple (success, reason), where 'success' is True if
+       :param x: is within the specificed % :param tolerance: of
+       :param y:, else False, and in this event 'reason' is the reason
+       for the failure"""
+
+    success = abs(x - y) <= tolerance * max(abs(x), abs(y))
+    reason = ""
+    if not success:
+        reason = \
+            str("compared %f to %f, failed as their %0.2f%% difference is "
+                "greater than the %0.2f%% tolerance" %
+                (x, y, 100 * float(abs(x - y)) / max(abs(x), abs(y)),
+                 100 * tolerance))
+
+    return success, reason
 
 
 def get_temp_copy(path):

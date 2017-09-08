@@ -12,7 +12,7 @@ from quodlibet.qltk.paned import RPaned, RVPaned, RHPaned, ConfigRVPaned, \
 from quodlibet import config
 
 from . import TestCase
-from .helper import visible, relatively_close
+from .helper import visible, relatively_close_test
 
 
 class TRPaned(object):
@@ -192,12 +192,15 @@ class TMultiPaned(object):
                 self.failUnlessAlmostEqual(
                     paneds[2].get_relative(), 1.0 / 2.0, 2)
             else:
-                self.failUnless(
-                    relatively_close(paneds[0].get_position(), size / 4, 0.02))
-                self.failUnless(
-                    relatively_close(paneds[1].get_position(), size / 4, 0.02))
-                self.failUnless(
-                    relatively_close(paneds[2].get_position(), size / 4, 0.02))
+                res, msg = relatively_close_test(
+                               paneds[0].get_position(), size / 4, 0.02)
+                self.failUnless(res, msg)
+                res, msg = relatively_close_test(
+                               paneds[1].get_position(), size / 4, 0.02)
+                self.failUnless(res, msg)
+                res, msg = relatively_close_test(
+                               paneds[2].get_position(), size / 4, 0.02)
+                self.failUnless(res, msg)
 
     def test_change_orientation(self):
         p = self.Kind()
@@ -296,10 +299,11 @@ class TMultiXVPaned(TestCase, TMultiPaned):
             for w in [w for w in exps if w is not exp]:
                 w.get_parent().update(w)
 
-            self.failUnless(relatively_close(
-                exp.get_allocation().height,
-                p.get_paned().get_allocation().height - 2 *
-                (title_size + 5 + handle_size)))
+            res, msg = relatively_close_test(
+                           exp.get_allocation().height,
+                           p.get_paned().get_allocation().height - 2 *
+                           (title_size + 5 + handle_size))
+            self.failUnless(res, msg)
 
         # 4 widgets, 2nd expandable
         p = self.Kind()
@@ -319,10 +323,11 @@ class TMultiXVPaned(TestCase, TMultiPaned):
             for w in [w for w in exps if w is not exp]:
                 w.get_parent().update(w)
 
-            self.failUnless(relatively_close(
-                exp.get_allocation().height,
-                p.get_paned().get_allocation().height - 3 *
-                (title_size + 5 + handle_size)))
+            res, msg = relatively_close_test(
+                           exp.get_allocation().height,
+                           p.get_paned().get_allocation().height - 3 *
+                           (title_size + 5 + handle_size))
+            self.failUnless(res, msg)
 
 
 class TConfigMultiRPaned(object):
