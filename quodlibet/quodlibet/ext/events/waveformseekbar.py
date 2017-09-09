@@ -382,10 +382,6 @@ class WaveformScale(Gtk.EventBox):
                     # The mouse is hovering the seekbar
                     fg_color = (hover_color if x < mouse_position
                                 else remaining_color)
-
-                    # Draw a line of width scale_factor at the current position
-                    if position_width - scale_factor <= x < position_width:
-                        fg_color = elapsed_color
                 else:
                     fg_color = (elapsed_color if x < position_width
                                 else remaining_color)
