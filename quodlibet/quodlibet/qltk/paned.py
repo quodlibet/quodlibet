@@ -17,6 +17,7 @@ class Paned(Gtk.Paned):
 
     def __init__(self, *args, **kwargs):
         super(Paned, self).__init__(*args, **kwargs)
+        self.__handle_size = 5
         self.ensure_wide_handle()
         self.root = self
 
@@ -26,9 +27,12 @@ class Paned(Gtk.Paned):
             add_css(self, """
                 paned separator {
                     border-width: 0;
-                    min-height: 5px;
-                    min-width: 5px;
+                    min-height: """ + str(self.__handle_size) + """px;
+                    min-width: """ + str(self.__handle_size) + """px;
                     background-image: none;
+                }
+                paned {
+                    padding: 0px;
                 }
             """)
             return
@@ -38,6 +42,7 @@ class Paned(Gtk.Paned):
             self.props.wide_handle = True
             add_css(self, """
                 GtkPaned {
+                    -GtkPaned-handle-size: """ + str(self.__handle_size) + """;
                     border-width: 0;
                     background: none;
                 }
@@ -47,12 +52,16 @@ class Paned(Gtk.Paned):
         # gtk 3.14
         add_css(self, """
             GtkPaned {
-                -GtkPaned-handle-size: 6;
+                -GtkPaned-handle-size: """ + str(self.__handle_size) + """;
                 background-image: none;
                 margin: 0;
                 border-width: 0;
             }
         """)
+
+    @property
+    def handle_size(self):
+        return self.__handle_size
 
 
 class RPaned(Paned):
@@ -140,6 +149,119 @@ class XPaned(Paned):
         self.__panelocks = []
         self.__updating = False
         self.__resizing = False
+
+        self.__allocated = 0
+
+    def add1(self, *args):
+        super(XPaned, self).add1(*args)
+        XPaned.__expander_widget(self, self.get_child1())
+
+    def add2(self, *args):
+        super(XPaned, self).add2(*args)
+        XPaned.__expander_widget(self, self.get_child2())
+
+    def pack1(self, *args):
+        super(XPaned, self).pack1(*args)
+        XPaned.__expander_widget(self, self.get_child1())
+
+    def pack2(self, *args):
+        super(XPaned, self).pack2(*args)
+        XPaned.__expander_widget(self, self.get_child2())
+
+    def __expander_widget_allocated(self, widget, allocation):
+        XPaned.__expander_widget(self, widget, True)
+
+    @classmethod
+    def __expander_widget(cls, xpaned, widget, allocated=False):
+        """Test if a widget is an Expander instance and if so, ensure its
+        title size is set"""
+
+        if not isinstance(widget, Gtk.Expander):
+            return
+
+        if xpaned.__allocated >= 2:
+            return
+
+        # ensure we 'know' the expander's title size by forcing it in
+        # the gentlist way possible..
+        # dictate margins and padding, force expander arrow size but allow
+        # its label natural sizing
+
+        # this is necessary for testing, where we want to calculate the
+        # position of where we expect the paned's handle to be positioned.
+        # elsewhere, it is probably better/safer to utilise paneds
+        # 'min|max-position' properties to set handle positions
+
+        if not allocated:
+            # call this function again when allocated
+            widget.connect('size-allocate', xpaned.__expander_widget_allocated)
+
+        # setup widget
+        widget.set_property('margin', 0)
+
+        __expander_size = 10
+        __expander_spacing = 2
+        __expander_padding = 2
+
+        title_size = __expander_size + 2 * __expander_spacing
+
+        __label_size = 0
+        __label_padding = 0
+        label = widget.get_label_widget()
+        if label:
+            req = label.get_requisition()
+            if xpaned.ORIENTATION == Gtk.Orientation.VERTICAL:
+                __label_size += req.height
+            else:
+                __label_size += req.width
+
+            if title_size > __label_size:
+                # pad label until bigger
+                __label_padding = round((title_size - req.height) / 2.0)
+
+            __label_padding += 2
+            title_size = __label_size + 2 * __label_padding
+
+        title_size += 2 * __expander_padding
+
+        # version specific
+        if gtk_version >= (3, 19):
+            add_css(widget, """
+                expander label, expander arrow {
+                    min-height: """ + str(max(__expander_size,
+                                              __label_size)) + """px;
+                    min-width: """ + str(max(__expander_size,
+                                             __label_size)) + """px;
+                }
+                expander arrow {
+                    padding: """ + str(__expander_spacing) + """px;
+                }""")
+        else:
+            add_css(widget, """
+                GtkExpander, expander {
+                    -GtkExpander-expander-size: """ +
+                        str(__expander_size) + "; }")
+
+        # common
+        add_css(widget, """
+            expander, GtkExpander {
+                border-width: 0;
+                background-image: none;
+                margin: 0px;
+                padding: """ + str(__expander_padding) + """px;
+            }
+            expander label,
+            GtkExpander .label {
+                border-width: 0;
+                background-image: none;
+                margin: 0px;
+                padding: """ + str(__label_padding) + """px;
+            }""")
+
+        widget.title_size = title_size
+
+        if allocated:
+            xpaned.__allocated += 1
 
     def __button_release(self, *data):
         for w in self.__panelocks:
@@ -231,18 +353,11 @@ class XPaned(Paned):
                     parent.props.position_set = False
                 parent = parent.get_parent()
 
-            title_size = widget.style_get_property('expander-size') +\
-                         widget.style_get_property('expander-spacing')
-            if widget.get_label_widget():
-                alloc = widget.get_label_widget().get_allocation()
-                if self.ORIENTATION == Gtk.Orientation.VERTICAL:
-                    title_size = max(title_size, alloc.height)
-                else:
-                    title_size = max(title_size, alloc.width)
+            title_size = widget.title_size
             if self.ORIENTATION == Gtk.Orientation.VERTICAL:
-                widget.set_size_request(-1, title_size + 5)
+                widget.set_size_request(-1, title_size)
             else:
-                widget.set_size_request(title_size + 5, -1)
+                widget.set_size_request(title_size, -1)
 
         p = widget
         while p is not self.root:
@@ -282,25 +397,31 @@ class XPaned(Paned):
         if self.__resizing:
             return
 
-        def handle_cb(pane, param, widget):
-            if isinstance(widget, Gtk.Expander):
-                title_size = widget.style_get_property('expander-size') +\
-                             widget.style_get_property('expander-spacing')
-                if widget.get_label_widget():
-                    alloc = widget.get_label_widget().get_allocation()
-                    if pane.ORIENTATION == Gtk.Orientation.VERTICAL:
-                        title_size = max(title_size, alloc.height)
-                    else:
-                        title_size = max(title_size, alloc.width)
+        def handle_cb(xpaned, param, widget):
+            if not isinstance(widget, Gtk.Expander):
+                return True
 
-                if widget is pane.get_child1():
-                    pane.set_position(title_size + 5)
+#            from quodlibet.util import print_d
+#            print_d("gtk: %s, exp_size: %d, req_size: %d, "
+#                    "min-pos: %d, max-pos: %d"
+#                     % ('.'.join(list(map(lambda x: str(x), gtk_version))),
+#                        widget.title_size, widget.get_requisition().height,
+#                        xpaned.get_property('min-position'),
+#                        xpaned.get_property('max-position')))
+
+            # note that use of 'min/max-position here is safer, but
+            # we want to know if those don't match our expected values
+            # calculated based on title and handle sizes
+            if widget is xpaned.get_child1():
+                xpaned.set_position(widget.title_size)
+            else:
+                alloc = xpaned.get_allocation()
+                if xpaned.ORIENTATION == Gtk.Orientation.VERTICAL:
+                    xpaned.set_position(alloc.height - widget.title_size -
+                                        xpaned.handle_size)
                 else:
-                    alloc = pane.get_allocation()
-                    if pane.ORIENTATION == Gtk.Orientation.VERTICAL:
-                        pane.set_position(alloc.height - title_size - 5)
-                    else:
-                        pane.set_position(alloc.width - title_size - 5)
+                    xpaned.set_position(alloc.width - widget.title_size -
+                                        xpaned.handle_size)
             return True
 
         # resize for collapsed children
@@ -331,7 +452,6 @@ class XPaned(Paned):
                         return
                 self.__disablenotify_id = \
                     self.connect("notify", handle_cb, widget)
-
         widget = self.get_child2()
         if isinstance(widget, Gtk.Expander):
             if widget.get_expanded() or \
@@ -431,24 +551,41 @@ class MultiPaned(object):
     def make_pane_sizes_equal(self):
         paneds = self.get_paneds()
 
+        # paneds array packs root (biggest) first, to the most/last nested
+
         # the relative paned widths must be equal to the reciprocal (1/i) of
         # their respective indices (i) in reverse order (from right to left)
         # to make the pane widths equal. (i + 2) because +1 from changing
         # from zero- to one-indexed, and +1 for compensating that the last
         # paned contains two panes
+
+        # the paned handle sits below the handle position (px) and
+        # consideration of its size is needed, else the bottom pane in the
+        # last nest will be wrong (too small by the size of the handle!)
+
+        # inner nest -> outer outer nest iteration
+        proportions = []
         for i, paned in enumerate(reversed(paneds)):
-            proportion = min(1.0 / (i + 2), 0.5)
-            if isinstance(paned, RPaned):
-                # relative
-                paned.set_relative(proportion)
+            proportions = [min(1.0 / (i + 2), 0.5)] + proportions
+
+        # outer nest -> inner nest iteration
+        for i, paned in enumerate(paneds):
+            size = 0
+            allocation = paned.get_allocation()
+            if paned.ORIENTATION == Gtk.Orientation.HORIZONTAL:
+                size = allocation.width
             else:
-                # absolute
-                if paned.ORIENTATION == Gtk.Orientation.HORIZONTAL:
-                    paned.set_position(
-                        paned.get_allocation().width * proportion)
-                else:
-                    paned.set_position(
-                        paned.get_allocation().height * proportion)
+                size = allocation.height
+
+            # adjustments
+            size = size - ((len(paneds) - i) * paned.handle_size)
+            # position
+            position = round(size * proportions[i])
+            paned.set_position(position)
+
+            # important, else the next nested allocation will be wrong
+            # simply iterating nests in reverse and hoping, is no good
+            paned.check_resize()
 
     def change_orientation(self, horizontal):
         """Change the orientation of the paned."""

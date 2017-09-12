@@ -6,7 +6,7 @@
 
 from gi.repository import Gtk
 
-from quodlibet.qltk.paned import RPaned, RVPaned, RHPaned, ConfigRVPaned, \
+from quodlibet.qltk.paned import RVPaned, RHPaned, ConfigRVPaned, \
         MultiRVPaned, MultiRHPaned, ConfigMultiRVPaned, ConfigMultiRHPaned, \
         XHPaned, XVPaned, MultiXHPaned, MultiXVPaned
 from quodlibet import config
@@ -92,14 +92,13 @@ class TXPaned(object):
         p.add2(exp2)
 
         with visible(p, 300, 200):
-            title_size = exp1.style_get_property('expander-size') +\
-                         exp1.style_get_property('expander-spacing')
 
             exp1.set_expanded(False)
             p.update(exp1)
 
             handle_position = p.get_position()
-            self.failUnlessAlmostEqual(handle_position, title_size + 5)
+            title_size = exp1.title_size
+            self.failUnlessAlmostEqual(handle_position, title_size)
 
 
 class XHPaned(TestCase, TXPaned):
@@ -174,33 +173,36 @@ class TMultiPaned(object):
         self.assertIs(sws[2], sub_paned.get_child2())
 
     def test_make_pane_sizes_equal(self):
-        p = self.Kind()
+        mp = self.Kind()
         sws = [Gtk.ScrolledWindow() for _ in range(4)]
-        p.set_widgets(sws)
-
+        mp.set_widgets(sws)
+        paneds = mp.get_paneds()
+        root = mp.get_paned()
+        handle_size = root.handle_size
+        orientation = root.ORIENTATION
         size = 500
-        with visible(p.get_paned(), size, size):
-            p.make_pane_sizes_equal()
+        with visible(root, size, size):
+            mp.make_pane_sizes_equal()
 
-            paneds = p.get_paneds()
+            expected = (size - (len(paneds) * handle_size)) / (len(paneds) + 1)
 
-            if isinstance(p.PANED(), RPaned):
-                self.failUnlessAlmostEqual(
-                    paneds[0].get_relative(), 1.0 / 4.0, 2)
-                self.failUnlessAlmostEqual(
-                    paneds[1].get_relative(), 1.0 / 3.0, 2)
-                self.failUnlessAlmostEqual(
-                    paneds[2].get_relative(), 1.0 / 2.0, 2)
+            for p in paneds:
+                size = 0
+                if orientation == Gtk.Orientation.HORIZONTAL:
+                    size = p.get_child1().get_allocation().width
+                else:
+                    size = p.get_child1().get_allocation().height
+
+                res, msg = relatively_close_test(size, expected)
+                self.failUnless(res, msg)
+
+            if orientation == Gtk.Orientation.HORIZONTAL:
+                size = paneds[-1].get_child1().get_allocation().width
             else:
-                res, msg = relatively_close_test(
-                               paneds[0].get_position(), size / 4, 0.02)
-                self.failUnless(res, msg)
-                res, msg = relatively_close_test(
-                               paneds[1].get_position(), size / 4, 0.02)
-                self.failUnless(res, msg)
-                res, msg = relatively_close_test(
-                               paneds[2].get_position(), size / 4, 0.02)
-                self.failUnless(res, msg)
+                size = paneds[-1].get_child2().get_allocation().height
+
+            res, msg = relatively_close_test(size, expected)
+            self.failUnless(res, msg)
 
     def test_change_orientation(self):
         p = self.Kind()
@@ -260,10 +262,6 @@ class TMultiXVPaned(TestCase, TMultiPaned):
                         p.pack2(w, True, False)
                 w = p
 
-        title_size = Gtk.Expander().style_get_property('expander-size') +\
-                     Gtk.Expander().style_get_property('expander-spacing')
-        handle_size = self.Kind().PANED().style_get_property('handle-size')
-
         # 2 widgets, bottom expandable
         p = self.Kind()
         exps = _widgets(2)
@@ -272,14 +270,17 @@ class TMultiXVPaned(TestCase, TMultiPaned):
         exp.set_expanded(True)
         _repack(exp)
 
-        with visible(p.get_paned(), 400, 400):
+        handle_size = self.Kind().PANED().handle_size
+        title_size = exp.title_size
+
+        with visible(p.get_paned(), 500, 500):
             for w in [w for w in exps if w is not exp]:
                 w.get_parent().update(w)
 
             self.failUnlessEqual(
                 exp.get_allocation().height,
                 p.get_paned().get_allocation().height -
-                (title_size + 5 + handle_size))
+                (title_size + handle_size))
 
         # 3 widgets, top expandable
         p = self.Kind()
@@ -288,7 +289,7 @@ class TMultiXVPaned(TestCase, TMultiPaned):
         exp = exps[0]
         exp.set_expanded(True)
         _repack(exp)
-        with visible(p.get_paned(), 400, 400):
+        with visible(p.get_paned(), 500, 500):
 
             exp.get_parent().update(exp)
             self.failUnlessEqual(
@@ -302,7 +303,7 @@ class TMultiXVPaned(TestCase, TMultiPaned):
             res, msg = relatively_close_test(
                            exp.get_allocation().height,
                            p.get_paned().get_allocation().height - 2 *
-                           (title_size + 5 + handle_size))
+                           (title_size + handle_size))
             self.failUnless(res, msg)
 
         # 4 widgets, 2nd expandable
@@ -312,7 +313,7 @@ class TMultiXVPaned(TestCase, TMultiPaned):
         exp = exps[1]
         exp.set_expanded(True)
         _repack(exp)
-        with visible(p.get_paned(), 400, 400):
+        with visible(p.get_paned(), 500, 500):
 
             exp.get_parent().update(exp)
             self.failUnlessEqual(
@@ -326,7 +327,7 @@ class TMultiXVPaned(TestCase, TMultiPaned):
             res, msg = relatively_close_test(
                            exp.get_allocation().height,
                            p.get_paned().get_allocation().height - 3 *
-                           (title_size + 5 + handle_size))
+                           (title_size + handle_size))
             self.failUnless(res, msg)
 
 

@@ -5,7 +5,7 @@
 # (at your option) any later version.
 
 from tests import TestCase
-from .helper import realized
+from .helper import realized, visible, relatively_close_test
 
 from gi.repository import Gtk
 from senf import fsnative
@@ -164,12 +164,33 @@ class TPanedBrowser(TestCase):
     def test_make_pane_widths_equal(self):
         config.set("browsers", "panes", "artist\talbum\t~year\t~#track")
         self.bar.set_all_panes()
-        self.bar.make_pane_sizes_equal()
-        paneds = self.bar.multi_paned.get_paneds()
+        mp = self.bar.multi_paned
+        paneds = mp.get_paneds()
+        root = mp.get_paned()
+        orientation = root.ORIENTATION
+        handle_size = root.handle_size
+        size = 500
+        with visible(self.bar, size, size):
+            self.bar.make_pane_sizes_equal()
+            expected = (size - (len(paneds) * handle_size)) / (len(paneds) + 1)
 
-        self.failUnlessAlmostEqual(paneds[0].get_relative(), 1.0 / 4.0)
-        self.failUnlessAlmostEqual(paneds[1].get_relative(), 1.0 / 3.0)
-        self.failUnlessAlmostEqual(paneds[2].get_relative(), 1.0 / 2.0)
+            for p in paneds:
+                size = 0
+                if orientation == Gtk.Orientation.HORIZONTAL:
+                    size = p.get_child1().get_allocation().width
+                else:
+                    size = p.get_child1().get_allocation().height
+
+                res, msg = relatively_close_test(size, expected)
+                self.failUnless(res, msg)
+
+            if orientation == Gtk.Orientation.HORIZONTAL:
+                size = paneds[-1].get_child1().get_allocation().width
+            else:
+                size = paneds[-1].get_child2().get_allocation().height
+
+        res, msg = relatively_close_test(size, expected)
+        self.failUnless(res, msg)
 
     def test_wide_mode(self):
         self.bar.set_all_wide_mode(True)
