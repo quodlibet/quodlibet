@@ -484,3 +484,5 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
         dialog = DuplicateDialog(model)
         dialog.show()
+        # Mainly for testing...
+        return dialog
