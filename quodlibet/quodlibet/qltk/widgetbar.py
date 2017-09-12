@@ -57,6 +57,7 @@ class WidgetBar(Gtk.Expander):
         self.preferences_cb = self.__preferences
 
         outer = Gtk.HBox()
+        outer.props.vexpand = True
         self.box_left = Gtk.HBox()
         self.box_right = Gtk.HBox()
         self.box = Gtk.HBox()
