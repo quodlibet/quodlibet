@@ -115,9 +115,10 @@ class TQltk(TestCase):
     def test_show_uri_with_existing_window(self):
         PluginManager.instance = PluginManager()
         # Force an instance
-        PluginWindow()
+        win = PluginWindow()
         qltk.show_uri("foo", "quodlibet:///prefs/plugins/Squeezebox Output")
         # TODO: proper assertions, etc
+        win.destroy()
 
 
 class Tselection_data(TestCase):

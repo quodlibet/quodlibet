@@ -56,4 +56,4 @@ class TDuplicates(PluginTestCase):
 
     def test_starts_up(self):
         sws = [SongWrapper(s) for s in app.library.songs]
-        self.plugin.plugin_songs(sws)
+        self.plugin.plugin_songs(sws).destroy()

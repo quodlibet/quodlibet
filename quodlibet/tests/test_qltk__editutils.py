@@ -76,3 +76,4 @@ class TFilterPluginBox(TestCase):
         handler = EditingPluginHandler()
         x = FilterPluginBox(handler)
         self.assertEqual(x.filters, [])
+        x.destroy()
