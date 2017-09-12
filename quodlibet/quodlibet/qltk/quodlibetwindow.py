@@ -917,8 +917,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         order = config.getstringlist('memory', 'pane_order') # default only
 
         widgetbars = self.widgetbars_enabled
-        if widgetbars:
-            order = config.getstringlist('plugins', 'widgetbars_pane_order')
+        widgetbars_order = \
+            config.getstringlist('plugins', 'widgetbars_pane_order')
+        if widgetbars and widgetbars_order:
+            order = widgetbars_order
 
         if 'main' not in order:
             order = ['main'] + order
