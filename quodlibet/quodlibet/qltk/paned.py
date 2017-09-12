@@ -135,6 +135,7 @@ class XPaned(Paned):
         self.connect('check_resize', self.__check_resize)
 
         self.__disablenotify_id = None
+        self.__disablenotify_id2 = None
 
         self.__panelocks = []
         self.__updating = False
@@ -281,46 +282,73 @@ class XPaned(Paned):
         if self.__resizing:
             return
 
-        def handle_cb(pane, param):
-            widget = self.get_child1()
+        def handle_cb(pane, param, widget):
             if isinstance(widget, Gtk.Expander):
                 title_size = widget.style_get_property('expander-size') +\
                              widget.style_get_property('expander-spacing')
                 if widget.get_label_widget():
                     alloc = widget.get_label_widget().get_allocation()
-                    if self.ORIENTATION == Gtk.Orientation.VERTICAL:
+                    if pane.ORIENTATION == Gtk.Orientation.VERTICAL:
                         title_size = max(title_size, alloc.height)
                     else:
                         title_size = max(title_size, alloc.width)
-                self.set_position(title_size + 5)
+
+                if widget is pane.get_child1():
+                    pane.set_position(title_size + 5)
+                else:
+                    alloc = pane.get_allocation()
+                    if pane.ORIENTATION == Gtk.Orientation.VERTICAL:
+                        pane.set_position(alloc.height - title_size - 5)
+                    else:
+                        pane.set_position(alloc.width - title_size - 5)
             return True
 
-        widget = self.get_child1()
-        if isinstance(widget, Gtk.Expander):
-            widget.get_parent().queue_draw()
-
-            expanded = widget.get_expanded()
-            if not expanded:
+        # resize for collapsed children
+        for w in self.get_children():
+            if isinstance(w, Gtk.Expander) and not w.get_expanded():
                 # refresh expandable
                 self.__resizing = True
-                widgets = self.panelocks(self.root, False)
-                for w in widgets:
-                    if w.get_parent() is not widget.get_parent():
-                        w.get_parent().check_resize()
+                expandables = self.panelocks(self.root, False)
+                for w2 in expandables:
+                    if w2.get_parent() is not self:
+                        w2.get_parent().check_resize()
                 self.__resizing = False
+                break
 
-                # add handle lock
-                if self.__disablenotify_id:
-                    if self.handler_is_connected(self.__disablenotify_id):
-                        return
-
-                self.__disablenotify_id = self.connect("notify", handle_cb)
-            else:
-                # remove handle lock
+        # handle position lock(s)
+        widget = self.get_child1()
+        if isinstance(widget, Gtk.Expander):
+            if widget.get_expanded():
+                # remove lock
                 if self.__disablenotify_id:
                     if self.handler_is_connected(self.__disablenotify_id):
                         self.handler_disconnect(self.__disablenotify_id)
                     self.__disablenotify_id = None
+            else:
+                # add lock
+                if self.__disablenotify_id:
+                    if self.handler_is_connected(self.__disablenotify_id):
+                        return
+                self.__disablenotify_id = \
+                    self.connect("notify", handle_cb, widget)
+
+        widget = self.get_child2()
+        if isinstance(widget, Gtk.Expander):
+            if widget.get_expanded() or \
+                (self.__disablenotify_id and
+                 self.handler_is_connected(self.__disablenotify_id)):
+                # remove lock
+                if self.__disablenotify_id2:
+                    if self.handler_is_connected(self.__disablenotify_id2):
+                        self.handler_disconnect(self.__disablenotify_id2)
+                    self.__disablenotify_id2 = None
+            else:
+                # add lock
+                if self.__disablenotify_id2:
+                    if self.handler_is_connected(self.__disablenotify_id2):
+                        return
+                self.__disablenotify_id2 = \
+                    self.connect("notify", handle_cb, widget)
 
 
 class XHPaned(XPaned):
