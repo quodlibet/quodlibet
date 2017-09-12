@@ -49,12 +49,6 @@ class WidgetBar(Gtk.Expander):
         self.title = Gtk.Label()
         self.title.set_alignment(0.0, 0.5)
         self.set_label_widget(self.title)
-        title_height = self.get_label_widget().get_allocation().height
-
-        expanded = config.getboolean("plugins", self.id + "_expanded", True)
-
-        self.set_size_request(-1, self.panelock.size if expanded
-                                                     else title_height + 5)
 
         self.scroll = ScrolledWindow()
         self.scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.NEVER)
@@ -106,6 +100,7 @@ class WidgetBar(Gtk.Expander):
         self.connect('size_allocate', self.__size_allocate)
         self.connect("destroy", self.__destroy)
 
+        expanded = config.getboolean("plugins", self.id + "_expanded", True)
         self.set_expanded(expanded)
 
     @property
@@ -151,13 +146,6 @@ class WidgetBar(Gtk.Expander):
         config.set("plugins", self.id + "_size", self.panelock.size)
 
     def __size_allocate(self, widget, allocation):
-
-        if not self.get_expanded():
-            title_height = self.get_label_widget().get_allocation().height
-            self.set_size_request(-1, title_height + 5)
-        self.get_parent().queue_resize()
-        self.get_parent().check_resize()
-
         self.panelock.size_allocate(allocation)
         # persistence overkill as __destroy failing
         config.set("plugins", self.id + "_size", self.panelock.size)
