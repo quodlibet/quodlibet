@@ -14,6 +14,7 @@
 import os
 import shutil
 import time
+from collections import OrderedDict
 
 from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 
@@ -537,24 +538,77 @@ class AudioFile(dict, ImageContainer):
 
     @property
     def lyric_filename(self):
-        """Returns the (potential) lyrics filename for this file"""
+        """Returns the validated, or default, lyrics filename for this
+        file. User defined '[memory] lyric_rootpaths' and
+        '[memory] lyric_filenames' matches take precedent"""
 
-        filename = self.comma("title").replace(u'/', u'')[:128] + u'.lyric'
-        sub_dir = ((self.comma("lyricist") or self.comma("artist"))
-                  .replace(u'/', u'')[:128])
+        from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 
-        if os.name == "nt":
-            # this was added at a later point. only use escape_filename here
-            # to keep the linux case the same as before
-            filename = escape_filename(filename)
-            sub_dir = escape_filename(sub_dir)
-        else:
-            filename = fsnative(filename)
-            sub_dir = fsnative(sub_dir)
+        lyric_paths = \
+            config.getstringlist("memory", "lyric_rootpaths", [])
+        # add default
+        lyric_paths.append(u'~/.lyrics')
+        lyric_filenames = \
+            config.getstringlist("memory", "lyric_filenames", [])
+        # add defaults
+        lyric_filenames.append(
+            (self.comma("lyricist") or self.comma("artist"))
+            .replace(u'/', u'')[:128] + os.sep +
+            self.comma("title").replace(u'/', u'')[:128] + u'.lyric')
+        lyric_filenames.append(
+            (self.comma("lyricist") or self.comma("artist"))
+            .replace(u'/', u'')[:128] + ' - ' +
+            self.comma("title").replace(u'/', u'')[:128] + u'.lyric')
 
-        path = os.path.join(
-            expanduser(fsnative(u"~/.lyrics")), sub_dir, filename)
-        return path
+        # generate all paths
+        pathfiles = OrderedDict()
+        pathfiles_expanded = OrderedDict()
+        for p in lyric_paths:
+            for f in lyric_filenames:
+                pathfile = ""
+                if os.name == "nt":
+                    # this was added at a later point. only use
+                    # escape_filename here to keep the linux case
+                    # the same as before
+                    pathfile = \
+                        os.path.join(p, os.path.dirname(f),
+                                     escape_filename(os.path.basename(f)))
+                else:
+                    pathfile = \
+                        os.path.join(p, os.path.dirname(f),
+                                    fsnative(os.path.basename(f)))
+                if not pathfile in pathfiles:
+                    pathfiles[pathfile] = pathfile
+
+        #print_d("looking for lyrics files:\n%s" % '\n'.join(pathfiles.keys()))
+
+        match_ = ""
+        for pathfile in pathfiles.keys():
+            path = expanduser(pathfile)
+            if '<' in path:
+                path = ArbitraryExtensionFileFromPattern(pathfile).format(self)
+            pathfiles_expanded[path] = path  # resolved as late as possible
+            if os.path.exists(path):
+                match_ = path
+                break
+
+        if not match_:
+            # look at modified extensions
+            lyric_extensions = ('lyric', 'lyrics', '', 'txt')
+            for pathfile in pathfiles_expanded.keys():
+                ext = os.path.splitext(pathfile)[1][1:]
+                path = pathfile[:-1 * len(ext)].strip('.') if ext else pathfile
+                for ext2 in lyric_extensions:
+                    if ext2 == ext:
+                        continue
+                    path_ext = '.'.join([path, ext2]) if ext2 else path
+                    if os.path.exists(path_ext):
+                        match_ = path_ext
+                        break
+                if match_:
+                    break
+
+        return match_ if match_ else list(pathfiles_expanded.keys())[0]
 
     @property
     def has_rating(self):
