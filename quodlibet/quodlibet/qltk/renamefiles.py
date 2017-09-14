@@ -269,7 +269,7 @@ class RenameFiles(Gtk.VBox):
         was_changed = set()
         skip_all = False
         self.view.freeze_child_notify()
-        move_art = config.getboolean("rename", "move_art")
+        should_move_art = config.getboolean("rename", "move_art")
         moveart_sets = {}
         remove_empty_dirs = config.getboolean("rename", "remove_empty_dirs")
 
@@ -280,10 +280,15 @@ class RenameFiles(Gtk.VBox):
             old_name = entry.name
             old_pathfile = song['~filename']
             new_name = entry.new_name
-            new_pathfile = new_name if (
-                os.path.abspath(os.path.join(os.getcwd(), new_name)) !=
-                os.path.abspath(new_name)) else (
-                os.path.join(os.path.dirname(old_pathfile), new_name))
+            new_pathfile = ""
+            # ensure target is a full path
+            if os.path.abspath(new_name) != \
+                   os.path.abspath(os.path.join(os.getcwd(), new_name)):
+                new_pathfile = new_name
+            else:
+                # must be a relative pattern, so prefix the path
+                new_pathfile = \
+                    os.path.join(os.path.dirname(old_pathfile), new_name)
 
             try:
                 library.rename(song, text2fsn(new_name), changed=was_changed)
@@ -316,7 +321,7 @@ class RenameFiles(Gtk.VBox):
                 if resp != Gtk.ResponseType.OK and resp != RESPONSE_SKIP_ALL:
                     break
 
-            if move_art:
+            if should_move_art:
                 self.__moveart(moveart_sets, old_pathfile, new_pathfile, song)
 
             if remove_empty_dirs:
