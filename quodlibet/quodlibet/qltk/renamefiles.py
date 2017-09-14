@@ -175,15 +175,15 @@ class RenameFiles(Gtk.VBox):
         moveart_box = Gtk.VBox()
         self.moveart = ConfigCheckButton(
              _('_Move album art'),
-             "rename", "moveart", populate=True)
+             "rename", "move_art", populate=True)
         self.moveart.set_tooltip_text(
              _("See '[albumart] filenames' config entry " +
                "for image search strings"))
         self.moveart.show()
-        moveart_box.pack_start(self.moveart, False, True, 0)
+        moveart_box.pack_start(self.move_art, False, True, 0)
         self.moveart_overwrite = ConfigCheckButton(
              _('_Overwrite album art at target'),
-             "rename", "moveart_overwrite", populate=True)
+             "rename", "move_art_overwrite", populate=True)
         self.moveart_overwrite.show()
         moveart_box.pack_start(self.moveart_overwrite, False, True, 0)
         self.pack_start(moveart_box, False, True, 0)
@@ -192,7 +192,7 @@ class RenameFiles(Gtk.VBox):
         removeemptydirs_box = Gtk.VBox()
         self.removeemptydirs = ConfigCheckButton(
              _('_Remove empty directories'),
-             "rename", "removeemptydirs", populate=True)
+             "rename", "remove_empty_dirs", populate=True)
         self.removeemptydirs.show()
         removeemptydirs_box.pack_start(self.removeemptydirs, False, True, 0)
         self.pack_start(removeemptydirs_box, False, True, 0)
@@ -269,9 +269,9 @@ class RenameFiles(Gtk.VBox):
         was_changed = set()
         skip_all = False
         self.view.freeze_child_notify()
-        moveart = config.getboolean("rename", "moveart")
+        move_art = config.getboolean("rename", "move_art")
         moveart_sets = {}
-        removeemptydirs = config.getboolean("rename", "removeemptydirs")
+        remove_empty_dirs = config.getboolean("rename", "remove_empty_dirs")
 
         for entry in itervalues(model):
             if entry.new_name is None:
@@ -316,10 +316,10 @@ class RenameFiles(Gtk.VBox):
                 if resp != Gtk.ResponseType.OK and resp != RESPONSE_SKIP_ALL:
                     break
 
-            if moveart:
+            if move_art:
                 self.__moveart(moveart_sets, old_pathfile, new_pathfile, song)
 
-            if removeemptydirs:
+            if remove_empty_dirs:
                 path_old = os.path.dirname(old_pathfile)
                 if not os.listdir(path_old):
                     try:
@@ -363,7 +363,7 @@ class RenameFiles(Gtk.VBox):
                                                      "*." + suffix)))
         if len(images) > 0:
             # set not empty yet, (re)process
-            filenames = config.getstringlist("albumart", "filenames")
+            filenames = config.getstringlist("albumart", "search_filenames")
             moves = []
             for fn in filenames:
                 fn = os.path.join(path_old, fn)
@@ -378,7 +378,7 @@ class RenameFiles(Gtk.VBox):
                 elif fn in images and fn not in moves:
                     moves.append(fn)
             if len(moves) > 0:
-                overwrite = config.getboolean("rename", "moveart_overwrite")
+                overwrite = config.getboolean("rename", "move_art_overwrite")
                 for fnmove in moves:
                     try:
                         # existing files safeguarded until move successful,
