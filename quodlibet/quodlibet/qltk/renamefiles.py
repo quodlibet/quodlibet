@@ -28,7 +28,7 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk import Icons, Button
+from quodlibet.qltk import Icons, Button, Frame
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj, gdecode
 from quodlibet.util.path import strip_win32_incompat_from_path
@@ -165,11 +165,21 @@ class RenameFiles(Gtk.VBox):
 
         self.pack_start(Gtk.VBox(), False, True, 0)
 
+        # rename options
+        rename_options = Gtk.HBox()
+
+        # file name options
         filter_box = FilterPluginBox(self.handler, self.FILTERS)
         filter_box.connect("preview", self.__filter_preview)
         filter_box.connect("changed", self.__filter_changed)
         self.filter_box = filter_box
-        self.pack_start(filter_box, False, True, 0)
+
+        frame_filename_options = Frame("File names", filter_box)
+        frame_filename_options.show_all()
+        rename_options.pack_start(frame_filename_options, False, True, 0)
+
+        # album art options
+        albumart_box = Gtk.VBox()
 
         # move art
         moveart_box = Gtk.VBox()
@@ -180,14 +190,13 @@ class RenameFiles(Gtk.VBox):
              _("See '[albumart] filenames' config entry " +
                "for image search strings"))
         self.moveart.show()
-        moveart_box.pack_start(self.move_art, False, True, 0)
+        moveart_box.pack_start(self.moveart, False, True, 0)
         self.moveart_overwrite = ConfigCheckButton(
              _('_Overwrite album art at target'),
              "rename", "move_art_overwrite", populate=True)
         self.moveart_overwrite.show()
         moveart_box.pack_start(self.moveart_overwrite, False, True, 0)
-        self.pack_start(moveart_box, False, True, 0)
-
+        albumart_box.pack_start(moveart_box, False, True, 0)
         # remove empty
         removeemptydirs_box = Gtk.VBox()
         self.removeemptydirs = ConfigCheckButton(
@@ -195,7 +204,13 @@ class RenameFiles(Gtk.VBox):
              "rename", "remove_empty_dirs", populate=True)
         self.removeemptydirs.show()
         removeemptydirs_box.pack_start(self.removeemptydirs, False, True, 0)
-        self.pack_start(removeemptydirs_box, False, True, 0)
+        albumart_box.pack_start(removeemptydirs_box, False, True, 0)
+
+        frame_albumart_options = Frame("Album art", albumart_box)
+        frame_albumart_options.show_all()
+        rename_options.pack_start(frame_albumart_options, False, True, 0)
+
+        self.pack_start(rename_options, False, True, 0)
 
         # Save button
         self.save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
