@@ -213,7 +213,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __configure_buttons(self, library):
         new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
-        new_pl.connect('clicked', self.__new_playlist)
+        new_pl.connect('clicked', self.__new_playlist, library)
         import_pl = qltk.Button(_("_Import"), Icons.LIST_ADD,
                                 Gtk.IconSize.MENU)
         import_pl.connect('clicked', self.__import, library)
@@ -537,8 +537,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         text = self.get_filter_text()
         config.set("browsers", "query_text", text)
 
-    def __new_playlist(self, activator):
-        playlist = FileBackedPlaylist.new(PLAYLISTS)
+    def __new_playlist(self, activator, library):
+        playlist = FileBackedPlaylist.new(PLAYLISTS, library=library)
         self.model.append(row=[playlist])
         self._select_playlist(playlist, scroll=True)
 
