@@ -53,8 +53,8 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.textview.show()
 
         self.scrolled_window.show()
-        self.plugin_on_song_started(app.player.info)
         self._sig = None
+        self.plugin_on_song_started(app.player.info)
 
     def create_sidebar(self):
         vbox = Gtk.VBox(margin=0)
