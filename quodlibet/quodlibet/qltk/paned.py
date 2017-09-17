@@ -34,7 +34,7 @@ class Paned(Gtk.Paned):
                 paned {
                     padding: 0px;
                 }
-            """)
+            """, True)
             return
 
         if hasattr(self.props, "wide_handle"):
@@ -46,7 +46,7 @@ class Paned(Gtk.Paned):
                     border-width: 0;
                     background: none;
                 }
-            """)
+            """, True)
             return
 
         # gtk 3.14
@@ -57,7 +57,7 @@ class Paned(Gtk.Paned):
                 margin: 0;
                 border-width: 0;
             }
-        """)
+        """, True)
 
     @property
     def handle_size(self):
@@ -235,12 +235,12 @@ class XPaned(Paned):
                 }
                 expander arrow {
                     padding: """ + str(__expander_spacing) + """px;
-                }""")
+                }""", True)
         else:
             add_css(widget, """
                 GtkExpander, expander {
                     -GtkExpander-expander-size: """ +
-                        str(__expander_size) + "; }")
+                        str(__expander_size) + "; }", True)
 
         # common
         add_css(widget, """
@@ -256,7 +256,7 @@ class XPaned(Paned):
                 background-image: none;
                 margin: 0px;
                 padding: """ + str(__label_padding) + """px;
-            }""")
+            }""", True)
 
         widget.title_size = title_size
 

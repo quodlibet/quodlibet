@@ -352,7 +352,7 @@ def is_accel(event, *accels):
     return False
 
 
-def add_css(widget, css):
+def add_css(widget, css, force=False):
     """Add css for the widget, overriding the theme.
 
     Can raise GLib.GError in case the css is invalid
@@ -364,7 +364,9 @@ def add_css(widget, css):
     provider = Gtk.CssProvider()
     provider.load_from_data(css)
     context = widget.get_style_context()
-    context.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+    context.add_provider(provider,
+        Gtk.STYLE_PROVIDER_PRIORITY_USER if force else
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
 
 def remove_padding(widget):
