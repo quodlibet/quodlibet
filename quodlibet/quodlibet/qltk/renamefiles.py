@@ -138,6 +138,7 @@ class RenameFiles(Gtk.VBox):
 
     def __init__(self, parent, library):
         super(RenameFiles, self).__init__(spacing=6)
+        self.__skip_interactive = False
         self.set_border_width(12)
 
         hbox = Gtk.HBox(spacing=6)
@@ -246,10 +247,10 @@ class RenameFiles(Gtk.VBox):
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.view.append_column(column)
 
-        connect_obj(self.preview, 'clicked', self.__preview, None)
+        connect_obj(self.preview, 'clicked', self._preview, None)
 
-        connect_obj(parent, 'changed', self.__class__.__preview, self)
-        connect_obj(self.save, 'clicked', self.__rename, library)
+        connect_obj(parent, 'changed', self.__class__._preview, self)
+        connect_obj(self.save, 'clicked', self._rename, library)
 
         render.connect('edited', self.__row_edited)
 
@@ -277,12 +278,12 @@ class RenameFiles(Gtk.VBox):
             self.save.set_sensitive(True)
             model.path_changed(path)
 
-    def __rename(self, library):
+    def _rename(self, library):
         model = self.view.get_model()
         win = WritingWindow(self, len(model))
         win.show()
         was_changed = set()
-        skip_all = False
+        skip_all = self.__skip_interactive
         self.view.freeze_child_notify()
         should_move_art = config.getboolean("rename", "move_art")
         moveart_sets = {}
@@ -337,7 +338,7 @@ class RenameFiles(Gtk.VBox):
                     break
 
             if should_move_art:
-                self.__moveart(moveart_sets, old_pathfile, new_pathfile, song)
+                self._moveart(moveart_sets, old_pathfile, new_pathfile, song)
 
             if remove_empty_dirs:
                 path_old = os.path.dirname(old_pathfile)
@@ -356,7 +357,7 @@ class RenameFiles(Gtk.VBox):
         library.changed(was_changed)
         self.save.set_sensitive(False)
 
-    def __moveart(self, art_sets, pathfile_old, pathfile_new, song):
+    def _moveart(self, art_sets, pathfile_old, pathfile_new, song):
 
         path_old = os.path.dirname(os.path.realpath(pathfile_old))
         path_new = os.path.dirname(os.path.realpath(pathfile_new))
@@ -427,7 +428,7 @@ class RenameFiles(Gtk.VBox):
                     except Exception:
                         util.print_exc()
 
-    def __preview(self, songs):
+    def _preview(self, songs):
         model = self.view.get_model()
         if songs is None:
             songs = [e.song for e in itervalues(model)]
@@ -471,3 +472,11 @@ class RenameFiles(Gtk.VBox):
                 break
         else:
             self.set_sensitive(True)
+
+    @property
+    def test_mode(self):
+        return self.__skip_interactive
+
+    @test_mode.setter
+    def test_mode(self, value):
+        self.__skip_interactive = value
