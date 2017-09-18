@@ -361,7 +361,7 @@ class RenameFiles(Gtk.VBox):
 
         path_old = os.path.dirname(os.path.realpath(pathfile_old))
         path_new = os.path.dirname(os.path.realpath(pathfile_new))
-        if os.path.samefile(path_old, path_new):
+        if os.path.realpath(path_old) == os.path.realpath(path_new):
             return
         if (path_old in art_sets.keys() and not art_sets[path_old]):
             return
