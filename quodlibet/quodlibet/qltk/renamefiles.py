@@ -7,6 +7,8 @@
 
 import os
 import unicodedata
+import glob
+import shutil
 
 from gi.repository import Gtk, Gdk
 from senf import fsn2text, text2fsn
@@ -14,19 +16,23 @@ from senf import fsn2text, text2fsn
 import quodlibet
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import config
 from quodlibet import _
 
 from quodlibet.plugins import PluginManager
 from quodlibet.pattern import FileFromPattern
+from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 from quodlibet.qltk._editutils import FilterPluginBox, FilterCheckButton
 from quodlibet.qltk._editutils import EditingPluginHandler
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk import Icons, Button
+from quodlibet.qltk import Icons, Button, Frame
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj, gdecode
 from quodlibet.util.path import strip_win32_incompat_from_path
+from quodlibet.util.dprint import print_d
 from quodlibet.compat import itervalues
 
 
@@ -124,6 +130,7 @@ class RenameFiles(Gtk.VBox):
     FILTERS = [SpacesToUnderscores, StripWindowsIncompat, StripDiacriticals,
                StripNonASCII, Lowercase]
     handler = RenameFilesPluginHandler()
+    IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'bmp']
 
     @classmethod
     def init_plugins(cls):
@@ -131,6 +138,7 @@ class RenameFiles(Gtk.VBox):
 
     def __init__(self, parent, library):
         super(RenameFiles, self).__init__(spacing=6)
+        self.__skip_interactive = False
         self.set_border_width(12)
 
         hbox = Gtk.HBox(spacing=6)
@@ -158,11 +166,52 @@ class RenameFiles(Gtk.VBox):
 
         self.pack_start(Gtk.VBox(), False, True, 0)
 
+        # rename options
+        rename_options = Gtk.HBox()
+
+        # file name options
         filter_box = FilterPluginBox(self.handler, self.FILTERS)
         filter_box.connect("preview", self.__filter_preview)
         filter_box.connect("changed", self.__filter_changed)
         self.filter_box = filter_box
-        self.pack_start(filter_box, False, True, 0)
+
+        frame_filename_options = Frame("File names", filter_box)
+        frame_filename_options.show_all()
+        rename_options.pack_start(frame_filename_options, False, True, 0)
+
+        # album art options
+        albumart_box = Gtk.VBox()
+
+        # move art
+        moveart_box = Gtk.VBox()
+        self.moveart = ConfigCheckButton(
+             _('_Move album art'),
+             "rename", "move_art", populate=True)
+        self.moveart.set_tooltip_text(
+             _("See '[albumart] filenames' config entry " +
+               "for image search strings"))
+        self.moveart.show()
+        moveart_box.pack_start(self.moveart, False, True, 0)
+        self.moveart_overwrite = ConfigCheckButton(
+             _('_Overwrite album art at target'),
+             "rename", "move_art_overwrite", populate=True)
+        self.moveart_overwrite.show()
+        moveart_box.pack_start(self.moveart_overwrite, False, True, 0)
+        albumart_box.pack_start(moveart_box, False, True, 0)
+        # remove empty
+        removeemptydirs_box = Gtk.VBox()
+        self.removeemptydirs = ConfigCheckButton(
+             _('_Remove empty directories'),
+             "rename", "remove_empty_dirs", populate=True)
+        self.removeemptydirs.show()
+        removeemptydirs_box.pack_start(self.removeemptydirs, False, True, 0)
+        albumart_box.pack_start(removeemptydirs_box, False, True, 0)
+
+        frame_albumart_options = Frame("Album art", albumart_box)
+        frame_albumart_options.show_all()
+        rename_options.pack_start(frame_albumart_options, False, True, 0)
+
+        self.pack_start(rename_options, False, True, 0)
 
         # Save button
         self.save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
@@ -198,10 +247,10 @@ class RenameFiles(Gtk.VBox):
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.view.append_column(column)
 
-        connect_obj(self.preview, 'clicked', self.__preview, None)
+        connect_obj(self.preview, 'clicked', self._preview, None)
 
-        connect_obj(parent, 'changed', self.__class__.__preview, self)
-        connect_obj(self.save, 'clicked', self.__rename, library)
+        connect_obj(parent, 'changed', self.__class__._preview, self)
+        connect_obj(self.save, 'clicked', self._rename, library)
 
         render.connect('edited', self.__row_edited)
 
@@ -229,20 +278,33 @@ class RenameFiles(Gtk.VBox):
             self.save.set_sensitive(True)
             model.path_changed(path)
 
-    def __rename(self, library):
+    def _rename(self, library):
         model = self.view.get_model()
         win = WritingWindow(self, len(model))
         win.show()
         was_changed = set()
-        skip_all = False
+        skip_all = self.__skip_interactive
         self.view.freeze_child_notify()
+        should_move_art = config.getboolean("rename", "move_art")
+        moveart_sets = {}
+        remove_empty_dirs = config.getboolean("rename", "remove_empty_dirs")
 
         for entry in itervalues(model):
-            song = entry.song
-            new_name = entry.new_name
-            old_name = entry.name
-            if new_name is None:
+            if entry.new_name is None:
                 continue
+            song = entry.song
+            old_name = entry.name
+            old_pathfile = song['~filename']
+            new_name = entry.new_name
+            new_pathfile = ""
+            # ensure target is a full path
+            if os.path.abspath(new_name) != \
+                   os.path.abspath(os.path.join(os.getcwd(), new_name)):
+                new_pathfile = new_name
+            else:
+                # must be a relative pattern, so prefix the path
+                new_pathfile = \
+                    os.path.join(os.path.dirname(old_pathfile), new_name)
 
             try:
                 library.rename(song, text2fsn(new_name), changed=was_changed)
@@ -274,6 +336,19 @@ class RenameFiles(Gtk.VBox):
                 library.reload(song, changed=was_changed)
                 if resp != Gtk.ResponseType.OK and resp != RESPONSE_SKIP_ALL:
                     break
+
+            if should_move_art:
+                self._moveart(moveart_sets, old_pathfile, new_pathfile, song)
+
+            if remove_empty_dirs:
+                path_old = os.path.dirname(old_pathfile)
+                if not os.listdir(path_old):
+                    try:
+                        os.rmdir(path_old)
+                        print_d("Removed empty directory: %r" % path_old, self)
+                    except Exception:
+                        util.print_exc()
+
             if win.step():
                 break
 
@@ -282,7 +357,78 @@ class RenameFiles(Gtk.VBox):
         library.changed(was_changed)
         self.save.set_sensitive(False)
 
-    def __preview(self, songs):
+    def _moveart(self, art_sets, pathfile_old, pathfile_new, song):
+
+        path_old = os.path.dirname(os.path.realpath(pathfile_old))
+        path_new = os.path.dirname(os.path.realpath(pathfile_new))
+        if os.path.realpath(path_old) == os.path.realpath(path_new):
+            return
+        if (path_old in art_sets.keys() and not art_sets[path_old]):
+            return
+
+        # get art set for path
+        images = []
+        if path_old in art_sets.keys():
+            images = art_sets[path_old]
+        else:
+            def glob_escape(s):
+                for c in '[*?':
+                    s = s.replace(c, '[' + c + ']')
+                return s
+
+            # generate art set for path
+            art_sets[path_old] = images
+            path_old_escaped = glob_escape(path_old)
+            for suffix in self.IMAGE_EXTENSIONS:
+                images.extend(glob.glob(os.path.join(path_old_escaped,
+                                                     "*." + suffix)))
+        if images:
+            # set not empty yet, (re)process
+            filenames = config.getstringlist("albumart", "search_filenames")
+            moves = []
+            for fn in filenames:
+                fn = os.path.join(path_old, fn)
+                if "<" in fn:
+                    # resolve path
+                    fnres = ArbitraryExtensionFileFromPattern(fn).format(song)
+                    if fnres in images and fnres not in moves:
+                        moves.append(fnres)
+                elif "*" in fn:
+                    moves.extend(f for f in glob.glob(fn)
+                                     if f in images and f not in moves)
+                elif fn in images and fn not in moves:
+                    moves.append(fn)
+            if len(moves) > 0:
+                overwrite = config.getboolean("rename", "move_art_overwrite")
+                for fnmove in moves:
+                    try:
+                        # existing files safeguarded until move successful,
+                        # then deleted if overwrite set
+                        fnmoveto = os.path.join(path_new,
+                                                os.path.split(fnmove)[1])
+                        fnmoveto_orig = ""
+                        if os.path.exists(fnmoveto):
+                            fnmoveto_orig = fnmoveto + ".orig"
+                            if not os.path.exists(fnmoveto_orig):
+                                os.rename(fnmoveto, fnmoveto_orig)
+                            else:
+                                suffix = 1
+                                while os.path.exists(fnmoveto_orig +
+                                                     "." + str(suffix)):
+                                    suffix += 1
+                                fnmoveto_orig = (fnmoveto_orig +
+                                                 "." + str(suffix))
+                                os.rename(fnmoveto, fnmoveto_orig)
+                        print_d("Renaming image %r to %r" %
+                                   (fnmove, fnmoveto), self)
+                        shutil.move(fnmove, fnmoveto)
+                        if overwrite and fnmoveto_orig:
+                            os.remove(fnmoveto_orig)
+                        images.remove(fnmove)
+                    except Exception:
+                        util.print_exc()
+
+    def _preview(self, songs):
         model = self.view.get_model()
         if songs is None:
             songs = [e.song for e in itervalues(model)]
@@ -326,3 +472,11 @@ class RenameFiles(Gtk.VBox):
                 break
         else:
             self.set_sensitive(True)
+
+    @property
+    def test_mode(self):
+        return self.__skip_interactive
+
+    @test_mode.setter
+    def test_mode(self, value):
+        self.__skip_interactive = value

@@ -215,6 +215,9 @@ INITIAL = {
         "spaces": "false",
         "windows": "true",
         "ascii": "false",
+        "move_art": "false",
+        "move_art_overwrite": "false",
+        "remove_empty_dirs": "false",
     },
 
     "tagsfrompath": {
@@ -257,6 +260,7 @@ INITIAL = {
         "prefer_embedded": "false",
         "force_filename": "false",
         "filename": "folder.jpg",
+        "search_filenames": "cover.jpg,folder.jpg,.folder.jpg",
     },
 
     "display": {
