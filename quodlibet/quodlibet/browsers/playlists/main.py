@@ -616,7 +616,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             playlist[:] = songs
         elif songs:
             playlist = FileBackedPlaylist.from_songs(PLAYLISTS, songs,
-                                                     self.__class__.library)
+                                                     self.library)
             GLib.idle_add(self._select_playlist, playlist)
         if playlist:
             self.changed(playlist, refresh=False)
