@@ -134,7 +134,7 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
 
     def __m3u_export(self, file_path, files):
         try:
-            fhandler = open(file_path, "w")
+            fhandler = open(file_path, "wb")
         except IOError:
             self.__file_error(file_path)
         else:
@@ -149,7 +149,7 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
 
     def __pls_export(self, file_path, files):
         try:
-            fhandler = open(file_path, "w")
+            fhandler = open(file_path, "wb")
         except IOError:
             self.__file_error(file_path)
         else:

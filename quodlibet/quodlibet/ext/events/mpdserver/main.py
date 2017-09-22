@@ -231,10 +231,7 @@ class MPDService(object):
         self.flush_idle()
 
     def play(self):
-        if not self._app.player.song:
-            self._app.player.reset()
-        else:
-            self._app.player.paused = False
+        self._app.player.playpause()
 
     def playid(self, songid):
         self.play()

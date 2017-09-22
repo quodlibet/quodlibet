@@ -13,7 +13,7 @@ from quodlibet import util, config
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w, print_d
 from quodlibet.util.http import download_json, download
-from quodlibet.compat import urlencode, iteritems
+from quodlibet.compat import urlencode, iteritems, text_type
 
 from .library import SoundcloudFile
 from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH
@@ -41,6 +41,8 @@ class RestApi(GObject.Object):
         args.update(kwargs)
         msg = Soup.Message.new('POST', self._url(path))
         post_body = urlencode(args)
+        if not isinstance(post_body, bytes):
+            post_body = post_body.encode("ascii")
         msg.set_request('application/x-www-form-urlencoded',
                         Soup.MemoryUse.COPY, post_body)
         download_json(msg, self._cancellable, callback, None)
@@ -50,6 +52,8 @@ class RestApi(GObject.Object):
         args.update(kwargs)
         msg = Soup.Message.new('PUT', self._url(path))
         body = urlencode(args)
+        if not isinstance(body, bytes):
+            body = body.encode("ascii")
         msg.set_request('application/x-www-form-urlencoded',
                         Soup.MemoryUse.COPY, body)
         download_json(msg, self._cancellable, callback, None)
@@ -60,10 +64,12 @@ class RestApi(GObject.Object):
         # Turns out the SC API doesn't mind body arguments for DELETEs,
         # and as it's neater and slightly more secure, let's do that.
         body = urlencode(args)
+        if not isinstance(body, bytes):
+            body = body.encode("ascii")
         msg = Soup.Message.new('DELETE', self._url(path))
         msg.set_request('application/x-www-form-urlencoded',
                         Soup.MemoryUse.COPY, body)
-        download(msg, self._cancellable, callback, None, try_decode=False)
+        download(msg, self._cancellable, callback, None, try_decode=True)
 
     def _url(self, path, args=None):
         path = "%s%s" % (self.root, path)
@@ -90,12 +96,15 @@ class SoundcloudApiClient(RestApi):
         'authenticated': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
-    def __init__(self, token=None):
+    def __init__(self):
         print_d("Starting Soundcloud API...")
         super(SoundcloudApiClient, self).__init__(self.API_ROOT)
-        self.online = bool(token)
+        self.access_token = config.get("browsers", "soundcloud_token", None)
+        self.online = bool(self.access_token)
+        self.user_id = config.get("browsers", "soundcloud_user_id", None)
+        if not self.user_id:
+            self._get_me()
         self.username = None
-        self.access_token = token
 
     def _default_params(self):
         params = {'client_id': self.__CLIENT_ID}
@@ -113,7 +122,7 @@ class SoundcloudApiClient(RestApi):
     def log_out(self):
         print_d("Destroying access token...")
         self.access_token = None
-        self.save_token()
+        self.save_auth()
         self.online = False
 
     def get_token(self, code):
@@ -131,13 +140,17 @@ class SoundcloudApiClient(RestApi):
     def _receive_token(self, json):
         self.access_token = json['access_token']
         print_d("Got an access token: %s" % self.access_token)
-        self.save_token()
+        self.save_auth()
         self.online = True
+        self._get_me()
+
+    def _get_me(self):
         self._get('/me', self._receive_me)
 
     @json_callback
     def _receive_me(self, json):
         self.username = json['username']
+        self.user_id = json['id']
         self.emit('authenticated', Wrapper(json))
 
     def get_tracks(self, params):
@@ -160,6 +173,9 @@ class SoundcloudApiClient(RestApi):
     def get_favorites(self):
         self._get('/me/favorites', self._on_track_data, limit=self.PAGE_SIZE)
 
+    def get_my_tracks(self):
+        self._get('/me/tracks', self._on_track_data, limit=self.PAGE_SIZE)
+
     def get_comments(self, track_id):
         self._get('/tracks/%s/comments' % track_id, self._receive_comments,
                   limit=200)
@@ -172,8 +188,9 @@ class SoundcloudApiClient(RestApi):
             track_id = json[0]["track_id"]
             self.emit('comments-received', track_id, json)
 
-    def save_token(self):
+    def save_auth(self):
         config.set("browsers", "soundcloud_token", self.access_token or "")
+        config.set("browsers", "soundcloud_user_id", self.user_id or "")
 
     def put_favorite(self, track_id):
         print_d("Saving track %s as favorite" % track_id)
@@ -234,8 +251,9 @@ class SoundcloudApiClient(RestApi):
         try:
             song.update(title=r.title,
                         artist=r.user["username"],
+                        soundcloud_user_id=text_type(r.user_id),
                         website=r.permalink_url,
-                        genre="\n".join(r.genre and r.genre.split(",") or []))
+                        genre=u"\n".join(r.genre and r.genre.split(",") or []))
             if dl:
                 song.update(format=r.original_format)
                 song["~#bitrate"] = r.original_content_size * 8 / r.duration

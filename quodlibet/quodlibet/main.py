@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012,2013 Christoph Reiter
-#           2010-2014 Nick Boultbee
+#           2010-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -139,7 +139,10 @@ def main(argv=None):
     from quodlibet.qltk.window import Window
 
     from quodlibet.plugins.events import EventPluginHandler
-    pm.register_handler(EventPluginHandler(library.librarian, player))
+    from quodlibet.plugins.gui import UserInterfacePluginHandler
+    pm.register_handler(EventPluginHandler(library.librarian, player,
+                                           app.window.songlist))
+    pm.register_handler(UserInterfacePluginHandler())
 
     from quodlibet.mmkeys import MMKeysHandler
     from quodlibet.remote import Remote, RemoteError

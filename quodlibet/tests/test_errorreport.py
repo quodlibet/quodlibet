@@ -34,8 +34,6 @@ class Tfaulthandling(TestCase):
             faulthandling.disable()
 
     def test_error(self):
-        if faulthandling.faulthandler is None:
-            return
         with temp_filename() as filename:
             with open(filename, "wb") as h:
                 h.write(b"something")

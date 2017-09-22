@@ -195,7 +195,7 @@ class PluginListView(HintedTreeView):
         self.set_headers_visible(False)
 
         render = Gtk.CellRendererToggle()
-        render.set_padding(3, 3)
+        render.set_padding(1, 1)
 
         def cell_data(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
@@ -211,7 +211,7 @@ class PluginListView(HintedTreeView):
         self.append_column(column)
 
         render = Gtk.CellRendererPixbuf()
-        render.set_padding(2, 2)
+        render.set_padding(1, 1)
 
         def cell_data2(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
@@ -362,7 +362,6 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         paned = Paned()
         vbox = Gtk.VBox()
-        vbox.set_property("margin-top", 3)
 
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
@@ -380,29 +379,32 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         enabled_combo = PluginEnabledFilterCombo()
         enabled_combo.connect("changed", lambda s: filter_model.refilter())
-        enabled_combo.set_tooltip_text("Filter by plugin state / tag")
+        enabled_combo.set_tooltip_text(_("Filter by plugin state / tag"))
         fb.pack_start(enabled_combo, True, True, 0)
         self._enabled_combo = enabled_combo
 
         type_combo = PluginTypeFilterCombo()
         type_combo.connect("changed", lambda s: filter_model.refilter())
-        type_combo.set_tooltip_text("Filter by plugin type")
+        type_combo.set_tooltip_text(_("Filter by plugin type"))
         fb.pack_start(type_combo, True, True, 0)
         self._type_combo = type_combo
 
         filter_entry = UndoSearchEntry()
-        filter_entry.set_tooltip_text("Filter by plugin name or description")
+        filter_entry.set_tooltip_text(
+            _("Filter by plugin name or description"))
         filter_entry.connect("changed", lambda s: filter_model.refilter())
         self._filter_entry = filter_entry
 
         sw.add(tv)
         sw.set_shadow_type(Gtk.ShadowType.IN)
 
-        bbox = Gtk.HBox(homogeneous=True, spacing=6)
+        bbox = Gtk.VBox()
 
         errors = qltk.Button(_("Show _Errors"), Icons.DIALOG_WARNING)
         errors.set_focus_on_click(False)
         errors.connect('clicked', self.__show_errors)
+        errors.show()
+        errors = Align(errors, top=6, bottom=6)
         errors.set_no_show_all(True)
         bbox.pack_start(errors, True, True, 0)
 
@@ -420,7 +422,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         filter_box.pack_start(filter_entry, False, True, 0)
         vbox.pack_start(Align(filter_box, border=6, right=-6), False, False, 0)
         vbox.pack_start(sw, True, True, 0)
-        vbox.pack_start(Align(bbox, border=6, right=-6), False, True, 0)
+        vbox.pack_start(Align(bbox, left=6), False, True, 0)
         paned.pack1(vbox, False, False)
 
         close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)

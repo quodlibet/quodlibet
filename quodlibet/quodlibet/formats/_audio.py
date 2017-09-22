@@ -16,7 +16,7 @@ import time
 
 from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 
-from quodlibet import _
+from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, mtime, expanduser, \
@@ -446,11 +446,13 @@ class AudioFile(dict, ImageContainer):
 
                 # If there are no embedded lyrics, try to read them from
                 # the external file.
+                fn = self.lyric_filename
                 try:
-                    fileobj = open(self.lyric_filename, "rU")
+                    fileobj = open(fn, "rUb")
                 except EnvironmentError:
                     return default
                 else:
+                    print_d("Reading lyrics from %s" % fn)
                     return fileobj.read().decode("utf-8", "replace")
             elif key == "filesize":
                 return util.format_size(self("~#filesize", 0))

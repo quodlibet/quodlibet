@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010-2011 Christoph Reiter, Steven Robertson
-#                2016 Nick Boultbee
+#           2016-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -40,7 +40,8 @@ class SearchBarBox(Gtk.HBox):
     DEFAULT_TIMEOUT = 400
 
     def __init__(self, filename=None, completion=None, accel_group=None,
-                 timeout=DEFAULT_TIMEOUT, validator=Query.validator):
+                 timeout=DEFAULT_TIMEOUT, validator=Query.validator,
+                 star=None):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
@@ -61,13 +62,14 @@ class SearchBarBox(Gtk.HBox):
         if completion:
             entry.set_completion(completion)
 
+        self._star = star
+        self.query = None
         self.__sig = combo.connect('text-changed', self.__text_changed)
 
         entry.connect('clear', self.__filter_changed)
         entry.connect('backspace', self.__text_changed)
         entry.connect('populate-popup', self.__menu)
         entry.connect('activate', self.__filter_changed)
-        entry.connect('activate', self.__save_search)
         entry.connect('focus-out-event', self.__save_search)
 
         entry.set_placeholder_text(_("Search"))
@@ -87,20 +89,21 @@ class SearchBarBox(Gtk.HBox):
 
     def set_enabled(self, enabled=True):
         self.__entry.set_sensitive(enabled)
-        if enabled:
-            self.__uninhibit()
-        else:
-            self.__inhibit()
 
     def set_text(self, text):
         """Set the text without firing any signals"""
 
         self.__deferred_changed.abort()
+        self._update_query_from(text)
 
         # deactivate all signals and change the entry text
         self.__inhibit()
         self.__entry.set_text(text)
         self.__uninhibit()
+
+    def _update_query_from(self, text):
+        # TODO: remove tight coupling to Query
+        self.query = Query(text, star=self._star)
 
     def get_text(self):
         """Get the active text as unicode"""
@@ -145,7 +148,7 @@ class SearchBarBox(Gtk.HBox):
             return
 
         text = self.get_text().strip()
-        if text and Query.is_parsable(text):
+        if text and self.query.is_parsable:
             # Adding the active text to the model triggers a changed signal
             # (get_active is no longer -1), so inhibit
             self.__inhibit()
@@ -156,10 +159,14 @@ class SearchBarBox(Gtk.HBox):
     def __filter_changed(self, *args):
         self.__deferred_changed.abort()
         text = self.get_text()
-        if Query.is_parsable(text):
+        self._update_query_from(text)
+        if self.query.is_parsable:
             GLib.idle_add(self.emit, 'query-changed', text)
+            self.__save_search(args[0:1], args[1:])
 
     def __text_changed(self, *args):
+        if not self.__entry.is_sensitive():
+            return
         # the combobox has an active entry selected -> no timeout
         # todo: we need a timeout when the selection changed because
         # of keyboard input (up/down arrows)

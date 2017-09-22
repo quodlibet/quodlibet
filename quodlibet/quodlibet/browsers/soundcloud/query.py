@@ -10,11 +10,11 @@ import operator
 from collections import defaultdict
 from datetime import datetime
 
+from quodlibet import print_d
 from quodlibet.formats import AudioFile
-from quodlibet.query import Query
+from quodlibet.query import Query, QueryType
 from quodlibet.query._match import Tag, Inter, Union, Numcmp, NumexprTag, \
-    Numexpr, True_, error
-
+    Numexpr, True_, error, False_
 
 error
 
@@ -41,6 +41,7 @@ _QL_TO_SC = {
     'artist': ('q', None),
     'title': ('q', None),
     'comments': ('q', None),
+    'soundcloud_user_id': ('user_id', None)
 }
 SUPPORTED = set(_QL_TO_SC.keys()) | {"rating"}
 
@@ -50,7 +51,12 @@ class SoundcloudQuery(Query):
     def __init__(self, string, star=None, clock=time.time):
         super(SoundcloudQuery, self).__init__(string, star)
         self._clock = clock
-        self.terms = self._extract_terms(self._match)
+        try:
+            self.terms = self._extract_terms(self._match)
+        except self.error as e:
+            print_d("Couldn't use query: %s" % e)
+            self.type = QueryType.INVALID
+            self.terms = {}
 
     def _extract_terms(self, node):
         """ Return a dict of sets keyed on API search term,
@@ -125,4 +131,6 @@ class SoundcloudQuery(Query):
             return terms_from_re(node.pattern, tag)
         elif isinstance(node, True_):
             return set()
+        elif isinstance(node, False_):
+            raise self.error("False can never be queried")
         raise self.error("Unhandled node: %r" % (node,))

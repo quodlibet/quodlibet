@@ -15,13 +15,9 @@
 import os
 import threading
 import time
+from hashlib import md5
 
 from gi.repository import Gtk, GLib
-
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5
 
 import quodlibet
 from quodlibet import _
@@ -171,7 +167,7 @@ class QLSubmitQueue(object):
 
     def _check_config(self):
         user = plugin_config.get('username')
-        passw = md5(plugin_config.get('password')).hexdigest()
+        passw = md5(plugin_config.getbytes('password')).hexdigest()
         url = config_get_url()
         if not user or not passw or not url:
             if self.queue and not self.broken:
@@ -240,7 +236,8 @@ class QLSubmitQueue(object):
     def send_handshake(self, show_dialog=False):
         # construct url
         stamp = int(time.time())
-        auth = md5(self.password + str(stamp)).hexdigest()
+        auth = md5(self.password.encode("utf-8") +
+                   str(stamp).encode("utf-8")).hexdigest()
         url = "%s/?hs=true&p=%s&c=%s&v=%s&u=%s&a=%s&t=%d" % (
                     self.base_url, self.PROTOCOL_VERSION, self.CLIENT,
                     self.CLIENT_VERSION, self.username, auth, stamp)
@@ -263,7 +260,7 @@ class QLSubmitQueue(object):
             return False
 
         # check response
-        lines = resp.read().rstrip().split("\n")
+        lines = resp.read().decode("utf-8", "ignore").rstrip().split("\n")
         status = lines.pop(0)
         print_d("Handshake status: %s" % status)
 
@@ -291,14 +288,14 @@ class QLSubmitQueue(object):
         return False
 
     def _check_submit(self, url, data):
-        data_str = urlencode(data)
+        data_str = urlencode(data).encode("ascii")
         try:
             resp = urlopen(url, data_str)
         except EnvironmentError:
             print_d("Audioscrobbler server not responding, will try later.")
             return False
 
-        resp_save = resp.read()
+        resp_save = resp.read().decode("utf-8", "ignore")
         status = resp_save.rstrip().split("\n")[0]
         print_d("Submission status: %s" % status)
 

@@ -182,18 +182,11 @@ value="false"/>
 
     @dbus.service.method(PLAYER_IFACE)
     def Play(self):
-        if app.player.song is None:
-            app.player.reset()
-        else:
-            app.player.paused = False
+        app.player.play()
 
     @dbus.service.method(PLAYER_IFACE)
     def PlayPause(self):
-        player = app.player
-        if player.song is None:
-            player.reset()
-        else:
-            player.paused ^= True
+        app.player.playpause()
 
     @dbus.service.method(PLAYER_IFACE)
     def Stop(self):

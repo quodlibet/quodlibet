@@ -2,8 +2,9 @@
 # Copyright 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from collections import defaultdict
 
@@ -19,8 +20,8 @@ TRACK_ID = 1234
 class TSoundcloudFile(TestCase):
     class FakeClient(SoundcloudApiClient):
 
-        def __init__(self, token=None):
-            super(TSoundcloudFile.FakeClient, self).__init__(token)
+        def __init__(self):
+            super(TSoundcloudFile.FakeClient, self).__init__()
             self.online = True
             self.favoritings = defaultdict(int)
             self.unfavoritings = defaultdict(int)

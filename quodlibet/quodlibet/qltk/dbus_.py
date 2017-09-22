@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Federico Pelloni <federico.pelloni@gmail.com>
 #           2013 Christoph Reiter
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of version 2 of the GNU General Public License as
@@ -95,27 +96,18 @@ class DBusHandler(dbus.service.Object):
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def Play(self):
-        if self._player.song is None:
-            self._player.reset()
-        else:
-            self._player.paused = False
+        self._player.play()
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def PlayPause(self):
-        if self._player.song is None:
-            self._player.reset()
-        else:
-            self._player.paused ^= True
+        self._player.playpause()
         return self._player.paused
 
     @dbus.service.method('net.sacredchao.QuodLibet', in_signature='s')
-    def Query(self, query):
-        if query is not None:
-            try:
-                results = Query(query, star=SongList.star).search
-            except Query.error:
-                pass
-            else:
+    def Query(self, text):
+        if text is not None:
+            query = Query(text, star=SongList.star)
+            if query.is_parsable:
                 return [self.__dict(s) for s in itervalues(self.library)
-                        if results(s)]
+                        if query.search(s)]
         return None

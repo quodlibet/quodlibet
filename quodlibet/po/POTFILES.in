@@ -14,7 +14,6 @@ quodlibet/browsers/covergrid/prefs.py
 quodlibet/browsers/filesystem.py
 quodlibet/browsers/__init__.py
 quodlibet/browsers/iradio.py
-quodlibet/browsers/media.py
 quodlibet/browsers/paned/main.py
 quodlibet/browsers/paned/models.py
 quodlibet/browsers/paned/prefs.py
@@ -26,9 +25,6 @@ quodlibet/browsers/search.py
 quodlibet/browsers/soundcloud/main.py
 quodlibet/browsers/soundcloud/util.py
 quodlibet/cli.py
-quodlibet/devices/_base.py
-quodlibet/devices/__init__.py
-quodlibet/devices/storage.py
 quodlibet/errorreport/ui.py
 quodlibet/exfalso.py
 quodlibet/ext/covers/artwork_url.py
@@ -53,7 +49,6 @@ quodlibet/ext/events/inhibit.py
 quodlibet/ext/events/iradiolog.py
 quodlibet/ext/events/jep118.py
 quodlibet/ext/events/language.py
-quodlibet/ext/events/lyricswindow.py
 quodlibet/ext/events/mediaserver.py
 quodlibet/ext/events/mpdserver/__init__.py
 quodlibet/ext/events/mpris/__init__.py
@@ -66,6 +61,7 @@ quodlibet/ext/events/rbimport.py
 quodlibet/ext/events/screensaver.py
 quodlibet/ext/events/searchprovider.py
 quodlibet/ext/events/seekbar.py
+quodlibet/ext/events/seekpoints.py
 quodlibet/ext/events/squeezebox_sync.py
 quodlibet/ext/events/synchronizedlyrics.py
 quodlibet/ext/events/telepathy_status.py
@@ -79,6 +75,7 @@ quodlibet/ext/events/trayicon/systemtray.py
 quodlibet/ext/events/viewlyrics.py
 quodlibet/ext/events/visualisations.py
 quodlibet/ext/events/waveformseekbar.py
+quodlibet/ext/events/weblyrics.py
 quodlibet/ext/events/write_cover.py
 quodlibet/ext/gstreamer/compressor.py
 quodlibet/ext/gstreamer/crossfeed.py

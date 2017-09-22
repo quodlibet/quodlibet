@@ -194,8 +194,7 @@ class IndicatorMenu(Gtk.Menu):
         submenu = self._playlists_item.get_submenu()
         if submenu:
             submenu.destroy()
-        playlist_menu = PlaylistMenu([song], PlaylistsBrowser.playlists(),
-                                     self._app.librarian)
+        playlist_menu = PlaylistMenu([song], PlaylistsBrowser.playlists())
 
         def on_new(widget, playlist):
             PlaylistsBrowser.changed(playlist)
@@ -205,7 +204,4 @@ class IndicatorMenu(Gtk.Menu):
         self._playlists_item.show_all()
 
     def _on_play_pause(self, menuitem, player):
-        if player.song:
-            player.paused ^= True
-        else:
-            player.reset()
+        player.playpause()

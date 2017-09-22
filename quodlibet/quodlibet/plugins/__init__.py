@@ -428,15 +428,6 @@ def plugin_enabled(plugin):
     return enabled
 
 
-def get_config_option(plugin_cls, option):
-    try:
-        prefix = plugin_cls.CONFIG_SECTION
-    except AttributeError:
-        prefix = plugin_cls.PLUGIN_ID.lower().replace(" ", "_")
-
-    return "%s_%s" % (prefix, option)
-
-
 class PluginConfig(ConfigProxy):
     """A proxy for a Config object that can be used by plugins.
 
@@ -464,14 +455,25 @@ class PluginConfig(ConfigProxy):
 
 class PluginConfigMixin(object):
     """
-    Mixin for storage and editing of plugin config in a standard way
-    Will use `CONFIG_SECTION`, if defined, for storing config, otherwise,
-    it will base the keys on `PLUGIN_ID`.
+    Mixin for storage and editing of plugin config in a standard way.
     """
+
+    CONFIG_SECTION = None
+    """If defined, the section for storing config,
+        otherwise, it will based on a munged `PLUGIN_ID`"""
 
     @classmethod
     def _config_key(cls, name):
-        return get_config_option(cls, name)
+        return cls._get_config_option(name)
+
+    @classmethod
+    def _get_config_option(cls, option):
+        try:
+            prefix = cls.CONFIG_SECTION
+        except AttributeError:
+            prefix = cls.PLUGIN_ID.lower().replace(" ", "_")
+
+        return "%s_%s" % (prefix, option)
 
     @classmethod
     def config_get(cls, name, default=""):
@@ -490,6 +492,12 @@ class PluginConfigMixin(object):
     def config_get_bool(cls, name, default=False):
         """Gets a config boolean for this plugin"""
         return config.getboolean(PM.CONFIG_SECTION, cls._config_key(name),
+                                 default)
+
+    @classmethod
+    def config_get_stringlist(cls, name, default=False):
+        """Gets a config string list for this plugin"""
+        return config.getstringlist(PM.CONFIG_SECTION, cls._config_key(name),
                                  default)
 
     def config_entry_changed(self, entry, key):

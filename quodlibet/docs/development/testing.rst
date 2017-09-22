@@ -12,11 +12,6 @@ To run the full tests suite simply execute::
 
     ./setup.py test
 
-We also provide a test for checking code quality using ``pep8`` and
-``pyflakes``. To run it simply execute::
-
-    ./setup.py quality
-
 For checking the code coverage of the test suite run::
 
     ./setup.py coverage
@@ -41,9 +36,13 @@ tests first. To speed things up you can just use pytest directly::
     py.test tests/test_formats*
     py.test tests/test_formats_mp3.py::TMP3File
 
+To just run code quality tests::
+
+    py.test tests/quality
+
 Some helpful ``py.test`` options are ``-s`` for not hiding stdout and ``-x``
 for stopping on the first error. For more information check out
-http://docs.pytest.org/en/latest/usage.html
+https://docs.pytest.org/en/latest/usage.html
 
 
 Abort on First Error

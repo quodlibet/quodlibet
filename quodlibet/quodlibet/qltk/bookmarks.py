@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
-#           2016 Nick Boultbee
+#        2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -10,7 +10,7 @@
 
 from gi.repository import Gtk, Pango
 
-from quodlibet import qltk
+from quodlibet import qltk, print_w
 from quodlibet import util
 from quodlibet import _
 
@@ -107,8 +107,8 @@ class EditBookmarksPane(Gtk.VBox):
         connect_obj(add, 'clicked', self.__add, model, time, name)
 
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
-        model.connect('row-changed', self.__set_bookmarks, library, song)
-        model.connect('row-inserted', self.__set_bookmarks, library, song)
+        model.connect('row-changed', self._set_bookmarks, library, song)
+        model.connect('row-inserted', self._set_bookmarks, library, song)
 
         selection = sw.get_child().get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -181,13 +181,16 @@ class EditBookmarksPane(Gtk.VBox):
         if model:
             for path in paths:
                 model.remove(model.get_iter(path))
-            self.__set_bookmarks(model, None, None, library, song)
+            self._set_bookmarks(model, None, None, library, song)
 
-    def __set_bookmarks(self, model, a, b, library, song):
+    def _set_bookmarks(self, model, a, b, library, song):
+        def stringify(s):
+            return s.decode('utf-8') if isinstance(s, bytes) else s
         try:
-            song.bookmarks = [(r[0], r[1].decode('utf-8')) for r in model]
-        except (AttributeError, ValueError):
-            pass
+            song.bookmarks = [(t, stringify(l)) for t, l in model]
+        except (AttributeError, ValueError) as e:
+            print_w("Couldn't save bookmark for %s (%s)"
+                    % (song("~filename"), e))
         else:
             if library is not None:
                 library.changed([song])

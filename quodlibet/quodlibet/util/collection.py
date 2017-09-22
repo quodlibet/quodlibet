@@ -385,6 +385,10 @@ class Playlist(Collection, Iterable):
         name = text_type(name)
         if not name:
             raise ValueError("Playlists must have a name")
+
+        # we require a file library here with masking
+        assert library is None or hasattr(library, "masked")
+
         self.name = name
         self.library = library
         self._list = HashedList()

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """TODO: Share better with, i.e. test MenuItemPlugin directly"""
 
@@ -19,12 +20,11 @@ from quodlibet.plugins import PluginManager, Plugin
 from tests.helper import capture_output
 
 MAX_PLAYLISTS = 50
-DIR = mkdtemp()
-TEST_PLAYLIST = Playlist(DIR, "foo")
+TEST_PLAYLIST = Playlist("foo")
 
 
 def generate_playlists(n):
-    return [Playlist(DIR, "Playlist %d" % x) for x in range(n)]
+    return [Playlist("Playlist %d" % x) for x in range(n)]
 
 
 class TPlaylistPlugins(TestCase):

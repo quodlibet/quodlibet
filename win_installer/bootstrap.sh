@@ -13,10 +13,12 @@ function install_python_packages {
         mingw-w64-i686-python$1 \
         mingw-w64-i686-python$1-gobject \
         mingw-w64-i686-python$1-cairo \
-        mingw-w64-i686-python$1-pip
+        mingw-w64-i686-python$1-pip \
+        mingw-w64-i686-python$1-pytest \
+        mingw-w64-i686-python$1-certifi \
 
-    pip$1 install certifi feedparser musicbrainzngs mutagen pep8 \
-        pyflakes pytest
+    pip$1 install feedparser musicbrainzngs mutagen pycodestyle pyflakes \
+        coverage
 
     if [ "$1" = "2" ]; then
         pip$1 install --no-binary ":all:" futures faulthandler
@@ -35,7 +37,8 @@ function main {
         mingw-w64-i686-gst-plugins-base \
         mingw-w64-i686-gst-plugins-good mingw-w64-i686-libsrtp \
         mingw-w64-i686-gst-plugins-bad mingw-w64-i686-gst-libav \
-        mingw-w64-i686-gst-plugins-ugly intltool
+        mingw-w64-i686-gst-plugins-ugly intltool \
+        base-devel mingw-w64-i686-toolchain
 
     install_python_packages 2
     install_python_packages 3

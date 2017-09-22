@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#                2016 Nick Boultbee
+#           2016-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -87,7 +87,8 @@ def Frame(name, widget):
 
 
 def Table(rows):
-    t = Gtk.Table(n_rows=rows, n_columns=2)
+    # Gtk.Table doesn't allow 0 rows
+    t = Gtk.Table(n_rows=max(rows, 1), n_columns=2)
     t.set_col_spacings(6)
     t.set_row_spacings(6)
     t.set_homogeneous(False)
@@ -133,6 +134,9 @@ class OneSong(qltk.Notebook):
             self.append_page(bookmarks)
 
         connect_destroy(library, 'changed', self.__check_changed, vbox, song)
+
+    def _switch_to_lyrics(self):
+        self.set_current_page(1)
 
     def __check_changed(self, library, songs, vbox, song):
         if song in songs:
@@ -307,22 +311,22 @@ class OneSong(qltk.Notebook):
     def _additional(self, song, box):
         if "website" not in song and "comment" not in song:
             return
-        data = []
+        markup_data = []
 
         if "comment" in song:
             comments = song.list("comment")
-            markups = ["<i>%s</i>" % c for c in comments]
-            data.append(("comment", markups))
+            markups = ["<i>%s</i>" % util.escape(c) for c in comments]
+            markup_data.append(("comment", markups))
 
         if "website" in song:
             markups = ["<a href=\"%(url)s\">%(text)s</a>" %
                        {"text": util.escape(website),
                         "url": util.escape(website)}
                        for website in song.list("website")]
-            data.append(("website", markups))
+            markup_data.append(("website", markups))
 
         table = Table(1)
-        for i, (key, markups) in enumerate(data):
+        for i, (key, markups) in enumerate(markup_data):
             title = readable(key, plural=len(markups) > 1)
             lab = Label(markup=util.capitalize(util.escape(title) + ":"))
             table.attach(lab, 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL)

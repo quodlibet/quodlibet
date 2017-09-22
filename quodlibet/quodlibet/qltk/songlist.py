@@ -2,7 +2,7 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #           2014 Jan Path
-#      2011-2016 Nick Boultbee
+#      2011-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -42,7 +42,7 @@ class SongSelectionInfo(GObject.Object):
     Songs which get included in the status bar summary.
 
     The `changed` signal gets fired after any of the songs in the
-    selection or the selection it self has changed.
+    selection or the selection itself has changed.
     The signal is async.
 
     Two selection states:
@@ -121,20 +121,8 @@ class SongSelectionInfo(GObject.Object):
 def get_columns():
     """Gets the list of songlist column headings"""
 
-    if config.has_option("settings", "columns"):
-        columns = config.getstringlist(
-            "settings", "columns", const.DEFAULT_COLUMNS)
-    else:
-        # migrate old settings
-        try:
-            columns = config.get("settings", "headers").split()
-        except config.Error:
-            columns = const.DEFAULT_COLUMNS
-        else:
-            config.remove_option("settings", "headers")
-            set_columns(columns)
-            config.setstringlist("settings", "columns", columns)
-
+    columns = config.getstringlist("settings", "columns",
+                                   const.DEFAULT_COLUMNS)
     if "~current" in columns:
         columns.remove("~current")
     return columns
@@ -683,7 +671,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             model.row_changed(path, iter_)
 
     def __columns_changed(self, *args):
-        headers = map(lambda h: h.header_name, self.get_columns())
+        headers = [h.header_name for h in self.get_columns()]
         SongList.set_all_column_headers(headers)
         SongList.headers = headers
 

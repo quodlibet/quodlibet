@@ -7,8 +7,42 @@
 # (at your option) any later version.
 
 import os
+from collections import namedtuple
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 import quodlibet
+from quodlibet.util import get_module_dir
+
+
+SetupConfig = namedtuple("SetupConfig", ["ignore", "builtins", "exclude"])
+
+
+def parse_setup_cfg():
+    """Parses the flake8 config from the setup.cfg file in the root dir
+
+    Returns:
+        SetupConfig
+    """
+
+    base_dir = os.path.dirname(get_module_dir(quodlibet))
+
+    cfg = os.path.join(base_dir, "setup.cfg")
+    config = configparser.RawConfigParser()
+    config.read(cfg)
+
+    ignore = str(config.get("flake8", "ignore")).split(",")
+    builtins = str(config.get("flake8", "builtins")).split(",")
+    exclude = str(config.get("flake8", "exclude")).split(",")
+    exclude = [
+        os.path.join(base_dir, e.replace("/", os.sep)) for e in exclude]
+
+    return SetupConfig(ignore, builtins, exclude)
+
+
+setup_cfg = parse_setup_cfg()
 
 
 def iter_py_files(root):
@@ -20,10 +54,8 @@ def iter_py_files(root):
 
 
 def iter_project_py_files():
-    root = os.path.dirname(os.path.abspath(quodlibet.__path__[0]))
-    skip = [
-        os.path.join(root, "quodlibet", "optpackages"),
-    ]
+    root = os.path.dirname(get_module_dir(quodlibet))
+    skip = setup_cfg.exclude
     for path in iter_py_files(root):
         if any((path.startswith(s + os.sep) or s == path)
                for s in skip):

@@ -58,10 +58,6 @@ distutils_build = get_dist_class("build")
 class build(distutils_build):
     """Override the default build with new subcommands."""
 
-    user_options = distutils_build.user_options + [
-        ("skip-po-update", None, "Don't update pot/po files"),
-    ]
-
     sub_commands = distutils_build.sub_commands + [
         ("build_mo",
          lambda self: self.distribution.has_po()),

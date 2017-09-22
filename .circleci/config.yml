@@ -1,0 +1,93 @@
+defaults: &defaults
+  working_directory: ~/workdir
+  machine: true
+  steps:
+    - checkout
+    - run: pwd; ls -l
+    - run: docker info
+    - run:
+        command: |
+          cp ".docker/Dockerfile.$DOCKERIMAGE" _cache_key_file
+    - restore_cache:
+        key: cache-{{ checksum "_cache_key_file" }}
+    - run: ls -l _ci_cache || true
+    - run:
+        command: |
+          if [ ! -f "_ci_cache/$DOCKERIMAGE" ]; then
+          .circleci/retry docker build --build-arg HOST_USER_ID="$UID" -t "$DOCKERIMAGE" -f ".docker/Dockerfile.$DOCKERIMAGE" .;
+          mkdir -p _ci_cache;
+          docker image save "$DOCKERIMAGE" -o "_ci_cache/$DOCKERIMAGE";
+          fi;
+    - save_cache:
+        key: cache-{{ checksum "_cache_key_file" }}
+        paths:
+          - _ci_cache
+    - run: docker image load -i "_ci_cache/$DOCKERIMAGE"
+    - run: docker run $(bash <(curl -s https://codecov.io/env)) --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --detach "$DOCKERIMAGE" bash > container_id
+    - run: docker exec "$(cat container_id)" $PYTHON $PYARGS -m coverage run --branch ./setup.py test
+    - run:
+        command: |
+          docker exec "$(cat container_id)" $PYTHON -m coverage xml
+          docker exec "$(cat container_id)" curl https://codecov.io/bash -o _codecov
+          docker exec "$(cat container_id)" bash _codecov
+        when: always
+    - run:
+        command: docker stop "$(cat container_id)"
+        when: always
+
+version: 2
+jobs:
+  job.debian8.py2:
+    environment:
+      - PYARGS: "-R"
+      - PYTHON: "python2"
+      - DOCKERIMAGE: "debian8.py2"
+    <<: *defaults
+  job.debian8.py3:
+    environment:
+      - PYARGS: "-R -bb"
+      - PYTHON: "python3"
+      - DOCKERIMAGE: "debian8.py3"
+    <<: *defaults
+  job.ubuntu16.04.py2:
+    environment:
+      - PYARGS: "-R"
+      - PYTHON: "python2"
+      - DOCKERIMAGE: "ubuntu16.04.py2"
+    <<: *defaults
+  job.ubuntu16.04.py3:
+    environment:
+      - PYARGS: "-R -bb"
+      - PYTHON: "python3"
+      - DOCKERIMAGE: "ubuntu16.04.py3"
+    <<: *defaults
+  job.ubuntu17.10.py3:
+    environment:
+      - PYARGS: "-R -bb"
+      - PYTHON: "python3"
+      - DOCKERIMAGE: "ubuntu17.10.py3"
+    <<: *defaults
+  job.win32.py2:
+    environment:
+      - PYARGS: "-R"
+      - PYTHON: "python2"
+      - DOCKERIMAGE: "win32.py2"
+    <<: *defaults
+  job.win32.py3:
+    environment:
+      - PYARGS: "-R"
+      - PYTHON: "python3"
+      - DOCKERIMAGE: "win32.py3"
+    <<: *defaults
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - job.win32.py2
+      - job.win32.py3
+      - job.debian8.py2
+      - job.debian8.py3
+      - job.ubuntu16.04.py2
+      - job.ubuntu16.04.py3
+      - job.ubuntu17.10.py3

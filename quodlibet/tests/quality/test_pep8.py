@@ -2,21 +2,21 @@
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import itertools
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 import pytest
 
-from quodlibet.compat import PY3
-from quodlibet.util import is_wine, is_windows
+from quodlibet.util import is_wine
 
 from tests import TestCase
 from tests.helper import capture_output
 
-from .util import iter_project_py_files
+from .util import iter_project_py_files, setup_cfg
 
 try:
     import pep8 as pycodestyle
@@ -28,9 +28,8 @@ except ImportError:
 
 
 def create_pool():
-    if is_wine() or(PY3 and is_windows()):
-        # ProcessPoolExecutor is broken under wine, and under py3+msys2
-        # https://github.com/Alexpux/MINGW-packages/issues/837
+    if is_wine():
+        # ProcessPoolExecutor is broken under wine
         return ThreadPoolExecutor(1)
     else:
         return ProcessPoolExecutor(None)
@@ -53,13 +52,10 @@ def check_files(files, ignore=[]):
 
 @pytest.mark.quality
 class TPEP8(TestCase):
-    IGNORE = ["E12", "E261", "E265", "E713", "W602", "E402", "E731",
-              "W503", "E741", "E305", "W601", "E722"]
-
     def test_all(self):
         assert pycodestyle is not None, "pep8/pycodestyle is missing"
 
         files = iter_project_py_files()
-        errors = check_files(files, ignore=self.IGNORE)
+        errors = check_files(files, ignore=setup_cfg.ignore)
         if errors:
             raise Exception("\n".join(errors))

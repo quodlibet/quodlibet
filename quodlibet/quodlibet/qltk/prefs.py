@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson
-#           2011-2016 Nick Boultbee
+#           2011-2017 Nick Boultbee
 #           2013      Christoph Reiter
 #           2014      Jan Path
 #
@@ -626,7 +626,7 @@ class PreferencesWindow(UniqueWindow):
             config.set(section, name, str(entry.get_value()))
             print_d("Signalling \"changed\" to entire library. Hold tight...")
             # Cache over clicks
-            self._songs = self._songs or app.library.values()
+            self._songs = self._songs or list(app.library.values())
             copool.add(emit_signal, self._songs, funcid="library changed",
                        name=_("Updating for new ratings"))
 

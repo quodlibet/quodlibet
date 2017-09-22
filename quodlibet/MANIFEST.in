@@ -21,6 +21,7 @@ include data/README.rst
 include MANIFEST.in
 include quodlibet/packages/README.rst
 include *.py
+include setup.cfg
 recursive-include docs *.py Makefile *.rst *.png *.ico *.svg *.css
 prune docs/_build_guide
 prune docs/_build_all

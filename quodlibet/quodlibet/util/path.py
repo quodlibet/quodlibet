@@ -15,7 +15,7 @@ import codecs
 import shlex
 
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
-    fsn2text
+    fsn2text, path2fsn
 
 from quodlibet.compat import PY2, urlparse, text_type, quote, unquote, PY3
 from . import windows
@@ -141,11 +141,16 @@ def unescape_filename(s):
 
 
 def unexpand(filename):
-    """Replace the user's home directory with ~/, if it appears at the
-    start of the path name.
+    """Replace the user's home directory with ~ or %USERPROFILE%, if it
+    appears at the start of the path name.
+
+    Args:
+        filename (fsnative): The file path
+    Returns:
+        fsnative: The path with the home directory replaced
     """
 
-    sub = (os.name == "nt" and "%USERPROFILE%") or "~"
+    sub = (os.name == "nt" and fsnative(u"%USERPROFILE%")) or fsnative(u"~")
     home = expanduser("~")
     if filename == home:
         return sub
@@ -310,14 +315,18 @@ def strip_win32_incompat_from_path(string):
 
 def _normalize_darwin_path(filename, canonicalise=False):
 
+    filename = path2fsn(filename)
+
     if canonicalise:
         filename = os.path.realpath(filename)
     filename = os.path.normpath(filename)
 
-    decoded = filename.decode("utf-8", "quodlibet-osx-path-decode")
+    data = fsn2bytes(filename, "utf-8")
+    decoded = data.decode("utf-8", "quodlibet-osx-path-decode")
 
     try:
-        return NSString.fileSystemRepresentation(decoded)
+        return bytes2fsn(
+            NSString.fileSystemRepresentation(decoded), "utf-8")
     except ValueError:
         return filename
 
@@ -327,6 +336,7 @@ def _normalize_path(filename, canonicalise=False):
     If `canonicalise` is True, dereference symlinks etc
     by calling `os.path.realpath`
     """
+    filename = path2fsn(filename)
     if canonicalise:
         filename = os.path.realpath(filename)
     filename = os.path.normpath(filename)
@@ -412,12 +422,19 @@ def ishidden(path):
 def uri_is_valid(uri):
     """Returns True if the passed in text is a valid URI (file, http, etc.)
 
+    Args:
+        uri(text or bytes)
     Returns:
         bool
     """
 
-    if not isinstance(uri, bytes):
-        uri = uri.encode("ascii")
+    try:
+        if isinstance(uri, bytes):
+            uri.decode("ascii")
+        elif not isinstance(uri, bytes):
+            uri = uri.encode("ascii")
+    except ValueError:
+        return False
 
     parsed = urlparse(uri)
     if not parsed.scheme or not len(parsed.scheme) > 1:

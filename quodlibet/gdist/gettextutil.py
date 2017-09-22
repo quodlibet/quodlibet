@@ -25,7 +25,9 @@
 """
 
 import os
+import glob
 import subprocess
+import contextlib
 from distutils.spawn import find_executable
 
 
@@ -66,36 +68,57 @@ def _get_xgettext_args():
 XGETTEXT_ARGS = " ".join(_get_xgettext_args())
 
 
+def cyg2winpath(path):
+    assert os.name == "nt"
+    win_path = subprocess.check_output(
+        ["cygpath.exe", "-m" if os.sep == "/" else "-w", "--", path])
+    return win_path.decode("utf-8").strip()
+
+
 def intltool(*args):
     command = args[0]
     args = args[1:]
     if os.name == "nt":
-        return ["perl", "/usr/bin/intltool-%s" % command] + list(args)
+        return [cyg2winpath("/usr/bin/perl"),
+                "/usr/bin/intltool-%s" % command] + list(args)
     else:
         return ["intltool-%s" % command] + list(args)
 
 
-def update_pot(po_dir, package):
+def _update_pot(po_dir, package):
     """Regenerate the pot file in po_dir
 
-        Returns the path to the pot file
-    or raise GettextError
+    Returns the path to the pot file or raise GettextError
     """
 
-    old_dir = os.getcwd()
-    os.chdir(po_dir)
     try:
         os.environ["XGETTEXT_ARGS"] = XGETTEXT_ARGS
         with open(os.devnull, 'wb') as devnull:
             subprocess.check_call(
                 intltool("update", "--pot", "--gettext-package", package),
-                stderr=devnull, stdout=devnull)
+                stderr=devnull, stdout=devnull, cwd=po_dir)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
-    finally:
-        os.chdir(old_dir)
 
     return os.path.join(po_dir, package + ".pot")
+
+
+@contextlib.contextmanager
+def create_pot(po_dir, package):
+    """Temporarily creates a .pot file in po_dir"""
+
+    path = _update_pot(po_dir, package)
+    try:
+        yield path
+    finally:
+        os.unlink(path)
+
+
+def list_languages(po_dir):
+    """Returns a list of available language codes"""
+
+    po_files = glob.glob(os.path.join(po_dir, "*.po"))
+    return sorted([os.path.basename(po[:-3]) for po in po_files])
 
 
 def update_po(po_dir, package, lang_code, output_file=None):
@@ -107,8 +130,6 @@ def update_po(po_dir, package, lang_code, output_file=None):
     or raise GettextError
     """
 
-    old_dir = os.getcwd()
-    os.chdir(po_dir)
     try:
         os.environ["XGETTEXT_ARGS"] = XGETTEXT_ARGS
         args = intltool(
@@ -116,11 +137,10 @@ def update_po(po_dir, package, lang_code, output_file=None):
         if output_file is not None:
             args.extend(["--output-file", output_file])
         with open(os.devnull, 'wb') as devnull:
-            subprocess.check_call(args, stderr=devnull, stdout=devnull)
+            subprocess.check_call(
+                args, stderr=devnull, stdout=devnull, cwd=po_dir)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
-    finally:
-        os.chdir(old_dir)
 
     if output_file is not None:
         return output_file
@@ -166,8 +186,6 @@ def get_missing(po_dir, package):
 
     missing_path = os.path.join(po_dir, "missing")
 
-    old_dir = os.getcwd()
-    os.chdir(po_dir)
     try:
         os.remove(missing_path)
     except OSError:
@@ -179,7 +197,7 @@ def get_missing(po_dir, package):
         with open(os.devnull, 'wb') as devnull:
             subprocess.check_call(
                 intltool("update", "--maintain", "--gettext-package", package),
-                stderr=devnull, stdout=devnull)
+                stderr=devnull, stdout=devnull, cwd=po_dir)
     except subprocess.CalledProcessError as e:
         raise GettextError(e)
     else:
@@ -188,8 +206,6 @@ def get_missing(po_dir, package):
                 result = h.read()
         except IOError:
             result = ""
-    finally:
-        os.chdir(old_dir)
 
     return result.splitlines()
 

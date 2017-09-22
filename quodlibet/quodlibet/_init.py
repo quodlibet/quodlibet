@@ -78,7 +78,6 @@ def _init_gettext(no_translations=False):
     localedir = os.path.dirname(base_dir)
     localedir = os.path.join(localedir, "build", "share", "locale")
     if not os.path.isdir(localedir) and os.name == "nt":
-        # py2exe case
         localedir = os.path.join(
             base_dir, "..", "..", "share", "locale")
 
@@ -253,10 +252,6 @@ def _init_gtk():
     if is_osx():
         environ["GTK_OVERLAY_SCROLLING"] = "0"
 
-    # make sure GdkX11 doesn't get used under Windows
-    if os.name == "nt":
-        sys.modules["gi.repository.GdkX11"] = None
-
     try:
         # not sure if this is available under Windows
         gi.require_version("GdkX11", "3.0")
@@ -382,6 +377,22 @@ def _init_gtk():
         """)
         css_override.register_provider("Adwaita", style_provider)
         css_override.register_provider("HighContrast", style_provider)
+
+    if gtk_version[:2] >= (3, 18):
+        # Hack to get some grab handle like thing for panes
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data(b"""
+            GtkPaned.vertical, paned.vertical >separator {
+                -gtk-icon-source: -gtk-icontheme("view-more-symbolic");
+                -gtk-icon-transform: rotate(90deg) scaleX(0.1) scaleY(3);
+            }
+
+            GtkPaned.horizontal, paned.horizontal >separator {
+                -gtk-icon-source: -gtk-icontheme("view-more-symbolic");
+                -gtk-icon-transform: rotate(0deg) scaleX(0.1) scaleY(3);
+            }
+        """)
+        css_override.register_provider("", style_provider)
 
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)

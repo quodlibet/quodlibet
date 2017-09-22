@@ -2,14 +2,17 @@
 # Copyright 2014, 2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import re
 import pprint
 
 from gi.repository import Gtk
+
+from quodlibet.util import get_module_dir
 
 from tests import TestCase
 
@@ -18,7 +21,7 @@ def iter_py_paths():
     """Iterates over all Python source files that are part of Quod Libet"""
 
     import quodlibet
-    root = os.path.dirname(quodlibet.__path__[0])
+    root = os.path.dirname(get_module_dir(quodlibet))
 
     skip = [
         os.path.join(root, "docs"),

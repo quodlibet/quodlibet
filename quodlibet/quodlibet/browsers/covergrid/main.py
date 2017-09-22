@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#      2012,2013,2016 Nick Boultbee
+#           2012-2017 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -121,6 +121,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
+    STAR = ["~people", "album"]
 
     name = _("Cover Grid")
     accelerated_name = _("_Cover Grid")
@@ -154,12 +155,12 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             covergrid.view.queue_resize()
 
     @classmethod
-    def toggle_vert(klass):
-        vert = config.getboolean("browsers", "covergrid_vertical", True)
+    def toggle_wide(klass):
+        wide = config.getboolean("browsers", "covergrid_wide", False)
         for covergrid in klass.instances():
             covergrid.songcontainer.set_orientation(
-                Gtk.Orientation.VERTICAL if vert
-                else Gtk.Orientation.HORIZONTAL)
+                Gtk.Orientation.HORIZONTAL if wide
+                else Gtk.Orientation.VERTICAL)
 
     @classmethod
     def update_mag(klass):
@@ -208,14 +209,14 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.songcontainer = qltk.paned.ConfigRVPaned(
             "browsers", "covergrid_pos", 0.4)
-        if not config.getboolean("browsers", "covergrid_vertical", True):
+        if config.getboolean("browsers", "covergrid_wide", False):
             self.songcontainer.set_orientation(Gtk.Orientation.HORIZONTAL)
 
         self._register_instance()
         if self.__model is None:
             self._init_model(library)
 
-        self._cover_cancel = Gio.Cancellable.new()
+        self._cover_cancel = Gio.Cancellable()
 
         self.scrollwin = sw = ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
@@ -314,7 +315,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators)
+                              accel_group=self.accelerators,
+                              star=self.STAR)
         search.connect('query-changed', self.__update_filter)
         connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
@@ -377,7 +379,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             if path is not None:
                 model.row_changed(path, model.get_iter(path))
             # XXX: icon view seems to ignore row_changed signals for pixbufs..
-            self.queue_resize()
+            self.queue_draw()
 
         item = model.get_value(iter_)
         scale_factor = self.get_scale_factor() * mag
@@ -399,8 +401,9 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         model = self.view.get_model()
 
         self.__filter = None
-        if not Query.match_all(text):
-            self.__filter = Query(text, star=["~people", "album"]).search
+        query = self.__search.query
+        if not query.matches_all:
+            self.__filter = query.search
         self.__bg_filter = background_filter()
 
         self.__inhibit()
@@ -550,7 +553,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
     def filter_text(self, text):
         self.__search.set_text(text)
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__update_filter(self.__search, text)
             # self.__inhibit()
             #self.view.set_cursor((0,), None, False)
@@ -623,7 +626,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         entry.set_text(text)
 
         # update_filter expects a parsable query
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__update_filter(entry, text, scroll_up=False, restore=True)
 
         keys = config.gettext("browsers", "covergrid", "").split("\n")

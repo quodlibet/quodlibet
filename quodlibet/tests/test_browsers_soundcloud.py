@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from unittest import TestCase
 
 import time
 
 from quodlibet import config
-from quodlibet.browsers.soundcloud import query
 from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
 from quodlibet.browsers.soundcloud.query import SoundcloudQuery, convert_time
 
 from quodlibet import const
+from quodlibet.query import QueryType
 from quodlibet.util.dprint import print_d
 
 NONE = set([])
@@ -32,12 +33,8 @@ class TestExtract(TestCase):
         self.verify("artist=jay z", {"jay z"})
 
     def test_extract_unsupported(self):
-        try:
-            self.verify("musicbrainz_discid=12345", NONE)
-        except query.error:
-            pass
-        else:
-            self.fail("Should have thrown")
+        self.failUnlessEqual(SoundcloudQuery("musicbrainz_discid=12345").type,
+                             QueryType.INVALID)
 
     def test_extract_composite_text(self):
         self.verify("&(foo, bar)", {"foo", "bar"})

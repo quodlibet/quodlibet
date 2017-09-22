@@ -51,7 +51,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
             return
         super(Preferences, self).__init__()
         self.set_border_width(12)
-        self.set_title(_("Cover Grid Preferences") + " - Quod Libet")
+        self.set_title(_("Cover Grid Preferences"))
         self.set_default_size(420, 380)
         self.set_transient_for(qltk.get_top_parent(browser))
         # Do this config-driven setup at instance-time
@@ -75,11 +75,11 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         vbox.pack_start(cb2, False, True, 0)
 
         cb3 = ConfigCheckButton(
-            _("Vertical Split"), "browsers", "covergrid_vertical")
+            _("Wide Mode"), "browsers", "covergrid_wide")
         cb3.set_active(config.getboolean("browsers",
-            "covergrid_vertical", True))
+            "covergrid_wide", False))
         cb3.connect('toggled',
-                   lambda s: browser.toggle_vert())
+                   lambda s: browser.toggle_wide())
         vbox.pack_start(cb3, False, True, 0)
 
         # Redraws the covers only when the user releases the slider

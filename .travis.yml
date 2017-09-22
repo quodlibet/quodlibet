@@ -1,68 +1,22 @@
 matrix:
   include:
-    - os: linux
-      sudo: required
-      services: docker
-      dist: trusty
+    - os: osx
+      osx_image: xcode6.4
       language: generic
-      env: TYPE="linux" PYTHON="python2" PYARGS="-R" APT_PACKAGES="" DOCKER_FILE=".travis/Dockerfile.debian8.py2"
-    - os: linux
-      sudo: required
-      services: docker
-      dist: trusty
+      env: TYPE="osx" PYTHON="python2" PYARGS="-R" APT_PACKAGES=""
+    - os: osx
+      osx_image: xcode6.4
       language: generic
-      env: TYPE="linux" PYTHON="python3" PYARGS="-R -bb" APT_PACKAGES="" DOCKER_FILE=".travis/Dockerfile.debian8.py3"
-    - os: linux
-      sudo: required
-      services: docker
-      dist: trusty
-      language: generic
-      env: TYPE="linux" PYTHON="python2" PYARGS="-R" APT_PACKAGES="" DOCKER_FILE=".travis/Dockerfile.ubuntu16.04.py2"
-    - os: linux
-      sudo: required
-      services: docker
-      dist: trusty
-      language: generic
-      env: TYPE="linux" PYTHON="python3" PYARGS="-R -bb" APT_PACKAGES="" DOCKER_FILE=".travis/Dockerfile.ubuntu16.04.py3"
-# travis osx builds are too slow
-#    - os: osx
-#      osx_image: xcode6.4
-#      language: generic
-#      env: TYPE="osx" PYTHON="python2" PYARGS="-R" APT_PACKAGES=""
-    - os: linux
-      language: generic
-      sudo: required
-      dist: trusty
-      env: TYPE="windows" PYTHON="python2" PYARGS="-R" APT_PACKAGES="wine xvfb p7zip-full"
-    - os: linux
-      language: generic
-      sudo: required
-      dist: trusty
-      env: TYPE="windows" PYTHON="python3" PYARGS="-R -bb" APT_PACKAGES="wine xvfb p7zip-full"
+      env: TYPE="osx" PYTHON="python3" PYARGS="-R -bb" APT_PACKAGES=""
 
 install:
- - if [ "$APT_PACKAGES" != "" ]; then sudo dpkg --add-architecture i386; fi
- - if [ "$APT_PACKAGES" != "" ]; then sudo apt-get update -q || true; fi
- - if [ "$APT_PACKAGES" != "" ]; then travis_retry sudo apt-get install -y $(echo $APT_PACKAGES); fi
- - if [ "$TYPE" == "linux" ]; then docker build -t myimage -f "$DOCKER_FILE" .; fi
- - if [ "$TYPE" == "osx" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg; fi
- - if [ "$TYPE" == "osx" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg; fi
- - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python2" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe -O win-inst.exe; fi
- - if [ "$TYPE" == "windows" ] && [ "$PYTHON" == "python3" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer-py3.exe -O win-inst.exe; fi
- - if [ "$TYPE" == "windows" ]; then 7z x -o_temp win-inst.exe > /dev/null; fi
- - if [ "$TYPE" == "windows" ]; then mv $(dirname _temp/*/bin) _win_inst; fi
-
-before_script:
-  - if [ "$TYPE" == "linux" ]; then docker run --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --detach myimage bash > container_id; fi
+ - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python2" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg; fi
+ - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python2" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg; fi
+ - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python3" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest-Py3.dmg; fi
+ - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python3" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-latest-Py3.dmg; fi
 
 script:
  - cd quodlibet
- - if [ "$TYPE" == "linux" ]; then docker exec "$(cat ../container_id)" $PYTHON $PYARGS ./setup.py test; fi
- - if [ "$TYPE" == "linux" ]; then docker exec "$(cat ../container_id)" $PYTHON ./setup.py quality; fi
- - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS setup.py test; fi
- - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run setup.py quality; fi
- - if [ "$TYPE" == "windows" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe $PYARGS ./setup.py test; fi
- - if [ "$TYPE" == "windows" ]; then WINEDEBUG=-all xvfb-run -a wine ../_win_inst/bin/$PYTHON.exe ./setup.py quality; fi
-
-after_script:
-  - if [ "$TYPE" == "linux" ]; then docker stop "$(cat ../container_id)"; fi
+ - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS -m coverage run --branch setup.py test; fi
+ - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS -m coverage xml; fi
+ - if [ "$TYPE" == "osx" ]; then bash <(curl -s https://codecov.io/bash); fi

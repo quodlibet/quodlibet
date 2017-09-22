@@ -6,7 +6,7 @@
 from tests import TestCase, get_data_path
 
 import os
-
+import io
 from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
 
 from quodlibet import config
@@ -15,7 +15,7 @@ from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
 from quodlibet.util.tags import _TAGS as TAGS
-from quodlibet.util.path import normalize_path
+from quodlibet.util.path import normalize_path, mkdir
 
 from .helper import temp_filename
 
@@ -408,6 +408,20 @@ class TAudioFile(TestCase):
         song["lyricist"] = u"Lyricist"
         self.assertTrue(isinstance(song.lyric_filename, fsnative))
 
+    def test_lyrics_from_file(self):
+        with temp_filename() as filename:
+            af = AudioFile(artist='Motörhead', title='this: again')
+            af.sanitize(filename)
+            lyrics = "blah!\nblasé 😬\n"
+            lyrics_dir = os.path.dirname(af.lyric_filename)
+            mkdir(lyrics_dir)
+            with io.open(af.lyric_filename, "w", encoding='utf-8') as lf:
+                lf.write(text_type(lyrics))
+            self.failUnlessEqual(af("~lyrics").splitlines(),
+                                 lyrics.splitlines())
+            os.remove(af.lyric_filename)
+            os.rmdir(lyrics_dir)
+
     def test_mountpoint(self):
         song = AudioFile()
         song["~filename"] = fsnative(u"filename")
@@ -789,7 +803,7 @@ class TAudioFormats(TestCase):
             except AudioFileError:
                 pass
 
-    def test_reaload_non_existing(self):
+    def test_reload_non_existing(self):
         for t in format_types:
             if not t.is_file:
                 continue
@@ -892,7 +906,7 @@ class Treplay_gain(TestCase):
             self.song.replay_gain(["album", "track"]), radio_rg)
 
     def test_numeric_rg_tags(self):
-        """"Tests fully-numeric (ie no "db") RG tags.  See Issue 865"""
+        """Tests fully-numeric (ie no "db") RG tags.  See Issue 865"""
         self.failUnless(self.song("replaygain_album_gain"), "-1.00 db")
         for key, exp in self.rg_data.items():
             # Hack the nasties off and produce the "real" expected value

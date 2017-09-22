@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
+import sys
 import unittest
 import tempfile
 import shutil
@@ -23,6 +25,7 @@ try:
 except ImportError:
     xvfbwrapper = None
 
+import faulthandler
 from senf import fsnative, path2fsn, environ
 
 import quodlibet
@@ -161,7 +164,7 @@ def init_test_environ():
     any resources created.
     """
 
-    global _TEMP_DIR, _BUS_INFO, _VDISPLAY
+    global _TEMP_DIR, _BUS_INFO, _VDISPLAY, _faulthandler_fobj
 
     # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
@@ -192,12 +195,16 @@ def init_test_environ():
         _VDISPLAY.start()
 
     _BUS_INFO = None
-    if os.name != "nt" and "DBUS_SESSION_BUS_ADDRESS" in environ:
+    if os.name != "nt" and sys.platform != "darwin":
         _BUS_INFO = dbus_launch_user()
         environ.update(_BUS_INFO)
 
     quodlibet.init(no_translations=True, no_excepthook=True)
     quodlibet.app.name = "QL Tests"
+
+    # to get around pytest silencing
+    _faulthandler_fobj = os.fdopen(os.dup(sys.__stderr__.fileno()), "w")
+    faulthandler.enable(_faulthandler_fobj)
 
     # try to make things the same in case a different locale is active.
     # LANG for gettext, setlocale for number formatting etc.
@@ -236,7 +243,7 @@ atexit.register(exit_test_environ)
 
 
 def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
-         quality=False):
+         quality=True):
     """Returns 0 if everything passed"""
 
     # make glib warnings fatal
@@ -248,6 +255,9 @@ def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
             GLib.LogLevelFlags.LEVEL_WARNING)
 
     args = []
+
+    if is_ci():
+        args.extend(["-p", "no:cacheprovider"])
 
     if run:
         args.append("-k")

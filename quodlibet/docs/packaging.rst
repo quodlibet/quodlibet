@@ -14,7 +14,7 @@ The following distributions package Quod Libet:
 
 * Arch Linux: https://www.archlinux.org/packages/extra/any/quodlibet/
 * Debian: https://packages.debian.org/source/sid/quodlibet
-* Fedora: https://admin.fedoraproject.org/pkgdb/package/quodlibet/
+* Fedora: https://admin.fedoraproject.org/pkgdb/package/rpms/quodlibet/
 
 The Ubuntu PPA / unstable repo builds are automated by the following scripts:
 
@@ -29,17 +29,17 @@ Non-Optional Runtime Dependencies
 The following software is needed to start Ex Falso or Quod Libet.
 
 * **Python** (2.7)
-* **PyGObject** including **cairo support** (>= 3.12)
+* **PyGObject** including **cairo support** (>= 3.14)
 * **pycairo** (>= 1.8)
-* **mutagen** (>= 1.32)
-* **GTK+** (>= 3.10)
+* **mutagen** (>= 1.34)
+* **GTK+** (>= 3.14)
 * **libsoup** (>= 2.44)
 * On OS X only: **PyObjC**
 * **feedparser**
+* **faulthandler**
 
 For icons a complete **icon theme** is needed, preferably with symbolic icons. 
-For example **adwaita-icon-theme** or the older **gnome-icon-theme** + 
-**gnome-icon-theme-symbolic**
+For example **adwaita-icon-theme**.
 
 For playback support in Quod Libet one of the following two is needed:
 
@@ -47,7 +47,7 @@ GStreamer
 ^^^^^^^^^
 
 Required:
-    * **GStreamer** (>= 1.0) + **typelibs**
+    * **GStreamer** (>= 1.4) + **typelibs**
     * **GStreamer Plugins Base**: Vorbis, Alsa, ...
 
 Optional but recommended:
@@ -74,12 +74,6 @@ Optional Runtime Dependencies
 
 **libgtksourceview-3** + **typelib**:
     * Undo/Redo support for multiline text fields
-
-**media-player-info**:
-    * For detection of DAPs
-
-**udisks2**:
-    * For detection of DAPs
 
 **libmodplug1**:
     * For MOD support
@@ -144,5 +138,5 @@ Testing Dependencies
 * The build dependencies
 * **pytest**
 * **pyflakes**
-* **pep8/pycodestyle**
+* **pycodestyle**
 * **polib**

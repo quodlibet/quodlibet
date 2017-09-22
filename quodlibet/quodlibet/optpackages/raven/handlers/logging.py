@@ -174,7 +174,9 @@ class SentryHandler(logging.Handler, object):
         tags.update(getattr(record, 'tags', {}))
 
         kwargs.update(handler_kwargs)
+        sample_rate = extra.pop('sample_rate', None)
 
         return self.client.capture(
             event_type, stack=stack, data=data,
-            extra=extra, date=date, **kwargs)
+            extra=extra, date=date, sample_rate=sample_rate,
+            **kwargs)

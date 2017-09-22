@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import uuid
 import tempfile
@@ -35,7 +36,7 @@ from quodlibet.util.string.splitters import split_people, split_title, \
     split_album
 
 from . import TestCase, skipIf
-from .helper import capture_output
+from .helper import capture_output, locale_numeric_conv
 
 
 is_win = os.name == "nt"
@@ -81,6 +82,28 @@ class Tmtime(TestCase):
         self.failUnlessEqual(mtime("/dev/doesnotexist"), 0)
 
 
+class Tget_locale_encoding(TestCase):
+
+    def test_main(self):
+        assert isinstance(util.get_locale_encoding(), str)
+
+
+class Tformat_locale(TestCase):
+
+    def test_format_int_locale(self):
+        assert isinstance(util.format_int_locale(1024), text_type)
+
+    def test_format_float_locale(self):
+        assert isinstance(util.format_float_locale(1024.1024), text_type)
+
+    def test_format_time_seconds(self):
+        assert isinstance(util.format_time_seconds(1024), text_type)
+
+        with locale_numeric_conv():
+            assert format_time_seconds(1024) == "1,024 seconds"
+            assert format_time_seconds(1) == "1 second"
+
+
 class Tunexpand(TestCase):
     d = expanduser("~")
     u = unexpand(d)
@@ -91,6 +114,9 @@ class Tunexpand(TestCase):
             self.failUnlessEqual(path, "%USERPROFILE%")
         else:
             self.failUnlessEqual(path, "~")
+
+    def test_only_profile_case(self):
+        assert isinstance(unexpand(expanduser(fsnative(u"~"))), fsnative)
 
     def test_base_trailing(self):
         path = unexpand(self.d + os.path.sep)
@@ -469,8 +495,8 @@ class Tsplit_people(TestCase):
 
     def test_cover(self):
         self.failUnlessEqual(
-            split_people("Pyscho Killer [Talking Heads Cover]"),
-            ("Pyscho Killer", ["Talking Heads"]))
+            split_people("Psycho Killer [Talking Heads Cover]"),
+            ("Psycho Killer", ["Talking Heads"]))
 
 
 class Ttag(TestCase):
@@ -750,6 +776,14 @@ class TNormalizePath(TestCase):
             self.failUnlessEqual(norm(os.path.join(name, "foo", "..")), name)
         finally:
             os.rmdir(name)
+
+    def test_types(self):
+        from quodlibet.util.path import normalize_path
+
+        assert isinstance(normalize_path(fsnative(u"foo"), False), fsnative)
+        assert isinstance(normalize_path("foo", False), fsnative)
+        assert isinstance(normalize_path(fsnative(u"foo"), True), fsnative)
+        assert isinstance(normalize_path("foo", True), fsnative)
 
     def test_canonicalise(self):
         from quodlibet.util.path import normalize_path as norm

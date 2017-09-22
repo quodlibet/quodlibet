@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
-#               2016 Nick Boultbee
+#            2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -36,7 +36,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 as the track.')
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
-    SYNC_PERIOD = 3000
+    SYNC_PERIOD = 10000
 
     DEFAULT_BGCOLOR = '#343428282C2C'
     DEFAULT_TXTCOLOR = '#FFFFFFFFFFFF'
@@ -49,7 +49,10 @@ as the track.')
     _lines = []
     _timers = []
 
-    _currentLrc = ""
+    _current_lrc = ""
+    _start_clearing_from = 0
+    textview = None
+    scrolled_window = None
 
     def PluginPreferences(cls, window):
         vb = Gtk.VBox(spacing=6)
@@ -59,9 +62,9 @@ as the track.')
         t.set_col_spacings(6)
         t.set_row_spacings(3)
 
-        clrSection = Gtk.Label()
-        clrSection.set_markup("<b>" + _("Colors") + "</b>")
-        t.attach(clrSection, 0, 2, 0, 1)
+        clr_section = Gtk.Label()
+        clr_section.set_markup("<b>" + _("Colors") + "</b>")
+        t.attach(clr_section, 0, 2, 0, 1)
 
         l = Gtk.Label(label=_("Text:"))
         l.set_alignment(xalign=1.0, yalign=0.5)
@@ -83,15 +86,15 @@ as the track.')
         t.attach(b, 1, 2, 2, 3)
         b.connect('color-set', cls._set_background_color)
 
-        fontSection = Gtk.Label()
-        fontSection.set_markup("<b>" + _("Font") + "</b>")
-        t.attach(fontSection, 0, 2, 3, 4)
+        font_section = Gtk.Label()
+        font_section.set_markup("<b>" + _("Font") + "</b>")
+        t.attach(font_section, 0, 2, 3, 4)
 
         l = Gtk.Label(label=_("Size (px):"))
         l.set_alignment(xalign=1.0, yalign=0.5)
         t.attach(l, 0, 1, 4, 5, xoptions=Gtk.AttachOptions.FILL)
 
-        a = Gtk.Adjustment.new(cls._get_font_size(), 6, 36, 1, 3, 0)
+        a = Gtk.Adjustment.new(cls._get_font_size(), 10, 72, 2, 3, 0)
         s = Gtk.SpinButton(adjustment=a)
         s.set_numeric(True)
         s.set_text(str(cls._get_font_size()))
@@ -121,8 +124,8 @@ as the track.')
         self.config_set(self.CFG_BGCOLOR_KEY, button.get_color().to_string())
         self._style_lyrics_window()
 
-    def _set_font_size(self, sButton):
-        self.config_set(self.CFG_FONTSIZE_KEY, sButton.get_value_as_int())
+    def _set_font_size(self, button):
+        self.config_set(self.CFG_FONTSIZE_KEY, button.get_value_as_int())
         self._style_lyrics_window()
 
     def enabled(self):
@@ -132,12 +135,13 @@ as the track.')
         self.adjustment = self.scrolled_window.get_vadjustment()
 
         self.textview = Gtk.TextView()
-        self.textbuffer = self.textview.get_buffer()
+        self.text_buffer = self.textview.get_buffer()
         self.textview.set_editable(False)
         self.textview.set_cursor_visible(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.scrolled_window.add_with_viewport(self.textview)
+
         self.textview.show()
 
         app.window.get_child().pack_start(self.scrolled_window, False, True, 0)
@@ -149,23 +153,28 @@ as the track.')
 
         self.scrolled_window.show()
 
-        self._syncTimer = GLib.timeout_add(self.SYNC_PERIOD, self._sync)
+        self._sync_timer = GLib.timeout_add(self.SYNC_PERIOD, self._sync)
         self._build_data()
         self._timer_control()
 
     def disabled(self):
         self._clear_timers()
-        GLib.source_remove(self._syncTimer)
+        GLib.source_remove(self._sync_timer)
         self.textview.destroy()
+        self.textview = None
         self.scrolled_window.destroy()
+        self.scrolled_window = None
 
     def _style_lyrics_window(self):
+        if self.scrolled_window is None:
+            return
+        self.scrolled_window.set_size_request(-1, 1.6 * self._get_font_size())
         qltk.add_css(self.textview, """
             * {{
                 background-color: {0};
                 color: {1};
                 font-size: {2}px;
-                font-weight: bold;
+                padding: 0.2em;
             }}
         """.format(self._get_background_color(), self._get_text_color(),
                    self._get_font_size()))
@@ -174,57 +183,53 @@ as the track.')
         return app.player.get_position()
 
     def _build_data(self):
-        self.textbuffer.set_text("")
+        self.text_buffer.set_text("")
         if app.player.song is not None:
-            #check in same location as track
-            trackName = app.player.song.get("~filename")
-            newLrc = os.path.splitext(trackName)[0] + ".lrc"
-            print_d("Checking for lyrics file %s" % newLrc)
-            if self._currentLrc != newLrc:
+            # check in same location as track
+            track_name = app.player.song.get("~filename")
+            new_lrc = os.path.splitext(track_name)[0] + ".lrc"
+            print_d("Checking for lyrics file %s" % new_lrc)
+            if self._current_lrc != new_lrc:
                 self._lines = []
-                if os.path.exists(newLrc):
-                    print_d("Found lyrics: %s" % newLrc)
-                    self._parse_lrc_file(newLrc)
-            self._currentLrc = newLrc
+                if os.path.exists(new_lrc):
+                    print_d("Found lyrics file: %s" % new_lrc)
+                    self._parse_lrc_file(new_lrc)
+            self._current_lrc = new_lrc
 
     def _parse_lrc_file(self, filename):
-        rawFile = ""
-        with open(filename, 'r') as lrcfile:
-            rawFile = lrcfile.read()
-
-        rawFile = rawFile.replace("\n", "")
+        with open(filename, 'r') as f:
+            raw_file = f.read()
+        raw_file = raw_file.replace("\n", "")
         begin = 0
-        keepReading = len(rawFile) != 0
+        keep_reading = len(raw_file) != 0
         tmp_dict = {}
         compressed = []
-        while keepReading:
-            lyricsLine = ""
-            nextFind = rawFile.find("[", begin + 1)
-            if(nextFind == -1):
-                keepReading = False
-                lyricsLine = rawFile[begin:]
+        while keep_reading:
+            next_find = raw_file.find("[", begin + 1)
+            if next_find == -1:
+                keep_reading = False
+                line = raw_file[begin:]
             else:
-                lyricsLine = rawFile[begin:nextFind]
-            begin = nextFind
+                line = raw_file[begin:next_find]
+            begin = next_find
 
-            #parse lyricsLine
-            if not lyricsLine[1].isdigit():
+            # parse lyricsLine
+            if not line[1].isdigit():
                 continue
-            closeBracket = lyricsLine.find("]")
-            timeObject = datetime.strptime(lyricsLine[1:closeBracket],
-                                           '%M:%S.%f')
-            timeStamp = (timeObject.minute * 60000 + timeObject.second * 1000
-                         + timeObject.microsecond / 1000)
-            words = lyricsLine[closeBracket + 1:]
-            if words == "":
-                compressed.append(timeStamp)
+            close_bracket = line.find("]")
+            t = datetime.strptime(line[1:close_bracket], '%M:%S.%f')
+            timestamp = (t.minute * 60000 + t.second * 1000 +
+                         t.microsecond / 1000)
+            words = line[close_bracket + 1:]
+            if not words:
+                compressed.append(timestamp)
             else:
-                tmp_dict[timeStamp] = words
+                tmp_dict[timestamp] = words
                 for t in compressed:
                     tmp_dict[t] = words
                 compressed = []
 
-        keys = tmp_dict.keys()
+        keys = list(tmp_dict.keys())
         keys.sort()
         for key in keys:
             self._lines.append((key, tmp_dict[key]))
@@ -232,19 +237,20 @@ as the track.')
         del tmp_dict
 
     def _set_timers(self):
+        print_d("Setting timers")
         if len(self._timers) == 0:
-            curTime = self._cur_position()
-            curIndex = self._greater(self._lines, curTime)
-            if curIndex != -1:
-                while (curIndex < len(self._lines) and
-                       self._lines[curIndex][0] < curTime + self.SYNC_PERIOD):
+            cur_time = self._cur_position()
+            cur_idx = self._greater(self._lines, cur_time)
+            if cur_idx != -1:
+                while (cur_idx < len(self._lines) and
+                       self._lines[cur_idx][0] < cur_time + self.SYNC_PERIOD):
 
-                    timeStamp = self._lines[curIndex][0]
-                    lyricsLine = self._lines[curIndex][1]
-                    timerId = GLib.timeout_add(timeStamp - curTime, self._show,
-                                               lyricsLine)
-                    self._timers.append((timeStamp, timerId))
-                    curIndex += 1
+                    timestamp = self._lines[cur_idx][0]
+                    line = self._lines[cur_idx][1]
+                    tid = GLib.timeout_add(timestamp - cur_time, self._show,
+                                           line)
+                    self._timers.append((timestamp, tid))
+                    cur_idx += 1
 
     def _sync(self):
         if not app.player.paused:
@@ -260,20 +266,20 @@ as the track.')
         return False
 
     def _clear_timers(self):
-        curIndex = 0
-        while curIndex < len(self._timers):
-            GLib.source_remove(self._timers[curIndex][1])
-            curIndex += 1
+        for ts, tid in self._timers[self._start_clearing_from:]:
+            GLib.source_remove(tid)
         self._timers = []
+        self._start_clearing_from = 0
 
     def _show(self, line):
-        self.textbuffer.set_text(line)
+        self.text_buffer.set_text(line)
+        self._start_clearing_from += 1
         print_d("♪ %s ♪" % line.strip())
         return False
 
     def plugin_on_song_started(self, song):
         self._build_data()
-        #delay so that current position is for current track, not previous one
+        # delay so that current position is for current track, not previous one
         GLib.timeout_add(5, self._timer_control)
 
     def plugin_on_song_ended(self, song, stopped):

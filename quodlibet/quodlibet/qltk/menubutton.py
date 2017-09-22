@@ -7,6 +7,8 @@
 
 from gi.repository import Gtk
 
+from . import add_css
+
 
 class MenuButton(Gtk.MenuButton):
     """TODO: remove. This used to be an implementation of Gtk.MenuButton
@@ -33,3 +35,16 @@ class MenuButton(Gtk.MenuButton):
 
     def set_menu(self, menu):
         self.set_popup(menu)
+
+
+class SmallMenuButton(MenuButton):
+
+    def __init__(self, *args, **kwargs):
+        super(SmallMenuButton, self).__init__(*args, **kwargs)
+
+        self.set_size_request(26, 26)
+        add_css(self, """
+            * {
+                padding: 0px 4px;
+            }
+        """)

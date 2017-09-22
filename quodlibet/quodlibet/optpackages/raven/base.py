@@ -17,6 +17,8 @@ import uuid
 import warnings
 
 from datetime import datetime
+from inspect import isclass
+from random import Random
 from types import FunctionType
 from threading import local
 
@@ -59,6 +61,9 @@ SDK_VALUE = {
 
 # singleton for the client
 Raven = None
+
+if sys.version_info >= (3, 2):
+    basestring = str
 
 
 def get_excepthook_client():
@@ -146,7 +151,8 @@ class Client(object):
 
     def __init__(self, dsn=None, raise_send_errors=False, transport=None,
                  install_sys_hook=True, install_logging_hook=True,
-                 hook_libraries=None, enable_breadcrumbs=True, **options):
+                 hook_libraries=None, enable_breadcrumbs=True,
+                 _random_seed=None, **options):
         global Raven
 
         o = options
@@ -191,11 +197,17 @@ class Client(object):
         self.environment = o.get('environment') or None
         self.release = o.get('release') or os.environ.get('HEROKU_SLUG_COMMIT')
         self.repos = self._format_repos(o.get('repos'))
+        self.sample_rate = (
+            o.get('sample_rate')
+            if o.get('sample_rate') is not None
+            else 1
+        )
         self.transaction = TransactionStack()
-
         self.ignore_exceptions = set(o.get('ignore_exceptions') or ())
 
         self.module_cache = ModuleProxyCache()
+
+        self._random = Random(_random_seed)
 
         if not self.is_enabled():
             self.logger.info(
@@ -554,7 +566,8 @@ class Client(object):
         })
 
     def capture(self, event_type, data=None, date=None, time_spent=None,
-                extra=None, stack=None, tags=None, **kwargs):
+                extra=None, stack=None, tags=None, sample_rate=None,
+                **kwargs):
         """
         Captures and processes an event and pipes it off to SentryClient.send.
 
@@ -602,6 +615,7 @@ class Client(object):
         :param extra: a dictionary of additional standard metadata
         :param stack: a stacktrace for the event
         :param tags: dict of extra tags
+        :param sample_rate: a float in the range [0, 1] to sample this message
         :return: a tuple with a 32-length string identifying this event
         """
 
@@ -623,7 +637,12 @@ class Client(object):
             event_type, data, date, time_spent, extra, stack, tags=tags,
             **kwargs)
 
-        self.send(**data)
+        # should this event be sampled?
+        if sample_rate is None:
+            sample_rate = self.sample_rate
+
+        if self._random.random() < sample_rate:
+            self.send(**data)
 
         self._local_state.last_event_id = data['event_id']
 
@@ -641,7 +660,7 @@ class Client(object):
             for frame in data['stacktrace']['frames']:
                 yield frame
         if 'exception' in data:
-            for frame in data['exception']['values'][-1]['stacktrace']['frames']:
+            for frame in data['exception']['values'][-1]['stacktrace'].get('frames', []):
                 yield frame
 
     def _successful_send(self):
@@ -675,7 +694,7 @@ class Client(object):
         output = [message]
         if 'exception' in data and 'stacktrace' in data['exception']['values'][-1]:
             # try to reconstruct a reasonable version of the exception
-            for frame in data['exception']['values'][-1]['stacktrace']['frames']:
+            for frame in data['exception']['values'][-1]['stacktrace'].get('frames', []):
                 output.append('  File "%(fn)s", line %(lineno)s, in %(func)s' % {
                     'fn': frame.get('filename', 'unknown_filename'),
                     'lineno': frame.get('lineno', -1),
@@ -802,12 +821,19 @@ class Client(object):
         exc_type = exc_info[0]
         exc_name = '%s.%s' % (exc_type.__module__, exc_type.__name__)
         exclusions = self.ignore_exceptions
+        string_exclusions = (e for e in exclusions if isinstance(e, basestring))
+        wildcard_exclusions = (e for e in string_exclusions if e.endswith('*'))
+        class_exclusions = (e for e in exclusions if isclass(e))
 
-        if exc_type.__name__ in exclusions:
+        if exc_type in exclusions:
+            return False
+        elif exc_type.__name__ in exclusions:
             return False
         elif exc_name in exclusions:
             return False
-        elif any(exc_name.startswith(e[:-1]) for e in exclusions if e.endswith('*')):
+        elif any(issubclass(exc_type, e) for e in class_exclusions):
+            return False
+        elif any(exc_name.startswith(e[:-1]) for e in wildcard_exclusions):
             return False
         return True
 

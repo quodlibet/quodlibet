@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012-13 Nick Boultbee, Thomas Vogt
+# Copyright (C) 2012-13 Thomas Vogt
+# Copyright (C) 2012-17 Nick Boultbee
 # Copyright (C) 2008 Andreas Bombe
 # Copyright (C) 2005  Michael Urman
 # Based on osd.py (C) 2005 Ton van den Heuvel, Joe Wreshnig
@@ -48,7 +49,7 @@ class OSDWindow(Gtk.Window):
     """wait this many milliseconds between steps"""
 
     def __init__(self, conf, song):
-        Gtk.Window.__init__(self, Gtk.WindowType.POPUP)
+        Gtk.Window.__init__(self, type=Gtk.WindowType.POPUP)
         self.set_type_hint(Gdk.WindowTypeHint.NOTIFICATION)
 
         screen = self.get_screen()
@@ -277,7 +278,7 @@ class OSDWindow(Gtk.Window):
     def do_fade_inout(self, fadein):
         fadein = bool(fadein)
         self.fading_in = fadein
-        now = GObject.get_current_time()
+        now = GLib.get_real_time()
 
         fraction = self.get_opacity()
         if not fadein:
@@ -289,7 +290,7 @@ class OSDWindow(Gtk.Window):
                     self.fade_iteration_callback)
 
     def fade_iteration_callback(self):
-        delta = GObject.get_current_time() - self.fade_start_time
+        delta = GLib.get_real_time() - self.fade_start_time
         fraction = delta / self.FADETIME
 
         if self.fading_in:

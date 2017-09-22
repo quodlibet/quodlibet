@@ -81,7 +81,7 @@ class MP4File(AudioFile):
     def __init__(self, filename):
         with translate_errors():
             audio = MP4(filename)
-        self["~codec"] = getattr(audio.info, "codec_description", u"AAC")
+        self["~codec"] = audio.info.codec_description
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         if audio.info.channels:

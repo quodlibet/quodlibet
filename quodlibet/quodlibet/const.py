@@ -53,7 +53,7 @@ class MinVersions(object):
 
     PYTHON2 = Version("Python2", 2, 7)
     PYTHON3 = Version("Python3", 3, 4)
-    MUTAGEN = Version("Mutagen", 1, 32,
+    MUTAGEN = Version("Mutagen", 1, 34,
         message="Use the Quod Libet unstable PPAs/repos to get a newer "
                 "mutagen version.")
     GTK = Version("GTK+", 3, 14)
@@ -61,7 +61,7 @@ class MinVersions(object):
     GSTREAMER = Version("GStreamer", 1, 4)
 
 
-VERSION_TUPLE = Version("", 3, 9, -1)
+VERSION_TUPLE = Version("", 3, 10, -1)
 VERSION = str(VERSION_TUPLE)
 
 # entry point for the user guide / wiki
@@ -79,17 +79,9 @@ EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
 # Displayed as registered / help email address
 SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
-MAIN_AUTHORS = u"""\
-Joe Wreschnig
-Michael Urman
-Iñigo Serna
-Steven Robertson
-Christoph Reiter
-Nick Boultbee""".split("\n")
-
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = u"""Copyright © 2004-2016 %s...""" % u", ".join(MAIN_AUTHORS)
+COPYRIGHT = u"Copyright 2004-2017"
 
 AUTHORS = sorted(u"""\
 Alexandre Passos
@@ -173,6 +165,15 @@ Uriel Zajaczkovski
 Vasiliy Faronov
 Victoria Hayes
 Zack Weinberg
+Vimalan Reddy
+Jason Heard
+David Pérez Carmona
+Jakub Wilk
+IBBoard@github
+CreamyCookie@github
+Sauyon Lee
+Thomas Leberbauer
+Kristian Laakkonen
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
@@ -230,9 +231,11 @@ Yasushi Iwata (ja)
 Николай Прокошенко (ru)
 Ростислав "zbrox" Райков (bg)
 Сергей Федосеев (ru)
-scootergrisen (da)
+scootergrisen@github (da)
 Marek Suchánek (cs)
 Till Berger (de)
+Jean-Michel Pouré (fr)
+Kristian Laakkonen (fi)
 """.strip().splitlines())
 
 ARTISTS = sorted(u"""\

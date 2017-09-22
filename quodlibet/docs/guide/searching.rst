@@ -204,6 +204,23 @@ name ``"Sigur Rós"``.
 
 Now you can search anything!
 
+Pluggable query expressions
+---------------------------
+
+More recent versions of Quod Libet allow queries to include pluggable expressions.
+This uses the format ``@(plugin: body)`` where plugin is the ID of the query
+plugin (e.g. ``saved``, ``python``) - see ``quodlibet/ext/query/*``.
+
+From QL 3.10 onwards, the Python query plugin allows some use of external modules,
+notably `time` and `random`, as well as a few useful variables.
+
+For example, here is a way of simulating an album Spotlight in an album browser:
+
+``@(python: Random((int(_ts / 60), a)).random() < 0.01)``
+
+Here ``_ts`` is a current timestamp, and ``a`` is the album data.
+So this generates a random number seeded on the current minute and the album key,
+so we randomly select 1% of our albums to look at.
 
 Reusing queries
 ---------------
@@ -211,7 +228,7 @@ Reusing queries
 Complex queries can be split into simpler ones.  Also, a query can be reused 
 in other ones.  This way it is easier to change and administer your searches.
 
-In order to do so, the ``Include Saved Search`` plugin must be activated.  
+In order to do so, the ``Include Saved Search`` query plugin (see above) must be activated.
 If you create a saved search named ``Unrated`` you can search for unrated songs from the Beatles
 like this:
 

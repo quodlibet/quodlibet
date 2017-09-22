@@ -17,7 +17,7 @@ from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, \
     Repeat, OneSong
 from quodlibet.qltk import Icons
 from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem, \
-    SeparatorMenuItem
+    SeparatorMenuItem, HighlightToggleButton
 from quodlibet.plugins import PluginManager
 from quodlibet.util.dprint import print_w, print_d
 
@@ -122,8 +122,9 @@ class ToggledPlayOrderMenu(Gtk.Box):
         context = self.get_style_context()
         context.add_class(Gtk.STYLE_CLASS_LINKED)
 
-        self._toggle_button = toggle = Gtk.ToggleButton(
+        self._toggle_button = toggle = HighlightToggleButton(
             image=SymbolicIconImage(icon_name, Gtk.IconSize.SMALL_TOOLBAR))
+
         if tooltip:
             toggle.set_tooltip_text(tooltip)
         toggle.set_active(enabled)

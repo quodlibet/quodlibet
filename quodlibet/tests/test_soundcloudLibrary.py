@@ -2,8 +2,9 @@
 # Copyright 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet import config
 from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
@@ -67,8 +68,8 @@ class TSoundcloudLibrary(TestCase):
         def get_tracks(self, query):
             self._on_track_data(None, [TRACK], None)
 
-        def __init__(self, token=None):
-            super(TSoundcloudLibrary.FakeClient, self).__init__(token)
+        def __init__(self):
+            super(TSoundcloudLibrary.FakeClient, self).__init__()
 
         def authenticate_user(self):
             pass
