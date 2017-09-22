@@ -1167,7 +1167,7 @@ msgstr "nom de fichier"
 
 #: ../quodlibet/cli.py:127
 msgid "Rate the playing song"
-msgstr "Évaluer le titre en cours de lecture"
+msgstr "Noter le titre en cours de lecture"
 
 #: ../quodlibet/cli.py:128
 msgid "Set the current browser"
@@ -1538,7 +1538,7 @@ msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux by Brian Nelson."
 msgstr ""
-"Évaluer automatiquement les titres, selon qu'il sont joués ou passés. Cette "
+"Noter automatiquement les titres, selon qu'il sont joués ou passés. Cette "
 "méthode utilise l'algorithme 'accéléré' de vux par Brian Nelson."
 
 #: ../quodlibet/ext/events/clock.py:24
@@ -3370,15 +3370,15 @@ msgstr "Incorporer l'image actuelle"
 
 #: ../quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
-msgstr "Évaluer avec précision"
+msgstr "Noter avec précision"
 
 #: ../quodlibet/ext/songsmenu/exact_rating.py:24
 msgid "Allows setting the rating of songs with a number."
-msgstr "Permet d'évaluer un titre en utilisant un nombre."
+msgstr "Permet de noter un titre en utilisant un nombre."
 
 #: ../quodlibet/ext/songsmenu/exact_rating.py:36
 msgid "Please give your desired rating on a scale from 0.0 to 1.0"
-msgstr "Veuillez évaluer en utilisant une échelle allant de 0.0 à 1.0"
+msgstr "Veuillez noter en utilisant une échelle allant de 0.0 à 1.0"
 
 #: ../quodlibet/ext/songsmenu/filterall.py:80
 msgid "Filter on Any Tag"
@@ -5155,7 +5155,7 @@ msgstr "Confirmer les évaluations _multiples"
 #: ../quodlibet/qltk/prefs.py:295
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
-msgstr "Demander confirmation avant d'évaluer plusieurs titres à la fois"
+msgstr "Demander confirmation avant de noter plusieurs titres à la fois"
 
 #: ../quodlibet/qltk/prefs.py:298
 msgid "Enable _one-click ratings"
