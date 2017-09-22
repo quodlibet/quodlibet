@@ -4420,7 +4420,7 @@ msgstr ""
 "problème. Veuillez ouvrir un ticket d'incident à  %(new-issue-url)s et "
 "attachez-y ce fichier ou son contenu. Ce fichier peut contenir certaines "
 "informations vous identifiant, telles qu'une liste de titres récemment "
-"écoutés. Si ceci est inacceptable, envoyez à la place <b>%(mini-dump-path)s</"
+"écoutés. Si ceci vous semble inacceptable, envoyez à la place <b>%(mini-dump-path)s</"
 "b> accompagné d'une description détaillée du problème."
 
 #: ../quodlibet/qltk/debugwindow.py:176
