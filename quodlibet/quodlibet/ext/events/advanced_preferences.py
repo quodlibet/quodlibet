@@ -146,6 +146,12 @@ class AdvancedPreferences(EventPlugin):
                 ("A (tied) tag for the main window title, e.g. ~title~~people "
                  "(restart required)")))
 
+        rows.append(
+            text_config(
+                "settings", "datecolumn_timestamp_format",
+                "DateColumn timestamp format",
+                "A timestamp format, e.g. %Y%m%d %X "))
+
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
             table.attach(label, 0, 1, row, row + 1,
