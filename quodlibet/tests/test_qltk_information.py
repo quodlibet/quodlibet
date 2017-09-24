@@ -11,7 +11,7 @@ from tests import TestCase, init_fake_app, destroy_fake_app
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.qltk.information import Information, OneArtist, OneAlbum, \
-    ManySongs, OneSong
+    ManySongs, OneSong, TitleLabel
 import quodlibet.config
 
 
@@ -56,6 +56,12 @@ class TInformation(TestCase):
         self.inf = Information(self.library, [f, f2])
         self.assert_child_is(OneAlbum)
 
+    def test_album_special_chars(self):
+        f = AF({"~filename": fsnative(u"/dev/null"), "album": "woo & hoo"})
+        f2 = AF({"~filename": fsnative(u"/dev/null2"), "album": "woo & hoo"})
+        self.inf = Information(self.library, [f, f2])
+        self.assert_child_is(OneAlbum)
+
     def test_artist(self):
         f = AF({"~filename": fsnative(u"/dev/null"), "artist": "woo"})
         f2 = AF({"~filename": fsnative(u"/dev/null2"), "artist": "woo"})
@@ -64,3 +70,9 @@ class TInformation(TestCase):
 
     def assert_child_is(self, cls):
         self.failUnless(isinstance(self.inf.get_child(), cls))
+
+
+class TTitleLabel(TestCase):
+    def test_foo(self):
+        label = TitleLabel("foo & bar")
+        self.failUnlessEqual(label.get_text(), "foo & bar")

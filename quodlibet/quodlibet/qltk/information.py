@@ -50,8 +50,8 @@ class TitleLabel(Gtk.Label):
         super(TitleLabel, self).__init__()
         self.set_ellipsize(Pango.EllipsizeMode.END)
         markup = text if is_markup else ("<i>%s</i>" % util.escape(text))
-        text = "<span size='xx-large'>%s</span>" % markup
-        self.set_markup(text)
+        markup = "<span size='xx-large'>%s</span>" % markup
+        self.set_markup(markup)
 
 
 class ReactiveCoverImage(CoverImage):
@@ -354,9 +354,9 @@ class OneAlbum(qltk.Notebook):
     def _title(self, songs, box):
         song = songs[0]
         self.title = text = song["album"]
-        markup = "<i>%s</i>" % text
+        markup = "<i>%s</i>" % util.escape(text)
         if "date" in song:
-            markup += " <small>(%s)</small>" % song("~year")
+            markup += " <small>(%s)</small>" % util.escape(song("~year"))
         box.pack_start(TitleLabel(markup, is_markup=True), False, False, 0)
 
     def _album(self, songs, box):
