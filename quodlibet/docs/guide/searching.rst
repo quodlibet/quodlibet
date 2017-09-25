@@ -60,7 +60,7 @@ In QL 3.9 onwards, you can also use `!=` to search for things not equal::
     genre != /.+ Jazz/
 
 
-You can also search :ref:internal tags <InternalTags>, e.g.
+You can also search :ref:`internal tags <InternalTags>`, e.g.
 
  * ``~format = Ogg Vorbis``
  * ``~dirname=Greatest Hits`` - search for all songs in Greatest Hits folders.
