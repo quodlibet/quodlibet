@@ -280,6 +280,6 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
                 print_exc()
                 ErrorMessage(
                     self.plugin_window,
-                    _("Unable to run custom command %s" %
-                      util.escape(self.com_index)),
+                    _("Unable to run custom command %s") %
+                    util.escape(self.com_index),
                     util.escape(str(err))).run()

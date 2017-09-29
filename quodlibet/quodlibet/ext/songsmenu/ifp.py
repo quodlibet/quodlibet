@@ -26,16 +26,16 @@ class IFPUpload(SongsMenuPlugin):
     def plugin_songs(self, songs):
         if os.system("ifp typestring"):
             qltk.ErrorMessage(
-                None, "No iFP device found",
-                "Unable to contact your iFP device. Check "
-                "that the device is powered on and plugged "
-                "in, and that you have ifp-line "
-                "(http://ifp-driver.sf.net) installed.").run()
+                None, _("No iFP device found"),
+                _("Unable to contact your iFP device. Check "
+                  "that the device is powered on and plugged "
+                  "in, and that you have ifp-line "
+                  "(http://ifp-driver.sf.net) installed.")).run()
             return True
         self.__madedir = []
 
         w = qltk.WaitLoadWindow(
-            None, len(songs), "Uploading %d/%d", (0, len(songs)))
+            None, len(songs), _("Uploading %d/%d"), (0, len(songs)))
         w.show()
 
         for i, song in enumerate(songs):
@@ -58,8 +58,8 @@ class IFPUpload(SongsMenuPlugin):
             self.__madedir.append(dirname)
         if os.system("ifp upload %r %r > /dev/null" % (filename, target)):
             qltk.ErrorMessage(
-                None, "Error uploading",
-                "Unable to upload <b>%s</b>. The device may be "
-                "out of space, or turned off." % (
+                None, _("Error uploading"),
+                _("Unable to upload <b>%s</b>. The device may be "
+                  "out of space, or turned off.") % (
                 util.escape(filename))).run()
             return True
