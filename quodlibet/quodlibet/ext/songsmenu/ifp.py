@@ -13,6 +13,7 @@ from quodlibet import util, qltk
 from quodlibet.plugins.songshelpers import each_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons
+from quodlibet.qltk.wlw import WaitLoadWindow
 
 
 class IFPUpload(SongsMenuPlugin):
@@ -34,12 +35,12 @@ class IFPUpload(SongsMenuPlugin):
             return True
         self.__madedir = []
 
-        w = qltk.WaitLoadWindow(
+        w = WaitLoadWindow(
             None, len(songs), _("Uploading %(current)d/%(total)d"))
         w.show()
 
         for i, song in enumerate(songs):
-            if self.__upload(song) or w.step(i, len(songs)):
+            if self.__upload(song) or w.step():
                 w.destroy()
                 return True
         else:
