@@ -35,7 +35,7 @@ class IFPUpload(SongsMenuPlugin):
         self.__madedir = []
 
         w = qltk.WaitLoadWindow(
-            None, len(songs), _("Uploading %d/%d"), (0, len(songs)))
+            None, len(songs), _("Uploading %(current)d/%(total)d"))
         w.show()
 
         for i, song in enumerate(songs):
