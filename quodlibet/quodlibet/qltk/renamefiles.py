@@ -175,7 +175,7 @@ class RenameFiles(Gtk.VBox):
         filter_box.connect("changed", self.__filter_changed)
         self.filter_box = filter_box
 
-        frame_filename_options = Frame("File names", filter_box)
+        frame_filename_options = Frame(_("File names"), filter_box)
         frame_filename_options.show_all()
         rename_options.pack_start(frame_filename_options, False, True, 0)
 
@@ -207,7 +207,7 @@ class RenameFiles(Gtk.VBox):
         removeemptydirs_box.pack_start(self.removeemptydirs, False, True, 0)
         albumart_box.pack_start(removeemptydirs_box, False, True, 0)
 
-        frame_albumart_options = Frame("Album art", albumart_box)
+        frame_albumart_options = Frame(_("Album art"), albumart_box)
         frame_albumart_options.show_all()
         rename_options.pack_start(frame_albumart_options, False, True, 0)
 

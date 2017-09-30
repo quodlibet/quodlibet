@@ -142,7 +142,7 @@ class GajimStatusMessage(EventPlugin):
         pattern = Gtk.Entry()
         pattern.set_text(self.pattern)
         pattern.connect('changed', self.pattern_changed)
-        pattern_box.pack_start(Gtk.Label(label="Pattern:"), False, True, 0)
+        pattern_box.pack_start(Gtk.Label(label=_("Pattern:")), False, True, 0)
         pattern_box.pack_start(pattern, True, True, 0)
 
         accounts_box = Gtk.HBox(spacing=3)
@@ -154,7 +154,8 @@ class GajimStatusMessage(EventPlugin):
             _("List accounts, separated by spaces, for "
               "changing status message. If none are specified, "
               "status message of all accounts will be changed."))
-        accounts_box.pack_start(Gtk.Label(label="Accounts:"), False, True, 0)
+        accounts_box.pack_start(Gtk.Label(label=_("Accounts:")),
+                                False, True, 0)
         accounts_box.pack_start(accounts, True, True, 0)
 
         c = Gtk.CheckButton(label=_("Add '[paused]'"))
