@@ -378,6 +378,17 @@ def _init_gtk():
         css_override.register_provider("Adwaita", style_provider)
         css_override.register_provider("HighContrast", style_provider)
 
+        # https://github.com/quodlibet/quodlibet/issues/2541
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data(b"""
+            treeview.view.separator {
+                min-height: 2px;
+                color: @borders;
+            }
+        """)
+        css_override.register_provider("Ambiance", style_provider)
+        css_override.register_provider("Radiance", style_provider)
+
     if gtk_version[:2] >= (3, 18):
         # Hack to get some grab handle like thing for panes
         style_provider = Gtk.CssProvider()
