@@ -32,7 +32,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 from quodlibet.compat import urlencode
-from quodlibet.util.urllib import urlopen
+from quodlibet.util.urllib import urlopen, UrllibError
 
 
 SERVICES = {
@@ -245,7 +245,7 @@ class QLSubmitQueue(object):
 
         try:
             resp = urlopen(url)
-        except EnvironmentError:
+        except UrllibError:
             if show_dialog:
                 self.quick_dialog(
                     _("Could not contact service '%s'.") %

@@ -12,14 +12,23 @@ from .misc import get_ca_file
 
 if PY2:
     import urllib2 as request_module
+    from httplib import HTTPException
 else:
     from urllib import request as request_module
+    from http.client import HTTPException
 
 
 Request = request_module.Request
 
-urlopen = request_module.urlopen
-# For general error handling use EnvironmentError
+UrllibError = EnvironmentError
+
+
+def urlopen(*args, **kwargs):
+    try:
+        return request_module.urlopen(*args, **kwargs)
+    except HTTPException as e:
+        # https://bugs.python.org/issue8823
+        raise EnvironmentError(e)
 
 
 def install_urllib2_ca_file():
