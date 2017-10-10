@@ -87,6 +87,11 @@ def run_error_dialogs(exc_info, sentry_error):
     error_text += u"\n------\n"
     error_text += u"\n".join(format_exception(*exc_info))
 
+    # Don't reshow the error dialog in case the user wanted to quit the app
+    # but due to the error state more errors pile up..
+    if app.is_quitting:
+        return
+
     window = find_active_window()
     if window is None:
         return

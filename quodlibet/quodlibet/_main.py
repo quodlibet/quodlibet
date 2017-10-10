@@ -50,6 +50,9 @@ class Application(object):
     id = None
     """The application ID e.g. 'quodlibet'"""
 
+    is_quitting = False
+    """True after quit() is called at least once"""
+
     @property
     def icon_name(self):
         return self.id
@@ -68,6 +71,8 @@ class Application(object):
 
     def quit(self):
         from gi.repository import GLib
+
+        self.is_quitting = True
 
         def idle_quit():
             if self.window:
