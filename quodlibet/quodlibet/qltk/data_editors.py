@@ -7,7 +7,6 @@
 
 from gi.repository import Gtk
 from gi.repository import Pango
-import re
 
 from quodlibet import _
 from quodlibet import qltk, util
@@ -19,7 +18,6 @@ from quodlibet.query import Query
 from quodlibet.util.json_data import JSONObjectDict
 from quodlibet.util import connect_obj
 from quodlibet.qltk.getstring import GetStringDialog
-from quodlibet.util.tags import _TAGS
 from quodlibet.compat import string_types
 
 
@@ -215,7 +213,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
     def get_field_name(field, key):
         field_name = (field.human_name
                       or (key and key.replace("_", " ")))
-        return field_name and field_name.title() or _("(unknown)")
+        return field_name and util.capitalize(field_name) or _("(unknown)")
 
     def _fill_values(self, data):
         if not data:
@@ -341,15 +339,7 @@ class TagListEditor(qltk.Window):
         def desc_cdf(column, cell, model, iter, data):
             row = model[iter]
             if row:
-                name = re.sub(':[a-z]+$', '', row[0].strip('~#'))
-                try:
-                    t = _TAGS[name]
-                    valid = (not t.hidden
-                             and t.numeric == row[0].startswith('~#'))
-                    val = t.desc if valid else name
-                except KeyError:
-                    val = name
-                cell.set_property('text', util.title(val.replace('~', ' / ')))
+                cell.set_property('text', util.tag(row[0]))
 
         render = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn(_("Tag expression"), render)
