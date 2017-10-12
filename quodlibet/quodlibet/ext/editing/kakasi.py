@@ -5,6 +5,7 @@
 
 import os
 import sys
+import subprocess
 
 from quodlibet.qltk import Icons
 
@@ -45,14 +46,18 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
         value = "\n".join(values)
         try:
             data = value.encode('shift-jis', 'replace')
-        except None:
-            return value
-        line = ("kakasi -isjis -osjis -Ha -Ka -Ja -Ea -ka -s")
-        w, r = os.popen2(line.split())
-        w.write(data)
-        w.close()
+        except UnicodeEncodeError:
+            return values
+
+        proc = subprocess.Popen(
+            ["kakasi", "-isjis", "-osjis", "-Ha", "-Ka", "-Ja",
+             "-Ea", "-ka", "-s"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE)
+        result = proc.communicate(data)[0]
+
         try:
-            return r.read().decode('shift-jis').strip().split("\n")
+            return result.decode('shift-jis').strip().split("\n")
         except:
             return values
 
