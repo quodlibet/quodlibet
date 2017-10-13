@@ -81,15 +81,14 @@ class LyricsPane(Gtk.VBox):
 
     def __save(self, save, song, buffer, delete):
         start, end = buffer.get_bounds()
-        text = buffer.get_text(start, end, True)
+        text = util.gdecode(buffer.get_text(start, end, True))
         self._save_lyrics(song, text)
         delete.set_sensitive(True)
         save.set_sensitive(False)
 
     def _save_lyrics(self, song, text):
         # First, try writing to the tags.
-        song["lyrics"] = (text.decode("utf-8") if isinstance(text, bytes)
-                          else text)
+        song["lyrics"] = text
         try:
             song.write()
         except AudioFileError as e:
@@ -107,8 +106,8 @@ class LyricsPane(Gtk.VBox):
         except EnvironmentError:
             errorhook()
         try:
-            with open(lyricname, "w") as f:
-                f.write(text)
+            with open(lyricname, "wb") as f:
+                f.write(text.encode("utf-8"))
             print_d("Saved lyrics to file (%s)" % lyricname)
         except EnvironmentError:
             errorhook()
