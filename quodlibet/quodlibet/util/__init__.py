@@ -14,8 +14,6 @@ import ctypes.util
 import sys
 import unicodedata
 import threading
-import subprocess
-import webbrowser
 
 # Windows doesn't have fcntl, just don't lock for now
 try:
@@ -28,7 +26,6 @@ from senf import fsnative, environ, argv
 
 from quodlibet.compat import reraise as py_reraise, PY2, text_type, \
     iteritems, reduce, number_types, long
-from quodlibet.util.path import iscommand
 from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
@@ -505,44 +502,12 @@ def human_sort_key(s, normalize=unicodedata.normalize):
 def website(site):
     """Open the given URL in the user's default browser"""
 
-    if os.name == "nt" or sys.platform == "darwin":
-        return webbrowser.open(site)
+    from gi.repository import Gtk, Gdk, GLib
 
-    # all commands here return immediately
-    for prog in ["xdg-open", "gnome-open"]:
-        if not iscommand(prog):
-            continue
-
-        status = subprocess.check_call([prog, site])
-        if status == 0:
-            return True
-
-    # sensible-browser is a debian thing
-    blocking_progs = ["sensible-browser"]
-    blocking_progs.extend(environ.get("BROWSER", "").split(":"))
-
-    for prog in blocking_progs:
-        if not iscommand(prog):
-            continue
-
-        # replace %s with the url
-        args = prog.split()
-        for i, arg in enumerate(args):
-            if arg == "%s":
-                args[i] = site
-                break
-        else:
-            args.append(site)
-
-        # calling e.g. firefox blocks, so call async and hope for the best
-        try:
-            spawn(args)
-        except RuntimeError:
-            continue
-        else:
-            return True
-
-    return False
+    try:
+        Gtk.show_uri(None, site, Gdk.CURRENT_TIME)
+    except GLib.Error:
+        print_exc()
 
 
 def tag(name, cap=True):
