@@ -52,15 +52,15 @@ class TLyricsPane(TestCase):
     def test_save_encoded_lyrics(self):
         af = self.temp_mp3()
         self.pane = LyricsPane(af)
-        self.pane._save_lyrics(af, LYRICS.encode('utf-8'))
+        self.pane._save_lyrics(af, LYRICS)
         self.failUnlessEqual(af("~lyrics"), LYRICS)
 
     def test_save_lyrics_deletes_lyric_file(self):
         af = self.temp_mp3()
         lf_name = af.lyric_filename
         os.makedirs(os.path.dirname(lf_name))
-        with open(lf_name, "w") as f:
-            f.write(LYRICS)
+        with open(lf_name, "wb") as f:
+            f.write(LYRICS.encode("utf-8"))
         self.failUnless(os.path.exists(lf_name))
         self.pane = LyricsPane(af)
         self.pane._save_lyrics(af, LYRICS)
