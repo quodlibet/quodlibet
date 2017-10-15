@@ -665,6 +665,15 @@ class TID3FileMixin(object):
         song = self.KIND(self.filename)
         self.assertEqual(song['albumartistsort'], u"foo")
 
+    def test_albumartist_performer(self):
+        band = u'Slackers'
+        for tag in ['albumartist', 'performer']:
+            song = self.KIND(self.filename)
+            song[tag] = band
+            song.write()
+            song = self.KIND(self.filename)
+            self.assertEqual(song[tag], band)
+
 
 class TID3FileMP3(TID3FileBase, TID3FileMixin):
 

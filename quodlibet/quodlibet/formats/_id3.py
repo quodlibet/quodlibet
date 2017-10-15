@@ -39,7 +39,7 @@ class ID3File(AudioFile):
            "TIT2": "title",
            "TIT3": "version",
            "TPE1": "artist",
-           "TPE2": "performer",
+           "TPE2": "albumartist",
            "TPE3": "conductor",
            "TPE4": "arranger",
            "TEXT": "lyricist",
@@ -91,6 +91,7 @@ class ID3File(AudioFile):
         u"MusicBrainz Disc Id": "musicbrainz_discid",
         u"ASIN": "asin",
         u"ALBUMARTISTSORT": "albumartistsort",
+        u"PERFORMER": "performer",
         u"BARCODE": "barcode",
         }
     PAM_XXXT = dict([(v, k) for k, v in iteritems(TXXX_MAP)])
