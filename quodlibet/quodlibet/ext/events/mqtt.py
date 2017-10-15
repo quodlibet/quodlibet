@@ -186,7 +186,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
                    % {'host': self.host, 'port': self.port})
             Message(Gtk.MessageType.INFO, app.window, "Success", msg).run()
         except IOError as e:
-            template = _("Couldn't connect to %(host)s:%(port)d (%(msg)s")
+            template = _("Couldn't connect to %(host)s:%(port)d (%(msg)s)")
             msg = template % {'host': self.host, 'port': self.port, 'msg': e}
             print_w(msg)
             ErrorMessage(app.window, _("Connection error"), msg).run()
