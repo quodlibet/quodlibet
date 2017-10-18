@@ -47,7 +47,7 @@ from quodlibet.compat import text_type, iteritems, iterkeys
 
 
 STATION_LIST_URL = \
-    "https://bitbucket.org/lazka/quodlibet/downloads/radiolist.bz2"
+    "https://quodlibet.github.io/radio/radiolist.bz2"
 STATIONS_FAV = os.path.join(quodlibet.get_user_dir(), "stations")
 STATIONS_ALL = os.path.join(quodlibet.get_user_dir(), "stations_all")
 
