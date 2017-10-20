@@ -84,7 +84,7 @@ def to_unicode(value):
         value = '(Error decoding value)'
     except Exception:  # in some cases we get a different exception
         try:
-            value = binary_type(repr(type(value)))
+            value = text_type(force_text(repr(type(value))))
         except Exception:
             value = '(Error decoding value)'
     return value

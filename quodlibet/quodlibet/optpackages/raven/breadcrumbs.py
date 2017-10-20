@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import os
 import time
 import logging
 from types import FunctionType
@@ -154,6 +155,12 @@ def _wrap_logging_method(meth, level=None):
 
     code = get_code(func)
 
+    logging_srcfile = logging._srcfile
+    if logging_srcfile is None:
+        logging_srcfile = os.path.normpath(
+            logging.currentframe.__code__.co_filename
+        )
+
     # This requires a bit of explanation why we're doing this.  Due to how
     # logging itself works we need to pretend that the method actually was
     # created within the logging module.  There are a few ways to detect
@@ -183,7 +190,7 @@ def _wrap_logging_method(meth, level=None):
         'args': ', '.join(args),
         'fwd': fwd,
         'level': level,
-    }, logging._srcfile, 'exec'), logging.__dict__, ns)
+    }, logging_srcfile, 'exec'), logging.__dict__, ns)
 
     new_func = ns['factory'](meth, _record_log_breadcrumb)
     new_func.__doc__ = func.__doc__

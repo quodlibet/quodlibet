@@ -8,7 +8,7 @@ mv "$DIR/tmp/contextlib2.py" "$DIR"
 rm -R "$DIR/tmp"
 
 rm -Rf "raven"
-pip install --system --no-compile --no-deps --target="$DIR/tmp" "raven==6.1.0"
+pip install --system --no-compile --no-deps --target="$DIR/tmp" "raven==6.2.1"
 mv "$DIR/tmp/raven" "$DIR"
 rm -R "$DIR/tmp"
 

@@ -4,6 +4,7 @@ raven.events
 
 :copyright: (c) 2010-2012 by the Sentry Team, see AUTHORS for more details.
 :license: BSD, see LICENSE for more details.
+
 """
 from __future__ import absolute_import
 
@@ -42,6 +43,7 @@ if hasattr(Exception, '__suppress_context__'):
 
         The exceptions are yielded from outermost to innermost (i.e. last to
         first when viewing a stack trace).
+
         """
         yield exc_info
         exc_type, exc, exc_traceback = exc_info
@@ -74,7 +76,9 @@ class Exception(BaseEvent):
     - type: 'ClassName'
     - module '__builtin__' (i.e. __builtin__.TypeError)
     - frames: a list of serialized frames (see _get_traceback_frames)
+
     """
+
     name = 'exception'
 
     def to_string(self, data):
@@ -130,6 +134,7 @@ class Message(BaseEvent):
     - message: 'My message from %s about %s'
     - params: ('foo', 'bar')
     """
+
     name = 'sentry.interfaces.Message'
 
     def to_string(self, data):
@@ -156,6 +161,7 @@ class Query(BaseEvent):
     - query: 'SELECT * FROM table'
     - engine: 'postgesql_psycopg2'
     """
+
     name = 'sentry.interfaces.Query'
 
     def to_string(self, data):

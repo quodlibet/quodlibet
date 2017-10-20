@@ -144,6 +144,7 @@ class Client(object):
     >>>     ident = client.get_ident(client.captureException())
     >>>     print "Exception caught; reference is %s" % ident
     """
+
     logger = logging.getLogger('raven')
     protocol_version = '6'
 
@@ -374,7 +375,6 @@ class Client(object):
         The result of ``build_msg`` should be a standardized dict, with
         all default values available.
         """
-
         # create ID client-side so that it can be passed to application
         event_id = uuid.uuid4().hex
 
@@ -560,6 +560,7 @@ class Client(object):
         Update the tags context for future events.
 
         >>> client.tags_context({'version': '1.0'})
+
         """
         return self.context.merge({
             'tags': data,
@@ -618,7 +619,6 @@ class Client(object):
         :param sample_rate: a float in the range [0, 1] to sample this message
         :return: a tuple with a 32-length string identifying this event
         """
-
         if not self.is_enabled():
             return
 
@@ -902,7 +902,8 @@ class Client(object):
         return self.context(**kwargs)
 
     def captureBreadcrumb(self, *args, **kwargs):
-        """Records a breadcrumb with the current context.  They will be
+        """
+        Records a breadcrumb with the current context.  They will be
         sent with the next event.
         """
         # Note: framework integration should not call this method but
@@ -922,6 +923,7 @@ class Client(object):
 
 
 class DummyClient(Client):
-    "Sends messages into an empty void"
+    """Sends messages into an empty void."""
+
     def send(self, **kwargs):
         return None

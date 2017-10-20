@@ -158,7 +158,7 @@ def get_frame_locals(frame, transformer=transform, max_var_size=4096):
     for k, v in iteritems(f_locals):
         v = transformer(v)
         v_size = len(repr(v))
-        if v_size + f_size < 4096:
+        if v_size + f_size < max_var_size:
             f_vars[k] = v
             f_size += v_size
     return f_vars

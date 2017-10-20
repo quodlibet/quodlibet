@@ -50,17 +50,15 @@ class Processor(object):
 
 
 class RemovePostDataProcessor(Processor):
-    """
-    Removes HTTP post data.
-    """
+    """Removes HTTP post data."""
+
     def filter_http(self, data, **kwargs):
         data.pop('data', None)
 
 
 class RemoveStackLocalsProcessor(Processor):
-    """
-    Removes local context variables from stacktraces.
-    """
+    """Removes local context variables from stacktraces."""
+
     def filter_stacktrace(self, data, **kwargs):
         for frame in data.get('frames', []):
             frame.pop('vars', None)
@@ -71,6 +69,7 @@ class SanitizePasswordsProcessor(Processor):
     Asterisk out things that look like passwords, credit card numbers,
     and API keys in frames, http, and basic extra data.
     """
+
     MASK = '*' * 8
     FIELDS = frozenset([
         'password',

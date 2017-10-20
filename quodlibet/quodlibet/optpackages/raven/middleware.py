@@ -40,6 +40,7 @@ class ClosingIterator(Iterator):
     An iterator that is implements a ``close`` method as-per
     WSGI recommendation.
     """
+
     def __init__(self, sentry, iterable, environ):
         self.sentry = sentry
         self.environ = environ
@@ -83,6 +84,7 @@ class Sentry(object):
     >>> from raven.base import Client
     >>> application = Sentry(application, Client())
     """
+
     def __init__(self, application, client=None):
         self.application = application
         if client is None:
