@@ -130,7 +130,7 @@ coverage==4.4.1
         mingw-w64-"${ARCH}"-SDL2 mingw-w64-"${ARCH}"-libdvdcss \
         mingw-w64-"${ARCH}"-libdvdnav mingw-w64-"${ARCH}"-libdvdread \
         mingw-w64-"${ARCH}"-openexr mingw-w64-"${ARCH}"-openal \
-        mingw-w64-"${ARCH}"-openh264 mingw-w64-"${ARCH}"-gnome-common \
+        mingw-w64-"${ARCH}"-openh264 \
         mingw-w64-"${ARCH}"-clutter  mingw-w64-"${ARCH}"-gsl \
         mingw-w64-"${ARCH}"-libvpx mingw-w64-"${ARCH}"-libcaca \
         mingw-w64-"${ARCH}"-libwebp || true
@@ -284,6 +284,7 @@ function cleanup_after {
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstmxf.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstfaac.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstschro.dll
+    rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstrtmp.dll
 
     rm -f "${MINGW_ROOT}"/bin/libharfbuzz-icu-0.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstcacasink.dll
