@@ -6,11 +6,10 @@
 # published by the Free Software Foundation
 
 import os
-import tempfile
 import hashlib
 
 from gi.repository import GdkPixbuf, GLib
-from senf import fsn2uri, fsnative
+from senf import fsn2uri, fsnative, gettempdir
 
 import quodlibet
 from quodlibet.util.path import mtime, mkdir, xdg_get_cache_home
@@ -123,7 +122,7 @@ def get_thumbnail(path, boundary):
 
     # embedded thumbnails come from /tmp/
     # FIXME: move this to another layer
-    if path.startswith(tempfile.gettempdir()):
+    if path.startswith(gettempdir()):
         return new_from_file_at_size(path, width, height)
 
     thumb_path, thumb_size = get_cache_info(path, boundary)
