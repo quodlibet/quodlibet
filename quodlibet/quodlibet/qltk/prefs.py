@@ -378,7 +378,7 @@ class PreferencesWindow(UniqueWindow):
             fb_label.set_mnemonic_widget(fb_spin)
 
             pre_amp_gain = config.getfloat("player", "pre_amp_gain", 0.0)
-            adj = Gtk.Adjustment.new(pre_amp_gain, -6, 6, 0.5, 0.5, 0.0)
+            adj = Gtk.Adjustment.new(pre_amp_gain, -12, 12, 0.5, 0.5, 0.0)
             adj.connect('value-changed', self.__changed,
                         'player', 'pre_amp_gain')
             pre_spin = Gtk.SpinButton(adjustment=adj)
