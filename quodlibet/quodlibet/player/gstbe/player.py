@@ -538,13 +538,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     break
         self.bin.connect("source-setup", source_setup)
 
-        if self.has_external_volume:
-            # ReplayGain information gets lost when destroying
-            self._reset_replaygain()
-        else:
+        if not self.has_external_volume:
             # Restore volume/ReplayGain and mute state
             self.volume = self._volume
             self.mute = self._mute
+
+        # ReplayGain information gets lost when destroying
+        self._reset_replaygain()
 
         if self.song:
             self.bin.set_property('uri', self.song("~uri"))
