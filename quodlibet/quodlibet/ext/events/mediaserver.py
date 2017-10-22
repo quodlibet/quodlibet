@@ -12,8 +12,6 @@ if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
-import tempfile
-
 from gi.repository import Gtk, GdkPixbuf
 from senf import fsn2uri
 
@@ -27,6 +25,7 @@ from quodlibet.pattern import Pattern
 from quodlibet.qltk import Icons
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
+from quodlibet.util import NamedTemporaryFile
 from quodlibet.compat import iteritems, itervalues
 
 BASE_PATH = "/org/gnome/UPnP/MediaServer2"
@@ -631,7 +630,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         self.__depth = pixbuf.get_bits_per_sample()
 
         # save and keep reference
-        self.__f = f = tempfile.NamedTemporaryFile()
+        self.__f = f = NamedTemporaryFile()
         pixbuf.savev(f.name, "png", [], [])
 
     def get_property(self, interface, name):

@@ -8,12 +8,14 @@
 import os
 import sys
 import locale
+import tempfile
 from functools import wraps
 
-from senf import environ, argv, path2fsn
+from senf import environ, argv, path2fsn, gettempdir
 
 
 from .environment import is_linux
+from .compat import PY3
 
 
 environ, argv
@@ -117,3 +119,13 @@ def get_ca_file():
     import certifi
 
     return os.path.join(get_module_dir(certifi), "cacert.pem")
+
+
+def NamedTemporaryFile(*args, **kwargs):
+    """Like tempfile.NamedTemporaryFile, but supports unicode paths on
+    Py2+Windows
+    """
+
+    if not PY3 and kwargs.get("dir", None) is None:
+        kwargs["dir"] = gettempdir()
+    return tempfile.NamedTemporaryFile(*args, **kwargs)

@@ -10,7 +10,6 @@ import os
 import re
 import sys
 import errno
-import tempfile
 import codecs
 import shlex
 
@@ -20,7 +19,7 @@ from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
 from quodlibet.compat import PY2, urlparse, text_type, quote, unquote, PY3
 from . import windows
 from .environment import is_windows
-from .misc import environ
+from .misc import environ, NamedTemporaryFile
 
 if sys.platform == "darwin":
     from Foundation import NSString
@@ -277,7 +276,7 @@ def get_temp_cover_file(data):
 
     try:
         # pass fsnative so that mkstemp() uses unicode on Windows
-        fn = tempfile.NamedTemporaryFile(prefix=fsnative(u"tmp"))
+        fn = NamedTemporaryFile(prefix=fsnative(u"tmp"))
         fn.write(data)
         fn.flush()
         fn.seek(0, 0)

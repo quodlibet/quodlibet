@@ -9,7 +9,6 @@
 
 import os
 import contextlib
-import tempfile
 
 from senf import fsnative
 
@@ -17,6 +16,8 @@ if os.name == "nt":
     from . import winapi
 else:
     import fcntl
+
+from .misc import NamedTemporaryFile
 
 
 def _windows_rename(source, dest):
@@ -58,7 +59,7 @@ def atomic_save(filename, mode):
 
     dir_ = os.path.dirname(filename)
     basename = os.path.basename(filename)
-    fileobj = tempfile.NamedTemporaryFile(
+    fileobj = NamedTemporaryFile(
         mode=mode, dir=dir_,
         prefix=basename + fsnative(u"_"), suffix=fsnative(u".tmp"),
         delete=False)
