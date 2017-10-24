@@ -56,9 +56,9 @@ class MinVersions(object):
     MUTAGEN = Version("Mutagen", 1, 34,
         message="Use the Quod Libet unstable PPAs/repos to get a newer "
                 "mutagen version.")
-    GTK = Version("GTK+", 3, 14)
-    PYGOBJECT = Version("PyGObject", 3, 14)
-    GSTREAMER = Version("GStreamer", 1, 4)
+    GTK = Version("GTK+", 3, 18)
+    PYGOBJECT = Version("PyGObject", 3, 18)
+    GSTREAMER = Version("GStreamer", 1, 8)
 
 
 VERSION_TUPLE = Version("", 4, 0, -1)
