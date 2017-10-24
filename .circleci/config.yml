@@ -37,18 +37,6 @@ defaults: &defaults
 
 version: 2
 jobs:
-  job.debian8.py2:
-    environment:
-      - PYARGS: "-R"
-      - PYTHON: "python2"
-      - DOCKERIMAGE: "debian8.py2"
-    <<: *defaults
-  job.debian8.py3:
-    environment:
-      - PYARGS: "-R -bb"
-      - PYTHON: "python3"
-      - DOCKERIMAGE: "debian8.py3"
-    <<: *defaults
   job.ubuntu16.04.py2:
     environment:
       - PYARGS: "-R"
@@ -60,6 +48,12 @@ jobs:
       - PYARGS: "-R -bb"
       - PYTHON: "python3"
       - DOCKERIMAGE: "ubuntu16.04.py3"
+    <<: *defaults
+  job.ubuntu17.10.py2:
+    environment:
+      - PYARGS: "-R"
+      - PYTHON: "python2"
+      - DOCKERIMAGE: "ubuntu17.10.py2"
     <<: *defaults
   job.ubuntu17.10.py3:
     environment:
@@ -86,8 +80,7 @@ workflows:
     jobs:
       - job.win32.py2
       - job.win32.py3
-      - job.debian8.py2
-      - job.debian8.py3
       - job.ubuntu16.04.py2
       - job.ubuntu16.04.py3
+      - job.ubuntu17.10.py2
       - job.ubuntu17.10.py3
