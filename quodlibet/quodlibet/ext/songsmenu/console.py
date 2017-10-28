@@ -48,7 +48,7 @@ class PyConsole(SongsMenuPlugin):
         win = ConsoleWindow(create_console(songs), title=desc)
         win.set_icon_name(self.PLUGIN_ICON)
         win.set_title(_("{plugin_name} for {songs} ({app})").format(
-            plugin_name=self.PLUGIN_DESC.strip('.'), songs=desc, app=app.name))
+            plugin_name=self.PLUGIN_NAME, songs=desc, app=app.name))
         win.show_all()
 
 
