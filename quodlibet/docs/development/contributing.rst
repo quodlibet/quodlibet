@@ -101,7 +101,7 @@ Getting started as a developer on Quod Libet
 --------------------------------------------
 
 On an long-standing project it can be daunting helping out for the first time.
-The `newcomer-friendly tag<https://github.com/quodlibet/quodlibet/issues?q=is%3Aopen+is%3Aissue+label%3Anewcomer-friendly>`_
+The `newcomer-friendly tag <https://github.com/quodlibet/quodlibet/issues?q=is%3Aopen+is%3Aissue+label%3Anewcomer-friendly>`_
 has been added to (some) issues to indicate where the existing developers
 feel there is an opportunity to help out without too much background (or risk).
 See the discussion around this in `Issue 2516 <https://github.com/quodlibet/quodlibet/issues/2516>`_
