@@ -236,6 +236,7 @@ Marek Suchánek (cs)
 Till Berger (de)
 Jean-Michel Pouré (fr)
 Kristian Laakkonen (fi)
+Kirill Romanov (ru)
 """.strip().splitlines())
 
 ARTISTS = sorted(u"""\
