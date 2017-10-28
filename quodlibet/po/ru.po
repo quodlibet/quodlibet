@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-17 18:58+0200\n"
-"PO-Revision-Date: 2015-01-05 14:45+0800\n"
+"PO-Revision-Date: 2017-10-28 18:07+0300\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: ../data/exfalso.appdata.xml.in.h:1 ../data/exfalso.desktop.in.h:2
 msgid "Edit tags in your audio files"
@@ -5591,23 +5591,20 @@ msgid "_Jump to Playing Song"
 msgstr "Перейти _к воспроизводимой композиции"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:986
-#, fuzzy
 msgid "_File"
 msgstr "Файл"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:987
-#, fuzzy
 msgid "_Song"
-msgstr "Композиции"
+msgstr "Композиция"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:988
 msgid "_View"
 msgstr "_Вид"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:989
-#, fuzzy
 msgid "_Browse"
-msgstr "Режимы отображения"
+msgstr "Просмотр"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Control"
