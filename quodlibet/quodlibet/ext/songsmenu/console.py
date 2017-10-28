@@ -159,8 +159,8 @@ class PythonConsole(Gtk.ScrolledWindow):
         self.namespace['__history__'] = self.history
 
         # Set up hooks for standard output.
-        self.stdout = OutFile(self, sys.stdout.fileno(), self.normal)
-        self.stderr = OutFile(self, sys.stderr.fileno(), self.error)
+        self.stdout = OutFile(self, self.normal)
+        self.stderr = OutFile(self, self.error)
 
         # Signals
         self.view.connect("key-press-event", self.__key_press_event_cb)
@@ -379,8 +379,7 @@ class OutFile(object):
     """A fake output file object. It sends output to a TK test widget,
     and if asked for a file number, returns one set on instance creation"""
 
-    def __init__(self, console, fn, tag):
-        self.fn = fn
+    def __init__(self, console, tag):
         self.console = console
         self.tag = tag
 
@@ -391,7 +390,7 @@ class OutFile(object):
         pass
 
     def fileno(self):
-        return self.fn
+        raise IOError
 
     def isatty(self):
         return 0
