@@ -169,7 +169,7 @@ function install_quodlibet {
         QL_VERSION_DESC="$QL_VERSION-rev$GIT_REV-$GIT_HASH"
     fi
 
-    build_compileall -d "" -f -q "${MINGW_ROOT}"
+    build_compileall -d "" -f -q "$(cygpath -w "${MINGW_ROOT}")"
 }
 
 function cleanup_before {
@@ -194,13 +194,14 @@ function cleanup_before {
     rm -f "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/lib-dynload/_tkinter*
     find "${MINGW_ROOT}"/lib/"${PYTHON_ID}".* -type d -name "test*" \
         -prune -exec rm -rf {} \;
-
     find "${MINGW_ROOT}"/lib/"${PYTHON_ID}".* -type d -name "*_test*" \
         -prune -exec rm -rf {} \;
 
     find "${MINGW_ROOT}"/bin -name "*.pyo" -exec rm -f {} \;
     find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
-    build_compileall -d "" -f -q "${MINGW_ROOT}"
+    find "${MINGW_ROOT}" -type d -name "__pycache__" -prune -exec rm -rf {} \;
+
+    build_compileall -d "" -f -q "$(cygpath -w "${MINGW_ROOT}")"
     find "${MINGW_ROOT}" -name "*.py" -exec rm -f {} \;
 }
 
@@ -325,6 +326,7 @@ function cleanup_after {
     find "${MINGW_ROOT}" -name "old_root.pem" -exec rm -rf {} \;
     find "${MINGW_ROOT}" -name "weak.pem" -exec rm -rf {} \;
 
+    find "${MINGW_ROOT}"/bin -name "*.pyo" -exec rm -f {} \;
     find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
     find "${MINGW_ROOT}" -type d -name "__pycache__" -prune -exec rm -rf {} \;
 

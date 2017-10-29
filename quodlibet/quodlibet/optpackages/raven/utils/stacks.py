@@ -10,6 +10,7 @@ from __future__ import absolute_import, division
 import inspect
 import linecache
 import re
+import os
 import sys
 
 from raven.utils.serializer import transform
@@ -278,7 +279,7 @@ def get_stack_info(frames, transformer=transform, capture_locals=True,
         try:
             base_filename = sys.modules[module_name.split('.', 1)[0]].__file__
             filename = abs_path.split(
-                base_filename.rsplit('/', 2)[0], 1)[-1].lstrip("/")
+                base_filename.rsplit(os.sep, 2)[0], 1)[-1].lstrip(os.sep)
         except Exception:
             filename = abs_path
 
