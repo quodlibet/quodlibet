@@ -180,6 +180,7 @@ def errorhook(exc_info=None):
     try:
         sentry_error = sentry.capture(exc_info, fingerprint=fingerprint)
     except SentryError:
+        print_exc()
         sentry_error = None
 
     def called_in_main_thread():
