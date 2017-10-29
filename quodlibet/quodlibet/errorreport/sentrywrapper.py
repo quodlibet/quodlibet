@@ -17,6 +17,7 @@ It also only imports raven when needed since it takes quite a lot of time
 to import.
 """
 
+import os
 import pprint
 
 from quodlibet.compat import text_type, urlencode
@@ -219,6 +220,7 @@ class Sentry(object):
         try:
             from raven import Client
             from raven.transport import Transport
+            from raven.processors import Processor
         except ImportError as e:
             raise SentryError(e)
 
@@ -259,6 +261,22 @@ class Sentry(object):
         client.captureException(exc_info, fingerprint=fingerprint)
         if data[0] is None:
             raise SentryError("Failed to capture")
+
+        class SanitizePaths(Processor):
+            """Makes filename on Windows match the Linux one.
+            Also adjust abs_path, so it still contains filename.
+            """
+
+            def filter_stacktrace(self, data, **kwargs):
+                for frame in data.get('frames', []):
+                    if frame.get("abs_path"):
+                        frame["abs_path"] = \
+                            frame["abs_path"].replace(os.sep, "/")
+                    if frame.get("filename"):
+                        frame["filename"] = \
+                            frame["filename"].replace(os.sep, "/")
+
+        SanitizePaths(client).process(data[0][1])
 
         # fix leak
         client.context.deactivate()
