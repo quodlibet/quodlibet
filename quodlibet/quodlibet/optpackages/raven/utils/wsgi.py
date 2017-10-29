@@ -92,3 +92,17 @@ def get_current_url(environ, root_only=False, strip_querystring=False,
             if qs:
                 cat('?' + qs)
     return ''.join(tmp)
+
+
+def get_client_ip(environ):
+    """
+    Naively yank the first IP address in an X-Forwarded-For header
+    and assume this is correct.
+
+    Note: Don't use this in security sensitive situations since this
+    value may be forged from a client.
+    """
+    try:
+        return environ['HTTP_X_FORWARDED_FOR'].split(',')[0].strip()
+    except (KeyError, IndexError):
+        return environ.get('REMOTE_ADDR')

@@ -15,7 +15,7 @@ import socket
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), os.pardir))
 
-TIMEOUT = 1
+TIMEOUT = 5
 
 # TODO: this is specific to Django
 CLIENT = 'raven.contrib.django.DjangoClient'
