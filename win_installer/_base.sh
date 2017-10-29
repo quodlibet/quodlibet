@@ -123,25 +123,24 @@ coverage==4.4.1
             --force-reinstall "futures==3.0.5" "faulthandler==2.4"
     fi
 
-    build_pacman --noconfirm -Rdd mingw-w64-"${ARCH}"-shared-mime-info \
+    build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-shared-mime-info \
         mingw-w64-"${ARCH}"-"${PYTHON_ID}"-pip mingw-w64-"${ARCH}"-ncurses \
         mingw-w64-"${ARCH}"-tk mingw-w64-"${ARCH}"-tcl \
         mingw-w64-"${ARCH}"-opencv mingw-w64-"${ARCH}"-daala-git \
         mingw-w64-"${ARCH}"-SDL2 mingw-w64-"${ARCH}"-libdvdcss \
         mingw-w64-"${ARCH}"-libdvdnav mingw-w64-"${ARCH}"-libdvdread \
         mingw-w64-"${ARCH}"-openexr mingw-w64-"${ARCH}"-openal \
-        mingw-w64-"${ARCH}"-openh264 \
+        mingw-w64-"${ARCH}"-openh264 mingw-w64-"${ARCH}"-zbar \
         mingw-w64-"${ARCH}"-clutter  mingw-w64-"${ARCH}"-gsl \
         mingw-w64-"${ARCH}"-libvpx mingw-w64-"${ARCH}"-libcaca \
         mingw-w64-"${ARCH}"-libwebp || true
 
     if [ "${PYTHON_ID}" = "python2" ]; then
-        build_pacman --noconfirm -Rdd mingw-w64-"${ARCH}"-python3 || true
+        build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-python3 || true
     else
-        build_pacman --noconfirm -Rdd mingw-w64-"${ARCH}"-python2 || true
+        build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-python2 || true
     fi
 
-    build_pacman --noconfirm -R $(build_pacman -Qdtq)
     build_pacman -S --noconfirm mingw-w64-"${ARCH}"-"${PYTHON_ID}"-setuptools
 }
 
@@ -258,6 +257,7 @@ function cleanup_after {
     rm -Rf "${MINGW_ROOT}"/share/fontconfig
     rm -Rf "${MINGW_ROOT}"/share/gettext-*
     rm -Rf "${MINGW_ROOT}"/share/gstreamer-1.0
+    rm -Rf "${MINGW_ROOT}"/share/installed-tests
 
     find "${MINGW_ROOT}"/share/glib-2.0 -type f ! \
         -name "*.compiled" -exec rm -f {} \;
@@ -286,6 +286,7 @@ function cleanup_after {
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstfaac.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstschro.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstrtmp.dll
+    rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstzbar.dll
 
     rm -f "${MINGW_ROOT}"/bin/libharfbuzz-icu-0.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstcacasink.dll
