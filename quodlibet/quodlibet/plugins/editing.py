@@ -43,12 +43,12 @@ class RenameFilesPlugin(object):
         return list(map(self.filter, origs, names))
 
     def __eq__(self, other):
-        return (self._order == other._order and
-                type(self).__name__ == type(other).__name__)
+        return (self._order, type(self).__name__) == \
+            (other._order, type(other).__name__)
 
     def __lt__(self, other):
-        return (self._order < other._order and
-                type(self).__name__ < type(other).__name__)
+        return (self._order, type(self).__name__) < \
+            (other._order, type(other).__name__)
 
 
 @total_ordering
@@ -84,12 +84,12 @@ class TagsFromPathPlugin(object):
         return value
 
     def __eq__(self, other):
-        return (self._order == other._order and
-                type(self).__name__ == type(other).__name__)
+        return (self._order, type(self).__name__) == \
+            (other._order, type(other).__name__)
 
     def __lt__(self, other):
-        return (self._order < other._order and
-                type(self).__name__ < type(other).__name__)
+        return (self._order, type(self).__name__) < \
+            (other._order, type(other).__name__)
 
 
 class EditTagsPlugin(Gtk.ImageMenuItem):
