@@ -15,7 +15,7 @@ gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk
 from gi.repository import Gdk
-from gi.repository import GLib, GObject
+from gi.repository import GLib, GObject, Soup
 from senf import fsn2bytes, bytes2fsn
 
 from quodlibet.util import gdecode, print_d, print_w
@@ -389,6 +389,10 @@ except AttributeError:
         pygobject_version = gi._gobject.pygobject_version
     except AttributeError:
         pygobject_version = (-1,)
+
+
+libsoup_version = (Soup.get_major_version(), Soup.get_minor_version(),
+                   Soup.get_micro_version())
 
 
 def io_add_watch(fd, prio, condition, func, *args, **kwargs):

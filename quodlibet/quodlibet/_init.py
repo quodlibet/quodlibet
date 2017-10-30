@@ -413,10 +413,11 @@ def _init_gtk():
     sys.modules["gpod"] = None
     sys.modules["gnome"] = None
 
-    from quodlibet.qltk import pygobject_version, gtk_version
+    from quodlibet.qltk import pygobject_version, gtk_version, libsoup_version
 
     MinVersions.GTK.check(gtk_version)
     MinVersions.PYGOBJECT.check(pygobject_version)
+    MinVersions.LIBSOUP.check(libsoup_version)
 
 
 def _init_gst():

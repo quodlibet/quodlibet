@@ -59,6 +59,7 @@ class MinVersions(object):
     GTK = Version("GTK+", 3, 18)
     PYGOBJECT = Version("PyGObject", 3, 18)
     GSTREAMER = Version("GStreamer", 1, 8)
+    LIBSOUP = Version("libsoup", 2, 52)
 
 
 VERSION_TUPLE = Version("", 4, 0, -1)
