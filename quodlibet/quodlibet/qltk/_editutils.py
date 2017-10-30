@@ -17,7 +17,7 @@ from quodlibet.plugins import PluginHandler
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
 from quodlibet.qltk import Icons
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.errorreport import errorhook
 
 
@@ -152,7 +152,7 @@ class FilterPluginBox(Gtk.VBox):
         vbox = Gtk.VBox()
         expander.add(vbox)
 
-        plugin_handler.connect(
+        connect_destroy(plugin_handler,
             "changed", self.__refresh_plugins, vbox, expander)
 
         expander.connect("notify::expanded", self.__notify_expanded, vbox)
