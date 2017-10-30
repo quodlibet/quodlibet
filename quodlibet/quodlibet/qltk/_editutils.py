@@ -18,6 +18,7 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
+from quodlibet.errorreport import errorhook
 
 
 class OverwriteWarning(WarningMessage):
@@ -171,7 +172,7 @@ class FilterPluginBox(Gtk.VBox):
             try:
                 f = Kind()
             except:
-                util.print_exc()
+                errorhook()
                 continue
             else:
                 instances.append(f)
@@ -185,7 +186,7 @@ class FilterPluginBox(Gtk.VBox):
             try:
                 vbox.pack_start(f, True, True, 0)
             except:
-                util.print_exc()
+                errorhook()
                 f.destroy()
                 continue
 
@@ -195,7 +196,7 @@ class FilterPluginBox(Gtk.VBox):
                 try:
                     f.connect('changed', lambda *x: self.emit('changed'))
                 except:
-                    util.print_exc()
+                    errorhook()
                     continue
 
             self.__plugins.append(f)
