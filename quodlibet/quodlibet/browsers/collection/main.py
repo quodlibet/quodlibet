@@ -155,6 +155,14 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         model_filter.set_visible_func(self.__parse_query)
         view.set_model(model_filter)
 
+        def cmpa(a, b):
+            """Like cmp but treats values that evaluate to false as inf"""
+            if not a and b:
+                return 1
+            if not b and a:
+                return -1
+            return cmp(a, b)
+
         def cmp_rows(model, i1, i2, data):
             t1, t2 = model[i1][0], model[i2][0]
             pos1 = _ORDERING.get(t1, 0)
@@ -166,10 +174,10 @@ class CollectionBrowser(Browser, util.InstanceTracker):
                 return cmp(util.human_sort_key(t1), util.human_sort_key(t2))
 
             a1, a2 = t1.album, t2.album
-            return (cmp(a1.peoplesort and a1.peoplesort[0],
-                        a2.peoplesort and a2.peoplesort[0]) or
-                    cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
-                    cmp((a1.sort, a1.key), (a2.sort, a2.key)))
+            return (cmpa(a1.peoplesort, a2.peoplesort) or
+                    cmpa(a1.date, a2.date) or
+                    cmpa(a1.sort, a2.sort) or
+                    cmp(a1.key, a2.key))
 
         model_sort.set_sort_func(0, cmp_rows)
         model_sort.set_sort_column_id(0, Gtk.SortType.ASCENDING)
