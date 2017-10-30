@@ -40,7 +40,7 @@ class RenameFilesPlugin(object):
         return value
 
     def filter_list(self, origs, names):
-        return map(self.filter, origs, names)
+        return list(map(self.filter, origs, names))
 
     def __eq__(self, other):
         return (self._order == other._order and
