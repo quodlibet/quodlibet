@@ -8,9 +8,10 @@
 from gi.repository import Gtk
 
 from quodlibet.util import connect_obj
-from quodlibet.compat import cmp
+from quodlibet.util.misc import total_ordering
 
 
+@total_ordering
 class RenameFilesPlugin(object):
     """Plugins of this type must subclass a GTK widget. They will be
     packed into the RenameFiles pane (currently a ScrolledWindow hidden
@@ -41,11 +42,16 @@ class RenameFilesPlugin(object):
     def filter_list(self, origs, names):
         return map(self.filter, origs, names)
 
-    def __cmp__(self, other):
-        return (cmp(self._order, other._order) or
-                cmp(type(self).__name__, type(other).__name__))
+    def __eq__(self, other):
+        return (self._order == other._order and
+                type(self).__name__ == type(other).__name__)
+
+    def __lt__(self, other):
+        return (self._order < other._order and
+                type(self).__name__ < type(other).__name__)
 
 
+@total_ordering
 class TagsFromPathPlugin(object):
     """Plugins of this type must subclass a GTK widget. They will be
     packed into the TagsFromPath pane (currently a ScrolledWindow hidden
@@ -77,9 +83,13 @@ class TagsFromPathPlugin(object):
     def filter(self, tag, value):
         return value
 
-    def __cmp__(self, other):
-        return (cmp(self._order, other._order) or
-                cmp(type(self).__name__, type(other).__name__))
+    def __eq__(self, other):
+        return (self._order == other._order and
+                type(self).__name__ == type(other).__name__)
+
+    def __lt__(self, other):
+        return (self._order < other._order and
+                type(self).__name__ < type(other).__name__)
 
 
 class EditTagsPlugin(Gtk.ImageMenuItem):
