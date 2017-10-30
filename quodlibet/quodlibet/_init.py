@@ -265,20 +265,8 @@ def _init_gtk():
     gi.require_version("Pango", "1.0")
     gi.require_version('Soup', '2.4')
 
-    from gi.repository import Gtk, Soup
+    from gi.repository import Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version
-
-    # Work around missing annotation in older libsoup (Ubuntu 14.04 at least)
-    message = Soup.Message()
-    try:
-        message.set_request(None, Soup.MemoryUse.COPY, b"")
-    except TypeError:
-        orig = Soup.Message.set_request
-
-        def new_set_request(self, content_type, req_use, req_body):
-            return orig(self, content_type, req_use, req_body, len(req_body))
-
-        Soup.Message.set_request = new_set_request
 
     # PyGObject doesn't fail anymore when init fails, so do it ourself
     initialized, argv[:] = Gtk.init_check(argv)
