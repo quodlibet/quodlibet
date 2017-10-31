@@ -47,7 +47,8 @@ def apicall(method, **kwargs):
                    urlencode(real_args)])
     log(url)
     uobj = urlopen(url)
-    resp = json.load(uobj)
+    json_text = uobj.read().decode("utf-8")
+    resp = json.loads(json_text)
     if 'error' in resp:
         errmsg = 'Last.fm API error: %s' % resp.get('message', '')
         log(errmsg)
@@ -99,7 +100,8 @@ class LastFMSyncCache(object):
                 for chart in charts:
                     # Charts keys are 2-tuple (from_timestamp, to_timestamp);
                     # values are whether we still need to fetch the chart
-                    fro, to = map(lambda s: int(chart[s]), ('from', 'to'))
+                    fro, to = list(
+                        map(lambda s: int(chart[s]), ('from', 'to')))
 
                     # If the chart is older than the register date of the
                     # user, don't download it. (So the download doesn't start
@@ -109,12 +111,13 @@ class LastFMSyncCache(object):
 
                     self.charts.setdefault((fro, to), True)
                 self.lastupdated = now
-            elif not filter(None, self.charts.values()):
+            elif not list(filter(None, self.charts.values())):
                 # No charts to fetch, no update scheduled.
                 prog(_("Already up-to-date."), 1.)
                 return False
 
-            new_charts = filter(lambda k: self.charts[k], self.charts.keys())
+            new_charts = list(
+                filter(lambda k: self.charts[k], self.charts.keys()))
 
             for idx, (fro, to) in enumerate(sorted(new_charts)):
                 chart_week = date.fromtimestamp(fro).isoformat()
@@ -163,7 +166,7 @@ class LastFMSyncCache(object):
             if artist:
                 keys.append((artist.lower(), track['name'].lower()))
 
-        stats = filter(None, map(self.songs.get, keys))
+        stats = list(filter(None, map(self.songs.get, keys)))
         if stats:
             # Not sure if last.fm ever changes their tag values, but this
             # should map all changed values to the same object correctly
@@ -194,7 +197,7 @@ class LastFMSyncCache(object):
                             song.get('title', '').lower()))
             keys.append((song.get('artist', '').lower(),
                          song.get('title', '').lower()))
-            stats = filter(None, map(self.songs.get, keys))
+            stats = list(filter(None, map(self.songs.get, keys)))
             if not stats:
                 continue
             stats = stats[0]
@@ -266,7 +269,12 @@ class LastFMSync(SongsMenuPlugin):
             return False
 
     def plugin_songs(self, songs):
-        self.cache_shelf = shelve.open(self.CACHE_PATH)
+        try:
+            self.cache_shelf = shelve.open(self.CACHE_PATH)
+        except:
+            # some Python 2 DB types can't be opened in Python 3
+            self.cache_shelf = shelve.open(self.CACHE_PATH, "n")
+
         user = config_get('username', '')
         try:
             cache = self.cache_shelf.setdefault(user, LastFMSyncCache(user))
