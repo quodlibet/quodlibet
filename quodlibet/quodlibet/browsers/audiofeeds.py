@@ -253,6 +253,43 @@ class AddFeedDialog(GetStringDialog):
         return None
 
 
+def hacky_py2_unpickle_recover(fileobj):
+    """Can raise anything"""
+
+    # We just recover the uri and let it refresh the feed later
+
+    def lookup_func(func, mod, name):
+
+        class Feed(list):
+            pass
+
+        class Bar(dict):
+            pass
+
+        if name == "Feed":
+            return Feed
+        else:
+            return Bar
+
+    with open(FEEDS, "rb") as fileobj:
+        feeds = pickle_load(fileobj, lookup_func)
+
+    uris = []
+    for item in feeds:
+        d = item.__dict__
+        if b"uri" in d:
+            v = d[b"uri"]
+        elif "uri" in d:
+            v = d["uri"]
+        else:
+            continue
+        if isinstance(v, bytes):
+            v = v.decode("utf-8")
+        uris.append(v)
+
+    return [Feed(u) for u in uris]
+
+
 class AudioFeeds(Browser):
     __feeds = Gtk.ListStore(object)  # unread
 
@@ -301,17 +338,24 @@ class AudioFeeds(Browser):
     @classmethod
     def init(klass, library):
         uris = set()
+        feeds = []
+
         try:
             with open(FEEDS, "rb") as fileobj:
                 feeds = pickle_load(fileobj)
         except (PickleError, EnvironmentError):
-            pass
-        else:
-            for feed in feeds:
-                if feed.uri in uris:
-                    continue
-                klass.__feeds.append(row=[feed])
-                uris.add(feed.uri)
+            try:
+                with open(FEEDS, "rb") as fileobj:
+                    feeds = hacky_py2_unpickle_recover(fileobj)
+            except Exception:
+                pass
+
+        for feed in feeds:
+            if feed.uri in uris:
+                continue
+            klass.__feeds.append(row=[feed])
+            uris.add(feed.uri)
+
         GLib.idle_add(klass.__do_check)
 
     @classmethod
