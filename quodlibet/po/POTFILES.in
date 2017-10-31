@@ -161,7 +161,6 @@ quodlibet/qltk/chooser.py
 quodlibet/qltk/controls.py
 quodlibet/qltk/data_editors.py
 quodlibet/qltk/delete.py
-quodlibet/qltk/downloader.py
 quodlibet/qltk/edittags.py
 quodlibet/qltk/_editutils.py
 quodlibet/qltk/entry.py

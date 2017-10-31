@@ -27,15 +27,12 @@ from quodlibet.browsers import Browser
 from quodlibet.compat import listfilter, text_type, build_opener, PY2
 from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
-from quodlibet.qltk.downloader import DownloadWindow
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.msg import ErrorMessage
-from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, print_w
 from quodlibet.qltk.x import ScrolledWindow, Align, Button, MenuItem
-from quodlibet.qltk.chooser import choose_target_file, choose_target_folder
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 
@@ -339,38 +336,6 @@ class AudioFeeds(Browser):
                 row[0] = feed
         klass.write()
         GLib.timeout_add(60 * 60 * 1000, klass.__do_check)
-
-    def Menu(self, songs, library, items):
-        if len(songs) == 1:
-            item = qltk.MenuItem(_(u"_Download…"), Icons.NETWORK_WORKGROUP)
-            item.connect('activate', self.__download, songs[0]("~uri"))
-            item.set_sensitive(not songs[0].is_file)
-        else:
-            uris = [song("~uri") for song in songs if not song.is_file]
-            item = qltk.MenuItem(_(u"_Download…"), Icons.NETWORK_WORKGROUP)
-            item.connect('activate', self.__download_many, uris)
-            item.set_sensitive(bool(uris))
-
-        items.append([item])
-        menu = SongsMenu(library, songs, items=items)
-        return menu
-
-    def __download_many(self, activator, sources):
-        target = choose_target_folder(self, _("Download Files"), _("_Save"))
-        if target is not None:
-            for i, source in enumerate(sources):
-                base = os.path.basename(source)
-                if not base:
-                    base = ("file%d" % i) + (
-                        os.path.splitext(source)[1] or ".audio")
-                fulltarget = os.path.join(target, base)
-                DownloadWindow.download(source, fulltarget, self)
-
-    def __download(self, activator, source):
-        name = os.path.basename(source)
-        target = choose_target_file(self, _("Download File"), _("_Save"), name)
-        if target is not None:
-            DownloadWindow.download(source, target, self)
 
     def __init__(self, library):
         super(AudioFeeds, self).__init__(spacing=6)
