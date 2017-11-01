@@ -544,6 +544,10 @@ class AudioFile(dict, ImageContainer):
 
         from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 
+        def sanitise(sep, parts):
+            return sep.join(list(map(lambda s: s.replace(u'/', u'')[:128],
+                                     parts)))
+
         lyric_paths = \
             config.getstringlist("memory", "lyric_rootpaths", [])
         # add default
@@ -552,13 +556,13 @@ class AudioFile(dict, ImageContainer):
             config.getstringlist("memory", "lyric_filenames", [])
         # add defaults
         lyric_filenames.append(
-            (self.comma("lyricist") or self.comma("artist"))
-            .replace(u'/', u'')[:128] + os.sep +
-            self.comma("title").replace(u'/', u'')[:128] + u'.lyric')
+            sanitise(os.sep, [(self.comma("lyricist") or
+                              self.comma("artist")),
+                              self.comma("title")]) + u'.lyric')
         lyric_filenames.append(
-            (self.comma("lyricist") or self.comma("artist"))
-            .replace(u'/', u'')[:128] + ' - ' +
-            self.comma("title").replace(u'/', u'')[:128] + u'.lyric')
+            sanitise(' - ', [(self.comma("lyricist") or
+                             self.comma("artist")),
+                             self.comma("title")]) + u'.lyric')
 
         # generate all paths
         pathfiles = OrderedDict()
