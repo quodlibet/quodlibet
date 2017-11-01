@@ -21,7 +21,6 @@ class FakeRMSMessage(object):
     type = Gst.MessageType.ELEMENT
 
     def __init__(self, rms_values=None):
-        super().__init__()
         self.rms_values = rms_values or []
 
     def get_structure(self):
