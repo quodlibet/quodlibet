@@ -16,7 +16,7 @@ from quodlibet import _, app
 from quodlibet import print_w
 from quodlibet import util
 from quodlibet.plugins import PluginConfig, IntConfProp, \
-    ConfProp
+    ConfProp, BoolConfProp
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align
 from quodlibet.qltk import Icons
@@ -345,7 +345,7 @@ class WaveformScale(Gtk.EventBox):
         return x, 0.0, w, height
 
     def draw_waveform(self, cr, width, height, elapsed_color, hover_color,
-                      remaining_color):
+                      remaining_color, show_current_pos_config):
         if width == 0 or height == 0:
             return
         scale_factor = self.get_scale_factor()
@@ -376,7 +376,7 @@ class WaveformScale(Gtk.EventBox):
                            int(ceil((cx + cw) * pixel_ratio)), 1):
 
                 if self._seeking and mouse_position >= 0:
-                    # The user is seeking
+                    # The user is seeking (holding mousebutton down)
                     fg_color = (elapsed_color if x < mouse_position
                                 else remaining_color)
                 elif mouse_position >= 0:
@@ -386,6 +386,11 @@ class WaveformScale(Gtk.EventBox):
                 else:
                     fg_color = (elapsed_color if x < position_width
                                 else remaining_color)
+
+                # Draw a line of width scale_factor at the current position
+                if show_current_pos_config:
+                    if position_width - scale_factor <= x < position_width:
+                        fg_color = elapsed_color
 
                 cr.set_source_rgba(*list(fg_color))
 
@@ -472,6 +477,9 @@ class WaveformScale(Gtk.EventBox):
                  (1 - opacity) * remaining_color.alpha)
             hover_color = Gdk.RGBA(r, g, b, a)
 
+        # Check if the user turned on showing current position
+        show_current_pos_config = CONFIG.show_current_pos
+
         # Paint the background
         cr.set_source_rgba(*list(bg_color))
         cr.paint()
@@ -482,7 +490,8 @@ class WaveformScale(Gtk.EventBox):
 
         if not self._placeholder and self._rms_vals:
             self.draw_waveform(cr, width, height, elapsed_color,
-                               hover_color, remaining_color)
+                               hover_color, remaining_color,
+                               show_current_pos_config)
         else:
             self.draw_placeholder(cr, width, height, remaining_color)
 
@@ -522,6 +531,7 @@ class Config(object):
     elapsed_color = ConfProp(_config, "elapsed_color", "")
     hover_color = ConfProp(_config, "hover_color", "")
     remaining_color = ConfProp(_config, "remaining_color", "")
+    show_current_pos = BoolConfProp(_config, "show_current_pos", False)
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
 
 CONFIG = Config()
@@ -576,6 +586,8 @@ class WaveformSeekBarPlugin(EventPlugin):
 
             CONFIG.remaining_color = entry.get_text()
 
+        def on_show_pos_toggled(button, *args):
+            CONFIG.show_current_pos = button.get_active()
         vbox = Gtk.VBox(spacing=6)
 
         def create_color(label_text, color, callback):
@@ -601,5 +613,10 @@ class WaveformSeekBarPlugin(EventPlugin):
         box = create_color(_("Override remaining color:"),
                            CONFIG.remaining_color, remaining_color_changed)
         vbox.pack_start(box, True, True, 0)
+
+        show_current_pos = Gtk.CheckButton(label=_("Show current position"))
+        show_current_pos.set_active(CONFIG.show_current_pos)
+        show_current_pos.connect("toggled", on_show_pos_toggled)
+        vbox.pack_start(show_current_pos, True, True, 0)
 
         return vbox
