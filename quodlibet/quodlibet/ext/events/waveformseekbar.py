@@ -107,11 +107,12 @@ class WaveformSeekBar(Gtk.Box):
             structure = message.get_structure()
             if structure.get_name() == "level":
                 rms_db = structure.get_value("rms")
-                # Calculate average of all channels (usually 2)
-                rms_db_avg = sum(rms_db) / len(rms_db)
-                # Normalize dB value to value between 0 and 1
-                rms = pow(10, (rms_db_avg / 20))
-                self._new_rms_vals.append(rms)
+                if rms_db:
+                    # Calculate average of all channels (usually 2)
+                    rms_db_avg = sum(rms_db) / len(rms_db)
+                    # Normalize dB value to value between 0 and 1
+                    rms = pow(10, (rms_db_avg / 20))
+                    self._new_rms_vals.append(rms)
             else:
                 print_w("Got unexpected message of type {}"
                         .format(message.type))
@@ -479,7 +480,7 @@ class WaveformScale(Gtk.EventBox):
         width = allocation.width
         height = allocation.height
 
-        if not self._placeholder and len(self._rms_vals) > 0:
+        if not self._placeholder and self._rms_vals:
             self.draw_waveform(cr, width, height, elapsed_color,
                                hover_color, remaining_color)
         else:
