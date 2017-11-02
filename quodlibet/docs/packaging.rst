@@ -28,15 +28,14 @@ Non-Optional Runtime Dependencies
 
 The following software is needed to start Ex Falso or Quod Libet.
 
-* **Python** (2.7)
-* **PyGObject** including **cairo support** (>= 3.14)
+* **Python** (>= 3.5)
+* **PyGObject** including **cairo support** (>= 3.18)
 * **pycairo** (>= 1.8)
 * **mutagen** (>= 1.34)
-* **GTK+** (>= 3.14)
-* **libsoup** (>= 2.44)
+* **GTK+** (>= 3.18)
+* **libsoup** (>= 2.52)
 * On OS X only: **PyObjC**
 * **feedparser**
-* **faulthandler**
 
 For icons a complete **icon theme** is needed, preferably with symbolic icons. 
 For example **adwaita-icon-theme**.
@@ -47,7 +46,7 @@ GStreamer
 ^^^^^^^^^
 
 Required:
-    * **GStreamer** (>= 1.4) + **typelibs**
+    * **GStreamer** (>= 1.8) + **typelibs**
     * **GStreamer Plugins Base**: Vorbis, Alsa, ...
 
 Optional but recommended:
@@ -122,7 +121,7 @@ plugin from loading.
 Build Dependencies
 ------------------
 
-* **Python** 2.7 (stdlib only)
+* **Python** >= 3.5 (stdlib only)
 * **gettext** >= 0.15 and **intltool** for translations.
 * (optional) **sphinx** >= 1.3
 

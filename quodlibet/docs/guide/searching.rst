@@ -117,7 +117,7 @@ Note again that in QL 3.9 onwards you can use the alternative syntax of::
 
 More complex searches are of course possible. For example, to select all
 Disco and Jazz related (_containing_, technically) genres,
-but avoiding Acid Jazz, you could use:
+but avoiding Acid Jazz, you could use::
 
     genre = &(|(Disco, Jazz), !Acid Jazz)
 

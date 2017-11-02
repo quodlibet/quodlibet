@@ -4,12 +4,19 @@
 -------------------
 
 Packaging Changes:
+  * **Python 3.5** required (was 2.7)
+
+    * All Python dependencies need to be switched to their Python 3 variants.
+      In case there is a "py" in the package name it likely needs to be
+      changed.
+
   * **Mutagen 1.34** required (was 1.32)
   * **GTK+ 3.18** required (was 3.14)
   * **PyGObject 3.18** required (was 3.14)
   * **GStreamer 1.8** required (was 1.4)
   * **media-player-info** no longer required
   * **udisks2** no longer required
+  * **python-futures** no longer required
 
 
 .. _release-3.9.1:
