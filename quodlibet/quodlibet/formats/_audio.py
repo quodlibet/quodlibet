@@ -12,6 +12,7 @@
 # more readable, unless they're also faster.
 
 import os
+import re
 import shutil
 import time
 from collections import OrderedDict
@@ -587,9 +588,10 @@ class AudioFile(dict, ImageContainer):
         #print_d("looking for lyrics files:\n%s" % '\n'.join(pathfiles.keys()))
 
         match_ = ""
+        rx_params = re.compile('[^\\\]<[^' + re.escape(os.sep) + ']*[^\\\]>')
         for pathfile in pathfiles.keys():
             path = expanduser(pathfile)
-            if '<' in path:
+            if rx_params.search(path):
                 path = ArbitraryExtensionFileFromPattern(pathfile).format(self)
             pathfiles_expanded[path] = path  # resolved as late as possible
             if os.path.exists(path):
