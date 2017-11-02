@@ -3,20 +3,13 @@ matrix:
     - os: osx
       osx_image: xcode6.4
       language: generic
-      env: TYPE="osx" PYTHON="python2" PYARGS="-R" APT_PACKAGES=""
-    - os: osx
-      osx_image: xcode6.4
-      language: generic
-      env: TYPE="osx" PYTHON="python3" PYARGS="-R -bb" APT_PACKAGES=""
 
 install:
- - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python2" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg; fi
- - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python2" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg; fi
- - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python3" ]; then travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest-Py3.dmg; fi
- - if [ "$TYPE" == "osx" ] && [ "$PYTHON" == "python3" ]; then hdiutil attach -readonly -mountpoint _mount QuodLibet-latest-Py3.dmg; fi
+ - travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg
+ - hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg
 
 script:
  - cd quodlibet
- - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS -m coverage run --branch setup.py test; fi
- - if [ "$TYPE" == "osx" ]; then ../_mount/QuodLibet.app/Contents/MacOS/run $PYARGS -m coverage xml; fi
- - if [ "$TYPE" == "osx" ]; then bash <(curl -s https://codecov.io/bash); fi
+ - ../_mount/QuodLibet.app/Contents/MacOS/run -R -bb -m coverage run --branch setup.py test
+ - ../_mount/QuodLibet.app/Contents/MacOS/run -R -bb -m coverage xml
+ - bash <(curl -s https://codecov.io/bash)
