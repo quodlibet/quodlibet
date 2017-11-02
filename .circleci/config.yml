@@ -61,25 +61,18 @@ jobs:
       - PYTHON: "python3"
       - DOCKERIMAGE: "ubuntu17.10.py3"
     <<: *defaults
-  job.win32.py2:
-    environment:
-      - PYARGS: "-R"
-      - PYTHON: "python2"
-      - DOCKERIMAGE: "win32.py2"
-    <<: *defaults
-  job.win32.py3:
+  job.win32:
     environment:
       - PYARGS: "-R"
       - PYTHON: "python3"
-      - DOCKERIMAGE: "win32.py3"
+      - DOCKERIMAGE: "win32"
     <<: *defaults
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - job.win32.py2
-      - job.win32.py3
+      - job.win32
       - job.ubuntu16.04.py2
       - job.ubuntu16.04.py3
       - job.ubuntu17.10.py2

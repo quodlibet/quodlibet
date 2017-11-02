@@ -30,10 +30,9 @@ RUN 7z x -o_win_inst win-inst.exe
 ENV WINEPREFIX /home/user/_wineprefix
 ENV WINEDEBUG -all
 
-RUN echo '#!/bin/bash\n(rm -Rf "$WINEPREFIX" && xvfb-run -a wine /home/user/_win_inst/bin/python.exe "$@")' > python2
-RUN echo '#!/bin/bash\n/home/user/python2 -m pytest "$@"' > py.test
+RUN echo '#!/bin/bash\n(rm -Rf "$WINEPREFIX" && xvfb-run -a wine /home/user/_win_inst/bin/python3.exe "$@")' > python3
+RUN echo '#!/bin/bash\n python3 -m pytest "$@"' > py.test-3
 
-RUN chmod a+x python2 py.test
-RUN ln -s python2 python
+RUN chmod a+x python3 py.test-3
 
 ENV PATH /home/user:$PATH
