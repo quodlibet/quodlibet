@@ -12,7 +12,7 @@ cd "${DIR}"
 # CONFIG START
 
 ARCH="i686"
-PYTHON_VERSION="2"
+PYTHON_VERSION="3"
 BUILD_VERSION="0"
 
 # CONFIG END
@@ -27,12 +27,6 @@ fi
 
 QL_VERSION="0.0.0"
 QL_VERSION_DESC="UNKNOWN"
-
-
-function set_python_version {
-    PYTHON_VERSION="$1"
-    PYTHON_ID="python${PYTHON_VERSION}"
-}
 
 function set_build_root {
     BUILD_ROOT="$1"

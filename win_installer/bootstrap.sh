@@ -8,24 +8,6 @@
 
 set -e
 
-function install_python_packages {
-    pacman --noconfirm -S --needed \
-        mingw-w64-i686-python$1 \
-        mingw-w64-i686-python$1-gobject \
-        mingw-w64-i686-python$1-cairo \
-        mingw-w64-i686-python$1-pip \
-        mingw-w64-i686-python$1-pytest \
-        mingw-w64-i686-python$1-certifi \
-
-    pip$1 install feedparser musicbrainzngs mutagen pycodestyle pyflakes \
-        coverage
-
-    if [ "$1" = "2" ]; then
-        pip$1 install --no-binary ":all:" futures faulthandler
-    fi
-
-}
-
 function main {
     pacman --noconfirm -Suy
 
@@ -40,8 +22,16 @@ function main {
         mingw-w64-i686-gst-plugins-ugly intltool \
         base-devel mingw-w64-i686-toolchain
 
-    install_python_packages 2
-    install_python_packages 3
+    pacman --noconfirm -S --needed \
+        mingw-w64-i686-python3 \
+        mingw-w64-i686-python3-gobject \
+        mingw-w64-i686-python3-cairo \
+        mingw-w64-i686-python3-pip \
+        mingw-w64-i686-python3-pytest \
+        mingw-w64-i686-python3-certifi
+
+    pip3 install feedparser musicbrainzngs mutagen pycodestyle pyflakes \
+        coverage
 }
 
 main;
