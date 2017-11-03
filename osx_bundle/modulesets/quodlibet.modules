@@ -93,34 +93,6 @@
       <dep package="gstreamer"/>
       <dep package="gtk-mac-integration"/>
       <dep package="gtk3"/>
-      <dep package="python2-cairo"/>
-      <dep package="python2-certifi"/>
-      <dep package="python2-faulthandler"/>
-      <dep package="python2-feedparser"/>
-      <dep package="python2-futures"/>
-      <dep package="python2-gobject"/>
-      <dep package="python2-musicbrainzngs"/>
-      <dep package="python2-mutagen"/>
-      <dep package="python2-pycodestyle"/>
-      <dep package="python2-pyflakes"/>
-      <dep package="python2-pyobjc"/>
-      <dep package="python2-pytest"/>
-      <dep package="python2-coverage"/>
-    </dependencies>
-  </metamodule>
-
-  <metamodule id="quodlibet-py3">
-    <dependencies>
-      <dep package="adwaita-icon-theme"/>
-      <dep package="dmgbuild"/>
-      <dep package="gst-libav"/>
-      <dep package="gst-plugins-bad"/>
-      <dep package="gst-plugins-base"/>
-      <dep package="gst-plugins-good"/>
-      <dep package="gst-plugins-ugly"/>
-      <dep package="gstreamer"/>
-      <dep package="gtk-mac-integration"/>
-      <dep package="gtk3"/>
       <dep package="python-cairo"/>
       <dep package="python-certifi"/>
       <dep package="python-feedparser"/>
@@ -262,6 +234,7 @@
       <dep package="libcroco"/>
       <dep package="freetype"/>
       <dep package="gdk-pixbuf2"/>
+      <dep package="pango"/>
     </dependencies>
   </autotools>
 
@@ -286,6 +259,10 @@
          autogen-sh="configure">
     <branch module="libcroco/0.6/libcroco-0.6.12.tar.xz" version="0.6.12"
         hash="sha256:ddc4b5546c9fb4280a5017e2707fbd4839034ed1aba5b7d4372212f34f84f860"/>
+    <dependencies>
+      <dep package="libxml2"/>
+      <dep package="glib2"/>
+    </dependencies>
   </autotools>
 
   <autotools id="hicolor-icon-theme" autogen-sh="configure"
@@ -572,7 +549,7 @@
     </dependencies>
   </autotools>
 
-  <autotools id="gobject-introspection" autogen-sh="configure">
+  <autotools id="gobject-introspection" autogen-sh="configure" autogenargs="--with-python=python3">
     <branch module="gobject-introspection/1.52/gobject-introspection-${version}.tar.xz"
             version="1.52.1"
             hash="sha256:2ed0c38d52fe1aa6fc4def0c868fe481cb87b532fc694756b26d6cfab29faff4">
@@ -581,17 +558,9 @@
     <dependencies>
       <dep package="glib2"/>
       <dep package="cairo"/>
-      <dep package="python2"/>
+      <dep package="python"/>
     </dependencies>
   </autotools>
-
-  <distutils id="python2-cairo">
-    <branch repo="github-tar"
-            version="1.13.3"
-            module="pygobject/pycairo/releases/download/v${version}/pycairo-${version}.tar.gz"
-            checkoutdir="python2-pycairo-${version}"
-            hash="sha256:2f2ae1acdc7197e4df58e458a0279de206f989972edfe06d54e99d9e5b839938"/>
-  </distutils>
 
   <distutils id="python-cairo" python3="1">
     <branch repo="github-tar"
@@ -600,18 +569,6 @@
             checkoutdir="python-pycairo-${version}"
             hash="sha256:2f2ae1acdc7197e4df58e458a0279de206f989972edfe06d54e99d9e5b839938"/>
   </distutils>
-
-   <autotools id="python2-gobject" autogenargs="--with-python=python2">
-    <branch version="3.25.1" module="pygobject/3.25/pygobject-${version}.tar.xz"
-            checkoutdir="python2-gobject-${version}"
-            hash="sha256:8728bb27078f7ee45c431ccbc237a58fb6d6eb1b7a0668bbe29eb107267bd736"/>
-    <dependencies>
-      <dep package="python2-cairo"/>
-      <dep package="gobject-introspection"/>
-      <dep package="glib2"/>
-      <dep package="python2"/>
-    </dependencies>
-  </autotools>
 
    <autotools id="python-gobject" autogenargs="--with-python=python3">
     <branch version="3.25.1" module="pygobject/3.25/pygobject-${version}.tar.xz"
@@ -625,17 +582,6 @@
     </dependencies>
   </autotools>
 
-  <distutils id="python2-setuptools">
-    <branch repo="pypi.org"
-            module="s/setuptools/setuptools-${version}.zip"
-            version="36.2.7"
-            checkoutdir="python2-setuptools-${version}"
-            hash="sha256:b0fe5d432d922df595e918577c51458d63f245115d141b309ac32ecfca329df5"/>
-    <dependencies>
-      <dep package="python2"/>
-    </dependencies>
-  </distutils>
-
   <distutils id="python-setuptools" python3="1">
     <branch repo="pypi.org"
             module="s/setuptools/setuptools-${version}.zip"
@@ -647,34 +593,15 @@
     </dependencies>
   </distutils>
 
-  <distutils id="python2-futures">
-      <branch repo="pypi.org" checkoutdir="python2-futures-${version}" module="f/futures/futures-${version}.tar.gz"
-              version="3.1.1" md5sum="77f261ab86cc78efa2c5fe7be27c3ec8"/>
-    <dependencies>
-      <dep package="python2-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="dmgbuild">
+  <distutils id="dmgbuild" python3="1">
     <branch repo="pypi.org" checkoutdir="dmgbuild-${version}" module="d/dmgbuild/dmgbuild-${version}.tar.gz"
             version="1.3.1" hash="sha256:53491eef7beb7e5890fb4ae9542b86fb988fadbe504bb0fffc80af912ac5ff07"/>
     <dependencies>
-      <dep package="python2-setuptools"/>
-      <dep package="python2-six"/>
-      <dep package="python2-mac_alias"/>
-      <dep package="python2-ds_store"/>
-      <dep package="python2-pyobjc-framework-Quartz"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python2-pycodestyle">
-    <branch repo="pypi.org"
-            checkoutdir="python2-pycodestyle-${version}"
-            module="p/pycodestyle/pycodestyle-${version}.tar.gz"
-            version="2.3.1"
-            hash="sha256:682256a5b318149ca0d2a9185d365d8864a768a28db66a84a2ea946bcc426766"/>
-    <dependencies>
-      <dep package="python2-setuptools"/>
+      <dep package="python-setuptools"/>
+      <dep package="python-six"/>
+      <dep package="python-mac_alias"/>
+      <dep package="python-ds_store"/>
+      <dep package="python-pyobjc-framework-Quartz"/>
     </dependencies>
   </distutils>
 
@@ -689,16 +616,6 @@
     </dependencies>
   </distutils>
 
-  <distutils id="python2-pyflakes">
-    <branch repo="pypi.org"
-            checkoutdir="python2-pyflakes-${version}" module="p/pyflakes/pyflakes-${version}.tar.gz"
-            version="1.6.0"
-            hash="sha256:8d616a382f243dbf19b54743f280b80198be0bca3a5396f1d2e1fca6223e8805"/>
-    <dependencies>
-      <dep package="python2-setuptools"/>
-    </dependencies>
-  </distutils>
-
   <distutils id="python-pyflakes" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyflakes-${version}" module="p/pyflakes/pyflakes-${version}.tar.gz"
@@ -709,43 +626,33 @@
     </dependencies>
   </distutils>
 
-  <distutils id="python2-six">
-    <branch repo="pypi.org" checkoutdir="python2-six-${version}"
+  <distutils id="python-six" python3="1">
+    <branch repo="pypi.org" checkoutdir="python-six-${version}"
             module="s/six/six-${version}.tar.gz"
             version="1.10.0"
             hash="sha256:105f8d68616f8248e24bf0e9372ef04d3cc10104f1980f54d57b2ce73a5ad56a"/>
     <dependencies>
-      <dep package="python2-setuptools"/>
+      <dep package="python-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="python2-mac_alias">
+  <distutils id="python-mac_alias" python3="1">
     <branch repo="pypi.org"
-            checkoutdir="python2-mac_alias-${version}" module="m/mac_alias/mac_alias-${version}.tar.gz"
-            version="2.0.1"
-            hash="sha256:d2f974dd0972a70af6b8ff3b50ad165982bdba49ad8bcc47a58b28b9cc20ec34"/>
+            checkoutdir="python-mac_alias-${version}" module="m/mac_alias/mac_alias-${version}.tar.gz"
+            version="2.0.6"
+            hash="sha256:5a96b5219e6d7dbb91e1eec78b32b1156a4a51f513a5f1f20c4cc9b611c93c87"/>
     <dependencies>
-      <dep package="python2-setuptools"/>
+      <dep package="python-setuptools"/>
     </dependencies>
   </distutils>
 
-  <distutils id="python2-biplist">
+  <distutils id="python-biplist" python3="1">
     <branch repo="pypi.org"
-            checkoutdir="python2-biplist-${version}" module="b/biplist/biplist-${version}.tar.gz"
+            checkoutdir="python-biplist-${version}" module="b/biplist/biplist-${version}.tar.gz"
             version="1.0.2"
             hash="sha256:d2f974dd0972a70af6b8ff3b50ad165982bdba49ad8bcc47a58b28b9cc20ec34"/>
     <dependencies>
-      <dep package="python2-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python2-py">
-    <branch repo="pypi.org"
-            checkoutdir="python2-py-${version}" module="p/py/py-${version}.tar.gz"
-            version="1.4.34"
-            hash="sha256:0f2d585d22050e90c7d293b6451c83db097df77871974d90efd5a30dc12fcde3"/>
-    <dependencies>
-      <dep package="python2-setuptools"/>
+      <dep package="python-setuptools"/>
     </dependencies>
   </distutils>
 
@@ -756,18 +663,6 @@
             hash="sha256:0f2d585d22050e90c7d293b6451c83db097df77871974d90efd5a30dc12fcde3"/>
     <dependencies>
       <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python2-pytest">
-    <branch repo="pypi.org"
-            checkoutdir="python2-pytest-${version}"
-            module="p/pytest/pytest-${version}.tar.gz"
-            version="3.2.1"
-            hash="sha256:4c2159d2be2b4e13fa293e7a72bdf2f06848a017150d5c6d35112ce51cfd74ce"/>
-    <dependencies>
-      <dep package="python2-setuptools"/>
-      <dep package="python2-py"/>
     </dependencies>
   </distutils>
 
@@ -783,24 +678,16 @@
     </dependencies>
   </distutils>
 
-  <distutils id="python2-ds_store">
+  <distutils id="python-ds_store" python3="1">
     <branch repo="pypi.org"
-            checkoutdir="python2-ds_store-${version}" module="d/ds_store/ds_store-${version}.tar.gz"
+            checkoutdir="python-ds_store-${version}" module="d/ds_store/ds_store-${version}.tar.gz"
             version="1.1.0"
             hash="sha256:2381e7cec7dd4c0b7f59165377ab3f9ae039f4b12b6ed2f20f80bbf6e4b17e0f"/>
     <dependencies>
-      <dep package="python2-setuptools"/>
-      <dep package="python2-six"/>
-      <dep package="python2-biplist"/>
+      <dep package="python-setuptools"/>
+      <dep package="python-six"/>
+      <dep package="python-biplist"/>
     </dependencies>
-  </distutils>
-
-  <distutils id="python2-certifi">
-    <branch repo="pypi.org"
-          checkoutdir="python2-certifi-${version}"
-            module="c/certifi/certifi-${version}.tar.gz"
-            version="2017.7.27.1"
-            hash="sha256:40523d2efb60523e113b44602298f0960e900388cf3bb6043f645cf57ea9e3f5"/>
   </distutils>
 
   <distutils id="python-certifi" python3="1">
@@ -809,15 +696,6 @@
             module="c/certifi/certifi-${version}.tar.gz"
             version="2017.7.27.1"
             hash="sha256:40523d2efb60523e113b44602298f0960e900388cf3bb6043f645cf57ea9e3f5"/>
-  </distutils>
-
-  <distutils id="python2-feedparser">
-    <branch repo="pypi.org" module="f/feedparser/feedparser-${version}.tar.bz2"
-            checkoutdir="python2-feedparser-${version}"
-            version="5.2.1"/>
-    <dependencies>
-      <dep package="python2-setuptools"/>
-    </dependencies>
   </distutils>
 
   <distutils id="python-feedparser" python3="1">
@@ -829,27 +707,11 @@
     </dependencies>
   </distutils>
 
-  <distutils id="python2-mutagen">
-    <branch repo="pypi.org" checkoutdir="python2-mutagen-${version}" module="m/mutagen/mutagen-${version}.tar.gz"
-            version="1.38" hash="sha256:23990f70ae678c7b8df3fd59e2adbefa5fe392c36da8c71d2254b21c6cd78766"/>
-    <dependencies>
-    <dep package="python2-setuptools"/>
-    </dependencies>
-  </distutils>
-
   <distutils id="python-mutagen" python3="1">
     <branch repo="pypi.org" checkoutdir="python-mutagen-${version}" module="m/mutagen/mutagen-${version}.tar.gz"
             version="1.38" hash="sha256:23990f70ae678c7b8df3fd59e2adbefa5fe392c36da8c71d2254b21c6cd78766"/>
     <dependencies>
       <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python2-coverage">
-    <branch repo="pypi.org" checkoutdir="python2-coverage-${version}" module="c/coverage/coverage-${version}.tar.gz"
-            version="4.4.1" hash="sha256:7a9c44400ee0f3b4546066e0710e1250fd75831adc02ab99dda176ad8726f424"/>
-    <dependencies>
-    <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
@@ -861,16 +723,6 @@
     </dependencies>
   </distutils>
 
-  <distutils id="python2-musicbrainzngs">
-    <branch repo="github-tar"
-            checkoutdir="python2-musicbrainzngs-${version}"
-            module="alastair/python-musicbrainzngs/archive/v${version}.tar.gz"
-            version="0.6"/>
-    <dependencies>
-      <dep package="python2-setuptools"/>
-    </dependencies>
-  </distutils>
-
   <distutils id="python-musicbrainzngs" python3="1">
     <branch repo="github-tar"
             checkoutdir="python-musicbrainzngs-${version}"
@@ -878,17 +730,6 @@
             version="0.6"/>
     <dependencies>
       <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python2-pyobjc-core">
-    <branch repo="pypi.org"
-            checkoutdir="python2-pyobjc-core-${version}"
-            module="p/pyobjc-core/pyobjc-core-${version}.tar.gz"
-            version="3.2.1"
-            hash="sha256:848163845921e5a61e069ea42bab06ac73278f5a09b4e9cedd6a3eac6712ff2c"/>
-    <dependencies>
-      <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
@@ -903,18 +744,6 @@
     </dependencies>
   </distutils>
 
-  <distutils id="python2-pyobjc-framework-Cocoa">
-    <branch repo="pypi.org"
-            checkoutdir="python2-pyobjc-framework-Cocoa-${version}"
-            module="p/pyobjc-framework-Cocoa/pyobjc-framework-Cocoa-${version}.tar.gz"
-            version="3.2.1"
-            hash="sha256:8215a528b552588f0024df03ef1c5f8edfa245301888c384f5b8c231f4c89431"/>
-    <dependencies>
-      <dep package="python2-setuptools"/>
-      <dep package="python2-pyobjc-core"/>
-    </dependencies>
-  </distutils>
-
   <distutils id="python-pyobjc-framework-Cocoa" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-framework-Cocoa-${version}"
@@ -924,19 +753,6 @@
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="python-pyobjc-core"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python2-pyobjc-framework-Quartz">
-    <branch repo="pypi.org"
-            checkoutdir="python2-pyobjc-framework-Quartz-${version}"
-            module="p/pyobjc-framework-Quartz/pyobjc-framework-Quartz-${version}.tar.gz"
-            version="3.2.1"
-            hash="sha256:328f6c3f2431be139fa54c166190d3cd4e1bae78243c7d0ace9a7be3fa3088ad"/>
-    <dependencies>
-      <dep package="python2-setuptools"/>
-      <dep package="python2-pyobjc-core"/>
-      <dep package="python2-pyobjc-framework-Cocoa"/>
     </dependencies>
   </distutils>
 
@@ -953,20 +769,6 @@
     </dependencies>
   </distutils>
 
-  <distutils id="python2-pyobjc">
-    <branch repo="pypi.org"
-            checkoutdir="python2-pyobjc-${version}"
-            module="p/pyobjc/pyobjc-${version}.tar.gz"
-            version="3.2.1"
-            hash="sha256:6cf373bf68f4f5e2cbc0ba7bc073e5f1b879f7454dcdcb8b07105512c37804ac"/>
-    <dependencies>
-      <dep package="python2-setuptools"/>
-      <dep package="python2-pyobjc-core"/>
-      <dep package="python2-pyobjc-framework-Cocoa"/>
-      <dep package="python2-pyobjc-framework-Quartz"/>
-    </dependencies>
-  </distutils>
-
   <distutils id="python-pyobjc" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-${version}"
@@ -978,15 +780,6 @@
     <dep package="python-pyobjc-core"/>
     <dep package="python-pyobjc-framework-Cocoa"/>
     <dep package="python-pyobjc-framework-Quartz"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python2-faulthandler">
-    <branch repo="pypi.org" checkoutdir="faulthandler-${version}"
-            module="f/faulthandler/faulthandler-${version}.tar.gz"
-            version="2.6" md5sum="7ba7d707fe8f084e35f4f4b72b1f4b4d"/>
-    <dependencies>
-    <dep package="python2-setuptools"/>
     </dependencies>
   </distutils>
 
@@ -1260,8 +1053,8 @@
         repo="xmlsoft.org"
         hash="sha256:ffb911191e509b966deb55de705387f14156e1a56b21824357cdf0053233633c"/>
     <dependencies>
-      <dep package="python2" />
       <dep package="libxml2"/>
+      <dep package="python2"/>
     </dependencies>
   </autotools>
 
@@ -1282,7 +1075,6 @@
     </branch>
     <dependencies>
         <dep package="gtk3"/>
-        <dep package="python2-gobject"/>
         <dep package="python-gobject"/>
     </dependencies>
   </autotools>

@@ -15,18 +15,13 @@ source env.sh
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 function jhbuild_compileall {
-    if [ "${PYTHONVER}" = "2" ]; then
-        jhbuild run "$PYTHON" -m compileall "$@"
-    else
-        jhbuild run "$PYTHON" -m compileall -b "$@"
-    fi
+    jhbuild run "$PYTHON" -m compileall -b "$@"
 }
 
 function main {
     local GIT_TAG=${1:-"master"}
 
-    PYTHONVER=${2:-"2"}
-    PYTHON="python${PYTHONVER}"
+    PYTHON="python3"
     PYTHONID="python"$(jhbuild run "${PYTHON}" -c \
         "import sys;sys.stdout.write('.'.join(map(str, sys.version_info[:2])))")
 
@@ -117,10 +112,6 @@ function main {
         "$QUODLIBET" > "$QUODLIBET/Contents/Resources/content.txt"
     jhbuild run python ./misc/list_content.py "$HOME/jhbuild_prefix" \
         "$EXFALSO" > "$EXFALSO/Contents/Resources/content.txt"
-
-    if [ "${PYTHONVER}" = "3" ]; then
-        VERSION="$VERSION-Py3"
-    fi
 
     DMG_SETTINGS="misc/dmg_settings.py"
     jhbuild run dmgbuild -s "$DMG_SETTINGS" -D app="$QUODLIBET" \
