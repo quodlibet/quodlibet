@@ -49,6 +49,10 @@ jobs:
     environment:
       - DOCKERIMAGE: "win32"
     <<: *defaults
+  job.fedora26:
+    environment:
+      - DOCKERIMAGE: "fedora26"
+    <<: *defaults
 
 workflows:
   version: 2
@@ -57,3 +61,4 @@ workflows:
       - job.win32
       - job.ubuntu16.04
       - job.ubuntu17.10
+      - job.fedora26
