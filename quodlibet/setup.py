@@ -32,6 +32,8 @@ def exec_module(path):
 
 
 def main():
+    assert sys.version_info[0] == 3, "Quod Libet is Python 3 only now"
+
     # distutils depends on setup.py beeing executed from the same dir.
     # Most of our custom commands work either way, but this makes
     # it work in all cases.
