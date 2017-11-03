@@ -541,7 +541,7 @@ class AudioFile(dict, ImageContainer):
     def lyric_filename(self):
         """Returns the validated, or default, lyrics filename for this
         file. User defined '[memory] lyric_rootpaths' and
-        '[memory] lyric_filenames' matches take precedent"""
+        '[memory] lyric_filenames' matches take precedence"""
 
         from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 
@@ -549,13 +549,16 @@ class AudioFile(dict, ImageContainer):
             return sep.join(list(map(lambda s: s.replace(u'/', u'')[:128],
                                      parts)))
 
+        # setup defaults (user-defined take precedence)
+        # root search paths
         lyric_paths = \
             config.getstringlist("memory", "lyric_rootpaths", [])
-        # add default
+        # ensure a default path
         lyric_paths.append(u'~/.lyrics')
+        # search pathfile names
         lyric_filenames = \
             config.getstringlist("memory", "lyric_filenames", [])
-        # add defaults
+        # ensure some default pathfile names
         lyric_filenames.append(
             sanitise(os.sep, [(self.comma("lyricist") or
                               self.comma("artist")),
@@ -565,9 +568,8 @@ class AudioFile(dict, ImageContainer):
                              self.comma("artist")),
                              self.comma("title")]) + u'.lyric')
 
-        # generate all paths
+        # generate all potential paths (unresolved/unexpanded)
         pathfiles = OrderedDict()
-        pathfiles_expanded = OrderedDict()
         for p in lyric_paths:
             for f in lyric_filenames:
                 pathfile = ""
@@ -585,9 +587,11 @@ class AudioFile(dict, ImageContainer):
                 if not pathfile in pathfiles:
                     pathfiles[pathfile] = pathfile
 
-        #print_d("looking for lyrics files:\n%s" % '\n'.join(pathfiles.keys()))
+        #print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
 
+        # expand each raw pathfile in turn and test for existence
         match_ = ""
+        pathfiles_expanded = OrderedDict()
         rx_params = re.compile('[^\\\]<[^' + re.escape(os.sep) + ']*[^\\\]>')
         for pathfile in pathfiles.keys():
             path = expanduser(pathfile)
@@ -599,16 +603,32 @@ class AudioFile(dict, ImageContainer):
                 break
 
         if not match_:
-            # look at modified extensions
-            lyric_extensions = ('lyric', 'lyrics', '', 'txt')
-            for pathfile in pathfiles_expanded.keys():
+            # search even harder!
+            lyric_extensions = ['lyric', 'lyrics', '', 'txt']
+            #print_d("extending search to extensions: %s" % lyric_extensions)
+
+            def generate_mod_ext_paths(pathfile):
+                # separate pathfile's extension (if any)
                 ext = os.path.splitext(pathfile)[1][1:]
                 path = pathfile[:-1 * len(ext)].strip('.') if ext else pathfile
-                for ext2 in lyric_extensions:
-                    if ext2 == ext:
-                        continue
-                    path_ext = '.'.join([path, ext2]) if ext2 else path
+                # skip the proposed lyric extension if it is the same as
+                # the original for a given search pathfile stub - it has
+                # already been tested without success!
+                extra_extensions = [x for x in lyric_extensions if x != ext]
+
+                # join valid new extensions to pathfile stub and return
+                return list(map(lambda ext: '.'.join([path, ext])
+                                                if ext else path,
+                                      extra_extensions))
+
+            # look for a match by modifying the extension for each of the
+            # (now fully resolved) 'pathfiles_expanded' search items
+            for pathfile in pathfiles_expanded.keys():
+                # get alternatives for existence testing
+                paths_mod_ext = generate_mod_ext_paths(pathfile)
+                for path_ext in paths_mod_ext:
                     if os.path.exists(path_ext):
+                        # persistence has paid off!
                         match_ = path_ext
                         break
                 if match_:
