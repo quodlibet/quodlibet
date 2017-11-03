@@ -3,6 +3,9 @@ matrix:
     - os: osx
       osx_image: xcode6.4
       language: generic
+    - os: osx
+      osx_image: xcode9.1
+      language: generic
 
 install:
  - travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg
