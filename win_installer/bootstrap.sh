@@ -28,10 +28,10 @@ function main {
         mingw-w64-i686-python3-cairo \
         mingw-w64-i686-python3-pip \
         mingw-w64-i686-python3-pytest \
-        mingw-w64-i686-python3-certifi
+        mingw-w64-i686-python3-certifi \
+        mingw-w64-i686-python3-coverage
 
-    pip3 install feedparser musicbrainzngs mutagen pycodestyle pyflakes \
-        coverage
+    pip3 install feedparser musicbrainzngs mutagen pycodestyle pyflakes
 }
 
 main;
