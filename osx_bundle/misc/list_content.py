@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Copyright 2015 Christoph Reiter
 #
@@ -18,6 +18,7 @@ from xml.dom import minidom
 
 
 def main(argv):
+    assert sys.version_info[0] == 3
     assert len(argv) == 3
 
     jhbuild = os.path.join(argv[1], "_jhbuild")

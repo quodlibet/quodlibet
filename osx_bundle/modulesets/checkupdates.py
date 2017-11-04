@@ -12,16 +12,12 @@ Checks package versions against Arch, pypi, gnome and reports out of date
 packages.
 """
 
-from __future__ import print_function
-
+import sys
 import xml.etree.ElementTree as etree
 from multiprocessing.pool import ThreadPool
-import requests
+from xmlrpc.client import ServerProxy
 
-try:
-    from xmlrpclib import ServerProxy
-except ImportError:
-    from xmlrpc.client import ServerProxy
+import requests
 
 
 def get_moduleset_versions():
@@ -133,6 +129,8 @@ def is_maybe_newer(a, b):
 
 
 def main():
+    assert sys.version_info[0] == 3
+
     moduleset_versions = get_moduleset_versions()
 
     pool = ThreadPool(20)

@@ -14,10 +14,6 @@ set -e
 source env.sh
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-function jhbuild_compileall {
-    jhbuild run "$PYTHON" -m compileall -b "$@"
-}
-
 function main {
     local GIT_TAG=${1:-"master"}
 
@@ -57,7 +53,7 @@ function main {
     jhbuild run gtk-update-icon-cache "${APP_PREFIX}/share/icons/Adwaita"
 
     # compile the stdlib
-    jhbuild_compileall -d "" -f "$APP_PREFIX"/lib/"$PYTHONID"
+    jhbuild run "$PYTHON" -m compileall -b -d "" -f "$APP_PREFIX"/lib/"$PYTHONID"
     # delete stdlib source
     find "$APP_PREFIX"/lib/"$PYTHONID" -name '*.py' -delete
 
@@ -98,19 +94,19 @@ function main {
 
     # force compile again to get relative paths in pyc files and for the
     # modified files
-    jhbuild_compileall -d "" -f "$EXFALSO_PREFIX"/lib/"$PYTHONID"
-    jhbuild_compileall -d "" -f "$QUODLIBET_PREFIX"/lib/"$PYTHONID"
+    jhbuild run "$PYTHON" -m compileall -b -d "" -f "$EXFALSO_PREFIX"/lib/"$PYTHONID"
+    jhbuild run "$PYTHON" -m compileall -b -d "" -f "$QUODLIBET_PREFIX"/lib/"$PYTHONID"
 
     VERSION=$("$QUODLIBET"/Contents/MacOS/run -c \
         "import sys, quodlibet.const;sys.stdout.write(quodlibet.const.VERSION)")
-    jhbuild run python ./misc/create_info.py "quodlibet" "$VERSION" > \
+    jhbuild run "$PYTHON" ./misc/create_info.py "quodlibet" "$VERSION" > \
         "$QUODLIBET"/Contents/Info.plist
-    jhbuild run python ./misc/create_info.py "exfalso" "$VERSION" > \
+    jhbuild run "$PYTHON" ./misc/create_info.py "exfalso" "$VERSION" > \
         "$EXFALSO"/Contents/Info.plist
 
-    jhbuild run python ./misc/list_content.py "$HOME/jhbuild_prefix" \
+    jhbuild run "$PYTHON" ./misc/list_content.py "$HOME/jhbuild_prefix" \
         "$QUODLIBET" > "$QUODLIBET/Contents/Resources/content.txt"
-    jhbuild run python ./misc/list_content.py "$HOME/jhbuild_prefix" \
+    jhbuild run "$PYTHON" ./misc/list_content.py "$HOME/jhbuild_prefix" \
         "$EXFALSO" > "$EXFALSO/Contents/Resources/content.txt"
 
     DMG_SETTINGS="misc/dmg_settings.py"

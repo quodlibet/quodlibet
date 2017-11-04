@@ -1,10 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
-from plistlib import Plist, Dict, writePlistToString
+from plistlib import Plist, Dict, writePlistToBytes
 
 
 if __name__ == "__main__":
+    assert sys.version_info[0] == 3
+
     # "quodlibet" "3.4.0"
     app_id, app_version = sys.argv[1:]
 
@@ -56,7 +58,7 @@ if __name__ == "__main__":
     else:
         assert 0
 
-    print(writePlistToString(plist))
+    print(writePlistToBytes(plist).decode("utf-8"))
 
 
 

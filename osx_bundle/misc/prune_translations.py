@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """A script to remove all translations for languages where Quod Libet doesn't
 provide a translation. The passed path should point to $PREFIX/share/locale in
@@ -10,6 +10,8 @@ import shutil
 
 
 def main(argv):
+    assert sys.version_info[0] == 3
+
     target = os.path.abspath(argv[1])
     assert os.path.exists(target)
 
