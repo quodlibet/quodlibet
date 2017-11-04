@@ -12,13 +12,11 @@ cd "${DIR}"
 # CONFIG START
 
 ARCH="i686"
-PYTHON_VERSION="3"
 BUILD_VERSION="0"
 
 # CONFIG END
 
 MISC="${DIR}"/misc
-PYTHON_ID="python${PYTHON_VERSION}"
 if [ "${ARCH}" = "x86_64" ]; then
     MINGW="mingw64"
 else
@@ -41,19 +39,15 @@ function build_pacman {
 }
 
 function build_pip {
-    "${BUILD_ROOT}"/"${MINGW}"/bin/"${PYTHON_ID}".exe -m pip "$@"
+    "${BUILD_ROOT}"/"${MINGW}"/bin/python3.exe -m pip "$@"
 }
 
 function build_python {
-    "${BUILD_ROOT}"/"${MINGW}"/bin/"${PYTHON_ID}".exe "$@"
+    "${BUILD_ROOT}"/"${MINGW}"/bin/python3.exe "$@"
 }
 
 function build_compileall {
-    if [ "${PYTHON_VERSION}" = "2" ]; then
-        MSYSTEM= build_python -m compileall "$@"
-    else
-        MSYSTEM= build_python -m compileall -b "$@"
-    fi
+    MSYSTEM= build_python -m compileall -b "$@"
 }
 
 function install_pre_deps {
@@ -88,17 +82,17 @@ function install_deps {
 
     build_pacman --noconfirm -S git mingw-w64-"${ARCH}"-gdk-pixbuf2 \
         mingw-w64-"${ARCH}"-librsvg \
-        mingw-w64-"${ARCH}"-gtk3 mingw-w64-"${ARCH}"-"${PYTHON_ID}" \
-        mingw-w64-"${ARCH}"-"${PYTHON_ID}"-gobject \
-        mingw-w64-"${ARCH}"-"${PYTHON_ID}"-cairo \
-        mingw-w64-"${ARCH}"-"${PYTHON_ID}"-pip \
+        mingw-w64-"${ARCH}"-gtk3 mingw-w64-"${ARCH}"-python3 \
+        mingw-w64-"${ARCH}"-python3-gobject \
+        mingw-w64-"${ARCH}"-python3-cairo \
+        mingw-w64-"${ARCH}"-python3-pip \
         mingw-w64-"${ARCH}"-libsoup mingw-w64-"${ARCH}"-gstreamer \
         mingw-w64-"${ARCH}"-gst-plugins-base \
         mingw-w64-"${ARCH}"-gst-plugins-good mingw-w64-"${ARCH}"-libsrtp \
         mingw-w64-"${ARCH}"-gst-plugins-bad mingw-w64-"${ARCH}"-gst-libav \
         mingw-w64-"${ARCH}"-gst-plugins-ugly \
-        mingw-w64-"${ARCH}"-"${PYTHON_ID}"-pytest \
-        mingw-w64-"${ARCH}"-"${PYTHON_ID}"-certifi \
+        mingw-w64-"${ARCH}"-python3-pytest \
+        mingw-w64-"${ARCH}"-python3-certifi \
 
     PIP_REQUIREMENTS="\
 feedparser==5.2.1
@@ -112,13 +106,8 @@ coverage==4.4.1
     build_pip install --no-deps --no-binary ":all:" --upgrade \
         --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr ["\\n"] [" "])
 
-    if [ "${PYTHON_ID}" = "python2" ]; then
-        build_pip install --no-deps --no-binary ":all:" --upgrade \
-            --force-reinstall "futures==3.0.5" "faulthandler==2.4"
-    fi
-
     build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-shared-mime-info \
-        mingw-w64-"${ARCH}"-"${PYTHON_ID}"-pip mingw-w64-"${ARCH}"-ncurses \
+        mingw-w64-"${ARCH}"-python3-pip mingw-w64-"${ARCH}"-ncurses \
         mingw-w64-"${ARCH}"-tk mingw-w64-"${ARCH}"-tcl \
         mingw-w64-"${ARCH}"-opencv mingw-w64-"${ARCH}"-daala-git \
         mingw-w64-"${ARCH}"-SDL2 mingw-w64-"${ARCH}"-libdvdcss \
@@ -129,13 +118,9 @@ coverage==4.4.1
         mingw-w64-"${ARCH}"-libvpx mingw-w64-"${ARCH}"-libcaca \
         mingw-w64-"${ARCH}"-libwebp || true
 
-    if [ "${PYTHON_ID}" = "python2" ]; then
-        build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-python3 || true
-    else
-        build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-python2 || true
-    fi
+    build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-python2 || true
 
-    build_pacman -S --noconfirm mingw-w64-"${ARCH}"-"${PYTHON_ID}"-setuptools
+    build_pacman -S --noconfirm mingw-w64-"${ARCH}"-python3-setuptools
 }
 
 function install_quodlibet {
@@ -149,7 +134,7 @@ function install_quodlibet {
     build_python "${REPO_CLONE}"/quodlibet/setup.py install
 
     # Create launchers
-    "${PYTHON_ID}" "${MISC}"/create-launcher.py \
+    python3 "${MISC}"/create-launcher.py \
         "${QL_VERSION}" "${MINGW_ROOT}"/bin
 
     QL_VERSION=$(MSYSTEM= build_python -c \
@@ -183,11 +168,11 @@ function cleanup_before {
         "${MINGW_ROOT}"/share/icons/hicolor
 
     # python related, before installing quodlibet
-    rm -Rf "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/test
-    rm -f "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/lib-dynload/_tkinter*
-    find "${MINGW_ROOT}"/lib/"${PYTHON_ID}".* -type d -name "test*" \
+    rm -Rf "${MINGW_ROOT}"/lib/python3.*/test
+    rm -f "${MINGW_ROOT}"/lib/python3.*/lib-dynload/_tkinter*
+    find "${MINGW_ROOT}"/lib/python3.* -type d -name "test*" \
         -prune -exec rm -rf {} \;
-    find "${MINGW_ROOT}"/lib/"${PYTHON_ID}".* -type d -name "*_test*" \
+    find "${MINGW_ROOT}"/lib/python3.* -type d -name "*_test*" \
         -prune -exec rm -rf {} \;
 
     find "${MINGW_ROOT}"/bin -name "*.pyo" -exec rm -f {} \;
@@ -286,12 +271,7 @@ function cleanup_after {
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstcacasink.dll
     rm -f "${MINGW_ROOT}"/bin/libgstopencv-1.0-0.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstopencv.dll
-
-    if [ "${PYTHON_VERSION}" = "2" ]; then
-        rm -Rf "${MINGW_ROOT}"/lib/python3.*
-    else
-        rm -Rf "${MINGW_ROOT}"/lib/python2.*
-    fi
+    rm -Rf "${MINGW_ROOT}"/lib/python2.*
 
     find "${MINGW_ROOT}" -name "*.a" -exec rm -f {} \;
     find "${MINGW_ROOT}" -name "*.whl" -exec rm -f {} \;
@@ -331,7 +311,7 @@ function cleanup_after {
 }
 
 function build_installer {
-    BUILDPY=$(echo "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/site-packages/quodlibet)/build.py
+    BUILDPY=$(echo "${MINGW_ROOT}"/lib/python3.*/site-packages/quodlibet)/build.py
     cp "${REPO_CLONE}"/quodlibet/quodlibet/build.py "$BUILDPY"
     echo 'BUILD_TYPE = u"windows"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
@@ -346,7 +326,7 @@ function build_installer {
 }
 
 function build_portable_installer {
-    BUILDPY=$(echo "${MINGW_ROOT}"/lib/"${PYTHON_ID}".*/site-packages/quodlibet)/build.py
+    BUILDPY=$(echo "${MINGW_ROOT}"/lib/python3.*/site-packages/quodlibet)/build.py
     cp "${REPO_CLONE}"/quodlibet/quodlibet/build.py "$BUILDPY"
     echo 'BUILD_TYPE = u"windows-portable"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
