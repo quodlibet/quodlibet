@@ -553,8 +553,10 @@ class AudioFile(dict, ImageContainer):
         # root search paths
         lyric_paths = \
             config.getstringlist("memory", "lyric_rootpaths", [])
-        # ensure a default path
+        # ensure default paths
         lyric_paths.append(os.path.join(get_home_dir(), ".lyrics"))
+        lyric_paths.append(
+            os.path.join(os.path.dirname(self.comma('~filename'))))
         # search pathfile names
         lyric_filenames = \
             config.getstringlist("memory", "lyric_filenames", [])
