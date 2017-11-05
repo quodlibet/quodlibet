@@ -411,6 +411,11 @@ class TAudioFile(TestCase):
 
     def test_lyric_filename_search(self):
 
+        def assertEqual(a, b):
+            # don't truncate the bloody error message..
+            msg_fail = str("item1: %s !=\nitem2: %s" % (a, b))
+            self.assertEqual(a, b, msg_fail)
+
         with temp_filename() as filename:
             s = AudioFile()
             s.sanitize(filename)
@@ -428,7 +433,7 @@ class TAudioFile(TestCase):
             fp_searched = unquote(s.lyric_filename)
             os.remove(fp)
             os.rmdir(p)
-            self.failUnlessEqual(fp_searched, fp)
+            assertEqual(fp_searched, fp)
 
             # test built-in default local path
             root = os.path.dirname(filename)
@@ -437,7 +442,7 @@ class TAudioFile(TestCase):
                 f.write(u"")
             fp_searched = unquote(s.lyric_filename)
             os.remove(fp)
-            self.failUnlessEqual(fp_searched, fp)
+            assertEqual(fp_searched, fp)
 
             # custom lyrics file location / naming
             config.set("memory", "lyric_filenames",
@@ -448,7 +453,7 @@ class TAudioFile(TestCase):
             # test custom default (fnf fallback!)
             fp = os.path.join(root, artist + ".-." + title)
             fp_searched = unquote(s.lyric_filename)
-            self.failUnlessEqual(fp_searched, fp)
+            assertEqual(fp_searched, fp)
 
             # test user defined
             fp = os.path.join(root, artist + " - " + title + ".lyric")
@@ -456,7 +461,7 @@ class TAudioFile(TestCase):
                 f.write(u"")
             fp_searched = unquote(s.lyric_filename)
             os.remove(fp)
-            self.failUnlessEqual(fp_searched, fp)
+            assertEqual(fp_searched, fp)
 
             # test order priority
             root2 = os.path.join(get_home_dir(), ".lyrics") # built-in default
@@ -473,7 +478,7 @@ class TAudioFile(TestCase):
             os.remove(fp2)
             os.rmdir(p2)
             os.remove(fp)
-            self.failUnlessEqual(fp_searched, fp)
+            assertEqual(fp_searched, fp)
 
             # test modified extension fallback search
             fp = os.path.join(root, artist + " - " + title + ".txt")
@@ -481,7 +486,7 @@ class TAudioFile(TestCase):
                 f.write(u"")
             fp_searched = unquote(s.lyric_filename)
             os.remove(fp)
-            self.failUnlessEqual(fp_searched, fp)
+            assertEqual(fp_searched, fp)
 
             # reset to pickup default (no <attr>) templates
             config.remove_option("memory", "lyric_filenames")
@@ -495,7 +500,7 @@ class TAudioFile(TestCase):
                     f.write(u"")
                 fp_searched = unquote(s.lyric_filename)
                 os.remove(fp)
-                self.failUnlessEqual(fp_searched, fp)
+                assertEqual(fp_searched, fp)
 
             # test '<' and '>' in name across path
             # (not parsed (transparent to test))
@@ -509,7 +514,7 @@ class TAudioFile(TestCase):
             fp_searched = unquote(s.lyric_filename)
             os.remove(fp)
             os.rmdir(p)
-            self.failUnlessEqual(fp_searched, fp)
+            assertEqual(fp_searched, fp)
 
         # reset config, other tests expect different defaults!
         config.remove_option("memory", "lyric_rootpaths")
