@@ -16,7 +16,7 @@ from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
 from quodlibet.util.tags import _TAGS as TAGS
-from quodlibet.util.path import normalize_path, mkdir
+from quodlibet.util.path import normalize_path, mkdir, get_home_dir
 
 from .helper import temp_filename
 
@@ -408,6 +408,112 @@ class TAudioFile(TestCase):
         self.assertTrue(isinstance(song.lyric_filename, fsnative))
         song["lyricist"] = u"Lyricist"
         self.assertTrue(isinstance(song.lyric_filename, fsnative))
+
+    def test_lyric_filename_search(self):
+
+        with temp_filename() as filename:
+            s = AudioFile()
+            s.sanitize(filename)
+
+            artist = s['artist'] = "SpongeBob SquarePants"
+            title = s['title'] = "Theme Tune"
+
+            # test built-in default
+            root = os.path.join(get_home_dir(), ".lyrics")
+            fp = os.path.join(root, artist, title + ".lyric")
+            p = os.path.dirname(fp)
+            mkdir(p)
+            with io.open(fp, "w", encoding='utf-8') as f:
+                f.write(u"")
+            fp_searched = s.lyric_filename
+            os.remove(fp)
+            os.rmdir(p)
+            self.failUnlessEqual(fp_searched, fp)
+
+            # test built-in default local path
+            root = os.path.dirname(filename)
+            fp = os.path.join(root, artist + " - " + title + ".lyric")
+            with io.open(fp, "w", encoding='utf-8') as f:
+                f.write(u"")
+            fp_searched = s.lyric_filename
+            os.remove(fp)
+            self.failUnlessEqual(fp_searched, fp)
+
+            # custom lyrics file location / naming
+            config.set("memory", "lyric_filenames",
+                           "<artist>.-.<title>,<artist> - <title>.lyrics_mod")
+            root = os.path.dirname(filename)
+            config.set("memory", "lyric_rootpaths", root)
+
+            # test custom default (fnf fallback!)
+            fp = os.path.join(root, artist + ".-." + title)
+            fp_searched = s.lyric_filename
+            self.failUnlessEqual(fp_searched, fp)
+
+            # test user defined
+            fp = os.path.join(root, artist + " - " + title + ".lyric")
+            with io.open(fp, "w", encoding='utf-8') as f:
+                f.write(u"")
+            fp_searched = s.lyric_filename
+            os.remove(fp)
+            self.failUnlessEqual(fp_searched, fp)
+
+            # test order priority
+            root2 = os.path.join(get_home_dir(), ".lyrics") # built-in default
+            fp2 = os.path.join(root2, artist + " - " + title + ".lyric")
+            p2 = os.path.dirname(fp2)
+            mkdir(p2)
+            with io.open(fp2, "w", encoding='utf-8') as f:
+                f.write(u"")
+            fp = os.path.join(root, artist + " - " + title + ".lyric")
+            with io.open(fp, "w", encoding='utf-8') as f:
+                f.write(u"")
+            mkdir(p2)
+            fp_searched = s.lyric_filename
+            os.remove(fp2)
+            os.rmdir(p2)
+            os.remove(fp)
+            self.failUnlessEqual(fp_searched, fp)
+
+            # test modified extension fallback search
+            fp = os.path.join(root, artist + " - " + title + ".txt")
+            with io.open(fp, "w", encoding='utf-8') as f:
+                f.write(u"")
+            fp_searched = s.lyric_filename
+            os.remove(fp)
+            self.failUnlessEqual(fp_searched, fp)
+
+            # reset to pickup default (no <attr>) templates
+            config.remove_option("memory", "lyric_filenames")
+
+            # test '<' and/or '>' in name
+            # (not parsed (transparent to test))
+            for artist in ['\<artist\>', '\<artist>', '<artist\>']:
+                artist = s['artist'] = artist + " SpongeBob SquarePants"
+                fp = os.path.join(root, artist + " - " + title + ".lyric")
+                with io.open(fp, "w", encoding='utf-8') as f:
+                    f.write(u"")
+                fp_searched = s.lyric_filename
+                os.remove(fp)
+                self.failUnlessEqual(fp_searched, fp)
+
+            # test '<' and '>' in name across path
+            # (not parsed (transparent to test))
+            artist = s['artist'] = "a < b"
+            title = s['title'] = "b > a"
+            fp = os.path.join(root, artist, title + ".lyric")
+            p = os.path.dirname(fp)
+            mkdir(p)
+            with io.open(fp, "w", encoding='utf-8') as f:
+                f.write(u"")
+            fp_searched = s.lyric_filename
+            os.remove(fp)
+            os.rmdir(p)
+            self.failUnlessEqual(fp_searched, fp)
+
+        # reset config, other tests expect different defaults!
+        config.remove_option("memory", "lyric_rootpaths")
+        config.remove_option("memory", "lyric_filenames")
 
     def test_lyrics_from_file(self):
         with temp_filename() as filename:
