@@ -16,7 +16,7 @@ from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
 from quodlibet.util.tags import _TAGS as TAGS
-from quodlibet.util.path import normalize_path, mkdir, get_home_dir
+from quodlibet.util.path import normalize_path, mkdir, get_home_dir, unquote
 
 from .helper import temp_filename
 
@@ -425,7 +425,7 @@ class TAudioFile(TestCase):
             mkdir(p)
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
-            fp_searched = s.lyric_filename
+            fp_searched = unquote(s.lyric_filename)
             os.remove(fp)
             os.rmdir(p)
             self.failUnlessEqual(fp_searched, fp)
@@ -435,7 +435,7 @@ class TAudioFile(TestCase):
             fp = os.path.join(root, artist + " - " + title + ".lyric")
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
-            fp_searched = s.lyric_filename
+            fp_searched = unquote(s.lyric_filename)
             os.remove(fp)
             self.failUnlessEqual(fp_searched, fp)
 
@@ -447,14 +447,14 @@ class TAudioFile(TestCase):
 
             # test custom default (fnf fallback!)
             fp = os.path.join(root, artist + ".-." + title)
-            fp_searched = s.lyric_filename
+            fp_searched = unquote(s.lyric_filename)
             self.failUnlessEqual(fp_searched, fp)
 
             # test user defined
             fp = os.path.join(root, artist + " - " + title + ".lyric")
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
-            fp_searched = s.lyric_filename
+            fp_searched = unquote(s.lyric_filename)
             os.remove(fp)
             self.failUnlessEqual(fp_searched, fp)
 
@@ -469,7 +469,7 @@ class TAudioFile(TestCase):
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
             mkdir(p2)
-            fp_searched = s.lyric_filename
+            fp_searched = unquote(s.lyric_filename)
             os.remove(fp2)
             os.rmdir(p2)
             os.remove(fp)
@@ -479,7 +479,7 @@ class TAudioFile(TestCase):
             fp = os.path.join(root, artist + " - " + title + ".txt")
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
-            fp_searched = s.lyric_filename
+            fp_searched = unquote(s.lyric_filename)
             os.remove(fp)
             self.failUnlessEqual(fp_searched, fp)
 
@@ -493,7 +493,7 @@ class TAudioFile(TestCase):
                 fp = os.path.join(root, artist + " - " + title + ".lyric")
                 with io.open(fp, "w", encoding='utf-8') as f:
                     f.write(u"")
-                fp_searched = s.lyric_filename
+                fp_searched = unquote(s.lyric_filename)
                 os.remove(fp)
                 self.failUnlessEqual(fp_searched, fp)
 
@@ -506,7 +506,7 @@ class TAudioFile(TestCase):
             mkdir(p)
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
-            fp_searched = s.lyric_filename
+            fp_searched = unquote(s.lyric_filename)
             os.remove(fp)
             os.rmdir(p)
             self.failUnlessEqual(fp_searched, fp)
