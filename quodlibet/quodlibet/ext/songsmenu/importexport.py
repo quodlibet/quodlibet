@@ -96,6 +96,7 @@ def export_metadata(songs, target_path):
                     line = '%s=%s' % (key, val)
                     out.write(line.encode("utf-8"))
                     out.write(os.linesep.encode("utf-8"))
+            out.write(os.linesep.encode("utf-8"))
 
 
 class Import(SongsMenuPlugin):
@@ -156,7 +157,6 @@ class Import(SongsMenuPlugin):
                 index = len(metadata)
             else:
                 key, value = line[:-1].split('=', 1)
-                value = value.decode('utf-8')
                 try:
                     metadata[index][key].append(value)
                 except KeyError:
