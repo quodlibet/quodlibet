@@ -3,7 +3,7 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 rm -Rf "raven"
-pip install --no-compile --no-deps --target="$DIR/tmp" "git+https://github.com/getsentry/raven-python.git@005d7fb0238a598529f85d11ddf272d2214408d8"
+pip install --system --no-compile --no-deps --target="$DIR/tmp" "raven==6.3.0"
 mv "$DIR/tmp/raven" "$DIR"
 rm -R "$DIR/tmp"
 
