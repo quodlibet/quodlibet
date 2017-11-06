@@ -174,6 +174,7 @@ CreamyCookie@github
 Sauyon Lee
 Thomas Leberbauer
 Kristian Laakkonen
+Emanuele Baldino
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
