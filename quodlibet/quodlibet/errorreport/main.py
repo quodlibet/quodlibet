@@ -19,13 +19,12 @@ import quodlibet
 from quodlibet import app
 from quodlibet.compat import text_type
 from quodlibet.build import BUILD_TYPE, BUILD_INFO
-from quodlibet.util import fver, cached_func, is_main_thread, website
+from quodlibet.util import fver, cached_func, is_main_thread
 from quodlibet.util.dprint import format_exception, print_exc, print_e
 from quodlibet.qltk import gtk_version, pygobject_version, get_backend_name
 
 from .sentrywrapper import Sentry, SentryError
 from .ui import ErrorDialog, find_active_window, SubmitErrorDialog
-from .github import get_github_issue_url
 from .faulthandling import FaultHandlerCrash
 from .logdump import dump_to_disk
 
@@ -81,6 +80,8 @@ def enable_errorhook(value):
 
 
 def run_error_dialogs(exc_info, sentry_error):
+    assert sentry_error is not None
+
     error_text = u"%s: %s" % (
         exc_info[0].__name__,
         (text_type(exc_info[1]).strip() or u"\n").splitlines()[0])
@@ -97,8 +98,7 @@ def run_error_dialogs(exc_info, sentry_error):
         return
 
     # XXX: This does blocking IO and uses nested event loops... but it's simple
-    dialog = ErrorDialog(
-        window, error_text, show_bug_report=(sentry_error is None))
+    dialog = ErrorDialog(window, error_text)
     while 1:
         response = dialog.run()
         if response == ErrorDialog.RESPONSE_QUIT:
@@ -123,10 +123,6 @@ def run_error_dialogs(exc_info, sentry_error):
                 submit_dialog.destroy()
                 dialog.show()
                 continue
-        elif response == ErrorDialog.RESPONSE_BUGREPORT:
-            url = get_github_issue_url(exc_info)
-            website(url)
-            dialog.destroy()
         else:
             dialog.destroy()
         break
@@ -185,7 +181,8 @@ def errorhook(exc_info=None):
 
     def called_in_main_thread():
         try:
-            run_error_dialogs(exc_info, sentry_error)
+            if sentry_error is not None:
+                run_error_dialogs(exc_info, sentry_error)
         finally:
             _error_lock.release()
 

@@ -14,7 +14,6 @@ from gi.repository import Gtk
 
 from quodlibet.errorreport import faulthandling, enable_errorhook, errorhook
 from quodlibet.errorreport.faulthandling import FaultHandlerCrash
-from quodlibet.errorreport.github import get_github_issue_url
 from quodlibet.errorreport.logdump import dump_to_disk
 from quodlibet.errorreport.ui import ErrorDialog, SubmitErrorDialog
 from quodlibet.errorreport.main import get_sentry
@@ -58,18 +57,6 @@ class Tfaulthandling(TestCase):
         assert key1 == key2 != key3
 
 
-class Tgithub(TestCase):
-
-    def test_main(self):
-        try:
-            raise Exception("foo")
-        except Exception:
-            url = get_github_issue_url(sys.exc_info())
-
-        assert url
-        assert url.startswith("https://")
-
-
 class Tlogdump(TestCase):
 
     def test_main(self):
@@ -91,8 +78,8 @@ class Terrorui(TestCase):
 
     def test_main(self):
         w = Gtk.Window()
-        ErrorDialog(w, u"foo", True).destroy()
-        ErrorDialog(w, u"foo", False).destroy()
+        ErrorDialog(w, u"foo").destroy()
+        ErrorDialog(w, u"foo").destroy()
         SubmitErrorDialog(w, u"foo").destroy()
 
 

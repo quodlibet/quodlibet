@@ -56,7 +56,7 @@ class ErrorDialog(Gtk.MessageDialog):
     RESPONSE_SUBMIT = 2
     RESPONSE_BUGREPORT = 3
 
-    def __init__(self, parent, error_text, show_bug_report):
+    def __init__(self, parent, error_text):
         main_text = _("An Error Occurred")
         secondary_text = _(
             "You can ignore this error, but the application might be unstable "
@@ -68,10 +68,7 @@ class ErrorDialog(Gtk.MessageDialog):
 
         self.set_transient_for(parent)
         self.set_modal(True)
-        if show_bug_report:
-            self.add_button(_("File Bug Report"), self.RESPONSE_BUGREPORT)
-        else:
-            self.add_button(_("Submit Error Report"), self.RESPONSE_SUBMIT)
+        self.add_button(_("Submit Error Report"), self.RESPONSE_SUBMIT)
         self.add_button(_("Quit Program"), self.RESPONSE_QUIT)
         self.add_button(_("Ignore Error"), Gtk.ResponseType.CANCEL)
         self.set_default_response(Gtk.ResponseType.CANCEL)
