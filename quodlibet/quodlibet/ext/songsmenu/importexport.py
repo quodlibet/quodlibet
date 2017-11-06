@@ -98,6 +98,7 @@ def export_metadata(songs, target_path):
                     out.write(os.linesep.encode("utf-8"))
             out.write(os.linesep.encode("utf-8"))
 
+
 class Import(SongsMenuPlugin):
     PLUGIN_ID = "ImportMeta"
     PLUGIN_NAME = _("Import Metadata")
