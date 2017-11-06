@@ -25,7 +25,7 @@ def iter_py_paths():
 
     skip = [
         os.path.join(root, "docs"),
-        os.path.join(root, "quodlibet", "optpackages"),
+        os.path.join(root, "quodlibet", "packages"),
     ]
     for dirpath, dirnames, filenames in os.walk(root):
         if any((dirpath.startswith(s + os.sep) or s == dirpath)

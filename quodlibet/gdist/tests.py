@@ -104,8 +104,6 @@ class distcheck_cmd(sdist):
     def _check_manifest(self):
         assert self.get_archive_files()
 
-        skip = os.path.join("quodlibet", "optpackages", "")
-
         # make sure MANIFEST.in includes all tracked files
         if subprocess.call(["git", "status"],
                            stdout=subprocess.PIPE,
@@ -121,8 +119,6 @@ class distcheck_cmd(sdist):
             assert process.returncode == 0
 
             tracked_files = out.splitlines()
-            tracked_files = [
-                p for p in tracked_files if not p.startswith(skip)]
 
             diff = set(tracked_files) - set(included_files)
             assert not diff, (

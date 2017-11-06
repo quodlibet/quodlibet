@@ -26,4 +26,3 @@ recursive-include docs *.py Makefile *.rst *.png *.ico *.svg *.css
 prune docs/_build_guide
 prune docs/_build_all
 prune docs/_rtd_theme*
-prune quodlibet/optpackages
