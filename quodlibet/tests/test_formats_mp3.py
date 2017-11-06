@@ -30,7 +30,8 @@ class TMP3File(TestCase):
     def test_bitrate(self):
         self.failUnlessEqual(self.song("~#bitrate"), 32)
         self.failUnlessEqual(self.song2("~#bitrate"), 32)
-        self.failUnlessEqual(self.song3("~#bitrate"), 270)
+        # 127 with mutagen 1.39+
+        assert self.song3("~#bitrate") in [127, 270]
 
     def test_format(self):
         self.assertEqual(self.song("~format"), "MP3")
