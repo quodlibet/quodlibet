@@ -69,11 +69,6 @@ This program is free software; you can redistribute it
 and/or modify it under the terms of version 2 of the GNU General Public
 License as published by the Free Software Foundation
 """, """
-This software and accompanying documentation, if any, may
-be freely used, distributed, and/or modified, in any form and for any
-purpose, as long as this notice is preserved. There is no warranty, either
-express or implied, for this software
-""", """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
