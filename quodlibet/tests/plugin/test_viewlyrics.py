@@ -6,7 +6,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-
 from quodlibet import app
 from quodlibet.formats import AudioFile
 from quodlibet.util.songwrapper import SongWrapper
