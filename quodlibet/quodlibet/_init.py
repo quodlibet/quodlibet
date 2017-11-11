@@ -112,11 +112,6 @@ def _init_python():
         # bytecode cache then start things with "MSYSTEM= ..."
         raise AssertionError("MSYSTEM is set (%r)" % environ.get("MSYSTEM"))
 
-    if is_windows():
-        # gdbm is broken under msys2, this makes shelve use another backend
-        sys.modules["gdbm"] = None
-        sys.modules["_gdbm"] = None
-
     logging.getLogger().addHandler(PrintHandler())
 
 
