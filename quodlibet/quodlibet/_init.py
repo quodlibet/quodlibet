@@ -418,7 +418,3 @@ def _init_gst():
     else:
         # monkey patching ahead
         _fix_gst_leaks()
-
-        # https://bugzilla.gnome.org/show_bug.cgi?id=710447
-        import threading
-        threading.Thread(target=lambda: None).start()
