@@ -288,17 +288,6 @@ def _init_gtk():
 
     css_override = ThemeOverrider()
 
-    # CSS overrides
-    if os.name == "nt":
-        # somehow borders are missing under Windows & Gtk+3.14
-        style_provider = Gtk.CssProvider()
-        style_provider.load_from_data(b"""
-            .menu {
-                border: 1px solid @borders;
-            }
-        """)
-        css_override.register_provider("", style_provider)
-
     if sys.platform == "darwin":
         # fix duplicated shadows for popups with Gtk+3.14
         style_provider = Gtk.CssProvider()
