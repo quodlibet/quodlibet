@@ -200,21 +200,6 @@ def _init_g():
     gi.require_version("GObject", "2.0")
     gi.require_version("GdkPixbuf", "2.0")
 
-    from gi.repository import GdkPixbuf
-
-    # On windows the default variants only do ANSI paths, so replace them.
-    # In some typelibs they are replaced by default, in some don't..
-    if os.name == "nt":
-        for name in ["new_from_file_at_scale", "new_from_file_at_size",
-                     "new_from_file"]:
-            cls = GdkPixbuf.Pixbuf
-            setattr(
-                cls, name, getattr(cls, name + "_utf8", getattr(cls, name)))
-
-    # https://bugzilla.gnome.org/show_bug.cgi?id=670372
-    if not hasattr(GdkPixbuf.Pixbuf, "savev"):
-        GdkPixbuf.Pixbuf.savev = GdkPixbuf.Pixbuf.save
-
     # Newer glib is noisy regarding deprecated signals/properties
     # even with stable releases.
     if is_release():
