@@ -282,9 +282,6 @@ def _init_gtk():
     # Make sure PyGObject includes support for foreign cairo structs
     try:
         gi.require_foreign("cairo")
-    except AttributeError:
-        # older pygobject
-        pass
     except ImportError:
         print_e("PyGObject is missing cairo support")
         exit(1)

@@ -382,14 +382,7 @@ def get_backend_name():
 gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(),
                Gtk.get_micro_version())
 
-try:
-    pygobject_version = gi.version_info
-except AttributeError:
-    # older gi versions
-    try:
-        pygobject_version = gi._gobject.pygobject_version
-    except AttributeError:
-        pygobject_version = (-1,)
+pygobject_version = gi.version_info
 
 
 def io_add_watch(fd, prio, condition, func, *args, **kwargs):
