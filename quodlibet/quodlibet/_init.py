@@ -13,7 +13,6 @@ import logging
 
 from senf import environ, argv, fsn2text
 
-from quodlibet.compat import PY2
 from quodlibet.const import MinVersions
 from quodlibet import config
 from quodlibet.util import is_osx, is_windows, i18n
@@ -89,11 +88,7 @@ def _init_gettext(no_translations=False):
 
 
 def _init_python():
-    if PY2 or is_release():
-        MinVersions.PYTHON2.check(sys.version_info)
-    else:
-        # for non release builds we allow Python3
-        MinVersions.PYTHON3.check(sys.version_info)
+    MinVersions.PYTHON3.check(sys.version_info)
 
     if is_osx():
         # We build our own openssl on OSX and need to make sure that
