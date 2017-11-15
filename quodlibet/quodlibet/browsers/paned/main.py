@@ -27,7 +27,7 @@ from quodlibet.util.library import background_filter
 from quodlibet.util import connect_destroy
 from quodlibet.qltk.paned import ConfigMultiRHPaned
 
-from .prefs import PreferencesButton
+from .prefs import PreferencesButton, ColumnModes
 from .util import get_headers
 from .pane import Pane
 
@@ -115,14 +115,17 @@ class PanedBrowser(Browser, util.InstanceTracker):
     def __destroy(self, *args):
         del self._sb_box
 
-    def set_wide_mode(self, do_wide):
+    def set_wide_mode(self, mode):
         hor = Gtk.Orientation.HORIZONTAL
         ver = Gtk.Orientation.VERTICAL
 
-        if do_wide:
+        if mode == ColumnModes.WIDE:
             self.main_box.props.orientation = hor
             self.multi_paned.change_orientation(horizontal=False)
-        else:
+        elif mode == ColumnModes.COLUMNAR:
+            self.main_box.props.orientation = hor
+            self.multi_paned.change_orientation(horizontal=True)
+        else:  # ColumnModes.SMALL
             self.main_box.props.orientation = ver
             self.multi_paned.change_orientation(horizontal=True)
 
@@ -227,7 +230,11 @@ class PanedBrowser(Browser, util.InstanceTracker):
             tags = [t for t in p.tags if not t.startswith("~#")]
             self.__star.update(dict.fromkeys(tags))
 
-        self.set_wide_mode(config.getboolean("browsers", "pane_wide_mode"))
+        try:
+            mode = config.gettext("browsers", "pane_mode")
+        except:
+            mode = ColumnModes.SMALL
+        self.set_wide_mode(mode)
 
     def fill_panes(self):
         self._panes[-1].inhibit()

@@ -8,8 +8,10 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from configparser import NoOptionError
 from gi.repository import Gtk
 
+from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet import _
@@ -18,10 +20,32 @@ from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.x import SymbolicIconImage, MenuItem, Button
 from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk.ccb import ConfigCheckMenuItem, ConfigCheckButton
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import connect_obj, escape
 from quodlibet.compat import iteritems, iterkeys
 from .util import get_headers, save_headers
+
+
+class ColumnModes(Gtk.VBox):
+    SMALL = _("Small")
+    WIDE = _("Wide")
+    COLUMNAR = _("Columnar")
+    modes = [SMALL, WIDE, COLUMNAR]
+    buttons = []
+
+    def __init__(self):
+        super(ColumnModes, self).__init__(spacing=6)
+
+        group = None
+        for mode in self.modes:
+            group = Gtk.RadioButton(group=group, label=mode)
+            try:
+                if mode == config.gettext("browsers", "pane_mode"):
+                    group.set_active(True)
+            except NoOptionError:
+                pass
+            self.pack_start(group, False, True, 0)
+            self.buttons.append(group)
 
 
 class PatternEditor(Gtk.VBox):
@@ -159,14 +183,9 @@ class PreferencesButton(Gtk.HBox):
 
         self._menu = menu = Gtk.Menu()
 
-        wide_mode = ConfigCheckMenuItem(
-            _("_Wide Mode"), "browsers", "pane_wide_mode", True)
-        wide_mode.connect("toggled", self.__wide_mode_changed, browser)
-        menu.append(wide_mode)
-
         pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
 
-        def preferences_cb(menu_item):
+        def preferences_cb(_):
             window = Preferences(browser)
             window.show()
         pref_item.connect("activate", preferences_cb)
@@ -180,9 +199,6 @@ class PreferencesButton(Gtk.HBox):
         button.set_menu(menu)
         button.show()
         self.pack_start(button, True, True, 0)
-
-    def __wide_mode_changed(self, menu_item, browser):
-        browser.set_all_wide_mode(menu_item.get_active())
 
 
 class Preferences(qltk.UniqueWindow):
@@ -199,8 +215,12 @@ class Preferences(qltk.UniqueWindow):
 
         vbox = Gtk.VBox(spacing=12)
 
+        column_modes = ColumnModes()
+        column_mode_frame = qltk.Frame(_("Column layout"), child=column_modes)
+
         editor = PatternEditor()
         editor.headers = get_headers()
+        editor_frame = qltk.Frame(_("Column content"), child=editor)
 
         equal_width = ConfigCheckButton(_("Equal pane width"),
                                         "browsers",
@@ -208,7 +228,7 @@ class Preferences(qltk.UniqueWindow):
                                         populate=True)
 
         apply_ = Button(_("_Apply"))
-        connect_obj(apply_, "clicked", self.__apply, editor,
+        connect_obj(apply_, "clicked", self.__apply, column_modes, editor,
                     browser, False, equal_width)
 
         cancel = Button(_("_Cancel"))
@@ -223,7 +243,8 @@ class Preferences(qltk.UniqueWindow):
         if not self.has_close_button():
             box.pack_start(cancel, True, True, 0)
 
-        vbox.pack_start(editor, True, True, 0)
+        vbox.pack_start(column_mode_frame, False, False, 0)
+        vbox.pack_start(editor_frame, True, True, 0)
         vbox.pack_start(box, False, True, 0)
 
         self.add(vbox)
@@ -231,7 +252,15 @@ class Preferences(qltk.UniqueWindow):
         cancel.grab_focus()
         self.get_child().show_all()
 
-    def __apply(self, editor, browser, close, equal_width):
+    def __apply(self, column_modes, editor, browser, close, equal_width):
+        selected_mode = ColumnModes.SMALL
+        if column_modes.buttons[1].get_active():
+            selected_mode = ColumnModes.WIDE
+        if column_modes.buttons[2].get_active():
+            selected_mode = ColumnModes.COLUMNAR
+        config.settext("browsers", "pane_mode", selected_mode)
+        browser.set_all_wide_mode(selected_mode)
+
         if editor.headers != get_headers():
             save_headers(editor.headers)
             browser.set_all_panes()
