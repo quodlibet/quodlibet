@@ -2,8 +2,9 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
@@ -13,10 +14,9 @@ from senf import environ, path2fsn
 from quodlibet import util
 from quodlibet import const
 from quodlibet import build
-from quodlibet.util import cached_func, windows, set_process_title
+from quodlibet.util import cached_func, windows, set_process_title, is_osx
 from quodlibet.util.dprint import print_d
-from quodlibet.util.path import mkdir
-from quodlibet.compat import PY2
+from quodlibet.util.path import mkdir, xdg_get_config_home
 
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
@@ -51,6 +51,9 @@ class Application(object):
     id = None
     """The application ID e.g. 'quodlibet'"""
 
+    is_quitting = False
+    """True after quit() is called at least once"""
+
     @property
     def icon_name(self):
         return self.id
@@ -69,6 +72,8 @@ class Application(object):
 
     def quit(self):
         from gi.repository import GLib
+
+        self.is_quitting = True
 
         def idle_quit():
             if self.window:
@@ -118,11 +123,15 @@ def get_user_dir():
 
     if os.name == "nt":
         USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
-    else:
+    elif is_osx():
         USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
+    else:
+        USERDIR = os.path.join(xdg_get_config_home(), "quodlibet")
 
-    if not PY2:
-        USERDIR += "_py3"
+        if not os.path.exists(USERDIR):
+            tmp = os.path.join(os.path.expanduser("~"), ".quodlibet")
+            if os.path.exists(tmp):
+                USERDIR = tmp
 
     if 'QUODLIBET_USERDIR' in environ:
         USERDIR = environ['QUODLIBET_USERDIR']
@@ -244,7 +253,7 @@ def _main_setup_osx(window):
     # applicationShouldHandleReopen_hasVisibleWindows_ and show everything.
     class Delegate(NSObject):
 
-        @objc.signature('B@:#B')
+        @objc.signature(b'B@:#B')
         def applicationShouldHandleReopen_hasVisibleWindows_(
                 self, ns_app, flag):
             print_d("osx: handle reopen")
@@ -276,7 +285,7 @@ def _main_setup_osx(window):
 
 def run(window, before_quit=None):
     print_d("Entering quodlibet.main")
-    from gi.repository import Gtk, Gdk
+    from gi.repository import Gtk, Gdk, GLib
     from quodlibet._init import is_init
 
     assert is_init()
@@ -323,9 +332,18 @@ def run(window, before_quit=None):
         # if we don't show a window, startup isn't completed, so call manually
         Gdk.notify_startup_complete()
 
+    from quodlibet.errorreport import faulthandling
+
+    try:
+        faulthandling.enable(os.path.join(get_user_dir(), "faultdump"))
+    except IOError:
+        util.print_exc()
+    else:
+        GLib.idle_add(faulthandling.raise_and_clear_error)
+
     # set QUODLIBET_START_PERF to measure startup time until the
     # windows is first shown.
-    if "QUODLIBET_START_PERF" in os.environ:
+    if "QUODLIBET_START_PERF" in environ:
         window.connect("draw", Gtk.main_quit)
         Gtk.main()
         sys.exit()

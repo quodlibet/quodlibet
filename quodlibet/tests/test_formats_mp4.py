@@ -2,8 +2,9 @@
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import mutagen
@@ -86,12 +87,24 @@ class TMP4File(TestCase):
     def test_bitrate(self):
         self.assertEqual(self.song("~#bitrate"), 2)
 
+    def test_channels(self):
+        assert self.song("~#channels") == 2
+
     def test_bpm_rounds(self):
         self.song["bpm"] = "98.76"
         self.song.write()
         self.song.reload()
         self.assertEqual(self.song("bpm"), "99")
         self.assertEqual(self.song("~#bpm"), 99)
+
+    def test_empty_disk_trkn(self):
+        for key in ["trkn", "disk"]:
+            tag = mutagen.mp4.MP4(self.f)
+            tag[key] = []
+            tag.save()
+            tag = mutagen.mp4.MP4(self.f)
+            assert tag[key] == []
+            self.song.reload()
 
     def test_write(self):
         self.song.write()

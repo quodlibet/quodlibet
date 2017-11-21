@@ -2,17 +2,18 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 from quodlibet.compat import urlsplit
 import errno
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
-from senf import uri2fsn, fsnative, fsn2text
+from senf import uri2fsn, fsnative, fsn2text, bytes2fsn
 
-from quodlibet import formats
+from quodlibet import formats, print_d
 from quodlibet import qltk
 from quodlibet import _
 
@@ -24,7 +25,7 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
-
+from quodlibet.compat import xrange
 from quodlibet.util.path import listdir, \
     glib2fsn, xdg_get_user_dirs, get_home_dir
 from quodlibet.util import connect_obj
@@ -147,10 +148,34 @@ def get_drives():
         return paths
 
 
+def parse_gtk_bookmarks(data):
+    """
+    Args:
+        data (bytes)
+    Retruns:
+        List[fsnative]
+    Raises:
+        ValueError
+    """
+
+    assert isinstance(data, bytes)
+
+    paths = []
+    for line in data.splitlines():
+        parts = line.split()
+        if not parts:
+            continue
+        folder_url = parts[0]
+        paths.append(bytes2fsn(urlsplit(folder_url)[2], "utf-8"))
+    return paths
+
+
 def get_gtk_bookmarks():
     """A list of paths from the GTK+ bookmarks.
-
     The paths don't have to exist.
+
+    Returns:
+        List[fsnative]
     """
 
     if os.name == "nt":
@@ -160,13 +185,8 @@ def get_gtk_bookmarks():
     folders = []
     try:
         with open(path, "rb") as f:
-            for line in f.readlines():
-                parts = line.split()
-                if not parts:
-                    continue
-                folder_url = parts[0]
-                folders.append(urlsplit(folder_url)[2])
-    except EnvironmentError:
+            folders = parse_gtk_bookmarks(f.read())
+    except (EnvironmentError, ValueError):
         pass
 
     return folders
@@ -218,7 +238,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             niter = model.append(None, [path])
             if path is not None:
                 assert isinstance(path, fsnative)
-                model.append(niter, ["dummy"])
+                model.append(niter, [fsnative(u"dummy")])
 
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.connect(
@@ -230,6 +250,18 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         if initial:
             self.go_to(initial)
 
+        menu = self._create_menu()
+        connect_obj(self, 'popup-menu', self._popup_menu, menu)
+
+        # Allow to drag and drop files from outside
+        targets = [
+            ("text/uri-list", 0, 42)
+        ]
+        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
+        self.connect('drag-data-received', self.__drag_data_received)
+
+    def _create_menu(self):
         menu = Gtk.Menu()
         m = qltk.MenuItem(_(u"_New Folder…"), Icons.DOCUMENT_NEW)
         m.connect('activate', self.__mkdir)
@@ -244,15 +276,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         m.connect('activate', self.__expand)
         menu.append(m)
         menu.show_all()
-        connect_obj(self, 'popup-menu', self.__popup_menu, menu)
-
-        # Allow to drag and drop files from outside
-        targets = [
-            ("text/uri-list", 0, 42)
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        self.connect('drag-data-received', self.__drag_data_received)
+        return menu
 
     def get_selected_paths(self):
         """A list of fs paths"""
@@ -323,24 +347,26 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                     return
         Gtk.drag_finish(drag_ctx, False, False, time)
 
-    def __popup_menu(self, menu):
+    def _popup_menu(self, menu):
         model, paths = self.get_selection().get_selected_rows()
-        if len(paths) != 1:
-            return True
 
-        path = paths[0]
-        directory = model[path][0]
-        delete = menu.get_children()[1]
+        directories = [model[path][0] for path in paths]
+        menu_items = menu.get_children()
+        delete = menu_items[1]
         try:
-            delete.set_sensitive(len(os.listdir(directory)) == 0)
+            is_empty = not any(len(os.listdir(d)) for d in directories)
+            delete.set_sensitive(is_empty)
         except OSError as err:
             if err.errno == errno.ENOENT:
-                model.remove(model.get_iter(path))
+                model.remove(model.get_iter(paths[0]))
             return False
+        new_folder = menu_items[0]
+        new_folder.set_sensitive(len(paths) == 1)
 
         selection = self.get_selection()
         selection.unselect_all()
-        selection.select_path(path)
+        for path in paths:
+            selection.select_path(path)
         return self.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __mkdir(self, button):
@@ -373,17 +399,17 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
     def __rmdir(self, button):
         model, paths = self.get_selection().get_selected_rows()
-        if len(paths) != 1:
-            return
 
-        directory = model[paths[0]][0]
-        try:
-            os.rmdir(directory)
-        except EnvironmentError as err:
-            error = "<b>%s</b>: %s" % (err.filename, err.strerror)
-            qltk.ErrorMessage(
-                None, _("Unable to delete folder"), error).run()
-            return
+        directories = [model[path][0] for path in paths]
+        print_d("Deleting %d empty directories" % len(directories))
+        for directory in directories:
+            try:
+                os.rmdir(directory)
+            except EnvironmentError as err:
+                error = "<b>%s</b>: %s" % (err.filename, err.strerror)
+                qltk.ErrorMessage(
+                    None, _("Unable to delete folder"), error).run()
+                return
 
         ppath = Gtk.TreePath(paths[0][:-1])
         expanded = self.row_expanded(ppath)

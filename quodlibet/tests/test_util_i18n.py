@@ -1,17 +1,44 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-import locale
-import os
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-import sys
+import contextlib
 
-from tests import TestCase, skipIf
-from .helper import preserve_environ
+from senf import environ
 
+from tests import TestCase
+from .helper import preserve_environ, locale_numeric_conv
+
+from quodlibet.util import i18n
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
-    set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, numeric_phrase
+    set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, \
+    numeric_phrase, get_available_languages
+from quodlibet.compat import text_type
+
+
+@contextlib.contextmanager
+def use_dummy_ngettext(exp_singular, exp_plural, ret_singular, ret_plural):
+    """Replace ngettext with a dummy implementation that returns
+    predefined translations if given source text equals expected value
+    and otherwise the source text unchanged.
+    """
+
+    original_ngettext = i18n.ngettext
+    try:
+        def dummy_ngettext(singular, plural, n):
+            if n == 1 and singular == exp_singular:
+                return ret_singular
+            elif n != 1 and plural == exp_plural:
+                return ret_plural
+            else:
+                return (singular if n == 1 else plural)
+
+        i18n.ngettext = dummy_ngettext
+        yield
+    finally:
+        i18n.ngettext = original_ngettext
 
 
 class TGlibTranslations(TestCase):
@@ -22,33 +49,36 @@ class TGlibTranslations(TestCase):
     def test_ugettext(self):
         t = self.t.ugettext("foo")
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
     def test_ungettext(self):
         t = self.t.ungettext("foo", "bar", 1)
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
         t = self.t.ungettext("foo", "bar", 2)
         self.assertEqual(t, "bar")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
     def test_upgettext(self):
         t = self.t.upgettext("ctx", "foo")
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
     def test_unpgettext(self):
         t = self.t.unpgettext("ctx", "foo", "bar", 1)
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
         t = self.t.unpgettext("ctx", "foo", "bar", 2)
         self.assertEqual(t, "bar")
-        self.assertTrue(isinstance(t, unicode))
+        self.assertTrue(isinstance(t, text_type))
 
 
 class Tgettext(TestCase):
+
+    def test_get_languages(self):
+        assert isinstance(get_available_languages("quodlibet"), list)
 
     def test_bcp47(self):
         self.assertEqual(bcp47_to_language("zh-Hans"), "zh_CN")
@@ -72,39 +102,56 @@ class Tgettext(TestCase):
 
     def test_fixup_i18n_envvars(self):
         with preserve_environ():
-            os.environ["LANGUAGE"] = "en:de:en_FOO:nl"
+            environ["LANGUAGE"] = "en:de:en_FOO:nl"
             fixup_i18n_envvars()
-            self.assertEqual(os.environ["LANGUAGE"], "en:C:de:en_FOO:C:nl")
+            self.assertEqual(environ["LANGUAGE"], "en:C:de:en_FOO:C:nl")
 
     def test_numeric_phrase(self):
         actual = numeric_phrase("%d green bottle", "%d green bottles", 1)
         self.failUnlessEqual(actual, "1 green bottle")
 
-        actual = numeric_phrase("%d green bottle", "%d green bottles", 1234)
-        self.failUnlessEqual(actual, "1,234 green bottles")
+        with locale_numeric_conv():
+            actual = numeric_phrase(
+                "%d green bottle", "%d green bottles", 1234)
+            self.failUnlessEqual(actual, "1,234 green bottles")
 
-    @skipIf(os.name == "nt" or sys.platform == "darwin",
-            "Locales don't exist on Windows / OSX test systems")
     def test_numeric_phrase_locales(self):
-        try:
-            locale.setlocale(locale.LC_ALL, 'fr_FR.utf-8')
-        except locale.Error:
-            # fr_FR not installed
-            pass
-        else:
+        with locale_numeric_conv(thousands_sep=" "):
             actual = numeric_phrase("%(bottles)d green bottle",
                                     "%(bottles)d green bottles",
                                     1234, "bottles")
             self.failUnlessEqual(actual, "1 234 green bottles")
-        finally:
-            locale.setlocale(locale.LC_ALL, '')
 
     def test_numeric_phrase_templated(self):
         actual = numeric_phrase("%(bottles)d green bottle",
                                 "%(bottles)d green bottles", 1, "bottles")
         self.failUnlessEqual(actual, "1 green bottle")
 
-        actual = numeric_phrase("%(bottles)d green bottle",
-                                "%(bottles)d green bottles", 1234, "bottles")
+        with locale_numeric_conv():
+            actual = numeric_phrase("%(bottles)d green bottle",
+                                    "%(bottles)d green bottles",
+                                    1234, "bottles")
 
-        self.failUnlessEqual(actual, "1,234 green bottles")
+            self.failUnlessEqual(actual, "1,234 green bottles")
+
+    def test_numeric_phrase_translation(self):
+        # See issue 2166
+
+        with use_dummy_ngettext("%d text", "%d texts",
+                                "%d translation", "%d translations"):
+            actual = numeric_phrase("%d text", "%d texts", 1)
+            self.failUnlessEqual(actual, "1 translation")
+
+            actual = numeric_phrase("%d text", "%d texts", 2)
+            self.failUnlessEqual(actual, "2 translations")
+
+    def test_numeric_phrase_translation_templated(self):
+        # See issue 2166
+
+        with use_dummy_ngettext("%(n)d text", "%(n)d texts",
+                                "%(n)d translation", "%(n)d translations"):
+            actual = numeric_phrase("%(n)d text", "%(n)d texts", 1, "n")
+            self.failUnlessEqual(actual, "1 translation")
+
+            actual = numeric_phrase("%(n)d text", "%(n)d texts", 2, "n")
+            self.failUnlessEqual(actual, "2 translations")

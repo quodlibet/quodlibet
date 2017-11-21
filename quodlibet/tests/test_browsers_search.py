@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from tests import TestCase
 
@@ -36,11 +37,11 @@ SONGS = [AudioFile({
                 "labelid": "65432-1",
                 "~filename": fsnative(u"/dev/random")}),
          AudioFile({
-                "title": "five",
+                "title": "five € and a £",
                 "artist": "shell",
                 "album": "don't stop",
                 "labelid": "12345-6",
-                "~filename": fsnative(u"/dev/sh")})]
+                "~filename": fsnative(u"/tmp/five € and £!")})]
 
 
 class TSearchBar(TestCase):

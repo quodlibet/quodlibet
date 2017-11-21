@@ -2,8 +2,9 @@
 # Copyright 2006 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import wave
@@ -25,6 +26,7 @@ class WAVEFile(AudioFile):
             with open(filename, "rb") as h:
                 f = wave.open(h)
                 self["~#length"] = float(f.getnframes()) / f.getframerate()
+                self["~#channels"] = f.getnchannels()
         self.sanitize(filename)
 
     def sanitize(self, filename):

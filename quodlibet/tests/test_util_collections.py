@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from tests import TestCase
 from quodlibet.util.collections import HashedList, DictProxy
+from quodlibet.compat import iteritems, iterkeys, itervalues
 
 
 class TDictMixin(TestCase):
@@ -36,19 +38,19 @@ class TDictMixin(TestCase):
     def test_keys(self):
         self.failUnlessEqual(list(self.fdict.keys()), list(self.rdict.keys()))
         self.failUnlessEqual(
-            list(self.fdict.iterkeys()), list(self.rdict.iterkeys()))
+            list(iterkeys(self.fdict)), list(iterkeys(self.rdict)))
 
     def test_values(self):
         self.failUnlessEqual(
             list(self.fdict.values()), list(self.rdict.values()))
         self.failUnlessEqual(
-            list(self.fdict.itervalues()), list(self.rdict.itervalues()))
+            list(itervalues(self.fdict)), list(itervalues(self.rdict)))
 
     def test_items(self):
         self.failUnlessEqual(
             list(self.fdict.items()), list(self.rdict.items()))
         self.failUnlessEqual(
-            list(self.fdict.iteritems()), list(self.rdict.iteritems()))
+            list(iteritems(self.fdict)), list(iteritems(self.rdict)))
 
     def test_pop(self):
         self.failUnlessEqual(self.fdict.pop("foo"), self.rdict.pop("foo"))

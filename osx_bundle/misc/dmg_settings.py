@@ -22,7 +22,7 @@ def icon_from_app(app_path):
 
 
 format = 'UDBZ'
-size = '170M'
+size = '200M'
 files = [application]
 symlinks = {'Applications': '/Applications'}
 badge_icon = icon_from_app(application)

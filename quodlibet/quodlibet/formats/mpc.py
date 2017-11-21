@@ -2,8 +2,9 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from mutagen.musepack import Musepack
 
@@ -23,6 +24,7 @@ class MPCFile(APEv2File):
         super(MPCFile, self).__init__(filename, audio)
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
+        self["~#channels"] = audio.info.channels
 
         version = audio.info.version
         self["~codec"] = u"%s SV%d" % (self.format, version)

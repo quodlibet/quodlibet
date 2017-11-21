@@ -2,16 +2,18 @@
 # Copyright 2005 Eduardo Gonzalez
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-
-from gi.repository import Gtk
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet import _
 from quodlibet.qltk import Icons
 from quodlibet.util import tag, escape
 from quodlibet.qltk.songlist import get_columns
+from quodlibet.qltk.chooser import choose_target_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.compat import text_type
+
 
 HTML = '''<html>
 <head><title>Quod Libet Playlist</title>
@@ -53,7 +55,7 @@ def to_html(songs):
             col = {"~#rating": "~rating", "~#length": "~length"}.get(
                 col, col)
             s += '\n<td>%s</td>' % (
-                escape(unicode(song.comma(col))) or '&nbsp;')
+                escape(text_type(song.comma(col))) or '&nbsp;')
         s += '</tr>'
         songs_s += s
 
@@ -71,19 +73,8 @@ class ExportToHTML(SongsMenuPlugin):
         if not songs:
             return
 
-        chooser = Gtk.FileChooserDialog(
-            title="Export to HTML",
-            action=Gtk.FileChooserAction.SAVE)
-        chooser.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
-        chooser.add_button(_("_OK"), Gtk.ResponseType.ACCEPT)
-        chooser.set_default_response(Gtk.ResponseType.ACCEPT)
-        resp = chooser.run()
-        if resp != Gtk.ResponseType.ACCEPT:
-            chooser.destroy()
-            return
-
-        fn = chooser.get_filename()
-        chooser.destroy()
-
-        with open(fn, "wb") as f:
-            f.write(to_html(songs).encode("utf-8"))
+        target = choose_target_file(
+            self.plugin_window, _("Export to HTML"), _("_Save"))
+        if target is not None:
+            with open(target, "wb") as f:
+                f.write(to_html(songs).encode("utf-8"))

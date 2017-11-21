@@ -2,15 +2,16 @@
 # Copyright 2012, 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import xml.etree.ElementTree as ET
 
 import dbus
 import dbus.service
 
-from quodlibet.compat import unichr, text_type, PY3
+from quodlibet.compat import unichr, text_type, PY3, iteritems
 
 
 def dbus_unicode_validate(text):
@@ -46,6 +47,8 @@ def list_spec_properties(spec):
     'emit' can be true/false/invalidates (see dbus spec)
     """
 
+    if not isinstance(spec, bytes):
+        spec = spec.encode("utf-8")
     assert isinstance(spec, bytes)
 
     ANNOTATION_EMITS = "org.freedesktop.DBus.Property.EmitsChangedSignal"
@@ -76,6 +79,10 @@ def list_spec_properties(spec):
 
 def filter_property_spec(spec, wl=None, bl=None):
     """Remove properties based on a white list or black list."""
+
+    if not isinstance(spec, bytes):
+        spec = spec.encode("utf-8")
+    assert isinstance(spec, bytes)
 
     if wl and bl:
         raise ValueError
@@ -172,12 +179,12 @@ class DBusIntrospectable(object):
     def Introspect(self):
         parts = []
         parts.append("<node>")
-        for iface, intros in self.__ispec.iteritems():
+        for iface, intros in iteritems(self.__ispec):
             parts.append("<interface name=\"%s\">" % iface)
             parts.extend(intros)
             parts.append("</interface>")
         parts.append("</node>")
-        return "\n".join(parts)
+        return ("\n".join(parts)).encode("utf-8")
 
 
 class DBusProperty(object):
@@ -283,7 +290,7 @@ class DBusProperty(object):
                 raise ValueError("Property %s not registered" % prop)
             combos.setdefault(iface, []).append(prop)
 
-        for iface, props in combos.iteritems():
+        for iface, props in iteritems(combos):
             values = {}
             inval = []
             for prop in props:

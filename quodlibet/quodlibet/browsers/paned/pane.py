@@ -2,8 +2,9 @@
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import operator
 
@@ -13,7 +14,8 @@ from quodlibet import qltk
 from quodlibet.qltk.views import AllTreeView, TreeViewColumnButton
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk import is_accel
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, gdecode
+from quodlibet.compat import text_type
 
 from .models import PaneModel
 from .util import PaneConfig
@@ -119,7 +121,7 @@ class Pane(AllTreeView):
         return "<%s config=%r>" % (type(self).__name__, self.config)
 
     def parse_restore_string(self, config_value):
-        assert isinstance(config_value, unicode)
+        assert isinstance(config_value, text_type)
 
         values = config_value.split("\t")[:-1]
 
@@ -162,7 +164,7 @@ class Pane(AllTreeView):
 
     def __search_func(self, model, column, key, iter_, data):
         entry = model.get_value(iter_)
-        return not entry.contains_text(key.decode('utf-8'))
+        return not entry.contains_text(gdecode(key))
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(sort=True)

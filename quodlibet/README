@@ -8,6 +8,12 @@ capabilities.
 
 Ex Falso is a tag editor with the same tag editing interface as Quod Libet.
 
+https://quodlibet.readthedocs.io
+
+.. image:: https://github.com/quodlibet/quodlibet/raw/master/quodlibet/docs/images/paned.png
+    :align: center
+    :width: 670
+    :height: 594
 
 For information on how to build/install/test Quod Libet check out
 
@@ -16,3 +22,12 @@ https://quodlibet.readthedocs.org/en/latest/development/overview.html
 
 .. image:: https://travis-ci.org/quodlibet/quodlibet.svg?branch=master
     :target: https://travis-ci.org/quodlibet/quodlibet
+
+.. image:: https://circleci.com/gh/quodlibet/quodlibet.svg?style=shield
+    :target: https://circleci.com/gh/quodlibet/quodlibet
+
+.. image:: https://ci.appveyor.com/api/projects/status/clchwo186004pk0f/branch/master?svg=true
+    :target: https://ci.appveyor.com/project/lazka/quodlibet/branch/master
+
+.. image:: https://codecov.io/gh/quodlibet/quodlibet/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/quodlibet/quodlibet

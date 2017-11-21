@@ -2,8 +2,9 @@
 # Copyright 2010 Steven Robertson
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """
 This module will provide a unified notification area for informational
@@ -223,8 +224,8 @@ class TaskController(object):
             self._parent.update()
 
     def finish(self, finished_task):
-        self.active_tasks = filter(lambda t: t is not finished_task,
-                                   self.active_tasks)
+        self.active_tasks = list(filter(lambda t: t is not finished_task,
+                                        self.active_tasks))
         self.update()
 
 # Oh so deliciously hacky.

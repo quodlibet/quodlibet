@@ -3,8 +3,9 @@
 #           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
@@ -43,9 +44,11 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
+from quodlibet.compat import text_type, iteritems, iterkeys
+
 
 STATION_LIST_URL = \
-    "https://bitbucket.org/lazka/quodlibet/downloads/radiolist.bz2"
+    "https://quodlibet.github.io/radio/radiolist.bz2"
 STATIONS_FAV = os.path.join(quodlibet.get_user_dir(), "stations")
 STATIONS_ALL = os.path.join(quodlibet.get_user_dir(), "stations_all")
 
@@ -112,8 +115,8 @@ class IRFile(RemoteFile):
         for tag in ["title", "artist", "~format"]:
             value = self.get(tag)
             if value is not None:
-                lines.append("%s=%s" % (tag, encode(value)))
-        return "\n".join(lines)
+                lines.append(encode(tag) + b"=" + encode(value))
+        return b"\n".join(lines)
 
     def can_change(self, k=None):
         if self.streamsong:
@@ -207,22 +210,13 @@ def add_station(uri):
     Returns None in error, else a possibly filled list of stations"""
 
     irfs = []
-    if isinstance(uri, unicode):
-        uri = uri.encode('utf-8')
 
     if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):
         try:
             sock = urlopen(uri)
-        except EnvironmentError as e:
-            print_d("Got %s from %s" % (uri, e))
-            encoding = util.get_locale_encoding()
-            try:
-                err = e.strerror.decode(encoding, 'replace')
-            except TypeError:
-                err = e.strerror[1].decode(encoding, 'replace')
-            except AttributeError:
-                # Give up and display the exception - may be useful HTTP info
-                err = str(e)
+        except EnvironmentError as err:
+            err = text_type(err)
+            print_d("Got %s from %s" % (uri, err))
             ErrorMessage(None, _("Unable to add station"), escape(err)).run()
             return None
 
@@ -264,8 +258,8 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
 
         decomp = bz2.BZ2Decompressor()
 
-        data = ""
-        temp = ""
+        data = b""
+        temp = b""
         read = 0
         while temp or not data:
             read += len(temp)
@@ -308,17 +302,20 @@ def parse_taglist(data):
     stations = []
     station = None
 
-    for l in data.split("\n"):
-        key = l.split("=")[0]
-        value = l.split("=", 1)[1]
+    for l in data.split(b"\n"):
+        if not l:
+            continue
+        key = l.split(b"=")[0]
+        value = l.split(b"=", 1)[1]
+        key = decode(key)
+        value = decode(value)
         if key == "uri":
             if station:
                 stations.append(station)
             station = IRFile(value)
             continue
 
-        value = decode(value)
-        san = sanitize_tags({key: value}, stream=True).items()
+        san = list(sanitize_tags({key: value}, stream=True).items())
         if not san:
             continue
 
@@ -327,8 +324,10 @@ def parse_taglist(data):
             key = "~#listenerpeak"
             value = int(value)
 
-        if isinstance(value, str):
-            value = value.decode("utf-8")
+        if not station:
+            continue
+
+        if isinstance(value, text_type):
             if value not in station.list(key):
                 station.add(key, value)
         else:
@@ -538,7 +537,8 @@ class InternetRadio(Browser, util.InstanceTracker):
         completion = LibraryTagCompletion(self.__stations)
         self.accelerators = Gtk.AccelGroup()
         self.__searchbar = search = SearchBarBox(completion=completion,
-                                                 accel_group=self.accelerators)
+                                                 accel_group=self.accelerators,
+                                                 star=self.STAR)
         search.connect('query-changed', self.__filter_changed)
 
         menu = Gtk.Menu()
@@ -689,7 +689,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         # keep at most 2 URLs for each group
         stations = []
-        for key, sub in groups.iteritems():
+        for key, sub in iteritems(groups):
             sub.sort(key=lambda s: s.get("~#listenerpeak", 0), reverse=True)
             stations.extend(sub[:2])
 
@@ -697,7 +697,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         all_ = [self.filters.query(k) for k in self.filters.keys()]
         assert all_
         anycat_filter = reduce(lambda x, y: x | y, all_)
-        stations = filter(anycat_filter.search, stations)
+        stations = list(filter(anycat_filter.search, stations))
 
         # remove listenerpeak
         for s in stations:
@@ -706,11 +706,11 @@ class InternetRadio(Browser, util.InstanceTracker):
         # update the libraries
         stations = dict(((s.key, s) for s in stations))
         # don't add ones that are in the fav list
-        for fav in self.__fav_stations.iterkeys():
+        for fav in iterkeys(self.__fav_stations):
             stations.pop(fav, None)
 
         # separate
-        o, n = set(self.__stations.iterkeys()), set(stations)
+        o, n = set(iterkeys(self.__stations)), set(stations)
         to_add, to_change, to_remove = n - o, o & n, o - n
         del o, n
 
@@ -721,7 +721,7 @@ class InternetRadio(Browser, util.InstanceTracker):
             # clear everything except stats
             AudioFile.reload(old)
             # add new metadata except stats
-            for k in (x for x in new.iterkeys() if x not in MIGRATE):
+            for k in (x for x in iterkeys(new) if x not in MIGRATE):
                 old[k] = new[k]
 
         to_add = [stations.pop(k) for k in to_add]
@@ -843,13 +843,13 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         items.append(iradio_items)
         menu = SongsMenu(self.__librarian, songs, playlists=False, remove=True,
-                         queue=False, devices=False, items=items)
+                         queue=False, items=items)
         return menu
 
     def restore(self):
-        text = config.get("browsers", "query_text").decode("utf-8")
+        text = config.gettext("browsers", "query_text")
         self.__searchbar.set_text(text)
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__filter_changed(self.__searchbar, text, restore=True)
 
         keys = config.get("browsers", "radio").splitlines()
@@ -882,7 +882,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
     def filter_text(self, text):
         self.__searchbar.set_text(text)
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__filter_changed(self.__searchbar, text)
             self.activate()
 
@@ -909,8 +909,8 @@ class InternetRadio(Browser, util.InstanceTracker):
         return True
 
     def save(self):
-        text = self.__searchbar.get_text().encode("utf-8")
-        config.set("browsers", "query_text", text)
+        text = self.__searchbar.get_text()
+        config.settext("browsers", "query_text", text)
 
         selection = self.view.get_selection()
         model, rows = selection.get_selected_rows()

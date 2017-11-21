@@ -1,10 +1,24 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013 Christoph Reiter
+# Copyright 2013-2016 Christoph Reiter
 #
-# This software and accompanying documentation, if any, may be freely
-# used, distributed, and/or modified, in any form and for any purpose,
-# as long as this notice is preserved. There is no warranty, either
-# express or implied, for this software.
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os
 
@@ -94,7 +108,10 @@ class install_dbus_services(Command):
             fullpath = os.path.join(basepath, service_name)
             (out, _) = self.copy_file(fullsrc, fullpath)
             self.outfiles.append(out)
-            _replace(fullpath, "@PREFIX@", self.exec_prefix or "")
+            prefix = self.exec_prefix or ""
+            if not isinstance(prefix, bytes):
+                prefix = prefix.encode("utf-8")
+            _replace(fullpath, b"@PREFIX@", prefix)
 
 
 __all__ = ["build_dbus_services", "install_dbus_services"]

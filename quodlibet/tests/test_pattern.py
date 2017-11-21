@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
@@ -17,25 +18,25 @@ from quodlibet.pattern import (FileFromPattern, XMLFromPattern, Pattern,
 class _TPattern(TestCase):
 
     def setUp(self):
-        s1 = {'tracknumber': '5/6', 'artist': 'Artist', 'title': 'Title5',
-              '~filename': '/path/to/a.mp3', 'xmltest': "<&>"}
-        s2 = {'tracknumber': '6', 'artist': 'Artist', 'title': 'Title6',
-              '~filename': '/path/to/b.ogg', 'discnumber': '2',
+        s1 = {'tracknumber': u'5/6', 'artist': u'Artist', 'title': u'Title5',
+              '~filename': '/path/to/a.mp3', 'xmltest': u"<&>"}
+        s2 = {'tracknumber': u'6', 'artist': u'Artist', 'title': u'Title6',
+              '~filename': '/path/to/b.ogg', 'discnumber': u'2',
               'unislash': u"foo\uff0fbar"}
-        s3 = {'title': 'test/subdir', 'genre': '/\n/',
-              '~filename': '/one/more/a.flac', 'version': 'Instrumental'}
-        s4 = {'performer': 'a\nb', 'artist': 'foo\nbar'}
-        s5 = {'tracknumber': '7/1234', 'artist': 'Artist', 'title': 'Title7',
-              '~filename': '/path/to/e.mp3'}
-        s6 = {'artist': 'Foo', 'albumartist': 'foo.bar', 'album': 'Best Of',
-              '~filename': '/path/to/f.mp3', 'title': 'The.Final.Word'}
+        s3 = {'title': u'test/subdir', 'genre': u'/\n/',
+              '~filename': '/one/more/a.flac', 'version': u'Instrumental'}
+        s4 = {'performer': u'a\nb', 'artist': u'foo\nbar'}
+        s5 = {'tracknumber': u'7/1234', 'artist': u'Artist',
+              'title': u'Title7', '~filename': '/path/to/e.mp3'}
+        s6 = {'artist': u'Foo', 'albumartist': u'foo.bar', 'album': u'Best Of',
+              '~filename': '/path/to/f.mp3', 'title': u'The.Final.Word'}
         s7 = {'artist': u'un élève français', '~filename': '/path/to/g.mp3',
               'albumartist': u'Lee "Scratch" Perry',
-              'album': "The 'only' way!", 'comment': 'Trouble|Strife'}
-        s8 = {'tracknumber': '7/8', 'artist': 'Artist1\n\nArtist3',
-              'artistsort': 'SortA1\nSortA2',
-              'album': 'Album5', 'albumsort': 'SortAlbum5',
-              '~filename': '/path/to/g.mp3', 'xmltest': "<&>"}
+              'album': u"The 'only' way!", 'comment': u'Trouble|Strife'}
+        s8 = {'tracknumber': u'7/8', 'artist': u'Artist1\n\nArtist3',
+              'artistsort': u'SortA1\nSortA2',
+              'album': u'Album5', 'albumsort': u'SortAlbum5',
+              '~filename': '/path/to/g.mp3', 'xmltest': u"<&>"}
 
         if os.name == "nt":
             s1["~filename"] = u"C:\\path\\to\\a.mp3"
@@ -125,8 +126,8 @@ class TPattern(_TPattern):
 
     def test_duplicate_query(self):
         pat = Pattern('<u=yes|<u=yes|x|y>|<u=yes|q|z>>')
-        self.assertEqual(pat.format(AudioFile({"u": "yes"})), "x")
-        self.assertEqual(pat.format(AudioFile({"u": "no"})), "z")
+        self.assertEqual(pat.format(AudioFile({"u": u"yes"})), "x")
+        self.assertEqual(pat.format(AudioFile({"u": u"no"})), "z")
 
     def test_tag_query_escaping(s):
         pat = Pattern('<albumartist=Lee "Scratch" Perry|matched|not matched>')
@@ -227,10 +228,10 @@ class TPattern(_TPattern):
 
     def test_unicode_with_int(s):
         song = AudioFile({"tracknumber": "5/6",
-            "title": "\xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8')})
+            "title": b"\xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8')})
         pat = Pattern('<~#track>. <title>')
         s.assertEquals(pat.format(song),
-            "5. \xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8'))
+            b"5. \xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8'))
 
 
 class _TFileFromPattern(_TPattern):

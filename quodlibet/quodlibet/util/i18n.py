@@ -2,15 +2,31 @@
 # Copyright 2006 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
 import gettext
 import locale
 
-from quodlibet.compat import text_type, PY2
+from senf import environ, path2fsn, fsn2text, text2fsn
+
+from quodlibet.util.path import unexpand
+from quodlibet.util.dprint import print_d
+from quodlibet.compat import text_type, PY2, listfilter
+
+from .misc import get_locale_encoding
+
+
+def locale_format(format, val, *args, **kwargs):
+    """Like locale.format but returns text"""
+
+    result = locale.format(format, val, *args, **kwargs)
+    if isinstance(result, bytes):
+        result = result.decode(get_locale_encoding(), "replace")
+    return result
 
 
 def bcp47_to_language(code):
@@ -65,22 +81,22 @@ def set_i18n_envvars():
         from quodlibet.util.winapi import GetUserDefaultUILanguage, \
             GetSystemDefaultUILanguage
 
-        langs = filter(None, map(locale.windows_locale.get,
-                                 [GetUserDefaultUILanguage(),
-                                  GetSystemDefaultUILanguage()]))
+        langs = listfilter(None, map(locale.windows_locale.get,
+                                     [GetUserDefaultUILanguage(),
+                                      GetSystemDefaultUILanguage()]))
         if langs:
-            os.environ.setdefault('LANG', langs[0])
-            os.environ.setdefault('LANGUAGE', ":".join(langs))
+            environ.setdefault('LANG', langs[0])
+            environ.setdefault('LANGUAGE', ":".join(langs))
     elif sys.platform == "darwin":
         from AppKit import NSLocale
         locale_id = NSLocale.currentLocale().localeIdentifier()
         lang = osx_locale_id_to_lang(locale_id)
-        os.environ.setdefault('LANG', lang)
+        environ.setdefault('LANG', lang)
 
         preferred_langs = NSLocale.preferredLanguages()
         if preferred_langs:
             languages = map(bcp47_to_language, preferred_langs)
-            os.environ.setdefault('LANGUAGE', ":".join(languages))
+            environ.setdefault('LANGUAGE', ":".join(languages))
     else:
         return
 
@@ -96,7 +112,7 @@ def fixup_i18n_envvars():
     """
 
     try:
-        langs = os.environ["LANGUAGE"].split(":")
+        langs = environ["LANGUAGE"].split(":")
     except KeyError:
         return
 
@@ -109,7 +125,7 @@ def fixup_i18n_envvars():
         if lang.startswith("en") and len(langs) > 1:
             sanitized.append("C")
 
-    os.environ["LANGUAGE"] = ":".join(sanitized)
+    environ["LANGUAGE"] = ":".join(sanitized)
 
 
 class GlibTranslations(gettext.GNUTranslations):
@@ -187,13 +203,119 @@ class GlibTranslations(gettext.GNUTranslations):
         raise NotImplementedError("We no longer do builtins")
 
 
-_translations = GlibTranslations()
+_initialized = False
+_debug_text = None
+_translations = {
+    "quodlibet": GlibTranslations(),
+}
 
 
-def set_translation(trans):
-    global _translations
+def set_debug_text(debug_text=None):
+    """
+    Args:
+        debug_text (text_type or None): text to add to all translations
+    """
 
-    _translations = trans
+    global _debug_text, _translations
+
+    _debug_text = debug_text
+    for trans in _translations.values():
+        trans.set_debug_text(debug_text)
+
+
+def register_translation(domain, localedir=None):
+    """Register a translation domain
+
+    Args:
+        domain (str): the gettext domain
+        localedir (pathlike): A directory used for translations, if it doesn't
+            exist the system one will be used.
+    Returns:
+        GlibTranslations
+    """
+
+    global _debug_text, _translations, _initialized
+
+    assert _initialized
+
+    if localedir is not None and os.path.isdir(localedir):
+        print_d("Using local localedir: %r" % unexpand(localedir))
+        gettext.bindtextdomain(domain, localedir)
+
+    localedir = gettext.bindtextdomain(domain)
+
+    try:
+        t = gettext.translation(domain, localedir, class_=GlibTranslations)
+    except IOError:
+        print_d("No translation found in %r" % unexpand(localedir))
+        t = GlibTranslations()
+    else:
+        print_d("Translations loaded: %r" % unexpand(t.path))
+
+    t.set_debug_text(_debug_text)
+    _translations[domain] = t
+    return t
+
+
+def init(language=None):
+    """Call this sometime at start before any register_translation()
+    and before any gettext using libraries are loaded.
+
+    Args:
+        language (text_type or None): Either a language to use or None for the
+            system derived default.
+    """
+
+    global _initialized
+
+    set_i18n_envvars()
+    fixup_i18n_envvars()
+
+    print_d("LANGUAGE: %r" % environ.get("LANGUAGE"))
+    print_d("LANG: %r" % environ.get("LANG"))
+
+    try:
+        locale.setlocale(locale.LC_ALL, '')
+    except locale.Error:
+        pass
+
+    # XXX: these are our most user facing APIs, make sre they are not loaded
+    # before we set the language. For GLib this is too late..
+    assert "gi.repository.Gtk" not in sys.modules
+    assert "gi.repository.Gst" not in sys.modules
+
+    if language is not None:
+        environ["LANGUAGE"] = text2fsn(language)
+        print_d("LANGUAGE: %r" % environ.get("LANGUAGE"))
+
+    _initialized = True
+
+
+def get_available_languages(domain):
+    """Returns a list of available translations for a given gettext domain.
+
+    Args:
+        domain (str)
+    Returns:
+        List[text_type]
+    """
+
+    locale_dir = gettext.bindtextdomain(domain)
+    if locale_dir is None:
+        return []
+
+    try:
+        entries = os.listdir(locale_dir)
+    except OSError:
+        return []
+
+    langs = [u"C"]
+    for lang in entries:
+        mo_path = os.path.join(
+            locale_dir, lang, "LC_MESSAGES", "%s.mo" % domain)
+        if os.path.exists(mo_path):
+            langs.append(fsn2text(path2fsn(lang)))
+    return langs
 
 
 def _(message):
@@ -206,7 +328,8 @@ def _(message):
     Lookup the translation for message
     """
 
-    return _translations.wrap_text(_translations.ugettext(message))
+    t = _translations["quodlibet"]
+    return t.wrap_text(t.ugettext(message))
 
 
 def N_(message):
@@ -233,8 +356,8 @@ def C_(context, message):
     Lookup the translation for message for a context
     """
 
-    return _translations.wrap_text(
-        _translations.upgettext(context, message))
+    t = _translations["quodlibet"]
+    return t.wrap_text(t.upgettext(context, message))
 
 
 def ngettext(singular, plural, n):
@@ -250,8 +373,8 @@ def ngettext(singular, plural, n):
     on the value of n.
     """
 
-    return _translations.wrap_text(
-        _translations.ungettext(singular, plural, n))
+    t = _translations["quodlibet"]
+    return t.wrap_text(t.ungettext(singular, plural, n))
 
 
 def numeric_phrase(singular, plural, n, template_var=None):
@@ -275,7 +398,7 @@ def numeric_phrase(singular, plural, n, template_var=None):
     `"Add 12,345 songs"`
     (in `en_US` locale at least)
     """
-    num_text = locale.format('%d', n, grouping=True)
+    num_text = locale_format('%d', n, grouping=True)
     if not template_var:
         template_var = '%d'
         replacement = '%s'
@@ -285,8 +408,8 @@ def numeric_phrase(singular, plural, n, template_var=None):
         replacement = '%(' + template_var + ')s'
         params = dict()
         params[template_var] = num_text
-    return (ngettext(singular.replace(template_var, replacement),
-            plural.replace(template_var, replacement), n) % params)
+    return (ngettext(singular, plural, n).replace(template_var, replacement) %
+            params)
 
 
 def npgettext(context, singular, plural, n):
@@ -302,5 +425,5 @@ def npgettext(context, singular, plural, n):
     Like ngettext, but with also depends on the context.
     """
 
-    return _translations.wrap_text(
-        _translations.unpgettext(context, singular, plural, n))
+    t = _translations["quodlibet"]
+    return t.wrap_text(t.unpgettext(context, singular, plural, n))

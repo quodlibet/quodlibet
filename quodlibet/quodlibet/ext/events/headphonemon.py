@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright 2015 Christoph Reiter
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
@@ -121,7 +123,7 @@ class HeadphoneMonitor(GObject.Object):
             # querying the status also results in client events which would
             # lead us into an endless loop. Instead just something if there
             # is a sink event
-            if " on sink " in data:
+            if b" on sink " in data:
                 self._update_status()
             return True
 

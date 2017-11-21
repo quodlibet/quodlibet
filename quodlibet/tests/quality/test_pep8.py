@@ -2,18 +2,21 @@
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-import os
 import itertools
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 import pytest
-import quodlibet
+
+from quodlibet.util import is_wine
 
 from tests import TestCase
 from tests.helper import capture_output
+
+from .util import iter_project_py_files, setup_cfg
 
 try:
     import pep8 as pycodestyle
@@ -24,12 +27,12 @@ except ImportError:
         pycodestyle = None
 
 
-def iter_py_files(root):
-    for base, dirs, files in os.walk(root):
-        for file_ in files:
-            path = os.path.join(base, file_)
-            if os.path.splitext(path)[1] == ".py":
-                yield path
+def create_pool():
+    if is_wine():
+        # ProcessPoolExecutor is broken under wine
+        return ThreadPoolExecutor(1)
+    else:
+        return ProcessPoolExecutor(None)
 
 
 def _check_file(f, ignore):
@@ -41,7 +44,7 @@ def _check_file(f, ignore):
 
 def check_files(files, ignore=[]):
     lines = []
-    with ProcessPoolExecutor(None) as pool:
+    with create_pool() as pool:
         for res in pool.map(_check_file, files, itertools.repeat(ignore)):
             lines.extend(res)
     return sorted(lines)
@@ -49,14 +52,10 @@ def check_files(files, ignore=[]):
 
 @pytest.mark.quality
 class TPEP8(TestCase):
-    IGNORE = ["E12", "E261", "E265", "E713", "W602", "E402", "E731",
-              "W503", "E741", "E305", "W601"]
-
     def test_all(self):
         assert pycodestyle is not None, "pep8/pycodestyle is missing"
 
-        files = iter_py_files(
-            os.path.dirname(os.path.abspath(quodlibet.__path__[0])))
-        errors = check_files(files, ignore=self.IGNORE)
+        files = iter_project_py_files()
+        errors = check_files(files, ignore=setup_cfg.ignore)
         if errors:
             raise Exception("\n".join(errors))

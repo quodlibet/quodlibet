@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2016 Ryan Dellenbaugh
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
+import codecs
 import re
 
 from . import _match as match
 from ._match import ParseError
-from ._diacritic import re_add_variants
 from quodlibet.util import re_escape
+from quodlibet.compat import text_type, PY3
+
 
 # Precompiled regexes
 TAG = re.compile(r'[~\w\s:]+')
@@ -24,7 +28,7 @@ REGEXP = re.compile(r'([^/\\]|\\.)*')
 SINGLE_STRING = re.compile(r"([^'\\]|\\.)*")
 DOUBLE_STRING = re.compile(r'([^"\\]|\\.)*')
 MODIFIERS = re.compile(r'[cisld]*')
-TEXT = re.compile(r'[^=)|&#/<>!@,]+')
+TEXT = re.compile(r'[^,)]+')
 DATE = re.compile(r'\d{4}(-\d{1,2}(-\d{1,2})?)?')
 
 
@@ -113,12 +117,16 @@ class QueryParser(object):
         elif self.accept('@'):
             return self.Extension()
         try:
-            # Equals and Star can begin the same, so try Equals first then
-            # backtrack and try Star on failure
+            # Equals, NotEquals and Star can begin the same,
+            # so try in order, backtracking on failure (with Star last)
             index = self.index
             return self.Equals()
         except ParseError:
             self.index = index
+            try:
+                return self.NotEquals()
+            except ParseError:
+                self.index = index
             return self.Star(outer=outer)
 
     def Negation(self, rule):
@@ -237,6 +245,15 @@ class QueryParser(object):
         value = self.Value()
         return match.Tag(tags, value)
 
+    def NotEquals(self):
+        """Rule for 'tag!=value' queries"""
+        tags = self.match_list(lambda: self.expect_re(TAG))
+        tags = [tag.strip() for tag in tags]
+        self.expect('!')
+        self.expect('=')
+        value = self.Value()
+        return match.Neg(match.Tag(tags, value))
+
     def Value(self, outer=False):
         """Rule for value. Either a regexp, quoted string, boolean combination
         of values, or free text string"""
@@ -262,32 +279,16 @@ class QueryParser(object):
             if outer:
                 # Hack to force plain text parsing for top level free text
                 raise ParseError('Free text not allowed at top level of query')
-            return self.RegexpMods(self.expect_re(TEXT))
+
+            return match.Regex(re_escape(self.expect_re(TEXT)), u"d")
 
     def RegexpMods(self, regex):
         """Consume regexp modifiers from tokens and compile provided regexp
-        with them."""
+        with them.
+        """
+
         mod_string = self.expect_re(MODIFIERS)
-        mods = re.MULTILINE | re.UNICODE | re.IGNORECASE
-        if "c" in mod_string:
-            mods &= ~re.IGNORECASE
-        if "i" in mod_string:
-            mods |= re.IGNORECASE
-        if "s" in mod_string:
-            mods |= re.DOTALL
-        if "l" in mod_string:
-            mods = (mods & ~re.UNICODE) | re.LOCALE
-        if "d" in mod_string:
-            try:
-                regex = re_add_variants(regex)
-            except re.error:
-                raise ParseError("The regular expression was invalid")
-            except NotImplementedError:
-                raise ParseError("The regular expression was is not supported")
-        try:
-            return re.compile(regex, mods)
-        except re.error:
-            raise ParseError("The regular expression /%s/ is invalid." % regex)
+        return match.Regex(regex, mod_string)
 
     def Star(self, outer=False):
         """Rule for value that matches all visible tags"""
@@ -295,8 +296,11 @@ class QueryParser(object):
 
     def str_to_re(self, string):
         """Convert plain string to escaped regexp that can be compiled"""
-        if isinstance(string, unicode):
+        if isinstance(string, text_type):
             string = string.encode('utf-8')
-        string = string.decode('string_escape')
+        if PY3:
+            string = codecs.escape_decode(string)[0]
+        else:
+            string = string.decode('string_escape')
         string = string.decode('utf-8')
         return "^%s$" % re_escape(string)

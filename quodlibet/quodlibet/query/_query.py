@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2015-2016 Nick Boultbee,
+#           2015-2017 Nick Boultbee,
 #                2016 Ryan Dellenbaugh
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
+from quodlibet import print_d
+from quodlibet.util.dprint import frame_info
 from . import _match as match
-from ._match import error, Node
+from ._match import error, Node, False_
 from ._parser import QueryParser
 from quodlibet.util import re_escape, enum, cached_property
 from quodlibet.compat import PY2, text_type
@@ -38,14 +41,11 @@ class Query(Node):
     stars = None
     """List of default tags used"""
 
-    def __init__(self, string, star=None, dumb_match_diacritics=True):
+    def __init__(self, string, star=None):
         """Parses the query string and returns a match object.
 
         star -- List of tags to look in if none are specified in the query.
                 Defaults to those specified in `STAR`.
-
-        dumb_match_diacritics -- In case of text queries (QueryType.TEXT)
-                                 try to match variants with diacritic marks.
 
         This parses the query language as well as some tagless shortcuts:
             "foo bar" ->  &(star1,star2=foo,star1,star2=bar)
@@ -57,9 +57,8 @@ class Query(Node):
             "!(foo, bar)" -> !star1,star2=(foo, bar)
             etc...
         """
-
-        # TODO dumb_match_diacritics
-
+        print_d("Creating query \"%s\", called from %s"
+                % (string, frame_info(1)))
         if star is None:
             star = self.STAR
 
@@ -78,9 +77,7 @@ class Query(Node):
             pass
 
         if not set("#=").intersection(string):
-            parts = ["/%s/" % re_escape(s) for s in string.split()]
-            if dumb_match_diacritics:
-                parts = [p + "d" for p in parts]
+            parts = ["/%s/d" % re_escape(s) for s in string.split()]
             string = "&(" + ",".join(parts) + ")"
             self.string = string
 
@@ -91,7 +88,10 @@ class Query(Node):
             except self.error:
                 pass
 
-        raise error('Query is not VALID or TEXT')
+        # raise error('Query is not VALID or TEXT')
+        print_d("Query '%s' is invalid" % string)
+        self.type = QueryType.INVALID
+        self._match = False_()
 
     @classmethod
     def StrictQueryMatcher(cls, string):
@@ -115,39 +115,20 @@ class Query(Node):
     def filter(self):
         return self._match.filter
 
-    @classmethod
-    def is_valid(cls, string):
-        """Whether a full query can be parsed"""
+    @property
+    def valid(self):
+        """Whether a query is a valid full (not free-text) query"""
+        return self.type == QueryType.VALID
 
-        return cls.get_type(string) == QueryType.VALID
-
-    @classmethod
-    def match_all(cls, string):
+    @property
+    def matches_all(self):
         """Whether the resulting query will not filter anything"""
+        return isinstance(self._match, match.True_)
 
-        try:
-            return isinstance(cls(string)._match, match.True_)
-        except cls.error:
-            return False
-
-    @classmethod
-    def is_parsable(cls, string):
-        """Whether the text can be parsed"""
-
-        try:
-            cls(string)
-        except cls.error:
-            return False
-        return True
-
-    @classmethod
-    def get_type(cls, string):
-        """Returns a QueryType instance for the given query"""
-
-        try:
-            return cls(string).type
-        except error:
-            return QueryType.INVALID
+    @property
+    def is_parsable(self):
+        """Whether the text can be parsed at all"""
+        return self.type is not QueryType.INVALID
 
     def _unpack(self):
         # so that other classes can see the wrapped one and optimize
@@ -167,10 +148,11 @@ class Query(Node):
     def validator(cls, string):
         """Returns True/False for a query, None for a text only query"""
 
-        type_ = cls.get_type(string)
+        query = cls(string)
+        type_ = query.type
         if type_ == QueryType.VALID:
             # in case of an empty but valid query we say it's "text"
-            if cls.match_all(string):
+            if query.matches_all:
                 return None
             return True
         elif type_ == QueryType.INVALID:

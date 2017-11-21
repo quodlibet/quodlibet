@@ -2,23 +2,21 @@
 # Copyright 2011,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import json
 import collections
 import threading
-import urllib
-import urllib2
-import socket
-import Queue
-import StringIO
 import gzip
 from xml.dom.minidom import parseString
 
 from gi.repository import GLib
 
 from quodlibet.util import print_w
+from quodlibet.compat import iteritems, urlencode, queue, cBytesIO
+from quodlibet.util.urllib import urlopen, Request
 from .util import get_api_key, GateKeeper
 
 
@@ -56,27 +54,27 @@ class AcoustidSubmissionThread(threading.Thread):
 
         self.__done += len(urldata)
 
-        basedata = urllib.urlencode({
+        basedata = urlencode({
             "format": "xml",
             "client": APP_KEY,
             "user": get_api_key(),
         })
 
-        urldata = "&".join([basedata] + map(urllib.urlencode, urldata))
-        obj = StringIO.StringIO()
-        gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
+        urldata = "&".join([basedata] + list(map(urlencode, urldata)))
+        obj = cBytesIO()
+        gzip.GzipFile(fileobj=obj, mode="wb").write(urldata.encode())
         urldata = obj.getvalue()
 
         headers = {
             "Content-Encoding": "gzip",
             "Content-type": "application/x-www-form-urlencoded"
         }
-        req = urllib2.Request(self.URL, urldata, headers)
+        req = Request(self.URL, urldata, headers)
 
         error = None
         try:
-            response = urllib2.urlopen(req, timeout=self.TIMEOUT)
-        except (urllib2.URLError, socket.timeout) as e:
+            response = urlopen(req, timeout=self.TIMEOUT)
+        except EnvironmentError as e:
             error = "urllib error: " + str(e)
         else:
             xml = response.read()
@@ -107,6 +105,7 @@ class AcoustidSubmissionThread(threading.Thread):
                 "bitrate": song("~#bitrate"),
                 "fileformat": song("~format"),
                 "mbid": song("musicbrainz_trackid"),
+                "track": song("title"),
                 "artist": song.list("artist"),
                 "album": song("album"),
                 "albumartist": song("albumartist"),
@@ -116,7 +115,7 @@ class AcoustidSubmissionThread(threading.Thread):
             }
 
             tuples = []
-            for key, value in track.iteritems():
+            for key, value in iteritems(track):
                 # this also dismisses 0.. which should be ok here.
                 if not value:
                     continue
@@ -265,7 +264,7 @@ class AcoustidLookupThread(threading.Thread):
     def __init__(self, progress_cb):
         super(AcoustidLookupThread, self).__init__()
         self.__progress_cb = progress_cb
-        self.__queue = Queue.Queue()
+        self.__queue = queue.Queue()
         self.__stopped = False
         self.start()
 
@@ -284,7 +283,7 @@ class AcoustidLookupThread(threading.Thread):
 
     def __process(self, results):
         req_data = []
-        req_data.append(urllib.urlencode({
+        req_data.append(urlencode({
             "format": "json",
             "client": APP_KEY,
             "batch": "1",
@@ -292,7 +291,7 @@ class AcoustidLookupThread(threading.Thread):
 
         for i, result in enumerate(results):
             postfix = ".%d" % i
-            req_data.append(urllib.urlencode({
+            req_data.append(urlencode({
                 "duration" + postfix: str(int(round(result.length))),
                 "fingerprint" + postfix: result.chromaprint,
             }))
@@ -300,26 +299,26 @@ class AcoustidLookupThread(threading.Thread):
         req_data.append("meta=releases+recordings+tracks+sources")
 
         urldata = "&".join(req_data)
-        obj = StringIO.StringIO()
-        gzip.GzipFile(fileobj=obj, mode="wb").write(urldata)
+        obj = cBytesIO()
+        gzip.GzipFile(fileobj=obj, mode="wb").write(urldata.encode())
         urldata = obj.getvalue()
 
         headers = {
             "Content-Encoding": "gzip",
             "Content-type": "application/x-www-form-urlencoded"
         }
-        req = urllib2.Request(self.URL, urldata, headers)
+        req = Request(self.URL, urldata, headers)
 
         releases = {}
         error = ""
         try:
-            response = urllib2.urlopen(req, timeout=self.TIMEOUT)
-        except (urllib2.URLError, socket.timeout) as e:
+            response = urlopen(req, timeout=self.TIMEOUT)
+        except EnvironmentError as e:
             error = "urllib error: " + str(e)
         else:
             try:
                 data = response.read()
-                data = json.loads(data)
+                data = json.loads(data.decode())
             except ValueError as e:
                 error = str(e)
             else:
@@ -343,7 +342,7 @@ class AcoustidLookupThread(threading.Thread):
                 timeout = 0.5 / len(results)
                 try:
                     results.append(self.__queue.get(timeout=timeout))
-                except Queue.Empty:
+                except queue.Empty:
                     break
 
             if self.__stopped:

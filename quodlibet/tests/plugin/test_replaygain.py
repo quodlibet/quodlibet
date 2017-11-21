@@ -2,18 +2,20 @@
 # Copyright 2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 import re
 import time
-from quodlibet.ext.songsmenu.replaygain import UpdateMode
+from quodlibet.ext.songsmenu.replaygain import UpdateMode, RGDialog, \
+    ReplayGainPipeline
 from quodlibet.formats import MusicFile
 from quodlibet.formats import AudioFile
 
 from tests.plugin import PluginTestCase
-from tests import get_data_path
+from tests import get_data_path, TestCase
 
 
 class TReplayGain(PluginTestCase):
@@ -133,3 +135,60 @@ class TReplayGain(PluginTestCase):
 
         # For one-song album, track == album
         self.failUnlessEqual(track_gain, song('~#replaygain_album_gain'))
+
+
+class FakePipeline(ReplayGainPipeline):
+
+    def __init__(self):
+        super(FakePipeline, self).__init__()
+        self.started = []
+
+    def quit(self):
+        pass
+
+    def _setup_pipe(self):
+        pass
+
+    def start(self, album):
+        self.started.append(album)
+        super(FakePipeline, self).start(album)
+
+    def _next_song(self, first=False):
+        GLib.idle_add(self._emit)
+
+    def _emit(self):
+        self.emit("done", self._album)
+
+
+class FakeRGDialog(RGDialog):
+    def create_pipelines(self):
+        self.pipes = [FakePipeline(), FakePipeline()]
+
+
+class TRGDialog(TestCase):
+    def test_some_songs_needing_update(self):
+        songs = [[a_song(x)] for x in range(8)]
+        d = FakeRGDialog(songs, None, UpdateMode.ALBUM_MISSING)
+        d.start_analysis()
+        self.run_main_loop()
+        d.destroy()
+        # One should have got half of the albums needing update (and no more)
+        self.failUnlessEqual(self.track_nums_from(d.pipes[0].started),
+                             [0, 4])
+        # And the other processor should get the other half
+        self.failUnlessEqual(self.track_nums_from(d.pipes[1].started),
+                             [2, 6])
+
+    def run_main_loop(self, timeout=0.25):
+        start = time.time()
+        while abs(time.time() - start) < timeout:
+            Gtk.main_iteration_do(False)
+
+    def track_nums_from(self, album):
+        return [s.songs[0].song("~#tracknumber") for s in album]
+
+
+def a_song(n):
+    d = {'replaygain_album_gain': -6.0} if n % 2 else {}
+    d['tracknumber'] = n
+    return AudioFile(d)

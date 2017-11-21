@@ -2,12 +2,13 @@
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from senf import fsnative
 
-from tests import TestCase, skipUnless
+from tests import TestCase, skipUnless, get_data_path
 
 from quodlibet import player
 from quodlibet import library
@@ -29,6 +30,9 @@ for file_ in FILES:
 
 UNKNOWN_FILE = FILES.pop(-1)
 
+REAL_FILE = AudioFile({"~filename": get_data_path("empty.ogg")})
+REAL_FILE.sanitize()
+
 
 class TPlayer(TestCase):
     NAME = None
@@ -36,6 +40,7 @@ class TPlayer(TestCase):
     def setUp(self):
         config.init()
         config.set("player", "gst_pipeline", "fakesink")
+        config.set("settings", "xine_driver", "none")
         module = player.init_backend(self.NAME)
         lib = library.init()
         self.player = module.init(lib.librarian)
@@ -80,6 +85,61 @@ class TPlayer(TestCase):
 
 
 class TPlayerMixin(object):
+
+    def _can_sync(self):
+        # TODO: make this work with xinebe
+        return not isinstance(self, TXinePlayer)
+
+    def test_seek_signal(self):
+        if not self._can_sync():
+            return
+
+        events = []
+        during_events = []
+
+        def on_seek(player, song, pos):
+            events.append(pos)
+            during_events.append(player.get_position())
+
+        self.player.connect("seek", on_seek)
+
+        self.player.go_to(REAL_FILE)
+        self.player.sync(10)
+
+        assert self.player.get_position() == 0
+        self.player.seek(100)
+        assert self.player.get_position() == 100
+        self.player.sync(10)
+        assert self.player.get_position() == 100
+        self.player.seek(150)
+        assert self.player.get_position() == 150
+        self.player.seek(50)
+        assert self.player.get_position() == 50
+        self.player.sync(10)
+        assert self.player.get_position() == 50
+
+        # some backends merge requests and only emit once
+        assert events in ([100, 150, 50], [100, 50])
+        assert events == during_events
+
+    def test_seek_in_song_started(self):
+        if not self._can_sync():
+            return
+
+        from gi.repository import Gst
+
+        # doesn't work on debian 8, maybe a GStreamer bug
+        if Gst.version()[:2] < (1, 6):
+            return
+
+        def on_started(player, song):
+            assert player.get_position() == 0
+            player.seek(100)
+
+        self.player.connect("song-started", on_started)
+        self.player.go_to(REAL_FILE)
+        self.player.sync(10)
+        assert self.player.get_position() == 100
 
     def test_song_start(self):
         self.assertFalse(self.player.song)
@@ -143,10 +203,10 @@ class TPlayerMixin(object):
 
     def test_reset(self):
         self.player.go_to(None)
-        self.player.reset()
+        self.player._reset()
         self.assertEqual(self.player.song, FILES[0])
         self.player.next()
-        self.player.reset()
+        self.player._reset()
         self.assertEqual(self.player.song, FILES[0])
 
     def test_equalizer(self):
@@ -202,6 +262,28 @@ class TPlayerMixin(object):
         self.player.volume = 0.5
         self.player.next()
         self.assertEqual(self.player.volume, 0.5)
+
+    def test_play(self):
+        assert self.player.song is None
+        assert self.player.paused
+        self.player.play()
+        assert not self.player.paused
+        song = self.player.song
+        assert song is not None
+        self.player.play()
+        assert not self.player.paused
+        assert self.player.song is song
+
+    def test_playpause(self):
+        assert self.player.song is None
+        assert self.player.paused
+        self.player.playpause()
+        assert not self.player.paused
+        song = self.player.song
+        assert song is not None
+        self.player.playpause()
+        assert self.player.paused
+        assert self.player.song is song
 
 
 class TNullPlayer(TPlayer, TPlayerMixin):

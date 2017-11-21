@@ -5,8 +5,9 @@
 #           2014 Jan Path
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import time
 import datetime
@@ -22,6 +23,7 @@ from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.qltk import add_css
 from quodlibet.util.path import unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS
+from quodlibet.compat import text_type, string_types, listvalues, listitems
 
 
 def create_songlist_column(t):
@@ -273,18 +275,30 @@ class DateColumn(WideTextColumn):
         if not stamp:
             cell.set_property('text', _("Never"))
         else:
-            date = datetime.datetime.fromtimestamp(stamp).date()
-            today = datetime.datetime.now().date()
-            days = (today - date).days
-            if days == 0:
-                format_ = "%X"
-            elif days < 7:
-                format_ = "%A"
+            try:
+                date = datetime.datetime.fromtimestamp(stamp).date()
+            except (OverflowError, ValueError, OSError):
+                text = u""
             else:
-                format_ = "%x"
-            stamp = time.localtime(stamp)
-            encoding = util.get_locale_encoding()
-            text = time.strftime(format_, stamp).decode(encoding)
+                format_setting = config.gettext("settings",
+                                      "datecolumn_timestamp_format")
+
+                # use format configured in Advanced Preferences
+                if format_setting:
+                    format_ = format_setting
+                # use default behaviour-format
+                else:
+                    today = datetime.datetime.now().date()
+                    days = (today - date).days
+                    if days == 0:
+                        format_ = "%X"
+                    elif days < 7:
+                        format_ = "%A"
+                    else:
+                        format_ = "%x"
+
+                stamp = time.localtime(stamp)
+                text = time.strftime(format_, stamp)
             cell.set_property('text', text)
 
 
@@ -374,7 +388,7 @@ class NumericColumn(TextColumn):
         if isinstance(value, float):
             text = u"%.2f" % round(value, 2)
         else:
-            text = unicode(value)
+            text = text_type(value)
 
         cell.set_property('text', text)
         self._recalc_width(model.get_path(iter_), text)
@@ -393,15 +407,15 @@ class NumericColumn(TextColumn):
         end = end[0]
 
         # compute the cell width for all drawn cells in range +/- 3
-        for key, value in self._texts.items():
+        for key, value in listitems(self._texts):
             if not (start - 3) <= key <= (end + 3):
                 del self._texts[key]
-            elif isinstance(value, basestring):
+            elif isinstance(value, string_types):
                 self._texts[key] = self._cell_width(value)
 
         # resize if too small or way too big and above the minimum
         width = self.get_width()
-        needed_width = max([self._get_min_width()] + self._texts.values())
+        needed_width = max([self._get_min_width()] + listvalues(self._texts))
         if width < needed_width:
             self._resize(needed_width)
         elif width - needed_width >= self._cell_width("0"):

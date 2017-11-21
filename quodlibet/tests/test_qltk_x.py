@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
@@ -9,6 +10,7 @@ from quodlibet.qltk import x
 from quodlibet.qltk import Icons
 
 from . import TestCase
+from .helper import visible
 
 
 class Notebook(TestCase):
@@ -66,4 +68,17 @@ class TAlign(TestCase):
 class TScrolledWindow(TestCase):
     def test_ctr(self):
         w = x.ScrolledWindow()
+        w.destroy()
+
+
+class THighlightToggleButton(TestCase):
+
+    def test_main(self):
+        w = x.HighlightToggleButton()
+        w.set_active(True)
+        with visible(w):
+            pass
+        w.set_active(False)
+        with visible(w):
+            pass
         w.destroy()

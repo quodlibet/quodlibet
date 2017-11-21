@@ -2,8 +2,9 @@
 # Copyright 2010,2012 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import time
 
@@ -12,6 +13,7 @@ import dbus.service
 
 from quodlibet import app
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
+from quodlibet.compat import iteritems
 
 from .util import MPRISObject
 
@@ -143,7 +145,7 @@ class MPRIS1Player(MPRISObject):
             "mb album artist sort name": "albumartistsort",
             }
 
-        for key, tag in strings.iteritems():
+        for key, tag in iteritems(strings):
             val = song.comma(tag)
             if val:
                 metadata[key] = unival(val)
@@ -205,10 +207,7 @@ class MPRIS1Player(MPRISObject):
 
     @dbus.service.method(IFACE)
     def Pause(self):
-        if app.player.song is None:
-            app.player.reset()
-        else:
-            app.player.paused ^= True
+        app.player.paused = True
 
     @dbus.service.method(IFACE)
     def Stop(self):
@@ -216,14 +215,7 @@ class MPRIS1Player(MPRISObject):
 
     @dbus.service.method(IFACE)
     def Play(self):
-        player = app.player
-        if player.song is None:
-            player.reset()
-        else:
-            if player.paused:
-                player.paused = False
-            else:
-                player.seek(0)
+        app.player.play()
 
     @dbus.service.method(IFACE, in_signature="b")
     def Repeat(self, value):

@@ -2,8 +2,9 @@
 # Copyright 2016 Ryan Dellenbaugh
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
@@ -59,13 +60,13 @@ class TQueryPlugins(PluginTestCase):
         body = plugin.parse_body('artist=a, genre=rock, genre=classical')
 
         self.failUnless(plugin.search(
-            AudioFile({'artist': 'a', 'genre': 'rock'}), body))
+            AudioFile({'artist': u'a', 'genre': u'rock'}), body))
         self.failIf(plugin.search(
-            AudioFile({'artist': 'a', 'genre': 'classical'}), body))
+            AudioFile({'artist': u'a', 'genre': u'classical'}), body))
         self.failIf(plugin.search(
-            AudioFile({'artist': 'b', 'genre': 'rock'}), body))
+            AudioFile({'artist': u'b', 'genre': u'rock'}), body))
         self.failUnless(plugin.search(
-            AudioFile({'artist': 'b', 'genre': 'classical'}), body))
+            AudioFile({'artist': u'b', 'genre': u'classical'}), body))
 
     def test_savedsearch(self):
         if 'include_saved' not in self.plugins:
@@ -91,7 +92,7 @@ class TQueryPlugins(PluginTestCase):
 
             query1 = plugin.parse_body('Query 1', query_path_=filename)
             query2 = plugin.parse_body('another query', query_path_=filename)
-            song = AudioFile({'artist': 'a', 'genre': 'dance'})
+            song = AudioFile({'artist': u'a', 'genre': u'dance'})
             self.failUnless(plugin.search(song, query1))
             self.failIf(plugin.search(song, query2))
         finally:

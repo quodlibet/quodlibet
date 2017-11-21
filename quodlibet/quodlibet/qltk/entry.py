@@ -3,8 +3,9 @@
 #           2011, 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import math
 
@@ -15,6 +16,7 @@ from quodlibet.qltk import is_accel, add_fake_accel
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.util import gdecode
+from quodlibet.compat import string_types
 
 
 class EditableUndo(object):
@@ -222,7 +224,13 @@ class ClearEntryMixin(object):
         self.set_icon_from_gicon(Gtk.EntryIconPosition.SECONDARY, gicon)
         self.connect("icon-release", self.__clear)
 
+    def clear(self):
+        self.__do_clear()
+
     def __clear(self, button, *args):
+        self.__do_clear()
+
+    def __do_clear(self):
         # TODO: don't change the order.. we connect to clear and remove all
         # timeouts added for text change in the searchbar
         self.delete_text(0, -1)
@@ -252,7 +260,7 @@ class ValidatingEntryMixin(object):
             color = self.VALID
         elif value is False:
             color = self.INVALID
-        elif value and isinstance(value, basestring):
+        elif value and isinstance(value, string_types):
             color = Gdk.RGBA()
             color.parse(value)
         else:

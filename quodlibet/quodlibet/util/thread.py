@@ -2,8 +2,9 @@
 # Copyright 2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """Utils for executing things in a thread controlled from the main loop"""
 
@@ -123,7 +124,7 @@ def terminate_all():
 
     global _pools
 
-    for key, pool in _pools.items():
+    for key, pool in list(_pools.items()):
         del _pools[key]
         pool.shutdown(wait=False)
 

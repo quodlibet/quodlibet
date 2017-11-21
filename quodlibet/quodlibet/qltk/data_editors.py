@@ -2,12 +2,12 @@
 # Copyright 2012-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 from gi.repository import Pango
-import re
 
 from quodlibet import _
 from quodlibet import qltk, util
@@ -19,7 +19,7 @@ from quodlibet.query import Query
 from quodlibet.util.json_data import JSONObjectDict
 from quodlibet.util import connect_obj
 from quodlibet.qltk.getstring import GetStringDialog
-from quodlibet.util.tags import _TAGS
+from quodlibet.compat import string_types
 
 
 class JSONBasedEditor(qltk.UniqueWindow):
@@ -114,6 +114,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
                 return row[0]
 
     def _new_item(self, button):
+        # Translators: New Command/Entry/Item/...
         current_name = name = _("New %s") % self.name
         n = 2
         while True:
@@ -176,7 +177,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
                 widget.set_active(val)
             elif isinstance(val, int):
                 widget.set_value(int(val))
-            elif isinstance(val, basestring):
+            elif isinstance(val, string_types):
                 widget.set_text(val or "")
 
     def __build_input_frame(self):
@@ -213,7 +214,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
     def get_field_name(field, key):
         field_name = (field.human_name
                       or (key and key.replace("_", " ")))
-        return field_name and field_name.title() or _("(unknown)")
+        return field_name and util.capitalize(field_name) or _("(unknown)")
 
     def _fill_values(self, data):
         if not data:
@@ -339,15 +340,7 @@ class TagListEditor(qltk.Window):
         def desc_cdf(column, cell, model, iter, data):
             row = model[iter]
             if row:
-                name = re.sub(':[a-z]+$', '', row[0].strip('~#'))
-                try:
-                    t = _TAGS[name]
-                    valid = (not t.hidden
-                             and t.numeric == row[0].startswith('~#'))
-                    val = t.desc if valid else name
-                except KeyError:
-                    val = name
-                cell.set_property('text', util.title(val.replace('~', ' / ')))
+                cell.set_property('text', util.tag(row[0]))
 
         render = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn(_("Tag expression"), render)

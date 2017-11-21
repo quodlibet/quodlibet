@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2016 Nick Boultbee
+#           2012-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 # Much of this code is highly optimized, because many of the functions
 # are called in tight loops. Don't change things just to make them
@@ -14,13 +15,13 @@ import os
 import shutil
 import time
 
-from senf import fsn2uri, fsnative, fsn2text, devnull
+from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 
-from quodlibet import _
+from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, mtime, expanduser, \
-    normalize_path, escape_filename
+    normalize_path, escape_filename, ismount
 from quodlibet.util.string import encode, decode, isascii
 
 from quodlibet.util import iso639
@@ -28,7 +29,7 @@ from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 from quodlibet.compat import iteritems, string_types, text_type, \
-    number_types, listitems, izip_longest, integer_types
+    number_types, listitems, izip_longest, integer_types, PY3, listfilter
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
@@ -56,7 +57,7 @@ NUMERIC_ZERO_DEFAULT = {"~#skipcount", "~#playcount", "~#length", "~#bitrate"}
 NUMERIC_ZERO_DEFAULT.update(TIME_TAGS)
 NUMERIC_ZERO_DEFAULT.update(SIZE_TAGS)
 
-FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname"}
+FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname", "~mountpoint"}
 """Values are bytes in Linux instead of unicode"""
 
 SORT_TO_TAG = dict([(v, k) for (k, v) in iteritems(TAG_TO_SORT)])
@@ -76,12 +77,13 @@ def decode_value(tag, value):
     Not reversible.
     """
 
-    if isinstance(value, text_type):
-        return value
-    elif isinstance(value, float):
-        return u"%.2f" % value
-    elif tag in FILESYSTEM_TAGS:
+    if tag in FILESYSTEM_TAGS:
         return fsn2text(value)
+    elif tag[:2] == "~#":
+        if isinstance(value, float):
+            return u"%.2f" % value
+        else:
+            return text_type(value)
     return text_type(value)
 
 
@@ -126,8 +128,14 @@ class AudioFile(dict, ImageContainer):
     mimes = []
     """MIME types this class can represent"""
 
+    def __init__(self, default=tuple(), **kwargs):
+        for key, value in dict(default).items():
+            self[key] = value
+        for key, value in kwargs.items():
+            self[key] = value
+
     def __song_key(self):
-        return (self("~#disc"), self("~#track"),
+        return (self("~#disc", 1), self("~#track", 1),
             human(self("artistsort")),
             self.get("musicbrainz_artistid", ""),
             human(self.get("title", "")),
@@ -170,15 +178,33 @@ class AudioFile(dict, ImageContainer):
         pass
 
     def __setitem__(self, key, value):
-        if not self.__dict__:
-            # unpickle case.. we can't fail
-            dict.__setitem__(self, key, value)
-            return
+        # validate key
+        if PY3:
+            if not isinstance(key, text_type):
+                raise TypeError("key has to be str")
+        else:
+            if isinstance(key, text_type):
+                # we try to save keys as encoded ASCII to save memory
+                # under PY2. Everything else besides ASCII combined with
+                # unicode breaks hashing even if the default encoding
+                # it utf-8.
+                try:
+                    key = key.encode("ascii")
+                except UnicodeEncodeError:
+                    pass
+            elif isinstance(key, bytes):
+                # make sure we set ascii keys only
+                key.decode("ascii")
+            else:
+                raise TypeError("key needs to be unicode or ASCII str")
 
+        # validate value
         if key.startswith("~#"):
-            assert isinstance(value, number_types)
+            if not isinstance(value, number_types):
+                raise TypeError
         elif key in FILESYSTEM_TAGS:
-            assert isinstance(value, fsnative)
+            if not isinstance(value, fsnative):
+                value = path2fsn(value)
         else:
             value = text_type(value)
 
@@ -190,8 +216,7 @@ class AudioFile(dict, ImageContainer):
 
     def __delitem__(self, key):
         dict.__delitem__(self, key)
-        if not self.__dict__:
-            return
+
         pop = self.__dict__.pop
         pop("album_key", None)
         pop("sort_key", None)
@@ -249,7 +274,7 @@ class AudioFile(dict, ImageContainer):
         """Returns a list of keys that are not internal, i.e. they don't
         have '~' in them."""
 
-        return filter(lambda s: s[:1] != "~", self.keys())
+        return listfilter(lambda s: s[:1] != "~", self.keys())
 
     def prefixkeys(self, prefix):
         """Returns a list of dict keys that either match prefix or start
@@ -269,17 +294,23 @@ class AudioFile(dict, ImageContainer):
     def iterrealitems(self):
         return ((k, v) for (k, v) in iteritems(self) if k[:1] != "~")
 
-    def __call__(self, key, default=u"", connector=" - "):
-        """Return a key, synthesizing it if necessary. A default value
-        may be given (like dict.get); the default default is an empty
-        unicode string (even if the tag is numeric).
+    def __call__(self, key, default=u"", connector=" - ", joiner=', '):
+        """Return the value(s) for a key, synthesizing if necessary.
+        Multiple values for a key are delimited by newlines.
 
-        If a tied tag ('a~b') is requested, the 'connector' keyword
+        A default value may be given (like `dict.get`);
+        the default default is an empty unicode string
+        (even if the tag is numeric).
+
+        If a tied tag ('a~b') is requested, the `connector` keyword
         argument may be used to specify what it is tied with.
         In case the tied tag contains numeric and file path tags, the result
         will still be a unicode string.
+        The `joiner` keyword specifies how multiple *values* will be joined
+        within that tied tag output, e.g.
+            ~people~title = "Kanye West, Jay Z - New Day"
 
-        For details on tied tags, see the documentation for util.tagsplit.
+        For details on tied tags, see the documentation for `util.tagsplit`.
         """
 
         if key[:1] == "~":
@@ -287,8 +318,13 @@ class AudioFile(dict, ImageContainer):
             if "~" in key:
                 real_key = "~" + key
                 values = []
-                for v in map(self.__call__, util.tagsplit(real_key)):
-                    v = decode_value(real_key, v)
+                sub_tags = util.tagsplit(real_key)
+                # If it's genuinely a tied tag (not ~~people etc), we want
+                # to delimit the multi-values separately from the tying
+                j = joiner if len(sub_tags) > 1 else "\n"
+                for t in sub_tags:
+                    vs = [decode_value(real_key, v) for v in (self.list(t))]
+                    v = j.join(vs)
                     if v:
                         values.append(v)
                 return connector.join(values) or default
@@ -353,9 +389,9 @@ class AudioFile(dict, ImageContainer):
                 try:
                     return self["~uri"]
                 except KeyError:
-                    return text_type(fsn2uri(self["~filename"]))
+                    return fsn2uri(self["~filename"])
             elif key == "format":
-                return self.get("~format", self.format)
+                return self.get("~format", text_type(self.format))
             elif key == "codec":
                 codec = self.get("~codec")
                 if codec is None:
@@ -411,11 +447,13 @@ class AudioFile(dict, ImageContainer):
 
                 # If there are no embedded lyrics, try to read them from
                 # the external file.
+                fn = self.lyric_filename
                 try:
-                    fileobj = open(self.lyric_filename, "rU")
+                    fileobj = open(fn, "rUb")
                 except EnvironmentError:
                     return default
                 else:
+                    print_d("Reading lyrics from %s" % fn)
                     return fileobj.read().decode("utf-8", "replace")
             elif key == "filesize":
                 return util.format_size(self("~#filesize", 0))
@@ -541,9 +579,10 @@ class AudioFile(dict, ImageContainer):
         """
 
         if "~" in key or key == "title":
-            v = self(key, u"")
             if key in FILESYSTEM_TAGS:
-                v = fsn2text(v)
+                v = fsn2text(self(key, fsnative()))
+            else:
+                v = self(key, u"")
         else:
             v = self.get(key, u"")
 
@@ -554,7 +593,7 @@ class AudioFile(dict, ImageContainer):
 
     def list(self, key):
         """Get all values of a tag, as a list. Synthetic tags are supported,
-        but will be slower. Numeric tags are not supported.
+        but will be slower. Numeric tags will give their one value.
 
         For file path keys the returned list might contain path items
         (non-unicode).
@@ -564,11 +603,11 @@ class AudioFile(dict, ImageContainer):
         """
 
         if "~" in key or key == "title":
-            v = self(key, connector="\n")
+            v = self(key)
             if v == "":
                 return []
             else:
-                return v.split("\n")
+                return v.split("\n") if isinstance(v, text_type) else [v]
         else:
             v = self.get(key)
             return [] if v is None else v.split("\n")
@@ -657,7 +696,7 @@ class AudioFile(dict, ImageContainer):
     def mounted(self):
         """Return true if the disk the file is on is mounted, or
         the file is not on a disk."""
-        return os.path.ismount(self.get("~mountpoint", "/"))
+        return ismount(self.get("~mountpoint", "/"))
 
     def can_multiple_values(self, key=None):
         """If no arguments are given, return a list of tags that can
@@ -707,35 +746,6 @@ class AudioFile(dict, ImageContainer):
 
         self.sanitize(newname)
 
-    def website(self):
-        """Look for a URL in the audio metadata, or a Google search
-        if no URL can be found."""
-
-        if "website" in self:
-            return self.list("website")[0]
-        for cont in self.list("contact") + self.list("comment"):
-            c = cont.lower()
-            if (c.startswith("http://") or c.startswith("https://") or
-                    c.startswith("www.")):
-                return cont
-            elif c.startswith("//www."):
-                return "http:" + cont
-        else:
-            text = "https://www.google.com/search?q="
-            esc = lambda c: ord(c) > 127 and '%%%x' % ord(c) or c
-            if "labelid" in self:
-                text += ''.join(map(esc, self["labelid"]))
-            else:
-                artist = util.escape("+".join(self("artist").split()))
-                album = util.escape("+".join(self("album").split()))
-                artist = encode(artist)
-                album = encode(album)
-                artist = "%22" + ''.join(map(esc, artist)) + "%22"
-                album = "%22" + ''.join(map(esc, album)) + "%22"
-                text += artist + "+" + album
-            text += "&ie=UTF8"
-            return text
-
     def sanitize(self, filename=None):
         """Fill in metadata defaults. Find ~mountpoint, ~#mtime, ~#filesize
         and ~#added. Check for null bytes in tags.
@@ -745,6 +755,7 @@ class AudioFile(dict, ImageContainer):
 
         # Replace nulls with newlines, trimming zero-length segments
         for key, val in listitems(self):
+            self[key] = val
             if isinstance(val, string_types) and '\0' in val:
                 self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
             # Remove unnecessary defaults
@@ -767,8 +778,8 @@ class AudioFile(dict, ImageContainer):
                 head, tail = os.path.split(head)
                 # Prevent infinite loop without a fully-qualified filename
                 # (the unit tests use these).
-                head = head or "/"
-                if os.path.ismount(head):
+                head = head or fsnative(u"/")
+                if ismount(head):
                     self["~mountpoint"] = head
         else:
             self["~mountpoint"] = fsnative(u"/")
@@ -795,7 +806,11 @@ class AudioFile(dict, ImageContainer):
             self["~#mtime"] = 0
 
     def to_dump(self):
-        """A string of 'key=value' lines, similar to vorbiscomment output."""
+        """A string of 'key=value' lines, similar to vorbiscomment output.
+
+        Returns:
+            bytes
+        """
 
         def encode_key(k):
             return encode(k) if isinstance(k, text_type) else k
@@ -803,45 +818,58 @@ class AudioFile(dict, ImageContainer):
         s = []
         for k in self.keys():
             enc_key = encode_key(k)
+            assert isinstance(enc_key, bytes)
 
             if isinstance(self[k], integer_types):
-                s.append("%s=%d" % (enc_key, self[k]))
+                l = enc_key + encode("=%d" % self[k])
+                s.append(l)
             elif isinstance(self[k], float):
-                s.append("%s=%f" % (enc_key, self[k]))
+                l = enc_key + encode("=%f" % self[k])
+                s.append(l)
             else:
                 for v2 in self.list(k):
-                    if isinstance(v2, str):
-                        s.append("%s=%s" % (enc_key, v2))
-                    else:
-                        s.append("%s=%s" % (enc_key, encode(v2)))
+                    if not isinstance(v2, bytes):
+                        v2 = encode(v2)
+                    s.append(enc_key + b"=" + v2)
         for k in (NUMERIC_ZERO_DEFAULT - set(self.keys())):
             enc_key = encode_key(k)
-            s.append("%s=%d" % (enc_key, self.get(k, 0)))
+            l = enc_key + encode("=%d" % self.get(k, 0))
+            s.append(l)
         if "~#rating" not in self:
-            s.append("~#rating=%f" % self("~#rating"))
-        s.append("~format=%s" % self.format)
-        s.append("")
-        return "\n".join(s)
+            s.append(encode("~#rating=%f" % self("~#rating")))
+        s.append(encode("~format=%s" % self.format))
+        s.append(b"")
+        return b"\n".join(s)
 
     def from_dump(self, text):
-        """Parses the text created with to_dump and adds the found tags."""
+        """Parses the text created with to_dump and adds the found tags.
+
+        Args:
+            text (bytes)
+        """
 
         def decode_key(key):
             """str if ascii, otherwise decode using utf-8"""
+
+            if PY3:
+                return decode(key)
+
             try:
                 key.decode("ascii")
             except ValueError:
                 return decode(key)
             return key
 
-        for line in text.split("\n"):
+        for line in text.split(b"\n"):
             if not line:
                 continue
-            parts = line.split("=")
-            key = parts[0]
-            val = "=".join(parts[1:])
+            parts = line.split(b"=")
+            key = decode_key(parts[0])
+            val = b"=".join(parts[1:])
             if key == "~format":
                 pass
+            elif key in FILESYSTEM_TAGS:
+                self.add(key, bytes2fsn(val, "utf-8"))
             elif key.startswith("~#"):
                 try:
                     self.add(key, int(val))
@@ -851,7 +879,7 @@ class AudioFile(dict, ImageContainer):
                     except ValueError:
                         pass
             else:
-                self.add(decode_key(key), decode(val))
+                self.add(key, decode(val))
 
     def change(self, key, old_value, new_value):
         """Change 'old_value' to 'new_value' for the given metadata key.

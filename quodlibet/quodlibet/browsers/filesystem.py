@@ -3,8 +3,9 @@
 #           2012,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 # Some sort of crazy directory-based browser. QL is full of minor hacks
 # to support this by automatically adding songs to the library when it
@@ -13,13 +14,14 @@
 import os
 
 from gi.repository import Gtk, Gdk
-from senf import fsn2uri
+from senf import fsn2uri, fsn2bytes, bytes2fsn
 
 from quodlibet import config
 from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import _
 from quodlibet.browsers import Browser
+from quodlibet.compat import listfilter
 from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import MainDirectoryTree
 from quodlibet.qltk.songsmenu import SongsMenu
@@ -91,11 +93,23 @@ class FileSystem(Browser, Gtk.HBox):
         sel = dt.get_selection()
         sel.unselect_all()
         connect_obj(sel, 'changed', copool.add, self.__songs_selected, dt)
+        sel.connect("changed", self._on_selection_changed)
         dt.connect('row-activated', lambda *a: self.songs_activated())
         sw.add(dt)
         self.pack_start(sw, True, True, 0)
 
         self.show_all()
+
+    def _on_selection_changed(self, tree_selection):
+        model, rows = tree_selection.get_selected_rows()
+        selected_paths = [model[row][0] for row in rows]
+
+        if selected_paths:
+            data = fsn2bytes("\n".join(selected_paths), "utf-8")
+        else:
+            data = b""
+
+        config.setbytes("browsers", "filesystem", data)
 
     def get_child(self):
         return self.get_children()[0].get_child()
@@ -106,7 +120,7 @@ class FileSystem(Browser, Gtk.HBox):
         for songs in self.__find_songs(view.get_selection()):
             pass
         if tid == self.TARGET_QL:
-            cant_add = filter(lambda s: not s.can_add, songs)
+            cant_add = listfilter(lambda s: not s.can_add, songs)
             if cant_add:
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self), _("Unable to copy songs"),
@@ -136,12 +150,14 @@ class FileSystem(Browser, Gtk.HBox):
         self.__select_paths([song("~dirname")])
 
     def restore(self):
+        data = config.getbytes("browsers", "filesystem", b"")
         try:
-            paths = config.get("browsers", "filesystem").split("\n")
-        except config.Error:
-            pass
-        else:
-            self.__select_paths(paths)
+            paths = bytes2fsn(data, "utf-8")
+        except ValueError:
+            return
+        if not paths:
+            return
+        self.__select_paths(paths.split("\n"))
 
     def __select_paths(self, paths):
         # AudioFile uses normalized paths, DirectoryTree doesn't
@@ -174,11 +190,6 @@ class FileSystem(Browser, Gtk.HBox):
         self.get_child().get_model().foreach(select, (paths, first))
         if first:
             self.get_child().scroll_to_cell(first[0], None, True, 0.5)
-
-    def save(self):
-        model, rows = self.get_child().get_selection().get_selected_rows()
-        paths = "\n".join([model[row][0] for row in rows])
-        config.set("browsers", "filesystem", paths)
 
     def activate(self):
         copool.add(self.__songs_selected, self.get_child())

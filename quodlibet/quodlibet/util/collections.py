@@ -3,14 +3,19 @@
 #           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from __future__ import absolute_import
 
 from collections import MutableSequence, defaultdict
 
+from quodlibet.compat import listkeys
+from .misc import total_ordering
 
+
+@total_ordering
 class DictMixin(object):
     """Implement the dict API using keys() and __*item__ methods.
 
@@ -38,18 +43,23 @@ class DictMixin(object):
             return True
     __contains__ = has_key
 
-    iterkeys = lambda self: iter(self.keys())
+    def iterkeys(self):
+        return iter(self.keys())
 
     def values(self):
-        return map(self.__getitem__, self.keys())
-    itervalues = lambda self: iter(self.values())
+        return [self[k] for k in self.keys()]
+
+    def itervalues(self):
+        return iter(self.values())
 
     def items(self):
-        return zip(self.keys(), self.values())
-    iteritems = lambda s: iter(s.items())
+        return list(zip(self.keys(), self.values()))
+
+    def iteritems(self):
+        return iter(self.items())
 
     def clear(self):
-        for key in self.keys():
+        for key in listkeys(self):
             del self[key]
 
     def pop(self, key, *args):
@@ -67,7 +77,7 @@ class DictMixin(object):
 
     def popitem(self):
         try:
-            key = self.keys()[0]
+            key = listkeys(self)[0]
             return key, self.pop(key)
         except IndexError:
             raise KeyError("dictionary is empty")
@@ -100,11 +110,11 @@ class DictMixin(object):
     def __repr__(self):
         return repr(dict(self.items()))
 
-    def __cmp__(self, other):
-        if other is None:
-            return 1
-        else:
-            return cmp(dict(self.items()), other)
+    def __eq__(self, other):
+        return dict(self.items()) == other
+
+    def __lt__(self, other):
+        return dict(self.items()) < other
 
     __hash__ = object.__hash__
 

@@ -2,8 +2,9 @@
 # Copyright 2011,2012,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """
 Repeats a given track a configurable number of times
@@ -16,6 +17,7 @@ TODO: notification of play count?
 from gi.repository import Gtk
 
 from quodlibet import _
+from quodlibet.order.repeat import Repeat
 from quodlibet.plugins.playorder import RepeatPlugin
 from quodlibet.util.dprint import print_d
 from quodlibet.plugins import PluginConfigMixin
@@ -37,6 +39,7 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
 
     # Plays of the current song
     play_count = START_COUNT
+    priority = Repeat.priority
 
     @classmethod
     def PluginPreferences(cls, parent):

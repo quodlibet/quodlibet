@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#      2012,2013,2016 Nick Boultbee
+#           2012-2017 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from __future__ import absolute_import
 
@@ -40,7 +41,7 @@ from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk import Icons
 from quodlibet.util import copool, connect_destroy
 from quodlibet.util.library import background_filter
-from quodlibet.util import connect_obj, DeferredSignal
+from quodlibet.util import connect_obj, DeferredSignal, gdecode
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.compat import cmp
@@ -320,9 +321,9 @@ class VisibleUpdate(object):
         start = start.get_indices()[0] - preload - 1
         end = end.get_indices()[0] + preload
 
-        vlist = range(end, start, -1)
-        top = vlist[:len(vlist) / 2]
-        bottom = vlist[len(vlist) / 2:]
+        vlist = list(range(end, start, -1))
+        top = vlist[:len(vlist) // 2]
+        bottom = vlist[len(vlist) // 2:]
         top.reverse()
 
         vlist_new = []
@@ -357,6 +358,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
+    STAR = ["~people", "album"]
 
     name = _("Album List")
     accelerated_name = _("_Album List")
@@ -416,7 +418,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         if self.__model is None:
             self._init_model(library)
 
-        self._cover_cancel = Gio.Cancellable.new()
+        self._cover_cancel = Gio.Cancellable()
 
         sw = ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
@@ -507,7 +509,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators)
+                              accel_group=self.accelerators,
+                              star=self.STAR)
         search.connect('query-changed', self.__update_filter)
         connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
@@ -589,8 +592,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         model = self.view.get_model()
 
         self.__filter = None
-        if not Query.match_all(text):
-            self.__filter = Query(text, star=["~people", "album"]).search
+        query = self.__search.query
+        if not query.matches_all:
+            self.__filter = query.search
         self.__bg_filter = background_filter()
 
         self.__inhibit()
@@ -628,7 +632,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         album = model.get_album(iter_)
         if album is None:
             return True
-        key = key.decode('utf-8').lower()
+        key = gdecode(key).lower()
         title = album.title.lower()
         if key in title:
             return False
@@ -712,7 +716,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     def filter_text(self, text):
         self.__search.set_text(text)
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__update_filter(self.__search, text)
             self.__inhibit()
             self.view.set_cursor((0,))
@@ -759,15 +763,15 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         self.view.handler_unblock(self.__sig)
 
     def restore(self):
-        text = config.get("browsers", "query_text").decode("utf-8")
+        text = config.gettext("browsers", "query_text")
         entry = self.__search
         entry.set_text(text)
 
         # update_filter expects a parsable query
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__update_filter(entry, text, scroll_up=False, restore=True)
 
-        keys = config.get("browsers", "albums").split("\n")
+        keys = config.gettext("browsers", "albums").split("\n")
 
         # FIXME: If albums is "" then it could be either all albums or
         # no albums. If it's "" and some other stuff, assume no albums,
@@ -809,9 +813,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     def save(self):
         conf = self.__get_config_string()
-        config.set("browsers", "albums", conf)
-        text = self.__search.get_text().encode("utf-8")
-        config.set("browsers", "query_text", text)
+        config.settext("browsers", "albums", conf)
+        text = self.__search.get_text()
+        config.settext("browsers", "query_text", text)
 
     def __update_songs(self, view, selection):
         songs = self.__get_selected_songs(sort=False)

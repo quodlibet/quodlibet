@@ -12,20 +12,12 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-from httplib import HTTPException
-import cPickle as pickle
 import os
 import threading
 import time
-import urllib
-import urllib2
+from hashlib import md5
 
 from gi.repository import Gtk, GLib
-
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5
 
 import quodlibet
 from quodlibet import _
@@ -38,6 +30,9 @@ from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
+from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
+from quodlibet.compat import urlencode
+from quodlibet.util.urllib import urlopen, UrllibError
 
 
 SERVICES = {
@@ -154,28 +149,25 @@ class QLSubmitQueue(object):
         self.artpat = Pattern(config_get_artist_pattern())
 
         try:
-            disk_queue_file = open(self.DUMP, 'r')
-            disk_queue = pickle.load(disk_queue_file)
-            disk_queue_file.close()
+            with open(self.DUMP, 'rb') as disk_queue_file:
+                disk_queue = pickle_load(disk_queue_file)
             os.unlink(self.DUMP)
             self.queue += disk_queue
-        except Exception:
+        except (EnvironmentError, PickleError):
             pass
 
     @classmethod
     def dump_queue(klass):
         if klass.queue:
             try:
-                disk_queue_file = open(klass.DUMP, 'w')
-                pickle.dump(klass.queue, disk_queue_file)
-                disk_queue_file.close()
-            except IOError:
+                with open(klass.DUMP, 'wb') as disk_queue_file:
+                    pickle_dump(klass.queue, disk_queue_file)
+            except (EnvironmentError, PickleError):
                 pass
-        return 0
 
     def _check_config(self):
         user = plugin_config.get('username')
-        passw = md5(plugin_config.get('password')).hexdigest()
+        passw = md5(plugin_config.getbytes('password')).hexdigest()
         url = config_get_url()
         if not user or not passw or not url:
             if self.queue and not self.broken:
@@ -244,15 +236,16 @@ class QLSubmitQueue(object):
     def send_handshake(self, show_dialog=False):
         # construct url
         stamp = int(time.time())
-        auth = md5(self.password + str(stamp)).hexdigest()
+        auth = md5(self.password.encode("utf-8") +
+                   str(stamp).encode("utf-8")).hexdigest()
         url = "%s/?hs=true&p=%s&c=%s&v=%s&u=%s&a=%s&t=%d" % (
                     self.base_url, self.PROTOCOL_VERSION, self.CLIENT,
                     self.CLIENT_VERSION, self.username, auth, stamp)
         print_d("Sending handshake to service.")
 
         try:
-            resp = urllib2.urlopen(url)
-        except (IOError, HTTPException):
+            resp = urlopen(url)
+        except UrllibError:
             if show_dialog:
                 self.quick_dialog(
                     _("Could not contact service '%s'.") %
@@ -267,7 +260,7 @@ class QLSubmitQueue(object):
             return False
 
         # check response
-        lines = resp.read().rstrip().split("\n")
+        lines = resp.read().decode("utf-8", "ignore").rstrip().split("\n")
         status = lines.pop(0)
         print_d("Handshake status: %s" % status)
 
@@ -295,14 +288,14 @@ class QLSubmitQueue(object):
         return False
 
     def _check_submit(self, url, data):
-        data_str = urllib.urlencode(data)
+        data_str = urlencode(data).encode("ascii")
         try:
-            resp = urllib2.urlopen(url, data_str)
-        except (IOError, HTTPException):
+            resp = urlopen(url, data_str)
+        except EnvironmentError:
             print_d("Audioscrobbler server not responding, will try later.")
             return False
 
-        resp_save = resp.read()
+        resp_save = resp.read().decode("utf-8", "ignore")
         status = resp_save.rstrip().split("\n")[0]
         print_d("Submission status: %s" % status)
 

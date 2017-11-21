@@ -1,10 +1,24 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Christoph Reiter
+# Copyright 2014-2016 Christoph Reiter
 #
-# This software and accompanying documentation, if any, may be freely
-# used, distributed, and/or modified, in any form and for any purpose,
-# as long as this notice is preserved. There is no warranty, either
-# express or implied, for this software.
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from __future__ import absolute_import
 
@@ -26,6 +40,7 @@ class test_cmd(Command):
         ("all", None, "run all suites"),
         ("exitfirst", "x", "stop after first failing test"),
         ("no-network", "n", "skip tests requiring a network connection"),
+        ("no-quality", "n", "skip tests for code quality"),
     ]
 
     def initialize_options(self):
@@ -35,6 +50,7 @@ class test_cmd(Command):
         self.all = False
         self.exitfirst = False
         self.no_network = False
+        self.no_quality = False
 
     def finalize_options(self):
         if self.to_run:
@@ -44,6 +60,7 @@ class test_cmd(Command):
         self.suite = self.suite and str(self.suite)
         self.exitfirst = bool(self.exitfirst)
         self.no_network = bool(self.no_network)
+        self.no_quality = bool(self.no_quality)
 
     def run(self):
         import tests
@@ -55,7 +72,7 @@ class test_cmd(Command):
         status = tests.unit(run=self.to_run, suite=suite,
                             strict=self.strict, exitfirst=self.exitfirst,
                             network=(not self.no_network or self.all),
-                            quality=self.all)
+                            quality=(not self.no_quality or self.all))
         if status != 0:
             raise SystemExit(status)
 
@@ -127,7 +144,6 @@ class distcheck_cmd(sdist):
         old_pwd = os.getcwd()
         os.chdir(extract_dir)
         self.spawn([sys.executable, "setup.py", "test"])
-        self.spawn([sys.executable, "setup.py", "quality"])
         self.spawn([sys.executable, "setup.py", "build"])
         self.spawn([sys.executable, "setup.py", "build_sphinx"])
         self.spawn([sys.executable, "setup.py", "install",

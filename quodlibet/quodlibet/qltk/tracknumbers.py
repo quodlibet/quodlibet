@@ -2,8 +2,9 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 from senf import fsn2text
@@ -15,10 +16,11 @@ from quodlibet.formats import AudioFileError
 from quodlibet.qltk._editutils import OverwriteWarning, WriteFailedError
 from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.qltk.x import Button
+from quodlibet.qltk.x import Button, Align
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, gdecode
+from quodlibet.compat import text_type, itervalues
 
 
 class Entry(object):
@@ -37,38 +39,42 @@ class TrackNumbers(Gtk.VBox):
         super(TrackNumbers, self).__init__(spacing=6)
         self.title = _("Track Numbers")
         self.set_border_width(12)
-        hbox2 = Gtk.HBox(spacing=12)
 
-        hbox_start = Gtk.HBox(spacing=3)
-        label_start = Gtk.Label(label=_("Start fro_m:"))
+        label_start = Gtk.Label(label=_("Start fro_m:"), halign=Gtk.Align.END)
         label_start.set_use_underline(True)
         spin_start = Gtk.SpinButton()
         spin_start.set_range(0, 999)
         spin_start.set_increments(1, 10)
         spin_start.set_value(1)
         label_start.set_mnemonic_widget(spin_start)
-        hbox_start.pack_start(label_start, True, True, 0)
-        hbox_start.pack_start(spin_start, True, True, 0)
 
-        hbox_total = Gtk.HBox(spacing=3)
-        label_total = Gtk.Label(label=_("_Total tracks:"))
+        label_total = Gtk.Label(
+            label=_("_Total tracks:"), halign=Gtk.Align.END)
         label_total.set_use_underline(True)
         spin_total = Gtk.SpinButton()
         spin_total.set_range(0, 999)
         spin_total.set_increments(1, 10)
         label_total.set_mnemonic_widget(spin_total)
-        hbox_total.pack_start(label_total, True, True, 0)
-        hbox_total.pack_start(spin_total, True, True, 0)
+
         preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
 
-        hbox2.pack_start(hbox_start, True, False, 0)
-        hbox2.pack_start(hbox_total, True, False, 0)
-        hbox2.pack_start(preview, False, True, 0)
+        grid = Gtk.Grid(row_spacing=4, column_spacing=4)
+        grid.add(label_start)
+        grid.attach_next_to(
+            spin_start, label_start, Gtk.PositionType.RIGHT, 1, 1)
+        grid.attach_next_to(
+            label_total, label_start, Gtk.PositionType.BOTTOM, 1, 1)
+        grid.attach_next_to(
+            spin_total, label_total, Gtk.PositionType.RIGHT, 1, 1)
+        grid.attach_next_to(
+            Align(preview, halign=Gtk.Align.END),
+            spin_start, Gtk.PositionType.RIGHT, 1, 1)
+        preview.props.hexpand = True
 
         model = ObjectStore()
         view = HintedTreeView(model=model)
 
-        self.pack_start(hbox2, False, True, 0)
+        self.pack_start(grid, False, True, 0)
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_('File'))
@@ -150,7 +156,7 @@ class TrackNumbers(Gtk.VBox):
         win = WritingWindow(parent, len(model))
         was_changed = set()
         all_done = False
-        for entry in model.itervalues():
+        for entry in itervalues(model):
             song, track = entry.song, entry.tracknumber
             if song.get("tracknumber") == track:
                 win.step()
@@ -188,7 +194,7 @@ class TrackNumbers(Gtk.VBox):
             if total:
                 s = u"%d/%d" % (row.path.get_indices()[0] + start, total)
             else:
-                s = unicode(row.path.get_indices()[0] + start)
+                s = text_type(row.path.get_indices()[0] + start)
             entry = row[0]
             entry.tracknumber = s
             model.row_changed(row.path, row.iter)
@@ -198,12 +204,13 @@ class TrackNumbers(Gtk.VBox):
 
     def __update(self, songs, total, model, save, revert):
         if songs is None:
-            songs = [e.song for e in model.itervalues()]
+            songs = [e.song for e in itervalues(model)]
         else:
             songs = list(songs)
 
-        songs.sort(
-            key=lambda song: (song("~#track"), song("~basename"), song))
+        def sort_key(song):
+            return song("~#track", 0), song("~basename"), song
+        songs.sort(key=sort_key)
 
         model.clear()
         total.set_value(len(songs))

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2013,2016 Nick Boultbee
+#           2013-2017 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """
 Functions for deleting files and songs with user interaction.
@@ -19,6 +20,7 @@ from gi.repository import Gtk
 from senf import fsn2text
 
 from quodlibet import _
+from quodlibet import print_w
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
 from quodlibet.qltk import Icons
@@ -52,7 +54,7 @@ class FileListExpander(Gtk.Expander):
 class DeleteDialog(WarningMessage):
 
     RESPONSE_DELETE = 1
-    """"Return value of DeleteDialog.run() in case the passed files
+    """Return value of DeleteDialog.run() in case the passed files
     should be deleted"""
 
     @classmethod
@@ -95,7 +97,7 @@ class DeleteDialog(WarningMessage):
 class TrashDialog(WarningMessage):
 
     RESPONSE_TRASH = 1
-    """"Return value of TrashDialog.run() in case the passed files
+    """Return value of TrashDialog.run() in case the passed files
     should be moved to the trash"""
 
     @classmethod
@@ -159,7 +161,8 @@ def _do_trash_songs(parent, songs, librarian):
         filename = song("~filename")
         try:
             trash.trash(filename)
-        except trash.TrashError:
+        except trash.TrashError as e:
+            print_w("Couldn't trash file (%s)" % e)
             failed.append(song)
         else:
             ok.append(song)

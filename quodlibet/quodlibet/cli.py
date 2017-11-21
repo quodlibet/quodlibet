@@ -2,11 +2,13 @@
 # Copyright 2014,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
-import sys
+
+from senf import fsn2text, uri2fsn
 
 from quodlibet import C_, _
 from quodlibet.util.dprint import print_, print_e
@@ -62,13 +64,11 @@ def control(command, arg=None, ignore_error=False):
         exit_(str(e), notify_startup=True)
     else:
         if response is not None:
-            print_(response, end="")
+            print_(response, end="", flush=True)
         exit_(notify_startup=True)
 
 
 def process_arguments(argv):
-    from senf import uri2fsn
-
     from quodlibet.util.path import uri_is_valid
     from quodlibet import util
     from quodlibet import const
@@ -79,7 +79,7 @@ def process_arguments(argv):
                 "focus", "quit", "unfilter", "refresh", "force-previous"]
     controls_opt = ["seek", "repeat", "query", "volume", "filter",
                     "set-rating", "set-browser", "open-browser", "shuffle",
-                    "song-list", "queue", "stop-after"]
+                    "song-list", "queue", "stop-after", "random"]
 
     options = util.OptionParser(
         "Quod Libet", const.VERSION,
@@ -88,6 +88,7 @@ def process_arguments(argv):
 
     options.add("print-playing", help=_("Print the playing song and exit"))
     options.add("start-playing", help=_("Begin playing immediately"))
+    options.add("start-hidden", help=_("Don't show any windows on start"))
 
     for opt, help in [
         ("next", _("Jump to next song")),
@@ -201,7 +202,7 @@ def process_arguments(argv):
         elif command in controls_opt:
             if command in validators and not validators[command](arg):
                 print_e(_("Invalid argument for '%s'.") % command)
-                print_e(_("Try %s --help.") % sys.argv[0])
+                print_e(_("Try %s --help.") % fsn2text(argv[0]))
                 exit_(True, notify_startup=True)
             else:
                 queue(command, arg)
@@ -246,6 +247,8 @@ def process_arguments(argv):
         elif command == "print-query-text":
             queue(command)
         elif command == "start-playing":
+            actions.append(command)
+        elif command == "start-hidden":
             actions.append(command)
         elif command == "no-plugins":
             actions.append(command)

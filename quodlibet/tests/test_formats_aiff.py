@@ -2,8 +2,9 @@
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from tests import TestCase, get_data_path
 from quodlibet.formats.aiff import AIFFFile
@@ -27,3 +28,6 @@ class TAIFFFile(TestCase):
         self.assertEqual(self.song("artist"), "artist")
         self.assertEqual(self.song("album"), "album")
         self.assertEqual(self.song("genre"), "genre")
+
+    def test_channels(self):
+        assert self.song("~#channels") == 1

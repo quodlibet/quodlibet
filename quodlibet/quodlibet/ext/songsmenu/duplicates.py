@@ -2,20 +2,20 @@
 #
 #    Duplicates songs plugin.
 #
-#    Copyright (C) 2012, 2011, 2016 Nick Boultbee
+#    Copyright (C) 2011-2017 Nick Boultbee
 #
 #    Finds "duplicates" of songs selected by searching the library for
 #    others with the same user-configurable "key", presenting a browser-like
 #    dialog for further interaction with these.
 #
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of version 2 of the GNU General Public License as
-#    published by the Free Software Foundation.
-#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-import string
 import unicodedata
 
+import sys
 from gi.repository import Gtk, Pango
 
 from quodlibet import app
@@ -29,8 +29,9 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import Icons, Button
-from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.util import connect_obj, connect_destroy, cached_func
 from quodlibet.util.i18n import numeric_phrase
+from quodlibet.compat import text_type, xrange, unichr
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -59,8 +60,7 @@ class DuplicateSongsView(RCMHintedTreeView):
             return
 
         menu = SongsMenu(
-            library, songs, delete=True, plugins=False,
-            devices=False, playlists=False)
+            library, songs, delete=True, plugins=False, playlists=False)
         menu.show_all()
         return menu
 
@@ -192,7 +192,6 @@ class DuplicatesTreeModel(Gtk.TreeStore):
     def add_to_existing_group(self, key, song):
         """Tries to add a song to an existing group. Returns None if not able
         """
-        #print_d("Trying to add %s to group \"%s\"" % (song("~filename"), key))
         for parent in self:
             if key == parent[0]:
                 print_d("Found group", self)
@@ -358,6 +357,15 @@ class DuplicateDialog(Gtk.Window):
         self.show_all()
 
 
+@cached_func
+def _remove_punctuation_trans():
+    """Lookup all Unicode punctuation, and remove it"""
+
+    return dict.fromkeys(
+        i for i in xrange(sys.maxunicode)
+        if unicodedata.category(unichr(i)).startswith('P'))
+
+
 class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Duplicates'
     PLUGIN_NAME = _('Duplicates Browser')
@@ -378,9 +386,6 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     # Cached values
     key_expression = None
     __cfg_cache = {}
-
-    # Faster than a speeding bullet
-    __trans = "".join(map(chr, range(256)))
 
     @classmethod
     def get_key_expression(cls):
@@ -433,8 +438,8 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
     @staticmethod
     def remove_accents(s):
-        return filter(lambda c: not unicodedata.combining(c),
-                      unicodedata.normalize('NFKD', unicode(s)))
+        return "".join(c for c in unicodedata.normalize('NFKD', text_type(s))
+                       if not unicodedata.combining(c))
 
     @classmethod
     def get_key(cls, song):
@@ -444,7 +449,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         if cls.config_get_bool(cls._CFG_CASE_INSENSITIVE):
             key = key.lower()
         if cls.config_get_bool(cls._CFG_REMOVE_PUNCTUATION):
-            key = str(key).translate(cls.__trans, string.punctuation)
+            key = (key.translate(_remove_punctuation_trans()))
         if cls.config_get_bool(cls._CFG_REMOVE_WHITESPACE):
             key = "_".join(key.split())
         return key
@@ -455,11 +460,12 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
         # Index all songs by our custom key
         # TODO: make this cache-friendly
-        print_d("Calculating duplicates...")
+        print_d("Calculating duplicates for %d song(s)..." % len(songs))
         groups = {}
         for song in songs:
             key = self.get_key(song)
             if key and key in groups:
+                print_d("Found duplicate based on '%s'" % key)
                 groups[key].add(song._song)
             elif key:
                 groups[key] = {song._song}
@@ -478,3 +484,5 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
         dialog = DuplicateDialog(model)
         dialog.show()
+        # Mainly for testing...
+        return dialog

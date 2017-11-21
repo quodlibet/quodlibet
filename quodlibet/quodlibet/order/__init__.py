@@ -1,22 +1,43 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
-#           2016 Nick Boultbee
+#        2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet import _, print_d
 
 
 class Order(object):
-    """Base class for all play orders"""
+    """Base class for all play orders
+
+    In all methods:
+        `playlist` is a GTK+ `ListStore` containing at least an `AudioFile`
+                   as the first element in each row
+                   (in the future there may be more elements per row).
+
+        `iter`     is a `GtkTreeIter` for the song that just finished, if any.
+                   If the song is not in the list, this iter will be `None`.
+    """
+
     name = "unknown_order"
+    """The name by which this order is known"""
+
     display_name = _("Unknown")
+    """The (translated) display name"""
+
     accelerated_name = _("_Unknown")
+    """The (translated) display name with (optional) accelerators"""
+
     replaygain_profiles = ["track"]
-    is_shuffle = False
+    """The ReplayGain mode(s) to use with this order.
+    Shuffled ones typically prefer track modes"""
+
     priority = 100
+    """The priority relative to other orders of its type.
+    Larger numbers typically appear lower in lists."""
 
     def __init__(self):
         """Must have a zero-arg constructor"""
@@ -55,9 +76,11 @@ class Order(object):
         """Called when the user manually selects a song (at `iter`).
         If desired the play order can override that, or just
         log it and return the iter again.
+        Note that playlist.current_iter is the current iter, if any.
 
         If the play order returns `None`,
-        no action will be taken by the player."""
+        no action will be taken by the player.
+        """
         return self.set(playlist, iter)
 
     def set_implicit(self, playlist, iter):

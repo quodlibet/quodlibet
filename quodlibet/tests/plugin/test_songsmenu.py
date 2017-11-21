@@ -2,8 +2,9 @@
 # Copyright 2013 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 from senf import fsnative
@@ -14,6 +15,8 @@ from quodlibet import config
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
+from quodlibet.compat import iteritems
+
 
 SONGS = [
     AudioFile({
@@ -53,7 +56,7 @@ class TPluginsSongsMenu(PluginTestCase):
         config.quit()
 
     def test_init(self):
-        for id_, plugin in self.plugins.iteritems():
+        for id_, plugin in iteritems(self.plugins):
             if self.h.plugin_handle(plugin):
                 self.h.plugin_enable(plugin)
                 self.h.handle(id_, None, None, [])
@@ -64,14 +67,14 @@ class TPluginsSongsMenu(PluginTestCase):
                       "Still worth keeping whilst we don't have unit tests "
                       "for all plugins.")
         # Ignored...
-        for id_, plugin in self.plugins.iteritems():
+        for id_, plugin in iteritems(self.plugins):
             if self.h.plugin_handle(plugin):
                 self.h.plugin_enable(plugin, None)
                 self.h.handle(id_, self.lib, self.parent, SONGS)
                 self.h.plugin_disable(plugin)
 
     def test_handles_albums(self):
-        for id_, plugin in self.plugins.iteritems():
+        for id_, plugin in iteritems(self.plugins):
             if isinstance(plugin, SongsMenuPlugin):
                 ha = plugin.handles_albums
                 self.failIf(hasattr(plugin, "plugin_single_album") and not ha)

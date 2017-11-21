@@ -4,13 +4,26 @@
 #           2011-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-"""Simple proxy to a Python ConfigParser."""
+"""Simple proxy to a Python ConfigParser
+
+ConfigParser uses "str" on both Python 2/3, on Python 2 we simply encode
+text/windows paths using utf-8 and save bytes as is.
+
+On Python 3 we save text as is, convert paths to bytes/utf-8 and convert bytes
+to unicode with utf-8/surrogateescape.
+
+The final representation on disk should then in both cases be the same.
+"""
+
+from __future__ import absolute_import
 
 import os
 import csv
+import collections
 
 try:
     # Python 2
@@ -23,7 +36,7 @@ except ImportError:
 
 from senf import fsnative
 
-from quodlibet.compat import cBytesIO, PY2, text_type, StringIO
+from quodlibet.compat import cBytesIO, PY2, PY3, text_type, StringIO
 from quodlibet.util import list_unique, print_d
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.string import join_escape, split_escape
@@ -33,7 +46,7 @@ from quodlibet.util.path import mkdir
 # In newer RawConfigParser it is possible to replace the internal dict. The
 # implementation only uses items() for writing, so replace with a dict that
 # returns them sorted. This makes it easier to look up entries in the file.
-class _sorted_dict(dict):
+class _sorted_dict(collections.OrderedDict):
     def items(self):
         return sorted(super(_sorted_dict, self).items())
 
@@ -111,7 +124,10 @@ class Config(object):
 
         assert self.defaults is not None
 
-        self.set(section, option, self.defaults.get(section, option))
+        try:
+            self._config.remove_option(section, option)
+        except NoSectionError:
+            pass
 
     def options(self, section):
         """Returns a list of options available in the specified section."""
@@ -153,7 +169,26 @@ class Config(object):
         value = self.get(*args, **kwargs)
         if PY2:
             value = value.decode("utf-8")
+        else:
+            # make sure there are no surrogates
+            value.encode("utf-8")
         return value
+
+    def getbytes(self, section, option, default=_DEFAULT):
+        try:
+            value = self._config.get(section, option)
+            if PY3:
+                value = value.encode("utf-8", "surrogateescape")
+            return value
+        except (Error, ValueError) as e:
+            if default is _DEFAULT:
+                if self.defaults is not None:
+                    try:
+                        return self.defaults.getbytes(section, option)
+                    except Error:
+                        pass
+                raise Error(e)
+            return default
 
     def getboolean(self, section, option, default=_DEFAULT):
         """getboolean(section, option[, default]) -> bool
@@ -256,7 +291,7 @@ class Config(object):
     def setlist(self, section, option, values, sep=","):
         """Saves a list of str using ',' as a separator and \\ for escaping"""
 
-        values = map(str, values)
+        values = [str(v) for v in values]
         joined = join_escape(values, sep)
         self.set(section, option, joined)
 
@@ -282,6 +317,9 @@ class Config(object):
         Don't pass unicode, encode first.
         """
 
+        if PY3 and isinstance(value, bytes):
+            raise TypeError("use setbytes")
+
         # RawConfigParser only allows string values but doesn't
         # scream if they are not (and it only fails before the
         # first config save..)
@@ -298,9 +336,22 @@ class Config(object):
                 raise
 
     def settext(self, section, option, value):
-        assert isinstance(value, text_type)
+        value = text_type(value)
+
         if PY2:
             value = value.encode("utf-8")
+        else:
+            # make sure there are no surrogates
+            value.encode("utf-8")
+
+        self.set(section, option, value)
+
+    def setbytes(self, section, option, value):
+        assert isinstance(value, bytes)
+
+        if PY3:
+            value = value.decode("utf-8", "surrogateescape")
+
         self.set(section, option, value)
 
     def write(self, filename):
@@ -318,8 +369,14 @@ class Config(object):
             self.add_section("__config__")
             self.set("__config__", "version", self._version)
         try:
-            with atomic_save(filename, "wb" if PY2 else "w") as fileobj:
-                self._config.write(fileobj)
+            with atomic_save(filename, "wb") as fileobj:
+                if PY2:
+                    self._config.write(fileobj)
+                else:
+                    temp = StringIO()
+                    self._config.write(temp)
+                    data = temp.getvalue().encode("utf-8", "surrogateescape")
+                    fileobj.write(data)
         finally:
             if self._loaded_version is not None:
                 self.set("__config__", "version", self._loaded_version)
@@ -342,10 +399,17 @@ class Config(object):
         Can raise EnvironmentError, Error.
         """
 
-        parsed_filenames = self._config.read(filename)
+        try:
+            with open(filename, "rb") as fileobj:
+                if PY3:
+                    fileobj = StringIO(
+                        fileobj.read().decode("utf-8", "surrogateescape"))
+                self._config.readfp(fileobj, filename)
+        except (IOError, OSError):
+            return
 
         # don't upgrade if we just created a new config
-        if parsed_filenames and self._version is not None:
+        if self._version is not None:
             self._loaded_version = self.getint("__config__", "version", -1)
             for func in self._upgrade_funcs:
                 self._do_upgrade(func)
@@ -413,7 +477,7 @@ class ConfigProxy(object):
 
         # methods starting with a section arg
         for name in ["get", "set", "getboolean", "getint", "getfloat",
-                     "reset", "settext", "gettext"]:
+                     "reset", "settext", "gettext", "getbytes", "setbytes"]:
             setattr(cls, name, get_func(name))
 
 ConfigProxy._init_wrappers()

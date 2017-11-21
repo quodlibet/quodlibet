@@ -1,10 +1,10 @@
-A Music Library/Editor/Player
-=============================
+.. title:: A Music Library/Editor/Player
 
-.. image:: images/front.png
+.. image:: images/paned.png
     :align: right
+    :scale: 50 %
 
-**Quod Libet** is a `GTK+ <http://www.gtk.org/>`__-based **audio player**
+**Quod Libet** is a `GTK+ <https://www.gtk.org/>`__-based **audio player**
 written in `Python <https://www.python.org/>`__, using the `Mutagen
 <https://github.com/quodlibet/mutagen>`__ tagging library. It's designed
 around the idea that you know how to organize your music better than we do.
@@ -24,12 +24,10 @@ happy with your favorite player and just want something that can handle
 tagging, Ex Falso is for you.
 
 
-Table of Contents
------------------
-
 .. toctree::
     :maxdepth: 1
     :titlesonly:
+    :hidden:
 
     screenshots
     changelog

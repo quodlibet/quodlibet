@@ -2,14 +2,18 @@
 # Copyright 2014 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import re
 import shlex
 
+from senf import bytes2fsn, fsn2bytes
+
 from quodlibet import const
 from quodlibet.util import print_d, print_w
+from quodlibet.compat import text_type, iteritems
 from .tcpserver import BaseTCPServer, BaseTCPConnection
 
 
@@ -49,14 +53,12 @@ TAG_MAPPING = [
     (u"AlbumArtistSort", "albumartistsort"),
     (u"Title", "title"),
     (u"Track", "tracknumber"),
-    (u"Name", ""),
     (u"Genre", "genre"),
     (u"Date", "~year"),
     (u"Composer", "composer"),
     (u"Performer", "performer"),
     (u"Comment", "commend"),
     (u"Disc", "discnumber"),
-    (u"Time", "~#length"),
     (u"Name", "~basename"),
     (u"MUSICBRAINZ_ARTISTID", "musicbrainz_artistid"),
     (u"MUSICBRAINZ_ALBUMID", "musicbrainz_albumid"),
@@ -70,15 +72,7 @@ def format_tags(song):
 
     lines = []
     for mpd_key, ql_key in TAG_MAPPING:
-        if not ql_key:
-            continue
-
-        if ql_key.startswith("~#"):
-            value = song(ql_key, None)
-            if value is not None:
-                value = str(value)
-        else:
-            value = song.comma(ql_key) or None
+        value = song.comma(ql_key) or None
 
         if value is not None:
             lines.append(u"%s: %s" % (mpd_key, value))
@@ -98,18 +92,18 @@ def parse_command(line):
 
     assert isinstance(line, bytes)
 
-    parts = re.split("[ \\t]+", line, maxsplit=1)
+    parts = re.split(b"[ \\t]+", line, maxsplit=1)
     if not parts:
         raise ParseError("empty command")
     command = parts[0]
 
     if len(parts) > 1:
-        lex = shlex.shlex(parts[1], posix=True)
+        lex = shlex.shlex(bytes2fsn(parts[1], "utf-8"), posix=True)
         lex.whitespace_split = True
         lex.commenters = ""
         lex.quotes = "\""
         lex.whitespace = " \t"
-        args = list(lex)
+        args = [fsn2bytes(a, "utf-8") for a in lex]
     else:
         args = []
 
@@ -208,7 +202,7 @@ class MPDService(object):
 
     def flush_idle(self):
         flushed = []
-        for conn, subs in self._idle_subscriptions.iteritems():
+        for conn, subs in iteritems(self._idle_subscriptions):
             # figure out which subsystems to report for each connection
             queued = self._idle_queue[conn]
             if subs:
@@ -233,15 +227,12 @@ class MPDService(object):
         self._idle_subscriptions.pop(connection, None)
 
     def emit_changed(self, subsystem):
-        for conn, subs in self._idle_queue.iteritems():
+        for conn, subs in iteritems(self._idle_queue):
             subs.add(subsystem)
         self.flush_idle()
 
     def play(self):
-        if not self._app.player.song:
-            self._app.player.reset()
-        else:
-            self._app.player.paused = False
+        self._app.player.playpause()
 
     def playid(self, songid):
         self.play()
@@ -356,6 +347,7 @@ class MPDService(object):
         parts = []
         parts.append(u"file: %s" % info("~filename"))
         parts.append(format_tags(info))
+        parts.append(u"Time: %d" % int(info("~#length")))
         parts.append(u"Pos: %d" % 0)
         parts.append(u"Id: %d" % self._get_id(info))
 
@@ -421,8 +413,8 @@ class MPDConnection(BaseTCPConnection):
         self.service = service
         service.add_connection(self)
 
-        str_version = ".".join(map(str, service.version))
-        self._buf = bytearray("OK MPD %s\n" % str_version)
+        str_version = u".".join(map(text_type, service.version))
+        self._buf = bytearray((u"OK MPD %s\n" % str_version).encode("utf-8"))
         self._read_buf = bytearray()
 
         # begin - command processing state
@@ -496,7 +488,7 @@ class MPDConnection(BaseTCPConnection):
         """Returns the next line from the read buffer or None"""
 
         try:
-            index = self._read_buf.index("\n")
+            index = self._read_buf.index(b"\n")
         except ValueError:
             return None
 
@@ -507,10 +499,10 @@ class MPDConnection(BaseTCPConnection):
     def write_line(self, line):
         """Writes a line to the client"""
 
-        assert isinstance(line, unicode)
+        assert isinstance(line, text_type)
         self.log(u"<- " + repr(line))
 
-        self._buf.extend(line.encode("utf-8", errors="replace") + "\n")
+        self._buf.extend(line.encode("utf-8", errors="replace") + b"\n")
 
     def ok(self):
         self.write_line(u"OK")
@@ -837,14 +829,13 @@ def _cmd_outputs(conn, service, args):
 @MPDConnection.Command("commands", permission=Permissions.PERMISSION_NONE)
 def _cmd_commands(conn, service, args):
     for name in conn.list_commands():
-        conn.write_line(u"command: " + unicode(name))
+        conn.write_line(u"command: " + text_type(name))
 
 
 @MPDConnection.Command("tagtypes")
 def _cmd_tagtypes(conn, service, args):
     for mpd_key, ql_key in TAG_MAPPING:
-        if ql_key:
-            conn.write_line(mpd_key)
+        conn.write_line(mpd_key)
 
 
 @MPDConnection.Command("lsinfo")

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2017 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #     Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import re
 
@@ -36,10 +37,9 @@ def background_filter():
     bg = config.gettext("browsers", "background")
     if not bg:
         return
-    try:
-        return Query(bg, SongList.star).search
-    except Query.error:
-        pass
+    query = Query(bg, SongList.star)
+    if query.is_parsable:
+        return query.search
 
 
 def split_scan_dirs(joined_paths):
@@ -55,9 +55,10 @@ def split_scan_dirs(joined_paths):
 
     if is_windows():
         # we used to separate this config with ":", so this is tricky
-        return filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", joined_paths))
+        return list(
+            filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", joined_paths)))
     else:
-        return filter(None, split_escape(joined_paths, ":"))
+        return list(filter(None, split_escape(joined_paths, ":")))
 
 
 def get_scan_dirs():
@@ -67,7 +68,7 @@ def get_scan_dirs():
         list
     """
 
-    joined_paths = bytes2fsn(config.get("settings", "scan"), "utf-8")
+    joined_paths = bytes2fsn(config.getbytes("settings", "scan"), "utf-8")
     return [expanduser(p) for p in split_scan_dirs(joined_paths)]
 
 
@@ -84,7 +85,7 @@ def set_scan_dirs(dirs):
         joined = fsnative(u":").join(dirs)
     else:
         joined = join_escape(dirs, fsnative(u":"))
-    config.set("settings", "scan", fsn2bytes(joined, "utf-8"))
+    config.setbytes("settings", "scan", fsn2bytes(joined, "utf-8"))
 
 
 def get_exclude_dirs():
@@ -95,7 +96,7 @@ def get_exclude_dirs():
     """
 
     paths = split_scan_dirs(
-        bytes2fsn(config.get("library", "exclude"), "utf-8"))
+        bytes2fsn(config.getbytes("library", "exclude"), "utf-8"))
     return [expanduser(p) for p in paths]
 
 

@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2006 Joe Wreschnig, Michael Urman, Iñigo Serna
 #                2014 Nick Boultbee
+#                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, GObject
 from senf import fsn2text
@@ -16,7 +18,8 @@ from quodlibet.plugins import PluginHandler
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
 from quodlibet.qltk import Icons
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.errorreport import errorhook
 
 
 class OverwriteWarning(WarningMessage):
@@ -106,7 +109,7 @@ class FilterCheckButton(ConfigCheckButton):
         raise NotImplementedError
 
     def filter_list(self, origs, names):
-        return map(self.filter, origs, names)
+        return list(map(self.filter, origs, names))
 
     def __lt__(self, other):
         return (self._order, type(self).__name__) < \
@@ -140,32 +143,26 @@ class FilterPluginBox(Gtk.VBox):
         hb = Gtk.HBox()
         expander = Gtk.Expander(label=_(u"_More options…"))
         expander.set_use_underline(True)
+        expander.set_no_show_all(True)
         hb.pack_start(expander, True, True, 0)
         self.pack_start(hb, False, True, 0)
 
         for filt in filters:
             filt.connect('preview', lambda *x: self.emit("preview"))
 
-        sw = Gtk.ScrolledWindow()
-        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-
         vbox = Gtk.VBox()
+        expander.add(vbox)
 
-        plugin_handler.connect(
+        connect_destroy(plugin_handler,
             "changed", self.__refresh_plugins, vbox, expander)
 
-        sw.add_with_viewport(vbox)
-        self.pack_start(sw, False, True, 0)
-
-        sw.set_no_show_all(True)
-        expander.connect("notify::expanded", self.__notify_expanded, sw)
+        expander.connect("notify::expanded", self.__notify_expanded, vbox)
         expander.set_expanded(False)
 
         for child in self.get_children():
             child.show()
 
         plugin_handler.changed()
-        sw.hide()
 
     def __notify_expanded(self, expander, event, vbox):
         vbox.set_property('visible', expander.get_property('expanded'))
@@ -176,7 +173,7 @@ class FilterPluginBox(Gtk.VBox):
             try:
                 f = Kind()
             except:
-                util.print_exc()
+                errorhook()
                 continue
             else:
                 instances.append(f)
@@ -190,7 +187,7 @@ class FilterPluginBox(Gtk.VBox):
             try:
                 vbox.pack_start(f, True, True, 0)
             except:
-                util.print_exc()
+                errorhook()
                 f.destroy()
                 continue
 
@@ -200,7 +197,7 @@ class FilterPluginBox(Gtk.VBox):
                 try:
                     f.connect('changed', lambda *x: self.emit('changed'))
                 except:
-                    util.print_exc()
+                    errorhook()
                     continue
 
             self.__plugins.append(f)

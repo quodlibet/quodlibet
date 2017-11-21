@@ -3,14 +3,15 @@
 #           2012, 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-import os
 import contextlib
 
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
+from senf import environ
 
 from quodlibet import _, print_e
 from quodlibet import config
@@ -174,8 +175,10 @@ class TreeViewHints(Gtk.Window):
                     self.__undisplay(send_leave=False)
                     return False
 
-        # hide if any modifier is active
-        if event.get_state() & Gtk.accelerator_get_default_mod_mask():
+        # hide if any modifier is active.
+        mask = Gtk.accelerator_get_default_mod_mask()
+        mask = Gdk.Keymap.get_default().map_virtual_modifiers(mask)[1]
+        if event.get_state() & mask:
             self.__undisplay()
             return False
 
@@ -201,7 +204,7 @@ class TreeViewHints(Gtk.Window):
         # get the renderer at the mouse position and get the xpos/width
         renderers = col.get_cells()
         pos = sorted(zip(map(col.cell_get_position, renderers), renderers))
-        pos = filter(lambda p: p[0][0] < cellx, pos)
+        pos = list(filter(lambda p: p[0][0] < cellx, pos))
         if not pos:
             self.__undisplay()
             return False
@@ -657,7 +660,13 @@ class BaseView(Gtk.TreeView):
 
         self.connect("button-release-event", on_button_release_event)
 
+    def do_key_press_event(self, event):
+        if is_accel(event, "space", "KP_Space"):
+            return False
+        return Gtk.TreeView.do_key_press_event(self, event)
+
     def __key_pressed(self, view, event):
+
         def get_first_selected():
             selection = self.get_selection()
             model, paths = selection.get_selected_rows()
@@ -683,7 +692,8 @@ class BaseView(Gtk.TreeView):
     def remove_paths(self, paths):
         """Remove rows and restore the selection if it got removed"""
 
-        self.remove_iters(map(self.get_model().get_iter, paths))
+        model = self.get_model()
+        self.remove_iters([model.get_iter(p) for p in paths])
 
     def remove_iters(self, iters):
         """Remove rows and restore the selection if it got removed"""
@@ -702,7 +712,7 @@ class BaseView(Gtk.TreeView):
                 self.__remove_iters([iter_], force_restore=True)
         elif mode == Gtk.SelectionMode.MULTIPLE:
             model, paths = selection.get_selected_rows()
-            iters = map(model.get_iter, paths or [])
+            iters = list(map(model.get_iter, paths or []))
             self.__remove_iters(iters, force_restore=True)
 
     def select_by_func(self, func, scroll=True, one=False):
@@ -1133,7 +1143,7 @@ class HintedTreeView(BaseView):
         display scroll bars instead for example.
         """
 
-        if "QUODLIBET_NO_HINTS" in os.environ:
+        if "QUODLIBET_NO_HINTS" in environ:
             return False
 
         return not config.state('disable_hints')

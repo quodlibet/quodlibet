@@ -2,8 +2,9 @@
 # Copyright 2013 Simonas Kazlauskas
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from os import path, makedirs
 from hashlib import sha1
@@ -101,7 +102,10 @@ class CoverSourcePlugin(GObject.Object):
         """
         key = sha1()
         # Should be fine as long as the same interpreter is used.
-        key.update(repr(self.song.album_key))
+        data = repr(self.song.album_key)
+        if not isinstance(data, bytes):
+            data = data.encode("utf-8")
+        key.update(data)
         return escape_filename(key.hexdigest())
 
     @property

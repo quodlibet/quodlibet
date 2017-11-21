@@ -2,13 +2,15 @@
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet import app
 from quodlibet import config
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort
+from quodlibet.compat import itervalues
 
 
 class AlbumItem(object):
@@ -77,7 +79,7 @@ class AlbumModel(ObjectStore, AlbumModelMixin):
         ]
 
         self.append(row=[AlbumItem(None)])
-        self.append_many((AlbumItem(a) for a in albums.itervalues()))
+        self.append_many((AlbumItem(a) for a in itervalues(albums)))
 
     def refresh_all(self):
         """Trigger redraws for all rows"""

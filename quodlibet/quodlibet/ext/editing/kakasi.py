@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
+import subprocess
 
 from quodlibet.qltk import Icons
 
@@ -45,14 +47,18 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
         value = "\n".join(values)
         try:
             data = value.encode('shift-jis', 'replace')
-        except None:
-            return value
-        line = ("kakasi -isjis -osjis -Ha -Ka -Ja -Ea -ka -s")
-        w, r = os.popen2(line.split())
-        w.write(data)
-        w.close()
+        except UnicodeEncodeError:
+            return values
+
+        proc = subprocess.Popen(
+            ["kakasi", "-isjis", "-osjis", "-Ha", "-Ka", "-Ja",
+             "-Ea", "-ka", "-s"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE)
+        result = proc.communicate(data)[0]
+
         try:
-            return r.read().decode('shift-jis').strip().split("\n")
+            return result.decode('shift-jis').strip().split("\n")
         except:
             return values
 

@@ -1,14 +1,28 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Copyright 2010-2015 Christoph Reiter
 #           2015 Nick Boultbee
 #           2010 Steven Robertson
 #           2007-2008 Joe Wreschnig
 #
-# This software and accompanying documentation, if any, may be freely
-# used, distributed, and/or modified, in any form and for any purpose,
-# as long as this notice is preserved. There is no warranty, either
-# express or implied, for this software.
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os
 import sys
@@ -24,7 +38,7 @@ def exec_module(path):
     if sys.version_info[0] == 2:
         execfile(path, globals_)
     else:
-        with open(path) as h:
+        with open(path, encoding="utf-8") as h:
             exec(h.read(), globals_)
     module = types.ModuleType("")
     module.__dict__.update(globals_)
@@ -32,6 +46,8 @@ def exec_module(path):
 
 
 def main():
+    assert sys.version_info[0] == 3, "Quod Libet is Python 3 only now"
+
     # distutils depends on setup.py beeing executed from the same dir.
     # Most of our custom commands work either way, but this makes
     # it work in all cases.

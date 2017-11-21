@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #           2015 Nick Boultbee
+#           2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
@@ -16,8 +18,9 @@ from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.x import SymbolicIconImage, MenuItem, Button
 from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk.ccb import ConfigCheckMenuItem
+from quodlibet.qltk.ccb import ConfigCheckMenuItem, ConfigCheckButton
 from quodlibet.util import connect_obj, escape
+from quodlibet.compat import iteritems, iterkeys
 from .util import get_headers, save_headers
 
 
@@ -110,7 +113,7 @@ class PatternEditor(Gtk.VBox):
 
     @property
     def headers(self):
-        for button in self.__headers.iterkeys():
+        for button in iterkeys(self.__headers):
             if button.get_active():
                 if button == self.__custom:
                     model_headers = [row[0] for row in self.__model]
@@ -119,7 +122,7 @@ class PatternEditor(Gtk.VBox):
 
     @headers.setter
     def headers(self, new_headers):
-        for button, headers in self.__headers.iteritems():
+        for button, headers in iteritems(self.__headers):
             if headers == new_headers:
                 button.set_active(True)
                 button.emit("toggled")
@@ -199,16 +202,23 @@ class Preferences(qltk.UniqueWindow):
         editor = PatternEditor()
         editor.headers = get_headers()
 
+        equal_width = ConfigCheckButton(_("Equal pane width"),
+                                        "browsers",
+                                        "equal_pane_width",
+                                        populate=True)
+
         apply_ = Button(_("_Apply"))
-        connect_obj(apply_, "clicked", self.__apply, editor, browser, False)
+        connect_obj(apply_, "clicked", self.__apply, editor,
+                    browser, False, equal_width)
 
         cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda x: self.destroy())
 
         box = Gtk.HButtonBox()
         box.set_spacing(6)
-        box.set_layout(Gtk.ButtonBoxStyle.END)
-        box.pack_start(apply_, True, True, 0)
+        box.set_layout(Gtk.ButtonBoxStyle.EDGE)
+        box.pack_start(equal_width, True, True, 0)
+        box.pack_start(apply_, False, False, 0)
         self.use_header_bar()
         if not self.has_close_button():
             box.pack_start(cancel, True, True, 0)
@@ -221,10 +231,13 @@ class Preferences(qltk.UniqueWindow):
         cancel.grab_focus()
         self.get_child().show_all()
 
-    def __apply(self, editor, browser, close):
+    def __apply(self, editor, browser, close, equal_width):
         if editor.headers != get_headers():
             save_headers(editor.headers)
             browser.set_all_panes()
+
+        if equal_width.get_active():
+            browser.make_pane_widths_equal()
 
         if close:
             self.destroy()

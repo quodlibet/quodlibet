@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet.config import RATINGS
 from tests import get_data_path, skipUnless, mkstemp, TestCase
@@ -65,6 +66,9 @@ class TVCFileMixin(object):
         self.song.write()
         song = type(self.song)(self.filename)
         self.failUnlessEqual(song["~#rating"], 0.2)
+
+    def test_channels(self):
+        assert self.song("~#channels") == 2
 
     def test_deletes_rating(self):
         config.set("editing", "save_email", "foo@bar.org")
@@ -602,6 +606,9 @@ class TOggOpusFile(TVCFile, TVCFileMixin):
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.6847, 3)
         self.failUnless("opusenc" in self.song("encoder"))
+
+    def test_channels(self):
+        assert self.song("~#channels") == 2
 
     def test_format_codec(self):
         self.assertEqual(self.song("~format"), "Ogg Opus")

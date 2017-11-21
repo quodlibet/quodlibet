@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013, 2016 Nick Boultbee
+# Copyright 2013, 2016, 2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import sys
 
@@ -12,6 +13,7 @@ from gi.repository import Gtk, GdkPixbuf
 from quodlibet import app
 
 from quodlibet import config
+from quodlibet.formats import AudioFile
 from quodlibet.qltk import Icons
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 from tests import skipIf, TestCase
@@ -97,3 +99,10 @@ class TIndicatorMenu(TestCase):
         self.failUnless(Icons.MEDIA_SKIP_BACKWARD in icons)
         self.failUnless(Icons.APPLICATION_EXIT in icons)
         self.failUnless(Icons.FAVORITE in icons)
+
+    def test_playlist_menu_populates(self):
+        from quodlibet.ext.events.trayicon.menu import IndicatorMenu
+        menu = IndicatorMenu(app)
+        song = AudioFile({'~filename': '/dev/null'})
+        menu._new_playlist_submenu_for(song)
+        self.failUnless(menu._playlists_item.get_submenu())

@@ -2,8 +2,9 @@
 # Copyright 2006 Lukas Lalinsky
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import struct
 
@@ -100,6 +101,8 @@ class WMAFile(AudioFile):
 
         self["~#length"] = info.length
         self["~#bitrate"] = int(info.bitrate / 1000)
+        if info.channels:
+            self["~#channels"] = info.channels
 
         type_, name, desc = info.codec_type, info.codec_name, \
             info.codec_description

@@ -3,8 +3,9 @@
 # Copyright 2006 Lukas Lalinsky
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from mutagen.mp4 import MP4, MP4Cover
 
@@ -81,18 +82,21 @@ class MP4File(AudioFile):
     def __init__(self, filename):
         with translate_errors():
             audio = MP4(filename)
-        self["~codec"] = getattr(audio.info, "codec_description", u"AAC")
+        self["~codec"] = audio.info.codec_description
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
+        if audio.info.channels:
+            self["~#channels"] = audio.info.channels
 
         for key, values in audio.items():
             if key in self.__tupletranslate:
-                name = self.__tupletranslate[key]
-                cur, total = values[0]
-                if total:
-                    self[name] = u"%d/%d" % (cur, total)
-                else:
-                    self[name] = text_type(cur)
+                if values:
+                    name = self.__tupletranslate[key]
+                    cur, total = values[0]
+                    if total:
+                        self[name] = u"%d/%d" % (cur, total)
+                    else:
+                        self[name] = text_type(cur)
             elif key in self.__translate:
                 name = self.__translate[key]
                 if key == "tmpo":

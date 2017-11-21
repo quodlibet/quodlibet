@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from tests import TestCase, get_data_path
 
@@ -632,7 +633,8 @@ class TID3FileMixin(object):
 
         # abuse mutagen a bit, and get some utf-8 in with the wrong encoding
         f = mutagen.File(self.filename)
-        f.tags.add(mutagen.id3.TPE1(encoding=0, text=x.encode("utf-8")))
+        f.tags.add(mutagen.id3.TPE1(
+            encoding=0, text=x.encode("utf-8").decode("latin-1")))
         f.save()
 
         # back to utf-8

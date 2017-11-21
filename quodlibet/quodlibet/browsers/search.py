@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2016 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2017 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, GLib
 
@@ -13,11 +13,9 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import _
 from quodlibet.browsers import Browser
-from quodlibet.query import Query
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.searchbar import LimitSearchBarBox
 from quodlibet.qltk.x import Align, SymbolicIconImage
 from quodlibet.qltk import Icons
@@ -101,13 +99,8 @@ class SearchBar(Browser):
         qltk.get_top_parent(widget).songlist.grab_focus()
 
     def _get_songs(self):
-        text = self._get_text()
-        try:
-            self._query = Query(text, star=SongList.star)
-        except Query.error:
-            pass
-        else:
-            return self._query.filter(self._library)
+        self._query = self._sb_box.query
+        return self._query.filter(self._library) if self._query else None
 
     def activate(self):
         songs = self._get_songs()
@@ -119,14 +112,10 @@ class SearchBar(Browser):
         self.activate()
 
     def save(self):
-        config.set("browsers", "query_text", self._get_text())
+        config.settext("browsers", "query_text", self._get_text())
 
     def restore(self):
-        try:
-            text = config.get("browsers", "query_text")
-        except config.Error:
-            return
-
+        text = config.gettext("browsers", "query_text")
         self._set_text(text)
 
     def finalize(self, restore):

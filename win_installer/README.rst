@@ -14,7 +14,8 @@ For developing on Windows you have two choices.
 1) Just use an existing Quod Libet installation plus a git checkout:
 
    * Clone the git repo with some git client
-   * Install the latest version of Quod Libet
+   * Download and install the latest installer build:
+     https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe
    * Go to quodlibet.py in the git checkout and run
      ``%PROGRAMFILES(X86)%\Quod Libet\bin\python.exe quodlibet.py``.
 
@@ -34,7 +35,7 @@ Setting Up the MSYS2 Environment
 * Now go to the application source code ``cd ../quodlibet``
 * To run Quod Libet execute ``./quodlibet.py``
 
-If you want to use py.test directly you have to unsed the MSYSTEM env var:
+If you want to use py.test directly you have to unset the MSYSTEM env var:
 ``MSYSTEM= py.test tests/test_util.py``
 
 

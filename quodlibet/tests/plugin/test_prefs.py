@@ -2,13 +2,15 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 from quodlibet import config
+from quodlibet.compat import iteritems
 
 
 class TPrefs(PluginTestCase):
@@ -23,7 +25,7 @@ class TPrefs(PluginTestCase):
     def test_all(self):
         tested_any = False
 
-        for id_, plugin in self.plugins.iteritems():
+        for id_, plugin in iteritems(self.plugins):
             plugin = plugin.cls
             if hasattr(plugin, "PLUGIN_INSTANCE"):
                 plugin = plugin()

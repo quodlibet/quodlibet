@@ -4,8 +4,9 @@
 #      2014-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet import _
 from quodlibet.compat import iteritems
@@ -75,7 +76,9 @@ _TAGS = dict((t.name, t) for t in [
     T("arranger", "us", _("arranger"), _("arrangers"), _("arrangement")),
     T("artist", "us", _("artist"), _("artists")),
     T("author", "us", _("author"), _("authors")),
+    T("comment", "u", _("comment")),
     T("composer", "us", _("composer"), _("composers"), _("composition")),
+    # Translators: conducting as in conducting a musical performance
     T("conductor", "us", _("conductor"), _("conductors"), _("conducting")),
     T("contact", "u", _("contact")),
     T("copyright", "u", _("copyright")),
@@ -162,6 +165,7 @@ _TAGS = dict((t.name, t) for t in [
     T("codec", "i", _("codec")),
     T("encoding", "i", _("encoding")),
     T("playlists", "i", _("playlists")),
+    T("channels", "n", _("channel count")),
 ])
 
 

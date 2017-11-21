@@ -317,8 +317,33 @@ Example:
     operon image-clear song.mp3
 
 
-COMMANDS
-========
+MISCELLANEOUS
+=============
+
+tags
+----
+
+List all common tags
+
+operon tags [-h] [-a] [-t] [-c <c1>,<c2>...]
+
+-h, --help
+    Display help and exit
+
+-a, --all
+    Also list programmatic tags
+
+-t, --terse
+    Output is terse and suitable for script processing
+
+-c, --columns <name>,...
+    Defines which columns should be printed and in which order
+
+Example:
+    operon tags -a
+
+    operon tags -t -c tag
+
 
 help
 ----

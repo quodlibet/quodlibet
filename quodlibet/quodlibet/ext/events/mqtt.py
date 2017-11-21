@@ -2,8 +2,9 @@
 # Copyright 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
@@ -186,7 +187,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
                    % {'host': self.host, 'port': self.port})
             Message(Gtk.MessageType.INFO, app.window, "Success", msg).run()
         except IOError as e:
-            template = _("Couldn't connect to %(host)s:%(port)d (%(msg)s")
+            template = _("Couldn't connect to %(host)s:%(port)d (%(msg)s)")
             msg = template % {'host': self.host, 'port': self.port, 'msg': e}
             print_w(msg)
             ErrorMessage(app.window, _("Connection error"), msg).run()

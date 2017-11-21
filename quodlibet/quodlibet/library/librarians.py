@@ -4,8 +4,10 @@
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 """
 Librarians for libraries.
 """
@@ -142,7 +144,7 @@ class SongLibrarian(Librarian):
 
     def tag_values(self, tag):
         """Return a set of all values for the given tag."""
-        return {value for lib in self.libraries.itervalues()
+        return {value for lib in itervalues(self.libraries)
                 for value in lib.tag_values(tag)}
 
     def rename(self, song, newname, changed=None):

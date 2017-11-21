@@ -2,8 +2,9 @@
 # Copyright 2012,2013 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
@@ -11,8 +12,6 @@ import sys
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
-
-import tempfile
 
 from gi.repository import Gtk, GdkPixbuf
 from senf import fsn2uri
@@ -27,6 +26,8 @@ from quodlibet.pattern import Pattern
 from quodlibet.qltk import Icons
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
+from quodlibet.util import NamedTemporaryFile
+from quodlibet.compat import iteritems, itervalues
 
 BASE_PATH = "/org/gnome/UPnP/MediaServer2"
 BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
@@ -417,8 +418,8 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         dbus.service.FallbackObject.__init__(self, bus, self.PATH)
 
         self.__library = library
-        self.__map = dict((id(v), v) for v in self.__library.itervalues())
-        self.__reverse = dict((v, k) for k, v in self.__map.iteritems())
+        self.__map = dict((id(v), v) for v in itervalues(self.__library))
+        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
 
         self.__song = DummySongObject(self)
 
@@ -495,8 +496,8 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         self.__library = library.albums
         self.__library.load()
 
-        self.__map = dict((id(v), v) for v in self.__library.itervalues())
-        self.__reverse = dict((v, k) for k, v in self.__map.iteritems())
+        self.__map = dict((id(v), v) for v in itervalues(self.__library))
+        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
 
         signals = [
             ("changed", self.__albums_changed),
@@ -630,7 +631,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         self.__depth = pixbuf.get_bits_per_sample()
 
         # save and keep reference
-        self.__f = f = tempfile.NamedTemporaryFile()
+        self.__f = f = NamedTemporaryFile()
         pixbuf.savev(f.name, "png", [], [])
 
     def get_property(self, interface, name):

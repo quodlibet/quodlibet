@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2006 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2013 Nick Boultbee
+#      2013,2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
@@ -15,6 +16,7 @@ from quodlibet import qltk
 from quodlibet.qltk import Icons
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.entry import UndoEntry
+from quodlibet.util import gdecode
 from .util import pconfig
 
 
@@ -28,7 +30,7 @@ class Preferences(Gtk.VBox):
 
         ccb = pconfig.ConfigCheckButton(_("Hide main window on close"),
                                         'window_hide', populate=True)
-        self.pack_start(ccb, False, True, 0)
+        self.pack_start(qltk.Frame(_("Behavior"), child=ccb), False, True, 0)
 
         def on_scroll_changed(button, new_state):
             if button.get_active():
@@ -53,7 +55,7 @@ class Preferences(Gtk.VBox):
         self.pack_start(qltk.Frame(_("Scroll _Wheel"), child=scrollwheel_box),
                         True, True, 0)
 
-        box = Gtk.VBox(spacing=12)
+        box = Gtk.VBox(spacing=6)
 
         entry_box = Gtk.HBox(spacing=6)
 
@@ -74,22 +76,24 @@ class Preferences(Gtk.VBox):
 
         preview = Gtk.Label()
         preview.set_line_wrap(True)
-        frame = Gtk.Frame()
-        frame.add(preview)
-        box.pack_start(frame, False, True, 0)
+        preview_frame = Gtk.Frame(label=_("Preview"))
+        vbox = Gtk.VBox(margin=18)
+        vbox.pack_start(preview, False, False, 0)
+        preview_frame.add(vbox)
+        box.pack_start(preview_frame, False, True, 0)
 
-        frame = qltk.Frame(_("Tooltip Display"), child=box)
-        frame.get_label_widget().set_mnemonic_widget(entry)
-        self.pack_start(frame, True, True, 0)
+        tt_frame = qltk.Frame(_("Tooltip Display"), child=box)
+        tt_frame.get_label_widget().set_mnemonic_widget(entry)
+        self.pack_start(tt_frame, True, True, 0)
 
-        entry.connect('changed', self.__changed_entry, preview, frame)
+        entry.connect('changed', self.__changed_entry, preview, preview_frame)
         entry.set_text(pconfig.gettext("tooltip"))
 
         for child in self.get_children():
             child.show_all()
 
     def __changed_entry(self, entry, label, frame):
-        text = entry.get_text().decode("utf-8")
+        text = gdecode(entry.get_text())
 
         if app.player.info is None:
             text = _("Not playing")

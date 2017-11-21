@@ -4,14 +4,15 @@
 #           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """Manage a pool of routines using Python iterators."""
 
 from gi.repository import GLib
 
-from quodlibet.compat import PY2
+from quodlibet.compat import PY2, listkeys
 
 
 class _Routine(object):
@@ -113,7 +114,7 @@ class CoPool(object):
     def remove_all(self):
         """Stop all running routines."""
 
-        for funcid in self.__routines.keys():
+        for funcid in listkeys(self.__routines):
             self.remove(funcid)
 
     def pause(self, funcid):

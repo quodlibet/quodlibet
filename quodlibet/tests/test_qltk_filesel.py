@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from tests import TestCase, mkdtemp
+from tests.helper import __
 
 import os
 import sys
@@ -11,10 +13,27 @@ sys.modules['dircache'] = os # cheat the dircache effects
 
 from senf import fsnative
 
-from quodlibet.qltk.filesel import DirectoryTree, FileSelector, get_drives
-from quodlibet.qltk.filesel import MainDirectoryTree, MainFileSelector
+from quodlibet.qltk.filesel import DirectoryTree, FileSelector, get_drives, \
+    MainDirectoryTree, MainFileSelector, get_gtk_bookmarks, parse_gtk_bookmarks
 from quodlibet.util.path import get_home_dir
 import quodlibet.config
+from quodlibet.util import is_windows
+
+
+class Tget_gtk_bookmarks(TestCase):
+
+    def test_main(self):
+        paths = get_gtk_bookmarks()
+        assert all(isinstance(p, fsnative) for p in paths)
+
+    def test_parse(self):
+        if is_windows():
+            return
+
+        data = (b'file:///foo/bar\nfile:///home/user\n'
+                b'file:///home/user/Downloads Downloads\n')
+        paths = parse_gtk_bookmarks(data)
+        assert all(isinstance(p, fsnative) for p in paths)
 
 
 class TDirectoryTree(TestCase):
@@ -72,6 +91,35 @@ class TDirectoryTree(TestCase):
     def test_get_drives(self):
         for path in get_drives():
             self.assertTrue(isinstance(path, fsnative))
+
+    def test_popup(self):
+        dt = DirectoryTree(None, folders=self.ROOTS)
+        menu = dt._create_menu()
+        dt._popup_menu(menu)
+        children = menu.get_children()
+        self.failUnlessEqual(len(children), 4)
+        delete = children[1]
+        self.failUnlessEqual(delete.get_label(), __("_Delete"))
+        self.failUnless(delete.get_sensitive())
+
+    def test_multiple_selections(self):
+        dt = DirectoryTree(None, folders=self.ROOTS)
+        menu = dt._create_menu()
+        dt._popup_menu(menu)
+        children = menu.get_children()
+        select_sub = children[3]
+        self.failUnless("sub-folders" in select_sub.get_label().lower())
+        self.failUnless(select_sub.get_sensitive())
+        sel = dt.get_selection()
+        model = dt.get_model()
+        for it, pth in model.iterrows(None):
+            sel.select_iter(it)
+        self.failUnless(select_sub.get_sensitive(),
+                        msg="Select All should work for multiple")
+        self.failIf(children[0].get_sensitive(),
+                    msg="New Folder should be disabled for multiple")
+        self.failUnless(children[3].get_sensitive(),
+                        msg="Refresh should be enabled for multiple")
 
 
 class TFileSelector(TestCase):

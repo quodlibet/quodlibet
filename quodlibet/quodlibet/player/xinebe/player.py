@@ -2,8 +2,9 @@
 # Copyright 2006-2007 Lukas Lalinsky
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import GLib
 
@@ -11,6 +12,7 @@ from quodlibet import _
 from quodlibet import config
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
+from quodlibet.util.string import decode
 
 from . import cdefs
 from .cdefs import XINE_PARAM_SPEED, XINE_PARAM_GAPLESS_SWITCH, xine_dispose, \
@@ -31,16 +33,21 @@ from .cdefs import XINE_PARAM_SPEED, XINE_PARAM_GAPLESS_SWITCH, xine_dispose, \
 class XineHandle(object):
     def __init__(self):
         _xine = xine_new()
-        xine_config_load(_xine, xine_get_homedir() + "/.xine/config")
+        xine_config_load(_xine, xine_get_homedir() + b"/.xine/config")
         xine_init(_xine)
         self._xine = _xine
 
     def list_input_plugins(self):
+        """
+        Returns:
+            List[text_type]
+        """
+
         plugins = []
         for plugin in xine_list_input_plugins(self._xine):
             if not plugin:
                 break
-            plugins.append(plugin)
+            plugins.append(decode(plugin))
         return plugins
 
     def exit(self):
@@ -66,16 +73,18 @@ class XinePlaylistPlayer(BasePlayer):
 
         super(XinePlaylistPlayer, self).__init__()
         self.name = "xine"
-        self.version_info = "xine-lib: " + xine_get_version_string()
+        self.version_info = "xine-lib: " + decode(xine_get_version_string())
         self._volume = 1.0
         self._handle = XineHandle()
         self._supports_gapless = xine_check_version(1, 1, 1) == 1
         self._event_queue = None
+
         self._new_stream(driver)
         self._librarian = librarian
         self._destroyed = False
 
     def _new_stream(self, driver):
+        assert driver is None or isinstance(driver, bytes)
         self._audio_port = self._handle.open_audio_driver(driver, None)
         if not self._audio_port:
             raise PlayerError(
@@ -275,7 +284,7 @@ class XinePlaylistPlayer(BasePlayer):
             self.volume = self.volume
             if gapless and self._supports_gapless:
                 xine_set_param(self._stream, XINE_PARAM_GAPLESS_SWITCH, 1)
-            xine_open(self._stream, self.song("~uri"))
+            xine_open(self._stream, self.song("~uri").encode("ascii"))
             if self._paused:
                 self._pause()
             else:
@@ -324,7 +333,7 @@ def init(librarian):
     """May raise PlayerError"""
 
     try:
-        driver = config.get("settings", "xine_driver")
+        driver = config.getbytes("settings", "xine_driver")
     except:
         driver = None
     return XinePlaylistPlayer(driver, librarian)

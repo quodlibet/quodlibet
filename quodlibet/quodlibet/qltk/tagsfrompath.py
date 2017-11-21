@@ -2,8 +2,9 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import re
 import os
@@ -31,6 +32,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.util.string.splitters import split_value
 from quodlibet.util import connect_obj, gdecode
+from quodlibet.compat import itervalues
 
 
 TBP = os.path.join(quodlibet.get_user_dir(), "lists", "tagpatterns")
@@ -69,7 +71,7 @@ class SplitTag(FilterCheckButton):
     _order = 1.2
 
     def filter(self, tag, value):
-        spls = config.get("editing", "split_on").decode('utf-8', 'replace')
+        spls = config.gettext("editing", "split_on")
         spls = spls.split()
         return "\n".join(split_value(value, spls))
 
@@ -149,7 +151,7 @@ class TagsFromPath(Gtk.VBox):
         self.pack_start(filter_box, False, True, 0)
 
         # Save button
-        self.save = qltk.Button(_("Save"), Icons.DOCUMENT_SAVE)
+        self.save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
@@ -280,7 +282,7 @@ class TagsFromPath(Gtk.VBox):
         was_changed = set()
 
         all_done = False
-        for entry in ((model and model.itervalues()) or []):
+        for entry in ((model and itervalues(model)) or []):
             song = entry.song
             changed = False
             if not song.valid():

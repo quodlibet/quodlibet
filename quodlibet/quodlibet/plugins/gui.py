@@ -3,13 +3,59 @@
 #                 2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-from quodlibet import config
+from quodlibet import config, print_d, app
+from quodlibet.plugins import PluginHandler
 from quodlibet.qltk import get_menu_item_top_parent
 from quodlibet.qltk import Icons
 from gi.repository import Gtk
+
+
+class UserInterfacePlugin(object):
+    """Plugins that provide a (Gtk+ Widget)
+    to display as a side bar (currently) in the main Quod Libet Window.
+
+    These can be combined well with an EventPlugin to listen for
+    current song or selection changes.
+
+    TODO: generalise this better. See #152, #2273, #1991.
+    """
+
+    PLUGIN_INSTANCE = True
+
+    def create_sidebar(self):
+        """If defined, returns a Gtk.Box to populate the sidebar"""
+        pass
+
+
+class UserInterfacePluginHandler(PluginHandler):
+    def __init__(self):
+
+        self.__plugins = {}
+        self.__sidebars = {}
+
+    def plugin_handle(self, plugin):
+        return issubclass(plugin.cls, UserInterfacePlugin)
+
+    def plugin_enable(self, plugin):
+        self.__plugins[plugin.cls] = pl_obj = plugin.get_instance()
+        sidebar = pl_obj.create_sidebar()
+        app.window.hide_side_book()
+        if sidebar:
+            print_d("Enabling sidebar for %s" % plugin.cls)
+            self.__sidebars[plugin] = app.window.add_sidebar(
+                sidebar, name=plugin.name)
+            sidebar.show_all()
+
+    def plugin_disable(self, plugin):
+        widget = self.__sidebars.get(plugin)
+        if widget:
+            print_d("Removing sidebar %s" % widget)
+            app.window.remove_sidebar(widget)
+        self.__plugins.pop(plugin.cls)
 
 
 class MenuItemPlugin(Gtk.ImageMenuItem):

@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 from tests import TestCase, mkstemp
 from .helper import temp_filename
 
 from quodlibet.util.config import Config, Error, ConfigProxy
+from quodlibet.compat import PY2
 
 
 class TConfig(TestCase):
@@ -48,7 +50,7 @@ class TConfig(TestCase):
 
     def test_read_garbage_file(self):
         conf = Config()
-        garbage = "\xf1=\xab\xac"
+        garbage = b"\xf1=\xab\xac"
 
         fd, filename = mkstemp()
         os.close(fd)
@@ -65,6 +67,16 @@ class TConfig(TestCase):
         self.failUnlessEqual(conf.get("foo", "bar"), "1")
         self.failUnlessEqual(conf.getint("foo", "bar"), 1)
 
+    def test_setbytes(self):
+        conf = Config()
+        conf.add_section("foo")
+        conf.setbytes("foo", "bar", b"\xff\xff")
+        assert conf.getbytes("foo", "bar") == b"\xff\xff"
+
+    def test_getbytes(self):
+        conf = Config()
+        assert conf.getbytes("foo", "bar", b"\xff") == b"\xff"
+
     def test_reset(self):
         conf = Config()
         conf.defaults.add_section("player")
@@ -72,7 +84,15 @@ class TConfig(TestCase):
         conf.set("player", "backend", "foo")
         self.assertEqual(conf.get("player", "backend"), "foo")
         conf.reset("player", "backend")
-        self.assertEqual(conf.get("player", "backend"), "blah")
+        conf.defaults.set("player", "backend", "blah_new")
+        self.assertEqual(conf.get("player", "backend"), "blah_new")
+
+    def test_reset_no_section(self):
+        conf = Config()
+        conf.defaults.add_section("player")
+        conf.defaults.set("player", "backend", "blah")
+        conf.reset("player", "backend")
+        assert conf.get("player", "backend") == "blah"
 
     def test_initial_after_set(self):
         conf = Config()
@@ -188,8 +208,9 @@ class TConfig(TestCase):
     def test_stringlist_invalid_encoding(self):
         conf = Config()
         conf.add_section("foo")
-        conf.set("foo", "bar", "\xff\xff\xff\xff\xff\xff")
-        self.assertRaises(Error, conf.getstringlist, "foo", "bar")
+        conf.setbytes("foo", "bar", b"\xff\xff\xff\xff\xff\xff")
+        if PY2:
+            self.assertRaises(Error, conf.getstringlist, "foo", "bar")
 
     def test_getlist(self):
         conf = Config()
@@ -295,6 +316,9 @@ class TConfigProxy(TestCase):
 
         self.proxy.set("foo", False)
         self.assertEqual(self.proxy.getboolean("foo"), False)
+
+        self.proxy.setbytes("foo", b"\xff")
+        assert self.proxy.getbytes("foo") == b"\xff"
 
     def test_default(self):
         self.assertEqual(self.proxy.get("foo", "quux"), "quux")

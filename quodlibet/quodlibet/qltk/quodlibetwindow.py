@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2012-2016 Nick Boultbee
+#           2012-2017 Nick Boultbee
+#           2017 Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GObject
-from senf import uri2fsn, fsnative
+from senf import uri2fsn, fsnative, path2fsn
 
 import quodlibet
 
@@ -22,12 +24,15 @@ from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
 from quodlibet import _
+from quodlibet.qltk.paned import ConfigRHPaned
+from quodlibet.compat import listfilter
 
 from quodlibet.qltk.appwindow import AppWindow
 from quodlibet.update import UpdateDialog
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.browser import LibraryBrowser, FilterMenu
-from quodlibet.qltk.chooser import FolderChooser, FileChooser
+from quodlibet.qltk.chooser import choose_folders, choose_files, \
+    create_chooser_filter
 from quodlibet.qltk.controls import PlayControls
 from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.getstring import GetStringDialog
@@ -46,15 +51,15 @@ from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action
-from quodlibet.qltk.x import ToggleAction, RadioAction
+from quodlibet.qltk.x import ToggleAction, RadioAction, HighlightToggleButton
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem, CellRendererPixbuf
 from quodlibet.qltk import Icons
 from quodlibet.qltk.about import AboutDialog
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
-from quodlibet.util.library import get_scan_dirs, set_scan_dirs
+from quodlibet.util.library import get_scan_dirs
 from quodlibet.util import connect_obj, print_d
-from quodlibet.util.path import glib2fsn, get_home_dir
 from quodlibet.util.library import background_filter, scan_library
+from quodlibet.util.path import uri_is_valid
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
 from quodlibet.qltk.songlistcolumns import SongListColumn
 
@@ -370,7 +375,7 @@ class TopBar(Gtk.Toolbar):
         self.image.refresh()
 
 
-class QueueButton(Gtk.ToggleButton):
+class QueueButton(HighlightToggleButton):
 
     def __init__(self):
         # XXX: view-list isn't part of the fdo spec, so fall back t justify..
@@ -669,14 +674,14 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def __init__(self, library, player, headless=False, restore_cb=None):
         super(QuodLibetWindow, self).__init__(dialog=False)
-        self.last_dir = get_home_dir()
 
         self.__destroyed = False
         self.__update_title(player)
-        self.set_default_size(550, 450)
+        self.set_default_size(600, 480)
 
         main_box = Gtk.VBox()
         self.add(main_box)
+        self.side_book = qltk.Notebook()
 
         self.__player = player
         # create main menubar, load/restore accelerator groups
@@ -744,7 +749,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.top_bar = top_bar
 
         self.__browserbox = Align(bottom=3)
-        main_box.pack_start(self.__browserbox, True, True, 0)
+        self.__paned = paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
+        paned.pack1(self.__browserbox, resize=True)
+        # We'll pack2 when necessary (when the first sidebar plugin is set up)
+
+        main_box.pack_start(paned, True, True, 0)
 
         play_order = PlayOrderWidget(self.songlist.model, player)
         statusbox = StatusBarBox(play_order, self.qexpander)
@@ -824,6 +833,36 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.connect("destroy", self.__destroy)
 
         self.enable_window_tracking("quodlibet")
+
+    def hide_side_book(self):
+        self.side_book.hide()
+
+    def add_sidebar(self, box, name):
+        vbox = Gtk.Box(margin=0)
+        vbox.pack_start(box, True, True, 0)
+        vbox.show()
+        if self.side_book_empty:
+            self.add_sidebar_to_layout(self.side_book)
+        self.side_book.append_page(vbox, label=name)
+        self.side_book.set_tab_detachable(vbox, False)
+        self.side_book.show_all()
+        return vbox
+
+    def remove_sidebar(self, widget):
+        self.side_book.remove_page(self.side_book.page_num(widget))
+        if self.side_book_empty:
+            print_d("Hiding sidebar")
+            self.__paned.remove(self.__paned.get_children()[1])
+
+    def add_sidebar_to_layout(self, widget):
+        print_d("Recreating sidebar")
+        align = Align(widget, top=6, bottom=3)
+        self.__paned.pack2(align, shrink=True)
+        align.show_all()
+
+    @property
+    def side_book_empty(self):
+        return not self.side_book.get_children()
 
     def set_seekbar_widget(self, widget):
         """Add an alternative seek bar widget.
@@ -1059,7 +1098,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         act = Action(name="Shortcuts", label=_("_Keyboard Shortcuts"))
         act.connect('activate', self.__keyboard_shortcuts)
-        ag.add_action_with_accel(act, "<Primary>F1")
+        ag.add_action_with_accel(act, "<Primary>question")
 
         act = Action(name="About", label=_("_About"),
                      icon_name=Icons.HELP_ABOUT)
@@ -1131,13 +1170,16 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         for Kind in browsers.browsers:
             action = "Browser" + Kind.__name__
             label = Kind.accelerated_name
+            name = browsers.name(Kind)
+            index = browsers.index(name)
             act = Action(name=action, label=label)
 
             def browser_activate(action, Kind):
                 LibraryBrowser.open(Kind, library, player)
 
             act.connect('activate', browser_activate, Kind)
-            ag.add_action_with_accel(act, None)
+            ag.add_action_with_accel(act,
+                                     "<Primary><alt>%d" % ((index + 1) % 10,))
 
         ui = Gtk.UIManager()
         ui.insert_action_group(ag, -1)
@@ -1258,7 +1300,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         song = player.info
         title = "Quod Libet"
         if song:
-            title = song.comma("~title~version~~people") + " - " + title
+            tag = config.gettext("settings", "window_title_pattern")
+            if tag:
+                title = song.comma(tag) + " - " + title
         self.set_title(title)
 
     def __song_started(self, player, song):
@@ -1278,10 +1322,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             self.__jump_to_current(False)
 
     def __play_pause(self, *args):
-        if app.player.song is None:
-            app.player.reset()
-        else:
-            app.player.paused ^= True
+        app.player.playpause()
 
     def __jump_to_current(self, explicit, force_scroll=False):
         """Select/scroll to the current playing song in the playlist.
@@ -1346,7 +1387,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             _("Enter the location of an audio file:"),
             button_label=_("_Add"), button_icon=Icons.LIST_ADD).run()
         if name:
-            if not util.uri_is_valid(name):
+            if not uri_is_valid(name):
                 ErrorMessage(
                     self, _("Unable to add location"),
                     _("%s is not a valid location.") % (
@@ -1361,57 +1402,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                     self.__library.add([RemoteFile(name)])
 
     def open_chooser(self, action):
-        last_dir = self.last_dir
-        if not os.path.exists(last_dir):
-            last_dir = get_home_dir()
-
-        class MusicFolderChooser(FolderChooser):
-            def __init__(self, parent, init_dir):
-                super(MusicFolderChooser, self).__init__(
-                    parent, _("Add Music"), init_dir)
-
-                cb = Gtk.CheckButton(_("Watch this folder for new songs"))
-                # enable if no folders are being watched
-                cb.set_active(not get_scan_dirs())
-                cb.show()
-                self.set_extra_widget(cb)
-
-            def run(self):
-                fns = super(MusicFolderChooser, self).run()
-                cb = self.get_extra_widget()
-                return fns, cb.get_active()
-
-        class MusicFileChooser(FileChooser):
-            def __init__(self, parent, init_dir):
-                super(MusicFileChooser, self).__init__(
-                    parent, _("Add Music"), formats.filter, init_dir)
-
         if action.get_name() == "AddFolders":
-            dialog = MusicFolderChooser(self, last_dir)
-            fns, do_watch = dialog.run()
-            dialog.destroy()
+            fns = choose_folders(self, _("Add Music"), _("_Add Folders"))
             if fns:
-                fns = map(glib2fsn, fns)
                 # scan them
-                self.last_dir = fns[0]
                 copool.add(self.__library.scan, fns, cofuncid="library",
                            funcid="library")
-
-                # add them as library scan directory
-                if do_watch:
-                    dirs = get_scan_dirs()
-                    for fn in fns:
-                        if fn not in dirs:
-                            dirs.append(fn)
-                    set_scan_dirs(dirs)
         else:
-            dialog = MusicFileChooser(self, last_dir)
-            fns = dialog.run()
-            dialog.destroy()
+            patterns = ["*" + path2fsn(k) for k in formats.loaders.keys()]
+            choose_filter = create_chooser_filter(_("Music Files"), patterns)
+            fns = choose_files(
+                self, _("Add Music"), _("_Add Files"), choose_filter)
             if fns:
-                fns = map(glib2fsn, fns)
-                self.last_dir = os.path.dirname(fns[0])
-                for filename in map(os.path.realpath, fns):
+                for filename in fns:
                     self.__library.add_filename(filename)
 
     def __songs_popup_menu(self, songlist):
@@ -1437,13 +1440,14 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             window.show()
 
     def __browser_activate(self, browser):
-        app.player.reset()
+        app.player.go_to(None)
+        app.player.play()
 
     def __browser_cb(self, browser, songs, sorted, library, player):
         if browser.background:
             bg = background_filter()
             if bg:
-                songs = filter(bg, songs)
+                songs = listfilter(bg, songs)
         self.songlist.set_songs(songs, sorted)
 
         # After the first time the browser activates, which should always

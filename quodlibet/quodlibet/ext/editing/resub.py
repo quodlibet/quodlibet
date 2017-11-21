@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import re
 
@@ -9,7 +10,7 @@ from gi.repository import Gtk, GObject
 
 from quodlibet import _
 from quodlibet.plugins.editing import RenameFilesPlugin, TagsFromPathPlugin
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, gdecode
 from quodlibet.qltk import Icons
 
 
@@ -39,8 +40,8 @@ class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
         connect_obj(self._to, 'changed', self.emit, 'changed')
 
     def filter(self, orig_or_tag, value):
-        fr = self._from.get_text().decode('utf-8')
-        to = self._to.get_text().decode('utf-8')
+        fr = gdecode(self._from.get_text())
+        to = gdecode(self._to.get_text())
         try:
             return re.sub(fr, to, value)
         except:

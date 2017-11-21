@@ -1,5 +1,5 @@
-Album Browser
-=============
+Album Browsers
+==============
 
 Identifying albums
 ------------------
@@ -20,8 +20,8 @@ Album List Browser
 ------------------
 
 .. image:: ../../images/album.png
-    :scale: 35%
-    :align: right
+    :scale: 45%
+    :align: left
 
 The *Album List* browser makes it easy to treat your music collection as a 
 set of albums, presented on the left, rather than as a set of songs, via 
@@ -32,6 +32,21 @@ faster identification of your albums (plus *it's just prettier*...).
 
 Extra features related to searching, sorting and presenting albums are 
 detailed below.
+
+
+Cover Grid Browser
+------------------
+
+.. image:: ../../images/covergrid-plus-waveform-2017-08.png
+    :scale: 30%
+    :align: right
+
+The cover grid is another album-like browser that places more emphasis on the
+album art.
+
+It has a search similar to album list (see the section below),
+and configuration of its own (including a flexible per-album display area).
+
 
 
 Searching

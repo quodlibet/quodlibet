@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010 Steven Robertson
+#           2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import shelve
-import urllib
-import urllib2
 import time
 from datetime import date
 from threading import Thread
@@ -21,6 +21,8 @@ from quodlibet import config, util, qltk
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.compat import urlencode
+from quodlibet.util.urllib import urlopen
 
 try:
     import json
@@ -43,10 +45,11 @@ def apicall(method, **kwargs):
             }
     real_args.update(kwargs)
     url = ''.join(["https://ws.audioscrobbler.com/2.0/?",
-                   urllib.urlencode(real_args)])
+                   urlencode(real_args)])
     log(url)
-    uobj = urllib2.urlopen(url)
-    resp = json.load(uobj)
+    uobj = urlopen(url)
+    json_text = uobj.read().decode("utf-8")
+    resp = json.loads(json_text)
     if 'error' in resp:
         errmsg = 'Last.fm API error: %s' % resp.get('message', '')
         log(errmsg)
@@ -60,9 +63,12 @@ def config_get(key, default=None):
 
 class LastFMSyncCache(object):
     """Stores the Last.fm charts for a particular user."""
+
+    registered = 0
+    lastupdated = None
+
     def __init__(self, username):
         self.username = username
-        self.lastupdated = None
         self.charts = {}
         self.songs = {}
 
@@ -83,6 +89,10 @@ class LastFMSyncCache(object):
         try:
             # Last.fm updates their charts weekly; we only poll for new
             # charts if it's been more than a day since the last poll
+            if not self.registered:
+                resp = apicall('user.getinfo', user=self.username)
+                self.registered = int(resp['user']['registered']['unixtime'])
+
             now = time.time()
             if not self.lastupdated or self.lastupdated + (24 * 60 * 60) < now:
                 prog(_("Updating chart list."), 0)
@@ -91,15 +101,24 @@ class LastFMSyncCache(object):
                 for chart in charts:
                     # Charts keys are 2-tuple (from_timestamp, to_timestamp);
                     # values are whether we still need to fetch the chart
-                    fro, to = map(lambda s: int(chart[s]), ('from', 'to'))
+                    fro, to = list(
+                        map(lambda s: int(chart[s]), ('from', 'to')))
+
+                    # If the chart is older than the register date of the
+                    # user, don't download it. (So the download doesn't start
+                    # with ~2005 every time.)
+                    if to < self.registered:
+                        continue
+
                     self.charts.setdefault((fro, to), True)
                 self.lastupdated = now
-            elif not filter(None, self.charts.values()):
+            elif not list(filter(None, self.charts.values())):
                 # No charts to fetch, no update scheduled.
                 prog(_("Already up-to-date."), 1.)
                 return False
 
-            new_charts = filter(lambda k: self.charts[k], self.charts.keys())
+            new_charts = list(
+                filter(lambda k: self.charts[k], self.charts.keys()))
 
             for idx, (fro, to) in enumerate(sorted(new_charts)):
                 chart_week = date.fromtimestamp(fro).isoformat()
@@ -108,7 +127,7 @@ class LastFMSyncCache(object):
                 args = {'user': self.username, 'from': fro, 'to': to}
                 try:
                     resp = apicall('user.getweeklytrackchart', **args)
-                except urllib2.HTTPError as err:
+                except EnvironmentError as err:
                     msg = "HTTP error %d, retrying in %d seconds."
                     log(msg % (err.code, 15))
                     for i in range(15, 0, -1):
@@ -148,7 +167,7 @@ class LastFMSyncCache(object):
             if artist:
                 keys.append((artist.lower(), track['name'].lower()))
 
-        stats = filter(None, map(self.songs.get, keys))
+        stats = list(filter(None, map(self.songs.get, keys)))
         if stats:
             # Not sure if last.fm ever changes their tag values, but this
             # should map all changed values to the same object correctly
@@ -179,7 +198,7 @@ class LastFMSyncCache(object):
                             song.get('title', '').lower()))
             keys.append((song.get('artist', '').lower(),
                          song.get('title', '').lower()))
-            stats = filter(None, map(self.songs.get, keys))
+            stats = list(filter(None, map(self.songs.get, keys)))
             if not stats:
                 continue
             stats = stats[0]
@@ -251,7 +270,12 @@ class LastFMSync(SongsMenuPlugin):
             return False
 
     def plugin_songs(self, songs):
-        self.cache_shelf = shelve.open(self.CACHE_PATH)
+        try:
+            self.cache_shelf = shelve.open(self.CACHE_PATH)
+        except:
+            # some Python 2 DB types can't be opened in Python 3
+            self.cache_shelf = shelve.open(self.CACHE_PATH, "n")
+
         user = config_get('username', '')
         try:
             cache = self.cache_shelf.setdefault(user, LastFMSyncCache(user))

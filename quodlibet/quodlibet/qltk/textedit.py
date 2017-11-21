@@ -2,8 +2,9 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, GLib, Pango
 
@@ -18,6 +19,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.pattern import XMLFromPattern, XMLFromMarkupPattern, \
     error as PatternError
 from quodlibet.util import connect_obj, gdecode
+from quodlibet.compat import text_type
 
 try:
     import gi
@@ -91,7 +93,7 @@ def validate_markup_pattern(text, alternative_markup=True, links=False):
         ValueError: In case the pattern isn't valid
     """
 
-    assert isinstance(text, unicode)
+    assert isinstance(text, text_type)
 
     f = AudioFile({"~filename": fsnative(u"dummy")})
 

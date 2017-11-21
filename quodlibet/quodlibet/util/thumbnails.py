@@ -2,15 +2,15 @@
 # Copyright 2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
-import tempfile
 import hashlib
 
 from gi.repository import GdkPixbuf, GLib
-from senf import fsn2uri, fsnative
+from senf import fsn2uri, fsnative, gettempdir
 
 import quodlibet
 from quodlibet.util.path import mtime, mkdir, xdg_get_cache_home
@@ -64,7 +64,7 @@ def get_cache_info(path, boundary):
     cache_dir = os.path.join(thumb_folder, size_name)
 
     uri = fsn2uri(path)
-    thumb_name = hashlib.md5(uri).hexdigest() + ".png"
+    thumb_name = hashlib.md5(uri.encode("ascii")).hexdigest() + ".png"
     thumb_path = os.path.join(cache_dir, thumb_name)
 
     return (thumb_path, thumb_size)
@@ -123,7 +123,7 @@ def get_thumbnail(path, boundary):
 
     # embedded thumbnails come from /tmp/
     # FIXME: move this to another layer
-    if path.startswith(tempfile.gettempdir()):
+    if path.startswith(gettempdir()):
         return new_from_file_at_size(path, width, height)
 
     thumb_path, thumb_size = get_cache_info(path, boundary)
@@ -169,7 +169,8 @@ def get_thumbnail(path, boundary):
         "tEXt::Software": "QuodLibet"
     }
 
-    thumb_pb.savev(thumb_path, "png", options.keys(), options.values())
+    thumb_pb.savev(
+        thumb_path, "png", list(options.keys()), list(options.values()))
     try:
         os.chmod(thumb_path, 0o600)
     except OSError:

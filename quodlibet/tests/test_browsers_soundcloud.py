@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from unittest import TestCase
 
 import time
 
-from quodlibet.browsers.soundcloud import query
+from quodlibet import config
+from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
 from quodlibet.browsers.soundcloud.query import SoundcloudQuery, convert_time
 
 from quodlibet import const
+from quodlibet.query import QueryType
 from quodlibet.util.dprint import print_d
 
 NONE = set([])
@@ -27,15 +30,11 @@ class TestExtract(TestCase):
         const.DEBUG = False
 
     def test_extract_single_tag(self):
-        self.verify("artist=jay-z", {"jay-z"})
+        self.verify("artist=jay z", {"jay z"})
 
     def test_extract_unsupported(self):
-        try:
-            self.verify("musicbrainz_discid=12345", NONE)
-        except query.error:
-            pass
-        else:
-            self.fail("Should have thrown")
+        self.failUnlessEqual(SoundcloudQuery("musicbrainz_discid=12345").type,
+                             QueryType.INVALID)
 
     def test_extract_composite_text(self):
         self.verify("&(foo, bar)", {"foo", "bar"})
@@ -72,3 +71,15 @@ class TestExtract(TestCase):
         self.failUnlessEqual(terms[term], expected,
                              msg="terms[%s] wasn't %r. Full terms: %r"
                                  % (term, expected, terms))
+
+
+class TestHttpsDefault(TestCase):
+    def setUp(self):
+        config.init()
+
+    def tearDown(self):
+        config.quit()
+
+    def test_setup_default(self):
+        self.failUnless(SoundcloudApiClient().root.startswith('https://'),
+                        msg="API client should use HTTPS")

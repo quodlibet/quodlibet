@@ -1,10 +1,11 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Copyright 2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """
 ./svg2icns.py source.svg target.icns
@@ -13,6 +14,8 @@
 import sys
 import struct
 
+import gi
+gi.require_version('GdkPixbuf', '2.0')
 from gi.repository import GdkPixbuf
 
 
@@ -33,9 +36,9 @@ def get_icon(svg_path, size):
     # https://en.wikipedia.org/wiki/PackBits
     # no real compression going on here..
     new_data = bytearray()
-    for c in xrange(3):
+    for c in range(3):
         x = 0
-        for i in xrange(0, len(data), 4):
+        for i in range(0, len(data), 4):
             if x == 0 or x % 128 == 0:
                 new_data.append(127)
             new_data.append(data[i+c])
@@ -53,7 +56,7 @@ def get_mask(svg_path, size):
     assert channels == 4
 
     new_data = bytearray()
-    for i in xrange(0, len(data), 4):
+    for i in range(0, len(data), 4):
         new_data.append(data[i+3])
 
     return new_data
@@ -116,6 +119,7 @@ def get_icns(svg_path):
 
 
 def main(argv):
+    assert sys.version_info[0] == 3
     svg = argv[1]
     dest = argv[2]
 

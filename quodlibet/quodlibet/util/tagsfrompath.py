@@ -2,8 +2,9 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import re
@@ -33,7 +34,7 @@ class TagsFromPattern(object):
                     piece = "<QUOD_LIBET_DUMMY_%d>" % dummies_found
                 pieces[i] = '(?P%s%s)' % (piece, override.get(piece, '.+?'))
                 if "QUOD_LIBET" not in piece:
-                    self.headers.append(piece[1:-1].encode("ascii", "replace"))
+                    self.headers.append(piece[1:-1])
             else:
                 pieces[i] = re_escape(piece)
 

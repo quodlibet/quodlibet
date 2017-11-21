@@ -2,8 +2,9 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 from senf import fsn2text, path2fsn
@@ -76,6 +77,24 @@ class WarningMessage(Message):
     def __init__(self, *args, **kwargs):
         super(WarningMessage, self).__init__(
             Gtk.MessageType.WARNING, *args, **kwargs)
+
+
+class ConfirmationPrompt(WarningMessage):
+    """Dialog to confirm actions, given a parent, title, description, and
+       OK-button text"""
+
+    RESPONSE_INVOKE = 1
+
+    def __init__(self, parent, title, description, ok_button_text):
+        super(ConfirmationPrompt, self).__init__(
+            get_top_parent(parent),
+            title, description,
+            buttons=Gtk.ButtonsType.NONE)
+
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(ok_button_text, Icons.SYSTEM_RUN,
+                             self.RESPONSE_INVOKE)
+        self.set_default_response(Gtk.ResponseType.CANCEL)
 
 
 class ConfirmFileReplace(WarningMessage):

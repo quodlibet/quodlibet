@@ -2,10 +2,13 @@
 # Copyright 2011, 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
+
+from . import add_css
 
 
 class MenuButton(Gtk.MenuButton):
@@ -33,3 +36,16 @@ class MenuButton(Gtk.MenuButton):
 
     def set_menu(self, menu):
         self.set_popup(menu)
+
+
+class SmallMenuButton(MenuButton):
+
+    def __init__(self, *args, **kwargs):
+        super(SmallMenuButton, self).__init__(*args, **kwargs)
+
+        self.set_size_request(26, 26)
+        add_css(self, """
+            * {
+                padding: 0px 4px;
+            }
+        """)

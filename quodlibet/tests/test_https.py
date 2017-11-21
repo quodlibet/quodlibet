@@ -2,15 +2,16 @@
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import pytest
 from gi.repository import Gio, Soup, GLib
 
 from tests import TestCase, skipIf
 
-from quodlibet.util import is_linux, is_osx, get_ca_file
+from quodlibet.util import is_linux, get_ca_file
 from quodlibet.compat import urlopen, build_opener
 
 
@@ -50,31 +51,25 @@ class Thttps(TestCase):
                 build_opener().open(url).close()
 
     def test_gio(self):
-        if is_osx():
-            return
-
         for url in self.GOOD:
-            client = Gio.SocketClient.new()
+            client = Gio.SocketClient()
             client.set_tls(True)
             client.connect_to_uri(url, 443, None).close()
 
         for url in self.BAD:
             with self.assertRaises(GLib.GError):
-                client = Gio.SocketClient.new()
+                client = Gio.SocketClient()
                 client.set_tls(True)
                 client.connect_to_uri(url, 443, None).close()
 
     def test_soup(self):
-        if is_osx():
-            return
-
         for url in self.GOOD:
-            session = Soup.Session.new()
+            session = Soup.Session()
             request = session.request_http("get", url)
             request.send(None).close()
 
         for url in self.BAD:
             with self.assertRaises(GLib.GError):
-                session = Soup.Session.new()
+                session = Soup.Session()
                 request = session.request_http("get", url)
                 request.send(None).close()

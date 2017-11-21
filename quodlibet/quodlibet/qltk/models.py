@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013, 2014 Christoph Reiter
-#                 2015 Nick Boultbee
+#           2015, 2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, GObject
 
-from quodlibet.compat import integer_types, string_types
+from quodlibet.compat import integer_types, string_types, cmp
 
 
 _auto_types = [float, bool, GObject.Object]
@@ -67,6 +68,10 @@ class _ModelMixin(object):
         while iter_:
             yield getv(iter_)
             iter_ = inext(iter_)
+
+    def values(self):
+        """Largely for PY2 -> PY3 compatibility"""
+        return list(self.itervalues())
 
     def iterrows(self, iter_=None):
         """Yields (iter, value) tuples"""

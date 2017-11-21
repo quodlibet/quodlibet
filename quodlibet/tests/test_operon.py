@@ -2,13 +2,14 @@
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
 
-from senf import fsnative
+from senf import fsnative, path2fsn
 
 from tests import TestCase, get_data_path, mkstemp
 from .helper import capture_output, get_temp_copy
@@ -17,12 +18,14 @@ from quodlibet import config
 from quodlibet import util
 from quodlibet.formats import MusicFile
 from quodlibet.operon.main import main as operon_main
+from quodlibet.compat import listkeys
 
 
-def call(args=None):
+def call(args):
+    args = [path2fsn(a) for a in args]
     with capture_output() as (out, err):
         try:
-            return_code = operon_main(["operon.py"] + args)
+            return_code = operon_main([path2fsn("operon.py")] + args)
         except SystemExit as e:
             return_code = e.code
 
@@ -39,7 +42,7 @@ class TOperonBase(TestCase):
         self.s2 = MusicFile(self.f2)
 
         fd, self.f3 = mkstemp(".mp3")
-        os.write(fd, "garbage")
+        os.write(fd, b"garbage")
         os.close(fd)
 
     def tearDown(self):
@@ -100,7 +103,7 @@ class TOperonAdd(TOperonBase):
         self.check_true(["add", "tag", "value", self.f, self.f], False, False)
 
     def test_add_check(self):
-        keys = self.s.keys()
+        keys = listkeys(self.s)
         self.check_true(["add", "foo", "bar", self.f], False, False)
         self.s.reload()
         self.failUnlessEqual(self.s["foo"], "bar")
@@ -465,6 +468,17 @@ class TOperonTags(TOperonBase):
         self.check_true(["tags", "-t", "-cdesc,tag"], True, False)
         self.check_true(["tags", "-t", "-ctag, desc"], True, False)
         self.check_false(["tags", "-t", "-cfoo"], False, True)
+
+    def test_output(self):
+        o, e = self.check_true(["tags"], True, False)
+        assert not e
+        assert "tracknumber" in o
+        assert "replaygain_album_gain" not in o
+
+        o, e = self.check_true(["tags", "-a"], True, False)
+        assert not e
+        assert "tracknumber" in o
+        assert "replaygain_album_gain" in o
 
 
 class TOperonImageExtract(TOperonBase):

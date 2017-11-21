@@ -4,10 +4,10 @@
 #                  2012,2014,2016  Nick Boultbee
 #                            2013  Christoph Reiter
 #
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of version 2 of the GNU General Public License as
-#    published by the Free Software Foundation.
-#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 from gi.repository import GObject
@@ -26,6 +26,7 @@ from quodlibet.qltk import Icons, Dialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
 from quodlibet.util import cached_property, print_w, print_e, format_int_locale
+from quodlibet.compat import xrange
 
 __all__ = ['ReplayGain']
 
@@ -243,7 +244,7 @@ class ReplayGainPipeline(GObject.Object):
                 i, f = x
                 i = {"mad": -1, "mpg123audiodec": -2}.get(f.get_name(), i)
                 return (i, f)
-            return zip(*sorted(map(set_prio, enumerate(factories))))[1]
+            return list(zip(*sorted(map(set_prio, enumerate(factories)))))[1]
 
         self.decode.connect("autoplug-sort", sort_decoders)
 
@@ -550,8 +551,9 @@ class RGDialog(Dialog):
 
     def __done(self, pipeline, album):
         self._done.append(album)
-        if self._todo:
-            pipeline.start(self._todo.pop(0))
+        next_album = self.get_next_album()
+        if next_album:
+            pipeline.start(next_album)
         self.__update_view_for(album)
 
     def __update_view_for(self, album):

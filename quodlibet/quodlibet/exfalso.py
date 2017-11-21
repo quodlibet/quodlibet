@@ -3,17 +3,19 @@
 #           2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
+
+from senf import fsnative, argv as sys_argv
 
 from quodlibet import _
 from quodlibet import app
 from quodlibet import util
 from quodlibet import const
 from quodlibet import config
-from quodlibet.senf import fsnative, argv as sys_argv
 
 
 def main(argv=None):
@@ -21,7 +23,9 @@ def main(argv=None):
         argv = sys_argv
 
     import quodlibet
-    quodlibet.init()
+
+    config_file = os.path.join(quodlibet.get_user_dir(), "config")
+    quodlibet.init(config_file=config_file)
 
     from quodlibet.qltk import add_signal_watch, Icons
     add_signal_watch(app.quit)
@@ -33,8 +37,6 @@ def main(argv=None):
     argv.append(os.path.abspath(fsnative(u".")))
     opts, args = opts.parse(argv[1:])
     args[0] = os.path.realpath(args[0])
-
-    config.init(os.path.join(quodlibet.get_user_dir(), "config"))
 
     app.name = "Ex Falso"
     app.id = "exfalso"

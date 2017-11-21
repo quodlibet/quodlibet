@@ -2,8 +2,9 @@
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
@@ -78,7 +79,7 @@ def get_importables(folder, include_compiled=False):
             continue
         if not first and any((is_init(n) for n in names)):
             yield (basename(root), root,
-                   filter(is_ok, [join(root, name) for name in names]))
+                   list(filter(is_ok, [join(root, name) for name in names])))
         else:
             for name in filter(is_ok, names):
                 yield (splitext(name)[0], join(root, name), [join(root, name)])

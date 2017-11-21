@@ -6,8 +6,9 @@
 #                 (C) 2004 Gustavo J. A. M. Carneiro
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, Gdk
 
@@ -136,7 +137,7 @@ class AnimOsdPrefs(Gtk.VBox):
             monitor_cnt = Gdk.Screen.get_default().get_n_monitors()
             if monitor_cnt > 1:
                 adj = Gtk.Adjustment(value=self.Conf.monitor, lower=0,
-                                     upper=monitor_cnt - 1, step_incr=1)
+                                     upper=monitor_cnt - 1, step_increment=1)
                 monitor = Gtk.SpinButton(adjustment=adj)
                 monitor.set_numeric(True)
                 monitor.connect('value-changed', change_monitor)

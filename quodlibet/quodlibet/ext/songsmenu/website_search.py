@@ -2,8 +2,9 @@
 # Copyright 2011-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import quodlibet
 from quodlibet import _
@@ -18,7 +19,7 @@ from quodlibet.util import website
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
 from quodlibet.util import connect_obj, print_w, print_d
 from quodlibet.util.path import uri_is_valid
-from quodlibet.compat import quote_plus
+from quodlibet.compat import quote_plus, text_type
 
 from gi.repository import Gtk
 import os
@@ -36,7 +37,7 @@ class WebsiteSearch(SongsMenuPlugin):
     PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
                     "Supports patterns e.g. %(pattern-example)s.") % {
                         "pattern-example":
-                            "https://google.com?q=<~artist~title>"}
+                            "https://google.com?q=&lt;~artist~title&gt;"}
 
     # Here are some starters...
     DEFAULT_URL_PATS = [
@@ -52,6 +53,7 @@ class WebsiteSearch(SongsMenuPlugin):
             "<albumartist|<albumartist>|<artist>>&title=<album>"),
         ("Youtube video search",
          "https://www.youtube.com/results?search_query=<artist~title>"),
+        ("Go to ~website", "<website>"),
     ]
     PATTERNS_FILE = os.path.join(
         quodlibet.get_user_dir(), 'lists', 'searchsites')
@@ -132,7 +134,9 @@ class WebsiteSearch(SongsMenuPlugin):
                     vals = song.comma(k)
                     if vals:
                         try:
-                            subs[k] = quote_plus(unicode(vals).encode('utf-8'))
+                            encoded = text_type(vals).encode('utf-8')
+                            subs[k] = (encoded if k == 'website'
+                                       else quote_plus(encoded))
                         # Dodgy unicode problems
                         except KeyError:
                             print_d("Problem with %s tag values: %r"

@@ -2,14 +2,13 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-import os
+from senf import fsnative, path2fsn
 
-from senf import fsnative
-
-from quodlibet.compat import text_type
+from quodlibet.compat import text_type, PY3
 
 from ._audio import AudioFile
 
@@ -24,6 +23,8 @@ class RemoteFile(AudioFile):
     format = "Remote File"
 
     def __init__(self, uri):
+        if PY3:
+            assert not isinstance(uri, bytes)
         self["~uri"] = text_type(uri)
         self.sanitize(fsnative(self["~uri"]))
 
@@ -32,10 +33,7 @@ class RemoteFile(AudioFile):
         value = super(RemoteFile, self).__getitem__(key)
         if key in ("~filename", "~mountpoint") and \
                 not isinstance(value, fsnative):
-            if os.name == "nt":
-                value = unicode(value)
-            else:
-                value = value.encode("utf-8")
+            value = path2fsn(value)
 
         return value
 

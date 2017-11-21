@@ -6,24 +6,25 @@
 #                Jeremy Cantrell <jmcantrell@gmail.com>
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
-#           2011-2016 Nick Boultbee
+#           2011-2017 Nick Boultbee
+#                2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+import json
 import os
+import re
 import time
 import threading
 import gzip
 
-import urllib
-import urllib2
-from cStringIO import StringIO
 from xml.dom import minidom
 
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern
+from quodlibet.pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.util import format_size, print_exc
@@ -39,13 +40,19 @@ from quodlibet.qltk.image import scale, add_border_widget, \
     get_surface_for_pixbuf
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
-
+from quodlibet.util.urllib import urlopen, Request
+from quodlibet.compat import urlencode, cBytesIO
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
     "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
 
 PLUGIN_CONFIG_SECTION = 'cover'
 CONFIG_ENG_PREFIX = 'engine_'
+
+SEARCH_PATTERN = Pattern(
+    '<albumartist|<albumartist>|<artist>> - <album|<album>|<title>>')
+
+REQUEST_LIMIT_MAX = 15
 
 
 def get_encoding_from_socket(socket):
@@ -55,40 +62,43 @@ def get_encoding_from_socket(socket):
     return (enc and enc[0]) or "utf-8"
 
 
-def get_url(url, post={}, get={}):
-    post_params = urllib.urlencode(post)
-    get_params = urllib.urlencode(get)
+def get_url(url, post=None, get=None):
+    post_params = urlencode(post or {})
+    get_params = urlencode(get or {})
     if get:
         get_params = '?' + get_params
 
     # add post, get data and headers
     url = '%s%s' % (url, get_params)
     if post_params:
-        request = urllib2.Request(url, post_params)
+        request = Request(url, post_params)
     else:
-        request = urllib2.Request(url)
+        request = Request(url)
 
     # for discogs
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
 
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     enc = get_encoding_from_socket(url_sock)
 
     # unzip the response if needed
     data = url_sock.read()
     if url_sock.headers.get("content-encoding", "") == "gzip":
-        data = gzip.GzipFile(fileobj=StringIO(data)).read()
+        data = gzip.GzipFile(fileobj=cBytesIO(data)).read()
     url_sock.close()
-
-    return data, enc
+    content_type = url_sock.headers.get('Content-Type', '').split(';', 1)[0]
+    domain = re.compile('\w+://([^/]+)/').search(url).groups(0)[0]
+    print_d("Got %s data from %s" % (content_type, domain))
+    return (data if content_type.startswith('image')
+            else data.decode(enc))
 
 
 def get_encoding(url):
-    request = urllib2.Request(url)
+    request = Request(url)
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     return get_encoding_from_socket(url_sock)
 
 
@@ -96,7 +106,7 @@ class AmazonParser(object):
     """A class for searching covers from Amazon"""
 
     def __init__(self):
-        self.page_count = 0
+        self.page_count = 1
         self.covers = []
         self.limit = 0
 
@@ -118,10 +128,10 @@ class AmazonParser(object):
             'ItemPage': page,
             # This specifies where the money goes and needed since 1.11.2011
             # (What a good reason to break API..)
-            # ...so use the gnome.org one
-            'AssociateTag': 'gnomestore-20',
+            # ...so use the eff.org one: https://www.eff.org/helpout
+            'AssociateTag': 'electronicfro-20',
         }
-        data, enc = get_url(url, get=parameters)
+        data = get_url(url, get=parameters)
         dom = minidom.parseString(data)
 
         pages = dom.getElementsByTagName('TotalPages')
@@ -129,7 +139,7 @@ class AmazonParser(object):
             self.page_count = int(pages[0].firstChild.data)
 
         items = dom.getElementsByTagName('Item')
-
+        print_d("Amazon: got %d search result(s)" % len(items))
         for item in items:
             self.__parse_item(item)
             if len(self.covers) >= self.limit:
@@ -185,19 +195,111 @@ class AmazonParser(object):
 
             self.covers.append(cover)
 
-    def start(self, query, limit=10):
+    def start(self, query, limit=5):
         """Start the search and returns the covers"""
 
         self.page_count = 0
         self.covers = []
         self.limit = limit
-        self.__parse_page(1, query)
+        page = 1
 
-        if len(self.covers) < limit:
-            for page in xrange(2, self.page_count + 1):
-                self.__parse_page(page, query)
-                if len(self.covers) >= limit:
-                    break
+        while len(self.covers) < limit:
+            self.__parse_page(page, query)
+            if page >= self.page_count:
+                break
+            page += 1
+
+        return self.covers
+
+
+class DiscogsParser(object):
+    """A class for searching covers from Amazon"""
+
+    def __init__(self):
+        self.page_count = 0
+        self.covers = []
+        self.limit = 0
+        self.creds = {'key': 'aWfZGjHQvkMcreUECGAp',
+                      'secret': 'VlORkklpdvAwJMwxUjNNSgqicjuizJAl'}
+
+    def __parse_page(self, page, query):
+        """Gets all item tags and calls the item parsing function for each"""
+
+        url = 'https://api.discogs.com/database/search'
+
+        parameters = {
+            'type': 'release',
+            'q': query,
+            'page': page,
+            # Assume that not all results are useful
+            'per_page': self.limit * 2,
+        }
+
+        parameters.update(self.creds)
+        data = get_url(url, get=parameters)
+        json_dict = json.loads(data)
+
+        # TODO: rate limiting
+
+        pages = json_dict.get('pagination', {}).get('pages', 0)
+        if not pages:
+            return
+        self.page_count = int(pages)
+
+        items = json_dict.get('results', {})
+        print_d("Discogs: got %d search result(s)" % len(items))
+        for item in items:
+            self.__parse_item(item)
+            if len(self.covers) >= self.limit:
+                break
+
+    def __parse_item(self, item):
+        """Extract all information and add the covers to the list."""
+
+        thumbnail = item.get('thumb', '')
+        if thumbnail is None:
+            print_d("Release doesn't have a cover")
+            return
+
+        res_url = item.get('resource_url', '')
+        data = get_url(res_url, get=self.creds)
+        json_dict = json.loads(data)
+
+        images = json_dict.get('images', [])
+
+        for i, image in enumerate(images):
+
+            type = image.get('type', '')
+            if type != 'primary':
+                continue
+
+            uri = image.get('uri', '')
+            cover = {'source': 'https://www.discogs.com',
+                     'name': item.get('title', ''),
+                     'thumbnail': image.get('uri150', thumbnail),
+                     'cover': uri,
+                     'size': get_size_of_url(uri)}
+
+            width = image.get('width', 0)
+            height = image.get('height', 0)
+            cover['resolution'] = '%s x %s px' % (width, height)
+
+            self.covers.append(cover)
+            if len(self.covers) >= self.limit:
+                break
+
+    def start(self, query, limit=3):
+        """Start the search and returns the covers"""
+
+        self.page_count = 0
+        self.covers = []
+        self.limit = limit
+        page = 1
+        while len(self.covers) < limit:
+            self.__parse_page(page, query)
+            if page >= self.page_count:
+                break
+            page += 1
 
         return self.covers
 
@@ -231,6 +333,9 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.window_fit.connect('toggled', self.__scale_pixbuf)
 
         self.name_combo = Gtk.ComboBoxText()
+        self.name_combo.set_tooltip_text(
+             _("See '[plugins] cover_filenames' config entry " +
+               "for image filename strings"))
 
         self.cmd = qltk.entry.ValidatingEntry(iscommand)
 
@@ -249,30 +354,33 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         self.cmd.set_text(self.config_get('edit_cmd', 'gimp'))
 
-        # Create the filename combo box
-        fn_list = ['cover.jpg', 'folder.jpg', '.folder.jpg']
-
+        # populate the filename combo box
+        fn_list = self.config_get_stringlist('filenames',
+                      ["cover.jpg", "folder.jpg", ".folder.jpg"])
         # Issue 374 - add dynamic file names
+        fn_dynlist = []
         artist = song("artist")
         alartist = song("albumartist")
         album = song("album")
         labelid = song("labelid")
         if album:
-            fn_list.append("<album>.jpg")
+            fn_dynlist.append("<album>.jpg")
             if alartist:
-                fn_list.append("<albumartist> - <album>.jpg")
+                fn_dynlist.append("<albumartist> - <album>.jpg")
             else:
-                fn_list.append("<artist> - <album>.jpg")
+                fn_dynlist.append("<artist> - <album>.jpg")
         else:
             print_w(u"No album for \"%s\". Could be difficult "
                     u"finding art…" % song("~filename"))
             title = song("title")
             if title and artist:
-                fn_list.append("<artist> - <title>.jpg")
+                fn_dynlist.append("<artist> - <title>.jpg")
         if labelid:
-            fn_list.append("<labelid>.jpg")
+            fn_dynlist.append("<labelid>.jpg")
+        # merge unique
+        fn_list.extend(s for s in fn_dynlist if s not in fn_list)
 
-        set_fn = self.config_get('fn', fn_list[0])
+        set_fn = self.config_get('filename', fn_list[0])
 
         for i, fn in enumerate(fn_list):
                 self.name_combo.append_text(fn)
@@ -281,6 +389,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         if self.name_combo.get_active() < 0:
             self.name_combo.set_active(0)
+        self.config_set('filename', self.name_combo.get_active_text())
 
         table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
         table.props.expand = False
@@ -339,8 +448,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         save_format = self.name_combo.get_active_text()
         # Allow use of patterns in creating cover filenames
-        pattern = ArbitraryExtensionFileFromPattern(
-            save_format.decode("utf-8"))
+        pattern = ArbitraryExtensionFileFromPattern(save_format)
         filename = pattern.format(self.song)
         print_d("Using '%s' as filename based on %s" % (filename, save_format))
         file_path = os.path.join(self.dirname, filename)
@@ -370,7 +478,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
     def __save_config(self, widget):
         self.config_set('edit_cmd', self.cmd.get_text())
-        self.config_set('fn', self.name_combo.get_active_text())
+        self.config_set('filename', self.name_combo.get_active_text())
 
     def __update(self, loader, *data):
         """Update the picture while it's loading"""
@@ -447,13 +555,13 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         if not raw_data:
             pbloader.connect('area-updated', self.__update)
 
-            data_store = StringIO()
+            data_store = cBytesIO()
 
             try:
-                request = urllib2.Request(url)
+                request = Request(url)
                 request.add_header('User-Agent', USER_AGENT)
-                url_sock = urllib2.urlopen(request)
-            except urllib2.HTTPError:
+                url_sock = urlopen(request)
+            except EnvironmentError:
                 print_w(_("[albumart] HTTP Error: %s") % url)
             else:
                 while not self.stop_loading:
@@ -587,21 +695,74 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         sw_list.set_shadow_type(Gtk.ShadowType.IN)
         sw_list.add(treeview)
 
-        self.search_field = Gtk.Entry()
+        search_labelraw = Gtk.Label('raw')
+        search_labelraw.set_alignment(xalign=1.0, yalign=0.5)
+        self.search_fieldraw = Gtk.Entry()
+        self.search_fieldraw.connect('activate', self.start_search)
+        self.search_fieldraw.connect('changed', self.__searchfieldchanged)
+        search_labelclean = Gtk.Label('clean')
+        search_labelclean.set_alignment(xalign=1.0, yalign=0.5)
+        self.search_fieldclean = Gtk.Label()
+        self.search_fieldclean.set_can_focus(False)
+        self.search_fieldclean.set_alignment(xalign=0.0, yalign=0.5)
+
+        self.search_radioraw = Gtk.RadioButton(group=None, label=None)
+        self.search_radioraw.connect("toggled", self.__searchtypetoggled,
+                                     "raw")
+        self.search_radioclean = Gtk.RadioButton(group=self.search_radioraw,
+                                                 label=None)
+        self.search_radioclean.connect("toggled", self.__searchtypetoggled,
+                                       "clean")
+        #note: set_active(False) appears to have no effect
+        #self.search_radioraw.set_active(
+        #    self.config_get_bool('searchraw', False))
+        if self.config_get_bool('searchraw', False):
+            self.search_radioraw.set_active(True)
+        else:
+            self.search_radioclean.set_active(True)
+
+        search_labelresultsmax = Gtk.Label('limit')
+        search_labelresultsmax.set_alignment(xalign=1.0, yalign=0.5)
+        search_labelresultsmax.set_tooltip_text(
+             _("Per engine 'at best' results limit"))
+        search_adjresultsmax = Gtk.Adjustment(
+            value=int(self.config_get("resultsmax", 3)), lower=1,
+            upper=REQUEST_LIMIT_MAX, step_incr=1,
+            page_incr=0, page_size=0)
+        self.search_spinresultsmax = Gtk.SpinButton(
+            adjustment=search_adjresultsmax, climb_rate=0.2, digits=0)
+        self.search_spinresultsmax.set_alignment(xalign=0.5)
+        self.search_spinresultsmax.set_can_focus(False)
+
         self.search_button = Button(_("_Search"), Icons.EDIT_FIND)
         self.search_button.connect('clicked', self.start_search)
-        self.search_field.connect('activate', self.start_search)
+        search_button_box = Gtk.Alignment()
+        search_button_box.set(1, 0, 0, 0)
+        search_button_box.add(self.search_button)
+
+        search_table = Gtk.Table(rows=3, columns=4, homogeneous=False)
+        search_table.attach(search_labelraw, 0, 1, 0, 1,
+                            xoptions=Gtk.AttachOptions.FILL, xpadding=6)
+        search_table.attach(self.search_radioraw, 1, 2, 0, 1,
+                            xoptions=0, xpadding=0)
+        search_table.attach(self.search_fieldraw, 2, 4, 0, 1)
+        search_table.attach(search_labelclean, 0, 1, 1, 2,
+                            xoptions=Gtk.AttachOptions.FILL, xpadding=6)
+        search_table.attach(self.search_radioclean, 1, 2, 1, 2,
+                            xoptions=0, xpadding=0)
+        search_table.attach(self.search_fieldclean, 2, 4, 1, 2, xpadding=4)
+        search_table.attach(search_labelresultsmax, 0, 2, 2, 3,
+                            xoptions=Gtk.AttachOptions.FILL, xpadding=6)
+        search_table.attach(self.search_spinresultsmax, 2, 3, 2, 3,
+                            xoptions=Gtk.AttachOptions.FILL, xpadding=0)
+        search_table.attach(search_button_box, 3, 4, 2, 3)
 
         widget_space = 5
-
-        search_hbox = Gtk.HBox(spacing=widget_space)
-        search_hbox.pack_start(self.search_field, True, True, 0)
-        search_hbox.pack_start(self.search_button, False, True, 0)
 
         self.progress = Gtk.ProgressBar()
 
         left_vbox = Gtk.VBox(spacing=widget_space)
-        left_vbox.pack_start(search_hbox, False, True, 0)
+        left_vbox.pack_start(search_table, False, True, 0)
         left_vbox.pack_start(sw_list, True, True, 0)
 
         hpaned = Paned()
@@ -616,15 +777,17 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         left_vbox.pack_start(self.progress, False, True, 0)
 
-        if songs[0]('albumartist'):
-            text = songs[0]('albumartist')
-        else:
-            text = songs[0]('artist')
+        self.connect('destroy', self.__save_config)
 
-        text += ' - ' + songs[0]('album')
-
+        song = songs[0]
+        text = SEARCH_PATTERN.format(song)
         self.set_text(text)
         self.start_search()
+
+    def __save_config(self, widget):
+        self.config_set('searchraw', self.search_radioraw.get_active())
+        self.config_set('resultsmax',
+                        self.search_spinresultsmax.get_value_as_int())
 
     def __drag_data_get(self, view, ctx, sel, tid, etime, treeselection):
         model, iter = treeselection.get_selected()
@@ -633,10 +796,19 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         cover = model.get_value(iter, 1)
         sel.set_uris([cover['cover']])
 
+    def __searchfieldchanged(self, *data):
+        search = data[0].get_text()
+        clean = cleanup_query(search, ' ')
+        self.search_fieldclean.set_text('<b>' + clean + '</b>')
+        self.search_fieldclean.set_use_markup(True)
+
+    def __searchtypetoggled(self, *data):
+        self.config_set('searchraw', self.search_radioraw.get_active())
+
     def start_search(self, *data):
         """Start the search using the text from the text entry"""
 
-        text = self.search_field.get_text()
+        text = self.search_fieldraw.get_text()
         if not text or self.search_lock:
             return
 
@@ -651,11 +823,14 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
 
         self.search = search = CoverSearch(self.__search_callback)
 
-        for eng in engines:
-            if self.config_get(CONFIG_ENG_PREFIX + eng['config_id'], True):
+        for eng in ENGINES:
+            if self.config_get_bool(
+                    CONFIG_ENG_PREFIX + eng['config_id'], True):
                 search.add_engine(eng['class'], eng['replace'])
 
-        search.start(text)
+        raw = self.search_radioraw.get_active()
+        limit = self.search_spinresultsmax.get_value_as_int()
+        search.start(text, raw, limit)
 
         # Focus the list
         self.treeview.grab_focus()
@@ -668,8 +843,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
     def set_text(self, text):
         """set the text and move the cursor to the end"""
 
-        self.search_field.set_text(text)
-        self.search_field.emit('move-cursor', Gtk.MovementStep.BUFFER_ENDS,
+        self.search_fieldraw.set_text(text)
+        self.search_fieldraw.emit('move-cursor', Gtk.MovementStep.BUFFER_ENDS,
             0, False)
 
     def __select_callback(self, selection, image):
@@ -682,7 +857,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
     def __add_cover_to_list(self, cover):
         try:
             pbloader = GdkPixbuf.PixbufLoader()
-            pbloader.write(get_url(cover['thumbnail'])[0])
+            pbloader.write(get_url(cover['thumbnail']))
             pbloader.close()
 
             scale_factor = self.get_scale_factor()
@@ -725,7 +900,6 @@ class CoverSearch(object):
 
         self.callback = wrap
         self.finished = 0
-        self.overall_limit = 7
 
     def add_engine(self, engine, query_replace):
         """Adds a new search engine, query_replace is the string with which
@@ -738,13 +912,13 @@ class CoverSearch(object):
 
         self._stop = True
 
-    def start(self, query):
+    def start(self, query, raw, limit):
         """Start search. The callback function will be called after each of
         the search engines has finished."""
 
         for engine, replace in self.engine_list:
             thr = threading.Thread(target=self.__search_thread,
-                                   args=(engine, query, replace))
+                                   args=(engine, query, replace, raw, limit))
             thr.setDaemon(True)
             thr.start()
 
@@ -752,14 +926,17 @@ class CoverSearch(object):
         if not len(self.engine_list):
             GLib.idle_add(self.callback, [], 1)
 
-    def __search_thread(self, engine, query, replace):
+    def __search_thread(self, engine, query, replace, raw, limit):
         """Creates searching threads which call the callback function after
         they are finished"""
 
-        clean_query = self.__cleanup_query(query, replace)
+        search = query if raw else cleanup_query(query, replace)
+
+        print_d("[AlbumArt] running search %r on engine %s" %
+                (search, engine.__name__))
         result = []
         try:
-            result = engine().start(clean_query, self.overall_limit)
+            result = engine().start(search, limit)
         except Exception:
             print_w("[AlbumArt] %s: %r" % (engine.__name__, query))
             print_exc()
@@ -769,51 +946,57 @@ class CoverSearch(object):
         progress = float(self.finished) / len(self.engine_list)
         GLib.idle_add(self.callback, result, progress)
 
-    def __cleanup_query(self, query, replace):
-        """split up at '-', remove some chars, only keep the longest words..
-        more false positives but much better results"""
 
-        query = query.lower()
-        if query.startswith("the "):
-            query = query[4:]
+def cleanup_query(query, replace):
+    """split up at '-', remove some chars, only keep the longest words..
+    more false positives but much better results"""
 
-        split = query.split('-')
-        replace_str = ('+', '&', ',', '.', '!', '´',
-                       '\'', ':', ' and ', '(', ')')
-        new_query = ''
-        for part in split:
-            for stri in replace_str:
-                part = part.replace(stri, replace)
+    query = query.lower()
+    if query.startswith("the "):
+        query = query[4:]
 
-            p_split = part.split()
-            p_split.sort(lambda x, y: len(y) - len(x))
-            p_split = p_split[:max(len(p_split) / 4, max(4 - len(p_split), 2))]
+    split = query.split('-')
+    replace_str = ('+', '&', ',', '.', '!', '´',
+                   '\'', ':', ' and ', '(', ')')
+    new_query = ''
+    for part in split:
+        for stri in replace_str:
+            part = part.replace(stri, replace)
 
-            new_query += ' '.join(p_split) + ' '
+        p_split = part.split()
+        p_split.sort(key=len, reverse=True)
+        end = max(int(len(p_split) / 4), max(4 - len(p_split), 2))
+        p_split = p_split[:end]
 
-        return new_query.rstrip()
+        new_query += ' '.join(p_split) + ' '
+
+    return new_query.rstrip()
 
 
-#------------------------------------------------------------------------------
 def get_size_of_url(url):
-    request = urllib2.Request(url)
+    request = Request(url)
     request.add_header('Accept-Encoding', 'gzip')
     request.add_header('User-Agent', USER_AGENT)
-    url_sock = urllib2.urlopen(request)
+    url_sock = urlopen(request)
     size = url_sock.headers.get('content-length')
     url_sock.close()
     return format_size(int(size)) if size else ''
 
-#------------------------------------------------------------------------------
-engines = [
+
+ENGINES = [
     {
         'class': AmazonParser,
         'url': 'https://www.amazon.com/',
         'replace': ' ',
         'config_id': 'amazon',
     },
+    {
+        'class': DiscogsParser,
+        'url': 'https://www.discogs.com/',
+        'replace': ' ',
+        'config_id': 'discogs',
+    },
 ]
-#------------------------------------------------------------------------------
 
 
 class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
@@ -830,13 +1013,13 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def PluginPreferences(cls, window):
-        table = Gtk.Table(n_rows=len(engines), n_columns=2)
+        table = Gtk.Table(n_rows=len(ENGINES), n_columns=2)
         table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         frame = qltk.Frame(_("Sources"), child=table)
 
-        for i, eng in enumerate(sorted(engines, key=lambda x: x["url"])):
+        for i, eng in enumerate(sorted(ENGINES, key=lambda x: x["url"])):
             check = cls.ConfigCheckButton(
                 eng['config_id'].title(),
                 CONFIG_ENG_PREFIX + eng['config_id'],

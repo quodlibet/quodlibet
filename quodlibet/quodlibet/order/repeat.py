@@ -2,8 +2,9 @@
 # Copyright 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet import _
 from quodlibet import print_d
@@ -40,8 +41,8 @@ class RepeatSongForever(Repeat):
     which is probably what the user wanted"""
 
     name = "repeat_song"
-    display_name = _("Repeat track")
-    accelerated_name = _("Repeat track")
+    display_name = _("Repeat this track")
+    accelerated_name = _("Repeat this track")
 
     def next(self, playlist, iter):
         return iter
@@ -64,3 +65,16 @@ class RepeatListForever(Repeat):
         self.wrapped.reset(playlist)
         print_d("Restarting songlist")
         return playlist.get_iter_first()
+
+
+class OneSong(Repeat):
+    """Stops after the current song"""
+
+    name = "one_song"
+    display_name = _("One Song")
+    accelerated_name = _("One Song")
+    priority = 400
+
+    def next(self, playlist, iter):
+        print_d("Ending songlist.")
+        return None

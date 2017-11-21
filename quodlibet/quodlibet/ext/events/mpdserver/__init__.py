@@ -2,8 +2,9 @@
 # Copyright 2014 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
@@ -93,7 +94,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
             try:
                 port_num = int(entry.get_text())
             except ValueError as e:
-                print_w(str(e))
+                print_w(e)
             else:
                 if get_port_num() != port_num:
                     set_port_num(port_num)
@@ -152,6 +153,8 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         clients.set_markup(u"""\
 \u2022 <a href="https://play.google.com/store/apps/details?id=com.\
 namelessdev.mpdroid">MPDroid</a> (Android)
+\u2022 <a href="https://play.google.com/store/apps/details?id=org.\
+gateshipone.malp">M.A.L.P.</a> (Android)
 """)
         clients.set_alignment(0, 0)
 
@@ -175,7 +178,7 @@ namelessdev.mpdroid">MPDroid</a> (Android)
         try:
             self._server.start()
         except ServerError as e:
-            print_w(str(e))
+            print_w(e)
 
     def _disable_server(self):
         print_d("Stopping MPD server")
@@ -189,7 +192,7 @@ namelessdev.mpdroid">MPDroid</a> (Android)
         try:
             self._avahi.register(app.name, port_num, "_mpd._tcp")
         except AvahiError as e:
-            print_w(str(e))
+            print_w(e)
 
     def enabled(self):
         self._enable_server()

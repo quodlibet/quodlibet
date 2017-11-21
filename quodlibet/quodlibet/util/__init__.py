@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2016 Nick Boultbee
+#           2011-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-import locale
 import os
 import random
 import re
@@ -15,8 +15,6 @@ import ctypes.util
 import sys
 import unicodedata
 import threading
-import subprocess
-import webbrowser
 
 # Windows doesn't have fcntl, just don't lock for now
 try:
@@ -25,28 +23,26 @@ try:
 except ImportError:
     fcntl = None
 
-from senf import fsnative
+from senf import fsnative, environ, argv
 
 from quodlibet.compat import reraise as py_reraise, PY2, text_type, \
-    iteritems, reduce
-from quodlibet.util.path import iscommand
+    iteritems, reduce, number_types, long
 from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
-from .misc import environ, argv, cached_func, get_locale_encoding
+from .misc import cached_func, get_module_dir, get_ca_file, \
+    get_locale_encoding, NamedTemporaryFile
 from .environment import is_plasma, is_unity, is_enlightenment, \
-    is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console, \
-    is_py2exe_window
+    is_linux, is_windows, is_wine, is_osx
 from .enum import enum
-from .i18n import _, C_
+from .i18n import _, C_, locale_format
 
 
 # pyflakes
-environ, argv, cached_func, get_locale_encoding, enum,
-print_w, print_exc, is_plasma, is_unity, is_enlightenment,
-is_linux, is_windows, is_wine, is_osx, is_py2exe, is_py2exe_console,
-is_py2exe_window
+cached_func, enum, print_w, print_exc, is_plasma, is_unity, is_enlightenment,
+is_linux, is_windows, is_wine, is_osx, get_module_dir, get_ca_file,
+get_locale_encoding, NamedTemporaryFile
 
 
 if PY2:
@@ -114,10 +110,10 @@ class OptionParser(object):
 
     def __longs(self):
         longs = []
-        for long, arg in self.__args.items():
-            longs.append(long + (arg and "=" or ""))
-        for long, canon in self.__translate_long.items():
-            longs.append(long + (self.__args[canon] and "=" or ""))
+        for long_, arg in self.__args.items():
+            longs.append(long_ + (arg and "=" or ""))
+        for long_, canon in self.__translate_long.items():
+            longs.append(long_ + (self.__args[canon] and "=" or ""))
         return longs
 
     def __format_help(self, opt, space):
@@ -135,7 +131,7 @@ class OptionParser(object):
             l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
         s = _("Usage: %(program)s %(usage)s") % {
-            "program": sys.argv[0],
+            "program": argv[0],
             "usage": self.__usage if self.__usage else _("[options]"),
         }
         s += "\n"
@@ -172,7 +168,7 @@ class OptionParser(object):
 
     def parse(self, args=None):
         if args is None:
-            args = sys.argv[1:]
+            args = argv[1:]
         from getopt import getopt, GetoptError
         try:
             opts, args = getopt(args, self.__shorts(), self.__longs())
@@ -189,7 +185,7 @@ class OptionParser(object):
                 text.append(
                     _("%r is not a unique prefix.") % s.split()[1])
             if "help" in self.__args:
-                text.append(_("Try %s --help.") % sys.argv[0])
+                text.append(_("Try %s --help.") % argv[0])
 
             print_e("\n".join(text))
             raise SystemExit(True)
@@ -329,19 +325,24 @@ def parse_date(datestr):
     except IndexError:
         raise ValueError
 
-    return time.mktime(time.strptime(datestr, frmt))
+    try:
+        return time.mktime(time.strptime(datestr, frmt))
+    except OverflowError as e:
+        raise ValueError(e)
 
 
 def format_int_locale(value):
     """Turn an integer into a grouped, locale-dependent string
-    e.g. 12345 -> "12,345" or "12.345" etc"""
-    return locale.format("%d", value, grouping=True)
+    e.g. 12345 -> "12,345" or "12.345" etc
+    """
+    return locale_format("%d", value, grouping=True)
 
 
-def format_float_locale(value, format=".2f"):
+def format_float_locale(value, format="%.2f"):
     """Turn a float into a grouped, locale-dependent string
-    e.g. 12345.67 -> "12,345.67" or "12.345,67" etc"""
-    return locale.format(format, value, grouping=True)
+    e.g. 12345.67 -> "12,345.67" or "12.345,67" etc
+    """
+    return locale_format(format, value, grouping=True)
 
 
 def format_rating(value, blank=True):
@@ -362,22 +363,28 @@ def format_bitrate(value):
 
 
 def format_size(size):
-    """Turn an integer size value into something human-readable."""
+    """Turn an integer size value into something human-readable.
+
+    Args:
+        size (int): size in bytes
+    Returns:
+        text_type
+    """
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)
     if size >= 1024 ** 3:
-        return "%.1f GB" % (float(size) / (1024 ** 3))
+        return u"%.1f GB" % (float(size) / (1024 ** 3))
     elif size >= 1024 ** 2 * 100:
-        return "%.0f MB" % (float(size) / (1024 ** 2))
+        return u"%.0f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 ** 2 * 10:
-        return "%.1f MB" % (float(size) / (1024 ** 2))
+        return u"%.1f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 ** 2:
-        return "%.2f MB" % (float(size) / (1024 ** 2))
+        return u"%.2f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 * 10:
-        return "%d KB" % int(size / 1024)
+        return u"%d KB" % int(size / 1024)
     elif size >= 1024:
-        return "%.2f KB" % (float(size) / 1024)
+        return u"%.2f KB" % (float(size) / 1024)
     else:
-        return "%d B" % size
+        return u"%d B" % size
 
 
 def format_time(time):
@@ -406,7 +413,7 @@ def format_time_display(time):
 def format_time_seconds(time):
     from quodlibet import ngettext
 
-    time_str = locale.format("%d", time, grouping=True)
+    time_str = format_int_locale(time)
     return ngettext("%s second", "%s seconds", time) % time_str
 
 
@@ -497,44 +504,12 @@ def human_sort_key(s, normalize=unicodedata.normalize):
 def website(site):
     """Open the given URL in the user's default browser"""
 
-    if os.name == "nt" or sys.platform == "darwin":
-        return webbrowser.open(site)
+    from gi.repository import Gtk, Gdk, GLib
 
-    # all commands here return immediately
-    for prog in ["xdg-open", "gnome-open"]:
-        if not iscommand(prog):
-            continue
-
-        status = subprocess.check_call([prog, site])
-        if status == 0:
-            return True
-
-    # sensible-browser is a debian thing
-    blocking_progs = ["sensible-browser"]
-    blocking_progs.extend(environ.get("BROWSER", "").split(":"))
-
-    for prog in blocking_progs:
-        if not iscommand(prog):
-            continue
-
-        # replace %s with the url
-        args = prog.split()
-        for i, arg in enumerate(args):
-            if arg == "%s":
-                args[i] = site
-                break
-        else:
-            args.append(site)
-
-        # calling e.g. firefox blocks, so call async and hope for the best
-        try:
-            spawn(args)
-        except RuntimeError:
-            continue
-        else:
-            return True
-
-    return False
+    try:
+        Gtk.show_uri(None, site, Gdk.CURRENT_TIME)
+    except GLib.Error:
+        print_exc()
 
 
 def tag(name, cap=True):
@@ -550,7 +525,7 @@ def tag(name, cap=True):
             # Translators: If tag names, when capitalized, should not
             # be title-cased ("Looks Like This"), but rather only have
             # the first letter capitalized, translate this string as
-            # something other than "titlecase?".
+            # something non-empty other than "titlecase?".
             if C_("check", "titlecase?") == "titlecase?":
                 parts = map(title, parts)
             else:
@@ -626,10 +601,7 @@ def spawn(argv, stdout=False):
 
     from gi.repository import GLib
 
-    types = map(type, argv)
-    if not (min(types) == max(types) == str):
-        raise TypeError("executables and arguments must be str objects")
-    print_d("Running %r" % " ".join(argv))
+    print_d("Running %r" % argv)
     args = GLib.spawn_async(argv=argv, flags=GLib.SpawnFlags.SEARCH_PATH,
                             standard_output=stdout)
 
@@ -824,7 +796,7 @@ def sanitize_tags(tags, stream=False):
         key = key.lower()
         key = {"location": "website"}.get(key, key)
 
-        if isinstance(value, unicode):
+        if isinstance(value, text_type):
             lower = value.lower().strip()
 
             if key == "channel-mode":
@@ -878,7 +850,7 @@ def sanitize_tags(tags, stream=False):
         if not stream and key in ("title", "album", "artist", "date"):
             continue
 
-        if isinstance(value, (int, long, float)):
+        if isinstance(value, number_types):
             if not key.startswith("~#"):
                 key = "~#" + key
             san[key] = value
@@ -886,7 +858,7 @@ def sanitize_tags(tags, stream=False):
             if key.startswith("~#"):
                 key = key[2:]
 
-            if not isinstance(value, unicode):
+            if not isinstance(value, text_type):
                 continue
 
             value = value.strip()
@@ -935,15 +907,10 @@ def limit_songs(songs, max, weight_by_ratings=False):
         return songs
     else:
         if weight_by_ratings:
-            def choose(r1, r2):
-                if r1 or r2:
-                    return cmp(random.random(), r1 / (r1 + r2))
-                else:
-                    return random.randint(-1, 1)
-
-            def rating(song):
-                return song("~#rating")
-            songs.sort(cmp=choose, key=rating)
+            def rating_weighted_random(song):
+                # Apply even (random : higher rating) weighting
+                return (1 - song("~#rating")) * (1 + random.random())
+            songs.sort(key=rating_weighted_random)
         else:
             random.shuffle(songs)
         return songs[:max]
@@ -994,13 +961,12 @@ def load_library(names, shared=True):
         # make sure it's either empty or contains /usr/lib.
         # (jhbuild sets it for example). Otherwise ctypes can't
         # find libc (bug?)
-        if "DYLD_FALLBACK_LIBRARY_PATH" in os.environ:
-            paths = os.environ["DYLD_FALLBACK_LIBRARY_PATH"]
+        if "DYLD_FALLBACK_LIBRARY_PATH" in environ:
+            paths = environ["DYLD_FALLBACK_LIBRARY_PATH"]
             paths = paths.split(os.pathsep)
             if "/usr/lib" not in paths:
                 paths.append("/usr/lib")
-                os.environ["DYLD_FALLBACK_LIBRARY_PATH"] = \
-                    os.pathsep.join(paths)
+                environ["DYLD_FALLBACK_LIBRARY_PATH"] = os.pathsep.join(paths)
 
     errors = []
     for name in names:
@@ -1192,59 +1158,3 @@ def reraise(tp, value, tb=None):
     if tb is None:
         tb = sys.exc_info()[2]
     py_reraise(tp, value, tb)
-
-
-def get_module_dir(module=None):
-    """Returns the absolute path of a module. If no module is given
-    the one this is called from is used.
-    """
-
-    if module is None:
-        file_path = sys._getframe(1).f_globals["__file__"]
-    else:
-        file_path = getattr(module, "__file__")
-    if is_windows():
-        file_path = file_path.decode(sys.getfilesystemencoding())
-    return os.path.dirname(os.path.realpath(file_path))
-
-
-def get_ca_file():
-    """A path to a CA file or None.
-
-    Depends whether we use certifi or the system trust store
-    on the current platform.
-    """
-
-    if is_linux():
-        return None
-
-    import certifi
-
-    return os.path.join(get_module_dir(certifi), "cacert.pem")
-
-
-def install_urllib2_ca_file():
-    """Makes urllib2.urlopen and urllib2.build_opener use the ca file
-    returned by get_ca_file()
-    """
-
-    try:
-        import ssl
-    except ImportError:
-        return
-
-    import urllib2
-
-    base = urllib2.HTTPSHandler
-
-    class MyHandler(base):
-
-        def __init__(self, debuglevel=0, context=None):
-            ca_file = get_ca_file()
-            if context is None and ca_file is not None:
-                context = ssl.create_default_context(
-                    purpose=ssl.Purpose.SERVER_AUTH,
-                    cafile=ca_file)
-            base.__init__(self, debuglevel, context)
-
-    urllib2.HTTPSHandler = MyHandler

@@ -2,13 +2,13 @@
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import stat
 import shlex
-import string
 
 from quodlibet import _
 from quodlibet.util.tags import MACHINE_TAGS, sortkey
@@ -72,7 +72,7 @@ def print_table(rows, headers, nicks, order):
 
     header = []
     for i, h in enumerate(rows.pop(0)):
-        header.append(string.ljust(h, widths[i], " "))
+        header.append(h.ljust(widths[i], " "))
     line_width = len("   ".join(header)) + 2
     header = [Colorise.bold(h) for h in header]
     header_line = " " + (" %s " % Colorise.gray("|")).join(header)

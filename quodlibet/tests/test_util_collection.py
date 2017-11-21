@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import shutil
 import os
@@ -18,6 +19,7 @@ from quodlibet.util.collection import Album, Playlist, avg, bayesian_average, \
     FileBackedPlaylist
 from quodlibet.library.libraries import FileLibrary
 from quodlibet.util import format_rating
+from quodlibet.compat import long
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 
@@ -73,7 +75,7 @@ class TAlbum(TestCase):
         album = Album(songs[0])
         album.songs = set(songs)
 
-        s.failUnlessEqual(album.comma("~artist~dummy"), "a - e, d")
+        s.failUnlessEqual(album.comma("~artist~dummy"), "a - d, e")
 
     def test_tied_num_tags(s):
         songs = [
@@ -86,9 +88,9 @@ class TAlbum(TestCase):
         album.songs = set(songs)
 
         s.failUnlessEqual(album.comma("~foo~~s~~~"), "")
-        s.failUnlessEqual(album.comma("~#length~dummy"), "12 - e, d")
-        s.failUnlessEqual(album.comma("~#rating~dummy"), "0.50 - e, d")
-        s.failUnlessEqual(album.comma("~#length:sum~dummy"), "12 - e, d")
+        s.failUnlessEqual(album.comma("~#length~dummy"), "12 - d, e")
+        s.failUnlessEqual(album.comma("~#rating~dummy"), "0.50 - d, e")
+        s.failUnlessEqual(album.comma("~#length:sum~dummy"), "12 - d, e")
         s.failUnlessEqual(album.comma("~#dummy2"), 5)
         s.failUnlessEqual(album.comma("~#dummy3"), "")
 
@@ -451,8 +453,9 @@ class TPlaylist(TestCase):
 
     def test_rename_working(self):
         with self.wrap("Foobar") as pl:
+            assert pl.name == "Foobar"
             pl.rename("Foo Quuxly")
-            self.failUnlessEqual(pl.name, "Foo Quuxly")
+            assert pl.name == "Foo Quuxly"
             # Rename should not fire signals
             self.failIf(self.FAKE_LIB.changed)
 

@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
-#           2016 Nick Boultbee
+#          2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
-import sys
 import signal
 
 import gi
@@ -16,9 +16,79 @@ gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk
 from gi.repository import Gdk
-from gi.repository import GLib
+from gi.repository import GLib, GObject
+from senf import fsn2bytes, bytes2fsn
 
 from quodlibet.util import gdecode, print_d, print_w
+from quodlibet.compat import urlparse
+
+
+def show_uri(label, uri):
+    """Shows a uri. The uri can be anything handled by GIO or a quodlibet
+    specific one.
+
+    Currently handled quodlibet uris:
+        - quodlibet:///prefs/plugins/<plugin id>
+
+    Args:
+        label (str)
+        uri (str) the uri to show
+    Returns:
+        True on success, False on error
+    """
+
+    parsed = urlparse(uri)
+    if parsed.scheme == "quodlibet":
+        if parsed.netloc != "":
+            print_w("Unknown QuodLibet URL format (%s)" % uri)
+            return False
+        else:
+            return __show_quodlibet_uri(parsed)
+    else:
+        # Gtk.show_uri_on_window exists since 3.22
+        if hasattr(Gtk, "show_uri_on_window"):
+            from quodlibet.qltk import get_top_parent
+            return Gtk.show_uri_on_window(get_top_parent(label), uri, 0)
+        else:
+            return Gtk.show_uri(None, uri, 0)
+
+
+def __show_quodlibet_uri(uri):
+    if uri.path.startswith("/prefs/plugins/"):
+        from .pluginwin import PluginWindow
+        print_d("Showing plugin prefs resulting from URI (%s)" % (uri, ))
+        return PluginWindow().move_to(uri.path[len("/prefs/plugins/"):])
+    else:
+        return False
+
+
+def get_fg_highlight_color(widget):
+    """Returns a color useable for highlighting things on top of the standard
+    background color.
+
+    Args:
+        widget (Gtk.Widget)
+    Returns:
+        Gdk.RGBA
+    """
+
+    context = widget.get_style_context()
+    if hasattr(Gtk.StateFlags, "LINK"):
+        # gtk+ >=3.12
+        context.save()
+        context.set_state(Gtk.StateFlags.LINK)
+        color = context.get_color(context.get_state())
+        context.restore()
+    else:
+        value = GObject.Value()
+        value.init(Gdk.Color)
+        value.set_boxed(None)
+        context.get_style_property("link-color", value)
+        color = Gdk.RGBA()
+        old_color = value.get_boxed()
+        if old_color is not None:
+            color.parse(old_color.to_string())
+    return color
 
 
 def get_primary_accel_mod():
@@ -49,13 +119,9 @@ def selection_set_songs(selection_data, songs):
 
     filenames = []
     for filename in (song["~filename"] for song in songs):
-        if isinstance(filename, unicode):
-            # win32
-            filename = filename.encode("utf-8")
-        filenames.append(filename)
-
+        filenames.append(fsn2bytes(filename, "utf-8"))
     type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
-    selection_data.set(type_, 8, "\x00".join(filenames))
+    selection_data.set(type_, 8, b"\x00".join(filenames))
 
 
 def selection_get_filenames(selection_data):
@@ -66,11 +132,8 @@ def selection_get_filenames(selection_data):
     data_type = selection_data.get_data_type()
     assert data_type.name() == "text/x-quodlibet-songs"
 
-    items = selection_data.get_data().split("\x00")
-    if sys.platform == "win32":
-        return [item.decode("utf-8") for item in items]
-    else:
-        return items
+    items = selection_data.get_data().split(b"\x00")
+    return [bytes2fsn(i, "utf-8") for i in items]
 
 
 def get_top_parent(widget):
@@ -98,20 +161,24 @@ def get_menu_item_top_parent(widget):
     return get_top_parent(widget)
 
 
-def find_widgets(container, type_):
-    """Given a container, find all children that are a subclass of type_
+def find_widgets(widget, type_):
+    """Given a widget, find all children that are a subclass of type_
     (including itself)
-    """
 
-    assert isinstance(container, Gtk.Container)
+    Args:
+        widget (Gtk.Widget)
+        type_ (type)
+    Returns:
+        List[Gtk.Widget]
+    """
 
     found = []
 
-    if isinstance(container, type_):
-        found.append(container)
+    if isinstance(widget, type_):
+        found.append(widget)
 
-    for child in container.get_children():
-        if isinstance(child, Gtk.Container):
+    if isinstance(widget, Gtk.Container):
+        for child in widget.get_children():
             found.extend(find_widgets(child, type_))
 
     return found
@@ -223,6 +290,13 @@ def is_accel(event, *accels):
     any of accelerator strings.
 
     example: is_accel(event, "<shift><ctrl>z")
+
+    Args:
+        *accels: one ore more `str`
+    Returns:
+        bool
+    Raises:
+        ValueError: in case any of the accels could not be parsed
     """
 
     assert accels
@@ -237,9 +311,12 @@ def is_accel(event, *accels):
         keyval = ord(chr(keyval).lower())
 
     default_mod = Gtk.accelerator_get_default_mod_mask()
+    keymap = Gdk.Keymap.get_default()
 
     for accel in accels:
         accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
+        if accel_keyval == 0 and accel_mod == 0:
+            raise ValueError("Invalid accel: %s" % accel)
 
         # If the accel contains non default modifiers matching will
         # never work and since no one should use them, complain
@@ -247,6 +324,11 @@ def is_accel(event, *accels):
         if non_default:
             print_w("Accelerator '%s' contains a non default modifier '%s'." %
                 (accel, Gtk.accelerator_name(0, non_default) or ""))
+
+        # event.state contains the real mod mask + the virtual one, while
+        # we usually pass only virtual one as text. This adds the real one
+        # so they match in the end.
+        accel_mod = keymap.map_virtual_modifiers(accel_mod)[1]
 
         # Remove everything except default modifiers and compare
         if (accel_keyval, accel_mod) == (keyval, event.state & default_mod):
@@ -300,14 +382,7 @@ def get_backend_name():
 gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(),
                Gtk.get_micro_version())
 
-try:
-    pygobject_version = gi.version_info
-except AttributeError:
-    # older gi versions
-    try:
-        pygobject_version = gi._gobject.pygobject_version
-    except AttributeError:
-        pygobject_version = (-1,)
+pygobject_version = gi.version_info
 
 
 def io_add_watch(fd, prio, condition, func, *args, **kwargs):
@@ -417,7 +492,7 @@ class ThemeOverrider(object):
         self._active_providers = []
         settings = Gtk.Settings.get_default()
         settings.connect("notify::gtk-theme-name", self._on_theme_name_notify)
-        settings.notify("gtk-theme-name")
+        self._update_providers()
 
     def register_provider(self, theme_name, provider):
         """
@@ -428,12 +503,12 @@ class ThemeOverrider(object):
         """
 
         self._providers.setdefault(theme_name, []).append(provider)
+        self._update_providers()
+
+    def _update_providers(self):
         settings = Gtk.Settings.get_default()
-        settings.notify("gtk-theme-name")
 
-    def _on_theme_name_notify(self, settings, gparam):
-
-        theme_name = settings.get_property(gparam.name)
+        theme_name = settings.get_property("gtk-theme-name")
         wanted_providers = \
             self._providers.get(theme_name, []) + self._providers.get("", [])
 
@@ -451,6 +526,9 @@ class ThemeOverrider(object):
                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
                 )
                 self._active_providers.append(provider)
+
+    def _on_theme_name_notify(self, settings, gparam):
+        self._update_providers()
 
 
 from .msg import Message, ErrorMessage, WarningMessage

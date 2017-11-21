@@ -2,11 +2,12 @@
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """
-Error handling: every function which has wintypes.HRESULT as restype
+Error handling: every function which has ctypes.HRESULT as restype
 will automatically raise WindowsError if a bad result is returned.
 For all other functions check the return status and raise ctypes.WinError()
 """
@@ -17,6 +18,8 @@ if os.name != "nt":
 
 import ctypes
 from ctypes import wintypes, cdll, windll, oledll
+
+from quodlibet.compat import long, add_metaclass
 
 from .enum import enum
 
@@ -60,6 +63,7 @@ ULONG_PTR = wintypes.WPARAM
 LONG_PTR = wintypes.LPARAM
 LRESULT = LONG_PTR
 HHOOK = wintypes.HANDLE
+HRESULT = ctypes.HRESULT
 
 HC_ACTION = 0
 HC_NOREMOVE = 3
@@ -115,15 +119,15 @@ LPWIN32_FIND_DATAW = ctypes.POINTER(wintypes.WIN32_FIND_DATAW)
 
 IIDFromString = windll.ole32.IIDFromString
 IIDFromString.argtypes = [wintypes.LPCOLESTR, LPIID]
-IIDFromString.restype = wintypes.HRESULT
+IIDFromString.restype = HRESULT
 
 StringFromIID = windll.ole32.StringFromIID
 StringFromIID.argtypes = [REFIID, ctypes.POINTER(wintypes.LPOLESTR)]
-StringFromIID.restype = wintypes.HRESULT
+StringFromIID.restype = HRESULT
 
 CoInitialize = windll.ole32.CoInitialize
 CoInitialize.argtypes = [wintypes.LPVOID]
-CoInitialize.restype = wintypes.HRESULT
+CoInitialize.restype = HRESULT
 
 LPDWORD = ctypes.POINTER(wintypes.DWORD)
 REFKNOWNFOLDERID = ctypes.POINTER(GUID)
@@ -146,13 +150,13 @@ SHGetFolderPathW = ctypes.windll.shell32.SHGetFolderPathW
 SHGetFolderPathW.argtypes = [
     wintypes.HWND, ctypes.c_int, wintypes.HANDLE, wintypes.DWORD,
     wintypes.LPWSTR]
-SHGetFolderPathW.restype = wintypes.HRESULT
+SHGetFolderPathW.restype = HRESULT
 
 SHGetKnownFolderPath = windll.shell32.SHGetKnownFolderPath
 SHGetKnownFolderPath.argtypes = [
     REFKNOWNFOLDERID, wintypes.DWORD, wintypes.HANDLE,
-    ctypes.POINTER(wintypes.c_wchar_p)]
-SHGetKnownFolderPath.restype = wintypes.HRESULT
+    ctypes.POINTER(ctypes.c_wchar_p)]
+SHGetKnownFolderPath.restype = HRESULT
 
 CoTaskMemFree = windll.ole32.CoTaskMemFree
 CoTaskMemFree.argtypes = [ctypes.c_void_p]
@@ -271,7 +275,7 @@ SetConsoleOutputCP.argtypes = [wintypes.UINT]
 SetConsoleOutputCP.restype = wintypes.BOOL
 
 WinError = ctypes.WinError
-S_OK = wintypes.HRESULT(0).value
+S_OK = HRESULT(0).value
 MAX_PATH = wintypes.MAX_PATH
 INVALID_HANDLE_VALUE = wintypes.HANDLE(-1).value
 
@@ -364,14 +368,13 @@ class COMInterface(type(ctypes.c_void_p)):
         return type(ctypes.c_void_p).__new__(mcls, cls_name, bases, dict(d))
 
 
+@add_metaclass(COMInterface)
 class IUnknown(ctypes.c_void_p):
-
-    __metaclass__ = COMInterface
 
     IID = GUID("{00000001-0000-0000-c000-000000000046}")
 
     _methods_ = [
-      ("QueryInterface", wintypes.HRESULT, LPGUID, wintypes.LPVOID),
+      ("QueryInterface", HRESULT, LPGUID, wintypes.LPVOID),
       ("AddRef", wintypes.DWORD),
       ("Release", wintypes.DWORD),
     ]
@@ -382,7 +385,7 @@ LPUNKNOWN = ctypes.POINTER(IUnknown)
 CoCreateInstance = windll.ole32.CoCreateInstance
 CoCreateInstance.argtypes = [REFCLSID, LPUNKNOWN, wintypes.DWORD, REFIID,
                              wintypes.LPVOID]
-CoCreateInstance.restype = wintypes.HRESULT
+CoCreateInstance.restype = HRESULT
 
 
 class IShellLinkW(IUnknown):
@@ -390,7 +393,7 @@ class IShellLinkW(IUnknown):
     IID = GUID("{000214F9-0000-0000-C000-000000000046}")
 
     _methods_ = [
-        ("GetPath", wintypes.HRESULT, wintypes.LPWSTR, wintypes.INT,
+        ("GetPath", HRESULT, wintypes.LPWSTR, wintypes.INT,
          LPWIN32_FIND_DATAW, wintypes.DWORD),
     ]
 
@@ -400,7 +403,7 @@ class IPersist(IUnknown):
     IID = GUID("{0000010c-0000-0000-C000-000000000046}")
 
     _methods_ = [
-        ("GetClassID", wintypes.HRESULT, LPGUID),
+        ("GetClassID", HRESULT, LPGUID),
     ]
 
 
@@ -409,8 +412,8 @@ class IPersistFile(IPersist):
     IID = GUID("{0000010b-0000-0000-c000-000000000046}")
 
     _methods_ = [
-        ("IsDirty", wintypes.HRESULT),
-        ("Load", wintypes.HRESULT, wintypes.LPOLESTR, wintypes.DWORD),
+        ("IsDirty", HRESULT),
+        ("Load", HRESULT, wintypes.LPOLESTR, wintypes.DWORD),
     ]
 
 
@@ -435,12 +438,12 @@ class IShellFolder(IUnknown):
     IID = GUID("{000214E6-0000-0000-C000-000000000046}")
 
     _methods_ = [
-        ("ParseDisplayName", wintypes.HRESULT, wintypes.HWND,
+        ("ParseDisplayName", HRESULT, wintypes.HWND,
          ctypes.POINTER(IBindCtx), wintypes.LPWSTR,
          ctypes.POINTER(wintypes.ULONG), ctypes.POINTER(PIDLIST_RELATIVE),
          ctypes.POINTER(wintypes.ULONG)),
         ("EnumObjects", None),
-        ("BindToObject", wintypes.HRESULT, PCUIDLIST_RELATIVE,
+        ("BindToObject", HRESULT, PCUIDLIST_RELATIVE,
          ctypes.POINTER(IBindCtx), REFIID, ctypes.c_void_p),
     ]
 
@@ -449,7 +452,7 @@ CLSID_ShellLink = GUID("{00021401-0000-0000-C000-000000000046}")
 
 SHGetDesktopFolder = oledll.shell32.SHGetDesktopFolder
 SHGetDesktopFolder.argtypes = [ctypes.POINTER(IShellFolder)]
-SHGetDesktopFolder.restype = wintypes.HRESULT
+SHGetDesktopFolder.restype = HRESULT
 
 ILCombine = windll.shell32.ILCombine
 ILCombine.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
@@ -466,7 +469,7 @@ ILFree.restype = None
 SHOpenFolderAndSelectItems = windll.shell32.SHOpenFolderAndSelectItems
 SHOpenFolderAndSelectItems.argtypes = [
     PCIDLIST_ABSOLUTE, wintypes.UINT, PCUITEMID_CHILD_ARRAY, DWORD]
-SHOpenFolderAndSelectItems.restype = wintypes.HRESULT
+SHOpenFolderAndSelectItems.restype = HRESULT
 
 SFGAOF = wintypes.ULONG
 
@@ -474,7 +477,7 @@ SHParseDisplayName = windll.shell32.SHParseDisplayName
 SHParseDisplayName.argtypes = [
     wintypes.LPCWSTR, ctypes.POINTER(IBindCtx),
     ctypes.POINTER(PIDLIST_ABSOLUTE), SFGAOF, ctypes.POINTER(SFGAOF)]
-SHParseDisplayName.restype = wintypes.HRESULT
+SHParseDisplayName.restype = HRESULT
 
 
 @enum

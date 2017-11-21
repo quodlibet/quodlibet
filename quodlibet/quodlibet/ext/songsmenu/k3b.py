@@ -4,8 +4,9 @@
 #                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
@@ -27,9 +28,10 @@ class BurnCD(SongsMenuPlugin):
     plugin_handles = each_song(is_a_file)
 
     burn_programs = {
-        'K3b': ['k3b', '--audiocd'],
-        'Brasero': ['brasero', '--audio'],
-        'Xfburn': ['xfburn', '--audio-composition'],
+        # args, reverse order
+        'K3b': (['k3b', '--audiocd'], False),
+        'Brasero': (['brasero', '--audio'], False),
+        'Xfburn': (['xfburn', '--audio-composition'], True),
     }
 
     def __init__(self, *args, **kwargs):
@@ -37,11 +39,11 @@ class BurnCD(SongsMenuPlugin):
         self.prog_name = None
 
         items = self.burn_programs.items()
-        progs = [(iscommand(x[1][0]), x) for x in items]
+        progs = [(iscommand(x[1][0][0]), x) for x in items]
         progs.sort(reverse=True)
 
         submenu = Gtk.Menu()
-        for (is_cmd, (name, (cmd, arg))) in progs:
+        for (is_cmd, (name, (args, reverse))) in progs:
             item = Gtk.MenuItem(label=name)
             if not is_cmd:
                 item.set_sensitive(False)
@@ -57,5 +59,6 @@ class BurnCD(SongsMenuPlugin):
         if self.prog_name is None:
             return
 
-        cmd, arg = self.burn_programs[self.prog_name]
-        util.spawn([cmd, arg] + [song['~filename'] for song in songs])
+        args, reverse = self.burn_programs[self.prog_name]
+        songs = sorted(songs, key=lambda s: s.sort_key, reverse=reverse)
+        util.spawn(args + [song['~filename'] for song in songs])

@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010, 2012-2014 Christoph Reiter
+#                      2017 Uriel Zajaczkovski
+#                      2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 
@@ -15,6 +17,7 @@ from quodlibet import _
 from quodlibet.browsers.albums import AlbumTagCompletion
 from quodlibet.browsers import Browser
 from quodlibet.query import Query
+from quodlibet.compat import cmp
 
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
@@ -26,7 +29,7 @@ from quodlibet.util import connect_obj
 from quodlibet.util.library import background_filter
 
 from .models import (CollectionTreeStore, CollectionSortModel,
-    CollectionFilterModel, MultiNode, UnknownNode, AlbumNode)
+                     CollectionFilterModel, AlbumNode, _ORDERING)
 from .prefs import get_headers, Preferences
 
 
@@ -153,27 +156,31 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         model_filter.set_visible_func(self.__parse_query)
         view.set_model(model_filter)
 
-        def sort(model, i1, i2, data):
-            t1, t2 = model[i1][0], model[i2][0]
-            if t1 is None or t2 is None:
-                # FIXME: why?
-                return 0
+        def cmpa(a, b):
+            """Like cmp but treats values that evaluate to false as inf"""
+            if not a and b:
+                return 1
+            if not b and a:
+                return -1
+            return cmp(a, b)
 
-            # FIXME: order this deterministically
-            if t1 is MultiNode or t1 is UnknownNode or \
-                    t2 is MultiNode or t2 is UnknownNode:
-                return -cmp(t1, t2)
+        def cmp_rows(model, i1, i2, data):
+            t1, t2 = model[i1][0], model[i2][0]
+            pos1 = _ORDERING.get(t1, 0)
+            pos2 = _ORDERING.get(t2, 0)
+            if pos1 or pos2:
+                return cmp(pos1, pos2)
 
             if not isinstance(t1, AlbumNode):
                 return cmp(util.human_sort_key(t1), util.human_sort_key(t2))
 
             a1, a2 = t1.album, t2.album
-            return (cmp(a1.peoplesort and a1.peoplesort[0],
-                        a2.peoplesort and a2.peoplesort[0]) or
-                        cmp(a1.date or "ZZZZ", a2.date or "ZZZZ") or
-                        cmp((a1.sort, a1.key), (a2.sort, a2.key)))
+            return (cmpa(a1.peoplesort, a2.peoplesort) or
+                    cmpa(a1.date, a2.date) or
+                    cmpa(a1.sort, a2.sort) or
+                    cmp(a1.key, a2.key))
 
-        model_sort.set_sort_func(0, sort)
+        model_sort.set_sort_func(0, cmp_rows)
         model_sort.set_sort_column_id(0, Gtk.SortType.ASCENDING)
 
         column = Gtk.TreeViewColumn("albums")
@@ -224,10 +231,13 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         prefs.add(SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU))
         prefs.connect('clicked', lambda *x: Preferences(self))
 
+        self.accelerators = Gtk.AccelGroup()
+        tags = self.__model.tags + ["album"]
         search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators)
-
+                              accel_group=self.accelerators,
+                              star=tags)
         search.connect('query-changed', self.__update_filter)
+        connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
 
         hbox.pack_start(search, True, True, 0)
@@ -283,9 +293,9 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def __update_filter(self, entry, text):
         self.__filter = None
-        if not Query.match_all(text):
-            tags = self.__model.tags + ["album"]
-            self.__filter = Query(text, star=tags).search
+        query = self.__search.query
+        if not query.matches_all:
+            self.__filter = query.search
         self.__bg_filter = background_filter()
 
         self.view.get_model().refilter()
@@ -338,7 +348,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         return True
 
     def filter_albums(self, album_keys):
-        albums = filter(None, [self.__albums.get(k) for k in album_keys])
+        albums = [a for a in
+                  [self.__albums.get(k) for k in album_keys] if a is not None]
         if albums:
             self.view.select_album(albums[0], unselect=True)
         for album in albums[1:]:
@@ -349,7 +360,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def filter_text(self, text):
         self.__search.set_text(text)
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__update_filter(self.__search, text)
             self.activate()
 

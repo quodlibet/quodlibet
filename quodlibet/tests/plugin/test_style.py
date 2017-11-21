@@ -2,12 +2,14 @@
 # Copyright 2015 Anton Shestakov
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from tests.helper import ListWithUnused as L
 from tests.plugin import PluginTestCase
 from quodlibet.util.string.titlecase import human_title
+from quodlibet.compat import iteritems
 
 
 class TPluginStyle(PluginTestCase):
@@ -38,7 +40,7 @@ class TPluginStyle(PluginTestCase):
             'This is a test')
         fails = []
 
-        for pid, plugin in self.plugins.iteritems():
+        for pid, plugin in iteritems(self.plugins):
             if not hasattr(plugin.cls, 'PLUGIN_NAME'):
                 fails.append((plugin, None, REASON_ABSENT))
                 continue
@@ -57,7 +59,7 @@ class TPluginStyle(PluginTestCase):
         skip_plugins = L('pickle_test')
         fails = []
 
-        for pid, plugin in self.plugins.iteritems():
+        for pid, plugin in iteritems(self.plugins):
             if pid in skip_plugins:
                 continue
             if not hasattr(plugin.cls, 'PLUGIN_DESC'):

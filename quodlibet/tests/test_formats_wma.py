@@ -2,8 +2,9 @@
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
@@ -51,6 +52,11 @@ class TWMAFile(TestCase):
         self.assertAlmostEqual(self.song("~#length"), 3.7120, 3)
         self.assertAlmostEqual(self.song2("~#length"), 3.684, 3)
         self.assertAlmostEqual(self.song3("~#length"), 11.38, 2)
+
+    def test_channels(self):
+        assert self.song("~#channels") == 2
+        assert self.song2("~#channels") == 2
+        assert self.song3("~#channels") == 1
 
     def test_bitrate(self):
         self.assertEqual(self.song("~#bitrate"), 64)

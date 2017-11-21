@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright 2009 Christoph Reiter
-#      2014,2016 Nick Boultbee
+#      2014-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 # The Unofficial M3U and PLS Specification (Winamp):
 # http://forums.winamp.com/showthread.php?threadid=65772
@@ -26,7 +27,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 lastfolder = get_home_dir()
 
 
-class PlaylistExport(SongsMenuPlugin, PlaylistPlugin):
+class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
     PLUGIN_ID = 'Playlist Export'
     PLUGIN_NAME = _('Export as Playlist')
     PLUGIN_DESC = _('Exports songs to an M3U or PLS playlist.')
@@ -134,7 +135,7 @@ class PlaylistExport(SongsMenuPlugin, PlaylistPlugin):
 
     def __m3u_export(self, file_path, files):
         try:
-            fhandler = open(file_path, "w")
+            fhandler = open(file_path, "wb")
         except IOError:
             self.__file_error(file_path)
         else:
@@ -149,7 +150,7 @@ class PlaylistExport(SongsMenuPlugin, PlaylistPlugin):
 
     def __pls_export(self, file_path, files):
         try:
-            fhandler = open(file_path, "w")
+            fhandler = open(file_path, "wb")
         except IOError:
             self.__file_error(file_path)
         else:

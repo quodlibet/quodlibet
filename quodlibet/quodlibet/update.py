@@ -2,8 +2,9 @@
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """Check for new versions of the application
 
@@ -17,6 +18,7 @@ is used and not the release version.
 """
 
 from gi.repository import Gtk
+import feedparser
 
 import quodlibet
 from quodlibet import _
@@ -55,12 +57,6 @@ def fetch_versions(build_type, timeout=5.0):
 
     Raises UpdateError
     """
-
-    # TODO: we currently don't depend on feedparser.. maybe we should?
-    try:
-        import feedparser
-    except ImportError as error:
-        raise UpdateError(error)
 
     try:
         content = urlopen(
@@ -148,6 +144,9 @@ class UpdateDialog(Dialog):
         self._set_widget(
             Gtk.Label(label=text, use_markup=True, wrap=True,
                       justify=Gtk.Justification.CENTER))
+
+        button = self.get_widget_for_response(Gtk.ResponseType.CANCEL)
+        button.set_label(_("_Close"))
 
     def _set_widget(self, widget):
         old = self._stack.get_visible_child()

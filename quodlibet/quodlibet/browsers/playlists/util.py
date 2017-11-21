@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014-2016 Nick Boultbee
+# Copyright 2014-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
 from gi.repository import Gtk
-from senf import uri2fsn, fsnative, fsn2text, path2fsn
+from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 import quodlibet
-from quodlibet import _
+from quodlibet import _, print_d
 from quodlibet import formats, qltk
+from quodlibet.compat import listfilter
 from quodlibet.qltk import Icons
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.wlw import WaitLoadWindow
@@ -52,44 +54,37 @@ class GetPlaylistName(GetStringDialog):
             button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
 
-def parse_m3u(filename, library=None):
-    plname = fsn2text(path2fsn(os.path.basename(
-        os.path.splitext(filename)[0])))
-
+def parse_m3u(filelike, pl_name, library=None):
     filenames = []
-
-    with open(filename, "rb") as h:
-        for line in h:
-            line = line.strip()
-            if line.startswith("#"):
-                continue
-            else:
-                filenames.append(line)
-    return __parse_playlist(plname, filename, filenames, library)
+    for line in filelike:
+        line = line.strip()
+        if line.startswith(b"#"):
+            continue
+        __attempt_add(line, filenames)
+    return __create_playlist(pl_name, _dir_for(filelike), filenames, library)
 
 
-def parse_pls(filename, name="", library=None):
-    plname = fsn2text(path2fsn(os.path.basename(
-        os.path.splitext(filename)[0])))
-
+def parse_pls(filelike, pl_name, library=None):
     filenames = []
-    with open(filename) as h:
-        for line in h:
-            line = line.strip()
-            if not line.lower().startswith("file"):
-                continue
-            else:
-                try:
-                    line = line[line.index("=") + 1:].strip()
-                except ValueError:
-                    pass
-                else:
-                    filenames.append(line)
-    return __parse_playlist(plname, filename, filenames, library)
+    for line in filelike:
+        line = line.strip()
+        if not line.lower().startswith(b"file"):
+            continue
+        fn = line[line.index(b"=") + 1:].strip()
+        __attempt_add(fn, filenames)
+    return __create_playlist(pl_name, _dir_for(filelike), filenames, library)
 
 
-def __parse_playlist(name, plfilename, files, library):
+def __attempt_add(filename, filenames):
+    try:
+        filenames.append(bytes2fsn(filename, 'utf-8'))
+    except ValueError:
+        return
+
+
+def __create_playlist(name, source_dir, files, library):
     playlist = FileBackedPlaylist.new(PLAYLISTS, name, library=library)
+    print_d("Created playlist %s" % playlist)
     songs = []
     win = WaitLoadWindow(
         None, len(files),
@@ -97,15 +92,8 @@ def __parse_playlist(name, plfilename, files, library):
     win.show()
     for i, filename in enumerate(files):
         if not uri_is_valid(filename):
-            if os.name == "nt":
-                filename = filename.decode("utf-8", "replace")
             # Plain filename.
-            filename = os.path.realpath(os.path.join(
-                os.path.dirname(plfilename), filename))
-            if library and filename in library:
-                songs.append(library[filename])
-            else:
-                songs.append(formats.MusicFile(filename))
+            songs.append(_af_for(filename, library, source_dir))
         else:
             try:
                 filename = uri2fsn(filename)
@@ -114,14 +102,36 @@ def __parse_playlist(name, plfilename, files, library):
                 songs.append(formats.remote.RemoteFile(filename))
             else:
                 # URI-encoded local filename.
-                filename = os.path.realpath(os.path.join(
-                    os.path.dirname(plfilename), filename))
-                if library and filename in library:
-                    songs.append(library[filename])
-                else:
-                    songs.append(formats.MusicFile(filename))
+                songs.append(_af_for(filename, library, source_dir))
         if win.step():
             break
     win.destroy()
-    playlist.extend(filter(None, songs))
+    playlist.extend(listfilter(None, songs))
     return playlist
+
+
+def _af_for(filename, library, pl_dir):
+    full_path = os.path.join(pl_dir, filename)
+    filename = os.path.realpath(full_path)
+
+    af = None
+    if library:
+        af = library.get_filename(filename)
+    if af is None:
+        af = formats.MusicFile(filename)
+    return af
+
+
+def _name_for(filename):
+    if not filename:
+        return _("New Playlist")
+    name = os.path.basename(os.path.splitext(filename)[0])
+    return fsn2text(path2fsn(name))
+
+
+def _dir_for(filelike):
+    try:
+        return os.path.dirname(path2fsn(filelike.name))
+    except AttributeError:
+        # Probably a URL
+        return text2fsn(u'')

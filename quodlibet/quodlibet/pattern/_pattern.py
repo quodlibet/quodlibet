@@ -4,8 +4,9 @@
 # Copyright 2013-2015 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 # Pattern := (<String> | <Tags>)*
 # String := ([^<>|\\]|\\.)+, a string
@@ -22,7 +23,7 @@ from quodlibet.query import Query
 from quodlibet.compat import exec_, itervalues
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 from quodlibet.formats._audio import decode_value, FILESYSTEM_TAGS
-from quodlibet.compat import quote_plus
+from quodlibet.compat import quote_plus, text_type, number_types
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -221,7 +222,8 @@ class PatternFormatter(object):
 
         def comma(self, key):
             value = self.__song.comma(key)
-            value = decode_value(key, value)
+            if isinstance(value, number_types):
+                value = decode_value(key, value)
             if self.__formatter:
                 return self.__formatter(key, value)
             return value
@@ -404,7 +406,7 @@ class _FileFromPattern(PatternFormatter):
 
     def _post(self, value, song, keep_extension=True):
         if value:
-            assert isinstance(value, unicode)
+            assert isinstance(value, text_type)
             value = fsnative(value)
 
             if keep_extension:
@@ -415,7 +417,7 @@ class _FileFromPattern(PatternFormatter):
                     value += ext.lower()
 
             if os.name == "nt":
-                assert isinstance(value, unicode)
+                assert isinstance(value, text_type)
                 value = strip_win32_incompat_from_path(value)
 
             value = expanduser(value)

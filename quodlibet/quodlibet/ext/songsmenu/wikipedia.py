@@ -2,10 +2,9 @@
 # Copyright 2005 Inigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-
-from urllib import quote
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
@@ -15,8 +14,9 @@ from quodlibet.util import website
 from quodlibet.qltk.entry import Entry
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.compat import quote
 
-WIKI_URL = "https://%s.wikipedia.org/wiki/"
+WIKI_URL = "https://%s.wikipedia.org/wiki/Special:Search/"
 
 
 def get_lang():

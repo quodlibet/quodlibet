@@ -2,26 +2,22 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
-import gettext
-import locale
 import warnings
 import logging
 
-from senf import environ
+from senf import environ, argv, fsn2text
 
-from quodlibet import util
-from quodlibet.compat import PY2
 from quodlibet.const import MinVersions
-from quodlibet.util import is_osx, is_windows
-from quodlibet.util.i18n import GlibTranslations, set_i18n_envvars, \
-    fixup_i18n_envvars, set_translation
-from quodlibet.util.dprint import print_d, print_e, PrintHandler
-from quodlibet.util.path import unexpand
+from quodlibet import config
+from quodlibet.util import is_osx, is_windows, i18n
+from quodlibet.util.dprint import print_e, PrintHandler
+from quodlibet.util.urllib import install_urllib2_ca_file
 
 from ._main import get_base_dir, is_release, get_image_dir
 
@@ -31,24 +27,9 @@ _initialized = False
 
 
 def _init_gtk_debug(no_excepthook):
-    from gi.repository import GLib
-    from quodlibet.qltk.debugwindow import excepthook
+    from quodlibet.errorreport import enable_errorhook
 
-    print_d("Initializing debugging extensions")
-
-    def _override_exceptions():
-        print_d("Enabling custom exception handler.")
-        sys.excepthook = excepthook
-    if not no_excepthook:
-        GLib.idle_add(_override_exceptions)
-
-    # faulthandler gives a python stacktrace on segfaults..
-    try:
-        import faulthandler
-    except ImportError:
-        pass
-    else:
-        faulthandler.enable()
+    enable_errorhook(not no_excepthook)
 
 
 def is_init():
@@ -59,7 +40,7 @@ def is_init():
     return _initialized
 
 
-def init(no_translations=False, no_excepthook=False):
+def init(no_translations=False, no_excepthook=False, config_file=None):
     """This needs to be called before any API can be used.
     Might raise in case of an error.
 
@@ -71,7 +52,7 @@ def init(no_translations=False, no_excepthook=False):
     if _initialized:
         return
 
-    init_cli(no_translations=no_translations)
+    init_cli(no_translations=no_translations, config_file=config_file)
     _init_gtk()
     _init_gtk_debug(no_excepthook=no_excepthook)
     _init_gst()
@@ -80,75 +61,51 @@ def init(no_translations=False, no_excepthook=False):
     _initialized = True
 
 
-def _init_gettext():
+def _init_gettext(no_translations=False):
     """Call before using gettext helpers"""
 
-    set_i18n_envvars()
-    fixup_i18n_envvars()
+    if no_translations:
+        language = u"C"
+    else:
+        language = config.gettext("settings", "language")
+        if not language:
+            language = None
 
-    print_d("LANGUAGE: %r" % environ.get("LANGUAGE"))
-    print_d("LANG: %r" % environ.get("LANG"))
-
-    try:
-        locale.setlocale(locale.LC_ALL, '')
-    except locale.Error:
-        pass
+    i18n.init(language)
 
     # Use the locale dir in ../build/share/locale if there is one
     base_dir = get_base_dir()
     localedir = os.path.dirname(base_dir)
     localedir = os.path.join(localedir, "build", "share", "locale")
     if not os.path.isdir(localedir) and os.name == "nt":
-        # py2exe case
         localedir = os.path.join(
             base_dir, "..", "..", "share", "locale")
 
-    if os.path.isdir(localedir):
-        print_d("Using local localedir: %r" % unexpand(localedir))
-    else:
-        localedir = gettext.bindtextdomain("quodlibet")
-
-    try:
-        t = gettext.translation("quodlibet", localedir,
-            class_=GlibTranslations)
-    except IOError:
-        print_d("No translation found in %r" % unexpand(localedir))
-        t = GlibTranslations()
-    else:
-        print_d("Translations loaded: %r" % unexpand(t.path))
-
+    i18n.register_translation("quodlibet", localedir)
     debug_text = environ.get("QUODLIBET_TEST_TRANS")
-    t.set_debug_text(debug_text)
-    set_translation(t)
+    if debug_text is not None:
+        i18n.set_debug_text(fsn2text(debug_text))
 
 
 def _init_python():
-    if PY2 or is_release():
-        MinVersions.PYTHON2.check(sys.version_info)
-    else:
-        # for non release builds we allow Python3
-        MinVersions.PYTHON3.check(sys.version_info)
+    MinVersions.PYTHON3.check(sys.version_info)
 
     if is_osx():
         # We build our own openssl on OSX and need to make sure that
         # our own ca file is used in all cases as the non-system openssl
         # doesn't use the system certs
-        util.install_urllib2_ca_file()
+        install_urllib2_ca_file()
 
     if is_windows():
         # Not really needed on Windows as pygi-aio seems to work fine, but
         # wine doesn't have certs which we use for testing.
-        util.install_urllib2_ca_file()
+        install_urllib2_ca_file()
 
     if is_windows() and os.sep != "\\":
         # In the MSYS2 console MSYSTEM is set, which breaks os.sep/os.path.sep
         # If you hit this do a "setup.py clean -all" to get rid of the
         # bytecode cache then start things with "MSYSTEM= ..."
-        raise AssertionError("MSYSTEM is set (%r)" % os.environ.get("MSYSTEM"))
-
-    if is_windows():
-        # gdbm is broken under msys2, this makes shelve use another backend
-        sys.modules["gdbm"] = None
+        raise AssertionError("MSYSTEM is set (%r)" % environ.get("MSYSTEM"))
 
     logging.getLogger().addHandler(PrintHandler())
 
@@ -158,7 +115,7 @@ def _init_formats():
     init()
 
 
-def init_cli(no_translations=False):
+def init_cli(no_translations=False, config_file=None):
     """This needs to be called before any API can be used.
     Might raise in case of an error.
 
@@ -170,12 +127,11 @@ def init_cli(no_translations=False):
     if _cli_initialized:
         return
 
-    from quodlibet import config
-
     _init_python()
     config.init_defaults()
-    if not no_translations and "QUODLIBET_NO_TRANS" not in environ:
-        _init_gettext()
+    if config_file is not None:
+        config.init(config_file)
+    _init_gettext(no_translations)
     _init_formats()
     _init_g()
 
@@ -244,21 +200,6 @@ def _init_g():
     gi.require_version("GObject", "2.0")
     gi.require_version("GdkPixbuf", "2.0")
 
-    from gi.repository import GdkPixbuf
-
-    # On windows the default variants only do ANSI paths, so replace them.
-    # In some typelibs they are replaced by default, in some don't..
-    if os.name == "nt":
-        for name in ["new_from_file_at_scale", "new_from_file_at_size",
-                     "new_from_file"]:
-            cls = GdkPixbuf.Pixbuf
-            setattr(
-                cls, name, getattr(cls, name + "_utf8", getattr(cls, name)))
-
-    # https://bugzilla.gnome.org/show_bug.cgi?id=670372
-    if not hasattr(GdkPixbuf.Pixbuf, "savev"):
-        GdkPixbuf.Pixbuf.savev = GdkPixbuf.Pixbuf.save
-
     # Newer glib is noisy regarding deprecated signals/properties
     # even with stable releases.
     if is_release():
@@ -280,16 +221,12 @@ def _init_gtk():
     # in 100% CPU under win7 revert it. Maybe we need to update the
     # cache in the windows installer for it to work... but for now revert.
     if is_windows():
-        os.environ['PANGOCAIRO_BACKEND'] = 'win32'
-        os.environ["GTK_CSD"] = "0"
+        environ['PANGOCAIRO_BACKEND'] = 'win32'
+        environ["GTK_CSD"] = "0"
 
     # disable for consistency and trigger events seem a bit flaky here
     if is_osx():
-        os.environ["GTK_OVERLAY_SCROLLING"] = "0"
-
-    # make sure GdkX11 doesn't get used under Windows
-    if os.name == "nt":
-        sys.modules["gi.repository.GdkX11"] = None
+        environ["GTK_OVERLAY_SCROLLING"] = "0"
 
     try:
         # not sure if this is available under Windows
@@ -304,26 +241,13 @@ def _init_gtk():
     gi.require_version("Pango", "1.0")
     gi.require_version('Soup', '2.4')
 
-    from gi.repository import Gtk, Soup
+    from gi.repository import Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version
 
-    # Work around missing annotation in older libsoup (Ubuntu 14.04 at least)
-    message = Soup.Message()
-    try:
-        message.set_request(None, Soup.MemoryUse.COPY, b"")
-    except TypeError:
-        orig = Soup.Message.set_request
-
-        def new_set_request(self, content_type, req_use, req_body):
-            return orig(self, content_type, req_use, req_body, len(req_body))
-
-        Soup.Message.set_request = new_set_request
-
     # PyGObject doesn't fail anymore when init fails, so do it ourself
-    initialized, argv = Gtk.init_check(sys.argv)
+    initialized, argv[:] = Gtk.init_check(argv)
     if not initialized:
         raise SystemExit("Gtk.init failed")
-    sys.argv = list(argv)
 
     # include our own icon theme directory
     theme = Gtk.IconTheme.get_default()
@@ -358,25 +282,11 @@ def _init_gtk():
     # Make sure PyGObject includes support for foreign cairo structs
     try:
         gi.require_foreign("cairo")
-    except AttributeError:
-        # older pygobject
-        pass
     except ImportError:
         print_e("PyGObject is missing cairo support")
         exit(1)
 
     css_override = ThemeOverrider()
-
-    # CSS overrides
-    if os.name == "nt":
-        # somehow borders are missing under Windows & Gtk+3.14
-        style_provider = Gtk.CssProvider()
-        style_provider.load_from_data(b"""
-            .menu {
-                border: 1px solid @borders;
-            }
-        """)
-        css_override.register_provider("", style_provider)
 
     if sys.platform == "darwin":
         # fix duplicated shadows for popups with Gtk+3.14
@@ -417,6 +327,33 @@ def _init_gtk():
         """)
         css_override.register_provider("Adwaita", style_provider)
         css_override.register_provider("HighContrast", style_provider)
+
+        # https://github.com/quodlibet/quodlibet/issues/2541
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data(b"""
+            treeview.view.separator {
+                min-height: 2px;
+                color: @borders;
+            }
+        """)
+        css_override.register_provider("Ambiance", style_provider)
+        css_override.register_provider("Radiance", style_provider)
+
+    if gtk_version[:2] >= (3, 18):
+        # Hack to get some grab handle like thing for panes
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data(b"""
+            GtkPaned.vertical, paned.vertical >separator {
+                -gtk-icon-source: -gtk-icontheme("view-more-symbolic");
+                -gtk-icon-transform: rotate(90deg) scaleX(0.1) scaleY(3);
+            }
+
+            GtkPaned.horizontal, paned.horizontal >separator {
+                -gtk-icon-source: -gtk-icontheme("view-more-symbolic");
+                -gtk-icon-transform: rotate(0deg) scaleX(0.1) scaleY(3);
+            }
+        """)
+        css_override.register_provider("", style_provider)
 
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
     warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
@@ -459,17 +396,11 @@ def _init_gst():
     from gi.repository import GLib
 
     try:
-        ok, argv = Gst.init_check(sys.argv)
+        ok, argv[:] = Gst.init_check(argv)
     except GLib.GError:
         print_e("Failed to initialize GStreamer")
         # Uninited Gst segfaults: make sure no one can use it
         sys.modules["gi.repository.Gst"] = None
     else:
-        sys.argv = argv
-
         # monkey patching ahead
         _fix_gst_leaks()
-
-        # https://bugzilla.gnome.org/show_bug.cgi?id=710447
-        import threading
-        threading.Thread(target=lambda: None).start()

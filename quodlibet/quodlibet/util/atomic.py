@@ -2,14 +2,14 @@
 # Copyright 2013,2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """Helpers for atomic file operations on Linux/OSX/Windows"""
 
 import os
 import contextlib
-import tempfile
 
 from senf import fsnative
 
@@ -17,6 +17,8 @@ if os.name == "nt":
     from . import winapi
 else:
     import fcntl
+
+from .misc import NamedTemporaryFile
 
 
 def _windows_rename(source, dest):
@@ -58,7 +60,7 @@ def atomic_save(filename, mode):
 
     dir_ = os.path.dirname(filename)
     basename = os.path.basename(filename)
-    fileobj = tempfile.NamedTemporaryFile(
+    fileobj = NamedTemporaryFile(
         mode=mode, dir=dir_,
         prefix=basename + fsnative(u"_"), suffix=fsnative(u".tmp"),
         delete=False)

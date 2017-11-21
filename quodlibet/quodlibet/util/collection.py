@@ -4,8 +4,9 @@
 #           2011-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from __future__ import absolute_import
 
@@ -19,10 +20,12 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
-from quodlibet.compat import xrange, text_type
+from quodlibet.compat import xrange, text_type, number_types, string_types, \
+    swap_to_string, listmap
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.dprint import print_d
+from quodlibet.util.misc import total_ordering, hashable
 from .collections import HashedList
 
 
@@ -100,7 +103,7 @@ class Collection(object):
         if not self.songs:
             return default
         if key[:1] == "~" and "~" in key[1:]:
-            if not isinstance(default, basestring):
+            if not isinstance(default, string_types):
                 return default
             keys = util.tagsplit(key)
             v = map(self.__get_cached_value, keys)
@@ -111,7 +114,8 @@ class Collection(object):
                 return x
             v = map(default_funct, v)
             v = map(lambda x: (isinstance(x, float) and "%.2f" % x) or x, v)
-            v = map(lambda x: isinstance(x, basestring) and x or str(x), v)
+            v = map(
+                lambda x: isinstance(x, string_types) and x or text_type(x), v)
             return connector.join(filter(None, v)) or default
         else:
             value = self.__get_cached_value(key)
@@ -123,7 +127,7 @@ class Collection(object):
 
     def comma(self, key):
         value = self.get(key)
-        return (value if isinstance(value, (int, float, long))
+        return (value if isinstance(value, number_types)
                 else value.replace("\n", ", "))
 
     def list(self, key):
@@ -264,8 +268,8 @@ class Collection(object):
             for value in song.list(key):
                 result[value] = result.get(value, 0) - 1
 
-        values = map(lambda x: x[0],
-                     sorted(result.items(), key=lambda x: x[1]))
+        values = listmap(lambda x: x[0],
+                     sorted(result.items(), key=lambda x: (x[1], x[0])))
         return "\n".join(values) if values else None
 
 
@@ -310,6 +314,9 @@ class Album(Collection):
         return "Album(%s)" % repr(self.key)
 
 
+@hashable
+@swap_to_string
+@total_ordering
 class Playlist(Collection, Iterable):
     """A Playlist is a `Collection` that has list-like features
     Songs can appear more than once.
@@ -369,18 +376,20 @@ class Playlist(Collection, Iterable):
 
     @property
     def songs(self):
-        return [s for s in self._list if not isinstance(s, basestring)]
+        return [s for s in self._list if not isinstance(s, string_types)]
 
     def __init__(self, name, library=None):
         super(Playlist, self).__init__()
         self.__inhibit_library_signals = False
         self.__instances.append(self)
 
-        if isinstance(name, text_type) and os.name != "nt":
-            name = name.encode('utf-8')
-
+        name = text_type(name)
         if not name:
             raise ValueError("Playlists must have a name")
+
+        # we require a file library here with masking
+        assert library is None or hasattr(library, "masked")
+
         self.name = name
         self.library = library
         self._list = HashedList()
@@ -408,7 +417,10 @@ class Playlist(Collection, Iterable):
 
     def _validated_name(self, new_name):
         """Returns a transformed (or not) name, or raises a `ValueError`
-        if the name is not allowed"""
+        if the name is not allowed
+        """
+
+        new_name = text_type(new_name)
         if not new_name:
             raise ValueError(_("Playlists must have a name"))
         return new_name
@@ -416,7 +428,8 @@ class Playlist(Collection, Iterable):
     def add_songs(self, filenames, library):
         changed = []
         for i in range(len(self)):
-            if isinstance(self[i], basestring) and self._list[i] in filenames:
+            if isinstance(self[i], string_types) \
+                    and self._list[i] in filenames:
                 song = library[self._list[i]]
                 self._list[i] = song
                 changed.append(song)
@@ -500,16 +513,25 @@ class Playlist(Collection, Iterable):
         random.shuffle(self._list)
         self.write()
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
         try:
-            return cmp(self.name, other.name)
+            return self.name == other.name
         except AttributeError:
-            return -1
+            return False
+
+    def __lt__(self, other):
+        try:
+            return self.name < other.name
+        except AttributeError:
+            return False
+
+    def __hash__(self):
+        return id(self)
 
     def __str__(self):
         songs_text = (ngettext("%d song", "%d songs", len(self.songs))
                       % len(self.songs))
-        return "\"%s\" (%s)" % (self.name, songs_text)
+        return u"\"%s\" (%s)" % (self.name, songs_text)
 
 
 class FileBackedPlaylist(Playlist):
@@ -519,7 +541,9 @@ class FileBackedPlaylist(Playlist):
     unquote = staticmethod(unescape_filename)
 
     def __init__(self, dir, name, library=None, validate=False):
+        assert isinstance(dir, fsnative)
         super(FileBackedPlaylist, self).__init__(name, library)
+
         self.dir = dir
         if validate:
             self.name = self._validated_name(name)
@@ -577,9 +601,9 @@ class FileBackedPlaylist(Playlist):
 
     def _validated_name(self, new_name):
         new_name = super(FileBackedPlaylist, self)._validated_name(new_name)
-        if isinstance(new_name, text_type):
-            new_name = new_name.encode('utf-8')
-        if os.path.exists(os.path.join(self.dir, self.quote(new_name))):
+        basename = self.quote(new_name)
+        path = os.path.join(self.dir, basename)
+        if os.path.exists(path):
             raise ValueError(
                     _("A playlist named %s already exists.") % new_name)
         return new_name
@@ -599,10 +623,10 @@ class FileBackedPlaylist(Playlist):
         fn = self.filename
         with open(fn, "wb") as f:
             for song in self._list:
-                if isinstance(song, basestring):
-                    f.write(fsn2bytes(song, "utf-8") + "\n")
+                if isinstance(song, string_types):
+                    f.write(fsn2bytes(song, "utf-8") + b"\n")
                 else:
-                    f.write(fsn2bytes(song("~filename"), "utf-8") + "\n")
+                    f.write(fsn2bytes(song("~filename"), "utf-8") + b"\n")
         if self._last_fn != fn:
             self.__delete_file(self._last_fn)
             self._last_fn = fn

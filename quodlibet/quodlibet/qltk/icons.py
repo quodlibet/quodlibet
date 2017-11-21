@@ -3,8 +3,9 @@
 #           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """A list of icon names.
 
@@ -57,6 +58,7 @@ class Icons(str):
     DRIVE_REMOVABLE_MEDIA = "drive-removable-media"
     EDIT_CLEAR = "edit-clear"  # "_Clear"
     EDIT_COPY = "edit-copy"  # "_Copy"
+    EDIT_PASTE = "edit-paste"  # "_Paste"
     EDIT_DELETE = "edit-delete"  # "_Delete"
     EDIT_FIND = "edit-find"  # "_Find"
     EDIT_FIND_REPLACE = "edit-find-replace"  # "Find and _Replace"
@@ -87,6 +89,7 @@ class Icons(str):
     MEDIA_PLAYBACK_STOP = "media-playback-stop"  # "_Stop"
     MEDIA_PLAYLIST_REPEAT = "media-playlist-repeat"
     MEDIA_PLAYLIST_SHUFFLE = "media-playlist-shuffle"
+    MEDIA_RECORD = "media-record"
     MEDIA_SKIP_BACKWARD = "media-skip-backward"  # "Pre_vious"
     MEDIA_SKIP_FORWARD = "media-skip-forward"  # "_Next"
     MULTIMEDIA_PLAYER = "multimedia-player"

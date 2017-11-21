@@ -2,8 +2,9 @@
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import time
 
@@ -17,7 +18,7 @@ except ImportError:
 
 class GnomeBackend(MMKeysBackend):
 
-    DBUS_NAME = "org.gnome.SettingsDaemon"
+    DBUS_NAME = "org.gnome.SettingsDaemon.MediaKeys"
     DBUS_PATH = "/org/gnome/SettingsDaemon/MediaKeys"
     DBUS_IFACE = "org.gnome.SettingsDaemon.MediaKeys"
 
@@ -44,7 +45,6 @@ class GnomeBackend(MMKeysBackend):
         """If the gsd plugin is active atm"""
         try:
             bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
-            # FIXME: check if the media-keys plugin is active
             return bus.name_has_owner(cls.DBUS_NAME)
         except dbus.DBusException:
             return False
@@ -144,6 +144,11 @@ class GnomeBackend(MMKeysBackend):
             except dbus.DBusException:
                 pass
             self.__interface = None
+
+
+# https://mail.gnome.org/archives/desktop-devel-list/2017-April/msg00069.html
+class GnomeBackendOldName(GnomeBackend):
+    DBUS_NAME = "org.gnome.SettingsDaemon"
 
 
 class MateBackend(GnomeBackend):

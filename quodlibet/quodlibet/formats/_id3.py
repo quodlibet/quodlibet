@@ -3,14 +3,15 @@
 #                     Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import mutagen.id3
 
 from quodlibet import config, const, print_d
 from quodlibet import util
-from quodlibet.compat import iteritems, text_type, listvalues
+from quodlibet.compat import iteritems, text_type, listvalues, PY2
 from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import isascii
@@ -226,10 +227,17 @@ class ID3File(AudioFile):
     def __validate_name(self, k):
         """Returns a ascii string or None if the key isn't supported"""
 
-        if not (k and "=" not in k and "~" not in k
-                and k.encode("ascii", "replace") == k):
+        if not k or "=" in k or "~" in k:
             return
-        return k.encode("ascii")
+
+        if not (k and "=" not in k and "~" not in k
+                and k.encode("ascii", "replace").decode("ascii") == k):
+            return
+
+        if PY2:
+            return k.encode("ascii")
+        else:
+            return k
 
     def __process_rg(self, frame):
         if frame.channel == 1:
@@ -253,9 +261,14 @@ class ID3File(AudioFile):
         return codecs
 
     def __distrust_latin1(self, text, encoding):
-        assert isinstance(text, unicode)
+        assert isinstance(text, text_type)
         if encoding == 0:
-            text = text.encode('iso-8859-1')
+            try:
+                text = text.encode('iso-8859-1')
+            except UnicodeEncodeError:
+                # mutagen might give us text not matching the encoding
+                # https://github.com/quodlibet/mutagen/issues/307
+                return text
             for codec in self.CODECS:
                 try:
                     text = text.decode(codec)

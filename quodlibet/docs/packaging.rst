@@ -14,7 +14,7 @@ The following distributions package Quod Libet:
 
 * Arch Linux: https://www.archlinux.org/packages/extra/any/quodlibet/
 * Debian: https://packages.debian.org/source/sid/quodlibet
-* Fedora: https://admin.fedoraproject.org/pkgdb/package/quodlibet/
+* Fedora: https://admin.fedoraproject.org/pkgdb/package/rpms/quodlibet/
 
 The Ubuntu PPA / unstable repo builds are automated by the following scripts:
 
@@ -28,17 +28,17 @@ Non-Optional Runtime Dependencies
 
 The following software is needed to start Ex Falso or Quod Libet.
 
-* **Python** (2.7)
-* **PyGObject** including **cairo support** (>= 3.12)
+* **Python** (>= 3.5)
+* **PyGObject** including **cairo support** (>= 3.18)
 * **pycairo** (>= 1.8)
-* **mutagen** (>= 1.32)
-* **GTK+** (>= 3.10)
-* **libsoup** (>= 2.44)
+* **mutagen** (>= 1.34)
+* **GTK+** (>= 3.18)
+* **libsoup** (>= 2.52)
 * On OS X only: **PyObjC**
+* **feedparser**
 
 For icons a complete **icon theme** is needed, preferably with symbolic icons. 
-For example **adwaita-icon-theme** or the older **gnome-icon-theme** + 
-**gnome-icon-theme-symbolic**
+For example **adwaita-icon-theme**.
 
 For playback support in Quod Libet one of the following two is needed:
 
@@ -46,7 +46,7 @@ GStreamer
 ^^^^^^^^^
 
 Required:
-    * **GStreamer** (>= 1.0) + **typelibs**
+    * **GStreamer** (>= 1.8) + **typelibs**
     * **GStreamer Plugins Base**: Vorbis, Alsa, ...
 
 Optional but recommended:
@@ -68,26 +68,11 @@ Optional Runtime Dependencies
     * Enables the DBus interface
     * Multimedia key support under GNOME
 
-**pyhook** (Windows only):
-    * Multimedia key support under Windows
-
 **libkeybinder-3.0** + **typelib**:
     * Multimedia key support under non Gnome setups
 
-**libgpod4** (the shared library, no Python bindings):
-    * iPod support
-
 **libgtksourceview-3** + **typelib**:
     * Undo/Redo support for multiline text fields
-
-**media-player-info**:
-    * For detection of DAPs
-
-**udisks2**:
-    * For detection of DAPs
-
-**python-feedparser**:
-    * For the feed browser
 
 **libmodplug1**:
     * For MOD support
@@ -123,9 +108,6 @@ plugin from loading.
 **rygel**:
     * The uPnP media server
 
-**Zeitgeist Python bindings**:
-    * For the zeitgeist plugin
-
 **pynotify**:
     * For the auto library update plugin
 
@@ -139,7 +121,7 @@ plugin from loading.
 Build Dependencies
 ------------------
 
-* **Python** 2.7 (stdlib only)
+* **Python** >= 3.5 (stdlib only)
 * **gettext** >= 0.15 and **intltool** for translations.
 * (optional) **sphinx** >= 1.3
 
@@ -147,3 +129,13 @@ For user documentation ``setup.py build_sphinx`` can be used to create the
 HTML user guide and put it in the build directory in the ``sphinx``
 subdirectory. This is not part of the default build process and requires
 **sphinx**.
+
+
+Testing Dependencies
+--------------------
+
+* The build dependencies
+* **pytest**
+* **pyflakes**
+* **pycodestyle**
+* **polib**

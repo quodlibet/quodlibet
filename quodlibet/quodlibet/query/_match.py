@@ -2,21 +2,21 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2011 Christoph Reiter
 #           2016 Ryan Dellenbaugh
-#           2016 Nick Boultbee
+#        2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import time
 import operator
 
 from senf import fsn2text, fsnative
 
-from quodlibet.compat import floordiv
+from quodlibet.unisearch import compile
+from quodlibet.compat import floordiv, text_type
 from quodlibet.util import parse_date
-from quodlibet.plugins.query import QUERY_HANDLER
-from quodlibet.plugins.query import QueryPluginError
 from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 
 
@@ -34,7 +34,7 @@ class Node(object):
         raise NotImplementedError
 
     def filter(self, sequence):
-        return filter(self.search, sequence)
+        return [s for s in sequence if self.search(s)]
 
     def _unpack(self):
         return self
@@ -47,6 +47,25 @@ class Node(object):
 
     def __neg__(self):
         return Neg(self._unpack())
+
+
+class Regex(Node):
+
+    def __init__(self, pattern, mod_string):
+        self.pattern = text_type(pattern)
+        self.mod_string = text_type(mod_string)
+
+        ignore_case = "c" not in self.mod_string or "i" in self.mod_string
+        dot_all = "s" in self.mod_string
+        asym = "d" in self.mod_string
+        try:
+            self.search = compile(self.pattern, ignore_case, dot_all, asym)
+        except ValueError:
+            raise ParseError(
+                "The regular expression /%s/ is invalid." % self.pattern)
+
+    def __repr__(self):
+        return "<Regex pattern=%s mod=%s>" % (self.pattern, self.mod_string)
 
 
 class True_(Node):
@@ -67,6 +86,26 @@ class True_(Node):
     def __and__(self, other):
         other = other._unpack()
         return other
+
+
+class False_(Node):
+    """Always False"""
+
+    def search(self, data):
+        return False
+
+    def filter(self, list_):
+        return []
+
+    def __repr__(self):
+        return "<False>"
+
+    def __or__(self, other):
+        other = other._unpack()
+        return other
+
+    def __and__(self, other):
+        return self
 
 
 class Union(Node):
@@ -114,6 +153,14 @@ class Inter(Node):
             if not re.search(data):
                 return False
         return True
+
+    def filter(self, sequence):
+        current = sequence
+        for re in self.res:
+            current = filter(re.search, current)
+        if not isinstance(current, list):
+            current = list(current)
+        return current
 
     def __repr__(self):
         return "<Inter %r>" % self.res
@@ -228,11 +275,7 @@ class NumexprTag(Numexpr):
     """Numeric tag"""
 
     def __init__(self, tag):
-        if isinstance(tag, unicode):
-            self._tag = tag.encode("utf-8")
-        else:
-            self._tag = tag
-
+        self._tag = tag
         self._ftag = "~#" + self._tag
 
     def evaluate(self, data, time, use_date):
@@ -247,7 +290,10 @@ class NumexprTag(Numexpr):
         else:
             num = data(self._ftag, None)
         if num is not None:
-            if self._ftag in TIME_TAGS:
+            # Strip aggregate function from tag
+            func_start = self._ftag.find(":")
+            tag = self._ftag[:func_start] if func_start >= 0 else self._ftag
+            if tag in TIME_TAGS:
                 num = time - num
             return round(num, 2)
         return None
@@ -475,24 +521,26 @@ class Tag(Node):
                 self._names.append(name)
 
     def search(self, data):
+        search = self.res.search
+        fs_default = fsnative()
+
         for name in self._names:
             val = data.get(name)
             if val is None:
-                # filename is the only real entry that's a path
-                if name == "filename":
-                    val = fsn2text(data.get("~filename", fsnative()))
+                if name in ("filename", "mountpoint"):
+                    val = fsn2text(data.get("~" + name, fs_default))
                 else:
-                    val = data.get("~" + name, "")
+                    val = data.get("~" + name, u"")
 
-            if self.res.search(unicode(val)):
+            if search(val):
                 return True
 
         for name in self.__intern:
-            if self.res.search(unicode(data(name))):
+            if search(data(name)):
                 return True
 
         for name in self.__fs:
-            if self.res.search(fsn2text(data(name))):
+            if search(fsn2text(data(name, fs_default))):
                 return True
 
         return False
@@ -523,6 +571,9 @@ class Extension(Node):
     fails to parse the body"""
 
     def __init__(self, name, body):
+        # pulls in gtk+
+        from quodlibet.plugins.query import QUERY_HANDLER, QueryPluginError
+
         self.__name = name
         self.__valid = True
         self.__body = body

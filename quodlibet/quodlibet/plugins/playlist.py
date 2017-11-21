@@ -1,52 +1,33 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2016 Nick Boultbee
+# Copyright 2013-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-
-from gi.repository import Gtk
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet import ngettext, _
 from quodlibet.qltk import get_top_parent, get_menu_item_top_parent
-from quodlibet.qltk.msg import WarningMessage
+from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk import Icons
 from quodlibet.util import print_exc, format_int_locale
 from quodlibet.util.dprint import print_d, print_e
 from quodlibet.plugins import PluginHandler, PluginManager
 from quodlibet.plugins.gui import MenuItemPlugin
 
 
-class ConfirmMultiPlaylistInvoke(WarningMessage):
+def confirm_multi_playlist_invoke(parent, plugin_name, count):
     """Dialog to confirm invoking a plugin with X playlists
     in case X is high
     """
-
-    RESPONSE_INVOKE = 1
-
-    def __init__(self, parent, plugin_name, count):
-        params = {"name": plugin_name, "count": format_int_locale(count)}
-        title = ngettext("Run the plugin \"%(name)s\" on %(count)s playlist?",
-                         "Run the plugin \"%(name)s\" on %(count)s playlists?",
-                         count) % params
-
-        super(ConfirmMultiPlaylistInvoke, self).__init__(
-            get_top_parent(parent),
-            title, "",
-            buttons=Gtk.ButtonsType.NONE)
-
-        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(
-            _("_Run Plugin"), Icons.SYSTEM_RUN, self.RESPONSE_INVOKE)
-        self.set_default_response(Gtk.ResponseType.CANCEL)
-
-    @classmethod
-    def confirm(cls, parent, plugin_name, count):
-        """Returns if the action was confirmed"""
-
-        resp = cls(parent, plugin_name, count).run()
-        return resp == cls.RESPONSE_INVOKE
+    params = {"name": plugin_name, "count": format_int_locale(count)}
+    title = ngettext("Run the plugin \"%(name)s\" on %(count)s playlist?",
+                     "Run the plugin \"%(name)s\" on %(count)s playlists?",
+                     count) % params
+    description = ""
+    ok_text = _("_Run Plugin")
+    prompt = ConfirmationPrompt(parent, title, description, ok_text).run()
+    return prompt == ConfirmationPrompt.RESPONSE_INVOKE
 
 
 class PlaylistPlugin(MenuItemPlugin):
@@ -80,7 +61,8 @@ class PlaylistPlugin(MenuItemPlugin):
     All of this is managed by the constructor, so
     make sure it gets called if you override it (you shouldn't have to).
 
-    TODO: A way to inherit from both PlaylistPlugin and SongsMenuPlugin
+    Note: If inheriting both `PlaylistPlugin` and `SongsMenuPlugin`,
+          it (currently) needs to be done in that order.
     """
     plugin_single_playlist = None
     plugin_playlist = None
@@ -89,7 +71,7 @@ class PlaylistPlugin(MenuItemPlugin):
     def __init__(self, playlists=None, library=None):
         super(PlaylistPlugin, self).__init__()
         self._library = library
-
+        self._playlists = playlists or []
         self.set_sensitive(bool(self.plugin_handles(playlists)))
 
     def plugin_handles(self, playlists):
@@ -107,7 +89,7 @@ class PlaylistPluginHandler(PluginHandler):
 
         self.__plugins = []
         self._confirm_multiple = (confirmer or
-                                  ConfirmMultiPlaylistInvoke.confirm)
+                                  confirm_multi_playlist_invoke)
 
     def populate_menu(self, menu, library, browser, playlists):
         """Appends items onto `menu` for each enabled playlist plugin,
@@ -126,11 +108,11 @@ class PlaylistPluginHandler(PluginHandler):
             usable = any([callable(getattr(Kind, s)) for s in attrs])
             if usable:
                 try:
-                    items.append(Kind(playlists, library))
+                    items.append(Kind(playlists=playlists, library=library))
                 except:
                     print_e("Couldn't initialise playlist plugin %s: " % Kind)
                     print_exc()
-        items = filter(lambda i: i.initialized, items)
+        items = [i for i in items if i.initialized]
 
         if items:
             menu.append(SeparatorMenuItem())
@@ -202,7 +184,7 @@ class PlaylistPluginHandler(PluginHandler):
             except Exception:
                 print_exc()
             else:
-                if max(ret):
+                if any(ret):
                     return
         if callable(plugin.plugin_playlists):
             try:

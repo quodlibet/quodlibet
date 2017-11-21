@@ -2,13 +2,15 @@
 # Copyright 2004-2011 Joe Wreschnig, Michael Urman, Iñigo Serna, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import locale
 import re
 
 from quodlibet import _
+from quodlibet.compat import text_type
 
 from .iso639 import ISO_639_2
 
@@ -161,7 +163,7 @@ class PeakMassager(Massager):
         else:
             if f < 0 or f >= 2:
                 raise ValidationError
-            return unicode(f)
+            return text_type(f)
 
 
 @Massager._register
@@ -172,8 +174,8 @@ class MBIDMassager(Massager):
     error = _("MusicBrainz IDs must be in UUID format.")
 
     def validate(self, value):
-        value = value.encode('ascii', 'replace')
-        value = filter(str.isalnum, value.strip().lower())
+        value = value.encode('ascii', 'replace').decode("ascii")
+        value = u"".join(filter(text_type.isalnum, value.strip().lower()))
         try:
             int(value, 16)
         except ValueError:

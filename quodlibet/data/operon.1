@@ -352,7 +352,33 @@ Display help and exit
 .B Example:
 operon image\-clear song.mp3
 .UNINDENT
-.SH COMMANDS
+.SH MISCELLANEOUS
+.SS tags
+.sp
+List all common tags
+.sp
+operon tags [\-h] [\-a] [\-t] [\-c <c1>,<c2>...]
+.INDENT 0.0
+.TP
+.B \-h\fP,\fB  \-\-help
+Display help and exit
+.TP
+.B \-a\fP,\fB  \-\-all
+Also list programmatic tags
+.TP
+.B \-t\fP,\fB  \-\-terse
+Output is terse and suitable for script processing
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-c, \-\-columns <name>,...
+Defines which columns should be printed and in which order
+.TP
+.B Example:
+operon tags \-a
+.sp
+operon tags \-t \-c tag
+.UNINDENT
 .SS help
 .sp
 operon help [<command>]

@@ -26,44 +26,26 @@ from gi.repository import Gtk, GObject, GLib
 from senf import fsn2uri
 
 from quodlibet import _
-from quodlibet import config, qltk, app
+from quodlibet import qltk, app
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.plugins import PluginConfig
 from quodlibet.pattern import XMLFromPattern
 from quodlibet.qltk.textedit import TextView, TextBuffer
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
-from quodlibet.util import connect_obj, unescape, print_w
+from quodlibet.util import unescape, print_w, gdecode
 
 
-# configuration stuff
-DEFAULT_CONFIG = {
-    "timeout": 4000,
-    "show_notifications": "all",
-    "show_only_when_unfocused": True,
-    "show_next_button": True,
-
-    "titlepattern": "<artist|<artist> - ><title>",
-    "bodypattern":
-"""<~length>
+pconfig = PluginConfig("notify")
+pconfig.defaults.set("timeout", 4000)
+pconfig.defaults.set("show_notifications", "all")
+pconfig.defaults.set("show_only_when_unfocused", True)
+pconfig.defaults.set("show_next_button", True)
+pconfig.defaults.set("titlepattern", "<artist|<artist> - ><title>")
+pconfig.defaults.set("bodypattern", """<~length>
 <album|<album><discsubtitle| - <discsubtitle>>
-><~year|<~year>>""",
-}
-
-
-def get_conf_value(name, accessor="get"):
-    try:
-        value = getattr(config, accessor)("plugins", "notify_%s" % name)
-    except Exception:
-        value = DEFAULT_CONFIG[name]
-    return value
-
-get_conf_bool = lambda name: get_conf_value(name, "getboolean")
-get_conf_int = lambda name: get_conf_value(name, "getint")
-
-
-def set_conf_value(name, value):
-    config.set("plugins", "notify_%s" % name, unicode(value))
+><~year|<~year>>""")
 
 
 class PreferencesWidget(Gtk.VBox):
@@ -79,9 +61,12 @@ class PreferencesWidget(Gtk.VBox):
         text_frame = qltk.Frame(_("Notification text"), child=table)
 
         title_entry = UndoEntry()
-        title_entry.set_text(get_conf_value("titlepattern"))
-        title_entry.connect("focus-out-event", self.on_entry_unfocused,
-                            "titlepattern")
+        title_entry.set_text(pconfig.gettext("titlepattern"))
+
+        def on_entry_changed(entry, cfgname):
+            pconfig.settext(cfgname, gdecode(entry.get_text()))
+
+        title_entry.connect("changed", on_entry_changed, "titlepattern")
         table.attach(title_entry, 1, 2, 0, 1)
 
         title_label = Gtk.Label(label=_("_Title:"))
@@ -96,17 +81,24 @@ class PreferencesWidget(Gtk.VBox):
         title_revert.add(Gtk.Image.new_from_icon_name(
             Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
         title_revert.set_tooltip_text(_("Revert to default pattern"))
-        connect_obj(title_revert,
-            "clicked", title_entry.set_text, DEFAULT_CONFIG["titlepattern"])
+        title_revert.connect(
+            "clicked", lambda *x: title_entry.set_text(
+                pconfig.defaults.gettext("titlepattern")))
         table.attach(title_revert, 2, 3, 0, 1,
                      xoptions=Gtk.AttachOptions.SHRINK)
 
         body_textbuffer = TextBuffer()
         body_textview = TextView(buffer=body_textbuffer)
         body_textview.set_size_request(-1, 85)
-        body_textview.get_buffer().set_text(get_conf_value("bodypattern"))
-        body_textview.connect("focus-out-event", self.on_textview_unfocused,
-                              "bodypattern")
+        body_textview.get_buffer().set_text(pconfig.gettext("bodypattern"))
+
+        def on_textbuffer_changed(text_buffer, cfgname):
+            start, end = text_buffer.get_bounds()
+            text = gdecode(text_buffer.get_text(start, end, True))
+            pconfig.settext(cfgname, text)
+
+        body_textbuffer.connect("changed", on_textbuffer_changed,
+                                "bodypattern")
         body_scrollarea = Gtk.ScrolledWindow()
         body_scrollarea.set_policy(Gtk.PolicyType.AUTOMATIC,
                                    Gtk.PolicyType.AUTOMATIC)
@@ -125,8 +117,8 @@ class PreferencesWidget(Gtk.VBox):
         body_revert.add(Gtk.Image.new_from_icon_name(
                         Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
         body_revert.set_tooltip_text(_("Revert to default pattern"))
-        connect_obj(body_revert,
-            "clicked", body_textbuffer.set_text, DEFAULT_CONFIG["bodypattern"])
+        body_revert.connect("clicked", lambda *x:
+            body_textbuffer.set_text(pconfig.defaults.gettext("bodypattern")))
         table.attach(
             body_revert, 2, 3, 1, 2,
             xoptions=Gtk.AttachOptions.SHRINK,
@@ -181,20 +173,17 @@ class PreferencesWidget(Gtk.VBox):
                           "show_notifications", "all")
         radio_box.pack_start(all_radio, True, True, 0)
 
-        try:
-            {
-                "user": only_user_radio,
-                "auto": only_auto_radio,
-                "all": all_radio
-            }[get_conf_value("show_notifications")].set_active(True)
-        except KeyError:
-            all_radio.set_active(True)
-            set_conf_value("show_notifications", "all")
+        {
+            "user": only_user_radio,
+            "auto": only_auto_radio,
+            "all": all_radio
+        }.get(pconfig.gettext("show_notifications"),
+              all_radio).set_active(True)
 
         focus_check = Gtk.CheckButton(
             label=_("Only when the main window is not _focused"),
             use_underline=True)
-        focus_check.set_active(get_conf_bool("show_only_when_unfocused"))
+        focus_check.set_active(pconfig.getboolean("show_only_when_unfocused"))
         focus_check.connect("toggled", self.on_checkbutton_toggled,
                             "show_only_when_unfocused")
         display_box.pack_start(focus_check, True, True, 0)
@@ -202,7 +191,7 @@ class PreferencesWidget(Gtk.VBox):
         show_next = Gtk.CheckButton(
             label=_("Show \"_Next\" button"),
             use_underline=True)
-        show_next.set_active(get_conf_bool("show_next_button"))
+        show_next.set_active(pconfig.getboolean("show_next_button"))
         show_next.connect("toggled", self.on_checkbutton_toggled,
                             "show_next_button")
         display_box.pack_start(show_next, True, True, 0)
@@ -212,22 +201,12 @@ class PreferencesWidget(Gtk.VBox):
         self.show_all()
         self.connect("destroy", self.on_destroyed)
 
-    # callbacks
-    def on_entry_unfocused(self, entry, event, cfgname):
-        set_conf_value(cfgname, entry.get_text())
-
-    def on_textview_unfocused(self, textview, event, cfgname):
-        text_buffer = textview.get_buffer()
-        start, end = text_buffer.get_bounds()
-        text = text_buffer.get_text(start, end, True)
-        set_conf_value(cfgname, text)
-
     def on_radiobutton_toggled(self, radio, cfgname, value):
         if radio.get_active():
-            set_conf_value(cfgname, value)
+            pconfig.set(cfgname, value)
 
     def on_checkbutton_toggled(self, button, cfgname):
-        set_conf_value(cfgname, button.get_active())
+        pconfig.set(cfgname, button.get_active())
 
     def on_preview_button_clicked(self, button):
         if app.player.info is not None:
@@ -355,7 +334,7 @@ class Notify(EventPlugin):
         fileobj = app.cover_manager.get_cover(song)
         self._set_image_fileobj(fileobj)
         if fileobj:
-            return unicode(fsn2uri(fileobj.name))
+            return fsn2uri(fileobj.name)
         return u""
 
     def show_notification(self, song):
@@ -395,12 +374,12 @@ class Notify(EventPlugin):
         strip_links = lambda t: re.subn("\</?a.*?\>", "", t)[0]
         strip_images = lambda t: re.subn("\<img.*?\>", "", t)[0]
 
-        title = XMLFromPattern(get_conf_value("titlepattern")) % song
+        title = XMLFromPattern(pconfig.gettext("titlepattern")) % song
         title = unescape(strip_markup(strip_links(strip_images(title))))
 
         body = ""
         if "body" in caps:
-            body = XMLFromPattern(get_conf_value("bodypattern")) % song
+            body = XMLFromPattern(pconfig.gettext("bodypattern")) % song
 
             if "body-markup" not in caps:
                 body = strip_markup(body)
@@ -410,7 +389,7 @@ class Notify(EventPlugin):
                 body = strip_images(body)
 
         actions = []
-        if get_conf_bool("show_next_button") and "actions" in caps:
+        if pconfig.getboolean("show_next_button") and "actions" in caps:
             actions = ["next", _("Next")]
 
         hints = {
@@ -426,7 +405,7 @@ class Notify(EventPlugin):
             self.__last_id = iface.Notify(
                 "Quod Libet", self.__last_id,
                 image_uri, title, body, actions, hints,
-                get_conf_int("timeout"))
+                pconfig.getint("timeout"))
         except dbus.DBusException:
             print_w("[notify] %s" %
                     _("Couldn't connect to notification daemon."))
@@ -448,8 +427,8 @@ class Notify(EventPlugin):
     def on_song_change(self, song, typ):
         if not song:
             self.close_notification()
-        if get_conf_value("show_notifications") in [typ, "all"] \
-                and not (get_conf_bool("show_only_when_unfocused")
+        if pconfig.gettext("show_notifications") in [typ, "all"] \
+                and not (pconfig.getboolean("show_only_when_unfocused")
                          and app.window.has_toplevel_focus()) \
                 or self.__force_notification:
             def idle_show(song):

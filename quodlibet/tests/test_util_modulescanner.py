@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import imp
@@ -13,6 +14,11 @@ from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.util.importhelper import get_importables, load_dir_modules
 
 from tests import TestCase, mkdtemp
+
+
+def py_compile_legacy(file_):
+    # so we get the same result on py2/3
+    py_compile.compile(file_, cfile=file_ + "c")
 
 
 class TModuleScanner(TestCase):
@@ -69,7 +75,7 @@ class TModuleScanner(TestCase):
 
     def test_load_dir_modules(self):
         h = self._create_mod("x.py")
-        h.write("test=42\n")
+        h.write(b"test=42\n")
         h.close()
         mods = load_dir_modules(self.d, "qlfake")
         self.failUnlessEqual(len(mods), 1)
@@ -77,22 +83,22 @@ class TModuleScanner(TestCase):
 
     def test_load_dir_modules_compiled_ignore(self):
         h = self._create_mod("x1.py")
-        h.write("test=24\n")
+        h.write(b"test=24\n")
         h.close()
-        py_compile.compile(h.name)
+        py_compile_legacy(h.name)
         os.unlink(h.name)
-        self.failUnlessEqual(os.listdir(self.d), ["x1.pyc"])
+        assert os.listdir(self.d) == ["x1.pyc"]
 
         mods = load_dir_modules(self.d, "qlfake")
         self.failUnlessEqual(len(mods), 0)
 
     def test_load_dir_modules_compiled(self):
         h = self._create_mod("x1.py")
-        h.write("test=99\n")
+        h.write(b"test=99\n")
         h.close()
-        py_compile.compile(h.name)
+        py_compile_legacy(h.name)
         os.unlink(h.name)
-        self.failUnlessEqual(os.listdir(self.d), ["x1.pyc"])
+        assert os.listdir(self.d) == ["x1.pyc"]
 
         mods = load_dir_modules(self.d, "qlfake", load_compiled=True)
         self.failUnlessEqual(len(mods), 1)
@@ -100,9 +106,9 @@ class TModuleScanner(TestCase):
 
     def test_load_dir_modules_both(self):
         h = self._create_mod("x1.py")
-        h.write("test=99\n")
+        h.write(b"test=99\n")
         h.close()
-        py_compile.compile(h.name)
+        py_compile_legacy(h.name)
         self.failUnlessEqual(set(os.listdir(self.d)), {"x1.pyc", "x1.py"})
 
         mods = load_dir_modules(self.d, "qlfake", load_compiled=True)
@@ -112,9 +118,9 @@ class TModuleScanner(TestCase):
     def test_load_dir_modules_packages(self):
         h = self._create_pkg("somepkg2")
         h2 = self._create_mod("sub.py", "somepkg2")
-        h2.write("test=456\n")
+        h2.write(b"test=456\n")
         h2.close()
-        h.write("from .sub import *\nmain=654\n")
+        h.write(b"from .sub import *\nmain=654\n")
         h.close()
         mods = load_dir_modules(self.d, "qlfake")
         self.failUnlessEqual(len(mods), 1)
@@ -157,7 +163,7 @@ class TModuleScanner(TestCase):
 
     def test_scanner_error(self):
         h = self._create_mod("q4.py")
-        h.write("1syntaxerror\n")
+        h.write(b"1syntaxerror\n")
         h.close()
         s = ModuleScanner([self.d])
         removed, added = s.rescan()
@@ -169,9 +175,9 @@ class TModuleScanner(TestCase):
     def test_scanner_add_package(self):
         h = self._create_pkg("somepkg")
         h2 = self._create_mod("sub.py", "somepkg")
-        h2.write("test=123\n")
+        h2.write(b"test=123\n")
         h2.close()
-        h.write("from .sub import *\nmain=321\n")
+        h.write(b"from .sub import *\nmain=321\n")
         h.close()
         s = ModuleScanner([self.d])
         removed, added = s.rescan()

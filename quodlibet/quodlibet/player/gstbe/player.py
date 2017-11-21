@@ -3,8 +3,9 @@
 #           2011-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import gi
 try:
@@ -27,6 +28,7 @@ from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError, \
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.notif import Task
+from quodlibet.compat import iteritems
 
 from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,
     GStreamerSink, link_many, bin_debug)
@@ -164,6 +166,144 @@ def sink_state_is_valid(sink):
     return current_state >= Gst.State.PAUSED
 
 
+class Seeker(object):
+    """Manages async seeking and position reporting for a pipeline.
+
+    You have to call destroy() before it gets gc'd
+    """
+
+    def __init__(self, playbin, player):
+        self._player = player
+        self._playbin = playbin
+
+        self._last_position = 0
+        self._seek_requests = []
+        self._active_seeks = []
+        self._seekable = False
+
+        bus = playbin.get_bus()
+        bus.add_signal_watch()
+        self._bus_id = bus.connect('message', self._on_message)
+        player.notify("seekable")
+
+    @property
+    def seekable(self):
+        """If the current stream is seekable"""
+
+        return self._seekable
+
+    def destroy(self):
+        """This needs to be called before it gets GC'ed"""
+
+        del self._seek_requests[:]
+        del self._active_seeks[:]
+
+        if self._bus_id:
+            bus = self._playbin.get_bus()
+            bus.disconnect(self._bus_id)
+            bus.remove_signal_watch()
+            self._bus_id = None
+
+        self._player = None
+        self._playbin = None
+
+    def set_position(self, pos):
+        """Set the position. Async and might not succeed.
+
+        Args:
+            pos (int): position in milliseconds
+        """
+
+        pos = max(0, int(pos))
+
+        # We need at least a paused state to seek, if there is non active
+        # or pending, request one async.
+        res, next_state, pending = self._playbin.get_state(timeout=0)
+        if pending != Gst.State.VOID_PENDING:
+            next_state = pending
+        if next_state < Gst.State.PAUSED:
+            self._playbin.set_state(Gst.State.PAUSED)
+
+        self._set_position(self._player.song, pos)
+
+    def get_position(self):
+        """Get the position
+
+        Returns:
+            int: the position in milliseconds
+        """
+
+        if self._seek_requests:
+            self._last_position = self._seek_requests[-1][1]
+        elif self._active_seeks:
+            self._last_position = self._active_seeks[-1][1]
+        else:
+            # While we are actively seeking return the last wanted position.
+            # query_position() returns 0 while in this state
+            ok, p = self._playbin.query_position(Gst.Format.TIME)
+            if ok:
+                p //= Gst.MSECOND
+                # During stream seeking querying the position fails.
+                # Better return the last valid one instead of 0.
+                self._last_position = p
+
+        return self._last_position
+
+    def reset(self):
+        """In case the underlying stream has changed, call this to
+        abort any pending seeking actions and update the seekable state
+        """
+
+        self._last_position = 0
+        del self._seek_requests[:]
+        del self._active_seeks[:]
+        self._refresh_seekable()
+
+    def _refresh_seekable(self):
+        query = Gst.Query.new_seeking(Gst.Format.TIME)
+        if self._playbin.query(query):
+            seekable = query.parse_seeking()[1]
+        elif self._player.song is None:
+            seekable = False
+        else:
+            seekable = True
+
+        if seekable != self._seekable:
+            self._seekable = seekable
+            self._player.notify("seekable")
+
+    def _on_message(self, bus, message):
+        if message.type == Gst.MessageType.ASYNC_DONE:
+            # we only get one ASYNC_DONE for multiple seeks, so flush all
+
+            if self._active_seeks:
+                song, pos = self._active_seeks[-1]
+                if song is self._player.song:
+                    self._player.emit("seek", song, pos)
+                del self._active_seeks[:]
+        elif message.type == Gst.MessageType.STATE_CHANGED:
+            if message.src is self._playbin.bin:
+                new_state = message.parse_state_changed()[1]
+                if new_state >= Gst.State.PAUSED:
+                    self._refresh_seekable()
+
+                    if self._seek_requests:
+                        song, pos = self._seek_requests[-1]
+                        if song is self._player.song:
+                            self._set_position(song, pos)
+                        del self._seek_requests[:]
+
+    def _set_position(self, song, pos):
+        event = Gst.Event.new_seek(
+            1.0, Gst.Format.TIME, Gst.SeekFlags.FLUSH,
+            Gst.SeekType.SET, pos * Gst.MSECOND, Gst.SeekType.NONE, 0)
+
+        if self._playbin.send_event(event):
+            self._active_seeks.append((song, pos))
+        else:
+            self._seek_requests.append((song, pos))
+
+
 class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     def PlayerPreferences(self):
@@ -180,15 +320,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         self._volume = 1.0
         self._paused = True
-        self._seekable = False
         self._mute = False
 
         self._in_gapless_transition = False
-        self._active_seeks = []
         self._active_error = False
-        self._last_position = 0
 
         self.bin = None
+        self._seeker = None
         self._int_vol_element = None
         self._ext_vol_element = None
         self._ext_mute_element = None
@@ -246,19 +384,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         else:
             print_e("No active pipeline.")
 
-    def _refresh_seekable(self):
-        query = Gst.Query.new_seeking(Gst.Format.TIME)
-        if self.bin and self.bin.query(query):
-            seekable = query.parse_seeking()[1]
-        elif self.song is None:
-            seekable = False
-        else:
-            seekable = True
-
-        if seekable != self._seekable:
-            self._seekable = seekable
-            self.notify("seekable")
-
     def __init_pipeline(self):
         """Creates a gstreamer pipeline. Returns True on success."""
 
@@ -315,22 +440,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             assert element is not None, pipeline
             bufbin.add(element)
 
-        PIPELINE_ERROR = PlayerError(_("Could not create GStreamer pipeline"))
-
         if len(pipeline) > 1:
             if not link_many(pipeline):
                 print_w("Linking the GStreamer pipeline failed")
-                self._error(PIPELINE_ERROR)
+                self._error(
+                    PlayerError(_("Could not create GStreamer pipeline")))
                 return False
-
-        # Test to ensure output pipeline can preroll
-        bufbin.set_state(Gst.State.READY)
-        result, state, pending = bufbin.get_state(timeout=STATE_CHANGE_TIMEOUT)
-        if result == Gst.StateChangeReturn.FAILURE:
-            bufbin.set_state(Gst.State.NULL)
-            print_w("Prerolling the GStreamer pipeline failed")
-            self._error(PIPELINE_ERROR)
-            return False
 
         # see if the sink provides a volume property, if yes, use it
         sink_element = pipeline[-1]
@@ -370,14 +485,16 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         gpad = Gst.GhostPad.new('sink', pipeline[0].get_static_pad('sink'))
         bufbin.add_pad(gpad)
 
-        self.bin = Gst.ElementFactory.make('playbin', None)
-        assert self.bin
+        bin_ = Gst.ElementFactory.make('playbin', None)
+        assert bin_
 
-        bus = self.bin.get_bus()
+        self.bin = BufferingWrapper(bin_, self)
+        self._seeker = Seeker(self.bin, self)
+
+        bus = bin_.get_bus()
         bus.add_signal_watch()
         self.__bus_id = bus.connect('message', self.__message, self._librarian)
 
-        self.bin = BufferingWrapper(self.bin, self)
         self.__atf_id = self.bin.connect('about-to-finish',
             self.__about_to_finish)
 
@@ -410,7 +527,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                         "mpg123audiodec": -2
                     }.get(f.get_name(), i)
                     return (i, f)
-                return zip(*sorted(map(set_prio, enumerate(factories))))[1]
+                return list(
+                    zip(*sorted(map(set_prio, enumerate(factories)))))[1]
 
             for e in iter_to_list(self.bin.iterate_recurse):
                 try:
@@ -421,13 +539,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     break
         self.bin.connect("source-setup", source_setup)
 
-        if self.has_external_volume:
-            # ReplayGain information gets lost when destroying
-            self._reset_replaygain()
-        else:
+        if not self.has_external_volume:
             # Restore volume/ReplayGain and mute state
             self.volume = self._volume
             self.mute = self._mute
+
+        # ReplayGain information gets lost when destroying
+        self._reset_replaygain()
 
         if self.song:
             self.bin.set_property('uri', self.song("~uri"))
@@ -447,6 +565,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.bin.disconnect(self.__atf_id)
             self.__atf_id = None
 
+        if self._seeker is not None:
+            self._seeker.destroy()
+            self._seeker = None
+            self.notify("seekable")
+
         if self.bin:
             self.bin.set_state(Gst.State.NULL)
             self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)
@@ -455,8 +578,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.bin = None
 
         self._in_gapless_transition = False
-        self._last_position = 0
-        self._active_seeks = []
 
         self._ext_vol_element = None
         self._int_vol_element = None
@@ -490,13 +611,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             gerror, debug_info = message.parse_error()
             message = u""
             if gerror:
-                message = gerror.message.decode("utf-8").rstrip(".")
+                message = util.gdecode(gerror.message).rstrip(".")
             details = None
             if debug_info:
                 # strip the first line, not user friendly
                 debug_info = "\n".join(debug_info.splitlines()[1:])
                 # can contain paths, so not sure if utf-8 in all cases
-                details = debug_info.decode("utf-8", errors="replace")
+                details = util.gdecode(debug_info)
             self._error(PlayerError(message, details))
         elif message.type == Gst.MessageType.STATE_CHANGED:
             # pulsesink doesn't notify a volume change on startup
@@ -505,20 +626,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 self.notify("volume")
             if message.src is self._ext_mute_element:
                 self.notify("mute")
-
-            if message.src is self.bin.bin:
-                new_state = message.parse_state_changed()[1]
-                if new_state >= Gst.State.PAUSED:
-                    self._refresh_seekable()
         elif message.type == Gst.MessageType.STREAM_START:
             if self._in_gapless_transition:
                 print_d("Stream changed")
                 self._end(False)
-        elif message.type == Gst.MessageType.ASYNC_DONE:
-            if self._active_seeks:
-                song, pos = self._active_seeks.pop(0)
-                if song is self.song:
-                    self.emit("seek", song, pos)
         elif message.type == Gst.MessageType.ELEMENT:
             message_name = message.get_structure().get_name()
 
@@ -557,7 +668,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         format_desc = get_description(message)
         title = _(u"No GStreamer element found to handle media format")
         error_details = _(u"Media format: %(format-description)s") % {
-            "format-description": format_desc.decode("utf-8")}
+            "format-description": util.gdecode(format_desc)}
 
         def install_done_cb(plugins_return, *args):
             print_d("Gstreamer plugin install return: %r" % plugins_return)
@@ -671,7 +782,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 self._mute = self._ext_mute_element.get_property("mute")
             return self._mute
         elif property.name == "seekable":
-            return self._seekable
+            if self._seeker is not None:
+                return self._seeker.seekable
+            return False
         else:
             raise AttributeError
 
@@ -709,20 +822,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         """Return the current playback position in milliseconds,
         or 0 if no song is playing."""
 
-        p = self._last_position
-        if self.song and self.bin:
-            # While we are actively seeking return the last wanted position.
-            # query_position() returns 0 while in this state
-            if self._active_seeks:
-                return self._active_seeks[-1][1]
-
-            ok, p = self.bin.query_position(Gst.Format.TIME)
-            if ok:
-                p //= Gst.MSECOND
-                # During stream seeking querying the position fails.
-                # Better return the last valid one instead of 0.
-                self._last_position = p
-        return p
+        if self._seeker:
+            return self._seeker.get_position()
+        return 0
 
     @property
     def paused(self):
@@ -775,39 +877,28 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.error = True
         self.paused = True
 
-        print_w(unicode(player_error))
+        print_w(player_error)
         self.emit('error', self.song, player_error)
         self._active_error = False
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
+
         # Don't allow seeking during gapless. We can't go back to the old song.
         if not self.song or self._in_gapless_transition:
             return
 
         if self.__init_pipeline():
-            # ensure any pending state changes have completed and we have
-            # at least paused state, so we can seek
-            state = self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)[1]
-            if state < Gst.State.PAUSED:
-                self.bin.set_state(Gst.State.PAUSED)
-                self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)
+            self._seeker.set_position(pos)
 
-            pos = max(0, int(pos))
-            gst_time = pos * Gst.MSECOND
-            event = Gst.Event.new_seek(
-                1.0, Gst.Format.TIME, Gst.SeekFlags.FLUSH,
-                Gst.SeekType.SET, gst_time, Gst.SeekType.NONE, 0)
-            if self.bin.send_event(event):
-                # to get a good estimate for when get_position fails
-                self._last_position = pos
-                # For cases where we get the position directly after
-                # a seek and the seek is not done, GStreamer returns
-                # a valid 0 position. To prevent this we try to emit seek only
-                # after it is done. Every flushing seek will trigger
-                # an async_done message on the bus, so we queue the seek
-                # event here and emit in the bus message callback.
-                self._active_seeks.append((self.song, pos))
+    def sync(self, timeout):
+        if self.bin is not None:
+            # XXX: This is flaky, try multiple times
+            for i in range(5):
+                self.bin.get_state(Gst.SECOND * timeout)
+                # we have some logic in the main loop, so iterate there
+                while GLib.MainContext.default().iteration(False):
+                    pass
 
     def _end(self, stopped, next_song=None):
         print_d("End song")
@@ -830,7 +921,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         # Then, set up the next song.
         self.song = self.info = current
-        self.emit('song-started', self.song)
 
         print_d("Next song")
         if self.song is not None:
@@ -853,7 +943,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.paused = True
 
         self._in_gapless_transition = False
-        self._refresh_seekable()
+
+        if self._seeker is not None:
+            # we could have a gapless transition to a non-seekable -> update
+            self._seeker.reset()
+
+        self.emit('song-started', self.song)
 
     def __tag(self, tags, librarian):
         if self.song and self.song.multisong:
@@ -880,12 +975,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         tags = TagListWrapper(tags, merge=True)
         tags = parse_gstreamer_taglist(tags)
 
-        for key, value in sanitize_tags(tags, stream=False).iteritems():
+        for key, value in iteritems(sanitize_tags(tags, stream=False)):
             if self.song.get(key) != value:
                 changed = True
                 self.song[key] = value
 
-        for key, value in sanitize_tags(tags, stream=True).iteritems():
+        for key, value in iteritems(sanitize_tags(tags, stream=True)):
             if new_info.get(key) != value:
                 info_changed = True
                 new_info[key] = value

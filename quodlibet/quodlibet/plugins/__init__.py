@@ -2,8 +2,9 @@
 # Copyright 2012 - 2014 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet import _
 from quodlibet import config
@@ -12,7 +13,7 @@ from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.util.dprint import print_d
 from quodlibet.util.config import ConfigProxy
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.compat import itervalues, iteritems
+from quodlibet.compat import itervalues, iteritems, listkeys, string_types
 
 
 def init(folders=None, disable_plugins=False):
@@ -150,7 +151,7 @@ class Plugin(object):
     @property
     def tags(self):
         tags = getattr(self.cls, "PLUGIN_TAGS", [])
-        if isinstance(tags, basestring):
+        if isinstance(tags, string_types):
             tags = [tags]
         return tags
 
@@ -382,7 +383,7 @@ class PluginManager(object):
     def quit(self):
         """Disable plugins and tell all handlers to clean up"""
 
-        for name in self.__modules.keys():
+        for name in listkeys(self.__modules):
             self.__remove_module(name)
 
     def __remove_module(self, name):
@@ -421,13 +422,11 @@ class PluginManager(object):
 PM = PluginManager
 
 
-def get_config_option(plugin_cls, option):
-    try:
-        prefix = plugin_cls.CONFIG_SECTION
-    except AttributeError:
-        prefix = plugin_cls.PLUGIN_ID.lower().replace(" ", "_")
-
-    return "%s_%s" % (prefix, option)
+def plugin_enabled(plugin):
+    """Returns true if the plugin is enabled (or "always" enabled)"""
+    pm = PluginManager.instance
+    enabled = pm.enabled(plugin) or not plugin.can_enable
+    return enabled
 
 
 class PluginConfig(ConfigProxy):
@@ -457,14 +456,25 @@ class PluginConfig(ConfigProxy):
 
 class PluginConfigMixin(object):
     """
-    Mixin for storage and editing of plugin config in a standard way
-    Will use `CONFIG_SECTION`, if defined, for storing config, otherwise,
-    it will base the keys on `PLUGIN_ID`.
+    Mixin for storage and editing of plugin config in a standard way.
     """
+
+    CONFIG_SECTION = None
+    """If defined, the section for storing config,
+        otherwise, it will based on a munged `PLUGIN_ID`"""
 
     @classmethod
     def _config_key(cls, name):
-        return get_config_option(cls, name)
+        return cls._get_config_option(name)
+
+    @classmethod
+    def _get_config_option(cls, option):
+        try:
+            prefix = cls.CONFIG_SECTION
+        except AttributeError:
+            prefix = cls.PLUGIN_ID.lower().replace(" ", "_")
+
+        return "%s_%s" % (prefix, option)
 
     @classmethod
     def config_get(cls, name, default=""):
@@ -483,6 +493,12 @@ class PluginConfigMixin(object):
     def config_get_bool(cls, name, default=False):
         """Gets a config boolean for this plugin"""
         return config.getboolean(PM.CONFIG_SECTION, cls._config_key(name),
+                                 default)
+
+    @classmethod
+    def config_get_stringlist(cls, name, default=False):
+        """Gets a config string list for this plugin"""
+        return config.getstringlist(PM.CONFIG_SECTION, cls._config_key(name),
                                  default)
 
     def config_entry_changed(self, entry, key):
@@ -540,7 +556,7 @@ class FloatConfProp(ConfProp):
 def str_to_color_tuple(s):
     """Raises ValueError"""
 
-    lst = map(float, s.split())
+    lst = [float(p) for p in s.split()]
     while len(lst) < 4:
         lst.append(0.0)
     return tuple(lst)

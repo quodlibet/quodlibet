@@ -3,8 +3,9 @@
 #           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet import _
 from quodlibet.util.dprint import print_d
@@ -12,8 +13,11 @@ from quodlibet.formats import AudioFileError
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.util.misc import total_ordering, hashable
 
 
+@hashable
+@total_ordering
 class SongWrapper(object):
     __slots__ = ['_song', '_updated', '_needs_write']
 
@@ -53,11 +57,18 @@ class SongWrapper(object):
         else:
             return super(SongWrapper, self).__setattr__(attr, value)
 
-    def __cmp__(self, other):
-        try:
-            return cmp(self._song, other._song)
-        except:
-            return cmp(self._song, other)
+    def __hash__(self):
+        return hash(self._song)
+
+    def __eq__(self, other):
+        if hasattr(other, '_song'):
+            other = other._song
+        return self._song == other
+
+    def __lt__(self, other):
+        if hasattr(other, '_song'):
+            other = other._song
+        return self._song < other
 
     def __getitem__(self, *args):
         return self._song.__getitem__(*args)
@@ -93,12 +104,12 @@ def ListWrapper(songs):
 
 
 def check_wrapper_changed(library, parent, songs):
-    needs_write = filter(lambda s: s._needs_write, songs)
+    need_write = [s for s in songs if s._needs_write]
 
-    if needs_write:
-        win = WritingWindow(parent, len(needs_write))
+    if need_write:
+        win = WritingWindow(parent, len(need_write))
         win.show()
-        for song in needs_write:
+        for song in need_write:
             try:
                 song._song.write()
             except AudioFileError as e:

@@ -66,7 +66,7 @@ OPTIONS
     Toggle play/pause mode
 
 --previous
-    Jump to previous song or restart if near the beginning
+    Jump to previous song if near the beginning, otherwise restart
 
 --force-previous
     Jump to previous song
@@ -111,6 +111,9 @@ OPTIONS
 
 --show-window
     Show main window
+
+--start-hidden
+    Don't show any windows on start
 
 --start-playing
     Begin playing immediately

@@ -1,14 +1,238 @@
-3.8.0 (????-??-??)
-------------------
+.. _release-4.0.0:
+
+4.0.0 (2017-??-??)
+-------------------
 
 Packaging Changes:
-  * `futures <https://pypi.python.org/pypi/futures>`__ required
-    (usually called python-futures or python2-futures in distros)
+  * **Python 3.5** required (was 2.7)
 
+    * All Python dependencies need to be switched to their Python 3 variants.
+      In case there is a "py" in the package name it likely needs to be
+      changed.
+
+  * **Mutagen 1.34** required (was 1.32)
+  * **GTK+ 3.18** required (was 3.14)
+  * **PyGObject 3.18** required (was 3.14)
+  * **GStreamer 1.8** required (was 1.4)
+  * **media-player-info** no longer required
+  * **udisks2** no longer required
+  * **python-futures** no longer required
+
+
+.. _release-3.9.1:
+
+3.9.1 (2017-06-06) - CHECK AND MATE, FAILING BODY AND MIND
+----------------------------------------------------------
+
+  * Danish translation update :pr:`2394` (:user:`scootergrisen`)
+  * Various bug fixes: :bug:`2409` :bug:`2364` :bug:`2406` :bug:`2401`
+    :bug:`2410` :bug:`2414` :bug:`2387` :bug:`2411` :bug:`2386` :bug:`2400`
+    :bug:`2404` (:user:`Nick Boultbee <declension>` et al.)
+
+
+.. _release-3.9.0:
+
+3.9.0 (2017-05-24) - If you can whistle, you can do this too
+------------------------------------------------------------
+
+Packaging Changes:
+  * **python-zeitgeist** no longer used
+  * **python-feedparser** required (no longer optional)
+  * **python-faulthandler** required
+  * **GTK+ 3.14** required (was 3.10)
+  * **PyGObject 3.14** required (was 3.12)
+  * **GStreamer 1.4** required (was 1.2)
+  * No longer installs icons to "/usr/share/pixmaps"
+  * Installs more icons into "/usr/share/icons/hicolor/" theme
+
+Translation Updates:
+  * Czech :pr:`2175` (:user:`Marek Suchánek <mrksu>`)
+  * Danish :pr:`2185` (:user:`scootergrisen`)
+  * French :pr:`2206` (:user:`Olivier Humbert <trebmuh>`)
+  * Czech :bug:`2209` (:user:`Honza Hejzl <welblaud>`)
+  * Norwegian Bokmål :pr:`2232` :pr:`2354` (:user:`Åka Sikrom <akrosikam>`)
+  * French :pr:`2240` (:user:`Jean-Michel Pouré <kellogsgit>`)
+  * German :pr:`2388` (:user:`Till Berger <Mellthas>`)
+  * Polish :pr:`2391` (:user:`Piotr Drąg <piotrdrag>`)
+
+General:
+  * Windows: Use native file choosers :pr:`2324`
+  * operon: add "--all" option for the "tags" command. :bug:`2335`
+  * Queue: Add checkbox to stop after queue is empty :pr:`2340`
+    (:user:`Fredrik Strupe <frestr>`)
+  * Opt-in online crash reporting using sentry.io :pr:`2313`
+  * Allow resizing of panes in PanedBrowser :pr:`2301`
+    (:user:`Fredrik Strupe <frestr>`)
+  * Plugins: Add UI for plugin type filtering :pr:`2218`
+    (:user:`Nick Boultbee <declension>`)
+  * Add accelerators for "Open Browser" Menu :pr:`2305`
+    (:user:`Uriel Zajaczkovski <urielz>`)
+  * replaygain: save selected replaygain profiles to config :pr:`2279`
+    (:user:`Didier Villevalois <ptitjes>`)
+  * Allow ``!=`` in queries :bug:`2056` (:user:`Nick Boultbee <declension>`)
+  * Add ``~#channels`` :bug:`1686`
+  * songlist: make "space" trigger play/pause. See :bug:`1288`
+  * Add ``--start-hidden`` and remove visibility restoring from the tray icon
+    :bug:`814`
+  * Add non-python crash reporting on the next start :bug:`1853`
+  * mp3: include lame preset in ``~encoding``
+
+Fixes:
+  * Fix queue height not getting restored in some cases :pr:`2330`
+    (:user:`Fredrik Strupe <frestr>`)
+  * macOS: Fix URL launching from labels :bug:`2306`
+  * Windows: Fix crash when the 65001 code page is used :bug:`2333`
+  * Windows: Fix crash with French locale in some cases. :bug:`2364`
+  * MPRIS: Fix metadata changes not getting emitted :pr:`2359`
+    (:user:`IBBoard`)
+  * Tray icon: Fix rating menu :pr:`2355` (:user:`IBBoard`)
+  * Player: Fix "previous" not working with radio streams :bug:`2198`
+  * gstbe: increase default buffer duration. :bug:`2191`
+  * macOS: Fix meta key for accelerators not working :bug:`2271`
+  * Fix error in case stdout gets closed before QL :bug:`2205`
+  * Fix icon size of app menu embedded in gnome-shell decoration :bug:`2320`
+    :pr:`2334` (:user:`Vimalan Reddy <redvimo>`)
+
+Plugins:
+  * Windows: Enable crossfeed plugin
+  * Add a plugin to export a playlist to a folder :pr:`2307`
+    (:user:`Didier Villevalois <ptitjes>`)
+  * Add skip by rating plugin :pr:`2201` (:user:`Jason Heard <101100>`)
+  * Advanced Prefs: add a configuration for the window title pattern :pr:`2272`
+    (:user:`Didier Villevalois <ptitjes>`)
+  * waveformseekbar: add hidpi detection :pr:`2261`
+    (:user:`Didier Villevalois <ptitjes>`)
+  * waveformseekbar: smoother drawing updates :pr:`2289`
+    (:user:`Didier Villevalois <ptitjes>`)
+  * Add a tap bpm plugin :pr:`2264` (:user:`Didier Villevalois <ptitjes>`)
+  * Add plugin for changing the user interface language :pr:`2154`
+  * Add external visualisations plugin :bug:`737`
+    (:user:`Nick Boultbee <declension>`)
+  * EQ Plugin: various improvements :bug:`1913`
+    (:user:`Nick Boultbee <declension>`)
+  * Add a plugin to toggle the menubar's visibility using "alt" :pr:`2263`
+    :pr:`2267` (:user:`Didier Villevalois <ptitjes>`)
+
+Further Contributions:
+  :pr:`2282` (:user:`David Pérez Carmona <DavidPerezIngeniero>`) :pr:`2284`
+  (:user:`Jakub Wilk <jwilk>`) :pr:`2294` :pr:`2326` (:user:`Fredrik Strupe
+  <frestr>`), :pr:`2270` :pr:`2302` :pr:`2280` :pr:`2385` (:user:`Didier
+  Villevalois <ptitjes>`) :pr:`2308` :pr:`2314` (:user:`Uriel Zajaczkovski
+  <urielz>`) :pr:`2331` (:user:`CreamyCookie`)
+
+Development:
+  * tests: use xvfbwrapper if available :pr:`2287`
+  * gdist: relicense to modern style MIT
+  * Use docker on travis-ci :pr:`2269` :pr:`2290`
+
+
+.. _release-3.8.1:
+
+3.8.1 (2017-01-23) - LET'S TALK ABOUT BIRDS
+-------------------------------------------
+
+* GStreamer: increase default buffer duration. :bug:`2191`
+* Fix acoustid plugin :bug:`2192`
+* Fix new playlists from menu :bug:`2183` (:user:`Nick Boultbee <declension>`)
+* mpdserver: Make it work with the M.A.L.P Android client :bug:`2179`
+* Waveform plugin fixes :bug:`2195` (:user:`Nick Boultbee <declension>`)
+* Covergrid context menu fixes :pr:`2197` (:user:`Joel Ong <darthoctopus>`)
+
+Translations:
+  * Norwegian Bokmål :pr:`2194` (:user:`Åka Sikrom <akrosikam>`)
+  * German :pr:`2188` (:user:`Till Berger <Mellthas>`)
+
+
+.. _release-3.8.0:
+
+3.8.0 (2016-12-29) - Maybe it'll land somewhere cool eventually
+---------------------------------------------------------------
+
+Packaging Changes:
+  * `concurrent.futures <https://pypi.python.org/pypi/futures>`__ required
+    (usually called python-futures, python-concurrent.futures or
+    python2-futures in distros)
+  * **libgpod4** is no longer used
+  * Testing now requires py.test
+  * Installs a new zsh completion file
+
+General:
+  * Preferences: Add option for changing the duration display format
+    :pr:`2021` :bug:`1727` :bug:`1967` (:user:`Nick Boultbee <declension>`)
+  * Locale-dependent number formatting :bug:`2018`
+    (:user:`Nick Boultbee <declension>`)
+  * Fix updates across browsers on changes to ~playlists :bug:`2017`
+    (:user:`Nick Boultbee <declension>`)
+  * Don't wake up when idle :pr:`2068` :bug:`2067`
+  * Covergrid Browser :bug:`241` :pr:`2071` :pr:`2115` :pr:`2125` :bug:`2110`
+    :pr:`2130` (:user:`brunob`, :user:`Joel Ong <darthoctopus>`,
+    :user:`knockoutMice`)
+  * Play order (shuffle / repeat) rewrite to be more modularised / powerful
+    :pr:`2043` :bug:`2059` :bug:`2121` :bug:`2123` :pr:`2125`
+    (:user:`Nick Boultbee <declension>`)
+  * Improvements / additions to Information window :pr:`2119` :bug:`1558`
+    (:user:`Nick Boultbee <declension>`)
+  * Search: Fix error when query divides by 0 :pr:`2025` (:user:`faubiguy`)
+  * Fix crash on tag edit abort :bug:`2081`
+  * Library scan: ignore hidden files :bug:`2074`
+  * Remove iPod support
+  * Log the filename in case something crashes :bug:`2143`
+  * MP4: Handle empty trkn/disk :bug:`2143`
+  * Library: support autofs mounts :bug:`2146`
+  * Various small GTK+/Ubuntu theme related updates
+  * Fix crash when parsing feeds :pr:`2144`
+    (:user:`Peter Schwede <pschwede>`)
+  * Song list: ctrl+drag will now force a song copy :bug:`1952`
+  * MP4: round bpm to nearest int. :bug:`2028`
+    (:user:`Nick Boultbee <declension>`)
+  * Songsmenu icons improved (:user:`Nick Boultbee <declension>`)
+  * Basic zsh completion
+
+Translation Updates:
+  * Polish :pr:`2141` (:user:`Piotr Drąg <piotrdrag>`)
+  * Norwegian Bokmål :pr:`2031` :pr:`2064` (:user:`Åka Sikrom <akrosikam>`)
+  * Danish :pr:`2169` (:user:`scootergrisen`)
+  * Czech :pr:`2173` (:user:`Marek Suchánek <mrksu>`)
+
+Plugins:
+  * Discogs Cover Source :pr:`2136` (:user:`knockoutMice`)
+  * Add register-date filter to lastfmsync plugin :pr:`2127`
+    (:user:`knockoutMice`)
+  * Wikipedia plugin - search instead of direct URL :pr:`2112` (:user:`urielz`)
+  * Notification plugin: add option to mask 'Next' :bug:`2026` :pr:`2045`
+    (:user:`Corentin Néau <weyfonk>`)
+  * Waveform seek bar :pr:`2046` (:user:`0x1777`),
+    related performance improvements (:user:`Nick Boultbee <declension>`)
+  * Add playlists to tray menu :bug:`2006` (:user:`Nick Boultbee <declension>`)
+  * Random album plugin fixes :pr:`2085` (:user:`draxil`)
+  * Custom commands: minor improvements (:user:`Nick Boultbee <declension>`)
+  * Some Auto Library Update plugin fixes :bug:`1315`
+    (:user:`Nick Boultbee <declension>`)
+  * Seek bar plugin: invert scrolling directions :pr:`2052`
+    (:user:`Corentin Néau <weyfonk>`)
+
+Windows:
+  * Switch to msys2 :bug:`1718`
+  * Allow opening audio files with quodlibet.exe :bug:`1607`
+  * Enable pitch plugin again :bug:`1534`
+  * Windows regressions: crossfeed plugin missing (will be back in the
+    next version)
+
+macOS:
+  * Allow opening audio files with the bundle
+  * Really (really..) fix TLS :pr:`2108` :bug:`2107`
+
+Development:
+  * Tests: switch to `pytest <http://docs.pytest.org/en/latest/>`__
+    as the main test runner
+  * Tests: ``setup.py quality`` speedups
+  * Tests: All tests pass now on Python 3 under Linux and Windows
+  * All magic builtins gone :pr:`2044`
+  * macOS bundle and Windows installer include everything required for running
+    the test suite.
 
 
 .. _release-3.7.1:
-
 
 3.7.1 (2016-09-25) - And then you're doomed. Doomed to to have not ill effects, that is!
 ----------------------------------------------------------------------------------------
@@ -71,7 +295,7 @@ Tagging:
 
 Plugins:
   * lyricswindow: Restart WebKit when crashed :pr:`1923` (:user:`CreamyCookie`)
-  * lyricswindow: Prevent alert windows. :pr:`1927` (:user:`CreamyCookie`)
+  * lyricswindow: Prevent alert windows. :bug:`1927` (:user:`CreamyCookie`)
   * tray icon: Improve unity detection :bug:`1999`
   * musicbrainz: Add option to write labelid. :bug:`1929`
   * musicbrainz: Write musicbrainz release track ids :pr:`1992`
@@ -2084,7 +2308,7 @@ Windows
    manual page for instructions on using it. This should let ALSA users
    use software mixing.
  * ID3 APIC (embedded picture) support.
- * VorbisGain (http://sjeng.org/vorbisgain.html) support.
+ * VorbisGain (https://sjeng.org/vorbisgain.html) support.
  * A context menu for common operations was added to the properties dialog.
  * Tag values can be set from filename patterns, or vice-versa.
  * Dates can be saved in MP3s now.

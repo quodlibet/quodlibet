@@ -4,8 +4,9 @@
 #           2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import gi
 try:
@@ -20,6 +21,7 @@ from quodlibet import _
 from quodlibet import app
 from quodlibet.util import is_plasma
 from quodlibet.pattern import Pattern
+from quodlibet.compat import xrange
 from .base import BaseIndicator
 from .util import pconfig
 from .menu import IndicatorMenu
@@ -61,7 +63,6 @@ class AppIndicator(BaseIndicator):
         self.__scroll_id = self.indicator.connect(
             "scroll_event", self.__on_scroll)
 
-        self.__w_sig_show = app.window.connect('show', self.__window_show)
         self.__w_sig_del = app.window.connect('delete-event',
                                               self.__window_delete)
 
@@ -87,7 +88,6 @@ class AppIndicator(BaseIndicator):
     def remove(self):
         # No function to remove an Indicator so it can be added back :(
         # If there is we can get rid of get_next_app_id()
-        app.window.disconnect(self.__w_sig_show)
         app.window.disconnect(self.__w_sig_del)
         self.indicator.disconnect(self.__scroll_id)
         self.__scroll_id = None
@@ -118,9 +118,5 @@ class AppIndicator(BaseIndicator):
             return True
         return False
 
-    def __window_show(self, win, *args):
-        pconfig.set("window_visible", True)
-
     def __hide_window(self):
         app.hide()
-        pconfig.set("window_visible", False)

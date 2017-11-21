@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import shutil
@@ -101,8 +102,8 @@ class TFSInterface(TestCase):
     def test_start(self):
         self.p.emit('song_started', AudioFile({"woo": "bar", "~#length": 10}))
         self.do()
-        with open(self.filename) as h:
-            self.failUnless("woo=bar\n" in h.read())
+        with open(self.filename, "rb") as h:
+            self.failUnless(b"woo=bar\n" in h.read())
 
     def test_song_ended(self):
         self.p.emit('song-started', AudioFile({"woo": "bar", "~#length": 10}))

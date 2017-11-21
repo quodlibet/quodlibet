@@ -2,8 +2,9 @@
 # Copyright 2010,2012 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import time
 import tempfile
@@ -15,6 +16,7 @@ from senf import fsn2uri
 from quodlibet import app
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
+from quodlibet.compat import iteritems, listmap
 
 from .util import MPRISObject
 
@@ -144,8 +146,8 @@ value="false"/>
     def __seeked(self, player, song, ms):
         self.Seeked(ms * 1000)
 
-    def __library_changed(self, library, song):
-        if song and song is not app.player.info:
+    def __library_changed(self, library, songs):
+        if not songs or app.player.info not in songs:
             return
         self.emit_properties_changed(self.PLAYER_IFACE, ["Metadata"])
 
@@ -181,18 +183,11 @@ value="false"/>
 
     @dbus.service.method(PLAYER_IFACE)
     def Play(self):
-        if app.player.song is None:
-            app.player.reset()
-        else:
-            app.player.paused = False
+        app.player.play()
 
     @dbus.service.method(PLAYER_IFACE)
     def PlayPause(self):
-        player = app.player
-        if player.song is None:
-            player.reset()
-        else:
-            player.paused ^= True
+        app.player.playpause()
 
     @dbus.service.method(PLAYER_IFACE)
     def Stop(self):
@@ -253,14 +248,14 @@ value="false"/>
         list_val = {"artist": "artist", "albumArtist": "albumartist",
             "comment": "comment", "composer": "composer", "genre": "genre",
             "lyricist": "lyricist"}
-        for xesam, tag in list_val.iteritems():
+        for xesam, tag in iteritems(list_val):
             vals = song.list(tag)
             if vals:
-                metadata["xesam:" + xesam] = map(unival, vals)
+                metadata["xesam:" + xesam] = listmap(unival, vals)
 
         # All single values
         sing_val = {"album": "album", "title": "title", "asText": "~lyrics"}
-        for xesam, tag in sing_val.iteritems():
+        for xesam, tag in iteritems(sing_val):
             vals = song.comma(tag)
             if vals:
                 metadata["xesam:" + xesam] = unival(vals)
@@ -272,7 +267,7 @@ value="false"/>
         num_val = {"audioBPM": "bpm", "discNumber": "disc",
                    "trackNumber": "track", "useCount": "playcount"}
 
-        for xesam, tag in num_val.iteritems():
+        for xesam, tag in iteritems(num_val):
             val = song("~#" + tag, None)
             if val is not None:
                 metadata["xesam:" + xesam] = int(val)

@@ -4,8 +4,9 @@
 #           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import random
 
@@ -20,6 +21,7 @@ from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.util import connect_obj, print_d
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.library import background_filter
+from quodlibet.compat import itervalues
 
 
 class Filter(object):
@@ -76,7 +78,7 @@ class Filter(object):
         library = app.library
         bg = background_filter()
         if bg:
-            songs = filter(bg, library.itervalues())
+            songs = filter(bg, itervalues(library))
             return list({value
                          for song in songs
                          for value in song.list(tag)})

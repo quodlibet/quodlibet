@@ -1,156 +1,159 @@
 # -*- encoding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+import time
 
 from senf import fsnative
 
-from tests import TestCase
-
 from quodlibet import config
+from quodlibet.compat import xrange
+from quodlibet.formats import AudioFile
 from quodlibet.query import Query, QueryType
 from quodlibet.query import _match as match
-from quodlibet.formats import AudioFile
+from tests import TestCase, skip
 
 
 class TQuery_is_valid(TestCase):
     def test_re(self):
-        self.failUnless(Query.is_valid('t = /an re/'))
-        self.failUnless(Query.is_valid('t = /an re/c'))
-        self.failUnless(Query.is_valid('t = /an\\/re/'))
-        self.failIf(Query.is_valid('t = /an/re/'))
-        self.failUnless(Query.is_valid('t = /aaa/lsic'))
-        self.failIf(Query.is_valid('t = /aaa/icslx'))
+        self.failUnless(Query('t = /an re/').valid)
+        self.failUnless(Query('t = /an re/c').valid)
+        self.failUnless(Query('t = /an\\/re/').valid)
+        self.failIf(Query('t = /an/re/').valid)
+        self.failUnless(Query('t = /aaa/lsic').valid)
+        self.failIf(Query('t = /aaa/icslx').valid)
 
     def test_str(self):
-        self.failUnless(Query.is_valid('t = "a str"'))
-        self.failUnless(Query.is_valid('t = "a str"c'))
-        self.failUnless(Query.is_valid('t = "a\\"str"'))
+        self.failUnless(Query('t = "a str"').valid)
+        self.failUnless(Query('t = "a str"c').valid)
+        self.failUnless(Query('t = "a\\"str"').valid)
         # there's no equivalent failure for strings since 'str"' would be
         # read as a set of modifiers
 
     def test_tag(self):
-        self.failUnless(Query.is_valid('t = tag'))
-        self.failUnless(Query.is_valid('t = !tag'))
-        self.failUnless(Query.is_valid('t = |(tag, bar)'))
-        self.failUnless(Query.is_valid('t = a"tag"'))
-        self.failIf(Query.is_valid('t = a, tag'))
-        self.failUnless(Query.is_valid('tag with spaces = tag'))
+        self.failUnless(Query('t = tag').valid)
+        self.failUnless(Query('t = !tag').valid)
+        self.failUnless(Query('t = |(tag, bar)').valid)
+        self.failUnless(Query('t = a"tag"').valid)
+        self.failIf(Query('t = a, tag').valid)
+        self.failUnless(Query('tag with spaces = tag').valid)
 
     def test_empty(self):
-        self.failUnless(Query.is_valid(''))
-        self.failUnless(Query.is_parsable(''))
+        self.failUnless(Query('').valid)
+        self.failUnless(Query('').is_parsable)
         self.failUnless(Query(''))
 
     def test_emptylist(self):
-        self.failIf(Query.is_valid("a = &()"))
-        self.failIf(Query.is_valid("a = |()"))
-        self.failIf(Query.is_valid("|()"))
-        self.failIf(Query.is_valid("&()"))
+        self.failIf(Query("a = &()").valid)
+        self.failIf(Query("a = |()").valid)
+        self.failIf(Query("|()").valid)
+        self.failIf(Query("&()").valid)
 
     def test_nonsense(self):
-        self.failIf(Query.is_valid('a string'))
-        self.failIf(Query.is_valid('t = #(a > b)'))
-        self.failIf(Query.is_valid("=a= = /b/"))
-        self.failIf(Query.is_valid("a = &(/b//"))
-        self.failIf(Query.is_valid("(a = &(/b//)"))
+        self.failIf(Query('a string').valid)
+        self.failIf(Query('t = #(a > b)').valid)
+        self.failIf(Query("=a= = /b/").valid)
+        self.failIf(Query("a = &(/b//").valid)
+        self.failIf(Query("(a = &(/b//)").valid)
 
     def test_trailing(self):
-        self.failIf(Query.is_valid('t = /an re/)'))
-        self.failIf(Query.is_valid('|(a, b = /a/, c, d = /q/) woo'))
+        self.failIf(Query('t = /an re/)').valid)
+        self.failIf(Query('|(a, b = /a/, c, d = /q/) woo').valid)
 
     def test_not(self):
-        self.failUnless(Query.is_valid('t = !/a/'))
-        self.failUnless(Query.is_valid('t = !!/a/'))
-        self.failUnless(Query.is_valid('!t = "a"'))
-        self.failUnless(Query.is_valid('!!t = "a"'))
-        self.failUnless(Query.is_valid('t = !|(/a/, !"b")'))
-        self.failUnless(Query.is_valid('t = !!|(/a/, !"b")'))
-        self.failUnless(Query.is_valid('!|(t = /a/)'))
+        self.failUnless(Query('t = !/a/').valid)
+        self.failUnless(Query('t = !!/a/').valid)
+        self.failUnless(Query('!t = "a"').valid)
+        self.failUnless(Query('!!t = "a"').valid)
+        self.failUnless(Query('t = !|(/a/, !"b")').valid)
+        self.failUnless(Query('t = !!|(/a/, !"b")').valid)
+        self.failUnless(Query('!|(t = /a/)').valid)
 
     def test_taglist(self):
-        self.failUnless(Query.is_valid('a, b = /a/'))
-        self.failUnless(Query.is_valid('a, b, c = |(/a/)'))
-        self.failUnless(Query.is_valid('|(a, b = /a/, c, d = /q/)'))
-        self.failIf(Query.is_valid('a = /a/, b'))
+        self.failUnless(Query('a, b = /a/').valid)
+        self.failUnless(Query('a, b, c = |(/a/)').valid)
+        self.failUnless(Query('|(a, b = /a/, c, d = /q/)').valid)
+        self.failIf(Query('a = /a/, b').valid)
 
     def test_andor(self):
-        self.failUnless(Query.is_valid('a = |(/a/, /b/)'))
-        self.failUnless(Query.is_valid('a = |(/b/)'))
-        self.failUnless(Query.is_valid('|(a = /b/, c = /d/)'))
+        self.failUnless(Query('a = |(/a/, /b/)').valid)
+        self.failUnless(Query('a = |(/b/)').valid)
+        self.failUnless(Query('|(a = /b/, c = /d/)').valid)
 
-        self.failUnless(Query.is_valid('a = &(/a/, /b/)'))
-        self.failUnless(Query.is_valid('a = &(/b/)'))
-        self.failUnless(Query.is_valid('&(a = /b/, c = /d/)'))
+        self.failUnless(Query('a = &(/a/, /b/)').valid)
+        self.failUnless(Query('a = &(/b/)').valid)
+        self.failUnless(Query('&(a = /b/, c = /d/)').valid)
 
     def test_numcmp(self):
-        self.failUnless(Query.is_valid("#(t < 3)"))
-        self.failUnless(Query.is_valid("#(t <= 3)"))
-        self.failUnless(Query.is_valid("#(t > 3)"))
-        self.failUnless(Query.is_valid("#(t >= 3)"))
-        self.failUnless(Query.is_valid("#(t = 3)"))
-        self.failUnless(Query.is_valid("#(t != 3)"))
+        self.failUnless(Query("#(t < 3)").valid)
+        self.failUnless(Query("#(t <= 3)").valid)
+        self.failUnless(Query("#(t > 3)").valid)
+        self.failUnless(Query("#(t >= 3)").valid)
+        self.failUnless(Query("#(t = 3)").valid)
+        self.failUnless(Query("#(t != 3)").valid)
 
-        self.failIf(Query.is_valid("#(t !> 3)"))
-        self.failIf(Query.is_valid("#(t >> 3)"))
+        self.failIf(Query("#(t !> 3)").valid)
+        self.failIf(Query("#(t >> 3)").valid)
 
     def test_numcmp_func(self):
-        self.assertTrue(Query.is_valid("#(t:min < 3)"))
+        self.assertTrue(Query("#(t:min < 3)").valid)
         self.assertTrue(
-            Query.is_valid("&(#(playcount:min = 0), #(added < 1 month ago))"))
+            Query("&(#(playcount:min = 0), #(added < 1 month ago))").valid)
 
     def test_trinary(self):
-        self.failUnless(Query.is_valid("#(2 < t < 3)"))
-        self.failUnless(Query.is_valid("#(2 >= t > 3)"))
+        self.failUnless(Query("#(2 < t < 3)").valid)
+        self.failUnless(Query("#(2 >= t > 3)").valid)
         # useless, but valid
-        self.failUnless(Query.is_valid("#(5 > t = 2)"))
+        self.failUnless(Query("#(5 > t = 2)").valid)
 
     def test_list(self):
-        self.failUnless(Query.is_valid("#(t < 3, t > 9)"))
-        self.failUnless(Query.is_valid("t = &(/a/, /b/)"))
-        self.failUnless(Query.is_valid("s, t = |(/a/, /b/)"))
-        self.failUnless(Query.is_valid("|(t = /a/, s = /b/)"))
+        self.failUnless(Query("#(t < 3, t > 9)").valid)
+        self.failUnless(Query("t = &(/a/, /b/)").valid)
+        self.failUnless(Query("s, t = |(/a/, /b/)").valid)
+        self.failUnless(Query("|(t = /a/, s = /b/)").valid)
 
     def test_nesting(self):
-        self.failUnless(Query.is_valid("|(s, t = &(/a/, /b/),!#(2 > q > 3))"))
+        self.failUnless(Query("|(s, t = &(/a/, /b/),!#(2 > q > 3))").valid)
 
     def test_extension(self):
-        self.failUnless(Query.is_valid("@(name)"))
-        self.failUnless(Query.is_valid("@(name: extension body)"))
-        self.failUnless(Query.is_valid("@(name: body (with (nested) parens))"))
-        self.failUnless(Query.is_valid(r"@(name: body \\ with \) escapes)"))
+        self.failUnless(Query("@(name)").valid)
+        self.failUnless(Query("@(name: extension body)").valid)
+        self.failUnless(Query("@(name: body (with (nested) parens))").valid)
+        self.failUnless(Query(r"@(name: body \\ with \) escapes)").valid)
 
-        self.failIf(Query.is_valid("@()"))
-        self.failIf(Query.is_valid(r"@(invalid %name!\\)"))
-        self.failIf(Query.is_valid("@(name: mismatched ( parenthesis)"))
-        self.failIf(Query.is_valid(r"@(\()"))
-        self.failIf(Query.is_valid("@(name:unclosed body"))
-        self.failIf(Query.is_valid("@ )"))
+        self.failIf(Query("@()").valid)
+        self.failIf(Query(r"@(invalid %name!\\)").valid)
+        self.failIf(Query("@(name: mismatched ( parenthesis)").valid)
+        self.failIf(Query(r"@(\()").valid)
+        self.failIf(Query("@(name:unclosed body").valid)
+        self.failIf(Query("@ )").valid)
 
     def test_numexpr(self):
-        self.failUnless(Query.is_valid("#(t < 3*4)"))
-        self.failUnless(Query.is_valid("#(t * (1+r) < 7)"))
-        self.failUnless(Query.is_valid("#(0 = t)"))
-        self.failUnless(Query.is_valid("#(t < r < 9)"))
-        self.failUnless(Query.is_valid("#((t-9)*r < -(6*2) = g*g-1)"))
-        self.failUnless(Query.is_valid("#(t + 1 + 2 + -4 * 9 > g*(r/4 + 6))"))
-        self.failUnless(Query.is_valid("#(date < 2010-4)"))
-        self.failUnless(Query.is_valid("#(date < 2010 - 4)"))
-        self.failUnless(Query.is_valid("#(date > 0000)"))
-        self.failUnless(Query.is_valid("#(date > 00004)"))
-        self.failUnless(Query.is_valid("#(t > 3 minutes)"))
-        self.failUnless(Query.is_valid("#(added > today)"))
-        self.failUnless(Query.is_valid("#(length < 5:00)"))
-        self.failUnless(Query.is_valid("#(filesize > 5M)"))
-        self.failUnless(Query.is_valid("#(added < 7 days ago)"))
+        self.failUnless(Query("#(t < 3*4)").valid)
+        self.failUnless(Query("#(t * (1+r) < 7)").valid)
+        self.failUnless(Query("#(0 = t)").valid)
+        self.failUnless(Query("#(t < r < 9)").valid)
+        self.failUnless(Query("#((t-9)*r < -(6*2) = g*g-1)").valid)
+        self.failUnless(Query("#(t + 1 + 2 + -4 * 9 > g*(r/4 + 6))").valid)
+        self.failUnless(Query("#(date < 2010-4)").valid)
+        self.failUnless(Query("#(date < 2010 - 4)").valid)
+        self.failUnless(Query("#(date > 0000)").valid)
+        self.failUnless(Query("#(date > 00004)").valid)
+        self.failUnless(Query("#(t > 3 minutes)").valid)
+        self.failUnless(Query("#(added > today)").valid)
+        self.failUnless(Query("#(length < 5:00)").valid)
+        self.failUnless(Query("#(filesize > 5M)").valid)
+        self.failUnless(Query("#(added < 7 days ago)").valid)
 
-        self.failIf(Query.is_valid("#(3*4)"))
-        self.failIf(Query.is_valid("#(t = 3 + )"))
-        self.failIf(Query.is_valid("#(t = -)"))
-        self.failIf(Query.is_valid("#(-4 <)"))
-        self.failIf(Query.is_valid("#(t < ()"))
-        self.failIf(Query.is_valid("#((t +) - 1 > 8)"))
-        self.failIf(Query.is_valid("#(t += 8)"))
+        self.failIf(Query("#(3*4)").valid)
+        self.failIf(Query("#(t = 3 + )").valid)
+        self.failIf(Query("#(t = -)").valid)
+        self.failIf(Query("#(-4 <)").valid)
+        self.failIf(Query("#(t < ()").valid)
+        self.failIf(Query("#((t +) - 1 > 8)").valid)
+        self.failIf(Query("#(t += 8)").valid)
 
 
 class TQuery(TestCase):
@@ -158,34 +161,71 @@ class TQuery(TestCase):
     def setUp(self):
         config.init()
         self.s1 = AudioFile(
-            {"album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
-             "version": "cake mix", "~filename": fsnative(u"/dir1/foobar.ogg"),
+            {"album": u"I Hate: Tests", "artist": u"piman", "title": u"Quuxly",
+             "version": u"cake mix",
+             "~filename": fsnative(u"/dir1/foobar.ogg"),
              "~#length": 224, "~#skipcount": 13, "~#playcount": 24,
-             "date": "2007-05-24"})
+             "date": u"2007-05-24"})
         self.s2 = AudioFile(
-            {"album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
+            {"album": u"Foo the Bar", "artist": u"mu", "title": u"Rockin' Out",
              "~filename": fsnative(u"/dir2/something.mp3"),
-             "tracknumber": "12/15"})
+             "tracknumber": u"12/15"})
 
-        self.s3 = AudioFile(
-            {"artist": "piman\nmu",
-             "~filename": fsnative(u"/test/\xf6\xe4\xfc/fo\xfc.ogg")})
-        self.s4 = AudioFile({"title": u"Ångström", "utf8": "Ångström"})
-        self.s5 = AudioFile({"title": "oh&blahhh", "artist": "!ohno"})
+        self.s3 = AudioFile({
+            "artist": u"piman\nmu",
+            "~filename": fsnative(u"/test/\xf6\xe4\xfc/fo\xfc.ogg"),
+            "~mountpoint": fsnative(u"/bla/\xf6\xe4\xfc/fo\xfc"),
+        })
+        self.s4 = AudioFile({"title": u"Ångström", "utf8": u"Ångström"})
+        self.s5 = AudioFile({"title": u"oh&blahhh", "artist": u"!ohno"})
 
     def tearDown(self):
         config.quit()
 
+    def test_basic_tag(self):
+        assert Query("album=foo").search(self.s2)
+        assert not Query("album=.").search(self.s2)
+        assert Query("album=/./").search(self.s2)
+
+    def test_inequality(self):
+        self.failUnless(Query("album!=foo").search(self.s1))
+        self.failIf(Query("album!=foo").search(self.s2))
+
+    @skip("Enable for basic benchmarking of Query")
+    def test_inequality_performance(self):
+        t = time.time()
+        for i in xrange(500):
+            # Native assert is a bit lighter...
+            assert Query("album!=foo the bar").search(self.s1)
+            assert Query("album=foo the bar").search(self.s2)
+            assert Query("foo the bar").search(self.s2)
+            assert not Query("foo the bar").search(self.s1)
+        us = (time.time() - t) * 1000000 / ((i + 1) * 4)
+        print("Blended Query searches average %.0f μs" % us)
+
+    @skip("Enable for basic benchmarking of Query")
+    def test_inequality_equalish_performance(self):
+        t0 = time.time()
+        repeats = 2000
+        for i in xrange(repeats):
+            assert Query("album!=foo the bar").search(self.s1)
+        ineq_time = (time.time() - t0)
+        t1 = time.time()
+        for i in xrange(repeats):
+            assert Query("album=!foo the bar").search(self.s1)
+        not_val_time = (time.time() - t1)
+        self.assertAlmostEqual(ineq_time, not_val_time, places=1)
+
     def test_repr(self):
         query = Query("foo = bar", [])
         self.assertEqual(
-            repr(query),
-            "<Query string=u'foo = bar' type=QueryType.VALID star=[]>")
+            repr(query).replace("u'", "'"),
+            "<Query string='foo = bar' type=QueryType.VALID star=[]>")
 
         query = Query("bar", ["foo"])
         self.assertEqual(
-            repr(query),
-            "<Query string=u'&(/bar/d)' type=QueryType.TEXT star=['foo']>")
+            repr(query).replace("u'", "'"),
+            "<Query string='&(/bar/d)' type=QueryType.TEXT star=['foo']>")
 
     def test_2007_07_27_synth_search(self):
         song = AudioFile({"~filename": fsnative(u"foo/64K/bar.ogg")})
@@ -205,6 +245,12 @@ class TQuery(TestCase):
         f = Query("artist = /mu|piman/").search
         self.failUnless(f(self.s1))
         self.failUnless(f(self.s2))
+
+    def test_re_escape(self):
+        af = AudioFile({"foo": "\""})
+        assert Query('foo="\\""').search(af)
+        af = AudioFile({"foo": "/"})
+        assert Query('foo=/\\//').search(af)
 
     def test_not(self):
         for s in ["album = !hate", "artist = !pi"]:
@@ -341,12 +387,14 @@ class TQuery(TestCase):
         tests = [inter | tag, tag | tag, neg | neg, tag | inter, neg | union,
             union | union, inter | inter, numcmp | numcmp, numcmp | union]
 
-        self.failIf(filter(lambda x: not isinstance(x, match.Union), tests))
+        self.failIf(
+            list(filter(lambda x: not isinstance(x, match.Union), tests)))
 
         tests = [inter & tag, tag & tag, neg & neg, tag & inter, neg & union,
             union & union, inter & inter, numcmp & numcmp, numcmp & inter]
 
-        self.failIf(filter(lambda x: not isinstance(x, match.Inter), tests))
+        self.failIf(
+            list(filter(lambda x: not isinstance(x, match.Inter), tests)))
 
         self.assertTrue(isinstance(-neg, match.Tag))
 
@@ -370,9 +418,9 @@ class TQuery(TestCase):
             q.filter(iter([self.s1, self.s2])), [self.s1, self.s2])
 
     def test_match_all(self):
-        self.failUnless(Query.match_all(""))
-        self.failUnless(Query.match_all("    "))
-        self.failIf(Query.match_all("foo"))
+        self.failUnless(Query("").matches_all)
+        self.failUnless(Query("    ").matches_all)
+        self.failIf(Query("foo").matches_all)
 
     def test_utf8(self):
         # also handle undecoded values
@@ -388,11 +436,19 @@ class TQuery(TestCase):
         self.failUnless(Query(u"filename=foü.ogg").search(self.s3))
         self.failUnless(Query(u"filename=öä").search(self.s3))
 
+    def test_mountpoint_utf8_fallback(self):
+        self.failUnless(Query(u"mountpoint=foü").search(self.s3))
+        self.failUnless(Query(u"mountpoint=öä").search(self.s3))
+
+    def test_mountpoint_no_value(self):
+        af = AudioFile({"~filename": fsnative(u"foo")})
+        assert not Query(u"~mountpoint=bla").search(af)
+
     def test_star_numeric(self):
         self.assertRaises(ValueError, Query, u"foobar", star=["~#mtime"])
 
     def test_match_diacriticals_explcit(self):
-        self.failIf(Query(u'title=angstrom').search(self.s4))
+        assert Query(u'title=angstrom').search(self.s4)
         self.failIf(Query(u'title="Ångstrom"').search(self.s4))
         self.failUnless(Query(u'title="Ångstrom"d').search(self.s4))
         self.failUnless(Query(u'title=Ångström').search(self.s4))
@@ -448,12 +504,12 @@ class TQuery(TestCase):
 class TQuery_get_type(TestCase):
     def test_red(self):
         for p in ["a = /w", "|(sa#"]:
-            self.failUnlessEqual(QueryType.INVALID, Query.get_type(p))
+            self.failUnlessEqual(QueryType.INVALID, Query(p).type)
 
     def test_black(self):
         for p in ["a test", "more test hooray"]:
-            self.failUnlessEqual(QueryType.TEXT, Query.get_type(p))
+            self.failUnlessEqual(QueryType.TEXT, Query(p).type)
 
     def test_green(self):
         for p in ["a = /b/", "&(a = b, c = d)", "/abc/", "!x", "!&(abc, def)"]:
-            self.failUnlessEqual(QueryType.VALID, Query.get_type(p))
+            self.failUnlessEqual(QueryType.VALID, Query(p).type)

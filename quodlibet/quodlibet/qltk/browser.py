@@ -3,8 +3,9 @@
 #           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, Pango
 
@@ -13,6 +14,7 @@ from quodlibet import util
 from quodlibet import browsers
 from quodlibet import app
 from quodlibet import _
+from quodlibet.compat import listfilter, text_type
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import ScrolledWindow, Action
@@ -132,9 +134,9 @@ class FilterMenu(object):
         name = menuitem.get_name()
 
         if name == "PlayedRecently":
-            self._make_query("#(lastplayed < 7 days ago)")
+            self._make_query(u"#(lastplayed < 7 days ago)")
         elif name == "AddedRecently":
-            self._make_query("#(added < 7 days ago)")
+            self._make_query(u"#(added < 7 days ago)")
         elif name == "TopRated":
             bg = background_filter()
             songs = (bg and filter(bg, self._library)) or self._library
@@ -143,15 +145,16 @@ class FilterMenu(object):
                 return
             songs.sort()
             if len(songs) < 40:
-                self._make_query("#(playcount > %d)" % (songs[0] - 1))
+                self._make_query(u"#(playcount > %d)" % (songs[0] - 1))
             else:
-                self._make_query("#(playcount > %d)" % (songs[-40] - 1))
+                self._make_query(u"#(playcount > %d)" % (songs[-40] - 1))
         elif name == "All":
             self._browser.unfilter()
 
     def _make_query(self, query):
+        assert isinstance(query, text_type)
         if self._browser.can_filter_text():
-            self._browser.filter_text(query.encode('utf-8'))
+            self._browser.filter_text(query)
             self._browser.activate()
 
     def _hide_menus(self):
@@ -314,7 +317,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         if browser.background:
             bg = background_filter()
             if bg:
-                songs = filter(bg, songs)
+                songs = listfilter(bg, songs)
         self.songlist.set_songs(songs, sorted)
 
     def __enqueue(self, view, path, column, player):

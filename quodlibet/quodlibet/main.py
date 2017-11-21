@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012,2013 Christoph Reiter
-#           2010-2014 Nick Boultbee
+#           2010-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import sys
 import os
 
-from quodlibet import _
+from senf import environ, argv as sys_argv
+
 from quodlibet.cli import process_arguments, exit_
-from quodlibet.util.dprint import print_d, print_, format_exc
-from quodlibet.senf import argv as sys_argv
+from quodlibet.util.dprint import print_d, print_, print_exc
 
 
 def main(argv=None):
@@ -22,7 +23,8 @@ def main(argv=None):
 
     import quodlibet
 
-    quodlibet.init_cli()
+    config_file = os.path.join(quodlibet.get_user_dir(), "config")
+    quodlibet.init_cli(config_file=config_file)
 
     try:
         # we want basic commands not to import gtk (doubles process time)
@@ -48,8 +50,6 @@ def main(argv=None):
     app.id = "quodlibet"
     quodlibet.set_application_info(Icons.QUODLIBET, app.id, app.name)
 
-    config.init(os.path.join(quodlibet.get_user_dir(), "config"))
-
     library_path = os.path.join(quodlibet.get_user_dir(), "songs")
 
     print_d("Initializing main library (%s)" % (
@@ -60,20 +60,19 @@ def main(argv=None):
 
     # this assumes that nullbe will always succeed
     from quodlibet.player import PlayerError
-    wanted_backend = os.environ.get(
+    wanted_backend = environ.get(
         "QUODLIBET_BACKEND", config.get("player", "backend"))
-    backend_traceback = None
-    for backend in [wanted_backend, "nullbe"]:
-        try:
-            player = quodlibet.player.init_player(backend, app.librarian)
-        except PlayerError:
-            backend_traceback = format_exc()
-        else:
-            break
+
+    try:
+        player = quodlibet.player.init_player(wanted_backend, app.librarian)
+    except PlayerError:
+        print_exc()
+        player = quodlibet.player.init_player("nullbe", app.librarian)
+
     app.player = player
 
-    os.environ["PULSE_PROP_media.role"] = "music"
-    os.environ["PULSE_PROP_application.icon_name"] = "quodlibet"
+    environ["PULSE_PROP_media.role"] = "music"
+    environ["PULSE_PROP_application.icon_name"] = "quodlibet"
 
     browsers.init()
 
@@ -125,11 +124,12 @@ def main(argv=None):
                 pass
             else:
                 if resp is not None:
-                    print_(resp, end="")
+                    print_(resp, end="", flush=True)
 
     from quodlibet.qltk.quodlibetwindow import QuodLibetWindow, PlayerOptions
     # Call exec_commands after the window is restored, but make sure
     # it's after the mainloop has started so everything is set up.
+
     app.window = window = QuodLibetWindow(
         library, player,
         restore_cb=lambda:
@@ -137,23 +137,13 @@ def main(argv=None):
 
     app.player_options = PlayerOptions(window)
 
-    from quodlibet.qltk.debugwindow import MinExceptionDialog
-    from quodlibet.qltk.window import on_first_map
-    if backend_traceback is not None:
-        def show_backend_error(window):
-            d = MinExceptionDialog(window,
-                _("Audio Backend Failed to Load"),
-                _("Loading the audio backend '%(name)s' failed. "
-                  "Audio playback will be disabled.") %
-                {"name": wanted_backend},
-                backend_traceback)
-            d.run()
-
-        # so we show the main window first
-        on_first_map(app.window, show_backend_error, app.window)
+    from quodlibet.qltk.window import Window
 
     from quodlibet.plugins.events import EventPluginHandler
-    pm.register_handler(EventPluginHandler(library.librarian, player))
+    from quodlibet.plugins.gui import UserInterfacePluginHandler
+    pm.register_handler(EventPluginHandler(library.librarian, player,
+                                           app.window.songlist))
+    pm.register_handler(UserInterfacePluginHandler())
 
     from quodlibet.mmkeys import MMKeysHandler
     from quodlibet.remote import Remote, RemoteError
@@ -185,6 +175,9 @@ def main(argv=None):
 
     if "start-playing" in startup_actions:
         player.paused = False
+
+    if "start-hidden" in startup_actions:
+        Window.prevent_inital_show(True)
 
     # restore browser windows
     from quodlibet.qltk.browser import LibraryBrowser

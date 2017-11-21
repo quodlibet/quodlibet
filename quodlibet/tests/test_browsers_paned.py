@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from tests import TestCase
 from .helper import realized
@@ -150,6 +151,25 @@ class TPanedBrowser(TestCase):
     def test_set_all_panes(self):
         self.bar.finalize(False)
         self.bar.set_all_panes()
+
+    def test_restore_pane_width(self):
+        config.set("browsers", "panes", "artist\talbum")
+        self.bar.set_all_panes()
+
+        paned = self.bar.multi_paned.get_paned()
+        paned.set_relative(0.8)
+        self.bar.set_all_panes()
+        self.failUnlessAlmostEqual(paned.get_relative(), 0.8)
+
+    def test_make_pane_widths_equal(self):
+        config.set("browsers", "panes", "artist\talbum\t~year\t~#track")
+        self.bar.set_all_panes()
+        self.bar.make_pane_widths_equal()
+        paneds = self.bar.multi_paned._get_paneds()
+
+        self.failUnlessAlmostEqual(paneds[0].get_relative(), 1.0 / 4.0)
+        self.failUnlessAlmostEqual(paneds[1].get_relative(), 1.0 / 3.0)
+        self.failUnlessAlmostEqual(paneds[2].get_relative(), 1.0 / 2.0)
 
     def test_wide_mode(self):
         self.bar.set_all_wide_mode(True)

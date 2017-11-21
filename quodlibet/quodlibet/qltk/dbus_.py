@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Federico Pelloni <federico.pelloni@gmail.com>
 #           2013 Christoph Reiter
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import dbus
 import dbus.service
@@ -14,6 +16,7 @@ from quodlibet.util import dbusutils
 from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
 from quodlibet.formats import decode_value
+from quodlibet.compat import itervalues
 
 
 class DBusHandler(dbus.service.Object):
@@ -94,27 +97,18 @@ class DBusHandler(dbus.service.Object):
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def Play(self):
-        if self._player.song is None:
-            self._player.reset()
-        else:
-            self._player.paused = False
+        self._player.play()
 
     @dbus.service.method('net.sacredchao.QuodLibet')
     def PlayPause(self):
-        if self._player.song is None:
-            self._player.reset()
-        else:
-            self._player.paused ^= True
+        self._player.playpause()
         return self._player.paused
 
     @dbus.service.method('net.sacredchao.QuodLibet', in_signature='s')
-    def Query(self, query):
-        if query is not None:
-            try:
-                results = Query(query, star=SongList.star).search
-            except Query.error:
-                pass
-            else:
-                return [self.__dict(s) for s in self.library.itervalues()
-                        if results(s)]
+    def Query(self, text):
+        if text is not None:
+            query = Query(text, star=SongList.star)
+            if query.is_parsable:
+                return [self.__dict(s) for s in itervalues(self.library)
+                        if query.search(s)]
         return None

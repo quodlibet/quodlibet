@@ -2,8 +2,9 @@
 # Copyright 2004 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet.player._base import BasePlayer
 from quodlibet.player import PlayerError
@@ -66,9 +67,10 @@ class NullPlayer(BasePlayer):
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
+
+        self._position = pos
         if self.song:
             self.emit('seek', self.song, pos)
-        self._position = pos
 
     def _end(self, stopped, next_song=None):
         # We need to set self.song to None before calling our signal
@@ -81,6 +83,7 @@ class NullPlayer(BasePlayer):
         current = self._source.current if next_song is None else next_song
 
         # Then, set up the next song.
+        self._position = 0
         self.song = self.info = current
         self.emit('song-started', self.song)
 
@@ -90,7 +93,6 @@ class NullPlayer(BasePlayer):
         if not self.paused and song is None:
             self.emit("unpaused")
 
-        self._position = 0
         # seekable might change if we change to None, so notify just in case
         self.notify("seekable")
 

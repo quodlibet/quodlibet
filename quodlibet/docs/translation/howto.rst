@@ -53,8 +53,8 @@ In case there's not already a translation for your language, create one::
 
     $ ./setup.py create_po --lang=<mylang>
 
-Create the POT file and update translations so all new strings that were added
-since the last translation update get included::
+Update translations so all new strings that were added since the last
+translation update get included::
 
     $ ./setup.py update_po --lang=<mylang>
 
@@ -71,7 +71,7 @@ instead of the global ones.
 
 ::
 
-    $ ./setup.py build_mo
+    $ ./setup.py build_mo --lang=<mylang>
     $ ./quodlibet.py
     $ ./exfalso.py
 
@@ -86,14 +86,13 @@ translation.
 
 ::
 
-    $ ./setup.py build_mo
     $ ./setup.py test --to-run PO.<mylang>
 
 And send us the .po file you made:
 
-* Create a `new issue 
+* Create a pull request.
+* Or create a `new issue 
   <https://github.com/quodlibet/quodlibet/issues/new>`__ linking to your 
   updated .po file. If you don't have a place for making the file accessible 
   create a `gist <https://gist.github.com/>`__ with the content of the .po 
   file and include the gist URL in the issue description.
-* Or create a pull request.

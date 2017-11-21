@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import errno
 import signal
 import stat
-import tempfile
+
+from quodlibet import print_e
 
 try:
     import fcntl
@@ -18,6 +21,7 @@ except ImportError:
     fcntl = None
 
 from gi.repository import GLib
+from senf import mkstemp, fsn2bytes
 
 from quodlibet.util.path import mkdir
 from quodlibet.util import print_d
@@ -27,9 +31,11 @@ FIFO_TIMEOUT = 10
 
 
 def _write_fifo(fifo_path, data):
-    """Writes the data to the fifo or raises EnvironmentError"""
+    """Writes the data to the FIFO or raises `EnvironmentError`"""
 
-    # this will raise if the fifo doesn't exist or there is no reader
+    assert isinstance(data, bytes)
+
+    # This will raise if the FIFO doesn't exist or there is no reader
     try:
         fifo = os.open(fifo_path, os.O_WRONLY | os.O_NONBLOCK)
     except OSError:
@@ -61,37 +67,44 @@ def _write_fifo(fifo_path, data):
 
 
 def split_message(data):
-    """Split incoming data in pairs of (command, fifo path or None)
+    """Split incoming data in pairs of (command, FIFO path or `None`)
 
     This supports two data formats:
-    Newline seperated commands without a return fifo path.
+    Newline-separated commands without a return FIFO path.
     and "NULL<command>NULL<fifo-path>NULL"
 
-    Raises ValueError
+    Args:
+        data (bytes)
+    Returns:
+        Tuple[bytes, bytes]
+    Raises:
+        ValueError
     """
+
+    assert isinstance(data, bytes)
 
     arg = 0
     args = []
     while data:
         if arg == 0:
-            index = data.find("\x00")
+            index = data.find(b"\x00")
             if index == 0:
                 arg = 1
                 data = data[1:]
                 continue
             if index == -1:
                 elm = data
-                data = ""
+                data = b""
             else:
                 elm, data = data[:index], data[index:]
             for l in elm.splitlines():
                 yield (l, None)
         elif arg == 1:
-            elm, data = data.split("\x00", 1)
+            elm, data = data.split(b"\x00", 1)
             args.append(elm)
             arg = 2
         elif arg == 2:
-            elm, data = data.split("\x00", 1)
+            elm, data = data.split(b"\x00", 1)
             args.append(elm)
             yield tuple(args)
             del args[:]
@@ -99,18 +112,29 @@ def split_message(data):
 
 
 def write_fifo(fifo_path, data):
-    """Writes the data to the fifo and returns a response
-    or raises EnvironmentError.
+    """Writes the data to the FIFO and returns a response.
+
+    Args:
+        fifo_path (pathlike)
+        data (bytes)
+    Returns:
+        bytes
+    Raises:
+        EnvironmentError: In case of timeout and other errors
     """
 
-    fd, filename = tempfile.mkstemp()
+    assert isinstance(data, bytes)
+
+    fd, filename = mkstemp()
     try:
         os.close(fd)
         os.unlink(filename)
         # mkfifo fails if the file exists, so this is safe.
         os.mkfifo(filename, 0o600)
 
-        _write_fifo(fifo_path, "\x00" + data + "\x00" + filename + "\x00")
+        _write_fifo(
+            fifo_path,
+            b"\x00" + data + b"\x00" + fsn2bytes(filename, None) + b"\x00")
 
         try:
             signal.signal(signal.SIGALRM, lambda: "" + 2)
@@ -128,6 +152,14 @@ def write_fifo(fifo_path, data):
 
 
 def fifo_exists(fifo_path):
+    """Returns whether a FIFO exists (and is writeable).
+
+    Args:
+        fifo_path (pathlike)
+    Returns:
+        bool
+    """
+
     # https://github.com/quodlibet/quodlibet/issues/1131
     # FIXME: There is a race where control() creates a new file
     # instead of writing to the FIFO, confusing the next QL instance.
@@ -149,18 +181,30 @@ class FIFO(object):
     """Creates and reads from a FIFO"""
 
     def __init__(self, path, callback):
+        """
+        Args:
+            path (pathlike)
+            callback (Callable[[bytes], None])
+        """
+
         self._callback = callback
         self._path = path
 
     def open(self):
-        """Create the fifo and listen to it.
+        """Create the FIFO and listen to it.
 
-        Might raise FIFOError in case another process is already using it.
+        Raises:
+            FIFOError in case another process is already using it.
         """
 
         self._open(False, None)
 
     def destroy(self):
+        """After destroy() the callback will no longer be called
+        and the FIFO can no longer be used. Can be called multiple
+        times.
+        """
+
         if self._id is not None:
             GLib.source_remove(self._id)
             self._id = None
@@ -195,7 +239,7 @@ class FIFO(object):
                     continue
                 if ignore_lock:
                     break
-                # OSX doesn't support fifo locking, so check errno
+                # OSX doesn't support FIFO locking, so check errno
                 if e.errno == errno.EWOULDBLOCK:
                     raise FIFOError("fifo already locked")
                 else:
@@ -203,14 +247,14 @@ class FIFO(object):
             break
 
         try:
-            f = os.fdopen(fifo, "r", 4096)
-        except OSError:
-            pass
-
-        self._id = qltk.io_add_watch(
-            f, GLib.PRIORITY_DEFAULT,
-            GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
-            self._process, *args)
+            f = os.fdopen(fifo, "rb", 4096)
+        except OSError as e:
+            print_e("Couldn't open FIFO (%s)" % e)
+        else:
+            self._id = qltk.io_add_watch(
+                f, GLib.PRIORITY_DEFAULT,
+                GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
+                self._process, *args)
 
     def _process(self, source, condition, *args):
         if condition in (GLib.IO_ERR, GLib.IO_HUP):

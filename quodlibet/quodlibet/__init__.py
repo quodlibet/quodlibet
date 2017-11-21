@@ -2,10 +2,12 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import sys
+import codecs
 
 from .compat import PY2
 
@@ -14,8 +16,14 @@ if PY2:
     reload(sys)
     sys.setdefaultencoding("utf-8")
 
-from . import senf
-sys.modules["senf"] = senf
+    # py2 doesn't know about cp65001, but tries to use it if it is the active
+    # code page
+    codecs.register(
+        lambda name: codecs.lookup("utf-8") if name == "cp65001" else None)
+
+
+from ._import import install_redirect_import_hook
+install_redirect_import_hook()
 
 from .util.i18n import _, C_, N_, ngettext, npgettext
 from .util.dprint import print_d, print_e, print_w
