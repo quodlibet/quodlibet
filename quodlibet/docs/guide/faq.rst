@@ -8,6 +8,20 @@ Why don't all my songs appear in the song list when searching for them?
 Do you have a global filter in use? Check the *Browsers* tab in *Preferences*.
 
 
+Where does Quod Libet store all its metadata?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The short answer is in ``~/.quodlibet``.
+Under there you'll find all sorts of things,
+separate from the audio file tags themselves, e.g.
+
+ * ``songs`` - the pickled songs database.
+ * ``config`` - the master Quod Libet configuration file - edit with care
+ * ``playlists/`` - a directory for all playlists
+ * ``lists/`` - a directory for saved searches and so on
+ * ``stations`` / ``stations_all`` - the Internet radio stations lists
+
+
 Why do my MP3 files have the wrong length?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
