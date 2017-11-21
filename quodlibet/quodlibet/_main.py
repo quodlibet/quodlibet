@@ -122,7 +122,7 @@ def get_user_dir():
     """Place where QL saves its state, database, config etc."""
 
     if os.name == "nt":
-        USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
+        USERDIR = os.path.join(windows.get_appdata_dir(), "Quod Libet")
     elif is_osx():
         USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
     else:

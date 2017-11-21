@@ -11,7 +11,19 @@ Do you have a global filter in use? Check the *Browsers* tab in *Preferences*.
 Where does Quod Libet store all its metadata?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The short answer is in ``~/.quodlibet``.
+The short answer was originally: in ``~/.quodlibet``.
+For newer versions of QL it's more complex:
+
+ * On Windows, it will be in your user's ``AppData`` folder under ``Quod Libet``
+   (except portable builds)
+ * On OS X, it will be in ``~/.quodlibet``.
+ * On Linux / Unix systems,
+
+    * if the ``QUODLIBET_USERDIR`` environment variable is set, this will be used
+    * else, ``$XDG_CONFIG_HOME/config`` will be used, if it exists
+    * else ``~/.quodlibet`` will be used still.
+
+
 Under there you'll find all sorts of things,
 separate from the audio file tags themselves, e.g.
 
