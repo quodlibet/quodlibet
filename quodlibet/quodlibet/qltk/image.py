@@ -189,4 +189,5 @@ def pixbuf_from_file(fileobj, boundary, scale_factor=1):
     w *= scale_factor
     h *= scale_factor
 
-    return scale(pixbuf, (w, h), scale_up=False)
+    #pfps return scale(pixbuf, (w, h), scale_up=False)
+    return scale(pixbuf, (w, h), scale_up=True) #pfps

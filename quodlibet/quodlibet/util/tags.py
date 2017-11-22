@@ -73,13 +73,13 @@ class TagName(object):
 T = TagName
 _TAGS = dict((t.name, t) for t in [
     T("album", "us", _("album"), _("albums")),
-    T("arranger", "us", _("arranger"), _("arrangers"), _("arrangement")),
+    T("arranger", "u", _("arranger"), _("arrangers"), _("arrangement")),
     T("artist", "us", _("artist"), _("artists")),
-    T("author", "us", _("author"), _("authors")),
+    T("author", "u", _("author"), _("authors")),
     T("comment", "u", _("comment")),
     T("composer", "us", _("composer"), _("composers"), _("composition")),
     # Translators: conducting as in conducting a musical performance
-    T("conductor", "us", _("conductor"), _("conductors"), _("conducting")),
+    T("conductor", "u", _("conductor"), _("conductors"), _("conducting")),
     T("contact", "u", _("contact")),
     T("copyright", "u", _("copyright")),
     T("date", "u", _("date")),
@@ -90,7 +90,7 @@ _TAGS = dict((t.name, t) for t in [
     T("language", "ui", _("language")),
     T("license", "u", _("license")),
     T("location", "u", _("location")),
-    T("lyricist", "us", _("lyricist"), _("lyricists"), _("lyrics")),
+    T("lyricist", "u", _("lyricist"), _("lyricists"), _("lyrics")),
     # Translators: Also e.g. "record label", "publisher"
     T("organization", "u", _("organization")),
     T("title", "u", _("title")),
