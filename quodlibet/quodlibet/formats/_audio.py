@@ -574,18 +574,8 @@ class AudioFile(dict, ImageContainer):
         pathfiles = OrderedDict()
         for p in lyric_paths:
             for f in lyric_filenames:
-                pathfile = ""
-                if os.name == "nt":
-                    # this was added at a later point. only use
-                    # escape_filename here to keep the linux case
-                    # the same as before
-                    pathfile = \
-                        os.path.join(p, os.path.dirname(f),
-                                     escape_filename(os.path.basename(f)))
-                else:
-                    pathfile = \
-                        os.path.join(p, os.path.dirname(f),
-                                    fsnative(os.path.basename(f)))
+                pathfile = os.path.join(p, os.path.dirname(f),
+                                        fsnative(os.path.basename(f)))
                 if not pathfile in pathfiles:
                     pathfiles[pathfile] = pathfile
 
@@ -636,7 +626,24 @@ class AudioFile(dict, ImageContainer):
                 if match_:
                     break
 
-        return match_ if match_ else list(pathfiles_expanded.keys())[0]
+        if not match_:
+            match_ = list(pathfiles_expanded.keys())[0]
+
+        if os.name == "nt":
+            # FIX: assumes 'nix build used on a case-sensitive fs, nt case
+            # insensitive, hence only pass the proposed path through
+            # 'escape_filename' (which apparently doesn't respect case) if
+            # we don't care about case
+            #
+            # FIX: in any case this call misses the possibility of needing to
+            # escape characters in the file's parent dir if that was built
+            # from the artist name etc.
+            #
+            # clearly this isn't biting anyone though..
+            match_ = os.path.join(os.path.dirname(match_),
+                                  escape_filename(os.path.basename(match_)))
+
+        return match_
 
     @property
     def has_rating(self):
