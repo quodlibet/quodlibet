@@ -3,14 +3,9 @@
 #               2011-2013 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
-
-
-# Note: This plugin is based on notify.py as distributed in the
-# quodlibet-plugins package; however, that file doesn't contain a copyright
-# note. As for the license, GPLv2 is the only choice anyway, as it calls
-# Quod Libet code, which is GPLv2 as well, so I thought it safe to add this.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
