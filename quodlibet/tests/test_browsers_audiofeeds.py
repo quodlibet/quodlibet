@@ -4,10 +4,12 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from tests import TestCase
+import pathlib
+
+from tests import TestCase, get_data_path
 
 from gi.repository import Gtk
-from quodlibet.browsers.audiofeeds import AudioFeeds, AddFeedDialog
+from quodlibet.browsers.audiofeeds import AudioFeeds, AddFeedDialog, Feed
 from quodlibet.library import SongLibrary
 import quodlibet.config
 
@@ -38,6 +40,24 @@ class TAddFeedDialog(TestCase):
         parent = Gtk.Window()
         ret = AddFeedDialog(parent).run(text=TEST_URL, test=True)
         self.failUnlessEqual(ret.uri, TEST_URL)
+
+    def tearDown(self):
+        quodlibet.config.quit()
+
+
+class TFeed(TestCase):
+
+    def setUp(self):
+        quodlibet.config.init()
+
+    def test_feed(self):
+        fn = get_data_path('valid_feed.xml')
+        feed = Feed(pathlib.Path(fn).as_uri())
+        result = feed.parse()
+        self.failUnless(result)
+        self.failUnlessEqual(len(feed), 2)
+        self.failUnlessEqual(feed[0]('title'),
+                             'Full Episode: Tuesday, November 28, 2017')
 
     def tearDown(self):
         quodlibet.config.quit()
