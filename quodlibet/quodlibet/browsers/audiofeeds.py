@@ -177,7 +177,7 @@ class Feed(list):
                                 uri = uri.decode('utf-8')
                             try:
                                 size = float(enclosure.length)
-                            except AttributeError:
+                            except (AttributeError, ValueError):
                                 size = 0
                             entries.append((uri, entry, size))
                             uris.add(uri)
@@ -224,15 +224,19 @@ class Feed(list):
             result = opener.open(req)
             ct_hdr = result.headers.get('Content-Type', "Unknown type")
             content_type = ct_hdr.split(';')[0]
-            status = result.code if PY2 else result.status
-            print_d("Pre-check: %s returned %s with content type '%s'" %
-                    (self.uri, status, content_type))
-            if content_type not in feedparser.ACCEPT_HEADER:
-                print_w("Unusable content: %s. Perhaps %s is not a feed?" %
-                        (content_type, self.uri))
-                return False
-            # No real need to check HTTP Status - errors are very unlikely
-            # to be a usable content type, and we should always try to parse
+            try:
+                status = result.code if PY2 else result.status
+            except AttributeError:
+                print_w("Missing status code for feed %s" % self.uri)
+            else:
+                print_d("Pre-check: %s returned %s with content type '%s'" %
+                        (self.uri, status, content_type))
+                if content_type not in feedparser.ACCEPT_HEADER:
+                    print_w("Unusable content: %s. Perhaps %s is not a feed?" %
+                            (content_type, self.uri))
+                    return False
+                # No real need to check HTTP Status - errors are very unlikely
+                # to be a usable content type, and we should try to parse
         finally:
             opener.close()
         return True
