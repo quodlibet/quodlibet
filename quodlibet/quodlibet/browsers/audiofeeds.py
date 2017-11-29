@@ -39,6 +39,7 @@ from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 FEEDS = os.path.join(quodlibet.get_user_dir(), "feeds")
 DND_URI_LIST, DND_MOZ_URL = range(2)
+HTML_TYPES = ['text/html', 'application/xhtml+xml']
 
 # Migration path for pickle
 sys.modules["browsers.audiofeeds"] = sys.modules[__name__]
@@ -231,7 +232,7 @@ class Feed(list):
             else:
                 print_d("Pre-check: %s returned %s with content type '%s'" %
                         (self.uri, status, content_type))
-                if content_type not in feedparser.ACCEPT_HEADER:
+                if content_type not in feedparser.ACCEPT_HEADER and content_type not in HTML_TYPES:
                     print_w("Unusable content: %s. Perhaps %s is not a feed?" %
                             (content_type, self.uri))
                     return False
