@@ -50,6 +50,7 @@ class InvalidFeed(ValueError):
 
 
 class Feed(list):
+
     def __init__(self, uri):
         self.name = _("Unknown")
         self.uri = uri
@@ -232,7 +233,8 @@ class Feed(list):
             else:
                 print_d("Pre-check: %s returned %s with content type '%s'" %
                         (self.uri, status, content_type))
-                if content_type not in feedparser.ACCEPT_HEADER and content_type not in HTML_TYPES:
+                if (content_type not in feedparser.ACCEPT_HEADER and
+                    content_type not in HTML_TYPES):
                     print_w("Unusable content: %s. Perhaps %s is not a feed?" %
                             (content_type, self.uri))
                     return False
@@ -244,6 +246,7 @@ class Feed(list):
 
 
 class AddFeedDialog(GetStringDialog):
+
     def __init__(self, parent):
         super(AddFeedDialog, self).__init__(
             qltk.get_top_parent(parent), _("New Feed"),
