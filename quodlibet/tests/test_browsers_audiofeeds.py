@@ -61,3 +61,17 @@ class TFeed(TestCase):
 
     def tearDown(self):
         quodlibet.config.quit()
+
+class HtmlFeed(TestCase):
+
+    def setUp(self):
+        quodlibet.config.init()
+
+    def test_feed(self):
+        feed = Feed('http://cbsradionewsfeed.com/rss.php?id=149&ud=12')
+        result = feed.parse()
+        self.failUnless(result)
+        self.failUnless(feed[0].valid)
+
+    def tearDown(self):
+        quodlibet.config.quit()
