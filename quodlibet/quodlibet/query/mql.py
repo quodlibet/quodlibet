@@ -6,7 +6,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet.compat import text_type
 from quodlibet.plugins import MissingModulePluginException
 from quodlibet.qltk.songlist import SongList
 from quodlibet.util.tags import NUMERIC_TAGS
