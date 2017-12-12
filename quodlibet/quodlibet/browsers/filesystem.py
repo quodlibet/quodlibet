@@ -71,7 +71,7 @@ class FileSystem(Browser, Gtk.HBox):
 
     @classmethod
     def __remove_because_added(klass, library, songs):
-        songs = filter(klass.__library.__contains__, songs)
+        songs = list(filter(klass.__library.__contains__, songs))
         klass.__library.remove(songs)
 
     def __init__(self, library):
@@ -128,7 +128,7 @@ class FileSystem(Browser, Gtk.HBox):
                       "song lists or the queue.")).run()
                 ctx.drag_abort(etime)
                 return
-            to_add = filter(self.__library.__contains__, songs)
+            to_add = list(filter(self.__library.__contains__, songs))
             self.__add_songs(view, to_add)
 
             qltk.selection_set_songs(sel, songs)
@@ -162,7 +162,7 @@ class FileSystem(Browser, Gtk.HBox):
     def __select_paths(self, paths):
         # AudioFile uses normalized paths, DirectoryTree doesn't
 
-        paths = map(normalize_path, paths)
+        paths = list(map(normalize_path, paths))
 
         def select(model, path, iter_, paths_):
             (paths, first) = paths_
@@ -210,11 +210,11 @@ class FileSystem(Browser, Gtk.HBox):
         return menu
 
     def __add_songs(self, item, songs):
-        songs = filter(self.__library.__contains__, songs)
+        songs = list(filter(self.__library.__contains__, songs))
         self.__library.librarian.move(songs, self.__library, self.__glibrary)
 
     def __remove_songs(self, songs):
-        songs = filter(self.__glibrary.__contains__, songs)
+        songs = list(filter(self.__glibrary.__contains__, songs))
         self.__library.librarian.move(songs, self.__glibrary, self.__library)
 
     def __find_songs(self, selection):
@@ -224,8 +224,8 @@ class FileSystem(Browser, Gtk.HBox):
         to_add = []
         for dir in dirs:
             try:
-                for file in filter(formats.filter,
-                                   sorted(os.listdir(dir))):
+                for file in list(filter(formats.filter,
+                                        sorted(os.listdir(dir)))):
                     raw_path = os.path.join(dir, file)
                     fn = normalize_path(raw_path, canonicalise=True)
                     if fn in self.__glibrary:

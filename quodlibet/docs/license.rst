@@ -6,20 +6,11 @@ License & Contributors
 License
 -------
 
-Quod Libet and all associated modules are free software distributed 
-entirely under the terms of the GNU GPL version 2. Alternate licensing 
-terms (such as GNU GPL "version 2 or later", or the GNU LGPL) may be 
-available for certain files or modules; see the files for details.
-
-All contributors/translators are listed under "quodlibet/const.py".
-For the specific copyright holders see the header comments in each file.
-
-Contributors
-------------
-
-Email addresses of contributors have been removed; when available they can 
-be found in the source archive. All copyright notices in the archive 
-supersede any here.
+Quod Libet and all associated modules are free software distributed entirely
+under the terms of the `GNU GPL version 2 or later
+<https://www.gnu.org/licenses/old-licenses/gpl-2.0.html>`__. Alternate
+licensing terms such as MIT, BSD or LGPL may be available for certain files or
+modules; see the files for details.
 
 
 Authors

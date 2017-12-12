@@ -10,6 +10,7 @@
 
 import os
 import signal
+import socket
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -401,11 +402,13 @@ def io_add_watch(fd, prio, condition, func, *args, **kwargs):
         return GLib.io_add_watch(fd, condition, func, *args, **kwargs)
 
 
-def add_signal_watch(signal_action):
+def add_signal_watch(signal_action, _sockets=[]):
     """Catches signals which should exit the program and calls `signal_action`
     after the main loop has started, even if the signal occurred before the
     main loop has started.
     """
+
+    # See https://bugzilla.gnome.org/show_bug.cgi?id=622084 for details
 
     sig_names = ["SIGINT", "SIGTERM", "SIGHUP"]
     if os.name == "nt":
@@ -418,35 +421,6 @@ def add_signal_watch(signal_action):
             continue
         signals[id_] = name
 
-    # in case Python catches a signal, wake up the mainloop.
-    # this makes signal handling work with older pygobject/glib (Ubuntu 12.04)
-    # no idea why..
-    rfd, wfd = os.pipe()
-
-    def wakeup_notify(source, condition):
-        # just read and do nothing so we can keep the watch around
-        if condition == GLib.IO_IN:
-            try:
-                os.read(rfd, 1)
-            except EnvironmentError:
-                pass
-            return True
-        else:
-            return False
-
-    try:
-        import fcntl
-    except ImportError:
-        pass
-    else:
-        fcntl.fcntl(wfd, fcntl.F_SETFL, os.O_NONBLOCK)
-
-    signal.set_wakeup_fd(wfd)
-    io_add_watch(rfd, GLib.PRIORITY_HIGH,
-                 GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
-                 wakeup_notify)
-
-    # set a python handler for each signal, used before the mainloop
     for signum, name in signals.items():
         # Before the mainloop starts we catch signals in python
         # directly and idle_add the app.quit
@@ -457,28 +431,31 @@ def add_signal_watch(signal_action):
         print_d("Register Python signal handler: %r" % name)
         signal.signal(signum, idle_handler)
 
+    read_socket, write_socket = socket.socketpair()
+    for sock in [read_socket, write_socket]:
+        sock.setblocking(False)
+        # prevent it from being GCed and leak it
+        _sockets.append(sock)
+
+    def signal_notify(source, condition):
+        if condition & GLib.IOCondition.IN:
+            try:
+                return bool(read_socket.recv(1))
+            except EnvironmentError:
+                return False
+        else:
+            return False
+
     if os.name == "nt":
-        return
-
-    # also try to use the official glib handling if available,
-    # can't hurt I guess
-    unix_signal_add = None
-    if hasattr(GLib, "unix_signal_add"):
-        unix_signal_add = GLib.unix_signal_add
-    elif hasattr(GLib, "unix_signal_add_full"):
-        unix_signal_add = GLib.unix_signal_add_full
+        channel = GLib.IOChannel.win32_new_socket(read_socket.fileno())
     else:
-        print_d("Can't install GLib signal handler, too old gi or wrong OS")
-        return
+        channel = GLib.IOChannel.unix_new(read_socket.fileno())
+    io_add_watch(channel, GLib.PRIORITY_HIGH,
+                 (GLib.IOCondition.IN | GLib.IOCondition.HUP |
+                  GLib.IOCondition.NVAL | GLib.IOCondition.ERR),
+                 signal_notify)
 
-    for signum, name in signals.items():
-
-        def handler(signum):
-            print_d("GLib signal handler activated: %s" % signals[signum])
-            signal_action()
-
-        print_d("Register GLib signal handler: %r" % name)
-        unix_signal_add(GLib.PRIORITY_HIGH, signum, handler, signum)
+    signal.set_wakeup_fd(write_socket.fileno())
 
 
 class ThemeOverrider(object):

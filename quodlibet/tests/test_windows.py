@@ -23,7 +23,7 @@ class TWindows(TestCase):
         d = windows.get_personal_dir()
         self.assertTrue(d is None or isinstance(d, text_type))
 
-        d = windows.get_appdate_dir()
+        d = windows.get_appdata_dir()
         self.assertTrue(d is None or isinstance(d, text_type))
 
         d = windows.get_desktop_dir()

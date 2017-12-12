@@ -3,15 +3,15 @@
 #           2006 Joe Wreschnig
 #           2008 Antonio Riva, Eduardo Gonzalez <wm.eddie@gmail.com>,
 #                Anthony Bretaudeau <wxcover@users.sourceforge.net>,
-#                Jeremy Cantrell <jmcantrell@gmail.com>
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
 #           2011-2017 Nick Boultbee
 #                2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import json
 import os

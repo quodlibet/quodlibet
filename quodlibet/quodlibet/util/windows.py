@@ -144,8 +144,8 @@ def get_personal_dir(**kwargs):
     return _get_path(CSIDL.PERSONAL, **kwargs)
 
 
-def get_appdate_dir(**kwargs):
-    r"""e.g. 'C:\Users\<user>\AppDate\Roaming'"""
+def get_appdata_dir(**kwargs):
+    r"""e.g. 'C:\Users\<user>\AppData\Roaming'"""
 
     return _get_path(CSIDL.APPDATA, **kwargs)
 

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+    <channel>
+        <ttl>60</ttl>
+        <title>Nightline</title>
+
+        <itunes:author>ABC News</itunes:author>
+
+        <link>http://www.abcnewspodcasts.com</link>
+        <description>Late-night television&apos;s award-winning news program.
+            In-depth reporting on the major stories of the day combined with
+            relevant topics in pop culture and entertainment.
+        </description>
+        <itunes:subtitle>Late-night television&apos;s award-winning news
+            program. In-depth reporting on the major stories of the day
+            combined with relevant topics in pop culture and entertainment.
+        </itunes:subtitle>
+        <itunes:summary>Late-night television&apos;s award-winning news
+            program. In-depth reporting on the major stories of the day
+            combined with relevant topics in pop culture and entertainment.
+        </itunes:summary>
+        <itunes:keywords>abc news, ABC, ABC News, ABC News Radio, radio, ABC
+            Radio, Nightline, Juju Chang, Dan Harris, Byron Pitts, talk show,
+            breaking news, podcast, audio, news, TV, show, shows, TV shows,
+            politics, campaign, election, interviews, broadcast, technology,
+            world, global
+        </itunes:keywords>
+        <language>en</language>
+        <copyright>Copyright (c) 2017 ABC News Internet Ventures</copyright>
+        <itunes:owner>
+            <itunes:name>ABC News</itunes:name>
+            <itunes:email>abc.podcast.support@abc.com</itunes:email>
+        </itunes:owner>
+        <category>News</category>
+
+        <image>
+            <url>http://a.abcnews.com/images/NL_onthestreet_SQUARE.jpeg</url>
+            <title>Nightline</title>
+            <link>http://www.abcnewspodcasts.com</link>
+        </image>
+        <itunes:image
+                href="http://a.abcnews.com/images/NL_onthestreet_SQUARE.jpeg"/>
+
+        <item>
+            <title>Full Episode: Tuesday, November 28, 2017</title>
+            <itunes:author>ABC News</itunes:author>
+            <description></description>
+            <itunes:subtitle></itunes:subtitle>
+            <itunes:summary>Inside Prince Harry, Meghan Markle&apos;s
+                engagement and the story behind the proposal; Women recount
+                their sexual assaults at Massage Envy spa; 12-year-old cancer
+                survivor makes his Carnegie Hall debut
+            </itunes:summary>
+            <enclosure
+                    url="http://c.abcnewsradio.com/audio/3430905/3430905_2017-11-28-052205.96.mp3"
+                    length="" type="audio/mpeg"/>
+            <guid>
+                http://c.abcnewsradio.com/audio/3430905/3430905_2017-11-28-052205.96.mp3
+            </guid>
+            <pubDate>Tue, 28 Nov 2017 05:27:13 EST</pubDate>
+            <category>News</category>
+            <itunes:explicit>No</itunes:explicit>
+            <itunes:duration>00:00</itunes:duration>
+            <itunes:keywords>abc news, ABC, ABC News, ABC News Radio, radio,
+                ABC Radio, Nightline, Juju Chang, Dan Harris, Byron Pitts, talk
+                show, breaking news, podcast, audio, news, TV, show, shows, TV
+                shows, politics, campaign, election, interviews, broadcast,
+                technology, world, global
+            </itunes:keywords>
+
+            <image>
+                <url>http://a.abcnews.com/images/NL_onthestreet_SQUARE.jpeg
+                </url>
+                <title>Nightline</title>
+                <link>http://www.abcnewspodcasts.com</link>
+            </image>
+            <itunes:image
+                    href="http://a.abcnews.com/images/NL_onthestreet_SQUARE.jpeg"/>
+
+        </item>
+
+        <item>
+            <title>Full Episode: Saturday, November 25, 2017</title>
+            <itunes:author>ABC News</itunes:author>
+            <description></description>
+            <itunes:subtitle></itunes:subtitle>
+            <itunes:summary>Although police thought the shooting death of Burke
+                O&apos; Brien would result in a home-run case, the murder
+                remains unsolved today.
+            </itunes:summary>
+            <enclosure
+                    url="http://c.abcnewsradio.com/audio/3429849/3429849_2017-11-25-124749.256k.mp3"
+                    length="" type="audio/mpeg"/>
+            <guid>
+                http://c.abcnewsradio.com/audio/3429849/3429849_2017-11-25-124749.256k.mp3
+            </guid>
+            <pubDate>Sat, 25 Nov 2017 13:01:43 EST</pubDate>
+            <category>News</category>
+            <itunes:explicit>No</itunes:explicit>
+            <itunes:duration>00:00</itunes:duration>
+            <itunes:keywords>abc news, ABC, ABC News, ABC News Radio, radio,
+                ABC Radio, Nightline, Juju Chang, Dan Harris, Byron Pitts, talk
+                show, breaking news, podcast, audio, news, TV, show, shows, TV
+                shows, politics, campaign, election, interviews, broadcast,
+                technology, world, global
+            </itunes:keywords>
+
+            <image>
+                <url>http://a.abcnews.com/images/NL_onthestreet_SQUARE.jpeg
+                </url>
+                <title>Nightline</title>
+                <link>http://www.abcnewspodcasts.com</link>
+            </image>
+            <itunes:image
+                    href="http://a.abcnews.com/images/NL_onthestreet_SQUARE.jpeg"/>
+        </item>
+    </channel>
+</rss>
