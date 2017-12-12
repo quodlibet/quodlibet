@@ -6,61 +6,28 @@ ways to view your audio library, as well as support for Internet radio and
 audio feeds. It has extremely flexible metadata tag editing and searching
 capabilities.
 
-Ex Falso is a tag editor with the same tag editing interface as Quod Libet,
-but it does not play files.
+Ex Falso is a tag editor with the same tag editing interface as Quod Libet.
 
-Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC,
-MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI.
+https://quodlibet.readthedocs.io
 
+.. image:: https://github.com/quodlibet/quodlibet/raw/master/quodlibet/docs/images/paned.png
+    :align: center
+    :width: 670
+    :height: 594
 
-Contact & Bug Reports
----------------------
+For information on how to build/install/test Quod Libet check out
 
-To report bugs, suggest features, ask a question, get the latest version,
-or help us out, visit https://github.com/quodlibet/quodlibet.
-
-IRC: #quodlibet on irc.oftc.net
-Mailing List: http://groups.google.com/group/quod-libet-development
+https://quodlibet.readthedocs.org/en/latest/development/overview.html
 
 
-Documentation
--------------
+.. image:: https://travis-ci.org/quodlibet/quodlibet.svg?branch=master
+    :target: https://travis-ci.org/quodlibet/quodlibet
 
-Call 'make' in the 'docs' directory to build sphinx documentation.
+.. image:: https://circleci.com/gh/quodlibet/quodlibet.svg?style=shield
+    :target: https://circleci.com/gh/quodlibet/quodlibet
 
-Or access it online: https://quodlibet.readthedocs.org/
+.. image:: https://ci.appveyor.com/api/projects/status/clchwo186004pk0f/branch/master?svg=true
+    :target: https://ci.appveyor.com/project/lazka/quodlibet/branch/master
 
-
-Installation Requirements
--------------------------
-
-* intltool
-* gettext
-
-
-Runtime Requirements
---------------------
-
-* Python >= 2.7
-* PyGObject >= 3.2
-* GTK+ >= 3.0
-* GStreamer >= 1.0 or xine-lib 1.x
-* Mutagen >= 1.14
-
-
-Installation
-------------
-
-::
-
-    ./setup.py build
-    ./setup.py install
-
-
-Tests
------
-
-::
-
-    ./setup.py test
-    ./setup.py test --to-run=TestClassName
+.. image:: https://codecov.io/gh/quodlibet/quodlibet/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/quodlibet/quodlibet

@@ -2,13 +2,17 @@
 # Copyright 2006 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import wave
 
-from quodlibet.formats._audio import AudioFile
+from senf import fsn2text
+
+from ._audio import AudioFile, translate_errors
+
 
 extensions = [".wav"]
 
@@ -18,13 +22,17 @@ class WAVEFile(AudioFile):
     mimes = ["audio/wav", "audio/x-wav", "audio/wave"]
 
     def __init__(self, filename):
-        f = wave.open(filename, "rb")
-        self["~#length"] = f.getnframes() // f.getframerate()
+        with translate_errors():
+            with open(filename, "rb") as h:
+                f = wave.open(h)
+                self["~#length"] = float(f.getnframes()) / f.getframerate()
+                self["~#channels"] = f.getnchannels()
         self.sanitize(filename)
 
     def sanitize(self, filename):
         super(WAVEFile, self).sanitize(filename)
-        self["title"] = os.path.basename(self["~filename"])[:-4]
+        self["title"] = fsn2text(os.path.splitext(
+            os.path.basename(self["~filename"]))[0])
 
     def write(self):
         pass
@@ -35,5 +43,5 @@ class WAVEFile(AudioFile):
         else:
             return k == "artist"
 
-info = WAVEFile
+loader = WAVEFile
 types = [WAVEFile]

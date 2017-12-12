@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 # Copyright 2008 Joe Wreschnig
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
+from quodlibet import _
+from quodlibet.plugins.songshelpers import any_song, is_finite, is_writable
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons
 
 
 def artist_to_sort(artist):
@@ -31,7 +36,9 @@ class MakeSortTags(SongsMenuPlugin):
     PLUGIN_ID = "SortTags"
     PLUGIN_NAME = _("Create Sort Tags")
     PLUGIN_DESC = _("Converts album and artist names to sort names, poorly.")
-    PLUGIN_ICON = 'gtk-edit'
+    PLUGIN_ICON = Icons.EDIT
+
+    plugin_handles = any_song(is_writable, is_finite)
 
     def plugin_song(self, song):
         for tag in ["album"]:

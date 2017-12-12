@@ -1,21 +1,27 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, GObject
 
+from quodlibet import app
+from quodlibet import ngettext, _
 from quodlibet import qltk
-from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
-from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent
-from quodlibet.util.collection import Playlist
+from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent, Icons
+from quodlibet.util.collection import Playlist, FileBackedPlaylist
 
 
 class PlaylistMenu(Gtk.Menu):
-    def __init__(self, songs):
+    __gsignals__ = {
+        'new': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+    }
+
+    def __init__(self, songs, playlists):
         super(PlaylistMenu, self).__init__()
         i = Gtk.MenuItem(label=_(u"_New Playlist…"), use_underline=True)
         i.connect('activate', self._on_new_playlist_activate, songs)
@@ -23,9 +29,9 @@ class PlaylistMenu(Gtk.Menu):
         self.append(SeparatorMenuItem())
         self.set_size_request(int(i.size_request().width * 2), -1)
 
-        for playlist in PlaylistsBrowser.playlists():
+        for playlist in playlists:
             name = playlist.name
-            i = Gtk.CheckMenuItem(name)
+            i = Gtk.CheckMenuItem(label=name)
             some, all = playlist.has_songs(songs)
             i.set_active(some)
             i.set_inconsistent(some and not all)
@@ -36,23 +42,22 @@ class PlaylistMenu(Gtk.Menu):
 
     def _on_new_playlist_activate(self, item, songs):
         parent = get_menu_item_top_parent(item)
-
-        if len(songs) == 1:
-            title = songs[0].comma("title")
-        else:
-            title = ngettext(
-                "%(title)s and %(count)d more",
-                "%(title)s and %(count)d more",
-                len(songs) - 1) % {
-                    'title': songs[0].comma("title"),
-                    'count': len(songs) - 1
-                }
-        title = GetPlaylistName(qltk.get_top_parent(parent)).run(title)
+        title = Playlist.suggested_name_for(songs)
+        title = self._get_new_name(parent, title)
         if title is None:
             return
-        playlist = Playlist.new(PLAYLISTS, title)
+        playlist = FileBackedPlaylist.new(PLAYLISTS, title,
+                                          library=app.library)
         playlist.extend(songs)
-        PlaylistsBrowser.changed(playlist)
+        self._emit_new(playlist)
+
+    def _get_new_name(self, parent, title):
+        """Ask the user for a name for the new playlist"""
+        return GetPlaylistName(qltk.get_top_parent(parent)).run(title)
+
+    def _emit_new(self, playlist):
+        # TODO: signals directly from a new playlist library (#518)
+        self.emit('new', playlist)
 
     def _on_toggle_playlist_activate(self, item, playlist, songs):
         parent = get_menu_item_top_parent(item)
@@ -69,7 +74,6 @@ class PlaylistMenu(Gtk.Menu):
             return
         else:
             playlist.extend(songs)
-        PlaylistsBrowser.changed(playlist)
 
 
 class ConfirmMultipleSongsAction(qltk.Message):
@@ -89,6 +93,6 @@ class ConfirmMultipleSongsAction(qltk.Message):
             Gtk.MessageType.QUESTION, parent, title, desc,
             Gtk.ButtonsType.NONE)
 
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_ADD, self.ADD,
-                         Gtk.STOCK_REMOVE, self.REMOVE)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Add"), Icons.LIST_ADD, self.ADD)
+        self.add_icon_button(_("_Remove"), Icons.LIST_REMOVE, self.REMOVE)

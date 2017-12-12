@@ -2,18 +2,23 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from tests import TestCase
 
 from quodlibet import config
 
-from quodlibet.browsers.collection import *
-from quodlibet.browsers.collection.models import *
-from quodlibet.browsers.collection.prefs import *
-from quodlibet.formats._audio import AudioFile
+from quodlibet.browsers.collection import CollectionBrowser
+from quodlibet.browsers.collection.models import UnknownNode, \
+    CollectionTreeStore, build_tree, MultiNode
+from quodlibet.browsers.collection.prefs import save_headers, get_headers, \
+    PatternEditor
+from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
+from quodlibet.compat import listvalues
+
 
 SONGS = [
     AudioFile({"album": "one", "artist": "piman", "~filename": "/dev/null"}),
@@ -83,7 +88,7 @@ class TCollectionAlbums(TestCase):
     def test_utils(self):
         model = CollectionTreeStore()
         model.set_albums([("~people", 0)], self.albums)
-        a = self.albums.values()
+        a = listvalues(self.albums)
         a.sort(key=lambda x: x.key)
 
         path = model.get_path_for_album(a[0])

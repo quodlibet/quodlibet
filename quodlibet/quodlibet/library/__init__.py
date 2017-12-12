@@ -2,8 +2,9 @@
 # Copyright 2006 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """Various library classes.
 
@@ -16,7 +17,6 @@ also be queried in various ways.
 import time
 
 from quodlibet import print_d
-import quodlibet.formats as formats
 
 from quodlibet.library.libraries import SongFileLibrary, SongLibrary
 from quodlibet.library.librarians import SongLibrarian
@@ -29,8 +29,7 @@ def init(cache_fn=None):
     Return a main library, and set a librarian for
     all future SongLibraries.
     """
-    s = ", ".join(formats.modules)
-    print_d("Supported formats: %s" % s)
+
     SongFileLibrary.librarian = SongLibrary.librarian = SongLibrarian()
     library = SongFileLibrary("main")
     if cache_fn:

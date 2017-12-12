@@ -13,12 +13,14 @@ String Tags
  * ``~basename``: The last component of the full path name
  * ``~dirname``: Everything but the last component of the file path name
  * ``~filename``: The full path name
- * ``~format``: The file format
+ * ``~format``: The file format (e.g. "MPEG-4")
+ * ``~codec``: The audio codec (e.g. "AAC LC")
+ * ``~encoding``: Encoder name, version, settings used (e.g. "LAME 3.97.0, VBR")
  * ``~length``: The length of the file in H:MM:SS format
  * ``~mountpoint``: The component of the full path name that corresponds to the file's immediate parent mount
- * ``~performers``: A list of performers, including :ref:`roles <PerformerRoles>`
+ * ``~performers``: A list of performers
  * ``~people``: A list of all people involved in the song
- * ``~rating``: A string representation of the song's rating (e.g. ★★★☆)
+ * ``~rating``: A string representation of the song's rating (e.g. ★★★☆). Note that in most formats these are per email address.
  * ``~uri``: The full URI of the song
  * ``~year``: The release year, derived from the ``date`` tag
  * ``~originalyear``: The original year, derived from the ``originaldate`` tag
@@ -34,11 +36,35 @@ The internal ``~people`` tag combines the following tags to one:
 ``originalartist``, ``lyricist``, ``arranger``, ``conductor`` in this exact 
 order.
 
-In case of sorting this means that all album artists come first followed by 
-all artists and so on.
+For sorting, this means that all album artists come first followed by
+all artists and so on. For song collections / albums, the values of
+each included tag are sorted by frequency.
 
-In case of song collections and albums the values of each included tag are 
-sorted by frequency.
+Variants:
+    ``~people:roles`` includes roles e.g. ``"The Parley of Instruments
+    (Orchestra), David Thomas (Bass)"``. The roles are either derived from the
+    source tag name (``composer=Joseph Haydn`` → ``Joseph Haydn
+    (Composition)``) or from the performer role
+    (``performer:composition=Joseph Haydn`` → ``Joseph Haydn (Composition)``).
+    For the latter see the ``~performers`` tag.
+
+    ``~people:real`` excludes *Various Artists*, commonly used as a
+    placeholder for album artists on compilations, etc.
+
+
+The ``~performers`` Internal Tag
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The internal ``~performers`` tag combines all the artists specified in the
+performer tags to a single one.
+
+Example: ``performer:vocals=Brandon Patton, performer:banjo=Béla Fleck``
+
+``~performers`` will then display ``"Brandon Patton, Béla Fleck"``
+
+Variants:
+    ``~performer:roles`` includes the roles as well. For the above example
+    it will display ``"Brandon Patton (Vocals), Béla Fleck (Banjo)"``
 
 
 Song Collections / Albums
@@ -62,6 +88,7 @@ Numeric Tags
  * ``~#added``: The date the song was added to the library
  * ``~#bitrate``: The bitrate of the song, in kilo bits per second
  * ``~#disc``: The disc number of the song (the first half of the ``discnumber`` tag)
+ * ``~#channels``: The channel count
  * ``~#discs``: The total number of discs in this song's collection
  * ``~#filesize``: The size in bytes of this song
  * ``~#lastplayed``: The time this song was last played through
@@ -85,7 +112,6 @@ Song Collections / Albums
 
  * ``~#tracks``: The real number of songs in the collection
  * ``~#discs``: The number of different discs in the collection
- * ``~#filesize``: The total filesize of all songs in the collection
 
 For all other numeric tags it is possible to define numeric functions by 
 appending ``:numeric_func`` to the tag name (``~#playcount:avg`` for example). 
@@ -94,8 +120,9 @@ given. For user defined numeric tags the average value is returned by
 default.
 
  * ``avg``: Returns the average value (``~#rating``)
- * ``sum``: Returns the summation of all values (``~#length``, ``~#playcount``, ``~#skipcount``)
+ * ``sum``: Returns the summation of all values (``~#length``, ``~#playcount``, ``~#skipcount``, ``~#filesize``)
  * ``min``: Returns the smallest value (``~#year``)
  * ``max``: Returns the largest value (``~#added``, ``~#lastplayed``, ``~#laststarted``, ``~#mtime``)
- * ``bav``: Returns the `Bayesian average <http://en.wikipedia .org/wiki/Bayesian_average>`_ value (``~#rating``)
-            Being most appropriate for ratings, it is adjusted globally under the preferences for ratings.
+ * ``bav``: Returns the `Bayesian average <https://en.wikipedia .org/wiki/Bayesian_average>`_ value (``~#rating``)
+            Being most appropriate for ratings, the parameter is adjusted
+            globally under the preferences for ratings.

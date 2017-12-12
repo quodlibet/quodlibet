@@ -1,29 +1,37 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#           2016-2017 Nick Boultbee
+#                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, Pango
+from senf import bytes2fsn, fsn2bytes
 
+import quodlibet
+from quodlibet import ngettext, _
 from quodlibet import config
-from quodlibet import const
 from quodlibet import util
 from quodlibet import qltk
+from quodlibet import app
 
-from quodlibet.util import connect_obj, connect_destroy
-from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.util import connect_destroy, format_time_preferred, print_exc
+from quodlibet.qltk import Icons, gtk_version, add_css
+from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
 from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.menubutton import SmallMenuButton
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
-    SmallImageButton
+    SmallImageButton, MenuItem
 
-QUEUE = os.path.join(const.USERDIR, "queue")
+QUEUE = os.path.join(quodlibet.get_user_dir(), "queue")
 
 
 class PlaybackStatusIcon(Gtk.Box):
@@ -56,16 +64,34 @@ class PlaybackStatusIcon(Gtk.Box):
         self._set("media-playback-pause")
 
 
+class ExpandBoxHack(Gtk.HBox):
+
+    def do_get_preferred_width(self):
+        # Workaround for https://bugzilla.gnome.org/show_bug.cgi?id=765602
+        # set_label_fill() no longer works since 3.20. Fake a natural size
+        # which is larger than the expander can be to force the parent to
+        # allocate to us the whole space.
+        min_, nat = Gtk.HBox.do_get_preferred_width(self)
+        if gtk_version > (3, 19):
+            # if we get too large gtk calcs will overflow..
+            nat = max(nat, 2 ** 16)
+        return (min_, nat)
+
+
 class QueueExpander(Gtk.Expander):
-    def __init__(self, menu, library, player):
+
+    def __init__(self, library, player):
         super(QueueExpander, self).__init__(spacing=3)
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.queue = PlayQueue(library, player)
+        self.queue.props.expand = True
         sw.add(self.queue)
 
-        outer = Gtk.HBox(spacing=12)
+        add_css(self, ".ql-expanded title { margin-bottom: 5px; }")
+
+        outer = ExpandBoxHack()
 
         left = Gtk.HBox(spacing=12)
 
@@ -75,21 +101,48 @@ class QueueExpander(Gtk.Expander):
         state_icon.show()
         hb2.pack_start(state_icon, True, True, 0)
         name_label = Gtk.Label(label=_("_Queue"), use_underline=True)
+        name_label.set_size_request(-1, 24)
         hb2.pack_start(name_label, True, True, 0)
         left.pack_start(hb2, False, True, 0)
 
-        b = SmallImageButton(
-            image=Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU))
-        b.set_tooltip_text(_("Remove all songs from the queue"))
-        b.connect('clicked', self.__clear_queue)
-        b.hide()
-        b.set_relief(Gtk.ReliefStyle.NONE)
-        left.pack_start(b, False, False, 0)
+        menu = Gtk.Menu()
 
-        count_label = Gtk.Label()
+        self.count_label = count_label = Gtk.Label()
+        self.count_label.set_property("ellipsize", Pango.EllipsizeMode.END)
+        self.count_label.set_width_chars(10)
+        self.count_label.get_style_context().add_class("dim-label")
         left.pack_start(count_label, False, True, 0)
 
         outer.pack_start(left, True, True, 0)
+
+        self.set_label_fill(True)
+
+        rand_checkbox = ConfigCheckMenuItem(
+                _("_Random"), "memory", "shufflequeue", populate=True)
+        rand_checkbox.connect('toggled', self.__queue_shuffle)
+        self.set_shuffled(rand_checkbox.get_active())
+        menu.append(rand_checkbox)
+
+        stop_checkbox = ConfigCheckMenuItem(
+            _("Stop Once Empty"), "memory", "queue_stop_once_empty",
+            populate=True)
+        menu.append(stop_checkbox)
+
+        clear_item = MenuItem(_("_Clear Queue"), Icons.EDIT_CLEAR)
+        menu.append(clear_item)
+        clear_item.connect("activate", self.__clear_queue)
+
+        button = SmallMenuButton(
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
+            arrow=True)
+        button.set_relief(Gtk.ReliefStyle.NONE)
+        button.show_all()
+        button.hide()
+        button.set_no_show_all(True)
+        menu.show_all()
+        button.set_menu(menu)
+
+        outer.pack_start(button, False, False, 0)
 
         close_button = SmallImageButton(
             image=SymbolicIconImage("window-close", Gtk.IconSize.MENU),
@@ -98,17 +151,11 @@ class QueueExpander(Gtk.Expander):
         close_button.connect("clicked", lambda *x: self.hide())
 
         outer.pack_start(close_button, False, False, 6)
-        self.set_label_fill(True)
-
-        cb = ConfigCheckButton(
-            _("_Random"), "memory", "shufflequeue")
-        cb.connect('toggled', self.__queue_shuffle, self.queue.model)
-        cb.set_active(config.getboolean("memory", "shufflequeue"))
-        left.pack_start(cb, False, True, 0)
 
         self.set_label_widget(outer)
         self.add(sw)
-        connect_obj(self, 'notify::expanded', self.__expand, cb, b)
+        self.connect('notify::expanded', self.__expand, button)
+        self.connect('notify::expanded', self.__expand, button)
 
         targets = [
             ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
@@ -120,15 +167,11 @@ class QueueExpander(Gtk.Expander):
         self.connect('drag-motion', self.__motion)
         self.connect('drag-data-received', self.__drag_data_received)
 
-        self.show_all()
-
         self.queue.model.connect_after('row-inserted',
             util.DeferredSignal(self.__check_expand), count_label)
         self.queue.model.connect_after('row-deleted',
             util.DeferredSignal(self.__update_count), count_label)
-        cb.hide()
 
-        connect_obj(self, 'notify::visible', self.__visible, cb, menu, b)
         self.__update_count(self.model, None, count_label)
 
         connect_destroy(
@@ -140,6 +183,9 @@ class QueueExpander(Gtk.Expander):
             player, 'unpaused', self.__update_state_icon_pause,
             state_icon, False)
 
+        connect_destroy(
+            player, 'song-started', self.__update_queue_stop, self.queue.model)
+
         # to make the children clickable if mapped
         # ....no idea why, but works
         def hack(expander):
@@ -149,9 +195,18 @@ class QueueExpander(Gtk.Expander):
                 label.map()
         self.connect("map", hack)
 
+        self.set_expanded(config.getboolean("memory", "queue_expanded"))
+        self.notify("expanded")
+
+        for child in self.get_children():
+            child.show_all()
+
     @property
     def model(self):
         return self.queue.model
+
+    def refresh(self):
+        self.__update_count(self.model, None, self.count_label)
 
     def __update_state_icon(self, player, song, state_icon):
         if self.model.sourced:
@@ -170,6 +225,11 @@ class QueueExpander(Gtk.Expander):
 
     def __clear_queue(self, activator):
         self.model.clear()
+        stop_queue = config.getboolean("memory",
+                                       "queue_stop_once_empty",
+                                       False)
+        if stop_queue:
+            app.player_options.stop_after = True
 
     def __motion(self, wid, context, x, y, time):
         Gdk.drag_status(context, Gdk.DragAction.COPY, time)
@@ -183,35 +243,41 @@ class QueueExpander(Gtk.Expander):
             text = ngettext("%(count)d song (%(time)s)",
                             "%(count)d songs (%(time)s)",
                             len(model)) % {
-                "count": len(model), "time": util.format_time_display(time)}
+                "count": len(model), "time": format_time_preferred(time)}
         lab.set_text(text)
 
     def __check_expand(self, model, path, iter, lab):
-        if not self.get_property('visible'):
-            self.set_expanded(False)
         self.__update_count(model, path, lab)
         self.show()
 
     def __drag_data_received(self, expander, *args):
         self.queue.emit('drag-data-received', *args)
 
-    def __queue_shuffle(self, button, model):
-        if not button.get_active():
-            model.order = OrderInOrder(model)
+    def __queue_shuffle(self, button):
+        self.set_shuffled(button.get_active())
+
+    def set_shuffled(self, is_shuffled):
+        self.queue.model.order = (OrderShuffle() if is_shuffled
+                                  else OrderInOrder())
+
+    def __update_queue_stop(self, player, song, model):
+        enabled = config.getboolean("memory", "queue_stop_once_empty", False)
+        songs_left = len(model.get())
+        if enabled and songs_left == 1:
+            # Enable stop_after if this is the last song
+            app.player_options.stop_after = True
+
+    def __expand(self, widget, prop, menu_button):
+        expanded = self.get_expanded()
+
+        style_context = self.get_style_context()
+        if expanded:
+            style_context.add_class("ql-expanded")
         else:
-            model.order = OrderShuffle(model)
+            style_context.remove_class("ql-expanded")
 
-    def __expand(self, cb, prop, clear):
-        cb.set_property('visible', self.get_expanded())
-        clear.set_property('visible', self.get_expanded())
-
-    def __visible(self, cb, prop, menu, clear):
-        value = self.get_property('visible')
-        config.set("memory", "queue", str(value))
-        menu.set_active(value)
-        self.set_expanded(not self.model.is_empty())
-        cb.set_property('visible', self.get_expanded())
-        clear.set_property('visible', self.get_expanded())
+        menu_button.set_property('visible', expanded)
+        config.set("memory", "queue_expanded", str(expanded))
 
 
 class QueueModel(PlaylistModel):
@@ -236,9 +302,9 @@ class PlayQueue(SongList):
         self.set_size_request(-1, 120)
         self.connect('row-activated', self.__go_to, player)
 
-        connect_obj(self, 'popup-menu', self.__popup, library)
+        self.connect('popup-menu', self.__popup, library)
         self.enable_drop()
-        connect_obj(self, 'destroy', self.__write, self.model)
+        self.connect('destroy', self.__write, self.model)
         self.__fill(library)
 
         self.connect('key-press-event', self.__delete_key_pressed)
@@ -256,24 +322,44 @@ class PlayQueue(SongList):
 
     def __fill(self, library):
         try:
-            filenames = file(QUEUE, "rU").readlines()
+            with open(QUEUE, "rb") as f:
+                lines = f.readlines()
         except EnvironmentError:
-            pass
-        else:
-            filenames = map(str.strip, filenames)
-            if library.librarian:
-                library = library.librarian
-            songs = filter(None, map(library.get, filenames))
-            for song in songs:
-                self.model.append([song])
+            return
 
-    def __write(self, model):
-        filenames = "\n".join([row[0]["~filename"] for row in model])
-        f = file(QUEUE, "w")
-        f.write(filenames)
-        f.close()
+        filenames = []
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                filename = bytes2fsn(line, "utf-8")
+            except ValueError:
+                print_exc()
+                continue
+            filenames.append(filename)
 
-    def __popup(self, library):
+        if library.librarian:
+            library = library.librarian
+        songs = filter(None, map(library.get, filenames))
+        for song in songs:
+            self.model.append([song])
+
+    def __write(self, widget, model):
+        filenames = [row[0]["~filename"] for row in model]
+        try:
+            with open(QUEUE, "wb") as f:
+                for filename in filenames:
+                    try:
+                        line = fsn2bytes(filename, "utf-8")
+                    except ValueError:
+                        print_exc()
+                        continue
+                    f.write(line + b"\n")
+        except EnvironmentError:
+            print_exc()
+
+    def __popup(self, widget, library):
         songs = self.get_selected_songs()
         if not songs:
             return
@@ -282,7 +368,7 @@ class PlayQueue(SongList):
             library, songs, queue=False, remove=False, delete=False,
             ratings=False)
         menu.preseparate()
-        remove = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE, use_stock=True)
+        remove = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         qltk.add_fake_accel(remove, "Delete")
         remove.connect('activate', self.__remove)
         menu.prepend(remove)

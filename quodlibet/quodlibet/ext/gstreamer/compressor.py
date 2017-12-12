@@ -2,11 +2,13 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gst, Gtk, GObject
 
+from quodlibet import _
 from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
@@ -104,7 +106,6 @@ class Compressor(GStreamerPlugin):
     PLUGIN_NAME = _("Audio Compressor")
     PLUGIN_DESC = _("Changes the amplitude of all samples above a specific "
                     "threshold with a specific ratio.")
-    PLUGIN_ICON = "audio-volume-high"
 
     @classmethod
     def setup_element(cls):

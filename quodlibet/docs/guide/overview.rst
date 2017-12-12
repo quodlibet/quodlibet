@@ -29,7 +29,7 @@ By right-clicking, they also provide context menus with advanced options:
  * The volume button lets you choose the active replaygain mode
    (album, track, automatic).
  * The seek button can display the remaining instead of the elapsed time
-   and provides the option to add a bookmark for the current song position.
+   and provides options for interacting with bookmarks.
  * The context menu of the play button has an option to pause playback after
    the current song.
 
@@ -74,6 +74,7 @@ played or skipped.
 It's important to note that the playback order will not affect the queue,
 which has its own playback settings.
 
+
 5. Song Information
 ^^^^^^^^^^^^^^^^^^^
 
@@ -84,6 +85,7 @@ selected.
 It also shows progress information of background operations like importing
 music.
 
+
 The Queue
 ---------
 
@@ -91,13 +93,16 @@ The Queue
     :width: 350px
     :align: right
 
-The play queue and the song list determine what's played next. The queue
-takes precedence whenever it has songs, but after it's empty, playback will
-continue in the main song list where it left off.
+The play queue and the song list determine what's played next. Unlike the 
+song list the queue consumes songs (from the queue not your library) as 
+they are played. That is, once a song starts playing it disappears from the 
+queue.
+
+The queue however, takes precedence whenever it has songs. After it's empty, 
+playback will continue in the main song list where it left off.
 
 To add songs to the queue, right-click and *Add to Queue*, use the shortcut
 ``CTRL+Return`` or select songs in a different browser window.
-
 
 More Browsers
 -------------
@@ -108,10 +113,10 @@ More Browsers
 
 
 Besides the active browser in the main window, you can open as many
-different browser windows as you want by selecting one under *Music* >
-*Browse Library* or in the tray icon plugin context menu.
+different browser windows as you want by selecting one under *Browse* >
+*Open Browser* or in the tray icon plugin context menu.
 
-In an separate browser, double-clicking a song will result in it being
+In a separate browser, double-clicking a song will result in it being
 added to the queue rather than played immediately (as per the main browser).
 
 See the :ref:`Browsers Guide <Browse>` for full details on browsers and the
@@ -120,7 +125,7 @@ various implementations.
 Example usage:
 
  * Manage playlists by dragging songs across browsers (eg Search browser to Playlist browser)
- *  Edit the tags of some songs while the ones in the main song list get played etc.
+ * Edit the tags of some songs while the ones in the main song list get played etc.
  * Check out other songs by the artist currently playing without disturbing that list.
 
 
@@ -130,13 +135,10 @@ The Library
 If all your music lives in one folder on your computer, adding your entire
 music collection in Quod Libet is easy.
 
-From the main menu bar, select *Music* > *Add a Folder* and browse to the
+From the main menu bar, select *File* > *Add a Folder* and browse to the
 top-most folder containing your music.  By default Quod Libet will scan
 your selected folder recursively, adding all the songs found to your
 library automatically. Add more folders if you wish.
-
-You may also check the *watch this folder for new songs*. If you want to
-change folder settings later, you can in the preferences window.
 
 Depending on the size of your music collection, it may take a few minutes
 to perform the initial scan.

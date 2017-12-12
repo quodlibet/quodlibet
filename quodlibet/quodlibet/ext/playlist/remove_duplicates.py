@@ -2,15 +2,17 @@
 # Copyright 2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-from quodlibet.formats._audio import AudioFile
-from quodlibet.util.dprint import print_d
+from quodlibet.formats import AudioFile
+from quodlibet import print_d, ngettext, _
 
 from quodlibet import qltk
 
 from quodlibet.plugins.playlist import PlaylistPlugin
+from quodlibet.qltk import Icons
 from gi.repository import Gtk
 
 
@@ -18,7 +20,7 @@ class RemoveDuplicates(PlaylistPlugin):
     PLUGIN_ID = "Remove Playlist Duplicates"
     PLUGIN_NAME = _("Remove Playlist Duplicates")
     PLUGIN_DESC = _("Removes duplicate entries in a playlist.")
-    PLUGIN_ICON = 'gtk-clear'
+    PLUGIN_ICON = Icons.EDIT_CLEAR
 
     def plugin_handles(self, playlists):
         return len(playlists) == 1 and playlists[0].has_duplicates
@@ -55,5 +57,6 @@ class ConfirmRemoveDuplicatesDialog(qltk.Message):
             Gtk.MessageType.WARNING, parent, title, description,
             Gtk.ButtonsType.NONE)
 
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_REMOVE, Gtk.ResponseType.YES)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Remove"), Icons.LIST_REMOVE,
+                             Gtk.ResponseType.YES)

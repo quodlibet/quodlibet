@@ -2,20 +2,29 @@
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+from ._misc import AudioFileError
 
 
 class ImageContainer(object):
     """Mixin/Interface for AudioFile to support basic embedded image editing"""
 
     def get_primary_image(self):
-        """Returns the primary embedded image or None."""
+        """Returns the primary embedded image or None.
+
+        In case of an error returns None.
+        """
 
         return
 
     def get_images(self):
-        """Returns a list of embedded images, primary first"""
+        """Returns a list of embedded images, primary first.
+
+        In case of an error returns an empty list.
+        """
 
         # fall back to the single implementation
         image = self.get_primary_image()
@@ -46,18 +55,25 @@ class ImageContainer(object):
         return False
 
     def clear_images(self):
-        """Delete all embedded images"""
+        """Delete all embedded images.
 
-        raise NotImplementedError
+        Raises:
+            AudioFileError
+        """
+
+        raise AudioFileError("Not supported for this format")
 
     def set_image(self, image):
         """Replaces all embedded images by the passed image.
 
         The image type recorded in the file will be APICType.COVER_FRONT,
         disregarding image.type.
+
+        Raises:
+            AudioFileError
         """
 
-        raise NotImplementedError
+        raise AudioFileError("Not supported for this format")
 
 
 class APICType(object):
@@ -158,6 +174,20 @@ class EmbeddedImage(object):
         return "<%s mime_type=%r width=%d height=%d type=%s file=%r>" % (
             type(self).__name__, self.mime_type, self.width, self.height,
             APICType.to_string(self.type), self.file)
+
+    def read(self):
+        """Read the raw image data
+
+        Returns:
+            bytes
+        Raises:
+            IOError
+        """
+
+        self.file.seek(0)
+        data = self.file.read()
+        self.file.seek(0)
+        return data
 
     @property
     def sort_key(self):

@@ -1,28 +1,32 @@
 # -*- coding: utf-8 -*-
 #    ReplayGain Album Analysis using gstreamer rganalysis element
 #    Copyright (C) 2005,2007,2009  Michael Urman
-#                         2012,14  Nick Boultbee
+#                  2012,2014,2016  Nick Boultbee
 #                            2013  Christoph Reiter
 #
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of version 2 of the GNU General Public License as
-#    published by the Free Software Foundation.
-#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 from gi.repository import GObject
 from gi.repository import Pango
 from gi.repository import Gst
 from gi.repository import GLib
-from quodlibet import print_d
+
+from quodlibet import print_d, ngettext, _
 from quodlibet.plugins import PluginConfigMixin
 
 from quodlibet.browsers.collection.models import EMPTY
 
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.x import Frame
+from quodlibet.qltk import Icons, Dialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.util import cached_property
+from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
+from quodlibet.util import cached_property, print_w, print_e, format_int_locale
+from quodlibet.compat import xrange
 
 __all__ = ['ReplayGain']
 
@@ -150,6 +154,13 @@ class RGSong(object):
         write_to_song('replaygain_album_gain', '%.2f dB', album_gain)
         write_to_song('replaygain_album_peak', '%.4f', album_peak)
 
+        # bs1770gain writes those and since we still do old replaygain
+        # just delete them so players use the defaults.
+        song.pop("replaygain_reference_loudness", None)
+        song.pop("replaygain_algorithm", None)
+        song.pop("replaygain_album_range", None)
+        song.pop("replaygain_track_range", None)
+
     @property
     def title(self):
         return self.song('~tracknumber~title~version')
@@ -233,7 +244,7 @@ class ReplayGainPipeline(GObject.Object):
                 i, f = x
                 i = {"mad": -1, "mpg123audiodec": -2}.get(f.get_name(), i)
                 return (i, f)
-            return zip(*sorted(map(set_prio, enumerate(factories))))[1]
+            return list(zip(*sorted(map(set_prio, enumerate(factories)))))[1]
 
         self.decode.connect("autoplug-sort", sort_decoders)
 
@@ -344,14 +355,15 @@ class ReplayGainPipeline(GObject.Object):
             self._next_song()
 
 
-class RGDialog(Gtk.Dialog):
+class RGDialog(Dialog):
 
     def __init__(self, albums, parent, process_mode):
         super(RGDialog, self).__init__(
-            title=_('ReplayGain Analyzer'), parent=parent,
-            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                     Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
-        )
+            title=_('ReplayGain Analyzer'), parent=parent)
+
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
+                             Gtk.ResponseType.OK)
 
         self.process_mode = process_mode
         self.set_default_size(600, 400)
@@ -373,9 +385,9 @@ class RGDialog(Gtk.Dialog):
         def icon_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
             if item.error:
-                cell.set_property('stock-id', Gtk.STOCK_DIALOG_ERROR)
+                cell.set_property('icon-name', Icons.DIALOG_ERROR)
             else:
-                cell.set_property('stock-id', None)
+                cell.set_property('icon-name', Icons.NONE)
 
         column = Gtk.TreeViewColumn()
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -448,12 +460,12 @@ class RGDialog(Gtk.Dialog):
         self.__fill_view(view, albums)
         num_to_process = sum(int(rga.should_process) for rga in self._todo)
         template = ngettext(
-            "There is <b>%(to-process)d</b> album to update (of %(all)d)",
-            "There are <b>%(to-process)d</b> albums to update (of %(all)d)",
+            "There is <b>%(to-process)s</b> album to update (of %(all)s)",
+            "There are <b>%(to-process)s</b> albums to update (of %(all)s)",
             num_to_process)
         info.set_markup(template % {
-            "to-process": num_to_process,
-            "all": len(self._todo),
+            "to-process": format_int_locale(num_to_process),
+            "all": format_int_locale(len(self._todo)),
         })
         self.connect("destroy", self.__destroy)
         self.connect('response', self.__response)
@@ -539,8 +551,9 @@ class RGDialog(Gtk.Dialog):
 
     def __done(self, pipeline, album):
         self._done.append(album)
-        if self._todo:
-            pipeline.start(self._todo.pop(0))
+        next_album = self.get_next_album()
+        if next_album:
+            pipeline.start(next_album)
         self.__update_view_for(album)
 
     def __update_view_for(self, album):
@@ -566,8 +579,10 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_NAME = _('Replay Gain')
     PLUGIN_DESC = _('Analyzes and updates ReplayGain information, '
                     'using GStreamer. Results are grouped by album.')
-    PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
+    PLUGIN_ICON = Icons.MULTIMEDIA_VOLUME_CONTROL
     CONFIG_SECTION = 'replaygain'
+
+    plugin_handles = each_song(is_finite, is_writable)
 
     def plugin_albums(self, albums):
         mode = self.config_get("process_if", UpdateMode.ALWAYS)
@@ -587,6 +602,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
 
         # Tabulate all settings for neatness
         table = Gtk.Table(n_rows=1, n_columns=2)
+        table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
         rows = []

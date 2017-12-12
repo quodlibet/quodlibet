@@ -3,17 +3,20 @@
 #                     Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
 from gi.repository import Gtk, Pango, GObject
 
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
 from quodlibet.qltk import entry
+from quodlibet.qltk import Icons
 
 
 class _KeyValueEditor(qltk.Window):
@@ -50,7 +53,7 @@ class _KeyValueEditor(qltk.Window):
         l.set_alignment(0.0, 0.5)
         t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
         t.attach(self.value, 1, 2, 1, 2)
-        add = Gtk.Button(stock=Gtk.STOCK_ADD)
+        add = qltk.Button(_("_Add"), Icons.LIST_ADD)
         add.set_sensitive(False)
         t.attach(add, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.FILL)
 
@@ -77,18 +80,18 @@ class _KeyValueEditor(qltk.Window):
         self.get_child().pack_start(sw, True, True, 0)
 
         menu = Gtk.Menu()
-        remove = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE, use_stock=True)
+        remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         connect_obj(remove, 'activate', self.__remove, view)
         qltk.add_fake_accel(remove, "Delete")
         menu.append(remove)
         menu.show_all()
 
         bbox = Gtk.HButtonBox()
-        rem_b = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        rem_b = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         rem_b.set_sensitive(False)
         bbox.pack_start(rem_b, True, True, 0)
         self.use_header_bar()
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
         if not self.has_close_button():
             bbox.pack_start(close, True, True, 0)
         else:
@@ -190,9 +193,9 @@ class StandaloneEditor(_KeyValueEditor):
         """Returns a list of tuples representing k,v pairs of the given file"""
         ret = []
         if os.path.exists(filename):
-            fileobj = file(filename, "rU")
+            fileobj = open(filename, "rU")
             lines = list(fileobj.readlines())
-            for i in range(len(lines) / 2):
+            for i in range(len(lines) // 2):
                 ret.append((lines[i * 2 + 1].strip(), lines[i * 2].strip()))
         return ret
 
@@ -205,14 +208,13 @@ class StandaloneEditor(_KeyValueEditor):
     def fill_values(self):
         filename = self.filename + ".saved"
         if os.path.exists(filename):
-            fileobj = file(filename, "rU")
+            fileobj = open(filename, "rU")
             lines = list(fileobj.readlines())
             lines.reverse()
             while len(lines) > 1:
                 self.model.prepend(
                     row=[lines.pop(1).strip(), lines.pop(0).strip()])
         if not len(self.model) and self.initial:
-            #print_d("None found - using defaults.", context=self)
             for (k, v) in self.initial:
                 self.model.append(row=[v.strip(), k.strip()])
 
@@ -224,15 +226,24 @@ class StandaloneEditor(_KeyValueEditor):
                 if not os.path.isdir(os.path.dirname(self.filename)):
                     os.makedirs(os.path.dirname(self.filename))
 
-            saved = file(self.filename + ".saved", "w")
-            for row in self.model:
-                saved.write(row[0] + "\n")
-                saved.write(row[1] + "\n")
-            saved.close()
+            with open(self.filename + ".saved", "w") as saved:
+                for row in self.model:
+                    saved.write(row[0] + "\n")
+                    saved.write(row[1] + "\n")
         except EnvironmentError:
             pass
 
-ICONS = {Gtk.STOCK_EDIT: CBESEditor}
+
+def clone_css_classes(src, dest):
+    """Makes dest have the same css classes as src"""
+
+    src_ctx = src.get_style_context()
+    dest_ctx = dest.get_style_context()
+
+    for class_ in dest_ctx.list_classes():
+        dest_ctx.remove_class(class_)
+    for class_ in src_ctx.list_classes():
+        dest_ctx.add_class(class_)
 
 
 class ComboBoxEntrySave(Gtk.ComboBox):
@@ -266,7 +277,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
 
         render = Gtk.CellRendererPixbuf()
         self.pack_start(render, False)
-        self.add_attribute(render, 'stock-id', 2)
+        self.add_attribute(render, 'icon-name', 2)
 
         render = Gtk.CellRendererText()
         self.pack_start(render, True)
@@ -277,8 +288,11 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         if not len(model):
             self.__fill(filename, initial, edit_title)
 
-        self.remove(self.get_child())
-        self.add(entry.ValidatingEntry(validator))
+        old_entry = self.get_child()
+        new_entry = entry.ValidatingEntry(validator)
+        clone_css_classes(old_entry, new_entry)
+        old_entry.destroy()
+        self.add(new_entry)
 
         connect_obj(self, 'destroy', self.set_model, None)
         connect_obj(self, 'changed', self.__changed, model,
@@ -290,10 +304,9 @@ class ComboBoxEntrySave(Gtk.ComboBox):
     def __changed(self, model, validator, title):
         iter = self.get_active_iter()
         if iter:
-            if model[iter][2] in ICONS:
+            if model[iter][2]:
                 self.get_child().set_text(self.__last)
-                Kind = ICONS[model[iter][2]]
-                win = Kind(self, title, validator)
+                win = CBESEditor(self, title, validator)
                 win.show()
                 self.set_active(-1)
             else:
@@ -310,24 +323,25 @@ class ComboBoxEntrySave(Gtk.ComboBox):
 
     def __fill(self, filename, initial, edit_title):
         model = self.get_model()
-        model.append(row=["", edit_title, Gtk.STOCK_EDIT])
+        model.append(row=["", edit_title, Icons.DOCUMENT_PROPERTIES])
         model.append(row=[None, None, None])
 
         if filename is None:
             return
 
         if os.path.exists(filename + ".saved"):
-            fileobj = file(filename + ".saved", "rU")
-            lines = list(fileobj.readlines())
+            with open(filename + ".saved", "rU") as fileobj:
+                lines = list(fileobj.readlines())
             lines.reverse()
             while len(lines) > 1:
                 model.prepend(
                     row=[lines.pop(1).strip(), lines.pop(0).strip(), None])
 
         if os.path.exists(filename):
-            for line in file(filename, "rU").readlines():
-                line = line.strip()
-                model.append(row=[line, line, None])
+            with open(filename, "rU") as fileobj:
+                for line in fileobj.readlines():
+                    line = line.strip()
+                    model.append(row=[line, line, None])
 
         for c in initial:
             model.append(row=[c, c, None])
@@ -358,18 +372,16 @@ class ComboBoxEntrySave(Gtk.ComboBox):
                 if not os.path.isdir(os.path.dirname(filename)):
                     os.makedirs(os.path.dirname(filename))
 
-            saved = file(filename + ".saved", "w")
-            memory = file(filename, "w")
-            target = saved
-            for row in self.get_model():
-                if row[0] is None:
-                    target = memory
-                elif row[2] is None:
-                    target.write(row[0] + "\n")
-                    if target is saved:
-                        target.write(row[1] + "\n")
-            saved.close()
-            memory.close()
+            with open(filename + ".saved", "w") as saved:
+                with open(filename, "w") as memory:
+                    target = saved
+                    for row in self.get_model():
+                        if row[0] is None:
+                            target = memory
+                        elif row[2] is None:
+                            target.write(row[0] + "\n")
+                            if target is saved:
+                                target.write(row[1] + "\n")
         except EnvironmentError:
             pass
 

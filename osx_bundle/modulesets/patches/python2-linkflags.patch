@@ -1,0 +1,31 @@
+Patch from https://bugs.python.org/issue11445 (minus whitespace changes)
+Fixes python.exe linking against the system libpython instead of the
+just built one (https://mail.gnome.org/archives/gtk-osx-devel-list/2014-December/msg00016.html)
+
+diff --git a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -505,9 +505,9 @@
+ 
+ # Build the interpreter
+ $(BUILDPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY)
+-		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
++		$(LINKCC) $(LINKFORSHARED) -o $@ \
+ 			Modules/python.o \
+-			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
++			$(BLDLIBRARY) $(LDFLAGS) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
+ 
+ platform: $(BUILDPYTHON) pybuilddir.txt
+ 	$(RUNSHARED) $(PYTHON_FOR_BUILD) -c 'import sys ; from sysconfig import get_platform ; print get_platform()+"-"+sys.version[0:3]' >platform
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
+@@ -1216,6 +1216,8 @@
+ 	    export MACOSX_DEPLOYMENT_TARGET
+ 	    EXPORT_MACOSX_DEPLOYMENT_TARGET=''
+ 
++	    LDFLAGS="${LDFLAGS} -Wl,-search_paths_first"
++
+ 	    if test "${enable_universalsdk}"; then
+ 		UNIVERSAL_ARCH_FLAGS=""
+ 	        if test "$UNIVERSAL_ARCHS" = "32-bit" ; then

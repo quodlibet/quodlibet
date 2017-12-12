@@ -1,19 +1,32 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Michael Urman
+#        2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+import os
 
 from gi.repository import Gtk
-from os.path import splitext, extsep, dirname
+from os.path import splitext, dirname
 
+from senf import fsn2bytes, extsep
+
+from quodlibet import _
 from quodlibet import app
-from quodlibet.qltk import ErrorMessage
-from quodlibet.const import HOME as lastfolder
+from quodlibet.plugins.songshelpers import each_song, is_writable, is_a_file, \
+    is_finite
+from quodlibet.qltk import ErrorMessage, Icons
+from quodlibet.util.path import get_home_dir
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.compat import iteritems
 
 __all__ = ['Export', 'Import']
+
+
+lastfolder = get_home_dir()
 
 
 def filechooser(save, title):
@@ -21,9 +34,10 @@ def filechooser(save, title):
         title=(save and "Export %s Metadata to ..." or
                "Import %s Metadata from ...") % title,
         action=(save and Gtk.FileChooserAction.SAVE or
-                Gtk.FileChooserAction.OPEN),
-        buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
-                 Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT))
+                Gtk.FileChooserAction.OPEN))
+
+    chooser.add_button(_("_OK"), Gtk.ResponseType.ACCEPT)
+    chooser.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
 
     for name, pattern in [('Tag files (*.tags)', '*.tags'),
                           ('All Files', '*')]:
@@ -37,18 +51,21 @@ def filechooser(save, title):
     return chooser
 
 
+def sort_key_for(s):
+    return s('~#track'), s('~basename'), s
+
+
 class Export(SongsMenuPlugin):
     PLUGIN_ID = "ExportMeta"
     PLUGIN_NAME = _("Export Metadata")
     PLUGIN_DESC = _("Exports metadata of selected songs as a .tags file.")
-    PLUGIN_ICON = 'gtk-save'
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE_AS
+    REQUIRES_ACTION = True
+
+    plugin_handles = each_song(is_finite)
 
     def plugin_album(self, songs):
-
-        songs.sort(lambda a, b: cmp(a('~#track'), b('~#track')) or
-                                cmp(a('~basename'), b('~basename')) or
-                                cmp(a, b))
-
+        songs.sort(key=sort_key_for)
         chooser = filechooser(save=True, title=songs[0]('album'))
         resp = chooser.run()
         fn = chooser.get_filename()
@@ -61,25 +78,36 @@ class Export(SongsMenuPlugin):
 
         global lastfolder
         lastfolder = dirname(fn)
-        out = open(fn, 'w')
 
+        export_metadata(songs, fn)
+
+
+def export_metadata(songs, target_path):
+    """Raises OSError/IOError"""
+
+    with open(target_path, 'wb') as out:
         for song in songs:
-            print>>out, str(song('~basename'))
-            keys = song.keys()
-            keys.sort()
-            for key in keys:
+            out.write(fsn2bytes(song('~basename'), "utf-8"))
+            out.write(os.linesep.encode("utf-8"))
+
+            for key in sorted(song.keys()):
                 if key.startswith('~'):
                     continue
                 for val in song.list(key):
-                    print>>out, '%s=%s' % (key, val.encode('utf-8'))
-            print>>out
+                    line = '%s=%s' % (key, val)
+                    out.write(line.encode("utf-8"))
+                    out.write(os.linesep.encode("utf-8"))
+            out.write(os.linesep.encode("utf-8"))
 
 
 class Import(SongsMenuPlugin):
     PLUGIN_ID = "ImportMeta"
     PLUGIN_NAME = _("Import Metadata")
     PLUGIN_DESC = _("Imports metadata for selected songs from a .tags file.")
-    PLUGIN_ICON = 'gtk-open'
+    PLUGIN_ICON = Icons.DOCUMENT_OPEN
+    REQUIRES_ACTION = True
+
+    plugin_handles = each_song(is_writable, is_a_file)
 
     # Note: the usage of plugin_album here is sometimes NOT what you want. It
     # supports fixing up tags on several already-known albums just by walking
@@ -95,9 +123,7 @@ class Import(SongsMenuPlugin):
     # and comment out the songs.sort line for safety.
     def plugin_album(self, songs):
 
-        songs.sort(lambda a, b: cmp(a('~#track'), b('~#track')) or
-                                cmp(a('~basename'), b('~basename')) or
-                                cmp(a, b))
+        songs.sort(key=sort_key_for)
 
         chooser = filechooser(save=False, title=songs[0]('album'))
         box = Gtk.HBox()
@@ -132,7 +158,6 @@ class Import(SongsMenuPlugin):
                 index = len(metadata)
             else:
                 key, value = line[:-1].split('=', 1)
-                value = value.decode('utf-8')
                 try:
                     metadata[index][key].append(value)
                 except KeyError:
@@ -140,13 +165,13 @@ class Import(SongsMenuPlugin):
 
         if not (len(songs) == len(metadata) == len(names)):
             ErrorMessage(None, "Songs mismatch",
-                        "There are %(select)d songs selected, but %(meta)d "
-                        "songs in the file. Aborting." %
-                        dict(select=len(songs), meta=len(metadata))).run()
+                         "There are %(select)d songs selected, but %(meta)d "
+                         "songs in the file. Aborting." %
+                         dict(select=len(songs), meta=len(metadata))).run()
             return
 
         for song, meta, name in zip(songs, metadata, names):
-            for key, values in meta.iteritems():
+            for key, values in iteritems(meta):
                 if append and key in song:
                     values = song.list(key) + values
                 song[key] = '\n'.join(values)

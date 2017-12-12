@@ -27,61 +27,49 @@ Filing bug reports
 ------------------
 
 Useful Links
-^^^^^^^^^^^^
-
- * `List current bugs <https://github.com/quodlibet/quodlibet/issues>`_
- * `Add a new bug <https://github.com/quodlibet/quodlibet/issues/new>`_
+    * `List current bugs <https://github.com/quodlibet/quodlibet/issues>`_
+    * `Add a new bug <https://github.com/quodlibet/quodlibet/issues/new>`_
 
 
 Writing a good bug report
-^^^^^^^^^^^^^^^^^^^^^^^^^
+    It helps the developers to format bugs in a standard way, with a short
+    summary as the Issue title, ideally:
 
-The more information provided in a bug report, the more likely a bug can be
-reproduced on another system. Good examples of details include:
+      1. **Steps to reproduce** (how the bug can be demonstrated again)
+      2. **Expected output** (what *should* happen)
+      3. **Actual output** (what *did* happen)
 
-  * OS, distribution, and version
-  * Versions of Python, Quod Libet, Mutagen, GTK, PyGTK, GStreamer, libXine
-  * A list of all enabled plugins
-  * The current browser
-  * Debug log information (dump files)
+    Also: the more logs, system details, and insight about the library / files
+    the better the chance of a speedy resolution.
 
-For more tips see `How to Report Bugs Effectively
-<http://www.chiark.greenend.org.uk/~sgtatham/bugs.html>`_.
+    For more general tips see `"How to Report Bugs Effectively"
+    <https://www.chiark.greenend.org.uk/~sgtatham/bugs.html>`_.
 
+Look through existing issues
+    Quod Libet is a mature project (in its second decade!), and there have been
+    a *lot* of features and bugs discussed over the years. It's probable that
+    what you're thinking has been discussed at some point, so please search
+    through existing open (and to a lesser extent closed) issues before
+    creating a new one. This reduces noise and saves the maintainers time.
 
-Isolating the problem(s)
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-Misbehaving plugins are a common source of bugs. Try reproducing the bug
-with all plugins disabled; if the bug is gone, enable them one by one until
-you find the *combination* of plugins that triggers the bug.
+One bug per ticket
+    Please do not create an item (ticket) in the issue tracker which contains
+    reports of multiple unrelated issues. Even if you are reporting several
+    very minor bugs, each one deserves its own issue. This allows each issue to
+    receive independent discussion and analysis, and to be closed separately.
 
 
 Viewing Debug information
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If the bug you have found does not raise an exception, the debug window
-won't appear and the dump won't be generated. In this case, run quodlibet
-from the command line using the command ``$ QUODLIBET_DEBUG=1 quodlibet``
-(or in newer versions, just ``quodlibet --debug``), and use 'Cause an
-error' from the Help menu to produce the dump.
+    If the bug you have found does not raise an exception, the debug window
+    won't appear and the dump won't be generated. In this case, run quodlibet
+    from the command line using the command ``quodlibet --debug``. It will show
+    additional information that might be useful.
 
 
 Testing the latest code
-^^^^^^^^^^^^^^^^^^^^^^^
-
-Some problems are fixed in the development branch which aren't yet fixed in
-the current release. If you can, try to reproduce your bug against a recent
-checkout before filing.
-
-
-One bug per ticket
-^^^^^^^^^^^^^^^^^^
-
-Please do not create an item (ticket) in the issue tracker which contains
-reports of multiple unrelated issues. Even if you are reporting several
-very minor bugs, each one deserves its own issue. This allows each issue to
-receive independent discussion and analysis, and to be closed separately.
+    Some problems are fixed in the development branch which aren't yet fixed in
+    the current release. If you can, try to reproduce your bug against a recent
+    checkout before filing.
 
 
 Filing enhancement requests
@@ -96,8 +84,9 @@ explaining how you envision it being implemented. Not only does this make
 your feature more likely to be supported, it allows others to enhance,
 generalize, and refine your ideas.
 
-As with bugs, please refrain from submitting multiple feature requests in
-the same issue. If you have related ideas, file them separately and mention
+As with bugs, please check for existing feature requests first and
+refrain from submitting multiple feature requests in the same issue.
+If you have related ideas, file them separately and mention
 the issue numbers of previous ideas.
 
 
@@ -108,20 +97,32 @@ Help us :ref:`translate Quod Libet into other languages<Translating>`.
 You don't need to know how to program in Python to do it.
 
 
-Submitting patches
+Getting started as a developer on Quod Libet
+--------------------------------------------
+
+On an long-standing project it can be daunting helping out for the first time.
+The `newcomer-friendly tag <https://github.com/quodlibet/quodlibet/issues?q=is%3Aopen+is%3Aissue+label%3Anewcomer-friendly>`_
+has been added to (some) issues to indicate where the existing developers
+feel there is an opportunity to help out without too much background (or risk).
+See the discussion around this in `Issue 2516 <https://github.com/quodlibet/quodlibet/issues/2516>`_
+
+The other area perfect for newcomers is in the rich
+:ref:`plugins ecosystem <PluginDev>` - at time of writing QL has >80 plugins.
+These require less knowledge of Python, GTK+ and the QL architecture / codebase.
+
+It's best to examine existing (and past) PRs, keep an eye on the mailing list,
+and especially the Github issues list.
+Reading the unit / integration tests is usually instructive too.
+IRC can be a good place for more immediate questions.
+
+
+Submitting changes
 ------------------
 
-Patches are always welcome, and should be attached to the issue tracker. We
-review every issue and tag the ones which include patches, so there's no
-need to add "PATCH" to the issue summary.
+Patches are always welcome, and should be in the form of a pull request or by 
+attaching a patch to the issue.
+Please work on existing issues where possible (there are a lot),
+or at the very least make sure there is an accompanying issue for your PR.
 
-We try to keep Quod Libet's code in pretty good shape; when submitting a
-patch, it's much easier to get it included quickly if you run through this
-checklist of common-sense code quality items. Make sure your patch:
-
-  * is `PEP 8 <http://www.python.org/dev/peps/pep-0008/>`_ compliant.
-    Yes, this means an 80-character line length.
-  * passes existing tests, and includes new ones if at all possible.
-  * is commented.
-  * adds your name to the copyright header of every file you touch.
-    This helps you get credit and helps us keep track of authorship.
+If you follow the :ref:`CodingGuidelines` it will be much easier to get your 
+changes included quickly.

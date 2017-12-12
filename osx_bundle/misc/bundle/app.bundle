@@ -1,0 +1,56 @@
+<?xml version="1.0" standalone="no"?>
+<app-bundle>
+  <meta>
+    <prefix name="default">${env:JHBUILD_PREFIX}</prefix>
+    <destination overwrite="yes">${env:QL_OSXBUNDLE_BUNDLE_DEST}</destination>
+    <run-install-name-tool/>
+    <launcher-script>${project}/launcher.sh</launcher-script >
+    <gtk>gtk+-3.0</gtk>
+  </meta>
+  <binary dest="${bundle}/Contents/MacOS">${prefix}/bin/${env:QL_PYTHON}</binary>
+  <binary>${prefix}/lib/${gtkdir}/${pkg:${gtk}:gtk_binary_version}/immodules/*.so</binary>
+  <binary>${prefix}/lib/${gtkdir}/${pkg:${gtk}:gtk_binary_version}/printbackends/*.so</binary>
+  <binary>${prefix}/lib/gdk-pixbuf-2.0/2.10.0/loaders/*.so</binary>
+  <binary>${prefix}/lib/gio/modules/*.so</binary>
+  <binary>${prefix}/lib/gstreamer-1.0/*.so</binary>
+  <binary>${prefix}/lib/libgst*.dylib</binary>
+  <binary>${prefix}/lib/libgtk-${gtkversion}.dylib</binary>
+  <binary>${prefix}/lib/libgtkmacintegration-gtk3.dylib</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/lib-dynload/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/AppKit/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/CoreFoundation/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Foundation/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/CoreGraphics/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/CoreVideo/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/ImageIO/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/ImageKit/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/PDFKit/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/QuartzComposer/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/QuartzCore/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/QuartzFilters/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/Quartz/QuickLookUI/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/cairo/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/gi/*.so</binary>
+  <binary>${prefix}/lib/${env:QL_PYTHONID}/site-packages/coverage/*.so</binary>
+  <binary>${prefix}/libexec/gstreamer-1.0/gst-plugin-scanner</binary>
+  <data dest="${bundle}/Contents/Resources/exfalso.icns">${project}/exfalso.icns</data>
+  <data dest="${bundle}/Contents/Resources/quodlibet.icns">${project}/quodlibet.icns</data>
+  <data>${prefix}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache</data>
+  <data>${prefix}/lib/girepository-1.0</data>
+  <data>${prefix}/lib/${env:QL_PYTHONID}</data>
+  <data>${prefix}/share/glib-2.0/schemas</data>
+  <data>${prefix}/share/themes/Default</data>
+  <data>${prefix}/share/themes/Mac</data>
+  <icon-theme icons="all">Adwaita</icon-theme>
+  <plist>${project}/Info.plist</plist>
+  <translations name="atk10">${prefix}/share/locale</translations>
+  <translations name="gdk-pixbuf">${prefix}/share/locale</translations>
+  <translations name="glib20">${prefix}/share/locale</translations>
+  <translations name="gst-plugins-base-1.0">${prefix}/share/locale</translations>
+  <translations name="gst-plugins-good-1.0">${prefix}/share/locale</translations>
+  <translations name="gst-plugins-ugly-1.0">${prefix}/share/locale</translations>
+  <translations name="gstreamer-1.0">${prefix}/share/locale</translations>
+  <translations name="gtk30">${prefix}/share/locale</translations>
+  <main-binary>${prefix}/bin/${env:QL_PYTHON}</main-binary>
+</app-bundle>

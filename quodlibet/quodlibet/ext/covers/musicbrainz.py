@@ -2,12 +2,14 @@
 # Copyright 2013 Simonas Kazlauskas
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from os import path
 from gi.repository import Soup
 
+from quodlibet import _
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
 from quodlibet.util.cover.http import HTTPDownloadMixin
 from quodlibet.util.path import escape_filename
@@ -43,7 +45,7 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
         if not self.mbid:
             return None
         mbid = Soup.URI.encode(self.mbid, None)
-        return 'http://coverartarchive.org/release/{0}/front'.format(mbid)
+        return 'https://coverartarchive.org/release/{0}/front'.format(mbid)
 
     def fetch_cover(self):
         if not self.mbid:

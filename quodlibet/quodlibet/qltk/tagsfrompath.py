@@ -2,18 +2,24 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import re
+import os
 
 from gi.repository import Gtk
+from senf import fsn2text
 
+import quodlibet
+
+from quodlibet import _
 from quodlibet import config
-from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
 
+from quodlibet.formats import AudioFileError
 from quodlibet.plugins import PluginManager
 from quodlibet.qltk._editutils import FilterPluginBox, FilterCheckButton
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
@@ -22,10 +28,20 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.util.path import fsdecode
+from quodlibet.qltk import Icons
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.util.string.splitters import split_value
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, gdecode
+from quodlibet.compat import itervalues
+
+
+TBP = os.path.join(quodlibet.get_user_dir(), "lists", "tagpatterns")
+TBP_EXAMPLES = """\
+<tracknumber>. <title>
+<tracknumber> - <title>
+<tracknumber> - <artist> - <title>
+<artist> - <album>/<tracknumber>. <title>
+<artist>/<album>/<tracknumber> - <title>"""
 
 
 class UnderscoresToSpaces(FilterCheckButton):
@@ -55,7 +71,7 @@ class SplitTag(FilterCheckButton):
     _order = 1.2
 
     def filter(self, tag, value):
-        spls = config.get("editing", "split_on").decode('utf-8', 'replace')
+        spls = config.gettext("editing", "split_on")
         spls = spls.split()
         return "\n".join(split_value(value, spls))
 
@@ -79,7 +95,7 @@ class ListEntry(object):
 
     @property
     def name(self):
-        return fsdecode(self.song("~basename"))
+        return fsn2text(self.song("~basename"))
 
 
 class TagsFromPath(Gtk.VBox):
@@ -96,13 +112,13 @@ class TagsFromPath(Gtk.VBox):
 
         self.set_border_width(12)
         hbox = Gtk.HBox(spacing=6)
-        cbes_defaults = const.TBP_EXAMPLES.split("\n")
-        self.combo = ComboBoxEntrySave(const.TBP, cbes_defaults,
+        cbes_defaults = TBP_EXAMPLES.split("\n")
+        self.combo = ComboBoxEntrySave(TBP, cbes_defaults,
             title=_("Path Patterns"),
             edit_title=_(u"Edit saved patterns…"))
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
-        self.preview = qltk.Button(_("_Preview"), Gtk.STOCK_CONVERT)
+        self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
         hbox.pack_start(self.preview, False, True, 0)
         self.pack_start(hbox, False, True, 0)
@@ -135,7 +151,7 @@ class TagsFromPath(Gtk.VBox):
         self.pack_start(filter_box, False, True, 0)
 
         # Save button
-        self.save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        self.save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
@@ -169,7 +185,7 @@ class TagsFromPath(Gtk.VBox):
             songs = [row[0].song for row in (self.view.get_model() or [])]
 
         if songs:
-            pattern_text = self.combo.get_child().get_text().decode("utf-8")
+            pattern_text = gdecode(self.combo.get_child().get_text())
         else:
             pattern_text = ""
         try:
@@ -185,7 +201,7 @@ class TagsFromPath(Gtk.VBox):
         else:
             if pattern_text:
                 self.combo.prepend_text(pattern_text)
-                self.combo.write(const.TBP)
+                self.combo.write(TBP)
 
         invalid = []
 
@@ -211,7 +227,8 @@ class TagsFromPath(Gtk.VBox):
             self.view.remove_column(col)
 
         render = Gtk.CellRendererText()
-        col = TreeViewColumn(_('File'), render)
+        col = TreeViewColumn(title=_('File'))
+        col.pack_start(render, True)
         col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_file(column, cell, model, iter_, data):
@@ -255,7 +272,7 @@ class TagsFromPath(Gtk.VBox):
         self.save.set_sensitive(len(pattern.headers) > 0)
 
     def __save(self, addreplace, library):
-        pattern_text = self.combo.get_child().get_text().decode('utf-8')
+        pattern_text = gdecode(self.combo.get_child().get_text())
         pattern = TagsFromPattern(pattern_text)
         model = self.view.get_model()
         add = bool(addreplace.get_active())
@@ -265,7 +282,7 @@ class TagsFromPath(Gtk.VBox):
         was_changed = set()
 
         all_done = False
-        for entry in ((model and model.itervalues()) or []):
+        for entry in ((model and itervalues(model)) or []):
             song = entry.song
             changed = False
             if not song.valid():
@@ -292,7 +309,7 @@ class TagsFromPath(Gtk.VBox):
             if changed:
                 try:
                     song.write()
-                except:
+                except AudioFileError:
                     util.print_exc()
                     WriteFailedError(self, song).run()
                     library.reload(song, changed=was_changed)
@@ -310,7 +327,7 @@ class TagsFromPath(Gtk.VBox):
 
     def __row_edited(self, renderer, path, new, model, header):
         entry = model[path][0]
-        new = new.decode("utf-8")
+        new = gdecode(new)
         if entry.get_match(header) != new:
             entry.replace_match(header, new)
             self.preview.set_sensitive(True)

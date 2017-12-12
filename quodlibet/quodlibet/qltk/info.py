@@ -4,16 +4,20 @@
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
 from gi.repository import Gtk, Gdk, Pango
 
+from quodlibet import _
+from quodlibet import print_w
 from quodlibet import qltk
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import SeparatorMenuItem, Align
+from quodlibet.qltk import Icons
 from quodlibet.util import connect_destroy
 
 from quodlibet.pattern import XMLFromMarkupPattern
@@ -50,6 +54,7 @@ class SongInfo(Gtk.EventBox):
         align = Align(halign=Gtk.Align.START, valign=Gtk.Align.START)
         label = Gtk.Label()
         label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
+        label.set_track_visited_links(False)
         label.set_selectable(True)
         align.add(label)
         label.set_alignment(0.0, 0.0)
@@ -101,18 +106,19 @@ class SongInfo(Gtk.EventBox):
             menu.append(sub)
 
     def _get_menu(self, player, library):
-        item = qltk.MenuItem(_(u"_Edit Display…"), Gtk.STOCK_EDIT)
+        item = qltk.MenuItem(_(u"_Edit Display…"), Icons.EDIT)
         item.connect('activate', self._on_edit_display, player)
 
         songs = [player.song] if player.song else []
-        song_menu = SongsMenu(library, songs, remove=False,
+        song_menu = SongsMenu(library, songs, remove=False, delete=True,
                               accels=False, items=[[item]])
 
         song_menu.show_all()
         return song_menu
 
     def _on_edit_display(self, menu_item, player):
-        editor = PatternEdit(self, SongInfo._pattern)
+        editor = PatternEdit(
+            self, SongInfo._pattern, alternative_markup=True, links=True)
         editor.text = self._pattern
         editor.apply.connect('clicked', self._on_set_pattern, editor, player)
         editor.show()
@@ -127,9 +133,10 @@ class SongInfo(Gtk.EventBox):
         else:
             try:
                 with open(self._pattern_filename, "wb") as h:
-                    h.write(self._pattern.encode("utf-8") + "\n")
-            except EnvironmentError:
-                pass
+                    h.write(self._pattern.encode("utf-8") + b"\n")
+            except EnvironmentError as e:
+                print_w("Couldn't save display pattern '%s' (%s)"
+                        % (self._pattern, e))
         self._compiled = XMLFromMarkupPattern(self._pattern)
         self._update_info(player)
 

@@ -9,6 +9,15 @@ What do these things in strings mean?
   see `String Formatting`_
 
 
+What does ``msgctxt`` in the .po files mean?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It stands for message context and (optionally) allows for different
+translations of the same translatable text appearing in different contexts.
+For example the word "Search" could be a title of a window or the label of a
+button. The former meaning "a search" and the latter "to search".
+
+
 Why are some strings not translatable?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -29,7 +38,7 @@ What does `titlecase?` mean?
 
 There's a special string `titlecase?` which should be translated as 
 anything if your language does not use `title casing 
-<http://en.wikipedia.org/wiki/Letter_case>`_ (eg *This Is Title Casing*) 
+<https://en.wikipedia.org/wiki/Letter_case>`_ (eg *This Is Title Casing*) 
 for labels. If it is left untranslated, title-casing will be used.
 
 
@@ -95,7 +104,7 @@ translations are not treated as accurate translations so will not be used.
 Common reasons for strings being marked as fuzzy include:
  * A contributor corrects a typo in the source (English) text 
  * A developer changes the `Mnemonic Label
-   <http://developer.gnome.org/gtk/2.24/GtkLabel.html#id727933>`_ -
+   <https://developer.gnome.org/gtk3/stable/GtkLabel.html#id-1.3.8.2.10.5>`_ -
    This is the underscore you see in many translation strings.
  * The English has changed, but not much
  * sometimes it *just happens*...

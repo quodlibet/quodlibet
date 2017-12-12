@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
-#      2011-2013 Nick Boultbee
 #           2014 Jan Path
+#      2011-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, GLib, Gdk, GObject
+from senf import uri2fsn
 
 from quodlibet import app
 from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
 
 from quodlibet.query import Query
 from quodlibet.pattern import Pattern
@@ -23,21 +26,24 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.views import AllTreeView, DragScroll
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songmodel import PlaylistModel
-from quodlibet.util.uri import URI
+from quodlibet.qltk import Icons
+from quodlibet.qltk.delete import trash_songs
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column
 from quodlibet.util import connect_destroy
+from quodlibet.compat import xrange, string_types, iteritems, listfilter
 
 
 DND_QL, DND_URI_LIST = range(2)
 
 
-class SongInfoSelection(GObject.Object):
+class SongSelectionInfo(GObject.Object):
     """
-    InfoSelection: Songs which get included in the status bar
-    summary. changed gets fired after any of the songs in the
-    selection or the selection it self have changed.
+    Songs which get included in the status bar summary.
+
+    The `changed` signal gets fired after any of the songs in the
+    selection or the selection itself has changed.
     The signal is async.
 
     Two selection states:
@@ -46,14 +52,13 @@ class SongInfoSelection(GObject.Object):
 
     The signals fires if the state changes.
 
-    FIXME:
-        row-changed for song lists isn't implemented (performance).
-        Since a library change could change the selection it should
-        also trigger a this.
+    FIXME: `row-changed` for song lists isn't implemented (performance).
+            Since a library change could change the selection it should
+            also trigger this.
 
-        Since this would happen quite often (song stat changes) and
-        would lead to a complete recalc in the common case ignore it for
-        now.
+            Since this would happen quite often (song stat changes) and
+            would lead to a complete re-calc in the common case,
+            ignore it for now.
     """
 
     __gsignals__ = {
@@ -62,18 +67,24 @@ class SongInfoSelection(GObject.Object):
     }
 
     def __init__(self, songlist):
-        super(SongInfoSelection, self).__init__()
+        super(SongSelectionInfo, self).__init__()
 
         self.__idle = None
         self.__songlist = songlist
         self.__selection = sel = songlist.get_selection()
         self.__count = sel.count_selected_rows()
-        self.__sel_id = sel.connect('changed', self.__selection_changed_cb)
+        self.__sel_id = songlist.connect(
+            'selection-changed', self.__selection_changed_cb)
 
     def destroy(self):
-        self.__selection.disconnect(self.__sel_id)
+        self.__songlist.disconnect(self.__sel_id)
         if self.__idle:
             GLib.source_remove(self.__idle)
+
+    def refresh(self):
+        songlist = self.__songlist
+        songs = songlist.get_selected_songs() or songlist.get_songs()
+        self.emit('changed', songs)
 
     def _update_songs(self, songs):
         """After making changes (filling the list) call this to
@@ -89,7 +100,6 @@ class SongInfoSelection(GObject.Object):
                 songs = self.__songlist.get_selected_songs()
         self.emit('changed', songs)
         self.__idle = None
-        False
 
     def __emit_info_selection(self, songs=None):
         if self.__idle:
@@ -97,7 +107,7 @@ class SongInfoSelection(GObject.Object):
         self.__idle = GLib.idle_add(
             self.__idle_emit, songs, priority=GLib.PRIORITY_LOW)
 
-    def __selection_changed_cb(self, selection):
+    def __selection_changed_cb(self, songlist, selection):
         count = selection.count_selected_rows()
         if self.__count == count == 0:
             return
@@ -112,20 +122,11 @@ class SongInfoSelection(GObject.Object):
 def get_columns():
     """Gets the list of songlist column headings"""
 
-    if config.has_option("settings", "columns"):
-        return config.getstringlist(
-            "settings", "columns", const.DEFAULT_COLUMNS)
-    else:
-        # migrate old settings
-        try:
-            columns = config.get("settings", "headers").split()
-        except config.Error:
-            return const.DEFAULT_COLUMNS
-        else:
-            config.remove_option("settings", "headers")
-            set_columns(columns)
-            config.setstringlist("settings", "columns", columns)
-            return columns
+    columns = config.getstringlist("settings", "columns",
+                                   const.DEFAULT_COLUMNS)
+    if "~current" in columns:
+        columns.remove("~current")
+    return columns
 
 
 def set_columns(vals):
@@ -151,9 +152,12 @@ def get_sort_tag(tag):
     elif tag == "~album~discsubtitle":
         tag = "album"
 
-    if tag.startswith("<"):
-        for key, value in replace_order.iteritems():
+    if "<" in tag:
+        for key, value in iteritems(replace_order):
             tag = tag.replace("<%s>" % key, "<%s>" % value)
+        for key, value in iteritems(TAG_TO_SORT):
+            tag = tag.replace("<%s>" % key,
+                               "<{1}|<{1}>|<{0}>>".format(key, value))
         tag = Pattern(tag).format
     else:
         tags = util.tagsplit(tag)
@@ -185,10 +189,18 @@ class SongListDnDMixin(object):
     """DnD support for the SongList class"""
 
     def setup_drop(self, library):
+        self.connect('drag-begin', self.__drag_begin)
         self.connect('drag-motion', self.__drag_motion)
         self.connect('drag-leave', self.__drag_leave)
         self.connect('drag-data-get', self.__drag_data_get)
         self.connect('drag-data-received', self.__drag_data_received, library)
+
+    def __drag_begin(self, *args):
+        ok, state = Gtk.get_current_event_state()
+        if ok and state & qltk.get_primary_accel_mod():
+            self.__force_copy = True
+        else:
+            self.__force_copy = False
 
     def enable_drop(self, by_row=True):
         targets = [
@@ -202,6 +214,7 @@ class SongListDnDMixin(object):
         self.drag_dest_set(Gtk.DestDefaults.ALL, targets,
                            Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
         self.__drop_by_row = by_row
+        self.__force_copy = False
 
     def disable_drop(self):
         targets = [
@@ -217,7 +230,8 @@ class SongListDnDMixin(object):
         if self.__drop_by_row:
             self.set_drag_dest(x, y)
             self.scroll_motion(x, y)
-            if Gtk.drag_get_source_widget(ctx) == self:
+            if Gtk.drag_get_source_widget(ctx) == self and \
+                    not self.__force_copy:
                 kind = Gdk.DragAction.MOVE
             else:
                 kind = Gdk.DragAction.COPY
@@ -247,7 +261,7 @@ class SongListDnDMixin(object):
 
             qltk.selection_set_songs(sel, songs)
             if ctx.get_actions() & Gdk.DragAction.MOVE:
-                self.__drag_iters = map(model.get_iter, paths)
+                self.__drag_iters = list(map(model.get_iter, paths))
             else:
                 self.__drag_iters = []
         else:
@@ -259,15 +273,15 @@ class SongListDnDMixin(object):
         model = view.get_model()
         if info == DND_QL:
             filenames = qltk.selection_get_filenames(sel)
-            move = (Gtk.drag_get_source_widget(ctx) == view)
+            move = bool(ctx.get_selected_action() & Gdk.DragAction.MOVE)
         elif info == DND_URI_LIST:
             def to_filename(s):
                 try:
-                    return URI(s).filename
+                    return uri2fsn(s)
                 except ValueError:
                     return None
 
-            filenames = filter(None, map(to_filename, sel.get_uris()))
+            filenames = listfilter(None, map(to_filename, sel.get_uris()))
             move = False
         else:
             Gtk.drag_finish(ctx, False, False, etime)
@@ -280,7 +294,7 @@ class SongListDnDMixin(object):
             elif filename not in library:
                 to_add.append(library.librarian[filename])
         library.add(to_add)
-        songs = filter(None, map(library.get, filenames))
+        songs = listfilter(None, map(library.get, filenames))
         if not songs:
             Gtk.drag_finish(ctx, bool(not filenames), False, etime)
             return
@@ -349,7 +363,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             # Translators: The substituted string is the name of the
             # selected column (a translated tag name).
             b = qltk.MenuItem(
-                _("_Filter on %s") % util.tag(t, True), Gtk.STOCK_INDEX)
+                _("_Filter on %s") % util.tag(t, True), Icons.EDIT_FIND)
             b.connect('activate', self.__filter_on, t, songs, browser)
             return b
 
@@ -372,7 +386,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         super(SongList, self).__init__()
         self._register_instance(SongList)
         self.set_model(model_cls())
-        self.info = SongInfoSelection(self)
+        self.info = SongSelectionInfo(self)
         self.set_size_request(200, 150)
         self.set_rules_hint(True)
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -400,7 +414,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                 player, 'error', lambda *x: self.__redraw_current())
 
         self.connect('button-press-event', self.__button_press, librarian)
-        self.connect('key-press-event', self.__key_press, librarian)
+        self.connect('key-press-event', self.__key_press, librarian, player)
 
         self.setup_drop(library)
         self.disable_drop()
@@ -554,7 +568,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
     def __search_func(self, model, column, key, iter, *args):
         for column in self.get_columns():
             value = model.get_value(iter)(column.header_name)
-            if not isinstance(value, basestring):
+            if not isinstance(value, string_types):
                 continue
             elif key in value.lower() or key in value:
                 return False
@@ -615,19 +629,17 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             song["~#rating"] = value
         librarian.changed(songs)
 
-    def __key_press(self, songlist, event, librarian):
-        rating_accels = [
-            "<ctrl>%d" % i for i in range(min(10, config.RATINGS.number + 1))]
-
-        if qltk.is_accel(event, *rating_accels):
-            rating = int(chr(event.keyval)) * config.RATINGS.precision
-            self.__set_rating(rating, self.get_selected_songs(), librarian)
-            return True
-        elif qltk.is_accel(event, "<ctrl>Return", "<ctrl>KP_Enter"):
+    def __key_press(self, songlist, event, librarian, player):
+        if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
             self.__enqueue(self.get_selected_songs())
             return True
-        elif qltk.is_accel(event, "<control>F"):
+        elif qltk.is_accel(event, "<Primary>F"):
             self.emit('start-interactive-search')
+            return True
+        elif qltk.is_accel(event, "<Primary>Delete"):
+            songs = self.get_selected_songs()
+            if songs:
+                trash_songs(self, songs, librarian)
             return True
         elif qltk.is_accel(event, "<alt>Return"):
             songs = self.get_selected_songs()
@@ -635,16 +647,19 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                 window = SongProperties(librarian, songs, parent=self)
                 window.show()
             return True
-        elif qltk.is_accel(event, "<control>I"):
+        elif qltk.is_accel(event, "<Primary>I"):
             songs = self.get_selected_songs()
             if songs:
                 window = Information(librarian, songs, self)
                 window.show()
             return True
+        elif qltk.is_accel(event, "space", "KP_Space") and player is not None:
+            player.paused = not player.paused
+            return True
         return False
 
     def __enqueue(self, songs):
-        songs = filter(lambda s: s.can_add, songs)
+        songs = [s for s in songs if s.can_add]
         if songs:
             from quodlibet import app
             app.window.playlist.enqueue(songs)
@@ -657,7 +672,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             model.row_changed(path, iter_)
 
     def __columns_changed(self, *args):
-        headers = map(lambda h: h.header_name, self.get_columns())
+        headers = [h.header_name for h in self.get_columns()]
         SongList.set_all_column_headers(headers)
         SongList.headers = headers
 
@@ -890,7 +905,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         window = qltk.get_top_parent(self)
         filter_ = window.browser.active_filter
         if callable(filter_):
-            self.add_songs(filter(filter_, songs))
+            self.add_songs(listfilter(filter_, songs))
 
     def __song_removed(self, librarian, songs, player):
         # The player needs to be called first so it can ge the next song
@@ -997,7 +1012,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                 event = Gtk.get_current_event()
                 if event:
                     ok, state = event.get_state()
-                    if ok and state & Gdk.ModifierType.CONTROL_MASK:
+                    if ok and state & qltk.get_primary_accel_mod():
                         ctrl_held = True
 
                 self.toggle_column_sort(column, replace=not ctrl_held)
@@ -1009,8 +1024,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             column.set_reorderable(True)
             self.append_column(column)
 
-        self.columns_autosize()
         self.set_sort_orders(old_sort)
+        self.columns_autosize()
 
         self.handler_unblock(self.__csig)
 
@@ -1026,12 +1041,13 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         current_set = set(current)
 
         def tag_title(tag):
-            if tag.startswith("<"):
+            if "<" in tag:
                 return util.pattern(tag)
             return util.tag(tag)
         current = zip(map(tag_title, current), current)
 
-        def add_header_toggle(menu, (header, tag), active, column=column):
+        def add_header_toggle(menu, pair, active, column=column):
+            header, tag = pair
             item = Gtk.CheckMenuItem(label=header)
             item.tag = tag
             item.set_active(active)
@@ -1048,19 +1064,20 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         menu.append(sep)
 
         trackinfo = """title genre ~title~version ~#track
-            ~#playcount ~#skipcount ~rating ~#length""".split()
+            ~#playcount ~#skipcount ~rating ~#length ~playlists""".split()
         peopleinfo = """artist ~people performer arranger author composer
             conductor lyricist originalartist""".split()
         albuminfo = """album ~album~discsubtitle labelid ~#disc ~#discs
             ~#tracks albumartist""".split()
-        dateinfo = """date originaldate recordingdate ~#laststarted
-            ~#lastplayed ~#added ~#mtime""".split()
+        dateinfo = """date originaldate recordingdate ~year ~originalyear
+            ~#laststarted ~#lastplayed ~#added ~#mtime""".split()
         fileinfo = """~format ~#bitrate ~#filesize ~filename ~basename ~dirname
-            ~uri""".split()
+            ~uri ~codec ~encoding ~#channels""".split()
         copyinfo = """copyright organization location isrc
             contact website""".split()
-        all_headers = reduce(lambda x, y: x + y,
-            [trackinfo, peopleinfo, albuminfo, dateinfo, fileinfo, copyinfo])
+        all_headers = sum(
+            [trackinfo, peopleinfo, albuminfo, dateinfo, fileinfo, copyinfo],
+            [])
 
         for name, group in [
             (_("All _Headers"), all_headers),
@@ -1155,7 +1172,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             return True
 
         widget = column.get_widget()
-        return qltk.popup_menu_under_widget(menu, widget, 3, time)
+        qltk.popup_menu_under_widget(menu, widget, 3, time)
+        return True
 
 
 @config.register_upgrade_function

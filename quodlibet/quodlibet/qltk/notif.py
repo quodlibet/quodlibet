@@ -2,8 +2,9 @@
 # Copyright 2010 Steven Robertson
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """
 This module will provide a unified notification area for informational
@@ -29,10 +30,10 @@ Of course, right now it does none of these things.
 
 from gi.repository import Gtk, GLib, Pango
 
+from quodlibet import _
 from quodlibet.util import copool
 from quodlibet.qltk.x import SmallImageToggleButton, SmallImageButton, Align
-
-SIZE = Gtk.IconSize.MENU
+from quodlibet.qltk import Icons
 
 
 class ParentProperty(object):
@@ -223,8 +224,8 @@ class TaskController(object):
             self._parent.update()
 
     def finish(self, finished_task):
-        self.active_tasks = filter(lambda t: t is not finished_task,
-                                   self.active_tasks)
+        self.active_tasks = list(filter(lambda t: t is not finished_task,
+                                        self.active_tasks))
         self.update()
 
 # Oh so deliciously hacky.
@@ -246,11 +247,15 @@ class TaskWidget(Gtk.HBox):
         self.progress.set_size_request(100, -1)
         self.pack_start(self.progress, True, True, 0)
         self.pause = SmallImageToggleButton()
-        self.pause.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_PAUSE, SIZE))
+        self.pause.add(
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE,
+                                         Gtk.IconSize.MENU))
         self.pause.connect('toggled', self.__pause_toggled)
         self.pack_start(self.pause, False, True, 0)
         self.stop = SmallImageButton()
-        self.stop.add(Gtk.Image.new_from_stock(Gtk.STOCK_MEDIA_STOP, SIZE))
+        self.stop.add(
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP,
+                                         Gtk.IconSize.MENU))
         self.stop.connect('clicked', self.__stop_clicked)
         self.pack_start(self.stop, False, True, 0)
 
@@ -288,7 +293,6 @@ class StatusBar(Gtk.HBox):
         self.task_controller.parent = self
 
         self.default_label = Gtk.Label(selectable=True)
-        self.default_label.set_text(_("No time information"))
         self.default_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.pack_start(
             Align(self.default_label, halign=Gtk.Align.END),
@@ -297,7 +301,7 @@ class StatusBar(Gtk.HBox):
         self.pack_start(self.task_widget, True, True, 0)
         # The history button will eventually hold the full list of running
         # tasks, as well as the list of previous notifications.
-        #self.history_btn = Gtk.Button(stock=Gtk.STOCK_MISSING_IMAGE)
+        #self.history_btn = Gtk.Button()
         #self.pack_start(self.history_btn, False, True, 0)
 
         self.show_all()

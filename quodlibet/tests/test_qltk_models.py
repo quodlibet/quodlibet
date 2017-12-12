@@ -2,18 +2,20 @@
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-from tests import TestCase, AbstractTestCase
+from tests import TestCase
 
 from gi.repository import Gtk
 
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort, ObjectTreeStore
+from quodlibet.compat import cmp, xrange
 
 
-class _TObjectStore(AbstractTestCase):
+class _TObjectStoreMixin(object):
 
     Store = None
 
@@ -21,7 +23,7 @@ class _TObjectStore(AbstractTestCase):
         m = self.Store()
         for i in range(10):
             m.append(row=[i])
-        self.failUnlessEqual([r[0] for r in m], range(10))
+        self.failUnlessEqual([r[0] for r in m], list(range(10)))
 
     def test_column_count(self):
         m = self.Store()
@@ -31,13 +33,13 @@ class _TObjectStore(AbstractTestCase):
         m = self.Store()
         for i in reversed(range(10)):
             m.insert(0, row=[i])
-        self.failUnlessEqual([r[0] for r in m], range(10))
+        self.failUnlessEqual([r[0] for r in m], list(range(10)))
 
     def test_prepend(self):
         m = self.Store()
         for i in reversed(range(10)):
             m.prepend(row=[i])
-        self.failUnlessEqual([r[0] for r in m], range(10))
+        self.failUnlessEqual([r[0] for r in m], list(range(10)))
 
     def test_insert_before(self):
         m = self.Store()
@@ -75,12 +77,12 @@ class _TObjectStore(AbstractTestCase):
         self.failUnless(m.insert_after(None))
 
 
-class TOrigObjectStore(_TObjectStore):
+class TOrigObjectStore(TestCase, _TObjectStoreMixin):
 
     Store = lambda *x: Gtk.ListStore(object)
 
 
-class TObjectStore(_TObjectStore):
+class TObjectStore(TestCase, _TObjectStoreMixin):
 
     Store = ObjectStore
 
@@ -109,26 +111,26 @@ class TObjectStore(_TObjectStore):
     def test_append_many(self):
         m = ObjectStore()
         m.append_many(range(10))
-        self.failUnlessEqual([r[0] for r in m], range(10))
+        self.failUnlessEqual([r[0] for r in m], list(range(10)))
 
     def test_append_many_set(self):
         m = ObjectStore()
         m.append_many(set())
         m.append_many(set(range(10)))
-        self.failUnlessEqual(set([r[0] for r in m]), set(range(10)))
+        self.failUnlessEqual({r[0] for r in m}, set(range(10)))
 
     def test_iter_append_many(self):
         m = ObjectStore()
         iters = list(m.iter_append_many(range(10)))
-        self.failUnlessEqual([r[0] for r in m], range(10))
+        self.failUnlessEqual([r[0] for r in m], list(range(10)))
         values = [m.get_value(i) for i in iters]
-        self.failUnlessEqual(values, range(10))
+        self.failUnlessEqual(values, list(range(10)))
 
     def test_iter_append_many_iterable_int(self):
         m = ObjectStore()
         for x in m.iter_append_many((i for i in xrange(10))):
             pass
-        self.failUnlessEqual([r[0] for r in m], range(10))
+        self.failUnlessEqual([r[0] for r in m], list(range(10)))
 
     def test_iter_append_many_iterable_object(self):
         objects = [object() for i in xrange(10)]
@@ -150,21 +152,21 @@ class TObjectStore(_TObjectStore):
         m.append(row=[42])
         m.append(row=[24])
         m.insert_many(1, range(10))
-        self.failUnlessEqual([r[0] for r in m], [42] + range(10) + [24])
+        self.failUnlessEqual([r[0] for r in m], [42] + list(range(10)) + [24])
 
     def test_insert_many_append(self):
         m = ObjectStore()
         m.insert_many(-1, range(10))
-        self.failUnlessEqual([r[0] for r in m], range(10))
+        self.failUnlessEqual([r[0] for r in m], list(range(10)))
 
         m = ObjectStore()
         m.insert_many(99, range(10))
-        self.failUnlessEqual([r[0] for r in m], range(10))
+        self.failUnlessEqual([r[0] for r in m], list(range(10)))
 
     def test_itervalues(self):
         m = ObjectStore()
         m.insert_many(0, range(10))
-        self.failUnlessEqual(range(10), list(m.itervalues()))
+        self.failUnlessEqual(list(range(10)), list(m.itervalues()))
 
     def test_itervalues_empty(self):
         m = ObjectStore()
@@ -220,8 +222,16 @@ class TObjectStore(_TObjectStore):
         self.assertEqual(changed[0], 0)
         self.assertEqual(inserted[0], len(m))
 
+    def test__sort_on_value(self):
+        m = ObjectStore()
+        iterBob = m.append(row=["bob"])
+        iterAlice = m.append(row=["alice"])
+        m.append(row=["charlie"])
+        result = ObjectStore._sort_on_value(m, iterAlice, iterBob, None)
+        self.assertEqual(result, cmp("alice", "bob"))
 
-class _TObjectTreeStore(AbstractTestCase):
+
+class _TObjectTreeStoreMixin(object):
 
     Store = None
 
@@ -297,12 +307,12 @@ class _TObjectTreeStore(AbstractTestCase):
         self.failUnless(m.insert_after(None, None))
 
 
-class TOrigTreeStore(_TObjectTreeStore):
+class TOrigTreeStore(TestCase, _TObjectTreeStoreMixin):
 
     Store = lambda *x: Gtk.TreeStore(object)
 
 
-class TObjectTreeStore(_TObjectTreeStore):
+class TObjectTreeStore(TestCase, _TObjectTreeStoreMixin):
 
     Store = ObjectTreeStore
 
@@ -383,7 +393,7 @@ class TObjectModelFilter(TestCase):
         m = ObjectStore()
         f = ObjectModelFilter(child_model=m)
         m.insert_many(0, range(10))
-        self.failUnlessEqual(range(10), list(f.itervalues()))
+        self.failUnlessEqual(list(range(10)), list(f.itervalues()))
 
     def test_filter(self):
         m = ObjectStore()
@@ -397,7 +407,7 @@ class TObjectModelFilter(TestCase):
 
         f.set_visible_func(filter_func)
         f.refilter()
-        self.failUnlessEqual(range(0, 10, 2), list(f.itervalues()))
+        self.failUnlessEqual(list(range(0, 10, 2)), list(f.itervalues()))
 
 
 class TObjectModelSort(TestCase):
@@ -406,7 +416,7 @@ class TObjectModelSort(TestCase):
         m = ObjectStore()
         f = ObjectModelSort(model=m)
         m.insert_many(0, range(10))
-        self.failUnlessEqual(range(10), list(f.itervalues()))
+        self.failUnlessEqual(list(range(10)), list(f.itervalues()))
 
     def test_sort(self):
         m = ObjectStore()

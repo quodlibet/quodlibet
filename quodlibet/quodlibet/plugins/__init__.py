@@ -2,14 +2,18 @@
 # Copyright 2012 - 2014 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet import util
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.util.dprint import print_d
+from quodlibet.util.config import ConfigProxy
 from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.compat import itervalues, iteritems, listkeys, string_types
 
 
 def init(folders=None, disable_plugins=False):
@@ -129,6 +133,10 @@ class Plugin(object):
         return "<%s id=%r name=%r>" % (type(self).__name__, self.id, self.name)
 
     @property
+    def can_enable(self):
+        return getattr(self.cls, "PLUGIN_CAN_ENABLE", True)
+
+    @property
     def id(self):
         return self.cls.PLUGIN_ID
 
@@ -143,7 +151,7 @@ class Plugin(object):
     @property
     def tags(self):
         tags = getattr(self.cls, "PLUGIN_TAGS", [])
-        if isinstance(tags, basestring):
+        if isinstance(tags, string_types):
             tags = [tags]
         return tags
 
@@ -270,14 +278,14 @@ class PluginManager(object):
 
     @property
     def _modules(self):
-        return self.__scanner.modules.itervalues()
+        return itervalues(self.__scanner.modules)
 
     @property
     def _plugins(self):
         """All registered plugins"""
 
         plugins = []
-        for module in self.__modules.itervalues():
+        for module in itervalues(self.__modules):
             for plugin in module.plugins:
                 plugins.append(plugin)
         return plugins
@@ -361,7 +369,7 @@ class PluginManager(object):
         """module name: list of error message text lines"""
 
         errors = {}
-        for name, error in self.__scanner.failures.iteritems():
+        for name, error in iteritems(self.__scanner.failures):
             exception = error.exception
             if isinstance(exception, PluginImportException):
                 if not exception.should_show():
@@ -375,7 +383,7 @@ class PluginManager(object):
     def quit(self):
         """Disable plugins and tell all handlers to clean up"""
 
-        for name in self.__modules.keys():
+        for name in listkeys(self.__modules):
             self.__remove_module(name)
 
     def __remove_module(self, name):
@@ -414,20 +422,59 @@ class PluginManager(object):
 PM = PluginManager
 
 
+def plugin_enabled(plugin):
+    """Returns true if the plugin is enabled (or "always" enabled)"""
+    pm = PluginManager.instance
+    enabled = pm.enabled(plugin) or not plugin.can_enable
+    return enabled
+
+
+class PluginConfig(ConfigProxy):
+    """A proxy for a Config object that can be used by plugins.
+
+    Provides some methods of the Config class but doesn't need a
+    section and prefixes the config option name.
+    """
+
+    def __init__(self, prefix, _config=None, _defaults=True):
+        self._prefix = prefix
+        if _config is None:
+            _config = config._config
+        super(PluginConfig, self).__init__(
+            _config, PM.CONFIG_SECTION, _defaults)
+
+    def _new_defaults(self, real_default_config):
+        return PluginConfig(self._prefix, real_default_config, False)
+
+    def _option(self, name):
+        return "%s_%s" % (self._prefix, name)
+
+    def ConfigCheckButton(self, label, option, **kwargs):
+        return ConfigCheckButton(label, PM.CONFIG_SECTION,
+                                 self._option(option), **kwargs)
+
+
 class PluginConfigMixin(object):
     """
-    Mixin for storage and editing of plugin config in a standard way
-    Will use `CONFIG_SECTION`, if defined, for storing config, otherwise,
-    it will base the keys on `PLUGIN_ID`.
+    Mixin for storage and editing of plugin config in a standard way.
     """
+
+    CONFIG_SECTION = None
+    """If defined, the section for storing config,
+        otherwise, it will based on a munged `PLUGIN_ID`"""
 
     @classmethod
     def _config_key(cls, name):
+        return cls._get_config_option(name)
+
+    @classmethod
+    def _get_config_option(cls, option):
         try:
             prefix = cls.CONFIG_SECTION
         except AttributeError:
             prefix = cls.PLUGIN_ID.lower().replace(" ", "_")
-        return "%s_%s" % (prefix, name)
+
+        return "%s_%s" % (prefix, option)
 
     @classmethod
     def config_get(cls, name, default=""):
@@ -448,6 +495,12 @@ class PluginConfigMixin(object):
         return config.getboolean(PM.CONFIG_SECTION, cls._config_key(name),
                                  default)
 
+    @classmethod
+    def config_get_stringlist(cls, name, default=False):
+        """Gets a config string list for this plugin"""
+        return config.getstringlist(PM.CONFIG_SECTION, cls._config_key(name),
+                                 default)
+
     def config_entry_changed(self, entry, key):
         """React to a change in an gtk.Entry (by saving it to config)"""
         if entry.get_property('sensitive'):
@@ -465,3 +518,69 @@ class PluginConfigMixin(object):
             cls.config_set(name, default)
         return ConfigCheckButton(label, PM.CONFIG_SECTION,
                                  option, populate=True)
+
+
+class ConfProp(object):
+
+    def __init__(self, conf, name, default):
+        self._conf = conf
+        self._name = name
+
+        self._conf.defaults.set(name, default)
+
+    def __get__(self, *args, **kwargs):
+        return self._conf.get(self._name)
+
+    def __set__(self, obj, value):
+        self._conf.set(self._name, value)
+
+
+class BoolConfProp(ConfProp):
+
+    def __get__(self, *args, **kwargs):
+        return self._conf.getboolean(self._name)
+
+
+class IntConfProp(ConfProp):
+
+    def __get__(self, *args, **kwargs):
+        return self._conf.getint(self._name)
+
+
+class FloatConfProp(ConfProp):
+
+    def __get__(self, *args, **kwargs):
+        return self._conf.getfloat(self._name)
+
+
+def str_to_color_tuple(s):
+    """Raises ValueError"""
+
+    lst = [float(p) for p in s.split()]
+    while len(lst) < 4:
+        lst.append(0.0)
+    return tuple(lst)
+
+
+def color_tuple_to_str(t):
+    return " ".join(map(str, t))
+
+
+class ColorConfProp(ConfProp):
+
+    def __init__(self, conf, name, default):
+        self._conf = conf
+        self._name = name
+
+        self._conf.defaults.set(name, color_tuple_to_str(default))
+
+    def __get__(self, *args, **kwargs):
+        s = self._conf.get(self._name)
+
+        try:
+            return str_to_color_tuple(s)
+        except ValueError:
+            return str_to_color_tuple(self._conf.defaults.get(self._name))
+
+    def __set__(self, obj, value):
+        self._conf.set(self._name, color_tuple_to_str(value))

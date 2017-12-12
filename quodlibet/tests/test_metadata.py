@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-from tests import mkstemp, AbstractTestCase
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+from tests import mkstemp, TestCase, get_data_path
 
 import os
 
@@ -9,14 +14,16 @@ from quodlibet import config
 from shutil import copyfileobj
 
 
-class TestMetaData(AbstractTestCase):
-    base = 'tests/data/silence-44-s'
+class TestMetaDataBase(TestCase):
+
+    base = get_data_path("silence-44-s")
 
     def setUp(self):
         """Copy the base silent file to a temp name/location and load it"""
+
         config.init()
         fd, self.filename = mkstemp(suffix=self.ext, text=False)
-        dst = os.fdopen(fd, 'w')
+        dst = os.fdopen(fd, 'wb')
         src = open(self.base + self.ext, 'rb')
         copyfileobj(src, dst)
         dst.close()
@@ -24,10 +31,14 @@ class TestMetaData(AbstractTestCase):
 
     def tearDown(self):
         """Delete the temp file"""
+
         os.remove(self.filename)
         del self.filename
         del self.song
         config.quit()
+
+
+class _TestMetaDataMixin(object):
 
     def test_base_data(self):
         self.failUnlessEqual(self.song['artist'], 'piman\njzig')
@@ -82,23 +93,23 @@ tags = ['album', 'arranger', 'artist', 'author', 'comment', 'composer',
 'tracknumber', 'version', 'xyzzy_undefined_tag', 'musicbrainz_trackid',
 'releasecountry']
 
-for ext in formats._infos.keys():
-    if os.path.exists(TestMetaData.base + ext):
-
+for ext in formats.loaders.keys():
+    if os.path.exists(TestMetaDataBase.base + ext):
         extra_tests = {}
         for tag in tags:
             if tag in ['artist', 'date', 'genre']:
                 continue
 
-            def test_tag(self, tag=tag):
+            def _test_tag(self, tag=tag):
                 self._test_tag(tag, [u'a'])
-            extra_tests['test_tag_' + tag] = test_tag
+            extra_tests['test_tag_' + tag] = _test_tag
 
-            def test_tags(self, tag=tag):
+            def _test_tags(self, tag=tag):
                 self._test_tag(tag, [u'b\nc'])
-            extra_tests['test_tags_' + tag] = test_tags
+            extra_tests['test_tags_' + tag] = _test_tags
 
         name = 'MetaData' + ext
-        testcase = type(name, (TestMetaData,), extra_tests)
+        testcase = type(
+            name, (TestMetaDataBase, _TestMetaDataMixin), extra_tests)
         testcase.ext = ext
         globals()[name] = testcase

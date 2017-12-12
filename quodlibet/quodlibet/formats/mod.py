@@ -2,14 +2,17 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import ctypes
 
 from quodlibet.util import load_library
-from quodlibet.formats._audio import AudioFile
+
+from ._audio import AudioFile, translate_errors
+
 
 extensions = [
     '.669', '.amf', '.ams', '.dsm', '.far', '.it', '.med', '.mod', '.mt2',
@@ -39,17 +42,19 @@ class ModFile(AudioFile):
     format = "MOD/XM/IT"
 
     def __init__(self, filename):
-        data = open(filename, "rb").read()
-        f = _modplug.ModPlug_Load(data, len(data))
-        if not f:
-            raise IOError("%r not a valid MOD file" % filename)
-        self["~#length"] = _modplug.ModPlug_GetLength(f) // 1000
-        title = _modplug.ModPlug_GetName(f) or os.path.basename(filename)
-        try:
-            self["title"] = title.decode('utf-8')
-        except UnicodeError:
-            self["title"] = title.decode("iso-8859-1")
-        _modplug.ModPlug_Unload(f)
+        with translate_errors():
+            data = open(filename, "rb").read()
+            f = _modplug.ModPlug_Load(data, len(data))
+            if not f:
+                raise IOError("%r not a valid MOD file" % filename)
+            self["~#length"] = _modplug.ModPlug_GetLength(f) // 1000
+            title = _modplug.ModPlug_GetName(f) or os.path.basename(filename)
+            try:
+                self["title"] = title.decode('utf-8')
+            except UnicodeError:
+                self["title"] = title.decode("iso-8859-1")
+            _modplug.ModPlug_Unload(f)
+
         self.sanitize(filename)
 
     def write(self):
@@ -67,5 +72,5 @@ class ModFile(AudioFile):
         else:
             return k == "artist"
 
-info = ModFile
+loader = ModFile
 types = [ModFile]

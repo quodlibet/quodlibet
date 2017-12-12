@@ -23,7 +23,7 @@ To translate, you'll want to have intltool, gettext and git installed::
 
 
 For translating itself you need a PO editor like `Poedit 
-<http://www.poedit.net/>`_::
+<https://poedit.net/>`_::
 
     apt-get install poedit
 
@@ -45,15 +45,18 @@ To translate current trunk, update to the default branch::
 
     $ git checkout master
 
-Create the POT file and update translations::
+You can find the translation file for your chosen language in::
 
-    $ ./setup.py build_mo
+    ./po/<lang>.po
 
+In case there's not already a translation for your language, create one::
 
-In case there's not already a translation for your language::
+    $ ./setup.py create_po --lang=<mylang>
 
-    $ msginit -i po/quodlibet.pot -l po/<mylang>
+Update translations so all new strings that were added since the last
+translation update get included::
 
+    $ ./setup.py update_po --lang=<mylang>
 
 Now start translating...
 
@@ -68,7 +71,7 @@ instead of the global ones.
 
 ::
 
-    $ ./setup.py build_mo
+    $ ./setup.py build_mo --lang=<mylang>
     $ ./quodlibet.py
     $ ./exfalso.py
 
@@ -83,14 +86,13 @@ translation.
 
 ::
 
-    $ ./setup.py build_mo
     $ ./setup.py test --to-run PO.<mylang>
 
 And send us the .po file you made:
 
-* Create a `new issue 
+* Create a pull request.
+* Or create a `new issue 
   <https://github.com/quodlibet/quodlibet/issues/new>`__ linking to your 
   updated .po file. If you don't have a place for making the file accessible 
   create a `gist <https://gist.github.com/>`__ with the content of the .po 
   file and include the gist URL in the issue description.
-* Or create a pull request.

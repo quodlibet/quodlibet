@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
-import os
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-if os.name == "nt":
+import os
+import sys
+import subprocess
+
+from quodlibet.qltk import Icons
+
+if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
 from gi.repository import Gtk, GObject
 
+from quodlibet import _
 from quodlibet.plugins.editing import RenameFilesPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util import connect_obj
@@ -16,7 +26,7 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     PLUGIN_ID = "Kana/Kanji Simple Inverter"
     PLUGIN_NAME = _("Kana/Kanji Simple Inverter")
     PLUGIN_DESC = _("Converts kana/kanji to romaji before renaming.")
-    PLUGIN_ICON = Gtk.STOCK_CONVERT
+    PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
     __gsignals__ = {
         "preview": (GObject.SignalFlags.RUN_LAST, None, ())
@@ -37,14 +47,18 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
         value = "\n".join(values)
         try:
             data = value.encode('shift-jis', 'replace')
-        except None:
-            return value
-        line = ("kakasi -isjis -osjis -Ha -Ka -Ja -Ea -ka -s")
-        w, r = os.popen2(line.split())
-        w.write(data)
-        w.close()
+        except UnicodeEncodeError:
+            return values
+
+        proc = subprocess.Popen(
+            ["kakasi", "-isjis", "-osjis", "-Ha", "-Ka", "-Ja",
+             "-Ea", "-ka", "-s"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE)
+        result = proc.communicate(data)[0]
+
         try:
-            return r.read().decode('shift-jis').strip().split("\n")
+            return result.decode('shift-jis').strip().split("\n")
         except:
             return values
 

@@ -2,8 +2,9 @@
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 # TODO:
 # RenameCommand
@@ -15,12 +16,16 @@ import shutil
 import subprocess
 import tempfile
 
+from senf import fsn2text
+
+from quodlibet import _
 from quodlibet import util
-from quodlibet.formats import EmbeddedImage
-from quodlibet.util.path import mtime, fsdecode
+from quodlibet.formats import EmbeddedImage, AudioFileError
+from quodlibet.util.path import mtime
 from quodlibet.pattern import Pattern, error as PatternError
-from quodlibet.util.tags import USER_TAGS, sortkey
+from quodlibet.util.tags import USER_TAGS, sortkey, MACHINE_TAGS
 from quodlibet.util.tagsfrompath import TagsFromPattern
+from quodlibet.compat import text_type, iteritems
 
 from .base import Command, CommandError
 from .util import print_terse_table, copy_mtime, list_tags, print_table, \
@@ -55,7 +60,7 @@ class ListCommand(Command):
         if not options.columns:
             order = nicks
         else:
-            order = map(str.strip, options.columns.split(","))
+            order = [n.strip() for n in options.columns.split(",")]
 
         song = self.load_song(path)
         tags = list_tags(song, machine=options.all, terse=options.terse)
@@ -78,6 +83,8 @@ class TagsCommand(Command):
         p.add_option("-c", "--columns", action="store", type="string",
                      help=_("Columns to display and order in terse mode (%s)")
                      % "tag,desc")
+        p.add_option("-a", "--all", action="store_true",
+                     help=_("Also list programmatic tags"))
 
     def _execute(self, options, args):
         if len(args) != 0:
@@ -89,10 +96,14 @@ class TagsCommand(Command):
         if not options.columns:
             order = nicks
         else:
-            order = map(str.strip, options.columns.split(","))
+            order = [n.strip() for n in options.columns.split(",")]
+
+        tag_names = list(USER_TAGS)
+        if options.all:
+            tag_names.extend(MACHINE_TAGS)
 
         tags = []
-        for key in USER_TAGS:
+        for key in tag_names:
             tags.append((key, util.tag(key)))
         tags.sort()
 
@@ -164,13 +175,13 @@ class EditCommand(Command):
             u"",
             u"#" * 80,
             u"# Lines that are empty or start with '#' will be ignored",
-            u"# File: %r" % fsdecode(song("~filename")),
+            u"# File: %r" % fsn2text(song("~filename")),
         ]
 
         return u"\n".join(lines)
 
     def _text_to_song(self, text, song):
-        assert isinstance(text, unicode)
+        assert isinstance(text, text_type)
 
         # parse
         tags = {}
@@ -197,7 +208,7 @@ class EditCommand(Command):
                     self.log("Add %s=%s" % (key, value))
                     song.add(key, value)
 
-        for key, values in tags.iteritems():
+        for key, values in iteritems(tags):
             if not song.can_change(key):
                 raise CommandError(
                     "Can't change key '%(key-name)s'." % {"key-name": key})
@@ -237,10 +248,10 @@ class EditCommand(Command):
             try:
                 subprocess.check_call(editor_args + [path])
             except subprocess.CalledProcessError as e:
-                self.log(unicode(e))
+                self.log(text_type(e))
                 raise CommandError(_("Editing aborted"))
             except OSError as e:
-                self.log(unicode(e))
+                self.log(text_type(e))
                 raise CommandError(
                     _("Starting text editor '%(editor-name)s' failed.") % {
                         "editor-name": editor_args[0]})
@@ -282,8 +293,8 @@ class SetCommand(Command):
         if len(args) < 3:
             raise CommandError(_("Not enough arguments"))
 
-        tag = args[0]
-        value = args[1].decode("utf-8")
+        tag = fsn2text(args[0])
+        value = fsn2text(args[1])
         paths = args[2:]
 
         songs = []
@@ -422,8 +433,8 @@ class AddCommand(Command):
         if len(args) < 3:
             raise CommandError(_("Not enough arguments"))
 
-        tag = args[0]
-        value = args[1].decode("utf-8")
+        tag = fsn2text(args[0])
+        value = fsn2text(args[1])
         paths = args[2:]
 
         songs = []
@@ -468,18 +479,20 @@ class InfoCommand(Command):
         if not options.columns:
             order = nicks
         else:
-            order = map(str.strip, options.columns.split(","))
+            order = [n.strip() for n in options.columns.split(",")]
 
         if not options.terse:
             tags = []
-            for key in ["~format", "~length", "~#bitrate", "~filesize"]:
-                tags.append((util.tag(key), unicode(song(key))))
+            for key in ["~format", "~codec", "~encoding", "~length",
+                        "~bitrate", "~filesize"]:
+                tags.append((util.tag(key), text_type(song.comma(key))))
 
             print_table(tags, headers, nicks, order)
         else:
             tags = []
-            for key in ["~format", "~#length", "~#bitrate", "~#filesize"]:
-                tags.append((key.lstrip("#~"), unicode(song(key))))
+            for key in ["~format", "~codec", "~encoding", "~#length",
+                        "~#bitrate", "~#filesize"]:
+                tags.append((key.lstrip("#~"), text_type(song(key))))
 
             print_terse_table(tags, nicks, order)
 
@@ -514,7 +527,10 @@ class ImageSetCommand(Command):
                     })
 
         for song in songs:
-            song.set_image(image)
+            try:
+                song.set_image(image)
+            except AudioFileError as e:
+                raise CommandError(e)
 
 
 @Command.register
@@ -540,7 +556,10 @@ class ImageClearCommand(Command):
                     })
 
         for song in songs:
-            song.clear_images()
+            try:
+                song.clear_images()
+            except AudioFileError as e:
+                raise CommandError(e)
 
 
 @Command.register
@@ -678,7 +697,7 @@ class FillCommand(Command):
         rows = []
         for song in songs:
             match = pattern.match(song)
-            row = [fsdecode(song("~basename"))]
+            row = [fsn2text(song("~basename"))]
             for header in pattern.headers:
                 row.append(match.get(header, u""))
             rows.append(row)
@@ -736,7 +755,7 @@ class PrintCommand(Command):
         error = False
         for path in paths:
             try:
-                print_(pattern % self.load_song(path))
+                util.print_(pattern % self.load_song(path))
             except CommandError:
                 error = True
 

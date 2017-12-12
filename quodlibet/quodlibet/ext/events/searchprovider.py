@@ -2,8 +2,9 @@
 # Copyright 2013 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """
 For this plugin to work GNOME Shell needs this file:
@@ -29,12 +30,14 @@ if os.name == "nt" or sys.platform == "darwin":
 import dbus
 import dbus.service
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet.util.dbusutils import dbus_unicode_validate
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.query import Query
 from quodlibet.plugins import PluginImportException
 from quodlibet.util.path import xdg_get_system_data_dirs
+from quodlibet.qltk import Icons
 
 
 def get_gs_provider_files():
@@ -59,7 +62,8 @@ def check_ini_installed():
     for path in get_gs_provider_files():
         try:
             with open(path, "rb") as handle:
-                if SearchProvider.BUS_NAME in handle.read():
+                data = handle.read().decode("utf-8", "replace")
+                if SearchProvider.BUS_NAME in data:
                     quodlibet_installed = True
                     break
         except EnvironmentError:
@@ -75,7 +79,7 @@ class GnomeSearchProvider(EventPlugin):
     PLUGIN_ID = "searchprovider"
     PLUGIN_NAME = _("GNOME Search Provider")
     PLUGIN_DESC = _("Allows GNOME Shell to search the library.")
-    PLUGIN_ICON = "gtk-connect"
+    PLUGIN_ICON = Icons.SYSTEM_SEARCH
 
     def enabled(self):
         self.obj = SearchProvider()

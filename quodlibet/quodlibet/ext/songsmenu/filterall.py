@@ -2,15 +2,17 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.tags import MACHINE_TAGS
 from quodlibet.util import build_filter_query
-from quodlibet.qltk import Window
+from quodlibet.qltk import Window, Icons, Button
 
 
 class SelectionWindow(Window):
@@ -44,7 +46,7 @@ class SelectionWindow(Window):
         buttons = Gtk.HButtonBox()
         buttons.set_spacing(6)
         buttons.set_layout(Gtk.ButtonBoxStyle.END)
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
         buttons.pack_start(close, True, True, 0)
 
@@ -79,16 +81,16 @@ class FilterAll(SongsMenuPlugin):
     PLUGIN_NAME = _("Filter on Any Tag")
     PLUGIN_DESC = _("Creates a search query based on "
                     "tags of the selected songs.")
-    PLUGIN_ICON = 'gtk-index'
+    PLUGIN_ICON = Icons.EDIT_FIND
+    REQUIRES_ACTION = True
 
     def plugin_songs(self, songs):
         browser = self.plugin_window.browser
         if not browser.can_filter_text():
             return
 
-        keys = set()
-        for song in songs:
-            keys.update(song.realkeys())
+        keys = {key for song in songs
+                for key in song.realkeys()}
         keys.difference_update(MACHINE_TAGS)
 
         filters = {}

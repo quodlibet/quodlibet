@@ -1,30 +1,36 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig, 2010 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
+from quodlibet.plugins.songshelpers import any_song, has_bookmark
 from quodlibet.qltk.bookmarks import EditBookmarks
 from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
 class Bookmarks(SongsMenuPlugin):
-    PLUGIN_ID = "Go to Bookmark..."
-    PLUGIN_NAME = _(u"Go to Bookmark…")
-    PLUGIN_DESC = _("Lists all bookmarks in the selected files.")
-    PLUGIN_ICON = Gtk.STOCK_JUMP_TO
+    PLUGIN_ID = "Go to Bookmark"
+    PLUGIN_NAME = _(u"Go to Bookmark")
+    PLUGIN_DESC = _("Manages bookmarks in the selected files.")
+    PLUGIN_ICON = Icons.GO_JUMP
+
+    plugin_handles = any_song(has_bookmark)
 
     def __init__(self, songs, *args, **kwargs):
         super(Bookmarks, self).__init__(songs, *args, **kwargs)
         self.__menu = Gtk.Menu()
-        self.__menu.connect('map', self.__map, songs)
-        self.__menu.connect('unmap', self.__unmap)
+        self.__menu.connect('map', self.__create_children, songs)
         self.set_submenu(self.__menu)
 
     class FakePlayer(object):
@@ -35,9 +41,11 @@ class Bookmarks(SongsMenuPlugin):
             if app.player.go_to(self.song._song, explicit=True):
                 app.player.seek(time)
 
-        get_position = lambda *x: 0
+        def get_position(self, *args):
+            return 0
 
-    def __map(self, menu, songs):
+    def __create_children(self, menu, songs):
+        self.__remove_children(menu)
         for song in songs:
             marks = song.bookmarks
             if marks:
@@ -53,7 +61,7 @@ class Bookmarks(SongsMenuPlugin):
                     song_menu.append(item)
 
                 song_menu.append(SeparatorMenuItem())
-                i = qltk.MenuItem(_(u"_Edit Bookmarks…"), Gtk.STOCK_EDIT)
+                i = qltk.MenuItem(_(u"_Edit Bookmarks…"), Icons.EDIT)
 
                 def edit_bookmarks_cb(menu_item):
                     window = EditBookmarks(self.plugin_window, app.library,
@@ -69,9 +77,9 @@ class Bookmarks(SongsMenuPlugin):
 
         menu.show_all()
 
-    def __unmap(self, menu):
-        for child in self.__menu.get_children():
-            self.__menu.remove(child)
+    def __remove_children(self, menu):
+        for child in menu.get_children():
+            menu.remove(child)
 
     def plugin_songs(self, songs):
         pass

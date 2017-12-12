@@ -2,8 +2,9 @@
 # Copyright 2011,2014 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
@@ -12,10 +13,11 @@ if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
-from gi.repository import Gtk
 import dbus
 
+from quodlibet import _
 from quodlibet import app
+from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -23,7 +25,7 @@ class ScreensaverPause(EventPlugin):
     PLUGIN_ID = "screensaver_pause"
     PLUGIN_NAME = _("Screensaver Pause")
     PLUGIN_DESC = _("Pauses playback while the GNOME screensaver is active.")
-    PLUGIN_ICON = Gtk.STOCK_MEDIA_PAUSE
+    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_PAUSE
 
     DBUS_NAME = "org.gnome.ScreenSaver"
     DBUS_INTERFACE = "org.gnome.ScreenSaver"

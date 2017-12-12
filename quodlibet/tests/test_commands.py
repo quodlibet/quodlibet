@@ -1,11 +1,20 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+from senf import fsnative
+
+from quodlibet.formats import AudioFile
 from tests import TestCase, init_fake_app, destroy_fake_app
-from helper import capture_output
+from .helper import capture_output
 
 from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet import app
+from quodlibet.compat import text_type
 
 from quodlibet.commands import registry
 
@@ -20,7 +29,12 @@ class TCommands(TestCase):
         config.quit()
 
     def __send(self, command):
+        command = fsnative(text_type(command))
         return registry.handle_line(app, command)
+
+    def test_query(self):
+        self.__send(u"query foo")
+        self.assertEqual(self.__send("print-query-text"), u"foo\n")
 
     def test_player(self):
         self.__send("previous")
@@ -55,7 +69,6 @@ class TCommands(TestCase):
         for window in Gtk.Window.list_toplevels():
             if isinstance(window, LibraryBrowser):
                 window.destroy()
-        self.__send("order shuffle")
         self.__send("properties")
         self.__send("queue 1")
         self.__send("quit")
@@ -66,6 +79,17 @@ class TCommands(TestCase):
         self.__send("set-rating 0.5")
         self.__send("show-window")
         self.__send("song-list 1")
+        self.__send("stop-after 1")
         self.__send("status")
         self.__send("toggle-window")
         self.__send("unqueue /dev/null")
+
+    def test_enqueue_files(self):
+        songs = [AudioFile({"~filename": fn, "title": fn})
+                 for fn in ["one", "two, please", "slash\\.mp3", "four"]]
+        app.library.add(songs)
+
+        self.assertFalse(app.window.playlist.q.get())
+        self.__send("enqueue-files "
+                    "one,two\\, please,slash\\\\.mp3,four")
+        self.assertEquals(app.window.playlist.q.get(), songs)

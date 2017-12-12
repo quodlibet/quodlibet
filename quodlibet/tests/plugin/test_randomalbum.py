@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from quodlibet.util.collection import Album
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet import config
 from tests.plugin import PluginTestCase
 from quodlibet.util.dprint import print_d
@@ -12,14 +17,14 @@ A1S2 = AudioFile(
         {'album': 'greatness', 'title': 'superlative', 'artist': 'fooman',
          '~#lastplayed': 1234, '~#rating': 1.0})
 A1 = Album(A1S1)
-A1.songs = set([A1S1, A1S2])
+A1.songs = {A1S1, A1S2}
 
 A2S1 = AudioFile({'album': 'mediocrity', 'title': 'blah', 'artist': 'fooman',
                   '~#lastplayed': 1234})
 A2S2 = AudioFile({'album': 'mediocrity', 'title': 'meh', 'artist': 'fooman',
                   '~#lastplayed': 1234})
 A2 = Album(A2S1)
-A2.songs = set([A2S1, A2S2])
+A2.songs = {A2S1, A2S2}
 
 A3S1 = AudioFile(
         {'album': 'disappointment', 'title': 'shameful', 'artist': 'poorman',
@@ -32,10 +37,10 @@ A3S3 = AudioFile(
          '~#lastplayed': 0, '~#rating': 0.25})
 
 A3 = Album(A3S1)
-A3.songs = set([A3S1, A3S2, A3S3])
+A3.songs = {A3S1, A3S2, A3S3}
 
 for song in [A1S1, A1S2, A2S1, A2S2, A3S1, A3S2, A3S3]:
-    song["length"] = 100
+    song["~#length"] = 100
 
 
 class TRandomAlbum(PluginTestCase):

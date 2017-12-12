@@ -2,19 +2,21 @@
 # Copyright 2005 Inigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-
-from urllib import quote
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet.util import website
 from quodlibet.qltk.entry import Entry
+from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.compat import quote
 
-WIKI_URL = "http://%s.wikipedia.org/wiki/"
+WIKI_URL = "https://%s.wikipedia.org/wiki/Special:Search/"
 
 
 def get_lang():
@@ -26,7 +28,7 @@ def set_lang(value):
 
 
 class WikiSearch(object):
-    PLUGIN_ICON = Gtk.STOCK_OPEN
+    PLUGIN_ICON = Icons.APPLICATION_INTERNET
 
     @classmethod
     def changed(self, e):
@@ -43,7 +45,7 @@ class WikiSearch(object):
         e.connect('changed', self.changed)
         hb.pack_start(
             Gtk.Label(label=_("Search at %(website)s") % {
-                "website": "http://"}),
+                "website": "https://"}),
             False, True, 0)
         hb.pack_start(e, False, True, 0)
         hb.pack_start(Gtk.Label(label=".wikipedia.org"), False, True, 0)

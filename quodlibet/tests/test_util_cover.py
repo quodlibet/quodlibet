@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
+import glob
 import os
+import shutil
 
-from quodlibet import config
-from quodlibet.formats._audio import AudioFile
+from senf import fsnative, bytes2fsn
+
+from quodlibet.formats import AudioFile
 from quodlibet.util.cover.manager import CoverManager
-from quodlibet.util.path import fsnative, normalize_path
+from quodlibet.util.path import normalize_path, path_equal
+from quodlibet.compat import text_type
 
-from . import TestCase, DATA_DIR
+from tests import TestCase, mkdtemp
 
-
-quux = AudioFile({
-    "~filename": os.path.join(DATA_DIR, "asong.ogg"),
-    "album": u"Quuxly",
-})
 
 bar_2_1 = AudioFile({
     "~filename": fsnative(u"does not/exist"),
@@ -31,23 +31,25 @@ bar_2_1 = AudioFile({
 class TCoverManager(TestCase):
 
     def setUp(self):
-        config.init()
         self.manager = CoverManager()
 
-        self.dir = os.path.realpath(quux("~dirname"))
-        self.files = [self.full_path("12345.jpg"),
-                      self.full_path("nothing.jpg")
-                      ]
-        for f in self.files:
-            file(f, "w").close()
+        self.dir = mkdtemp()
+        self.song = AudioFile({
+            "~filename": os.path.join(self.dir, "asong.ogg"),
+            "album": u"Quuxly",
+        })
+
+        # Safety check
+        self.failIf(glob.glob(os.path.join(self.dir + "*.jpg")))
+        files = [self.full_path("12345.jpg"), self.full_path("nothing.jpg")]
+        for f in files:
+            open(f, "w").close()
+
+    def tearDown(self):
+        shutil.rmtree(self.dir)
 
     def _find_cover(self, song):
         return self.manager.get_cover(song)
-
-    def tearDown(self):
-        for f in self.files:
-            os.unlink(f)
-        config.quit()
 
     def full_path(self, path):
         return os.path.join(self.dir, path)
@@ -56,53 +58,46 @@ class TCoverManager(TestCase):
         self.failIf(self._find_cover(bar_2_1))
 
     def test_nothing(self):
-        self.failIf(self._find_cover(quux))
+        self.failIf(self._find_cover(self.song))
 
     def test_labelid(self):
-        quux["labelid"] = "12345"
-        self.failUnlessEqual(os.path.abspath(self._find_cover(quux).name),
-                             self.full_path("12345.jpg"))
-        del(quux["labelid"])
+        self.song["labelid"] = "12345"
+        assert path_equal(os.path.abspath(self._find_cover(self.song).name),
+                          self.full_path("12345.jpg"))
+        del(self.song["labelid"])
 
     def test_regular(self):
-        files = [os.path.join(self.dir, f) for f in
-                 ["cover.png", "folder.jpg", "frontcover.jpg",
-                  "front_folder_cover.gif", "jacket_cover.front.folder.jpeg"]]
-        for f in files:
-            file(f, "w").close()
-            self.files.append(f)
-            self.failUnlessEqual(
-                os.path.abspath(self._find_cover(quux).name), f)
+        for fn in ["cover.png", "folder.jpg", "frontcover.jpg",
+                   "front_folder_cover.gif", "jacket_cover.front.folder.jpeg"]:
+            f = self.add_file(fn)
+            assert path_equal(
+                os.path.abspath(self._find_cover(self.song).name), f)
         self.test_labelid() # labelid must work with other files present
 
     def test_file_encoding(self):
         if os.name == "nt":
             return
 
-        f = self.full_path("\xff\xff\xff\xff - cover.jpg")
-        file(f, "w").close()
-        self.files.append(f)
-        self.assertTrue(isinstance(quux("album"), unicode))
-        h = self._find_cover(quux)
+        f = self.add_file(bytes2fsn(b"\xff\xff\xff\xff - cover.jpg", None))
+        self.assertTrue(isinstance(self.song("album"), text_type))
+        h = self._find_cover(self.song)
         self.assertEqual(h.name, normalize_path(f))
 
     def test_intelligent(self):
-        song = quux
+        song = self.song
         song["artist"] = "Q-Man"
         song["title"] = "First Q falls hardest"
-        files = [self.full_path(f) for f in
-                 ["Quuxly - back.jpg", "Quuxly.jpg", "q-man - quxxly.jpg",
-                  "folder.jpeg", "Q-man - Quuxly (FRONT).jpg"]]
-        for f in files:
-            file(f, "w").close()
-            self.files.append(f)
+        fns = ["Quuxly - back.jpg", "Quuxly.jpg", "q-man - quxxly.jpg",
+                  "folder.jpeg", "Q-man - Quuxly (FRONT).jpg"]
+        for fn in fns:
+            f = self.add_file(fn)
             cover = self._find_cover(song)
             if cover:
                 actual = os.path.abspath(cover.name)
-                self.failUnlessEqual(actual, f)
+                assert path_equal(actual, f)
             else:
                 # Here, no cover is better than the back...
-                self.failUnlessEqual(f, self.full_path("Quuxly - back.jpg"))
+                assert path_equal(f, self.full_path("Quuxly - back.jpg"))
 
     def test_embedded_special_cover_words(self):
         """Tests that words incidentally containing embedded "special" words
@@ -110,28 +105,57 @@ class TCoverManager(TestCase):
         See Issue 818"""
 
         song = AudioFile({
-            "~filename": fsnative(u"tests/data/asong.ogg"),
+            "~filename": fsnative(os.path.join(self.dir, u"asong.ogg")),
             "album": "foobar",
             "title": "Ode to Baz",
             "artist": "Q-Man",
         })
-        files = [self.full_path(f) for f in
-                 ['back.jpg',
-                  'discovery.jpg', "Pharell - frontin'.jpg",
-                  'nickelback - Curb.jpg',
-                  'foobar.jpg', 'folder.jpg',     # Though this is debatable
-                  'Q-Man - foobar.jpg', 'Q-man - foobar (cover).jpg']]
-        for f in files:
-            file(f, "w").close()
-            self.files.append(f)
+        data = [('back.jpg', False),
+                ('discovery.jpg', False),
+                ("Pharell - frontin'.jpg", False),
+                ('nickelback - Curb.jpg', False),
+                ('foobar.jpg', True),
+                ('folder.jpg', True),  # Though this order is debatable
+                ('Q-Man - foobar.jpg', True),
+                ('Q-man - foobar (cover).jpg', True)]
+        for fn, should_find in data:
+            f = self.add_file(fn)
             cover = self._find_cover(song)
             if cover:
                 actual = os.path.abspath(cover.name)
-                self.failUnlessEqual(
+                assert path_equal(
                     actual, f, "\"%s\" should trump \"%s\"" % (f, actual))
             else:
-                self.failUnless(f, self.full_path('back.jpg'))
+                self.failIf(should_find, msg="Couldn't find %s for %s" %
+                                             (f, song("~filename")))
+
+    def add_file(self, fn):
+        f = self.full_path(fn)
+        open(f, "wb").close()
+        return f
+
+    def test_multiple_people(self):
+        song = AudioFile({
+            "~filename": os.path.join(self.dir, "asong.ogg"),
+            "album": "foobar",
+            "title": "Ode to Baz",
+            "performer": "The Performer",
+            "artist": "The Composer\nThe Conductor",
+            "composer": "The Composer",
+        })
+        for fn in ["foobar.jpg",
+                   "The Performer - foobar.jpg",
+                   "The Composer - The Performer - foobar.jpg",
+                   "The Composer - The Conductor, The Performer - foobar.jpg"]:
+            f = self.add_file(fn)
+            cover = self._find_cover(song)
+            self.failUnless(cover)
+            actual = os.path.abspath(cover.name)
+            cover.close()
+            assert path_equal(
+                actual, f, "\"%s\" should trump \"%s\"" % (f, actual))
 
     def test_get_thumbnail(self):
-        self.assertTrue(self.manager.get_pixbuf(quux, 10, 10) is None)
-        self.assertTrue(self.manager.get_pixbuf_many([quux], 10, 10) is None)
+        self.assertTrue(self.manager.get_pixbuf(self.song, 10, 10) is None)
+        self.assertTrue(
+            self.manager.get_pixbuf_many([self.song], 10, 10) is None)

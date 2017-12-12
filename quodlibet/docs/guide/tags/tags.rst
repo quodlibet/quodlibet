@@ -39,6 +39,7 @@ A programmatic tag is one typically added by either Quod Libet / Ex Falso or
  these, you must turn on "Show programmatic tags" in the relevant
  preferences window.
 
+
 Internal Tags
 -------------
 
@@ -48,16 +49,26 @@ from the values in the files.
 
 See :ref:`InternalTags` for a complete list.
 
+.. _PerformerRoles:
+
+Performer Roles
+---------------
+
+Quod Libet supports performer roles, which let you associate a performer in a
+song with a specific instrument. To use this feature, name a tag
+performer:role. Quod Libet will display the roles alongside the names in
+``~people:roles`` and ``~performers:roles``.
+
 
 Album Identification
 --------------------
 
 Quod Libet uses various tags to define what songs are in the same album. 
 
-For songs to be in the same album, both ``album`` and ``albumartist`` 
-(since 3.1.0) have to be the same. In addition the first non-empty value of 
-the following tags have to match (checked in this order): 
-``musicbrainz_albumid``, ``labelid``, ``album_grouping_key``.
+For songs to be in the same album, both ``album`` and ``albumartist`` have to
+be the same. In addition the first non-empty value of the following tags have
+to match (checked in this order): ``musicbrainz_albumid``, ``labelid``,
+``album_grouping_key``.
 
 
 Common scenarios
@@ -65,15 +76,13 @@ Common scenarios
 
     ''I have a two disc album and each disc is shown separately.''
 
-Make sure the album tags (and ``albumsort`` if present) are the same 
-(remove 'CD1/2' etc.). In case you used the musicbrainz plugin and each 
-disc got a different ``musicbrainz_albumid``, add a nonempty ``labelid`` to 
-all songs.
+Make sure the album tags (and ``albumsort`` if present) (remove 'CD1/2' etc.)
+and albumartist tags are the same.
 
     ''Two albums have the same name and are merged.''
 
-Add a nonempty labelid to one of the albums, or use the musicbrainz plugin 
-to get a `musicbrainz_albumid` for at least one of them.
+Add an albumartist tag for at least one of them.
+
 
 Common Questions
 ^^^^^^^^^^^^^^^^

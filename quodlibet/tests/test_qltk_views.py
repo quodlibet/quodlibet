@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from tests import TestCase
 from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn, \
     DragScroll, MultiDragTreeView, RCMTreeView, DragIconTreeView
 import quodlibet.config
+from quodlibet.compat import xrange
+from quodlibet.util import is_windows
 from gi.repository import Gtk, Gdk
 
-from helper import send_key_click, visible, send_button_click, realized
+from . import skipIf
+from .helper import send_key_click, visible, send_button_click, realized
 
 
 def _fill_view(view):
@@ -44,6 +52,19 @@ class TBaseView(TestCase):
         self.m = Gtk.ListStore(str)
         self.c = BaseView(model=self.m)
 
+    def test_selection_changed(self):
+        events = []
+
+        def on_selection_changed(*args):
+            events.append(args)
+
+        self.c.connect("selection-changed", on_selection_changed)
+
+        self.m.append(row=["foo"])
+        self.c.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
+        self.c.get_selection().select_all()
+        self.assertTrue(events)
+
     def test_remove(self):
         self.m.append(row=["foo"])
         self.c.remove_iters([self.m[0].iter])
@@ -58,8 +79,8 @@ class TBaseView(TestCase):
 
     def test_key_events(self):
         with visible(self.c):
-            send_key_click(self.c, "<ctrl>Right")
-            send_key_click(self.c, "<ctrl>Left")
+            send_key_click(self.c, "<Primary>Right")
+            send_key_click(self.c, "<Primary>Left")
 
     def test_select_func(self):
         self.m.append(row=["foo"])
@@ -67,6 +88,30 @@ class TBaseView(TestCase):
         self.failUnless(self.c.select_by_func(lambda r: True))
         self.failIf(self.c.select_by_func(lambda r: False))
         self.c.select_by_func(lambda r: False, scroll=False, one=True)
+
+    def test_iter_select_func(self):
+        # empty
+        self.assertFalse(self.c.iter_select_by_func(lambda r: False))
+        self.assertFalse(self.c.iter_select_by_func(lambda r: True))
+
+        self.m.append(row=["foo"])
+        self.m.append(row=["bar"])
+        self.m.append(row=["foo"])
+        self.c.remove_selection()
+        self.assertTrue(self.c.iter_select_by_func(lambda r: r[0] == "foo"))
+        selection = self.c.get_selection()
+        model, iter_ = selection.get_selected()
+        self.assertEqual(model.get_path(iter_)[:], [0])
+        self.assertTrue(self.c.iter_select_by_func(lambda r: r[0] == "foo"))
+        model, iter_ = selection.get_selected()
+        self.assertEqual(model.get_path(iter_)[:], [2])
+        self.assertTrue(self.c.iter_select_by_func(lambda r: r[0] == "foo"))
+        model, iter_ = selection.get_selected()
+        self.assertEqual(model.get_path(iter_)[:], [0])
+        self.assertTrue(self.c.iter_select_by_func(lambda r: r[0] == "bar"))
+        model, iter_ = selection.get_selected()
+        self.assertEqual(model.get_path(iter_)[:], [1])
+        self.assertFalse(self.c.iter_select_by_func(lambda r: r[0] == "bar"))
 
     def test_remove_select_single(self):
         # empty
@@ -165,7 +210,7 @@ class TMultiDragTreeView(TestCase):
     def test_click(self):
         with visible(self.c):
             send_button_click(self.c, Gdk.BUTTON_PRIMARY)
-            send_button_click(self.c, Gdk.BUTTON_PRIMARY, ctrl=True)
+            send_button_click(self.c, Gdk.BUTTON_PRIMARY, primary=True)
 
 
 class TRCMTreeView(TestCase):
@@ -177,7 +222,7 @@ class TRCMTreeView(TestCase):
     def test_right_click(self):
         with visible(self.c):
             send_button_click(self.c, Gdk.BUTTON_SECONDARY)
-            send_button_click(self.c, Gdk.BUTTON_SECONDARY, ctrl=True)
+            send_button_click(self.c, Gdk.BUTTON_SECONDARY, primary=True)
 
     def test_popup(self):
         menu = Gtk.Menu()
@@ -217,8 +262,18 @@ class TDragScroll(TestCase):
         self.c = ScrollClass()
         _fill_view(self.c)
 
+    @skipIf(is_windows(), "fixme")
     def test_basic(self):
         self.c.scroll_motion(0, 0)
         self.c.scroll_motion(42, 42)
         self.c.scroll_motion(999, 999)
         self.c.scroll_disable()
+
+
+class TTreeViewColumn(TestCase):
+
+    def test_main(self):
+        TreeViewColumn(title="foo")
+        area = Gtk.CellAreaBox()
+        tvc = TreeViewColumn(cell_area=area)
+        self.assertEqual(tvc.get_area(), area)

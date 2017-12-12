@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#           2011-2013 Nick Boultbee
+#           2011-2013,2016 Nick Boultbee
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
-from cStringIO import StringIO
+
+from senf import uri2fsn, fsnative, fsn2text, text2fsn
+
+from quodlibet.util.string import split_escape
 
 from quodlibet import browsers
 
+from quodlibet.compat import listfilter, text_type
 from quodlibet import util
-from quodlibet.util.uri import URI
-from quodlibet.util.path import fsnative
+from quodlibet.util import print_d, print_e
 
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.properties import SongProperties
@@ -32,7 +36,19 @@ class CommandRegistry(object):
         self._commands = {}
 
     def register(self, name, args=0, optional=0):
-        """Register a new command function"""
+        """Register a new command function
+
+        The functions gets zero or more arguments as `fsnative`
+        and should return `None` or `fsnative`. In case an error
+        occured the command should raise `CommandError`.
+
+        Args:
+            name (str): the command name
+            args (int): amount of required arguments
+            optional (int): amoutn of additional optional arguments
+        Returns:
+            Callable
+        """
 
         def wrap(func):
             self._commands[name] = (func, args, optional)
@@ -43,19 +59,27 @@ class CommandRegistry(object):
         """Parses a command line and executes the command.
 
         Can not fail.
+
+        Args:
+            app (Application)
+            line (fsnative)
+        Returns:
+            fsnative or None
         """
+
+        assert isinstance(line, fsnative)
 
         # only one arg supported atm
         parts = line.split(" ", 1)
         command = parts[0]
         args = parts[1:]
 
-        print_d("command: %s(*%r)" % (command, args))
+        print_d("command: %r(*%r)" % (command, args))
 
         try:
             return self.run(app, command, *args)
         except CommandError as e:
-            print_e(str(e))
+            print_e(e)
         except:
             util.print_exc()
 
@@ -74,12 +98,26 @@ class CommandRegistry(object):
         if len(args) > argcount + optcount:
             raise CommandError("Too many arguments for %r" % name)
 
-        print_d("Running %r with params %r " % (cmd, args))
+        print_d("Running %r with params %s " % (cmd.__name__, args))
 
         try:
-            return cmd(app, *args)
+            result = cmd(app, *args)
         except CommandError as e:
             raise CommandError("%s: %s" % (name, str(e)))
+        else:
+            if result is not None and not isinstance(result, fsnative):
+                raise CommandError(
+                    "%s: returned %r which is not fsnative" % (name, result))
+            return result
+
+
+def arg2text(arg):
+    """Like fsn2text but is strict by default and raises CommandError"""
+
+    try:
+        return fsn2text(arg, strict=True)
+    except ValueError as e:
+        raise CommandError(e)
 
 
 registry = CommandRegistry()
@@ -107,18 +145,12 @@ def _pause(app):
 
 @registry.register("play")
 def _play(app):
-    player = app.player
-    if player.song:
-        player.paused = False
+    app.player.play()
 
 
 @registry.register("play-pause")
 def _play_pause(app):
-    player = app.player
-    if player.song is None:
-        player.reset()
-    else:
-        player.paused ^= True
+    app.player.playpause()
 
 
 @registry.register("stop")
@@ -155,32 +187,40 @@ def _volume(app, value):
     app.player.volume = min(1.0, max(0.0, volume))
 
 
-@registry.register("order", args=1)
-def _order(app, value):
-    order = app.window.order
+@registry.register("stop-after", args=1)
+def _stop_after(app, value):
+    po = app.player_options
+    if value == "0":
+        po.stop_after = False
+    elif value == "1":
+        po.stop_after = True
+    elif value == "t":
+        po.stop_after = not po.stop_after
+    else:
+        raise CommandError("Invalid value %r" % value)
 
-    if value in ["t", "toggle"]:
-        order.set_shuffle(not order.get_shuffle())
-        return
 
-    try:
-        order.set_active_by_name(value.lower())
-    except ValueError:
-        try:
-            order.set_active_by_index(int(value))
-        except (ValueError, IndexError):
-            pass
+@registry.register("shuffle", args=1)
+def _shuffle(app, value):
+    po = app.player_options
+    if value in ["0", "off"]:
+        po.shuffle = False
+    elif value in ["1", "on"]:
+        po.shuffle = True
+    elif value in ["t", "toggle"]:
+        po.shuffle = not po.shuffle
 
 
 @registry.register("repeat", args=1)
 def _repeat(app, value):
-    repeat = app.window.repeat
+    po = app.player_options
     if value in ["0", "off"]:
-        repeat.set_active(False)
+        po.repeat = False
     elif value in ["1", "on"]:
-        repeat.set_active(True)
+        print_d("Enabling repeat")
+        po.repeat = True
     elif value in ["t", "toggle"]:
-        repeat.set_active(not repeat.get_active())
+        po.repeat = not po.repeat
 
 
 @registry.register("seek", args=1)
@@ -202,11 +242,7 @@ def _seek(app, time):
 
 @registry.register("play-file", args=1)
 def _play_file(app, value):
-    filename = os.path.realpath(value)
-    song = app.library.add_filename(filename, add=False)
-    if song:
-        if app.player.go_to(song):
-            app.player.paused = False
+    app.window.open_file(value)
 
 
 @registry.register("toggle-window")
@@ -233,6 +269,8 @@ def _set_rating(app, value):
     if not song:
         return
 
+    value = arg2text(value)
+
     try:
         song["~#rating"] = max(0.0, min(1.0, float(value)))
     except (ValueError, TypeError):
@@ -243,52 +281,55 @@ def _set_rating(app, value):
 
 @registry.register("dump-browsers")
 def _dump_browsers(app):
-    f = StringIO()
-    for i, browser in enumerate(browsers.browsers):
-        if browser is not browsers.empty.EmptyBar:
-            f.write("%d. %s\n" % (i, browser.__name__))
-    return f.getvalue()
+    response = u""
+    for i, b in enumerate(browsers.browsers):
+        response += u"%d. %s\n" % (i, browsers.name(b))
+    return text2fsn(response)
 
 
 @registry.register("set-browser", args=1)
 def _set_browser(app, value):
-    Kind = browsers.get(value)
-    if Kind is not browsers.empty.EmptyBar:
-        app.window.select_browser(None, value, app.library, app.player)
-    else:
+    if not app.window.select_browser(value, app.library, app.player):
         raise CommandError("Unknown browser %r" % value)
 
 
 @registry.register("open-browser", args=1)
 def _open_browser(app, value):
-    Kind = browsers.get(value)
-    if Kind is not browsers.empty.EmptyBar:
-        LibraryBrowser.open(Kind, app.library, app.player)
-    else:
+    value = arg2text(value)
+
+    try:
+        Kind = browsers.get(value)
+    except ValueError:
         raise CommandError("Unknown browser %r" % value)
+    LibraryBrowser.open(Kind, app.library, app.player)
 
 
 @registry.register("random", args=1)
 def _random(app, tag):
+    tag = arg2text(tag)
     if app.browser.can_filter(tag):
         app.browser.filter_random(tag)
 
 
 @registry.register("filter", args=1)
 def _filter(app, value):
+    value = arg2text(value)
+
     try:
-        tag, values = value.split('=', 1)
-        values = [v.decode("utf-8", "replace") for v in values.split("\x00")]
+        tag, value = value.split('=', 1)
     except ValueError:
         raise CommandError("invalid argument")
-    if app.browser.can_filter(tag) and values:
-        app.browser.filter(tag, values)
+
+    if app.browser.can_filter(tag):
+        app.browser.filter(tag, [value])
 
 
 @registry.register("query", args=1)
 def _query(app, value):
+    value = arg2text(value)
+
     if app.browser.can_filter_text():
-        app.browser.filter_text(value.decode("utf-8", "replace"))
+        app.browser.filter_text(value)
 
 
 @registry.register("unfilter")
@@ -302,14 +343,16 @@ def _properties(app, value=None):
     player = app.player
     window = app.window
 
-    if value:
+    if value is not None:
+        value = arg2text(value)
         if value in library:
             songs = [library[value]]
         else:
             songs = library.query(value)
     else:
         songs = [player.song]
-    songs = filter(None, songs)
+
+    songs = listfilter(None, songs)
 
     if songs:
         window = SongProperties(library, songs, parent=window)
@@ -325,21 +368,22 @@ def _enqueue(app, value):
     elif os.path.isfile(value):
         songs = [library.add_filename(os.path.realpath(value))]
     else:
-        songs = library.query(value)
+        songs = library.query(arg2text(value))
     songs.sort()
     playlist.enqueue(songs)
 
 
 @registry.register("enqueue-files", args=1)
 def _enqueue_files(app, value):
-    """Enqueues comma-separated filenames or song names."""
+    """Enqueues comma-separated filenames or song names.
+    Commas in filenames should be backslash-escaped"""
 
     library = app.library
     window = app.window
     songs = []
-    for param in value.split(","):
+    for param in split_escape(value, ","):
         try:
-            song_path = URI(param).filename
+            song_path = uri2fsn(param)
         except ValueError:
             song_path = param
         if song_path in library:
@@ -358,7 +402,7 @@ def _unqueue(app, value):
     if value in library:
         songs = [library[value]]
     else:
-        songs = library.query(value)
+        songs = library.query(arg2text(value))
     playlist.unqueue(songs)
 
 
@@ -370,44 +414,38 @@ def _quit(app):
 @registry.register("status")
 def _status(app):
     player = app.player
-    window = app.window
-    f = StringIO()
 
     if player.paused:
         strings = ["paused"]
     else:
         strings = ["playing"]
     strings.append(type(app.browser).__name__)
+    po = app.player_options
     strings.append("%0.3f" % player.volume)
-    strings.append(window.order.get_active_name())
-    strings.append((window.repeat.get_active() and "on") or "off")
+    strings.append("shuffle" if po.shuffle else "inorder")
+    strings.append("on" if po.repeat else "off")
     progress = 0
     if player.info:
         length = player.info.get("~#length", 0)
         if length:
             progress = player.get_position() / (length * 1000.0)
     strings.append("%0.3f" % progress)
-    f.write(" ".join(strings) + "\n")
-    try:
-        f.write(app.browser.status + "\n")
-    except AttributeError:
-        pass
-    return f.getvalue()
+    status = u" ".join(strings) + u"\n"
+
+    return text2fsn(status)
 
 
 @registry.register("song-list", args=1)
 def _song_list(app, value):
-    window = app.window
-    if value.startswith("t"):
-        value = not window.song_scroller.get_property('visible')
-    else:
-        value = value not in ['0', 'off', 'false']
-    window.song_scroller.set_property('visible', value)
+    # deprecated
+    return
 
 
 @registry.register("queue", args=1)
 def _queue(app, value):
     window = app.window
+    value = arg2text(value)
+
     if value.startswith("t"):
         value = not window.qexpander.get_property('visible')
     else:
@@ -418,19 +456,19 @@ def _queue(app, value):
 @registry.register("dump-playlist")
 def _dump_playlist(app):
     window = app.window
-    f = StringIO()
+    uris = []
     for song in window.playlist.pl.get():
-        f.write(song("~uri") + "\n")
-    return f.getvalue()
+        uris.append(song("~uri"))
+    return text2fsn(u"\n".join(uris) + u"\n")
 
 
 @registry.register("dump-queue")
 def _dump_queue(app):
     window = app.window
-    f = StringIO()
+    uris = []
     for song in window.playlist.q.get():
-        f.write(song("~uri") + "\n")
-    return f.getvalue()
+        uris.append(song("~uri"))
+    return text2fsn(u"\n".join(uris) + u"\n")
 
 
 @registry.register("refresh")
@@ -444,18 +482,36 @@ def _print_query(app, query):
     See Issue 716
     """
 
+    query = arg2text(query)
     songs = app.library.query(query)
     return "\n".join([song("~filename") for song in songs]) + "\n"
 
 
+@registry.register("print-query-text")
+def _print_query_text(app):
+    if app.browser.can_filter_text():
+        return text2fsn(text_type(app.browser.get_filter_text()) + u"\n")
+
+
 @registry.register("print-playing", optional=1)
-def _print_playing(app, fstring="<artist~album~tracknumber~title>"):
-    from quodlibet.formats._audio import AudioFile
+def _print_playing(app, fstring=None):
+    from quodlibet.formats import AudioFile
     from quodlibet.pattern import Pattern
 
-    song = app.player.song
+    if fstring is None:
+        fstring = u"<artist~album~tracknumber~title>"
+    else:
+        fstring = arg2text(fstring)
+
+    song = app.player.info
     if song is None:
         song = AudioFile({"~filename": fsnative(u"/")})
         song.sanitize()
 
-    return Pattern(fstring).format(song) + "\n"
+    return text2fsn(Pattern(fstring).format(song) + u"\n")
+
+
+@registry.register("uri-received", args=1)
+def _uri_received(app, uri):
+    uri = arg2text(uri)
+    app.browser.emit("uri-received", uri)

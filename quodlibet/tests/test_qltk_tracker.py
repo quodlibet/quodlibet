@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
-import os
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-from tests import TestCase
+import os
+import shutil
+
+from tests import TestCase, mkdtemp
 
 from gi.repository import Gtk
 
 from quodlibet import config
-from quodlibet import const
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.tracker import SongTracker, FSInterface
 from quodlibet.library import SongLibrary
@@ -78,7 +83,13 @@ class TSongTracker(TestCase):
 class TFSInterface(TestCase):
     def setUp(self):
         self.p = NullPlayer()
-        self.fs = FSInterface(self.p)
+        self.dir = mkdtemp()
+        self.filename = os.path.join(self.dir, "foo")
+        self.fs = FSInterface(self.filename, self.p)
+
+    def tearDown(self):
+        self.p.destroy()
+        shutil.rmtree(self.dir)
 
     def do(self):
         while Gtk.events_pending():
@@ -86,23 +97,17 @@ class TFSInterface(TestCase):
 
     def test_init(self):
         self.do()
-        self.failIf(os.path.exists(const.CURRENT))
+        self.failIf(os.path.exists(self.filename))
 
     def test_start(self):
         self.p.emit('song_started', AudioFile({"woo": "bar", "~#length": 10}))
         self.do()
-        self.failUnless("woo=bar\n" in file(const.CURRENT).read())
+        with open(self.filename, "rb") as h:
+            self.failUnless(b"woo=bar\n" in h.read())
 
     def test_song_ended(self):
         self.p.emit('song-started', AudioFile({"woo": "bar", "~#length": 10}))
         self.do()
         self.p.emit('song-ended', {}, False)
         self.do()
-        self.failIf(os.path.exists(const.CURRENT))
-
-    def tearDown(self):
-        self.p.destroy()
-        try:
-            os.unlink(const.CURRENT)
-        except EnvironmentError:
-            pass
+        self.failIf(os.path.exists(self.filename))

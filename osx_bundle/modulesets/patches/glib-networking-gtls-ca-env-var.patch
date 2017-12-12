@@ -1,0 +1,16 @@
+diff --git a/tls/gnutls/gtlsbackend-gnutls.c b/tls/gnutls/gtlsbackend-gnutls.c
+index 332ca05..e5548a5 100644
+--- a/tls/gnutls/gtlsbackend-gnutls.c
++++ b/tls/gnutls/gtlsbackend-gnutls.c
+@@ -104,8 +104,10 @@ g_tls_backend_gnutls_real_create_database (GTlsBackendGnutls  *self,
+                                            GError            **error)
+ {
+   const gchar *anchor_file = NULL;
++  anchor_file = g_getenv ("GTLS_SYSTEM_CA_FILE");
+ #ifdef GTLS_SYSTEM_CA_FILE
+-  anchor_file = GTLS_SYSTEM_CA_FILE;
++  if (!anchor_file)
++    anchor_file = GTLS_SYSTEM_CA_FILE;
+ #endif
+   return g_tls_file_database_new (anchor_file, error);
+ }

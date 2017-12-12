@@ -2,10 +2,13 @@
 # Copyright 2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
+
+from quodlibet import _
 
 
 class GetPlayerDialog(Gtk.Dialog):
@@ -14,8 +17,8 @@ class GetPlayerDialog(Gtk.Dialog):
         super(GetPlayerDialog, self).__init__(title, parent)
         self.set_border_width(6)
         self.set_resizable(False)
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_OK, Gtk.ResponseType.OK)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_button(_("_OK"), Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
 

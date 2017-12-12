@@ -1,16 +1,31 @@
 # -*- coding: utf-8 -*-
-# Copyright 2007 Joe Wreschnig
+# Copyright 2007-2008 Joe Wreschnig
+#           2009,2012-2016 Christoph Reiter
 #
-# This software and accompanying documentation, if any, may be freely
-# used, distributed, and/or modified, in any form and for any purpose,
-# as long as this notice is preserved. There is no warranty, either
-# express or implied, for this software.
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os
-
 from distutils.dep_util import newer
-from distutils.util import change_root
-from distutils.core import Command
+
+from .util import Command
+from .gettextutil import intltool
 
 
 class build_shortcuts(Command):
@@ -22,10 +37,9 @@ class build_shortcuts(Command):
 
     description = "build .desktop files"
     user_options = []
-    build_base = None
 
     def initialize_options(self):
-        pass
+        self.build_base = None
 
     def finalize_options(self):
         self.shortcuts = self.distribution.shortcuts
@@ -45,9 +59,9 @@ class build_shortcuts(Command):
                 fullpath = os.path.join(basepath, os.path.basename(shortcut))
                 self.__check_po()
                 if newer(shortcut + ".in", fullpath):
-                    self.spawn(["intltool-merge",
-                                "-d", self.po_directory,
-                                shortcut + ".in", fullpath])
+                    self.spawn(
+                        intltool("merge", "-d", self.po_directory,
+                                 shortcut + ".in", fullpath))
             else:
                 self.copy_file(shortcut, os.path.join(basepath, shortcut))
 
@@ -62,21 +76,18 @@ class install_shortcuts(Command):
     description = "install .desktop files"
     user_options = []
 
-    prefix = None
-    skip_build = None
-    shortcuts = None
-    build_base = None
-    root = None
-
     def initialize_options(self):
+        self.install_dir = None
+        self.skip_build = None
+        self.shortcuts = None
+        self.build_base = None
         self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options('build', ('build_base', 'build_base'))
         self.set_undefined_options(
             'install',
-            ('root', 'root'),
-            ('install_base', 'prefix'),
+            ('install_data', 'install_dir'),
             ('skip_build', 'skip_build'))
 
         self.set_undefined_options(
@@ -88,9 +99,7 @@ class install_shortcuts(Command):
     def run(self):
         if not self.skip_build:
             self.run_command('build_shortcuts')
-        basepath = os.path.join(self.prefix, 'share', 'applications')
-        if self.root is not None:
-            basepath = change_root(self.root, basepath)
+        basepath = os.path.join(self.install_dir, 'share', 'applications')
         srcpath = os.path.join(self.build_base, 'share', 'applications')
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])

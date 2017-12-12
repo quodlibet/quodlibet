@@ -60,6 +60,21 @@ Examples:
   * ``<title>, by <albumartist|<albumartist>|<composer|<composer>|<artist>>>``:
     *Liebstraum no. 3, (by Franz Liszt)*
 
+
+Conditional Tags With Comparisons
+---------------------------------
+
+In addition to checking if a tag value is empty, the "if" expression can also
+contain a value comparison using the same syntax as the :ref:`search
+<Searching>`:
+
+    ``<sometag=test|the value was test|it was something different>``
+
+or more complex ones (note the needed escaping):
+
+    ``<artist=\|(Townshend, Who)|foo|bar>``
+
+
 Text Markup
 -----------
 

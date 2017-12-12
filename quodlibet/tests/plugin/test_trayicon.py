@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013 Nick Boultbee
+# Copyright 2013, 2016, 2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import sys
 
-from gi.repository import Gtk, Gdk, GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf
+
+from quodlibet import app
+
 from quodlibet import config
+from quodlibet.formats import AudioFile
+from quodlibet.qltk import Icons
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
-from tests import skipIf
+from tests import skipIf, TestCase
 
 
 @skipIf(sys.platform == "darwin", "segfaults..")
@@ -36,12 +42,14 @@ class TTrayIcon(PluginTestCase):
 
     def test_popup_menu(self):
         self.plugin.enabled()
-        self.plugin._popup_menu(self.plugin._icon, Gdk.BUTTON_SECONDARY,
-                                Gtk.get_current_event_time())
-        self.plugin.disabled()
+        try:
+            self.plugin._tray.popup_menu()
+        finally:
+            self.plugin.disabled()
 
     def test_get_paused_pixbuf(self):
-        get_paused_pixbuf = self.modules["Tray Icon"].get_paused_pixbuf
+        get_paused_pixbuf = \
+            self.modules["Tray Icon"].systemtray.get_paused_pixbuf
 
         self.assertTrue(get_paused_pixbuf((1, 1), 0))
         self.assertRaises(ValueError, get_paused_pixbuf, (0, 0), 0)
@@ -49,7 +57,7 @@ class TTrayIcon(PluginTestCase):
 
     def test_new_with_paused_emblem(self):
         new_with_paused_emblem = \
-            self.modules["Tray Icon"].new_with_paused_emblem
+            self.modules["Tray Icon"].systemtray.new_with_paused_emblem
 
         # too small source pixbuf
         for w, h in [(150, 1), (1, 150), (1, 1)]:
@@ -64,3 +72,37 @@ class TTrayIcon(PluginTestCase):
             success, new = new_with_paused_emblem(pb)
             self.assertTrue(success)
             self.assertTrue(new)
+
+
+@skipIf(sys.platform == "darwin", "segfaults..")
+class TIndicatorMenu(TestCase):
+    def setUp(self):
+        config.init()
+        init_fake_app()
+
+    def tearDown(self):
+        destroy_fake_app()
+        config.quit()
+
+    def test_icons(self):
+        from quodlibet.ext.events.trayicon.menu import IndicatorMenu
+        menu = IndicatorMenu(app)
+        # Slightly lame way to assert here,
+        # but it does the job and is not *too* brittle
+        icons = [item.get_image().get_icon_name()[0]
+                 for item in menu.get_children()
+                 if isinstance(item, Gtk.ImageMenuItem)]
+        self.failUnless(Icons.EDIT in icons)
+        self.failUnless(Icons.FOLDER_DRAG_ACCEPT in icons)
+        self.failUnless(Icons.MEDIA_PLAYBACK_START in icons)
+        self.failUnless(Icons.MEDIA_SKIP_FORWARD in icons)
+        self.failUnless(Icons.MEDIA_SKIP_BACKWARD in icons)
+        self.failUnless(Icons.APPLICATION_EXIT in icons)
+        self.failUnless(Icons.FAVORITE in icons)
+
+    def test_playlist_menu_populates(self):
+        from quodlibet.ext.events.trayicon.menu import IndicatorMenu
+        menu = IndicatorMenu(app)
+        song = AudioFile({'~filename': '/dev/null'})
+        menu._new_playlist_submenu_for(song)
+        self.failUnless(menu._playlists_item.get_submenu())

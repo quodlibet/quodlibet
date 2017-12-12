@@ -1,25 +1,28 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011, 2012, 2014 Nick Boultbee
+# Copyright 2011-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-from quodlibet import print_w, print_d, qltk
-from quodlibet.const import USERDIR
-from quodlibet.formats._audio import AudioFile
+import quodlibet
+from quodlibet import _
+from quodlibet import qltk
+from quodlibet.formats import AudioFile
 from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.cbes import StandaloneEditor
 from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.qltk import Icons
 from quodlibet.util import website
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
-from quodlibet.util import connect_obj
-from urllib import quote_plus
+from quodlibet.util import connect_obj, print_w, print_d
+from quodlibet.util.path import uri_is_valid
+from quodlibet.compat import quote_plus, text_type
 
 from gi.repository import Gtk
 import os
-from quodlibet.util.uri import URI
 
 
 class WebsiteSearch(SongsMenuPlugin):
@@ -28,31 +31,32 @@ class WebsiteSearch(SongsMenuPlugin):
     specific site look-up. The URLs are customisable using tag patterns.
     """
 
-    PLUGIN_ICON = Gtk.STOCK_OPEN
+    PLUGIN_ICON = Icons.APPLICATION_INTERNET
     PLUGIN_ID = "Website Search"
     PLUGIN_NAME = _("Website Search")
     PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
                     "Supports patterns e.g. %(pattern-example)s.") % {
                         "pattern-example":
-                            "http://google.com?q=<~artist~title>"}
+                            "https://google.com?q=&lt;~artist~title&gt;"}
 
     # Here are some starters...
-    # Sorry, PEP-8 : sometimes you're unrealistic
     DEFAULT_URL_PATS = [
         ("Google song search",
-            "http://google.com/search?q=<artist~title>"),
+            "https://google.com/search?q=<artist~title>"),
         ("Wikipedia (en) artist entry",
-            "http://wikipedia.org/wiki/<albumartist|<albumartist>|<artist>>"),
+            "https://wikipedia.org/wiki/<albumartist|<albumartist>|<artist>>"),
         ("Musicbrainz album listing",
-            "http://musicbrainz.org/<musicbrainz_albumid|release/"
+            "https://musicbrainz.org/<musicbrainz_albumid|release/"
             "<musicbrainz_albumid>|search?query=<album>&type=release>"),
         ("Discogs album search",
-            "http://www.discogs.com/search?type=release&artist="
+            "https://www.discogs.com/search?type=release&artist="
             "<albumartist|<albumartist>|<artist>>&title=<album>"),
         ("Youtube video search",
          "https://www.youtube.com/results?search_query=<artist~title>"),
+        ("Go to ~website", "<website>"),
     ]
-    PATTERNS_FILE = os.path.join(USERDIR, 'lists', 'searchsites')
+    PATTERNS_FILE = os.path.join(
+        quodlibet.get_user_dir(), 'lists', 'searchsites')
 
     def __set_site(self, name):
         self.chosen_site = name
@@ -67,9 +71,7 @@ class WebsiteSearch(SongsMenuPlugin):
             # TODO: some pattern validation too (that isn't slow)
             try:
                 p = Pattern(s)
-                u = URI(s)
-                return (p and u.netloc and
-                        u.scheme in ["http", "https", "ftp", "file"])
+                return (p and uri_is_valid(s))
             except ValueError:
                 return False
 
@@ -84,7 +86,7 @@ class WebsiteSearch(SongsMenuPlugin):
         hb = Gtk.HBox(spacing=3)
         hb.set_border_width(0)
 
-        button = qltk.Button(_("Edit search URLs"), Gtk.STOCK_EDIT)
+        button = qltk.Button(_("Edit search URLs"), Icons.EDIT)
         button.connect("clicked", cls.edit_patterns)
         hb.pack_start(button, True, True, 0)
         hb.show_all()
@@ -96,7 +98,7 @@ class WebsiteSearch(SongsMenuPlugin):
         # Failing all else...
         if not len(self._url_pats):
             print_d("No saved searches found in %s. Using defaults." %
-                    filename, context=self)
+                    filename)
             self._url_pats = self.DEFAULT_URL_PATS
 
     def __init__(self, *args, **kwargs):
@@ -110,7 +112,7 @@ class WebsiteSearch(SongsMenuPlugin):
             connect_obj(item, 'activate', self.__set_site, name)
             submenu.append(item)
         # Add link to editor
-        configure = Gtk.MenuItem(label=_(u"Configure searches…"))
+        configure = Gtk.MenuItem(label=_(u"Configure Searches…"))
         connect_obj(configure, 'activate', self.edit_patterns, configure)
         submenu.append(SeparatorMenuItem())
         submenu.append(configure)
@@ -132,7 +134,9 @@ class WebsiteSearch(SongsMenuPlugin):
                     vals = song.comma(k)
                     if vals:
                         try:
-                            subs[k] = quote_plus(unicode(vals).encode('utf-8'))
+                            encoded = text_type(vals).encode('utf-8')
+                            subs[k] = (encoded if k == 'website'
+                                       else quote_plus(encoded))
                         # Dodgy unicode problems
                         except KeyError:
                             print_d("Problem with %s tag values: %r"

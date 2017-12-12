@@ -1,0 +1,18 @@
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode6.4
+      language: generic
+    - os: osx
+      osx_image: xcode9.1
+      language: generic
+
+install:
+ - travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg
+ - hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg
+
+script:
+ - cd quodlibet
+ - ../_mount/QuodLibet.app/Contents/MacOS/run -R -bb -m coverage run --branch setup.py test
+ - ../_mount/QuodLibet.app/Contents/MacOS/run -R -bb -m coverage xml
+ - bash <(curl -s https://codecov.io/bash)

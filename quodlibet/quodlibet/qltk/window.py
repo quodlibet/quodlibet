@@ -1,20 +1,44 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012,2014 Christoph Reiter
-#                2014 Nick Boultbee
+#           2014,2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import sys
 import os
 
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, Gdk
 
 from quodlibet import config
-from quodlibet.qltk import get_top_parent, is_wayland
-from quodlibet.util import DeferredSignal
+from quodlibet.qltk import get_top_parent, is_wayland, gtk_version, is_accel
+from quodlibet.qltk.x import Button
+from quodlibet.util import DeferredSignal, print_d, print_w
 from quodlibet.util import connect_obj, connect_destroy
+
+
+def on_first_map(window, callback, *args, **kwargs):
+    """Calls callback when the passed Gtk.Window is first visible
+    on screen or it already is.
+    """
+
+    assert isinstance(window, Gtk.Window)
+
+    if window.get_mapped():
+        callback(*args, **kwargs)
+        return False
+
+    id_ = [0]
+
+    def on_map(*otherargs):
+        window.disconnect(id_[0])
+        callback(*args, **kwargs)
+
+    id_[0] = window.connect("map", on_map)
+
+    return False
 
 
 def should_use_header_bar():
@@ -24,6 +48,18 @@ def should_use_header_bar():
     if not hasattr(settings.props, "gtk_dialogs_use_header"):
         return False
     return settings.get_property("gtk-dialogs-use-header")
+
+
+def fix_default_size(width, height):
+    # https://bugzilla.gnome.org/show_bug.cgi?id=740922
+    if gtk_version < (3, 19):
+        # fixed with 3.20:
+        #   https://bugzilla.gnome.org/show_bug.cgi?id=756618
+        if width != -1:
+            width += min((width - 174), 56)
+        if height != -1:
+            height += 84
+    return (width, height)
 
 
 class Dialog(Gtk.Dialog):
@@ -37,6 +73,34 @@ class Dialog(Gtk.Dialog):
             kwargs.pop("use_header_bar", None)
         super(Dialog, self).__init__(*args, **kwargs)
 
+    def get_titlebar(self):
+        try:
+            # gtk+ >=3.16
+            return super(Dialog, self).get_titlebar()
+        except AttributeError:
+            return None
+
+    def set_default_size(self, width, height):
+        if self.get_titlebar():
+            width, height = fix_default_size(width, height)
+        else:
+            # In case we don't use a headerbar we have to add an additional
+            # row of buttons in the content box. To get roughly the same
+            # content height make the window a bit taller.
+            if height != -1:
+                height += 20
+        super(Dialog, self).set_default_size(width, height)
+
+    def add_icon_button(self, label, icon_name, response_id):
+        """Like add_button() but allows to pass an icon name"""
+
+        button = Button(label, icon_name)
+        # file chooser uses grab_default() on this
+        button.set_can_default(True)
+        button.show()
+        self.add_action_widget(button, response_id)
+        return button
+
 
 class Window(Gtk.Window):
     """Base window class the keeps track of all window instances.
@@ -49,38 +113,58 @@ class Window(Gtk.Window):
     windows = []
     _preven_inital_show = False
 
-    __gsignals__ = {
-        "close-accel": (GObject.SignalFlags.RUN_LAST |
-                            GObject.SignalFlags.ACTION,
-                        GObject.TYPE_NONE, ())
-    }
-
     def __init__(self, *args, **kwargs):
         self._header_bar = None
         dialog = kwargs.pop("dialog", True)
         super(Window, self).__init__(*args, **kwargs)
         type(self).windows.append(self)
-        self.__accels = Gtk.AccelGroup()
         if dialog:
             self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_destroy_with_parent(True)
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.add_accel_group(self.__accels)
-        if not dialog:
-            self.add_accelerator('close-accel', self.__accels,
-                                 ord('w'), Gdk.ModifierType.CONTROL_MASK, 0)
-        else:
-            esc, mod = Gtk.accelerator_parse("Escape")
-            self.add_accelerator('close-accel', self.__accels, esc, mod, 0)
         connect_obj(self, 'destroy', type(self).windows.remove, self)
+        self.connect('key-press-event', self._on_key_press)
+
+    def _on_key_press(self, widget, event):
+        is_dialog = (self.get_type_hint() == Gdk.WindowTypeHint.DIALOG)
+
+        if (is_dialog and is_accel(event, "Escape")) or (
+                not is_dialog and is_accel(event, "<Primary>w")):
+            # Do not close the window if we edit a Gtk.CellRendererText.
+            # Focus the treeview instead.
+            if isinstance(self.get_focus(), Gtk.Entry) and \
+                isinstance(self.get_focus().get_parent(), Gtk.TreeView):
+                self.get_focus().get_parent().grab_focus()
+                return Gdk.EVENT_PROPAGATE
+            self.close()
+            return Gdk.EVENT_STOP
+
+        if not is_dialog and is_accel(event, "F11"):
+            self.toggle_fullscreen()
+            return Gdk.EVENT_STOP
+
+        return Gdk.EVENT_PROPAGATE
+
+    def toggle_fullscreen(self):
+        """Toggle the fullscreen mode of the window depending on its current
+        state. If the windows isn't realized it will switch to fullscreen
+        when it does.
+        """
+
+        window = self.get_window()
+        if not window:
+            is_fullscreen = False
+        else:
+            is_fullscreen = window.get_state() & Gdk.WindowState.FULLSCREEN
+
+        if is_fullscreen:
+            self.unfullscreen()
+        else:
+            self.fullscreen()
 
     def set_default_size(self, width, height):
-        # https://bugzilla.gnome.org/show_bug.cgi?id=740922
         if self._header_bar:
-            if width != -1:
-                width += min((width - 174), 56)
-            if height != -1:
-                height += 84
+            width, height = fix_default_size(width, height)
         super(Window, self).set_default_size(width, height)
 
     def use_header_bar(self):
@@ -121,7 +205,17 @@ class Window(Gtk.Window):
         if self._header_bar is not None:
             return self._header_bar.get_show_close_button()
 
-        return False
+        screen = Gdk.Screen.get_default()
+        if hasattr(screen, "get_window_manager_name"):
+            # X11 only
+            wm_name = screen.get_window_manager_name()
+            # Older Gnome Shell didn't show close buttons.
+            # We can't get the version but the GTK+ version is a good guess,
+            # I guess..
+            if wm_name == "GNOME Shell" and gtk_version < (3, 18):
+                return False
+
+        return True
 
     def present(self):
         """A version of present that also works if not called from an event
@@ -156,16 +250,6 @@ class Window(Gtk.Window):
             from quodlibet import app
             parent = app.window
         super(Window, self).set_transient_for(parent)
-
-    def do_close_accel(self):
-        #Do not close the window if we edit a Gtk.CellRendererText.
-        #Focus the treeview instead.
-        if isinstance(self.get_focus(), Gtk.Entry) and \
-            isinstance(self.get_focus().get_parent(), Gtk.TreeView):
-            self.get_focus().get_parent().grab_focus()
-            return
-        if not self.emit('delete-event', Gdk.Event.new(Gdk.EventType.DELETE)):
-            self.destroy()
 
     @classmethod
     def prevent_inital_show(cls, value):
@@ -286,26 +370,31 @@ class PersistentWindowMixin(object):
         # to QL remembering the wrong size. Work around that by waiting
         # until configure-event settles down, at which point the maximized
         # state should be set
-        # WARNING: we can't keep the event, because PyGObject doesn't
-        # keep it alive; so extract width/height before returning here.
 
-        self.__save_size_pos_deferred(event.width, event.height)
+        self.__save_size_pos_deferred()
         return False
 
-    def __do_save_size_pos(self, width, height):
+    def _should_ignore_state(self):
         if self.__state & Gdk.WindowState.MAXIMIZED:
+            return True
+        elif self.__state & Gdk.WindowState.FULLSCREEN:
+            return True
+        elif not self.get_visible():
+            return True
+        return False
+
+    def __do_save_size_pos(self):
+        if self._should_ignore_state():
             return
 
+        width, height = self.get_size()
         value = "%d %d" % (width, height)
         config.set("memory", self.__conf("size"), value)
 
         self.__do_save_pos()
 
     def __do_save_pos(self):
-        if self.__state & Gdk.WindowState.MAXIMIZED:
-            return
-
-        if not self.get_property("visible"):
+        if self._should_ignore_state():
             return
 
         x, y = self.get_position()
@@ -327,10 +416,7 @@ class PersistentWindowMixin(object):
 
 
 class _Unique(object):
-    """A mixin for the window class to get a one instance per class window.
-    The is_not_unique method will return True if the window
-    is already there.
-    """
+    """A mixin for window-like classes to ensure one instance per class. """
 
     __window = None
 
@@ -338,9 +424,9 @@ class _Unique(object):
         window = klass.__window
         if window is None:
             return super(_Unique, klass).__new__(klass, *args, **kwargs)
-        #Look for widgets in the args, if there is one and it has
-        #a new top level window, reparent and reposition the window.
-        widgets = filter(lambda x: isinstance(x, Gtk.Widget), args)
+        # Look for widgets in the args, if there is one and it has
+        # a new top level window, re-parent and reposition the window.
+        widgets = [w for w in args if isinstance(w, Gtk.Widget)]
         if widgets:
             parent = window.get_transient_for()
             new_parent = get_top_parent(widgets[0])
@@ -353,6 +439,7 @@ class _Unique(object):
 
     @classmethod
     def is_not_unique(klass):
+        """Returns True if a window instance already exists."""
         return bool(klass.__window)
 
     def __init__(self, *args, **kwargs):

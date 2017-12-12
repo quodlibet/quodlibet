@@ -1,12 +1,32 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from tests import TestCase
 
 from quodlibet.library import SongLibrary
-from quodlibet.formats._audio import AudioFile
-from quodlibet.browsers.iradio import InternetRadio, IRFile, QuestionBar
+from quodlibet.formats import AudioFile
+from quodlibet.browsers.iradio import InternetRadio, IRFile, QuestionBar, \
+    parse_taglist
 import quodlibet.config
 
 quodlibet.config.RATINGS = quodlibet.config.HardCodedRatingsPrefs()
+
+
+def test_parse_taglist():
+    parse_taglist(b"")
+    stations = parse_taglist(b"""\
+uri=http://foo.bar
+artist=foo
+artist=bar
+~listenerpeak=42
+""")
+
+    assert len(stations) == 1
+    assert stations[0]["~#listenerpeak"] == 42
+    assert stations[0].list("artist") == ["foo", "bar"]
 
 
 class TQuestionBar(TestCase):
@@ -24,6 +44,10 @@ class TInternetRadio(TestCase):
     def test_can_filter(self):
         self.assertTrue(self.bar.can_filter("foo"))
         self.assertTrue(self.bar.can_filter_text())
+
+    def test_status_bar_text(self):
+        self.assertEqual(self.bar.status_text(1), "1 station")
+        self.assertEqual(self.bar.status_text(101, 123), "101 stations")
 
     def tearDown(self):
         self.bar.destroy()

@@ -3,22 +3,25 @@
 # Copyright 2014 Eric Le Lay elelay.fr:dev
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-#
-# osxmmkey - Mac OS X Media Keys support
-# --------------------------------------
-#
-# Requires the PyObjC, with the Cocoa and Quartz bindings to be installed.
-# Under macports, that's the `py27-pyobjc`, `py27-pyobjc-cocoa`
-# and`py27-pyobjc-quartz` ports, or equivalents for the python version used by
-# quodlibet.
-#
-# This plugin also requires that 'access for assistive devices' is enabled, see
-# the Universal Access preference pane in the OS X System Prefences.
-#
-# We register a Quartz event tap to listen for the multimedia keys and
-# intercept them to control QL and prevent iTunes to get them.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+"""
+osxmmkey - Mac OS X Media Keys support
+--------------------------------------
+
+Requires the PyObjC, with the Cocoa and Quartz bindings to be installed.
+Under macports, that's the `py27-pyobjc`, `py27-pyobjc-cocoa`
+and`py27-pyobjc-quartz` ports, or equivalents for the python version used by
+quodlibet.
+
+This plugin also requires that 'access for assistive devices' is enabled, see
+the Universal Access preference pane in the OS X System Prefences.
+
+We register a Quartz event tap to listen for the multimedia keys and
+intercept them to control QL and prevent iTunes to get them.
+"""
 
 import threading
 
@@ -75,6 +78,7 @@ class MacKeyEventsTap(threading.Thread):
         # evenTrap disabled by timeout or user input, reenable
         if type_ == Quartz.kCGEventTapDisabledByUserInput or \
                 type_ == Quartz.kCGEventTapDisabledByTimeout:
+            assert self._tap is not None
             Quartz.CGEventTapEnable(self._tap, True)
             return event
 
@@ -147,10 +151,6 @@ class MacKeyEventsTap(threading.Thread):
         if self._tap is None:
             return
 
-        # Disable the tap
-        Quartz.CGEventTapEnable(self._tap, False)
-        self._tap = None
-
         # remove the runloop source
         Quartz.CFRunLoopRemoveSource(
             self._loop,
@@ -167,3 +167,7 @@ class MacKeyEventsTap(threading.Thread):
         # stop the loop
         Quartz.CFRunLoopStop(self._loop)
         self._loop = None
+
+        # Disable the tap
+        Quartz.CGEventTapEnable(self._tap, False)
+        self._tap = None

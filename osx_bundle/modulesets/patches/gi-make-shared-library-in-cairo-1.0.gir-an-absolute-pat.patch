@@ -1,0 +1,26 @@
+From b828eaad6af03b91fe3437cfe90d86ccbca77b4f Mon Sep 17 00:00:00 2001
+From: Christoph Reiter <creiter@src.gnome.org>
+Date: Wed, 20 Apr 2016 22:41:20 +0200
+Subject: [PATCH] make shared-library in cairo-1.0.gir an absolute path like
+ for all others
+
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 41d3287..8718cca 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -150,7 +150,7 @@ AM_CONDITIONAL(HAVE_CAIRO, test x$have_cairo = xyes)
+ 
+ case "$host" in
+   *-*-darwin*)
+-    CAIRO_SHARED_LIBRARY="libcairo-gobject.2.dylib"
++    CAIRO_SHARED_LIBRARY="$libdir/libcairo-gobject.2.dylib"
+     ;;
+   *-*-mingw*)
+     CAIRO_SHARED_LIBRARY="libcairo-gobject-2.dll"
+-- 
+2.8.1
+

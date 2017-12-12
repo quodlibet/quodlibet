@@ -2,19 +2,27 @@
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+from quodlibet import config
+from quodlibet.util import print_d
 
 from ._base import MMKeysAction, MMKeysImportError
 
 
 def iter_backends():
+    if config.getboolean("settings", "disable_mmkeys"):
+        return
+
     try:
-        from .gnome import GnomeBackend, MateBackend
+        from .gnome import GnomeBackend, GnomeBackendOldName, MateBackend
     except MMKeysImportError:
         pass
     else:
         yield GnomeBackend
+        yield GnomeBackendOldName
         yield MateBackend
 
     try:
@@ -25,11 +33,11 @@ def iter_backends():
         yield KeybinderBackend
 
     try:
-        from .pyhook import PyHookBackend
+        from .winhook import WinHookBackend
     except MMKeysImportError:
         pass
     else:
-        yield PyHookBackend
+        yield WinHookBackend
 
     try:
         from .osx import OSXBackend
@@ -52,11 +60,11 @@ class MMKeysHandler(object):
     events to actions on the player backend.
     """
 
-    def __init__(self, app_name, window, player):
+    def __init__(self, app):
         self._backend = None
-        self._window = window
-        self._player = player
-        self._app_name = app_name
+        self._window = app.window
+        self._player = app.player
+        self._app_name = app.name
 
     def start(self):
         kind = find_active_backend()
@@ -84,21 +92,15 @@ class MMKeysHandler(object):
 
         player = self._player
         if action == MMKeysAction.PREV:
-            player.previous()
+            player.previous(force=True)
         elif action == MMKeysAction.NEXT:
             player.next()
         elif action == MMKeysAction.STOP:
             player.stop()
         elif action == MMKeysAction.PLAY:
-            if player.song is None:
-                player.reset()
-            else:
-                player.paused = False
+            player.play()
         elif action == MMKeysAction.PLAYPAUSE:
-            if player.song is None:
-                player.reset()
-            else:
-                player.paused ^= True
+            player.playpause()
         elif action == MMKeysAction.PAUSE:
             player.paused = True
         else:

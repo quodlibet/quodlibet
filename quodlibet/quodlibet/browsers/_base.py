@@ -1,19 +1,27 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import random
 
-from gi.repository import GObject
+from gi.repository import Gtk, GObject, GLib, Pango
 
-from quodlibet import app
+from quodlibet import app, qltk
 from quodlibet import util
+from quodlibet import _
+from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.textedit import PatternEditBox
+from quodlibet.util import connect_obj, print_d
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.library import background_filter
+from quodlibet.compat import itervalues
 
 
 class Filter(object):
@@ -31,11 +39,16 @@ class Filter(object):
         return False
 
     def can_filter_text(self):
-        """If filter_text() can be used"""
+        """If filter_text() and get_filter_text() can be used"""
         return False
 
     def filter_text(self, text):
         """Set a text query"""
+        raise NotImplementedError
+
+    def get_filter_text(self):
+        """Get the active text query"""
+
         raise NotImplementedError
 
     def can_filter_albums(self):
@@ -65,12 +78,11 @@ class Filter(object):
         library = app.library
         bg = background_filter()
         if bg:
-            songs = filter(bg, library.itervalues())
-            tags = set()
-            for song in songs:
-                tags.update(song.list(tag))
-            return list(tags)
-        return library.tag_values(tag)
+            songs = filter(bg, itervalues(library))
+            return list({value
+                         for song in songs
+                         for value in song.list(tag)})
+        return list(library.tag_values(tag))
 
     def unfilter(self):
         """Reset all filters and display the whole library."""
@@ -85,8 +97,7 @@ class Filter(object):
     def filter_on(self, songs, key):
         """Do filtering in the best way the browser can handle"""
         if key == "album" and self.can_filter_albums():
-            values = set()
-            values.update([s.album_key for s in songs])
+            values = {s.album_key for s in songs}
             self.filter_albums(values)
         elif self.can_filter_tag(key) or self.can_filter_text():
             values = set()
@@ -121,8 +132,8 @@ class Filter(object):
                 self.filter_text(query)
 
 
-class Browser(Filter):
-    """Browers are how the audio library is presented to the user; they
+class Browser(Gtk.Box, Filter):
+    """Browsers are how the audio library is presented to the user; they
     create the list of songs that MainSongList is filled with, and pass
     them back via a callback function.
     """
@@ -131,6 +142,7 @@ class Browser(Filter):
         'songs-selected':
         (GObject.SignalFlags.RUN_LAST, None, (object, object)),
         'songs-activated': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'uri-received': (GObject.SignalFlags.RUN_LAST, None, (str,))
     }
 
     name = _("Library Browser")
@@ -139,11 +151,13 @@ class Browser(Filter):
     accelerated_name = _("Library Browser")
     """The name, with an accelerator."""
 
+    keys = ["Unknown"]
+    """Keys which are used to reference the browser from the command line.
+    The first is the primary one.
+    """
+
     priority = 100
     """Priority in the menu list (0 is first, higher numbers come later)"""
-
-    in_menu = True
-    """Whether the browser should appear in the Music->Browse menu."""
 
     uses_main_library = True
     """Whether the browser has the main library as source"""
@@ -220,12 +234,12 @@ class Browser(Filter):
 
     can_reorder = False
     """If the song list should be reorderable. In case this is True
-    every time the song list gets reorderd the whole list of songs is
+    every time the song list gets reordered the whole list of songs is
     passed to reordered().
     """
 
     def reordered(self, songs):
-        """In case can_reorder is True and the song list gets reorderd
+        """In case can_reorder is True and the song list gets reordered
         this gets called with the whole list of songs.
         """
 
@@ -257,9 +271,142 @@ class Browser(Filter):
 
         return SongsMenu(library, songs, delete=True, items=items)
 
-    def statusbar(self, i):
-        return ngettext(
-            "%(count)d song (%(time)s)", "%(count)d songs (%(time)s)", i)
+    def status_text(self, count, time=None):
+        tmpl = numeric_phrase("%d song", "%d songs", count)
+        return tmpl + " (%s)" % time
 
     replaygain_profiles = None
     """Replay Gain profiles for this browser."""
+
+
+class DisplayPatternMixin(object):
+    """Allows Browsers customisable item (e.g. album) display patterns"""
+
+    _DEFAULT_PATTERN_TEXT = ""
+    """The default pattern to display"""
+
+    _PATTERN_FN = None
+    """The filename to save the display pattern under"""
+
+    __pattern = None
+    __pattern_text = None
+
+    @classmethod
+    def load_pattern(cls):
+        """Load the pattern as defined in `_PATTERN_FN`"""
+        print_d("Loading pattern from %s" % cls._PATTERN_FN)
+        try:
+            with open(cls._PATTERN_FN, "r") as f:
+                cls.__pattern_text = f.read().rstrip()
+        except EnvironmentError as e:
+            print_d("Couldn't load pattern for %s (%s), using default." %
+                    (cls.__name__, e))
+            cls.__pattern_text = cls._DEFAULT_PATTERN_TEXT
+        cls.__refresh_pattern()
+
+    @classmethod
+    def update_pattern(cls, pattern_text):
+        """Saves `pattern_text` to disk (and caches)"""
+        if pattern_text == cls.__pattern_text:
+            return
+        cls.__pattern_text = pattern_text
+        cls.__refresh_pattern()
+        cls.refresh_all()
+        print_d("Saving pattern for %s to %s" %
+                (cls.__name__, cls._PATTERN_FN))
+        with open(cls._PATTERN_FN, "w") as f:
+            f.write(pattern_text + "\n")
+
+    @classmethod
+    def __refresh_pattern(cls):
+        cls.__pattern = XMLFromMarkupPattern(cls.__pattern_text)
+
+    @property
+    def display_pattern(self):
+        """The `Pattern` used for formatting entries in this browser"""
+        return self.__pattern
+
+    @property
+    def display_pattern_text(self):
+        """The text of the display pattern
+        used for formatting entries in this browser"""
+        return self.__pattern_text or self._DEFAULT_PATTERN_TEXT
+
+    @classmethod
+    def refresh_all(cls):
+        """Refresh the browser's items"""
+        pass
+
+
+class FakeDisplayItem(dict):
+    """Like an `AudioFile`, but if the values aren't present in the underlying
+    dictionary, it uses the translated tag names as values.
+    See also `util.pattern`"""
+
+    def get(self, key, default="", connector=" - "):
+        if key[:1] == "~" and '~' in key[1:]:
+            return connector.join(map(self.get, util.tagsplit(key)))
+        elif key[:1] == "~" and key[-4:-3] == ":":
+            func = key[-3:]
+            key = key[:-4]
+            return "%s<%s>" % (util.tag(key), func)
+        elif key in self:
+            return self[key]
+        return util.tag(key)
+
+    __call__ = get
+
+    def comma(self, key):
+        value = self.get(key)
+        if isinstance(value, (int, float)):
+            return value
+        return value.replace("\n", ", ")
+
+
+class EditDisplayPatternMixin(object):
+    """Provides a display Pattern in an editable frame"""
+
+    _PREVIEW_ITEM = None
+    """The `FakeItem` (or similar) to use to interpolate into the pattern"""
+
+    _DEFAULT_PATTERN = None
+    """The display pattern to use when none is saved"""
+
+    def edit_display_pane(self, browser, frame_title=None):
+        """Returns a Pattern edit widget, with preview,
+         optionally wrapped in a named Frame"""
+
+        vbox = Gtk.VBox(spacing=6)
+        label = Gtk.Label()
+        label.set_alignment(0.0, 0.5)
+        label.set_padding(6, 6)
+        eb = Gtk.EventBox()
+        eb.get_style_context().add_class("entry")
+        eb.add(label)
+        edit = PatternEditBox(self._DEFAULT_PATTERN)
+        edit.text = browser.display_pattern_text
+        edit.apply.connect('clicked', self._set_pattern, edit, browser)
+        connect_obj(
+                edit.buffer, 'changed', self._preview_pattern, edit, label)
+        vbox.pack_start(eb, False, True, 3)
+        vbox.pack_start(edit, True, True, 0)
+        self._preview_pattern(edit, label)
+        return qltk.Frame(frame_title, child=vbox) if frame_title else vbox
+
+    def _set_pattern(self, button, edit, browser):
+        browser.update_pattern(edit.text)
+
+    def _preview_pattern(self, edit, label):
+        try:
+            text = XMLFromMarkupPattern(edit.text) % self._PREVIEW_ITEM
+        except:
+            text = _("Invalid pattern")
+            edit.apply.set_sensitive(False)
+        try:
+            Pango.parse_markup(text, -1, u"\u0000")
+        except GLib.GError:
+            text = _("Invalid pattern")
+            edit.apply.set_sensitive(False)
+        else:
+            edit.apply.set_sensitive(True)
+        label.set_markup(text)

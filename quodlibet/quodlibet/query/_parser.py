@@ -1,288 +1,306 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
+#           2016 Ryan Dellenbaugh
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-# A simple top-down parser for the query grammar. It's basically textbook,
-# but it could use some cleaning up. It builds the requisite match.*
-# objects as it goes, which is where the interesting stuff will happen.
-
+import codecs
 import re
-from re import Scanner
 
 from . import _match as match
-from ._match import error, ParseError
-from ._diacritic import re_add_diacritic_variants
+from ._match import ParseError
 from quodlibet.util import re_escape
-
-# Token types.
-(NEGATION, INTERSECT, UNION, OPENP, CLOSEP, EQUALS, OPENRE,
- CLOSERE, REMODS, COMMA, TAG, RE, RELOP, NUMCMP, EOF) = range(15)
+from quodlibet.compat import text_type, PY3
 
 
-class LexerError(error):
-    pass
-
-
-class QueryLexer(Scanner):
-    def __init__(self, s):
-        self.string = s.strip()
-        Scanner.__init__(self,
-                         [(r"/([^/\\]|\\.)*/", self.regexp),
-                          (r'"([^"\\]|\\.)*"', self.str_to_re),
-                          (r"'([^'\\]|\\.)*'", self.str_to_re),
-                          (r"([<>]=?)|(!=)", self.relop),
-                          (r"[=|()&!,#]", self.table),
-                          (r"\s+", None),
-                          (r"[^=)|&#/<>!,]+", self.tag)
-                          ])
-
-    def regexp(self, scanner, string):
-        return QueryLexeme(RE, string[1:-1])
-
-    def str_to_re(self, scanner, string):
-        if isinstance(string, unicode):
-            string = string.encode('utf-8')
-        string = string[1:-1].decode('string_escape')
-        string = string.decode('utf-8')
-        return QueryLexeme(RE, "^%s$" % re_escape(string))
-
-    def tag(self, scanner, string):
-        return QueryLexeme(TAG, string.strip())
-
-    def relop(self, scanner, string):
-        return QueryLexeme(RELOP, string)
-
-    def table(self, scanner, string):
-        return QueryLexeme({'!': NEGATION, '&': INTERSECT, '|': UNION,
-                            '(': OPENP, ')': CLOSEP, '=': EQUALS,
-                            ',': COMMA, '#': NUMCMP}[string], string)
-
-    def __iter__(self):
-        s = self.scan(self.string)
-        if s[1] != "":
-            raise LexerError("characters left over in string")
-        else:
-            return iter(s[0] + [QueryLexeme(EOF, "")])
-
-
-class QueryLexeme(object):
-    _reverse = {NEGATION: "NEGATION", INTERSECT: "INTERSECT",
-                OPENRE: "OPENRE", CLOSERE: "CLOSERE", REMODS: "REMODS",
-                OPENP: "OPENP", CLOSEP: "CLOSEP", UNION: "UNION",
-                EQUALS: "EQUALS", COMMA: "COMMA", TAG: "TAG", RE: "RE",
-                RELOP: "RELOP", NUMCMP: "NUMCP", EOF: "EOF",
-                }
-
-    def __init__(self, typ, lexeme):
-        self.type = typ
-        self.lexeme = lexeme
-
-    def __repr__(self):
-        return (super(QueryLexeme, self).__repr__().split()[0] +
-                " type=" + repr(self.type) + " (" +
-                str(self._reverse[self.type]) +
-                "), lexeme=" + repr(self.lexeme) + ">")
+# Precompiled regexes
+TAG = re.compile(r'[~\w\s:]+')
+UNARY_OPERATOR = re.compile(r'-')
+BINARY_OPERATOR = re.compile(r'[+\-\*/]')
+RELATIONAL_OPERATOR = re.compile(r'>=|<=|==|!=|>|<|=')
+DIGITS = re.compile(r'\d+(\.\d+)?')
+WORD = re.compile(r'[ \w]+')
+REGEXP = re.compile(r'([^/\\]|\\.)*')
+SINGLE_STRING = re.compile(r"([^'\\]|\\.)*")
+DOUBLE_STRING = re.compile(r'([^"\\]|\\.)*')
+MODIFIERS = re.compile(r'[cisld]*')
+TEXT = re.compile(r'[^,)]+')
+DATE = re.compile(r'\d{4}(-\d{1,2}(-\d{1,2})?)?')
 
 
 class QueryParser(object):
     """Parse the input. One lookahead token, start symbol is Query."""
 
-    def __init__(self, tokens):
-        self.tokens = iter(tokens)
-        self.lookahead = self.tokens.next()
+    def __init__(self, tokens, star=[]):
+        self.tokens = tokens
+        self.index = 0
+        self.last_match = None
+        self.star = star
 
-    def _match_parened(self, expect, ReturnType, InternalType):
-        self.match(expect)
-        self.match(OPENP)
-        m = InternalType()
-        if len(m) > 1:
-            m = ReturnType(m)
+    def space(self):
+        """Advance to the first non-space token"""
+        while not self.eof() and self.tokens[self.index] == ' ':
+            self.index += 1
+
+    def accept(self, token):
+        """Return whether the next token is the same as the provided token,
+        and if so advance past it."""
+        self.space()
+        if self.eof():
+            return False
+        if self.tokens[self.index] == token:
+            self.index += 1
+            return True
         else:
-            m = m[0]
-        self.match(CLOSEP)
+            return False
+
+    def accept_re(self, regexp):
+        """Same as accept, but with a regexp instead of a single token.
+        Sets self.last_match to the match text upon success"""
+        self.space()
+        re_match = regexp.match(self.tokens, self.index)
+        if re_match:
+            self.index = re_match.end()
+            re_match = re_match.group()
+        self.last_match = re_match
+        return re_match
+
+    def expect(self, token):
+        """Raise an error if the next token doesn't match the provided token"""
+        if not self.accept(token):
+            raise ParseError("'{0}' expected at index {1}, but not found"
+                             .format(token, self.index))
+
+    def expect_re(self, regexp):
+        """Same as expect, but with a regexp instead of a single token"""
+        if self.accept_re(regexp) is None:
+            raise ParseError("RE match expected at index {0}, but not found"
+                             .format(self.index))
+        return self.last_match
+
+    def eof(self):
+        """Return whether last token has been consumed"""
+        return self.index >= len(self.tokens)
+
+    def match_list(self, rule):
+        """Match a comma-separated list of rules"""
+        m = [rule()]
+        while self.accept(','):
+            m.append(rule())
         return m
 
-    def _match_list(self, InternalType):
-        l = [InternalType()]
-        while self.lookahead.type == COMMA:
-            self.match(COMMA)
-            l.append(InternalType())
-        return l
-
-    def Query(self):
-        if self.lookahead.type == UNION:
-            return self.QueryUnion()
-        elif self.lookahead.type == INTERSECT:
-            return self.QueryInter()
-        elif self.lookahead.type == NEGATION:
-            return self.QueryNeg()
-        elif self.lookahead.type == NUMCMP:
-            return self.QueryNumcmp()
-        elif self.lookahead.type == TAG:
-            return self.QueryPart()
-        elif self.lookahead.type == EOF:
-            return match.True_()
-        else:
-            raise ParseError("The expected symbol should be |, &, !, #, or "
-                             "a tag name, but was %s" % self.lookahead.lexeme)
-
     def StartQuery(self):
-        s = self.Query()
-        self.match(EOF)
+        """Match a query that extends until the end of the input"""
+        s = self.Query(outer=True)
+        if not self.eof():
+            raise ParseError('Query ended before end of input')
         return s
 
-    def StartStarQuery(self, star):
-        if self.lookahead.type == EOF:
-            s = match.True_()
-            self.match(EOF)
-            return s
+    def Query(self, outer=False):
+        """Rule for a query or subquery. Determines type of query based on
+        first token"""
+        self.space()
+        if self.eof():
+            return match.True_()
+        elif self.accept('!'):
+            return self.Negation(self.Query)
+        elif self.accept('&'):
+            return self.Intersection(self.Query)
+        elif self.accept('|'):
+            return self.Union(self.Query)
+        elif self.accept('#'):
+            return self.Intersection(self.Numcmp)
+        elif self.accept('@'):
+            return self.Extension()
+        try:
+            # Equals, NotEquals and Star can begin the same,
+            # so try in order, backtracking on failure (with Star last)
+            index = self.index
+            return self.Equals()
+        except ParseError:
+            self.index = index
+            try:
+                return self.NotEquals()
+            except ParseError:
+                self.index = index
+            return self.Star(outer=outer)
 
-        s = self.RegexpSet(no_tag=True)
-        self.match(EOF)
+    def Negation(self, rule):
+        """Rule for '!query'. '!' token is consumed in Query"""
+        return match.Neg(rule())
 
-        def insert_tags(p):
-            # traverse and fill in tags where needed
-            if isinstance(p, match.Inter):
-                return match.Inter([insert_tags(v) for v in p.res])
-            elif isinstance(p, match.Union):
-                return match.Union([insert_tags(v) for v in p.res])
-            elif isinstance(p, match.Neg):
-                return match.Neg(insert_tags(p.res))
-            else:
-                return match.Tag(star, p)
+    def Intersection(self, rule):
+        """Rule for '&(query, query)'. '&' token is consumed in Query"""
+        self.expect('(')
+        inter = match.Inter(self.match_list(rule))
+        self.expect(')')
+        return inter
 
-        return insert_tags(s)
-
-    def QueryNeg(self):
-        self.match(NEGATION)
-        return match.Neg(self.Query())
-
-    def QueryInter(self):
-        return self._match_parened(INTERSECT, match.Inter, self.QueryList)
-
-    def QueryUnion(self):
-        return self._match_parened(UNION, match.Union, self.QueryList)
-
-    def QueryNumcmp(self):
-        return self._match_parened(NUMCMP, match.Inter, self.NumcmpList)
-
-    def QueryList(self):
-        return self._match_list(self.Query)
-
-    def NumcmpList(self):
-        return self._match_list(self.Numcmp)
+    def Union(self, rule):
+        """Rule for '|(query, query)'. '|' token is consumed in Query"""
+        self.expect('(')
+        union = match.Union(self.match_list(rule))
+        self.expect(')')
+        return union
 
     def Numcmp(self):
-        tag = self.lookahead.lexeme
-        self.match(TAG)
-        op = self.lookahead.lexeme
-        self.match(RELOP, EQUALS)
-        value = self.lookahead.lexeme
-        self.match(TAG)
-        if self.lookahead.type in [RELOP, EQUALS]:
-            # Reverse the first operator
-            tag, value = value, tag
-            op = {">": "<", "<": ">", "<=": ">=", "<=": ">="}.get(op, op)
-            op2 = self.lookahead.lexeme
-            self.match(RELOP, EQUALS)
-            val2 = self.lookahead.lexeme
-            self.match(TAG)
-            return match.Inter([match.Numcmp(tag, op, value),
-                                match.Numcmp(tag, op2, val2)])
+        """Rule for numerical comparison like 'length > 3:30'"""
+        cmps = []
+        expr2 = self.Numexpr(allow_date=True)
+        while self.accept_re(RELATIONAL_OPERATOR):
+            expr = expr2
+            relop = self.last_match
+            expr2 = self.Numexpr(allow_date=True)
+            cmps.append(match.Numcmp(expr, relop, expr2))
+        if not cmps:
+            raise ParseError('No relational operator in numerical comparison')
+        if len(cmps) > 1:
+            return match.Inter(cmps)
         else:
-            return match.Numcmp(tag, op, value)
+            return cmps[0]
 
-    def _match_string(self):
-        s = self.lookahead.lexeme
-        self.match(self.lookahead.type)
-        return s
-
-    def QueryPart(self):
-        names = [s.lower() for s in self._match_list(self._match_string)]
-        if filter(lambda k: k.encode("ascii", "replace") != k, names):
-            raise ParseError("Expected ascii key")
-        self.match(EQUALS)
-        res = self.RegexpSet()
-        return match.Tag(names, res)
-
-    def RegexpSet(self, no_tag=False):
-        if self.lookahead.type == UNION:
-            return self.RegexpUnion()
-        elif self.lookahead.type == INTERSECT:
-            return self.RegexpInter()
-        elif self.lookahead.type == NEGATION:
-            return self.RegexpNeg()
-        elif self.lookahead.type == TAG and not no_tag:
-            return self.MatchTag()
-        elif self.lookahead.type == RE:
-            return self.Regexp()
-        else:
-            raise ParseError("The expected symbol should be |, &, !, or "
-                             "a tag name, but was %s" % self.lookahead.lexeme)
-
-    def RegexpNeg(self):
-        self.match(NEGATION)
-        return match.Neg(self.RegexpSet())
-
-    def RegexpUnion(self):
-        return self._match_parened(UNION, match.Union, self.RegexpList)
-
-    def RegexpInter(self):
-        return self._match_parened(INTERSECT, match.Inter, self.RegexpList)
-
-    def RegexpList(self):
-        return self._match_list(self.RegexpSet)
-
-    def MatchTag(self):
-        tag = self.lookahead.lexeme
-        self.match(TAG)
-        try:
-            return re.compile(re_escape(tag), re.IGNORECASE | re.UNICODE)
-        except re.error:
-            raise ParseError("The regular expression was invalid")
-
-    def Regexp(self):
-        regex = self.lookahead.lexeme
-        self.match(RE)
-        mods = re.MULTILINE | re.UNICODE | re.IGNORECASE
-        if self.lookahead.type == TAG:
-            s = self.lookahead.lexeme.lower()
-            if set(s) - set("cisld"):
-                raise ParseError("Invalid regular expression flags: %r" % s)
-            if "c" in s:
-                mods &= ~re.IGNORECASE
-            if "i" in s:
-                mods |= re.IGNORECASE
-            if "s" in s:
-                mods |= re.DOTALL
-            if "l" in s:
-                mods = (mods & ~re.UNICODE) | re.LOCALE
-            if "d" in s:
-                try:
-                    regex = re_add_diacritic_variants(regex)
-                except re.error:
-                    raise ParseError("The regular expression was invalid")
-                except NotImplementedError:
-                    raise ParseError(
-                        "The regular expression was is not supported")
-            self.match(TAG)
-        try:
-            return re.compile(regex, mods)
-        except re.error:
-            raise ParseError("The regular expression /%s/ is invalid." % regex)
-
-    def match(self, *tokens):
-        if tokens == [EOF] and self.lookahead.type == EOF:
-            raise ParseError("The search string ended, but more "
-                             "tokens were expected.")
-        try:
-            if self.lookahead.type in tokens:
-                self.lookahead = self.tokens.next()
+    def Numexpr(self, allow_date=False):
+        """Rule for numerical expression like 'playcount + 4'"""
+        if self.accept('('):
+            expr = match.NumexprGroup(self.Numexpr(allow_date=True))
+            self.expect(')')
+        elif self.accept_re(UNARY_OPERATOR):
+            expr = match.NumexprUnary(self.last_match, self.Numexpr())
+        elif allow_date and self.accept_re(DATE):
+            # Parse sequences of numbers that looks like dates as either dates
+            # or numbers
+            try:
+                expr = match.NumexprNumberOrDate(self.last_match)
+            except ValueError:
+                # If the date can't be parsed then backtrack and try again
+                # without allowing dates
+                self.index -= len(self.last_match)
+                expr = self.Numexpr(allow_date=False)
+        elif self.accept_re(DIGITS):
+            number = float(self.last_match)
+            if self.accept(':'):
+                # time like 4:15
+                number2 = float(self.expect_re(DIGITS))
+                expr = match.NumexprNumber(60 * number + number2)
+            elif self.accept_re(WORD):
+                # Number with units like 7 minutes
+                expr = match.numexprUnit(number, self.last_match)
             else:
-                raise ParseError("The token '%s' is not the type exected." % (
-                    self.lookahead.lexeme))
-        except StopIteration:
-            self.lookahead = QueryLexeme(EOF, "")
+                expr = match.NumexprNumber(number)
+        else:
+            # Either tag name or special name like "today"
+            expr = match.numexprTagOrSpecial(self.expect_re(TAG).strip())
+        if self.accept_re(BINARY_OPERATOR):
+            # Try matching a binary operator then the second argument
+            binop = self.last_match
+            expr2 = self.Numexpr()
+            return match.NumexprBinary(binop, expr, expr2)
+        else:
+            return expr
+
+    def Extension(self):
+        """Rule for plugin use like @(plugin: arguments)"""
+        self.expect('(')
+        name = self.expect_re(WORD)
+        if self.accept(':'):
+            body = self.ExtBody()
+        else:
+            body = None
+        self.expect(')')
+        return match.Extension(name, body)
+
+    def ExtBody(self):
+        """Body of plugin expression. Matches balanced parentheses"""
+        depth = 0
+        index = self.index
+        try:
+            while True:
+                current = self.tokens[index]
+                if current == '(':
+                    depth += 1
+                elif current == ')':
+                    if depth == 0:
+                        break
+                    depth -= 1
+                elif current == '\\':
+                    index += 1
+                index += 1
+        except IndexError:
+            if depth != 0:
+                raise ParseError('Unexpected end of string while parsing '
+                                 'extension body')
+        result = self.tokens[self.index:index]
+        self.index = index
+        return result
+
+    def Equals(self):
+        """Rule for 'tag=value' queries"""
+        tags = self.match_list(lambda: self.expect_re(TAG))
+        tags = [tag.strip() for tag in tags]
+        self.expect('=')
+        value = self.Value()
+        return match.Tag(tags, value)
+
+    def NotEquals(self):
+        """Rule for 'tag!=value' queries"""
+        tags = self.match_list(lambda: self.expect_re(TAG))
+        tags = [tag.strip() for tag in tags]
+        self.expect('!')
+        self.expect('=')
+        value = self.Value()
+        return match.Neg(match.Tag(tags, value))
+
+    def Value(self, outer=False):
+        """Rule for value. Either a regexp, quoted string, boolean combination
+        of values, or free text string"""
+        if self.accept('/'):
+            regex = self.expect_re(REGEXP)
+            self.expect('/')
+            return self.RegexpMods(regex)
+        elif self.accept('"'):
+            regex = self.str_to_re(self.expect_re(DOUBLE_STRING))
+            self.expect('"')
+            return self.RegexpMods(regex)
+        elif self.accept("'"):
+            regex = self.str_to_re(self.expect_re(SINGLE_STRING))
+            self.expect("'")
+            return self.RegexpMods(regex)
+        elif self.accept('!'):
+            return self.Negation(self.Value)
+        elif self.accept('|'):
+            return self.Union(self.Value)
+        elif self.accept('&'):
+            return self.Intersection(self.Value)
+        else:
+            if outer:
+                # Hack to force plain text parsing for top level free text
+                raise ParseError('Free text not allowed at top level of query')
+
+            return match.Regex(re_escape(self.expect_re(TEXT)), u"d")
+
+    def RegexpMods(self, regex):
+        """Consume regexp modifiers from tokens and compile provided regexp
+        with them.
+        """
+
+        mod_string = self.expect_re(MODIFIERS)
+        return match.Regex(regex, mod_string)
+
+    def Star(self, outer=False):
+        """Rule for value that matches all visible tags"""
+        return match.Tag(self.star, self.Value(outer=outer))
+
+    def str_to_re(self, string):
+        """Convert plain string to escaped regexp that can be compiled"""
+        if isinstance(string, text_type):
+            string = string.encode('utf-8')
+        if PY3:
+            string = codecs.escape_decode(string)[0]
+        else:
+            string = string.decode('string_escape')
+        string = string.decode('utf-8')
+        return "^%s$" % re_escape(string)

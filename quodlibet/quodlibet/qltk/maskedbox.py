@@ -2,14 +2,17 @@
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, Pango
+from senf import fsn2text
 
+from quodlibet import ngettext, _
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.util.path import fsdecode
+from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 
 
@@ -22,8 +25,9 @@ class ConfirmMaskedRemoval(qltk.Message):
             Gtk.MessageType.WARNING, parent, title, description,
             Gtk.ButtonsType.NONE)
 
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                         Gtk.STOCK_DELETE, Gtk.ResponseType.YES)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Delete"), Icons.EDIT_DELETE,
+                             Gtk.ResponseType.YES)
 
 
 class MaskedBox(Gtk.HBox):
@@ -38,11 +42,11 @@ class MaskedBox(Gtk.HBox):
         self.view = view
 
         menu = Gtk.Menu()
-        unhide_item = qltk.MenuItem(_("Unhide"), Gtk.STOCK_ADD)
+        unhide_item = qltk.MenuItem(_("Unhide"), Icons.LIST_ADD)
         connect_obj(unhide_item, 'activate', self.__unhide, view, library)
         menu.append(unhide_item)
 
-        remove_item = Gtk.ImageMenuItem(label=Gtk.STOCK_REMOVE, use_stock=True)
+        remove_item = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         connect_obj(remove_item, 'activate', self.__remove, view, library)
         menu.append(remove_item)
 
@@ -57,7 +61,7 @@ class MaskedBox(Gtk.HBox):
 
         def cdf(column, cell, model, iter, data):
             row = model[iter]
-            cell.set_property('text', fsdecode(row[0]))
+            cell.set_property('text', fsn2text(row[0]))
 
         def cdf_count(column, cell, model, iter, data):
             mount = model[iter][0]
@@ -80,9 +84,9 @@ class MaskedBox(Gtk.HBox):
 
         view.append_column(column)
 
-        unhide = qltk.Button(_("Unhide"), Gtk.STOCK_ADD)
+        unhide = qltk.Button(_("_Unhide"), Icons.LIST_ADD)
         connect_obj(unhide, "clicked", self.__unhide, view, library)
-        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
 
         selection = view.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)

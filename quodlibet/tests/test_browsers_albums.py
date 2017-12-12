@@ -1,25 +1,32 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012,2014 Christoph Reiter
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+from functools import cmp_to_key
 
 from gi.repository import Gtk
+from senf import fsnative
 
-from tests import TestCase
-from helper import realized
+from quodlibet.browsers._base import DisplayPatternMixin
+from . import TestCase
+from .helper import realized
 
 from quodlibet import config
 
 from quodlibet.browsers.albums import AlbumList
-from quodlibet.browsers.albums.prefs import Preferences, FakeAlbum
+from quodlibet.browsers.albums.models import AlbumItem
+from quodlibet.browsers.albums.prefs import Preferences, DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.albums.main import (compare_title, compare_artist,
     compare_genre, compare_rating, compare_date)
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
-from quodlibet.util.path import fsnative
 from quodlibet.util.collection import Album
+
 
 SONGS = [
     AudioFile({
@@ -56,8 +63,8 @@ class TAlbumPrefs(TestCase):
 
     def test_main(self):
 
-        class Browser(Gtk.Box):
-            _pattern_text = ""
+        class Browser(Gtk.Box, DisplayPatternMixin):
+            _DEFAULT_PATTERN_TEXT = ""
 
         widget = Preferences(Browser())
         widget.destroy()
@@ -69,12 +76,13 @@ class TAlbumSort(TestCase):
         song = AudioFile(dict_)
         album = Album(song)
         album.songs.add(song)
-        return album
+        return AlbumItem(album)
 
     def assertOrder(self, func, list_):
+        key = cmp_to_key(func)
         # sort twice for full line coverage of the compare function
-        reversed_ = list(sorted(list_, cmp=func, reverse=True))
-        sorted_ = list(sorted(list_, cmp=func))
+        reversed_ = list(sorted(list_, key=key, reverse=True))
+        sorted_ = list(sorted(list_, key=key))
         self.assertEqual(reversed_[::-1], sorted_)
         self.assertEqual(list_, sorted_)
 
@@ -83,7 +91,7 @@ class TAlbumSort(TestCase):
         b = self._get_album({"album": "b"})
         n = self._get_album({"album": ""})
 
-        self.assertOrder(compare_title, [None, a, b, n])
+        self.assertOrder(compare_title, [AlbumItem(None), a, b, n])
 
     def test_sort_artist(self):
         a = self._get_album({"album": "b", "artist": "x"})
@@ -91,7 +99,7 @@ class TAlbumSort(TestCase):
         c = self._get_album({"album": "a", "artist": ""})
         n = self._get_album({"album": ""})
 
-        self.assertOrder(compare_artist, [None, a, b, c, n])
+        self.assertOrder(compare_artist, [AlbumItem(None), a, b, c, n])
 
     def test_sort_genre(self):
         a = self._get_album({"album": "b", "genre": "x"})
@@ -99,7 +107,7 @@ class TAlbumSort(TestCase):
         c = self._get_album({"album": "a", "genre": ""})
         n = self._get_album({"album": ""})
 
-        self.assertOrder(compare_genre, [None, a, b, c, n])
+        self.assertOrder(compare_genre, [AlbumItem(None), a, b, c, n])
 
     def test_sort_date(self):
         a = self._get_album({"album": "b", "date": "1970"})
@@ -107,7 +115,7 @@ class TAlbumSort(TestCase):
         c = self._get_album({"album": "a", "date": ""})
         n = self._get_album({"album": ""})
 
-        self.assertOrder(compare_date, [None, a, b, c, n])
+        self.assertOrder(compare_date, [AlbumItem(None), a, b, c, n])
 
     def test_sort_rating(self):
         a = self._get_album({"album": "b", "~#rating": 0.5})
@@ -115,27 +123,7 @@ class TAlbumSort(TestCase):
         c = self._get_album({"album": "x", "~#rating": 0.0})
         n = self._get_album({"album": "", "~#rating": 0.25})
 
-        self.assertOrder(compare_rating, [None, a, b, c, n])
-
-
-class TFakeAlbum(TestCase):
-
-    def test_call(self):
-        self.assertEqual(FakeAlbum()("title"), "Title")
-        self.assertEqual(FakeAlbum()("~title~artist"), "Title - Artist")
-        self.assertEqual(FakeAlbum(title="foo")("title"), "foo")
-        self.assertEqual(FakeAlbum(title="f")("~title~artist"), "f - Artist")
-        self.assertEqual(FakeAlbum()("~#rating"), "Rating")
-        self.assertEqual(FakeAlbum({"~#rating": 0.5})("~#rating"), 0.5)
-        self.assertEqual(FakeAlbum()("~#rating:max"), "Rating<max>")
-
-    def test_get(self):
-        self.assertEqual(FakeAlbum().get("title"), "Title")
-
-    def test_comma(self):
-        self.assertEqual(FakeAlbum().comma("title"), "Title")
-        self.assertEqual(FakeAlbum({"~#rating": 0.5}).comma("~#rating"), 0.5)
-        self.assertEqual(FakeAlbum(title="a\nb").comma("title"), "a, b")
+        self.assertOrder(compare_rating, [AlbumItem(None), a, b, c, n])
 
 
 class TAlbumBrowser(TestCase):
@@ -217,11 +205,11 @@ class TAlbumBrowser(TestCase):
 
     def test_list(self):
         albums = self.bar.list_albums()
-        self.failUnlessEqual(set(albums), set([s.album_key for s in SONGS]))
+        self.failUnlessEqual(set(albums), {s.album_key for s in SONGS})
         self.bar.filter_albums([SONGS[0].album_key])
         self._wait()
-        self.failUnlessEqual(set([s.album_key for s in self.songs]),
-                             set([SONGS[0].album_key]))
+        self.failUnlessEqual({s.album_key for s in self.songs},
+                             {SONGS[0].album_key})
 
     def test_active_filter(self):
         with realized(self.bar):
@@ -231,6 +219,11 @@ class TAlbumBrowser(TestCase):
             for s in SONGS:
                 if s is not self.songs[0]:
                     self.failIf(self.bar.active_filter(s))
+
+    def test_default_display_pattern(self):
+        pattern_text = self.bar.display_pattern_text
+        self.failUnlessEqual(pattern_text, DEFAULT_PATTERN_TEXT)
+        self.failUnless("<album>" in pattern_text)
 
     def tearDown(self):
         self.bar.disconnect(self._id)

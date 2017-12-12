@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2010 Joe Wreschnig, Michael Urman
 # Copyright 2010,2013 Christoph Reiter
-# Copyright 2013,2014 Nick Boultbee
+# Copyright 2013-2015 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 # Pattern := (<String> | <Tags>)*
 # String := ([^<>|\\]|\\.)+, a string
@@ -15,9 +16,14 @@ import os
 import re
 from re import Scanner
 
+from senf import sep, fsnative, expanduser
+
 from quodlibet import util
-from quodlibet.util.path import fsdecode, expanduser, fsnative, sep
-from quodlibet.util.path import strip_win32_incompat_from_path
+from quodlibet.query import Query
+from quodlibet.compat import exec_, itervalues
+from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
+from quodlibet.formats._audio import decode_value, FILESYSTEM_TAGS
+from quodlibet.compat import quote_plus, text_type, number_types
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -52,14 +58,14 @@ class PatternLexeme(object):
 
 class PatternLexer(Scanner):
     def __init__(self, s):
-        self.string = s.strip()
+        self.string = s
         Scanner.__init__(self,
                          [(r"([^<>|\\]|\\.)+", self.text),
                           (r"[<>|]", self.table),
                           ])
 
     def text(self, scanner, string):
-        return PatternLexeme(TEXT, re.sub(r"\\(.)", r"\1", string))
+        return PatternLexeme(TEXT, re.sub(r"\\([|<>\\])", r"\1", string))
 
     def table(self, scanner, string):
         return PatternLexeme(
@@ -90,14 +96,14 @@ class TextNode(object):
 
 
 class ConditionNode(object):
-    def __init__(self, tag, ifcase, elsecase):
-        self.tag = tag
+    def __init__(self, expr, ifcase, elsecase):
+        self.expr = expr
         self.ifcase = ifcase
         self.elsecase = elsecase
 
     def __repr__(self):
-        t, i, e = self.tag, repr(self.ifcase), repr(self.elsecase)
-        return "Condition(tag: \"%s\", if: %s, else: %s)" % (t, i, e)
+        t, i, e = self.expr, repr(self.ifcase), repr(self.elsecase)
+        return "Condition(expression: \"%s\", if: %s, else: %s)" % (t, i, e)
 
 
 class TagNode(object):
@@ -111,7 +117,7 @@ class TagNode(object):
 class PatternParser(object):
     def __init__(self, tokens):
         self.tokens = iter(tokens)
-        self.lookahead = self.tokens.next()
+        self.lookahead = next(self.tokens)
         self.node = self.Pattern()
 
     def Pattern(self):
@@ -169,7 +175,7 @@ class PatternParser(object):
                              "tokens were expected.")
         try:
             if self.lookahead.type in tokens:
-                self.lookahead = self.tokens.next()
+                self.lookahead = next(self.tokens)
             else:
                 raise ParseError("The token '%s' is not the type exected." % (
                     self.lookahead.lexeme))
@@ -180,6 +186,7 @@ class PatternParser(object):
 class PatternFormatter(object):
     _format = None
     _post = None
+    _text = None
 
     def __init__(self, func, list_func, tags):
         self.__func = func
@@ -188,10 +195,18 @@ class PatternFormatter(object):
         self.format(self.Dummy())  # Validate string
 
     class Dummy(dict):
-        def comma(self, *args):
+
+        def __call__(self, key, *args):
+            if key in FILESYSTEM_TAGS:
+                return fsnative(u"_")
+            if key[:2] == "~#" and "~" not in key[2:]:
+                return 0
             return u"_"
 
-        def list_separate(self, *args):
+        def comma(self, key, *args):
+            return u"_"
+
+        def list_separate(self, key):
             return [u""]
 
     class SongProxy(object):
@@ -199,14 +214,16 @@ class PatternFormatter(object):
             self.__song = realsong
             self.__formatter = formatter
 
+        def __call__(self, key, *args):
+            return self.__song(key, *args)
+
+        def get(self, key, default=None):
+            return self.__song.get(key, default)
+
         def comma(self, key):
             value = self.__song.comma(key)
-            if isinstance(value, str):
-                value = fsdecode(value)
-            elif not isinstance(value, unicode):
-                if isinstance(value, float):
-                    value = "%.2f" % value
-                value = unicode(value)
+            if isinstance(value, number_types):
+                value = decode_value(key, value)
             if self.__formatter:
                 return self.__formatter(key, value)
             return value
@@ -214,14 +231,16 @@ class PatternFormatter(object):
         def list_separate(self, key):
             if key.startswith("~#") and "~" not in key[2:]:
                 value = self.__song(key)
-                if isinstance(value, float):
-                    value = "%.2f" % value
-                values = [unicode(value)]
+                value = decode_value(key, value)
+                if self.__formatter:
+                    value = self.__formatter(key, value)
+                values = [(value, value)]
             else:
                 values = self.__song.list_separate(key)
+                if self.__formatter:
+                    return [(self.__formatter(key, v[0]),
+                             self.__formatter(key, v[1])) for v in values]
 
-            if self.__formatter:
-                return [self.__formatter(key, v) for v in values]
             return values
 
     def format(self, song):
@@ -231,24 +250,23 @@ class PatternFormatter(object):
         return value
 
     def format_list(self, song):
-        """Returns a set of formatted patterns with all tag combinations:
-        <performer>-bla returns [performer1-bla, performer2-bla]
-
-        The returned set will never be empty (e.g. for an empty pattern).
+        """Formats the output of a list pattern, generating all the
+        combinations always returns pairs of display and sort values. The
+        returned set will never be empty (e.g. for an empty pattern).
         """
-
-        vals = [u""]
+        vals = [(u"", u"")]
         for val in self.__list_func(self.SongProxy(song, self._format)):
             if not val:
                 continue
-            if isinstance(val, list):
-                vals = [r + part for part in val for r in vals]
-            else:
-                vals = [r + val for r in vals]
+            if isinstance(val, list): # list of strings or pairs
+                vals = [(r[0] + part[0], r[1] + part[1])
+                        for part in val for r in vals]
+            else: # just a display string to concatenate
+                vals = [(r[0] + val, r[1] + val) for r in vals]
 
         if self._post:
-            vals = (self._post(v, song) for v in vals)
-
+            vals = ((self._post(v[0], song), self._post(v[1], song))
+                    for v in vals)
         return set(vals)
 
     __mod__ = format
@@ -258,64 +276,91 @@ class PatternCompiler(object):
     def __init__(self, root):
         self.__root = root.node
 
-    def compile(self, song_func):
+    def compile(self, song_func, text_formatter=None):
         tags = []
+        queries = {}
         content = [
             "def f(s):",
             "  x = s." + song_func,
             "  r = []",
             "  a = r.append"]
-        content.extend(self.__pattern(self.__root, {}, tags))
+        content.extend(
+            self.__tag(self.__root, {}, {}, tags, queries, text_formatter))
         content.append("  return r")
         code = "\n".join(content)
 
-        scope = {}
-        exec compile(code, "<string>", "exec") in scope
+        scope = dict(itervalues(queries))
+        if text_formatter:
+            scope["_format"] = text_formatter
+        exec_(compile(code, "<string>", "exec"), scope)
         return scope["f"], tags
 
-    def __escape(self, text):
-        text = text.replace("\\", r"\\")
-        text = text.replace("\"", "\\\"")
-        return text.replace("\n", r"\n")
-
-    def __put_tag(self, text, scope, tag):
-        tag = self.__escape(tag)
+    def __get_value(self, text, scope, tag):
         if tag not in scope:
-            scope[tag] = 't%d' % len(scope)
-            text.append('%s = x("%s")' % (scope[tag], tag))
-        return tag
+            t_var = 'v%d' % len(scope)
+            scope[tag] = t_var
+            text.append('%s = x(%r)' % (t_var, tag))
+        else:
+            t_var = scope[tag]
+        return t_var
 
-    def __tag(self, node, scope, tags):
+    def __get_query(self, text, scope, qscope, query, queries):
+        if query not in qscope:
+            if query in queries:
+                q_var = queries[query][0]
+                r_var = 'r%d' % len(qscope)
+                text.append('%s = %s(s)' % (r_var, q_var))
+                qscope[query] = r_var
+            else:
+                q = Query.StrictQueryMatcher(query)
+                if q is not None:
+                    q_var = 'q%d' % len(queries)
+                    r_var = 'r%d' % len(qscope)
+                    queries[query] = (q_var, q.search)
+                    text.append('%s = %s(s)' % (r_var, q_var))
+                    qscope[query] = r_var
+                else:
+                    r_var = self.__get_value(text, scope, query)
+        else:
+            r_var = qscope[query]
+        return r_var
+
+    def __tag(self, node, scope, qscope, tags, queries, text_formatter):
         text = []
         if isinstance(node, TextNode):
-            text.append('a("%s")' % self.__escape(node.text))
+            if text_formatter:
+                text.append('a(_format(%r))' % node.text)
+            else:
+                text.append('a(%r)' % node.text)
         elif isinstance(node, ConditionNode):
-            tag = self.__put_tag(text, scope, node.tag)
-            ic = self.__pattern(node.ifcase, dict(scope), tags)
-            ec = self.__pattern(node.elsecase, dict(scope), tags)
+            var = self.__get_query(text, scope, qscope, node.expr, queries)
+            ic = self.__tag(
+                node.ifcase, dict(scope), dict(qscope), tags, queries,
+                text_formatter)
+            ec = self.__tag(
+                node.elsecase, dict(scope), dict(qscope), tags, queries,
+                text_formatter)
             if not ic and not ec:
                 text.pop(-1)
             elif ic:
-                text.append('if %s:' % scope[tag])
+                text.append('if %s:' % var)
                 text.extend(ic)
                 if ec:
                     text.append('else:')
                     text.extend(ec)
             else:
-                text.append('if not %s:' % scope[tag])
+                text.append('if not %s:' % var)
                 text.extend(ec)
         elif isinstance(node, TagNode):
             tags.extend(util.tagsplit(node.tag))
-            tag = self.__put_tag(text, scope, node.tag)
-            text.append('a(%s)' % scope[tag])
-        return text
-
-    def __pattern(self, node, scope, tags):
-        text = []
-        if isinstance(node, PatternNode):
+            var = self.__get_value(text, scope, node.tag)
+            text.append('a(%s)' % var)
+        elif isinstance(node, PatternNode):
             for child in node.children:
-                text.extend(self.__tag(child, scope, tags))
-        return map("  ".__add__, text)
+                for line in self.__tag(child, scope, qscope, tags, queries,
+                                       text_formatter):
+                    text.append("  " + line)
+        return text
 
 
 def Pattern(string, Kind=PatternFormatter, MAX_CACHE_SIZE=100, cache={}):
@@ -323,8 +368,8 @@ def Pattern(string, Kind=PatternFormatter, MAX_CACHE_SIZE=100, cache={}):
         if len(cache) > MAX_CACHE_SIZE:
             cache.clear()
         comp = PatternCompiler(PatternParser(PatternLexer(string)))
-        func, tags = comp.compile("comma")
-        list_func, tags = comp.compile("list_separate")
+        func, tags = comp.compile("comma", Kind._text)
+        list_func, tags = comp.compile("list_separate", Kind._text)
         cache[(Kind, string)] = Kind(func, list_func, tags)
     return cache[(Kind, string)]
 
@@ -361,7 +406,7 @@ class _FileFromPattern(PatternFormatter):
 
     def _post(self, value, song, keep_extension=True):
         if value:
-            assert isinstance(value, unicode)
+            assert isinstance(value, text_type)
             value = fsnative(value)
 
             if keep_extension:
@@ -372,24 +417,17 @@ class _FileFromPattern(PatternFormatter):
                     value += ext.lower()
 
             if os.name == "nt":
-                assert isinstance(value, unicode)
+                assert isinstance(value, text_type)
                 value = strip_win32_incompat_from_path(value)
 
             value = expanduser(value)
-
-            # Limit each path section to 255 (bytes on linux, chars on win).
-            # http://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
-            path, ext = os.path.splitext(value)
-            path = path.split(sep)
-            limit = [255] * len(path)
-            limit[-1] -= len(ext)
-            elip = lambda (p, l): (len(p) > l and p[:l - 2] + "..") or p
-            path = sep.join(map(elip, zip(path, limit)))
-            value = path + ext
+            value = limit_path(value)
 
             if sep in value and not os.path.isabs(value):
                 raise ValueError("Pattern is not rooted")
-        return value
+            return value
+        else:
+            return fsnative(value)
 
 
 class _ArbitraryExtensionFileFromPattern(_FileFromPattern):
@@ -413,6 +451,8 @@ def replace_nt_seps(string):
 
 
 def FileFromPattern(string):
+    """Gives fsnative, not unicode"""
+
     return Pattern(replace_nt_seps(string), _FileFromPattern)
 
 
@@ -424,20 +464,23 @@ def XMLFromPattern(string):
     return Pattern(string, _XMLFromPattern)
 
 
-def pattern_from_markup(string):
+class _XMLFromMarkupPattern(_XMLFromPattern):
 
-    tags = ["b", "big", "i", "s", "sub", "sup", "small", "tt", "u", "span"]
-    pat = "(?:%s)" % "|".join(tags)
+    @classmethod
+    def _text(cls, string):
+        tags = ["b", "big", "i", "s", "sub", "sup", "small", "tt", "u", "span",
+                "a"]
+        pat = "(?:%s)" % "|".join(tags)
 
-    def repl_func(match):
-        orig, pre, body = match.group(0, 1, 2)
-        if len(pre) % 2:
-            return orig
-        return r"%s\<%s\>" % (pre, body)
+        def repl_func(match):
+            orig, pre, body = match.group(0, 1, 2)
+            if len(pre) % 2:
+                return orig[1:]
+            return r"%s<%s>" % (pre, body)
 
-    string = re.sub(r"(\\*)\[(/?%s\s*)\]" % pat, repl_func, string)
-    string = re.sub(r"(\\*)\[(span\s+.*?)\]", repl_func, string)
-    return string
+        string = re.sub(r"(\\*)\[(/?%s\s*)\]" % pat, repl_func, string)
+        string = re.sub(r"(\\*)\[((a|span)\s+.*?)\]", repl_func, string)
+        return string
 
 
 def XMLFromMarkupPattern(string):
@@ -447,5 +490,14 @@ def XMLFromMarkupPattern(string):
     To get text like "[b]" escape the first '[' like "\[b]"
     """
 
-    string = pattern_from_markup(string)
-    return Pattern(string, _XMLFromPattern)
+    return Pattern(string, _XMLFromMarkupPattern)
+
+
+class _URLFromPattern(PatternFormatter):
+
+    def _format(self, key, value):
+        return quote_plus(value.encode('utf8'))
+
+
+def URLFromPattern(string):
+    return Pattern(string, _URLFromPattern)

@@ -1,15 +1,28 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013 Christoph Reiter
+# Copyright 2013-2016 Christoph Reiter
 #
-# This software and accompanying documentation, if any, may be freely
-# used, distributed, and/or modified, in any form and for any purpose,
-# as long as this notice is preserved. There is no warranty, either
-# express or implied, for this software.
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os
 
-from distutils.util import change_root
-from distutils.core import Command
+from .util import Command
 
 
 class build_dbus_services(Command):
@@ -20,6 +33,7 @@ class build_dbus_services(Command):
 
     def initialize_options(self):
         self.build_base = None
+        self.dbus_services = None
 
     def finalize_options(self):
         self.dbus_services = self.distribution.dbus_services
@@ -53,11 +67,11 @@ class install_dbus_services(Command):
     user_options = []
 
     def initialize_options(self):
-        self.prefix = None
+        self.install_dir = None
+        self.exec_prefix = None
         self.skip_build = None
         self.dbus_services = None
         self.build_base = None
-        self.root = None
         self.outfiles = []
 
     def finalize_options(self):
@@ -67,8 +81,8 @@ class install_dbus_services(Command):
 
         self.set_undefined_options(
             'install',
-            ('root', 'root'),
-            ('install_base', 'prefix'),
+            ('install_data', 'install_dir'),
+            ('exec_prefix', 'exec_prefix'),
             ('skip_build', 'skip_build'))
 
         self.set_undefined_options(
@@ -82,9 +96,8 @@ class install_dbus_services(Command):
         if not self.skip_build:
             self.run_command('build_dbus_services')
 
-        basepath = os.path.join(self.prefix, 'share', 'dbus-1', 'services')
-        if self.root is not None:
-            basepath = change_root(self.root, basepath)
+        basepath = os.path.join(
+            self.install_dir, 'share', 'dbus-1', 'services')
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
 
@@ -95,7 +108,10 @@ class install_dbus_services(Command):
             fullpath = os.path.join(basepath, service_name)
             (out, _) = self.copy_file(fullsrc, fullpath)
             self.outfiles.append(out)
-            _replace(fullpath, "@PREFIX@", self.prefix)
+            prefix = self.exec_prefix or ""
+            if not isinstance(prefix, bytes):
+                prefix = prefix.encode("utf-8")
+            _replace(fullpath, b"@PREFIX@", prefix)
 
 
 __all__ = ["build_dbus_services", "install_dbus_services"]

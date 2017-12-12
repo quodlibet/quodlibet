@@ -2,18 +2,18 @@
 # Copyright 2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
-import tempfile
 import hashlib
 
 from gi.repository import GdkPixbuf, GLib
+from senf import fsn2uri, fsnative, gettempdir
 
-from quodlibet.const import USERDIR
-from quodlibet.util.path import mtime, mkdir, pathname2url, \
-    xdg_get_cache_home, is_fsnative
+import quodlibet
+from quodlibet.util.path import mtime, mkdir, xdg_get_cache_home
 from quodlibet.util import enum
 from quodlibet.qltk.image import scale
 
@@ -25,7 +25,7 @@ def get_thumbnail_folder():
     """
 
     if os.name == "nt":
-        thumb_folder = os.path.join(USERDIR, "thumbnails")
+        thumb_folder = os.path.join(quodlibet.get_user_dir(), "thumbnails")
     else:
         cache_folder = os.path.join(xdg_get_cache_home(), "thumbnails")
         thumb_folder = os.path.expanduser('~/.thumbnails')
@@ -36,7 +36,7 @@ def get_thumbnail_folder():
 
 
 @enum
-class ThumbSize(object):
+class ThumbSize(int):
     NORMAL = 128
     LARGE = 256
     LARGEST = LARGE
@@ -49,7 +49,7 @@ def get_cache_info(path, boundary):
     thumb size is either 128 or 256
     """
 
-    assert is_fsnative(path)
+    assert isinstance(path, fsnative)
 
     width, height = boundary
 
@@ -63,8 +63,8 @@ def get_cache_info(path, boundary):
     thumb_folder = get_thumbnail_folder()
     cache_dir = os.path.join(thumb_folder, size_name)
 
-    uri = "file://" + pathname2url(path)
-    thumb_name = hashlib.md5(uri).hexdigest() + ".png"
+    uri = fsn2uri(path)
+    thumb_name = hashlib.md5(uri.encode("ascii")).hexdigest() + ".png"
     thumb_path = os.path.join(cache_dir, thumb_name)
 
     return (thumb_path, thumb_size)
@@ -82,7 +82,7 @@ def get_thumbnail_from_file(fileobj, boundary):
 
     try:
         path = fileobj.name
-        assert is_fsnative(path), path
+        assert isinstance(path, fsnative), path
         return get_thumbnail(path, boundary)
     except GLib.GError:
         try:
@@ -108,6 +108,8 @@ def get_thumbnail(path, boundary):
     Can raise GLib.GError. Thread-safe.
     """
 
+    assert isinstance(path, fsnative)
+
     width, height = boundary
     new_from_file_at_size = GdkPixbuf.Pixbuf.new_from_file_at_size
 
@@ -121,13 +123,13 @@ def get_thumbnail(path, boundary):
 
     # embedded thumbnails come from /tmp/
     # FIXME: move this to another layer
-    if path.startswith(tempfile.gettempdir()):
+    if path.startswith(gettempdir()):
         return new_from_file_at_size(path, width, height)
 
     thumb_path, thumb_size = get_cache_info(path, boundary)
     cache_dir = os.path.dirname(thumb_path)
     try:
-        mkdir(cache_dir, 0700)
+        mkdir(cache_dir, 0o700)
     except OSError:
         return new_from_file_at_size(path, width, height)
 
@@ -155,7 +157,7 @@ def get_thumbnail(path, boundary):
 
     thumb_pb = new_from_file_at_size(path, thumb_size, thumb_size)
 
-    uri = "file://" + pathname2url(path)
+    uri = fsn2uri(path)
     mime = info.get_mime_types()[0]
     options = {
         "tEXt::Thumb::Image::Width": str(pw),
@@ -167,9 +169,10 @@ def get_thumbnail(path, boundary):
         "tEXt::Software": "QuodLibet"
     }
 
-    thumb_pb.savev(thumb_path, "png", options.keys(), options.values())
+    thumb_pb.savev(
+        thumb_path, "png", list(options.keys()), list(options.values()))
     try:
-        os.chmod(thumb_path, 0600)
+        os.chmod(thumb_path, 0o600)
     except OSError:
         pass
 

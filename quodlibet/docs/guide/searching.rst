@@ -21,8 +21,8 @@ If you want to listen to Electronic music but no Ambient::
     &(electro, !ambient)
 
 Or you want to get all songs by `Neutral Milk Hotel
-<http://en.wikipedia.org/wiki/Neutral_Milk_Hotel>`_ including the solo
-performances of `Jeff Mangum <http://en.wikipedia.org/wiki/Jeff_Mangum>`_::
+<https://en.wikipedia.org/wiki/Neutral_Milk_Hotel>`_ including the solo
+performances of `Jeff Mangum <https://en.wikipedia.org/wiki/Jeff_Mangum>`_::
 
     |(mangum, neutral milk)
 
@@ -32,13 +32,14 @@ You can get all songs that don't match the search term using ``!``::
 
 Lets say you want to listen to you whole library but are not in the mood
 for classical music or songs by `The Smiths
-<http://en.wikipedia.org/wiki/The_Smiths>`_::
+<https://en.wikipedia.org/wiki/The_Smiths>`_::
 
     !|(classical, smiths)
 
-While these searches are easy to type in, they depend on the visible colums
-and the active browser, also the last one might exclude some songs wich
-happen to contain "smiths" in their album title.
+While these searches are easy to type in, they depend on the visible columns
+and the active browser, also the last one might exclude some songs which
+happen to contain "smiths" in their album title
+- see below for how to perform more targeted searching.
 
 
 Searching a Specific Tag
@@ -53,14 +54,20 @@ The search terms can't use quotes (``"``), slashes (``/``), hashes (``#``),
 pipes (``|``), ampersands (``&``), or bangs (``!``); these characters have
 special meanings for advanced searches.
 
-You can also search :ref:internal tags <InternalTags>, e.g.
+In QL 3.9 onwards, you can also use `!=` to search for things not equal::
+
+    artist != delerium
+    genre != /.+ Jazz/
+
+
+You can also search :ref:`internal tags <InternalTags>`, e.g.
 
  * ``~format = Ogg Vorbis``
  * ``~dirname=Greatest Hits`` - search for all songs in Greatest Hits folders.
 
 It's also possible to search in multiple tags at once:
 
- * ``*artist, performer = "Boa"c``
+ * ``artist, performer = "Boa"c``
 
 
 Exact Matching
@@ -78,6 +85,7 @@ You can put a ``c`` after the last " to make the search case-sensitive::
 
     artist = "BoA"c
     artist = "Boa"c
+    artist != "Boa"c
 
 Combining Tag Searches
 ----------------------
@@ -90,12 +98,11 @@ matches or regular expressions::
     artist = |(Townshend, Who)
     &(artist = Lindsay Smith, album = Vat)
 
-The first finds anything by `The Who <http://www.thewho.net/>`_ or
-guitarist `Pete Townshend <http://www.petetownshend.co.uk/>`_ .
-The second gives the songs that match both, so you'll find
-songs `Lindsay Smith <http://www.lindsay-smith.com/>`_'s `Tales From The
-Fruitbat Vat <http://www.cdbaby.com/cd/lindsaysmith>`_, but not her other
-albums.
+The first finds anything by `The Who <https://en.wikipedia.org/wiki/The_Who>`_
+or guitarist `Pete Townshend <https://en.wikipedia.org/wiki/Pete_Townshend>`_
+. The second gives the songs that match both, so you'll find songs `Lindsay
+Smith <http://www.lindsay-smith.com/>`_'s `Tales From The Fruitbat Vat
+<http://www.cdbaby.com/cd/lindsaysmith>`_, but not her other albums.
 
 You can also pick out all the songs that *don't* match the terms you give,
 using ``!``::
@@ -103,6 +110,16 @@ using ``!``::
     genre = !Audiobook
 
 is probably a good idea when playing your whole library on shuffle.
+Note again that in QL 3.9 onwards you can use the alternative syntax of::
+
+    genre != Audiobook
+
+
+More complex searches are of course possible. For example, to select all
+Disco and Jazz related (_containing_, technically) genres,
+but avoiding Acid Jazz, you could use::
+
+    genre = &(|(Disco, Jazz), !Acid Jazz)
 
 
 Numeric Searches
@@ -166,12 +183,12 @@ Quod Libet also supports searching your library using ''regular
 expressions'', a common way of finding text for Unix applications. Regular
 expressions look like regular searches, except they use / instead of ", and
 some punctuation has special meaning. There are many good tutorials on the
-web, and useful online regex testers (such as `Regex Pal <http://regexpal
+web, and useful online regex testers (such as `Regex Pal <http://www.regexpal
 .com/>`_)
 
 Some examples:
 
- * ``artist = !/\sRice/``
+ * ``artist = !/\sRice/`` (or in 3.9+: ``artist != /\sRice/``)
 
 or using the default tags
 
@@ -193,3 +210,36 @@ name ``"Sigur Rós"``.
 
 
 Now you can search anything!
+
+Pluggable query expressions
+---------------------------
+
+More recent versions of Quod Libet allow queries to include pluggable expressions.
+This uses the format ``@(plugin: body)`` where plugin is the ID of the query
+plugin (e.g. ``saved``, ``python``) - see ``quodlibet/ext/query/*``.
+
+From QL 3.10 onwards, the Python query plugin allows some use of external modules,
+notably `time` and `random`, as well as a few useful variables.
+
+For example, here is a way of simulating an album Spotlight in an album browser:
+
+``@(python: Random((int(_ts / 60), a)).random() < 0.01)``
+
+Here ``_ts`` is a current timestamp, and ``a`` is the album data.
+So this generates a random number seeded on the current minute and the album key,
+so we randomly select 1% of our albums to look at.
+
+Reusing queries
+---------------
+
+Complex queries can be split into simpler ones.  Also, a query can be reused 
+in other ones.  This way it is easier to change and administer your searches.
+
+In order to do so, the ``Include Saved Search`` query plugin (see above) must be activated.
+If you create a saved search named ``Unrated`` you can search for unrated songs from the Beatles
+like this:
+
+``&(@(saved: Unrated), Beatles)``
+
+For creating saved searches, use the "Edit saved searches..." item in the drop-down 
+at the right of the query text box.

@@ -1,14 +1,23 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+import shutil
+
 from quodlibet.library import SongLibrary
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.plugins.songshelpers import any_song, each_song
 from tests import TestCase, mkstemp, mkdtemp
 
 import os
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginManager, Plugin
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from tests.helper import capture_output
+from tests.test_library_libraries import FakeSong
 
 
 class TSongsMenuPlugins(TestCase):
@@ -29,9 +38,7 @@ class TSongsMenuPlugins(TestCase):
     def tearDown(self):
         self.library.destroy()
         self.pm.quit()
-        for f in os.listdir(self.tempdir):
-            os.remove(os.path.join(self.tempdir, f))
-        os.rmdir(self.tempdir)
+        shutil.rmtree(self.tempdir)
 
     def create_plugin(self, id='', name='', desc='', icon='',
                       funcs=None, mod=False):
@@ -135,6 +142,42 @@ class TSongsMenuPlugins(TestCase):
         self.failUnless(self.confirmed,
                         ("Should have confirmed %d invocations (Max=%d)."
                          % (len(songs), MAX)))
+
+
+def even(i):
+    return i % 2 == 0
+
+
+def never(_):
+    return False
+
+
+class Tsongsmenu(TestCase):
+    songs = [FakeSong(1), FakeSong(2)]
+
+    def test_any_song(self):
+        FakeSongsMenuPlugin.plugin_handles = any_song(even)
+        p = FakeSongsMenuPlugin(self.songs, None)
+        self.failUnless(p.plugin_handles(self.songs))
+        self.failIf(p.plugin_handles(self.songs[:1]))
+
+    def test_any_song_multiple(self):
+        FakeSongsMenuPlugin.plugin_handles = any_song(even, never)
+        p = FakeSongsMenuPlugin(self.songs, None)
+        self.failIf(p.plugin_handles(self.songs))
+        self.failIf(p.plugin_handles(self.songs[:1]))
+
+    def test_each_song(self):
+        FakeSongsMenuPlugin.plugin_handles = each_song(even)
+        p = FakeSongsMenuPlugin(self.songs, None)
+        self.failIf(p.plugin_handles(self.songs))
+        self.failUnless(p.plugin_handles(self.songs[1:]))
+
+    def test_each_song_multiple(self):
+        FakeSongsMenuPlugin.plugin_handles = each_song(even, never)
+        p = FakeSongsMenuPlugin(self.songs, None)
+        self.failIf(p.plugin_handles(self.songs))
+        self.failIf(p.plugin_handles(self.songs[:1]))
 
 
 class FakeSongsMenuPlugin(SongsMenuPlugin):

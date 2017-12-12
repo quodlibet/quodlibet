@@ -2,13 +2,15 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from tests import TestCase
 
-from quodlibet.qltk.edittags import *
-from quodlibet.formats._audio import AudioFile
+from quodlibet.qltk.edittags import SplitValues, SplitDisc, SplitTitle, \
+    SplitArranger, AddTagDialog, AudioFileGroup
+from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
 import quodlibet.config
 
@@ -61,12 +63,12 @@ class TAudioFileGroup(TestCase):
         self.assertTrue(group.can_multiple_values("foo") is True)
 
         group = AudioFileGroup([GroupSong(["ha"]), GroupSong(True)])
-        self.assertEqual(group.can_multiple_values(), set(["ha"]))
+        self.assertEqual(group.can_multiple_values(), {"ha"})
         self.assertFalse(group.can_multiple_values("foo"))
         self.assertTrue(group.can_multiple_values("ha"))
 
         group = AudioFileGroup([GroupSong(["foo", "ha"]), GroupSong(["ha"])])
-        self.assertEqual(group.can_multiple_values(), set(["ha"]))
+        self.assertEqual(group.can_multiple_values(), {"ha"})
         self.assertFalse(group.can_multiple_values("foo"))
         self.assertTrue(group.can_multiple_values("ha"))
 
@@ -79,7 +81,7 @@ class TAudioFileGroup(TestCase):
         group = AudioFileGroup(
             [GroupSong(can_change=["foo", "ha"]),
              GroupSong(can_change=["ha"])])
-        self.assertEqual(group.can_change(), set(["ha"]))
+        self.assertEqual(group.can_change(), {"ha"})
         self.assertFalse(group.can_change("foo"))
         self.assertTrue(group.can_change("ha"))
 

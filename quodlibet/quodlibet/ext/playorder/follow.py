@@ -1,28 +1,31 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-from quodlibet.plugins.playorder import PlayOrderPlugin, \
-    PlayOrderRememberedMixin, PlayOrderInOrderMixin
-
+from quodlibet.plugins.playorder import ShufflePlugin
+from quodlibet.order import OrderInOrder, OrderRemembered
+from quodlibet import _
 from quodlibet import app
+from quodlibet.qltk import Icons
 
 
-class FollowOrder(PlayOrderPlugin, PlayOrderRememberedMixin,
-    PlayOrderInOrderMixin):
+class FollowOrder(ShufflePlugin, OrderInOrder, OrderRemembered):
     PLUGIN_ID = "follow"
     PLUGIN_NAME = _("Follow Cursor")
-    PLUGIN_ICON = "gtk-jump-to"
-    PLUGIN_DESC = _("Playback follows your selection.")
+    PLUGIN_ICON = Icons.GO_JUMP
+    PLUGIN_DESC = _("Playback follows your selection, "
+                    "or the next song in the list once exhausted.")
 
     __last_path = None
 
     def next(self, playlist, iter):
-        next_fallback = PlayOrderInOrderMixin.next(self, playlist, iter)
-        PlayOrderRememberedMixin.next(self, playlist, iter)
+        next_fallback = OrderInOrder.next(self, playlist, iter)
+        OrderRemembered.next(self, playlist, iter)
 
         selected = app.window.songlist.get_selected_songs()
         if not selected:
@@ -39,8 +42,8 @@ class FollowOrder(PlayOrderPlugin, PlayOrderRememberedMixin,
         return selected_iter
 
     def previous(self, *args):
-        return super(FollowOrder, self).previous(*args)
         self.__last_path = None
+        return super(FollowOrder, self).previous(*args)
 
     def set(self, playlist, iter):
         if iter:

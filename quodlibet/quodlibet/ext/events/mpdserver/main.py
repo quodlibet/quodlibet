@@ -2,15 +2,18 @@
 # Copyright 2014 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import re
 import shlex
 
-from gi.repository import GObject
+from senf import bytes2fsn, fsn2bytes
 
 from quodlibet import const
+from quodlibet.util import print_d, print_w
+from quodlibet.compat import text_type, iteritems
 from .tcpserver import BaseTCPServer, BaseTCPConnection
 
 
@@ -29,6 +32,19 @@ class AckError(object):
     EXIST = 56
 
 
+class Permissions(object):
+    PERMISSION_NONE = 0
+    PERMISSION_READ = 1
+    PERMISSION_ADD = 2
+    PERMISSION_CONTROL = 4
+    PERMISSION_ADMIN = 8
+    PERMISSION_ALL = PERMISSION_NONE | \
+                     PERMISSION_READ | \
+                     PERMISSION_ADD | \
+                     PERMISSION_CONTROL | \
+                     PERMISSION_ADMIN
+
+
 TAG_MAPPING = [
     (u"Artist", "artist"),
     (u"ArtistSort", "artistsort"),
@@ -37,14 +53,12 @@ TAG_MAPPING = [
     (u"AlbumArtistSort", "albumartistsort"),
     (u"Title", "title"),
     (u"Track", "tracknumber"),
-    (u"Name", ""),
     (u"Genre", "genre"),
     (u"Date", "~year"),
     (u"Composer", "composer"),
     (u"Performer", "performer"),
     (u"Comment", "commend"),
     (u"Disc", "discnumber"),
-    (u"Time", "~#length"),
     (u"Name", "~basename"),
     (u"MUSICBRAINZ_ARTISTID", "musicbrainz_artistid"),
     (u"MUSICBRAINZ_ALBUMID", "musicbrainz_albumid"),
@@ -58,15 +72,7 @@ def format_tags(song):
 
     lines = []
     for mpd_key, ql_key in TAG_MAPPING:
-        if not ql_key:
-            continue
-
-        if ql_key.startswith("~#"):
-            value = song(ql_key, None)
-            if value is not None:
-                value = str(value)
-        else:
-            value = song.comma(ql_key) or None
+        value = song.comma(ql_key) or None
 
         if value is not None:
             lines.append(u"%s: %s" % (mpd_key, value))
@@ -86,18 +92,18 @@ def parse_command(line):
 
     assert isinstance(line, bytes)
 
-    parts = re.split("[ \\t]+", line, maxsplit=1)
+    parts = re.split(b"[ \\t]+", line, maxsplit=1)
     if not parts:
         raise ParseError("empty command")
     command = parts[0]
 
     if len(parts) > 1:
-        lex = shlex.shlex(parts[1], posix=True)
+        lex = shlex.shlex(bytes2fsn(parts[1], "utf-8"), posix=True)
         lex.whitespace_split = True
         lex.commenters = ""
         lex.quotes = "\""
         lex.whitespace = " \t"
-        args = list(lex)
+        args = [fsn2bytes(a, "utf-8") for a in lex]
     else:
         args = []
 
@@ -117,80 +123,32 @@ def parse_command(line):
     return command, dec_args
 
 
-class PlayerOptions(GObject.Object):
-    """Provides a simplified interface for playback options.
-
-    This should probably go into the core.
-    """
-
-    __gsignals__ = {
-        'random-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
-        'repeat-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
-        'single-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
-    }
-
-    def __init__(self, app):
-        super(PlayerOptions, self).__init__()
-
-        self._repeat = app.window.repeat
-        self._rid = self._repeat.connect(
-            "toggled", lambda *x: self.emit("repeat-changed"))
-
-        def order_changed(*args):
-            self.emit("random-changed")
-            self.emit("single-changed")
-
-        self._order = app.window.order
-        self._oid = self._order.connect("changed", order_changed)
-
-    def destroy(self):
-        self._repeat.disconnect(self._rid)
-        del self._repeat
-        self._order.disconnect(self._oid)
-        del self._order
-
-    def set_single(self, value):
-        is_single = self.get_single()
-        if value and not is_single:
-            self._order.set_active_by_name("onesong")
-        elif not value and is_single:
-            self._order.set_active_by_name("inorder")
-
-    def get_single(self):
-        return self._order.get_active_name() == "onesong"
-
-    def get_random(self):
-        return self._order.get_shuffle()
-
-    def set_random(self, value):
-        self._order.set_shuffle(value)
-
-    def get_repeat(self):
-        return self._repeat.get_active()
-
-    def set_repeat(self, value):
-        self._repeat.set_active(value)
-
-
 class MPDService(object):
     """This is the actual shared MPD service which the clients talk to"""
 
     version = (0, 17, 0)
 
-    def __init__(self, app):
+    def __init__(self, app, config):
         self._app = app
         self._connections = set()
         self._idle_subscriptions = {}
+        self._idle_queue = {}
         self._pl_ver = 0
 
-        self._options = PlayerOptions(app)
+        self._config = config
+        self._options = app.player_options
+
+        if not self._config.config_get("password"):
+            self.default_permission = Permissions.PERMISSION_ALL
+        else:
+            self.default_permission = Permissions.PERMISSION_NONE
 
         def options_changed(*args):
             self.emit_changed("options")
 
-        self._options.connect("random-changed", options_changed)
-        self._options.connect("repeat-changed", options_changed)
-        self._options.connect("single-changed", options_changed)
+        self._options.connect("notify::shuffle", options_changed)
+        self._options.connect("notify::repeat", options_changed)
+        self._options.connect("notify::single", options_changed)
 
         self._player_sigs = []
 
@@ -226,40 +184,55 @@ class MPDService(object):
     def destroy(self):
         for id_ in self._player_sigs:
             self._app.player.disconnect(id_)
-        self._options.destroy()
-        del self._app
         del self._options
+        del self._app
 
     def add_connection(self, connection):
         self._connections.add(connection)
+        self._idle_queue[connection] = set()
 
     def remove_connection(self, connection):
         self._idle_subscriptions.pop(connection, None)
+        self._idle_queue.pop(connection, None)
         self._connections.remove(connection)
 
     def register_idle(self, connection, subsystems):
-        self._idle_subscriptions[connection] = subsystems
+        self._idle_subscriptions[connection] = set(subsystems)
+        self.flush_idle()
 
-    def unregister_idle(self, connection):
-        try:
-            del self._idle_subscriptions[connection]
-        except KeyError:
-            pass
+    def flush_idle(self):
+        flushed = []
+        for conn, subs in iteritems(self._idle_subscriptions):
+            # figure out which subsystems to report for each connection
+            queued = self._idle_queue[conn]
+            if subs:
+                to_send = subs & queued
+            else:
+                to_send = queued
+            queued -= to_send
 
-    def emit_changed(self, subsystem):
-        for conn, subs in self._idle_subscriptions.iteritems():
-            if not subs or subsystem in subs:
-                line = u"changed: %s" % subsystem
-                conn.log(u"<- " + line)
-                conn.write_line(line)
+            # send out the response and remove the idle status for affected
+            # connections
+            for subsystem in to_send:
+                conn.write_line(u"changed: %s" % subsystem)
+            if to_send:
+                flushed.append(conn)
                 conn.ok()
                 conn.start_write()
 
+        for conn in flushed:
+            self._idle_subscriptions.pop(conn, None)
+
+    def unregister_idle(self, connection):
+        self._idle_subscriptions.pop(connection, None)
+
+    def emit_changed(self, subsystem):
+        for conn, subs in iteritems(self._idle_queue):
+            subs.add(subsystem)
+        self.flush_idle()
+
     def play(self):
-        if not self._app.player.song:
-            self._app.player.reset()
-        else:
-            self._app.player.paused = False
+        self._app.player.playpause()
 
     def playid(self, songid):
         self.play()
@@ -292,23 +265,23 @@ class MPDService(object):
     def seekcur(self, value, relative):
         if relative:
             pos = self._app.player.get_position()
-            self._app.player.seek(pos + value)
+            self._app.player.seek(pos + value * 1000)
         else:
-            self._app.player.seek(value)
+            self._app.player.seek(value * 1000)
 
     def setvol(self, value):
         """value: 0..100"""
 
-        self._app.player.volume = value / 100.0
+        self._app.player.volume = (value / 100.0) ** 3.0
 
     def repeat(self, value):
-        self._options.set_repeat(value)
+        self._options.repeat = value
 
     def random(self, value):
-        self._options.set_random(value)
+        self._options.shuffle = value
 
     def single(self, value):
-        self._options.set_single(value)
+        self._options.single = value
 
     def stats(self):
         has_song = int(bool(self._app.player.info))
@@ -337,10 +310,10 @@ class MPDService(object):
             state = "stop"
 
         status = [
-            ("volume", int(app.player.volume * 100)),
-            ("repeat", int(self._options.get_repeat())),
-            ("random", int(self._options.get_random())),
-            ("single", int(self._options.get_single())),
+            ("volume", int((app.player.volume ** (1.0 / 3.0)) * 100)),
+            ("repeat", int(self._options.repeat)),
+            ("random", int(self._options.shuffle)),
+            ("single", int(self._options.single)),
             ("consume", 0),
             ("playlist", self._pl_ver),
             ("playlistlength", int(bool(app.player.info))),
@@ -374,6 +347,7 @@ class MPDService(object):
         parts = []
         parts.append(u"file: %s" % info("~filename"))
         parts.append(format_tags(info))
+        parts.append(u"Time: %d" % int(info("~#length")))
         parts.append(u"Pos: %d" % 0)
         parts.append(u"Id: %d" % self._get_id(info))
 
@@ -404,13 +378,14 @@ class MPDService(object):
 
 class MPDServer(BaseTCPServer):
 
-    def __init__(self, app, port):
+    def __init__(self, app, config, port):
         self._app = app
+        self._config = config
         super(MPDServer, self).__init__(port, MPDConnection, const.DEBUG)
 
     def handle_init(self):
         print_d("Creating the MPD service")
-        self.service = MPDService(self._app)
+        self.service = MPDService(self._app, self._config)
 
     def handle_idle(self):
         print_d("Destroying the MPD service")
@@ -438,8 +413,8 @@ class MPDConnection(BaseTCPConnection):
         self.service = service
         service.add_connection(self)
 
-        str_version = ".".join(map(str, service.version))
-        self._buf = bytearray("OK MPD %s\n" % str_version)
+        str_version = u".".join(map(text_type, service.version))
+        self._buf = bytearray((u"OK MPD %s\n" % str_version).encode("utf-8"))
         self._read_buf = bytearray()
 
         # begin - command processing state
@@ -449,6 +424,8 @@ class MPDConnection(BaseTCPConnection):
         self._command_list = []
         self._command = None
         # end - command processing state
+
+        self.permission = self.service.default_permission
 
         self.start_write()
         self.start_read()
@@ -491,6 +468,13 @@ class MPDConnection(BaseTCPConnection):
 
     #  ------------ rest ------------
 
+    def authenticate(self, password):
+        if password == self.service._config.config_get("password"):
+            self.permission = Permissions.PERMISSION_ALL
+        else:
+            self.permission = self.service.default_permission
+            raise MPDRequestError("Password incorrect", AckError.PASSWORD)
+
     def log(self, msg):
         if const.DEBUG:
             print_d("[%s] %s" % (self.name, msg))
@@ -504,7 +488,7 @@ class MPDConnection(BaseTCPConnection):
         """Returns the next line from the read buffer or None"""
 
         try:
-            index = self._read_buf.index("\n")
+            index = self._read_buf.index(b"\n")
         except ValueError:
             return None
 
@@ -515,9 +499,10 @@ class MPDConnection(BaseTCPConnection):
     def write_line(self, line):
         """Writes a line to the client"""
 
-        assert isinstance(line, unicode)
+        assert isinstance(line, text_type)
+        self.log(u"<- " + repr(line))
 
-        self._buf.extend(line.encode("utf-8", errors="replace") + "\n")
+        self._buf.extend(line.encode("utf-8", errors="replace") + b"\n")
 
     def ok(self):
         self.write_line(u"OK")
@@ -528,7 +513,7 @@ class MPDConnection(BaseTCPConnection):
         if index is not None:
             error.append(u"@%d" % index)
         assert self._command is not None
-        error.append("u] {%s}" % self._command)
+        error.append(u"] {%s}" % self._command)
         if msg is not None:
             error.append(u" %s" % msg)
         self.write_line(u"".join(error))
@@ -581,7 +566,11 @@ class MPDConnection(BaseTCPConnection):
                 self.write_line(u"list_OK")
             return
 
-        cmd, do_ack = self._commands[command]
+        cmd, do_ack, permission = self._commands[command]
+        if permission != (self.permission & permission):
+            raise MPDRequestError("Insufficient permission",
+                    AckError.PERMISSION)
+
         cmd(self, self.service, args)
 
         if self._use_command_list:
@@ -593,11 +582,11 @@ class MPDConnection(BaseTCPConnection):
     _commands = {}
 
     @classmethod
-    def Command(cls, name, ack=True):
+    def Command(cls, name, ack=True, permission=Permissions.PERMISSION_ADMIN):
 
         def wrap(func):
             assert name not in cls._commands, name
-            cls._commands[name] = (func, ack)
+            cls._commands[name] = (func, ack, permission)
             return func
 
         return wrap
@@ -651,9 +640,15 @@ def _cmd_idle(conn, service, args):
     service.register_idle(conn, args)
 
 
-@MPDConnection.Command("ping")
+@MPDConnection.Command("ping", permission=Permissions.PERMISSION_NONE)
 def _cmd_ping(conn, service, args):
     return
+
+
+@MPDConnection.Command("password", permission=Permissions.PERMISSION_NONE)
+def _cmd_password(conn, service, args):
+    _verify_length(args, 1)
+    conn.authenticate(args[0])
 
 
 @MPDConnection.Command("noidle")
@@ -661,7 +656,8 @@ def _cmd_noidle(conn, service, args):
     service.unregister_idle(conn)
 
 
-@MPDConnection.Command("close", ack=False)
+@MPDConnection.Command("close", ack=False,
+        permission=Permissions.PERMISSION_NONE)
 def _cmd_close(conn, service, args):
     conn.close()
 
@@ -669,6 +665,16 @@ def _cmd_close(conn, service, args):
 @MPDConnection.Command("play")
 def _cmd_play(conn, service, args):
     service.play()
+
+
+@MPDConnection.Command("listplaylists")
+def _cmd_listplaylists(conn, service, args):
+    pass
+
+
+@MPDConnection.Command("list")
+def _cmd_list(conn, service, args):
+    pass
 
 
 @MPDConnection.Command("playid")
@@ -810,7 +816,7 @@ def _cmd_seekcur(conn, service, args):
     except ValueError:
         raise MPDRequestError("arg not a number")
 
-    service.seekid(time_, relative)
+    service.seekcur(time_, relative)
 
 
 @MPDConnection.Command("outputs")
@@ -820,17 +826,16 @@ def _cmd_outputs(conn, service, args):
     conn.write_line(u"outputenabled: 1")
 
 
-@MPDConnection.Command("commands")
+@MPDConnection.Command("commands", permission=Permissions.PERMISSION_NONE)
 def _cmd_commands(conn, service, args):
     for name in conn.list_commands():
-        conn.write_line(u"command: " + unicode(name))
+        conn.write_line(u"command: " + text_type(name))
 
 
 @MPDConnection.Command("tagtypes")
 def _cmd_tagtypes(conn, service, args):
     for mpd_key, ql_key in TAG_MAPPING:
-        if ql_key:
-            conn.write_line(mpd_key)
+        conn.write_line(mpd_key)
 
 
 @MPDConnection.Command("lsinfo")

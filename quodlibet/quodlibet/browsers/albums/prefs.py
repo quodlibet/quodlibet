@@ -1,66 +1,46 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2013 Nick Boultbee
+#      2012,2013,2016 Nick Boultbee
 #           2009-2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-from gi.repository import Gtk, GLib, Pango
+from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
+from quodlibet import _
+from quodlibet.browsers._base import FakeDisplayItem, EditDisplayPatternMixin
 from quodlibet.formats import PEOPLE
-
-from quodlibet.util import format_rating, connect_obj
+from quodlibet.qltk import Button, Icons
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.textedit import PatternEditBox
-from quodlibet.pattern import XMLFromMarkupPattern
-
-
-EMPTY = _("Songs not in an album")
-PATTERN = """[b]<album|<album>|%s>[/b]<date| (<date>)>
-[small]<~discs|<~discs> - ><~tracks> - <~long-length>[/small]
-<~people>""" % EMPTY
-
-
-class FakeAlbum(dict):
-
-    def get(self, key, default="", connector=" - "):
-        if key[:1] == "~" and '~' in key[1:]:
-            return connector.join(map(self.get, util.tagsplit(key)))
-        elif key[:1] == "~" and key[-4:-3] == ":":
-            func = key[-3:]
-            key = key[:-4]
-            return "%s<%s>" % (util.tag(key), func)
-        elif key in self:
-            return self[key]
-        return util.tag(key)
-
-    __call__ = get
-
-    def comma(self, key):
-        value = self.get(key)
-        if isinstance(value, (int, float)):
-            return value
-        return value.replace("\n", ", ")
+from quodlibet.util import format_rating
+from quodlibet.util.i18n import numeric_phrase
 
 PEOPLE
 _SOME_PEOPLE = "\n".join([util.tag("artist"), util.tag("performer"),
                          util.tag("composer"), util.tag("arranger"), ])
 
+_EMPTY = _("Songs not in an album")
+DEFAULT_PATTERN_TEXT = """[b]<album|<album>|%s>[/b]<date| (<date>)>
+[small]<~discs|<~discs> - ><~tracks> - <~long-length>[/small]
+<~people>""" % _EMPTY
 
-class Preferences(qltk.UniqueWindow):
 
-    _EXAMPLE_ALBUM = FakeAlbum({
+class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
+    _DEFAULT_PATTERN = DEFAULT_PATTERN_TEXT
+
+    _PREVIEW_ITEM = FakeDisplayItem({
         "date": "2010-10-31",
         "~length": util.format_time_display(6319),
         "~long-length": util.format_time_long(6319),
-        "~tracks": ngettext("%d track", "%d tracks", 5) % 5,
-        "~discs": ngettext("%d disc", "%d discs", 2) % 2,
+        "~tracks": numeric_phrase("%d track", "%d tracks", 5),
+        "~discs": numeric_phrase("%d disc", "%d discs", 2),
         "~#rating": 0.75,
         "album": _("An Example Album"),
         "~people": _SOME_PEOPLE + "..."})
@@ -70,11 +50,11 @@ class Preferences(qltk.UniqueWindow):
             return
         super(Preferences, self).__init__()
         self.set_border_width(12)
-        self.set_title(_("Album List Preferences") + " - Quod Libet")
+        self.set_title(_("Album List Preferences"))
         self.set_default_size(420, 380)
         self.set_transient_for(qltk.get_top_parent(browser))
         # Do this config-driven setup at instance-time
-        self._EXAMPLE_ALBUM["~rating"] = format_rating(0.75)
+        self._PREVIEW_ITEM["~rating"] = format_rating(0.75)
 
         box = Gtk.VBox(spacing=6)
         vbox = Gtk.VBox(spacing=6)
@@ -92,28 +72,11 @@ class Preferences(qltk.UniqueWindow):
         f = qltk.Frame(_("Options"), child=vbox)
         box.pack_start(f, False, True, 12)
 
-        vbox = Gtk.VBox(spacing=6)
-        label = Gtk.Label()
-        label.set_alignment(0.0, 0.5)
-        label.set_padding(6, 6)
-        eb = Gtk.EventBox()
-        eb.get_style_context().add_class("entry")
-        eb.add(label)
-
-        edit = PatternEditBox(PATTERN)
-        edit.text = browser._pattern_text
-        edit.apply.connect('clicked', self.__set_pattern, edit, browser)
-        connect_obj(
-            edit.buffer, 'changed', self.__preview_pattern, edit, label)
-
-        vbox.pack_start(eb, False, True, 3)
-        vbox.pack_start(edit, True, True, 0)
-        self.__preview_pattern(edit, label)
-        f = qltk.Frame(_("Album Display"), child=vbox)
-        box.pack_start(f, True, True, 0)
+        display_frame = self.edit_display_pane(browser, _("Album Display"))
+        box.pack_start(display_frame, True, True, 0)
 
         main_box = Gtk.VBox(spacing=12)
-        close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
+        close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect('clicked', lambda *x: self.destroy())
         b = Gtk.HButtonBox()
         b.set_layout(Gtk.ButtonBoxStyle.END)
@@ -128,21 +91,3 @@ class Preferences(qltk.UniqueWindow):
 
         close.grab_focus()
         self.show_all()
-
-    def __set_pattern(self, apply, edit, browser):
-        browser.refresh_pattern(edit.text)
-
-    def __preview_pattern(self, edit, label):
-        try:
-            text = XMLFromMarkupPattern(edit.text) % self._EXAMPLE_ALBUM
-        except:
-            text = _("Invalid pattern")
-            edit.apply.set_sensitive(False)
-        try:
-            Pango.parse_markup(text, -1, u"\u0000")
-        except GLib.GError:
-            text = _("Invalid pattern")
-            edit.apply.set_sensitive(False)
-        else:
-            edit.apply.set_sensitive(True)
-        label.set_markup(text)

@@ -1,20 +1,26 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from quodlibet.config import RATINGS
-from tests import TestCase, DATA_DIR, skipUnless, mkstemp, AbstractTestCase
+from tests import get_data_path, skipUnless, mkstemp, TestCase
 
 import os
 import sys
-import shutil
 import base64
-import StringIO
 
 from quodlibet import config, const, formats
 from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
 from quodlibet.formats._image import EmbeddedImage, APICType
+from quodlibet.compat import long, cBytesIO, iteritems
 
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
 from mutagen.oggvorbis import OggVorbis
+
+from .helper import get_temp_copy
 
 
 def _get_jpeg(size=5):
@@ -23,7 +29,7 @@ def _get_jpeg(size=5):
         GdkPixbuf.Colorspace.RGB, False, 8, size, size)
     fd, fn = mkstemp()
     pb.savev(fn, "jpeg", [], [])
-    with os.fdopen(fd) as h:
+    with os.fdopen(fd, "rb") as h:
         data = h.read()
     os.unlink(fn)
     return data
@@ -44,7 +50,7 @@ class TXiphPickle(TestCase):
         self.failUnless(mod.OggFile is OggFile)
 
 
-class TVCFile(AbstractTestCase):
+class TVCFile(TestCase):
     # Mixin to test Vorbis writing features
 
     def setUp(self):
@@ -52,11 +58,17 @@ class TVCFile(AbstractTestCase):
         config.set("editing", "save_email", "")
         config.set("editing", "save_to_songs", "1")
 
+
+class TVCFileMixin(object):
+
     def test_rating(self):
         self.song["~#rating"] = 0.2
         self.song.write()
         song = type(self.song)(self.filename)
         self.failUnlessEqual(song["~#rating"], 0.2)
+
+    def test_channels(self):
+        assert self.song("~#channels") == 2
 
     def test_deletes_rating(self):
         config.set("editing", "save_email", "foo@bar.org")
@@ -98,14 +110,8 @@ class TVCFile(AbstractTestCase):
         config.set("editing", "save_email", const.EMAIL)
         self.failUnlessEqual(song["~#rating"], 0.2)
 
-    def test_invalid_rating(self):
-        self.song["~#rating"] = "invalid"
-        self.song.write()
-        song = type(self.song)(self.filename)
-        self.failUnlessEqual(song("~#rating"), RATINGS.default)
-
     def test_huge_playcount(self):
-        count = 1000000000000000L
+        count = long(1000000000000000)
         self.song["~#playcount"] = count
         self.song.write()
         song = type(self.song)(self.filename)
@@ -144,7 +150,7 @@ class TVCFile(AbstractTestCase):
         self.failUnless(self.song.can_change())
 
 
-class TTotalTagsBase(AbstractTestCase):
+class TTotalTagsBase(TestCase):
     """Test conversation between the tracknumber/totaltracks/tracktotal
     format and the tracknumber="x/y" format.
 
@@ -156,21 +162,22 @@ class TTotalTagsBase(AbstractTestCase):
 
     def setUp(self):
         config.init()
-        h, self.filename = mkstemp(".ogg")
-        os.close(h)
-        shutil.copy(os.path.join(DATA_DIR, 'empty.ogg'), self.filename)
+        self.filename = get_temp_copy(get_data_path('empty.ogg'))
 
     def tearDown(self):
         os.unlink(self.filename)
         config.quit()
 
+
+class TTotalTagsMixin(object):
+
     def __load_tags(self, tags, expected):
         m = OggVorbis(self.filename)
-        for key, value in tags.iteritems():
+        for key, value in iteritems(tags):
             m.tags[key] = value
         m.save()
         song = OggFile(self.filename)
-        for key, value in expected.iteritems():
+        for key, value in iteritems(expected):
             self.failUnlessEqual(song(key), value)
         if self.MAIN not in expected:
             self.failIf(self.MAIN in song)
@@ -217,12 +224,12 @@ class TTotalTagsBase(AbstractTestCase):
     def __save_tags(self, tags, expected):
         #return
         song = OggFile(self.filename)
-        for key, value in tags.iteritems():
+        for key, value in iteritems(tags):
             song[key] = value
         song.write()
         m = OggVorbis(self.filename)
         # test if all values ended up where we wanted
-        for key, value in expected.iteritems():
+        for key, value in iteritems(expected):
             self.failUnless(key in m.tags)
             self.failUnlessEqual(m.tags[key], [value])
 
@@ -267,25 +274,29 @@ class TTotalTagsBase(AbstractTestCase):
             {self.SINGLE: "1", self.MAIN: "4", self.FALLBACK: "3"})
 
 
-class TTrackTotal(TTotalTagsBase):
+class TTrackTotal(TTotalTagsBase, TTotalTagsMixin):
     MAIN = "tracktotal"
     FALLBACK = "totaltracks"
     SINGLE = "tracknumber"
 
 
-class TDiscTotal(TTotalTagsBase):
+class TDiscTotal(TTotalTagsBase, TTotalTagsMixin):
     MAIN = "disctotal"
     FALLBACK = "totaldiscs"
     SINGLE = "discnumber"
 
 
-class TFLACFile(TVCFile):
+class TFLACFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
-        h, self.filename = mkstemp(".flac")
-        os.close(h)
-        shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
+
+        self.filename = get_temp_copy(get_data_path('empty.flac'))
         self.song = FLACFile(self.filename)
+
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "FLAC")
+        self.assertEqual(self.song("~codec"), "FLAC")
+        self.assertEqual(self.song("~encoding"), "")
 
     def test_mime(self):
         self.failUnless(self.song.mimes)
@@ -313,9 +324,16 @@ class TFLACFile(TVCFile):
         config.quit()
 
 
-class TVCCover(AbstractTestCase):
+class TVCCover(TestCase):
     def setUp(self):
         config.init()
+
+    def tearDown(self):
+        os.unlink(self.filename)
+        config.quit()
+
+
+class TVCCoverMixin(object):
 
     def test_can_change_images(self):
         song = self.QLType(self.filename)
@@ -330,8 +348,8 @@ class TVCCover(AbstractTestCase):
         # coverart + coverartmime
         data = _get_jpeg()
         song = self.MutagenType(self.filename)
-        song["coverart"] = base64.b64encode(data)
-        song["coverartmime"] = "image/jpeg"
+        song["coverart"] = base64.b64encode(data).decode("ascii")
+        song["coverartmime"] = u"image/jpeg"
         song.save()
 
         song = self.QLType(self.filename)
@@ -342,7 +360,7 @@ class TVCCover(AbstractTestCase):
         pic = Picture()
         pic.data = _get_jpeg()
         pic.type = APICType.COVER_FRONT
-        b64pic_cover = base64.b64encode(pic.write())
+        b64pic_cover = base64.b64encode(pic.write()).decode("ascii")
 
         song = self.MutagenType(self.filename)
         song["metadata_block_picture"] = [b64pic_cover]
@@ -355,7 +373,7 @@ class TVCCover(AbstractTestCase):
     def test_handle_old_coverart(self):
         data = _get_jpeg()
         song = self.MutagenType(self.filename)
-        song["coverart"] = base64.b64encode(data)
+        song["coverart"] = base64.b64encode(data).decode("ascii")
         song["coverartmime"] = "image/jpeg"
         song.save()
 
@@ -375,7 +393,7 @@ class TVCCover(AbstractTestCase):
         self.failUnlessEqual(song["coverartmime"][0], "image/jpeg")
 
     def test_handle_invalid_coverart(self):
-        crap = ".-a,a.f,afa-,.-"
+        crap = u".-a,a.f,afa-,.-"
         song = self.MutagenType(self.filename)
         song["coverart"] = crap
         song.save()
@@ -394,12 +412,12 @@ class TVCCover(AbstractTestCase):
         pic = Picture()
         pic.data = _get_jpeg()
         pic.type = APICType.COVER_FRONT
-        b64pic_cover = base64.b64encode(pic.write())
+        b64pic_cover = base64.b64encode(pic.write()).decode("ascii")
 
         pic2 = Picture()
         pic2.data = _get_jpeg(size=6)
         pic2.type = APICType.COVER_BACK
-        b64pic_other = base64.b64encode(pic2.write())
+        b64pic_other = base64.b64encode(pic2.write()).decode("ascii")
 
         song = self.MutagenType(self.filename)
         song["metadata_block_picture"] = [b64pic_other, b64pic_cover]
@@ -439,9 +457,9 @@ class TVCCover(AbstractTestCase):
         self.failUnlessEqual(song["metadata_block_picture"][0], crap)
 
     def test_handle_invalid_flac_picture(self):
-        crap = ".-a,a.f,afa-,.-"
+        crap = b".-a,a.f,afa-,.-"
         song = self.MutagenType(self.filename)
-        song["metadata_block_picture"] = base64.b64encode(crap)
+        song["metadata_block_picture"] = base64.b64encode(crap).decode("ascii")
         song.save()
         song = self.QLType(self.filename)
         self.failIf(song.get_primary_image())
@@ -450,11 +468,11 @@ class TVCCover(AbstractTestCase):
     def test_set_image(self):
         data = _get_jpeg()
         song = self.MutagenType(self.filename)
-        song["coverart"] = base64.b64encode(data)
+        song["coverart"] = base64.b64encode(data).decode("ascii")
         song["coverartmime"] = "image/jpeg"
         song.save()
 
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = self.QLType(self.filename)
@@ -469,27 +487,19 @@ class TVCCover(AbstractTestCase):
         self.assertTrue("coverart" not in song)
         self.assertTrue("coverartmime" not in song)
 
-    def tearDown(self):
-        os.unlink(self.filename)
-        config.quit()
 
-
-class TVCCoverOgg(TVCCover):
+class TVCCoverOgg(TVCCover, TVCCoverMixin):
     def setUp(self):
         TVCCover.setUp(self)
-        h, self.filename = mkstemp(".ogg")
-        os.close(h)
-        shutil.copy(os.path.join(DATA_DIR, 'empty.ogg'), self.filename)
+        self.filename = get_temp_copy(get_data_path('empty.ogg'))
         self.MutagenType = OggVorbis
         self.QLType = OggFile
 
 
-class TVCCoverFlac(TVCCover):
+class TVCCoverFlac(TVCCover, TVCCoverMixin):
     def setUp(self):
         TVCCover.setUp(self)
-        h, self.filename = mkstemp(".flac")
-        os.close(h)
-        shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
+        self.filename = get_temp_copy(get_data_path('empty.flac'))
         self.MutagenType = FLAC
         self.QLType = FLACFile
 
@@ -497,15 +507,13 @@ class TVCCoverFlac(TVCCover):
 class TFlacPicture(TestCase):
     def setUp(self):
         config.init()
-        h, self.filename = mkstemp(".flac")
-        os.close(h)
-        shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), self.filename)
+        self.filename = get_temp_copy(get_data_path('empty.flac'))
 
     def test_get_images(self):
         pic = Picture()
         pic.data = _get_jpeg()
         pic.type = APICType.COVER_FRONT
-        b64pic_cover = base64.b64encode(pic.write())
+        b64pic_cover = base64.b64encode(pic.write()).decode("ascii")
 
         # metadata_block_picture
         song = FLAC(self.filename)
@@ -529,7 +537,7 @@ class TFlacPicture(TestCase):
         self.assertEqual(song.get_images()[-1].type, APICType.COVER_BACK)
 
     def test_get_image(self):
-        data = "abc"
+        data = b"abc"
         song = FLAC(self.filename)
         pic = Picture()
         pic.data = data
@@ -542,7 +550,7 @@ class TFlacPicture(TestCase):
         self.failUnlessEqual(fn.read(), pic.data)
 
     def test_clear_images(self):
-        data = "abc"
+        data = b"abc"
         song = FLAC(self.filename)
         pic = Picture()
         pic.data = data
@@ -557,7 +565,7 @@ class TFlacPicture(TestCase):
         self.assertFalse(song.get_primary_image())
 
     def test_set_image(self):
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = FLACFile(self.filename)
@@ -570,31 +578,42 @@ class TFlacPicture(TestCase):
         config.quit()
 
 
-class TOggFile(TVCFile):
+class TOggFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
-        h, self.filename = mkstemp(".ogg")
-        os.close(h)
-        shutil.copy(os.path.join(DATA_DIR, 'empty.ogg'), self.filename)
+
+        self.filename = get_temp_copy(get_data_path('empty.ogg'))
         self.song = OggFile(self.filename)
 
     def tearDown(self):
         os.unlink(self.filename)
         config.quit()
 
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "Ogg Vorbis")
+        self.assertEqual(self.song("~codec"), "Ogg Vorbis")
+        self.assertEqual(self.song("~encoding"), "")
+
 
 @skipUnless(OggOpus, "Ogg Opus mutagen support missing")
-class TOggOpusFile(TVCFile):
+class TOggOpusFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
-        h, self.filename = mkstemp(".ogg")
-        os.close(h)
-        shutil.copy(os.path.join(DATA_DIR, 'empty.opus'), self.filename)
+
+        self.filename = get_temp_copy(get_data_path('empty.opus'))
         self.song = OggOpusFile(self.filename)
 
     def test_length(self):
-        self.failUnlessEqual(self.song("~#length"), 3)
+        self.assertAlmostEqual(self.song("~#length"), 3.6847, 3)
         self.failUnless("opusenc" in self.song("encoder"))
+
+    def test_channels(self):
+        assert self.song("~#channels") == 2
+
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "Ogg Opus")
+        self.assertEqual(self.song("~codec"), "Ogg Opus")
+        self.assertEqual(self.song("~encoding"), "libopus 0.9.14")
 
     def tearDown(self):
         os.unlink(self.filename)

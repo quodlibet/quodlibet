@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2017 Joe Wreschnig, Michael Urman, Iñigo Serna,
 # Christoph Reiter, Nick Boultbee, Simonas Kazlauskas
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject
+from senf import fsnative
 
 from quodlibet import qltk
-from quodlibet import config
 from quodlibet import app
-from quodlibet.util import thumbnails
-from quodlibet.util.path import is_fsnative
-from quodlibet.qltk.image import (get_scale_factor, pixbuf_from_file,
-    set_image_from_pbosf, get_pbosf_for_pixbuf, pbosf_render, calc_scale_size,
-    scale, add_border_widget)
+from quodlibet.util import thumbnails, print_w
+from quodlibet.qltk.image import pixbuf_from_file, \
+    calc_scale_size, scale, add_border_widget, get_surface_for_pixbuf
 
 
 # TODO: neater way of managing dependency on this particular plugin
@@ -30,6 +29,7 @@ class BigCenteredImage(qltk.Window):
 
     def __init__(self, title, fileobj, parent):
         super(BigCenteredImage, self).__init__(type=Gtk.WindowType.POPUP)
+        self.set_type_hint(Gdk.WindowTypeHint.TOOLTIP)
 
         assert parent
         parent = qltk.get_top_parent(parent)
@@ -42,12 +42,12 @@ class BigCenteredImage(qltk.Window):
             width = int(width / 1.1)
             height = int(height / 1.1)
         else:
-            width = int(Gdk.Screen.width() / 1.75)
-            height = int(Gdk.Screen.height() / 1.75)
+            width = int(Gdk.Screen.width() / 1.8)
+            height = int(Gdk.Screen.height() / 1.8)
 
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 
-        scale_factor = get_scale_factor(self)
+        scale_factor = self.get_scale_factor()
 
         pixbuf = None
         try:
@@ -61,7 +61,7 @@ class BigCenteredImage(qltk.Window):
             return
 
         image = Gtk.Image()
-        set_image_from_pbosf(image, get_pbosf_for_pixbuf(self, pixbuf))
+        image.set_from_surface(get_surface_for_pixbuf(self, pixbuf))
 
         event_box = Gtk.EventBox()
         event_box.add(image)
@@ -81,7 +81,7 @@ class BigCenteredImage(qltk.Window):
 
 
 def get_no_cover_pixbuf(width, height, scale_factor=1):
-    """A no cover pixbux at max width x height"""
+    """A no-cover pixbuf at maximum width x height"""
 
     # win32 workaround: https://bugzilla.gnome.org/show_bug.cgi?id=721062
 
@@ -117,7 +117,7 @@ class ResizeImage(Gtk.Bin):
             path = None
         else:
             path = fileobj.name
-            assert is_fsnative(path)
+            assert isinstance(path, fsnative)
 
         # XXX: Don't reload if the file path is the same.
         # Could prevent updates if fileobj.name isn't defined
@@ -134,7 +134,7 @@ class ResizeImage(Gtk.Bin):
             return self._pixbuf
         self._dirty = False
 
-        max_size = 256 * get_scale_factor(self)
+        max_size = 256 * self.get_scale_factor()
 
         self._pixbuf = None
         if self._file:
@@ -188,7 +188,7 @@ class ResizeImage(Gtk.Bin):
         alloc = self.get_allocation()
         width, height = alloc.width, alloc.height
 
-        scale_factor = get_scale_factor(self)
+        scale_factor = self.get_scale_factor()
 
         width *= scale_factor
         height *= scale_factor
@@ -196,17 +196,16 @@ class ResizeImage(Gtk.Bin):
         if self._path:
             if width < (2 * scale_factor) or height < (2 * scale_factor):
                 return
-            round_thumbs = config.getboolean("albumart", "round")
             pixbuf = scale(
                 pixbuf, (width - 2 * scale_factor, height - 2 * scale_factor))
-            pixbuf = add_border_widget(pixbuf, self, None, round_thumbs)
+            pixbuf = add_border_widget(pixbuf, self)
         else:
             pixbuf = scale(pixbuf, (width, height))
 
         style_context = self.get_style_context()
 
-        pbosf = get_pbosf_for_pixbuf(self, pixbuf)
-        pbosf_render(style_context, cairo_context, pbosf, 0, 0)
+        surface = get_surface_for_pixbuf(self, pixbuf)
+        Gtk.render_icon_surface(style_context, cairo_context, surface, 0, 0)
 
 
 class CoverImage(Gtk.EventBox):
@@ -242,7 +241,7 @@ class CoverImage(Gtk.EventBox):
         self.set_image(None)
         if self.__cancellable:
             self.__cancellable.cancel()
-        cancellable = self.__cancellable = Gio.Cancellable.new()
+        cancellable = self.__cancellable = Gio.Cancellable()
 
         if song:
             def cb(success, result):

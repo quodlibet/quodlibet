@@ -2,18 +2,22 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import sys
-import os
-import pickle
 
-from tests import TestCase, DATA_DIR
-from helper import capture_output, temp_filename
+from senf import fsnative
+
+from tests import TestCase, get_data_path
+from .helper import capture_output
 
 from quodlibet import formats
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile, load_audio_files, dump_audio_files, \
+    SerializationError
+from quodlibet.compat import PY3, long
+from quodlibet.util.picklehelper import pickle_dumps
 from quodlibet import config
 
 
@@ -26,6 +30,7 @@ class TFormats(TestCase):
 
     def test_presence(self):
         self.failUnless(formats.aac)
+        self.failUnless(formats.aiff)
         self.failUnless(formats.midi)
         self.failUnless(formats.mod)
         self.failUnless(formats.monkeysaudio)
@@ -40,8 +45,8 @@ class TFormats(TestCase):
         self.failUnless(formats.wma)
         self.failUnless(formats.xiph)
 
-    def test_infos(self):
-        self.failUnless(formats._infos[".mp3"] is formats.mp3.MP3File)
+    def test_loaders(self):
+        self.failUnless(formats.loaders[".mp3"] is formats.mp3.MP3File)
 
     def test_migration(self):
         self.failUnless(formats.mp3 is sys.modules["quodlibet.formats.mp3"])
@@ -57,94 +62,166 @@ class TFormats(TestCase):
         self.assertFalse(formats.filter("foomp3"))
 
     def test_music_file(self):
-        path = os.path.join(DATA_DIR, 'silence-44-s.mp3')
+        path = get_data_path('silence-44-s.mp3')
         self.assertTrue(formats.MusicFile(path))
 
         # non existing
         with capture_output() as (stdout, stderr):
-            song = formats.MusicFile(os.path.join(DATA_DIR, "nope.mp3"))
+            song = formats.MusicFile(get_data_path("nope.mp3"))
             self.assertFalse(song)
-            self.assertTrue("Error" in stderr.getvalue())
+            self.assertTrue(stderr.getvalue())
 
         # unknown extension
         with capture_output() as (stdout, stderr):
-            song = formats.MusicFile(os.path.join(DATA_DIR, "nope.xxx"))
+            song = formats.MusicFile(get_data_path("nope.xxx"))
             self.assertFalse(song)
-            self.assertTrue("extension" in stderr.getvalue())
+            self.assertFalse(stderr.getvalue())
 
 
 class TPickle(TestCase):
 
-    # protocol 1 pickle of all types (created by test_pickle below)
-    PICKLE = (
-        b']q\x00(ccopy_reg\n_reconstructor\nq\x01(cquodlibet.formats.vgm\nVgm'
-        b'File\nq\x02c__builtin__\ndict\nq\x03}q\x04tq\x05Rq\x06h\x01(cquodli'
-        b'bet.formats.monkeysaudio\nMonkeysAudioFile\nq\x07h\x03}q\x08tq\tRq'
-        b'\nh\x01(cquodlibet.formats.mpc\nMPCFile\nq\x0bh\x03}q\x0ctq\rRq\x0eh'
-        b'\x01(cquodlibet.formats.aac\nAACFile\nq\x0fh\x03}q\x10tq\x11Rq'
-        b'\x12h\x01(cquodlibet.formats.midi\nMidiFile\nq\x13h\x03}q\x14'
-        b'tq\x15Rq\x16h\x01(cquodlibet.formats.wavpack\nWavpackFile\nq\x17'
-        b'h\x03}q\x18tq\x19Rq\x1ah\x01(cquodlibet.formats.trueaudio\nTrueAudio'
-        b'File\nq\x1bh\x03}q\x1ctq\x1dRq\x1eh\x01(cquodlibet.formats.mp4\nMP4'
-        b'File\nq\x1fh\x03}q tq!Rq"h\x01(cquodlibet.formats.xiph\nOggFLACFile'
-        b'\nq#h\x03}q$tq%Rq&h\x01(cquodlibet.formats.xiph\nOggSpeexFile\nq\'h'
-        b'\x03}q(tq)Rq*h\x01(cquodlibet.formats.xiph\nOggOpusFile\nq+h\x03}q,'
-        b'tq-Rq.h\x01(cquodlibet.formats.xiph\nOggFile\nq/h\x03}q0tq1Rq2h\x01'
-        b'(cquodlibet.formats.xiph\nFLACFile\nq3h\x03}q4tq5Rq6h\x01(cquodlibet'
-        b'.formats.xiph\nOggTheoraFile\nq7h\x03}q8tq9Rq:h\x01(cquodlibet.forma'
-        b'ts.wav\nWAVEFile\nq;h\x03}q<tq=Rq>h\x01(cquodlibet.formats.wma\nWMA'
-        b'File\nq?h\x03}q@tqARqBh\x01(cquodlibet.formats.spc\nSPCFile\nqCh\x03'
-        b'}qDtqERqFh\x01(cquodlibet.formats.mp3\nMP3File\nqGh\x03}qHtqIRqJh'
-        b'\x01(cquodlibet.formats.remote\nRemoteFile\nqKh\x03}qLtqMRqNh\x01(cq'
-        b'uodlibet.formats.mod\nModFile\nqOh\x03}qPtqQRqRe.')
-
-    def test_pickle(self):
+    def setUp(self):
         types = formats.types
         instances = []
         for t in types:
-            instances.append(AudioFile.__new__(t))
+            i = AudioFile.__new__(t)
+            # we want to pickle/unpickle everything, since historically
+            # these things ended up in the file
+            dict.__init__(
+                i, {b"foo": u"bar", u"quux": b"baz", "a": "b",
+                    u"b": 42, "c": 0.25})
+            instances.append(i)
+        self.instances = instances
 
-        with temp_filename() as filename:
-            with open(filename, "wb") as h:
-                pickle.dump(instances, h, 1)
+    def test_load_audio_files(self):
+        for protocol in [0, 1, 2]:
+            data = pickle_dumps(self.instances, protocol)
+            items = load_audio_files(data)
+            assert len(items) == len(formats.types)
+            assert all(isinstance(i, AudioFile) for i in items)
 
-            with open(filename, "rb") as h:
-                self.assertEqual(len(pickle.load(h)), len(formats.types))
+    def test_sanitized_py3(self):
+        i = AudioFile.__new__(list(formats.types)[0])
+        # this is something that old py2 versions could pickle
+        dict.__init__(i, {
+            b"bytes": b"bytes",
+            u"unicode": u"unicode",
+            b"~filename": b"somefile",
+            u"~mountpoint": u"somemount",
+            u"int": 42,
+            b"float": 1.25,
+        })
+        data = pickle_dumps([i], 1)
+        items = load_audio_files(data, process=True)
+        i = items[0]
 
-    def test_unpickle(self):
-        self.assertEqual(len(pickle.loads(self.PICKLE)), len(formats.types))
+        if not PY3:
+            return
 
-    def test_load_items(self):
-        from quodlibet.library.libraries import load_items
+        assert i["bytes"] == "bytes"
+        assert i["unicode"] == "unicode"
+        assert isinstance(i["~filename"], fsnative)
+        assert isinstance(i["~mountpoint"], fsnative)
+        assert i["int"] == 42
+        assert i["float"] == 1.25
 
-        with temp_filename() as filename:
-            with open(filename, "wb") as h:
-                h.write(self.PICKLE)
+    def test_sanitize_py2_normal(self):
+        if PY3:
+            return
 
-            self.assertEqual(len(load_items(filename)), len(formats.types))
+        af = AudioFile({
+            b"foo": u"bar",
+            u"öäü": u"bla",
+            "~#num": 1,
+            "~#num2": long(2),
+            "~#num3": 1.25,
+            "~filename": fsnative(u"filename"),
+            "~mountpoint": fsnative(u"mount"),
+            "~somethingdifferent": u"hello",
+        })
 
-    def test_dump_items(self):
-        from quodlibet.library.libraries import dump_items, load_items
+        data = dump_audio_files([af])
+        new = load_audio_files(data)
+        assert dict(new[0]) == dict(af)
 
-        types = formats.types
-        instances = []
-        for t in types:
-            instances.append(AudioFile.__new__(t))
+    def test_sanitize_py2_fixup(self):
+        if PY3:
+            return
 
-        with temp_filename() as filename:
-            dump_items(filename, instances)
-            self.assertEqual(len(load_items(filename)), len(formats.types))
+        old = dict.__new__(AudioFile)
+        dict.__init__(old, {
+            b"foo": b"bar",
+            u"öäü": b"bla",
+            "~#num": u"1",
+            "~#num2": u"1.25",
+            "~#num3": u"bla",
+            "~filename": u"text",
+            "~mountpoint": b"bytes",
+            "~somethingdifferent": b"hello",
+        })
 
-    def test_unpickle_save(self):
-        from quodlibet.library.libraries import unpickle_save
+        fixed = {
+            b"foo": u"bar",
+            u"öäü": u"bla",
+            "~#num": 1,
+            "~#num2": 1.25,
+            "~#num3": 0,
+            "~filename": fsnative(u"text"),
+            "~mountpoint": fsnative(u"bytes"),
+            "~somethingdifferent": u"hello",
+        }
 
-        items = unpickle_save(self.PICKLE, [])
-        self.assertEqual(len(items), len(formats.types))
+        data = dump_audio_files([old])
+        new = load_audio_files(data)
+        assert dict(new[0]) == fixed
+        for v1, v2 in zip(sorted(new[0].values()), sorted(fixed.values())):
+            assert type(v1) is type(v2)
 
-        broken = self.PICKLE.replace(b"SPCFile", b"FooFile")
-        items = unpickle_save(broken, [])
-        self.assertEqual(len(items), len(formats.types) - 1)
+    def test_dump_audio_files(self):
+        data = dump_audio_files(self.instances, process=False)
+        items = load_audio_files(data, process=False)
 
-        broken = self.PICKLE.replace(b"formats.spc", b"formats.foo")
-        items = unpickle_save(broken, [])
-        self.assertEqual(len(items), len(formats.types) - 1)
+        assert len(items) == len(self.instances)
+        for a, b in zip(items, self.instances):
+            a = dict(a)
+            b = dict(b)
+            for key in a:
+                assert b[key] == a[key]
+            for key in b:
+                assert b[key] == a[key]
+
+    def test_save_ascii_keys_as_bytes_on_py3(self):
+        i = AudioFile.__new__(list(formats.types)[0])
+        dict.__setitem__(i, u"foo", u"bar")
+        data = dump_audio_files([i], process=True)
+        if PY3:
+            items = load_audio_files(data, process=False)
+            assert isinstance(list(items[0].keys())[0], bytes)
+
+    def test_dump_empty(self):
+        data = dump_audio_files([])
+        assert load_audio_files(data) == []
+
+    def test_load_audio_files_missing_class(self):
+        for protocol in [0, 1, 2]:
+            data = pickle_dumps(self.instances, protocol)
+
+            items = load_audio_files(data)
+            self.assertEqual(len(items), len(formats.types))
+            assert all(isinstance(i, AudioFile) for i in items)
+
+            broken = data.replace(b"SPCFile", b"FooFile")
+            items = load_audio_files(broken)
+            self.assertEqual(len(items), len(formats.types) - 1)
+            assert all(isinstance(i, AudioFile) for i in items)
+
+            broken = data.replace(b"formats.spc", b"formats.foo")
+            items = load_audio_files(broken)
+            self.assertEqual(len(items), len(formats.types) - 1)
+            assert all(isinstance(i, AudioFile) for i in items)
+
+    def test_unpickle_random_class(self):
+        for protocol in [0, 1, 2]:
+            data = pickle_dumps([42], protocol)
+            with self.assertRaises(SerializationError):
+                load_audio_files(data)

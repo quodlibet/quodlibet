@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 import io
 import os
 import shutil
@@ -6,16 +11,18 @@ import shutil
 from gi.repository import Gtk
 from gi.repository import GdkPixbuf
 
-from tests import TestCase, mkdtemp, mkstemp, DATA_DIR
+from tests import TestCase, mkdtemp, mkstemp, get_data_path
 
 from quodlibet import config
 from quodlibet.plugins import Plugin
 from quodlibet.formats.mp3 import MP3File
-from quodlibet.formats._audio import AudioFile
-from quodlibet.formats._image import EmbeddedImage
+from quodlibet.formats import AudioFile, EmbeddedImage
 from quodlibet.plugins.cover import CoverSourcePlugin
 from quodlibet.util.cover.manager import CoverPluginHandler, CoverManager
 from quodlibet.util.path import path_equal
+
+from .helper import get_temp_copy
+
 
 DUMMY_COVER = io.StringIO()
 
@@ -216,13 +223,8 @@ class TCoverManagerBuiltin(TestCase):
         pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 20, 20)
         pb.savev(self.cover2, "png", [], [])
 
-        fd, self.file1 = mkstemp(".mp3", dir=self.main)
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.file1)
-
-        fd, self.file2 = mkstemp(".mp3", dir=self.main)
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.file2)
+        self.file1 = get_temp_copy(get_data_path('silence-44-s.mp3'))
+        self.file2 = get_temp_copy(get_data_path('silence-44-s.mp3'))
 
         self.manager = CoverManager()
 
@@ -268,7 +270,7 @@ class TCoverManagerBuiltin(TestCase):
         song2 = MP3File(self.file2)
 
         def is_embedded(fileobj):
-            return not path_equal(fileobj.name, self.cover2)
+            return not path_equal(fileobj.name, self.cover2, True)
 
         # each should find a cover
         self.assertTrue(is_embedded(self.manager.get_cover(song1)))

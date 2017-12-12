@@ -2,8 +2,9 @@
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """Everything related to Ubuntu Unity integration (quicklist..)
 
@@ -12,6 +13,7 @@ See the MPRIS plugin for sound menu integration.
 
 import gi
 
+from quodlibet import _
 from quodlibet.util import gi_require_versions
 
 
@@ -44,23 +46,20 @@ def init(desktop_id, player):
 
     launcher = Unity.LauncherEntry.get_for_desktop_id(desktop_id)
 
-    main = Dbusmenu.Menuitem.new()
+    main = Dbusmenu.Menuitem()
 
-    play_pause = Dbusmenu.Menuitem.new()
+    play_pause = Dbusmenu.Menuitem()
     play_pause.property_set(Dbusmenu.MENUITEM_PROP_LABEL,
                             _("Play/Pause"))
     play_pause.property_set_bool(Dbusmenu.MENUITEM_PROP_VISIBLE, True)
     main.child_append(play_pause)
 
     def play_pause_cb(item, timestamp):
-        if player.song is None:
-            player.reset()
-        else:
-            player.paused ^= True
+        player.playpause()
 
     play_pause.connect("item-activated", play_pause_cb)
 
-    next_ = Dbusmenu.Menuitem.new()
+    next_ = Dbusmenu.Menuitem()
     next_.property_set(Dbusmenu.MENUITEM_PROP_LABEL, _("Next"))
     next_.property_set_bool(Dbusmenu.MENUITEM_PROP_VISIBLE, True)
     main.child_append(next_)
@@ -70,7 +69,7 @@ def init(desktop_id, player):
 
     next_.connect("item-activated", next_cb)
 
-    prev = Dbusmenu.Menuitem.new()
+    prev = Dbusmenu.Menuitem()
     prev.property_set(Dbusmenu.MENUITEM_PROP_LABEL, _("Previous"))
     prev.property_set_bool(Dbusmenu.MENUITEM_PROP_VISIBLE, True)
     main.child_append(prev)

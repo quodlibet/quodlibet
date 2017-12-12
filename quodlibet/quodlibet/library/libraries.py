@@ -4,8 +4,9 @@
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """Base library classes.
 
@@ -13,26 +14,28 @@ These classes are the most basic library classes. As such they are the
 least useful but most content-agnostic.
 """
 
-from pickle import Unpickler
-from cStringIO import StringIO
-import cPickle as pickle
 import os
 import shutil
 import time
 
 from gi.repository import GObject
+from senf import fsn2text, fsnative
 
-from quodlibet.formats import MusicFile
+from quodlibet import _
+from quodlibet.formats import MusicFile, AudioFileError, load_audio_files, \
+    dump_audio_files, SerializationError
 from quodlibet.query import Query
 from quodlibet.qltk.notif import Task
+from quodlibet.util.atomic import atomic_save
 from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
 from quodlibet import util
-from quodlibet import const
 from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.path import fsdecode, expanduser, unexpand, mkdir, \
-    normalize_path
+from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, \
+    ismount
+from quodlibet.compat import iteritems, iterkeys, itervalues, listkeys, \
+    listvalues, listfilter
 
 
 class Library(GObject.GObject, DictMixin):
@@ -88,11 +91,11 @@ class Library(GObject.GObject, DictMixin):
 
         if not items:
             return
-        if self.librarian and self in self.librarian.libraries.itervalues():
+        if self.librarian and self in itervalues(self.librarian.libraries):
             print_d("Changing %d items via librarian." % len(items), self)
             self.librarian.changed(items)
         else:
-            items = set(item for item in items if item in self)
+            items = {item for item in items if item in self}
             if not items:
                 return
             print_d("Changing %d items directly." % len(items), self)
@@ -110,16 +113,16 @@ class Library(GObject.GObject, DictMixin):
 
     def __iter__(self):
         """Iterate over the items in the library."""
-        return self._contents.itervalues()
+        return itervalues(self._contents)
 
     def iteritems(self):
-        return self._contents.iteritems()
+        return iteritems(self._contents)
 
     def iterkeys(self):
-        return self._contents.iterkeys()
+        return iterkeys(self._contents)
 
     def itervalues(self):
-        return self._contents.itervalues()
+        return itervalues(self._contents)
 
     def __len__(self):
         """The number of items in the library."""
@@ -138,8 +141,10 @@ class Library(GObject.GObject, DictMixin):
 
     def get_content(self):
         """All items including hidden ones for saving the library
-           (see FileLibrary with masked items)"""
-        return self.values()
+           (see FileLibrary with masked items)
+        """
+
+        return listvalues(self)
 
     def keys(self):
         return self._contents.keys()
@@ -170,7 +175,7 @@ class Library(GObject.GObject, DictMixin):
         already in the library.
         """
 
-        items = set(item for item in items if item not in self)
+        items = {item for item in items if item not in self}
         if not items:
             return items
 
@@ -188,7 +193,7 @@ class Library(GObject.GObject, DictMixin):
         Return the sequence of items actually removed.
         """
 
-        items = set(item for item in items if item in self)
+        items = {item for item in items if item in self}
         if not items:
             return items
 
@@ -201,81 +206,22 @@ class Library(GObject.GObject, DictMixin):
         return items
 
 
-def dump_items(filename, items):
-    """Pickle items to disk.
-
-    Doesn't handle exceptions.
-    """
-
-    dirname = os.path.dirname(filename)
-    mkdir(dirname)
-
-    with util.atomic_save(filename, ".tmp", "wb") as fileobj:
-        # While protocol 2 is usually faster it uses __setitem__
-        # for unpickle and we override it to clear the sort cache.
-        # This roundtrip makes it much slower, so we use protocol 1
-        # unpickle numbers (py2.7):
-        #   2: 0.66s / 2 + __set_item__: 1.18s / 1 + __set_item__: 0.72s
-        # see: http://bugs.python.org/issue826897
-        pickle.dump(items, fileobj, 1)
-
-
-def unpickle_save(data, default, type_=dict):
-    """Unpickle a list of `type_` subclasses and skip items for which the
-    class is missing.
-
-    In case not just the class lookup fails, returns default.
-    """
-
-    class dummy(type_):
-        pass
-
-    class SaveUnpickler(Unpickler):
-
-        def find_class(self, module, name):
-            try:
-                return Unpickler.find_class(self, module, name)
-            except (ImportError, AttributeError):
-                return dummy
-
-    fileobj = StringIO(data)
-
-    try:
-        items = SaveUnpickler(fileobj).load()
-    except Exception:
-        return default
-
-    return [i for i in items if not isinstance(i, dummy)]
-
-
-def load_items(filename, default=None):
+def _load_items(filename):
     """Load items from disk.
 
     In case of an error returns default or an empty list.
     """
 
-    if default is None:
-        default = []
-
     try:
-        fp = open(filename, "rb")
+        with open(filename, "rb") as fp:
+            data = fp.read()
     except EnvironmentError:
-        if const.DEBUG or os.path.exists(filename):
-            print_w("Couldn't load library from: %r" % filename)
-        return default
-
-    # pickle makes 1000 read syscalls for 6000 songs
-    # read the file into memory so that there are less
-    # context switches. saves 40% CPU time..
-    try:
-        data = fp.read()
-    except IOError:
-        fp.close()
-        return default
+        print_w("Couldn't load library file from: %r" % filename)
+        return []
 
     try:
-        items = pickle.loads(data)
-    except Exception:
+        items = load_audio_files(data)
+    except SerializationError:
         # there are too many ways this could fail
         util.print_exc()
 
@@ -285,10 +231,7 @@ def load_items(filename, default=None):
         except EnvironmentError:
             util.print_exc()
 
-        # try to skip items for which the class is missing
-        # XXX: we assume the items are dict subclasses here.. while nothing
-        # else does
-        items = unpickle_save(data, default)
+        return []
 
     return items
 
@@ -307,7 +250,7 @@ class PicklingMixin(object):
         self.filename = filename
         print_d("Loading contents of %r." % filename, self)
 
-        items = load_items(filename)
+        items = _load_items(filename)
 
         # this loads all items without checking their validity, but makes
         # sure that non-mounted items are masked
@@ -324,7 +267,12 @@ class PicklingMixin(object):
         print_d("Saving contents to %r." % filename, self)
 
         try:
-            dump_items(filename, self.get_content())
+            dirname = os.path.dirname(filename)
+            mkdir(dirname)
+            with atomic_save(filename, "wb") as fileobj:
+                fileobj.write(dump_audio_files(self.get_content()))
+                # unhandled SerializationError, shouldn't happen -> better
+                # not replace the library file with nothing
         except EnvironmentError:
             print_w("Couldn't save library to path: %r" % filename)
         else:
@@ -359,10 +307,6 @@ class AlbumLibrary(Library):
         self._rsig = library.connect('removed', self.__removed)
         self._csig = library.connect('changed', self.__changed)
         self.__added(library, library.values(), signal=False)
-
-    def refresh(self, items):
-        """Refresh albums after a manual change."""
-        self._changed(set(items))
 
     def load(self):
         # deprectated
@@ -439,7 +383,7 @@ class AlbumLibrary(Library):
                 changed.add(self._contents[key])
             else:  # key changed.. look for it in each album
                 to_add.append(song)
-                for key, album in self._contents.iteritems():
+                for key, album in iteritems(self._contents):
                     if song in album.songs:
                         album.songs.remove(song)
                         if not album.songs:
@@ -489,11 +433,9 @@ class SongLibrary(PicklingLibrary):
             self.albums.destroy()
 
     def tag_values(self, tag):
-        """Return a list of all values for the given tag."""
-        tags = set()
-        for song in self.itervalues():
-            tags.update(song.list(tag))
-        return list(tags)
+        """Return a set of all values for the given tag."""
+        return {value for song in itervalues(self)
+                for value in song.list(tag)}
 
     def rename(self, song, newname, changed=None):
         """Rename a song.
@@ -515,17 +457,61 @@ class SongLibrary(PicklingLibrary):
             print_d("%s: Delaying changed signal." % (type(self).__name__,))
             changed.add(song)
         else:
-            self.changed(set([song]))
+            self.changed({song})
 
     def query(self, text, sort=None, star=Query.STAR):
         """Query the library and return matching songs."""
-        if isinstance(text, str):
+        if isinstance(text, bytes):
             text = text.decode('utf-8')
 
         songs = self.values()
         if text != "":
-            songs = filter(Query(text, star).search, songs)
+            songs = listfilter(Query(text, star).search, songs)
         return songs
+
+
+def iter_paths(root, exclude=[], skip_hidden=True):
+    """yields paths contained in root (symlinks dereferenced)
+
+    Any path starting with any of the path parts included in exclude
+    are ignored (before and after dereferencing symlinks)
+
+    Directory symlinks are not followed (except root itself)
+
+    Args:
+        root (fsnative)
+        exclude (List[fsnative])
+        skip_hidden (bool): Ignore files which are hidden or where any
+            of the parent directories are hidden.
+    Yields:
+        fsnative: absolute dereferenced paths
+    """
+
+    assert isinstance(root, fsnative)
+    assert all((isinstance(p, fsnative) for p in exclude))
+    assert os.path.abspath(root)
+
+    def skip(path):
+        if skip_hidden and ishidden(path):
+            return True
+        # FIXME: normalize paths..
+        return any((path.startswith(p) for p in exclude))
+
+    if skip_hidden and ishidden(root):
+        return
+
+    for path, dnames, fnames in os.walk(root):
+        if skip_hidden:
+            dnames[:] = list(filter(
+                lambda d: not ishidden(os.path.join(path, d)), dnames))
+        for filename in fnames:
+            fullfilename = os.path.join(path, filename)
+            if skip(fullfilename):
+                continue
+            fullfilename = os.path.realpath(fullfilename)
+            if skip(fullfilename):
+                continue
+            yield fullfilename
 
 
 class FileLibrary(PicklingLibrary):
@@ -554,7 +540,15 @@ class FileLibrary(PicklingLibrary):
             mountpoint = item.mountpoint
 
             if mountpoint not in mounts:
-                is_mounted = os.path.ismount(mountpoint)
+                is_mounted = ismount(mountpoint)
+
+                # In case mountpoint is mounted through autofs we need to
+                # access a sub path for it to mount
+                # https://github.com/quodlibet/quodlibet/issues/2146
+                if not is_mounted:
+                    item.exists()
+                    is_mounted = ismount(mountpoint)
+
                 mounts[mountpoint] = is_mounted
                 # at least one not mounted, make sure masked has an entry
                 if not is_mounted:
@@ -592,7 +586,7 @@ class FileLibrary(PicklingLibrary):
             if item.exists():
                 try:
                     item.reload()
-                except (StandardError, EnvironmentError):
+                except AudioFileError:
                     print_d("Error reloading %r." % item.key, self)
                     util.print_exc()
                     return False, True
@@ -628,12 +622,12 @@ class FileLibrary(PicklingLibrary):
 
         if was_changed:
             if changed is None:
-                self.emit('changed', set([item]))
+                self.emit('changed', {item})
             else:
                 changed.add(item)
         elif was_removed:
             if removed is None:
-                self.emit('removed', set([item]))
+                self.emit('removed', {item})
             else:
                 removed.add(item)
 
@@ -658,10 +652,10 @@ class FileLibrary(PicklingLibrary):
         if cofuncid:
             task.copool(cofuncid)
         for i, (point, items) in task.list(enumerate(self._masked.items())):
-            if os.path.ismount(point):
+            if ismount(point):
                 self._contents.update(items)
                 del(self._masked[point])
-                self.emit('added', items.values())
+                self.emit('added', listvalues(items))
                 yield True
 
         task = Task(_("Library"), _("Scanning library"))
@@ -697,11 +691,19 @@ class FileLibrary(PicklingLibrary):
 
         Subclasses must override this to open the file correctly.
         """
+
+        raise NotImplementedError
+
+    def contains_filename(self, filename):
+        """Returns if a song for the passed filename is in the library.
+
+        Returns:
+            bool
+        """
+
         raise NotImplementedError
 
     def scan(self, paths, exclude=[], cofuncid=None):
-        added = []
-        exclude = [expanduser(path) for path in exclude if path]
 
         def need_yield(last_yield=[0]):
             current = time.time()
@@ -717,48 +719,54 @@ class FileLibrary(PicklingLibrary):
                 return True
             return False
 
-        for fullpath in paths:
-            print_d("Scanning %r." % fullpath, self)
-            desc = _("Scanning %s") % (unexpand(fsdecode(fullpath)))
+        # first scan each path for new files
+        paths_to_load = []
+        for scan_path in paths:
+            print_d("Scanning %r." % scan_path)
+            desc = _("Scanning %s") % (fsn2text(unexpand(scan_path)))
             with Task(_("Library"), desc) as task:
                 if cofuncid:
                     task.copool(cofuncid)
-                fullpath = expanduser(fullpath)
-                if filter(fullpath.startswith, exclude):
-                    continue
-                for path, dnames, fnames in os.walk(fullpath):
-                    for filename in fnames:
-                        fullfilename = os.path.join(path, filename)
-                        if filter(fullfilename.startswith, exclude):
-                            continue
-                        if fullfilename not in self._contents:
-                            fullfilename = os.path.realpath(fullfilename)
-                            # skip unknown file extensions
-                            if not formats.filter(fullfilename):
-                                continue
-                            if filter(fullfilename.startswith, exclude):
-                                continue
-                            if fullfilename not in self._contents:
-                                item = self.add_filename(fullfilename, False)
-                                if item is not None:
-                                    added.append(item)
-                                    if len(added) > 100 or need_added():
-                                        self.add(added)
-                                        added = []
-                                        task.pulse()
-                                        yield
-                                if added and need_yield():
-                                    yield
-                if added:
-                    self.add(added)
-                    added = []
-                    task.pulse()
-                    yield True
+
+                for real_path in iter_paths(scan_path, exclude=exclude):
+                    if need_yield():
+                        task.pulse()
+                        yield
+                    # skip unknown file extensions
+                    if not formats.filter(real_path):
+                        continue
+                    # already loaded
+                    if self.contains_filename(real_path):
+                        continue
+                    paths_to_load.append(real_path)
+
+        yield
+
+        # then (try to) load all new files
+        with Task(_("Library"), _("Loading files")) as task:
+            if cofuncid:
+                task.copool(cofuncid)
+
+            added = []
+            for real_path in task.gen(paths_to_load):
+                item = self.add_filename(real_path, False)
+                if item is not None:
+                    added.append(item)
+                    if len(added) > 100 or need_added():
+                        self.add(added)
+                        added = []
+                        yield
+                if added and need_yield():
+                    yield
+            if added:
+                self.add(added)
+                added = []
+                yield True
 
     def get_content(self):
         """Return visible and masked items"""
 
-        items = self.values()
+        items = listvalues(self)
         for masked in self._masked.values():
             items.extend(masked.values())
 
@@ -775,12 +783,12 @@ class FileLibrary(PicklingLibrary):
             point = item.mountpoint
         except AttributeError:
             # Checking a key.
-            for point in self._masked.itervalues():
+            for point in itervalues(self._masked):
                 if item in point:
                     return True
         else:
             # Checking a full item.
-            return item in self._masked.get(point, {}).itervalues()
+            return item in itervalues(self._masked.get(point, {}))
 
     def unmask(self, point):
         print_d("Unmasking %r." % point, self)
@@ -791,7 +799,7 @@ class FileLibrary(PicklingLibrary):
     def mask(self, point):
         print_d("Masking %r." % point, self)
         removed = {}
-        for item in self.itervalues():
+        for item in itervalues(self):
             if item.mountpoint == point:
                 removed[item.key] = item
         if removed:
@@ -802,12 +810,12 @@ class FileLibrary(PicklingLibrary):
     def masked_mount_points(self):
         """List of mount points that contain masked items"""
 
-        return self._masked.keys()
+        return listkeys(self._masked)
 
     def get_masked(self, mount_point):
         """List of items for a mount point"""
 
-        return self._masked.get(mount_point, {}).values()
+        return listvalues(self._masked.get(mount_point, {}))
 
     def remove_masked(self, mount_point):
         """Remove all songs for a masked point"""
@@ -822,6 +830,14 @@ class SongFileLibrary(SongLibrary, FileLibrary):
     def __init__(self, name=None):
         print_d("Initializing SongFileLibrary \"%s\"." % name)
         super(SongFileLibrary, self).__init__(name)
+
+    def contains_filename(self, filename):
+        key = normalize_path(filename, True)
+        return key in self._contents
+
+    def get_filename(self, filename):
+        key = normalize_path(filename, True)
+        return self._contents.get(key)
 
     def add_filename(self, filename, add=True):
         """Add a song to the library based on filename.

@@ -4,12 +4,16 @@
 #           2009-2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import GObject
 
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
+from quodlibet.util import print_d
+from quodlibet import config
+from quodlibet.compat import listfilter
 
 
 class Equalizer(object):
@@ -69,11 +73,10 @@ class BasePlayer(GObject.GObject, Equalizer):
     # Replay Gain profiles are a list of values to be tried in order;
     # Four things can set them: rg menu, browser, play order, and a default.
     replaygain_profiles = [None, None, None, ["none"]]
-    _volume = 1.0
     _paused = True
     _source = None
 
-    _gsignals_ = {
+    __gsignals__ = {
         'song-started':
         (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'song-ended':
@@ -86,11 +89,15 @@ class BasePlayer(GObject.GObject, Equalizer):
         'error': (GObject.SignalFlags.RUN_LAST, None, (object, object)),
     }
 
-    _gproperties_ = {
+    __gproperties__ = {
         'volume': (float, 'player volume', 'the volume of the player',
                    0.0, 1.0, 1.0,
-                   GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE)
-        }
+                   GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
+        'seekable': (bool, 'seekable', 'if the stream is seekable', True,
+                     GObject.ParamFlags.READABLE),
+        'mute': (bool, 'mute', 'if the stream is muted', False,
+                 GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
+    }
 
     def __init__(self, *args, **kwargs):
         super(BasePlayer, self).__init__()
@@ -105,19 +112,69 @@ class BasePlayer(GObject.GObject, Equalizer):
 
         self._destroy()
 
-    def do_get_property(self, property):
-        if property.name == 'volume':
-            return self._volume
+    def calc_replaygain_volume(self, volume):
+        """Returns a new float volume for the given volume.
+
+        Takes into account the global active replaygain profile list,
+        the user specified replaygain settings and the tags available
+        for that song.
+
+        Args:
+            volume (float): 0.0..1.0
+        Returns:
+            float: adjusted volume, can be outside of 0.0..0.1
+        """
+
+        if self.song and config.getboolean("player", "replaygain"):
+            profiles = listfilter(None, self.replaygain_profiles)[0]
+            fb_gain = config.getfloat("player", "fallback_gain")
+            pa_gain = config.getfloat("player", "pre_amp_gain")
+            scale = self.song.replay_gain(profiles, pa_gain, fb_gain)
         else:
-            raise AttributeError
+            scale = 1
+        return volume * scale
+
+    def _reset_replaygain(self):
+        self.volume = self.volume
+
+    def reset_replaygain(self):
+        """Call in case something affecting the replaygain adjustment has
+        changed to change the output volume
+        """
+
+        self._reset_replaygain()
+
+    @property
+    def has_external_volume(self):
+        """If setting the volume will affect anything outside of QL and
+        if the volume can change without any event in QL.
+        """
+
+        return False
 
     @property
     def volume(self):
-        return self._volume
+        return self.props.volume
 
     @volume.setter
     def volume(self, v):
         self.props.volume = min(1.0, max(0.0, v))
+
+    @property
+    def mute(self):
+        return self.props.mute
+
+    @mute.setter
+    def mute(self, v):
+        self.props.mute = v
+
+    @property
+    def seekable(self):
+        """If the current song can be seeked, in case it's not clear defaults
+        to True. See the "seekable" GObject property for notifications.
+        """
+
+        return self.props.seekable
 
     def _destroy(self):
         """Clean up"""
@@ -152,6 +209,13 @@ class BasePlayer(GObject.GObject, Equalizer):
 
         raise NotImplementedError
 
+    def sync(self, timeout):
+        """Tries to finish any pending operations. Mainly for testing.
+        timeout in seconds.
+        """
+
+        pass
+
     def get_position(self):
         """The current position in milliseconds"""
 
@@ -172,7 +236,27 @@ class BasePlayer(GObject.GObject, Equalizer):
         self.paused = True
         self.seek(0)
 
-    def reset(self):
+    def play(self):
+        """If a song is active then unpause else reset the source and start
+        playing.
+        """
+
+        if self.song is None:
+            self._reset()
+        else:
+            self.paused = False
+
+    def playpause(self):
+        """If a song is active then toogle the pause mode else reset the
+        source and start playing.
+        """
+
+        if self.song is None:
+            self._reset()
+        else:
+            self.paused ^= True
+
+    def _reset(self):
         """Reset the source and start playing if possible"""
 
         self._source.reset()
@@ -196,7 +280,7 @@ class BasePlayer(GObject.GObject, Equalizer):
         If force is True always go back.
         """
 
-        if force or self.get_position() < 1500:
+        if force or self.get_position() < 1500 or not self.seekable:
             self._source.previous()
             self._end(True)
         else:

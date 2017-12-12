@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011,2013 Nick Boultbee
+#           2011-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import random
@@ -12,13 +13,8 @@ import re
 import ctypes
 import ctypes.util
 import sys
-import traceback
-import urlparse
 import unicodedata
 import threading
-import subprocess
-import webbrowser
-import contextlib
 
 # Windows doesn't have fcntl, just don't lock for now
 try:
@@ -27,11 +23,40 @@ try:
 except ImportError:
     fcntl = None
 
-from quodlibet.util.path import iscommand, is_fsnative
+from senf import fsnative, environ, argv
+
+from quodlibet.compat import reraise as py_reraise, PY2, text_type, \
+    iteritems, reduce, number_types, long
 from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
-from quodlibet.util.dprint import print_d, print_
+from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
+from .misc import cached_func, get_module_dir, get_ca_file, \
+    get_locale_encoding, NamedTemporaryFile
+from .environment import is_plasma, is_unity, is_enlightenment, \
+    is_linux, is_windows, is_wine, is_osx
+from .enum import enum
+from .i18n import _, C_, locale_format
+
+
+# pyflakes
+cached_func, enum, print_w, print_exc, is_plasma, is_unity, is_enlightenment,
+is_linux, is_windows, is_wine, is_osx, get_module_dir, get_ca_file,
+get_locale_encoding, NamedTemporaryFile
+
+
+if PY2:
+    def gdecode(s):
+        """Returns unicode for the glib text type"""
+
+        assert isinstance(s, bytes)
+        return s.decode("utf-8")
+else:
+    def gdecode(s):
+        """Returns unicode for the glib text type"""
+
+        assert isinstance(s, text_type)
+        return s
 
 
 class InstanceTracker(object):
@@ -85,10 +110,10 @@ class OptionParser(object):
 
     def __longs(self):
         longs = []
-        for long, arg in self.__args.items():
-            longs.append(long + (arg and "=" or ""))
-        for long, canon in self.__translate_long.items():
-            longs.append(long + (self.__args[canon] and "=" or ""))
+        for long_, arg in self.__args.items():
+            longs.append(long_ + (arg and "=" or ""))
+        for long_, canon in self.__translate_long.items():
+            longs.append(long_ + (self.__args[canon] and "=" or ""))
         return longs
 
     def __format_help(self, opt, space):
@@ -106,7 +131,7 @@ class OptionParser(object):
             l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
         s = _("Usage: %(program)s %(usage)s") % {
-            "program": sys.argv[0],
+            "program": argv[0],
             "usage": self.__usage if self.__usage else _("[options]"),
         }
         s += "\n"
@@ -143,11 +168,11 @@ class OptionParser(object):
 
     def parse(self, args=None):
         if args is None:
-            args = sys.argv[1:]
+            args = argv[1:]
         from getopt import getopt, GetoptError
         try:
             opts, args = getopt(args, self.__shorts(), self.__longs())
-        except GetoptError, s:
+        except GetoptError as s:
             s = str(s)
             text = []
             if "not recognized" in s:
@@ -160,7 +185,7 @@ class OptionParser(object):
                 text.append(
                     _("%r is not a unique prefix.") % s.split()[1])
             if "help" in self.__args:
-                text.append(_("Try %s --help.") % sys.argv[0])
+                text.append(_("Try %s --help.") % argv[0])
 
             print_e("\n".join(text))
             raise SystemExit(True)
@@ -210,17 +235,21 @@ def italic(string):
     return "<i>%s</i>" % string
 
 
-def parse_time(timestr, err=(ValueError, re.error)):
+def parse_time(timestr, err=object()):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
+
     if timestr[0:1] == "-":
         m = -1
         timestr = timestr[1:]
     else:
         m = 1
+
     try:
         return m * reduce(lambda s, a: s * 60 + int(a),
                           re.split(r":|\.", timestr), 0)
-    except err:
+    except (ValueError, re.error):
+        if err is None:
+            raise
         return 0
 
 
@@ -296,7 +325,24 @@ def parse_date(datestr):
     except IndexError:
         raise ValueError
 
-    return time.mktime(time.strptime(datestr, frmt))
+    try:
+        return time.mktime(time.strptime(datestr, frmt))
+    except OverflowError as e:
+        raise ValueError(e)
+
+
+def format_int_locale(value):
+    """Turn an integer into a grouped, locale-dependent string
+    e.g. 12345 -> "12,345" or "12.345" etc
+    """
+    return locale_format("%d", value, grouping=True)
+
+
+def format_float_locale(value, format="%.2f"):
+    """Turn a float into a grouped, locale-dependent string
+    e.g. 12345.67 -> "12,345.67" or "12.345,67" etc
+    """
+    return locale_format(format, value, grouping=True)
 
 
 def format_rating(value, blank=True):
@@ -312,23 +358,33 @@ def format_rating(value, blank=True):
     return prefs.full_symbol * ons + prefs.blank_symbol * offs
 
 
+def format_bitrate(value):
+    return _("%d kbps") % int(value)
+
+
 def format_size(size):
-    """Turn an integer size value into something human-readable."""
+    """Turn an integer size value into something human-readable.
+
+    Args:
+        size (int): size in bytes
+    Returns:
+        text_type
+    """
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)
     if size >= 1024 ** 3:
-        return "%.1f GB" % (float(size) / (1024 ** 3))
+        return u"%.1f GB" % (float(size) / (1024 ** 3))
     elif size >= 1024 ** 2 * 100:
-        return "%.0f MB" % (float(size) / (1024 ** 2))
+        return u"%.0f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 ** 2 * 10:
-        return "%.1f MB" % (float(size) / (1024 ** 2))
+        return u"%.1f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 ** 2:
-        return "%.2f MB" % (float(size) / (1024 ** 2))
+        return u"%.2f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 * 10:
-        return "%d KB" % int(size / 1024)
+        return u"%d KB" % int(size / 1024)
     elif size >= 1024:
-        return "%.2f KB" % (float(size) / 1024)
+        return u"%.2f KB" % (float(size) / 1024)
     else:
-        return "%d B" % size
+        return u"%d B" % size
 
 
 def format_time(time):
@@ -354,12 +410,21 @@ def format_time_display(time):
     return format_time(time).replace(":", u"\u2236")
 
 
+def format_time_seconds(time):
+    from quodlibet import ngettext
+
+    time_str = format_int_locale(time)
+    return ngettext("%s second", "%s seconds", time) % time_str
+
+
 def format_time_long(time, limit=2):
     """Turn a time value in seconds into x hours, x minutes, etc.
 
     `limit` limits the count of units used, so the result will be <= time.
     0 means no limit.
     """
+
+    from quodlibet import ngettext
 
     if time < 1:
         return _("No time information")
@@ -390,6 +455,21 @@ def format_time_long(time, limit=2):
     return ", ".join(time_str)
 
 
+def format_time_preferred(t, fmt=None):
+    """Returns duration formatted to user's preference"""
+    from quodlibet.config import DurationFormat, DURATION
+    fmt = fmt or DURATION.format
+
+    if fmt == DurationFormat.STANDARD:
+        return format_time_long(t, 2)
+    elif fmt == DurationFormat.NUMERIC:
+        return format_time_display(t)
+    elif fmt == DurationFormat.FULL:
+        return format_time_long(t, 5)
+    else:
+        return format_time_seconds(t)
+
+
 def capitalize(str):
     """Capitalize a string, not affecting any character after the first."""
     return str[:1].upper() + str[1:]
@@ -402,7 +482,8 @@ def _split_numeric_sortkey(s, limit=10,
     it can be used for human sorting. Also removes all extra whitespace."""
     result = reg(s)
     if not result or not limit:
-        return (join(s.split()),)
+        text = join(s.split())
+        return (text,) if text else tuple()
     else:
         start, end = result.span()
         return (
@@ -412,53 +493,23 @@ def _split_numeric_sortkey(s, limit=10,
 
 
 def human_sort_key(s, normalize=unicodedata.normalize):
-    if not isinstance(s, unicode):
+    if not s:
+        return ()
+    if not isinstance(s, text_type):
         s = s.decode("utf-8")
     s = normalize("NFD", s.lower())
-    return s and _split_numeric_sortkey(s)
+    return _split_numeric_sortkey(s)
 
 
 def website(site):
     """Open the given URL in the user's default browser"""
 
-    if os.name == "nt" or sys.platform == "darwin":
-        return webbrowser.open(site)
+    from gi.repository import Gtk, Gdk, GLib
 
-    # all commands here return immediately
-    for prog in ["xdg-open", "gnome-open"]:
-        if not iscommand(prog):
-            continue
-
-        status = subprocess.check_call([prog, site])
-        if status == 0:
-            return True
-
-    # sensible-browser is a debian thing
-    blocking_progs = ["sensible-browser"]
-    blocking_progs.extend(os.environ.get("BROWSER", "").split(":"))
-
-    for prog in blocking_progs:
-        if not iscommand(prog):
-            continue
-
-        # replace %s with the url
-        args = prog.split()
-        for i, arg in enumerate(args):
-            if arg == "%s":
-                args[i] = site
-                break
-        else:
-            args.append(site)
-
-        # calling e.g. firefox blocks, so call async and hope for the best
-        try:
-            spawn(args)
-        except RuntimeError:
-            continue
-        else:
-            return True
-
-    return False
+    try:
+        Gtk.show_uri(None, site, Gdk.CURRENT_TIME)
+    except GLib.Error:
+        print_exc()
 
 
 def tag(name, cap=True):
@@ -474,7 +525,7 @@ def tag(name, cap=True):
             # Translators: If tag names, when capitalized, should not
             # be title-cased ("Looks Like This"), but rather only have
             # the first letter capitalized, translate this string as
-            # something other than "titlecase?".
+            # something non-empty other than "titlecase?".
             if C_("check", "titlecase?") == "titlecase?":
                 parts = map(title, parts)
             else:
@@ -501,10 +552,13 @@ def tagsplit(tag):
         return [tag]
 
 
-def pattern(pat, cap=True, esc=False):
+def pattern(pat, cap=True, esc=False, markup=False):
     """Return a 'natural' version of the pattern string for human-readable
-    bits. Assumes all tags in the pattern are present."""
-    from quodlibet.pattern import Pattern, XMLFromPattern
+    bits. Assumes all tags in the pattern are present.
+    """
+
+    from quodlibet.pattern import Pattern, XMLFromPattern, XMLFromMarkupPattern
+    from quodlibet.formats import FILESYSTEM_TAGS
 
     class Fakesong(dict):
         cap = False
@@ -514,13 +568,22 @@ def pattern(pat, cap=True, esc=False):
 
         def list(self, key):
             return [tag(k, self.cap) for k in tagsplit(key)]
-        list_seperate = list
-        __call__ = comma
+        list_separate = list
+
+        def __call__(self, tag, *args):
+            if tag in FILESYSTEM_TAGS:
+                return fsnative(text_type(tag))
+            return 0 if '~#' in tag[:2] else self.comma(tag)
 
     fakesong = Fakesong({'filename': tag('filename', cap)})
     fakesong.cap = cap
     try:
-        p = (esc and XMLFromPattern(pat)) or Pattern(pat)
+        if markup:
+            p = XMLFromMarkupPattern(pat)
+        elif esc:
+            p = XMLFromPattern(pat)
+        else:
+            p = Pattern(pat)
     except ValueError:
         return _("Invalid pattern")
 
@@ -538,10 +601,7 @@ def spawn(argv, stdout=False):
 
     from gi.repository import GLib
 
-    types = map(type, argv)
-    if not (min(types) == max(types) == str):
-        raise TypeError("executables and arguments must be str objects")
-    print_d("Running %r" % " ".join(argv))
+    print_d("Running %r" % argv)
     args = GLib.spawn_async(argv=argv, flags=GLib.SpawnFlags.SEARCH_PATH,
                             standard_output=stdout)
 
@@ -555,19 +615,8 @@ def fver(tup):
     return ".".join(map(str, tup))
 
 
-def uri_is_valid(uri):
-    return bool(urlparse.urlparse(uri)[0])
-
-
 def make_case_insensitive(filename):
     return "".join(["[%s%s]" % (c.lower(), c.upper()) for c in filename])
-
-
-def print_exc(limit=None, file=None):
-    """A wrapper preventing crashes on broken pipes in print_exc."""
-    if not file:
-        file = sys.stderr
-    print_(traceback.format_exc(limit=limit), output=file)
 
 
 class DeferredSignal(object):
@@ -578,7 +627,7 @@ class DeferredSignal(object):
     priority and prevents multiple calls from being inserted in the
     mainloop at a time, greatly improving responsiveness in some places.
 
-    When the target function will finally be called the arguments passed
+    When the target function is finally called, the arguments passed
     are the last arguments passed to DeferredSignal.
 
     `priority` defaults to GLib.PRIORITY_DEFAULT
@@ -617,8 +666,8 @@ class DeferredSignal(object):
                 timeout, f, priority=priority)
 
     @property
-    def im_self(self):
-        return self.func.im_self
+    def __self__(self):
+        return self.func.__self__
 
     @property
     def __code__(self):
@@ -627,6 +676,13 @@ class DeferredSignal(object):
     @property
     def __closure__(self):
         return self.func.__closure__
+
+    def call(self, *args):
+        """Force a call"""
+
+        self.abort()
+        self.args = args
+        self._wrap()
 
     def abort(self):
         """Abort any queued up calls.
@@ -682,8 +738,8 @@ def _connect_destroy(sender, func, detailed_signal, handler, *args, **kwargs):
     to the bound method and the bound to object doesn't get GCed.
     """
 
-    if hasattr(handler, "im_self"):
-        obj = handler.im_self
+    if hasattr(handler, "__self__"):
+        obj = handler.__self__
     else:
         # XXX: get the "self" var of the enclosing scope.
         # Used for nested functions which ref the object but aren't methods.
@@ -736,11 +792,11 @@ def sanitize_tags(tags, stream=False):
     """
 
     san = {}
-    for key, value in tags.iteritems():
+    for key, value in iteritems(tags):
         key = key.lower()
         key = {"location": "website"}.get(key, key)
 
-        if isinstance(value, unicode):
+        if isinstance(value, text_type):
             lower = value.lower().strip()
 
             if key == "channel-mode":
@@ -794,7 +850,7 @@ def sanitize_tags(tags, stream=False):
         if not stream and key in ("title", "album", "artist", "date"):
             continue
 
-        if isinstance(value, (int, long, float)):
+        if isinstance(value, number_types):
             if not key.startswith("~#"):
                 key = "~#" + key
             san[key] = value
@@ -802,7 +858,7 @@ def sanitize_tags(tags, stream=False):
             if key.startswith("~#"):
                 key = key[2:]
 
-            if not isinstance(value, unicode):
+            if not isinstance(value, text_type):
                 continue
 
             value = value.strip()
@@ -851,15 +907,10 @@ def limit_songs(songs, max, weight_by_ratings=False):
         return songs
     else:
         if weight_by_ratings:
-            def choose(r1, r2):
-                if r1 or r2:
-                    return cmp(random.random(), r1 / (r1 + r2))
-                else:
-                    return random.randint(-1, 1)
-
-            def rating(song):
-                return song("~#rating")
-            songs.sort(cmp=choose, key=rating)
+            def rating_weighted_random(song):
+                # Apply even (random : higher rating) weighting
+                return (1 - song("~#rating")) * (1 + random.random())
+            songs.sort(key=rating_weighted_random)
         else:
             random.shuffle(songs)
         return songs[:max]
@@ -875,56 +926,16 @@ def gi_require_versions(name, versions):
 
     import gi
 
+    error = None
     for version in versions:
         try:
             gi.require_version(name, version)
         except ValueError as e:
-            pass
+            error = e
         else:
             return version
     else:
-        raise e
-
-
-@contextlib.contextmanager
-def atomic_save(filename, suffix, mode):
-    """Try to replace the content of a file in the safest way possible.
-
-    * filename+suffix will be created during the process.
-    * On UNIX this operation is atomic, on Windows it is not.
-
-    with atomic_save("config.cfg", ".tmp", "wb") as f:
-        f.write(data)
-
-    Can raise.
-    """
-
-    assert is_fsnative(filename)
-
-    temp_filename = filename + suffix
-    fileobj = open(temp_filename, "wb")
-    try:
-        if fcntl is not None:
-            fcntl.flock(fileobj.fileno(), fcntl.LOCK_EX)
-
-        yield fileobj
-
-        fileobj.flush()
-        os.fsync(fileobj.fileno())
-
-        # No atomic rename on windows
-        if os.name == "nt":
-            fileobj.close()
-            try:
-                os.remove(filename)
-            except EnvironmentError:
-                pass
-
-        os.rename(temp_filename, filename)
-    finally:
-        if fcntl is not None:
-            fcntl.flock(fileobj.fileno(), fcntl.LOCK_UN)
-        fileobj.close()
+        raise error
 
 
 def load_library(names, shared=True):
@@ -946,10 +957,22 @@ def load_library(names, shared=True):
     else:
         load_func = ctypes.cdll.LoadLibrary
 
+    if is_osx():
+        # make sure it's either empty or contains /usr/lib.
+        # (jhbuild sets it for example). Otherwise ctypes can't
+        # find libc (bug?)
+        if "DYLD_FALLBACK_LIBRARY_PATH" in environ:
+            paths = environ["DYLD_FALLBACK_LIBRARY_PATH"]
+            paths = paths.split(os.pathsep)
+            if "/usr/lib" not in paths:
+                paths.append("/usr/lib")
+                environ["DYLD_FALLBACK_LIBRARY_PATH"] = os.pathsep.join(paths)
+
     errors = []
     for name in names:
         dlopen_name = name
-        if ".so" not in name and ".dll" not in name:
+        if ".so" not in name and ".dll" not in name and \
+                ".dylib" not in name:
             dlopen_name = ctypes.util.find_library(name) or name
 
         try:
@@ -1094,41 +1117,6 @@ def re_escape(string, BAD="/.^$*+-?{,\\[]|()<>#=!:"):
     return type(string)().join(map(needs_escape, string))
 
 
-def enum(cls):
-    """Class decorator for enum types::
-
-        @enum
-        class SomeEnum(object):
-            FOO = 0
-            BAR = 1
-
-    Result is an int subclass and all attributes are instances of it.
-    """
-
-    assert cls.__bases__ == (object,)
-
-    d = dict(cls.__dict__)
-    new_type = type(cls.__name__, (int,), d)
-    new_type.__module__ = cls.__module__
-
-    map_ = {}
-    for key, value in d.iteritems():
-        if key.upper() == key and isinstance(value, (int, long)):
-            value_instance = new_type(value)
-            setattr(new_type, key, value_instance)
-            map_[value] = key
-
-    def repr_(self):
-        if self in map_:
-            return "%s.%s" % (type(self).__name__, map_[self])
-        else:
-            return "%s(%s)" % (type(self).__name__, self)
-
-    setattr(new_type, "__repr__", repr_)
-
-    return new_type
-
-
 def set_process_title(title):
     """Sets process name as visible in ps or top. Requires ctypes libc
     and is almost certainly *nix-only. See issue 736
@@ -1162,31 +1150,11 @@ def list_unique(sequence):
     return l
 
 
-def set_win32_unicode_argv():
-    if os.name != "nt":
-        return
+def reraise(tp, value, tb=None):
+    """Reraise an exception with a new exception type and
+    the original stack trace
+    """
 
-    import ctypes
-    from ctypes import cdll, windll, wintypes
-
-    GetCommandLineW = cdll.kernel32.GetCommandLineW
-    GetCommandLineW.argtypes = []
-    GetCommandLineW.restype = wintypes.LPCWSTR
-
-    CommandLineToArgvW = windll.shell32.CommandLineToArgvW
-    CommandLineToArgvW.argtypes = [
-        wintypes.LPCWSTR, ctypes.POINTER(ctypes.c_int)]
-    CommandLineToArgvW.restype = ctypes.POINTER(wintypes.LPWSTR)
-
-    LocalFree = windll.kernel32.LocalFree
-    LocalFree.argtypes = [wintypes.HLOCAL]
-    LocalFree.restype = wintypes.HLOCAL
-
-    argc = ctypes.c_int()
-    argv = CommandLineToArgvW(GetCommandLineW(), ctypes.byref(argc))
-    if not argv:
-        return
-
-    sys.argv = argv[max(0, argc.value - len(sys.argv)):argc.value]
-
-    LocalFree(argv)
+    if tb is None:
+        tb = sys.exc_info()[2]
+    py_reraise(tp, value, tb)

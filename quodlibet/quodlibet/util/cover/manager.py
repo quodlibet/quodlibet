@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
-#           2014 Nick Boultbee
+#      2014,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from itertools import chain
-from multiprocessing.pool import ThreadPool
 
-from gi.repository import GObject, GLib
+from gi.repository import GObject
 
 from quodlibet import config
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.util.cover import built_in
+from quodlibet.util import print_d
+from quodlibet.util.thread import call_async
 from quodlibet.util.thumbnails import get_thumbnail_from_file
 from quodlibet.plugins.cover import CoverSourcePlugin
 
@@ -24,8 +26,7 @@ class CoverPluginHandler(PluginHandler):
     def __init__(self, use_built_in=True):
         self.providers = set()
         if use_built_in:
-            self.built_in = set([built_in.EmbedCover,
-                                 built_in.FilesystemCover])
+            self.built_in = {built_in.EmbeddedCover, built_in.FilesystemCover}
         else:
             self.built_in = set()
 
@@ -52,7 +53,7 @@ class CoverPluginHandler(PluginHandler):
 class CoverManager(GObject.Object):
 
     __gsignals__ = {
-        # artwork_changed([AudioFile]), emmited if the cover art for one
+        # artwork_changed([AudioFile]), emitted if the cover art for one
         # or more songs might have changed
         'cover-changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
@@ -62,7 +63,6 @@ class CoverManager(GObject.Object):
     def __init__(self, use_built_in=True):
         super(CoverManager, self).__init__()
         self.plugin_handler = CoverPluginHandler(use_built_in)
-        self._pool = ThreadPool()
 
     def init_plugins(self):
         """Register the cover sources plugin handler with the global
@@ -122,7 +122,7 @@ class CoverManager(GObject.Object):
             cover = provider.cover
             if cover:
                 name = provider.__class__.__name__
-                print_d('Found local cover from {0}'.format(name))
+                print_d('Found local cover from {0}: {1}'.format(name, cover))
                 callback(True, cover)
             else:
                 provider.connect('fetch-success', success)
@@ -217,16 +217,5 @@ class CoverManager(GObject.Object):
         if fileobj is None:
             return
 
-        def main_loop_callback(result):
-            if not cancel.is_cancelled():
-                callback(result)
-
-        def thread_callback(result):
-            if cancel.is_cancelled():
-                return
-            GLib.idle_add(main_loop_callback, result,
-                          priority=GLib.PRIORITY_DEFAULT)
-
-        self._pool.apply_async(
-            get_thumbnail_from_file, args=(fileobj, (width, height)),
-            callback=thread_callback)
+        call_async(get_thumbnail_from_file, cancel, callback,
+                   args=(fileobj, (width, height)))

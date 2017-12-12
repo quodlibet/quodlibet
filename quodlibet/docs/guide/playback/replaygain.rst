@@ -3,7 +3,7 @@
 Replay Gain
 ===========
 
-`Replay Gain <http://en.wikipedia.org/wiki/Replay_Gain>`_ is a common 
+`Replay Gain <https://en.wikipedia.org/wiki/Replay_Gain>`_ is a common 
 standard for adjusting the loudness of songs/albums to the same level.
 
 Quod Libet provides tools for analyzing songs, saving the calculated values 
@@ -22,7 +22,7 @@ select some songs, or some albums and activate the replaygain plugin in the
 plugin submenu. The replaygain plugin has to go through every bit of song 
 data so this can take some time.
 
-After the the analyzing part is finished you can save the calculated
+After the analyzing part is finished you can save the calculated
 values. They will be written into the song's metadata.
 
 The replay gain plugin calculates a peak and a gain value for each song and
@@ -33,13 +33,13 @@ is needed because the range where the song volume can be increased is limited
 and pushing the volume over it would lead to sound distortion, so called
 "clipping". The calculated gain adjustments are relative to 89 dB.
 
-To find out more about how the calculation is done, read the `detailed 
-summary 
-<http://wiki.hydrogenaudio.org/index.php?title=Replay_Gain_specification>`_ 
-over at the hydrogenaudio's knowledgebase. QL uses GStreamer for this 
-operation, so check out `rganalysis docs 
-<http://www.gstreamer.net/data/doc/gstreamer/head/gst-plugins-good-plugins/ht
-ml/gst-plugins-good-plugins-rganalysis.html>`_ for more info.
+To find out more about how the calculation is done, read the `detailed summary
+<http://wiki.hydrogenaud.io/index.php?title=Replay_Gain_specification>`_ over
+at the hydrogenaudio's knowledgebase. QL uses GStreamer for this operation, so
+check out `rganalysis docs
+<https://gstreamer.freedesktop.org/data/doc/gstreamer/head/
+gst-plugins-good-plugins/html/gst-plugins-good-plugins-rganalysis.html>`_ for
+more info.
 
 
 Setting it up
@@ -55,7 +55,7 @@ There are two configuration options available:
 
 *Fall-back gain* is the volume adjustment that gets used for songs with no 
 replay gain tags (which have not been analyzed). Most audio files are 
-rather high volume these days and the difference between a 89db song and an 
+rather high volume these days and the difference between an 89db song and an 
 unadjusted song can be quite high (e.g. >9dB). So to avoid a sudden volume 
 jump, try setting this value to the average gain adjustment in your library.
 

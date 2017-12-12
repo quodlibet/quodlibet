@@ -3,9 +3,11 @@
 #           2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.plugins.gstelement import GStreamerPlugin
@@ -30,7 +32,7 @@ class GStreamerPluginHandler(PluginHandler):
             except Exception:
                 util.print_exc()
             if not element:
-                print_w(
+                util.print_w(
                     _("GStreamer plugin '%(name)s' could not be initialized")
                     % {"name": plugin.PLUGIN_ID})
                 return

@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from tests import TestCase
 from tests.helper import realized
 
@@ -6,10 +11,11 @@ from quodlibet import plugins
 from quodlibet import config
 
 from quodlibet.plugins import Plugin
+from quodlibet.plugins.cover import CoverSourcePlugin
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.pluginwin import PluginWindow, PluginErrorWindow, \
-    PluginListView, PluginFilterCombo, PluginPreferencesContainer, \
-    ComboType
+    PluginListView, PluginEnabledFilterCombo, PluginPreferencesContainer, \
+    EnabledType, PluginTypeFilterCombo
 
 
 class FakePlugin(object):
@@ -19,7 +25,7 @@ class FakePlugin(object):
 
     @classmethod
     def PluginPreferences(cls, parent):
-        return PluginFilterCombo()
+        return PluginEnabledFilterCombo()
 
 
 class FakePlugin2(FakePlugin):
@@ -55,10 +61,19 @@ class TPluginWindow(TestCase):
             plist.select_by_plugin_id("foobar")
         plist.destroy()
 
-    def test_filter_combo(self):
-        combo = PluginFilterCombo()
+    def test_enabled_filter_combo(self):
+        combo = PluginEnabledFilterCombo()
         combo.refill(["a", "b", "c"], True)
-        self.assertEqual(combo.get_active_tag()[1], ComboType.ALL)
+        self.assertEqual(combo.get_active_row()[1], EnabledType.ALL)
+        combo.destroy()
+
+    def test_type_filter_combo(self):
+        combo = PluginTypeFilterCombo()
+        # The ALL item should be first.
+        self.failUnlessEqual(combo.get_active_type(), object)
+        # Separator counts as one too
+        combo.set_active(1 + 1)
+        self.failUnlessEqual(combo.get_active_type(), CoverSourcePlugin)
         combo.destroy()
 
     def test_plugin_prefs(self):

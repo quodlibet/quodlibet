@@ -2,33 +2,33 @@
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
-import shutil
 
-from tests import AbstractTestCase, DATA_DIR, mkstemp, skipUnless
+from mutagen.aac import AAC
+
 from quodlibet.formats.aac import AACFile
 
-try:
-    from mutagen.aac import AAC
-except ImportError:
-    AAC = None
+from . import TestCase, get_data_path, skipUnless
+from .helper import get_temp_copy
 
 
-class _TAACFile(AbstractTestCase):
+class _TAACFile(TestCase):
 
     NAME = None
 
     def setUp(self):
-        fd, self.f = mkstemp(".aac")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, self.NAME), self.f)
+        self.f = get_temp_copy(get_data_path(self.NAME))
         self.song = AACFile(self.f)
 
     def tearDown(self):
         os.unlink(self.f)
+
+
+class _TAACFileMixin(object):
 
     def test_basic(self):
         self.song["title"] = u"SomeTestValue"
@@ -49,13 +49,21 @@ class _TAACFile(AbstractTestCase):
         self.assertTrue(self.song.can_multiple_values("title"))
 
     def test_invalid(self):
-        path = os.path.join(DATA_DIR, 'empty.xm')
+        path = get_data_path('empty.xm')
         self.assertTrue(os.path.exists(path))
         self.assertRaises(Exception, AACFile, path)
 
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "AAC")
+        self.assertEqual(self.song("~codec"), "AAC")
+        self.assertEqual(self.song("~encoding"), "")
+
+    def test_channels(self):
+        assert self.song("~#channels") == 2
+
 
 @skipUnless(AAC, "too old mutagen")
-class TADTSFile(_TAACFile):
+class TADTSFile(_TAACFile, _TAACFileMixin):
 
     NAME = "empty.aac"
 
@@ -67,7 +75,7 @@ class TADTSFile(_TAACFile):
 
 
 @skipUnless(AAC, "too old mutagen")
-class TADIFFile(_TAACFile):
+class TADIFFile(_TAACFile, _TAACFileMixin):
 
     NAME = "adif.aac"
 

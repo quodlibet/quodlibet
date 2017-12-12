@@ -2,20 +2,21 @@
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import subprocess
 
-from tests import AbstractTestCase, mkstemp
+from tests import TestCase, mkstemp
+from quodlibet import util
 
 
-QLDATA_DIR = os.path.join(os.path.dirname(
-    os.path.dirname(os.path.realpath(__file__))), "data")
+QLDATA_DIR = os.path.join(os.path.dirname(util.get_module_dir()), "data")
 
 
-class _TDesktopFile(AbstractTestCase):
+class _TDesktopFileMixin(object):
     PATH = None
 
     def test_filename(self):
@@ -31,10 +32,10 @@ class _TDesktopFile(AbstractTestCase):
         with open(name, "wb") as temp:
             new_lines = []
             for l in desktop_data.splitlines():
-                if l.startswith("_"):
+                if l.startswith(b"_"):
                     l = l[1:]
                 new_lines.append(l)
-            temp.write("\n".join(new_lines))
+            temp.write(b"\n".join(new_lines))
 
         # pass to desktop-file-validate
         try:
@@ -52,9 +53,9 @@ class _TDesktopFile(AbstractTestCase):
             raise Exception(output)
 
 
-class TQLDesktopFile(_TDesktopFile):
+class TQLDesktopFile(TestCase, _TDesktopFileMixin):
     PATH = os.path.join(QLDATA_DIR, "quodlibet.desktop.in")
 
 
-class TEFDesktopFile(_TDesktopFile):
+class TEFDesktopFile(TestCase, _TDesktopFileMixin):
     PATH = os.path.join(QLDATA_DIR, "exfalso.desktop.in")

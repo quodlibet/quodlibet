@@ -3,22 +3,21 @@
 #                     Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import mutagen.id3
 
 from quodlibet import config, const, print_d
 from quodlibet import util
-from quodlibet.config import RATINGS
-from quodlibet.formats._audio import AudioFile
-from quodlibet.formats._image import EmbeddedImage, APICType
-from quodlibet.util.massagers import LanguageMassager
+from quodlibet.compat import iteritems, text_type, listvalues, PY2
+from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
+from quodlibet.util.string import isascii
 
-
-def isascii(s):
-    return (len(s) == 0) or (ord(max(s)) < 128)
+from ._audio import AudioFile, translate_errors, AudioFileError
+from ._image import EmbeddedImage, APICType
 
 
 def encoding_for(s):
@@ -26,15 +25,10 @@ def encoding_for(s):
     return 3 if isascii(s) else 1
 
 
-class ID3hack(mutagen.id3.ID3):
-    """Override 'correct' behavior with desired behavior"""
-    def add(self, tag):
-        if len(type(tag).__name__) == 3:
-            tag = type(tag).__base__(tag)
-        if tag.HashKey in self and tag.FrameID[0] == "T":
-            self[tag.HashKey].extend(tag[:])
-        else:
-            self[tag.HashKey] = tag
+RG_KEYS = [
+    "replaygain_track_peak", "replaygain_track_gain",
+    "replaygain_album_peak", "replaygain_album_gain",
+]
 
 
 # ID3 is absolutely the worst thing ever.
@@ -77,13 +71,15 @@ class ID3File(AudioFile):
            # TLAN requires an ISO 639-2 language code, check manually
            #"TLAN": "language"
     }
-    SDI = dict([(v, k) for k, v in IDS.iteritems()])
+    SDI = dict([(v, k) for k, v in iteritems(IDS)])
 
     # At various times, information for this came from
     # http://musicbrainz.org/docs/specs/metadata_tags.html
     # http://bugs.musicbrainz.org/ticket/1383
     # http://musicbrainz.org/doc/MusicBrainzTag
     TXXX_MAP = {
+        u"MusicBrainz Release Group Id": "musicbrainz_releasegroupid",
+        u"MusicBrainz Release Track Id": "musicbrainz_releasetrackid",
         u"MusicBrainz Artist Id": "musicbrainz_artistid",
         u"MusicBrainz Album Id": "musicbrainz_albumid",
         u"MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
@@ -98,13 +94,18 @@ class ID3File(AudioFile):
         u"ALBUMARTISTSORT": "albumartistsort",
         u"BARCODE": "barcode",
         }
-    PAM_XXXT = dict([(v, k) for k, v in TXXX_MAP.iteritems()])
+    PAM_XXXT = dict([(v, k) for k, v in iteritems(TXXX_MAP)])
 
     Kind = None
 
     def __init__(self, filename):
-        audio = self.Kind(filename, ID3=ID3hack)
-        tag = audio.tags or mutagen.id3.ID3()
+        with translate_errors():
+            audio = self.Kind(filename)
+        if audio.tags is None:
+            audio.add_tags()
+        tag = audio.tags
+
+        self._parse_info(audio.info)
 
         for frame in tag.values():
             if frame.FrameID == "APIC" and len(frame.data):
@@ -115,7 +116,7 @@ class ID3File(AudioFile):
                 continue
             elif frame.FrameID == "TLEN":
                 try:
-                    length = +frame // 1000
+                    length = +frame / 1000.0
                 except ValueError:
                     continue
                 # ignore TLEN <= 0 [issue 222]
@@ -124,7 +125,8 @@ class ID3File(AudioFile):
                 continue
             elif (frame.FrameID == "UFID" and
                   frame.owner == "http://musicbrainz.org"):
-                self["musicbrainz_trackid"] = frame.data
+                self["musicbrainz_trackid"] = frame.data.decode("utf-8",
+                                                                "replace")
                 continue
             elif frame.FrameID == "POPM":
                 rating = frame.rating / 255.0
@@ -162,6 +164,9 @@ class ID3File(AudioFile):
             elif frame.FrameID == "TLAN":
                 self["language"] = "\n".join(frame.text)
                 continue
+            elif (frame.FrameID == "USLT" and frame.desc == "" and
+                  frame.lang == "\x00\x00\x00"):
+                name = "lyrics"
             else:
                 name = self.IDS.get(frame.FrameID, "").lower()
 
@@ -172,9 +177,12 @@ class ID3File(AudioFile):
 
             id3id = frame.FrameID
             if id3id.startswith("T"):
-                text = "\n".join(map(unicode, frame.text))
+                text = "\n".join(map(text_type, frame.text))
             elif id3id == "COMM":
                 text = "\n".join(frame.text)
+            elif id3id == "USLT":
+                # lyrics are single string, not list
+                text = frame.text
             elif id3id.startswith("W"):
                 text = frame.url
                 frame.encoding = 0
@@ -201,31 +209,35 @@ class ID3File(AudioFile):
         # to avoid reverting or duplicating tags in existing libraries.
         if audio.tags and "date" not in self:
             for frame in tag.getall('TXXX:DATE'):
-                self["date"] = "\n".join(map(unicode, frame.text))
+                self["date"] = "\n".join(map(text_type, frame.text))
 
-        # Read TXXX replaygain in case we don't have any (from RVA2)
-        for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
-            k = "replaygain_" + k
-            if k not in self:
-                for frame in tag.getall("TXXX:" + k):
-                    self[k] = "\n".join(map(unicode, frame.text))
-
-        self.setdefault("~#length", int(audio.info.length))
-        try:
-            self.setdefault("~#bitrate", int(audio.info.bitrate / 1000))
-        except AttributeError:
-            pass
+        # Read TXXX replaygain and replace previously read values from RVA2
+        for frame in tag.getall("TXXX"):
+            k = frame.desc.lower()
+            if k in RG_KEYS:
+                self[str(k)] = u"\n".join(map(text_type, frame.text))
 
         self.sanitize(filename)
 
+    def _parse_info(self, info):
+        """Optionally implement in subclasses"""
+
+        pass
+
     def __validate_name(self, k):
         """Returns a ascii string or None if the key isn't supported"""
-        if isinstance(k, unicode):
-            k = k.encode("utf-8")
-        if not (k and "=" not in k and "~" not in k
-                and k.encode("ascii", "replace") == k):
+
+        if not k or "=" in k or "~" in k:
             return
-        return k
+
+        if not (k and "=" not in k and "~" not in k
+                and k.encode("ascii", "replace").decode("ascii") == k):
+            return
+
+        if PY2:
+            return k.encode("ascii")
+        else:
+            return k
 
     def __process_rg(self, frame):
         if frame.channel == 1:
@@ -249,9 +261,14 @@ class ID3File(AudioFile):
         return codecs
 
     def __distrust_latin1(self, text, encoding):
-        assert isinstance(text, unicode)
+        assert isinstance(text, text_type)
         if encoding == 0:
-            text = text.encode('iso-8859-1')
+            try:
+                text = text.encode('iso-8859-1')
+            except UnicodeEncodeError:
+                # mutagen might give us text not matching the encoding
+                # https://github.com/quodlibet/mutagen/issues/307
+                return text
             for codec in self.CODECS:
                 try:
                     text = text.decode(codec)
@@ -264,10 +281,12 @@ class ID3File(AudioFile):
         return text
 
     def write(self):
-        try:
-            tag = mutagen.id3.ID3(self['~filename'])
-        except mutagen.id3.error:
-            tag = mutagen.id3.ID3()
+        with translate_errors():
+            audio = self.Kind(self['~filename'])
+
+        if audio.tags is None:
+            audio.add_tags()
+        tag = audio.tags
 
         # prefill TMCL with the ones we can't read
         mcl = tag.get("TMCL", mutagen.id3.TMCL(encoding=3, people=[]))
@@ -300,21 +319,20 @@ class ID3File(AudioFile):
             else:
                 tag.add(Kind(encoding=enc, text=text))
 
-        dontwrite = ["genre", "comment", "replaygain_album_peak",
-                     "replaygain_track_peak", "replaygain_album_gain",
-                     "replaygain_track_gain", "musicbrainz_trackid",
-                     ] + self.TXXX_MAP.values()
+        dontwrite = ["genre", "comment", "musicbrainz_trackid", "lyrics"] \
+            + RG_KEYS + listvalues(self.TXXX_MAP)
 
         if "musicbrainz_trackid" in self.realkeys():
-            f = mutagen.id3.UFID(owner="http://musicbrainz.org",
-                                 data=self["musicbrainz_trackid"])
+            f = mutagen.id3.UFID(
+                owner="http://musicbrainz.org",
+                data=self["musicbrainz_trackid"].encode("utf-8"))
             tag.add(f)
 
         # Issue 439 - Only write valid ISO 639-2 codes to TLAN (else TXXX)
         tag.delall("TLAN")
         if "language" in self:
             langs = self["language"].split("\n")
-            if all([lang in LanguageMassager.ISO_639_2 for lang in langs]):
+            if all([lang in ISO_639_2 for lang in langs]):
                 # Save value(s) to TLAN tag. Guaranteed to be ASCII here
                 tag.add(mutagen.id3.TLAN(encoding=3, text=langs))
                 dontwrite.append("language")
@@ -356,14 +374,20 @@ class ID3File(AudioFile):
             tag.add(mutagen.id3.COMM(encoding=enc, text=t, desc=u"",
                                      lang="\x00\x00\x00"))
 
-        # Delete old foobar replaygain and write new one
-        for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
-            k = "replaygain_" + k
-            # Delete Foobar droppings.
-            try:
-                del(tag["TXXX:" + k])
-            except KeyError:
-                pass
+        tag.delall("USLT::\x00\x00\x00")
+        if "lyrics" in self:
+            enc = encoding_for(self["lyrics"])
+            # lyrics are single string, not array
+            tag.add(mutagen.id3.USLT(encoding=enc, text=self["lyrics"],
+                                     desc=u"", lang="\x00\x00\x00"))
+
+        # Delete old foobar replaygain ..
+        for frame in tag.getall("TXXX"):
+            if frame.desc.lower() in RG_KEYS:
+                del tag[frame.HashKey]
+
+        # .. write new one
+        for k in RG_KEYS:
             # Add new ones
             if k in self:
                 value = self[k]
@@ -399,6 +423,9 @@ class ID3File(AudioFile):
             except KeyError:
                 pass
         for key in self.PAM_XXXT:
+            if key in self.SDI:
+                # we already write it back using non-TXXX frames
+                continue
             if key in self:
                 value = self[key]
                 f = mutagen.id3.TXXX(encoding=encoding_for(value),
@@ -407,8 +434,7 @@ class ID3File(AudioFile):
                 tag.add(f)
 
         if (config.getboolean("editing", "save_to_songs") and
-                (self("~#rating") != RATINGS.default or
-                 self.get("~#playcount", 0) != 0)):
+                (self.has_rating or self.get("~#playcount", 0) != 0)):
             email = config.get("editing", "save_email").strip()
             email = email or const.EMAIL
             t = mutagen.id3.POPM(email=email,
@@ -416,7 +442,8 @@ class ID3File(AudioFile):
                                  count=self.get("~#playcount", 0))
             tag.add(t)
 
-        tag.save(self["~filename"])
+        with translate_errors():
+            audio.save()
         self.sanitize()
 
     can_change_images = True
@@ -424,13 +451,12 @@ class ID3File(AudioFile):
     def clear_images(self):
         """Delete all embedded images"""
 
-        try:
-            tag = mutagen.id3.ID3(self["~filename"])
-        except Exception:
-            return
+        with translate_errors():
+            audio = self.Kind(self["~filename"])
 
-        tag.delall("APIC")
-        tag.save()
+        if audio.tags is not None:
+            audio.tags.delall("APIC")
+            audio.save()
 
         self.has_images = False
 
@@ -440,8 +466,13 @@ class ID3File(AudioFile):
         images = []
 
         try:
-            tag = mutagen.id3.ID3(self["~filename"])
-        except Exception:
+            with translate_errors():
+                audio = self.Kind(self["~filename"])
+        except AudioFileError:
+            return images
+
+        tag = audio.tags
+        if tag is None:
             return images
 
         for frame in tag.getall("APIC"):
@@ -455,8 +486,13 @@ class ID3File(AudioFile):
         """Returns the primary embedded image"""
 
         try:
-            tag = mutagen.id3.ID3(self["~filename"])
-        except Exception:
+            with translate_errors():
+                audio = self.Kind(self["~filename"])
+        except AudioFileError:
+            return
+
+        tag = audio.tags
+        if tag is None:
             return
 
         # get the APIC frame with type == 3 (cover) or the first one
@@ -474,21 +510,26 @@ class ID3File(AudioFile):
     def set_image(self, image):
         """Replaces all embedded images by the passed image"""
 
-        try:
-            tag = mutagen.id3.ID3(self["~filename"])
-        except Exception:
-            tag = mutagen.id3.ID3()
+        with translate_errors():
+            audio = self.Kind(self["~filename"])
+
+        if audio.tags is None:
+            audio.add_tags()
+
+        tag = audio.tags
 
         try:
-            data = image.file.read()
-        except EnvironmentError:
-            return
+            data = image.read()
+        except EnvironmentError as e:
+            raise AudioFileError(e)
 
         tag.delall("APIC")
         frame = mutagen.id3.APIC(
             encoding=3, mime=image.mime_type, type=APICType.COVER_FRONT,
             desc=u"", data=data)
         tag.add(frame)
-        tag.save(self["~filename"])
+
+        with translate_errors():
+            audio.save()
 
         self.has_images = True

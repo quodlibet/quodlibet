@@ -2,16 +2,16 @@
 # Copyright 2006 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 # Encoding magic. Show off the submenu stuff.
 
-import locale
-
 from gi.repository import Gtk
 
-from quodlibet.const import FSCODING
+from quodlibet import _
+from quodlibet.qltk import Icons
 from quodlibet.plugins.editing import EditTagsPlugin
 
 ENCODINGS = """\
@@ -21,24 +21,18 @@ iso2022_kr iso8859_2 iso8859_3 iso8859_4 iso8859_5 iso8859_6 iso8859_7
 iso8859_8 iso8859_9 iso8859_10 iso8859_13 iso8859_14 iso8859_15 johab
 koi8_r koi8_u ptcp154 shift_jis utf_16_be utf_16_le""".split()
 
-if FSCODING not in ENCODINGS + ["utf-8", "latin1"]:
-    ENCODINGS.append(FSCODING)
-if locale.getpreferredencoding() not in ENCODINGS + ["utf-8", "latin1"]:
-    ENCODINGS.append(FSCODING)
-
 
 class Iconv(EditTagsPlugin):
     PLUGIN_ID = "Convert Encodings"
     PLUGIN_NAME = _("Convert Encodings")
     PLUGIN_DESC = _("Fixes misinterpreted tag value encodings in the "
                     "tag editor.")
-    PLUGIN_ICON = Gtk.STOCK_CONVERT
+    PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
     def __init__(self, tag, value):
         super(Iconv, self).__init__(
             _(u"_Convert Encoding…"), use_underline=True)
-        self.set_image(
-            Gtk.Image.new_from_stock(Gtk.STOCK_CONVERT, Gtk.IconSize.MENU))
+
         submenu = Gtk.Menu()
 
         items = []

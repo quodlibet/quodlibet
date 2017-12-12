@@ -1,35 +1,25 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import sys
 import os
-
 from optparse import OptionParser
 
-from quodlibet import config
-from quodlibet import const
+from senf import argv as sys_argv
 
+import quodlibet
+from quodlibet import const
 from quodlibet.util.dprint import print_
 
 from .base import Command, CommandError
 from . import commands
 
 commands
-
-
-def main(argv):
-    """Main entry point"""
-
-    config.init()
-    try:
-        return _main(argv)
-    finally:
-        config.quit()
 
 
 def _print_help(main_cmd, parser, file=None):
@@ -47,10 +37,15 @@ def _print_help(main_cmd, parser, file=None):
     cl.append("See '%s help <command>' for more information "
               "on a specific command." % main_cmd)
 
-    print_("\n".join(cl), file)
+    print_("\n".join(cl), file=file)
 
 
-def _main(argv):
+def main(argv=None):
+    if argv is None:
+        argv = sys_argv
+
+    quodlibet.init_cli()
+
     main_cmd = os.path.basename(argv[0])
 
     # the main optparser
@@ -114,12 +109,12 @@ def _main(argv):
             try:
                 cmd.execute(argv[offset + 1:])
             except CommandError as e:
-                print_(u"%s: %s" % (command.NAME, e), sys.stderr)
+                print_(u"%s: %s" % (command.NAME, e), file=sys.stderr)
                 return 1
             break
     else:
         print_(u"Unknown command '%s'. See '%s help'." % (arg, main_cmd),
-               sys.stderr)
+               file=sys.stderr)
         return 1
 
     return 0

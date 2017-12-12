@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
+#           2015 Nick Boultbee
+#           2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
 from quodlibet import util
 from quodlibet import qltk
-
+from quodlibet import _
 from quodlibet.qltk.views import BaseView
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
-from quodlibet.qltk.x import SymbolicIconImage, MenuItem
+from quodlibet.qltk.x import SymbolicIconImage, MenuItem, Button
+from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk.ccb import ConfigCheckMenuItem
-from quodlibet.util import connect_obj
-
+from quodlibet.qltk.ccb import ConfigCheckMenuItem, ConfigCheckButton
+from quodlibet.util import connect_obj, escape
+from quodlibet.compat import iteritems, iterkeys
 from .util import get_headers, save_headers
 
 
@@ -26,7 +30,10 @@ class PatternEditor(Gtk.VBox):
         ["genre", "~people", "album"],
         ["~people", "album"],
     ]
-    COMPLETION = ["genre", "grouping", "~people", "artist", "album", "~year"]
+    COMPLETION = ["genre", "grouping", "~people", "artist", "album", "~year",
+                  "~rating"]
+
+    _COMPLEX_PATTERN_EXAMPLE = "<~year|[b]<~year>[/b]|[i]unknown year[/i]>"
 
     def __init__(self):
         super(PatternEditor, self).__init__(spacing=6)
@@ -58,7 +65,10 @@ class PatternEditor(Gtk.VBox):
 
         self.pack_start(radio_box, False, True, 0)
 
-        cb = TagsComboBoxEntry(self.COMPLETION)
+        tooltip = _("Tag pattern with optional markup "
+                    "e.g. <tt>composer</tt> or\n<tt>%s</tt>"
+                    % escape(self._COMPLEX_PATTERN_EXAMPLE))
+        cb = TagsComboBoxEntry(self.COMPLETION, tooltip_markup=tooltip)
 
         view = BaseView(model=model)
         view.set_reorderable(True)
@@ -66,11 +76,11 @@ class PatternEditor(Gtk.VBox):
 
         ctrl_box = Gtk.VBox(spacing=6)
 
-        add = Gtk.Button(stock=Gtk.STOCK_ADD)
+        add = Button(_("_Add"), Icons.LIST_ADD)
         ctrl_box.pack_start(add, False, True, 0)
         add.connect('clicked', self.__add, model, cb)
 
-        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         ctrl_box.pack_start(remove, False, True, 0)
         remove.connect('clicked', self.__remove, view)
 
@@ -103,7 +113,7 @@ class PatternEditor(Gtk.VBox):
 
     @property
     def headers(self):
-        for button in self.__headers.iterkeys():
+        for button in iterkeys(self.__headers):
             if button.get_active():
                 if button == self.__custom:
                     model_headers = [row[0] for row in self.__model]
@@ -112,7 +122,7 @@ class PatternEditor(Gtk.VBox):
 
     @headers.setter
     def headers(self, new_headers):
-        for button, headers in self.__headers.iteritems():
+        for button, headers in iteritems(self.__headers):
             if headers == new_headers:
                 button.set_active(True)
                 button.emit("toggled")
@@ -154,7 +164,7 @@ class PreferencesButton(Gtk.HBox):
         wide_mode.connect("toggled", self.__wide_mode_changed, browser)
         menu.append(wide_mode)
 
-        pref_item = MenuItem(_("_Preferences"), Gtk.STOCK_PREFERENCES)
+        pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
 
         def preferences_cb(menu_item):
             window = Preferences(browser)
@@ -165,7 +175,7 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-                SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
+                SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
                 arrow=True)
         button.set_menu(menu)
         button.show()
@@ -185,23 +195,30 @@ class Preferences(qltk.UniqueWindow):
         self.set_default_size(350, 300)
         self.set_border_width(12)
 
-        self.set_title(_("Paned Browser Preferences") + " - Quod Libet")
+        self.set_title(_("Paned Browser Preferences"))
 
         vbox = Gtk.VBox(spacing=12)
 
         editor = PatternEditor()
         editor.headers = get_headers()
 
-        apply_ = Gtk.Button(stock=Gtk.STOCK_APPLY)
-        connect_obj(apply_, "clicked", self.__apply, editor, browser, False)
+        equal_width = ConfigCheckButton(_("Equal pane width"),
+                                        "browsers",
+                                        "equal_pane_width",
+                                        populate=True)
 
-        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+        apply_ = Button(_("_Apply"))
+        connect_obj(apply_, "clicked", self.__apply, editor,
+                    browser, False, equal_width)
+
+        cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda x: self.destroy())
 
         box = Gtk.HButtonBox()
         box.set_spacing(6)
-        box.set_layout(Gtk.ButtonBoxStyle.END)
-        box.pack_start(apply_, True, True, 0)
+        box.set_layout(Gtk.ButtonBoxStyle.EDGE)
+        box.pack_start(equal_width, True, True, 0)
+        box.pack_start(apply_, False, False, 0)
         self.use_header_bar()
         if not self.has_close_button():
             box.pack_start(cancel, True, True, 0)
@@ -214,10 +231,13 @@ class Preferences(qltk.UniqueWindow):
         cancel.grab_focus()
         self.get_child().show_all()
 
-    def __apply(self, editor, browser, close):
+    def __apply(self, editor, browser, close, equal_width):
         if editor.headers != get_headers():
             save_headers(editor.headers)
             browser.set_all_panes()
+
+        if equal_width.get_active():
+            browser.make_pane_widths_equal()
 
         if close:
             self.destroy()

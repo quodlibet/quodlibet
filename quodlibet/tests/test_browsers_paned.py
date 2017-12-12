@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from tests import TestCase
-from helper import realized
+from .helper import realized
 
 from gi.repository import Gtk
+from senf import fsnative
 
 from quodlibet import config
 
@@ -14,9 +20,8 @@ from quodlibet.browsers.paned.models import PaneModel
 from quodlibet.browsers.paned.prefs import PatternEditor, Preferences
 from quodlibet.browsers.paned.prefs import PreferencesButton
 from quodlibet.browsers.paned.pane import Pane
-from quodlibet.formats._audio import AudioFile
+from quodlibet.formats import AudioFile
 from quodlibet.util.collection import Collection
-from quodlibet.util.path import fsnative
 from quodlibet.library import SongLibrary, SongLibrarian
 
 
@@ -36,7 +41,6 @@ SONGS = [
     AudioFile({
         "title": "xxx", "~filename": fsnative(u"/bin/bar"), "foo": "bar"}),
 ]
-SONGS.sort()
 
 UNKNOWN_ARTIST = AudioFile(dict(SONGS[0]))
 del UNKNOWN_ARTIST["artist"]
@@ -148,6 +152,25 @@ class TPanedBrowser(TestCase):
         self.bar.finalize(False)
         self.bar.set_all_panes()
 
+    def test_restore_pane_width(self):
+        config.set("browsers", "panes", "artist\talbum")
+        self.bar.set_all_panes()
+
+        paned = self.bar.multi_paned.get_paned()
+        paned.set_relative(0.8)
+        self.bar.set_all_panes()
+        self.failUnlessAlmostEqual(paned.get_relative(), 0.8)
+
+    def test_make_pane_widths_equal(self):
+        config.set("browsers", "panes", "artist\talbum\t~year\t~#track")
+        self.bar.set_all_panes()
+        self.bar.make_pane_widths_equal()
+        paneds = self.bar.multi_paned._get_paneds()
+
+        self.failUnlessAlmostEqual(paneds[0].get_relative(), 1.0 / 4.0)
+        self.failUnlessAlmostEqual(paneds[1].get_relative(), 1.0 / 3.0)
+        self.failUnlessAlmostEqual(paneds[2].get_relative(), 1.0 / 2.0)
+
     def test_wide_mode(self):
         self.bar.set_all_wide_mode(True)
         self.bar.set_all_wide_mode(False)
@@ -161,58 +184,59 @@ class TPaneConfig(TestCase):
     def test_tag(self):
         p = PaneConfig("title")
         self.failUnlessEqual(p.title, "Title")
-        self.failUnlessEqual(p.tags, set(["title"]))
+        self.failUnlessEqual(p.tags, {"title"})
 
-        self.failUnlessEqual(p.format(SONGS[0]), ["three"])
+        self.failUnlessEqual(p.format(SONGS[0]), [("three", "three")])
         self.failUnless(str(len(ALBUM.songs)) in p.format_display(ALBUM))
         self.failIf(p.has_markup)
 
     def test_numeric(self):
         p = PaneConfig("~#lastplayed")
         self.failUnlessEqual(p.title, "Last Played")
-        self.failUnlessEqual(p.tags, set(["~#lastplayed"]))
+        self.failUnlessEqual(p.tags, {"~#lastplayed"})
 
-        self.failUnlessEqual(p.format(SONGS[0]), ["0"])
+        self.failUnlessEqual(p.format(SONGS[0]), [("0", "0")])
         self.failIf(p.has_markup)
 
     def test_tied(self):
         p = PaneConfig("~title~artist")
         self.failUnlessEqual(p.title, "Title / Artist")
-        self.failUnlessEqual(p.tags, set(["title", "artist"]))
+        self.failUnlessEqual(p.tags, {"title", "artist"})
 
-        self.failUnlessEqual(p.format(SONGS[0]), ["three - boris"])
+        self.failUnlessEqual(p.format(SONGS[0]),
+                             [("three", "three"), ("boris", "boris")])
         self.failIf(p.has_markup)
 
     def test_pattern(self):
         p = PaneConfig("<foo>")
         self.failUnlessEqual(p.title, "Foo")
-        self.failUnlessEqual(p.tags, set(["foo"]))
+        self.failUnlessEqual(p.tags, {"foo"})
         self.failUnless(p.has_markup)
 
     def test_condition(self):
         p = PaneConfig("<foo|a <bar>|quux>")
         self.failUnlessEqual(p.title, "a Bar")
-        self.failUnlessEqual(p.tags, set(["bar"]))
+        self.failUnlessEqual(p.tags, {"bar"})
         self.failUnless(p.has_markup)
 
     def test_group(self):
         p = PaneConfig("a\:b:<title>")
         self.failUnlessEqual(p.title, "A:B")
         self.failUnlessEqual(set(p.format_display(ALBUM).split(", ")),
-                             set(["one", "two", "three", "four", "xxx"]))
+                             {"one", "two", "three", "four", "xxx"})
 
         p = PaneConfig("foo:~#lastplayed")
         self.failUnlessEqual(p.format_display(ALBUM), "0")
 
         p = PaneConfig("foo:title")
         self.failUnlessEqual(set(p.format_display(ALBUM).split(", ")),
-                             set(["one", "two", "three", "four", "xxx"]))
+                             {"one", "two", "three", "four", "xxx"})
 
 
 class TPaneEntry(TestCase):
 
     def test_all_have(self):
-        sel = SongsEntry("foo", SONGS)
+        sel = SongsEntry("foo", "foo", SONGS)
         self.assertFalse(sel.all_have("artist", "one"))
         self.assertFalse(sel.all_have("~#mtime", 4))
         self.assertTrue(sel.all_have("foo", "bar"))
@@ -237,7 +261,7 @@ class TPaneEntry(TestCase):
         repr(entry)
 
     def test_songs(self):
-        entry = SongsEntry("key", SONGS)
+        entry = SongsEntry("key", "key", SONGS)
         self.assertEqual(entry.key, "key")
         conf = PaneConfig("title:artist")
         self.assertTrue("boris" in entry.get_count_text(conf))
@@ -246,7 +270,7 @@ class TPaneEntry(TestCase):
         repr(entry)
 
     def test_songs_markup(self):
-        entry = SongsEntry("key", SONGS)
+        entry = SongsEntry("key", "key", SONGS)
         conf = PaneConfig("<title>")
         self.assertEqual(entry.get_text(conf), (True, "key"))
 
@@ -266,7 +290,7 @@ class TPane(TestCase):
 
     def test_init(self):
         repr(self.pane)
-        self.assertEqual(self.pane.tags, set(["artist"]))
+        self.assertEqual(self.pane.tags, {"artist"})
 
     def test_add_remove_and_show(self):
         with realized(self.pane):
@@ -297,7 +321,7 @@ class TPane(TestCase):
         self.pane.fill(SONGS)
 
         self.pane.set_selected([])
-        self.assertEqual(self.pane.get_selected(), set([None]))
+        self.assertEqual(self.pane.get_selected(), {None})
 
         self.pane.set_selected([], force_any=False)
         self.assertEqual(self.pane.get_selected(), set())
@@ -437,7 +461,7 @@ class TPaneModel(TestCase):
         self.assertEqual(len(m.get_songs([0, 1])), len(SONGS))
 
         # get one
-        self.assertEqual(m.get_songs([1]), set([SONGS[0]]))
+        self.assertEqual(m.get_songs([1]), {SONGS[0]})
 
     def test_get_keys_by_tag(self):
         conf = PaneConfig("artist")
@@ -455,21 +479,21 @@ class TPaneModel(TestCase):
         m = PaneModel(conf)
         m.add_songs(SONGS)
 
-        self.assertEqual(m.list("artist"), set(["boris", "mu", "piman", ""]))
+        self.assertEqual(m.list("artist"), {"boris", "mu", "piman", ""})
 
         conf = PaneConfig("<artist><foo>")
         m = PaneModel(conf)
         m.add_songs(SONGS)
 
-        self.assertEqual(m.list("artist"), set(["boris", "mu", "piman"]))
-        self.assertEqual(set(m.list("foo")), set(['nope', 'bar', 'quux']))
+        self.assertEqual(m.list("artist"), {"boris", "mu", "piman"})
+        self.assertEqual(set(m.list("foo")), {'nope', 'bar', 'quux'})
 
     def test_get_keys(self):
         conf = PaneConfig("artist")
         m = PaneModel(conf)
         m.add_songs(SONGS)
-        self.assertEqual(m.get_keys([]), set([]))
-        self.assertEqual(m.get_keys([0, 1]), set([None, "boris"]))
+        self.assertFalse(m.get_keys([]))
+        self.assertEqual(m.get_keys([0, 1]), {None, "boris"})
 
     def test_remove_songs_keep_rows(self):
         conf = PaneConfig("artist")

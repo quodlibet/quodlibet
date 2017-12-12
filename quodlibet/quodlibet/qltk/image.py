@@ -2,22 +2,11 @@
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-"""
-Some helper function for loading and converting image data.
-
-A PixbufOrSurface is either a GdkPixbuf.Pixbuf or a cairo.Surface. Gtk+ 3.10
-added HiDPI support and added APIs which take cairo surfaces. Since we still
-want to support older GTK+  we provide some helpers to work on both data
-types.
-
-Rule of thumb: Every pixbuf which ends up in a surface before getting drawn
-needs to be loaded at original_size * scale_factor.
-
-To test HiDPI start QL with GDK_SCALE=2.
-"""
+"""Some helper function for loading and converting image data."""
 
 import math
 
@@ -25,66 +14,58 @@ from gi.repository import GdkPixbuf, Gtk, Gdk, GLib
 import cairo
 
 
-def get_scale_factor(widget):
-    """Returns the scale factor for a Gtk.Widget"""
+def get_surface_for_pixbuf(widget, pixbuf):
+    """Returns a cairo surface"""
 
-    if hasattr(widget, "get_scale_factor"):
-        return widget.get_scale_factor()
-    else:
-        return 1
+    scale_factor = widget.get_scale_factor()
+    return Gdk.cairo_surface_create_from_pixbuf(
+            pixbuf, scale_factor, widget.get_window())
 
 
-def get_pbosf_for_pixbuf(widget, pixbuf):
-    """Returns a cairo surface or the same pixbuf,
-    let's call it PixbufOrSurface..
+def get_surface_extents(surface):
+    """Gives (x, y, width, height) for a surface, scale independent"""
+
+    ctx = cairo.Context(surface)
+    x1, y1, x2, y2 = ctx.clip_extents()
+    x1 = int(math.floor(x1))
+    y1 = int(math.floor(y1))
+    x2 = int(math.ceil(x2))
+    y2 = int(math.ceil(y2))
+    x2 -= x1
+    y2 -= y1
+
+    return (x1, y1, x2, y2)
+
+
+def get_border_radius(_widgets=[]):
+    """Returns the border radius commonly used in the current theme.
+    If there are no rounded corners 0 will be returned.
     """
 
-    if hasattr(Gdk, "cairo_surface_create_from_pixbuf"):
-        scale_factor = widget.get_scale_factor()
-        # Don't create a surface if we don't have to
-        if scale_factor == 1:
-            return pixbuf
-        return Gdk.cairo_surface_create_from_pixbuf(
-                pixbuf, scale_factor, widget.get_window())
-    else:
-        return pixbuf
+    if not _widgets:
+        b = Gtk.Button()
+        b.show()
+        e = Gtk.Entry()
+        e.show()
+        _widgets += [b, e]
+
+    radii = []
+    for widget in _widgets:
+        style_context = widget.get_style_context()
+        radii.append(style_context.get_property(
+            Gtk.STYLE_PROPERTY_BORDER_RADIUS, style_context.get_state()))
+    radius = max(radii)
+
+    # Doesn't work on the default Ubuntu theme.
+    # Not sure why, so fix manually for now
+    theme_name = Gtk.Settings.get_default().props.gtk_theme_name
+    if theme_name in ("Ambiance", "Radiance"):
+        radius = int(radius / 1.5)
+
+    return radius
 
 
-def pbosf_get_property_name(pbosf):
-    """Gives the property name to use for the PixbufOrSurface."""
-
-    if pbosf is None or isinstance(pbosf, GdkPixbuf.Pixbuf):
-        return "pixbuf"
-    else:
-        return "surface"
-
-
-def set_renderer_from_pbosf(renderer, pbosf):
-    """Set a Gtk.CellRendererPixbuf given a PixbufOrSurface or None"""
-
-    name = pbosf_get_property_name(pbosf)
-    renderer.set_property(name, pbosf)
-
-
-def set_image_from_pbosf(image, pbosf):
-    """Sets a Gtk.Image given a PixbufOrSurface"""
-
-    if isinstance(pbosf, GdkPixbuf.Pixbuf):
-        return image.set_from_pixbuf(pbosf)
-    else:
-        return image.set_from_surface(pbosf)
-
-
-def pbosf_render(style_context, cairo_context, pbosf, x, y):
-    """Draws the PixbufOrSurface to the cairo context at (x, y)"""
-
-    if isinstance(pbosf, GdkPixbuf.Pixbuf):
-        Gtk.render_icon(style_context, cairo_context, pbosf, x, y)
-    else:
-        Gtk.render_icon_surface(style_context, cairo_context, pbosf, x, y)
-
-
-def add_border(pixbuf, color, round=False, width=1):
+def add_border(pixbuf, color, width=1, radius=0):
     """Add a border to the pixbuf and round of the edges.
     color is a Gdk.RGBA
     The resulting pixbuf will be width * 2px higher and wider.
@@ -99,7 +80,7 @@ def add_border(pixbuf, color, round=False, width=1):
     ctx = cairo.Context(surface)
 
     pi = math.pi
-    r = min(w, h) / 10.0 if round else 0
+    r = min(radius, min(w, h) / 2)
     ctx.new_path()
     ctx.arc(w - r, r, r, -pi / 2, 0)
     ctx.arc(w - r, h - r, r, 0, pi / 2)
@@ -118,22 +99,17 @@ def add_border(pixbuf, color, round=False, width=1):
     return Gdk.pixbuf_get_from_surface(surface, 0, 0, w, h)
 
 
-def add_border_widget(pixbuf, widget, cell=None, round=False):
+def add_border_widget(pixbuf, widget):
     """Like add_border() but uses the widget to get a border color and a
     border width.
     """
 
-    from quodlibet.qltk.image import get_scale_factor
-
     context = widget.get_style_context()
-    if cell is not None:
-        state = cell.get_state(widget, 0)
-    else:
-        state = widget.get_state_flags()
-    color = context.get_color(state)
-    scale_factor = get_scale_factor(widget)
+    color = context.get_color(context.get_state())
+    scale_factor = widget.get_scale_factor()
+    border_radius = get_border_radius() * scale_factor
 
-    return add_border(pixbuf, color, round=round, width=scale_factor)
+    return add_border(pixbuf, color, width=scale_factor, radius=border_radius)
 
 
 def scale(pixbuf, boundary, scale_up=True, force_copy=False):
@@ -213,4 +189,4 @@ def pixbuf_from_file(fileobj, boundary, scale_factor=1):
     w *= scale_factor
     h *= scale_factor
 
-    return scale(pixbuf, (w, h), scale_up=False)
+    return scale(pixbuf, (w, h), scale_up=True)

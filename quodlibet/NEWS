@@ -1,3 +1,590 @@
+.. _release-4.0.0:
+
+4.0.0 (2017-??-??)
+-------------------
+
+Packaging Changes:
+  * **Python 3.5** required (was 2.7)
+
+    * All Python dependencies need to be switched to their Python 3 variants.
+      In case there is a "py" in the package name it likely needs to be
+      changed.
+
+  * **Mutagen 1.34** required (was 1.32)
+  * **GTK+ 3.18** required (was 3.14)
+  * **PyGObject 3.18** required (was 3.14)
+  * **GStreamer 1.8** required (was 1.4)
+  * **media-player-info** no longer required
+  * **udisks2** no longer required
+  * **python-futures** no longer required
+
+
+.. _release-3.9.1:
+
+3.9.1 (2017-06-06) - CHECK AND MATE, FAILING BODY AND MIND
+----------------------------------------------------------
+
+  * Danish translation update :pr:`2394` (:user:`scootergrisen`)
+  * Various bug fixes: :bug:`2409` :bug:`2364` :bug:`2406` :bug:`2401`
+    :bug:`2410` :bug:`2414` :bug:`2387` :bug:`2411` :bug:`2386` :bug:`2400`
+    :bug:`2404` (:user:`Nick Boultbee <declension>` et al.)
+
+
+.. _release-3.9.0:
+
+3.9.0 (2017-05-24) - If you can whistle, you can do this too
+------------------------------------------------------------
+
+Packaging Changes:
+  * **python-zeitgeist** no longer used
+  * **python-feedparser** required (no longer optional)
+  * **python-faulthandler** required
+  * **GTK+ 3.14** required (was 3.10)
+  * **PyGObject 3.14** required (was 3.12)
+  * **GStreamer 1.4** required (was 1.2)
+  * No longer installs icons to "/usr/share/pixmaps"
+  * Installs more icons into "/usr/share/icons/hicolor/" theme
+
+Translation Updates:
+  * Czech :pr:`2175` (:user:`Marek Suchánek <mrksu>`)
+  * Danish :pr:`2185` (:user:`scootergrisen`)
+  * French :pr:`2206` (:user:`Olivier Humbert <trebmuh>`)
+  * Czech :bug:`2209` (:user:`Honza Hejzl <welblaud>`)
+  * Norwegian Bokmål :pr:`2232` :pr:`2354` (:user:`Åka Sikrom <akrosikam>`)
+  * French :pr:`2240` (:user:`Jean-Michel Pouré <kellogsgit>`)
+  * German :pr:`2388` (:user:`Till Berger <Mellthas>`)
+  * Polish :pr:`2391` (:user:`Piotr Drąg <piotrdrag>`)
+
+General:
+  * Windows: Use native file choosers :pr:`2324`
+  * operon: add "--all" option for the "tags" command. :bug:`2335`
+  * Queue: Add checkbox to stop after queue is empty :pr:`2340`
+    (:user:`Fredrik Strupe <frestr>`)
+  * Opt-in online crash reporting using sentry.io :pr:`2313`
+  * Allow resizing of panes in PanedBrowser :pr:`2301`
+    (:user:`Fredrik Strupe <frestr>`)
+  * Plugins: Add UI for plugin type filtering :pr:`2218`
+    (:user:`Nick Boultbee <declension>`)
+  * Add accelerators for "Open Browser" Menu :pr:`2305`
+    (:user:`Uriel Zajaczkovski <urielz>`)
+  * replaygain: save selected replaygain profiles to config :pr:`2279`
+    (:user:`Didier Villevalois <ptitjes>`)
+  * Allow ``!=`` in queries :bug:`2056` (:user:`Nick Boultbee <declension>`)
+  * Add ``~#channels`` :bug:`1686`
+  * songlist: make "space" trigger play/pause. See :bug:`1288`
+  * Add ``--start-hidden`` and remove visibility restoring from the tray icon
+    :bug:`814`
+  * Add non-python crash reporting on the next start :bug:`1853`
+  * mp3: include lame preset in ``~encoding``
+
+Fixes:
+  * Fix queue height not getting restored in some cases :pr:`2330`
+    (:user:`Fredrik Strupe <frestr>`)
+  * macOS: Fix URL launching from labels :bug:`2306`
+  * Windows: Fix crash when the 65001 code page is used :bug:`2333`
+  * Windows: Fix crash with French locale in some cases. :bug:`2364`
+  * MPRIS: Fix metadata changes not getting emitted :pr:`2359`
+    (:user:`IBBoard`)
+  * Tray icon: Fix rating menu :pr:`2355` (:user:`IBBoard`)
+  * Player: Fix "previous" not working with radio streams :bug:`2198`
+  * gstbe: increase default buffer duration. :bug:`2191`
+  * macOS: Fix meta key for accelerators not working :bug:`2271`
+  * Fix error in case stdout gets closed before QL :bug:`2205`
+  * Fix icon size of app menu embedded in gnome-shell decoration :bug:`2320`
+    :pr:`2334` (:user:`Vimalan Reddy <redvimo>`)
+
+Plugins:
+  * Windows: Enable crossfeed plugin
+  * Add a plugin to export a playlist to a folder :pr:`2307`
+    (:user:`Didier Villevalois <ptitjes>`)
+  * Add skip by rating plugin :pr:`2201` (:user:`Jason Heard <101100>`)
+  * Advanced Prefs: add a configuration for the window title pattern :pr:`2272`
+    (:user:`Didier Villevalois <ptitjes>`)
+  * waveformseekbar: add hidpi detection :pr:`2261`
+    (:user:`Didier Villevalois <ptitjes>`)
+  * waveformseekbar: smoother drawing updates :pr:`2289`
+    (:user:`Didier Villevalois <ptitjes>`)
+  * Add a tap bpm plugin :pr:`2264` (:user:`Didier Villevalois <ptitjes>`)
+  * Add plugin for changing the user interface language :pr:`2154`
+  * Add external visualisations plugin :bug:`737`
+    (:user:`Nick Boultbee <declension>`)
+  * EQ Plugin: various improvements :bug:`1913`
+    (:user:`Nick Boultbee <declension>`)
+  * Add a plugin to toggle the menubar's visibility using "alt" :pr:`2263`
+    :pr:`2267` (:user:`Didier Villevalois <ptitjes>`)
+
+Further Contributions:
+  :pr:`2282` (:user:`David Pérez Carmona <DavidPerezIngeniero>`) :pr:`2284`
+  (:user:`Jakub Wilk <jwilk>`) :pr:`2294` :pr:`2326` (:user:`Fredrik Strupe
+  <frestr>`), :pr:`2270` :pr:`2302` :pr:`2280` :pr:`2385` (:user:`Didier
+  Villevalois <ptitjes>`) :pr:`2308` :pr:`2314` (:user:`Uriel Zajaczkovski
+  <urielz>`) :pr:`2331` (:user:`CreamyCookie`)
+
+Development:
+  * tests: use xvfbwrapper if available :pr:`2287`
+  * gdist: relicense to modern style MIT
+  * Use docker on travis-ci :pr:`2269` :pr:`2290`
+
+
+.. _release-3.8.1:
+
+3.8.1 (2017-01-23) - LET'S TALK ABOUT BIRDS
+-------------------------------------------
+
+* GStreamer: increase default buffer duration. :bug:`2191`
+* Fix acoustid plugin :bug:`2192`
+* Fix new playlists from menu :bug:`2183` (:user:`Nick Boultbee <declension>`)
+* mpdserver: Make it work with the M.A.L.P Android client :bug:`2179`
+* Waveform plugin fixes :bug:`2195` (:user:`Nick Boultbee <declension>`)
+* Covergrid context menu fixes :pr:`2197` (:user:`Joel Ong <darthoctopus>`)
+
+Translations:
+  * Norwegian Bokmål :pr:`2194` (:user:`Åka Sikrom <akrosikam>`)
+  * German :pr:`2188` (:user:`Till Berger <Mellthas>`)
+
+
+.. _release-3.8.0:
+
+3.8.0 (2016-12-29) - Maybe it'll land somewhere cool eventually
+---------------------------------------------------------------
+
+Packaging Changes:
+  * `concurrent.futures <https://pypi.python.org/pypi/futures>`__ required
+    (usually called python-futures, python-concurrent.futures or
+    python2-futures in distros)
+  * **libgpod4** is no longer used
+  * Testing now requires py.test
+  * Installs a new zsh completion file
+
+General:
+  * Preferences: Add option for changing the duration display format
+    :pr:`2021` :bug:`1727` :bug:`1967` (:user:`Nick Boultbee <declension>`)
+  * Locale-dependent number formatting :bug:`2018`
+    (:user:`Nick Boultbee <declension>`)
+  * Fix updates across browsers on changes to ~playlists :bug:`2017`
+    (:user:`Nick Boultbee <declension>`)
+  * Don't wake up when idle :pr:`2068` :bug:`2067`
+  * Covergrid Browser :bug:`241` :pr:`2071` :pr:`2115` :pr:`2125` :bug:`2110`
+    :pr:`2130` (:user:`brunob`, :user:`Joel Ong <darthoctopus>`,
+    :user:`knockoutMice`)
+  * Play order (shuffle / repeat) rewrite to be more modularised / powerful
+    :pr:`2043` :bug:`2059` :bug:`2121` :bug:`2123` :pr:`2125`
+    (:user:`Nick Boultbee <declension>`)
+  * Improvements / additions to Information window :pr:`2119` :bug:`1558`
+    (:user:`Nick Boultbee <declension>`)
+  * Search: Fix error when query divides by 0 :pr:`2025` (:user:`faubiguy`)
+  * Fix crash on tag edit abort :bug:`2081`
+  * Library scan: ignore hidden files :bug:`2074`
+  * Remove iPod support
+  * Log the filename in case something crashes :bug:`2143`
+  * MP4: Handle empty trkn/disk :bug:`2143`
+  * Library: support autofs mounts :bug:`2146`
+  * Various small GTK+/Ubuntu theme related updates
+  * Fix crash when parsing feeds :pr:`2144`
+    (:user:`Peter Schwede <pschwede>`)
+  * Song list: ctrl+drag will now force a song copy :bug:`1952`
+  * MP4: round bpm to nearest int. :bug:`2028`
+    (:user:`Nick Boultbee <declension>`)
+  * Songsmenu icons improved (:user:`Nick Boultbee <declension>`)
+  * Basic zsh completion
+
+Translation Updates:
+  * Polish :pr:`2141` (:user:`Piotr Drąg <piotrdrag>`)
+  * Norwegian Bokmål :pr:`2031` :pr:`2064` (:user:`Åka Sikrom <akrosikam>`)
+  * Danish :pr:`2169` (:user:`scootergrisen`)
+  * Czech :pr:`2173` (:user:`Marek Suchánek <mrksu>`)
+
+Plugins:
+  * Discogs Cover Source :pr:`2136` (:user:`knockoutMice`)
+  * Add register-date filter to lastfmsync plugin :pr:`2127`
+    (:user:`knockoutMice`)
+  * Wikipedia plugin - search instead of direct URL :pr:`2112` (:user:`urielz`)
+  * Notification plugin: add option to mask 'Next' :bug:`2026` :pr:`2045`
+    (:user:`Corentin Néau <weyfonk>`)
+  * Waveform seek bar :pr:`2046` (:user:`0x1777`),
+    related performance improvements (:user:`Nick Boultbee <declension>`)
+  * Add playlists to tray menu :bug:`2006` (:user:`Nick Boultbee <declension>`)
+  * Random album plugin fixes :pr:`2085` (:user:`draxil`)
+  * Custom commands: minor improvements (:user:`Nick Boultbee <declension>`)
+  * Some Auto Library Update plugin fixes :bug:`1315`
+    (:user:`Nick Boultbee <declension>`)
+  * Seek bar plugin: invert scrolling directions :pr:`2052`
+    (:user:`Corentin Néau <weyfonk>`)
+
+Windows:
+  * Switch to msys2 :bug:`1718`
+  * Allow opening audio files with quodlibet.exe :bug:`1607`
+  * Enable pitch plugin again :bug:`1534`
+  * Windows regressions: crossfeed plugin missing (will be back in the
+    next version)
+
+macOS:
+  * Allow opening audio files with the bundle
+  * Really (really..) fix TLS :pr:`2108` :bug:`2107`
+
+Development:
+  * Tests: switch to `pytest <http://docs.pytest.org/en/latest/>`__
+    as the main test runner
+  * Tests: ``setup.py quality`` speedups
+  * Tests: All tests pass now on Python 3 under Linux and Windows
+  * All magic builtins gone :pr:`2044`
+  * macOS bundle and Windows installer include everything required for running
+    the test suite.
+
+
+.. _release-3.7.1:
+
+3.7.1 (2016-09-25) - And then you're doomed. Doomed to to have not ill effects, that is!
+----------------------------------------------------------------------------------------
+
+* tests: Use dbus-daemon instead of dbus-launch for creating a session bus. :bug:`2022`
+* Fix 100% CPU when no song column is expanded. :bug:`2030`
+* Fix SoundCloud login with Ubuntu 14.04 :bug:`2034`
+* MP4: Fix crash when saving certain bpm tags :bug:`2028` (:user:`Nick Boultbee <declension>`)
+* Windows: Make lastfmsync plugin work :bug:`1777`
+
+
+.. _release-3.7.0:
+
+3.7.0 (2016-08-27) - Yeah, this is like one of those scammy "name a star" sites!
+--------------------------------------------------------------------------------
+
+Packaging Changes:
+  * **Mutagen 1.32** required
+  * **udisks1** support removed
+  * **PyGObject 3.12** required
+
+* Add Soundcloud browser :bug:`1828` :pr:`1990` (:user:`Nick Boultbee <declension>`)
+* Make F11 toggle fullscreen mode
+* Add ``--refresh`` to the man page. :bug:`1914`
+* Add ``--stop-after``. :bug:`1909`
+* Remove support for loading browsers from ``~/.quodlibet/browsers`` :bug:`1919`
+* Added shortcut of ``<Primary>Delete`` for moving files to trash :pr:`1921` (:user:`Victoria Hayes <victoriahayes>`)
+* gstbe: always use pulsesink if pulseaudio is running. :bug:`1926`
+* Remove udisks1 support
+* Add a "Check for Updates" dialog
+* Windows: Port mmkeys support from pyhook to ctypes.
+  Fixes accents not working when QL is running. :bug:`1168`
+* OSX: Enable multimedia key handling by default :bug:`1817`
+* Add selection tick (check) for rating(s) that are selected :bug:`1891` (:user:`Nick Boultbee <declension>`)
+* Support composersort :bug:`1795` (:user:`Nick Boultbee <declension>`)
+* Rework application menu :bug:`1598` (:user:`Nick Boultbee <declension>`)
+* Add a ~#playcount equalizer play order plugin :pr:`1626` (:user:`Ryan Turner <ZDBioHazard>`)
+* Fix too large cover art border radius with Ubuntu themes
+* songlist columns: handle font size changes at runtime. :bug:`1420`
+* Fix song list column label fade out in RTL mode
+* Fix seek bar getting stuck when releasing the button outside of the widget. :bug:`1953`
+* Add default keyboard shortcuts for browsers/views :bug:`1540`
+* Restore queue state. :bug:`1605`
+* Add a queue toggle button to the status bar and remove the view menu
+* docs: Clarified function of the queue :pr:`2004` (:user:`Bernd Wechner <bernd-wechner>`)
+
+Translations:
+  * Updated Polish translation :pr:`2009` (:user:`Piotr Drąg <piotrdrag>`)
+  * French translation update :pr:`1932` (:user:`Ludovic Druette <LudoBike>`)
+  * Fully update British English "translation" (:user:`Nick Boultbee <declension>`)
+
+Tagging:
+  * AIFF support :bug:`1801`
+  * Support musicbrainz_releasetrackid :pr:`1992`
+  * Support musicbrainz_releasegroupid :bug:`1896`
+  * operon: Fix image-set when passing multiple files. :bug:`1729`
+  * ASF: add WM/AlbumArtistSortOrder :bug:`1936`
+  * MP4: Support saving replaygain tags :pr:`1916` (:user:`bp0`)
+  * MP4: support replaygain_reference_loudness. :pr:`1928`
+
+Plugins:
+  * lyricswindow: Restart WebKit when crashed :pr:`1923` (:user:`CreamyCookie`)
+  * lyricswindow: Prevent alert windows. :bug:`1927` (:user:`CreamyCookie`)
+  * tray icon: Improve unity detection :bug:`1999`
+  * musicbrainz: Add option to write labelid. :bug:`1929`
+  * musicbrainz: Write musicbrainz release track ids :pr:`1992`
+  * Rename Force Write plugin to "update tags in files" :bug:`1938` (:user:`Nick Boultbee <declension>`)
+  * tray icon: Use App indicator when running under Enlightenment :pr:`1941` (:user:`Jakob Gahde <J5lx>`)
+  * replaygain: delete tags written by bs1770gain. :bug:`1942`
+
+Development:
+  * py.test support
+  * Some Python 3 porting progress: 47% tests passing :bug:`1580`
+  * OSX: build dmgs
+
+
+.. _release-3.6.2:
+
+3.6.2 (2016-05-24) - It seemed like there was a lesson here, but nobody was sure what it was
+--------------------------------------------------------------------------------------------
+
+* Fix queue not expanding with GTK+ 3.20 :bug:`1915`
+* Tag editor: Fix error message for unrooted patterns :bug:`1937`
+
+
+.. _release-3.6.1:
+
+3.6.1 (2016-04-05) - GOOD LUCK OUT THERE
+----------------------------------------
+
+* Tray icon: Don't use the app indicator for Ubuntu GNOME and KDE 4.
+  :bug:`1904`
+* Tray icon: Present the window when showing the window through the app
+  indicator menu item. :bug:`1904`
+* Paned browser: Fix crash with numeric tags in patterns :bug:`1903`
+* Paned browser: Fix missing "Unknown" entry for patterns
+* OS X: Fix TLS for real
+* Lyrics window: Also support webkitgtk2 3.0 (for Ubuntu 14.04)
+
+
+.. _release-3.6.0:
+
+3.6.0 (2016-03-24) - It is altogether fitting and proper that we should do this
+-------------------------------------------------------------------------------
+
+Packaging Changes:
+  * **Mutagen 1.30** required
+  * **GTK+ 3.10** required
+  * **PyGObject 3.10** required
+  * **webkitgtk-3.0** → **webkit2gtk-4.0** (Lyrics Window plugin)
+  * **sphinx 1.3** required for building the documentation
+  * New optional plugin dependency: **libappindicator-gtk3** + **typelibs**:
+    for the Tray Icon plugin under Ubuntu Unity and KDE Plasma
+  * **python-musicbrainzngs** (>= 0.5) instead of **python-musicbrainz2**
+  * **python-cddb** no longer needed
+  * **libsoup** (>= 2.44) + **typelibs** required
+
+* Add a keyboard shortcut window. :bug:`1837`
+* Add ~language, which shows the language name for iso639 codes
+* Allow cross-device moves to trash. :pr:`1782` :bug:`1339` (Andrew Chadwick)
+* CLI: allow backslash-escaped commas in --enqueue-files. :bug:`1773`
+  (Nick Boultbee)
+* Fix custom accels read from ``~/.quodlibet/accels`` :bug:`1726` :pr:`1818`
+* Fix determination of tag patterns in songlist :pr:`1830`
+  (Peter F. Patel-Schneider)
+* Fix ratings not being stored if they are the same as the default :bug:`1461`
+  :pr:`1846`
+* ID3: read lyrics from USLT frame, make ~lyrics read lyrics and form files
+  :pr:`1810` (Ivan Shapovalov)
+* Make test suite run (and fail) under Python 3 :bug:`1580`
+* MP4: support conductor, discsubtitle, language & mood :bug:`323`
+  (Nick Boultbee)
+* Paned browser: Allow filters to be reset by clicking heading. :bug:`1284`
+* Paned browser: use sort tags :bug:`1785`, :pr:`1796`
+  (Peter F. Patel-Schneider)
+* Patterns: Allow proper escaping in nested queries.
+  (``<~filename=/^\/bla\/foo/|match|no-match>``)
+* Player controls: use a normal button with two icons instead of a toggle
+  button. :bug:`1814`
+* Playlist browser: implement scroll to playing song :bug:`1426`
+* Playlist browser: Make display configurable :bug:`1780` (Nick Boultbee)
+* Playlist browser: Improve usability when creating a new playlist :bug:`1839`
+  (Nick Boultbee)
+* Playlist browser: Fix bug when deleting playlists :bug:`1882` (Nick Boultbee)
+* Remove rounded cover preference and make border radius depend on theme.
+  :bug:`1864`
+* Search: make "ae" match "æ" and "ss" match "ß" etc.
+* Search: numeric expressions and query plugins :pr:`1799`
+* Song info display: show delete option to context menu. :bug:`1869`
+* Songlist: Highlight the current song. See :bug:`1809`
+* Support sort tags in song list patterns :pr:`1783` (Peter F. Patel-Schneider)
+* Various GTK+ 3.20 related fixes
+
+Translations:
+  * Updated Dutch and Norwegian Bokmål translation :pr:`1784` (Nathan Follens)
+  * Updated Polish translation :pr:`1898` (Piotr Drąg)
+
+Plugins:
+  * Update icons for most plugins: more and (mostly) better chosen.
+    :bug:`1894` (Nick Boultbee)
+  * Make songsmenu plugins only enabled if it makes sense for them
+    :bug:`1858` (Nick Boultbee)
+  * Remove cddb plugin; it's broken
+  * Remove Send To plugin, in favour of Browse Folders and k3b plugins.
+  * New plugin: Pause on headphone unplug. :bug:`1753`
+  * New events plugin: Shows synchronized lyrics from .lrc file with same name
+    as the track :pr:`1723`
+  * Add a seekbar plugin. See :bug:`204`
+  * lyricwiki: port to WebKit2
+  * tray icon: support Ubuntu Unity and KDE Plasma (using libappindicator)
+    :bug:`1756`
+  * musicbrainz: port to musicbrainzngs. This fixes tagging of multi disc
+    releases. :bug:`829`
+  * Make LyricsWindow an events plugin; Add zoom level preference :pr:`1709`
+  * Add authentication for MPDServer plugin :pr:`1789`
+  * Custom Commands: add support for playlist name. :bug:`1685` (Nick Boultbee)
+  * Playlist Export: convert to being a playlist plugin as well as songsmenu.
+    (Nick Boultbee)
+
+OS X:
+  * Add a simple dock menu
+  * TLS support (https streams..) :bug:`1895`
+  * Add option to enable experimental mmkeys support in the advanced
+    prefs plugin. :bug:`1817`
+
+Wayland:
+  * Fix seek bar window position (needs gtk+ 3.20)
+
+
+.. _release-3.5.3:
+
+3.5.3 (2016-01-16) - Uh, I GUESS that'd be good too??
+-----------------------------------------------------
+
+* Fix crash when opening new windows under some DEs (Linux only) :bug:`1788`
+
+
+.. _release-3.5.2:
+
+3.5.2 (2016-01-13) - This is because dates are arbitrary and friendship can be whatever we want it to be!
+---------------------------------------------------------------------------------------------------------
+
+* Polish translation update (Piotr Drąg)
+* ID3: don't write albumartistsort twice :bug:`1732`
+* Use the stream song for ``--print-playing``. :bug:`1742`
+* Fix background color of some context menus with the Ubuntu 12.04 theme
+* Fix adding new tags failing in some cases :bug:`1757`
+* OSX: make cmd+w close windows :bug:`1715`
+* Fix a crash with numerics in tag pattern conditionals :bug:`1762` (Nick Boultbee)
+* Fix tests with newer Perl (through intltool)
+
+
+.. _release-3.5.1:
+
+3.5.1 (2015-10-14) - HOW TO SUCCEED AT SMALLTALK
+------------------------------------------------
+
+* Fix volume / mute state resetting on song change with some configurations
+  :bug:`1703`
+* Fix crash when G_FILENAME_ENCODING is set :bug:`1699`
+
+
+.. _release-3.5.0:
+
+3.5.0 (2015-10-07) - BETTER ANSWERS TO "HEY HOW ARE YOU?" THAN "I'M FINE"
+-------------------------------------------------------------------------
+
+Packaging Changes:
+  * **Mutagen 1.27** required
+
+General:
+ * Add --print-query-text to get the current query for browsers that support
+   it :bug:`1634`
+ * Support conditional patterns with QL Query syntax :bug:`1604`
+   (Nick Boultbee)
+ * Playlist content search in the playlist browser :pr:`1593` (Nick Boultbee)
+ * Disable app menu under Unity :bug:`1599`
+ * Allow users to optionally bypass the trash even if it is available on their
+   operating system (Eric Casteleijn) :pr:`1573`
+ * Try to prevent fifo timeouts for slow operations :bug:`1616`
+ * Fix border drawing with CSD/wayland
+ * Use float for ~#length :bug:`1483`
+ * Add a setting to enable/disable rating hotkeys :pr:`1625` (Ryan Turner)
+ * Display all tags in tag list editor not just the non-default ones
+   :bug:`1660`
+ * Add a new ~codec and ~encoding tag (library reload needed) :bug:`9`
+ * Add ~bitrate tag including the unit
+ * Asymmetric search improvements e.g. 'o' now matches 'ø'
+ * Various custom column header dialog improvements :bug:`1660` (Nick Boultbee)
+ * Prefer txxx replaygain over rva2 :bug:`1587`
+ * Support reading RG when ID3 tag key is in uppercase :bug:`1502`
+
+Playback:
+ * Implement direct sink volume control (e.g. for pulsesink, directsoundsink).
+   Changing volume will now control the PA stream volume and result in less
+   delay :bug:`1389` :bug:`1512`
+ * Allow muting by middle clicking the volume button. Controls the
+   pulseaudio stream mute property directly.
+ * Increased GStreamer pipeline buffer size to reduce CPU usage :bug:`1687`
+ * Hide seek slider when not seekable
+
+OSX:
+ * Replace "Ctrl" with "Command" in all keyboard shortcuts :bug:`1677`
+ * (already in 3.4.1-v2 build) HIDPI support
+ * (already in 3.4.1-v2 build) Support for more audio formats
+
+Plugins:
+ * Add a plugin for editing ~#playcount and ~#skipcount. :pr:`1624`
+   (Ryan Turner)
+ * Advanced preferences plugin :bug:`1050` (Bruno Bergot)
+ * Allow to configure cover size in animosd plugin :bug:`1049` (Bruno Bergot)
+ * Add plugin for removing TLEN frames from ID3 based files. :bug:`1655`
+ * mpd: fix state sync with mpdroid 0.8. :bug:`1636`
+ * Fix screensaver inhibit plugin. :bug:`1692`
+ * qlscrobbler: fix offline mode check box. :bug:`1688`
+ * lyrics window: use mobile wikia version
+
+Translations:
+ * Update Dutch translation :pr:`1618` (Nathan Follens)
+ * Updated greek translation :bug:`1684` (Dimitris Papageorgiou)
+ * setup.py: add a new create_po command for starting new translations
+
+
+.. _release-3.4.1:
+
+3.4.1 (2015-05-24) - Apparently, MY problem is a poisonous basement
+-------------------------------------------------------------------
+
+Fixes:
+ * setup.py: respect --install-data :bug:`1575`
+ * Suppress deprecation warnings with newer glib
+
+Regressions:
+ * Fix error when invoking a plugin with many songs/albums :bug:`1578`
+ * Fix main window sometimes not showing under Ubuntu 12.04
+ * Fix search not working with non-ASCII text in some cases
+
+
+.. _release-3.4.0:
+
+3.4.0 (2015-04-09) - She knew every of the things
+-------------------------------------------------
+
+Packaging Changes:
+  * The main repo moved from Mercurial (Google Code) to Git (GitHub)
+  * The build should now be reproducible
+  * **gtk-update-icon-cache** is no longer a build dependency
+  * **gettext >= 0.15** is required now at build time
+  * A complete **icon theme** is now required (this was also partly the case
+    with 3.3) and an icon theme including symbolic icons is recommended.
+    **adwaita-icon-theme** provides both for example.
+  * **Mutagen 1.22** required, **Mutagen 1.27** recommended
+  * New files installed to ``/usr/share/icons/hicolor/scalable/apps/``
+  * **quodlibet.desktop** now contains a **MimeType** entry, which means
+    calling **update-desktop-database** is needed after package installation.
+
+* Improved Gnome 3.16 compatibility
+
+ * Fixes for the list tooltips in combination with GTK 3.16 scrollbars
+ * Include symbolic icons for gnome-shell 3.16
+
+* Album browser: faster cover loading
+* Devices: fix detection of Sansa Clip+ with some setups :bug:`1523`
+* Prefs: restore active tab
+* Songlist: support patterns in the filter song list menu
+* New shortcut ``ctrl+shift+j``, like ``ctrl+j`` but refilters the browser
+  always
+* Make build reproducible :bug:`1524`
+* MP4: include codec information in ``~format``
+  (needs a library reload) :bug:`1505`
+* GStreamer: fix a deadlock when seeking right at a song change
+* Queue: don't decide the next song too early :bug:`1496`
+* Song info widget: provide the full song context menu :bug:`1527`
+* CLI: ``--run`` to make QL start if it isn't already.
+  Useful for pairing with other commands like ``--play-file``. :bug:`67`
+* Add supported mime types to desktop file :bug:`67`
+* CLI: ``--play-file`` doesn't add songs to the library anymore :bug:`1537`
+* Fix QL starting twice if started in quick succession
+* Tooltips: don't span multiple monitors :bug:`1554`
+* MPD-Server: Fix a crash when changing the port number :bug:`1559`
+* Fix short hang on shutdown with GStreamer plugins active :bug:`1567`
+* Fix setting an embedded image in case the file doesn't have tags :bug:`1531`
+* OSX: add a menu bar for Ex Falso
+* Fifo: Fix commands failing in case QL is busy :bug:`1542`
+* ...
+
+Translations:
+ * Use msgctx for message contexts
+
+
+.. _release-3.3.1:
+
 3.3.1 (2015-01-10) - Reduce, reuse, recycle, RESUBMIT
 -----------------------------------------------------
 
@@ -11,8 +598,14 @@ Fixes:
  * Fix HiDPI DnD images when dragging multiple rows
 
 
+.. _release-3.3.0:
+
 3.3.0 (2014-12-31) - PARALLEL UNIVERSES. Travel there and THEN go back in time, and you can mess things up as much as you want.
 -------------------------------------------------------------------------------------------------------------------------------
+
+Packaging Changes:
+  * New optional plugin dependency: **webkitgtk-3.0 + typelibs**
+  * **Mutagen 1.27** recommended
 
 General:
  * Support ``--query`` with all browsers that have a search entry. :bug:`1437`
@@ -97,6 +690,8 @@ Windows:
    can be executed in the Windows console with visible stdout :bug:`635`
 
 
+.. _release-3.2.2:
+
 3.2.2 (2014-10-03) - ENJOY, THERE'S NO GOING BACK
 -------------------------------------------------
 
@@ -110,6 +705,8 @@ Translations
  * Russian translation update (Anton Shestakov)
 
 
+.. _release-3.2.1:
+
 3.2.1 (2014-08-16) - BAKE HIM AWAY, TOYS
 ----------------------------------------
 
@@ -122,8 +719,20 @@ Translations
  * Russian translation update (Anton Shestakov) :bug:`1441`
 
 
+.. _release-3.2.0:
+
 3.2.0 (2014-08-01) - WHAT KIND OF GOD MADE IT SO LIONS HUG BACK TOO HARD
 ------------------------------------------------------------------------
+
+Packaging Changes:
+  * **Plugins got merged** into Quod Libet. This means the quodlibet-plugins
+    tarball is gone and plugins will be installed by ``setup.py install``. For
+    distros that used to include the plugins in the main package this means all
+    plugin related packaging code can simply be removed. For distros that
+    offered separate packages the installation can be split by packaging
+    ``quodlibet/ext`` in a separate package. Quod Libet can run without it.
+  * **UDisks2** is supported, in addition to UDisks1
+  * **Python 2.7** required instead of 2.6 (might still work, but not tested)
 
 Tags:
  * ~people and ~performer don't show roles anymore, which makes them more
@@ -165,7 +774,7 @@ Windows:
 
 Misc:
  * Keyboard shortcuts are now documented:
-   https://quodlibet.readthedocs.org/en/latest/guide/shortcuts.html
+   https://quodlibet.readthedocs.io/en/latest/guide/shortcuts.html
 
 Developers:
  * Due to the inclusion of the plugins into the core, the symlink from
@@ -181,20 +790,26 @@ Packaging:
    quodlibet/plugins to quodlibet/ext for system wide plugins, loading from
    ~/.quodlibet/plugins is the same) :bug:`1396`
  * For BSDs: setup.py has a new "--mandir" to select the man page location
- * Packaging guide: https://quodlibet.readthedocs.org/en/latest/packaging.html
+ * Packaging guide: https://quodlibet.readthedocs.io/en/latest/packaging.html
 
+
+.. _release-3.1.91:
 
 3.1.91 [beta] (2014-07-22) - Pumps, powerheads, lights and filters!
 -------------------------------------------------------------------
 
-See final release
+See :ref:`final release <release-3.2.0>`
 
+
+.. _release-3.1.2:
 
 3.1.2 (2014-06-20) - Dang it
 ----------------------------
 
 * Fix 3.1.1 regression causing folders in the file browser to show up in reverse order :bug:`1390`
 
+
+.. _release-3.1.1:
 
 3.1.1 (2014-04-28) - I've shown that you're dealing with an Alpha here, baby, not some weak Beta!
 -------------------------------------------------------------------------------------------------
@@ -203,6 +818,8 @@ See final release
 * Handle invalid flac picture blocks :bug:`1385`
 * Fix "setup.py install --record" :bug:`1373`
 
+
+.. _release-3.1.0:
 
 3.1.0 (2014-04-10) - Olden times, man! NEVER LIVE THERE.
 --------------------------------------------------------
@@ -283,10 +900,13 @@ Dependencies & Packaging:
 * ``setup.py build_sphinx`` builds the html user guide
 
 
+.. _release-3.0.91:
+
 3.0.91 [beta] (2014-02-28) - You'd have to be in space for that to work.
 ------------------------------------------------------------------------
 
-See final release
+See :ref:`final release <release-3.1.0>`
+
 
 2.6.3 (2013-09-25) - The one that can't even go naked into space without dying!
 -------------------------------------------------------------------------------
@@ -295,6 +915,9 @@ This is a Windows only bug fix release.
 
 Windows:
  * Fix library saving [1230] (Sebastian Thürrschmidt)
+
+
+.. _release-3.0.2:
 
 3.0.2 (2013-07-22) - LATER, THE OCEANS BOIL AS THE EARTH TURNS TO FIRE
 ----------------------------------------------------------------------
@@ -328,10 +951,16 @@ Plugins
  * Fix HTML export plugin
  * Fix Bookmarks plugin
 
+
+.. _release-3.0.1:
+
 3.0.1 (2013-07-08) - *gasp*
 ---------------------------
 
  * Fix a crasher with some PyGObject versions [1211]
+
+
+.. _release-3.0.0:
 
 3.0.0 (2013-06-15) - THE NEMESIS HYPOTHESIS
 -------------------------------------------
@@ -389,7 +1018,7 @@ Known Regressions
    due to missing packaging:
 
    * https://bugzilla.redhat.com/show_bug.cgi?id=963476
-   * http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=710254
+   * https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=710254
 
  * Animated On-Screen Display plugin is missing transparency support
  * No Windows build (work in progress)
@@ -1402,7 +2031,7 @@ Windows
  * More command-line and FIFO options.
  * Read-only M4A support. (thanks to Alexey Bobyakov)
  * Wavpack support.
- * Audio Feed (Podcast) support (requires http://www.feedparser.org).
+ * Audio Feed (Podcast) support (requires https://pythonhosted.org/feedparser/).
  * "One Song" (and repeat) play mode.
  * Improved and configurable tray icon.
  * New install system that is more FHS-compliant.
@@ -1559,7 +2188,7 @@ Windows
 --------------------------------------------------------
 
  * Plugins (either appearing in the right-click menu, or triggered on a
-   player event); see http://www.sacredchao.net/quodlibet/wiki/Plugins.
+   player event)
  * Browse songs by album, with a cover display.
  * "Library Browser" added to search/edit files without disturbing your
    playlist.
@@ -1679,7 +2308,7 @@ Windows
    manual page for instructions on using it. This should let ALSA users
    use software mixing.
  * ID3 APIC (embedded picture) support.
- * VorbisGain (http://sjeng.org/vorbisgain.html) support.
+ * VorbisGain (https://sjeng.org/vorbisgain.html) support.
  * A context menu for common operations was added to the properties dialog.
  * Tag values can be set from filename patterns, or vice-versa.
  * Dates can be saved in MP3s now.

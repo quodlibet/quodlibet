@@ -2,14 +2,16 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-import os
+from senf import fsnative, path2fsn
 
-from quodlibet.formats._audio import AudioFile
-from quodlibet.util.path import fsnative, is_fsnative
-from quodlibet.util.uri import URI
+from quodlibet.compat import text_type, PY3
+
+from ._audio import AudioFile
+
 
 extensions = []
 
@@ -21,17 +23,17 @@ class RemoteFile(AudioFile):
     format = "Remote File"
 
     def __init__(self, uri):
-        self["~uri"] = str(URI(uri))
-        self.sanitize(fsnative(unicode(self["~uri"])))
+        if PY3:
+            assert not isinstance(uri, bytes)
+        self["~uri"] = text_type(uri)
+        self.sanitize(fsnative(self["~uri"]))
 
     def __getitem__(self, key):
         # we used to save them with the wrong type
         value = super(RemoteFile, self).__getitem__(key)
-        if key in ("~filename", "~mountpoint") and not is_fsnative(value):
-            if os.name == "nt":
-                value = unicode(value)
-            else:
-                value = value.encode("utf-8")
+        if key in ("~filename", "~mountpoint") and \
+                not isinstance(value, fsnative):
+            value = path2fsn(value)
 
         return value
 
@@ -51,7 +53,7 @@ class RemoteFile(AudioFile):
         return True
 
     def write(self):
-        raise TypeError("RemoteFiles do not support writing!")
+        pass
 
     def can_change(self, k=None):
         if k is None:
@@ -63,5 +65,5 @@ class RemoteFile(AudioFile):
     def key(self):
         return self["~uri"]
 
-info = RemoteFile
+loader = RemoteFile
 types = [RemoteFile]

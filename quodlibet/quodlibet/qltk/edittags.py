@@ -1,21 +1,24 @@
 # -*- coding: utf-8 -*-
-# Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna, Nick Boultbee
+# Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna
+#           2011-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import sys
 
 from gi.repository import Gtk, Pango, Gdk
 
+from quodlibet import C_, _
 from quodlibet import qltk
-
 from quodlibet import config
 from quodlibet import util
 
 from quodlibet.util import massagers
 
+from quodlibet.formats import AudioFileError
 from quodlibet.qltk.completion import LibraryValueCompletion
 from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
 from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn
@@ -23,14 +26,18 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.window import Dialog
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.qltk.x import SeparatorMenuItem, Button, MenuItem
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
+from quodlibet.qltk import Icons
 from quodlibet.plugins import PluginManager
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, gdecode
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
+from quodlibet.compat import iteritems, string_types, text_type, listkeys, \
+    listmap, itervalues
 
 
 class Comment(object):
@@ -54,20 +61,20 @@ class Comment(object):
 
     def _paren(self):
         if self.shared:
-            return ngettext('missing from %d song',
-                            'missing from %d songs',
-                            self.missing) % self.missing
+            return numeric_phrase('missing from %d song',
+                                  'missing from %d songs',
+                                  self.missing)
         elif self.complete:
-            return ngettext('different across %d song',
-                            'different across %d songs',
-                            self.total) % self.total
+            return numeric_phrase('different across %d song',
+                                  'different across %d songs',
+                                  self.total)
         else:
-            d = ngettext('different across %d song',
-                          'different across %d songs',
-                          self.have) % self.have
-            m = ngettext('missing from %d song',
-                          'missing from %d songs',
-                          self.missing) % self.missing
+            d = numeric_phrase('different across %d song',
+                               'different across %d songs',
+                               self.have)
+            m = numeric_phrase('missing from %d song',
+                               'missing from %d songs',
+                               self.missing)
             return ", ".join([d, m])
 
     def is_special(self):
@@ -120,7 +127,7 @@ class AudioFileGroup(dict):
             if real_keys_only:
                 iter_func = song.iterrealitems
             else:
-                iter_func = song.iteritems
+                iter_func = song.items
 
             for comment, val in iter_func():
                 keys[comment] = keys.get(comment, 0) + 1
@@ -145,10 +152,10 @@ class AudioFileGroup(dict):
         self._can_change = can_change
 
         # collect comment representations
-        for tag, count in keys.iteritems():
+        for tag, count in iteritems(keys):
             first_value = first[tag]
-            if not isinstance(first_value, basestring):
-                first_value = unicode(first_value)
+            if not isinstance(first_value, string_types):
+                first_value = text_type(first_value)
             shared = all[tag]
             complete = count == total
             if shared and complete:
@@ -185,15 +192,13 @@ class SplitValues(Gtk.ImageMenuItem):
     def __init__(self, tag, value):
         super(SplitValues, self).__init__(
             label=_("Split into _Multiple Values"), use_underline=True)
-        self.set_image(Gtk.Image.new_from_stock(
-            Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        self.set_image(Gtk.Image.new_from_icon_name(
+            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+        spls = config.gettext("editing", "split_on").split()
         self.set_sensitive(len(split_value(value, spls)) > 1)
 
     def activated(self, tag, value):
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        spls = config.gettext("editing", "split_on").split()
         return [(tag, v) for v in split_value(value, spls)]
 
 
@@ -205,8 +210,8 @@ class SplitDisc(Gtk.ImageMenuItem):
     def __init__(self, tag, value):
         super(SplitDisc, self).__init__(
             label=_("Split Disc out of _Album"), use_underline=True)
-        self.set_image(Gtk.Image.new_from_stock(
-            Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
+        self.set_image(Gtk.Image.new_from_icon_name(
+            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
         self.set_sensitive(split_album(value)[1] is not None)
 
     def activated(self, tag, value):
@@ -222,15 +227,13 @@ class SplitTitle(Gtk.ImageMenuItem):
     def __init__(self, tag, value):
         super(SplitTitle, self).__init__(
             label=_("Split _Version out of Title"), use_underline=True)
-        self.set_image(Gtk.Image.new_from_stock(
-            Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        self.set_image(Gtk.Image.new_from_icon_name(
+            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+        spls = config.gettext("editing", "split_on").split()
         self.set_sensitive(bool(split_title(value, spls)[1]))
 
     def activated(self, tag, value):
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        spls = config.gettext("editing", "split_on").split()
         title, versions = split_title(value, spls)
         return [(tag, title)] + [("version", v) for v in versions]
 
@@ -241,15 +244,13 @@ class SplitPerson(Gtk.ImageMenuItem):
 
     def __init__(self, tag, value):
         super(SplitPerson, self).__init__(label=self.title, use_underline=True)
-        self.set_image(Gtk.Image.new_from_stock(
-            Gtk.STOCK_FIND_AND_REPLACE, Gtk.IconSize.MENU))
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        self.set_image(Gtk.Image.new_from_icon_name(
+            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+        spls = config.gettext("editing", "split_on").split()
         self.set_sensitive(bool(split_people(value, spls)[1]))
 
     def activated(self, tag, value):
-        spls = config.get("editing", "split_on").decode(
-            'utf-8', 'replace').split()
+        spls = config.gettext("editing", "split_on").split()
         artist, others = split_people(value, spls)
         return [(tag, artist)] + [(self.needs[0], o) for o in others]
 
@@ -284,8 +285,9 @@ class AddTagDialog(Dialog):
             use_header_bar=True)
         self.set_border_width(6)
         self.set_resizable(False)
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        add = self.add_button(Gtk.STOCK_ADD, Gtk.ResponseType.OK)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        add = self.add_icon_button(_("_Add"), Icons.LIST_ADD,
+                                   Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
         table = Gtk.Table(n_rows=2, n_columns=2)
@@ -318,8 +320,8 @@ class AddTagDialog(Dialog):
         valuebox.add(hbox)
         hbox.pack_start(self.__val, True, True, 0)
         hbox.set_spacing(6)
-        invalid = Gtk.Image.new_from_stock(
-            Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.SMALL_TOOLBAR)
+        invalid = Gtk.Image.new_from_icon_name(
+            Icons.DIALOG_WARNING, Gtk.IconSize.SMALL_TOOLBAR)
         hbox.pack_start(invalid, True, True, 0)
 
         self.vbox.pack_start(table, True, True, 0)
@@ -348,23 +350,19 @@ class AddTagDialog(Dialog):
             return self.__tag.tag
 
     def get_value(self):
-        return self.__val.get_text().decode("utf-8")
+        return gdecode(self.__val.get_text())
 
     def __validate(self, editable, add, invalid, box):
         tag = self.get_tag()
         value = self.get_value()
-        fmt = massagers.tags.get(tag)
-        if fmt:
-            valid = fmt.is_valid(value)
-        else:
-            valid = True
+        valid = massagers.is_valid(tag, value)
         add.set_sensitive(valid)
         if valid:
             invalid.hide()
             box.set_tooltip_text("")
         else:
             invalid.show()
-            box.set_tooltip_text(fmt.error)
+            box.set_tooltip_text(massagers.error_message(tag, value))
 
     def run(self):
         self.show()
@@ -396,13 +394,6 @@ class ListEntry(object):
 
 
 class EditTags(Gtk.VBox):
-    _SAVE_BUTTON_KEY = 'ql-save'
-    _REVERT_BUTTON_KEY = 'ql-revert'
-    # Translators: translate only to override the text
-    # for the tag "save" button
-    _SAVE_BUTTON_TEXT = _('ql-save')
-    # Translators: translate only to override the  for the tag "revert" button
-    _REVERT_BUTTON_TEXT = _('ql-revert')
     handler = EditTagsPluginHandler()
 
     @classmethod
@@ -419,23 +410,27 @@ class EditTags(Gtk.VBox):
         self._view = view
         selection = view.get_selection()
         render = Gtk.CellRendererPixbuf()
-        column = TreeViewColumn(_("Write"), render)
+        column = TreeViewColumn()
+        column.pack_start(render, True)
+        column.set_fixed_width(24)
+        column.set_expand(False)
 
         def cdf_write(col, rend, model, iter_, *args):
             entry = model.get_value(iter_)
+            rend.set_property('sensitive', entry.edited or entry.deleted)
             if entry.canedit or entry.deleted:
-                rend.set_property('sensitive', entry.edited or entry.deleted)
                 if entry.deleted:
-                    rend.set_property('stock-id', Gtk.STOCK_DELETE)
+                    rend.set_property('icon-name', Icons.EDIT_DELETE)
                 else:
-                    rend.set_property('stock-id', Gtk.STOCK_EDIT)
+                    rend.set_property('icon-name', Icons.EDIT)
             else:
-                rend.set_property('stock-id', Gtk.STOCK_DIALOG_AUTHENTICATION)
+                rend.set_property('icon-name', Icons.CHANGES_PREVENT)
         column.set_cell_data_func(render, cdf_write)
         view.append_column(column)
 
         render = Gtk.CellRendererText()
-        column = TreeViewColumn(_('Tag'), render)
+        column = TreeViewColumn(title=_('Tag'))
+        column.pack_start(render, True)
 
         def cell_data_tag(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
@@ -457,7 +452,8 @@ class EditTags(Gtk.VBox):
         render.connect('edited', self.__edit_tag, model)
         render.connect(
             'editing-started', self.__value_editing_started, model, library)
-        column = TreeViewColumn(_('Value'), render)
+        column = TreeViewColumn(title=_('Value'))
+        column.pack_start(render, True)
 
         def cell_data_value(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
@@ -490,13 +486,13 @@ class EditTags(Gtk.VBox):
         bbox1 = Gtk.HButtonBox()
         bbox1.set_spacing(6)
         bbox1.set_layout(Gtk.ButtonBoxStyle.START)
-        add = Gtk.Button(stock=Gtk.STOCK_ADD)
+        add = qltk.Button(_("_Add"), Icons.LIST_ADD)
         add.set_focus_on_click(False)
         self._add = add
         add.connect('clicked', self.__add_tag, model, library)
         bbox1.pack_start(add, True, True, 0)
         # Remove button
-        remove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.set_focus_on_click(False)
         remove.connect('clicked', self.__remove_tag, view)
         remove.set_sensitive(False)
@@ -509,17 +505,13 @@ class EditTags(Gtk.VBox):
         bbox2 = Gtk.HButtonBox()
         bbox2.set_spacing(6)
         bbox2.set_layout(Gtk.ButtonBoxStyle.END)
-        revert = (Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
-                  if self._REVERT_BUTTON_KEY == self._REVERT_BUTTON_TEXT
-                  else Gtk.Button(label=self._REVERT_BUTTON_TEXT,
-                                  use_underline=True))
+        # Translators: Revert button in the tag editor
+        revert = Button(C_("edittags", "_Revert"), Icons.DOCUMENT_REVERT)
+
         self._revert = revert
         revert.set_sensitive(False)
-        # Save button.
-        save = (Gtk.Button(stock=Gtk.STOCK_SAVE)
-                if self._SAVE_BUTTON_TEXT == self._SAVE_BUTTON_KEY
-                else Gtk.Button(label=self._SAVE_BUTTON_TEXT,
-                                use_underline=True))
+        # Translators: Save button in the tag editor
+        save = Button(C_("edittags", "_Save"), Icons.DOCUMENT_SAVE)
         save.set_sensitive(False)
         self._save = save
         bbox2.pack_start(revert, True, True, 0)
@@ -558,7 +550,7 @@ class EditTags(Gtk.VBox):
         if qltk.is_accel(event, "Delete"):
             self.__remove_tag(view, view)
             return Gdk.EVENT_STOP
-        elif qltk.is_accel(event, "<ctrl>s"):
+        elif qltk.is_accel(event, "<Primary>s"):
             # Issue 697: allow Ctrl-s to save.
             self._save.emit('clicked')
             return Gdk.EVENT_STOP
@@ -569,7 +561,8 @@ class EditTags(Gtk.VBox):
         for b in buttons:
             b.set_sensitive(True)
 
-    def __paste(self, clip, text, (rend, path)):
+    def __paste(self, clip, text, args):
+        rend, path = args
         if text:
             rend.emit('edited', path, text.strip())
 
@@ -629,7 +622,8 @@ class EditTags(Gtk.VBox):
                 else:
                     b.connect('activate', self.__menu_activate, view)
 
-                    if (not min(map(self.__songinfo.can_change, b.needs) + [1])
+                    if (not min(listmap(self.__songinfo.can_change, b.needs) +
+                                [1])
                             or comment.is_special()):
                         b.set_sensitive(False)
 
@@ -638,7 +632,7 @@ class EditTags(Gtk.VBox):
             if menu.get_children():
                 menu.append(SeparatorMenuItem())
 
-        b = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_REMOVE, None)
+        b = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         b.connect('activate', self.__remove_tag, view)
         qltk.add_fake_accel(b, "Delete")
         menu.append(b)
@@ -660,6 +654,7 @@ class EditTags(Gtk.VBox):
         remove.set_sensitive(bool(rows))
 
     def __add_new_tag(self, model, tag, value):
+        assert isinstance(value, text_type)
         iters = [i for (i, v) in model.iterrows() if v.tag == tag]
         if iters and not self.__songinfo.can_multiple_values(tag):
             title = _("Unable to add tag")
@@ -688,8 +683,9 @@ class EditTags(Gtk.VBox):
                 break
             tag = add.get_tag()
             value = add.get_value()
-            if tag in massagers.tags:
-                value = massagers.tags[tag].validate(value)
+            assert isinstance(value, text_type)
+            value = massagers.validate(tag, value)
+            assert isinstance(value, text_type)
             if not self.__songinfo.can_change(tag):
                 title = _("Invalid tag")
                 msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
@@ -721,7 +717,7 @@ class EditTags(Gtk.VBox):
         added = {}
         renamed = {}
 
-        for entry in model.itervalues():
+        for entry in itervalues(model):
             if entry.edited and not (entry.deleted or entry.renamed):
                 if entry.origvalue is not None:
                     l = updated.setdefault(entry.tag, [])
@@ -754,7 +750,7 @@ class EditTags(Gtk.VBox):
                     break
 
             changed = False
-            for key, values in updated.iteritems():
+            for key, values in iteritems(updated):
                 for (new_value, old_value) in values:
                     if song.can_change(key):
                         if old_value is None:
@@ -763,20 +759,27 @@ class EditTags(Gtk.VBox):
                             song.change(key, old_value.text, new_value.text)
                         changed = True
 
-            for key, values in added.iteritems():
+            for key, values in iteritems(added):
                 for value in values:
                     if song.can_change(key):
                         song.add(key, value.text)
                         changed = True
 
-            for key, values in deleted.iteritems():
+            for key, values in iteritems(deleted):
                 for value in values:
-                    if key in song:
+                    if not value.shared:
+                        # In case it isn't shared we don't know the actual
+                        # values to remove. But we know that in that case
+                        # we merge all values into one Comment so just removing
+                        # everything for that key is OK.
+                        song.remove(key, None)
+                        changed = True
+                    elif key in song:
                         song.remove(key, value.text)
                         changed = True
 
             save_rename = []
-            for new_tag, values in renamed.iteritems():
+            for new_tag, values in iteritems(renamed):
                 for old_tag, new_value, old_value in values:
                     if (song.can_change(new_tag) and old_tag in song):
                         if not new_value.is_special():
@@ -797,7 +800,7 @@ class EditTags(Gtk.VBox):
             if changed:
                 try:
                     song.write()
-                except:
+                except AudioFileError:
                     util.print_exc()
                     WriteFailedError(self, song).run()
                     library.reload(song, changed=was_changed)
@@ -815,23 +818,29 @@ class EditTags(Gtk.VBox):
             b.set_sensitive(not all_done)
 
     def __edit_tag(self, renderer, path, new_value, model):
+        new_value = gdecode(new_value)
         new_value = ', '.join(new_value.splitlines())
         path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
+        error_dialog = None
 
-        if entry.tag in massagers.tags:
-            fmt = massagers.tags[entry.tag]
-            if not fmt.is_valid(new_value):
-                qltk.WarningMessage(
-                    self, _("Invalid value"),
-                    _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
-                    "value": new_value, "error": fmt.error}).run()
-                return
-            else:
-                new_value = fmt.validate(new_value)
+        if not massagers.is_valid(entry.tag, new_value):
+            error_dialog = qltk.WarningMessage(
+                self, _("Invalid value"),
+                _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
+                "value": new_value,
+                "error": massagers.error_message(entry.tag, new_value)})
+        else:
+            new_value = massagers.validate(entry.tag, new_value)
 
         comment = entry.value
-        if comment.text != new_value and (new_value or comment.shared):
+        changed = comment.text != new_value
+        if (changed and ((comment.shared and comment.complete) or new_value)) \
+                or (new_value and comment.shared and not comment.complete):
+            # only give an error if we would have applied the value
+            if error_dialog is not None:
+                error_dialog.run()
+                return
             entry.value = Comment(new_value)
             entry.edited = True
             entry.deleted = False
@@ -855,15 +864,14 @@ class EditTags(Gtk.VBox):
             # validate one value and never write it back..
 
             text = entry.value.text
-            if new_tag in massagers.tags:
-                fmt = massagers.tags[new_tag]
-                if not fmt.is_valid(text):
-                    qltk.WarningMessage(
-                        self, _("Invalid value"),
-                        _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
-                          "value": text, "error": fmt.error}).run()
-                    return
-                text = fmt.validate(text)
+            if not massagers.is_valid(new_tag, text):
+                qltk.WarningMessage(
+                    self, _("Invalid value"),
+                    _("Invalid value: <b>%(value)s</b>\n\n%(error)s") % {
+                      "value": text,
+                      "error": massagers.error_message(new_tag, text)}).run()
+                return
+            text = massagers.validate(new_tag, text)
 
             if entry.origvalue is None:
                 # The tag hasn't been saved yet, so we can just update
@@ -894,19 +902,7 @@ class EditTags(Gtk.VBox):
         except TypeError:
             return Gdk.EVENT_PROPAGATE
 
-        if event.button == Gdk.BUTTON_PRIMARY and col is view.get_columns()[0]:
-            model = view.get_model()
-            row = model[path]
-            entry = row[0]
-            # In case we have a (partially) shared value, write it
-            # to all songs. For unshared/incomplete do nothing
-            if entry.value.shared:
-                entry.edited = not entry.edited
-                if entry.edited:
-                    entry.value.complete = True
-            model.row_changed(row.path, row.iter)
-            return Gdk.EVENT_STOP
-        elif event.button == Gdk.BUTTON_MIDDLE and \
+        if event.button == Gdk.BUTTON_MIDDLE and \
                 col == view.get_columns()[2]:
             display = Gdk.DisplayManager.get().get_default_display()
             selection = Gdk.SELECTION_PRIMARY
@@ -931,7 +927,7 @@ class EditTags(Gtk.VBox):
             self.__songinfo = AudioFileGroup(songs)
         songinfo = self.__songinfo
 
-        keys = songinfo.keys()
+        keys = listkeys(songinfo)
         default_tags = get_default_tags()
         keys = set(keys + default_tags)
 

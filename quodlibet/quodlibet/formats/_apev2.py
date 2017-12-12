@@ -2,14 +2,18 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import mutagen.apev2
 
-from quodlibet.formats._audio import AudioFile
-from quodlibet.formats._image import APICType, EmbeddedImage
 from quodlibet.util.path import get_temp_cover_file
+from quodlibet.compat import iteritems, iterkeys
+
+from ._audio import AudioFile
+from ._image import APICType, EmbeddedImage
+from ._misc import AudioFileError, translate_errors
 
 
 def get_cover_type(key, value):
@@ -47,7 +51,11 @@ def parse_cover(key, value):
 
 
 def write_cover(image):
-    """Takes EmbeddedImage and returns a (key, value) tuple or None"""
+    """Takes EmbeddedImage and returns a (key, value) tuple
+
+    Raises:
+        AudioFileError
+    """
 
     if image.type == APICType.COVER_FRONT:
         key = "Cover Art (Front)"
@@ -55,12 +63,12 @@ def write_cover(image):
         key = "Cover Art (Back)"
 
     try:
-        data = image.file.read()
-    except EnvironmentError:
-        return
+        data = image.read()
+    except EnvironmentError as e:
+        raise AudioFileError(e)
 
     ext = (image.extensions and image.extensions[0]) or "jpg"
-    data = ("hello.%s\x00" % (ext)) + data
+    data = ("hello.%s\x00" % (ext)).encode("ascii") + data
 
     value = mutagen.apev2.APEValue(data, mutagen.apev2.BINARY)
 
@@ -83,7 +91,7 @@ class APEv2File(AudioFile):
              "original artist": "originalartist",
              "mixartist": "remixer",
     }
-    SNART = dict([(v, k) for k, v in TRANS.iteritems()])
+    SNART = dict([(v, k) for k, v in iteritems(TRANS)])
 
     can_change_images = True
 
@@ -91,10 +99,12 @@ class APEv2File(AudioFile):
         if audio:
             tag = audio.tags or {}
         else:
-            try:
-                tag = mutagen.apev2.APEv2(filename)
-            except mutagen.apev2.APENoHeaderError:
-                tag = {}
+            with translate_errors():
+                try:
+                    tag = mutagen.apev2.APEv2(filename)
+                except mutagen.apev2.APENoHeaderError:
+                    tag = {}
+
         for key, value in tag.items():
             if get_cover_type(key, value) is not None:
                 self.has_images = True
@@ -123,13 +133,14 @@ class APEv2File(AudioFile):
                     mutagen.apev2.is_valid_apev2_key(self.__titlecase(key)))
 
     def write(self):
-        try:
-            tag = mutagen.apev2.APEv2(self['~filename'])
-        except mutagen.apev2.APENoHeaderError:
-            tag = mutagen.apev2.APEv2()
+        with translate_errors():
+            try:
+                tag = mutagen.apev2.APEv2(self['~filename'])
+            except mutagen.apev2.APENoHeaderError:
+                tag = mutagen.apev2.APEv2()
 
         # Remove any text keys we read in
-        for key in tag.iterkeys():
+        for key in iterkeys(tag):
             value = tag[key]
             if (value.kind == mutagen.apev2.TEXT and
                 key.lower() not in self.IGNORE):
@@ -144,20 +155,20 @@ class APEv2File(AudioFile):
             new_key = self.__titlecase(new_key)
             tag[new_key] = lower.list(key)
 
-        tag.save(self["~filename"])
+        with translate_errors():
+            tag.save(self["~filename"])
         self.sanitize()
 
     def get_primary_image(self):
         try:
             tag = mutagen.apev2.APEv2(self['~filename'])
-        except mutagen.apev2.APENoHeaderError:
+        except Exception:
             return
 
         primary = None
-        for key, value in tag.iteritems():
+        for key, value in iteritems(tag):
+            primary = (key, value)
             cover_type = get_cover_type(key, value)
-            if cover_type is not None:
-                primary = primary or (key, value)
             if cover_type == APICType.COVER_FRONT:
                 break
 
@@ -167,11 +178,11 @@ class APEv2File(AudioFile):
     def get_images(self):
         try:
             tag = mutagen.apev2.APEv2(self['~filename'])
-        except mutagen.apev2.APENoHeaderError:
+        except Exception:
             return []
 
         images = []
-        for key, value in tag.iteritems():
+        for key, value in iteritems(tag):
             image = parse_cover(key, value)
             if image is not None:
                 images.append(image)
@@ -180,34 +191,36 @@ class APEv2File(AudioFile):
         return images
 
     def clear_images(self):
-        try:
-            tag = mutagen.apev2.APEv2(self['~filename'])
-        except mutagen.apev2.APENoHeaderError:
-            return
+        with translate_errors():
+            try:
+                tag = mutagen.apev2.APEv2(self['~filename'])
+            except mutagen.apev2.APENoHeaderError:
+                return
 
-        for key, value in tag.items():
-            cover_type = get_cover_type(key, value)
-            if cover_type is not None:
-                del tag[key]
+            for key, value in tag.items():
+                cover_type = get_cover_type(key, value)
+                if cover_type is not None:
+                    del tag[key]
 
-        tag.save()
+            tag.save()
+
         self.has_images = False
 
     def set_image(self, image):
-        try:
-            tag = mutagen.apev2.APEv2(self['~filename'])
-        except mutagen.apev2.APENoHeaderError:
-            tag = mutagen.apev2.APEv2()
+        with translate_errors():
+            try:
+                tag = mutagen.apev2.APEv2(self['~filename'])
+            except mutagen.apev2.APENoHeaderError:
+                tag = mutagen.apev2.APEv2()
 
         for key, value in tag.items():
             cover_type = get_cover_type(key, value)
             if cover_type is not None:
                 del tag[key]
 
-        to_write = write_cover(image)
-        if to_write is None:
-            return
-        key, value = to_write
+        key, value = write_cover(image)
         tag[key] = value
-        tag.save(self['~filename'])
+        with translate_errors():
+            tag.save(self['~filename'])
+
         self.has_images = True

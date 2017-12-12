@@ -2,13 +2,16 @@
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from __future__ import absolute_import
 
 import collections
 import threading
+
+from quodlibet.compat import xrange
 
 
 class Logs(object):
@@ -61,7 +64,7 @@ class Logs(object):
         content = []
         for cat, string in self._save_iter():
             if category is None or category == cat:
-                if isinstance(string, str):
+                if isinstance(string, bytes):
                     string = string.decode("utf-8", "replace")
                 content.append(string)
 

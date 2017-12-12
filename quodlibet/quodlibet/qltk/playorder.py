@@ -1,272 +1,239 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-
-import random
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, GObject
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet import qltk
-from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem
-from quodlibet.plugins import PluginManager, PluginHandler
+from quodlibet.order import Order, OrderInOrder
+from quodlibet.order.reorder import OrderShuffle, OrderWeighted, Reorder
+from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, \
+    Repeat, OneSong
+from quodlibet.qltk import Icons
+from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem, \
+    SeparatorMenuItem, HighlightToggleButton
+from quodlibet.plugins import PluginManager
+from quodlibet.util.dprint import print_w, print_d
 
 
-class Order(object):
-    name = "unknown_order"
-    display_name = _("Unknown")
-    accelerated_name = _("_Unknown")
-    replaygain_profiles = ["track"]
-    is_shuffle = False
-    priority = 100
+class Orders(GObject.Object):
+    """
+    A minimal list-like container for Order objects
+    that signals on changes
+    """
 
-    def __init__(self, playlist):
-        self.playlist = playlist
+    __gsignals__ = {
+        'updated': (GObject.SignalFlags.RUN_LAST, None, ()),
+    }
 
-    # Not called directly, but the default implementation of
-    # next_explicit and next_implicit both just call this.
-    def next(self, playlist, iter):
-        raise NotImplementedError
+    def __init__(self, initial=None):
+        super(Orders, self).__init__()
+        self.items = initial or []
 
-    # Not called directly, but the default implementation of
-    # previous_explicit calls this. Right now there is no such thing
-    # as previous_implicit.
-    def previous(self, playlist, iter):
-        raise NotImplementedError
-
-    # Not called directly, but the default implementations of
-    # set_explicit and set_implicit call this.
-    def set(self, playlist, iter):
-        return iter
-
-    # Called when the user presses a "Next" button.
-    def next_explicit(self, playlist, iter):
-        return self.next(playlist, iter)
-
-    # Called when a song ends passively, e.g. it plays through.
-    def next_implicit(self, playlist, iter):
-        return self.next(playlist, iter)
-
-    # Called when the user presses a "Previous" button.
-    def previous_explicit(self, playlist, iter):
-        return self.previous(playlist, iter)
-
-    # Called when the user manually selects a song (at iter).
-    # If desired the play order can override that, or just
-    # log it and return the iter again. If the play order returns
-    # None, no action will be taken by the player.
-    def set_explicit(self, playlist, iter):
-        return self.set(playlist, iter)
-
-    # Called when the song is set by a means other than the UI.
-    def set_implicit(self, playlist, iter):
-        return self.set(playlist, iter)
-
-    def reset(self, playlist):
-        pass
-
-
-class OrderInOrder(Order):
-    name = "inorder"
-    display_name = _("In Order")
-    accelerated_name = _("_In Order")
-    replaygain_profiles = ["album", "track"]
-    priority = 0
-
-    def next(self, playlist, iter):
-        if iter is None:
-            return playlist.get_iter_first()
-        else:
-            next = playlist.iter_next(iter)
-            if next is None and playlist.repeat:
-                next = playlist.get_iter_first()
-            return next
-
-    def previous(self, playlist, iter):
-        if len(playlist) == 0:
+    def by_name(self, name):
+        if not name:
             return None
-        elif iter is None:
-            return playlist[(len(playlist) - 1,)].iter
-        else:
-            path = max(1, playlist.get_path(iter).get_indices()[0])
-            try:
-                return playlist.get_iter((path - 1,))
-            except ValueError:
-                if playlist.repeat:
-                    return playlist[(len(playlist) - 1,)].iter
+        for cls in self.items:
+            if cls.name == name:
+                return cls
         return None
 
+    def __getitem__(self, y):
+        return self.items.__getitem__(y)
 
-class OrderRemembered(Order):
-    # Shared class for all the shuffle modes that keep a memory
-    # of their previously played songs.
+    def __len__(self):
+        return self.items.__len__()
 
-    def __init__(self, playlist):
-        super(OrderRemembered, self).__init__(playlist)
-        self._played = []
+    def append(self, x):
+        self.items.append(x)
+        self.emit('updated')
 
-    def next(self, playlist, iter):
-        if iter is not None:
-            self._played.append(playlist.get_path(iter).get_indices()[0])
+    def remove(self, x):
+        self.items.remove(x)
+        self.emit('updated')
 
-    def previous(self, playlist, iter):
-        try:
-            path = self._played.pop()
-        except IndexError:
-            return None
+    def __contains__(self, y):
+        return self.items.__contains__(y)
+
+    def __str__(self):
+        return "<%s of %s>" % (type(self).__name__, self.items)
+
+
+class PluggableOrders(Orders, PluginManager):
+    """Registers as a Plugin Handler for various types of `Order` plugins"""
+    def __init__(self, orders, base_cls):
+        assert issubclass(base_cls, Order)
+        super(PluggableOrders, self).__init__(orders)
+        self.base_cls = base_cls
+        if PluginManager.instance:
+            PluginManager.instance.register_handler(self)
         else:
-            return playlist.get_iter(path)
+            print_w("No plugin manager found")
 
-    def set(self, playlist, iter):
-        if iter is not None:
-            self._played.append(playlist.get_path(iter).get_indices()[0])
-        return iter
+    def plugin_handle(self, plugin):
+        return issubclass(plugin.cls, self.base_cls)
 
-    def reset(self, playlist):
-        del(self._played[:])
+    def plugin_enable(self, plugin):
+        plugin_cls = plugin.cls
+        if plugin_cls.name is None:
+            plugin_cls.name = plugin.name
+        if plugin_cls.display_name is None:
+            plugin_cls.display_name = str(plugin.name).capitalize()
+        if plugin_cls.accelerated_name is None:
+            plugin_cls.accelerated_name = plugin_cls.display_name
+        self.append(plugin_cls)
 
+    def plugin_disable(self, plugin):
+        self.remove(plugin.cls)
 
-class OrderShuffle(OrderRemembered):
-    name = "shuffle"
-    display_name = _("Shuffle")
-    accelerated_name = _("_Shuffle")
-    is_shuffle = True
-    priority = 1
-
-    def next(self, playlist, iter):
-        super(OrderShuffle, self).next(playlist, iter)
-        played = set(self._played)
-        songs = set(range(len(playlist)))
-        remaining = songs.difference(played)
-
-        if remaining:
-            return playlist.get_iter((random.choice(list(remaining)),))
-        elif playlist.repeat and not playlist.is_empty():
-            del(self._played[:])
-            return playlist.get_iter((random.choice(list(songs)),))
-        else:
-            del(self._played[:])
-            return None
+DEFAULT_SHUFFLE_ORDERS = [OrderShuffle, OrderWeighted]
+DEFAULT_REPEAT_ORDERS = [RepeatSongForever, RepeatListForever, OneSong]
 
 
-class OrderWeighted(OrderRemembered):
-    name = "weighted"
-    display_name = _("Weighted")
-    accelerated_name = _("_Weighted")
-    is_shuffle = True
-    priority = 2
+class ToggledPlayOrderMenu(Gtk.Box):
+    """A toggle button with a menu button.
+    Items displayed are all `PlayOrder`
 
-    def next(self, playlist, iter):
-        super(OrderWeighted, self).next(playlist, iter)
-        songs = playlist.get()
-        max_score = sum([song('~#rating') for song in songs])
-        choice = random.random() * max_score
-        current = 0.0
-        for i, song in enumerate(songs):
-            current += song("~#rating")
-            if current >= choice:
-                return playlist.get_iter((i,))
-        else:
-            return playlist.get_iter_first()
-
-
-class OrderOneSong(OrderInOrder):
-    name = "onesong"
-    display_name = _("One Song")
-    accelerated_name = _("_One Song")
-    priority = 3
-
-    def next_implicit(self, playlist, iter):
-        if playlist.repeat:
-            return iter
-        else:
-            return None
-
-ORDERS = []
-
-
-def set_orders(orders):
-    ORDERS[:] = [OrderInOrder, OrderShuffle, OrderWeighted, OrderOneSong]
-    ORDERS.extend(orders)
-    ORDERS.sort(lambda K1, K2:
-                cmp(K1.priority, K2.priority) or cmp(K1.name, K2.name))
-set_orders([])
-
-
-class ShuffleButton(Gtk.Box):
-    """A shuffle toggle button + a menu button.
-
-    In case the shuffle button gets toggled, 'toggled' gets emitted.
+    When the button is toggled, a `toggled` signal gets emitted.
     """
 
     __gsignals__ = {
         'toggled': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
-    def __init__(self, arrow_down=False):
+    def __init__(self, icon_name, orders, current_order, enabled=False,
+                 tooltip=None, arrow_down=False):
         """arrow_down -- the direction of the menu and arrow icon"""
+        assert issubclass(current_order, Order)
+        if current_order not in orders:
+            raise ValueError("%s is not supported by %s"
+                             % (current_order.__name__, orders))
 
-        super(ShuffleButton, self).__init__()
+        super(ToggledPlayOrderMenu, self).__init__()
+        self.__inhibit = True
 
         context = self.get_style_context()
         context.add_class(Gtk.STYLE_CLASS_LINKED)
 
-        # shuffle button
-        b = Gtk.ToggleButton(image=SymbolicIconImage(
-            "media-playlist-shuffle", Gtk.IconSize.SMALL_TOOLBAR))
-        b.show_all()
-        qltk.add_css(b, """
-            * {
-                padding: 0px;
-            }
-        """)
-        b.set_size_request(26, 26)
-        self.pack_start(b, True, True, 0)
+        self._toggle_button = toggle = HighlightToggleButton(
+            image=SymbolicIconImage(icon_name, Gtk.IconSize.SMALL_TOOLBAR))
+
+        if tooltip:
+            toggle.set_tooltip_text(tooltip)
+        toggle.set_active(enabled)
+        toggle.show_all()
+        qltk.remove_padding(toggle)
+        toggle.set_size_request(26, 26)
+        self.pack_start(toggle, True, True, 0)
 
         def forward_signal(*args):
-            self.emit("toggled")
+            if not self.__inhibit:
+                self.emit("toggled")
 
-        b.connect("toggled", forward_signal)
-        self._toggle_button = b
+        toggle.connect("toggled", forward_signal)
+        self._toggle_button = toggle
 
-        # arrow
         from quodlibet.qltk.menubutton import MenuButton
-        b = MenuButton(arrow=True, down=arrow_down)
-        b.show_all()
-        b.set_size_request(20, 26)
-        qltk.add_css(b, """
-            * {
-                padding: 0px;
-            }
-        """)
-        self.pack_start(b, True, True, 0)
-        self._menu_button = b
+        arrow = MenuButton(arrow=True, down=arrow_down)
+        arrow.show_all()
+        arrow.set_size_request(20, 26)
+        qltk.remove_padding(arrow)
+        self.pack_start(arrow, True, True, 0)
+        self._menu_button = arrow
+        self.__current = current_order
+        self.__orders = orders
+        self.__rebuild_menu()
+        self.__inhibit = False
 
-    def set_active(self, value):
-        """Set if shuffle is active"""
-
-        self._toggle_button.set_active(value)
-
-    def get_active(self):
-        """Get if shuffle is active"""
-
+    @property
+    def enabled(self):
+        """Returns True if toggle button is active"""
         return self._toggle_button.get_active()
 
-    def set_menu(self, menu):
-        """Replace the current menu with a new one"""
+    @enabled.setter
+    def enabled(self, value):
+        """Set button to be active or inactive"""
+        self.__inhibit = True
+        self._toggle_button.set_active(bool(value))
+        self.emit("toggled")
+        self.__inhibit = False
 
+    @property
+    def orders(self):
+        return self.__orders
+
+    @orders.setter
+    def orders(self, values):
+        self.__orders = values
+        if self.__current not in self.orders:
+            self.__current = None
+        self.__rebuild_menu()
+
+    @property
+    def current(self):
+        return self.__current
+
+    @current.setter
+    def current(self, value):
+        if value not in self.orders:
+            raise ValueError(
+                "Unknown order %s. Try: %s"
+                % (value, ", ".join([o.__name__ for o in self.__orders])))
+
+        self.__current = value
+        if not self.__inhibit:
+            self.emit('changed', self.__current)
+
+    def set_active_by_name(self, name):
+        for cls in self.__orders:
+            if cls.name == name:
+                self.current = cls
+                return
+        raise ValueError("Unknown order named \"%s\". Try: %s"
+                         % (name, [o.name for o in self.__orders]))
+
+    def set_orders(self, orders):
+        self.orders = orders
+
+    def __rebuild_menu(self):
+
+        def toggled_cb(item, order):
+            if item.get_active():
+                self.current = order
+
+        menu = Gtk.Menu()
+        group = None
+        prev_priority = None
+
+        def ui_sorted(items):
+            return sorted(items, key=lambda k: (k.priority, k.display_name))
+
+        for order in ui_sorted(self.__orders):
+            if prev_priority and order.priority > prev_priority:
+                menu.append(SeparatorMenuItem())
+            prev_priority = order.priority
+            group = RadioMenuItem(
+                label=order.accelerated_name,
+                use_underline=True,
+                group=group)
+            group.set_active(order == self.__current)
+            group.connect("toggled", toggled_cb, order)
+            menu.append(group)
+        menu.show_all()
         self._menu_button.set_menu(menu)
 
 
-class PlayOrder(Gtk.Box, PluginHandler):
-    """A play order selection widget.
-
+class PlayOrderWidget(Gtk.HBox):
+    """A combined play order selection widget.
     Whenever something changes the 'changed' signal gets emitted.
-
-    TODO: split up in UI and management part
     """
 
     __gsignals__ = {
@@ -274,147 +241,125 @@ class PlayOrder(Gtk.Box, PluginHandler):
     }
 
     def __init__(self, model, player):
-        super(PlayOrder, self).__init__()
+        super(PlayOrderWidget, self).__init__(spacing=6)
+        self.order = None
+        self.__inhibit = True
+        self.__playlist = model
+        self.__player = player
 
-        self._model = model
-        self._player = player
-        self._plugins = []
-        self._inhibit_save = False
+        def create_shuffle(orders):
+            shuffle = ToggledPlayOrderMenu(
+                Icons.MEDIA_PLAYLIST_SHUFFLE,
+                orders=orders,
+                current_order=self.__get_shuffle_class(),
+                enabled=(config.getboolean("memory", "shuffle", False)),
+                tooltip=_("Toggle shuffle mode"))
+            shuffle.connect('changed', self.__shuffle_updated)
+            shuffle.connect('toggled', self.__shuffle_toggled)
+            return shuffle
 
-        self._shuffle = shuffle = ShuffleButton()
-        self.pack_start(shuffle, True, True, 0)
+        self._shuffle_orders = PluggableOrders(DEFAULT_SHUFFLE_ORDERS, Reorder)
+        self.__shuffle_widget = create_shuffle(self._shuffle_orders)
+        self._shuffle_orders.connect('updated',
+                                     self.__shuffle_widget.set_orders)
 
-        if PluginManager.instance:
-            PluginManager.instance.register_handler(self)
+        def create_repeat(orders):
+            repeat = ToggledPlayOrderMenu(
+                Icons.MEDIA_PLAYLIST_REPEAT,
+                orders=orders,
+                current_order=self.__get_repeat_class(),
+                enabled=config.getboolean("memory", "repeat", False),
+                tooltip=_("Toggle repeat mode"))
+            repeat.connect('changed', self.__repeat_updated)
+            repeat.connect('toggled', self.__repeat_toggled)
+            return repeat
+        self._repeat_orders = PluggableOrders(DEFAULT_REPEAT_ORDERS, Repeat)
+        self.__repeat_widget = create_repeat(self._repeat_orders)
+        self._repeat_orders.connect('updated', self.__repeat_widget.set_orders)
 
-        self._set_order(
-            self._get_order(config.getboolean("memory", "shuffle")))
-        shuffle.connect("toggled", self._random_toggle)
+        self.__compose_order()
+        self.pack_start(self.__shuffle_widget, False, True, 0)
+        self.pack_start(self.__repeat_widget, False, True, 0)
+        self.__inhibit = False
 
-    def set_shuffle(self, value):
-        """Set shuffle, will change the order accordingly"""
+    @property
+    def shuffler(self):
+        return self.__shuffle_widget.current
 
-        self._shuffle.set_active(value)
+    @shuffler.setter
+    def shuffler(self, cls):
+        assert issubclass(cls, Reorder)
+        self.__shuffle_widget.current = cls
 
-    def get_shuffle(self):
-        """If the active order is a shuffle based one"""
+    @property
+    def repeater(self):
+        return self.__repeat_widget.current
 
-        return self._shuffle.get_active()
+    @repeater.setter
+    def repeater(self, cls):
+        assert issubclass(cls, Repeat)
+        self.__repeat_widget.current = cls
 
-    def set_active_by_name(self, name):
-        """Set the active play order via the order name.
+    @property
+    def shuffled(self):
+        return self.__shuffle_widget.enabled
 
-        Raises ValueError if not found.
-        """
+    @shuffled.setter
+    def shuffled(self, enabled):
+        self.__shuffle_widget.enabled = bool(enabled)
 
-        for order in ORDERS:
-            if order.name == name:
-                self._set_order(order)
-                return
-        raise ValueError("order %r not available" % name)
+    @property
+    def repeated(self):
+        return self.__repeat_widget.enabled
 
-    def set_active_by_index(self, index):
-        """Set by index number in global order list.
+    @repeated.setter
+    def repeated(self, enabled):
+        self.__repeat_widget.enabled = bool(enabled)
 
-        Raises IndexError
-        """
+    def __repeat_updated(self, widget, repeat_cls):
+        if self.__inhibit:
+            return
+        print_d("New repeat mode: %s" % repeat_cls.name)
+        config.set("memory", "repeat_mode", repeat_cls.name)
+        self.__compose_order()
 
-        self._set_order(ORDERS[index])
+    def __shuffle_updated(self, widget, shuffle_cls):
+        if self.__inhibit:
+            return
+        print_d("New shuffle mode: %s" % shuffle_cls.name)
+        config.set("memory", "shuffle_mode", shuffle_cls.name)
+        self.__compose_order()
 
-    def get_active(self):
-        """Get the active order"""
+    def __shuffle_toggled(self, widget):
+        if self.__inhibit:
+            return
+        config.set("memory", "shuffle", widget.enabled)
+        self.__compose_order()
 
-        return self._get_order(self.get_shuffle())
+    def __repeat_toggled(self, widget):
+        if self.__inhibit:
+            return
+        config.set("memory", "repeat", widget.enabled)
+        self.__compose_order()
 
-    def get_active_name(self):
-        """Get the identifier name for the active play order"""
+    def __compose_order(self):
+        old_order = self.order
+        repeat_cls = self.__get_repeat_class()
+        shuffle_cls = self.__get_shuffle_class()
+        shuffler = (shuffle_cls() if self.shuffled else OrderInOrder())
+        self.order = repeat_cls(shuffler) if self.repeated else shuffler
+        print_d("Updating %s order to %s"
+                % (type(self.__playlist).__name__, self.order))
+        self.__playlist.order = self.order
+        self.__player.replaygain_profiles[2] = shuffler.replaygain_profiles
+        self.__player.reset_replaygain()
+        if self.order != old_order:
+            self.emit('changed')
 
-        return self.get_active().name
+    def __get_shuffle_class(self):
+        name = config.get("memory", "shuffle_mode", None)
+        return self._shuffle_orders.by_name(name) or OrderShuffle
 
-    def _get_order(self, shuffle):
-        """Get the active order for shuffle/inorder mode"""
-
-        first_matching = None
-        if shuffle:
-            name = config.get("memory", "order_shuffle")
-        else:
-            name = config.get("memory", "order")
-        for order in ORDERS:
-            if order.is_shuffle == shuffle:
-                first_matching = first_matching or order
-                if order.name == name:
-                    return order
-        return first_matching
-
-    def _set_order(self, order_cls):
-        """Set shuffle and order based on the passed class"""
-
-        self._model.order = order_cls(self._model)
-        is_shuffle = order_cls.is_shuffle
-
-        if not self._inhibit_save:
-            config.set("memory", "shuffle", is_shuffle)
-            if is_shuffle:
-                config.set("memory", "order_shuffle", order_cls.name)
-            else:
-                config.set("memory", "order", order_cls.name)
-        self.set_shuffle(is_shuffle)
-        self._refresh_menu()
-
-        self._player.replaygain_profiles[2] = order_cls.replaygain_profiles
-        self._player.volume = self._player.volume
-        self.emit("changed")
-
-    def _refresh_menu(self):
-        is_shuffle = self._shuffle.get_active()
-
-        def toggled_cb(item, order):
-            if item.get_active():
-                self._set_order(order)
-
-        active_order = self._get_order(is_shuffle)
-
-        menu = Gtk.Menu()
-        group = None
-        for order in ORDERS:
-            if order.is_shuffle == is_shuffle:
-                group = RadioMenuItem(
-                    label=order.accelerated_name,
-                    use_underline=True,
-                    group=group)
-                group.set_active(order == active_order)
-                group.connect("toggled", toggled_cb, order)
-                menu.append(group)
-        menu.show_all()
-        self._shuffle.set_menu(menu)
-
-    def _random_toggle(self, button):
-        self._set_order(self._get_order(button.get_active()))
-
-    def plugin_handle(self, plugin):
-        from quodlibet.plugins.playorder import PlayOrderPlugin
-        return issubclass(plugin.cls, PlayOrderPlugin)
-
-    def plugin_enable(self, plugin):
-        plugin_cls = plugin.cls
-        if plugin_cls.name is None:
-            plugin_cls.name = plugin.name
-        if plugin_cls.display_name is None:
-            plugin_cls.display_name = plugin.name
-        if plugin_cls.accelerated_name is None:
-            plugin_cls.accelerated_name = plugin_cls.display_name
-
-        self._plugins.append(plugin_cls)
-        set_orders(self._plugins)
-        self._refresh_menu()
-
-    def plugin_disable(self, plugin):
-        order = plugin.cls
-        self._plugins.remove(order)
-        set_orders(self._plugins)
-
-        # Don't safe changes from plugin changes
-        # so that disables on shutdown don't change the config.
-        self._inhibit_save = True
-        self._set_order(self._get_order(self.get_shuffle()))
-        self._inhibit_save = False
+    def __get_repeat_class(self):
+        name = config.get("memory", "repeat_mode", None)
+        return self._repeat_orders.by_name(name) or RepeatSongForever

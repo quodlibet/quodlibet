@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from tests import TestCase
 
 from gi.repository import Gtk
+from senf import fsnative
 
-from quodlibet.formats._audio import AudioFile
-from quodlibet.util.path import fsnative
+from quodlibet.formats import AudioFile
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.library import SongLibrary
 from quodlibet import config

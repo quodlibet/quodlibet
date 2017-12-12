@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-
-import itertools
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
-from quodlibet.qltk.playorder import ORDERS
+from quodlibet.qltk.playorder import OrderInOrder
 from quodlibet.qltk.models import ObjectStore
+from quodlibet.util import print_d
+from quodlibet.compat import izip
 
 
 class PlaylistMux(object):
@@ -129,18 +131,14 @@ class TrackCurrentModel(ObjectStore):
     def set(self, songs):
         """Clear the model and add the passed songs"""
 
-        print_d("Clearing model.")
+        print_d("Filling view model with %d songs." % len(songs))
         self.clear()
         self.__iter = None
 
-        print_d("Setting %d songs." % len(songs))
-
         oldsong = self.last_current
-        for iter_, song in itertools.izip(self.iter_append_many(songs), songs):
+        for iter_, song in izip(self.iter_append_many(songs), songs):
             if song is oldsong:
                 self.__iter = iter_
-
-        print_d("Done filling model.")
 
     def get(self):
         """A list of all contained songs"""
@@ -221,17 +219,14 @@ class PlaylistModel(TrackCurrentModel):
     """A play list model for song lists"""
 
     order = None
-    """The active play order"""
-
-    repeat = False
-    """If the playlist should be repeated after it ended"""
+    """The active `PlayOrder`"""
 
     sourced = False
     """True in case this model is the source of the currently playing song"""
 
-    def __init__(self):
+    def __init__(self, order_cls=OrderInOrder):
         super(PlaylistModel, self).__init__(object)
-        self.order = ORDERS[0](self)
+        self.order = order_cls()
 
         # The playorder plugins use paths atm to remember songs so
         # we need to reset them if the paths change somehow.
@@ -244,12 +239,14 @@ class PlaylistModel(TrackCurrentModel):
         """Switch to the next song"""
 
         iter_ = self.current_iter
+        print_d("Using %s.next_explicit() to get next song" % self.order)
         self.current_iter = self.order.next_explicit(self, iter_)
 
     def next_ended(self):
         """Switch to the next song (action comes from the user)"""
 
         iter_ = self.current_iter
+        print_d("Using %s.next_implicit() to get next song" % self.order)
         self.current_iter = self.order.next_implicit(self, iter_)
 
     def previous(self):

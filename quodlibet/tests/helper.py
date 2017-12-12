@@ -3,17 +3,53 @@
 #           2015 Anton Shestakov
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import contextlib
-import StringIO
 import sys
+import shutil
+import locale
+import errno
 
 from gi.repository import Gtk, Gdk
 
-from quodlibet.qltk import find_widgets
+from quodlibet.util.i18n import GlibTranslations
+from senf import fsnative, environ
+
+from quodlibet.qltk import find_widgets, get_primary_accel_mod
+from quodlibet.util.path import normalize_path
+from quodlibet.compat import StringIO
+
+
+def dummy_path(path):
+    path = fsnative(path)
+    if os.name == "nt":
+        return normalize_path(u"z:\\" + path.replace(u"/", u"\\"))
+    return path
+
+
+@contextlib.contextmanager
+def locale_numeric_conv(
+        decimal_point=".", grouping=[3, 3, 0], thousands_sep=","):
+    """Temporarely change number formatting conventions.
+
+    By default this uses en_US conventions.
+    """
+
+    # XXX: locale internals
+    override = locale._override_localeconv
+    old = override.copy()
+    try:
+        override["decimal_point"] = decimal_point
+        override["grouping"] = grouping
+        override["thousands_sep"] = thousands_sep
+        yield
+    finally:
+        override.clear()
+        override.update(old)
 
 
 def _send_key_click_event(widget, **kwargs):
@@ -87,13 +123,13 @@ def _send_button_click_event(widget, **kwargs):
     return handled
 
 
-def send_button_click(widget, button, ctrl=False, shift=False,
+def send_button_click(widget, button, primary=False, shift=False,
                       recursive=False):
     """See send_key_click_event"""
 
     state = Gdk.ModifierType(0)
-    if ctrl:
-        state |= Gdk.ModifierType.CONTROL_MASK
+    if primary:
+        state |= get_primary_accel_mod()
     if shift:
         state |= Gdk.ModifierType.SHIFT_MASK
 
@@ -104,7 +140,7 @@ def send_button_click(widget, button, ctrl=False, shift=False,
         if isinstance(widget, Gtk.Container):
             for child in widget.get_children():
                 handled += send_button_click(
-                    child, button, ctrl, shift, recursive)
+                    child, button, primary, shift, recursive)
 
     return handled
 
@@ -186,28 +222,28 @@ def visible(widget, width=None, height=None):
 
 @contextlib.contextmanager
 def preserve_environ():
-    old = os.environ.copy()
+    old = environ.copy()
     yield
     # don't touch existing values as os.environ is broken for empty
     # keys on Windows: http://bugs.python.org/issue20658
-    for key, value in os.environ.items():
+    for key, value in list(environ.items()):
         if key not in old:
-            del os.environ[key]
+            del environ[key]
     for key, value in old.items():
-        if key not in os.environ or os.environ[key] != value:
-            os.environ[key] = value
+        if key not in environ or environ[key] != value:
+            environ[key] = value
 
 
 @contextlib.contextmanager
 def capture_output():
     """
-    with capture_output as (stdout, stderr):
+    with capture_output() as (stdout, stderr):
         some_action()
     print stdout.getvalue(), stderr.getvalue()
     """
 
-    err = StringIO.StringIO()
-    out = StringIO.StringIO()
+    err = StringIO()
+    out = StringIO()
     old_err = sys.stderr
     old_out = sys.stdout
     sys.stderr = err
@@ -225,7 +261,7 @@ def temp_filename(*args, **kwargs):
     """Creates an empty file and removes it when done.
 
         with temp_filename() as filename:
-            with open(filename) as h:
+            with open(filename, 'w') as h:
                 h.write("foo")
             do_stuff(filename)
     """
@@ -237,7 +273,23 @@ def temp_filename(*args, **kwargs):
 
     yield filename
 
-    os.remove(filename)
+    try:
+        os.remove(filename)
+    except OSError as e:
+        if e.errno != errno.ENOENT:
+            raise
+
+
+def get_temp_copy(path):
+    """Returns a copy of the file with the same extension"""
+
+    from tests import mkstemp
+
+    ext = os.path.splitext(path)[-1]
+    fd, filename = mkstemp(suffix=ext)
+    os.close(fd)
+    shutil.copy(path, filename)
+    return filename
 
 
 class ListWithUnused(object):
@@ -269,3 +321,9 @@ class ListWithUnused(object):
         if self.unused:
             from quodlibet import print_w
             print_w('ListWithUnused has unused items: %s' % self.unused)
+
+
+def __(message):
+    """See `quodlibet._`. Avoids triggering PO scanners"""
+    t = GlibTranslations()
+    return t.wrap_text(t.ugettext(message))

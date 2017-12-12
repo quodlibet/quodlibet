@@ -2,14 +2,17 @@
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import re
 
+from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.collection import Collection
+from quodlibet.compat import iteritems, listfilter
 
 
 class BaseEntry(Collection):
@@ -18,7 +21,8 @@ class BaseEntry(Collection):
         super(BaseEntry, self).__init__()
 
         self.songs = set(songs or [])
-        self.key = key
+        self.key = key # not used for sorting!
+        self.sort = tuple()
 
     def all_have(self, tag, value):
         """Check if all songs have tag `tag` set to `value`"""
@@ -49,8 +53,10 @@ class BaseEntry(Collection):
 
 class SongsEntry(BaseEntry):
 
-    def __init__(self, key, songs=None):
+    def __init__(self, key, sort, songs=None):
         super(SongsEntry, self).__init__(key, songs)
+
+        self.sort = sort # value used for sorting
 
     def get_count_text(self, config):
         return config.format_display(self)
@@ -75,7 +81,7 @@ class SongsEntry(BaseEntry):
 class UnknownEntry(SongsEntry):
 
     def __init__(self, songs=None):
-        super(UnknownEntry, self).__init__("", songs)
+        super(UnknownEntry, self).__init__("", tuple(), songs)
 
     def get_text(self, config):
         return True, "<b>%s</b>" % _("Unknown")
@@ -112,8 +118,8 @@ class PaneModel(ObjectStore):
 
     def __init__(self, pattern_config):
         super(PaneModel, self).__init__()
-        self.__sort_cache = {}
-        self.__key_cache = {}
+        self.__sort_cache = {} # text to sort text cache
+        self.__key_cache = {} # song to key cache
         self.config = pattern_config
 
     def get_format_keys(self, song):
@@ -121,7 +127,8 @@ class PaneModel(ObjectStore):
             return self.__key_cache[song]
         except KeyError:
             # We filter out empty values, so Unknown can be ""
-            self.__key_cache[song] = filter(None, self.config.format(song))
+            self.__key_cache[song] = listfilter(
+                lambda v: v[0], self.config.format(song))
             return self.__key_cache[song]
 
     def __human_sort_key(self, text, reg=re.compile('<.*?>')):
@@ -154,7 +161,7 @@ class PaneModel(ObjectStore):
         return s
 
     def get_keys(self, paths):
-        return set(self[p][0].key for p in paths)
+        return {self[p][0].key for p in paths}
 
     def remove_songs(self, songs, remove_if_empty):
         """Remove all songs from the entries.
@@ -204,18 +211,23 @@ class PaneModel(ObjectStore):
         unknown = UnknownEntry()
         human_sort = self.__human_sort_key
         for song in songs:
-            keys = self.get_format_keys(song)
-            if not keys:
+            items = self.get_format_keys(song)
+            if not items:
                 unknown.songs.add(song)
-            for key in keys:
+            for key, sort in items:
                 if key in collection:
+                    if sort and not collection[key][2]: # first actual sort key
+                        hsort = human_sort(sort)
+                        collection[key][0].sort = hsort
+                        collection[key] = (collection[key][0], hsort, True)
                     collection[key][0].songs.add(song)
-                else:
-                    entry = SongsEntry(key)
-                    collection[key] = (entry, human_sort(key))
+                else: # first key sets up sorting
+                    hsort = human_sort(sort)
+                    entry = SongsEntry(key, hsort)
+                    collection[key] = (entry, hsort, bool(sort))
                     entry.songs.add(song)
 
-        items = sorted(collection.iteritems(),
+        items = sorted(iteritems(collection),
                        key=lambda s: s[1][1],
                        reverse=True)
 
@@ -224,7 +236,7 @@ class PaneModel(ObjectStore):
             if unknown.songs:
                 self.insert(0, [unknown])
             entries = []
-            for key, (val, sort_key) in items:
+            for key, (val, sort_key, srtp) in items:
                 entries.append(val)
             self.insert_many(0, reversed(entries))
             if len(self) > 1:
@@ -243,25 +255,25 @@ class PaneModel(ObjectStore):
             if key is None:
                 if not items:
                     break
-                key, (val, sort_key) = items.pop(-1)
+                key, (val, sort_key, srtp) = items.pop(-1)
 
-            if key == entry.key:
+            if key == entry.key: # Display strings the same
                 entry.songs |= val.songs
                 entry.finalize()
                 self.row_changed(self.get_path(iter_), iter_)
                 key = None
-            elif sort_key < human_sort(entry.key):
+            elif sort_key < entry.sort:
                 self.insert_before(iter_, row=[val])
                 key = None
 
         # the last one failed, add it again
         if key:
-            items.append((key, (val, sort_key)))
+            items.append((key, (val, sort_key, srtp)))
 
         # insert the left over songs
         if items:
             entries = []
-            for key, (val, srt) in items:
+            for key, (val, srt, srtp) in items:
                 entries.append(val)
             if isinstance(self[-1][0], UnknownEntry):
                 self.insert_many(len(self) - 1, entries)
@@ -304,8 +316,9 @@ class PaneModel(ObjectStore):
 
         for path in paths:
             entry = self.get_value(self.get_iter(path))
-            if entry.key in keys:
-                return True
+            for key in keys:
+                if entry.key == (key[0] if isinstance(key, tuple) else key):
+                    return True
 
         return False
 
@@ -315,8 +328,8 @@ class PaneModel(ObjectStore):
         # fast path, use the keys since they are unique and only depend
         # on the tag in question.
         if tag in tags and len(tags) == 1:
-            return set(r.key for r in self.itervalues()
-                       if not isinstance(r, AllEntry))
+            return {r.key for r in self.itervalues()
+                    if not isinstance(r, AllEntry)}
 
         # For patterns/tied tags we have to make sure that filtering for
         # that key will return only songs that all have the specified value

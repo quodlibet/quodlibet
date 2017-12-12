@@ -2,22 +2,17 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-
-import os
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, GObject, Gst
 
-from quodlibet.plugins import PluginImportException, PluginNotSupportedError
+from quodlibet import _
+from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
 from quodlibet import config
-
-
-if os.name == "nt":
-    # https://github.com/quodlibet/quodlibet/issues/1534
-    raise PluginNotSupportedError("Crashes under Windows...")
 
 
 _PLUGIN_ID = "pitch"
@@ -94,7 +89,6 @@ class Pitch(GStreamerPlugin):
     PLUGIN_ID = _PLUGIN_ID
     PLUGIN_NAME = _("Audio Pitch / Speed")
     PLUGIN_DESC = _("Controls the pitch of an audio stream.")
-    PLUGIN_ICON = "audio-volume-high"
 
     @classmethod
     def setup_element(cls):

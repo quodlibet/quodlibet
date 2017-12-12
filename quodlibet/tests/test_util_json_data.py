@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 import json
 import os
 
 from quodlibet.util.json_data import JSONObjectDict, JSONObject
-from tests import TestCase, mkstemp
-from helper import capture_output
+from . import TestCase, mkstemp
+from .helper import capture_output
 
 Field = JSONObject.Field
 
@@ -55,7 +60,7 @@ class TJsonData(TestCase):
         self.failUnlessEqual(blah.name, 'blah')
         exp = {"name": "blah", "pattern": None, "wibble": False}
         self.failUnlessEqual(exp, dict(blah.data))
-        self.failUnlessEqual(json.dumps(exp), blah.json)
+        self.failUnlessEqual(exp, json.loads(blah.json))
 
     def test_from_invalid_json(self):
         # Invalid JSON
@@ -83,6 +88,8 @@ class TJsonData(TestCase):
             self.failUnlessEqual(jstr, ret)
         finally:
             os.unlink(filename)
+
+        jstr = jstr.decode("utf-8")
 
         # Check we have the right number of items
         self.failUnlessEqual(len(json.loads(jstr)), len(data))

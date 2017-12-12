@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#                2012 Nick Boultbee
+#           2012,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 # Some sort of crazy directory-based browser. QL is full of minor hacks
 # to support this by automatically adding songs to the library when it
@@ -13,31 +14,33 @@
 import os
 
 from gi.repository import Gtk, Gdk
+from senf import fsn2uri, fsn2bytes, bytes2fsn
 
 from quodlibet import config
 from quodlibet import formats
 from quodlibet import qltk
-
-from quodlibet.browsers._base import Browser
+from quodlibet import _
+from quodlibet.browsers import Browser
+from quodlibet.compat import listfilter
 from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import MainDirectoryTree
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import ScrolledWindow
+from quodlibet.qltk import Icons
 from quodlibet.util import copool
 from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.dprint import print_d
-from quodlibet.util.uri import URI
 from quodlibet.util.path import normalize_path
 from quodlibet.util import connect_obj
 
 
 class FileSystem(Browser, Gtk.HBox):
-    __gsignals__ = Browser.__gsignals__
 
     __library = None
 
     name = _("File System")
     accelerated_name = _("_File System")
+    keys = ["FileSystem"]
     priority = 10
     uses_main_library = False
 
@@ -68,7 +71,7 @@ class FileSystem(Browser, Gtk.HBox):
 
     @classmethod
     def __remove_because_added(klass, library, songs):
-        songs = filter(klass.__library.__contains__, songs)
+        songs = list(filter(klass.__library.__contains__, songs))
         klass.__library.remove(songs)
 
     def __init__(self, library):
@@ -90,11 +93,23 @@ class FileSystem(Browser, Gtk.HBox):
         sel = dt.get_selection()
         sel.unselect_all()
         connect_obj(sel, 'changed', copool.add, self.__songs_selected, dt)
+        sel.connect("changed", self._on_selection_changed)
         dt.connect('row-activated', lambda *a: self.songs_activated())
         sw.add(dt)
         self.pack_start(sw, True, True, 0)
 
         self.show_all()
+
+    def _on_selection_changed(self, tree_selection):
+        model, rows = tree_selection.get_selected_rows()
+        selected_paths = [model[row][0] for row in rows]
+
+        if selected_paths:
+            data = fsn2bytes("\n".join(selected_paths), "utf-8")
+        else:
+            data = b""
+
+        config.setbytes("browsers", "filesystem", data)
 
     def get_child(self):
         return self.get_children()[0].get_child()
@@ -105,7 +120,7 @@ class FileSystem(Browser, Gtk.HBox):
         for songs in self.__find_songs(view.get_selection()):
             pass
         if tid == self.TARGET_QL:
-            cant_add = filter(lambda s: not s.can_add, songs)
+            cant_add = listfilter(lambda s: not s.can_add, songs)
             if cant_add:
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self), _("Unable to copy songs"),
@@ -113,14 +128,14 @@ class FileSystem(Browser, Gtk.HBox):
                       "song lists or the queue.")).run()
                 ctx.drag_abort(etime)
                 return
-            to_add = filter(self.__library.__contains__, songs)
+            to_add = list(filter(self.__library.__contains__, songs))
             self.__add_songs(view, to_add)
 
             qltk.selection_set_songs(sel, songs)
         else:
             # External target (app) is delivered a list of URIS of songs
-            uris = list(set([URI.frompath(dir) for dir in dirs]))
-            print_d("Directories to drop: %s" % [u.filename for u in uris])
+            uris = list({fsn2uri(dir) for dir in dirs})
+            print_d("Directories to drop: %s" % dirs)
             sel.set_uris(uris)
 
     def can_filter_tag(self, key):
@@ -135,19 +150,22 @@ class FileSystem(Browser, Gtk.HBox):
         self.__select_paths([song("~dirname")])
 
     def restore(self):
+        data = config.getbytes("browsers", "filesystem", b"")
         try:
-            paths = config.get("browsers", "filesystem").split("\n")
-        except config.Error:
-            pass
-        else:
-            self.__select_paths(paths)
+            paths = bytes2fsn(data, "utf-8")
+        except ValueError:
+            return
+        if not paths:
+            return
+        self.__select_paths(paths.split("\n"))
 
     def __select_paths(self, paths):
         # AudioFile uses normalized paths, DirectoryTree doesn't
 
-        paths = map(normalize_path, paths)
+        paths = list(map(normalize_path, paths))
 
-        def select(model, path, iter_, (paths, first)):
+        def select(model, path, iter_, paths_):
+            (paths, first) = paths_
             value = model.get_value(iter_)
             if value is None:
                 return not bool(paths)
@@ -173,17 +191,12 @@ class FileSystem(Browser, Gtk.HBox):
         if first:
             self.get_child().scroll_to_cell(first[0], None, True, 0.5)
 
-    def save(self):
-        model, rows = self.get_child().get_selection().get_selected_rows()
-        paths = "\n".join([model[row][0] for row in rows])
-        config.set("browsers", "filesystem", paths)
-
     def activate(self):
         copool.add(self.__songs_selected, self.get_child())
 
     def Menu(self, songs, library, items):
 
-        i = qltk.MenuItem(_("_Add to Library"), Gtk.STOCK_ADD)
+        i = qltk.MenuItem(_("_Add to Library"), Icons.LIST_ADD)
         i.set_sensitive(False)
         i.connect('activate', self.__add_songs, songs)
         for song in songs:
@@ -193,15 +206,15 @@ class FileSystem(Browser, Gtk.HBox):
 
         items.append([i])
         menu = SongsMenu(library, songs, remove=self.__remove_songs,
-                         delete=True, items=items)
+                         delete=True, queue=True, items=items)
         return menu
 
     def __add_songs(self, item, songs):
-        songs = filter(self.__library.__contains__, songs)
+        songs = list(filter(self.__library.__contains__, songs))
         self.__library.librarian.move(songs, self.__library, self.__glibrary)
 
     def __remove_songs(self, songs):
-        songs = filter(self.__glibrary.__contains__, songs)
+        songs = list(filter(self.__glibrary.__contains__, songs))
         self.__library.librarian.move(songs, self.__glibrary, self.__library)
 
     def __find_songs(self, selection):
@@ -211,8 +224,8 @@ class FileSystem(Browser, Gtk.HBox):
         to_add = []
         for dir in dirs:
             try:
-                for file in filter(formats.filter,
-                                   sorted(os.listdir(dir))):
+                for file in list(filter(formats.filter,
+                                        sorted(os.listdir(dir)))):
                     raw_path = os.path.join(dir, file)
                     fn = normalize_path(raw_path, canonicalise=True)
                     if fn in self.__glibrary:

@@ -2,30 +2,32 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
-import urlparse
+from quodlibet.compat import urlsplit
 import errno
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
+from senf import uri2fsn, fsnative, fsn2text, bytes2fsn
 
-from quodlibet import const
-from quodlibet import formats
+from quodlibet import formats, print_d
 from quodlibet import qltk
-from quodlibet import windows
+from quodlibet import _
 
+from quodlibet.util import windows
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.views import AllTreeView, RCMHintedTreeView, \
     MultiDragTreeView
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
-
-from quodlibet.util.path import fsdecode, listdir, is_fsnative, \
-    glib2fsnative, fsnative, xdg_get_user_dirs
-from quodlibet.util.uri import URI
+from quodlibet.qltk import Icons
+from quodlibet.compat import xrange
+from quodlibet.util.path import listdir, \
+    glib2fsn, xdg_get_user_dirs, get_home_dir
 from quodlibet.util import connect_obj
 
 
@@ -38,15 +40,19 @@ def search_func(model, column, key, iter_, handledirs):
     return key not in check.lower() and key not in check
 
 
-def filesel_filter(filename):
+def is_image(filename):
     IMAGES = [".jpg", ".png", ".jpeg"]
+    for ext in IMAGES:
+        if filename.lower().endswith(ext):
+            return True
+    return False
+
+
+def filesel_filter(filename):
     if formats.filter(filename):
         return True
     else:
-        for ext in IMAGES:
-            if filename.lower().endswith(ext):
-                return True
-    return False
+        return is_image(filename)
 
 
 def _get_win_favorites():
@@ -71,11 +77,23 @@ def _get_win_favorites():
     # if not already present
     links = windows.get_links_dir()
     if links is not None:
-        for entry in os.listdir(links):
+        try:
+            link_entries = os.listdir(links)
+        except OSError:
+            link_entries = []
+
+        for entry in link_entries:
             if entry.endswith(".lnk"):
-                target = windows.get_link_target(os.path.join(links, entry))
-                if target is not None:
-                    folders.append(target)
+                try:
+                    target = windows.get_link_target(
+                        os.path.join(links, entry))
+                except WindowsError:
+                    pass
+                else:
+                    if target:
+                        # RecentPlaces.lnk resolves
+                        # to an empty string for example
+                        folders.append(target)
 
     # remove duplicated entries
     filtered = []
@@ -95,7 +113,7 @@ def get_favorites():
     if os.name == "nt":
         return _get_win_favorites()
     else:
-        paths = [const.HOME]
+        paths = [get_home_dir()]
 
         xfg_user_dirs = xdg_get_user_dirs()
         for key in ["XDG_DESKTOP_DIR", "XDG_DOWNLOAD_DIR", "XDG_MUSIC_DIR"]:
@@ -125,31 +143,50 @@ def get_drives():
         for mount in Gio.VolumeMonitor.get().get_mounts():
             path = mount.get_root().get_path()
             if path is not None:
-                paths.append(glib2fsnative(path))
+                paths.append(glib2fsn(path))
         paths.append("/")
         return paths
 
 
+def parse_gtk_bookmarks(data):
+    """
+    Args:
+        data (bytes)
+    Retruns:
+        List[fsnative]
+    Raises:
+        ValueError
+    """
+
+    assert isinstance(data, bytes)
+
+    paths = []
+    for line in data.splitlines():
+        parts = line.split()
+        if not parts:
+            continue
+        folder_url = parts[0]
+        paths.append(bytes2fsn(urlsplit(folder_url)[2], "utf-8"))
+    return paths
+
+
 def get_gtk_bookmarks():
     """A list of paths from the GTK+ bookmarks.
-
     The paths don't have to exist.
+
+    Returns:
+        List[fsnative]
     """
 
     if os.name == "nt":
         return []
 
-    path = os.path.join(const.HOME, ".gtk-bookmarks")
+    path = os.path.join(get_home_dir(), ".gtk-bookmarks")
     folders = []
     try:
         with open(path, "rb") as f:
-            for line in f.readlines():
-                parts = line.split()
-                if not parts:
-                    continue
-                folder_url = parts[0]
-                folders.append(urlparse.urlsplit(folder_url)[2])
-    except EnvironmentError:
+            folders = parse_gtk_bookmarks(f.read())
+    except (EnvironmentError, ValueError):
         pass
 
     return folders
@@ -169,12 +206,13 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         super(DirectoryTree, self).__init__(model=model)
 
         if initial is not None:
-            assert is_fsnative(initial)
+            assert isinstance(initial, fsnative)
 
-        column = TreeViewColumn(_("Folders"))
+        column = TreeViewColumn(title=_("Folders"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render = Gtk.CellRendererPixbuf()
-        render.set_property('stock_id', Gtk.STOCK_DIRECTORY)
+        render.set_property('icon-name', Icons.FOLDER)
+        render.props.xpad = 3
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
         if self.supports_hints():
@@ -184,7 +222,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
             if value is not None:
-                text = fsdecode(os.path.basename(value) or value)
+                text = fsn2text(os.path.basename(value) or value)
                 cell.set_property('text', text)
 
         column.set_cell_data_func(render, cell_data)
@@ -199,8 +237,8 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         for path in folders:
             niter = model.append(None, [path])
             if path is not None:
-                assert is_fsnative(path)
-                model.append(niter, ["dummy"])
+                assert isinstance(path, fsnative)
+                model.append(niter, [fsnative(u"dummy")])
 
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.connect(
@@ -212,21 +250,8 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         if initial:
             self.go_to(initial)
 
-        menu = Gtk.Menu()
-        m = qltk.MenuItem(_(u"_New Folder…"), Gtk.STOCK_NEW)
-        m.connect('activate', self.__mkdir)
-        menu.append(m)
-        m = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_DELETE, None)
-        m.connect('activate', self.__rmdir)
-        menu.append(m)
-        m = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_REFRESH, None)
-        m.connect('activate', self.__refresh)
-        menu.append(m)
-        m = qltk.MenuItem(_("_Select All Subfolders"), Gtk.STOCK_DIRECTORY)
-        m.connect('activate', self.__expand)
-        menu.append(m)
-        menu.show_all()
-        connect_obj(self, 'popup-menu', self.__popup_menu, menu)
+        menu = self._create_menu()
+        connect_obj(self, 'popup-menu', self._popup_menu, menu)
 
         # Allow to drag and drop files from outside
         targets = [
@@ -236,6 +261,23 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
         self.connect('drag-data-received', self.__drag_data_received)
 
+    def _create_menu(self):
+        menu = Gtk.Menu()
+        m = qltk.MenuItem(_(u"_New Folder…"), Icons.DOCUMENT_NEW)
+        m.connect('activate', self.__mkdir)
+        menu.append(m)
+        m = qltk.MenuItem(_("_Delete"), Icons.EDIT_DELETE)
+        m.connect('activate', self.__rmdir)
+        menu.append(m)
+        m = qltk.MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
+        m.connect('activate', self.__refresh)
+        menu.append(m)
+        m = qltk.MenuItem(_("_Select all Sub-Folders"), Icons.FOLDER)
+        m.connect('activate', self.__expand)
+        menu.append(m)
+        menu.show_all()
+        return menu
+
     def get_selected_paths(self):
         """A list of fs paths"""
 
@@ -244,7 +286,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         return [model[p][0] for p in paths]
 
     def go_to(self, path_to_go):
-        assert is_fsnative(path_to_go)
+        assert isinstance(path_to_go, fsnative)
 
         # FIXME: what about non-normalized paths?
         model = self.get_model()
@@ -296,7 +338,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             uris = data.get_uris()
             if uris:
                 try:
-                    filename = URI(uris[0]).filename
+                    filename = uri2fsn(uris[0])
                 except ValueError:
                     pass
                 else:
@@ -305,24 +347,26 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                     return
         Gtk.drag_finish(drag_ctx, False, False, time)
 
-    def __popup_menu(self, menu):
+    def _popup_menu(self, menu):
         model, paths = self.get_selection().get_selected_rows()
-        if len(paths) != 1:
-            return True
 
-        path = paths[0]
-        directory = model[path][0]
-        delete = menu.get_children()[1]
+        directories = [model[path][0] for path in paths]
+        menu_items = menu.get_children()
+        delete = menu_items[1]
         try:
-            delete.set_sensitive(len(os.listdir(directory)) == 0)
-        except OSError, err:
+            is_empty = not any(len(os.listdir(d)) for d in directories)
+            delete.set_sensitive(is_empty)
+        except OSError as err:
             if err.errno == errno.ENOENT:
-                model.remove(model.get_iter(path))
+                model.remove(model.get_iter(paths[0]))
             return False
+        new_folder = menu_items[0]
+        new_folder.set_sensitive(len(paths) == 1)
 
         selection = self.get_selection()
         selection.unselect_all()
-        selection.select_path(path)
+        for path in paths:
+            selection.select_path(path)
         return self.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __mkdir(self, button):
@@ -339,12 +383,12 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         if not dir_:
             return
 
-        dir_ = glib2fsnative(dir_)
+        dir_ = glib2fsn(dir_)
         fullpath = os.path.realpath(os.path.join(directory, dir_))
 
         try:
             os.makedirs(fullpath)
-        except EnvironmentError, err:
+        except EnvironmentError as err:
             error = "<b>%s</b>: %s" % (err.filename, err.strerror)
             qltk.ErrorMessage(
                 None, _("Unable to create folder"), error).run()
@@ -355,17 +399,17 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
     def __rmdir(self, button):
         model, paths = self.get_selection().get_selected_rows()
-        if len(paths) != 1:
-            return
 
-        directory = model[paths[0]][0]
-        try:
-            os.rmdir(directory)
-        except EnvironmentError, err:
-            error = "<b>%s</b>: %s" % (err.filename, err.strerror)
-            qltk.ErrorMessage(
-                None, _("Unable to delete folder"), error).run()
-            return
+        directories = [model[path][0] for path in paths]
+        print_d("Deleting %d empty directories" % len(directories))
+        for directory in directories:
+            try:
+                os.rmdir(directory)
+            except EnvironmentError as err:
+                error = "<b>%s</b>: %s" % (err.filename, err.strerror)
+                qltk.ErrorMessage(
+                    None, _("Unable to delete folder"), error).run()
+                return
 
         ppath = Gtk.TreePath(paths[0][:-1])
         expanded = self.row_expanded(ppath)
@@ -470,7 +514,7 @@ class FileSelector(Paned):
         self.__filter = filter
 
         if initial is not None:
-            assert is_fsnative(initial)
+            assert isinstance(initial, fsnative)
 
         if initial and os.path.isfile(initial):
             initial = os.path.dirname(initial)
@@ -479,11 +523,20 @@ class FileSelector(Paned):
         model = ObjectStore()
         filelist = AllTreeView(model=model)
 
-        column = TreeViewColumn(_("Songs"))
+        column = TreeViewColumn(title=_("Songs"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render = Gtk.CellRendererPixbuf()
-        render.set_property('stock_id', Gtk.STOCK_FILE)
         render.props.xpad = 3
+
+        def cell_icon(column, cell, model, iter_, userdata):
+            value = model.get_value(iter_)
+            if is_image(value):
+                cell.set_property('icon-name', Icons.IMAGE_X_GENERIC)
+            else:
+                cell.set_property('icon-name', Icons.AUDIO_X_GENERIC)
+
+        column.set_cell_data_func(render, cell_icon)
+
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
         if filelist.supports_hints():
@@ -492,7 +545,7 @@ class FileSelector(Paned):
 
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
-            cell.set_property('text', fsdecode(os.path.basename(value)))
+            cell.set_property('text', fsn2text(os.path.basename(value)))
 
         column.set_cell_data_func(render, cell_data)
 
@@ -618,18 +671,7 @@ class MainFileSelector(FileSelector):
     def __init__(self, initial=None):
         folders = _get_main_folders()
         super(MainFileSelector, self).__init__(
-            initial, self._filesel_filter, folders=folders)
-
-    @staticmethod
-    def _filesel_filter(filename):
-        IMAGES = [".jpg", ".png", ".jpeg"]
-        if formats.filter(filename):
-            return True
-        else:
-            for ext in IMAGES:
-                if filename.lower().endswith(ext):
-                    return True
-        return False
+            initial, filesel_filter, folders=folders)
 
 
 class MainDirectoryTree(DirectoryTree):

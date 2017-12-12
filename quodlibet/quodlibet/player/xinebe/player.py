@@ -2,32 +2,52 @@
 # Copyright 2006-2007 Lukas Lalinsky
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import GLib
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
+from quodlibet.util.string import decode
 
 from . import cdefs
-from .cdefs import *
+from .cdefs import XINE_PARAM_SPEED, XINE_PARAM_GAPLESS_SWITCH, xine_dispose, \
+    XINE_SPEED_PAUSE, xine_play, xine_close, xine_set_param, xine_get_param, \
+    xine_get_status, xine_open, xine_stop, XINE_PARAM_EARLY_FINISHED_EVENT, \
+    XINE_META_INFO_ARTIST, xine_ui_message_data_t, XINE_EVENT_UI_SET_TITLE, \
+    XINE_PARAM_AUDIO_AMP_MUTE, XINE_PARAM_AUDIO_AMP_LEVEL, xine_new, \
+    XINE_EVENT_UI_PLAYBACK_FINISHED, xine_event_dispose_queue, xine_init, \
+    XINE_PARAM_IGNORE_VIDEO, XINE_PARAM_IGNORE_SPU, xine_config_load, \
+    xine_check_version, xine_get_homedir, xine_list_input_plugins, xine_exit, \
+    xine_open_audio_driver, xine_close_audio_driver, XINE_STATUS_PLAY, \
+    XINE_SPEED_NORMAL, xine_get_pos_length, XINE_MSG_NO_ERROR, \
+    XINE_EVENT_UI_MESSAGE, xine_get_meta_info, XINE_META_INFO_ALBUM, \
+    XINE_META_INFO_TITLE, xine_stream_new, xine_get_version_string, \
+    xine_event_new_queue, xine_event_create_listener_thread
 
 
 class XineHandle(object):
     def __init__(self):
         _xine = xine_new()
-        xine_config_load(_xine, xine_get_homedir() + "/.xine/config")
+        xine_config_load(_xine, xine_get_homedir() + b"/.xine/config")
         xine_init(_xine)
         self._xine = _xine
 
     def list_input_plugins(self):
+        """
+        Returns:
+            List[text_type]
+        """
+
         plugins = []
         for plugin in xine_list_input_plugins(self._xine):
             if not plugin:
                 break
-            plugins.append(plugin)
+            plugins.append(decode(plugin))
         return plugins
 
     def exit(self):
@@ -45,8 +65,6 @@ class XineHandle(object):
 
 class XinePlaylistPlayer(BasePlayer):
     """Xine playlist player."""
-    __gproperties__ = BasePlayer._gproperties_
-    __gsignals__ = BasePlayer._gsignals_
 
     _paused = True
 
@@ -55,15 +73,18 @@ class XinePlaylistPlayer(BasePlayer):
 
         super(XinePlaylistPlayer, self).__init__()
         self.name = "xine"
-        self.version_info = "xine-lib: " + xine_get_version_string()
+        self.version_info = "xine-lib: " + decode(xine_get_version_string())
+        self._volume = 1.0
         self._handle = XineHandle()
         self._supports_gapless = xine_check_version(1, 1, 1) == 1
         self._event_queue = None
+
         self._new_stream(driver)
         self._librarian = librarian
         self._destroyed = False
 
     def _new_stream(self, driver):
+        assert driver is None or isinstance(driver, bytes)
         self._audio_port = self._handle.open_audio_driver(driver, None)
         if not self._audio_port:
             raise PlayerError(
@@ -152,18 +173,30 @@ class XinePlaylistPlayer(BasePlayer):
                 GLib.idle_add(self._error, PlayerError(message))
         return True
 
+    def do_get_property(self, property):
+        if property.name == 'volume':
+            return self._volume
+        elif property.name == 'seekable':
+            if self.song is None:
+                return False
+            return True
+        elif property.name == 'mute':
+            if not self._destroyed:
+                return xine_get_param(self._stream, XINE_PARAM_AUDIO_AMP_MUTE)
+            return False
+        else:
+            raise AttributeError
+
     def do_set_property(self, property, v):
         if property.name == 'volume':
             self._volume = v
-            if self.song and config.getboolean("player", "replaygain"):
-                profiles = filter(None, self.replaygain_profiles)[0]
-                fb_gain = config.getfloat("player", "fallback_gain")
-                pa_gain = config.getfloat("player", "pre_amp_gain")
-                scale = self.song.replay_gain(profiles, pa_gain, fb_gain)
-                v = max(0.0, v * scale)
+            v = self.calc_replaygain_volume(v)
             v = min(100, int(v * 100))
             if not self._destroyed:
                 xine_set_param(self._stream, XINE_PARAM_AUDIO_AMP_LEVEL, v)
+        elif property.name == 'mute':
+            if not self._destroyed:
+                xine_set_param(self._stream, XINE_PARAM_AUDIO_AMP_MUTE, v)
         else:
             raise AttributeError
 
@@ -251,7 +284,7 @@ class XinePlaylistPlayer(BasePlayer):
             self.volume = self.volume
             if gapless and self._supports_gapless:
                 xine_set_param(self._stream, XINE_PARAM_GAPLESS_SWITCH, 1)
-            xine_open(self._stream, self.song("~uri"))
+            xine_open(self._stream, self.song("~uri").encode("ascii"))
             if self._paused:
                 self._pause()
             else:
@@ -263,6 +296,9 @@ class XinePlaylistPlayer(BasePlayer):
         else:
             self.paused = True
             xine_stop(self._stream)
+
+        # seekable might change if we change to None, so notify just in case
+        self.notify("seekable")
 
     def setup(self, playlist, song, seek_pos):
         super(XinePlaylistPlayer, self).setup(playlist, song, seek_pos)
@@ -297,7 +333,7 @@ def init(librarian):
     """May raise PlayerError"""
 
     try:
-        driver = config.get("settings", "xine_driver")
+        driver = config.getbytes("settings", "xine_driver")
     except:
         driver = None
     return XinePlaylistPlayer(driver, librarian)

@@ -1,112 +1,95 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from tests import TestCase
 
-from quodlibet.query._match import map_numeric_op, ParseError
-from quodlibet.util import date_key, parse_date
+from quodlibet.query._match import numexprUnit, ParseError, NumexprTag
+from quodlibet.query._match import NumexprNow, numexprTagOrSpecial, Inter,\
+    True_, Neg
+from quodlibet.util import parse_date
+from quodlibet.formats import AudioFile
+from quodlibet.util.collection import Collection
 
 
-class TNumericOp(TestCase):
-    TIME = 424242
+class TQueryInter(TestCase):
 
-    def test_time_op(self):
-        # lastplayed less than 10 seconds ago
-        o, v = map_numeric_op("lastplayed", "<", "10 seconds", time_=self.TIME)
-        self.failUnless(o(self.TIME - 5, v))
+    def test_main(self):
+        q = Inter([])
+        assert q.filter([1]) == [1]
+        q = Inter([True_()])
+        assert q.filter([1]) == [1]
+        q = Inter([True_(), True_()])
+        assert q.filter([1]) == [1]
+        q = Inter([True_(), Neg(True_())])
+        assert q.filter([1]) == []
+        q = Inter([Neg(True_()), True_()])
+        assert q.filter([1]) == []
+        q = Inter([Neg(True_())])
+        assert q.filter([1]) == []
 
-        # laststarted more than 1 day ago
-        o, v = map_numeric_op("laststarted", ">", "1 day", time_=self.TIME)
-        self.failUnless(o(self.TIME - (3600 * 25), v))
 
-        # added less than 4 minutes and 30 seconds ago
-        o, v = map_numeric_op("added", "<", "4:30", time_=self.TIME)
-        self.failUnless(o(self.TIME - (4 * 60 + 15), v))
-        self.failIf(o(self.TIME - (4 * 60 + 35), v))
+class TQueryMatch(TestCase):
 
-        # don't allow time keys with raw numbers
-        self.assertRaises(ParseError, map_numeric_op, "added", "<", "42")
+    def test_numexpr_unit(self):
+        self.failUnless(numexprUnit(10, 'seconds').evaluate(None, 0, True)
+                        == 10)
+        self.failUnless(numexprUnit(10, 'minutes').evaluate(None, 0, True)
+                        == 10 * 60)
+        self.failUnless(numexprUnit(1, 'year').evaluate(None, 0, True)
+                        == 365 * 24 * 60 * 60)
+        self.failUnless(numexprUnit(3, 'k').evaluate(None, 0, True)
+                        == 3 * 1024)
+        self.failUnless(numexprUnit(3, 'megabytes').evaluate(None, 0, True)
+                        == 3 * 1024 ** 2)
+        self.failUnlessRaises(ParseError, numexprUnit, 7, 'invalid unit')
 
-    def test_date_op(self):
-        o, v = map_numeric_op("lastplayed", "=", "2004")
-        self.assertTrue(o(parse_date("2004"), v))
-        o, v = map_numeric_op("lastplayed", "<", "2004")
-        self.assertTrue(o(parse_date("2003"), v))
-        o, v = map_numeric_op("lastplayed", ">", "2004")
-        self.assertFalse(o(parse_date("2003"), v))
+    def test_time_tag(self):
+        time = 424242
+        song = AudioFile({'~#added': 400000, '~#mtime': 410000,
+                          '~#length': 315})
+        self.failUnless(NumexprTag('added').evaluate(song, time, True)
+                        == 24242)
+        self.failUnless(NumexprTag('length').evaluate(song, time, True) == 315)
+        self.failUnless(NumexprTag('date').evaluate(song, time, True) is None)
+        self.failUnless(NumexprTag('added').evaluate(song, time, True)
+                        > NumexprTag('mtime').evaluate(song, time, True))
 
-    def test_time_unit(self):
-        t = map_numeric_op("mtime", "=", "now", time_=self.TIME)[1]
-        self.failUnlessEqual(t, self.TIME)
+    def test_date_tag(self):
+        song = AudioFile({'date': '2012-11-09'})
+        self.failUnless(NumexprTag('date').evaluate(song, 0, True)
+                        == parse_date('2012-11-09'))
+        self.failUnless(NumexprTag('date').evaluate(song, 424242, True)
+                        == parse_date('2012-11-09'))
+        self.failUnless(NumexprTag('date').evaluate(song, 0, True)
+                        > parse_date('2012-11-08'))
+        self.failUnless(NumexprTag('date').evaluate(song, 0, True)
+                        < parse_date('2012-11-10'))
 
-        t = map_numeric_op("mtime", ">", "today", time_=self.TIME)[1]
-        self.failUnlessEqual(t, self.TIME - (3600 * 24))
+    def test_numexpr_func(self):
+        time = 424242
+        col = Collection()
+        col.songs = (AudioFile({'~#added': 400000, '~#length': 315}),
+                     AudioFile({'~#added': 405000, '~#length': 225}))
+        self.failUnless(NumexprTag('length:avg').evaluate(col, time, True)
+                        == 270)
+        self.failUnless(NumexprTag('added:max').evaluate(col, time, True)
+                        == 19242)
 
-        t = map_numeric_op("mtime", ">", "2 days ago", time_=self.TIME)[1]
-        self.failUnlessEqual(t, self.TIME - (3600 * 24 * 2))
-
-        t = map_numeric_op("mtime", ">", "3.0 weeks ago", time_=self.TIME)[1]
-        self.failUnlessEqual(t, self.TIME - (3600 * 24 * 7 * 3))
-
-        t = map_numeric_op("mtime", ">", "3 months ago", time_=self.TIME)[1]
-        self.failUnlessEqual(t, self.TIME - (3600 * 24 * 30 * 3))
-
-        t = map_numeric_op("mtime", ">", "1 year ago", time_=self.TIME)[1]
-        self.failUnlessEqual(t, self.TIME - (3600 * 24 * 365))
-
-        t = map_numeric_op("mtime", ">", "5 hours ago", time_=self.TIME)[1]
-        self.failUnlessEqual(t, self.TIME - (3600 * 5))
-
-        t = map_numeric_op("mtime", ">", "1 minute", time_=self.TIME)[1]
-        self.failUnlessEqual(t, self.TIME - (60))
-
-        self.failUnlessRaises(ParseError,
-                              map_numeric_op, "mtime", "<", "3 foo")
-
-        self.failUnlessRaises(ParseError,
-                              map_numeric_op, "mtime", "<", "bar")
-
-    def test_time_format(self):
-        o, v = map_numeric_op("length", ">", "5:10")
-        self.failUnless(o(5 * 60 + 12, v))
-
-        o, v = map_numeric_op("length", "=", "10:5:10")
-        self.failUnless(o((3600 * 10) + (5 * 60) + 10, v))
-
-    def test_date(self):
-        o, v = map_numeric_op("date", ">", "2004")
-        self.failUnless(o(date_key("2004-01-02"), v))
-
-        o, v = map_numeric_op("date", "=", "2005")
-        self.failUnless(o(date_key("2005"), v))
-
-        self.failUnlessRaises(
-            ParseError, map_numeric_op, "date", ">", "2001-foo")
-
-    def test_float(self):
-        for variant in ["0.5", ".5", "+.5", "+.5e0"]:
-            o, v = map_numeric_op("rating", ">", variant)
-            self.failUnless(o(0.6, v))
-            self.failIf(o(0.5, v))
-
-    def test_size(self):
-        o, v = map_numeric_op("filesize", ">", "10MB")
-        self.failUnless(o(1024 * 1024 * 11, v))
-        self.failIf(o(1024 * 1024 * 9, v))
-
-        map_numeric_op("filesize", ">", "10kB")
-        map_numeric_op("filesize", ">", "10bytes")
-        map_numeric_op("filesize", ">", "10G")
-        map_numeric_op("filesize", ">", "10m")
-
-        self.failUnlessRaises(ParseError,
-                              map_numeric_op, "foobar", ">", "10MB")
-
-        self.failUnlessRaises(ParseError,
-                              map_numeric_op, "filesize", ">", "10X")
-
-        self.failUnlessRaises(ParseError,
-                              map_numeric_op, "filesize", "!", "10MB")
-
-    def test_simple(self):
-        o, v = map_numeric_op("playcount", "<=", "5")
-        self.failUnless(o(5, v))
-        self.failIf(o(5.01, v))
+    def test_numexpr_now(self):
+        time = 424242
+        day = 24 * 60 * 60
+        self.failUnless(NumexprNow().evaluate(None, time, True) == time)
+        self.failUnless(NumexprNow(day).evaluate(None, time, True)
+                        == time - day)
+        self.failUnless(NumexprNow().evaluate(None, time, True) ==
+                        numexprTagOrSpecial('now').evaluate(None, time, True))
+        self.failUnless(NumexprNow(day).evaluate(None, time, True) ==
+                        numexprTagOrSpecial('today')
+                        .evaluate(None, time, True))
+        self.failUnless(NumexprNow().__repr__()
+                        == numexprTagOrSpecial('now').__repr__())
+        self.failUnless(NumexprTag('genre').__repr__()
+                        == numexprTagOrSpecial('genre').__repr__())

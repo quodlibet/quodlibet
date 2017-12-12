@@ -1,27 +1,31 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012 Nick Boultbee
+# Copyright 2012,2016 Nick Boultbee
 #           2012,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
 import subprocess
 
 from gi.repository import Gtk
+from senf import fsn2uri, fsnative
+
+from quodlibet.plugins.songshelpers import any_song, is_a_file
 
 try:
     import dbus
 except ImportError:
     dbus = None
 
+from quodlibet import _
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.util.uri import URI
 from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
-from quodlibet.util.path import is_fsnative, normalize_path
 
 
 class BrowseError(Exception):
@@ -84,7 +88,7 @@ def browse_folders_thunar(songs, display=""):
         # open each folder and select the first file we have selected
         for dirname, sub_songs in group_songs(songs).items():
             bus_iface.DisplayFolderAndSelect(
-                URI.frompath(dirname),
+                fsn2uri(dirname),
                 sub_songs[0]("~basename"),
                 display,
                 get_startup_id())
@@ -118,30 +122,16 @@ def show_files_win32(path, files):
     """
 
     assert os.name == "nt"
+    assert isinstance(path, fsnative)
+    assert all(isinstance(f, fsnative) for f in files)
 
-    import pywintypes
-    from win32com.shell import shell
-
-    assert is_fsnative(path)
-    assert all(is_fsnative(f) for f in files)
-
-    normalized_files = map(normalize_path, files)
+    from quodlibet.util.windows import open_folder_and_select_items
 
     try:
-        folder_pidl = shell.SHILCreateFromPath(path, 0)[0]
-        desktop = shell.SHGetDesktopFolder()
-        shell_folder = desktop.BindToObject(
-            folder_pidl, None, shell.IID_IShellFolder)
-        items = []
-        for item in shell_folder:
-            name = desktop.GetDisplayNameOf(item, 0)
-            if normalize_path(name) in normalized_files:
-                items.append(item)
-        shell.SHOpenFolderAndSelectItems(folder_pidl, items, 0)
-    except pywintypes.com_error:
+        open_folder_and_select_items(path, files)
+    except WindowsError:
         return False
-    else:
-        return True
+    return True
 
 
 def browse_folders_win_explorer(songs):
@@ -169,7 +159,7 @@ class BrowseFolders(SongsMenuPlugin):
     PLUGIN_ID = 'Browse Folders'
     PLUGIN_NAME = _('Browse Folders')
     PLUGIN_DESC = _("Opens the songs' folders in a file manager.")
-    PLUGIN_ICON = Gtk.STOCK_OPEN
+    PLUGIN_ICON = Icons.DOCUMENT_OPEN
 
     _HANDLERS = [browse_folders_fdo, browse_folders_thunar,
                  browse_folders_xdg_open, browse_folders_gnome_open,
@@ -183,12 +173,8 @@ class BrowseFolders(SongsMenuPlugin):
                          _("Unable to open folders"),
                          _("No program available to open folders.")).run()
 
-    def plugin_handles(self, songs):
-        # By default, any single song being a file is good enough
-        for song in songs:
-            if song.is_file:
-                return True
-        return False
+    plugin_handles = any_song(is_a_file)
+    """By default, any single song being a file is good enough"""
 
     def _handle(self, songs):
         """

@@ -2,26 +2,31 @@
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
-import shutil
 
-from tests import TestCase, DATA_DIR, mkstemp
-from helper import capture_output
+from senf import fsnative, path2fsn
+
+from tests import TestCase, get_data_path, mkstemp
+from .helper import capture_output, get_temp_copy
 
 from quodlibet import config
+from quodlibet import util
 from quodlibet.formats import MusicFile
-from quodlibet.operon.main import _main as operon_main
+from quodlibet.operon.main import main as operon_main
+from quodlibet.compat import listkeys
 
 
-def call(args=None):
+def call(args):
+    args = [path2fsn(a) for a in args]
     with capture_output() as (out, err):
         try:
-            return_code = operon_main(["operon.py"] + args)
-        except SystemExit, e:
+            return_code = operon_main([path2fsn("operon.py")] + args)
+        except SystemExit as e:
             return_code = e.code
 
     return (return_code, out.getvalue(), err.getvalue())
@@ -30,17 +35,15 @@ def call(args=None):
 class TOperonBase(TestCase):
     def setUp(self):
         config.init()
-        fd, self.f = mkstemp(".ogg")
-        os.close(fd)
-        fd, self.f2 = mkstemp(".mp3")
-        os.close(fd)
-        fd, self.f3 = mkstemp(".mp3")
-        os.write(fd, "garbage")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ogg'), self.f)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mp3'), self.f2)
+
+        self.f = get_temp_copy(get_data_path('silence-44-s.ogg'))
+        self.f2 = get_temp_copy(get_data_path('silence-44-s.mp3'))
         self.s = MusicFile(self.f)
         self.s2 = MusicFile(self.f2)
+
+        fd, self.f3 = mkstemp(".mp3")
+        os.write(fd, b"garbage")
+        os.close(fd)
 
     def tearDown(self):
         os.unlink(self.f)
@@ -100,7 +103,7 @@ class TOperonAdd(TOperonBase):
         self.check_true(["add", "tag", "value", self.f, self.f], False, False)
 
     def test_add_check(self):
-        keys = self.s.keys()
+        keys = listkeys(self.s)
         self.check_true(["add", "foo", "bar", self.f], False, False)
         self.s.reload()
         self.failUnlessEqual(self.s["foo"], "bar")
@@ -108,21 +111,21 @@ class TOperonAdd(TOperonBase):
 
         self.check_true(["-v", "add", "foo", "bar2", self.f], False, True)
         self.s.reload()
-        self.failUnlessEqual(set(self.s.list("foo")), set(["bar", "bar2"]))
+        self.failUnlessEqual(set(self.s.list("foo")), {"bar", "bar2"})
 
     def test_add_backlisted(self):
         self.check_false(["add", "playcount", "bar", self.f], False, True)
 
     def test_permissions(self):
         try:
-            os.chmod(self.f, 0000)
+            os.chmod(self.f, 0o000)
             self.check_false(["add", "foo", "bar", self.f, self.f],
                              False, True)
-            os.chmod(self.f, 0444)
+            os.chmod(self.f, 0o444)
             self.check_false(["add", "foo", "bar", self.f, self.f],
                              False, True)
         finally:
-            os.chmod(self.f, 0666)
+            os.chmod(self.f, 0o666)
 
 
 class TOperonPrint(TOperonBase):
@@ -150,13 +153,12 @@ class TOperonPrint(TOperonBase):
         # an error status
         o, e = self.check_false(["print", self.f3, self.f2], True, True)
         self.assertTrue("Quod Libet Test Data" in o)
-        self.assertTrue(os.path.basename(self.f3) in e)
 
     def test_permissions(self):
         # doesn't prevent reading under wine..
         if os.name == "nt":
             return
-        os.chmod(self.f, 0000)
+        os.chmod(self.f, 0o000)
         self.check_false(["print", "-p", "<title>", self.f],
                          False, True)
 
@@ -332,8 +334,8 @@ class TOperonEdit(TOperonBase):
         self.check_false(["edit", "foo", "bar"], False, True)
 
     def test_nonexist_editor(self):
-        editor = "/this/path/does/not/exist/hopefully"
-        os.environ["VISUAL"] = editor
+        editor = fsnative(u"/this/path/does/not/exist/hopefully")
+        util.environ["VISUAL"] = editor
         e = self.check_false(["edit", self.f], False, True)[1]
         self.assertTrue(editor in e)
 
@@ -467,6 +469,17 @@ class TOperonTags(TOperonBase):
         self.check_true(["tags", "-t", "-ctag, desc"], True, False)
         self.check_false(["tags", "-t", "-cfoo"], False, True)
 
+    def test_output(self):
+        o, e = self.check_true(["tags"], True, False)
+        assert not e
+        assert "tracknumber" in o
+        assert "replaygain_album_gain" not in o
+
+        o, e = self.check_true(["tags", "-a"], True, False)
+        assert not e
+        assert "tracknumber" in o
+        assert "replaygain_album_gain" in o
+
 
 class TOperonImageExtract(TOperonBase):
     # [--dry-run] [--primary] [-d <destination>] <file> [<files>]
@@ -474,9 +487,7 @@ class TOperonImageExtract(TOperonBase):
     def setUp(self):
         super(TOperonImageExtract, self).setUp()
 
-        h, self.fcover = mkstemp(".wma")
-        os.close(h)
-        shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
+        self.fcover = get_temp_copy(get_data_path('test-2.wma'))
         self.cover = MusicFile(self.fcover)
 
     def tearDown(self):
@@ -506,7 +517,7 @@ class TOperonImageExtract(TOperonBase):
         self.assertTrue(os.path.exists(expected_path))
 
         with open(expected_path, "rb") as h:
-            self.assertEqual(h.read(), image.file.read())
+            self.assertEqual(h.read(), image.read())
 
     def test_extract_primary(self):
         target_dir = os.path.dirname(self.fcover)
@@ -525,7 +536,7 @@ class TOperonImageExtract(TOperonBase):
         self.assertTrue(os.path.exists(expected_path))
 
         with open(expected_path, "rb") as h:
-            self.assertEqual(h.read(), image.file.read())
+            self.assertEqual(h.read(), image.read())
 
 
 class TOperonImageSet(TOperonBase):
@@ -540,10 +551,11 @@ class TOperonImageSet(TOperonBase):
         wide = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
         wide.savev(self.filename, "png", [], [])
 
-        h, self.fcover = mkstemp(".wma")
-        os.close(h)
-        shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
+        self.fcover = get_temp_copy(get_data_path('test-2.wma'))
         self.cover = MusicFile(self.fcover)
+
+        self.fcover2 = get_temp_copy(get_data_path('test-2.wma'))
+        self.cover2 = MusicFile(self.fcover2)
 
     def tearDown(self):
         os.unlink(self.fcover)
@@ -557,7 +569,7 @@ class TOperonImageSet(TOperonBase):
         self.check_false(["image-set", self.filename], False, True)
 
     def test_not_supported(self):
-        path = os.path.join(DATA_DIR, 'test.mid')
+        path = get_data_path('test.mid')
         out, err = self.check_false(
             ["image-set", self.filename, path], False, True)
         self.assertTrue("supported" in err)
@@ -573,7 +585,20 @@ class TOperonImageSet(TOperonBase):
         self.assertEqual(len(images), 1)
 
         with open(self.filename, "rb") as h:
-            self.assertEqual(h.read(), images[0].file.read())
+            self.assertEqual(h.read(), images[0].read())
+
+    def test_set_two(self):
+        self.check_true(
+            ["image-set", self.filename, self.fcover, self.fcover2],
+            False, False)
+
+        with open(self.filename, "rb") as h:
+            image_data = h.read()
+
+        for audio in [self.cover, self.cover2]:
+            audio.reload()
+            image = audio.get_images()[0]
+            self.assertEqual(image.read(), image_data)
 
 
 class TOperonImageClear(TOperonBase):
@@ -581,9 +606,7 @@ class TOperonImageClear(TOperonBase):
 
     def setUp(self):
         super(TOperonImageClear, self).setUp()
-        fd, self.fcover = mkstemp(".wma")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'test-2.wma'), self.fcover)
+        self.fcover = get_temp_copy(get_data_path('test-2.wma'))
         self.cover = MusicFile(self.fcover)
 
     def tearDown(self):
@@ -596,7 +619,7 @@ class TOperonImageClear(TOperonBase):
         self.check_false(["image-clear"], False, True)
 
     def test_not_supported(self):
-        path = os.path.join(DATA_DIR, 'test.mid')
+        path = get_data_path('test.mid')
         out, err = self.check_false(["image-clear", path], False, True)
         self.assertTrue("supported" in err)
 

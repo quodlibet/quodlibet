@@ -3,38 +3,27 @@
 #           2011-2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import re
 import sys
 import errno
-import tempfile
 import codecs
 import shlex
-import urllib
-from quodlibet.const import FSCODING
-from quodlibet.util.string import decode
-from quodlibet import windows
+
+from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
+    fsn2text, path2fsn
+
+from quodlibet.compat import PY2, urlparse, text_type, quote, unquote, PY3
+from . import windows
+from .environment import is_windows
+from .misc import environ, NamedTemporaryFile
 
 if sys.platform == "darwin":
     from Foundation import NSString
-
-
-"""
-Path related functions like open, os.listdir have different behavior on win32
-
-- Passing a string calls the old non unicode win API.
-  In case of listdir this leads to "?" for >1byte chars and to
-  1 byte chars encoded using the fs encoding. -> DO NOT USE!
-
-- Passing a unicode object internally calls the windows unicode functions.
-  This will mostly lead to proper unicode paths (except expanduser).
-
-  And that's why QL is using unicode paths on win and encoded paths
-  everywhere else.
-"""
 
 
 def mkdir(dir_, *args):
@@ -49,88 +38,22 @@ def mkdir(dir_, *args):
             raise
 
 
-def fsdecode(s, note=True):
-    """Takes a native path and returns unicode for displaying it.
+def glib2fsn(path):
+    """Takes a glib filename and returns a fsnative path"""
 
-    Can not fail and can't be reversed.
-    """
-
-    if isinstance(s, unicode):
-        return s
-    elif note:
-        return decode(s, FSCODING)
+    if PY2:
+        return bytes2fsn(path, "utf-8")
     else:
-        return s.decode(FSCODING, 'replace')
-
-
-"""
-There exist 3 types of paths:
-
- * Python: bytes on Linux, unicode on Windows
- * GLib: bytes on Linux, utf-8 bytes on Windows
- * Serialized for the config: same as GLib
-"""
-
-
-if sys.platform == "win32":
-    # We use FSCODING to save paths in files for example,
-    # so this should never change on Windows (like in glib)
-    assert FSCODING == "utf-8"
-
-    def is_fsnative(path):
-        """If path is a native path"""
-
-        return isinstance(path, unicode)
-
-    def fsnative(path):
-        """unicode -> native path"""
-
-        assert isinstance(path, unicode)
         return path
 
-    def glib2fsnative(path):
-        """glib path -> native path"""
 
-        assert isinstance(path, bytes)
-        return path.decode("utf-8")
+def fsn2glib(path):
+    """Takes a fsnative path and returns a glib filename"""
 
-    def fsnative2glib(path):
-        """native path -> glib path"""
-
-        assert isinstance(path, unicode)
-        return path.encode("utf-8")
-
-    fsnative2bytes = fsnative2glib
-    """native path -> bytes
-
-    Can never fail.
-    """
-
-    bytes2fsnative = glib2fsnative
-    """bytes -> native path
-
-    Warning: This can fail (raise ValueError) only on Windows,
-    if the input wasn't produced by fsnative2bytes.
-    """
-else:
-    def is_fsnative(path):
-        return isinstance(path, bytes)
-
-    def fsnative(path):
-        assert isinstance(path, unicode)
-        return path.encode(FSCODING, 'replace')
-
-    def glib2fsnative(path):
-        assert isinstance(path, bytes)
+    if PY2:
+        return fsn2bytes(path, "utf-8")
+    else:
         return path
-
-    def fsnative2glib(path):
-        assert isinstance(path, bytes)
-        return path
-
-    fsnative2bytes = fsnative2glib
-
-    bytes2fsnative = glib2fsnative
 
 
 def iscommand(s):
@@ -141,7 +64,7 @@ def iscommand(s):
         return os.path.isfile(s) and os.access(s, os.X_OK)
     else:
         s = s.split()[0]
-        path = os.environ.get('PATH', '') or os.defpath
+        path = environ.get('PATH', '') or os.defpath
         for p in path.split(os.path.pathsep):
             p2 = os.path.join(p, s)
             if os.path.isfile(p2) and os.access(p2, os.X_OK):
@@ -156,7 +79,7 @@ def listdir(path, hidden=False):
     If hidden is false, Unix-style hidden files are not returned.
     """
 
-    assert is_fsnative(path)
+    assert isinstance(path, fsnative)
 
     if hidden:
         filt = None
@@ -169,16 +92,6 @@ def listdir(path, hidden=False):
     return [join([path, basename])
             for basename in sorted(os.listdir(path))
             if filt(basename)]
-
-
-if os.name == "nt":
-    getcwd = os.getcwdu
-    sep = os.sep.decode("ascii")
-    pathsep = os.pathsep.decode("ascii")
-else:
-    getcwd = os.getcwd
-    sep = os.sep
-    pathsep = os.pathsep
 
 
 def mtime(filename):
@@ -200,72 +113,67 @@ def filesize(filename):
 def escape_filename(s):
     """Escape a string in a manner suitable for a filename.
 
-    Takes unicode or str and returns a fsnative path.
+    Args:
+        s (text_type)
+    Returns:
+        fsnative
     """
 
-    if isinstance(s, unicode):
-        s = s.encode("utf-8")
-
-    return fsnative(urllib.quote(s, safe="").decode("utf-8"))
+    s = text_type(s)
+    s = quote(s.encode("utf-8"), safe=b"")
+    if isinstance(s, text_type):
+        s = s.encode("ascii")
+    return bytes2fsn(s, "utf-8")
 
 
 def unescape_filename(s):
-    """Unescape a string in a manner suitable for a filename."""
-    if isinstance(s, unicode):
-        s = s.encode("utf-8")
-    return urllib.unquote(s).decode("utf-8")
+    """Unescape a string in a manner suitable for a filename.
 
-
-def expanduser(filename):
-    """needed because expanduser does not return wide character paths
-    on windows even if a unicode path gets passed.
+    Args:
+        filename (fsnative)
+    Returns:
+        text_type
     """
 
-    if os.name == "nt":
-        profile = windows.get_profile_dir() or u""
-        if filename == "~":
-            return profile
-        if filename.startswith(u"~" + os.path.sep):
-            return os.path.join(profile, filename[2:])
-    return os.path.expanduser(filename)
+    assert isinstance(s, fsnative)
+
+    return fsn2text(unquote(s))
 
 
-def unexpand(filename, HOME=expanduser("~")):
-    """Replace the user's home directory with ~/, if it appears at the
-    start of the path name."""
-    sub = (os.name == "nt" and "%USERPROFILE%") or "~"
-    if filename == HOME:
+def unexpand(filename):
+    """Replace the user's home directory with ~ or %USERPROFILE%, if it
+    appears at the start of the path name.
+
+    Args:
+        filename (fsnative): The file path
+    Returns:
+        fsnative: The path with the home directory replaced
+    """
+
+    sub = (os.name == "nt" and fsnative(u"%USERPROFILE%")) or fsnative(u"~")
+    home = expanduser("~")
+    if filename == home:
         return sub
-    elif filename.startswith(HOME + os.path.sep):
-        filename = filename.replace(HOME, sub, 1)
+    elif filename.startswith(home + os.path.sep):
+        filename = filename.replace(home, sub, 1)
     return filename
 
 
+if PY3 and is_windows():
+    def ismount(path):
+        # this can raise on py3+win, but we don't care
+        try:
+            return os.path.ismount(path)
+        except OSError:
+            return False
+else:
+    ismount = os.path.ismount
+
+
 def find_mount_point(path):
-    while not os.path.ismount(path):
+    while not ismount(path):
         path = os.path.dirname(path)
     return path
-
-
-def pathname2url_win32(path):
-    # stdlib version raises IOError for more than one ':' which can appear
-    # using a virtual box shared folder and it inserts /// at the beginning
-    # but it should be /.
-
-    # windows paths should be unicode
-    if isinstance(path, unicode):
-        path = path.encode("utf-8")
-
-    quote = urllib.quote
-    if ":" not in path:
-        return quote("/".join(path.split("\\")))
-    drive, remain = path.split(":", 1)
-    return "/%s:%s" % (quote(drive), quote("/".join(remain.split("\\"))))
-
-if os.name == "nt":
-    pathname2url = pathname2url_win32
-else:
-    pathname2url = urllib.pathname2url
 
 
 def xdg_get_system_data_dirs():
@@ -275,12 +183,12 @@ def xdg_get_system_data_dirs():
         from gi.repository import GLib
         dirs = []
         for dir_ in GLib.get_system_data_dirs():
-            dirs.append(glib2fsnative(dir_))
+            dirs.append(glib2fsn(dir_))
         return dirs
 
     data_dirs = os.getenv("XDG_DATA_DIRS")
     if data_dirs:
-        return map(os.path.abspath, data_dirs.split(":"))
+        return list(map(os.path.abspath, data_dirs.split(":")))
     else:
         return ("/usr/local/share/", "/usr/share/")
 
@@ -288,7 +196,7 @@ def xdg_get_system_data_dirs():
 def xdg_get_cache_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsnative(GLib.get_user_cache_dir())
+        return glib2fsn(GLib.get_user_cache_dir())
 
     data_home = os.getenv("XDG_CACHE_HOME")
     if data_home:
@@ -300,7 +208,7 @@ def xdg_get_cache_home():
 def xdg_get_data_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsnative(GLib.get_user_data_dir())
+        return glib2fsn(GLib.get_user_data_dir())
 
     data_home = os.getenv("XDG_DATA_HOME")
     if data_home:
@@ -312,7 +220,7 @@ def xdg_get_data_home():
 def xdg_get_config_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsnative(GLib.get_user_config_dir())
+        return glib2fsn(GLib.get_user_config_dir())
 
     data_home = os.getenv("XDG_CONFIG_HOME")
     if data_home:
@@ -324,28 +232,32 @@ def xdg_get_config_home():
 def parse_xdg_user_dirs(data):
     """Parses xdg-user-dirs and returns a dict of keys and paths.
 
-    The paths depend on the content of os.environ while calling this function.
+    The paths depend on the content of environ while calling this function.
     See http://www.freedesktop.org/wiki/Software/xdg-user-dirs/
+
+    Args:
+        data (bytes)
 
     Can't fail (but might return garbage).
     """
-    paths = {}
 
+    assert isinstance(data, bytes)
+
+    paths = {}
     for line in data.splitlines():
-        if line.startswith("#"):
+        if line.startswith(b"#"):
             continue
-        parts = line.split("=", 1)
+        parts = line.split(b"=", 1)
         if len(parts) <= 1:
             continue
         key = parts[0]
         try:
-            values = shlex.split(parts[1])
+            values = shlex.split(bytes2fsn(parts[1], "utf-8"))
         except ValueError:
             continue
         if len(values) != 1:
             continue
-        paths[key] = os.path.normpath(
-            os.path.expandvars(bytes2fsnative(values[0])))
+        paths[key] = os.path.normpath(expandvars(values[0]))
 
     return paths
 
@@ -365,7 +277,7 @@ def get_temp_cover_file(data):
 
     try:
         # pass fsnative so that mkstemp() uses unicode on Windows
-        fn = tempfile.NamedTemporaryFile(prefix=fsnative(u"tmp"))
+        fn = NamedTemporaryFile(prefix=fsnative(u"tmp"))
         fn.write(data)
         fn.flush()
         fn.seek(0, 0)
@@ -403,14 +315,18 @@ def strip_win32_incompat_from_path(string):
 
 def _normalize_darwin_path(filename, canonicalise=False):
 
+    filename = path2fsn(filename)
+
     if canonicalise:
         filename = os.path.realpath(filename)
     filename = os.path.normpath(filename)
 
-    decoded = filename.decode("utf-8", "quodlibet-osx-path-decode")
+    data = fsn2bytes(filename, "utf-8")
+    decoded = data.decode("utf-8", "quodlibet-osx-path-decode")
 
     try:
-        return NSString.fileSystemRepresentation(decoded)
+        return bytes2fsn(
+            NSString.fileSystemRepresentation(decoded), "utf-8")
     except ValueError:
         return filename
 
@@ -420,6 +336,7 @@ def _normalize_path(filename, canonicalise=False):
     If `canonicalise` is True, dereference symlinks etc
     by calling `os.path.realpath`
     """
+    filename = path2fsn(filename)
     if canonicalise:
         filename = os.path.realpath(filename)
     filename = os.path.normpath(filename)
@@ -442,3 +359,87 @@ else:
 
 def path_equal(p1, p2, canonicalise=False):
     return normalize_path(p1, canonicalise) == normalize_path(p2, canonicalise)
+
+
+def limit_path(path, ellipsis=True):
+    """Reduces the filename length of all filenames in the given path
+    to the common maximum length for current platform.
+
+    While the limits are depended on the file system and more restrictions
+    may apply, this covers the common case.
+    """
+
+    assert isinstance(path, fsnative)
+
+    main, ext = os.path.splitext(path)
+    parts = main.split(sep)
+    for i, p in enumerate(parts):
+        # Limit each path section to 255 (bytes on linux, chars on win).
+        # http://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
+        limit = 255
+        if i == len(parts) - 1:
+            limit -= len(ext)
+
+        if len(p) > limit:
+            if ellipsis:
+                p = p[:limit - 2] + fsnative(u"..")
+            else:
+                p = p[:limit]
+        parts[i] = p
+
+    return sep.join(parts) + ext
+
+
+def get_home_dir():
+    """Returns the root directory of the user, /home/user or C:\\Users\\user"""
+
+    if os.name == "nt":
+        return windows.get_profile_dir()
+    else:
+        return expanduser("~")
+
+
+def ishidden(path):
+    """Returns if a directory/ file is considered hidden by the platform.
+
+    Hidden meaning the user should normally not be exposed to those files when
+    opening the parent directory in the default file manager using the default
+    settings.
+
+    Does not check if any of the parents are hidden.
+    In case the file/dir does not exist the result is implementation defined.
+
+    Args:
+        path (fsnative)
+    Returns:
+        bool
+    """
+
+    # TODO: win/osx
+    return os.path.basename(path).startswith(".")
+
+
+def uri_is_valid(uri):
+    """Returns True if the passed in text is a valid URI (file, http, etc.)
+
+    Args:
+        uri(text or bytes)
+    Returns:
+        bool
+    """
+
+    try:
+        if isinstance(uri, bytes):
+            uri.decode("ascii")
+        elif not isinstance(uri, bytes):
+            uri = uri.encode("ascii")
+    except ValueError:
+        return False
+
+    parsed = urlparse(uri)
+    if not parsed.scheme or not len(parsed.scheme) > 1:
+        return False
+    elif not (parsed.netloc or parsed.path):
+        return False
+    else:
+        return True

@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010-2011 Christoph Reiter, Steven Robertson
+#           2016-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
 from gi.repository import Gtk, GObject, GLib
 
+import quodlibet
 from quodlibet import config
-from quodlibet import const
+from quodlibet import _
 
 from quodlibet.qltk.cbes import ComboBoxEntrySave
-from quodlibet.qltk.entry import QueryValidator
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
+from quodlibet.util import limit_songs, DeferredSignal, gdecode
 from quodlibet.query import QueryType
-from quodlibet.util import limit_songs, DeferredSignal
 
 
 class SearchBarBox(Gtk.HBox):
@@ -36,36 +38,39 @@ class SearchBarBox(Gtk.HBox):
         'focus-out': (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 
-    timeout = 400
+    DEFAULT_TIMEOUT = 400
 
     def __init__(self, filename=None, completion=None, accel_group=None,
-                 validator=QueryValidator):
+                 timeout=DEFAULT_TIMEOUT, validator=Query.validator,
+                 star=None):
         super(SearchBarBox, self).__init__(spacing=6)
 
         if filename is None:
-            filename = os.path.join(const.USERDIR, "lists", "queries")
+            filename = os.path.join(
+                quodlibet.get_user_dir(), "lists", "queries")
 
         combo = ComboBoxEntrySave(filename, count=8,
-                validator=validator, title=_("Saved Searches"),
-                edit_title=_(u"Edit saved searches…"))
+                                  validator=validator,
+                                  title=_("Saved Searches"),
+                                  edit_title=_(u"Edit saved searches…"))
 
         self.__deferred_changed = DeferredSignal(
-            self.__filter_changed, timeout=self.timeout, owner=self)
+            self.__filter_changed, timeout=timeout, owner=self)
 
-        self.validator = validator
         self.__combo = combo
         entry = combo.get_child()
         self.__entry = entry
         if completion:
             entry.set_completion(completion)
 
+        self._star = star
+        self.query = None
         self.__sig = combo.connect('text-changed', self.__text_changed)
 
         entry.connect('clear', self.__filter_changed)
         entry.connect('backspace', self.__text_changed)
         entry.connect('populate-popup', self.__menu)
         entry.connect('activate', self.__filter_changed)
-        entry.connect('activate', self.__save_search)
         entry.connect('focus-out-event', self.__save_search)
 
         entry.set_placeholder_text(_("Search"))
@@ -76,27 +81,35 @@ class SearchBarBox(Gtk.HBox):
         self.pack_start(combo, True, True, 0)
 
         if accel_group:
-            key, mod = Gtk.accelerator_parse("<ctrl>L")
+            key, mod = Gtk.accelerator_parse("<Primary>L")
             accel_group.connect(key, mod, 0,
                     lambda *x: entry.mnemonic_activate(True))
 
         for child in self.get_children():
             child.show_all()
 
+    def set_enabled(self, enabled=True):
+        self.__entry.set_sensitive(enabled)
+
     def set_text(self, text):
         """Set the text without firing any signals"""
 
         self.__deferred_changed.abort()
+        self._update_query_from(text)
 
         # deactivate all signals and change the entry text
         self.__inhibit()
         self.__entry.set_text(text)
         self.__uninhibit()
 
+    def _update_query_from(self, text):
+        # TODO: remove tight coupling to Query
+        self.query = Query(text, star=self._star)
+
     def get_text(self):
         """Get the active text as unicode"""
 
-        return self.__entry.get_text().decode("utf-8")
+        return gdecode(self.__entry.get_text())
 
     def _is_parsable(self, text):
         return text and self.validator(text) != QueryType.INVALID
@@ -139,7 +152,7 @@ class SearchBarBox(Gtk.HBox):
             return
 
         text = self.get_text().strip()
-        if self._is_parsable(text):
+        if text and self.query.is_parsable:
             # Adding the active text to the model triggers a changed signal
             # (get_active is no longer -1), so inhibit
             self.__inhibit()
@@ -150,10 +163,14 @@ class SearchBarBox(Gtk.HBox):
     def __filter_changed(self, *args):
         self.__deferred_changed.abort()
         text = self.get_text()
-        if self._is_parsable(text):
+        self._update_query_from(text)
+        if self.query.is_parsable:
             GLib.idle_add(self.emit, 'query-changed', text)
+            self.__save_search(args[0:1], args[1:])
 
     def __text_changed(self, *args):
+        if not self.__entry.is_sensitive():
+            return
         # the combobox has an active entry selected -> no timeout
         # todo: we need a timeout when the selection changed because
         # of keyboard input (up/down arrows)

@@ -1,21 +1,24 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005-2009 Joe Wreschnig, Steven Robertson
-#                2012 Nick Boultbee
+#           2012,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import random
 
 from gi.repository import Gtk, GLib
 
+from quodlibet import _
 from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import util
+from quodlibet.util import print_d
 try:
-    from quodlibet.qltk import notif
+    from quodlibet.qltk import notif, Icons
 except Exception:
     notif = None
 
@@ -26,6 +29,7 @@ class RandomAlbum(EventPlugin):
     PLUGIN_DESC = _("Starts a random album when your playlist reaches its "
                     "end. It requires that your active browser supports "
                     "filtering by album.")
+    PLUGIN_ICON = Icons.MEDIA_SKIP_FORWARD
 
     weights = {}
     use_weights = False
@@ -158,11 +162,11 @@ class RandomAlbum(EventPlugin):
         return [(score, name) for name, score in scores.items()]
 
     def plugin_on_song_started(self, song):
-        if (song is None and config.get("memory", "order") != "onesong" and
-            not app.player.paused):
+        one_song = app.player_options.single
+        if song is None and not one_song and not app.player.paused:
             browser = app.window.browser
 
-            if not browser.can_filter('album'):
+            if self.disabled_for_browser(browser):
                 return
 
             albumlib = app.library.albums
@@ -212,7 +216,7 @@ class RandomAlbum(EventPlugin):
 
     def change_album(self, album):
         browser = app.window.browser
-        if not browser.can_filter('album'):
+        if self.disabled_for_browser(browser):
             return
 
         if browser.can_filter_albums():
@@ -230,3 +234,6 @@ class RandomAlbum(EventPlugin):
             app.player.next()
         except AttributeError:
             app.player.paused = True
+
+    def disabled_for_browser(self, browser):
+        return not browser.can_filter_albums() or browser == "Playlists"

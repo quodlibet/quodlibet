@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013, 2014 Christoph Reiter
+#           2015, 2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, GObject
 
-from quodlibet.qltk import pygobject_version
+from quodlibet.compat import integer_types, string_types, cmp
 
 
-def _gets_marshaled_to_pyobject(obj,
-        _types=(long, float, int, basestring, bool, GObject.Object)):
+_auto_types = [float, bool, GObject.Object]
+_auto_types.extend(integer_types)
+_auto_types.extend(string_types)
+
+
+def _gets_marshaled_to_pyobject(obj, _types=tuple(_auto_types)):
     """Python objects get automarshalled to GValues which is faster than
     doing it in python but also has its own mapping, because it doesn't
     know the column type of the model.
@@ -37,15 +43,8 @@ class _ModelMixin(object):
     Set to False if you know what you're doing.
     """
 
-    def get_value(self, iter_, column=0,
-            _value_type=GObject.Value,
-            _base=Gtk.TreeModel.get_value):
-
-        res = _base(self, iter_, column)
-        # PyGObject 3.4 doesn't unbox in some cases...
-        if isinstance(res, _value_type):
-            res = res.get_boxed()
-        return res
+    def get_value(self, iter_, column=0, _base=Gtk.TreeModel.get_value):
+        return _base(self, iter_, column)
 
     def get_n_columns(self):
         return 1
@@ -70,6 +69,10 @@ class _ModelMixin(object):
             yield getv(iter_)
             iter_ = inext(iter_)
 
+    def values(self):
+        """Largely for PY2 -> PY3 compatibility"""
+        return list(self.itervalues())
+
     def iterrows(self, iter_=None):
         """Yields (iter, value) tuples"""
 
@@ -83,27 +86,16 @@ class _ModelMixin(object):
     def is_empty(self):
         return not self.get_iter_first()
 
-    if pygobject_version >= (3, 12):
-        _value = GObject.Value()
-        _value.init(GObject.TYPE_PYOBJECT)
+    _value = GObject.Value()
+    _value.init(GObject.TYPE_PYOBJECT)
 
-        def _get_marshalable(self, obj, _value=_value):
-            if _gets_marshaled_to_pyobject(obj):
-                return obj
-            _value.set_boxed(obj)
-            return _value
+    def _get_marshalable(self, obj, _value=_value):
+        if _gets_marshaled_to_pyobject(obj):
+            return obj
+        _value.set_boxed(obj)
+        return _value
 
-        del _value
-    else:
-        # https://bugzilla.gnome.org/show_bug.cgi?id=703662
-
-        def _get_marshalable(self, obj):
-            if _gets_marshaled_to_pyobject(obj):
-                return obj
-            value = GObject.Value()
-            value.init(GObject.TYPE_PYOBJECT)
-            value.set_boxed(obj)
-            return value
+    del _value
 
 
 class ObjectModelFilter(_ModelMixin, Gtk.TreeModelFilter):
@@ -175,6 +167,12 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
      - append_many(), insert_many()
      - itervalues()
     """
+
+    @staticmethod
+    def _sort_on_value(m, a, b, data):
+        """Sorts two items in an ObjectStore,
+        suitable for passing to `set_default_sort_func`"""
+        return cmp(m[a][0], m[b][0])
 
     def __init__(self, *args):
         if len(args) > 1:

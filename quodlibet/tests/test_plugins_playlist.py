@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
-# TODO: Share better with, i.e. test MenuItemPlugin directly
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+"""TODO: Share better with, i.e. test MenuItemPlugin directly"""
 
 import os
+import shutil
 
 from gi.repository import Gtk
 from quodlibet.browsers import Browser
@@ -14,12 +20,11 @@ from quodlibet.plugins import PluginManager, Plugin
 from tests.helper import capture_output
 
 MAX_PLAYLISTS = 50
-DIR = mkdtemp()
-TEST_PLAYLIST = Playlist(DIR, "foo")
+TEST_PLAYLIST = Playlist("foo")
 
 
 def generate_playlists(n):
-    return [Playlist(DIR, "Playlist %d" % x) for x in range(n)]
+    return [Playlist("Playlist %d" % x) for x in range(n)]
 
 
 class TPlaylistPlugins(TestCase):
@@ -55,9 +60,7 @@ class TPlaylistPlugins(TestCase):
     def tearDown(self):
         self.library.destroy()
         self.pm.quit()
-        for f in os.listdir(self.tempdir):
-            os.remove(os.path.join(self.tempdir, f))
-        os.rmdir(self.tempdir)
+        shutil.rmtree(self.tempdir)
 
     def create_plugin(self, id='', name='', desc='', icon='',
                       funcs=None, mod=False):

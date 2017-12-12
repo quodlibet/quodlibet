@@ -1,35 +1,45 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011,2012 Nick Boultbee
+# Copyright 2011,2012,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
-#
-# Repeats a given track a configurable number of times
-# Useful for musicians practising / working out songs...
-# or maybe you just REALLY like your playlist.
-#
-# TODO: notification of play count? Non-shuffle? Integration with main UI?
-#
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+"""
+Repeats a given track a configurable number of times
+Useful for musicians practising / working out songs...
+or maybe you just REALLY like your playlist.
+
+TODO: notification of play count?
+"""
 
 from gi.repository import Gtk
 
-from quodlibet.plugins.playorder import PlayOrderPlugin, PlayOrderShuffleMixin
+from quodlibet import _
+from quodlibet.order.repeat import Repeat
+from quodlibet.plugins.playorder import RepeatPlugin
 from quodlibet.util.dprint import print_d
 from quodlibet.plugins import PluginConfigMixin
+from quodlibet.qltk import Icons
+
+START_COUNT = 1
 
 
-class TrackRepeatOrder(PlayOrderPlugin,
-        PlayOrderShuffleMixin, PluginConfigMixin):
+class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
     PLUGIN_ID = "track_repeat"
-    PLUGIN_NAME = _("Track Repeat")
-    PLUGIN_ICON = "gtk-refresh"
+    PLUGIN_NAME = _("Repeat Each Track")
+    PLUGIN_ICON = Icons.MEDIA_PLAYLIST_REPEAT
     PLUGIN_DESC = _("Shuffle songs, "
                     "but repeat every track a set number of times.")
     PLAY_EACH_DEFAULT = 2
 
+    START_COUNT = 1
+    """By the time this plugin is invoked, the song has already been played"""
+
     # Plays of the current song
-    play_count = 0
+    play_count = START_COUNT
+    priority = Repeat.priority
 
     @classmethod
     def PluginPreferences(cls, parent):
@@ -51,30 +61,27 @@ class TrackRepeatOrder(PlayOrderPlugin,
         return vb
 
     def restart_counting(self):
-        self.play_count = 0
-        print_d("Resetting play count", context=self)
+        self.play_count = START_COUNT
+        print_d("Resetting play count")
 
     def next(self, playlist, iter):
-        self.play_count += 1
         play_each = int(self.config_get('play_each', self.PLAY_EACH_DEFAULT))
-        print_d("Play count now at %d/%d" % (self.play_count, play_each))
-        if self.play_count < play_each and iter is not None:
+        self.play_count += 1
+        if self.play_count <= play_each and iter is not None:
+            print_d("Play count now at %d/%d" % (self.play_count, play_each))
             return iter
         else:
             self.restart_counting()
-            return super(TrackRepeatOrder, self).next(playlist, iter)
+            return self.wrapped.next(playlist, iter)
 
-    def next_explicit(self, *args):
+    def next_explicit(self, playlist, iter):
         self.restart_counting()
-        return super(TrackRepeatOrder, self).next(*args)
-
-    def previous(self, *args):
-        return super(TrackRepeatOrder, self).previous(*args)
+        return self.wrapped.next_explicit(playlist, iter)
 
     def set(self, playlist, iter):
         self.restart_counting()
         return super(TrackRepeatOrder, self).set(playlist, iter)
 
     def reset(self, playlist):
-        super(TrackRepeatOrder, self).reset(playlist)
         self.play_count = 0
+        return super(TrackRepeatOrder, self).reset(playlist)

@@ -1,14 +1,26 @@
 # -*- coding: utf-8 -*-
-from tests import AbstractTestCase, skipIf
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+from tests import TestCase, skipIf
 
 from quodlibet.util.tags import USER_TAGS
 from quodlibet.qltk import is_wayland
 
 
-class TagsCombo(AbstractTestCase):
+class TagsCombo(TestCase):
     def setUp(self):
         self.all = self.Kind()
         self.some = self.Kind(["artist", "album", "~people", "foobar"])
+
+    def tearDown(self):
+        self.all.destroy()
+        self.some.destroy()
+
+
+class TagsComboMixin(object):
 
     def test_none(self):
         self.failUnlessRaises(ValueError, self.Kind, [])
@@ -23,10 +35,6 @@ class TagsCombo(AbstractTestCase):
         for i, value in enumerate(tags):
             self.all.set_active(i)
             self.failUnlessEqual(self.all.tag, value)
-
-    def tearDown(self):
-        self.all.destroy()
-        self.some.destroy()
 
 
 @skipIf(is_wayland(), "crashes..")

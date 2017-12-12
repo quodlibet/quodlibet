@@ -1,23 +1,27 @@
 # -*- coding: utf-8 -*-
-from tests import DATA_DIR, mkstemp, AbstractTestCase, TestCase
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+from tests import TestCase, get_data_path
 
 import os
-import shutil
-import StringIO
 
 import mutagen
 
 from mutagen.apev2 import BINARY, APEValue
 
+from quodlibet.compat import cBytesIO
 from quodlibet.formats.monkeysaudio import MonkeysAudioFile
 from quodlibet.formats.mpc import MPCFile
 from quodlibet.formats.wavpack import WavpackFile
 from quodlibet.formats._image import APICType, EmbeddedImage
 
+from .helper import get_temp_copy
 
-class TAPEv2FileBase(AbstractTestCase):
-    def setUp(self):
-        raise NotImplementedError
+
+class TAPEv2FileMixin(object):
 
     def test_can_change(self):
         self.failUnlessEqual(self.s.can_change(), True)
@@ -56,11 +60,11 @@ class TAPEv2FileBase(AbstractTestCase):
         self.s["Aa"] = "E"
         self.s.write()
         self.s.reload()
-        self.failUnlessEqual(set(self.s["aa"].split()), set(["C", "B", "E"]))
+        self.failUnlessEqual(set(self.s["aa"].split()), {"C", "B", "E"})
 
     def test_binary_ignore(self):
         m = mutagen.apev2.APEv2(self.f)
-        m["foo"] = APEValue("bar", BINARY)
+        m["foo"] = APEValue(b"bar", BINARY)
         m.save()
         self.s.reload()
         self.failUnlessEqual(self.s.get("foo"), None)
@@ -105,41 +109,52 @@ class TAPEv2FileBase(AbstractTestCase):
         m = mutagen.apev2.APEv2(self.f)
         self.failUnlessEqual(m["track"], "77/88")
 
+
+class TMPCFileAPEv2(TestCase, TAPEv2FileMixin):
+    def setUp(self):
+        self.f = get_temp_copy(get_data_path('silence-44-s.mpc'))
+        self.s = MPCFile(self.f)
+
     def tearDown(self):
         os.unlink(self.f)
 
 
-class TMPCFile(TAPEv2FileBase):
+class TMAFile(TestCase, TAPEv2FileMixin):
     def setUp(self):
-        fd, self.f = mkstemp(".mpc")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.mpc'), self.f)
-        self.s = MPCFile(self.f)
-
-
-class TMAFile(TAPEv2FileBase):
-    def setUp(self):
-        fd, self.f = mkstemp(".ape")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.ape'), self.f)
+        self.f = get_temp_copy(get_data_path('silence-44-s.ape'))
         self.s = MonkeysAudioFile(self.f)
 
+    def tearDown(self):
+        os.unlink(self.f)
 
-class TWavpackFile(TAPEv2FileBase):
+    def test_format_codec(self):
+        self.assertEqual(self.s("~format"), "Monkey's Audio")
+        self.assertEqual(self.s("~codec"), "Monkey's Audio")
+        self.assertEqual(self.s("~encoding"), "")
+
+    def test_channels(self):
+        assert self.s("~#channels") == 2
+
+
+class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 
     def setUp(self):
-        fd, self.f = mkstemp(".wv")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'silence-44-s.wv'), self.f)
+        self.f = get_temp_copy(get_data_path('silence-44-s.wv'))
         self.s = WavpackFile(self.f)
+
+    def tearDown(self):
+        os.unlink(self.f)
+
+    def test_format_codec(self):
+        self.assertEqual(self.s("~format"), "WavPack")
+        self.assertEqual(self.s("~codec"), "WavPack")
+        self.assertEqual(self.s("~encoding"), "")
 
 
 class TWvCoverArt(TestCase):
 
     def setUp(self):
-        fd, self.f = mkstemp(".wv")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'coverart.wv'), self.f)
+        self.f = get_temp_copy(get_data_path('coverart.wv'))
         self.s = WavpackFile(self.f)
 
     def tearDown(self):
@@ -173,7 +188,7 @@ class TWvCoverArt(TestCase):
         self.s.clear_images()
 
     def test_set_image(self):
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.s.set_image(image)
         self.assertTrue(self.s.has_images)
@@ -181,12 +196,12 @@ class TWvCoverArt(TestCase):
         images = self.s.get_images()
         self.assertEqual(len(images), 1)
         self.assertEqual(images[0].mime_type, "image/")
-        self.assertEqual(images[0].file.read(), "foo")
+        self.assertEqual(images[0].read(), b"foo")
 
     def test_set_image_no_tag(self):
         m = mutagen.apev2.APEv2(self.f)
         m.delete()
-        fileobj = StringIO.StringIO("foo")
+        fileobj = cBytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.s.set_image(image)
         images = self.s.get_images()

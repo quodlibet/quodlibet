@@ -1,16 +1,26 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from gi.repository import Gtk
 
 import os
 import shutil
+from senf import fsnative
+
+from quodlibet.formats import AudioFileError
 from quodlibet import config
-from quodlibet.util import connect_obj
-from quodlibet.formats._audio import AudioFile
+from quodlibet.util import connect_obj, is_windows
+from quodlibet.formats import AudioFile
+from quodlibet.compat import text_type, iteritems, iterkeys, itervalues
 
-from tests import TestCase, DATA_DIR, mkstemp
-from helper import capture_output
+from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipIf
+from .helper import capture_output, get_temp_copy
 
-from quodlibet.library.libraries import *
+from quodlibet.library.libraries import Library, PicklingMixin, SongLibrary, \
+    FileLibrary, AlbumLibrary, SongFileLibrary, iter_paths
 
 
 class Fake(int):
@@ -19,7 +29,7 @@ class Fake(int):
 
 
 def Frange(*args):
-    return map(Fake, range(*args))
+    return list(map(Fake, range(*args)))
 
 
 class FakeSong(Fake):
@@ -39,7 +49,7 @@ class AlbumSong(AudioFile):
     based on a single number"""
     def __init__(self, num, album=None):
         super(AlbumSong, self).__init__()
-        self["~filename"] = "file_%d.mp3" % (num + 1)
+        self["~filename"] = fsnative(u"file_%d.mp3" % (num + 1))
         self["title"] = "Song %d" % (num + 1)
         self["artist"] = "Fakeman"
         if album is None:
@@ -76,15 +86,15 @@ class FakeSongFile(FakeSong):
 
 # Custom range functions, to generate lists of song-like objects
 def FSFrange(*args):
-    return map(FakeSongFile, range(*args))
+    return list(map(FakeSongFile, range(*args)))
 
 
 def FSrange(*args):
-    return map(FakeSong, range(*args))
+    return list(map(FakeSong, range(*args)))
 
 
 def ASrange(*args):
-    return map(AlbumSong, range(*args))
+    return list(map(AlbumSong, range(*args)))
 
 
 class TLibrary(TestCase):
@@ -135,7 +145,7 @@ class TLibrary(TestCase):
         self.library.changed(self.Frange(2, 20, 3))
         while Gtk.events_pending():
             Gtk.main_iteration()
-        self.failUnlessEqual(set(self.changed), set([2, 5, 8]))
+        self.failUnlessEqual(set(self.changed), {2, 5, 8})
 
     def test_changed_none_present(self):
         self.library.changed(self.Frange(5))
@@ -200,8 +210,10 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        self.failUnlessEqual(sorted(self.library.keys()), range(100, 120))
-        self.failUnlessEqual(sorted(self.library.iterkeys()), range(100, 120))
+        self.failUnlessEqual(
+            sorted(self.library.keys()), list(range(100, 120)))
+        self.failUnlessEqual(
+            sorted(iterkeys(self.library)), list(range(100, 120)))
 
     def test_values(self):
         items = []
@@ -209,8 +221,9 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        self.failUnlessEqual(sorted(self.library.values()), range(20))
-        self.failUnlessEqual(sorted(self.library.itervalues()), range(20))
+        self.failUnlessEqual(sorted(self.library.values()), list(range(20)))
+        self.failUnlessEqual(
+            sorted(itervalues(self.library)), list(range(20)))
 
     def test_items(self):
         items = []
@@ -218,9 +231,9 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        expected = zip(range(100, 120), range(20))
+        expected = list(zip(range(100, 120), range(20)))
         self.failUnlessEqual(sorted(self.library.items()), expected)
-        self.failUnlessEqual(sorted(self.library.iteritems()), expected)
+        self.failUnlessEqual(sorted(iteritems(self.library)), expected)
 
     def test_has_key(self):
         self.failIf(self.library.has_key(10))
@@ -232,6 +245,16 @@ class TLibrary(TestCase):
 
     def tearDown(self):
         self.library.destroy()
+
+
+class FakeAudioFile(AudioFile):
+
+    def __init__(self, key):
+        self["~filename"] = fsnative(text_type(key))
+
+
+def FakeAudioFileRange(*args):
+    return list(map(FakeAudioFile, range(*args)))
 
 
 class TPicklingMixin(TestCase):
@@ -250,22 +273,43 @@ class TPicklingMixin(TestCase):
                 self._contents[item.key] = item
 
     Library = PicklingMockLibrary
-    Frange = staticmethod(Frange)
+    Frange = staticmethod(FakeAudioFileRange)
 
     def setUp(self):
         self.library = self.Library()
+
+    def test_load_noexist(self):
+        fd, filename = mkstemp()
+        os.close(fd)
+        os.unlink(filename)
+        library = self.Library()
+        library.load(filename)
+        assert len(library) == 0
+
+    def test_load_invalid(self):
+        fd, filename = mkstemp()
+        os.write(fd, b"nope")
+        os.close(fd)
+        try:
+            library = self.Library()
+            library.load(filename)
+            assert len(library) == 0
+        finally:
+            os.unlink(filename)
 
     def test_save_load(self):
         fd, filename = mkstemp()
         os.close(fd)
         try:
-            self.library.add(Frange(30))
+            self.library.add(self.Frange(30))
             self.library.save(filename)
 
             library = self.Library()
             library.load(filename)
-            self.failUnlessEqual(
-                sorted(self.library.items()), sorted(library.items()))
+            for (k, v), (k2, v2) in zip(
+                    sorted(self.library.items()), sorted(library.items())):
+                assert k == k2
+                assert v.key == v2.key
         finally:
             os.unlink(filename)
 
@@ -277,7 +321,7 @@ class TSongLibrary(TLibrary):
 
     def test_rename_dirty(self):
         self.library.dirty = False
-        song = FakeSong(10)
+        song = self.Fake(10)
         self.library.add([song])
         self.failUnless(self.library.dirty)
         self.library.dirty = False
@@ -285,7 +329,7 @@ class TSongLibrary(TLibrary):
         self.failUnless(self.library.dirty)
 
     def test_rename(self):
-        song = FakeSong(10)
+        song = self.Fake(10)
         self.library.add([song])
         self.library.rename(song, 20)
         while Gtk.events_pending():
@@ -296,7 +340,7 @@ class TSongLibrary(TLibrary):
         self.failUnlessEqual(song.key, 20)
 
     def test_rename_changed(self):
-        song = FakeSong(10)
+        song = self.Fake(10)
         self.library.add([song])
         changed = set()
         self.library.rename(song, 20, changed=changed)
@@ -306,7 +350,8 @@ class TSongLibrary(TLibrary):
     def test_tag_values(self):
         self.library.add(self.Frange(30))
         del(self.added[:])
-        self.failUnlessEqual(sorted(self.library.tag_values(10)), range(10))
+        self.failUnlessEqual(
+            sorted(self.library.tag_values(10)), list(range(10)))
         self.failUnlessEqual(sorted(self.library.tag_values(0)), [])
         self.failIf(self.changed or self.added or self.removed)
 
@@ -367,7 +412,7 @@ class TFileLibrary(TLibrary):
         new = self.Fake(200)
         new._mounted = True
         self.library._load_init([new])
-        self.failUnlessEqual(self.library.values(), [new])
+        self.failUnlessEqual(list(self.library.values()), [new])
 
     def test_reload(self):
         new = self.Fake(200)
@@ -411,7 +456,7 @@ class TSongFileLibrary(TSongLibrary):
             new = self.Fake(100)
 
             def error():
-                raise IOError
+                raise AudioFileError
             new.reload = error
             new._valid = False
             changed, removed = self.library._load_item(new)
@@ -435,10 +480,7 @@ class TSongFileLibrary(TSongLibrary):
         self.failUnless(self.library.masked(new))
 
     def __get_file(self):
-        fd, filename = mkstemp(".flac")
-        os.close(fd)
-        shutil.copy(os.path.join(DATA_DIR, 'empty.flac'), filename)
-        return filename
+        return get_temp_copy(get_data_path('empty.flac'))
 
     def test_add_filename(self):
         config.init()
@@ -472,6 +514,17 @@ class TSongFileLibrary(TSongLibrary):
 
         finally:
             config.quit()
+
+    def test_contains_filename(self):
+        filename = self.__get_file()
+        try:
+            assert not self.library.contains_filename(filename)
+            assert self.library.add_filename(filename, add=False)
+            assert not self.library.contains_filename(filename)
+            assert self.library.add_filename(filename)
+            assert self.library.contains_filename(filename)
+        finally:
+            os.unlink(filename)
 
     def test_add_filename_normalize_path(self):
         if not os.name == "nt":
@@ -545,8 +598,8 @@ class TAlbumLibrary(TestCase):
         self.failUnless(self.library.has_key(key))
 
     def test_misc_collection(self):
-        self.failUnless(self.library.itervalues())
-        self.failUnless(self.library.iteritems())
+        self.failUnless(itervalues(self.library))
+        self.failUnless(iteritems(self.library))
 
     def test_items(self):
         self.failUnlessEqual(len(self.library.items()), 3)
@@ -556,8 +609,8 @@ class TAlbumLibrary(TestCase):
         self.failUnlessEqual(len(albums), 3)
         songs = self.underlying._contents.values()
         # Make sure "all the songs' albums" == "all the albums", roughly
-        self.failUnlessEqual(set([a.key for a in albums]),
-                             set([s.album_key for s in songs]))
+        self.failUnlessEqual({a.key for a in albums},
+                             {s.album_key for s in songs})
 
     def test_remove(self):
         key = self.underlying.get("file_1.mp3").album_key
@@ -637,3 +690,71 @@ class TAlbumLibrarySignals(TestCase):
         for s in self._sigs:
             self.lib.disconnect(s)
         self.lib.destroy()
+
+
+class Titer_paths(TestCase):
+
+    def setUp(self):
+        # on osx the temp folder returned is a symlink
+        self.root = os.path.realpath(mkdtemp())
+
+    def tearDown(self):
+        shutil.rmtree(self.root)
+
+    def test_empty(self):
+        assert list(iter_paths(self.root)) == []
+
+    def test_one_file(self):
+        fd, name = mkstemp(dir=self.root)
+        os.close(fd)
+        assert list(iter_paths(self.root)) == [name]
+
+    def test_one_file_exclude(self):
+        fd, name = mkstemp(dir=self.root)
+        os.close(fd)
+        assert list(iter_paths(self.root, exclude=[self.root])) == []
+        assert list(iter_paths(self.root,
+                               exclude=[os.path.dirname(self.root)])) == []
+        assert list(iter_paths(self.root, exclude=[name])) == []
+        assert list(iter_paths(self.root, exclude=[name + "a"])) == [name]
+
+    @skipIf(is_windows(), "no symlink")
+    def test_with_dir_symlink(self):
+        child = mkdtemp(dir=self.root)
+        link = os.path.join(self.root, "foo")
+        os.symlink(child, link)
+        fd, name = mkstemp(dir=link)
+        os.close(fd)
+
+        assert name not in list(iter_paths(self.root))
+        assert list(iter_paths(link)) == list(iter_paths(child))
+
+        assert list(iter_paths(link, exclude=[link])) == []
+        assert list(iter_paths(child, exclude=[child])) == []
+        assert list(iter_paths(link, exclude=[child])) == []
+
+    @skipIf(is_windows(), "no symlink")
+    def test_with_file(self):
+        fd, name = mkstemp(dir=self.root)
+        os.close(fd)
+        link = os.path.join(self.root, "foo")
+        os.symlink(name, link)
+
+        assert list(iter_paths(self.root)) == [name, name]
+        assert list(iter_paths(self.root, exclude=[link])) == [name]
+        assert list(iter_paths(self.root, exclude=[name])) == []
+
+    def test_hidden_dir(self):
+        child = mkdtemp(dir=self.root, prefix=".")
+        fd, name = mkstemp(dir=child)
+        os.close(fd)
+        assert list(iter_paths(child)) == []
+        assert list(iter_paths(child, skip_hidden=False)) == [name]
+        assert list(iter_paths(self.root)) == []
+        assert list(iter_paths(self.root, skip_hidden=False)) == [name]
+
+    def test_hidden_file(self):
+        fd, name = mkstemp(dir=self.root, prefix=".")
+        os.close(fd)
+
+        assert list(iter_paths(self.root)) == []

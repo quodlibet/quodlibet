@@ -2,18 +2,30 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-# Things that are more or less direct wrappers around GTK widgets to
-# ease constructors.
+"""
+Things that are more or less direct wrappers around GTK widgets to
+ease constructors.
+"""
 
-from gi.repository import Gtk, GObject, GLib, Gio
+from gi.repository import Gtk, GObject, GLib, Gio, GdkPixbuf
+
+from quodlibet.util.dprint import print_d
 
 from quodlibet import util
-from quodlibet import config
-from quodlibet.qltk import add_css, is_accel
-from quodlibet.util import connect_obj
+from quodlibet.compat import urlopen, xrange
+from quodlibet.util import print_w
+from quodlibet.util.thread import call_async, Cancellable
+from quodlibet.qltk import add_css, is_accel, gtk_version
+
+from .paned import Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, \
+    ConfigRHPaned, ConfigRVPaned
+
+
+Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, ConfigRHPaned, ConfigRVPaned
 
 
 class ScrolledWindow(Gtk.ScrolledWindow):
@@ -24,6 +36,8 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
         toplevel = self.get_toplevel()
+        # try to get the child so we ignore the CSD
+        toplevel = toplevel.get_child() or toplevel
 
         try:
             dx, dy = self.translate_coordinates(toplevel, 0, 0)
@@ -32,7 +46,7 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
         ctx = self.get_style_context()
-        border = ctx.get_border(self.get_state_flags())
+        border = ctx.get_border(ctx.get_state())
 
         # https://bugzilla.gnome.org/show_bug.cgi?id=694844
         border.left = border.top = border.right = border.bottom = 1
@@ -46,12 +60,10 @@ class ScrolledWindow(Gtk.ScrolledWindow):
             if not isinstance(top_bar, Gtk.Widget):
                 raise TypeError
         except (AttributeError, TypeError):
-            # In case the window border is at the top, we expect the menubar
-            # there, so draw the normal border
-            border.top = 0
+            pass
         else:
             top_ctx = top_bar.get_style_context()
-            b = top_ctx.get_border(top_bar.get_state_flags())
+            b = top_ctx.get_border(top_ctx.get_state())
             if b.bottom:
                 dy_bar = self.translate_coordinates(top_bar, 0, 0)[1]
                 dy_bar -= top_bar.get_allocation().height
@@ -68,13 +80,20 @@ class ScrolledWindow(Gtk.ScrolledWindow):
         # and the scrollbar on that edge is visible
         bottom = left = right = top = False
 
-        value = GObject.Value()
-        value.init(GObject.TYPE_BOOLEAN)
-        # default to True: https://bugzilla.gnome.org/show_bug.cgi?id=701058
-        value.set_boolean(True)
-        ctx.get_style_property("scrollbars-within-bevel", value)
-        scroll_within = value.get_boolean()
-        value.unset()
+        if gtk_version < (3, 19):
+            value = GObject.Value()
+            value.init(GObject.TYPE_BOOLEAN)
+            # default to True:
+            #    https://bugzilla.gnome.org/show_bug.cgi?id=701058
+            value.set_boolean(True)
+            ctx.get_style_property("scrollbars-within-bevel", value)
+            scroll_within = value.get_boolean()
+            value.unset()
+        else:
+            # was deprecated in gtk 3.20
+            # https://git.gnome.org/browse/gtk+/commit/?id=
+            #   7c0f0e882ae60911e39aaf7b42fb2d94108f3474
+            scroll_within = True
 
         if not scroll_within:
             h, v = self.get_hscrollbar(), self.get_vscrollbar()
@@ -101,7 +120,8 @@ class ScrolledWindow(Gtk.ScrolledWindow):
                 left = vscroll
                 top = hscroll
 
-        width, height = toplevel.get_size()
+        top_alloc = toplevel.get_allocation()
+        width, height = top_alloc.width, top_alloc.height
         if alloc.height + dy == height and not bottom:
             alloc.height += border.bottom
 
@@ -138,9 +158,11 @@ class Notebook(Gtk.Notebook):
 
     def do_size_allocate(self, alloc):
         ctx = self.get_style_context()
-        border = ctx.get_border(self.get_state_flags())
+        border = ctx.get_border(ctx.get_state())
 
         toplevel = self.get_toplevel()
+        # try to get the child so we ignore the CSD
+        toplevel = toplevel.get_child() or toplevel
 
         try:
             dx, dy = self.translate_coordinates(toplevel, 0, 0)
@@ -154,12 +176,17 @@ class Notebook(Gtk.Notebook):
         # all 0 since gtk+ 3.12..
         border.left = border.top = border.right = border.bottom = 1
 
-        width, height = toplevel.get_size()
+        top_alloc = toplevel.get_allocation()
+        width, height = top_alloc.width, top_alloc.height
         if alloc.height + dy == height:
             alloc.height += border.bottom
 
         if alloc.width + dx == width:
             alloc.width += border.right
+
+        if dy == 0:
+            alloc.y -= border.top
+            alloc.height += border.top
 
         if dx == 0:
             alloc.x -= border.left
@@ -246,147 +273,52 @@ class Align(Gtk.Alignment):
         return self.props.right_padding
 
 
-def MenuItem(label, stock_id):
+def MenuItem(label, icon_name=None):
     """An ImageMenuItem with a custom label and stock image."""
+
+    if icon_name is None:
+        return Gtk.MenuItem.new_with_mnemonic(label)
 
     item = Gtk.ImageMenuItem.new_with_mnemonic(label)
     item.set_always_show_image(True)
-    if Gtk.stock_lookup(stock_id):
-        image = Gtk.Image.new_from_stock(stock_id, Gtk.IconSize.MENU)
-    else:
-        image = Gtk.Image.new_from_icon_name(stock_id, Gtk.IconSize.MENU)
+    image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.MENU)
     image.show()
     item.set_image(image)
     return item
 
 
-def Button(label, stock_id, size=Gtk.IconSize.BUTTON):
-    """A Button with a custom label and stock image. It should pack
-    exactly like a stock button."""
+def _Button(type_, label, icon_name, size):
+    if icon_name is None:
+        return Gtk.Button.new_with_mnemonic(label)
 
     align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
     hbox = Gtk.HBox(spacing=2)
-    if Gtk.stock_lookup(stock_id):
-        image = Gtk.Image.new_from_stock(stock_id, size)
-    else:
-        image = Gtk.Image.new_from_icon_name(stock_id, size)
+    image = Gtk.Image.new_from_icon_name(icon_name, size)
     hbox.pack_start(image, True, True, 0)
     label = Gtk.Label(label=label)
     label.set_use_underline(True)
     hbox.pack_start(label, True, True, 0)
     align.add(hbox)
     align.show_all()
-    button = Gtk.Button()
+    button = type_()
     button.add(align)
     return button
 
 
-class Paned(Gtk.Paned):
+def Button(label, icon_name=None, size=Gtk.IconSize.BUTTON):
+    """A Button with a custom label and stock image. It should pack
+    exactly like a stock button.
+    """
 
-    def __init__(self, *args, **kwargs):
-        super(Paned, self).__init__(*args, **kwargs)
-        self.ensure_wide_handle()
-
-    def ensure_wide_handle(self):
-        if hasattr(self.props, "wide_handle"):
-            # gtk 3.16
-            self.props.wide_handle = True
-            add_css(self, """
-                GtkPaned {
-                    border-width: 0;
-                }
-            """)
-            return
-
-        # gtk 3.14
-        add_css(self, """
-            GtkPaned {
-                -GtkPaned-handle-size: 6;
-                background-image: none;
-                margin: 0;
-                border-width: 0;
-            }
-        """)
+    return _Button(Gtk.Button, label, icon_name, size)
 
 
-class RPaned(Paned):
-    """A Paned that supports relative (percentage) width/height setting."""
+def ToggleButton(label, icon_name=None, size=Gtk.IconSize.BUTTON):
+    """A ToggleButton with a custom label and stock image. It should pack
+    exactly like a stock button.
+    """
 
-    ORIENTATION = None
-
-    def __init__(self, *args, **kwargs):
-        if self.ORIENTATION is not None:
-            kwargs["orientation"] = self.ORIENTATION
-        super(RPaned, self).__init__(*args, **kwargs)
-        # before first alloc: save value in relative and set on the first alloc
-        # after the first alloc: use the normal properties
-        self.__alloced = False
-        self.__relative = None
-
-    def set_relative(self, v):
-        """Set the relative position of the separator, [0..1]."""
-
-        if self.__alloced:
-            max_pos = self.get_property('max-position')
-            if not max_pos:
-                # no children
-                self.__relative = v
-                return
-            self.set_position(int(v * max_pos))
-        else:
-            self.__relative = v
-
-    def get_relative(self):
-        """Return the relative position of the separator, [0..1]."""
-
-        if self.__alloced:
-            max_pos = self.get_property('max-position')
-            if not max_pos:
-                # no children
-                return self.__relative
-            return (float(self.get_position()) / max_pos)
-        elif self.__relative is not None:
-            return self.__relative
-        else:
-            # before first alloc and set_relative not called
-            return 0.5
-
-    def do_size_allocate(self, *args):
-        ret = Gtk.HPaned.do_size_allocate(self, *args)
-        if not self.__alloced and self.__relative is not None:
-            self.__alloced = True
-            self.set_relative(self.__relative)
-            # call again so the children get alloced
-            ret = Gtk.HPaned.do_size_allocate(self, *args)
-        self.__alloced = True
-        return ret
-
-
-class RHPaned(RPaned):
-    ORIENTATION = Gtk.Orientation.HORIZONTAL
-
-
-class RVPaned(RPaned):
-    ORIENTATION = Gtk.Orientation.VERTICAL
-
-
-class ConfigRPaned(RPaned):
-    def __init__(self, section, option, default, *args, **kwargs):
-        super(ConfigRPaned, self).__init__(*args, **kwargs)
-        self.set_relative(config.getfloat(section, option, default))
-        self.connect('notify::position', self.__changed, section, option)
-
-    def __changed(self, widget, event, section, option):
-        if self.get_property('position-set'):
-            config.set(section, option, str(self.get_relative()))
-
-
-class ConfigRHPaned(ConfigRPaned):
-    ORIENTATION = Gtk.Orientation.HORIZONTAL
-
-
-class ConfigRVPaned(ConfigRPaned):
-    ORIENTATION = Gtk.Orientation.VERTICAL
+    return _Button(Gtk.ToggleButton, label, icon_name, size)
 
 
 class _SmallImageButton(object):
@@ -409,15 +341,6 @@ class SmallImageButton(_SmallImageButton, Gtk.Button):
 
 class SmallImageToggleButton(_SmallImageButton, Gtk.ToggleButton):
     pass
-
-
-def ClearButton(entry=None):
-    clear = Gtk.Button()
-    clear.add(Gtk.Image.new_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.MENU))
-    clear.set_tooltip_text(_("Clear search"))
-    if entry is not None:
-        connect_obj(clear, 'clicked', entry.set_text, '')
-    return clear
 
 
 def EntryCompletion(words):
@@ -455,3 +378,139 @@ def SymbolicIconImage(name, size, fallbacks=None):
     symbolic_name = name + "-symbolic"
     gicon = Gio.ThemedIcon.new_from_names([symbolic_name, name])
     return Gtk.Image.new_from_gicon(gicon, size)
+
+
+class CellRendererPixbuf(Gtk.CellRendererPixbuf):
+
+    def __init__(self, *args, **kwargs):
+        super(CellRendererPixbuf, self).__init__(*args, **kwargs)
+        if gtk_version < (3, 16):
+            # was deprecated in 3.16 and defaults to True now. Since it was
+            # False before force it here so we have the same behavior in all
+            # cases
+            self.set_property("follow-state", True)
+
+
+class Action(Gtk.Action):
+    def __init__(self, *args, **kargs):
+        # Older pygobject didn't pass through kwargs to GObject.Object
+        # so skip the override __init__
+        GObject.Object.__init__(self, *args, **kargs)
+
+
+class ToggleAction(Gtk.ToggleAction):
+    def __init__(self, *args, **kargs):
+        GObject.Object.__init__(self, *args, **kargs)
+
+
+class RadioAction(Gtk.RadioAction):
+    def __init__(self, *args, **kargs):
+        GObject.Object.__init__(self, *args, **kargs)
+
+
+class WebImage(Gtk.Image):
+    """A Gtk.Image which loads the image over HTTP in the background
+    and displays it when available.
+    """
+
+    def __init__(self, url, width=-1, height=-1):
+        """
+        Args:
+            url (str): an HTTP URL
+            width (int): a width to reserve for the image or -1
+            height (int): a height to reserve for the image or -1
+        """
+
+        super(WebImage, self).__init__()
+
+        self._cancel = Cancellable()
+        call_async(self._fetch_image, self._cancel, self._finished, (url,))
+        self.connect("destroy", self._on_destroy)
+        self.set_size_request(width, height)
+        self.set_from_icon_name("image-loading", Gtk.IconSize.BUTTON)
+
+    def _on_destroy(self, *args):
+        self._cancel.cancel()
+
+    def _fetch_image(self, url):
+        try:
+            data = urlopen(url).read()
+        except Exception as e:
+            print_w("Couldn't read web image from %s (%s)" % (url, e))
+            return None
+        try:
+            loader = GdkPixbuf.PixbufLoader()
+        except GLib.GError as e:
+            print_w("Couldn't create GdkPixbuf (%s)" % e)
+        else:
+            loader.write(data)
+            loader.close()
+            print_d("Got web image from %s" % url)
+            return loader.get_pixbuf()
+
+    def _finished(self, pixbuf):
+        if pixbuf is None:
+            self.set_from_icon_name("image-missing", Gtk.IconSize.BUTTON)
+        else:
+            self.set_from_pixbuf(pixbuf)
+
+
+class HighlightToggleButton(Gtk.ToggleButton):
+    """A ToggleButton which changes the foreground color when active"""
+
+    def __init__(self, *args, **kwargs):
+        super(HighlightToggleButton, self).__init__(*args, **kwargs)
+        self._provider = None
+        self._color = ""
+        self._dummy = Gtk.ToggleButton()
+
+    def _update_provider(self):
+        # not active, reset everything
+        if not self.get_active():
+            if self._provider is not None:
+                style_context = self.get_style_context()
+                style_context.remove_provider(self._provider)
+                self._provider = None
+                self._color = ""
+            return
+
+        # in case the foreground changes between normal and checked
+        # state assume that the theme does some highlighting and stop.
+        style_context = self._dummy.get_style_context()
+        style_context.save()
+        style_context.set_state(Gtk.StateFlags.NORMAL)
+        a = style_context.get_color(style_context.get_state())
+        style_context.set_state(Gtk.StateFlags.CHECKED)
+        b = style_context.get_color(style_context.get_state())
+        same_color = (a.to_string() == b.to_string())
+        style_context.restore()
+        if not same_color:
+            style_context = self.get_style_context()
+            if self._provider is not None:
+                style_context.remove_provider(self._provider)
+                self._provider = None
+                self._color = ""
+            return
+
+        # force a color
+        style_context = self.get_style_context()
+        style_context.save()
+        style_context.set_state(Gtk.StateFlags.VISITED)
+        color = style_context.get_color(style_context.get_state())
+        style_context.restore()
+        if self._color != color.to_string():
+            self._color = color.to_string()
+            style_context = self.get_style_context()
+            if self._provider is not None:
+                style_context.remove_provider(self._provider)
+
+            provider = Gtk.CssProvider()
+            provider.load_from_data(
+                (u"* {color: %s}" % self._color).encode("ascii"))
+            style_context.add_provider(
+                provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+            self._provider = provider
+
+    def do_draw(self, context):
+        self._update_provider()
+        return Gtk.ToggleButton.do_draw(self, context)

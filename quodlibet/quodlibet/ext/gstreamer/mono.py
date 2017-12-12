@@ -2,11 +2,13 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gst
 
+from quodlibet import _
 from quodlibet.plugins.gstelement import GStreamerPlugin
 
 
@@ -14,7 +16,6 @@ class MonoDownmix(GStreamerPlugin):
     PLUGIN_ID = "mono"
     PLUGIN_NAME = _("Mono Downmix")
     PLUGIN_DESC = _("Downmixes audio channels to mono.")
-    PLUGIN_ICON = "audio-volume-high"
 
     priority = -1
 

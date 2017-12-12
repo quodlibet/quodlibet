@@ -1,15 +1,25 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 import shutil
 import os
+from collections import defaultdict
+
+from senf import fsnative
+
 from quodlibet import config
 
 from tests import TestCase, mkdtemp
-from quodlibet.formats._audio import AudioFile as Fakesong
-from quodlibet.formats._audio import INTERN_NUM_DEFAULT, PEOPLE
-from quodlibet.util.collection import Album, Playlist, avg, bayesian_average
+from quodlibet.formats import AudioFile as Fakesong
+from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT, PEOPLE
+from quodlibet.util.collection import Album, Playlist, avg, bayesian_average, \
+    FileBackedPlaylist
 from quodlibet.library.libraries import FileLibrary
 from quodlibet.util import format_rating
-from quodlibet.util.path import fsnative
+from quodlibet.compat import long
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 
@@ -65,7 +75,7 @@ class TAlbum(TestCase):
         album = Album(songs[0])
         album.songs = set(songs)
 
-        s.failUnlessEqual(album.comma("~artist~dummy"), "a - e, d")
+        s.failUnlessEqual(album.comma("~artist~dummy"), "a - d, e")
 
     def test_tied_num_tags(s):
         songs = [
@@ -78,9 +88,9 @@ class TAlbum(TestCase):
         album.songs = set(songs)
 
         s.failUnlessEqual(album.comma("~foo~~s~~~"), "")
-        s.failUnlessEqual(album.comma("~#length~dummy"), "12 - e, d")
-        s.failUnlessEqual(album.comma("~#rating~dummy"), "0.50 - e, d")
-        s.failUnlessEqual(album.comma("~#length:sum~dummy"), "12 - e, d")
+        s.failUnlessEqual(album.comma("~#length~dummy"), "12 - d, e")
+        s.failUnlessEqual(album.comma("~#rating~dummy"), "0.50 - d, e")
+        s.failUnlessEqual(album.comma("~#length:sum~dummy"), "12 - d, e")
         s.failUnlessEqual(album.comma("~#dummy2"), 5)
         s.failUnlessEqual(album.comma("~#dummy3"), "")
 
@@ -225,13 +235,12 @@ class TAlbum(TestCase):
         failUnlessEq(album("~performer", "x"), song("~performer", "x"))
         failUnlessEq(album("~performersort", "x"), song("~performersort", "x"))
 
-        failUnlessEq(album("~cover", "x"), song("~cover", "x"))
         failUnlessEq(album("~rating", "x"), song("~rating", "x"))
 
         for p in PEOPLE:
             failUnlessEq(album(p, "x"), song(p, "x"))
 
-        for p in INTERN_NUM_DEFAULT:
+        for p in NUMERIC_ZERO_DEFAULT:
             failUnlessEq(album(p, "x"), song(p, "x"))
 
     def test_methods(s):
@@ -253,91 +262,60 @@ class TAlbum(TestCase):
         config.quit()
 
 
+class MockPlaylistResource(object):
+    def __init__(self, pl):
+        self.pl = pl
+
+    def __enter__(self):
+        return self.pl
+
+    def __exit__(self, *exc_info):
+        self.pl.delete()
+
+
 class TPlaylist(TestCase):
     TWO_SONGS = [
         Fakesong({"~#length": 5, "discnumber": "1", "date": "2038"}),
         Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
     ]
 
+    class FakeLib(object):
+
+        def __init__(self):
+            self.reset()
+
+        def emit(self, name, songs):
+            self.emitted[name].extend(songs)
+
+        def masked(self, songs):
+            return False
+
+        def reset(self):
+            self.emitted = defaultdict(list)
+
+        @property
+        def changed(self):
+            return self.emitted.get('changed', [])
+
+    FAKE_LIB = FakeLib()
+
     def setUp(self):
-        self.temp = mkdtemp()
-        self.temp2 = mkdtemp()
+        self.FAKE_LIB.reset()
 
-    def tearDown(self):
-        shutil.rmtree(self.temp)
-        shutil.rmtree(self.temp2)
+    def pl(self, name, lib=None):
+        return Playlist(name, lib)
 
-    def test_make(self):
-        p1 = Playlist.new(self.temp, "Does not exist")
-        self.failUnlessEqual(0, len(p1))
-        self.failUnlessEqual(p1.name, "Does not exist")
-        p1.delete()
-
-    def test_rename_working(self):
-        p1 = Playlist.new(self.temp, "Foobar")
-        p1.rename("Foo Quuxly")
-        self.failUnlessEqual(p1.name, "Foo Quuxly")
-        p1.delete()
-
-    def test_rename_nothing(self):
-        p1 = Playlist.new(self.temp, "Foobar")
-        self.failUnlessRaises(ValueError, p1.rename, "")
-        p1.delete()
-
-    def test_rename_dup(self):
-        p1 = Playlist.new(self.temp, "Foobar")
-        p2 = Playlist.new(self.temp, "Crazy")
-        self.failUnlessRaises(ValueError, p2.rename, "Foobar")
-        p1.delete()
-        p2.delete()
-
-    def test_make_dup(self):
-        p1 = Playlist.new(self.temp, "Does not exist")
-        p2 = Playlist.new(self.temp, "Does not exist")
-        self.failUnlessEqual(p1.name, "Does not exist")
-        self.failUnless(p2.name.startswith("Does not exist"))
-        self.failIfEqual(p1.name, p2.name)
-        p1.delete()
-        p2.delete()
-
-    def test_masked_handling(self):
-        if os.name == "nt":
-            # FIXME: masking isn't properly implemented on Windows
-            return
-        # playlists can contain songs and paths for masked handling..
-        lib = FileLibrary("foobar")
-        pl = Playlist(self.temp, "playlist", lib)
-        song = Fakesong({"date": "2038", "~filename": fsnative(u"/fake")})
-        song.sanitize()
-        lib.add([song])
-
-        # mask and update
-        lib.mask("/")
-        pl.append(song)
-        pl.remove_songs([song])
-        self.failUnless("/fake" in pl)
-
-        pl.extend(self.TWO_SONGS)
-
-        # check if collections can handle the mix
-        self.failUnlessEqual(pl("date"), "2038")
-
-        # unmask and update
-        lib.unmask("/")
-        pl.add_songs(["/fake"], lib)
-        self.failUnless(song in pl)
-
-        pl.delete()
-        lib.destroy()
+    def wrap(self, name, lib=FAKE_LIB):
+        return MockPlaylistResource(self.pl(name, lib))
 
     def test_equality(s):
-        pl = Playlist(s.temp, "playlist")
-        pl2 = Playlist(s.temp, "playlist")
-        pl3 = Playlist(s.temp2, "playlist")
+        pl = s.pl("playlist")
+        pl2 = s.pl("playlist")
+        pl3 = s.pl("playlist")
         s.failUnlessEqual(pl, pl2)
         # Debatable
         s.failUnlessEqual(pl, pl3)
-        pl4 = Playlist(s.temp, "foobar")
+        pl4 = s.pl("foobar")
         s.failIfEqual(pl, pl4)
         pl.delete()
         pl2.delete()
@@ -345,166 +323,296 @@ class TPlaylist(TestCase):
         pl4.delete()
 
     def test_index(s):
-        pl = Playlist(s.temp, "playlist")
-        songs = s.TWO_SONGS
-        pl.extend(songs)
-        # Just a sanity check...
-        s.failUnlessEqual(1, songs.index(songs[1]))
-        # And now the happy paths..
-        s.failUnlessEqual(0, pl.index(songs[0]))
-        s.failUnlessEqual(1, pl.index(songs[1]))
-        # ValueError is what we want here
-        try:
-            pl.index(Fakesong({}))
-            s.fail()
-        except ValueError:
-            pass
-        pl.delete()
+        with s.wrap("playlist") as pl:
+            songs = s.TWO_SONGS
+            pl.extend(songs)
+            # Just a sanity check...
+            s.failUnlessEqual(1, songs.index(songs[1]))
+            # And now the happy paths..
+            s.failUnlessEqual(0, pl.index(songs[0]))
+            s.failUnlessEqual(1, pl.index(songs[1]))
+            # ValueError is what we want here
+            try:
+                pl.index(Fakesong({}))
+                s.fail()
+            except ValueError:
+                pass
+
+    def test_name_tag(s):
+        with s.wrap("a playlist") as pl:
+            s.failUnlessEqual(pl("~name"), "a playlist")
+            s.failUnlessEqual(pl.get("~name"), "a playlist")
 
     def test_internal_tags(s):
-        pl = Playlist(s.temp, "playlist")
-        pl.extend(s.TWO_SONGS)
+        with s.wrap("playlist") as pl:
+            pl.extend(s.TWO_SONGS)
 
-        s.failIfEqual(pl.comma("~long-length"), "")
-        s.failIfEqual(pl.comma("~tracks"), "")
-        s.failIfEqual(pl.comma("~discs"), "")
-        s.failUnlessEqual(pl.comma("~foo"), "")
+            s.failIfEqual(pl.comma("~long-length"), "")
+            s.failIfEqual(pl.comma("~tracks"), "")
+            s.failIfEqual(pl.comma("~discs"), "")
+            s.failUnlessEqual(pl.comma("~foo"), "")
 
-        s.failUnlessEqual(pl.comma(""), "")
-        s.failUnlessEqual(pl.comma("~"), "")
-        s.failUnlessEqual(pl.get("~#"), "")
-        pl.delete()
+            s.failUnlessEqual(pl.comma(""), "")
+            s.failUnlessEqual(pl.comma("~"), "")
+            s.failUnlessEqual(pl.get("~#"), "")
 
     def test_numeric_ops(s):
         songs = NUMERIC_SONGS
-        pl = Playlist(s.temp, "playlist")
-        pl.extend(songs)
+        with s.wrap("playlist") as pl:
+            pl.extend(songs)
 
-        s.failUnlessEqual(pl.get("~#length"), 12)
-        s.failUnlessEqual(pl.get("~#length:sum"), 12)
-        s.failUnlessEqual(pl.get("~#length:max"), 7)
-        s.failUnlessEqual(pl.get("~#length:min"), 1)
-        s.failUnlessEqual(pl.get("~#length:avg"), 4)
-        s.failUnlessEqual(pl.get("~#length:foo"), 0)
+            s.failUnlessEqual(pl.get("~#length"), 12)
+            s.failUnlessEqual(pl.get("~#length:sum"), 12)
+            s.failUnlessEqual(pl.get("~#length:max"), 7)
+            s.failUnlessEqual(pl.get("~#length:min"), 1)
+            s.failUnlessEqual(pl.get("~#length:avg"), 4)
+            s.failUnlessEqual(pl.get("~#length:foo"), 0)
 
-        s.failUnlessEqual(pl.get("~#rating:avg"), avg([0.1, 0.3, 0.5]))
+            s.failUnlessEqual(pl.get("~#rating:avg"), avg([0.1, 0.3, 0.5]))
 
-        s.failUnlessEqual(pl.get("~#filesize"), 303)
+            s.failUnlessEqual(pl.get("~#filesize"), 303)
 
-        s.failUnlessEqual(pl.get("~#added"), 7)
-        s.failUnlessEqual(pl.get("~#lastplayed"), 88)
-        s.failUnlessEqual(pl.get("~#bitrate"), 200)
-        s.failUnlessEqual(pl.get("~#year"), 33)
-        s.failUnlessEqual(pl.get("~#rating"), 0.3)
-        s.failUnlessEqual(pl.get("~#originalyear"), 2002)
-        pl.delete()
-
-    def test_write(self):
-        pl = Playlist(self.temp, "playlist")
-        pl.extend(NUMERIC_SONGS)
-        pl.extend([fsnative(u"xf0xf0")])
-        pl.write()
-
-        with open(pl.filename, "rb") as h:
-            self.assertEqual(len(h.read().splitlines()),
-                             len(NUMERIC_SONGS) + 1)
-
-    def test_read(self):
-        pl = Playlist(self.temp, "playlist")
-        pl.extend(NUMERIC_SONGS)
-        pl.write()
-
-        lib = FileLibrary("foobar")
-        lib.add(NUMERIC_SONGS)
-        pl = Playlist(self.temp, "playlist", lib)
-        self.assertEqual(len(pl), len(NUMERIC_SONGS))
+            s.failUnlessEqual(pl.get("~#added"), 7)
+            s.failUnlessEqual(pl.get("~#lastplayed"), 88)
+            s.failUnlessEqual(pl.get("~#bitrate"), 200)
+            s.failUnlessEqual(pl.get("~#year"), 33)
+            s.failUnlessEqual(pl.get("~#rating"), 0.3)
+            s.failUnlessEqual(pl.get("~#originalyear"), 2002)
 
     def test_updating_aggregates_extend(s):
-        pl = Playlist(s.temp, "playlist")
-        pl.extend(NUMERIC_SONGS)
-        old_length = pl.get("~#length")
-        old_size = pl.get("~#filesize")
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            old_length = pl.get("~#length")
+            old_size = pl.get("~#filesize")
 
-        # Double the playlist
-        pl.extend(NUMERIC_SONGS)
+            # Double the playlist
+            pl.extend(NUMERIC_SONGS)
 
-        new_length = pl.get("~#length")
-        new_size = pl.get("~#filesize")
-        s.failUnless(new_length > old_length,
-                     msg="Ooops, %d <= %d" % (new_length, old_length))
+            new_length = pl.get("~#length")
+            new_size = pl.get("~#filesize")
+            s.failUnless(new_length > old_length,
+                         msg="Ooops, %d <= %d" % (new_length, old_length))
 
-        s.failUnless(new_size > old_size,
-                     msg="Ooops, %d <= %d" % (new_size, old_size))
+            s.failUnless(new_size > old_size,
+                         msg="Ooops, %d <= %d" % (new_size, old_size))
 
     def test_updating_aggregates_append(s):
-        pl = Playlist(s.temp, "playlist")
-        pl.extend(NUMERIC_SONGS)
-        old_rating = pl.get("~#rating")
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            old_rating = pl.get("~#rating")
 
-        pl.append(AMAZING_SONG)
+            pl.append(AMAZING_SONG)
 
-        new_rating = pl.get("~#filesize")
-        s.failUnless(new_rating > old_rating)
+            new_rating = pl.get("~#filesize")
+            s.failUnless(new_rating > old_rating)
 
     def test_updating_aggregates_clear(s):
-        pl = Playlist(s.temp, "playlist")
-        pl.extend(NUMERIC_SONGS)
-        s.failUnless(pl.get("~#length"))
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            s.failUnless(pl.get("~#length"))
 
-        pl.clear()
-        s.failIf(pl.get("~#length"))
+            pl.clear()
+            s.failIf(pl.get("~#length"))
 
     def test_updating_aggregates_remove_songs(s):
-        pl = Playlist(s.temp, "playlist")
-        pl.extend(NUMERIC_SONGS)
-        s.failUnless(pl.get("~#length"))
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            s.failUnless(pl.get("~#length"))
 
-        pl.remove_songs(NUMERIC_SONGS)
-        s.failIf(pl.get("~#length"))
+            pl.remove_songs(NUMERIC_SONGS)
+            s.failIf(pl.get("~#length"))
 
     def test_listlike(s):
-        pl = Playlist(s.temp, "playlist")
-        pl.extend(NUMERIC_SONGS)
-        s.failUnlessEqual(NUMERIC_SONGS[0], pl[0])
-        s.failUnlessEqual(NUMERIC_SONGS[1:2], pl[1:2])
-        s.failUnless(NUMERIC_SONGS[1] in pl)
-        pl.delete()
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            s.failUnlessEqual(NUMERIC_SONGS[0], pl[0])
+            s.failUnlessEqual(NUMERIC_SONGS[1:2], pl[1:2])
+            s.failUnless(NUMERIC_SONGS[1] in pl)
+
+    def test_extend_signals(s):
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            s.failUnlessEqual(s.FAKE_LIB.changed, NUMERIC_SONGS)
+
+    def test_append_signals(s):
+        with s.wrap("playlist") as pl:
+            song = NUMERIC_SONGS[0]
+            pl.append(song)
+            s.failUnlessEqual(s.FAKE_LIB.changed, [song])
+
+    def test_clear_signals(s):
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            pl.clear()
+            s.failUnlessEqual(s.FAKE_LIB.changed, NUMERIC_SONGS * 2)
+
+    def test_make(self):
+        with self.wrap("Does not exist") as pl:
+            self.failUnlessEqual(0, len(pl))
+            self.failUnlessEqual(pl.name, "Does not exist")
+
+    def test_rename_working(self):
+        with self.wrap("Foobar") as pl:
+            assert pl.name == "Foobar"
+            pl.rename("Foo Quuxly")
+            assert pl.name == "Foo Quuxly"
+            # Rename should not fire signals
+            self.failIf(self.FAKE_LIB.changed)
+
+    def test_rename_nothing(self):
+        with self.wrap("Foobar") as pl:
+            self.failUnlessRaises(ValueError, pl.rename, "")
+
+    def test_no_op_rename(self):
+        with self.wrap("playlist") as pl:
+            pl.rename("playlist")
+            self.failUnlessEqual(pl.name, "playlist")
 
     def test_playlists_featuring(s):
-        pl = Playlist(s.temp, "playlist")
-        pl.extend(NUMERIC_SONGS)
-        playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
-        s.failUnlessEqual(set(playlists), set([pl]))
-        # Now add a second one, check that instance tracking works
-        pl2 = Playlist(s.temp, "playlist2")
-        pl2.append(NUMERIC_SONGS[0])
-        playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
-        s.failUnlessEqual(set(playlists), set([pl, pl2]))
-        pl.delete()
-        pl2.delete()
+        with s.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
+            s.failUnlessEqual(set(playlists), {pl})
+            # Now add a second one, check that instance tracking works
+            with s.wrap("playlist2") as pl2:
+                pl2.append(NUMERIC_SONGS[0])
+                playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
+                s.failUnlessEqual(set(playlists), {pl, pl2})
 
     def test_playlists_tag(self):
         # Arguably belongs in _audio
         songs = NUMERIC_SONGS
         pl_name = "playlist 123!"
-        pl = Playlist(self.temp, pl_name)
-        pl.extend(songs)
-        for song in songs:
-            self.assertEquals(pl_name, song("~playlists"))
-        pl.delete()
+        with self.wrap(pl_name) as pl:
+            pl.extend(songs)
+            for song in songs:
+                self.assertEquals(pl_name, song("~playlists"))
 
     def test_duplicates_single_item(self):
-        pl = Playlist(self.temp, "playlist")
-        pl.append(self.TWO_SONGS[0])
-        self.failIf(pl.has_duplicates)
-        pl.append(self.TWO_SONGS[0])
-        self.failUnless(pl.has_duplicates)
+        with self.wrap("playlist") as pl:
+            pl.append(self.TWO_SONGS[0])
+            self.failIf(pl.has_duplicates)
+            pl.append(self.TWO_SONGS[0])
+            self.failUnless(pl.has_duplicates)
 
     def test_duplicates(self):
-        pl = Playlist(self.temp, "playlist")
-        pl.extend(self.TWO_SONGS)
-        pl.extend(self.TWO_SONGS)
-        self.failUnlessEqual(len(pl), 4)
-        self.failUnless(pl.has_duplicates,
-                        ("Playlist has un-detected duplicates: %s "
-                         % "\n".join([str(s) for s in pl._list])))
+        with self.wrap("playlist") as pl:
+            pl.extend(self.TWO_SONGS)
+            pl.extend(self.TWO_SONGS)
+            self.failUnlessEqual(len(pl), 4)
+            self.failUnless(pl.has_duplicates,
+                            ("Playlist has un-detected duplicates: %s "
+                             % "\n".join([str(s) for s in pl._list])))
+
+    def test_remove_leaving_duplicates(self):
+        with self.wrap("playlist") as pl:
+            pl.extend(self.TWO_SONGS)
+            [first, second] = self.TWO_SONGS
+            pl.extend(NUMERIC_SONGS + self.TWO_SONGS)
+            self.failUnlessEqual(len(self.FAKE_LIB.changed), 7)
+            self.FAKE_LIB.reset()
+            pl.remove_songs(self.TWO_SONGS, leave_dupes=True)
+            self.failUnless(first in pl)
+            self.failUnless(second in pl)
+            self.failIf(len(self.FAKE_LIB.changed))
+
+    def test_remove_fully(self):
+        with self.wrap("playlist") as pl:
+            pl.extend(self.TWO_SONGS * 2)
+            self.FAKE_LIB.reset()
+            pl.remove_songs(self.TWO_SONGS, leave_dupes=False)
+            self.failIf(len(pl))
+            self.failUnlessEqual(self.FAKE_LIB.changed, self.TWO_SONGS)
+
+
+class TFileBackedPlaylist(TPlaylist):
+
+    def setUp(self):
+        super(TFileBackedPlaylist, self).setUp()
+        self.temp = mkdtemp()
+        self.temp2 = mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.temp)
+        shutil.rmtree(self.temp2)
+
+    def pl(self, name, lib=None):
+        return FileBackedPlaylist(self.temp, name, lib)
+
+    def test_from_songs(self):
+        pl = FileBackedPlaylist.from_songs(self.temp, NUMERIC_SONGS)
+        self.failUnlessEqual(pl.songs, NUMERIC_SONGS)
+        pl.delete()
+
+    def test_read(self):
+        with self.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            pl.write()
+
+            lib = FileLibrary("foobar")
+            lib.add(NUMERIC_SONGS)
+            pl = self.pl("playlist", lib)
+            self.assertEqual(len(pl), len(NUMERIC_SONGS))
+
+    def test_write(self):
+        with self.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            pl.extend([fsnative(u"xf0xf0")])
+            pl.write()
+
+            with open(pl.filename, "rb") as h:
+                self.assertEqual(len(h.read().splitlines()),
+                                 len(NUMERIC_SONGS) + 1)
+
+    def test_make_dup(self):
+        p1 = FileBackedPlaylist.new(self.temp, "Does not exist")
+        p2 = FileBackedPlaylist.new(self.temp, "Does not exist")
+        self.failUnlessEqual(p1.name, "Does not exist")
+        self.failUnless(p2.name.startswith("Does not exist"))
+        self.failIfEqual(p1.name, p2.name)
+        p1.delete()
+        p2.delete()
+
+    def test_rename_removes(self):
+        with self.wrap("foo") as pl:
+            pl.rename("bar")
+            self.failUnless(os.path.exists(os.path.join(self.temp, 'bar')))
+            self.failIf(os.path.exists(os.path.join(self.temp, 'foo')))
+
+    def test_rename_fails_if_file_exists(self):
+        with self.wrap("foo") as foo:
+            with self.wrap("bar") as bar:
+                try:
+                    foo.rename("bar")
+                    self.fail("Should have raised, %s exists" % bar.filename)
+                except ValueError:
+                    pass
+
+    def test_masked_handling(self):
+        if os.name == "nt":
+            # FIXME: masking isn't properly implemented on Windows
+            return
+        # playlists can contain songs and paths for masked handling..
+        lib = FileLibrary("foobar")
+        with self.wrap("playlist", lib) as pl:
+            song = Fakesong({"date": "2038", "~filename": fsnative(u"/fake")})
+            song.sanitize()
+            lib.add([song])
+
+            # mask and update
+            lib.mask("/")
+            pl.append(song)
+            pl.remove_songs([song])
+            self.failUnless("/fake" in pl)
+
+            pl.extend(self.TWO_SONGS)
+
+            # check if collections can handle the mix
+            self.failUnlessEqual(pl("date"), "2038")
+
+            # unmask and update
+            lib.unmask("/")
+            pl.add_songs(["/fake"], lib)
+            self.failUnless(song in pl)
+
+            lib.destroy()

@@ -3,8 +3,9 @@
 #           2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import time
@@ -12,7 +13,6 @@ import time
 from gi.repository import GObject, GLib
 
 from quodlibet import config
-from quodlibet import const
 
 
 class TimeTracker(GObject.GObject):
@@ -30,12 +30,27 @@ class TimeTracker(GObject.GObject):
     def __init__(self, player):
         super(TimeTracker, self).__init__()
 
+        self.__interval = 1000
         self.__player = player
         self.__id = None
+        self.__stop = False
+        self.__reset = False
         self.__sigs = [
-            player.connect("paused", self.__paused),
-            player.connect("unpaused", self.__unpaused),
+            player.connect("paused", self.__paused, True),
+            player.connect("unpaused", self.__paused, False),
         ]
+        self.__paused(player, player.paused)
+
+    def set_interval(self, interval):
+        """Update the resolution in milliseconds"""
+
+        self.__interval = interval
+        self.__reset = True
+
+    def tick(self):
+        """Emit a tick event"""
+
+        self.emit("tick")
 
     def destroy(self):
         for signal_id in self.__sigs:
@@ -52,18 +67,28 @@ class TimeTracker(GObject.GObject):
             self.__source_remove()
             return False
 
-        self.emit("tick")
+        if self.__reset:
+            self.__reset = False
+            self.__source_remove()
+            self.__paused(self.__player, self.__player.paused)
+
+        self.tick()
         return True
 
-    def __paused(self, *args):
-        # By removing the timeout only in the callback we are safe from
-        # huge deviation caused by lots of pause/unpause actions.
-        self.__stop = True
-
-    def __unpaused(self, *args):
-        self.__stop = False
-        if self.__id is None:
-            self.__id = GLib.timeout_add_seconds(1, self.__update)
+    def __paused(self, player, paused):
+        if paused:
+            # By removing the timeout only in the callback we are safe from
+            # huge deviation caused by lots of pause/unpause actions.
+            self.__stop = True
+        else:
+            self.__stop = False
+            if self.__id is None:
+                # The application is already woke up every seconds
+                # so synchronize to it by calling timeout_add_seconds(...)
+                # if the requested tracker interval is exactly 1 second.
+                self.__id = GLib.timeout_add_seconds(1, self.__update) \
+                    if self.__interval == 1000 \
+                    else GLib.timeout_add(self.__interval, self.__update)
 
 
 class SongTracker(object):
@@ -143,7 +168,8 @@ class SongTracker(object):
 class FSInterface(object):
     """Provides a file in ~/.quodlibet to indicate what song is playing."""
 
-    def __init__(self, player):
+    def __init__(self, path, player):
+        self.path = path
         self._player = player
         self._ids = [
             player.connect('song-started', self.__started),
@@ -155,22 +181,20 @@ class FSInterface(object):
             self._player.disconnect(id_)
 
         try:
-            os.unlink(const.CURRENT)
+            os.unlink(self.path)
         except EnvironmentError:
             pass
 
     def __started(self, player, song):
         if song:
             try:
-                f = file(const.CURRENT, "w")
+                with open(self.path, "wb") as f:
+                    f.write(song.to_dump())
             except EnvironmentError:
                 pass
-            else:
-                f.write(song.to_dump())
-                f.close()
 
     def __ended(self, player, song, stopped):
         try:
-            os.unlink(const.CURRENT)
+            os.unlink(self.path)
         except EnvironmentError:
             pass

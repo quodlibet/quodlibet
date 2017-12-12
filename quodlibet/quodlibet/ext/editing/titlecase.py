@@ -2,12 +2,15 @@
 # Copyright 2010-14 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
+from quodlibet import _
 from quodlibet import util
+from quodlibet.qltk import Icons
 from quodlibet.plugins.editing import EditTagsPlugin
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.util.string.titlecase import _humanise
@@ -17,7 +20,7 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
     PLUGIN_ID = "Title Case"
     PLUGIN_NAME = _("Title Case")
     PLUGIN_DESC = _("Title-cases tag values in the tag editor.")
-    PLUGIN_ICON = Gtk.STOCK_SPELL_CHECK
+    PLUGIN_ICON = Icons.TOOLS_CHECK_SPELLING
     CONFIG_SECTION = "titlecase"
 
     # Issue 753: Allow all caps (as before).
@@ -37,7 +40,8 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
         super(TitleCase, self).__init__(
             label=_("Title-_case Value"), use_underline=True)
         self.set_image(
-            Gtk.Image.new_from_stock(Gtk.STOCK_EDIT, Gtk.IconSize.MENU))
+            Gtk.Image.new_from_icon_name(Icons.TOOLS_CHECK_SPELLING,
+                                         Gtk.IconSize.MENU))
         self.set_sensitive(self.process_tag(value) != value)
 
     @classmethod

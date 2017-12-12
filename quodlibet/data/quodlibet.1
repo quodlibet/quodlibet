@@ -45,7 +45,7 @@ capabilities.
 .sp
 This manual page is only a short reference for Quod Libet. Complete
 documentation is available at
-\fI\%https://quodlibet.readthedocs.org/en/latest/guide/index.html\fP\&.
+\fI\%https://quodlibet.readthedocs.io/en/latest/guide/index.html\fP\&.
 .SH OPTIONS
 .INDENT 0.0
 .TP
@@ -92,7 +92,7 @@ Play a file
 Toggle play/pause mode
 .TP
 .B \-\-previous
-Jump to previous song or restart if near the beginning
+Jump to previous song if near the beginning, otherwise restart
 .TP
 .B \-\-force\-previous
 Jump to previous song
@@ -119,6 +119,9 @@ Exit Quod Libet
 .TP
 .BI \-\-random\fB= tag
 Filter on a random value
+.TP
+.B \-\-refresh
+Refresh and rescan library
 .UNINDENT
 .INDENT 0.0
 .TP
@@ -141,13 +144,23 @@ Rate the playing song
 .INDENT 0.0
 .TP
 .B \-\-show\-window
-Hide main window
+Show main window
+.TP
+.B \-\-start\-hidden
+Don\(aqt show any windows on start
 .TP
 .B \-\-start\-playing
 Begin playing immediately
 .TP
 .B \-\-status
 Print playing status
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-stop\-after=0|1|t
+Stop after the playing song
+.UNINDENT
+.INDENT 0.0
 .TP
 .B \-\-toggle\-window
 Toggle main window visibility
@@ -206,14 +219,14 @@ The \(aqc\(aq postfix on strings or regular expressions makes the  search
 case\-sensitive. Numeric values may be given as integers, floating\-point
 numbers, MM:SS format, or simple English, e.g. "3 days", "2 hours".
 .sp
-See \fI\%https://quodlibet.readthedocs.org/en/latest/guide/searching.html\fP\&.
+See \fI\%https://quodlibet.readthedocs.io/en/latest/guide/searching.html\fP\&.
 .sp
 All internal tags begin with a ~ character. Non\-numeric internal tags are
 ~base‐ name, ~dirname, ~filename, ~format, ~length, ~people, and ~rating.
 Numeric internal tags are ~#added, ~#bitrate, ~#disc, ~#lastplayed,
 ~#laststarted, ~#length, ~#mtime, ~#playcount, ~#skipcount, and ~#track.
 .sp
-See \fI\%https://quodlibet.readthedocs.org/en/latest/guide/tags/internal_tags.html\fP\&.
+See \fI\%https://quodlibet.readthedocs.io/en/latest/guide/tags/internal_tags.html\fP\&.
 .SH RENAMING FILES
 .sp
 Quod Libet allows you to rename files based on their tags. In some cases
@@ -230,7 +243,7 @@ You can also specify literal text to use if the tag is missing by adding another
 .sp
 \fB<album|<album>|No Album> \- <title>\fP
 .sp
-See \fI\%https://quodlibet.readthedocs.org/en/latest/guide/renaming_files.html\fP\&.
+See \fI\%https://quodlibet.readthedocs.io/en/latest/guide/renaming_files.html\fP\&.
 .SH AUDIO BACKENDS
 .sp
 Quod Libet uses GStreamer for audio playback. It tries to read your GConf
@@ -239,7 +252,7 @@ change the pipeline option in ~/.quodlibet/config to use a different sink, or
 pass options to the sink. For example, you might use esdsink or alsasink
 device=hw:1.
 .sp
-See \fI\%https://quodlibet.readthedocs.org/en/latest/guide/playback/backends.html\fP\&.
+See \fI\%https://quodlibet.readthedocs.io/en/latest/guide/playback/backends.html\fP\&.
 .SH FILES
 .INDENT 0.0
 .TP
@@ -265,7 +278,7 @@ Put plugins here.
 Put custom library browsers here.
 .UNINDENT
 .sp
-See \fI\%https://quodlibet.readthedocs.org/en/latest/guide/interacting.html\fP\&.
+See \fI\%https://quodlibet.readthedocs.io/en/latest/guide/interacting.html\fP\&.
 .SH BUGS
 .sp
 See \fI\%https://github.com/quodlibet/quodlibet/issues\fP for a list of all
@@ -275,8 +288,8 @@ currently open bugs and feature requests.
 Joe Wreschnig and Michael Urman are the primary authors of Quod Libet.
 .SH SEE ALSO
 .nf
-\fI\%https://quodlibet.readthedocs.org/en/latest/guide\fP,
-\fI\%https://quodlibet.readthedocs.org/en/latest/guide/faq.html\fP,
+\fI\%https://quodlibet.readthedocs.io/en/latest/guide/\fP,
+\fI\%https://quodlibet.readthedocs.io/en/latest/guide/faq.html\fP,
 \fBregex\fP(7), \fBgst\-launch\fP(1)
 .fi
 .sp

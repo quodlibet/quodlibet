@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig, Alexandre Passos
 #           2014 Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """Manage a pool of routines using Python iterators."""
 
 from gi.repository import GLib
+
+from quodlibet.compat import PY2, listkeys
 
 
 class _Routine(object):
@@ -24,7 +28,8 @@ class _Routine(object):
             pool.remove(funcid)
             yield False
 
-        self.source_func = wrap(func, funcid, args, kwargs).next
+        f = wrap(func, funcid, args, kwargs)
+        self.source_func = f.next if PY2 else f.__next__
 
     @property
     def paused(self):
@@ -90,7 +95,6 @@ class CoPool(object):
         priority = kwargs.pop("priority", GLib.PRIORITY_LOW)
         timeout = kwargs.pop("timeout", None)
 
-        print_d("Added copool function %r with id %r" % (func, funcid))
         routine = _Routine(self, func, funcid, priority, timeout, args, kwargs)
         self.__routines[funcid] = routine
         routine.resume()
@@ -106,12 +110,11 @@ class CoPool(object):
         routine = self._get(funcid)
         routine.pause()
         del self.__routines[funcid]
-        print_d("Removed copool function id %r" % funcid)
 
     def remove_all(self):
         """Stop all running routines."""
 
-        for funcid in self.__routines.keys():
+        for funcid in listkeys(self.__routines):
             self.remove(funcid)
 
     def pause(self, funcid):
@@ -119,7 +122,6 @@ class CoPool(object):
 
         routine = self._get(funcid)
         routine.pause()
-        print_d("Paused copool function id %r" % funcid)
 
     def pause_all(self):
         """Temporarily pause all registered routines."""
@@ -132,7 +134,6 @@ class CoPool(object):
 
         routine = self._get(funcid)
         routine.resume()
-        print_d("Resumed copool function id %r" % funcid)
 
     def step(self, funcid):
         """Force this function to iterate once."""

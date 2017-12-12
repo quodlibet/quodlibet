@@ -1,16 +1,56 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 import os
 from tests import TestCase, mkstemp
-from helper import temp_filename
+from .helper import temp_filename
 
-from quodlibet.util.config import Config, Error
+from quodlibet.util.config import Config, Error, ConfigProxy
+from quodlibet.compat import PY2
 
 
 class TConfig(TestCase):
 
+    def test_set_default_only(self):
+        conf = Config()
+        self.assertRaises(Error, conf.set, "foo", "bar", 1)
+        conf.defaults.add_section("foo")
+        conf.set("foo", "bar", 1)
+
+    def test_options(self):
+        conf = Config()
+        self.assertRaises(Error, conf.options, "foo")
+        conf.defaults.add_section("foo")
+        self.assertEqual(conf.options("foo"), [])
+        conf.defaults.set("foo", "bar", 1)
+        conf.defaults.set("foo", "blah", 1)
+        conf.set("foo", "blah", 1)
+        conf.set("foo", "quux", 1)
+        self.assertEqual(conf.options("foo"), ['blah', 'quux', 'bar'])
+        conf.defaults.clear()
+
+    def test_options_no_default(self):
+        conf = Config()
+        conf.add_section("foo")
+        self.assertEqual(conf.options("foo"), [])
+
+    def test_has_section(self):
+        conf = Config()
+        self.assertFalse(conf.has_section("foo"))
+        conf.defaults.add_section("foo")
+        self.assertTrue(conf.has_section("foo"))
+        conf.add_section("foo")
+        conf.defaults.clear()
+        self.assertTrue(conf.has_section("foo"))
+        conf.clear()
+        self.assertFalse(conf.has_section("foo"))
+
     def test_read_garbage_file(self):
         conf = Config()
-        garbage = "\xf1=\xab\xac"
+        garbage = b"\xf1=\xab\xac"
 
         fd, filename = mkstemp()
         os.close(fd)
@@ -27,14 +67,71 @@ class TConfig(TestCase):
         self.failUnlessEqual(conf.get("foo", "bar"), "1")
         self.failUnlessEqual(conf.getint("foo", "bar"), 1)
 
+    def test_setbytes(self):
+        conf = Config()
+        conf.add_section("foo")
+        conf.setbytes("foo", "bar", b"\xff\xff")
+        assert conf.getbytes("foo", "bar") == b"\xff\xff"
+
+    def test_getbytes(self):
+        conf = Config()
+        assert conf.getbytes("foo", "bar", b"\xff") == b"\xff"
+
     def test_reset(self):
         conf = Config()
-        conf.add_section("player")
-        conf.set_inital("player", "backend", "blah")
+        conf.defaults.add_section("player")
+        conf.defaults.set("player", "backend", "blah")
         conf.set("player", "backend", "foo")
         self.assertEqual(conf.get("player", "backend"), "foo")
         conf.reset("player", "backend")
-        self.assertEqual(conf.get("player", "backend"), "blah")
+        conf.defaults.set("player", "backend", "blah_new")
+        self.assertEqual(conf.get("player", "backend"), "blah_new")
+
+    def test_reset_no_section(self):
+        conf = Config()
+        conf.defaults.add_section("player")
+        conf.defaults.set("player", "backend", "blah")
+        conf.reset("player", "backend")
+        assert conf.get("player", "backend") == "blah"
+
+    def test_initial_after_set(self):
+        conf = Config()
+        conf.add_section("player")
+        conf.set("player", "backend", "orig")
+        conf.defaults.add_section("player")
+        conf.defaults.set("player", "backend", "initial")
+        self.assertEqual(conf.get("player", "backend"), "orig")
+        self.assertEqual(conf.defaults.get("player", "backend"), "initial")
+        conf.reset("player", "backend")
+        self.assertEqual(conf.get("player", "backend"), "initial")
+
+    def test_get_fallback_default(self):
+        conf = Config()
+
+        conf.defaults.add_section("get")
+        self.assertRaises(Error, conf.get, "get", "bar")
+        conf.defaults.set("get", "bar", 1)
+        self.assertEqual(conf.get("get", "bar"), "1")
+
+        conf.defaults.add_section("getboolean")
+        self.assertRaises(Error, conf.getboolean, "getboolean", "bar")
+        conf.defaults.set("getboolean", "bar", True)
+        self.assertEqual(conf.getboolean("getboolean", "bar"), True)
+
+        conf.defaults.add_section("getfloat")
+        self.assertRaises(Error, conf.getfloat, "getfloat", "bar")
+        conf.defaults.set("getfloat", "bar", 1.0)
+        self.assertEqual(conf.getfloat("getfloat", "bar"), 1.0)
+
+        conf.defaults.add_section("getint")
+        self.assertRaises(Error, conf.getint, "getint", "bar")
+        conf.defaults.set("getint", "bar", 42)
+        self.assertEqual(conf.getint("getint", "bar"), 42)
+
+        conf.defaults.add_section("getlist")
+        self.assertRaises(Error, conf.getlist, "getlist", "bar")
+        conf.defaults.setlist("getlist", "bar", [1, 2, 3])
+        self.assertEqual(conf.getlist("getlist", "bar"), ["1", "2", "3"])
 
     def test_get(self):
         conf = Config()
@@ -49,6 +146,21 @@ class TConfig(TestCase):
         self.failUnlessEqual(conf.get("foo", "str"), "foobar")
         self.failUnlessEqual(conf.getboolean("foo", "bool"), True)
 
+    def test_get_invalid_data(self):
+        conf = Config()
+        conf.add_section("foo")
+        conf.set("foo", "bla", "xx;,,;\n\n\naa")
+        self.assertTrue(conf.getboolean("foo", "bla", True))
+        self.assertEqual(conf.getint("foo", "bla", 42), 42)
+        self.assertEqual(conf.getfloat("foo", "bla", 1.5), 1.5)
+        self.assertEqual(conf.getstringlist("foo", "bla", ["baz"]), ["baz"])
+
+    def test_getint_float(self):
+        conf = Config()
+        conf.add_section("foo")
+        conf.set("foo", "float", "1.25")
+        self.assertEqual(conf.getint("foo", "float"), 1)
+
     def test_get_default(self):
         conf = Config()
         conf.add_section("foo")
@@ -57,31 +169,6 @@ class TConfig(TestCase):
         self.failUnlessEqual(conf.getint("foo", "nothing", 42), 42)
         self.failUnlessEqual(conf.getfloat("foo", "nothing", 42.42), 42.42)
         self.failUnlessEqual(conf.get("foo", "nothing", "foo"), "foo")
-
-    def test_get_default_raises(self):
-        conf = Config()
-        conf.add_section("foo")
-
-        self.assertRaises(ValueError, conf.getboolean, "foo", "nothing", "")
-        self.assertRaises(ValueError, conf.getint, "foo", "nothing", "")
-        self.assertRaises(ValueError, conf.getfloat, "foo", "nothing", "")
-
-    def test_setdefault_no_defaulting(self):
-        conf = Config()
-        conf.add_section("foo")
-
-        self.failUnlessEqual(None, conf.get("foo", "bar", None))
-        conf.set("foo", "bar", "blah")
-        conf.setdefault("foo", "bar", "xxx")
-        self.failUnlessEqual("blah", conf.get("foo", "bar"))
-
-    def test_setdefault_defaulting(self):
-        conf = Config()
-        conf.add_section("foo")
-
-        self.failUnlessEqual(None, conf.get("foo", "bar", None))
-        conf.setdefault("foo", "bar", "xxx")
-        self.failUnlessEqual("xxx", conf.get("foo", "bar"))
 
     def test_stringlist_simple(self):
         conf = Config()
@@ -121,8 +208,9 @@ class TConfig(TestCase):
     def test_stringlist_invalid_encoding(self):
         conf = Config()
         conf.add_section("foo")
-        conf.set("foo", "bar", "\xff\xff\xff\xff\xff\xff")
-        self.assertRaises(Error, conf.getstringlist, "foo", "bar")
+        conf.setbytes("foo", "bar", b"\xff\xff\xff\xff\xff\xff")
+        if PY2:
+            self.assertRaises(Error, conf.getstringlist, "foo", "bar")
 
     def test_getlist(self):
         conf = Config()
@@ -207,3 +295,42 @@ class TConfig(TestCase):
             self.assertTrue(False)
         conf.register_upgrade_function(func)
         conf.read(filename)
+
+
+class TConfigProxy(TestCase):
+
+    def setUp(self):
+        conf = Config()
+        conf.defaults.add_section("somesection")
+        self.proxy = ConfigProxy(conf, "somesection")
+
+    def test_getters_setters(self):
+        self.proxy.set("foo", "bar")
+        self.assertEqual(self.proxy.get("foo"), "bar")
+
+        self.proxy.set("foo", 1.5)
+        self.assertEqual(self.proxy.getfloat("foo"), 1.5)
+
+        self.proxy.set("foo", 15)
+        self.assertEqual(self.proxy.getint("foo"), 15)
+
+        self.proxy.set("foo", False)
+        self.assertEqual(self.proxy.getboolean("foo"), False)
+
+        self.proxy.setbytes("foo", b"\xff")
+        assert self.proxy.getbytes("foo") == b"\xff"
+
+    def test_default(self):
+        self.assertEqual(self.proxy.get("foo", "quux"), "quux")
+
+    def test_get_initial(self):
+        self.proxy.defaults.set("a", 3.0)
+        self.assertEqual(self.proxy.defaults.get("a"), "3.0")
+
+    def test_initial_and_reset(self):
+        self.proxy.defaults.set("bla", "baz")
+        self.assertEqual(self.proxy.get("bla"), "baz")
+        self.proxy.set("bla", "nope")
+        self.assertEqual(self.proxy.get("bla"), "nope")
+        self.proxy.reset("bla")
+        self.assertEqual(self.proxy.get("bla"), "baz")

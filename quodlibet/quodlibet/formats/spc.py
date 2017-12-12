@@ -2,12 +2,16 @@
 # Copyright 2007 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
-from quodlibet.formats._audio import AudioFile
+from senf import path2fsn, fsn2text
+
+from quodlibet.compat import getbyte, listkeys
+from ._audio import AudioFile, translate_errors
 
 extensions = [".spc"]
 
@@ -16,20 +20,20 @@ class SPCFile(AudioFile):
     format = "SPC700"
 
     def __init__(self, filename):
-        h = open(filename, "rb")
-        try:
-            head = h.read(46)
-            if len(head) != 46 or head[:27] != 'SNES-SPC700 Sound File Data':
-                raise IOError("Not a valid SNES-SPC700 file")
+        with translate_errors():
+            with open(filename, "rb") as h:
+                head = h.read(46)
+                if len(head) != 46 or \
+                        head[:27] != b'SNES-SPC700 Sound File Data':
+                    raise IOError("Not a valid SNES-SPC700 file")
 
-            if head[35] == '\x1a':
-                data = h.read(210)
-                if len(data) == 210:
-                    self.update(parse_id666(data))
-        finally:
-            h.close()
+                if getbyte(head, 35) == b'\x1a':
+                    data = h.read(210)
+                    if len(data) == 210:
+                        self.update(parse_id666(data))
 
-        self.setdefault("title", os.path.basename(filename)[:-4])
+        self.setdefault(
+            "title", fsn2text(path2fsn(os.path.basename(filename)[:-4])))
         self.sanitize(filename)
 
     def write(self):
@@ -57,24 +61,24 @@ def parse_id666(data):
     # Instead of detecting "perfectly", we'll just detect enough for
     # the "artist" field. This fails for artist names that begin with
     # numbers or symbols less than ascii value A.
-    if data[130] < 'A':
+    if getbyte(data, 130) < b'A':
         try:
-            tags["~#length"] = int(data[123:126].strip("\x00"))
+            tags["~#length"] = int(data[123:126].strip(b"\x00"))
         except ValueError:
             pass
         tags["artist"] = data[131:163]
     else:
         tags["artist"] = data[130:162]
 
-    for k in tags.keys():
+    for k in listkeys(tags):
         if k[:2] == "~#":
             continue
-        tags[k] = tags[k].replace("\x00", "").decode("ascii", "ignore")
+        tags[k] = tags[k].replace(b"\x00", b"").decode("ascii", "ignore")
         if not tags[k]:
             del tags[k]
 
     return tags
 
 
-info = SPCFile
+loader = SPCFile
 types = [SPCFile]

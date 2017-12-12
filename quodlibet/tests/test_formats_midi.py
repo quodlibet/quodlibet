@@ -2,18 +2,17 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-import os
-
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 from quodlibet.formats.midi import MidiFile
 
 
 class TMidiFile(TestCase):
     def setUp(self):
-        self.song = MidiFile(os.path.join(DATA_DIR, 'test.mid'))
+        self.song = MidiFile(get_data_path('test.mid'))
 
     def test_length(self):
         self.failUnlessAlmostEqual(87, self.song("~#length", 0), 0)
@@ -32,5 +31,10 @@ class TMidiFile(TestCase):
         self.failIf(self.song.can_change("album"))
 
     def test_invalid(self):
-        path = os.path.join(DATA_DIR, 'empty.xm')
+        path = get_data_path('empty.xm')
         self.failUnlessRaises(Exception, MidiFile, path)
+
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "MIDI")
+        self.assertEqual(self.song("~codec"), "MIDI")
+        self.assertEqual(self.song("~encoding"), "")

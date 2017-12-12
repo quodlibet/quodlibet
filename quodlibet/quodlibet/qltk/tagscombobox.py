@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
+#           2015 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk
 
@@ -60,12 +62,14 @@ class TagsComboBoxEntry(Gtk.ComboBox, _TagsCombo):
 
     The 'tag' attribute is the currently chosen tag."""
 
-    def __init__(self, can_change=None):
+    def __init__(self, can_change=None, tooltip_markup=None):
         super(TagsComboBoxEntry, self).__init__(
             model=Gtk.ListStore(str, str),
             entry_text_column=0,
             has_entry=True)
         self._fill_model(can_change)
+        if tooltip_markup:
+            self.get_child().set_tooltip_markup(tooltip_markup)
 
     def _fill_model(self, can_change):
         super(TagsComboBoxEntry, self)._fill_model(can_change)

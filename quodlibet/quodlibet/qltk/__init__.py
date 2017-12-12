@@ -1,21 +1,104 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
+#          2016-17 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
-import sys
 import signal
+import socket
 
 import gi
 gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk
 from gi.repository import Gdk
-from gi.repository import GLib
+from gi.repository import GLib, GObject
+from senf import fsn2bytes, bytes2fsn
+
+from quodlibet.util import gdecode, print_d, print_w
+from quodlibet.compat import urlparse
+
+
+def show_uri(label, uri):
+    """Shows a uri. The uri can be anything handled by GIO or a quodlibet
+    specific one.
+
+    Currently handled quodlibet uris:
+        - quodlibet:///prefs/plugins/<plugin id>
+
+    Args:
+        label (str)
+        uri (str) the uri to show
+    Returns:
+        True on success, False on error
+    """
+
+    parsed = urlparse(uri)
+    if parsed.scheme == "quodlibet":
+        if parsed.netloc != "":
+            print_w("Unknown QuodLibet URL format (%s)" % uri)
+            return False
+        else:
+            return __show_quodlibet_uri(parsed)
+    else:
+        # Gtk.show_uri_on_window exists since 3.22
+        if hasattr(Gtk, "show_uri_on_window"):
+            from quodlibet.qltk import get_top_parent
+            return Gtk.show_uri_on_window(get_top_parent(label), uri, 0)
+        else:
+            return Gtk.show_uri(None, uri, 0)
+
+
+def __show_quodlibet_uri(uri):
+    if uri.path.startswith("/prefs/plugins/"):
+        from .pluginwin import PluginWindow
+        print_d("Showing plugin prefs resulting from URI (%s)" % (uri, ))
+        return PluginWindow().move_to(uri.path[len("/prefs/plugins/"):])
+    else:
+        return False
+
+
+def get_fg_highlight_color(widget):
+    """Returns a color useable for highlighting things on top of the standard
+    background color.
+
+    Args:
+        widget (Gtk.Widget)
+    Returns:
+        Gdk.RGBA
+    """
+
+    context = widget.get_style_context()
+    if hasattr(Gtk.StateFlags, "LINK"):
+        # gtk+ >=3.12
+        context.save()
+        context.set_state(Gtk.StateFlags.LINK)
+        color = context.get_color(context.get_state())
+        context.restore()
+    else:
+        value = GObject.Value()
+        value.init(Gdk.Color)
+        value.set_boxed(None)
+        context.get_style_property("link-color", value)
+        color = Gdk.RGBA()
+        old_color = value.get_boxed()
+        if old_color is not None:
+            color.parse(old_color.to_string())
+    return color
+
+
+def get_primary_accel_mod():
+    """Returns the primary Gdk.ModifierType modifier.
+
+    cmd on osx, ctrl everywhere else.
+    """
+
+    return Gtk.accelerator_parse("<Primary>")[1]
 
 
 def redraw_all_toplevels():
@@ -37,13 +120,9 @@ def selection_set_songs(selection_data, songs):
 
     filenames = []
     for filename in (song["~filename"] for song in songs):
-        if isinstance(filename, unicode):
-            # win32
-            filename = filename.encode("utf-8")
-        filenames.append(filename)
-
+        filenames.append(fsn2bytes(filename, "utf-8"))
     type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
-    selection_data.set(type_, 8, "\x00".join(filenames))
+    selection_data.set(type_, 8, b"\x00".join(filenames))
 
 
 def selection_get_filenames(selection_data):
@@ -54,11 +133,8 @@ def selection_get_filenames(selection_data):
     data_type = selection_data.get_data_type()
     assert data_type.name() == "text/x-quodlibet-songs"
 
-    items = selection_data.get_data().split("\x00")
-    if sys.platform == "win32":
-        return [item.decode("utf-8") for item in items]
-    else:
-        return items
+    items = selection_data.get_data().split(b"\x00")
+    return [bytes2fsn(i, "utf-8") for i in items]
 
 
 def get_top_parent(widget):
@@ -86,20 +162,24 @@ def get_menu_item_top_parent(widget):
     return get_top_parent(widget)
 
 
-def find_widgets(container, type_):
-    """Given a container, find all children that are a subclass of type_
+def find_widgets(widget, type_):
+    """Given a widget, find all children that are a subclass of type_
     (including itself)
-    """
 
-    assert isinstance(container, Gtk.Container)
+    Args:
+        widget (Gtk.Widget)
+        type_ (type)
+    Returns:
+        List[Gtk.Widget]
+    """
 
     found = []
 
-    if isinstance(container, type_):
-        found.append(container)
+    if isinstance(widget, type_):
+        found.append(widget)
 
-    for child in container.get_children():
-        if isinstance(child, Gtk.Container):
+    if isinstance(widget, Gtk.Container):
+        for child in widget.get_children():
             found.extend(find_widgets(child, type_))
 
     return found
@@ -153,15 +233,38 @@ def _popup_menu_at_widget(menu, widget, button, time, under):
 
         return (menu_x, menu_y, True) # x, y, move_within_screen
     menu_popup(menu, None, None, pos_func, None, button, time)
-    return True
+
+
+def _ensure_menu_attached(menu, widget):
+    assert widget is not None
+
+    # Workaround the menu inheriting the wrong colors with the Ubuntu 12.04
+    # default themes. Attaching to the parent kinda works... submenus still
+    # have the wrong color.
+    if isinstance(widget, Gtk.Button):
+        widget = widget.get_parent() or widget
+
+    attached_widget = menu.get_attach_widget()
+    if attached_widget is widget:
+        return
+    if attached_widget is not None:
+        menu.detach()
+    menu.attach_to_widget(widget, None)
 
 
 def popup_menu_under_widget(menu, widget, button, time):
-    return _popup_menu_at_widget(menu, widget, button, time, True)
+    _ensure_menu_attached(menu, widget)
+    _popup_menu_at_widget(menu, widget, button, time, True)
 
 
 def popup_menu_above_widget(menu, widget, button, time):
-    return _popup_menu_at_widget(menu, widget, button, time, False)
+    _ensure_menu_attached(menu, widget)
+    _popup_menu_at_widget(menu, widget, button, time, False)
+
+
+def popup_menu_at_widget(menu, widget, button, time):
+    _ensure_menu_attached(menu, widget)
+    menu_popup(menu, None, None, None, None, button, time)
 
 
 def add_fake_accel(widget, accel):
@@ -188,6 +291,13 @@ def is_accel(event, *accels):
     any of accelerator strings.
 
     example: is_accel(event, "<shift><ctrl>z")
+
+    Args:
+        *accels: one ore more `str`
+    Returns:
+        bool
+    Raises:
+        ValueError: in case any of the accels could not be parsed
     """
 
     assert accels
@@ -202,9 +312,12 @@ def is_accel(event, *accels):
         keyval = ord(chr(keyval).lower())
 
     default_mod = Gtk.accelerator_get_default_mod_mask()
+    keymap = Gdk.Keymap.get_default()
 
     for accel in accels:
         accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
+        if accel_keyval == 0 and accel_mod == 0:
+            raise ValueError("Invalid accel: %s" % accel)
 
         # If the accel contains non default modifiers matching will
         # never work and since no one should use them, complain
@@ -212,6 +325,11 @@ def is_accel(event, *accels):
         if non_default:
             print_w("Accelerator '%s' contains a non default modifier '%s'." %
                 (accel, Gtk.accelerator_name(0, non_default) or ""))
+
+        # event.state contains the real mod mask + the virtual one, while
+        # we usually pass only virtual one as text. This adds the real one
+        # so they match in the end.
+        accel_mod = keymap.map_virtual_modifiers(accel_mod)[1]
 
         # Remove everything except default modifiers and compare
         if (accel_keyval, accel_mod) == (keyval, event.state & default_mod):
@@ -226,10 +344,18 @@ def add_css(widget, css):
     Can raise GLib.GError in case the css is invalid
     """
 
+    if not isinstance(css, bytes):
+        css = css.encode("utf-8")
+
     provider = Gtk.CssProvider()
     provider.load_from_data(css)
     context = widget.get_style_context()
     context.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+
+def remove_padding(widget):
+    """Removes padding on supplied widget"""
+    return add_css(widget, " * { padding: 0px; } ")
 
 
 def is_wayland():
@@ -240,17 +366,24 @@ def is_wayland():
     return False
 
 
+def get_backend_name():
+    """The GDK backend name"""
+
+    display = Gdk.Display.get_default()
+    if display is not None:
+        name = gdecode(display.__gtype__.name)
+        if name.startswith("Gdk"):
+            name = name[3:]
+        if name.endswith("Display"):
+            name = name[:-7]
+        return name
+    return u"Unknown"
+
+
 gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(),
                Gtk.get_micro_version())
 
-try:
-    pygobject_version = gi.version_info
-except AttributeError:
-    # older gi versions
-    try:
-        pygobject_version = gi._gobject.pygobject_version
-    except AttributeError:
-        pygobject_version = (-1,)
+pygobject_version = gi.version_info
 
 
 def io_add_watch(fd, prio, condition, func, *args, **kwargs):
@@ -269,11 +402,13 @@ def io_add_watch(fd, prio, condition, func, *args, **kwargs):
         return GLib.io_add_watch(fd, condition, func, *args, **kwargs)
 
 
-def add_signal_watch(signal_action):
+def add_signal_watch(signal_action, _sockets=[]):
     """Catches signals which should exit the program and calls `signal_action`
     after the main loop has started, even if the signal occurred before the
     main loop has started.
     """
+
+    # See https://bugzilla.gnome.org/show_bug.cgi?id=622084 for details
 
     sig_names = ["SIGINT", "SIGTERM", "SIGHUP"]
     if os.name == "nt":
@@ -286,28 +421,6 @@ def add_signal_watch(signal_action):
             continue
         signals[id_] = name
 
-    # in case Python catches a signal, wake up the mainloop.
-    # this makes signal handling work with older pygobject/glib (Ubuntu 12.04)
-    # no idea why..
-    rfd, wfd = os.pipe()
-
-    def wakeup_notify(source, condition):
-        # just read and do nothing so we can keep the watch around
-        if condition == GLib.IO_IN:
-            try:
-                os.read(rfd, 1)
-            except EnvironmentError:
-                pass
-            return True
-        else:
-            return False
-
-    signal.set_wakeup_fd(wfd)
-    io_add_watch(rfd, GLib.PRIORITY_HIGH,
-                 GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
-                 wakeup_notify)
-
-    # set a python handler for each signal, used before the mainloop
     for signum, name in signals.items():
         # Before the mainloop starts we catch signals in python
         # directly and idle_add the app.quit
@@ -318,34 +431,93 @@ def add_signal_watch(signal_action):
         print_d("Register Python signal handler: %r" % name)
         signal.signal(signum, idle_handler)
 
+    read_socket, write_socket = socket.socketpair()
+    for sock in [read_socket, write_socket]:
+        sock.setblocking(False)
+        # prevent it from being GCed and leak it
+        _sockets.append(sock)
+
+    def signal_notify(source, condition):
+        if condition & GLib.IOCondition.IN:
+            try:
+                return bool(read_socket.recv(1))
+            except EnvironmentError:
+                return False
+        else:
+            return False
+
     if os.name == "nt":
-        return
-
-    # also try to use the official glib handling if available,
-    # can't hurt I guess
-    unix_signal_add = None
-    if hasattr(GLib, "unix_signal_add"):
-        unix_signal_add = GLib.unix_signal_add
-    elif hasattr(GLib, "unix_signal_add_full"):
-        unix_signal_add = GLib.unix_signal_add_full
+        channel = GLib.IOChannel.win32_new_socket(read_socket.fileno())
     else:
-        print_d("Can't install GLib signal handler, too old gi or wrong OS")
-        return
+        channel = GLib.IOChannel.unix_new(read_socket.fileno())
+    io_add_watch(channel, GLib.PRIORITY_HIGH,
+                 (GLib.IOCondition.IN | GLib.IOCondition.HUP |
+                  GLib.IOCondition.NVAL | GLib.IOCondition.ERR),
+                 signal_notify)
 
-    for signum, name in signals.items():
-
-        def handler(signum):
-            print_d("GLib signal handler activated: %s" % signals[signum])
-            signal_action()
-
-        print_d("Register GLib signal handler: %r" % name)
-        unix_signal_add(GLib.PRIORITY_HIGH, signum, handler, signum)
+    signal.set_wakeup_fd(write_socket.fileno())
 
 
-# Legacy plugin/code support.
-from quodlibet.qltk.msg import *
-from quodlibet.qltk.x import *
-from quodlibet.qltk.window import Window, UniqueWindow
+class ThemeOverrider(object):
+    """Allows registering global Gtk.StyleProviders for a specific theme.
+    They get activated when the theme gets active and removed when the theme
+    changes to something else.
+    """
 
-Window
-UniqueWindow
+    def __init__(self):
+        self._providers = {}
+        self._active_providers = []
+        settings = Gtk.Settings.get_default()
+        settings.connect("notify::gtk-theme-name", self._on_theme_name_notify)
+        self._update_providers()
+
+    def register_provider(self, theme_name, provider):
+        """
+        Args:
+            theme_name (str): A gtk+ theme name e.g. "Adwaita" or empty to
+                apply to all themes
+            provider (Gtk.StyleProvider)
+        """
+
+        self._providers.setdefault(theme_name, []).append(provider)
+        self._update_providers()
+
+    def _update_providers(self):
+        settings = Gtk.Settings.get_default()
+
+        theme_name = settings.get_property("gtk-theme-name")
+        wanted_providers = \
+            self._providers.get(theme_name, []) + self._providers.get("", [])
+
+        for provider in list(self._active_providers):
+            if provider not in wanted_providers:
+                Gtk.StyleContext.remove_provider_for_screen(
+                    Gdk.Screen.get_default(), provider)
+            self._active_providers.remove(provider)
+
+        for provider in wanted_providers:
+            if provider not in self._active_providers:
+                Gtk.StyleContext.add_provider_for_screen(
+                    Gdk.Screen.get_default(),
+                    provider,
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                )
+                self._active_providers.append(provider)
+
+    def _on_theme_name_notify(self, settings, gparam):
+        self._update_providers()
+
+
+from .msg import Message, ErrorMessage, WarningMessage
+from .x import Align, Button, ToggleButton, Notebook, SeparatorMenuItem, \
+    WebImage, MenuItem, Frame, EntryCompletion
+from .icons import Icons
+from .window import Window, UniqueWindow, Dialog
+from .paned import ConfigRPaned, ConfigRHPaned
+
+Message, ErrorMessage, WarningMessage
+Align, Button, ToggleButton, Notebook, SeparatorMenuItem, \
+    WebImage, MenuItem, Frame, EntryCompletion
+Icons
+Window, UniqueWindow, Dialog
+ConfigRPaned, ConfigRHPaned

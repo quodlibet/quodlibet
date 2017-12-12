@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
-#           2012 Nick Boultbee
+#     2012, 2016 Nick Boultbee
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 """
 Librarians for libraries.
 """
@@ -15,6 +17,7 @@ import itertools
 from gi.repository import GObject
 
 from quodlibet.util.dprint import print_d
+from quodlibet.compat import itervalues
 
 
 class Librarian(GObject.GObject):
@@ -81,14 +84,14 @@ class Librarian(GObject.GObject):
     def changed(self, items):
         """Triage the items and inform their real libraries."""
 
-        for library in self.libraries.itervalues():
+        for library in itervalues(self.libraries):
             in_library = set(item for item in items if item in library)
             if in_library:
                 library._changed(in_library)
 
     def __getitem__(self, key):
         """Find a item given its key."""
-        for library in self.libraries.itervalues():
+        for library in itervalues(self.libraries):
             try:
                 return library[key]
             except KeyError:
@@ -104,12 +107,12 @@ class Librarian(GObject.GObject):
 
     def remove(self, items):
         """Remove items from all libraries."""
-        for library in self.libraries.itervalues():
+        for library in itervalues(self.libraries):
             library.remove(items)
 
     def __contains__(self, item):
         """Check if a key or item is in the library."""
-        for library in self.libraries.itervalues():
+        for library in itervalues(self.libraries):
             if item in library:
                 return True
         else:
@@ -117,7 +120,7 @@ class Librarian(GObject.GObject):
 
     def __iter__(self):
         """Iterate over all items in all libraries."""
-        return itertools.chain(*self.libraries.itervalues())
+        return itertools.chain(*itervalues(self.libraries))
 
     def move(self, items, from_, to):
         """Move items from one library to another.
@@ -140,11 +143,9 @@ class SongLibrarian(Librarian):
     """A librarian for SongLibraries."""
 
     def tag_values(self, tag):
-        """Return a list of all values for the given tag."""
-        tags = set()
-        for library in self.libraries.itervalues():
-            tags.update(library.tag_values(tag))
-        return list(tags)
+        """Return a set of all values for the given tag."""
+        return {value for lib in itervalues(self.libraries)
+                for value in lib.tag_values(tag)}
 
     def rename(self, song, newname, changed=None):
         """Rename the song in all libraries it belongs to.
@@ -159,7 +160,7 @@ class SongLibrarian(Librarian):
         # changed. So, it needs to reimplement the method.
         re_add = []
         print_d("Renaming %r to %r" % (song.key, newname), self)
-        for library in self.libraries.itervalues():
+        for library in itervalues(self.libraries):
             try:
                 del library._contents[song.key]
             except KeyError:
@@ -170,7 +171,7 @@ class SongLibrarian(Librarian):
         for library in re_add:
             library._contents[song.key] = song
             if changed is None:
-                library._changed(set([song]))
+                library._changed({song})
             else:
                 print_d("Delaying changed signal for %r." % library, self)
                 changed.add(song)
@@ -186,7 +187,7 @@ class SongLibrarian(Librarian):
 
         had_item = []
         print_d("Reloading %r" % item.key, self)
-        for library in self.libraries.itervalues():
+        for library in itervalues(self.libraries):
             try:
                 del library._contents[item.key]
             except KeyError:
@@ -206,7 +207,7 @@ class SongLibrarian(Librarian):
         if was_removed:
             if removed is None:
                 for library in had_item:
-                    library.emit('removed', set([item]))
+                    library.emit('removed', {item})
             else:
                 removed.add(item)
         elif was_changed:
@@ -215,6 +216,6 @@ class SongLibrarian(Librarian):
 
             if changed is None:
                 for library in had_item:
-                    library.emit('changed', set([item]))
+                    library.emit('changed', {item})
             else:
                 changed.add(item)

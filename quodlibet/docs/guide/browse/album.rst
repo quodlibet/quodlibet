@@ -1,5 +1,5 @@
-Album Browser
-=============
+Album Browsers
+==============
 
 Identifying albums
 ------------------
@@ -20,18 +20,33 @@ Album List Browser
 ------------------
 
 .. image:: ../../images/album.png
-    :scale: 35%
-    :align: right
+    :scale: 45%
+    :align: left
 
 The *Album List* browser makes it easy to treat your music collection as a 
 set of albums, presented on the left, rather than as a set of songs, via 
 album-centric enhancements to viewing, sorting, and searching.
 
 You can (configurably) display the album art next to each album to allow 
-faster identifcation of your albums (plus *it's just prettier*...).
+faster identification of your albums (plus *it's just prettier*...).
 
 Extra features related to searching, sorting and presenting albums are 
 detailed below.
+
+
+Cover Grid Browser
+------------------
+
+.. image:: ../../images/covergrid-plus-waveform-2017-08.png
+    :scale: 30%
+    :align: right
+
+The cover grid is another album-like browser that places more emphasis on the
+album art.
+
+It has a search similar to album list (see the section below),
+and configuration of its own (including a flexible per-album display area).
+
 
 
 Searching
@@ -60,7 +75,7 @@ of the underlying songs' values together. The albums in an Album List also
 have a few tags which are computed in a particular manner. A few of the 
 interesting ones:
 
-  * ``~#length`` is computed as the the sum of the length of the underlying
+  * ``~#length`` is computed as the sum of the length of the underlying
     songs.
   * ``~#tracks`` and ``~#discs`` are the total number of songs and discs in
     an album.

@@ -1,21 +1,38 @@
 # -*- coding: utf-8 -*-
 # Copyright 2007 Joe Wreschnig
+#           2012,2013,2015, 2016 Christoph Reiter
 #
-# This software and accompanying documentation, if any, may be freely
-# used, distributed, and/or modified, in any form and for any purpose,
-# as long as this notice is preserved. There is no warranty, either
-# express or implied, for this software.
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """clean up output of 'build' commands"""
 
 import os
 import shutil
 
-from distutils.core import Command
-from distutils.command.clean import clean as distutils_clean
+from .util import get_dist_class
 
 
-class clean(distutils_clean, Command):
+distutils_clean = get_dist_class("clean")
+
+
+class clean(distutils_clean):
     """clean up output of 'build' commands
 
     GDistribution commands generate files that the normal distutils
@@ -26,6 +43,9 @@ class clean(distutils_clean, Command):
 
     def initialize_options(self):
         distutils_clean.initialize_options(self)
+        self.shortcuts = None
+        self.po_package = None
+        self.po_directory = None
 
     def finalize_options(self):
         distutils_clean.finalize_options(self)
@@ -66,6 +86,12 @@ class clean(distutils_clean, Command):
         for base in ["coverage", "build", "dist"]:
             if os.path.isdir(base):
                 shutil.rmtree(base)
+
+        # docs
+        for entry in os.listdir("docs"):
+            path = os.path.join("docs", entry)
+            if entry.startswith("_") and os.path.isdir(path):
+                shutil.rmtree(path)
 
         try:
             os.remove("MANIFEST")

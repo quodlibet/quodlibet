@@ -1,78 +1,16 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright 2004-2005 Joe Wreschnig, Niklas Janlert
-#           2012 Christoph Reiter
-# <quod-libet-development@googlegroups.com>
+# Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-import os
 import sys
 
-import quodlibet
-from quodlibet import app
-from quodlibet import util
-from quodlibet import const
-from quodlibet import config
-from quodlibet.util.path import fsdecode
-from quodlibet.util import set_win32_unicode_argv
-
-
-def main():
-    global quodlibet
-
-    from quodlibet.qltk import add_signal_watch, icons
-    add_signal_watch(app.quit)
-
-    opts = util.OptionParser(
-        "Ex Falso", const.VERSION,
-        _("an audio tag editor"), "[%s]" % _("directory"))
-
-    # FIXME: support unicode on Windows, sys.argv isn't good enough
-    sys.argv.append(os.path.abspath("."))
-    opts, args = opts.parse()
-    args[0] = os.path.realpath(args[0])
-
-    config.init(const.CONFIG)
-
-    app.name = "Ex Falso"
-    app.id = "exfalso"
-
-    quodlibet.init(icon=icons.EXFALSO, name=app.name, proc_title=app.id)
-
-    import quodlibet.library
-    app.library = quodlibet.library.init()
-    app.player = quodlibet.init_backend("nullbe", app.librarian)
-    from quodlibet.qltk.songlist import PlaylistModel
-    app.player.setup(PlaylistModel(), None, 0)
-    pm = quodlibet.init_plugins()
-    pm.rescan()
-
-    from quodlibet.qltk.exfalsowindow import ExFalsoWindow
-    dir_ = args[0]
-    if os.name == "nt":
-        dir_ = fsdecode(dir_)
-    app.window = ExFalsoWindow(app.library, dir_)
-    app.window.init_plugins()
-
-    from quodlibet.util.cover import CoverManager
-    app.cover_manager = CoverManager()
-    app.cover_manager.init_plugins()
-
-    from quodlibet.qltk import session
-    session.init("exfalso")
-
-    quodlibet.enable_periodic_save(save_library=False)
-    quodlibet.main(app.window)
-
-    quodlibet.finish_first_session(app.id)
-    config.save(const.CONFIG)
-
-    print_d("Finished shutdown.")
+from quodlibet.exfalso import main
 
 
 if __name__ == "__main__":
-    set_win32_unicode_argv()
-    main()
+    sys.exit(main())

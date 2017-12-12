@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from tests import TestCase
 
 from gi.repository import Gtk
+from senf import fsnative
 
 import quodlibet.browsers.search
 import quodlibet.config
 
 from quodlibet.browsers.search import SearchBar
-from quodlibet.browsers.empty import EmptyBar
-from quodlibet.formats._audio import AudioFile
-from quodlibet.util.path import fsnative
+from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 
 # Don't sort yet, album_key makes it complicated...
@@ -20,6 +24,7 @@ SONGS = [AudioFile({
          AudioFile({
                 "title": "two",
                 "artist": "mu",
+                "~#length": 234,
                 "~filename": fsnative(u"/dev/zero")}),
          AudioFile({
                 "title": "three",
@@ -32,15 +37,15 @@ SONGS = [AudioFile({
                 "labelid": "65432-1",
                 "~filename": fsnative(u"/dev/random")}),
          AudioFile({
-                "title": "five",
+                "title": "five € and a £",
                 "artist": "shell",
                 "album": "don't stop",
                 "labelid": "12345-6",
-                "~filename": fsnative(u"/dev/sh")})]
+                "~filename": fsnative(u"/tmp/five € and £!")})]
 
 
-class TEmptyBar(TestCase):
-    Bar = EmptyBar
+class TSearchBar(TestCase):
+    Bar = SearchBar
 
     def setUp(self):
         quodlibet.config.init()
@@ -54,8 +59,9 @@ class TEmptyBar(TestCase):
 
     def _expected(self, bar, songs, sort):
         songs.sort()
-        self.failUnlessEqual(self.expected, songs)
-        self.expected = None
+        if self.expected:
+            self.failUnlessEqual(self.expected, songs)
+            self.expected = None
 
     def _do(self):
         while Gtk.events_pending():
@@ -118,7 +124,3 @@ class TEmptyBar(TestCase):
         self.bar.destroy()
         quodlibet.browsers.search.library.destroy()
         quodlibet.config.quit()
-
-
-class TSearchBar(TEmptyBar):
-    Bar = SearchBar

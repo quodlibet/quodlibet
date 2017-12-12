@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005-2006 Sergey Fedoseev <fedoseev.sergey@gmail.com>
 # Copyright 2007 Simon Morgan <zen84964@zen.co.uk>
+#           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
@@ -13,15 +15,22 @@ if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
-from string import join
-
 from gi.repository import Gtk
 import dbus
 
+from quodlibet import _
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
-from quodlibet.qltk import Frame
+from quodlibet.qltk import Frame, Icons
 from quodlibet import config
+
+# Translators: statuses relating to Instant Messenger apps
+_STATUSES = {'online': _('online'),
+             'offline': _('offline'),
+             'chat': _('chat'),
+             'away': _('away'),
+             'xa': _('xa'),
+             'invisible': _('invisible')}
 
 
 class GajimStatusMessage(EventPlugin):
@@ -29,6 +38,7 @@ class GajimStatusMessage(EventPlugin):
     PLUGIN_NAME = _('Gajim Status Message')
     PLUGIN_DESC = _("Changes Gajim status message according to what "
                     "you are currently listening to.")
+    PLUGIN_ICON = Icons.FACE_SMILE
 
     c_accounts = __name__ + '_accounts'
     c_paused = __name__ + '_paused'
@@ -52,7 +62,7 @@ class GajimStatusMessage(EventPlugin):
             self.statuses = config.get('plugins', self.c_statuses).split()
         except:
             self.statuses = ['online', 'chat']
-            config.set('plugins', self.c_statuses, join(self.statuses))
+            config.set('plugins', self.c_statuses, " ".join(self.statuses))
 
         try:
             self.pattern = config.get('plugins', self.c_pattern)
@@ -101,7 +111,8 @@ class GajimStatusMessage(EventPlugin):
 
     def plugin_on_paused(self):
         if self.paused and self.current != '':
-            self.change_status(self.accounts, self.current + " [paused]")
+            self.change_status(self.accounts,
+                               "%s [%s]" % (self.current, _("paused")))
 
     def plugin_on_unpaused(self):
         self.change_status(self.accounts, self.current)
@@ -122,32 +133,33 @@ class GajimStatusMessage(EventPlugin):
             self.statuses.append(b.get_name())
         elif b.get_active() is False and b.get_name() in self.statuses:
             self.statuses.remove(b.get_name())
-        config.set('plugins', self.c_statuses, join(self.statuses))
+        config.set('plugins', self.c_statuses, " ".join(self.statuses))
 
     def PluginPreferences(self, parent):
-        vb = Gtk.VBox(spacing=3)
+        vb = Gtk.VBox(spacing=6)
 
-        pattern_box = Gtk.HBox(spacing=3)
+        pattern_box = Gtk.HBox(spacing=6)
         pattern_box.set_border_width(3)
         pattern = Gtk.Entry()
         pattern.set_text(self.pattern)
         pattern.connect('changed', self.pattern_changed)
-        pattern_box.pack_start(Gtk.Label(label="Pattern:"), True, True, 0)
+        pattern_box.pack_start(Gtk.Label(label=_("Pattern:")), False, True, 0)
         pattern_box.pack_start(pattern, True, True, 0)
 
         accounts_box = Gtk.HBox(spacing=3)
         accounts_box.set_border_width(3)
         accounts = Gtk.Entry()
-        accounts.set_text(join(self.accounts))
+        accounts.set_text(" ".join(self.accounts))
         accounts.connect('changed', self.accounts_changed)
         accounts.set_tooltip_text(
             _("List accounts, separated by spaces, for "
               "changing status message. If none are specified, "
               "status message of all accounts will be changed."))
-        accounts_box.pack_start(Gtk.Label(label="Accounts:"), True, True, 0)
+        accounts_box.pack_start(Gtk.Label(label=_("Accounts:")),
+                                False, True, 0)
         accounts_box.pack_start(accounts, True, True, 0)
 
-        c = Gtk.CheckButton(label="Add '[paused]'")
+        c = Gtk.CheckButton(label=_("Add '[paused]'"))
         c.set_active(self.paused)
         c.connect('toggled', self.paused_changed)
         c.set_tooltip_text(_("If checked, '[paused]' will be added to "
@@ -157,8 +169,8 @@ class GajimStatusMessage(EventPlugin):
         self.list = []
         i = 0
         j = 0
-        for status in ['online', 'offline', 'chat', 'away', 'xa', 'invisible']:
-            button = Gtk.CheckButton(label=status)
+        for status, translated in _STATUSES.items():
+            button = Gtk.CheckButton(label=translated)
             button.set_name(status)
             if status in self.statuses:
                 button.set_active(True)
@@ -174,8 +186,7 @@ class GajimStatusMessage(EventPlugin):
         vb.pack_start(pattern_box, True, True, 0)
         vb.pack_start(accounts_box, True, True, 0)
         vb.pack_start(c, True, True, 0)
-        vb.pack_start(Frame(label=_("Statuses for which status message\n"
-                                    "will be changed")), True, True, 0)
-        vb.pack_start(table, True, True, 0)
-
+        frame = Frame(label=_("Statuses for which message will be changed"),
+                      child=table)
+        vb.pack_start(frame, True, True, 6)
         return vb

@@ -1,46 +1,56 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011 Joe Wreschnig, Christoph Reiter
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
 import bz2
-import urllib2
-import urllib
 import itertools
 
 from gi.repository import Gtk, GLib, Pango
 
-from quodlibet import const
+from quodlibet.util.dprint import print_d
+
+import quodlibet
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import config
 
-from quodlibet.browsers._base import Browser
+from quodlibet.browsers import Browser
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.formats._audio import TAG_TO_SORT, MIGRATE, AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.query import Query
+from quodlibet.compat import reduce, urlopen
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.notif import Task
-from quodlibet.util import copool, connect_destroy, sanitize_tags, connect_obj
+from quodlibet.qltk import Icons, ErrorMessage, WarningMessage
+from quodlibet.util import copool, connect_destroy, sanitize_tags, \
+    connect_obj, escape
+from quodlibet.util.i18n import numeric_phrase
+from quodlibet.util.path import uri_is_valid
 from quodlibet.util.string import decode, encode
-from quodlibet.util.uri import URI
+from quodlibet.util import print_w
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
+from quodlibet.compat import text_type, iteritems, iterkeys
+
 
 STATION_LIST_URL = \
-    "http://bitbucket.org/lazka/quodlibet/downloads/radiolist.bz2"
-STATIONS_FAV = os.path.join(const.USERDIR, "stations")
-STATIONS_ALL = os.path.join(const.USERDIR, "stations_all")
+    "https://quodlibet.github.io/radio/radiolist.bz2"
+STATIONS_FAV = os.path.join(quodlibet.get_user_dir(), "stations")
+STATIONS_ALL = os.path.join(quodlibet.get_user_dir(), "stations_all")
 
 # TODO: - Do the update in a thread
 #       - Ranking: reduce duplicate stations (max 3 URLs per station)
@@ -105,8 +115,8 @@ class IRFile(RemoteFile):
         for tag in ["title", "artist", "~format"]:
             value = self.get(tag)
             if value is not None:
-                lines.append("%s=%s" % (tag, encode(value)))
-        return "\n".join(lines)
+                lines.append(encode(tag) + b"=" + encode(value))
+        return b"\n".join(lines)
 
     def can_change(self, k=None):
         if self.streamsong:
@@ -165,7 +175,7 @@ def ParsePLS(file):
         count += 1
 
     if warnings:
-        qltk.WarningMessage(
+        WarningMessage(
             None, _("Unsupported file type"),
             _("Station lists can only contain locations of stations, "
               "not other station lists or playlists. The following locations "
@@ -196,22 +206,19 @@ def ParseM3U(fileobj):
 
 
 def add_station(uri):
-    """Fetches the URI content and extracts IRFiles"""
+    """Fetches the URI content and extracts IRFiles
+    Returns None in error, else a possibly filled list of stations"""
 
     irfs = []
-    if isinstance(uri, unicode):
-        uri = uri.encode('utf-8')
 
     if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):
         try:
-            sock = urllib.urlopen(uri)
-        except EnvironmentError, e:
-            try:
-                err = e.strerror.decode(const.ENCODING, 'replace')
-            except (TypeError, AttributeError):
-                err = e.strerror[1].decode(const.ENCODING, 'replace')
-            qltk.ErrorMessage(None, _("Unable to add station"), err).run()
-            return []
+            sock = urlopen(uri)
+        except EnvironmentError as err:
+            err = text_type(err)
+            print_d("Got %s from %s" % (uri, err))
+            ErrorMessage(None, _("Unable to add station"), escape(err)).run()
+            return None
 
         if uri.lower().endswith(".pls"):
             irfs = ParsePLS(sock)
@@ -222,8 +229,8 @@ def add_station(uri):
     else:
         try:
             irfs = [IRFile(uri)]
-        except ValueError, err:
-            qltk.ErrorMessage(None, _("Unable to add station"), err).run()
+        except ValueError as err:
+            ErrorMessage(None, _("Unable to add station"), err).run()
 
     return irfs
 
@@ -239,8 +246,8 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
             task.copool(cofuncid)
 
         try:
-            response = urllib2.urlopen(STATION_LIST_URL)
-        except urllib2.URLError:
+            response = urlopen(STATION_LIST_URL)
+        except EnvironmentError:
             GLib.idle_add(callback, None)
             return
 
@@ -251,8 +258,8 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
 
         decomp = bz2.BZ2Decompressor()
 
-        data = ""
-        temp = ""
+        data = b""
+        temp = b""
         read = 0
         while temp or not data:
             read += len(temp)
@@ -295,17 +302,20 @@ def parse_taglist(data):
     stations = []
     station = None
 
-    for l in data.split("\n"):
-        key = l.split("=")[0]
-        value = l.split("=", 1)[1]
+    for l in data.split(b"\n"):
+        if not l:
+            continue
+        key = l.split(b"=")[0]
+        value = l.split(b"=", 1)[1]
+        key = decode(key)
+        value = decode(value)
         if key == "uri":
             if station:
                 stations.append(station)
             station = IRFile(value)
             continue
 
-        value = decode(value)
-        san = sanitize_tags({key: value}, stream=True).items()
+        san = list(sanitize_tags({key: value}, stream=True).items())
         if not san:
             continue
 
@@ -314,8 +324,10 @@ def parse_taglist(data):
             key = "~#listenerpeak"
             value = int(value)
 
-        if isinstance(value, str):
-            value = value.decode("utf-8")
+        if not station:
+            continue
+
+        if isinstance(value, text_type):
             if value not in station.list(key):
                 station.add(key, value)
         else:
@@ -332,18 +344,14 @@ class AddNewStation(GetStringDialog):
         super(AddNewStation, self).__init__(
             parent, _("New Station"),
             _("Enter the location of an Internet radio station:"),
-            okbutton=Gtk.STOCK_ADD)
+            button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
     def _verify_clipboard(self, text):
         # try to extract a URI from the clipboard
         for line in text.splitlines():
             line = line.strip()
 
-            try:
-                URI(line)
-            except ValueError:
-                pass
-            else:
+            if uri_is_valid(line):
                 return line
 
 
@@ -451,26 +459,14 @@ class QuestionBar(Gtk.InfoBar):
         content.add(label)
 
         self.add_button(_("_Load Stations"), self.RESPONSE_LOAD)
-
-        try:
-            self.set_show_close_button(True)
-        except AttributeError:
-            # < gtk3.10
-            action = self.get_action_area()
-            close_button = CloseButton()
-            close_button.show()
-            self.add_action_widget(close_button, Gtk.ResponseType.CLOSE)
-            # FIXME: doesn't seem to have any effect
-            action.set_child_packing(
-                close_button, False, True, 2, Gtk.PackType.START)
+        self.set_show_close_button(True)
 
     def __response(self, bar, response_id):
         if response_id == Gtk.ResponseType.CLOSE:
             bar.hide()
 
 
-class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
-    __gsignals__ = Browser.__gsignals__
+class InternetRadio(Browser, util.InstanceTracker):
 
     __stations = None
     __fav_stations = None
@@ -480,12 +476,13 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
     name = _("Internet Radio")
     accelerated_name = _("_Internet Radio")
+    keys = ["InternetRadio"]
     priority = 16
     uses_main_library = False
     headers = "title artist ~people grouping genre website ~format " \
         "channel-mode".split()
 
-    TYPE, STOCK, KEY, NAME = range(4)
+    TYPE, ICON_NAME, KEY, NAME = range(4)
     TYPE_FILTER, TYPE_ALL, TYPE_FAV, TYPE_SEP, TYPE_NOCAT = range(5)
     STAR = ["artist", "title", "website", "genre", "comment"]
 
@@ -529,6 +526,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
     def __init__(self, library):
         super(InternetRadio, self).__init__(spacing=12)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
 
         if not self.instances():
             self._init(library)
@@ -539,20 +537,21 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         completion = LibraryTagCompletion(self.__stations)
         self.accelerators = Gtk.AccelGroup()
         self.__searchbar = search = SearchBarBox(completion=completion,
-                                                 accel_group=self.accelerators)
+                                                 accel_group=self.accelerators,
+                                                 star=self.STAR)
         search.connect('query-changed', self.__filter_changed)
 
         menu = Gtk.Menu()
-        new_item = MenuItem(_(u"_New Station…"), Gtk.STOCK_ADD)
+        new_item = MenuItem(_(u"_New Station…"), Icons.LIST_ADD)
         new_item.connect('activate', self.__add)
         menu.append(new_item)
-        update_item = MenuItem(_("_Update Stations"), Gtk.STOCK_REFRESH)
+        update_item = MenuItem(_("_Update Stations"), Icons.VIEW_REFRESH)
         update_item.connect('activate', self.__update)
         menu.append(update_item)
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage("emblem-system", Gtk.IconSize.MENU),
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
             arrow=True)
         button.set_menu(menu)
 
@@ -572,19 +571,19 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         scrolled_window.add(view)
         model = Gtk.ListStore(int, str, str, str)
 
-        model.append(row=[self.TYPE_ALL, Gtk.STOCK_DIRECTORY, "__all",
+        model.append(row=[self.TYPE_ALL, Icons.FOLDER, "__all",
                           _("All Stations")])
-        model.append(row=[self.TYPE_SEP, Gtk.STOCK_DIRECTORY, "", ""])
+        model.append(row=[self.TYPE_SEP, Icons.FOLDER, "", ""])
         #Translators: Favorite radio stations
-        model.append(row=[self.TYPE_FAV, Gtk.STOCK_DIRECTORY, "__fav",
+        model.append(row=[self.TYPE_FAV, Icons.FOLDER, "__fav",
                           _("Favorites")])
-        model.append(row=[self.TYPE_SEP, Gtk.STOCK_DIRECTORY, "", ""])
+        model.append(row=[self.TYPE_SEP, Icons.FOLDER, "", ""])
 
         filters = self.filters
         for text, k in sorted([(filters.text(k), k) for k in filters.keys()]):
-            model.append(row=[self.TYPE_FILTER, Gtk.STOCK_FIND, k, text])
+            model.append(row=[self.TYPE_FILTER, Icons.EDIT_FIND, k, text])
 
-        model.append(row=[self.TYPE_NOCAT, Gtk.STOCK_DIRECTORY,
+        model.append(row=[self.TYPE_NOCAT, Icons.FOLDER,
                           "nocat", _("No Category")])
 
         def separator(model, iter, data):
@@ -602,7 +601,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         renderpb = Gtk.CellRendererPixbuf()
         renderpb.props.xpad = 3
         column.pack_start(renderpb, False)
-        column.add_attribute(renderpb, "stock_id", self.STOCK)
+        column.add_attribute(renderpb, "icon-name", self.ICON_NAME)
 
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
@@ -690,7 +689,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
         # keep at most 2 URLs for each group
         stations = []
-        for key, sub in groups.iteritems():
+        for key, sub in iteritems(groups):
             sub.sort(key=lambda s: s.get("~#listenerpeak", 0), reverse=True)
             stations.extend(sub[:2])
 
@@ -698,7 +697,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         all_ = [self.filters.query(k) for k in self.filters.keys()]
         assert all_
         anycat_filter = reduce(lambda x, y: x | y, all_)
-        stations = filter(anycat_filter.search, stations)
+        stations = list(filter(anycat_filter.search, stations))
 
         # remove listenerpeak
         for s in stations:
@@ -707,11 +706,11 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         # update the libraries
         stations = dict(((s.key, s) for s in stations))
         # don't add ones that are in the fav list
-        for fav in self.__fav_stations.iterkeys():
+        for fav in iterkeys(self.__fav_stations):
             stations.pop(fav, None)
 
         # separate
-        o, n = set(self.__stations.iterkeys()), set(stations)
+        o, n = set(iterkeys(self.__stations)), set(stations)
         to_add, to_change, to_remove = n - o, o & n, o - n
         del o, n
 
@@ -722,7 +721,7 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
             # clear everything except stats
             AudioFile.reload(old)
             # add new metadata except stats
-            for k in (x for x in new.iterkeys() if x not in MIGRATE):
+            for k in (x for x in iterkeys(new) if x not in MIGRATE):
                 old[k] = new[k]
 
         to_add = [stations.pop(k) for k in to_add]
@@ -802,17 +801,19 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
     def __add_station(self, uri):
         irfs = add_station(uri)
-
+        if irfs is None:
+            # Error, rather than empty list
+            return
         if not irfs:
-            qltk.ErrorMessage(
+            ErrorMessage(
                 None, _("No stations found"),
                 _("No Internet radio stations were found at %s.") %
                 util.escape(uri)).run()
             return
 
-        irfs = filter(lambda station: station not in self.__fav_stations, irfs)
+        irfs = set(irfs) - set(self.__fav_stations)
         if not irfs:
-            qltk.WarningMessage(
+            WarningMessage(
                 None, _("Unable to add station"),
                 _("All stations listed are already in your library.")).run()
 
@@ -831,24 +832,24 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
                 break
 
         iradio_items = []
-        button = MenuItem(_("Add to Favorites"), Gtk.STOCK_ADD)
+        button = MenuItem(_("Add to Favorites"), Icons.LIST_ADD)
         button.set_sensitive(in_all)
         connect_obj(button, 'activate', self.__add_fav, songs)
         iradio_items.append(button)
-        button = MenuItem(_("Remove from Favorites"), Gtk.STOCK_REMOVE)
+        button = MenuItem(_("Remove from Favorites"), Icons.LIST_REMOVE)
         button.set_sensitive(in_fav)
         connect_obj(button, 'activate', self.__remove_fav, songs)
         iradio_items.append(button)
 
         items.append(iradio_items)
         menu = SongsMenu(self.__librarian, songs, playlists=False, remove=True,
-                         queue=False, devices=False, items=items)
+                         queue=False, items=items)
         return menu
 
     def restore(self):
-        text = config.get("browsers", "query_text").decode("utf-8")
+        text = config.gettext("browsers", "query_text")
         self.__searchbar.set_text(text)
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__filter_changed(self.__searchbar, text, restore=True)
 
         keys = config.get("browsers", "radio").splitlines()
@@ -881,9 +882,12 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
 
     def filter_text(self, text):
         self.__searchbar.set_text(text)
-        if Query.is_parsable(text):
+        if Query(text).is_parsable:
             self.__filter_changed(self.__searchbar, text)
             self.activate()
+
+    def get_filter_text(self):
+        return self.__searchbar.get_text()
 
     def activate(self):
         filter_ = self.__get_filter()
@@ -905,8 +909,8 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         return True
 
     def save(self):
-        text = self.__searchbar.get_text().encode("utf-8")
-        config.set("browsers", "query_text", text)
+        text = self.__searchbar.get_text()
+        config.settext("browsers", "query_text", text)
 
         selection = self.view.get_selection()
         model, rows = selection.get_selected_rows()
@@ -931,8 +935,9 @@ class InternetRadio(Gtk.VBox, Browser, util.InstanceTracker):
         self.view.set_cursor(path)
         self.view.scroll_to_cell(path, use_align=True, row_align=0.5)
 
-    def statusbar(self, i):
-        return ngettext("%(count)d station", "%(count)d stations", i)
+    def status_text(self, count, time=None):
+        return numeric_phrase("%(count)d station", "%(count)d stations",
+                              count, 'count')
 
 
 from quodlibet import app

@@ -1,10 +1,25 @@
 # -*- coding: utf-8 -*-
-# Copyright 2007 Joe Wreschnig
+# Copyright 2007-2008 Joe Wreschnig
+#           2009,2012-2016 Christoph Reiter
 #
-# This software and accompanying documentation, if any, may be freely
-# used, distributed, and/or modified, in any form and for any purpose,
-# as long as this notice is preserved. There is no warranty, either
-# express or implied, for this software.
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """install man pages
 
@@ -13,8 +28,7 @@ Commands to install Unix man pages.
 
 import os
 
-from distutils.util import change_root
-from distutils.core import Command
+from .util import Command
 
 
 class install_man(Command):
@@ -30,20 +44,18 @@ class install_man(Command):
     def initialize_options(self):
         self.man_pages = None
         self.mandir = None
-        self.prefix = None
-        self.root = None
+        self.install_dir = None
         self.outfiles = []
 
     def finalize_options(self):
         self.set_undefined_options(
             'install',
-            ('root', 'root'),
-            ('install_base', 'prefix'),
+            ('install_data', 'install_dir'),
             ('mandir', 'mandir'),
         )
 
         if self.mandir is None:
-            self.mandir = os.path.join(self.prefix, 'share', 'man')
+            self.mandir = os.path.join(self.install_dir, 'share', 'man')
 
         self.man_pages = self.distribution.man_pages
         for man_page in self.man_pages:
@@ -55,8 +67,6 @@ class install_man(Command):
 
     def run(self):
         basepath = self.mandir
-        if self.root is not None:
-            basepath = change_root(self.root, basepath)
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
 

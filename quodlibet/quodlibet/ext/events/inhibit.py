@@ -2,8 +2,9 @@
 # Copyright 2011 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
@@ -12,10 +13,11 @@ if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
-from gi.repository import Gtk
 import dbus
 
+from quodlibet import _
 from quodlibet import app
+from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -40,7 +42,7 @@ class SessionInhibit(EventPlugin):
     PLUGIN_NAME = _("Inhibit Screensaver")
     PLUGIN_DESC = _("Prevents the GNOME screensaver from activating while"
                     " a song is playing.")
-    PLUGIN_ICON = Gtk.STOCK_STOP
+    PLUGIN_ICON = Icons.PREFERENCES_DESKTOP_SCREENSAVER
 
     DBUS_NAME = "org.gnome.SessionManager"
     DBUS_INTERFACE = "org.gnome.SessionManager"
@@ -66,7 +68,8 @@ class SessionInhibit(EventPlugin):
         try:
             bus = dbus.SessionBus()
             obj = bus.get_object(self.DBUS_NAME, self.DBUS_PATH)
-            self.__cookie = obj.Inhibit(
+            iface = dbus.Interface(obj, self.DBUS_INTERFACE)
+            self.__cookie = iface.Inhibit(
                 self.APPLICATION_ID, xid, self.INHIBIT_REASON, flags)
         except dbus.DBusException:
             pass
@@ -78,7 +81,8 @@ class SessionInhibit(EventPlugin):
         try:
             bus = dbus.SessionBus()
             obj = bus.get_object(self.DBUS_NAME, self.DBUS_PATH)
-            obj.Uninhibit(self.__cookie)
+            iface = dbus.Interface(obj, self.DBUS_INTERFACE)
+            iface.Uninhibit(self.__cookie)
             self.__cookie = None
         except dbus.DBusException:
             pass

@@ -5,15 +5,17 @@
 # SqueezeCenter and SqueezeBox are copyright Logitech
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-from gi.repository import Gtk
 import os
 
+from quodlibet import _
 from quodlibet import qltk, app
 from quodlibet.ext._shared.squeezebox.base import SqueezeboxPluginMixin
 from quodlibet.util.dprint import print_d
+from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -27,7 +29,8 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     PLUGIN_NAME = _('Squeezebox Sync')
     PLUGIN_DESC = _("Makes Logitech Squeezebox mirror Quod Libet output, "
                     "provided both read from an identical library.")
-    PLUGIN_ICON = Gtk.STOCK_MEDIA_PLAY
+    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
+
     server = None
     active = False
     _debug = False

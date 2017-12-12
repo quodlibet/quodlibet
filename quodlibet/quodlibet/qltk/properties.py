@@ -4,11 +4,14 @@
 #                2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, GObject, Pango
+from senf import fsn2text
 
+from quodlibet import ngettext, _
 from quodlibet import qltk
 from quodlibet import config
 
@@ -20,8 +23,9 @@ from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.qltk.x import ScrolledWindow, ConfigRPaned
 from quodlibet.qltk.models import ObjectStore, ObjectModelSort
-from quodlibet.util.path import fsdecode
+from quodlibet.qltk.msg import CancelRevertSave
 from quodlibet.util import connect_destroy
+from quodlibet.compat import cmp
 
 
 class _ListEntry(object):
@@ -31,7 +35,7 @@ class _ListEntry(object):
 
     @property
     def name(self):
-        return fsdecode(self.song("~basename"))
+        return fsn2text(self.song("~basename"))
 
 
 class SongProperties(qltk.Window, PersistentWindowMixin):
@@ -186,7 +190,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
             if self.auto_save_on_change:
                 self.__save.clicked()
                 return
-            resp = qltk.CancelRevertSave(self).run()
+            resp = CancelRevertSave(self).run()
             if resp == Gtk.ResponseType.YES:
                 self.__save.clicked()
             elif resp == Gtk.ResponseType.NO:

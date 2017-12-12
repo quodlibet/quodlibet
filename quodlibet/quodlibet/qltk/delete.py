@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2013 Nick Boultbee
+#           2013-2017 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 """
 Functions for deleting files and songs with user interaction.
@@ -16,13 +17,18 @@ Only use trash_files() or trash_songs() and TrashMenuItem().
 import os
 
 from gi.repository import Gtk
+from senf import fsn2text
 
+from quodlibet import _
+from quodlibet import print_w
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.wlw import WaitLoadWindow
-from quodlibet.qltk.x import Button, MenuItem, Align
-from quodlibet.util.path import fsdecode, unexpand
+from quodlibet.qltk.x import MenuItem, Align
+from quodlibet.util.i18n import numeric_phrase
+from quodlibet.util.path import unexpand
 
 
 class FileListExpander(Gtk.Expander):
@@ -32,7 +38,7 @@ class FileListExpander(Gtk.Expander):
         super(FileListExpander, self).__init__(label=_("Files:"))
         self.set_resize_toplevel(True)
 
-        paths = [fsdecode(unexpand(p)) for p in paths]
+        paths = [fsn2text(unexpand(p)) for p in paths]
         lab = Gtk.Label(label="\n".join(paths))
         lab.set_alignment(0.0, 0.0)
         lab.set_selectable(True)
@@ -48,7 +54,7 @@ class FileListExpander(Gtk.Expander):
 class DeleteDialog(WarningMessage):
 
     RESPONSE_DELETE = 1
-    """"Return value of DeleteDialog.run() in case the passed files
+    """Return value of DeleteDialog.run() in case the passed files
     should be deleted"""
 
     @classmethod
@@ -68,12 +74,9 @@ class DeleteDialog(WarningMessage):
         return cls(parent, paths, description)
 
     def __init__(self, parent, paths, description):
-        title = ngettext(
-            "Delete %(file_count)d file permanently?",
-            "Delete %(file_count)d files permanently?",
-            len(paths)) % {
-                "file_count": len(paths),
-            }
+        title = numeric_phrase("Delete %(file_count)d file permanently?",
+                               "Delete %(file_count)d files permanently?",
+                               len(paths), "file_count")
 
         super(DeleteDialog, self).__init__(
             get_top_parent(parent),
@@ -85,17 +88,16 @@ class DeleteDialog(WarningMessage):
         exp.show()
         area.pack_start(exp, False, True, 0)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        delete_button = Button(_("_Delete Files"), Gtk.STOCK_DELETE)
-        delete_button.show()
-        self.add_action_widget(delete_button, self.RESPONSE_DELETE)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Delete Files"), Icons.EDIT_DELETE,
+                             self.RESPONSE_DELETE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
 
 class TrashDialog(WarningMessage):
 
     RESPONSE_TRASH = 1
-    """"Return value of TrashDialog.run() in case the passed files
+    """Return value of TrashDialog.run() in case the passed files
     should be moved to the trash"""
 
     @classmethod
@@ -116,13 +118,9 @@ class TrashDialog(WarningMessage):
 
     def __init__(self, parent, paths, description):
 
-        title = ngettext(
-            "Move %(file_count)d file to the trash?",
-            "Move %(file_count)d files to the trash?",
-            len(paths)) % {
-                "file_count": len(paths),
-            }
-
+        title = numeric_phrase("Move %(file_count)d file to the trash?",
+                               "Move %(file_count)d files to the trash?",
+                               len(paths), "file_count")
         super(TrashDialog, self).__init__(
             get_top_parent(parent),
             title, description,
@@ -133,16 +131,17 @@ class TrashDialog(WarningMessage):
         exp.show()
         area.pack_start(exp, False, True, 0)
 
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        trash_button = Button(_("_Move to Trash"), "user-trash")
-        trash_button.show()
-        self.add_action_widget(trash_button, self.RESPONSE_TRASH)
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Move to Trash"), Icons.USER_TRASH,
+                             self.RESPONSE_TRASH)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
 
 def TrashMenuItem():
-    return (MenuItem(_("_Move to Trash"), "user-trash") if trash.can_trash()
-            else Gtk.ImageMenuItem(Gtk.STOCK_DELETE, use_stock=True))
+    if trash.use_trash():
+        return MenuItem(_("_Move to Trash"), Icons.USER_TRASH)
+    else:
+        return MenuItem(_("_Delete"), Icons.EDIT_DELETE)
 
 
 def _do_trash_songs(parent, songs, librarian):
@@ -162,7 +161,8 @@ def _do_trash_songs(parent, songs, librarian):
         filename = song("~filename")
         try:
             trash.trash(filename)
-        except trash.TrashError:
+        except trash.TrashError as e:
+            print_w("Couldn't trash file (%s)" % e)
             failed.append(song)
         else:
             ok.append(song)
@@ -283,7 +283,7 @@ def trash_files(parent, paths):
         return
 
     # depends on the platform if we can
-    if trash.can_trash():
+    if trash.use_trash():
         _do_trash_files(parent, paths)
     else:
         _do_delete_files(parent, paths)
@@ -302,7 +302,7 @@ def trash_songs(parent, songs, librarian):
         return
 
     # depends on the platform if we can
-    if trash.can_trash():
+    if trash.use_trash():
         _do_trash_songs(parent, songs, librarian)
     else:
         _do_delete_songs(parent, songs, librarian)

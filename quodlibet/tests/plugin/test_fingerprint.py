@@ -2,10 +2,10 @@
 # Copyright 2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-import os
 import time
 
 from gi.repository import Gtk
@@ -21,12 +21,12 @@ else:
 
 
 from tests.plugin import PluginTestCase
-from tests import skipUnless, DATA_DIR
+from tests import skipUnless, get_data_path
 from quodlibet import config
 from quodlibet.formats import MusicFile
 
 
-@skipUnless(Gst and chromaprint and vorbisdec)
+@skipUnless(Gst and chromaprint and vorbisdec, "gstreamer plugins missing")
 class TFingerprint(PluginTestCase):
 
     TIMEOUT = 20.0
@@ -42,7 +42,7 @@ class TFingerprint(PluginTestCase):
 
     def test_analyze_silence(self):
         pipeline = self.mod.analyze.FingerPrintPipeline()
-        song = MusicFile(os.path.join(DATA_DIR, "silence-44-s.ogg"))
+        song = MusicFile(get_data_path("silence-44-s.ogg"))
         done = []
 
         def callback(self, *args):
@@ -60,7 +60,7 @@ class TFingerprint(PluginTestCase):
 
     def test_analyze_pool(self):
         pool = self.mod.analyze.FingerPrintPool()
-        song = MusicFile(os.path.join(DATA_DIR, "silence-44-s.ogg"))
+        song = MusicFile(get_data_path("silence-44-s.ogg"))
 
         events = []
 
@@ -81,7 +81,7 @@ class TFingerprint(PluginTestCase):
         self.assertEqual(events[1][-1], "error")
 
 
-@skipUnless(Gst and chromaprint)
+@skipUnless(Gst and chromaprint, "gstreamer plugins missing")
 class TAcoustidLookup(PluginTestCase):
 
     def setUp(self):

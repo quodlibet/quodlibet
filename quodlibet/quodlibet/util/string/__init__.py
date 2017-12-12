@@ -3,8 +3,26 @@
 #           2011,2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+from quodlibet.compat import text_type, iterbytes
+
+
+def isascii(string):
+    """Returns if the passed str/unicode is an ascii encoded string or
+    unicode string containing only ascii code points.
+    """
+
+    try:
+        if isinstance(string, bytes):
+            string.decode("ascii")
+        else:
+            string.encode("ascii")
+    except UnicodeError:
+        return False
+    return True
 
 
 def decode(s, charset="utf-8"):
@@ -13,6 +31,7 @@ def decode(s, charset="utf-8"):
     try:
         return s.decode(charset)
     except UnicodeError:
+        from quodlibet import _
         return s.decode(charset, "replace") + " " + _("[Invalid Encoding]")
 
 
@@ -22,32 +41,34 @@ def encode(s, charset="utf-8"):
     try:
         return s.encode(charset)
     except UnicodeError:
+        from quodlibet import _
         return (s + " " + _("[Invalid Encoding]")).encode(charset, "replace")
 
 
 def split_escape(string, sep, maxsplit=None, escape_char="\\"):
-    """Like unicode/str.split but allows for the separator to be escaped
+    """Like unicode/str/bytes.split but allows for the separator to be escaped
 
-    If passed unicode/str will only return list of unicode/str.
-
-    Borrowed from Mutagen's mid3v2
+    If passed unicode/str/bytes will only return list of unicode/str/bytes.
     """
 
     assert len(sep) == 1
     assert len(escape_char) == 1
 
-    # don't allow auto decoding of 'string'
     if isinstance(string, bytes):
-        assert not isinstance(sep, unicode)
+        if isinstance(escape_char, text_type):
+            escape_char = escape_char.encode("ascii")
+        iter_ = iterbytes
+    else:
+        iter_ = iter
 
     if maxsplit is None:
         maxsplit = len(string)
 
-    empty = type(string)("")
+    empty = string[:0]
     result = []
     current = empty
     escaped = False
-    for char in string:
+    for char in iter_(string):
         if escaped:
             if char != escape_char and char != sep:
                 current += escape_char
@@ -66,7 +87,7 @@ def split_escape(string, sep, maxsplit=None, escape_char="\\"):
 
 
 def join_escape(values, sep, escape_char="\\"):
-    """Join str/unicode so that it can be split with split_escape.
+    """Join bytes/unicode so that it can be split with split_escape.
 
     In case values is empty, the result has the type of `sep`.
     otherwise it has the type of values.
@@ -79,7 +100,9 @@ def join_escape(values, sep, escape_char="\\"):
 
     # don't allow auto decoding of 'values'
     if values and isinstance(values[0], bytes):
-        assert not isinstance(sep, unicode)
+        if isinstance(escape_char, text_type):
+            escape_char = escape_char.encode("ascii")
+        assert not isinstance(sep, text_type)
 
     escaped = []
     for value in values:

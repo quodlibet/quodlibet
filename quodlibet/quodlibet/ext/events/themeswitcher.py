@@ -1,54 +1,37 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011,2013 Christoph Reiter
+#                2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import warnings
 import os
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gio, GLib
 
+from quodlibet import _
 from quodlibet import qltk
 from quodlibet import config
-from quodlibet import const
+from quodlibet.qltk import Icons
+from quodlibet.util.path import get_home_dir
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.events import EventPlugin
-
-
-def has_header_bar_prop():
-    """if gtk is recent enough to have the property"""
-
-    settings = Gtk.Settings.get_default()
-    return hasattr(settings.props, "gtk_dialogs_use_header")
-
-
-def set_header_bar(value):
-    if not has_header_bar_prop():
-        return
-    settings = Gtk.Settings.get_default()
-    settings.set_property('gtk-dialogs-use-header', value)
-
-
-def get_header_bar():
-    if not has_header_bar_prop():
-        return False
-    settings = Gtk.Settings.get_default()
-    return settings.get_property('gtk-dialogs-use-header')
 
 
 class ThemeSwitcher(EventPlugin):
     PLUGIN_ID = "Theme Switcher"
     PLUGIN_NAME = _("Theme Switcher")
     PLUGIN_DESC = _("Changes the active GTK+ theme.")
+    PLUGIN_ICON = Icons.PREFERENCES_DESKTOP_THEME
 
     __enabled = False
     __defaults = False
 
     CONFIG_THEME = PLUGIN_ID + "_theme"
     CONFIG_DARK = PLUGIN_ID + "_prefer_dark"
-    CONFIG_HEADER_BAR = PLUGIN_ID + "_prefer_header_bar"
 
     def __init_defaults(self):
         if self.__defaults:
@@ -59,7 +42,6 @@ class ThemeSwitcher(EventPlugin):
         self.__default_theme = settings.get_property('gtk-theme-name')
         self.__default_dark = settings.get_property(
             'gtk-application-prefer-dark-theme')
-        self.__default_header_bar = get_header_bar()
 
     def PluginPreferences(self, *args):
         self.__init_defaults()
@@ -91,16 +73,6 @@ class ThemeSwitcher(EventPlugin):
 
         dark_button.connect('toggled', dark_cb)
 
-        hb_button = ConfigCheckButton(
-            _("Use header bars"),
-            "plugins", self.CONFIG_HEADER_BAR,
-            populate=True, default=self.__get_header_bar())
-
-        def hb_cb(button):
-            self.__set_header_bar(button.get_active())
-
-        hb_button.connect('toggled', hb_cb)
-
         label.set_mnemonic_widget(combo)
         label.set_use_underline(True)
         hb.pack_start(label, False, True, 0)
@@ -109,7 +81,6 @@ class ThemeSwitcher(EventPlugin):
         vbox = Gtk.VBox(spacing=6)
         vbox.pack_start(hb, False, True, 0)
         vbox.pack_start(dark_button, False, True, 0)
-        vbox.pack_start(hb_button, False, True, 0)
 
         return qltk.Frame(_("Preferences"), child=vbox)
 
@@ -125,7 +96,7 @@ class ThemeSwitcher(EventPlugin):
             warnings.simplefilter("ignore")
             theme_dir = Gtk.rc_get_theme_dir()
 
-        theme_dirs = [theme_dir, os.path.join(const.HOME, ".themes")]
+        theme_dirs = [theme_dir, os.path.join(get_home_dir(), ".themes")]
 
         themes = set()
         for theme_dir in theme_dirs:
@@ -137,6 +108,15 @@ class ThemeSwitcher(EventPlugin):
                 gtk_dir = os.path.join(theme_dir, dir_, "gtk-3.0")
                 if os.path.isdir(gtk_dir):
                     themes.add(dir_)
+
+        try:
+            resource_themes = Gio.resources_enumerate_children(
+                "/org/gtk/libgtk/theme", 0)
+        except GLib.GError:
+            pass
+        else:
+            themes.update([t.rstrip("/") for t in resource_themes])
+
         return themes
 
     def __set_theme(self, name):
@@ -157,17 +137,6 @@ class ThemeSwitcher(EventPlugin):
             value = self.__default_dark
         settings.set_property('gtk-application-prefer-dark-theme', value)
 
-    def __set_header_bar(self, value):
-        if not self.__enabled:
-            return
-        if value is None:
-            value = self.__default_header_bar
-        set_header_bar(value)
-
-    def __get_header_bar(self):
-        return config.getboolean(
-            "plugins", self.CONFIG_HEADER_BAR, self.__default_header_bar)
-
     def __get_dark(self):
         return config.getboolean(
             "plugins", self.CONFIG_DARK, self.__default_dark)
@@ -180,10 +149,8 @@ class ThemeSwitcher(EventPlugin):
         self.__set_theme(theme)
 
         self.__set_dark(self.__get_dark())
-        self.__set_header_bar(self.__get_header_bar())
 
     def disabled(self):
         self.__set_theme(None)
         self.__set_dark(None)
-        self.__set_header_bar(None)
         self.__enabled = False

@@ -1,15 +1,36 @@
 # -*- coding: utf-8 -*-
-import fnmatch
-import inspect
-from math import log
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 import os
 import sys
 import unittest
 import tempfile
 import shutil
+import atexit
 import subprocess
-from quodlibet.util.dprint import Colorise, print_
-from quodlibet.util.path import fsnative, is_fsnative
+import locale
+from quodlibet.compat import PY3
+
+try:
+    import pytest
+except ImportError:
+    module = "python3-pytest" if PY3 else "python-pytest"
+    raise SystemExit("pytest missing: sudo apt-get install %s" % module)
+
+try:
+    import xvfbwrapper
+except ImportError:
+    xvfbwrapper = None
+
+import faulthandler
+from senf import fsnative, path2fsn, environ
+
+import quodlibet
+from quodlibet.util.path import xdg_get_cache_home
+from quodlibet import util
 
 from unittest import TestCase as OrigTestCase
 
@@ -26,52 +47,30 @@ class TestCase(OrigTestCase):
     failIfAlmostEqual = OrigTestCase.assertNotAlmostEqual
 
 
-class AbstractTestCase(TestCase):
-    """If a class is a direct subclass of this one it gets skipped"""
+skip = unittest.skip
+skipUnless = unittest.skipUnless
+skipIf = unittest.skipIf
 
 
-skipped = []
-skipped_reason = {}
-skipped_warn = set()
+def is_ci():
+    """Guesses if this is being run in (Travis, maybe other) CI.
+       See https://docs.travis-ci.com/user/environment-variables
+    """
+    return os.environ.get('CI', "").lower() == 'true'
 
-
-def skip(cls, reason=None, warn=True):
-    assert inspect.isclass(cls)
-
-    skipped.append(cls)
-    if reason:
-        skipped_reason[cls] = reason
-    if warn:
-        skipped_warn.add(cls)
-
-    return cls
-
-
-def skipUnless(value, *args, **kwargs):
-    def dec(cls):
-        assert inspect.isclass(cls)
-
-        if value:
-            return cls
-        return skip(cls, *args, **kwargs)
-    return dec
-
-
-def skipIf(value, *args, **kwargs):
-    return skipUnless(not value, *args, **kwargs)
-
-
-DATA_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data")
-if os.name == "nt":
-    DATA_DIR = DATA_DIR.decode("ascii")
-assert is_fsnative(DATA_DIR)
+_DATA_DIR = os.path.join(util.get_module_dir(), "data")
+assert isinstance(_DATA_DIR, fsnative)
 _TEMP_DIR = None
+
+
+def get_data_path(filename):
+    return os.path.join(_DATA_DIR, path2fsn(filename))
 
 
 def _wrap_tempfile(func):
     def wrap(*args, **kwargs):
-        if kwargs.get("dir") is None:
-            assert is_fsnative(_TEMP_DIR)
+        if kwargs.get("dir") is None and _TEMP_DIR is not None:
+            assert isinstance(_TEMP_DIR, fsnative)
             kwargs["dir"] = _TEMP_DIR
         return func(*args, **kwargs)
     return wrap
@@ -82,13 +81,13 @@ NamedTemporaryFile = _wrap_tempfile(tempfile.NamedTemporaryFile)
 
 def mkdtemp(*args, **kwargs):
     path = _wrap_tempfile(tempfile.mkdtemp)(*args, **kwargs)
-    assert is_fsnative(path)
+    assert isinstance(path, fsnative)
     return path
 
 
 def mkstemp(*args, **kwargs):
     fd, filename = _wrap_tempfile(tempfile.mkstemp)(*args, **kwargs)
-    assert is_fsnative(filename)
+    assert isinstance(filename, fsnative)
     return (fd, filename)
 
 
@@ -99,7 +98,7 @@ def init_fake_app():
     from quodlibet.player.nullbe import NullPlayer
     from quodlibet.library.libraries import SongFileLibrary
     from quodlibet.library.librarians import SongLibrarian
-    from quodlibet.qltk.quodlibetwindow import QuodLibetWindow
+    from quodlibet.qltk.quodlibetwindow import QuodLibetWindow, PlayerOptions
     from quodlibet.util.cover import CoverManager
 
     browsers.init()
@@ -110,6 +109,7 @@ def init_fake_app():
     app.library.librarian = SongLibrarian()
     app.cover_manager = CoverManager()
     app.window = QuodLibetWindow(app.library, app.player, headless=True)
+    app.player_options = PlayerOptions(app.window)
 
 
 def destroy_fake_app():
@@ -124,127 +124,127 @@ def destroy_fake_app():
     app.cover_manager = None
 
 
-class Result(unittest.TestResult):
-    TOTAL_WIDTH = 80
-    TEST_RESULTS_WIDTH = 50
-    TEST_NAME_WIDTH = TOTAL_WIDTH - TEST_RESULTS_WIDTH - 3
-    MAJOR_SEPARATOR = '=' * TOTAL_WIDTH
-    MINOR_SEPARATOR = '-' * TOTAL_WIDTH
+def dbus_launch_user():
+    """Returns a dict with env vars, or an empty dict"""
 
-    CHAR_SUCCESS, CHAR_ERROR, CHAR_FAILURE = '+', 'E', 'F'
-
-    def __init__(self, test_name, num_tests, out=sys.stdout, failfast=False):
-        super(Result, self).__init__()
-        self.out = out
-        self.failfast = failfast
-        if hasattr(out, "flush"):
-            out.flush()
-        pref = '%s (%d): ' % (Colorise.bold(test_name), num_tests)
-        line = pref + " " * (self.TEST_NAME_WIDTH - len(test_name)
-                             - 7 - int(num_tests and log(num_tests, 10) or 0))
-        print_(line, end="")
-
-    def addSuccess(self, test):
-        unittest.TestResult.addSuccess(self, test)
-        print_(Colorise.green(self.CHAR_SUCCESS), end="")
-
-    def addError(self, test, err):
-        unittest.TestResult.addError(self, test, err)
-        print_(Colorise.red(self.CHAR_ERROR), end="")
-
-    def addFailure(self, test, err):
-        unittest.TestResult.addFailure(self, test, err)
-        print_(Colorise.red(self.CHAR_FAILURE), end="")
-
-    def printErrors(self):
-        succ = self.testsRun - (len(self.errors) + len(self.failures))
-        v = Colorise.bold("%3d" % succ)
-        cv = Colorise.green(v) if succ == self.testsRun else Colorise.red(v)
-        count = self.TEST_RESULTS_WIDTH - self.testsRun
-        print_((" " * count) + cv)
-        self.printErrorList('ERROR', self.errors)
-        self.printErrorList('FAIL', self.failures)
-
-    def printErrorList(self, flavour, errors):
-        for test, err in errors:
-            print_(self.MAJOR_SEPARATOR)
-            print_(Colorise.red("%s: %s" % (flavour, str(test))))
-            print_(self.MINOR_SEPARATOR)
-            # tracebacks can contain encoded paths, not sure
-            # what the right fix is here, so use repr
-            for line in err.splitlines():
-                print_(repr(line)[1:-1])
+    try:
+        out = subprocess.check_output([
+            "dbus-daemon", "--session", "--fork", "--print-address=1",
+            "--print-pid=1"])
+    except (subprocess.CalledProcessError, OSError):
+        return {}
+    else:
+        if PY3:
+            out = out.decode("utf-8")
+        addr, pid = out.splitlines()
+        return {"DBUS_SESSION_BUS_PID": pid, "DBUS_SESSION_BUS_ADDRESS": addr}
 
 
-class Runner(object):
+def dbus_kill_user(info):
+    """Kills the dbus daemon used for testing"""
 
-    def run(self, test, failfast=False):
-        suite = unittest.makeSuite(test)
-        result = Result(test.__name__, len(suite._tests), failfast=failfast)
-        suite(result)
-        result.printErrors()
-        return len(result.failures), len(result.errors)
+    if not info:
+        return
+
+    try:
+        subprocess.check_call(
+            ["kill", "-9", info["DBUS_SESSION_BUS_PID"]])
+    except (subprocess.CalledProcessError, OSError):
+        pass
 
 
-def unit(*args, **kwargs):
+_BUS_INFO = None
+_VDISPLAY = None
 
-    global _TEMP_DIR
+
+def init_test_environ():
+    """This needs to be called before any test can be run.
+
+    Before exiting the process call exit_test_environ() to clean up
+    any resources created.
+    """
+
+    global _TEMP_DIR, _BUS_INFO, _VDISPLAY, _faulthandler_fobj
 
     # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
 
     # needed for dbus/dconf
     runtime_dir = tempfile.mkdtemp(prefix=fsnative(u"RUNTIME-"), dir=_TEMP_DIR)
-    os.chmod(runtime_dir, 0700)
-    os.environ["XDG_RUNTIME_DIR"] = runtime_dir
+    os.chmod(runtime_dir, 0o700)
+    environ["XDG_RUNTIME_DIR"] = runtime_dir
+
+    # force the old cache dir so that GStreamer can re-use the GstRegistry
+    # cache file
+    environ["XDG_CACHE_HOME"] = xdg_get_cache_home()
+    # GStreamer will update the cache if the environment has changed
+    # (in Gst.init()). Since it takes 0.5s here and doesn't add much,
+    # disable it. If the registry cache is missing it will be created
+    # despite this setting.
+    environ["GST_REGISTRY_UPDATE"] = fsnative(u"no")
 
     # set HOME and remove all XDG vars that default to it if not set
     home_dir = tempfile.mkdtemp(prefix=fsnative(u"HOME-"), dir=_TEMP_DIR)
-    os.environ["HOME"] = home_dir
-    os.environ.pop("XDG_DATA_HOME", None)
-    os.environ.pop("XDG_CACHE_HOME", None)
+    environ["HOME"] = home_dir
 
-    bus = None
-    if os.name != "nt" and "DBUS_SESSION_BUS_ADDRESS" in os.environ:
-        try:
-            out = subprocess.check_output(["dbus-launch"])
-        except (subprocess.CalledProcessError, OSError):
-            pass
+    # set to new default
+    environ.pop("XDG_DATA_HOME", None)
+
+    if xvfbwrapper is not None:
+        _VDISPLAY = xvfbwrapper.Xvfb()
+        _VDISPLAY.start()
+
+    _BUS_INFO = None
+    if os.name != "nt" and sys.platform != "darwin":
+        _BUS_INFO = dbus_launch_user()
+        environ.update(_BUS_INFO)
+
+    quodlibet.init(no_translations=True, no_excepthook=True)
+    quodlibet.app.name = "QL Tests"
+
+    # to get around pytest silencing
+    _faulthandler_fobj = os.fdopen(os.dup(sys.__stderr__.fileno()), "w")
+    faulthandler.enable(_faulthandler_fobj)
+
+    # try to make things the same in case a different locale is active.
+    # LANG for gettext, setlocale for number formatting etc.
+    # Note: setlocale has to be called after Gtk.init()
+    try:
+        if os.name != "nt":
+            environ["LANG"] = locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
         else:
-            bus = dict([l.split("=", 1) for l in out.splitlines()])
-            os.environ.update(bus)
+            environ["LANG"] = "en_US.utf8"
+            locale.setlocale(locale.LC_ALL, "english")
+    except locale.Error:
+        pass
+
+
+def exit_test_environ():
+    """Call after init_test_environ() and all tests are finished"""
+
+    global _TEMP_DIR, _BUS_INFO, _VDISPLAY
 
     try:
-        return _run_tests(*args, **kwargs)
-    finally:
-        try:
-            shutil.rmtree(_TEMP_DIR)
-        except EnvironmentError:
-            pass
+        shutil.rmtree(_TEMP_DIR)
+    except EnvironmentError:
+        pass
 
-        if bus:
-            try:
-                subprocess.check_call(
-                    ["kill", "-9", bus["DBUS_SESSION_BUS_PID"]])
-            except (subprocess.CalledProcessError, OSError):
-                pass
+    dbus_kill_user(_BUS_INFO)
+
+    if _VDISPLAY is not None:
+        _VDISPLAY.stop()
+        _VDISPLAY = None
 
 
-def _run_tests(run=[], filter_func=None, main=False, subdirs=None,
-               strict=False, stop_first=False):
+# we have to do this on import so the tests work with other test runners
+# like py.test which don't know about out setup code and just import
+init_test_environ()
+atexit.register(exit_test_environ)
 
-    # Ideally nothing should touch the FS on import, but we do atm..
-    # Get rid of all modules so QUODLIBET_USERDIR gets used everywhere.
-    for key in sys.modules.keys():
-        if key.startswith('quodlibet'):
-            del(sys.modules[key])
 
-    path = os.path.dirname(__file__)
-    if subdirs is None:
-        subdirs = []
-
-    import quodlibet
-    quodlibet.init()
+def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
+         quality=True):
+    """Returns 0 if everything passed"""
 
     # make glib warnings fatal
     if strict:
@@ -254,71 +254,33 @@ def _run_tests(run=[], filter_func=None, main=False, subdirs=None,
             GLib.LogLevelFlags.LEVEL_ERROR |
             GLib.LogLevelFlags.LEVEL_WARNING)
 
-    suites = []
-    abstract = []
+    args = []
 
-    def discover_tests(mod):
-        for k in vars(mod):
-            value = getattr(mod, k)
+    if is_ci():
+        args.extend(["-p", "no:cacheprovider"])
 
-            if value not in (TestCase, AbstractTestCase) and \
-                    inspect.isclass(value) and issubclass(value, TestCase):
-                if AbstractTestCase in value.__bases__:
-                    abstract.append(value)
-                elif value not in skipped:
-                    suites.append(value)
+    if run:
+        args.append("-k")
+        args.append(" or ".join(run))
 
-    if main:
-        for name in os.listdir(path):
-            if fnmatch.fnmatch(name, "test_*.py"):
-                mod = __import__(".".join([__name__, name[:-3]]), {}, {}, [])
-                discover_tests(getattr(mod, name[:-3]))
+    skip_markers = []
 
-    if main:
-        # include plugin tests by default
-        subdirs = (subdirs or []) + ["plugin"]
+    if not quality:
+        skip_markers.append("quality")
 
-    for subdir in subdirs:
-        sub_path = os.path.join(path, subdir)
-        for name in os.listdir(sub_path):
-            if fnmatch.fnmatch(name, "test_*.py"):
-                mod = __import__(
-                    ".".join([__name__, subdir, name[:-3]]), {}, {}, [])
-                discover_tests(getattr(getattr(mod, subdir), name[:-3]))
+    if not network:
+        skip_markers.append("network")
 
-    # check if each abstract class is actually used (also by skipped ones)
-    unused_abstract = set(abstract)
-    for case in suites:
-        unused_abstract -= set(case.__mro__)
-    for case in skipped:
-        unused_abstract -= set(case.__mro__)
-    if unused_abstract:
-        raise Exception("The following abstract test cases have no "
-                        "implementation: %r" % list(unused_abstract))
+    if skip_markers:
+        args.append("-m")
+        args.append(" and ".join(["not %s" % m for m in skip_markers]))
 
-    for case in skipped:
-        # don't warn for tests we won't run anyway
-        if run and case not in run:
-            continue
-        name = "%s.%s" % (case.__module__, case.__name__)
-        reason = skipped_reason.get(case, "??")
-        if case in skipped_warn:
-            print_w("Skipped test: %s (%s)" % (name, reason))
+    if exitfirst:
+        args.append("-x")
 
-    import quodlibet.config
+    if suite is None:
+        args.append("tests")
+    else:
+        args.append(os.path.join("tests", suite))
 
-    runner = Runner()
-    failures = errors = 0
-    use_suites = filter(filter_func, suites)
-    for test in sorted(use_suites, key=repr):
-        if (not run
-                or test.__name__ in run
-                or test.__module__[11:] in run):
-            df, de = runner.run(test, failfast=stop_first)
-            if stop_first and (df or de):
-                break
-            failures += df
-            errors += de
-            quodlibet.config.quit()
-
-    return failures, errors
+    return pytest.main(args=args)

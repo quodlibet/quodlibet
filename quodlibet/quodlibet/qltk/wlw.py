@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
+#           2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import math
 import time
 
 from gi.repository import Gtk, Pango, Gdk
 
-from quodlibet.qltk import get_top_parent
-from quodlibet import util
+from quodlibet import _
+from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton
+from quodlibet.util import format_int_locale, format_time_display
+from quodlibet.compat import iteritems
 
 
 class WaitLoadBase(object):
@@ -44,27 +48,37 @@ class WaitLoadBase(object):
         if self.count > limit or self.count == 0:
             # Add stop/pause buttons. count = 0 means an indefinite
             # number of steps.
-            self._cancel_button = Gtk.Button.new_from_stock(Gtk.STOCK_STOP)
-            self._pause_button = Gtk.ToggleButton(label=Gtk.STOCK_MEDIA_PAUSE)
-            self._pause_button.set_use_stock(True)
+            self._cancel_button = Button(_("_Stop"), Icons.PROCESS_STOP)
+            self._pause_button = ToggleButton(_("P_ause"),
+                                              Icons.MEDIA_PLAYBACK_PAUSE)
             self._cancel_button.connect('clicked', self.__cancel_clicked)
             self._pause_button.connect('clicked', self.__pause_clicked)
         else:
             self._cancel_button = None
             self._pause_button = None
 
-    def setup(self, count=0, text="", initial={}):
+    def setup(self, count=0, text="", initial=None):
         self.current = 0
         self.count = count
         self._text = text
         self.paused = False
         self.quit = False
         self._start_time = time.time()
+        initial = initial or {}
 
         initial.setdefault("total", self.count)
         initial.setdefault("current", self.current)
         initial.setdefault("remaining", _("Unknown"))
-        self._label.set_markup(self._text % initial)
+
+        def localeify(k, v):
+            foo = '%(' + k + ')d'
+            if foo in self._text:
+                self._text = self._text.replace(foo, '%(' + k + ')s')
+                return k, format_int_locale(int(v))
+            return k, v
+
+        localed = dict([localeify(k, v) for k, v in iteritems(initial)])
+        self._label.set_markup(self._text % localed)
         self._progress.set_fraction(0.0)
 
     def __pause_clicked(self, button):
@@ -88,12 +102,12 @@ class WaitLoadBase(object):
                 max(0, min(1, self.current / float(self.count))))
         else:
             self._progress.pulse()
-        values.setdefault("total", self.count)
-        values.setdefault("current", self.current)
+        values.setdefault("total", format_int_locale(self.count))
+        values.setdefault("current", format_int_locale(self.current))
         if self.count:
             t = (time.time() - self._start_time) / self.current
             remaining = math.ceil((self.count - self.current) * t)
-            values.setdefault("remaining", util.format_time_display(remaining))
+            values.setdefault("remaining", format_time_display(remaining))
         self._label.set_markup(self._text % values)
 
         while not self.quit and (self.paused or Gtk.events_pending()):
@@ -114,7 +128,8 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
 
     def __init__(self, parent, *args):
         """parent: the parent window, or None"""
-        Gtk.Window.__init__(self, type=Gtk.WindowType.POPUP)
+        Gtk.Window.__init__(self, type=Gtk.WindowType.TOPLEVEL)
+        self.set_decorated(False)
         WaitLoadBase.__init__(self)
         self.setup(*args)
 
@@ -199,11 +214,11 @@ class WaitLoadBar(WaitLoadBase, Gtk.HBox):
         self._label.set_ellipsize(Pango.EllipsizeMode.END)
 
         self._cancel_button.remove(self._cancel_button.get_child())
-        self._cancel_button.add(Gtk.Image.new_from_stock(
-            Gtk.STOCK_STOP, Gtk.IconSize.MENU))
+        self._cancel_button.add(Gtk.Image.new_from_icon_name(
+            Icons.PROCESS_STOP, Gtk.IconSize.MENU))
         self._pause_button.remove(self._pause_button.get_child())
-        self._pause_button.add(Gtk.Image.new_from_stock(
-            Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.MENU))
+        self._pause_button.add(Gtk.Image.new_from_icon_name(
+            Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.MENU))
 
         self.pack_start(self._label, True, True, 0)
         self.pack_start(self._progress, False, True, 6)
@@ -215,8 +230,7 @@ class WaitLoadBar(WaitLoadBase, Gtk.HBox):
 
     def step(self, **values):
         ret = super(WaitLoadBar, self).step(**values)
-        self._progress.set_text(_("%(current)d of %(all)d") % {
-            "current": self.current,
-            "all": self.count,
-        })
+        params = {"current": format_int_locale(self.current),
+                  "all": format_int_locale(self.count)}
+        self._progress.set_text(_("%(current)s of %(all)s") % params)
         return ret

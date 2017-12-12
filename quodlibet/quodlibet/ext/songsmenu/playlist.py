@@ -1,59 +1,43 @@
 # -*- coding: utf-8 -*-
 # Copyright 2009 Christoph Reiter
-#           2014 Nick Boultbee
+#      2014-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-#
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 # The Unofficial M3U and PLS Specification (Winamp):
 # http://forums.winamp.com/showthread.php?threadid=65772
-#
-# TODO: Support PlaylistPlugin, somehow
 
 import os
 
 from gi.repository import Gtk
+from os.path import relpath
 
+from quodlibet.plugins.playlist import PlaylistPlugin
+from quodlibet import _
 from quodlibet import util, qltk
-from quodlibet.util.path import glib2fsnative
+from quodlibet.util.path import glib2fsn, get_home_dir
 from quodlibet.qltk.msg import ConfirmFileReplace
+from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.const import HOME as lastfolder
 
 
-if hasattr(os.path, 'relpath'):
-    relpath = os.path.relpath
-else:
-    # relpath taken from posixpath in Python 2.7
-    def relpath(path, start=os.path.curdir):
-        """Return a relative version of a path"""
-
-        if not path:
-            raise ValueError("no path specified")
-
-        start_list = os.path.abspath(start).split(os.path.sep)
-        path_list = os.path.abspath(path).split(os.path.sep)
-
-        # Work out how much of the filepath is shared by start and path.
-        i = len(os.path.commonprefix([start_list, path_list]))
-
-        rel_list = [os.path.pardir] * (len(start_list) - i) + path_list[i:]
-        if not rel_list:
-            return os.path.curdir
-        return os.path.join(*rel_list)
+lastfolder = get_home_dir()
 
 
-class PlaylistExport(SongsMenuPlugin):
+class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
     PLUGIN_ID = 'Playlist Export'
-    PLUGIN_NAME = _('Playlist Export')
+    PLUGIN_NAME = _('Export as Playlist')
     PLUGIN_DESC = _('Exports songs to an M3U or PLS playlist.')
-    PLUGIN_ICON = 'gtk-save'
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE_AS
+    REQUIRES_ACTION = True
 
     lastfolder = None
 
-    # def plugin_single_playlist(self, playlist):
-    #     return self.__save_playlist(playlist.songs, playlist.name)
+    def plugin_single_playlist(self, playlist):
+        return self.__save_playlist(playlist.songs, playlist.name)
 
     def plugin_songs(self, songs):
         self.__save_playlist(songs)
@@ -61,9 +45,11 @@ class PlaylistExport(SongsMenuPlugin):
     def __save_playlist(self, songs, name=None):
         dialog = Gtk.FileChooserDialog(self.PLUGIN_NAME,
             None,
-            Gtk.FileChooserAction.SAVE,
-            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-             Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+            Gtk.FileChooserAction.SAVE)
+        dialog.set_show_hidden(False)
+        dialog.set_create_folders(True)
+        dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        dialog.add_button(_("_Save"), Gtk.ResponseType.OK)
         dialog.set_default_response(Gtk.ResponseType.OK)
         if name:
             dialog.set_current_name(name)
@@ -96,7 +82,7 @@ class PlaylistExport(SongsMenuPlugin):
         response = dialog.run()
 
         if response == Gtk.ResponseType.OK:
-            file_path = glib2fsnative(dialog.get_filename())
+            file_path = glib2fsn(dialog.get_filename())
             dir_path = os.path.dirname(file_path)
 
             file_format = dialog.get_filter().get_name()
@@ -149,7 +135,7 @@ class PlaylistExport(SongsMenuPlugin):
 
     def __m3u_export(self, file_path, files):
         try:
-            fhandler = open(file_path, "w")
+            fhandler = open(file_path, "wb")
         except IOError:
             self.__file_error(file_path)
         else:
@@ -164,7 +150,7 @@ class PlaylistExport(SongsMenuPlugin):
 
     def __pls_export(self, file_path, files):
         try:
-            fhandler = open(file_path, "w")
+            fhandler = open(file_path, "wb")
         except IOError:
             self.__file_error(file_path)
         else:

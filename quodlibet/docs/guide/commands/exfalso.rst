@@ -21,7 +21,7 @@ MP3, Ogg Vorbis, FLAC, Musepack (MPC), WavPack, and MOD/XM/IT.
 
 This manual page is only a short reference for Ex Falso. Complete 
 documentation is available at 
-https://quodlibet.readthedocs.org/en/latest/guide.
+https://quodlibet.readthedocs.io/en/latest/guide/.
 
 OPTIONS
 =======
@@ -56,7 +56,7 @@ another '|':
 
 ``<album|<album>|No Album> - <title>``
 
-See https://quodlibet.readthedocs.org/en/latest/guide/renaming_files.html.
+See https://quodlibet.readthedocs.io/en/latest/guide/renaming_files.html.
 
 BUGS
 ====
@@ -72,5 +72,5 @@ Joe Wreschnig and Michael Urman are the primary authors of Ex Falso.
 SEE ALSO
 ========
 
-| https://quodlibet.readthedocs.org/en/latest/guide,
-| https://quodlibet.readthedocs.org/en/latest/guide/faq.html
+| https://quodlibet.readthedocs.io/en/latest/guide/,
+| https://quodlibet.readthedocs.io/en/latest/guide/faq.html

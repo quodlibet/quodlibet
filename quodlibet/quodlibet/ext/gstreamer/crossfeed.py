@@ -2,17 +2,13 @@
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-
-import os
-
-if os.name == "nt":
-    from quodlibet.plugins import PluginNotSupportedError
-    raise PluginNotSupportedError
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from gi.repository import Gtk, Gst, GObject
 
+from quodlibet import _
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk, plugins
 from quodlibet import config
@@ -63,6 +59,7 @@ class Preferences(Gtk.VBox):
         super(Preferences, self).__init__(spacing=12)
 
         table = Gtk.Table(n_rows=3, n_columns=2)
+        table.props.expand = False
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 

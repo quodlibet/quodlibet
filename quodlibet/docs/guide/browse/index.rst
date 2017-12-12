@@ -14,3 +14,4 @@ Browsing Your Library
     filesystem
     iradio
     audiofeeds
+    soundcloud

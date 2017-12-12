@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from quodlibet.util.path import mtime
-from tests import TestCase, NamedTemporaryFile
+from tests import TestCase, NamedTemporaryFile, get_data_path
 
 from gi.repository import GdkPixbuf
+from senf import fsn2uri, fsnative
 
 import os
 
@@ -12,10 +18,10 @@ except ImportError:
     import md5 as hash
 
 from quodlibet.util import thumbnails
-from quodlibet.util.path import pathname2url, is_fsnative, getcwd
 
 
 class TThumb(TestCase):
+
     def setUp(s):
         s.wide = GdkPixbuf.Pixbuf.new(
             GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
@@ -23,13 +29,12 @@ class TThumb(TestCase):
             GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
         s.small = GdkPixbuf.Pixbuf.new(
             GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
-        s.filename = os.path.join(getcwd(), "test_thumbnail.png")
-        s.wide.savev(s.filename, "png", [], [])
+        s.filename = get_data_path("test.png")
 
     def tearDown(self):
         p1 = thumbnails.get_cache_info(self.filename, (10, 10))[0]
         p2 = thumbnails.get_cache_info(self.filename, (1000, 1000))[0]
-        for path in [p1, p2, self.filename]:
+        for path in [p1, p2]:
             try:
                 os.remove(path)
             except OSError:
@@ -37,7 +42,7 @@ class TThumb(TestCase):
 
     def test_get_thumbnail_folder(self):
         path = thumbnails.get_thumbnail_folder()
-        self.assertTrue(is_fsnative(path))
+        self.assertTrue(isinstance(path, fsnative))
 
     def test_thumb_from_file(self):
         with open(self.filename, "rb") as h:
@@ -88,11 +93,11 @@ class TThumb(TestCase):
 
         #check for right scaling
         s.failUnless(thumb)
-        s.failUnlessEqual((thumb.get_width(), thumb.get_height()), (50, 3))
+        s.failUnlessEqual((thumb.get_width(), thumb.get_height()), (50, 25))
 
         #test the thumbnail filename
-        uri = "file://" + pathname2url(s.filename)
-        name = hash.md5(uri).hexdigest() + ".png"
+        uri = fsn2uri(s.filename)
+        name = hash.md5(uri.encode("ascii")).hexdigest() + ".png"
 
         path = thumbnails.get_thumbnail_folder()
         path = os.path.join(path, "normal", name)

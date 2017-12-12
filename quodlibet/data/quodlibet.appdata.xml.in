@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application>
     <id type="desktop">quodlibet.desktop</id>
+    <name>Quod Libet</name>
+    <_summary>Listen to, browse, or edit your audio collection</_summary>
     <metadata_license>CC0</metadata_license>
     <project_license>GPL-2.0</project_license>
+    <translation type="gettext">quodlibet</translation>
     <description>
     <_p>
         Quod Libet is a music management program. It provides several
@@ -17,8 +20,12 @@
     </_p>
     </description>
     <screenshots>
-        <screenshot type="default" width="834" height="670">https://quodlibet.readthedocs.org/en/latest/_images/paned1.png</screenshot>
-        <screenshot width="1236" height="803">https://quodlibet.readthedocs.org/en/latest/_images/queue_2browsers1.png</screenshot>
+        <screenshot type="default">
+            <image>https://quodlibet.readthedocs.org/en/latest/_images/paned1.png</image>
+        </screenshot>
+        <screenshot>
+            <image>https://quodlibet.readthedocs.org/en/latest/_images/queue_2browsers1.png</image>
+        </screenshot>
     </screenshots>
     <url type="homepage">https://quodlibet.readthedocs.org</url>
     <updatecontact>quod-libet-development@googlegroups.com</updatecontact>

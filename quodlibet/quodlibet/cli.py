@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Nick Boultbee
+# Copyright 2014,2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
-import sys
+
+from senf import fsn2text, uri2fsn
+
+from quodlibet import C_, _
 from quodlibet.util.dprint import print_, print_e
 from quodlibet.remote import Remote, RemoteError
 
@@ -19,6 +23,8 @@ def exit_(status=None, notify_startup=False):
     """
 
     if notify_startup:
+        import gi
+        gi.require_version("Gdk", "3.0")
         from gi.repository import Gdk
         Gdk.notify_startup_complete()
     raise SystemExit(status)
@@ -58,12 +64,12 @@ def control(command, arg=None, ignore_error=False):
         exit_(str(e), notify_startup=True)
     else:
         if response is not None:
-            print_(response, end="")
+            print_(response, end="", flush=True)
         exit_(notify_startup=True)
 
 
-def process_arguments():
-    from quodlibet.util.uri import URI
+def process_arguments(argv):
+    from quodlibet.util.path import uri_is_valid
     from quodlibet import util
     from quodlibet import const
 
@@ -71,9 +77,9 @@ def process_arguments():
     controls = ["next", "previous", "play", "pause", "play-pause", "stop",
                 "hide-window", "show-window", "toggle-window",
                 "focus", "quit", "unfilter", "refresh", "force-previous"]
-    controls_opt = ["seek", "order", "repeat", "query", "volume", "filter",
-                    "set-rating", "set-browser", "open-browser", "random",
-                    "song-list", "queue"]
+    controls_opt = ["seek", "repeat", "query", "volume", "filter",
+                    "set-rating", "set-browser", "open-browser", "shuffle",
+                    "song-list", "queue", "stop-after", "random"]
 
     options = util.OptionParser(
         "Quod Libet", const.VERSION,
@@ -82,6 +88,7 @@ def process_arguments():
 
     options.add("print-playing", help=_("Print the playing song and exit"))
     options.add("start-playing", help=_("Begin playing immediately"))
+    options.add("start-hidden", help=_("Don't show any windows on start"))
 
     for opt, help in [
         ("next", _("Jump to next song")),
@@ -104,6 +111,7 @@ def process_arguments():
         ("list-browsers", _("List available browsers")),
         ("print-playlist", _("Print the current playlist")),
         ("print-queue", _("Print the contents of the queue")),
+        ("print-query-text", _("Print the active text query")),
         ("no-plugins", _("Start without plugins")),
         ("run", _("Start Quod Libet if it isn't running")),
         ("quit", _("Exit Quod Libet")),
@@ -112,17 +120,18 @@ def process_arguments():
 
     for opt, help, arg in [
         ("seek", _("Seek within the playing song"), _("[+|-][HH:]MM:SS")),
-        ("order", _("Set or toggle the playback order"),
-            "[order]|toggle"),
+        ("shuffle", _("Set or toggle shuffle mode"), "[0|1|t"),
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
         ("volume", _("Set the volume"), "(+|-|)0..100"),
         ("query", _("Search your audio library"), _("query")),
         ("play-file", _("Play a file"), C_("command", "filename")),
         ("set-rating", _("Rate the playing song"), "0.0..1.0"),
         ("set-browser", _("Set the current browser"), "BrowserName"),
+        ("stop-after", _("Stop after the playing song"), "0|1|t"),
         ("open-browser", _("Open a new browser"), "BrowserName"),
         ("queue", _("Show or hide the queue"), "on|off|t"),
-        ("song-list", _("Show or hide the main song list"), "on|off|t"),
+        ("song-list",
+            _("Show or hide the main song list (deprecated)"), "on|off|t"),
         ("random", _("Filter on a random value"), C_("command", "tag")),
         ("filter", _("Filter on a tag value"), _("tag=value")),
         ("enqueue", _("Enqueue a file or query"), "%s|%s" % (
@@ -167,12 +176,12 @@ def process_arguments():
             return True
 
     validators = {
-        "order": ["0", "1", "t", "toggle", "inorder", "shuffle",
-                  "weighted", "onesong"].__contains__,
+        "shuffle": ["0", "1", "t", "on", "off", "toggle"].__contains__,
         "repeat": ["0", "1", "t", "on", "off", "toggle"].__contains__,
         "volume": is_vol,
         "seek": is_time,
         "set-rating": is_float,
+        "stop-after": ["0", "1", "t"].__contains__,
         }
 
     cmds_todo = []
@@ -182,10 +191,10 @@ def process_arguments():
 
     # XXX: to make startup work in case the desktop file isn't passed
     # a file path/uri
-    if sys.argv[-1] == "--play-file":
-        sys.argv = sys.argv[:-1]
+    if argv[-1] == "--play-file":
+        argv = argv[:-1]
 
-    opts, args = options.parse()
+    opts, args = options.parse(argv[1:])
 
     for command, arg in opts.items():
         if command in controls:
@@ -193,7 +202,7 @@ def process_arguments():
         elif command in controls_opt:
             if command in validators and not validators[command](arg):
                 print_e(_("Invalid argument for '%s'.") % command)
-                print_e(_("Try %s --help.") % sys.argv[0])
+                print_e(_("Try %s --help.") % fsn2text(argv[0]))
                 exit_(True, notify_startup=True)
             else:
                 queue(command, arg)
@@ -211,18 +220,23 @@ def process_arguments():
             queue("volume -")
         elif command == "enqueue" or command == "unqueue":
             try:
-                filename = URI(arg).filename
+                filename = uri2fsn(arg)
             except ValueError:
                 filename = arg
             queue(command, filename)
         elif command == "enqueue-files":
             queue(command, arg)
         elif command == "play-file":
-            try:
-                filename = URI(arg).filename
-            except ValueError:
+            if uri_is_valid(arg) and arg.startswith("quodlibet://"):
+                # TODO: allow handling of URIs without --play-file
+                queue("uri-received", arg)
+            else:
+                try:
+                    filename = uri2fsn(arg)
+                except ValueError:
+                    filename = arg
                 filename = os.path.abspath(util.path.expanduser(arg))
-            queue("play-file", filename)
+                queue("play-file", filename)
         elif command == "print-playing":
             try:
                 queue("print-playing", args[0])
@@ -230,7 +244,11 @@ def process_arguments():
                 queue("print-playing")
         elif command == "print-query":
             queue(command, arg)
+        elif command == "print-query-text":
+            queue(command)
         elif command == "start-playing":
+            actions.append(command)
+        elif command == "start-hidden":
             actions.append(command)
         elif command == "no-plugins":
             actions.append(command)

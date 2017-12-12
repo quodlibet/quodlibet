@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from gi.repository import Gtk, Gdk
 
 from tests import TestCase, skipIf
@@ -24,6 +29,10 @@ class TGetStringDialog(TestCase):
     def test_getstring(self):
         ret = self.gsd1.run(text="foobar", test=True)
         self.failUnlessEqual(ret, "foobar")
+
+    def test_tooltip(self):
+        foo = GetStringDialog(Gtk.Window(), "title", "", tooltip="foo bar")
+        self.failUnlessEqual(foo._val.get_tooltip_text(), "foo bar")
 
     def test_clipboard(self):
         clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)

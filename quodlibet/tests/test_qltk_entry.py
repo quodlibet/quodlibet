@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
-from tests import TestCase
-from helper import visible
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
-from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, Entry, \
-    QueryValidator
+from tests import TestCase
+from .helper import visible
+
+from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, Entry
+from quodlibet.query._query import Query
+from quodlibet.util import gdecode
+from quodlibet.compat import text_type
 import quodlibet.config
 
 
@@ -21,7 +28,7 @@ class TEntry(TestCase):
 class TValidatingEntry(TestCase):
     def setUp(self):
         quodlibet.config.init()
-        self.entry = ValidatingEntry(QueryValidator)
+        self.entry = ValidatingEntry(Query.validator)
 
     def test_changed_simple(self):
         self.entry.set_text("valid")
@@ -42,7 +49,7 @@ class TValidatingEntry(TestCase):
         entry = ValidatingEntry(valid)
         entry.set_text("foo")
         self.assertEqual(x, [u"foo"])
-        self.assertTrue(isinstance(x[0], unicode))
+        self.assertTrue(isinstance(x[0], text_type))
 
     def tearDown(self):
         self.entry.destroy()
@@ -54,7 +61,7 @@ class TUndoEntry(TestCase):
         self.entry = UndoEntry()
 
     def __equal(self, value):
-        entry_val = self.entry.get_text().decode("utf-8")
+        entry_val = gdecode(self.entry.get_text())
         self.failUnlessEqual(value, entry_val)
 
     def __insert(self, text, pos):

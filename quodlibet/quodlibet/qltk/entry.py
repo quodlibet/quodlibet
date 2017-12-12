@@ -3,16 +3,20 @@
 #           2011, 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import math
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
+from quodlibet import _
 from quodlibet.qltk import is_accel, add_fake_accel
-from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.query import Query, QueryType
+from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
+from quodlibet.qltk import Icons
+from quodlibet.util import gdecode
+from quodlibet.compat import string_types
 
 
 class EditableUndo(object):
@@ -55,10 +59,10 @@ class EditableUndo(object):
             ]
 
     def __key_press(self, entry, event):
-        if is_accel(event, "<ctrl>z"):
+        if is_accel(event, "<Primary>z"):
             self.undo()
             return True
-        elif is_accel(event, "<ctrl><shift>z"):
+        elif is_accel(event, "<Primary><shift>z"):
             self.redo()
             return True
         return False
@@ -74,10 +78,10 @@ class EditableUndo(object):
         del self.__del_pos
 
     def __popup(self, entry, menu):
-        undo = Gtk.ImageMenuItem(Gtk.STOCK_UNDO, use_stock=True)
-        add_fake_accel(undo, "<ctrl>z")
-        redo = Gtk.ImageMenuItem(Gtk.STOCK_REDO, use_stock=True)
-        add_fake_accel(redo, "<ctrl><shift>z")
+        undo = MenuItem(_("_Undo"), Icons.EDIT_UNDO)
+        add_fake_accel(undo, "<Primary>z")
+        redo = MenuItem(_("_Redo"), Icons.EDIT_REDO)
+        add_fake_accel(redo, "<Primary><shift>z")
         sep = SeparatorMenuItem()
 
         for widget in [sep, redo, undo]:
@@ -93,7 +97,7 @@ class EditableUndo(object):
             menu.prepend(item)
 
     def __all(self):
-        text = self.get_chars(0, -1).decode("utf-8")
+        text = gdecode(self.get_chars(0, -1))
         pos = self.get_position()
         return [text, pos]
 
@@ -169,8 +173,11 @@ class Entry(Gtk.Entry):
         if self._max_width_chars >= 0:
             # based on gtkentry.c
             style_context = self.get_style_context()
-            border = style_context.get_border(Gtk.StateFlags.NORMAL)
-            padding = style_context.get_padding(Gtk.StateFlags.NORMAL)
+            style_context.save()
+            style_context.set_state(Gtk.StateFlags.NORMAL)
+            border = style_context.get_border(style_context.get_state())
+            padding = style_context.get_padding(style_context.get_state())
+            style_context.restore()
             pango_context = self.get_pango_context()
 
             metrics = pango_context.get_metrics(
@@ -217,7 +224,13 @@ class ClearEntryMixin(object):
         self.set_icon_from_gicon(Gtk.EntryIconPosition.SECONDARY, gicon)
         self.connect("icon-release", self.__clear)
 
+    def clear(self):
+        self.__do_clear()
+
     def __clear(self, button, *args):
+        self.__do_clear()
+
+    def __do_clear(self):
         # TODO: don't change the order.. we connect to clear and remove all
         # timeouts added for text change in the searchbar
         self.delete_text(0, -1)
@@ -242,12 +255,12 @@ class ValidatingEntryMixin(object):
             self.connect('changed', self.__color, validator)
 
     def __color(self, widget, validator):
-        value = validator(self.get_text().decode("utf-8"))
+        value = validator(gdecode(self.get_text()))
         if value is True:
             color = self.VALID
         elif value is False:
             color = self.INVALID
-        elif value and isinstance(value, basestring):
+        elif value and isinstance(value, string_types):
             color = Gdk.RGBA()
             color.parse(value)
         else:
@@ -257,20 +270,6 @@ class ValidatingEntryMixin(object):
             self.override_color(Gtk.StateType.NORMAL, color)
         else:
             self.override_color(Gtk.StateType.NORMAL, None)
-
-
-def QueryValidator(string):
-    """Returns True/False for a query, None for a text only query"""
-
-    type_ = Query.get_type(string)
-    if type_ == QueryType.VALID:
-        # in case of an empty but valid query we say it's "text"
-        if Query.match_all(string):
-            return None
-        return True
-    elif type_ == QueryType.INVALID:
-        return False
-    return None
 
 
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):

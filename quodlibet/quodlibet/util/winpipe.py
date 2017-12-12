@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-# Copyright 2014 Christoph Reiter
+# Copyright 2014,2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
+import os
 import threading
+import ctypes
 
-import win32pipe
-import win32file
-import pywintypes
+if os.name == "nt":
+    from . import winapi
 
 from gi.repository import GLib
 
@@ -17,19 +19,26 @@ from gi.repository import GLib
 def write_pipe(pipe_name, data):
     """Writes the data to the pipe or raises EnvironmentError"""
 
+    assert isinstance(data, bytes)
+
     # XXX: otherwise many consecutive open fail, no idea..
     pipe_exists(pipe_name)
 
-    with open(NamedPipeServer._get_filename(pipe_name), "wb") as h:
+    filename = NamedPipeServer._get_filename(pipe_name)
+    with open(filename, "wb") as h:
         h.write(data)
 
 
 def pipe_exists(pipe_name):
     """Returns True if the named pipe named 'pipe_name' currently exists"""
 
+    timeout_ms = 1
+    filename = NamedPipeServer._get_filename(pipe_name)
+
     try:
-        win32pipe.WaitNamedPipe(NamedPipeServer._get_filename(pipe_name), 1)
-    except pywintypes.error:
+        if winapi.WaitNamedPipeW(filename, timeout_ms) == 0:
+            raise ctypes.WinError()
+    except WindowsError:
         return False
     return True
 
@@ -66,7 +75,7 @@ class NamedPipeServer(threading.Thread):
 
     @classmethod
     def _get_filename(cls, name):
-        return ur'\\.\pipe\%s' % name
+        return u"\\\\.\\pipe\\%s" % name
 
     def _process(self, data):
         def idle_process(data):
@@ -85,30 +94,26 @@ class NamedPipeServer(threading.Thread):
             raise NamedPipeServerError("Setting up named pipe failed")
 
     def run(self):
-        # REJECT doesn't do anything under XP, but XP is gone anyway
-        PIPE_REJECT_REMOTE_CLIENTS = 0x00000008
-        FILE_FLAG_FIRST_PIPE_INSTANCE = 0x00080000
-        buffer_ = 4096
-        timeout_ms = 50
+        buffer_size = 4096
 
         try:
-            handle = win32pipe.CreateNamedPipe(
+            handle = winapi.CreateNamedPipeW(
                 self._filename,
-                win32pipe.PIPE_ACCESS_INBOUND | FILE_FLAG_FIRST_PIPE_INSTANCE,
-                (win32pipe.PIPE_TYPE_BYTE | win32pipe.PIPE_READMODE_BYTE |
-                 win32pipe.PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS),
-                win32pipe.PIPE_UNLIMITED_INSTANCES,
-                buffer_,
-                buffer_,
-                timeout_ms,
+                (winapi.PIPE_ACCESS_INBOUND |
+                 winapi.FILE_FLAG_FIRST_PIPE_INSTANCE),
+                (winapi.PIPE_TYPE_BYTE | winapi.PIPE_READMODE_BYTE |
+                 winapi.PIPE_WAIT | winapi.PIPE_REJECT_REMOTE_CLIENTS),
+                winapi.PIPE_UNLIMITED_INSTANCES,
+                buffer_size,
+                buffer_size,
+                winapi.NMPWAIT_USE_DEFAULT_WAIT,
                 None)
-        except pywintypes.error:
-            # due to FILE_FLAG_FIRST_PIPE_INSTANCE and not the first instance
-            self._stopped = True
-            self._event.set()
-            return
 
-        if handle == win32file.INVALID_HANDLE_VALUE:
+            if handle == winapi.INVALID_HANDLE_VALUE:
+                raise ctypes.WinError()
+
+        except WindowsError:
+            # due to FILE_FLAG_FIRST_PIPE_INSTANCE and not the first instance
             self._stopped = True
             self._event.set()
             return
@@ -118,18 +123,27 @@ class NamedPipeServer(threading.Thread):
         while 1:
             data = bytearray()
             try:
-                win32pipe.ConnectNamedPipe(handle)
+                if winapi.ConnectNamedPipe(handle, None) == 0:
+                    raise ctypes.WinError()
 
                 while 1:
+                    readbuf = ctypes.create_string_buffer(buffer_size)
+                    bytesread = winapi.DWORD()
                     try:
-                        code, message = win32file.ReadFile(
-                            handle, buffer_, None)
-                    except pywintypes.error:
+                        if winapi.ReadFile(
+                                handle, readbuf, buffer_size,
+                                ctypes.byref(bytesread), None) == 0:
+                            raise ctypes.WinError()
+                    except WindowsError:
                         break
+                    else:
+                        message = readbuf[:bytesread.value]
+
                     data += message
 
-                win32pipe.DisconnectNamedPipe(handle)
-            except pywintypes.error:
+                if winapi.DisconnectNamedPipe(handle) == 0:
+                    raise ctypes.WinError()
+            except WindowsError:
                 # better not loop forever..
                 break
             finally:
@@ -138,10 +152,8 @@ class NamedPipeServer(threading.Thread):
                 if data:
                     self._process(bytes(data))
 
-        try:
-            win32file.CloseHandle(handle)
-        except pywintypes.error:
-            pass
+        # ignore errors here..
+        winapi.CloseHandle(handle)
 
     def stop(self):
         """After this returns the callback will no longer be called.
@@ -155,7 +167,7 @@ class NamedPipeServer(threading.Thread):
         self._stopped = True
         try:
             with open(self._filename, "wb") as h:
-                h.write("stop!")
+                h.write(b"stop!")
         except EnvironmentError:
             pass
 

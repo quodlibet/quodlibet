@@ -2,18 +2,19 @@
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
-from tests import TestCase, DATA_DIR
+from tests import TestCase, get_data_path
 from quodlibet.formats.spc import SPCFile
 
 
 class TSPCFile(TestCase):
     def setUp(self):
-        self.song = SPCFile(os.path.join(DATA_DIR, 'test.spc'))
+        self.song = SPCFile(get_data_path('test.spc'))
 
     def test_tags(self):
         tags = {
@@ -36,6 +37,11 @@ class TSPCFile(TestCase):
         self.failUnless(self.song.can_change("title"))
 
     def test_invalid(self):
-        path = os.path.join(DATA_DIR, 'empty.xm')
+        path = get_data_path('empty.xm')
         self.failUnless(os.path.exists(path))
         self.failUnlessRaises(Exception, SPCFile, path)
+
+    def test_format_codec(self):
+        self.assertEqual(self.song("~format"), "SPC700")
+        self.assertEqual(self.song("~codec"), "SPC700")
+        self.assertEqual(self.song("~encoding"), "")
