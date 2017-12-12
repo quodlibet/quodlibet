@@ -74,8 +74,8 @@ class SearchBar(Browser):
                                 accel_group=self.accelerators,
                                 show_limit=show_limit)
 
-        sbb.connect('query-changed', self.__text_parse)
-        sbb.connect('focus-out', self.__focus)
+        sbb.connect('query-changed', self._text_parse)
+        sbb.connect('focus-out', self._focus)
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
@@ -95,7 +95,7 @@ class SearchBar(Browser):
     def __destroy(self, *args):
         self._sb_box = None
 
-    def __focus(self, widget, *args):
+    def _focus(self, widget, *args):
         qltk.get_top_parent(widget).songlist.grab_focus()
 
     def _get_songs(self):
@@ -108,7 +108,7 @@ class SearchBar(Browser):
             songs = self._sb_box.limit(songs)
             GLib.idle_add(self.songs_selected, songs)
 
-    def __text_parse(self, bar, text):
+    def _text_parse(self, bar, text):
         self.activate()
 
     def save(self):

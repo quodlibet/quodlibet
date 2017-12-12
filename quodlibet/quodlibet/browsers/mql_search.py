@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012, 2014, 2017 Nick Boultbee
+# Copyright 2012-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,9 +10,9 @@ import os
 
 from gi.repository import Gtk, GLib
 
-from quodlibet import get_user_dir, _
-from quodlibet import qltk
+from quodlibet import _, get_user_dir
 from quodlibet.browsers.search import SearchBar
+from quodlibet.compat import listvalues
 
 from quodlibet.qltk import Align
 from quodlibet.qltk.completion import LibraryTagCompletion
@@ -45,6 +45,7 @@ class MqlBrowser(SearchBar):
     name = _("MQL Browser")
     keys = ["MQL"]
     accelerated_name = _("_MQL Browser")
+    keys = ["MqlSearch"]
     priority = 1
     in_menu = True
 
@@ -59,10 +60,10 @@ class MqlBrowser(SearchBar):
         self.accelerators = Gtk.AccelGroup()
 
         sbb = MqlSearchBarBox(completion=completion,
-                              validator=Mql.validator,
+                              query_class=Mql,
                               accel_group=self.accelerators)
-        sbb.connect('query-changed', self.__text_parse)
-        sbb.connect('focus-out', self.__focus)
+        sbb.connect('query-changed', self._text_parse)
+        sbb.connect('focus-out', self._focus)
         self.add_label(sbb)
         self._sb_box = sbb
         self.connect('destroy', self.__destroy)
@@ -75,21 +76,9 @@ class MqlBrowser(SearchBar):
         label = Gtk.Label(label="MQL:")
         label.set_use_underline(True)
         label.set_mnemonic_widget(sbb)
-        hbox.pack_start(label, False, True, 6)
+        hbox.pack_start(label, False, False, 6)
         hbox.pack_start(align, True, True, 0)
-        self.pack_start(hbox, False, True, 0)
-
-    def __text_parse(self, bar, text):
-        self.activate()
-
-    def __focus(self, widget, *args):
-        qltk.get_top_parent(widget).songlist.grab_focus()
-
-    def pack(self, songpane):
-        container = Gtk.VBox(spacing=6)
-        container.pack_start(self, True, True, 0)
-        container.pack_start(songpane, True, True, 0)
-        return container
+        self.pack_start(hbox, True, True, 0)
 
     def _get_songs(self):
         collection = Collection()
@@ -97,12 +86,10 @@ class MqlBrowser(SearchBar):
         text = self._get_text()
         if not text:
             print_d("empty search")
-            collection.songs = self._library.values()
+            collection.songs = listvalues(self._library)
             self._query = None
         else:
             try:
-                print_d("Building parser for \"%s\"" % text)
-                #print_d(self.mql.parse(self._text))
                 tags = SongList.star
                 print_d("Setting up MQL parser with %s" % tags)
                 self._query = mql_query = Mql(text, star=tags)
@@ -129,7 +116,7 @@ class MqlBrowser(SearchBar):
                             tag, mul = AGGREGATES[lim.units]
                             delta = song(tag)
                         else:
-                            # Some cardinality tings
+                            # Some cardinality stuff
                             vals = collection.list(tag)
                             new_vals = song.list(tag)
                             if not new_vals:

@@ -237,6 +237,8 @@ class TMQL(TestCase):
             ("/^Hate/", False),
             ("/^I Hate/", True),
             (u"/œufs/", True),
+            ("/fo./ /b.r/", True),
+            ("/fo./ /foop/", False),
 
         ]
         self._check_matching(__DATA, self.song1)
@@ -247,18 +249,29 @@ class TMQL(TestCase):
             ("artist=/foop/", False),
             ("artist=/f[o]{3,3}/", False),
             ("artist=/f[o]{1,3}/", True),
-            ("artist=foo AND album=/Hat.? t[es]*ts?/", True),
             ("album=/[0-9]+/", False),
             ("album=/Hate/", True),
             ("album=/^Hate/", False),
-            ("album=/^Hate/ OR album=/Hate$/", False),
             ("album=/^I Hate/", True),
-            ("album=/^I Hate/ AND album=/Hate Tests/", True),
-            ("album = /^I Hate/ AND artist=food", False),
             ("album != /^I Hate/", False),
-
             ("album = /Hate Tests$/", True),
             ("album = /[a-zA-Z\ ]+/", True),
+            (u"comment = /œufs/", True),
+        ]
+        self._check_matching(__DATA, self.song1)
+
+    def test_query_and_regex(self):
+        __DATA = [
+            ("genre=jazz and artist=/foo/", True),
+            ("artist=foo AND album=/Hat.? t[es]*ts?/", True),
+            ("album=/^Hate/ OR album=/Hate$/", False),
+            ("album = nothing OR genre = /^Jazz$/", True),
+            ("genre = Hate AND album = /^Jazz/", False),
+            ("album = Hate OR genre = NotMatched", True),
+            ("album = Hate OR genre = /^NotMatched$/", True),
+            ("genre=/^Jazz$/ OR album=notMatched", True),
+            ("album=/^I Hate/ AND album=/Hate Tests/", True),
+            ("album = /^I Hate/ AND artist=food", False),
             (u"comment = /œufs/", True),
         ]
         self._check_matching(__DATA, self.song1)

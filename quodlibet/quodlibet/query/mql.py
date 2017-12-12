@@ -1,11 +1,12 @@
 # -*- encoding: utf-8 -*-
-# Copyright 2011-12, 2014-15 Nick Boultbee
+# Copyright 2011-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from quodlibet.compat import text_type
 from quodlibet.plugins import MissingModulePluginException
 from quodlibet.qltk.songlist import SongList
 from quodlibet.util.tags import NUMERIC_TAGS
@@ -20,6 +21,7 @@ except ImportError:
     raise MissingModulePluginException("pyparsing")
 
 import re
+import sre_constants
 from quodlibet import print_d, print_w
 from quodlibet.query import _match as match, Query, QueryType
 from quodlibet.query._match import ParseError as QlParseError, False_, \
@@ -47,7 +49,7 @@ def proc_str(string, location, tokens):
 
 def process_keyword(string, location, tokens):
     """Spaces keywords for reformatted text"""
-    return [" %s " % t for t in upcaseTokens(string, location, tokens)]
+    return [" %s " % t for t in upcaseTokens(string, location, tokens) or []]
 
 
 class Tag(match.Tag):
@@ -116,8 +118,8 @@ class Mql(Query):
     # Loose definition of numeric value (note: allows 1.2.3. 12:14)
     NUM_VAL = Word(nums, nums + '.:')("NUM_VAL") + Optional(UNITS)
     # TODO: support for regex escaping e.g. /\/home\/[^\/]+\/dir/
-    REGEX = Literal("/") + Regex("[^\/]*")("REGEX") + Literal("/")
-    LIST_ = (Suppress("[") + Optional(delimitedList(VALUE)) + Suppress("]"))
+    REGEX = Literal("/") + Regex(r"[^/]*")("REGEX") + Literal("/")
+    LIST_ = Suppress("[") + Optional(delimitedList(VALUE)) + Suppress("]")
 
     # Tag-related
     TAG_NAME = Word(alphas, alphas + "_.")
@@ -152,11 +154,7 @@ class Mql(Query):
 
         self.string = string
         if star is None:
-            # Ugh. This feels wrong, but other models don't need to know
-            # STAR for validity, so the validator doesn't (currently) pass it
-            print_d("Using default STAR for %s" % string)
             star = SongList.star
-            #star = self.STAR
 
         if not isinstance(string, text_type):
             string = string.decode('utf-8')
@@ -190,19 +188,18 @@ class Mql(Query):
         num_expr.setParseAction(self.handle_num_expr)
         list_expr = (self.TAG + Mql.IN_ + Mql.LIST_("LIST"))
         list_expr.setParseAction(self.handle_in)
-        expr = Group(
-            (Literal("(") + clause + Literal(")")) |
-            no_tag_val |
-            num_expr |
-            tag_expr |
-            exc_expr |
-            list_expr |
-            Mql.REGEX.setParseAction(self.handle_bare_regex) |
-            OneOrMore(Mql.VALUE).setParseAction(self.handle_bare_value)
-        )
-        clause << (expr + ZeroOrMore((Mql.JUNCTION + clause)
+        expr = ((Literal("(") + clause + Literal(")")) |
+                no_tag_val |
+                num_expr |
+                tag_expr |
+                exc_expr |
+                list_expr |
+                OneOrMore(Mql.REGEX).setParseAction(self.handle_bare_regex) |
+                OneOrMore(Mql.VALUE).setParseAction(self.handle_bare_value))
+
+        clause << (expr + ZeroOrMore((Mql.JUNCTION + expr)
                                      .setParseAction(self.handle_junction)))
-        self.pp_query << (Group(Optional(clause) + Optional(limit_clause))
+        self.pp_query << ((Optional(clause) + Optional(limit_clause))
                           + StringEnd())
         if debug:
             self.pp_query.setDebug()
@@ -240,7 +237,7 @@ class Mql(Query):
         if not self._stack:
             print_d("Empty stack")
             return self.EMPTY_MATCH
-        # print_d("Here's the stack: %s" % list(reversed(self.stack)))
+        # print_d("Here's the stack: %s" % list(reversed(self._stack)))
         try:
             x = self._stack.pop()
         except IndexError as e:
@@ -262,10 +259,14 @@ class Mql(Query):
         self._limit = Mql.Limit(str(tokens.NUM_VAL), tokens.UNITS or "SONGS")
 
     def handle_equality(self, string, location, tokens):
-        matcher = Tag(tokens.REGEX, [tokens.TAG])
-        if tokens.OPERATOR == Mql.NEQ:
-            matcher = match.Neg(matcher)
-        self.push(matcher)
+        try:
+            matcher = Tag(tokens.REGEX, [tokens.TAG])
+        except sre_constants.error as e:
+            raise ParseError("Invalid Regex: %s" % e)
+        else:
+            if tokens.OPERATOR == Mql.NEQ:
+                matcher = match.Neg(matcher)
+            self.push(matcher)
 
     def handle_excluded_equality(self, string, location, tokens):
 
@@ -312,7 +313,8 @@ class Mql(Query):
             matcher = Tag(tokens.REGEX, self.star)
         except Exception:
             raise ParseError("Invalid regex: %s" % tokens.REGEX)
-        self.push(matcher)
+        else:
+            self.push(matcher)
 
     def handle_no_tag_val(self, string, location, tokens):
         try:
@@ -320,3 +322,8 @@ class Mql(Query):
         except Exception as e:
             raise ParseError("Invalid tag: %s (%r)" % (tokens.TAG, e))
         self.push(matcher)
+
+    @classmethod
+    def validator(cls, string):
+        query = cls(string)
+        return query.type == QueryType.VALID

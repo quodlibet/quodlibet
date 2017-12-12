@@ -5,7 +5,9 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV CI true
 
 RUN echo "deb http://ppa.launchpad.net/lazka/dumpingplace/ubuntu xenial main" >> /etc/apt/sources.list
+
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5806C7C4
+
 RUN apt-get update
 
 RUN apt-get install -y \
@@ -13,11 +15,12 @@ RUN apt-get install -y \
     exfalso
 
 RUN apt-get install --no-install-recommends -y \
-    python3-polib \
-    python3-pytest \
-    python3-pip \
-    python3-setuptools \
-    python3-pyparsing \
+    python-polib \
+    python-pytest \
+    python-pip \
+    python-faulthandler \
+    python-setuptools \
+    python-pyparsing \
     xvfb \
     gettext \
     intltool \
@@ -26,7 +29,7 @@ RUN apt-get install --no-install-recommends -y \
     curl \
     git
 
-RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper coverage
+RUN pip install --upgrade pycodestyle pyflakes xvfbwrapper coverage
 
 ARG HOST_USER_ID=5555
 ENV HOST_USER_ID ${HOST_USER_ID}

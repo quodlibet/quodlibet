@@ -14,7 +14,6 @@ quodlibet/browsers/covergrid/prefs.py
 quodlibet/browsers/filesystem.py
 quodlibet/browsers/__init__.py
 quodlibet/browsers/iradio.py
-quodlibet/browsers/media.py
 quodlibet/browsers/mql_search.py
 quodlibet/browsers/paned/main.py
 quodlibet/browsers/paned/models.py
@@ -55,6 +54,7 @@ quodlibet/ext/events/inhibit.py
 quodlibet/ext/events/iradiolog.py
 quodlibet/ext/events/jep118.py
 quodlibet/ext/events/language.py
+quodlibet/ext/events/lyricswindow.py
 quodlibet/ext/events/mediaserver.py
 quodlibet/ext/events/mpdserver/__init__.py
 quodlibet/ext/events/mpris/__init__.py
@@ -167,6 +167,7 @@ quodlibet/qltk/chooser.py
 quodlibet/qltk/controls.py
 quodlibet/qltk/data_editors.py
 quodlibet/qltk/delete.py
+quodlibet/qltk/downloader.py
 quodlibet/qltk/edittags.py
 quodlibet/qltk/_editutils.py
 quodlibet/qltk/entry.py
