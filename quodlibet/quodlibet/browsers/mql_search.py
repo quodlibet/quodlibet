@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012, 2014 Nick Boultbee
+# Copyright 2012, 2014, 2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 
 from gi.repository import Gtk, GLib
 
-from quodlibet import const
+from quodlibet import get_user_dir, _
 from quodlibet import qltk
 from quodlibet.browsers.search import SearchBar
 
@@ -21,7 +22,7 @@ from quodlibet.query.mql import Mql, ParseError
 from quodlibet.util.collection import Collection
 from quodlibet.util.dprint import print_d, print_w
 
-QUERIES = os.path.join(const.USERDIR, "lists", "queries")
+QUERIES = os.path.join(get_user_dir(), "lists", "queries")
 
 AGGREGATES = {
     'MB': ('~#filesize', 1024 * 1024),
@@ -42,6 +43,7 @@ class MqlBrowser(SearchBar):
         return False
 
     name = _("MQL Browser")
+    keys = ["MQL"]
     accelerated_name = _("_MQL Browser")
     priority = 1
     in_menu = True
@@ -57,7 +59,7 @@ class MqlBrowser(SearchBar):
         self.accelerators = Gtk.AccelGroup()
 
         sbb = MqlSearchBarBox(completion=completion,
-                              validator=Mql.is_valid,
+                              validator=Mql.validator,
                               accel_group=self.accelerators)
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
@@ -85,7 +87,7 @@ class MqlBrowser(SearchBar):
 
     def pack(self, songpane):
         container = Gtk.VBox(spacing=6)
-        container.pack_start(self, False, True, 0)
+        container.pack_start(self, True, True, 0)
         container.pack_start(songpane, True, True, 0)
         return container
 
@@ -145,7 +147,7 @@ class MqlBrowser(SearchBar):
                         collection.songs.append(song)
                 print_d("Chose %d songs from library of %d."
                         % (len(collection.songs), len(self._library)))
-            except ParseError, e:
+            except ParseError as e:
                 print_w("Parse error: " + str(e))
         return collection.songs
 

@@ -23,6 +23,10 @@ quodlibet/browsers/playlists/main.py
 quodlibet/browsers/playlists/menu.py
 quodlibet/browsers/playlists/prefs.py
 quodlibet/browsers/playlists/util.py
+quodlibet/operon/base.py
+quodlibet/operon/commands.py
+quodlibet/operon/main.py
+quodlibet/operon/util.py
 quodlibet/browsers/search.py
 quodlibet/browsers/soundcloud/main.py
 quodlibet/browsers/soundcloud/util.py
@@ -198,6 +202,7 @@ quodlibet/qltk/unity.py
 quodlibet/qltk/views.py
 quodlibet/qltk/wlw.py
 quodlibet/qltk/x.py
+quodlibet/query/mql.py
 quodlibet/update.py
 quodlibet/util/collection.py
 quodlibet/util/cover/built_in.py

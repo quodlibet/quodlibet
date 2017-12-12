@@ -1,4 +1,9 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 from quodlibet import print_d
 from quodlibet.query import QueryType
 from tests import TestCase
@@ -29,7 +34,7 @@ class TMQL(TestCase):
                               "genre", "comment", "~dirname", "genre",
                               "performer", "originalartist"])
                 print_d("Reformatted={%s}" % m.pp_query.transformString(expr))
-            except ParseError, pe:
+            except ParseError as pe:
                 self.fail("{%s} died unexpectedly (%s)" % (expr, pe))
             else:
                 self.assertEquals(expected, m.search(song),
@@ -172,8 +177,8 @@ class TMQL(TestCase):
 
     def test_internal_tags(self):
         __DATA = [
-            #FIXME: Why does this break in the tests, but not in QL???
-            #("~dirname='/dir1'",    True),
+            # FIXME: Why does this break in the tests, but not in QL???
+            # ("~dirname='/dir1'",    True),
             ("~dirname=dir1", True),
             ("~dirname='/tmp'", False),
             ("~#length=120", True),

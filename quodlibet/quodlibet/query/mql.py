@@ -2,12 +2,14 @@
 # Copyright 2011-12, 2014-15 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet.plugins import MissingModulePluginException
 from quodlibet.qltk.songlist import SongList
 from quodlibet.util.tags import NUMERIC_TAGS
+from quodlibet.compat import text_type
 
 try:
     from pyparsing import Literal, CaselessLiteral, Word, delimitedList,\
@@ -20,7 +22,8 @@ except ImportError:
 import re
 from quodlibet import print_d, print_w
 from quodlibet.query import _match as match, Query, QueryType
-from quodlibet.query._match import ParseError as QlParseError, False_
+from quodlibet.query._match import ParseError as QlParseError, False_, \
+    NumexprTag, numexprUnit
 from quodlibet.query._match import Numcmp
 
 
@@ -56,7 +59,7 @@ class Tag(match.Tag):
         super(Tag, self).__init__(tags, self.__res)
 
     def __repr__(self):
-        names = self.__names + self.__intern
+        names = self._names + self.__intern
         return "<MQL Tag names=%r, regex=%r>" % (names, self.__res.pattern)
 
 
@@ -155,7 +158,7 @@ class Mql(Query):
             star = SongList.star
             #star = self.STAR
 
-        if not isinstance(string, unicode):
+        if not isinstance(string, text_type):
             string = string.decode('utf-8')
 
         # MQL-specifics
@@ -240,7 +243,7 @@ class Mql(Query):
         # print_d("Here's the stack: %s" % list(reversed(self.stack)))
         try:
             x = self._stack.pop()
-        except IndexError, e:
+        except IndexError as e:
             print_w("MQL error: %s" % e)
             raise ParseError(e)
         if x == Mql.AND_:
@@ -273,11 +276,11 @@ class Mql(Query):
         self.push(matcher)
 
     def handle_num_expr(self, string, location, tokens):
-        value = tokens.NUM_VAL
-        if hasattr(tokens, "UNITS"):
-            value += " %s" % tokens.UNITS
+        value = numexprUnit(tokens.NUM_VAL, tokens.UNIT)
         try:
-            matcher = Numcmp(str(tokens.NUM_TAG), str(tokens.NUM_OP), value)
+            matcher = Numcmp(NumexprTag(str(tokens.NUM_TAG)),
+                             str(tokens.NUM_OP),
+                             value)
         except QlParseError as e:
             raise ParseError("Couldn't handle numeric expression '%s' (%s)"
                              % (string, e))
