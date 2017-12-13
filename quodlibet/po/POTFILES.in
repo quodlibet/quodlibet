@@ -22,10 +22,6 @@ quodlibet/browsers/playlists/main.py
 quodlibet/browsers/playlists/menu.py
 quodlibet/browsers/playlists/prefs.py
 quodlibet/browsers/playlists/util.py
-quodlibet/operon/base.py
-quodlibet/operon/commands.py
-quodlibet/operon/main.py
-quodlibet/operon/util.py
 quodlibet/browsers/search.py
 quodlibet/browsers/soundcloud/main.py
 quodlibet/browsers/soundcloud/util.py
@@ -54,7 +50,6 @@ quodlibet/ext/events/inhibit.py
 quodlibet/ext/events/iradiolog.py
 quodlibet/ext/events/jep118.py
 quodlibet/ext/events/language.py
-quodlibet/ext/events/lyricswindow.py
 quodlibet/ext/events/mediaserver.py
 quodlibet/ext/events/mpdserver/__init__.py
 quodlibet/ext/events/mpris/__init__.py
@@ -167,7 +162,6 @@ quodlibet/qltk/chooser.py
 quodlibet/qltk/controls.py
 quodlibet/qltk/data_editors.py
 quodlibet/qltk/delete.py
-quodlibet/qltk/downloader.py
 quodlibet/qltk/edittags.py
 quodlibet/qltk/_editutils.py
 quodlibet/qltk/entry.py
