@@ -153,13 +153,13 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self._panes[-1].get_selection().emit('changed')
 
     def __added(self, library, songs):
-        songs = filter(self._filter, songs)
+        songs = list(filter(self._filter, songs))
         for pane in self._panes:
             pane.add(songs)
-            songs = filter(pane.matches, songs)
+            songs = list(filter(pane.matches, songs))
 
     def __removed(self, library, songs, remove_if_empty=True):
-        songs = filter(self._filter, songs)
+        songs = list(filter(self._filter, songs))
         for pane in self._panes:
             pane.remove(songs, remove_if_empty)
 
@@ -187,10 +187,10 @@ class PanedBrowser(Browser, util.InstanceTracker):
         query = Query(self._get_text(), star.keys())
         if query.is_parsable:
             self._filter = query.search
-            songs = filter(self._filter, self._library)
+            songs = list(filter(self._filter, self._library))
             bg = background_filter()
             if bg:
-                songs = filter(bg, songs)
+                songs = list(filter(bg, songs))
             self._panes[0].fill(songs)
 
     def scroll(self, song):
