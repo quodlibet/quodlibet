@@ -31,7 +31,7 @@ function main {
         mingw-w64-i686-python3-certifi \
         mingw-w64-i686-python3-coverage
 
-    pip3 install feedparser musicbrainzngs mutagen pycodestyle pyflakes
+    pip3 install feedparser musicbrainzngs mutagen pycodestyle pyflakes pyparsing
 }
 
 main;

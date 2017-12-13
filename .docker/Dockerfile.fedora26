@@ -12,6 +12,7 @@ RUN dnf -y install \
     quodlibet \
     python3-polib \
     python3-setuptools \
+    python3-pyparsing \
     python3-pytest \
     python3-pip \
     which \
