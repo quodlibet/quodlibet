@@ -13,7 +13,8 @@ from senf import fsn2text, uri2fsn
 from quodlibet import C_, _
 from quodlibet.util.dprint import print_, print_e
 from quodlibet.remote import Remote, RemoteError
-
+from quodlibet.util import print_d, print_e
+from quodlibet.util.string import split_escape, join_escape
 
 def exit_(status=None, notify_startup=False):
     """Call this to abort the startup before any mainloop starts.
@@ -223,9 +224,20 @@ def process_arguments(argv):
                 filename = uri2fsn(arg)
             except ValueError:
                 filename = arg
+            if os.path.isfile(filename):
+                filename = os.path.abspath(util.path.expanduser(filename))
             queue(command, filename)
         elif command == "enqueue-files":
-            queue(command, arg)
+            args = []
+            for param in split_escape(arg, ","):
+                try:
+                    filename = uri2fsn(param)
+                except ValueError:
+                    filename = param
+                    if os.path.isfile(filename):
+                        filename = os.path.abspath(util.path.expanduser(filename))
+                args.append(filename)
+            queue(command, join_escape(args,","))
         elif command == "play-file":
             if uri_is_valid(arg) and arg.startswith("quodlibet://"):
                 # TODO: allow handling of URIs without --play-file
