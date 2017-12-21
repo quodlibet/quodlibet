@@ -47,6 +47,7 @@ class TCommands(TestCase):
         self.__send("volume +1000")
         self.__send("volume 40")
         self.__send("volume -10")
+        self.__send("volume +4.2")
 
         self.__send("seek -10")
         self.__send("seek +10")
