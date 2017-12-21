@@ -176,6 +176,11 @@ Sauyon Lee
 Thomas Leberbauer
 Kristian Laakkonen
 Emanuele Baldino
+Peter F. Patel-Schneider
+Pete Beardmore
+Muges@github
+Meriipu@github
+Jonas Platte
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
