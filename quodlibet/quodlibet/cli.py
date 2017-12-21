@@ -151,11 +151,9 @@ def process_arguments(argv):
     options.add("screen", arg="dummy")
 
     def is_vol(str):
-        if str[0] in '+-':
-            if len(str) == 1:
-                return True
-            str = str[1:]
-        return str.isdigit()
+        if len(str) == 1 and str[0] in '+-':
+            return True
+        return is_float(str)
 
     def is_time(str):
         if str[0] not in "+-0123456789":

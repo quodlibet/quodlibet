@@ -45,7 +45,7 @@ class CommandRegistry(object):
         Args:
             name (str): the command name
             args (int): amount of required arguments
-            optional (int): amoutn of additional optional arguments
+            optional (int): amount of additional optional arguments
         Returns:
             Callable
         """
@@ -171,7 +171,7 @@ def _volume(app, value):
     if value[0] in ('+', '-'):
         if len(value) > 1:
             try:
-                change = (int(value[1:]) / 100.0)
+                change = (float(value[1:]) / 100.0)
             except ValueError:
                 return
         else:
@@ -181,7 +181,7 @@ def _volume(app, value):
         volume = app.player.volume + change
     else:
         try:
-            volume = (int(value) / 100.0)
+            volume = (float(value) / 100.0)
         except ValueError:
             return
     app.player.volume = min(1.0, max(0.0, volume))
