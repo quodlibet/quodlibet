@@ -18,6 +18,85 @@ Packaging Changes:
   * **udisks2** no longer required
   * **python-futures** no longer required
 
+Project:
+  * Ported from Python 2 to Python 3 :bug:`1580` :bug:`2467`
+  * Relicensed all code under "GPLv2 only" to "GPLv2 or later" :bug:`2276`
+
+Translations:
+  * Update German translation :pr:`2651` (:user:`Till Berger <Mellthas>`)
+  * Update Polish translation :pr:`2646` (:user:`Piotr Drąg <piotrdrag>`)
+  * Update Norwegian (bokmål) translation :pr:`2506` :pr:`2621`
+    (:user:`Åka Sikrom <akrosikam>`)
+  * Russian translation fixes :pr:`2608` :user:`Kirill Romanov <Djaler>`
+  * Update Finnish translation :pr:`2606` :user:`Kristian Laakkonen <krisse7>`
+
+Various:
+  * Allow cover image pop-up to scale up to maximum size :bug:`2634`
+    (:user:`Peter F. Patel-Schneider <pfps>`)
+  * Draw a drag handle for the pane separator with newer GTK+ :bug:`2402`
+  * Soundcloud: Add "my tracks" category (:user:`Nick Boultbee <declension>`)
+  * Workaround Ubuntu theme bug which results in drawing artefacts with
+    treeview separators. :bug:`2541`
+  * Added support for custom date column timestamp formats (advanced prefs)
+    :pr:`2366` (:user:`Meriipu`)
+  * Fix filter function (e.g. max, min) doesn't work correctly with lastplayed
+    :pr:`2504` (:user:`Thomas Leberbauer <slosd>`)
+  * Multimeida keys: make "previous" always go to the previous song
+    :bug:`2494`
+  * Prefer userdir in XDG_CONFIG_HOME :bug:`138` :pr:`2466`
+    (:user:`Sauyon Lee <sauyon>`)
+  * Fix error on start under LXDE with its "org.gnome.SessionManager"
+    re-implementation
+  * Improve visibility of the active state of toggle buttons in the
+    bottom bar :bug:`2430`
+  * Remove device support :bug:`2415`
+  * Filesystem browser: Allow selecting multiple folders :bug:`2399`
+    (:user:`Nick Boultbee <declension>`)
+  * CLI: Allow floating point arguments for ``--volume`` :pr:`2661`
+    (:user:`Jonas Platte <jplatte>`)
+  * Windows: SIGINT handling support
+  * Sentry.io error reporting now available on all platforms
+
+Playback:
+  * GStreamer: Fix gain adjustments are not applied during the first split
+    second of a song on macOS/Windows. :bug:`1905`
+  * GStreamer: Seeking performance improvements :bug:`2420`
+
+Tagging:
+  * Add option for moving album art when renaming :pr:`2560`
+    (:user:`Pete Beardmore <elbeardmorez>`)
+  * Add DSF tagging support :bug:`2491`
+
+Plugins:
+  * Add support for sidebar plugins :bug:`152`
+    (:user:`Nick Boultbee <declension>`)
+  * LyricsWindow: convert to a sidebar plugin :bug:`2553`
+    (:user:`Nick Boultbee <declension>`)
+  * Fix synchronized lyrics window not showing :bug:`1743` :pr:`2492`
+    (:user:`elfalem`)
+  * Add more preferences for the album cover search :pr:`2511`
+    (:user:`Pete Beardmore <elbeardmorez>`)
+  * Waveform seekbar hoover time indication :pr:`2419` :pr:`2550`
+    (:user:`Muges`)
+  * New automatic seekpoint plugin (seeking based on bookmarks)
+    :pr:`2437` (:user:`Meriipu`:)
+
+CI:
+  * Run Windows tests on appveyor :pr:`2619`
+  * Submit coverage reports to codecov.io
+  * Move to circleci for Docker tests :pr:`2443`
+  * Dockerize Windows-under-Wine tests :pr:`2444`
+
+Various improvements, fixes and Python 3 porting fixes, thanks to:
+  * :user:`Kristian Laakkonen <krisse7>`: :bug:`2607` :bug:`2605` :pr:`2593`
+    :pr:`2586` :pr:`2578` :pr:`2576` :pr:`2521`
+  * :user:`Emanuele Baldino <Ironbalden>`: :pr:`2622`
+  * :user:`CreamyCookie`: :pr:`2574`
+  * :user:`Muges`: :bug:`2425`
+  * :user:`Till Berger <Mellthas>`: :pr:`2531` :pr:`2530` :pr:`2474`
+  * :user:`Meriipu`: :pr:`2486` :pr:`2449` :pr:`2616`
+  * :user:`Fredrik Strupe <frestr>`: :pr:`2476`
+
 
 .. _release-3.9.1:
 
