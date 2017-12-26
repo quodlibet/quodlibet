@@ -94,14 +94,14 @@ function install_deps {
         mingw-w64-"${ARCH}"-gst-plugins-ugly \
         mingw-w64-"${ARCH}"-python3-pytest \
         mingw-w64-"${ARCH}"-python3-certifi \
+        mingw-w64-"${ARCH}"-python3-coverage
 
     PIP_REQUIREMENTS="\
 feedparser==5.2.1
 musicbrainzngs==0.6
-mutagen==1.38
+mutagen==1.39
 pycodestyle==2.3.1
-pyflakes==1.5.0
-coverage==4.4.1
+pyflakes==1.6.0
 "
 
     build_pip install --no-deps --no-binary ":all:" --upgrade \
@@ -111,13 +111,11 @@ coverage==4.4.1
         mingw-w64-"${ARCH}"-python3-pip mingw-w64-"${ARCH}"-ncurses \
         mingw-w64-"${ARCH}"-tk mingw-w64-"${ARCH}"-tcl \
         mingw-w64-"${ARCH}"-opencv mingw-w64-"${ARCH}"-daala-git \
-        mingw-w64-"${ARCH}"-SDL2 mingw-w64-"${ARCH}"-libdvdcss \
+        mingw-w64-"${ARCH}"-libdvdcss \
         mingw-w64-"${ARCH}"-libdvdnav mingw-w64-"${ARCH}"-libdvdread \
-        mingw-w64-"${ARCH}"-openexr mingw-w64-"${ARCH}"-openal \
+        mingw-w64-"${ARCH}"-openexr \
         mingw-w64-"${ARCH}"-openh264 mingw-w64-"${ARCH}"-zbar \
-        mingw-w64-"${ARCH}"-clutter  mingw-w64-"${ARCH}"-gsl \
-        mingw-w64-"${ARCH}"-libvpx mingw-w64-"${ARCH}"-libcaca \
-        mingw-w64-"${ARCH}"-libwebp || true
+        mingw-w64-"${ARCH}"-clutter  mingw-w64-"${ARCH}"-gsl || true
 
     build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-python2 || true
 
