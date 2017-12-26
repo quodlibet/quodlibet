@@ -152,7 +152,8 @@ class CoverManager(GObject.Object):
 
             groups = {}
             for song in songs:
-                groups.setdefault(plugin.group_by(song), []).append(song)
+                group = plugin.group_by(song) or ''
+                groups.setdefault(group, []).append(song)
 
             # sort both groups and songs by key, so we always get
             # the same result for the same set of songs
