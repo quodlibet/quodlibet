@@ -21,11 +21,10 @@ We use the GitHub bug tracker:
 ----------------------
 
 Quod Libet uses `Git <https://git-scm.com/>`_ for source
-control and is hosted on `GitHub <https://github.com/>`_ as well
-as `Bitbucket <https://bitbucket.org/>`__:
+control and is hosted on `GitHub <https://github.com/>`_:
 
- * https://github.com/quodlibet/quodlibet (primary)
- * https://bitbucket.org/lazka/quodlibet (mirror)
+https://github.com/quodlibet/quodlibet
+
 
 .. _RunFromSource:
 
@@ -34,7 +33,8 @@ as `Bitbucket <https://bitbucket.org/>`__:
 ::
 
     $ git clone https://github.com/quodlibet/quodlibet.git
-    $ ./quodlibet/quodlibet/quodlibet.py
+    $ cd quodlibet
+    $ ./quodlibet/quodlibet.py
 
 To get all the dependencies needed for running Quod Libet the easiest way is 
 to use one of the unstable PPAs / repos listed on the :ref:`download page 
