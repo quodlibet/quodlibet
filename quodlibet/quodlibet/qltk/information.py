@@ -220,7 +220,7 @@ class OneSong(qltk.Notebook):
 
         if performers:
             text = '\n'.join("%s (%s)" % (', '.join(names), part)
-                             for part, names in performers.iteritems())
+                             for part, names in performers.items())
 
             name = (tag("performer") if len(performers) == 1
                     else _("performers"))

@@ -68,6 +68,11 @@ class TInformation(TestCase):
         self.inf = Information(self.library, [f, f2])
         self.assert_child_is(OneArtist)
 
+    def test_performer_roles(self):
+        f = AF({"~filename": fsnative(u"/dev/null"), "performer:piano": "woo"})
+        self.inf = Information(self.library, [f])
+        self.assert_child_is(OneSong)
+
     def assert_child_is(self, cls):
         self.failUnless(isinstance(self.inf.get_child(), cls))
 
