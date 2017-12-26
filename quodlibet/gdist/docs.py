@@ -21,6 +21,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os
+import sys
 
 from .util import Command
 
@@ -46,5 +47,6 @@ class build_sphinx(Command):
         TARGET = os.path.join(self.build_dir, "sphinx")
 
         srcdir = GUIDE_ROOT if not self.all else DOCS_ROOT
-        self.spawn(["sphinx-build", "-b", "html", "-c", DOCS_ROOT,
+        self.spawn([sys.executable, "-m", "sphinx",
+                    "-b", "html", "-c", DOCS_ROOT,
                     "-n", "-E", srcdir, TARGET])
