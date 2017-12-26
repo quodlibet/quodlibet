@@ -55,7 +55,10 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
         self.scrolled_window.show()
         self._sig = None
-        self.plugin_on_song_started(app.player.info)
+        cur = app.player.info
+        if cur is not None:
+            cur = SongWrapper(cur)
+        self.plugin_on_song_started(cur)
 
     def create_sidebar(self):
         vbox = Gtk.VBox(margin=0)
