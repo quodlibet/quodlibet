@@ -5,6 +5,3 @@ coverage:
     project: false
     patch: false
     changes: false
-
-fixes:
-  - "::quodlibet/"
