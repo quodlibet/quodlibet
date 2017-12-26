@@ -17,6 +17,11 @@ import quodlibet.player
 
 
 class TSongsMenu(TestCase):
+
+    def _confirmer(self, *args):
+        self.confirmed = True
+        return False
+
     def setUp(self):
         config.init()
         self.library = SongLibrary()
@@ -27,6 +32,7 @@ class TSongsMenu(TestCase):
                       ["song1", "song2", "song3"]]
         for song in self.songs:
             song.sanitize(fsnative(text_type(song["title"])))
+        self.confirmed = False
 
     def test_empty(self):
         self.menu = SongsMenu(self.library, self.songs, plugins=False,
@@ -74,9 +80,12 @@ class TSongsMenu(TestCase):
         self.menu = SongsMenu(
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, remove=True, delete=False, edit=False,
-            ratings=False)
+            ratings=False, removal_confirmer=self._confirmer)
         self.failUnlessEqual(1, len(self.menu))
-        self.failIf(self.menu.get_children()[0].props.sensitive)
+        item = self.menu.get_children()[0]
+        self.failIf(item.props.sensitive)
+        item.activate()
+        self.failUnless(self.confirmed, "Should have confirmed song removal")
 
     def test_remove_sensitive(self):
         self.library.add(self.songs)
