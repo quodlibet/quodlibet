@@ -29,6 +29,22 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
 
 
+def confirm_song_removal_invoke(parent, songs):
+    songs = set(songs)
+    if not songs:
+        return True
+
+    count = len(songs)
+    song = next(iter(songs))
+    title = ngettext("Remove track: \"%(title)s\" from library?",
+                     "Remove %(count)d tracks from library?",
+                     count) % {'title': song('title') or song('~basename'),
+                               'count': count}
+
+    return ConfirmationPrompt.RESPONSE_INVOKE == ConfirmationPrompt(
+               parent, title, "", _("Remove from Library")).run()
+
+
 def confirm_multi_song_invoke(parent, plugin_name, count):
     """Dialog to confirm invoking a plugin with X songs in case X is high"""
     title = ngettext("Run the plugin \"%(name)s\" on %(count)d song?",
@@ -246,7 +262,8 @@ class SongsMenu(Gtk.Menu):
 
     def __init__(self, library, songs, plugins=True, playlists=True,
                  queue=True, remove=True, delete=False,
-                 edit=True, ratings=True, items=None, accels=True):
+                 edit=True, ratings=True, items=None, accels=True,
+                 removal_confirmer=None):
         super(SongsMenu, self).__init__()
         # The library may actually be a librarian; if it is, use it,
         # otherwise find the real librarian.
@@ -326,12 +343,16 @@ class SongsMenu(Gtk.Menu):
             self.separate()
 
         if remove:
-            b = qltk.MenuItem(_("_Remove from Library"), Icons.LIST_REMOVE)
+            self._confirm_song_removal = (removal_confirmer or
+                                          confirm_song_removal_invoke)
+            b = qltk.MenuItem(_("_Remove from Library…"), Icons.LIST_REMOVE)
             if callable(remove):
                 b.connect('activate', lambda item: remove(songs))
             else:
                 def remove_cb(item, songs, library):
-                    library.remove(set(songs))
+                    parent = get_menu_item_top_parent(item)
+                    if self._confirm_song_removal(parent, songs):
+                        library.remove(songs)
 
                 b.connect('activate', remove_cb, songs, library)
                 b.set_sensitive(in_lib and bool(songs))
