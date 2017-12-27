@@ -31,11 +31,16 @@ from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
 
 def confirm_song_removal_invoke(parent, songs):
     songs = set(songs)
-    if len(songs) == 1:
-        title = _("Remove track: \"%s\" from library?"
-                  % next(iter(songs))['title'])
-    else:
-        title = _("Remove %s tracks from library?" % len(songs))
+    if not songs:
+        return True
+
+    count = len(songs)
+    song = next(iter(songs))
+    title = ngettext("Remove track: \"%(title)s\" from library?",
+                     "Remove %(count)d tracks from library?",
+                     count) % {'title': song('title'),
+                               'count': count}
+
     return ConfirmationPrompt.RESPONSE_INVOKE == ConfirmationPrompt(
                parent, title, "", _("Remove from Library")).run()
 
