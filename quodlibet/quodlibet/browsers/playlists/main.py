@@ -353,6 +353,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __get_name_of_current_selected_playlist(self):
         model, iter = self.__selected_playlists()
+        if not iter:
+            return None
         path = model.get_path(iter)
         playlist = model[path][0]
         return playlist
