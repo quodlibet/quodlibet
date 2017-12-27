@@ -90,6 +90,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
             def edit(widget):
                 print_d("Launching lyrics editor for %s" % song("~filename"))
+                assert isinstance(song, SongWrapper)
                 information = Information(app.librarian, [song._song])
                 information.get_child()._switch_to_lyrics()
                 information.show()
