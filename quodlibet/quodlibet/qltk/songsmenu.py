@@ -38,7 +38,7 @@ def confirm_song_removal_invoke(parent, songs):
     song = next(iter(songs))
     title = ngettext("Remove track: \"%(title)s\" from library?",
                      "Remove %(count)d tracks from library?",
-                     count) % {'title': song('title'),
+                     count) % {'title': song('title') or song('~basename'),
                                'count': count}
 
     return ConfirmationPrompt.RESPONSE_INVOKE == ConfirmationPrompt(
