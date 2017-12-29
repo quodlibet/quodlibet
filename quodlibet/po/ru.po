@@ -4849,7 +4849,7 @@ msgstr "_О программе"
 #: ../quodlibet/qltk/exfalsowindow.py:99
 #: ../quodlibet/qltk/quodlibetwindow.py:1088
 msgid "_Check for Updates…"
-msgstr "_Проверить наличие обновлений..."
+msgstr "_Проверить наличие обновлений…"
 
 #: ../quodlibet/qltk/exfalsowindow.py:105
 #: ../quodlibet/qltk/quodlibetwindow.py:1021 ../quodlibet/qltk/songsmenu.py:304
