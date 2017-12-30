@@ -510,10 +510,10 @@ class AudioFile(dict, ImageContainer):
 
         role_map = {}
         for key in role_tag_keys:
-            if key != role_tag:
-                role = key.rsplit(":", 1)[-1]
-                for name in self.list(key):
-                    role_map.setdefault(name, []).append(role)
+            role = (TAG_ROLES.get(role_tag, role_tag) if key == role_tag
+                    else key.split(":", 1)[-1])
+            for name in self.list(key):
+                role_map.setdefault(name, []).append(role)
 
         if sub_keys is None:
             names = self.list_unique(role_tag_keys)

@@ -447,7 +447,7 @@ class TAudioFile(TestCase):
                        ("performer", "C")])
         self.failUnlessEqual(set(q.list("~performers")), {"A", "B", "C"})
         self.failUnlessEqual(set(q.list("~performers:roles")),
-                             {"A (Vocals)", "B (Guitar)", "C"})
+                             {"A (Vocals)", "B (Guitar)", "C (Performance)"})
 
     def test_performers_multi_value(self):
         q = AudioFile([
@@ -461,12 +461,12 @@ class TAudioFile(TestCase):
 
         self.failUnlessEqual(
             set(q.list("~performer:roles")), {
-                    "A (Guitar, Vocals)",
-                    "C",
-                    "B (Guitar)",
+                    "A (Guitar, Performance, Vocals)",
+                    "C (Performance)",
+                    "B (Guitar, Performance)",
                     "X (Vocals)",
                     "Y (Guitar, Vocals)",
-                    "F",
+                    "F (Performance)",
                 })
 
     def test_people(self):
@@ -475,7 +475,7 @@ class TAudioFile(TestCase):
                        ("albumartist", "B"), ("artist", "C")])
         self.failUnlessEqual(q.list("~people"), ["C", "B", "A"])
         self.failUnlessEqual(q.list("~people:roles"),
-                         ["C", "B (Guitar)", "A (Arrangement, Vocals)"])
+            ["C (Performance)", "B (Guitar)", "A (Arrangement, Vocals)"])
 
     def test_people_mix(self):
         q = AudioFile([
@@ -486,7 +486,7 @@ class TAudioFile(TestCase):
         ])
         self.failUnlessEqual(q.list("~people"), ["A"])
         self.failUnlessEqual(q.list("~people:roles"),
-                             ["A (Arrangement, Arrangement, Foo)"])
+            ["A (Arrangement, Arrangement, Foo, Performance)"])
 
     def test_people_multi_value(self):
         q = AudioFile([
@@ -496,9 +496,9 @@ class TAudioFile(TestCase):
         ])
 
         self.failUnlessEqual(q.list("~people"), ["A", "Y", "X"])
-        self.failUnlessEqual(
-            q.list("~people:roles"),
-            ["A (Arrangement, Foo)", "Y", "X (Arrangement, Foo)"])
+        self.failUnlessEqual(q.list("~people:roles"),
+            ["A (Arrangement, Foo, Performance)", "Y (Performance)",
+             "X (Arrangement, Foo)"])
 
     def test_people_individuals(self):
         q = AudioFile({"artist": "A\nX", "albumartist": "Various Artists"})
@@ -524,7 +524,7 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(q.list("~peoplesort"),
                              ["B, The", "C, The", "A, The"])
         self.failUnlessEqual(q.list("~peoplesort:roles"),
-                             ["B, The (Guitar)", "C, The", "A, The (Vocals)"])
+            ["B, The (Guitar)", "C, The (Performance)", "A, The (Vocals)"])
 
     def test_to_dump(self):
         dump = bar_1_1.to_dump()
