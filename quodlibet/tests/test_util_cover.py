@@ -11,7 +11,9 @@ import shutil
 
 from senf import fsnative, bytes2fsn
 
+from quodlibet.ext.covers.artwork_url import ArtworkUrlCover
 from quodlibet.formats import AudioFile
+from quodlibet.plugins import Plugin
 from quodlibet.util.cover.manager import CoverManager
 from quodlibet.util.path import normalize_path, path_equal
 from quodlibet.compat import text_type
@@ -34,16 +36,19 @@ class TCoverManager(TestCase):
         self.manager = CoverManager()
 
         self.dir = mkdtemp()
-        self.song = AudioFile({
-            "~filename": os.path.join(self.dir, "asong.ogg"),
-            "album": u"Quuxly",
-        })
+        self.song = self.an_album_song()
 
         # Safety check
         self.failIf(glob.glob(os.path.join(self.dir + "*.jpg")))
         files = [self.full_path("12345.jpg"), self.full_path("nothing.jpg")]
         for f in files:
             open(f, "w").close()
+
+    def an_album_song(self):
+        return AudioFile({
+            "~filename": os.path.join(self.dir, "asong.ogg"),
+            "album": u"Quuxly",
+        })
 
     def tearDown(self):
         shutil.rmtree(self.dir)
@@ -159,3 +164,13 @@ class TCoverManager(TestCase):
         self.assertTrue(self.manager.get_pixbuf(self.song, 10, 10) is None)
         self.assertTrue(
             self.manager.get_pixbuf_many([self.song], 10, 10) is None)
+
+    def test_get_many(self):
+        songs = [AudioFile({"~filename": os.path.join(self.dir, "song.ogg"),
+                            "title": "Ode to Baz"}),
+                 self.an_album_song()]
+        plugin = Plugin(ArtworkUrlCover)
+        self.manager.plugin_handler.plugin_enable(plugin)
+        self.add_file('cover.jpg')
+        cover = self.manager.get_cover_many(songs)
+        assert cover

@@ -44,6 +44,17 @@ BUILD_TYPE_SHORT_TITLES = {
 
 RELEASES = [
     {
+        "version": "4.0.0",
+        "date": "2017-12-26",
+        "builds": {
+            OSX_QL: [GITHUB + "QuodLibet-%(version)s.dmg"],
+            OSX_EF: [GITHUB + "ExFalso-%(version)s.dmg"],
+            WIN: [GITHUB + "quodlibet-%(version)s-installer.exe"],
+            WIN_PORT: [GITHUB + "quodlibet-%(version)s-portable.exe"],
+            TARBALL: [GITHUB + "quodlibet-%(version)s.tar.gz"],
+        }
+    },
+    {
         "version": "3.9.1",
         "date": "2017-06-06",
         "builds": {

@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-17 18:58+0200\n"
-"PO-Revision-Date: 2017-10-28 18:07+0300\n"
+"PO-Revision-Date: 2017-12-28 23:32+0300\n"
 "Last-Translator: Anton Shestakov <engored@ya.ru>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -4488,15 +4488,15 @@ msgstr "_Все композиции"
 
 #: ../quodlibet/qltk/browser.py:71
 msgid "On Current _Genre(s)"
-msgstr ""
+msgstr "По текущим _жанрам"
 
 #: ../quodlibet/qltk/browser.py:72
 msgid "On Current _Artist(s)"
-msgstr ""
+msgstr "По текущим _исполнителям"
 
 #: ../quodlibet/qltk/browser.py:73
 msgid "On Current Al_bum"
-msgstr ""
+msgstr "По текущему _альбому"
 
 #: ../quodlibet/qltk/browser.py:81
 msgid "Random _Genre"
@@ -4504,11 +4504,11 @@ msgstr "Случайный _жанр"
 
 #: ../quodlibet/qltk/browser.py:82
 msgid "Random _Artist"
-msgstr "_Случайный исполнитель"
+msgstr "Случайный _исполнитель"
 
 #: ../quodlibet/qltk/browser.py:83
 msgid "Random Al_bum"
-msgstr "_Случайный альбом"
+msgstr "Случайный _альбом"
 
 #: ../quodlibet/qltk/browser.py:96
 msgid ""
@@ -4844,12 +4844,12 @@ msgstr ""
 #: ../quodlibet/qltk/exfalsowindow.py:95
 #: ../quodlibet/qltk/quodlibetwindow.py:1066
 msgid "_About"
-msgstr ""
+msgstr "_О программе"
 
 #: ../quodlibet/qltk/exfalsowindow.py:99
 #: ../quodlibet/qltk/quodlibetwindow.py:1088
 msgid "_Check for Updates…"
-msgstr ""
+msgstr "_Проверить наличие обновлений…"
 
 #: ../quodlibet/qltk/exfalsowindow.py:105
 #: ../quodlibet/qltk/quodlibetwindow.py:1021 ../quodlibet/qltk/songsmenu.py:304
@@ -5488,9 +5488,8 @@ msgid "Scan library _on start"
 msgstr "_Обновлять фонотеку при запуске"
 
 #: ../quodlibet/qltk/prefs.py:651 ../quodlibet/qltk/quodlibetwindow.py:1100
-#, fuzzy
 msgid "_Scan Library"
-msgstr "_Поиск по фонотеке"
+msgstr "_Сканировать фонотеку"
 
 #: ../quodlibet/qltk/prefs.py:653 ../quodlibet/qltk/quodlibetwindow.py:1162
 msgid "Check for changes in your library"
@@ -5636,7 +5635,7 @@ msgstr "Остановиться после этой композиции"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1062
 msgid "_Keyboard Shortcuts"
-msgstr ""
+msgstr "Сочетания клавиш"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1071
 msgid "Online Help"

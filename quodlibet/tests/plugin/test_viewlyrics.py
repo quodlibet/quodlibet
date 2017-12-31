@@ -12,8 +12,8 @@ from quodlibet.util.songwrapper import SongWrapper
 from tests import init_fake_app, destroy_fake_app
 from tests.plugin import PluginTestCase
 
-AUDIO_FILE = SongWrapper(AudioFile({'~filename': "/tmp/foobar",
-                                    'lyrics': 'Never gonna give you up'}))
+AUDIO_FILE = AudioFile({'~filename': "/tmp/foobar",
+                        'lyrics': 'Never gonna give you up'})
 
 
 class TViewlyrics(PluginTestCase):
@@ -32,7 +32,7 @@ class TViewlyrics(PluginTestCase):
         self.plugin.plugin_on_song_started(None)
 
     def test_song_started(self):
-        self.plugin.plugin_on_song_started(AUDIO_FILE)
+        self.plugin.plugin_on_song_started(SongWrapper(AUDIO_FILE))
 
     def test_on_changed_stopped(self):
         self.plugin.plugin_on_changed([])
@@ -43,7 +43,12 @@ class TViewlyrics(PluginTestCase):
 
     def test_on_changed(self):
         app.player.info = AUDIO_FILE
-        self.plugin.plugin_on_changed([AUDIO_FILE])
+        self.plugin.plugin_on_changed([SongWrapper(AUDIO_FILE)])
         tb = self.plugin.textbuffer
         actual = tb.get_text(tb.get_start_iter(), tb.get_end_iter(), True)
         self.failUnlessEqual(actual, AUDIO_FILE("lyrics"))
+
+    def test_startup_playing_then_edit(self):
+        app.player.info = AUDIO_FILE
+        self.plugin.enabled()
+        self.plugin._edit_button.emit('clicked')
