@@ -17,6 +17,7 @@ Packaging Changes:
   * **media-player-info** no longer required
   * **udisks2** no longer required
   * **python-futures** no longer required
+  * **python-faulthandler** no longer required
 
 Project:
   * Ported from Python 2 to Python 3 :bug:`1580` :bug:`2467`
