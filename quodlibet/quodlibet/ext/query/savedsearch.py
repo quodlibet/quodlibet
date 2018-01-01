@@ -35,7 +35,7 @@ class IncludeSavedSearchQuery(QueryPlugin):
         else:
             query_path = os.path.join(get_user_dir(), 'lists', 'queries.saved')
         try:
-            with open(query_path, 'rU') as query_file:
+            with open(query_path, 'r', encoding="utf-8") as query_file:
                 for query_string in query_file:
                     name = next(query_file).strip().lower()
                     if name == body:

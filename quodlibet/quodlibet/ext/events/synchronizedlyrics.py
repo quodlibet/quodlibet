@@ -198,7 +198,7 @@ as the track.')
             self._current_lrc = new_lrc
 
     def _parse_lrc_file(self, filename):
-        with open(filename, 'r') as f:
+        with open(filename, 'r', encoding="utf-8") as f:
             raw_file = f.read()
         raw_file = raw_file.replace("\n", "")
         begin = 0
