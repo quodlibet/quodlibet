@@ -70,6 +70,16 @@ class TagName(object):
         return "%s(%r)" % (type(self).__name__, vars(self))
 
 
+def _get_role_map(tags):
+    roles = {}
+    for (name, tag) in iteritems(tags):
+        if tag.role:
+            roles[name] = tag.role
+            if tag.has_sort:
+                roles[name + "sort"] = tag.role
+    return roles
+
+
 T = TagName
 _TAGS = dict((t.name, t) for t in [
     T("album", "us", _("album"), _("albums")),
@@ -85,7 +95,7 @@ _TAGS = dict((t.name, t) for t in [
     T("date", "u", _("date")),
     T("description", "u", _("description")),
     T("genre", "u", _("genre"), _("genres")),
-    T("performer", "uisr", _("performer"), _("performers")),
+    T("performer", "uisr", _("performer"), _("performers"), _("performance")),
     T("grouping", "u", _("grouping")),
     T("language", "ui", _("language")),
     T("license", "u", _("license")),
@@ -205,7 +215,7 @@ USER_TAGS = _get_standard_tags(_TAGS, machine=False)
 e.g. album
 """
 
-TAG_ROLES = dict([(n, t.role) for (n, t) in iteritems(_TAGS) if t.role])
+TAG_ROLES = _get_role_map(_TAGS)
 """A mapping from tags to their translated role description.
 e.g. conductor -> conducting
 """
