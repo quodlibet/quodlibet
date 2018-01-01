@@ -449,7 +449,7 @@ class AudioFile(dict, ImageContainer):
                 # the external file.
                 fn = self.lyric_filename
                 try:
-                    fileobj = open(fn, "rUb")
+                    fileobj = open(fn, "rb")
                 except EnvironmentError:
                     return default
                 else:
