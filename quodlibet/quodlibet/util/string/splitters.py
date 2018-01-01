@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2017 Nick Boultbee
+#           2011-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,14 +17,17 @@ def split_value(s, splitters=[u"/", u"&", u","]):
     separator; subsequent matches are intentionally ignored.
     """
 
+    def regex_for(sp):
+        return r'{start}\s*{split}\s*{end}'.format(
+            start=r'(?:\b|(?<=\W))', split=re_escape(sp), end=r'(?:\b|(?=\W))')
+
     if not splitters:
         return [s.strip()]
     values = s.split("\n")
     for spl in splitters:
-        spl = re.compile(r"\b\s*%s\s*\b" % re_escape(spl), re.UNICODE)
-        if not list(filter(spl.search, values)):
-            continue
-        return [st.strip() for v in values for st in spl.split(v)]
+        spl = re.compile(regex_for(spl), re.UNICODE)
+        if any(spl.search(v) for v in values):
+            return [st.strip() for v in values for st in spl.split(v)]
     return values
 
 
