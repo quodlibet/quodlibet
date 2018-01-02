@@ -31,7 +31,7 @@ from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.qltk import Icons
 from quodlibet.plugins import PluginManager
-from quodlibet.util import connect_obj, gdecode
+from quodlibet.util import connect_obj
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
@@ -350,7 +350,7 @@ class AddTagDialog(Dialog):
             return self.__tag.tag
 
     def get_value(self):
-        return gdecode(self.__val.get_text())
+        return self.__val.get_text()
 
     def __validate(self, editable, add, invalid, box):
         tag = self.get_tag()
@@ -818,7 +818,6 @@ class EditTags(Gtk.VBox):
             b.set_sensitive(not all_done)
 
     def __edit_tag(self, renderer, path, new_value, model):
-        new_value = gdecode(new_value)
         new_value = ', '.join(new_value.splitlines())
         path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]

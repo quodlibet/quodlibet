@@ -16,7 +16,7 @@ import logging
 from senf import getcwd, fsnative, fsn2bytes, bytes2fsn, mkdtemp
 
 from quodlibet import _
-from quodlibet.compat import text_type, PY2
+from quodlibet.compat import text_type
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
 from quodlibet import config
 from quodlibet import util
@@ -1093,15 +1093,6 @@ class Tenviron(TestCase):
                 self.assertTrue(isinstance(v, text_type))
             else:
                 self.assertTrue(isinstance(v, str))
-
-
-class Tgdecode(TestCase):
-
-    def test_main(self):
-        if PY2:
-            self.assertTrue(isinstance(util.gdecode(b"foo"), text_type))
-        else:
-            self.assertTrue(isinstance(util.gdecode(u"foo"), text_type))
 
 
 class Tget_module_dir(TestCase):

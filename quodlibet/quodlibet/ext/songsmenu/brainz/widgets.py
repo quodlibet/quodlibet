@@ -442,7 +442,7 @@ class SearchWindow(Dialog):
     def _do_query(self, *args):
         """Search for album using the query text."""
 
-        query = util.gdecode(self.search_query.get_text())
+        query = self.search_query.get_text()
 
         if not query:
             self.result_label.set_markup(

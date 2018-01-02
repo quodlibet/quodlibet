@@ -14,7 +14,7 @@ from quodlibet import qltk
 from quodlibet.qltk.views import AllTreeView, TreeViewColumnButton
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk import is_accel
-from quodlibet.util import connect_obj, gdecode
+from quodlibet.util import connect_obj
 from quodlibet.compat import text_type
 
 from .models import PaneModel
@@ -164,7 +164,7 @@ class Pane(AllTreeView):
 
     def __search_func(self, model, column, key, iter_, data):
         entry = model.get_value(iter_)
-        return not entry.contains_text(gdecode(key))
+        return not entry.contains_text(key)
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(sort=True)

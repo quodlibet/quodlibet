@@ -20,7 +20,7 @@ from gi.repository import Gdk
 from gi.repository import GLib, GObject
 from senf import fsn2bytes, bytes2fsn
 
-from quodlibet.util import gdecode, print_d, print_w
+from quodlibet.util import print_d, print_w
 from quodlibet.compat import urlparse
 
 
@@ -371,7 +371,7 @@ def get_backend_name():
 
     display = Gdk.Display.get_default()
     if display is not None:
-        name = gdecode(display.__gtype__.name)
+        name = display.__gtype__.name
         if name.startswith("Gdk"):
             name = name[3:]
         if name.endswith("Display"):

@@ -14,14 +14,13 @@ from quodlibet import config
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.util.string import decode
-from quodlibet.util import gdecode
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.compat import text_type
 
 
 def _config(section, option, label, tooltip=None, getter=None):
     def on_changed(entry, *args):
-        config.settext(section, option, gdecode(entry.get_text()))
+        config.settext(section, option, entry.get_text())
 
     entry = UndoEntry()
     if tooltip:

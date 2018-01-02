@@ -19,7 +19,7 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.x import Button, Align
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons
-from quodlibet.util import connect_obj, gdecode
+from quodlibet.util import connect_obj
 from quodlibet.compat import text_type, itervalues
 
 
@@ -145,7 +145,6 @@ class TrackNumbers(Gtk.VBox):
         path = Gtk.TreePath.new_from_string(path)
         row = model[path]
         entry = row[0]
-        new = gdecode(new)
         if entry.tracknumber != new:
             entry.tracknumber = new
             preview.set_sensitive(True)

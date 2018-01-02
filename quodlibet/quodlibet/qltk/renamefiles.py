@@ -31,7 +31,7 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons, Button, Frame
 from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.util import connect_obj, gdecode
+from quodlibet.util import connect_obj
 from quodlibet.util.path import strip_win32_incompat_from_path
 from quodlibet.util.dprint import print_d
 from quodlibet.compat import itervalues
@@ -272,7 +272,6 @@ class RenameFiles(Gtk.VBox):
         path = Gtk.TreePath.new_from_string(path)
         model = self.view.get_model()
         entry = model[path][0]
-        new = gdecode(new)
         if entry.new_name != new:
             entry.new_name = new
             self.preview.set_sensitive(True)
@@ -434,7 +433,7 @@ class RenameFiles(Gtk.VBox):
         if songs is None:
             songs = [e.song for e in itervalues(model)]
 
-        pattern_text = gdecode(self.combo.get_child().get_text())
+        pattern_text = self.combo.get_child().get_text()
 
         try:
             pattern = FileFromPattern(pattern_text)

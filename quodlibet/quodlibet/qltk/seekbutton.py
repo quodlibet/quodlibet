@@ -22,7 +22,7 @@ from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.util import window_grab_and_map, window_ungrab_and_unmap, \
     position_window_beside_widget
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.util import connect_obj, connect_destroy, gdecode
+from quodlibet.util import connect_obj, connect_destroy
 
 
 class TimeLabel(Gtk.Label):
@@ -45,7 +45,7 @@ class TimeLabel(Gtk.Label):
 
         # If for same number of characters, the needed width was larger,
         # use that instead of the current one
-        num_chars = len(gdecode(self.get_text()))
+        num_chars = len(self.get_text())
         max_widths = self.__widths.get(num_chars, widths)
         widths = max(widths[0], max_widths[0]), max(widths[1], max_widths[1])
         self.__widths[num_chars] = widths

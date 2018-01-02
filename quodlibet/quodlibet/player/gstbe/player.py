@@ -611,13 +611,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             gerror, debug_info = message.parse_error()
             message = u""
             if gerror:
-                message = util.gdecode(gerror.message).rstrip(".")
+                message = gerror.message.rstrip(".")
             details = None
             if debug_info:
                 # strip the first line, not user friendly
                 debug_info = "\n".join(debug_info.splitlines()[1:])
                 # can contain paths, so not sure if utf-8 in all cases
-                details = util.gdecode(debug_info)
+                details = debug_info
             self._error(PlayerError(message, details))
         elif message.type == Gst.MessageType.STATE_CHANGED:
             # pulsesink doesn't notify a volume change on startup
@@ -668,7 +668,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         format_desc = get_description(message)
         title = _(u"No GStreamer element found to handle media format")
         error_details = _(u"Media format: %(format-description)s") % {
-            "format-description": util.gdecode(format_desc)}
+            "format-description": format_desc}
 
         def install_done_cb(plugins_return, *args):
             print_d("Gstreamer plugin install return: %r" % plugins_return)

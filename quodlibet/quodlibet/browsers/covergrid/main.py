@@ -439,7 +439,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         album = model.get_album(iter_)
         if album is None:
             return config.getboolean("browsers", "covergrid_all", False)
-        key = util.gdecode(key).lower()
+        key = key.lower()
         title = album.title.lower()
         if key in title:
             return False

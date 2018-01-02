@@ -484,7 +484,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
                     flag == EnabledType.DIS and enabled):
                 return False
 
-        filter_ = util.gdecode(entry.get_text()).lower()
+        filter_ = entry.get_text().lower()
         return (not filter_ or filter_ in plugin.name.lower()
                 or filter_ in (plugin.description or "").lower())
 

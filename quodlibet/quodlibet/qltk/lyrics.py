@@ -82,7 +82,7 @@ class LyricsPane(Gtk.VBox):
 
     def __save(self, save, song, buffer, delete):
         start, end = buffer.get_bounds()
-        text = util.gdecode(buffer.get_text(start, end, True))
+        text = buffer.get_text(start, end, True)
         self._save_lyrics(song, text)
         delete.set_sensitive(True)
         save.set_sensitive(False)

@@ -29,7 +29,7 @@ from quodlibet.qltk.textedit import TextView, TextBuffer
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
-from quodlibet.util import unescape, print_w, gdecode
+from quodlibet.util import unescape, print_w
 
 
 pconfig = PluginConfig("notify")
@@ -59,7 +59,7 @@ class PreferencesWidget(Gtk.VBox):
         title_entry.set_text(pconfig.gettext("titlepattern"))
 
         def on_entry_changed(entry, cfgname):
-            pconfig.settext(cfgname, gdecode(entry.get_text()))
+            pconfig.settext(cfgname, entry.get_text())
 
         title_entry.connect("changed", on_entry_changed, "titlepattern")
         table.attach(title_entry, 1, 2, 0, 1)
@@ -89,7 +89,7 @@ class PreferencesWidget(Gtk.VBox):
 
         def on_textbuffer_changed(text_buffer, cfgname):
             start, end = text_buffer.get_bounds()
-            text = gdecode(text_buffer.get_text(start, end, True))
+            text = text_buffer.get_text(start, end, True)
             pconfig.settext(cfgname, text)
 
         body_textbuffer.connect("changed", on_textbuffer_changed,

@@ -13,7 +13,7 @@ from gi.repository import GLib, Gst
 
 from quodlibet import _
 from quodlibet.util.string import decode
-from quodlibet.util import is_linux, is_windows, gdecode
+from quodlibet.util import is_linux, is_windows
 from quodlibet.player import PlayerError
 from quodlibet.compat import text_type, number_types, xrange
 
@@ -119,7 +119,7 @@ def GStreamerSink(pipeline_desc):
         try:
             pipe = [Gst.parse_launch(e) for e in pipeline_desc.split('!')]
         except GLib.GError as e:
-            message = gdecode(e.message)
+            message = e.message
             raise PlayerError(_("Invalid GStreamer output pipeline"), message)
 
     if pipe:

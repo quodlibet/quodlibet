@@ -41,7 +41,7 @@ from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk import Icons
 from quodlibet.util import copool, connect_destroy
 from quodlibet.util.library import background_filter
-from quodlibet.util import connect_obj, DeferredSignal, gdecode
+from quodlibet.util import connect_obj, DeferredSignal
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.compat import cmp
@@ -632,7 +632,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         album = model.get_album(iter_)
         if album is None:
             return True
-        key = gdecode(key).lower()
+        key = key.lower()
         title = album.title.lower()
         if key in title:
             return False

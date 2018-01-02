@@ -25,7 +25,7 @@ except ImportError:
 
 from senf import fsnative, environ, argv
 
-from quodlibet.compat import reraise as py_reraise, PY2, text_type, \
+from quodlibet.compat import reraise as py_reraise, text_type, \
     iteritems, reduce, number_types, long
 from quodlibet.util.string.titlecase import title
 
@@ -43,20 +43,6 @@ from .i18n import _, C_, locale_format
 cached_func, enum, print_w, print_exc, is_plasma, is_unity, is_enlightenment,
 is_linux, is_windows, is_wine, is_osx, get_module_dir, get_ca_file,
 get_locale_encoding, NamedTemporaryFile
-
-
-if PY2:
-    def gdecode(s):
-        """Returns unicode for the glib text type"""
-
-        assert isinstance(s, bytes)
-        return s.decode("utf-8")
-else:
-    def gdecode(s):
-        """Returns unicode for the glib text type"""
-
-        assert isinstance(s, text_type)
-        return s
 
 
 class InstanceTracker(object):

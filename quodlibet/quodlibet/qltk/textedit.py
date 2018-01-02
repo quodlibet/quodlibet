@@ -18,7 +18,7 @@ from quodlibet.qltk import Button, Icons
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import XMLFromPattern, XMLFromMarkupPattern, \
     error as PatternError
-from quodlibet.util import connect_obj, gdecode
+from quodlibet.util import connect_obj
 from quodlibet.compat import text_type
 
 try:
@@ -74,7 +74,7 @@ class TextEditBox(Gtk.HBox):
     @property
     def text(self):
         start, end = self.buffer.get_bounds()
-        return gdecode(self.buffer.get_text(start, end, True))
+        return self.buffer.get_text(start, end, True)
 
     @text.setter
     def text(self, value):
