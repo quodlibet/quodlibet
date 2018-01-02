@@ -26,7 +26,7 @@ USER user
 # Increment when the installer gets changed
 ENV QL_CACHE_KEY 42
 
-RUN wget https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe -O win-inst.exe
+RUN wget https://github.com/quodlibet/quodlibet/releases/download/release-4.0.0/quodlibet-4.0.0-installer.exe -O win-inst.exe
 
 RUN 7z x -o_win_inst win-inst.exe
 

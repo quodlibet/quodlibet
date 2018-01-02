@@ -8,8 +8,8 @@ matrix:
       language: generic
 
 install:
- - travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg
- - hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg
+ - travis_retry wget https://github.com/quodlibet/quodlibet/releases/download/release-4.0.0/QuodLibet-4.0.0.dmg
+ - hdiutil attach -readonly -mountpoint _mount QuodLibet-4.0.0.dmg
 
 script:
  - cd quodlibet
