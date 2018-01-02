@@ -296,9 +296,9 @@ class Notify(EventPlugin):
         interface = dbus.Interface(obj, self.DBUS_IFACE)
 
         name, vendor, version, spec_version = \
-            map(str, interface.GetServerInformation())
-        spec_version = map(int, spec_version.split("."))
-        caps = map(str, interface.GetCapabilities())
+            list(map(str, interface.GetServerInformation()))
+        spec_version = list(map(int, spec_version.split(".")))
+        caps = list(map(str, interface.GetCapabilities()))
 
         return interface, caps, spec_version
 
