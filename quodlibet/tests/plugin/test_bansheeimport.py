@@ -55,4 +55,8 @@ class TBansheeImport(PluginTestCase):
             db = get_example_db(data["path"], data["rating"],
                                 data["lastplayed"], data["dateadded"])
 
+            importer = self.mod.BansheeDBImporter(lib)
+            importer.read(db)
+            importer.finish()
+
             db.close()

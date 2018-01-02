@@ -6,6 +6,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import sqlite3
+
 from gi.repository import Gtk
 from senf import uri2fsn
 
@@ -16,6 +18,30 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
 from quodlibet.util.path import expanduser, normalize_path
 from quodlibet.plugins.events import EventPlugin
+
+
+class BansheeDBImporter:
+
+    def __init__(self, library):
+
+        self._library = library
+        self._changed_songs = []
+
+    def read(self, db):
+        """Iterate through the library and search for data to import for
+        each song
+        """
+
+        for song in self._library:
+            print("filename: %s" % song["~filename"])
+
+    def finish(self):
+        """Call at the end, also returns number of songs with data imported"""
+
+        count = len(self._changed_songs)
+        self._library.changed(self._changed_songs)
+        self._changed_songs = []
+        return count
 
 
 def do_import(parent, library):
