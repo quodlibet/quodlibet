@@ -32,8 +32,6 @@ from quodlibet.util.path import fsn2glib, glib2fsn, \
     xdg_get_data_home, unexpand, expanduser, xdg_get_user_dirs, \
     xdg_get_config_home, get_temp_cover_file, mkdir, mtime
 from quodlibet.util.string import decode, encode, split_escape, join_escape
-from quodlibet.util.string.splitters import split_people, split_title, \
-    split_album
 
 from . import TestCase, skipIf
 from .helper import capture_output, locale_numeric_conv
@@ -408,95 +406,6 @@ class Tformat_size(TestCase):
             1024 * 1024 * 10240: "10.0 GB",
             1024 * 1024 * 15360: "15.0 GB"
         })
-
-
-class Tsplit_title(TestCase):
-
-    def test_trailing(self):
-        self.failUnlessEqual(split_title("foo ~"), ("foo ~", []))
-
-    def test_prefixed(self):
-        self.failUnlessEqual(split_title("~foo "), ("~foo ", []))
-
-    def test_prefix_and_trailing(self):
-        self.failUnlessEqual(split_title("~foo ~"), ("~foo ~", []))
-
-    def test_prefix_and_version(self):
-        self.failUnlessEqual(split_title("~foo ~bar~"), ("~foo", ["bar"]))
-
-    def test_simple(self):
-        self.failUnlessEqual(split_title("foo (baz)"), ("foo", ["baz"]))
-
-    def test_two_versions(self):
-        self.failUnlessEqual(
-            split_title("foo [b, c]"), ("foo", ["b", "c"]))
-
-    def test_custom_splitter(self):
-        self.failUnlessEqual(
-            split_title("foo [b c]", " "), ("foo", ["b", "c"]))
-
-
-class Tsplit_album(TestCase):
-    def test_album_looks_like_disc(self):
-        self.failUnlessEqual(
-            split_album("disk 2"), ("disk 2", None))
-
-    def test_basic_disc(self):
-        self.failUnlessEqual(
-            split_album("foo disc 1/2"), ("foo", "1/2"))
-
-    def test_looks_like_disc_but_isnt(self):
-        self.failUnlessEqual(
-            split_album("disc foo disc"), ("disc foo disc", None))
-
-    def test_disc_album_and_disc(self):
-        self.failUnlessEqual(
-            split_album("disc foo disc 1"), ("disc foo", "1"))
-
-    def test_weird_disc(self):
-        self.failUnlessEqual(
-            split_album("foo ~disk 3~"), ("foo", "3"))
-
-    def test_weird_not_disc(self):
-        self.failUnlessEqual(
-            split_album("foo ~crazy 3~"), ("foo ~crazy 3~", None))
-
-
-class Tsplit_people(TestCase):
-
-    def test_parened_person(self):
-        self.failUnlessEqual(split_people("foo (bar)"), ("foo", ["bar"]))
-
-    def test_with_person(self):
-        self.failUnlessEqual(
-            split_people("foo (With bar)"), ("foo", ["bar"]))
-
-    def test_with_with_person(self):
-        self.failUnlessEqual(
-            split_people("foo (with with bar)"), ("foo", ["with bar"]))
-
-    def test_featuring_two_people(self):
-        self.failUnlessEqual(
-            split_people("foo featuring bar, qx"), ("foo", ["bar", "qx"]))
-
-    def test_featuring_person_bracketed(self):
-        self.failUnlessEqual(
-            split_people("foo (Ft. bar)"), ("foo", ["bar"]))
-        self.failUnlessEqual(
-            split_people("foo(feat barman)"), ("foo", ["barman"]))
-
-    def test_originally_by(self):
-        self.failUnlessEqual(
-            split_people("title (originally by artist)"),
-            ("title", ["artist"]))
-        self.failUnlessEqual(
-            split_people("title [originally by artist & artist2]"),
-            ("title", ["artist", "artist2"]))
-
-    def test_cover(self):
-        self.failUnlessEqual(
-            split_people("Psycho Killer [Talking Heads Cover]"),
-            ("Psycho Killer", ["Talking Heads"]))
 
 
 class Ttag(TestCase):

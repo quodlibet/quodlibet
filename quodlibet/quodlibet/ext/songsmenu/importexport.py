@@ -150,7 +150,7 @@ class Import(SongsMenuPlugin):
         metadata = []
         names = []
         index = 0
-        for line in open(fn, 'rU'):
+        for line in open(fn, 'r', encoding="utf-8"):
             if index == len(metadata):
                 names.append(line[:line.rfind('.')])
                 metadata.append({})
