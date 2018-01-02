@@ -48,6 +48,9 @@ class Application(object):
     name = None
     """The application name e.g. 'Quod Libet'"""
 
+    description = None
+    """A short description of the application"""
+
     id = None
     """The application ID e.g. 'quodlibet'"""
 

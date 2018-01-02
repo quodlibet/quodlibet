@@ -39,6 +39,7 @@ def main(argv=None):
     args[0] = os.path.realpath(args[0])
 
     app.name = "Ex Falso"
+    app.description = _("Audio metadata editor")
     app.id = "exfalso"
     quodlibet.set_application_info(Icons.EXFALSO, app.id, app.name)
 

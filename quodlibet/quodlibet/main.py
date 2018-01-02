@@ -13,6 +13,7 @@ import os
 
 from senf import environ, argv as sys_argv
 
+from quodlibet import _
 from quodlibet.cli import process_arguments, exit_
 from quodlibet.util.dprint import print_d, print_, print_exc
 
@@ -47,6 +48,7 @@ def main(argv=None):
     from quodlibet import util
 
     app.name = "Quod Libet"
+    app.description = _("Music player and music library manager")
     app.id = "quodlibet"
     quodlibet.set_application_info(Icons.QUODLIBET, app.id, app.name)
 
