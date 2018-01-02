@@ -819,7 +819,7 @@ class EditTags(Gtk.VBox):
 
     def __edit_tag(self, renderer, path, new_value, model):
         new_value = gdecode(new_value)
-        new_value = ', '.join(new_value.splitlines())
+#        new_value = ', '.join(new_value.splitlines())  # leaving the newline should be OK
         path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
         error_dialog = None
