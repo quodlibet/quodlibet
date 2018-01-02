@@ -34,7 +34,7 @@ Now clone the git repository and start Quod Libet::
 On OS X all the needed dependencies are included in the provided bundle
 itself. Download the latest bundle, which is guaranteed to work with current
 git master: `QuodLibet-latest.dmg
-<https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg>`__. It
+<https://github.com/quodlibet/quodlibet/releases/download/latest/QuodLibet-latest.dmg>`__. It
 contains a "run" script which passes all arguments to the included Python with
 the right environment set up.
 
