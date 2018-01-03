@@ -65,7 +65,7 @@ class Tcli(TestCase):
                     self.assertEqual(
                         cli.process_arguments(["myprog", "--run",
                                                "--enqueue", tname]),
-                        (['run'], [('enqueue', tdir + "/" + tname)]))
+                        (['run'], [('enqueue', tpath)]))
         finally:
             os.remove(tpath)
 
