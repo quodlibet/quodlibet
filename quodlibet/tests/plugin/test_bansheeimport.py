@@ -16,20 +16,31 @@ from quodlibet.library.libraries import SongFileLibrary
 from . import PluginTestCase
 
 
-def get_example_db(song_path, rating, lastplayed, dateadded):
+def get_example_db(song_path, rating, playcount, skipcount, lastplayed,
+                   dateadded):
     # create a temporary database in memory
     db = sqlite3.connect(':memory:')
 
-    # create table
+    # create a trimmed version of a banshee track table
     csr = db.cursor()
-    csr.execute('''CREATE TABLE CoreTracks
-                (Uri, Title, ArtistID, AlbumID, Rating, PlayCount, SkipCount,
-                LastPlayedStamp, DateAddedStamp)''')
+    csr.execute('''CREATE TABLE CoreTracks(
+                ArtistID INTEGER,
+                AlbumID INTEGER,
+                Uri TEXT,
+                Title TEXT,
+                Rating INTEGER,
+                PlayCount INTEGER,
+                SkipCount INTEGER,
+                LastPlayedStamp INTEGER,
+                DateAddedStamp INTEGER
+                )
+                ''')
 
     # insert song and save
     song_uri = fsn2uri(song_path)
     csr.execute('INSERT INTO CoreTracks VALUES (?,?,?,?,?,?,?,?,?)',
-                (song_uri, 'Music', 1, 1, rating, 1, 2, lastplayed, dateadded))
+                (1, 1, song_uri, 'Music', rating, playcount, skipcount,
+                lastplayed, dateadded))
     db.commit()
 
     # give the user the in-memory database
@@ -49,14 +60,44 @@ class TBansheeImport(PluginTestCase):
             song.sanitize()
             lib.add([song])
 
+            # test recovery of basic song
             data = {"path" : song("~filename"), "rating" : 1,
-            "lastplayed" : 1371802107, "dateadded" : 1260691996}
+            "playcount" : 1, "skipcount" : 2,
+            "lastplayed" : 1371802107, "added" : 1260691996}
 
             db = get_example_db(data["path"], data["rating"],
-                                data["lastplayed"], data["dateadded"])
+                                data["playcount"], data["skipcount"],
+                                data["lastplayed"], data["added"])
 
             importer = self.mod.BansheeDBImporter(lib)
             importer.read(db)
-            importer.finish()
-
+            count = importer.finish()
             db.close()
+
+            self.assertEqual(song("~#rating"), data["rating"] / 5.0)
+            self.assertEqual(song("~#playcount"), data["playcount"])
+            self.assertEqual(song("~#skipcount"), data["skipcount"])
+            self.assertEqual(song("~#lastplayed"), data["lastplayed"])
+            self.assertEqual(song("~#added"), data["added"])
+            self.assertEqual(count, 1)
+
+            # test recovery of different version of same song
+            data_mod = {"path" : song("~filename"), "rating" : 2,
+            "playcount" : 4, "skipcount" : 1,
+            "lastplayed" : data["lastplayed"] - 1, "added" : data["added"] + 1}
+
+            db = get_example_db(data_mod["path"], data_mod["rating"],
+                                data_mod["playcount"], data_mod["skipcount"],
+                                data_mod["lastplayed"], data_mod["added"])
+
+            importer = self.mod.BansheeDBImporter(lib)
+            importer.read(db)
+            count = importer.finish()
+            db.close()
+
+            self.assertEqual(song("~#rating"), data_mod["rating"] / 5.0)
+            self.assertEqual(song("~#playcount"), data_mod["playcount"])
+            self.assertEqual(song("~#skipcount"), data_mod["skipcount"])
+            self.assertEqual(song("~#lastplayed"), data["lastplayed"])
+            self.assertEqual(song("~#added"), data["added"])
+            self.assertEqual(count, 1)

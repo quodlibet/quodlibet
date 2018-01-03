@@ -28,12 +28,61 @@ class BansheeDBImporter:
         self._changed_songs = []
 
     def read(self, db):
-        """Iterate through the library and search for data to import for
-        each song
+        """Iterate through the database and import data for songs found in
+        the library
         """
 
-        for song in self._library:
-            print("filename: %s" % song["~filename"])
+        # use the Row class for extracting rows
+        db.row_factory = sqlite3.Row
+
+        # iterate over all songs in the database
+        for row in db.execute("SELECT * FROM CoreTracks"):
+            try:
+                filename = uri2fsn(row["Uri"])
+            except ValueError:
+                continue
+
+            song = self._library.get(normalize_path(filename))
+            if not song:
+                continue
+
+            has_changed = False
+
+            if row["Rating"] is not None:
+                try:
+                    # banshee stores ratings as integers up to 5
+                    value = row["Rating"] / 5.0
+                except ValueError:
+                    pass
+                else:
+                    song["~#rating"] = value
+                    has_changed = True
+
+            if row["PlayCount"] is not None:
+                # summing play counts would break on multiple imports
+                song["~#playcount"] = row["PlayCount"]
+                has_changed = True
+
+            if row["SkipCount"] is not None:
+                song["~#skipcount"] = row["SkipCount"]
+                has_changed = True
+
+            if row["LastPlayedStamp"] is not None:
+                value = row["LastPlayedStamp"]
+                # keep timestamp if it is newer than what we had
+                if value > song("~#lastplayed", 0):
+                    song["~#lastplayed"] = value
+                    has_changed = True
+
+            if row["DateAddedStamp"] is not None:
+                value = row["DateAddedStamp"]
+                # keep timestamp if it is older than what we had
+                if value < song("~#added", 0):
+                    song["~#added"] = value
+                    has_changed = True
+
+            if has_changed:
+                self._changed_songs.append(song)
 
     def finish(self):
         """Call at the end, also returns number of songs with data imported"""
