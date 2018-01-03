@@ -45,15 +45,17 @@ class Tcli(TestCase):
 
     def test_enqueue_notfile(self):
         tdir = tempfile.gettempdir()
-        (tfile, tpath) = tempfile.mkstemp(dir=tdir)
-        tname = os.path.basename(tpath)
-        os.remove(tpath)
+        # Can't get known non-file the correct way in some setups so fake it
+        # (nfile, npath) = tempfile.mkstemp(dir=tdir)
+        # nname = os.path.basename(npath)
+        # os.remove(npath)
+        nname = "THIS_IS_NOT_A_FILE"
         with working_directory(tdir):
             with capture_output():
                 self.assertEqual(
                     cli.process_arguments(["myprog", "--run",
-                                           "--enqueue", tname]),
-                    (['run'], [('enqueue', tname)]))
+                                           "--enqueue", nname]),
+                    (['run'], [('enqueue', nname)]))
 
     def test_enqueue_file(self):
         tdir = tempfile.gettempdir()
@@ -73,9 +75,11 @@ class Tcli(TestCase):
         tdir = tempfile.gettempdir()
         (tfile, tpath) = tempfile.mkstemp(dir=tdir)
         tname = os.path.basename(tpath)
-        (nfile, npath) = tempfile.mkstemp(dir=tdir)
-        nname = os.path.basename(npath)
-        os.remove(npath)
+        # Can't get known non-file the correct way in some setups so fake it
+        # (nfile, npath) = tempfile.mkstemp(dir=tdir)
+        # nname = os.path.basename(npath)
+        # os.remove(npath)
+        nname = "THIS_IS_NOT_A_FILE"
         try:
             with working_directory(tdir):
                 with capture_output():
