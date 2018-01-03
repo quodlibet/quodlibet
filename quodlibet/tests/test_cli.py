@@ -9,6 +9,20 @@
 from .helper import capture_output
 from quodlibet import cli
 from tests import TestCase
+import os
+import tempfile
+
+from contextlib import contextmanager
+
+
+@contextmanager
+def working_directory(directory):
+    owd = os.getcwd()
+    try:
+        os.chdir(directory)
+        yield directory
+    finally:
+        os.chdir(owd)
 
 
 class Tcli(TestCase):
@@ -23,3 +37,52 @@ class Tcli(TestCase):
         with self.assertRaises(SystemExit):
             with capture_output():
                 cli.process_arguments(["myprog", "--wrong-thing"])
+
+    def test_command_norun(self):
+        with self.assertRaises(SystemExit):
+            with capture_output():
+                cli.process_arguments(["myprog", "--enqueue", "hi"])
+
+    def test_enqueue_notfile(self):
+        tdir = tempfile.gettempdir()
+        (tfile, tpath) = tempfile.mkstemp(dir=tdir)
+        tname = os.path.basename(tpath)
+        os.remove(tpath)
+        with working_directory(tdir):
+            with capture_output():
+                self.assertEqual(
+                    cli.process_arguments(["myprog", "--run",
+                                           "--enqueue", tname]),
+                    (['run'], [('enqueue', tname)]))
+
+    def test_enqueue_file(self):
+        tdir = tempfile.gettempdir()
+        (tfile, tpath) = tempfile.mkstemp(dir=tdir)
+        tname = os.path.basename(tpath)
+        try:
+            with working_directory(tdir):
+                with capture_output():
+                    self.assertEqual(
+                        cli.process_arguments(["myprog", "--run",
+                                               "--enqueue", tname]),
+                        (['run'], [('enqueue', tdir + "/" + tname)]))
+        finally:
+            os.remove(tpath)
+
+    def test_enqueue_files(self):
+        tdir = tempfile.gettempdir()
+        (tfile, tpath) = tempfile.mkstemp(dir=tdir)
+        tname = os.path.basename(tpath)
+        (nfile, npath) = tempfile.mkstemp(dir=tdir)
+        nname = os.path.basename(npath)
+        os.remove(npath)
+        try:
+            with working_directory(tdir):
+                with capture_output():
+                    self.assertEqual(
+                        cli.process_arguments(["myprog", "--run",
+                                               "--enqueue-files",
+                                               nname + "," + tname]),
+                        (['run'], [('enqueue-files', nname + "," + tpath)]))
+        finally:
+            os.remove(tpath)
