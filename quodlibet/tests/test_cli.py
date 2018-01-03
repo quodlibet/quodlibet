@@ -8,6 +8,7 @@
 
 from .helper import capture_output
 from quodlibet import cli
+from quodlibet.util.string import join_escape
 from tests import TestCase
 import os
 import tempfile
@@ -49,7 +50,7 @@ class Tcli(TestCase):
         # (nfile, npath) = tempfile.mkstemp(dir=tdir)
         # nname = os.path.basename(npath)
         # os.remove(npath)
-        nname = "THIS_IS_NOT_A_FILE"
+        nname = "NOT_A_FILE"
         with working_directory(tdir):
             with capture_output():
                 self.assertEqual(
@@ -79,7 +80,7 @@ class Tcli(TestCase):
         # (nfile, npath) = tempfile.mkstemp(dir=tdir)
         # nname = os.path.basename(npath)
         # os.remove(npath)
-        nname = "THIS_IS_NOT_A_FILE"
+        nname = "NOT_A_FILE"
         try:
             with working_directory(tdir):
                 with capture_output():
@@ -87,6 +88,7 @@ class Tcli(TestCase):
                         cli.process_arguments(["myprog", "--run",
                                                "--enqueue-files",
                                                nname + "," + tname]),
-                        (['run'], [('enqueue-files', nname + "," + tpath)]))
+                        (['run'], [('enqueue-files',
+                                    join_escape([nname, tpath], ","))]))
         finally:
             True # can't remove files in some test setups - os.remove(tpath)
