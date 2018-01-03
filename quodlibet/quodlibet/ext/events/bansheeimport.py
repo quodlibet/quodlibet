@@ -14,11 +14,11 @@ from senf import uri2fsn
 from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
-from quodlibet import config
+from quodlibet import ngettext
 from quodlibet import util
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
-from quodlibet.qltk.msg import WarningMessage, ErrorMessage
+from quodlibet.qltk.msg import Message, WarningMessage, ErrorMessage
 from quodlibet.util.path import expanduser, normalize_path
 from quodlibet.plugins.events import EventPlugin
 
@@ -39,6 +39,7 @@ class BansheeDBImporter:
         db.row_factory = sqlite3.Row
 
         # iterate over all songs in the database
+        # throws sqlite3.OperationalError if CoreTracks is not found
         for row in db.execute("SELECT * FROM CoreTracks"):
             try:
                 filename = uri2fsn(row["Uri"])
@@ -97,21 +98,30 @@ class BansheeDBImporter:
 
 
 def do_import(parent, library):
-    db_path = expanduser(get_db_path())
-    msg = _("test db path %s") % db_path
-    # FIXME: this is just a warning so it works with older QL
-    WarningMessage(parent, BansheeImport.PLUGIN_NAME, msg).run()
+    db_path = expanduser(BansheeImport.USR_PATH)
+    db = sqlite3.connect(db_path)
 
+    importer = BansheeDBImporter(library)
+    try:
+        importer.read(db)
+    except sqlite3.OperationalError:
+        msg = _("Specified Banshee database is malformed or missing")
+        WarningMessage(parent, BansheeImport.PLUGIN_NAME, msg).run()
+    except Exception:
+        util.print_exc()
+        importer.finish()
+        msg = _("Import Failed")
+        # FIXME: don't depend on the plugin class here
+        ErrorMessage(parent, BansheeImport.PLUGIN_NAME, msg).run()
+    else:
+        count = importer.finish()
+        preamble = "Successfully imported ratings and statistics for "
+        msg = ngettext(preamble + "%d song", preamble + "%d songs",
+                       count) % count
+        Message(Gtk.MessageType.INFO, parent, BansheeImport.PLUGIN_NAME,
+                msg).run()
 
-DEFAULT_PATH = "~/.config/banshee-1/banshee.db"
-
-
-def get_db_path():
-    return config.get("plugins", "bansheeimport_path", DEFAULT_PATH)
-
-
-def set_db_path(value):
-    return config.set("plugins", "bansheeimport_path", str(value))
+    db.close()
 
 
 class BansheeImport(EventPlugin):
@@ -119,6 +129,9 @@ class BansheeImport(EventPlugin):
     PLUGIN_NAME = _("Banshee Import")
     PLUGIN_DESC = _("Imports ratings and song statistics from Banshee.")
     PLUGIN_ICON = Icons.DOCUMENT_OPEN
+
+    DEF_PATH = "~/.config/banshee-1/banshee.db"
+    USR_PATH = DEF_PATH
 
     def PluginPreferences(self, *args):
         grid = Gtk.Grid(row_spacing=6, column_spacing=6)
@@ -129,16 +142,15 @@ class BansheeImport(EventPlugin):
 
         entry = UndoEntry()
         entry.set_hexpand(True)
-        entry.set_text(str(get_db_path()))
+        entry.set_text(BansheeImport.DEF_PATH)
 
         def path_activate(entry, *args):
             path = entry.get_text()
-            if get_db_path() != path:
-                set_db_path(path)
+            if BansheeImport.USR_PATH != path:
+                BansheeImport.USR_PATH = path
 
         entry.connect_after("activate", path_activate)
         entry.connect_after("focus-out-event", path_activate)
-
         grid.attach_next_to(entry, label, Gtk.PositionType.RIGHT, 1, 1)
 
         path_revert = Gtk.Button()
@@ -146,7 +158,7 @@ class BansheeImport(EventPlugin):
                         Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
 
         def path_revert_cb(button, entry):
-            entry.set_text(DEFAULT_PATH)
+            entry.set_text(BansheeImport.DEF_PATH)
             entry.emit("activate")
 
         path_revert.connect("clicked", path_revert_cb, entry)
@@ -156,6 +168,7 @@ class BansheeImport(EventPlugin):
 
         def clicked_cb(button):
             do_import(button, app.library)
+
         button.connect("clicked", clicked_cb)
 
         box = Gtk.VBox(spacing=12)

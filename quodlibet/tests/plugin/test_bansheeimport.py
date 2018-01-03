@@ -21,7 +21,7 @@ def get_example_db(song_path, rating, playcount, skipcount, lastplayed,
     # create a temporary database in memory
     db = sqlite3.connect(':memory:')
 
-    # create a trimmed version of a banshee track table
+    # create a simplified version of a banshee track table
     csr = db.cursor()
     csr.execute('''CREATE TABLE CoreTracks(
                 ArtistID INTEGER,
