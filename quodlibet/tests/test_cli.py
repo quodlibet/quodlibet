@@ -67,7 +67,7 @@ class Tcli(TestCase):
                                                "--enqueue", tname]),
                         (['run'], [('enqueue', tpath)]))
         finally:
-            os.remove(tpath)
+            True # can't remove files in some test setups - os.remove(tpath)
 
     def test_enqueue_files(self):
         tdir = tempfile.gettempdir()
@@ -85,4 +85,4 @@ class Tcli(TestCase):
                                                nname + "," + tname]),
                         (['run'], [('enqueue-files', nname + "," + tpath)]))
         finally:
-            os.remove(tpath)
+            True # can't remove files in some test setups - os.remove(tpath)
