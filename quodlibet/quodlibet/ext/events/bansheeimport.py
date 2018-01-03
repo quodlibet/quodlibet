@@ -13,7 +13,10 @@ from senf import uri2fsn
 
 from quodlibet import _
 from quodlibet import app
+from quodlibet import qltk
+from quodlibet import config
 from quodlibet import util
+from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
 from quodlibet.util.path import expanduser, normalize_path
@@ -94,10 +97,21 @@ class BansheeDBImporter:
 
 
 def do_import(parent, library):
-    db_path = expanduser("~/.config/banshee-1/banshee.db")
+    db_path = expanduser(get_db_path())
     msg = _("test db path %s") % db_path
     # FIXME: this is just a warning so it works with older QL
     WarningMessage(parent, BansheeImport.PLUGIN_NAME, msg).run()
+
+
+DEFAULT_PATH = "~/.config/banshee-1/banshee.db"
+
+
+def get_db_path():
+    return config.get("plugins", "bansheeimport_path", DEFAULT_PATH)
+
+
+def set_db_path(value):
+    return config.set("plugins", "bansheeimport_path", str(value))
 
 
 class BansheeImport(EventPlugin):
@@ -107,10 +121,46 @@ class BansheeImport(EventPlugin):
     PLUGIN_ICON = Icons.DOCUMENT_OPEN
 
     def PluginPreferences(self, *args):
+        grid = Gtk.Grid(row_spacing=6, column_spacing=6)
+
+        label = Gtk.Label(label=_("_Database path:"), use_underline=True)
+        label.set_alignment(0.0, 0.5)
+        grid.attach(label, 0, 0, 1, 1)
+
+        entry = UndoEntry()
+        entry.set_hexpand(True)
+        entry.set_text(str(get_db_path()))
+
+        def path_activate(entry, *args):
+            path = entry.get_text()
+            if get_db_path() != path:
+                set_db_path(path)
+
+        entry.connect_after("activate", path_activate)
+        entry.connect_after("focus-out-event", path_activate)
+
+        grid.attach_next_to(entry, label, Gtk.PositionType.RIGHT, 1, 1)
+
+        path_revert = Gtk.Button()
+        path_revert.add(Gtk.Image.new_from_icon_name(
+                        Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
+
+        def path_revert_cb(button, entry):
+            entry.set_text(DEFAULT_PATH)
+            entry.emit("activate")
+
+        path_revert.connect("clicked", path_revert_cb, entry)
+        grid.attach_next_to(path_revert, entry, Gtk.PositionType.RIGHT, 1, 1)
+
         button = Gtk.Button(label=_("Start Import"))
 
         def clicked_cb(button):
             do_import(button, app.library)
-
         button.connect("clicked", clicked_cb)
-        return button
+
+        box = Gtk.VBox(spacing=12)
+
+        box.pack_start(grid, True, True, 0)
+        box.pack_start(button, False, False, 0)
+
+        return box
