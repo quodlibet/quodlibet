@@ -4,12 +4,14 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import io
+
 from tests import TestCase
 
 from quodlibet.library import SongLibrary
 from quodlibet.formats import AudioFile
 from quodlibet.browsers.iradio import InternetRadio, IRFile, QuestionBar, \
-    parse_taglist
+    parse_taglist, ParsePLS, ParseM3U
 import quodlibet.config
 
 quodlibet.config.RATINGS = quodlibet.config.HardCodedRatingsPrefs()
@@ -27,6 +29,33 @@ artist=bar
     assert len(stations) == 1
     assert stations[0]["~#listenerpeak"] == 42
     assert stations[0].list("artist") == ["foo", "bar"]
+
+
+def test_parse_pls():
+    f = io.BytesIO(b"""\
+[playlist]
+Title1=Here enter name of the station
+File1=http://stream2.streamq.net:8020/
+NumberOfEntries=1
+""")
+
+    r = ParsePLS(f)
+    assert len(r) == 1
+    assert r[0]("~uri") == "http://stream2.streamq.net:8020/"
+    assert r[0]("title") == "Here enter name of the station"
+
+
+def test_parse_m3u():
+    f = io.BytesIO(b"""\
+#EXTM3U
+
+#EXTINF:123, Sample artist - Sample title
+http://stream2.streamq.net:8020/
+""")
+
+    r = ParseM3U(f)
+    assert len(r) == 1
+    assert r[0]("~uri") == "http://stream2.streamq.net:8020/"
 
 
 class TQuestionBar(TestCase):
