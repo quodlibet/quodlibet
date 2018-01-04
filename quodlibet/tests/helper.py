@@ -99,7 +99,7 @@ def send_key_click(widget, accel, recursive=False):
     return handled
 
 
-def _send_button_click_event(widget, **kwargs):
+def _send_button_click_event(widget, x=None, y=None, **kwargs):
     """Returns True if the event was handled"""
 
     assert widget.get_realized()
@@ -109,8 +109,11 @@ def _send_button_click_event(widget, **kwargs):
     window = widget.get_window()
     ev.any.window = window
 
-    ev.button.x = window.get_width() / 2.0
-    ev.button.y = window.get_height() / 2.0
+    if x is None:
+      x = window.get_width() / 2.0
+    if y is None:
+      y = window.get_height() / 2.0
+    ev.button.x, ev.button.y = x, y
 
     for key, value in kwargs.items():
         assert hasattr(ev.button, key)
@@ -121,7 +124,6 @@ def _send_button_click_event(widget, **kwargs):
     ev.any.type = Gdk.EventType.BUTTON_RELEASE
     handled |= widget.event(ev)
     return handled
-
 
 def send_button_click(widget, button, primary=False, shift=False,
                       recursive=False):
@@ -141,6 +143,28 @@ def send_button_click(widget, button, primary=False, shift=False,
             for child in widget.get_children():
                 handled += send_button_click(
                     child, button, primary, shift, recursive)
+
+    return handled
+
+def send_button_click_row(widget, path, button, primary=False, shift=False):
+    """See send_key_click_event"""
+
+    state = Gdk.ModifierType(0)
+    if primary:
+        state |= get_primary_accel_mod()
+    if shift:
+        state |= Gdk.ModifierType.SHIFT_MASK
+
+    assert isinstance(widget, Gtk.Widget)
+    box = widget.get_cell_area(path, widget.get_column(0))
+    wx, wy = widget.convert_tree_to_widget_coords(box.x, box.y)
+    #width, height = widget.convert_tree_to_widget_coords(box.width, box.height)
+    wx += box.width // 2
+    wy += box.height // 2
+    handled = _send_button_click_event(widget, x=wx, y=wy, button=button, state=state)
+    # I did not get the parameter to enable stdout to work...
+    #import time; time.sleep(2)
+    #raise Exception(str((wx, wy)))
 
     return handled
 

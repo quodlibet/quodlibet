@@ -979,12 +979,35 @@ class MultiDragTreeView(BaseView):
         self.connect('button-press-event', self.__button_press)
         self.connect('button-release-event', self.__button_release)
         self.__pending_action = None
+        self.__previous_selected_path = None
+        self.__ctrl_shift_in_progress = False
 
     def __button_press(self, view, event):
         if event.button == Gdk.BUTTON_PRIMARY:
             return self.__block_selection(event)
 
     def __block_selection(self, event):
+        def ctrl_shift(*args):
+            selection, model, path, a, b = args
+            #print(self.__previous_selected_path,'-->',path)
+            if self.__ctrl_shift_in_progress:
+                return True
+            else:
+                # I tried to temporarily set_select_function to
+                # the old lambda: True, but it lead to segfaults
+                # (because even select_range seems to call ctrl_shift,
+                # I suppose it is still active at this point?)
+                if self.__previous_selected_path:
+                    self.__ctrl_shift_in_progress = True
+                    selection.select_range(self.__previous_selected_path, path)
+
+                    self.__ctrl_shift_in_progress = False
+                    #not sure how necessary it is to set it here too
+                    self.__previous_selected_path = path
+                    # False to not toggle last element
+                    return False
+                self.__previous_selected_path = path
+                return True
         x, y = map(int, [event.x, event.y])
         try:
             path, col, cellx, celly = self.get_path_at_pos(x, y)
@@ -994,13 +1017,19 @@ class MultiDragTreeView(BaseView):
         is_selected = selection.path_is_selected(path)
         mod_active = event.get_state() & (
             get_primary_accel_mod() | Gdk.ModifierType.SHIFT_MASK)
-
         if is_selected:
             self.__pending_action = (path, col, mod_active)
             selection.set_select_function(lambda *args: False, None)
+            self.__previous_selected_path = path
         else:
-            self.__pending_action = None
-            selection.set_select_function(lambda *args: True, None)
+            if (mod_active == (get_primary_accel_mod() |
+                               Gdk.ModifierType.SHIFT_MASK)):
+                self.__pending_action = None
+                selection.set_select_function(ctrl_shift, None)
+            else:
+                self.__pending_action = None
+                selection.set_select_function(lambda *args: True, None)
+                self.__previous_selected_path = path
 
     def __button_release(self, view, event):
         if self.__pending_action:

@@ -13,7 +13,8 @@ from quodlibet.util import is_windows
 from gi.repository import Gtk, Gdk
 
 from . import skipIf
-from .helper import send_key_click, visible, send_button_click, realized
+from .helper import send_key_click, visible, send_button_click, realized, \
+    send_button_click_row
 
 
 def _fill_view(view):
@@ -205,13 +206,39 @@ class TMultiDragTreeView(TestCase):
 
     def setUp(self):
         self.c = MultiDragTreeView()
-        _fill_view(self.c)
+        self.m = _fill_view(self.c)
+        #self.c.grab_focus()
+        #self.c.set_sensitive(True)
+        #self.c.activate()
+    #def test_click(self):
+    #    with visible(self.c):
+    #        send_button_click(self.c, Gdk.BUTTON_PRIMARY)
+    #        send_button_click(self.c, Gdk.BUTTON_PRIMARY, primary=True)
 
-    def test_click(self):
+    def test_select_sequence(self):
+        selection = self.c.get_selection()
+        selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         with visible(self.c):
-            send_button_click(self.c, Gdk.BUTTON_PRIMARY)
-            send_button_click(self.c, Gdk.BUTTON_PRIMARY, primary=True)
+            second = self.m[1].path
+            fourth = self.m[3].path
+            eight = self.m[7].path
 
+            # select the second (currently broken it seems)
+            send_button_click_row(self.c, second, Gdk.BUTTON_PRIMARY, primary=False, shift=False)
+            assert selection.path_is_selected(second)
+
+            # primary+select the fourth, adding to selection
+            #send_button_click_row(self.c, fourth, Gdk.BUTTON_PRIMARY, primary=True, shift=False)
+
+            # primary+shift+select the eight, to add the range 4->8
+            #send_button_click_row(self.c, eight, Gdk.BUTTON_PRIMARY, primary=True, shift=True)
+
+            expected_rows = {self.m[i].path for i in (1,3,4,5,6,7)}
+            for i in range(0, 10):
+                p = self.m[i].path
+                # if the row is not expected to be selected that is fine,
+                # otherwise it has to be selected.
+                #assert ((not p in expected_rows) or selection.path_is_selected(p))
 
 class TRCMTreeView(TestCase):
 
