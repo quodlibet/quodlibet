@@ -3,6 +3,7 @@
 #        2016-17 Nick Boultbee
 #           2017 Didier Villevalois
 #           2017 Muges
+#           2017 Eyenseo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -376,22 +377,30 @@ class WaveformScale(Gtk.EventBox):
             for x in range(int(floor(cx * pixel_ratio)),
                            int(ceil((cx + cw) * pixel_ratio)), 1):
 
-                if self._seeking and mouse_position >= 0:
-                    # The user is seeking (holding mousebutton down)
-                    fg_color = (elapsed_color if x < mouse_position
-                                else remaining_color)
-                elif mouse_position >= 0:
-                    # The mouse is hovering the seekbar
-                    fg_color = (hover_color if x < mouse_position
-                                else remaining_color)
+                if mouse_position >= 0:
+                    if self._seeking:
+                        # The user is seeking (holding mousebutton down)
+                        fg_color = (elapsed_color if x < mouse_position
+                                    else remaining_color)
+                    elif show_current_pos_config:
+                        # Use hover color and elapsed color to display the
+                        # current playing position while hovering
+                        if x < mouse_position:
+                            if x < position_width:
+                                fg_color = elapsed_color
+                            else:
+                                fg_color = hover_color
+                        elif x < position_width:
+                            fg_color = hover_color
+                        else:
+                            fg_color = remaining_color
+                    else:
+                        # The mouse is hovering the seekbar
+                        fg_color = (hover_color if x < mouse_position
+                                    else remaining_color)
                 else:
                     fg_color = (elapsed_color if x < position_width
                                 else remaining_color)
-
-                # Draw a line of width scale_factor at the current position
-                if show_current_pos_config:
-                    if position_width - scale_factor <= x < position_width:
-                        fg_color = elapsed_color
 
                 cr.set_source_rgba(*list(fg_color))
 
