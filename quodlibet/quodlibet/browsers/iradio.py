@@ -13,6 +13,7 @@ import bz2
 import itertools
 
 from gi.repository import Gtk, GLib, Pango
+from senf import text2fsn
 
 from quodlibet.util.dprint import print_d
 
@@ -134,7 +135,8 @@ class IRFile(RemoteFile):
 def ParsePLS(file):
     data = {}
 
-    lines = file.readlines()
+    lines = file.read().decode('utf-8', 'replace').splitlines()
+
     if not lines or "[playlist]" not in lines.pop(0):
         return []
 
@@ -148,14 +150,14 @@ def ParsePLS(file):
             if head.startswith("length") and val == "-1":
                 continue
             else:
-                data[head] = val.decode('utf-8', 'replace')
+                data[head] = val
 
     count = 1
     files = []
     warnings = []
     while True:
         if "file%d" % count in data:
-            filename = data["file%d" % count].encode('utf-8', 'replace')
+            filename = text2fsn(data["file%d" % count])
             if filename.lower()[-4:] in [".pls", ".m3u"]:
                 warnings.append(filename)
             else:
@@ -189,7 +191,8 @@ def ParsePLS(file):
 def ParseM3U(fileobj):
     files = []
     pending_title = None
-    for line in fileobj:
+    lines = fileobj.read().decode('utf-8', 'replace').splitlines()
+    for line in lines:
         line = line.strip()
         if line.startswith("#EXTINF:"):
             try:
@@ -197,9 +200,9 @@ def ParseM3U(fileobj):
             except IndexError:
                 pending_title = None
         elif line.startswith("http"):
-            irf = IRFile(line)
+            irf = IRFile(text2fsn(line))
             if pending_title:
-                irf["title"] = pending_title.decode('utf-8', 'replace')
+                irf["title"] = pending_title
                 pending_title = None
             files.append(irf)
     return files
