@@ -9,7 +9,7 @@ import glob
 import os
 import shutil
 
-from senf import fsnative, bytes2fsn
+from senf import fsnative
 
 from quodlibet.ext.covers.artwork_url import ArtworkUrlCover
 from quodlibet.formats import AudioFile
@@ -80,13 +80,10 @@ class TCoverManager(TestCase):
         self.test_labelid() # labelid must work with other files present
 
     def test_file_encoding(self):
-        if os.name == "nt":
-            return
-
-        f = self.add_file(bytes2fsn(b"\xff\xff\xff\xff - cover.jpg", None))
+        f = self.add_file(fsnative(u"öäü - cover.jpg"))
         self.assertTrue(isinstance(self.song("album"), text_type))
         h = self._find_cover(self.song)
-        self.assertEqual(h.name, normalize_path(f))
+        self.assertEqual(normalize_path(h.name), normalize_path(f))
 
     def test_intelligent(self):
         song = self.song
