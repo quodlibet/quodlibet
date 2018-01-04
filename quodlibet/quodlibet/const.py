@@ -181,6 +181,7 @@ Pete Beardmore
 Muges@github
 Meriipu@github
 Jonas Platte
+Eyenseo@github
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
