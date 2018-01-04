@@ -62,7 +62,7 @@ class po_stats(Command):
                                           language, output_file=temp_path)
                     proc = Popen(["msgfmt", "-o", "/dev/null", "--statistics",
                                   temp_path], stdout=PIPE, stderr=PIPE)
-                    output = proc.communicate()[1]
+                    output = proc.communicate()[1].decode("utf-8")
                     res.append((language, output))
                 finally:
                     os.remove(temp_path)
