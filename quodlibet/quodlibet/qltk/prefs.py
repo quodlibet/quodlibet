@@ -127,12 +127,13 @@ class PreferencesWindow(UniqueWindow):
 
                 # Ellipsis ComboBox
                 def draw_ellipsis_mode(column, cell, model, it, data):
-                    num = model[it][0]
-                    mapping = {
-                        1: _('Beginning:  ...ic/artist/track.mp3'),
-                        2: _('Middle:  /home/user...track.mp3'),
-                        3: _('End:  /home/user/Music/ar...')}
-                    cell.set_property('text', mapping[num])
+                    modestr = model[it][0]
+                    example_render_lines = {
+                        'BEGINNING': _('Beginning: "…ic/artist/track.mp3"'),
+                        'MIDDLE': _('Middle: "/home/user…track.mp3"'),
+                        'END': _('End: "/home/user/Music/ar…"'),
+                        'NONE': _('None: "/home/user/Music/artis"')}
+                    cell.set_property('text', example_render_lines[modestr])
 
                 def ellipsis_mode_changed(combo, model):
                     it = combo.get_active_iter()
@@ -143,7 +144,7 @@ class PreferencesWindow(UniqueWindow):
 
                 hb = Gtk.HBox(spacing=6)
 
-                model = Gtk.ListStore(int)
+                model = Gtk.ListStore(str)
                 ellipsis_combo = Gtk.ComboBox(model=model)
                 ellipsis_lab = Gtk.Label(label=_("_Filepath ellipsis mode:"))
                 ellipsis_lab.set_use_underline(True)
@@ -151,10 +152,10 @@ class PreferencesWindow(UniqueWindow):
 
                 cell = Gtk.CellRendererText()
                 ellipsis_combo.pack_start(cell, False)
-                num = int(config.get('settings', 'ellipsizing_mode'))
-                for mode in [1, 2, 3]:
+                current_mode = config.get('settings', 'ellipsizing_mode')
+                for mode in config.EllipsizingModes:
                     it = model.append(row=[mode])
-                    if mode == num:
+                    if mode == current_mode:
                         ellipsis_combo.set_active_iter(it)
 
                 ellipsis_combo.set_cell_data_func(cell, draw_ellipsis_mode,

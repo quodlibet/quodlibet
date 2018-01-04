@@ -322,11 +322,8 @@ class FSColumn(WideTextColumn):
     def __init__(self, *args, **kwargs):
         super(FSColumn, self).__init__(*args, **kwargs)
         ellipsize_mode = config.get('settings', 'ellipsizing_mode')
-        mapping = {'1': Pango.EllipsizeMode.START,
-                   '2': Pango.EllipsizeMode.MIDDLE,
-                   '3': Pango.EllipsizeMode.END}
-
-        self._render.set_property('ellipsize', mapping[ellipsize_mode])
+        modes = config.EllipsizingModes
+        self._render.set_property('ellipsize', modes[ellipsize_mode])
 
     def _fetch_value(self, model, iter_):
         values = model.get_value(iter_).list(self.header_name)
