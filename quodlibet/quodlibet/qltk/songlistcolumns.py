@@ -22,9 +22,9 @@ from quodlibet.pattern import Pattern
 from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.qltk import add_css
 from quodlibet.util.path import unexpand
+from quodlibet.util.dprint import print_d
 from quodlibet.formats._audio import FILESYSTEM_TAGS
 from quodlibet.compat import text_type, string_types, listvalues, listitems
-
 
 def create_songlist_column(t):
     """Returns a SongListColumn instance for the given tag"""
@@ -321,9 +321,22 @@ class FSColumn(WideTextColumn):
 
     def __init__(self, *args, **kwargs):
         super(FSColumn, self).__init__(*args, **kwargs)
-        ellipsize_mode = config.get('settings', 'ellipsizing_mode')
+        configured_mode = config.get('settings', 'ellipsizing_mode')
         modes = config.EllipsizingModes
-        self._render.set_property('ellipsize', modes[ellipsize_mode])
+
+        if configured_mode in modes:
+            to_set_mode = modes[configured_mode]
+        else:
+            fallbacks = list(modes.keys())
+            if len(fallbacks) > 1:
+                fallback = fallbacks[1]
+            else:
+                fallback = fallbacks[0]
+            print_d("Stored mode does not match any configurable modes, "
+                    "defaulting to {}".format(fallback))
+            to_set_mode = modes[fallback]
+
+        self._render.set_property('ellipsize', to_set_mode)
 
     def _fetch_value(self, model, iter_):
         values = model.get_value(iter_).list(self.header_name)
