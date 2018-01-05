@@ -26,6 +26,7 @@ from quodlibet.util.dprint import print_d
 from quodlibet.formats._audio import FILESYSTEM_TAGS
 from quodlibet.compat import text_type, string_types, listvalues, listitems
 
+
 def create_songlist_column(t):
     """Returns a SongListColumn instance for the given tag"""
 
