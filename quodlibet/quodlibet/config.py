@@ -14,6 +14,7 @@ from quodlibet.util import enum
 from . import const
 from quodlibet.util.config import Config, Error
 from quodlibet.util import print_d, print_w
+from quodlibet.util import is_osx
 from quodlibet.compat import PY2, iteritems, text_type
 
 # Some plugins can be enabled on first install
@@ -213,6 +214,9 @@ INITIAL = {
 
         # the format of the timestamps in DateColumn
         "datecolumn_timestamp_format": "",
+
+        # scrollbar does not fade out when inactive
+        "scrollbar_always_visible": "true" if is_osx() else "false",
     },
 
     "rename": {

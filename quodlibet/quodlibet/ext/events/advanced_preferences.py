@@ -152,6 +152,14 @@ class AdvancedPreferences(EventPlugin):
                 "DateColumn timestamp format",
                 "A timestamp format, e.g. %Y%m%d %X "))
 
+        rows.append(
+            text_config(
+                "settings", "scrollbar_always_visible",
+                "Scrollbars always visible:",
+                ("Toggles whether the scrollbars on the bottom and side of "
+                 "the window always are visible or get hidden when not in use "
+                 "(restart required)")))
+
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
             table.attach(label, 0, 1, row, row + 1,
