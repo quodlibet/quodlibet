@@ -225,7 +225,7 @@ def _init_gtk():
         environ["GTK_CSD"] = "0"
 
     # disable for consistency and trigger events seem a bit flaky here
-    if is_osx():
+    if config.getboolean("settings", "scrollbar_always_visible"):
         environ["GTK_OVERLAY_SCROLLING"] = "0"
 
     try:
