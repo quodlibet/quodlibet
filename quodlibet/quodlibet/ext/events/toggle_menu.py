@@ -31,8 +31,7 @@ class ToggleMenuBarPlugin(EventPlugin):
 
         # Menu bar visibility toggle
         def toggle_menubar(widget, event):
-            # Test for the Alt key
-            if event.state == Gdk.ModifierType.MOD1_MASK:
+            if event.keyval in (Gdk.KEY_Alt_L, Gdk.KEY_Alt_R):
                 self._menubar.set_visible(not self._menubar.get_visible())
                 # Select the menu bar if visible
                 if self._menubar.get_visible():
