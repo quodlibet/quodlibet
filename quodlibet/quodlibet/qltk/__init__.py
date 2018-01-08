@@ -18,9 +18,9 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib, GObject
-from senf import fsn2bytes, bytes2fsn
+from senf import fsn2bytes, bytes2fsn, uri2fsn
 
-from quodlibet.util import print_d, print_w
+from quodlibet.util import print_d, print_w, is_windows, is_osx
 from quodlibet.compat import urlparse
 
 
@@ -45,13 +45,27 @@ def show_uri(label, uri):
             return False
         else:
             return __show_quodlibet_uri(parsed)
+    elif parsed.scheme == "file" and (is_windows() or is_osx()):
+        # Gio on non-Linux can't handle file URIs for some reason,
+        # fall back to our own implementation for now
+        from quodlibet.qltk.showfiles import show_files
+
+        try:
+            filepath = uri2fsn(uri)
+        except ValueError:
+            return False
+        else:
+            return show_files(filepath, [])
     else:
         # Gtk.show_uri_on_window exists since 3.22
-        if hasattr(Gtk, "show_uri_on_window"):
-            from quodlibet.qltk import get_top_parent
-            return Gtk.show_uri_on_window(get_top_parent(label), uri, 0)
-        else:
-            return Gtk.show_uri(None, uri, 0)
+        try:
+            if hasattr(Gtk, "show_uri_on_window"):
+                from quodlibet.qltk import get_top_parent
+                return Gtk.show_uri_on_window(get_top_parent(label), uri, 0)
+            else:
+                return Gtk.show_uri(None, uri, 0)
+        except GLib.Error:
+            return False
 
 
 def __show_quodlibet_uri(uri):
