@@ -36,7 +36,7 @@ A1.sanitize()
 A2 = AudioFile(
         {'album': u'greatness2\ufffe', 'title': 'superlative',
          'artist': u'fooman\ufffe', '~#lastplayed': 1234, '~#rating': 1.0,
-         '~filename': fsnative(u'/foo')})
+         '~filename': fsnative(u'/foo'), 'discnumber': '4294967296'})
 A2.sanitize()
 
 MAX_TIME = 3
@@ -231,3 +231,5 @@ class TMPRIS(PluginTestCase):
         resp = self._wait()[0]
         self.failUnlessEqual(resp["xesam:album"], u'greatness2\ufffd')
         self.failUnlessEqual(resp["xesam:artist"], [u'fooman\ufffd'])
+        # overflow
+        assert resp["xesam:discNumber"] == 0

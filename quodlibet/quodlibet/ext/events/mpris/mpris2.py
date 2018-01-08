@@ -221,16 +221,25 @@ value="false"/>
         return dbus.ObjectPath(path + "/" + str(id(app.player.info)))
 
     def __get_metadata(self):
-        """http://xmms2.org/wiki/MPRIS_Metadata"""
+        """
+        https://www.freedesktop.org/wiki/Specifications/mpris-spec/metadata/
+        """
 
         metadata = {}
         metadata["mpris:trackid"] = self.__get_current_track_id()
+
+        def ignore_overflow(dbus_type, value):
+            try:
+                return dbus_type(value)
+            except OverflowError:
+                return 0
 
         song = app.player.info
         if not song:
             return metadata
 
-        metadata["mpris:length"] = dbus.Int64(song("~#length") * 10 ** 6)
+        metadata["mpris:length"] = ignore_overflow(
+            dbus.Int64, song("~#length") * 10 ** 6)
 
         self.__cover = cover = app.cover_manager.get_cover(song)
         is_temp = False
@@ -270,10 +279,11 @@ value="false"/>
         for xesam, tag in iteritems(num_val):
             val = song("~#" + tag, None)
             if val is not None:
-                metadata["xesam:" + xesam] = int(val)
+                metadata["xesam:" + xesam] = ignore_overflow(dbus.Int32, val)
 
         # Rating
-        metadata["xesam:userRating"] = float(song("~#rating"))
+        metadata["xesam:userRating"] = ignore_overflow(
+            dbus.Double, song("~#rating"))
 
         # Dates
         ISO_8601_format = "%Y-%m-%dT%H:%M:%S"
