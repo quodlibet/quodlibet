@@ -47,9 +47,7 @@ def list_spec_properties(spec):
     'emit' can be true/false/invalidates (see dbus spec)
     """
 
-    if not isinstance(spec, bytes):
-        spec = spec.encode("utf-8")
-    assert isinstance(spec, bytes)
+    assert isinstance(spec, str)
 
     ANNOTATION_EMITS = "org.freedesktop.DBus.Property.EmitsChangedSignal"
 
@@ -62,7 +60,10 @@ def list_spec_properties(spec):
             emit = fallback
         return emit
 
-    root = ET.fromstring(b'<?xml version="1.0"?><props>' + spec + b'</props>')
+    root = ET.fromstring(
+        b'<?xml version="1.0" encoding="UTF-8"?><props>' +
+        spec.encode("utf-8") +
+        b'</props>')
     props = {}
     root_emit = get_emit(root, "true")
     for element in root:
@@ -80,15 +81,17 @@ def list_spec_properties(spec):
 def filter_property_spec(spec, wl=None, bl=None):
     """Remove properties based on a white list or black list."""
 
-    if not isinstance(spec, bytes):
-        spec = spec.encode("utf-8")
-    assert isinstance(spec, bytes)
+    assert isinstance(spec, str)
 
     if wl and bl:
         raise ValueError
     if not wl and not bl:
         return spec
-    root = ET.fromstring(b'<?xml version="1.0"?><props>' + spec + b'</props>')
+
+    root = ET.fromstring(
+        b'<?xml version="1.0" encoding="UTF-8"?><props>' +
+        spec.encode("utf-8") +
+        b'</props>')
     if wl:
         to_rm = lambda e: e.attrib["name"] not in wl
     elif bl:
@@ -96,8 +99,8 @@ def filter_property_spec(spec, wl=None, bl=None):
     strs = []
     for element in root:
         if element.tag != "property" or not to_rm(element):
-            strs.append(ET.tostring(element).strip())
-    return b"\n".join(strs)
+            strs.append(ET.tostring(element, encoding="unicode").strip())
+    return "\n".join(strs)
 
 
 TYPE_MAP = {
@@ -184,7 +187,7 @@ class DBusIntrospectable(object):
             parts.extend(intros)
             parts.append("</interface>")
         parts.append("</node>")
-        return ("\n".join(parts)).encode("utf-8")
+        return "\n".join(parts)
 
 
 class DBusProperty(object):

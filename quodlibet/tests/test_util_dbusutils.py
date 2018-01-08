@@ -20,7 +20,7 @@ else:
     from quodlibet.util.dbusutils import dbus_unicode_validate
 
 
-ANN1 = b"""
+ANN1 = """
 <property name="Position" type="s" access="read">
 <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" \
 value="false"/>
@@ -28,7 +28,7 @@ value="false"/>
 <property name="MinimumRate" type="s" access="read"/>
 """
 
-ANN2 = b"""
+ANN2 = """
 <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" \
 value="false"/>
 <property name="Foobar" type="s" access="read">
