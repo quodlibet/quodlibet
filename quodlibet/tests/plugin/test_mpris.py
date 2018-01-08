@@ -90,6 +90,12 @@ class TMPRIS(PluginTestCase):
         return dbus.Interface(obj,
                               dbus_interface="org.mpris.MediaPlayer2.Player")
 
+    def _introspect_iface(self):
+        bus = dbus.SessionBus()
+        obj = bus.get_object("org.mpris.quodlibet", "/org/mpris/MediaPlayer2")
+        return dbus.Interface(
+            obj, dbus_interface="org.freedesktop.DBus.Introspectable")
+
     def _reply(self, *args):
         self._replies.append(args)
 
@@ -133,6 +139,9 @@ class TMPRIS(PluginTestCase):
 
         self._prop().Get(piface, "SupportedMimeTypes", **args)
         self.failUnless("audio/vorbis" in self._wait()[0])
+
+        self._introspect_iface().Introspect(**args)
+        assert self._wait()
 
     def test_player(self):
         args = {"reply_handler": self._reply, "error_handler": self._error}
