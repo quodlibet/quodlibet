@@ -170,6 +170,7 @@ class TPlaylistsBrowser(TSearchBar):
         "~filename": dummy_path(u"/dev/urandom")})
 
     def setUp(self):
+        self.success = False
         # Testing locally is VERY dangerous without this...
         self.assertTrue(_TEMP_DIR in PLAYLISTS or os.name == "nt",
                         msg="Failing, don't want to delete %s" % PLAYLISTS)
