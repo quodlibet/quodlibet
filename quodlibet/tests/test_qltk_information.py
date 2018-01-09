@@ -73,6 +73,13 @@ class TInformation(TestCase):
         self.inf = Information(self.library, [f])
         self.assert_child_is(OneSong)
 
+    def test_remove_song(self):
+        f = AF({"~filename": fsnative(u"/dev/null"), "artist": "woo"})
+        f2 = AF({"~filename": fsnative(u"/dev/null2"), "artist": "woo"})
+        self.library.add([f, f2])
+        self.inf = Information(self.library, [f, f2])
+        self.library.remove([f])
+
     def assert_child_is(self, cls):
         self.failUnless(isinstance(self.inf.get_child(), cls))
 

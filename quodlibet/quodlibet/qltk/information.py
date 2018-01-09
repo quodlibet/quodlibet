@@ -635,7 +635,7 @@ class Information(Window, PersistentWindowMixin):
     def __check_removed(self, library, songs):
         gone = set(songs)
         old = len(self.__songs)
-        self.__songs = filter(lambda s: s not in gone, self.__songs)
+        self.__songs = list(filter(lambda s: s not in gone, self.__songs))
         if len(self.__songs) != old:
             self.__update(library)
 
