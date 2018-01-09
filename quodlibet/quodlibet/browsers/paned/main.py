@@ -2,7 +2,7 @@
 # Copyright 2004-2008 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009,2010 Steven Robertson
 #           2009-2013 Christoph Reiter
-#           2011-2017 Nick Boultbee
+#           2011-2018 Nick Boultbee
 #                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,7 +18,6 @@ from quodlibet import util
 from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.formats import PEOPLE
-from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
@@ -183,8 +182,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
     def activate(self):
         star = dict.fromkeys(SongList.star)
         star.update(self.__star)
-        # TODO: get query from SearchBarBox (but with dynamic star)
-        query = Query(self._get_text(), star.keys())
+        query = self._sb_box.get_query(star.keys())
         if query.is_parsable:
             self._filter = query.search
             songs = list(filter(self._filter, self._library))

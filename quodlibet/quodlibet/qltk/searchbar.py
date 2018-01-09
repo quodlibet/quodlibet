@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010-2011 Christoph Reiter, Steven Robertson
-#           2016-2017 Nick Boultbee
+#           2016-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ class SearchBarBox(Gtk.HBox):
             entry.set_completion(completion)
 
         self._star = star
-        self.query = None
+        self._query = None
         self.__sig = combo.connect('text-changed', self.__text_changed)
 
         entry.connect('clear', self.__filter_changed)
@@ -104,12 +104,18 @@ class SearchBarBox(Gtk.HBox):
 
     def _update_query_from(self, text):
         # TODO: remove tight coupling to Query
-        self.query = Query(text, star=self._star)
+        self._query = Query(text, star=self._star)
 
     def get_text(self):
         """Get the active text as unicode"""
 
         return self.__entry.get_text()
+
+    def get_query(self, star=None):
+        if star and star != self._star:
+            self._star = star
+            self._update_query_from(self.get_text())
+        return self._query
 
     def changed(self):
         """Triggers a filter-changed signal if the current text
@@ -149,7 +155,7 @@ class SearchBarBox(Gtk.HBox):
             return
 
         text = self.get_text().strip()
-        if text and self.query.is_parsable:
+        if text and self._query.is_parsable:
             # Adding the active text to the model triggers a changed signal
             # (get_active is no longer -1), so inhibit
             self.__inhibit()
@@ -161,7 +167,7 @@ class SearchBarBox(Gtk.HBox):
         self.__deferred_changed.abort()
         text = self.get_text()
         self._update_query_from(text)
-        if self.query.is_parsable:
+        if self._query.is_parsable:
             GLib.idle_add(self.emit, 'query-changed', text)
             self.__save_search(args[0:1], args[1:])
 

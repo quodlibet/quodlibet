@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
-#    2012 - 2017 Nick Boultbee
+#    2012 - 2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -186,7 +186,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     @property
     def _query(self):
-        return self._sb_box.query
+        return self._sb_box.get_query(SongList.star)
 
     def __destroy(self, *args):
         del self._sb_box
@@ -200,7 +200,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.accelerators = Gtk.AccelGroup()
         completion = LibraryTagCompletion(library.librarian)
         sbb = SearchBarBox(completion=completion,
-                           accel_group=self.accelerators, star=SongList.star)
+                           accel_group=self.accelerators)
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
         return sbb
@@ -489,7 +489,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def activate(self, widget=None, resort=True):
         songs = self._get_playlist_songs()
-        query = self._sb_box.query
+        query = self._sb_box.get_query(SongList.star)
         if query and query.is_parsable:
             songs = query.filter(songs)
         GLib.idle_add(self.songs_selected, songs, resort)

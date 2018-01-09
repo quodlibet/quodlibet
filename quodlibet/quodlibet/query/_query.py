@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2015-2017 Nick Boultbee,
+#           2015-2018 Nick Boultbee,
 #                2016 Ryan Dellenbaugh
 #
 # This program is free software; you can redistribute it and/or modify
@@ -37,9 +37,6 @@ class Query(Node):
 
     string = None
     """The original string which was used to create this query"""
-
-    stars = None
-    """List of default tags used"""
 
     def __init__(self, string, star=None):
         """Parses the query string and returns a match object.
@@ -143,6 +140,10 @@ class Query(Node):
 
     def __neg__(self):
         return self._match.__neg__()
+
+    def __eq__(self, other):
+        return (self.string == other.string and self.star == other.star and
+                self.type == other.type)
 
     @classmethod
     def validator(cls, string):

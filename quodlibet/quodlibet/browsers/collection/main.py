@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010, 2012-2014 Christoph Reiter
 #                      2017 Uriel Zajaczkovski
-#                      2017 Nick Boultbee
+#                 2017-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -232,10 +232,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         prefs.connect('clicked', lambda *x: Preferences(self))
 
         self.accelerators = Gtk.AccelGroup()
-        tags = self.__model.tags + ["album"]
         search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators,
-                              star=tags)
+                              accel_group=self.accelerators)
         search.connect('query-changed', self.__update_filter)
         connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
@@ -293,7 +291,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def __update_filter(self, entry, text):
         self.__filter = None
-        query = self.__search.query
+        star = self.__model.tags + ["album"]
+        query = self.__search.get_query(star)
         if not query.matches_all:
             self.__filter = query.search
         self.__bg_filter = background_filter()
