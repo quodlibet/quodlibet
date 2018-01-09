@@ -848,6 +848,12 @@ class Treplay_gain(TestCase):
         self.song = AudioFile(self.rg_data)
         self.no_rg_song = AudioFile()
 
+    def test_large(self):
+        rg_data = {"replaygain_track_gain": "9999999 dB"}
+        song = AudioFile(rg_data)
+        assert song.replay_gain(["track"], 0, 0) == 1.0
+        assert song.replay_gain([], 0, 99999999999) == 1.0
+
     def test_no_rg_song(self):
         scale = self.no_rg_song.replay_gain(["track"], 0, -6.0)
         self.failUnlessAlmostEqual(scale, self.minus_6db)
