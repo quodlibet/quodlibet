@@ -940,7 +940,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     self.bin.set_state(Gst.State.PLAYING)
         else:
             self.__destroy_pipeline()
-            self.paused = True
 
         self._in_gapless_transition = False
 
@@ -949,6 +948,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self._seeker.reset()
 
         self.emit('song-started', self.song)
+
+        if self.song is None:
+            self.paused = True
 
     def __tag(self, tags, librarian):
         if self.song and self.song.multisong:
