@@ -14,7 +14,7 @@
 
 import os
 import re
-from re import Scanner
+from re import Scanner  # type: ignore
 
 from senf import sep, fsnative, expanduser
 

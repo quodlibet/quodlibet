@@ -6,7 +6,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import sys
 import ctypes
 
 from quodlibet.util import load_library
@@ -144,104 +143,124 @@ XINE_MSG_FILE_EMPTY = 13 # file is empty
 XINE_MSG_AUTHENTICATION_NEEDED = 14 # (mrl, likely http); added in 1.2
 
 # xine_t *xine_new(void)
-_libxine.xine_new.restype = ctypes.c_void_p
+xine_new = _libxine.xine_new
+xine_new.restype = ctypes.c_void_p
 
 # void xine_init(xine_t *self)
-_libxine.xine_init.argtypes = [ctypes.c_void_p]
+xine_init = _libxine.xine_init
+xine_init.argtypes = [ctypes.c_void_p]
 
 # void xine_exit(xine_t *self)
-_libxine.xine_exit.argtypes = [ctypes.c_void_p]
+xine_exit = _libxine.xine_exit
+xine_exit.argtypes = [ctypes.c_void_p]
 
 # void xine_config_load(xine_t *self, const char *cfg_filename)
-_libxine.xine_config_load.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+xine_config_load = _libxine.xine_config_load
+xine_config_load.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
 
 # const char *xine_get_homedir(void)
-_libxine.xine_get_homedir.restype = ctypes.c_char_p
+xine_get_homedir = _libxine.xine_get_homedir
+xine_get_homedir.restype = ctypes.c_char_p
 
 # xine_audio_port_t *xine_open_audio_driver(xine_t *self, const char *id,
 #    void *data)
-_libxine.xine_open_audio_driver.argtypes = [ctypes.c_void_p,
+xine_open_audio_driver = _libxine.xine_open_audio_driver
+xine_open_audio_driver.argtypes = [ctypes.c_void_p,
     ctypes.c_char_p, ctypes.c_void_p]
-_libxine.xine_open_audio_driver.restype = ctypes.c_void_p
+xine_open_audio_driver.restype = ctypes.c_void_p
 
 # void xine_close_audio_driver(xine_t *self, xine_audio_port_t *driver)
-_libxine.xine_close_audio_driver.argtypes = [ctypes.c_void_p,
-    ctypes.c_void_p]
+xine_close_audio_driver = _libxine.xine_close_audio_driver
+xine_close_audio_driver.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
 
 # xine_stream_t *xine_stream_new(xine_t *self,
 #    xine_audio_port_t *ao, xine_video_port_t *vo)
-_libxine.xine_stream_new.argtypes = [ctypes.c_void_p, ctypes.c_void_p,
+xine_stream_new = _libxine.xine_stream_new
+xine_stream_new.argtypes = [ctypes.c_void_p, ctypes.c_void_p,
     ctypes.c_void_p]
-_libxine.xine_stream_new.restype = ctypes.c_void_p
+xine_stream_new.restype = ctypes.c_void_p
 
 # void xine_close(xine_sxine_event_create_listener_threadtream_t *stream)
-_libxine.xine_close.argtypes = [ctypes.c_void_p]
+xine_close = _libxine.xine_close
+xine_close.argtypes = [ctypes.c_void_p]
 
 # int xine_open (xine_stream_t *stream, const char *mrl)
-_libxine.xine_open.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
-_libxine.xine_open.restype = ctypes.c_int
+xine_open = _libxine.xine_open
+xine_open.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+xine_open.restype = ctypes.c_int
 
 # int xine_play(xine_stream_t *stream, int start_pos, int start_time)
-_libxine.xine_play.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
-_libxine.xine_play.restype = ctypes.c_int
+xine_play = _libxine.xine_play
+xine_play.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
+xine_play.restype = ctypes.c_int
 
 # void xine_stop(xine_stream_t *stream)
-_libxine.xine_stop.argtypes = [ctypes.c_void_p]
+xine_stop = _libxine.xine_stop
+xine_stop.argtypes = [ctypes.c_void_p]
 
 # void xine_dispose(xine_stream_t *stream)
-_libxine.xine_dispose.argtypes = [ctypes.c_void_p]
+xine_dispose = _libxine.xine_dispose
+xine_dispose.argtypes = [ctypes.c_void_p]
 
 # xine_event_queue_t *xine_event_new_queue(xine_stream_t *stream)
-_libxine.xine_event_new_queue.argtypes = [ctypes.c_void_p]
-_libxine.xine_event_new_queue.restype = ctypes.c_void_p
+xine_event_new_queue = _libxine.xine_event_new_queue
+xine_event_new_queue.argtypes = [ctypes.c_void_p]
+xine_event_new_queue.restype = ctypes.c_void_p
 
 # void xine_event_dispose_queue(xine_event_queue_t *queue)
-_libxine.xine_event_dispose_queue.argtypes = [ctypes.c_void_p]
+xine_event_dispose_queue = _libxine.xine_event_dispose_queue
+xine_event_dispose_queue.argtypes = [ctypes.c_void_p]
 
 # void xine_event_create_listener_thread(xine_event_queue_t *queue,
 #    xine_event_listener_cb_t callback,
 #    void *user_data)
-_libxine.xine_event_create_listener_thread.argtypes = [ctypes.c_void_p,
+xine_event_create_listener_thread = _libxine.xine_event_create_listener_thread
+xine_event_create_listener_thread.argtypes = [ctypes.c_void_p,
     ctypes.c_void_p, ctypes.c_void_p]
 
-_libxine.xine_usec_sleep.argtypes = [ctypes.c_int]
+xine_usec_sleep = _libxine.xine_usec_sleep
+xine_usec_sleep.argtypes = [ctypes.c_int]
 
-_libxine.xine_set_param.argtypes = [ctypes.c_void_p, ctypes.c_int,
-    ctypes.c_int]
+xine_set_param = _libxine.xine_set_param
+xine_set_param.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
 
-_libxine.xine_get_param.argtypes = [ctypes.c_void_p, ctypes.c_int]
-_libxine.xine_get_param.restype = ctypes.c_int
+xine_get_param = _libxine.xine_get_param
+xine_get_param.argtypes = [ctypes.c_void_p, ctypes.c_int]
+xine_get_param.restype = ctypes.c_int
 
-_libxine.xine_get_meta_info.argtypes = [ctypes.c_void_p, ctypes.c_int]
-_libxine.xine_get_meta_info.restype = ctypes.c_char_p
+xine_get_meta_info = _libxine.xine_get_meta_info
+xine_get_meta_info.argtypes = [ctypes.c_void_p, ctypes.c_int]
+xine_get_meta_info.restype = ctypes.c_char_p
 
-_libxine.xine_get_status.argtypes = [ctypes.c_void_p]
-_libxine.xine_get_status.restype = ctypes.c_int
+xine_get_status = _libxine.xine_get_status
+xine_get_status.argtypes = [ctypes.c_void_p]
+xine_get_status.restype = ctypes.c_int
 
-_libxine.xine_get_pos_length.argtypes = [ctypes.c_void_p,
+xine_get_pos_length = _libxine.xine_get_pos_length
+xine_get_pos_length.argtypes = [ctypes.c_void_p,
     ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int),
     ctypes.POINTER(ctypes.c_int)]
 
-_libxine.xine_get_version_string.restype = ctypes.c_char_p
+xine_get_version_string = _libxine.xine_get_version_string
+xine_get_version_string.restype = ctypes.c_char_p
 
-_libxine.xine_get_file_extensions.argtypes = [ctypes.c_void_p]
-_libxine.xine_get_file_extensions.restype = ctypes.c_char_p
+xine_get_file_extensions = _libxine.xine_get_file_extensions
+xine_get_file_extensions.argtypes = [ctypes.c_void_p]
+xine_get_file_extensions.restype = ctypes.c_char_p
 
-_libxine.xine_get_mime_types.argtypes = [ctypes.c_void_p]
-_libxine.xine_get_mime_types.restype = ctypes.c_char_p
+xine_get_mime_types = _libxine.xine_get_mime_types
+xine_get_mime_types.argtypes = [ctypes.c_void_p]
+xine_get_mime_types.restype = ctypes.c_char_p
 
-_libxine.xine_list_input_plugins.argtypes = [ctypes.c_void_p]
-_libxine.xine_list_input_plugins.restype = ctypes.POINTER(ctypes.c_char_p)
+xine_list_input_plugins = _libxine.xine_list_input_plugins
+xine_list_input_plugins.argtypes = [ctypes.c_void_p]
+xine_list_input_plugins.restype = ctypes.POINTER(ctypes.c_char_p)
 
-_libxine.xine_check_version.argtypes = [ctypes.c_int, ctypes.c_int,
+xine_check_version = _libxine.xine_check_version
+xine_check_version.argtypes = [ctypes.c_int, ctypes.c_int,
                                         ctypes.c_int]
-_libxine.xine_check_version.restype = ctypes.c_int
+xine_check_version.restype = ctypes.c_int
 
-# copy functions from the library
-module = sys.modules[__name__]
-for name in dir(_libxine):
-    if name.startswith('xine_'):
-        setattr(module, name, getattr(_libxine, name))
 
 _callbacks = []
 

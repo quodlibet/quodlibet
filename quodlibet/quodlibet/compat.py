@@ -96,7 +96,7 @@ elif PY3:
     from io import BytesIO as cBytesIO
     cBytesIO
     from io import StringIO
-    StringIO = StringIO
+    StringIO
     from functools import reduce
     reduce
     from operator import floordiv
@@ -140,7 +140,7 @@ elif PY3:
     def swap_to_string(cls):
         return cls
 
-    escape_decode = lambda b: codecs.escape_decode(b)[0]
+    escape_decode = lambda b: codecs.escape_decode(b)[0]  # type: ignore
 
 
 # taken from six

@@ -61,7 +61,6 @@ class BasePlayer(GObject.GObject, Equalizer):
     name = ""
     version_info = ""
 
-    paused = None
     song = None
     info = None
     volume = None
@@ -167,6 +166,10 @@ class BasePlayer(GObject.GObject, Equalizer):
     @mute.setter
     def mute(self, v):
         self.props.mute = v
+
+    @property
+    def paused(self):
+        raise NotImplementedError
 
     @property
     def seekable(self):

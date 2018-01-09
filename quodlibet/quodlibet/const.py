@@ -33,6 +33,9 @@ class Version(tuple):
         inst.message = kwargs.pop("message", "")
         return inst
 
+    def __init__(self, *args, **kwargs):
+        pass
+
     def human_version(self):
         return ".".join(map(str, self))
 

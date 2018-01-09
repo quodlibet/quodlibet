@@ -459,7 +459,7 @@ class PluginConfigMixin(object):
     Mixin for storage and editing of plugin config in a standard way.
     """
 
-    CONFIG_SECTION = None
+    CONFIG_SECTION = ""
     """If defined, the section for storing config,
         otherwise, it will based on a munged `PLUGIN_ID`"""
 
@@ -469,9 +469,8 @@ class PluginConfigMixin(object):
 
     @classmethod
     def _get_config_option(cls, option):
-        try:
-            prefix = cls.CONFIG_SECTION
-        except AttributeError:
+        prefix = cls.CONFIG_SECTION
+        if not prefix:
             prefix = cls.PLUGIN_ID.lower().replace(" ", "_")
 
         return "%s_%s" % (prefix, option)

@@ -41,7 +41,7 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
         return self.song.get('musicbrainz_albumid', None)
 
     @property
-    def url(self, front=True):
+    def url(self):
         if not self.mbid:
             return None
         mbid = Soup.URI.encode(self.mbid, None)

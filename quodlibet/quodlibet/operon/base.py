@@ -24,9 +24,9 @@ class Command(object):
     Subclasses can override _add_options() and _execute()
     """
 
-    NAME = None
-    DESCRIPTION = None
-    USAGE = None
+    NAME = ""
+    DESCRIPTION = ""
+    USAGE = ""
     COMMANDS = []
 
     @classmethod
