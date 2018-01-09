@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2017 Nick Boultbee
+#           2012-2018 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -509,8 +509,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators,
-                              star=self.STAR)
+                              accel_group=self.accelerators)
         search.connect('query-changed', self.__update_filter)
         connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
@@ -592,7 +591,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         model = self.view.get_model()
 
         self.__filter = None
-        query = self.__search.query
+        query = self.__search.get_query()
         if not query.matches_all:
             self.__filter = query.search
         self.__bg_filter = background_filter()

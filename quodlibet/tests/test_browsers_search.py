@@ -15,6 +15,7 @@ import quodlibet.config
 from quodlibet.browsers.search import SearchBar
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
+from quodlibet.qltk.songlist import SongList
 
 # Don't sort yet, album_key makes it complicated...
 SONGS = [AudioFile({
@@ -113,6 +114,23 @@ class TSearchBar(TestCase):
         self.expected = sorted([SONGS[0]] + SONGS[2:])
         self.bar.filter("~#length", [0])
         self._do()
+
+    def test_search_text_artist(self):
+        self.bar._set_text("boris")
+        self.expected = [SONGS[2]]
+        self.bar._sb_box.changed()
+        self._do()
+
+    def test_search_text_custom_star(self):
+        old = SongList.star
+        SongList.star = ["artist", "labelid"]
+        self.bar._set_text("65432-1")
+        self.expected = [SONGS[3]]
+        self.bar._sb_box.changed()
+        try:
+            self._do()
+        finally:
+            SongList.star = old
 
     def test_saverestore(self):
         self.bar.filter_text("title = %s" % SONGS[0]["title"])

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011 Joe Wreschnig, Christoph Reiter
-#           2016 Nick Boultbee
+#      2013-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -540,8 +540,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         completion = LibraryTagCompletion(self.__stations)
         self.accelerators = Gtk.AccelGroup()
         self.__searchbar = search = SearchBarBox(completion=completion,
-                                                 accel_group=self.accelerators,
-                                                 star=self.STAR)
+                                                 accel_group=self.accelerators)
         search.connect('query-changed', self.__filter_changed)
 
         menu = Gtk.Menu()
