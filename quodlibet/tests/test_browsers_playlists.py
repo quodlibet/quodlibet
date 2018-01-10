@@ -29,7 +29,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.util.path import mkdir
 from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
-from tests.test_browsers_search import SONGS, TSearchBar
+from tests.test_browsers_search import SONGS
 
 
 class ConfigSetupMixin(object):
@@ -161,7 +161,7 @@ class TPlaylistIntegration(TestCase):
         self.assertFalse(len(pl))
 
 
-class TPlaylistsBrowser(TSearchBar):
+class TPlaylistsBrowser(TestCase):
     Bar = PlaylistsBrowser
 
     ANOTHER_SONG = AudioFile({
@@ -211,6 +211,17 @@ class TPlaylistsBrowser(TSearchBar):
         shutil.rmtree(PLAYLISTS)
         PlaylistsBrowser.deinit(self.lib)
         destroy_fake_app()
+
+    def _expected(self, bar, songs, sort):
+        songs.sort()
+        if self.expected is not None:
+            self.failUnlessEqual(self.expected, songs)
+        self.success = True
+
+    def _do(self):
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+        self.failUnless(self.success or self.expected is None)
 
     def test_saverestore(self):
         # Flush previous signals, etc. Hmm.
