@@ -38,13 +38,13 @@ class TagsComboMixin(object):
 
 
 @skipIf(is_wayland(), "crashes..")
-class TTagsComboBox(TagsCombo):
+class TTagsComboBox(TagsCombo, TagsComboMixin):
     from quodlibet.qltk.tagscombobox import TagsComboBox as Kind
     Kind
 
 
 @skipIf(is_wayland(), "crashes..")
-class TTagsComboBoxEntry(TagsCombo):
+class TTagsComboBoxEntry(TagsCombo, TagsComboMixin):
     from quodlibet.qltk.tagscombobox import TagsComboBoxEntry as Kind
     Kind
 
