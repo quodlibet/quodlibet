@@ -260,9 +260,9 @@ class LyricsWindowPrefs(Gtk.VBox):
                 value = float(button.get_value())
                 self.Conf.zoom_level = value
 
-                window = self.plugin._window
-                if window:
-                    window.set_zoom_level(value)
+                pane = self.plugin._pane
+                if pane is not None:
+                    pane.set_zoom_level(value)
 
             zoom_level.connect('value-changed', change_zoom_level)
             l1 = ConfigLabel(_("_Zoom level:"), zoom_level)
