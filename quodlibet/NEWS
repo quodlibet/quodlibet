@@ -1,3 +1,18 @@
+.. _release-4.0.1:
+
+4.0.1 (2018-01-13) - Water as far as the eye can see!
+-----------------------------------------------------
+
+Translation updates by :user:`Kirill Romanov <Djaler>` and :user:`Honza Hejzl
+<welblaud>`
+
+Bug fixes: :bug:`2677` :bug:`2672` :bug:`2671` :bug:`2680` :bug:`2687`
+:bug:`2669` :bug:`2699` :bug:`2698` :bug:`2704` :bug:`2703` :bug:`2683`
+:bug:`2706` :bug:`2705` :bug:`2710` :bug:`2718` :bug:`2719` :bug:`2713`
+:bug:`2668` :pr:`2715` (:user:`CreamyCookie`, :user:`Nick Boultbee
+<declension>`, …)
+
+
 .. _release-4.0.0:
 
 4.0.0 (2017-12-26) - Speculative fiction where everything's the same, except for one chilling difference
