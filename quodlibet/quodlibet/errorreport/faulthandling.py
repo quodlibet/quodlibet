@@ -75,11 +75,14 @@ def enable(path):
     if _fileobj is not None:
         raise Exception("already enabled")
 
+    # we open as reading so raise_and_clear_error() can extract the old error
     try:
         _fileobj = open(path, "rb+")
     except IOError as e:
         if e.errno == errno.ENOENT:
             _fileobj = open(path, "wb+")
+        else:
+            raise
 
     faulthandler.enable(_fileobj, all_threads=False)
 
