@@ -271,8 +271,11 @@ class PicklingMixin(object):
             mkdir(dirname)
             with atomic_save(filename, "wb") as fileobj:
                 fileobj.write(dump_audio_files(self.get_content()))
-                # unhandled SerializationError, shouldn't happen -> better
-                # not replace the library file with nothing
+        except SerializationError:
+            # Can happen when we try to pickle while the library is being
+            # modified, like in the periodic 15min save.
+            # Ignore, as it should try again later or on program exit.
+            util.print_exc()
         except EnvironmentError:
             print_w("Couldn't save library to path: %r" % filename)
         else:
