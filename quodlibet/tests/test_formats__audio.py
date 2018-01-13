@@ -751,6 +751,12 @@ class TAudioFile(TestCase):
             f(bar_1_2)
             f(bar_2_1)
 
+    def test_sort_func_custom_numeric(self):
+        func = AudioFile.sort_by_func("~#year")
+
+        files = [AudioFile({"year": "nope"}), AudioFile({"date": "2038"})]
+        assert sorted(files, key=func) == files
+
     def test_uri(self):
         # On windows where we have unicode paths (windows encoding is utf-16)
         # we need to encode to utf-8 first, then escape.

@@ -166,7 +166,7 @@ class AudioFile(dict, ImageContainer):
         elif tag in FILESYSTEM_TAGS:
             return lambda song: fsn2text(song(tag))
         elif tag.startswith("~#") and "~" not in tag[2:]:
-            return lambda song: song(tag)
+            return lambda song: song(tag, 0)
         return lambda song: human(song(tag))
 
     def __getstate__(self):
