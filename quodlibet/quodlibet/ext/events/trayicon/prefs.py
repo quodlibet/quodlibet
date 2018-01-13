@@ -13,11 +13,18 @@ from gi.repository import Gtk
 from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
+from quodlibet.util import is_windows
 from quodlibet.qltk import Icons
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.util import gdecode
 from .util import pconfig
+
+
+def supports_scrolling():
+    """If our tray icon implementation supports scrolling"""
+
+    return not is_windows()
 
 
 class Preferences(Gtk.VBox):
@@ -52,8 +59,10 @@ class Preferences(Gtk.VBox):
         group.set_active(modifier_swap)
         scrollwheel_box.pack_start(group, False, True, 0)
 
-        self.pack_start(qltk.Frame(_("Scroll _Wheel"), child=scrollwheel_box),
-                        True, True, 0)
+        if supports_scrolling():
+            self.pack_start(
+                qltk.Frame(_("Scroll _Wheel"), child=scrollwheel_box),
+                True, True, 0)
 
         box = Gtk.VBox(spacing=6)
 
