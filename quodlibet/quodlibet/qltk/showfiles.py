@@ -91,10 +91,10 @@ def _show_files_fdo(dirname, entries):
         bus_iface = dbus.Interface(bus_object, dbus_interface=FDO_IFACE)
 
         if not entries:
-            bus_iface.ShowFolders(fsn2uri(dirname), _get_startup_id())
+            bus_iface.ShowFolders([fsn2uri(dirname)], _get_startup_id())
         else:
             item_uri = fsn2uri(os.path.join(dirname, entries[0]))
-            bus_iface.ShowItems([item_uri])
+            bus_iface.ShowItems([item_uri], _get_startup_id())
     except dbus.DBusException as e:
         raise BrowseError(e)
 
