@@ -13,6 +13,7 @@
 from gi.repository import Gtk, Gdk, Gst
 import cairo
 from math import ceil, floor
+from copy import deepcopy
 
 from quodlibet import _, app
 from quodlibet import print_w
@@ -25,6 +26,118 @@ from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.qltk import get_fg_highlight_color
 from quodlibet.util import connect_destroy, print_d
+
+
+class HSLA():
+    hue = 0
+    lightness = 0
+    satuation = 0
+    alpha = 0
+
+    def __init__(self, hue, satuation, lightness, alpha):
+        self.hue = hue
+        self.satuation = satuation
+        self.lightness = lightness
+        self.alpha = alpha
+        self.clamp()
+
+    def mix_hue(self, h1, h2, strength):
+        hues = (
+            ((h1 * strength + h2 * (1.0 - strength))),
+            (((h1 * strength + h2 * (1.0 - strength) + .5)) % 1)
+        )
+        if (min(abs(h2 - hues[0]), abs(h1 - hues[0]))
+                < min(abs(h1 - hues[1]), abs(h2 - hues[1]))):
+            return hues[0]
+        else:
+            return hues[1]
+
+    def tint(self, light_strength, satuation_strength=None):
+        if satuation_strength is None:
+            satuation_strength = light_strength
+        self.satuation += self.satuation * satuation_strength
+        self.lightness += self.lightness * light_strength
+        self.clamp()
+
+    def shade(self, light_strength, satuation_strength=None):
+        if satuation_strength is None:
+            satuation_strength = light_strength
+        self.satuation -= self.satuation * satuation_strength
+        self.lightness -= self.lightness * light_strength
+        self.clamp()
+
+    def mix(self, other, strength):
+        self.hue = self.mix_hue(self.hue, other.hue, strength)
+        self.satuation = (self.satuation * strength +
+                          other.satuation * (1.0 - strength))
+        self.lightness = (self.lightness * strength +
+                          other.lightness * (1.0 - strength))
+        self.alpha = (self.alpha * strength + other.alpha * (1.0 - strength))
+        self.clamp()
+
+    def clamp(self):
+        self.hue %= 1
+        self.satuation = self.satuation if self.satuation < 1 else 1.0
+        self.lightness = self.lightness if self.lightness < 1 else 1.0
+        self.alpha = self.alpha if self.alpha < 1 else 1.0
+
+    def rgba_to_hsla(rgba):
+        maxim = max(rgba.red, rgba.green, rgba.blue)
+        minim = min(rgba.red, rgba.green, rgba.blue)
+        lightness = (maxim + minim) / 2
+
+        if maxim == minim:
+            hue = 0
+            satuation = 0
+        else:
+            diff = maxim - minim
+
+            if lightness > .5:
+                satuation = diff / (2 - maxim - minim)
+            else:
+                satuation = diff / (maxim + minim)
+
+            if maxim == rgba.red:
+                hue = (rgba.green - rgba.blue) / diff
+                if rgba.green < rgba.blue:
+                    hue += 6
+            elif maxim == rgba.green:
+                hue = (rgba.blue - rgba.red) / diff + 2
+            else:
+                hue = (rgba.red - rgba.green) / diff + 4
+            hue /= 6.0
+
+        return HSLA(hue, satuation, lightness, rgba.alpha)
+
+    def hsla_to_rgba(hsla):
+        if hsla.satuation < 0.001:
+            r = g = b = hsla.lightness
+        else:
+            def hue_to_rgb(p, q, t):
+                if (t < 0.0):
+                    t += 1.0
+                if (t > 1.0):
+                    t -= 1.0
+                if (t < 1.0 / 6.0):
+                    return p + (q - p) * 6.0 * t
+                if (t < 1.0 / 2.0):
+                    return q
+                if (t < 2.0 / 3.0):
+                    return p + (q - p) * (2.0 / 3.0 - t) * 6.0
+                return p
+
+            if hsla.lightness < 0.5:
+                q = hsla.lightness * (1.0 + hsla.satuation)
+            else:
+                q = (hsla.lightness + hsla.satuation -
+                     hsla.lightness * hsla.satuation)
+
+            p = 2.0 * hsla.lightness - q
+            r = hue_to_rgb(p, q, hsla.hue + 1.0 / 3.0)
+            g = hue_to_rgb(p, q, hsla.hue)
+            b = hue_to_rgb(p, q, hsla.hue - 1.0 / 3.0)
+
+        return Gdk.RGBA(r, g, b, hsla.alpha)
 
 
 class WaveformSeekBar(Gtk.Box):
@@ -451,6 +564,58 @@ class WaveformScale(Gtk.EventBox):
             (height_px if height_px % 2 else height_px - 1) / pixel_ratio / 2
         return half_height
 
+    def calculate_colors(self, elapsed_color, remaining_color):
+        eh = HSLA.rgba_to_hsla(elapsed_color)
+        rh = HSLA.rgba_to_hsla(remaining_color)
+
+        preview_base_color = deepcopy(rh)
+        if ((eh.lightness < .5 and rh.lightness < .9)
+                or rh.lightness < .5):  # Dark colors lighten
+            if (rh.satuation < 0.1 and  # monochrome
+                    (rh.hue < .1 or rh.lightness > .9 or rh.lightness < .1)):
+                preview_base_color = deepcopy(eh)
+                preview_base_color.satuation = (
+                    eh.satuation + rh.satuation) / 2
+                preview_base_color.lightness = .3
+                preview_base_color.tint(.2, 0)
+            elif (eh.satuation < .1 and  # monochrome
+                    (eh.hue < .1 or eh.lightness > .9 or eh.lightness < .1)):
+                preview_base_color.tint(.2)
+            else:
+                preview_base_color.mix(eh, .45)
+                preview_base_color.tint(.2, 0)
+                preview_base_color.shade(0, .2)
+        else:  # light colors darken
+            if (rh.satuation < .1 and  # monochrome
+                    (rh.hue < .1 or rh.lightness > .9 or rh.lightness < .1)):
+                preview_base_color = deepcopy(eh)
+                preview_base_color.satuation = (
+                    eh.satuation + rh.satuation) / 2
+                preview_base_color.lightness = rh.lightness
+                preview_base_color.shade(.3)
+            elif (eh.satuation < .1 and  # monochrome
+                    (eh.hue < .1 or eh.lightness > .9 or eh.lightness < .1)):
+                preview_base_color.shade(.3)
+            else:
+                preview_base_color.mix(eh, .65)
+                preview_base_color.shade(.1, .2)
+
+        preview_shade_color = deepcopy(eh)
+        if ((rh.lightness < .5 and eh.lightness < .9)
+                or eh.lightness < .5):  # Dark colors lighten
+            if eh.lightness < .2:  # monochrome
+                preview_shade_color.lightness = .2
+            elif eh.satuation < .1:  # monochrome
+                preview_shade_color.tint(.2)
+            else:
+                preview_shade_color.tint(.2)
+            preview_shade_color.clamp()
+        else:  # light colors darken
+            preview_shade_color.shade(.15)
+
+        return (HSLA.hsla_to_rgba(preview_base_color),
+                HSLA.hsla_to_rgba(preview_shade_color))
+
     def do_draw(self, cr):
         context = self.get_style_context()
 
@@ -475,35 +640,18 @@ class WaveformScale(Gtk.EventBox):
             remaining_color = Gdk.RGBA()
             remaining_color.parse(remaining_color_config)
 
-        def mult(a, b, strenght):
-            return Gdk.RGBA(
-                (strenght * a.alpha * a.red +
-                    (1 - strenght) * b.alpha * b.red),
-                (strenght * a.alpha * a.green +
-                    (1 - strenght) * b.alpha * b.green),
-                (strenght * a.alpha * a.blue +
-                    (1 - strenght) * b.alpha * b.blue),
-                (strenght * a.alpha +
-                    (1 - strenght) * b.alpha)
-            )
-
-        def shade(base, strenght):
-            return Gdk.RGBA(
-                base.red * (1 - strenght),
-                base.green * (1 - strenght),
-                base.blue * (1 - strenght),
-                base.alpha
-            )
-
         # Check if the user set a hover color in the config
         preview_color_config = CONFIG.preview_color
         if preview_color_config and Gdk.RGBA().parse(preview_color_config):
             preview_base_color = Gdk.RGBA()
             preview_base_color.parse(preview_color_config)
-            preview_shade_color = mult(preview_base_color, elapsed_color, 0.65)
+            eh = HSLA.rgba_to_hsla(elapsed_color)
+            ph = HSLA.rgba_to_hsla(preview_base_color)
+            ph.mix(eh, 0.65)
+            preview_shade_color = HSLA.hsla_to_rgba(ph)
         else:
-            preview_base_color = mult(elapsed_color, remaining_color, 0.65)
-            preview_shade_color = shade(elapsed_color, 0.2)
+            preview_base_color, preview_shade_color = self.calculate_colors(
+                elapsed_color, remaining_color)
 
         # Paint the background
         cr.set_source_rgba(*list(bg_color))
