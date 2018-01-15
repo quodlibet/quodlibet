@@ -210,7 +210,7 @@ class RandomAlbum(EventPlugin):
                     yield True
                 task.finish()
                 yield False
-            GLib.timeout_add(100, countdown().next)
+            GLib.timeout_add(100, next, countdown())
         else:
             self.change_album(album)
 
