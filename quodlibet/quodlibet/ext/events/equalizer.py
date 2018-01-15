@@ -164,7 +164,7 @@ class Equalizer(EventPlugin):
             lbl = Gtk.Label(label=band.split()[1])
             lbl.set_alignment(1, 0.5)
             table.attach(lbl, 1, 2, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
-            adj = Gtk.Adjustment(levels[i], -24., 12., 0.5, 3, 0)
+            adj = Gtk.Adjustment.new(levels[i], -24., 12., 0.5, 3, 0)
             adj.connect('value-changed', set_band, i)
             adjustments.append(adj)
             hs = Gtk.HScale(adjustment=adj)
