@@ -358,7 +358,6 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
-    STAR = ["~people", "album"]
 
     name = _("Album List")
     accelerated_name = _("_Album List")
@@ -591,7 +590,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         model = self.view.get_model()
 
         self.__filter = None
-        query = self.__search.get_query()
+        query = self.__search.get_query(star=["~people", "album"])
         if not query.matches_all:
             self.__filter = query.search
         self.__bg_filter = background_filter()
