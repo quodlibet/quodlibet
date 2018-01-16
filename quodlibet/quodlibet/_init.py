@@ -223,6 +223,7 @@ def _init_gtk():
     if is_windows():
         environ['PANGOCAIRO_BACKEND'] = 'win32'
         environ["GTK_CSD"] = "0"
+        environ["GTK_OVERLAY_SCROLLING"] = "0"
 
     # disable for consistency and trigger events seem a bit flaky here
     if is_osx():
