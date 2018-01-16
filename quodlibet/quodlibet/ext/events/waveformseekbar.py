@@ -239,7 +239,12 @@ class WaveformSeekBar(Gtk.Box):
             self._waveform_scale.queue_draw()
 
     def _on_mouse_hover(self, _, event):
-        self._waveform_scale.set_mouse_x_position(event.x)
+        def clamp(a, x, b):
+            '''Return x if a <= x <= b, else the a or b nearest to x.'''
+            return min(max(x, a), b)
+
+        width = self._waveform_scale.get_allocation().width
+        self._waveform_scale.set_mouse_x_position(clamp(0, event.x, width))
 
         if self._hovering:
             (x, y, w, h) = self._waveform_scale.compute_hover_redraw_area()
