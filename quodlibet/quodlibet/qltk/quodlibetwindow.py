@@ -1440,8 +1440,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             window.show()
 
     def __browser_activate(self, browser):
-        app.player.go_to(None)
-        app.player.play()
+        app.player._reset()
 
     def __browser_cb(self, browser, songs, sorted, library, player):
         if browser.background:
