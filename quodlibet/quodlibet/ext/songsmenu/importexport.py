@@ -52,7 +52,7 @@ def filechooser(save, title):
 
 
 def sort_key_for(s):
-    return s('~#track'), s('~basename'), s
+    return s('~#track', 1), s('~basename'), s
 
 
 class Export(SongsMenuPlugin):
