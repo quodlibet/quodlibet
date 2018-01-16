@@ -372,12 +372,25 @@ def remove_padding(widget):
     return add_css(widget, " * { padding: 0px; } ")
 
 
+def is_instance_of_gtype_name(instance, name):
+    """Returns False if the gtype can't be found"""
+
+    try:
+        gtype = GObject.type_from_name(name)
+    except Exception:
+        return False
+    else:
+        pytype = gtype.pytype
+        if pytype is None:
+            return False
+        return isinstance(instance, pytype)
+
+
 def is_wayland():
-    # FIXME: Is there no better way?
     display = Gdk.Display.get_default()
-    if display:
-        return display.get_name() == "Wayland"
-    return False
+    if display is None:
+        return False
+    return is_instance_of_gtype_name(display, "GdkWaylandDisplay")
 
 
 def get_backend_name():
