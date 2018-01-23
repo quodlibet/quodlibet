@@ -46,28 +46,22 @@ def fetch_git_sha(path, head=None):
         # https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery
         packed_file = os.path.join(path, '.git', 'packed-refs')
         if os.path.exists(packed_file):
-            with open(packed_file, 'r') as fh:
+            with open(packed_file) as fh:
                 for line in fh:
                     line = line.rstrip()
-                    if not line:
-                        continue
-                    if line[:1] in ('#', '^'):
-                        continue
-                    try:
-                        revision, ref = line.split(' ', 1)
-                    except ValueError:
-                        continue
-                    if ref == head:
-                        return text_type(revision)
+                    if line and line[:1] not in ('#', '^'):
+                        try:
+                            revision, ref = line.split(' ', 1)
+                        except ValueError:
+                            continue
+                        if ref == head:
+                            return text_type(revision)
 
         raise InvalidGitRepository(
             'Unable to find ref to head "%s" in repository' % (head,))
 
-    fh = open(revision_file, 'r')
-    try:
+    with open(revision_file) as fh:
         return text_type(fh.read()).strip()
-    finally:
-        fh.close()
 
 
 def fetch_package_version(dist_name):

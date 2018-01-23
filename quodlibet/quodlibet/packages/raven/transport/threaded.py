@@ -48,8 +48,7 @@ class AsyncWorker(object):
         self.start()
 
     def main_thread_terminated(self):
-        self._lock.acquire()
-        try:
+        with self._lock:
             if not self.is_alive():
                 # thread not started or already stopped - nothing to do
                 return
@@ -80,9 +79,6 @@ class AsyncWorker(object):
                 self._timed_queue_join(timeout - initial_timeout)
 
             self._thread = None
-
-        finally:
-            self._lock.release()
 
     def _timed_queue_join(self, timeout):
         """
@@ -127,15 +123,12 @@ class AsyncWorker(object):
         """
         Stops the task thread. Synchronous!
         """
-        self._lock.acquire()
-        try:
+        with self._lock:
             if self._thread:
                 self._queue.put_nowait(self._terminator)
                 self._thread.join(timeout=timeout)
                 self._thread = None
                 self._thread_for_pid = None
-        finally:
-            self._lock.release()
 
     def queue(self, callback, *args, **kwargs):
         self._ensure_thread()

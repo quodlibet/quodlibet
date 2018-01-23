@@ -10,7 +10,7 @@ mv "$DIR/tmp/senf" "$DIR"
 rm -R "$DIR/tmp"
 
 rm -Rf "raven"
-pip install --system --no-compile --no-deps --target="$DIR/tmp" "raven==6.3.0"
+pip install --system --no-compile --no-deps --target="$DIR/tmp" "raven==6.5.0"
 mv "$DIR/tmp/raven" "$DIR"
 rm -R "$DIR/tmp"
 

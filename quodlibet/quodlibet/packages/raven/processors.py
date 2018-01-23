@@ -8,8 +8,9 @@ raven.core.processors
 from __future__ import absolute_import
 
 import re
+import warnings
 
-from raven.utils.compat import string_types, text_type
+from raven.utils.compat import string_types, text_type, PY3
 from raven.utils import varmap
 
 
@@ -64,45 +65,37 @@ class RemoveStackLocalsProcessor(Processor):
             frame.pop('vars', None)
 
 
-class SanitizePasswordsProcessor(Processor):
+class SanitizeKeysProcessor(Processor):
     """
-    Asterisk out things that look like passwords, credit card numbers,
-    and API keys in frames, http, and basic extra data.
+    Asterisk out things that correspond to a configurable set of keys.
     """
 
     MASK = '*' * 8
-    FIELDS = frozenset([
-        'password',
-        'secret',
-        'passwd',
-        'authorization',
-        'api_key',
-        'apikey',
-        'sentry_dsn',
-        'access_token',
-    ])
-    VALUES_RE = re.compile(r'^(?:\d[ -]*?){13,16}$')
 
-    def sanitize(self, key, value):
+    @property
+    def sanitize_keys(self):
+        keys = getattr(self.client, 'sanitize_keys')
+        if keys is None:
+            raise ValueError('The sanitize_keys setting must be present to use SanitizeKeysProcessor')
+        return keys
+
+    def sanitize(self, item, value):
         if value is None:
             return
 
-        if isinstance(value, string_types) and self.VALUES_RE.match(value):
-            return self.MASK
-
-        if not key:  # key can be a NoneType
+        if not item:  # key can be a NoneType
             return value
 
         # Just in case we have bytes here, we want to make them into text
         # properly without failing so we can perform our check.
-        if isinstance(key, bytes):
-            key = key.decode('utf-8', 'replace')
+        if isinstance(item, bytes):
+            item = item.decode('utf-8', 'replace')
         else:
-            key = text_type(key)
+            item = text_type(item)
 
-        key = key.lower()
-        for field in self.FIELDS:
-            if field in key:
+        item = item.lower()
+        for key in self.sanitize_keys:
+            if key in item:
                 # store mask as a fixed length for security
                 return self.MASK
         return value
@@ -117,6 +110,10 @@ class SanitizePasswordsProcessor(Processor):
         for n in ('data', 'cookies', 'headers', 'env', 'query_string'):
             if n not in data:
                 continue
+
+            # data could be provided as bytes
+            if PY3 and isinstance(data[n], bytes):
+                data[n] = data[n].decode('utf-8', 'replace')
 
             if isinstance(data[n], string_types) and '=' in data[n]:
                 # at this point we've assumed it's a standard HTTP query
@@ -147,3 +144,42 @@ class SanitizePasswordsProcessor(Processor):
                 sanitized_keyvals.append(keyval)
 
         return delimiter.join('='.join(keyval) for keyval in sanitized_keyvals)
+
+
+class SanitizePasswordsProcessor(SanitizeKeysProcessor):
+    """
+    Asterisk out things that look like passwords, credit card numbers,
+    and API keys in frames, http, and basic extra data.
+    """
+
+    KEYS = frozenset([
+        'password',
+        'secret',
+        'passwd',
+        'authorization',
+        'api_key',
+        'apikey',
+        'sentry_dsn',
+        'access_token',
+    ])
+    VALUES_RE = re.compile(r'^(?:\d[ -]*?){13,16}$')
+
+    @property
+    def sanitize_keys(self):
+        return self.KEYS
+
+    @property
+    def FIELDS(self):
+        warnings.warn(
+            "`SanitizePasswordsProcessor.Fields` has been deprecated. Use "
+            "`SanitizePasswordsProcessor.KEYS` or `SanitizePasswordsProcessor.sanitize_keys` "
+            "instead",
+            DeprecationWarning,
+        )
+        return self.KEYS
+
+    def sanitize(self, item, value):
+        value = super(SanitizePasswordsProcessor, self).sanitize(item, value)
+        if isinstance(value, string_types) and self.VALUES_RE.match(value):
+            return self.MASK
+        return value
