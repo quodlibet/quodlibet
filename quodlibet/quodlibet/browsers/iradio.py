@@ -12,6 +12,7 @@ import sys
 import bz2
 import itertools
 
+import re
 from gi.repository import Gtk, GLib, Pango
 from senf import text2fsn
 
@@ -215,11 +216,15 @@ def add_station(uri):
     irfs = []
 
     if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):
+        if not re.match('^([^/:]+)://', uri):
+            # Assume HTTP if no protocol given. See #2731
+            uri = 'http://' + uri
+            print_d("Assuming http: %s" % uri)
         try:
             sock = urlopen(uri)
         except EnvironmentError as err:
-            err = text_type(err)
-            print_d("Got %s from %s" % (uri, err))
+            err = "%s\n\nURL: %s" % (text_type(err), uri)
+            print_d("Got %s from %s" % (err, uri))
             ErrorMessage(None, _("Unable to add station"), escape(err)).run()
             return None
 
