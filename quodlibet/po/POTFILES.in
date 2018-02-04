@@ -118,7 +118,6 @@ quodlibet/ext/songsmenu/fingerprint/search.py
 quodlibet/ext/songsmenu/fingerprint/submit.py
 quodlibet/ext/songsmenu/forcewrite.py
 quodlibet/ext/songsmenu/html.py
-quodlibet/ext/songsmenu/id3tlen.py
 quodlibet/ext/songsmenu/ifp.py
 quodlibet/ext/songsmenu/importexport.py
 quodlibet/ext/songsmenu/k3b.py

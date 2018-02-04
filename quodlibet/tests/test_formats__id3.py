@@ -280,22 +280,18 @@ class TID3FileMixin(object):
                 msg="Wrong tags: %s" % tags)
         af.clear()
 
-    def test_tlen(self):
+    def test_ignore_tlen(self):
         f = mutagen.File(self.filename)
-        f.tags.add(mutagen.id3.TLEN(encoding=0, text=['20000']))
+        f.tags.delall("TLEN")
         f.save()
-        self.failUnlessEqual(self.KIND(self.filename)("~#length"), 20)
+        length = self.KIND(self.filename)("~#length")
 
-        # ignore <= 0 [issue 222]
-        f = mutagen.File(self.filename)
-        f.tags.add(mutagen.id3.TLEN(encoding=0, text=['0']))
-        f.save()
-        self.failUnless(self.KIND(self.filename)("~#length") > 0)
-
-        # inval
-        f.tags.add(mutagen.id3.TLEN(encoding=0, text=['x']))
-        f.save()
-        self.failUnless(self.KIND(self.filename)("~#length") > 0)
+        for value in ["20000", "0", "x"]:
+            f = mutagen.File(self.filename)
+            f.tags.add(mutagen.id3.TLEN(encoding=0, text=[value]))
+            f.save()
+            self.assertAlmostEqual(
+                self.KIND(self.filename)("~#length"), length, 2)
 
     def test_load_tcon(self):
         # check if the mutagen preprocessing is used

@@ -114,15 +114,6 @@ class ID3File(AudioFile):
             elif frame.FrameID == "TCON":
                 self["genre"] = "\n".join(frame.genres)
                 continue
-            elif frame.FrameID == "TLEN":
-                try:
-                    length = +frame / 1000.0
-                except ValueError:
-                    continue
-                # ignore TLEN <= 0 [issue 222]
-                if length > 0:
-                    self["~#length"] = length
-                continue
             elif (frame.FrameID == "UFID" and
                   frame.owner == "http://musicbrainz.org"):
                 self["musicbrainz_trackid"] = frame.data.decode("utf-8",

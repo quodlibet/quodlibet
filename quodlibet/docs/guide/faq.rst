@@ -34,25 +34,6 @@ separate from the audio file tags themselves, e.g.
  * ``stations`` / ``stations_all`` - the Internet radio stations lists
 
 
-Why do my MP3 files have the wrong length?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The ID3 standard defines the ``TLEN`` frame. If an MP3 has an ID3 tag
-which contains a ``TLEN`` frame, Quod Libet will use it. You can remove
-possibly incorrect ``TLEN`` frames from your MP3 files using the "Fix MP3
-Duration" plugin or the ``mid3v2`` tool::
-
-    $ mid3v2 --delete-frames=TLEN filename.mp3
-
-If there are variable bit-rate (VBR) files, there may be errors in the
-frames themselves leading to an incorrectly computed length separate
-from any tags. You can fix this problem with various tools, e.g.
-`mp3val <http://mp3val.sourceforge.net/>`_::
-
-    $ sudo apt-get install mp3val
-    $ mp3val -f filename.mp3
-
-
 Whenever I type a space, Quod Libet pauses
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
