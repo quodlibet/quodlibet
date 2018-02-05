@@ -22,8 +22,8 @@ from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
-from quodlibet.util.path import mkdir, mtime, expanduser, \
-    normalize_path, escape_filename, ismount, get_home_dir
+from quodlibet.util.path import mkdir, mtime, expanduser, normalize_path, \
+                                ismount, get_home_dir, RootPathFile
 from quodlibet.util.string import encode, decode, isascii
 
 from quodlibet.util import iso639
@@ -572,12 +572,13 @@ class AudioFile(dict, ImageContainer):
 
         # generate all potential paths (unresolved/unexpanded)
         pathfiles = OrderedDict()
-        for p in lyric_paths:
+        for r in lyric_paths:
             for f in lyric_filenames:
-                pathfile = os.path.join(p, os.path.dirname(f),
+                pathfile = os.path.join(r, os.path.dirname(f),
                                         fsnative(os.path.basename(f)))
+                rpf = RootPathFile(r, pathfile)
                 if not pathfile in pathfiles:
-                    pathfiles[pathfile] = pathfile
+                    pathfiles[pathfile] = rpf
 
         #print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
 
@@ -585,14 +586,32 @@ class AudioFile(dict, ImageContainer):
         match_ = ""
         pathfiles_expanded = OrderedDict()
         rx_params = re.compile('[^\\\]<[^' + re.escape(os.sep) + ']*[^\\\]>')
-        for pathfile in pathfiles.keys():
-            path = expanduser(pathfile)
-            if rx_params.search(path):
-                path = ArbitraryExtensionFileFromPattern(pathfile).format(self)
-            pathfiles_expanded[path] = path  # resolved as late as possible
-            if os.path.exists(path):
-                match_ = path
+        expand_patterns = ArbitraryExtensionFileFromPattern
+        for pf, rpf in pathfiles.items():
+            root = expanduser(rpf.root)
+            pathfile = expanduser(pf)
+            if rx_params.search(pathfile):
+                root = expand_patterns(root).format(self)
+                pathfile = expand_patterns(pathfile).format(self)
+            # resolved as late as possible
+            pathfiles_expanded[pathfile] = RootPathFile(root, pathfile)
+            if os.path.exists(pathfile):
+                match_ = pathfile
                 break
+            elif os.name == "nt":
+                # try a special character encoded version
+                #
+                # only pass the proposed path through 'escape_filename' (which
+                # apparently doesn't respect case) if we don't care about case.
+                # most 'alien' chars are supported for 'nix fs paths too
+                #
+                # FIX: assumes 'nix build used on a case-sensitive fs, nt case
+                # insensitive. clearly this is not biting anyone though (yet!)
+                pathfile = os.path.sep.join([root, rpf.end_escaped])
+                pathfiles_expanded[pathfile] = RootPathFile(root, pathfile)
+                if os.path.exists(pathfile):
+                    match_ = pathfile
+                    break
 
         if not match_:
             # search even harder!
@@ -627,21 +646,8 @@ class AudioFile(dict, ImageContainer):
                     break
 
         if not match_:
+            # default
             match_ = list(pathfiles_expanded.keys())[0]
-
-        if os.name == "nt":
-            # FIX: assumes 'nix build used on a case-sensitive fs, nt case
-            # insensitive, hence only pass the proposed path through
-            # 'escape_filename' (which apparently doesn't respect case) if
-            # we don't care about case
-            #
-            # FIX: in any case this call misses the possibility of needing to
-            # escape characters in the file's parent dir if that was built
-            # from the artist name etc.
-            #
-            # clearly this isn't biting anyone though..
-            match_ = os.path.join(os.path.dirname(match_),
-                                  escape_filename(os.path.basename(match_)))
 
         return match_
 

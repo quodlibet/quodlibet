@@ -16,7 +16,8 @@ from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
 from quodlibet.util.tags import _TAGS as TAGS
-from quodlibet.util.path import normalize_path, mkdir, get_home_dir, unquote
+from quodlibet.util.path import normalize_path, mkdir, get_home_dir, unquote, \
+                                escape_filename, RootPathFile
 
 from .helper import temp_filename
 
@@ -432,19 +433,19 @@ class TAudioFile(TestCase):
             mkdir(p)
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
-            fp_searched = unquote(s.lyric_filename)
+            search = unquote(s.lyric_filename)
             os.remove(fp)
             os.rmdir(p)
-            assertEqual(fp_searched, fp)
+            assertEqual(search, fp)
 
             # test built-in default local path
             root = os.path.dirname(filename)
             fp = os.path.join(root, artist + " - " + title + ".lyric")
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
-            fp_searched = unquote(s.lyric_filename)
+            search = s.lyric_filename
             os.remove(fp)
-            assertEqual(fp_searched, fp)
+            assertEqual(search, fp)
 
             # custom lyrics file location / naming
             config.set("memory", "lyric_filenames",
@@ -454,16 +455,16 @@ class TAudioFile(TestCase):
 
             # test custom default (fnf fallback!)
             fp = os.path.join(root, artist + ".-." + title)
-            fp_searched = unquote(s.lyric_filename)
-            assertEqual(fp_searched, fp)
+            search = unquote(s.lyric_filename)
+            assertEqual(search, fp)
 
             # test user defined
             fp = os.path.join(root, artist + " - " + title + ".lyric")
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
-            fp_searched = unquote(s.lyric_filename)
+            search = s.lyric_filename
             os.remove(fp)
-            assertEqual(fp_searched, fp)
+            assertEqual(search, fp)
 
             # test order priority
             root2 = os.path.join(get_home_dir(), ".lyrics") # built-in default
@@ -476,49 +477,76 @@ class TAudioFile(TestCase):
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
             mkdir(p2)
-            fp_searched = unquote(s.lyric_filename)
+            search = s.lyric_filename
             os.remove(fp2)
             os.rmdir(p2)
             os.remove(fp)
-            assertEqual(fp_searched, fp)
+            assertEqual(search, fp)
 
             # test modified extension fallback search
             fp = os.path.join(root, artist + " - " + title + ".txt")
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
-            fp_searched = unquote(s.lyric_filename)
+            search = s.lyric_filename
             os.remove(fp)
-            assertEqual(fp_searched, fp)
+            assertEqual(search, fp)
 
             # reset to pickup default (no <attr>) templates
             config.remove_option("memory", "lyric_filenames")
 
             # test '<' and/or '>' in name
             # (not parsed (transparent to test))
-            for artist in ['\<artist\>', '\<artist>', '<artist\>']:
-                artist = s['artist'] = artist + " SpongeBob SquarePants"
-                fp = os.path.join(root, artist + " - " + title + ".lyric")
-                with io.open(fp, "w", encoding='utf-8') as f:
+            path_variants = \
+                ['<oldskool>'] if (os.name == "nt") \
+                               else ['\<artist\>', '\<artist>', '<artist\>']
+            for path_variant in path_variants:
+                s['artist'] = path_variant + " SpongeBob SquarePants"
+                parts = [root, s['artist'] + " - " + s['title'] + ".lyric"]
+                rpf = RootPathFile(root, os.path.sep.join(parts))
+                if not rpf.is_valid:
+                    rpf = RootPathFile(rpf.root, rpf.pathfile_escaped)
+                self.assertTrue(rpf.is_valid,
+                                "even escaped target file is not valid")
+                with io.open(rpf.pathfile, "w", encoding='utf-8') as f:
                     f.write(u"")
-                fp_searched = unquote(s.lyric_filename)
-                os.remove(fp)
-                assertEqual(fp_searched, fp)
+                search = s.lyric_filename
+                os.remove(rpf.pathfile)
+                assertEqual(search, rpf.pathfile)
 
             # test '<' and '>' in name across path
             # (not parsed (transparent to test))
-            artist = s['artist'] = "a < b"
-            title = s['title'] = "b > a"
-            fp = os.path.join(root, artist, title + ".lyric")
-            p = os.path.dirname(fp)
-            mkdir(p)
-            with io.open(fp, "w", encoding='utf-8') as f:
-                f.write(u"")
-            fp_searched = unquote(s.lyric_filename)
-            os.remove(fp)
-            os.rmdir(p)
-            assertEqual(fp_searched, fp)
+            s['artist'] = "a < b"
+            s['title'] = "b > a"
+            parts = [root, s['artist'], s['title'] + ".lyric"]
+            rpf = RootPathFile(root, os.path.sep.join(parts))
+            rootp = root
+            rmdirs = []
+            # ensure valid dir existence
+            for p in rpf.end.split(os.path.sep)[:-1]:
+                rootp = os.path.sep.join([root, p])
+                if not RootPathFile(root, rootp).is_valid:
+                    rootp = os.path.sep.join([root, escape_filename(p)])
+                self.assertTrue(RootPathFile(root, rootp).is_valid,
+                                "even escaped target dir part is not valid!")
+                if not os.path.exists(rootp):
+                    mkdir(rootp)
+                    rmdirs.append(rootp)
 
-        # reset config, other tests expect different defaults!
+            if not rpf.is_valid:
+                rpf = RootPathFile(rpf.root, rpf.pathfile_escaped)
+
+            with io.open(rpf.pathfile, "w", encoding='utf-8') as f:
+                f.write(u"")
+            # search for lyric file
+            search = s.lyric_filename
+            # clean up test lyric file / path
+            os.remove(rpf.pathfile)
+            for p in rmdirs:
+                os.rmdir(p)
+            # test whether the 'found' file is the test lyric file
+            assertEqual(search, rpf.pathfile)
+
+        # reset config - other tests expect different defaults!
         config.remove_option("memory", "lyric_rootpaths")
         config.remove_option("memory", "lyric_filenames")
 
