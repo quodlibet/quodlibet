@@ -8,6 +8,7 @@
 # (at your option) any later version.
 
 import os
+import io
 import re
 import sys
 import errno
@@ -443,3 +444,53 @@ def uri_is_valid(uri):
         return False
     else:
         return True
+
+
+class RootPathFile:
+    """Simple container used for discerning a pathfile's 'root' directory
+    and 'end' part. The variable depth of a pathfile's 'end' part renders
+    os.path built-ins (basename etc.) useless for this purpose"""
+
+    _root = ''  # 'root' of full file path
+    _pathfile = ''  # full file path
+
+    def __init__(self, root, pathfile):
+        self._root = root
+        self._pathfile = pathfile
+
+    @property
+    def root(self):
+        return self._root
+
+    @property
+    def end(self):
+        return self._pathfile[len(self._root) + len(os.sep):]
+
+    @property
+    def pathfile(self):
+        return self._pathfile
+
+    @property
+    def end_escaped(self):
+        escaped = list(map(lambda part: escape_filename(part),
+                           self.end.split(os.path.sep)))
+        return os.path.sep.join(escaped)
+
+    @property
+    def pathfile_escaped(self):
+        return os.path.sep.join([self.root, self.end_escaped])
+
+    @property
+    def is_valid(self):
+        valid = True
+        if os.path.exists(self.pathfile):
+            return valid
+        else:
+            try:
+                with io.open(self.pathfile, "w", encoding='utf-8') as f:
+                    f.close()  # do nothing
+            except OSError:
+                valid = False
+            if os.path.exists(self.pathfile):
+                os.remove(self.pathfile)
+            return valid
