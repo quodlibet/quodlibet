@@ -92,7 +92,8 @@ class MutagenVCFile(AudioFile):
         email = config.get("editing", "save_email").strip()
         maps = {"rating": float, "playcount": int}
         for keyed_key, func in maps.items():
-            for subkey in ["", ":" + const.EMAIL, ":" + email]:
+            emails = [s.lower() for s in ["", ":" + const.EMAIL, ":" + email]]
+            for subkey in emails:
                 key = keyed_key + subkey
                 if key in self:
                     try:
