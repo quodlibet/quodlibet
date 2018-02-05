@@ -71,7 +71,7 @@ class TVCFileMixin(object):
         assert self.song("~#channels") == 2
 
     def test_deletes_rating(self):
-        config.set("editing", "save_email", "foo@bar.org")
+        config.set("editing", "save_email", "foo@Bar.org")
         self.song["~#rating"] = 0.2
         self.song.write()
         self.song["~#rating"] = RATINGS.default
@@ -81,7 +81,7 @@ class TVCFileMixin(object):
         self.failUnlessEqual(song("~#rating"), RATINGS.default)
 
     def test_new_email_rating(self):
-        config.set("editing", "save_email", "foo@bar.org")
+        config.set("editing", "save_email", "foo@Bar.org")
         self.song["~#rating"] = 0.2
         self.song.write()
         song = type(self.song)(self.filename)
@@ -92,12 +92,12 @@ class TVCFileMixin(object):
         self.song["~#rating"] = 0.2
         self.song.write()
         song = type(self.song)(self.filename)
-        config.set("editing", "save_email", "foo@bar.org")
+        config.set("editing", "save_email", "foo@Bar.org")
         config.set("editing", "save_email", const.EMAIL)
         self.failUnlessEqual(song["~#rating"], 0.2)
 
     def test_different_email_rating(self):
-        config.set("editing", "save_email", "foo@bar.org")
+        config.set("editing", "save_email", "foo@Bar.org")
         self.song["~#rating"] = 0.2
         self.song.write()
         config.set("editing", "save_email", const.EMAIL)
@@ -105,7 +105,7 @@ class TVCFileMixin(object):
         self.failUnlessEqual(song("~#rating"), RATINGS.default)
 
         song.write()
-        config.set("editing", "save_email", "foo@bar.org")
+        config.set("editing", "save_email", "foo@Bar.org")
         song = type(self.song)(self.filename)
         config.set("editing", "save_email", const.EMAIL)
         self.failUnlessEqual(song["~#rating"], 0.2)
