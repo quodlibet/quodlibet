@@ -414,8 +414,8 @@ class TAudioFile(TestCase):
 
         def assertEqual(a, b):
             # pass custom error message to avoid truncation!
-            a2 = a.lower()
-            b2 = b.lower()
+            a2 = os.path.realpath(a).lower()
+            b2 = os.path.realpath(b).lower()
             msg_fail = str("item1: %s !=\nitem2: %s" % (a2, b2))
             self.assertEqual(a2, b2, msg_fail)
 
