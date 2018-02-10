@@ -639,6 +639,7 @@ class AudioFile(dict, ImageContainer):
                 for path_ext in paths_mod_ext:
                     if os.path.exists(path_ext):
                         # persistence has paid off!
+                        #print_d("extended search match!")
                         match_ = path_ext
                         break
                 if match_:
