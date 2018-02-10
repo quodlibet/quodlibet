@@ -543,7 +543,34 @@ class AudioFile(dict, ImageContainer):
         file. User defined '[memory] lyric_rootpaths' and
         '[memory] lyric_filenames' matches take precedence"""
 
-        from quodlibet.pattern import ArbitraryExtensionFileFromPattern
+        from quodlibet.pattern \
+            import ArbitraryExtensionFileFromPattern as expand_patterns
+
+        rx_params = re.compile('[^\\\]<[^' + re.escape(os.sep) + ']*[^\\\]>')
+
+        def expand_pathfile(rpf):
+            """Return the expanded RootPathFile"""
+            expanded = []
+            root = expanduser(rpf.root)
+            pathfile = expanduser(rpf.pathfile)
+            if rx_params.search(pathfile):
+                root = expand_patterns(root).format(self)
+                pathfile = expand_patterns(pathfile).format(self)
+            rpf = RootPathFile(root, pathfile)
+            expanded.append(rpf)
+            if not os.path.exists(pathfile) and os.name == "nt":
+                # add a special character encoded version
+                #
+                # most 'alien' chars are supported for 'nix fs paths, and we
+                # only pass the proposed path through 'escape_filename' (which
+                # apparently doesn't respect case) if we don't care about case!
+                #
+                # FIX: assumes 'nix build used on a case-sensitive fs, nt case
+                # insensitive. clearly this is not biting anyone though (yet!)
+                pathfile = os.path.sep.join([rpf.root, rpf.end_escaped])
+                rpf = RootPathFile(rpf.root, pathfile)
+                expanded.append(rpf)
+            return expanded
 
         def sanitise(sep, parts):
             """Return a santisied version of a path's parts"""
@@ -586,33 +613,15 @@ class AudioFile(dict, ImageContainer):
         # expand each raw pathfile in turn and test for existence
         match_ = ""
         pathfiles_expanded = OrderedDict()
-        rx_params = re.compile('[^\\\]<[^' + re.escape(os.sep) + ']*[^\\\]>')
-        expand_patterns = ArbitraryExtensionFileFromPattern
         for pf, rpf in pathfiles.items():
-            root = expanduser(rpf.root)
-            pathfile = expanduser(pf)
-            if rx_params.search(pathfile):
-                root = expand_patterns(root).format(self)
-                pathfile = expand_patterns(pathfile).format(self)
-            # resolved as late as possible
-            pathfiles_expanded[pathfile] = RootPathFile(root, pathfile)
-            if os.path.exists(pathfile):
-                match_ = pathfile
-                break
-            elif os.name == "nt":
-                # try a special character encoded version
-                #
-                # only pass the proposed path through 'escape_filename' (which
-                # apparently doesn't respect case) if we don't care about case.
-                # most 'alien' chars are supported for 'nix fs paths too
-                #
-                # FIX: assumes 'nix build used on a case-sensitive fs, nt case
-                # insensitive. clearly this is not biting anyone though (yet!)
-                pathfile = os.path.sep.join([root, rpf.end_escaped])
-                pathfiles_expanded[pathfile] = RootPathFile(root, pathfile)
+            for rpf in expand_pathfile(rpf):  # resolved as late as possible
+                pathfile = rpf.pathfile
+                pathfiles_expanded[pathfile] = rpf
                 if os.path.exists(pathfile):
                     match_ = pathfile
                     break
+            if match_ != "":
+                break
 
         if not match_:
             # search even harder!
