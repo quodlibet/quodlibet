@@ -546,7 +546,8 @@ class AudioFile(dict, ImageContainer):
         from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 
         def sanitise(sep, parts):
-            return sep.join(part.replace(u'/', u'')[:128]
+            """Return a santisied version of a path's parts"""
+            return sep.join(part.replace(os.path.sep, u'')[:128]
                                 for part in parts)
 
         # setup defaults (user-defined take precedence)
