@@ -546,8 +546,8 @@ class AudioFile(dict, ImageContainer):
         from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 
         def sanitise(sep, parts):
-            return sep.join(list(map(lambda s: s.replace(u'/', u'')[:128],
-                                     parts)))
+            return sep.join(part.replace(u'/', u'')[:128]
+                                for part in parts)
 
         # setup defaults (user-defined take precedence)
         # root search paths
@@ -628,9 +628,8 @@ class AudioFile(dict, ImageContainer):
                 extra_extensions = [x for x in lyric_extensions if x != ext]
 
                 # join valid new extensions to pathfile stub and return
-                return list(map(lambda ext: '.'.join([path, ext])
-                                                if ext else path,
-                                      extra_extensions))
+                return ['.'.join([path, ext]) if ext else path
+                           for ext in extra_extensions]
 
             # look for a match by modifying the extension for each of the
             # (now fully resolved) 'pathfiles_expanded' search items
