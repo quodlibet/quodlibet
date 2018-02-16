@@ -85,7 +85,7 @@ class Command(object):
     def _execute(self, options, args):
         """Override to execute something"""
 
-        raise NotImplemented
+        raise NotImplementedError
 
     def print_help(self, file=None):
         """Print the help information about the comand"""
