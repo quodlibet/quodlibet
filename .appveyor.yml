@@ -6,7 +6,7 @@ environment:
 build_script:
   - set PATH=C:\msys64\%MSYSTEM%\bin;C:\msys64\usr\bin;%PATH%
   - set CHERE_INVOKING=yes
-  - bash -lc "pacman --noconfirm -Suy"
+  - bash -lc "pacman --noconfirm --ask 20 -Suy"
   - bash -lc "bash .appveyor/msys2.sh"
 
 deploy: off
