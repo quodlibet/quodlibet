@@ -313,12 +313,14 @@ class QLSubmitQueue(object):
         to_submit = self.queue[:min(len(self.queue), 50)]
         for idx, song in enumerate(to_submit):
             for key, val in song.items():
-                data['%s[%d]' % (key, idx)] = val.encode('utf-8')
+                data['%s[%d]' % (key, idx)] = val
             data['o[%d]' % idx] = 'P'
             data['r[%d]' % idx] = ''
 
         print_d('Submitting song(s): %s' %
-            ('\n\t'.join(['%s - %s' % (s['a'], s['t']) for s in to_submit])))
+            ('\n\t'.join(['%s - %s' % (
+                s[b'a' if b'a' in s else 'a'],
+                s[b't' if b't' in s else 't']) for s in to_submit])))
 
         if self._check_submit(self.submit_url, data):
             del self.queue[:len(to_submit)]
