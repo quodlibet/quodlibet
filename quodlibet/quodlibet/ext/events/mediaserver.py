@@ -445,7 +445,7 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
             if song_id not in self.__map:
                 continue
             for user in self.__users:
-                # ask the user for the prefix whith which the song is used
+                # ask the user for the prefix with which the song is used
                 prefix = user.get_prefix(song)
                 path = "/" + prefix + "/" + song_id
                 self.emit_properties_changed(MediaItem.IFACE, props, path)

@@ -75,7 +75,7 @@ class MacKeyEventsTap(threading.Thread):
         GLib.idle_add(idle_call, action)
 
     def _event_tap(self, proxy, type_, event, refcon):
-        # evenTrap disabled by timeout or user input, reenable
+        # evenTrap disabled by timeout or user input, re-enable
         if type_ == Quartz.kCGEventTapDisabledByUserInput or \
                 type_ == Quartz.kCGEventTapDisabledByTimeout:
             assert self._tap is not None

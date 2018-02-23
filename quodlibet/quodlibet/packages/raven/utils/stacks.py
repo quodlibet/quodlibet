@@ -96,7 +96,7 @@ def _getitem_from_frame(f_locals, key, default=None):
 def to_dict(dictish):
     """
     Given something that closely resembles a dictionary, we attempt
-    to coerce it into a propery dictionary.
+    to coerce it into a property dictionary.
     """
     if hasattr(dictish, 'iterkeys'):
         m = dictish.iterkeys

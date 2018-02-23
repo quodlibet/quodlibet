@@ -316,6 +316,6 @@ class BasePlayer(GObject.GObject, Equalizer):
         return self.song is not None
 
     def can_play_uri(self, uri):
-        """Whether the player supports playing te given URI scheme"""
+        """Whether the player supports playing the given URI scheme"""
 
         raise NotImplementedError

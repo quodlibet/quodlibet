@@ -55,7 +55,7 @@ def build_shortcut_window(data):
 
     # Note: gtk+ is picky about the order of adding/showing things because
     # this is usually done through XML. e.g. adding shortcuts after a section
-    # wont make them show up in the search etc..
+    # won't make them show up in the search etc..
     w = Gtk.ShortcutsWindow()
     section = Gtk.ShortcutsSection()
     section.show()

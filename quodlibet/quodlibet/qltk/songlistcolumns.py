@@ -208,7 +208,7 @@ class TextColumn(SongListColumn):
         self._apply_value(model, iter_, cell, value)
 
     def _fetch_value(self, model, iter_):
-        """Should return everything needed for formating the final value"""
+        """Should return everything needed for formatting the final value"""
 
         raise NotImplementedError
 

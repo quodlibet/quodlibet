@@ -247,7 +247,7 @@ value="false"/>
             name = cover.name
             is_temp = name.startswith(tempfile.gettempdir())
             # This doesn't work for embedded images.. the file gets unlinked
-            # after loosing the file handle
+            # after losing the file handle
             metadata["mpris:artUrl"] = fsn2uri(name)
 
         if not is_temp:

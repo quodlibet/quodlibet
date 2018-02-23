@@ -125,7 +125,7 @@ class SystemTray(BaseIndicator):
                                               self.__window_delete)
 
         # If after the main loop is idle and 3 seconds have passed
-        # the tray icon isn't embedded, assume it wont be and unhide
+        # the tray icon isn't embedded, assume it won't be and unhide
         # all windows, so QL isn't 'lost'..
 
         def add_timeout():

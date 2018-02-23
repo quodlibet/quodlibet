@@ -88,7 +88,7 @@ class Command(object):
         raise NotImplementedError
 
     def print_help(self, file=None):
-        """Print the help information about the comand"""
+        """Print the help information about the command"""
 
         if file is None:
             file = sys.stdout
