@@ -253,12 +253,12 @@ class TCoverManagerBuiltin(TestCase):
         self.assertEqual(len(list(self.manager.sources)), 2)
 
     def test_main(self):
-        # embedd one cover, move one to the other dir
+        # embed one cover, move one to the other dir
         MP3File(self.file1).set_image(EmbeddedImage.from_path(self.cover1))
         os.unlink(self.cover1)
         dest = os.path.join(self.dir2, "cover.png")
         shutil.move(self.cover2, dest)
-        self.cover2 = dest
+        embedded_cover = dest
 
         # move one audio file in each dir
         shutil.move(self.file1, self.dir1)
@@ -270,21 +270,18 @@ class TCoverManagerBuiltin(TestCase):
         song2 = MP3File(self.file2)
 
         def is_embedded(fileobj):
-            return not path_equal(fileobj.name, self.cover2, True)
+            return not path_equal(fileobj.name, embedded_cover, True)
 
         # each should find a cover
-        self.assertTrue(is_embedded(self.manager.get_cover(song1)))
-        self.assertTrue(not is_embedded(self.manager.get_cover(song2)))
+        self.failUnless(is_embedded(self.manager.get_cover(song1)))
+        self.failIf(is_embedded(self.manager.get_cover(song2)))
 
+        cover_for = self.manager.get_cover_many
         # both settings should search both songs before giving up
         config.set("albumart", "prefer_embedded", True)
-        self.assertTrue(
-            is_embedded(self.manager.get_cover_many([song1, song2])))
-        self.assertTrue(
-            is_embedded(self.manager.get_cover_many([song2, song1])))
+        self.failUnless(is_embedded(cover_for([song1, song2])))
+        self.failUnless(is_embedded(cover_for([song2, song1])))
 
         config.set("albumart", "prefer_embedded", False)
-        self.assertTrue(
-            not is_embedded(self.manager.get_cover_many([song1, song2])))
-        self.assertTrue(
-            not is_embedded(self.manager.get_cover_many([song2, song1])))
+        self.failIf(is_embedded(cover_for([song1, song2])))
+        self.failIf(is_embedded(cover_for([song2, song1])))
