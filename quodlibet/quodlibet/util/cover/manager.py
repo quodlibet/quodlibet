@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
-#      2014,2016 Nick Boultbee
+#      2014-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +11,6 @@ from itertools import chain
 
 from gi.repository import GObject
 
-from quodlibet import config
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.util.cover import built_in
 from quodlibet.util import print_d
@@ -175,19 +174,11 @@ class CoverManager(GObject.Object):
     def get_cover_many(self, songs):
         """Returns a cover file object for many songs or None.
 
-        Returns the first found image for a group of songs
-        and respects the prefer_embedded setting. It tries to return the
-        same cover for the same set of songs.
+        Returns the first found image for a group of songs.
+        It tries to return the same cover for the same set of songs.
         """
 
-        prefer_embedded = config.getboolean(
-            "albumart", "prefer_embedded", False)
-
-        get = self.acquire_cover_sync_many
-        if prefer_embedded:
-            return get(songs, True, False) or get(songs, False, True)
-        else:
-            return get(songs, False, True) or get(songs, True, False)
+        return self.acquire_cover_sync_many(songs)
 
     def get_pixbuf_many(self, songs, width, height):
         """Returns a Pixbuf which fits into the boundary defined by width

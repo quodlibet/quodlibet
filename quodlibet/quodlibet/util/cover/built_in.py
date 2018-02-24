@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
-#      2015-2016 Nick Boultbee
+#      2015-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,6 +22,10 @@ def get_ext(s):
     return os.path.splitext(s)[1].lstrip('.')
 
 
+def prefer_embedded():
+    return config.getboolean("albumart", "prefer_embedded", False)
+
+
 class EmbeddedCover(CoverSourcePlugin):
     PLUGIN_ID = "embed-cover"
     PLUGIN_NAME = _("Embedded album covers")
@@ -36,7 +40,7 @@ class EmbeddedCover(CoverSourcePlugin):
 
     @staticmethod
     def priority():
-        return 0.7001
+        return 0.85 if prefer_embedded() else 0.7
 
     @property
     def cover(self):

@@ -27,6 +27,11 @@ from .helper import get_temp_copy
 DUMMY_COVER = io.StringIO()
 
 
+def run_loop():
+    while Gtk.events_pending():
+        Gtk.main_iteration()
+
+
 class DummyCoverSource1(CoverSourcePlugin):
     @staticmethod
     def priority():
@@ -137,17 +142,17 @@ class TCoverManager(TestCase):
             found.append(_found)
             result.append(_result)
         manager.acquire_cover(done, None, None)
-        self.runLoop()
+        run_loop()
         self.assertFalse(found[0])
         handler.plugin_enable(dummy_sources[1])
         manager.acquire_cover(done, None, None)
-        self.runLoop()
+        run_loop()
         self.assertTrue(found[1])
         self.assertIs(result[1], DUMMY_COVER)
         handler.plugin_disable(dummy_sources[1])
         handler.plugin_enable(dummy_sources[2])
         manager.acquire_cover(done, None, None)
-        self.runLoop()
+        run_loop()
         self.assertTrue(found[2])
         self.assertIs(result[2], DUMMY_COVER)
 
@@ -171,7 +176,7 @@ class TCoverManager(TestCase):
             found.append(_found)
             result.append(_result)
         manager.acquire_cover(done, None, None)
-        self.runLoop()
+        run_loop()
         self.assertTrue(found[0])
         self.assertIs(result[0], DUMMY_COVER)
         self.assertTrue(dummy_sources[0].cls.cover_call)
@@ -185,7 +190,7 @@ class TCoverManager(TestCase):
             source.cls.fetch_call = False
         handler.plugin_disable(dummy_sources[1])
         manager.acquire_cover(done, None, None)
-        self.runLoop()
+        run_loop()
         self.assertTrue(found[1])
         self.assertIs(result[1], DUMMY_COVER)
         self.assertTrue(dummy_sources[0].cls.cover_call)
@@ -194,10 +199,6 @@ class TCoverManager(TestCase):
         self.assertFalse(dummy_sources[0].cls.fetch_call)
         self.assertFalse(dummy_sources[1].cls.fetch_call)
         self.assertTrue(dummy_sources[2].cls.fetch_call)
-
-    def runLoop(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration()
 
     def tearDown(self):
         pass
@@ -252,13 +253,12 @@ class TCoverManagerBuiltin(TestCase):
     def test_manager(self):
         self.assertEqual(len(list(self.manager.sources)), 2)
 
-    def test_main(self):
+    def test_get_cover_many_prefer_embedded(self):
         # embed one cover, move one to the other dir
         MP3File(self.file1).set_image(EmbeddedImage.from_path(self.cover1))
         os.unlink(self.cover1)
-        dest = os.path.join(self.dir2, "cover.png")
-        shutil.move(self.cover2, dest)
-        embedded_cover = dest
+        self.external_cover = os.path.join(self.dir2, "cover.png")
+        shutil.move(self.cover2, self.external_cover)
 
         # move one audio file in each dir
         shutil.move(self.file1, self.dir1)
@@ -269,19 +269,52 @@ class TCoverManagerBuiltin(TestCase):
         song1 = MP3File(self.file1)
         song2 = MP3File(self.file2)
 
-        def is_embedded(fileobj):
-            return not path_equal(fileobj.name, embedded_cover, True)
-
         # each should find a cover
-        self.failUnless(is_embedded(self.manager.get_cover(song1)))
-        self.failIf(is_embedded(self.manager.get_cover(song2)))
+        self.failUnless(self.is_embedded(self.manager.get_cover(song1)))
+        self.failIf(self.is_embedded(self.manager.get_cover(song2)))
 
         cover_for = self.manager.get_cover_many
         # both settings should search both songs before giving up
         config.set("albumart", "prefer_embedded", True)
-        self.failUnless(is_embedded(cover_for([song1, song2])))
-        self.failUnless(is_embedded(cover_for([song2, song1])))
+        self.failUnless(self.is_embedded(cover_for([song1, song2])))
+        self.failUnless(self.is_embedded(cover_for([song2, song1])))
 
         config.set("albumart", "prefer_embedded", False)
-        self.failIf(is_embedded(cover_for([song1, song2])))
-        self.failIf(is_embedded(cover_for([song2, song1])))
+        self.failIf(self.is_embedded(cover_for([song1, song2])))
+        self.failIf(self.is_embedded(cover_for([song2, song1])))
+
+    def is_embedded(self, fileobj):
+        return not path_equal(fileobj.name, self.external_cover, True)
+
+    def test_acquire_prefer_embedded(self):
+        # embed one cover...
+        MP3File(self.file1).set_image(EmbeddedImage.from_path(self.cover1))
+        os.unlink(self.cover1)
+        self.external_cover = os.path.join(self.dir1, "cover.png")
+        # ...and save a different cover externally
+        shutil.copy(self.cover2, self.external_cover)
+
+        shutil.move(self.file1, self.dir1)
+        self.file1 = os.path.join(self.dir1, os.path.basename(self.file1))
+        both_song = MP3File(self.file1)
+
+        results = []
+
+        def acquire(song):
+            def cb(source, result):
+                results.append(result)
+
+            self.manager.acquire_cover(cb, None, song)
+
+        def result_was_embedded():
+            return self.is_embedded(results.pop())
+
+        config.set("albumart", "prefer_embedded", True)
+        acquire(both_song)
+        self.failUnless(result_was_embedded(),
+                        "Embedded image expected due to prefs")
+
+        config.set("albumart", "prefer_embedded", False)
+        acquire(both_song)
+        self.failIf(result_was_embedded(),
+                    "Got an embedded image despite prefs")
