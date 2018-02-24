@@ -758,7 +758,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         return libs
 
     def __get_selection_filter(self):
-        """Retuns a filter object for the current selection or None
+        """Returns a filter object for the current selection or None
         if nothing should be filtered"""
 
         selection = self.view.get_selection()

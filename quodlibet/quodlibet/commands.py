@@ -40,7 +40,7 @@ class CommandRegistry(object):
 
         The functions gets zero or more arguments as `fsnative`
         and should return `None` or `fsnative`. In case an error
-        occured the command should raise `CommandError`.
+        occurred the command should raise `CommandError`.
 
         Args:
             name (str): the command name

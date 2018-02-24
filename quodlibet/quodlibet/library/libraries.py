@@ -312,7 +312,7 @@ class AlbumLibrary(Library):
         self.__added(library, library.values(), signal=False)
 
     def load(self):
-        # deprectated
+        # deprecated
         pass
 
     def destroy(self):

@@ -37,7 +37,7 @@ def iswbound(char):
 def utitle(string):
     """Title-case a string using a less destructive method than str.title."""
     new_string = string[0].capitalize()
-    # It's possible we need to capitalise the second character...
+    # It's possible we need to capitalize the second character...
     cap = iswbound(string[0])
     for i in xrange(1, len(string)):
         s = string[i]

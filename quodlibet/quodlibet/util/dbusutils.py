@@ -158,7 +158,7 @@ class DBusIntrospectable(object):
     and provided signals, properties, methods in the introspection
     xml format.
 
-    The dbus bindings allready provide a Introspect method, but it doesn't
+    The dbus bindings already provide a Introspect method, but it doesn't
     understand properties, also having them in text format in the class
     is a nice documentation.
     """

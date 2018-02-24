@@ -251,7 +251,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
     """A ComboBoxEntry that remembers the past 'count' strings entered,
     and can save itself to (and load itself from) a filename or file-like."""
 
-    # gets emited if the text entry changes
+    # gets emitted if the text entry changes
     # mainly to filter out model changes that don't have any effect
     __gsignals__ = {
         'text-changed': (GObject.SignalFlags.RUN_LAST, None, ()),

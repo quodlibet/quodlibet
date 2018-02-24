@@ -348,7 +348,7 @@ class TopBar(Gtk.Toolbar):
 
         # On older Gtk+ (3.4, at least)
         # setting a margin on CoverImage leads to errors and result in the
-        # QL window not beeing visible for some reason.
+        # QL window not being visible for some reason.
         assert self.image.props.margin == 0
 
         for child in self.get_children():

@@ -72,7 +72,7 @@ def _wrap_function(function, cancellable, args, kwargs):
                 return function(*args, **kwargs)
             except:
                 # ThreadPool catches the exception for the async result
-                # which we don't use. Print instead as if it was not catched.
+                # which we don't use. Print instead as if it was not caught.
                 util.print_exc()
                 raise
 

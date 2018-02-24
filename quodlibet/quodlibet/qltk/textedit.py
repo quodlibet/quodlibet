@@ -48,7 +48,7 @@ class TextEditBox(Gtk.HBox):
     and an apply button. The 'buffer' attribute is the text buffer, the
     'apply' attribute is the apply button.
 
-    FIXME: Button text should changable (without poking the buttons directly).
+    FIXME: Button text should changeable (without poking the buttons directly).
     """
 
     def __init__(self, default=""):

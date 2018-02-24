@@ -759,7 +759,7 @@ class cached_property(object):
         self.fget = fget
         self.__doc__ = doc or fget.__doc__
         self.__name__ = name = fget.__name__
-        # these get name mangled, so caching wont work unless
+        # these get name mangled, so caching won't work unless
         # we mangle too
         assert not (name.startswith("__") and not name.endswith("__")), \
             "can't cache a dunder method"

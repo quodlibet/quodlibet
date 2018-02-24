@@ -337,7 +337,7 @@ def get_punctuation_mapping(regenerate=False):
             mapping[repls] = mapping.get(repls, u"") + char
 
     # if any of the equal chars is also ascii + punct we can replace
-    # it aswell
+    # it as well
     for ascii_, uni in mapping.items():
         also_ascii = [c for c in uni if is_ascii(c) and is_punct(c)]
         for c in also_ascii:
@@ -398,7 +398,7 @@ def generate_re_mapping(_diacritic_for_letters):
 @cached_func
 def get_replacement_mapping():
     """Returns a dict mapping a sequence of characters to another sequence
-    of chracters.
+    of characters.
 
     If a key occurs in a text, it should also match any of the characters in
     in the value.

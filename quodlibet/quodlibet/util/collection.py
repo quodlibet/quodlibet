@@ -341,7 +341,7 @@ class Playlist(Collection, Iterable):
 
     __call__ = get
 
-    # List-like methods, for compatibilty with original Playlist class.
+    # List-like methods, for compatibility with original Playlist class.
     def extend(self, songs):
         self._list.extend(songs)
         self.finalize()
