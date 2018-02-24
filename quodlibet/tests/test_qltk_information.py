@@ -11,7 +11,7 @@ from tests import TestCase, init_fake_app, destroy_fake_app
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.qltk.information import Information, OneArtist, OneAlbum, \
-    ManySongs, OneSong, TitleLabel
+    ManySongs, OneSong, TitleLabel, _sort_albums
 import quodlibet.config
 
 
@@ -82,6 +82,18 @@ class TInformation(TestCase):
 
     def assert_child_is(self, cls):
         self.failUnless(isinstance(self.inf.get_child(), cls))
+
+
+class TUtils(TestCase):
+    def test_sort_albums(self):
+        # Make sure we have more than one album, one having a null date
+        f = AF({"~filename": fsnative(u"/1"), "album": "one"})
+        f2 = AF({"~filename": fsnative(u"/2"), "album": "one"})
+        f3 = AF({"~filename": fsnative(u"/3"), "album": "two", "date": "2009"})
+        f4 = AF({"~filename": fsnative(u"/4")})
+        albums, count = _sort_albums([f, f2, f3, f4])
+        self.failUnlessEqual(count, 1)
+        self.failUnlessEqual(len(albums), 2)
 
 
 class TTitleLabel(TestCase):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2016-2017 Nick Boultbee
+#           2016-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -487,16 +487,7 @@ class OneArtist(qltk.Notebook):
         box.pack_start(l, False, False, 0)
 
     def _album(self, songs, box):
-        noalbum = 0
-        albums = {}
-        for song in songs:
-            if "album" in song:
-                albums[song.list("album")[0]] = song
-            else:
-                noalbum += 1
-        albums = [(song.get("date"), song, album) for
-                  album, song in albums.items()]
-        albums.sort()
+        albums, noalbum = _sort_albums(songs)
 
         def format(args):
             date, song, album = args
@@ -527,6 +518,23 @@ class OneArtist(qltk.Notebook):
                      xoptions=Gtk.AttachOptions.EXPAND, yoptions=0)
             added.add(cover.name)
         box.pack_start(t, True, True, 0)
+
+
+def _sort_albums(songs):
+    """:return: a tuple of (albums, count) where
+        count is the number of album-less songs and
+        albums is a list of (date, song, album), sorted"""
+    no_album_count = 0
+    albums = {}
+    for song in songs:
+        if "album" in song:
+            albums[song.list("album")[0]] = song
+        else:
+            no_album_count += 1
+    albums = [(song.get("date", ""), song, album) for
+              album, song in albums.items()]
+    albums.sort()
+    return albums, no_album_count
 
 
 class ManySongs(qltk.Notebook):
