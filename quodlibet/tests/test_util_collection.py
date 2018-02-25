@@ -199,16 +199,16 @@ class TAlbum(TestCase):
         l = [1, 2, 3, 4]
         a = avg(l)
         # c=0 => this becomes a mean regardless of m
-        s.failUnlessEqual(a, bav(l, 0, 0))
-        s.failUnlessEqual(a, bav(l, 0, 999))
+        s.failUnlessEqual(bav(l, 0, 0), a)
+        s.failUnlessEqual(bav(l, 0, 999), a)
         # c=1, m = a (i.e. just adding another mean score) => no effect
-        s.failUnlessEqual(a, bav(l, 1, a))
+        s.failUnlessEqual(bav(l, 1, a), a)
         # Harder ones
-        s.failUnlessEqual(20.0 / 9, bav(l, 5, 2))
+        s.failUnlessEqual(bav(l, 5, 2), 20.0 / 9)
         expected = 40.0 / 14
-        s.failUnlessEqual(expected, bav(l, 10, 3))
+        s.failUnlessEqual(bav(l, 10, 3), expected)
         # Also check another iterable
-        s.failUnlessEqual(expected, bav(tuple(l), 10, 3))
+        s.failUnlessEqual(bav(tuple(l), 10, 3), expected)
 
     def test_defaults(s):
         failUnlessEq = s.failUnlessEqual
@@ -327,10 +327,10 @@ class TPlaylist(TestCase):
             songs = s.TWO_SONGS
             pl.extend(songs)
             # Just a sanity check...
-            s.failUnlessEqual(1, songs.index(songs[1]))
+            s.failUnlessEqual(songs.index(songs[1]), 1)
             # And now the happy paths..
-            s.failUnlessEqual(0, pl.index(songs[0]))
-            s.failUnlessEqual(1, pl.index(songs[1]))
+            s.failUnlessEqual(pl.index(songs[0]), 0)
+            s.failUnlessEqual(pl.index(songs[1]), 1)
             # ValueError is what we want here
             try:
                 pl.index(Fakesong({}))
@@ -448,7 +448,7 @@ class TPlaylist(TestCase):
 
     def test_make(self):
         with self.wrap("Does not exist") as pl:
-            self.failUnlessEqual(0, len(pl))
+            self.failIf(len(pl))
             self.failUnlessEqual(pl.name, "Does not exist")
 
     def test_rename_working(self):

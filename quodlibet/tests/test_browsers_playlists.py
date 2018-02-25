@@ -46,7 +46,7 @@ class TParsePlaylistMixin(object):
         with temp_filename() as name:
             with open(name) as f:
                 pl = self.Parse(f, name)
-        self.failUnlessEqual(0, len(pl))
+        self.failIf(pl)
         pl.delete()
 
     def test_parse_onesong(self):

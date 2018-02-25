@@ -289,7 +289,7 @@ class Thuman_sort(TestCase):
         self.failUnlessEqual(
             util.human_sort_key(u"  3foo    bar6 42.8"),
             util.human_sort_key(u"3 foo bar6  42.8  "))
-        self.failUnlessEqual(64.0 in util.human_sort_key(u"64. 8"), True)
+        self.failUnless(64.0 in util.human_sort_key(u"64. 8"))
 
 
 class Tformat_time(TestCase):

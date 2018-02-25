@@ -488,7 +488,7 @@ class TSongFileLibrary(TSongLibrary):
             filename = self.__get_file()
             ret = self.library.add_filename(filename)
             self.failUnless(ret)
-            self.failUnlessEqual(1, len(self.library))
+            self.failUnlessEqual(len(self.library), 1)
             self.failUnlessEqual(len(self.added), 1)
             ret = self.library.add_filename(filename)
             self.failUnless(ret)
@@ -510,7 +510,7 @@ class TSongFileLibrary(TSongLibrary):
                 ret = self.library.add_filename("")
             self.failIf(ret)
             self.failUnlessEqual(len(self.added), 2)
-            self.failUnlessEqual(2, len(self.library))
+            self.failUnlessEqual(len(self.library), 2)
 
         finally:
             config.quit()
