@@ -200,32 +200,6 @@ class TCoverManager(TestCase):
         self.assertFalse(dummy_sources[1].cls.fetch_call)
         self.assertTrue(dummy_sources[2].cls.fetch_call)
 
-    def test_search(self):
-        manager = CoverManager(use_built_in=False)
-        handler = manager.plugin_handler
-        for source in dummy_sources:
-            handler.plugin_handle(source)
-            handler.plugin_enable(source)
-            source.cls.cover_call = False
-            source.cls.fetch_call = False
-
-        song = AudioFile({
-            "~filename": os.path.join("/tmp/asong.ogg"),
-            "album": "Abbey Road",
-            "artist": "The Beatles"
-        })
-        songs = [song]
-        results = []
-
-        def done(result, *args):
-            self.failUnless(result)
-            results.append(result)
-
-        manager.search_cover(done, None, songs)
-        run_loop()
-        self.failUnlessEqual(2 + 2, 5)
-        self.failUnlessEqual(len(results), 2)
-
     def tearDown(self):
         pass
 
