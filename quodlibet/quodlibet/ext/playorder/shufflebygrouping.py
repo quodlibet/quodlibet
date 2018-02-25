@@ -133,15 +133,17 @@ class ShuffleByGrouping(ShufflePlugin, OrderInOrder, OrderRemembered):
         vbox = Gtk.VBox(spacing=12)
         vbox.set_border_width(0)
 
-        grouping_label = Gtk.Label(_("Grouping tag: "))
+        grouping_label = Gtk.Label(_("Grouping tag:"))
         grouping_label.set_alignment(0.0, 0.5)
+        grouping_label.set_margin_end(3)
         grouping_entry = Gtk.Entry()
         grouping_entry.connect('changed', on_change, "grouping")
         grouping_entry.set_text(pconfig.gettext("grouping"))
         grouping_entry.set_tooltip_text(_("Tag to group songs by"))
 
-        grouping_test_label = Gtk.Label(_("Test tag: "))
+        grouping_test_label = Gtk.Label(_("Test tag:"))
         grouping_test_label.set_alignment(0.0, 0.5)
+        grouping_test_label.set_margin_end(3)
         grouping_test_entry = Gtk.Entry()
         grouping_test_entry.connect('changed', on_change, "grouping_test")
         grouping_test_entry.set_text(pconfig.gettext("grouping_test"))
@@ -150,8 +152,9 @@ class ShuffleByGrouping(ShufflePlugin, OrderInOrder, OrderRemembered):
             "A song with an undefined test tag will be treated as\n"
             "a group consisting only of itself."))
 
-        delay_label = Gtk.Label(_("Delay: "))
+        delay_label = Gtk.Label(_("Delay:"))
         delay_label.set_alignment(0.0, 0.5)
+        delay_label.set_margin_end(3)
         adj = Gtk.Adjustment.new(pconfig.getint("delay"), 0, 3600, 1, 5, 0)
         delay_spin = Gtk.SpinButton(adjustment=adj, climb_rate=0.1, digits=0)
         delay_spin.set_numeric(True)
