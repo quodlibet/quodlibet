@@ -91,6 +91,7 @@ quodlibet/ext/playorder/follow.py
 quodlibet/ext/playorder/playcounteq.py
 quodlibet/ext/playorder/queue.py
 quodlibet/ext/playorder/reverse.py
+quodlibet/ext/playorder/shufflebygrouping.py
 quodlibet/ext/playorder/skip_songs.py
 quodlibet/ext/playorder/track_repeat.py
 quodlibet/ext/query/conditional.py
