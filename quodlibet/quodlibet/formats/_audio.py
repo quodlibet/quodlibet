@@ -559,7 +559,7 @@ class AudioFile(dict, ImageContainer):
             rpf = RootPathFile(root, pathfile)
             expanded.append(rpf)
             if not os.path.exists(pathfile) and os.name == "nt":
-                # add a special character encoded version
+                # prioritise a special character encoded version
                 #
                 # most 'alien' chars are supported for 'nix fs paths, and we
                 # only pass the proposed path through 'escape_filename' (which
@@ -569,7 +569,7 @@ class AudioFile(dict, ImageContainer):
                 # insensitive. clearly this is not biting anyone though (yet!)
                 pathfile = os.path.sep.join([rpf.root, rpf.end_escaped])
                 rpf = RootPathFile(rpf.root, pathfile)
-                expanded.append(rpf)
+                expanded.insert(len(expanded) - 1, rpf)
             return expanded
 
         def sanitise(sep, parts):
