@@ -36,15 +36,33 @@ from unittest import TestCase as OrigTestCase
 
 
 class TestCase(OrigTestCase):
+    """Adds aliases for equality-type methods.
+    Also swaps first and second parameters to support our mostly-favoured
+    assertion style e.g. `assertEqual(actual, expected)`"""
+
+    def assertEqual(self, first, second, msg=None):
+        super().assertEqual(second, first, msg)
+
+    def assertNotEqual(self, first, second, msg=None):
+        super().assertNotEqual(second, first, msg)
+
+    def assertAlmostEqual(self, first, second, places=None, msg=None,
+                          delta=None):
+        super().assertAlmostEqual(second, first, places, msg, delta)
+
+    def assertNotAlmostEqual(self, first, second, places=None, msg=None,
+                             delta=None):
+        super().assertNotAlmostEqual(second, first, places, msg, delta)
 
     # silence deprec warnings about useless renames
     failUnless = OrigTestCase.assertTrue
     failIf = OrigTestCase.assertFalse
-    failUnlessEqual = OrigTestCase.assertEqual
     failUnlessRaises = OrigTestCase.assertRaises
-    failUnlessAlmostEqual = OrigTestCase.assertAlmostEqual
-    failIfEqual = OrigTestCase.assertNotEqual
-    failIfAlmostEqual = OrigTestCase.assertNotAlmostEqual
+
+    failUnlessEqual = assertEqual
+    failIfEqual = assertNotEqual
+    failUnlessAlmostEqual = assertAlmostEqual
+    failIfAlmostEqual = assertNotAlmostEqual
 
 
 skip = unittest.skip

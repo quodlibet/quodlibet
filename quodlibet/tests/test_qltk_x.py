@@ -18,7 +18,7 @@ class Notebook(TestCase):
         n = x.Notebook()
         c = Gtk.VBox()
         n.append_page(c, "A Test")
-        self.failUnlessEqual("A Test", n.get_tab_label(c).get_text())
+        self.failUnlessEqual(n.get_tab_label(c).get_text(), "A Test")
         n.destroy()
 
     def test_widget_label(self):

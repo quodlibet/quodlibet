@@ -47,24 +47,24 @@ class TWaitLoadWindow(TestCase):
             self.failUnlessEqual(wlw._label.get_text(), "At 1,000 of 1,234")
 
     def test_connect(self):
-        self.failUnlessEqual(2, self.parent.count)
+        self.failUnlessEqual(self.parent.count, 2)
         self.wlw.destroy()
-        self.failUnlessEqual(0, self.parent.count)
+        self.failUnlessEqual(self.parent.count, 0)
 
     def test_start(self):
-        self.failUnlessEqual(0, self.wlw.current)
-        self.failUnlessEqual(5, self.wlw.count)
+        self.failUnlessEqual(self.wlw.current, 0)
+        self.failUnlessEqual(self.wlw.count, 5)
 
     def test_step(self):
         self.failIf(self.wlw.step())
-        self.failUnlessEqual(1, self.wlw.current)
+        self.failUnlessEqual(self.wlw.current, 1)
         self.failIf(self.wlw.step())
         self.failIf(self.wlw.step())
-        self.failUnlessEqual(3, self.wlw.current)
+        self.failUnlessEqual(self.wlw.current, 3)
 
     def test_destroy(self):
         self.wlw.destroy()
-        self.failUnlessEqual(0, self.parent.count)
+        self.failUnlessEqual(self.parent.count, 0)
 
     def tearDown(self):
         self.wlw.destroy()

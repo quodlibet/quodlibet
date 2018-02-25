@@ -68,7 +68,7 @@ class TComboBoxEntrySave(TestCase):
 
     def test_initial_size(self):
         # 1 saved, Edit, separator, 2 remembered
-        self.failUnlessEqual(5, len(self.cbes.get_model()))
+        self.failUnlessEqual(len(self.cbes.get_model()), 5)
 
     def test_prepend_text(self):
         self.cbes.prepend_text("pattern 3")

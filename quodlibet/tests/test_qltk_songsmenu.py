@@ -39,7 +39,7 @@ class TSongsMenu(TestCase):
                               playlists=False, queue=False,
                               remove=False, delete=False, edit=False,
                               ratings=False)
-        self.failUnlessEqual(0, len(self.menu))
+        self.failIf(len(self.menu))
 
     def test_simple(self):
         self.menu = SongsMenu(self.library, self.songs, plugins=False)
@@ -49,7 +49,7 @@ class TSongsMenu(TestCase):
             self.library, self.songs, plugins=False, playlists=True,
             queue=False, remove=False, delete=False, edit=False,
             ratings=False)
-        self.failUnlessEqual(1, len(self.menu))
+        self.failUnlessEqual(len(self.menu), 1)
         self.failUnless(self.menu.get_children()[0].props.sensitive)
 
         self.songs[0].can_add = False
@@ -57,7 +57,7 @@ class TSongsMenu(TestCase):
             self.library, self.songs, plugins=False, playlists=True,
             queue=False, remove=False, delete=False, edit=False,
             ratings=False)
-        self.failUnlessEqual(1, len(self.menu))
+        self.failUnlessEqual(len(self.menu), 1)
         self.failIf(self.menu.get_children()[0].props.sensitive)
 
     def test_queue(self):
@@ -65,7 +65,7 @@ class TSongsMenu(TestCase):
             self.library, self.songs, plugins=False, playlists=False,
             queue=True, remove=False, delete=False, edit=False,
             ratings=False)
-        self.failUnlessEqual(1, len(self.menu))
+        self.failUnlessEqual(len(self.menu), 1)
         self.failUnless(self.menu.get_children()[0].props.sensitive)
 
         self.songs[0].can_add = False
@@ -73,7 +73,7 @@ class TSongsMenu(TestCase):
             self.library, self.songs, plugins=False, playlists=False,
             queue=True, remove=False, delete=False, edit=False,
             ratings=False)
-        self.failUnlessEqual(1, len(self.menu))
+        self.failUnlessEqual(len(self.menu), 1)
         self.failIf(self.menu.get_children()[0].props.sensitive)
 
     def test_remove(self):
@@ -81,7 +81,7 @@ class TSongsMenu(TestCase):
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, remove=True, delete=False, edit=False,
             ratings=False, removal_confirmer=self._confirmer)
-        self.failUnlessEqual(1, len(self.menu))
+        self.failUnlessEqual(len(self.menu), 1)
         item = self.menu.get_children()[0]
         self.failIf(item.props.sensitive)
         item.activate()
@@ -93,7 +93,7 @@ class TSongsMenu(TestCase):
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, remove=True, delete=False, edit=False,
             ratings=False)
-        self.failUnlessEqual(1, len(self.menu))
+        self.failUnlessEqual(len(self.menu), 1)
         self.failUnless(self.menu.get_children()[0].props.sensitive)
 
     def test_delete(self):
@@ -101,7 +101,7 @@ class TSongsMenu(TestCase):
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, remove=False, delete=True, edit=False,
             ratings=False)
-        self.failUnlessEqual(1, len(self.menu))
+        self.failUnlessEqual(len(self.menu), 1)
         self.failUnless(self.menu.get_children()[0].props.sensitive)
 
         self.songs[0].is_file = False
@@ -109,7 +109,7 @@ class TSongsMenu(TestCase):
             self.library, self.songs, plugins=False, playlists=False,
             queue=False, remove=False, delete=True, edit=False,
             ratings=False)
-        self.failUnlessEqual(1, len(self.menu))
+        self.failUnlessEqual(len(self.menu), 1)
         self.failIf(self.menu.get_children()[0].props.sensitive)
 
     def tearDown(self):
