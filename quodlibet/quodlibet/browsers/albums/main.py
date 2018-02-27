@@ -3,6 +3,7 @@
 #           2009-2010 Steven Robertson
 #           2012-2018 Nick Boultbee
 #           2009-2014 Christoph Reiter
+#           2018      Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -160,6 +161,20 @@ def compare_rating(a1, a2):
             cmpa(a1.sort, a2.sort) or
             cmp(a1.key, a2.key))
 
+def compare_avgplaycount(a1, a2):
+    a1, a2 = a1.album, a2.album
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
+    if not a1.title:
+        return 1
+    if not a2.title:
+        return -1
+    return (-cmp(a1("~#playcount:avg"), a2("~#playcount:avg")) or
+            cmpa(a1.date, a2.date) or
+            cmpa(a1.sort, a2.sort) or
+            cmp(a1.key, a2.key))
 
 class PreferencesButton(Gtk.HBox):
     def __init__(self, browser, model):
@@ -171,6 +186,7 @@ class PreferencesButton(Gtk.HBox):
             (_("_Date"), self.__compare_date),
             (_("_Genre"), self.__compare_genre),
             (_("_Rating"), self.__compare_rating),
+            (_("_Playcount"), self.__compare_avgplaycount),
         ]
 
         menu = Gtk.Menu()
@@ -234,6 +250,9 @@ class PreferencesButton(Gtk.HBox):
         a1, a2 = model.get_value(i1), model.get_value(i2)
         return compare_rating(a1, a2)
 
+    def __compare_avgplaycount(self, model, i1, i2, data):
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_avgplaycount(a1, a2)
 
 class VisibleUpdate(object):
 
