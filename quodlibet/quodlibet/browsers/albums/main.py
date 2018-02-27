@@ -256,6 +256,7 @@ class PreferencesButton(Gtk.HBox):
         a1, a2 = model.get_value(i1), model.get_value(i2)
         return compare_avgplaycount(a1, a2)
 
+
 class VisibleUpdate(object):
 
     # how many rows should be updated
