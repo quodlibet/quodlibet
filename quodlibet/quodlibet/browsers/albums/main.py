@@ -161,6 +161,7 @@ def compare_rating(a1, a2):
             cmpa(a1.sort, a2.sort) or
             cmp(a1.key, a2.key))
 
+
 def compare_avgplaycount(a1, a2):
     a1, a2 = a1.album, a2.album
     if a1 is None:
@@ -175,6 +176,7 @@ def compare_avgplaycount(a1, a2):
             cmpa(a1.date, a2.date) or
             cmpa(a1.sort, a2.sort) or
             cmp(a1.key, a2.key))
+
 
 class PreferencesButton(Gtk.HBox):
     def __init__(self, browser, model):
