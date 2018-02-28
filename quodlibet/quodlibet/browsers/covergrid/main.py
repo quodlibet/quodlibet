@@ -47,8 +47,10 @@ from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk import popup_menu_at_widget
 
+
 def get_cover_size_grid():
     return AlbumItem(None).COVER_SIZE_GRID
+
 
 class PreferencesButton(PreferencesButton):
     def __init__(self, browser, model):
@@ -132,7 +134,6 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     keys = ["CoverGrid"]
     priority = 4
 
-
     def pack(self, songpane):
         container = self.songcontainer
         container.pack1(self, True, False)
@@ -171,7 +172,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     def update_mag(klass):
         mag = config.getfloat("browsers", "covergrid_magnification", 3.)
         for covergrid in klass.instances():
-            covergrid.__cover.set_property('width', get_cover_size_grid() * mag + 8)
+            covergrid.__cover.set_property('width',
+                get_cover_size_grid() * mag + 8)
             covergrid.__cover.set_property('height',
                 get_cover_size_grid() * mag + 8)
             covergrid.view.set_item_width(get_cover_size_grid() * mag + 8)
@@ -377,7 +379,6 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         iter_ = sort_model.convert_iter_to_child_iter(iter_)
         tref = Gtk.TreeRowReference.new(model, model.get_path(iter_))
         mag = config.getfloat("browsers", "covergrid_magnification", 3.)
-
 
         def callback():
             path = tref.get_path()
