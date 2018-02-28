@@ -1,0 +1,58 @@
+diff --git a/gdk/quartz/gdkdnd-quartz.c b/gdk/quartz/gdkdnd-quartz.c
+index b9928acd44..aca4cb1dd8 100644
+--- a/gdk/quartz/gdkdnd-quartz.c
++++ b/gdk/quartz/gdkdnd-quartz.c
+@@ -28,7 +28,7 @@ G_DEFINE_TYPE (GdkQuartzDragContext, gdk_quartz_drag_context, GDK_TYPE_DRAG_CONT
+ GdkDragContext *_gdk_quartz_drag_source_context = NULL;
+ 
+ GdkDragContext *
+-gdk_quartz_drag_source_context ()
++gdk_quartz_drag_source_context_libgtk_only ()
+ {
+   return _gdk_quartz_drag_source_context;
+ }
+diff --git a/gdk/quartz/gdkquartzdnd.h b/gdk/quartz/gdkquartzdnd.h
+index 1fb4131754..fb578e1b8f 100644
+--- a/gdk/quartz/gdkquartzdnd.h
++++ b/gdk/quartz/gdkquartzdnd.h
+@@ -48,6 +48,9 @@ GType     gdk_quartz_drag_context_get_type (void);
+ GDK_AVAILABLE_IN_ALL
+ id        gdk_quartz_drag_context_get_dragging_info_libgtk_only (GdkDragContext *context);
+ 
++GDK_AVAILABLE_IN_ALL
++GdkDragContext *gdk_quartz_drag_source_context_libgtk_only (void);
++
+ G_END_DECLS
+ 
+ #endif /* __GDK_QUARTZ_DRAG_CONTEXT_H__ */
+diff --git a/gtk/gtkdnd-quartz.c b/gtk/gtkdnd-quartz.c
+index 6198986f6d..f9d70e455c 100644
+--- a/gtk/gtkdnd-quartz.c
++++ b/gtk/gtkdnd-quartz.c
+@@ -65,8 +65,6 @@ static GtkDragSourceInfo *gtk_drag_get_source_info (GdkDragContext *context,
+ static void gtk_drag_drop_finished (GtkDragSourceInfo *info,
+                                    GtkDragResult      result);
+ 
+-extern GdkDragContext *gdk_quartz_drag_source_context (); /* gdk/quartz/gdkdnd-quartz.c */
+-
+ struct _GtkDragSourceInfo 
+ {
+   GtkWidget         *source_widget;
+@@ -233,7 +231,7 @@ gtk_drag_finish (GdkDragContext *context,
+ 		 guint32         time)
+ {
+   GtkDragSourceInfo *info;
+-  GdkDragContext* source_context = gdk_quartz_drag_source_context ();
++  GdkDragContext* source_context = gdk_quartz_drag_source_context_libgtk_only ();
+ 
+   if (source_context)
+     {
+@@ -315,7 +313,7 @@ GtkWidget *
+ gtk_drag_get_source_widget (GdkDragContext *context)
+ {
+   GtkDragSourceInfo *info;
+-  GdkDragContext* real_source_context = gdk_quartz_drag_source_context();
++  GdkDragContext* real_source_context = gdk_quartz_drag_source_context_libgtk_only ();
+ 
+   if (!real_source_context)
+     return NULL;

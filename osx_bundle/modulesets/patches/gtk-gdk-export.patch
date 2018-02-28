@@ -1,0 +1,28 @@
+From 2760b020a83e71405fddf83d3b9d320bb58016dd Mon Sep 17 00:00:00 2001
+From: Tom Schoonjans <Tom.Schoonjans@diamond.ac.uk>
+Date: Fri, 16 Feb 2018 12:16:02 +0000
+Subject: [PATCH] gdkquartz.h: export pasteboard functions
+
+---
+ gdk/quartz/gdkquartz.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/gdk/quartz/gdkquartz.h b/gdk/quartz/gdkquartz.h
+index be2cb3c..24555d4 100644
+--- a/gdk/quartz/gdkquartz.h
++++ b/gdk/quartz/gdkquartz.h
+@@ -60,8 +60,11 @@ typedef enum
+ GDK_AVAILABLE_IN_ALL
+ GdkOSXVersion gdk_quartz_osx_version (void);
+ 
++GDK_AVAILABLE_IN_ALL
+ GdkAtom   gdk_quartz_pasteboard_type_to_atom_libgtk_only        (NSString       *type);
++GDK_AVAILABLE_IN_ALL
+ NSString *gdk_quartz_target_to_pasteboard_type_libgtk_only      (const gchar    *target);
++GDK_AVAILABLE_IN_ALL
+ NSString *gdk_quartz_atom_to_pasteboard_type_libgtk_only        (GdkAtom         atom);
+ 
+ G_END_DECLS
+--
+libgit2 0.26.0
+

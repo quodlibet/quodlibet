@@ -1,0 +1,59 @@
+From 5c0d242ea33ec1be60e6b2ad464dd9087692d7ab Mon Sep 17 00:00:00 2001
+From: Christoph Reiter <creiter@src.gnome.org>
+Date: Tue, 27 Feb 2018 19:53:43 +0100
+Subject: [PATCH] macos: Fix
+ gdk_quartz_drag_context_get_dragging_info_libgtk_only symbol export
+
+The header got included without config.h being included first which resulted in the
+wrong _GDK_EXTERN macro being used. As a result some symbols weren't exported
+and starting a DnD action would crash in the linker.
+
+This patch adds config.h includes in all places where clang complained about
+_GDK_EXTERN redefinitions.
+
+See #32 for more info.
+---
+ gdk/quartz/GdkQuartzNSWindow.c | 1 +
+ gdk/quartz/GdkQuartzView.c     | 1 +
+ gdk/quartz/gdkdnd-quartz.c     | 1 +
+ 3 files changed, 3 insertions(+)
+
+diff --git a/gdk/quartz/GdkQuartzNSWindow.c b/gdk/quartz/GdkQuartzNSWindow.c
+index 4d68048ce8..c66fea73c8 100644
+--- a/gdk/quartz/GdkQuartzNSWindow.c
++++ b/gdk/quartz/GdkQuartzNSWindow.c
+@@ -16,6 +16,7 @@
+  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#include "config.h"
+ #import "GdkQuartzNSWindow.h"
+ #include "gdkquartzwindow.h"
+ #include "gdkdnd-quartz.h"
+diff --git a/gdk/quartz/GdkQuartzView.c b/gdk/quartz/GdkQuartzView.c
+index 97c60d051c..7237363f75 100644
+--- a/gdk/quartz/GdkQuartzView.c
++++ b/gdk/quartz/GdkQuartzView.c
+@@ -17,6 +17,7 @@
+  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#include "config.h"
+ #import "GdkQuartzView.h"
+ #include "gdkquartzwindow.h"
+ #include "gdkprivate-quartz.h"
+diff --git a/gdk/quartz/gdkdnd-quartz.c b/gdk/quartz/gdkdnd-quartz.c
+index 15b6fed319..b9928acd44 100644
+--- a/gdk/quartz/gdkdnd-quartz.c
++++ b/gdk/quartz/gdkdnd-quartz.c
+@@ -16,6 +16,7 @@
+  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#include "config.h"
+ #include "gdkdnd.h"
+ #include "gdkquartzdnd.h"
+ #include "gdkprivate-quartz.h"
+-- 
+2.16.2
+
