@@ -25,7 +25,6 @@ try:
 except ImportError:
     xvfbwrapper = None
 
-import faulthandler
 from senf import fsnative, path2fsn, environ
 
 import quodlibet
@@ -182,7 +181,7 @@ def init_test_environ():
     any resources created.
     """
 
-    global _TEMP_DIR, _BUS_INFO, _VDISPLAY, _faulthandler_fobj
+    global _TEMP_DIR, _BUS_INFO, _VDISPLAY
 
     # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
@@ -219,10 +218,6 @@ def init_test_environ():
 
     quodlibet.init(no_translations=True, no_excepthook=True)
     quodlibet.app.name = "QL Tests"
-
-    # to get around pytest silencing
-    _faulthandler_fobj = os.fdopen(os.dup(sys.__stderr__.fileno()), "w")
-    faulthandler.enable(_faulthandler_fobj)
 
     # try to make things the same in case a different locale is active.
     # LANG for gettext, setlocale for number formatting etc.
