@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
+#           2018 Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,6 +29,13 @@ class AlbumItem(object):
             size = 48
         return size
 
+    @property
+    def COVER_SIZE_GRID(self):
+        size = config.getint("browsers", "cover_size_grid")
+        if size <= 0:
+            size = 96
+        return size
+
     def scan_cover(self, force=False, scale_factor=1,
             callback=None, cancel=None):
         if (self.scanned and not force) or not self.album or \
@@ -40,6 +48,21 @@ class AlbumItem(object):
             callback()
 
         s = self.COVER_SIZE * scale_factor
+        app.cover_manager.get_pixbuf_many_async(
+            self.album.songs, s, s, cancel, set_cover_cb)
+
+    def scan_cover_grid(self, force=False, scale_factor=1,
+            callback=None, cancel=None):
+        if (self.scanned and not force) or not self.album or \
+                not self.album.songs:
+            return
+        self.scanned = True
+
+        def set_cover_cb(pixbuf):
+            self.cover = pixbuf
+            callback()
+
+        s = self.COVER_SIZE_GRID * scale_factor
         app.cover_manager.get_pixbuf_many_async(
             self.album.songs, s, s, cancel, set_cover_cb)
 

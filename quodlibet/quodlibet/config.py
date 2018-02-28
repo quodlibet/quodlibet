@@ -2,6 +2,7 @@
 # Copyright 2004-2008 Joe Wreschnig
 #           2009-2017 Nick Boultbee
 #           2011-2014 Christoph Reiter
+#           2018      Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -147,6 +148,9 @@ INITIAL = {
 
         # max cover height/width, <= 0 is default
         "cover_size": "-1",
+
+        # max cover height/width, <= 0 is default
+        "cover_size_grid": "-1",
 
         # Show the limit widgets for SearchBar
         "search_limit": "false",
