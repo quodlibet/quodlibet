@@ -818,7 +818,8 @@ class EditTags(Gtk.VBox):
             b.set_sensitive(not all_done)
 
     def __edit_tag(self, renderer, path, new_value, model):
-        new_value = ', '.join(new_value.splitlines())
+        #pfps leaving the newline should be OK
+        #        new_value = ', '.join(new_value.splitlines())
         path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
         error_dialog = None
