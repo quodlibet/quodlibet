@@ -944,15 +944,11 @@ def load_library(names, shared=True):
         load_func = ctypes.cdll.LoadLibrary
 
     if is_osx():
-        # make sure it's either empty or contains /usr/lib.
-        # (jhbuild sets it for example). Otherwise ctypes can't
-        # find libc (bug?)
-        if "DYLD_FALLBACK_LIBRARY_PATH" in environ:
-            paths = environ["DYLD_FALLBACK_LIBRARY_PATH"]
-            paths = paths.split(os.pathsep)
-            if "/usr/lib" not in paths:
-                paths.append("/usr/lib")
-                environ["DYLD_FALLBACK_LIBRARY_PATH"] = os.pathsep.join(paths)
+        # help ctypes find the libraries...
+        # DYLD_FALLBACK_LIBRARY_PATH gets reset by macOS in newer
+        # versions
+        environ["DYLD_FALLBACK_LIBRARY_PATH"] = os.pathsep.join(
+            [os.path.join(sys.prefix, "lib"), "/usr/lib"])
 
     errors = []
     for name in names:
