@@ -42,7 +42,7 @@ class CoverPluginHandler(PluginHandler):
 
     @property
     def sources(self):
-        """Yields all active CoverSourcePlugin sorted by priority"""
+        """Yields all active CoverSourcePlugin classes sorted by priority"""
 
         sources = chain((p.cls for p in self.providers), self.built_in)
         for p in sorted(sources, reverse=True, key=lambda x: x.priority()):
@@ -211,3 +211,53 @@ class CoverManager(GObject.Object):
 
         call_async(get_thumbnail_from_file, cancel, callback,
                    args=(fileobj, (width, height)))
+
+    def search_cover(self, callback, cancellable, songs):
+        """Search for all the covers applicable to `songs` across all providers
+        Every successful image result initiates a callback
+        (unless cancelled)."""
+
+        def search_complete(source, results):
+            name = source.__class__.__name__
+            if not results:
+                print_d('No covers from {0}'.format(name))
+                return
+
+            print_d('Successfully found covers from {0}'.format(name))
+            # provider.disconnect_by_func(success)
+            if not (cancellable and cancellable.is_cancelled()):
+                covers = {CoverData(url=res['cover'], source=name,
+                                    dimensions=res.get('dimensions', None))
+                          for res in results}
+                callback(source, covers)
+
+        def failure(source, result):
+            name = source.__class__.__name__
+            print_d('Failed to get cover from {0}'.format(name))
+            # source.disconnect_by_func(failure)
+
+        for plugin in self.sources:
+            if plugin.embedded:
+                continue
+            groups = {}
+            for song in songs:
+                group = plugin.group_by(song) or ''
+                groups.setdefault(group, []).append(song)
+
+            for key, group in sorted(groups.items()):
+                song = sorted(group, key=lambda s: s.key)[0]
+                provider = plugin(song)
+                provider.connect('search-complete', search_complete)
+                provider.search()
+
+
+class CoverData(GObject.GObject):
+    """Structured data for results from cover searching"""
+    def __init__(self, url, source=None, dimensions=None):
+        super().__init__()
+        self.url = url
+        self.dimensions = dimensions
+        self.source = source
+
+    def __repr__(self):
+        return "CoverData<url=%s>" % self.url

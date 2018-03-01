@@ -7,9 +7,11 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gio, GLib
+from gi.repository import Gio, GLib, Soup
 
-from quodlibet.util.http import HTTPRequest
+from quodlibet import print_d
+from quodlibet.plugins.cover import CoverSourcePlugin
+from quodlibet.util.http import HTTPRequest, download_json
 from quodlibet.util import print_w
 
 
@@ -23,7 +25,9 @@ class HTTPDownloadMixin(object):
 
     def _download_sent(self, request, message):
         status = message.get_property('status-code')
-        if not 200 <= status < 300:
+        headers = message.get_property('response-headers')
+        self.set_size(int(headers.get('content-length') or '0'))
+        if not 200 <= status < 400:
             request.cancel()
             return self.fail('Bad HTTP code {0}'.format(status))
 
@@ -61,3 +65,44 @@ class HTTPDownloadMixin(object):
             self.fail(exception.message or ' '.join(exception.args))
         except AttributeError:
             self.fail("Download error (%s)" % exception)
+
+    def set_size(self, size):
+        """Callback when size (in bytes) is discovered"""
+        pass
+
+
+class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
+
+    @property
+    def url(self):
+        """The URL to the image, if remote"""
+        return None
+
+    def search(self):
+        if not self.url:
+            return self.emit('search-complete', [])
+        msg = Soup.Message.new('GET', self.url)
+        download_json(msg, self.cancellable, self._handle_search_response,
+                      None)
+
+    def _handle_search_response(self, message, json_dict, data=None):
+        self.emit('search-complete', [])
+
+    def fetch_cover(self):
+        if not self.url:
+            return self.fail('Not enough data to get cover from %s'
+                             % type(self).__name__)
+
+        def search_complete(self, res):
+            self.disconnect(sci)
+            if res:
+                self.download(Soup.Message.new('GET', res[0]['cover']))
+            else:
+                return self.fail('No cover was found')
+
+        sci = self.connect('search-complete', search_complete)
+        self.search()
+
+    def set_size(self, size):
+        print_d("Got size: %.1f KB" % (float(size) / 1024))
+        self.size = size

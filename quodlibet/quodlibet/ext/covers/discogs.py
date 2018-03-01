@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2016 Mice Pápai
+#           2018 Nick Boultbee
 #
 # Based on lastfm.py by Simonas Kazlauskas
 #
@@ -8,32 +9,28 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import json
+
 from os import path
 
+import re
 from gi.repository import Soup
 
 from quodlibet import _
-from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
+from quodlibet.plugins.cover import cover_dir
 from quodlibet.util.http import download_json
-from quodlibet.util.cover.http import HTTPDownloadMixin
+from quodlibet.util.cover.http import ApiCoverSourcePlugin
 from quodlibet.util.path import escape_filename
 from quodlibet.util import print_d
 
 
-class DiscogsCover(CoverSourcePlugin, HTTPDownloadMixin):
+class DiscogsCover(ApiCoverSourcePlugin):
     PLUGIN_ID = "discogs-cover"
     PLUGIN_NAME = _("Discogs Cover Source")
     PLUGIN_DESC = _("Downloads covers from Discogs.")
 
-    credentials = ('?key=aWfZGjHQvkMcreUECGAp' +
+    credentials = ('key=aWfZGjHQvkMcreUECGAp' +
                    '&secret=VlORkklpdvAwJMwxUjNNSgqicjuizJAl')
-
-    def pretty_json(self, json_dict):
-        print_d(json.dumps(json_dict,
-                           sort_keys=True,
-                           indent=4,
-                           separators=(',', ': ')))
+    use_secondary = True
 
     @classmethod
     def group_by(cls, song):
@@ -41,7 +38,7 @@ class DiscogsCover(CoverSourcePlugin, HTTPDownloadMixin):
 
     @staticmethod
     def priority():
-        return 0.1  # Testing version
+        return 0.6
 
     @property
     def cover_path(self):
@@ -53,7 +50,7 @@ class DiscogsCover(CoverSourcePlugin, HTTPDownloadMixin):
 
     @property
     def url(self):
-        _url = ('https://api.discogs.com/database/search' +
+        _url = ('https://api.discogs.com/database/search?' +
                 self.credentials +
                 '&type=release' +
                 '&artist={artist}' +
@@ -65,59 +62,39 @@ class DiscogsCover(CoverSourcePlugin, HTTPDownloadMixin):
         else:
             return None   # Not enough data
 
-    def search(self):
-        if not self.url:
-            return self.emit('search-complete', [])
-        msg = Soup.Message.new('GET', self.url)
-        download_json(msg, self.cancellable, self.search_data, None)
-
-    def search_data(self, message, json_dict, data=None):
+    def _handle_search_response(self, message, json_dict, data=None):
         if not json_dict:
-            print_d('Server did not return valid JSON')
+            print_d('Server did not return any valid JSON')
             return self.emit('search-complete', [])
-
-        # debug
-        # self.pretty_json(json_dict)
 
         try:
             res_url = json_dict.get('results', [])[0].get('resource_url', '')
         except IndexError:
-            res_url = ''
-
-        if not res_url:
             print_d('Album data is not available')
             return self.emit('search-complete', [])
+        else:
+            msg = Soup.Message.new('GET',
+                                   "%s?%s" % (res_url, self.credentials))
+            download_json(msg, self.cancellable, self._handle_album_data, None)
 
-        msg = Soup.Message.new('GET', res_url + self.credentials)
-        download_json(msg, self.cancellable, self.album_data, None)
+    def _handle_album_data(self, message, json_dict, data=None):
 
-    def album_data(self, message, json_dict, data=None):
-
-        # debug
-        # self.pretty_json(json_dict)
-
-        images = json_dict.get('images', '')
+        images = json_dict.get('images', None)
 
         if not images:
             print_d('Covers are not available')
             return self.emit('search-complete', [])
 
-        result = []
-        for cover in images:
-            if cover.get('uri') and cover['type'] == 'primary':
-                result.append({'cover': cover['uri']})
+        results = list(self._covers_of_type(images))
+        if not results and images and self.use_secondary:
+            results.append(next(self._covers_of_type(images, "secondary")))
 
-        self.emit('search-complete', result)
+        self.emit('search-complete', results)
 
-    def fetch_cover(self):
-        if not self.url:
-            return self.fail('Not enough data to get cover from Discogs')
-
-        def search_complete(self, res):
-            self.disconnect(sci)
-            if res:
-                self.download(Soup.Message.new('GET', res[0]['cover']))
-            else:
-                return self.fail('No cover was found')
-        sci = self.connect('search-complete', search_complete)
-        self.search()
+    def _covers_of_type(self, images, image_type='primary'):
+        for image in images:
+            url = image.get('uri')
+            if url and image['type'] == image_type:
+                dimensions = re.compile(r'/(\d+x\d+)/').search(url)
+                dimensions = dimensions and dimensions.group(1)
+                yield ({'cover': image['uri'], 'dimensions': dimensions})
