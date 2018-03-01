@@ -10,6 +10,8 @@ import os
 import stat
 import shlex
 
+from senf import environ
+
 from quodlibet import _
 from quodlibet.util.tags import MACHINE_TAGS, sortkey
 from quodlibet.util.dprint import print_, Colorise
@@ -122,10 +124,10 @@ def get_editor_args(fallback_command="nano"):
     Can't fail, but the result might not be a valid/existing command.
     """
 
-    if "VISUAL" in util.environ:
-        editor = util.environ["VISUAL"]
-    elif "EDITOR" in util.environ:
-        editor = util.environ["EDITOR"]
+    if "VISUAL" in environ:
+        editor = environ["VISUAL"]
+    elif "EDITOR" in environ:
+        editor = environ["EDITOR"]
     else:
         editor = fallback_command
 
