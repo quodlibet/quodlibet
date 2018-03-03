@@ -41,15 +41,10 @@ class ShuffleByGrouping(ShufflePlugin, OrderInOrder, OrderRemembered):
     def next(self, playlist, current):
         return self._next(playlist, current)
 
-    def _next(self, playlist, current, explicit=False):
+    def _next(self, playlist, current, delay_on=True):
         grouping = str(pconfig.gettext("grouping")).strip()
         grouping_test = str(pconfig.gettext("grouping_test")).strip()
         delay = pconfig.getint("delay")
-        delay_on = True
-
-        # Check if explicitly called and alter variables accordingly
-        if explicit:
-            delay_on = False
 
         # Keep track of played songs
         OrderRemembered.next(self, playlist, current)
@@ -106,7 +101,7 @@ class ShuffleByGrouping(ShufflePlugin, OrderInOrder, OrderRemembered):
         return False
 
     def next_explicit(self, playlist, current):
-        return self._next(playlist, current, explicit=True)
+        return self._next(playlist, current, delay_on=False)
 
     def previous(self, playlist, current):
         return OrderRemembered.previous(self, playlist, current)
