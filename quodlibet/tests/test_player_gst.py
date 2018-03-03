@@ -222,7 +222,7 @@ class TGStreamerCodecs(TestCase):
         error = None
         try:
             while 1:
-                message = bus.timed_pop(Gst.SECOND * 20)
+                message = bus.timed_pop(Gst.SECOND * 40)
                 if not message or message.type == Gst.MessageType.ERROR:
                     if message:
                         error = message.parse_error()[0].message
