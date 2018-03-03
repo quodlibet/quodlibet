@@ -80,7 +80,8 @@ class CoverArtWindow(qltk.Window):
 
         def create_widget(item, data=None):
             img = ResizeWebImage(item.url)
-            text = _("(Loading %s (%s)...)") % (item.source, item.dimensions)
+            text = (_("(Loading %(source)s (%(dimensions)s)…")
+                    % (item.source, item.dimensions))
             frame = Gtk.Frame.new(text)
             img.connect('info-known', update, item, frame)
             frame.add(img)
