@@ -254,7 +254,7 @@ class CoverManager(GObject.Object):
         def failure(provider, result):
             finished(provider)
             name = provider.__class__.__name__
-            print_d('Failed to get cover from {name} ({msg}'.format(
+            print_d('Failed to get cover from {name} ({msg})'.format(
                 name=name, msg=result))
             provider.disconnect_by_func(failure)
 

@@ -6,16 +6,26 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import os
+
 from gi.repository import GObject, Gtk, Gio, GLib, Soup, GdkPixbuf
 
 from quodlibet import _, app, print_d, print_w
 from quodlibet import qltk
+from quodlibet.packages.senf import path2fsn
+from quodlibet.pattern import ArbitraryExtensionFileFromPattern
+from quodlibet.plugins import PluginConfig, ConfProp, IntConfProp
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons
-from quodlibet.qltk.paned import ConfigRVPaned
+from quodlibet.qltk.paned import Paned
 from quodlibet.util import connect_destroy, format_size, escape
 from quodlibet.util.http import session
+
+SAVE_PATTERNS = [
+    "folder.jpg", "cover.jpg",
+    "<albumartist|<albumartist>|<artist>> - <album>.jpg",
+    "<albumartist|<albumartist>|<artist>> - <album> - front.jpg"]
 
 
 class ResizeWebImage(Gtk.Image):
@@ -24,15 +34,15 @@ class ResizeWebImage(Gtk.Image):
         'info-known': (GObject.SignalFlags.RUN_LAST, None, (int, object))
     }
 
-    def __init__(self, url, preview_size, cancellable=None):
+    def __init__(self, url, config, cancellable=None):
         super().__init__()
-        self.preview_size = preview_size
+        self.config = config
         self.url = url
         self.cancellable = cancellable
         self.message = msg = Soup.Message.new('GET', self.url)
         session.send_async(msg, self.cancellable, self._sent, None)
         # TODO: drop this sizing hack
-        self.set_size_request(preview_size, preview_size)
+        self.set_size_request(config.preview_size, config.preview_size)
         self._pixbuf = None
 
     def _sent(self, session, task, data):
@@ -55,23 +65,31 @@ class ResizeWebImage(Gtk.Image):
             print_w('Failed sending {method} request to {uri} ({err})'.format(
                 method=self.message.method, uri=self.url, err=e))
 
-    def resize(self, new_size=None):
-        if not self._pixbuf:
-            return
-        if new_size:
-            self.preview_size = new_size
-        pb = self._pixbuf
-        resized = pb.scale_simple(self.preview_size, self.preview_size,
-                                  GdkPixbuf.InterpType.BILINEAR)
-        self.set_from_pixbuf(resized)
-        self.queue_resize()
-
     def _finished(self, istream, result):
         self._pixbuf = GdkPixbuf.Pixbuf.new_from_stream_finish(result)
         self.resize()
         istream.close()
         self.emit('info-known', self.size, self._pixbuf.props)
         self.queue_draw()
+
+    def resize(self, new_size=None):
+        if not self._pixbuf:
+            return
+        if new_size:
+            self.config.preview_size = new_size
+        else:
+            new_size = self.config.preview_size
+        pb = self._pixbuf
+        resized = pb.scale_simple(new_size, new_size,
+                                  GdkPixbuf.InterpType.BILINEAR)
+        self.set_from_pixbuf(resized)
+        self.queue_resize()
+
+    def save_image(self, path):
+        # TODO: Don't re-encode (unless user wants it)
+        ret = self._pixbuf.savev(path2fsn(path), 'jpeg', ['quality'], ['100'])
+        if not ret:
+            raise IOError("Couldn't save to %s" % path)
 
 
 class CoverArtWindow(qltk.Dialog):
@@ -86,11 +104,13 @@ class CoverArtWindow(qltk.Dialog):
     }
     DEFAULT_SIZE = list(SIZES.keys())[0]
 
-    def __init__(self, songs):
+    def __init__(self, songs, config=None):
         super().__init__(title="Cover Art Download", use_header_bar=True)
+        self.config = config
         self.set_default_size(1200, 640)
         self.flow_box = box = Gtk.FlowBox()
         self.model = model = Gio.ListStore()
+        self.songs = songs
 
         def update(img, size, props, item, frame):
             text = ("{} - {}x{}, <b>{}</b>".format(escape(item.source),
@@ -99,7 +119,7 @@ class CoverArtWindow(qltk.Dialog):
             frame.get_child().set_reveal_child(True)
 
         def create_widget(item, data=None):
-            img = ResizeWebImage(item.url, preview_size=self.DEFAULT_SIZE)
+            img = ResizeWebImage(item.url, config=self.config)
             text = (_("(Loading %(source)s (%(dimensions)s)…")
                     % {'source': item.source, 'dimensions': item.dimensions})
             frame = Gtk.Frame.new(text)
@@ -117,16 +137,25 @@ class CoverArtWindow(qltk.Dialog):
             frame.set_label_align(0.5, 1.0)
             return frame
 
+        def selected(fb):
+            children = fb.get_selected_children()
+            cover = self.model.get_item(children[0].get_index())
+            print_d("Selected %s " % cover)
+            if cover:
+                self.button.set_sensitive(True)
+
         box.bind_model(model, create_widget, None)
         box.set_valign(Gtk.Align.START)
         box.set_max_children_per_line(4)
-        paned = ConfigRVPaned("plugins", "cover_art_pane_pos", 0.25)
+        box.connect('selected-children-changed', selected)
+
+        paned = Paned(orientation=Gtk.Orientation.VERTICAL)
         paned.ensure_wide_handle()
         sw = Gtk.ScrolledWindow()
         sw.add(self.flow_box)
 
         paned.pack1(sw, True, True)
-        paned.pack2(self.create_options(), True, False)
+        paned.pack2(self.create_options(), False, False)
         self.vbox.pack_start(paned, True, True, 0)
 
         manager = app.cover_manager
@@ -137,6 +166,14 @@ class CoverArtWindow(qltk.Dialog):
 
         # Do the search
         manager.search_cover(cancellable, songs)
+
+    def _filenames(self, pat_text, full_path=False):
+        def fn_for(song):
+            pat = ArbitraryExtensionFileFromPattern(pat_text)
+            fn = pat.format(song)
+            return os.path.join(song('~dirname'), fn) if full_path else fn
+
+        return {fn_for(song) for song in self.songs}
 
     def _covers_found(self, manager, provider, results):
         if not results:
@@ -151,8 +188,10 @@ class CoverArtWindow(qltk.Dialog):
         if not self.model.get_n_items():
             print_w("Nothing found from any sources")
             self.button.set_sensitive(False)
-        else:
-            self.button.set_sensitive(True)
+
+    def __image_from_child(self, child):
+        # Ugh, horrible
+        return child.get_child().get_child().get_child()
 
     def create_options(self):
         frame = Gtk.Frame(label=_("Options"))
@@ -163,7 +202,7 @@ class CoverArtWindow(qltk.Dialog):
         for size, name in self.SIZES.items():
             slider.add_mark(size, Gtk.PositionType.BOTTOM, name)
         slider.set_show_fill_level(False)
-        slider.set_value(self.DEFAULT_SIZE)
+        slider.set_value(self.config.preview_size)
 
         def format_size(slider, value):
             return _("%(size)d ✕ %(size)d px") % {'size': value}
@@ -172,7 +211,7 @@ class CoverArtWindow(qltk.Dialog):
             new_size = slider.get_value()
             try:
                 for child in self.flow_box.get_children():
-                    img = child.get_child().get_child().get_child()
+                    img = self.__image_from_child(child)
                     img.resize(new_size)
             except AttributeError as e:
                 print_w("Couldn't set picture size(s) (%s)" % e)
@@ -183,7 +222,43 @@ class CoverArtWindow(qltk.Dialog):
         label.set_mnemonic_widget(slider)
         hbox.pack_start(label, False, False, 6)
         hbox.pack_start(slider, True, True, 6)
-        frame.add(hbox)
+        vbox = Gtk.VBox()
+        vbox.pack_start(hbox, False, False, 6)
+
+        def create_save_box():
+            hbox = Gtk.HBox()
+            label = Gtk.Label(_("Save destination"))
+            hbox.pack_start(label, False, False, 6)
+            model = Gtk.ListStore(str)
+            for val in SAVE_PATTERNS:
+                model.append(row=[val])
+            save_options = Gtk.ComboBox(model=model)
+            label.set_mnemonic_widget(save_options)
+            cell = Gtk.CellRendererText()
+            save_options.pack_start(cell, True)
+
+            def draw_save_type(column, cell, model, it, data):
+                pat_text = model[it][0]
+                text = list(self._filenames(pat_text))[0]
+                cell.set_property('text', text)
+
+            save_options.set_cell_data_func(cell, draw_save_type, None)
+
+            def changed(combo):
+                value = model.get_value(combo.get_active_iter(), 0)
+                self.config.save_pattern = value
+
+            def select_value(combo, value):
+                for i, item in enumerate(model):
+                    if value == item[0]:
+                        combo.set_active(i)
+
+            save_options.connect('changed', changed)
+            select_value(save_options, self.config.save_pattern)
+            hbox.pack_start(save_options, True, False, 6)
+            return hbox
+        vbox.pack_start(create_save_box(), False, False, 6)
+        frame.add(vbox)
 
         self.button = self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
                                            Gtk.ResponseType.APPLY)
@@ -192,10 +267,13 @@ class CoverArtWindow(qltk.Dialog):
         return frame
 
     def __save(self, button):
-        children = self.flow_box.get_selected_children()
-        cover = self.model.get_item(children[0].get_index())
-        print_d("Would be saving... data of %s" % cover)
-        pass
+        child = self.flow_box.get_selected_children()[0]
+        data = self.model.get_item(child.get_index())
+        img = self.__image_from_child(child)
+        paths = self._filenames(self.config.save_pattern, full_path=True)
+        print_d("Saving... data of %s to %s" % (data, paths))
+        for path in paths:
+            img.save_image(path)
 
 
 class DownloadCoverArt(SongsMenuPlugin):
@@ -210,6 +288,12 @@ class DownloadCoverArt(SongsMenuPlugin):
     plugin_handles = any_song(is_a_file)
 
     def plugin_album(self, songs):
-        dialog = CoverArtWindow(songs)
+        dialog = CoverArtWindow(songs, Config())
         dialog.run()
         dialog.destroy()
+
+
+class Config:
+    plugin_config = PluginConfig(DownloadCoverArt.PLUGIN_ID)
+    preview_size = IntConfProp(plugin_config, "preview_size", 300)
+    save_pattern = ConfProp(plugin_config, "save_pattern", "folder.jpg")
