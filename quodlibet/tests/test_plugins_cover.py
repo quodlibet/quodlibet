@@ -12,6 +12,7 @@ from gi.repository import Gtk
 from gi.repository import GdkPixbuf
 
 from quodlibet.util.cover.http import ApiCoverSourcePlugin
+from quodlibet.util.thread import Cancellable
 from tests import TestCase, mkdtemp, mkstemp, get_data_path
 
 from quodlibet import config
@@ -221,13 +222,18 @@ class TCoverManager(TestCase):
         songs = [song]
         results = []
 
-        def done(source, result):
+        def done(manager, provider, result):
             self.failUnless(result, msg="Shouldn't succeed with no results")
             results.append(result)
 
-        manager.search_cover(done, None, songs)
+        def finished(manager, songs):
+            print("Finished!")
+
+        manager.connect('covers-found', done)
+        manager.search_cover(Cancellable(), songs)
+        manager.connect('searches-complete', finished)
         run_loop()
-        print(results)
+
         self.failUnlessEqual(len(results), 1)
 
     def tearDown(self):

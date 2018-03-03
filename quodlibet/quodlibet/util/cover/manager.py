@@ -11,7 +11,9 @@ from itertools import chain
 
 from gi.repository import GObject
 
+from quodlibet import _
 from quodlibet.plugins import PluginManager, PluginHandler
+from quodlibet.qltk.notif import Task
 from quodlibet.util.cover import built_in
 from quodlibet.util import print_d
 from quodlibet.util.thread import call_async
@@ -52,9 +54,14 @@ class CoverPluginHandler(PluginHandler):
 class CoverManager(GObject.Object):
 
     __gsignals__ = {
-        # artwork_changed([AudioFile]), emitted if the cover art for one
-        # or more songs might have changed
+        # ([AudioFile]), emitted if the cover for any songs might have changed
         'cover-changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+
+        # Covers were found for the songs
+        'covers-found': (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+
+        # All searches were submitted
+        'searches-complete': (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
 
     plugin_handler = None
@@ -212,33 +219,46 @@ class CoverManager(GObject.Object):
         call_async(get_thumbnail_from_file, cancel, callback,
                    args=(fileobj, (width, height)))
 
-    def search_cover(self, callback, cancellable, songs):
+    def search_cover(self, cancellable, songs):
         """Search for all the covers applicable to `songs` across all providers
-        Every successful image result initiates a callback
+        Every successful image result emits a 'covers-found' signal
         (unless cancelled)."""
 
-        def search_complete(source, results):
-            name = source.__class__.__name__
+        sources = [source for source in self.sources if not source.embedded]
+        processed = []
+        task = Task(_("Cover Art"), _("Querying album art providers"),
+                    stop=cancellable.cancel)
+
+        def finished(provider):
+            processed.append(provider)
+            frac = len(processed) / len(sources)
+            task.update(frac)
+            if frac >= 1.0:
+                task.finish()
+                self.emit('searches-complete', songs)
+
+        def search_complete(provider, results):
+            finished(provider)
+            name = provider.__class__.__name__
             if not results:
                 print_d('No covers from {0}'.format(name))
                 return
 
-            print_d('Successfully found covers from {0}'.format(name))
-            # provider.disconnect_by_func(success)
             if not (cancellable and cancellable.is_cancelled()):
                 covers = {CoverData(url=res['cover'], source=name,
                                     dimensions=res.get('dimensions', None))
                           for res in results}
-                callback(source, covers)
+                self.emit('covers-found', provider, covers)
+            provider.disconnect_by_func(search_complete)
 
-        def failure(source, result):
-            name = source.__class__.__name__
-            print_d('Failed to get cover from {0}'.format(name))
-            # source.disconnect_by_func(failure)
+        def failure(provider, result):
+            finished(provider)
+            name = provider.__class__.__name__
+            print_d('Failed to get cover from {name} ({msg}'.format(
+                name=name, msg=result))
+            provider.disconnect_by_func(failure)
 
-        for plugin in self.sources:
-            if plugin.embedded:
-                continue
+        for plugin in sources:
             groups = {}
             for song in songs:
                 group = plugin.group_by(song) or ''
@@ -248,6 +268,7 @@ class CoverManager(GObject.Object):
                 song = sorted(group, key=lambda s: s.key)[0]
                 provider = plugin(song)
                 provider.connect('search-complete', search_complete)
+                provider.connect('fetch-failure', failure)
                 provider.search()
 
 

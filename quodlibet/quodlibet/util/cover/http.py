@@ -9,7 +9,6 @@
 
 from gi.repository import Gio, GLib, Soup
 
-from quodlibet import print_d
 from quodlibet.plugins.cover import CoverSourcePlugin
 from quodlibet.util.http import HTTPRequest, download_json
 from quodlibet.util import print_w
@@ -25,8 +24,6 @@ class HTTPDownloadMixin(object):
 
     def _download_sent(self, request, message):
         status = message.get_property('status-code')
-        headers = message.get_property('response-headers')
-        self.set_size(int(headers.get('content-length') or '0'))
         if not 200 <= status < 400:
             request.cancel()
             return self.fail('Bad HTTP code {0}'.format(status))
@@ -66,10 +63,6 @@ class HTTPDownloadMixin(object):
         except AttributeError:
             self.fail("Download error (%s)" % exception)
 
-    def set_size(self, size):
-        """Callback when size (in bytes) is discovered"""
-        pass
-
 
 class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
 
@@ -102,7 +95,3 @@ class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
 
         sci = self.connect('search-complete', search_complete)
         self.search()
-
-    def set_size(self, size):
-        print_d("Got size: %.1f KB" % (float(size) / 1024))
-        self.size = size

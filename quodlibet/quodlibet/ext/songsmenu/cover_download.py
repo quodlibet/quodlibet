@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Gio, GLib, Soup, GdkPixbuf
+from gi.repository import GObject, Gtk, Gio, GLib, Soup, GdkPixbuf
 
 from quodlibet import _, app, print_d, print_w
 from quodlibet import qltk
@@ -14,20 +14,25 @@ from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons, Button
 from quodlibet.qltk.paned import ConfigRVPaned
+from quodlibet.util import connect_destroy, format_size, escape
 from quodlibet.util.http import session
 
 
 class ResizeWebImage(Gtk.Image):
+    __gsignals__ = {
+        # The size (in bytes) and properties of a cover once known
+        'info-known': (GObject.SignalFlags.RUN_LAST, None, (int, object))
+    }
 
-    def __init__(self, url, size=500, cancellable=None):
+    def __init__(self, url, preview_size=400, cancellable=None):
         super().__init__()
-        self.size = size
+        self.preview_size = preview_size
         self.url = url
         self.cancellable = cancellable
         self.message = msg = Soup.Message.new('GET', self.url)
         session.send_async(msg, self.cancellable, self._sent, None)
 
-        self.set_size_request(size, size)
+        self.set_size_request(preview_size + 24, preview_size + 24)
 
     def _sent(self, session, task, data):
         try:
@@ -37,37 +42,49 @@ class ResizeWebImage(Gtk.Image):
                     status, self.message.method, self.url)
                 print_w(msg)
                 return
+            headers = self.message.get_property('response-headers')
+            self.size = int(headers.get('content-length'))
+            print_d('Got HTTP {code} from {uri} ({size} KB)'.format(
+                uri=self.url, code=status, size=int(self.size / 1024)))
             istream = session.send_finish(task)
-            GdkPixbuf.Pixbuf.new_from_stream_at_scale_async(
-                istream, self.size, self.size, True, None, self._finished)
-            print_d('Got HTTP {code} on {method} request to {uri}.'.format(
-                uri=self.url, code=status, method=self.message.method))
+            GdkPixbuf.Pixbuf.new_from_stream_async(istream, self.cancellable,
+                                                   self._finished)
+
         except GLib.GError as e:
             print_w('Failed sending {method} request to {uri} ({err})'.format(
                 method=self.message.method, uri=self.url, err=e))
 
     def _finished(self, istream, result):
-        self._pixbuf = GdkPixbuf.Pixbuf.new_from_stream_finish(result)
-        self.set_from_pixbuf(self._pixbuf)
+        self._pixbuf = pb = GdkPixbuf.Pixbuf.new_from_stream_finish(result)
+        resized = pb.scale_simple(self.preview_size, self.preview_size,
+                                  GdkPixbuf.InterpType.BILINEAR)
+        self.set_from_pixbuf(resized)
         istream.close()
-        props = self._pixbuf.props
-        print_d("Got web image pixbuf from %s (%d x %d)" %
-                (self.url, props.width, props.height))
+        self.emit('info-known', self.size, self._pixbuf.props)
         self.queue_draw()
 
 
 class CoverArtWindow(qltk.Window):
+
     def __init__(self, songs):
         super().__init__(title="Cover Art Download")
         self.set_default_size(1000, 800)
         self.flow_box = box = Gtk.FlowBox()
+        box.set_row_spacing(12)
         self.model = model = Gio.ListStore()
+
+        def update(img, size, props, item, frame):
+            text = ("{} - {}x{}, <b>{}</b>".format(escape(item.source),
+                    props.width, props.height, format_size(size)))
+            frame.get_label_widget().set_markup(text)
 
         def create_widget(item, data=None):
             img = ResizeWebImage(item.url)
-            text = "Image from %s (%s)" % (item.source, item.dimensions)
+            text = _("(Loading %s (%s)...)") % (item.source, item.dimensions)
             frame = Gtk.Frame.new(text)
+            img.connect('info-known', update, item, frame)
             frame.add(img)
+            frame.set_label_align(0.5, 0.5)
             return frame
 
         box.bind_model(model, create_widget, None)
@@ -78,31 +95,46 @@ class CoverArtWindow(qltk.Window):
         self.add(paned)
         sw = Gtk.ScrolledWindow()
         sw.add(self.flow_box)
-        vbox = Gtk.VBox()
+        options_box = Gtk.VBox()
         frame = Gtk.Frame(label=_("Options"))
-        vbox.pack_start(frame, True, True, 6)
+        options_box.pack_start(frame, True, False, 6)
         self.button = Button(_("_Save"), Icons.DOCUMENT_SAVE_AS)
         self.button.set_sensitive(False)
         self.button.connect('clicked', self.__save)
-        vbox.pack_start(self.button, True, False, 6)
+        options_box.pack_start(self.button, True, False, 6)
 
         paned.pack1(sw, True, False)
-        paned.pack2(vbox, True, False)
+        paned.pack2(options_box, True, False)
 
         manager = app.cover_manager
 
-        def on_success(source, results, cancel=None):
+        def covers_found(manager, provider, results):
             if not results:
-                print_d("No results from %s" % source)
+                print_d("No results from %s" % provider)
                 return
             for result in results:
                 self.model.append(result)
             self.show_all()
-        cancellable = self.__cancellable = Gio.Cancellable()
-        manager.search_cover(on_success, cancellable, songs)
 
-    def __save(self):
-        print_d("Saving...")
+        def finished(manager, songs):
+            print_d("Finished all searches")
+            if not self.model.get_n_items():
+                print_w("Nothing found from any sources")
+
+                self.button.set_sensitive(False)
+            else:
+                self.button.set_sensitive(True)
+
+        cancellable = self.__cancellable = Gio.Cancellable()
+        connect_destroy(manager, 'covers-found', covers_found)
+        connect_destroy(manager, 'searches-complete', finished)
+
+        manager.search_cover(cancellable, songs)
+
+    def __save(self, button):
+        children = self.flow_box.get_selected_children()
+        cover = self.model.get_item(children[0].get_index())
+        print_d("Would be saving... data of %s" % cover)
         pass
 
 
