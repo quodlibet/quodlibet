@@ -128,6 +128,10 @@ Refresh and rescan library
 .B \-\-repeat=off|on|t
 Turn repeat off, on, or toggle
 .TP
+.B \-\-repeat\-type=current|all|one
+Repeat the currently playing song, the current list, or stop after
+one song
+.TP
 .B \-\-seek=[+|\-][HH:]MM:SS
 Seek within the playing song
 .UNINDENT
@@ -145,6 +149,13 @@ Rate the playing song
 .TP
 .B \-\-show\-window
 Show main window
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-shuffle\-type=random|weighted
+Set the shuffle type to be random or to prefer higher rated songs
+.UNINDENT
+.INDENT 0.0
 .TP
 .B \-\-start\-hidden
 Don\(aqt show any windows on start

@@ -24,6 +24,10 @@ from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.util.library import scan_library
 
+from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, \
+        OneSong
+from quodlibet.order.reorder import OrderWeighted, OrderShuffle
+
 
 class CommandError(Exception):
     pass
@@ -211,6 +215,14 @@ def _shuffle(app, value):
         po.shuffle = not po.shuffle
 
 
+@registry.register("shuffle-type", args=1)
+def _shuffle_type(app, value):
+    if value == "random":
+        app.window.order.shuffler = OrderShuffle
+    elif value == "weighted":
+        app.window.order.shuffler = OrderWeighted
+
+
 @registry.register("repeat", args=1)
 def _repeat(app, value):
     po = app.player_options
@@ -221,6 +233,16 @@ def _repeat(app, value):
         po.repeat = True
     elif value in ["t", "toggle"]:
         po.repeat = not po.repeat
+
+
+@registry.register("repeat-type", args=1)
+def _repeat_type(app, value):
+    if value == "current":
+        app.window.order.repeater = RepeatSongForever
+    elif value == "all":
+        app.window.order.repeater = RepeatListForever
+    elif value == "one":
+        app.window.order.repeater = OneSong
 
 
 @registry.register("seek", args=1)
