@@ -19,10 +19,6 @@ import shlex
 import tempfile
 import shutil
 import struct
-from distutils.spawn import find_executable
-
-
-PY3 = sys.version_info[0] == 3
 
 
 def build_resource(rc_path, out_path):
@@ -42,21 +38,13 @@ def get_build_args():
     python_config = os.path.join(
         os.path.dirname(sys.executable), python_name + "-config")
 
-    # under mingw, python-config is a python while python3-config is bash
-    if PY3:
-        cflags = subprocess.check_output(
-            ["sh", python_config, "--cflags"]).strip()
-        libs = subprocess.check_output(
-            ["sh", python_config, "--libs"]).strip()
-    else:
-        cflags = subprocess.check_output(
-            [python_name, python_config, "--cflags"]).strip()
-        libs = subprocess.check_output(
-            [python_name, python_config, "--libs"]).strip()
+    cflags = subprocess.check_output(
+        ["sh", python_config, "--cflags"]).strip()
+    libs = subprocess.check_output(
+        ["sh", python_config, "--libs"]).strip()
 
-    if PY3:
-        cflags = os.fsdecode(cflags)
-        libs = os.fsdecode(libs)
+    cflags = os.fsdecode(cflags)
+    libs = os.fsdecode(libs)
     return shlex.split(cflags) + shlex.split(libs)
 
 
@@ -64,6 +52,7 @@ def build_exe(source_path, resource_path, is_gui, out_path):
     args = ["gcc", "-s"]
     if is_gui:
         args.append("-mwindows")
+    args.append("-municode")
     args.extend(["-o", out_path, source_path, resource_path])
     args.extend(get_build_args())
     subprocess.check_call(args)
@@ -77,8 +66,8 @@ def get_launcher_code(entry_point):
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine, int nCmdShow)
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                    PWSTR lpCmdLine, int nCmdShow)
 {
     int result;
 
@@ -86,11 +75,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     Py_IgnoreEnvironmentFlag = 1;
     Py_DontWriteBytecodeFlag = 1;
     Py_Initialize();
-    #if PY_MAJOR_VERSION >= 3
     PySys_SetArgvEx(__argc, __wargv, 0);
-    #else
-    PySys_SetArgvEx(__argc, __argv, 0);
-    #endif
     result = PyRun_SimpleString("%s");
     Py_Finalize();
     return result;
