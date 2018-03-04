@@ -100,9 +100,9 @@ OPTIONS
 --repeat=off|on|t
     Turn repeat off, on, or toggle
 
---repeat-type=current|all|one
-    Repeat the currently playing song, the current list, or stop after
-    one song
+--repeat-type=current|all|one|off
+    Repeat the currently playing song, the current list, stop after
+    one song, or turn repeat off
 
 --seek=[+|-][HH:]MM:SS
     Seek within the playing song
@@ -116,8 +116,12 @@ OPTIONS
 --show-window
     Show main window
 
---shuffle-type=random|weighted
-    Set the shuffle type to be random or to prefer higher rated songs
+--shuffle=off|on|t
+    Turn shuffle off, on, or toggle
+
+--shuffle-type=random|weighted|off
+    Set the shuffle type to be random, to prefer higher rated songs,
+    or turn shuffle off
 
 --start-hidden
     Don't show any windows on start

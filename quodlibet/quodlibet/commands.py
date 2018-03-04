@@ -217,10 +217,14 @@ def _shuffle(app, value):
 
 @registry.register("shuffle-type", args=1)
 def _shuffle_type(app, value):
-    if value == "random":
-        app.window.order.shuffler = OrderShuffle
-    elif value == "weighted":
-        app.window.order.shuffler = OrderWeighted
+    if value in ["random", "weighted"]:
+        app.player_options.shuffle = True
+        if value == "random":
+            app.window.order.shuffler = OrderShuffle
+        elif value == "weighted":
+            app.window.order.shuffler = OrderWeighted
+    elif value in ["off", "0"]:
+        app.player_options.shuffle = False
 
 
 @registry.register("repeat", args=1)
@@ -237,12 +241,16 @@ def _repeat(app, value):
 
 @registry.register("repeat-type", args=1)
 def _repeat_type(app, value):
-    if value == "current":
-        app.window.order.repeater = RepeatSongForever
-    elif value == "all":
-        app.window.order.repeater = RepeatListForever
-    elif value == "one":
-        app.window.order.repeater = OneSong
+    if value in ["current", "all", "one"]:
+        app.player_options.repeat = True
+        if value == "current":
+            app.window.order.repeater = RepeatSongForever
+        elif value == "all":
+            app.window.order.repeater = RepeatListForever
+        elif value == "one":
+            app.window.order.repeater = OneSong
+    elif value in ["off", "0"]:
+        app.player_options.repeat = False
 
 
 @registry.register("seek", args=1)

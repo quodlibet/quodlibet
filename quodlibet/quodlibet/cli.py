@@ -122,9 +122,9 @@ def process_arguments(argv):
     for opt, help, arg in [
         ("seek", _("Seek within the playing song"), _("[+|-][HH:]MM:SS")),
         ("shuffle", _("Set or toggle shuffle mode"), "0|1|t"),
-        ("shuffle-type", _("Set shuffle mode type"), "random|weighted"),
+        ("shuffle-type", _("Set shuffle mode type"), "random|weighted|off"),
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
-        ("repeat-type", _("Set repeat mode type"), "current|all|one"),
+        ("repeat-type", _("Set repeat mode type"), "current|all|one|off"),
         ("volume", _("Set the volume"), "(+|-|)0..100"),
         ("query", _("Search your audio library"), _("query")),
         ("play-file", _("Play a file"), C_("command", "filename")),
@@ -178,9 +178,9 @@ def process_arguments(argv):
 
     validators = {
         "shuffle": ["0", "1", "t", "on", "off", "toggle"].__contains__,
-        "shuffle-type": ["random", "weighted"].__contains__,
+        "shuffle-type": ["random", "weighted", "off", "0"].__contains__,
         "repeat": ["0", "1", "t", "on", "off", "toggle"].__contains__,
-        "repeat-type": ["current", "all", "one"].__contains__,
+        "repeat-type": ["current", "all", "one", "off", "0"].__contains__,
         "volume": is_vol,
         "seek": is_time,
         "set-rating": is_float,
