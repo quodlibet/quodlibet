@@ -12,12 +12,14 @@
 
 from gi.repository import Gtk, GLib
 
+from quodlibet import app
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.formats import PEOPLE
+from quodlibet.qltk import is_accel
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
@@ -80,6 +82,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
                            accel_group=self.accelerators)
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
+        sbb.connect('key-press-event', self.__sb_key_pressed)
         self._sb_box = sbb
 
         align = Align(sbb, left=6, right=6, top=6)
@@ -136,6 +139,14 @@ class PanedBrowser(Browser, util.InstanceTracker):
 
     def __text_parse(self, bar, text):
         self.activate()
+
+    def __sb_key_pressed(self, entry, event):
+        if (is_accel(event, "<Primary>Return") or
+                is_accel(event, "<Primary>KP_Enter")):
+            songs = app.window.songlist.get_songs()
+            app.window.playlist.enqueue(songs)
+            return True
+        return False
 
     def filter_text(self, text):
         self._set_text(text)
