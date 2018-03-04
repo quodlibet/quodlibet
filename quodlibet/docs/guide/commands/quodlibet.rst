@@ -50,9 +50,6 @@ OPTIONS
 --open-browser=BrowserName
     Open a new browser
 
---order=inorder|shuffle|weighted|onesong|toggle
-    Set or toggle the playback order
-
 --pause
     Pause playback
 
