@@ -183,7 +183,11 @@ class QueueExpander(Gtk.Expander):
             state_icon, False)
 
         connect_destroy(
+            player, 'song-started', self.__song_started, self.queue.model)
+        connect_destroy(
             player, 'song-ended', self.__update_queue_stop, self.queue.model)
+
+        self._last_queue_song = None
 
         # to make the children clickable if mapped
         # ....no idea why, but works
@@ -254,8 +258,16 @@ class QueueExpander(Gtk.Expander):
     def __update_queue_stop(self, player, song, stopped, model):
         enabled = config.getboolean("memory", "queue_stop_once_empty", False)
         songs_left = len(model.get())
-        if enabled and songs_left == 0 and not stopped:
+        if (enabled and songs_left == 0 and song is self._last_queue_song
+                and not stopped):
             app.player.stop()
+
+    def __song_started(self, player, song, model):
+        songs_left = len(model.get())
+        if songs_left == 0:
+            self._last_queue_song = None
+        elif songs_left == 1:
+            self._last_queue_song = song
 
     def __expand(self, widget, prop, menu_button):
         expanded = self.get_expanded()
