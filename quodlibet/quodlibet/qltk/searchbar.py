@@ -16,6 +16,7 @@ from quodlibet import config
 from quodlibet import _
 
 from quodlibet.query import Query
+from quodlibet.qltk import is_accel
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
@@ -67,6 +68,7 @@ class SearchBarBox(Gtk.HBox):
         self._query = None
         self.__sig = combo.connect('text-changed', self.__text_changed)
 
+        entry.connect('key-press-event', self.__key_pressed)
         entry.connect('clear', self.__filter_changed)
         entry.connect('backspace', self.__text_changed)
         entry.connect('populate-popup', self.__menu)
@@ -170,6 +172,14 @@ class SearchBarBox(Gtk.HBox):
         if self._query.is_parsable:
             GLib.idle_add(self.emit, 'query-changed', text)
             self.__save_search(args[0:1], args[1:])
+
+    def __key_pressed(self, entry, event):
+        if (is_accel(event, "<ctrl>Return") or
+                is_accel(event, "<ctrl>KP_Enter")):
+            songs = quodlibet.app.window.songlist.get_songs()
+            quodlibet.app.window.playlist.enqueue(songs)
+            return True
+        return False
 
     def __text_changed(self, *args):
         if not self.__entry.is_sensitive():
