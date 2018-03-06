@@ -130,7 +130,6 @@ class QueueExpander(Gtk.Expander):
 
         clear_item = MenuItem(_("_Clear Queue"), Icons.EDIT_CLEAR)
         menu.append(clear_item)
-        clear_item.connect("activate", self.__clear_queue)
 
         button = SmallMenuButton(
             SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
@@ -184,7 +183,11 @@ class QueueExpander(Gtk.Expander):
             state_icon, False)
 
         connect_destroy(
-            player, 'song-started', self.__update_queue_stop, self.queue.model)
+            player, 'song-started', self.__song_started, self.queue.model)
+        connect_destroy(
+            player, 'song-ended', self.__update_queue_stop, self.queue.model)
+
+        self._last_queue_song = None
 
         # to make the children clickable if mapped
         # ....no idea why, but works
@@ -223,14 +226,6 @@ class QueueExpander(Gtk.Expander):
         else:
             state_icon.stop()
 
-    def __clear_queue(self, activator):
-        self.model.clear()
-        stop_queue = config.getboolean("memory",
-                                       "queue_stop_once_empty",
-                                       False)
-        if stop_queue:
-            app.player_options.stop_after = True
-
     def __motion(self, wid, context, x, y, time):
         Gdk.drag_status(context, Gdk.DragAction.COPY, time)
         return True
@@ -260,12 +255,19 @@ class QueueExpander(Gtk.Expander):
         self.queue.model.order = (OrderShuffle() if is_shuffled
                                   else OrderInOrder())
 
-    def __update_queue_stop(self, player, song, model):
+    def __update_queue_stop(self, player, song, stopped, model):
         enabled = config.getboolean("memory", "queue_stop_once_empty", False)
         songs_left = len(model.get())
-        if enabled and songs_left == 1:
-            # Enable stop_after if this is the last song
-            app.player_options.stop_after = True
+        if (enabled and songs_left == 0 and song is self._last_queue_song
+                and not stopped):
+            app.player.stop()
+
+    def __song_started(self, player, song, model):
+        songs_left = len(model.get())
+        if songs_left == 0:
+            self._last_queue_song = None
+        elif songs_left == 1:
+            self._last_queue_song = song
 
     def __expand(self, widget, prop, menu_button):
         expanded = self.get_expanded()
