@@ -8,30 +8,42 @@
 
 import os
 
+import shutil
 from gi.repository import GObject, Gtk, Gio, GLib, Soup, GdkPixbuf
 
 from quodlibet import _, app, print_d, print_w
 from quodlibet import qltk
 from quodlibet.packages.senf import path2fsn
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern
-from quodlibet.plugins import PluginConfig, ConfProp, IntConfProp
+from quodlibet.plugins import PluginConfig, ConfProp, IntConfProp, BoolConfProp
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons
 from quodlibet.qltk.paned import Paned
+from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.util import connect_destroy, format_size, escape
-from quodlibet.util.http import session
+from quodlibet.util.http import download
+
+JPEG_QUALITY = 95
 
 SAVE_PATTERNS = [
-    "folder.jpg", "cover.jpg",
-    "<albumartist|<albumartist>|<artist>> - <album>.jpg",
-    "<albumartist|<albumartist>|<artist>> - <album> - front.jpg"]
+    "folder", "cover",
+    "<albumartist|<albumartist>|<artist>><album| - <album>| - <title>>",
+    "<albumartist|<albumartist>|<artist>><album| - <album>| - <title>> - front"
+]
+
+IMAGE_EXTENSIONS = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/gif': 'gif',
+}
 
 
 class ResizeWebImage(Gtk.Image):
     __gsignals__ = {
-        # The size (in bytes) and properties of a cover once known
-        'info-known': (GObject.SignalFlags.RUN_LAST, None, (int, object))
+        # The content-type, size (in bytes) and properties of a cover
+        # once discovered
+        'info-known': (GObject.SignalFlags.RUN_LAST, None, (str, int, object))
     }
 
     def __init__(self, url, config, cancellable=None):
@@ -40,37 +52,35 @@ class ResizeWebImage(Gtk.Image):
         self.url = url
         self.cancellable = cancellable
         self.message = msg = Soup.Message.new('GET', self.url)
-        session.send_async(msg, self.cancellable, self._sent, None)
-        # TODO: drop this sizing hack
+        self._content_type = None
+        self._original = None
+        download(msg, cancellable, self._sent, None)
         self.set_size_request(config.preview_size, config.preview_size)
         self._pixbuf = None
 
-    def _sent(self, session, task, data):
+    @property
+    def extension(self):
+        return IMAGE_EXTENSIONS.get(self._content_type, 'jpg')
+
+    def _sent(self, msg, result, data):
+        headers = self.message.get_property('response-headers')
+        self.size = int(headers.get('content-length'))
+        self._content_type = headers.get('content-type')
+        print_d("Got some bytes: %d KB (of %s)"
+                % (len(result) / 1024, self._content_type))
+        self._original = result
         try:
-            status = int(self.message.get_property('status-code'))
-            if status >= 400:
-                msg = 'HTTP {0} error in {1} request to {2}'.format(
-                    status, self.message.method, self.url)
-                print_w(msg)
-                return
-            headers = self.message.get_property('response-headers')
-            self.size = int(headers.get('content-length'))
-            print_d('Got HTTP {code} from {uri} ({size} KB)'.format(
-                uri=self.url, code=status, size=int(self.size / 1024)))
-            istream = session.send_finish(task)
-            GdkPixbuf.Pixbuf.new_from_stream_async(istream, self.cancellable,
-                                                   self._finished)
-
+            loader = GdkPixbuf.PixbufLoader()
         except GLib.GError as e:
-            print_w('Failed sending {method} request to {uri} ({err})'.format(
-                method=self.message.method, uri=self.url, err=e))
-
-    def _finished(self, istream, result):
-        self._pixbuf = GdkPixbuf.Pixbuf.new_from_stream_finish(result)
-        self.resize()
-        istream.close()
-        self.emit('info-known', self.size, self._pixbuf.props)
-        self.queue_draw()
+            print_w("Couldn't create GdkPixbuf (%s)" % e)
+        else:
+            loader.write(result)
+            loader.close()
+            self._pixbuf = loader.get_pixbuf()
+            self.emit('info-known', self._content_type, self.size,
+                      self._pixbuf.props)
+            self.resize()
+            self.queue_draw()
 
     def resize(self, new_size=None):
         if not self._pixbuf:
@@ -79,20 +89,28 @@ class ResizeWebImage(Gtk.Image):
             self.config.preview_size = new_size
         else:
             new_size = self.config.preview_size
-        pb = self._pixbuf
-        resized = pb.scale_simple(new_size, new_size,
-                                  GdkPixbuf.InterpType.BILINEAR)
+        props = self._pixbuf.props
+        if not self.config.over_scale:
+            new_size = min(props.width, props.height, new_size)
+        resized = self._pixbuf.scale_simple(new_size, new_size,
+                                            GdkPixbuf.InterpType.BILINEAR)
         self.set_from_pixbuf(resized)
-        self.queue_resize()
+        self.set_size_request(new_size, new_size)
 
-    def save_image(self, path):
-        # TODO: Don't re-encode (unless user wants it)
-        ret = self._pixbuf.savev(path2fsn(path), 'jpeg', ['quality'], ['100'])
-        if not ret:
-            raise IOError("Couldn't save to %s" % path)
+    def save_image(self, fsn):
+        fsn = path2fsn(fsn)
+        if self.config.re_encode:
+            ret = self._pixbuf.savev(fsn,
+                                     'jpeg', ['quality'], [str(JPEG_QUALITY)])
+            if not ret:
+                raise IOError("Couldn't save to %s" % fsn)
+        else:
+            print_d("Saving original image to %s" % fsn)
+            with open(fsn, "wb") as f:
+                f.write(self._original)
 
 
-class CoverArtWindow(qltk.Dialog):
+class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
     SIZES = {
         300: _("Small"),
         500: _("Classic"),
@@ -104,7 +122,7 @@ class CoverArtWindow(qltk.Dialog):
     }
     DEFAULT_SIZE = list(SIZES.keys())[0]
 
-    def __init__(self, songs, config=None):
+    def __init__(self, songs, manager, config=None):
         super().__init__(title="Cover Art Download", use_header_bar=True)
         self.config = config
         self.set_default_size(1200, 640)
@@ -112,15 +130,17 @@ class CoverArtWindow(qltk.Dialog):
         self.model = model = Gio.ListStore()
         self.songs = songs
 
-        def update(img, size, props, item, frame):
-            text = ("{} - {}x{}, <b>{}</b>".format(escape(item.source),
-                    props.width, props.height, format_size(size)))
+        def update(img, content_type, size, props, item, frame):
+            format = IMAGE_EXTENSIONS.get(content_type, content_type).upper()
+            text = "{source} - {w}x{h}, {format}, <b>{size}</b>".format(
+                source=escape(item.source), format=format,
+                w=props.width, h=props.height, size=format_size(size))
             frame.get_label_widget().set_markup(text)
             frame.get_child().set_reveal_child(True)
 
         def create_widget(item, data=None):
             img = ResizeWebImage(item.url, config=self.config)
-            text = (_("(Loading %(source)s (%(dimensions)s)…")
+            text = (_("Loading %(source)s - %(dimensions)s…")
                     % {'source': item.source, 'dimensions': item.dimensions})
             frame = Gtk.Frame.new(text)
             img.set_padding(12, 12)
@@ -140,7 +160,6 @@ class CoverArtWindow(qltk.Dialog):
         def selected(fb):
             children = fb.get_selected_children()
             cover = self.model.get_item(children[0].get_index())
-            print_d("Selected %s " % cover)
             if cover:
                 self.button.set_sensitive(True)
 
@@ -158,7 +177,6 @@ class CoverArtWindow(qltk.Dialog):
         paned.pack2(self.create_options(), False, False)
         self.vbox.pack_start(paned, True, True, 0)
 
-        manager = app.cover_manager
         connect_destroy(manager, 'covers-found', self._covers_found)
         connect_destroy(manager, 'searches-complete', self._finished)
         cancellable = self.__cancellable = Gio.Cancellable()
@@ -167,9 +185,9 @@ class CoverArtWindow(qltk.Dialog):
         # Do the search
         manager.search_cover(cancellable, songs)
 
-    def _filenames(self, pat_text, full_path=False):
+    def _filenames(self, pat_text, ext, full_path=False):
         def fn_for(song):
-            pat = ArbitraryExtensionFileFromPattern(pat_text)
+            pat = ArbitraryExtensionFileFromPattern("%s.%s" % (pat_text, ext))
             fn = pat.format(song)
             return os.path.join(song('~dirname'), fn) if full_path else fn
 
@@ -239,7 +257,7 @@ class CoverArtWindow(qltk.Dialog):
 
             def draw_save_type(column, cell, model, it, data):
                 pat_text = model[it][0]
-                text = list(self._filenames(pat_text))[0]
+                text = list(self._filenames(pat_text, 'jpg'))[0]
                 cell.set_property('text', text)
 
             save_options.set_cell_data_func(cell, draw_save_type, None)
@@ -270,10 +288,14 @@ class CoverArtWindow(qltk.Dialog):
         child = self.flow_box.get_selected_children()[0]
         data = self.model.get_item(child.get_index())
         img = self.__image_from_child(child)
-        paths = self._filenames(self.config.save_pattern, full_path=True)
-        print_d("Saving... data of %s to %s" % (data, paths))
+        ext = 'jpg' if self.config.re_encode else img.extension
+        paths = self._filenames(self.config.save_pattern, ext, full_path=True)
+        print_d("Saving %s to %s" % (data, paths))
+        first_path = paths.pop()
+        img.save_image(first_path)
+        # Copying faster than potentially resizing
         for path in paths:
-            img.save_image(path)
+            shutil.copy(first_path, path)
 
 
 class DownloadCoverArt(SongsMenuPlugin):
@@ -288,8 +310,11 @@ class DownloadCoverArt(SongsMenuPlugin):
     plugin_handles = any_song(is_a_file)
 
     def plugin_album(self, songs):
-        dialog = CoverArtWindow(songs, Config())
-        dialog.run()
+        manager = app.cover_manager
+        dialog = CoverArtWindow(songs, manager, Config())
+        ret = dialog.run()
+        if ret == Gtk.ResponseType.APPLY:
+            manager.cover_changed(songs)
         dialog.destroy()
 
 
@@ -297,3 +322,5 @@ class Config:
     plugin_config = PluginConfig(DownloadCoverArt.PLUGIN_ID)
     preview_size = IntConfProp(plugin_config, "preview_size", 300)
     save_pattern = ConfProp(plugin_config, "save_pattern", "folder.jpg")
+    over_scale = BoolConfProp(plugin_config, "over_scale", False)
+    re_encode = BoolConfProp(plugin_config, "re_encode", False)

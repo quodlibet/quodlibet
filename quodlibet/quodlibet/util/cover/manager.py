@@ -281,4 +281,4 @@ class CoverData(GObject.GObject):
         self.source = source
 
     def __repr__(self):
-        return "CoverData<url=%s>" % self.url
+        return "CoverData<url=%s @ %s>" % (self.url, self.dimensions)
