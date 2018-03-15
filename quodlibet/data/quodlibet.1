@@ -49,13 +49,11 @@ documentation is available at
 .SH OPTIONS
 .INDENT 0.0
 .TP
-.B \-\-enqueue filename|query
+.BI \-\-enqueue \ <filename|query>
 Enqueue a filename or query results
 .TP
-.B \-\-filter tag=value
+.BI \-\-filter \ <tag=value>
 Filter on a tag value
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-focus
 Focus the running player
@@ -71,13 +69,6 @@ List available browsers
 .TP
 .BI \-\-open\-browser\fB= BrowserName
 Open a new browser
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-order=inorder|shuffle|weighted|onesong|toggle
-Set or toggle the playback order
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-pause
 Pause playback
@@ -122,29 +113,32 @@ Filter on a random value
 .TP
 .B \-\-refresh
 Refresh and rescan library
-.UNINDENT
-.INDENT 0.0
 .TP
-.B \-\-repeat=off|on|t
+.BI \-\-repeat\fB= <off|on|t>
 Turn repeat off, on, or toggle
 .TP
-.B \-\-seek=[+|\-][HH:]MM:SS
+.BI \-\-repeat\-type\fB= <current|all|one|off>
+Repeat the currently playing song, the current list, stop after
+one song, or turn repeat off
+.TP
+.BI \-\-seek\fB= <[+|\-][HH:]MM:SS>
 Seek within the playing song
-.UNINDENT
-.INDENT 0.0
 .TP
 .BI \-\-set\-browser\fB= BrowserName
 Set the current browser
-.UNINDENT
-.INDENT 0.0
 .TP
-.B \-\-set\-rating=0.0..1.0
+.BI \-\-set\-rating\fB= <0.0..1.0>
 Rate the playing song
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-show\-window
 Show main window
+.TP
+.BI \-\-shuffle\fB= <off|on|t>
+Turn shuffle off, on, or toggle
+.TP
+.BI \-\-shuffle\-type\fB= <random|weighted|off>
+Set the shuffle type to be random, to prefer higher rated songs,
+or turn shuffle off
 .TP
 .B \-\-start\-hidden
 Don\(aqt show any windows on start
@@ -154,26 +148,20 @@ Begin playing immediately
 .TP
 .B \-\-status
 Print playing status
-.UNINDENT
-.INDENT 0.0
 .TP
-.B \-\-stop\-after=0|1|t
+.BI \-\-stop\-after\fB= <0|1|t>
 Stop after the playing song
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-toggle\-window
 Toggle main window visibility
 .TP
 .B \-\-unfilter
 Remove active browser filters
-.UNINDENT
-.INDENT 0.0
 .TP
-.B \-\-unqueue=filename|query
+.BI \-\-unqueue\fB= <filename|query>
 Unqueue a file or query
 .TP
-.B \-\-volume=(+|\-|)0..100
+.BI \-\-volume\fB= <(+\e|\-\e|)0..100>
 Set the volume
 .UNINDENT
 .SH ALBUM COVERS

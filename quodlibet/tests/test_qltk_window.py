@@ -4,10 +4,10 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from tests import TestCase
+from tests import TestCase, skipIf
 
 from quodlibet.qltk.window import Window, on_first_map, Dialog
-from quodlibet.util import InstanceTracker
+from quodlibet.util import InstanceTracker, is_osx
 
 from .helper import realized
 
@@ -71,6 +71,7 @@ class TWindows(TestCase):
         self.assertEqual(w.get_title(), None)
         w.destroy()
 
+    @skipIf(is_osx(), "crashes on 10.13")
     def test_toggle_fullscreen(self):
         w = Window(title="foo")
         w.toggle_fullscreen()

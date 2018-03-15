@@ -105,6 +105,7 @@
       <dep package="python-pyflakes"/>
       <dep package="python-pyobjc"/>
       <dep package="python-pytest"/>
+      <dep package="python-pytest-faulthandler"/>
       <dep package="python-coverage"/>
     </dependencies>
   </metamodule>
@@ -180,8 +181,8 @@
   </autotools>
 
   <autotools id="itstool" autogen-sh="configure">
-    <branch module="itstool/itstool-${version}.tar.bz2" version="2.0.4"
-            hash="sha256:97c208b51da33e0b553e830b92655f8deb9132f8fbe9a646771f95c33226eb60"
+    <branch module="itstool/itstool-${version}.tar.bz2" version="2.0.3"
+            hash="sha256:8c7a5c639eb4714a91ad829910fd06c1c677abcbbb60aee9211141faa7fb02c7"
             repo="itstool"/>
     <dependencies>
       <dep package="libxml2-python2"/>
@@ -206,7 +207,10 @@
              autogen-sh="configure">
     <branch version="0.34.0" module="pixman-${version}.tar.gz"
             repo="cairographics"
-            hash="sha1:a1b1683c1a55acce9d928fea1ab6ceb79142ddc7"/>
+            hash="sha1:a1b1683c1a55acce9d928fea1ab6ceb79142ddc7">
+      <!-- https://bugs.freedesktop.org/show_bug.cgi?id=104886 -->
+      <patch file="patches/pixman-clang5.patch" strip="1"/>
+    </branch>
   </autotools>
 
   <autotools id="cairo"  autogen-sh="configure"
@@ -368,7 +372,9 @@
   <autotools id="bison" autogen-sh="configure">
     <branch repo="ftp.gnu.org" module="bison/bison-3.0.4.tar.xz"
             version="3.0.4"
-            hash="sha256:a72428c7917bdf9fa93cb8181c971b6e22834125848cf1d03ce10b1bb0716fe1"/>
+            hash="sha256:a72428c7917bdf9fa93cb8181c971b6e22834125848cf1d03ce10b1bb0716fe1">
+      <patch file="patches/bison-secure-snprintf.patch" strip="1"/>
+    </branch>
     <dependencies>
       <dep package="gettext"/>
     </dependencies>
@@ -718,7 +724,6 @@
       <dep package="python-pytest"/>
     </dependencies>
   </distutils>
-
 
   <distutils id="python-ds_store" python3="1">
     <branch repo="pypi.org"

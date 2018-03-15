@@ -23,7 +23,7 @@ try:
 except ImportError:
     fcntl = None
 
-from senf import fsnative, environ, argv
+from senf import fsnative, argv
 
 from quodlibet.compat import reraise as py_reraise, text_type, \
     iteritems, reduce, number_types, long
@@ -943,19 +943,15 @@ def load_library(names, shared=True):
     else:
         load_func = ctypes.cdll.LoadLibrary
 
-    if is_osx():
-        # help ctypes find the libraries...
-        # DYLD_FALLBACK_LIBRARY_PATH gets reset by macOS in newer
-        # versions
-        environ["DYLD_FALLBACK_LIBRARY_PATH"] = os.pathsep.join(
-            [os.path.join(sys.prefix, "lib"), "/usr/lib"])
-
     errors = []
     for name in names:
         dlopen_name = name
         if ".so" not in name and ".dll" not in name and \
                 ".dylib" not in name:
             dlopen_name = ctypes.util.find_library(name) or name
+
+        if is_osx() and not os.path.isabs(dlopen_name):
+            dlopen_name = os.path.join(sys.prefix, "lib", dlopen_name)
 
         try:
             return load_func(dlopen_name), name

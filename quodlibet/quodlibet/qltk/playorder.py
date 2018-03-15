@@ -191,6 +191,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         self.__current = value
         if not self.__inhibit:
             self.emit('changed', self.__current)
+        self.__rebuild_menu()
 
     def set_active_by_name(self, name):
         for cls in self.__orders:

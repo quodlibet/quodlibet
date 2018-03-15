@@ -29,10 +29,10 @@ https://quodlibet.readthedocs.io/en/latest/guide/index.html.
 OPTIONS
 =======
 
---enqueue filename|query
+--enqueue <filename|query>
     Enqueue a filename or query results
 
---filter tag=value
+--filter <tag=value>
     Filter on a tag value
 
 --focus
@@ -49,9 +49,6 @@ OPTIONS
 
 --open-browser=BrowserName
     Open a new browser
-
---order=inorder|shuffle|weighted|onesong|toggle
-    Set or toggle the playback order
 
 --pause
     Pause playback
@@ -97,20 +94,31 @@ OPTIONS
 --refresh
     Refresh and rescan library
 
---repeat=off|on|t
+--repeat=<off|on|t>
     Turn repeat off, on, or toggle
 
---seek=[+|-][HH:]MM:SS
+--repeat-type=<current|all|one|off>
+    Repeat the currently playing song, the current list, stop after
+    one song, or turn repeat off
+
+--seek=<[+|-][HH:]MM:SS>
     Seek within the playing song
 
 --set-browser=BrowserName
     Set the current browser
 
---set-rating=0.0..1.0
+--set-rating=<0.0..1.0>
     Rate the playing song
 
 --show-window
     Show main window
+
+--shuffle=<off|on|t>
+    Turn shuffle off, on, or toggle
+
+--shuffle-type=<random|weighted|off>
+    Set the shuffle type to be random, to prefer higher rated songs,
+    or turn shuffle off
 
 --start-hidden
     Don't show any windows on start
@@ -121,7 +129,7 @@ OPTIONS
 --status
     Print playing status
 
---stop-after=0|1|t
+--stop-after=<0|1|t>
     Stop after the playing song
 
 --toggle-window
@@ -130,10 +138,10 @@ OPTIONS
 --unfilter
     Remove active browser filters
 
---unqueue=filename|query
+--unqueue=<filename|query>
     Unqueue a file or query
 
---volume=(+\|-\|)0..100
+--volume=<(+\|-\|)0..100>
     Set the volume
 
 ALBUM COVERS

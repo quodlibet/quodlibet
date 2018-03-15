@@ -9,13 +9,12 @@
 import os
 import sys
 
-from senf import fsnative, path2fsn
+from senf import fsnative, path2fsn, environ
 
 from tests import TestCase, get_data_path, mkstemp
 from .helper import capture_output, get_temp_copy
 
 from quodlibet import config
-from quodlibet import util
 from quodlibet.formats import MusicFile
 from quodlibet.operon.main import main as operon_main
 from quodlibet.compat import listkeys
@@ -335,7 +334,7 @@ class TOperonEdit(TOperonBase):
 
     def test_nonexist_editor(self):
         editor = fsnative(u"/this/path/does/not/exist/hopefully")
-        util.environ["VISUAL"] = editor
+        environ["VISUAL"] = editor
         e = self.check_false(["edit", self.f], False, True)[1]
         self.assertTrue(editor in e)
 

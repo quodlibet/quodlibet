@@ -209,7 +209,12 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
         try:
             first = next(objects)
         except TypeError:
-            first = next(iter(objects))
+            try:
+                first = next(iter(objects))
+            except StopIteration:
+                return
+        except StopIteration:
+            return
         else:
             value = get_marshalable(first)
             yield insert_with_valuesv(-1, columns, [value])
