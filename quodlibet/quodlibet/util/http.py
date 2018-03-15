@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
-#        2016-17 Nick Boultbee
+#        2016-18 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -80,11 +80,12 @@ class HTTPRequest(GObject.Object):
                 print_w(msg)
                 return self.emit('send-failure', Exception(msg))
             self.istream = session.send_finish(task)
-            print_d('Sent {1} request to {0}'.format(self._uri,
-                                                     self.message.method))
+            print_d('Got HTTP {code} on {method} request to {uri}.'.format(
+                uri=self._uri, code=status, method=self.message.method))
             self.emit('sent', self.message)
         except GLib.GError as e:
-            print_w('Failed sending request to {0} ({1})'.format(self._uri, e))
+            print_w('Failed sending {method} request to {uri} ({err})'.format(
+                method=self.message.method, uri=self._uri, err=e))
             self.emit('send-failure', e)
 
     def provide_target(self, stream):
