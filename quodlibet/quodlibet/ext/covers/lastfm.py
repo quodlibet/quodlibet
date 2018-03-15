@@ -44,7 +44,7 @@ class LastFMCover(ApiCoverSourcePlugin):
     def url(self):
         _url = 'https://ws.audioscrobbler.com/2.0?method=album.getinfo&' + \
                'api_key=107db6fd4c1c7f53b1526fafddab2c82&format=json&' + \
-               '&artist={artist}&album={album}&mbid={mbid}'
+               'artist={artist}&album={album}&mbid={mbid}'
         artist = Soup.URI.encode(self.song.get('artist', ''), None)
         album = Soup.URI.encode(self.song.get('album', ''), None)
         mbid = Soup.URI.encode(self.song.get('musicbrainz_albumid', ''), None)
