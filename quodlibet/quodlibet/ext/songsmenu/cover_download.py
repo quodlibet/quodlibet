@@ -191,7 +191,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             fn = pat.format(song)
             return os.path.join(song('~dirname'), fn) if full_path else fn
 
-        return {fn_for(song) for song in self.songs}
+        return sorted({fn_for(song) for song in self.songs})
 
     def _covers_found(self, manager, provider, results):
         if not results:
