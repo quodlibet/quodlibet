@@ -16,7 +16,7 @@ from quodlibet.qltk import get_top_parent
 from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import SmallMenuButton
 from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
-    SmallImageButton, MenuItem, PaneLock
+    SmallImageButton, MenuItem, PaneLock, ExpanderTitleContainerHack
 
 from gi.repository import Gtk
 
@@ -49,7 +49,7 @@ class WidgetBar(Gtk.Expander):
 
         self.title = Gtk.Label()
         self.title.set_alignment(0.0, 0.5)
-        self.set_label_widget(self.title)
+        self.set_label_widget(ExpanderTitleContainerHack(self.title))
 
         self.scroll = ScrolledWindow()
         self.scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.NEVER)
