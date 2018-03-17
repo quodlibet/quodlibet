@@ -14,6 +14,7 @@ from senf import fsnative
 from quodlibet.ext.covers.artwork_url import ArtworkUrlCover
 from quodlibet.formats import AudioFile
 from quodlibet.plugins import Plugin
+from quodlibet.util.cover.http import escape_query_value
 from quodlibet.util.cover.manager import CoverManager
 from quodlibet.util.path import normalize_path, path_equal
 from quodlibet.compat import text_type
@@ -171,3 +172,11 @@ class TCoverManager(TestCase):
         self.add_file('cover.jpg')
         cover = self.manager.get_cover_many(songs)
         assert cover
+
+
+class THttp(TestCase):
+
+    def test_escape(self):
+        assert escape_query_value("foo bar") == "foo%20bar"
+        assert escape_query_value("foo?") == "foo%3F"
+        assert escape_query_value("foo&bar") == "foo%26bar"

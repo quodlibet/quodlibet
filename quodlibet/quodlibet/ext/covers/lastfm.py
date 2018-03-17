@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
+#           2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +14,7 @@ from gi.repository import Soup
 from quodlibet import _
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
 from quodlibet.util.http import download_json
-from quodlibet.util.cover.http import HTTPDownloadMixin
+from quodlibet.util.cover.http import HTTPDownloadMixin, escape_query_value
 from quodlibet.util.path import escape_filename
 from quodlibet.util import print_d
 
@@ -45,9 +46,10 @@ class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
         _url = 'https://ws.audioscrobbler.com/2.0?method=album.getinfo&' + \
                'api_key=107db6fd4c1c7f53b1526fafddab2c82&format=json&' +\
                '&artist={artist}&album={album}&mbid={mbid}'
-        artist = Soup.URI.encode(self.song.get('artist', ''), None)
-        album = Soup.URI.encode(self.song.get('album', ''), None)
-        mbid = Soup.URI.encode(self.song.get('musicbrainz_albumid', ''), None)
+        song = self.song
+        artist = escape_query_value(song.get('artist', ''))
+        album = escape_query_value(song.get('album', ''))
+        mbid = escape_query_value(song.get('musicbrainz_albumid', ''))
         if (artist and album) or mbid:
             return _url.format(artist=artist, album=album, mbid=mbid)
         else:

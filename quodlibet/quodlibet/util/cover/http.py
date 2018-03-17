@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gio, GLib
+from gi.repository import Gio, GLib, Soup
 
 from quodlibet.util.http import HTTPRequest
 from quodlibet.util import print_w
@@ -61,3 +61,7 @@ class HTTPDownloadMixin(object):
             self.fail(exception.message or ' '.join(exception.args))
         except AttributeError:
             self.fail("Download error (%s)" % exception)
+
+
+def escape_query_value(s):
+    return Soup.URI.encode(s, '&')
