@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005-2009 Joe Wreschnig, Steven Robertson
-#           2012,2016 Nick Boultbee
+#           2012-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -167,6 +167,7 @@ class RandomAlbum(EventPlugin):
             browser = app.window.browser
 
             if self.disabled_for_browser(browser):
+                print_d("%s doesn't support album filtering" % browser.name)
                 return
 
             albumlib = app.library.albums
@@ -178,14 +179,19 @@ class RandomAlbum(EventPlugin):
             else:
                 keys = set(browser.list("album"))
                 values = [a for a in albumlib if a("album") in keys]
+            if not values:
+                print_d("No albums to randomly choose from.")
+                return
 
             if self.use_weights:
                 # Select 3% of albums, or at least 3 albums
-                nr_albums = int(min(len(values), max(0.03 * len(values), 3)))
+                total = len(values)
+                nr_albums = min(total, max(int(0.03 * total), 3))
+                print_d("Choosing from %d library albums. Best:" % nr_albums)
                 chosen_albums = random.sample(values, nr_albums)
                 album_scores = sorted(self._score(chosen_albums))
-                for score, album in album_scores:
-                    print_d("%0.2f scored by %s" % (score, album("album")))
+                for score, album in album_scores[-5:]:
+                    print_d("%0.1f scored by %s" % (score, album("album")))
                 album = max(album_scores)[1]
             else:
                 album = random.choice(values)

@@ -228,4 +228,6 @@ class TAlbumBrowser(TestCase):
     def tearDown(self):
         self.bar.disconnect(self._id)
         self.bar.disconnect(self._id2)
+        self.bar.destroy()
+        del self.bar
         config.quit()

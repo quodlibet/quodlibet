@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
-#           2016 Nick Boultbee
+#      2016-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -95,3 +95,7 @@ class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
 
         sci = self.connect('search-complete', search_complete)
         self.search()
+
+
+def escape_query_value(s):
+    return Soup.URI.encode(s, '&')

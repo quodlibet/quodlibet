@@ -18,6 +18,7 @@ from gi.repository import Soup
 from quodlibet import _
 from quodlibet.plugins.cover import cover_dir
 from quodlibet.util.http import download_json
+from quodlibet.util.cover.http import escape_query_value
 from quodlibet.util.cover.http import ApiCoverSourcePlugin
 from quodlibet.util.path import escape_filename
 from quodlibet.util import print_d
@@ -55,8 +56,8 @@ class DiscogsCover(ApiCoverSourcePlugin):
                 '&type=release' +
                 '&artist={artist}' +
                 '&release_title={album}')
-        artist = Soup.URI.encode(self.song.get('artist', ''), None)
-        album = Soup.URI.encode(self.song.get('album', ''), None)
+        artist = escape_query_value(self.song.get('artist', ''))
+        album = escape_query_value(self.song.get('album', ''))
         if artist and album:
             return _url.format(artist=artist, album=album)
         else:

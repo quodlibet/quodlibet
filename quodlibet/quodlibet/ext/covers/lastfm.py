@@ -9,12 +9,10 @@
 
 from os import path
 
-from gi.repository import Soup
-
 from quodlibet import _
 from quodlibet.plugins.cover import cover_dir
 from quodlibet.util import print_d
-from quodlibet.util.cover.http import ApiCoverSourcePlugin
+from quodlibet.util.cover.http import ApiCoverSourcePlugin, escape_query_value
 from quodlibet.util.path import escape_filename
 
 
@@ -45,9 +43,10 @@ class LastFMCover(ApiCoverSourcePlugin):
         _url = 'https://ws.audioscrobbler.com/2.0?method=album.getinfo&' + \
                'api_key=107db6fd4c1c7f53b1526fafddab2c82&format=json&' + \
                'artist={artist}&album={album}&mbid={mbid}'
-        artist = Soup.URI.encode(self.song.get('artist', ''), None)
-        album = Soup.URI.encode(self.song.get('album', ''), None)
-        mbid = Soup.URI.encode(self.song.get('musicbrainz_albumid', ''), None)
+        song = self.song
+        artist = escape_query_value(song.get('artist', ''))
+        album = escape_query_value(song.get('album', ''))
+        mbid = escape_query_value(song.get('musicbrainz_albumid', ''))
         if (artist and album) or mbid:
             return _url.format(artist=artist, album=album, mbid=mbid)
         else:
