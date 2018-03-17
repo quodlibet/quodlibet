@@ -411,13 +411,6 @@ class TAudioFile(TestCase):
         song["lyricist"] = u"Lyricist"
         self.assertTrue(isinstance(song.lyric_filename, fsnative))
 
-    def assert_paths_equal(self, a, b):
-        # pass custom error message to avoid truncation!
-        a2 = os.path.realpath(a).lower()
-        b2 = os.path.realpath(b).lower()
-        msg_fail = str("item1: %s !=\nitem2: %s" % (a2, b2))
-        self.assertEqual(a2, b2, msg_fail)
-
     def lyric_filename_search_test_song(self, pathfile):
         s = AudioFile()
         s.sanitize(pathfile)
@@ -443,7 +436,7 @@ class TAudioFile(TestCase):
             search = unquote(s.lyric_filename)
             os.remove(fp)
             os.rmdir(p)
-            self.assert_paths_equal(search, fp)
+            self.assertEqual(search, fp)
 
     def test_lyric_filename_search_builtin_default_local_path(self):
         """test built-in default local path"""
@@ -456,7 +449,10 @@ class TAudioFile(TestCase):
                 f.write(u"")
             search = s.lyric_filename
             os.remove(fp)
-            self.assert_paths_equal(search, fp)
+            if is_windows():
+                fp = fp.lower()  # account for 'os.path.normcase' santisatation
+                search = search.lower()  # compensate for the above
+            self.assertEqual(search, fp)
 
     def test_lyric_filename_search_file_not_found(self):
         """test default file not found fallback"""
@@ -468,7 +464,7 @@ class TAudioFile(TestCase):
             config.set("memory", "lyric_rootpaths", root)
             fp = os.path.join(root, s["artist"] + ".-." + s["title"])
             search = unquote(s.lyric_filename)
-            self.assert_paths_equal(search, fp)
+            self.assertEqual(search, fp)
         self.lyric_filename_search_clean_config()
 
     def test_lyric_filename_search_custom_path(self):
@@ -486,7 +482,7 @@ class TAudioFile(TestCase):
                 f.write(u"")
             search = s.lyric_filename
             os.remove(fp)
-            self.assert_paths_equal(search, fp)
+            self.assertEqual(search, fp)
         self.lyric_filename_search_clean_config()
 
     def test_lyric_filename_search_order_priority(self):
@@ -513,7 +509,7 @@ class TAudioFile(TestCase):
             os.remove(fp2)
             os.rmdir(p2)
             os.remove(fp)
-            self.assert_paths_equal(search, fp)
+            self.assertEqual(search, fp)
         self.lyric_filename_search_clean_config()
 
     def test_lyric_filename_search_modified_extension_fallback(self):
@@ -530,7 +526,7 @@ class TAudioFile(TestCase):
                 f.write(u"")
             search = s.lyric_filename
             os.remove(fp)
-            self.assert_paths_equal(search, fp)
+            self.assertEqual(search, fp)
         self.lyric_filename_search_clean_config()
 
     def test_lyric_filename_search_special_characters(self):
@@ -554,10 +550,15 @@ class TAudioFile(TestCase):
                     f.write(u"")
                 search = s.lyric_filename
                 os.remove(rpf.pathfile)
-                self.assert_paths_equal(search, rpf.pathfile)
+                fp = rpf.pathfile
+                if is_windows():
+                    # account for 'os.path.normcase' santisatation
+                    fp = fp.lower()
+                    search = search.lower() # compensate for the above
+                self.assertEqual(search, fp)
         self.lyric_filename_search_clean_config()
 
-    def test_lyric_filename_search_special_characters_accross_path(self):
+    def test_lyric_filename_search_special_characters_across_path(self):
         """test '<' and/or '>' in name across path separator (not parsed
         (transparent to test))"""
         with temp_filename() as filename:
@@ -595,7 +596,11 @@ class TAudioFile(TestCase):
             for p in rmdirs:
                 os.rmdir(p)
             # test whether the 'found' file is the test lyric file
-            self.assert_paths_equal(search, rpf.pathfile)
+            fp = rpf.pathfile
+            if is_windows():
+                fp = fp.lower()  # account for 'os.path.normcase' santisatation
+                search = search.lower()  # compensate for the above
+            self.assertEqual(search, fp)
         self.lyric_filename_search_clean_config()
 
     def test_lyrics_from_file(self):
