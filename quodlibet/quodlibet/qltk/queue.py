@@ -21,7 +21,7 @@ from quodlibet import qltk
 from quodlibet import app
 
 from quodlibet.util import connect_destroy, format_time_preferred, print_exc
-from quodlibet.qltk import Icons, gtk_version, add_css
+from quodlibet.qltk import Icons, add_css
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
 from quodlibet.qltk.songsmenu import SongsMenu
@@ -29,7 +29,7 @@ from quodlibet.qltk.menubutton import SmallMenuButton
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
-    SmallImageButton, MenuItem
+    SmallImageButton, MenuItem, ExpanderTitleContainerHack
 
 QUEUE = os.path.join(quodlibet.get_user_dir(), "queue")
 
@@ -64,20 +64,6 @@ class PlaybackStatusIcon(Gtk.Box):
         self._set("media-playback-pause")
 
 
-class ExpandBoxHack(Gtk.HBox):
-
-    def do_get_preferred_width(self):
-        # Workaround for https://bugzilla.gnome.org/show_bug.cgi?id=765602
-        # set_label_fill() no longer works since 3.20. Fake a natural size
-        # which is larger than the expander can be to force the parent to
-        # allocate to us the whole space.
-        min_, nat = Gtk.HBox.do_get_preferred_width(self)
-        if gtk_version > (3, 19):
-            # if we get too large gtk calcs will overflow..
-            nat = max(nat, 2 ** 16)
-        return (min_, nat)
-
-
 class QueueExpander(Gtk.Expander):
 
     def __init__(self, library, player):
@@ -91,7 +77,7 @@ class QueueExpander(Gtk.Expander):
 
         add_css(self, ".ql-expanded title { margin-bottom: 5px; }")
 
-        outer = ExpandBoxHack()
+        outer = ExpanderTitleContainerHack()
 
         left = Gtk.HBox(spacing=12)
 
