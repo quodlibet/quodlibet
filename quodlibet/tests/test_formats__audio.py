@@ -18,6 +18,7 @@ from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
 from quodlibet.util.tags import _TAGS as TAGS
 from quodlibet.util.path import normalize_path, mkdir, get_home_dir, unquote, \
                                 escape_filename, RootPathFile
+from quodlibet.util.environment import is_windows
 
 from .helper import temp_filename
 
@@ -539,7 +540,7 @@ class TAudioFile(TestCase):
             root = os.path.dirname(filename)
 
             path_variants = \
-                ['<oldskool>'] if (os.name == "nt") \
+                ['<oldskool>'] if is_windows() \
                                else ['\<artist\>', '\<artist>', '<artist\>']
             for path_variant in path_variants:
                 s['artist'] = path_variant + " SpongeBob SquarePants"

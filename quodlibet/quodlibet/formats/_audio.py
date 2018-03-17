@@ -25,6 +25,7 @@ from quodlibet import config
 from quodlibet.util.path import mkdir, mtime, expanduser, normalize_path, \
                                 ismount, get_home_dir, RootPathFile
 from quodlibet.util.string import encode, decode, isascii
+from quodlibet.util.environment import is_windows
 
 from quodlibet.util import iso639
 from quodlibet.util import human_sort_key as human, capitalize
@@ -558,7 +559,7 @@ class AudioFile(dict, ImageContainer):
                 pathfile = expand_patterns(pathfile).format(self)
             rpf = RootPathFile(root, pathfile)
             expanded.append(rpf)
-            if not os.path.exists(pathfile) and os.name == "nt":
+            if not os.path.exists(pathfile) and is_windows():
                 # prioritise a special character encoded version
                 #
                 # most 'alien' chars are supported for 'nix fs paths, and we
