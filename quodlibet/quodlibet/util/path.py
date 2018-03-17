@@ -481,7 +481,7 @@ class RootPathFile:
         return os.path.sep.join([self.root, self.end_escaped])
 
     @property
-    def is_valid(self):
+    def valid(self):
         valid = True
         if os.path.exists(self.pathfile):
             return valid

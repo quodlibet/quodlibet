@@ -546,9 +546,9 @@ class TAudioFile(TestCase):
                 s['artist'] = path_variant + " SpongeBob SquarePants"
                 parts = [root, s["artist"] + " - " + s["title"] + ".lyric"]
                 rpf = RootPathFile(root, os.path.sep.join(parts))
-                if not rpf.is_valid:
+                if not rpf.valid:
                     rpf = RootPathFile(rpf.root, rpf.pathfile_escaped)
-                self.assertTrue(rpf.is_valid,
+                self.assertTrue(rpf.valid,
                                 "even escaped target file is not valid")
                 with io.open(rpf.pathfile, "w", encoding='utf-8') as f:
                     f.write(u"")
@@ -575,15 +575,15 @@ class TAudioFile(TestCase):
             # ensure valid dir existence
             for p in rpf.end.split(os.path.sep)[:-1]:
                 rootp = os.path.sep.join([root, p])
-                if not RootPathFile(root, rootp).is_valid:
+                if not RootPathFile(root, rootp).valid:
                     rootp = os.path.sep.join([root, escape_filename(p)])
-                self.assertTrue(RootPathFile(root, rootp).is_valid,
+                self.assertTrue(RootPathFile(root, rootp).valid,
                                 "even escaped target dir part is not valid!")
                 if not os.path.exists(rootp):
                     mkdir(rootp)
                     rmdirs.append(rootp)
 
-            if not rpf.is_valid:
+            if not rpf.valid:
                 rpf = RootPathFile(rpf.root, rpf.pathfile_escaped)
 
             with io.open(rpf.pathfile, "w", encoding='utf-8') as f:
