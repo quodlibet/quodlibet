@@ -472,8 +472,8 @@ class RootPathFile:
 
     @property
     def end_escaped(self):
-        escaped = list(map(lambda part: escape_filename(part),
-                           self.end.split(os.path.sep)))
+        escaped = [escape_filename(part)
+                    for part in self.end.split(os.path.sep)]
         return os.path.sep.join(escaped)
 
     @property
