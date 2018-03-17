@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2016 Nick Boultbee
+#           2016,18 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -95,4 +95,5 @@ def index(name):
         if name in keys:
             return j
 
-    raise ValueError("%r not found" % name)
+    raise ValueError("%r not found. Try: %s"
+                     % (name, [b.keys for b in browsers]))
