@@ -132,36 +132,9 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         self.headless = headless
         self.set_default_size(1400, 720)
         self.flow_box = box = Gtk.FlowBox()
-        self.model = model = Gio.ListStore()
+        self.model = Gio.ListStore()
         self.songs = songs
         self._groups = {}
-
-        def update(img, content_type, size, props, item, frame):
-            format = IMAGE_EXTENSIONS.get(content_type, content_type).upper()
-            text = "{source} - {w}x{h}, {format}, <b>{size}</b>".format(
-                source=escape(item.source), format=format,
-                w=props.width, h=props.height, size=format_size(size))
-            frame.get_label_widget().set_markup(text)
-            frame.get_child().set_reveal_child(True)
-
-        def create_widget(item, data=None):
-            img = ResizeWebImage(item.url, config=self.config)
-            text = (_("Loading %(source)s - %(dimensions)s…")
-                    % {'source': item.source, 'dimensions': item.dimensions})
-            frame = Gtk.Frame.new(text)
-            img.set_padding(12, 12)
-            frame.set_shadow_type(Gtk.ShadowType.NONE)
-            frame.set_border_width(12)
-            img.connect('info-known', update, item, frame)
-            reveal = Gtk.Revealer()
-            reveal.set_reveal_child(False)
-            reveal.props.transition_duration = 800
-            reveal.props.transition_type = Gtk.RevealerTransitionType.CROSSFADE
-            reveal.add(img)
-            frame.add(reveal)
-
-            frame.set_label_align(0.5, 1.0)
-            return frame
 
         def selected(fb):
             children = fb.get_selected_children()
@@ -169,7 +142,9 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             if cover:
                 self.button.set_sensitive(True)
 
-        box.bind_model(model, create_widget, None)
+        # Only supported on GTK >= 3.18 (not Ubuntu 16.04)
+        # Re-enable some day perhaps...
+        # box.bind_model(self.model, self.create_widget, None)
         box.set_valign(Gtk.Align.START)
         box.set_max_children_per_line(4)
         box.connect('selected-children-changed', selected)
@@ -191,6 +166,32 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         # Do the search
         self._groups = manager.search_cover(cancellable, songs)
 
+    def _create_item_widget(self, item):
+        def update(img, content_type, size, props, item, frame):
+            format = IMAGE_EXTENSIONS.get(content_type, content_type).upper()
+            text = "{source} - {w}x{h}, {format}, <b>{size}</b>".format(
+                source=escape(item.source), format=format,
+                w=props.width, h=props.height, size=format_size(size))
+            frame.get_label_widget().set_markup(text)
+            frame.get_child().set_reveal_child(True)
+
+        img = ResizeWebImage(item.url, config=self.config)
+        text = (_("Loading %(source)s - %(dimensions)s…")
+                % {'source': item.source, 'dimensions': item.dimensions})
+        frame = Gtk.Frame.new(text)
+        img.set_padding(12, 12)
+        frame.set_shadow_type(Gtk.ShadowType.NONE)
+        frame.set_border_width(12)
+        img.connect('info-known', update, item, frame)
+        reveal = Gtk.Revealer()
+        reveal.set_reveal_child(False)
+        reveal.props.transition_duration = 800
+        reveal.props.transition_type = Gtk.RevealerTransitionType.CROSSFADE
+        reveal.add(img)
+        frame.add(reveal)
+        frame.set_label_align(0.5, 1.0)
+        return frame
+
     def _filenames(self, pat_text, ext, full_path=False):
         def fn_for(song):
             pat = ArbitraryExtensionFileFromPattern("%s.%s" % (pat_text, ext))
@@ -205,6 +206,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             return
         for result in results:
             self.model.append(result)
+            self.flow_box.add(self._create_item_widget(result))
         self.show_all()
 
     def _finished(self, manager, results):
