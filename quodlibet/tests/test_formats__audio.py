@@ -8,6 +8,7 @@ from tests import TestCase, get_data_path
 
 import os
 import io
+from contextlib import contextmanager
 from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
 
 from quodlibet import config
@@ -16,7 +17,9 @@ from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
 from quodlibet.util.tags import _TAGS as TAGS
-from quodlibet.util.path import normalize_path, mkdir
+from quodlibet.util.path import normalize_path, mkdir, get_home_dir, unquote, \
+                                escape_filename, RootPathFile
+from quodlibet.util.environment import is_windows
 
 from .helper import temp_filename
 
@@ -408,6 +411,181 @@ class TAudioFile(TestCase):
         self.assertTrue(isinstance(song.lyric_filename, fsnative))
         song["lyricist"] = u"Lyricist"
         self.assertTrue(isinstance(song.lyric_filename, fsnative))
+
+    def lyric_filename_search_test_song(self, pathfile):
+        s = AudioFile()
+        s.sanitize(pathfile)
+        s['artist'] = "SpongeBob SquarePants"
+        s['title'] = "Theme Tune"
+        return s
+
+    @contextmanager
+    def lyric_filename_test_setup(self, no_config=False):
+
+        with temp_filename() as filename:
+            s = self.lyric_filename_search_test_song(filename)
+            root = os.path.dirname(filename)
+
+            if not no_config:
+                config.set("memory", "lyric_filenames",
+                           "<artist>.-.<title>,<artist> - <title>.lyrics_mod")
+            config.set("memory", "lyric_rootpaths", root)
+
+            s.root = root
+            yield s
+
+            if not no_config:
+                self.lyric_filename_search_clean_config()
+
+    def lyric_filename_search_clean_config(self):
+        """reset config to ensure other tests aren't affected"""
+        config.remove_option("memory", "lyric_rootpaths")
+        config.remove_option("memory", "lyric_filenames")
+
+    def test_lyric_filename_search_builtin_default(self):
+        """test built-in default"""
+        with self.lyric_filename_test_setup(no_config=True) as ts:
+            fp = os.path.join(ts.root, ts["artist"], ts["title"] + ".lyric")
+            p = os.path.dirname(fp)
+            mkdir(p)
+            with io.open(fp, "w", encoding='utf-8') as f:
+                f.write(u"")
+            search = unquote(ts.lyric_filename)
+            os.remove(fp)
+            os.rmdir(p)
+            self.assertEqual(search, fp)
+
+    def test_lyric_filename_search_builtin_default_local_path(self):
+        """test built-in default local path"""
+        with self.lyric_filename_test_setup(no_config=True) as ts:
+            fp = os.path.join(ts.root, ts["artist"] + " - " +
+                                       ts["title"] + ".lyric")
+            with io.open(fp, "w", encoding='utf-8') as f:
+                f.write(u"")
+            search = ts.lyric_filename
+            os.remove(fp)
+            if is_windows():
+                fp = fp.lower()  # account for 'os.path.normcase' santisatation
+                search = search.lower()  # compensate for the above
+            self.assertEqual(search, fp)
+
+    def test_lyric_filename_search_file_not_found(self):
+        """test default file not found fallback"""
+        with self.lyric_filename_test_setup() as ts:
+            fp = os.path.join(ts.root, ts["artist"] + ".-." + ts["title"])
+            search = unquote(ts.lyric_filename)
+            self.assertEqual(search, fp)
+
+    def test_lyric_filename_search_custom_path(self):
+        """test custom lyrics file location / naming"""
+        with self.lyric_filename_test_setup() as ts:
+            fp = os.path.join(ts.root, ts["artist"] + " - " +
+                                       ts["title"] + ".lyric")
+            with io.open(fp, "w", encoding='utf-8') as f:
+                f.write(u"")
+            search = ts.lyric_filename
+            os.remove(fp)
+            self.assertEqual(search, fp)
+
+    def test_lyric_filename_search_order_priority(self):
+        """test custom lyrics order priority"""
+        with self.lyric_filename_test_setup() as ts:
+            root2 = os.path.join(get_home_dir(), ".lyrics") # built-in default
+            fp2 = os.path.join(root2, ts["artist"] + " - " +
+                                      ts["title"] + ".lyric")
+            p2 = os.path.dirname(fp2)
+            mkdir(p2)
+            with io.open(fp2, "w", encoding='utf-8') as f:
+                f.write(u"")
+            fp = os.path.join(ts.root, ts["artist"] + " - " +
+                                       ts["title"] + ".lyric")
+            with io.open(fp, "w", encoding='utf-8') as f:
+                f.write(u"")
+            mkdir(p2)
+            search = ts.lyric_filename
+            os.remove(fp2)
+            os.rmdir(p2)
+            os.remove(fp)
+            self.assertEqual(search, fp)
+
+    def test_lyric_filename_search_modified_extension_fallback(self):
+        """test modified extension fallback search"""
+        with self.lyric_filename_test_setup() as ts:
+            fp = os.path.join(ts.root,
+                              ts["artist"] + " - " + ts["title"] + ".txt")
+            with io.open(fp, "w", encoding='utf-8') as f:
+                f.write(u"")
+            search = ts.lyric_filename
+            os.remove(fp)
+            self.assertEqual(search, fp)
+
+    def test_lyric_filename_search_special_characters(self):
+        """test '<' and/or '>' in name (not parsed (transparent to test))"""
+        with self.lyric_filename_test_setup(no_config=True) as ts:
+
+            path_variants = ['<oldskool>'] \
+                if is_windows() else ['\<artist\>', '\<artist>', '<artist\>']
+
+            for path_variant in path_variants:
+                ts['artist'] = path_variant + " SpongeBob SquarePants"
+                parts = [ts.root,
+                         ts["artist"] + " - " + ts["title"] + ".lyric"]
+                rpf = RootPathFile(ts.root, os.path.sep.join(parts))
+                if not rpf.valid:
+                    rpf = RootPathFile(rpf.root, rpf.pathfile_escaped)
+                self.assertTrue(rpf.valid,
+                                "even escaped target file is not valid")
+                with io.open(rpf.pathfile, "w", encoding='utf-8') as f:
+                    f.write(u"")
+                search = ts.lyric_filename
+                os.remove(rpf.pathfile)
+                fp = rpf.pathfile
+                if is_windows():
+                    # account for 'os.path.normcase' santisatation
+                    fp = fp.lower()
+                    search = search.lower() # compensate for the above
+                self.assertEqual(search, fp)
+
+    def test_lyric_filename_search_special_characters_across_path(self):
+        """test '<' and/or '>' in name across path separator (not parsed
+        (transparent to test))"""
+        with self.lyric_filename_test_setup(no_config=True) as ts:
+            # test '<' and '>' in name across path
+            # (not parsed (transparent to test))
+            ts['artist'] = "a < b"
+            ts['title'] = "b > a"
+            parts = [ts.root, ts["artist"], ts["title"] + ".lyric"]
+            rpf = RootPathFile(ts.root, os.path.sep.join(parts))
+            rootp = ts.root
+            rmdirs = []
+            # ensure valid dir existence
+            for p in rpf.end.split(os.path.sep)[:-1]:
+                rootp = os.path.sep.join([ts.root, p])
+                if not RootPathFile(ts.root, rootp).valid:
+                    rootp = os.path.sep.join([ts.root, escape_filename(p)])
+                self.assertTrue(RootPathFile(ts.root, rootp).valid,
+                                "even escaped target dir part is not valid!")
+                if not os.path.exists(rootp):
+                    mkdir(rootp)
+                    rmdirs.append(rootp)
+
+            if not rpf.valid:
+                rpf = RootPathFile(rpf.root, rpf.pathfile_escaped)
+
+            with io.open(rpf.pathfile, "w", encoding='utf-8') as f:
+                f.write(u"")
+            # search for lyric file
+            search = ts.lyric_filename
+            # clean up test lyric file / path
+            os.remove(rpf.pathfile)
+            for p in rmdirs:
+                os.rmdir(p)
+            # test whether the 'found' file is the test lyric file
+            fp = rpf.pathfile
+            if is_windows():
+                fp = fp.lower()  # account for 'os.path.normcase' santisatation
+                search = search.lower()  # compensate for the above
+            self.assertEqual(search, fp)
 
     def test_lyrics_from_file(self):
         with temp_filename() as filename:

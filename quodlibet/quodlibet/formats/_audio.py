@@ -12,17 +12,20 @@
 # more readable, unless they're also faster.
 
 import os
+import re
 import shutil
 import time
+from collections import OrderedDict
 
 from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 
 from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
-from quodlibet.util.path import mkdir, mtime, expanduser, \
-    normalize_path, escape_filename, ismount
+from quodlibet.util.path import mkdir, mtime, expanduser, normalize_path, \
+                                ismount, get_home_dir, RootPathFile
 from quodlibet.util.string import encode, decode, isascii
+from quodlibet.util.environment import is_windows
 
 from quodlibet.util import iso639
 from quodlibet.util import human_sort_key as human, capitalize
@@ -537,24 +540,127 @@ class AudioFile(dict, ImageContainer):
 
     @property
     def lyric_filename(self):
-        """Returns the (potential) lyrics filename for this file"""
+        """Returns the validated, or default, lyrics filename for this
+        file. User defined '[memory] lyric_rootpaths' and
+        '[memory] lyric_filenames' matches take precedence"""
 
-        filename = self.comma("title").replace(u'/', u'')[:128] + u'.lyric'
-        sub_dir = ((self.comma("lyricist") or self.comma("artist"))
-                  .replace(u'/', u'')[:128])
+        from quodlibet.pattern \
+            import ArbitraryExtensionFileFromPattern as expand_patterns
 
-        if os.name == "nt":
-            # this was added at a later point. only use escape_filename here
-            # to keep the linux case the same as before
-            filename = escape_filename(filename)
-            sub_dir = escape_filename(sub_dir)
-        else:
-            filename = fsnative(filename)
-            sub_dir = fsnative(sub_dir)
+        rx_params = re.compile('[^\\\]<[^' + re.escape(os.sep) + ']*[^\\\]>')
 
-        path = os.path.join(
-            expanduser(fsnative(u"~/.lyrics")), sub_dir, filename)
-        return path
+        def expand_pathfile(rpf):
+            """Return the expanded RootPathFile"""
+            expanded = []
+            root = expanduser(rpf.root)
+            pathfile = expanduser(rpf.pathfile)
+            if rx_params.search(pathfile):
+                root = expand_patterns(root).format(self)
+                pathfile = expand_patterns(pathfile).format(self)
+            rpf = RootPathFile(root, pathfile)
+            expanded.append(rpf)
+            if not os.path.exists(pathfile) and is_windows():
+                # prioritise a special character encoded version
+                #
+                # most 'alien' chars are supported for 'nix fs paths, and we
+                # only pass the proposed path through 'escape_filename' (which
+                # apparently doesn't respect case) if we don't care about case!
+                #
+                # FIX: assumes 'nix build used on a case-sensitive fs, nt case
+                # insensitive. clearly this is not biting anyone though (yet!)
+                pathfile = os.path.sep.join([rpf.root, rpf.end_escaped])
+                rpf = RootPathFile(rpf.root, pathfile)
+                expanded.insert(len(expanded) - 1, rpf)
+            return expanded
+
+        def sanitise(sep, parts):
+            """Return a santisied version of a path's parts"""
+            return sep.join(part.replace(os.path.sep, u'')[:128]
+                                for part in parts)
+
+        # setup defaults (user-defined take precedence)
+        # root search paths
+        lyric_paths = \
+            config.getstringlist("memory", "lyric_rootpaths", [])
+        # ensure default paths
+        lyric_paths.append(os.path.join(get_home_dir(), ".lyrics"))
+        lyric_paths.append(
+            os.path.join(os.path.dirname(self.comma('~filename'))))
+        # search pathfile names
+        lyric_filenames = \
+            config.getstringlist("memory", "lyric_filenames", [])
+        # ensure some default pathfile names
+        lyric_filenames.append(
+            sanitise(os.sep, [(self.comma("lyricist") or
+                              self.comma("artist")),
+                              self.comma("title")]) + u'.lyric')
+        lyric_filenames.append(
+            sanitise(' - ', [(self.comma("lyricist") or
+                             self.comma("artist")),
+                             self.comma("title")]) + u'.lyric')
+
+        # generate all potential paths (unresolved/unexpanded)
+        pathfiles = OrderedDict()
+        for r in lyric_paths:
+            for f in lyric_filenames:
+                pathfile = os.path.join(r, os.path.dirname(f),
+                                        fsnative(os.path.basename(f)))
+                rpf = RootPathFile(r, pathfile)
+                if not pathfile in pathfiles:
+                    pathfiles[pathfile] = rpf
+
+        #print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
+
+        # expand each raw pathfile in turn and test for existence
+        match_ = ""
+        pathfiles_expanded = OrderedDict()
+        for pf, rpf in pathfiles.items():
+            for rpf in expand_pathfile(rpf):  # resolved as late as possible
+                pathfile = rpf.pathfile
+                pathfiles_expanded[pathfile] = rpf
+                if os.path.exists(pathfile):
+                    match_ = pathfile
+                    break
+            if match_ != "":
+                break
+
+        if not match_:
+            # search even harder!
+            lyric_extensions = ['lyric', 'lyrics', '', 'txt']
+            #print_d("extending search to extensions: %s" % lyric_extensions)
+
+            def generate_mod_ext_paths(pathfile):
+                # separate pathfile's extension (if any)
+                ext = os.path.splitext(pathfile)[1][1:]
+                path = pathfile[:-1 * len(ext)].strip('.') if ext else pathfile
+                # skip the proposed lyric extension if it is the same as
+                # the original for a given search pathfile stub - it has
+                # already been tested without success!
+                extra_extensions = [x for x in lyric_extensions if x != ext]
+
+                # join valid new extensions to pathfile stub and return
+                return ['.'.join([path, ext]) if ext else path
+                           for ext in extra_extensions]
+
+            # look for a match by modifying the extension for each of the
+            # (now fully resolved) 'pathfiles_expanded' search items
+            for pathfile in pathfiles_expanded.keys():
+                # get alternatives for existence testing
+                paths_mod_ext = generate_mod_ext_paths(pathfile)
+                for path_ext in paths_mod_ext:
+                    if os.path.exists(path_ext):
+                        # persistence has paid off!
+                        #print_d("extended search match!")
+                        match_ = path_ext
+                        break
+                if match_:
+                    break
+
+        if not match_:
+            # default
+            match_ = list(pathfiles_expanded.keys())[0]
+
+        return match_
 
     @property
     def has_rating(self):
