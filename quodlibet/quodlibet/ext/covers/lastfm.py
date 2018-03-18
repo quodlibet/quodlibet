@@ -44,7 +44,10 @@ class LastFMCover(ApiCoverSourcePlugin):
                'api_key=107db6fd4c1c7f53b1526fafddab2c82&format=json&' + \
                'artist={artist}&album={album}&mbid={mbid}'
         song = self.song
-        artist = escape_query_value(song.get('artist', ''))
+        # This can work well for albums in Last.FM
+        artists = self._album_artists_for(song) or 'Various Artists'
+        song = self.song
+        artist = escape_query_value(artists)
         album = escape_query_value(song.get('album', ''))
         mbid = escape_query_value(song.get('musicbrainz_albumid', ''))
         if (artist and album) or mbid:

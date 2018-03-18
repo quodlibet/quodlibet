@@ -56,7 +56,11 @@ class DiscogsCover(ApiCoverSourcePlugin):
                 '&type=release' +
                 '&artist={artist}' +
                 '&release_title={album}')
-        artist = escape_query_value(self.song.get('artist', ''))
+        # Discogs seems to use 'Various' almost exclusively for compilations
+        artists = self._album_artists_for(self.song) or 'Various'
+        if 'various artists' in artists.lower():
+            artists = 'Various'
+        artist = escape_query_value(artists)
         album = escape_query_value(self.song.get('album', ''))
         if artist and album:
             return _url.format(artist=artist, album=album)

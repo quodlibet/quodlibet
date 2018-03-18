@@ -96,6 +96,15 @@ class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
         sci = self.connect('search-complete', search_complete)
         self.search()
 
+    def _album_artists_for(self, song):
+        """Returns a comma-separated list of artists indicating the
+        "main" artists from the song's album"""
+        people = [song.comma(key)
+                  for key in ['albumartist', 'artist', 'composer', 'conductor',
+                              'performer']]
+        people = list(filter(None, people))
+        return people[0] if people else None
+
 
 def escape_query_value(s):
     return Soup.URI.encode(s, '&')

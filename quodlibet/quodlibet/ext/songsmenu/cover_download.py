@@ -7,14 +7,17 @@
 # (at your option) any later version.
 
 import os
+import operator
 
 import shutil
+from functools import reduce
+
 from gi.repository import GObject, Gtk, Gio, GLib, Soup, GdkPixbuf
 
 from quodlibet import _, app, print_d, print_w
 from quodlibet import qltk
 from quodlibet.packages.senf import path2fsn
-from quodlibet.pattern import ArbitraryExtensionFileFromPattern
+from quodlibet.pattern import ArbitraryExtensionFileFromPattern, Pattern
 from quodlibet.plugins import PluginConfig, ConfProp, IntConfProp, BoolConfProp
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
@@ -122,13 +125,16 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
     }
     DEFAULT_SIZE = list(SIZES.keys())[0]
 
-    def __init__(self, songs, manager, config=None):
-        super().__init__(title="Cover Art Download", use_header_bar=True)
+    def __init__(self, songs, manager, config=None, headless=False, **kwargs):
+        super().__init__(title=_("Cover Art Download"), use_header_bar=True,
+                         **kwargs)
         self.config = config
-        self.set_default_size(1200, 640)
+        self.headless = headless
+        self.set_default_size(1400, 720)
         self.flow_box = box = Gtk.FlowBox()
         self.model = model = Gio.ListStore()
         self.songs = songs
+        self._groups = {}
 
         def update(img, content_type, size, props, item, frame):
             format = IMAGE_EXTENSIONS.get(content_type, content_type).upper()
@@ -183,7 +189,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         self.show_all()
 
         # Do the search
-        manager.search_cover(cancellable, songs)
+        self._groups = manager.search_cover(cancellable, songs)
 
     def _filenames(self, pat_text, ext, full_path=False):
         def fn_for(song):
@@ -201,11 +207,28 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             self.model.append(result)
         self.show_all()
 
-    def _finished(self, manager, songs):
-        print_d("Finished all searches")
-        if not self.model.get_n_items():
-            print_w("Nothing found from any sources")
+    def _finished(self, manager, results):
+        if not any(results.values()):
+            print_w("Nothing found from %d provider(s)" % len(self._groups))
+
             self.button.set_sensitive(False)
+            if not self.headless:
+                self._quit(results)
+
+    def _quit(self, results):
+        pat = Pattern("<albumartist|<albumartist>|<artist>> - <album>")
+        group_songs = [songs
+                       for group in self._groups.values()
+                       for songs in group.values()]
+        texts = {pat.format(s) for s in
+                 reduce(operator.concat, group_songs, [])}
+        albums = "\n".join(texts)
+        providers = ", ".join({manager.name for manager in results.keys()})
+        qltk.Message(Gtk.MessageType.INFO, self, _("No covers found"),
+                     _("Nothing found for albums:\n<i>%s</i>.\n\n"
+                       "Providers used:\n<tt>%s</tt>")
+                     % (escape(albums), escape(providers))).run()
+        self.destroy()
 
     def __image_from_child(self, child):
         # Ugh, horrible
@@ -288,6 +311,9 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         child = self.flow_box.get_selected_children()[0]
         data = self.model.get_item(child.get_index())
         img = self.__image_from_child(child)
+        self._save_images(data, img)
+
+    def _save_images(self, data, img):
         ext = 'jpg' if self.config.re_encode else img.extension
         paths = self._filenames(self.config.save_pattern, ext, full_path=True)
         print_d("Saving %s to %s" % (data, paths))
