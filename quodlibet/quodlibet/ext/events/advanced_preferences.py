@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2015 Christoph Reiter
 #        2016-17 Nick Boultbee
+#        2018    Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -129,9 +130,16 @@ class AdvancedPreferences(EventPlugin):
         rows.append(
             int_config(
                 "browsers", "cover_size",
-                "Album cover size:",
-                ("Size of the album cover images in the album list browser "
+                "Album List browser cover size:",
+                ("Size of the album cover images in the Album List browser "
                  "(restart required)")))
+
+        rows.append(
+            int_config(
+                "browsers", "cover_size_grid",
+                "Cover Grid browser cover size:",
+                ("Size of the album cover images in the Cover Grid browser "
+                "(restart required)")))
 
         rows.append(
             boolean_config(

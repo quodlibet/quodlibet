@@ -3,6 +3,7 @@
 #           2009-2010 Steven Robertson
 #           2012-2018 Nick Boultbee
 #           2009-2014 Christoph Reiter
+#           2018      Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,9 +18,9 @@ from gi.repository import Gtk, Pango, Gdk, Gio
 
 from .prefs import Preferences, DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.albums.models import (AlbumModel,
-    AlbumFilterModel, AlbumSortModel)
-from quodlibet.browsers.albums.main import (get_cover_size,
-    AlbumTagCompletion, PreferencesButton, VisibleUpdate)
+    AlbumFilterModel, AlbumSortModel, AlbumItem)
+from quodlibet.browsers.albums.main import (AlbumTagCompletion,
+    PreferencesButton, VisibleUpdate)
 
 import quodlibet
 from quodlibet import app
@@ -45,6 +46,10 @@ from quodlibet.util import connect_obj
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk import popup_menu_at_widget
+
+
+def get_cover_size_grid():
+    return AlbumItem(None).COVER_SIZE_GRID
 
 
 class PreferencesButton(PreferencesButton):
@@ -167,10 +172,11 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     def update_mag(klass):
         mag = config.getfloat("browsers", "covergrid_magnification", 3.)
         for covergrid in klass.instances():
-            covergrid.__cover.set_property('width', get_cover_size() * mag + 8)
+            covergrid.__cover.set_property('width',
+                get_cover_size_grid() * mag + 8)
             covergrid.__cover.set_property('height',
-                get_cover_size() * mag + 8)
-            covergrid.view.set_item_width(get_cover_size() * mag + 8)
+                get_cover_size_grid() * mag + 8)
+            covergrid.view.set_item_width(get_cover_size_grid() * mag + 8)
             covergrid.view.queue_resize()
             covergrid.redraw()
 
@@ -200,7 +206,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         mag = config.getfloat("browsers", "covergrid_magnification", 3.)
 
-        cover_size = get_cover_size()
+        cover_size = get_cover_size_grid()
         scale_factor = self.get_scale_factor() * mag
         pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
         return get_surface_for_pixbuf(self, pb)
@@ -224,7 +230,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         model_sort = AlbumSortModel(model=self.__model)
         model_filter = AlbumFilterModel(child_model=model_sort)
         self.view = view = IconView(model_filter)
-        #view.set_item_width(get_cover_size() + 12)
+        #view.set_item_width(get_cover_size_grid() + 12)
         self.view.set_row_spacing(config.getint("browsers", "row_spacing", 6))
         self.view.set_column_spacing(config.getint("browsers",
             "column_spacing", 6))
@@ -239,11 +245,11 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         mag = config.getfloat("browsers", "covergrid_magnification", 3.)
 
-        self.view.set_item_width(get_cover_size() * mag + 8)
+        self.view.set_item_width(get_cover_size_grid() * mag + 8)
 
         self.__cover = render = Gtk.CellRendererPixbuf()
-        render.set_property('width', get_cover_size() * mag + 8)
-        render.set_property('height', get_cover_size() * mag + 8)
+        render.set_property('width', get_cover_size_grid() * mag + 8)
+        render.set_property('height', get_cover_size_grid() * mag + 8)
         view.pack_start(render, False)
 
         def cell_data_pb(view, cell, model, iter_, no_cover):
@@ -383,7 +389,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         item = model.get_value(iter_)
         scale_factor = self.get_scale_factor() * mag
-        item.scan_cover(scale_factor=scale_factor,
+        item.scan_cover_grid(scale_factor=scale_factor,
                         callback=callback,
                         cancel=self._cover_cancel)
 
