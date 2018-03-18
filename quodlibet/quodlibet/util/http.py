@@ -67,8 +67,6 @@ class HTTPRequest(GObject.Object):
         Send the request and receive HTTP headers. Some of the body might
         get downloaded too.
         """
-        print_d('Sending {1} request to {0}'.format(self._uri,
-                                                    self.message.method))
         session.send_async(self.message, self.cancellable, self._sent, None)
 
     def _sent(self, session, task, data):
