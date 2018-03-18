@@ -224,10 +224,12 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
                  reduce(operator.concat, group_songs, [])}
         albums = "\n".join(texts)
         providers = ", ".join({manager.name for manager in results.keys()})
-        qltk.Message(Gtk.MessageType.INFO, self, _("No covers found"),
-                     _("Nothing found for albums:\n<i>%s</i>.\n\n"
-                       "Providers used:\n<tt>%s</tt>")
-                     % (escape(albums), escape(providers))).run()
+        data = {'albums': escape(albums), 'providers': escape(providers)}
+        text = _("Nothing found for albums:\n<i>%(albums)s</i>.\n\n"
+                 "Providers used:\n<tt>%(providers)s</tt>") % data
+        dialog = qltk.Message(Gtk.MessageType.INFO, parent=self,
+                              title=_("No covers found"), description=text)
+        dialog.run()
         self.destroy()
 
     def __image_from_child(self, child):
@@ -296,7 +298,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
             save_options.connect('changed', changed)
             select_value(save_options, self.config.save_pattern)
-            hbox.pack_start(save_options, True, False, 6)
+            hbox.pack_start(save_options, False, False, 6)
             return hbox
         vbox.pack_start(create_save_box(), False, False, 6)
         frame.add(vbox)
@@ -329,7 +331,7 @@ class DownloadCoverArt(SongsMenuPlugin):
 
     PLUGIN_ID = 'Download Cover Art'
     PLUGIN_NAME = _('Download Cover Art')
-    PLUGIN_DESC = _('Downloads album covers using cover plugins.')
+    PLUGIN_DESC = _('Downloads high-quality album covers using cover plugins.')
     PLUGIN_ICON = Icons.INSERT_IMAGE
     REQUIRES_ACTION = True
 
@@ -348,5 +350,5 @@ class Config:
     plugin_config = PluginConfig(DownloadCoverArt.PLUGIN_ID)
     preview_size = IntConfProp(plugin_config, "preview_size", 300)
     save_pattern = ConfProp(plugin_config, "save_pattern", "folder.jpg")
-    over_scale = BoolConfProp(plugin_config, "over_scale", False)
+    over_scale = BoolConfProp(plugin_config, "preview_over_scale", True)
     re_encode = BoolConfProp(plugin_config, "re_encode", False)
