@@ -53,6 +53,7 @@ class DiscogsCover(ApiCoverSourcePlugin):
     def url(self):
         _url = ('https://api.discogs.com/database/search?' +
                 self.credentials +
+                '&format=CD&per_page=5'
                 '&type=release' +
                 '&artist={artist}' +
                 '&release_title={album}')
@@ -71,11 +72,14 @@ class DiscogsCover(ApiCoverSourcePlugin):
         if not json_dict:
             print_d('Server did not return any valid JSON')
             return self.emit('search-complete', [])
-
         try:
-            res_url = json_dict.get('results', [])[0].get('resource_url', '')
+            results = json_dict.get('results', [])
+            covers = filter(None, (self.result_for(r.get('cover_image', None))
+                                   for r in results))
+            if covers:
+                return self.emit('search-complete', list(covers))
+            res_url = results[0].get('resource_url', '')
         except IndexError:
-            print_d('Album data is not available')
             return self.emit('search-complete', [])
         else:
             msg = Soup.Message.new('GET',
@@ -100,6 +104,16 @@ class DiscogsCover(ApiCoverSourcePlugin):
         for image in images:
             url = image.get('uri')
             if url and image['type'] == image_type:
-                dimensions = re.compile(r'/(\d+x\d+)/').search(url)
-                dimensions = dimensions and dimensions.group(1)
-                yield ({'cover': image['uri'], 'dimensions': dimensions})
+                yield self.result_for(url)
+
+    def result_for(self, url):
+        if not url:
+            return None
+        dimensions = re.compile(r'/(\d+x\d+)/').search(url)
+        dimensions = dimensions and dimensions.group(1)
+        if dimensions:
+            dims = map(int, dimensions.split('x'))
+            if min(dims) < self.MIN_DIMENSION:
+                print_d("%s is too small to use" % dimensions)
+                return None
+        return {'cover': url, 'dimensions': dimensions}

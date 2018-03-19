@@ -65,6 +65,8 @@ class HTTPDownloadMixin(object):
 
 
 class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
+    MIN_DIMENSION = 300
+    """Minimum width / height in pixels for an image to be used"""
 
     @property
     def url(self):

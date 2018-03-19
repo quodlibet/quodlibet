@@ -69,7 +69,7 @@ class ResizeWebImage(Gtk.Image):
         headers = self.message.get_property('response-headers')
         self.size = int(headers.get('content-length'))
         self._content_type = headers.get('content-type')
-        print_d("Got some bytes: %d KB (of %s)"
+        print_d("Loading %d KB (of %s)"
                 % (len(result) / 1024, self._content_type))
         self._original = result
         try:
@@ -79,6 +79,7 @@ class ResizeWebImage(Gtk.Image):
         else:
             loader.write(result)
             loader.close()
+            print_d("Done")
             self._pixbuf = loader.get_pixbuf()
             self.emit('info-known', self._content_type, self.size,
                       self._pixbuf.props)
