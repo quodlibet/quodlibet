@@ -72,6 +72,13 @@ class FilesystemCover(CoverSourcePlugin):
         # in the common case this means we only search once per album
         return song('~dirname'), song.album_key
 
+    @property
+    def name(self):
+        return "Filesystem"
+
+    def __str__(self):
+        return "Filesystem in %s" % (self.group_by(self.song)[0])
+
     @staticmethod
     def priority():
         return 0.80

@@ -37,6 +37,14 @@ class CoverSourcePlugin(GObject.Object):
     }
     PLUGIN_ICON = Icons.EMBLEM_DOWNLOADS
 
+    @property
+    def name(self):
+        """Human name of the source"""
+        return type(self).__name__
+
+    def __str__(self):
+        return "%s for %s" % (self.name, self.group_by(self.song))
+
     embedded = False
     """Whether the source is an embedded one"""
 

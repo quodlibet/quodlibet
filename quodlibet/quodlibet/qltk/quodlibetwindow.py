@@ -130,7 +130,7 @@ class PlayerOptions(GObject.Object):
         When `repeat` is True the current song will be replayed.
         """
 
-        return (self._order_widget.repeated and
+        return (self._order_widget and self._order_widget.repeated and
                 self._order_widget.repeater is RepeatSongForever)
 
     @single.setter

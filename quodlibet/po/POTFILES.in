@@ -106,6 +106,7 @@ quodlibet/ext/songsmenu/brainz/__init__.py
 quodlibet/ext/songsmenu/brainz/widgets.py
 quodlibet/ext/songsmenu/browsefolders.py
 quodlibet/ext/songsmenu/console.py
+quodlibet/ext/songsmenu/cover_download.py
 quodlibet/ext/songsmenu/custom_commands.py
 quodlibet/ext/songsmenu/duplicates.py
 quodlibet/ext/songsmenu/editplaycount.py
@@ -199,6 +200,7 @@ quodlibet/qltk/x.py
 quodlibet/update.py
 quodlibet/util/collection.py
 quodlibet/util/cover/built_in.py
+quodlibet/util/cover/manager.py
 quodlibet/util/dprint.py
 quodlibet/util/__init__.py
 quodlibet/util/library.py
