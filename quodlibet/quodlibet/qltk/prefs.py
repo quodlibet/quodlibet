@@ -554,16 +554,25 @@ class PreferencesWindow(UniqueWindow):
             hb.pack_start(bayes_label, False, True, 0)
             hb.pack_start(bayes_spin, False, True, 0)
             vb.pack_start(hb, True, True, 0)
-            cb = CCB(_("Save ratings and play _counts"),
+            cb = CCB(_("Save ratings and play _counts in tags"),
                      "editing", "save_to_songs", populate=True)
+
+            def update_entry(widget, email_entry):
+                email_entry.set_sensitive(widget.get_active())
+
             vb.pack_start(cb, True, True, 0)
             hb = Gtk.HBox(spacing=6)
             lab = Gtk.Label(label=_("_Email:"))
             entry = UndoEntry()
-            entry.set_tooltip_text(_("Ratings and play counts will be set "
-                                     "for this email address"))
+            entry.set_tooltip_text(_("Ratings and play counts will be saved "
+                                     "in tags for this email address"))
             entry.set_text(config.get("editing", "save_email"))
             entry.connect('changed', self.__changed, 'editing', 'save_email')
+
+            # Disable the entry if not saving to tags
+            cb.connect('clicked', update_entry, entry)
+            update_entry(cb, entry)
+
             hb.pack_start(lab, False, True, 0)
             hb.pack_start(entry, True, True, 0)
             lab.set_mnemonic_widget(entry)
