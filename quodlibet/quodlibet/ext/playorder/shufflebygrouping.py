@@ -134,22 +134,21 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
             grouping_filter_entry.set_text(pconfig.gettext("grouping_filter"))
             delay_spin.set_value(pconfig.getint("delay"))
 
-        vbox = Gtk.VBox(spacing=12)
-        vbox.set_border_width(0)
+        def make_label(label_text):
+            label = Gtk.Label(label_text, selectable=True)
+            label.set_alignment(0.0, 0.5)
+            label.set_margin_end(3)
+            return label
 
-        grouping_label = Gtk.Label(_("Grouping tag:"))
-        grouping_label.set_alignment(0.0, 0.5)
-        grouping_label.set_margin_end(3)
-        grouping_label.set_selectable(True)
+        vbox = Gtk.VBox(spacing=12)
+
+        grouping_label = make_label(_("Grouping tag:"))
         grouping_entry = Gtk.Entry()
         grouping_entry.connect('changed', on_change, "grouping")
         grouping_entry.set_text(pconfig.gettext("grouping"))
         grouping_entry.set_tooltip_text(_("Tag to group songs by"))
 
-        grouping_filter_label = Gtk.Label(_("Filter tag:"))
-        grouping_filter_label.set_alignment(0.0, 0.5)
-        grouping_filter_label.set_margin_end(3)
-        grouping_filter_label.set_selectable(True)
+        grouping_filter_label = make_label(_("Filter tag:"))
         grouping_filter_entry = Gtk.Entry()
         grouping_filter_entry.connect('changed', on_change, "grouping_filter")
         grouping_filter_entry.set_text(pconfig.gettext("grouping_filter"))
@@ -159,10 +158,7 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
             "a group consisting only of itself. Typically the filter\n"
             "tag should match or partially match the grouping tag."))
 
-        delay_label = Gtk.Label(_("Delay:"))
-        delay_label.set_alignment(0.0, 0.5)
-        delay_label.set_margin_end(3)
-        delay_label.set_selectable(True)
+        delay_label = make_label(_("Delay:"))
         adj = Gtk.Adjustment.new(pconfig.getint("delay"), 0, 3600, 1, 5, 0)
         delay_spin = Gtk.SpinButton(adjustment=adj, climb_rate=0.1, digits=0)
         delay_spin.set_numeric(True)
