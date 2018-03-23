@@ -92,7 +92,7 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
         app.player.paused = True
         delay_timer = GLib.timeout_add(1000 * delay, app.player.play)
         task = Task(_("Shuffle by Grouping"),
-                    _("Waiting to start new group..."),
+                    _("Waiting to start new group…"),
                     stop=lambda: GLib.source_remove(delay_timer))
 
         def countdown():
