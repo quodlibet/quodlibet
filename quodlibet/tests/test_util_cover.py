@@ -11,6 +11,7 @@ import shutil
 
 from senf import fsnative
 
+from quodlibet import config
 from quodlibet.ext.covers.artwork_url import ArtworkUrlCover
 from quodlibet.formats import AudioFile
 from quodlibet.plugins import Plugin
@@ -34,8 +35,9 @@ bar_2_1 = AudioFile({
 class TCoverManager(TestCase):
 
     def setUp(self):
-        self.manager = CoverManager()
+        config.init()
 
+        self.manager = CoverManager()
         self.dir = mkdtemp()
         self.song = self.an_album_song()
 
@@ -53,6 +55,7 @@ class TCoverManager(TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.dir)
+        config.quit()
 
     def _find_cover(self, song):
         return self.manager.get_cover(song)
@@ -85,6 +88,14 @@ class TCoverManager(TestCase):
         self.assertTrue(isinstance(self.song("album"), text_type))
         h = self._find_cover(self.song)
         self.assertEqual(normalize_path(h.name), normalize_path(f))
+
+    def test_glob(self):
+        config.set("albumart", "force_filename", str(True))
+        config.set("albumart", "filename", "foo.*")
+        for fn in ["foo.jpg", "foo.png"]:
+            f = self.add_file(fn)
+            assert path_equal(
+                os.path.abspath(self._find_cover(self.song).name), f)
 
     def test_intelligent(self):
         song = self.song
