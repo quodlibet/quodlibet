@@ -7,6 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import glob
 import os.path
 import re
 
@@ -95,8 +96,8 @@ class FilesystemCover(CoverSourcePlugin):
         # Issue 374: Specify artwork filename
         if config.getboolean("albumart", "force_filename"):
             path = os.path.join(base, config.get("albumart", "filename"))
-            if os.path.isfile(path):
-                images = [(100, path)]
+            for path in glob.glob(path):
+                images.append((100, os.path.join(base, path)))
         else:
             entries = []
             try:
@@ -149,8 +150,8 @@ class FilesystemCover(CoverSourcePlugin):
                     if sub is not None:
                         fn = os.path.join(sub, fn)
                     images.append((score, os.path.join(base, fn)))
-            images.sort(reverse=True)
 
+        images.sort(reverse=True)
         for score, path in images:
             # could be a directory
             if not os.path.isfile(path):

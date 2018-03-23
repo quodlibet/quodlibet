@@ -325,7 +325,8 @@ class PreferencesWindow(UniqueWindow):
 
             entry = UndoEntry()
             entry.set_tooltip_text(
-                    _("The album art image file to use when forced"))
+                    _("The album art image file to use when forced"
+                      " (supports wildcards)"))
             entry.set_text(config.get("albumart", "filename"))
             entry.connect('changed', self.__changed_text, 'filename')
             # Disable entry when not forcing
