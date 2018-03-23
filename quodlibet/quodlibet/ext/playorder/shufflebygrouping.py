@@ -18,16 +18,17 @@ from quodlibet.order.reorder import Reorder
 from quodlibet.plugins import PluginConfig
 from quodlibet.plugins.playorder import ShufflePlugin
 from quodlibet.qltk import Icons
+from quodlibet.qltk.notif import Task
 
 
 pconfig = PluginConfig("shufflebygrouping")
 pconfig.defaults.set("grouping", "~grouping~album~albumartist")
-pconfig.defaults.set("grouping_test", "grouping")
+pconfig.defaults.set("grouping_filter", "grouping")
 pconfig.defaults.set("delay", 0)
 
 
-class ShuffleByGrouping(ShufflePlugin, OrderInOrder, OrderRemembered):
-    PLUGIN_ID = "shufflebygrouping"
+class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
+    PLUGIN_ID = "Shuffle by Grouping"
     PLUGIN_NAME = _("Shuffle by Grouping")
     PLUGIN_DESC = _("Shuffles by a grouping of songs defined by a common tag "
                     "instead of by track, similar to album shuffle. This is "
@@ -38,73 +39,82 @@ class ShuffleByGrouping(ShufflePlugin, OrderInOrder, OrderRemembered):
     display_name = _("Shuffle by grouping")
     priority = Reorder.priority
 
-    def next(self, playlist, current):
-        return self._next(playlist, current)
+    def next(self, playlist, current_song):
+        return self._next(playlist, current_song)
 
-    def _next(self, playlist, current, delay_on=True):
+    def _next(self, playlist, current_song, delay_on=True):
         grouping = str(pconfig.gettext("grouping")).strip()
-        grouping_test = str(pconfig.gettext("grouping_test")).strip()
+        grouping_filter = str(pconfig.gettext("grouping_filter")).strip()
         delay = pconfig.getint("delay")
 
+        def same_group(song_iter_a, song_iter_b):
+            if song_iter_a is None or song_iter_b is None:
+                return False
+            song_a = playlist.get_value(song_iter_a)
+            song_b = playlist.get_value(song_iter_b)
+            if not self._tag_defined(grouping_filter, song_a):
+                return False
+            if not self._tag_defined(grouping_filter, song_b):
+                return False
+            return song_a(grouping) == song_b(grouping)
+
         # Keep track of played songs
-        OrderRemembered.next(self, playlist, current)
+        OrderRemembered.next(self, playlist, current_song)
         remaining = OrderRemembered.remaining(self, playlist)
 
         # Check if playlist is finished or empty
-        if len(remaining) <= 0:
+        if not remaining:
             OrderRemembered.reset(self, playlist)
             return None
 
         # Play next song in current grouping
-        next_song = super().next(playlist, current)
-        if (current is not None and next_song is not None and
-            self._tag_defined(grouping_test, playlist, next_song) and
-            self._same_tag(grouping, playlist, current, next_song)):
+        next_song = OrderInOrder.next(self, playlist, current_song)
+        if same_group(next_song, current_song):
             return next_song
 
         # Pause for a moment before picking new group
-        if delay_on and delay > 0:
-            app.player.paused = True
-            GLib.timeout_add(1000 * delay, app.player.play)
+        if delay_on:
+            self._resume_after_delay(delay)
 
         # Pick random song at the start of a new group
         while True:
             song_location = random.choice(list(remaining.keys()))
             new_song = playlist.get_iter(song_location)
-
-            if song_location <= 0:
-                break
-            if not self._tag_defined(grouping_test, playlist, new_song):
-                break
-            new_song_prev = playlist.get_iter(song_location - 1)
-            if not self._same_tag(grouping, playlist, new_song, new_song_prev):
-                break
-
-        return new_song
+            new_song_prev = (playlist.get_iter(song_location - 1)
+                             if song_location >= 1 else None)
+            if not same_group(new_song, new_song_prev):
+                return new_song
 
     @staticmethod
-    def _tag_defined(tag_name, playlist, song_iter):
-        if tag_name == "":
+    def _resume_after_delay(delay, refresh_rate=20):
+        if delay <= 0:
+            return
+        app.player.paused = True
+        delay_timer = GLib.timeout_add(1000 * delay, app.player.play)
+        task = Task(_("Shuffle by Grouping"),
+                    _("Waiting to start new group..."),
+                    stop=lambda: GLib.source_remove(delay_timer))
+
+        def countdown():
+            for i in range(int(refresh_rate * delay)):
+                task.update(i / (refresh_rate * delay))
+                yield True
+            task.finish()
+            yield False
+        GLib.timeout_add(1000 / refresh_rate, next, countdown())
+
+    @staticmethod
+    def _tag_defined(tag_name, song):
+        if not tag_name:
             return True
-        song = playlist.get_value(song_iter)
         tag_value = song(tag_name)
-        if tag_value.strip() != "":
-            return True
-        return False
+        return bool(tag_value.strip())
 
-    @staticmethod
-    def _same_tag(tag, playlist, song_iter_a, song_iter_b):
-        song_a = playlist.get_value(song_iter_a)
-        song_b = playlist.get_value(song_iter_b)
-        if song_a(tag) == song_b(tag):
-            return True
-        return False
+    def next_explicit(self, playlist, current_song):
+        return self._next(playlist, current_song, delay_on=False)
 
-    def next_explicit(self, playlist, current):
-        return self._next(playlist, current, delay_on=False)
-
-    def previous(self, playlist, current):
-        return OrderRemembered.previous(self, playlist, current)
+    def previous(self, playlist, current_song):
+        return OrderRemembered.previous(self, playlist, current_song)
 
     @classmethod
     def PluginPreferences(cls, window):
@@ -118,10 +128,10 @@ class ShuffleByGrouping(ShufflePlugin, OrderInOrder, OrderRemembered):
 
         def default_on_click(widget):
             pconfig.reset("grouping")
-            pconfig.reset("grouping_test")
+            pconfig.reset("grouping_filter")
             pconfig.reset("delay")
             grouping_entry.set_text(pconfig.gettext("grouping"))
-            grouping_test_entry.set_text(pconfig.gettext("grouping_test"))
+            grouping_filter_entry.set_text(pconfig.gettext("grouping_filter"))
             delay_spin.set_value(pconfig.getint("delay"))
 
         vbox = Gtk.VBox(spacing=12)
@@ -130,25 +140,29 @@ class ShuffleByGrouping(ShufflePlugin, OrderInOrder, OrderRemembered):
         grouping_label = Gtk.Label(_("Grouping tag:"))
         grouping_label.set_alignment(0.0, 0.5)
         grouping_label.set_margin_end(3)
+        grouping_label.set_selectable(True)
         grouping_entry = Gtk.Entry()
         grouping_entry.connect('changed', on_change, "grouping")
         grouping_entry.set_text(pconfig.gettext("grouping"))
         grouping_entry.set_tooltip_text(_("Tag to group songs by"))
 
-        grouping_test_label = Gtk.Label(_("Test tag:"))
-        grouping_test_label.set_alignment(0.0, 0.5)
-        grouping_test_label.set_margin_end(3)
-        grouping_test_entry = Gtk.Entry()
-        grouping_test_entry.connect('changed', on_change, "grouping_test")
-        grouping_test_entry.set_text(pconfig.gettext("grouping_test"))
-        grouping_test_entry.set_tooltip_text(_(
-            "Grouping is applied only if the test tag is defined.\n"
-            "A song with an undefined test tag will be treated as\n"
-            "a group consisting only of itself."))
+        grouping_filter_label = Gtk.Label(_("Filter tag:"))
+        grouping_filter_label.set_alignment(0.0, 0.5)
+        grouping_filter_label.set_margin_end(3)
+        grouping_filter_label.set_selectable(True)
+        grouping_filter_entry = Gtk.Entry()
+        grouping_filter_entry.connect('changed', on_change, "grouping_filter")
+        grouping_filter_entry.set_text(pconfig.gettext("grouping_filter"))
+        grouping_filter_entry.set_tooltip_text(_(
+            "Grouping is applied only if the filter tag is defined.\n"
+            "A song with an undefined filter tag will be treated as\n"
+            "a group consisting only of itself. Typically the filter\n"
+            "tag should match or partially match the grouping tag."))
 
         delay_label = Gtk.Label(_("Delay:"))
         delay_label.set_alignment(0.0, 0.5)
         delay_label.set_margin_end(3)
+        delay_label.set_selectable(True)
         adj = Gtk.Adjustment.new(pconfig.getint("delay"), 0, 3600, 1, 5, 0)
         delay_spin = Gtk.SpinButton(adjustment=adj, climb_rate=0.1, digits=0)
         delay_spin.set_numeric(True)
@@ -161,11 +175,11 @@ class ShuffleByGrouping(ShufflePlugin, OrderInOrder, OrderRemembered):
         table.set_row_spacings(6)
 
         table.attach(grouping_label, 0, 1, 0, 1, Gtk.AttachOptions.FILL)
-        table.attach(grouping_test_label, 0, 1, 1, 2, Gtk.AttachOptions.FILL)
+        table.attach(grouping_filter_label, 0, 1, 1, 2, Gtk.AttachOptions.FILL)
         table.attach(delay_label, 0, 1, 2, 3, Gtk.AttachOptions.FILL)
 
         table.attach(grouping_entry, 1, 2, 0, 1)
-        table.attach(grouping_test_entry, 1, 2, 1, 2)
+        table.attach(grouping_filter_entry, 1, 2, 1, 2)
         table.attach(delay_spin, 1, 2, 2, 3)
 
         vbox.add(table)
@@ -174,5 +188,4 @@ class ShuffleByGrouping(ShufflePlugin, OrderInOrder, OrderRemembered):
         defaults.connect('clicked', default_on_click)
         vbox.add(defaults)
 
-        vbox.show_all()
         return vbox
