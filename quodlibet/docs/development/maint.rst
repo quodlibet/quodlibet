@@ -53,13 +53,11 @@ Release Checklist
 New Stable branch:
 
     * git checkout -b quodlibet-x.y
-    * Change branch name in const.py to "quodlibet-x.y"
     * git commit -m "new stable branch
     * git push
     * git checkout master
     * Update version to (X, Y + 1, -1)
     * git commit -m "version bump"
-    * Enable branch version @readthedocs
 
 New Stable release:
 

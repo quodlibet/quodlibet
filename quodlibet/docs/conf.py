@@ -74,13 +74,3 @@ html_theme_options = {
 
 html_favicon = "favicon/favicon.ico"
 html_show_copyright = False
-
-# on a stable branch which isn't a release
-if const.BRANCH_NAME != "master":
-    rst_prolog = """
-
-.. note::
-    There exists a newer version of this page and the content below may be
-    outdated. See %s for the latest documentation.
-
-""" % (const.DOCS_LATEST)

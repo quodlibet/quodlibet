@@ -69,13 +69,10 @@ VERSION_TUPLE = Version("", 4, 1, -1)
 VERSION = str(VERSION_TUPLE)
 
 # entry point for the user guide / wiki
-BRANCH_NAME = "master"
-DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/%s"
-DOCS_LATEST = DOCS_BASE_URL % "latest"
-DOCS_BASE_URL %= BRANCH_NAME if BRANCH_NAME != "master" else "latest"
-ONLINE_HELP = DOCS_BASE_URL + "/guide/index.html"
-SEARCH_HELP = DOCS_BASE_URL + "/guide/searching.html"
-SHORTCUTS_HELP = DOCS_BASE_URL + "/guide/shortcuts.html"
+_DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/latest"
+ONLINE_HELP = _DOCS_BASE_URL + "/guide/index.html"
+SEARCH_HELP = _DOCS_BASE_URL + "/guide/searching.html"
+SHORTCUTS_HELP = _DOCS_BASE_URL + "/guide/shortcuts.html"
 
 # Email used as default for reading/saving per-user data in tags, etc.
 EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
