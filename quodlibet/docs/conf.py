@@ -34,15 +34,7 @@ project = 'Quod Libet'
 copyright = u""
 exclude_patterns = ['_build', '_build_all', 'README.rst', '**/README.rst']
 html_theme = "sphinx_rtd_theme"
-
-if const.BRANCH_NAME != "master":
-    version = ".".join(const.VERSION.rsplit(".")[:2])
-    release = const.VERSION
-    if release.endswith(".-1"):
-        release = release[:-3]
-    html_title = "%s (%s)" % (project, version)
-else:
-    html_title = project
+html_title = project
 
 extlinks = {
     'bug': ('https://github.com/quodlibet/quodlibet/issues/%s', '#'),
