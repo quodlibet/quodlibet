@@ -34,7 +34,6 @@ class ArtworkUrlCover(CoverSourcePlugin, HTTPDownloadMixin):
         url = self.url
         if url:
             return path.join(cover_dir, escape_filename(url))
-        return super(ArtworkUrlCover, self).cover_path
 
     @property
     def url(self):
