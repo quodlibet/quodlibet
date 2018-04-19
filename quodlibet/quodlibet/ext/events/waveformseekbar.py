@@ -198,7 +198,7 @@ class WaveformSeekBar(Gtk.Box):
         ! audioconvert
         ! level name=audiolevel interval={} post-messages=true
         ! fakesink sync=false"""
-        interval = int(song("~#length") * 1E9 / points)
+        interval = int(song("~#length") * 1E9 / self._waveform_scale.width)
         print_d("Computing data for each %.3f seconds" % (interval / 1E9))
 
         command = command_template.format(interval)
@@ -396,6 +396,9 @@ class WaveformSeekBar(Gtk.Box):
         self._remaining_label.set_size_request(width, -1)
         self._elapsed_label.set_size_request(width, -1)
 
+    def update_colors(self):
+        self._waveform_scale.update_colors()
+
 
 class WaveformScale(Gtk.EventBox):
     """The waveform widget."""
@@ -418,6 +421,8 @@ class WaveformScale(Gtk.EventBox):
         self.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
 
         self._seeking = False
+
+        self.update_colors()
 
     @property
     def width(self):
@@ -469,40 +474,35 @@ class WaveformScale(Gtk.EventBox):
         w = min(width, abs(x2 - x1) + line_width * 10)
         return x, 0.0, w, height
 
-    def _choose_fg_color(self, mouse_position, position_width, x,
-                         elapsed_color, preview_base_color,
-                         preview_shade_color, remaining_color):
+    def _choose_fg_color(self, mouse_position, position_width, x):
         if mouse_position >= 0:
             if self._seeking:
                 # The user is seeking (holding mousebutton down)
                 if x < mouse_position:
                     if x < position_width:
-                        return preview_shade_color
+                        return self.preview_shade_color
                     else:
-                        return elapsed_color
+                        return self.elapsed_color
                 elif x < position_width:
-                    return preview_base_color
+                    return self.preview_base_color
                 else:
-                    return remaining_color
+                    return self.remaining_color
             else:
                 # The user is hovering (not holding mousebutton down)
                 if x < mouse_position:
                     if x < position_width:
-                        return preview_shade_color
+                        return self.preview_shade_color
                     else:
-                        return preview_base_color
+                        return self.preview_base_color
                 elif x < position_width:
-                    return elapsed_color
+                    return self.elapsed_color
                 else:
-                    return remaining_color
+                    return self.remaining_color
         else:
-            return (elapsed_color
-                    if x < position_width else remaining_color)
+            return (self.elapsed_color
+                    if x < position_width else self.remaining_color)
 
-    def draw_waveform(self, cr, width, height, elapsed_color,
-                      preview_base_color, preview_shade_color,
-                      remaining_color):
-
+    def draw_waveform(self, cr, width, height):
         if width == 0 or height == 0:
             return
         scale_factor = self.get_scale_factor()
@@ -527,19 +527,18 @@ class WaveformScale(Gtk.EventBox):
         # Avoiding object lookups is slightly faster
         data = self._rms_vals
 
+        fg_color = None
         # Use the clip rectangles to redraw only what is necessary
         for (cx, cy, cw, ch) in cr.copy_clip_rectangle_list():
             for x in range(
                     int(floor(cx * pixel_ratio)),
                     int(ceil((cx + cw) * pixel_ratio)), 1):
-                fg_color = self._choose_fg_color(mouse_position,
-                                                 position_width, x,
-                                                 elapsed_color,
-                                                 preview_base_color,
-                                                 preview_shade_color,
-                                                 remaining_color)
-
-                cr.set_source_rgba(*list(fg_color))
+                tmp_color = self._choose_fg_color(mouse_position,
+                                                  position_width, x)
+                if tmp_color is not fg_color:
+                    cr.stroke()
+                    fg_color = tmp_color
+                    cr.set_source_rgba(*list(fg_color))
 
                 # Basic anti-aliasing / oversampling
                 u1 = max(0, int(floor((x - hw) * ratio_width)))
@@ -550,14 +549,12 @@ class WaveformScale(Gtk.EventBox):
                 hx = x / pixel_ratio + hw
                 cr.move_to(hx, half_height - val)
                 cr.line_to(hx, half_height + val)
-                cr.stroke()
 
+        cr.stroke()
         self._last_drawn_position = self.position
         self._last_mouse_position = self.mouse_position
 
-    def draw_placeholder(self, cr, width, height, elapsed_color,
-                         preview_base_color, preview_shade_color,
-                         remaining_color):
+    def draw_placeholder(self, cr, width, height):
         if width == 0 or height == 0:
             return
         scale_factor = self.get_scale_factor()
@@ -581,22 +578,21 @@ class WaveformScale(Gtk.EventBox):
             positions.append(self.mouse_position * scale_factor)
         positions.append(self.width)
 
-        last_x = positions[0]
-        for x in positions[1:]:
-            fg_color = self._choose_fg_color(self.mouse_position,
-                                             position_width, last_x,
-                                             elapsed_color,
-                                             preview_base_color,
-                                             preview_shade_color,
-                                             remaining_color)
-            cr.set_source_rgba(*list(fg_color))
-            print_d(fg_color)
+        x = positions[0]
+        fg_color = None
+        for next_x in positions[1:]:
+            tmp_color = self._choose_fg_color(self.mouse_position,
+                                              position_width, x)
+            if tmp_color is not fg_color:
+                cr.stroke()
+                fg_color = tmp_color
+                cr.set_source_rgba(*list(fg_color))
 
-            cr.move_to(last_x, half_height)
-            last_x = x/pixel_ratio
-            cr.line_to(last_x, half_height)
-            cr.stroke()
+            cr.move_to(x, half_height)
+            x = next_x / pixel_ratio
+            cr.line_to(x, half_height)
 
+        cr.stroke()
         self._last_drawn_position = self.position
         self._last_mouse_position = self.mouse_position
 
@@ -608,7 +604,7 @@ class WaveformScale(Gtk.EventBox):
             (height_px if height_px % 2 else height_px - 1) / pixel_ratio / 2
         return half_height
 
-    def calculate_colors(self, elapsed_color, remaining_color):
+    def _calulate_colors(self, elapsed_color, remaining_color):
         eh = HSLA.rgba_to_hsla(elapsed_color)
         rh = HSLA.rgba_to_hsla(remaining_color)
 
@@ -660,45 +656,46 @@ class WaveformScale(Gtk.EventBox):
         return (HSLA.hsla_to_rgba(preview_base_color),
                 HSLA.hsla_to_rgba(preview_shade_color))
 
-    def do_draw(self, cr):
+    def update_colors(self):
         context = self.get_style_context()
 
         # Get colors
         context.save()
         context.set_state(Gtk.StateFlags.NORMAL)
-        bg_color = context.get_background_color(context.get_state())
-        remaining_color = context.get_color(context.get_state())
+        self.bg_color = context.get_background_color(context.get_state())
+        self.remaining_color = context.get_color(context.get_state())
         context.restore()
 
-        elapsed_color = get_fg_highlight_color(self)
+        self.elapsed_color = get_fg_highlight_color(self)
 
         # Check if the user set a different elapsed color in the config
         elapsed_color_config = CONFIG.elapsed_color
         if elapsed_color_config and Gdk.RGBA().parse(elapsed_color_config):
-            elapsed_color = Gdk.RGBA()
-            elapsed_color.parse(elapsed_color_config)
+            self.elapsed_color = Gdk.RGBA()
+            self.elapsed_color.parse(elapsed_color_config)
 
         # Check if the user set a different remaining color in the config
         remaining_color_config = CONFIG.remaining_color
         if remaining_color_config and Gdk.RGBA().parse(remaining_color_config):
-            remaining_color = Gdk.RGBA()
-            remaining_color.parse(remaining_color_config)
+            self.remaining_color = Gdk.RGBA()
+            self.remaining_color.parse(remaining_color_config)
 
         # Check if the user set a hover color in the config
         preview_color_config = CONFIG.preview_color
         if preview_color_config and Gdk.RGBA().parse(preview_color_config):
-            preview_base_color = Gdk.RGBA()
-            preview_base_color.parse(preview_color_config)
-            eh = HSLA.rgba_to_hsla(elapsed_color)
-            ph = HSLA.rgba_to_hsla(preview_base_color)
+            self.preview_base_color = Gdk.RGBA()
+            self.preview_base_color.parse(preview_color_config)
+            eh = HSLA.rgba_to_hsla(self.elapsed_color)
+            ph = HSLA.rgba_to_hsla(self.preview_base_color)
             ph.mix(eh, 0.65)
-            preview_shade_color = HSLA.hsla_to_rgba(ph)
+            self.preview_shade_color = HSLA.hsla_to_rgba(ph)
         else:
-            preview_base_color, preview_shade_color = self.calculate_colors(
-                elapsed_color, remaining_color)
+            self.preview_base_color, self.preview_shade_color = \
+                self._calulate_colors(self.elapsed_color, self.remaining_color)
 
+    def do_draw(self, cr):
         # Paint the background
-        cr.set_source_rgba(*list(bg_color))
+        cr.set_source_rgba(*list(self.bg_color))
         cr.paint()
 
         allocation = self.get_allocation()
@@ -706,13 +703,9 @@ class WaveformScale(Gtk.EventBox):
         height = allocation.height
 
         if not self._placeholder and self._rms_vals:
-            self.draw_waveform(cr, width, height, elapsed_color,
-                               preview_base_color, preview_shade_color,
-                               remaining_color)
+            self.draw_waveform(cr, width, height)
         else:
-            self.draw_placeholder(cr, width, height, elapsed_color,
-                                  preview_base_color, preview_shade_color,
-                                  remaining_color)
+            self.draw_placeholder(cr, width, height)
 
     def do_button_press_event(self, event):
         # Left mouse button
@@ -724,8 +717,9 @@ class WaveformScale(Gtk.EventBox):
         # Left mouse button
         if event.button == 1 and self._player:
             ratio = event.x / self.get_allocation().width
-            length = self._player.info("~#length")
-            self._player.seek(ratio * length * 1000)
+            if self._player.info:
+                length = self._player.info("~#length")
+                self._player.seek(ratio * length * 1000)
             self._seeking = False
             self.queue_draw()
             return True
@@ -752,6 +746,7 @@ class Config(object):
     remaining_color = ConfProp(_config, "remaining_color", "")
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
 
+
 CONFIG = Config()
 
 
@@ -775,6 +770,9 @@ class WaveformSeekBarPlugin(EventPlugin):
         self._bar.destroy()
         del self._bar
 
+    def _update_color(self):
+        self._bar.update_colors()
+
     def PluginPreferences(self, parent):
         red = Gdk.RGBA()
         red.parse("#ff0000")
@@ -785,24 +783,32 @@ class WaveformSeekBarPlugin(EventPlugin):
             if not Gdk.RGBA().parse(text):
                 # Invalid color, make text red
                 entry.override_color(Gtk.StateFlags.NORMAL, red)
+                return False
             else:
                 # Reset text color
                 entry.override_color(Gtk.StateFlags.NORMAL, None)
+                return True
 
         def elapsed_color_changed(entry):
-            validate_color(entry)
+            if not validate_color(entry):
+                return
 
             CONFIG.elapsed_color = entry.get_text()
+            self._update_color()
 
         def preview_color_changed(entry):
-            validate_color(entry)
+            if not validate_color(entry):
+                return
 
             CONFIG.preview_color = entry.get_text()
+            self._update_color()
 
         def remaining_color_changed(entry):
-            validate_color(entry)
+            if not validate_color(entry):
+                return
 
             CONFIG.remaining_color = entry.get_text()
+            self._update_color()
 
         vbox = Gtk.VBox(spacing=6)
 
