@@ -340,7 +340,11 @@ class WaveformSeekBar(Gtk.Box):
                 print_d("Length reported as zero for %s" % player.info)
                 self._waveform_scale.set_position(0)
 
-            if position == 0 or full_redraw:
+            if (position == 0 or full_redraw
+                    or self._waveform_scale.is_placeholder()):
+                # if the placeholder flag is set this means that the source is
+                # most probably not a local file and has thus no waveform
+                # In that case we want a full redraw
                 self._waveform_scale.queue_draw()
             else:
                 (x, y, w, h) = self._waveform_scale.compute_redraw_area()
@@ -422,6 +426,9 @@ class WaveformScale(Gtk.EventBox):
     def set_placeholder(self, placeholder):
         self._placeholder = placeholder
 
+    def is_placeholder(self):
+        return self._placeholder
+
     def reset(self, rms_vals):
         self._rms_vals = rms_vals
         self._seeking = False
@@ -462,6 +469,36 @@ class WaveformScale(Gtk.EventBox):
         w = min(width, abs(x2 - x1) + line_width * 10)
         return x, 0.0, w, height
 
+    def _choose_fg_color(self, mouse_position, position_width, x,
+                         elapsed_color, preview_base_color,
+                         preview_shade_color, remaining_color):
+        if mouse_position >= 0:
+            if self._seeking:
+                # The user is seeking (holding mousebutton down)
+                if x < mouse_position:
+                    if x < position_width:
+                        return preview_shade_color
+                    else:
+                        return elapsed_color
+                elif x < position_width:
+                    return preview_base_color
+                else:
+                    return remaining_color
+            else:
+                # The user is hovering (not holding mousebutton down)
+                if x < mouse_position:
+                    if x < position_width:
+                        return preview_shade_color
+                    else:
+                        return preview_base_color
+                elif x < position_width:
+                    return elapsed_color
+                else:
+                    return remaining_color
+        else:
+            return (elapsed_color
+                    if x < position_width else remaining_color)
+
     def draw_waveform(self, cr, width, height, elapsed_color,
                       preview_base_color, preview_shade_color,
                       remaining_color):
@@ -492,35 +529,15 @@ class WaveformScale(Gtk.EventBox):
 
         # Use the clip rectangles to redraw only what is necessary
         for (cx, cy, cw, ch) in cr.copy_clip_rectangle_list():
-            for x in range(int(floor(cx * pixel_ratio)),
-                           int(ceil((cx + cw) * pixel_ratio)), 1):
-
-                if mouse_position >= 0:
-                    if self._seeking:
-                        # The user is seeking (holding mousebutton down)
-                        if x < mouse_position:
-                            if x < position_width:
-                                fg_color = preview_shade_color
-                            else:
-                                fg_color = elapsed_color
-                        elif x < position_width:
-                            fg_color = preview_base_color
-                        else:
-                            fg_color = remaining_color
-                    else:
-                        # The user is hovering (not holding mousebutton down)
-                        if x < mouse_position:
-                            if x < position_width:
-                                fg_color = preview_shade_color
-                            else:
-                                fg_color = preview_base_color
-                        elif x < position_width:
-                            fg_color = elapsed_color
-                        else:
-                            fg_color = remaining_color
-                else:
-                    fg_color = (elapsed_color if x < position_width
-                                else remaining_color)
+            for x in range(
+                    int(floor(cx * pixel_ratio)),
+                    int(ceil((cx + cw) * pixel_ratio)), 1):
+                fg_color = self._choose_fg_color(mouse_position,
+                                                 position_width, x,
+                                                 elapsed_color,
+                                                 preview_base_color,
+                                                 preview_shade_color,
+                                                 remaining_color)
 
                 cr.set_source_rgba(*list(fg_color))
 
@@ -538,23 +555,50 @@ class WaveformScale(Gtk.EventBox):
         self._last_drawn_position = self.position
         self._last_mouse_position = self.mouse_position
 
-    def draw_placeholder(self, cr, width, height, color):
+    def draw_placeholder(self, cr, width, height, elapsed_color,
+                         preview_base_color, preview_shade_color,
+                         remaining_color):
         if width == 0 or height == 0:
             return
         scale_factor = self.get_scale_factor()
         pixel_ratio = float(scale_factor)
-        line_width = 1.0 / pixel_ratio
 
         half_height = self.compute_half_height(height, pixel_ratio)
-        hw = line_width / 2.0
 
-        cr.set_line_width(line_width)
-        cr.set_line_cap(cairo.LINE_CAP_ROUND)
-        cr.set_line_join(cairo.LINE_JOIN_ROUND)
-        cr.set_source_rgba(*list(color))
-        cr.move_to(hw, half_height)
-        cr.line_to(width - hw, half_height)
-        cr.stroke()
+        cr.set_line_width(half_height)
+        cr.set_line_cap(cairo.LINE_CAP_BUTT)
+        cr.set_line_join(cairo.LINE_JOIN_BEVEL)
+
+        position_width = self.position * width
+
+        positions = [0]
+        if position_width > self.mouse_position and self.mouse_position >= 0:
+            positions.append(self.mouse_position * scale_factor)
+        positions.append(position_width)
+        if (self.width > self.mouse_position
+                and position_width < self.mouse_position
+                and self.mouse_position >= 0):
+            positions.append(self.mouse_position * scale_factor)
+        positions.append(self.width)
+
+        last_x = positions[0]
+        for x in positions[1:]:
+            fg_color = self._choose_fg_color(self.mouse_position,
+                                             position_width, last_x,
+                                             elapsed_color,
+                                             preview_base_color,
+                                             preview_shade_color,
+                                             remaining_color)
+            cr.set_source_rgba(*list(fg_color))
+            print_d(fg_color)
+
+            cr.move_to(last_x, half_height)
+            last_x = x/pixel_ratio
+            cr.line_to(last_x, half_height)
+            cr.stroke()
+
+        self._last_drawn_position = self.position
+        self._last_mouse_position = self.mouse_position
 
     @staticmethod
     def compute_half_height(height, pixel_ratio):
@@ -666,7 +710,9 @@ class WaveformScale(Gtk.EventBox):
                                preview_base_color, preview_shade_color,
                                remaining_color)
         else:
-            self.draw_placeholder(cr, width, height, remaining_color)
+            self.draw_placeholder(cr, width, height, elapsed_color,
+                                  preview_base_color, preview_shade_color,
+                                  remaining_color)
 
     def do_button_press_event(self, event):
         # Left mouse button
