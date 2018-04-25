@@ -3,7 +3,7 @@
 #        2016-17 Nick Boultbee
 #           2017 Didier Villevalois
 #           2017 Muges
-#           2017 Eyenseo
+#           2018 Eyenseo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ from copy import deepcopy
 from quodlibet import _, app
 from quodlibet import print_w
 from quodlibet import util
-from quodlibet.plugins import PluginConfig, IntConfProp, ConfProp
+from quodlibet.plugins import PluginConfig, ConfProp
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align
 from quodlibet.qltk import Icons
@@ -161,37 +161,32 @@ class WaveformSeekBar(Gtk.Box):
         for child in self.get_children():
             child.show_all()
 
-        self._waveform_scale.connect('size-allocate',
-                                     self._update_redraw_interval)
+        self._waveform_scale.connect('size-allocate', self._on_size_change)
         self._waveform_scale.connect('motion-notify-event',
                                      self._on_mouse_hover)
         self._waveform_scale.connect('leave-notify-event',
                                      self._on_mouse_leave)
 
         self._label_tracker = TimeTracker(player)
-        self._label_tracker.connect('tick', self._on_tick_label, player)
+        self._label_tracker.connect('tick', self._on_tick_label)
 
         self._redraw_tracker = TimeTracker(player)
-        self._redraw_tracker.connect('tick', self._on_tick_waveform, player)
+        self._redraw_tracker.connect('tick', self._on_tick_waveform)
 
         connect_destroy(player, 'seek', self._on_player_seek)
         connect_destroy(player, 'song-started', self._on_song_started)
         connect_destroy(player, 'song-ended', self._on_song_ended)
         connect_destroy(player, 'notify::seekable', self._on_seekable_changed)
-        connect_destroy(library, 'changed', self._on_song_changed, player)
+        connect_destroy(library, 'changed', self._on_song_changed)
 
         self.connect('destroy', self._on_destroy)
-        self._update(player)
 
-        if player.info:
-            self._create_waveform(player.info, CONFIG.max_data_points)
+    def _create_waveform(self, song):
+        if not song.is_file or not self._waveform_scale.get_realized():
+            return
 
-    def _create_waveform(self, song, points):
         # Close any existing pipeline to avoid leaks
         self._clean_pipeline()
-
-        if not song.is_file:
-            return
 
         command_template = """
         uridecodebin name=uridec
@@ -213,6 +208,23 @@ class WaveformSeekBar(Gtk.Box):
 
         self._pipeline = pipeline
         self._new_rms_vals = []
+
+    def _clean_pipeline(self):
+        if hasattr(self, "_pipeline") and self._pipeline:
+            self._pipeline.set_state(Gst.State.NULL)
+            if self._bus_id:
+                bus = self._pipeline.get_bus()
+                bus.remove_signal_watch()
+                bus.disconnect(self._bus_id)
+                self._bus_id = None
+            if self._pipeline:
+                self._pipeline = None
+
+    def _update_redraw_interval(self, *args):
+        if self._player.info and self.is_visible():
+            # Must be recomputed when size is changed
+            interval = self._waveform_scale.compute_redraw_interval()
+            self._redraw_tracker.set_interval(interval)
 
     def _on_bus_message(self, bus, message):
         if message.type == Gst.MessageType.ERROR:
@@ -245,99 +257,90 @@ class WaveformSeekBar(Gtk.Box):
             # Clear temporary reference to the waveform data
             del self._new_rms_vals
 
-    def _clean_pipeline(self):
-        if hasattr(self, "_pipeline") and self._pipeline:
-            self._pipeline.set_state(Gst.State.NULL)
-            if self._bus_id:
-                bus = self._pipeline.get_bus()
-                bus.remove_signal_watch()
-                bus.disconnect(self._bus_id)
-                self._bus_id = None
-            if self._pipeline:
-                self._pipeline = None
+    def _on_size_change(self, widget, allocation):
+        self._update()
 
-    def _update_redraw_interval(self, *args):
-        if self._player.info and self.is_visible():
-            # Must be recomputed when size is changed
-            interval = self._waveform_scale.compute_redraw_interval()
-            self._redraw_tracker.set_interval(interval)
+        if self._player.info:
+            self._create_waveform(self._player.info)
 
     def _on_destroy(self, *args):
         self._clean_pipeline()
         self._label_tracker.destroy()
         self._redraw_tracker.destroy()
 
-    def _on_tick_label(self, tracker, player):
-        self._update_label(player)
+    def _on_tick_label(self, tracker):
+        if self.is_visible():
+            self._update_label()
 
-    def _on_tick_waveform(self, tracker, player):
-        self._update_waveform(player)
+    def _on_tick_waveform(self, tracker):
+        if self.is_visible():
+            self._update_waveform()
 
     def _on_seekable_changed(self, player, *args):
-        self._update_label(player)
+        self._update_label()
 
     def _on_player_seek(self, player, song, ms):
-        self._update(player)
+        self._update()
 
-    def _on_song_changed(self, library, songs, player):
-        if not player.info:
+    def _on_song_changed(self, library, songs):
+        if not self._player.info:
             return
         # Check that the currently playing song has changed
-        if player.info in songs:
+        if self._player.info in songs:
             # Trigger a re-computation of the waveform
-            self._create_waveform(player.info, CONFIG.max_data_points)
-            self._resize_labels(player.info)
+            self._create_waveform(self._player.info)
+            self._resize_labels(self._player.info)
             # Only update the label if some tag value changed
-            self._update_label(player)
+            self._update_label()
 
     def _on_song_started(self, player, song):
-        if player.info:
+        if self._player.info:
             # Trigger a re-computation of the waveform
-            self._create_waveform(player.info, CONFIG.max_data_points)
-            self._resize_labels(player.info)
+            self._create_waveform(self._player.info)
+            self._resize_labels(self._player.info)
 
         self._waveform_scale.set_placeholder(True)
-        self._update(player, True)
+        self._update(True)
 
     def _on_song_ended(self, player, song, ended):
-        self._update(player)
+        self._update()
 
-    def _update(self, player, full_redraw=False):
-        self._update_label(player)
-        self._update_waveform(player, full_redraw)
+    def _update(self, full_redraw=False):
+        self._update_label()
+        self._update_waveform(full_redraw)
 
-    def _update_label(self, player):
-        if player.info:
+    def _update_label(self):
+        if self._player.info:
             if self._hovering:
                 # Show the position pointed by the mouse
                 position = self._waveform_scale.get_mouse_position()
             else:
-                # Show the position of the player (converted in seconds)
-                position = player.get_position() / 1000.0
-            length = player.info("~#length")
+                # Show the position of the self._player (converted in seconds)
+                position = self._player.get_position() / 1000.0
+            length = self._player.info("~#length")
             remaining = length - position
 
             self._elapsed_label.set_time(position)
             self._remaining_label.set_time(remaining)
 
-            self._elapsed_label.set_disabled(not player.seekable)
-            self._remaining_label.set_disabled(not player.seekable)
-            self.set_sensitive(player.seekable)
+            self._elapsed_label.set_disabled(not self._player.seekable)
+            self._remaining_label.set_disabled(not self._player.seekable)
+            self.set_sensitive(self._player.seekable)
         else:
             self._remaining_label.set_disabled(True)
             self._elapsed_label.set_disabled(True)
             self.set_sensitive(False)
 
-    def _update_waveform(self, player, full_redraw=False):
-        if player.info:
+    def _update_waveform(self, full_redraw=False):
+        if self._player.info:
             # Position in ms, length in seconds
-            position = player.get_position() / 1000.0
-            length = player.info("~#length")
+            position = self._player.get_position() / 1000.0
+            length = self._player.info("~#length")
 
             if length != 0:
                 self._waveform_scale.set_position(position / length)
             else:
-                print_d("Length reported as zero for %s" % player.info)
+                print_d("Length reported as zero for %s" % self._player.info)
                 self._waveform_scale.set_position(0)
 
             if (position == 0 or full_redraw
@@ -367,7 +370,7 @@ class WaveformSeekBar(Gtk.Box):
         else:
             self._waveform_scale.queue_draw()
 
-        self._update_label(self._player)
+        self._update_label()
         self._hovering = True
 
     def _on_mouse_leave(self, _, event):
@@ -375,7 +378,7 @@ class WaveformSeekBar(Gtk.Box):
         self._waveform_scale.queue_draw()
 
         self._hovering = False
-        self._update_label(self._player)
+        self._update_label()
 
     def _resize_labels(self, song):
         """Resize the labels to make sure there is enough space to display the
@@ -502,14 +505,14 @@ class WaveformScale(Gtk.EventBox):
             return (self.elapsed_color
                     if x < position_width else self.remaining_color)
 
-    def draw_waveform(self, cr, width, height):
+    def _draw_waveform(self, cr, width, height):
         if width == 0 or height == 0:
             return
         scale_factor = self.get_scale_factor()
         pixel_ratio = float(scale_factor)
         line_width = 1.0 / pixel_ratio
 
-        half_height = self.compute_half_height(height, pixel_ratio)
+        half_height = self._compute_half_height(height, pixel_ratio)
 
         value_count = len(self._rms_vals)
         max_value = max(self._rms_vals)
@@ -554,13 +557,13 @@ class WaveformScale(Gtk.EventBox):
         self._last_drawn_position = self.position
         self._last_mouse_position = self.mouse_position
 
-    def draw_placeholder(self, cr, width, height):
+    def _draw_placeholder(self, cr, width, height):
         if width == 0 or height == 0:
             return
         scale_factor = self.get_scale_factor()
         pixel_ratio = float(scale_factor)
 
-        half_height = self.compute_half_height(height, pixel_ratio)
+        half_height = self._compute_half_height(height, pixel_ratio)
 
         cr.set_line_width(half_height)
         cr.set_line_cap(cairo.LINE_CAP_BUTT)
@@ -597,7 +600,7 @@ class WaveformScale(Gtk.EventBox):
         self._last_mouse_position = self.mouse_position
 
     @staticmethod
-    def compute_half_height(height, pixel_ratio):
+    def _compute_half_height(height, pixel_ratio):
         # Ensure half_height is in the middle of a pixel (c.f. Cairo's FAQ)
         height_px = int(height * pixel_ratio)
         half_height = \
@@ -703,9 +706,9 @@ class WaveformScale(Gtk.EventBox):
         height = allocation.height
 
         if not self._placeholder and self._rms_vals:
-            self.draw_waveform(cr, width, height)
+            self._draw_waveform(cr, width, height)
         else:
-            self.draw_placeholder(cr, width, height)
+            self._draw_placeholder(cr, width, height)
 
     def do_button_press_event(self, event):
         # Left mouse button
@@ -744,7 +747,6 @@ class Config(object):
     elapsed_color = ConfProp(_config, "elapsed_color", "")
     preview_color = ConfProp(_config, "preview_color", "")
     remaining_color = ConfProp(_config, "remaining_color", "")
-    max_data_points = IntConfProp(_config, "max_data_points", 3000)
 
 
 CONFIG = Config()
