@@ -82,7 +82,6 @@ def find_audio_sink():
     if is_windows():
         sinks = [
             "directsoundsink",
-            "autoaudiosink",
         ]
     elif is_linux() and pulse_is_running():
         sinks = [
