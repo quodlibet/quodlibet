@@ -94,7 +94,7 @@ class WaveformSeekBar(Gtk.Box):
         pipeline.get_by_name("uridec").set_property("uri", song("~uri"))
 
         bus = pipeline.get_bus()
-        self._bus_id = bus.connect("message", self._on_bus_message)
+        self._bus_id = bus.connect("message", self._on_bus_message, points)
         bus.add_signal_watch()
 
         pipeline.set_state(Gst.State.PLAYING)
@@ -102,7 +102,8 @@ class WaveformSeekBar(Gtk.Box):
         self._pipeline = pipeline
         self._new_rms_vals = []
 
-    def _on_bus_message(self, bus, message):
+    def _on_bus_message(self, bus, message, points):
+        force_stop = False
         if message.type == Gst.MessageType.ERROR:
             error, debug = message.parse_error()
             print_d("Error received from element {name}: {error}".format(
@@ -118,10 +119,16 @@ class WaveformSeekBar(Gtk.Box):
                     # Normalize dB value to value between 0 and 1
                     rms = pow(10, (rms_db_avg / 20))
                     self._new_rms_vals.append(rms)
+                    if len(self._new_rms_vals) >= points:
+                        # The audio might be much longer than we anticipated
+                        # and we would get way too many events due to the too
+                        # short interval set.
+                        force_stop = True
             else:
                 print_w("Got unexpected message of type {}"
                         .format(message.type))
-        elif message.type == Gst.MessageType.EOS:
+
+        if message.type == Gst.MessageType.EOS or force_stop:
             self._clean_pipeline()
 
             # Update the waveform with the new data

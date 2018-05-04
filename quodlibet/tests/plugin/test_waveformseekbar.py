@@ -65,4 +65,4 @@ class TWaveformSeekBar(PluginTestCase):
         bar = self.mod.WaveformSeekBar(player, library)
 
         message = FakeRMSMessage()
-        bar._on_bus_message(None, message)
+        bar._on_bus_message(None, message, 1234)
