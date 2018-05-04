@@ -87,6 +87,8 @@ class WaveformSeekBar(Gtk.Box):
         ! level name=audiolevel interval={} post-messages=true
         ! fakesink sync=false"""
         interval = int(song("~#length") * 1E9 / points)
+        if not interval:
+            return
         print_d("Computing data for each %.3f seconds" % (interval / 1E9))
 
         command = command_template.format(interval)
