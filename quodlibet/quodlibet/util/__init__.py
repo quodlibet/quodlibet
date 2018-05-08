@@ -1105,11 +1105,22 @@ def set_process_title(title):
 
     try:
         libc = load_library(["libc.so.6", "c"])[0]
-        # 15 = PR_SET_NAME, apparently
-        libc.prctl(15, title.encode("utf-8"), 0, 0, 0)
+        prctl = libc.prctl
     except (OSError, AttributeError):
         print_d("Couldn't find module libc.so.6 (ctypes). "
                 "Not setting process title.")
+    else:
+        prctl.argtypes = [
+            ctypes.c_int, ctypes.c_ulong, ctypes.c_ulong,
+            ctypes.c_ulong, ctypes.c_ulong,
+        ]
+        prctl.restype = ctypes.c_int
+
+        PR_SET_NAME = 15
+        data = ctypes.create_string_buffer(title.encode("utf-8"))
+        res = prctl(PR_SET_NAME, ctypes.addressof(data), 0, 0, 0)
+        if res != 0:
+            print_w("Setting the process title failed")
 
 
 def list_unique(sequence):
