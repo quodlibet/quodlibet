@@ -1106,7 +1106,7 @@ def set_process_title(title):
     try:
         libc = load_library(["libc.so.6", "c"])[0]
         # 15 = PR_SET_NAME, apparently
-        libc.prctl(15, title, 0, 0, 0)
+        libc.prctl(15, title.encode("utf-8"), 0, 0, 0)
     except (OSError, AttributeError):
         print_d("Couldn't find module libc.so.6 (ctypes). "
                 "Not setting process title.")
