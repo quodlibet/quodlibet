@@ -111,7 +111,8 @@ def main():
             "data/exfalso.1",
             "data/operon.1",
         ],
-        "search_provider": "data/quodlibet-search-provider.ini",
+        "search_provider":
+            "data/io.github.quodlibet.QuodLibet-search-provider.ini",
         "zsh_completions": [
             ("data/quodlibet.zsh", "_quodlibet"),
         ],

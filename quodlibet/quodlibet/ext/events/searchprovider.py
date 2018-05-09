@@ -9,7 +9,7 @@
 """
 For this plugin to work GNOME Shell needs this file:
 
-/usr/share/gnome-shell/search-providers/quodlibet-search-provider.ini
+/usr/share/gnome-shell/search-providers/io.github.quodlibet.QuodLibet-search-provider.ini
 
 with the following content:
 
