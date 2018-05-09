@@ -6,6 +6,9 @@
     <metadata_license>CC0</metadata_license>
     <project_license>GPL-2.0</project_license>
     <translation type="gettext">quodlibet</translation>
+    <provides>
+        <id>quodlibet.desktop</id>
+    </provides>
     <description>
     <_p>
         Quod Libet is a music management program. It provides several
