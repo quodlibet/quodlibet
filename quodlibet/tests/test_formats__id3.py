@@ -145,6 +145,13 @@ class TID3FileMixin(object):
         else:
             self.KIND(self.filename)
 
+    def test_write_empty_replaygain_track_gain(self):
+        f = self.KIND(self.filename)
+        f["replaygain_track_gain"] = ""
+        f.write()
+        f.reload()
+        assert f.replay_gain(["track"]) == 1.0
+
     def test_TXXX_DATE(self):
         # https://github.com/quodlibet/quodlibet/issues/220
         f = mutagen.File(self.filename)
