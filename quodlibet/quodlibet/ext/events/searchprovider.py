@@ -15,8 +15,8 @@ with the following content:
 
 [Shell Search Provider]
 DesktopId=quodlibet.desktop
-BusName=net.sacredchao.QuodLibet.SearchProvider
-ObjectPath=/net/sacredchao/QuodLibet/SearchProvider
+BusName=io.github.quodlibet.QuodLibet.SearchProvider
+ObjectPath=/io/github/quodlibet/QuodLibet/SearchProvider
 Version=2
 """
 
@@ -114,8 +114,8 @@ def get_songs_for_ids(library, ids):
 
 
 class SearchProvider(dbus.service.Object):
-    PATH = "/net/sacredchao/QuodLibet/SearchProvider"
-    BUS_NAME = "net.sacredchao.QuodLibet.SearchProvider"
+    PATH = "/io/github/quodlibet/QuodLibet/SearchProvider"
+    BUS_NAME = "io.github.quodlibet.QuodLibet.SearchProvider"
     IFACE = "org.gnome.Shell.SearchProvider2"
 
     def __init__(self):
