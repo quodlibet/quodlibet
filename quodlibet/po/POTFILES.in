@@ -1,7 +1,7 @@
 data/exfalso.appdata.xml.in
 data/exfalso.desktop.in
-data/quodlibet.appdata.xml.in
-data/quodlibet.desktop.in
+data/io.github.quodlibet.QuodLibet.appdata.xml.in
+data/io.github.quodlibet.QuodLibet.desktop.in
 quodlibet/browsers/albums/main.py
 quodlibet/browsers/albums/prefs.py
 quodlibet/browsers/audiofeeds.py

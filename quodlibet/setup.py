@@ -95,7 +95,10 @@ def main():
         ],
         'po_directory': "po",
         'po_package': "quodlibet",
-        'shortcuts': ["data/quodlibet.desktop", "data/exfalso.desktop"],
+        'shortcuts': [
+            "data/io.github.quodlibet.QuodLibet.desktop",
+            "data/exfalso.desktop"
+        ],
         'dbus_services': [
             "data/io.github.quodlibet.QuodLibet.service",
             # https://github.com/quodlibet/quodlibet/issues/1268
@@ -103,7 +106,7 @@ def main():
             # "data/org.mpris.quodlibet.service",
         ],
         'appdata': [
-            "data/quodlibet.appdata.xml",
+            "data/io.github.quodlibet.QuodLibet.appdata.xml",
             "data/exfalso.appdata.xml",
         ],
         'man_pages': [

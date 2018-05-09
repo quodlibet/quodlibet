@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application>
-    <id type="desktop">quodlibet.desktop</id>
+    <id type="desktop">io.github.quodlibet.QuodLibet.desktop</id>
     <name>Quod Libet</name>
     <_summary>Listen to, browse, or edit your audio collection</_summary>
     <metadata_license>CC0</metadata_license>

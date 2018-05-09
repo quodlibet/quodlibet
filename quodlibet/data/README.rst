@@ -12,6 +12,6 @@ D-Bus Service Files (``*.service.in``)
     These depend on the installation path, so get changed during
     installation.
 
-GNOME Search Provider (``quodlibet-search-provider.ini``)
+GNOME Search Provider (``*-search-provider.ini``)
     Gets copied as is for GNOME to know that Quod Libet can provide
     a search provider (currently through a plugin)

@@ -127,7 +127,7 @@ class TMPRIS(PluginTestCase):
             "CanSetFullscreen": dbus.Boolean(False),
             "HasTrackList": dbus.Boolean(False),
             "Identity": dbus.String("Quod Libet"),
-            "DesktopEntry": dbus.String("quodlibet"),
+            "DesktopEntry": dbus.String("io.github.quodlibet.QuodLibet"),
             "SupportedUriSchemes": dbus.Array(),
         }
 
