@@ -396,7 +396,7 @@ class ID3File(AudioFile):
             if ('replaygain_%s_gain' % k) in self:
                 try:
                     gain = float(self["replaygain_%s_gain" % k].split()[0])
-                except ValueError:
+                except (ValueError, IndexError):
                     gain = 0
                 try:
                     peak = float(self["replaygain_%s_peak" % k])
