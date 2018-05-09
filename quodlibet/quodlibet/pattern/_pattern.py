@@ -177,7 +177,7 @@ class PatternParser(object):
             if self.lookahead.type in tokens:
                 self.lookahead = next(self.tokens)
             else:
-                raise ParseError("The token '%s' is not the type exected." % (
+                raise ParseError("The token '%s' is not the type expected." % (
                     self.lookahead.lexeme))
         except StopIteration:
             self.lookahead = PatternLexeme(EOF, "")
