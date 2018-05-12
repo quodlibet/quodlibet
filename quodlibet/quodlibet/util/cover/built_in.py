@@ -10,6 +10,7 @@
 import glob
 import os.path
 import re
+import sre_constants
 
 from senf import fsn2text
 
@@ -95,9 +96,15 @@ class FilesystemCover(CoverSourcePlugin):
 
         # Issue 374: Specify artwork filename
         if config.getboolean("albumart", "force_filename"):
-            path = os.path.join(base, config.get("albumart", "filename"))
-            for path in glob.glob(path):
-                images.append((100, os.path.join(base, path)))
+            escaped_path = os.path.join(glob.escape(base),
+                                        config.get("albumart", "filename"))
+            try:
+                for path in glob.glob(escaped_path):
+                    images.append((100, path))
+            except sre_constants.error:
+                # Use literal filename if globbing causes errors
+                path = os.path.join(base, config.get("albumart", "filename"))
+                images = [(100, path)]
         else:
             entries = []
             try:
