@@ -25,7 +25,7 @@ def get_thumbnail_folder():
     """
 
     if os.name == "nt":
-        thumb_folder = os.path.join(quodlibet.get_user_dir(), "thumbnails")
+        thumb_folder = os.path.join(quodlibet.get_cache_dir(), "thumbnails")
     else:
         cache_folder = os.path.join(xdg_get_cache_home(), "thumbnails")
         thumb_folder = os.path.expanduser('~/.thumbnails')

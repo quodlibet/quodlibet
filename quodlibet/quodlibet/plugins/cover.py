@@ -11,8 +11,9 @@ from hashlib import sha1
 
 from gi.repository import GObject
 
+from quodlibet import get_cache_dir
 from quodlibet.qltk import Icons
-from quodlibet.util.path import escape_filename, xdg_get_cache_home
+from quodlibet.util.path import escape_filename
 from quodlibet.util import print_w
 
 
@@ -179,7 +180,7 @@ class CoverSourcePlugin(GObject.Object):
         self.emit('fetch-failure', message)
 
 
-cover_dir = path.join(xdg_get_cache_home(), 'quodlibet', 'covers')
+cover_dir = path.join(get_cache_dir(), 'covers')
 
 try:
     makedirs(cover_dir)

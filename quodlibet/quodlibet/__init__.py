@@ -31,11 +31,11 @@ from ._init import init_cli, init
 from ._main import get_base_dir, is_release, get_user_dir, app, \
     set_application_info, init_plugins, enable_periodic_save, run, \
     finish_first_session, get_image_dir, is_first_session, \
-    get_build_description, get_build_version
+    get_build_description, get_build_version, get_cache_dir
 
 
 _, C_, N_, ngettext, npgettext, is_release, init, init_cli, print_e, \
     get_base_dir, print_w, print_d, get_user_dir, app, set_application_info, \
     init_plugins, enable_periodic_save, run, finish_first_session, \
     get_image_dir, is_first_session, get_build_description, \
-    get_build_version
+    get_build_version, get_cache_dir
