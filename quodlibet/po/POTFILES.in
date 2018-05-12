@@ -105,7 +105,6 @@ quodlibet/ext/songsmenu/ape2id3.py
 quodlibet/ext/songsmenu/bookmarks.py
 quodlibet/ext/songsmenu/brainz/__init__.py
 quodlibet/ext/songsmenu/brainz/widgets.py
-quodlibet/ext/songsmenu/browsefolders.py
 quodlibet/ext/songsmenu/console.py
 quodlibet/ext/songsmenu/cover_download.py
 quodlibet/ext/songsmenu/custom_commands.py

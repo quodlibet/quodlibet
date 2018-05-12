@@ -22,7 +22,8 @@ from quodlibet.util.string.titlecase import human_title
 from gdist import gettextutil
 
 
-PODIR = os.path.join(os.path.dirname(get_module_dir(quodlibet)), "po")
+QL_BASE_DIR = os.path.dirname(get_module_dir(quodlibet))
+PODIR = os.path.join(QL_BASE_DIR, "po")
 
 
 class MissingTranslationsException(Exception):
@@ -33,6 +34,14 @@ class MissingTranslationsException(Exception):
 
 
 class TPOTFILESIN(TestCase):
+
+    def test_no_extra_entries(self):
+        """Works without polib installed..."""
+        with open(os.path.join(PODIR, "POTFILES.in")) as f:
+            for fn in f:
+                path = os.path.join(QL_BASE_DIR, fn.strip())
+                assert os.path.isfile(path), \
+                    "Can't read '%s' from POTFILES.in" % path
 
     def test_missing(self):
         try:
