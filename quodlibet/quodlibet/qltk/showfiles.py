@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2012,2016 Nick Boultbee
+# Copyright 2012,2016,2018 Nick Boultbee
 #           2012,2014,2018 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -64,6 +64,20 @@ def show_files(dirname, entries=[]):
         else:
             return True
     return False
+
+
+def show_songs(songs):
+    """Returns False if showing any of them failed"""
+
+    dirs = {}
+    for s in songs:
+        dirs.setdefault(s("~dirname"), []).append(s("~basename"))
+
+    for dirname, entries in sorted(dirs.items()):
+        status = show_files(dirname, entries)
+        if not status:
+            return False
+    return True
 
 
 class BrowseError(Exception):

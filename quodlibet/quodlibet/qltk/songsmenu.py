@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
-#      2013-2017 Nick Boultbee
+#      2013-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,14 +10,17 @@
 from gi.repository import Gtk
 
 from quodlibet.compat import listvalues
+from quodlibet.plugins.gui import MenuItemPlugin
+from quodlibet.plugins.songshelpers import is_a_file
 from quodlibet.qltk.pluginwin import PluginWindow
 
-from quodlibet import ngettext, _
+from quodlibet import ngettext, _, print_d
 from quodlibet import qltk
 from quodlibet.errorreport import errorhook
+from quodlibet.qltk.showfiles import show_songs
 
 from quodlibet.util import print_e, print_w
-from quodlibet.qltk.msg import ConfirmationPrompt
+from quodlibet.qltk.msg import ConfirmationPrompt, ErrorMessage
 from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
@@ -261,8 +264,8 @@ class SongsMenu(Gtk.Menu):
         PluginManager.instance.register_handler(cls.plugins)
 
     def __init__(self, library, songs, plugins=True, playlists=True,
-                 queue=True, remove=True, delete=False,
-                 edit=True, ratings=True, items=None, accels=True,
+                 queue=True, remove=True, delete=False, edit=True,
+                 ratings=True, show_files=True, items=None, accels=True,
                  removal_confirmer=None):
         super(SongsMenu, self).__init__()
         # The library may actually be a librarian; if it is, use it,
@@ -402,6 +405,26 @@ class SongsMenu(Gtk.Menu):
                 window = Information(librarian, songs, parent)
                 window.show()
             b.connect('activate', information_cb)
+            self.append(b)
+
+        if show_files and any(is_a_file(s) for s in songs):
+            def show_files_cb(menu_item):
+                print_d("Trying to show files...")
+                if not show_songs(songs):
+                    msg = ErrorMessage(self.plugin_window,
+                                 _("Unable to show files"),
+                                 _("Error showing files, "
+                                   "or no program available to show them."))
+                    msg.run()
+
+            self.separate()
+            total = len([s for s in songs if is_a_file(s)])
+            text = ngettext("_Show in File Manager",
+                            "_Show %d Files in File Manager" % total, total)
+            b = qltk.MenuItem(text, Icons.DOCUMENT_OPEN)
+            b.set_sensitive(bool(songs)
+                            and len(songs) < MenuItemPlugin.MAX_INVOCATIONS)
+            b.connect('activate', show_files_cb)
             self.append(b)
 
         def selection_done_cb(menu):
