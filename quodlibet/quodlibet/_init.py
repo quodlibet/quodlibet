@@ -19,7 +19,7 @@ from quodlibet.util import is_osx, is_windows, i18n
 from quodlibet.util.dprint import print_e, PrintHandler
 from quodlibet.util.urllib import install_urllib2_ca_file
 
-from ._main import get_base_dir, is_release, get_image_dir
+from ._main import get_base_dir, is_release, get_image_dir, get_cache_dir
 
 
 _cli_initialized = False
@@ -373,6 +373,10 @@ def _init_gtk():
 
 def _init_gst():
     """Call once before importing GStreamer"""
+
+    arch_key = "64" if sys.maxsize > 2**32 else "32"
+    registry_name = "gst-registry-%s-%s.bin" % (sys.platform, arch_key)
+    environ["GST_REGISTRY"] = os.path.join(get_cache_dir(), registry_name)
 
     assert "gi.repository.Gst" not in sys.modules
 
