@@ -169,7 +169,7 @@ def _show_files_win32(dirname, entries):
         from quodlibet.util.windows import open_folder_and_select_items
 
         try:
-            open_folder_and_select_items(dirname, [])
+            open_folder_and_select_items(dirname, entries)
         except WindowsError as e:
             raise BrowseError(e)
 
