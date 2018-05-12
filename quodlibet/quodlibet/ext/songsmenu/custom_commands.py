@@ -148,7 +148,9 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         Command(name="Flash notification",
                 command="notify-send"
                     " -t 2000"
-                    " -i /usr/share/icons/hicolor/scalable/apps/quodlibet.svg",
+                    " -i "
+                        "/usr/share/icons/hicolor/scalable/apps/"
+                        "io.github.quodlibet.QuodLibet.svg",
                 pattern="<~rating> \"<title><version| (<version>)>\""
                         "<~people| by <~people>>"
                     "<album|, from <album><discnumber| : disk <discnumber>>"

@@ -7,7 +7,7 @@ MimeType=application/x-flac;audio/aac;audio/aiff;audio/dsf;audio/midi;audio/mp3;
 Terminal=false
 StartupNotify=true
 Type=Application
-Icon=quodlibet
+Icon=io.github.quodlibet.QuodLibet
 Categories=AudioVideo;Audio;Player;GTK;
 
 #http://live.gnome.org/GnomeGoals/NotificationSource

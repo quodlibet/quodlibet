@@ -49,7 +49,7 @@ def main(argv=None):
 
     app.name = "Quod Libet"
     app.description = _("Music player and music library manager")
-    app.id = "quodlibet"
+    app.id = "io.github.quodlibet.QuodLibet"
     quodlibet.set_application_info(Icons.QUODLIBET, app.id, app.name)
 
     library_path = os.path.join(quodlibet.get_user_dir(), "songs")
@@ -74,7 +74,7 @@ def main(argv=None):
     app.player = player
 
     environ["PULSE_PROP_media.role"] = "music"
-    environ["PULSE_PROP_application.icon_name"] = "quodlibet"
+    environ["PULSE_PROP_application.icon_name"] = Icons.QUODLIBET
 
     browsers.init()
 

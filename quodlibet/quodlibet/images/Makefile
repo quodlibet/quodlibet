@@ -1,7 +1,7 @@
 THEME=hicolor
 
-QL_SOURCE=$(THEME)/scalable/apps/quodlibet.svg
-QL_DEST=quodlibet.png
+QL_SOURCE=$(THEME)/scalable/apps/io.github.quodlibet.QuodLibet.svg
+QL_DEST=io.github.quodlibet.QuodLibet.png
 
 EF_SOURCE=$(THEME)/scalable/apps/exfalso.svg
 EF_DEST=exfalso.png
