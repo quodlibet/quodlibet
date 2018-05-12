@@ -17,7 +17,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.plugins import Plugin
 from quodlibet.util.cover.http import escape_query_value
 from quodlibet.util.cover.manager import CoverManager
-from quodlibet.util.path import normalize_path, path_equal
+from quodlibet.util.path import normalize_path, path_equal, mkdir
 from quodlibet.compat import text_type
 
 from tests import TestCase, mkdtemp
@@ -96,6 +96,42 @@ class TCoverManager(TestCase):
             f = self.add_file(fn)
             assert path_equal(
                 os.path.abspath(self._find_cover(self.song).name), f)
+
+    def test_invalid_glob(self):
+        config.set("albumart", "force_filename", str(True))
+        config.set("albumart", "filename", "[a-2].jpg")
+
+        # Should match
+        f = self.add_file("[a-2].jpg")
+        assert path_equal(
+            os.path.abspath(self._find_cover(self.song).name), f)
+
+        # Should not crash
+        f = self.add_file("test.jpg")
+        assert not path_equal(
+            os.path.abspath(self._find_cover(self.song).name), f)
+
+    def test_invalid_glob_path(self):
+        config.set("albumart", "force_filename", str(True))
+        config.set("albumart", "filename", "*.jpg")
+
+        # Make a dir which contains an invalid glob
+        path = os.path.join(self.full_path("[a-2]"), "cover.jpg")
+        mkdir(os.path.dirname(path))
+        f = self.add_file(path)
+
+        # Change the song's path to contain the invalid glob
+        old_song_path = self.song['~filename']
+        new_song_path = os.path.join(os.path.dirname(path),
+                                     os.path.basename(old_song_path))
+        self.song['~filename'] = new_song_path
+
+        # The glob in the dirname should be ignored, while the
+        # glob in the filename/basename is honored
+        assert path_equal(
+            os.path.abspath(self._find_cover(self.song).name), f)
+
+        self.song['~filename'] = old_song_path
 
     def test_intelligent(self):
         song = self.song
