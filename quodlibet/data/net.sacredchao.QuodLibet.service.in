@@ -1,3 +1,3 @@
 [D-BUS Service]
-Name=io.github.quodlibet.QuodLibet
+Name=net.sacredchao.QuodLibet
 Exec=@PREFIX@/bin/quodlibet

@@ -24,10 +24,8 @@ class DBusHandler(dbus.service.Object):
         try:
             self.library = library
             bus = dbus.SessionBus()
-            name = dbus.service.BusName(
-                'io.github.quodlibet.QuodLibet',
-                bus=bus)
-            path = '/io/github/quodlibet/QuodLibet'
+            name = dbus.service.BusName('net.sacredchao.QuodLibet', bus=bus)
+            path = '/net/sacredchao/QuodLibet'
             super(DBusHandler, self).__init__(name, path)
         except DBusException:
             pass
@@ -57,56 +55,56 @@ class DBusHandler(dbus.service.Object):
             song = self.__dict(song)
             self.SongEnded(song, skipped)
 
-    @dbus.service.signal('io.github.quodlibet.QuodLibet')
+    @dbus.service.signal('net.sacredchao.QuodLibet')
     def SongStarted(self, song):
         pass
 
-    @dbus.service.signal('io.github.quodlibet.QuodLibet')
+    @dbus.service.signal('net.sacredchao.QuodLibet')
     def SongEnded(self, song, skipped):
         pass
 
-    @dbus.service.signal('io.github.quodlibet.QuodLibet')
+    @dbus.service.signal('net.sacredchao.QuodLibet')
     def Paused(self):
         pass
 
-    @dbus.service.signal('io.github.quodlibet.QuodLibet')
+    @dbus.service.signal('net.sacredchao.QuodLibet')
     def Unpaused(self):
         pass
 
-    @dbus.service.method('io.github.quodlibet.QuodLibet')
+    @dbus.service.method('net.sacredchao.QuodLibet')
     def GetPosition(self):
         return self._player.get_position()
 
-    @dbus.service.method('io.github.quodlibet.QuodLibet')
+    @dbus.service.method('net.sacredchao.QuodLibet')
     def IsPlaying(self):
         return not self._player.paused
 
-    @dbus.service.method('io.github.quodlibet.QuodLibet')
+    @dbus.service.method('net.sacredchao.QuodLibet')
     def CurrentSong(self):
         return self.__dict(self._player.song)
 
-    @dbus.service.method('io.github.quodlibet.QuodLibet')
+    @dbus.service.method('net.sacredchao.QuodLibet')
     def Next(self):
         self._player.next()
 
-    @dbus.service.method('io.github.quodlibet.QuodLibet')
+    @dbus.service.method('net.sacredchao.QuodLibet')
     def Previous(self):
         self._player.previous()
 
-    @dbus.service.method('io.github.quodlibet.QuodLibet')
+    @dbus.service.method('net.sacredchao.QuodLibet')
     def Pause(self):
         self._player.paused = True
 
-    @dbus.service.method('io.github.quodlibet.QuodLibet')
+    @dbus.service.method('net.sacredchao.QuodLibet')
     def Play(self):
         self._player.play()
 
-    @dbus.service.method('io.github.quodlibet.QuodLibet')
+    @dbus.service.method('net.sacredchao.QuodLibet')
     def PlayPause(self):
         self._player.playpause()
         return self._player.paused
 
-    @dbus.service.method('io.github.quodlibet.QuodLibet', in_signature='s')
+    @dbus.service.method('net.sacredchao.QuodLibet', in_signature='s')
     def Query(self, text):
         if text is not None:
             query = Query(text, star=SongList.star)

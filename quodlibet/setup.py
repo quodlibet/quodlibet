@@ -100,7 +100,7 @@ def main():
             "data/exfalso.desktop"
         ],
         'dbus_services': [
-            "data/io.github.quodlibet.QuodLibet.service",
+            "data/net.sacredchao.QuodLibet.service",
             # https://github.com/quodlibet/quodlibet/issues/1268
             # "data/org.mpris.MediaPlayer2.quodlibet.service",
             # "data/org.mpris.quodlibet.service",
