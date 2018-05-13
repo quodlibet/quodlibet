@@ -2,6 +2,5 @@
 
 set -e
 
-for name in quodlibet exfalso; do
-    convert ../../quodlibet/quodlibet/images/hicolor/*/apps/${name}.png "${name}.ico"
-done
+convert ../../quodlibet/quodlibet/images/hicolor/*/apps/io.github.quodlibet.QuodLibet.png quodlibet.ico
+convert ../../quodlibet/quodlibet/images/hicolor/*/apps/exfalso.png exfalso.ico
