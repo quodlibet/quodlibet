@@ -341,7 +341,7 @@ value="false"/>
             elif name == "Identity":
                 return app.name
             elif name == "DesktopEntry":
-                return "quodlibet"
+                return "io.github.quodlibet.QuodLibet"
             elif name == "SupportedUriSchemes":
                 # TODO: enable once OpenUri is done
                 can = lambda s: False

@@ -470,9 +470,9 @@ class AppMenu(object):
             action.connect("activate", callback)
 
         # export on the bus
-        ag_object_path = "/net/sacredchao/QuodLibet"
-        am_object_path = "/net/sacredchao/QuodLibet/menus/appmenu"
-        app_id = "net.sacredchao.QuodLibet"
+        ag_object_path = "/io/github/quodlibet/QuodLibet"
+        am_object_path = "/io/github/quodlibet/QuodLibet/menus/appmenu"
+        app_id = "io.github.quodlibet.QuodLibet"
 
         win = window.get_window()
         if not hasattr(win, "set_utf8_property"):

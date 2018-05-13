@@ -120,7 +120,7 @@ def init_fake_app():
 
     browsers.init()
     app.name = "Quod Libet"
-    app.id = "quodlibet"
+    app.id = "io.github.quodlibet.QuodLibet"
     app.player = NullPlayer()
     app.library = SongFileLibrary()
     app.library.librarian = SongLibrarian()

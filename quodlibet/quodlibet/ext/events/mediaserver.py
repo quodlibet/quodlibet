@@ -623,7 +623,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
 
         # load into a pixbuf
         theme = Gtk.IconTheme.get_default()
-        pixbuf = theme.load_icon("quodlibet", Icon.SIZE, 0)
+        pixbuf = theme.load_icon(Icons.QUODLIBET, Icon.SIZE, 0)
 
         # make sure the size is right
         pixbuf = pixbuf.scale_simple(Icon.SIZE, Icon.SIZE,

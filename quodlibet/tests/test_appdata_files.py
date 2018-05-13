@@ -52,7 +52,9 @@ class _TAppDataFileMixin(object):
 
 @skipUnless(iscommand("appstream-util"), "appstream-util not found")
 class TQLAppDataFile(TestCase, _TAppDataFileMixin):
-    PATH = os.path.join(QLDATA_DIR, "quodlibet.appdata.xml.in")
+    PATH = os.path.join(
+        QLDATA_DIR,
+        "io.github.quodlibet.QuodLibet.appdata.xml.in")
 
 
 @skipUnless(iscommand("appstream-util"), "appstream-util not found")

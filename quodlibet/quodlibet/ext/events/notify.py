@@ -388,7 +388,7 @@ class Notify(EventPlugin):
             actions = ["next", _("Next")]
 
         hints = {
-            "desktop-entry": "quodlibet",
+            "desktop-entry": "io.github.quodlibet.QuodLibet",
         }
 
         image_uri = self._get_image_uri(song)
