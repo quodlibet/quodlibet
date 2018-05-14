@@ -16,7 +16,7 @@ from quodlibet import _
 from quodlibet import qltk
 from quodlibet import config
 from quodlibet.qltk import Icons
-from quodlibet.util.path import get_home_dir
+from quodlibet.util.path import get_home_dir, xdg_get_system_data_dirs
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.events import EventPlugin
 
@@ -97,9 +97,11 @@ class ThemeSwitcher(EventPlugin):
             theme_dir = Gtk.rc_get_theme_dir()
 
         theme_dirs = [theme_dir, os.path.join(get_home_dir(), ".themes")]
+        theme_dirs += [
+            os.path.join(d, "themes") for d in xdg_get_system_data_dirs()]
 
         themes = set()
-        for theme_dir in theme_dirs:
+        for theme_dir in set(theme_dirs):
             try:
                 subdirs = os.listdir(theme_dir)
             except OSError:
