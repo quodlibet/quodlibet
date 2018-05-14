@@ -351,12 +351,14 @@ def run(window, before_quit=None):
 
     from quodlibet.errorreport import faulthandling
 
-    try:
-        faulthandling.enable(os.path.join(get_user_dir(), "faultdump"))
-    except IOError:
-        util.print_exc()
-    else:
-        GLib.idle_add(faulthandling.raise_and_clear_error)
+    # gtk+ on osx is just too crashy
+    if not is_osx():
+        try:
+            faulthandling.enable(os.path.join(get_user_dir(), "faultdump"))
+        except IOError:
+            util.print_exc()
+        else:
+            GLib.idle_add(faulthandling.raise_and_clear_error)
 
     # set QUODLIBET_START_PERF to measure startup time until the
     # windows is first shown.
