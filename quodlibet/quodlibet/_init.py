@@ -74,12 +74,10 @@ def _init_gettext(no_translations=False):
     i18n.init(language)
 
     # Use the locale dir in ../build/share/locale if there is one
-    base_dir = get_base_dir()
-    localedir = os.path.dirname(base_dir)
-    localedir = os.path.join(localedir, "build", "share", "locale")
-    if not os.path.isdir(localedir) and os.name == "nt":
-        localedir = os.path.join(
-            base_dir, "..", "..", "share", "locale")
+    localedir = os.path.join(
+        os.path.dirname(get_base_dir()), "build", "share", "locale")
+    if not os.path.isdir(localedir):
+        localedir = None
 
     i18n.register_translation("quodlibet", localedir)
     debug_text = environ.get("QUODLIBET_TEST_TRANS")

@@ -13,8 +13,9 @@ import locale
 
 from senf import environ, path2fsn, fsn2text, text2fsn
 
-from quodlibet.util.path import unexpand
+from quodlibet.util.path import unexpand, xdg_get_system_data_dirs
 from quodlibet.util.dprint import print_d
+from quodlibet.util import cached_func
 from quodlibet.compat import text_type, PY2, listfilter
 
 from .misc import get_locale_encoding
@@ -223,13 +224,29 @@ def set_debug_text(debug_text=None):
         trans.set_debug_text(debug_text)
 
 
+@cached_func
+def get_locale_dir():
+    # this is the one gettext.bindtextdomain() uses by default
+    default = os.path.join(sys.base_prefix, "share", "locale")
+    if os.path.isdir(default):
+        return default
+
+    for path in xdg_get_system_data_dirs():
+        locale_dir = os.path.join(path, "locale")
+        if os.path.isdir(locale_dir):
+            return locale_dir
+
+    # at least return something
+    return default
+
+
 def register_translation(domain, localedir=None):
     """Register a translation domain
 
     Args:
         domain (str): the gettext domain
-        localedir (pathlike): A directory used for translations, if it doesn't
-            exist the system one will be used.
+        localedir (pathlike): A directory used for translations, if None the
+            system one will be used.
     Returns:
         GlibTranslations
     """
@@ -238,11 +255,11 @@ def register_translation(domain, localedir=None):
 
     assert _initialized
 
-    if localedir is not None and os.path.isdir(localedir):
-        print_d("Using local localedir: %r" % unexpand(localedir))
-        gettext.bindtextdomain(domain, localedir)
+    if localedir is None:
+        localedir = get_locale_dir()
 
-    localedir = gettext.bindtextdomain(domain)
+    print_d("Using localedir: %r" % unexpand(localedir))
+    gettext.bindtextdomain(domain, localedir)
 
     try:
         t = gettext.translation(domain, localedir, class_=GlibTranslations)

@@ -14,7 +14,7 @@ from .helper import preserve_environ, locale_numeric_conv
 from quodlibet.util import i18n
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
     set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, \
-    numeric_phrase, get_available_languages
+    numeric_phrase, get_available_languages, get_locale_dir
 from quodlibet.compat import text_type
 
 
@@ -76,6 +76,9 @@ class TGlibTranslations(TestCase):
 
 
 class Tgettext(TestCase):
+
+    def test_get_locale_dir(self):
+        assert isinstance(get_locale_dir(), str)
 
     def test_get_languages(self):
         assert isinstance(get_available_languages("quodlibet"), list)
