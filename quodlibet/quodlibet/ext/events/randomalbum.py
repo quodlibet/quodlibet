@@ -17,6 +17,7 @@ from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import util
 from quodlibet.util import print_d
+from quodlibet.browsers.playlists import PlaylistsBrowser
 try:
     from quodlibet.qltk import notif, Icons
 except Exception:
@@ -242,4 +243,5 @@ class RandomAlbum(EventPlugin):
             app.player.paused = True
 
     def disabled_for_browser(self, browser):
-        return not browser.can_filter_albums() or browser == "Playlists"
+        return (not browser.can_filter("album") or
+                isinstance(browser, PlaylistsBrowser))
