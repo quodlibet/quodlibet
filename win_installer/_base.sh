@@ -81,17 +81,22 @@ function install_deps {
     # cache update step during package installation
     export MSYS2_FC_CACHE_SKIP=1
 
-    build_pacman --noconfirm -S git mingw-w64-"${ARCH}"-gdk-pixbuf2 \
+    build_pacman --noconfirm -S \
+        git \
+        mingw-w64-"${ARCH}"-gdk-pixbuf2 \
         mingw-w64-"${ARCH}"-librsvg \
-        mingw-w64-"${ARCH}"-gtk3 mingw-w64-"${ARCH}"-python3 \
+        mingw-w64-"${ARCH}"-gtk3 \
+        mingw-w64-"${ARCH}"-python3 \
         mingw-w64-"${ARCH}"-python3-gobject \
         mingw-w64-"${ARCH}"-python3-cairo \
         mingw-w64-"${ARCH}"-python3-pip \
-        mingw-w64-"${ARCH}"-libsoup mingw-w64-"${ARCH}"-gstreamer \
+        mingw-w64-"${ARCH}"-libsoup \
+        mingw-w64-"${ARCH}"-gstreamer \
         mingw-w64-"${ARCH}"-gst-plugins-base \
-        mingw-w64-"${ARCH}"-gst-plugins-good mingw-w64-"${ARCH}"-libsrtp \
-        mingw-w64-"${ARCH}"-gst-plugins-bad mingw-w64-"${ARCH}"-gst-libav \
+        mingw-w64-"${ARCH}"-gst-plugins-good \
+        mingw-w64-"${ARCH}"-gst-plugins-bad \
         mingw-w64-"${ARCH}"-gst-plugins-ugly \
+        mingw-w64-"${ARCH}"-gst-libav \
         mingw-w64-"${ARCH}"-python3-pytest \
         mingw-w64-"${ARCH}"-python3-certifi \
         mingw-w64-"${ARCH}"-python3-coverage
@@ -107,15 +112,21 @@ pyflakes==1.6.0
     build_pip install --no-deps --no-binary ":all:" --upgrade \
         --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr ["\\n"] [" "])
 
-    build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-shared-mime-info \
-        mingw-w64-"${ARCH}"-python3-pip mingw-w64-"${ARCH}"-ncurses \
-        mingw-w64-"${ARCH}"-tk mingw-w64-"${ARCH}"-tcl \
-        mingw-w64-"${ARCH}"-opencv mingw-w64-"${ARCH}"-daala-git \
+    build_pacman --noconfirm -Rdds \
+        mingw-w64-"${ARCH}"-shared-mime-info \
+        mingw-w64-"${ARCH}"-python3-pip \
+        mingw-w64-"${ARCH}"-ncurses \
+        mingw-w64-"${ARCH}"-tk \
+        mingw-w64-"${ARCH}"-tcl \
+        mingw-w64-"${ARCH}"-opencv \
+        mingw-w64-"${ARCH}"-daala-git \
         mingw-w64-"${ARCH}"-libdvdcss \
-        mingw-w64-"${ARCH}"-libdvdnav mingw-w64-"${ARCH}"-libdvdread \
+        mingw-w64-"${ARCH}"-libdvdnav \
+        mingw-w64-"${ARCH}"-libdvdread \
         mingw-w64-"${ARCH}"-openexr \
-        mingw-w64-"${ARCH}"-openh264 mingw-w64-"${ARCH}"-zbar \
-        mingw-w64-"${ARCH}"-clutter  mingw-w64-"${ARCH}"-gsl || true
+        mingw-w64-"${ARCH}"-openh264 \
+        mingw-w64-"${ARCH}"-zbar \
+        mingw-w64-"${ARCH}"-gsl
 
     build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-python2 || true
 
