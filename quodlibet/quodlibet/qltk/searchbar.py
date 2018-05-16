@@ -153,7 +153,9 @@ class SearchBarBox(Gtk.HBox):
 
     def __save_search(self, entry, *args):
         # only save the query on focus-out if eager_search is turned on
-        if args and not config.getboolean('settings', 'eager_search'):
+        if (len(args) > 0
+                and args[0]
+                and not config.getboolean('settings', 'eager_search')):
             return
 
         text = self.get_text().strip()
