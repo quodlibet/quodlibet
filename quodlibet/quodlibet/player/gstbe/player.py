@@ -517,29 +517,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         flags &= ~(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_TEXT)
         self.bin.set_property("flags", flags)
 
-        # find the (uri)decodebin after setup and use autoplug-sort
-        # to sort elements like decoders
-        def source_setup(*args):
-            def autoplug_sort(decode, pad, caps, factories):
-                def set_prio(x):
-                    i, f = x
-                    i = {
-                        "mad": -1,
-                        "mpg123audiodec": -2
-                    }.get(f.get_name(), i)
-                    return (i, f)
-                return list(
-                    zip(*sorted(map(set_prio, enumerate(factories)))))[1]
-
-            for e in iter_to_list(self.bin.iterate_recurse):
-                try:
-                    e.connect("autoplug-sort", autoplug_sort)
-                except TypeError:
-                    pass
-                else:
-                    break
-        self.bin.connect("source-setup", source_setup)
-
         if not self.has_external_volume:
             # Restore volume/ReplayGain and mute state
             self.volume = self._volume
