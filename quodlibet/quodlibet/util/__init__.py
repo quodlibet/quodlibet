@@ -77,7 +77,7 @@ class OptionParser(object):
             "help", shorts="h", help=_("Display brief usage information"))
         self.add(
             "version", shorts="v", help=_("Display version and copyright"))
-        self.add("debug", shorts="d")
+        self.add("debug", shorts="d", help=_("Print debugging information"))
 
     def add(self, canon, help=None, arg="", shorts="", longs=[]):
         self.__args[canon] = arg

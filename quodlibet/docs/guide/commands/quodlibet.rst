@@ -29,6 +29,9 @@ https://quodlibet.readthedocs.io/en/latest/guide/index.html.
 OPTIONS
 =======
 
+--debug
+    Print debugging information
+
 --enqueue <filename|query>
     Enqueue a filename or query results
 
@@ -38,14 +41,17 @@ OPTIONS
 --focus
     Focus the running player
 
+--force-previous
+    Jump to previous song
+
 --hide-window
     Hide main window
 
---next
-    Jump to next song
-
 --list-browsers
     List available browsers
+
+--next
+    Jump to next song
 
 --open-browser=BrowserName
     Open a new browser
@@ -65,8 +71,10 @@ OPTIONS
 --previous
     Jump to previous song if near the beginning, otherwise restart
 
---force-previous
-    Jump to previous song
+--print-playing
+    Print out information about the currently playing song. You may
+    provide in a string like the kind described in the RENAMING FILES
+    section below.
 
 --print-playlist
     Print the current playlist
@@ -74,16 +82,8 @@ OPTIONS
 --print-queue
     Print the contents of the queue
 
---print-playing
-    Print out information about the currently playing song. You may
-    provide in a string like the kind described in the RENAMING FILES
-    section below.
-
 --query=search-string
     Search your audio library
-
---run
-    Start Quod Libet if it isn't running
 
 --quit
     Exit Quod Libet
@@ -100,6 +100,9 @@ OPTIONS
 --repeat-type=<current|all|one|off>
     Repeat the currently playing song, the current list, stop after
     one song, or turn repeat off
+
+--run
+    Start Quod Libet if it isn't running
 
 --seek=<[+|-][HH:]MM:SS>
     Seek within the playing song
