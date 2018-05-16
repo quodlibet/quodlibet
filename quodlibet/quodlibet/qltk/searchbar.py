@@ -56,6 +56,8 @@ class SearchBarBox(Gtk.HBox):
 
         self.__deferred_changed = DeferredSignal(
             self.__filter_changed, timeout=timeout, owner=self)
+        self.__deferred_save_search = DeferredSignal(
+            self.__save_search, timeout=1000, owner=self)
 
         self.__combo = combo
         entry = combo.get_child()
@@ -169,7 +171,10 @@ class SearchBarBox(Gtk.HBox):
         self._update_query_from(text)
         if self._query.is_parsable:
             GLib.idle_add(self.emit, 'query-changed', text)
-            self.__save_search(args[0:1], args[1:])
+            # Abort to reset timeout
+            self.__deferred_save_search.abort()
+            # Don't save the query immediately after filtering
+            self.__deferred_save_search(args[0:1], args[1:])
 
     def __text_changed(self, *args):
         if not self.__entry.is_sensitive():
