@@ -53,9 +53,13 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
                     self.__restarting = False
                 elif not onlySeekable:
                     self.__restarting = True
+
+                    # Check if the stream is seekable before stopping!
+                    isSeekable =  app.player.seekable:
+
                     app.player.stop()
 
-                    if app.player.seekable:
+                    if isSeekable:
                         position = app.player.get_position()
                         app.player.seek(position)
 
