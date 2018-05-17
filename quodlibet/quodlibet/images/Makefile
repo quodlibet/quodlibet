@@ -18,6 +18,7 @@ all: \
 	png-32x32 \
 	png-48x48 \
 	png-64x64 \
+	png-128x128 \
 	png-256x256 \
 	$(SYMBOLIC_TARGET)
 
@@ -28,11 +29,12 @@ clean:
 		$(THEME)/32x32 \
 		$(THEME)/48x48 \
 		$(THEME)/64x64 \
+		$(THEME)/128x128 \
 		$(THEME)/256x256 \
 		$(SYMBOLIC_TARGET)
 
 png-%: $(THEME)/%/apps/$(QL_DEST) $(THEME)/%/apps/$(EF_DEST) $(THEME)/%/status/$(QL_MC_DEST)
-	true
+	@true
 
 $(THEME)/%/apps/$(QL_DEST): $(QL_SOURCE)
 	mkdir -p $(dir $@)
