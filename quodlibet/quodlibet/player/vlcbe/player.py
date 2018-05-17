@@ -29,6 +29,7 @@ import vlc
 class VLCPlayer(BasePlayer):
     _paused     = True
     _vlcmp      = None
+    _vlceq      = None
     _volume     = 1.0
     _seekOnPlay = None
 
@@ -152,6 +153,9 @@ class VLCPlayer(BasePlayer):
             self._events.event_attach(vlc.EventType.MediaPlayerPlaying, self._event_playing)
             self._events.event_attach(vlc.EventType.MediaPlayerEndReached, self._event_ended)
 
+            if self._vlceq is not None:
+                self._vlcmp.set_equalizer(self._vlceq)
+
             self._seekOnPlay = seek
 
             self._vlcmp.play()
@@ -241,6 +245,39 @@ class VLCPlayer(BasePlayer):
 
         # XXX Implement Me!
         return True
+
+    @property
+    def eq_bands(self):
+        """read-only list of equalizer bands (in Hz) supported."""
+
+        eqBands = []
+        for band in range(vlc.libvlc_audio_equalizer_get_band_count()):
+            eqBands.append(vlc.libvlc_audio_equalizer_get_band_frequency(band))
+
+        return eqBands
+
+    def update_eq_values(self):
+        """Set equalizer values in the backend"""
+
+        # Always release any previous equalizer, if it exists
+        vlc.libvlc_audio_equalizer_release(self._vlceq)
+
+        # Always start from a flat equalizer
+        # ... because QuodLibet has no master preamp setting
+        # ... so this gives a consistent preamp starting point
+        self._vlceq = vlc.libvlc_audio_equalizer_new_from_preset(0)
+
+        if any(self._eq_values):
+            print_d(f"Set Equalizer Bands to {self._eq_values}")
+
+            for band, val in enumerate(self._eq_values):
+                # NOTE: VLC equalizers have a range [-20,20], different from QuodLibet!
+                #       This will be handled automatically by the VLC backend.
+                vlc.libvlc_audio_equalizer_set_amp_at_index(self._vlceq, val, band)
+
+        if self._vlcmp is not None:
+            self._vlcmp.set_equalizer(self._vlceq)
+
 
 def init(librarian):
     return VLCPlayer(librarian)
