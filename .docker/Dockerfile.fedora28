@@ -1,12 +1,12 @@
-FROM fedora:26
+FROM fedora:28
 
-ENV LANG C.utf8
+ENV LANG C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV CI true
 
 RUN dnf -y install dnf-plugins-core
 RUN dnf -y config-manager --add-repo \
-    https://download.opensuse.org/repositories/home:lazka0:ql-unstable/Fedora_26/home:lazka0:ql-unstable.repo
+    https://download.opensuse.org/repositories/home:lazka0:ql-unstable/Fedora_28/home:lazka0:ql-unstable.repo
 
 RUN dnf -y install \
     quodlibet \

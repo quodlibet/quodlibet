@@ -41,17 +41,17 @@ jobs:
     environment:
       - DOCKERIMAGE: "ubuntu16.04"
     <<: *defaults
-  job.ubuntu17.10:
+  job.ubuntu18.04:
     environment:
-      - DOCKERIMAGE: "ubuntu17.10"
+      - DOCKERIMAGE: "ubuntu18.04"
     <<: *defaults
   job.win32:
     environment:
       - DOCKERIMAGE: "win32"
     <<: *defaults
-  job.fedora26:
+  job.fedora28:
     environment:
-      - DOCKERIMAGE: "fedora26"
+      - DOCKERIMAGE: "fedora28"
     <<: *defaults
 
 workflows:
@@ -60,5 +60,5 @@ workflows:
     jobs:
       - job.win32
       - job.ubuntu16.04
-      - job.ubuntu17.10
-      - job.fedora26
+      - job.ubuntu18.04
+      - job.fedora28
