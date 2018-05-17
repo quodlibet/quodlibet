@@ -21,10 +21,12 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "StopOnPause"
     PLUGIN_NAME = _("Stop on Pause")
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_PAUSE
-    PLUGIN_DESC = _("This plugin changes Pause to Stop/Play/Seek.\n\n"
+    PLUGIN_DESC = _("This plugin changes Pause to Stop/Play/Seek."
+                    "\n\n"
                     "This behavior is useful if Quod Libet fails to switch "
                     "audio devices when a new audio device is added to the "
-                    "system (Bluetooth speaker, USB DAC, etc).\n\n"
+                    "system (Bluetooth speaker, USB DAC, etc)."
+                    "\n\n"
                     "If the option for 'Only Seekable Sources' "
                     "is not checked, this plugin will ensure the position in "
                     "the current source is maintained.  Otherwise, playback "
