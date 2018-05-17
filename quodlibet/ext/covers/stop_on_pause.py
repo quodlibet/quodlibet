@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
@@ -19,7 +19,7 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 class StopOnPause(EventPlugin, PluginConfigMixin):
 
     PLUGIN_ID = "StopOnPause"
-    PLUGIN_NAME = _("Stop On Pase")
+    PLUGIN_NAME = _("Stop on Pause")
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_PAUSE
     PLUGIN_DESC = _("This plugin changes Pause to Stop/Play/Seek.\n\n"
                     "This behavior is useful if Quod Libet fails to switch "
@@ -57,11 +57,11 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
 
                     # Check if the stream is seekable before stopping!
                     isSeekable = app.player.seekable
+                    position = app.player.get_position()
 
                     app.player.stop()
 
                     if isSeekable:
-                        position = app.player.get_position()
                         app.player.seek(position)
 
                     self.__restarting = False
