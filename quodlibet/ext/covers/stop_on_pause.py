@@ -52,7 +52,14 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
                     app.player.seek(position)
                     self.__restarting = False
                 elif not onlySeekable:
+                    self.__restarting = True
                     app.player.stop()
+
+                    if app.player.seekable:
+                        position = app.player.get_position()
+                        app.player.seek(position)
+
+                    self.__restarting = False
 
     @classmethod
     def PluginPreferences(cls, window):
