@@ -42,11 +42,11 @@ class VLCPlayer(BasePlayer):
 
     @paused.setter
     def paused(self, state):
-        print_d(f"Pause State [{state}] pauseable [{self._vlcmp.can_pause()}]")
+        print_d(f"Pause Set to State [{state}]")
 
         # Detect if pause is not possible and alter the action accordingly
         if self._vlcmp is None or self._vlcmp.can_pause() == 0:
-            print_d("Unable To Pause")
+            print_d("Unable to pause, no VLC backend is active!")
             state = True
 
         # Change the internal tracking
@@ -60,7 +60,13 @@ class VLCPlayer(BasePlayer):
 
         # The signal handler might have changed the paused state
         # ... no matter what happens, set VLC to the current tracked pause state
-        self._vlcmp.set_pause(self._paused)
+        # ... but only if the vlc object exists!
+        if self._vlcmp is not None:
+            self._vlcmp.set_pause(self._paused)
+        # Just to be certain eveything is consistent
+        # ... If there is no player object, by definition we are paused
+        else:
+            self._paused = True
         print_d(f"Performing Pause: {self._paused}")
 
     def do_get_property(self, property):
@@ -107,11 +113,7 @@ class VLCPlayer(BasePlayer):
         print_d("End song")
         song, info = self.song, self.info
 
-        if self._vlcmp is not None:
-            if self._vlcmp.get_state() in [vlc.State.Playing, vlc.State.Paused]:
-                self._vlcmp.stop()
-            self._vlcmp  = None
-            self._events = None
+        self._stop()
 
         # We need to set self.song to None before calling our signal
         # handlers. Otherwise, if they try to end the song they're given
@@ -124,29 +126,56 @@ class VLCPlayer(BasePlayer):
         current = self._source.current if next_song is None else next_song
 
         # Then, set up the next song.
-        self.song = self.info = current
+        self.song = current
+        self.info = current
 
         if self.song is not None:
             print_d("Next Song: %s" % self.song("~uri"))
 
-            self.volume  = self.volume
-            self._vlcmp  = vlc.MediaPlayer(self.song("~uri"))
-            self._events = self._vlcmp.event_manager()
-            self._events.event_attach(vlc.EventType.MediaPlayerPlaying, self._event_playing)
-            self._events.event_attach(vlc.EventType.MediaPlayerEndReached, self._event_ended)
-            self._vlcmp.play()
+            self._play()
         else:
-            self._vlcmp  = None
-            self._events = None
+            self._stop()
 
         self.emit('song-started', self.song)
         self.notify("seekable")
 
+    def _play(self, seek = None):
+        if self._vlcmp is None:
+            print_d(f"Creating New VLC Player with seek [{seek}]")
+
+            # Set replay volume
+            self.volume = self.volume
+
+            self._vlcmp = vlc.MediaPlayer(self.song("~uri"))
+
+            self._events = self._vlcmp.event_manager()
+            self._events.event_attach(vlc.EventType.MediaPlayerPlaying, self._event_playing)
+            self._events.event_attach(vlc.EventType.MediaPlayerEndReached, self._event_ended)
+
+            self._seekOnPlay = seek
+
+            self._vlcmp.play()
+
     def setup(self, playlist, song, seek_pos):
+        # VLC cannot seek immediately at startup, perform seek by event instead
+        self._seekOnPlay = seek_pos
+
         super().setup(playlist, song, seek_pos)
-        # VLC cannot seek immediately at startup; try again in 100ms
-        if seek_pos:
-            GLib.timeout_add(100, self.seek, seek_pos)
+
+    def _stop(self):
+        if self._vlcmp is not None:
+            print_d(f"Destroying VLC Player Backend")
+            #if self._vlcmp.get_state() in [vlc.State.Playing, vlc.State.Paused]:
+            #    self._vlcmp.stop()
+            self._vlcmp.stop()
+            self._vlcmp = None
+            self._events = None
+
+
+    def stop(self):
+        """Stop playback and reset the position."""
+        super().stop()
+        self._stop()
 
     def _event_playing(self, event):
         print_d(f"Playing Event paused [{self._paused}] seek [{self._seekOnPlay}]")
@@ -178,13 +207,13 @@ class VLCPlayer(BasePlayer):
         if self._vlcmp is not None:
             # XXX Detect if we should skip to the next song !?!?
             if  self._vlcmp.get_state() == vlc.State.Paused:
-                print_d(f"Seeking While Paused with seek [{position}]")
+                print_d(f"Seeking while Paused with Seek [{position}]")
                 self._vlcmp.set_position(position / self._vlcmp.get_length())
                 self.emit('seek', self.song, position)
                 # XXX Needed?
                 #self._vlcmp.play()
             elif self._vlcmp.get_state() == vlc.State.Playing:
-                print_d(f"Seeking While Playing with seek [{position}]")
+                print_d(f"Seeking while Playing with Seek [{position}]")
                 self._vlcmp.set_position(position / self._vlcmp.get_length())
                 self.emit('seek', self.song, position)
             else:
@@ -195,6 +224,9 @@ class VLCPlayer(BasePlayer):
                 # Tell VLC to start playing
                 # ... but the custom event handler will pause playback as necessary
                 self._vlcmp.play()
+        elif self.song is not None:
+            print_d(f"Seeking with Player Stopped with seek [{position}]")
+            self._play(position)
 
     def get_position(self):
         """Return the current playback position in milliseconds,
