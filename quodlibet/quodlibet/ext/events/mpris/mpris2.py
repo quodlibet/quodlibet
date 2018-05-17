@@ -8,20 +8,38 @@
 
 import time
 import tempfile
+import os
 
 import dbus
 import dbus.service
 from senf import fsn2uri
 
+import quodlibet
 from quodlibet import app
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
+from quodlibet.util.misc import NamedTemporaryFile
+from quodlibet.util.path import mkdir
 from quodlibet.compat import iteritems, listmap
 
 from .util import MPRISObject
 
 # TODO: OpenUri, CanXYZ
 # Date parsing (util?)
+
+
+def create_exportable_temp_file_object(fileobj):
+    try:
+        cache_dir = os.path.join(quodlibet.get_cache_dir(), "tempcovers")
+        mkdir(cache_dir, 0o700)
+        fn = NamedTemporaryFile(dir=cache_dir)
+        fn.write(fileobj.read())
+        fn.flush()
+        fn.seek(0, 0)
+    except EnvironmentError:
+        return
+    else:
+        return fn
 
 
 # http://www.mpris.org/2.0/spec/
@@ -106,6 +124,8 @@ value="false"/>
         name = dbus.service.BusName(self.BUS_NAME, bus)
         MPRISObject.__init__(self, bus, self.PATH, name)
 
+        self.__metadata = None
+        self.__cover = None
         player_options = app.player_options
         self.__repeat_id = player_options.connect(
             "notify::repeat", self.__repeat_changed)
@@ -122,7 +142,6 @@ value="false"/>
     def remove_from_connection(self, *arg, **kwargs):
         super(MPRIS2, self).remove_from_connection(*arg, **kwargs)
 
-        self.__cover = None
         player_options = app.player_options
         player_options.disconnect(self.__repeat_id)
         player_options.disconnect(self.__random_id)
@@ -130,6 +149,11 @@ value="false"/>
         app.librarian.disconnect(self.__lsig)
         app.player.disconnect(self.__vsig)
         app.player.disconnect(self.__seek_sig)
+
+        if self.__cover is not None:
+            self.__cover.close()
+            self.__cover = None
+        self.__invalidate_metadata()
 
     def __volume_changed(self, *args):
         self.emit_properties_changed(self.PLAYER_IFACE, ["Volume"])
@@ -147,6 +171,7 @@ value="false"/>
         self.Seeked(ms * 1000)
 
     def __library_changed(self, library, songs):
+        self.__invalidate_metadata()
         if not songs or app.player.info not in songs:
             return
         self.emit_properties_changed(self.PLAYER_IFACE, ["Metadata"])
@@ -208,6 +233,8 @@ value="false"/>
     unpaused = paused
 
     def song_started(self, song):
+        self.__invalidate_metadata()
+
         # so the position in clients gets updated faster
         self.Seeked(0)
 
@@ -220,7 +247,16 @@ value="false"/>
             return dbus.ObjectPath(path + "/" + "NoTrack")
         return dbus.ObjectPath(path + "/" + str(id(app.player.info)))
 
+    def __invalidate_metadata(self):
+        self.__metadata = None
+
     def __get_metadata(self):
+        if self.__metadata is None:
+            self.__metadata = self.__get_metadata_real()
+            assert self.__metadata is not None
+        return self.__metadata
+
+    def __get_metadata_real(self):
         """
         https://www.freedesktop.org/wiki/Specifications/mpris-spec/metadata/
         """
@@ -241,17 +277,21 @@ value="false"/>
         metadata["mpris:length"] = ignore_overflow(
             dbus.Int64, song("~#length") * 10 ** 6)
 
-        self.__cover = cover = app.cover_manager.get_cover(song)
-        is_temp = False
-        if cover:
-            name = cover.name
-            is_temp = name.startswith(tempfile.gettempdir())
-            # This doesn't work for embedded images.. the file gets unlinked
-            # after losing the file handle
-            metadata["mpris:artUrl"] = fsn2uri(name)
-
-        if not is_temp:
+        if self.__cover is not None:
+            self.__cover.close()
             self.__cover = None
+
+        cover = app.cover_manager.get_cover(song)
+        if cover:
+            with cover:
+                is_temp = cover.name.startswith(tempfile.gettempdir())
+                if is_temp:
+                    # in flatpak, tempdir is not visible on the host
+                    self.__cover = create_exportable_temp_file_object(cover)
+                    if self.__cover is not None:
+                        metadata["mpris:artUrl"] = fsn2uri(self.__cover.name)
+                else:
+                    metadata["mpris:artUrl"] = fsn2uri(cover.name)
 
         # All list values
         list_val = {"artist": "artist", "albumArtist": "albumartist",
