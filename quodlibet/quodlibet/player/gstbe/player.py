@@ -29,6 +29,7 @@ from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.notif import Task
 from quodlibet.compat import iteritems
+from quodlibet.formats.mod import ModFile
 
 from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,
     GStreamerSink, link_many, bin_debug)
@@ -715,6 +716,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # https://bugzilla.gnome.org/show_bug.cgi?id=695474
         if self.song.multisong:
             print_d("multisong: ignore about to finish")
+            return
+
+        # mod + gapless deadlocks
+        # https://github.com/quodlibet/quodlibet/issues/2780
+        if isinstance(self.song, ModFile):
             return
 
         if config.getboolean("player", "gst_disable_gapless"):

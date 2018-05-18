@@ -14,7 +14,7 @@ from .helper import preserve_environ, locale_numeric_conv
 from quodlibet.util import i18n
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
     set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, \
-    numeric_phrase, get_available_languages, get_locale_dir
+    numeric_phrase, get_available_languages, iter_locale_dirs
 from quodlibet.compat import text_type
 
 
@@ -77,11 +77,16 @@ class TGlibTranslations(TestCase):
 
 class Tgettext(TestCase):
 
-    def test_get_locale_dir(self):
-        assert isinstance(get_locale_dir(), str)
+    def test_iter_locale_dirs(self):
+        for dir_ in iter_locale_dirs():
+            assert isinstance(dir_, str)
+
+        dirs = list(iter_locale_dirs())
+        assert len(dirs) == len(set(dirs))
 
     def test_get_languages(self):
-        assert isinstance(get_available_languages("quodlibet"), list)
+        assert isinstance(get_available_languages("quodlibet"), set)
+        assert isinstance(get_available_languages("quodlibet_nope"), set)
 
     def test_bcp47(self):
         self.assertEqual(bcp47_to_language("zh-Hans"), "zh_CN")

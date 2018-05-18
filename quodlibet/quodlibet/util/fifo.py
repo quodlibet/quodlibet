@@ -143,6 +143,13 @@ def write_fifo(fifo_path, data):
                 signal.signal(signal.SIGALRM, signal.SIG_IGN)
                 return h.read()
         except TypeError:
+            # In case the main instance deadlocks we can write to it, but
+            # reading will time out. Assume it is broken and delete the
+            # fifo.
+            try:
+                os.unlink(fifo_path)
+            except OSError:
+                pass
             raise EnvironmentError("timeout")
     finally:
         try:
