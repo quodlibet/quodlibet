@@ -246,8 +246,6 @@ class VLCPlayer(BasePlayer):
                 self.emit('seek', self.song, position)
 
             else:
-                    self._vlcmp.get_state(),
-                    position))
                 self._vlcmp.stop()
 
                 # VLC can only seek while playing so store the seek value for
