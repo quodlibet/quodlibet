@@ -147,17 +147,25 @@ class VLCPlayer(BasePlayer):
             # Set replay volume
             self.volume = self.volume
 
+            # Create the new media player for the current song!
             self._vlcmp = vlc.MediaPlayer(self.song("~uri"))
 
+            # Connect to useful events
+            # ... this is how we know what the media player is doing
+            # ... also how we take action on media palyer state changes
             self._events = self._vlcmp.event_manager()
             self._events.event_attach(vlc.EventType.MediaPlayerPlaying, self._event_playing)
             self._events.event_attach(vlc.EventType.MediaPlayerEndReached, self._event_ended)
 
+            # Setup the equalizer, if one exists
             if self._vlceq is not None:
                 self._vlcmp.set_equalizer(self._vlceq)
 
+            # Save the seek location
+            # ... seek happens on the VLC event MediaPlayerPlaying
             self._seekOnPlay = seek
 
+            # Start the media playing
             self._vlcmp.play()
 
     def setup(self, playlist, song, seek_pos):
@@ -169,12 +177,22 @@ class VLCPlayer(BasePlayer):
     def _stop(self):
         if self._vlcmp is not None:
             print_d(f"Destroying VLC Player Backend")
-            #if self._vlcmp.get_state() in [vlc.State.Playing, vlc.State.Paused]:
-            #    self._vlcmp.stop()
-            self._vlcmp.stop()
+
+            # Release the player so that VLC performs internal cleanup
+            # ... but only if actively playing, because it doesn't seem
+            #     necessary otherwise
+            # ... this is used instead of "stop" in order to ensure proper
+            #     cleanup
+            if self._vlcmp.get_state() in [vlc.State.Playing, vlc.State.Paused]:
+                self._vlcmp.release()
+                print_d("Release Complete")
+
+            # Remove our references to the player
             self._vlcmp = None
             self._events = None
 
+            # Note that the equalizer does not need to be released
+            # ... equalizer objects are independent of the media player
 
     def stop(self):
         """Stop playback and reset the position."""
@@ -184,11 +202,14 @@ class VLCPlayer(BasePlayer):
     def _event_playing(self, event):
         print_d(f"Playing Event paused [{self._paused}] seek [{self._seekOnPlay}]")
 
+        # Set the current pause state in the player to align with
+        # the current requested pause state
         if self._paused:
             self.paused = self._paused
 
         # This should really be handled by the seekable event
-        # ... However, it seems that when the seekable event is triggered, the length is not available
+        # ... However, it seems that when the seekable event is triggered, the
+        #     length is not available
         if self._seekOnPlay is not None and self._vlcmp.is_seekable():
             self._vlcmp.set_position(self._seekOnPlay / self._vlcmp.get_length())
             self.emit('seek', self.song, self._seekOnPlay)
@@ -197,10 +218,14 @@ class VLCPlayer(BasePlayer):
 
     def _event_ended(self, event):
         print_d(f"Playback Ended")
-        if self._vlcmp is not None:
-            self._vlcmp  = None
-            self._events = None
+
+        # When playback ends, destroy the current media player
+        self._stop()
+
+        # Tell the source that the song ended
         self._source.next_ended()
+
+        # Start the next song
         self._end(False)
 
     def seek(self, position):
