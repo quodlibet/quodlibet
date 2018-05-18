@@ -6,31 +6,26 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-################################################################################
+###############################################################################
 #
 # VLC Backend
 #
 # This is a backend for the VLC media player using their python interface
 # "python-vlc" available on PyPi and licensed under the GPL.
 #
-################################################################################
+###############################################################################
 
-from gi.repository import GLib
-
-from quodlibet import _
-from quodlibet import config
-from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
-from quodlibet.util.string import decode
 from quodlibet.util import print_d
 
 import vlc
 
+
 class VLCPlayer(BasePlayer):
-    _paused     = True # Current Pause State
-    _vlcmp      = None # The VLC MediaPlayer object
-    _vlceq      = None # The VLC Equalizer pointer
-    _volume     = 1.0  # Volume property storage
+    _paused = True     # Current Pause State
+    _vlcmp = None      # The VLC MediaPlayer object
+    _vlceq = None      # The VLC Equalizer pointer
+    _volume = 1.0      # Volume property storage
     _seekOnPlay = None # Location to seek to on next play
 
     def __init__(self, librarian=None):
@@ -50,16 +45,18 @@ class VLCPlayer(BasePlayer):
             state = True
 
         # Change the internal tracking
-        prev_state   = self._paused
+        prev_state = self._paused
         self._paused = state
 
         # Only emit a signal if the pause state changed
         if state != prev_state:
-            # Emit a signal telling the application a pause/unpause has occurred
+            # Emit a signal telling the application a pause/unpause has
+            # occurred
             self.emit((self._paused and 'paused') or 'unpaused')
 
         # The signal handler might have changed the paused state
-        # ... no matter what happens, set VLC to the current tracked pause state
+        # ... no matter what happens, set VLC to the current tracked pause
+        #     state
         # ... but only if the vlc object exists!
         if self._vlcmp is not None:
             self._vlcmp.set_pause(self._paused)
@@ -78,7 +75,7 @@ class VLCPlayer(BasePlayer):
         elif property.name == 'mute':
             if self._vlcmp is not None:
                 isMuted = self._vlcmp.audio_get_mute()
-                muteStates = {-1:False, 0:False, 1:True}
+                muteStates = {-1: False, 0: False, 1: True}
                 return muteStates[isMuted]
             return False
         else:
@@ -97,12 +94,11 @@ class VLCPlayer(BasePlayer):
         else:
             raise AttributeError
 
-
     def _destroy(self):
         """Clean up"""
         if self._vlcmp is not None:
             self._vlcmp.release()
-            self._vlcmp  = None
+            self._vlcmp = None
             self._events = None
 
     def _end(self, stopped, next_song=None):
@@ -138,7 +134,7 @@ class VLCPlayer(BasePlayer):
         self.emit('song-started', self.song)
         self.notify("seekable")
 
-    def _play(self, seek = None):
+    def _play(self, seek=None):
         if self._vlcmp is None:
             print_d("Creating New VLC Player with seek [%s]" % seek)
 
@@ -183,7 +179,8 @@ class VLCPlayer(BasePlayer):
             #     necessary otherwise
             # ... this is used instead of "stop" in order to ensure proper
             #     cleanup
-            if self._vlcmp.get_state() in [vlc.State.Playing, vlc.State.Paused]:
+            if self._vlcmp.get_state() in [vlc.State.Playing,
+                                           vlc.State.Paused]:
                 self._vlcmp.release()
                 print_d("Release Complete")
 
@@ -212,7 +209,8 @@ class VLCPlayer(BasePlayer):
         # ... However, it seems that when the seekable event is triggered, the
         #     length is not available
         if self._seekOnPlay is not None and self._vlcmp.is_seekable():
-            self._vlcmp.set_position(self._seekOnPlay/self._vlcmp.get_length())
+            self._vlcmp.set_position(self._seekOnPlay
+                                   / self._vlcmp.get_length())
             self.emit('seek', self.song, self._seekOnPlay)
             self._seekOnPlay = None
             self.notify("seekable")
@@ -237,7 +235,7 @@ class VLCPlayer(BasePlayer):
 
         if self._vlcmp is not None:
             # XXX Detect if we should skip to the next song !?!?
-            if  self._vlcmp.get_state() == vlc.State.Paused:
+            if self._vlcmp.get_state() == vlc.State.Paused:
                 self._vlcmp.set_position(position / self._vlcmp.get_length())
                 self.emit('seek', self.song, position)
 
@@ -301,8 +299,8 @@ class VLCPlayer(BasePlayer):
         if any(self._eq_values):
             for band, val in enumerate(self._eq_values):
                 # NOTE: VLC equalizers have a range [-20,20], different from
-                #       QuodLibet! This will be handled automatically by the VLC
-                #       backend.
+                #       QuodLibet! This will be handled automatically by the
+                #       VLC backend.
                 vlc.libvlc_audio_equalizer_set_amp_at_index(self._vlceq,
                                                             val, band)
 
