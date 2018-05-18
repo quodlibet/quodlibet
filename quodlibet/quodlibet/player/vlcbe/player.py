@@ -43,11 +43,10 @@ class VLCPlayer(BasePlayer):
 
     @paused.setter
     def paused(self, state):
-        print_d(f"Pause Set to State [{state}]")
+        print_d("Pause Set to State [%s]" % state)
 
         # Detect if pause is not possible and alter the action accordingly
         if self._vlcmp is None or self._vlcmp.can_pause() == 0:
-            print_d("Unable to pause, no VLC backend is active!")
             state = True
 
         # Change the internal tracking
@@ -68,7 +67,6 @@ class VLCPlayer(BasePlayer):
         # ... If there is no player object, by definition we are paused
         else:
             self._paused = True
-        print_d(f"Performing Pause: {self._paused}")
 
     def do_get_property(self, property):
         if property.name == 'volume':
@@ -142,7 +140,7 @@ class VLCPlayer(BasePlayer):
 
     def _play(self, seek = None):
         if self._vlcmp is None:
-            print_d(f"Creating New VLC Player with seek [{seek}]")
+            print_d("Creating New VLC Player with seek [%s]" % seek)
 
             # Set replay volume
             self.volume = self.volume
@@ -176,7 +174,7 @@ class VLCPlayer(BasePlayer):
 
     def _stop(self):
         if self._vlcmp is not None:
-            print_d(f"Destroying VLC Player Backend")
+            print_d("Destroying VLC Player Backend")
 
             # Release the player so that VLC performs internal cleanup
             # ... but only if actively playing, because it doesn't seem
@@ -200,7 +198,8 @@ class VLCPlayer(BasePlayer):
         self._stop()
 
     def _event_playing(self, event):
-        print_d(f"Playing Event paused [{self._paused}] seek [{self._seekOnPlay}]")
+        print_d("Playing Event paused [%s] seek [%s]" % (
+            self._paused, self._seekOnPlay))
 
         # Set the current pause state in the player to align with
         # the current requested pause state
@@ -217,7 +216,7 @@ class VLCPlayer(BasePlayer):
             self.notify("seekable")
 
     def _event_ended(self, event):
-        print_d(f"Playback Ended")
+        print_d("Playback Ended")
 
         # When playback ends, destroy the current media player
         self._stop()
@@ -232,29 +231,31 @@ class VLCPlayer(BasePlayer):
         """Seek to absolute position in milliseconds.
         If position is larger than the duration start the next song
         """
+        print_d("Seeking to position [%s]" % position)
 
         if self._vlcmp is not None:
             # XXX Detect if we should skip to the next song !?!?
             if  self._vlcmp.get_state() == vlc.State.Paused:
-                print_d(f"Seeking while Paused with Seek [{position}]")
                 self._vlcmp.set_position(position / self._vlcmp.get_length())
                 self.emit('seek', self.song, position)
-                # XXX Needed?
-                #self._vlcmp.play()
+
             elif self._vlcmp.get_state() == vlc.State.Playing:
-                print_d(f"Seeking while Playing with Seek [{position}]")
                 self._vlcmp.set_position(position / self._vlcmp.get_length())
                 self.emit('seek', self.song, position)
+
             else:
-                print_d(f"Seeking In State [{self._vlcmp.get_state()}] with seek [{position}]")
+                    self._vlcmp.get_state(),
+                    position))
                 self._vlcmp.stop()
+
                 # VLC can only seek while playing so store the seek value for later
                 self._seekOnPlay = position
+
                 # Tell VLC to start playing
                 # ... but the custom event handler will pause playback as necessary
                 self._vlcmp.play()
+
         elif self.song is not None:
-            print_d(f"Seeking with Player Stopped with seek [{position}]")
             self._play(position)
 
     def get_position(self):
@@ -292,14 +293,15 @@ class VLCPlayer(BasePlayer):
         # ... so this gives a consistent preamp starting point
         self._vlceq = vlc.libvlc_audio_equalizer_new_from_preset(0)
 
+        # Only configure the equalizer if there are non-zero values
+        # ... otherwise the VLC defaults will be used
         if any(self._eq_values):
-            print_d(f"Set Equalizer Bands to {self._eq_values}")
-
             for band, val in enumerate(self._eq_values):
                 # NOTE: VLC equalizers have a range [-20,20], different from QuodLibet!
                 #       This will be handled automatically by the VLC backend.
                 vlc.libvlc_audio_equalizer_set_amp_at_index(self._vlceq, val, band)
 
+        # Set the equalizer if the media player exists
         if self._vlcmp is not None:
             self._vlcmp.set_equalizer(self._vlceq)
 
