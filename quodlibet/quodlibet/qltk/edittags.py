@@ -835,8 +835,9 @@ class EditTags(Gtk.VBox):
 
         comment = entry.value
         changed = comment.text != new_value
-        if (changed and ((comment.shared and comment.complete) or new_value)) \
-                or (new_value and comment.shared and not comment.complete):
+        identical = comment.shared and comment.complete
+        if (changed and (identical or new_value)) \
+                or (new_value and not identical):
             # only give an error if we would have applied the value
             if error_dialog is not None:
                 error_dialog.run()
