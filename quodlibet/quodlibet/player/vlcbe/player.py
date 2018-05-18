@@ -27,11 +27,11 @@ from quodlibet.util import print_d
 import vlc
 
 class VLCPlayer(BasePlayer):
-    _paused     = True
-    _vlcmp      = None
-    _vlceq      = None
-    _volume     = 1.0
-    _seekOnPlay = None
+    _paused     = True # Current Pause State
+    _vlcmp      = None # The VLC MediaPlayer object
+    _vlceq      = None # The VLC Equalizer pointer
+    _volume     = 1.0  # Volume property storage
+    _seekOnPlay = None # Location to seek to on next play
 
     def __init__(self, librarian=None):
         super().__init__()
