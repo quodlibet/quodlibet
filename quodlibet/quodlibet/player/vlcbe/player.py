@@ -152,8 +152,10 @@ class VLCPlayer(BasePlayer):
             # ... this is how we know what the media player is doing
             # ... also how we take action on media palyer state changes
             self._events = self._vlcmp.event_manager()
-            self._events.event_attach(vlc.EventType.MediaPlayerPlaying, self._event_playing)
-            self._events.event_attach(vlc.EventType.MediaPlayerEndReached, self._event_ended)
+            self._events.event_attach(vlc.EventType.MediaPlayerPlaying,
+                                      self._event_playing)
+            self._events.event_attach(vlc.EventType.MediaPlayerEndReached,
+                                      self._event_ended)
 
             # Setup the equalizer, if one exists
             if self._vlceq is not None:
@@ -210,7 +212,7 @@ class VLCPlayer(BasePlayer):
         # ... However, it seems that when the seekable event is triggered, the
         #     length is not available
         if self._seekOnPlay is not None and self._vlcmp.is_seekable():
-            self._vlcmp.set_position(self._seekOnPlay / self._vlcmp.get_length())
+            self._vlcmp.set_position(self._seekOnPlay/self._vlcmp.get_length())
             self.emit('seek', self.song, self._seekOnPlay)
             self._seekOnPlay = None
             self.notify("seekable")
@@ -248,11 +250,13 @@ class VLCPlayer(BasePlayer):
                     position))
                 self._vlcmp.stop()
 
-                # VLC can only seek while playing so store the seek value for later
+                # VLC can only seek while playing so store the seek value for
+                # later
                 self._seekOnPlay = position
 
                 # Tell VLC to start playing
-                # ... but the custom event handler will pause playback as necessary
+                # ... but the custom event handler will pause playback as
+                #     necessary
                 self._vlcmp.play()
 
         elif self.song is not None:
@@ -261,7 +265,8 @@ class VLCPlayer(BasePlayer):
     def get_position(self):
         """Return the current playback position in milliseconds,
         or 0 if no song is playing."""
-        if self._vlcmp is not None and self._vlcmp.get_state() in [vlc.State.Playing, vlc.State.Paused]:
+        if self._vlcmp is not None and self._vlcmp.get_state() in [
+                vlc.State.Playing, vlc.State.Paused]:
             return int(self._vlcmp.get_position() * self._vlcmp.get_length())
         else:
             return 0
@@ -297,9 +302,11 @@ class VLCPlayer(BasePlayer):
         # ... otherwise the VLC defaults will be used
         if any(self._eq_values):
             for band, val in enumerate(self._eq_values):
-                # NOTE: VLC equalizers have a range [-20,20], different from QuodLibet!
-                #       This will be handled automatically by the VLC backend.
-                vlc.libvlc_audio_equalizer_set_amp_at_index(self._vlceq, val, band)
+                # NOTE: VLC equalizers have a range [-20,20], different from
+                #       QuodLibet! This will be handled automatically by the VLC
+                #       backend.
+                vlc.libvlc_audio_equalizer_set_amp_at_index(self._vlceq,
+                                                            val, band)
 
         # Set the equalizer if the media player exists
         if self._vlcmp is not None:
