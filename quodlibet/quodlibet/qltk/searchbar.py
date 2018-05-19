@@ -159,7 +159,7 @@ class SearchBarBox(Gtk.HBox):
             return
 
         text = self.get_text().strip()
-        if text and self._query.is_parsable:
+        if text and self._query and self._query.is_parsable:
             # Adding the active text to the model triggers a changed signal
             # (get_active is no longer -1), so inhibit
             self.__inhibit()
