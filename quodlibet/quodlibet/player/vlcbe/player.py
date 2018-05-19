@@ -15,8 +15,15 @@
 #
 ###############################################################################
 
+from gi.repository import GLib
+
 from quodlibet.player._base import BasePlayer
 from quodlibet.util import print_d
+from quodlibet.util import MainRunner
+from quodlibet.util import MainRunnerError
+from quodlibet.util import MainRunnerAbortedError
+from quodlibet.util import MainRunnerTimeoutError
+from quodlibet import util
 
 import vlc
 
@@ -27,10 +34,12 @@ class VLCPlayer(BasePlayer):
     _vlceq = None      # The VLC Equalizer pointer
     _volume = 1.0      # Volume property storage
     _seekOnPlay = None # Location to seek to on next play
+    _runner = None     # MainRunner instance to change async events to sync
 
     def __init__(self, librarian=None):
         super().__init__()
         self._librarian = librarian
+        self._runner = MainRunner()
 
     @property
     def paused(self):
@@ -85,9 +94,12 @@ class VLCPlayer(BasePlayer):
         if property.name == 'volume':
             self._volume = v
             if self._vlcmp is not None:
+                print_d("calc v")
                 v = self.calc_replaygain_volume(v)
                 v = min(100, int(v * 100))
+                print_d(f"set v: [{self._volume}] [{v}]")
                 self._vlcmp.audio_set_volume(v)
+                print_d("set v complete")
         elif property.name == 'mute':
             if self._vlcmp is not None:
                 self._vlcmp.audio_set_mute(v)
@@ -100,6 +112,7 @@ class VLCPlayer(BasePlayer):
             self._vlcmp.release()
             self._vlcmp = None
             self._events = None
+        self._runner.abort()
 
     def _end(self, stopped, next_song=None):
         """Start playing the current song from the source or
@@ -132,9 +145,6 @@ class VLCPlayer(BasePlayer):
     def _play(self, seek=None):
         print_d("Playing current media with seek [%s]" % seek)
 
-        # Set replay volume
-        self.volume = self.volume
-
         if self._vlcmp is None:
             print_d("Creating New Media Player")
             # Create the new media player for the current song
@@ -145,9 +155,9 @@ class VLCPlayer(BasePlayer):
             # ... also how we take action on media palyer state changes
             self._events = self._vlcmp.event_manager()
             self._events.event_attach(vlc.EventType.MediaPlayerPlaying,
-                                      self._event_playing)
+                                      self._event_playing_async)
             self._events.event_attach(vlc.EventType.MediaPlayerEndReached,
-                                      self._event_ended)
+                                      self._event_ended_async)
 
             # Setup the equalizer, if one exists
             if self._vlceq is not None:
@@ -199,9 +209,36 @@ class VLCPlayer(BasePlayer):
         super().stop()
         self._stop()
 
-    def _event_playing(self, event):
-        print_d("Playing Event paused [%s] seek [%s]" % (
+    def _event_playing_async(self, event):
+        try:
+            uri = self._runner.call(self._event_playing_sync,
+                                    event,
+                                    priority=GLib.PRIORITY_HIGH,
+                                    timeout=0.5)
+        except MainRunnerTimeoutError as e:
+            # Due to some locks being held during this signal we can get
+            # into a deadlock when a seek or state change event happens
+            # in the mainloop before our function gets scheduled.
+            #
+            # XXX In this case abort and do nothing, which results in ???
+            print_d("EVENT Play (async): %s" % e)
+            return
+        except MainRunnerAbortedError as e:
+            print_d("EVENT Play (async): %s" % e)
+            return
+        except MainRunnerError:
+            util.print_exc()
+            return
+
+    def _event_playing_sync(self, event):
+        print_d("Playing Event (sync) [%s] seek [%s]" % (
             self._paused, self._seekOnPlay))
+
+        # Set replay gain volume
+        # XXX This causes VLC to hang ... need to wait a bit before use?
+        #self.volume = self.volume
+
+        print_d("Volume Set Complete")
 
         # Set the current pause state in the player to align with
         # the current requested pause state
@@ -227,10 +264,37 @@ class VLCPlayer(BasePlayer):
 
         print_d("Song play startup complete!")
 
-    def _event_ended(self, event):
+    def _event_ended_async(self, event):
+        try:
+            uri = self._runner.call(self._event_ended_sync,
+                                    event,
+                                    priority=GLib.PRIORITY_HIGH,
+                                    timeout=0.5)
+        except MainRunnerTimeoutError as e:
+            # Due to some locks being held during this signal we can get
+            # into a deadlock when a seek or state change event happens
+            # in the mainloop before our function gets scheduled.
+            #
+            # XXX In this case abort and do nothing, which results in ???
+            print_d("EVENT Play (async): %s" % e)
+            return
+        except MainRunnerAbortedError as e:
+            print_d("EVENT Play (async): %s" % e)
+            return
+        except MainRunnerError:
+            util.print_exc()
+            return
+
+    def _event_ended_sync(self, event):
         print_d("Playback Ended")
 
-        # When playback ends, destroy the current media player
+        # NOTE: Do NOT destroy the media player here because it will be reused
+        # during continuous playback. The media player object will be destroyed
+        # by the _end() method if necessary.
+
+        # XXX However, experimentation indicates that media player object
+        #     reuse does not work so well.  For now, simply destroy the old
+        #     media player object and a new one will be created.
         self._stop()
 
         # Tell the source that the song ended
