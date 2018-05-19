@@ -31,6 +31,14 @@
         </screenshot>
     </screenshots>
 
+    <releases>
+        <release version="4.0.2" date="2018-01-17"/>
+        <release version="4.0.1" date="2018-01-13"/>
+        <release version="4.0.0" date="2017-12-26"/>
+        <release version="3.9.1" date="2017-06-06"/>
+        <release version="3.9.0" date="2017-05-24"/>
+    </releases>
+
     <url type="homepage">https://quodlibet.readthedocs.org</url>
     <url type="bugtracker">https://quodlibet.readthedocs.io/en/latest/bugs_repo.html</url>
     <url type="help">https://quodlibet.readthedocs.io/en/latest/guide/index.html</url>
