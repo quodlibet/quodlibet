@@ -106,17 +106,15 @@ class VLCPlayer(BasePlayer):
         next_song if it isn't None.
         """
         print_d("End song")
-        song, info = self.song, self.info
 
         # We need to set self.song to None before calling our signal
         # handlers. Otherwise, if they try to end the song they're given
         # (e.g. by removing it), then we get in an infinite loop.
+        song, info = self.song, self.info
         self.song = self.info = None
         if song is not info:
             self.emit('song-ended', info, stopped)
         self.emit('song-ended', song, stopped)
-
-        self._stop()
 
         current = self._source.current if next_song is None else next_song
 
@@ -128,18 +126,18 @@ class VLCPlayer(BasePlayer):
             print_d("Next Song: %s" % self.song("~uri"))
 
             self._play()
-            print_d("New player created!")
         else:
             self._stop()
 
     def _play(self, seek=None):
+        print_d("Playing current media with seek [%s]" % seek)
+
+        # Set replay volume
+        self.volume = self.volume
+
         if self._vlcmp is None:
-            print_d("Creating New VLC Player with seek [%s]" % seek)
-
-            # Set replay volume
-            self.volume = self.volume
-
-            # Create the new media player for the current song!
+            print_d("Creating New Media Player")
+            # Create the new media player for the current song
             self._vlcmp = vlc.MediaPlayer(self.song("~uri"))
 
             # Connect to useful events
@@ -155,12 +153,17 @@ class VLCPlayer(BasePlayer):
             if self._vlceq is not None:
                 self._vlcmp.set_equalizer(self._vlceq)
 
-            # Save the seek location
-            # ... seek happens on the VLC event MediaPlayerPlaying
-            self._seekOnPlay = seek
+        else:
+            print_d("Reusing Existing Media Player")
+            # Reuse the existing media player
+            self._vlcmp.set_mrl(self.song("~uri"))
 
-            # Start the media playing
-            self._vlcmp.play()
+        # Save the seek location
+        # ... seek happens on the VLC event MediaPlayerPlaying
+        self._seekOnPlay = seek
+
+        # Start the media playing
+        self._vlcmp.play()
 
     def setup(self, playlist, song, seek_pos):
         # VLC cannot seek immediately at startup, perform seek by event instead
@@ -205,6 +208,10 @@ class VLCPlayer(BasePlayer):
         if self._paused:
             self.paused = self._paused
 
+        # Notify the rest of the application of the state change
+        self.emit('song-started', self.song)
+        self.notify("seekable")
+
         # This should really be handled by the seekable event
         # ... However, it seems that when the seekable event is triggered, the
         #     length is not available
@@ -212,12 +219,12 @@ class VLCPlayer(BasePlayer):
             self._vlcmp.set_position(self._seekOnPlay
                                    / self._vlcmp.get_length())
             print_d("VLC Position Set")
+            # Notify the rest of the applicaiton that the seek happened
             self.emit('seek', self.song, self._seekOnPlay)
+
+            # Reset the seek indicator so it doesn't accidentally get resused
             self._seekOnPlay = None
 
-        print_d("Emitting song-started and notifying seekable")
-        self.emit('song-started', self.song)
-        self.notify("seekable")
         print_d("Song play startup complete!")
 
     def _event_ended(self, event):
