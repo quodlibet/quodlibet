@@ -89,13 +89,13 @@ class TUniSearch(TestCase):
             (u"^foo$", None),
             (u"[-+]?(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?",
              u"[\\-\\+]?([\\d]+(\\.[\\d]*)?|\\.[\\d]+)([eE][\\-\\+]?[\\d]+)?"),
-            (u"(\$\d*)", u"(\\$[\\d]*)"),
+            (u"(\\$\\d*)", u"(\\$[\\d]*)"),
             (u"\\$\\.\\^\\[\\]\\:\\-\\+\\?\\\\", None),
             (u"[^a][^ab]", None),
             (u"[ab][abc]", None),
             (u"[.]", u"\\."),
             (u"[^a-z]", None),
-            (u"[^a-z\w]", None),
+            (u"[^a-z\\w]", None),
         ]
 
         for r, o in res:
@@ -113,7 +113,7 @@ class TUniSearch(TestCase):
         assert re_add_variants(u"[x-y]") == u"[ẋẍýÿŷȳẏẙỳỵỷỹx-y]"
         assert re_add_variants(u"[f-gm]") == u"[ḟꝼĝğġģǧǵḡᵹf-gmḿṁṃ]"
         assert re_add_variants(u"[^m]") == u"[^mḿṁṃ]"
-        assert re_add_variants(u"[^m-m\w]") == u"[^ḿṁṃm-m\w]"
+        assert re_add_variants(u"[^m-m\\w]") == u"[^ḿṁṃm-m\\w]"
         assert re_add_variants(u"[^m-m]") == "[^ḿṁṃm-m]"
         assert re_add_variants(u"[^ö]") == u"[^ö]"
         assert re_add_variants(u"[LLL]") == u"[LĹĻĽḶḸḺḼŁ]"

@@ -288,7 +288,7 @@ def get_temp_cover_file(data):
         return fn
 
 
-def _strip_win32_incompat(string, BAD='\:*?;"<>|'):
+def _strip_win32_incompat(string, BAD=r'\:*?;"<>|'):
     """Strip Win32-incompatible characters from a Windows or Unix path."""
 
     if os.name == "nt":

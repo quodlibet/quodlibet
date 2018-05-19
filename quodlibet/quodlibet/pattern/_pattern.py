@@ -484,10 +484,10 @@ class _XMLFromMarkupPattern(_XMLFromPattern):
 
 
 def XMLFromMarkupPattern(string):
-    """Like XMLFromPattern but allows using [] instead of \<\> for
+    """Like XMLFromPattern but allows using [] instead of \\<\\> for
     pango markup to get rid of all the escaping in the common case.
 
-    To get text like "[b]" escape the first '[' like "\[b]"
+    To get text like "[b]" escape the first '[' like "\\[b]"
     """
 
     return Pattern(string, _XMLFromMarkupPattern)

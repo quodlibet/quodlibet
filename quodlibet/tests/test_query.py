@@ -469,7 +469,7 @@ class TQuery(TestCase):
         # invalid regex
         Query(u'/Sigur [r-zos/d')
         # group refs unsupported for diacritic matching
-        Query(u'/(<)?(\w+@\w+(?:\.\w+)+)(?(1)>)/d')
+        Query(u'/(<)?(\\w+@\\w+(?:\\.\\w+)+)(?(1)>)/d')
 
     def test_numexpr(self):
         self.failUnless(Query("#(length = 224)").search(self.s1))

@@ -220,7 +220,7 @@ class TPaneConfig(TestCase):
         self.failUnless(p.has_markup)
 
     def test_group(self):
-        p = PaneConfig("a\:b:<title>")
+        p = PaneConfig(r"a\:b:<title>")
         self.failUnlessEqual(p.title, "A:B")
         self.failUnlessEqual(set(p.format_display(ALBUM).split(", ")),
                              {"one", "two", "three", "four", "xxx"})

@@ -45,7 +45,7 @@ extlinks = {
 linkcheck_anchors = True
 linkcheck_workers = 20
 linkcheck_ignore = [
-    ".*groups\.google\.com/.*",
+    r".*groups\.google\.com/.*",
     r".*keyserver\.ubuntu\.com.*"
 ]
 

@@ -643,7 +643,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
             elif name == "Path":
                 return Icon.PATH
             elif name == "DisplayName":
-                return "I'm an icon \o/"
+                return r"I'm an icon \o/"
         elif interface == MediaItem.IFACE:
             if name == "URLs":
                 return [fsn2uri(self.__f.name)]

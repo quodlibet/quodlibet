@@ -288,7 +288,8 @@ class ConfigMultiRPaned(MultiRPaned):
             self.__changed()
 
     def __changed(self, widget=None, event=None):
-        """Callback function for individual paneds. Saves all current paned widths.
+        """Callback function for individual paneds. Saves all current paned
+        widths.
 
         Widget and event default to None, as they aren't really used. They
         are just required for GTK.
