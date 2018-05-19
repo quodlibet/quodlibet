@@ -8,6 +8,8 @@ Why don't all my songs appear in the song list when searching for them?
 Do you have a global filter in use? Check the *Browsers* tab in *Preferences*.
 
 
+.. _MetadataLocation:
+
 Where does Quod Libet store all its metadata?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
