@@ -38,7 +38,7 @@ class VLCPlayer(BasePlayer):
 
     @paused.setter
     def paused(self, state):
-        print_d("Pause Set to State [%s]" % state)
+        print_d(f"Pause Set to State [{state}]")
 
         # Detect if pause is not possible and alter the action accordingly
         if self._vlcmp is None or self._vlcmp.can_pause() == 0:
@@ -108,8 +108,6 @@ class VLCPlayer(BasePlayer):
         print_d("End song")
         song, info = self.song, self.info
 
-        self._stop()
-
         # We need to set self.song to None before calling our signal
         # handlers. Otherwise, if they try to end the song they're given
         # (e.g. by removing it), then we get in an infinite loop.
@@ -117,6 +115,8 @@ class VLCPlayer(BasePlayer):
         if song is not info:
             self.emit('song-ended', info, stopped)
         self.emit('song-ended', song, stopped)
+
+        self._stop()
 
         current = self._source.current if next_song is None else next_song
 
@@ -128,11 +128,9 @@ class VLCPlayer(BasePlayer):
             print_d("Next Song: %s" % self.song("~uri"))
 
             self._play()
+            print_d("New player created!")
         else:
             self._stop()
-
-        self.emit('song-started', self.song)
-        self.notify("seekable")
 
     def _play(self, seek=None):
         if self._vlcmp is None:
@@ -183,6 +181,8 @@ class VLCPlayer(BasePlayer):
                                            vlc.State.Paused]:
                 self._vlcmp.release()
                 print_d("Release Complete")
+            else:
+                print_d("Not Releasing (not playing)")
 
             # Remove our references to the player
             self._vlcmp = None
@@ -211,9 +211,14 @@ class VLCPlayer(BasePlayer):
         if self._seekOnPlay is not None and self._vlcmp.is_seekable():
             self._vlcmp.set_position(self._seekOnPlay
                                    / self._vlcmp.get_length())
+            print_d("VLC Position Set")
             self.emit('seek', self.song, self._seekOnPlay)
             self._seekOnPlay = None
-            self.notify("seekable")
+
+        print_d("Emitting song-started and notifying seekable")
+        self.emit('song-started', self.song)
+        self.notify("seekable")
+        print_d("Song play startup complete!")
 
     def _event_ended(self, event):
         print_d("Playback Ended")
