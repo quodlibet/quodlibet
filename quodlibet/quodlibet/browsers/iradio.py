@@ -373,8 +373,8 @@ class GenreFilter(object):
             "|(electr,house,techno,trance,/trip.?hop/,&(drum,n,bass),chill,"
             "dnb,minimal,/down(beat|tempo)/,&(dub,step))"),
         "rap": (_("Hip Hop / Rap"), "|(&(hip,hop),rap)"),
-        "oldies": (_("Oldies"), "|(/[2-9]0\S?s/,oldies)"),
-        "r&b": (_("R&B"), "/r(\&|n)b/"),
+        "oldies": (_("Oldies"), r"|(/[2-9]0\S?s/,oldies)"),
+        "r&b": (_("R&B"), r"/r(\&|n)b/"),
         "japanese": (_("Japanese"), "|(anime,jpop,japan,jrock)"),
         "indian": (_("Indian"), "|(bollywood,hindi,indian,bhangra)"),
         "religious": (
@@ -382,7 +382,7 @@ class GenreFilter(object):
             "|(religious,christian,bible,gospel,spiritual,islam)"),
         "charts": (_("Charts"), "|(charts,hits,top)"),
         "turkish": (_("Turkish"), "|(turkish,turkce)"),
-        "reggae": (_("Reggae / Dancehall"), "|(/reggae([^\w]|$)/,dancehall)"),
+        "reggae": (_("Reggae / Dancehall"), r"|(/reggae([^\w]|$)/,dancehall)"),
         "latin": (_("Latin"), "|(latin,salsa)"),
         "college": (_("College Radio"), "|(college,campus)"),
         "talk_news": (_("Talk / News"), "|(news,talk)"),

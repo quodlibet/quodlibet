@@ -86,7 +86,7 @@ def validate_markup_pattern(text, alternative_markup=True, links=False):
 
     Args:
         text (unicode): the pattern
-        alternative_markup (bool): if "[b]" gets mapped to "\<b\>"
+        alternative_markup (bool): if "[b]" gets mapped to "\\<b\\>"
         links (bool): if link tags are allowed (for Gtk.Label only)
 
     Raises:

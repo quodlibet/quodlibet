@@ -86,8 +86,8 @@ class Colorise(object):
         return cls.__reset(Color.GRAY + text)
 
 
-_ANSI_ESC_RE = re.compile(u"(\x1b\[\d\d?m)")
-_ANSI_ESC_RE_B = re.compile(b"(\x1b\[\d\d?m)")
+_ANSI_ESC_RE = re.compile(u"(\x1b\\[\\d\\d?m)")
+_ANSI_ESC_RE_B = re.compile(b"(\x1b\\[\\d\\d?m)")
 
 
 def strip_color(text):

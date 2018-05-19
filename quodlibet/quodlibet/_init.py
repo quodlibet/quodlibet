@@ -265,7 +265,7 @@ def _init_gtk():
     warnings.filterwarnings(
         'ignore', '.*:use-stock.*', Warning)
     warnings.filterwarnings(
-        'ignore', '.*The property GtkAlignment:[^\s]+ is deprecated.*',
+        'ignore', r'.*The property GtkAlignment:[^\s]+ is deprecated.*',
         Warning)
 
     settings = Gtk.Settings.get_default()

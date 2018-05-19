@@ -103,8 +103,8 @@ class CoverSourcePlugin(GObject.Object):
         uniquely identify most (or even better – all) of the albums.
 
         The string returned must not contain any characters illegal in
-        most common filesystems. These include /, ?, <, >, \, :, *, |, ” and ^.
-        Staying in the bounds of ASCII is highly encouraged.
+        most common filesystems. These include /, ?, <, >, \\, :, *, |, ” and
+        ^. Staying in the bounds of ASCII is highly encouraged.
 
         Perchance the song lacks data to generate the filename of cover for
         this provider, None shall be returned.

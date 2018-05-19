@@ -116,7 +116,7 @@ class DateMassager(Massager):
     error = _("The date must be entered in 'YYYY', 'YYYY-MM-DD' or "
               "'YYYY-MM-DD HH:MM:SS' format.")
     __match = re.compile(r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}"
-                         "([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match
+                         r"([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match
 
     def validate(self, value):
         value = value.strip().replace(".", "-").replace("/", "-")

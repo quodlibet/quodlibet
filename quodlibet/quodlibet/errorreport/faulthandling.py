@@ -50,7 +50,7 @@ class FaultHandlerCrash(Exception):
 
         # Extract the basename and the function name for each line and hash
         # them. Could be smarter, but let's try this for now..
-        reg = re.compile('.*?"([^"]+).*?(\w+$)')
+        reg = re.compile(r'.*?"([^"]+).*?(\w+$)')
         values = []
         for l in stacktrace.splitlines():
             m = reg.match(l)

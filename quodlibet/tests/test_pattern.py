@@ -199,7 +199,7 @@ class TPattern(_TPattern):
         s.assertEquals(pat.format(s.c), '. test/subdir')
 
     def test_recnumber_dot_title(s):
-        pat = Pattern('\<<tracknumber>\>. <title>')
+        pat = Pattern(r'\<<tracknumber>\>. <title>')
         s.assertEquals(pat.format(s.a), '<5/6>. Title5')
         s.assertEquals(pat.format(s.b), '<6>. Title6')
         s.assertEquals(pat.format(s.c), '<>. test/subdir')
@@ -270,7 +270,7 @@ class _TFileFromPattern(_TPattern):
     def test_backslash_conversion_win32(s):
         if os.name == 'nt':
             pat = s._create(r'Z:\<artist>\<title>')
-            s.assertTrue(pat.format(s.a).startswith('Z:\Artist\Title5'))
+            s.assertTrue(pat.format(s.a).startswith(r'Z:\Artist\Title5'))
 
     def test_raw_slash_preservation(s):
         if os.name == "nt":
