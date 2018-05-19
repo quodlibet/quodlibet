@@ -12,12 +12,27 @@ import subprocess
 from quodlibet.util.path import iscommand
 from quodlibet import util
 
-from tests import TestCase, mkstemp, skipUnless
+from tests import TestCase, mkstemp, skipUnless, skipIf
 
 
 QLDATA_DIR = os.path.join(os.path.dirname(util.get_module_dir()), "data")
 
 
+def get_appstream_util_version():
+    try:
+        data = subprocess.check_output(["appstream-util", "--version"])
+    except subprocess.CalledProcessError as e:
+        data = e.output or b""
+
+    text = data.decode("utf-8", "replace")
+    return tuple([int(p) for p in text.rsplit()[-1].split(".")])
+
+
+def is_too_old_appstream_util_version():
+    return get_appstream_util_version() < (0, 7, 0)
+
+
+@skipIf(is_too_old_appstream_util_version(), "appstream-util is too old")
 class _TAppDataFileMixin(object):
     PATH = None
 
