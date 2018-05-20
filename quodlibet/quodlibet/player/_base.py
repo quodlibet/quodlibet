@@ -8,6 +8,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import collections
+
 from gi.repository import GObject
 
 from quodlibet.formats import AudioFile
@@ -18,6 +20,19 @@ from quodlibet.compat import listfilter
 
 class Equalizer(object):
     _eq_values = []
+    _eq_preamp = 0.0
+
+    # This class is used to return information about an equalizer
+    # preset provided by the backend player
+    #
+    # NOTE: If the backend equalizer does not have a preamp,
+    #       any the 'preamp' field will be ignored.
+    EqualizerPreset = collections.namedtuple('EqualizerPreset', [
+        'name', 'values', 'preamp'])
+    EqualizerPreset.__doc__ += """: Equalizer Preset Definition"""
+    EqualizerPreset.name.__doc__ += """Equalizer Preset Name"""
+    EqualizerPreset.values.__doc__ += """List of preset band values"""
+    EqualizerPreset.preamp.__doc__ += """Preamp value (use 0.0 if no preamp)"""
 
     @property
     def eq_bands(self):
@@ -27,7 +42,9 @@ class Equalizer(object):
 
     @property
     def eq_values(self):
-        """The list of equalizer values, in the range (-24dB, 12dB)."""
+        """The list of equalizer values, in the range (-24dB, 12dB).
+
+        Override the available range using the eq_range() method."""
 
         return self._eq_values
 
@@ -40,6 +57,51 @@ class Equalizer(object):
         """Override to apply equalizer values"""
 
         pass
+
+    @property
+    def eq_has_preamp(self):
+        """If the equalizer has a preamp."""
+
+        return False
+
+    @property
+    def eq_preamp(self):
+        """The equalizer preamp value.
+
+        Only vaid if eq_has_preamp() == True"""
+
+        return self._eq_preamp
+
+    @eq_preamp.setter
+    def eq_preamp(self, value):
+        """Set the equalizer preamp value.
+
+        Only vaid if eq_has_preamp() == True"""
+
+        self._eq_preamp = value
+        self.update_eq_values()
+
+    @property
+    def eq_preamp_default(self):
+        """Default Preamp Value.
+        This is useful when a backend player should have a default preamp
+        value other than 0.0 for normal playback."""
+
+        return 0.0
+
+    @property
+    def eq_preset_list(self):
+        """List of presets provided by the equalizer.
+
+        This should be a list of EqualizerPreset objects!"""
+
+        return []
+
+    @property
+    def eq_range(self):
+        """Return the (min,max) equalizer range."""
+
+        return (-24, 12)
 
 
 class BasePlayer(GObject.GObject, Equalizer):
