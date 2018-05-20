@@ -170,6 +170,10 @@ class RGSong(object):
         return self.song("~filename")
 
     @property
+    def uri(self):
+        return self.song("~uri")
+
+    @property
     def length(self):
         return self.song("~#length")
 
@@ -229,28 +233,15 @@ class ReplayGainPipeline(GObject.Object):
 
     def _setup_pipe(self):
         # gst pipeline for replay gain analysis:
-        # filesrc!decodebin!audioconvert!audioresample!rganalysis!fakesink
+        # uridecodebin!audioconvert!audioresample!rganalysis!fakesink
         self.pipe = Gst.Pipeline()
-        self.filesrc = Gst.ElementFactory.make("filesrc", "source")
-        self.pipe.add(self.filesrc)
-
-        self.decode = Gst.ElementFactory.make("decodebin", "decode")
+        self.decode = Gst.ElementFactory.make("uridecodebin", "decode")
 
         def new_decoded_pad(dbin, pad):
             pad.link(self.convert.get_static_pad("sink"))
 
-        def sort_decoders(decode, pad, caps, factories):
-            def set_prio(x):
-                i, f = x
-                i = {"mad": -1, "mpg123audiodec": -2}.get(f.get_name(), i)
-                return (i, f)
-            return list(zip(*sorted(map(set_prio, enumerate(factories)))))[1]
-
-        self.decode.connect("autoplug-sort", sort_decoders)
-
         self.decode.connect("pad-added", new_decoded_pad)
         self.pipe.add(self.decode)
-        self.filesrc.link(self.decode)
 
         self.convert = Gst.ElementFactory.make("audioconvert", "convert")
         self.pipe.add(self.convert)
@@ -319,7 +310,7 @@ class ReplayGainPipeline(GObject.Object):
             self.pipe.set_state(Gst.State.NULL)
 
         self._current = self._songs.pop(0)
-        self.filesrc.set_property("location", self._current.filename)
+        self.decode.set_property("uri", self._current.uri)
         if not first:
             # flush, so the element takes new data after EOS
             pad = self.analysis.get_static_pad("src")

@@ -547,7 +547,7 @@ class AudioFile(dict, ImageContainer):
         from quodlibet.pattern \
             import ArbitraryExtensionFileFromPattern as expand_patterns
 
-        rx_params = re.compile('[^\\\]<[^' + re.escape(os.sep) + ']*[^\\\]>')
+        rx_params = re.compile(r'[^\\]<[^' + re.escape(os.sep) + r']*[^\\]>')
 
         def expand_pathfile(rpf):
             """Return the expanded RootPathFile"""

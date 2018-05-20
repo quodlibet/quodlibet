@@ -62,25 +62,6 @@ class FingerPrintPipeline(object):
         self._dec_id = connect_obj(decode,
             "pad-added", new_decoded_pad, convert)
 
-        def sort_decoders(decode, pad, caps, factories):
-            # Example (atom CPU) 248 sec song:
-            #   mpg123: 3.5s / ffdec_mp3: 5.5s / mad: 7.2s / flump3dec: 13.3s
-
-            def set_prio(x):
-                i, f = x
-                i = {
-                    "mad": -1,
-                    "avdec_mp3": -2,
-                    "avdec_mp3float": -3,
-                    "mpegaudioparse": -4,
-                    "mpg123audiodec": -5,
-                }.get(f.get_name(), i)
-                return (i, f)
-
-            return list(zip(*sorted(map(set_prio, enumerate(factories)))))[1]
-
-        self._dec_id2 = decode.connect("autoplug-sort", sort_decoders)
-
         chroma = Gst.ElementFactory.make("chromaprint", None)
         fake = Gst.ElementFactory.make("fakesink", None)
         pipe.add(chroma)
@@ -131,7 +112,6 @@ class FingerPrintPipeline(object):
         self._bus.remove_signal_watch()
         self._bus.disconnect(self._bus_id)
         self._dec.disconnect(self._dec_id)
-        self._dec.disconnect(self._dec_id2)
         self._dec = None
         self._filesrc = None
         self._bus = None

@@ -489,7 +489,7 @@ class Tpattern(TestCase):
                              "Year - Album")
 
     def test_escape(self):
-        self.failUnlessEqual(util.pattern("\<i\><&>\</i\>", esc=True),
+        self.failUnlessEqual(util.pattern(r"\<i\><&>\</i\>", esc=True),
                             "<i>&amp;</i>")
 
     def test_invalid(self):
@@ -497,7 +497,7 @@ class Tpattern(TestCase):
         util.pattern("<d\\")
 
     def test_complex_condition(self):
-        self.assertEqual(util.pattern("<#(bitrate \> 150)|HQ|LQ>"), "LQ")
+        self.assertEqual(util.pattern(r"<#(bitrate \> 150)|HQ|LQ>"), "LQ")
 
     def test_escape_condition(self):
         self.assertEqual(

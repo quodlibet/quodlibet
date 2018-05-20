@@ -41,7 +41,7 @@ def main(argv=None):
     app.name = "Ex Falso"
     app.description = _("Audio metadata editor")
     app.id = "exfalso"
-    quodlibet.set_application_info(Icons.EXFALSO, app.id, app.name)
+    quodlibet.set_application_info(Icons.EXFALSO, "exfalso", app.name)
 
     import quodlibet.library
     import quodlibet.player
@@ -66,7 +66,7 @@ def main(argv=None):
 
     quodlibet.enable_periodic_save(save_library=False)
     quodlibet.run(app.window)
-    quodlibet.finish_first_session(app.id)
+    quodlibet.finish_first_session("exfalso")
     config.save()
 
     util.print_d("Finished shutdown.")

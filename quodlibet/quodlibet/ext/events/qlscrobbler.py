@@ -34,6 +34,7 @@ from quodlibet.util.dprint import print_d
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 from quodlibet.compat import urlencode
 from quodlibet.util.urllib import urlopen, UrllibError
+from quodlibet.errorreport import errorhook
 
 
 SERVICES = {
@@ -88,7 +89,7 @@ class QLSubmitQueue(object):
     CLIENT = "qlb"
     CLIENT_VERSION = const.VERSION
     PROTOCOL_VERSION = "1.2"
-    DUMP = os.path.join(quodlibet.get_user_dir(), "scrobbler_cache")
+    DUMP = os.path.join(quodlibet.get_user_dir(), "scrobbler_cache_v2")
 
     # These objects are shared across instances, to allow other plugins to
     # queue scrobbles in future versions of QL
@@ -354,7 +355,14 @@ class QLScrobbler(EventPlugin):
     def __init__(self):
         self.__enabled = False
         self.queue = QLSubmitQueue()
-        queue_thread = threading.Thread(None, self.queue.run)
+
+        def queue_run():
+            try:
+                self.queue.run()
+            except Exception:
+                errorhook()
+
+        queue_thread = threading.Thread(None, queue_run)
         queue_thread.setDaemon(True)
         queue_thread.start()
 

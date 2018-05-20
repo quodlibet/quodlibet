@@ -35,7 +35,7 @@ class RadioAdMute(EventPlugin):
             "www.di.fm/jobs",
             ]
 
-    RE_SPAM = ["Sponsored Message\s+\([0-9]+\)",
+    RE_SPAM = [r"Sponsored Message\s+\([0-9]+\)",
             ]
 
     SPAM = list(map(re_escape, SPAM)) + RE_SPAM

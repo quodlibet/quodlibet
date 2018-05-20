@@ -8,9 +8,9 @@ it may be convenient to edit these files directly, or to synchronize them
 across different computers/ home directories.
 
 Like many Linux applications, QL stores user configuration in a hidden
-directory, in this case ``~/.quodlibet``. Feel free to explore; but maybe
-make a backup of the directory first.
-
+directory, in this case ``~/.quodlibet``. (Note that this may not always be
+the case, see :ref:`the FAQ <MetadataLocation>` for details). Feel free to
+explore; but maybe make a backup of the directory first.
 
 Saved values for search, tagging and renaming patterns
 ------------------------------------------------------

@@ -24,7 +24,7 @@ OTHER_PATH = fsnative(u"/opt/party")
 GVFS_PATH = fsnative(u"/run/user/12345/gvfs/smb-share"
                       ":server=12.23.34.45,share=/foo/bar/baz/path")
 GVFS_PATH_ESCAPED = fsnative(u"/run/user/12345/gvfs/smb-share"
-                              "\:server=12.23.34.45,share=/foo/bar/baz/path")
+                              "\\:server=12.23.34.45,share=/foo/bar/baz/path")
 
 
 class Tlibrary_utils(TestCase):

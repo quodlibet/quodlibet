@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2013 Christoph Reiter -->
 <application>
-    <id type="desktop">exfalso.desktop</id>
+    <id type="desktop-application">exfalso.desktop</id>
     <name>Ex Falso</name>
     <_summary>Edit tags in your audio files</_summary>
     <metadata_license>CC0</metadata_license>
     <project_license>GPL-2.0</project_license>
     <translation type="gettext">quodlibet</translation>
+    <launchable type="desktop-id">exfalso.desktop</launchable>
+    <provides>
+        <binary>exfalso</binary>
+    </provides>
+
     <description>
     <_p>
         Ex Falso is a tag editor with the same tag editing interface as
@@ -18,11 +24,24 @@
         SPC, MIDI.
     </_p>
     </description>
+
     <screenshots>
         <screenshot type="default">
-            <image>https://quodlibet.readthedocs.org/en/latest/_images/exfalso.png</image>
+            <image>https://quodlibet.github.io/appdata/exfalso_1.png</image>
         </screenshot>
     </screenshots>
+
+    <releases>
+        <release version="4.0.2" date="2018-01-17"/>
+        <release version="4.0.1" date="2018-01-13"/>
+        <release version="4.0.0" date="2017-12-26"/>
+        <release version="3.9.1" date="2017-06-06"/>
+        <release version="3.9.0" date="2017-05-24"/>
+    </releases>
+
     <url type="homepage">https://quodlibet.readthedocs.org</url>
-    <updatecontact>quod-libet-development@googlegroups.com</updatecontact>
+    <url type="bugtracker">https://quodlibet.readthedocs.io/en/latest/bugs_repo.html</url>
+    <url type="help">https://quodlibet.readthedocs.io/en/latest/guide/index.html</url>
+    <url type="translate">https://quodlibet.readthedocs.io/en/latest/translation/howto.html</url>
+    <update_contact>quod-libet-development@googlegroups.com</update_contact>
 </application>

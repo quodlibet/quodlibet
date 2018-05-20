@@ -48,7 +48,8 @@ class TSourceEncoding(TestCase):
                 match = None
                 for i, line in enumerate(h):
                     # https://www.python.org/dev/peps/pep-0263/
-                    match = match or re.search(b"coding[:=]\s*([-\w.]+)", line)
+                    match = match or re.search(br"coding[:=]\s*([-\w.]+)",
+                                               line)
                     if i >= 2:
                         break
                 if match:

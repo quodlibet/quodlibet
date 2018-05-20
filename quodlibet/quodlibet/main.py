@@ -50,7 +50,7 @@ def main(argv=None):
     app.name = "Quod Libet"
     app.description = _("Music player and music library manager")
     app.id = "io.github.quodlibet.QuodLibet"
-    quodlibet.set_application_info(Icons.QUODLIBET, app.id, app.name)
+    quodlibet.set_application_info(Icons.QUODLIBET, "quodlibet", app.name)
 
     library_path = os.path.join(quodlibet.get_user_dir(), "songs")
 
@@ -199,7 +199,7 @@ def main(argv=None):
     quodlibet.run(window, before_quit=before_quit)
 
     app.player_options.destroy()
-    quodlibet.finish_first_session(app.id)
+    quodlibet.finish_first_session("quodlibet")
     mmkeys_handler.quit()
     remote.stop()
     fsiface.destroy()

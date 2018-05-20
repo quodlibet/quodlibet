@@ -43,7 +43,7 @@ class TWindows(TestCase):
         d = windows.get_link_target(path)
         self.assertTrue(isinstance(d, text_type))
         self.assertEqual(
-            normalize_path(d), normalize_path(u"C:\Windows\explorer.exe"))
+            normalize_path(d), normalize_path(u"C:\\Windows\\explorer.exe"))
 
     def test_get_link_target_unicode(self):
         path = get_data_path("test2.lnk")

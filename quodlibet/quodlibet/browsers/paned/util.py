@@ -21,7 +21,7 @@ class PaneConfig(object):
     * display_pattern is optional (fallback: ~#tracks)
     * patterns, tied and normal tags.
     * display patterns can have function prefixes for numerical tags.
-    * ':' has to be escaped ('\:')
+    * ':' has to be escaped ('\\:')
 
     TODO: sort pattern, filter query
     """

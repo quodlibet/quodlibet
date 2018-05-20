@@ -49,6 +49,9 @@ documentation is available at
 .SH OPTIONS
 .INDENT 0.0
 .TP
+.B \-\-debug
+Print debugging information
+.TP
 .BI \-\-enqueue \ <filename|query>
 Enqueue a filename or query results
 .TP
@@ -58,14 +61,17 @@ Filter on a tag value
 .B \-\-focus
 Focus the running player
 .TP
+.B \-\-force\-previous
+Jump to previous song
+.TP
 .B \-\-hide\-window
 Hide main window
 .TP
-.B \-\-next
-Jump to next song
-.TP
 .B \-\-list\-browsers
 List available browsers
+.TP
+.B \-\-next
+Jump to next song
 .TP
 .BI \-\-open\-browser\fB= BrowserName
 Open a new browser
@@ -85,8 +91,10 @@ Toggle play/pause mode
 .B \-\-previous
 Jump to previous song if near the beginning, otherwise restart
 .TP
-.B \-\-force\-previous
-Jump to previous song
+.B \-\-print\-playing
+Print out information about the currently playing song. You may
+provide in a string like the kind described in the RENAMING FILES
+section below.
 .TP
 .B \-\-print\-playlist
 Print the current playlist
@@ -94,16 +102,8 @@ Print the current playlist
 .B \-\-print\-queue
 Print the contents of the queue
 .TP
-.B \-\-print\-playing
-Print out information about the currently playing song. You may
-provide in a string like the kind described in the RENAMING FILES
-section below.
-.TP
 .BI \-\-query\fB= search\-string
 Search your audio library
-.TP
-.B \-\-run
-Start Quod Libet if it isn\(aqt running
 .TP
 .B \-\-quit
 Exit Quod Libet
@@ -120,6 +120,9 @@ Turn repeat off, on, or toggle
 .BI \-\-repeat\-type\fB= <current|all|one|off>
 Repeat the currently playing song, the current list, stop after
 one song, or turn repeat off
+.TP
+.B \-\-run
+Start Quod Libet if it isn\(aqt running
 .TP
 .BI \-\-seek\fB= <[+|\-][HH:]MM:SS>
 Seek within the playing song

@@ -88,7 +88,7 @@ def get_url(url, post=None, get=None):
         data = gzip.GzipFile(fileobj=cBytesIO(data)).read()
     url_sock.close()
     content_type = url_sock.headers.get('Content-Type', '').split(';', 1)[0]
-    domain = re.compile('\w+://([^/]+)/').search(url).groups(0)[0]
+    domain = re.compile(r'\w+://([^/]+)/').search(url).groups(0)[0]
     print_d("Got %s data from %s" % (content_type, domain))
     return (data if content_type.startswith('image')
             else data.decode(enc))

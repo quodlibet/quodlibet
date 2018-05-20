@@ -524,7 +524,8 @@ class TAudioFile(TestCase):
         with self.lyric_filename_test_setup(no_config=True) as ts:
 
             path_variants = ['<oldskool>'] \
-                if is_windows() else ['\<artist\>', '\<artist>', '<artist\>']
+                if is_windows() else [r'\<artist\>', r'\<artist>',
+                                      r'<artist\>']
 
             for path_variant in path_variants:
                 ts['artist'] = path_variant + " SpongeBob SquarePants"
