@@ -21,7 +21,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
-AppData Specification: http://people.freedesktop.org/~hughsient/appdata/
+AppData Specification: https://www.freedesktop.org/software/appstream/docs/
 """
 
 import os
