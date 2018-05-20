@@ -155,9 +155,9 @@ class VLCPlayer(BasePlayer):
             # ... also how we take action on media palyer state changes
             self._events = self._vlcmp.event_manager()
             self._events.event_attach(vlc.EventType.MediaPlayerPlaying,
-                                      self._event_playing_async)
+                                      self._event_callback_async)
             self._events.event_attach(vlc.EventType.MediaPlayerEndReached,
-                                      self._event_ended_async)
+                                      self._event_callback_async)
 
             # Setup the equalizer, if one exists
             if self._vlceq is not None:
@@ -209,12 +209,17 @@ class VLCPlayer(BasePlayer):
         super().stop()
         self._stop()
 
-    def _event_playing_async(self, event):
+    def _event_callback_async(self, event):
         try:
-            uri = self._runner.call(self._event_playing_sync,
-                                    event,
-                                    priority=GLib.PRIORITY_HIGH,
-                                    timeout=0.5)
+            if event.type == vlc.EventType.MediaPlayerPlaying:
+                callback = self._event_playing_sync
+            elif event.type == vlc.EventType.MediaPlayerEndReached:
+                callback = self._event_ended_sync
+
+            self._runner.call(callback,
+                                event,
+                                priority=GLib.PRIORITY_HIGH,
+                                timeout=0.5)
         except MainRunnerTimeoutError as e:
             # Due to some locks being held during this signal we can get
             # into a deadlock when a seek or state change event happens
@@ -264,37 +269,16 @@ class VLCPlayer(BasePlayer):
 
         print_d("Song play startup complete!")
 
-    def _event_ended_async(self, event):
-        try:
-            uri = self._runner.call(self._event_ended_sync,
-                                    event,
-                                    priority=GLib.PRIORITY_HIGH,
-                                    timeout=0.5)
-        except MainRunnerTimeoutError as e:
-            # Due to some locks being held during this signal we can get
-            # into a deadlock when a seek or state change event happens
-            # in the mainloop before our function gets scheduled.
-            #
-            # XXX In this case abort and do nothing, which results in ???
-            print_d("EVENT Play (async): %s" % e)
-            return
-        except MainRunnerAbortedError as e:
-            print_d("EVENT Play (async): %s" % e)
-            return
-        except MainRunnerError:
-            util.print_exc()
-            return
-
     def _event_ended_sync(self, event):
         print_d("Playback Ended")
 
-        # NOTE: Do NOT destroy the media player here because it will be reused
-        # during continuous playback. The media player object will be destroyed
-        # by the _end() method if necessary.
-
-        # XXX However, experimentation indicates that media player object
-        #     reuse does not work so well.  For now, simply destroy the old
-        #     media player object and a new one will be created.
+        # NOTE: Ideally, we would not destroy the media player here because it
+        # could be reused during continuous playback. The media player object
+        # will be destroyed by the _end() method if necessary.
+        #
+        # However, experimentation indicates that media player object reuse
+        # does not work so well.  For now, simply destroy the old media player
+        # object and a new one will be created.
         self._stop()
 
         # Tell the source that the song ended
