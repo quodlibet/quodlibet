@@ -16,6 +16,8 @@ from quodlibet import config
 from quodlibet.compat import listfilter
 
 
+# FIXME: Add capabilities to control a backend equalizer preamp (for vlcbe)
+# FIXME: Add capabilities to load backend equalizer presets (for vlcbe)
 class Equalizer(object):
     _eq_values = []
 

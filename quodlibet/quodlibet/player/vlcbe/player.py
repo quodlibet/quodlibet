@@ -15,6 +15,12 @@
 #
 ###############################################################################
 
+# FIXME: Add code for PREAMP control after the Equalizer interface supports it.
+#        - In the meantime, the preamp is fixed at a value of 12
+# FIXME: Add code for PRESET laoding after the Equalizer interface supports it.
+#        - In the meantime, equalizer values can be set but VLC presets are not
+#          available for use.
+
 from gi.repository import GLib
 
 from quodlibet.player._base import BasePlayer
@@ -363,6 +369,16 @@ class VLCPlayer(BasePlayer):
                 #       VLC backend.
                 vlc.libvlc_audio_equalizer_set_amp_at_index(self._vlceq,
                                                             val, band)
+
+            # Set the preamp value.
+            # FIXME: The Equalizer interface does not support preamp values.
+            #        Until this capability is added, our only option for a
+            #        a functional equalizer is to use the default VLC preamp
+            #        value which can be determined by loading preset 0 (flat).
+            tmpeq = vlc.libvlc_audio_equalizer_new_from_preset(0)
+            preamp = vlc.libvlc_audio_equalizer_get_preamp(self._vlceq)
+            vlc.libvlc_audio_equalizer_release(tmpeq)
+            vlc.libvlc_audio_equalizer_set_preamp(self._vlceq, preamp)
 
         # Set the equalizer if the media player exists
         if self._vlcmp is not None:
