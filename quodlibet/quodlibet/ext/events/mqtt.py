@@ -17,7 +17,7 @@ _TOTAL_MQTT_ITEMS = 3
 
 try:
     import paho.mqtt.client as mqtt
-except ImportError as e:
+except ImportError:
     from quodlibet.plugins import MissingModulePluginException, \
         PluginNotSupportedError
     if os.name == "nt":

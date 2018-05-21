@@ -22,7 +22,7 @@ if os.name == "nt" or sys.platform == "darwin":
 try:
     from pyinotify import WatchManager, EventsCodes, ProcessEvent
     from pyinotify import Notifier, ThreadedNotifier
-except ImportError as e:
+except ImportError:
     from quodlibet import plugins
     raise plugins.MissingModulePluginException("pyinotify")
 
