@@ -39,10 +39,10 @@ def confirm_song_removal_invoke(parent, songs):
 
     count = len(songs)
     song = next(iter(songs))
-    title = ngettext("Remove track: \"%(title)s\" from library?",
+    title = (ngettext("Remove track: \"%%(title)s\" from library?",
                      "Remove %(count)d tracks from library?",
-                     count) % {'title': song('title') or song('~basename'),
-                               'count': count}
+                     count) % {'count': count}) % {
+                        'title': song('title') or song('~basename')}
 
     return ConfirmationPrompt.RESPONSE_INVOKE == ConfirmationPrompt(
                parent, title, "", _("Remove from Library")).run()
@@ -419,8 +419,10 @@ class SongsMenu(Gtk.Menu):
 
             self.separate()
             total = len([s for s in songs if is_a_file(s)])
-            text = ngettext("_Show in File Manager",
-                            "_Show %d Files in File Manager" % total, total)
+            text = ngettext(
+                "_Show in File Manager",
+                "_Show %(total)d Files in File Manager", total) % {
+                    "total": total}
             b = qltk.MenuItem(text, Icons.DOCUMENT_OPEN)
             b.set_sensitive(bool(songs)
                             and len(songs) < MenuItemPlugin.MAX_INVOCATIONS)
