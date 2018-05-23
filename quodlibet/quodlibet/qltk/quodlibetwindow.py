@@ -52,7 +52,7 @@ from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action
 from quodlibet.qltk.x import ToggleAction, RadioAction, HighlightToggleButton
-from quodlibet.qltk.x import SeparatorMenuItem, MenuItem, CellRendererPixbuf
+from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.qltk.about import AboutDialog
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
@@ -61,7 +61,7 @@ from quodlibet.util import connect_obj, print_d
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.util.path import uri_is_valid
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
-from quodlibet.qltk.songlistcolumns import SongListColumn
+from quodlibet.qltk.songlistcolumns import CurrentColumn
 
 
 class PlayerOptions(GObject.Object):
@@ -217,53 +217,6 @@ class DockMenu(Gtk.Menu):
 
     def _on_pause(self, item, player):
         player.paused = True
-
-
-class CurrentColumn(SongListColumn):
-    """Displays the current song indicator, either a play or pause icon."""
-
-    def __init__(self):
-        super(CurrentColumn, self).__init__("~current")
-        self._render = CellRendererPixbuf()
-        self.pack_start(self._render, True)
-        self._render.set_property('xalign', 0.5)
-
-        self.set_fixed_width(24)
-        self.set_expand(False)
-        self.set_cell_data_func(self._render, self._cdf)
-
-    def _format_title(self, tag):
-        return u""
-
-    def _cdf(self, column, cell, model, iter_, user_data):
-        PLAY = "media-playback-start"
-        PAUSE = "media-playback-pause"
-        STOP = "media-playback-stop"
-        ERROR = "dialog-error"
-
-        row = model[iter_]
-
-        if row.path == model.current_path:
-            player = app.player
-            if player.error:
-                name = ERROR
-            elif model.sourced:
-                name = [PLAY, PAUSE][player.paused]
-            else:
-                name = STOP
-        else:
-            name = None
-
-        if not self._needs_update(name):
-            return
-
-        if name is not None:
-            gicon = Gio.ThemedIcon.new_from_names(
-                [name + "-symbolic", name])
-        else:
-            gicon = None
-
-        cell.set_property('gicon', gicon)
 
 
 class MainSongList(SongList):

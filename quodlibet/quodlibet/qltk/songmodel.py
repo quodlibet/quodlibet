@@ -13,6 +13,7 @@ from quodlibet.qltk.playorder import OrderInOrder
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util import print_d
 from quodlibet.compat import izip
+from quodlibet import config
 
 
 class PlaylistMux(object):
@@ -34,7 +35,8 @@ class PlaylistMux(object):
     def __song_started(self, player, song):
         if song is not None and self.q.sourced:
             iter = self.q.find(song)
-            if iter:
+            keep_song = config.getboolean("memory", "queue_keep_songs", False)
+            if iter and not keep_song:
                 self.q.remove(iter)
                 # we don't call _check_sourced here since we want the queue
                 # to stay sourced even if no current song is left
@@ -59,7 +61,10 @@ class PlaylistMux(object):
     def next(self):
         """Switch to the next song"""
 
-        if self.q.is_empty():
+        keep_song = config.getboolean("memory", "queue_keep_songs", False)
+        q_prio = config.getboolean("memory", "queue_prioritize", False)
+
+        if self.q.is_empty() or (keep_song and not q_prio and self.pl.sourced):
             self.pl.next()
         else:
             self.q.next()
@@ -68,7 +73,10 @@ class PlaylistMux(object):
     def next_ended(self):
         """Switch to the next song (action comes from the user)"""
 
-        if self.q.is_empty():
+        keep_song = config.getboolean("memory", "queue_keep_songs", False)
+        q_prio = config.getboolean("memory", "queue_prioritize", False)
+
+        if self.q.is_empty() or (keep_song and not q_prio and self.pl.sourced):
             self.pl.next_ended()
         else:
             self.q.next_ended()
@@ -77,7 +85,13 @@ class PlaylistMux(object):
     def previous(self):
         """Go to the previous song"""
 
-        self.pl.previous()
+        keep_song = config.getboolean("memory", "queue_keep_songs", False)
+        q_prio = config.getboolean("memory", "queue_prioritize", False)
+
+        if keep_song and (q_prio or self.q.sourced):
+            self.q.previous()
+        else:
+            self.pl.previous()
         self._check_sourced()
 
     def go_to(self, song, explicit=False, source=None):

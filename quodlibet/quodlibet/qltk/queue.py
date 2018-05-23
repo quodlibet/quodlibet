@@ -30,6 +30,7 @@ from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
     SmallImageButton, MenuItem
+from quodlibet.qltk.songlistcolumns import CurrentColumn
 
 QUEUE = os.path.join(quodlibet.get_user_dir(), "queue")
 
@@ -124,9 +125,20 @@ class QueueExpander(Gtk.Expander):
         menu.append(rand_checkbox)
 
         stop_checkbox = ConfigCheckMenuItem(
-            _("Stop Once Empty"), "memory", "queue_stop_once_empty",
+            _("Stop at End"), "memory", "queue_stop_at_end",
             populate=True)
         menu.append(stop_checkbox)
+
+        keep_checkbox = ConfigCheckMenuItem(
+            _("Keep Songs"), "memory", "queue_keep_songs",
+            populate=True)
+        keep_checkbox.connect("activate", self.__keep_songs_activated)
+        menu.append(keep_checkbox)
+
+        self._prio_q_cb = ConfigCheckMenuItem(
+            _("Prioritize Queue"), "memory", "queue_prioritize",
+            populate=True)
+        menu.append(self._prio_q_cb)
 
         clear_item = MenuItem(_("_Clear Queue"), Icons.EDIT_CLEAR)
         menu.append(clear_item)
@@ -141,6 +153,9 @@ class QueueExpander(Gtk.Expander):
         button.set_no_show_all(True)
         menu.show_all()
         button.set_menu(menu)
+
+        keep_song = config.getboolean("memory", "queue_keep_songs", False)
+        self._prio_q_cb.set_sensitive(keep_song)
 
         outer.pack_start(button, False, False, 0)
 
@@ -189,6 +204,7 @@ class QueueExpander(Gtk.Expander):
             player, 'song-ended', self.__update_queue_stop, self.queue.model)
 
         self._last_queue_song = None
+        self._curr_song_index = None
 
         # to make the children clickable if mapped
         # ....no idea why, but works
@@ -230,6 +246,19 @@ class QueueExpander(Gtk.Expander):
     def __clear_queue(self, activator):
         self.model.clear()
 
+    def __keep_songs_activated(self, activator):
+        keep_song = config.getboolean("memory", "queue_keep_songs", False)
+        if keep_song:
+            self.queue.set_first_column_type(CurrentColumn)
+            self._prio_q_cb.set_sensitive(True)
+        else:
+            self._prio_q_cb.set_sensitive(False)
+            for col in self.queue.get_columns():
+                # Remove the CurrentColum if it exists
+                if isinstance(col, CurrentColumn):
+                    self.queue.set_first_column_type(None)
+                    break
+
     def __motion(self, wid, context, x, y, time):
         Gdk.drag_status(context, Gdk.DragAction.COPY, time)
         return True
@@ -260,11 +289,15 @@ class QueueExpander(Gtk.Expander):
                                   else OrderInOrder())
 
     def __update_queue_stop(self, player, song, stopped, model):
-        enabled = config.getboolean("memory", "queue_stop_once_empty", False)
+        enabled = config.getboolean("memory", "queue_stop_at_end", False)
         songs_left = len(model.get())
-        if (enabled and songs_left == 0 and song is self._last_queue_song
-                and not stopped):
+        queue_empty = songs_left == 0 and song is self._last_queue_song
+        queue_finished = (self._curr_song_index and
+                          self._curr_song_index + 1 >= songs_left)
+        if (enabled and not stopped and (queue_empty or queue_finished)):
             app.player.stop()
+        else:
+            self.queue_finished = False
 
     def __song_started(self, player, song, model):
         songs_left = len(model.get())
@@ -272,6 +305,11 @@ class QueueExpander(Gtk.Expander):
             self._last_queue_song = None
         else:
             self._last_queue_song = song
+
+        if model.current_path:
+            self._curr_song_index = int(model.current_path.to_string())
+        else:
+            self._curr_song_index = None
 
     def __expand(self, widget, prop, menu_button):
         expanded = self.get_expanded()
@@ -294,17 +332,11 @@ class PlayQueue(SongList):
 
     sortable = False
 
-    class CurrentColumn(Gtk.TreeViewColumn):
-        # Match MainSongList column sizes by default.
-        header_name = "~current"
-
-        def __init__(self):
-            super(PlayQueue.CurrentColumn, self).__init__()
-            self.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-            self.set_fixed_width(24)
-
     def __init__(self, library, player):
         super(PlayQueue, self).__init__(library, player, model_cls=QueueModel)
+        keep_song = config.getboolean("memory", "queue_keep_songs", False)
+        if keep_song:
+            self.set_first_column_type(CurrentColumn)
         self.set_size_request(-1, 120)
         self.connect('row-activated', self.__go_to, player)
 
