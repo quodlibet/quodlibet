@@ -32,6 +32,8 @@ class OrderShuffle(Reorder, OrderRemembered):
 
         if remaining:
             return playlist.get_iter((random.choice(list(remaining)),))
+
+        self.reset(playlist)
         return None
 
 
@@ -46,6 +48,7 @@ class OrderWeighted(Reorder, OrderRemembered):
 
         # Don't try to search through an empty / played playlist.
         if len(remaining) <= 0:
+            self.reset(playlist)
             return None
 
         total_score = sum([song('~#rating') for song in remaining.values()])
