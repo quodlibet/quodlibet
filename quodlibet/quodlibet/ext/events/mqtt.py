@@ -7,6 +7,11 @@
 # (at your option) any later version.
 
 import os
+import sys
+
+if os.name == "nt" or sys.platform == "darwin":
+    from quodlibet.plugins import PluginNotSupportedError
+    raise PluginNotSupportedError
 
 from quodlibet import _
 from quodlibet.formats import AudioFile
