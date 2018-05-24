@@ -485,6 +485,13 @@ def add_signal_watch(signal_action, _sockets=[]):
     signal.set_wakeup_fd(write_socket.fileno())
 
 
+def enqueue(songs):
+    songs = [s for s in songs if s.can_add]
+    if songs:
+        from quodlibet import app
+        app.window.playlist.enqueue(songs)
+
+
 class ThemeOverrider(object):
     """Allows registering global Gtk.StyleProviders for a specific theme.
     They get activated when the theme gets active and removed when the theme

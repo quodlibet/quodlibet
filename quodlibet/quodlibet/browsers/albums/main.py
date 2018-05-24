@@ -568,6 +568,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
                 window = Information(librarian, songs, self)
                 window.show()
             return True
+        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+            qltk.enqueue(self.__get_selected_songs(sort=True))
+            return True
         elif qltk.is_accel(event, "<alt>Return"):
             songs = self.__get_selected_songs()
             if songs:
