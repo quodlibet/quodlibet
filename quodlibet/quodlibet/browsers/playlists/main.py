@@ -32,6 +32,8 @@ from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem, SymbolicIconImage
 from quodlibet.qltk import Icons
 from quodlibet.qltk.chooser import choose_files, create_chooser_filter
+from quodlibet.qltk.information import Information
+from quodlibet.qltk.properties import SongProperties
 from quodlibet.util import connect_obj
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.collection import FileBackedPlaylist
@@ -298,6 +300,21 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             model, iter = self.__selected_playlists()
             if iter:
                 self._start_rename(model.get_path(iter))
+            return True
+        elif qltk.is_accel(event, "<Primary>I"):
+            songs = self._get_playlist_songs()
+            if songs:
+                window = Information(self.library.librarian, songs, self)
+                window.show()
+            return True
+        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+            qltk.enqueue(self._get_playlist_songs())
+            return True
+        elif qltk.is_accel(event, "<alt>Return"):
+            songs = self._get_playlist_songs()
+            if songs:
+                window = SongProperties(self.library.librarian, songs, self)
+                window.show()
             return True
         return False
 

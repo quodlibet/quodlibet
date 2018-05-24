@@ -19,6 +19,8 @@ from quodlibet.browsers import Browser
 from quodlibet.query import Query
 from quodlibet.compat import cmp
 
+from quodlibet.qltk.information import Information
+from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
@@ -259,6 +261,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         view.connect("drag-data-get", self.__drag_data_get)
 
         self.connect("destroy", self.__destroy)
+        self.connect('key-press-event', self.__key_pressed, library.librarian)
 
         self.show_all()
 
@@ -342,6 +345,24 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         songs = self.__get_selected_songs(False)
         if songs is not None:
             GLib.idle_add(self.songs_selected, songs)
+
+    def __key_pressed(self, widget, event, librarian):
+        if qltk.is_accel(event, "<Primary>I"):
+            songs = self.__get_selected_songs()
+            if songs:
+                window = Information(librarian, songs, self)
+                window.show()
+            return True
+        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+            qltk.enqueue(self.__get_selected_songs(sort=True))
+            return True
+        elif qltk.is_accel(event, "<alt>Return"):
+            songs = self.__get_selected_songs()
+            if songs:
+                window = SongProperties(librarian, songs, self)
+                window.show()
+            return True
+        return False
 
     def can_filter_albums(self):
         return True
