@@ -27,7 +27,7 @@ from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
 from quodlibet.compat import xrange
 from quodlibet.util.path import listdir, \
-    glib2fsn, xdg_get_user_dirs, get_home_dir
+    glib2fsn, xdg_get_user_dirs, get_home_dir, xdg_get_config_home
 from quodlibet.util import connect_obj
 
 
@@ -181,7 +181,7 @@ def get_gtk_bookmarks():
     if os.name == "nt":
         return []
 
-    path = os.path.join(get_home_dir(), ".gtk-bookmarks")
+    path = os.path.join(xdg_get_config_home(), "gtk-3.0", "bookmarks")
     folders = []
     try:
         with open(path, "rb") as f:
