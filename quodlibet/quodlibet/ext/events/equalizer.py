@@ -93,6 +93,7 @@ def get_config():
     except (config.Error, ValueError):
         return []
 
+
 def get_config_preamp():
     try:
         eq_preamp_str = config.get('plugins', 'equalizer_level_preamp')
