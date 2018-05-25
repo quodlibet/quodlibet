@@ -540,7 +540,7 @@ class MultiPaned(object):
             tmp_paned = self.PANED()
             tmp_paned.root = self._root_paned
 
-            curr_paned.pack2(tmp_paned, pack_expand, pack_fill)
+            curr_paned.pack2(tmp_paned, False, False)
             curr_paned = tmp_paned
 
     def get_paned(self):
