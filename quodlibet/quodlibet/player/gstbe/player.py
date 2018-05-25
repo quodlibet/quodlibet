@@ -154,7 +154,13 @@ class BufferingWrapper(object):
 
 
 def sink_has_external_state(sink):
-    return sink.get_factory().get_name() == "pulsesink"
+    sink_name = sink.get_factory().get_name()
+
+    if sink_name == "wasapisink":
+        # https://bugzilla.gnome.org/show_bug.cgi?id=796386
+        return hasattr(sink.props, "volume")
+    else:
+        return sink_name == "pulsesink"
 
 
 def sink_state_is_valid(sink):
