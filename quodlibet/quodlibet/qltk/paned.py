@@ -526,12 +526,12 @@ class MultiPaned(object):
             # the last widget completes the last paned
 
             pack_expand = packing[min(i, len(packing) - 1)][0]
-            pack_fill = packing[min(i, len(packing) - 1)][1]
+            pack_shrink = packing[min(i, len(packing) - 1)][1]
 
             if widget is widgets[-1]:
-                curr_paned.pack2(widget, pack_expand, pack_fill)
+                curr_paned.pack2(widget, pack_expand, pack_shrink)
                 break
-            curr_paned.pack1(widget, pack_expand, pack_fill)
+            curr_paned.pack1(widget, pack_expand, pack_shrink)
 
             # the second last widget ends the nesting
             if widget is widgets[-2]:
