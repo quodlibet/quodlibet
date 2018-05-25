@@ -215,19 +215,31 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.pack_start(swin, True, True, 0)
 
     def __configure_buttons(self, library):
-        new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
+        new_pl = qltk.Button(None, Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
+        new_pl.set_tooltip_text(_("New"))
         new_pl.connect('clicked', self.__new_playlist, library)
-        import_pl = qltk.Button(_("_Import"), Icons.LIST_ADD,
+        import_pl = qltk.Button(None, Icons.LIST_ADD,
                                 Gtk.IconSize.MENU)
+        import_pl.set_tooltip_text(_("Import"))
         import_pl.connect('clicked', self.__import, library)
-        hb = Gtk.HBox(spacing=6)
-        hb.set_homogeneous(False)
-        hb.pack_start(new_pl, True, True, 0)
-        hb.pack_start(import_pl, True, True, 0)
-        hb2 = Gtk.HBox(spacing=0)
-        hb2.pack_start(hb, True, True, 0)
-        hb2.pack_start(PreferencesButton(self), False, False, 6)
-        self.pack_start(Align(hb2, left=3, bottom=3), False, False, 0)
+
+        fb = Gtk.FlowBox()
+        fb.set_selection_mode(Gtk.SelectionMode.NONE)
+        fb.set_homogeneous(True)
+        fb.insert(new_pl, 0)
+        fb.insert(import_pl, 1)
+        fb.set_max_children_per_line(2)
+
+        # The pref button is in its own flowbox instead of directly under the
+        # HBox to make it the same height as the other buttons
+        pref = PreferencesButton(self)
+        fb2 = Gtk.FlowBox()
+        fb2.insert(pref, 0)
+
+        hb = Gtk.HBox()
+        hb.pack_start(fb, True, True, 0)
+        hb.pack_start(fb2, False, False, 0)
+        self.pack_start(hb, False, False, 0)
 
     def __create_playlists_view(self, render):
         view = RCMHintedTreeView()
