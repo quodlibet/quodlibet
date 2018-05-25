@@ -33,6 +33,12 @@ def _dbus_name_owned(name):
         return False
 
 
+def is_flatpak():
+    """If we are running in a flatpak"""
+
+    return is_linux() and os.path.exists("/.flatpak-info")
+
+
 def is_plasma():
     """If we are running under plasma"""
 
