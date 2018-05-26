@@ -7,10 +7,11 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from quodlibet import config
 from . import add_css, gtk_version
+from quodlibet.util import print_d
 
 
 class Paned(Gtk.Paned):
@@ -62,6 +63,21 @@ class Paned(Gtk.Paned):
     @property
     def handle_size(self):
         return self.__handle_size
+
+    def get_paneds(self):
+        """Return a hierarchy of paneds in a flat, ordered list."""
+
+        paneds = [self.root]
+        # append any nested paneds in this structure
+        curr_paned = self.root
+        while True:
+            child = curr_paned.get_child2()
+            if isinstance(child, Paned):
+                paneds.append(child)
+                curr_paned = child
+            else:
+                break
+        return paneds
 
 
 class RPaned(Paned):
@@ -140,15 +156,24 @@ class XPaned(Paned):
             kwargs["orientation"] = self.ORIENTATION
         super(XPaned, self).__init__(*args, **kwargs)
 
+        self.connect('button-press-event', self.__button_press)
         self.connect('button-release-event', self.__button_release)
+        self.connect('enter-notify-event', self.__enter_notify)
         self.connect('check_resize', self.__check_resize)
+
+        self.add_events(Gdk.EventMask.ENTER_NOTIFY_MASK)
+        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
 
         self.__disablenotify_id = None
         self.__disablenotify_id2 = None
 
-        self.__panelocks = []
-        self.__updating = False
+        self.__mouse = False
+        self.__toggling = False
         self.__resizing = False
+
+        self.__active_paned = None
+        self.__active_widget = None
+        self.__pane_infos = None
 
         self.__allocated = 0
 
@@ -263,88 +288,250 @@ class XPaned(Paned):
         if allocated:
             xpaned.__allocated += 1
 
-    def __button_release(self, *data):
-        for w in self.__panelocks:
-            alloc = w.get_size_request()
-            size = 0
-            if self.ORIENTATION == Gtk.Orientation.VERTICAL:
-                size = alloc[1]
-                w.set_size_request(-1, size)
-            else:
-                size = alloc[0]
-                w.set_size_request(size, -1)
-#            print_d("%r | resetting locked size %d" % (w.id, size))
-        del self.__panelocks
-        self.__panelocks = []
+    def __enter_notify(self, *data):
+        if self.root and \
+           not self.root.__pane_infos:
+            self.root.__active_paned = self
 
-    def panelocks(self, widget, has=True):
+    def __button_press(self, *data):
+        self.__mouse = True
+
+    def __button_release(self, *data):
+        self.__mouse = False
+        self.__toggling = False
+        self.__resizing = False
+
+        if not self.root or \
+           not self.root.__pane_infos:
+            return
+
+        for id, pi in self.root.__pane_infos.items():
+            w = pi['widget']
+            size = self.get_widget_size(w)
+            alloc = w.get_size_request()
+            size2 = alloc[1]
+            if pi['locked'] and size != size2:
+                print_d("[%s] locked, but size %d -> %d, resetting!" %
+                        (id, size, size2))
+                self.set_widget_size(w, size)
+
+        self.root.__pane_infos = None
+
+    def get_widget_id(self, widget):
+        return widget.id if hasattr(widget, 'id') \
+                         else "%s|%s" % (id(widget), type(widget))
+
+    def get_widget_size(self, widget):
+        size = -1
+        id = self.get_widget_id(widget)
+        if isinstance(widget, Gtk.Expander) and not widget.get_expanded():
+            size = widget.title_size
+        else:
+            try:
+                size = self.root.__pane_infos[id]['size']
+            except:
+                try:
+                    size = widget.panelock.size
+                except:
+                    req = widget.get_allocation()
+                    size = req.height if self.ORIENTATION == \
+                                         Gtk.Orientation.VERTICAL \
+                                      else req.width
+        return size
+
+    def set_widget_size(self, widget, size):
+        if self.ORIENTATION == Gtk.Orientation.VERTICAL:
+            widget.set_size_request(-1, size)
+        else:
+            widget.set_size_request(size, -1)
+
+    def set_widget_resize(self, widget, resize):
+        p = widget.get_parent()
+        p.child_set_property(widget, 'resize', resize)
+
+    def get_pane_info(self, widget):
+        id = self.get_widget_id(widget)
+        if hasattr(self.root, '_pane_infos') and \
+           id in self.root.__pane_infos:
+            return self.root.__pane_infos[id]
+        return None
+
+    def get_widgets(self):
+        paneds = self.root.get_paneds()
         widgets = []
-        if isinstance(widget.get_child1(), XPaned):
-            children = self.panelocks(widget.get_child1(), has)
-            if children:
-                widgets.extend(children)
-        elif widget.get_child1() and \
-                 hasattr(widget.get_child1(), "panelock") == has:
-            widgets.append(widget.get_child1())
-        if isinstance(widget.get_child2(), XPaned):
-            children = self.panelocks(widget.get_child2(), has)
-            if children:
-                widgets.extend(children)
-        elif widget.get_child2() and \
-                 hasattr(widget.get_child2(), "panelock") == has:
-            widgets.append(widget.get_child2())
+        for p in paneds:
+            widgets.append(p.get_child1())
+            w2 = p.get_child2()
+            if not isinstance(w2, Paned):
+                widgets.append(w2)
         return widgets
+
+    def get_active_panes(self):
+        """Get the (widgets in the) panes immediately above and below the
+        active paned split."""
+
+        # through use of the enter-notify-event, and given the nesting of
+        # containers, '_active_paned' is always set to the most nested paned
+        # and hence the 'panes of interest' (e.g. above / below the split,
+        # are always child1 of the active paned, and child1 of the paned
+        # nested in the active paned's child2(), unless active paned has no
+        # nested paned in its child2 (e.g. the last / most nested paned), in
+        # which case it is just the active paned's child1 and child2
+
+        if not self.__active_paned:
+            return
+        w1 = self.__active_paned.get_child1()
+        w2 = self.__active_paned.get_child2()
+        if isinstance(w2, Paned):
+            w2 = w2.get_child1()
+
+        return (w1, w2)
+
+    def dump_active_panes(self):
+        (w1, w2) = self.get_active_panes()
+        if not w1:
+            return
+
+        description = "active panes: [%s] / [%s]" % \
+                          (w1.id if hasattr(w1, 'id') else w1,
+                           w2.id if hasattr(w2, 'id') else w2)
+        if description:
+            print_d(description)
+
+    def dump_pane_infos(self, operation):
+        if not self.__pane_infos:
+            return
+        description = "pane_infos: %s" % operation
+        for id, pi in self.__pane_infos.items():
+            description += "\n[%s] size: %d, locked: %s" \
+                           % (id, pi['size'], pi['locked'])
+        if description:
+            print_d(description)
+
+    def set_pane_infos(self, target):
+        """build reference dictionary of pane locks where target is either a
+        widget (when toggling), of a paned (when resizing)"""
+
+        pane_infos = []  # array of dictionaries
+
+        # which panes (widgets!) need to be locked (i.e. size request set) ?
+        widgets = self.get_widgets()
+        for w in widgets:
+            id = self.get_widget_id(w)
+            size = self.get_widget_size(w)
+            locked = False
+            pi = {'id': id, 'widget': w, 'size': size, 'locked': locked}
+            pane_infos.append(pi)
+
+        # lock all
+        for pi in pane_infos:
+            w = pi['widget']
+            pi['locked'] = True
+            self.set_widget_size(w, pi['size'])
+            self.set_widget_resize(w, False)
+
+        def can_resize(pane_info):
+            ret = True
+            w = pane_info['widget']
+            if isinstance(w, Gtk.Expander) and not w.get_expanded():
+                ret = False
+            return ret
+
+        if self.__toggling:
+
+            # unlock main and target to take the hit / absorb the toggled
+
+            # main / unnamed
+            for pi in pane_infos:
+                w = pi['widget']
+                if not hasattr(w, 'id'):
+                    pi['locked'] = False
+                    self.set_widget_resize(w, True)
+                    self.set_widget_size(w, -1)
+            idx = 0
+            for pi in pane_infos:
+                if pi['widget'] is target:
+                    # target
+                    pi['locked'] = False
+                    self.set_widget_resize(target, True)
+                    self.set_widget_size(target, -1)
+                    break
+                idx += 1
+
+        elif self.__resizing:
+
+            # using the given position of interest (poi), we can find the
+            # nearest non-collapsed pane and then ensure that that is unlocked
+
+            # so where are we?
+            (w1, w2) = target
+            self.root.dump_active_panes()
+            idx_w1 = None
+            l = 0
+            for pi in pane_infos:
+                w = pi['widget']
+                if w is w1:
+                    idx_w1 = l
+                l += 1
+
+            # unlock appropriate
+            idx = idx_w1
+            while idx > -1:
+                pi = pane_infos[idx]
+                if can_resize(pi):
+                    # above
+                    w = pi['widget']
+                    pi['locked'] = False
+                    self.set_widget_resize(w, True)
+                    self.set_widget_size(w, -1)
+                    break
+                idx -= 1
+            idx = idx_w1 + 1
+            while idx < len(pane_infos):
+                pi = pane_infos[idx]
+                if can_resize(pane_infos[idx]):
+                    # below
+                    w = pi['widget']
+                    pi['locked'] = False
+                    self.set_widget_resize(w, True)
+                    self.set_widget_size(w, -1)
+                    break
+                idx += 1
+
+        # respect handle positions
+        paneds = self.root.get_paneds()
+        for p in paneds:
+            p.props.position_set = True
+        #w1.get_parent().props.position_set = True
+
+        # update container
+        self.root.__pane_infos = infos = {}
+        for pi in pane_infos:
+            infos[pi['id']] = pi
+
+        # dump state
+        self.root.dump_pane_infos("resizing" if self.__resizing
+                                                       else "toggling")
 
     def update(self, widget):
         """Pass the widget whose pane needs updating."""
 
-        self.__updating = True
-
         if not isinstance(widget, Gtk.Expander):
             return
 
-        # lock other non-expander or expanded widgets
-        widgets = self.panelocks(self.root)
-        for w in widgets:
-            if w is widget:
-                # ignore as this is the widget we're targetting to update!
-                continue
-            if isinstance(w, Gtk.Expander) and not w.get_expanded():
-                # ignore collapsed expanders
-                continue
-
-            # widget already changed. use stored if available
-            size = w.panelock.size
-#            print_d("%r | setting size request: %d" % (w.id, size))
-            if self.ORIENTATION == Gtk.Orientation.VERTICAL:
-                w.set_size_request(-1, size)
-            else:
-                w.set_size_request(size, -1)
+        # build once
+        self.__toggling = True
+        self.set_pane_infos(widget)
 
         expanded = widget.get_expanded()
 
-        # set up parent pane(s) position-set
-        parent = self
-        while parent:
-            if isinstance(parent, Gtk.Paned):
-                parent.props.position_set = expanded
-            parent = parent.get_parent()
-
+        id = self.get_widget_id(widget)
         if expanded:
             # widget size changed. use stored if available
-            size = 0
-            try:
-                size = widget.panelock.size
-            except:
-                req = widget.get_requisition()
-                size = req.height if \
-                           self.ORIENTATION == Gtk.Orientation.VERTICAL\
-                           else req.width
-#            print_d("%r | restoring size: %d" % (widget.id, size))
-            if self.ORIENTATION == Gtk.Orientation.VERTICAL:
-                widget.set_size_request(-1, size)
-            else:
-                widget.set_size_request(size, -1)
+            size = self.get_widget_size(widget)
+            self.set_widget_resize(widget, True)
+            print_d("[%s] restoring size: %d" % (id, size))
+            self.set_widget_size(widget, size)
         else:
             # ensure parent pane(s) are not using position-set
             parent = self
@@ -364,33 +551,17 @@ class XPaned(Paned):
             p = p.get_parent()
             p.check_resize()
 
-        self.__updating = False
-
     def do_size_allocate(self, *args):
-        # clear size requests to allow shrinking
+
+        if self.__mouse and not self.root.__pane_infos:
+            # build once
+            self.__resizing = True
+            self.set_pane_infos(self.root.get_active_panes())
+
+        # resize
         Gtk.HPaned.do_size_allocate(self, *args)
 
-        if self.__updating:
-            return
-
-        if not self.__panelocks:
-            widgets = self.panelocks(self.root)
-            for w in widgets:
-                if isinstance(w, Gtk.Expander) and not w.get_expanded():
-                    continue
-#                print_d("%r | adding to panelocks, size: %d"
-#                        % (w.id, w.panelock.size))
-                self.__panelocks.append(w)
-#                print_d("%r | setting parent pane(s) to respect "
-#                        "handle position" % w.id)
-                parent = self
-                while parent:
-                    if isinstance(parent, Gtk.Paned):
-                        parent.props.position_set = True
-                    parent = parent.get_parent()
-
-#                print_d("%r | clearing size request" % w.id)
-                w.set_size_request(-1, -1)
+        return
 
     def __check_resize(self, data, *args):
 
@@ -398,43 +569,30 @@ class XPaned(Paned):
             return
 
         def handle_cb(xpaned, param, widget):
-            if not isinstance(widget, Gtk.Expander):
-                return True
-
-#            from quodlibet.util import print_d
-#            print_d("gtk: %s, exp_size: %d, req_size: %d, "
-#                    "min-pos: %d, max-pos: %d"
-#                     % ('.'.join(list(map(lambda x: str(x), gtk_version))),
-#                        widget.title_size, widget.get_requisition().height,
-#                        xpaned.get_property('min-position'),
-#                        xpaned.get_property('max-position')))
-
             # note that use of 'min/max-position here is safer, but
             # we want to know if those don't match our expected values
             # calculated based on title and handle sizes
+            widget = xpaned.get_child1()
+            position = None
             if widget is xpaned.get_child1():
-                xpaned.set_position(widget.title_size)
+                if isinstance(widget, Gtk.Expander) and \
+                   not widget.get_expanded():
+                    position = widget.title_size
+                else:
+                    position = self.get_widget_size(widget)
             else:
                 alloc = xpaned.get_allocation()
-                if xpaned.ORIENTATION == Gtk.Orientation.VERTICAL:
-                    xpaned.set_position(alloc.height - widget.title_size -
-                                        xpaned.handle_size)
+                size = None
+                if isinstance(widget, Gtk.Expander) and \
+                   not widget.get_expanded():
+                    size = widget.title_size + xpaned.handle_size
                 else:
-                    xpaned.set_position(alloc.width - widget.title_size -
-                                        xpaned.handle_size)
+                    size = self.get_widget_size(widget)
+                position = (alloc.height if xpaned.ORIENTATION ==
+                                            Gtk.Orientation.VERTICAL
+                                         else alloc.width) - size
+            xpaned.set_position(position)
             return True
-
-        # resize for collapsed children
-        for w in self.get_children():
-            if isinstance(w, Gtk.Expander) and not w.get_expanded():
-                # refresh expandable
-                self.__resizing = True
-                expandables = self.panelocks(self.root, False)
-                for w2 in expandables:
-                    if w2.get_parent() is not self:
-                        w2.get_parent().check_resize()
-                self.__resizing = False
-                break
 
         # handle position lock(s)
         widget = self.get_child1()
@@ -453,6 +611,7 @@ class XPaned(Paned):
                 self.__disablenotify_id = \
                     self.connect("notify", handle_cb, widget)
         widget = self.get_child2()
+
         if isinstance(widget, Gtk.Expander):
             if widget.get_expanded() or \
                 (self.__disablenotify_id and
@@ -548,6 +707,11 @@ class MultiPaned(object):
 
         return self._root_paned
 
+    def get_paneds(self):
+        """Get all internal paneds in a flat, ordered list."""
+
+        return self._root_paned.get_paneds()
+
     def make_pane_sizes_equal(self):
         paneds = self.get_paneds()
 
@@ -602,23 +766,6 @@ class MultiPaned(object):
 
     def show_all(self):
         self._root_paned.show_all()
-
-    def get_paneds(self):
-        """Get all internal paneds in a flat, ordered list."""
-
-        paneds = [self._root_paned]
-
-        # gather all the paneds in the nested structure
-        curr_paned = self._root_paned
-        while True:
-            child = curr_paned.get_child2()
-            if type(child) is self.PANED:
-                paneds.append(child)
-                curr_paned = child
-            else:
-                break
-
-        return paneds
 
 
 class MultiRHPaned(MultiPaned):
@@ -724,7 +871,8 @@ class PaneLock(object):
             else allocation.width
 
         if alloc_size > self.default_size:
+            # don't store a collapsed height!
             self.size = alloc_size
 
-#            print_d("%s | size_allocate event. storing height: %d" %
+#            print_d("[%s] size_allocate event. storing height: %d" %
 #                    (self.id, self.size))

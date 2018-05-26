@@ -279,8 +279,8 @@ class TMultiXVPaned(TestCase, TMultiPaned):
 
             self.failUnlessEqual(
                 exp.get_allocation().height,
-                p.get_paned().get_allocation().height -
-                (title_size + handle_size))
+                p.get_paned().get_allocation().height
+                - (title_size + handle_size))
 
         # 3 widgets, top expandable
         p = self.Kind()
@@ -294,16 +294,16 @@ class TMultiXVPaned(TestCase, TMultiPaned):
             exp.get_parent().update(exp)
             self.failUnlessEqual(
                 exp.get_allocation().height,
-                p.get_paned().get_allocation().height - 2 *
-                (100 + handle_size))
+                p.get_paned().get_allocation().height
+                - 2 * (100 + handle_size))
 
             for w in [w for w in exps if w is not exp]:
                 w.get_parent().update(w)
 
             res, msg = relatively_close_test(
                            exp.get_allocation().height,
-                           p.get_paned().get_allocation().height - 2 *
-                           (title_size + handle_size))
+                           p.get_paned().get_allocation().height
+                           - 2 * (title_size + handle_size))
             self.failUnless(res, msg)
 
         # 4 widgets, 2nd expandable
@@ -318,16 +318,17 @@ class TMultiXVPaned(TestCase, TMultiPaned):
             exp.get_parent().update(exp)
             self.failUnlessEqual(
                 exp.get_allocation().height,
-                p.get_paned().get_allocation().height - 3 *
-                (100 + handle_size))
+                p.get_paned().get_allocation().height
+                - (title_size + handle_size)
+                - 2 * (100 + handle_size))
 
             for w in [w for w in exps if w is not exp]:
                 w.get_parent().update(w)
 
             res, msg = relatively_close_test(
                            exp.get_allocation().height,
-                           p.get_paned().get_allocation().height - 3 *
-                           (title_size + handle_size))
+                           p.get_paned().get_allocation().height
+                           - 3 * (title_size + handle_size))
             self.failUnless(res, msg)
 
 
