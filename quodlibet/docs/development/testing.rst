@@ -5,8 +5,8 @@ Testing
 =======
 
 Quod Libet uses the CPython unittest framework for testing and `pytest
-<http://docs.pytest.org>`__ as a test runner. All testing related code can be
-found under ``quodlibet/quodlibet/tests``.
+<https://docs.pytest.org/en/latest/>`__ as a test runner. All testing related
+code can be found under ``quodlibet/quodlibet/tests``.
 
 To run the full tests suite simply execute::
 

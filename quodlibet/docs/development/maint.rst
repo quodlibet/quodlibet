@@ -9,7 +9,7 @@ Downstream Bug Trackers
 Some bug reports never make it to us so check these once in a while.
 
   * `Fedora <https://apps.fedoraproject.org/packages/quodlibet/bugs>`_
-  * `Debian <http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=quodlibet>`_
+  * `Debian <https://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=quodlibet>`_
   * `Arch Linux <https://bugs.archlinux.org/?project=1&string=quodlibet>`_
   * `Ubuntu <https://launchpad.net/ubuntu/+source/quodlibet/+bugs>`_
   * `Gentoo <https://bugs.gentoo.org/buglist.cgi?quicksearch=media-sound%2Fquodlibet>`_

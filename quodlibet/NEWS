@@ -17,7 +17,7 @@ Translation updates by :user:`Kirill Romanov <Djaler>` and :user:`Honza Hejzl
 
 Bug fixes: :bug:`2677` :bug:`2672` :bug:`2671` :bug:`2680` :bug:`2687`
 :bug:`2669` :bug:`2699` :bug:`2698` :bug:`2704` :bug:`2703` :bug:`2683`
-:bug:`2706` :bug:`2705` :bug:`2710` :bug:`2718` :bug:`2719` :bug:`2713`
+:pr:`2706` :bug:`2705` :bug:`2710` :bug:`2718` :bug:`2719` :bug:`2713`
 :bug:`2668` :pr:`2715` (:user:`CreamyCookie`, :user:`Nick Boultbee
 <declension>`, …)
 
@@ -56,9 +56,9 @@ Translations:
   * Update Finnish translation :pr:`2606` :user:`Kristian Laakkonen <krisse7>`
 
 Various:
-  * Allow cover image pop-up to scale up to maximum size :bug:`2634`
+  * Allow cover image pop-up to scale up to maximum size :pr:`2634`
     (:user:`Peter F. Patel-Schneider <pfps>`)
-  * Draw a drag handle for the pane separator with newer GTK+ :bug:`2402`
+  * Draw a drag handle for the pane separator with newer GTK+ :pr:`2402`
   * Soundcloud: Add "my tracks" category (:user:`Nick Boultbee <declension>`)
   * Workaround Ubuntu theme bug which results in drawing artefacts with
     treeview separators. :bug:`2541`
@@ -101,7 +101,7 @@ Plugins:
     (:user:`elfalem`)
   * Add more preferences for the album cover search :pr:`2511`
     (:user:`Pete Beardmore <elbeardmorez>`)
-  * Waveform seekbar hoover time indication :pr:`2419` :pr:`2550`
+  * Waveform seekbar hoover time indication :bug:`2419` :pr:`2550`
     (:user:`Muges`)
   * New automatic seekpoint plugin (seeking based on bookmarks)
     :pr:`2437` (:user:`Meriipu`:)
@@ -113,7 +113,7 @@ CI:
   * Dockerize Windows-under-Wine tests :pr:`2444`
 
 Various improvements, fixes and Python 3 porting fixes, thanks to:
-  * :user:`Kristian Laakkonen <krisse7>`: :bug:`2607` :bug:`2605` :pr:`2593`
+  * :user:`Kristian Laakkonen <krisse7>`: :pr:`2607` :pr:`2605` :pr:`2593`
     :pr:`2586` :pr:`2578` :pr:`2576` :pr:`2521`
   * :user:`Emanuele Baldino <Ironbalden>`: :pr:`2622`
   * :user:`CreamyCookie`: :pr:`2574`
@@ -155,7 +155,7 @@ Translation Updates:
   * French :pr:`2206` (:user:`Olivier Humbert <trebmuh>`)
   * Czech :bug:`2209` (:user:`Honza Hejzl <welblaud>`)
   * Norwegian Bokmål :pr:`2232` :pr:`2354` (:user:`Åka Sikrom <akrosikam>`)
-  * French :pr:`2240` (:user:`Jean-Michel Pouré <kellogsgit>`)
+  * French :pr:`2240` (:user:`Jean-Michel Pouré <ffries>`)
   * German :pr:`2388` (:user:`Till Berger <Mellthas>`)
   * Polish :pr:`2391` (:user:`Piotr Drąg <piotrdrag>`)
 
@@ -253,7 +253,7 @@ Translations:
 ---------------------------------------------------------------
 
 Packaging Changes:
-  * `concurrent.futures <https://pypi.python.org/pypi/futures>`__ required
+  * `concurrent.futures <https://pypi.org/project/futures/>`__ required
     (usually called python-futures, python-concurrent.futures or
     python2-futures in distros)
   * **libgpod4** is no longer used
@@ -269,14 +269,13 @@ General:
     (:user:`Nick Boultbee <declension>`)
   * Don't wake up when idle :pr:`2068` :bug:`2067`
   * Covergrid Browser :bug:`241` :pr:`2071` :pr:`2115` :pr:`2125` :bug:`2110`
-    :pr:`2130` (:user:`brunob`, :user:`Joel Ong <darthoctopus>`,
-    :user:`knockoutMice`)
+    :pr:`2130` (:user:`brunob`, :user:`Joel Ong <darthoctopus>`, :user:`qwhex`)
   * Play order (shuffle / repeat) rewrite to be more modularised / powerful
     :pr:`2043` :bug:`2059` :bug:`2121` :bug:`2123` :pr:`2125`
     (:user:`Nick Boultbee <declension>`)
   * Improvements / additions to Information window :pr:`2119` :bug:`1558`
     (:user:`Nick Boultbee <declension>`)
-  * Search: Fix error when query divides by 0 :pr:`2025` (:user:`faubiguy`)
+  * Search: Fix error when query divides by 0 :pr:`2025` (:user:`faubi`)
   * Fix crash on tag edit abort :bug:`2081`
   * Library scan: ignore hidden files :bug:`2074`
   * Remove iPod support
@@ -299,9 +298,9 @@ Translation Updates:
   * Czech :pr:`2173` (:user:`Marek Suchánek <mrksu>`)
 
 Plugins:
-  * Discogs Cover Source :pr:`2136` (:user:`knockoutMice`)
+  * Discogs Cover Source :pr:`2136` (:user:`qwhex`)
   * Add register-date filter to lastfmsync plugin :pr:`2127`
-    (:user:`knockoutMice`)
+    (:user:`qwhex`)
   * Wikipedia plugin - search instead of direct URL :pr:`2112` (:user:`urielz`)
   * Notification plugin: add option to mask 'Next' :bug:`2026` :pr:`2045`
     (:user:`Corentin Néau <weyfonk>`)
@@ -327,7 +326,7 @@ macOS:
   * Really (really..) fix TLS :pr:`2108` :bug:`2107`
 
 Development:
-  * Tests: switch to `pytest <http://docs.pytest.org/en/latest/>`__
+  * Tests: switch to `pytest <https://docs.pytest.org/en/latest/>`__
     as the main test runner
   * Tests: ``setup.py quality`` speedups
   * Tests: All tests pass now on Python 3 under Linux and Windows

@@ -71,9 +71,9 @@ Integration with third party tools
 Quod Libet in Conky
 ^^^^^^^^^^^^^^^^^^^
 
-`Conky <http://conky.sourceforge.net/>`_ is a lightweight system monitor
-for X. It includes builtin objects for many popular music players, but not
-quodlibet (yet).  That doesn't mean you can't use conky with quodlibet.
+`Conky <https://github.com/brndnmtthws/conky>`_ is a lightweight system
+monitor for X. It includes builtin objects for many popular music players, but
+not quodlibet (yet).  That doesn't mean you can't use conky with quodlibet.
 After installing conky, add the following to your```~/.conkyrc`` file::
 
     ${if_existing /<path to your home directory>/.quodlibet/current}
