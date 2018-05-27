@@ -636,6 +636,29 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.add(main_box)
         self.side_book = qltk.Notebook()
 
+        # get the playlist up before other stuff
+        self.songlist = MainSongList(library, player)
+        self.songlist.connect("key-press-event", self.__songlist_key_press)
+        self.songlist.connect_after(
+            'drag-data-received', self.__songlist_drag_data_recv)
+        self.song_scroller = ScrolledWindow()
+        self.song_scroller.set_policy(
+            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.song_scroller.set_shadow_type(Gtk.ShadowType.IN)
+        self.song_scroller.add(self.songlist)
+
+        self.qexpander = QueueExpander(library, player)
+        self.qexpander.set_no_show_all(True)
+        self.qexpander.set_visible(config.getboolean("memory", "queue"))
+
+        def on_queue_visible(qex, param):
+            config.set("memory", "queue", str(qex.get_visible()))
+
+        self.qexpander.connect("notify::visible", on_queue_visible)
+
+        self.playlist = PlaylistMux(
+            player, self.qexpander.model, self.songlist.model)
+
         self.__player = player
         # create main menubar, load/restore accelerator groups
         self.__library = library
@@ -644,7 +667,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.add_accel_group(accel_group)
 
         def scroll_and_jump(*args):
-            self.__jump_to_current(True, True)
+            self.__jump_to_current(True, None, True)
 
         keyval, mod = Gtk.accelerator_parse("<Primary><shift>J")
         accel_group.connect(keyval, mod, 0, scroll_and_jump)
@@ -673,29 +696,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                 child.set_image(None)
 
         main_box.pack_start(menubar, False, True, 0)
-
-        # get the playlist up before other stuff
-        self.songlist = MainSongList(library, player)
-        self.songlist.connect("key-press-event", self.__songlist_key_press)
-        self.songlist.connect_after(
-            'drag-data-received', self.__songlist_drag_data_recv)
-        self.song_scroller = ScrolledWindow()
-        self.song_scroller.set_policy(
-            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        self.song_scroller.set_shadow_type(Gtk.ShadowType.IN)
-        self.song_scroller.add(self.songlist)
-
-        self.qexpander = QueueExpander(library, player)
-        self.qexpander.set_no_show_all(True)
-        self.qexpander.set_visible(config.getboolean("memory", "queue"))
-
-        def on_queue_visible(qex, param):
-            config.set("memory", "queue", str(qex.get_visible()))
-
-        self.qexpander.connect("notify::visible", on_queue_visible)
-
-        self.playlist = PlaylistMux(
-            player, self.qexpander.model, self.songlist.model)
 
         top_bar = TopBar(self, player, library)
         main_box.pack_start(top_bar, False, True, 0)
@@ -969,6 +969,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
             act = Action(name="Jump", label=_('_Jump to Playing Song'),
                          icon_name=Icons.GO_JUMP)
+            self.__jump_to_current(True, None, True)
             act.connect('activate', self.__jump_to_current)
             ag.add_action_with_accel(act, "<Primary>J")
 
@@ -1267,17 +1268,24 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             self.ui.get_widget('/Menu/' + wid).set_sensitive(bool(song))
 
         # don't jump on stream changes (player.info != player.song)
-        should_jump = (song and player.song is song and
+        main_should_jump = (song and player.song is song and
                        not self.songlist._activated and
                        config.getboolean("settings", "jump") and
                        self.songlist.sourced)
-        if should_jump:
-            self.__jump_to_current(False)
+        queue_should_jump = (song and player.song is song and
+                        not self.qexpander.queue._activated and
+                        config.getboolean("settings", "jump") and
+                        self.qexpander.queue.sourced and
+                        config.getboolean("memory", "queue_keep_songs"))
+        if main_should_jump:
+            self.__jump_to_current(False, self.songlist)
+        elif queue_should_jump:
+            self.__jump_to_current(False, self.qexpander.queue)
 
     def __play_pause(self, *args):
         app.player.playpause()
 
-    def __jump_to_current(self, explicit, force_scroll=False):
+    def __jump_to_current(self, explicit, songlist=None, force_scroll=False):
         """Select/scroll to the current playing song in the playlist.
         If it can't be found tell the browser to properly fill the playlist
         with an appropriate selection containing the song.
@@ -1285,14 +1293,28 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         explicit means that the jump request comes from the user and not
         from an event like song-started.
 
+        songlist is the songlist to be jumped within. Usually the main song
+        list or the queue. If None, the currently sourced songlist will be
+        used.
+
         force_scroll will ask the browser to refill the playlist in any case.
         """
 
         def idle_jump_to(song, select):
-            ok = self.songlist.jump_to_song(song, select=select)
+            ok = songlist.jump_to_song(song, select=select)
             if ok:
-                self.songlist.grab_focus()
+                songlist.grab_focus()
             return False
+
+        if not songlist:
+            if (config.getboolean("memory", "queue_keep_songs")
+                    and self.qexpander.queue.sourced):
+                songlist = self.qexpander.queue
+            else:
+                songlist = self.songlist
+
+        if app.player is None:
+            return
 
         song = app.player.song
 
@@ -1301,13 +1323,13 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             return
 
         if not force_scroll:
-            ok = self.songlist.jump_to_song(song, select=explicit)
+            ok = songlist.jump_to_song(song, select=explicit)
         else:
             assert explicit
             ok = False
 
         if ok:
-            self.songlist.grab_focus()
+            songlist.grab_focus()
         elif explicit:
             # if we can't find it and the user requested it, try harder
             self.browser.scroll(song)

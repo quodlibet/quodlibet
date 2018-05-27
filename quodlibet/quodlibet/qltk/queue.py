@@ -20,7 +20,8 @@ from quodlibet import util
 from quodlibet import qltk
 from quodlibet import app
 
-from quodlibet.util import connect_destroy, format_time_preferred, print_exc
+from quodlibet.util import connect_destroy, connect_after_destroy, \
+        format_time_preferred, print_exc
 from quodlibet.qltk import Icons, gtk_version, add_css
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
@@ -331,6 +332,7 @@ class QueueModel(PlaylistModel):
 class PlayQueue(SongList):
 
     sortable = False
+    _activated = False
 
     def __init__(self, library, player):
         super(PlayQueue, self).__init__(library, player, model_cls=QueueModel)
@@ -339,6 +341,10 @@ class PlayQueue(SongList):
             self.set_first_column_type(CurrentColumn)
         self.set_size_request(-1, 120)
         self.connect('row-activated', self.__go_to, player)
+
+        def reset_activated(*args):
+            self._activated = False
+        connect_after_destroy(player, 'song-started', reset_activated)
 
         self.connect('popup-menu', self.__popup, library)
         self.enable_drop()
@@ -354,6 +360,7 @@ class PlayQueue(SongList):
         return False
 
     def __go_to(self, view, path, column, player):
+        self._activated = True
         if player.go_to(self.model.get_iter(path), explicit=True,
                         source=self.model):
             player.paused = False
