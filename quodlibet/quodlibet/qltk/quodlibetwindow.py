@@ -902,10 +902,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             if isinstance(p, Gtk.Paned):
                 if w == p.get_child1():
                     p.remove(w)
-                    p.pack1(w, True, False)
+                    p.pack1(w, True, True)
                 else:
                     p.remove(w)
-                    p.pack2(w, True, False)
+                    p.pack2(w, True, True)
             w = p
 
         self.__dyn_elements_box.add(self.__multipaned.get_paned())
