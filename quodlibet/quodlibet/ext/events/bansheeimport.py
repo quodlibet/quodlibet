@@ -52,25 +52,24 @@ class BansheeDBImporter:
 
             has_changed = False
 
-            if row["Rating"] is not None:
-                try:
-                    # banshee stores ratings as integers up to 5
-                    value = row["Rating"] / 5.0
-                except ValueError:
-                    pass
-                else:
-                    song["~#rating"] = value
-                    has_changed = True
+            # rating is stored as integer from 0 to 5
+            b_rating = row["Rating"] / 5.0
+            if b_rating != song("~#rating"):
+                song["~#rating"] = b_rating
+                has_changed = True
 
-            if row["PlayCount"] is not None:
+            # play count is stored as integer from 0
+            if row["PlayCount"] != song("~#playcount"):
                 # summing play counts would break on multiple imports
                 song["~#playcount"] = row["PlayCount"]
                 has_changed = True
 
-            if row["SkipCount"] is not None:
+            # skip count is stored as integer from 0
+            if row["SkipCount"] != song("~#skipcount"):
                 song["~#skipcount"] = row["SkipCount"]
                 has_changed = True
 
+            # timestamp is stored as integer or None
             if row["LastPlayedStamp"] is not None:
                 value = row["LastPlayedStamp"]
                 # keep timestamp if it is newer than what we had

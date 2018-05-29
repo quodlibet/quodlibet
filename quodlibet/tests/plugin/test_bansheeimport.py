@@ -101,3 +101,15 @@ class TBansheeImport(PluginTestCase):
             self.assertEqual(song("~#lastplayed"), data["lastplayed"])
             self.assertEqual(song("~#added"), data["added"])
             self.assertEqual(count, 1)
+
+            # test that no recovery is performed when data is identical
+            db = get_example_db(data_mod["path"], data_mod["rating"],
+                                data_mod["playcount"], data_mod["skipcount"],
+                                data_mod["lastplayed"], data_mod["added"])
+
+            importer = self.mod.BansheeDBImporter(lib)
+            importer.read(db)
+            count = importer.finish()
+            db.close()
+
+            self.assertEqual(count, 0)
