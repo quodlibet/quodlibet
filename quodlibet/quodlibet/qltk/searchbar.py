@@ -72,6 +72,7 @@ class SearchBarBox(Gtk.HBox):
         entry.connect('backspace', self.__text_changed)
         entry.connect('populate-popup', self.__menu)
         entry.connect('activate', self.__filter_changed)
+        entry.connect('activate', self.__save_search)
         entry.connect('focus-out-event', self.__save_search)
         entry.connect('key-press-event', self.__key_pressed)
 
@@ -168,7 +169,7 @@ class SearchBarBox(Gtk.HBox):
             self.__uninhibit()
 
     def __key_pressed(self, entry, event):
-        if (is_accel(event, "<Primary>Return") or
+        if (is_accel(event, '<Primary>Return') or
                 is_accel(event, '<Primary>KP_Enter')):
             # Save query on Primary+Return accel, even though the focus is kept
             self.__save_search(entry)
