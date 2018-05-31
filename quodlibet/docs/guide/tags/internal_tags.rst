@@ -97,6 +97,7 @@ Numeric Tags
  * ``~#mtime``: The time this file was last modified
  * ``~#playcount``: The total number of times you've played the song through
  * ``~#rating``: The rating of the song, as a number between 0 and 1.
+ * ``~#samplerate``: The sample rate of this song
  * ``~#skipcount``: The total number of times you've skipped through the song
  * ``~#track``: The track number of the song (the first half of the ``tracknumber`` tag)
  * ``~#tracks``: The total number of tracks in the album

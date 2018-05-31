@@ -28,6 +28,9 @@ class TWAVEFile(TestCase):
     def test_channels(self):
         assert self.song("~#channels") == 1
 
+    def test_samplerate(self):
+        assert self.song("~#samplerate") == 11025
+
     def test_write(self):
         self.song.write()
 

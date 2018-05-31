@@ -175,6 +175,7 @@ _TAGS = dict((t.name, t) for t in [
     T("codec", "i", _("codec")),
     T("encoding", "i", _("encoding")),
     T("playlists", "i", _("playlists")),
+    T("samplerate", "n", _("sample rate")),
     T("channels", "n", _("channel count")),
 ])
 

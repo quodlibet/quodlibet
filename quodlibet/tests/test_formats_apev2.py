@@ -135,6 +135,9 @@ class TMAFile(TestCase, TAPEv2FileMixin):
     def test_channels(self):
         assert self.s("~#channels") == 2
 
+    def test_samplerate(self):
+        assert self.s("~#samplerate") == 44100
+
 
 class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 

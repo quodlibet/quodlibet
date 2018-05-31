@@ -42,3 +42,9 @@ class TDSFFile(TestCase):
         assert self.song2("~#channels") == 1
         assert self.song3("~#channels") == 1
         assert self.song4("~#channels") == 2
+
+    def test_samplerate(self):
+        assert self.song1("~#samplerate") == 2822400
+        assert self.song2("~#samplerate") == 2822400
+        assert self.song3("~#samplerate") == 2822400
+        assert self.song4("~#samplerate") == 5644800

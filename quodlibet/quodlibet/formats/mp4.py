@@ -87,6 +87,7 @@ class MP4File(AudioFile):
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         if audio.info.channels:
             self["~#channels"] = audio.info.channels
+        self["~#samplerate"] = audio.info.sample_rate
 
         for key, values in audio.items():
             if key in self.__tupletranslate:
