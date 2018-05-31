@@ -105,9 +105,9 @@ function install_deps {
     PIP_REQUIREMENTS="\
 feedparser==5.2.1
 musicbrainzngs==0.6
-mutagen==1.39
-pycodestyle==2.3.1
-pyflakes==1.6.0
+mutagen==1.40
+pycodestyle==2.4.0
+pyflakes==2.0.0
 "
 
     build_pip install --no-deps --no-binary ":all:" --upgrade \
