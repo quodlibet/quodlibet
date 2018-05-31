@@ -48,3 +48,9 @@ class TDSFFile(TestCase):
         assert self.song2("~#samplerate") == 2822400
         assert self.song3("~#samplerate") == 2822400
         assert self.song4("~#samplerate") == 5644800
+
+    def test_bitdepth(self):
+        assert self.song1("~#bitdepth") == 1
+        assert self.song2("~#bitdepth") == 1
+        assert self.song3("~#bitdepth") == 1
+        assert self.song4("~#bitdepth") == 1

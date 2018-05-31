@@ -1082,8 +1082,9 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             ~#tracks albumartist""".split()
         dateinfo = """date originaldate recordingdate ~year ~originalyear
             ~#laststarted ~#lastplayed ~#added ~#mtime""".split()
-        fileinfo = """~format ~#bitrate ~#filesize ~filename ~basename ~dirname
-            ~uri ~codec ~encoding ~#channels ~#samplerate""".split()
+        fileinfo = """~format ~#bitdepth ~#bitrate ~#filesize
+            ~filename ~basename ~dirname ~uri ~codec ~encoding ~#channels
+            ~#samplerate""".split()
         copyinfo = """copyright organization location isrc
             contact website""".split()
         all_headers = sum(

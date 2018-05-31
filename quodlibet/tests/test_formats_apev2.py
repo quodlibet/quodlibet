@@ -138,6 +138,9 @@ class TMAFile(TestCase, TAPEv2FileMixin):
     def test_samplerate(self):
         assert self.s("~#samplerate") == 44100
 
+    def test_bitdepth(self):
+        assert self.s("~#bitdepth") == 16
+
 
 class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 

@@ -169,6 +169,7 @@ _TAGS = dict((t.name, t) for t in [
     T("year", "in", _("year")),
     T("originalyear", "in", _("original release year")),
     T("bookmark", "i", _("bookmark")),
+    T("bitdepth", "n", _("bitdepth")),
     T("bitrate", "in", _("bitrate")),
     T("filesize", "n", _("file size")),
     T("format", "i", _("file format")),
