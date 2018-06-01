@@ -23,7 +23,6 @@ pacman --noconfirm -S --needed \
     mingw-w64-$MSYS2_ARCH-python3-gobject \
     mingw-w64-$MSYS2_ARCH-python3-cairo \
     mingw-w64-$MSYS2_ARCH-python3-pip \
-    mingw-w64-$MSYS2_ARCH-python3-more-itertools \
     mingw-w64-$MSYS2_ARCH-python3-pytest \
     mingw-w64-$MSYS2_ARCH-python3-certifi \
     mingw-w64-$MSYS2_ARCH-python3-coverage
