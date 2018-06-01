@@ -27,6 +27,7 @@ class AACFile(AudioFile):
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         if audio.info.channels:
             self["~#channels"] = audio.info.channels
+        self["~#samplerate"] = audio.info.sample_rate
         self.sanitize(filename)
 
     def write(self):

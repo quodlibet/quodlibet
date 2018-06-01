@@ -21,6 +21,9 @@ class TWavpackFile(TestCase):
     def test_channels(self):
         assert self.song("~#channels") == 2
 
+    def test_samplerate(self):
+        assert self.song("~#samplerate") == 44100
+
     def test_bitrate(self):
         self.failUnlessEqual(self.song("~#bitrate"), 76)
 
