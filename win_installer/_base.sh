@@ -98,7 +98,6 @@ function install_deps {
         mingw-w64-"${ARCH}"-gst-plugins-ugly \
         mingw-w64-"${ARCH}"-gst-libav \
         mingw-w64-"${ARCH}"-python3-pytest \
-        mingw-w64-"${ARCH}"-python3-more-itertools \
         mingw-w64-"${ARCH}"-python3-certifi \
         mingw-w64-"${ARCH}"-python3-coverage
 
