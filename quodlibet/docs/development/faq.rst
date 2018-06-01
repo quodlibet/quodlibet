@@ -4,10 +4,8 @@ Frequently Asked Questions
 Any plans to use Python 3?
 --------------------------
 
-We are currently working on porting to Python 3. See the `github issue
-<https://github.com/quodlibet/quodlibet/issues/1580>`_ for updates.
-
-That said, at the moment Python 2 does its job well.
+Older releases of QL use Python 2. As of :ref:`release 4.0.0 <release-4.0.0>`,
+QL is Python 3 only.
 
 
 Why don't you use SQLite for the song database?
