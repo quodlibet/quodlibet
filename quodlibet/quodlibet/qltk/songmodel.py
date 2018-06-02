@@ -61,10 +61,11 @@ class PlaylistMux(object):
     def next(self):
         """Switch to the next song"""
 
-        keep_song = config.getboolean("memory", "queue_keep_songs", False)
-        q_prio = config.getboolean("memory", "queue_prioritize", False)
+        keep_songs = config.getboolean("memory", "queue_keep_songs", False)
+        q_ignore = config.getboolean("memory", "queue_ignore", False)
 
-        if self.q.is_empty() or (keep_song and not q_prio and self.pl.sourced):
+        if (self.q.is_empty()
+                or (q_ignore and not (keep_songs and self.q.sourced))):
             self.pl.next()
         else:
             self.q.next()
@@ -73,10 +74,11 @@ class PlaylistMux(object):
     def next_ended(self):
         """Switch to the next song (action comes from the user)"""
 
-        keep_song = config.getboolean("memory", "queue_keep_songs", False)
-        q_prio = config.getboolean("memory", "queue_prioritize", False)
+        keep_songs = config.getboolean("memory", "queue_keep_songs", False)
+        q_ignore = config.getboolean("memory", "queue_ignore", False)
 
-        if self.q.is_empty() or (keep_song and not q_prio and self.pl.sourced):
+        if (self.q.is_empty()
+                or (q_ignore and not (keep_songs and self.q.sourced))):
             self.pl.next_ended()
         else:
             self.q.next_ended()
@@ -85,13 +87,13 @@ class PlaylistMux(object):
     def previous(self):
         """Go to the previous song"""
 
-        keep_song = config.getboolean("memory", "queue_keep_songs", False)
-        q_prio = config.getboolean("memory", "queue_prioritize", False)
+        keep_songs = config.getboolean("memory", "queue_keep_songs", False)
+        q_ignore = config.getboolean("memory", "queue_ignore", False)
 
-        if keep_song and (q_prio or self.q.sourced):
-            self.q.previous()
-        else:
+        if q_ignore or self.pl.sourced or not keep_songs:
             self.pl.previous()
+        else:
+            self.q.previous()
         self._check_sourced()
 
     def go_to(self, song, explicit=False, source=None):

@@ -130,16 +130,18 @@ class QueueExpander(Gtk.Expander):
             populate=True)
         menu.append(stop_checkbox)
 
+        queue_ignore_cb = ConfigCheckMenuItem(
+            _("Ignore"), "memory", "queue_ignore",
+            populate=True)
+        menu.append(queue_ignore_cb)
+
         keep_checkbox = ConfigCheckMenuItem(
             _("Keep Songs"), "memory", "queue_keep_songs",
             populate=True)
+        keep_checkbox.set_tooltip_text(
+            _("Keep songs in the queue after playing them"))
         keep_checkbox.connect("activate", self.__keep_songs_activated)
         menu.append(keep_checkbox)
-
-        self._prio_q_cb = ConfigCheckMenuItem(
-            _("Prioritize Queue"), "memory", "queue_prioritize",
-            populate=True)
-        menu.append(self._prio_q_cb)
 
         clear_item = MenuItem(_("_Clear Queue"), Icons.EDIT_CLEAR)
         menu.append(clear_item)
@@ -154,9 +156,6 @@ class QueueExpander(Gtk.Expander):
         button.set_no_show_all(True)
         menu.show_all()
         button.set_menu(menu)
-
-        keep_song = config.getboolean("memory", "queue_keep_songs", False)
-        self._prio_q_cb.set_sensitive(keep_song)
 
         outer.pack_start(button, False, False, 0)
 
@@ -251,9 +250,7 @@ class QueueExpander(Gtk.Expander):
         keep_song = config.getboolean("memory", "queue_keep_songs", False)
         if keep_song:
             self.queue.set_first_column_type(CurrentColumn)
-            self._prio_q_cb.set_sensitive(True)
         else:
-            self._prio_q_cb.set_sensitive(False)
             for col in self.queue.get_columns():
                 # Remove the CurrentColum if it exists
                 if isinstance(col, CurrentColumn):
