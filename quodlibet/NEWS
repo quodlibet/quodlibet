@@ -1,3 +1,122 @@
+.. _release-4.1.0:
+
+4.1.0 (2018-06-03) - Trapped in a holodeck that won't take commands
+-------------------------------------------------------------------
+
+Packaging Changes:
+  * No dependency changes compared to 4.0
+  * Various installed files have been renamed
+    ("quodlibet" -> "io.github.quodlibet.QuodLibet") to work better with
+    Flatpak
+  * We've added some new icon resolutions
+
+Translations:
+  * Update Norwegian (bokmål) translation :pr:`2833`
+    (:user:`Åka Sikrom <akrosikam>`)
+  * Update German translation :pr:`2860` (:user:`Till Berger <Mellthas>`)
+  * Update Polish translation :pr:`2857` (:user:`Piotr Drąg <piotrdrag>`)
+  * Some Russian translation improvements :pr:`2670`
+    (:user:`Kirill Romanov <Djaler>`)
+
+* Various improvements and fixes to make Quod Libet ready for Flatpak/Flathub
+  :pr:`2842` :pr:`2851` (:user:`Felix Krull <fkrull>`)
+* Show confirmation dialog when removing songs from playlists :pr:`2667`
+  (:user:`zsau`)
+* Map bare performer tags to a "Performance" role in ``~people:roles``
+  :pr:`2674` (:user:`zsau`)
+* Add wildcard support to albumart filename preferences :pr:`2814`
+  (:user:`zsau`)
+* Fix various typos :pr:`2786` (:user:`luzpaz`) :pr:`2750`
+  (:user:`Tom McCleery <rakuna>`)
+* waveformseekbar: Improve hover time indication :pr:`2690` (:user:`Eyenseo`)
+* Add shuffle-by-grouping plugin :pr:`2788` (:user:`archy3`)
+* Album List - sorting by album average playcount :pr:`2794`
+  (:user:`Uriel Zajaczkovski <urielz>`)
+* Recognize rating/playcount tags in vorbis comments :pr:`2761`
+  (:user:`Thomas Leberbauer <slosd>`)
+* Handle error when writing empty replaygain tag :pr:`2838`
+  (:user:`Thomas Leberbauer <slosd>`)
+* waveformseekbar: Clamp seek time to valid range :pr:`2729`
+  (:user:`Peter Simonyi <psimonyi>`)
+* tag editor: don't use inline separators when changing multiple tag values
+  :pr:`2684` (:user:`Peter F. Patel-Schneider <pfps>`)
+* Improve the lyrics file search :pr:`2567`
+  (:user:`Pete Beardmore <elbeardmorez>`)
+* Added advanded_preferences config for scrollbar visibility :pr:`2697`
+  (:user:`Meriipu`)
+* cli: Allow floating point arguments for volume :pr:`2661`
+  (:user:`Jonas Platte <jplatte>`)
+* code quality: Fix raising NotImplementedError :pr:`2772`
+  (:user:`Jakub Wilk <jwilk>`)
+* paned browser: Add shortcut Ctrl-Return to the searchbar :pr:`2745`
+  (:user:`Felician Nemeth <nemethf>`)
+* Fix translations on systems with translations spread across multiple
+  directories like with NixOS/Flatpak. :bug:`2819`
+* Fix setting the process name on Linux to "quodlibet" (4.0 regression)
+  :bug:`2826`
+* Fix a case where a deadlocked QL would prevent new instances from being
+  started :bug:`2754`
+* Directory browser: fix not showing Gnome bookmarks
+* Various Python 3.7 compatibility fixes
+* id3: always ignore TLEN frames :bug:`2758`
+* wayland: fix errors when showing the seek popup widget :bug:`2644`
+* Add cli options for setting repeat and shuffle type :pr:`2799`
+  (:user:`Fredrik Strupe <frestr>`)
+* Queue stop once empty: do check at end of song instead :pr:`2801`
+  (:user:`Fredrik Strupe <frestr>`)
+* searchbar: Don't save indeterminate search queries in the history :pr:`2871`
+  (:user:`Fredrik Strupe <frestr>`)
+* browsers/playlist: Make the side pane take up less space :bug:`2765`
+  (:user:`Fredrik Strupe <frestr>`)
+* Make songs menu key accels work across all browsers :bug:`2863`
+  (:user:`Fredrik Strupe <frestr>`)
+* shuffle: fix shuffle no longer working after one complete run :bug:`2864`
+  (:user:`Fredrik Strupe <frestr>`)
+* tag editor: Allow saving tag if present in all songs but value differ
+  :bug:`2686` (:user:`Fredrik Strupe <frestr>`)
+* iradio: assume http if no protocol specified :bug:`2731`
+  (:user:`Nick Boultbee <declension>`)
+* tag split: Allow non-word characters around tag separators :bug:`1088`
+  :bug:`2678` (:user:`Nick Boultbee <declension>`)
+* Various improvements to the cover source plugin system
+  (:user:`Nick Boultbee <declension>`)
+* gstreamer: Disable gapless for .mod files :bug:`2780`
+* gstreamer: Store the GStreamer registry/cache in our own cache directory
+  to avoid conflicts with the system cache :bug:`2839`
+* macOS: Fix cannot re-order playlist songs with DnD :pr:`2867`
+  (:user:`David Morris <othalan>`)
+
+Plugins:
+  * Add a new cover download plugin using the cover sources :pr:`2812`
+    (:user:`Nick Boultbee <declension>`)
+  * headphonemon: fix headphone detection (4.0 regression) :bug:`2868`
+  * plugin search: handle search for multiple words better
+  * importexport: pass a default value for ~#track when sorting. :bug:`2694`
+  * equalizer: Fix scales in the preferences not showing the initial values
+    :bug:`2722`
+  * randomalbum: Various Python3 fixes :bug:`2721` :bug:`2726`
+  * trayicon: hide the (useless) scrolling preferences on Windows. :bug:`2718`
+  * Move the app/system/dependency info from the about dialog into a plugin.
+  * Tap BPM plugin: Handle non-numeric BPMs :bug:`2824`
+    (:user:`Fredrik Strupe <frestr>`)
+  * plugins: Make random album work on non-album browsers again :pr:`2844`
+    (:user:`Fredrik Strupe <frestr>`)
+  * alarm plugin: Port to Python 3 :bug:`2735`
+    (:user:`Nick Boultbee <declension>`)
+  * Website search: support ~filename :bug:`2762`
+    (:user:`Nick Boultbee <declension>`)
+  * Move Browse Files to core (fully) :bug:`2835` :bug:`1859`
+    (:user:`Nick Boultbee <declension>`)
+  * qlscrobble: Fix a potential error when upgrading from 3.9 and older
+    :bug:`2768`
+
+Windows:
+  * Fix sys.argv not being set by exe launchers (4.0 regression) :bug:`2781`
+  * The portable app now uses a local cache directory instead of the system one
+    in more cases.
+  * Always show the scrollbars like we do on macOS :bug:`2717`
+
+
 .. _release-4.0.2:
 
 4.0.2 (2018-01-17) - So it goes!
