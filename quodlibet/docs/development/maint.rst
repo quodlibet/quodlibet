@@ -66,7 +66,8 @@ New Stable release:
     * Update NEWS
     * git commit -m "update NEWS"
     * setup.py distcheck
-    * Update version to (X, Y, Z)
+    * Update version to (X, Y, Z) in const.py
+    * Update version to (X, Y, Z) in appdata.xml.in
     * git commit -m "release prep"
     * git tag release-x.y.z
     * git push origin release-x.y.z
@@ -77,4 +78,5 @@ New Stable release:
     * Create checksums / signature, attach everything to the github tag
     * Update release_db/make.py; run ./release_db/update.sh
     * Update stable PPAs (ubuntu/debian/OBS)
+    * Update the flathub repo
     * Write release mail
