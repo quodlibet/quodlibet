@@ -183,6 +183,12 @@ Meriipu@github
 Jonas Platte
 Eyenseo@github
 Peter Simonyi
+zsau@github
+luzpaz@github
+Tom McCleery
+archy3@github
+Felician Nemeth
+David Morris
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
