@@ -53,6 +53,17 @@ class SessionInhibit(EventPlugin):
 
     __cookie = None
 
+    def __get_dbus_proxy(self):
+        try:
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            return Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
+                                          self.DBUS_NAME,
+                                          self.DBUS_PATH,
+                                          self.DBUS_INTERFACE,
+                                          None)
+        except Exception:
+            return None
+
     def enabled(self):
         if not app.player.paused:
             self.plugin_on_unpaused()
@@ -66,10 +77,10 @@ class SessionInhibit(EventPlugin):
         flags = InhibitFlags.IDLE
 
         try:
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            dbus_proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                                                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_INTERFACE, None)
-            self.__cookie = dbus_proxy.Inhibit('(susu)', self.APPLICATION_ID, xid, self.INHIBIT_REASON, flags)
+            dbus_proxy = self.__get_dbus_proxy()
+            self.__cookie = dbus_proxy.Inhibit('(susu)',
+                                               self.APPLICATION_ID, xid,
+                                               self.INHIBIT_REASON, flags)
         except Exception:
             pass
 
@@ -78,9 +89,7 @@ class SessionInhibit(EventPlugin):
             return
 
         try:
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            dbus_proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                                                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_INTERFACE, None)
+            dbus_proxy = self.__get_dbus_proxy()
             dbus_proxy.Uninhibit('(u)', self.__cookie)
             self.__cookie = None
         except Exception:
