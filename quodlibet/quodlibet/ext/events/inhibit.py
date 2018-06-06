@@ -14,6 +14,7 @@ if os.name == "nt" or sys.platform == "darwin":
     raise PluginNotSupportedError
 
 from gi.repository import Gio
+from gi.repository import GLib
 
 from quodlibet import _
 from quodlibet import app
