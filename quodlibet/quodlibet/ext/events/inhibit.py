@@ -13,7 +13,7 @@ if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
-import dbus
+from gi.repository import Gio
 
 from quodlibet import _
 from quodlibet import app
@@ -62,16 +62,15 @@ class SessionInhibit(EventPlugin):
             self.plugin_on_paused()
 
     def plugin_on_unpaused(self):
-        xid = dbus.UInt32(get_toplevel_xid())
-        flags = dbus.UInt32(InhibitFlags.IDLE)
+        xid = get_toplevel_xid()
+        flags = InhibitFlags.IDLE
 
         try:
-            bus = dbus.SessionBus()
-            obj = bus.get_object(self.DBUS_NAME, self.DBUS_PATH)
-            iface = dbus.Interface(obj, self.DBUS_INTERFACE)
-            self.__cookie = iface.Inhibit(
-                self.APPLICATION_ID, xid, self.INHIBIT_REASON, flags)
-        except dbus.DBusException:
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            dbus_proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
+                                                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_INTERFACE, None)
+            self.__cookie = dbus_proxy.Inhibit('(susu)', self.APPLICATION_ID, xid, self.INHIBIT_REASON, flags)
+        except Exception:
             pass
 
     def plugin_on_paused(self):
@@ -79,10 +78,10 @@ class SessionInhibit(EventPlugin):
             return
 
         try:
-            bus = dbus.SessionBus()
-            obj = bus.get_object(self.DBUS_NAME, self.DBUS_PATH)
-            iface = dbus.Interface(obj, self.DBUS_INTERFACE)
-            iface.Uninhibit(self.__cookie)
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            dbus_proxy = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
+                                                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_INTERFACE, None)
+            dbus_proxy.Uninhibit('(u)', self.__cookie)
             self.__cookie = None
-        except dbus.DBusException:
+        except Exception:
             pass
