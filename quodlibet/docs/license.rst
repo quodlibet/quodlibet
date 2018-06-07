@@ -49,4 +49,4 @@ Piarres Beobide (eu), Roee Haimovich (he), Rüdiger Arp (de), SZERVÁC Attila
 (hu), Tomasz Torcz (pl), Türerkan İnce (tr), Witold Kieraś (pl), Yasushi
 Iwata (ja), Δημήτρης Παπαγεωργίου (el), Андрей Федосеев (ru), Микола
 'Cthulhu' Линник (uk), Николай Прокошенко (ru), Ростислав "zbrox" Райков
-(bg), Сергей Федосеев (ru)
+(bg), Сергей Федосеев (ru), scootergrisen (da)
