@@ -22,6 +22,11 @@ class TMP3File(TestCase):
         assert self.song2("~#channels") == 1
         assert self.song3("~#channels") == 2
 
+    def test_samplerate(self):
+        assert self.song("~#samplerate") == 44100
+        assert self.song2("~#samplerate") == 32000
+        assert self.song3("~#samplerate") == 44100
+
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.77, 2)
         self.assertAlmostEqual(self.song2("~#length"), 1.764, 3)

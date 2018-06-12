@@ -14,3 +14,4 @@ Development Guide
     faq
     maint
     formats
+    flatpak

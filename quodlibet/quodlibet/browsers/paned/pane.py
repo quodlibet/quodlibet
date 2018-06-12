@@ -119,7 +119,7 @@ class Pane(AllTreeView):
             self.set_selected([])
             return True
         elif is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
-            self.__enqueue(self.__get_selected_songs(sort=True))
+            qltk.enqueue(self.__get_selected_songs(sort=True))
             return True
         elif is_accel(event, "<alt>Return"):
             songs = self.__get_selected_songs(sort=True)
@@ -134,12 +134,6 @@ class Pane(AllTreeView):
                 window.show()
             return True
         return False
-
-    def __enqueue(self, songs):
-        songs = [s for s in songs if s.can_add]
-        if songs:
-            from quodlibet import app
-            app.window.playlist.enqueue(songs)
 
     def __repr__(self):
         return "<%s config=%r>" % (type(self).__name__, self.config)

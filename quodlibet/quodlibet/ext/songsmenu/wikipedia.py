@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Inigo Serna
+#           2018 Phoenix Dailey
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -62,14 +63,22 @@ class WikiSearch(object):
 class WikiArtist(WikiSearch, SongsMenuPlugin):
     PLUGIN_ID = 'Search artist in Wikipedia'
     PLUGIN_NAME = _('Search Artist in Wikipedia')
-    PLUGIN_DESC = _('Opens a browser window with Wikipedia article '
-                    'on the playing song artist.')
+    PLUGIN_DESC = _("Opens a browser window with the Wikipedia article "
+                    "on the playing song's artist.")
     k = 'artist'
 
 
 class WikiAlbum(WikiSearch, SongsMenuPlugin):
     PLUGIN_ID = 'Search album in Wikipedia'
     PLUGIN_NAME = _('Search Album in Wikipedia')
-    PLUGIN_DESC = _('Opens a browser window with Wikipedia article '
-                    'on the playing song album.')
+    PLUGIN_DESC = _("Opens a browser window with the Wikipedia article "
+                    "on the playing song's album.")
     k = 'album'
+
+
+class WikiComposer(WikiSearch, SongsMenuPlugin):
+    PLUGIN_ID = 'Search composer in Wikipedia'
+    PLUGIN_NAME = _('Search Composer in Wikipedia')
+    PLUGIN_DESC = _("Opens a browser window with the Wikipedia article "
+                    "on the playing song's composer.")
+    k = 'composer'

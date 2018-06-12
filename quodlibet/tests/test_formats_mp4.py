@@ -90,6 +90,12 @@ class TMP4File(TestCase):
     def test_channels(self):
         assert self.song("~#channels") == 2
 
+    def test_samplerate(self):
+        assert self.song("~#samplerate") == 44100
+
+    def test_bitdepth(self):
+        assert self.song("~#bitdepth") == 16
+
     def test_bpm_rounds(self):
         self.song["bpm"] = "98.76"
         self.song.write()

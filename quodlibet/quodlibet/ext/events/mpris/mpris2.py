@@ -8,38 +8,20 @@
 
 import time
 import tempfile
-import os
 
 import dbus
 import dbus.service
 from senf import fsn2uri
 
-import quodlibet
 from quodlibet import app
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
-from quodlibet.util.misc import NamedTemporaryFile
-from quodlibet.util.path import mkdir
 from quodlibet.compat import iteritems, listmap
 
 from .util import MPRISObject
 
 # TODO: OpenUri, CanXYZ
 # Date parsing (util?)
-
-
-def create_exportable_temp_file_object(fileobj):
-    try:
-        cache_dir = os.path.join(quodlibet.get_cache_dir(), "tempcovers")
-        mkdir(cache_dir, 0o700)
-        fn = NamedTemporaryFile(dir=cache_dir)
-        fn.write(fileobj.read())
-        fn.flush()
-        fn.seek(0, 0)
-    except EnvironmentError:
-        return
-    else:
-        return fn
 
 
 # http://www.mpris.org/2.0/spec/
@@ -283,15 +265,10 @@ value="false"/>
 
         cover = app.cover_manager.get_cover(song)
         if cover:
-            with cover:
-                is_temp = cover.name.startswith(tempfile.gettempdir())
-                if is_temp:
-                    # in flatpak, tempdir is not visible on the host
-                    self.__cover = create_exportable_temp_file_object(cover)
-                    if self.__cover is not None:
-                        metadata["mpris:artUrl"] = fsn2uri(self.__cover.name)
-                else:
-                    metadata["mpris:artUrl"] = fsn2uri(cover.name)
+            is_temp = cover.name.startswith(tempfile.gettempdir())
+            if is_temp:
+                self.__cover = cover
+            metadata["mpris:artUrl"] = fsn2uri(cover.name)
 
         # All list values
         list_val = {"artist": "artist", "albumArtist": "albumartist",

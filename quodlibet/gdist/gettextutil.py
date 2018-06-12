@@ -148,6 +148,41 @@ def update_po(po_dir, package, lang_code, output_file=None):
     return os.path.join(po_dir, lang_code + ".po")
 
 
+def check_po(po_dir, lang_code, ignore_header=False):
+    """Makes sure the .po is well formed
+
+    Raises GettextError if not
+    """
+
+    po_path = os.path.join(po_dir, lang_code + ".po")
+    check_arg = "--check" if not ignore_header else "--check-format"
+    try:
+        subprocess.check_output(
+            ["msgfmt", check_arg, "--check-domain", po_path],
+            stderr=subprocess.STDOUT, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        raise GettextError(e.output)
+
+
+def check_pot(po_dir, package):
+    """Makes sure that the .pot is well formed
+
+    Raises GettextError if not
+    """
+
+    # msgfmt doesn't like .pot files, but we can create a dummy .po
+    # and test that instead.
+    dummy_lang = "_pot_check_tmp"
+    po_path = create_po(po_dir, package, dummy_lang)
+    try:
+        check_po(po_dir, dummy_lang, ignore_header=True)
+    finally:
+        try:
+            os.remove(po_path)
+        except OSError:
+            pass
+
+
 def create_po(po_dir, package, lang_code):
     """Create a new <lang_code>.po file based on <package>.pot
 
@@ -165,10 +200,11 @@ def create_po(po_dir, package, lang_code):
         raise GettextError("%r missing" % pot_path)
 
     try:
-        subprocess.check_call(["msginit", "--no-translator",
-                               "-i", pot_path, "-o", po_path])
+        subprocess.check_output(
+            ["msginit", "--no-translator", "-i", pot_path, "-o", po_path],
+            universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        raise GettextError(e)
+        raise GettextError(e.output)
 
     if not os.path.exists(po_path):
         raise GettextError(
@@ -235,6 +271,9 @@ def check_version():
 
     if find_executable("xgettext") is None:
         raise GettextError("xgettext missing")
+
+    if find_executable("msgfmt") is None:
+        raise GettextError("msgfmt missing")
 
     if _get_xgettext_version() < (0, 15):
         raise GettextError("xgettext too old, need 0.15+")

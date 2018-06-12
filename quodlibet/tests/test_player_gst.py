@@ -24,7 +24,7 @@ except ImportError:
     pass
 
 from quodlibet.player import PlayerError
-from quodlibet.util import sanitize_tags
+from quodlibet.util import sanitize_tags, is_flatpak
 from quodlibet.formats import MusicFile
 from quodlibet.compat import long, text_type
 from quodlibet import config
@@ -202,7 +202,8 @@ class TGstreamerTagList(TestCase):
 
 
 @skipUnless(Gst, "GStreamer missing")
-@skipUnless(sys.platform == "darwin" or os.name == "nt", "no control over gst")
+@skipUnless(sys.platform == "darwin" or os.name == "nt" or is_flatpak(),
+            "no control over gst")
 class TGStreamerCodecs(TestCase):
 
     def setUp(self):

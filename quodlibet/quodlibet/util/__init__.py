@@ -34,7 +34,7 @@ from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
 from .misc import cached_func, get_module_dir, get_ca_file, \
     get_locale_encoding, NamedTemporaryFile
 from .environment import is_plasma, is_unity, is_enlightenment, \
-    is_linux, is_windows, is_wine, is_osx
+    is_linux, is_windows, is_wine, is_osx, is_flatpak
 from .enum import enum
 from .i18n import _, C_, locale_format
 
@@ -42,7 +42,7 @@ from .i18n import _, C_, locale_format
 # pyflakes
 cached_func, enum, print_w, print_exc, is_plasma, is_unity, is_enlightenment,
 is_linux, is_windows, is_wine, is_osx, get_module_dir, get_ca_file,
-get_locale_encoding, NamedTemporaryFile
+get_locale_encoding, NamedTemporaryFile, is_flatpak
 
 
 class InstanceTracker(object):

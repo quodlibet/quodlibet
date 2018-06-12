@@ -322,6 +322,10 @@ class MPDService(object):
         ]
 
         if info:
+            status.append(("audio", "%d:%d:%d" % (
+                info("~#samplerate") or 0,
+                info("~#bitdepth") or 0,
+                info("~#channels") or 0)))
             total_time = int(info("~#length"))
             elapsed_time = int(app.player.get_position() / 1000)
             elapsed_exact = "%1.3f" % (app.player.get_position() / 1000.0)

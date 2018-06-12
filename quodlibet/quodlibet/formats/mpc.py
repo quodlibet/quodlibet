@@ -25,6 +25,7 @@ class MPCFile(APEv2File):
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         self["~#channels"] = audio.info.channels
+        self["~#samplerate"] = audio.info.sample_rate
 
         version = audio.info.version
         self["~codec"] = u"%s SV%d" % (self.format, version)

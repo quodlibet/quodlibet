@@ -3,6 +3,7 @@
 #           2012 Christoph Reiter
 #           2014 Jan Path
 #      2011-2017 Nick Boultbee
+#           2018 David Morris
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -260,7 +261,17 @@ class SongListDnDMixin(object):
                 return
 
             qltk.selection_set_songs(sel, songs)
-            if ctx.get_actions() & Gdk.DragAction.MOVE:
+
+            # DEM 2018/05/25: The below check is a deliberate repitition of
+            # code in the drag-motion signal handler.  In MacOS/Quartz, the
+            # context action is not propogated between event handlers for
+            # drag-motion and drag-data-get using "ctx.get_actions()".  It is
+            # unclear if this is a bug or expected behavior.  Regardless, the
+            # context widget information is the same so identical behavior can
+            # be achieved by simply using the same widget check as in the move
+            # action.
+            if Gtk.drag_get_source_widget(ctx) == self and \
+                    not self.__force_copy:
                 self.__drag_iters = list(map(model.get_iter, paths))
             else:
                 self.__drag_iters = []
@@ -1071,8 +1082,9 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             ~#tracks albumartist""".split()
         dateinfo = """date originaldate recordingdate ~year ~originalyear
             ~#laststarted ~#lastplayed ~#added ~#mtime""".split()
-        fileinfo = """~format ~#bitrate ~#filesize ~filename ~basename ~dirname
-            ~uri ~codec ~encoding ~#channels""".split()
+        fileinfo = """~format ~#bitdepth ~#bitrate ~#filesize
+            ~filename ~basename ~dirname ~uri ~codec ~encoding ~#channels
+            ~#samplerate""".split()
         copyinfo = """copyright organization location isrc
             contact website""".split()
         all_headers = sum(

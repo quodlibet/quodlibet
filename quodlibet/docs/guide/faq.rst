@@ -107,7 +107,7 @@ By default these are in the internal database - and remember this is indexed by 
 so renames will lose data.
 For this and other reasons, some users prefer to save save them
 *in the tags themselves* (under an email address), using the most appropriate
-tag for that format (e.g. `ID3's popm tag<http://id3.org/id3v2.3.0#Popularimeter>`_ for ID3).
+tag for that format (e.g. `ID3's popm tag <http://id3.org/id3v2.3.0#Popularimeter>`__ for ID3).
 See the configuration under
 *Preferences* -> *Tags* -> *Save ratings and play _counts in tags*.
 
