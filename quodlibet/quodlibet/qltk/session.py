@@ -6,47 +6,42 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-try:
-    import dbus
-    dbus
-except ImportError:
-    dbus = None
+from gi.repository import Gio
+from gi.repository import GLib
 
 from quodlibet import app
 from quodlibet.util import print_d, print_w
 
 
 def init(app_id):
-    if not dbus:
-        return
-
     try:
-        bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
-        manager = bus.get_object("org.gnome.SessionManager",
-                                 "/org/gnome/SessionManager")
-        iface = dbus.Interface(manager, "org.gnome.SessionManager")
-        client_path = iface.RegisterClient(app_id, "")
+        bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+        session_mgr = Gio.DBusProxy.new_sync(
+            bus, Gio.DBusProxyFlags.NONE, None,
+            'org.gnome.SessionManager', '/org/gnome/SessionManager',
+            'org.gnome.SessionManager', None)
+        client_path = session_mgr.RegisterClient('(ss)', app_id, "")
         if client_path is None:
             # https://github.com/quodlibet/quodlibet/issues/2435
             print_w("Broken session manager implementation, likely LXDE")
             return
 
-        client = bus.get_object("org.gnome.SessionManager", client_path)
-        client_priv = dbus.Interface(client,
-                                     "org.gnome.SessionManager.ClientPrivate")
+        client_priv = Gio.DBusProxy.new_sync(
+            bus, Gio.DBusProxyFlags.NONE, None,
+            'org.gnome.SessionManager', client_path,
+            'org.gnome.SessionManager.ClientPrivate', None)
 
-        def end_session_cb(*args):
-            print_d("GSM sent EndSession: going down")
-            client_priv.EndSessionResponse(True, "")
-            app.quit()
+        def g_signal_cb(proxy, sender, signal, args):
+            if signal == 'EndSession':
+                print_d("GSM sent EndSession: going down")
+                client_priv.EndSessionResponse('(bs)', True, "")
+                app.quit()
+            elif signal == 'QueryEndSession':
+                print_d("GSM sent QueryEndSession")
+                client_priv.EndSessionResponse('(bs)', True, "")
 
-        def query_end_session_cb(*args):
-            print_d("GSM sent QueryEndSession")
-            client_priv.EndSessionResponse(True, "")
-
-        client_priv.connect_to_signal("QueryEndSession", query_end_session_cb)
-        client_priv.connect_to_signal("EndSession", end_session_cb)
-    except dbus.DBusException:
+        client_priv.connect('g-signal', g_signal_cb)
+    except GLib.Error:
         print_d("Connecting with the gnome session manager failed")
     else:
         print_d("Connected with gnome session manager: %s" % client_path)
