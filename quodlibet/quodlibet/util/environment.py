@@ -14,6 +14,9 @@ import os
 import sys
 import ctypes
 
+from gi.repository import Gio
+from gi.repository import GLib
+
 
 def _dbus_name_owned(name):
     """Returns True if the dbus name has an owner"""
@@ -22,14 +25,14 @@ def _dbus_name_owned(name):
         return False
 
     try:
-        import dbus
-    except ImportError:
-        return False
-
-    try:
-        bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
-        return bus.name_has_owner(name)
-    except dbus.DBusException:
+        dbus = Gio.DBusProxy.new_for_bus_sync(Gio.BusType.SESSION,
+                                              Gio.DBusProxyFlags.NONE, None,
+                                              'org.freedesktop.DBus',
+                                              '/org/freedesktop/DBus',
+                                              'org.freedesktop.DBus',
+                                              None)
+        return dbus.NameHasOwner('(s)', name)
+    except GLib.Error:
         return False
 
 
