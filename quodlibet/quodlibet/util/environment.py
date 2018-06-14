@@ -14,17 +14,14 @@ import os
 import sys
 import ctypes
 
+from gi.repository import Gio
+from gi.repository import GLib
+
 
 def _dbus_name_owned(name):
     """Returns True if the dbus name has an owner"""
 
     if not is_linux():
-        return False
-
-    try:
-        from gi.repository import Gio
-        from gi.repository import GLib
-    except ImportError:
         return False
 
     try:
