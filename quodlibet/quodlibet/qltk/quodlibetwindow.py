@@ -1195,6 +1195,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                 self.remove_accel_group(self.browser.accelerators)
             container.destroy()
             self.browser.destroy()
+
+        spinner = Gtk.Spinner()
+        spinner.start()
+        spinner.show()
+        self.__browserbox.add(spinner)
+        window = self.get_window()
+        window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+
+        # Wait for the old browser to be destroyed before
+        # setting up the new one
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+
         self.browser = Browser(library)
         self.browser.connect('songs-selected',
             self.__browser_cb, library, player)
@@ -1216,8 +1229,14 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.reset_replaygain()
+
+        self.__browserbox.remove(spinner)
         self.__browserbox.add(container)
         container.show()
+
+        # Reset the cursor when the browser container is visible to the user
+        container.connect('draw', lambda w, cr: window.set_cursor(None))
+
         self._filter_menu.set_browser(self.browser)
         self.__hide_headers()
 
