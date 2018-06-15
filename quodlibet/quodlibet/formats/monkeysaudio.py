@@ -22,7 +22,8 @@ class MonkeysAudioFile(APEv2File):
         self["~#length"] = int(audio.info.length)
         self["~#channels"] = audio.info.channels
         self["~#samplerate"] = audio.info.sample_rate
-        self["~#bitdepth"] = audio.info.bits_per_sample
+        if hasattr(audio.info, "bits_per_sample"):
+            self["~#bitdepth"] = audio.info.bits_per_sample
         self.sanitize(filename)
 
 loader = MonkeysAudioFile

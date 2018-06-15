@@ -142,6 +142,17 @@ class TMAFile(TestCase, TAPEv2FileMixin):
         assert self.s("~#bitdepth") == 16
 
 
+def test_ma_file_old():
+    s = MonkeysAudioFile(get_data_path('mac-396.ape'))
+
+    assert s("~format") == "Monkey's Audio"
+    assert s("~codec") == "Monkey's Audio"
+    assert s("~encoding") == ""
+    assert s("~#channels") == 2
+    assert s("~#samplerate") == 44100
+    assert s("~#bitdepth", 0) == 0
+
+
 class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 
     def setUp(self):
