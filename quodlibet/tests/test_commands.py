@@ -76,7 +76,6 @@ class TCommands(TestCase):
         self.__send("random album")
         self.__send("refresh")
         self.__send("repeat 0")
-        self.__send("set-browser 1")
         self.__send("set-rating 0.5")
         self.__send("show-window")
         self.__send("song-list 1")
@@ -84,6 +83,9 @@ class TCommands(TestCase):
         self.__send("status")
         self.__send("toggle-window")
         self.__send("unqueue /dev/null")
+
+    def test_set_browser(self):
+        self.__send("set-browser 1")
 
     def test_enqueue_files(self):
         songs = [AudioFile({"~filename": fn, "title": fn})
