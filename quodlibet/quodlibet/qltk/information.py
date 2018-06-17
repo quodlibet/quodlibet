@@ -53,6 +53,7 @@ class TitleLabel(Gtk.Label):
         markup = text if is_markup else ("<i>%s</i>" % util.escape(text))
         markup = "<span size='xx-large'>%s</span>" % markup
         self.set_markup(markup)
+        self.set_selectable(True)
 
 
 class ReactiveCoverImage(CoverImage):
