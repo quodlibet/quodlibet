@@ -83,6 +83,11 @@ class Comment(object):
     def is_missing(self):
         return not self.complete
 
+    def get_shared_text(self):
+        if self.shared:
+            return util.escape(self.text)
+        return ''
+
     def get_markup(self):
         """Returns pango markup for displaying"""
 
@@ -554,6 +559,9 @@ class EditTags(Gtk.VBox):
             # Issue 697: allow Ctrl-s to save.
             self._save.emit('clicked')
             return Gdk.EVENT_STOP
+        elif qltk.is_accel(event, "<Primary>c"):
+            self.__copy_tag_value(event, view)
+            return Gdk.EVENT_STOP
         return Gdk.EVENT_PROPAGATE
 
     def __enable_save(self, *args):
@@ -632,17 +640,23 @@ class EditTags(Gtk.VBox):
             if menu.get_children():
                 menu.append(SeparatorMenuItem())
 
-        b = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
-        b.connect('activate', self.__remove_tag, view)
-        qltk.add_fake_accel(b, "Delete")
-        menu.append(b)
+        copy_b = MenuItem(_("_Copy Value(s)"), Icons.EDIT_COPY)
+        copy_b.connect('activate', self.__copy_tag_value, view)
+        qltk.add_fake_accel(copy_b, "<Primary>c")
+        menu.append(copy_b)
+
+        remove_b = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
+        remove_b.connect('activate', self.__remove_tag, view)
+        qltk.add_fake_accel(remove_b, "Delete")
+        menu.append(remove_b)
 
         menu.show_all()
         # Setting the menu itself to be insensitive causes it to not
         # be dismissed; see #473.
         for c in menu.get_children():
             c.set_sensitive(can_change and c.get_property('sensitive'))
-        b.set_sensitive(True)
+        copy_b.set_sensitive(True)
+        remove_b.set_sensitive(True)
         menu.connect('selection-done', lambda m: m.destroy())
 
         # XXX: Keep reference
@@ -710,6 +724,19 @@ class EditTags(Gtk.VBox):
                 model.row_changed(row.path, row.iter)
             else:
                 model.remove(row.iter)
+
+    def __copy_tag_value(self, activator, view):
+        model, paths = view.get_selection().get_selected_rows()
+        rows = [model[path] for path in paths]
+        values = []
+        for row in rows:
+            entry_text = row[0].value.get_shared_text()
+            if entry_text:
+                values.append(entry_text)
+        text = '\n'.join(values)
+        if len(text) > 0:
+            clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+            clipboard.set_text(text, -1)
 
     def __save_files(self, save, revert, model, library):
         updated = {}
