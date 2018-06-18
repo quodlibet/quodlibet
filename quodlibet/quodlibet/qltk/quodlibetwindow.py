@@ -1185,7 +1185,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         Browser = browsers.get(current)
 
         window = self.get_window()
-        window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+        if window:
+            window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
 
         # Wait for the cursor to update before continuing
         while Gtk.events_pending():
@@ -1222,7 +1223,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         container = self.browser.__container = self.browser.pack(self.songpane)
 
         # Reset the cursor when done loading the browser
-        GLib.idle_add(window.set_cursor, None)
+        if window:
+            GLib.idle_add(window.set_cursor, None)
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.reset_replaygain()
