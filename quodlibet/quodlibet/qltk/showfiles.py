@@ -125,9 +125,8 @@ def _show_files_thunar(dirname, entries):
             dbus_proxy.DisplayFolder('(sss)',
                                      fsn2uri(dirname), "", _get_startup_id())
         else:
-            item_name = os.path.join(dirname, entries[0])
             dbus_proxy.DisplayFolderAndSelect(
-                '(ssss)', fsn2uri(dirname), item_name, "", _get_startup_id())
+                '(ssss)', fsn2uri(dirname), entries[0], "", _get_startup_id())
     except GLib.Error as e:
         raise BrowseError(e)
 
