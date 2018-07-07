@@ -12,7 +12,8 @@ from tests.plugin import PluginTestCase
 from quodlibet import config
 
 A_SONG = AudioFile({'title': 'foo', 'artist': 'barman',
-                    '~filename': '/tmp/dir/barman - foo.mp3'})
+                    '~filename': '/tmp/dir/barman - foo.mp3',
+                    'website': 'https://example.com'})
 
 
 class TWebsiteSearch(PluginTestCase):
@@ -37,6 +38,12 @@ class TWebsiteSearch(PluginTestCase):
         url = self.mod.website_for(pat, song)
         # This is probably what the user wanted, ish
         assert url == "https://example.com//tmp/dir"
+
+    def test_website_for_website(self):
+        song = AudioFile(A_SONG)
+        pat = Pattern("<website>")
+        url = self.mod.website_for(pat, song)
+        assert url == "https://example.com"
 
     def tearDown(self):
         config.quit()
