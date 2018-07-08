@@ -6,9 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gio, GLib
-
-from quodlibet import print_d, print_w
+from quodlibet import print_d
 from ._base import SessionClient, SessionError
 
 
