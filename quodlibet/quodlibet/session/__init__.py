@@ -10,17 +10,25 @@ from quodlibet import print_d
 from ._base import SessionClient, SessionError
 
 
+def iter_backends():
+    from .gnome import GnomeSessionClient
+    yield GnomeSessionClient
+    from .xfce import XfceSessionClient
+    yield XfceSessionClient
+    # dummy one last
+    yield SessionClient
+
+
 def init(app):
     """Returns an active SessionClient instance or None"""
 
-    from .gnome import GnomeSessionClient
-
-    client = GnomeSessionClient()
-    try:
-        client.open(app)
-    except SessionError as e:
-        print_d(str(e))
-    else:
-        return client
-
-    return SessionClient()
+    for backend in iter_backends():
+        print_d("Trying %s" % backend.__name__)
+        client = backend()
+        try:
+            client.open(app)
+        except SessionError as e:
+            print_d(str(e))
+        else:
+            return client
+    assert False

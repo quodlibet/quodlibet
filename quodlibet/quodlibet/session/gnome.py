@@ -33,6 +33,8 @@ class GnomeSessionClient(SessionClient):
                 bus, Gio.DBusProxyFlags.NONE, None,
                 self.DBUS_NAME, self.DBUS_OBJECT_PATH,
                 self.DBUS_MAIN_INTERFACE, None)
+            if session_mgr.get_name_owner() is None:
+                raise SessionError("%s unowned" % self.DBUS_NAME)
             client_path = session_mgr.RegisterClient('(ss)', app.id, "")
             if client_path is None:
                 # https://github.com/quodlibet/quodlibet/issues/2435

@@ -8,7 +8,9 @@
 
 from tests import TestCase, init_fake_app, destroy_fake_app
 
+from quodlibet import app
 from quodlibet import session
+from quodlibet.session import SessionError, iter_backends
 
 
 class TSession(TestCase):
@@ -20,8 +22,16 @@ class TSession(TestCase):
         destroy_fake_app()
 
     def test_session(self):
-        from quodlibet import app
-
         client = session.init(app)
-        if client is None:
-            client.close()
+        client.close()
+
+    def test_all(self):
+        for backend in iter_backends():
+            client = backend()
+            try:
+                client.open(app)
+            except SessionError:
+                pass
+            else:
+                client.close()
+                client.close()
