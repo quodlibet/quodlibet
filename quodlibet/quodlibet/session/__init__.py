@@ -7,16 +7,18 @@
 # (at your option) any later version.
 
 from quodlibet import print_d
+from quodlibet.util import is_linux
 from ._base import SessionClient, SessionError
 
 
 def iter_backends():
-    from .gnome import GnomeSessionClient
-    yield GnomeSessionClient
-    from .xfce import XfceSessionClient
-    yield XfceSessionClient
-    from .xsmp import XSMPSessionClient
-    yield XSMPSessionClient
+    if is_linux():
+        from .gnome import GnomeSessionClient
+        yield GnomeSessionClient
+        from .xfce import XfceSessionClient
+        yield XfceSessionClient
+        from .xsmp import XSMPSessionClient
+        yield XSMPSessionClient
     # dummy one last
     yield SessionClient
 
