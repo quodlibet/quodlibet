@@ -150,7 +150,8 @@ def test_ma_file_old():
     assert s("~encoding") == ""
     assert s("~#channels") == 2
     assert s("~#samplerate") == 44100
-    assert s("~#bitdepth", 0) == 0
+    # depends on the mutagen version
+    assert s("~#bitdepth", 0) in (0, 16)
 
 
 class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
