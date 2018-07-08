@@ -15,6 +15,8 @@ def iter_backends():
     yield GnomeSessionClient
     from .xfce import XfceSessionClient
     yield XfceSessionClient
+    from .xsmp import XSMPSessionClient
+    yield XSMPSessionClient
     # dummy one last
     yield SessionClient
 

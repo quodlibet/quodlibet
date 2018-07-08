@@ -6,14 +6,11 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import GObject
-
-
 class SessionError(Exception):
     pass
 
 
-class SessionClient(GObject.Object):
+class SessionClient(object):
 
     def open(self, app):
         """Raises SessionError"""
