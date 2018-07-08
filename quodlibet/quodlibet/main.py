@@ -170,7 +170,7 @@ def main(argv=None):
     DBusHandler(player, library)
     tracker = SongTracker(library.librarian, player, window.playlist)
 
-    from quodlibet.qltk import session
+    from quodlibet import session
     session.init("quodlibet")
 
     quodlibet.enable_periodic_save(save_library=True)

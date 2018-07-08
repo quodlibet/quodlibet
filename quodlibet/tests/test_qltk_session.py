@@ -8,7 +8,7 @@
 
 from tests import TestCase
 
-from quodlibet.qltk import session
+from quodlibet import session
 
 
 class TSession(TestCase):
