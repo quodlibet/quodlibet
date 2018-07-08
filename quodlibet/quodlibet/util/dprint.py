@@ -142,6 +142,8 @@ def frame_info(level=0):
     if not info:
         info = frame.f_globals.get("__name__", "")
 
+    info = str(info)
+
     # append the function/method name
     if info:
         info += "." + co_name

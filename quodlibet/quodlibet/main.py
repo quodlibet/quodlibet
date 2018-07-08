@@ -171,7 +171,7 @@ def main(argv=None):
     tracker = SongTracker(library.librarian, player, window.playlist)
 
     from quodlibet import session
-    session.init("quodlibet")
+    session_client = session.init(app)
 
     quodlibet.enable_periodic_save(save_library=True)
 
@@ -208,5 +208,7 @@ def main(argv=None):
     quodlibet.library.save()
 
     config.save()
+
+    session_client.close()
 
     print_d("Finished shutdown.")

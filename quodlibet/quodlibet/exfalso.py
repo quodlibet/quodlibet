@@ -61,12 +61,14 @@ def main(argv=None):
     app.cover_manager = CoverManager()
     app.cover_manager.init_plugins()
 
-    from quodlibet.qltk import session
-    session.init("exfalso")
+    from quodlibet import session
+    session_client = session.init(app)
 
     quodlibet.enable_periodic_save(save_library=False)
     quodlibet.run(app.window)
     quodlibet.finish_first_session("exfalso")
     config.save()
+
+    session_client.close()
 
     util.print_d("Finished shutdown.")

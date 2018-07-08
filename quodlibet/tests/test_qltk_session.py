@@ -6,11 +6,22 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from tests import TestCase
+from tests import TestCase, init_fake_app, destroy_fake_app
 
 from quodlibet import session
 
 
 class TSession(TestCase):
+
+    def setUp(self):
+        init_fake_app()
+
+    def tearDown(self):
+        destroy_fake_app()
+
     def test_session(self):
-        session.init("quodlibet")
+        from quodlibet import app
+
+        client = session.init(app)
+        if client is None:
+            client.close()
