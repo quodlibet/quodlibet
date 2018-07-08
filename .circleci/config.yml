@@ -7,7 +7,8 @@ defaults: &defaults
     - run: docker info
     - run:
         command: |
-          cp ".docker/Dockerfile.$DOCKERIMAGE" _cache_key_file
+          cp ".docker/Dockerfile.$DOCKERIMAGE" _cache_key_file;
+          echo "CACHE-VERSION-1" >> _cache_key_file;
     - restore_cache:
         key: cache-{{ checksum "_cache_key_file" }}
     - run: ls -l _ci_cache || true
