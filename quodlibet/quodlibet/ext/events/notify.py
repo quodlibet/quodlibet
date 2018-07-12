@@ -16,8 +16,7 @@ if os.name == "nt" or sys.platform == "darwin":
 
 import re
 
-import dbus
-from gi.repository import Gtk, GObject, GLib
+from gi.repository import Gtk, GObject, GLib, Gio
 from senf import fsn2uri
 
 from quodlibet import _
@@ -262,29 +261,33 @@ class Notify(EventPlugin):
     def __enable_watch(self):
         """Enable events for dbus name owner change"""
         try:
-            bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             # This also triggers for existing name owners
-            self.__watch = bus.watch_name_owner(self.DBUS_NAME,
-                                                self.__owner_changed)
-        except dbus.DBusException:
+            self.__watch = Gio.bus_watch_name_on_connection(
+                    bus, self.DBUS_NAME, Gio.BusNameWatcherFlags.NONE,
+                    None, self.__owner_vanished)
+        except GLib.Error:
             pass
 
     def __disable_watch(self):
         """Disable name owner change events"""
         if self.__watch:
-            self.__watch.cancel()
+            Gio.bus_unwatch_name(self.__watch)
             self.__watch = None
 
     def __disconnect(self):
-        self.__interface = None
+        if self.__interface is None:
+            return
+
         if self.__action_sig:
-            self.__action_sig.remove()
+            self.__interface.disconnect(self.__action_sig)
             self.__action_sig = None
 
-    def __owner_changed(self, owner):
+        self.__interface = None
+
+    def __owner_vanished(self, bus, owner):
         # In case the owner gets removed, remove all references to it
-        if not owner:
-            self.__disconnect()
+        self.__disconnect()
 
     def PluginPreferences(self, parent):
         return PreferencesWidget(parent, self)
@@ -292,8 +295,9 @@ class Notify(EventPlugin):
     def __get_interface(self):
         """Returns a fresh proxy + info about the server"""
 
-        obj = dbus.SessionBus().get_object(self.DBUS_NAME, self.DBUS_PATH)
-        interface = dbus.Interface(obj, self.DBUS_IFACE)
+        interface = Gio.DBusProxy.new_for_bus_sync(
+                Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
+                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_IFACE, None)
 
         name, vendor, version, spec_version = \
             list(map(str, interface.GetServerInformation()))
@@ -309,10 +313,11 @@ class Notify(EventPlugin):
             return
 
         try:
-            obj = dbus.SessionBus().get_object(self.DBUS_NAME, self.DBUS_PATH)
-            interface = dbus.Interface(obj, self.DBUS_IFACE)
-            interface.CloseNotification(self.__last_id)
-        except dbus.DBusException:
+            interface = Gio.DBusProxy.new_for_bus_sync(
+                Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
+                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_IFACE, None)
+            interface.CloseNotification('(u)', self.__last_id)
+        except GLib.Error:
             pass
         else:
             self.__last_id = 0
@@ -348,8 +353,8 @@ class Notify(EventPlugin):
                     self.__caps = caps
                     self.__spec_version = spec
                     if "actions" in caps:
-                        self.__action_sig = iface.connect_to_signal(
-                            "ActionInvoked", self.on_dbus_action)
+                        self.__action_sig = iface.connect(
+                            'g-signal', self._on_signal)
                 else:
                     iface = self.__interface
                     caps = self.__caps
@@ -359,7 +364,7 @@ class Notify(EventPlugin):
                 # propably preview
                 iface, caps, spec = self.__get_interface()
 
-        except dbus.DBusException:
+        except GLib.Error:
             print_w("[notify] %s" %
                     _("Couldn't connect to notification daemon."))
             self.__disconnect()
@@ -388,20 +393,20 @@ class Notify(EventPlugin):
             actions = ["next", _("Next")]
 
         hints = {
-            "desktop-entry": "io.github.quodlibet.QuodLibet",
+            "desktop-entry": GLib.Variant(
+                's', "io.github.quodlibet.QuodLibet"),
         }
 
         image_uri = self._get_image_uri(song)
         if image_uri:
-            hints["image_path"] = image_uri
-            hints["image-path"] = image_uri
+            hints["image_path"] = GLib.Variant('s', image_uri)
+            hints["image-path"] = GLib.Variant('s', image_uri)
 
         try:
-            self.__last_id = iface.Notify(
-                "Quod Libet", self.__last_id,
-                image_uri, title, body, actions, hints,
-                pconfig.getint("timeout"))
-        except dbus.DBusException:
+            self.__last_id = iface.Notify('(susssasa{sv}i)',
+                "Quod Libet", self.__last_id, image_uri, title, body,
+                actions, hints, pconfig.getint("timeout"))
+        except GLib.Error:
             print_w("[notify] %s" %
                     _("Couldn't connect to notification daemon."))
             self.__disconnect()
@@ -412,6 +417,12 @@ class Notify(EventPlugin):
             self.__disconnect()
 
         return True
+
+    def _on_signal(self, proxy, sender, signal, args):
+        if signal == 'ActionInvoked':
+            notify_id = args[0]
+            key = args[1]
+            self.on_dbus_action(notify_id, key)
 
     def on_dbus_action(self, notify_id, key):
         if notify_id == self.__last_id and key == "next":
