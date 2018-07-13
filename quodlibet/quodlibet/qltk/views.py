@@ -51,7 +51,7 @@ class TreeViewHints(Gtk.Window):
         self.set_type_hint(Gdk.WindowTypeHint.TOOLTIP)
         self.__clabel = Gtk.Label()
         self.__clabel.show()
-        self.__clabel.set_alignment(0, 0.5)
+        self.__clabel.xalign = 0
         self.__clabel.set_ellipsize(Pango.EllipsizeMode.NONE)
 
         screen = self.get_screen()
@@ -60,7 +60,7 @@ class TreeViewHints(Gtk.Window):
             self.set_visual(rgba)
 
         self.__label = label = self._MinLabel()
-        label.set_alignment(0, 0.5)
+        label.xalign = 0
         label.set_ellipsize(Pango.EllipsizeMode.NONE)
         label.show()
         self.add(label)
@@ -176,8 +176,9 @@ class TreeViewHints(Gtk.Window):
                     return False
 
         # hide if any modifier is active.
+        keymap = Gdk.Keymap.get_for_display(Gdk.Display.get_default())
         mask = Gtk.accelerator_get_default_mod_mask()
-        mask = Gdk.Keymap.get_default().map_virtual_modifiers(mask)[1]
+        mask = keymap.map_virtual_modifiers(mask)[1]
         if event.get_state() & mask:
             self.__undisplay()
             return False
@@ -262,9 +263,9 @@ class TreeViewHints(Gtk.Window):
         else:
             extra_xpad = 0
 
-        label.set_padding(render_xpad + extra_xpad, 0)
+        label.margin_start = label.margin_end = render_xpad + extra_xpad
         set_text(clabel)
-        clabel.set_padding(render_xpad, 0)
+        clabel.margin_start = clabel.margin_end = render_xpad
         label_width = clabel.get_layout().get_pixel_size()[0]
         label_width += clabel.get_layout_offsets()[0] or 0
         # layout offset includes the left padding, so add one more
@@ -1177,7 +1178,7 @@ class _TreeViewColumnLabel(Gtk.Label):
         if alloc.width <= available_width:
             return Gtk.Label.do_draw(self, ctx)
 
-        req_height = self.get_requisition().height
+        req_height = self.get_preferred_height().natural_height
         w, h = alloc.width, alloc.height
         aw = available_width
 
@@ -1239,7 +1240,7 @@ class TreeViewColumn(Gtk.TreeViewColumn):
         GObject.Object.__init__(self, **kwargs)
 
         label = _TreeViewColumnLabel(label=title)
-        label.set_padding(1, 1)
+        label.margin = 1
         label.show()
         self.set_widget(label)
 
