@@ -80,8 +80,6 @@ class TUniSearch(TestCase):
             (u"(?<=abc)def", None),
             (u"(?<!foo)", None),
             (u"(?#foo)", u""),
-            (u"(?:foo)", None),
-            (u"(?:foo|bla)x", None),
             (u"(.+) \1", None),
             (u"\\A\\b\\B\\d\\D\\s\\S\\w\\W\\Z\a",
              u"\\A\\b\\B[\\d][\\D][\\s][\\S][\\w][\\W]\\Z\a"),
@@ -96,12 +94,33 @@ class TUniSearch(TestCase):
             (u"[.]", u"\\."),
             (u"[^a-z]", None),
             (u"[^a-z\\w]", None),
+            ("(x|yy)", None),
         ]
 
         for r, o in res:
             if o is None:
                 o = r
             self.assertEqual(re_replace_literals(r, {}), o)
+
+    def test_construct_regexp_37_change(self):
+        # Starting with 3.7 the parser throws out some subpattern
+        # nodes. We try to recover them or test against the old and new result.
+        res = [
+            (u"(?:foo)", ("(?:foo)", "foo")),
+            (u"(?:foo)x", ("(?:foo)x", "foox")),
+            (u"(?:foo)(?:bar)", ("(?:foo)(?:bar)", "foobar")),
+            (u"(?:foo|bla)", None),
+            (u"(?:foo|bla)x", None),
+        ]
+
+        for r, o in res:
+            out = re_replace_literals(r, {})
+            if o is None:
+                o = r
+            if isinstance(o, tuple):
+                assert out in o
+            else:
+                assert out == o
 
     def test_construct_regexp_broken(self):
         self.assertRaises(re.error, re_replace_literals, u"[", {})

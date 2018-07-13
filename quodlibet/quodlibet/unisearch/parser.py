@@ -135,7 +135,7 @@ def _construct_in(pattern, mapping):
     return "[%s%s]" % ("^" if negate else "", u"".join(parts))
 
 
-def _construct_regexp(pattern, mapping):
+def _construct_regexp(pattern, mapping, parent=""):
     """Raises NotImplementedError"""
 
     parts = []
@@ -203,7 +203,7 @@ def _construct_regexp(pattern, mapping):
                 else:
                     raise NotImplementedError(op, av)
             group, pad = av
-            pad = _construct_regexp(pad, mapping)
+            pad = _construct_regexp(pad, mapping, parent=op)
             if group is None:
                 parts.append(u"(?:%s)" % pad)
             else:
@@ -229,7 +229,11 @@ def _construct_regexp(pattern, mapping):
         elif op == "branch":
             dummy, branches = av
             branches = map(lambda b: _construct_regexp(b, mapping), branches)
-            parts.append(u"%s" % (u"|".join(branches)))
+            pad = u"|".join(branches)
+            if parent != "subpattern":
+                parts.append("(?:%s)" % pad)
+            else:
+                parts.append(pad)
         else:
             raise NotImplementedError(op)
 
