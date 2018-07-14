@@ -2,6 +2,7 @@ environment:
   matrix:
     - MSYS2_ARCH: i686
       MSYSTEM: MINGW32
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
 build_script:
   - set PATH=C:\msys64\%MSYSTEM%\bin;C:\msys64\usr\bin;%PATH%
