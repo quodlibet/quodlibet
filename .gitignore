@@ -52,3 +52,4 @@ quodlibet/coverage/*
 .mypy_cache
 
 .pytest_cache
+test-results

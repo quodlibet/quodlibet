@@ -2,6 +2,8 @@ defaults: &defaults
   working_directory: ~/workdir
   machine: true
   steps:
+    - store_test_results:
+        path: test-results
     - checkout
     - run: pwd; ls -l
     - run: docker info
