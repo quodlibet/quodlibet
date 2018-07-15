@@ -708,7 +708,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         main_box.pack_start(paned, True, True, 0)
 
-        play_order = PlayOrderWidget(self.songlist.model, player)
+        play_order = PlayOrderWidget(
+            self.songlist.model,
+            self.qexpander.queue.model, player)
         statusbox = StatusBarBox(play_order, self.qexpander)
         self.order = play_order
         self.statusbar = statusbox.statusbar

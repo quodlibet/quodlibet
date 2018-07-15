@@ -22,7 +22,7 @@ class TPlayOrderWidget(TestCase):
         self.volume = 0
         self.replaygain_profiles = [None, None, None]
         self.reset_replaygain = lambda: None
-        self.po = PlayOrderWidget(self, self)
+        self.po = PlayOrderWidget(self, self, self)
 
     def tearDown(self):
         self.po.destroy()

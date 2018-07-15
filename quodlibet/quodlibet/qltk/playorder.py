@@ -241,11 +241,12 @@ class PlayOrderWidget(Gtk.HBox):
         'changed': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
-    def __init__(self, model, player):
+    def __init__(self, model, queue_model, player):
         super(PlayOrderWidget, self).__init__(spacing=6)
         self.order = None
         self.__inhibit = True
         self.__playlist = model
+        self.__queue = queue_model
         self.__player = player
 
         def create_shuffle(orders):
@@ -352,6 +353,9 @@ class PlayOrderWidget(Gtk.HBox):
         print_d("Updating %s order to %s"
                 % (type(self.__playlist).__name__, self.order))
         self.__playlist.order = self.order
+        print_d("Updating %s order to %s"
+                % (type(self.__queue).__name__, self.order))
+        self.__queue.order = self.order
         self.__player.replaygain_profiles[2] = shuffler.replaygain_profiles
         self.__player.reset_replaygain()
         if self.order != old_order:
