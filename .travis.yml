@@ -8,7 +8,7 @@ matrix:
       language: generic
 
 install:
- - travis_retry wget https://github.com/quodlibet/quodlibet/releases/download/latest/QuodLibet-latest.dmg
+ - travis_retry wget https://github.com/quodlibet/quodlibet/releases/download/ci/QuodLibet-latest.dmg
  - hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg
 
 script:
