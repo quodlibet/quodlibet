@@ -42,8 +42,16 @@ class BigCenteredImage(qltk.Window):
             width = int(width / 1.1)
             height = int(height / 1.1)
         else:
-            width = int(Gdk.Screen.width() / 1.8)
-            height = int(Gdk.Screen.height() / 1.8)
+            win = Gdk.Window.at_pointer()
+            disp = Gdk.Display.get_default()
+            if win[0] and disp:
+                mon = disp.get_monitor_at_window(win[0])
+                rect = mon.get_workarea()
+                width = int(rect.width / 1.8)
+                height = int(rect.height / 1.8)
+            else:
+                width = int(Gdk.Screen.width() / 1.8)
+                height = int(Gdk.Screen.height() / 1.8)
 
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 
