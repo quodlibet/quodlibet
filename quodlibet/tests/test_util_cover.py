@@ -9,6 +9,8 @@ import glob
 import os
 import shutil
 
+from gi.repository import Gio
+
 from senf import fsnative
 
 from quodlibet import config
@@ -47,9 +49,9 @@ class TCoverManager(TestCase):
         for f in files:
             open(f, "w").close()
 
-    def an_album_song(self):
+    def an_album_song(self, fn="asong.ogg"):
         return AudioFile({
-            "~filename": os.path.join(self.dir, "asong.ogg"),
+            "~filename": os.path.join(self.dir, fn),
             "album": u"Quuxly",
         })
 
@@ -219,6 +221,13 @@ class TCoverManager(TestCase):
         self.add_file('cover.jpg')
         cover = self.manager.get_cover_many(songs)
         assert cover
+
+    def test_search_missing_artist(self):
+        titled_album_song = self.an_album_song('z.ogg')
+        titled_album_song["artist"] = "foo"
+        album_songs = [self.an_album_song('x.ogg'), titled_album_song,
+                       self.an_album_song()]
+        self.manager.search_cover(Gio.Cancellable(), album_songs)
 
 
 class THttp(TestCase):
