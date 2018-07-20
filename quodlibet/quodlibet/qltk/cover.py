@@ -42,11 +42,18 @@ class BigCenteredImage(qltk.Window):
             width = int(width / 1.1)
             height = int(height / 1.1)
         else:
-            win = Gdk.Window.at_pointer()
-            disp = Gdk.Display.get_default()
-            if win[0] and disp:
-                mon = disp.get_monitor_at_window(win[0])
-                rect = mon.get_workarea()
+            win = parent.get_window()
+            if win:
+                if qltk.gtk_version[:2] >= (3, 22):
+                    disp = Gdk.Display.get_default()
+                    mon = disp.get_monitor_at_window(win)
+                    rect = mon.get_geometry()
+                else:
+                    # The result should be the same as above, just using
+                    # deprecated methods instead
+                    screen = Gdk.Screen.get_default()
+                    mon_num = screen.get_monitor_at_window(win)
+                    rect = screen.get_monitor_geometry(mon_num)
                 width = int(rect.width / 1.8)
                 height = int(rect.height / 1.8)
             else:
