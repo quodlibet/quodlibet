@@ -45,7 +45,7 @@ def get_sentry():
     sentry = Sentry(SENTRY_DSN)
     sentry.add_tag("release", quodlibet.get_build_description())
     sentry.add_tag("build_type", BUILD_TYPE)
-    sentry.add_tag("build_info", BUILD_INFO)
+    sentry.add_tag("build_info", BUILD_INFO or "NONE")
     sentry.add_tag("mutagen_version", fver(mutagen.version))
     sentry.add_tag("python_version", platform.python_version())
     sentry.add_tag("gtk_version", fver(gtk_version))
