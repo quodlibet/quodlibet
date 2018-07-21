@@ -260,8 +260,7 @@ class TreeViewHints(Gtk.Window):
 
         # get the displayed width of the text, accounting for padding
         set_text(clabel)
-        label_width = (clabel.get_layout().get_pixel_size()[0] +
-                       render_xpad + extra_xpad)
+        label_width = clabel.get_layout().get_pixel_size()[0] + 2 * render_xpad
 
         # CellRenderer width is too large if it's the last one in a column.
         # Use cell_area width as a maximum and limit render_width.
