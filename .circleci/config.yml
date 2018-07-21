@@ -28,6 +28,7 @@ defaults: &defaults
     - run: docker image load -i "_ci_cache/$DOCKERIMAGE"
     - run: docker run $(bash <(curl -s https://codecov.io/env)) --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --detach "$DOCKERIMAGE" bash > container_id
     - run: docker exec "$(cat container_id)" python3 -R -bb -m coverage run --branch ./setup.py test
+    - run: ls -l && circleci-install tree && tree -CAd
     - run:
         command: |
           docker exec "$(cat container_id)" python3 -m coverage xml
