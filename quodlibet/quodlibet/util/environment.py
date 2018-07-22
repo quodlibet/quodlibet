@@ -14,8 +14,7 @@ import os
 import sys
 import ctypes
 
-from gi.repository import Gio
-from gi.repository import GLib
+from quodlibet.util.dbusutils import dbus_name_owned
 
 
 def _dbus_name_owned(name):
@@ -24,16 +23,7 @@ def _dbus_name_owned(name):
     if not is_linux():
         return False
 
-    try:
-        dbus = Gio.DBusProxy.new_for_bus_sync(Gio.BusType.SESSION,
-                                              Gio.DBusProxyFlags.NONE, None,
-                                              'org.freedesktop.DBus',
-                                              '/org/freedesktop/DBus',
-                                              'org.freedesktop.DBus',
-                                              None)
-        return dbus.NameHasOwner('(s)', name)
-    except GLib.Error:
-        return False
+    return dbus_name_owned(name)
 
 
 def is_flatpak():
