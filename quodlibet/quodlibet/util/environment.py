@@ -14,7 +14,7 @@ import os
 import sys
 import ctypes
 
-from quodlibet.util.dbusutils import dbus_name_owned
+from gi.repository import GLib, Gio
 
 
 def _dbus_name_owned(name):
@@ -80,3 +80,19 @@ def is_osx():
     """If we are running under OS X"""
 
     return sys.platform == "darwin"
+
+
+def dbus_name_owned(name):
+    """Returns True if the dbus name has an owner"""
+
+    BUS_DAEMON_NAME = 'org.freedesktop.DBus'
+    BUS_DAEMON_PATH = '/org/freedesktop/DBus'
+    BUS_DAEMON_IFACE = 'org.freedesktop.DBus'
+
+    try:
+        bus = Gio.DBusProxy.new_for_bus_sync(
+            Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
+            BUS_DAEMON_NAME, BUS_DAEMON_PATH, BUS_DAEMON_IFACE, None)
+        return bus.NameHasOwner('(s)', name)
+    except GLib.Error:
+        return False

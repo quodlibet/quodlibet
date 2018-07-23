@@ -11,7 +11,7 @@ import time
 from gi.repository import GLib, Gio
 
 from ._base import MMKeysBackend, MMKeysAction
-from quodlibet.util.dbusutils import dbus_name_owned
+from quodlibet.util.environment import dbus_name_owned
 
 
 class GnomeBackend(MMKeysBackend):
