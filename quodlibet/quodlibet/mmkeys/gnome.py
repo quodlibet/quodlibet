@@ -124,7 +124,7 @@ class GnomeBackend(MMKeysBackend):
 
     def __on_signal(self, proxy, sender, signal, args):
         if signal == 'MediaPlayerKeyPressed':
-            application, action = args[:2]
+            application, action = tuple(args)[:2]
             self.__key_pressed(application, action)
 
     def __key_pressed(self, application, action):
