@@ -140,7 +140,7 @@ class RandomAlbum(EventPlugin):
         return vbox
 
     def _score(self, albums):
-        """Score each album. Returns a list of (score, name) tuples."""
+        """Score each album. Returns a list of (score, album) tuples."""
 
         # Score the album based on its weighted rank ordering for each key
         # Rank ordering is more resistant to clustering than weighting
@@ -160,7 +160,7 @@ class RandomAlbum(EventPlugin):
                 rank = ranked[tag].index(album)
                 scores[album] += rank * self.weights[tag]
 
-        return [(score, name) for name, score in scores.items()]
+        return [(score, album) for album, score in scores.items()]
 
     def plugin_on_song_started(self, song):
         one_song = app.player_options.single
@@ -190,10 +190,15 @@ class RandomAlbum(EventPlugin):
                 nr_albums = min(total, max(int(0.03 * total), 3))
                 print_d("Choosing from %d library albums. Best:" % nr_albums)
                 chosen_albums = random.sample(values, nr_albums)
-                album_scores = sorted(self._score(chosen_albums))
-                for score, album in album_scores[-5:]:
-                    print_d("%0.1f scored by %s" % (score, album("album")))
-                album = max(album_scores)[1]
+                album_scores = self._score(chosen_albums)
+                # Find highest score
+                max_score = max(album_scores, key=lambda t: t[0])[0]
+                # Filter albums by highest score
+                albums = [(sc, al)
+                          for sc, al in album_scores
+                          if sc == max_score]
+                # Pick random album from albums with max. score
+                album = random.choice(albums)
             else:
                 album = random.choice(values)
 
