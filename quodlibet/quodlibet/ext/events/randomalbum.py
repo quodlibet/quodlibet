@@ -191,14 +191,16 @@ class RandomAlbum(EventPlugin):
                 print_d("Choosing from %d library albums. Best:" % nr_albums)
                 chosen_albums = random.sample(values, nr_albums)
                 album_scores = self._score(chosen_albums)
-                # Find highest score
+                for score, album in album_scores[-5:]:
+                    print_d("%0.1f scored by %s" % (score, album("album")))
+                # Find highest score value
                 max_score = max(album_scores, key=lambda t: t[0])[0]
-                # Filter albums by highest score
+                # Filter albums by highest score value
                 albums = [(sc, al)
                           for sc, al in album_scores
                           if sc == max_score]
-                # Pick random album from albums with max. score
-                album = random.choice(albums)
+                # Pick random album from list of highest scored albums
+                album = random.choice(albums)[1]
             else:
                 album = random.choice(values)
 
