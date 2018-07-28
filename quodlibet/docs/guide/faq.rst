@@ -44,8 +44,7 @@ Alternative, may hit this bug. In these layouts, the spacebar sends a
 non-breaking space character, which GTK+ interprets as
 ``<control>space``. This is a `known bug in GTK
 <https://bugzilla.gnome.org/show_bug.cgi?id=541466>`__. You can work
-around it by changing your keyboard layout to send a regular space, or
-by changing the keybinding for play/pause using the method above.
+around it by changing your keyboard layout to send a regular space.
 
 
 How do I add custom / unusual tags to the columns in the song list?
