@@ -188,23 +188,27 @@ class RandomAlbum(EventPlugin):
                 # Select 3% of albums, or at least 3 albums
                 total = len(values)
                 nr_albums = min(total, max(int(0.03 * total), 3))
-                print_d("Choosing from %d library albums. Best:" % nr_albums)
+                print_d("Choosing from %d library albums:" % nr_albums)
                 chosen_albums = random.sample(values, nr_albums)
                 album_scores = self._score(chosen_albums)
-                for score, album in album_scores[-5:]:
-                    print_d("%0.1f scored by %s" % (score, album("album")))
                 # Find highest score value
                 max_score = max(album_scores, key=lambda t: t[0])[0]
+                print_d("Maximum score found: %0.1f" % max_score)
                 # Filter albums by highest score value
                 albums = [(sc, al)
                           for sc, al in album_scores
                           if sc == max_score]
+                print_d("Albums with maximum score:")
+                for score, album in album:
+                    print_d("  %s" % album("album"))
+                
                 # Pick random album from list of highest scored albums
                 album = random.choice(albums)[1]
             else:
                 album = random.choice(values)
 
             if album is not None:
+                print_d("Chosen album: %s" % album("album"))
                 self.schedule_change(album)
 
     def schedule_change(self, album):
