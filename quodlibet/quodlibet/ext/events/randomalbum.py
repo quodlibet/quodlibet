@@ -199,9 +199,9 @@ class RandomAlbum(EventPlugin):
                           for sc, al in album_scores
                           if sc == max_score]
                 print_d("Albums with maximum score:")
-                for score, album in album:
+                for score, album in albums:
                     print_d("  %s" % album("album"))
-                
+
                 # Pick random album from list of highest scored albums
                 album = random.choice(albums)[1]
             else:
