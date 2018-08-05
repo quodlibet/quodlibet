@@ -48,6 +48,7 @@ class WaveformSeekBar(Gtk.Box):
 
         for child in self.get_children():
             child.show_all()
+        self.set_time_label_visibility(CONFIG.show_time_labels)
 
         self._waveform_scale.connect('size-allocate',
                                      self._update_redraw_interval)
@@ -73,6 +74,15 @@ class WaveformSeekBar(Gtk.Box):
 
         if player.info:
             self._create_waveform(player.info, CONFIG.max_data_points)
+
+    def set_time_label_visibility(self, is_visible):
+        self._time_labels_visible = is_visible
+        if is_visible:
+            self._elapsed_label.show()
+            self._remaining_label.show()
+        else:
+            self._elapsed_label.hide()
+            self._remaining_label.hide()
 
     def _create_waveform(self, song, points):
         # Close any existing pipeline to avoid leaks
@@ -204,6 +214,10 @@ class WaveformSeekBar(Gtk.Box):
         self._update_waveform(player, full_redraw)
 
     def _update_label(self, player):
+        if not self._time_labels_visible:
+            self.set_sensitive(player.info is not None and player.seekable)
+            return
+
         if player.info:
             if self._hovering:
                 # Show the position pointed by the mouse
@@ -556,6 +570,7 @@ class Config(object):
     remaining_color = ConfProp(_config, "remaining_color", "")
     show_current_pos = BoolConfProp(_config, "show_current_pos", False)
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
+    show_time_labels = BoolConfProp(_config, "show_time_labels", True)
 
 CONFIG = Config()
 
@@ -570,6 +585,9 @@ class WaveformSeekBarPlugin(EventPlugin):
     PLUGIN_DESC = _(
         "A seekbar in the shape of the waveform of the current song.")
 
+    def __init__(self):
+        self._bar = None
+
     def enabled(self):
         self._bar = WaveformSeekBar(app.player, app.librarian)
         self._bar.show()
@@ -578,7 +596,7 @@ class WaveformSeekBarPlugin(EventPlugin):
     def disabled(self):
         app.window.set_seekbar_widget(None)
         self._bar.destroy()
-        del self._bar
+        self._bar = None
 
     def PluginPreferences(self, parent):
         red = Gdk.RGBA()
@@ -613,6 +631,11 @@ class WaveformSeekBarPlugin(EventPlugin):
             CONFIG.show_current_pos = button.get_active()
         vbox = Gtk.VBox(spacing=6)
 
+        def on_show_time_labels_toggled(button, *args):
+            CONFIG.show_time_labels = button.get_active()
+            if self._bar is not None:
+                self._bar.set_time_label_visibility(CONFIG.show_time_labels)
+
         def create_color(label_text, color, callback):
             hbox = Gtk.HBox(spacing=6)
             hbox.set_border_width(6)
@@ -641,5 +664,11 @@ class WaveformSeekBarPlugin(EventPlugin):
         show_current_pos.set_active(CONFIG.show_current_pos)
         show_current_pos.connect("toggled", on_show_pos_toggled)
         vbox.pack_start(show_current_pos, True, True, 0)
+
+
+        show_time_labels = Gtk.CheckButton(label=_("Show time labels"))
+        show_time_labels.set_active(CONFIG.show_time_labels)
+        show_time_labels.connect("toggled", on_show_time_labels_toggled)
+        vbox.pack_start(show_time_labels, True, True, 0)
 
         return vbox
