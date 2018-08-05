@@ -4,6 +4,7 @@
 #           2017 Didier Villevalois
 #           2017 Muges
 #           2017 Eyenseo
+#           2018 Joschua Gandert
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -664,7 +665,6 @@ class WaveformSeekBarPlugin(EventPlugin):
         show_current_pos.set_active(CONFIG.show_current_pos)
         show_current_pos.connect("toggled", on_show_pos_toggled)
         vbox.pack_start(show_current_pos, True, True, 0)
-
 
         show_time_labels = Gtk.CheckButton(label=_("Show time labels"))
         show_time_labels.set_active(CONFIG.show_time_labels)
