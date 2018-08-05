@@ -540,9 +540,9 @@ class WaveformScale(Gtk.EventBox):
             # Each scroll gives 2 callbacks, one with an extra arg
             return
         if event.direction == Gdk.ScrollDirection.UP:
-            self._player.seek(self._player.get_position() + 5000)
+            self._player.seek(self._player.get_position() + CONFIG.seek_amount)
         elif event.direction == Gdk.ScrollDirection.DOWN:
-            self._player.seek(self._player.get_position() - 5000)
+            self._player.seek(self._player.get_position() - CONFIG.seek_amount)
 
     def set_position(self, position):
         self.position = position
@@ -565,6 +565,7 @@ class Config(object):
     hover_color = ConfProp(_config, "hover_color", "")
     remaining_color = ConfProp(_config, "remaining_color", "")
     show_current_pos = BoolConfProp(_config, "show_current_pos", False)
+    seek_amount = IntConfProp(_config, "seek_amount", 5000)
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
 
 
@@ -622,6 +623,10 @@ class WaveformSeekBarPlugin(EventPlugin):
 
         def on_show_pos_toggled(button, *args):
             CONFIG.show_current_pos = button.get_active()
+
+        def seek_amount_changed(spinbox):
+            CONFIG.seek_amount = spinbox.get_value_as_int()
+
         vbox = Gtk.VBox(spacing=6)
 
         def create_color(label_text, color, callback):
@@ -652,5 +657,17 @@ class WaveformSeekBarPlugin(EventPlugin):
         show_current_pos.set_active(CONFIG.show_current_pos)
         show_current_pos.connect("toggled", on_show_pos_toggled)
         vbox.pack_start(show_current_pos, True, True, 0)
+
+        hbox = Gtk.HBox(spacing=6)
+        hbox.set_border_width(6)
+        label = Gtk.Label(label=_("Seek amount when scrolling (milliseconds):"))
+        hbox.pack_start(label, False, True, 0)
+        seek_amount = Gtk.SpinButton(
+            adjustment=Gtk.Adjustment(CONFIG.seek_amount,
+                                      0, 60000, 1000, 1000, 0)
+        )
+        seek_amount.connect("changed", seek_amount_changed)
+        hbox.pack_start(seek_amount, True, True, 0)
+        vbox.pack_start(hbox, True, True, 0)
 
         return vbox
