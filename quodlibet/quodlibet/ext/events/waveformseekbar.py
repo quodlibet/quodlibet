@@ -310,7 +310,8 @@ class WaveformScale(Gtk.EventBox):
         self.mouse_position = -1
         self._last_mouse_position = -1
         self.connect('scroll-event', self.do_scroll_event)
-        self.add_events(Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.SCROLL_MASK)
+        self.add_events(Gdk.EventMask.POINTER_MOTION_MASK |
+                        Gdk.EventMask.SCROLL_MASK)
 
         self._seeking = False
 
@@ -661,7 +662,9 @@ class WaveformSeekBarPlugin(EventPlugin):
 
         hbox = Gtk.HBox(spacing=6)
         hbox.set_border_width(6)
-        label = Gtk.Label(label=_("Seek amount when scrolling (milliseconds):"))
+        label = Gtk.Label(label=_(
+            "Seek amount when scrolling (milliseconds):"
+        ))
         hbox.pack_start(label, False, True, 0)
         seek_amount = Gtk.SpinButton(
             adjustment=Gtk.Adjustment(CONFIG.seek_amount,
