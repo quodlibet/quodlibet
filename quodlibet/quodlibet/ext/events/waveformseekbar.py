@@ -670,6 +670,7 @@ class WaveformSeekBarPlugin(EventPlugin):
             adjustment=Gtk.Adjustment(CONFIG.seek_amount,
                                       0, 60000, 1000, 1000, 0)
         )
+        seek_amount.set_numeric(True)
         seek_amount.connect("changed", seek_amount_changed)
         hbox.pack_start(seek_amount, True, True, 0)
         vbox.pack_start(hbox, True, True, 0)
