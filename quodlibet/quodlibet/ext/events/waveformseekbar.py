@@ -309,7 +309,6 @@ class WaveformScale(Gtk.EventBox):
 
         self.mouse_position = -1
         self._last_mouse_position = -1
-        self.connect('scroll-event', self.do_scroll_event)
         self.add_events(Gdk.EventMask.POINTER_MOTION_MASK |
                         Gdk.EventMask.SCROLL_MASK)
 
@@ -537,10 +536,7 @@ class WaveformScale(Gtk.EventBox):
             self.queue_draw()
             return True
 
-    def do_scroll_event(self, event, extra=None):
-        if extra is not None:
-            # Each scroll gives 2 callbacks, one with an extra arg
-            return
+    def do_scroll_event(self, event):
         if event.direction == Gdk.ScrollDirection.UP:
             self._player.seek(self._player.get_position() + CONFIG.seek_amount)
         elif event.direction == Gdk.ScrollDirection.DOWN:
