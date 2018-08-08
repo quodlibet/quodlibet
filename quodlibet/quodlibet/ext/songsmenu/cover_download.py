@@ -139,9 +139,10 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         def selected(fb):
             children = fb.get_selected_children()
-            cover = self.model.get_item(children[0].get_index())
-            if cover:
-                self.button.set_sensitive(True)
+            if children:
+                cover = self.model.get_item(children[0].get_index())
+                if cover:
+                    self.button.set_sensitive(True)
 
         # Only supported on GTK >= 3.18 (not Ubuntu 16.04)
         # Re-enable some day perhaps...
