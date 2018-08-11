@@ -5,6 +5,7 @@
 #           2017 Muges
 #           2017 Eyenseo
 #           2018 Joschua Gandert
+#           2018 Blimmo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -323,7 +324,8 @@ class WaveformScale(Gtk.EventBox):
 
         self.mouse_position = -1
         self._last_mouse_position = -1
-        self.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
+        self.add_events(Gdk.EventMask.POINTER_MOTION_MASK |
+                        Gdk.EventMask.SCROLL_MASK)
 
         self._seeking = False
 
@@ -549,6 +551,14 @@ class WaveformScale(Gtk.EventBox):
             self.queue_draw()
             return True
 
+    def do_scroll_event(self, event):
+        if event.direction == Gdk.ScrollDirection.UP:
+            self._player.seek(self._player.get_position() + CONFIG.seek_amount)
+            self.queue_draw()
+        elif event.direction == Gdk.ScrollDirection.DOWN:
+            self._player.seek(self._player.get_position() - CONFIG.seek_amount)
+            self.queue_draw()
+
     def set_position(self, position):
         self.position = position
 
@@ -570,8 +580,10 @@ class Config(object):
     hover_color = ConfProp(_config, "hover_color", "")
     remaining_color = ConfProp(_config, "remaining_color", "")
     show_current_pos = BoolConfProp(_config, "show_current_pos", False)
+    seek_amount = IntConfProp(_config, "seek_amount", 5000)
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
     show_time_labels = BoolConfProp(_config, "show_time_labels", True)
+
 
 CONFIG = Config()
 
@@ -630,6 +642,10 @@ class WaveformSeekBarPlugin(EventPlugin):
 
         def on_show_pos_toggled(button, *args):
             CONFIG.show_current_pos = button.get_active()
+
+        def seek_amount_changed(spinbox):
+            CONFIG.seek_amount = spinbox.get_value_as_int()
+
         vbox = Gtk.VBox(spacing=6)
 
         def on_show_time_labels_toggled(button, *args):
@@ -670,5 +686,20 @@ class WaveformSeekBarPlugin(EventPlugin):
         show_time_labels.set_active(CONFIG.show_time_labels)
         show_time_labels.connect("toggled", on_show_time_labels_toggled)
         vbox.pack_start(show_time_labels, True, True, 0)
+
+        hbox = Gtk.HBox(spacing=6)
+        hbox.set_border_width(6)
+        label = Gtk.Label(label=_(
+            "Seek amount when scrolling (milliseconds):"
+        ))
+        hbox.pack_start(label, False, True, 0)
+        seek_amount = Gtk.SpinButton(
+            adjustment=Gtk.Adjustment(CONFIG.seek_amount,
+                                      0, 60000, 1000, 1000, 0)
+        )
+        seek_amount.set_numeric(True)
+        seek_amount.connect("changed", seek_amount_changed)
+        hbox.pack_start(seek_amount, True, True, 0)
+        vbox.pack_start(hbox, True, True, 0)
 
         return vbox
