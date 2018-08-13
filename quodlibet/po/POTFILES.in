@@ -95,6 +95,7 @@ quodlibet/ext/playorder/shufflebygrouping.py
 quodlibet/ext/playorder/skip_songs.py
 quodlibet/ext/playorder/track_repeat.py
 quodlibet/ext/query/conditional.py
+quodlibet/ext/query/missing.py
 quodlibet/ext/query/pythonexpression.py
 quodlibet/ext/query/savedsearch.py
 quodlibet/ext/_shared/squeezebox/base.py
