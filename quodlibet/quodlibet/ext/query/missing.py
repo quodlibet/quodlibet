@@ -8,16 +8,22 @@
 
 from quodlibet import _
 from quodlibet.plugins.query import QueryPlugin
+from quodlibet.plugins import PluginConfigMixin
 
 
-class MissingQuery(QueryPlugin):
+class MissingQuery(QueryPlugin, PluginConfigMixin):
     PLUGIN_ID = "missing_query"
     PLUGIN_NAME = _("Missing Query")
     PLUGIN_DESC = _("Matches songs without the given tag")
     key = 'missing'
 
-    @staticmethod
-    def search(data, body):
-        if data.get(body, None) is None:
-            return True
-        return False
+    def search(self, data, body):
+        val = data.get(body, None)
+        return (val is None
+                or (self.config_get_bool("include_empty", True)
+                    and val == ""))
+
+    @classmethod
+    def PluginPreferences(cls, window):
+        return cls.ConfigCheckButton(_("Include empty tags"),
+                                     "include_empty", True)
