@@ -14,7 +14,7 @@ from quodlibet.plugins import PluginConfigMixin
 class MissingQuery(QueryPlugin, PluginConfigMixin):
     PLUGIN_ID = "missing_query"
     PLUGIN_NAME = _("Missing Query")
-    PLUGIN_DESC = _("Matches songs without the given tag")
+    PLUGIN_DESC = _("Matches songs without the given tag.")
     key = 'missing'
 
     def search(self, data, body):
