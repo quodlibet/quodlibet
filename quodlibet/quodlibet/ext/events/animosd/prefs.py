@@ -183,7 +183,7 @@ class AnimOsdPrefs(Gtk.VBox):
             hb = Gtk.HBox(spacing=6)
             coversize = Gtk.SpinButton(
                 adjustment=Gtk.Adjustment.new(
-                    self.Conf.coversize, 120, 600, 1, 10, 0),
+                    self.Conf.coversize, 1, 600, 1, 10, 0),
                 climb_rate=1, digits=0)
             coversize.set_numeric(True)
             coversize.connect('value-changed', change_coversize)
