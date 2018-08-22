@@ -81,7 +81,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
     name = _("Album Collection")
     accelerated_name = _("Album _Collection")
     keys = ["AlbumCollection", "CollectionBrowser"]
-    priority = 5
+    priority = 6
 
     __model = None
 

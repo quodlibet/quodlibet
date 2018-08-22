@@ -127,7 +127,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     name = _("Cover Grid")
     accelerated_name = _("_Cover Grid")
     keys = ["CoverGrid"]
-    priority = 4
+    priority = 5
 
     def pack(self, songpane):
         container = self.songcontainer
