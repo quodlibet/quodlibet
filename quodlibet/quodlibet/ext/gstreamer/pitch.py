@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
+#           2018 Ludovic Druette
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -50,7 +51,7 @@ class Preferences(Gtk.VBox):
     def __init__(self):
         super(Preferences, self).__init__(spacing=12)
 
-        table = Gtk.Table(n_rows=3, n_columns=2)
+        table = Gtk.Table(n_rows=3, n_columns=3)
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
@@ -71,13 +72,18 @@ class Preferences(Gtk.VBox):
             self.emit("changed")
 
         for idx, key in enumerate(["tempo", "rate", "pitch"]):
-            scale = Gtk.HScale(
-                adjustment=Gtk.Adjustment.new(0, 0.1, 3, 0.1, 1, 0))
+            adjustment = Gtk.Adjustment(0, 0.1, 3, 0.1, 1, 0)
+            scale = Gtk.HScale(adjustment=adjustment)
             scale.set_digits(2)
             scale.add_mark(1.0, Gtk.PositionType.BOTTOM, None)
             labels[key].set_mnemonic_widget(scale)
-            scale.set_value_pos(Gtk.PositionType.RIGHT)
+            scale.set_draw_value(False)
             table.attach(scale, 1, 2, idx, idx + 1)
+            spin = Gtk.SpinButton(adjustment=adjustment)
+            spin.set_digits(2)
+            table.attach(spin, 2, 3, idx, idx + 1,
+                         xoptions=Gtk.AttachOptions.FILL |
+                         Gtk.AttachOptions.SHRINK)
             scale.connect('value-changed', scale_changed, key)
             scale.set_value(get_cfg(key))
 
