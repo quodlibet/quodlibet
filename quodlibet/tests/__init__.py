@@ -210,6 +210,12 @@ def init_test_environ():
     # don't use dconf
     environ["GSETTINGS_BACKEND"] = "memory"
 
+    # don't use dconf
+    environ["GSETTINGS_BACKEND"] = "memory"
+
+    # Force the default theme so broken themes don't affect the tests
+    environ["GTK_THEME"] = "Adwaita"
+
     if xvfbwrapper is not None:
         _VDISPLAY = xvfbwrapper.Xvfb()
         _VDISPLAY.start()
