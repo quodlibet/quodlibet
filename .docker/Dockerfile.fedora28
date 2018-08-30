@@ -21,7 +21,8 @@ RUN dnf -y install \
     dbus-x11 \
     intltool \
     gdb \
-    gettext
+    gettext \
+    && dnf clean all
 
 RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper coverage
 

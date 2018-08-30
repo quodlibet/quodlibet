@@ -6,13 +6,11 @@ ENV CI true
 
 RUN echo "deb http://ppa.launchpad.net/lazka/dumpingplace/ubuntu xenial main" >> /etc/apt/sources.list
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5806C7C4
-RUN apt-get update
 
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
     quodlibet \
-    exfalso
-
-RUN apt-get install --no-install-recommends -y \
+    exfalso \
+    && apt-get install --no-install-recommends -y \
     python3-polib \
     python3-pytest \
     python3-pip \
@@ -25,7 +23,8 @@ RUN apt-get install --no-install-recommends -y \
     curl \
     git \
     gdb \
-    appstream-util
+    appstream-util \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper coverage
 
