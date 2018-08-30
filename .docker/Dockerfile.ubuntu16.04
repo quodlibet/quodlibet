@@ -24,6 +24,7 @@ RUN apt-get install --no-install-recommends -y \
     dbus-x11 \
     curl \
     git \
+    gdb \
     appstream-util
 
 RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper coverage
