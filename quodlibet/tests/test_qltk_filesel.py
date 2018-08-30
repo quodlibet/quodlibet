@@ -50,9 +50,10 @@ class TDirectoryTree(TestCase):
         quodlibet.config.quit()
 
     def test_initial(self):
-        paths = ["/", get_home_dir(), "/usr/bin"]
         if os.name == "nt":
-            paths = [u"C:\\", get_home_dir()]
+            paths = [u"C:\\", get_home_dir(), sys.prefix]
+        else:
+            paths = ["/", get_home_dir(), sys.prefix]
 
         for path in paths:
             dirlist = DirectoryTree(path, folders=self.ROOTS)
