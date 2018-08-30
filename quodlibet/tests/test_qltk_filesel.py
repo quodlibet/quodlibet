@@ -51,7 +51,7 @@ class TDirectoryTree(TestCase):
 
     def test_initial(self):
         if os.name == "nt":
-            paths = [u"C:\\", get_home_dir(), sys.prefix]
+            paths = [u"C:\\", get_home_dir()]
         else:
             paths = ["/", get_home_dir(), sys.prefix]
 
