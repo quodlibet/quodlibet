@@ -24,6 +24,7 @@ def iter_py_paths():
     root = os.path.dirname(get_module_dir(quodlibet))
 
     skip = [
+        os.path.join(root, "build"),
         os.path.join(root, "docs"),
         os.path.join(root, "quodlibet", "packages"),
     ]
