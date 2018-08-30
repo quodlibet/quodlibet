@@ -97,13 +97,16 @@ def get_thumbnail_from_file(fileobj, boundary):
             pass
 
 
-def get_thumbnail(path, boundary):
+def get_thumbnail(path, boundary, ignore_temp=True):
     """Get a thumbnail pixbuf of an image at `path`.
 
     Will create/use a thumbnail in the user's thumbnail directory if possible.
     Follows the Free Desktop specification:
 
     http://specifications.freedesktop.org/thumbnail-spec/
+
+    If ignore_temp then no thumbnail cache will be created for files
+    in the default temporary directory.
 
     Can raise GLib.GError. Thread-safe.
     """
@@ -123,7 +126,7 @@ def get_thumbnail(path, boundary):
 
     # embedded thumbnails come from /tmp/
     # FIXME: move this to another layer
-    if path.startswith(gettempdir()):
+    if ignore_temp and path.startswith(gettempdir()):
         return new_from_file_at_size(path, width, height)
 
     thumb_path, thumb_size = get_cache_info(path, boundary)
