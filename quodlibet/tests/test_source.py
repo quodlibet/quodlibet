@@ -25,6 +25,7 @@ def iter_py_paths():
 
     skip = [
         os.path.join(root, "build"),
+        os.path.join(root, "dist"),
         os.path.join(root, "docs"),
         os.path.join(root, "quodlibet", "packages"),
     ]
