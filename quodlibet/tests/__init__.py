@@ -207,6 +207,9 @@ def init_test_environ():
     # set to new default
     environ.pop("XDG_DATA_HOME", None)
 
+    # don't use dconf
+    environ["GSETTINGS_BACKEND"] = "memory"
+
     if xvfbwrapper is not None:
         _VDISPLAY = xvfbwrapper.Xvfb()
         _VDISPLAY.start()
