@@ -26,7 +26,12 @@ RUN apt-get update && apt-get install -y \
     appstream-util \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --upgrade pycodestyle pyflakes xvfbwrapper coverage
+RUN pip3 install --upgrade \
+    pycodestyle \
+    pyflakes \
+    xvfbwrapper \
+    coverage \
+    pytest-faulthandler
 
 ARG HOST_USER_ID=5555
 ENV HOST_USER_ID ${HOST_USER_ID}
