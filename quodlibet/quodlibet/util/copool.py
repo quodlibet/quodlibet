@@ -12,7 +12,7 @@
 
 from gi.repository import GLib
 
-from quodlibet.compat import PY2, listkeys
+from quodlibet.compat import listkeys
 
 
 class _Routine(object):
@@ -29,7 +29,7 @@ class _Routine(object):
             yield False
 
         f = wrap(func, funcid, args, kwargs)
-        self.source_func = f.next if PY2 else f.__next__
+        self.source_func = f.__next__
 
     @property
     def paused(self):

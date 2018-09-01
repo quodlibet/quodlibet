@@ -25,7 +25,7 @@ from quodlibet import util
 from quodlibet import app
 
 from quodlibet.browsers import Browser
-from quodlibet.compat import listfilter, text_type, build_opener, PY2
+from quodlibet.compat import listfilter, text_type, build_opener
 from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.getstring import GetStringDialog
@@ -225,7 +225,7 @@ class Feed(list):
             ct_hdr = result.headers.get('Content-Type', "Unknown type")
             content_type = ct_hdr.split(';')[0]
             try:
-                status = result.code if PY2 else result.status
+                status = result.status
             except AttributeError:
                 print_w("Missing status code for feed %s" % self.uri)
             else:

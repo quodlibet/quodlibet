@@ -11,7 +11,7 @@ import xml.etree.ElementTree as ET
 import dbus
 import dbus.service
 
-from quodlibet.compat import unichr, text_type, PY3, iteritems
+from quodlibet.compat import unichr, iteritems
 
 
 def dbus_unicode_validate(text):
@@ -135,14 +135,9 @@ def apply_signature(value, sig, utf8_strings=False):
     elif sig.startswith("a"):
         return dbus.Array(value, signature=sig[1:])
     elif sig == "s":
-        if utf8_strings and not PY3:
-            if isinstance(value, text_type):
-                value = value.encode("utf-8")
-            return dbus.UTF8String(value)
-        else:
-            if isinstance(value, bytes):
-                value = value.decode("utf-8")
-            return dbus.String(value)
+        if isinstance(value, bytes):
+            value = value.decode("utf-8")
+        return dbus.String(value)
     else:
         return TYPE_MAP[sig](value)
 

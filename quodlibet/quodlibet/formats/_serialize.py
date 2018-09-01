@@ -9,11 +9,11 @@
 """Code for serializing AudioFile instances"""
 
 import pickle
-from senf import bytes2fsn, fsn2bytes, fsnative
+from senf import bytes2fsn, fsn2bytes
 
 from quodlibet.util.picklehelper import pickle_loads, pickle_dumps
 from quodlibet.util import is_windows
-from quodlibet.compat import PY3, text_type
+from quodlibet.compat import text_type
 from ._audio import AudioFile
 
 
@@ -22,8 +22,6 @@ class SerializationError(Exception):
 
 
 def _py2_to_py3(items):
-    assert PY3
-
     for i in items:
         try:
             l = list(i.items())
@@ -63,8 +61,6 @@ def _py2_to_py3(items):
 
 
 def _py3_to_py2(items):
-    assert PY3
-
     is_win = is_windows()
 
     new_list = []
@@ -80,52 +76,6 @@ def _py3_to_py2(items):
             dict.__setitem__(inst, key, value)
         new_list.append(inst)
     return new_list
-
-
-def _py2_to_py2(items):
-    # for weren't always so strict about the types in AudioFile.__setitem__
-    # This tries to fix things.
-
-    assert not PY3
-    fsn_type = type(fsnative())
-
-    fixups = []
-    for i in items:
-        try:
-            it = i.iteritems()
-        except AttributeError:
-            raise SerializationError
-        for k, v in it:
-            if k in ("~filename", "~mountpoint"):
-                if not isinstance(v, fsn_type):
-                    # use utf-8 here since we can't be sure that the environ
-                    # is the same as before
-                    if isinstance(v, text_type):
-                        v = v.encode("utf-8", "replace")
-                    else:
-                        v = v.decode("utf-8", "replace")
-                    fixups.append((i, k, v))
-            elif k[:2] == "~#":
-                try:
-                    v + 0
-                except:
-                    try:
-                        fixups.append((i, k, int(v)))
-                    except:
-                        try:
-                            fixups.append((i, k, float(v)))
-                        except:
-                            fixups.append((i, k, 0))
-            elif not isinstance(v, text_type):
-                if isinstance(v, bytes):
-                    fixups.append((i, k, v.decode("utf-8", "replace")))
-                else:
-                    fixups.append((i, k, text_type(v)))
-
-    for item, key, value in fixups:
-        item[key] = value
-
-    return items
 
 
 def load_audio_files(data, process=True):
@@ -181,10 +131,7 @@ def load_audio_files(data, process=True):
                 "all class lookups failed. something is wrong")
 
     if process:
-        if PY3:
-            items = _py2_to_py3(items)
-        else:
-            items = _py2_to_py2(items)
+        items = _py2_to_py3(items)
 
     try:
         for i in items:
@@ -207,7 +154,7 @@ def dump_audio_files(item_list, process=True):
     assert isinstance(item_list, list)
     assert not item_list or isinstance(item_list[0], AudioFile)
 
-    if PY3 and process:
+    if process:
         item_list = _py3_to_py2(item_list)
 
     try:

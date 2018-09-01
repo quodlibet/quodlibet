@@ -20,8 +20,7 @@ from senf import print_, path2fsn, fsn2text, fsnative, \
     supports_ansi_escape_codes
 
 from quodlibet import const
-from quodlibet.compat import PY2, text_type
-from .string import decode
+from quodlibet.compat import text_type
 from . import logging as ql_logging
 
 
@@ -249,17 +248,7 @@ def extract_tb(*args, **kwargs):
     (fsnative, int, text_type, text_type)
     """
 
-    tp = traceback.extract_tb(*args, **kwargs)
-    if not PY2:
-        return tp
-
-    result = []
-    for filename, line_number, function_name, text in tp:
-        filename = path2fsn(filename)
-        function_name = decode(function_name)
-        text = decode(text or u"")
-        result.append((filename, line_number, function_name, text))
-    return result
+    return traceback.extract_tb(*args, **kwargs)
 
 
 def print_exc(exc_info=None, context=None):

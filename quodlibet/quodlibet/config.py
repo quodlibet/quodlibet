@@ -15,20 +15,10 @@ from . import const
 from quodlibet.util.config import Config, Error
 from quodlibet.util import print_d, print_w
 from quodlibet.util import is_osx, is_windows
-from quodlibet.compat import PY2, iteritems, text_type
+from quodlibet.compat import iteritems
 
 # Some plugins can be enabled on first install
 AUTO_ENABLED_PLUGINS = ["Shuffle Playlist", "Remove Playlist Duplicates"]
-
-
-def _config_text(text):
-    # raw config values are utf-8 encoded on PY2, while they are unicode
-    # with surrogates on PY2. this makes initing the defaults work
-
-    assert isinstance(text, text_type)
-    if PY2:
-        return text.encode("utf-8")
-    return text
 
 
 # this defines the initial and default values
@@ -183,10 +173,10 @@ INITIAL = {
         "bayesian_rating_factor": "0.0",
 
         # rating symbol (black star)
-        "rating_symbol_full": _config_text(u'\u2605'),
+        "rating_symbol_full": u'\u2605',
 
         # rating symbol (hollow star)
-        "rating_symbol_blank": _config_text(u'\u2606'),
+        "rating_symbol_blank": u'\u2606',
 
         # Comma-separated columns to display in the song list
         "columns": ",".join(const.DEFAULT_COLUMNS),
@@ -446,9 +436,6 @@ class HardCodedRatingsPrefs(RatingsPrefs):
     default = float(INITIAL["settings"]["default_rating"])
     blank_symbol = INITIAL["settings"]["rating_symbol_blank"]
     full_symbol = INITIAL["settings"]["rating_symbol_full"]
-    if PY2:
-        blank_symbol = blank_symbol.decode("utf-8")
-        full_symbol = full_symbol.decode("utf-8")
 
 
 # Need an instance just for imports to work

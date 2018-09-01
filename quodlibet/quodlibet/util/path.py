@@ -18,7 +18,7 @@ import shlex
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
     fsn2text, path2fsn
 
-from quodlibet.compat import PY2, urlparse, text_type, quote, unquote, PY3
+from quodlibet.compat import urlparse, text_type, quote, unquote
 from . import windows
 from .environment import is_windows
 from .misc import environ, NamedTemporaryFile
@@ -42,19 +42,13 @@ def mkdir(dir_, *args):
 def glib2fsn(path):
     """Takes a glib filename and returns a fsnative path"""
 
-    if PY2:
-        return bytes2fsn(path, "utf-8")
-    else:
-        return path
+    return path
 
 
 def fsn2glib(path):
     """Takes a fsnative path and returns a glib filename"""
 
-    if PY2:
-        return fsn2bytes(path, "utf-8")
-    else:
-        return path
+    return path
 
 
 def iscommand(s):
@@ -160,7 +154,7 @@ def unexpand(filename):
     return filename
 
 
-if PY3 and is_windows():
+if is_windows():
     def ismount(path):
         # this can raise on py3+win, but we don't care
         try:

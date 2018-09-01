@@ -15,7 +15,7 @@ from senf import environ, path2fsn, fsn2text, text2fsn
 
 from quodlibet.util.path import unexpand, xdg_get_system_data_dirs
 from quodlibet.util.dprint import print_d
-from quodlibet.compat import text_type, PY2, listfilter
+from quodlibet.compat import text_type, listfilter
 
 from .misc import get_locale_encoding
 
@@ -152,21 +152,14 @@ class GlibTranslations(gettext.GNUTranslations):
         # our changed defaultencoding for coercion, so utf-8 encoded strings
         # fail at lookup.
         message = text_type(message)
-        if PY2:
-            return text_type(gettext.GNUTranslations.ugettext(self, message))
-        else:
-            return text_type(gettext.GNUTranslations.gettext(self, message))
+        return text_type(gettext.GNUTranslations.gettext(self, message))
 
     def ungettext(self, msgid1, msgid2, n):
         # see ugettext
         msgid1 = text_type(msgid1)
         msgid2 = text_type(msgid2)
-        if PY2:
-            return text_type(
-                gettext.GNUTranslations.ungettext(self, msgid1, msgid2, n))
-        else:
-            return text_type(
-                gettext.GNUTranslations.ngettext(self, msgid1, msgid2, n))
+        return text_type(
+            gettext.GNUTranslations.ngettext(self, msgid1, msgid2, n))
 
     def unpgettext(self, context, msgid, msgidplural, n):
         context = text_type(context)

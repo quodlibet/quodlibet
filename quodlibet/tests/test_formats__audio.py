@@ -12,7 +12,7 @@ from contextlib import contextmanager
 from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
 
 from quodlibet import config
-from quodlibet.compat import PY2, text_type, long, listkeys, PY3
+from quodlibet.compat import text_type, listkeys
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
@@ -144,12 +144,8 @@ class TAudioFile(TestCase):
         with self.assertRaises(TypeError):
             af[42] = u"foo"
 
-        if PY3:
-            with self.assertRaises(TypeError):
-                af[b"foo"] = u"bar"
-        else:
-            with self.assertRaises(ValueError):
-                af[b"\xff"] = u"bar"
+        with self.assertRaises(TypeError):
+            af[b"foo"] = u"bar"
 
     def test_call(self):
         # real keys should lookup the same
@@ -719,19 +715,6 @@ class TAudioFile(TestCase):
         n.from_dump(dump)
         self.failUnless(
             set(dump.split(b"\n")) == set(n.to_dump().split(b"\n")))
-
-    def test_to_dump_long(self):
-        if not PY2:
-            return
-        b = AudioFile(bar_1_1)
-        b["~#length"] = long(200000000000)
-        dump = b.to_dump()
-        num = len(set(bar_1_1.keys()) | NUMERIC_ZERO_DEFAULT)
-        self.failUnlessEqual(dump.count("\n"), num + 2, msg=dump)
-
-        n = AudioFile()
-        n.from_dump(dump)
-        self.failUnless(set(dump.split("\n")) == set(n.to_dump().split("\n")))
 
     def test_to_dump_unicode(self):
         b = AudioFile(bar_1_1)

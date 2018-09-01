@@ -31,7 +31,7 @@ from quodlibet import const
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins.gui import UserInterfacePlugin
 from quodlibet.qltk import Icons, add_css, Align
-from quodlibet.compat import exec_, PY2
+from quodlibet.compat import exec_
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.collection import Collection
 from quodlibet.util import print_
@@ -86,8 +86,6 @@ def create_console(songs=None):
 
     dir_string = _("Your current working directory is:")
 
-    if PY2:
-        console.eval("from __future__ import print_function", False)
     console.eval("import mutagen", False)
     console.eval("import os", False)
     console.eval("print(\"Python: %s / Quod Libet: %s\")" %

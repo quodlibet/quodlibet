@@ -70,7 +70,7 @@ class _ModelMixin(object):
             iter_ = inext(iter_)
 
     def values(self):
-        """Largely for PY2 -> PY3 compatibility"""
+        """Largely for Py2 -> Py3 compatibility"""
         return list(self.itervalues())
 
     def iterrows(self, iter_=None):

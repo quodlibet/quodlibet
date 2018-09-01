@@ -32,7 +32,7 @@ from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 from quodlibet.compat import iteritems, string_types, text_type, \
-    number_types, listitems, izip_longest, integer_types, PY3, listfilter
+    number_types, listitems, izip_longest, integer_types, listfilter
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
@@ -182,24 +182,8 @@ class AudioFile(dict, ImageContainer):
 
     def __setitem__(self, key, value):
         # validate key
-        if PY3:
-            if not isinstance(key, text_type):
-                raise TypeError("key has to be str")
-        else:
-            if isinstance(key, text_type):
-                # we try to save keys as encoded ASCII to save memory
-                # under PY2. Everything else besides ASCII combined with
-                # unicode breaks hashing even if the default encoding
-                # it utf-8.
-                try:
-                    key = key.encode("ascii")
-                except UnicodeEncodeError:
-                    pass
-            elif isinstance(key, bytes):
-                # make sure we set ascii keys only
-                key.decode("ascii")
-            else:
-                raise TypeError("key needs to be unicode or ASCII str")
+        if not isinstance(key, text_type):
+            raise TypeError("key has to be str")
 
         # validate value
         if key.startswith("~#"):
@@ -954,23 +938,11 @@ class AudioFile(dict, ImageContainer):
             text (bytes)
         """
 
-        def decode_key(key):
-            """str if ascii, otherwise decode using utf-8"""
-
-            if PY3:
-                return decode(key)
-
-            try:
-                key.decode("ascii")
-            except ValueError:
-                return decode(key)
-            return key
-
         for line in text.split(b"\n"):
             if not line:
                 continue
             parts = line.split(b"=")
-            key = decode_key(parts[0])
+            key = decode(parts[0])
             val = b"=".join(parts[1:])
             if key == "~format":
                 pass
