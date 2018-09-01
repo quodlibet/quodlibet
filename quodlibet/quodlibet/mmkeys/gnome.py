@@ -27,10 +27,11 @@ class GnomeBackend(MMKeysBackend):
         "Play": MMKeysAction.PLAYPAUSE,
         "Pause": MMKeysAction.PAUSE,
         "Stop": MMKeysAction.STOP,
+        "FastForward": MMKeysAction.FORWARD,
+        "Rewind": MMKeysAction.REWIND,
         "Repeat": MMKeysAction.REPEAT,
         "Shuffle": MMKeysAction.SHUFFLE
     }
-    # TODO: Rewind, FastForward
 
     def __init__(self, name, callback):
         self.__interface = None

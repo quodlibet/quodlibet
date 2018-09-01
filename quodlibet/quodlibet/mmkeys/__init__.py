@@ -92,6 +92,13 @@ class MMKeysHandler(object):
     def _callback(self, action):
         print_d("Event %r from %r" % (action, type(self._backend).__name__))
 
+        def seek_relative(seconds):
+            current = player.get_position()
+            current += seconds * 1000
+            current = min(player.song("~#length") * 1000 - 1, current)
+            current = max(0, current)
+            player.seek(current)
+
         player = self._player
         player_options = self._player_options
         if action == MMKeysAction.PREV:
@@ -106,6 +113,12 @@ class MMKeysHandler(object):
             player.playpause()
         elif action == MMKeysAction.PAUSE:
             player.paused = True
+        elif action == MMKeysAction.FORWARD:
+            if player.song:
+                seek_relative(10)
+        elif action == MMKeysAction.REWIND:
+            if player.song:
+                seek_relative(-10)
         elif action == MMKeysAction.REPEAT:
             player_options.repeat = not player_options.repeat
         elif action == MMKeysAction.SHUFFLE:

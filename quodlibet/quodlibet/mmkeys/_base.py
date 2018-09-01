@@ -19,6 +19,8 @@ class MMKeysAction(object):
     PREV = "prev"
     NEXT = "next"
     PLAYPAUSE = "playpause"
+    FORWARD = "forward"
+    REWIND = "rewind"
     REPEAT = "repeat"
     SHUFFLE = "shuffle"
 

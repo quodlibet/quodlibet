@@ -32,6 +32,8 @@ class KeybinderBackend(MMKeysBackend):
         "XF86AudioNext": MMKeysAction.NEXT,
         "XF86AudioStop": MMKeysAction.STOP,
         "XF86AudioPlay": MMKeysAction.PLAYPAUSE,
+        "XF86AudioForward": MMKeysAction.FORWARD,
+        "XF86AudioRewind": MMKeysAction.REWIND,
         "XF86AudioRepeat": MMKeysAction.REPEAT,
         "XF86AudioRandomPlay": MMKeysAction.SHUFFLE
     }
