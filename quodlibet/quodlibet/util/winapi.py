@@ -19,7 +19,7 @@ if os.name != "nt":
 import ctypes
 from ctypes import wintypes, cdll, windll, oledll
 
-from quodlibet.compat import long, add_metaclass
+from quodlibet.compat import long
 
 from .enum import enum
 
@@ -368,8 +368,7 @@ class COMInterface(type(ctypes.c_void_p)):
         return type(ctypes.c_void_p).__new__(mcls, cls_name, bases, dict(d))
 
 
-@add_metaclass(COMInterface)
-class IUnknown(ctypes.c_void_p):
+class IUnknown(ctypes.c_void_p, metaclass=COMInterface):
 
     IID = GUID("{00000001-0000-0000-c000-000000000046}")
 
