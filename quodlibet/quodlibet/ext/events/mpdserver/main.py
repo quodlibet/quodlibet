@@ -13,7 +13,7 @@ from senf import bytes2fsn, fsn2bytes
 
 from quodlibet import const
 from quodlibet.util import print_d, print_w
-from quodlibet.compat import text_type, iteritems
+from quodlibet.compat import iteritems
 from .tcpserver import BaseTCPServer, BaseTCPConnection
 
 
@@ -417,7 +417,7 @@ class MPDConnection(BaseTCPConnection):
         self.service = service
         service.add_connection(self)
 
-        str_version = u".".join(map(text_type, service.version))
+        str_version = u".".join(map(str, service.version))
         self._buf = bytearray((u"OK MPD %s\n" % str_version).encode("utf-8"))
         self._read_buf = bytearray()
 
@@ -503,7 +503,7 @@ class MPDConnection(BaseTCPConnection):
     def write_line(self, line):
         """Writes a line to the client"""
 
-        assert isinstance(line, text_type)
+        assert isinstance(line, str)
         self.log(u"<- " + repr(line))
 
         self._buf.extend(line.encode("utf-8", errors="replace") + b"\n")
@@ -833,7 +833,7 @@ def _cmd_outputs(conn, service, args):
 @MPDConnection.Command("commands", permission=Permissions.PERMISSION_NONE)
 def _cmd_commands(conn, service, args):
     for name in conn.list_commands():
-        conn.write_line(u"command: " + text_type(name))
+        conn.write_line(u"command: " + str(name))
 
 
 @MPDConnection.Command("tagtypes")

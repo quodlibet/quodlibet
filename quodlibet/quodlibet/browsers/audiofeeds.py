@@ -26,7 +26,7 @@ from quodlibet import util
 from quodlibet import app
 
 from quodlibet.browsers import Browser
-from quodlibet.compat import listfilter, text_type
+from quodlibet.compat import listfilter
 from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.getstring import GetStringDialog
@@ -174,7 +174,7 @@ class Feed(list):
                                 "ogg" in enclosure.type or
                                 formats.filter(enclosure.url)):
                             uri = enclosure.url
-                            if not isinstance(uri, text_type):
+                            if not isinstance(uri, str):
                                 uri = uri.decode('utf-8')
                             try:
                                 size = float(enclosure.length)
@@ -253,7 +253,7 @@ class AddFeedDialog(GetStringDialog):
     def run(self, text='', test=False):
         uri = super(AddFeedDialog, self).run(text=text, test=test)
         if uri:
-            if not isinstance(uri, text_type):
+            if not isinstance(uri, str):
                 uri = uri.decode('utf-8')
             return Feed(uri)
         return None

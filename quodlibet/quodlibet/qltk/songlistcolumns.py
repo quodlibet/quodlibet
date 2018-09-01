@@ -24,7 +24,7 @@ from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.qltk import add_css
 from quodlibet.util.path import unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS
-from quodlibet.compat import text_type, listvalues, listitems
+from quodlibet.compat import listvalues, listitems
 from quodlibet.qltk.x import CellRendererPixbuf
 
 
@@ -390,7 +390,7 @@ class NumericColumn(TextColumn):
         if isinstance(value, float):
             text = u"%.2f" % round(value, 2)
         else:
-            text = text_type(value)
+            text = str(value)
 
         cell.set_property('text', text)
         self._recalc_width(model.get_path(iter_), text)

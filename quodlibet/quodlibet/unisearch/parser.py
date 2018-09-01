@@ -12,7 +12,6 @@ import unicodedata
 
 from quodlibet import print_d
 from quodlibet.util import re_escape
-from quodlibet.compat import text_type
 
 from .db import get_replacement_mapping
 
@@ -243,7 +242,7 @@ def _construct_regexp(pattern, mapping, parent=""):
 def re_replace_literals(text, mapping):
     """Raises NotImplementedError or re.error"""
 
-    assert isinstance(text, text_type)
+    assert isinstance(text, str)
 
     pattern = sre_parse.parse(text)
     return _construct_regexp(pattern, mapping)
@@ -262,7 +261,7 @@ def re_add_variants(text):
     case something is not supported NotImplementedError gets raised.
     """
 
-    assert isinstance(text, text_type)
+    assert isinstance(text, str)
 
     text = unicodedata.normalize("NFC", text)
     return re_replace_literals(text, get_replacement_mapping())
@@ -271,7 +270,7 @@ def re_add_variants(text):
 def compile(pattern, ignore_case=True, dot_all=False, asym=False):
     """
     Args:
-        pattern (text_type): a unicode regex
+        pattern (str): a unicode regex
         ignore_case (bool): if case shouuld be ignored when matching
         dot_all (bool): if "." should match newlines
         asym (bool): if ascii should match similar looking unicode chars
@@ -282,7 +281,7 @@ def compile(pattern, ignore_case=True, dot_all=False, asym=False):
         ValueError: In case the regex is invalid
     """
 
-    assert isinstance(pattern, text_type)
+    assert isinstance(pattern, str)
 
     pattern = unicodedata.normalize("NFC", pattern)
 

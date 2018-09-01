@@ -15,7 +15,6 @@ from quodlibet.util import i18n
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
     set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, \
     numeric_phrase, get_available_languages, iter_locale_dirs
-from quodlibet.compat import text_type
 
 
 @contextlib.contextmanager
@@ -49,30 +48,30 @@ class TGlibTranslations(TestCase):
     def test_ugettext(self):
         t = self.t.ugettext("foo")
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
     def test_ungettext(self):
         t = self.t.ungettext("foo", "bar", 1)
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
         t = self.t.ungettext("foo", "bar", 2)
         self.assertEqual(t, "bar")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
     def test_upgettext(self):
         t = self.t.upgettext("ctx", "foo")
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
     def test_unpgettext(self):
         t = self.t.unpgettext("ctx", "foo", "bar", 1)
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
         t = self.t.unpgettext("ctx", "foo", "bar", 2)
         self.assertEqual(t, "bar")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
 
 class Tgettext(TestCase):

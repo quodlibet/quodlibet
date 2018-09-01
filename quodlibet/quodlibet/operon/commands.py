@@ -25,7 +25,7 @@ from quodlibet.util.path import mtime
 from quodlibet.pattern import Pattern, error as PatternError
 from quodlibet.util.tags import USER_TAGS, sortkey, MACHINE_TAGS
 from quodlibet.util.tagsfrompath import TagsFromPattern
-from quodlibet.compat import text_type, iteritems
+from quodlibet.compat import iteritems
 
 from .base import Command, CommandError
 from .util import print_terse_table, copy_mtime, list_tags, print_table, \
@@ -181,7 +181,7 @@ class EditCommand(Command):
         return u"\n".join(lines)
 
     def _text_to_song(self, text, song):
-        assert isinstance(text, text_type)
+        assert isinstance(text, str)
 
         # parse
         tags = {}
@@ -248,10 +248,10 @@ class EditCommand(Command):
             try:
                 subprocess.check_call(editor_args + [path])
             except subprocess.CalledProcessError as e:
-                self.log(text_type(e))
+                self.log(str(e))
                 raise CommandError(_("Editing aborted"))
             except OSError as e:
-                self.log(text_type(e))
+                self.log(str(e))
                 raise CommandError(
                     _("Starting text editor '%(editor-name)s' failed.") % {
                         "editor-name": editor_args[0]})
@@ -485,14 +485,14 @@ class InfoCommand(Command):
             tags = []
             for key in ["~format", "~codec", "~encoding", "~length",
                         "~bitrate", "~filesize"]:
-                tags.append((util.tag(key), text_type(song.comma(key))))
+                tags.append((util.tag(key), str(song.comma(key))))
 
             print_table(tags, headers, nicks, order)
         else:
             tags = []
             for key in ["~format", "~codec", "~encoding", "~#length",
                         "~#bitrate", "~#filesize"]:
-                tags.append((key.lstrip("#~"), text_type(song(key))))
+                tags.append((key.lstrip("#~"), str(song(key))))
 
             print_terse_table(tags, nicks, order)
 

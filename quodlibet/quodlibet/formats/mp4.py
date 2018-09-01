@@ -11,7 +11,7 @@ from mutagen.mp4 import MP4, MP4Cover
 
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import decode
-from quodlibet.compat import iteritems, listkeys, text_type
+from quodlibet.compat import iteritems, listkeys
 
 from ._audio import AudioFile
 from ._misc import AudioFileError, translate_errors
@@ -98,11 +98,11 @@ class MP4File(AudioFile):
                     if total:
                         self[name] = u"%d/%d" % (cur, total)
                     else:
-                        self[name] = text_type(cur)
+                        self[name] = str(cur)
             elif key in self.__translate:
                 name = self.__translate[key]
                 if key == "tmpo":
-                    self[name] = u"\n".join(map(text_type, values))
+                    self[name] = u"\n".join(map(str, values))
                 elif key.startswith("----"):
                     self[name] = "\n".join(
                         map(lambda v: decode(v).strip("\x00"), values))

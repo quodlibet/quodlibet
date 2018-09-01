@@ -15,7 +15,6 @@ import operator
 from senf import fsn2text, fsnative
 
 from quodlibet.unisearch import compile
-from quodlibet.compat import text_type
 from quodlibet.util import parse_date
 from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 
@@ -52,8 +51,8 @@ class Node(object):
 class Regex(Node):
 
     def __init__(self, pattern, mod_string):
-        self.pattern = text_type(pattern)
-        self.mod_string = text_type(mod_string)
+        self.pattern = str(pattern)
+        self.mod_string = str(mod_string)
 
         ignore_case = "c" not in self.mod_string or "i" in self.mod_string
         dot_all = "s" in self.mod_string

@@ -8,7 +8,6 @@
 
 from mutagen.musepack import Musepack
 
-from quodlibet.compat import text_type
 from ._audio import translate_errors
 from ._apev2 import APEv2File
 
@@ -38,10 +37,10 @@ class MPCFile(APEv2File):
                 album_g = u"%+0.2f dB" % audio.info.album_gain
                 self.setdefault("replaygain_album_gain", album_g)
             if audio.info.title_peak:
-                track_p = text_type(audio.info.title_peak * 2)
+                track_p = str(audio.info.title_peak * 2)
                 self.setdefault("replaygain_track_peak", track_p)
             if audio.info.album_peak:
-                album_p = text_type(audio.info.album_peak * 2)
+                album_p = str(audio.info.album_peak * 2)
                 self.setdefault("replaygain_album_peak", album_p)
         except AttributeError:
             pass

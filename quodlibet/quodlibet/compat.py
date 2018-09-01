@@ -8,8 +8,6 @@
 
 cmp = lambda a, b: (a > b) - (a < b)
 
-text_type = str
-
 iteritems = lambda d: iter(d.items())
 itervalues = lambda d: iter(d.values())
 iterkeys = lambda d: iter(d.keys())

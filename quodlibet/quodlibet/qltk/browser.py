@@ -14,7 +14,7 @@ from quodlibet import util
 from quodlibet import browsers
 from quodlibet import app
 from quodlibet import _
-from quodlibet.compat import listfilter, text_type
+from quodlibet.compat import listfilter
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import ScrolledWindow, Action
@@ -152,7 +152,7 @@ class FilterMenu(object):
             self._browser.unfilter()
 
     def _make_query(self, query):
-        assert isinstance(query, text_type)
+        assert isinstance(query, str)
         if self._browser.can_filter_text():
             self._browser.filter_text(query)
             self._browser.activate()

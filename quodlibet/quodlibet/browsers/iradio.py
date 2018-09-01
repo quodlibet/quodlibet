@@ -47,7 +47,7 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.compat import text_type, iteritems, iterkeys
+from quodlibet.compat import iteritems, iterkeys
 
 
 STATION_LIST_URL = \
@@ -224,7 +224,7 @@ def add_station(uri):
         try:
             sock = urlopen(uri)
         except EnvironmentError as err:
-            err = "%s\n\nURL: %s" % (text_type(err), uri)
+            err = "%s\n\nURL: %s" % (str(err), uri)
             print_d("Got %s from %s" % (err, uri))
             ErrorMessage(None, _("Unable to add station"), escape(err)).run()
             return None
@@ -336,7 +336,7 @@ def parse_taglist(data):
         if not station:
             continue
 
-        if isinstance(value, text_type):
+        if isinstance(value, str):
             if value not in station.list(key):
                 station.add(key, value)
         else:

@@ -36,7 +36,7 @@ from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
-from quodlibet.compat import iteritems, text_type, listkeys, itervalues
+from quodlibet.compat import iteritems, listkeys, itervalues
 
 
 class Comment(object):
@@ -159,7 +159,7 @@ class AudioFileGroup(dict):
         for tag, count in iteritems(keys):
             first_value = first[tag]
             if not isinstance(first_value, str):
-                first_value = text_type(first_value)
+                first_value = str(first_value)
             shared = all[tag]
             complete = count == total
             if shared and complete:
@@ -667,7 +667,7 @@ class EditTags(Gtk.VBox):
         remove.set_sensitive(bool(rows))
 
     def __add_new_tag(self, model, tag, value):
-        assert isinstance(value, text_type)
+        assert isinstance(value, str)
         iters = [i for (i, v) in model.iterrows() if v.tag == tag]
         if iters and not self.__songinfo.can_multiple_values(tag):
             title = _("Unable to add tag")
@@ -696,9 +696,9 @@ class EditTags(Gtk.VBox):
                 break
             tag = add.get_tag()
             value = add.get_value()
-            assert isinstance(value, text_type)
+            assert isinstance(value, str)
             value = massagers.validate(tag, value)
-            assert isinstance(value, text_type)
+            assert isinstance(value, str)
             if not self.__songinfo.can_change(tag):
                 title = _("Invalid tag")
                 msg = _("Invalid tag <b>%s</b>\n\nThe files currently"

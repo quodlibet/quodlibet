@@ -30,7 +30,6 @@ from configparser import RawConfigParser as ConfigParser, Error, NoSectionError
 
 from senf import fsnative
 
-from quodlibet.compat import text_type
 from quodlibet.util import list_unique, print_d
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.string import join_escape, split_escape
@@ -265,7 +264,7 @@ class Config(object):
         """Saves a list of unicode strings using the csv module"""
 
         sw = StringIO()
-        values = [text_type(v) for v in values]
+        values = [str(v) for v in values]
 
         writer = csv.writer(sw, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(values)
@@ -319,7 +318,7 @@ class Config(object):
                 raise
 
     def settext(self, section, option, value):
-        value = text_type(value)
+        value = str(value)
 
         # make sure there are no surrogates
         value.encode("utf-8")

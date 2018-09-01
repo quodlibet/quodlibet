@@ -20,7 +20,7 @@ from quodlibet.qltk.x import Button, Align
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
-from quodlibet.compat import text_type, itervalues
+from quodlibet.compat import itervalues
 
 
 class Entry(object):
@@ -193,7 +193,7 @@ class TrackNumbers(Gtk.VBox):
             if total:
                 s = u"%d/%d" % (row.path.get_indices()[0] + start, total)
             else:
-                s = text_type(row.path.get_indices()[0] + start)
+                s = str(row.path.get_indices()[0] + start)
             entry = row[0]
             entry.tracknumber = s
             model.row_changed(row.path, row.iter)

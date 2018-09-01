@@ -31,7 +31,6 @@ from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import Icons, Button
 from quodlibet.util import connect_obj, connect_destroy, cached_func
 from quodlibet.util.i18n import numeric_phrase
-from quodlibet.compat import text_type
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -438,7 +437,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
     @staticmethod
     def remove_accents(s):
-        return "".join(c for c in unicodedata.normalize('NFKD', text_type(s))
+        return "".join(c for c in unicodedata.normalize('NFKD', str(s))
                        if not unicodedata.combining(c))
 
     @classmethod

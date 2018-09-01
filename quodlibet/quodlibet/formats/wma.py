@@ -11,7 +11,7 @@ import struct
 import mutagen.asf
 
 from quodlibet.util.path import get_temp_cover_file
-from quodlibet.compat import iteritems, text_type
+from quodlibet.compat import iteritems
 
 from ._audio import AudioFile
 from ._image import EmbeddedImage, APICType
@@ -120,7 +120,7 @@ class WMAFile(AudioFile):
                 name = self.__translate[name]
             except KeyError:
                 continue
-            self[name] = u"\n".join(map(text_type, values))
+            self[name] = u"\n".join(map(str, values))
         self.sanitize(filename)
 
     def write(self):

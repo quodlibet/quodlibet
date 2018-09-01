@@ -21,7 +21,6 @@ from quodlibet.formats import AudioFile
 from quodlibet import config
 from quodlibet.browsers import Browser
 from quodlibet.library import SongFileLibrary, SongLibrarian
-from quodlibet.compat import text_type
 
 
 SONGS = [
@@ -165,11 +164,11 @@ class TBrowserMixin(object):
             if self.b.can_filter_text():
                 self.assertEqual(self.b.get_filter_text(), u"")
                 self.assertTrue(
-                    isinstance(self.b.get_filter_text(), text_type))
+                    isinstance(self.b.get_filter_text(), str))
                 self.b.filter_text(u"foo")
                 self.assertEqual(self.b.get_filter_text(), u"foo")
                 self.assertTrue(
-                    isinstance(self.b.get_filter_text(), text_type))
+                    isinstance(self.b.get_filter_text(), str))
 
     def test_filter_albums(self):
         with realized(self.b):

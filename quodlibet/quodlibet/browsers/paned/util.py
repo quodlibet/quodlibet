@@ -10,7 +10,6 @@ import re
 
 from quodlibet import config
 from quodlibet import util
-from quodlibet.compat import text_type
 
 from quodlibet.pattern import XMLFromMarkupPattern as XMLFromPattern
 
@@ -53,7 +52,7 @@ class PaneConfig(object):
             if is_numeric(cat):
 
                 def format(song):
-                    v = text_type(f_round(song(cat)))
+                    v = str(f_round(song(cat)))
                     return [(v, v)]
             else:
                 format = lambda song: song.list_separate(cat)
@@ -66,7 +65,7 @@ class PaneConfig(object):
             format_display = pd.format
         else:
             if is_numeric(disp):
-                format_display = lambda coll: text_type(f_round(coll(disp)))
+                format_display = lambda coll: str(f_round(coll(disp)))
             else:
                 format_display = lambda coll: util.escape(coll.comma(disp))
 

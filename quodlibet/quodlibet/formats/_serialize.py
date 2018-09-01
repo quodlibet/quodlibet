@@ -13,7 +13,6 @@ from senf import bytes2fsn, fsn2bytes
 
 from quodlibet.util.picklehelper import pickle_loads, pickle_dumps
 from quodlibet.util import is_windows
-from quodlibet.compat import text_type
 from ._audio import AudioFile
 
 
@@ -48,7 +47,7 @@ def _py2_to_py3(items):
                         v = v.decode("utf-8", "replace")
             elif isinstance(v, bytes):
                 v = v.decode("utf-8", "replace")
-            elif isinstance(v, text_type):
+            elif isinstance(v, str):
                 # strip surrogates
                 try:
                     v.encode("utf-8")

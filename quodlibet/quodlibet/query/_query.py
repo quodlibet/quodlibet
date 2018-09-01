@@ -14,7 +14,6 @@ from . import _match as match
 from ._match import error, Node, False_
 from ._parser import QueryParser
 from quodlibet.util import re_escape, enum, cached_property
-from quodlibet.compat import text_type
 
 
 @enum
@@ -59,7 +58,7 @@ class Query(Node):
         if star is None:
             star = self.STAR
 
-        assert isinstance(string, text_type)
+        assert isinstance(string, str)
 
         self.star = list(star)
         self.string = string

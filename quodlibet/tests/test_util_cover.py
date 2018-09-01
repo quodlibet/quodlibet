@@ -20,7 +20,6 @@ from quodlibet.plugins import Plugin
 from quodlibet.util.cover.http import escape_query_value
 from quodlibet.util.cover.manager import CoverManager
 from quodlibet.util.path import normalize_path, path_equal, mkdir
-from quodlibet.compat import text_type
 
 from tests import TestCase, mkdtemp
 
@@ -87,7 +86,7 @@ class TCoverManager(TestCase):
 
     def test_file_encoding(self):
         f = self.add_file(fsnative(u"öäü - cover.jpg"))
-        self.assertTrue(isinstance(self.song("album"), text_type))
+        self.assertTrue(isinstance(self.song("album"), str))
         h = self._find_cover(self.song)
         self.assertEqual(normalize_path(h.name), normalize_path(f))
 

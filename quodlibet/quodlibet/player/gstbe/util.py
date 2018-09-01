@@ -15,7 +15,6 @@ from quodlibet import _
 from quodlibet.util.string import decode
 from quodlibet.util import is_linux, is_windows
 from quodlibet.player import PlayerError
-from quodlibet.compat import text_type
 
 
 def pulse_is_running():
@@ -187,14 +186,14 @@ def parse_gstreamer_taglist(tags):
             if not isinstance(value, list):
                 value = [value]
             for val in value:
-                if not isinstance(val, text_type):
+                if not isinstance(val, str):
                     continue
                 split = val.split("=", 1)
                 sub_key = split[0]
                 val = split[-1]
                 if sub_key in merged:
                     sub_val = merged[sub_key]
-                    if not isinstance(sub_val, text_type):
+                    if not isinstance(sub_val, str):
                         continue
                     if val not in sub_val.split("\n"):
                         merged[sub_key] += "\n" + val
@@ -211,8 +210,8 @@ def parse_gstreamer_taglist(tags):
             if isinstance(value, bytes):
                 value = decode(value)
 
-            if not isinstance(value, text_type):
-                value = text_type(value)
+            if not isinstance(value, str):
+                value = str(value)
 
             if key in merged:
                 merged[key] += "\n" + value

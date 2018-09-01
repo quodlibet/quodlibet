@@ -14,7 +14,7 @@ from quodlibet.formats import AudioFileError
 from quodlibet import config
 from quodlibet.util import connect_obj, is_windows
 from quodlibet.formats import AudioFile
-from quodlibet.compat import text_type, iteritems, iterkeys, itervalues
+from quodlibet.compat import iteritems, iterkeys, itervalues
 
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipIf
 from .helper import capture_output, get_temp_copy
@@ -250,7 +250,7 @@ class TLibrary(TestCase):
 class FakeAudioFile(AudioFile):
 
     def __init__(self, key):
-        self["~filename"] = fsnative(text_type(key))
+        self["~filename"] = fsnative(str(key))
 
 
 def FakeAudioFileRange(*args):

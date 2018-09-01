@@ -12,7 +12,7 @@ from contextlib import contextmanager
 from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
 
 from quodlibet import config
-from quodlibet.compat import text_type, listkeys
+from quodlibet.compat import listkeys
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
@@ -77,9 +77,9 @@ class TAudioFile(TestCase):
     def test_format_type(self):
         for t in format_types:
             i = AudioFile.__new__(t)
-            assert isinstance(i("~format"), text_type)
+            assert isinstance(i("~format"), str)
 
-    def test_tag_text_types(self):
+    def test_tag_strs(self):
         for t in format_types:
             i = AudioFile.__new__(t)
             i["~filename"] = fsnative(u"foo")
@@ -95,7 +95,7 @@ class TAudioFile(TestCase):
                     if name in FILESYSTEM_TAGS:
                         assert isinstance(i(name, fsnative()), fsnative)
                     else:
-                        assert isinstance(i(name), text_type)
+                        assert isinstance(i(name), str)
 
     def test_sort(self):
         l = [self.quux, bar_1_2, bar_2_1, bar_1_1]
@@ -139,7 +139,7 @@ class TAudioFile(TestCase):
         af.clear()
         af[u"öäü"] = u"bar"
         assert u"öäü" in af
-        assert isinstance(listkeys(af)[0], text_type)
+        assert isinstance(listkeys(af)[0], str)
 
         with self.assertRaises(TypeError):
             af[42] = u"foo"
@@ -178,7 +178,7 @@ class TAudioFile(TestCase):
     def test_filesize(self):
         self.failUnlessEqual(bar_1_2("~filesize"), "1.00 MB")
         self.failUnlessEqual(bar_1_2("~#filesize"), 1024 ** 2)
-        assert isinstance(bar_1_2("~filesize"), text_type)
+        assert isinstance(bar_1_2("~filesize"), str)
 
     def test_bitrate(self):
         self.assertEqual(bar_1_2("~#bitrate"), 128)
@@ -315,11 +315,11 @@ class TAudioFile(TestCase):
         self.failUnless(", " in bar_2_1.comma("artist"))
 
     def test_comma_filename(self):
-        self.assertTrue(isinstance(bar_1_1.comma("~filename"), text_type))
+        self.assertTrue(isinstance(bar_1_1.comma("~filename"), str))
 
     def test_comma_mountpoint(self):
         assert not bar_1_1("~mountpoint")
-        assert isinstance(bar_1_1.comma("~mountpoint"), text_type)
+        assert isinstance(bar_1_1.comma("~mountpoint"), str)
         assert bar_1_1.comma("~mountpoint") == u""
 
     def test_exist(self):
@@ -592,7 +592,7 @@ class TAudioFile(TestCase):
             lyrics_dir = os.path.dirname(af.lyric_filename)
             mkdir(lyrics_dir)
             with io.open(af.lyric_filename, "w", encoding='utf-8') as lf:
-                lf.write(text_type(lyrics))
+                lf.write(str(lyrics))
             self.failUnlessEqual(af("~lyrics").splitlines(),
                                  lyrics.splitlines())
             os.remove(af.lyric_filename)
@@ -603,7 +603,7 @@ class TAudioFile(TestCase):
         song["~filename"] = fsnative(u"filename")
         song.sanitize()
         assert isinstance(song["~mountpoint"], fsnative)
-        assert isinstance(song.comma("~mointpoint"), text_type)
+        assert isinstance(song.comma("~mointpoint"), str)
 
     def test_sanitize(self):
         q = AudioFile(self.quux)
@@ -990,7 +990,7 @@ class Tdecode_value(TestCase):
         self.assertEqual(decode_value("~#foo", 0.25), u"0.25")
         self.assertEqual(decode_value("~#foo", 4), u"4")
         self.assertEqual(decode_value("~#foo", "bar"), u"bar")
-        self.assertTrue(isinstance(decode_value("~#foo", "bar"), text_type))
+        self.assertTrue(isinstance(decode_value("~#foo", "bar"), str))
         path = fsnative(u"/foobar")
         self.assertEqual(decode_value("~filename", path), fsn2text(path))
 

@@ -15,7 +15,7 @@ from quodlibet import util, config
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w, print_d
 from quodlibet.util.http import download_json, download
-from quodlibet.compat import iteritems, text_type
+from quodlibet.compat import iteritems
 
 from .library import SoundcloudFile
 from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH
@@ -253,7 +253,7 @@ class SoundcloudApiClient(RestApi):
         try:
             song.update(title=r.title,
                         artist=r.user["username"],
-                        soundcloud_user_id=text_type(r.user_id),
+                        soundcloud_user_id=str(r.user_id),
                         website=r.permalink_url,
                         genre=u"\n".join(r.genre and r.genre.split(",") or []))
             if dl:

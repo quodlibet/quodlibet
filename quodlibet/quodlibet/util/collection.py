@@ -20,7 +20,6 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
-from quodlibet.compat import text_type
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.dprint import print_d
@@ -114,7 +113,7 @@ class Collection(object):
             v = map(default_funct, v)
             v = map(lambda x: (isinstance(x, float) and "%.2f" % x) or x, v)
             v = map(
-                lambda x: isinstance(x, str) and x or text_type(x), v)
+                lambda x: isinstance(x, str) and x or str(x), v)
             return connector.join(filter(None, v)) or default
         else:
             value = self.__get_cached_value(key)
@@ -381,7 +380,7 @@ class Playlist(Collection, Iterable):
         self.__inhibit_library_signals = False
         self.__instances.append(self)
 
-        name = text_type(name)
+        name = str(name)
         if not name:
             raise ValueError("Playlists must have a name")
 
@@ -418,7 +417,7 @@ class Playlist(Collection, Iterable):
         if the name is not allowed
         """
 
-        new_name = text_type(new_name)
+        new_name = str(new_name)
         if not new_name:
             raise ValueError(_("Playlists must have a name"))
         return new_name

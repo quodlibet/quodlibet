@@ -32,7 +32,7 @@ from quodlibet.util import iso639
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
-from quodlibet.compat import iteritems, text_type, \
+from quodlibet.compat import iteritems, \
     listitems, listfilter
 
 from ._image import ImageContainer
@@ -87,8 +87,8 @@ def decode_value(tag, value):
         if isinstance(value, float):
             return u"%.2f" % value
         else:
-            return text_type(value)
-    return text_type(value)
+            return str(value)
+    return str(value)
 
 
 class AudioFile(dict, ImageContainer):
@@ -183,7 +183,7 @@ class AudioFile(dict, ImageContainer):
 
     def __setitem__(self, key, value):
         # validate key
-        if not isinstance(key, text_type):
+        if not isinstance(key, str):
             raise TypeError("key has to be str")
 
         # validate value
@@ -194,7 +194,7 @@ class AudioFile(dict, ImageContainer):
             if not isinstance(value, fsnative):
                 value = path2fsn(value)
         else:
-            value = text_type(value)
+            value = str(value)
 
         dict.__setitem__(self, key, value)
 
@@ -379,7 +379,7 @@ class AudioFile(dict, ImageContainer):
                 except KeyError:
                     return fsn2uri(self["~filename"])
             elif key == "format":
-                return self.get("~format", text_type(self.format))
+                return self.get("~format", str(self.format))
             elif key == "codec":
                 codec = self.get("~codec")
                 if codec is None:
@@ -698,7 +698,7 @@ class AudioFile(dict, ImageContainer):
             if v == "":
                 return []
             else:
-                return v.split("\n") if isinstance(v, text_type) else [v]
+                return v.split("\n") if isinstance(v, str) else [v]
         else:
             v = self.get(key)
             return [] if v is None else v.split("\n")
@@ -904,7 +904,7 @@ class AudioFile(dict, ImageContainer):
         """
 
         def encode_key(k):
-            return encode(k) if isinstance(k, text_type) else k
+            return encode(k) if isinstance(k, str) else k
 
         s = []
         for k in self.keys():

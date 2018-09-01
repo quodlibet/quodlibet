@@ -19,7 +19,6 @@ from urllib.parse import urlparse, quote, unquote
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
     fsn2text, path2fsn
 
-from quodlibet.compat import text_type
 from . import windows
 from .environment import is_windows
 from .misc import environ, NamedTemporaryFile
@@ -110,14 +109,14 @@ def escape_filename(s):
     """Escape a string in a manner suitable for a filename.
 
     Args:
-        s (text_type)
+        s (str)
     Returns:
         fsnative
     """
 
-    s = text_type(s)
+    s = str(s)
     s = quote(s.encode("utf-8"), safe=b"")
-    if isinstance(s, text_type):
+    if isinstance(s, str):
         s = s.encode("ascii")
     return bytes2fsn(s, "utf-8")
 
@@ -128,7 +127,7 @@ def unescape_filename(s):
     Args:
         filename (fsnative)
     Returns:
-        text_type
+        str
     """
 
     assert isinstance(s, fsnative)

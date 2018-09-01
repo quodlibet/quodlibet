@@ -11,7 +11,7 @@ import mutagen.id3
 
 from quodlibet import config, const, print_d
 from quodlibet import util
-from quodlibet.compat import iteritems, text_type, listvalues
+from quodlibet.compat import iteritems, listvalues
 from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import isascii
@@ -168,7 +168,7 @@ class ID3File(AudioFile):
 
             id3id = frame.FrameID
             if id3id.startswith("T"):
-                text = "\n".join(map(text_type, frame.text))
+                text = "\n".join(map(str, frame.text))
             elif id3id == "COMM":
                 text = "\n".join(frame.text)
             elif id3id == "USLT":
@@ -200,13 +200,13 @@ class ID3File(AudioFile):
         # to avoid reverting or duplicating tags in existing libraries.
         if audio.tags and "date" not in self:
             for frame in tag.getall('TXXX:DATE'):
-                self["date"] = "\n".join(map(text_type, frame.text))
+                self["date"] = "\n".join(map(str, frame.text))
 
         # Read TXXX replaygain and replace previously read values from RVA2
         for frame in tag.getall("TXXX"):
             k = frame.desc.lower()
             if k in RG_KEYS:
-                self[str(k)] = u"\n".join(map(text_type, frame.text))
+                self[str(k)] = u"\n".join(map(str, frame.text))
 
         self.sanitize(filename)
 
@@ -249,7 +249,7 @@ class ID3File(AudioFile):
         return codecs
 
     def __distrust_latin1(self, text, encoding):
-        assert isinstance(text, text_type)
+        assert isinstance(text, str)
         if encoding == 0:
             try:
                 text = text.encode('iso-8859-1')

@@ -26,7 +26,7 @@ except ImportError:
 
 from senf import fsnative, argv
 
-from quodlibet.compat import text_type, iteritems
+from quodlibet.compat import iteritems
 from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
@@ -354,7 +354,7 @@ def format_size(size):
     Args:
         size (int): size in bytes
     Returns:
-        text_type
+        str
     """
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)
     if size >= 1024 ** 3:
@@ -481,7 +481,7 @@ def _split_numeric_sortkey(s, limit=10,
 def human_sort_key(s, normalize=unicodedata.normalize):
     if not s:
         return ()
-    if not isinstance(s, text_type):
+    if not isinstance(s, str):
         s = s.decode("utf-8")
     s = normalize("NFD", s.lower())
     return _split_numeric_sortkey(s)
@@ -558,7 +558,7 @@ def pattern(pat, cap=True, esc=False, markup=False):
 
         def __call__(self, tag, *args):
             if tag in FILESYSTEM_TAGS:
-                return fsnative(text_type(tag))
+                return fsnative(str(tag))
             return 0 if '~#' in tag[:2] else self.comma(tag)
 
     fakesong = Fakesong({'filename': tag('filename', cap)})
@@ -782,7 +782,7 @@ def sanitize_tags(tags, stream=False):
         key = key.lower()
         key = {"location": "website"}.get(key, key)
 
-        if isinstance(value, text_type):
+        if isinstance(value, str):
             lower = value.lower().strip()
 
             if key == "channel-mode":
@@ -844,7 +844,7 @@ def sanitize_tags(tags, stream=False):
             if key.startswith("~#"):
                 key = key[2:]
 
-            if not isinstance(value, text_type):
+            if not isinstance(value, str):
                 continue
 
             value = value.strip()

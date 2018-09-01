@@ -14,7 +14,6 @@ import re
 from . import _match as match
 from ._match import ParseError
 from quodlibet.util import re_escape
-from quodlibet.compat import text_type
 
 
 # Precompiled regexes
@@ -296,7 +295,7 @@ class QueryParser(object):
 
     def str_to_re(self, string):
         """Convert plain string to escaped regexp that can be compiled"""
-        if isinstance(string, text_type):
+        if isinstance(string, str):
             string = string.encode('utf-8')
         string = codecs.escape_decode(string)[0]
         string = string.decode('utf-8')

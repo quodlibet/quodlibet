@@ -7,8 +7,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet.compat import text_type
-
 
 def isascii(string):
     """Returns if the passed str/unicode is an ascii encoded string or
@@ -55,7 +53,7 @@ def split_escape(string, sep, maxsplit=None, escape_char="\\"):
     assert len(escape_char) == 1
 
     if isinstance(string, bytes):
-        if isinstance(escape_char, text_type):
+        if isinstance(escape_char, str):
             escape_char = escape_char.encode("ascii")
         iter_ = lambda b: (bytes([v]) for v in b)
     else:
@@ -100,9 +98,9 @@ def join_escape(values, sep, escape_char="\\"):
 
     # don't allow auto decoding of 'values'
     if values and isinstance(values[0], bytes):
-        if isinstance(escape_char, text_type):
+        if isinstance(escape_char, str):
             escape_char = escape_char.encode("ascii")
-        assert not isinstance(sep, text_type)
+        assert not isinstance(sep, str)
 
     escaped = []
     for value in values:

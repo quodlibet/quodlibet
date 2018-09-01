@@ -20,7 +20,6 @@ from senf import print_, path2fsn, fsn2text, fsnative, \
     supports_ansi_escape_codes
 
 from quodlibet import const
-from quodlibet.compat import text_type
 from . import logging as ql_logging
 
 
@@ -176,8 +175,8 @@ def _supports_ansi_escape_codes(file_):
 def _print_message(string, custom_context, debug_only, prefix,
                    color, logging_category, start_time=time.time()):
 
-    if not isinstance(string, (text_type, fsnative)):
-        string = text_type(string)
+    if not isinstance(string, (str, fsnative)):
+        string = str(string)
 
     context = frame_info(2)
 
@@ -222,21 +221,21 @@ def _print_message(string, custom_context, debug_only, prefix,
 
 
 def format_exception(etype, value, tb, limit=None):
-    """Returns a list of text_type"""
+    """Returns a list of str"""
 
     result_lines = traceback.format_exception(etype, value, tb, limit)
     return [fsn2text(path2fsn(l)) for l in result_lines]
 
 
 def format_exception_only(etype, value):
-    """Returns a list of text_type"""
+    """Returns a list of str"""
 
     result_lines = traceback.format_exception_only(etype, value)
     return [fsn2text(path2fsn(l)) for l in result_lines]
 
 
 def format_exc(limit=None):
-    """Returns text_type"""
+    """Returns str"""
 
     etype, value, tb = sys.exc_info()
     return u''.join(format_exception(etype, value, tb, limit))
@@ -245,7 +244,7 @@ def format_exc(limit=None):
 def extract_tb(*args, **kwargs):
     """Returns a list of tuples containing
 
-    (fsnative, int, text_type, text_type)
+    (fsnative, int, str, str)
     """
 
     return traceback.extract_tb(*args, **kwargs)
