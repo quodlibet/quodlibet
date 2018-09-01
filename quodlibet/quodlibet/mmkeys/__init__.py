@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
+#           2018 Ludovic Druette
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -64,6 +65,7 @@ class MMKeysHandler(object):
         self._backend = None
         self._window = app.window
         self._player = app.player
+        self._player_options = app.player_options
         self._app_name = app.name
 
     def start(self):
@@ -91,6 +93,7 @@ class MMKeysHandler(object):
         print_d("Event %r from %r" % (action, type(self._backend).__name__))
 
         player = self._player
+        player_options = self._player_options
         if action == MMKeysAction.PREV:
             player.previous(force=True)
         elif action == MMKeysAction.NEXT:
@@ -103,5 +106,9 @@ class MMKeysHandler(object):
             player.playpause()
         elif action == MMKeysAction.PAUSE:
             player.paused = True
+        elif action == MMKeysAction.REPEAT:
+            player_options.repeat = not player_options.repeat
+        elif action == MMKeysAction.SHUFFLE:
+            player_options.shuffle = not player_options.shuffle
         else:
             assert 0, "unhandled event"

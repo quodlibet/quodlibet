@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
+#           2018 Ludovic Druette
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,6 +32,8 @@ class KeybinderBackend(MMKeysBackend):
         "XF86AudioNext": MMKeysAction.NEXT,
         "XF86AudioStop": MMKeysAction.STOP,
         "XF86AudioPlay": MMKeysAction.PLAYPAUSE,
+        "XF86AudioRepeat": MMKeysAction.REPEAT,
+        "XF86AudioRandomPlay": MMKeysAction.SHUFFLE
     }
 
     def __init__(self, name, callback):

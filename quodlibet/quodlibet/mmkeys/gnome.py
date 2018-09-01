@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
+#           2018 Ludovic Druette
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,8 +27,10 @@ class GnomeBackend(MMKeysBackend):
         "Play": MMKeysAction.PLAYPAUSE,
         "Pause": MMKeysAction.PAUSE,
         "Stop": MMKeysAction.STOP,
+        "Repeat": MMKeysAction.REPEAT,
+        "Shuffle": MMKeysAction.SHUFFLE
     }
-    # TODO: Rewind, FastForward, Repeat, Shuffle
+    # TODO: Rewind, FastForward
 
     def __init__(self, name, callback):
         self.__interface = None
