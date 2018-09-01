@@ -15,7 +15,7 @@ import operator
 from senf import fsn2text, fsnative
 
 from quodlibet.unisearch import compile
-from quodlibet.compat import floordiv, text_type
+from quodlibet.compat import text_type
 from quodlibet.util import parse_date
 from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 
@@ -336,14 +336,14 @@ class NumexprBinary(Numexpr):
         '-': operator.sub,
         '+': operator.add,
         '*': operator.mul,
-        '/': floordiv,
+        '/': operator.floordiv,
     }
 
     precedence = {
         operator.sub: 1,
         operator.add: 1,
         operator.mul: 2,
-        floordiv: 2,
+        operator.floordiv: 2,
     }
 
     def __init__(self, op, expr, expr2):

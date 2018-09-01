@@ -9,7 +9,7 @@
 
 import unicodedata
 
-from quodlibet.compat import text_type, xrange
+from quodlibet.compat import text_type
 
 
 # Cheat list for human title-casing in English. See Issue 424.
@@ -39,7 +39,7 @@ def utitle(string):
     new_string = string[0].capitalize()
     # It's possible we need to capitalize the second character...
     cap = iswbound(string[0])
-    for i in xrange(1, len(string)):
+    for i in range(1, len(string)):
         s = string[i]
         prev = string[i - 1]
         # Special case apostrophe in the middle of a word.
@@ -87,7 +87,7 @@ def _humanise(text):
         return ws[idx]
 
     words = text.split(" ")   # Yes: to preserve double spacing (!)
-    for i in xrange(1, len(words) - 1):
+    for i in range(1, len(words) - 1):
         word = words[i]
         if word in ENGLISH_INCORRECTLY_CAPITALISED_WORDS:
             prev = previous_real_word(words, i)

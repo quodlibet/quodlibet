@@ -26,7 +26,7 @@ except ImportError:
 from quodlibet.player import PlayerError
 from quodlibet.util import sanitize_tags, is_flatpak
 from quodlibet.formats import MusicFile
-from quodlibet.compat import long, text_type
+from quodlibet.compat import text_type
 from quodlibet import config
 
 
@@ -116,9 +116,6 @@ class TGstreamerTagList(TestCase):
 
         l["bar"] = 1.2
         self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], 1.2)
-
-        l["bar"] = long(9)
-        self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], 9)
 
         l["bar"] = 9
         self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], 9)

@@ -31,7 +31,7 @@ from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import Icons, Button
 from quodlibet.util import connect_obj, connect_destroy, cached_func
 from quodlibet.util.i18n import numeric_phrase
-from quodlibet.compat import text_type, xrange, unichr
+from quodlibet.compat import text_type
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -362,8 +362,8 @@ def _remove_punctuation_trans():
     """Lookup all Unicode punctuation, and remove it"""
 
     return dict.fromkeys(
-        i for i in xrange(sys.maxunicode)
-        if unicodedata.category(unichr(i)).startswith('P'))
+        i for i in range(sys.maxunicode)
+        if unicodedata.category(chr(i)).startswith('P'))
 
 
 class Duplicates(SongsMenuPlugin, PluginConfigMixin):

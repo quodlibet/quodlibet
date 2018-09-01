@@ -31,7 +31,6 @@ from quodlibet import const
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins.gui import UserInterfacePlugin
 from quodlibet.qltk import Icons, add_css, Align
-from quodlibet.compat import exec_
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.collection import Collection
 from quodlibet.util import print_
@@ -362,7 +361,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 if r is not None:
                     print_(repr(r))
             except SyntaxError:
-                exec_(command, self.namespace)
+                exec(command, self.namespace)
         except:
             if hasattr(sys, 'last_type') and sys.last_type == SystemExit:
                 self.destroy()

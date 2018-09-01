@@ -10,10 +10,9 @@
 import importlib
 
 from quodlibet import util
-from quodlibet.compat import swap_to_string, text_type
+from quodlibet.compat import text_type
 
 
-@swap_to_string
 class PlayerError(Exception):
     """Error raised by player loading/initialization and emitted by the
     error signal during playback.

@@ -16,7 +16,7 @@ from senf import fsn2uri
 from quodlibet import app
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
-from quodlibet.compat import iteritems, listmap
+from quodlibet.compat import iteritems
 
 from .util import MPRISObject
 
@@ -277,7 +277,7 @@ value="false"/>
         for xesam, tag in iteritems(list_val):
             vals = song.list(tag)
             if vals:
-                metadata["xesam:" + xesam] = listmap(unival, vals)
+                metadata["xesam:" + xesam] = list(map(unival, vals))
 
         # All single values
         sing_val = {"album": "album", "title": "title", "asText": "~lyrics"}

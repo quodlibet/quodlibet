@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet.compat import text_type, iterbytes
+from quodlibet.compat import text_type
 
 
 def isascii(string):
@@ -57,7 +57,7 @@ def split_escape(string, sep, maxsplit=None, escape_char="\\"):
     if isinstance(string, bytes):
         if isinstance(escape_char, text_type):
             escape_char = escape_char.encode("ascii")
-        iter_ = iterbytes
+        iter_ = lambda b: (bytes([v]) for v in b)
     else:
         iter_ = iter
 

@@ -7,6 +7,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from urllib.parse import quote
+
 from gi.repository import Gtk
 
 from quodlibet import _
@@ -17,7 +19,6 @@ from quodlibet.qltk.entry import Entry
 from quodlibet.qltk.data_editors import TagListEditor
 from quodlibet.qltk import Icons, get_top_parent, ErrorMessage
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.compat import quote
 
 WIKI_URL = "https://%s.wikipedia.org/wiki/Special:Search/"
 

@@ -14,11 +14,12 @@ import sys
 import errno
 import codecs
 import shlex
+from urllib.parse import urlparse, quote, unquote
 
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
     fsn2text, path2fsn
 
-from quodlibet.compat import urlparse, text_type, quote, unquote
+from quodlibet.compat import text_type
 from . import windows
 from .environment import is_windows
 from .misc import environ, NamedTemporaryFile

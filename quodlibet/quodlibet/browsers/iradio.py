@@ -11,6 +11,8 @@ import os
 import sys
 import bz2
 import itertools
+from functools import reduce
+from urllib.request import urlopen
 
 import re
 from gi.repository import Gtk, GLib, Pango
@@ -29,7 +31,6 @@ from quodlibet.formats.remote import RemoteFile
 from quodlibet.formats._audio import TAG_TO_SORT, MIGRATE, AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.query import Query
-from quodlibet.compat import reduce, urlopen
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.notif import Task

@@ -11,7 +11,7 @@ import xml.etree.ElementTree as ET
 import dbus
 import dbus.service
 
-from quodlibet.compat import unichr, iteritems
+from quodlibet.compat import iteritems
 
 
 def dbus_unicode_validate(text):
@@ -34,7 +34,7 @@ def dbus_unicode_validate(text):
             cps.append(c)
         else:
             cps.append(0xFFFD)
-    return u"".join(map(unichr, cps))
+    return u"".join(map(chr, cps))
 
 
 def list_spec_properties(spec):

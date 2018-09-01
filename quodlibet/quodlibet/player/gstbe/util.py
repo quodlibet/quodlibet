@@ -15,7 +15,7 @@ from quodlibet import _
 from quodlibet.util.string import decode
 from quodlibet.util import is_linux, is_windows
 from quodlibet.player import PlayerError
-from quodlibet.compat import text_type, number_types, xrange
+from quodlibet.compat import text_type
 
 
 def pulse_is_running():
@@ -146,7 +146,7 @@ class TagListWrapper(collections.Mapping):
         return self._list.n_tags()
 
     def __iter__(self):
-        for i in xrange(len(self)):
+        for i in range(len(self)):
             yield self._list.nth_tag_name(i)
 
     def __getitem__(self, key):
@@ -204,7 +204,7 @@ def parse_gstreamer_taglist(tags):
             value = value.to_iso8601_string()
             merged[key] = value
         else:
-            if isinstance(value, number_types):
+            if isinstance(value, (int, float)):
                 merged[key] = value
                 continue
 

@@ -7,13 +7,13 @@
 # (at your option) any later version.
 
 import os
+from io import BytesIO
 
 from mutagen import asf
 
 from tests import TestCase, get_data_path
 from quodlibet.formats.wma import WMAFile, unpack_image, pack_image
 from quodlibet.formats._image import APICType, EmbeddedImage
-from quodlibet.compat import cBytesIO
 
 from .helper import get_temp_copy
 
@@ -179,7 +179,7 @@ class TWMAFile(TestCase):
         self.song.clear_images()
 
     def test_set_image(self):
-        fileobj = cBytesIO(b"foo")
+        fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.assertFalse(self.song.has_images)
         self.song.set_image(image)

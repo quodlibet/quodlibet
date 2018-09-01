@@ -16,6 +16,7 @@ import re
 import shutil
 import time
 from collections import OrderedDict
+from itertools import zip_longest
 
 from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 
@@ -31,8 +32,8 @@ from quodlibet.util import iso639
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
-from quodlibet.compat import iteritems, string_types, text_type, \
-    number_types, listitems, izip_longest, integer_types, listfilter
+from quodlibet.compat import iteritems, text_type, \
+    listitems, listfilter
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
@@ -187,7 +188,7 @@ class AudioFile(dict, ImageContainer):
 
         # validate value
         if key.startswith("~#"):
-            if not isinstance(value, number_types):
+            if not isinstance(value, (int, float)):
                 raise TypeError
         elif key in FILESYSTEM_TAGS:
             if not isinstance(value, fsnative):
@@ -676,7 +677,7 @@ class AudioFile(dict, ImageContainer):
         else:
             v = self.get(key, u"")
 
-        if isinstance(v, number_types):
+        if isinstance(v, (int, float)):
             return v
         else:
             return v.replace("\n", ", ")
@@ -721,7 +722,7 @@ class AudioFile(dict, ImageContainer):
             sort = sort.split("\n") if sort else []
 
         result = []
-        for d, s in izip_longest(display, sort):
+        for d, s in zip_longest(display, sort):
             if d is not None:
                 result.append((d, (s if s is not None and s != "" else d)))
         return result
@@ -846,7 +847,7 @@ class AudioFile(dict, ImageContainer):
         # Replace nulls with newlines, trimming zero-length segments
         for key, val in listitems(self):
             self[key] = val
-            if isinstance(val, string_types) and '\0' in val:
+            if isinstance(val, str) and '\0' in val:
                 self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
             # Remove unnecessary defaults
             if key in NUMERIC_ZERO_DEFAULT and val == 0:
@@ -910,7 +911,7 @@ class AudioFile(dict, ImageContainer):
             enc_key = encode_key(k)
             assert isinstance(enc_key, bytes)
 
-            if isinstance(self[k], integer_types):
+            if isinstance(self[k], int):
                 l = enc_key + encode("=%d" % self[k])
                 s.append(l)
             elif isinstance(self[k], float):

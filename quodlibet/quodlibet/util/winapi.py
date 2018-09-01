@@ -19,8 +19,6 @@ if os.name != "nt":
 import ctypes
 from ctypes import wintypes, cdll, windll, oledll
 
-from quodlibet.compat import long
-
 from .enum import enum
 
 
@@ -510,7 +508,7 @@ class CSIDLFlag(int):
 
 
 @enum
-class KnownFolderFlag(long):
+class KnownFolderFlag(int):
     SIMPLE_IDLIST = 0x00000100
     NOT_PARENT_RELATIVE = 0x00000200
     DEFAULT_PATH = 0x00000400

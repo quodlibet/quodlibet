@@ -8,9 +8,10 @@
 
 import unicodedata
 import sys
+from urllib.request import urlopen
 
 from quodlibet.util import cached_func
-from quodlibet.compat import iteritems, urlopen, xrange, unichr
+from quodlibet.compat import iteritems
 
 
 _DIACRITIC_CACHE = {
@@ -268,7 +269,7 @@ def get_decomps_mapping(regenerate=False):
         if line.startswith("#"):
             continue
 
-        to_uni = lambda x: unichr(int(x, 16))
+        to_uni = lambda x: chr(int(x, 16))
         is_letter = lambda x: unicodedata.category(x) in ("Lu", "Ll", "Lt")
 
         cp, line = line.split(";", 1)
@@ -318,7 +319,7 @@ def get_punctuation_mapping(regenerate=False):
         char, repls = line.split(";", 2)[:2]
         char = char.strip()
         repls = repls.split()
-        to_uni = lambda x: unichr(int(x, 16))
+        to_uni = lambda x: chr(int(x, 16))
         char = to_uni(char)
         repls = [to_uni(r) for r in repls]
 
@@ -362,8 +363,8 @@ def diacritic_for_letters(regenerate=False):
         return _DIACRITIC_CACHE
 
     d = {}
-    for i in xrange(sys.maxunicode):
-        u = unichr(i)
+    for i in range(sys.maxunicode):
+        u = chr(i)
         n = unicodedata.normalize("NFKD", u)
         if len(n) <= 1:
             continue

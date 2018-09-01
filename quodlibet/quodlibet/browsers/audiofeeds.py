@@ -11,6 +11,7 @@ import os
 import sys
 import threading
 import time
+from urllib.request import build_opener
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 import feedparser
@@ -25,7 +26,7 @@ from quodlibet import util
 from quodlibet import app
 
 from quodlibet.browsers import Browser
-from quodlibet.compat import listfilter, text_type, build_opener
+from quodlibet.compat import listfilter, text_type
 from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.getstring import GetStringDialog

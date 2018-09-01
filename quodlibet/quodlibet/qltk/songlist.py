@@ -33,7 +33,7 @@ from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column
 from quodlibet.util import connect_destroy
-from quodlibet.compat import xrange, string_types, iteritems, listfilter
+from quodlibet.compat import iteritems, listfilter
 
 
 DND_QL, DND_URI_LIST = range(2)
@@ -579,7 +579,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
     def __search_func(self, model, column, key, iter, *args):
         for column in self.get_columns():
             value = model.get_value(iter)(column.header_name)
-            if not isinstance(value, string_types):
+            if not isinstance(value, str):
                 continue
             elif key in value.lower() or key in value:
                 return False
@@ -907,7 +907,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             return
         (start,), (end,) = vrange
         model = self.get_model()
-        for path in xrange(start, end + 1):
+        for path in range(start, end + 1):
             row = model[path]
             if row[0] in songs:
                 model.row_changed(row.path, row.iter)

@@ -10,8 +10,6 @@
 
 from io import BytesIO, BufferedReader
 
-from quodlibet.compat import cBytesIO
-
 import pickle
 from pickle import PicklingError, UnpicklingError, PickleError
 
@@ -118,4 +116,4 @@ def pickle_loads(data, lookup_func=None):
         pickle.UnpicklingError
     """
 
-    return pickle_load(cBytesIO(data), lookup_func=lookup_func)
+    return pickle_load(BytesIO(data), lookup_func=lookup_func)

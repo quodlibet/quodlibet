@@ -10,11 +10,12 @@ from tests import get_data_path, skipUnless, mkstemp, TestCase
 import os
 import sys
 import base64
+from io import BytesIO
 
 from quodlibet import config, const, formats
 from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
 from quodlibet.formats._image import EmbeddedImage, APICType
-from quodlibet.compat import long, cBytesIO, iteritems
+from quodlibet.compat import iteritems
 
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
@@ -111,7 +112,7 @@ class TVCFileMixin(object):
         self.failUnlessEqual(song["~#rating"], 0.2)
 
     def test_huge_playcount(self):
-        count = long(1000000000000000)
+        count = 1000000000000000
         self.song["~#playcount"] = count
         self.song.write()
         song = type(self.song)(self.filename)
@@ -472,7 +473,7 @@ class TVCCoverMixin(object):
         song["coverartmime"] = "image/jpeg"
         song.save()
 
-        fileobj = cBytesIO(b"foo")
+        fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = self.QLType(self.filename)
@@ -565,7 +566,7 @@ class TFlacPicture(TestCase):
         self.assertFalse(song.get_primary_image())
 
     def test_set_image(self):
-        fileobj = cBytesIO(b"foo")
+        fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = FLACFile(self.filename)

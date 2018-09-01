@@ -36,8 +36,7 @@ from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
-from quodlibet.compat import iteritems, string_types, text_type, listkeys, \
-    listmap, itervalues
+from quodlibet.compat import iteritems, text_type, listkeys, itervalues
 
 
 class Comment(object):
@@ -159,7 +158,7 @@ class AudioFileGroup(dict):
         # collect comment representations
         for tag, count in iteritems(keys):
             first_value = first[tag]
-            if not isinstance(first_value, string_types):
+            if not isinstance(first_value, str):
                 first_value = text_type(first_value)
             shared = all[tag]
             complete = count == total
@@ -630,7 +629,7 @@ class EditTags(Gtk.VBox):
                 else:
                     b.connect('activate', self.__menu_activate, view)
 
-                    if (not min(listmap(self.__songinfo.can_change, b.needs) +
+                    if (not min(map(self.__songinfo.can_change, b.needs) +
                                 [1])
                             or comment.is_special()):
                         b.set_sensitive(False)

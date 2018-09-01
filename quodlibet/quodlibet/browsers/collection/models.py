@@ -12,7 +12,7 @@ from quodlibet import _
 from quodlibet.pattern import XMLFromPattern
 from quodlibet.qltk.models import ObjectTreeStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort
-from quodlibet.compat import iteritems, string_types, itervalues
+from quodlibet.compat import iteritems, itervalues
 
 
 EMPTY = _("Songs not in an album")
@@ -126,7 +126,7 @@ class CollectionModelMixin(object):
         if isinstance(obj, AlbumNode):
             return PAT % obj.album
 
-        if isinstance(obj, string_types):
+        if isinstance(obj, str):
             markup = util.escape(obj)
         else:
             tag = util.tag(tags[len(self.get_path(iter_).get_indices()) - 1])

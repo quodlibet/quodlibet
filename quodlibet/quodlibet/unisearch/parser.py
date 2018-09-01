@@ -12,13 +12,13 @@ import unicodedata
 
 from quodlibet import print_d
 from quodlibet.util import re_escape
-from quodlibet.compat import text_type, xrange, unichr
+from quodlibet.compat import text_type
 
 from .db import get_replacement_mapping
 
 
 def _fixup_literal(literal, in_seq, mapping):
-    u = unichr(literal)
+    u = chr(literal)
     if u in mapping:
         u = u + u"".join(mapping[u])
     need_seq = len(u) > 1
@@ -29,7 +29,7 @@ def _fixup_literal(literal, in_seq, mapping):
 
 
 def _fixup_literal_list(literals, mapping):
-    u = u"".join(map(unichr, literals))
+    u = u"".join(map(chr, literals))
 
     # longest matches first, we will handle contained ones in the replacement
     # function
@@ -62,19 +62,19 @@ def _fixup_literal_list(literals, mapping):
 
 
 def _fixup_not_literal(literal, mapping):
-    u = unichr(literal)
+    u = chr(literal)
     return u"[^%s]" % u"".join(re_escape(u + u"".join(mapping.get(u, []))))
 
 
 def _fixup_range(start, end, mapping):
     extra = []
-    for i in xrange(start, end + 1):
-        u = unichr(i)
+    for i in range(start, end + 1):
+        u = chr(i)
         if u in mapping:
             extra.append(re_escape(u"".join(mapping[u])))
 
-    start = re_escape(unichr(start))
-    end = re_escape(unichr(end))
+    start = re_escape(chr(start))
+    end = re_escape(chr(end))
     return u"%s%s-%s" % ("".join(extra), start, end)
 
 

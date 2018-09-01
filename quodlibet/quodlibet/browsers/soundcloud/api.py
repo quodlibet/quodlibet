@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 from datetime import datetime
+from urllib.parse import urlencode
 
 from gi.repository import GObject, Gio, Soup
 
@@ -14,7 +15,7 @@ from quodlibet import util, config
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w, print_d
 from quodlibet.util.http import download_json, download
-from quodlibet.compat import urlencode, iteritems, text_type
+from quodlibet.compat import iteritems, text_type
 
 from .library import SoundcloudFile
 from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH

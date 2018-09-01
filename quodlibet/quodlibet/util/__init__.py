@@ -15,6 +15,7 @@ import ctypes.util
 import sys
 import unicodedata
 import threading
+from functools import reduce
 
 # Windows doesn't have fcntl, just don't lock for now
 try:
@@ -25,8 +26,7 @@ except ImportError:
 
 from senf import fsnative, argv
 
-from quodlibet.compat import reraise as py_reraise, text_type, \
-    iteritems, reduce, number_types, long
+from quodlibet.compat import text_type, iteritems
 from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
@@ -803,7 +803,7 @@ def sanitize_tags(tags, stream=False):
 
         if key == "duration":
             try:
-                value = int(long(value) / 1000)
+                value = int(int(value) / 1000)
             except ValueError:
                 pass
             else:
@@ -836,7 +836,7 @@ def sanitize_tags(tags, stream=False):
         if not stream and key in ("title", "album", "artist", "date"):
             continue
 
-        if isinstance(value, number_types):
+        if isinstance(value, (int, float)):
             if not key.startswith("~#"):
                 key = "~#" + key
             san[key] = value
@@ -1146,4 +1146,4 @@ def reraise(tp, value, tb=None):
 
     if tb is None:
         tb = sys.exc_info()[2]
-    py_reraise(tp, value, tb)
+    raise tp(value).with_traceback(tb)

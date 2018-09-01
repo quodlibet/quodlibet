@@ -15,15 +15,16 @@
 import os
 import re
 from re import Scanner  # type: ignore
+from urllib.parse import quote_plus
 
 from senf import sep, fsnative, expanduser
 
 from quodlibet import util
 from quodlibet.query import Query
-from quodlibet.compat import exec_, itervalues
+from quodlibet.compat import itervalues
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 from quodlibet.formats._audio import decode_value, FILESYSTEM_TAGS
-from quodlibet.compat import quote_plus, text_type, number_types
+from quodlibet.compat import text_type
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -222,7 +223,7 @@ class PatternFormatter(object):
 
         def comma(self, key):
             value = self.__song.comma(key)
-            if isinstance(value, number_types):
+            if isinstance(value, (int, float)):
                 value = decode_value(key, value)
             if self.__formatter:
                 return self.__formatter(key, value)
@@ -292,7 +293,7 @@ class PatternCompiler(object):
         scope = dict(itervalues(queries))
         if text_formatter:
             scope["_format"] = text_formatter
-        exec_(compile(code, "<string>", "exec"), scope)
+        exec(compile(code, "<string>", "exec"), scope)
         return scope["f"], tags
 
     def __get_value(self, text, scope, tag):

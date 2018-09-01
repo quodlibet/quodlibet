@@ -19,8 +19,9 @@ to import.
 
 import os
 import pprint
+from urllib.parse import urlencode
 
-from quodlibet.compat import text_type, urlencode
+from quodlibet.compat import text_type
 from quodlibet.util.urllib import Request, urlopen
 
 
