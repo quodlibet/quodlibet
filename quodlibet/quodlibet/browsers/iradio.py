@@ -47,7 +47,7 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.compat import iteritems, iterkeys
+from quodlibet.compat import iteritems
 
 
 STATION_LIST_URL = \
@@ -714,11 +714,11 @@ class InternetRadio(Browser, util.InstanceTracker):
         # update the libraries
         stations = dict(((s.key, s) for s in stations))
         # don't add ones that are in the fav list
-        for fav in iterkeys(self.__fav_stations):
+        for fav in self.__fav_stations.keys():
             stations.pop(fav, None)
 
         # separate
-        o, n = set(iterkeys(self.__stations)), set(stations)
+        o, n = set(self.__stations.keys()), set(stations)
         to_add, to_change, to_remove = n - o, o & n, o - n
         del o, n
 
@@ -729,7 +729,7 @@ class InternetRadio(Browser, util.InstanceTracker):
             # clear everything except stats
             AudioFile.reload(old)
             # add new metadata except stats
-            for k in (x for x in iterkeys(new) if x not in MIGRATE):
+            for k in (x for x in new.keys() if x not in MIGRATE):
                 old[k] = new[k]
 
         to_add = [stations.pop(k) for k in to_add]

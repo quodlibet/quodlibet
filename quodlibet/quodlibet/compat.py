@@ -8,4 +8,3 @@
 
 iteritems = lambda d: iter(d.items())
 itervalues = lambda d: iter(d.values())
-iterkeys = lambda d: iter(d.keys())

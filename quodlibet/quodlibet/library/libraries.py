@@ -34,7 +34,7 @@ from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, \
     ismount
-from quodlibet.compat import iteritems, iterkeys, itervalues
+from quodlibet.compat import iteritems, itervalues
 
 
 class Library(GObject.GObject, DictMixin):
@@ -118,7 +118,7 @@ class Library(GObject.GObject, DictMixin):
         return iteritems(self._contents)
 
     def iterkeys(self):
-        return iterkeys(self._contents)
+        return iter(self._contents.keys())
 
     def itervalues(self):
         return itervalues(self._contents)

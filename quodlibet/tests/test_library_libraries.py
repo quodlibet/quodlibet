@@ -14,7 +14,7 @@ from quodlibet.formats import AudioFileError
 from quodlibet import config
 from quodlibet.util import connect_obj, is_windows
 from quodlibet.formats import AudioFile
-from quodlibet.compat import iteritems, iterkeys, itervalues
+from quodlibet.compat import iteritems, itervalues
 
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipIf
 from .helper import capture_output, get_temp_copy
@@ -212,8 +212,6 @@ class TLibrary(TestCase):
         self.library.add(items)
         self.failUnlessEqual(
             sorted(self.library.keys()), list(range(100, 120)))
-        self.failUnlessEqual(
-            sorted(iterkeys(self.library)), list(range(100, 120)))
 
     def test_values(self):
         items = []

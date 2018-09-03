@@ -9,7 +9,7 @@
 import mutagen.apev2
 
 from quodlibet.util.path import get_temp_cover_file
-from quodlibet.compat import iteritems, iterkeys
+from quodlibet.compat import iteritems
 
 from ._audio import AudioFile
 from ._image import APICType, EmbeddedImage
@@ -140,7 +140,7 @@ class APEv2File(AudioFile):
                 tag = mutagen.apev2.APEv2()
 
         # Remove any text keys we read in
-        for key in iterkeys(tag):
+        for key in list(tag.keys()):
             value = tag[key]
             if (value.kind == mutagen.apev2.TEXT and
                 key.lower() not in self.IGNORE):
