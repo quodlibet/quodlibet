@@ -15,7 +15,6 @@ from quodlibet.util import dbusutils
 from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
 from quodlibet.formats import decode_value
-from quodlibet.compat import itervalues
 
 
 class DBusHandler:
@@ -185,6 +184,6 @@ class DBusHandler:
         if text is not None:
             query = Query(text, star=SongList.star)
             if query.is_parsable:
-                return [self.__dict(s) for s in itervalues(self.library)
+                return [self.__dict(s) for s in self.library.values()
                         if query.search(s)]
         return None

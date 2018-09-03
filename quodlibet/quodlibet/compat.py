@@ -7,4 +7,3 @@
 # (at your option) any later version.
 
 iteritems = lambda d: iter(d.items())
-itervalues = lambda d: iter(d.values())

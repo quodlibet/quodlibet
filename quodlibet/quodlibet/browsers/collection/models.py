@@ -12,7 +12,7 @@ from quodlibet import _
 from quodlibet.pattern import XMLFromPattern
 from quodlibet.qltk.models import ObjectTreeStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort
-from quodlibet.compat import iteritems, itervalues
+from quodlibet.compat import iteritems
 
 
 EMPTY = _("Songs not in an album")
@@ -253,7 +253,7 @@ class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
                 if isinstance(sub, list):
                     found.update(sub)
                     return found
-                for v in itervalues(sub):
+                for v in sub.values():
                     _get_all(v, found)
                 return found
             not_found.update(_get_all(tree))

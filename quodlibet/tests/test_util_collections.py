@@ -6,7 +6,7 @@
 
 from tests import TestCase
 from quodlibet.util.collections import HashedList, DictProxy
-from quodlibet.compat import iteritems, itervalues
+from quodlibet.compat import iteritems
 
 
 class TDictMixin(TestCase):
@@ -41,8 +41,6 @@ class TDictMixin(TestCase):
     def test_values(self):
         self.failUnlessEqual(
             list(self.fdict.values()), list(self.rdict.values()))
-        self.failUnlessEqual(
-            list(itervalues(self.fdict)), list(itervalues(self.rdict)))
 
     def test_items(self):
         self.failUnlessEqual(

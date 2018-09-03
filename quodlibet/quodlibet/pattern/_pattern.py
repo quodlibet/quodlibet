@@ -21,7 +21,6 @@ from senf import sep, fsnative, expanduser
 
 from quodlibet import util
 from quodlibet.query import Query
-from quodlibet.compat import itervalues
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 from quodlibet.formats._audio import decode_value, FILESYSTEM_TAGS
 
@@ -289,7 +288,7 @@ class PatternCompiler(object):
         content.append("  return r")
         code = "\n".join(content)
 
-        scope = dict(itervalues(queries))
+        scope = dict(queries.values())
         if text_formatter:
             scope["_format"] = text_formatter
         exec(compile(code, "<string>", "exec"), scope)

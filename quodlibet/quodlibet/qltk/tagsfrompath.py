@@ -32,7 +32,6 @@ from quodlibet.qltk import Icons
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.util.string.splitters import split_value
 from quodlibet.util import connect_obj
-from quodlibet.compat import itervalues
 
 
 TBP = os.path.join(quodlibet.get_user_dir(), "lists", "tagpatterns")
@@ -282,7 +281,7 @@ class TagsFromPath(Gtk.VBox):
         was_changed = set()
 
         all_done = False
-        for entry in ((model and itervalues(model)) or []):
+        for entry in ((model and model.values()) or []):
             song = entry.song
             changed = False
             if not song.valid():

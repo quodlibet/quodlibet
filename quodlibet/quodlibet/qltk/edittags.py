@@ -36,7 +36,7 @@ from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
-from quodlibet.compat import iteritems, itervalues
+from quodlibet.compat import iteritems
 
 
 class Comment(object):
@@ -743,7 +743,7 @@ class EditTags(Gtk.VBox):
         added = {}
         renamed = {}
 
-        for entry in itervalues(model):
+        for entry in model.values():
             if entry.edited and not (entry.deleted or entry.renamed):
                 if entry.origvalue is not None:
                     l = updated.setdefault(entry.tag, [])

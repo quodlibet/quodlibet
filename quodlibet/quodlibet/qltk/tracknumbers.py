@@ -20,7 +20,6 @@ from quodlibet.qltk.x import Button, Align
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
-from quodlibet.compat import itervalues
 
 
 class Entry(object):
@@ -155,7 +154,7 @@ class TrackNumbers(Gtk.VBox):
         win = WritingWindow(parent, len(model))
         was_changed = set()
         all_done = False
-        for entry in itervalues(model):
+        for entry in model.values():
             song, track = entry.song, entry.tracknumber
             if song.get("tracknumber") == track:
                 win.step()
@@ -203,7 +202,7 @@ class TrackNumbers(Gtk.VBox):
 
     def __update(self, songs, total, model, save, revert):
         if songs is None:
-            songs = [e.song for e in itervalues(model)]
+            songs = [e.song for e in model.values()]
         else:
             songs = list(songs)
 

@@ -34,7 +34,7 @@ from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, \
     ismount
-from quodlibet.compat import iteritems, itervalues
+from quodlibet.compat import iteritems
 
 
 class Library(GObject.GObject, DictMixin):
@@ -90,7 +90,7 @@ class Library(GObject.GObject, DictMixin):
 
         if not items:
             return
-        if self.librarian and self in itervalues(self.librarian.libraries):
+        if self.librarian and self in self.librarian.libraries.values():
             print_d("Changing %d items via librarian." % len(items), self)
             self.librarian.changed(items)
         else:
@@ -112,7 +112,7 @@ class Library(GObject.GObject, DictMixin):
 
     def __iter__(self):
         """Iterate over the items in the library."""
-        return itervalues(self._contents)
+        return iter(self._contents.values())
 
     def iteritems(self):
         return iteritems(self._contents)
@@ -121,7 +121,7 @@ class Library(GObject.GObject, DictMixin):
         return iter(self._contents.keys())
 
     def itervalues(self):
-        return itervalues(self._contents)
+        return iter(self._contents.values())
 
     def __len__(self):
         """The number of items in the library."""
@@ -436,7 +436,7 @@ class SongLibrary(PicklingLibrary):
 
     def tag_values(self, tag):
         """Return a set of all values for the given tag."""
-        return {value for song in itervalues(self)
+        return {value for song in self.values()
                 for value in song.list(tag)}
 
     def rename(self, song, newname, changed=None):
@@ -785,12 +785,12 @@ class FileLibrary(PicklingLibrary):
             point = item.mountpoint
         except AttributeError:
             # Checking a key.
-            for point in itervalues(self._masked):
+            for point in self._masked.values():
                 if item in point:
                     return True
         else:
             # Checking a full item.
-            return item in itervalues(self._masked.get(point, {}))
+            return item in self._masked.get(point, {}).values()
 
     def unmask(self, point):
         print_d("Unmasking %r." % point, self)
@@ -801,7 +801,7 @@ class FileLibrary(PicklingLibrary):
     def mask(self, point):
         print_d("Masking %r." % point, self)
         removed = {}
-        for item in itervalues(self):
+        for item in self.values():
             if item.mountpoint == point:
                 removed[item.key] = item
         if removed:

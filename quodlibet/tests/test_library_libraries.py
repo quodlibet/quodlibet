@@ -14,7 +14,7 @@ from quodlibet.formats import AudioFileError
 from quodlibet import config
 from quodlibet.util import connect_obj, is_windows
 from quodlibet.formats import AudioFile
-from quodlibet.compat import iteritems, itervalues
+from quodlibet.compat import iteritems
 
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipIf
 from .helper import capture_output, get_temp_copy
@@ -220,8 +220,6 @@ class TLibrary(TestCase):
             items[-1].key = i + 100
         self.library.add(items)
         self.failUnlessEqual(sorted(self.library.values()), list(range(20)))
-        self.failUnlessEqual(
-            sorted(itervalues(self.library)), list(range(20)))
 
     def test_items(self):
         items = []
@@ -596,7 +594,7 @@ class TAlbumLibrary(TestCase):
         self.failUnless(self.library.has_key(key))
 
     def test_misc_collection(self):
-        self.failUnless(itervalues(self.library))
+        self.failUnless(self.library.values())
         self.failUnless(iteritems(self.library))
 
     def test_items(self):
