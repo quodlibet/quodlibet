@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
+#           2018 Ludovic Druette
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,6 +19,10 @@ class MMKeysAction(object):
     PREV = "prev"
     NEXT = "next"
     PLAYPAUSE = "playpause"
+    FORWARD = "forward"
+    REWIND = "rewind"
+    REPEAT = "repeat"
+    SHUFFLE = "shuffle"
 
 
 class MMKeysBackend(object):
