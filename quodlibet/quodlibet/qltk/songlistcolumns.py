@@ -24,7 +24,7 @@ from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.qltk import add_css
 from quodlibet.util.path import unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS
-from quodlibet.compat import listvalues, listitems
+from quodlibet.compat import listitems
 from quodlibet.qltk.x import CellRendererPixbuf
 
 
@@ -417,7 +417,8 @@ class NumericColumn(TextColumn):
 
         # resize if too small or way too big and above the minimum
         width = self.get_width()
-        needed_width = max([self._get_min_width()] + listvalues(self._texts))
+        needed_width = max(
+            [self._get_min_width()] + list(self._texts.values()))
         if width < needed_width:
             self._resize(needed_width)
         elif width - needed_width >= self._cell_width("0"):

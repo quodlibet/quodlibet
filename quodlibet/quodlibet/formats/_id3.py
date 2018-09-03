@@ -11,7 +11,7 @@ import mutagen.id3
 
 from quodlibet import config, const, print_d
 from quodlibet import util
-from quodlibet.compat import iteritems, listvalues
+from quodlibet.compat import iteritems
 from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import isascii
@@ -308,7 +308,7 @@ class ID3File(AudioFile):
                 tag.add(Kind(encoding=enc, text=text))
 
         dontwrite = ["genre", "comment", "musicbrainz_trackid", "lyrics"] \
-            + RG_KEYS + listvalues(self.TXXX_MAP)
+            + RG_KEYS + list(self.TXXX_MAP.values())
 
         if "musicbrainz_trackid" in self.realkeys():
             f = mutagen.id3.UFID(

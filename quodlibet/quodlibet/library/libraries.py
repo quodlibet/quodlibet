@@ -34,8 +34,7 @@ from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, \
     ismount
-from quodlibet.compat import iteritems, iterkeys, itervalues, listkeys, \
-    listvalues
+from quodlibet.compat import iteritems, iterkeys, itervalues, listkeys
 
 
 class Library(GObject.GObject, DictMixin):
@@ -144,7 +143,7 @@ class Library(GObject.GObject, DictMixin):
            (see FileLibrary with masked items)
         """
 
-        return listvalues(self)
+        return list(self.values())
 
     def keys(self):
         return self._contents.keys()
@@ -658,7 +657,7 @@ class FileLibrary(PicklingLibrary):
             if ismount(point):
                 self._contents.update(items)
                 del(self._masked[point])
-                self.emit('added', listvalues(items))
+                self.emit('added', list(items.values()))
                 yield True
 
         task = Task(_("Library"), _("Scanning library"))
@@ -769,7 +768,7 @@ class FileLibrary(PicklingLibrary):
     def get_content(self):
         """Return visible and masked items"""
 
-        items = listvalues(self)
+        items = list(self.values())
         for masked in self._masked.values():
             items.extend(masked.values())
 
@@ -818,7 +817,7 @@ class FileLibrary(PicklingLibrary):
     def get_masked(self, mount_point):
         """List of items for a mount point"""
 
-        return listvalues(self._masked.get(mount_point, {}))
+        return list(self._masked.get(mount_point, {}).values())
 
     def remove_masked(self, mount_point):
         """Remove all songs for a masked point"""
