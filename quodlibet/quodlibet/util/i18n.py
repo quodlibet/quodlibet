@@ -15,7 +15,6 @@ from senf import environ, path2fsn, fsn2text, text2fsn
 
 from quodlibet.util.path import unexpand, xdg_get_system_data_dirs
 from quodlibet.util.dprint import print_d
-from quodlibet.compat import listfilter
 
 from .misc import get_locale_encoding
 
@@ -81,9 +80,9 @@ def set_i18n_envvars():
         from quodlibet.util.winapi import GetUserDefaultUILanguage, \
             GetSystemDefaultUILanguage
 
-        langs = listfilter(None, map(locale.windows_locale.get,
-                                     [GetUserDefaultUILanguage(),
-                                      GetSystemDefaultUILanguage()]))
+        langs = list(filter(None, map(locale.windows_locale.get,
+                                      [GetUserDefaultUILanguage(),
+                                       GetSystemDefaultUILanguage()])))
         if langs:
             environ.setdefault('LANG', langs[0])
             environ.setdefault('LANGUAGE', ":".join(langs))

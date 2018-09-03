@@ -33,7 +33,7 @@ from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column
 from quodlibet.util import connect_destroy
-from quodlibet.compat import iteritems, listfilter
+from quodlibet.compat import iteritems
 
 
 DND_QL, DND_URI_LIST = range(2)
@@ -292,7 +292,7 @@ class SongListDnDMixin(object):
                 except ValueError:
                     return None
 
-            filenames = listfilter(None, map(to_filename, sel.get_uris()))
+            filenames = list(filter(None, map(to_filename, sel.get_uris())))
             move = False
         else:
             Gtk.drag_finish(ctx, False, False, etime)
@@ -305,7 +305,7 @@ class SongListDnDMixin(object):
             elif filename not in library:
                 to_add.append(library.librarian[filename])
         library.add(to_add)
-        songs = listfilter(None, map(library.get, filenames))
+        songs = list(filter(None, map(library.get, filenames)))
         if not songs:
             Gtk.drag_finish(ctx, bool(not filenames), False, etime)
             return
@@ -916,7 +916,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         window = qltk.get_top_parent(self)
         filter_ = window.browser.active_filter
         if callable(filter_):
-            self.add_songs(listfilter(filter_, songs))
+            self.add_songs(list(filter(filter_, songs)))
 
     def __song_removed(self, librarian, songs, player):
         # The player needs to be called first so it can ge the next song

@@ -26,7 +26,6 @@ from quodlibet import util
 from quodlibet import app
 
 from quodlibet.browsers import Browser
-from quodlibet.compat import listfilter
 from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.getstring import GetStringDialog
@@ -495,7 +494,7 @@ class AudioFeeds(Browser):
         AudioFeeds.write()
 
     def __refresh(self, feeds):
-        changed = listfilter(Feed.parse, feeds)
+        changed = list(filter(Feed.parse, feeds))
         AudioFeeds.changed(changed)
 
     def __remove_paths(self, model, paths):

@@ -9,7 +9,6 @@
 # (at your option) any later version.
 
 from quodlibet import util
-from quodlibet.compat import listfilter
 from quodlibet.util.importhelper import load_dir_modules
 
 from ._base import Browser
@@ -48,7 +47,7 @@ def init():
 
     def is_browser(Kind):
         return isinstance(Kind, type) and issubclass(Kind, Browser)
-    browsers = listfilter(is_browser, browsers)
+    browsers = list(filter(is_browser, browsers))
 
     if not browsers:
         raise SystemExit("No browsers found!")

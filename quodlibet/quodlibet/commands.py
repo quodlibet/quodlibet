@@ -16,7 +16,6 @@ from quodlibet.util.string import split_escape
 
 from quodlibet import browsers
 
-from quodlibet.compat import listfilter
 from quodlibet import util
 from quodlibet.util import print_d, print_e
 
@@ -382,7 +381,7 @@ def _properties(app, value=None):
     else:
         songs = [player.song]
 
-    songs = listfilter(None, songs)
+    songs = list(filter(None, songs))
 
     if songs:
         window = SongProperties(library, songs, parent=window)

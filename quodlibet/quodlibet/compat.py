@@ -12,5 +12,3 @@ iterkeys = lambda d: iter(d.keys())
 listitems = lambda d: list(d.items())
 listkeys = lambda d: list(d.keys())
 listvalues = lambda d: list(d.values())
-
-listfilter = lambda *x: list(filter(*x))
