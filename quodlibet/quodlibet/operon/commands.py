@@ -25,7 +25,6 @@ from quodlibet.util.path import mtime
 from quodlibet.pattern import Pattern, error as PatternError
 from quodlibet.util.tags import USER_TAGS, sortkey, MACHINE_TAGS
 from quodlibet.util.tagsfrompath import TagsFromPattern
-from quodlibet.compat import iteritems
 
 from .base import Command, CommandError
 from .util import print_terse_table, copy_mtime, list_tags, print_table, \
@@ -208,7 +207,7 @@ class EditCommand(Command):
                     self.log("Add %s=%s" % (key, value))
                     song.add(key, value)
 
-        for key, values in iteritems(tags):
+        for key, values in tags.items():
             if not song.can_change(key):
                 raise CommandError(
                     "Can't change key '%(key-name)s'." % {"key-name": key})

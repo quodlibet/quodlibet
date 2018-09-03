@@ -33,7 +33,6 @@ from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column
 from quodlibet.util import connect_destroy
-from quodlibet.compat import iteritems
 
 
 DND_QL, DND_URI_LIST = range(2)
@@ -154,9 +153,9 @@ def get_sort_tag(tag):
         tag = "album"
 
     if "<" in tag:
-        for key, value in iteritems(replace_order):
+        for key, value in replace_order.items():
             tag = tag.replace("<%s>" % key, "<%s>" % value)
-        for key, value in iteritems(TAG_TO_SORT):
+        for key, value in TAG_TO_SORT.items():
             tag = tag.replace("<%s>" % key,
                                "<{1}|<{1}>|<{0}>>".format(key, value))
         tag = Pattern(tag).format

@@ -26,7 +26,6 @@ except ImportError:
 
 from senf import fsnative, argv
 
-from quodlibet.compat import iteritems
 from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
@@ -778,7 +777,7 @@ def sanitize_tags(tags, stream=False):
     """
 
     san = {}
-    for key, value in iteritems(tags):
+    for key, value in tags.items():
         key = key.lower()
         key = {"location": "website"}.get(key, key)
 

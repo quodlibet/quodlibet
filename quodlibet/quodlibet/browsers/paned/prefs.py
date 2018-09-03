@@ -20,7 +20,6 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.ccb import ConfigCheckMenuItem, ConfigCheckButton
 from quodlibet.util import connect_obj, escape
-from quodlibet.compat import iteritems
 from .util import get_headers, save_headers
 
 
@@ -122,7 +121,7 @@ class PatternEditor(Gtk.VBox):
 
     @headers.setter
     def headers(self, new_headers):
-        for button, headers in iteritems(self.__headers):
+        for button, headers in self.__headers.items():
             if headers == new_headers:
                 button.set_active(True)
                 button.emit("toggled")

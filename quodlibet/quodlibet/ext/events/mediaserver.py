@@ -27,7 +27,6 @@ from quodlibet.qltk import Icons
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
 from quodlibet.util import NamedTemporaryFile
-from quodlibet.compat import iteritems
 
 BASE_PATH = "/org/gnome/UPnP/MediaServer2"
 BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
@@ -419,7 +418,7 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
 
         self.__library = library
         self.__map = dict((id(v), v) for v in self.__library.values())
-        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
+        self.__reverse = dict((v, k) for k, v in self.__map.items())
 
         self.__song = DummySongObject(self)
 
@@ -497,7 +496,7 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         self.__library.load()
 
         self.__map = dict((id(v), v) for v in self.__library.values())
-        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
+        self.__reverse = dict((v, k) for k, v in self.__map.items())
 
         signals = [
             ("changed", self.__albums_changed),

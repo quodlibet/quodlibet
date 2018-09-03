@@ -36,7 +36,6 @@ from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
-from quodlibet.compat import iteritems
 
 
 class Comment(object):
@@ -156,7 +155,7 @@ class AudioFileGroup(dict):
         self._can_change = can_change
 
         # collect comment representations
-        for tag, count in iteritems(keys):
+        for tag, count in keys.items():
             first_value = first[tag]
             if not isinstance(first_value, str):
                 first_value = str(first_value)
@@ -776,7 +775,7 @@ class EditTags(Gtk.VBox):
                     break
 
             changed = False
-            for key, values in iteritems(updated):
+            for key, values in updated.items():
                 for (new_value, old_value) in values:
                     if song.can_change(key):
                         if old_value is None:
@@ -785,13 +784,13 @@ class EditTags(Gtk.VBox):
                             song.change(key, old_value.text, new_value.text)
                         changed = True
 
-            for key, values in iteritems(added):
+            for key, values in added.items():
                 for value in values:
                     if song.can_change(key):
                         song.add(key, value.text)
                         changed = True
 
-            for key, values in iteritems(deleted):
+            for key, values in deleted.items():
                 for value in values:
                     if not value.shared:
                         # In case it isn't shared we don't know the actual
@@ -805,7 +804,7 @@ class EditTags(Gtk.VBox):
                         changed = True
 
             save_rename = []
-            for new_tag, values in iteritems(renamed):
+            for new_tag, values in renamed.items():
                 for old_tag, new_value, old_value in values:
                     if (song.can_change(new_tag) and old_tag in song):
                         if not new_value.is_special():

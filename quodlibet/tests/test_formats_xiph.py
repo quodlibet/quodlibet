@@ -15,7 +15,6 @@ from io import BytesIO
 from quodlibet import config, const, formats
 from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
 from quodlibet.formats._image import EmbeddedImage, APICType
-from quodlibet.compat import iteritems
 
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
@@ -174,11 +173,11 @@ class TTotalTagsMixin(object):
 
     def __load_tags(self, tags, expected):
         m = OggVorbis(self.filename)
-        for key, value in iteritems(tags):
+        for key, value in tags.items():
             m.tags[key] = value
         m.save()
         song = OggFile(self.filename)
-        for key, value in iteritems(expected):
+        for key, value in expected.items():
             self.failUnlessEqual(song(key), value)
         if self.MAIN not in expected:
             self.failIf(self.MAIN in song)
@@ -225,12 +224,12 @@ class TTotalTagsMixin(object):
     def __save_tags(self, tags, expected):
         #return
         song = OggFile(self.filename)
-        for key, value in iteritems(tags):
+        for key, value in tags.items():
             song[key] = value
         song.write()
         m = OggVorbis(self.filename)
         # test if all values ended up where we wanted
-        for key, value in iteritems(expected):
+        for key, value in expected.items():
             self.failUnless(key in m.tags)
             self.failUnlessEqual(m.tags[key], [value])
 

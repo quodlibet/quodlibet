@@ -47,7 +47,6 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.compat import iteritems
 
 
 STATION_LIST_URL = \
@@ -697,7 +696,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         # keep at most 2 URLs for each group
         stations = []
-        for key, sub in iteritems(groups):
+        for key, sub in groups.items():
             sub.sort(key=lambda s: s.get("~#listenerpeak", 0), reverse=True)
             stations.extend(sub[:2])
 

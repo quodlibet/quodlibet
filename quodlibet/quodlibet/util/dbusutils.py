@@ -11,8 +11,6 @@ import xml.etree.ElementTree as ET
 import dbus
 import dbus.service
 
-from quodlibet.compat import iteritems
-
 
 def dbus_unicode_validate(text):
     """Takes a unicode string and replaces all invalid codepoints that would
@@ -177,7 +175,7 @@ class DBusIntrospectable(object):
     def Introspect(self):
         parts = []
         parts.append("<node>")
-        for iface, intros in iteritems(self.__ispec):
+        for iface, intros in self.__ispec.items():
             parts.append("<interface name=\"%s\">" % iface)
             parts.extend(intros)
             parts.append("</interface>")
@@ -288,7 +286,7 @@ class DBusProperty(object):
                 raise ValueError("Property %s not registered" % prop)
             combos.setdefault(iface, []).append(prop)
 
-        for iface, props in iteritems(combos):
+        for iface, props in combos.items():
             values = {}
             inval = []
             for prop in props:

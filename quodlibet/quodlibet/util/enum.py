@@ -7,8 +7,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet.compat import iteritems
-
 
 def enum(cls):
     """Class decorator for enum types::
@@ -29,7 +27,7 @@ def enum(cls):
     new_type.__module__ = cls.__module__
 
     map_ = {}
-    for key, value in iteritems(d):
+    for key, value in d.items():
         if key.upper() == key:
             value_instance = new_type(value)
             setattr(new_type, key, value_instance)

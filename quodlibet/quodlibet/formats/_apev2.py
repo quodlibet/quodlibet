@@ -9,7 +9,6 @@
 import mutagen.apev2
 
 from quodlibet.util.path import get_temp_cover_file
-from quodlibet.compat import iteritems
 
 from ._audio import AudioFile
 from ._image import APICType, EmbeddedImage
@@ -91,7 +90,7 @@ class APEv2File(AudioFile):
              "original artist": "originalartist",
              "mixartist": "remixer",
     }
-    SNART = dict([(v, k) for k, v in iteritems(TRANS)])
+    SNART = dict([(v, k) for k, v in TRANS.items()])
 
     can_change_images = True
 
@@ -166,7 +165,7 @@ class APEv2File(AudioFile):
             return
 
         primary = None
-        for key, value in iteritems(tag):
+        for key, value in tag.items():
             primary = (key, value)
             cover_type = get_cover_type(key, value)
             if cover_type == APICType.COVER_FRONT:
@@ -182,7 +181,7 @@ class APEv2File(AudioFile):
             return []
 
         images = []
-        for key, value in iteritems(tag):
+        for key, value in tag.items():
             image = parse_cover(key, value)
             if image is not None:
                 images.append(image)

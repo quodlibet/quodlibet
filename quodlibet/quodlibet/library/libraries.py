@@ -34,7 +34,6 @@ from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, \
     ismount
-from quodlibet.compat import iteritems
 
 
 class Library(GObject.GObject, DictMixin):
@@ -115,7 +114,7 @@ class Library(GObject.GObject, DictMixin):
         return iter(self._contents.values())
 
     def iteritems(self):
-        return iteritems(self._contents)
+        return iter(self._contents.items())
 
     def iterkeys(self):
         return iter(self._contents.keys())
@@ -385,7 +384,7 @@ class AlbumLibrary(Library):
                 changed.add(self._contents[key])
             else:  # key changed.. look for it in each album
                 to_add.append(song)
-                for key, album in iteritems(self._contents):
+                for key, album in self._contents.items():
                     if song in album.songs:
                         album.songs.remove(song)
                         if not album.songs:

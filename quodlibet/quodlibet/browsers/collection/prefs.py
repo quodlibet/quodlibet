@@ -16,7 +16,6 @@ from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import BaseView
 from quodlibet.qltk import Button, Icons
 from quodlibet.util import connect_obj
-from quodlibet.compat import iteritems
 
 
 def get_headers():
@@ -143,7 +142,7 @@ class PatternEditor(Gtk.HBox):
 
     @headers.setter
     def headers(self, new_headers):
-        for button, headers in iteritems(self.__headers):
+        for button, headers in self.__headers.items():
             if headers == new_headers:
                 button.set_active(True)
                 button.emit("toggled")

@@ -15,7 +15,6 @@ from . import const
 from quodlibet.util.config import Config, Error
 from quodlibet.util import print_d, print_w
 from quodlibet.util import is_osx, is_windows
-from quodlibet.compat import iteritems
 
 # Some plugins can be enabled on first install
 AUTO_ENABLED_PLUGINS = ["Shuffle Playlist", "Remove Playlist Duplicates"]
@@ -301,9 +300,9 @@ def init_defaults():
     """Fills in the defaults, so they are guaranteed to be available"""
 
     _config.defaults.clear()
-    for section, values in iteritems(INITIAL):
+    for section, values in INITIAL.items():
         _config.defaults.add_section(section)
-        for key, value in iteritems(values):
+        for key, value in values.items():
             _config.defaults.set(section, key, value)
 
 

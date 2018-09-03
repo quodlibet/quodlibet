@@ -15,7 +15,6 @@ from gi.repository import Gtk, Pango, Gdk
 from quodlibet import _
 from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton
 from quodlibet.util import format_int_locale, format_time_display
-from quodlibet.compat import iteritems
 
 
 class WaitLoadBase(object):
@@ -77,7 +76,7 @@ class WaitLoadBase(object):
                 return k, format_int_locale(int(v))
             return k, v
 
-        localed = dict([localeify(k, v) for k, v in iteritems(initial)])
+        localed = dict([localeify(k, v) for k, v in initial.items()])
         self._label.set_markup(self._text % localed)
         self._progress.set_fraction(0.0)
 

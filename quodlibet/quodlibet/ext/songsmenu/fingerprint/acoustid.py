@@ -18,7 +18,6 @@ import queue
 from gi.repository import GLib
 
 from quodlibet.util import print_w
-from quodlibet.compat import iteritems
 from quodlibet.util.urllib import urlopen, Request
 from .util import get_api_key, GateKeeper
 
@@ -118,7 +117,7 @@ class AcoustidSubmissionThread(threading.Thread):
             }
 
             tuples = []
-            for key, value in iteritems(track):
+            for key, value in track.items():
                 # this also dismisses 0.. which should be ok here.
                 if not value:
                     continue

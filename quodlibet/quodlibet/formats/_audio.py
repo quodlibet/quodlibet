@@ -32,7 +32,6 @@ from quodlibet.util import iso639
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
-from quodlibet.compat import iteritems
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
@@ -63,7 +62,7 @@ NUMERIC_ZERO_DEFAULT.update(SIZE_TAGS)
 FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname", "~mountpoint"}
 """Values are bytes in Linux instead of unicode"""
 
-SORT_TO_TAG = dict([(v, k) for (k, v) in iteritems(TAG_TO_SORT)])
+SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.items()])
 """Reverse map, so sort tags can fall back to the normal ones"""
 
 PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
@@ -279,7 +278,7 @@ class AudioFile(dict, ImageContainer):
         return "\n".join(self.list_unique(sorted(self.prefixkeys(tag))))
 
     def iterrealitems(self):
-        return ((k, v) for (k, v) in iteritems(self) if k[:1] != "~")
+        return ((k, v) for (k, v) in self.items() if k[:1] != "~")
 
     def __call__(self, key, default=u"", connector=" - ", joiner=', '):
         """Return the value(s) for a key, synthesizing if necessary.
@@ -762,7 +761,7 @@ class AudioFile(dict, ImageContainer):
 
         merged = AudioFile()
         text = {}
-        for key, value in iteritems(self):
+        for key, value in self.items():
             lower = key.lower()
             if key.startswith("~#"):
                 merged[lower] = value

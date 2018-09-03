@@ -11,7 +11,6 @@ import sys
 from urllib.request import urlopen
 
 from quodlibet.util import cached_func
-from quodlibet.compat import iteritems
 
 
 _DIACRITIC_CACHE = {
@@ -384,7 +383,7 @@ def generate_re_mapping(_diacritic_for_letters):
     letter_to_variants = {}
 
     # combine combining characters with the ascii chars
-    for dia, letters in iteritems(_diacritic_for_letters):
+    for dia, letters in _diacritic_for_letters.items():
         for c in letters:
             unichar = unicodedata.normalize("NFKC", c + dia)
             letter_to_variants.setdefault(c, []).append(unichar)
@@ -408,16 +407,16 @@ def get_replacement_mapping():
     mapping = {}
 
     # use _DIACRITIC_CACHE and create a lookup table
-    for cp, repl in iteritems(
-            generate_re_mapping(diacritic_for_letters(regenerate=False))):
+    for cp, repl in generate_re_mapping(
+            diacritic_for_letters(regenerate=False)).items():
         mapping.setdefault(cp, []).extend(repl)
 
     # add more from the UCA decomp dataset
-    for cp, repl in iteritems(get_decomps_mapping(regenerate=False)):
+    for cp, repl in get_decomps_mapping(regenerate=False).items():
         mapping.setdefault(cp, []).extend(repl)
 
     # and some punctuation
-    for cp, repl in iteritems(get_punctuation_mapping(regenerate=False)):
+    for cp, repl in get_punctuation_mapping(regenerate=False).items():
         mapping.setdefault(cp, []).extend(repl)
 
     return mapping
