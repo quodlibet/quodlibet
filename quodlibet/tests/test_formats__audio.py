@@ -12,7 +12,6 @@ from contextlib import contextmanager
 from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
 
 from quodlibet import config
-from quodlibet.compat import listkeys
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
@@ -135,11 +134,11 @@ class TAudioFile(TestCase):
         af = AudioFile()
         af[u"foo"] = u"bar"
         assert "foo" in af
-        assert isinstance(listkeys(af)[0], str)
+        assert isinstance(list(af.keys())[0], str)
         af.clear()
         af[u"öäü"] = u"bar"
         assert u"öäü" in af
-        assert isinstance(listkeys(af)[0], str)
+        assert isinstance(list(af.keys())[0], str)
 
         with self.assertRaises(TypeError):
             af[42] = u"foo"

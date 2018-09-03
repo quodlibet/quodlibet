@@ -11,7 +11,7 @@ from mutagen.mp4 import MP4, MP4Cover
 
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import decode
-from quodlibet.compat import iteritems, listkeys
+from quodlibet.compat import iteritems
 
 from ._audio import AudioFile
 from ._misc import AudioFileError, translate_errors
@@ -116,8 +116,8 @@ class MP4File(AudioFile):
         with translate_errors():
             audio = MP4(self["~filename"])
 
-        for key in (listkeys(self.__translate) +
-                    listkeys(self.__tupletranslate)):
+        for key in (list(self.__translate.keys()) +
+                    list(self.__tupletranslate.keys())):
             try:
                 del(audio[key])
             except KeyError:
@@ -150,7 +150,8 @@ class MP4File(AudioFile):
         return False
 
     def can_change(self, key=None):
-        OK = listkeys(self.__rtranslate) + listkeys(self.__rtupletranslate)
+        OK = list(self.__rtranslate.keys()) + \
+            list(self.__rtupletranslate.keys())
         if key is None:
             return OK
         else:

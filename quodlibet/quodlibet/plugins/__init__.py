@@ -13,7 +13,7 @@ from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.util.dprint import print_d
 from quodlibet.util.config import ConfigProxy
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.compat import itervalues, iteritems, listkeys
+from quodlibet.compat import itervalues, iteritems
 
 
 def init(folders=None, disable_plugins=False):
@@ -383,7 +383,7 @@ class PluginManager(object):
     def quit(self):
         """Disable plugins and tell all handlers to clean up"""
 
-        for name in listkeys(self.__modules):
+        for name in list(self.__modules.keys()):
             self.__remove_module(name)
 
     def __remove_module(self, name):

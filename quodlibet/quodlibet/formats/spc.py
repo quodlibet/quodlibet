@@ -10,7 +10,6 @@ import os
 
 from senf import path2fsn, fsn2text
 
-from quodlibet.compat import listkeys
 from ._audio import AudioFile, translate_errors
 
 extensions = [".spc"]
@@ -70,7 +69,7 @@ def parse_id666(data):
     else:
         tags["artist"] = data[130:162]
 
-    for k in listkeys(tags):
+    for k in list(tags.keys()):
         if k[:2] == "~#":
             continue
         tags[k] = tags[k].replace(b"\x00", b"").decode("ascii", "ignore")

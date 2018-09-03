@@ -34,7 +34,7 @@ from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, \
     ismount
-from quodlibet.compat import iteritems, iterkeys, itervalues, listkeys
+from quodlibet.compat import iteritems, iterkeys, itervalues
 
 
 class Library(GObject.GObject, DictMixin):
@@ -812,7 +812,7 @@ class FileLibrary(PicklingLibrary):
     def masked_mount_points(self):
         """List of mount points that contain masked items"""
 
-        return listkeys(self._masked)
+        return list(self._masked.keys())
 
     def get_masked(self, mount_point):
         """List of items for a mount point"""

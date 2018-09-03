@@ -36,7 +36,7 @@ from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
-from quodlibet.compat import iteritems, listkeys, itervalues
+from quodlibet.compat import iteritems, itervalues
 
 
 class Comment(object):
@@ -954,7 +954,7 @@ class EditTags(Gtk.VBox):
             self.__songinfo = AudioFileGroup(songs)
         songinfo = self.__songinfo
 
-        keys = listkeys(songinfo)
+        keys = list(songinfo.keys())
         default_tags = get_default_tags()
         keys = set(keys + default_tags)
 
