@@ -12,7 +12,7 @@ from gi.repository import Gtk
 
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort, ObjectTreeStore
-from quodlibet.compat import cmp
+from quodlibet.util import cmp
 
 
 class _TObjectStoreMixin(object):

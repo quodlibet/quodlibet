@@ -9,7 +9,7 @@
 
 from gi.repository import Gtk, GObject
 
-from quodlibet.compat import cmp
+from quodlibet.util import cmp
 
 
 _auto_types = [float, bool, GObject.Object, int, str]

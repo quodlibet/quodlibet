@@ -21,6 +21,10 @@ from .environment import is_linux
 environ, argv
 
 
+def cmp(a, b):
+    return (a > b) - (a < b)
+
+
 def cached_func(f):
     """Decorator which caches the return value of a function which
     doesn't take any input.
