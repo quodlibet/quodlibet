@@ -32,8 +32,7 @@ from quodlibet.util import iso639
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
-from quodlibet.compat import iteritems, \
-    listitems
+from quodlibet.compat import iteritems
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
@@ -845,7 +844,7 @@ class AudioFile(dict, ImageContainer):
         """
 
         # Replace nulls with newlines, trimming zero-length segments
-        for key, val in listitems(self):
+        for key, val in list(self.items()):
             self[key] = val
             if isinstance(val, str) and '\0' in val:
                 self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
