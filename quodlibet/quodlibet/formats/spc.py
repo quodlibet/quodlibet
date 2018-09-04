@@ -10,7 +10,6 @@ import os
 
 from senf import path2fsn, fsn2text
 
-from quodlibet.compat import getbyte, listkeys
 from ._audio import AudioFile, translate_errors
 
 extensions = [".spc"]
@@ -27,7 +26,7 @@ class SPCFile(AudioFile):
                         head[:27] != b'SNES-SPC700 Sound File Data':
                     raise IOError("Not a valid SNES-SPC700 file")
 
-                if getbyte(head, 35) == b'\x1a':
+                if head[35:35 + 1] == b'\x1a':
                     data = h.read(210)
                     if len(data) == 210:
                         self.update(parse_id666(data))
@@ -61,7 +60,7 @@ def parse_id666(data):
     # Instead of detecting "perfectly", we'll just detect enough for
     # the "artist" field. This fails for artist names that begin with
     # numbers or symbols less than ascii value A.
-    if getbyte(data, 130) < b'A':
+    if data[130:130 + 1] < b'A':
         try:
             tags["~#length"] = int(data[123:126].strip(b"\x00"))
         except ValueError:
@@ -70,7 +69,7 @@ def parse_id666(data):
     else:
         tags["artist"] = data[130:162]
 
-    for k in listkeys(tags):
+    for k in list(tags.keys()):
         if k[:2] == "~#":
             continue
         tags[k] = tags[k].replace(b"\x00", b"").decode("ascii", "ignore")

@@ -9,7 +9,6 @@
 # (at your option) any later version.
 
 from quodlibet import _
-from quodlibet.compat import iteritems
 
 """Database of all known tags, their translations and how they are used"""
 
@@ -72,7 +71,7 @@ class TagName(object):
 
 def _get_role_map(tags):
     roles = {}
-    for (name, tag) in iteritems(tags):
+    for (name, tag) in tags.items():
         if tag.role:
             roles[name] = tag.role
             if tag.has_sort:
@@ -185,7 +184,7 @@ def _get_sort_map(tags):
     """See TAG_TO_SORT"""
 
     tts = {}
-    for name, tag in iteritems(tags):
+    for name, tag in tags.items():
         if tag.has_sort:
             if tag.user:
                 tts[name] = "%ssort" % name
@@ -196,7 +195,7 @@ def _get_sort_map(tags):
 
 def _get_standard_tags(tags, machine=False):
     stags = []
-    for name, tag in iteritems(tags):
+    for name, tag in tags.items():
         if tag.user and tag.machine == machine:
             stags.append(name)
             if tag.has_sort:

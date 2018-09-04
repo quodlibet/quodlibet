@@ -17,7 +17,6 @@ from quodlibet import app
 from quodlibet import config
 from quodlibet.qltk import Button, Icons
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.compat import iteritems
 
 
 # Presets (roughly) taken from Pulseaudio equalizer
@@ -178,7 +177,7 @@ class Equalizer(EventPlugin):
         def clicked_cb(button):
             [adj.set_value(0) for adj in adjustments]
 
-        sorted_presets = sorted(iteritems(PRESETS))
+        sorted_presets = sorted(PRESETS.items())
 
         def combo_changed(combo):
             # custom, skip

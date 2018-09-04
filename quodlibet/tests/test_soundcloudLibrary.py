@@ -9,7 +9,6 @@
 from quodlibet import config
 from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
 from quodlibet.browsers.soundcloud.library import SoundcloudLibrary
-from quodlibet.compat import listvalues
 from tests import TestCase
 
 PERMALINK = "https://soundcloud.com/"
@@ -88,7 +87,7 @@ class TSoundcloudLibrary(TestCase):
     def test_parse(self):
         lib = self.lib
         lib.query_with_refresh("dummy search")
-        songs = listvalues(lib._contents)
+        songs = list(lib._contents.values())
         self.failUnlessEqual(len(songs), 1)
         s = songs[0]
         self.failUnlessEqual(s("artist"), "Kerstin Eden")
@@ -103,7 +102,7 @@ class TSoundcloudLibrary(TestCase):
     def test_artwork_url(self):
         lib = SoundcloudLibrary(self.FakeClient())
         lib.query_with_refresh("")
-        s = listvalues(lib._contents)[0]
+        s = list(lib._contents.values())[0]
         self.failUnlessEqual(
             s("artwork_url"),
             "https://i1.sndcdn.com/artworks-000108682375-q4j7y6-t500x500.jpg")

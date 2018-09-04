@@ -19,8 +19,8 @@ to import.
 
 import os
 import pprint
+from urllib.parse import urlencode
 
-from quodlibet.compat import text_type, urlencode
 from quodlibet.util.urllib import Request, urlopen
 
 
@@ -36,17 +36,17 @@ def send_feedback(dsn, event_id, name, email, comment, timeout):
     Args:
         dsn (str): The DSN
         event_id (str): The event ID this feedback should be attached to
-        name (text_type): The user name
-        email (text_type): The user email
-        comment (text_type): The feedback text
+        name (str): The user name
+        email (str): The user email
+        comment (str): The feedback text
         timeout (float): The timeout for this request
     Raises:
         SentryError: In case of timeout or other errors
     """
 
-    name = text_type(name).encode("utf-8")
-    email = text_type(email).encode("utf-8")
-    comment = text_type(comment).encode("utf-8")
+    name = str(name).encode("utf-8")
+    email = str(email).encode("utf-8")
+    comment = str(comment).encode("utf-8")
 
     data = urlencode(
         [('name', name), ('email', email), ('comments', comment)])
@@ -97,7 +97,7 @@ class CapturedException(object):
         sentry servers.
 
         Returns:
-            text_type
+            str
         """
 
         lines = []
@@ -117,7 +117,7 @@ class CapturedException(object):
         Something like "I clicked button X and then this happened"
 
         Args:
-            comment (text_type)
+            comment (str)
         """
 
         self._comment = comment
@@ -188,8 +188,8 @@ class Sentry(object):
         """Attach tags to the error report.
 
         Args:
-            key (text_type)
-            value (text_type)
+            key (str)
+            value (str)
 
         The keys are arbitrary, but some have a special meaning:
 
@@ -208,7 +208,7 @@ class Sentry(object):
 
         Args:
             exc_info (tuple): a sys.exc_info() return value
-            fingerprint (List[text_type] or None):
+            fingerprint (List[str] or None):
                 fingerprint for custom grouping
         Returns:
             CapturedException

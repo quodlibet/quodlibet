@@ -12,7 +12,6 @@ from gi.repository import Gtk
 from quodlibet.qltk.playorder import OrderInOrder
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util import print_d
-from quodlibet.compat import izip
 from quodlibet import config
 
 
@@ -152,7 +151,7 @@ class TrackCurrentModel(ObjectStore):
         self.__iter = None
 
         oldsong = self.last_current
-        for iter_, song in izip(self.iter_append_many(songs), songs):
+        for iter_, song in zip(self.iter_append_many(songs), songs):
             if song is oldsong:
                 self.__iter = iter_
 

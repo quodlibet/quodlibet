@@ -12,13 +12,13 @@
 
 import os
 import threading
+from urllib.parse import quote
 
 from gi.repository import Gtk
 
 from quodlibet import _, print_d, print_w, app
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet.compat import quote
 from quodlibet.errorreport import errorhook
 from quodlibet.formats import AudioFileError
 from quodlibet.qltk import Icons

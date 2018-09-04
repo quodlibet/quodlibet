@@ -17,7 +17,6 @@ import cairo
 
 import quodlibet
 from quodlibet import app
-from quodlibet.compat import text_type
 from quodlibet.build import BUILD_TYPE, BUILD_INFO
 from quodlibet.util import fver, cached_func, is_main_thread
 from quodlibet.util.dprint import format_exception, print_exc, print_e
@@ -84,7 +83,7 @@ def run_error_dialogs(exc_info, sentry_error):
 
     error_text = u"%s: %s" % (
         exc_info[0].__name__,
-        (text_type(exc_info[1]).strip() or u"\n").splitlines()[0])
+        (str(exc_info[1]).strip() or u"\n").splitlines()[0])
     error_text += u"\n------\n"
     error_text += u"\n".join(format_exception(*exc_info))
 

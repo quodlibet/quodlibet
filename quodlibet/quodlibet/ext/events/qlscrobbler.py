@@ -17,6 +17,7 @@ import os
 import threading
 import time
 from hashlib import md5
+from urllib.parse import urlencode
 
 from gi.repository import Gtk, GLib
 
@@ -32,7 +33,6 @@ from quodlibet.qltk.msg import Message
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
-from quodlibet.compat import urlencode
 from quodlibet.util.urllib import urlopen, UrllibError
 from quodlibet.errorreport import errorhook
 

@@ -11,8 +11,6 @@ from __future__ import absolute_import
 import collections
 import threading
 
-from quodlibet.compat import xrange
-
 
 class Logs(object):
     """Thread safe log store"""
@@ -27,7 +25,7 @@ class Logs(object):
         # only pop/append/len are threadsafe, implement iter with them
         with self._iter_lock:
             temp = collections.deque()
-            for i in xrange(len(self._log)):
+            for i in range(len(self._log)):
                 item = self._log.popleft()
                 yield item
                 temp.append(item)
@@ -50,7 +48,7 @@ class Logs(object):
         """
 
         with self._iter_lock:
-            for i in xrange(len(self._log)):
+            for i in range(len(self._log)):
                 self._log.popleft()
 
     def get_content(self, category=None, limit=None):

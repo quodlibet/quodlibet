@@ -8,8 +8,6 @@
 
 from senf import fsnative, path2fsn
 
-from quodlibet.compat import text_type, PY3
-
 from ._audio import AudioFile
 
 
@@ -23,9 +21,8 @@ class RemoteFile(AudioFile):
     format = "Remote File"
 
     def __init__(self, uri):
-        if PY3:
-            assert not isinstance(uri, bytes)
-        self["~uri"] = text_type(uri)
+        assert not isinstance(uri, bytes)
+        self["~uri"] = str(uri)
         self.sanitize(fsnative(self["~uri"]))
 
     def __getitem__(self, key):

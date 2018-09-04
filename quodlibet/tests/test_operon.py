@@ -17,7 +17,6 @@ from .helper import capture_output, get_temp_copy
 from quodlibet import config
 from quodlibet.formats import MusicFile
 from quodlibet.operon.main import main as operon_main
-from quodlibet.compat import listkeys
 
 
 def call(args):
@@ -102,7 +101,7 @@ class TOperonAdd(TOperonBase):
         self.check_true(["add", "tag", "value", self.f, self.f], False, False)
 
     def test_add_check(self):
-        keys = listkeys(self.s)
+        keys = list(self.s.keys())
         self.check_true(["add", "foo", "bar", self.f], False, False)
         self.s.reload()
         self.failUnlessEqual(self.s["foo"], "bar")

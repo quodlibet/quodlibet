@@ -14,7 +14,6 @@ from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn, text2fsn
 import quodlibet
 from quodlibet import _, print_d
 from quodlibet import formats, qltk
-from quodlibet.compat import listfilter
 from quodlibet.qltk import Icons
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.wlw import WaitLoadWindow
@@ -106,7 +105,7 @@ def __create_playlist(name, source_dir, files, library):
         if win.step():
             break
     win.destroy()
-    playlist.extend(listfilter(None, songs))
+    playlist.extend(list(filter(None, songs)))
     return playlist
 
 

@@ -17,7 +17,6 @@ from quodlibet import _
 from quodlibet.browsers.albums import AlbumTagCompletion
 from quodlibet.browsers import Browser
 from quodlibet.query import Query
-from quodlibet.compat import cmp
 
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
@@ -27,7 +26,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, cmp
 from quodlibet.util.library import background_filter
 
 from .models import (CollectionTreeStore, CollectionSortModel,

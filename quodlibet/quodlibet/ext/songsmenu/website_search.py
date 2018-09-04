@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 import os
+from urllib.parse import quote_plus
 from typing import Optional
 
 from gi.repository import Gtk
@@ -14,7 +15,6 @@ from gi.repository import Gtk
 import quodlibet
 from quodlibet import _
 from quodlibet import qltk
-from quodlibet.compat import quote_plus
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin

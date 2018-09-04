@@ -8,7 +8,6 @@ from tests import TestCase
 from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn, \
     DragScroll, MultiDragTreeView, RCMTreeView, DragIconTreeView
 import quodlibet.config
-from quodlibet.compat import xrange
 from quodlibet.util import is_windows
 from gi.repository import Gtk, Gdk
 
@@ -28,7 +27,7 @@ def _fill_view(view):
     column.pack_start(title, True)
     column.add_attribute(title, "text", 0)
     view.append_column(column)
-    for x in xrange(100):
+    for x in range(100):
         model.append(row=["foo"])
     view.set_model(model)
     return model

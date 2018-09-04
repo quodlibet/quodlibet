@@ -22,7 +22,6 @@ from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 from quodlibet.formats import AudioFile
 from quodlibet import config
 from quodlibet import app
-from quodlibet.compat import iteritems
 
 
 A1 = AudioFile(
@@ -131,7 +130,7 @@ class TMPRIS(PluginTestCase):
             "SupportedUriSchemes": dbus.Array(),
         }
 
-        for key, value in iteritems(props):
+        for key, value in props.items():
             self._prop().Get(piface, key, **args)
             resp = self._wait()[0]
             self.failUnlessEqual(resp, value)
@@ -164,7 +163,7 @@ class TMPRIS(PluginTestCase):
             "CanControl": dbus.Boolean(True),
         }
 
-        for key, value in iteritems(props):
+        for key, value in props.items():
             self._prop().Get(piface, key, **args)
             resp = self._wait(msg="for key '%s'" % key)[0]
             self.failUnlessEqual(resp, value)

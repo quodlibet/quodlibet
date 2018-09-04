@@ -25,7 +25,7 @@ def format_dump_header(exc_info):
     Args:
         exc_info (tuple): sys.exc_info() result tuple
     Returns:
-        text_type
+        str
     """
 
     lines = [
@@ -50,7 +50,7 @@ def format_dump_log(limit=75):
     Args:
         limit (int): number of log entries to return
     Returns:
-        text_type
+        str
     """
 
     dump = [u"=== LOG:"]

@@ -7,12 +7,12 @@
 from tests import TestCase, get_data_path
 
 import os
+from io import BytesIO
 
 from quodlibet import const
 from quodlibet.formats._image import EmbeddedImage
 from quodlibet.formats.mp3 import MP3File
 from quodlibet.formats.aiff import AIFFFile
-from quodlibet.compat import cBytesIO
 
 import mutagen
 
@@ -83,7 +83,7 @@ class TID3ImagesMixin(object):
         self.assertFalse(song.has_images)
 
     def test_set_image(self):
-        fileobj = cBytesIO(b"foo")
+        fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = self.KIND(self.filename)
@@ -99,7 +99,7 @@ class TID3ImagesMixin(object):
         f = mutagen.File(self.filename)
         f.delete()
         song = self.KIND(self.filename)
-        fileobj = cBytesIO(b"foo")
+        fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         song.set_image(image)
 

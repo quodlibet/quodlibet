@@ -9,7 +9,6 @@ import time
 from senf import fsnative
 
 from quodlibet import config
-from quodlibet.compat import xrange
 from quodlibet.formats import AudioFile
 from quodlibet.query import Query, QueryType
 from quodlibet.query import _match as match
@@ -194,7 +193,7 @@ class TQuery(TestCase):
     @skip("Enable for basic benchmarking of Query")
     def test_inequality_performance(self):
         t = time.time()
-        for i in xrange(500):
+        for i in range(500):
             # Native assert is a bit lighter...
             assert Query("album!=foo the bar").search(self.s1)
             assert Query("album=foo the bar").search(self.s2)
@@ -207,11 +206,11 @@ class TQuery(TestCase):
     def test_inequality_equalish_performance(self):
         t0 = time.time()
         repeats = 2000
-        for i in xrange(repeats):
+        for i in range(repeats):
             assert Query("album!=foo the bar").search(self.s1)
         ineq_time = (time.time() - t0)
         t1 = time.time()
-        for i in xrange(repeats):
+        for i in range(repeats):
             assert Query("album=!foo the bar").search(self.s1)
         not_val_time = (time.time() - t1)
         self.assertAlmostEqual(ineq_time, not_val_time, places=1)

@@ -11,7 +11,6 @@ import mutagen.id3
 
 from quodlibet import config, const, print_d
 from quodlibet import util
-from quodlibet.compat import iteritems, text_type, listvalues, PY2
 from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import isascii
@@ -71,7 +70,7 @@ class ID3File(AudioFile):
            # TLAN requires an ISO 639-2 language code, check manually
            #"TLAN": "language"
     }
-    SDI = dict([(v, k) for k, v in iteritems(IDS)])
+    SDI = dict([(v, k) for k, v in IDS.items()])
 
     # At various times, information for this came from
     # http://musicbrainz.org/docs/specs/metadata_tags.html
@@ -94,7 +93,7 @@ class ID3File(AudioFile):
         u"ALBUMARTISTSORT": "albumartistsort",
         u"BARCODE": "barcode",
         }
-    PAM_XXXT = dict([(v, k) for k, v in iteritems(TXXX_MAP)])
+    PAM_XXXT = dict([(v, k) for k, v in TXXX_MAP.items()])
 
     Kind = None
 
@@ -168,7 +167,7 @@ class ID3File(AudioFile):
 
             id3id = frame.FrameID
             if id3id.startswith("T"):
-                text = "\n".join(map(text_type, frame.text))
+                text = "\n".join(map(str, frame.text))
             elif id3id == "COMM":
                 text = "\n".join(frame.text)
             elif id3id == "USLT":
@@ -200,13 +199,13 @@ class ID3File(AudioFile):
         # to avoid reverting or duplicating tags in existing libraries.
         if audio.tags and "date" not in self:
             for frame in tag.getall('TXXX:DATE'):
-                self["date"] = "\n".join(map(text_type, frame.text))
+                self["date"] = "\n".join(map(str, frame.text))
 
         # Read TXXX replaygain and replace previously read values from RVA2
         for frame in tag.getall("TXXX"):
             k = frame.desc.lower()
             if k in RG_KEYS:
-                self[str(k)] = u"\n".join(map(text_type, frame.text))
+                self[str(k)] = u"\n".join(map(str, frame.text))
 
         self.sanitize(filename)
 
@@ -225,10 +224,7 @@ class ID3File(AudioFile):
                 and k.encode("ascii", "replace").decode("ascii") == k):
             return
 
-        if PY2:
-            return k.encode("ascii")
-        else:
-            return k
+        return k
 
     def __process_rg(self, frame):
         if frame.channel == 1:
@@ -252,7 +248,7 @@ class ID3File(AudioFile):
         return codecs
 
     def __distrust_latin1(self, text, encoding):
-        assert isinstance(text, text_type)
+        assert isinstance(text, str)
         if encoding == 0:
             try:
                 text = text.encode('iso-8859-1')
@@ -311,7 +307,7 @@ class ID3File(AudioFile):
                 tag.add(Kind(encoding=enc, text=text))
 
         dontwrite = ["genre", "comment", "musicbrainz_trackid", "lyrics"] \
-            + RG_KEYS + listvalues(self.TXXX_MAP)
+            + RG_KEYS + list(self.TXXX_MAP.values())
 
         if "musicbrainz_trackid" in self.realkeys():
             f = mutagen.id3.UFID(

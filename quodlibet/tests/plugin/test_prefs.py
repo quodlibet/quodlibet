@@ -10,7 +10,6 @@ from gi.repository import Gtk
 
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 from quodlibet import config
-from quodlibet.compat import iteritems
 
 
 class TPrefs(PluginTestCase):
@@ -25,7 +24,7 @@ class TPrefs(PluginTestCase):
     def test_all(self):
         tested_any = False
 
-        for id_, plugin in iteritems(self.plugins):
+        for id_, plugin in self.plugins.items():
             plugin = plugin.cls
             if hasattr(plugin, "PLUGIN_INSTANCE"):
                 plugin = plugin()

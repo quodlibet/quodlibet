@@ -11,7 +11,6 @@ from __future__ import absolute_import
 import os
 import ctypes
 
-from quodlibet.compat import text_type
 
 if os.name == "nt":
     from . import winapi
@@ -39,9 +38,9 @@ def open_folder_and_select_items(folder, items=None):
     if items is None:
         items = []
 
-    assert isinstance(folder, text_type)
+    assert isinstance(folder, str)
     for item in items:
-        assert isinstance(item, text_type)
+        assert isinstance(item, str)
         assert not os.path.split(item)[0]
 
     desktop = winapi.IShellFolder()
@@ -181,7 +180,7 @@ def get_link_target(path):
     Might raise WindowsError in case something fails.
     """
 
-    assert isinstance(path, text_type)
+    assert isinstance(path, str)
 
     CoInitialize(None)
 

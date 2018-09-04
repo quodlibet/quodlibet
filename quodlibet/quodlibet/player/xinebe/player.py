@@ -40,7 +40,7 @@ class XineHandle(object):
     def list_input_plugins(self):
         """
         Returns:
-            List[text_type]
+            List[str]
         """
 
         plugins = []

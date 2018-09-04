@@ -11,8 +11,6 @@ import xml.etree.ElementTree as ET
 import dbus
 import dbus.service
 
-from quodlibet.compat import unichr, text_type, PY3, iteritems
-
 
 def dbus_unicode_validate(text):
     """Takes a unicode string and replaces all invalid codepoints that would
@@ -34,7 +32,7 @@ def dbus_unicode_validate(text):
             cps.append(c)
         else:
             cps.append(0xFFFD)
-    return u"".join(map(unichr, cps))
+    return u"".join(map(chr, cps))
 
 
 def list_spec_properties(spec):
@@ -135,14 +133,9 @@ def apply_signature(value, sig, utf8_strings=False):
     elif sig.startswith("a"):
         return dbus.Array(value, signature=sig[1:])
     elif sig == "s":
-        if utf8_strings and not PY3:
-            if isinstance(value, text_type):
-                value = value.encode("utf-8")
-            return dbus.UTF8String(value)
-        else:
-            if isinstance(value, bytes):
-                value = value.decode("utf-8")
-            return dbus.String(value)
+        if isinstance(value, bytes):
+            value = value.decode("utf-8")
+        return dbus.String(value)
     else:
         return TYPE_MAP[sig](value)
 
@@ -182,7 +175,7 @@ class DBusIntrospectable(object):
     def Introspect(self):
         parts = []
         parts.append("<node>")
-        for iface, intros in iteritems(self.__ispec):
+        for iface, intros in self.__ispec.items():
             parts.append("<interface name=\"%s\">" % iface)
             parts.extend(intros)
             parts.append("</interface>")
@@ -293,7 +286,7 @@ class DBusProperty(object):
                 raise ValueError("Property %s not registered" % prop)
             combos.setdefault(iface, []).append(prop)
 
-        for iface, props in iteritems(combos):
+        for iface, props in combos.items():
             values = {}
             inval = []
             for prop in props:

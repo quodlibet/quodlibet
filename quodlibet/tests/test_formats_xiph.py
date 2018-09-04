@@ -10,11 +10,11 @@ from tests import get_data_path, skipUnless, mkstemp, TestCase
 import os
 import sys
 import base64
+from io import BytesIO
 
 from quodlibet import config, const, formats
 from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
 from quodlibet.formats._image import EmbeddedImage, APICType
-from quodlibet.compat import long, cBytesIO, iteritems
 
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
@@ -111,7 +111,7 @@ class TVCFileMixin(object):
         self.failUnlessEqual(song["~#rating"], 0.2)
 
     def test_huge_playcount(self):
-        count = long(1000000000000000)
+        count = 1000000000000000
         self.song["~#playcount"] = count
         self.song.write()
         song = type(self.song)(self.filename)
@@ -173,11 +173,11 @@ class TTotalTagsMixin(object):
 
     def __load_tags(self, tags, expected):
         m = OggVorbis(self.filename)
-        for key, value in iteritems(tags):
+        for key, value in tags.items():
             m.tags[key] = value
         m.save()
         song = OggFile(self.filename)
-        for key, value in iteritems(expected):
+        for key, value in expected.items():
             self.failUnlessEqual(song(key), value)
         if self.MAIN not in expected:
             self.failIf(self.MAIN in song)
@@ -224,12 +224,12 @@ class TTotalTagsMixin(object):
     def __save_tags(self, tags, expected):
         #return
         song = OggFile(self.filename)
-        for key, value in iteritems(tags):
+        for key, value in tags.items():
             song[key] = value
         song.write()
         m = OggVorbis(self.filename)
         # test if all values ended up where we wanted
-        for key, value in iteritems(expected):
+        for key, value in expected.items():
             self.failUnless(key in m.tags)
             self.failUnlessEqual(m.tags[key], [value])
 
@@ -472,7 +472,7 @@ class TVCCoverMixin(object):
         song["coverartmime"] = "image/jpeg"
         song.save()
 
-        fileobj = cBytesIO(b"foo")
+        fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = self.QLType(self.filename)
@@ -565,7 +565,7 @@ class TFlacPicture(TestCase):
         self.assertFalse(song.get_primary_image())
 
     def test_set_image(self):
-        fileobj = cBytesIO(b"foo")
+        fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = FLACFile(self.filename)

@@ -8,8 +8,6 @@
 
 from tests import TestCase, skipUnless
 
-from quodlibet.compat import text_type
-
 try:
     import dbus
 except ImportError:
@@ -64,13 +62,13 @@ class TDbusUtils(TestCase):
         value = apply_signature(text, "s", utf8_strings=True)
         self.failUnless(isinstance(value, str))
         value = apply_signature(text, "s")
-        self.failUnless(isinstance(value, text_type))
+        self.failUnless(isinstance(value, str))
 
         text = u"öäü"
         value = apply_signature(text, "s", utf8_strings=True)
         self.failUnless(isinstance(value, str))
         value = apply_signature(text, "s")
-        self.failUnless(isinstance(value, text_type))
+        self.failUnless(isinstance(value, str))
 
     def test_list_props(self):
         props = list_spec_properties(ANN1)

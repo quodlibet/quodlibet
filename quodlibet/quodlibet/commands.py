@@ -16,7 +16,6 @@ from quodlibet.util.string import split_escape
 
 from quodlibet import browsers
 
-from quodlibet.compat import listfilter, text_type
 from quodlibet import util
 from quodlibet.util import print_d, print_e
 
@@ -382,7 +381,7 @@ def _properties(app, value=None):
     else:
         songs = [player.song]
 
-    songs = listfilter(None, songs)
+    songs = list(filter(None, songs))
 
     if songs:
         window = SongProperties(library, songs, parent=window)
@@ -520,7 +519,7 @@ def _print_query(app, query):
 @registry.register("print-query-text")
 def _print_query_text(app):
     if app.browser.can_filter_text():
-        return text2fsn(text_type(app.browser.get_filter_text()) + u"\n")
+        return text2fsn(str(app.browser.get_filter_text()) + u"\n")
 
 
 @registry.register("print-playing", optional=1)

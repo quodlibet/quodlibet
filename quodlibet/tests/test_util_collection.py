@@ -19,7 +19,6 @@ from quodlibet.util.collection import Album, Playlist, avg, bayesian_average, \
     FileBackedPlaylist
 from quodlibet.library.libraries import FileLibrary
 from quodlibet.util import format_rating
-from quodlibet.compat import long
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 
@@ -133,7 +132,7 @@ class TAlbum(TestCase):
 
     def test_numeric_comma(self):
         songs = [Fakesong({
-            "~#added": long(1),
+            "~#added": 1,
             "~#rating": 0.5,
             "~#bitrate": 42,
             "~#length": 1,

@@ -25,7 +25,6 @@ from quodlibet import util
 from quodlibet import app
 from quodlibet import _
 from quodlibet.qltk.paned import ConfigRHPaned
-from quodlibet.compat import listfilter
 
 from quodlibet.qltk.appwindow import AppWindow
 from quodlibet.update import UpdateDialog
@@ -1334,7 +1333,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         if browser.background:
             bg = background_filter()
             if bg:
-                songs = listfilter(bg, songs)
+                songs = list(filter(bg, songs))
         self.songlist.set_songs(songs, sorted)
 
         # After the first time the browser activates, which should always

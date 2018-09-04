@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import types
 
 dir_ = os.path.dirname(os.path.realpath(__file__))
@@ -14,11 +13,8 @@ def exec_module(path):
     # assert in const.py
     os.environ.pop("MSYSTEM", None)
     globals_ = {}
-    if sys.version_info[0] == 2:
-        execfile(path, globals_)
-    else:
-        with open(path, encoding="utf-8") as h:
-            exec(h.read(), globals_)
+    with open(path, encoding="utf-8") as h:
+        exec(h.read(), globals_)
     module = types.ModuleType("")
     module.__dict__.update(globals_)
     return module

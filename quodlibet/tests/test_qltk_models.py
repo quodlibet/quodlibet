@@ -12,7 +12,7 @@ from gi.repository import Gtk
 
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort, ObjectTreeStore
-from quodlibet.compat import cmp, xrange
+from quodlibet.util import cmp
 
 
 class _TObjectStoreMixin(object):
@@ -128,12 +128,12 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
 
     def test_iter_append_many_iterable_int(self):
         m = ObjectStore()
-        for x in m.iter_append_many((i for i in xrange(10))):
+        for x in m.iter_append_many((i for i in range(10))):
             pass
         self.failUnlessEqual([r[0] for r in m], list(range(10)))
 
     def test_iter_append_many_iterable_object(self):
-        objects = [object() for i in xrange(10)]
+        objects = [object() for i in range(10)]
         m = ObjectStore()
         for x in m.iter_append_many((i for i in objects)):
             pass
@@ -217,7 +217,7 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
         m.insert_many(0, [1, 2, 3])
         m.append_many([1, 2, 3])
         list(m.iter_append_many([1, 2, 3]))
-        list(m.iter_append_many(xrange(3)))
+        list(m.iter_append_many(range(3)))
 
         self.assertEqual(changed[0], 0)
         self.assertEqual(inserted[0], len(m))

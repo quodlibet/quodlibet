@@ -16,7 +16,6 @@ import logging
 from senf import getcwd, fsnative, fsn2bytes, bytes2fsn, mkdtemp, environ
 
 from quodlibet import _
-from quodlibet.compat import text_type
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
 from quodlibet import config
 from quodlibet import util
@@ -89,13 +88,13 @@ class Tget_locale_encoding(TestCase):
 class Tformat_locale(TestCase):
 
     def test_format_int_locale(self):
-        assert isinstance(util.format_int_locale(1024), text_type)
+        assert isinstance(util.format_int_locale(1024), str)
 
     def test_format_float_locale(self):
-        assert isinstance(util.format_float_locale(1024.1024), text_type)
+        assert isinstance(util.format_float_locale(1024.1024), str)
 
     def test_format_time_seconds(self):
-        assert isinstance(util.format_time_seconds(1024), text_type)
+        assert isinstance(util.format_time_seconds(1024), str)
 
         with locale_numeric_conv():
             assert format_time_seconds(1024) == "1,024 seconds"
@@ -209,7 +208,7 @@ class Tre_esc(TestCase):
 
     def test_empty_unicode(self):
         self.failUnlessEqual(re_escape(u""), u"")
-        self.assertTrue(isinstance(re_escape(u""), text_type))
+        self.assertTrue(isinstance(re_escape(u""), str))
 
     def test_safe(self):
         self.failUnlessEqual(re_escape("fo o"), "fo o")
@@ -377,7 +376,7 @@ class Tformat_size(TestCase):
         for key, value in d.items():
             formatted = util.format_size(key)
             self.failUnlessEqual(formatted, value)
-            assert isinstance(formatted, text_type)
+            assert isinstance(formatted, str)
 
     def test_bytes(self):
         self.t_dict({0: "0 B", 1: "1 B", 1023: "1023 B"})
@@ -771,9 +770,9 @@ class Tstrip_win32_incompat_from_path(TestCase):
         self.assertTrue(isinstance(v, fsnative))
 
         v = strip_win32_incompat_from_path(u"")
-        self.assertTrue(isinstance(v, text_type))
+        self.assertTrue(isinstance(v, str))
         v = strip_win32_incompat_from_path(u"foo")
-        self.assertTrue(isinstance(v, text_type))
+        self.assertTrue(isinstance(v, str))
 
     def test_basic(self):
         if is_win:
@@ -840,20 +839,20 @@ class Tsplit_escape(TestCase):
 
         parts = split_escape(u"a:b", u":")
         self.assertEqual(parts, [u"a", u"b"])
-        self.assertTrue(all(isinstance(p, text_type) for p in parts))
+        self.assertTrue(all(isinstance(p, str) for p in parts))
 
         parts = split_escape(u"", u":")
         self.assertEqual(parts, [u""])
-        self.assertTrue(all(isinstance(p, text_type) for p in parts))
+        self.assertTrue(all(isinstance(p, str) for p in parts))
 
         parts = split_escape(u":", u":")
         self.assertEqual(parts, [u"", u""])
-        self.assertTrue(all(isinstance(p, text_type) for p in parts))
+        self.assertTrue(all(isinstance(p, str) for p in parts))
 
     def test_join_escape_types(self):
         self.assertEqual(join_escape([], b":"), b"")
         self.assertTrue(isinstance(join_escape([], b":"), bytes))
-        self.assertTrue(isinstance(join_escape([], u":"), text_type))
+        self.assertTrue(isinstance(join_escape([], u":"), str))
         self.assertEqual(join_escape([b"\xff", b"\xff"], b":"), b"\xff:\xff")
         self.assertEqual(join_escape([u'\xe4', u'\xe4'], ":"), u'\xe4:\xe4')
 
@@ -1090,7 +1089,7 @@ class Tenviron(TestCase):
     def test_main(self):
         for v in environ.values():
             if os.name == "nt":
-                self.assertTrue(isinstance(v, text_type))
+                self.assertTrue(isinstance(v, str))
             else:
                 self.assertTrue(isinstance(v, str))
 
@@ -1153,7 +1152,7 @@ class Tformat_exception(TestCase):
         except:
             result = format_exception(*sys.exc_info())
             self.assertTrue(isinstance(result, list))
-            self.assertTrue(all([isinstance(l, text_type) for l in result]))
+            self.assertTrue(all([isinstance(l, str) for l in result]))
 
 
 class Textract_tb(TestCase):
@@ -1167,5 +1166,5 @@ class Textract_tb(TestCase):
             for fn, l, fu, text in result:
                 self.assertTrue(isinstance(fn, fsnative))
                 self.assertTrue(isinstance(l, int))
-                self.assertTrue(isinstance(fu, text_type))
-                self.assertTrue(isinstance(text, text_type))
+                self.assertTrue(isinstance(fu, str))
+                self.assertTrue(isinstance(text, str))

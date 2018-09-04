@@ -26,7 +26,6 @@ except ImportError:
 from quodlibet.player import PlayerError
 from quodlibet.util import sanitize_tags, is_flatpak
 from quodlibet.formats import MusicFile
-from quodlibet.compat import long, text_type
 from quodlibet import config
 
 
@@ -106,26 +105,23 @@ class TGstreamerTagList(TestCase):
 
         l["foo"] = u"äöü"
         parsed = parse_gstreamer_taglist(l)
-        self.assertTrue(isinstance(parsed["foo"], text_type))
+        self.assertTrue(isinstance(parsed["foo"], str))
         self.assertTrue(u"äöü" in parsed["foo"].split("\n"))
 
         l["foo"] = u"äöü".encode("utf-8")
         parsed = parse_gstreamer_taglist(l)
-        self.assertTrue(isinstance(parsed["foo"], text_type))
+        self.assertTrue(isinstance(parsed["foo"], str))
         self.assertTrue(u"äöü" in parsed["foo"].split("\n"))
 
         l["bar"] = 1.2
         self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], 1.2)
-
-        l["bar"] = long(9)
-        self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], 9)
 
         l["bar"] = 9
         self.failUnlessEqual(parse_gstreamer_taglist(l)["bar"], 9)
 
         l["bar"] = Gst.TagList() # some random gst instance
         self.failUnless(
-            isinstance(parse_gstreamer_taglist(l)["bar"], text_type))
+            isinstance(parse_gstreamer_taglist(l)["bar"], str))
         self.failUnless("GstTagList" in parse_gstreamer_taglist(l)["bar"])
 
     def test_sanitize(self):
