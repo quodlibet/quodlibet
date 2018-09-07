@@ -16,6 +16,7 @@ import re
 import shutil
 import time
 from collections import OrderedDict
+from itertools import zip_longest
 
 from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 
@@ -31,8 +32,6 @@ from quodlibet.util import iso639
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
-from quodlibet.compat import iteritems, string_types, text_type, \
-    number_types, listitems, izip_longest, integer_types, PY3, listfilter
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
@@ -63,7 +62,7 @@ NUMERIC_ZERO_DEFAULT.update(SIZE_TAGS)
 FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname", "~mountpoint"}
 """Values are bytes in Linux instead of unicode"""
 
-SORT_TO_TAG = dict([(v, k) for (k, v) in iteritems(TAG_TO_SORT)])
+SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.items()])
 """Reverse map, so sort tags can fall back to the normal ones"""
 
 PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
@@ -86,8 +85,8 @@ def decode_value(tag, value):
         if isinstance(value, float):
             return u"%.2f" % value
         else:
-            return text_type(value)
-    return text_type(value)
+            return str(value)
+    return str(value)
 
 
 class AudioFile(dict, ImageContainer):
@@ -182,34 +181,18 @@ class AudioFile(dict, ImageContainer):
 
     def __setitem__(self, key, value):
         # validate key
-        if PY3:
-            if not isinstance(key, text_type):
-                raise TypeError("key has to be str")
-        else:
-            if isinstance(key, text_type):
-                # we try to save keys as encoded ASCII to save memory
-                # under PY2. Everything else besides ASCII combined with
-                # unicode breaks hashing even if the default encoding
-                # it utf-8.
-                try:
-                    key = key.encode("ascii")
-                except UnicodeEncodeError:
-                    pass
-            elif isinstance(key, bytes):
-                # make sure we set ascii keys only
-                key.decode("ascii")
-            else:
-                raise TypeError("key needs to be unicode or ASCII str")
+        if not isinstance(key, str):
+            raise TypeError("key has to be str")
 
         # validate value
         if key.startswith("~#"):
-            if not isinstance(value, number_types):
+            if not isinstance(value, (int, float)):
                 raise TypeError
         elif key in FILESYSTEM_TAGS:
             if not isinstance(value, fsnative):
                 value = path2fsn(value)
         else:
-            value = text_type(value)
+            value = str(value)
 
         dict.__setitem__(self, key, value)
 
@@ -277,7 +260,7 @@ class AudioFile(dict, ImageContainer):
         """Returns a list of keys that are not internal, i.e. they don't
         have '~' in them."""
 
-        return listfilter(lambda s: s[:1] != "~", self.keys())
+        return list(filter(lambda s: s[:1] != "~", self.keys()))
 
     def prefixkeys(self, prefix):
         """Returns a list of dict keys that either match prefix or start
@@ -295,7 +278,7 @@ class AudioFile(dict, ImageContainer):
         return "\n".join(self.list_unique(sorted(self.prefixkeys(tag))))
 
     def iterrealitems(self):
-        return ((k, v) for (k, v) in iteritems(self) if k[:1] != "~")
+        return ((k, v) for (k, v) in self.items() if k[:1] != "~")
 
     def __call__(self, key, default=u"", connector=" - ", joiner=', '):
         """Return the value(s) for a key, synthesizing if necessary.
@@ -394,7 +377,7 @@ class AudioFile(dict, ImageContainer):
                 except KeyError:
                     return fsn2uri(self["~filename"])
             elif key == "format":
-                return self.get("~format", text_type(self.format))
+                return self.get("~format", str(self.format))
             elif key == "codec":
                 codec = self.get("~codec")
                 if codec is None:
@@ -692,7 +675,7 @@ class AudioFile(dict, ImageContainer):
         else:
             v = self.get(key, u"")
 
-        if isinstance(v, number_types):
+        if isinstance(v, (int, float)):
             return v
         else:
             return v.replace("\n", ", ")
@@ -713,7 +696,7 @@ class AudioFile(dict, ImageContainer):
             if v == "":
                 return []
             else:
-                return v.split("\n") if isinstance(v, text_type) else [v]
+                return v.split("\n") if isinstance(v, str) else [v]
         else:
             v = self.get(key)
             return [] if v is None else v.split("\n")
@@ -737,7 +720,7 @@ class AudioFile(dict, ImageContainer):
             sort = sort.split("\n") if sort else []
 
         result = []
-        for d, s in izip_longest(display, sort):
+        for d, s in zip_longest(display, sort):
             if d is not None:
                 result.append((d, (s if s is not None and s != "" else d)))
         return result
@@ -778,7 +761,7 @@ class AudioFile(dict, ImageContainer):
 
         merged = AudioFile()
         text = {}
-        for key, value in iteritems(self):
+        for key, value in self.items():
             lower = key.lower()
             if key.startswith("~#"):
                 merged[lower] = value
@@ -860,9 +843,9 @@ class AudioFile(dict, ImageContainer):
         """
 
         # Replace nulls with newlines, trimming zero-length segments
-        for key, val in listitems(self):
+        for key, val in list(self.items()):
             self[key] = val
-            if isinstance(val, string_types) and '\0' in val:
+            if isinstance(val, str) and '\0' in val:
                 self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
             # Remove unnecessary defaults
             if key in NUMERIC_ZERO_DEFAULT and val == 0:
@@ -919,14 +902,14 @@ class AudioFile(dict, ImageContainer):
         """
 
         def encode_key(k):
-            return encode(k) if isinstance(k, text_type) else k
+            return encode(k) if isinstance(k, str) else k
 
         s = []
         for k in self.keys():
             enc_key = encode_key(k)
             assert isinstance(enc_key, bytes)
 
-            if isinstance(self[k], integer_types):
+            if isinstance(self[k], int):
                 l = enc_key + encode("=%d" % self[k])
                 s.append(l)
             elif isinstance(self[k], float):
@@ -954,23 +937,11 @@ class AudioFile(dict, ImageContainer):
             text (bytes)
         """
 
-        def decode_key(key):
-            """str if ascii, otherwise decode using utf-8"""
-
-            if PY3:
-                return decode(key)
-
-            try:
-                key.decode("ascii")
-            except ValueError:
-                return decode(key)
-            return key
-
         for line in text.split(b"\n"):
             if not line:
                 continue
             parts = line.split(b"=")
-            key = decode_key(parts[0])
+            key = decode(parts[0])
             val = b"=".join(parts[1:])
             if key == "~format":
                 pass

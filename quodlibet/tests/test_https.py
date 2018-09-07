@@ -9,10 +9,10 @@
 import pytest
 from gi.repository import Gio, Soup, GLib
 
+from urllib.request import urlopen, build_opener
 from tests import TestCase, skipIf
 
 from quodlibet.util import is_linux, get_ca_file
-from quodlibet.compat import urlopen, build_opener
 
 
 @pytest.mark.network

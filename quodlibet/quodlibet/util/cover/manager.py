@@ -287,7 +287,11 @@ class CoverManager(GObject.Object):
                             "Using provider to search for compilation"
                             % (len(artists), key))
                     song = AudioFile(song)
-                    del song['artist']
+                    try:
+                        del song['artist']
+                    except KeyError:
+                        # Artist(s) from other grouped songs, never mind.
+                        pass
                 provider = plugin(song)
                 provider.connect('search-complete', search_complete)
                 provider.connect('fetch-failure', failure)

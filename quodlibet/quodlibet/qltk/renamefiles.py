@@ -34,7 +34,6 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj
 from quodlibet.util.path import strip_win32_incompat_from_path
 from quodlibet.util.dprint import print_d
-from quodlibet.compat import itervalues
 
 
 NBP = os.path.join(quodlibet.get_user_dir(), "lists", "renamepatterns")
@@ -289,7 +288,7 @@ class RenameFiles(Gtk.VBox):
         moveart_sets = {}
         remove_empty_dirs = config.getboolean("rename", "remove_empty_dirs")
 
-        for entry in itervalues(model):
+        for entry in model.values():
             if entry.new_name is None:
                 continue
             song = entry.song
@@ -431,7 +430,7 @@ class RenameFiles(Gtk.VBox):
     def _preview(self, songs):
         model = self.view.get_model()
         if songs is None:
-            songs = [e.song for e in itervalues(model)]
+            songs = [e.song for e in model.values()]
 
         pattern_text = self.combo.get_child().get_text()
 

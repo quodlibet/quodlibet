@@ -5,6 +5,7 @@
 # (at your option) any later version.
 
 import os
+import shutil
 import unittest
 
 from senf import uri2fsn, fsn2uri, fsnative, environ
@@ -130,7 +131,7 @@ class Tiscommand(TestCase):
     @unittest.skipIf(is_win, "Unix only")
     def test_unix(self):
         self.failUnless(iscommand("ls"))
-        self.failUnless(iscommand("/bin/ls"))
+        self.failUnless(iscommand(shutil.which("ls")))
         self.failUnless(iscommand("whoami"))
 
     def test_both(self):

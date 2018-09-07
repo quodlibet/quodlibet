@@ -13,7 +13,6 @@ from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet import config
-from quodlibet.compat import text_type
 import quodlibet.player
 
 
@@ -37,7 +36,7 @@ class TSongsMenu(TestCase):
         self.songs = [AudioFile({"title": x}) for x in
                       ["song1", "song2", "song3"]]
         for song in self.songs:
-            song.sanitize(fsnative(text_type(song["title"])))
+            song.sanitize(fsnative(str(song["title"])))
         self.confirmed = False
 
     def test_empty(self):

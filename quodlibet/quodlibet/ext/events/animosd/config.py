@@ -28,6 +28,7 @@ def get_config(prefix):
 
         font = ConfProp(plugin_conf, "font", "Sans 22")
         string = ConfProp(plugin_conf, "string", DEFAULT_PATTERN)
+        pos_x = FloatConfProp(plugin_conf, "pos_x", 0.5)
         pos_y = FloatConfProp(plugin_conf, "pos_y", 0.0)
         corners = IntConfProp(plugin_conf, "corners", 1)
         delay = IntConfProp(plugin_conf, "delay", 2500)

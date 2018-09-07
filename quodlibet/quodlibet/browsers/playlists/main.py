@@ -19,7 +19,6 @@ from quodlibet.browsers import Browser
 from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.browsers.playlists.prefs import Preferences, \
     DEFAULT_PATTERN_TEXT
-from quodlibet.compat import listfilter
 from quodlibet.formats import AudioFile
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 from quodlibet.qltk.completion import LibraryTagCompletion
@@ -394,7 +393,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         model = view.get_model()
         if tid == DND_QL:
             filenames = qltk.selection_get_filenames(sel)
-            songs = listfilter(None, [library.get(f) for f in filenames])
+            songs = list(filter(None, [library.get(f) for f in filenames]))
             if not songs:
                 Gtk.drag_finish(ctx, False, False, etime)
                 return

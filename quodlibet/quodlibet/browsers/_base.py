@@ -21,7 +21,6 @@ from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.util import connect_obj, print_d
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.library import background_filter
-from quodlibet.compat import itervalues
 
 
 class Filter(object):
@@ -78,7 +77,7 @@ class Filter(object):
         library = app.library
         bg = background_filter()
         if bg:
-            songs = filter(bg, itervalues(library))
+            songs = filter(bg, library.values())
             return list({value
                          for song in songs
                          for value in song.list(tag)})

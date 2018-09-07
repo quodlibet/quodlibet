@@ -11,6 +11,7 @@
 import os
 import signal
 import socket
+from urllib.parse import urlparse
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -21,7 +22,6 @@ from gi.repository import GLib, GObject
 from senf import fsn2bytes, bytes2fsn, uri2fsn
 
 from quodlibet.util import print_d, print_w, is_windows, is_osx
-from quodlibet.compat import urlparse
 
 
 def show_uri(label, uri):

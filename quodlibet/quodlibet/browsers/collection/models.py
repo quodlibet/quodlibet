@@ -12,7 +12,6 @@ from quodlibet import _
 from quodlibet.pattern import XMLFromPattern
 from quodlibet.qltk.models import ObjectTreeStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort
-from quodlibet.compat import iteritems, string_types, itervalues
 
 
 EMPTY = _("Songs not in an album")
@@ -71,7 +70,7 @@ def build_tree(tags, albums, cache=None):
             values = [MultiNode]
         for value in values or [UnknownNode]:
             tree.setdefault(value, []).append(album)
-    for key, value in iteritems(tree):
+    for key, value in tree.items():
         tree[key] = build_tree(tags[1:], value, cache)
     return tree
 
@@ -126,7 +125,7 @@ class CollectionModelMixin(object):
         if isinstance(obj, AlbumNode):
             return PAT % obj.album
 
-        if isinstance(obj, string_types):
+        if isinstance(obj, str):
             markup = util.escape(obj)
         else:
             tag = util.tag(tags[len(self.get_path(iter_).get_indices()) - 1])
@@ -184,7 +183,7 @@ class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
                 child = self.iter_next(child)
 
             # add missing ones
-            for key, value in iteritems(tree):
+            for key, value in tree.items():
                 _add(value, self.append(parent=iter_, row=[key]))
 
         _add(build_tree(self.__tags, albums))
@@ -253,7 +252,7 @@ class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
                 if isinstance(sub, list):
                     found.update(sub)
                     return found
-                for v in itervalues(sub):
+                for v in sub.values():
                     _get_all(v, found)
                 return found
             not_found.update(_get_all(tree))

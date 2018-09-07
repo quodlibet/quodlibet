@@ -15,15 +15,14 @@
 import os
 import re
 from re import Scanner  # type: ignore
+from urllib.parse import quote_plus
 
 from senf import sep, fsnative, expanduser
 
 from quodlibet import util
 from quodlibet.query import Query
-from quodlibet.compat import exec_, itervalues
 from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 from quodlibet.formats._audio import decode_value, FILESYSTEM_TAGS
-from quodlibet.compat import quote_plus, text_type, number_types
 
 # Token types.
 (OPEN, CLOSE, TEXT, COND, EOF) = range(5)
@@ -222,7 +221,7 @@ class PatternFormatter(object):
 
         def comma(self, key):
             value = self.__song.comma(key)
-            if isinstance(value, number_types):
+            if isinstance(value, (int, float)):
                 value = decode_value(key, value)
             if self.__formatter:
                 return self.__formatter(key, value)
@@ -289,10 +288,10 @@ class PatternCompiler(object):
         content.append("  return r")
         code = "\n".join(content)
 
-        scope = dict(itervalues(queries))
+        scope = dict(queries.values())
         if text_formatter:
             scope["_format"] = text_formatter
-        exec_(compile(code, "<string>", "exec"), scope)
+        exec(compile(code, "<string>", "exec"), scope)
         return scope["f"], tags
 
     def __get_value(self, text, scope, tag):
@@ -406,7 +405,7 @@ class _FileFromPattern(PatternFormatter):
 
     def _post(self, value, song, keep_extension=True):
         if value:
-            assert isinstance(value, text_type)
+            assert isinstance(value, str)
             value = fsnative(value)
 
             if keep_extension:
@@ -417,7 +416,7 @@ class _FileFromPattern(PatternFormatter):
                     value += ext.lower()
 
             if os.name == "nt":
-                assert isinstance(value, text_type)
+                assert isinstance(value, str)
                 value = strip_win32_incompat_from_path(value)
 
             value = expanduser(value)

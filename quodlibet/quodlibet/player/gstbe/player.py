@@ -28,7 +28,6 @@ from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError, \
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.notif import Task
-from quodlibet.compat import iteritems
 from quodlibet.formats.mod import ModFile
 
 from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,
@@ -966,12 +965,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         tags = TagListWrapper(tags, merge=True)
         tags = parse_gstreamer_taglist(tags)
 
-        for key, value in iteritems(sanitize_tags(tags, stream=False)):
+        for key, value in sanitize_tags(tags, stream=False).items():
             if self.song.get(key) != value:
                 changed = True
                 self.song[key] = value
 
-        for key, value in iteritems(sanitize_tags(tags, stream=True)):
+        for key, value in sanitize_tags(tags, stream=True).items():
             if new_info.get(key) != value:
                 info_changed = True
                 new_info[key] = value

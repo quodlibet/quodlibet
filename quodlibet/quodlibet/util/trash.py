@@ -13,13 +13,13 @@ import sys
 import errno
 import time
 import shutil
+from urllib.request import pathname2url
 
 from os.path import join, islink, abspath, dirname
 from os.path import isdir, basename, exists, splitext
 
 from quodlibet import config
 from quodlibet.util.path import find_mount_point, xdg_get_data_home
-from quodlibet.compat import pathname2url
 
 _TRASH_TMPL = """[Trash Info]
 Path={path}

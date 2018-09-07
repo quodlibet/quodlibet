@@ -12,6 +12,7 @@
 import operator
 import os
 import sys
+from functools import reduce
 
 from quodlibet.qltk import Icons
 
@@ -30,7 +31,6 @@ from quodlibet import _
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.util.library import get_scan_dirs
-from quodlibet.compat import reduce
 from quodlibet import app
 from gi.repository import GLib
 

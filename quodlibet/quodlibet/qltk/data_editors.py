@@ -19,7 +19,6 @@ from quodlibet.query import Query
 from quodlibet.util.json_data import JSONObjectDict
 from quodlibet.util import connect_obj
 from quodlibet.qltk.getstring import GetStringDialog
-from quodlibet.compat import string_types
 
 
 class JSONBasedEditor(qltk.UniqueWindow):
@@ -177,7 +176,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
                 widget.set_active(val)
             elif isinstance(val, int):
                 widget.set_value(int(val))
-            elif isinstance(val, string_types):
+            elif isinstance(val, str):
                 widget.set_text(val or "")
 
     def __build_input_frame(self):

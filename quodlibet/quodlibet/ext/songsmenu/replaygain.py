@@ -26,7 +26,6 @@ from quodlibet.qltk import Icons, Dialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
 from quodlibet.util import cached_property, print_w, print_e, format_int_locale
-from quodlibet.compat import xrange
 
 __all__ = ['ReplayGain']
 
@@ -463,7 +462,7 @@ class RGDialog(Dialog):
 
     def create_pipelines(self):
         # create as many pipelines as threads
-        self.pipes = [ReplayGainPipeline() for _ in xrange(get_num_threads())]
+        self.pipes = [ReplayGainPipeline() for _ in range(get_num_threads())]
 
     def __fill_view(self, view, albums):
         self._todo = [RGAlbum.from_songs(a, self.process_mode) for a in albums]

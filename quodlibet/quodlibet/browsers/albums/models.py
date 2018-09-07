@@ -10,7 +10,6 @@ from quodlibet import app
 from quodlibet import config
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort
-from quodlibet.compat import itervalues
 
 
 class AlbumItem(object):
@@ -79,7 +78,7 @@ class AlbumModel(ObjectStore, AlbumModelMixin):
         ]
 
         self.append(row=[AlbumItem(None)])
-        self.append_many((AlbumItem(a) for a in itervalues(albums)))
+        self.append_many((AlbumItem(a) for a in albums.values()))
 
     def refresh_all(self):
         """Trigger redraws for all rows"""

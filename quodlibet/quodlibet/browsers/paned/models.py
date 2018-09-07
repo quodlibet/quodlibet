@@ -12,7 +12,6 @@ from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util.collection import Collection
-from quodlibet.compat import iteritems, listfilter
 
 
 class BaseEntry(Collection):
@@ -127,8 +126,8 @@ class PaneModel(ObjectStore):
             return self.__key_cache[song]
         except KeyError:
             # We filter out empty values, so Unknown can be ""
-            self.__key_cache[song] = listfilter(
-                lambda v: v[0], self.config.format(song))
+            self.__key_cache[song] = list(filter(
+                lambda v: v[0], self.config.format(song)))
             return self.__key_cache[song]
 
     def __human_sort_key(self, text, reg=re.compile('<.*?>')):
@@ -227,7 +226,7 @@ class PaneModel(ObjectStore):
                     collection[key] = (entry, hsort, bool(sort))
                     entry.songs.add(song)
 
-        items = sorted(iteritems(collection),
+        items = sorted(collection.items(),
                        key=lambda s: s[1][1],
                        reverse=True)
 

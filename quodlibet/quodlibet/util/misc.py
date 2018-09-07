@@ -12,14 +12,17 @@ import locale
 import tempfile
 from functools import wraps
 
-from senf import environ, argv, path2fsn, gettempdir
+from senf import environ, argv, path2fsn
 
 
 from .environment import is_linux
-from .compat import PY3
 
 
 environ, argv
+
+
+def cmp(a, b):
+    return (a > b) - (a < b)
 
 
 def cached_func(f):
@@ -127,6 +130,4 @@ def NamedTemporaryFile(*args, **kwargs):
     Py2+Windows
     """
 
-    if not PY3 and kwargs.get("dir", None) is None:
-        kwargs["dir"] = gettempdir()
     return tempfile.NamedTemporaryFile(*args, **kwargs)

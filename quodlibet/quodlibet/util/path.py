@@ -14,11 +14,11 @@ import sys
 import errno
 import codecs
 import shlex
+from urllib.parse import urlparse, quote, unquote
 
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
     fsn2text, path2fsn
 
-from quodlibet.compat import PY2, urlparse, text_type, quote, unquote, PY3
 from . import windows
 from .environment import is_windows
 from .misc import environ, NamedTemporaryFile
@@ -42,19 +42,13 @@ def mkdir(dir_, *args):
 def glib2fsn(path):
     """Takes a glib filename and returns a fsnative path"""
 
-    if PY2:
-        return bytes2fsn(path, "utf-8")
-    else:
-        return path
+    return path
 
 
 def fsn2glib(path):
     """Takes a fsnative path and returns a glib filename"""
 
-    if PY2:
-        return fsn2bytes(path, "utf-8")
-    else:
-        return path
+    return path
 
 
 def iscommand(s):
@@ -115,14 +109,14 @@ def escape_filename(s):
     """Escape a string in a manner suitable for a filename.
 
     Args:
-        s (text_type)
+        s (str)
     Returns:
         fsnative
     """
 
-    s = text_type(s)
+    s = str(s)
     s = quote(s.encode("utf-8"), safe=b"")
-    if isinstance(s, text_type):
+    if isinstance(s, str):
         s = s.encode("ascii")
     return bytes2fsn(s, "utf-8")
 
@@ -133,7 +127,7 @@ def unescape_filename(s):
     Args:
         filename (fsnative)
     Returns:
-        text_type
+        str
     """
 
     assert isinstance(s, fsnative)
@@ -160,7 +154,7 @@ def unexpand(filename):
     return filename
 
 
-if PY3 and is_windows():
+if is_windows():
     def ismount(path):
         # this can raise on py3+win, but we don't care
         try:

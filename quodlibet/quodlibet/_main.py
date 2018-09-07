@@ -176,7 +176,7 @@ def get_build_version():
     """Returns a build version tuple"""
 
     version = list(const.VERSION_TUPLE)
-    if version[-1] != -1 and build.BUILD_VERSION > 0:
+    if is_release() and build.BUILD_VERSION > 0:
         version.append(build.BUILD_VERSION)
 
     return tuple(version)
@@ -190,12 +190,12 @@ def get_build_description():
 
     version = list(get_build_version())
     notes = []
-    if version[-1] == -1:
+    if not is_release():
         version = version[:-1]
         notes.append(u"development")
 
-    if build.BUILD_INFO:
-        notes.append(build.BUILD_INFO)
+        if build.BUILD_INFO:
+            notes.append(build.BUILD_INFO)
 
     version_string = u".".join(map(str, version))
     note = u" (%s)" % u", ".join(notes) if notes else u""

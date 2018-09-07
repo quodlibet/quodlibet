@@ -17,13 +17,14 @@ Since there can be multiple builds per release for the same release type
 is used and not the release version.
 """
 
+from urllib.request import urlopen
+
 from gi.repository import Gtk
 import feedparser
 
 import quodlibet
 from quodlibet import _
 from quodlibet.build import BUILD_TYPE
-from quodlibet.compat import text_type, urlopen
 from quodlibet.qltk.window import Dialog
 from quodlibet.util.dprint import print_exc
 from quodlibet.util import escape
@@ -41,7 +42,7 @@ def parse_version(version_string):
 
 
 def format_version(version_tuple):
-    return u".".join(map(text_type, version_tuple))
+    return u".".join(map(str, version_tuple))
 
 
 def fetch_versions(build_type, timeout=5.0):

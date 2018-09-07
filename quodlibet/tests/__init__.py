@@ -12,25 +12,22 @@ import shutil
 import atexit
 import subprocess
 import locale
-from quodlibet.compat import PY3
 
 try:
     import pytest
 except ImportError:
-    module = "python3-pytest" if PY3 else "python-pytest"
-    raise SystemExit("pytest missing: sudo apt-get install %s" % module)
+    raise SystemExit("pytest missing: sudo apt-get install python3-pytest")
 
 try:
     import xvfbwrapper
 except ImportError:
     xvfbwrapper = None
 
-from senf import fsnative, path2fsn, environ
-
 import quodlibet
 from quodlibet.util.path import xdg_get_cache_home
 from quodlibet import util
 
+from senf import fsnative, path2fsn, environ
 from unittest import TestCase as OrigTestCase
 
 
@@ -151,8 +148,7 @@ def dbus_launch_user():
     except (subprocess.CalledProcessError, OSError):
         return {}
     else:
-        if PY3:
-            out = out.decode("utf-8")
+        out = out.decode("utf-8")
         addr, pid = out.splitlines()
         return {"DBUS_SESSION_BUS_PID": pid, "DBUS_SESSION_BUS_ADDRESS": addr}
 
@@ -206,6 +202,15 @@ def init_test_environ():
 
     # set to new default
     environ.pop("XDG_DATA_HOME", None)
+
+    # don't use dconf
+    environ["GSETTINGS_BACKEND"] = "memory"
+
+    # don't use dconf
+    environ["GSETTINGS_BACKEND"] = "memory"
+
+    # Force the default theme so broken themes don't affect the tests
+    environ["GTK_THEME"] = "Adwaita"
 
     if xvfbwrapper is not None:
         _VDISPLAY = xvfbwrapper.Xvfb()

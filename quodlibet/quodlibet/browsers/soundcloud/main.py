@@ -6,10 +6,11 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from urllib.parse import parse_qs, urlparse
+
 from gi.repository import Gtk, Pango
 
 from quodlibet import _
-from quodlibet.compat import parse_qs, urlparse
 from quodlibet import config, app
 from quodlibet import qltk
 from quodlibet import util

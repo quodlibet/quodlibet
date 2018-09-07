@@ -9,6 +9,8 @@ import glob
 import os
 import shutil
 
+from gi.repository import Gio
+
 from senf import fsnative
 
 from quodlibet import config
@@ -18,7 +20,6 @@ from quodlibet.plugins import Plugin
 from quodlibet.util.cover.http import escape_query_value
 from quodlibet.util.cover.manager import CoverManager
 from quodlibet.util.path import normalize_path, path_equal, mkdir
-from quodlibet.compat import text_type
 
 from tests import TestCase, mkdtemp
 
@@ -47,9 +48,9 @@ class TCoverManager(TestCase):
         for f in files:
             open(f, "w").close()
 
-    def an_album_song(self):
+    def an_album_song(self, fn="asong.ogg"):
         return AudioFile({
-            "~filename": os.path.join(self.dir, "asong.ogg"),
+            "~filename": os.path.join(self.dir, fn),
             "album": u"Quuxly",
         })
 
@@ -85,7 +86,7 @@ class TCoverManager(TestCase):
 
     def test_file_encoding(self):
         f = self.add_file(fsnative(u"öäü - cover.jpg"))
-        self.assertTrue(isinstance(self.song("album"), text_type))
+        self.assertTrue(isinstance(self.song("album"), str))
         h = self._find_cover(self.song)
         self.assertEqual(normalize_path(h.name), normalize_path(f))
 
@@ -219,6 +220,13 @@ class TCoverManager(TestCase):
         self.add_file('cover.jpg')
         cover = self.manager.get_cover_many(songs)
         assert cover
+
+    def test_search_missing_artist(self):
+        titled_album_song = self.an_album_song('z.ogg')
+        titled_album_song["artist"] = "foo"
+        album_songs = [self.an_album_song('x.ogg'), titled_album_song,
+                       self.an_album_song()]
+        self.manager.search_cover(Gio.Cancellable(), album_songs)
 
 
 class THttp(TestCase):

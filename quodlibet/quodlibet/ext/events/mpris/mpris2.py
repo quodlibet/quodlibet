@@ -16,7 +16,6 @@ from senf import fsn2uri
 from quodlibet import app
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
-from quodlibet.compat import iteritems, listmap
 
 from .util import MPRISObject
 
@@ -274,14 +273,14 @@ value="false"/>
         list_val = {"artist": "artist", "albumArtist": "albumartist",
             "comment": "comment", "composer": "composer", "genre": "genre",
             "lyricist": "lyricist"}
-        for xesam, tag in iteritems(list_val):
+        for xesam, tag in list_val.items():
             vals = song.list(tag)
             if vals:
-                metadata["xesam:" + xesam] = listmap(unival, vals)
+                metadata["xesam:" + xesam] = list(map(unival, vals))
 
         # All single values
         sing_val = {"album": "album", "title": "title", "asText": "~lyrics"}
-        for xesam, tag in iteritems(sing_val):
+        for xesam, tag in sing_val.items():
             vals = song.comma(tag)
             if vals:
                 metadata["xesam:" + xesam] = unival(vals)
@@ -293,7 +292,7 @@ value="false"/>
         num_val = {"audioBPM": "bpm", "discNumber": "disc",
                    "trackNumber": "track", "useCount": "playcount"}
 
-        for xesam, tag in iteritems(num_val):
+        for xesam, tag in num_val.items():
             val = song("~#" + tag, None)
             if val is not None:
                 metadata["xesam:" + xesam] = ignore_overflow(dbus.Int32, val)

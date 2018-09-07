@@ -29,7 +29,6 @@ from quodlibet.util import tag, connect_destroy
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import readable
 from quodlibet.util.path import filesize, unexpand
-from quodlibet.compat import text_type
 
 
 def Label(label=None, markup=None, ellipsize=False):
@@ -245,7 +244,7 @@ class OneSong(qltk.Notebook):
             if t == 0:
                 return _("Unknown")
             else:
-                return text_type(time.strftime("%c", time.localtime(t)))
+                return str(time.strftime("%c", time.localtime(t)))
 
         playcount = counter(song.get("~#playcount", 0))
         skipcount = counter(song.get("~#skipcount", 0))
@@ -278,7 +277,7 @@ class OneSong(qltk.Notebook):
             if t == 0:
                 return _("Unknown")
             else:
-                return text_type(time.strftime("%c", time.localtime(t)))
+                return str(time.strftime("%c", time.localtime(t)))
 
         fn = fsn2text(unexpand(song["~filename"]))
         length = util.format_time_preferred(song.get("~#length", 0))
