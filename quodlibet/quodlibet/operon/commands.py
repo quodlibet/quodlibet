@@ -142,8 +142,9 @@ class CopyCommand(Command):
         for key in source.realkeys():
             self.log("Copy %r" % key)
             if not options.ignore_errors and not dest.can_change(key):
-                raise CommandError(_("Can't copy tag %r to file: %r") %
-                                   (key, dest_path))
+                raise CommandError(
+                    _("Can't copy tag {tagname} to file: {filename}").format(
+                        tagname=repr(key), filename=repr(dest_path)))
             for value in source.list(key):
                 dest.add(key, value)
 
@@ -363,7 +364,8 @@ class ClearCommand(Command):
                 self.log("Remove tag %r" % tag)
                 if not song.can_change(tag):
                     raise CommandError(
-                        _("Can't remove %r from %r") % (tag, path))
+                        _("Can't remove {tagname} from {filename}").format(
+                            tagname=repr(tag), filename=repr(path)))
                 del song[tag]
 
             if tags:
