@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2013 Christoph Reiter -->
-<application>
-    <id type="desktop-application">exfalso.desktop</id>
+<component type="desktop-application">
+    <id>io.github.quodlibet.QuodLibet.desktop</id>
     <name>Ex Falso</name>
     <_summary>Edit tags in your audio files</_summary>
     <metadata_license>CC0</metadata_license>
@@ -44,4 +44,4 @@
     <url type="help">https://quodlibet.readthedocs.io/en/latest/guide/index.html</url>
     <url type="translate">https://quodlibet.readthedocs.io/en/latest/translation/howto.html</url>
     <update_contact>quod-libet-development@googlegroups.com</update_contact>
-</application>
+</component>
