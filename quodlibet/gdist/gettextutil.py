@@ -121,6 +121,29 @@ def list_languages(po_dir):
     return sorted([os.path.basename(po[:-3]) for po in po_files])
 
 
+def merge_file(po_dir, file_type, source_file, target_file):
+    """Using a template input create a new file including translations"""
+
+    if file_type == "xml":
+        style = "--xml-style"
+    elif file_type == "desktop":
+        style = "--desktop-style"
+    else:
+        raise ValueError
+
+    source_file = os.path.abspath(source_file)
+    target_file = os.path.abspath(target_file)
+    po_dir = os.path.abspath(po_dir)
+    args = intltool("merge", style, po_dir, source_file, target_file)
+
+    try:
+        with open(os.devnull, 'wb') as devnull:
+            subprocess.check_call(
+                args, stderr=devnull, stdout=devnull, cwd=po_dir)
+    except subprocess.CalledProcessError as e:
+        raise GettextError(e.output)
+
+
 def update_po(po_dir, package, lang_code, output_file=None):
     """Update the <lang_code>.po file based on <package>.pot
 

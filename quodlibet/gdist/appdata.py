@@ -28,7 +28,7 @@ import os
 
 from distutils.dep_util import newer
 from .util import Command
-from .gettextutil import intltool
+from .gettextutil import merge_file
 
 
 class build_appdata(Command):
@@ -58,9 +58,8 @@ class build_appdata(Command):
             if os.path.exists(appdata + ".in"):
                 fullpath = os.path.join(basepath, os.path.basename(appdata))
                 if newer(appdata + ".in", fullpath):
-                    self.spawn(
-                        intltool("merge", "-x", self.po_directory,
-                                 appdata + ".in", fullpath))
+                    merge_file(self.po_directory, "xml",
+                               appdata + ".in", fullpath)
             else:
                 self.copy_file(appdata, os.path.join(basepath, appdata))
 
