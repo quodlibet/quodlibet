@@ -43,8 +43,8 @@ class MissingTranslationsException(Exception):
 
 @pytest.mark.skipif(not has_gettext_util(), reason="no gettext")
 def test_potfile_format():
-    with gettextutil.create_pot(PODIR, "quodlibet"):
-        gettextutil.check_pot(PODIR, "quodlibet")
+    with gettextutil.create_pot(PODIR) as pot_path:
+        gettextutil.check_pot(pot_path)
 
 
 class TPOTFILESIN(TestCase):
@@ -57,24 +57,20 @@ class TPOTFILESIN(TestCase):
                 assert os.path.isfile(path), \
                     "Can't read '%s' from POTFILES.in" % path
 
+    @pytest.mark.skipif(not has_gettext_util(), reason="no gettext")
     def test_missing(self):
-        try:
-            gettextutil.check_version()
-        except gettextutil.GettextError:
-            return
-
-        results = gettextutil.get_missing(PODIR, "quodlibet")
+        results = gettextutil.get_missing(PODIR)
         if results:
             raise MissingTranslationsException(results)
 
 
 @skipUnless(polib, "polib not found")
+@pytest.mark.skipif(not has_gettext_util(), reason="no gettext")
 class TPot(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        gettextutil.check_version()
-        with gettextutil.create_pot(PODIR, "quodlibet") as pot_path:
+        with gettextutil.create_pot(PODIR) as pot_path:
             cls.pot = polib.pofile(pot_path)
 
     def conclude(self, fails, reason):
@@ -250,13 +246,10 @@ class TPot(TestCase):
 
 class POMixin(object):
 
+    @pytest.mark.skipif(not has_gettext_util(), reason="no gettext")
     def test_pos(self):
-        try:
-            gettextutil.check_version()
-        except gettextutil.GettextError:
-            return
-
-        gettextutil.check_po(PODIR, self.lang)
+        po_path = gettextutil.get_po_path(PODIR, self.lang)
+        gettextutil.check_po(po_path)
 
     def test_gtranslator_blows_goats(self):
         for line in open(os.path.join(PODIR, "%s.po" % self.lang), "rb"):

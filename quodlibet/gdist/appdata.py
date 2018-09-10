@@ -35,7 +35,7 @@ class build_appdata(Command):
     """Build .appdata.xml files
 
     Move .appdata.xml files to the appropriate location in the build tree.
-    If there is a .appdata.xml.in file, process it with intltool.
+    If there is a .appdata.xml.in file, process it with gettext.
     """
 
     description = "build .appdata.xml files"

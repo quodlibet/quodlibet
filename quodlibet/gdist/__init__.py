@@ -26,7 +26,7 @@
 This module contains a Distribution subclass (GDistribution) which
 implements build and install commands for operations related to
 Python GTK+ and GObject support. This includes installation
-of man pages and gettext/intltool support.
+of man pages and gettext support.
 
 Also supports setuptools but needs to be imported after setuptools
 (which does some monkey patching)
@@ -118,7 +118,7 @@ class GDistribution(Distribution):
       man_pages -- list of man pages to install
       appdata -- list of appdata files to install
 
-    Using the translation features requires intltool.
+    Using the translation features requires gettext.
 
     Example:
       from distutils.core import setup

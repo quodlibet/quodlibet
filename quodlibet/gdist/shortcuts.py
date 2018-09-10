@@ -32,7 +32,7 @@ class build_shortcuts(Command):
     """Build .desktop files
 
     Move .desktop files to the appropriate location in the build tree.
-    If there is a .desktop.in file, process it with intltool.
+    If there is a .desktop.in file, process it with gettext.
     """
 
     description = "build .desktop files"

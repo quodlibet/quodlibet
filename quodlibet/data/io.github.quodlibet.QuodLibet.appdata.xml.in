@@ -3,7 +3,7 @@
 <component type="desktop-application">
     <id>io.github.quodlibet.QuodLibet.desktop</id>
     <name>Quod Libet</name>
-    <_summary>Listen to, browse, or edit your audio collection</_summary>
+    <summary>Listen to, browse, or edit your audio collection</summary>
     <metadata_license>CC0</metadata_license>
     <project_license>GPL-2.0</project_license>
     <translation type="gettext">quodlibet</translation>
@@ -15,17 +15,17 @@
     </provides>
 
     <description>
-    <_p>
+    <p>
         Quod Libet is a music management program. It provides several
         different ways to view your audio library, as well as support for
         Internet radio and audio feeds. It has extremely flexible metadata
         tag editing and searching capabilities.
-    </_p>
-    <_p>
+    </p>
+    <p>
         Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3,
         FLAC, MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA,
         SPC, MIDI.
-    </_p>
+    </p>
     </description>
 
     <screenshots>

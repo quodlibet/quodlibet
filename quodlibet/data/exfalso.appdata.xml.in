@@ -3,7 +3,7 @@
 <component type="desktop-application">
     <id>io.github.quodlibet.QuodLibet.desktop</id>
     <name>Ex Falso</name>
-    <_summary>Edit tags in your audio files</_summary>
+    <summary>Edit tags in your audio files</summary>
     <metadata_license>CC0</metadata_license>
     <project_license>GPL-2.0</project_license>
     <translation type="gettext">quodlibet</translation>
@@ -13,16 +13,16 @@
     </provides>
 
     <description>
-    <_p>
+    <p>
         Ex Falso is a tag editor with the same tag editing interface as
         Quod Libet. It lets you display and edit any tags you want in the
         file, for all the file formats it supports.
-    </_p>
-    <_p>
+    </p>
+    <p>
         Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3,
         FLAC, MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA,
         SPC, MIDI.
-    </_p>
+    </p>
     </description>
 
     <screenshots>
