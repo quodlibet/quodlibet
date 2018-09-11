@@ -181,7 +181,7 @@ def po_stats(po_path):
 
     try:
         return subprocess.check_output(
-            ["msgfmt", "--statistics", po_path],
+            ["msgfmt", "--statistics", po_path, "-o", os.devnull],
             universal_newlines=True, stderr=subprocess.STDOUT).strip()
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)
@@ -242,7 +242,7 @@ def check_po(po_path, ignore_header=False):
     check_arg = "--check" if not ignore_header else "--check-format"
     try:
         subprocess.check_output(
-            ["msgfmt", check_arg, "--check-domain", po_path],
+            ["msgfmt", check_arg, "--check-domain", po_path, "-o", os.devnull],
             stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)
