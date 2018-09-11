@@ -47,7 +47,7 @@ class GettextError(Exception):
     pass
 
 
-def _read_potfiles(potfiles):
+def _read_potfiles(src_root, potfiles):
     """Returns a list of paths for a POTFILES.in file"""
 
     paths = []
@@ -56,22 +56,31 @@ def _read_potfiles(potfiles):
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
-            paths.append(os.path.normpath(line))
+            paths.append(os.path.normpath(os.path.join(src_root, line)))
     return paths
+
+
+def _write_potfiles(src_root, potfiles, paths):
+    with open(potfiles, "w", encoding="utf-8") as h:
+        for path in paths:
+            path = os.path.relpath(path, src_root)
+            h.write(path + "\n")
+
+
+def _src_root(po_dir):
+    return os.path.normpath(os.path.join(po_dir, ".."))
 
 
 def get_pot_dependencies(po_dir):
     """Returns a list of paths that are used as input for the .pot file"""
 
-    src_root = os.path.normpath(os.path.join(po_dir, ".."))
+    src_root = _src_root(po_dir)
     potfiles_path = os.path.join(po_dir, "POTFILES.in")
-    potfiles = _read_potfiles(potfiles_path)
-
-    return [os.path.join(src_root, p) for p in potfiles]
+    return _read_potfiles(src_root, potfiles_path)
 
 
 def _create_pot(potfiles_path, src_root, skip_unknown=False):
-    potfiles = _read_potfiles(potfiles_path)
+    potfiles = _read_potfiles(src_root, potfiles_path)
 
     groups = {}
     for path in potfiles:
@@ -110,8 +119,7 @@ def _create_pot(potfiles_path, src_root, skip_unknown=False):
             fd, potfiles_in = tempfile.mkstemp()
             try:
                 os.close(fd)
-                with open(potfiles_in, "w", encoding="utf-8") as h:
-                    h.write("\n".join(paths))
+                _write_potfiles(src_root, potfiles_in, paths)
 
                 args = ["xgettext", "--from-code=utf-8", "--add-comments",
                     "--files-from=" + potfiles_in, "--directory=" + src_root,
@@ -140,7 +148,7 @@ def _create_pot(potfiles_path, src_root, skip_unknown=False):
 def create_pot(po_dir):
     """Temporarily creates a .pot file in a temp directory"""
 
-    src_root = os.path.normpath(os.path.join(po_dir, ".."))
+    src_root = _src_root(po_dir)
     potfiles_path = os.path.join(po_dir, "POTFILES.in")
     pot_path = _create_pot(potfiles_path, src_root)
     try:
@@ -300,14 +308,16 @@ def get_missing(po_dir):
     POTFILES.skip.
     """
 
+    src_root = _src_root(po_dir)
     potfiles_path = os.path.join(po_dir, "POTFILES.in")
     skip_path = os.path.join(po_dir, "POTFILES.skip")
-    potfiles = _read_potfiles(potfiles_path)
-    skipfiles = _read_potfiles(skip_path)
+    potfiles = _read_potfiles(src_root, potfiles_path)
+    skipfiles = _read_potfiles(src_root, skip_path)
 
     # generate a list of paths of files which are not marked translatable
     # and not skipped
-    src_root = os.path.join(po_dir, "..")
+    potfiles = [os.path.relpath(p, src_root) for p in potfiles]
+    skipfiles = [os.path.relpath(p, src_root) for p in skipfiles]
     not_translatable = []
     for root, dirs, files in os.walk(src_root):
         for dirname in list(dirs):
@@ -324,9 +334,7 @@ def get_missing(po_dir):
     fd, temp_path = tempfile.mkstemp("POTFILES.in")
     try:
         os.close(fd)
-        with open(temp_path, "w", encoding="utf-8") as h:
-            for path in not_translatable:
-                h.write(path + "\n")
+        _write_potfiles(src_root, temp_path, not_translatable)
 
         pot_path = _create_pot(temp_path, src_root, skip_unknown=True)
         try:
