@@ -53,7 +53,7 @@ function build_compileall {
 
 function install_pre_deps {
     pacman -S --needed --noconfirm p7zip git dos2unix \
-        mingw-w64-"${ARCH}"-nsis wget intltool mingw-w64-"${ARCH}"-toolchain
+        mingw-w64-"${ARCH}"-nsis wget mingw-w64-"${ARCH}"-toolchain
 }
 
 function create_root {
@@ -83,6 +83,7 @@ function install_deps {
 
     build_pacman --noconfirm -S \
         git \
+        mingw-w64-"${ARCH}"-gettext \
         mingw-w64-"${ARCH}"-gdk-pixbuf2 \
         mingw-w64-"${ARCH}"-librsvg \
         mingw-w64-"${ARCH}"-gtk3 \

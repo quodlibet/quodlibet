@@ -8,7 +8,7 @@ pacman --noconfirm -Suy
 
 pacman --noconfirm -S --needed \
     git \
-    intltool \
+    mingw-w64-$MSYS2_ARCH-gettext \
     mingw-w64-$MSYS2_ARCH-gdk-pixbuf2 \
     mingw-w64-$MSYS2_ARCH-librsvg \
     mingw-w64-$MSYS2_ARCH-gtk3 \

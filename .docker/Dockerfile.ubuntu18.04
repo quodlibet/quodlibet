@@ -21,7 +21,6 @@ RUN apt-get update && apt-get install -y \
     python3-setuptools \
     xvfb \
     gettext \
-    intltool \
     libxine2 \
     dbus-x11 \
     curl \

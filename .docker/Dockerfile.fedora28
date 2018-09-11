@@ -19,7 +19,6 @@ RUN dnf -y install \
     git \
     curl \
     dbus-x11 \
-    intltool \
     gdb \
     gettext \
     && dnf clean all
