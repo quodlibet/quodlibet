@@ -38,7 +38,7 @@ from distutils.core import setup
 
 from .shortcuts import build_shortcuts, install_shortcuts
 from .man import install_man
-from .po import build_mo, install_mo, po_stats, update_po, create_po
+from .po import build_mo, install_mo, po_stats, update_po, create_po, build_po
 from .icons import install_icons
 from .search_provider import install_search_provider
 from .dbus_services import build_dbus_services, install_dbus_services
@@ -60,6 +60,8 @@ class build(distutils_build):
 
     sub_commands = distutils_build.sub_commands + [
         ("build_mo",
+         lambda self: self.distribution.has_po()),
+        ("build_po",
          lambda self: self.distribution.has_po()),
         ("build_shortcuts",
          lambda self: self.distribution.has_shortcuts()),
@@ -139,6 +141,7 @@ class GDistribution(Distribution):
 
     def __init__(self, *args, **kwargs):
         Distribution.__init__(self, *args, **kwargs)
+        self.cmdclass.setdefault("build_po", build_po)
         self.cmdclass.setdefault("build_mo", build_mo)
         self.cmdclass.setdefault("build_shortcuts", build_shortcuts)
         self.cmdclass.setdefault("build_dbus_services", build_dbus_services)

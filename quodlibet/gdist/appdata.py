@@ -43,22 +43,25 @@ class build_appdata(Command):
 
     def initialize_options(self):
         self.build_base = None
-        self.po_directory = None
         self.appdata = None
+        self.po_build_dir = None
 
     def finalize_options(self):
         self.appdata = self.distribution.appdata
-        self.po_directory = self.distribution.po_directory
         self.set_undefined_options('build', ('build_base', 'build_base'))
+        self.set_undefined_options(
+            'build_po', ('po_build_dir', 'po_build_dir'))
 
     def run(self):
+        self.run_command("build_po")
+
         basepath = os.path.join(self.build_base, 'share', 'appdata')
         self.mkpath(basepath)
         for appdata in self.appdata:
             if os.path.exists(appdata + ".in"):
                 fullpath = os.path.join(basepath, os.path.basename(appdata))
                 if newer(appdata + ".in", fullpath):
-                    merge_file(self.po_directory, "xml",
+                    merge_file(self.po_build_dir, "xml",
                                appdata + ".in", fullpath)
             else:
                 self.copy_file(appdata, os.path.join(basepath, appdata))

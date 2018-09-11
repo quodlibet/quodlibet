@@ -60,6 +60,16 @@ def _read_potfiles(potfiles):
     return paths
 
 
+def get_pot_dependencies(po_dir):
+    """Returns a list of paths that are used as input for the .pot file"""
+
+    src_root = os.path.normpath(os.path.join(po_dir, ".."))
+    potfiles_path = os.path.join(po_dir, "POTFILES.in")
+    potfiles = _read_potfiles(potfiles_path)
+
+    return [os.path.join(src_root, p) for p in potfiles]
+
+
 def _create_pot(potfiles_path, src_root, skip_unknown=False):
     potfiles = _read_potfiles(potfiles_path)
 
@@ -125,13 +135,22 @@ def _create_pot(potfiles_path, src_root, skip_unknown=False):
 def create_pot(po_dir):
     """Temporarily creates a .pot file in a temp directory"""
 
-    src_root = os.path.join(po_dir, "..")
+    src_root = os.path.normpath(os.path.join(po_dir, ".."))
     potfiles_path = os.path.join(po_dir, "POTFILES.in")
     pot_path = _create_pot(potfiles_path, src_root)
     try:
         yield pot_path
     finally:
         os.unlink(pot_path)
+
+
+def update_linguas(po_dir):
+    """Create a LINGUAS file in po_dir"""
+
+    linguas = os.path.join(po_dir, "LINGUAS")
+    with open(linguas, "w", encoding="utf-8") as h:
+        for l in list_languages(po_dir):
+            h.write(l + "\n")
 
 
 def list_languages(po_dir):
@@ -171,23 +190,16 @@ def merge_file(po_dir, file_type, source_file, target_file):
     style = "--" + file_type
 
     linguas = os.path.join(po_dir, "LINGUAS")
-    try:
-        with open(linguas, "w", encoding="utf-8") as h:
-            for l in list_languages(po_dir):
-                h.write(l + "\n")
+    if not os.path.exists(linguas):
+        raise GettextError("{!r} doesn't exist".format(linguas))
 
-        try:
-            subprocess.check_output(
-                ["msgfmt", style, "--template", source_file, "-d", po_dir,
-                 "-o", target_file],
-                universal_newlines=True, stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as e:
-            raise GettextError(e.output)
-    finally:
-        try:
-            os.unlink(linguas)
-        except OSError:
-            pass
+    try:
+        subprocess.check_output(
+            ["msgfmt", style, "--template", source_file, "-d", po_dir,
+             "-o", target_file],
+            universal_newlines=True, stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError as e:
+        raise GettextError(e.output)
 
 
 def get_po_path(po_dir, lang_code):
