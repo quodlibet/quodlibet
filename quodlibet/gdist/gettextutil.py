@@ -118,10 +118,15 @@ def _create_pot(potfiles_path, src_root, skip_unknown=False):
                     "--output=" + out_path, "--force-po",
                     "--join-existing"] + args
 
-                try:
-                    subprocess.check_call(args)
-                except subprocess.CalledProcessError as e:
-                    raise GettextError(e)
+                p = subprocess.Popen(
+                    args,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    universal_newlines=True)
+                stdout, stderr = p.communicate()
+                if p.returncode != 0:
+                    raise GettextError(p.returncode)
+                if stderr:
+                    raise GettextError(stderr)
             finally:
                 os.unlink(potfiles_in)
     except Exception:
