@@ -252,23 +252,25 @@ class POMixin(object):
         gettextutil.check_po(po_path)
 
     def test_gtranslator_blows_goats(self):
-        for line in open(os.path.join(PODIR, "%s.po" % self.lang), "rb"):
-            if line.strip().startswith(b"#"):
-                continue
-            self.failIf(b"\xc2\xb7" in line,
-                        "Broken GTranslator copy/paste in %s:\n%r" % (
-                self.lang, line))
+        with open(os.path.join(PODIR, "%s.po" % self.lang), "rb") as h:
+            for line in h:
+                if line.strip().startswith(b"#"):
+                    continue
+                self.failIf(b"\xc2\xb7" in line,
+                            "Broken GTranslator copy/paste in %s:\n%r" % (
+                    self.lang, line))
 
     def test_gtk_stock_items(self):
-        for line in open(os.path.join(PODIR, "%s.po" % self.lang), "rb"):
-            if line.strip().startswith(b'msgstr "gtk-'):
-                parts = line.strip().split()
-                value = parts[1].strip('"')[4:]
-                self.failIf(value and value not in [
-                    b'media-next', b'media-previous', b'media-play',
-                    b'media-pause'],
-                            "Invalid stock translation in %s\n%s" % (
-                    self.lang, line))
+        with open(os.path.join(PODIR, "%s.po" % self.lang), "rb") as h:
+            for line in h:
+                if line.strip().startswith(b'msgstr "gtk-'):
+                    parts = line.strip().split()
+                    value = parts[1].strip('"')[4:]
+                    self.failIf(value and value not in [
+                        b'media-next', b'media-previous', b'media-play',
+                        b'media-pause'],
+                                "Invalid stock translation in %s\n%s" % (
+                        self.lang, line))
 
     def conclude(self, fails, reason):
         if fails:
