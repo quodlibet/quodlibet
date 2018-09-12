@@ -2047,7 +2047,7 @@ msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
 "Шаблон форматирования заголовка для отправки. Оставьте пустым для"
-"значения по умолчанию.
+"значения по умолчанию."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:574
 msgid "Songs matching this filter will not be submitted."
@@ -2294,7 +2294,7 @@ msgid ""
 "a status message based on current song."
 msgstr ""
 "Обновляет во всех основанных на Telepathy IM аккаунтах (Empathy и т.д.)"
-"статусы на основе текущего трека.
+"статусы на основе текущего трека."
 
 #: ../quodlibet/ext/events/telepathy_status.py:123
 msgid "Playing:"
@@ -4192,7 +4192,7 @@ msgstr "Показать сокращенный вывод"
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
 msgstr ""
-"Столбцы и порядок отображения в сокращенном режиме (%s)
+"Столбцы и порядок отображения в сокращенном режиме (%s)"
 
 #: ../quodlibet/operon/commands.py:48 ../quodlibet/operon/commands.py:87
 msgid "Also list programmatic tags"
@@ -4771,7 +4771,7 @@ msgstr "Выделить '_Performer' из 'Artist'"
 
 #: ../quodlibet/qltk/edittags.py:271
 msgid "Split _Performer out of Title"
-msgstr "Выделить "Performer' из '_Title'"
+msgstr "Выделить 'Performer' из '_Title'"
 
 #: ../quodlibet/qltk/edittags.py:277
 msgid "Split _Originalartist out of Title"
@@ -5488,7 +5488,7 @@ msgstr ""
 "Средний коэффициент Байеса (C) для агрегированных оценок.\n"
 "'0' означает - обычное среднее значение; значения выше приведут "
 "к более низким оценкам альбомов с меньшим колличеством треков. "
-"Изменение этого значения вызовет перерасчет для всех альбомов.
+"Изменение этого значения вызовет перерасчет для всех альбомов."
 
 #: ../quodlibet/qltk/prefs.py:549
 msgid "_Bayesian averaging amount:"
@@ -5506,7 +5506,7 @@ msgstr "_Электронная почта:"
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr ""
 "Оценки и счётчики воспроизведений будут сохранены в тегах для этого адреса "
-электронной почты"
+"электронной почты"
 
 #: ../quodlibet/qltk/prefs.py:588
 msgid "Auto-save tag changes"
@@ -6084,7 +6084,7 @@ msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] "_Показать %(total)d файл"
 msgstr[1] "_Показать %(total)d файла"
-msgstr[1] "_Показать %(total)d файлов"
+msgstr[2] "_Показать %(total)d файлов"
 
 #: ../quodlibet/qltk/tagsfrompath.py:48
 msgid "Replace _underscores with spaces"
@@ -6092,7 +6092,7 @@ msgstr "_Заменить подчёркивание пробелом"
 
 #: ../quodlibet/qltk/tagsfrompath.py:58
 msgid "_Title-case tags"
-msgstr "С з_аглавных
+msgstr "С з_аглавных"
 
 #: ../quodlibet/qltk/tagsfrompath.py:68
 msgid "Split into multiple _values"
