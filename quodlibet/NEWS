@@ -1,3 +1,13 @@
+.. _release-4.2.0:
+
+4.2.0 (2018-??-??)
+------------------
+
+Packaging Changes:
+  * **gettext 0.19.8** required (was 0.15)
+  * **intltool** no longer required
+
+
 .. _release-4.1.0:
 
 4.1.0 (2018-06-03) - Trapped in a holodeck that won't take commands
