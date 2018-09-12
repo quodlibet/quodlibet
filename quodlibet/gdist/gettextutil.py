@@ -79,7 +79,7 @@ def get_pot_dependencies(po_dir):
     return _read_potfiles(src_root, potfiles_path)
 
 
-def _create_pot(potfiles_path, src_root, skip_unknown=False):
+def _create_pot(potfiles_path, src_root, strict):
     potfiles = _read_potfiles(src_root, potfiles_path)
 
     groups = {}
@@ -92,9 +92,8 @@ def _create_pot(potfiles_path, src_root, skip_unknown=False):
                 groups.setdefault(pattern, []).append(path)
                 break
         else:
-            if skip_unknown:
-                continue
-            raise ValueError("Unknown filetype: " + path)
+            if strict:
+                raise ValueError("Unknown filetype: " + path)
 
     specs = []
     for pattern, paths in groups.items():
@@ -138,7 +137,7 @@ def _create_pot(potfiles_path, src_root, skip_unknown=False):
                 stdout, stderr = p.communicate()
                 if p.returncode != 0:
                     raise GettextError(p.returncode)
-                if stderr:
+                if strict and stderr:
                     raise GettextError(stderr)
             finally:
                 os.unlink(potfiles_in)
@@ -150,12 +149,15 @@ def _create_pot(potfiles_path, src_root, skip_unknown=False):
 
 
 @contextlib.contextmanager
-def create_pot(po_dir):
-    """Temporarily creates a .pot file in a temp directory"""
+def create_pot(po_dir, strict=False):
+    """Temporarily creates a .pot file in a temp directory.
+
+    If strict then error out on extraction warnings.
+    """
 
     src_root = _src_root(po_dir)
     potfiles_path = os.path.join(po_dir, "POTFILES.in")
-    pot_path = _create_pot(potfiles_path, src_root)
+    pot_path = _create_pot(potfiles_path, src_root, strict)
     try:
         yield pot_path
     finally:
@@ -341,7 +343,7 @@ def get_missing(po_dir):
         os.close(fd)
         _write_potfiles(src_root, temp_path, not_translatable)
 
-        pot_path = _create_pot(temp_path, src_root, skip_unknown=True)
+        pot_path = _create_pot(temp_path, src_root, strict=False)
         try:
             infos = set()
             with open(pot_path, "r", encoding="utf-8") as h:
