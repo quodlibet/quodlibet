@@ -628,8 +628,9 @@ class EditTags(Gtk.VBox):
                 else:
                     b.connect('activate', self.__menu_activate, view)
 
-                    if (not min(map(self.__songinfo.can_change, b.needs) +
-                                [1])
+                    if (not min(list(
+                                map(self.__songinfo.can_change, b.needs))
+                                + [1])
                             or comment.is_special()):
                         b.set_sensitive(False)
 
