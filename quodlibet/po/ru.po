@@ -67,7 +67,7 @@ msgid ""
 msgstr ""
 "Quod Libet - программа управления музыкой. Доступно несколько способов "
 "просмотра аудиотеки, а также поддержка интернет-радио и аудио лент. "
-"Он имеет гибкие возможности редактирования и поиска по аудио тегам. "
+"Он имеет гибкие возможности редактирования и поиска по аудио тегам."
 
 #: ../data/io.github.quodlibet.QuodLibet.desktop.in.h:1
 msgid "Music Player"
@@ -900,7 +900,7 @@ msgstr "Авторизация в SoundCloud"
 
 #: ../quodlibet/browsers/soundcloud/util.py:88
 msgid "Enter Soundcloud auth code:"
-msgstr "Введите код авторизации SoundCloud"
+msgstr "Введите код авторизации SoundCloud:"
 
 #: ../quodlibet/cli.py:51
 msgid "Quod Libet is not running (add '--run' to start it)"
@@ -1184,7 +1184,7 @@ msgid ""
 "(optional) Please provide a short description of what happened when the "
 "error occurred:"
 msgstr ""
-"(не обязательно) Краткое описание ситуации до и во время ошибки: "
+"(не обязательно) Краткое описание ситуации до и во время ошибки:"
 
 #: ../quodlibet/errorreport/ui.py:105
 msgid "_Send"
@@ -1192,7 +1192,7 @@ msgstr "_Отправить"
 
 #: ../quodlibet/errorreport/ui.py:111
 msgid "Short description…"
-msgstr "Краткое описание"
+msgstr "Краткое описание…"
 
 #: ../quodlibet/errorreport/ui.py:114
 msgid "Data to be sent:"
@@ -1320,7 +1320,7 @@ msgstr "Расширенные настройки"
 
 #: ../quodlibet/ext/events/advanced_preferences.py:70
 msgid "Allow editing of advanced config settings."
-msgstr "Настройка дополнительных параметров"
+msgstr "Настройка дополнительных параметров."
 
 #: ../quodlibet/ext/events/advanced_preferences.py:176
 msgid "I know what I'm doing"
@@ -1712,7 +1712,7 @@ msgstr ""
 
 #: ../quodlibet/ext/events/jep118.py:32
 msgid "Outputs a Jabber User Tunes file to ~/.quodlibet/jabber."
-msgstr "Выводит файл Jabber User Tunes в ~/.quodlibet/jabber"
+msgstr "Выводит файл Jabber User Tunes в ~/.quodlibet/jabber."
 
 #: ../quodlibet/ext/events/language.py:22
 msgid "Change Language"
@@ -2234,7 +2234,7 @@ msgid ""
 "current position exceeds the timestamp, seek to the end of the track."
 msgstr ""
 "Имя закладки конца трека, если существует, плеер, при достижении этой "
-"точки, переходит к следующему треку"
+"точки, переходит к следующему треку."
 
 #: ../quodlibet/ext/events/squeezebox_sync.py:29
 msgid "Squeezebox Sync"
@@ -2355,7 +2355,7 @@ msgstr "Панель меню - переключение"
 
 #: ../quodlibet/ext/events/toggle_menu.py:20
 msgid "Toggle the menu bar by pressing the Alt key."
-msgstr "Переключение отображения строки меню клавишей Alt"
+msgstr "Переключение отображения строки меню клавишей Alt."
 
 #: ../quodlibet/ext/events/trayicon/appindicator.py:78
 #: ../quodlibet/ext/events/trayicon/prefs.py:107
@@ -2521,11 +2521,11 @@ msgstr "Цвет пройденного :"
 
 #: ../quodlibet/ext/events/waveformseekbar.py:632
 msgid "Override hover color:"
-msgstr "Цвет наведения :  "
+msgstr "Цвет наведения:"
 
 #: ../quodlibet/ext/events/waveformseekbar.py:636
 msgid "Override remaining color:"
-msgstr "Цвет оставшегося :"
+msgstr "Цвет оставшегося:"
 
 #: ../quodlibet/ext/events/waveformseekbar.py:640
 msgid "Show current position"
@@ -2620,7 +2620,7 @@ msgstr "Пресет фильтра"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:21
 msgid "_Frequency cut:"
-msgstr "_Частоты среза"
+msgstr "_Частоты среза:"
 
 #: ../quodlibet/ext/gstreamer/crossfeed.py:21
 msgid "Low-pass filter cut frequency"
@@ -2719,7 +2719,7 @@ msgstr "Микширует аудио каналы в моно."
 
 #: ../quodlibet/ext/gstreamer/pitch.py:21
 msgid "R_ate:"
-msgstr "_Коэффициент"
+msgstr "_Коэффициент:"
 
 #: ../quodlibet/ext/gstreamer/pitch.py:22
 msgid "_Tempo:"
@@ -2970,7 +2970,7 @@ msgid ""
 "condition, then, else)'."
 msgstr ""
 "Позволяет запросу получать результаты на основе условия поиска. "
-"Синтаксис: '@(if: condition, then, else)'"
+"Синтаксис: '@(if: condition, then, else)'."
 
 #: ../quodlibet/ext/query/pythonexpression.py:19
 msgid "Python Query"
@@ -4827,7 +4827,7 @@ msgstr "Не удалось добавить <b>%s</b>"
 msgid ""
 "The files currently selected do not support multiple values for <b>%s</b>."
 msgstr ""
-"Выбранные файлы не поддерживают множественные значения для <b>%s</b>"
+"Выбранные файлы не поддерживают множественные значения для <b>%s</b>."
 
 #. Can't add the new tag.
 #: ../quodlibet/qltk/edittags.py:690 ../quodlibet/qltk/edittags.py:858
