@@ -1120,7 +1120,6 @@ msgstr ""
 msgid "filename"
 msgstr "имя файла"
 
-# Klingt genauso wackelig wie das Englische. Was meinst?
 #: ../quodlibet/cli.py:144
 msgid "Print filenames of results of query to stdout"
 msgstr "Отправить полученные имена файлов в стандартный вывод"
@@ -2563,7 +2562,6 @@ msgstr "Тексты песен из сети"
 msgid "Shows a sidebar containing online lyrics of the playing song."
 msgstr "Боковая панель, содержащая тексты песни из интернета."
 
-# »Grafiksicherer« oder »Grafikspeicherer« ist in meinen Augen weniger klar
 #: ../quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
 msgstr "Импорт обложки"
@@ -2626,13 +2624,10 @@ msgstr "_Частоты среза:"
 msgid "Low-pass filter cut frequency"
 msgstr "Частота среза низких частот"
 
-# Ich weiß nicht, ob das eine treffende Übersetzung ist. Wenn jemand mehr Ahnung von der Materie hat, bitte verbessern
 #: ../quodlibet/ext/gstreamer/crossfeed.py:22
 msgid "Feed _level:"
 msgstr ""
 
-# Ich weiß nicht, ob das eine treffende Übersetzung ist. Wenn jemand
-# mehr Ahnung von der Materie hat, bitte verbessern
 #: ../quodlibet/ext/gstreamer/crossfeed.py:22
 msgid "Feed level"
 msgstr ""
@@ -4307,7 +4302,6 @@ msgstr "Добавить значение тега"
 msgid "List file information"
 msgstr "Вывести информацию о файле"
 
-# Was genau bedeutet hier 'provided'?
 #: ../quodlibet/operon/commands.py:503
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
@@ -4498,7 +4492,6 @@ msgid ""
 msgstr ""
 "Не удалось найти модуль '{module}'. Возможно, нужно установить пакет."
 
-# verknüpft?
 #: ../quodlibet/plugins/__init__.py:72
 #, python-brace-format
 msgid "Couldn't find GStreamer element '{element}'."
@@ -4562,12 +4555,10 @@ msgstr "40 _лучших"
 msgid "All _Songs"
 msgstr "_Все треки"
 
-# Mit Plural wird der Menüeintrag sehr lang (etwa: Nach aktuellem Genre/aktuellen Genres). Ich denke, dass er auch ohne den Plural verständlich ist und außerdem schneller zu erkennen.
 #: ../quodlibet/qltk/browser.py:72
 msgid "On Current _Genre(s)"
 msgstr "По текущим _жанрам"
 
-# Siehe Kommentar für »On Current _Genre(s)«
 #: ../quodlibet/qltk/browser.py:73
 msgid "On Current _Artist(s)"
 msgstr "По текущим _исполнителям"
@@ -5538,7 +5529,6 @@ msgstr "Обновлять оценки"
 msgid "Scan library _on start"
 msgstr "Сканировать ф_онотеку при запуске"
 
-# »Einlesen« würde nach einem aufwendigeren Vorgang klingen
 #: ../quodlibet/qltk/prefs.py:662 ../quodlibet/qltk/quodlibetwindow.py:1137
 msgid "_Scan Library"
 msgstr "_Сканировать"
@@ -5775,16 +5765,10 @@ msgstr "_Только строчные символы"
 msgid "Rename Files"
 msgstr "Переименовать файлы"
 
-# Unter Tagging, 'Tags aus Pfad erzeugen'.
-# 'Pfad' gefällt mir nicht, 'Muster' ('Profil'?) auch nicht ;)
-# –> Mir gefiel 'Pfad' auch nicht. ;-)
-# Kann es sein, dass 'path' etwas unglücklich formuliert ist? Es handelt sich doch um den Dateinamen. Allerdings gibt es auch noch '_Filename Pattern:'.
 #: ../quodlibet/qltk/renamefiles.py:148 ../quodlibet/qltk/tagsfrompath.py:117
 msgid "Path Patterns"
 msgstr "Шаблон пути к файлам"
 
-# Für mich sieht das eher nach 'Profile' aus.
-# –> Jo, wesentlich besser. Global geändert.
 #: ../quodlibet/qltk/renamefiles.py:149 ../quodlibet/qltk/tagsfrompath.py:118
 msgid "Edit saved patterns…"
 msgstr "Изменить сохранённые шаблоны…"
