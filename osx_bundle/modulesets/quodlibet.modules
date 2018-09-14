@@ -709,6 +709,16 @@
     </dependencies>
   </distutils>
 
+  <distutils id="python-more-itertools" python3="1">
+    <branch repo="pypi.org"
+            checkoutdir="python-more-itertools-${version}" module="m/more-itertools/more-itertools-${version}.tar.gz"
+            version="4.3.0"
+            hash="sha256:e0d0eb91441a3b53dab4d9b743eafc1ac44476296a2053b6ca3af0b139faf87b"/>
+    <dependencies>
+      <dep package="python-setuptools"/>
+    </dependencies>
+  </distutils>
+
   <distutils id="python-pytest" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pytest-${version}"
@@ -720,6 +730,7 @@
       <dep package="python-py"/>
       <dep package="python-pluggy"/>
       <dep package="python-attrs"/>
+      <dep package="python-more-itertools"/>
     </dependencies>
   </distutils>
 
