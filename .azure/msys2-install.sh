@@ -28,6 +28,3 @@ pacman --noconfirm -S --needed \
     mingw-w64-$MSYS2_ARCH-python3-coverage
 
 pip3 install feedparser musicbrainzngs mutagen pycodestyle pyflakes
-
-cd quodlibet
-MSYSTEM= python3 -R -bb setup.py test
