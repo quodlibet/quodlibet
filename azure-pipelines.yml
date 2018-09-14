@@ -12,7 +12,7 @@ jobs:
         displayName: Update MSYS2
       - script: |
           set PATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem
-          %CD:~0,2%\msys64\usr\bin\bash -lc ".appveyor/msys2.sh"
+          %CD:~0,2%\msys64\usr\bin\bash -lc ".azure/msys2.sh"
         displayName: CI-Build
         env:
           MSYS2_ARCH: i686
