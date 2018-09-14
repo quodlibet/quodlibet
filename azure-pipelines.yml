@@ -26,3 +26,7 @@ jobs:
           MSYS2_ARCH: i686
           MSYSTEM: MINGW32
           CHERE_INVOKING: yes
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFiles: '**/test-*.xml'
+          testRunTitle: 'Publish test results'
