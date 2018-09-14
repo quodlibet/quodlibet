@@ -130,7 +130,11 @@ class Collection(object):
 
     def list(self, key):
         v = self.get(key, connector=u"\n") if "~" in key[1:] else self.get(key)
-        return [] if v == "" else v.split("\n")
+        if isinstance(v, float):
+            # Ignore insignificant differences in numeric tags caused
+            # by floating point imprecision when converting them to strings
+            v = round(v, 8)
+        return [] if v == "" else str(v).split("\n")
 
     def __get_cached_value(self, key):
         if key in self.__cache:
