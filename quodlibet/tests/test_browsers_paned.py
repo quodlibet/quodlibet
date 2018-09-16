@@ -23,8 +23,8 @@ from quodlibet.browsers.paned.pane import Pane
 from quodlibet.formats import AudioFile
 from quodlibet.util.collection import Collection
 from quodlibet.library import SongLibrary, SongLibrarian
-from quodlibet.const import COLUMN_MODE_SMALL, COLUMN_MODE_WIDE, COLUMN_MODE_COLUMNAR
-
+from quodlibet.const import COLUMN_MODE_SMALL, COLUMN_MODE_WIDE, \
+    COLUMN_MODE_COLUMNAR
 
 SONGS = [
     AudioFile({
