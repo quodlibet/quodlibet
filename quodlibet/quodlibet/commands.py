@@ -17,7 +17,7 @@ from quodlibet.util.string import split_escape
 from quodlibet import browsers
 
 from quodlibet import util
-from quodlibet.util import print_d, print_e
+from quodlibet.util import print_d, print_e, copool
 
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.properties import SongProperties
@@ -272,6 +272,19 @@ def _seek(app, time):
 @registry.register("play-file", args=1)
 def _play_file(app, value):
     app.window.open_file(value)
+
+
+@registry.register("add-location", args=1)
+def _add_location(app, value):
+    if os.path.isfile(value):
+        ret = app.library.add_filename(value)
+        if not ret:
+            print_e("Couldn't add file to library")
+    elif os.path.isdir(value):
+        copool.add(app.library.scan, [value], cofuncid="library",
+                   funcid="library")
+    else:
+        print_e("Invalid location")
 
 
 @registry.register("toggle-window")

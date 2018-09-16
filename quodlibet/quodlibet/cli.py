@@ -80,7 +80,7 @@ def process_arguments(argv):
     controls_opt = ["seek", "repeat", "query", "volume", "filter",
                     "set-rating", "set-browser", "open-browser", "shuffle",
                     "song-list", "queue", "stop-after", "random",
-                    "repeat-type", "shuffle-type"]
+                    "repeat-type", "shuffle-type", "add-location"]
 
     options = util.OptionParser(
         "Quod Libet", const.VERSION,
@@ -145,6 +145,8 @@ def process_arguments(argv):
             _("query")),
         ("unqueue", _("Unqueue a file or query"), "%s|%s" % (
             C_("command", "filename"), _("query"))),
+        ("add-location", _("Add a file or directory to the library"),
+            _("location")),
             ]:
         options.add(opt, help=help, arg=arg)
 
@@ -240,6 +242,13 @@ def process_arguments(argv):
                     filename = arg
                 filename = os.path.abspath(util.path.expanduser(arg))
                 queue("play-file", filename)
+        elif command == 'add-location':
+            try:
+                path = uri2fsn(arg)
+            except ValueError:
+                path = arg
+            path = os.path.abspath(util.path.expanduser(arg))
+            queue("add-location", path)
         elif command == "print-playing":
             try:
                 queue("print-playing", args[0])

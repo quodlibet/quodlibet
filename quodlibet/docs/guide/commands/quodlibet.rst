@@ -29,6 +29,9 @@ https://quodlibet.readthedocs.io/en/latest/guide/index.html.
 OPTIONS
 =======
 
+--add-location=<location>
+    Add a file or directory to the library
+
 --debug
     Print debugging information
 
