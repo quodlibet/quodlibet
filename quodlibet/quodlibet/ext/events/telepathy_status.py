@@ -15,7 +15,8 @@ if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
-import dbus
+from gi.repository import GLib
+from gi.repository import Gio
 from gi.repository import Gtk
 
 from quodlibet import _
@@ -36,26 +37,31 @@ AM_IFACE = "org.freedesktop.Telepathy.AccountManager"
 AC_IFACE = "org.freedesktop.Telepathy.Account"
 PROPS_IFACE = "org.freedesktop.DBus.Properties"
 CONN_PRESENCE_TYPE_AVAILABLE = 2
-is_valid_presence_type = lambda x: x not in [0, 7, 8]
+
+
+def is_valid_presence_type(x):
+    return x not in [0, 7, 8]
 
 
 def get_active_account_paths():
-    bus = dbus.SessionBus()
-    bus_object = bus.get_object(AM_NAME, AM_PATH)
-    bus_iface = dbus.Interface(bus_object, dbus_interface=PROPS_IFACE)
-    return bus_iface.Get(AM_IFACE, "ValidAccounts")
+    bus_iface = Gio.DBusProxy.new_for_bus_sync(
+        Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
+        AM_NAME, AM_PATH, PROPS_IFACE, None)
+    return bus_iface.Get('(ss)', AM_IFACE, "ValidAccounts")
 
 
 def set_accounts_requested_presence(paths, message):
-    bus = dbus.SessionBus()
+    bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
     for path in paths:
-        bus_object = bus.get_object(AM_NAME, path)
-        bus_iface = dbus.Interface(bus_object, dbus_interface=PROPS_IFACE)
-        presence_type, status = bus_iface.Get(AC_IFACE, "CurrentPresence")[:2]
+        bus_iface = Gio.DBusProxy.new_sync(
+            bus, Gio.DBusProxyFlags.NONE, None,
+            AM_NAME, path, PROPS_IFACE, None)
+        presence_type, status = bus_iface.Get(
+            '(ss)', AC_IFACE, "CurrentPresence")[:2]
         if not is_valid_presence_type(presence_type):
-            presence_type = dbus.UInt32(CONN_PRESENCE_TYPE_AVAILABLE)
-        value = dbus.Struct([presence_type, status, message])
-        bus_iface.Set(AC_IFACE, "RequestedPresence", value)
+            presence_type = CONN_PRESENCE_TYPE_AVAILABLE
+        value = GLib.Variant('(uss)', (presence_type, status, message))
+        bus_iface.Set('(ssv)', AC_IFACE, "RequestedPresence", value)
 
 
 class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
@@ -80,7 +86,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
             accounts = get_active_account_paths()
             # TODO: account filtering
             set_accounts_requested_presence(accounts, text)
-        except dbus.DBusException:
+        except GLib.Error:
             print_d("...but setting failed")
             util.print_exc()
 

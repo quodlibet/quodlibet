@@ -3,15 +3,15 @@
 #           2006 Joe Wreschnig
 #           2008 Antonio Riva, Eduardo Gonzalez <wm.eddie@gmail.com>,
 #                Anthony Bretaudeau <wxcover@users.sourceforge.net>,
-#                Jeremy Cantrell <jmcantrell@gmail.com>
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
 #           2011-2017 Nick Boultbee
 #                2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import json
 import os
@@ -19,6 +19,8 @@ import re
 import time
 import threading
 import gzip
+from io import BytesIO
+from urllib.parse import urlencode
 
 from xml.dom import minidom
 
@@ -41,7 +43,6 @@ from quodlibet.qltk.image import scale, add_border_widget, \
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util.urllib import urlopen, Request
-from quodlibet.compat import urlencode, cBytesIO
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
     "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
@@ -85,10 +86,10 @@ def get_url(url, post=None, get=None):
     # unzip the response if needed
     data = url_sock.read()
     if url_sock.headers.get("content-encoding", "") == "gzip":
-        data = gzip.GzipFile(fileobj=cBytesIO(data)).read()
+        data = gzip.GzipFile(fileobj=BytesIO(data)).read()
     url_sock.close()
     content_type = url_sock.headers.get('Content-Type', '').split(';', 1)[0]
-    domain = re.compile('\w+://([^/]+)/').search(url).groups(0)[0]
+    domain = re.compile(r'\w+://([^/]+)/').search(url).groups(0)[0]
     print_d("Got %s data from %s" % (content_type, domain))
     return (data if content_type.startswith('image')
             else data.decode(enc))
@@ -555,7 +556,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         if not raw_data:
             pbloader.connect('area-updated', self.__update)
 
-            data_store = cBytesIO()
+            data_store = BytesIO()
 
             try:
                 request = Request(url)

@@ -100,9 +100,9 @@ matches or regular expressions::
 
 The first finds anything by `The Who <https://en.wikipedia.org/wiki/The_Who>`_
 or guitarist `Pete Townshend <https://en.wikipedia.org/wiki/Pete_Townshend>`_
-. The second gives the songs that match both, so you'll find songs `Lindsay
-Smith <http://www.lindsay-smith.com/>`_'s `Tales From The Fruitbat Vat
-<http://www.cdbaby.com/cd/lindsaysmith>`_, but not her other albums.
+. The second gives the songs that match both, so you'll find songs Lindsay
+Smith's `Tales From The Fruitbat Vat
+<https://store.cdbaby.com/cd/lindsaysmith>`__, but not her other albums.
 
 You can also pick out all the songs that *don't* match the terms you give,
 using ``!``::
@@ -179,12 +179,11 @@ surprisingly powerful if you're a playlist user.
 Regular Expressions
 -------------------
 
-Quod Libet also supports searching your library using ''regular
-expressions'', a common way of finding text for Unix applications. Regular
-expressions look like regular searches, except they use / instead of ", and
-some punctuation has special meaning. There are many good tutorials on the
-web, and useful online regex testers (such as `Regex Pal <http://www.regexpal
-.com/>`_)
+Quod Libet also supports searching your library using ''regular expressions'',
+a common way of finding text for Unix applications. Regular expressions look
+like regular searches, except they use / instead of ", and some punctuation
+has special meaning. There are many good tutorials on the web, and useful
+online regex testers (such as `Regex Pal <https://www.regexpal.com/>`__)
 
 Some examples:
 

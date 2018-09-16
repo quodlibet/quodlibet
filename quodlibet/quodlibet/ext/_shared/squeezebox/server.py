@@ -9,11 +9,11 @@
 import socket
 from telnetlib import Telnet
 import time
+from urllib.parse import quote, unquote
 
 from quodlibet import _
 from quodlibet import app
 from quodlibet.util.dprint import print_w, print_d, print_
-from quodlibet.compat import quote, unquote
 
 
 class SqueezeboxException(Exception):

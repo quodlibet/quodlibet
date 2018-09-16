@@ -13,10 +13,9 @@ import traceback
 import time
 import logging
 
-from senf import getcwd, fsnative, fsn2bytes, bytes2fsn, mkdtemp
+from senf import getcwd, fsnative, fsn2bytes, bytes2fsn, mkdtemp, environ
 
 from quodlibet import _
-from quodlibet.compat import text_type, PY2
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
 from quodlibet import config
 from quodlibet import util
@@ -28,12 +27,10 @@ from quodlibet.util import re_escape
 from quodlibet.util.library import set_scan_dirs, get_scan_dirs
 from quodlibet.util.path import fsn2glib, glib2fsn, \
     parse_xdg_user_dirs, xdg_get_system_data_dirs, escape_filename, \
-    strip_win32_incompat_from_path, xdg_get_cache_home, environ, \
+    strip_win32_incompat_from_path, xdg_get_cache_home, \
     xdg_get_data_home, unexpand, expanduser, xdg_get_user_dirs, \
     xdg_get_config_home, get_temp_cover_file, mkdir, mtime
 from quodlibet.util.string import decode, encode, split_escape, join_escape
-from quodlibet.util.string.splitters import split_people, split_title, \
-    split_album
 
 from . import TestCase, skipIf
 from .helper import capture_output, locale_numeric_conv
@@ -91,13 +88,13 @@ class Tget_locale_encoding(TestCase):
 class Tformat_locale(TestCase):
 
     def test_format_int_locale(self):
-        assert isinstance(util.format_int_locale(1024), text_type)
+        assert isinstance(util.format_int_locale(1024), str)
 
     def test_format_float_locale(self):
-        assert isinstance(util.format_float_locale(1024.1024), text_type)
+        assert isinstance(util.format_float_locale(1024.1024), str)
 
     def test_format_time_seconds(self):
-        assert isinstance(util.format_time_seconds(1024), text_type)
+        assert isinstance(util.format_time_seconds(1024), str)
 
         with locale_numeric_conv():
             assert format_time_seconds(1024) == "1,024 seconds"
@@ -211,7 +208,7 @@ class Tre_esc(TestCase):
 
     def test_empty_unicode(self):
         self.failUnlessEqual(re_escape(u""), u"")
-        self.assertTrue(isinstance(re_escape(u""), text_type))
+        self.assertTrue(isinstance(re_escape(u""), str))
 
     def test_safe(self):
         self.failUnlessEqual(re_escape("fo o"), "fo o")
@@ -291,7 +288,7 @@ class Thuman_sort(TestCase):
         self.failUnlessEqual(
             util.human_sort_key(u"  3foo    bar6 42.8"),
             util.human_sort_key(u"3 foo bar6  42.8  "))
-        self.failUnlessEqual(64.0 in util.human_sort_key(u"64. 8"), True)
+        self.failUnless(64.0 in util.human_sort_key(u"64. 8"))
 
 
 class Tformat_time(TestCase):
@@ -379,7 +376,7 @@ class Tformat_size(TestCase):
         for key, value in d.items():
             formatted = util.format_size(key)
             self.failUnlessEqual(formatted, value)
-            assert isinstance(formatted, text_type)
+            assert isinstance(formatted, str)
 
     def test_bytes(self):
         self.t_dict({0: "0 B", 1: "1 B", 1023: "1023 B"})
@@ -408,95 +405,6 @@ class Tformat_size(TestCase):
             1024 * 1024 * 10240: "10.0 GB",
             1024 * 1024 * 15360: "15.0 GB"
         })
-
-
-class Tsplit_title(TestCase):
-
-    def test_trailing(self):
-        self.failUnlessEqual(split_title("foo ~"), ("foo ~", []))
-
-    def test_prefixed(self):
-        self.failUnlessEqual(split_title("~foo "), ("~foo ", []))
-
-    def test_prefix_and_trailing(self):
-        self.failUnlessEqual(split_title("~foo ~"), ("~foo ~", []))
-
-    def test_prefix_and_version(self):
-        self.failUnlessEqual(split_title("~foo ~bar~"), ("~foo", ["bar"]))
-
-    def test_simple(self):
-        self.failUnlessEqual(split_title("foo (baz)"), ("foo", ["baz"]))
-
-    def test_two_versions(self):
-        self.failUnlessEqual(
-            split_title("foo [b, c]"), ("foo", ["b", "c"]))
-
-    def test_custom_splitter(self):
-        self.failUnlessEqual(
-            split_title("foo [b c]", " "), ("foo", ["b", "c"]))
-
-
-class Tsplit_album(TestCase):
-    def test_album_looks_like_disc(self):
-        self.failUnlessEqual(
-            split_album("disk 2"), ("disk 2", None))
-
-    def test_basic_disc(self):
-        self.failUnlessEqual(
-            split_album("foo disc 1/2"), ("foo", "1/2"))
-
-    def test_looks_like_disc_but_isnt(self):
-        self.failUnlessEqual(
-            split_album("disc foo disc"), ("disc foo disc", None))
-
-    def test_disc_album_and_disc(self):
-        self.failUnlessEqual(
-            split_album("disc foo disc 1"), ("disc foo", "1"))
-
-    def test_weird_disc(self):
-        self.failUnlessEqual(
-            split_album("foo ~disk 3~"), ("foo", "3"))
-
-    def test_weird_not_disc(self):
-        self.failUnlessEqual(
-            split_album("foo ~crazy 3~"), ("foo ~crazy 3~", None))
-
-
-class Tsplit_people(TestCase):
-
-    def test_parened_person(self):
-        self.failUnlessEqual(split_people("foo (bar)"), ("foo", ["bar"]))
-
-    def test_with_person(self):
-        self.failUnlessEqual(
-            split_people("foo (With bar)"), ("foo", ["bar"]))
-
-    def test_with_with_person(self):
-        self.failUnlessEqual(
-            split_people("foo (with with bar)"), ("foo", ["with bar"]))
-
-    def test_featuring_two_people(self):
-        self.failUnlessEqual(
-            split_people("foo featuring bar, qx"), ("foo", ["bar", "qx"]))
-
-    def test_featuring_person_bracketed(self):
-        self.failUnlessEqual(
-            split_people("foo (Ft. bar)"), ("foo", ["bar"]))
-        self.failUnlessEqual(
-            split_people("foo(feat barman)"), ("foo", ["barman"]))
-
-    def test_originally_by(self):
-        self.failUnlessEqual(
-            split_people("title (originally by artist)"),
-            ("title", ["artist"]))
-        self.failUnlessEqual(
-            split_people("title [originally by artist & artist2]"),
-            ("title", ["artist", "artist2"]))
-
-    def test_cover(self):
-        self.failUnlessEqual(
-            split_people("Psycho Killer [Talking Heads Cover]"),
-            ("Psycho Killer", ["Talking Heads"]))
 
 
 class Ttag(TestCase):
@@ -580,7 +488,7 @@ class Tpattern(TestCase):
                              "Year - Album")
 
     def test_escape(self):
-        self.failUnlessEqual(util.pattern("\<i\><&>\</i\>", esc=True),
+        self.failUnlessEqual(util.pattern(r"\<i\><&>\</i\>", esc=True),
                             "<i>&amp;</i>")
 
     def test_invalid(self):
@@ -588,7 +496,7 @@ class Tpattern(TestCase):
         util.pattern("<d\\")
 
     def test_complex_condition(self):
-        self.assertEqual(util.pattern("<#(bitrate \> 150)|HQ|LQ>"), "LQ")
+        self.assertEqual(util.pattern(r"<#(bitrate \> 150)|HQ|LQ>"), "LQ")
 
     def test_escape_condition(self):
         self.assertEqual(
@@ -862,9 +770,9 @@ class Tstrip_win32_incompat_from_path(TestCase):
         self.assertTrue(isinstance(v, fsnative))
 
         v = strip_win32_incompat_from_path(u"")
-        self.assertTrue(isinstance(v, text_type))
+        self.assertTrue(isinstance(v, str))
         v = strip_win32_incompat_from_path(u"foo")
-        self.assertTrue(isinstance(v, text_type))
+        self.assertTrue(isinstance(v, str))
 
     def test_basic(self):
         if is_win:
@@ -931,20 +839,20 @@ class Tsplit_escape(TestCase):
 
         parts = split_escape(u"a:b", u":")
         self.assertEqual(parts, [u"a", u"b"])
-        self.assertTrue(all(isinstance(p, text_type) for p in parts))
+        self.assertTrue(all(isinstance(p, str) for p in parts))
 
         parts = split_escape(u"", u":")
         self.assertEqual(parts, [u""])
-        self.assertTrue(all(isinstance(p, text_type) for p in parts))
+        self.assertTrue(all(isinstance(p, str) for p in parts))
 
         parts = split_escape(u":", u":")
         self.assertEqual(parts, [u"", u""])
-        self.assertTrue(all(isinstance(p, text_type) for p in parts))
+        self.assertTrue(all(isinstance(p, str) for p in parts))
 
     def test_join_escape_types(self):
         self.assertEqual(join_escape([], b":"), b"")
         self.assertTrue(isinstance(join_escape([], b":"), bytes))
-        self.assertTrue(isinstance(join_escape([], u":"), text_type))
+        self.assertTrue(isinstance(join_escape([], u":"), str))
         self.assertEqual(join_escape([b"\xff", b"\xff"], b":"), b"\xff:\xff")
         self.assertEqual(join_escape([u'\xe4', u'\xe4'], ":"), u'\xe4:\xe4')
 
@@ -1179,20 +1087,11 @@ class Treraise(TestCase):
 class Tenviron(TestCase):
 
     def test_main(self):
-        for v in util.environ.values():
+        for v in environ.values():
             if os.name == "nt":
-                self.assertTrue(isinstance(v, text_type))
+                self.assertTrue(isinstance(v, str))
             else:
                 self.assertTrue(isinstance(v, str))
-
-
-class Tgdecode(TestCase):
-
-    def test_main(self):
-        if PY2:
-            self.assertTrue(isinstance(util.gdecode(b"foo"), text_type))
-        else:
-            self.assertTrue(isinstance(util.gdecode(u"foo"), text_type))
 
 
 class Tget_module_dir(TestCase):
@@ -1253,7 +1152,7 @@ class Tformat_exception(TestCase):
         except:
             result = format_exception(*sys.exc_info())
             self.assertTrue(isinstance(result, list))
-            self.assertTrue(all([isinstance(l, text_type) for l in result]))
+            self.assertTrue(all([isinstance(l, str) for l in result]))
 
 
 class Textract_tb(TestCase):
@@ -1267,5 +1166,5 @@ class Textract_tb(TestCase):
             for fn, l, fu, text in result:
                 self.assertTrue(isinstance(fn, fsnative))
                 self.assertTrue(isinstance(l, int))
-                self.assertTrue(isinstance(fu, text_type))
-                self.assertTrue(isinstance(text, text_type))
+                self.assertTrue(isinstance(fu, str))
+                self.assertTrue(isinstance(text, str))

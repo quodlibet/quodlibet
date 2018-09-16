@@ -33,6 +33,9 @@ class Version(tuple):
         inst.message = kwargs.pop("message", "")
         return inst
 
+    def __init__(self, *args, **kwargs):
+        pass
+
     def human_version(self):
         return ".".join(map(str, self))
 
@@ -62,17 +65,14 @@ class MinVersions(object):
     GSTREAMER = Version("GStreamer", 1, 8)
 
 
-VERSION_TUPLE = Version("", 4, 0, -1)
+VERSION_TUPLE = Version("", 4, 2, -1)
 VERSION = str(VERSION_TUPLE)
 
 # entry point for the user guide / wiki
-BRANCH_NAME = "master"
-DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/%s"
-DOCS_LATEST = DOCS_BASE_URL % "latest"
-DOCS_BASE_URL %= BRANCH_NAME if BRANCH_NAME != "master" else "latest"
-ONLINE_HELP = DOCS_BASE_URL + "/guide/index.html"
-SEARCH_HELP = DOCS_BASE_URL + "/guide/searching.html"
-SHORTCUTS_HELP = DOCS_BASE_URL + "/guide/shortcuts.html"
+_DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/latest"
+ONLINE_HELP = _DOCS_BASE_URL + "/guide/index.html"
+SEARCH_HELP = _DOCS_BASE_URL + "/guide/searching.html"
+SHORTCUTS_HELP = _DOCS_BASE_URL + "/guide/shortcuts.html"
 
 # Email used as default for reading/saving per-user data in tags, etc.
 EMAIL = os.environ.get("EMAIL", "quodlibet@lists.sacredchao.net")
@@ -82,7 +82,7 @@ SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = u"Copyright 2004-2017"
+COPYRIGHT = u"Copyright 2004-2018"
 
 AUTHORS = sorted(u"""\
 Alexandre Passos
@@ -176,6 +176,13 @@ Sauyon Lee
 Thomas Leberbauer
 Kristian Laakkonen
 Emanuele Baldino
+Peter F. Patel-Schneider
+Pete Beardmore
+Muges@github
+Meriipu@github
+Jonas Platte
+Eyenseo@github
+Peter Simonyi
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""

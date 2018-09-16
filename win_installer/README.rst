@@ -15,7 +15,7 @@ For developing on Windows you have two choices.
 
    * Clone the git repo with some git client
    * Download and install the latest installer build:
-     https://bitbucket.org/lazka/quodlibet/downloads/quodlibet-latest-installer.exe
+     https://github.com/quodlibet/quodlibet/releases/download/latest/quodlibet-latest-installer.exe
    * Go to quodlibet.py in the git checkout and run
      ``%PROGRAMFILES(X86)%\Quod Libet\bin\python.exe quodlibet.py``.
 

@@ -79,7 +79,6 @@ class TUniSearch(TestCase):
             (u"(?!Asimov)", None),
             (u"(?<=abc)def", None),
             (u"(?<!foo)", None),
-            (u"(?:foo)", None),
             (u"(?#foo)", u""),
             (u"(.+) \1", None),
             (u"\\A\\b\\B\\d\\D\\s\\S\\w\\W\\Z\a",
@@ -88,19 +87,40 @@ class TUniSearch(TestCase):
             (u"^foo$", None),
             (u"[-+]?(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?",
              u"[\\-\\+]?([\\d]+(\\.[\\d]*)?|\\.[\\d]+)([eE][\\-\\+]?[\\d]+)?"),
-            (u"(\$\d*)", u"(\\$[\\d]*)"),
+            (u"(\\$\\d*)", u"(\\$[\\d]*)"),
             (u"\\$\\.\\^\\[\\]\\:\\-\\+\\?\\\\", None),
             (u"[^a][^ab]", None),
             (u"[ab][abc]", None),
             (u"[.]", u"\\."),
             (u"[^a-z]", None),
-            (u"[^a-z\w]", None),
+            (u"[^a-z\\w]", None),
+            ("(x|yy)", None),
         ]
 
         for r, o in res:
             if o is None:
                 o = r
             self.assertEqual(re_replace_literals(r, {}), o)
+
+    def test_construct_regexp_37_change(self):
+        # Starting with 3.7 the parser throws out some subpattern
+        # nodes. We try to recover them or test against the old and new result.
+        res = [
+            (u"(?:foo)", ("(?:foo)", "foo")),
+            (u"(?:foo)x", ("(?:foo)x", "foox")),
+            (u"(?:foo)(?:bar)", ("(?:foo)(?:bar)", "foobar")),
+            (u"(?:foo|bla)", None),
+            (u"(?:foo|bla)x", None),
+        ]
+
+        for r, o in res:
+            out = re_replace_literals(r, {})
+            if o is None:
+                o = r
+            if isinstance(o, tuple):
+                assert out in o
+            else:
+                assert out == o
 
     def test_construct_regexp_broken(self):
         self.assertRaises(re.error, re_replace_literals, u"[", {})
@@ -112,7 +132,7 @@ class TUniSearch(TestCase):
         assert re_add_variants(u"[x-y]") == u"[ẋẍýÿŷȳẏẙỳỵỷỹx-y]"
         assert re_add_variants(u"[f-gm]") == u"[ḟꝼĝğġģǧǵḡᵹf-gmḿṁṃ]"
         assert re_add_variants(u"[^m]") == u"[^mḿṁṃ]"
-        assert re_add_variants(u"[^m-m\w]") == u"[^ḿṁṃm-m\w]"
+        assert re_add_variants(u"[^m-m\\w]") == u"[^ḿṁṃm-m\\w]"
         assert re_add_variants(u"[^m-m]") == "[^ḿṁṃm-m]"
         assert re_add_variants(u"[^ö]") == u"[^ö]"
         assert re_add_variants(u"[LLL]") == u"[LĹĻĽḶḸḺḼŁ]"

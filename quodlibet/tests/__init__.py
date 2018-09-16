@@ -12,39 +12,53 @@ import shutil
 import atexit
 import subprocess
 import locale
-from quodlibet.compat import PY3
 
 try:
     import pytest
 except ImportError:
-    module = "python3-pytest" if PY3 else "python-pytest"
-    raise SystemExit("pytest missing: sudo apt-get install %s" % module)
+    raise SystemExit("pytest missing: sudo apt-get install python3-pytest")
 
 try:
     import xvfbwrapper
 except ImportError:
     xvfbwrapper = None
 
-import faulthandler
-from senf import fsnative, path2fsn, environ
-
 import quodlibet
 from quodlibet.util.path import xdg_get_cache_home
 from quodlibet import util
 
+from senf import fsnative, path2fsn, environ
 from unittest import TestCase as OrigTestCase
 
 
 class TestCase(OrigTestCase):
+    """Adds aliases for equality-type methods.
+    Also swaps first and second parameters to support our mostly-favoured
+    assertion style e.g. `assertEqual(actual, expected)`"""
+
+    def assertEqual(self, first, second, msg=None):
+        super().assertEqual(second, first, msg)
+
+    def assertNotEqual(self, first, second, msg=None):
+        super().assertNotEqual(second, first, msg)
+
+    def assertAlmostEqual(self, first, second, places=None, msg=None,
+                          delta=None):
+        super().assertAlmostEqual(second, first, places, msg, delta)
+
+    def assertNotAlmostEqual(self, first, second, places=None, msg=None,
+                             delta=None):
+        super().assertNotAlmostEqual(second, first, places, msg, delta)
 
     # silence deprec warnings about useless renames
     failUnless = OrigTestCase.assertTrue
     failIf = OrigTestCase.assertFalse
-    failUnlessEqual = OrigTestCase.assertEqual
     failUnlessRaises = OrigTestCase.assertRaises
-    failUnlessAlmostEqual = OrigTestCase.assertAlmostEqual
-    failIfEqual = OrigTestCase.assertNotEqual
-    failIfAlmostEqual = OrigTestCase.assertNotAlmostEqual
+
+    failUnlessEqual = assertEqual
+    failIfEqual = assertNotEqual
+    failUnlessAlmostEqual = assertAlmostEqual
+    failIfAlmostEqual = assertNotAlmostEqual
 
 
 skip = unittest.skip
@@ -103,7 +117,7 @@ def init_fake_app():
 
     browsers.init()
     app.name = "Quod Libet"
-    app.id = "quodlibet"
+    app.id = "io.github.quodlibet.QuodLibet"
     app.player = NullPlayer()
     app.library = SongFileLibrary()
     app.library.librarian = SongLibrarian()
@@ -134,8 +148,7 @@ def dbus_launch_user():
     except (subprocess.CalledProcessError, OSError):
         return {}
     else:
-        if PY3:
-            out = out.decode("utf-8")
+        out = out.decode("utf-8")
         addr, pid = out.splitlines()
         return {"DBUS_SESSION_BUS_PID": pid, "DBUS_SESSION_BUS_ADDRESS": addr}
 
@@ -164,7 +177,7 @@ def init_test_environ():
     any resources created.
     """
 
-    global _TEMP_DIR, _BUS_INFO, _VDISPLAY, _faulthandler_fobj
+    global _TEMP_DIR, _BUS_INFO, _VDISPLAY
 
     # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
@@ -190,6 +203,15 @@ def init_test_environ():
     # set to new default
     environ.pop("XDG_DATA_HOME", None)
 
+    # don't use dconf
+    environ["GSETTINGS_BACKEND"] = "memory"
+
+    # don't use dconf
+    environ["GSETTINGS_BACKEND"] = "memory"
+
+    # Force the default theme so broken themes don't affect the tests
+    environ["GTK_THEME"] = "Adwaita"
+
     if xvfbwrapper is not None:
         _VDISPLAY = xvfbwrapper.Xvfb()
         _VDISPLAY.start()
@@ -201,10 +223,6 @@ def init_test_environ():
 
     quodlibet.init(no_translations=True, no_excepthook=True)
     quodlibet.app.name = "QL Tests"
-
-    # to get around pytest silencing
-    _faulthandler_fobj = os.fdopen(os.dup(sys.__stderr__.fileno()), "w")
-    faulthandler.enable(_faulthandler_fobj)
 
     # try to make things the same in case a different locale is active.
     # LANG for gettext, setlocale for number formatting etc.

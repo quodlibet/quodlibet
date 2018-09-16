@@ -19,7 +19,6 @@ import atexit
 
 import faulthandler
 
-from quodlibet.compat import text_type
 from quodlibet.util.dprint import print_exc
 
 
@@ -37,20 +36,20 @@ class FaultHandlerCrash(Exception):
         short string for grouping similar stacktraces together.
 
         Args:
-            stacktrace (text_type)
+            stacktrace (str)
         Returns:
-            text_type
+            str
         """
 
-        stacktrace = text_type(self)
+        stacktrace = str(self)
         if isinstance(stacktrace, bytes):
             stacktrace = stacktrace.decode("utf-8", "replace")
 
-        assert isinstance(stacktrace, text_type)
+        assert isinstance(stacktrace, str)
 
         # Extract the basename and the function name for each line and hash
         # them. Could be smarter, but let's try this for now..
-        reg = re.compile('.*?"([^"]+).*?(\w+$)')
+        reg = re.compile(r'.*?"([^"]+).*?(\w+$)')
         values = []
         for l in stacktrace.splitlines():
             m = reg.match(l)
@@ -75,11 +74,14 @@ def enable(path):
     if _fileobj is not None:
         raise Exception("already enabled")
 
+    # we open as reading so raise_and_clear_error() can extract the old error
     try:
         _fileobj = open(path, "rb+")
     except IOError as e:
         if e.errno == errno.ENOENT:
             _fileobj = open(path, "wb+")
+        else:
+            raise
 
     faulthandler.enable(_fileobj, all_threads=False)
 
@@ -112,7 +114,7 @@ def _at_exit():
 
 def raise_and_clear_error():
     """Raises an error if there is one. Calling this will clear the error
-    so a second call wont do anything.
+    so a second call won't do anything.
 
     enable() needs to be called first.
 

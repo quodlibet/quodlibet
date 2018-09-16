@@ -24,11 +24,7 @@ from __future__ import absolute_import
 
 import os
 import sys
-
-try:
-    from urllib import pathname2url
-except:
-    from urllib.request import pathname2url
+from urllib.request import pathname2url
 
 from .util import Command
 

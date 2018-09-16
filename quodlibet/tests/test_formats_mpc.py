@@ -26,6 +26,10 @@ class TMPCFile(TestCase):
         assert self.song("~#channels") == 2
         assert self.song2("~#channels") == 2
 
+    def test_samplerate(self):
+        assert self.song("~#samplerate") == 44100
+        assert self.song2("~#samplerate") == 44100
+
     def test_bitrate(self):
         self.failUnlessEqual(self.song("~#bitrate"), 239)
         self.failUnlessEqual(self.song2("~#bitrate"), 1)

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2013 Christoph Reiter -->
+<component type="desktop-application">
+    <id>io.github.quodlibet.QuodLibet.desktop</id>
+    <name>Quod Libet</name>
+    <summary>Listen to, browse, or edit your audio collection</summary>
+    <metadata_license>CC0</metadata_license>
+    <project_license>GPL-2.0</project_license>
+    <translation type="gettext">quodlibet</translation>
+    <launchable type="desktop-id">io.github.quodlibet.QuodLibet.desktop</launchable>
+    <provides>
+        <id>quodlibet.desktop</id>
+        <binary>quodlibet</binary>
+        <binary>operon</binary>
+    </provides>
+
+    <description>
+    <p>
+        Quod Libet is a music management program. It provides several
+        different ways to view your audio library, as well as support for
+        Internet radio and audio feeds. It has extremely flexible metadata
+        tag editing and searching capabilities.
+    </p>
+    <p>
+        Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3,
+        FLAC, MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA,
+        SPC, MIDI.
+    </p>
+    </description>
+
+    <screenshots>
+        <screenshot type="default">
+            <image>https://quodlibet.github.io/appdata/quodlibet_1.png</image>
+        </screenshot>
+        <screenshot>
+            <image>https://quodlibet.github.io/appdata/quodlibet_2.png</image>
+        </screenshot>
+        <screenshot>
+            <image>https://quodlibet.github.io/appdata/quodlibet_3.png</image>
+        </screenshot>
+    </screenshots>
+
+    <releases>
+        <release version="4.0.2" date="2018-01-17"/>
+        <release version="4.0.1" date="2018-01-13"/>
+        <release version="4.0.0" date="2017-12-26"/>
+        <release version="3.9.1" date="2017-06-06"/>
+        <release version="3.9.0" date="2017-05-24"/>
+    </releases>
+
+    <url type="homepage">https://quodlibet.readthedocs.org</url>
+    <url type="bugtracker">https://quodlibet.readthedocs.io/en/latest/bugs_repo.html</url>
+    <url type="help">https://quodlibet.readthedocs.io/en/latest/guide/index.html</url>
+    <url type="translate">https://quodlibet.readthedocs.io/en/latest/translation/howto.html</url>
+    <update_contact>quod-libet-development@googlegroups.com</update_contact>
+</component>

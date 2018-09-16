@@ -24,8 +24,7 @@ from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.qltk.x import ScrolledWindow, ConfigRPaned
 from quodlibet.qltk.models import ObjectStore, ObjectModelSort
 from quodlibet.qltk.msg import CancelRevertSave
-from quodlibet.util import connect_destroy
-from quodlibet.compat import cmp
+from quodlibet.util import connect_destroy, cmp
 
 
 class _ListEntry(object):

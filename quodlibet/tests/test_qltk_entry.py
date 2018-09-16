@@ -9,8 +9,6 @@ from .helper import visible
 
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry, Entry
 from quodlibet.query._query import Query
-from quodlibet.util import gdecode
-from quodlibet.compat import text_type
 import quodlibet.config
 
 
@@ -49,7 +47,7 @@ class TValidatingEntry(TestCase):
         entry = ValidatingEntry(valid)
         entry.set_text("foo")
         self.assertEqual(x, [u"foo"])
-        self.assertTrue(isinstance(x[0], text_type))
+        self.assertTrue(isinstance(x[0], str))
 
     def tearDown(self):
         self.entry.destroy()
@@ -61,7 +59,7 @@ class TUndoEntry(TestCase):
         self.entry = UndoEntry()
 
     def __equal(self, value):
-        entry_val = gdecode(self.entry.get_text())
+        entry_val = self.entry.get_text()
         self.failUnlessEqual(value, entry_val)
 
     def __insert(self, text, pos):

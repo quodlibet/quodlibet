@@ -21,7 +21,7 @@ class FilterBrowser(SongsMenuPlugin):
     PLUGIN_DESC = _("Filters on directory in a new browser window.")
     PLUGIN_ICON = Icons.EDIT_SELECT_ALL
 
-    plugin_songs = any_song(is_a_file)
+    plugin_handles = any_song(is_a_file)
 
     def plugin_songs(self, songs):
         tag = "~dirname"

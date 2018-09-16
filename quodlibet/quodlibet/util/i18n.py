@@ -13,9 +13,8 @@ import locale
 
 from senf import environ, path2fsn, fsn2text, text2fsn
 
-from quodlibet.util.path import unexpand
+from quodlibet.util.path import unexpand, xdg_get_system_data_dirs
 from quodlibet.util.dprint import print_d
-from quodlibet.compat import text_type, PY2, listfilter
 
 from .misc import get_locale_encoding
 
@@ -81,9 +80,9 @@ def set_i18n_envvars():
         from quodlibet.util.winapi import GetUserDefaultUILanguage, \
             GetSystemDefaultUILanguage
 
-        langs = listfilter(None, map(locale.windows_locale.get,
-                                     [GetUserDefaultUILanguage(),
-                                      GetSystemDefaultUILanguage()]))
+        langs = list(filter(None, map(locale.windows_locale.get,
+                                      [GetUserDefaultUILanguage(),
+                                       GetSystemDefaultUILanguage()])))
         if langs:
             environ.setdefault('LANG', langs[0])
             environ.setdefault('LANGUAGE', ":".join(langs))
@@ -151,27 +150,20 @@ class GlibTranslations(gettext.GNUTranslations):
         # force unicode here since __contains__ (used in gettext) ignores
         # our changed defaultencoding for coercion, so utf-8 encoded strings
         # fail at lookup.
-        message = text_type(message)
-        if PY2:
-            return text_type(gettext.GNUTranslations.ugettext(self, message))
-        else:
-            return text_type(gettext.GNUTranslations.gettext(self, message))
+        message = str(message)
+        return str(gettext.GNUTranslations.gettext(self, message))
 
     def ungettext(self, msgid1, msgid2, n):
         # see ugettext
-        msgid1 = text_type(msgid1)
-        msgid2 = text_type(msgid2)
-        if PY2:
-            return text_type(
-                gettext.GNUTranslations.ungettext(self, msgid1, msgid2, n))
-        else:
-            return text_type(
-                gettext.GNUTranslations.ngettext(self, msgid1, msgid2, n))
+        msgid1 = str(msgid1)
+        msgid2 = str(msgid2)
+        return str(
+            gettext.GNUTranslations.ngettext(self, msgid1, msgid2, n))
 
     def unpgettext(self, context, msgid, msgidplural, n):
-        context = text_type(context)
-        msgid = text_type(msgid)
-        msgidplural = text_type(msgidplural)
+        context = str(context)
+        msgid = str(msgid)
+        msgidplural = str(msgidplural)
         real_msgid = u"%s\x04%s" % (context, msgid)
         real_msgidplural = u"%s\x04%s" % (context, msgidplural)
         result = self.ngettext(real_msgid, real_msgidplural, n)
@@ -182,8 +174,8 @@ class GlibTranslations(gettext.GNUTranslations):
         return result
 
     def upgettext(self, context, msgid):
-        context = text_type(context)
-        msgid = text_type(msgid)
+        context = str(context)
+        msgid = str(msgid)
         real_msgid = u"%s\x04%s" % (context, msgid)
         result = self.ugettext(real_msgid)
         if result == real_msgid:
@@ -213,7 +205,7 @@ _translations = {
 def set_debug_text(debug_text=None):
     """
     Args:
-        debug_text (text_type or None): text to add to all translations
+        debug_text (str or None): text to add to all translations
     """
 
     global _debug_text, _translations
@@ -223,13 +215,28 @@ def set_debug_text(debug_text=None):
         trans.set_debug_text(debug_text)
 
 
+def iter_locale_dirs():
+    dirs = list(xdg_get_system_data_dirs())
+    # this is the one python gettext uses by default, use as a fallback
+    dirs.append(os.path.join(sys.base_prefix, "share"))
+
+    done = set()
+    for path in dirs:
+        locale_dir = os.path.join(path, "locale")
+        if locale_dir in done:
+            continue
+        done.add(locale_dir)
+        if os.path.isdir(locale_dir):
+            yield locale_dir
+
+
 def register_translation(domain, localedir=None):
     """Register a translation domain
 
     Args:
         domain (str): the gettext domain
-        localedir (pathlike): A directory used for translations, if it doesn't
-            exist the system one will be used.
+        localedir (pathlike): A directory used for translations, if None the
+            system one will be used.
     Returns:
         GlibTranslations
     """
@@ -238,19 +245,22 @@ def register_translation(domain, localedir=None):
 
     assert _initialized
 
-    if localedir is not None and os.path.isdir(localedir):
-        print_d("Using local localedir: %r" % unexpand(localedir))
-        gettext.bindtextdomain(domain, localedir)
-
-    localedir = gettext.bindtextdomain(domain)
-
-    try:
-        t = gettext.translation(domain, localedir, class_=GlibTranslations)
-    except IOError:
-        print_d("No translation found in %r" % unexpand(localedir))
-        t = GlibTranslations()
+    if localedir is None:
+        iterdirs = iter_locale_dirs
     else:
-        print_d("Translations loaded: %r" % unexpand(t.path))
+        iterdirs = lambda: iter([localedir])
+
+    for dir_ in iterdirs():
+        try:
+            t = gettext.translation(domain, dir_, class_=GlibTranslations)
+        except OSError:
+            continue
+        else:
+            print_d("Translations loaded: %r" % unexpand(t.path))
+            break
+    else:
+        print_d("No translation found for the domain %r" % domain)
+        t = GlibTranslations()
 
     t.set_debug_text(_debug_text)
     _translations[domain] = t
@@ -262,7 +272,7 @@ def init(language=None):
     and before any gettext using libraries are loaded.
 
     Args:
-        language (text_type or None): Either a language to use or None for the
+        language (str or None): Either a language to use or None for the
             system derived default.
     """
 
@@ -292,38 +302,37 @@ def init(language=None):
 
 
 def get_available_languages(domain):
-    """Returns a list of available translations for a given gettext domain.
+    """Returns a set of available translations for a given gettext domain.
 
     Args:
         domain (str)
     Returns:
-        List[text_type]
+        Set[str]
     """
 
-    locale_dir = gettext.bindtextdomain(domain)
-    if locale_dir is None:
-        return []
+    langs = set(["C"])
 
-    try:
-        entries = os.listdir(locale_dir)
-    except OSError:
-        return []
+    for locale_dir in iter_locale_dirs():
+        try:
+            entries = os.listdir(locale_dir)
+        except OSError:
+            continue
 
-    langs = [u"C"]
-    for lang in entries:
-        mo_path = os.path.join(
-            locale_dir, lang, "LC_MESSAGES", "%s.mo" % domain)
-        if os.path.exists(mo_path):
-            langs.append(fsn2text(path2fsn(lang)))
+        for lang in entries:
+            mo_path = os.path.join(
+                locale_dir, lang, "LC_MESSAGES", "%s.mo" % domain)
+            if os.path.exists(mo_path):
+                langs.add(fsn2text(path2fsn(lang)))
+
     return langs
 
 
 def _(message):
     """
     Args:
-        message (text_type)
+        message (str)
     Returns:
-        text_type
+        str
 
     Lookup the translation for message
     """
@@ -335,23 +344,23 @@ def _(message):
 def N_(message):
     """
     Args:
-        message (text_type)
+        message (str)
     Returns:
-        text_type
+        str
 
     Only marks a string for translation
     """
 
-    return text_type(message)
+    return str(message)
 
 
 def C_(context, message):
     """
     Args:
-        context (text_type)
-        message (text_type)
+        context (str)
+        message (str)
     Returns:
-        text_type
+        str
 
     Lookup the translation for message for a context
     """
@@ -363,11 +372,11 @@ def C_(context, message):
 def ngettext(singular, plural, n):
     """
     Args:
-        singular (text_type)
-        plural (text_type)
+        singular (str)
+        plural (str)
         n (int)
     Returns:
-        text_type
+        str
 
     Returns the translation for a singular or plural form depending
     on the value of n.
@@ -384,12 +393,12 @@ def numeric_phrase(singular, plural, n, template_var=None):
     This is added to custom gettext keywords to allow us to use as-is.
 
     Args:
-        singular (text_type)
-        plural (text_type)
+        singular (str)
+        plural (str)
         n (int)
-        template_var (text_type)
+        template_var (str)
     Returns:
-        text_type
+        str
 
     For example,
 
@@ -415,12 +424,12 @@ def numeric_phrase(singular, plural, n, template_var=None):
 def npgettext(context, singular, plural, n):
     """
     Args:
-        context (text_type)
-        singular (text_type)
-        plural (text_type)
+        context (str)
+        singular (str)
+        plural (str)
         n (int)
     Returns:
-        text_type
+        str
 
     Like ngettext, but with also depends on the context.
     """

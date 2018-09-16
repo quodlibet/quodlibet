@@ -16,7 +16,6 @@ from senf import fsn2uri
 from quodlibet import app
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
-from quodlibet.compat import iteritems, listmap
 
 from .util import MPRISObject
 
@@ -106,6 +105,8 @@ value="false"/>
         name = dbus.service.BusName(self.BUS_NAME, bus)
         MPRISObject.__init__(self, bus, self.PATH, name)
 
+        self.__metadata = None
+        self.__cover = None
         player_options = app.player_options
         self.__repeat_id = player_options.connect(
             "notify::repeat", self.__repeat_changed)
@@ -122,7 +123,6 @@ value="false"/>
     def remove_from_connection(self, *arg, **kwargs):
         super(MPRIS2, self).remove_from_connection(*arg, **kwargs)
 
-        self.__cover = None
         player_options = app.player_options
         player_options.disconnect(self.__repeat_id)
         player_options.disconnect(self.__random_id)
@@ -130,6 +130,11 @@ value="false"/>
         app.librarian.disconnect(self.__lsig)
         app.player.disconnect(self.__vsig)
         app.player.disconnect(self.__seek_sig)
+
+        if self.__cover is not None:
+            self.__cover.close()
+            self.__cover = None
+        self.__invalidate_metadata()
 
     def __volume_changed(self, *args):
         self.emit_properties_changed(self.PLAYER_IFACE, ["Volume"])
@@ -147,6 +152,7 @@ value="false"/>
         self.Seeked(ms * 1000)
 
     def __library_changed(self, library, songs):
+        self.__invalidate_metadata()
         if not songs or app.player.info not in songs:
             return
         self.emit_properties_changed(self.PLAYER_IFACE, ["Metadata"])
@@ -208,6 +214,8 @@ value="false"/>
     unpaused = paused
 
     def song_started(self, song):
+        self.__invalidate_metadata()
+
         # so the position in clients gets updated faster
         self.Seeked(0)
 
@@ -220,42 +228,59 @@ value="false"/>
             return dbus.ObjectPath(path + "/" + "NoTrack")
         return dbus.ObjectPath(path + "/" + str(id(app.player.info)))
 
+    def __invalidate_metadata(self):
+        self.__metadata = None
+
     def __get_metadata(self):
-        """http://xmms2.org/wiki/MPRIS_Metadata"""
+        if self.__metadata is None:
+            self.__metadata = self.__get_metadata_real()
+            assert self.__metadata is not None
+        return self.__metadata
+
+    def __get_metadata_real(self):
+        """
+        https://www.freedesktop.org/wiki/Specifications/mpris-spec/metadata/
+        """
 
         metadata = {}
         metadata["mpris:trackid"] = self.__get_current_track_id()
+
+        def ignore_overflow(dbus_type, value):
+            try:
+                return dbus_type(value)
+            except OverflowError:
+                return 0
 
         song = app.player.info
         if not song:
             return metadata
 
-        metadata["mpris:length"] = dbus.Int64(song("~#length") * 10 ** 6)
+        metadata["mpris:length"] = ignore_overflow(
+            dbus.Int64, song("~#length") * 10 ** 6)
 
-        self.__cover = cover = app.cover_manager.get_cover(song)
-        is_temp = False
-        if cover:
-            name = cover.name
-            is_temp = name.startswith(tempfile.gettempdir())
-            # This doesn't work for embedded images.. the file gets unlinked
-            # after loosing the file handle
-            metadata["mpris:artUrl"] = fsn2uri(name)
-
-        if not is_temp:
+        if self.__cover is not None:
+            self.__cover.close()
             self.__cover = None
+
+        cover = app.cover_manager.get_cover(song)
+        if cover:
+            is_temp = cover.name.startswith(tempfile.gettempdir())
+            if is_temp:
+                self.__cover = cover
+            metadata["mpris:artUrl"] = fsn2uri(cover.name)
 
         # All list values
         list_val = {"artist": "artist", "albumArtist": "albumartist",
             "comment": "comment", "composer": "composer", "genre": "genre",
             "lyricist": "lyricist"}
-        for xesam, tag in iteritems(list_val):
+        for xesam, tag in list_val.items():
             vals = song.list(tag)
             if vals:
-                metadata["xesam:" + xesam] = listmap(unival, vals)
+                metadata["xesam:" + xesam] = list(map(unival, vals))
 
         # All single values
         sing_val = {"album": "album", "title": "title", "asText": "~lyrics"}
-        for xesam, tag in iteritems(sing_val):
+        for xesam, tag in sing_val.items():
             vals = song.comma(tag)
             if vals:
                 metadata["xesam:" + xesam] = unival(vals)
@@ -267,13 +292,14 @@ value="false"/>
         num_val = {"audioBPM": "bpm", "discNumber": "disc",
                    "trackNumber": "track", "useCount": "playcount"}
 
-        for xesam, tag in iteritems(num_val):
+        for xesam, tag in num_val.items():
             val = song("~#" + tag, None)
             if val is not None:
-                metadata["xesam:" + xesam] = int(val)
+                metadata["xesam:" + xesam] = ignore_overflow(dbus.Int32, val)
 
         # Rating
-        metadata["xesam:userRating"] = float(song("~#rating"))
+        metadata["xesam:userRating"] = ignore_overflow(
+            dbus.Double, song("~#rating"))
 
         # Dates
         ISO_8601_format = "%Y-%m-%dT%H:%M:%S"
@@ -331,7 +357,7 @@ value="false"/>
             elif name == "Identity":
                 return app.name
             elif name == "DesktopEntry":
-                return "quodlibet"
+                return "io.github.quodlibet.QuodLibet"
             elif name == "SupportedUriSchemes":
                 # TODO: enable once OpenUri is done
                 can = lambda s: False

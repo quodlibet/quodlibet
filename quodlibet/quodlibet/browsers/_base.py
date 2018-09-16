@@ -21,7 +21,6 @@ from quodlibet.qltk.textedit import PatternEditBox
 from quodlibet.util import connect_obj, print_d
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.library import background_filter
-from quodlibet.compat import itervalues
 
 
 class Filter(object):
@@ -78,7 +77,7 @@ class Filter(object):
         library = app.library
         bg = background_filter()
         if bg:
-            songs = filter(bg, itervalues(library))
+            songs = filter(bg, library.values())
             return list({value
                          for song in songs
                          for value in song.list(tag)})
@@ -296,7 +295,7 @@ class DisplayPatternMixin(object):
         """Load the pattern as defined in `_PATTERN_FN`"""
         print_d("Loading pattern from %s" % cls._PATTERN_FN)
         try:
-            with open(cls._PATTERN_FN, "r") as f:
+            with open(cls._PATTERN_FN, "r", encoding="utf-8") as f:
                 cls.__pattern_text = f.read().rstrip()
         except EnvironmentError as e:
             print_d("Couldn't load pattern for %s (%s), using default." %
@@ -314,7 +313,7 @@ class DisplayPatternMixin(object):
         cls.refresh_all()
         print_d("Saving pattern for %s to %s" %
                 (cls.__name__, cls._PATTERN_FN))
-        with open(cls._PATTERN_FN, "w") as f:
+        with open(cls._PATTERN_FN, "w", encoding="utf-8") as f:
             f.write(pattern_text + "\n")
 
     @classmethod

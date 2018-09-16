@@ -122,7 +122,7 @@ Build Dependencies
 ------------------
 
 * **Python** >= 3.5 (stdlib only)
-* **gettext** >= 0.15 and **intltool** for translations.
+* **gettext** >= 0.19.8 for translations.
 * (optional) **sphinx** >= 1.3
 
 For user documentation ``setup.py build_sphinx`` can be used to create the

@@ -148,7 +148,9 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         Command(name="Flash notification",
                 command="notify-send"
                     " -t 2000"
-                    " -i /usr/share/icons/hicolor/scalable/apps/quodlibet.svg",
+                    " -i "
+                        "/usr/share/icons/hicolor/scalable/apps/"
+                        "io.github.quodlibet.QuodLibet.svg",
                 pattern="<~rating> \"<title><version| (<version>)>\""
                         "<~people| by <~people>>"
                     "<album|, from <album><discnumber| : disk <discnumber>>"
@@ -216,7 +218,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         print_d("Loading saved commands from '%s'..." % filename)
         coms = None
         try:
-            with open(filename) as f:
+            with open(filename, "r", encoding="utf-8") as f:
                 coms = JSONObjectDict.from_json(Command, f.read())
         except (IOError, ValueError) as e:
             print_w("Couldn't parse saved commands (%s)" % e)

@@ -46,6 +46,7 @@ def convert_options(settings, defaults=None):
     options.setdefault('list_max_length', getopt('list_max_length'))
     options.setdefault('site', getopt('site'))
     options.setdefault('processors', getopt('processors'))
+    options.setdefault('sanitize_keys', getopt('sanitize_keys'))
     options.setdefault('dsn', getopt('dsn', os.environ.get('SENTRY_DSN')))
     options.setdefault('context', getopt('context'))
     options.setdefault('tags', getopt('tags'))

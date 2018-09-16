@@ -16,7 +16,7 @@ from quodlibet import const
 from quodlibet import build
 from quodlibet.util import cached_func, windows, set_process_title, is_osx
 from quodlibet.util.dprint import print_d
-from quodlibet.util.path import mkdir, xdg_get_config_home
+from quodlibet.util.path import mkdir, xdg_get_config_home, xdg_get_cache_home
 
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
@@ -47,6 +47,9 @@ class Application(object):
 
     name = None
     """The application name e.g. 'Quod Libet'"""
+
+    description = None
+    """A short description of the application"""
 
     id = None
     """The application ID e.g. 'quodlibet'"""
@@ -118,11 +121,25 @@ def get_image_dir():
 
 
 @cached_func
+def get_cache_dir():
+    """The directory to store things into which can be deleted at any time"""
+
+    if os.name == "nt" and build.BUILD_TYPE == u"windows-portable":
+        # avoid writing things to the host system for the portable build
+        path = os.path.join(get_user_dir(), "cache")
+    else:
+        path = os.path.join(xdg_get_cache_home(), "quodlibet")
+
+    mkdir(path, 0o700)
+    return path
+
+
+@cached_func
 def get_user_dir():
     """Place where QL saves its state, database, config etc."""
 
     if os.name == "nt":
-        USERDIR = os.path.join(windows.get_appdate_dir(), "Quod Libet")
+        USERDIR = os.path.join(windows.get_appdata_dir(), "Quod Libet")
     elif is_osx():
         USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
     else:
@@ -159,7 +176,7 @@ def get_build_version():
     """Returns a build version tuple"""
 
     version = list(const.VERSION_TUPLE)
-    if version[-1] != -1 and build.BUILD_VERSION > 0:
+    if is_release() and build.BUILD_VERSION > 0:
         version.append(build.BUILD_VERSION)
 
     return tuple(version)
@@ -173,12 +190,12 @@ def get_build_description():
 
     version = list(get_build_version())
     notes = []
-    if version[-1] == -1:
+    if not is_release():
         version = version[:-1]
         notes.append(u"development")
 
-    if build.BUILD_INFO:
-        notes.append(build.BUILD_INFO)
+        if build.BUILD_INFO:
+            notes.append(build.BUILD_INFO)
 
     version_string = u".".join(map(str, version))
     note = u" (%s)" % u", ".join(notes) if notes else u""
@@ -334,12 +351,14 @@ def run(window, before_quit=None):
 
     from quodlibet.errorreport import faulthandling
 
-    try:
-        faulthandling.enable(os.path.join(get_user_dir(), "faultdump"))
-    except IOError:
-        util.print_exc()
-    else:
-        GLib.idle_add(faulthandling.raise_and_clear_error)
+    # gtk+ on osx is just too crashy
+    if not is_osx():
+        try:
+            faulthandling.enable(os.path.join(get_user_dir(), "faultdump"))
+        except IOError:
+            util.print_exc()
+        else:
+            GLib.idle_add(faulthandling.raise_and_clear_error)
 
     # set QUODLIBET_START_PERF to measure startup time until the
     # windows is first shown.

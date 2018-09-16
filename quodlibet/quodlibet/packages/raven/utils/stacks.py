@@ -96,7 +96,7 @@ def _getitem_from_frame(f_locals, key, default=None):
 def to_dict(dictish):
     """
     Given something that closely resembles a dictionary, we attempt
-    to coerce it into a propery dictionary.
+    to coerce it into a property dictionary.
     """
     if hasattr(dictish, 'iterkeys'):
         m = dictish.iterkeys
@@ -136,9 +136,8 @@ def iter_stack_frames(frames=None):
 
     for frame, lineno in ((f[0], f[2]) for f in frames):
         f_locals = getattr(frame, 'f_locals', {})
-        if _getitem_from_frame(f_locals, '__traceback_hide__'):
-            continue
-        yield frame, lineno
+        if not _getitem_from_frame(f_locals, '__traceback_hide__'):
+            yield frame, lineno
 
 
 def get_frame_locals(frame, transformer=transform, max_var_size=4096):
@@ -204,16 +203,15 @@ def slim_frame_data(frames, frame_allowance=25):
             frame.pop('post_context', None)
             remaining -= 1
 
-    if not remaining:
-        return frames
+    if remaining:
+        app_allowance = app_count - remaining
+        half_max = int(app_allowance / 2)
 
-    app_allowance = app_count - remaining
-    half_max = int(app_allowance / 2)
+        for frame in app_frames[half_max:-half_max]:
+            frame.pop('vars', None)
+            frame.pop('pre_context', None)
+            frame.pop('post_context', None)
 
-    for frame in app_frames[half_max:-half_max]:
-        frame.pop('vars', None)
-        frame.pop('pre_context', None)
-        frame.pop('post_context', None)
     return frames
 
 

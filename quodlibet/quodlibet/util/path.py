@@ -8,16 +8,17 @@
 # (at your option) any later version.
 
 import os
+import io
 import re
 import sys
 import errno
 import codecs
 import shlex
+from urllib.parse import urlparse, quote, unquote
 
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
     fsn2text, path2fsn
 
-from quodlibet.compat import PY2, urlparse, text_type, quote, unquote, PY3
 from . import windows
 from .environment import is_windows
 from .misc import environ, NamedTemporaryFile
@@ -41,19 +42,13 @@ def mkdir(dir_, *args):
 def glib2fsn(path):
     """Takes a glib filename and returns a fsnative path"""
 
-    if PY2:
-        return bytes2fsn(path, "utf-8")
-    else:
-        return path
+    return path
 
 
 def fsn2glib(path):
     """Takes a fsnative path and returns a glib filename"""
 
-    if PY2:
-        return fsn2bytes(path, "utf-8")
-    else:
-        return path
+    return path
 
 
 def iscommand(s):
@@ -114,14 +109,14 @@ def escape_filename(s):
     """Escape a string in a manner suitable for a filename.
 
     Args:
-        s (text_type)
+        s (str)
     Returns:
         fsnative
     """
 
-    s = text_type(s)
+    s = str(s)
     s = quote(s.encode("utf-8"), safe=b"")
-    if isinstance(s, text_type):
+    if isinstance(s, str):
         s = s.encode("ascii")
     return bytes2fsn(s, "utf-8")
 
@@ -132,7 +127,7 @@ def unescape_filename(s):
     Args:
         filename (fsnative)
     Returns:
-        text_type
+        str
     """
 
     assert isinstance(s, fsnative)
@@ -159,7 +154,7 @@ def unexpand(filename):
     return filename
 
 
-if PY3 and is_windows():
+if is_windows():
     def ismount(path):
         # this can raise on py3+win, but we don't care
         try:
@@ -287,7 +282,7 @@ def get_temp_cover_file(data):
         return fn
 
 
-def _strip_win32_incompat(string, BAD='\:*?;"<>|'):
+def _strip_win32_incompat(string, BAD=r'\:*?;"<>|'):
     """Strip Win32-incompatible characters from a Windows or Unix path."""
 
     if os.name == "nt":
@@ -443,3 +438,53 @@ def uri_is_valid(uri):
         return False
     else:
         return True
+
+
+class RootPathFile:
+    """Simple container used for discerning a pathfile's 'root' directory
+    and 'end' part. The variable depth of a pathfile's 'end' part renders
+    os.path built-ins (basename etc.) useless for this purpose"""
+
+    _root = ''  # 'root' of full file path
+    _pathfile = ''  # full file path
+
+    def __init__(self, root, pathfile):
+        self._root = root
+        self._pathfile = pathfile
+
+    @property
+    def root(self):
+        return self._root
+
+    @property
+    def end(self):
+        return self._pathfile[len(self._root) + len(os.sep):]
+
+    @property
+    def pathfile(self):
+        return self._pathfile
+
+    @property
+    def end_escaped(self):
+        escaped = [escape_filename(part)
+                    for part in self.end.split(os.path.sep)]
+        return os.path.sep.join(escaped)
+
+    @property
+    def pathfile_escaped(self):
+        return os.path.sep.join([self.root, self.end_escaped])
+
+    @property
+    def valid(self):
+        valid = True
+        if os.path.exists(self.pathfile):
+            return valid
+        else:
+            try:
+                with io.open(self.pathfile, "w", encoding='utf-8') as f:
+                    f.close()  # do nothing
+            except OSError:
+                valid = False
+            if os.path.exists(self.pathfile):
+                os.remove(self.pathfile)
+            return valid

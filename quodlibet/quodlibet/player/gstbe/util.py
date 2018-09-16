@@ -13,9 +13,8 @@ from gi.repository import GLib, Gst
 
 from quodlibet import _
 from quodlibet.util.string import decode
-from quodlibet.util import is_linux, is_windows, gdecode
+from quodlibet.util import is_linux, is_windows
 from quodlibet.player import PlayerError
-from quodlibet.compat import text_type, number_types, xrange
 
 
 def pulse_is_running():
@@ -82,7 +81,6 @@ def find_audio_sink():
     if is_windows():
         sinks = [
             "directsoundsink",
-            "autoaudiosink",
         ]
     elif is_linux() and pulse_is_running():
         sinks = [
@@ -119,7 +117,7 @@ def GStreamerSink(pipeline_desc):
         try:
             pipe = [Gst.parse_launch(e) for e in pipeline_desc.split('!')]
         except GLib.GError as e:
-            message = gdecode(e.message)
+            message = e.message
             raise PlayerError(_("Invalid GStreamer output pipeline"), message)
 
     if pipe:
@@ -147,7 +145,7 @@ class TagListWrapper(collections.Mapping):
         return self._list.n_tags()
 
     def __iter__(self):
-        for i in xrange(len(self)):
+        for i in range(len(self)):
             yield self._list.nth_tag_name(i)
 
     def __getitem__(self, key):
@@ -182,20 +180,20 @@ def parse_gstreamer_taglist(tags):
     merged = {}
     for key in tags.keys():
         value = tags[key]
-        # extended-comment sometimes containes a single vorbiscomment or
+        # extended-comment sometimes contains a single vorbiscomment or
         # a list of them ["key=value", "key=value"]
         if key == "extended-comment":
             if not isinstance(value, list):
                 value = [value]
             for val in value:
-                if not isinstance(val, text_type):
+                if not isinstance(val, str):
                     continue
                 split = val.split("=", 1)
                 sub_key = split[0]
                 val = split[-1]
                 if sub_key in merged:
                     sub_val = merged[sub_key]
-                    if not isinstance(sub_val, text_type):
+                    if not isinstance(sub_val, str):
                         continue
                     if val not in sub_val.split("\n"):
                         merged[sub_key] += "\n" + val
@@ -205,15 +203,15 @@ def parse_gstreamer_taglist(tags):
             value = value.to_iso8601_string()
             merged[key] = value
         else:
-            if isinstance(value, number_types):
+            if isinstance(value, (int, float)):
                 merged[key] = value
                 continue
 
             if isinstance(value, bytes):
                 value = decode(value)
 
-            if not isinstance(value, text_type):
-                value = text_type(value)
+            if not isinstance(value, str):
+                value = str(value)
 
             if key in merged:
                 merged[key] += "\n" + value

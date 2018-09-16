@@ -13,7 +13,6 @@ from gi.repository import GObject
 from quodlibet.formats import AudioFile
 from quodlibet.util import print_d
 from quodlibet import config
-from quodlibet.compat import listfilter
 
 
 class Equalizer(object):
@@ -61,7 +60,6 @@ class BasePlayer(GObject.GObject, Equalizer):
     name = ""
     version_info = ""
 
-    paused = None
     song = None
     info = None
     volume = None
@@ -126,7 +124,7 @@ class BasePlayer(GObject.GObject, Equalizer):
         """
 
         if self.song and config.getboolean("player", "replaygain"):
-            profiles = listfilter(None, self.replaygain_profiles)[0]
+            profiles = list(filter(None, self.replaygain_profiles))[0]
             fb_gain = config.getfloat("player", "fallback_gain")
             pa_gain = config.getfloat("player", "pre_amp_gain")
             scale = self.song.replay_gain(profiles, pa_gain, fb_gain)
@@ -167,6 +165,10 @@ class BasePlayer(GObject.GObject, Equalizer):
     @mute.setter
     def mute(self, v):
         self.props.mute = v
+
+    @property
+    def paused(self):
+        raise NotImplementedError
 
     @property
     def seekable(self):
@@ -313,6 +315,6 @@ class BasePlayer(GObject.GObject, Equalizer):
         return self.song is not None
 
     def can_play_uri(self, uri):
-        """Whether the player supports playing te given URI scheme"""
+        """Whether the player supports playing the given URI scheme"""
 
         raise NotImplementedError

@@ -23,6 +23,7 @@ class AIFFFile(ID3File):
         self["~#length"] = info.length
         self["~#bitrate"] = int(info.bitrate / 1000)
         self["~#channels"] = info.channels
+        self["~#samplerate"] = info.sample_rate
 
 
 loader = AIFFFile

@@ -7,8 +7,8 @@
 # (at your option) any later version.
 
 import os
-from quodlibet.compat import urlsplit
 import errno
+from urllib.parse import urlsplit
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 from senf import uri2fsn, fsnative, fsn2text, bytes2fsn
@@ -25,9 +25,8 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
-from quodlibet.compat import xrange
 from quodlibet.util.path import listdir, \
-    glib2fsn, xdg_get_user_dirs, get_home_dir
+    glib2fsn, xdg_get_user_dirs, get_home_dir, xdg_get_config_home
 from quodlibet.util import connect_obj
 
 
@@ -181,7 +180,7 @@ def get_gtk_bookmarks():
     if os.name == "nt":
         return []
 
-    path = os.path.join(get_home_dir(), ".gtk-bookmarks")
+    path = os.path.join(xdg_get_config_home(), "gtk-3.0", "bookmarks")
     folders = []
     try:
         with open(path, "rb") as f:
@@ -431,7 +430,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         nchildren = model.iter_n_children(iter_)
         last = model.get_path(iter_)
 
-        for i in xrange(nchildren):
+        for i in range(nchildren):
             child = model.iter_nth_child(iter_, i)
             self.expand_row(model.get_path(child), False)
             last = self.__select_children(child, model, selection)

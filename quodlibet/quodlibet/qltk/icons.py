@@ -26,7 +26,7 @@ class Icons(str):
     NONE = ""
 
     # these we have in our fallback icon theme
-    QUODLIBET = "quodlibet"
+    QUODLIBET = "io.github.quodlibet.QuodLibet"
     EXFALSO = "exfalso"
     QUODLIBET_MISSING_COVER = "quodlibet-missing-cover"
 

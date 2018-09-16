@@ -11,6 +11,7 @@ import os
 import sys
 import threading
 import time
+from urllib.request import build_opener
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 import feedparser
@@ -25,7 +26,6 @@ from quodlibet import util
 from quodlibet import app
 
 from quodlibet.browsers import Browser
-from quodlibet.compat import listfilter, text_type, build_opener, PY2
 from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.getstring import GetStringDialog
@@ -173,11 +173,11 @@ class Feed(list):
                                 "ogg" in enclosure.type or
                                 formats.filter(enclosure.url)):
                             uri = enclosure.url
-                            if not isinstance(uri, text_type):
+                            if not isinstance(uri, str):
                                 uri = uri.decode('utf-8')
                             try:
                                 size = float(enclosure.length)
-                            except AttributeError:
+                            except (AttributeError, ValueError):
                                 size = 0
                             entries.append((uri, entry, size))
                             uris.add(uri)
@@ -224,15 +224,19 @@ class Feed(list):
             result = opener.open(req)
             ct_hdr = result.headers.get('Content-Type', "Unknown type")
             content_type = ct_hdr.split(';')[0]
-            status = result.code if PY2 else result.status
-            print_d("Pre-check: %s returned %s with content type '%s'" %
-                    (self.uri, status, content_type))
-            if content_type not in feedparser.ACCEPT_HEADER:
-                print_w("Unusable content: %s. Perhaps %s is not a feed?" %
-                        (content_type, self.uri))
-                return False
-            # No real need to check HTTP Status - errors are very unlikely
-            # to be a usable content type, and we should always try to parse
+            try:
+                status = result.status
+            except AttributeError:
+                print_w("Missing status code for feed %s" % self.uri)
+            else:
+                print_d("Pre-check: %s returned %s with content type '%s'" %
+                        (self.uri, status, content_type))
+                if content_type not in feedparser.ACCEPT_HEADER:
+                    print_w("Unusable content: %s. Perhaps %s is not a feed?" %
+                            (content_type, self.uri))
+                    return False
+                # No real need to check HTTP Status - errors are very unlikely
+                # to be a usable content type, and we should try to parse
         finally:
             opener.close()
         return True
@@ -248,7 +252,7 @@ class AddFeedDialog(GetStringDialog):
     def run(self, text='', test=False):
         uri = super(AddFeedDialog, self).run(text=text, test=test)
         if uri:
-            if not isinstance(uri, text_type):
+            if not isinstance(uri, str):
                 uri = uri.decode('utf-8')
             return Feed(uri)
         return None
@@ -490,7 +494,7 @@ class AudioFeeds(Browser):
         AudioFeeds.write()
 
     def __refresh(self, feeds):
-        changed = listfilter(Feed.parse, feeds)
+        changed = list(filter(Feed.parse, feeds))
         AudioFeeds.changed(changed)
 
     def __remove_paths(self, model, paths):

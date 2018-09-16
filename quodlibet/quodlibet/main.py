@@ -13,6 +13,7 @@ import os
 
 from senf import environ, argv as sys_argv
 
+from quodlibet import _
 from quodlibet.cli import process_arguments, exit_
 from quodlibet.util.dprint import print_d, print_, print_exc
 
@@ -47,8 +48,9 @@ def main(argv=None):
     from quodlibet import util
 
     app.name = "Quod Libet"
-    app.id = "quodlibet"
-    quodlibet.set_application_info(Icons.QUODLIBET, app.id, app.name)
+    app.description = _("Music player and music library manager")
+    app.id = "io.github.quodlibet.QuodLibet"
+    quodlibet.set_application_info(Icons.QUODLIBET, "quodlibet", app.name)
 
     library_path = os.path.join(quodlibet.get_user_dir(), "songs")
 
@@ -72,7 +74,7 @@ def main(argv=None):
     app.player = player
 
     environ["PULSE_PROP_media.role"] = "music"
-    environ["PULSE_PROP_application.icon_name"] = "quodlibet"
+    environ["PULSE_PROP_application.icon_name"] = Icons.QUODLIBET
 
     browsers.init()
 
@@ -99,7 +101,7 @@ def main(argv=None):
         player.init_plugins()
 
     from quodlibet.qltk import unity
-    unity.init("quodlibet.desktop", player)
+    unity.init("io.github.quodlibet.QuodLibet.desktop", player)
 
     from quodlibet.qltk.songsmenu import SongsMenu
     SongsMenu.init_plugins()
@@ -168,8 +170,8 @@ def main(argv=None):
     DBusHandler(player, library)
     tracker = SongTracker(library.librarian, player, window.playlist)
 
-    from quodlibet.qltk import session
-    session.init("quodlibet")
+    from quodlibet import session
+    session_client = session.init(app)
 
     quodlibet.enable_periodic_save(save_library=True)
 
@@ -197,7 +199,7 @@ def main(argv=None):
     quodlibet.run(window, before_quit=before_quit)
 
     app.player_options.destroy()
-    quodlibet.finish_first_session(app.id)
+    quodlibet.finish_first_session("quodlibet")
     mmkeys_handler.quit()
     remote.stop()
     fsiface.destroy()
@@ -206,5 +208,7 @@ def main(argv=None):
     quodlibet.library.save()
 
     config.save()
+
+    session_client.close()
 
     print_d("Finished shutdown.")

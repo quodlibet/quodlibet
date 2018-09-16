@@ -127,9 +127,8 @@ def get_versions(module_list=None):
             _VERSION_CACHE[module_name] = version
         else:
             version = _VERSION_CACHE[module_name]
-        if version is None:
-            continue
-        versions[module_name] = version
+        if version is not None:
+            versions[module_name] = version
     return versions
 
 

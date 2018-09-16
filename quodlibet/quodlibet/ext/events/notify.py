@@ -3,14 +3,9 @@
 #               2011-2013 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
-
-
-# Note: This plugin is based on notify.py as distributed in the
-# quodlibet-plugins package; however, that file doesn't contain a copyright
-# note. As for the license, GPLv2 is the only choice anyway, as it calls
-# Quod Libet code, which is GPLv2 as well, so I thought it safe to add this.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 import os
 import sys
@@ -21,8 +16,7 @@ if os.name == "nt" or sys.platform == "darwin":
 
 import re
 
-import dbus
-from gi.repository import Gtk, GObject, GLib
+from gi.repository import Gtk, GObject, GLib, Gio
 from senf import fsn2uri
 
 from quodlibet import _
@@ -34,7 +28,7 @@ from quodlibet.qltk.textedit import TextView, TextBuffer
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk import Icons
-from quodlibet.util import unescape, print_w, gdecode
+from quodlibet.util import unescape, print_w
 
 
 pconfig = PluginConfig("notify")
@@ -64,7 +58,7 @@ class PreferencesWidget(Gtk.VBox):
         title_entry.set_text(pconfig.gettext("titlepattern"))
 
         def on_entry_changed(entry, cfgname):
-            pconfig.settext(cfgname, gdecode(entry.get_text()))
+            pconfig.settext(cfgname, entry.get_text())
 
         title_entry.connect("changed", on_entry_changed, "titlepattern")
         table.attach(title_entry, 1, 2, 0, 1)
@@ -94,7 +88,7 @@ class PreferencesWidget(Gtk.VBox):
 
         def on_textbuffer_changed(text_buffer, cfgname):
             start, end = text_buffer.get_bounds()
-            text = gdecode(text_buffer.get_text(start, end, True))
+            text = text_buffer.get_text(start, end, True)
             pconfig.settext(cfgname, text)
 
         body_textbuffer.connect("changed", on_textbuffer_changed,
@@ -267,29 +261,33 @@ class Notify(EventPlugin):
     def __enable_watch(self):
         """Enable events for dbus name owner change"""
         try:
-            bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             # This also triggers for existing name owners
-            self.__watch = bus.watch_name_owner(self.DBUS_NAME,
-                                                self.__owner_changed)
-        except dbus.DBusException:
+            self.__watch = Gio.bus_watch_name_on_connection(
+                    bus, self.DBUS_NAME, Gio.BusNameWatcherFlags.NONE,
+                    None, self.__owner_vanished)
+        except GLib.Error:
             pass
 
     def __disable_watch(self):
         """Disable name owner change events"""
         if self.__watch:
-            self.__watch.cancel()
+            Gio.bus_unwatch_name(self.__watch)
             self.__watch = None
 
     def __disconnect(self):
-        self.__interface = None
+        if self.__interface is None:
+            return
+
         if self.__action_sig:
-            self.__action_sig.remove()
+            self.__interface.disconnect(self.__action_sig)
             self.__action_sig = None
 
-    def __owner_changed(self, owner):
+        self.__interface = None
+
+    def __owner_vanished(self, bus, owner):
         # In case the owner gets removed, remove all references to it
-        if not owner:
-            self.__disconnect()
+        self.__disconnect()
 
     def PluginPreferences(self, parent):
         return PreferencesWidget(parent, self)
@@ -297,13 +295,14 @@ class Notify(EventPlugin):
     def __get_interface(self):
         """Returns a fresh proxy + info about the server"""
 
-        obj = dbus.SessionBus().get_object(self.DBUS_NAME, self.DBUS_PATH)
-        interface = dbus.Interface(obj, self.DBUS_IFACE)
+        interface = Gio.DBusProxy.new_for_bus_sync(
+                Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
+                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_IFACE, None)
 
         name, vendor, version, spec_version = \
-            map(str, interface.GetServerInformation())
-        spec_version = map(int, spec_version.split("."))
-        caps = map(str, interface.GetCapabilities())
+            list(map(str, interface.GetServerInformation()))
+        spec_version = list(map(int, spec_version.split(".")))
+        caps = list(map(str, interface.GetCapabilities()))
 
         return interface, caps, spec_version
 
@@ -314,10 +313,11 @@ class Notify(EventPlugin):
             return
 
         try:
-            obj = dbus.SessionBus().get_object(self.DBUS_NAME, self.DBUS_PATH)
-            interface = dbus.Interface(obj, self.DBUS_IFACE)
-            interface.CloseNotification(self.__last_id)
-        except dbus.DBusException:
+            interface = Gio.DBusProxy.new_for_bus_sync(
+                Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
+                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_IFACE, None)
+            interface.CloseNotification('(u)', self.__last_id)
+        except GLib.Error:
             pass
         else:
             self.__last_id = 0
@@ -353,8 +353,8 @@ class Notify(EventPlugin):
                     self.__caps = caps
                     self.__spec_version = spec
                     if "actions" in caps:
-                        self.__action_sig = iface.connect_to_signal(
-                            "ActionInvoked", self.on_dbus_action)
+                        self.__action_sig = iface.connect(
+                            'g-signal', self._on_signal)
                 else:
                     iface = self.__interface
                     caps = self.__caps
@@ -364,15 +364,15 @@ class Notify(EventPlugin):
                 # propably preview
                 iface, caps, spec = self.__get_interface()
 
-        except dbus.DBusException:
+        except GLib.Error:
             print_w("[notify] %s" %
                     _("Couldn't connect to notification daemon."))
             self.__disconnect()
             return False
 
-        strip_markup = lambda t: re.subn("\</?[iub]\>", "", t)[0]
-        strip_links = lambda t: re.subn("\</?a.*?\>", "", t)[0]
-        strip_images = lambda t: re.subn("\<img.*?\>", "", t)[0]
+        strip_markup = lambda t: re.subn(r"\</?[iub]\>", "", t)[0]
+        strip_links = lambda t: re.subn(r"\</?a.*?\>", "", t)[0]
+        strip_images = lambda t: re.subn(r"\<img.*?\>", "", t)[0]
 
         title = XMLFromPattern(pconfig.gettext("titlepattern")) % song
         title = unescape(strip_markup(strip_links(strip_images(title))))
@@ -393,20 +393,20 @@ class Notify(EventPlugin):
             actions = ["next", _("Next")]
 
         hints = {
-            "desktop-entry": "quodlibet",
+            "desktop-entry": GLib.Variant(
+                's', "io.github.quodlibet.QuodLibet"),
         }
 
         image_uri = self._get_image_uri(song)
         if image_uri:
-            hints["image_path"] = image_uri
-            hints["image-path"] = image_uri
+            hints["image_path"] = GLib.Variant('s', image_uri)
+            hints["image-path"] = GLib.Variant('s', image_uri)
 
         try:
-            self.__last_id = iface.Notify(
-                "Quod Libet", self.__last_id,
-                image_uri, title, body, actions, hints,
-                pconfig.getint("timeout"))
-        except dbus.DBusException:
+            self.__last_id = iface.Notify('(susssasa{sv}i)',
+                "Quod Libet", self.__last_id, image_uri, title, body,
+                actions, hints, pconfig.getint("timeout"))
+        except GLib.Error:
             print_w("[notify] %s" %
                     _("Couldn't connect to notification daemon."))
             self.__disconnect()
@@ -417,6 +417,12 @@ class Notify(EventPlugin):
             self.__disconnect()
 
         return True
+
+    def _on_signal(self, proxy, sender, signal, args):
+        if signal == 'ActionInvoked':
+            notify_id = args[0]
+            key = args[1]
+            self.on_dbus_action(notify_id, key)
 
     def on_dbus_action(self, notify_id, key):
         if notify_id == self.__last_id and key == "next":

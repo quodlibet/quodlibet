@@ -160,7 +160,7 @@ class TreeViewHints(Gtk.Window):
         # For gtk3.16 overlay scrollbars: if our event x coordinate
         # is contained in the scrollbar, hide the tooltip. Unlike other
         # hiding events we don't want to send a leave event to the scrolled
-        # window so the overlay scrollbar does't hide and can be interacted
+        # window so the overlay scrollbar doesn't hide and can be interacted
         # with.
         parent = view.get_parent()
         # We only need to check if the tooltip is there since events

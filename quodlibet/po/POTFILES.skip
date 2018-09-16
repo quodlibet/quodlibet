@@ -1,5 +1,6 @@
 tests/test_qltk_notif.py
 tests/test_util.py
+tests/test_util_i18n.py
 build
 dist
 quodlibet/packages

@@ -10,7 +10,6 @@ from gi.repository import Gtk
 
 from quodlibet import _
 from quodlibet import app
-from quodlibet import util
 from quodlibet.qltk.entry import UndoEntry
 
 
@@ -125,4 +124,4 @@ class SubmitErrorDialog(Gtk.MessageDialog):
             text_Type
         """
 
-        return util.gdecode(self._entry.get_text())
+        return self._entry.get_text()

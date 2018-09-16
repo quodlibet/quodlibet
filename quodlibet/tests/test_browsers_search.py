@@ -15,6 +15,7 @@ import quodlibet.config
 from quodlibet.browsers.search import SearchBar
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
+from quodlibet.qltk.songlist import SongList
 
 # Don't sort yet, album_key makes it complicated...
 SONGS = [AudioFile({
@@ -56,17 +57,17 @@ class TSearchBar(TestCase):
         quodlibet.browsers.search.library.add(SONGS)
         self.bar = self.Bar(quodlibet.browsers.search.library)
         self.bar.connect('songs-selected', self._expected)
+        self.success = False
 
     def _expected(self, bar, songs, sort):
         songs.sort()
-        if self.expected:
-            self.failUnlessEqual(self.expected, songs)
-            self.expected = None
+        self.failUnlessEqual(self.expected, songs)
+        self.success = True
 
     def _do(self):
         while Gtk.events_pending():
             Gtk.main_iteration()
-        self.failUnless(self.expected is None)
+        self.failUnless(self.success or self.expected is None)
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
@@ -82,30 +83,54 @@ class TSearchBar(TestCase):
         self.bar.filter_text("this does not match any song")
         self.expected = []
         self.assertFalse(self.bar.active_filter(SONGS[0]))
+        self._do()
 
     def test_filter(self):
         self.expected = [SONGS[1]]
         self.bar.filter("title", ["two"])
+        self._do()
 
     def test_filter_again(self):
         self.expected = sorted(SONGS[3:5])
         self.bar.filter("album", ["don't stop"])
+        self._do()
 
     def test_filter_notvalue(self):
         self.expected = sorted(SONGS[0:2])
         self.bar.filter("artist", ["notvalue", "mu", "piman"])
+        self._do()
 
     def test_filter_none(self):
         self.expected = []
         self.bar.filter("title", ["not a value"])
+        self._do()
 
     def test_filter_album_by_labelid(self):
         self.expected = [SONGS[3]]
         self.bar.filter("labelid", [("65432-1")])
+        self._do()
 
     def test_filter_numeric(self):
-        self.expected = list(sorted(SONGS))
+        self.expected = sorted([SONGS[0]] + SONGS[2:])
         self.bar.filter("~#length", [0])
+        self._do()
+
+    def test_search_text_artist(self):
+        self.bar._set_text("boris")
+        self.expected = [SONGS[2]]
+        self.bar._sb_box.changed()
+        self._do()
+
+    def test_search_text_custom_star(self):
+        old = SongList.star
+        SongList.star = ["artist", "labelid"]
+        self.bar._set_text("65432-1")
+        self.expected = [SONGS[3]]
+        self.bar._sb_box.changed()
+        try:
+            self._do()
+        finally:
+            SongList.star = old
 
     def test_saverestore(self):
         self.bar.filter_text("title = %s" % SONGS[0]["title"])

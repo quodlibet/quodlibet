@@ -8,8 +8,6 @@
 
 from tests import TestCase, skipUnless
 
-from quodlibet.compat import text_type
-
 try:
     import dbus
 except ImportError:
@@ -20,7 +18,7 @@ else:
     from quodlibet.util.dbusutils import dbus_unicode_validate
 
 
-ANN1 = b"""
+ANN1 = """
 <property name="Position" type="s" access="read">
 <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" \
 value="false"/>
@@ -28,7 +26,7 @@ value="false"/>
 <property name="MinimumRate" type="s" access="read"/>
 """
 
-ANN2 = b"""
+ANN2 = """
 <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" \
 value="false"/>
 <property name="Foobar" type="s" access="read">
@@ -64,13 +62,13 @@ class TDbusUtils(TestCase):
         value = apply_signature(text, "s", utf8_strings=True)
         self.failUnless(isinstance(value, str))
         value = apply_signature(text, "s")
-        self.failUnless(isinstance(value, text_type))
+        self.failUnless(isinstance(value, str))
 
         text = u"öäü"
         value = apply_signature(text, "s", utf8_strings=True)
         self.failUnless(isinstance(value, str))
         value = apply_signature(text, "s")
-        self.failUnless(isinstance(value, text_type))
+        self.failUnless(isinstance(value, str))
 
     def test_list_props(self):
         props = list_spec_properties(ANN1)

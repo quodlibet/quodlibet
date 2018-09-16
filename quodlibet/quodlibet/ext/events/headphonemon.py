@@ -36,7 +36,7 @@ def get_headphone_status():
     except OSError:
         return False
     for line in data.splitlines():
-        if line.strip() == "Active Port: analog-output-headphones":
+        if line.strip() == b"Active Port: analog-output-headphones":
             return True
     else:
         return False

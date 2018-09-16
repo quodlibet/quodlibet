@@ -15,8 +15,9 @@ if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
     raise PluginNotSupportedError
 
+from gi.repository import GLib
+from gi.repository import Gio
 from gi.repository import Gtk
-import dbus
 
 from quodlibet import _
 from quodlibet.plugins.events import EventPlugin
@@ -81,25 +82,24 @@ class GajimStatusMessage(EventPlugin):
     def change_status(self, enabled_accounts, status_message):
         if not self.interface:
             try:
-                bus = dbus.SessionBus()
-                obj = bus.get_object(
-                    'org.gajim.dbus', '/org/gajim/dbus/RemoteObject')
-                self.interface = dbus.Interface(
-                obj, 'org.gajim.dbus.RemoteInterface')
-            except dbus.DBusException:
+                self.interface = Gio.DBusProxy.new_for_bus_sync(
+                    Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
+                    'org.gajim.dbus', '/org/gajim/dbus/RemoteObject',
+                    'org.gajim.dbus.RemoteInterface', None)
+            except GLib.Error:
                 self.interface = None
 
         if self.interface:
             try:
                 for account in self.interface.list_accounts():
-                    status = self.interface.get_status(account)
+                    status = self.interface.get_status('(s)', account)
                     if enabled_accounts != [] and \
                             account not in enabled_accounts:
                         continue
                     if status in self.statuses:
-                        self.interface.change_status(
+                        self.interface.change_status('(sss)',
                             status, status_message, account)
-            except dbus.DBusException:
+            except GLib.Error:
                 self.interface = None
 
     def plugin_on_song_started(self, song):

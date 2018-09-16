@@ -4,12 +4,15 @@ matrix:
       osx_image: xcode6.4
       language: generic
     - os: osx
-      osx_image: xcode9.1
+      osx_image: xcode8
+      language: generic
+    - os: osx
+      osx_image: xcode9.4
       language: generic
 
 install:
- - travis_retry wget https://bitbucket.org/lazka/quodlibet/downloads/QuodLibet-latest.dmg
- - hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg
+ - travis_retry wget -O ql.dmg https://github.com/quodlibet/quodlibet/releases/download/ci/QuodLibet-latest-v4.dmg
+ - hdiutil attach -readonly -mountpoint _mount ql.dmg
 
 script:
  - cd quodlibet

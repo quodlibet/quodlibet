@@ -12,6 +12,7 @@ from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
 from quodlibet.qltk.playorder import Order, OrderShuffle, OrderInOrder, \
     RepeatSongForever, RepeatListForever
+import quodlibet.config
 
 
 def do_events():
@@ -257,6 +258,7 @@ class TPlaylistMux(TestCase):
         self.mux = PlaylistMux(self.p, self.q, self.pl)
         self.p.setup(self.mux, None, 0)
         self.failUnless(self.pl.current is None)
+        quodlibet.config.init()
 
     def test_destroy(self):
         self.mux.destroy()
@@ -401,6 +403,36 @@ class TPlaylistMux(TestCase):
         self.mux.go_to(self.q[-1].iter, source=self.q)
         self.assertTrue(self.q.sourced)
         self.assertEqual(self.mux.current, self.q[-1][0])
+
+    def test_queue_ignore(self):
+        self.pl.set(range(10))
+        self.q.set(range(10))
+
+        quodlibet.config.set("memory", "queue_ignore", True)
+        self.next()
+        self.failUnlessEqual(len(self.pl.get()), len(range(10)))
+        self.failUnlessEqual(len(self.q.get()), len(range(10)))
+
+        quodlibet.config.set("memory", "queue_ignore", False)
+        self.next()
+        self.failUnlessEqual(len(self.pl.get()), len(range(10)))
+        self.failUnlessEqual(len(self.q.get()), len(range(10)) - 1)
+
+    def test_queue_keep_songs(self):
+        self.q.set(range(10))
+
+        quodlibet.config.set("memory", "queue_keep_songs", True)
+        self.next()
+        self.failUnlessEqual(len(self.q.get()), len(range(10)))
+        self.failUnlessEqual(self.q.current, 0)
+        self.next()
+        self.failUnlessEqual(len(self.q.get()), len(range(10)))
+        self.failUnlessEqual(self.q.current, 1)
+
+        quodlibet.config.set("memory", "queue_keep_songs", False)
+        self.next()
+        self.failUnlessEqual(len(self.q.get()), len(range(10)) - 1)
+        self.failUnless(self.q.current is None)
 
     def tearDown(self):
         self.p.destroy()

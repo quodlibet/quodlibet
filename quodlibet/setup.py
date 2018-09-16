@@ -35,11 +35,8 @@ def exec_module(path):
     """Executes the Python file at `path` and returns it as the module"""
 
     globals_ = {}
-    if sys.version_info[0] == 2:
-        execfile(path, globals_)
-    else:
-        with open(path, encoding="utf-8") as h:
-            exec(h.read(), globals_)
+    with open(path, encoding="utf-8") as h:
+        exec(h.read(), globals_)
     module = types.ModuleType("")
     module.__dict__.update(globals_)
     return module
@@ -95,7 +92,10 @@ def main():
         ],
         'po_directory': "po",
         'po_package': "quodlibet",
-        'shortcuts': ["data/quodlibet.desktop", "data/exfalso.desktop"],
+        'shortcuts': [
+            "data/io.github.quodlibet.QuodLibet.desktop",
+            "data/exfalso.desktop"
+        ],
         'dbus_services': [
             "data/net.sacredchao.QuodLibet.service",
             # https://github.com/quodlibet/quodlibet/issues/1268
@@ -103,7 +103,7 @@ def main():
             # "data/org.mpris.quodlibet.service",
         ],
         'appdata': [
-            "data/quodlibet.appdata.xml",
+            "data/io.github.quodlibet.QuodLibet.appdata.xml",
             "data/exfalso.appdata.xml",
         ],
         'man_pages': [
@@ -111,7 +111,8 @@ def main():
             "data/exfalso.1",
             "data/operon.1",
         ],
-        "search_provider": "data/quodlibet-search-provider.ini",
+        "search_provider":
+            "data/io.github.quodlibet.QuodLibet-search-provider.ini",
         "zsh_completions": [
             ("data/quodlibet.zsh", "_quodlibet"),
         ],

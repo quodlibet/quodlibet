@@ -27,7 +27,6 @@ from quodlibet.qltk import Icons
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
 from quodlibet.util import NamedTemporaryFile
-from quodlibet.compat import iteritems, itervalues
 
 BASE_PATH = "/org/gnome/UPnP/MediaServer2"
 BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
@@ -418,8 +417,8 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         dbus.service.FallbackObject.__init__(self, bus, self.PATH)
 
         self.__library = library
-        self.__map = dict((id(v), v) for v in itervalues(self.__library))
-        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
+        self.__map = dict((id(v), v) for v in self.__library.values())
+        self.__reverse = dict((v, k) for k, v in self.__map.items())
 
         self.__song = DummySongObject(self)
 
@@ -445,7 +444,7 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
             if song_id not in self.__map:
                 continue
             for user in self.__users:
-                # ask the user for the prefix whith which the song is used
+                # ask the user for the prefix with which the song is used
                 prefix = user.get_prefix(song)
                 path = "/" + prefix + "/" + song_id
                 self.emit_properties_changed(MediaItem.IFACE, props, path)
@@ -496,8 +495,8 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         self.__library = library.albums
         self.__library.load()
 
-        self.__map = dict((id(v), v) for v in itervalues(self.__library))
-        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
+        self.__map = dict((id(v), v) for v in self.__library.values())
+        self.__reverse = dict((v, k) for k, v in self.__map.items())
 
         signals = [
             ("changed", self.__albums_changed),
@@ -623,7 +622,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
 
         # load into a pixbuf
         theme = Gtk.IconTheme.get_default()
-        pixbuf = theme.load_icon("quodlibet", Icon.SIZE, 0)
+        pixbuf = theme.load_icon(Icons.QUODLIBET, Icon.SIZE, 0)
 
         # make sure the size is right
         pixbuf = pixbuf.scale_simple(Icon.SIZE, Icon.SIZE,
@@ -643,7 +642,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
             elif name == "Path":
                 return Icon.PATH
             elif name == "DisplayName":
-                return "I'm an icon \o/"
+                return r"I'm an icon \o/"
         elif interface == MediaItem.IFACE:
             if name == "URLs":
                 return [fsn2uri(self.__f.name)]

@@ -250,6 +250,22 @@ class TPlayerMixin(object):
         self.assertTrue(calls)
         self.assertFalse(self.player.seekable)
 
+    def test_pause_on_goto_none(self):
+        # When we got to None, pause after song-started
+        # Not that that's the right thing to do, but it should be consistent
+        # between backends and the random album plugin expects it atm.
+        assert self.player.song is None
+        self.player.play()
+
+        event = []
+
+        def on_started(player, song):
+            event.append((song, player.paused))
+
+        self.player.connect("song-started", on_started)
+        self.player.go_to(None)
+        assert event[0] == (None, False)
+
     def test_mute(self):
         self.assertFalse(self.player.mute)
         self.player.next()

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
+#           2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -8,17 +9,14 @@
 
 from os import path
 
-from gi.repository import Soup
-
 from quodlibet import _
-from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
-from quodlibet.util.http import download_json
-from quodlibet.util.cover.http import HTTPDownloadMixin
-from quodlibet.util.path import escape_filename
+from quodlibet.plugins.cover import cover_dir
 from quodlibet.util import print_d
+from quodlibet.util.cover.http import ApiCoverSourcePlugin, escape_query_value
+from quodlibet.util.path import escape_filename
 
 
-class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
+class LastFMCover(ApiCoverSourcePlugin):
     PLUGIN_ID = "lastfm-cover"
     PLUGIN_NAME = _("Last.fm Cover Source")
     PLUGIN_DESC = _("Downloads covers from Last.fm's cover art archive.")
@@ -43,23 +41,21 @@ class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
     @property
     def url(self):
         _url = 'https://ws.audioscrobbler.com/2.0?method=album.getinfo&' + \
-               'api_key=107db6fd4c1c7f53b1526fafddab2c82&format=json&' +\
-               '&artist={artist}&album={album}&mbid={mbid}'
-        artist = Soup.URI.encode(self.song.get('artist', ''), None)
-        album = Soup.URI.encode(self.song.get('album', ''), None)
-        mbid = Soup.URI.encode(self.song.get('musicbrainz_albumid', ''), None)
+               'api_key=107db6fd4c1c7f53b1526fafddab2c82&format=json&' + \
+               'artist={artist}&album={album}&mbid={mbid}'
+        song = self.song
+        # This can work well for albums in Last.FM
+        artists = self._album_artists_for(song) or 'Various Artists'
+        song = self.song
+        artist = escape_query_value(artists)
+        album = escape_query_value(song.get('album', ''))
+        mbid = escape_query_value(song.get('musicbrainz_albumid', ''))
         if (artist and album) or mbid:
             return _url.format(artist=artist, album=album, mbid=mbid)
         else:
-            return None   # Not enough data
+            return None  # Not enough data
 
-    def search(self):
-        if not self.url:
-            return self.emit('search-complete', [])
-        msg = Soup.Message.new('GET', self.url)
-        download_json(msg, self.cancellable, self.album_data, None)
-
-    def album_data(self, message, json, data=None):
+    def _handle_search_response(self, message, json, data=None):
         if not json:
             print_d('Server did not return valid JSON')
             return self.emit('search-complete', [])
@@ -67,25 +63,25 @@ class LastFMCover(CoverSourcePlugin, HTTPDownloadMixin):
         if not album:
             print_d('Album data is not available')
             return self.emit('search-complete', [])
-        covers = dict((i['size'], i['#text']) for i in album['image'])
-        result = []
-        for ck in ('mega', 'extralarge',):
-            if covers.get(ck):
-                result.append({'artist': album['artist'],
-                               'album': album['name'],
-                               'cover': covers[ck]
-                               })
-        self.emit('search-complete', result)
-
-    def fetch_cover(self):
-        if not self.url:
-            return self.fail('Not enough data to get cover from Last.fm')
-
-        def search_complete(self, res):
-            self.disconnect(sci)
-            if res:
-                self.download(Soup.Message.new('GET', res[0]['cover']))
-            else:
-                return self.fail('No cover was found')
-        sci = self.connect('search-complete', search_complete)
-        self.search()
+        results = []
+        for img in album['image']:
+            if img['size'] in ('mega', 'extralarge'):
+                url = img['#text']
+                if not url:
+                    # Yes sometimes it's there but blank
+                    continue
+                print_d("Got last.fm image: %s" % img)
+                results.append({'artist': album['artist'],
+                                'album': album['name'],
+                                'cover': url.replace('/300x300', '/500x500'),
+                                'dimensions': '500x500'
+                                })
+                # This one can be massive, and slow
+                results.append({'artist': album['artist'],
+                                'album': album['name'],
+                                'cover': url.replace('/300x300', ''),
+                                'dimensions': '(original)'
+                                })
+                # Prefer the bigger ones
+                break
+        self.emit('search-complete', results)

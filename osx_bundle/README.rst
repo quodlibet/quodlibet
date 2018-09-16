@@ -9,27 +9,29 @@ OS X Bundle Build Scripts
     ``./QuodLibet.app/Contents/MacOS/run quodlibet.py``.
 
 
-Uses jhbuild [2] and the stable module set provided by gtk-osx [1] with a Quod
-Libet specific module set overlay to build all needed dependencies for Quod
-Libet. Everything will be downloaded/installed into this directory and your
-user directory will not be touched.
+Uses `jhbuild <https://git.gnome.org/browse/jhbuild/>`__ with a Quod Libet
+specific moduleset to build all needed dependencies for Quod Libet. Everything
+will be downloaded/installed into this directory and your user directory will
+not be touched.
 
 
 Creating a Bundle
 -----------------
 
-Prerequisites: `OS X` 10.7+ and a working `Xcode` [0]
+Prerequisites: `macOS` 10.9+
 
-Verify that Xcode and git is installed and in your ``$PATH`` by invoking ``git
---version`` and ``gcc --version``. Also make sure that other package managers
-like homebrew or macports aren't in your ``$PATH``.
-
-(Tested on OS X 10.9)
-
-1) Call ``bootstrap.sh`` to install jhbuild and set up dummy ``$HOME`` as base.
-2) Call ``build.sh`` to download and build all the dependencies.
+1) Go to https://developer.apple.com/download/more/ and download the "Command
+   Line Tools" matching your macOS version and install it.
+2) (optional) On the same page download "Graphics Tools" and enable HiDPI
+   debug mode in the "Quartz Debug" tool, so you can test HiDPI on a LowDPI
+   screen.
+3) Verify that Xcode and git is installed and in your ``$PATH`` by invoking
+   ``git --version`` and ``gcc --version``. Also make sure that other package
+   managers like homebrew or macports aren't in your ``$PATH``.
+4) Call ``bootstrap.sh`` to install jhbuild and set up dummy ``$HOME`` as base.
+5) Call ``build.sh`` to download and build all the dependencies.
    This should not lead to errors; if it does please file a bug.
-3) Call ``bundle.sh`` to create the finished bundles for QL and EF in
+6) Call ``bundle.sh`` to create the finished bundles for QL and EF in
    ``_build``.
 
 Call ``clean.sh`` to remove everything created above again and get back to
@@ -47,24 +49,8 @@ Development
   keeping any build packages.
 
 
-Maintenance
------------
-
-* ``fetch_modules()`` downloads the git master of the gtk-osx module set
-  and replaces the modules under "modulessets" and the
-  ``misc/gtk-osx-jhbuildrc`` file. Doing so so should ideally be followed by a
-  review of the quodlibet module to reduce duplication and a rebuilt to verify
-  that everything still works.
-
-
 Content Description
 -------------------
 
-* ``modulesets`` contains the gtk-osx stable module set and a quodlibet module
-  which adds new packages replaces existing ones.
+* ``modulesets``: the jhbuild modulesets + patches.
 * ``misc``: see each file or directory README for a description.
-
-
-| [0] https://developer.apple.com/xcode/downloads/
-| [1] https://git.gnome.org/browse/gtk-osx/
-| [2] https://git.gnome.org/browse/jhbuild/

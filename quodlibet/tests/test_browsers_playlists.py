@@ -29,7 +29,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.util.path import mkdir
 from quodlibet.library.librarians import SongLibrarian
 from quodlibet.library.libraries import FileLibrary
-from tests.test_browsers_search import SONGS, TSearchBar
+from tests.test_browsers_search import SONGS
 
 
 class ConfigSetupMixin(object):
@@ -46,7 +46,7 @@ class TParsePlaylistMixin(object):
         with temp_filename() as name:
             with open(name) as f:
                 pl = self.Parse(f, name)
-        self.failUnlessEqual(0, len(pl))
+        self.failIf(pl)
         pl.delete()
 
     def test_parse_onesong(self):
@@ -161,7 +161,7 @@ class TPlaylistIntegration(TestCase):
         self.assertFalse(len(pl))
 
 
-class TPlaylistsBrowser(TSearchBar):
+class TPlaylistsBrowser(TestCase):
     Bar = PlaylistsBrowser
 
     ANOTHER_SONG = AudioFile({
@@ -170,6 +170,7 @@ class TPlaylistsBrowser(TSearchBar):
         "~filename": dummy_path(u"/dev/urandom")})
 
     def setUp(self):
+        self.success = False
         # Testing locally is VERY dangerous without this...
         self.assertTrue(_TEMP_DIR in PLAYLISTS or os.name == "nt",
                         msg="Failing, don't want to delete %s" % PLAYLISTS)
@@ -210,6 +211,17 @@ class TPlaylistsBrowser(TSearchBar):
         shutil.rmtree(PLAYLISTS)
         PlaylistsBrowser.deinit(self.lib)
         destroy_fake_app()
+
+    def _expected(self, bar, songs, sort):
+        songs.sort()
+        if self.expected is not None:
+            self.failUnlessEqual(self.expected, songs)
+        self.success = True
+
+    def _do(self):
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+        self.failUnless(self.success or self.expected is None)
 
     def test_saverestore(self):
         # Flush previous signals, etc. Hmm.

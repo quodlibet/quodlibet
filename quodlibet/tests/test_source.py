@@ -24,6 +24,8 @@ def iter_py_paths():
     root = os.path.dirname(get_module_dir(quodlibet))
 
     skip = [
+        os.path.join(root, "build"),
+        os.path.join(root, "dist"),
         os.path.join(root, "docs"),
         os.path.join(root, "quodlibet", "packages"),
     ]
@@ -48,7 +50,8 @@ class TSourceEncoding(TestCase):
                 match = None
                 for i, line in enumerate(h):
                     # https://www.python.org/dev/peps/pep-0263/
-                    match = match or re.search(b"coding[:=]\s*([-\w.]+)", line)
+                    match = match or re.search(br"coding[:=]\s*([-\w.]+)",
+                                               line)
                     if i >= 2:
                         break
                 if match:
@@ -61,14 +64,6 @@ class TSourceEncoding(TestCase):
 class TLicense(TestCase):
 
     ALLOWED = ["""
-This program is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License version 2
-as published by the Free Software Foundation
-""", """
-This program is free software; you can redistribute it
-and/or modify it under the terms of version 2 of the GNU General Public
-License as published by the Free Software Foundation
-""", """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or

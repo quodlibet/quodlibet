@@ -97,17 +97,16 @@ class StreamReader(Codec, codecs.StreamReader):
 
 
 def getregentry(name):
-    if name != 'safe-utf-8':
-        return None
-    return codecs.CodecInfo(
-        name='safe-utf-8',
-        encode=safe_encode,
-        decode=safe_decode,
-        incrementalencoder=IncrementalEncoder,
-        incrementaldecoder=IncrementalDecoder,
-        streamreader=StreamReader,
-        streamwriter=StreamWriter,
-    )
+    if name == 'safe-utf-8':
+        return codecs.CodecInfo(
+            name=name,
+            encode=safe_encode,
+            decode=safe_decode,
+            incrementalencoder=IncrementalEncoder,
+            incrementaldecoder=IncrementalDecoder,
+            streamreader=StreamReader,
+            streamwriter=StreamWriter,
+        )
 
 
 codecs.register(getregentry)

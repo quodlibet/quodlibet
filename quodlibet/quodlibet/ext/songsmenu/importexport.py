@@ -21,7 +21,6 @@ from quodlibet.plugins.songshelpers import each_song, is_writable, is_a_file, \
 from quodlibet.qltk import ErrorMessage, Icons
 from quodlibet.util.path import get_home_dir
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.compat import iteritems
 
 __all__ = ['Export', 'Import']
 
@@ -52,7 +51,7 @@ def filechooser(save, title):
 
 
 def sort_key_for(s):
-    return s('~#track'), s('~basename'), s
+    return s('~#track', 1), s('~basename'), s
 
 
 class Export(SongsMenuPlugin):
@@ -150,7 +149,7 @@ class Import(SongsMenuPlugin):
         metadata = []
         names = []
         index = 0
-        for line in open(fn, 'rU'):
+        for line in open(fn, 'r', encoding="utf-8"):
             if index == len(metadata):
                 names.append(line[:line.rfind('.')])
                 metadata.append({})
@@ -171,7 +170,7 @@ class Import(SongsMenuPlugin):
             return
 
         for song, meta, name in zip(songs, metadata, names):
-            for key, values in iteritems(meta):
+            for key, values in meta.items():
                 if append and key in song:
                     values = song.list(key) + values
                 song[key] = '\n'.join(values)

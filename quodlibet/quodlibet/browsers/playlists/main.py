@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
-#    2012 - 2017 Nick Boultbee
+#    2012 - 2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@ from quodlibet.browsers import Browser
 from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.browsers.playlists.prefs import Preferences, \
     DEFAULT_PATTERN_TEXT
-from quodlibet.compat import listfilter
 from quodlibet.formats import AudioFile
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 from quodlibet.qltk.completion import LibraryTagCompletion
@@ -32,6 +31,8 @@ from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem, SymbolicIconImage
 from quodlibet.qltk import Icons
 from quodlibet.qltk.chooser import choose_files, create_chooser_filter
+from quodlibet.qltk.information import Information
+from quodlibet.qltk.properties import SongProperties
 from quodlibet.util import connect_obj
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.collection import FileBackedPlaylist
@@ -186,7 +187,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     @property
     def _query(self):
-        return self._sb_box.query
+        return self._sb_box.get_query(SongList.star)
 
     def __destroy(self, *args):
         del self._sb_box
@@ -200,7 +201,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.accelerators = Gtk.AccelGroup()
         completion = LibraryTagCompletion(library.librarian)
         sbb = SearchBarBox(completion=completion,
-                           accel_group=self.accelerators, star=SongList.star)
+                           accel_group=self.accelerators)
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
         return sbb
@@ -213,19 +214,31 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.pack_start(swin, True, True, 0)
 
     def __configure_buttons(self, library):
-        new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
+        new_pl = qltk.Button(None, Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
+        new_pl.set_tooltip_text(_("New"))
         new_pl.connect('clicked', self.__new_playlist, library)
-        import_pl = qltk.Button(_("_Import"), Icons.LIST_ADD,
+        import_pl = qltk.Button(None, Icons.LIST_ADD,
                                 Gtk.IconSize.MENU)
+        import_pl.set_tooltip_text(_("Import"))
         import_pl.connect('clicked', self.__import, library)
-        hb = Gtk.HBox(spacing=6)
-        hb.set_homogeneous(False)
-        hb.pack_start(new_pl, True, True, 0)
-        hb.pack_start(import_pl, True, True, 0)
-        hb2 = Gtk.HBox(spacing=0)
-        hb2.pack_start(hb, True, True, 0)
-        hb2.pack_start(PreferencesButton(self), False, False, 6)
-        self.pack_start(Align(hb2, left=3, bottom=3), False, False, 0)
+
+        fb = Gtk.FlowBox()
+        fb.set_selection_mode(Gtk.SelectionMode.NONE)
+        fb.set_homogeneous(True)
+        fb.insert(new_pl, 0)
+        fb.insert(import_pl, 1)
+        fb.set_max_children_per_line(2)
+
+        # The pref button is in its own flowbox instead of directly under the
+        # HBox to make it the same height as the other buttons
+        pref = PreferencesButton(self)
+        fb2 = Gtk.FlowBox()
+        fb2.insert(pref, 0)
+
+        hb = Gtk.HBox()
+        hb.pack_start(fb, True, True, 0)
+        hb.pack_start(fb2, False, False, 0)
+        self.pack_start(hb, False, False, 0)
 
     def __create_playlists_view(self, render):
         view = RCMHintedTreeView()
@@ -299,6 +312,21 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             if iter:
                 self._start_rename(model.get_path(iter))
             return True
+        elif qltk.is_accel(event, "<Primary>I"):
+            songs = self._get_playlist_songs()
+            if songs:
+                window = Information(self.library.librarian, songs, self)
+                window.show()
+            return True
+        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+            qltk.enqueue(self._get_playlist_songs())
+            return True
+        elif qltk.is_accel(event, "<alt>Return"):
+            songs = self._get_playlist_songs()
+            if songs:
+                window = SongProperties(self.library.librarian, songs, self)
+                window.show()
+            return True
         return False
 
     def __drag_motion(self, view, ctx, x, y, time):
@@ -353,6 +381,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __get_name_of_current_selected_playlist(self):
         model, iter = self.__selected_playlists()
+        if not iter:
+            return None
         path = model.get_path(iter)
         playlist = model[path][0]
         return playlist
@@ -363,7 +393,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         model = view.get_model()
         if tid == DND_QL:
             filenames = qltk.selection_get_filenames(sel)
-            songs = listfilter(None, [library.get(f) for f in filenames])
+            songs = list(filter(None, [library.get(f) for f in filenames]))
             if not songs:
                 Gtk.drag_finish(ctx, False, False, etime)
                 return
@@ -487,7 +517,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def activate(self, widget=None, resort=True):
         songs = self._get_playlist_songs()
-        query = self._sb_box.query
+        query = self._sb_box.get_query(SongList.star)
         if query and query.is_parsable:
             songs = query.filter(songs)
         GLib.idle_add(self.songs_selected, songs, resort)

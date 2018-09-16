@@ -55,7 +55,10 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
         self.scrolled_window.show()
         self._sig = None
-        self.plugin_on_song_started(app.player.info)
+        cur = app.player.info
+        if cur is not None:
+            cur = SongWrapper(cur)
+        self.plugin_on_song_started(cur)
 
     def create_sidebar(self):
         vbox = Gtk.VBox(margin=0)
@@ -87,6 +90,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
             def edit(widget):
                 print_d("Launching lyrics editor for %s" % song("~filename"))
+                assert isinstance(song, SongWrapper)
                 information = Information(app.librarian, [song._song])
                 information.get_child()._switch_to_lyrics()
                 information.show()

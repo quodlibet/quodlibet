@@ -26,7 +26,12 @@ RESERVED = frozenset((
 ))
 
 
-def extract_extra(record, reserved=RESERVED):
+CONTEXTUAL = frozenset((
+    'user', 'culprit', 'server_name', 'fingerprint'
+))
+
+
+def extract_extra(record, reserved=RESERVED, contextual=CONTEXTUAL):
     data = {}
 
     extra = getattr(record, 'data', None)
@@ -41,7 +46,7 @@ def extract_extra(record, reserved=RESERVED):
             continue
         if k.startswith('_'):
             continue
-        if '.' not in k and k not in ('culprit', 'server_name', 'fingerprint'):
+        if '.' not in k and k not in contextual:
             extra[k] = v
         else:
             data[k] = v

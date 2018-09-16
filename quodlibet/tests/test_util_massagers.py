@@ -8,7 +8,6 @@ from tests import TestCase
 
 from quodlibet.util.massagers import Massager, validate, is_valid, \
     error_message, get_options, ValidationError
-from quodlibet.compat import text_type
 
 
 class TMassagers(TestCase):
@@ -17,7 +16,7 @@ class TMassagers(TestCase):
         for val in values:
             self.assertTrue(massager.is_valid(val))
             self.assertTrue(
-                isinstance(massager.validate(text_type(val)), text_type))
+                isinstance(massager.validate(str(val)), str))
 
     def invalidate(self, key, values):
         for val in values:
@@ -28,7 +27,7 @@ class TMassagers(TestCase):
         for value, normed in equivs.items():
             self.assertEqual(normed, massager.validate(value))
             self.assertTrue(
-                isinstance(massager.validate(text_type(value)), text_type))
+                isinstance(massager.validate(str(value)), str))
 
     def test_validate_helper(self):
         self.assertEqual(validate("foo", "bar"), "bar")

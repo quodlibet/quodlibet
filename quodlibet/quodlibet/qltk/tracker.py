@@ -17,7 +17,7 @@ from quodlibet import config
 
 class TimeTracker(GObject.GObject):
     """Emits tick every second (with up to one second jitter) as long
-    as the player is activly playing.
+    as the player is actively playing.
 
     Uses timeout_add_seconds, so multiple instances of this should
     sync and not produce more wakeups.

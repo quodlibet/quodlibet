@@ -19,7 +19,7 @@ from quodlibet.util import is_osx, is_windows, i18n
 from quodlibet.util.dprint import print_e, PrintHandler
 from quodlibet.util.urllib import install_urllib2_ca_file
 
-from ._main import get_base_dir, is_release, get_image_dir
+from ._main import get_base_dir, is_release, get_image_dir, get_cache_dir
 
 
 _cli_initialized = False
@@ -74,12 +74,10 @@ def _init_gettext(no_translations=False):
     i18n.init(language)
 
     # Use the locale dir in ../build/share/locale if there is one
-    base_dir = get_base_dir()
-    localedir = os.path.dirname(base_dir)
-    localedir = os.path.join(localedir, "build", "share", "locale")
-    if not os.path.isdir(localedir) and os.name == "nt":
-        localedir = os.path.join(
-            base_dir, "..", "..", "share", "locale")
+    localedir = os.path.join(
+        os.path.dirname(get_base_dir()), "build", "share", "locale")
+    if not os.path.isdir(localedir):
+        localedir = None
 
     i18n.register_translation("quodlibet", localedir)
     debug_text = environ.get("QUODLIBET_TEST_TRANS")
@@ -225,7 +223,7 @@ def _init_gtk():
         environ["GTK_CSD"] = "0"
 
     # disable for consistency and trigger events seem a bit flaky here
-    if is_osx():
+    if config.getboolean("settings", "scrollbar_always_visible"):
         environ["GTK_OVERLAY_SCROLLING"] = "0"
 
     try:
@@ -267,7 +265,7 @@ def _init_gtk():
     warnings.filterwarnings(
         'ignore', '.*:use-stock.*', Warning)
     warnings.filterwarnings(
-        'ignore', '.*The property GtkAlignment:[^\s]+ is deprecated.*',
+        'ignore', r'.*The property GtkAlignment:[^\s]+ is deprecated.*',
         Warning)
 
     settings = Gtk.Settings.get_default()
@@ -338,6 +336,8 @@ def _init_gtk():
         """)
         css_override.register_provider("Ambiance", style_provider)
         css_override.register_provider("Radiance", style_provider)
+        # https://github.com/quodlibet/quodlibet/issues/2677
+        css_override.register_provider("Clearlooks-Phenix", style_provider)
 
     if gtk_version[:2] >= (3, 18):
         # Hack to get some grab handle like thing for panes
@@ -371,6 +371,10 @@ def _init_gtk():
 
 def _init_gst():
     """Call once before importing GStreamer"""
+
+    arch_key = "64" if sys.maxsize > 2**32 else "32"
+    registry_name = "gst-registry-%s-%s.bin" % (sys.platform, arch_key)
+    environ["GST_REGISTRY"] = os.path.join(get_cache_dir(), registry_name)
 
     assert "gi.repository.Gst" not in sys.modules
 

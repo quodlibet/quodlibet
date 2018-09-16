@@ -24,9 +24,9 @@ class Command(object):
     Subclasses can override _add_options() and _execute()
     """
 
-    NAME = None
-    DESCRIPTION = None
-    USAGE = None
+    NAME = ""
+    DESCRIPTION = ""
+    USAGE = ""
     COMMANDS = []
 
     @classmethod
@@ -85,10 +85,10 @@ class Command(object):
     def _execute(self, options, args):
         """Override to execute something"""
 
-        raise NotImplemented
+        raise NotImplementedError
 
     def print_help(self, file=None):
-        """Print the help information about the comand"""
+        """Print the help information about the command"""
 
         if file is None:
             file = sys.stdout

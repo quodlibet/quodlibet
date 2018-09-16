@@ -31,8 +31,7 @@ from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk import Icons
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.util.string.splitters import split_value
-from quodlibet.util import connect_obj, gdecode
-from quodlibet.compat import itervalues
+from quodlibet.util import connect_obj
 
 
 TBP = os.path.join(quodlibet.get_user_dir(), "lists", "tagpatterns")
@@ -185,7 +184,7 @@ class TagsFromPath(Gtk.VBox):
             songs = [row[0].song for row in (self.view.get_model() or [])]
 
         if songs:
-            pattern_text = gdecode(self.combo.get_child().get_text())
+            pattern_text = self.combo.get_child().get_text()
         else:
             pattern_text = ""
         try:
@@ -272,7 +271,7 @@ class TagsFromPath(Gtk.VBox):
         self.save.set_sensitive(len(pattern.headers) > 0)
 
     def __save(self, addreplace, library):
-        pattern_text = gdecode(self.combo.get_child().get_text())
+        pattern_text = self.combo.get_child().get_text()
         pattern = TagsFromPattern(pattern_text)
         model = self.view.get_model()
         add = bool(addreplace.get_active())
@@ -282,7 +281,7 @@ class TagsFromPath(Gtk.VBox):
         was_changed = set()
 
         all_done = False
-        for entry in ((model and itervalues(model)) or []):
+        for entry in ((model and model.values()) or []):
             song = entry.song
             changed = False
             if not song.valid():
@@ -327,7 +326,6 @@ class TagsFromPath(Gtk.VBox):
 
     def __row_edited(self, renderer, path, new, model, header):
         entry = model[path][0]
-        new = gdecode(new)
         if entry.get_match(header) != new:
             entry.replace_match(header, new)
             self.preview.set_sensitive(True)

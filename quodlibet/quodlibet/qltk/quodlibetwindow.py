@@ -25,7 +25,6 @@ from quodlibet import util
 from quodlibet import app
 from quodlibet import _
 from quodlibet.qltk.paned import ConfigRHPaned
-from quodlibet.compat import listfilter
 
 from quodlibet.qltk.appwindow import AppWindow
 from quodlibet.update import UpdateDialog
@@ -52,7 +51,7 @@ from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action
 from quodlibet.qltk.x import ToggleAction, RadioAction, HighlightToggleButton
-from quodlibet.qltk.x import SeparatorMenuItem, MenuItem, CellRendererPixbuf
+from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.qltk.about import AboutDialog
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
@@ -61,7 +60,7 @@ from quodlibet.util import connect_obj, print_d
 from quodlibet.util.library import background_filter, scan_library
 from quodlibet.util.path import uri_is_valid
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
-from quodlibet.qltk.songlistcolumns import SongListColumn
+from quodlibet.qltk.songlistcolumns import CurrentColumn
 
 
 class PlayerOptions(GObject.Object):
@@ -130,7 +129,7 @@ class PlayerOptions(GObject.Object):
         When `repeat` is True the current song will be replayed.
         """
 
-        return (self._order_widget.repeated and
+        return (self._order_widget and self._order_widget.repeated and
                 self._order_widget.repeater is RepeatSongForever)
 
     @single.setter
@@ -219,53 +218,6 @@ class DockMenu(Gtk.Menu):
         player.paused = True
 
 
-class CurrentColumn(SongListColumn):
-    """Displays the current song indicator, either a play or pause icon."""
-
-    def __init__(self):
-        super(CurrentColumn, self).__init__("~current")
-        self._render = CellRendererPixbuf()
-        self.pack_start(self._render, True)
-        self._render.set_property('xalign', 0.5)
-
-        self.set_fixed_width(24)
-        self.set_expand(False)
-        self.set_cell_data_func(self._render, self._cdf)
-
-    def _format_title(self, tag):
-        return u""
-
-    def _cdf(self, column, cell, model, iter_, user_data):
-        PLAY = "media-playback-start"
-        PAUSE = "media-playback-pause"
-        STOP = "media-playback-stop"
-        ERROR = "dialog-error"
-
-        row = model[iter_]
-
-        if row.path == model.current_path:
-            player = app.player
-            if player.error:
-                name = ERROR
-            elif model.sourced:
-                name = [PLAY, PAUSE][player.paused]
-            else:
-                name = STOP
-        else:
-            name = None
-
-        if not self._needs_update(name):
-            return
-
-        if name is not None:
-            gicon = Gio.ThemedIcon.new_from_names(
-                [name + "-symbolic", name])
-        else:
-            gicon = None
-
-        cell.set_property('gicon', gicon)
-
-
 class MainSongList(SongList):
     """SongList for the main browser's displayed songs."""
 
@@ -348,7 +300,7 @@ class TopBar(Gtk.Toolbar):
 
         # On older Gtk+ (3.4, at least)
         # setting a margin on CoverImage leads to errors and result in the
-        # QL window not beeing visible for some reason.
+        # QL window not being visible for some reason.
         assert self.image.props.margin == 0
 
         for child in self.get_children():
@@ -410,99 +362,6 @@ class StatusBarBox(Gtk.HBox):
         queue_button.props.active = queue.props.visible
 
         self.pack_start(queue_button, False, True, 0)
-
-
-class AppMenu(object):
-    """Implements a app menu proxy mirroring some main menu items
-    to a new menu and exporting it on the session bus.
-
-    Activation gets proxied back to the main menu actions.
-    """
-
-    def __init__(self, window, action_group):
-        window.realize()
-
-        self._bus = None
-        self._ag_id = None
-        self._am_id = None
-        window.connect("destroy", self._unexport)
-
-        if window.get_realized():
-            self._export(window, action_group)
-        else:
-            self._id = window.connect("realize", self._realized, action_group)
-
-    def _realized(self, window, ag):
-        window.disconnect(self._id)
-        self._export(window, ag)
-
-    def _export(self, window, gtk_group):
-        actions = [
-            ["Preferences", "Plugins"],
-            ["RefreshLibrary"],
-            ["OnlineHelp", "About", "Quit"],
-        ]
-
-        # build the new menu
-        menu = Gio.Menu()
-        action_names = []
-        for group in actions:
-            section = Gio.Menu()
-            for name in group:
-                action = gtk_group.get_action(name)
-                assert action
-                label = action.get_label()
-                section.append(label, "app." + name)
-                action_names.append(name)
-            menu.append_section(None, section)
-        menu.freeze()
-
-        # proxy activate to the old group
-        def callback(action, data):
-            name = action.get_name()
-            gtk_action = gtk_group.get_action(name)
-            gtk_action.activate()
-
-        action_group = Gio.SimpleActionGroup()
-        for name in action_names:
-            action = Gio.SimpleAction.new(name, None)
-            action_group.insert(action)
-            action.connect("activate", callback)
-
-        # export on the bus
-        ag_object_path = "/net/sacredchao/QuodLibet"
-        am_object_path = "/net/sacredchao/QuodLibet/menus/appmenu"
-        app_id = "net.sacredchao.QuodLibet"
-
-        win = window.get_window()
-        if not hasattr(win, "set_utf8_property"):
-            # not a GdkX11.X11Window
-            print_d("Registering appmenu failed: X11 only")
-            return
-
-        # FIXME: this doesn't fail on Windows but takes for ages.
-        # Maybe remove some deps to make it fail fast?
-        # We don't need dbus anyway there.
-        try:
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            self._ag_id = bus.export_action_group(ag_object_path, action_group)
-            self._am_id = bus.export_menu_model(am_object_path, menu)
-        except GLib.GError as e:
-            print_d("Registering appmenu failed: %r" % e)
-            return
-
-        self._bus = bus
-
-        win.set_utf8_property("_GTK_UNIQUE_BUS_NAME", bus.get_unique_name())
-        win.set_utf8_property("_GTK_APPLICATION_ID", app_id)
-        win.set_utf8_property("_GTK_APPLICATION_OBJECT_PATH", ag_object_path)
-        win.set_utf8_property("_GTK_APP_MENU_OBJECT_PATH", am_object_path)
-
-    def _unexport(self, window):
-        if self._bus:
-            self._bus.unexport_action_group(self._ag_id)
-            self._bus.unexport_menu_model(self._am_id)
-            self._bus = None
 
 
 class PlaybackErrorDialog(ErrorMessage):
@@ -683,44 +542,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.add(main_box)
         self.side_book = qltk.Notebook()
 
-        self.__player = player
-        # create main menubar, load/restore accelerator groups
-        self.__library = library
-        ui = self.__create_menu(player, library)
-        accel_group = ui.get_accel_group()
-        self.add_accel_group(accel_group)
-
-        def scroll_and_jump(*args):
-            self.__jump_to_current(True, True)
-
-        keyval, mod = Gtk.accelerator_parse("<Primary><shift>J")
-        accel_group.connect(keyval, mod, 0, scroll_and_jump)
-
-        # dbus app menu
-        # Unity puts the app menu next to our menu bar. Since it only contains
-        # menu items also available in the menu bar itself, don't add it.
-        if not util.is_unity():
-            AppMenu(self, ui.get_action_groups()[0])
-
-        # custom accel map
-        accel_fn = os.path.join(quodlibet.get_user_dir(), "accels")
-        Gtk.AccelMap.load(accel_fn)
-        # save right away so we fill the file with example comments of all
-        # accels
-        Gtk.AccelMap.save(accel_fn)
-
-        menubar = ui.get_widget("/Menu")
-
-        # Since https://git.gnome.org/browse/gtk+/commit/?id=b44df22895c79
-        # toplevel menu items show an empty 16x16 image. While we don't
-        # need image items there UIManager creates them by default.
-        # Work around by removing the empty GtkImages
-        for child in menubar.get_children():
-            if isinstance(child, Gtk.ImageMenuItem):
-                child.set_image(None)
-
-        main_box.pack_start(menubar, False, True, 0)
-
         # get the playlist up before other stuff
         self.songlist = MainSongList(library, player)
         self.songlist.connect("key-press-event", self.__songlist_key_press)
@@ -743,6 +564,38 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         self.playlist = PlaylistMux(
             player, self.qexpander.model, self.songlist.model)
+
+        self.__player = player
+        # create main menubar, load/restore accelerator groups
+        self.__library = library
+        ui = self.__create_menu(player, library)
+        accel_group = ui.get_accel_group()
+        self.add_accel_group(accel_group)
+
+        def scroll_and_jump(*args):
+            self.__jump_to_current(True, None, True)
+
+        keyval, mod = Gtk.accelerator_parse("<Primary><shift>J")
+        accel_group.connect(keyval, mod, 0, scroll_and_jump)
+
+        # custom accel map
+        accel_fn = os.path.join(quodlibet.get_user_dir(), "accels")
+        Gtk.AccelMap.load(accel_fn)
+        # save right away so we fill the file with example comments of all
+        # accels
+        Gtk.AccelMap.save(accel_fn)
+
+        menubar = ui.get_widget("/Menu")
+
+        # Since https://git.gnome.org/browse/gtk+/commit/?id=b44df22895c79
+        # toplevel menu items show an empty 16x16 image. While we don't
+        # need image items there UIManager creates them by default.
+        # Work around by removing the empty GtkImages
+        for child in menubar.get_children():
+            if isinstance(child, Gtk.ImageMenuItem):
+                child.set_image(None)
+
+        main_box.pack_start(menubar, False, True, 0)
 
         top_bar = TopBar(self, player, library)
         main_box.pack_start(top_bar, False, True, 0)
@@ -1016,6 +869,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
             act = Action(name="Jump", label=_('_Jump to Playing Song'),
                          icon_name=Icons.GO_JUMP)
+            self.__jump_to_current(True, None, True)
             act.connect('activate', self.__jump_to_current)
             ag.add_action_with_accel(act, "<Primary>J")
 
@@ -1230,6 +1084,14 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         Browser = browsers.get(current)
 
+        window = self.get_window()
+        if window:
+            window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+
+        # Wait for the cursor to update before continuing
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+
         config.set("memory", "browser", current)
         if self.browser:
             if not (self.browser.uses_main_library and
@@ -1259,6 +1121,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             self.add_accel_group(self.browser.accelerators)
 
         container = self.browser.__container = self.browser.pack(self.songpane)
+
+        # Reset the cursor when done loading the browser
+        if window:
+            GLib.idle_add(window.set_cursor, None)
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.reset_replaygain()
@@ -1314,17 +1180,24 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             self.ui.get_widget('/Menu/' + wid).set_sensitive(bool(song))
 
         # don't jump on stream changes (player.info != player.song)
-        should_jump = (song and player.song is song and
+        main_should_jump = (song and player.song is song and
                        not self.songlist._activated and
                        config.getboolean("settings", "jump") and
                        self.songlist.sourced)
-        if should_jump:
-            self.__jump_to_current(False)
+        queue_should_jump = (song and player.song is song and
+                        not self.qexpander.queue._activated and
+                        config.getboolean("settings", "jump") and
+                        self.qexpander.queue.sourced and
+                        config.getboolean("memory", "queue_keep_songs"))
+        if main_should_jump:
+            self.__jump_to_current(False, self.songlist)
+        elif queue_should_jump:
+            self.__jump_to_current(False, self.qexpander.queue)
 
     def __play_pause(self, *args):
         app.player.playpause()
 
-    def __jump_to_current(self, explicit, force_scroll=False):
+    def __jump_to_current(self, explicit, songlist=None, force_scroll=False):
         """Select/scroll to the current playing song in the playlist.
         If it can't be found tell the browser to properly fill the playlist
         with an appropriate selection containing the song.
@@ -1332,14 +1205,28 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         explicit means that the jump request comes from the user and not
         from an event like song-started.
 
+        songlist is the songlist to be jumped within. Usually the main song
+        list or the queue. If None, the currently sourced songlist will be
+        used.
+
         force_scroll will ask the browser to refill the playlist in any case.
         """
 
         def idle_jump_to(song, select):
-            ok = self.songlist.jump_to_song(song, select=select)
+            ok = songlist.jump_to_song(song, select=select)
             if ok:
-                self.songlist.grab_focus()
+                songlist.grab_focus()
             return False
+
+        if not songlist:
+            if (config.getboolean("memory", "queue_keep_songs")
+                    and self.qexpander.queue.sourced):
+                songlist = self.qexpander.queue
+            else:
+                songlist = self.songlist
+
+        if app.player is None:
+            return
 
         song = app.player.song
 
@@ -1348,13 +1235,13 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             return
 
         if not force_scroll:
-            ok = self.songlist.jump_to_song(song, select=explicit)
+            ok = songlist.jump_to_song(song, select=explicit)
         else:
             assert explicit
             ok = False
 
         if ok:
-            self.songlist.grab_focus()
+            songlist.grab_focus()
         elif explicit:
             # if we can't find it and the user requested it, try harder
             self.browser.scroll(song)
@@ -1440,14 +1327,13 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             window.show()
 
     def __browser_activate(self, browser):
-        app.player.go_to(None)
-        app.player.play()
+        app.player._reset()
 
     def __browser_cb(self, browser, songs, sorted, library, player):
         if browser.background:
             bg = background_filter()
             if bg:
-                songs = listfilter(bg, songs)
+                songs = list(filter(bg, songs))
         self.songlist.set_songs(songs, sorted)
 
         # After the first time the browser activates, which should always

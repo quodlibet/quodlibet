@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010, 2012-2014 Christoph Reiter
 #                      2017 Uriel Zajaczkovski
-#                      2017 Nick Boultbee
+#                 2017-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,15 +17,16 @@ from quodlibet import _
 from quodlibet.browsers.albums import AlbumTagCompletion
 from quodlibet.browsers import Browser
 from quodlibet.query import Query
-from quodlibet.compat import cmp
 
+from quodlibet.qltk.information import Information
+from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, cmp
 from quodlibet.util.library import background_filter
 
 from .models import (CollectionTreeStore, CollectionSortModel,
@@ -79,7 +80,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
     name = _("Album Collection")
     accelerated_name = _("Album _Collection")
     keys = ["AlbumCollection", "CollectionBrowser"]
-    priority = 5
+    priority = 6
 
     __model = None
 
@@ -232,10 +233,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         prefs.connect('clicked', lambda *x: Preferences(self))
 
         self.accelerators = Gtk.AccelGroup()
-        tags = self.__model.tags + ["album"]
         search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators,
-                              star=tags)
+                              accel_group=self.accelerators)
         search.connect('query-changed', self.__update_filter)
         connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
@@ -261,6 +260,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         view.connect("drag-data-get", self.__drag_data_get)
 
         self.connect("destroy", self.__destroy)
+        self.connect('key-press-event', self.__key_pressed, library.librarian)
 
         self.show_all()
 
@@ -293,7 +293,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def __update_filter(self, entry, text):
         self.__filter = None
-        query = self.__search.query
+        star = self.__model.tags + ["album"]
+        query = self.__search.get_query(star)
         if not query.matches_all:
             self.__filter = query.search
         self.__bg_filter = background_filter()
@@ -343,6 +344,24 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         songs = self.__get_selected_songs(False)
         if songs is not None:
             GLib.idle_add(self.songs_selected, songs)
+
+    def __key_pressed(self, widget, event, librarian):
+        if qltk.is_accel(event, "<Primary>I"):
+            songs = self.__get_selected_songs()
+            if songs:
+                window = Information(librarian, songs, self)
+                window.show()
+            return True
+        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+            qltk.enqueue(self.__get_selected_songs(sort=True))
+            return True
+        elif qltk.is_accel(event, "<alt>Return"):
+            songs = self.__get_selected_songs()
+            if songs:
+                window = SongProperties(librarian, songs, self)
+                window.show()
+            return True
+        return False
 
     def can_filter_albums(self):
         return True

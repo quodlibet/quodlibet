@@ -14,7 +14,6 @@ from quodlibet.formats import AudioFileError
 from quodlibet import config
 from quodlibet.util import connect_obj, is_windows
 from quodlibet.formats import AudioFile
-from quodlibet.compat import text_type, iteritems, iterkeys, itervalues
 
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipIf
 from .helper import capture_output, get_temp_copy
@@ -212,8 +211,6 @@ class TLibrary(TestCase):
         self.library.add(items)
         self.failUnlessEqual(
             sorted(self.library.keys()), list(range(100, 120)))
-        self.failUnlessEqual(
-            sorted(iterkeys(self.library)), list(range(100, 120)))
 
     def test_values(self):
         items = []
@@ -222,8 +219,6 @@ class TLibrary(TestCase):
             items[-1].key = i + 100
         self.library.add(items)
         self.failUnlessEqual(sorted(self.library.values()), list(range(20)))
-        self.failUnlessEqual(
-            sorted(itervalues(self.library)), list(range(20)))
 
     def test_items(self):
         items = []
@@ -233,7 +228,6 @@ class TLibrary(TestCase):
         self.library.add(items)
         expected = list(zip(range(100, 120), range(20)))
         self.failUnlessEqual(sorted(self.library.items()), expected)
-        self.failUnlessEqual(sorted(iteritems(self.library)), expected)
 
     def test_has_key(self):
         self.failIf(self.library.has_key(10))
@@ -250,7 +244,7 @@ class TLibrary(TestCase):
 class FakeAudioFile(AudioFile):
 
     def __init__(self, key):
-        self["~filename"] = fsnative(text_type(key))
+        self["~filename"] = fsnative(str(key))
 
 
 def FakeAudioFileRange(*args):
@@ -488,7 +482,7 @@ class TSongFileLibrary(TSongLibrary):
             filename = self.__get_file()
             ret = self.library.add_filename(filename)
             self.failUnless(ret)
-            self.failUnlessEqual(1, len(self.library))
+            self.failUnlessEqual(len(self.library), 1)
             self.failUnlessEqual(len(self.added), 1)
             ret = self.library.add_filename(filename)
             self.failUnless(ret)
@@ -510,7 +504,7 @@ class TSongFileLibrary(TSongLibrary):
                 ret = self.library.add_filename("")
             self.failIf(ret)
             self.failUnlessEqual(len(self.added), 2)
-            self.failUnlessEqual(2, len(self.library))
+            self.failUnlessEqual(len(self.library), 2)
 
         finally:
             config.quit()
@@ -598,8 +592,7 @@ class TAlbumLibrary(TestCase):
         self.failUnless(self.library.has_key(key))
 
     def test_misc_collection(self):
-        self.failUnless(itervalues(self.library))
-        self.failUnless(iteritems(self.library))
+        self.failUnless(self.library.values())
 
     def test_items(self):
         self.failUnlessEqual(len(self.library.items()), 3)

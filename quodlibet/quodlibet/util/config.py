@@ -24,19 +24,12 @@ from __future__ import absolute_import
 import os
 import csv
 import collections
+from io import StringIO
 
-try:
-    # Python 2
-    from ConfigParser import RawConfigParser as ConfigParser, Error, \
-        NoSectionError
-except ImportError:
-    # Python 3
-    from configparser import RawConfigParser as ConfigParser, Error, \
-        NoSectionError
+from configparser import RawConfigParser as ConfigParser, Error, NoSectionError
 
 from senf import fsnative
 
-from quodlibet.compat import cBytesIO, PY2, PY3, text_type, StringIO
 from quodlibet.util import list_unique, print_d
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.string import join_escape, split_escape
@@ -167,18 +160,14 @@ class Config(object):
 
     def gettext(self, *args, **kwargs):
         value = self.get(*args, **kwargs)
-        if PY2:
-            value = value.decode("utf-8")
-        else:
-            # make sure there are no surrogates
-            value.encode("utf-8")
+        # make sure there are no surrogates
+        value.encode("utf-8")
         return value
 
     def getbytes(self, section, option, default=_DEFAULT):
         try:
             value = self._config.get(section, option)
-            if PY3:
-                value = value.encode("utf-8", "surrogateescape")
+            value = value.encode("utf-8", "surrogateescape")
             return value
         except (Error, ValueError) as e:
             if default is _DEFAULT:
@@ -257,10 +246,7 @@ class Config(object):
             parser = csv.reader(
                 [value], lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
             try:
-                if PY2:
-                    vals = [v.decode('utf-8') for v in next(parser)]
-                else:
-                    vals = next(parser)
+                vals = next(parser)
             except (csv.Error, ValueError) as e:
                 raise Error(e)
             return vals
@@ -277,12 +263,8 @@ class Config(object):
     def setstringlist(self, section, option, values):
         """Saves a list of unicode strings using the csv module"""
 
-        if PY2:
-            sw = cBytesIO()
-            values = [text_type(v).encode('utf-8') for v in values]
-        else:
-            sw = StringIO()
-            values = [text_type(v) for v in values]
+        sw = StringIO()
+        values = [str(v) for v in values]
 
         writer = csv.writer(sw, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(values)
@@ -317,7 +299,7 @@ class Config(object):
         Don't pass unicode, encode first.
         """
 
-        if PY3 and isinstance(value, bytes):
+        if isinstance(value, bytes):
             raise TypeError("use setbytes")
 
         # RawConfigParser only allows string values but doesn't
@@ -336,21 +318,17 @@ class Config(object):
                 raise
 
     def settext(self, section, option, value):
-        value = text_type(value)
+        value = str(value)
 
-        if PY2:
-            value = value.encode("utf-8")
-        else:
-            # make sure there are no surrogates
-            value.encode("utf-8")
+        # make sure there are no surrogates
+        value.encode("utf-8")
 
         self.set(section, option, value)
 
     def setbytes(self, section, option, value):
         assert isinstance(value, bytes)
 
-        if PY3:
-            value = value.decode("utf-8", "surrogateescape")
+        value = value.decode("utf-8", "surrogateescape")
 
         self.set(section, option, value)
 
@@ -370,13 +348,10 @@ class Config(object):
             self.set("__config__", "version", self._version)
         try:
             with atomic_save(filename, "wb") as fileobj:
-                if PY2:
-                    self._config.write(fileobj)
-                else:
-                    temp = StringIO()
-                    self._config.write(temp)
-                    data = temp.getvalue().encode("utf-8", "surrogateescape")
-                    fileobj.write(data)
+                temp = StringIO()
+                self._config.write(temp)
+                data = temp.getvalue().encode("utf-8", "surrogateescape")
+                fileobj.write(data)
         finally:
             if self._loaded_version is not None:
                 self.set("__config__", "version", self._loaded_version)
@@ -401,9 +376,8 @@ class Config(object):
 
         try:
             with open(filename, "rb") as fileobj:
-                if PY3:
-                    fileobj = StringIO(
-                        fileobj.read().decode("utf-8", "surrogateescape"))
+                fileobj = StringIO(
+                    fileobj.read().decode("utf-8", "surrogateescape"))
                 self._config.readfp(fileobj, filename)
         except (IOError, OSError):
             return

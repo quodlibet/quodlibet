@@ -3,21 +3,22 @@
 #           2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 # FIXME:
 # - Too many buttons -- saving should be automatic?
 
 import os
 import threading
+from urllib.parse import quote
 
 from gi.repository import Gtk
 
 from quodlibet import _, print_d, print_w, app
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet.compat import quote
 from quodlibet.errorreport import errorhook
 from quodlibet.formats import AudioFileError
 from quodlibet.qltk import Icons
@@ -81,7 +82,7 @@ class LyricsPane(Gtk.VBox):
 
     def __save(self, save, song, buffer, delete):
         start, end = buffer.get_bounds()
-        text = util.gdecode(buffer.get_text(start, end, True))
+        text = buffer.get_text(start, end, True)
         self._save_lyrics(song, text)
         delete.set_sensitive(True)
         save.set_sensitive(False)

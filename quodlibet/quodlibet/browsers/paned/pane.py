@@ -13,9 +13,10 @@ from gi.repository import Gtk, Pango, Gdk
 from quodlibet import qltk
 from quodlibet.qltk.views import AllTreeView, TreeViewColumnButton
 from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.properties import SongProperties
+from quodlibet.qltk.information import Information
 from quodlibet.qltk import is_accel
-from quodlibet.util import connect_obj, gdecode
-from quodlibet.compat import text_type
+from quodlibet.util import connect_obj
 
 from .models import PaneModel
 from .util import PaneConfig
@@ -108,12 +109,28 @@ class Pane(AllTreeView):
         self.connect("drag-data-get", self.__drag_data_get)
         self.connect("destroy", self.__destroy)
 
-        self.connect("key-press-event", self.__key_pressed)
+        librarian = library.librarian or library
+        self.connect("key-press-event", self.__key_pressed, librarian)
 
-    def __key_pressed(self, view, event):
+    def __key_pressed(self, view, event, librarian):
         # if ctrl+a is pressed, intercept and select the All entry instead
         if is_accel(event, "<Primary>a"):
             self.set_selected([])
+            return True
+        elif is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+            qltk.enqueue(self.__get_selected_songs(sort=True))
+            return True
+        elif is_accel(event, "<alt>Return"):
+            songs = self.__get_selected_songs(sort=True)
+            if songs:
+                window = SongProperties(librarian, songs, parent=self)
+                window.show()
+            return True
+        elif is_accel(event, "<Primary>I"):
+            songs = self.__get_selected_songs(sort=True)
+            if songs:
+                window = Information(librarian, songs, self)
+                window.show()
             return True
         return False
 
@@ -121,7 +138,7 @@ class Pane(AllTreeView):
         return "<%s config=%r>" % (type(self).__name__, self.config)
 
     def parse_restore_string(self, config_value):
-        assert isinstance(config_value, text_type)
+        assert isinstance(config_value, str)
 
         values = config_value.split("\t")[:-1]
 
@@ -164,7 +181,7 @@ class Pane(AllTreeView):
 
     def __search_func(self, model, column, key, iter_, data):
         entry = model.get_value(iter_)
-        return not entry.contains_text(gdecode(key))
+        return not entry.contains_text(key)
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         songs = self.__get_selected_songs(sort=True)

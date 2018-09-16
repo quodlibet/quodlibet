@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
-#      2014,2016 Nick Boultbee
+#      2014-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,8 +11,10 @@ from itertools import chain
 
 from gi.repository import GObject
 
-from quodlibet import config
+from quodlibet import _
+from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginManager, PluginHandler
+from quodlibet.qltk.notif import Task
 from quodlibet.util.cover import built_in
 from quodlibet.util import print_d
 from quodlibet.util.thread import call_async
@@ -43,7 +45,7 @@ class CoverPluginHandler(PluginHandler):
 
     @property
     def sources(self):
-        """Yields all active CoverSourcePlugin sorted by priority"""
+        """Yields all active CoverSourcePlugin classes sorted by priority"""
 
         sources = chain((p.cls for p in self.providers), self.built_in)
         for p in sorted(sources, reverse=True, key=lambda x: x.priority()):
@@ -53,9 +55,14 @@ class CoverPluginHandler(PluginHandler):
 class CoverManager(GObject.Object):
 
     __gsignals__ = {
-        # artwork_changed([AudioFile]), emitted if the cover art for one
-        # or more songs might have changed
+        # ([AudioFile]), emitted if the cover for any songs might have changed
         'cover-changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+
+        # Covers were found for the songs
+        'covers-found': (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+
+        # All searches were submitted, and success by provider is sent
+        'searches-complete': (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
 
     plugin_handler = None
@@ -152,7 +159,8 @@ class CoverManager(GObject.Object):
 
             groups = {}
             for song in songs:
-                groups.setdefault(plugin.group_by(song), []).append(song)
+                group = plugin.group_by(song) or ''
+                groups.setdefault(group, []).append(song)
 
             # sort both groups and songs by key, so we always get
             # the same result for the same set of songs
@@ -174,19 +182,11 @@ class CoverManager(GObject.Object):
     def get_cover_many(self, songs):
         """Returns a cover file object for many songs or None.
 
-        Returns the first found image for a group of songs
-        and respects the prefer_embedded setting. It tries to return the
-        same cover for the same set of songs.
+        Returns the first found image for a group of songs.
+        It tries to return the same cover for the same set of songs.
         """
 
-        prefer_embedded = config.getboolean(
-            "albumart", "prefer_embedded", False)
-
-        get = self.acquire_cover_sync_many
-        if prefer_embedded:
-            return get(songs, True, False) or get(songs, False, True)
-        else:
-            return get(songs, False, True) or get(songs, True, False)
+        return self.acquire_cover_sync_many(songs)
 
     def get_pixbuf_many(self, songs, width, height):
         """Returns a Pixbuf which fits into the boundary defined by width
@@ -219,3 +219,96 @@ class CoverManager(GObject.Object):
 
         call_async(get_thumbnail_from_file, cancel, callback,
                    args=(fileobj, (width, height)))
+
+    def search_cover(self, cancellable, songs):
+        """Search for all the covers applicable to `songs` across all providers
+        Every successful image result emits a 'covers-found' signal
+        (unless cancelled)."""
+
+        sources = [source for source in self.sources if not source.embedded]
+        processed = {}
+        all_groups = {}
+        task = Task(_("Cover Art"), _("Querying album art providers"),
+                    stop=cancellable.cancel)
+
+        def finished(provider, success):
+            processed[provider] = success
+            total = self._total_groupings(all_groups)
+
+            frac = len(processed) / total
+            print_d("%s is finished: %d / %d"
+                    % (provider, len(processed), total))
+            task.update(frac)
+            if frac >= 1:
+                task.finish()
+                self.emit('searches-complete', processed)
+
+        def search_complete(provider, results):
+            name = provider.name
+            if not results:
+                print_d('No covers from {0}'.format(name))
+                finished(provider, False)
+                return
+            finished(provider, True)
+            if not (cancellable and cancellable.is_cancelled()):
+                covers = {CoverData(url=res['cover'], source=name,
+                                    dimensions=res.get('dimensions', None))
+                          for res in results}
+                self.emit('covers-found', provider, covers)
+            provider.disconnect_by_func(search_complete)
+
+        def failure(provider, result):
+            finished(provider, False)
+            name = provider.__class__.__name__
+            print_d('Failed to get cover from {name} ({msg})'.format(
+                name=name, msg=result))
+            provider.disconnect_by_func(failure)
+
+        def song_groups(songs, sources):
+            all_groups = {}
+            for plugin in sources:
+                groups = {}
+                for song in songs:
+                    group = plugin.group_by(song) or ''
+                    groups.setdefault(group, []).append(song)
+                all_groups[plugin] = groups
+            return all_groups
+
+        all_groups = song_groups(songs, sources)
+        print_d("Got %d plugin groupings" % self._total_groupings(all_groups))
+
+        for plugin, groups in all_groups.items():
+            print_d("Getting covers from %s" % plugin)
+            for key, group in sorted(groups.items()):
+                song = sorted(group, key=lambda s: s.key)[0]
+                artists = {s.comma('artist') for s in group}
+                if len(artists) > 1:
+                    print_d("%d artist groups in %s - probably a compilation. "
+                            "Using provider to search for compilation"
+                            % (len(artists), key))
+                    song = AudioFile(song)
+                    try:
+                        del song['artist']
+                    except KeyError:
+                        # Artist(s) from other grouped songs, never mind.
+                        pass
+                provider = plugin(song)
+                provider.connect('search-complete', search_complete)
+                provider.connect('fetch-failure', failure)
+                provider.search()
+        return all_groups
+
+    def _total_groupings(self, groups):
+        return sum(len(g) for g in groups.values())
+
+
+class CoverData(GObject.GObject):
+    """Structured data for results from cover searching"""
+    def __init__(self, url, source=None, dimensions=None):
+        super().__init__()
+        self.url = url
+        self.dimensions = dimensions
+        self.source = source
+
+    def __repr__(self):
+        return "CoverData<url=%s @ %s>" % (self.url, self.dimensions)

@@ -1,3 +1,5 @@
+.. _TagPatterns:
+
 Tag Patterns
 ============
 
@@ -74,6 +76,8 @@ or more complex ones (note the needed escaping):
 
     ``<artist=\|(Townshend, Who)|foo|bar>``
 
+
+.. _TextMarkup:
 
 Text Markup
 -----------

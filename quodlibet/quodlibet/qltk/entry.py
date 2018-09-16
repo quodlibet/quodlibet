@@ -15,8 +15,6 @@ from quodlibet import _
 from quodlibet.qltk import is_accel, add_fake_accel
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
-from quodlibet.util import gdecode
-from quodlibet.compat import string_types
 
 
 class EditableUndo(object):
@@ -97,7 +95,7 @@ class EditableUndo(object):
             menu.prepend(item)
 
     def __all(self):
-        text = gdecode(self.get_chars(0, -1))
+        text = self.get_chars(0, -1)
         pos = self.get_position()
         return [text, pos]
 
@@ -255,12 +253,12 @@ class ValidatingEntryMixin(object):
             self.connect('changed', self.__color, validator)
 
     def __color(self, widget, validator):
-        value = validator(gdecode(self.get_text()))
+        value = validator(self.get_text())
         if value is True:
             color = self.VALID
         elif value is False:
             color = self.INVALID
-        elif value and isinstance(value, string_types):
+        elif value and isinstance(value, str):
             color = Gdk.RGBA()
             color.parse(value)
         else:

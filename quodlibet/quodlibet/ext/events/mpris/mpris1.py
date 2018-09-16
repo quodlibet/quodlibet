@@ -13,7 +13,6 @@ import dbus.service
 
 from quodlibet import app
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
-from quodlibet.compat import iteritems
 
 from .util import MPRISObject
 
@@ -145,7 +144,7 @@ class MPRIS1Player(MPRISObject):
             "mb album artist sort name": "albumartistsort",
             }
 
-        for key, tag in iteritems(strings):
+        for key, tag in strings.items():
             val = song.comma(tag)
             if val:
                 metadata[key] = unival(val)
@@ -162,7 +161,7 @@ class MPRIS1Player(MPRISObject):
                 continue
             value = int(value * mul)
             # dbus uses python types to guess the dbus type without
-            # checking maxint, also we need uint (dbus always trys int)
+            # checking maxint, also we need uint (dbus always tries int)
             try:
                 value = dbus.UInt32(value)
             except OverflowError:

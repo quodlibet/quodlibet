@@ -47,3 +47,9 @@ osx_bundle/_jhbuild
 # coverage.py html report
 quodlibet/coverage/*
 .coverage
+
+# mypy
+.mypy_cache
+
+.pytest_cache
+test-results

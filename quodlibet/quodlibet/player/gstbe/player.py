@@ -28,7 +28,7 @@ from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError, \
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.notif import Task
-from quodlibet.compat import iteritems
+from quodlibet.formats.mod import ModFile
 
 from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,
     GStreamerSink, link_many, bin_debug)
@@ -153,7 +153,13 @@ class BufferingWrapper(object):
 
 
 def sink_has_external_state(sink):
-    return sink.get_factory().get_name() == "pulsesink"
+    sink_name = sink.get_factory().get_name()
+
+    if sink_name == "wasapisink":
+        # https://bugzilla.gnome.org/show_bug.cgi?id=796386
+        return hasattr(sink.props, "volume")
+    else:
+        return sink_name == "pulsesink"
 
 
 def sink_state_is_valid(sink):
@@ -516,29 +522,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         flags &= ~(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_TEXT)
         self.bin.set_property("flags", flags)
 
-        # find the (uri)decodebin after setup and use autoplug-sort
-        # to sort elements like decoders
-        def source_setup(*args):
-            def autoplug_sort(decode, pad, caps, factories):
-                def set_prio(x):
-                    i, f = x
-                    i = {
-                        "mad": -1,
-                        "mpg123audiodec": -2
-                    }.get(f.get_name(), i)
-                    return (i, f)
-                return list(
-                    zip(*sorted(map(set_prio, enumerate(factories)))))[1]
-
-            for e in iter_to_list(self.bin.iterate_recurse):
-                try:
-                    e.connect("autoplug-sort", autoplug_sort)
-                except TypeError:
-                    pass
-                else:
-                    break
-        self.bin.connect("source-setup", source_setup)
-
         if not self.has_external_volume:
             # Restore volume/ReplayGain and mute state
             self.volume = self._volume
@@ -611,13 +594,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             gerror, debug_info = message.parse_error()
             message = u""
             if gerror:
-                message = util.gdecode(gerror.message).rstrip(".")
+                message = gerror.message.rstrip(".")
             details = None
             if debug_info:
                 # strip the first line, not user friendly
                 debug_info = "\n".join(debug_info.splitlines()[1:])
                 # can contain paths, so not sure if utf-8 in all cases
-                details = util.gdecode(debug_info)
+                details = debug_info
             self._error(PlayerError(message, details))
         elif message.type == Gst.MessageType.STATE_CHANGED:
             # pulsesink doesn't notify a volume change on startup
@@ -668,7 +651,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         format_desc = get_description(message)
         title = _(u"No GStreamer element found to handle media format")
         error_details = _(u"Media format: %(format-description)s") % {
-            "format-description": util.gdecode(format_desc)}
+            "format-description": format_desc}
 
         def install_done_cb(plugins_return, *args):
             print_d("Gstreamer plugin install return: %r" % plugins_return)
@@ -715,6 +698,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # https://bugzilla.gnome.org/show_bug.cgi?id=695474
         if self.song.multisong:
             print_d("multisong: ignore about to finish")
+            return
+
+        # mod + gapless deadlocks
+        # https://github.com/quodlibet/quodlibet/issues/2780
+        if isinstance(self.song, ModFile):
             return
 
         if config.getboolean("player", "gst_disable_gapless"):
@@ -940,7 +928,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     self.bin.set_state(Gst.State.PLAYING)
         else:
             self.__destroy_pipeline()
-            self.paused = True
 
         self._in_gapless_transition = False
 
@@ -949,6 +936,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self._seeker.reset()
 
         self.emit('song-started', self.song)
+
+        if self.song is None:
+            self.paused = True
 
     def __tag(self, tags, librarian):
         if self.song and self.song.multisong:
@@ -975,12 +965,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         tags = TagListWrapper(tags, merge=True)
         tags = parse_gstreamer_taglist(tags)
 
-        for key, value in iteritems(sanitize_tags(tags, stream=False)):
+        for key, value in sanitize_tags(tags, stream=False).items():
             if self.song.get(key) != value:
                 changed = True
                 self.song[key] = value
 
-        for key, value in iteritems(sanitize_tags(tags, stream=True)):
+        for key, value in sanitize_tags(tags, stream=True).items():
             if new_info.get(key) != value:
                 info_changed = True
                 new_info[key] = value

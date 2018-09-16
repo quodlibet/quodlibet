@@ -100,15 +100,12 @@ def record(message=None, timestamp=None, level=None, category=None,
 
 def _record_log_breadcrumb(logger, level, msg, *args, **kwargs):
     for handler in special_logging_handlers:
-        rv = handler(logger, level, msg, args, kwargs)
-        if rv:
+        if handler(logger, level, msg, args, kwargs):
             return
 
     handler = special_logger_handlers.get(logger.name)
-    if handler is not None:
-        rv = handler(logger, level, msg, args, kwargs)
-        if rv:
-            return
+    if handler is not None and handler(logger, level, msg, args, kwargs):
+        return
 
     def processor(data):
         formatted_msg = msg
@@ -238,9 +235,7 @@ def install_logging_hook():
 
 
 def ignore_logger(name_or_logger, allow_level=None):
-    """Ignores a logger for the regular breadcrumb code.  This is useful
-    for framework integration code where some log messages should be
-    specially handled.
+    """Ignores a logger during breadcrumb recording.
     """
     def handler(logger, level, msg, args, kwargs):
         if allow_level is not None and \
@@ -251,10 +246,13 @@ def ignore_logger(name_or_logger, allow_level=None):
 
 
 def register_special_log_handler(name_or_logger, callback):
-    """Registers a callback for log handling.  The callback is invoked
-    with give arguments: `logger`, `level`, `msg`, `args` and `kwargs`
-    which are the values passed to the logging system.  If the callback
-    returns `True` the default handling is disabled.
+    """Registers a callback for log handling. The callback is invoked
+    with given arguments: `logger`, `level`, `msg`, `args` and `kwargs`
+    which are the values passed to the logging system. If the callback
+    returns true value the default handling is disabled. Only one callback
+    can be registered per one logger name. Logger tree is not traversed
+    so calling this method with `spammy_module` argument will not silence
+    messages from `spammy_module.child`.
     """
     if isinstance(name_or_logger, string_types):
         name = name_or_logger
@@ -265,9 +263,10 @@ def register_special_log_handler(name_or_logger, callback):
 
 def register_logging_handler(callback):
     """Registers a callback for log handling.  The callback is invoked
-    with give arguments: `logger`, `level`, `msg`, `args` and `kwargs`
+    with given arguments: `logger`, `level`, `msg`, `args` and `kwargs`
     which are the values passed to the logging system.  If the callback
-    returns `True` the default handling is disabled.
+    returns true value the default handling is disabled. Registering
+    multiple handlers is allowed.
     """
     special_logging_handlers.append(callback)
 

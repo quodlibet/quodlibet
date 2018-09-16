@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2017 Nick Boultbee
+#           2012-2018 Nick Boultbee
 #           2009-2014 Christoph Reiter
+#           2018      Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,12 +40,11 @@ from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk import Icons
-from quodlibet.util import copool, connect_destroy
+from quodlibet.util import copool, connect_destroy, cmp
 from quodlibet.util.library import background_filter
-from quodlibet.util import connect_obj, DeferredSignal, gdecode
+from quodlibet.util import connect_obj, DeferredSignal
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
-from quodlibet.compat import cmp
 
 
 def get_cover_size():
@@ -161,6 +161,22 @@ def compare_rating(a1, a2):
             cmp(a1.key, a2.key))
 
 
+def compare_avgplaycount(a1, a2):
+    a1, a2 = a1.album, a2.album
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
+    if not a1.title:
+        return 1
+    if not a2.title:
+        return -1
+    return (-cmp(a1("~#playcount:avg"), a2("~#playcount:avg")) or
+            cmpa(a1.date, a2.date) or
+            cmpa(a1.sort, a2.sort) or
+            cmp(a1.key, a2.key))
+
+
 class PreferencesButton(Gtk.HBox):
     def __init__(self, browser, model):
         super(PreferencesButton, self).__init__()
@@ -171,6 +187,7 @@ class PreferencesButton(Gtk.HBox):
             (_("_Date"), self.__compare_date),
             (_("_Genre"), self.__compare_genre),
             (_("_Rating"), self.__compare_rating),
+            (_("_Playcount"), self.__compare_avgplaycount),
         ]
 
         menu = Gtk.Menu()
@@ -233,6 +250,10 @@ class PreferencesButton(Gtk.HBox):
     def __compare_rating(self, model, i1, i2, data):
         a1, a2 = model.get_value(i1), model.get_value(i2)
         return compare_rating(a1, a2)
+
+    def __compare_avgplaycount(self, model, i1, i2, data):
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_avgplaycount(a1, a2)
 
 
 class VisibleUpdate(object):
@@ -358,7 +379,6 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
-    STAR = ["~people", "album"]
 
     name = _("Album List")
     accelerated_name = _("_Album List")
@@ -509,8 +529,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators,
-                              star=self.STAR)
+                              accel_group=self.accelerators)
         search.connect('query-changed', self.__update_filter)
         connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
@@ -547,6 +566,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
             if songs:
                 window = Information(librarian, songs, self)
                 window.show()
+            return True
+        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+            qltk.enqueue(self.__get_selected_songs(sort=True))
             return True
         elif qltk.is_accel(event, "<alt>Return"):
             songs = self.__get_selected_songs()
@@ -592,7 +614,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         model = self.view.get_model()
 
         self.__filter = None
-        query = self.__search.query
+        query = self.__search.get_query(star=["~people", "album"])
         if not query.matches_all:
             self.__filter = query.search
         self.__bg_filter = background_filter()
@@ -632,7 +654,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         album = model.get_album(iter_)
         if album is None:
             return True
-        key = gdecode(key).lower()
+        key = key.lower()
         title = album.title.lower()
         if key in title:
             return False

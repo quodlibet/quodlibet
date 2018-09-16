@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Ex Falso
-_GenericName=Audio tag editor
-_Comment=Edit tags in your audio files
+GenericName=Audio tag editor
+Comment=Edit tags in your audio files
 Exec=exfalso
 Terminal=false
 StartupNotify=true

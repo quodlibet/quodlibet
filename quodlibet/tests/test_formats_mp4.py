@@ -7,9 +7,9 @@
 # (at your option) any later version.
 
 import os
+from io import BytesIO
 import mutagen
 
-from quodlibet.compat import cBytesIO
 from tests import TestCase, get_data_path
 from quodlibet.formats.mp4 import MP4File
 from quodlibet.formats._image import EmbeddedImage
@@ -90,6 +90,12 @@ class TMP4File(TestCase):
     def test_channels(self):
         assert self.song("~#channels") == 2
 
+    def test_samplerate(self):
+        assert self.song("~#samplerate") == 44100
+
+    def test_bitdepth(self):
+        assert self.song("~#bitdepth") == 16
+
     def test_bpm_rounds(self):
         self.song["bpm"] = "98.76"
         self.song.write()
@@ -148,7 +154,7 @@ class TMP4File(TestCase):
 
     def test_set_image(self):
         self.assertTrue(self.song.has_images)
-        fileobj = cBytesIO(b"foo")
+        fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.song.set_image(image)
         image = self.song.get_primary_image()

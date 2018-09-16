@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2017 Nick Boultbee
+#           2012-2018 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from __future__ import absolute_import
 
@@ -126,7 +127,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     name = _("Cover Grid")
     accelerated_name = _("_Cover Grid")
     keys = ["CoverGrid"]
-    priority = 4
+    priority = 5
 
     def pack(self, songpane):
         container = self.songcontainer
@@ -315,8 +316,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators,
-                              star=self.STAR)
+                              accel_group=self.accelerators)
         search.connect('query-changed', self.__update_filter)
         connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
         self.__search = search
@@ -353,6 +353,9 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             if songs:
                 window = Information(librarian, songs, self)
                 window.show()
+            return True
+        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+            qltk.enqueue(self.__get_selected_songs(sort=True))
             return True
         elif qltk.is_accel(event, "<alt>Return"):
             songs = self.__get_selected_songs()
@@ -401,7 +404,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         model = self.view.get_model()
 
         self.__filter = None
-        query = self.__search.query
+        query = self.__search.get_query(self.STAR)
         if not query.matches_all:
             self.__filter = query.search
         self.__bg_filter = background_filter()
@@ -438,7 +441,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         album = model.get_album(iter_)
         if album is None:
             return config.getboolean("browsers", "covergrid_all", False)
-        key = util.gdecode(key).lower()
+        key = key.lower()
         title = album.title.lower()
         if key in title:
             return False

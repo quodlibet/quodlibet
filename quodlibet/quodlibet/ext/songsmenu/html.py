@@ -2,8 +2,9 @@
 # Copyright 2005 Eduardo Gonzalez
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
 from quodlibet import _
 from quodlibet.qltk import Icons
@@ -11,7 +12,6 @@ from quodlibet.util import tag, escape
 from quodlibet.qltk.songlist import get_columns
 from quodlibet.qltk.chooser import choose_target_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.compat import text_type
 
 
 HTML = '''<html>
@@ -54,7 +54,7 @@ def to_html(songs):
             col = {"~#rating": "~rating", "~#length": "~length"}.get(
                 col, col)
             s += '\n<td>%s</td>' % (
-                escape(text_type(song.comma(col))) or '&nbsp;')
+                escape(str(song.comma(col))) or '&nbsp;')
         s += '</tr>'
         songs_s += s
 

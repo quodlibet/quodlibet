@@ -21,21 +21,21 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
-AppData Specification: http://people.freedesktop.org/~hughsient/appdata/
+AppData Specification: https://www.freedesktop.org/software/appstream/docs/
 """
 
 import os
 
 from distutils.dep_util import newer
 from .util import Command
-from .gettextutil import intltool
+from .gettextutil import merge_file
 
 
 class build_appdata(Command):
     """Build .appdata.xml files
 
     Move .appdata.xml files to the appropriate location in the build tree.
-    If there is a .appdata.xml.in file, process it with intltool.
+    If there is a .appdata.xml.in file, process it with gettext.
     """
 
     description = "build .appdata.xml files"
@@ -43,24 +43,26 @@ class build_appdata(Command):
 
     def initialize_options(self):
         self.build_base = None
-        self.po_directory = None
         self.appdata = None
+        self.po_build_dir = None
 
     def finalize_options(self):
         self.appdata = self.distribution.appdata
-        self.po_directory = self.distribution.po_directory
         self.set_undefined_options('build', ('build_base', 'build_base'))
+        self.set_undefined_options(
+            'build_po', ('po_build_dir', 'po_build_dir'))
 
     def run(self):
+        self.run_command("build_po")
+
         basepath = os.path.join(self.build_base, 'share', 'appdata')
         self.mkpath(basepath)
         for appdata in self.appdata:
             if os.path.exists(appdata + ".in"):
                 fullpath = os.path.join(basepath, os.path.basename(appdata))
                 if newer(appdata + ".in", fullpath):
-                    self.spawn(
-                        intltool("merge", "-x", self.po_directory,
-                                 appdata + ".in", fullpath))
+                    merge_file(self.po_build_dir, "xml",
+                               appdata + ".in", fullpath)
             else:
                 self.copy_file(appdata, os.path.join(basepath, appdata))
 

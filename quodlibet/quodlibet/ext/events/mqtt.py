@@ -7,6 +7,11 @@
 # (at your option) any later version.
 
 import os
+import sys
+
+if os.name == "nt" or sys.platform == "darwin":
+    from quodlibet.plugins import PluginNotSupportedError
+    raise PluginNotSupportedError
 
 from quodlibet import _
 from quodlibet.formats import AudioFile
@@ -17,7 +22,7 @@ _TOTAL_MQTT_ITEMS = 3
 
 try:
     import paho.mqtt.client as mqtt
-except ImportError as e:
+except ImportError:
     from quodlibet.plugins import MissingModulePluginException, \
         PluginNotSupportedError
     if os.name == "nt":

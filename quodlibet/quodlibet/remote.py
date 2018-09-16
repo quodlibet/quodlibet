@@ -32,7 +32,7 @@ class RemoteBase(object):
             cmd_registry (CommandRegistry)
         """
 
-        raise NotImplemented
+        raise NotImplementedError
 
     @classmethod
     def remote_exists(self):
@@ -42,7 +42,7 @@ class RemoteBase(object):
             bool
         """
 
-        raise NotImplemented
+        raise NotImplementedError
 
     @classmethod
     def send_message(cls, message):
@@ -58,7 +58,7 @@ class RemoteBase(object):
                 there was no response.
         """
 
-        raise NotImplemented
+        raise NotImplementedError
 
     def start(self):
         """Start the listener for other instances.
@@ -67,12 +67,12 @@ class RemoteBase(object):
             RemoteError: in case another instance is already listening.
         """
 
-        raise NotImplemented
+        raise NotImplementedError
 
     def stop(self):
         """Stop the listener for other instances"""
 
-        raise NotImplemented
+        raise NotImplementedError
 
 
 class QuodLibetWinRemote(RemoteBase):

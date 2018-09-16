@@ -21,7 +21,7 @@ class TapBpmPanel(Gtk.VBox):
 
         self.dialog = parent
         self.song = song
-        self.original_bpm = float(song["bpm"]) if "bpm" in song else 0.0
+        self.original_bpm = song["bpm"] if "bpm" in song else _("n/a")
 
         self.set_margin_bottom(6)
         self.set_spacing(6)
@@ -51,15 +51,17 @@ class TapBpmPanel(Gtk.VBox):
         self.show_all()
 
     def update(self):
-        has_new_bpm = self.floating_bpm != self.original_bpm
+        has_new_bpm = self.clicks > 1
 
         self.dialog.set_response_sensitive(Gtk.ResponseType.OK, has_new_bpm)
         self.reset_btn.set_sensitive(has_new_bpm)
 
-        if self.floating_bpm != 0.0:
+        if self.clicks > 1:
             self.bpm_label.set_text("%.1f" % self.floating_bpm)
-        else:
+        elif self.clicks == 1:
             self.bpm_label.set_text(_("n/a"))
+        else:
+            self.bpm_label.set_text(str(self.original_bpm))
 
         # Give focus back to the tap button even if reset was pressed
         self.tap_btn.grab_focus()
@@ -98,7 +100,10 @@ class TapBpmPanel(Gtk.VBox):
         self.average_count = 0
         self.min = 0
         self.max = 0
-        self.floating_bpm = self.original_bpm
+        try:
+            self.floating_bpm = float(self.original_bpm)
+        except ValueError:
+            self.floating_bpm = 0.0
         self.floating_square = 0.0
         self.keep = 100
 

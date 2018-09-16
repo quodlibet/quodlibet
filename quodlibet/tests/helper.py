@@ -13,6 +13,7 @@ import sys
 import shutil
 import locale
 import errno
+from io import StringIO
 
 from gi.repository import Gtk, Gdk
 
@@ -21,7 +22,6 @@ from senf import fsnative, environ
 
 from quodlibet.qltk import find_widgets, get_primary_accel_mod
 from quodlibet.util.path import normalize_path
-from quodlibet.compat import StringIO
 
 
 def dummy_path(path):

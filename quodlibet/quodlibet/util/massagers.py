@@ -10,7 +10,6 @@ import locale
 import re
 
 from quodlibet import _
-from quodlibet.compat import text_type
 
 from .iso639 import ISO_639_2
 
@@ -116,7 +115,7 @@ class DateMassager(Massager):
     error = _("The date must be entered in 'YYYY', 'YYYY-MM-DD' or "
               "'YYYY-MM-DD HH:MM:SS' format.")
     __match = re.compile(r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}"
-                         "([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match
+                         r"([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match
 
     def validate(self, value):
         value = value.strip().replace(".", "-").replace("/", "-")
@@ -163,7 +162,7 @@ class PeakMassager(Massager):
         else:
             if f < 0 or f >= 2:
                 raise ValidationError
-            return text_type(f)
+            return str(f)
 
 
 @Massager._register
@@ -175,7 +174,7 @@ class MBIDMassager(Massager):
 
     def validate(self, value):
         value = value.encode('ascii', 'replace').decode("ascii")
-        value = u"".join(filter(text_type.isalnum, value.strip().lower()))
+        value = u"".join(filter(str.isalnum, value.strip().lower()))
         try:
             int(value, 16)
         except ValueError:

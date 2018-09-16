@@ -31,13 +31,11 @@ from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.qltk import Icons
 from quodlibet.plugins import PluginManager
-from quodlibet.util import connect_obj, gdecode
+from quodlibet.util import connect_obj
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
-from quodlibet.compat import iteritems, string_types, text_type, listkeys, \
-    listmap, itervalues
 
 
 class Comment(object):
@@ -82,6 +80,11 @@ class Comment(object):
 
     def is_missing(self):
         return not self.complete
+
+    def get_shared_text(self):
+        if self.shared:
+            return util.escape(self.text)
+        return ''
 
     def get_markup(self):
         """Returns pango markup for displaying"""
@@ -152,10 +155,10 @@ class AudioFileGroup(dict):
         self._can_change = can_change
 
         # collect comment representations
-        for tag, count in iteritems(keys):
+        for tag, count in keys.items():
             first_value = first[tag]
-            if not isinstance(first_value, string_types):
-                first_value = text_type(first_value)
+            if not isinstance(first_value, str):
+                first_value = str(first_value)
             shared = all[tag]
             complete = count == total
             if shared and complete:
@@ -350,7 +353,7 @@ class AddTagDialog(Dialog):
             return self.__tag.tag
 
     def get_value(self):
-        return gdecode(self.__val.get_text())
+        return self.__val.get_text()
 
     def __validate(self, editable, add, invalid, box):
         tag = self.get_tag()
@@ -554,6 +557,9 @@ class EditTags(Gtk.VBox):
             # Issue 697: allow Ctrl-s to save.
             self._save.emit('clicked')
             return Gdk.EVENT_STOP
+        elif qltk.is_accel(event, "<Primary>c"):
+            self.__copy_tag_value(event, view)
+            return Gdk.EVENT_STOP
         return Gdk.EVENT_PROPAGATE
 
     def __enable_save(self, *args):
@@ -622,8 +628,9 @@ class EditTags(Gtk.VBox):
                 else:
                     b.connect('activate', self.__menu_activate, view)
 
-                    if (not min(listmap(self.__songinfo.can_change, b.needs) +
-                                [1])
+                    if (not min(list(
+                                map(self.__songinfo.can_change, b.needs))
+                                + [1])
                             or comment.is_special()):
                         b.set_sensitive(False)
 
@@ -632,17 +639,23 @@ class EditTags(Gtk.VBox):
             if menu.get_children():
                 menu.append(SeparatorMenuItem())
 
-        b = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
-        b.connect('activate', self.__remove_tag, view)
-        qltk.add_fake_accel(b, "Delete")
-        menu.append(b)
+        copy_b = MenuItem(_("_Copy Value(s)"), Icons.EDIT_COPY)
+        copy_b.connect('activate', self.__copy_tag_value, view)
+        qltk.add_fake_accel(copy_b, "<Primary>c")
+        menu.append(copy_b)
+
+        remove_b = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
+        remove_b.connect('activate', self.__remove_tag, view)
+        qltk.add_fake_accel(remove_b, "Delete")
+        menu.append(remove_b)
 
         menu.show_all()
         # Setting the menu itself to be insensitive causes it to not
         # be dismissed; see #473.
         for c in menu.get_children():
             c.set_sensitive(can_change and c.get_property('sensitive'))
-        b.set_sensitive(True)
+        copy_b.set_sensitive(True)
+        remove_b.set_sensitive(True)
         menu.connect('selection-done', lambda m: m.destroy())
 
         # XXX: Keep reference
@@ -654,7 +667,7 @@ class EditTags(Gtk.VBox):
         remove.set_sensitive(bool(rows))
 
     def __add_new_tag(self, model, tag, value):
-        assert isinstance(value, text_type)
+        assert isinstance(value, str)
         iters = [i for (i, v) in model.iterrows() if v.tag == tag]
         if iters and not self.__songinfo.can_multiple_values(tag):
             title = _("Unable to add tag")
@@ -683,9 +696,9 @@ class EditTags(Gtk.VBox):
                 break
             tag = add.get_tag()
             value = add.get_value()
-            assert isinstance(value, text_type)
+            assert isinstance(value, str)
             value = massagers.validate(tag, value)
-            assert isinstance(value, text_type)
+            assert isinstance(value, str)
             if not self.__songinfo.can_change(tag):
                 title = _("Invalid tag")
                 msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
@@ -711,13 +724,26 @@ class EditTags(Gtk.VBox):
             else:
                 model.remove(row.iter)
 
+    def __copy_tag_value(self, activator, view):
+        model, paths = view.get_selection().get_selected_rows()
+        rows = [model[path] for path in paths]
+        values = []
+        for row in rows:
+            entry_text = row[0].value.get_shared_text()
+            if entry_text:
+                values.append(entry_text)
+        text = '\n'.join(values)
+        if len(text) > 0:
+            clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+            clipboard.set_text(text, -1)
+
     def __save_files(self, save, revert, model, library):
         updated = {}
         deleted = {}
         added = {}
         renamed = {}
 
-        for entry in itervalues(model):
+        for entry in model.values():
             if entry.edited and not (entry.deleted or entry.renamed):
                 if entry.origvalue is not None:
                     l = updated.setdefault(entry.tag, [])
@@ -750,7 +776,7 @@ class EditTags(Gtk.VBox):
                     break
 
             changed = False
-            for key, values in iteritems(updated):
+            for key, values in updated.items():
                 for (new_value, old_value) in values:
                     if song.can_change(key):
                         if old_value is None:
@@ -759,13 +785,13 @@ class EditTags(Gtk.VBox):
                             song.change(key, old_value.text, new_value.text)
                         changed = True
 
-            for key, values in iteritems(added):
+            for key, values in added.items():
                 for value in values:
                     if song.can_change(key):
                         song.add(key, value.text)
                         changed = True
 
-            for key, values in iteritems(deleted):
+            for key, values in deleted.items():
                 for value in values:
                     if not value.shared:
                         # In case it isn't shared we don't know the actual
@@ -779,7 +805,7 @@ class EditTags(Gtk.VBox):
                         changed = True
 
             save_rename = []
-            for new_tag, values in iteritems(renamed):
+            for new_tag, values in renamed.items():
                 for old_tag, new_value, old_value in values:
                     if (song.can_change(new_tag) and old_tag in song):
                         if not new_value.is_special():
@@ -818,8 +844,8 @@ class EditTags(Gtk.VBox):
             b.set_sensitive(not all_done)
 
     def __edit_tag(self, renderer, path, new_value, model):
-        new_value = gdecode(new_value)
-        new_value = ', '.join(new_value.splitlines())
+        #pfps leaving the newline should be OK
+        #        new_value = ', '.join(new_value.splitlines())
         path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
         error_dialog = None
@@ -835,8 +861,9 @@ class EditTags(Gtk.VBox):
 
         comment = entry.value
         changed = comment.text != new_value
-        if (changed and ((comment.shared and comment.complete) or new_value)) \
-                or (new_value and comment.shared and not comment.complete):
+        identical = comment.shared and comment.complete
+        if (changed and (identical or new_value)) \
+                or (new_value and not identical):
             # only give an error if we would have applied the value
             if error_dialog is not None:
                 error_dialog.run()
@@ -927,7 +954,7 @@ class EditTags(Gtk.VBox):
             self.__songinfo = AudioFileGroup(songs)
         songinfo = self.__songinfo
 
-        keys = listkeys(songinfo)
+        keys = list(songinfo.keys())
         default_tags = get_default_tags()
         keys = set(keys + default_tags)
 

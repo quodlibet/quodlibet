@@ -12,13 +12,12 @@ import unicodedata
 
 from quodlibet import print_d
 from quodlibet.util import re_escape
-from quodlibet.compat import text_type, xrange, unichr
 
 from .db import get_replacement_mapping
 
 
 def _fixup_literal(literal, in_seq, mapping):
-    u = unichr(literal)
+    u = chr(literal)
     if u in mapping:
         u = u + u"".join(mapping[u])
     need_seq = len(u) > 1
@@ -29,7 +28,7 @@ def _fixup_literal(literal, in_seq, mapping):
 
 
 def _fixup_literal_list(literals, mapping):
-    u = u"".join(map(unichr, literals))
+    u = u"".join(map(chr, literals))
 
     # longest matches first, we will handle contained ones in the replacement
     # function
@@ -62,19 +61,19 @@ def _fixup_literal_list(literals, mapping):
 
 
 def _fixup_not_literal(literal, mapping):
-    u = unichr(literal)
+    u = chr(literal)
     return u"[^%s]" % u"".join(re_escape(u + u"".join(mapping.get(u, []))))
 
 
 def _fixup_range(start, end, mapping):
     extra = []
-    for i in xrange(start, end + 1):
-        u = unichr(i)
+    for i in range(start, end + 1):
+        u = chr(i)
         if u in mapping:
             extra.append(re_escape(u"".join(mapping[u])))
 
-    start = re_escape(unichr(start))
-    end = re_escape(unichr(end))
+    start = re_escape(chr(start))
+    end = re_escape(chr(end))
     return u"%s%s-%s" % ("".join(extra), start, end)
 
 
@@ -135,7 +134,7 @@ def _construct_in(pattern, mapping):
     return "[%s%s]" % ("^" if negate else "", u"".join(parts))
 
 
-def _construct_regexp(pattern, mapping):
+def _construct_regexp(pattern, mapping, parent=""):
     """Raises NotImplementedError"""
 
     parts = []
@@ -203,7 +202,7 @@ def _construct_regexp(pattern, mapping):
                 else:
                     raise NotImplementedError(op, av)
             group, pad = av
-            pad = _construct_regexp(pad, mapping)
+            pad = _construct_regexp(pad, mapping, parent=op)
             if group is None:
                 parts.append(u"(?:%s)" % pad)
             else:
@@ -229,7 +228,11 @@ def _construct_regexp(pattern, mapping):
         elif op == "branch":
             dummy, branches = av
             branches = map(lambda b: _construct_regexp(b, mapping), branches)
-            parts.append(u"%s" % (u"|".join(branches)))
+            pad = u"|".join(branches)
+            if parent != "subpattern":
+                parts.append("(?:%s)" % pad)
+            else:
+                parts.append(pad)
         else:
             raise NotImplementedError(op)
 
@@ -239,7 +242,7 @@ def _construct_regexp(pattern, mapping):
 def re_replace_literals(text, mapping):
     """Raises NotImplementedError or re.error"""
 
-    assert isinstance(text, text_type)
+    assert isinstance(text, str)
 
     pattern = sre_parse.parse(text)
     return _construct_regexp(pattern, mapping)
@@ -258,7 +261,7 @@ def re_add_variants(text):
     case something is not supported NotImplementedError gets raised.
     """
 
-    assert isinstance(text, text_type)
+    assert isinstance(text, str)
 
     text = unicodedata.normalize("NFC", text)
     return re_replace_literals(text, get_replacement_mapping())
@@ -267,7 +270,7 @@ def re_add_variants(text):
 def compile(pattern, ignore_case=True, dot_all=False, asym=False):
     """
     Args:
-        pattern (text_type): a unicode regex
+        pattern (str): a unicode regex
         ignore_case (bool): if case shouuld be ignored when matching
         dot_all (bool): if "." should match newlines
         asym (bool): if ascii should match similar looking unicode chars
@@ -278,7 +281,7 @@ def compile(pattern, ignore_case=True, dot_all=False, asym=False):
         ValueError: In case the regex is invalid
     """
 
-    assert isinstance(pattern, text_type)
+    assert isinstance(pattern, str)
 
     pattern = unicodedata.normalize("NFC", pattern)
 

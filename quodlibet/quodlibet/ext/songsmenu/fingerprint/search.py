@@ -177,7 +177,7 @@ class ResultView(AllTreeView):
             render.set_property('ellipsize', Pango.EllipsizeMode.END)
             column = Gtk.TreeViewColumn(util.tag(tag), render)
 
-            def cell_data(column, cell, model, iter_, data, tag=tag):
+            def cell_data2(column, cell, model, iter_, data, tag=tag):
                 entry = model.get_value(iter_)
                 release = entry.release
                 if not release:
@@ -187,7 +187,7 @@ class ResultView(AllTreeView):
                     value = ", ".join(value.split("\n"))
                     cell.set_property("text", value)
 
-            column.set_cell_data_func(render, cell_data)
+            column.set_cell_data_func(render, cell_data2)
             self.append_column(column)
             if tag == "tracknumber":
                 self._track_column = column

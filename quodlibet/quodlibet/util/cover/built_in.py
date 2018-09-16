@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
-#      2015-2016 Nick Boultbee
+#      2015-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import glob
 import os.path
 import re
+import sre_constants
 
 from senf import fsn2text
 
@@ -20,6 +22,10 @@ from quodlibet import config
 
 def get_ext(s):
     return os.path.splitext(s)[1].lstrip('.')
+
+
+def prefer_embedded():
+    return config.getboolean("albumart", "prefer_embedded", False)
 
 
 class EmbeddedCover(CoverSourcePlugin):
@@ -36,7 +42,7 @@ class EmbeddedCover(CoverSourcePlugin):
 
     @staticmethod
     def priority():
-        return 0.7001
+        return 0.85 if prefer_embedded() else 0.7
 
     @property
     def cover(self):
@@ -68,6 +74,13 @@ class FilesystemCover(CoverSourcePlugin):
         # in the common case this means we only search once per album
         return song('~dirname'), song.album_key
 
+    @property
+    def name(self):
+        return "Filesystem"
+
+    def __str__(self):
+        return "Filesystem in %s" % (self.group_by(self.song)[0])
+
     @staticmethod
     def priority():
         return 0.80
@@ -83,8 +96,14 @@ class FilesystemCover(CoverSourcePlugin):
 
         # Issue 374: Specify artwork filename
         if config.getboolean("albumart", "force_filename"):
-            path = os.path.join(base, config.get("albumart", "filename"))
-            if os.path.isfile(path):
+            escaped_path = os.path.join(glob.escape(base),
+                                        config.get("albumart", "filename"))
+            try:
+                for path in glob.glob(escaped_path):
+                    images.append((100, path))
+            except sre_constants.error:
+                # Use literal filename if globbing causes errors
+                path = os.path.join(base, config.get("albumart", "filename"))
                 images = [(100, path)]
         else:
             entries = []
@@ -138,8 +157,8 @@ class FilesystemCover(CoverSourcePlugin):
                     if sub is not None:
                         fn = os.path.join(sub, fn)
                     images.append((score, os.path.join(base, fn)))
-            images.sort(reverse=True)
 
+        images.sort(reverse=True)
         for score, path in images:
             # could be a directory
             if not os.path.isfile(path):

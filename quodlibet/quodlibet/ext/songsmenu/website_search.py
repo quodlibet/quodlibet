@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
-# Copyright 2011-2016 Nick Boultbee
+# Copyright 2011-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+
+import os
+from urllib.parse import quote_plus
+from typing import Optional
+
+from gi.repository import Gtk
 
 import quodlibet
 from quodlibet import _
@@ -12,17 +18,13 @@ from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons
 from quodlibet.qltk.cbes import StandaloneEditor
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk import Icons
-from quodlibet.util import website
-from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
 from quodlibet.util import connect_obj, print_w, print_d
+from quodlibet.util import website
 from quodlibet.util.path import uri_is_valid
-from quodlibet.compat import quote_plus, text_type
-
-from gi.repository import Gtk
-import os
+from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS
 
 
 class WebsiteSearch(SongsMenuPlugin):
@@ -121,32 +123,39 @@ class WebsiteSearch(SongsMenuPlugin):
         else:
             self.set_sensitive(False)
 
-    def plugin_songs(self, songs):
+    def plugin_songs(self, songs, launch=True) -> bool:
         # Check this is a launch, not a configure
         if self.chosen_site:
             url_pat = self.get_url_pattern(self.chosen_site)
             pat = Pattern(url_pat)
-            urls = set()
-            for song in songs:
-                # Generate a sanitised AudioFile; allow through most tags
-                subs = AudioFile()
-                for k in (USER_TAGS + MACHINE_TAGS):
-                    vals = song.comma(k)
-                    if vals:
-                        try:
-                            encoded = text_type(vals).encode('utf-8')
-                            subs[k] = (encoded if k == 'website'
-                                       else quote_plus(encoded))
-                        # Dodgy unicode problems
-                        except KeyError:
-                            print_d("Problem with %s tag values: %r"
-                                    % (k, vals))
-                url = str(pat.format(subs))
-                if not url:
-                    print_w("Couldn't build URL using \"%s\"."
-                            "Check your pattern?" % url_pat)
-                    return
-                # Grr, set.add() should return boolean...
-                if url not in urls:
-                    urls.add(url)
+            # Remove Nones, and de-duplicate collection
+            urls = set(filter(None, (website_for(pat, s) for s in songs)))
+            if not urls:
+                print_w("Couldn't build URLs using \"%s\"."
+                        "Check your pattern?" % url_pat)
+                return False
+            print_d("Got %d websites from %d songs" % (len(urls), len(songs)))
+            if launch:
+                for url in urls:
                     website(url)
+        return True
+
+
+def website_for(pat: Pattern, song: AudioFile) -> Optional[str]:
+    """Gets a utf-8 encoded string for a website from the given pattern"""
+
+    # Generate a sanitised AudioFile; allow through most tags
+    subs = AudioFile()
+    # See issue 2762
+    for k in (USER_TAGS + MACHINE_TAGS + ['~filename']):
+        vals = song.comma(k)
+        if vals:
+            try:
+                # Escaping ~filename stops ~dirname ~basename etc working
+                # But not escaping means ? % & will cause problems.
+                # Who knows what user wants to do with /, seems better raw.
+                subs[k] = (vals if k in ['website', '~filename']
+                           else quote_plus(vals))
+            except KeyError:
+                print_d("Problem with %s tag values: %r" % (k, vals))
+    return pat.format(subs) or None

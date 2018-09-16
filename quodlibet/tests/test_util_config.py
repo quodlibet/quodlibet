@@ -9,7 +9,6 @@ from tests import TestCase, mkstemp
 from .helper import temp_filename
 
 from quodlibet.util.config import Config, Error, ConfigProxy
-from quodlibet.compat import PY2
 
 
 class TConfig(TestCase):
@@ -209,8 +208,6 @@ class TConfig(TestCase):
         conf = Config()
         conf.add_section("foo")
         conf.setbytes("foo", "bar", b"\xff\xff\xff\xff\xff\xff")
-        if PY2:
-            self.assertRaises(Error, conf.getstringlist, "foo", "bar")
 
     def test_getlist(self):
         conf = Config()

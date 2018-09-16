@@ -114,7 +114,7 @@ Let's dissect this:
    trailing slash is outside the < > that delineate the conditional block,
    since we always want that folder level.
  * ``<album|<album>/>``: Album folder as needed, else skip
- * ``<tracknumber|<tracknumber - >``: Prepend tracknumber if it exists
+ * ``<tracknumber|<tracknumber> - >``: Prepend tracknumber if it exists
  * ``<title>``: Duh.
 
 However, for songs that don't have a genre tag, I wanted to use a tag I use

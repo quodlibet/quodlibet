@@ -11,7 +11,6 @@ from mutagen.mp4 import MP4, MP4Cover
 
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import decode
-from quodlibet.compat import iteritems, listkeys, text_type
 
 from ._audio import AudioFile
 from ._misc import AudioFileError, translate_errors
@@ -71,13 +70,13 @@ class MP4File(AudioFile):
         '----:com.apple.iTunes:replaygain_reference_loudness':
             'replaygain_reference_loudness',
     }
-    __rtranslate = dict([(v, k) for k, v in iteritems(__translate)])
+    __rtranslate = dict([(v, k) for k, v in __translate.items()])
 
     __tupletranslate = {
         "disk": "discnumber",
         "trkn": "tracknumber",
         }
-    __rtupletranslate = dict([(v, k) for k, v in iteritems(__tupletranslate)])
+    __rtupletranslate = dict([(v, k) for k, v in __tupletranslate.items()])
 
     def __init__(self, filename):
         with translate_errors():
@@ -87,6 +86,8 @@ class MP4File(AudioFile):
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         if audio.info.channels:
             self["~#channels"] = audio.info.channels
+        self["~#samplerate"] = audio.info.sample_rate
+        self["~#bitdepth"] = audio.info.bits_per_sample
 
         for key, values in audio.items():
             if key in self.__tupletranslate:
@@ -96,11 +97,11 @@ class MP4File(AudioFile):
                     if total:
                         self[name] = u"%d/%d" % (cur, total)
                     else:
-                        self[name] = text_type(cur)
+                        self[name] = str(cur)
             elif key in self.__translate:
                 name = self.__translate[key]
                 if key == "tmpo":
-                    self[name] = u"\n".join(map(text_type, values))
+                    self[name] = u"\n".join(map(str, values))
                 elif key.startswith("----"):
                     self[name] = "\n".join(
                         map(lambda v: decode(v).strip("\x00"), values))
@@ -114,8 +115,8 @@ class MP4File(AudioFile):
         with translate_errors():
             audio = MP4(self["~filename"])
 
-        for key in (listkeys(self.__translate) +
-                    listkeys(self.__tupletranslate)):
+        for key in (list(self.__translate.keys()) +
+                    list(self.__tupletranslate.keys())):
             try:
                 del(audio[key])
             except KeyError:
@@ -148,7 +149,8 @@ class MP4File(AudioFile):
         return False
 
     def can_change(self, key=None):
-        OK = listkeys(self.__rtranslate) + listkeys(self.__rtupletranslate)
+        OK = list(self.__rtranslate.keys()) + \
+            list(self.__rtupletranslate.keys())
         if key is None:
             return OK
         else:

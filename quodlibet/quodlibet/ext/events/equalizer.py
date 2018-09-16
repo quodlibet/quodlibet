@@ -17,7 +17,6 @@ from quodlibet import app
 from quodlibet import config
 from quodlibet.qltk import Button, Icons
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.compat import iteritems
 
 
 # Presets (roughly) taken from Pulseaudio equalizer
@@ -164,7 +163,7 @@ class Equalizer(EventPlugin):
             lbl = Gtk.Label(label=band.split()[1])
             lbl.set_alignment(1, 0.5)
             table.attach(lbl, 1, 2, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
-            adj = Gtk.Adjustment(levels[i], -24., 12., 0.5, 3, 0)
+            adj = Gtk.Adjustment.new(levels[i], -24., 12., 0.5, 3, 0)
             adj.connect('value-changed', set_band, i)
             adjustments.append(adj)
             hs = Gtk.HScale(adjustment=adj)
@@ -178,7 +177,7 @@ class Equalizer(EventPlugin):
         def clicked_cb(button):
             [adj.set_value(0) for adj in adjustments]
 
-        sorted_presets = sorted(iteritems(PRESETS))
+        sorted_presets = sorted(PRESETS.items())
 
         def combo_changed(combo):
             # custom, skip

@@ -11,8 +11,6 @@ import xml.etree.ElementTree as ET
 import dbus
 import dbus.service
 
-from quodlibet.compat import unichr, text_type, PY3, iteritems
-
 
 def dbus_unicode_validate(text):
     """Takes a unicode string and replaces all invalid codepoints that would
@@ -34,7 +32,7 @@ def dbus_unicode_validate(text):
             cps.append(c)
         else:
             cps.append(0xFFFD)
-    return u"".join(map(unichr, cps))
+    return u"".join(map(chr, cps))
 
 
 def list_spec_properties(spec):
@@ -47,9 +45,7 @@ def list_spec_properties(spec):
     'emit' can be true/false/invalidates (see dbus spec)
     """
 
-    if not isinstance(spec, bytes):
-        spec = spec.encode("utf-8")
-    assert isinstance(spec, bytes)
+    assert isinstance(spec, str)
 
     ANNOTATION_EMITS = "org.freedesktop.DBus.Property.EmitsChangedSignal"
 
@@ -62,7 +58,10 @@ def list_spec_properties(spec):
             emit = fallback
         return emit
 
-    root = ET.fromstring(b'<?xml version="1.0"?><props>' + spec + b'</props>')
+    root = ET.fromstring(
+        b'<?xml version="1.0" encoding="UTF-8"?><props>' +
+        spec.encode("utf-8") +
+        b'</props>')
     props = {}
     root_emit = get_emit(root, "true")
     for element in root:
@@ -80,15 +79,17 @@ def list_spec_properties(spec):
 def filter_property_spec(spec, wl=None, bl=None):
     """Remove properties based on a white list or black list."""
 
-    if not isinstance(spec, bytes):
-        spec = spec.encode("utf-8")
-    assert isinstance(spec, bytes)
+    assert isinstance(spec, str)
 
     if wl and bl:
         raise ValueError
     if not wl and not bl:
         return spec
-    root = ET.fromstring(b'<?xml version="1.0"?><props>' + spec + b'</props>')
+
+    root = ET.fromstring(
+        b'<?xml version="1.0" encoding="UTF-8"?><props>' +
+        spec.encode("utf-8") +
+        b'</props>')
     if wl:
         to_rm = lambda e: e.attrib["name"] not in wl
     elif bl:
@@ -96,8 +97,8 @@ def filter_property_spec(spec, wl=None, bl=None):
     strs = []
     for element in root:
         if element.tag != "property" or not to_rm(element):
-            strs.append(ET.tostring(element).strip())
-    return b"\n".join(strs)
+            strs.append(ET.tostring(element, encoding="unicode").strip())
+    return "\n".join(strs)
 
 
 TYPE_MAP = {
@@ -132,14 +133,9 @@ def apply_signature(value, sig, utf8_strings=False):
     elif sig.startswith("a"):
         return dbus.Array(value, signature=sig[1:])
     elif sig == "s":
-        if utf8_strings and not PY3:
-            if isinstance(value, text_type):
-                value = value.encode("utf-8")
-            return dbus.UTF8String(value)
-        else:
-            if isinstance(value, bytes):
-                value = value.decode("utf-8")
-            return dbus.String(value)
+        if isinstance(value, bytes):
+            value = value.decode("utf-8")
+        return dbus.String(value)
     else:
         return TYPE_MAP[sig](value)
 
@@ -155,7 +151,7 @@ class DBusIntrospectable(object):
     and provided signals, properties, methods in the introspection
     xml format.
 
-    The dbus bindings allready provide a Introspect method, but it doesn't
+    The dbus bindings already provide a Introspect method, but it doesn't
     understand properties, also having them in text format in the class
     is a nice documentation.
     """
@@ -179,12 +175,12 @@ class DBusIntrospectable(object):
     def Introspect(self):
         parts = []
         parts.append("<node>")
-        for iface, intros in iteritems(self.__ispec):
+        for iface, intros in self.__ispec.items():
             parts.append("<interface name=\"%s\">" % iface)
             parts.extend(intros)
             parts.append("</interface>")
         parts.append("</node>")
-        return ("\n".join(parts)).encode("utf-8")
+        return "\n".join(parts)
 
 
 class DBusProperty(object):
@@ -290,7 +286,7 @@ class DBusProperty(object):
                 raise ValueError("Property %s not registered" % prop)
             combos.setdefault(iface, []).append(prop)
 
-        for iface, props in iteritems(combos):
+        for iface, props in combos.items():
             values = {}
             inval = []
             for prop in props:

@@ -14,14 +14,12 @@ from quodlibet import config
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.util.string import decode
-from quodlibet.util import gdecode
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.compat import text_type
 
 
 def _config(section, option, label, tooltip=None, getter=None):
     def on_changed(entry, *args):
-        config.settext(section, option, gdecode(entry.get_text()))
+        config.settext(section, option, entry.get_text())
 
     entry = UndoEntry()
     if tooltip:
@@ -52,7 +50,7 @@ def text_config(section, option, label, tooltip=None):
 def boolean_config(section, option, label, tooltip):
 
     def getter(section, option):
-        return text_type(config.getboolean(section, option))
+        return str(config.getboolean(section, option))
 
     return _config(section, option, label, tooltip, getter)
 
@@ -60,7 +58,7 @@ def boolean_config(section, option, label, tooltip):
 def int_config(section, option, label, tooltip):
 
     def getter(section, option):
-        return text_type(config.getint(section, option))
+        return str(config.getint(section, option))
 
     return _config(section, option, label, tooltip, getter)
 
@@ -152,6 +150,14 @@ class AdvancedPreferences(EventPlugin):
                 "settings", "datecolumn_timestamp_format",
                 "DateColumn timestamp format",
                 "A timestamp format, e.g. %Y%m%d %X "))
+
+        rows.append(
+            text_config(
+                "settings", "scrollbar_always_visible",
+                "Scrollbars always visible:",
+                ("Toggles whether the scrollbars on the bottom and side of "
+                 "the window always are visible or get hidden when not in use "
+                 "(restart required)")))
 
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)

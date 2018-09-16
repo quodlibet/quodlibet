@@ -17,6 +17,13 @@ from quodlibet.plugins import PluginManager
 from tests.gtk_helpers import MockSelData
 
 
+def test_is_instance_of_gtype_name():
+    assert qltk.is_instance_of_gtype_name(Gtk.Button(), "GtkButton")
+    assert qltk.is_instance_of_gtype_name(Gtk.Button(), "GtkWidget")
+    assert not qltk.is_instance_of_gtype_name(Gtk.Button(), "GtkLabel")
+    assert not qltk.is_instance_of_gtype_name(Gtk.Button(), "NopeNopeNope")
+
+
 class TQltk(TestCase):
     def test_none(self):
         self.failUnless(qltk.get_top_parent(None) is None)

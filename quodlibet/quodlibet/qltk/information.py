@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2016-2017 Nick Boultbee
+#           2016-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ from quodlibet.util import tag, connect_destroy
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import readable
 from quodlibet.util.path import filesize, unexpand
-from quodlibet.compat import text_type
 
 
 def Label(label=None, markup=None, ellipsize=False):
@@ -53,6 +52,7 @@ class TitleLabel(Gtk.Label):
         markup = text if is_markup else ("<i>%s</i>" % util.escape(text))
         markup = "<span size='xx-large'>%s</span>" % markup
         self.set_markup(markup)
+        self.set_selectable(True)
 
 
 class ReactiveCoverImage(CoverImage):
@@ -220,7 +220,7 @@ class OneSong(qltk.Notebook):
 
         if performers:
             text = '\n'.join("%s (%s)" % (', '.join(names), part)
-                             for part, names in performers.iteritems())
+                             for part, names in performers.items())
 
             name = (tag("performer") if len(performers) == 1
                     else _("performers"))
@@ -244,7 +244,7 @@ class OneSong(qltk.Notebook):
             if t == 0:
                 return _("Unknown")
             else:
-                return text_type(time.strftime("%c", time.localtime(t)))
+                return str(time.strftime("%c", time.localtime(t)))
 
         playcount = counter(song.get("~#playcount", 0))
         skipcount = counter(song.get("~#skipcount", 0))
@@ -277,7 +277,7 @@ class OneSong(qltk.Notebook):
             if t == 0:
                 return _("Unknown")
             else:
-                return text_type(time.strftime("%c", time.localtime(t)))
+                return str(time.strftime("%c", time.localtime(t)))
 
         fn = fsn2text(unexpand(song["~filename"]))
         length = util.format_time_preferred(song.get("~#length", 0))
@@ -487,16 +487,7 @@ class OneArtist(qltk.Notebook):
         box.pack_start(l, False, False, 0)
 
     def _album(self, songs, box):
-        noalbum = 0
-        albums = {}
-        for song in songs:
-            if "album" in song:
-                albums[song.list("album")[0]] = song
-            else:
-                noalbum += 1
-        albums = [(song.get("date"), song, album) for
-                  album, song in albums.items()]
-        albums.sort()
+        albums, noalbum = _sort_albums(songs)
 
         def format(args):
             date, song, album = args
@@ -527,6 +518,23 @@ class OneArtist(qltk.Notebook):
                      xoptions=Gtk.AttachOptions.EXPAND, yoptions=0)
             added.add(cover.name)
         box.pack_start(t, True, True, 0)
+
+
+def _sort_albums(songs):
+    """:return: a tuple of (albums, count) where
+        count is the number of album-less songs and
+        albums is a list of (date, song, album), sorted"""
+    no_album_count = 0
+    albums = {}
+    for song in songs:
+        if "album" in song:
+            albums[song.list("album")[0]] = song
+        else:
+            no_album_count += 1
+    albums = [(song.get("date", ""), song, album) for
+              album, song in albums.items()]
+    albums.sort()
+    return albums, no_album_count
 
 
 class ManySongs(qltk.Notebook):
@@ -635,7 +643,7 @@ class Information(Window, PersistentWindowMixin):
     def __check_removed(self, library, songs):
         gone = set(songs)
         old = len(self.__songs)
-        self.__songs = filter(lambda s: s not in gone, self.__songs)
+        self.__songs = list(filter(lambda s: s not in gone, self.__songs))
         if len(self.__songs) != old:
             self.__update(library)
 

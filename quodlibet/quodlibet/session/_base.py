@@ -1,19 +1,24 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2015  Christoph Reiter
+# Copyright 2018 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import sys
+
+class SessionError(Exception):
+    pass
 
 
-PY2 = sys.version_info[0] == 2
-PY3 = not PY2
+class SessionClient(object):
 
+    def open(self, app):
+        """Raises SessionError"""
 
-if PY2:
-    text_type = unicode
-else:
-    text_type = str
+        pass
+
+    def close(self):
+        """Doesn't raise, can be called multiple times"""
+
+        pass

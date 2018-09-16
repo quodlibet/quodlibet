@@ -8,7 +8,6 @@
 
 
 """Various `plugin_handles` helpers"""
-from quodlibet.formats._id3 import ID3File
 
 
 def is_a_file(song):
@@ -33,10 +32,6 @@ def has_writable_image(song):
 
 def has_bookmark(song):
     return bool(song.bookmarks)
-
-
-def is_an_id3(song):
-    return isinstance(song, ID3File)
 
 
 # Higher order functions

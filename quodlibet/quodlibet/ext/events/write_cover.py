@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
+#           2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +13,7 @@ import shutil
 from gi.repository import Gtk
 
 import quodlibet
-from quodlibet import _
+from quodlibet import _, print_w
 from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
@@ -20,8 +21,8 @@ from quodlibet.qltk import Icons
 
 
 def get_path():
-    out = os.path.join(quodlibet.get_user_dir(), "current.cover")
-    return config.get("plugins", __name__, out)
+    default = os.path.join(quodlibet.get_user_dir(), "current.cover")
+    return config.get("plugins", __name__, default=default)
 
 
 def set_path(value):
@@ -35,19 +36,19 @@ class PictureSaver(EventPlugin):
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def plugin_on_song_started(self, song):
-        outfile = get_path()
-        if song is None:
+        def delete(outfile):
             try:
                 os.unlink(outfile)
-            except EnvironmentError:
-                pass
+            except EnvironmentError as e:
+                print_w("Couldn't delete '%s' (%s)" % (outfile, e))
+
+        outfile = get_path()
+        if song is None:
+            delete(outfile)
         else:
             cover = app.cover_manager.get_cover(song)
             if cover is None:
-                try:
-                    os.unlink(outfile)
-                except EnvironmentError:
-                    pass
+                delete(outfile)
             else:
                 with open(outfile, "wb") as f:
                     f.write(cover.read())

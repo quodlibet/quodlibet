@@ -72,7 +72,9 @@ class MPRIS(EventPlugin):
         if indicate:
             self.__indicate_server = s = indicate.indicate_server_ref_default()
             s.set_type("music.quodlibet")
-            s.set_desktop_file("/usr/share/applications/quodlibet.desktop")
+            s.set_desktop_file(
+                "/usr/share/applications/io.github.quodlibet.QuodLibet.desktop"
+            )
             s.show()
 
     def disabled(self):

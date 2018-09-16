@@ -10,7 +10,7 @@ from gi.repository import Gtk, GObject
 
 from quodlibet import _
 from quodlibet.plugins.editing import RenameFilesPlugin, TagsFromPathPlugin
-from quodlibet.util import connect_obj, gdecode
+from quodlibet.util import connect_obj
 from quodlibet.qltk import Icons
 
 
@@ -40,8 +40,8 @@ class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
         connect_obj(self._to, 'changed', self.emit, 'changed')
 
     def filter(self, orig_or_tag, value):
-        fr = gdecode(self._from.get_text())
-        to = gdecode(self._to.get_text())
+        fr = self._from.get_text()
+        to = self._to.get_text()
         try:
             return re.sub(fr, to, value)
         except:

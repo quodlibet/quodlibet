@@ -6,7 +6,8 @@ Downloads
 =========
 
 ================ ================================================ ==========================================
-**Linux:**       |ubuntu-logo| :ref:`Ubuntu <ubuntu>`             |debian-logo| :ref:`Debian <debian>`
+**Linux:**       |flatpak-logo| :ref:`Flatpak <flatpak>`
+   \             |ubuntu-logo| :ref:`Ubuntu <ubuntu>`             |debian-logo| :ref:`Debian <debian>`
    \             |fedora-logo| :ref:`Fedora <fedora>`             |opensuse-logo| :ref:`openSUSE <opensuse>`
    \             |arch-logo| :ref:`Arch Linux <arch>`
 **Windows:**     |windows-logo| :ref:`Windows <windows>`
@@ -27,6 +28,15 @@ All files are signed with the following key: `0EBF 782C 5D53 F7E5 FB02  A667 46B
 .. include:: tables/default.rst
 
 For old releases see the `full file listing <https://github.com/quodlibet/quodlibet/releases>`__.
+
+
+.. _flatpak:
+
+|flatpak-logo| Flatpak
+----------------------
+
+`Quod Libet on Flathub
+<https://flathub.org/apps/details/io.github.quodlibet.QuodLibet>`__
 
 
 .. _ubuntu:
