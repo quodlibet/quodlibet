@@ -21,7 +21,6 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import connect_obj, escape
-from quodlibet.compat import iteritems, iterkeys
 from quodlibet.const import COLUMN_MODE_SMALL, COLUMN_MODE_WIDE, COLUMN_MODE_COLUMNAR
 from .util import get_headers, save_headers
 

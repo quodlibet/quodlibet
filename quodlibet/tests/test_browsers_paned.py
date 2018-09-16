@@ -23,6 +23,7 @@ from quodlibet.browsers.paned.pane import Pane
 from quodlibet.formats import AudioFile
 from quodlibet.util.collection import Collection
 from quodlibet.library import SongLibrary, SongLibrarian
+from quodlibet.const import COLUMN_MODE_SMALL, COLUMN_MODE_WIDE, COLUMN_MODE_COLUMNAR
 
 
 SONGS = [
@@ -172,8 +173,9 @@ class TPanedBrowser(TestCase):
         self.failUnlessAlmostEqual(paneds[2].get_relative(), 1.0 / 2.0)
 
     def test_wide_mode(self):
-        self.bar.set_all_wide_mode(True)
-        self.bar.set_all_wide_mode(False)
+        self.bar.set_all_wide_mode(COLUMN_MODE_SMALL)
+        self.bar.set_all_wide_mode(COLUMN_MODE_WIDE)
+        self.bar.set_all_wide_mode(COLUMN_MODE_COLUMNAR)
 
     def tearDown(self):
         self.bar.destroy()
