@@ -8,7 +8,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from configparser import NoOptionError
 from gi.repository import Gtk
 
 from quodlibet import config
@@ -23,14 +22,12 @@ from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import connect_obj, escape
 from quodlibet.compat import iteritems, iterkeys
+from quodlibet.const import COLUMN_MODE_SMALL, COLUMN_MODE_WIDE, COLUMN_MODE_COLUMNAR
 from .util import get_headers, save_headers
 
 
 class ColumnModes(Gtk.VBox):
-    SMALL = _("Small")
-    WIDE = _("Wide")
-    COLUMNAR = _("Columnar")
-    modes = [SMALL, WIDE, COLUMNAR]
+    modes = [COLUMN_MODE_SMALL, COLUMN_MODE_WIDE, COLUMN_MODE_COLUMNAR]
     buttons = []
 
     def __init__(self):
@@ -38,12 +35,9 @@ class ColumnModes(Gtk.VBox):
 
         group = None
         for mode in self.modes:
-            group = Gtk.RadioButton(group=group, label=mode)
-            try:
-                if mode == config.gettext("browsers", "pane_mode"):
-                    group.set_active(True)
-            except NoOptionError:
-                pass
+            group = Gtk.RadioButton(group=group, label=_(mode))
+            if mode == config.gettext("browsers", "pane_mode"):
+                group.set_active(True)
             self.pack_start(group, False, True, 0)
             self.buttons.append(group)
 
@@ -185,7 +179,7 @@ class PreferencesButton(Gtk.HBox):
 
         pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
 
-        def preferences_cb(_):
+        def preferences_cb(menu_item):
             window = Preferences(browser)
             window.show()
         pref_item.connect("activate", preferences_cb)
@@ -253,11 +247,11 @@ class Preferences(qltk.UniqueWindow):
         self.get_child().show_all()
 
     def __apply(self, column_modes, editor, browser, close, equal_width):
-        selected_mode = ColumnModes.SMALL
+        selected_mode = COLUMN_MODE_SMALL
         if column_modes.buttons[1].get_active():
-            selected_mode = ColumnModes.WIDE
+            selected_mode = COLUMN_MODE_WIDE
         if column_modes.buttons[2].get_active():
-            selected_mode = ColumnModes.COLUMNAR
+            selected_mode = COLUMN_MODE_COLUMNAR
         config.settext("browsers", "pane_mode", selected_mode)
         browser.set_all_wide_mode(selected_mode)
 
