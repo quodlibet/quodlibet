@@ -56,8 +56,8 @@ class ColumnModes(Gtk.VBox):
         config.settext("browsers", "pane_mode", selected_mode)
         self.browser.set_all_wide_mode(selected_mode)
 
-class PatternEditor(Gtk.VBox):
 
+class PatternEditor(Gtk.VBox):
     PRESETS = [
         ["genre", "~people", "album"],
         ["~people", "album"],
