@@ -30,8 +30,9 @@ class ColumnModes(Gtk.VBox):
     modes = [COLUMN_MODE_SMALL, COLUMN_MODE_WIDE, COLUMN_MODE_COLUMNAR]
     buttons = []
 
-    def __init__(self):
+    def __init__(self, browser):
         super(ColumnModes, self).__init__(spacing=6)
+        self.browser = browser
 
         group = None
         for mode in self.modes:
@@ -41,6 +42,19 @@ class ColumnModes(Gtk.VBox):
             self.pack_start(group, False, True, 0)
             self.buttons.append(group)
 
+        # Connect to signal after the correct radio button has been
+        # selected
+        for button in self.buttons:
+            button.connect('toggled', self.toggled)
+
+    def toggled(self, _):
+        selected_mode = COLUMN_MODE_SMALL
+        if self.buttons[1].get_active():
+            selected_mode = COLUMN_MODE_WIDE
+        if self.buttons[2].get_active():
+            selected_mode = COLUMN_MODE_COLUMNAR
+        config.settext("browsers", "pane_mode", selected_mode)
+        self.browser.set_all_wide_mode(selected_mode)
 
 class PatternEditor(Gtk.VBox):
 
@@ -209,7 +223,7 @@ class Preferences(qltk.UniqueWindow):
 
         vbox = Gtk.VBox(spacing=12)
 
-        column_modes = ColumnModes()
+        column_modes = ColumnModes(browser)
         column_mode_frame = qltk.Frame(_("Column layout"), child=column_modes)
 
         editor = PatternEditor()
@@ -222,7 +236,7 @@ class Preferences(qltk.UniqueWindow):
                                         populate=True)
 
         apply_ = Button(_("_Apply"))
-        connect_obj(apply_, "clicked", self.__apply, column_modes, editor,
+        connect_obj(apply_, "clicked", self.__apply, editor,
                     browser, False, equal_width)
 
         cancel = Button(_("_Cancel"))
@@ -246,15 +260,7 @@ class Preferences(qltk.UniqueWindow):
         cancel.grab_focus()
         self.get_child().show_all()
 
-    def __apply(self, column_modes, editor, browser, close, equal_width):
-        selected_mode = COLUMN_MODE_SMALL
-        if column_modes.buttons[1].get_active():
-            selected_mode = COLUMN_MODE_WIDE
-        if column_modes.buttons[2].get_active():
-            selected_mode = COLUMN_MODE_COLUMNAR
-        config.settext("browsers", "pane_mode", selected_mode)
-        browser.set_all_wide_mode(selected_mode)
-
+    def __apply(self, editor, browser, close, equal_width):
         if editor.headers != get_headers():
             save_headers(editor.headers)
             browser.set_all_panes()
