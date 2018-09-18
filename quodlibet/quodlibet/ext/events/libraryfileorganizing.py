@@ -67,7 +67,7 @@ class MyPlugin(EventPlugin, PluginConfigMixin):
         entry.connect('changed',
                       self.config_entry_changed,
                       self.CFG_PAT_PLAYING)
-        lbl = Gtk.Label(label=_("Naming Pattern:"))
+        lbl = Gtk.Label(label=_("Naming pattern:"))
         entry.set_tooltip_markup(_("File path based off of tags "
                                    "to move a file after update. "
                                    "Accepts QL Patterns e.g. %s") %
