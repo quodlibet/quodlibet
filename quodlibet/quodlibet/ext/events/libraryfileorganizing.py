@@ -18,6 +18,7 @@ from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.util.library import get_scan_dirs
 
+
 class MyPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "libraryfileorganizing"
     PLUGIN_NAME = _("Automatically Update Library Files")
@@ -40,9 +41,10 @@ class MyPlugin(EventPlugin, PluginConfigMixin):
     def plugin_on_changed(self, songs):
         song = songs[0]
         current_location = song("~filename")
-        psbl_new_location = os.path.abspath(os.path.expanduser((Pattern(self.config_get(self.CFG_PAT_PLAYING,
-                                                                                        self.DEFAULT_PAT)) %
-                                                                song) + os.path.splitext(current_location)[1]))
+        psbl_new_location = os.path.abspath(
+            os.path.expanduser((Pattern(self.config_get(self.CFG_PAT_PLAYING,
+                                                        self.DEFAULT_PAT)) %
+                                song) + os.path.splitext(current_location)[1]))
 
         if(not(psbl_new_location == current_location)):
             dirname = os.path.dirname(psbl_new_location)
