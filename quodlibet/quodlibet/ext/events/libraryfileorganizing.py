@@ -68,9 +68,11 @@ class MyPlugin(EventPlugin, PluginConfigMixin):
                       self.config_entry_changed,
                       self.CFG_PAT_PLAYING)
         lbl = Gtk.Label(label=_("Naming Pattern:"))
-        entry.set_tooltip_markup(_("File path based off of tags to move a file "
-                                   "after update. Accepts QL Patterns e.g. %s") %
-                                 util.monospace(util.escape("<~artist~title>")))
+        entry.set_tooltip_markup(_("File path based off of tags "
+                                   "to move a file after update. "
+                                   "Accepts QL Patterns e.g. %s") %
+                                 util.monospace(util.escape("<~artist" +
+                                                            "~title>")))
         lbl.set_mnemonic_widget(entry)
         hb.pack_start(lbl, False, True, 0)
         hb.pack_start(entry, True, True, 0)
