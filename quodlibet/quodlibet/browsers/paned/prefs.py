@@ -10,6 +10,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet import _
@@ -18,13 +19,44 @@ from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.x import SymbolicIconImage, MenuItem, Button
 from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk.ccb import ConfigCheckMenuItem, ConfigCheckButton
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import connect_obj, escape
+from quodlibet.const import COLUMN_MODE_SMALL, COLUMN_MODE_WIDE, \
+    COLUMN_MODE_COLUMNAR
 from .util import get_headers, save_headers
 
 
-class PatternEditor(Gtk.VBox):
+class ColumnModes(Gtk.VBox):
+    def __init__(self, browser):
+        super(ColumnModes, self).__init__(spacing=6)
+        self.browser = browser
+        self.buttons = []
 
+        group = None
+        for mode in [COLUMN_MODE_SMALL, COLUMN_MODE_WIDE,
+                     COLUMN_MODE_COLUMNAR]:
+            group = Gtk.RadioButton(group=group, label=_(mode))
+            if mode == config.gettext("browsers", "pane_mode"):
+                group.set_active(True)
+            self.pack_start(group, False, True, 0)
+            self.buttons.append(group)
+
+        # Connect to signal after the correct radio button has been
+        # selected
+        for button in self.buttons:
+            button.connect('toggled', self.toggled)
+
+    def toggled(self, button):
+        selected_mode = COLUMN_MODE_SMALL
+        if self.buttons[1].get_active():
+            selected_mode = COLUMN_MODE_WIDE
+        if self.buttons[2].get_active():
+            selected_mode = COLUMN_MODE_COLUMNAR
+        config.settext("browsers", "pane_mode", selected_mode)
+        self.browser.set_all_column_mode(selected_mode)
+
+
+class PatternEditor(Gtk.VBox):
     PRESETS = [
         ["genre", "~people", "album"],
         ["~people", "album"],
@@ -158,11 +190,6 @@ class PreferencesButton(Gtk.HBox):
 
         self._menu = menu = Gtk.Menu()
 
-        wide_mode = ConfigCheckMenuItem(
-            _("_Wide Mode"), "browsers", "pane_wide_mode", True)
-        wide_mode.connect("toggled", self.__wide_mode_changed, browser)
-        menu.append(wide_mode)
-
         pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
 
         def preferences_cb(menu_item):
@@ -180,9 +207,6 @@ class PreferencesButton(Gtk.HBox):
         button.show()
         self.pack_start(button, True, True, 0)
 
-    def __wide_mode_changed(self, menu_item, browser):
-        browser.set_all_wide_mode(menu_item.get_active())
-
 
 class Preferences(qltk.UniqueWindow):
     def __init__(self, browser):
@@ -198,8 +222,12 @@ class Preferences(qltk.UniqueWindow):
 
         vbox = Gtk.VBox(spacing=12)
 
+        column_modes = ColumnModes(browser)
+        column_mode_frame = qltk.Frame(_("Column layout"), child=column_modes)
+
         editor = PatternEditor()
         editor.headers = get_headers()
+        editor_frame = qltk.Frame(_("Column content"), child=editor)
 
         equal_width = ConfigCheckButton(_("Equal pane width"),
                                         "browsers",
@@ -222,7 +250,8 @@ class Preferences(qltk.UniqueWindow):
         if not self.has_close_button():
             box.pack_start(cancel, True, True, 0)
 
-        vbox.pack_start(editor, True, True, 0)
+        vbox.pack_start(column_mode_frame, False, False, 0)
+        vbox.pack_start(editor_frame, True, True, 0)
         vbox.pack_start(box, False, True, 0)
 
         self.add(vbox)
