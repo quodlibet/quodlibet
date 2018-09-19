@@ -27,15 +27,14 @@ from .util import get_headers, save_headers
 
 
 class ColumnModes(Gtk.VBox):
-    modes = [COLUMN_MODE_SMALL, COLUMN_MODE_WIDE, COLUMN_MODE_COLUMNAR]
-    buttons = []
-
     def __init__(self, browser):
         super(ColumnModes, self).__init__(spacing=6)
         self.browser = browser
+        self.buttons = []
 
         group = None
-        for mode in self.modes:
+        for mode in [COLUMN_MODE_SMALL, COLUMN_MODE_WIDE,
+                     COLUMN_MODE_COLUMNAR]:
             group = Gtk.RadioButton(group=group, label=_(mode))
             if mode == config.gettext("browsers", "pane_mode"):
                 group.set_active(True)
@@ -47,14 +46,14 @@ class ColumnModes(Gtk.VBox):
         for button in self.buttons:
             button.connect('toggled', self.toggled)
 
-    def toggled(self, _):
+    def toggled(self, button):
         selected_mode = COLUMN_MODE_SMALL
         if self.buttons[1].get_active():
             selected_mode = COLUMN_MODE_WIDE
         if self.buttons[2].get_active():
             selected_mode = COLUMN_MODE_COLUMNAR
         config.settext("browsers", "pane_mode", selected_mode)
-        self.browser.set_all_wide_mode(selected_mode)
+        self.browser.set_all_column_mode(selected_mode)
 
 
 class PatternEditor(Gtk.VBox):

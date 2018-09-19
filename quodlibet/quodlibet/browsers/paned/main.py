@@ -57,9 +57,9 @@ class PanedBrowser(Browser, util.InstanceTracker):
         container.remove(self)
 
     @classmethod
-    def set_all_wide_mode(klass, value):
+    def set_all_column_mode(klass, value):
         for browser in klass.instances():
-            browser.set_wide_mode(value)
+            browser.set_column_mode(value)
 
     @classmethod
     def set_all_panes(klass):
@@ -118,7 +118,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
     def __destroy(self, *args):
         del self._sb_box
 
-    def set_wide_mode(self, mode):
+    def set_column_mode(self, mode):
         hor = Gtk.Orientation.HORIZONTAL
         ver = Gtk.Orientation.VERTICAL
 
@@ -240,7 +240,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
             tags = [t for t in p.tags if not t.startswith("~#")]
             self.__star.update(dict.fromkeys(tags))
 
-        self.set_wide_mode(config.gettext("browsers", "pane_mode"))
+        self.set_column_mode(config.gettext("browsers", "pane_mode"))
 
     def fill_panes(self):
         self._panes[-1].inhibit()

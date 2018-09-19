@@ -173,9 +173,9 @@ class TPanedBrowser(TestCase):
         self.failUnlessAlmostEqual(paneds[2].get_relative(), 1.0 / 2.0)
 
     def test_wide_mode(self):
-        self.bar.set_all_wide_mode(COLUMN_MODE_SMALL)
-        self.bar.set_all_wide_mode(COLUMN_MODE_WIDE)
-        self.bar.set_all_wide_mode(COLUMN_MODE_COLUMNAR)
+        self.bar.set_all_column_mode(COLUMN_MODE_SMALL)
+        self.bar.set_all_column_mode(COLUMN_MODE_WIDE)
+        self.bar.set_all_column_mode(COLUMN_MODE_COLUMNAR)
 
     def tearDown(self):
         self.bar.destroy()
