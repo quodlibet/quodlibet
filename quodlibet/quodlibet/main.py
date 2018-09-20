@@ -38,7 +38,7 @@ def main(argv=None):
     quodlibet.init()
 
     from quodlibet import app
-    from quodlibet.qltk import add_signal_watch, Icons
+    from quodlibet.qltk import add_signal_watch
     add_signal_watch(app.quit)
 
     import quodlibet.player
@@ -50,7 +50,8 @@ def main(argv=None):
     app.name = "Quod Libet"
     app.description = _("Music player and music library manager")
     app.id = "io.github.quodlibet.QuodLibet"
-    quodlibet.set_application_info(Icons.QUODLIBET, "quodlibet", app.name)
+    app.process_name = "quodlibet"
+    quodlibet.set_application_info(app)
 
     library_path = os.path.join(quodlibet.get_user_dir(), "songs")
 
@@ -74,7 +75,7 @@ def main(argv=None):
     app.player = player
 
     environ["PULSE_PROP_media.role"] = "music"
-    environ["PULSE_PROP_application.icon_name"] = Icons.QUODLIBET
+    environ["PULSE_PROP_application.icon_name"] = app.icon_name
 
     browsers.init()
 

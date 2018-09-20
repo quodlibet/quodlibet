@@ -52,7 +52,10 @@ class Application(object):
     """A short description of the application"""
 
     id = None
-    """The application ID e.g. 'quodlibet'"""
+    """The application ID e.g. 'io.github.quodlibet.QuodLibet'"""
+
+    process_name = None
+    """e.g. quodlibet"""
 
     is_quitting = False
     """True after quit() is called at least once"""
@@ -224,7 +227,7 @@ def init_plugins(no_plugins=False):
     return pm
 
 
-def set_application_info(icon_name, process_title, app_name):
+def set_application_info(app):
     """Call after init() and before creating any windows to apply default
     values for names and icons.
     """
@@ -235,16 +238,19 @@ def set_application_info(icon_name, process_title, app_name):
 
     from gi.repository import Gtk, GLib
 
-    set_process_title(process_title)
+    assert app.process_name
+    set_process_title(app.process_name)
     # Issue 736 - set after main loop has started (gtk seems to reset it)
-    GLib.idle_add(set_process_title, process_title)
+    GLib.idle_add(set_process_title, app.process_name)
 
-    GLib.set_prgname(process_title)
-    GLib.set_application_name(app_name)
+    GLib.set_prgname(app.process_name)
+    assert app.name
+    GLib.set_application_name(app.name)
 
+    assert app.icon_name
     theme = Gtk.IconTheme.get_default()
-    assert theme.has_icon(icon_name)
-    Gtk.Window.set_default_icon_name(icon_name)
+    assert theme.has_icon(app.icon_name)
+    Gtk.Window.set_default_icon_name(app.icon_name)
 
 
 def _main_setup_osx(window):
