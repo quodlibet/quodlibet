@@ -243,7 +243,9 @@ def set_application_info(app):
     # Issue 736 - set after main loop has started (gtk seems to reset it)
     GLib.idle_add(set_process_title, app.process_name)
 
-    GLib.set_prgname(app.process_name)
+    assert app.id
+    # https://honk.sigxcpu.org/con/GTK__and_the_application_id.html
+    GLib.set_prgname(app.id)
     assert app.name
     GLib.set_application_name(app.name)
 
