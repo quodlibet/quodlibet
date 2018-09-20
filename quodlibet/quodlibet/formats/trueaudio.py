@@ -18,6 +18,7 @@ class TrueAudioFile(ID3File):
 
     def _parse_info(self, info):
         self["~#length"] = info.length
+        self["~#samplerate"] = info.sample_rate
 
 loader = TrueAudioFile
 types = [TrueAudioFile]

@@ -28,6 +28,7 @@ class WAVEFile(AudioFile):
                 self["~#length"] = float(f.getnframes()) / f.getframerate()
                 self["~#channels"] = f.getnchannels()
                 self["~#samplerate"] = f.getframerate()
+                self["~#bitdepth"] = f.getsampwidth() * 8
         self.sanitize(filename)
 
     def sanitize(self, filename):

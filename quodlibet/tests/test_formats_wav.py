@@ -30,6 +30,9 @@ class TWAVEFile(TestCase):
     def test_samplerate(self):
         assert self.song("~#samplerate") == 11025
 
+    def test_bitdepth(self):
+        assert self.song("~#bitdepth") == 8
+
     def test_write(self):
         self.song.write()
 

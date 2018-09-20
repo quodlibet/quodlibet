@@ -298,6 +298,11 @@ class TFLACFile(TVCFile, TVCFileMixin):
         self.assertEqual(self.song("~codec"), "FLAC")
         self.assertEqual(self.song("~encoding"), "")
 
+    def test_audio_props(self):
+        assert self.song("~#channels") == 2
+        assert self.song("~#samplerate") == 44100
+        assert self.song("~#bitdepth") == 16
+
     def test_mime(self):
         self.failUnless(self.song.mimes)
 
@@ -589,6 +594,9 @@ class TOggFile(TVCFile, TVCFileMixin):
         os.unlink(self.filename)
         config.quit()
 
+    def test_audio_props(self):
+        assert self.song("~#samplerate") == 44100
+
     def test_format_codec(self):
         self.assertEqual(self.song("~format"), "Ogg Vorbis")
         self.assertEqual(self.song("~codec"), "Ogg Vorbis")
@@ -609,6 +617,9 @@ class TOggOpusFile(TVCFile, TVCFileMixin):
 
     def test_channels(self):
         assert self.song("~#channels") == 2
+
+    def test_sample_rate(self):
+        assert self.song("~#samplerate") == 48000
 
     def test_format_codec(self):
         self.assertEqual(self.song("~format"), "Ogg Opus")

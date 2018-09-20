@@ -48,6 +48,10 @@ class MutagenVCFile(AudioFile):
             self["~#channels"] = audio.info.channels
         except AttributeError:
             pass
+        try:
+            self["~#samplerate"] = audio.info.sample_rate
+        except AttributeError:
+            pass
         if audio.tags and audio.tags.vendor:
             self["~encoding"] = audio.tags.vendor
         # mutagen keys are lower cased
@@ -370,6 +374,10 @@ class OggOpusFile(MutagenVCFile):
     mimes = ["audio/ogg; codecs=opus"]
     MutagenType = OggOpus
 
+    def __init__(self, *args, **kwargs):
+        super(OggOpusFile, self).__init__(*args, **kwargs)
+        self["~#samplerate"] = 48000
+
 
 class FLACFile(MutagenVCFile):
     format = "FLAC"
@@ -383,6 +391,7 @@ class FLACFile(MutagenVCFile):
         super(FLACFile, self).__init__(filename, audio)
         if audio.pictures:
             self.has_images = True
+        self["~#bitdepth"] = audio.info.bits_per_sample
 
     def get_images(self):
         images = super(FLACFile, self).get_images()

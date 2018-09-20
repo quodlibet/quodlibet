@@ -63,6 +63,11 @@ class TWMAFile(TestCase):
         self.assertEqual(self.song2("~#bitrate"), 38)
         self.assertEqual(self.song3("~#bitrate"), 5)
 
+    def test_sample_rate(self):
+        assert self.song("~#samplerate") == 48000
+        assert self.song2("~#samplerate") == 44100
+        assert self.song3("~#samplerate") == 8000
+
     def test_write(self):
         self.song.write()
         self.song2.write()
