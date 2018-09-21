@@ -7,9 +7,11 @@
 # (at your option) any later version.
 
 import os
+import re
 import shutil
 from gi.repository import Gtk
 from quodlibet import _
+from quodlibet import app
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet.qltk.entry import UndoEntry
@@ -17,6 +19,7 @@ from quodlibet.pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.util.library import get_scan_dirs
+from quodlibet.util.library import scan_library
 
 
 class MyPlugin(EventPlugin, PluginConfigMixin):
@@ -34,26 +37,49 @@ class MyPlugin(EventPlugin, PluginConfigMixin):
                   "<albumartist|<albumartist>|" + \
                   "<artist|<artist>|Unknown Artist>> " + \
                   "(<album|<album>|Unknown Album>) - " + \
-                  "<~#track|<~#track> - >" + \
+                  "<~#track|<~#track><~#disc| (<~#disc>)> - >" + \
                   "<title|<title>|Unknown Title>>"
     CFG_PAT_PLAYING = "naming_pattern"
 
     def plugin_on_changed(self, songs):
         song = songs[0]
         current_location = song("~filename")
+        file_split = os.path.splitext(current_location)
+        file_extension = file_split[1]
         psbl_new_location = os.path.abspath(
             os.path.expanduser((Pattern(self.config_get(self.CFG_PAT_PLAYING,
                                                         self.DEFAULT_PAT)) %
-                                song) + os.path.splitext(current_location)[1]))
+                                song) + file_extension))
 
-        if(not(psbl_new_location == current_location)):
+        if(not(psbl_new_location == re.sub(" \([0-9]+\)$",
+                                           "",
+                                           file_split[0]) + file_extension)):
             dirname = os.path.dirname(psbl_new_location)
             if(not(os.path.exists(dirname))):
                 os.makedirs(dirname)
 
+            if(os.path.isfile(psbl_new_location)):
+                num_to_use = 1
+                start_with = os.path.splitext(
+                    os.path.basename(psbl_new_location))[0]
+                length_chk = len(start_with) + 2
+
+                for f in sorted(os.listdir(dirname)):
+                    if(f.startswith(start_with)):
+                        temporary = f[length_chk:]
+
+                        if(temporary[:temporary.find(")")] == str(num_to_use)):
+                            num_to_use += 1
+
+                psbl_new_location = dirname + start_with + \
+                                    " (" + str(num_to_use) + ")" + \
+                                    file_extension
+
             shutil.move(current_location, psbl_new_location)
 
             self.removeEmptyDirs(os.path.dirname(current_location))
+
+            scan_library(app.library, False)
 
     def PluginPreferences(self, parent):
         outer_vb = Gtk.VBox(spacing=12)
