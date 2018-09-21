@@ -51,7 +51,7 @@ class MyPlugin(EventPlugin, PluginConfigMixin):
                                                         self.DEFAULT_PAT)) %
                                 song) + file_extension))
 
-        if(not(psbl_new_location == re.sub(" \([0-9]+\)$",
+        if(not(psbl_new_location == re.sub(" \\([0-9]+\\)$",
                                            "",
                                            file_split[0]) + file_extension)):
             dirname = os.path.dirname(psbl_new_location)
