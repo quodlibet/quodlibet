@@ -35,8 +35,11 @@ OPTIONS
 --debug
     Print debugging information
 
---enqueue <filename|query>
+--enqueue=<filename|query>
     Enqueue a filename or query results
+
+--enqueue-files=<filename[,filename..]>
+    Enqueue comma-separated files
 
 --filter <tag=value>
     Filter on a tag value
@@ -47,6 +50,9 @@ OPTIONS
 --force-previous
     Jump to previous song
 
+--help
+    Display brief usage information
+
 --hide-window
     Hide main window
 
@@ -55,6 +61,9 @@ OPTIONS
 
 --next
     Jump to next song
+
+--no-plugins
+    Start without plugins
 
 --open-browser=BrowserName
     Open a new browser
@@ -82,11 +91,20 @@ OPTIONS
 --print-playlist
     Print the current playlist
 
+--print-query=<query>
+    Print filenames of results of query
+
+--print-query-text
+    Print the active text query
+
 --print-queue
     Print the contents of the queue
 
 --query=search-string
     Search your audio library
+
+--queue=<on|off|t>
+    Show or hide the queue
 
 --quit
     Exit Quod Libet
@@ -135,6 +153,9 @@ OPTIONS
 --status
     Print playing status
 
+--stop
+    Stop playback
+
 --stop-after=<0|1|t>
     Stop after the playing song
 
@@ -147,8 +168,17 @@ OPTIONS
 --unqueue=<filename|query>
     Unqueue a file or query
 
+--version
+    Display version and copyright
+
 --volume=<(+\|-\|)0..100>
     Set the volume
+
+--volume-down
+    Turn down the volume
+
+--volume-up
+    Turn up the volume
 
 ALBUM COVERS
 ============
