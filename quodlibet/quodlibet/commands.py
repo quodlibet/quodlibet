@@ -477,12 +477,6 @@ def _status(app):
     return text2fsn(status)
 
 
-@registry.register("song-list", args=1)
-def _song_list(app, value):
-    # deprecated
-    return
-
-
 @registry.register("queue", args=1)
 def _queue(app, value):
     window = app.window

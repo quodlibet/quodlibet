@@ -79,8 +79,8 @@ def process_arguments(argv):
                 "focus", "quit", "unfilter", "refresh", "force-previous"]
     controls_opt = ["seek", "repeat", "query", "volume", "filter",
                     "set-rating", "set-browser", "open-browser", "shuffle",
-                    "song-list", "queue", "stop-after", "random",
-                    "repeat-type", "shuffle-type", "add-location"]
+                    "queue", "stop-after", "random", "repeat-type",
+                    "shuffle-type", "add-location"]
 
     options = util.OptionParser(
         "Quod Libet", const.VERSION,
@@ -133,8 +133,6 @@ def process_arguments(argv):
         ("stop-after", _("Stop after the playing song"), "0|1|t"),
         ("open-browser", _("Open a new browser"), "BrowserName"),
         ("queue", _("Show or hide the queue"), "on|off|t"),
-        ("song-list",
-            _("Show or hide the main song list (deprecated)"), "on|off|t"),
         ("random", _("Filter on a random value"), C_("command", "tag")),
         ("filter", _("Filter on a tag value"), _("tag=value")),
         ("enqueue", _("Enqueue a file or query"), "%s|%s" % (
