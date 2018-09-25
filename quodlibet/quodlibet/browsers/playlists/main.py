@@ -429,7 +429,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 sock = urlopen(uri)
                 if uri.lower().endswith('.pls'):
                     playlist = parse_pls(sock, name, library=library)
-                elif uri.lower().endswith('.m3u'):
+                elif (uri.lower().endswith('.m3u') or
+                        uri.lower().endswith('.m3u8')):
                     playlist = parse_m3u(sock, name, library=library)
                 else:
                     raise IOError
@@ -441,7 +442,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self),
                     _("Unable to import playlist"),
-                    _("Quod Libet can only import playlists in the M3U "
+                    _("Quod Libet can only import playlists in the M3U/M3U8 "
                       "and PLS formats.")).run()
 
     def _drag_data_get(self, view, ctx, sel, tid, etime):
@@ -599,7 +600,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             self._select_playlist(playlist, scroll=True)
 
     def __import(self, activator, library):
-        cf = create_chooser_filter(_("Playlists"), ["*.pls", "*.m3u"])
+        formats = ["*.pls", "*.m3u", "*.m3u8"]
+        cf = create_chooser_filter(_("Playlists"), formats)
         fns = choose_files(self, _("Import Playlist"), _("_Import"), cf)
         self._import_playlists(fns, library)
 
@@ -608,7 +610,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         for filename in fns:
             name = _name_for(filename)
             with open(filename, "rb") as f:
-                if filename.endswith(".m3u"):
+                if filename.endswith(".m3u") or filename.endswith(".m3u8"):
                     playlist = parse_m3u(f, name, library=library)
                 elif filename.endswith(".pls"):
                     playlist = parse_pls(f, name, library=library)
