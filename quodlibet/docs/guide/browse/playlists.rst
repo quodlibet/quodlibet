@@ -33,7 +33,7 @@ There are several ways to create playlists in Quod Libet. Choose whichever suits
     browser, right click, and select *Add to Playlist* → *New Playlist*.
   * To add songs to an existing playlist, either use *Add to Playlist* in the
     right click menu, or drag them to the playlist name on the sidebar.
-  * To import playlists from `pls` or `m3u` files, use the *Import* button.
+  * To import playlists from `pls` or `m3u`/`m3u8` files, use the *Import* button.
     In addition to creating the playlist, any files in it will be added to
     your library.
 
@@ -71,9 +71,9 @@ playlist, a new playlist is created, named after that song.
 Importing and Exporting Playlists
 ---------------------------------
 
-As outlined above, you can import playlists from `pls` or `m3u` files using 
-the _Import_ button. In addition to creating the playlist, any files in it 
-will be added to your library. You can also drag and drop an `m3u` playlist 
+As outlined above, you can import playlists from `pls` or `m3u`/`m3u8` files
+using the _Import_ button. In addition to creating the playlist, any files in
+it will be added to your library. You can also drag and drop an `m3u` playlist
 file from an external browser onto the left-hand pane in the playlist 
 browser to import a playlist.
 
