@@ -159,7 +159,7 @@ def ParsePLS(file):
     while True:
         if "file%d" % count in data:
             filename = text2fsn(data["file%d" % count])
-            if filename.lower()[-4:] in [".pls", ".m3u"]:
+            if filename.lower()[-4:] in [".pls", ".m3u", "m3u8"]:
                 warnings.append(filename)
             else:
                 irf = IRFile(filename)
@@ -215,7 +215,9 @@ def add_station(uri):
 
     irfs = []
 
-    if uri.lower().endswith(".pls") or uri.lower().endswith(".m3u"):
+    if (uri.lower().endswith(".pls")
+            or uri.lower().endswith(".m3u")
+            or uri.lower().endswith(".m3u8")):
         if not re.match('^([^/:]+)://', uri):
             # Assume HTTP if no protocol given. See #2731
             uri = 'http://' + uri
@@ -230,7 +232,7 @@ def add_station(uri):
 
         if uri.lower().endswith(".pls"):
             irfs = ParsePLS(sock)
-        elif uri.lower().endswith(".m3u"):
+        elif uri.lower().endswith(".m3u") or uri.lower().endswith(".m3u8"):
             irfs = ParseM3U(sock)
 
         sock.close()
