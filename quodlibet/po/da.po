@@ -442,7 +442,7 @@ msgstr "De valgte filer kan ikke kopieres til anden sangliste eller køen."
 
 #: ../quodlibet/browsers/filesystem.py:199
 msgid "_Add to Library"
-msgstr "_Føj til bibliotek"
+msgstr "_Tilføj til bibliotek"
 
 #: ../quodlibet/browsers/iradio.py:182
 msgid "Unsupported file type"
@@ -661,7 +661,7 @@ msgstr "Alle viste stationer er allerede i dit bibliotek."
 
 #: ../quodlibet/browsers/iradio.py:842
 msgid "Add to Favorites"
-msgstr "Føj til favoritter"
+msgstr "Tilføj til favoritter"
 
 #: ../quodlibet/browsers/iradio.py:846
 msgid "Remove from Favorites"
@@ -5859,7 +5859,7 @@ msgid ""
 "Songs in the listed folders will be added to the library during a library "
 "refresh"
 msgstr ""
-"Sange i de viste mapper vil blive føjet til biblioteket under genindlæsning "
+"Sange i de viste mapper vil blive tilføjet til biblioteket under genindlæsning "
 "af et bibliotek"
 
 #: ../quodlibet/qltk/scanbox.py:100
@@ -6046,7 +6046,7 @@ msgstr "Konfigurér plugins…"
 
 #: ../quodlibet/qltk/songsmenu.py:331
 msgid "Add to _Queue"
-msgstr "Føj til _kø"
+msgstr "Tilføj til _kø"
 
 #: ../quodlibet/qltk/songsmenu.py:351
 msgid "_Remove from Library…"
