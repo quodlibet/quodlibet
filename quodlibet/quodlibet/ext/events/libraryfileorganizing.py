@@ -71,11 +71,11 @@ class MyPlugin(EventPlugin, PluginConfigMixin):
                         if(temporary[:temporary.find(")")] == str(num_to_use)):
                             num_to_use += 1
 
-                psbl_new_location = dirname + start_with + \
+                psbl_new_location = dirname + "/" + start_with + \
                                     " (" + str(num_to_use) + ")" + \
                                     file_extension
 
-            shutil.move(current_location, psbl_new_location)
+            shutil.move(current_location, os.path.normpath(psbl_new_location))
 
             self.removeEmptyDirs(os.path.dirname(current_location))
 
