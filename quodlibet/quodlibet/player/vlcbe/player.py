@@ -231,8 +231,10 @@ class VLCPlayer(BasePlayer):
             # into a deadlock when a seek or state change event happens
             # in the mainloop before our function gets scheduled.
             #
-            # XXX In this case abort and do nothing, which results in ???
+            # ... This is a rare occurrance but must be handled gracefully
+            # XXX ... In this case try rescheduling the event
             print_d("EVENT Play (async): %s" % e)
+            self._event_callback_async(event)
             return
         except MainRunnerAbortedError as e:
             print_d("EVENT Play (async): %s" % e)
