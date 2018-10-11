@@ -2,6 +2,7 @@
 
 import os
 import types
+import sys
 
 dir_ = os.path.dirname(os.path.realpath(__file__))
 
@@ -23,7 +24,10 @@ const = exec_module(os.path.join(dir_, "..", "quodlibet", "const.py"))
 
 needs_sphinx = "1.3"
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.extlinks']
+sys.path.append(os.path.join(dir_, "ext"))
+
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.extlinks', 'contributors']
+
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'Quod Libet'
@@ -62,3 +66,7 @@ html_theme_options = {
 
 html_favicon = "favicon/favicon.ico"
 html_show_copyright = False
+
+
+def setup(app):
+    app.add_config_value('const', const, True)
