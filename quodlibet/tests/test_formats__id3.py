@@ -185,9 +185,10 @@ class TID3FileMixin(object):
                              u'lyrics with non-empty lang')
 
         f = self.KIND(self.filename)
-        self.failUnlessEqual(f['lyrics'], u'lyrics\n'
-                                          u'lyrics with non-empty lang\n'
-                                          u'lyrics with non-empty desc')
+        self.failUnlessEqual(sorted(f['lyrics'].split('\n')),
+                             sorted([u'lyrics',
+                                     u'lyrics with non-empty lang',
+                                     u'lyrics with non-empty desc']))
         f['lyrics'] = u'modified lyrics'
         f.write()
 
