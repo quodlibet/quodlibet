@@ -93,6 +93,7 @@ Andreas Bombe
 Andrew Chadwick
 Anton Shestakov
 Ari Pollak
+Arkadiy Illarionov
 Aymeric Mansoux
 Bastian Kleineidam
 Bastien Gorissen
@@ -105,14 +106,17 @@ Christine Spang
 Christoph Reiter
 Corentin Néau
 David Kågedal
+David Morris
 David Schneider
 Decklin Foster
 Didier Villevalois
 Eduardo Gonzalez
+Eoin O'Neill
 Eric Casteleijn
 Erich Schubert
 Eric Le Lay
 Federico Pelloni
+Felicián Németh
 Felix Krull
 Florian Demmer
 Fredrik Strupe
@@ -121,6 +125,7 @@ Hans Scholze
 Iñigo Serna
 Jacob Lee
 Jakob Gahde
+Jakub Wilk
 Jan Arne Petersen
 Jan Path
 Javier Kohen
@@ -135,6 +140,7 @@ Joshua Homan
 Joshua Kwan
 Lalo Martins
 Lee Willis
+Ludovic Druette
 Lukáš Lalinský
 Markus Koller
 Martijn Pieters
@@ -146,8 +152,12 @@ Nicholas J. Michalek
 Nick Boultbee
 Niklas Janlert
 Nikolai Prokoschenko
+Olli Helin
+Peter Simonyi
+Peter Strulo
 Philipp Müller
 Philipp Weis
+Phoenix Dailey
 Quincy John Hamilton
 Remi Vanicat
 Robert Muth
@@ -183,6 +193,11 @@ Meriipu@github
 Jonas Platte
 Eyenseo@github
 Peter Simonyi
+dpitch40@github
+sphh@github
+zsau@github
+luk1337@github
+luzpaz@github
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
@@ -246,6 +261,7 @@ Till Berger (de)
 Jean-Michel Pouré (fr)
 Kristian Laakkonen (fi)
 Kirill Romanov (ru)
+wvxwxvw@github (ru)
 """.strip().splitlines())
 
 ARTISTS = sorted(u"""\
