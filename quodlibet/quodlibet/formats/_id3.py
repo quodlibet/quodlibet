@@ -154,8 +154,7 @@ class ID3File(AudioFile):
             elif frame.FrameID == "TLAN":
                 self["language"] = "\n".join(frame.text)
                 continue
-            elif (frame.FrameID == "USLT" and frame.desc == "" and
-                  frame.lang == "\x00\x00\x00"):
+            elif frame.FrameID == "USLT":
                 name = "lyrics"
             else:
                 name = self.IDS.get(frame.FrameID, "").lower()
@@ -361,7 +360,7 @@ class ID3File(AudioFile):
             tag.add(mutagen.id3.COMM(encoding=enc, text=t, desc=u"",
                                      lang="\x00\x00\x00"))
 
-        tag.delall("USLT::\x00\x00\x00")
+        tag.delall("USLT")
         if "lyrics" in self:
             enc = encoding_for(self["lyrics"])
             # lyrics are single string, not array

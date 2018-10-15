@@ -6,6 +6,7 @@
 #           2017 Eyenseo
 #           2018 Joschua Gandert
 #           2018 Blimmo
+#           2018 Olli Helin
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -350,6 +351,14 @@ class WaveformScale(Gtk.EventBox):
 
         # Compute the coarsest time interval for redraws
         length = self._player.info("~#length")
+        if (length == 0):
+            # The length is 0 for example when playing a stream from
+            # Internet radio. If 0 is passed forward as the update interval,
+            # UI will freeze as it will try to update continuously.
+            # The update interval is usually 1 second so use that instead.
+            print_d("Length is zero for %s, using redraw interval of 1000 ms"
+                % self._player.info)
+            return 1000
         return length * 1000 / max(width * pixel_ratio, 1)
 
     def compute_redraw_area(self):
