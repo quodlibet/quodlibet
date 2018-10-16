@@ -497,7 +497,9 @@ class AudioFile(dict, ImageContainer):
         role_map = {}
         for key in role_tag_keys:
             if key == role_tag:
-                # #2986: don't add a role description for the bare tag unless this is a composite tag (e.g. only show "(Performance)" for ~people:roles and not ~performer:roles)
+                # #2986: don't add a role description for the bare tag, unless
+                # this is a composite tag (e.g. only show "(Performance)" for
+                # ~people:roles and not ~performer:roles).
                 if sub_keys is None:
                     continue
                 else:
