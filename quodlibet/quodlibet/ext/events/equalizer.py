@@ -210,7 +210,7 @@ class Equalizer(EventPlugin):
         def clicked_db(button):
             selected_index = self._combo_custom.get_active()
             if selected_index < 1:
-                return # Select...
+                return # Select…
             selected = self._combo_custom.get_active_text()
             self._combo_custom.set_active(0)
             self._combo_custom.remove(selected_index)
@@ -245,7 +245,7 @@ class Equalizer(EventPlugin):
 
         def default_combo_changed(combo):
             if combo.get_active() < 1:
-                return # Select...
+                return # Select…
             self._combo_custom.set_active(0)
             gain = sorted_presets[combo.get_active() - 1][1][1]
             gain = interp_bands(PRESET_BANDS, app.player.eq_bands, gain)
@@ -254,7 +254,7 @@ class Equalizer(EventPlugin):
 
         def custom_combo_changed(combo):
             if combo.get_active() < 1:
-                return # Select...
+                return # Select…
             self._combo_default.set_active(0)
             gain = self._config[combo.get_active_text()]
             for (g, a) in zip(gain, adjustments):
@@ -266,7 +266,7 @@ class Equalizer(EventPlugin):
         # Default presets
         combo = Gtk.ComboBoxText()
         self._combo_default = combo
-        combo.append_text(_("Select..."))
+        combo.append_text(_("Select…"))
         combo.set_active(0)
         for key, (name, gain) in sorted_presets:
             combo.append_text(name)
@@ -293,7 +293,7 @@ class Equalizer(EventPlugin):
         # Custom presets
         combo = Gtk.ComboBoxText()
         self._combo_custom = combo
-        combo.append_text(_("Select..."))
+        combo.append_text(_("Select…"))
         combo.set_active(0)
 
         custom_presets = self._config.keys() - {"Current"}
