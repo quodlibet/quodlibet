@@ -496,8 +496,16 @@ class AudioFile(dict, ImageContainer):
 
         role_map = {}
         for key in role_tag_keys:
-            role = (TAG_ROLES.get(role_tag, role_tag) if key == role_tag
-                    else key.split(":", 1)[-1])
+            if key == role_tag:
+                # #2986: don't add a role description for the bare tag, unless
+                # this is a composite tag (e.g. only show "(Performance)" for
+                # ~people:roles and not ~performer:roles).
+                if sub_keys is None:
+                    continue
+                else:
+                    role = TAG_ROLES.get(role_tag, role_tag)
+            else:
+                role = key.split(":", 1)[-1]
             for name in self.list(key):
                 role_map.setdefault(name, []).append(role)
 

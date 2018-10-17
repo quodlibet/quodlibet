@@ -621,26 +621,25 @@ class TAudioFile(TestCase):
                        ("performer", "C")])
         self.failUnlessEqual(set(q.list("~performers")), {"A", "B", "C"})
         self.failUnlessEqual(set(q.list("~performers:roles")),
-                             {"A (Vocals)", "B (Guitar)", "C (Performance)"})
+                             {"A (Vocals)", "B (Guitar)", "C"})
 
     def test_performers_multi_value(self):
         q = AudioFile([
             ("performer:vocals", "X\nA\nY"),
             ("performer:guitar", "Y\nB\nA"),
-            ("performer", "C\nF\nB\nA"),
+            ("performer", "C\nB\nA"),
         ])
 
         self.failUnlessEqual(
-            set(q.list("~performer")), {"A", "B", "C", "F", "X", "Y"})
+            set(q.list("~performer")), {"A", "B", "C", "X", "Y"})
 
         self.failUnlessEqual(
             set(q.list("~performer:roles")), {
-                    "A (Guitar, Performance, Vocals)",
-                    "C (Performance)",
-                    "B (Guitar, Performance)",
+                    "A (Guitar, Vocals)",
+                    "C",
+                    "B (Guitar)",
                     "X (Vocals)",
                     "Y (Guitar, Vocals)",
-                    "F (Performance)",
                 })
 
     def test_people(self):
