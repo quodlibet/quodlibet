@@ -287,9 +287,9 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
     def go_to(self, path_to_go):
         assert isinstance(path_to_go, fsnative)
 
-        # The path should not be relative in normal situations.
+        # The path should be normalized in normal situations.
         # On some systems and special environments (pipenv) there might be
-        # a relative path at least during tests, though.
+        # a non-normalized path at least during tests, though.
         path_to_go = os.path.normpath(path_to_go)
 
         model = self.get_model()
