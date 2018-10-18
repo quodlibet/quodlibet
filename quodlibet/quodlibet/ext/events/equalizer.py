@@ -87,7 +87,7 @@ def interp_bands(src_band, target_band, src_gain):
 
 def get_config():
     try:
-        config_str = config.get('plugins', 'equalizer_levels')
+        config_str = config.get("plugins", "equalizer_levels", "[]")
         config_dict = ast.literal_eval(config_str)
 
         if isinstance(config_dict, list):
@@ -254,11 +254,21 @@ class Equalizer(EventPlugin):
 
         def custom_combo_changed(combo):
             if combo.get_active() < 1:
-                return # Select…
+                # Case: Select…
+                self._delete_button.set_sensitive(False)
+                return
             self._combo_default.set_active(0)
+            self._delete_button.set_sensitive(True)
             gain = self._config[combo.get_active_text()]
             for (g, a) in zip(gain, adjustments):
                 a.set_value(g)
+
+        def save_name_changed(entry):
+            name = entry.get_text()
+            if not name or name == "Current" or name.isspace():
+                self._save_button.set_sensitive(False)
+            else:
+                self._save_button.set_sensitive(True)
 
         frame = Gtk.Frame(label="Default presets", label_xalign=0.5)
         main_middle_hbox = Gtk.HBox(spacing=6)
@@ -305,6 +315,8 @@ class Equalizer(EventPlugin):
 
         delete = Button(_("_Delete selected"), Icons.EDIT_DELETE)
         delete.connect('clicked', clicked_db)
+        delete.set_sensitive(False)
+        self._delete_button = delete
         hb.pack_start(delete, False, False, 0)
 
         main_bottom_vbox.pack_start(hb, True, True, 6)
@@ -317,12 +329,15 @@ class Equalizer(EventPlugin):
         main_bottom_vbox.pack_start(hb, False, False, 0)
 
         e = Gtk.Entry()
+        e.connect("changed", save_name_changed)
         self._preset_name_entry = e
         hb = Gtk.HBox(spacing=6)
         hb.pack_start(e, True, True, 0)
 
         save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         save.connect('clicked', clicked_sb)
+        save.set_sensitive(False)
+        self._save_button = save
         hb.pack_start(save, False, False, 0)
 
         main_bottom_vbox.pack_start(hb, True, True, 6)
