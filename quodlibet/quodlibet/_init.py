@@ -338,6 +338,8 @@ def _init_gtk():
         css_override.register_provider("Radiance", style_provider)
         # https://github.com/quodlibet/quodlibet/issues/2677
         css_override.register_provider("Clearlooks-Phenix", style_provider)
+        # https://github.com/quodlibet/quodlibet/issues/2997
+        css_override.register_provider("Breeze", style_provider)
 
     if gtk_version[:2] >= (3, 18):
         # Hack to get some grab handle like thing for panes
