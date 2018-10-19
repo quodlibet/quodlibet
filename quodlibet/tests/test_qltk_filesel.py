@@ -60,7 +60,7 @@ class TDirectoryTree(TestCase):
             model, rows = dirlist.get_selection().get_selected_rows()
             selected = [model[row][0] for row in rows]
             dirlist.destroy()
-            self.failUnlessEqual([path], selected)
+            self.failUnlessEqual([os.path.normpath(path)], selected)
 
     def test_bad_initial(self):
         invalid = os.path.join("bin", "file", "does", "not", "exist")

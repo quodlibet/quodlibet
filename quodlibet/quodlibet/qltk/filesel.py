@@ -287,7 +287,11 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
     def go_to(self, path_to_go):
         assert isinstance(path_to_go, fsnative)
 
-        # FIXME: what about non-normalized paths?
+        # The path should be normalized in normal situations.
+        # On some systems and special environments (pipenv) there might be
+        # a non-normalized path at least during tests, though.
+        path_to_go = os.path.normpath(path_to_go)
+
         model = self.get_model()
 
         # Find the top level row which has the largest common
