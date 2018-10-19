@@ -26,7 +26,8 @@ needs_sphinx = "1.3"
 
 sys.path.append(os.path.join(dir_, "ext"))
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.extlinks', 'contributors']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.extlinks',
+              'contributors', 'plugins']
 
 source_suffix = '.rst'
 master_doc = 'index'
