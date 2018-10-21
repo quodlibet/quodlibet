@@ -36,7 +36,17 @@ class MediaServer(EventPlugin):
     PLUGIN_ID = "mediaserver"
     PLUGIN_NAME = _("UPnP AV Media Server")
     PLUGIN_DESC = _("Exposes all albums to the Rygel UPnP Media Server "
-                    "through the MediaServer2 D-Bus interface.")
+                    "through the MediaServer2 D-Bus interface.\n"
+                    "\n"
+                    "Ensure the following is in your rygel config file "
+                    "(~/.config/rygel.conf):\n"
+                    "\n"
+                    "<span font='mono'>"
+                    "[External]\n"
+                    "enabled=true\n\n"
+                    "[org.gnome.UPnP.MediaServer2.QuodLibet]\n"
+                    "enabled=true"
+                    "</span>")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def enabled(self):
