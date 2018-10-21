@@ -525,6 +525,7 @@ class FileSelector(Paned):
 
         model = ObjectStore()
         filelist = AllTreeView(model=model)
+        filelist.connect("draw", self.__restore_scroll_pos_on_draw)
 
         column = TreeViewColumn(title=_("Songs"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -637,6 +638,13 @@ class FileSelector(Paned):
 
         fselect.handler_unblock(self.__sig)
         fselect.emit('changed')
+        self._saved_scroll_pos = filelist.get_vadjustment().get_value()
+
+    def __restore_scroll_pos_on_draw(self, treeview, context):
+        if self._saved_scroll_pos:
+            vadj = treeview.get_vadjustment()
+            vadj.set_value(self._saved_scroll_pos)
+            self._saved_scroll_pos = None
 
 
 def _get_main_folders():
