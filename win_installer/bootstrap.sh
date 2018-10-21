@@ -31,9 +31,11 @@ function main {
         mingw-w64-i686-python3-pip \
         mingw-w64-i686-python3-pytest \
         mingw-w64-i686-python3-certifi \
-        mingw-w64-i686-python3-coverage
+        mingw-w64-i686-python3-coverage \
+        mingw-w64-i686-python3-pycodestyle \
+        mingw-w64-i686-python3-pyflakes
 
-    pip3 install --user -U feedparser musicbrainzngs mutagen pycodestyle pyflakes
+    pip3 install --user -U feedparser musicbrainzngs mutagen
 }
 
 main;
