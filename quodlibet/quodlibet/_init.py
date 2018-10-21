@@ -308,15 +308,15 @@ def _init_gtk():
         style_provider = Gtk.CssProvider()
         style_provider.load_from_data(b"""
             spinbutton, button {
-                min-height: 1.8rem;
+                min-height: 22px;
             }
 
             .view button {
-                min-height: 2.0rem;
+                min-height: 24px;
             }
 
             entry {
-                min-height: 2.4rem;
+                min-height: 28px;
             }
 
             entry.cell {
