@@ -440,9 +440,9 @@ class ID3File(AudioFile):
         with translate_errors():
             audio = self.Kind(self["~filename"])
 
-        if audio.tags is not None:
-            audio.tags.delall("APIC")
-            audio.save()
+            if audio.tags is not None:
+                audio.tags.delall("APIC")
+                audio.save()
 
         self.has_images = False
 
