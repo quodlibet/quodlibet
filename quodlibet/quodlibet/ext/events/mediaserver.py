@@ -36,18 +36,30 @@ class MediaServer(EventPlugin):
     PLUGIN_ID = "mediaserver"
     PLUGIN_NAME = _("UPnP AV Media Server")
     PLUGIN_DESC = _("Exposes all albums to the Rygel UPnP Media Server "
-                    "through the MediaServer2 D-Bus interface.\n"
-                    "\n"
-                    "Ensure the following is in your rygel config file "
-                    "(~/.config/rygel.conf):\n"
-                    "\n"
-                    "<span font='mono'>"
-                    "[External]\n"
-                    "enabled=true\n\n"
-                    "[org.gnome.UPnP.MediaServer2.QuodLibet]\n"
-                    "enabled=true"
-                    "</span>")
+                    "through the MediaServer2 D-Bus interface.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
+
+    def PluginPreferences(self, parent):
+        vbox = Gtk.VBox(spacing=12)
+
+        conf_exp = _("Ensure the following is in your rygel config file "
+                      "(~/.config/rygel.conf):")
+        conf_cont = ("[External]\n"
+                     "enabled=true\n\n"
+                     "[org.gnome.UPnP.MediaServer2.QuodLibet]\n"
+                     "enabled=true")
+
+        exp_lbl = Gtk.Label(label=conf_exp)
+        exp_lbl.set_alignment(0, 0)
+
+        conf_lbl = Gtk.Label()
+        conf_lbl.set_selectable(True)
+        conf_lbl.set_alignment(0, 0)
+        conf_lbl.set_markup("<span font='mono'>{}</span>".format(conf_cont))
+
+        vbox.pack_start(exp_lbl, True, False, 0)
+        vbox.pack_start(conf_lbl, True, False, 0)
+        return vbox
 
     def enabled(self):
         try:
