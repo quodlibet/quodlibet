@@ -1,9 +1,6 @@
 from docutils.parsers.rst import Directive
 from docutils import nodes
-from quodlibet.util import get_module_dir
-from quodlibet.util.modulescanner import ModuleScanner
-from quodlibet.plugins import list_plugins, Plugin
-import quodlibet
+import re
 import os
 
 
@@ -12,39 +9,38 @@ class PluginsDirective(Directive):
     has_content = True
 
     def get_plugins(self):
-        # Most of this code is copied directly from tests/plugin/__init__.py
-        # Consider moving this to a function that both can call instead
-        PLUGIN_DIRS = []
-
-        root = os.path.join(get_module_dir(quodlibet), "ext")
-        for entry in os.listdir(root):
-            if entry.startswith("_"):
-                continue
-            path = os.path.join(root, entry)
-            if not os.path.isdir(path):
-                continue
-            PLUGIN_DIRS.append(path)
-
-        ms = ModuleScanner(PLUGIN_DIRS)
-        ms.rescan()
-
         plugins = []
-        for name, module in ms.modules.items():
-            for plugin in list_plugins(module.module):
-                plugins.append(Plugin(plugin))
+        dir_ = self.state.document.settings.env.config.dir_
 
+        for root, dirs, files in os.walk(os.path.join(dir_, '..', 'quodlibet', 'ext')):
+            for filename in files:
+                if filename[-3:] == '.py':
+                    path = os.path.join(root, filename)
+                    with open(path, 'r') as f:
+                        cont = f.read()
+                        ids = re.findall(r'PLUGIN_ID = "(.+?)"', cont)
+                        names = re.findall(r'PLUGIN_NAME = _\("(.+?)"\)', cont)
+                        raw_descs = re.findall(r'PLUGIN_DESC = _\("((.|\n)+?)"\)', cont)
+                        descs = []
+                        for desc in raw_descs:
+                            new_desc = ''.join([s.strip(' ').strip('"') for s in desc[0].split('\n')])
+                            descs.append(new_desc)
+
+                        if len(ids) > 0 and len(ids) == len(names) == len(descs):
+                            for i in range(len(ids)):
+                                plugins.append((ids[i], names[i], descs[i]))
         return plugins
 
     def run(self):
         plugins = self.get_plugins()
         output = []
 
-        for plugin in sorted(plugins, key=lambda p: p.name):
-            title = nodes.title(text=plugin.name)
-            par = nodes.paragraph(text=plugin.description)
+        for ID, name, desc in sorted(plugins, key=lambda p: p[1]):
+            title = nodes.title(text=name)
+            par = nodes.paragraph(text=desc)
 
             section = nodes.section()
-            section['ids'].append(plugin.id)
+            section['ids'].append(ID)
             section += title
             section += par
             output.append(section)

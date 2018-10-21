@@ -71,3 +71,4 @@ html_show_copyright = False
 
 def setup(app):
     app.add_config_value('const', const, True)
+    app.add_config_value('dir_', dir_, True)

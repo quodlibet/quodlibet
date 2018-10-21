@@ -1,5 +1,0 @@
-feedparser~=5.2
-mutagen~=1.34
-pycairo~=1.8
-pygobject~=3.18
-dbus-python~=1.2
