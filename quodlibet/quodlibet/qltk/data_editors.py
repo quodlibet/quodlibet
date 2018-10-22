@@ -219,7 +219,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         if not data:
             return
         for (name, obj) in data.items():
-            self.model.prepend(row=[obj])
+            self.model.append(row=[obj])
 
     def _update_current(self, new_selection=None):
         if new_selection:
