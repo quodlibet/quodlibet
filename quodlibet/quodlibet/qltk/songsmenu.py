@@ -410,7 +410,8 @@ class SongsMenu(Gtk.Menu):
             def show_files_cb(menu_item):
                 print_d("Trying to show files...")
                 if not show_songs(songs):
-                    msg = ErrorMessage(self.plugin_window,
+                    parent = get_menu_item_top_parent(menu_item)
+                    msg = ErrorMessage(parent,
                                  _("Unable to show files"),
                                  _("Error showing files, "
                                    "or no program available to show them."))
