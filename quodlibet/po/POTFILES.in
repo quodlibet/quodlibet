@@ -67,6 +67,7 @@ quodlibet/ext/events/squeezebox_sync.py
 quodlibet/ext/events/synchronizedlyrics.py
 quodlibet/ext/events/telepathy_status.py
 quodlibet/ext/events/themeswitcher.py
+quodlibet/ext/events/thumbrating.py
 quodlibet/ext/events/toggle_menu.py
 quodlibet/ext/events/trayicon/appindicator.py
 quodlibet/ext/events/trayicon/__init__.py
