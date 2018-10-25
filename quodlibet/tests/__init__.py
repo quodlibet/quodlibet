@@ -55,6 +55,7 @@ class TestCase(OrigTestCase):
     failIf = OrigTestCase.assertFalse
     failUnlessRaises = OrigTestCase.assertRaises
 
+    assertEquals = assertEqual
     failUnlessEqual = assertEqual
     failIfEqual = assertNotEqual
     failUnlessAlmostEqual = assertAlmostEqual
