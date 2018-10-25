@@ -6,6 +6,16 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import sys
+import os
+
+if os.name == "nt":
+    # To prevent us loading DLLs in the system directory which clash
+    # with the ones we ship.
+    # https://github.com/quodlibet/quodlibet/issues/2817
+    from ctypes import windll
+    windll.kernel32.SetDllDirectoryW(os.path.dirname(sys.executable))
+
 from ._import import install_redirect_import_hook
 install_redirect_import_hook()
 
