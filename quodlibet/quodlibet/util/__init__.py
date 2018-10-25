@@ -15,6 +15,7 @@ import ctypes.util
 import sys
 import unicodedata
 import threading
+import locale
 from functools import reduce
 
 # Windows doesn't have fcntl, just don't lock for now
@@ -31,17 +32,17 @@ from quodlibet.util.string.titlecase import title
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
 from .misc import cached_func, get_module_dir, get_ca_file, \
-    get_locale_encoding, NamedTemporaryFile, cmp
+    NamedTemporaryFile, cmp
 from .environment import is_plasma, is_unity, is_enlightenment, \
     is_linux, is_windows, is_wine, is_osx, is_flatpak
 from .enum import enum
-from .i18n import _, C_, locale_format
+from .i18n import _, C_
 
 
 # pyflakes
 cached_func, enum, print_w, print_exc, is_plasma, is_unity, is_enlightenment,
 is_linux, is_windows, is_wine, is_osx, get_module_dir, get_ca_file,
-get_locale_encoding, NamedTemporaryFile, is_flatpak, cmp
+NamedTemporaryFile, is_flatpak, cmp
 
 
 class InstanceTracker(object):
@@ -320,14 +321,14 @@ def format_int_locale(value):
     """Turn an integer into a grouped, locale-dependent string
     e.g. 12345 -> "12,345" or "12.345" etc
     """
-    return locale_format("%d", value, grouping=True)
+    return locale.format_string("%d", value, grouping=True)
 
 
 def format_float_locale(value, format="%.2f"):
     """Turn a float into a grouped, locale-dependent string
     e.g. 12345.67 -> "12,345.67" or "12.345,67" etc
     """
-    return locale_format(format, value, grouping=True)
+    return locale.format_string(format, value, grouping=True)
 
 
 def format_rating(value, blank=True):

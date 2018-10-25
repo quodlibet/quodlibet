@@ -16,17 +16,6 @@ from senf import environ, path2fsn, fsn2text, text2fsn
 from quodlibet.util.path import unexpand, xdg_get_system_data_dirs
 from quodlibet.util.dprint import print_d
 
-from .misc import get_locale_encoding
-
-
-def locale_format(format, val, *args, **kwargs):
-    """Like locale.format but returns text"""
-
-    result = locale.format(format, val, *args, **kwargs)
-    if isinstance(result, bytes):
-        result = result.decode(get_locale_encoding(), "replace")
-    return result
-
 
 def bcp47_to_language(code):
     """Takes a BCP 47 language identifier and returns a value suitable for the
@@ -407,7 +396,7 @@ def numeric_phrase(singular, plural, n, template_var=None):
     `"Add 12,345 songs"`
     (in `en_US` locale at least)
     """
-    num_text = locale_format('%d', n, grouping=True)
+    num_text = locale.format_string('%d', n, grouping=True)
     if not template_var:
         template_var = '%d'
         replacement = '%s'

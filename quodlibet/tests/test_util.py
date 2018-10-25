@@ -79,12 +79,6 @@ class Tmtime(TestCase):
         self.failUnlessEqual(mtime("/dev/doesnotexist"), 0)
 
 
-class Tget_locale_encoding(TestCase):
-
-    def test_main(self):
-        assert isinstance(util.get_locale_encoding(), str)
-
-
 class Tformat_locale(TestCase):
 
     def test_format_int_locale(self):
