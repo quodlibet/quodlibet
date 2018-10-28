@@ -99,8 +99,6 @@ class PreferencesButton(PreferencesButton):
 # penalty on some systems (tested on Fedora 15th July 2017)
 
 class IconView(Gtk.IconView):
-    # XXX: disable height for width etc. Speeds things up and doesn't seem
-    # to break anyhting in a scrolled window
 
     def do_get_preferred_width_for_height(self, height):
         return (1, 1)
@@ -109,10 +107,10 @@ class IconView(Gtk.IconView):
         return (1, 1)
 
     def do_get_preferred_height(self):
-        return (1, 1)
+        return (65536, 65536)
 
-    # def do_get_preferred_height_for_width(self, width):
-    #     return (1, 1)
+    def do_get_preferred_height_for_width(self, width):
+        return (65536, 65536)
 
 
 class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
