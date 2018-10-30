@@ -119,6 +119,8 @@ def main(argv=None):
 
     from gi.repository import GLib
 
+    from quodlibet.commands import registry as cmd_registry, CommandError
+
     def exec_commands(*args):
         for cmd in cmds_todo:
             try:
@@ -150,7 +152,6 @@ def main(argv=None):
 
     from quodlibet.mmkeys import MMKeysHandler
     from quodlibet.remote import Remote, RemoteError
-    from quodlibet.commands import registry as cmd_registry, CommandError
     from quodlibet.qltk.tracker import SongTracker, FSInterface
     try:
         from quodlibet.qltk.dbus_ import DBusHandler
