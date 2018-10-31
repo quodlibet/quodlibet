@@ -32,6 +32,8 @@
     </screenshots>
 
     <releases>
+        <release version="4.2.0" date="2018-10-31"/>
+        <release version="4.1.0" date="2018-06-03"/>
         <release version="4.0.2" date="2018-01-17"/>
         <release version="4.0.1" date="2018-01-13"/>
         <release version="4.0.0" date="2017-12-26"/>

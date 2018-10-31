@@ -1,11 +1,95 @@
 .. _release-4.2.0:
 
-4.2.0 (2018-??-??)
-------------------
+4.2.0 (2018-10-31) - staffed by the living
+------------------------------------------
 
 Packaging Changes:
   * **gettext 0.19.8** required (was 0.15)
   * **intltool** no longer required
+
+Translations:
+  * Finnish translation update
+    :pr:`2894` (:user:`Kristian Laakkonen <krisse7>`)
+  * Russian translation update :pr:`2965` (:user:`Arkadiy Illarionov <qarkai>`)
+  * Danish translation update :pr:`2983` (:user:`scootergrisen`)
+  * Polish translation update :pr:`3015` (:user:`Piotr Drąg <piotrdrag>`)
+
+Codebase:
+  * Port lots of dbus related code from python-dbus to GDBus
+    :pr:`2876` :pr:`2879` :pr:`2885` :pr:`2887` :pr:`2886` :pr:`2901`
+    :pr:`2903` :pr:`2904` :pr:`2905` :pr:`2917` :pr:`2918` :pr:`2925`
+    (:user:`Arkadiy Illarionov <qarkai>`)
+  * Ported from intltool to gettext
+  * CI: moved from appveyor to azure-pipelines for Windows testing
+  * CI: Add junit test reporting :pr:`2960`
+    (:user:`Nick Boultbee <declension>`)
+  * Various test suite fixes for NixOS :bug:`2820`
+    (:user:`Jan Tojnar <jtojnar>`)
+  * Removed most Python 2 compatibility code :pr:`2957`
+  * Add a Pipefile for pipenv :pr:`2977`
+  * Various minor Python 3.7 compatibility fixes
+
+General:
+  * queue: Add option to keep songs after playing them
+    :pr:`2865` (:user:`Fredrik Strupe <frestr>`)
+  * queue: Add option to not play songs from the queue
+    :pr:`2865` (:user:`Fredrik Strupe <frestr>`)
+  * Fix non-deterministic ordering of album list and cover grid browsers
+    :pr:`2945` (:user:`dpitch40`)
+  * multimedia keys: add support for forward/rewind/repeat/shuffle keys
+    :pr:`2954` (:user:`Druette Ludovic <LudoBike>`)
+  * tag editor: Fix a context menu crash
+    :pr:`2968` (:user:`Eoin O'Neill <TheYokai>`)
+  * Remove GNOME app menu :bug:`2846`
+  * cli: ``--add-location`` for adding a file/directory to the library
+    :pr:`2970` (:user:`Fredrik Strupe <frestr>`)
+  * cli: Remove deprecated ``--song-list`` option
+    (:user:`Fredrik Strupe <frestr>`)
+  * Update the big cover window on song changes
+    :pr:`2972` (:user:`Eoin O'Neill <TheYokai>`)
+  * wayland: Fix the application window icon under Plasma :bug:`2974`
+  * Various man page updates for missing commands etc
+    :pr:`2971` (:user:`Fredrik Strupe <frestr>`)
+  * Add support for importing m3u8 playlists (:user:`Fredrik Strupe <frestr>`)
+  * tags: Don't show generic Performance role description for ~performer:roles
+    :pr:`2994` (:user:`zsau`)
+  * themes: Work around redraw issues with the Breeze gtk theme :bug:`2997`
+  * tag editor: Remember filelist scroll position on tag save
+    :pr:`3005` (:user:`Olli Helin <ohel>`)
+  * Windows: use SetDllDirectoryW to prevent loading clashing DLLs not
+    shipped by us :bug:`2817`
+  * cover display: Fix the cover window size on multi monitor systems
+    :pr:`2915` (:user:`Fredrik Strupe <frestr>`)
+  * session: Add an XSMP session management backend to improve (but not fix)
+    save on shutdown behavior under XFCE :bug:`2897`
+  * monkeysaudio: handle missing bits_per_sample for older format versions
+    :bug:`2882`
+  * Various other fixes and improvements:
+    :pr:`2998` (:user:`Olli Helin <ohel>`), :pr:`2909` (:user:`zsau`)
+
+Plugins:
+  * waveformseekbar: Mouse scroll seeking
+    :pr:`2930` (:user:`Peter Strulo <blimmo>`)
+  * waveformseekbar: Add option to hide time labels
+    :pr:`2929` (:user:`CreamyCookie`)
+  * waveformseekbar: Fix freezes while playing streams
+    :pr:`2987` (:user:`Olli Helin <ohel>`)
+  * animocd: Add more preset positions
+    :pr:`2937` (:user:`Fredrik Strupe <frestr>`)
+  * New query plugin to match missing tags
+    :pr:`2936` (:user:`Peter Strulo <blimmo>`)
+  * pitch: Add spin buttons for finer control
+    :pr:`2950` (:user:`Druette Ludovic <LudoBike>`)
+  * wikipedia: Unify Wikipedia plugins
+    :pr:`2953` (:user:`Fredrik Strupe <frestr>`)
+  * equalizer: Add option to save custom presets
+    :pr:`2995` (:user:`Olli Helin <ohel>`)
+  * mediaserver: Point out required rygel config adjustment in the plugin
+    settings :pr:`3004` (:user:`Fredrik Strupe <frestr>`)
+  * custom commands: Fix menu order
+    :bug:`2659` (:user:`Fredrik Strupe <frestr>`)
+  * random album: Make it Python 3 compatible
+    :pr:`2922` (:user:`Stephan Helma <sphh>`)
 
 
 .. _release-4.1.0:
