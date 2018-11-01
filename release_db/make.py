@@ -44,6 +44,13 @@ BUILD_TYPE_SHORT_TITLES = {
 
 RELEASES = [
     {
+        "version": "4.2.0",
+        "date": "2018-10-31",
+        "builds": {
+            TARBALL: [GITHUB + "quodlibet-%(version)s.tar.gz"],
+        }
+    },
+    {
         "version": "4.1.0",
         "date": "2018-06-03",
         "builds": {
