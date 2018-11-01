@@ -27,7 +27,7 @@ class BigCenteredImage(qltk.Window):
 
     This might leak memory, but it could just be Python's GC being dumb."""
 
-    def __init__(self, title, fileobj, parent):
+    def __init__(self, title, fileobj, parent, scale=0.5):
         super(BigCenteredImage, self).__init__(type=Gtk.WindowType.POPUP)
         self.set_type_hint(Gdk.WindowTypeHint.TOOLTIP)
 
@@ -38,7 +38,7 @@ class BigCenteredImage(qltk.Window):
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 
         #If image fails to set, abort construction.
-        if not self.set_image(fileobj, parent):
+        if not self.set_image(fileobj, parent, scale):
             self.destroy()
             return
 
@@ -56,10 +56,10 @@ class BigCenteredImage(qltk.Window):
 
         self.get_child().show_all()
 
-    def set_image(self, file, parent):
+    def set_image(self, file, parent, scale=0.5):
         scale_factor = self.get_scale_factor()
 
-        (width, height) = self.__calculate_screen_width(parent)
+        (width, height) = self.__calculate_screen_width(parent, scale)
 
         pixbuf = None
         try:
@@ -76,7 +76,7 @@ class BigCenteredImage(qltk.Window):
 
         return True
 
-    def __calculate_screen_width(self, parent):
+    def __calculate_screen_width(self, parent, scale=0.5):
         if qltk.is_wayland():
             # no screen size with wayland, the parent window is
             # the next best thing..
@@ -97,12 +97,12 @@ class BigCenteredImage(qltk.Window):
                     screen = Gdk.Screen.get_default()
                     mon_num = screen.get_monitor_at_window(win)
                     rect = screen.get_monitor_geometry(mon_num)
-                width = int(rect.width / 1.8)
-                height = int(rect.height / 1.8)
+                width = int(rect.width * scale)
+                height = int(rect.height * scale)
                 return (width, height)
 
-            width = int(Gdk.Screen.width() / 1.8)
-            height = int(Gdk.Screen.height() / 1.8)
+            width = int(Gdk.Screen.width() * scale)
+            height = int(Gdk.Screen.height() * scale)
             return (width, height)
 
     def __destroy(self, *args):
@@ -253,6 +253,7 @@ class CoverImage(Gtk.EventBox):
         self.__file = None
         self.__current_bci = None
         self.__cancellable = None
+        self._scale = None
 
         self.add(ResizeImage(resize, size))
         self.connect('button-press-event', self.__album_clicked)
@@ -295,7 +296,10 @@ class CoverImage(Gtk.EventBox):
         if self.__current_bci is not None:
             self.__current_bci.destroy()
             if albumfile:
-                self.__show_cover(self.__song)
+                if self._scale:
+                    self.__show_cover(self.__song, self._scale)
+                else:
+                    self.__show_cover(self.__song)
 
     def __nonzero__(self):
         return bool(self.__file)
@@ -308,13 +312,16 @@ class CoverImage(Gtk.EventBox):
         if not song:
             return
 
-        if event.button != Gdk.BUTTON_PRIMARY or \
-                event.type != Gdk.EventType.BUTTON_PRESS:
+        if (event.type != Gdk.EventType.BUTTON_PRESS or
+                event.button == Gdk.BUTTON_MIDDLE):
             return False
 
-        return self.__show_cover(song)
+        self._scale = 0.55
+        if event.button == Gdk.BUTTON_SECONDARY:
+            self._scale = 0.9
+        return self.__show_cover(song, scale=self._scale)
 
-    def __show_cover(self, song):
+    def __show_cover(self, song, scale=0.5):
         """Show the cover as a detached BigCenteredImage.
         If one is already showing, destroy it instead
         If there is no image, run the AlbumArt plugin
@@ -338,7 +345,7 @@ class CoverImage(Gtk.EventBox):
 
         try:
             self.__current_bci = BigCenteredImage(
-                song.comma("album"), self.__file, parent=self)
+                song.comma("album"), self.__file, parent=self, scale=scale)
         except GLib.GError: # reload in case the image file is gone
             self.refresh()
         else:
