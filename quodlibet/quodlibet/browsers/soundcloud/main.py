@@ -336,6 +336,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
     def filter_text(self, text):
         self.__searchbar.set_text(text)
+        self.__query_changed(None, text)
         if SoundcloudQuery(text).is_parsable:
             self.activate()
         else:
