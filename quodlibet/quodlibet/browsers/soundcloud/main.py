@@ -324,6 +324,23 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         return [self.library]
 
     def restore(self):
+        filter_type = config.getint("browsers",
+                                    "soundcloud_selection",
+                                    FilterType.SEARCH)
+        model = self.view.get_model()
+        it = model.get_iter_first()
+        while it:
+            if model.get_value(it, 0) == filter_type:
+                break
+            it = model.iter_next(it)
+
+        if filter_type == FilterType.SEARCH:
+            self.__searchbar.set_enabled()
+            self.__inhibit()
+
+        self.view.get_selection().select_iter(it)
+        self.__uninhibit()
+
         text = config.gettext("browsers", "query_text")
         self.__searchbar.set_text(text)
         self.__query_changed(None, text, restore=True)
@@ -340,7 +357,6 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         selected = False
         while it:
             typ = model.get_value(it, 0)
-            query = model.get_value(it, 3)
             if typ == FilterType.SEARCH:
                 search_it = it
             elif ((typ == FilterType.FAVORITES and text == "#(rating = 1.0)")
@@ -390,6 +406,12 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         text = self.__searchbar.get_text()
         config.settext("browsers", "query_text", text)
         self.api_client.save_auth()
+
+        model, paths = self.view.get_selection().get_selected_rows()
+        if paths:
+            row = model[paths[0]]
+            filter_type = row[self.ModelIndex.TYPE]
+            config.set("browsers", "soundcloud_selection", filter_type)
 
     def _refresh_online_filters(self):
         model = self.view.get_model()
