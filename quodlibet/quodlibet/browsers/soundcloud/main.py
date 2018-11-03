@@ -335,12 +335,38 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         return True
 
     def filter_text(self, text):
-        self.__searchbar.set_text(text)
-        self.__query_changed(None, text)
-        if SoundcloudQuery(text).is_parsable:
-            self.activate()
-        else:
-            print_d("Not parsable: %s" % text)
+        model = self.view.get_model()
+        it = model.get_iter_first()
+        selected = False
+        while it:
+            typ = model.get_value(it, 0)
+            query = model.get_value(it, 3)
+            if typ == FilterType.SEARCH:
+                search_it = it
+            elif ((typ == FilterType.FAVORITES and text == "#(rating = 1.0)")
+                    or (typ == FilterType.MINE and
+                         text == "soundcloud_user_id=%s"
+                         % self.api_client.user_id)):
+                self.view.get_selection().select_iter(it)
+                selected = True
+                break
+            it = model.iter_next(it)
+
+        if not selected:
+            # We don't want the selection to be cleared, so inhibit
+            # the selection callback method
+            self.__inhibit()
+            self.view.get_selection().select_iter(search_it)
+            self.__uninhibit()
+
+            self.__searchbar.set_enabled()
+            self.__searchbar.set_text(text)
+            self.__query_changed(None, text)
+
+            if SoundcloudQuery(text).is_parsable:
+                self.activate()
+            else:
+                print_d("Not parsable: %s" % text)
 
     def get_filter_text(self):
         return self.__searchbar.get_text()
