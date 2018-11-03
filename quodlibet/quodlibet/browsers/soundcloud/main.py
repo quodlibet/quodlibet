@@ -264,6 +264,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                     model[model.get_iter(path)][self.ModelIndex.ALWAYS_ENABLE])
 
         selection.set_select_function(select_func)
+        selection.select_iter(model.get_iter_first())
         self._refresh_online_filters()
         self.__changed_sig = connect_destroy(selection, 'changed',
                                              DeferredSignal(self._on_select))
