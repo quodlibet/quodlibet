@@ -26,17 +26,19 @@ _arguments \
   '--queue=[Show or hide the queue]:on|off|t:(on off t)'\
   '--quit[Exit Quod Libet]'\
   '--random=[Filter on a random value]:tag'\
+  '--rating=[Set rating of playing song]:[+|-]0.0..1.0'\
+  '--rating-down[Decrease rating of playing song by one star]'\
+  '--rating-up[Increase rating of playing song by one star]'\
   '--refresh[Refresh and rescan library]'\
   '--repeat=[Turn repeat off, on, or toggle it]:0|1|t:(0 1 t)'\
   '--seek=[Seek within the playing song]:[+|-][HH\:]MM\:SS'\
   '--set-browser=[Set the current browser]:browser name:'$browsers\
-  '--set-rating=[Rate the playing song]:0.0..1.0'\
   '--show-window[Show main window]'\
   '--song-list=[Show or hide the main song list]:on|off|t:(on off t)'\
   '--start-playing[Begin playing immediately]'\
   '--status[Print player status]'\
   '--toggle-window[Toggle main window visibility]'\
   '--unfilter[Remove active browser filters]'\
-  '--volume=[Set the volume]:(+|-|)0..100'\
+  '--volume=[Set the volume]:[+|-]0..100'\
   '--volume-down[Turn down volume]'\
   '--volume-up[Turn up volume]'

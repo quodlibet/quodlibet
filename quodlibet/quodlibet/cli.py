@@ -78,7 +78,7 @@ def process_arguments(argv):
                 "hide-window", "show-window", "toggle-window",
                 "focus", "quit", "unfilter", "refresh", "force-previous"]
     controls_opt = ["seek", "repeat", "query", "volume", "filter",
-                    "set-rating", "set-browser", "open-browser", "shuffle",
+                    "rating", "set-browser", "open-browser", "shuffle",
                     "queue", "stop-after", "random", "repeat-type",
                     "shuffle-type", "add-location"]
 
@@ -102,6 +102,8 @@ def process_arguments(argv):
         ("stop", _("Stop playback")),
         ("volume-up", _("Turn up volume")),
         ("volume-down", _("Turn down volume")),
+        ("rating-up", _("Increase rating of playing song by one star")),
+        ("rating-down", _("Decrease rating of playing song by one star")),
         ("status", _("Print player status")),
         ("hide-window", _("Hide main window")),
         ("show-window", _("Show main window")),
@@ -125,10 +127,10 @@ def process_arguments(argv):
         ("shuffle-type", _("Set shuffle mode type"), "random|weighted|off"),
         ("repeat", _("Turn repeat off, on, or toggle it"), "0|1|t"),
         ("repeat-type", _("Set repeat mode type"), "current|all|one|off"),
-        ("volume", _("Set the volume"), "(+|-|)0..100"),
+        ("volume", _("Set the volume"), "[+|-]0..100"),
         ("query", _("Search your audio library"), _("query")),
         ("play-file", _("Play a file"), C_("command", "filename")),
-        ("set-rating", _("Rate the playing song"), "0.0..1.0"),
+        ("rating", _("Set rating of playing song"), "[+|-]0.0..1.0"),
         ("set-browser", _("Set the current browser"), "BrowserName"),
         ("stop-after", _("Stop after the playing song"), "0|1|t"),
         ("open-browser", _("Open a new browser"), "BrowserName"),
@@ -153,6 +155,11 @@ def process_arguments(argv):
     options.add("screen", arg="dummy")
 
     def is_vol(str):
+        if len(str) == 1 and str[0] in '+-':
+            return True
+        return is_float(str)
+
+    def is_rate(str):
         if len(str) == 1 and str[0] in '+-':
             return True
         return is_float(str)
@@ -183,7 +190,7 @@ def process_arguments(argv):
         "repeat-type": ["current", "all", "one", "off", "0"].__contains__,
         "volume": is_vol,
         "seek": is_time,
-        "set-rating": is_float,
+        "rating": is_rate,
         "stop-after": ["0", "1", "t"].__contains__,
         }
 
@@ -221,6 +228,10 @@ def process_arguments(argv):
             queue("volume +")
         elif command == "volume-down":
             queue("volume -")
+        elif command == "rating-up":
+            queue("rating +")
+        elif command == "rating-down":
+            queue("rating -")
         elif command == "enqueue" or command == "unqueue":
             try:
                 filename = uri2fsn(arg)
