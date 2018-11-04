@@ -50,6 +50,8 @@ class MediaServer(EventPlugin):
                      "enabled=true")
 
         exp_lbl = Gtk.Label(label=conf_exp)
+        exp_lbl.set_selectable(True)
+        exp_lbl.set_line_wrap(True)
         exp_lbl.set_alignment(0, 0)
 
         conf_lbl = Gtk.Label()
