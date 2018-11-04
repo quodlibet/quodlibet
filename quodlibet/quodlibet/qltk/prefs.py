@@ -429,7 +429,7 @@ class PreferencesWindow(UniqueWindow):
             c = CCB(_("_Continue playback on startup"),
                     "player", "restore_playing", populate=True,
                     tooltip=_("If music is playing on shutdown, automatically "
-                              "start playing on next startup."))
+                              "start playing on next startup"))
             vbox.pack_start(c, False, False, 0)
 
             f = qltk.Frame(_("Startup"), child=vbox)
