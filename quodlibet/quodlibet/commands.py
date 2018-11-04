@@ -307,8 +307,8 @@ def _show_window(app):
     app.show()
 
 
-@registry.register("set-rating", args=1)
-def _set_rating(app, value):
+@registry.register("rating", args=1)
+def _rating(app, value):
     song = app.player.song
     if not song:
         return
