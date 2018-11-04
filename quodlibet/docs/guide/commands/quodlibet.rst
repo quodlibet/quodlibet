@@ -22,8 +22,8 @@ ways to view your audio library, as well as support for Internet radio and
 audio feeds. It has extremely flexible metadata tag editing and searching
 capabilities.
 
-This manual page is only a short reference for Quod Libet. Complete 
-documentation is available at 
+This manual page is only a short reference for Quod Libet. Complete
+documentation is available at
 https://quodlibet.readthedocs.io/en/latest/guide/index.html.
 
 OPTIONS
@@ -112,6 +112,15 @@ OPTIONS
 --random=tag
     Filter on a random value
 
+--rating=<[+|-]0.0..1.0>
+    Set rating of playing song
+
+--rating-down
+    Decrease rating of playing song by one star
+
+--rating-up
+    Increase rating of playing song by one star
+
 --refresh
     Refresh and rescan library
 
@@ -130,9 +139,6 @@ OPTIONS
 
 --set-browser=BrowserName
     Set the current browser
-
---set-rating=<0.0..1.0>
-    Rate the playing song
 
 --show-window
     Show main window
@@ -171,7 +177,7 @@ OPTIONS
 --version
     Display version and copyright
 
---volume=<(+\|-\|)0..100>
+--volume=<[+|-]0..100>
     Set the volume
 
 --volume-down
