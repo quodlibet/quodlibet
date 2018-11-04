@@ -27,6 +27,8 @@ from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, \
         OneSong
 from quodlibet.order.reorder import OrderWeighted, OrderShuffle
 
+from quodlibet.config import RATINGS
+
 
 class CommandError(Exception):
     pass
@@ -311,14 +313,24 @@ def _set_rating(app, value):
     if not song:
         return
 
-    value = arg2text(value)
-
-    try:
-        song["~#rating"] = max(0.0, min(1.0, float(value)))
-    except (ValueError, TypeError):
-        pass
+    if value[0] in ('+', '-'):
+        if len(value) > 1:
+            try:
+                change = float(value[1:])
+            except ValueError:
+                return
+        else:
+            change = (1 / RATINGS.number)
+        if value[0] == '-':
+            change = -change
+        rating = song["~#rating"] + change
     else:
-        app.library.changed([song])
+        try:
+            rating = float(value)
+        except (ValueError, TypeError):
+            return
+    song["~#rating"] = max(0.0, min(1.0, rating))
+    app.library.changed([song])
 
 
 @registry.register("dump-browsers")

@@ -128,7 +128,7 @@ def process_arguments(argv):
         ("volume", _("Set the volume"), "(+|-|)0..100"),
         ("query", _("Search your audio library"), _("query")),
         ("play-file", _("Play a file"), C_("command", "filename")),
-        ("set-rating", _("Rate the playing song"), "0.0..1.0"),
+        ("set-rating", _("Rate the playing song"), "(+|-|)0.0..1.0"),
         ("set-browser", _("Set the current browser"), "BrowserName"),
         ("stop-after", _("Stop after the playing song"), "0|1|t"),
         ("open-browser", _("Open a new browser"), "BrowserName"),
@@ -153,6 +153,11 @@ def process_arguments(argv):
     options.add("screen", arg="dummy")
 
     def is_vol(str):
+        if len(str) == 1 and str[0] in '+-':
+            return True
+        return is_float(str)
+
+    def is_rate(str):
         if len(str) == 1 and str[0] in '+-':
             return True
         return is_float(str)
@@ -183,7 +188,7 @@ def process_arguments(argv):
         "repeat-type": ["current", "all", "one", "off", "0"].__contains__,
         "volume": is_vol,
         "seek": is_time,
-        "set-rating": is_float,
+        "set-rating": is_rate,
         "stop-after": ["0", "1", "t"].__contains__,
         }
 
