@@ -177,7 +177,9 @@ def main(argv=None):
 
     quodlibet.enable_periodic_save(save_library=True)
 
-    if "start-playing" in startup_actions:
+    if ("start-playing" in startup_actions or
+            (config.getboolean("player", "restore_playing", False) and
+                config.getboolean("player", "is_playing", False))):
         player.paused = False
 
     if "start-hidden" in startup_actions:
