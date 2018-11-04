@@ -132,6 +132,15 @@ Exit Quod Libet
 .BI \-\-random\fB= tag
 Filter on a random value
 .TP
+.BI \-\-rating\fB= <[+|\-]0.0..1.0>
+Set rating of playing song
+.TP
+.B \-\-rating\-down
+Decrease rating of playing song by one star
+.TP
+.B \-\-rating\-up
+Increase rating of playing song by one star
+.TP
 .B \-\-refresh
 Refresh and rescan library
 .TP
@@ -150,9 +159,6 @@ Seek within the playing song
 .TP
 .BI \-\-set\-browser\fB= BrowserName
 Set the current browser
-.TP
-.BI \-\-set\-rating\fB= <0.0..1.0>
-Rate the playing song
 .TP
 .B \-\-show\-window
 Show main window
@@ -191,7 +197,7 @@ Unqueue a file or query
 .B \-\-version
 Display version and copyright
 .TP
-.BI \-\-volume\fB= <(+\e|\-\e|)0..100>
+.BI \-\-volume\fB= <[+|\-]0..100>
 Set the volume
 .TP
 .B \-\-volume\-down
