@@ -39,6 +39,9 @@ INITIAL = {
 
         "gst_device": "",
         "gst_disable_gapless": "false",
+
+        "is_playing": "false",
+        "restore_playing": "false",
     },
     "library": {
         "exclude": "",

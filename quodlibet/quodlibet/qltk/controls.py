@@ -202,6 +202,7 @@ class PlayPauseButton(Gtk.Button):
     def set_active(self, is_active):
         if self.get_active() == is_active:
             return
+        config.set("player", "is_playing", is_active)
         self._set_active(is_active)
 
     def get_active(self):

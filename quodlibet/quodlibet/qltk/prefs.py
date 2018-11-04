@@ -425,6 +425,16 @@ class PreferencesWindow(UniqueWindow):
 
             self.pack_start(f, False, True, 0)
 
+            vbox = Gtk.VBox()
+            c = CCB(_("_Continue playback on startup"),
+                    "player", "restore_playing", populate=True,
+                    tooltip=_("If music is playing on shutdown, automatically "
+                              "start playing on next startup."))
+            vbox.pack_start(c, False, False, 0)
+
+            f = qltk.Frame(_("Startup"), child=vbox)
+            self.pack_start(f, False, True, 0)
+
             for child in self.get_children():
                 child.show_all()
 
