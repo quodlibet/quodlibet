@@ -143,6 +143,11 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     def init(klass, library):
         super(CoverGrid, klass).load_pattern()
 
+    def finalize(self, restored):
+        if not restored:
+            # Select the "All Albums" album, which is None
+            self.select_by_func(lambda r: r[0].album is None, one=True)
+
     @classmethod
     def _destroy_model(klass):
         klass.__model.destroy()
