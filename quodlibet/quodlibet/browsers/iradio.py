@@ -524,6 +524,13 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         klass.filters = None
 
+    def finalize(self, restored):
+        if not restored:
+            # Select "All Stations" by default
+            def sel_all(row):
+                return row[self.TYPE] == self.TYPE_ALL
+            self.view.select_by_func(sel_all, one=True)
+
     def __inhibit(self):
         self.view.get_selection().handler_block(self.__changed_sig)
 
