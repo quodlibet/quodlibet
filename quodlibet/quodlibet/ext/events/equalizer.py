@@ -270,7 +270,7 @@ class Equalizer(EventPlugin):
             else:
                 self._save_button.set_sensitive(True)
 
-        frame = Gtk.Frame(label="Default presets", label_xalign=0.5)
+        frame = Gtk.Frame(label=_("Default presets"), label_xalign=0.5)
         main_middle_hbox = Gtk.HBox(spacing=6)
 
         # Default presets
@@ -297,7 +297,7 @@ class Equalizer(EventPlugin):
 
         main_vbox.pack_start(main_middle_hbox, False, False, 0)
 
-        frame = Gtk.Frame(label="Custom presets", label_xalign=0.5)
+        frame = Gtk.Frame(label=_("Custom presets"), label_xalign=0.5)
         main_bottom_vbox = Gtk.VBox()
 
         # Custom presets
@@ -324,7 +324,7 @@ class Equalizer(EventPlugin):
         main_bottom_vbox.pack_start(hs, True, True, 6)
 
         hb = Gtk.HBox()
-        l = Gtk.Label(label="Preset name for saving:")
+        l = Gtk.Label(label=_("Preset name for saving:"))
         hb.pack_start(l, False, False, 0)
         main_bottom_vbox.pack_start(hb, False, False, 0)
 
