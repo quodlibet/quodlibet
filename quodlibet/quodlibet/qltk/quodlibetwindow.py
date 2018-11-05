@@ -1126,6 +1126,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         if window:
             GLib.idle_add(window.set_cursor, None)
 
+        self.browser.activate()
+
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.reset_replaygain()
         self.__browserbox.add(container)
