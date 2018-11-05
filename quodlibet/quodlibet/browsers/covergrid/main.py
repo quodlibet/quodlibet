@@ -330,6 +330,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         self.enable_row_update(view, sw, self.view)
 
+        self.__update_filter()
+
         self.connect('key-press-event', self.__key_pressed, library.librarian)
 
         if app.cover_manager:
@@ -400,7 +402,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         if not klass.instances():
             klass._destroy_model()
 
-    def __update_filter(self, entry, text, scroll_up=True, restore=False):
+    def __update_filter(self, entry=None, text=None, scroll_up=True, restore=False):
         model = self.view.get_model()
 
         self.__filter = None
