@@ -152,7 +152,7 @@ INITIAL = {
         "covergrid_magnification": "3.0",
 
         # show "all albums" in covergrid view
-        "covergrid_all": "0",
+        "covergrid_all": "1",
     },
 
     # Kind of a dumping ground right now, should probably be

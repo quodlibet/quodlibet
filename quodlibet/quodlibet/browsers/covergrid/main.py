@@ -418,7 +418,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         # way to implement this
 
         if (not restore or self.__filter or self.__bg_filter) or (not
-            config.getboolean("browsers", "covergrid_all", False)):
+            config.getboolean("browsers", "covergrid_all", True)):
             model.refilter()
 
         self.__uninhibit()
@@ -431,7 +431,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             return True
         else:
             if album is None:
-                return config.getboolean("browsers", "covergrid_all", False)
+                return config.getboolean("browsers", "covergrid_all", True)
             elif b is None:
                 return f(album)
             elif f is None:
@@ -442,7 +442,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     def __search_func(self, model, column, key, iter_, data):
         album = model.get_album(iter_)
         if album is None:
-            return config.getboolean("browsers", "covergrid_all", False)
+            return config.getboolean("browsers", "covergrid_all", True)
         key = key.lower()
         title = album.title.lower()
         if key in title:
