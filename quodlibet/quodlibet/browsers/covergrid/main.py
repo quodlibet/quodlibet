@@ -402,7 +402,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         if not klass.instances():
             klass._destroy_model()
 
-    def __update_filter(self, entry=None, text=None, scroll_up=True, restore=False):
+    def __update_filter(self, entry=None, text=None, scroll_up=True,
+                        restore=False):
         model = self.view.get_model()
 
         self.__filter = None
