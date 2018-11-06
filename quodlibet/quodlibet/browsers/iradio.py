@@ -799,6 +799,9 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         return filter_
 
+    def unfilter(self):
+        self.filter_text("")
+
     def __add_fav(self, songs):
         songs = [s for s in songs if s in self.__stations]
         type(self).__librarian.move(

@@ -401,8 +401,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     def finalize(self, restored):
         if not restored:
-            # Select the "All Albums" album, which is None
-            self.view.select_by_func(lambda r: r[0].album is None, one=True)
+            self.view.set_cursor((0,))
 
     @classmethod
     def _destroy_model(klass):

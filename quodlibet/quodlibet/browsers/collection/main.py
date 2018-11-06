@@ -387,7 +387,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         return self.__search.get_text()
 
     def unfilter(self):
-        pass
+        self.filter_text("")
 
     def activate(self):
         self.view.get_selection().emit('changed')

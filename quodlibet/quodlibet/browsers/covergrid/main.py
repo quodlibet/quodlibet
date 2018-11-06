@@ -620,7 +620,6 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
     def unfilter(self):
         self.filter_text("")
-        #self.view.set_cursor((0,), None, False)
 
     def activate(self):
         self.view.emit('selection-changed')
