@@ -1110,9 +1110,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         if restore:
             self.browser.restore()
             self.browser.activate()
-        else:
-            self.browser.unfilter()
         self.browser.finalize(restore)
+        if not restore:
+            self.browser.unfilter()
         if self.browser.can_reorder:
             self.songlist.enable_drop()
         elif self.browser.dropped:
