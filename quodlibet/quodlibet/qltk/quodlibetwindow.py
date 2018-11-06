@@ -1110,6 +1110,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         if restore:
             self.browser.restore()
             self.browser.activate()
+        else:
+            self.browser.unfilter()
         self.browser.finalize(restore)
         if self.browser.can_reorder:
             self.songlist.enable_drop()
@@ -1125,8 +1127,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         # Reset the cursor when done loading the browser
         if window:
             GLib.idle_add(window.set_cursor, None)
-
-        self.browser.activate()
 
         player.replaygain_profiles[1] = self.browser.replaygain_profiles
         player.reset_replaygain()
