@@ -641,18 +641,16 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         keys = config.gettext("browsers", "covergrid", "").split("\n")
 
-        # FIXME: If albums is "" then it could be either all albums or
-        # no albums. If it's "" and some other stuff, assume no albums,
-        # otherwise all albums.
         self.__inhibit()
         if keys != [""]:
-
             def select_fun(row):
                 album = row[0].album
                 if not album:  # all
                     return False
                 return album.str_key in keys
             self.select_by_func(select_fun)
+        else:
+            self.select_by_func(lambda r: r[0].album is None)
         self.__uninhibit()
 
     def scroll(self, song):
