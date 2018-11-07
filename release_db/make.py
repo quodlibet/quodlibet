@@ -48,6 +48,8 @@ RELEASES = [
         "date": "2018-10-31",
         "builds": {
             TARBALL: [GITHUB + "quodlibet-%(version)s.tar.gz"],
+            WIN: [GITHUB + "quodlibet-%(version)s-installer.exe"],
+            WIN_PORT: [GITHUB + "quodlibet-%(version)s-portable.exe"],
         }
     },
     {
