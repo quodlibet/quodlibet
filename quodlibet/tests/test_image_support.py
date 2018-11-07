@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import GdkPixbuf
+from gi.repository import GdkPixbuf, Gdk
 
 from tests import TestCase, get_data_path
 
@@ -31,3 +31,8 @@ class Timage_support(TestCase):
             assert pb
             assert pb.get_width() == 16
             assert pb.get_height() == 16
+
+    def test_cursors(self):
+        # make sure cursor images are packaged right
+        cursor = Gdk.Cursor.new_from_name(Gdk.Display.get_default(), "default")
+        assert cursor.get_surface()
