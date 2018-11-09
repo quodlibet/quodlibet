@@ -323,8 +323,6 @@ class PanedBrowser(Browser, util.InstanceTracker):
 
     def finalize(self, restored):
         config.settext("browsers", "query_text", u"")
-        if not restored:
-            self.fill_panes()
 
     def fill(self, songs):
         GLib.idle_add(self.songs_selected, list(songs))
