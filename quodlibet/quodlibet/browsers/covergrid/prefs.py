@@ -70,9 +70,13 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         cb2 = ConfigCheckButton(
             _("Show \"All Albums\" Item"), "browsers", "covergrid_all")
-        cb2.set_active(config.getboolean("browsers", "covergrid_all", False))
-        cb2.connect('toggled',
-                   lambda s: browser.view.get_model().refilter())
+        cb2.set_active(config.getboolean("browsers", "covergrid_all", True))
+
+        def refilter(s):
+            mod = browser.view.get_model()
+            if mod:
+                mod.refilter()
+        cb2.connect('toggled', refilter)
         vbox.pack_start(cb2, False, True, 0)
 
         cb3 = ConfigCheckButton(

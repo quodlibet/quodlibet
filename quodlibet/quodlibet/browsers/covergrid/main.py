@@ -143,6 +143,11 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     def init(klass, library):
         super(CoverGrid, klass).load_pattern()
 
+    def finalize(self, restored):
+        if not restored:
+            # Select the "All Albums" album, which is None
+            self.select_by_func(lambda r: r[0].album is None, one=True)
+
     @classmethod
     def _destroy_model(klass):
         klass.__model.destroy()
@@ -615,7 +620,6 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
     def unfilter(self):
         self.filter_text("")
-        #self.view.set_cursor((0,), None, False)
 
     def activate(self):
         self.view.emit('selection-changed')
@@ -637,18 +641,16 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         keys = config.gettext("browsers", "covergrid", "").split("\n")
 
-        # FIXME: If albums is "" then it could be either all albums or
-        # no albums. If it's "" and some other stuff, assume no albums,
-        # otherwise all albums.
         self.__inhibit()
         if keys != [""]:
-
             def select_fun(row):
                 album = row[0].album
                 if not album:  # all
                     return False
                 return album.str_key in keys
             self.select_by_func(select_fun)
+        else:
+            self.select_by_func(lambda r: r[0].album is None)
         self.__uninhibit()
 
     def scroll(self, song):

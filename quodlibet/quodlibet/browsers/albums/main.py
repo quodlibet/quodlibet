@@ -399,6 +399,10 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
     def init(klass, library):
         super(AlbumList, klass).load_pattern()
 
+    def finalize(self, restored):
+        if not restored:
+            self.view.set_cursor((0,))
+
     @classmethod
     def _destroy_model(klass):
         klass.__model.destroy()

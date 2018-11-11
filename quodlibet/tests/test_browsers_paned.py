@@ -92,7 +92,7 @@ class TPanedBrowser(TestCase):
         self.failUnless(self.bar.can_filter_text())
 
     def test_filter_text(self):
-        self.bar.finalize(False)
+        self.bar.activate()
 
         self.bar.filter_text("artist=nope")
         self._wait()
@@ -103,14 +103,14 @@ class TPanedBrowser(TestCase):
         self.failUnlessEqual(set(self.last), set(SONGS[1:]))
 
     def test_filter_value(self):
-        self.bar.finalize(False)
+        self.bar.activate()
         expected = [SONGS[0]]
         self.bar.filter("artist", ["boris"])
         self._wait()
         self.failUnlessEqual(self.last, expected)
 
     def test_filter_notvalue(self):
-        self.bar.finalize(False)
+        self.bar.activate()
         expected = SONGS[1:4]
         self.bar.filter("artist", ["notvalue", "mu", "piman"])
         self._wait()
@@ -139,7 +139,7 @@ class TPanedBrowser(TestCase):
         self.failUnlessEqual(self.emit_count, 1)
 
     def test_restore_selection(self):
-        self.bar.finalize(False)
+        self.bar.activate()
         self.bar.filter("artist", [u"piman"])
         self.bar.save()
         self.bar.unfilter()
@@ -150,7 +150,7 @@ class TPanedBrowser(TestCase):
             self.assertTrue(u"piman" in song.list("artist"))
 
     def test_set_all_panes(self):
-        self.bar.finalize(False)
+        self.bar.activate()
         self.bar.set_all_panes()
 
     def test_restore_pane_width(self):

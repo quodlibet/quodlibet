@@ -50,6 +50,9 @@ class TMPRIS(PluginTestCase):
         config.init()
         init_fake_app()
 
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+
         app.window.songlist.set_songs([A1, A2])
         app.player.go_to(None)
         self.m = self.plugin()
