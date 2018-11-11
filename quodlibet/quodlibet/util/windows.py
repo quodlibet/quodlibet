@@ -10,6 +10,7 @@ from __future__ import absolute_import
 
 import os
 import ctypes
+from typing import List
 
 
 if os.name == "nt":
@@ -18,7 +19,7 @@ if os.name == "nt":
         SHGetFolderPathW, S_OK, MAX_PATH, \
         KnownFolderFlag, FOLDERID, SHGetKnownFolderPath, CoTaskMemFree, \
         CoInitialize, IShellLinkW, CoCreateInstance, CLSID_ShellLink, \
-        CLSCTX_INPROC_SERVER, IPersistFile
+        CLSCTX_INPROC_SERVER, IPersistFile, GetLogicalDriveStringsW
 
 
 def open_folder_and_select_items(folder, items=None):
@@ -202,3 +203,20 @@ def get_link_target(path):
         pShellLinkW.Release()
 
     return ctypes.wstring_at(buffer_)
+
+
+def get_logical_drive_strings() -> List[str]:
+    wsize = ctypes.sizeof(ctypes.c_wchar)
+    buf = ctypes.create_string_buffer(wsize * 42)
+    while 1:
+        buf_len = (len(buf) // wsize) - 1
+        length = GetLogicalDriveStringsW(
+            buf_len, ctypes.cast(buf, ctypes.c_wchar_p))
+        if length == 0:
+            raise ctypes.WinError()
+        elif length > buf_len:
+            buf = ctypes.create_string_buffer((length + 1) * wsize)
+        else:
+            break
+    uni = buf[:length * wsize].decode("utf-16-le", "surrogatepass")
+    return [v for v in uni.split("\0") if v]

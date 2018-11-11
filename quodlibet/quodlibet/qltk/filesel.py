@@ -124,19 +124,11 @@ def get_favorites():
         return paths
 
 
-def _get_win_drives():
-    """Returns a list of paths for all available drives e.g. ['C:\\']"""
-
-    assert os.name == "nt"
-    drives = [letter + u":\\" for letter in u"CDEFGHIJKLMNOPQRSTUVWXYZ"]
-    return [d for d in drives if os.path.isdir(d)]
-
-
 def get_drives():
     """A list of accessible drives"""
 
     if os.name == "nt":
-        return _get_win_drives()
+        return windows.get_logical_drive_strings()
     else:
         paths = []
         for mount in Gio.VolumeMonitor.get().get_mounts():

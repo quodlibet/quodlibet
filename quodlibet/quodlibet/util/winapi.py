@@ -519,3 +519,8 @@ class KnownFolderFlag(int):
     CREATE = 0x00008000
     NO_APPCONTAINER_REDIRECTION = 0x00010000
     ALIAS_ONLY = 0x80000000
+
+
+GetLogicalDriveStringsW = windll.kernel32.GetLogicalDriveStringsW
+GetLogicalDriveStringsW.restype = wintypes.DWORD
+GetLogicalDriveStringsW.argtypes = [wintypes.DWORD, wintypes.LPWSTR]

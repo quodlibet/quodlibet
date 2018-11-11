@@ -57,3 +57,9 @@ class TWindows(TestCase):
     def test_get_link_target_non_exist(self):
         with self.assertRaises(WindowsError):
             windows.get_link_target(u"nopenope.lnk")
+
+    def test_get_logical_drive_strings(self):
+        res = windows.get_logical_drive_strings()
+        assert isinstance(res, list)
+        if res:
+            assert isinstance(res[0], str)
