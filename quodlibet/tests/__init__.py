@@ -277,6 +277,7 @@ def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
 
     if is_ci():
         args.extend(["-p", "no:cacheprovider"])
+        args.extend(["-p", "no:stepwise"])
 
     if run:
         args.append("-k")
