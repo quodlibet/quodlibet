@@ -21,22 +21,33 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import connect_obj, escape
-from quodlibet.const import COLUMN_MODE_SMALL, COLUMN_MODE_WIDE, \
-    COLUMN_MODE_COLUMNAR
 from .util import get_headers, save_headers
 
 
-class ColumnModes(Gtk.VBox):
+@util.enum
+class ColumnMode(int):
+    SMALL = 0
+    WIDE = 1
+    COLUMNAR = 2
+
+
+class ColumnModeSelection(Gtk.VBox):
     def __init__(self, browser):
-        super(ColumnModes, self).__init__(spacing=6)
+        super(ColumnModeSelection, self).__init__(spacing=6)
         self.browser = browser
         self.buttons = []
 
         group = None
-        for mode in [COLUMN_MODE_SMALL, COLUMN_MODE_WIDE,
-                     COLUMN_MODE_COLUMNAR]:
-            group = Gtk.RadioButton(group=group, label=_(mode))
-            if mode == config.gettext("browsers", "pane_mode"):
+        mode_label = {
+                ColumnMode.SMALL: _("Small"),
+                ColumnMode.WIDE: _("Wide"),
+                ColumnMode.COLUMNAR: _("Columnar"),
+        }
+        for mode in ColumnMode.values:
+            lbl = mode_label[ColumnMode.value_of(mode)]
+            group = Gtk.RadioButton(group=group, label=lbl)
+            if mode == config.getint("browsers", "pane_mode",
+                                     ColumnMode.SMALL):
                 group.set_active(True)
             self.pack_start(group, False, True, 0)
             self.buttons.append(group)
@@ -47,12 +58,12 @@ class ColumnModes(Gtk.VBox):
             button.connect('toggled', self.toggled)
 
     def toggled(self, button):
-        selected_mode = COLUMN_MODE_SMALL
+        selected_mode = ColumnMode.SMALL
         if self.buttons[1].get_active():
-            selected_mode = COLUMN_MODE_WIDE
+            selected_mode = ColumnMode.WIDE
         if self.buttons[2].get_active():
-            selected_mode = COLUMN_MODE_COLUMNAR
-        config.settext("browsers", "pane_mode", selected_mode)
+            selected_mode = ColumnMode.COLUMNAR
+        config.set("browsers", "pane_mode", selected_mode)
         self.browser.set_all_column_mode(selected_mode)
 
 
@@ -222,7 +233,7 @@ class Preferences(qltk.UniqueWindow):
 
         vbox = Gtk.VBox(spacing=12)
 
-        column_modes = ColumnModes(browser)
+        column_modes = ColumnModeSelection(browser)
         column_mode_frame = qltk.Frame(_("Column layout"), child=column_modes)
 
         editor = PatternEditor()

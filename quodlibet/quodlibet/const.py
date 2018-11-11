@@ -274,8 +274,4 @@ Fabien Devaux
 DEFAULT_COLUMNS = "~#track ~people ~title~version ~album~discsubtitle " \
                   "~#length".split()
 
-COLUMN_MODE_SMALL = "Small"
-COLUMN_MODE_WIDE = "Wide"
-COLUMN_MODE_COLUMNAR = "Columnar"
-
 DEBUG = ("--debug" in sys.argv or "QUODLIBET_DEBUG" in os.environ)

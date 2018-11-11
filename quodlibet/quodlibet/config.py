@@ -106,9 +106,6 @@ INITIAL = {
         # selected pane values
         "pane_selection": "",
 
-        # browser orientation
-        "pane_mode": const.COLUMN_MODE_SMALL,
-
         # equal pane width in paned browser
         "equal_pane_width": "true",
 
