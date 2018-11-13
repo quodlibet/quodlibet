@@ -35,6 +35,7 @@ jobs:
           MSYSTEM: $(MSYSTEM)
           CHERE_INVOKING: yes
       - task: PublishTestResults@2
+        condition: not(canceled())
         inputs:
           testResultsFiles: '**/test-*.xml'
           testRunTitle: 'Publish test results'
