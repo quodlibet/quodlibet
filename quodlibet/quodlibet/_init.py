@@ -215,13 +215,6 @@ def _init_gtk():
 
     import gi
 
-    # pygiaio 3.14rev16 switched to fontconfig for PangoCairo. As this results
-    # in 100% CPU under win7 revert it. Maybe we need to update the
-    # cache in the windows installer for it to work... but for now revert.
-    if is_windows():
-        environ['PANGOCAIRO_BACKEND'] = 'win32'
-        environ["GTK_CSD"] = "0"
-
     # disable for consistency and trigger events seem a bit flaky here
     if config.getboolean("settings", "scrollbar_always_visible"):
         environ["GTK_OVERLAY_SCROLLING"] = "0"
