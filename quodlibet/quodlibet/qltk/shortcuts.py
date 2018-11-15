@@ -94,6 +94,7 @@ def show_shortcuts(parent):
         # window placement. This fixes the jumping around and wrong position
         # with some WMs and under Windows.
         window.hide()
+        window.unrealize()
         window.show()
     else:
         util.website(const.SHORTCUTS_HELP)
