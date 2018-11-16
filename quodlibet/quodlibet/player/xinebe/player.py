@@ -236,7 +236,7 @@ class XinePlaylistPlayer(BasePlayer):
             if paused:
                 if not self.song.is_file:
                     xine_close(self._stream)
-                    xine_open(self._stream, self.song("~uri"))
+                    xine_open(self._stream, self.song("~uri").encode("ascii"))
                 else:
                     self._pause()
             else:
