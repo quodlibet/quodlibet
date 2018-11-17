@@ -11,8 +11,24 @@ import time
 
 from gi.repository import GLib, Gio
 
+from quodlibet.util import print_exc
 from ._base import MMKeysBackend, MMKeysAction
-from quodlibet.util.environment import dbus_name_owned
+
+
+def dbus_has_interface(dbus_name, dbus_path, dbus_interface):
+    try:
+        proxy = Gio.DBusProxy.new_for_bus_sync(
+            Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
+            dbus_name, dbus_path,
+            "org.freedesktop.DBus.Introspectable", None)
+        xml = proxy.Introspect()
+        node = Gio.DBusNodeInfo.new_for_xml(xml)
+        for iface in node.interfaces:
+            if iface.name == dbus_interface:
+                return True
+        return False
+    except GLib.Error:
+        return False
 
 
 class GnomeBackend(MMKeysBackend):
@@ -45,7 +61,8 @@ class GnomeBackend(MMKeysBackend):
     @classmethod
     def is_active(cls):
         """If the gsd plugin is active atm"""
-        return dbus_name_owned(cls.DBUS_NAME)
+
+        return dbus_has_interface(cls.DBUS_NAME, cls.DBUS_PATH, cls.DBUS_IFACE)
 
     def cancel(self):
         if self.__callback:
@@ -70,9 +87,8 @@ class GnomeBackend(MMKeysBackend):
 
         try:
             iface.GrabMediaPlayerKeys('(su)', self.__name, self.__grab_time)
-        except GLib.Error as e:
-            if 'Error.ServiceUnknown' not in str(e):
-                raise
+        except GLib.Error:
+            print_exc()
 
     def __update_interface(self):
         """If __interface is None, set a proxy interface object and connect
@@ -86,7 +102,7 @@ class GnomeBackend(MMKeysBackend):
                 Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
                 self.DBUS_NAME, self.DBUS_PATH, self.DBUS_IFACE, None)
         except GLib.Error:
-            pass
+            print_exc()
         else:
             self.__key_pressed_sig = iface.connect(
                 'g-signal', self.__on_signal)
@@ -152,7 +168,7 @@ class GnomeBackend(MMKeysBackend):
         try:
             self.__interface.ReleaseMediaPlayerKeys('(s)', self.__name)
         except GLib.Error:
-            pass
+            print_exc()
         self.__interface = None
 
 
