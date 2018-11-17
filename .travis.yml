@@ -11,7 +11,7 @@ matrix:
       language: generic
 
 install:
- - travis_retry wget -O ql.dmg https://github.com/quodlibet/quodlibet/releases/download/ci/QuodLibet-latest-v5.dmg
+ - travis_retry wget -O ql.dmg https://github.com/quodlibet/quodlibet/releases/download/ci/QuodLibet-latest-v6.dmg
  - hdiutil attach -readonly -mountpoint _mount ql.dmg
 
 script:
