@@ -127,6 +127,10 @@ class TQltk(TestCase):
         # TODO: proper assertions, etc
         win.destroy()
 
+    def test_get_font_backend_name(self):
+        name = qltk.get_font_backend_name()
+        assert isinstance(name, str)
+
 
 class Tselection_data(TestCase):
 

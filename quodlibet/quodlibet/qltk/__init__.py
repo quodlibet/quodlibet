@@ -18,7 +18,7 @@ gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk
 from gi.repository import Gdk
-from gi.repository import GLib, GObject
+from gi.repository import GLib, GObject, PangoCairo
 from senf import fsn2bytes, bytes2fsn, uri2fsn
 
 from quodlibet.util import print_d, print_w, is_windows, is_osx
@@ -405,6 +405,17 @@ def get_backend_name():
             name = name[:-7]
         return name
     return u"Unknown"
+
+
+def get_font_backend_name() -> str:
+    """The PangoCairo font backend name"""
+
+    font_map = PangoCairo.FontMap.get_default()
+    name = font_map.__gtype__.name.lower()
+    name = name.split("pangocairo")[-1].split("fontmap")[0]
+    if name == "fc":
+        name = "fontconfig"
+    return name
 
 
 gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(),

@@ -215,6 +215,10 @@ def _init_gtk():
 
     import gi
 
+    if config.getboolean("settings", "pangocairo_force_fontconfig") and \
+            "PANGOCAIRO_BACKEND" not in environ:
+        environ["PANGOCAIRO_BACKEND"] = "fontconfig"
+
     # disable for consistency and trigger events seem a bit flaky here
     if config.getboolean("settings", "scrollbar_always_visible"):
         environ["GTK_OVERLAY_SCROLLING"] = "0"
@@ -231,6 +235,7 @@ def _init_gtk():
     gi.require_version("Gdk", "3.0")
     gi.require_version("Pango", "1.0")
     gi.require_version('Soup', '2.4')
+    gi.require_version('PangoCairo', "1.0")
 
     from gi.repository import Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version

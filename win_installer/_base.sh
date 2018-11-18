@@ -76,11 +76,6 @@ function extract_installer {
 }
 
 function install_deps {
-
-    # We don't use the fontconfig backend, and this skips the lengthy
-    # cache update step during package installation
-    export MSYS2_FC_CACHE_SKIP=1
-
     build_pacman --noconfirm -S \
         git \
         mingw-w64-"${ARCH}"-gettext \
@@ -178,6 +173,15 @@ function cleanup_before {
     "${MINGW_ROOT}"/bin/gtk-update-icon-cache-3.0.exe \
         "${MINGW_ROOT}"/share/icons/hicolor
 
+    # fontconfig settings
+    cat >"${MINGW_ROOT}/etc/gtk-3.0/settings.ini" <<EOL
+[Settings]
+gtk-xft-antialias=1
+gtk-xft-hinting=1
+gtk-xft-hintstyle=hintfull
+gtk-xft-rgba=rgb
+EOL
+
     # python related, before installing quodlibet
     rm -Rf "${MINGW_ROOT}"/lib/python3.*/test
     rm -f "${MINGW_ROOT}"/lib/python3.*/lib-dynload/_tkinter*
@@ -210,7 +214,10 @@ function cleanup_after {
     rm -Rf "${MINGW_ROOT}"/share/gtk-doc
     rm -Rf "${MINGW_ROOT}"/include
     rm -Rf "${MINGW_ROOT}"/var
-    rm -Rf "${MINGW_ROOT}"/etc
+    rm -Rf "${MINGW_ROOT}"/etc/config.site
+    rm -Rf "${MINGW_ROOT}"/etc/pki
+    rm -Rf "${MINGW_ROOT}"/etc/pkcs11
+    rm -Rf "${MINGW_ROOT}"/etc/gtk-3.0/im-multipress.conf
     rm -Rf "${MINGW_ROOT}"/share/zsh
     rm -Rf "${MINGW_ROOT}"/share/pixmaps
     rm -Rf "${MINGW_ROOT}"/share/gnome-shell

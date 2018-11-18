@@ -159,6 +159,12 @@ class AdvancedPreferences(EventPlugin):
                  "the window always are visible or get hidden when not in use "
                  "(restart required)")))
 
+        rows.append(
+            boolean_config(
+                "settings", "pangocairo_force_fontconfig",
+                "Force Use Fontconfig Backend:",
+                "It's not the default on win/macOS (restart required)"))
+
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
             table.attach(label, 0, 1, row, row + 1,

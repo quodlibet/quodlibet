@@ -209,6 +209,9 @@ INITIAL = {
         # scrollbar does not fade out when inactive
         "scrollbar_always_visible":
             "true" if (is_osx() or is_windows()) else "false",
+
+        # Force fontconfig as PangoCairo backend
+        "pangocairo_force_fontconfig": False,
     },
 
     "rename": {
