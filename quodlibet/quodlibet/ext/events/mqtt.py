@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2016 Nick Boultbee
+# Copyright 2016, 2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,10 +23,7 @@ _TOTAL_MQTT_ITEMS = 3
 try:
     import paho.mqtt.client as mqtt
 except ImportError:
-    from quodlibet.plugins import MissingModulePluginException, \
-        PluginNotSupportedError
-    if os.name == "nt":
-        raise PluginNotSupportedError
+    from quodlibet.plugins import MissingModulePluginException
     raise MissingModulePluginException('paho-mqtt')
 
 from gi.repository import Gtk
@@ -52,6 +49,8 @@ class Config(object):
     HOST = 'host', "localhost"
     PORT = 'port', 1883
     TOPIC = 'topic', 'quodlibet/now-playing'
+    EMPTY_STATUS = ""
+
 
 _ACCEPTS_PATTERNS = (_("Accepts QL Patterns e.g. %s") %
                      monospace(escape('<~artist~title>')))
@@ -63,19 +62,19 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_DESC = _("Publishes status messages to an MQTT topic.")
     PLUGIN_ICON = Icons.FACE_SMILE
 
+    def __init__(self) -> None:
+        super().__init__()
+        self.song = self.host = self.port = self.topic = None
+        self.status = Config.EMPTY_STATUS
+
     def on_connect(self, client, userdata, flags, rc):
         """Callback for when the client receives a
         CONNACK response from the server."""
         print_d("Connected to %s at %s:%d with result code %s"
                 % (self.topic, self.host, self.port, rc))
 
-    def _subscribe(self, client, topic):
-        result = client.subscribe(topic)
-        if result != mqtt.MQTT_ERR_SUCCESS:
-            print_w("Couldn't connect to %s (%s)" % (self.topic, result))
-
-    # The callback for when a PUBLISH message is received from the server.
     def on_message(self, client, userdata, msg):
+        """The callback for messages received from the server."""
         print_d("%s: %s" % (msg.topic, msg.payload))
 
     def _set_up_mqtt_client(self):
@@ -91,7 +90,8 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         result, mid = self.client.publish(self.topic, text)
         if result != mqtt.MQTT_ERR_SUCCESS:
             print_w("Couldn't publish to %s at %s:%d (%s)"
-                    % (self.topic, self.host, self.port, result))
+                    % (self.topic, self.host, self.port,
+                       mqtt.error_string(result)))
         self.status = text
 
     def plugin_on_song_started(self, song):
@@ -105,7 +105,8 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
     def plugin_on_paused(self):
         pat_str = self.config_get(*Config.PAT_PAUSED)
         pattern = Pattern(pat_str)
-        self.status = pattern.format(self.song) if self.song else ""
+        self.status = (pattern.format(self.song) if self.song
+                       else Config.EMPTY_STATUS)
         self._set_status(self.status)
 
     def plugin_on_unpaused(self):
@@ -114,20 +115,21 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
     def disabled(self):
         if self.status:
             self._set_status(self.config_get(Config.STATUS_SONGLESS))
+        self.client.on_connect = None
+        self.client.on_message = None
         self.client.disconnect()
 
     def enabled(self):
-        self.song = None
-        self.status = ''
-        self.host = self.config_get(*Config.HOST)
-        self.port = int(self.config_get(*Config.PORT))
+        self.host = self.config_get(*Config.HOST) or 'localhost'
+        self.port = int(self.config_get(*Config.PORT)) or 1883
         self.topic = self.config_get(*Config.TOPIC)
         self._set_up_mqtt_client()
 
     _CONFIG = [
-        (_("Broker hostname"), Config.HOST, _("broker hostname / IP")),
+        (_("Broker hostname"), Config.HOST,
+         _("broker hostname / IP (defaults to localhost)")),
 
-        (_("Broker port"), Config.PORT, _("broker port")),
+        (_("Broker port"), Config.PORT, _("broker port (defaults to 1883")),
 
         (_("Topic"), Config.TOPIC, _("Topic")),
 
@@ -203,8 +205,7 @@ def validator(pat):
     """Validates Patterns a bit.
     TODO: Extract to somewhere good - see #1983"""
     try:
-        str = Pattern(pat).format(DUMMY_AF)
-        return bool(str)
+        return bool(Pattern(pat).format(DUMMY_AF))
     except Exception as e:
         print_e("Problem with %s" % (pat,), e)
 
