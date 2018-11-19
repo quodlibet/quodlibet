@@ -26,7 +26,7 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.window import Dialog
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.x import SeparatorMenuItem, Button, MenuItem
+from quodlibet.qltk.x import Button, MenuItem
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.qltk import Icons
@@ -198,6 +198,9 @@ class SplitValues(Gtk.ImageMenuItem):
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
         spls = config.gettext("editing", "split_on").split()
+        vals = split_value(value, spls)
+        string = ", ".join(["{}={}".format(tag, val) for val in vals])
+        self.set_label(string)
         self.set_sensitive(len(split_value(value, spls)) > 1)
 
     def activated(self, tag, value):
@@ -215,6 +218,12 @@ class SplitDisc(Gtk.ImageMenuItem):
             label=_("Split Disc out of _Album"), use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+
+        album, disc = split_album(value)
+        if disc is not None:
+            self.set_label("{}={}, {}={}".format(tag, album,
+                           self.needs[0], disc))
+
         self.set_sensitive(split_album(value)[1] is not None)
 
     def activated(self, tag, value):
@@ -233,6 +242,13 @@ class SplitTitle(Gtk.ImageMenuItem):
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
         spls = config.gettext("editing", "split_on").split()
+
+        title, versions = split_title(value)
+        if versions:
+            string = (", ".join(["{}={}".format(tag, title)] +
+               ["{}={}".format(self.needs[0], ver) for ver in versions]))
+            self.set_label(string)
+
         self.set_sensitive(bool(split_title(value, spls)[1]))
 
     def activated(self, tag, value):
@@ -250,6 +266,13 @@ class SplitPerson(Gtk.ImageMenuItem):
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
         spls = config.gettext("editing", "split_on").split()
+
+        artist, others = split_people(value, spls)
+        if others:
+            string = (", ".join(["{}={}".format(tag, artist)] +
+                ["{}={}".format(self.needs[0], o) for o in others]))
+            self.set_label(string)
+
         self.set_sensitive(bool(split_people(value, spls)[1]))
 
     def activated(self, tag, value):
@@ -617,6 +640,8 @@ class EditTags(Gtk.VBox):
             comment = entry.value
             text = comment.text
 
+            split_menu = Gtk.Menu()
+
             for Item in items:
                 if Item.tags and entry.tag not in Item.tags:
                     continue
@@ -634,10 +659,18 @@ class EditTags(Gtk.VBox):
                             or comment.is_special()):
                         b.set_sensitive(False)
 
-                    menu.append(b)
+                    vals = b.activated(entry.tag, text)
+                    if len(vals) > 1 and vals[1][1]:
+                        split_menu.append(b)
 
-            if menu.get_children():
-                menu.append(SeparatorMenuItem())
+            split_item = MenuItem(_("_Split Tag"), Icons.EDIT_FIND_REPLACE)
+
+            if split_menu.get_children():
+                split_item.set_submenu(split_menu)
+            else:
+                split_item.set_sensitive(False)
+
+            menu.append(split_item)
 
         copy_b = MenuItem(_("_Copy Value(s)"), Icons.EDIT_COPY)
         copy_b.connect('activate', self.__copy_tag_value, view)
