@@ -701,7 +701,7 @@ class PreferencesWindow(UniqueWindow):
             for child in self.get_children():
                 child.show_all()
 
-    def __init__(self, parent):
+    def __init__(self, parent, open_page=None):
         if self.is_not_unique():
             return
         super(PreferencesWindow, self).__init__()
@@ -711,14 +711,18 @@ class PreferencesWindow(UniqueWindow):
         self.set_transient_for(qltk.get_top_parent(parent))
 
         self.__notebook = notebook = qltk.Notebook()
-        for Page in [self.SongList, self.Browsers, self.Player,
-                     self.Library, self.Tagging]:
+        pages = [self.SongList, self.Browsers, self.Player, self.Library,
+                 self.Tagging]
+        for Page in pages:
             page = Page()
             page.show()
             notebook.append_page(page)
 
-        page_name = config.get("memory", "prefs_page", "")
-        self.set_page(page_name)
+        if open_page in [page.name for page in pages]:
+            self.set_page(open_page)
+        else:
+            page_name = config.get("memory", "prefs_page", "")
+            self.set_page(page_name)
 
         def on_switch_page(notebook, page, page_num):
             config.set("memory", "prefs_page", page.name)

@@ -663,6 +663,16 @@ class EditTags(Gtk.VBox):
                     if len(vals) > 1 and vals[1][1]:
                         split_menu.append(b)
 
+            pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
+            split_menu.append(pref_item)
+
+            def show_prefs(parent):
+                from quodlibet.qltk.prefs import PreferencesWindow
+                window = PreferencesWindow(parent, open_page="tagging")
+                window.show()
+
+            connect_obj(pref_item, "activate", show_prefs, self)
+
             split_item = MenuItem(_("_Split Tag"), Icons.EDIT_FIND_REPLACE)
 
             if split_menu.get_children():
