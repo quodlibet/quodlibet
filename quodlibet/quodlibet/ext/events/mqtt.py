@@ -87,7 +87,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
 
     def _set_status(self, text):
         print_d("Setting status to \"%s\"..." % text)
-        result, mid = self.client.publish(self.topic, text)
+        result, mid = self.client.publish(self.topic, text, retain=True)
         if result != mqtt.MQTT_ERR_SUCCESS:
             print_w("Couldn't publish to %s at %s:%d (%s)"
                     % (self.topic, self.host, self.port,
