@@ -26,7 +26,7 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.window import Dialog
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.x import Button, MenuItem
+from quodlibet.qltk.x import SeparatorMenuItem, Button, MenuItem
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.qltk import Icons
@@ -663,7 +663,10 @@ class EditTags(Gtk.VBox):
                     if len(vals) > 1 and vals[1][1]:
                         split_menu.append(b)
 
-            pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
+            if split_menu.get_children():
+                split_menu.append(SeparatorMenuItem())
+
+            pref_item = MenuItem(_("_Configure"), Icons.PREFERENCES_SYSTEM)
             split_menu.append(pref_item)
 
             def show_prefs(parent):
