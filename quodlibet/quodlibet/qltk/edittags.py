@@ -198,10 +198,11 @@ class SplitValues(Gtk.ImageMenuItem):
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
         spls = config.gettext("editing", "split_on").split()
-        vals = split_value(value, spls)
+        vals = [val if len(val) <= 64 else val[:64] + "…"
+                for val in split_value(value, spls)]
         string = ", ".join(["{}={}".format(tag, val) for val in vals])
         self.set_label(string)
-        self.set_sensitive(len(split_value(value, spls)) > 1)
+        self.set_sensitive(len(vals) > 1)
 
     def activated(self, tag, value):
         spls = config.gettext("editing", "split_on").split()
@@ -221,6 +222,7 @@ class SplitDisc(Gtk.ImageMenuItem):
 
         album, disc = split_album(value)
         if disc is not None:
+            album = album if len(album) <= 64 else album[:64] + "…"
             self.set_label("{}={}, {}={}".format(tag, album,
                            self.needs[0], disc))
 
@@ -246,6 +248,9 @@ class SplitTitle(Gtk.ImageMenuItem):
 
         title, versions = split_title(value, tag_spls, sub_spls)
         if versions:
+            title = title if len(title) <= 64 else title[:64] + "…"
+            versions = [ver if len(ver) <= 64 else ver[:64] + "…"
+                        for ver in versions]
             string = (", ".join(["{}={}".format(tag, title)] +
                ["{}={}".format(self.needs[0], ver) for ver in versions]))
             self.set_label(string)
@@ -272,6 +277,9 @@ class SplitPerson(Gtk.ImageMenuItem):
 
         artist, others = split_people(value, tag_spls, sub_spls)
         if others:
+            artist = artist if len(artist) <= 64 else artist[:64] + "…"
+            others = [other if len(other) <= 64 else other[:64] + "…"
+                        for other in others]
             string = (", ".join(["{}={}".format(tag, artist)] +
                 ["{}={}".format(self.needs[0], o) for o in others]))
             self.set_label(string)
