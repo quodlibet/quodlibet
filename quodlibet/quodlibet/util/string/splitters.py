@@ -12,7 +12,12 @@ import re
 from quodlibet.util import re_escape
 
 
-def split_value(s, splitters=[u"/", u"&", u","]):
+DEFAULT_TAG_SPLITTERS = ["/", "&", ","]
+DEFAULT_SUB_SPLITTERS = ["\u301c\u301c", "\uff08\uff09",
+                         "[]", "()", "~~", "--"]
+
+
+def split_value(s, splitters=DEFAULT_TAG_SPLITTERS):
     """Splits a string. The first match in 'splitters' is used as the
     separator; subsequent matches are intentionally ignored.
     """
@@ -31,11 +36,12 @@ def split_value(s, splitters=[u"/", u"&", u","]):
     return values
 
 
-def find_subtitle(title):
+def find_subtitle(title, delimiters=DEFAULT_SUB_SPLITTERS):
     if isinstance(title, bytes):
         title = title.decode('utf-8', 'replace')
-    for pair in [u"[]", u"()", u"~~", u"--", u"\u301c\u301c", u'\uff08\uff09']:
-        if pair[0] in title[:-1] and title.endswith(pair[1]):
+    for pair in delimiters:
+        if (len(pair) == 2 and pair[0] in title[:-1]
+                and title.endswith(pair[1])):
             r = len(pair[1])
             l = title[0:-r].rindex(pair[0])
             if l:
@@ -45,9 +51,10 @@ def find_subtitle(title):
         return title, None
 
 
-def split_title(s, splitters=["/", "&", ","]):
-    title, subtitle = find_subtitle(s)
-    return ((title.strip(), split_value(subtitle, splitters))
+def split_title(s, tag_splitters=DEFAULT_TAG_SPLITTERS,
+                sub_splitters=DEFAULT_SUB_SPLITTERS):
+    title, subtitle = find_subtitle(s, sub_splitters)
+    return ((title.strip(), split_value(subtitle, tag_splitters))
             if subtitle else (s, []))
 
 
@@ -58,8 +65,9 @@ __FEAT_REGEX = [re.compile(re_escape(s + " "), re.I) for s in __FEATURING]
 __ORIG_REGEX = [re.compile(re_escape(s), re.I) for s in __ORIGINALLY]
 
 
-def split_people(s, splitters=["/", "&", ","]):
-    title, subtitle = find_subtitle(s)
+def split_people(s, tag_splitters=DEFAULT_TAG_SPLITTERS,
+                 sub_splitters=DEFAULT_SUB_SPLITTERS):
+    title, subtitle = find_subtitle(s, sub_splitters)
     if not subtitle:
         parts = s.split(" ")
         if len(parts) > 2:
@@ -68,7 +76,7 @@ def split_people(s, splitters=["/", "&", ","]):
                     i = [p.lower() for p in parts].index(feat)
                     orig = " ".join(parts[:i])
                     others = " ".join(parts[i + 1:])
-                    return orig, split_value(others, splitters)
+                    return orig, split_value(others, tag_splitters)
                 except (ValueError, IndexError):
                     pass
         return s, []
@@ -80,12 +88,12 @@ def split_people(s, splitters=["/", "&", ","]):
             if old != subtitle:
                 # Only change once
                 break
-        values = split_value(subtitle, splitters)
+        values = split_value(subtitle, tag_splitters)
         return title.strip(), values
 
 
-def split_album(s):
-    name, disc = find_subtitle(s)
+def split_album(s, sub_splitters=DEFAULT_SUB_SPLITTERS):
+    name, disc = find_subtitle(s, sub_splitters)
     if not disc:
         parts = s.split(" ")
         if len(parts) > 2:

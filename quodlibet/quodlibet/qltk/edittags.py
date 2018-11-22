@@ -224,7 +224,7 @@ class SplitDisc(Gtk.ImageMenuItem):
             self.set_label("{}={}, {}={}".format(tag, album,
                            self.needs[0], disc))
 
-        self.set_sensitive(split_album(value)[1] is not None)
+        self.set_sensitive(disc is not None)
 
     def activated(self, tag, value):
         album, disc = split_album(value)
@@ -241,19 +241,21 @@ class SplitTitle(Gtk.ImageMenuItem):
             label=_("Split _Version out of Title"), use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
-        spls = config.gettext("editing", "split_on").split()
+        tag_spls = config.gettext("editing", "split_on").split()
+        sub_spls = config.gettext("editing", "sub_split_on").split()
 
-        title, versions = split_title(value)
+        title, versions = split_title(value, tag_spls, sub_spls)
         if versions:
             string = (", ".join(["{}={}".format(tag, title)] +
                ["{}={}".format(self.needs[0], ver) for ver in versions]))
             self.set_label(string)
 
-        self.set_sensitive(bool(split_title(value, spls)[1]))
+        self.set_sensitive(bool(versions))
 
     def activated(self, tag, value):
-        spls = config.gettext("editing", "split_on").split()
-        title, versions = split_title(value, spls)
+        tag_spls = config.gettext("editing", "split_on").split()
+        sub_spls = config.gettext("editing", "sub_split_on").split()
+        title, versions = split_title(value, tag_spls, sub_spls)
         return [(tag, title)] + [("version", v) for v in versions]
 
 
@@ -265,19 +267,21 @@ class SplitPerson(Gtk.ImageMenuItem):
         super(SplitPerson, self).__init__(label=self.title, use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
-        spls = config.gettext("editing", "split_on").split()
+        tag_spls = config.gettext("editing", "split_on").split()
+        sub_spls = config.gettext("editing", "sub_split_on").split()
 
-        artist, others = split_people(value, spls)
+        artist, others = split_people(value, tag_spls, sub_spls)
         if others:
             string = (", ".join(["{}={}".format(tag, artist)] +
                 ["{}={}".format(self.needs[0], o) for o in others]))
             self.set_label(string)
 
-        self.set_sensitive(bool(split_people(value, spls)[1]))
+        self.set_sensitive(bool(others))
 
     def activated(self, tag, value):
-        spls = config.gettext("editing", "split_on").split()
-        artist, others = split_people(value, spls)
+        tag_spls = config.gettext("editing", "split_on").split()
+        sub_spls = config.gettext("editing", "sub_split_on").split()
+        artist, others = split_people(value, tag_spls, sub_spls)
         return [(tag, artist)] + [(self.needs[0], o) for o in others]
 
 

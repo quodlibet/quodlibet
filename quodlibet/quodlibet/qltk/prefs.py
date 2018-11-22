@@ -600,29 +600,62 @@ class PreferencesWindow(UniqueWindow):
                      tooltip=_("Save changes to tags without confirmation "
                                "when editing multiple files"))
             vbox.pack_start(cb, False, True, 0)
-            hb = Gtk.HBox(spacing=6)
-            e = UndoEntry()
-            e.set_text(config.get("editing", "split_on"))
-            e.connect('changed', self.__changed, 'editing', 'split_on')
-            e.set_tooltip_text(
+
+            split_entry = UndoEntry()
+            split_entry.set_text(config.get("editing", "split_on"))
+            split_entry.connect('changed', self.__changed, 'editing',
+                                'split_on')
+            split_entry.set_tooltip_text(
                 _("A set of separators to use when splitting tag values "
                   "in the tag editor. "
                   "The list is space-separated"))
+            split_entry.props.expand = True
 
-            def do_revert_split(button, section, option):
+            sub_entry = UndoEntry()
+            sub_entry.set_text(config.get("editing", "sub_split_on"))
+            sub_entry.connect('changed', self.__changed, 'editing',
+                              'sub_split_on')
+            sub_entry.set_tooltip_text(
+                _("A set of separators to use when extracting subtags from "
+                  "tags in the tag editor. "
+                  "The list is space-separated, and each entry must only "
+                  "contain two characters."))
+            sub_entry.props.expand = True
+
+            def do_revert_split(button, entry, section, option):
                 config.reset(section, option)
-                e.set_text(config.get(section, option))
+                entry.set_text(config.get(section, option))
 
             split_revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
-            split_revert.connect("clicked", do_revert_split, "editing",
-                                 "split_on")
-            l = Gtk.Label(label=_("Split _on:"))
-            l.set_use_underline(True)
-            l.set_mnemonic_widget(e)
-            hb.pack_start(l, False, True, 0)
-            hb.pack_start(e, True, True, 0)
-            hb.pack_start(split_revert, False, True, 0)
-            vbox.pack_start(hb, False, True, 0)
+            split_revert.connect("clicked", do_revert_split, split_entry,
+                                 "editing", "split_on")
+            split_label = Gtk.Label(label=_("Split _tag on:"))
+            split_label.set_use_underline(True)
+            split_label.set_mnemonic_widget(split_entry)
+
+            sub_revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
+            sub_revert.connect("clicked", do_revert_split, sub_entry,
+                               "editing", "sub_split_on")
+            sub_label = Gtk.Label(label=_("Split _subtag on:"))
+            sub_label.set_use_underline(True)
+            sub_label.set_mnemonic_widget(split_entry)
+
+            split_align = Align(halign=Gtk.Align.START)
+            split_align.add(split_label)
+            sub_align = Align(halign=Gtk.Align.START)
+            sub_align.add(sub_label)
+
+            grid = Gtk.Grid(column_spacing=6, row_spacing=6)
+            grid.add(split_align)
+            grid.add(split_entry)
+            grid.add(split_revert)
+            grid.attach(sub_align, 0, 1, 1, 1)
+            grid.attach(sub_entry, 1, 1, 1, 1)
+            grid.attach(sub_revert, 2, 1, 1, 1)
+            grid.props.expand = False
+
+            vbox.pack_start(grid, False, False, 6)
+
             return vbox
 
         def __init__(self):
