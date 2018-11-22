@@ -75,6 +75,14 @@ class Tsplit_title(TestCase):
         self.failUnlessEqual(
             split_title("foo [b c]", " "), ("foo", ["b", "c"]))
 
+    def test_custom_subtag_splitter(self):
+        self.failUnlessEqual(
+            split_title("foo |b c|", " ", ["||"]), ("foo", ["b", "c"]))
+        self.failUnlessEqual(
+            split_title("foo abc", " ", ["ac"]), ("foo", ["b"]))
+        self.failUnlessEqual(
+            split_title("foo (a)", " ", []), ("foo (a)", []))
+
 
 class Tsplit_album(TestCase):
     def test_album_looks_like_disc(self):
@@ -100,6 +108,10 @@ class Tsplit_album(TestCase):
     def test_weird_not_disc(self):
         self.failUnlessEqual(
             split_album("foo ~crazy 3~"), ("foo ~crazy 3~", None))
+
+    def test_custom_splitter(self):
+        self.failUnlessEqual(
+            split_album("foo |CD 1|", ["||"]), ("foo", "1"))
 
 
 class Tsplit_people(TestCase):
@@ -137,3 +149,7 @@ class Tsplit_people(TestCase):
         self.failUnlessEqual(
             split_people("Psycho Killer [Talking Heads Cover]"),
             ("Psycho Killer", ["Talking Heads"]))
+
+    def test_custom_splitter(self):
+        self.failUnlessEqual(
+            split_people("foo |With bar|", " ", ["||"]), ("foo", ["bar"]))
