@@ -279,7 +279,7 @@ class PreferencesWindow(QLPreferencesWindow):
         self.set_title(_("Ex Falso Preferences"))
         self.set_border_width(12)
         self.set_resizable(False)
-        self.set_transient_for(parent)
+        self.set_transient_for(qltk.get_top_parent(parent))
 
         tagging = self.Tagging()
         f = qltk.Frame(_("Tag Editing"), child=(tagging.tag_editing_vbox()))

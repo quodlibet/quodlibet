@@ -15,6 +15,7 @@ from quodlibet import C_, _
 from quodlibet import qltk
 from quodlibet import config
 from quodlibet import util
+from quodlibet import app
 
 from quodlibet.util import massagers
 
@@ -682,8 +683,13 @@ class EditTags(Gtk.VBox):
             split_menu.append(pref_item)
 
             def show_prefs(parent):
-                from quodlibet.qltk.prefs import PreferencesWindow
-                window = PreferencesWindow(parent, open_page="tagging")
+                from quodlibet.qltk.exfalsowindow import ExFalsoWindow
+                if isinstance(app.window, ExFalsoWindow):
+                    from quodlibet.qltk.exfalsowindow import PreferencesWindow
+                    window = PreferencesWindow(parent)
+                else:
+                    from quodlibet.qltk.prefs import PreferencesWindow
+                    window = PreferencesWindow(parent, open_page="tagging")
                 window.show()
 
             connect_obj(pref_item, "activate", show_prefs, self)
