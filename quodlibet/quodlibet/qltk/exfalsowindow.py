@@ -28,13 +28,13 @@ from quodlibet.qltk.renamefiles import RenameFiles
 from quodlibet.qltk.tagsfrompath import TagsFromPath
 from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.about import AboutDialog
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Align, SeparatorMenuItem, ConfigRHPaned, \
     Button, SymbolicIconImage, MenuItem
-from quodlibet.qltk.window import PersistentWindowMixin, Window, UniqueWindow
+from quodlibet.qltk.window import PersistentWindowMixin, Window
 from quodlibet.qltk.msg import CancelRevertSave
+from quodlibet.qltk.prefs import PreferencesWindow as QLPreferencesWindow
 from quodlibet.qltk import Icons
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import mtime, normalize_path
@@ -271,28 +271,18 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         self.emit('changed', files)
 
 
-class PreferencesWindow(UniqueWindow):
+class PreferencesWindow(QLPreferencesWindow):
     def __init__(self, parent):
         if self.is_not_unique():
             return
-        super(PreferencesWindow, self).__init__()
+        super(QLPreferencesWindow, self).__init__()
         self.set_title(_("Ex Falso Preferences"))
         self.set_border_width(12)
         self.set_resizable(False)
         self.set_transient_for(parent)
 
-        vbox = Gtk.VBox(spacing=6)
-        hb = Gtk.HBox(spacing=6)
-        e = UndoEntry()
-        e.set_text(config.get("editing", "split_on"))
-        e.connect('changed', self.__changed, 'editing', 'split_on')
-        l = Gtk.Label(label=_("Split _on:"))
-        l.set_use_underline(True)
-        l.set_mnemonic_widget(e)
-        hb.pack_start(l, False, True, 0)
-        hb.pack_start(e, True, True, 0)
-        vbox.pack_start(hb, False, True, 0)
-        f = qltk.Frame(_("Tag Editing"), child=vbox)
+        tagging = self.Tagging()
+        f = qltk.Frame(_("Tag Editing"), child=(tagging.tag_editing_vbox()))
 
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         connect_obj(close, 'clicked', lambda x: x.destroy(), self)
@@ -309,9 +299,6 @@ class PreferencesWindow(UniqueWindow):
 
         connect_obj(self, 'destroy', PreferencesWindow.__destroy, self)
         self.get_child().show_all()
-
-    def __changed(self, entry, section, name):
-        config.set(section, name, entry.get_text())
 
     def __destroy(self):
         config.save()
