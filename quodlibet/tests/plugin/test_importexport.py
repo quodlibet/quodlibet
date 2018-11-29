@@ -42,7 +42,7 @@ class TExport(PluginTestCase):
 def a_dummy_song():
     """Looks like the real thing"""
     return AudioFile({
-        '~#length': 234, '~filename': ("/tmp/%d" % random.randint(1, 100_000)),
+        '~#length': 234, '~filename': ("/tmp/%d" % random.randint(1, 100000)),
         'artist': AN_ARTIST, 'album': 'An Example Album',
         'title': A_TITLE, 'tracknumber': 1,
         'date': '2010-12-31',
