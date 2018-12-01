@@ -139,6 +139,8 @@ class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
             if sibling is None:
                 position = -1
             else:
+                if parent is None:
+                    parent = self.iter_parent(sibling)
                 position = self.get_path(sibling)[-1]
             return self.insert_with_values(parent, position, [0], [value])
 
@@ -151,6 +153,8 @@ class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
             if sibling is None:
                 position = 0
             else:
+                if parent is None:
+                    parent = self.iter_parent(sibling)
                 position = self.get_path(sibling)[-1] + 1
             return self.insert_with_values(parent, position, [0], [value])
 
