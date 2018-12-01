@@ -1,0 +1,30 @@
+name: python3-mutagen
+buildsystem: simple
+build-commands:
+  - pip3 install --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST}
+    mutagen sgmllib3k feedparser pyinotify musicbrainzngs dbus-python paho-mqtt
+sources:
+  - type: file
+    url: https://files.pythonhosted.org/packages/25/63/db25e62979c2a716a74950c9ed658dce431b5cb01fde29eb6cba9489a904/paho-mqtt-1.4.0.tar.gz
+    sha256: e440a052b46d222e184be3be38676378722072fcd4dfd2c8f509fb861a7b0b79
+  - type: file
+    url: https://files.pythonhosted.org/packages/3f/e7/4edb582d1ffd5ac3c84188deea32e960b5c8c0fe1da56ce70224f85ce542/dbus-python-1.2.8.tar.gz
+    sha256: abf12bbb765e300bf8e2a1b2f32f85949eab06998dbda127952c31cb63957b6f
+  - type: file
+    url: https://files.pythonhosted.org/packages/63/cc/67ad422295750e2b9ee57c27370dc85d5b85af2454afe7077df6b93d5938/musicbrainzngs-0.6.tar.gz
+    sha256: 28ef261a421dffde0a25281dab1ab214e1b407eec568cd05a53e73256f56adb5
+  - type: file
+    url: https://files.pythonhosted.org/packages/e3/c0/fd5b18dde17c1249658521f69598f3252f11d9d7a980c5be8619970646e1/pyinotify-0.9.6.tar.gz
+    sha256: 9c998a5d7606ca835065cdabc013ae6c66eb9ea76a00a1e3bc6e0cfe2b4f71f4
+  - type: file
+    url: https://files.pythonhosted.org/packages/91/d8/7d37fec71ff7c9dbcdd80d2b48bcdd86d6af502156fc93846fb0102cb2c4/feedparser-5.2.1.tar.bz2
+    sha256: ce875495c90ebd74b179855449040003a1beb40cd13d5f037a0654251e260b02
+  - type: file
+    url: https://files.pythonhosted.org/packages/9e/bd/3704a8c3e0942d711c1299ebf7b9091930adae6675d7c8f476a7ce48653c/sgmllib3k-1.0.0.tar.gz
+    sha256: 7868fb1c8bfa764c1ac563d3cf369c381d1325d36124933a726f29fcdaa812e9
+  - type: file
+    url: https://files.pythonhosted.org/packages/c0/17/e1c3c18f5d637ebebcb94aa19d74c8c06925cb4ffb9f1031fe5f21a698d3/mutagen-1.41.1.tar.gz
+    sha256: 2ea9c900a05fa7f5f4c5bd9fc1475d7d576532e13b2f79b694452b997ff67200
+cleanup:
+  - /bin
+  - /share/man/man1
