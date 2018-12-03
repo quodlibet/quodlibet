@@ -30,7 +30,7 @@ from quodlibet.qltk.menubutton import SmallMenuButton
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
-    SmallImageButton, MenuItem
+    SmallImageButton, SmallImageToggleButton, MenuItem
 from quodlibet.qltk.songlistcolumns import CurrentColumn
 
 QUEUE = os.path.join(quodlibet.get_user_dir(), "queue")
@@ -130,11 +130,6 @@ class QueueExpander(Gtk.Expander):
             populate=True)
         menu.append(stop_checkbox)
 
-        queue_ignore_cb = ConfigCheckMenuItem(
-            _("Ignore"), "memory", "queue_ignore",
-            populate=True)
-        menu.append(queue_ignore_cb)
-
         keep_checkbox = ConfigCheckMenuItem(
             _("Keep Songs"), "memory", "queue_keep_songs",
             populate=True)
@@ -158,6 +153,18 @@ class QueueExpander(Gtk.Expander):
         button.set_menu(menu)
 
         outer.pack_start(button, False, False, 0)
+
+        toggle = SmallImageToggleButton(
+            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN,
+                                    Gtk.IconSize.MENU),
+            relief=Gtk.ReliefStyle.NONE,
+            tooltip_text=_("Disable queue"))
+        disabled = config.getboolean("memory", "queue_disable", False)
+        toggle.props.active = disabled
+        self.__queue_disable(disabled)
+        toggle.connect('toggled',
+                       lambda b: self.__queue_disable(b.props.active))
+        outer.pack_start(toggle, False, False, 6)
 
         close_button = SmallImageButton(
             image=SymbolicIconImage("window-close", Gtk.IconSize.MENU),
@@ -320,6 +327,10 @@ class QueueExpander(Gtk.Expander):
 
         menu_button.set_property('visible', expanded)
         config.set("memory", "queue_expanded", str(expanded))
+
+    def __queue_disable(self, disabled):
+        config.set("memory", "queue_disable", disabled)
+        self.queue.set_sensitive(not disabled)
 
 
 class QueueModel(PlaylistModel):

@@ -100,6 +100,7 @@ class Icons(str):
     PREFERENCES_DESKTOP_SCREENSAVER = "preferences-desktop-screensaver"
     PREFERENCES_DESKTOP_THEME = "preferences-desktop-theme"
     PROCESS_STOP = "process-stop"  # "_Stop"
+    SYSTEM_LOCK_SCREEN = "system-lock-screen"
     SYSTEM_RUN = "system-run"  # "_Execute"
     SYSTEM_SEARCH = "system-search"
     TEXT_HTML = "text-html"

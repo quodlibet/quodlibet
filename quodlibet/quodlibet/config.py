@@ -68,7 +68,7 @@ INITIAL = {
         "shufflequeue": "false",
         "queue_stop_at_end": "false",
         "queue_keep_songs": "false",
-        "queue_ignore": "false",
+        "queue_disable": "false",
 
         # <reversed?>tagname, song list sort
         "sortby": "0album",

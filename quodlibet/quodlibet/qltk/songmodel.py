@@ -61,11 +61,15 @@ class PlaylistMux(object):
         """Switch to the next song"""
 
         keep_songs = config.getboolean("memory", "queue_keep_songs", False)
-        q_ignore = config.getboolean("memory", "queue_ignore", False)
+        q_disable = config.getboolean("memory", "queue_disable", False)
 
         if (self.q.is_empty()
-                or (q_ignore and not (keep_songs and self.q.sourced))):
+                or q_disable
+                or (keep_songs and not self.q.sourced)):
             self.pl.next()
+            # The go_to is to make sure the playlist begins playing
+            # when the queue is disabled while being sourced
+            self.go_to(self.pl.current)
         else:
             self.q.next()
         self._check_sourced()
@@ -74,11 +78,13 @@ class PlaylistMux(object):
         """Switch to the next song (action comes from the user)"""
 
         keep_songs = config.getboolean("memory", "queue_keep_songs", False)
-        q_ignore = config.getboolean("memory", "queue_ignore", False)
+        q_disable = config.getboolean("memory", "queue_disable", False)
 
         if (self.q.is_empty()
-                or (q_ignore and not (keep_songs and self.q.sourced))):
+                or q_disable
+                or (keep_songs and not self.q.sourced)):
             self.pl.next_ended()
+            self.go_to(self.pl.current)
         else:
             self.q.next_ended()
         self._check_sourced()
@@ -87,10 +93,11 @@ class PlaylistMux(object):
         """Go to the previous song"""
 
         keep_songs = config.getboolean("memory", "queue_keep_songs", False)
-        q_ignore = config.getboolean("memory", "queue_ignore", False)
+        q_disable = config.getboolean("memory", "queue_disable", False)
 
-        if q_ignore or self.pl.sourced or not keep_songs:
+        if q_disable or self.pl.sourced or not keep_songs:
             self.pl.previous()
+            self.go_to(self.pl.current)
         else:
             self.q.previous()
         self._check_sourced()
