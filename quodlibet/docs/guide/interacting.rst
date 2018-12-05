@@ -34,9 +34,7 @@ will be either *playing*, *paused*, or *not-running*, followed by
  * the selected View,
  * volume setting (0.0 - 1.0)
  * Playback order & repeat settings
-
-If the View is SearchBar, then the text currently in the search bar will be
-displayed on a second status line.
+ * Current song progress (0.0 - 1.0)
 
 
 Controlling the player
