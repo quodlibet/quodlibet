@@ -290,7 +290,7 @@ def MenuItem(label, icon_name=None):
 
 def _Button(type_, label, icon_name, size):
     if icon_name is None:
-        return Gtk.Button.new_with_mnemonic(label)
+        return type_.new_with_mnemonic(label)
 
     align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
     hbox = Gtk.HBox(spacing=2)

@@ -27,8 +27,8 @@ class RatingBox(Gtk.VBox):
         self.title.set_lines(2)
 
         hbox = Gtk.HBox()
-        self.upvote = ToggleButton("👍", "")
-        self.downvote = ToggleButton("👎", "")
+        self.upvote = ToggleButton("👍")
+        self.downvote = ToggleButton("👎")
         self.upvote.connect("toggled", self.__thumb_toggled)
         self.downvote.connect("toggled", self.__thumb_toggled)
         self.score_label = Gtk.Label("----")
