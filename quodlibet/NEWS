@@ -1,3 +1,11 @@
+4.3.0 (WIP)
+-----------
+
+Packaging Changes:
+  * Various installed files have been renamed
+    ("exfalso" -> "io.github.quodlibet.ExFalso") to work better with Flatpak
+
+
 .. _release-4.2.0:
 
 4.2.0 (2018-10-31) - staffed by the living

@@ -76,4 +76,6 @@ class TQLAppDataFile(TestCase, _TAppDataFileMixin):
 
 @skipIf(is_too_old_appstream_util_version(), "appstream-util is too old")
 class TEFAppDataFile(TestCase, _TAppDataFileMixin):
-    PATH = os.path.join(QLDATA_DIR, "exfalso.appdata.xml.in")
+    PATH = os.path.join(
+        QLDATA_DIR,
+        "io.github.quodlibet.ExFalso.appdata.xml.in")

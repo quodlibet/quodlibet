@@ -99,9 +99,9 @@ function main {
 
     VERSION=$("$QUODLIBET"/Contents/MacOS/run -c \
         "import sys, quodlibet.const;sys.stdout.write(quodlibet.const.VERSION)")
-    jhbuild run "$PYTHON" ./misc/create_info.py "quodlibet" "$VERSION" > \
+    jhbuild run "$PYTHON" ./misc/create_info.py "QuodLibet" "$VERSION" > \
         "$QUODLIBET"/Contents/Info.plist
-    jhbuild run "$PYTHON" ./misc/create_info.py "exfalso" "$VERSION" > \
+    jhbuild run "$PYTHON" ./misc/create_info.py "ExFalso" "$VERSION" > \
         "$EXFALSO"/Contents/Info.plist
 
     jhbuild run "$PYTHON" ./misc/list_content.py "$HOME/jhbuild_prefix" \
