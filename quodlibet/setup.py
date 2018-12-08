@@ -94,7 +94,7 @@ def main():
         'po_package': "quodlibet",
         'shortcuts': [
             "data/io.github.quodlibet.QuodLibet.desktop",
-            "data/exfalso.desktop"
+            "data/io.github.quodlibet.QuodLibet.desktop"
         ],
         'dbus_services': [
             "data/net.sacredchao.QuodLibet.service",
@@ -104,7 +104,7 @@ def main():
         ],
         'appdata': [
             "data/io.github.quodlibet.QuodLibet.appdata.xml",
-            "data/exfalso.appdata.xml",
+            "data/io.github.quodlibet.QuodLibet.appdata.xml",
         ],
         'man_pages': [
             "data/quodlibet.1",

@@ -40,7 +40,7 @@ def main(argv=None):
 
     app.name = "Ex Falso"
     app.description = _("Audio metadata editor")
-    app.id = "exfalso"
+    app.id = "io.github.quodlibet.ExFalso"
     app.process_name = "exfalso"
     quodlibet.set_application_info(app)
 

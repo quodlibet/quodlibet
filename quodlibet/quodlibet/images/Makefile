@@ -3,8 +3,8 @@ THEME=hicolor
 QL_SOURCE=$(THEME)/scalable/apps/io.github.quodlibet.QuodLibet.svg
 QL_DEST=io.github.quodlibet.QuodLibet.png
 
-EF_SOURCE=$(THEME)/scalable/apps/exfalso.svg
-EF_DEST=exfalso.png
+EF_SOURCE=$(THEME)/scalable/apps/io.github.quodlibet.ExFalso.svg
+EF_DEST=io.github.quodlibet.ExFalso.png
 
 QL_MC_SOURCE=$(THEME)/scalable/status/quodlibet-missing-cover.svg
 QL_MC_DEST=quodlibet-missing-cover.png

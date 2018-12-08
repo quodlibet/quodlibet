@@ -58,4 +58,4 @@ class TQLDesktopFile(TestCase, _TDesktopFileMixin):
 
 
 class TEFDesktopFile(TestCase, _TDesktopFileMixin):
-    PATH = os.path.join(QLDATA_DIR, "exfalso.desktop.in")
+    PATH = os.path.join(QLDATA_DIR, "io.github.quodlibet.ExFalso.desktop.in")
