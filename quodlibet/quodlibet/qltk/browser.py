@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2016 Nick Boultbee
+#           2018 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -230,10 +231,8 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         so we can restore them on start.
         """
 
-        names = []
-        for browser in cls.instances():
-            names.append(browser.name)
-        config.set("memory", "open_browsers", "\n".join(names))
+        config.set("memory", "open_browsers",
+                   "\n".join(browser.name for browser in cls.instances()))
 
     @classmethod
     def restore(cls, library, player):
