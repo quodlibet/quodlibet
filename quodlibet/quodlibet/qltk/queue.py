@@ -175,7 +175,8 @@ class QueueExpander(Gtk.Expander):
             image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN,
                                     Gtk.IconSize.MENU),
             relief=Gtk.ReliefStyle.NONE,
-            tooltip_text=_("Disable queue"))
+            tooltip_text=_(
+                "Disable queue - the queue will be ignored when playing"))
         disabled = config.getboolean("memory", "queue_disable", False)
         toggle.props.active = disabled
         self.__queue_disable(disabled)

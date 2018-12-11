@@ -109,8 +109,8 @@ playback will continue in the main song list where it left off.
 To add songs to the queue, right-click and *Add to Queue*, use the shortcut
 ``CTRL+Return`` or select songs in a different browser window.
 
-To disable the queue, click the lock icon in the queue header. When disabled,
-it cannot be played from - but you can still add songs to it.
+The queue can be disabled by clicking the padlock in the queue header. When
+disabled, the queue cannot be played from - but you can still add songs to it.
 
 The queue also has two different modes, that can be changed in the queue
 preferences. The *Ephemeral* mode is the default one, where the queue consumes
