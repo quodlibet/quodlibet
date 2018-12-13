@@ -90,6 +90,7 @@ selected.
 It also shows progress information of background operations like importing
 music.
 
+.. _Queue_Overview:
 
 The Queue
 ---------
@@ -109,22 +110,8 @@ playback will continue in the main song list where it left off.
 To add songs to the queue, right-click and *Add to Queue*, use the shortcut
 ``CTRL+Return`` or select songs in a different browser window.
 
-With :ref:`release 4.2.0 <release-4.2.0>` the queue was updated with
-two new checkboxes: *Ignore* and *Keep Songs*.
+For more information, see the :ref:`Queue Guide <Queue>`.
 
-When the *Keep Songs* checkbox is checked, songs won't be consumed from the
-queue anymore when played. In this way, the queue can function as a kind of
-temporary playlist.
-
-With the *Ignore* checkbox checked, the queue won't have priority anymore.
-This means that if a song is played from the song list, then songs from the
-song list will continue playing even if the queue is not empty.
-
-If both *Keep Songs* and *Ignore* are enabled, songs will be kept in the queue
-while one at the same time is free to switch between playing songs from the
-queue and the song list. If a song in the queue is selected, songs will keep
-playing from the queue, while if a song in the song list is selected, then
-songs from the song list will be played instead.
 
 More Browsers
 -------------

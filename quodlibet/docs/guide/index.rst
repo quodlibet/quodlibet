@@ -9,6 +9,7 @@ User Guide
     searching
     stats_rating.rst
     browse/index
+    queue
     editing_tags
     renaming_files
     playback/index

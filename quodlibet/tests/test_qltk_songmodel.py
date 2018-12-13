@@ -404,19 +404,21 @@ class TPlaylistMux(TestCase):
         self.assertTrue(self.q.sourced)
         self.assertEqual(self.mux.current, self.q[-1][0])
 
-    def test_queue_ignore(self):
+    def test_queue_disable(self):
         self.pl.set(range(10))
         self.q.set(range(10))
 
-        quodlibet.config.set("memory", "queue_ignore", True)
+        quodlibet.config.set("memory", "queue_disable", True)
         self.next()
         self.failUnlessEqual(len(self.pl.get()), len(range(10)))
         self.failUnlessEqual(len(self.q.get()), len(range(10)))
+        self.assertTrue(self.pl.sourced)
 
-        quodlibet.config.set("memory", "queue_ignore", False)
+        quodlibet.config.set("memory", "queue_disable", False)
         self.next()
         self.failUnlessEqual(len(self.pl.get()), len(range(10)))
         self.failUnlessEqual(len(self.q.get()), len(range(10)) - 1)
+        self.assertTrue(self.q.sourced)
 
     def test_queue_keep_songs(self):
         self.q.set(range(10))
@@ -424,6 +426,8 @@ class TPlaylistMux(TestCase):
         quodlibet.config.set("memory", "queue_keep_songs", True)
         self.next()
         self.failUnlessEqual(len(self.q.get()), len(range(10)))
+        self.failUnlessEqual(self.q.current, None)
+        self.mux.go_to(self.q[0].iter, source=self.q)
         self.failUnlessEqual(self.q.current, 0)
         self.next()
         self.failUnlessEqual(len(self.q.get()), len(range(10)))
@@ -433,6 +437,17 @@ class TPlaylistMux(TestCase):
         self.next()
         self.failUnlessEqual(len(self.q.get()), len(range(10)) - 1)
         self.failUnless(self.q.current is None)
+
+    def test_queue_disable_and_keep_songs(self):
+        self.pl.set(range(10))
+        self.q.set(range(10))
+
+        self.mux.go_to(self.q[0].iter, source=self.q)
+        quodlibet.config.set("memory", "queue_disable", True)
+        quodlibet.config.set("memory", "queue_keep_songs", True)
+
+        self.next()
+        self.assertTrue(self.pl.sourced)
 
     def tearDown(self):
         self.p.destroy()
