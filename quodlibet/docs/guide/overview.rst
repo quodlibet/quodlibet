@@ -90,6 +90,7 @@ selected.
 It also shows progress information of background operations like importing
 music.
 
+.. _Queue_Overview:
 
 The Queue
 ---------
@@ -109,17 +110,7 @@ playback will continue in the main song list where it left off.
 To add songs to the queue, right-click and *Add to Queue*, use the shortcut
 ``CTRL+Return`` or select songs in a different browser window.
 
-The queue can be disabled by clicking the padlock in the queue header. When
-disabled, the queue cannot be played from - but you can still add songs to it.
-
-The queue also has two different modes, that can be changed in the queue
-preferences. The *Ephemeral* mode is the default one, where the queue consumes
-songs as described above. The other mode is the *Persistent* mode. In this
-mode, songs will be kept in the queue even after being played. Furthermore, the
-queue won't have precedence over the song list unless it is explicitly being
-played from by first double-clicking on a song in it. This allows switching
-between the queue and the song list without having to clear or disable the
-queue.
+For more information, see the :ref:`Queue Guide <Queue>`.
 
 
 More Browsers
