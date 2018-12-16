@@ -60,7 +60,7 @@ class SearchBarBox(Gtk.HBox):
 
         self.__combo = combo
         entry = combo.get_child()
-        self.__entry = entry
+        self._entry = entry
         if completion:
             entry.set_completion(completion)
 
@@ -92,7 +92,7 @@ class SearchBarBox(Gtk.HBox):
             child.show_all()
 
     def set_enabled(self, enabled=True):
-        self.__entry.set_sensitive(enabled)
+        self._entry.set_sensitive(enabled)
 
     def set_text(self, text):
         """Set the text without firing any signals"""
@@ -102,7 +102,7 @@ class SearchBarBox(Gtk.HBox):
 
         # deactivate all signals and change the entry text
         self.__inhibit()
-        self.__entry.set_text(text)
+        self._entry.set_text(text)
         self.__uninhibit()
 
     def _update_query_from(self, text):
@@ -112,7 +112,7 @@ class SearchBarBox(Gtk.HBox):
     def get_text(self):
         """Get the active text as unicode"""
 
-        return self.__entry.get_text()
+        return self._entry.get_text()
 
     def get_query(self, star=None):
         if star and star != self._star:
@@ -183,7 +183,7 @@ class SearchBarBox(Gtk.HBox):
             GLib.idle_add(self.emit, 'query-changed', text)
 
     def __text_changed(self, *args):
-        if not self.__entry.is_sensitive():
+        if not self._entry.is_sensitive():
             return
         # the combobox has an active entry selected -> no timeout
         # todo: we need a timeout when the selection changed because
