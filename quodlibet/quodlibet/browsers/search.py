@@ -59,7 +59,7 @@ class SearchBar(Browser):
         container.remove(songpane)
         container.remove(self)
 
-    def __init__(self, library):
+    def __init__(self, library, searchbar=LimitSearchBarBox):
         super(SearchBar, self).__init__()
         self.set_spacing(6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
@@ -71,9 +71,9 @@ class SearchBar(Browser):
         self.accelerators = Gtk.AccelGroup()
 
         show_limit = config.getboolean("browsers", "search_limit")
-        sbb = LimitSearchBarBox(completion=completion,
-                                accel_group=self.accelerators,
-                                show_limit=show_limit)
+        sbb = searchbar(completion=completion,
+                        accel_group=self.accelerators,
+                        show_limit=show_limit)
 
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)

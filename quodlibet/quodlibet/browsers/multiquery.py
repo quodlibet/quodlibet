@@ -16,6 +16,7 @@ from quodlibet import _
 from quodlibet.browsers.search import SearchBar
 from quodlibet.qltk import Align
 from quodlibet.query import Query
+from quodlibet.qltk.searchbar import ButtonSearchBarBox
 
 
 class MultiQueryBrowser(SearchBar):
@@ -29,8 +30,8 @@ class MultiQueryBrowser(SearchBar):
     priority = 0
 
     def __init__(self, library):
-        super().__init__(library)
-        self._sb_box._entry.connect('activate', self.add_list_query)
+        super().__init__(library, searchbar=ButtonSearchBarBox)
+        self._sb_box.connect('activate', self.add_list_query)
 
         self._list_box = lb = Gtk.ListBox()
 
@@ -43,6 +44,7 @@ class MultiQueryBrowser(SearchBar):
         q.show()
         self._list_box.add(q)
         self._set_text("")
+        self.activate()
 
     def _get_songs(self):
         # Gtk.ListBox doesn't seem to have a get_rows method?

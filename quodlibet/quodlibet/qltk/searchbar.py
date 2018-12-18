@@ -264,3 +264,19 @@ class LimitSearchBarBox(SearchBarBox):
         else:
             self.__limit.hide()
         self.changed()
+
+
+class ButtonSearchBarBox(LimitSearchBarBox):
+
+    __gsignals__ = {
+        'activate': (GObject.SignalFlags.ACTION, None, ()),
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._button = btn = Gtk.Button.new_from_icon_name("list-add",
+                                                           Gtk.IconSize.BUTTON)
+        btn.show()
+        self.pack_start(btn, False, False, 0)
+        btn.connect('clicked', lambda _: self.emit('activate'))
+        self._entry.connect('activate', lambda _: self.emit('activate'))
