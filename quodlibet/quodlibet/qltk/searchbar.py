@@ -23,7 +23,7 @@ from quodlibet.qltk import is_accel
 from quodlibet.util import limit_songs, DeferredSignal
 
 
-class SearchBarBox(Gtk.HBox):
+class SearchBarBox(Gtk.Grid):
     """
         A search bar widget for inputting queries.
 
@@ -44,7 +44,10 @@ class SearchBarBox(Gtk.HBox):
     def __init__(self, filename=None, completion=None, accel_group=None,
                  timeout=DEFAULT_TIMEOUT, validator=Query.validator,
                  star=None):
-        super(SearchBarBox, self).__init__(spacing=6)
+        super(SearchBarBox, self).__init__(
+            column_spacing=6,
+            orientation=Gtk.Orientation.HORIZONTAL
+        )
 
         if filename is None:
             filename = os.path.join(
@@ -81,7 +84,8 @@ class SearchBarBox(Gtk.HBox):
                                  "using free text or QL queries"))
 
         combo.enable_clear_button()
-        self.pack_start(combo, True, True, 0)
+        combo.set_hexpand(True)
+        self.add(combo)
 
         if accel_group:
             key, mod = Gtk.accelerator_parse("<Primary>L")
@@ -208,7 +212,8 @@ class LimitSearchBarBox(SearchBarBox):
         }
 
         def __init__(self):
-            super(LimitSearchBarBox.Limit, self).__init__(spacing=3)
+            super(LimitSearchBarBox.Limit, self).__init__(spacing=3,
+                                                          no_show_all=True)
             label = Gtk.Label(label=_("_Limit:"))
             self.pack_start(label, True, True, 0)
 
@@ -243,8 +248,8 @@ class LimitSearchBarBox(SearchBarBox):
     def __init__(self, show_limit=False, *args, **kwargs):
         super(LimitSearchBarBox, self).__init__(*args, **kwargs)
         self.__limit = self.Limit()
-        self.pack_start(self.__limit, False, True, 0)
-        self.__limit.set_no_show_all(not show_limit)
+        self.__limit.set_visible(show_limit)
+        self.add(self.__limit)
         self.__limit.connect("changed", self.__limit_changed)
 
     def __limit_changed(self, *args):
@@ -273,31 +278,42 @@ class MultiSearchBarBox(LimitSearchBarBox):
         'activate': (GObject.SignalFlags.ACTION, None, ()),
     }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, show_multi=False, **kwargs):
         super().__init__(*args, **kwargs)
-        self.__old_placeholder = self._entry.get_placeholder_text()
-        self.__old_tooltip = self._entry.get_tooltip_text()
+        self._old_placeholder = self._entry.get_placeholder_text()
+        self._old_tooltip = self._entry.get_tooltip_text()
 
-        self.__add_button = Gtk.Button.new_from_icon_name("list-add",
-                                                          Gtk.IconSize.BUTTON)
-        self.__add_button.set_no_show_all(True)
-        self.pack_start(self.__add_button, False, False, 0)
-        self.__add_button.connect('clicked', lambda _: self.emit('activate'))
+        self._add_button = Gtk.Button.new_from_icon_name("list-add",
+                                                         Gtk.IconSize.BUTTON)
+        self._add_button.set_no_show_all(True)
+        self.add(self._add_button)
+        self._add_button.connect('clicked', lambda _: self.emit('activate'))
         self._entry.connect('activate', lambda _: self.emit('activate'))
+
+        self._list_box = Gtk.ListBox()
+        self.attach(self._list_box, 0, 1, 1, 1)
+
+        self.toggle_multi_bool(show_multi)
 
     def toggle_multi(self, button):
         """Toggles the multiquery mode according to `button`"""
-        if button.get_active():
-            self.__add_button.show()
+        self.toggle_multi_bool(button.get_active())
 
-            self.__old_placeholder = self._entry.get_placeholder_text()
-            self.__old_tooltip = self._entry.get_tooltip_text()
+    def toggle_multi_bool(self, bool):
+        """Toggles the multiquery mode according to `bool`"""
+        if bool:
+            self._add_button.show()
+            self._list_box.show()
+
+            self._old_placeholder = self._entry.get_placeholder_text()
+            self._old_tooltip = self._entry.get_tooltip_text()
             self._entry.set_placeholder_text(_("Add query"))
             self._entry.set_tooltip_text(_("Add a QL query or free text "
                                            "to be &ed together"))
         else:
-            self.__add_button.hide()
+            self._add_button.hide()
+            self._list_box.hide()
 
-            self._entry.set_placeholder_text(self.__old_placeholder)
-            self._entry.set_tooltip_text(self.__old_tooltip)
+            self._entry.set_placeholder_text(self._old_placeholder)
+            self._entry.set_tooltip_text(self._old_tooltip)
         self.changed()
