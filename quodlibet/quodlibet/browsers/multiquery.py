@@ -16,7 +16,7 @@ from quodlibet import _
 from quodlibet.browsers.search import SearchBar
 from quodlibet.qltk import Align
 from quodlibet.query import Query
-from quodlibet.qltk.searchbar import ButtonSearchBarBox
+# from quodlibet.qltk.searchbar import ButtonSearchBarBox
 
 
 class MultiQueryBrowser(SearchBar):
@@ -30,7 +30,7 @@ class MultiQueryBrowser(SearchBar):
     priority = 0
 
     def __init__(self, library):
-        super().__init__(library, searchbar=ButtonSearchBarBox)
+        super().__init__(library)
         self._sb_box.connect('activate', self.add_list_query)
 
         self._list_box = lb = Gtk.ListBox()

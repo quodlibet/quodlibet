@@ -266,7 +266,8 @@ class LimitSearchBarBox(SearchBarBox):
         self.changed()
 
 
-class ButtonSearchBarBox(LimitSearchBarBox):
+class MultiSearchBarBox(LimitSearchBarBox):
+    """An extension of `LimitSearchBarBox` allowing multiple queries"""
 
     __gsignals__ = {
         'activate': (GObject.SignalFlags.ACTION, None, ()),
@@ -274,9 +275,29 @@ class ButtonSearchBarBox(LimitSearchBarBox):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._button = btn = Gtk.Button.new_from_icon_name("list-add",
-                                                           Gtk.IconSize.BUTTON)
-        btn.show()
-        self.pack_start(btn, False, False, 0)
-        btn.connect('clicked', lambda _: self.emit('activate'))
+        self.__old_placeholder = self._entry.get_placeholder_text()
+        self.__old_tooltip = self._entry.get_tooltip_text()
+
+        self.__add_button = Gtk.Button.new_from_icon_name("list-add",
+                                                          Gtk.IconSize.BUTTON)
+        self.__add_button.set_no_show_all(True)
+        self.pack_start(self.__add_button, False, False, 0)
+        self.__add_button.connect('clicked', lambda _: self.emit('activate'))
         self._entry.connect('activate', lambda _: self.emit('activate'))
+
+    def toggle_multi(self, button):
+        """Toggles the multiquery mode according to `button`"""
+        if button.get_active():
+            self.__add_button.show()
+
+            self.__old_placeholder = self._entry.get_placeholder_text()
+            self.__old_tooltip = self._entry.get_tooltip_text()
+            self._entry.set_placeholder_text(_("Add query"))
+            self._entry.set_tooltip_text(_("Add a QL query or free text "
+                                           "to be &ed together"))
+        else:
+            self.__add_button.hide()
+
+            self._entry.set_placeholder_text(self.__old_placeholder)
+            self._entry.set_tooltip_text(self.__old_tooltip)
+        self.changed()

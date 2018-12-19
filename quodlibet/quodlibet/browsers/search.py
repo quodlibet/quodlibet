@@ -16,7 +16,7 @@ from quodlibet.browsers import Browser
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk.searchbar import LimitSearchBarBox
+from quodlibet.qltk.searchbar import MultiSearchBarBox
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import Align, SymbolicIconImage
 from quodlibet.qltk import Icons
@@ -32,6 +32,12 @@ class PreferencesButton(Gtk.HBox):
             _("_Limit Results"), "browsers", "search_limit", True)
         limit_item.connect("toggled", search_bar_box.toggle_limit_widgets)
         menu.append(limit_item)
+
+        multi_item = ConfigCheckMenuItem(
+            _("_Allow multiple queries"), "browsers", "multiple_queries", True)
+        multi_item.connect("toggled", search_bar_box.toggle_multi)
+        menu.append(multi_item)
+
         menu.show_all()
 
         button = MenuButton(
@@ -59,7 +65,7 @@ class SearchBar(Browser):
         container.remove(songpane)
         container.remove(self)
 
-    def __init__(self, library, searchbar=LimitSearchBarBox):
+    def __init__(self, library):
         super(SearchBar, self).__init__()
         self.set_spacing(6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
@@ -71,9 +77,9 @@ class SearchBar(Browser):
         self.accelerators = Gtk.AccelGroup()
 
         show_limit = config.getboolean("browsers", "search_limit")
-        sbb = searchbar(completion=completion,
-                        accel_group=self.accelerators,
-                        show_limit=show_limit)
+        sbb = MultiSearchBarBox(completion=completion,
+                                accel_group=self.accelerators,
+                                show_limit=show_limit)
 
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
