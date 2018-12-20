@@ -6,8 +6,10 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
+import operator
 import os
+from functools import reduce
+from itertools import count
 
 from gi.repository import Gtk, GObject, GLib
 
@@ -45,7 +47,7 @@ class SearchBarBox(Gtk.Grid):
                  timeout=DEFAULT_TIMEOUT, validator=Query.validator,
                  star=None):
         super(SearchBarBox, self).__init__(
-            column_spacing=6,
+            row_spacing=6,
             orientation=Gtk.Orientation.HORIZONTAL
         )
 
@@ -59,9 +61,10 @@ class SearchBarBox(Gtk.Grid):
                                   edit_title=_(u"Edit saved searches…"))
 
         self.__deferred_changed = DeferredSignal(
-            self.__filter_changed, timeout=timeout, owner=self)
+            self._filter_changed, timeout=timeout, owner=self)
 
         self.__combo = combo
+        combo.set_margin_end(6)
         entry = combo.get_child()
         self._entry = entry
         if completion:
@@ -71,10 +74,10 @@ class SearchBarBox(Gtk.Grid):
         self._query = None
         self.__sig = combo.connect('text-changed', self.__text_changed)
 
-        entry.connect('clear', self.__filter_changed)
+        entry.connect('clear', self._filter_changed)
         entry.connect('backspace', self.__text_changed)
         entry.connect('populate-popup', self.__menu)
-        entry.connect('activate', self.__filter_changed)
+        entry.connect('activate', self._filter_changed)
         entry.connect('activate', self.__save_search)
         entry.connect('focus-out-event', self.__save_search)
         entry.connect('key-press-event', self.__key_pressed)
@@ -129,7 +132,7 @@ class SearchBarBox(Gtk.Grid):
         is a parsable query
         """
 
-        self.__filter_changed()
+        self._filter_changed()
 
     def __inhibit(self):
         self.__combo.handler_block(self.__sig)
@@ -179,7 +182,7 @@ class SearchBarBox(Gtk.Grid):
             self.__save_search(entry)
         return False
 
-    def __filter_changed(self, *args):
+    def _filter_changed(self, *args):
         self.__deferred_changed.abort()
         text = self.get_text()
         self._update_query_from(text)
@@ -193,7 +196,7 @@ class SearchBarBox(Gtk.Grid):
         # todo: we need a timeout when the selection changed because
         # of keyboard input (up/down arrows)
         if self.__combo.get_active() != -1:
-            self.__filter_changed()
+            self._filter_changed()
             return
 
         if not config.getboolean('settings', 'eager_search'):
@@ -249,6 +252,7 @@ class LimitSearchBarBox(SearchBarBox):
         super(LimitSearchBarBox, self).__init__(*args, **kwargs)
         self.__limit = self.Limit()
         self.__limit.set_visible(show_limit)
+        self.__limit.set_margin_end(6)
         self.add(self.__limit)
         self.__limit.connect("changed", self.__limit_changed)
 
@@ -274,10 +278,6 @@ class LimitSearchBarBox(SearchBarBox):
 class MultiSearchBarBox(LimitSearchBarBox):
     """An extension of `LimitSearchBarBox` allowing multiple queries"""
 
-    __gsignals__ = {
-        'activate': (GObject.SignalFlags.ACTION, None, ()),
-    }
-
     def __init__(self, *args, show_multi=False, **kwargs):
         super().__init__(*args, **kwargs)
         self._old_placeholder = self._entry.get_placeholder_text()
@@ -286,14 +286,38 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self._add_button = Gtk.Button.new_from_icon_name("list-add",
                                                          Gtk.IconSize.BUTTON)
         self._add_button.set_no_show_all(True)
+        self._add_button.set_margin_end(6)
         self.add(self._add_button)
-        self._add_button.connect('clicked', lambda _: self.emit('activate'))
-        self._entry.connect('activate', lambda _: self.emit('activate'))
+        self._add_button.connect('clicked', self.add_list_query)
+        self._entry.connect('activate', self.add_list_query)
 
         self._list_box = Gtk.ListBox()
-        self.attach(self._list_box, 0, 1, 1, 1)
+        self.attach(self._list_box, 0, 1, 20, 1)
 
         self.toggle_multi_bool(show_multi)
+
+    def add_list_query(self, _):
+        q = ListQuery(self.get_text(), self._filter_changed)
+        q.show()
+        self._list_box.add(q)
+        self.set_text("")
+        self._filter_changed()
+
+    def _update_query_from(self, text):
+        if self._list_box.get_visible():
+            # Gtk.ListBox doesn't seem to have a get_rows method?
+            matches = []
+            for i in count():
+                lq = self._list_box.get_row_at_index(i)
+                if lq is None:
+                    break
+                matches.append(lq.query._unpack())
+
+            self._query = Query("", star=self._star)
+            if len(matches) > 0:
+                self._query._match = reduce(operator.and_, matches)
+        else:
+            super()._update_query_from(text)
 
     def toggle_multi(self, button):
         """Toggles the multiquery mode according to `button`"""
@@ -317,3 +341,27 @@ class MultiSearchBarBox(LimitSearchBarBox):
             self._entry.set_placeholder_text(self._old_placeholder)
             self._entry.set_tooltip_text(self._old_tooltip)
         self.changed()
+
+
+class ListQuery(Gtk.ListBoxRow):
+    """A ListBoxRow representing a query"""
+
+    def __init__(self, string, changed_callback):
+        super().__init__(activatable=False, selectable=False)
+
+        self.changed_callback = changed_callback
+        self.query = Query(string)
+
+        hbox = Gtk.HBox()
+        hbox.pack_start(Gtk.Label(string, halign=Gtk.Align.START, margin=3),
+                        True, True, 0)
+        btn = Gtk.Button.new_from_icon_name("window-close",
+                                            Gtk.IconSize.BUTTON)
+        btn.connect('clicked', self.remove)
+        hbox.pack_start(btn, False, True, 0)
+        self.add(hbox)
+        self.show_all()
+
+    def remove(self, _):
+        self.destroy()
+        self.changed_callback()

@@ -85,11 +85,10 @@ class SearchBar(Browser):
 
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
-        sbb.connect('activate', print, "42")
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
-        sbb.add(prefs)
+        sbb.attach(prefs, 10, 0, 1, 1)
 
         align = Align(sbb, left=6, right=6, top=6)
         self.pack_start(align, False, True, 0)
