@@ -66,9 +66,8 @@ class SearchBar(Browser):
         container.remove(self)
 
     def __init__(self, library):
-        super(SearchBar, self).__init__()
-        self.set_spacing(6)
-        self.set_orientation(Gtk.Orientation.VERTICAL)
+        super().__init__(margin=6, spacing=6,
+                         orientation=Gtk.Orientation.VERTICAL)
 
         self._query = None
         self._library = library
@@ -90,8 +89,8 @@ class SearchBar(Browser):
         prefs = PreferencesButton(sbb)
         sbb.pack_start(prefs, False, True, 0)
 
-        align = Align(sbb, left=6, right=6, top=6)
-        self.pack_start(align, False, True, 0)
+        self.pack_start(sbb, False, True, 0)
+        self.pack_start(sbb._list_box, False, True, 0)
         self.connect('destroy', self.__destroy)
         self.show_all()
 

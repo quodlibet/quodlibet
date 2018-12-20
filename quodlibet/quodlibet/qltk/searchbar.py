@@ -25,7 +25,7 @@ from quodlibet.qltk import is_accel
 from quodlibet.util import limit_songs, DeferredSignal
 
 
-class SearchBarBox(Gtk.Grid):
+class SearchBarBox(Gtk.Box):
     """
         A search bar widget for inputting queries.
 
@@ -46,11 +46,7 @@ class SearchBarBox(Gtk.Grid):
     def __init__(self, filename=None, completion=None, accel_group=None,
                  timeout=DEFAULT_TIMEOUT, validator=Query.validator,
                  star=None):
-        super(SearchBarBox, self).__init__(
-            column_spacing=3,
-            row_spacing=6,
-            orientation=Gtk.Orientation.HORIZONTAL
-        )
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
 
         self._last_packed = None
 
@@ -67,7 +63,6 @@ class SearchBarBox(Gtk.Grid):
             self._filter_changed, timeout=timeout, owner=self)
 
         self.__combo = combo
-        combo.set_margin_end(6)
         entry = combo.get_child()
         self._entry = entry
         if completion:
@@ -99,13 +94,6 @@ class SearchBarBox(Gtk.Grid):
 
         for child in self.get_children():
             child.show_all()
-
-    def pack_start(self, child, expand, fill, padding):
-        child.set_hexpand(expand)
-        child.set_halign(Gtk.Align.FILL if fill else Gtk.Align.CENTER)
-        self.attach_next_to(child, self._last_packed,
-                            Gtk.PositionType.RIGHT, 1, 1)
-        self._last_packed = child
 
     def set_enabled(self, enabled=True):
         self._entry.set_sensitive(enabled)
@@ -299,9 +287,7 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self._entry.connect('activate', self.add_list_query)
 
         self._list_box = Gtk.ListBox(no_show_all=True)
-        # gtk doesn't allow spanning all so if you add more widgets on the
-        # top row of the grid you should increase the 3rd int arg below
-        self.attach(self._list_box, 0, 1, 5, 1)
+        # self.pack_start(self._list_box, False, True, 0)
 
         self.toggle_multi_bool(show_multi)
 
