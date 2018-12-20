@@ -274,8 +274,14 @@ class LimitSearchBarBox(SearchBarBox):
 class MultiSearchBarBox(LimitSearchBarBox):
     """An extension of `LimitSearchBarBox` allowing multiple queries"""
 
-    def __init__(self, *args, show_multi=False, **kwargs):
+    def __init__(self, *args, show_multi=False, multi_filename=None, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.multi_filename = os.path.join(
+            quodlibet.get_user_dir(),
+            "lists", "multiqueries"
+        ) if multi_filename is None else multi_filename
+
         self._old_placeholder = self._entry.get_placeholder_text()
         self._old_tooltip = self._entry.get_tooltip_text()
 
@@ -283,30 +289,48 @@ class MultiSearchBarBox(LimitSearchBarBox):
                                                          Gtk.IconSize.BUTTON)
         self._add_button.set_no_show_all(True)
         self.pack_start(self._add_button, False, True, 0)
-        self._add_button.connect('clicked', self.add_list_query)
-        self._entry.connect('activate', self.add_list_query)
+        self._add_button.connect('clicked', self.activated)
+        self._entry.connect('activate', self.activated)
 
         self._list_box = Gtk.ListBox(no_show_all=True)
-        # self.pack_start(self._list_box, False, True, 0)
+        self.load()
 
         self.toggle_multi_bool(show_multi)
 
-    def add_list_query(self, _):
-        q = ListQuery(self.get_text(), self._filter_changed)
+    def activated(self, _):
+        self.add_list_query(self.get_text().strip())
+        self.set_text("")
+        self.changed_callback()
+
+    def add_list_query(self, text):
+        q = ListQuery(text, self.changed_callback)
         q.show()
         self._list_box.add(q)
-        self.set_text("")
+
+    def changed_callback(self):
+        self.save()
         self._filter_changed()
+
+    def load(self):
+        with open(self.multi_filename) as f:
+            for row in f:
+                self.add_list_query(row.strip())
+
+    def save(self):
+        with open(self.multi_filename, "w") as f:
+            f.writelines(lq.string + "\n" for lq in self.get_rows())
+
+    def get_rows(self):
+        # Gtk.ListBox doesn't seem to have a get_rows method?
+        for i in count():
+            lq = self._list_box.get_row_at_index(i)
+            if lq is None:
+                break
+            yield lq
 
     def _update_query_from(self, text):
         if self._list_box.get_visible():
-            # Gtk.ListBox doesn't seem to have a get_rows method?
-            matches = []
-            for i in count():
-                lq = self._list_box.get_row_at_index(i)
-                if lq is None:
-                    break
-                matches.append(lq.query._unpack())
+            matches = [lq.query._unpack() for lq in self.get_rows()]
 
             self._query = Query("", star=self._star)
             if len(matches) > 0:
@@ -345,6 +369,7 @@ class ListQuery(Gtk.ListBoxRow):
         super().__init__(activatable=False, selectable=False)
 
         self.changed_callback = changed_callback
+        self.string = string
         self.query = Query(string)
 
         hbox = Gtk.HBox()
