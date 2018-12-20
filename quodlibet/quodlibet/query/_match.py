@@ -595,3 +595,19 @@ class Extension(Node):
     def __repr__(self):
         return ('<Extension name=%r valid=%r body=%r>'
                 % (self.__name, self.__valid, self.__body))
+
+    def __and__(self, other):
+        other = other._unpack()
+
+        if isinstance(other, (Inter, True_)):
+            return other.__and__(self)
+
+        return Inter([self] + [other])
+
+    def __or__(self, other):
+        other = other._unpack()
+
+        if isinstance(other, (Union, True_)):
+            return other.__or__(self)
+
+        return Union([self, other])
