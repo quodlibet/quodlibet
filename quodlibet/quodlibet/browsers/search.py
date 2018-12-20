@@ -88,7 +88,7 @@ class SearchBar(Browser):
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
-        sbb.attach(prefs, 10, 0, 1, 1)
+        sbb.pack_start(prefs, False, True, 0)
 
         align = Align(sbb, left=6, right=6, top=6)
         self.pack_start(align, False, True, 0)

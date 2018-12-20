@@ -14,7 +14,6 @@ quodlibet/browsers/covergrid/prefs.py
 quodlibet/browsers/filesystem.py
 quodlibet/browsers/__init__.py
 quodlibet/browsers/iradio.py
-quodlibet/browsers/multiquery.py
 quodlibet/browsers/paned/main.py
 quodlibet/browsers/paned/models.py
 quodlibet/browsers/paned/prefs.py
