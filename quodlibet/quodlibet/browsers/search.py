@@ -18,7 +18,7 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.searchbar import MultiSearchBarBox
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.x import Align, SymbolicIconImage
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk import Icons
 
 

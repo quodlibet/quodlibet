@@ -142,6 +142,9 @@ INITIAL = {
         # Show the limit widgets for SearchBar
         "search_limit": "false",
 
+        # Allow multiple queries in SearchBar
+        "multiple_queries": "false",
+
         # show text in covergrid view
         "album_text": "1",
 
