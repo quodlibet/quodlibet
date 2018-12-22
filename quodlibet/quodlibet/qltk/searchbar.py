@@ -278,8 +278,7 @@ class MultiSearchBarBox(LimitSearchBarBox):
         super().__init__(*args, **kwargs)
 
         self.multi_filename = os.path.join(
-            quodlibet.get_user_dir(),
-            "lists", "multiqueries"
+            quodlibet.get_user_dir(), "lists", "multiqueries"
         ) if multi_filename is None else multi_filename
 
         self._old_placeholder = self._entry.get_placeholder_text()
@@ -292,20 +291,22 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self._add_button.connect('clicked', self.activated)
         self._entry.connect('activate', self.activated)
 
-        self._list_box = Gtk.ListBox(no_show_all=True)
+        self._flow_box = Gtk.FlowBox(no_show_all=True,
+                                     max_children_per_line=99,
+                                     selection_mode=Gtk.SelectionMode.NONE)
         self.load()
 
         self.toggle_multi_bool(show_multi)
 
     def activated(self, _):
-        self.add_list_query(self.get_text().strip())
+        self.add_query_item(self.get_text().strip())
         self.set_text("")
         self.changed_callback()
 
-    def add_list_query(self, text):
-        q = ListQuery(text, self.changed_callback)
+    def add_query_item(self, text):
+        q = QueryItem(text, self.changed_callback)
         q.show()
-        self._list_box.add(q)
+        self._flow_box.add(q)
 
     def changed_callback(self):
         self.save()
@@ -314,23 +315,23 @@ class MultiSearchBarBox(LimitSearchBarBox):
     def load(self):
         with open(self.multi_filename) as f:
             for row in f:
-                self.add_list_query(row.strip())
+                self.add_query_item(row.strip())
 
     def save(self):
         with open(self.multi_filename, "w") as f:
-            f.writelines(lq.string + "\n" for lq in self.get_rows())
+            f.writelines(lq.string + "\n" for lq in self.get_children())
 
-    def get_rows(self):
-        # Gtk.ListBox doesn't seem to have a get_rows method?
+    def get_children(self):
+        # Gtk.FlowBox doesn't seem to have a get_children method?
         for i in count():
-            lq = self._list_box.get_row_at_index(i)
+            lq = self._flow_box.get_child_at_index(i)
             if lq is None:
                 break
             yield lq
 
     def _update_query_from(self, text):
-        if self._list_box.get_visible():
-            matches = [lq.query._unpack() for lq in self.get_rows()]
+        if self._flow_box.get_visible():
+            matches = [lq.query._unpack() for lq in self.get_children()]
 
             self._query = Query("", star=self._star)
             if len(matches) > 0:
@@ -346,7 +347,7 @@ class MultiSearchBarBox(LimitSearchBarBox):
         """Toggles the multiquery mode according to `bool`"""
         if bool:
             self._add_button.show()
-            self._list_box.show()
+            self._flow_box.show()
 
             self._old_placeholder = self._entry.get_placeholder_text()
             self._old_tooltip = self._entry.get_tooltip_text()
@@ -355,18 +356,18 @@ class MultiSearchBarBox(LimitSearchBarBox):
                                            "to be &ed together"))
         else:
             self._add_button.hide()
-            self._list_box.hide()
+            self._flow_box.hide()
 
             self._entry.set_placeholder_text(self._old_placeholder)
             self._entry.set_tooltip_text(self._old_tooltip)
         self.changed()
 
 
-class ListQuery(Gtk.ListBoxRow):
-    """A ListBoxRow representing a query"""
+class QueryItem(Gtk.FlowBoxChild):
+    """A FlowBoxChild representing a query"""
 
     def __init__(self, string, changed_callback):
-        super().__init__(activatable=False, selectable=False)
+        super().__init__()
 
         self.changed_callback = changed_callback
         self.string = string
