@@ -90,7 +90,7 @@ class SearchBar(Browser):
         sbb.pack_start(prefs, False, True, 0)
 
         self.pack_start(sbb, False, True, 0)
-        self.pack_start(sbb._flow_box, False, True, 0)
+        self.pack_start(sbb.flow_box, False, True, 0)
         self.connect('destroy', self.__destroy)
         self.show_all()
 

@@ -272,7 +272,11 @@ class LimitSearchBarBox(SearchBarBox):
 
 
 class MultiSearchBarBox(LimitSearchBarBox):
-    """An extension of `LimitSearchBarBox` allowing multiple queries"""
+    """An extension of `LimitSearchBarBox` allowing multiple queries.
+
+    Note: Instances of this class must have their flow_box attribute packed by
+    their parents or the multiple queries won't work.
+    """
 
     def __init__(self, *args, show_multi=False, multi_filename=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -291,9 +295,9 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self._add_button.connect('clicked', self.activated)
         self._entry.connect('activate', self.activated)
 
-        self._flow_box = Gtk.FlowBox(no_show_all=True,
-                                     max_children_per_line=99,
-                                     selection_mode=Gtk.SelectionMode.NONE)
+        self.flow_box = Gtk.FlowBox(no_show_all=True,
+                                    max_children_per_line=99,
+                                    selection_mode=Gtk.SelectionMode.NONE)
         self.load()
 
         self.toggle_multi_bool(show_multi)
@@ -306,7 +310,7 @@ class MultiSearchBarBox(LimitSearchBarBox):
     def add_query_item(self, text):
         q = QueryItem(text, self.changed_callback)
         q.show()
-        self._flow_box.add(q)
+        self.flow_box.add(q)
 
     def changed_callback(self):
         self.save()
@@ -327,13 +331,13 @@ class MultiSearchBarBox(LimitSearchBarBox):
     def get_items(self):
         # Gtk.FlowBox doesn't seem to have a get_children method?
         for i in count():
-            lq = self._flow_box.get_child_at_index(i)
+            lq = self.flow_box.get_child_at_index(i)
             if lq is None:
                 break
             yield lq
 
     def _update_query_from(self, text):
-        if self._flow_box.get_visible():
+        if self.flow_box.get_visible():
             matches = [lq.query._unpack() for lq in self.get_items()]
 
             self._query = Query("", star=self._star)
@@ -350,7 +354,7 @@ class MultiSearchBarBox(LimitSearchBarBox):
         """Toggles the multiquery mode according to `bool`"""
         if bool:
             self._add_button.show()
-            self._flow_box.show()
+            self.flow_box.show()
 
             self._old_placeholder = self._entry.get_placeholder_text()
             self._old_tooltip = self._entry.get_tooltip_text()
@@ -359,7 +363,7 @@ class MultiSearchBarBox(LimitSearchBarBox):
                                            "to be &ed together"))
         else:
             self._add_button.hide()
-            self._flow_box.hide()
+            self.flow_box.hide()
 
             self._entry.set_placeholder_text(self._old_placeholder)
             self._entry.set_tooltip_text(self._old_tooltip)
