@@ -1,19 +1,10 @@
 ---
 name: Feature Request
-about: Request a change or new feature in Quod Libet
+about: Request a change or new feature in Quod Libet. Please sedarch the existing issues first - it's easier to continue an existing discussion that start another one.
 title: ''
 labels: 'enhancement'
 assignees: ''
 ---
-
-Requesting a feature
---------------------
-_Please make sure your feature hasn't [been requested already](https://github.com/quodlibet/quodlibet/issues?utf8=%E2%9C%93&q=is%3Aissue+). 
-It's much easier to continue or vote on an existing discussion that start a new one._
-
-_Please then complete this template and remove this section 
-and any unnecessary text. Thanks for helping with Quod Libet!_
-
 
 
 The proposed change
@@ -35,4 +26,4 @@ Any issues this might cause
 > or less predictable?)
 >
 > (Migrations: some changes, e.g. to tag formats, have huge impact for existing users. 
-Migrations are possible but can require a lot of thought.)
+> Migrations are possible but can require a lot of thought.)

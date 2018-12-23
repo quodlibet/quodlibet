@@ -41,4 +41,4 @@ Test System
 Additional Information
 ----------------------
 
-> (anything else relevant here)
+> (anything else relevant here, e.g. screenshots or logs)
