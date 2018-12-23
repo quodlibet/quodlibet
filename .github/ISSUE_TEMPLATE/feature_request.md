@@ -1,3 +1,11 @@
+---
+name: Feature Request
+about: Request a change or new feature in Quod Libet
+title: ''
+labels: 'enhancement'
+assignees: ''
+---
+
 Requesting a feature
 --------------------
 _Please make sure your feature hasn't [been requested already](https://github.com/quodlibet/quodlibet/issues?utf8=%E2%9C%93&q=is%3Aissue+). 
