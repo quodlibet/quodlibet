@@ -374,13 +374,16 @@ class QueryItem(Gtk.FlowBoxChild):
         self.query = Query(string)
 
         hbox = Gtk.HBox()
-        hbox.pack_start(Gtk.Label(string, halign=Gtk.Align.START, margin=3),
+        hbox.pack_start(Gtk.Label(string, halign=Gtk.Align.START, margin=6),
                         True, True, 0)
         btn = Gtk.Button.new_from_icon_name("window-close",
                                             Gtk.IconSize.BUTTON)
+        btn.set_relief(Gtk.ReliefStyle.NONE)
         btn.connect('clicked', self.remove)
         hbox.pack_start(btn, False, True, 0)
-        self.add(hbox)
+        frame = Gtk.Frame()
+        frame.add(hbox)
+        self.add(frame)
         self.show_all()
 
     def remove(self, _):
