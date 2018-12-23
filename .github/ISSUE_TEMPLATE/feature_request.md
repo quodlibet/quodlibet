@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: Request a change or new feature in Quod Libet. Please sedarch the existing issues first - it's easier to continue an existing discussion that start another one.
+about: Request a change or new feature in Quod Libet. Please search the existing issues before starting a new one.
 title: ''
 labels: 'enhancement'
 assignees: ''
