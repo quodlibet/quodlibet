@@ -313,9 +313,12 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self._filter_changed()
 
     def load(self):
-        with open(self.multi_filename) as f:
-            for row in f:
-                self.add_query_item(row.strip())
+        try:
+            with open(self.multi_filename) as f:
+                for row in f:
+                    self.add_query_item(row.strip())
+        except FileNotFoundError:
+            pass
 
     def save(self):
         with open(self.multi_filename, "w") as f:
