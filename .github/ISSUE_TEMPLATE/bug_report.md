@@ -1,3 +1,11 @@
+---
+name: Bug report
+about: Report a bug in Quod Libet
+title: ''
+labels: 'bug'
+assignees: ''
+---
+
 Steps to reproduce
 ------------------
 
