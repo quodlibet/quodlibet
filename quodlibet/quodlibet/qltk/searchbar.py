@@ -319,9 +319,9 @@ class MultiSearchBarBox(LimitSearchBarBox):
 
     def save(self):
         with open(self.multi_filename, "w") as f:
-            f.writelines(lq.string + "\n" for lq in self.get_children())
+            f.writelines(lq.string + "\n" for lq in self.get_items())
 
-    def get_children(self):
+    def get_items(self):
         # Gtk.FlowBox doesn't seem to have a get_children method?
         for i in count():
             lq = self._flow_box.get_child_at_index(i)
@@ -331,7 +331,7 @@ class MultiSearchBarBox(LimitSearchBarBox):
 
     def _update_query_from(self, text):
         if self._flow_box.get_visible():
-            matches = [lq.query._unpack() for lq in self.get_children()]
+            matches = [lq.query._unpack() for lq in self.get_items()]
 
             self._query = Query("", star=self._star)
             if len(matches) > 0:
