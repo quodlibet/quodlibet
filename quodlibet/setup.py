@@ -77,7 +77,7 @@ def main():
         'author': "Joe Wreschnig, Michael Urman, & others",
         'author_email': "quod-libet-development@googlegroups.com",
         'maintainer': "Steven Robertson and Christoph Reiter",
-        'license': "GNU GPL v2",
+        'license': "GPL-2.0-or-later",
         'packages': packages,
         'package_data': {
             "quodlibet": [
