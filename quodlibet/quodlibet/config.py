@@ -2,6 +2,7 @@
 # Copyright 2004-2008 Joe Wreschnig
 #           2009-2017 Nick Boultbee
 #           2011-2014 Christoph Reiter
+#                2018 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

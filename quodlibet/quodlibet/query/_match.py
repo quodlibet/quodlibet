@@ -3,6 +3,7 @@
 #           2011 Christoph Reiter
 #           2016 Ryan Dellenbaugh
 #        2016-17 Nick Boultbee
+#           2018 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010-2011 Christoph Reiter, Steven Robertson
-#           2016-2018 Nick Boultbee
+#           2016-2018 Nick Boultbee, Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+
 import operator
 import os
 from functools import reduce
-from itertools import count
 
 from gi.repository import Gtk, GObject, GLib
 
@@ -47,8 +47,6 @@ class SearchBarBox(Gtk.Box):
                  timeout=DEFAULT_TIMEOUT, validator=Query.validator,
                  star=None):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-
-        self._last_packed = None
 
         if filename is None:
             filename = os.path.join(
@@ -326,19 +324,13 @@ class MultiSearchBarBox(LimitSearchBarBox):
 
     def save(self):
         with open(self.multi_filename, "w") as f:
-            f.writelines(lq.string + "\n" for lq in self.get_items())
-
-    def get_items(self):
-        # Gtk.FlowBox doesn't seem to have a get_children method?
-        for i in count():
-            lq = self.flow_box.get_child_at_index(i)
-            if lq is None:
-                break
-            yield lq
+            f.writelines(lq.string + "\n"
+                         for lq in self.flow_box.get_children())
 
     def _update_query_from(self, text):
         if self.flow_box.get_visible():
-            matches = [lq.query._unpack() for lq in self.get_items()]
+            matches = [lq.query._unpack()
+                       for lq in self.flow_box.get_children()]
 
             self._query = Query("", star=self._star)
             if len(matches) > 0:
