@@ -1,3 +1,24 @@
+.. _release-4.2.1:
+
+4.2.1 (2018-12-26) - DO NOT WEAR THE HAT UNDER ANY CIRCUMSTANCES
+----------------------------------------------------------------
+
+Translations:
+  * Hebrew translation update :bug:`3027` (:user:`Avi Markovitz <avma>`)
+  * German translation update :pr:`3036` (:user:`Till Berger <Mellthas>`)
+
+Fixes:
+  * Fix freezes when opening the shortcuts window with i3wm
+    :bug:`3055` (:user:`Fredrik Strupe <frestr>`)
+  * xinebe: Fix error when pausing a non-local stream :bug:`3057`
+  * Fix mmkeys error (preventing QL to start) when mate-settings-daemon is
+    running outside of a mate session :bug:`3056`
+  * Fix some panels/docks not being able to match the app with the desktop
+    file :bug:`3029`
+  * Migrate metadata plugin fixes
+    :bug:`3070` (:user:`Fredrik Strupe <frestr>`)
+
+
 .. _release-4.2.0:
 
 4.2.0 (2018-10-31) - staffed by the living
