@@ -1,9 +1,9 @@
 ---
-app-id: io.github.quodlibet.QuodLibet
+app-id: io.github.quodlibet.ExFalso
 runtime: org.gnome.Platform
 runtime-version: '3.30'
 sdk: org.gnome.Sdk
-command: quodlibet
+command: exfalso
 build-options:
   no-debuginfo: true
   strip: true
@@ -12,7 +12,6 @@ finish-args:
   - "--socket=x11"
   - "--share=ipc"
   - "--socket=wayland"
-  - "--socket=pulseaudio"
   - "--filesystem=host"
 
   # some embedded covers and the fifo is still shared through /tmp
@@ -21,30 +20,14 @@ finish-args:
   # bookmarks in the filesystem browser
   - "--filesystem=xdg-config/gtk-3.0:ro"
 
-  # Various D-Bus names: for...
-  # ...multimedia keys
-  - "--talk-name=org.gnome.SettingsDaemon.MediaKeys"
-  - "--talk-name=org.mate.SettingsDaemon"
-
   # ...detecting the running desktop environment
   - "--talk-name=com.canonical.Unity.Launcher"
   - "--talk-name=org.enlightenment.wm.service"
   - "--talk-name=org.kde.plasmashell"
 
-  # ...MPRIS support
-  - "--own-name=org.mpris.quodlibet"
-  - "--own-name=org.mpris.MediaPlayer2.quodlibet"
-
   # ...various other plugins
-  - "--own-name=org.gnome.UPnP.MediaServer2.QuodLibet"
-  - "--talk-name=org.freedesktop.Avahi"
   - "--talk-name=org.freedesktop.FileManager1"
-  - "--talk-name=org.freedesktop.Notifications"
-  - "--talk-name=org.freedesktop.Telepathy.AccountManager"
-  - "--talk-name=org.gajim.dbus"
-  - "--talk-name=org.gnome.ScreenSaver"
   - "--talk-name=org.gnome.SessionManager"
-  - "--talk-name=org.kde.StatusNotifierWatcher"
   - "--talk-name=org.xfce.FileManager"
 
   # ...talking to dconf
@@ -55,7 +38,6 @@ finish-args:
 
 modules:
   - python-modules.yaml
-  - flathub-shared-modules/libappindicator/libappindicator-gtk3-introspection-12.10.json
   - name: kakasi
     sources:
       - type: archive
@@ -75,26 +57,6 @@ modules:
       - type: archive
         url: https://github.com/acoustid/chromaprint/releases/download/v1.4.3/chromaprint-1.4.3.tar.gz
         sha256: ea18608b76fb88e0203b7d3e1833fb125ce9bb61efe22c6e169a50c52c457f82
-  - name: libbs2b
-    rm-configure: true
-    sources:
-      - type: archive
-        url: https://sourceforge.net/projects/bs2b/files/libbs2b/3.1.0/libbs2b-3.1.0.tar.gz
-        sha256: 6aaafd81aae3898ee40148dd1349aab348db9bfae9767d0e66e0b07ddd4b2528
-      - type: script
-        dest-filename: autogen.sh
-        commands:
-          - cp -p /usr/share/automake-*/config.{sub,guess} build-aux
-          - autoreconf -vfi
-      - type: patch
-        path: patches/bs2b-fix-automake-dist-lzma.patch
-    cleanup:
-      - /bin
-  - name: soundtouch
-    sources:
-      - type: archive
-        url: https://gitlab.com/soundtouch/soundtouch/-/archive/2.1.0/soundtouch-2.1.0.tar.gz
-        sha256: 454712b08bf758f6a4c0df8821350c323e5b274443a20e21d193d17c5dc3d0d5
   - name: gst-libav
     sources:
       - type: archive
@@ -125,7 +87,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/quodlibet/quodlibet.git
-        tag: release-4.2.1
+        tag: master
 cleanup:
   - /include
   - /share/gtk-doc

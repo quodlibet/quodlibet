@@ -8,7 +8,8 @@ PLUGINS_DEPENDS := \
 	dbus-python \
 	paho-mqtt
 
-APP_ID := io.github.quodlibet.QuodLibet
+QL_ID := io.github.quodlibet.QuodLibet
+EF_ID := io.github.quodlibet.ExFalso
 
 BUILD := build
 DIST := dist
@@ -16,18 +17,26 @@ REPO := $(BUILD)/repo
 
 all: $(REPO) dist-flatpaks
 
-install: $(BUILD)/$(APP_ID).flatpak
-	flatpak install $(BUILD)/$(APP_ID).flatpak
+install: $(BUILD)/$(QL_ID).flatpak $(BUILD)/$(EF_ID).flatpak
+	flatpak install --reinstall --assumeyes $(BUILD)/$(QL_ID).flatpak
+	flatpak install --reinstall --assumeyes $(BUILD)/$(EF_ID).flatpak
 
 $(REPO): *.yaml
-	flatpak-builder --force-clean --repo=$@ $(BUILD)/build --state-dir=$(BUILD)/.flatpak-builder $(APP_ID).yaml
+	flatpak-builder --force-clean --repo=$@ $(BUILD)/build --state-dir=$(BUILD)/.flatpak-builder $(QL_ID).yaml
+	flatpak-builder --force-clean --repo=$@ $(BUILD)/build --state-dir=$(BUILD)/.flatpak-builder $(EF_ID).yaml
 	flatpak build-update-repo $(REPO)
 
-$(BUILD)/$(APP_ID).flatpak: $(REPO)
-	flatpak build-bundle $(REPO) $@ $(APP_ID)
+$(BUILD)/$(QL_ID).flatpak: $(REPO)
+	flatpak build-bundle $(REPO) $@ $(QL_ID)
 
-$(BUILD)/$(APP_ID).Locale.flatpak: $(REPO)
-	flatpak build-bundle $(REPO) $@ $(APP_ID).Locale --runtime
+$(BUILD)/$(EF_ID).flatpak: $(REPO)
+	flatpak build-bundle $(REPO) $@ $(EF_ID)
+
+$(BUILD)/$(QL_ID).Locale.flatpak: $(REPO)
+	flatpak build-bundle $(REPO) $@ $(QL_ID).Locale --runtime
+
+$(BUILD)/$(EF_ID).Locale.flatpak: $(REPO)
+	flatpak build-bundle $(REPO) $@ $(EF_ID).Locale --runtime
 
 $(DIST):
 	mkdir -p $(DIST)
@@ -35,7 +44,7 @@ $(DIST):
 $(DIST)/%.flatpak: $(BUILD)/%.flatpak $(DIST)
 	cp $< $@
 
-dist-flatpaks: $(DIST)/$(APP_ID).flatpak $(DIST)/$(APP_ID).Locale.flatpak
+dist-flatpaks: $(DIST)/$(QL_ID).flatpak $(DIST)/$(QL_ID).Locale.flatpak $(DIST)/$(EF_ID).flatpak $(DIST)/$(EF_ID).Locale.flatpak
 
 python-modules:
 	python3 flatpak-builder-tools/pip/flatpak-pip-generator \
