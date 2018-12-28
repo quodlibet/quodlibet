@@ -332,9 +332,9 @@ class MultiSearchBarBox(LimitSearchBarBox):
             matches = [lq.query._unpack()
                        for lq in self.flow_box.get_children()]
 
-            self._query = Query("", star=self._star)
-            if len(matches) > 0:
-                self._query._match = reduce(operator.and_, matches)
+            self._query = Query(text, star=self._star)
+            self._query._match = reduce(operator.and_, matches,
+                                        self._query._match)
         else:
             super()._update_query_from(text)
 
