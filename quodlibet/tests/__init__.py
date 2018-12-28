@@ -203,6 +203,7 @@ def init_test_environ():
 
     # set to new default
     environ.pop("XDG_DATA_HOME", None)
+    environ.pop("XDG_CONFIG_HOME", None)
 
     # don't use dconf
     environ["GSETTINGS_BACKEND"] = "memory"
