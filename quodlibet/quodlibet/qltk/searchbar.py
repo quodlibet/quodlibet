@@ -301,9 +301,10 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self.toggle_multi_bool(show_multi)
 
     def activated(self, _):
-        self.add_query_item(self.get_text().strip())
-        self.set_text("")
-        self.changed_callback()
+        if self.flow_box.get_visible():
+            self.add_query_item(self.get_text().strip())
+            self.set_text("")
+            self.changed_callback()
 
     def add_query_item(self, text):
         q = QueryItem(text, self.changed_callback)
@@ -342,9 +343,9 @@ class MultiSearchBarBox(LimitSearchBarBox):
         """Toggles the multiquery mode according to `button`"""
         self.toggle_multi_bool(button.get_active())
 
-    def toggle_multi_bool(self, bool):
-        """Toggles the multiquery mode according to `bool`"""
-        if bool:
+    def toggle_multi_bool(self, multi):
+        """Toggles the multiquery mode to the given bool"""
+        if multi:
             self._add_button.show()
             self.flow_box.show()
 
