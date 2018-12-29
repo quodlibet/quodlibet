@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2005 Michael Urman
-#        2016-18 Nick Boultbee
+#           2016-18 Nick Boultbee
+#           2018 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +17,7 @@ from os.path import splitext, dirname
 from senf import fsn2bytes, extsep
 
 from quodlibet import _
-from quodlibet import app
+from quodlibet import app, print_e
 from quodlibet.plugins.songshelpers import each_song, is_writable, is_a_file, \
     is_finite
 from quodlibet.qltk import ErrorMessage, Icons
@@ -184,6 +185,13 @@ class Import(SongsMenuPlugin):
                 song[key] = '\n'.join(values)
             if rename:
                 origname = song['~filename']
-                newname = name + origname[origname.rfind('.'):]
-                app.library.rename(origname, newname)
+                path = os.path.dirname(origname)
+                suffix_index = origname.rfind('.')
+                suffix = origname[suffix_index:] if suffix_index >= 0 else ''
+                newname = os.path.join(path, name + suffix)
+                try:
+                    app.library.rename(song._song, newname)
+                except ValueError:
+                    print_e("File {} already exists. Ignoring file "
+                            "rename.".format(newname))
         app.library.changed(songs)
