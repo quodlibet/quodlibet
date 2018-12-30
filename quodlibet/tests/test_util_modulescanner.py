@@ -8,17 +8,11 @@ import os
 import imp
 import sys
 import shutil
-import py_compile
 
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.util.importhelper import get_importables, load_dir_modules
 
 from tests import TestCase, mkdtemp
-
-
-def py_compile_legacy(file_):
-    # so we get the same result on py2/3
-    py_compile.compile(file_, cfile=file_ + "c")
 
 
 class TModuleScanner(TestCase):
@@ -80,40 +74,6 @@ class TModuleScanner(TestCase):
         mods = load_dir_modules(self.d, "qlfake")
         self.failUnlessEqual(len(mods), 1)
         self.failUnlessEqual(mods[0].test, 42)
-
-    def test_load_dir_modules_compiled_ignore(self):
-        h = self._create_mod("x1.py")
-        h.write(b"test=24\n")
-        h.close()
-        py_compile_legacy(h.name)
-        os.unlink(h.name)
-        assert os.listdir(self.d) == ["x1.pyc"]
-
-        mods = load_dir_modules(self.d, "qlfake")
-        self.failUnlessEqual(len(mods), 0)
-
-    def test_load_dir_modules_compiled(self):
-        h = self._create_mod("x1.py")
-        h.write(b"test=99\n")
-        h.close()
-        py_compile_legacy(h.name)
-        os.unlink(h.name)
-        assert os.listdir(self.d) == ["x1.pyc"]
-
-        mods = load_dir_modules(self.d, "qlfake", load_compiled=True)
-        self.failUnlessEqual(len(mods), 1)
-        self.failUnlessEqual(mods[0].test, 99)
-
-    def test_load_dir_modules_both(self):
-        h = self._create_mod("x1.py")
-        h.write(b"test=99\n")
-        h.close()
-        py_compile_legacy(h.name)
-        self.failUnlessEqual(set(os.listdir(self.d)), {"x1.pyc", "x1.py"})
-
-        mods = load_dir_modules(self.d, "qlfake", load_compiled=True)
-        self.failUnlessEqual(len(mods), 1)
-        self.failUnlessEqual(mods[0].test, 99)
 
     def test_load_dir_modules_packages(self):
         h = self._create_pkg("somepkg2")

@@ -63,10 +63,7 @@ def init():
     MinVersions.MUTAGEN.check(mutagen.version)
 
     base = util.get_module_dir()
-    load_pyc = util.is_windows() or util.is_osx()
-    formats = load_dir_modules(base,
-                               package=__package__,
-                               load_compiled=load_pyc)
+    formats = load_dir_modules(base, package=__package__)
 
     module_names = []
     for format in formats:

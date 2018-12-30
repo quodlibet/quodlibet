@@ -15,9 +15,9 @@ from os.path import join, splitext, basename
 from quodlibet import util
 
 
-def load_dir_modules(path, package, load_compiled=False):
+def load_dir_modules(path, package):
     """Load all modules and packages in path (recursive).
-    Load pyc files if load_compiled is True.
+
     In case the module is already loaded, doesn't reload it.
     """
 
@@ -25,7 +25,7 @@ def load_dir_modules(path, package, load_compiled=False):
     assert package in sys.modules
 
     try:
-        modules = [e[0] for e in get_importables(path, load_compiled)]
+        modules = [e[0] for e in get_importables(path)]
     except OSError:
         util.print_w("%r not found" % path)
         return []
@@ -47,7 +47,7 @@ def load_dir_modules(path, package, load_compiled=False):
     return loaded
 
 
-def get_importables(folder, include_compiled=False):
+def get_importables(folder):
     """Searches a folder and its subfolders for modules and packages to import.
     No subfolders in packages, .so supported.
 
@@ -61,14 +61,10 @@ def get_importables(folder, include_compiled=False):
             return False
         if f.endswith(".py"):
             return True
-        elif include_compiled and f.endswith(".pyc"):
-            return True
         return False
 
     def is_init(f):
         if f == "__init__.py":
-            return True
-        elif include_compiled and f == "__init__.pyc":
             return True
         return False
 
