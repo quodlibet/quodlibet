@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2011,2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify

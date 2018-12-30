@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Mice Pápai
 #           2018 Nick Boultbee
 #

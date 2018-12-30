@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
 #            2016-17 Nick Boultbee

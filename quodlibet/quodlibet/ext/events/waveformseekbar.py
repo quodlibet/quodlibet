@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 0x1777
 #        2016-17 Nick Boultbee
 #           2017 Didier Villevalois

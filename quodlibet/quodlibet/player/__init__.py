@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2007 Joe Wreschnig
 #           2013 Christoph Reiter
 #

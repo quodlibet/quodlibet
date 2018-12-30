@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
 #           2018 Ludovic Druette
 #

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
 #     2012, 2016 Nick Boultbee
 #           2014 Christoph Reiter

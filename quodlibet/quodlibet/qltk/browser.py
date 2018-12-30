@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2016 Nick Boultbee
 #           2018 Peter Strulo

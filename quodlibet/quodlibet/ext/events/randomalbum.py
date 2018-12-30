@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005-2009 Joe Wreschnig, Steven Robertson
 #           2012-2018 Nick Boultbee
 #

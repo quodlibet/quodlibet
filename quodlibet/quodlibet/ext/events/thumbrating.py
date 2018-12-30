@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # View Lyrics: a Quod Libet plugin for viewing lyrics.
 # Copyright (C) 2018 Eoin O'Neill (eoinoneill1991@gmail.com)

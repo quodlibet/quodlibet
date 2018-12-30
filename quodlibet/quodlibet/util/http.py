@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
 #        2016-18 Nick Boultbee
 #

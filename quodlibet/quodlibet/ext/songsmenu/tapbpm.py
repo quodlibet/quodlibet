@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2017 Didier Villevalois,
 #           2010 Christoph Reiter
 #

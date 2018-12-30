@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2018 Phoenix Dailey
 #
 # This program is free software; you can redistribute it and/or modify

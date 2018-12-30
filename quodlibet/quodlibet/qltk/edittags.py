@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2011-2017 Nick Boultbee
 #

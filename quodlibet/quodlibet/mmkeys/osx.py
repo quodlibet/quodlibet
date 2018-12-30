@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012 Martijn Pieters <mj@zopatista.com>
 # Copyright 2014 Eric Le Lay elelay.fr:dev
 #

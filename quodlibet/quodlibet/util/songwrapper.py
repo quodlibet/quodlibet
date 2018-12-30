@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Michael Urman
 #           2016 Nick Boultbee
 #

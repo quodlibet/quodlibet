@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Eduardo Gonzalez <wm.eddie@gmail.com>, Niklas Janlert
 #           2006 Joe Wreschnig
 #           2008 Antonio Riva, Eduardo Gonzalez <wm.eddie@gmail.com>,

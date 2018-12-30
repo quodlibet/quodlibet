@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2012,2013,2016 Nick Boultbee
 # Copyright (C) 2012-13 Thomas Vogt
 # Copyright (C) 2008 Andreas Bombe

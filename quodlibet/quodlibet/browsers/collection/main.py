@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2010, 2012-2014 Christoph Reiter
 #                      2017 Uriel Zajaczkovski
 #                 2017-2018 Nick Boultbee

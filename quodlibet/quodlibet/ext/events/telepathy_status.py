@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Quod Libet Telepathy Plugin
 # Copyright 2012 Christoph Reiter
 #      2012,2016 Nick Boultbee

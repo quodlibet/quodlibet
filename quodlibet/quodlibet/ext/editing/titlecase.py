@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2010-14 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify

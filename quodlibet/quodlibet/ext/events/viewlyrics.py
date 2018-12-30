@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # View Lyrics: a Quod Libet plugin for viewing lyrics.
 # Copyright (C) 2008, 2011, 2012 Vasiliy Faronov <vfaronov@gmail.com>

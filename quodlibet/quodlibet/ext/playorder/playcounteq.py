@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012-2016 Ryan "ZDBioHazard" Turner <zdbiohazard2@gmail.com>
 #           2016-2017 Nick Boultbee
 #

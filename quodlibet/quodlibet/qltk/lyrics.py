@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Eduardo Gonzalez, Joe Wreschnig
 #           2017 Nick Boultbee
 #

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2011-2014 Nick Boultbee
 #
 # Inspired in parts by PySqueezeCenter (c) 2010 JingleManSweep

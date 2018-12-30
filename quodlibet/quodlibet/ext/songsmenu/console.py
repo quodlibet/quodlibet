@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (C) 2006 - Steve Frécinaux
 #            2016-17 - Nick Boultbee
 #

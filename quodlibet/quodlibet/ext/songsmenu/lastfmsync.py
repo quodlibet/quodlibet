@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2010 Steven Robertson
 #           2016 Mice Pápai
 #

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2010 Felix Krull <f_krull@gmx.de>
 #               2011-2013 Christoph Reiter <reiter.christoph@gmail.com>
 #

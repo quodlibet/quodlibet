@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Inigo Serna
 #           2018 Phoenix Dailey, Fredrik Strupe
 #
