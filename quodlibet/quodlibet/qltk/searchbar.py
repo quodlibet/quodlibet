@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010-2011 Christoph Reiter, Steven Robertson
-#           2016-2018 Nick Boultbee, Peter Strulo
+#           2016-2018 Nick Boultbee
+#           2018-2019 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -296,7 +297,6 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self.flow_box = Gtk.FlowBox(no_show_all=True,
                                     max_children_per_line=99,
                                     selection_mode=Gtk.SelectionMode.NONE)
-        self.load()
 
         self.toggle_multi_bool(show_multi)
 
@@ -304,16 +304,12 @@ class MultiSearchBarBox(LimitSearchBarBox):
         if self.flow_box.get_visible():
             self.add_query_item(self.get_text().strip())
             self.set_text("")
-            self.changed_callback()
+            self._filter_changed()
 
     def add_query_item(self, text):
-        q = QueryItem(text, self.changed_callback)
+        q = QueryItem(text, self._filter_changed)
         q.show()
         self.flow_box.add(q)
-
-    def changed_callback(self):
-        self.save()
-        self._filter_changed()
 
     def load(self):
         try:

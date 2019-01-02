@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2004-2018 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson, Nick Boultbee,
-#                     Peter Strulo
+#           2018-2019 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -122,10 +122,12 @@ class SearchBar(Browser):
 
     def save(self):
         config.settext("browsers", "query_text", self._get_text())
+        self._sb_box.save()
 
     def restore(self):
         text = config.gettext("browsers", "query_text")
         self._set_text(text)
+        self._sb_box.load()
 
     def finalize(self, restore):
         config.set("browsers", "query_text", "")
