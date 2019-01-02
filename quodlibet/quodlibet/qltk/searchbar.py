@@ -316,10 +316,13 @@ class MultiSearchBarBox(LimitSearchBarBox):
             with open(self.multi_filename) as f:
                 for row in f:
                     self.add_query_item(row.strip())
-        except FileNotFoundError:
+        except OSError:
             pass
 
     def save(self):
+        if not os.path.isdir(os.path.dirname(self.multi_filename)):
+            os.makedirs(os.path.dirname(self.multi_filename))
+
         with open(self.multi_filename, "w") as f:
             f.writelines(lq.string + "\n"
                          for lq in self.flow_box.get_children())
