@@ -3684,7 +3684,7 @@ msgstr ""
 #: ../quodlibet/ext/songsmenu/ifp.py:40
 #, fuzzy, python-format
 msgid "Uploading %(current)d/%(total)d"
-msgstr "Přesouvání %(current)d/%(total).d."
+msgstr "Přesouvání %(current)d/%(total)d."
 
 #: ../quodlibet/ext/songsmenu/ifp.py:63
 #, fuzzy
@@ -4565,7 +4565,7 @@ msgstr "_Přesunout do koše"
 #: ../quodlibet/qltk/delete.py:153 ../quodlibet/qltk/delete.py:188
 #, python-format
 msgid "Moving %(current)d/%(total)d."
-msgstr "Přesouvání %(current)d/%(total).d."
+msgstr "Přesouvání %(current)d/%(total)d."
 
 #: ../quodlibet/qltk/delete.py:174 ../quodlibet/qltk/delete.py:206
 msgid "Unable to move to trash"
