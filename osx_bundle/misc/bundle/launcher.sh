@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 bundle=$(cd "$(dirname "$(dirname "$(dirname "$0")")")"; pwd)
 bundle_contents="$bundle"/Contents
@@ -51,13 +51,13 @@ export QUODLIBET_NO_HINTS=yes
 
 # select target based on our basename
 APP=$(basename "$0")
-if [ "$APP" == "run" ]; then
+if [ "$APP" = "run" ]; then
     "$PYTHON" "$@"
-elif  [ "$APP" == "gst-plugin-scanner" ]; then
+elif  [ "$APP" = "gst-plugin-scanner" ]; then
     # Starting with 10.11 OSX will no longer pass DYLD_LIBRARY_PATH
     # to child processes. To work around use this launcher for the
     # GStreamer plugin scanner helper
     "$bundle_res/libexec/gstreamer-1.0/gst-plugin-scanner" "$@"
 else
-    "$PYTHON" "$bundle_contents/Resources/bin/$APP" "$@"
+    "$PYTHON" "$bundle_bin/$APP" "$@"
 fi
