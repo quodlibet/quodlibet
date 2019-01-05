@@ -171,6 +171,21 @@ class TMPRIS(PluginTestCase):
             self.failUnlessEqual(resp, value)
             self.failUnless(isinstance(resp, type(value)))
 
+    def test_volume_property(self):
+        args = {"reply_handler": self._reply, "error_handler": self._error}
+        piface = "org.mpris.MediaPlayer2.Player"
+
+        def get_volume():
+            self._prop().Get(piface, "Volume", **args)
+            return float(self._wait()[0])
+
+        assert get_volume() == 1.0
+        app.player.volume_cubic = 0.5
+        assert get_volume() == 0.5
+        self._prop().Set(piface, "Volume", 0.25, **args)
+        self._wait()
+        assert app.player.volume_cubic == 0.25
+
     def test_metadata(self):
         args = {"reply_handler": self._reply, "error_handler": self._error}
         piface = "org.mpris.MediaPlayer2.Player"
