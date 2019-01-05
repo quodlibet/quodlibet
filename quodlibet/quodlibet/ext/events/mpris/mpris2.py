@@ -338,7 +338,7 @@ value="false"/>
             elif name == "Shuffle":
                 player_options.shuffle = value
             elif name == "Volume":
-                player.volume = value ** 3.0
+                player.volume_cubic = value
 
     def get_property(self, interface, name):
         player = app.player
@@ -385,7 +385,8 @@ value="false"/>
             elif name == "Metadata":
                 return self.__get_metadata()
             elif name == "Volume":
-                return player.volume ** (1.0 / 3.0)
+                # https://gitlab.freedesktop.org/mpris/mpris-spec/issues/8
+                return player.volume_cubic
             elif name == "Position":
                 return player.get_position() * 1000
             elif name == "MinimumRate":

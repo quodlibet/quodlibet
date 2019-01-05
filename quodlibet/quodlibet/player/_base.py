@@ -158,6 +158,14 @@ class BasePlayer(GObject.GObject, Equalizer):
         self.props.volume = min(1.0, max(0.0, v))
 
     @property
+    def volume_cubic(self):
+        return self.volume ** (1.0 / 3.0)
+
+    @volume_cubic.setter
+    def volume_cubic(self, value):
+        self.volume = value ** 3.0
+
+    @property
     def mute(self):
         return self.props.mute
 
