@@ -43,6 +43,8 @@ MAX_TIME = 3
 @skipUnless(dbus, "no dbus")
 class TMPRIS(PluginTestCase):
 
+    BUS_NAME = "org.mpris.MediaPlayer2.quodlibet"
+
     def setUp(self):
         self.plugin = self.plugins["mpris"].cls
 
@@ -61,9 +63,9 @@ class TMPRIS(PluginTestCase):
     def tearDown(self):
         bus = dbus.SessionBus()
         self.failUnless(
-            bus.name_has_owner("org.mpris.quodlibet"))
+            bus.name_has_owner(self.BUS_NAME))
         self.m.disabled()
-        self.failIf(bus.name_has_owner("org.mpris.quodlibet"))
+        self.failIf(bus.name_has_owner(self.BUS_NAME))
 
         destroy_fake_app()
         config.quit()
@@ -71,29 +73,29 @@ class TMPRIS(PluginTestCase):
 
     def test_name_owner(self):
         bus = dbus.SessionBus()
-        self.failUnless(bus.name_has_owner("org.mpris.quodlibet"))
+        self.failUnless(bus.name_has_owner(self.BUS_NAME))
 
     def _main_iface(self):
         bus = dbus.SessionBus()
-        obj = bus.get_object("org.mpris.quodlibet", "/org/mpris/MediaPlayer2")
+        obj = bus.get_object(self.BUS_NAME, "/org/mpris/MediaPlayer2")
         return dbus.Interface(obj,
                               dbus_interface="org.mpris.MediaPlayer2")
 
     def _prop(self):
         bus = dbus.SessionBus()
-        obj = bus.get_object("org.mpris.quodlibet", "/org/mpris/MediaPlayer2")
+        obj = bus.get_object(self.BUS_NAME, "/org/mpris/MediaPlayer2")
         return dbus.Interface(obj,
                               dbus_interface="org.freedesktop.DBus.Properties")
 
     def _player_iface(self):
         bus = dbus.SessionBus()
-        obj = bus.get_object("org.mpris.quodlibet", "/org/mpris/MediaPlayer2")
+        obj = bus.get_object(self.BUS_NAME, "/org/mpris/MediaPlayer2")
         return dbus.Interface(obj,
                               dbus_interface="org.mpris.MediaPlayer2.Player")
 
     def _introspect_iface(self):
         bus = dbus.SessionBus()
-        obj = bus.get_object("org.mpris.quodlibet", "/org/mpris/MediaPlayer2")
+        obj = bus.get_object(self.BUS_NAME, "/org/mpris/MediaPlayer2")
         return dbus.Interface(
             obj, dbus_interface="org.freedesktop.DBus.Introspectable")
 

@@ -29,7 +29,6 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
-from .mpris1 import MPRIS1Root, MPRIS1DummyTracklist, MPRIS1Player
 from .mpris2 import MPRIS2
 
 
@@ -37,7 +36,7 @@ class MPRIS(EventPlugin):
     PLUGIN_ID = "mpris"
     PLUGIN_NAME = _("MPRIS D-Bus Support")
     PLUGIN_DESC = _("Allows control of Quod Libet using the "
-                    "MPRIS 1.0/2.0 D-Bus Interface Specification.")
+                    "MPRIS 2 D-Bus Interface Specification.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def PluginPreferences(self, parent):
@@ -60,8 +59,7 @@ class MPRIS(EventPlugin):
         self.__sig = app.window.connect('delete-event', self.__window_delete)
 
         self.objects = []
-        for service in [MPRIS1Root, MPRIS1DummyTracklist,
-                        MPRIS1Player, MPRIS2]:
+        for service in [MPRIS2]:
             try:
                 self.objects.append(service())
             except dbus.DBusException:
