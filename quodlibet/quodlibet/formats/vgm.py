@@ -5,7 +5,9 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 import struct
+import os
 
+from senf import path2fsn, fsn2text
 from ._audio import AudioFile, translate_errors
 
 # VGM and GD3 SPECs:
@@ -61,16 +63,12 @@ class VgmFile(AudioFile):
                 h.seek(GD3_TAG_PTR_POS + gd3_position)
                 self.update(parse_gd3(h.read()))
 
+        self.setdefault(
+            "title", fsn2text(path2fsn(os.path.basename(filename)[:-4])))
         self.sanitize(filename)
 
     def write(self):
         pass
-
-    def reload(self, *args):
-        title = self.get("title")
-        super(VgmFile, self).reload(*args)
-        if title is not None:
-            self.setdefault("title", title)
 
     def can_change(self, k=None):
         if k is None:
@@ -85,7 +83,7 @@ def parse_gd3(data):
         print('Invalid Gd3, Missing Header...')
         return tags
 
-    version = data[4:8]
+    # version = data[4:8]
     # Should be [0x00, 0x10, 0x00, 0x00] currently.
     # We should hold onto it for possible branching if standards change.
 
@@ -93,24 +91,47 @@ def parse_gd3(data):
     # Length of gd3 footer. This means we can actually add more tags to the end
     # with APETAG at some point. (Or at least consider...)
 
-    entries = data[12:12+gd3_length].decode('utf-16').split('\0')
+    entries = data[12:12 + gd3_length].decode('utf-16-le').split('\0')
 
-    tags["title"] = entries[GD3_ENGLISH_TITLE] \
-        if (entries[GD3_ENGLISH_TITLE] == entries[GD3_JAPANESE_TITLE]) \
-        else \
-        '\n'.join(filter(None, [entries[GD3_ENGLISH_TITLE],
-                                entries[GD3_JAPANESE_TITLE]]))
+    titles = gd3_filter_entries([entries[GD3_ENGLISH_TITLE],
+                                 entries[GD3_JAPANESE_TITLE]])
+    if len(titles) > 0:
+        tags["title"] = '\n'.join(titles)
 
-    tags["artist"] = '\n'.join(filter(None, [entries[GD3_ENGLISH_ARTIST],
-                                             entries[GD3_JAPANESE_ARTIST]]))
-    tags["console"] = '\n'.join(filter(None, [entries[GD3_ENGLISH_SYSTEM],
-                                              entries[GD3_JAPANESE_SYSTEM]]))
-    tags["album"] = '\n'.join(filter(None, [entries[GD3_ENGLISH_GAME],
-                                            entries[GD3_JAPANESE_GAME]]))
-    tags["date"] = entries[GD3_DATE]
-    tags["dumper"] = entries[GD3_DUMPER]
+    artists = gd3_filter_entries([entries[GD3_ENGLISH_ARTIST],
+                                  entries[GD3_JAPANESE_ARTIST]])
+    if len(artists) > 0:
+        tags["artist"] = '\n'.join(artists)
+
+    consoles = gd3_filter_entries([entries[GD3_ENGLISH_SYSTEM],
+                                   entries[GD3_JAPANESE_SYSTEM]])
+    if len(consoles) > 0:
+        tags["console"] = '\n'.join(consoles)
+
+    games = gd3_filter_entries([entries[GD3_ENGLISH_GAME],
+                                entries[GD3_JAPANESE_GAME]])
+    if len(games) > 0:
+        tags["album"] = '\n'.join(games)
+
+    if entries[GD3_DATE] != "":
+        tags["date"] = entries[GD3_DATE]
+
+    if entries[GD3_DUMPER] != "":
+        tags["dumper"] = entries[GD3_DUMPER]
+
     tags["comment"] = entries[GD3_COMMENT]
     return tags
+
+
+def gd3_filter_entries(entries):
+    # First, filter out empty strings...
+    filtered = list(filter(None, entries))
+    if len(filtered) == 0:
+        return filtered
+
+    # Then, filter out any duplicate strings...
+    filtered = list(set(filtered))
+    return sorted(filtered)
 
 
 loader = VgmFile
