@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 bundle=$(cd "$(dirname "$(dirname "$(dirname "$0")")")"; pwd)
 bundle_contents="$bundle"/Contents
