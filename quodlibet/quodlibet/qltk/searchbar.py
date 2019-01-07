@@ -302,7 +302,10 @@ class MultiSearchBarBox(LimitSearchBarBox):
 
     def activated(self, _):
         if self.flow_box.get_visible():
-            self.add_query_item(self.get_text().strip())
+            text = self.get_text().strip()
+            if text == "":  # disallow empty queries
+                return
+            self.add_query_item(text)
             self.set_text("")
             self._filter_changed()
 
