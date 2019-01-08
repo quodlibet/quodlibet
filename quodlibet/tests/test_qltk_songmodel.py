@@ -337,6 +337,28 @@ class TPlaylistMux(TestCase):
         do_events()
         return song
 
+    def previous(self):
+        self.mux.previous()
+        song = self.mux.current
+        self.p.emit('song-started', self.mux.current)
+        do_events()
+        return song
+
+    def test_previous(self):
+        self.pl.set(range(10))
+        self.mux.go_to(0)
+        self.next()
+        self.previous()
+        self.assertEqual(self.mux.current, 0)
+
+    def test_previous_shuffle(self):
+        self.pl.set(range(10))
+        self.pl.order = OrderShuffle()
+        self.mux.go_to(0)
+        self.next()
+        self.previous()
+        self.assertEqual(self.mux.current, 0)
+
     def test_goto(self):
         self.pl.set(range(10))
         self.q.set(range(10, 20))
@@ -418,6 +440,24 @@ class TPlaylistMux(TestCase):
         self.failUnlessEqual(len(self.pl.get()), len(range(10)))
         self.failUnlessEqual(len(self.q.get()), len(range(10)) - 1)
         self.assertTrue(self.q.sourced)
+
+    def test_queue_disable_next(self):
+        self.pl.set(range(10))
+        self.q.set(range(10))
+
+        self.mux.go_to(self.q[0].iter, source=self.q)
+        quodlibet.config.set("memory", "queue_disable", True)
+        self.next()
+        self.assertTrue(self.pl.sourced)
+
+    def test_queue_disable_prev(self):
+        self.pl.set(range(10))
+        self.q.set(range(10))
+
+        self.mux.go_to(self.q[0].iter, source=self.q)
+        quodlibet.config.set("memory", "queue_disable", True)
+        self.previous()
+        self.assertTrue(self.pl.sourced)
 
     def test_queue_keep_songs(self):
         self.q.set(range(10))

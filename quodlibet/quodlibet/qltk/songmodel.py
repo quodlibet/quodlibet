@@ -1,5 +1,6 @@
 # Copyright 2012 Christoph Reiter
 #           2016 Nick Boultbee
+#      2018-2019 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -66,9 +67,10 @@ class PlaylistMux(object):
                 or q_disable
                 or (keep_songs and not self.q.sourced)):
             self.pl.next()
-            # The go_to is to make sure the playlist begins playing
-            # when the queue is disabled while being sourced
-            self.go_to(self.pl.current)
+            if q_disable and self.q.sourced:
+                # The go_to is to make sure the playlist begins playing
+                # when the queue is disabled while being sourced
+                self.go_to(self.pl.current)
         else:
             self.q.next()
         self._check_sourced()
@@ -83,7 +85,8 @@ class PlaylistMux(object):
                 or q_disable
                 or (keep_songs and not self.q.sourced)):
             self.pl.next_ended()
-            self.go_to(self.pl.current)
+            if q_disable and self.q.sourced:
+                self.go_to(self.pl.current)
         else:
             self.q.next_ended()
         self._check_sourced()
@@ -96,7 +99,8 @@ class PlaylistMux(object):
 
         if q_disable or self.pl.sourced or not keep_songs:
             self.pl.previous()
-            self.go_to(self.pl.current)
+            if q_disable and self.q.sourced:
+                self.go_to(self.pl.current)
         else:
             self.q.previous()
         self._check_sourced()
