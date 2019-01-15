@@ -53,6 +53,10 @@ To search a specific tag, use a search like::
 The search terms can't use quotes (``"``), slashes (``/``), hashes (``#``),
 pipes (``|``), ampersands (``&``), or bangs (``!``); these characters have
 special meanings for advanced searches.
+If you need to search and match one of those special characters,
+you can use regex search which gives you the possibility to escape them, e.g.
+
+ * ``filename=/\/Music\/Alternative/``
 
 In QL 3.9 onwards, you can also use `!=` to search for things not equal::
 
