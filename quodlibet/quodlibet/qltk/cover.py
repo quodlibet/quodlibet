@@ -228,7 +228,7 @@ class CoverImage(Gtk.EventBox):
         self.__file = None
         self.__current_bci = None
         self.__cancellable = None
-        self._scale = None
+        self._scale = 0.9
 
         self.add(ResizeImage(resize, size))
         self.connect('button-press-event', self.__album_clicked)
@@ -291,7 +291,7 @@ class CoverImage(Gtk.EventBox):
                 event.button == Gdk.BUTTON_MIDDLE):
             return False
 
-        return self.__show_cover(song, scale=0.9)
+        return self.__show_cover(song, scale=self._scale)
 
     def __show_cover(self, song, scale=0.5):
         """Show the cover as a detached BigCenteredImage.
