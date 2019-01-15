@@ -1,5 +1,6 @@
 # Copyright 2004-2017 Joe Wreschnig, Michael Urman, Iñigo Serna,
-# Christoph Reiter, Nick Boultbee, Simonas Kazlauskas
+#                     Christoph Reiter, Nick Boultbee, Simonas Kazlauskas
+#           2018-2019 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,10 +22,8 @@ ALBUM_ART_PLUGIN_ID = "Download Album Art"
 
 
 class BigCenteredImage(qltk.Window):
-    """Load an image and display it, scaling down to 1/2 the screen's
-    dimensions if necessary.
-
-    This might leak memory, but it could just be Python's GC being dumb."""
+    """Load an image and display it, scaling it down to the parent window size.
+    """
 
     def __init__(self, title, fileobj, parent, scale=0.5):
         super(BigCenteredImage, self).__init__(type=Gtk.WindowType.POPUP)
@@ -76,33 +75,10 @@ class BigCenteredImage(qltk.Window):
         return True
 
     def __calculate_screen_width(self, parent, scale=0.5):
-        if qltk.is_wayland():
-            # no screen size with wayland, the parent window is
-            # the next best thing..
-            width, height = parent.get_size()
-            width = int(width / 1.1)
-            height = int(height / 1.1)
-            return (width, height)
-        else:
-            win = parent.get_window()
-            if win:
-                if qltk.gtk_version[:2] >= (3, 22):
-                    disp = Gdk.Display.get_default()
-                    mon = disp.get_monitor_at_window(win)
-                    rect = mon.get_geometry()
-                else:
-                    # The result should be the same as above, just using
-                    # deprecated methods instead
-                    screen = Gdk.Screen.get_default()
-                    mon_num = screen.get_monitor_at_window(win)
-                    rect = screen.get_monitor_geometry(mon_num)
-                width = int(rect.width * scale)
-                height = int(rect.height * scale)
-                return (width, height)
-
-            width = int(Gdk.Screen.width() * scale)
-            height = int(Gdk.Screen.height() * scale)
-            return (width, height)
+        width, height = parent.get_size()
+        width = int(width * scale)
+        height = int(height * scale)
+        return (width, height)
 
     def __destroy(self, *args):
         self.destroy()
@@ -315,10 +291,7 @@ class CoverImage(Gtk.EventBox):
                 event.button == Gdk.BUTTON_MIDDLE):
             return False
 
-        self._scale = 0.55
-        if event.button == Gdk.BUTTON_SECONDARY:
-            self._scale = 0.9
-        return self.__show_cover(song, scale=self._scale)
+        return self.__show_cover(song, scale=0.9)
 
     def __show_cover(self, song, scale=0.5):
         """Show the cover as a detached BigCenteredImage.
