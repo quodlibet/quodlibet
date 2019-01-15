@@ -52,7 +52,9 @@ To search a specific tag, use a search like::
 
 The search terms can't use quotes (``"``), slashes (``/``), hashes (``#``),
 pipes (``|``), ampersands (``&``), or bangs (``!``); these characters have
-special meanings for advanced searches.
+special meanings for advanced searches. See :ref:`exact matching
+<exact_matching>` or :ref:`regular expressions <regular_expressions>` for how
+to do searches including these characters.
 
 In QL 3.9 onwards, you can also use `!=` to search for things not equal::
 
@@ -69,6 +71,7 @@ It's also possible to search in multiple tags at once:
 
  * ``artist, performer = "Boa"c``
 
+.. _exact_matching:
 
 Exact Matching
 --------------
@@ -80,6 +83,10 @@ If you want an exact match, use quotes::
 If you need to put a ``"`` inside the quotes, you can put a ``\`` before it::
 
     version = "12\" mix"
+
+Other special characters can be used without escaping::
+
+    title = "Concertos #1"
 
 You can put a ``c`` after the last " to make the search case-sensitive::
 
@@ -176,6 +183,8 @@ surprisingly powerful if you're a playlist user.
    *not* in any playlist
 
 
+.. _regular_expressions:
+
 Regular Expressions
 -------------------
 
@@ -185,18 +194,22 @@ like regular searches, except they use / instead of ", and some punctuation
 has special meaning. There are many good tutorials on the web, and useful
 online regex testers (such as `Regex Pal <https://www.regexpal.com/>`__)
 
-Some examples:
+Some examples::
 
- * ``artist = !/\sRice/`` (or in 3.9+: ``artist != /\sRice/``)
+    artist = !/\sRice/ (or in 3.9+: artist != /\sRice/)
 
-or using the default tags
+or using the default tags::
 
- * ``/^portis/``
+    /^portis/
 
-like with exact matches append a `c` to make the search case-sensitive
+Like with exact matches, append a `c` to make the search case-sensitive::
 
- * ``/Boa/c``
+    /Boa/c
 
+Regex searches can also be used to escape special characters not permitted in
+normal searches::
+
+    filename = /\/Music\/Alternative/
 
 Ignore Accents and Umlauts
 --------------------------
