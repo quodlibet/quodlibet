@@ -284,6 +284,7 @@ function cleanup_after {
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstschro.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstrtmp.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstzbar.dll
+    rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstfdkaac.dll
 
     rm -f "${MINGW_ROOT}"/bin/libharfbuzz-icu-0.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstcacasink.dll
