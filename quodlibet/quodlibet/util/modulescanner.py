@@ -133,8 +133,7 @@ class ModuleScanner(object):
                     sys.modules[parent] = imp.new_module(parent)
                 vars(sys.modules["quodlibet"])["fake"] = sys.modules[parent]
 
-                mod = load_module(name, parent + ".plugins",
-                                  dirname(path), reload=True)
+                mod = load_module(name, parent + ".plugins", dirname(path))
                 if mod is None:
                     continue
 

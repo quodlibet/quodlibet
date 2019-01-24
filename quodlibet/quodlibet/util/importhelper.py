@@ -81,10 +81,9 @@ def get_importables(folder):
         first = False
 
 
-def load_module(name, package, path, reload=False):
+def load_module(name, package, path):
     """Load a module/package. Returns the module or None.
        Doesn't catch any exceptions during the actual import.
-       If reload is True and the module is already loaded, reload it.
     """
 
     fullname = package + "." + name
