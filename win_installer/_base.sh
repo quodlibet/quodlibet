@@ -47,8 +47,12 @@ function build_python {
     "${BUILD_ROOT}"/"${MINGW}"/bin/python3.exe "$@"
 }
 
+function build_compileall_pyconly {
+    MSYSTEM= build_python -m compileall --invalidation-mode unchecked-hash -b "$@"
+}
+
 function build_compileall {
-    MSYSTEM= build_python -m compileall -b "$@"
+    MSYSTEM= build_python -m compileall --invalidation-mode unchecked-hash "$@"
 }
 
 function install_pre_deps {
@@ -185,7 +189,7 @@ function cleanup_before {
     find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
     find "${MINGW_ROOT}" -type d -name "__pycache__" -prune -exec rm -rf {} \;
 
-    build_compileall -d "" -f -q "$(cygpath -w "${MINGW_ROOT}")"
+    build_compileall_pyconly -d "" -f -q "$(cygpath -w "${MINGW_ROOT}")"
     find "${MINGW_ROOT}" -name "*.py" -exec rm -f {} \;
 }
 
@@ -313,7 +317,6 @@ function cleanup_after {
 
     find "${MINGW_ROOT}"/bin -name "*.pyo" -exec rm -f {} \;
     find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
-    find "${MINGW_ROOT}" -type d -name "__pycache__" -prune -exec rm -rf {} \;
 
     build_python "${MISC}/depcheck.py" --delete
 
@@ -326,8 +329,7 @@ function build_installer {
     echo 'BUILD_TYPE = u"windows"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
     (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
-    (cd $(dirname "$BUILDPY") && build_compileall -d "" -q -f -l .)
-    rm -f "$BUILDPY"
+    build_compileall -d "" -q -f "$BUILDPY"
 
     cp misc/quodlibet.ico "${BUILD_ROOT}"
     (cd "$BUILD_ROOT" && makensis -NOCD -DVERSION="$QL_VERSION_DESC" "${MISC}"/win_installer.nsi)
@@ -341,8 +343,7 @@ function build_portable_installer {
     echo 'BUILD_TYPE = u"windows-portable"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
     (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
-    (cd $(dirname "$BUILDPY") && build_compileall -d "" -q -f -l .)
-    rm -f "$BUILDPY"
+    build_compileall -d "" -q -f "$BUILDPY"
 
     local PORTABLE="$DIR/quodlibet-$QL_VERSION_DESC-portable"
 
