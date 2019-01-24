@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 import sys
-import imp
+import importlib
 
 from os.path import dirname
 from traceback import format_exception
@@ -130,13 +130,14 @@ class ModuleScanner(object):
                 # https://github.com/quodlibet/quodlibet/issues/1093
                 parent = "quodlibet.fake"
                 if parent not in sys.modules:
-                    sys.modules[parent] = imp.new_module(parent)
+                    spec = importlib.machinery.ModuleSpec(
+                        parent, None, is_package=True)
+                    sys.modules[parent] = importlib.util.module_from_spec(spec)
                 vars(sys.modules["quodlibet"])["fake"] = sys.modules[parent]
 
                 mod = load_module(name, parent + ".plugins", dirname(path))
                 if mod is None:
                     continue
-
             except Exception as err:
                 text = format_exception(*sys.exc_info())
                 self.__failures[name] = ModuleImportError(name, err, text)

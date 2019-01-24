@@ -7,7 +7,7 @@
 
 import os
 import sys
-import imp
+import importlib
 
 from os.path import join, splitext, basename
 
@@ -92,21 +92,16 @@ def load_module(name, package, path):
     except KeyError:
         pass
 
-    try:
-        # this also handles packages
-        fp, path, desc = imp.find_module(name, [path])
-    except ImportError:
+    loader = importlib.find_loader(fullname, [path])
+    if loader is None:
         return
 
     # modules need a parent package
     if package not in sys.modules:
-        sys.modules[package] = imp.new_module(package)
+        spec = importlib.machinery.ModuleSpec(package, None, is_package=True)
+        sys.modules[package] = importlib.util.module_from_spec(spec)
 
-    try:
-        mod = imp.load_module(fullname, fp, path, desc)
-    finally:
-        if fp:
-            fp.close()
+    mod = loader.load_module(fullname)
 
     # make it accessible from the parent, like __import__ does
     vars(sys.modules[package])[name] = mod

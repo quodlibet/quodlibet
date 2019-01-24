@@ -4,7 +4,7 @@
 # (at your option) any later version.
 
 import os
-import imp
+import importlib
 import sys
 import shutil
 
@@ -18,7 +18,8 @@ class TModuleScanner(TestCase):
 
     def setUp(self):
         self.d = mkdtemp("ql-mod")
-        sys.modules["qlfake"] = imp.new_module("qlfake")
+        spec = importlib.machinery.ModuleSpec("qlfake", None)
+        sys.modules["qlfake"] = importlib.util.module_from_spec(spec)
 
     def tearDown(self):
         del sys.modules["qlfake"]
