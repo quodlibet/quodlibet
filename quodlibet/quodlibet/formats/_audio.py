@@ -1015,7 +1015,7 @@ class AudioFile(dict, ImageContainer):
         used when the song does not have replaygain information.
         """
         for profile in profiles:
-            if profile is "none":
+            if profile == "none":
                 return 1.0
             try:
                 db = float(self["replaygain_%s_gain" % profile].split()[0])
