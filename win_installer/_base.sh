@@ -173,15 +173,6 @@ function cleanup_before {
     "${MINGW_ROOT}"/bin/gtk-update-icon-cache-3.0.exe \
         "${MINGW_ROOT}"/share/icons/hicolor
 
-    # fontconfig settings
-    cat >"${MINGW_ROOT}/etc/gtk-3.0/settings.ini" <<EOL
-[Settings]
-gtk-xft-antialias=1
-gtk-xft-hinting=1
-gtk-xft-hintstyle=hintfull
-gtk-xft-rgba=rgb
-EOL
-
     # python related, before installing quodlibet
     rm -Rf "${MINGW_ROOT}"/lib/python3.*/test
     rm -f "${MINGW_ROOT}"/lib/python3.*/lib-dynload/_tkinter*
