@@ -465,8 +465,8 @@
 
   <autotools id="glib2"
              autogenargs="--with-pcre=internal">
-    <branch module="glib/2.58/glib-${version}.tar.xz"  version="2.58.1"
-            hash="sha256:97d6a9d926b6aa3dfaadad3077cfb43eec74432ab455dff14250c769d526d7d6">
+    <branch module="glib/2.58/glib-${version}.tar.xz"  version="2.58.3"
+            hash="sha256:8f43c31767e88a25da72b52a40f3301fefc49a665b56dc10ee7cc9565cbe7481">
     </branch>
     <dependencies>
         <dep package="libffi"/>
@@ -490,8 +490,8 @@
     <branch repo="pypi.org"
             checkoutdir="meson-${version}"
             module="m/meson/meson-${version}.tar.gz"
-            version="0.48.2"
-            hash="sha256:7e516d4727b7c5a7dd698cd50e5d4d1c0b24d0e535ef58f8e5f52157415e0eea"/>
+            version="0.49.0"
+            hash="sha256:a0cd55372208730eca5cd7cdff7948e439a006d8587c50c4445be1a0e88b2521"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="ninja"/>
@@ -509,7 +509,7 @@
 
   <autotools id="gtk3" autogen-sh="autogen.sh"
     autogenargs="--enable-quartz-backend --enable-quartz-relocation">
-    <branch repo="gitlab.gnome.org/GNOME" module="gtk" revision="gtk-3-24" tag="bb376222">
+    <branch repo="gitlab.gnome.org/GNOME" module="gtk" revision="gtk-3-24" tag="3e3a15de">
     </branch>
     <dependencies>
         <dep package="glib2"/>
@@ -567,7 +567,7 @@
   </autotools>
 
   <meson id="gdk-pixbuf2" mesonargs="-Dx11=false -Dman=false">
-    <branch repo="gitlab.gnome.org/GNOME" module="gdk-pixbuf" tag="61daa6ce">
+    <branch repo="gitlab.gnome.org/GNOME" module="gdk-pixbuf" tag="720983a9">
     </branch>
     <dependencies>
       <dep package="libtiff"/>
@@ -579,8 +579,8 @@
 
   <autotools id="gobject-introspection" autogen-sh="configure" autogenargs="--with-python=python3">
     <branch module="gobject-introspection/1.58/gobject-introspection-${version}.tar.xz"
-            version="1.58.0"
-            hash="sha256:27c1590a32749de0a5481ce897772547043e94bccba4bc0a7edb3d8513e401ec">
+            version="1.58.3"
+            hash="sha256:025b632bbd944dcf11fc50d19a0ca086b83baf92b3e34936d008180d28cdc3c8">
       <patch file="patches/gi-make-shared-library-in-cairo-1.0.gir-an-absolute-pat.patch" strip="1"/>
     </branch>
     <dependencies>
@@ -603,9 +603,9 @@
   </distutils>
 
    <distutils id="python-gobject" python3="1">
-    <branch version="3.30.2" module="pygobject/3.30/pygobject-${version}.tar.xz"
+    <branch version="3.30.4" module="pygobject/3.30/pygobject-${version}.tar.xz"
             checkoutdir="python-gobject-${version}"
-            hash="sha256:a4fc3523c4c1bb3d59e01d182fa50d9fb17db9896d86e68e470468390827ed97"/>
+            hash="sha256:2dc1a1a444b82955e65b81c2a2511ecf8032404beba4ef1d48144168f2f64c43"/>
     <dependencies>
       <dep package="python-cairo"/>
       <dep package="gobject-introspection"/>
