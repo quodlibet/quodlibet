@@ -138,6 +138,11 @@ def init_cli(no_translations=False, config_file=None):
 def _init_dbus():
     """Setup dbus mainloop integration. Call before using dbus"""
 
+    # To make GDBus fail early and we don't have to wait for a timeout
+    if is_osx() or is_windows():
+        os.environ["DBUS_SYSTEM_BUS_ADDRESS"] = "something-invalid"
+        os.environ["DBUS_SESSION_BUS_ADDRESS"] = "something-invalid"
+
     try:
         from dbus.mainloop.glib import DBusGMainLoop, threads_init
     except ImportError:
