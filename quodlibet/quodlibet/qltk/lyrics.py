@@ -88,7 +88,11 @@ class LyricsPane(Gtk.VBox):
 
     def _save_lyrics(self, song, text):
         # First, try writing to the tags.
-        song["lyrics"] = text
+        if "lyrics" not in song and "unsyncedlyrics" in song:
+            tag = "unsyncedlyrics"
+        else:
+            tag = "lyrics"
+        song[tag] = text
         try:
             song.write()
         except AudioFileError as e:

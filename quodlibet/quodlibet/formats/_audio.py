@@ -426,7 +426,12 @@ class AudioFile(dict, ImageContainer):
             elif key == "lyrics":
                 # First, try the embedded lyrics.
                 try:
-                    return self[key]
+                    return self["lyrics"]
+                except KeyError:
+                    pass
+
+                try:
+                    return self["unsyncedlyrics"]
                 except KeyError:
                     pass
 

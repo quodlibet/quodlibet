@@ -596,6 +596,13 @@ class TAudioFile(TestCase):
             os.remove(af.lyric_filename)
             os.rmdir(lyrics_dir)
 
+    def test_unsynced_lyrics(self):
+        song = AudioFile()
+        song["unsyncedlyrics"] = "lala"
+        assert song("~lyrics") == "lala"
+        assert song("unsyncedlyrics") == "lala"
+        assert song("lyrics") != "lala"
+
     def test_mountpoint(self):
         song = AudioFile()
         song["~filename"] = fsnative(u"filename")
