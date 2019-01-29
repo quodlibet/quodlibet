@@ -134,7 +134,7 @@ class PatternParser(object):
         tag = self.lookahead.lexeme
         # fix bad tied tags
         if tag[:1] != "~" and "~" in tag:
-                tag = "~" + tag
+            tag = "~" + tag
         try:
             self.match(TEXT)
         except ParseError:

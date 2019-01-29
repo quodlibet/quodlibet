@@ -383,9 +383,9 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         set_fn = self.config_get('filename', fn_list[0])
 
         for i, fn in enumerate(fn_list):
-                self.name_combo.append_text(fn)
-                if fn == set_fn:
-                    self.name_combo.set_active(i)
+            self.name_combo.append_text(fn)
+            if fn == set_fn:
+                self.name_combo.set_active(i)
 
         if self.name_combo.get_active() < 0:
             self.name_combo.set_active(0)
@@ -567,7 +567,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
                 while not self.stop_loading:
                     tmp = url_sock.read(1024 * 10)
                     if not tmp:
-                            break
+                        break
                     pbloader.write(tmp)
                     data_store.write(tmp)
 
