@@ -236,10 +236,6 @@ class PluginManager(object):
         if folders is None:
             folders = []
 
-        import pkgutil
-        for x in pkgutil.iter_modules(folders):
-            print(dir(x))
-
         self.__scanner = ModuleScanner(folders)
         self.__modules = {}     # name: PluginModule
         self.__handlers = []    # handler list
