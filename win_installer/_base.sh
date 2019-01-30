@@ -81,7 +81,6 @@ function extract_installer {
 
 function install_deps {
     build_pacman --noconfirm -S \
-        git \
         mingw-w64-"${ARCH}"-gettext \
         mingw-w64-"${ARCH}"-gdk-pixbuf2 \
         mingw-w64-"${ARCH}"-librsvg \
