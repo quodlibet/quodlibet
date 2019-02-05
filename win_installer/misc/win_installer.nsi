@@ -235,10 +235,20 @@ SectionEnd
 Function .onInit
     ; Read the install dir and set it
     Var /GLOBAL instdir_temp
+
+    SetRegView 32
     ReadRegStr $instdir_temp HKLM "${QL_INSTDIR_KEY}" "${QL_INSTDIR_VALUENAME}"
+    SetRegView lastused
     StrCmp $instdir_temp "" skip 0
         StrCpy $INSTDIR $instdir_temp
     skip:
+
+    SetRegView 64
+    ReadRegStr $instdir_temp HKLM "${QL_INSTDIR_KEY}" "${QL_INSTDIR_VALUENAME}"
+    SetRegView lastused
+    StrCmp $instdir_temp "" skip2 0
+        StrCpy $INSTDIR $instdir_temp
+    skip2:
 
     StrCpy $EF_INST_BIN "$INSTDIR\bin\exfalso.exe"
     StrCpy $QL_INST_BIN "$INSTDIR\bin\quodlibet.exe"
