@@ -20,6 +20,7 @@ Unicode true
 !define QL_INSTDIR_KEY "Software\${QL_NAME}"
 !define QL_INSTDIR_VALUENAME "InstDir"
 
+!define MUI_CUSTOMFUNCTION_GUIINIT custom_gui_init
 !include "MUI2.nsh"
 !include "FileFunc.nsh"
 
@@ -232,7 +233,9 @@ Section "Install"
     CreateShortCut "$SMPROGRAMS\${QL_NAME}\${EF_NAME}.lnk" "$EF_INST_BIN"
 SectionEnd
 
-Function .onInit
+Function custom_gui_init
+    BringToFront
+
     ; Read the install dir and set it
     Var /GLOBAL instdir_temp
 
@@ -275,6 +278,8 @@ Function .onInit
             RMDir /r "$INSTDIR"
     do_continue:
         ; the instdir shouldn't exist from here on
+
+    BringToFront
 FunctionEnd
 
 Section "Uninstall"
