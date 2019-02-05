@@ -115,6 +115,10 @@ Section "Install"
     SetOutPath "$INSTDIR"
     File /r "*.*"
 
+    StrCpy $EF_INST_BIN "$INSTDIR\bin\exfalso.exe"
+    StrCpy $QL_INST_BIN "$INSTDIR\bin\quodlibet.exe"
+    StrCpy $UNINST_BIN "$INSTDIR\uninstall.exe"
+
     ; Store installation folder
     WriteRegStr HKLM "${QL_INSTDIR_KEY}" "${QL_INSTDIR_VALUENAME}" $INSTDIR
 
@@ -238,6 +242,7 @@ Function custom_gui_init
 
     ; Read the install dir and set it
     Var /GLOBAL instdir_temp
+    Var /GLOBAL uninst_bin_temp
 
     SetRegView 32
     ReadRegStr $instdir_temp HKLM "${QL_INSTDIR_KEY}" "${QL_INSTDIR_VALUENAME}"
@@ -253,20 +258,18 @@ Function custom_gui_init
         StrCpy $INSTDIR $instdir_temp
     skip2:
 
-    StrCpy $EF_INST_BIN "$INSTDIR\bin\exfalso.exe"
-    StrCpy $QL_INST_BIN "$INSTDIR\bin\quodlibet.exe"
-    StrCpy $UNINST_BIN "$INSTDIR\uninstall.exe"
+    StrCpy $uninst_bin_temp "$INSTDIR\uninstall.exe"
 
     ; try to un-install existing installations first
     IfFileExists "$INSTDIR" do_uninst do_continue
     do_uninst:
         ; instdir exists
-        IfFileExists "$UNINST_BIN" exec_uninst rm_instdir
+        IfFileExists "$uninst_bin_temp" exec_uninst rm_instdir
         exec_uninst:
             ; uninstall.exe exists, execute it and
             ; if it returns success proceede, otherwise abort the
             ; installer (uninstall aborted by user for example)
-            ExecWait '"$UNINST_BIN" _?=$INSTDIR' $R1
+            ExecWait '"$uninst_bin_temp" _?=$INSTDIR' $R1
             ; uninstall suceeded, since the uninstall.exe is still there
             ; goto rm_instdir as well
             StrCmp $R1 0 rm_instdir
