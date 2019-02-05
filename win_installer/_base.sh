@@ -331,9 +331,9 @@ function build_installer {
     build_compileall -d "" -q -f "$BUILDPY"
 
     cp misc/quodlibet.ico "${BUILD_ROOT}"
-    (cd "$BUILD_ROOT" && makensis -NOCD -DVERSION="$QL_VERSION_DESC" "${MISC}"/win_installer.nsi)
+    (cd "${MINGW_ROOT}" && makensis -NOCD -DVERSION="$QL_VERSION_DESC" "${MISC}"/win_installer.nsi)
 
-    mv "$BUILD_ROOT/quodlibet-LATEST.exe" "$DIR/quodlibet-$QL_VERSION_DESC-installer.exe"
+    mv "${MINGW_ROOT}/quodlibet-LATEST.exe" "$DIR/quodlibet-$QL_VERSION_DESC-installer.exe"
 }
 
 function build_portable_installer {

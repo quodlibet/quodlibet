@@ -35,9 +35,9 @@ Var QL_INST_BIN
 Var UNINST_BIN
 
 !define MUI_ABORTWARNING
-!define MUI_ICON "quodlibet.ico"
+!define MUI_ICON "..\quodlibet.ico"
 
-!insertmacro MUI_PAGE_LICENSE "quodlibet\quodlibet\COPYING"
+!insertmacro MUI_PAGE_LICENSE "..\quodlibet\quodlibet\COPYING"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 
@@ -112,7 +112,7 @@ Section "Install"
     ;~ File /r "mingw32\bin\*.exe"
 
     SetOutPath "$INSTDIR"
-    File /r "mingw32\*.*"
+    File /r "*.*"
 
     ; Store installation folder
     WriteRegStr HKLM "${QL_INSTDIR_KEY}" "${QL_INSTDIR_VALUENAME}" $INSTDIR
