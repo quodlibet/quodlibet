@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-02-08 00:53-0200\n"
-"PO-Revision-Date: 2019-02-10 17:27-0200\n"
+"PO-Revision-Date: 2019-02-10 19:38-0200\n"
 "Last-Translator: Hugo Musso Gualandi <hugo_musso_gualandi@hotmail.com>\n"
 "Language-Team: Portuguese/Brazil <gnome-l10n-br@listas.cipspa.org.br>\n"
 "Language: pt_BR\n"
@@ -3031,7 +3031,7 @@ msgstr "Incluir etiquetas vazias"
 
 #: quodlibet/ext/query/pythonexpression.py:18
 msgid "Python Query"
-msgstr ""
+msgstr "Consulta Python"
 
 #: quodlibet/ext/query/pythonexpression.py:19
 msgid ""
@@ -3040,16 +3040,24 @@ msgid ""
 "number) timestamp at start of query. Modules 'time' and 'random' are also "
 "available, and the class 'Random' (==random.Random) too."
 msgstr ""
+"Permite o uso de Python nas consultas. A sintaxe é \"@(python: "
+"expression)\".\n"
+"A variável \"s\" referencia a música em reprodução e a variável \"a\" o "
+"álbum.\n"
+"\"_ts\" é horário do início da consulta, expresso como um número real.\n"
+"Os módulos \"time\" e a classe \"Random\" também estão disponíveis."
 
 #: quodlibet/ext/query/savedsearch.py:19
 msgid "Include Saved Search"
-msgstr ""
+msgstr "Incluir consulta salva"
 
 #: quodlibet/ext/query/savedsearch.py:20
 msgid ""
 "Include the results of a saved search as part of another query. Syntax is "
 "'@(saved: search name)'."
 msgstr ""
+"Inclui os resultados de uma consulta salva como parte de outra consulta. A "
+"sintaxe é \"@(saved: search name)\"."
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -3130,20 +3138,21 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:331
 msgid "Fit image to _window"
-msgstr ""
+msgstr "Ajustar à _janela"
 
 #: quodlibet/ext/songsmenu/albumart.py:337
 msgid "See '[plugins] cover_filenames' config entry for image filename strings"
 msgstr ""
+"Refira-se à entrada \"[plugins] cover_filenames\", no arquivo de configuração"
 
 #. Both labels
 #: quodlibet/ext/songsmenu/albumart.py:343
 msgid "_Program:"
-msgstr ""
+msgstr "_Programa:"
 
 #: quodlibet/ext/songsmenu/albumart.py:348
 msgid "_Edit image after saving"
-msgstr ""
+msgstr "_Editar imagem após salvar"
 
 #: quodlibet/ext/songsmenu/albumart.py:350
 msgid "File_name:"
@@ -3165,30 +3174,30 @@ msgstr "Erro HTTP: %s"
 
 #: quodlibet/ext/songsmenu/albumart.py:622
 msgid "Album Art Downloader"
-msgstr ""
+msgstr "Baixar capa de álbum"
 
 #: quodlibet/ext/songsmenu/albumart.py:675
 #, python-format
 msgid "from %(source)s"
-msgstr ""
+msgstr "obtido de %(source)s"
 
 #: quodlibet/ext/songsmenu/albumart.py:678
 #, python-format
 msgid "Resolution: %s"
-msgstr ""
+msgstr "Resolução: %s"
 
 #: quodlibet/ext/songsmenu/albumart.py:681
 #, python-format
 msgid "Size: %s"
-msgstr ""
+msgstr "Tamanho: %s"
 
 #: quodlibet/ext/songsmenu/albumart.py:727
 msgid "Per engine 'at best' results limit"
-msgstr ""
+msgstr "Limite de capas por fonte"
 
 #: quodlibet/ext/songsmenu/albumart.py:737
 msgid "_Search"
-msgstr "_Busca"
+msgstr "_Buscar"
 
 #: quodlibet/ext/songsmenu/albumart.py:819
 #: quodlibet/ext/songsmenu/brainz/widgets.py:451
@@ -3198,19 +3207,19 @@ msgstr "Buscando…"
 #: quodlibet/ext/songsmenu/albumart.py:884
 #: quodlibet/ext/songsmenu/fingerprint/search.py:42
 msgid "Done"
-msgstr ""
+msgstr "Concluído"
 
 #: quodlibet/ext/songsmenu/albumart.py:1006
 msgid "Download Album Art"
-msgstr ""
+msgstr "Baixar capas de álbum"
 
 #: quodlibet/ext/songsmenu/albumart.py:1007
 msgid "Downloads album covers from various websites."
-msgstr ""
+msgstr "Baixa capas de álbum de diversos websites."
 
 #: quodlibet/ext/songsmenu/albumart.py:1020
 msgid "Sources"
-msgstr ""
+msgstr "Fontes"
 
 #: quodlibet/ext/songsmenu/ape2id3.py:26
 msgid "APEv2 to ID3v2"
@@ -3230,7 +3239,7 @@ msgstr "Ir para marcador"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:24
 msgid "Manages bookmarks in the selected files."
-msgstr ""
+msgstr "Gerencia marcadores nos arquivos selecionados."
 
 #: quodlibet/ext/songsmenu/bookmarks.py:63 quodlibet/qltk/seekbutton.py:244
 msgid "_Edit Bookmarks…"
@@ -3325,34 +3334,36 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/console.py:40
 msgid "Python Console"
-msgstr ""
+msgstr "Console Python"
 
 #: quodlibet/ext/songsmenu/console.py:41
 msgid "Interactive Python console. Opens a new window."
-msgstr ""
+msgstr "Um console interativo Python. Abre em nova janela."
 
 #: quodlibet/ext/songsmenu/console.py:48
 #, python-brace-format
 msgid "{plugin_name} for {songs} ({app})"
-msgstr ""
+msgstr "{plugin_name} para {songs} ({app})"
 
 #: quodlibet/ext/songsmenu/console.py:55
 msgid "Python Console Sidebar"
-msgstr ""
+msgstr "Console Python (barra lateral)"
 
 #: quodlibet/ext/songsmenu/console.py:56
 msgid ""
 "Interactive Python console sidebar, that follows the selected songs in the "
 "main window."
 msgstr ""
+"Um console interativo Python, em uma barra lateral na janela principal. "
+"Segue as músicas selecionadas pela janela principal."
 
 #: quodlibet/ext/songsmenu/console.py:75
 msgid "You can access the following objects by default:"
-msgstr ""
+msgstr "Você pode acessar os seguintes objetos por padrao:"
 
 #: quodlibet/ext/songsmenu/console.py:85
 msgid "Your current working directory is:"
-msgstr ""
+msgstr "O diretório de trabalho atual é:"
 
 #: quodlibet/ext/songsmenu/cover_download.py:119
 msgid "Classic"
@@ -3981,18 +3992,16 @@ msgstr "Falha ao escrever em <b>%s</b>."
 
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
-#, fuzzy
 msgid "Rescan Songs"
-msgstr "Atuali_zar biblioteca"
+msgstr ""
 
 #: quodlibet/ext/songsmenu/refresh.py:23
 msgid "Checks for file changes and reloads / removes the songs if needed."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/refresh.py:31
-#, fuzzy
 msgid "Rescan songs"
-msgstr "Atuali_zar biblioteca"
+msgstr ""
 
 #: quodlibet/ext/songsmenu/replaygain.py:351
 msgid "ReplayGain Analyzer"
@@ -4118,18 +4127,20 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/wikipedia.py:35
 msgid "Search Tag in Wikipedia"
-msgstr ""
+msgstr "Pesquisar etiqueta na Wikipedia"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:36
 msgid ""
 "Opens a browser window with the Wikipedia article on the selected song's "
 "corresponding tag."
 msgstr ""
+"Abre uma janela de navegador Web com o artigo da Wikipedia referente a uma "
+"das etiquetas da música selecionada."
 
 #: quodlibet/ext/songsmenu/wikipedia.py:56
 #, python-format
 msgid "Search at %(website)s"
-msgstr ""
+msgstr "Pesquisar em %(website)s"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:70
 #: quodlibet/ext/songsmenu/wikipedia.py:76 quodlibet/qltk/edittags.py:443
@@ -4138,12 +4149,12 @@ msgstr "Editar etiquetas"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:111
 msgid "Search failed"
-msgstr ""
+msgstr "A pesquisa falhou"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:112
 #, python-format
 msgid "Tag \"%s\" not found."
-msgstr ""
+msgstr "A etiqueta\"%s\" não foi encontrada."
 
 #. then (try to) load all new files
 #: quodlibet/library/libraries.py:651 quodlibet/library/libraries.py:661
@@ -5501,10 +5512,16 @@ msgid ""
 "tracks will have less extreme ratings. Changing this value triggers a re-"
 "calculation for all albums."
 msgstr ""
+"Fator da média bayesiana para avaliações agregadas.\n"
+"Para um dado fator C, efetivamente adiciona C elementos com avaliação padrão "
+"antes de tirar a média.\n"
+"0 corresponde à média aritmética usual. Valores mais altos significam que "
+"álbuns com poucas faixas tem avaliações menos extremas.\n"
+"Alterar este valor resulta em um recálculo da avaliação de todos os álbuns."
 
 #: quodlibet/qltk/prefs.py:558
 msgid "_Bayesian averaging amount:"
-msgstr ""
+msgstr "Fator da média _bayesiana:"
 
 #: quodlibet/qltk/prefs.py:567
 msgid "Save ratings and play _counts in tags"
