@@ -160,12 +160,14 @@ Phoenix Dailey
 Quincy John Hamilton
 Remi Vanicat
 Robert Muth
+Ruud van Asseldonk
 Ryan Turner
 Sebastian Thürrschmidt
 Simonas Kazlauskas
 Simon Larsen
 Steven Robertson
 Thomas Vogt
+Till Berger
 Tobias Wolf
 Tomasz Miasko
 Tomasz Torcz
@@ -178,7 +180,6 @@ Zack Weinberg
 Vimalan Reddy
 Jason Heard
 David Pérez Carmona
-Jakub Wilk
 IBBoard@github
 CreamyCookie@github
 Sauyon Lee
@@ -191,12 +192,13 @@ Muges@github
 Meriipu@github
 Jonas Platte
 Eyenseo@github
-Peter Simonyi
 dpitch40@github
 sphh@github
 zsau@github
 luk1337@github
 luzpaz@github
+a-vrma@github
+Phidica@github
 """.strip().split("\n"))
 
 TRANSLATORS = sorted(u"""
@@ -205,6 +207,7 @@ Alexandre Passos (pt)
 Andreas Bertheussen (nb)
 Olivier Humbert (fr)
 Anton Shestakov (ru)
+Avi Markovitz (he)
 Bastian Kleineidam (de)
 Bastien Gorissen (fr)
 Byung-Hee HWANG (ko)
