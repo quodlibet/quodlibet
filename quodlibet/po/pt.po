@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-02-08 00:53-0200\n"
-"PO-Revision-Date: 2019-02-10 19:38-0200\n"
+"PO-Revision-Date: 2019-02-11 02:26-0200\n"
 "Last-Translator: Hugo Musso Gualandi <hugo_musso_gualandi@hotmail.com>\n"
 "Language-Team: Portuguese/Brazil <gnome-l10n-br@listas.cipspa.org.br>\n"
 "Language: pt_BR\n"
@@ -138,7 +138,7 @@ msgstr "Mostrar _capas"
 
 #: quodlibet/browsers/albums/prefs.py:67
 msgid "Inline _search includes people"
-msgstr "_Busca inclui pessoas"
+msgstr "_Pesquisa inline inclui pessoas"
 
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:124
@@ -807,11 +807,11 @@ msgstr "_Permitir múltiplas consultas"
 
 #: quodlibet/browsers/search.py:53
 msgid "Search Library"
-msgstr "Buscar na biblioteca"
+msgstr "Pesquisar na biblioteca"
 
 #: quodlibet/browsers/search.py:54
 msgid "_Search Library"
-msgstr "_Buscar na biblioteca"
+msgstr "_Pesquisar na biblioteca"
 
 #: quodlibet/browsers/soundcloud/main.py:39
 msgid "Soundcloud Browser"
@@ -823,7 +823,7 @@ msgstr "Sound_cloud"
 
 #: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:81
 msgid "Search"
-msgstr "Buscar"
+msgstr "Procurar"
 
 #: quodlibet/browsers/soundcloud/main.py:69
 msgid "My tracks"
@@ -1021,7 +1021,7 @@ msgstr "Ajusta o volume"
 
 #: quodlibet/cli.py:130
 msgid "Search your audio library"
-msgstr "Busca na sua biblioteca"
+msgstr "Pesquise na sua biblioteca"
 
 #: quodlibet/cli.py:130 quodlibet/cli.py:140 quodlibet/cli.py:144
 #: quodlibet/cli.py:146
@@ -2194,17 +2194,17 @@ msgstr "Interrompe a reprodução enquanto o GNOME Screensaver estiver ativo."
 
 #: quodlibet/ext/events/searchprovider.py:73
 msgid "No GNOME Shell search provider for Quod Libet installed."
-msgstr "Nenhum provedor de busca GNOME Shell para Quod Libet foi instalado."
+msgstr "Nenhum provedor de pesquisa GNOME Shell para Quod Libet foi instalado."
 
 #: quodlibet/ext/events/searchprovider.py:79
 msgid "GNOME Search Provider"
-msgstr "Provedor de busca GNOME"
+msgstr "Provedor de pesquisa GNOME"
 
 #: quodlibet/ext/events/searchprovider.py:80
 msgid "Allows GNOME Shell to search the library."
 msgstr ""
-"Permite pesquisar na biblioteca do Quod Libet através da barra de busca do "
-"GNOME Shell."
+"Permite pesquisar na biblioteca do Quod Libet através da barra de pesquisa "
+"do GNOME Shell."
 
 #: quodlibet/ext/events/seekbar.py:122
 msgid "Alternative Seek Bar"
@@ -2378,21 +2378,24 @@ msgstr "Preferir versão escura"
 
 #: quodlibet/ext/events/thumbrating.py:93
 msgid "Thumb Rating"
-msgstr ""
+msgstr "Avaliação por curtidas"
 
 #: quodlibet/ext/events/thumbrating.py:94
 msgid ""
 "Adds a thumb-up/thumb-down scoring system which is converted to a rating "
 "value. Useful for keeping running vote totals and sorting by '~#score'."
 msgstr ""
+"Adiciona um sistema em que \"curtidas\" (👍) e \"descurtidas\" (👎) são "
+"internamente convertidas para uma nota numérica de sempre. É útil para "
+"contar o total de votos e ordenar por \"~#score\"."
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
-msgstr ""
+msgstr "Alternar barra de menu"
 
 #: quodlibet/ext/events/toggle_menu.py:19
 msgid "Toggle the menu bar by pressing the Alt key."
-msgstr ""
+msgstr "Exibe/esconde a barra de menu com a tecla Alt."
 
 #: quodlibet/ext/events/trayicon/appindicator.py:76
 #: quodlibet/ext/events/trayicon/prefs.py:106
@@ -2402,16 +2405,17 @@ msgstr "Não está reproduzindo"
 
 #: quodlibet/ext/events/trayicon/__init__.py:53
 msgid "Tray Icon"
-msgstr ""
+msgstr "Ícone na área de notificação"
 
 #: quodlibet/ext/events/trayicon/__init__.py:54
 msgid "Controls Quod Libet from the system tray."
 msgstr ""
+"Controla o Quod Libet a partir de um ícone na área de notificação do sistema."
 
 #: quodlibet/ext/events/trayicon/menu.py:41
 #, python-format
 msgid "_Show %(application-name)s"
-msgstr ""
+msgstr "_Exibir %(application-name)s"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:183 quodlibet/qltk/quodlibetwindow.py:936
@@ -2485,11 +2489,11 @@ msgstr "Roda do mouse troca de música"
 
 #: quodlibet/ext/events/trayicon/prefs.py:62
 msgid "Scroll _Wheel"
-msgstr "_Roda do Mouse"
+msgstr "_Roda do mouse"
 
 #: quodlibet/ext/events/trayicon/prefs.py:92
 msgid "Tooltip Display"
-msgstr "Mostrar Dicas"
+msgstr "Mostrar dicas"
 
 #: quodlibet/ext/events/viewlyrics.py:25
 msgid "View Lyrics"
@@ -2758,23 +2762,23 @@ msgstr "Remove os vocais do áudio."
 
 #: quodlibet/ext/gstreamer/mono.py:16
 msgid "Mono Downmix"
-msgstr ""
+msgstr "Converter para mono"
 
 #: quodlibet/ext/gstreamer/mono.py:17
 msgid "Downmixes audio channels to mono."
-msgstr ""
+msgstr "Converte canais estéreo para mono."
 
 #: quodlibet/ext/gstreamer/pitch.py:21
 msgid "R_ate:"
-msgstr ""
+msgstr "_Taxa de amostragem:"
 
 #: quodlibet/ext/gstreamer/pitch.py:22
 msgid "_Tempo:"
-msgstr ""
+msgstr "_Velocidade:"
 
 #: quodlibet/ext/gstreamer/pitch.py:23
 msgid "_Pitch:"
-msgstr ""
+msgstr "_Altura (tom):"
 
 #: quodlibet/ext/gstreamer/pitch.py:95
 msgid "Audio Pitch / Speed"
@@ -2782,7 +2786,7 @@ msgstr "Afinação e velocidade"
 
 #: quodlibet/ext/gstreamer/pitch.py:96
 msgid "Controls the pitch of an audio stream."
-msgstr "Controla a afinação do fluxo de áudio."
+msgstr "Controla a afinação e velocidade do fluxo de áudio."
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
@@ -3197,12 +3201,12 @@ msgstr "Limite de capas por fonte"
 
 #: quodlibet/ext/songsmenu/albumart.py:737
 msgid "_Search"
-msgstr "_Buscar"
+msgstr "_Procurar"
 
 #: quodlibet/ext/songsmenu/albumart.py:819
 #: quodlibet/ext/songsmenu/brainz/widgets.py:451
 msgid "Searching…"
-msgstr "Buscando…"
+msgstr "Procurando…"
 
 #: quodlibet/ext/songsmenu/albumart.py:884
 #: quodlibet/ext/songsmenu/fingerprint/search.py:42
@@ -3547,59 +3551,61 @@ msgstr "Não foi possível executar o comando personalizado %s"
 #, python-format
 msgid "%d duplicate group"
 msgid_plural "%d duplicate groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d grupo de duplicatas"
+msgstr[1] "%d gruposde duplicatas"
 
 #: quodlibet/ext/songsmenu/duplicates.py:340
 msgid "Collapse / Expand all"
-msgstr ""
+msgstr "Colapsar/expandir todos"
 
 #: quodlibet/ext/songsmenu/duplicates.py:344
 #, python-format
 msgid "Duplicate key expression is '%s'"
-msgstr ""
+msgstr "A expressão chave é \"%s\""
 
 #: quodlibet/ext/songsmenu/duplicates.py:369
 msgid "Duplicates Browser"
-msgstr ""
+msgstr "Navegador de duplicatas"
 
 #: quodlibet/ext/songsmenu/duplicates.py:370
 msgid "Finds and displays similarly tagged versions of songs."
-msgstr ""
+msgstr "Encontra e exibe músicas com etiquetas semelhantes."
 
 #: quodlibet/ext/songsmenu/duplicates.py:408
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
 msgstr ""
+"Aceita expressões de etiqueta QL como  <tt>~artist~title</tt> ou "
+"<tt>musicbrainz_track_id</tt>"
 
 #: quodlibet/ext/songsmenu/duplicates.py:410
 msgid "_Group duplicates by:"
-msgstr ""
+msgstr "_Agrupar duplicatas por:"
 
 #: quodlibet/ext/songsmenu/duplicates.py:415
 msgid "Duplicate Key"
-msgstr ""
+msgstr "Expressão chave"
 
 #: quodlibet/ext/songsmenu/duplicates.py:420
 msgid "Remove _Whitespace"
-msgstr ""
+msgstr "Remover espaços em branco"
 
 #: quodlibet/ext/songsmenu/duplicates.py:421
 msgid "Remove _Diacritics"
-msgstr ""
+msgstr "Remover acentos e diacríticos"
 
 #: quodlibet/ext/songsmenu/duplicates.py:422
 msgid "Remove _Punctuation"
-msgstr ""
+msgstr "Remover pontuação"
 
 #: quodlibet/ext/songsmenu/duplicates.py:423
 msgid "Case _Insensitive"
-msgstr ""
+msgstr "Não diferenciar maiúsculas de minúsculas"
 
 #: quodlibet/ext/songsmenu/duplicates.py:431
 msgid "Matching options"
-msgstr ""
+msgstr "Opções de emparelhamento"
 
 #. Create a dialog.
 #: quodlibet/ext/songsmenu/editplaycount.py:19
@@ -3933,25 +3939,25 @@ msgstr "Migrar metadados"
 
 #: quodlibet/ext/songsmenu/migratemetadata.py:39
 msgid "Copies the quodlibet-specific metadata between songs."
-msgstr ""
+msgstr "Copia metadados específicos ao Quod Libet de uma música para a outra."
 
 #: quodlibet/ext/songsmenu/migratemetadata.py:52
 msgid "_Copy"
-msgstr ""
+msgstr "_Copiar"
 
 #: quodlibet/ext/songsmenu/migratemetadata.py:54
 msgid "_Paste"
-msgstr ""
+msgstr "_Colar"
 
 #. Create the tag table.
 #: quodlibet/ext/songsmenu/migratemetadata.py:64
 msgid "Information to copy/paste"
-msgstr ""
+msgstr "Informação a copiar/colar"
 
 #. Create the indexing box.
 #: quodlibet/ext/songsmenu/migratemetadata.py:86
 msgid "Map tracks by disc and track number"
-msgstr ""
+msgstr "Mapear faixas por disco e número da faixa"
 
 #: quodlibet/ext/songsmenu/migratemetadata.py:87
 msgid ""
@@ -3961,13 +3967,18 @@ msgid ""
 "<b>Note:</b> this must be enabled when metadata is copied for track "
 "information to be stored."
 msgstr ""
+"Ative esta opção quando você quiser migrar metadados de um álbum para o "
+"outro, emparelhando por disco e número de faixa.\n"
+"\n"
+"<b>Nota:</b> esta opção precisa estar ativada durante a cópia para que a "
+"informação seja armazenada."
 
 #: quodlibet/ext/songsmenu/migratemetadata.py:103
 #, python-format
 msgid "There is %d stored track."
 msgid_plural "There are %d stored tracks."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d faixa armazenada."
+msgstr[1] "%d faixas armazenadas."
 
 #: quodlibet/ext/songsmenu/playlist.py:31
 msgid "Export as Playlist"
@@ -3975,15 +3986,15 @@ msgstr "Exportar como lista de reprodução"
 
 #: quodlibet/ext/songsmenu/playlist.py:32
 msgid "Exports songs to an M3U or PLS playlist."
-msgstr ""
+msgstr "Exporta músicas para uma lista de reprodução em formato M3U ou PLS."
 
 #: quodlibet/ext/songsmenu/playlist.py:77
 msgid "Use relative paths"
-msgstr ""
+msgstr "Usar caminhos relativos"
 
 #: quodlibet/ext/songsmenu/playlist.py:77
 msgid "Use absolute paths"
-msgstr ""
+msgstr "Usar caminhos absolutos"
 
 #: quodlibet/ext/songsmenu/playlist.py:133
 #, python-format
@@ -3993,117 +4004,124 @@ msgstr "Falha ao escrever em <b>%s</b>."
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
 msgid "Rescan Songs"
-msgstr ""
+msgstr "Reescanear músicas"
 
 #: quodlibet/ext/songsmenu/refresh.py:23
 msgid "Checks for file changes and reloads / removes the songs if needed."
 msgstr ""
+"Verifica por alterações nos arquivos e recarrega ou remove músicas se "
+"necessário."
 
 #: quodlibet/ext/songsmenu/refresh.py:31
 msgid "Rescan songs"
-msgstr ""
+msgstr "Reescaneando músicas"
 
 #: quodlibet/ext/songsmenu/replaygain.py:351
 msgid "ReplayGain Analyzer"
-msgstr ""
+msgstr "Analizador ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:407
 msgid "Progress"
-msgstr ""
+msgstr "Progresso"
 
 #: quodlibet/ext/songsmenu/replaygain.py:422
 msgid "Gain"
-msgstr ""
+msgstr "Ganho"
 
 #: quodlibet/ext/songsmenu/replaygain.py:437
 msgid "Peak"
-msgstr ""
+msgstr "Pico"
 
 #: quodlibet/ext/songsmenu/replaygain.py:452
 #, python-format
 msgid "There is <b>%(to-process)s</b> album to update (of %(all)s)"
 msgid_plural "There are <b>%(to-process)s</b> albums to update (of %(all)s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<b>%(to-process)s</b> álbum a ser atualizado (de %(all)s)"
+msgstr[1] "<b>%(to-process)s</b> álbuns a serem atualizados (de %(all)s)"
 
 #: quodlibet/ext/songsmenu/replaygain.py:568
 msgid "Replay Gain"
-msgstr ""
+msgstr "Replay Gain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:569
 msgid ""
 "Analyzes and updates ReplayGain information, using GStreamer. Results are "
 "grouped by album."
 msgstr ""
+"Analisa e atualiza a os metadados do Replay Gain, usando o GStreamer. Os "
+"resultados são agrupados por álbum."
 
 #: quodlibet/ext/songsmenu/replaygain.py:607
 msgid "always"
-msgstr ""
+msgstr "sempre"
 
 #: quodlibet/ext/songsmenu/replaygain.py:608
 msgid "if <b>any</b> RG tags are missing"
-msgstr ""
+msgstr "se <b>pelo menus uma</b> etiqueta Repaly Gain estiver faltando"
 
 #: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "if <b>album</b> RG tags are missing"
-msgstr ""
+msgstr "se as etiquetas Replay Gain de <b>álbum</b> estiverem faltando."
 
 #: quodlibet/ext/songsmenu/replaygain.py:627
 msgid "_Process albums:"
-msgstr ""
+msgstr "_Processar álbuns:"
 
 #. Server settings Frame
 #: quodlibet/ext/songsmenu/replaygain.py:639
 msgid "Existing Tags"
-msgstr ""
+msgstr "Etiquetas existentes"
 
 #: quodlibet/ext/songsmenu/splitting.py:31
 msgid "Split Tags"
-msgstr ""
+msgstr "Separar etiquetas"
 
 #: quodlibet/ext/songsmenu/splitting.py:32
 msgid ""
 "Splits the disc number from the album and the version from the title at the "
 "same time."
 msgstr ""
+"Separa o número de disco do álbum e a versão do título, ao mesmo tempo."
 
 #: quodlibet/ext/songsmenu/splitting.py:56
 msgid "Split Album"
-msgstr ""
+msgstr "Separar álbum"
 
 #: quodlibet/ext/songsmenu/splitting.py:57
 msgid "Split out disc number."
-msgstr ""
+msgstr "Separa o número de disco."
 
 #: quodlibet/ext/songsmenu/tapbpm.py:23 quodlibet/ext/songsmenu/tapbpm.py:32
 #: quodlibet/ext/songsmenu/tapbpm.py:61
 msgid "n/a"
-msgstr ""
+msgstr "n/d"
 
 #. TRANSLATORS: BPM mean "beats per minute"
 #: quodlibet/ext/songsmenu/tapbpm.py:31
 msgid "BPM:"
-msgstr ""
+msgstr "BPM:"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:36
 msgid "Reset"
-msgstr ""
+msgstr "Restaurar"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:42
 msgid "Tap"
-msgstr ""
+msgstr "Clique"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:177 quodlibet/ext/songsmenu/tapbpm.py:184
 msgid "Tap BPM"
-msgstr ""
+msgstr "BPM via clique"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:178
 msgid "Tap BPM for the selected song."
 msgstr ""
+"Calcula o número de batidas por minuto (BPM) para a música selecionada, "
+"manualmente, por cliques."
 
 #: quodlibet/ext/songsmenu/website_search.py:37
 msgid "Website Search"
-msgstr ""
+msgstr "Pesquisa em website"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
 #, python-format
@@ -4111,19 +4129,21 @@ msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. %(pattern-example)s."
 msgstr ""
+"Pesquisa no website de sua escolha, usando qualquer etiqueta da música.\n"
+"Tem suporte a padrões, por exemplo %(pattern-example)s."
 
 #: quodlibet/ext/songsmenu/website_search.py:80
 msgid "Search URL patterns"
-msgstr ""
+msgstr "Padrões de URL para pesquisa"
 
 #: quodlibet/ext/songsmenu/website_search.py:90
 msgid "Edit search URLs"
-msgstr ""
+msgstr "Editar URLs"
 
 #. Add link to editor
 #: quodlibet/ext/songsmenu/website_search.py:116
 msgid "Configure Searches…"
-msgstr ""
+msgstr "Configurar pesquisas…"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:35
 msgid "Search Tag in Wikipedia"
@@ -5161,7 +5181,7 @@ msgstr "Não foram encontradas letras para esta música."
 
 #: quodlibet/qltk/lyrics.py:75
 msgid "Searching for lyrics…"
-msgstr "Buscando letras…"
+msgstr "Procurando por letras…"
 
 #: quodlibet/qltk/maskedbox.py:20
 msgid "Are you sure you want to remove all songs?"
@@ -5381,7 +5401,7 @@ msgstr "Adicionar esta consulta a todas as outras"
 #: quodlibet/qltk/prefs.py:283
 msgctxt "heading"
 msgid "Search"
-msgstr "Busca"
+msgstr "Pesquisa"
 
 #: quodlibet/qltk/prefs.py:287 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
@@ -5759,7 +5779,7 @@ msgstr "_Ajuda online"
 
 #: quodlibet/qltk/quodlibetwindow.py:970
 msgid "Search Help"
-msgstr "Ajuda sobre _busca"
+msgstr "Como _pesquisar na biblioteca"
 
 #: quodlibet/qltk/quodlibetwindow.py:1274
 msgid "Add a Location"
@@ -5863,8 +5883,8 @@ msgstr "_Mover capas de álbum"
 #: quodlibet/qltk/renamefiles.py:190
 msgid "See '[albumart] filenames' config entry for image search strings"
 msgstr ""
-"As chaves de busca são descritas na entrada \"[albumart] filenames\" do "
-"arquivo de configuração"
+"Os nomes de arquivos usados na busca são descritos na entrada \"[albumart] "
+"filenames\" do arquivo de configuração"
 
 #: quodlibet/qltk/renamefiles.py:195
 msgid "_Overwrite album art at target"
@@ -5942,7 +5962,7 @@ msgstr "Selecionar pastas"
 
 #: quodlibet/qltk/searchbar.py:57
 msgid "Saved Searches"
-msgstr "Consultas Salvas"
+msgstr "Consultas salvas"
 
 #: quodlibet/qltk/searchbar.py:58
 msgid "Edit saved searches…"
@@ -5995,7 +6015,7 @@ msgstr "Avança 10 segundos"
 
 #: quodlibet/qltk/shortcuts.py:19
 msgid "Focus the search entry"
-msgstr "Foca o cursor na barra de busca"
+msgstr "Foca o cursor na barra de pesquisa"
 
 #: quodlibet/qltk/shortcuts.py:22
 msgid "Reset filters and jump to the playing song"
@@ -6019,7 +6039,7 @@ msgstr "Exclui as músicas selecionadas"
 
 #: quodlibet/qltk/shortcuts.py:30
 msgid "Show the inline search entry"
-msgstr "Mostrar a entrada de busca embutida"
+msgstr "Mostrar a entrada de pesquisa inline"
 
 #: quodlibet/qltk/shortcuts.py:31
 msgid "Left click on a column header"
