@@ -272,6 +272,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         for pane in self._panes:
             if pane is filter_pane:
                 filter_pane.set_selected_by_tag(tag, values, True)
+                filter_pane.grab_focus()
                 return
             pane.set_selected([None], True)
 

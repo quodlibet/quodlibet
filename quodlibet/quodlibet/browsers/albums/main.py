@@ -797,6 +797,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         self.__inhibit()
         changed = view.select_by_func(
             lambda r: r[0].album and r[0].album.key in values)
+        self.view.grab_focus()
         self.__uninhibit()
         if changed:
             self.activate()
