@@ -1,5 +1,3 @@
-#
-# View Lyrics: a Quod Libet plugin for viewing lyrics.
 # Copyright (C) 2018 Eoin O'Neill (eoinoneill1991@gmail.com)
 #
 # This program is free software; you can redistribute it and/or modify
