@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-02-08 00:53-0200\n"
-"PO-Revision-Date: 2019-02-11 02:26-0200\n"
+"PO-Revision-Date: 2019-02-12 00:32-0200\n"
 "Last-Translator: Hugo Musso Gualandi <hugo_musso_gualandi@hotmail.com>\n"
 "Language-Team: Portuguese/Brazil <gnome-l10n-br@listas.cipspa.org.br>\n"
 "Language: pt_BR\n"
@@ -2261,24 +2261,26 @@ msgstr "Se existente, termina a reprodução da música ao atingir este marcador
 
 #: quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
-msgstr ""
+msgstr "Sincronizar com Squeezebox"
 
 #: quodlibet/ext/events/squeezebox_sync.py:29
 msgid ""
 "Makes Logitech Squeezebox mirror Quod Libet output, provided both read from "
 "an identical library."
 msgstr ""
+"Espelha a saída do Quod Libet em um Squeezebox da Logitech, desde que ambos "
+"possam ler de uma biblioteca idêntica."
 
 #: quodlibet/ext/events/squeezebox_sync.py:57
 #: quodlibet/ext/playlist/export_to_squeezebox.py:89
 msgid "Error finding Squeezebox server"
-msgstr ""
+msgstr "Não foi possível encontrar o servidor Squeezebox"
 
 #: quodlibet/ext/events/squeezebox_sync.py:58
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 #, python-format
 msgid "Error finding %s. Please check settings"
-msgstr ""
+msgstr "Não foi possível encontrar %s. Por favor verifique a configuração"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:34
 msgid "Synchronized Lyrics"
@@ -2664,19 +2666,19 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/crossfeed.py:19
 msgid "_Preset:"
-msgstr ""
+msgstr "_Predefinição:"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:19
 msgid "Filter preset"
-msgstr ""
+msgstr "Predefinição do filtro"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:20
 msgid "_Frequency cut:"
-msgstr ""
+msgstr "_Frequência de corte:"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:20
 msgid "Low-pass filter cut frequency"
-msgstr ""
+msgstr "Frequência de corte do filtro de passa-baixa"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:21
 msgid "Feed _level:"
@@ -2688,35 +2690,35 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/crossfeed.py:25
 msgid "Default"
-msgstr ""
+msgstr "Padrão"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:26
 msgid "Closest to virtual speaker placement (30°, 3 meter)"
-msgstr ""
+msgstr "Mais próximo do auto-falante virtual (30°, 3 metros)"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:27
 msgid "Chu Moy"
-msgstr ""
+msgstr "Chu Moy"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:28
 msgid "Close to Chu Moy's crossfeeder (popular)"
-msgstr ""
+msgstr "Similar a Chu Moy (popular)"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:29
 msgid "Jan Meier"
-msgstr ""
+msgstr "Jan Meier"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:30
 msgid "Close to Jan Meier's CORDA amplifiers (little change)"
-msgstr ""
+msgstr "Similar aos amplificadores CORDA de Jan Meier (pequena diferença)"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:31
 msgid "Custom"
-msgstr ""
+msgstr "Customizado"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:31
 msgid "Custom settings"
-msgstr ""
+msgstr "Configurações customizadas"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:152
 msgid "Crossfeed"
@@ -2727,6 +2729,10 @@ msgid ""
 "Mixes the left and right channel in a way that simulates a speaker setup "
 "while using headphones, or to adjust for early Stereo recordings."
 msgstr ""
+"Mistura o canal de áudio esquerdo com o direito, de forma a simular uma "
+"configuração com auto-falantes para quem usa fone de ouvido. Pode ser útil "
+"para compensar gravações estéreo mais antigas, em que os canais de áudio "
+"eram muito diferentes um do outro."
 
 #: quodlibet/ext/gstreamer/karaoke.py:20
 msgid "Filter _band:"
@@ -2826,7 +2832,7 @@ msgstr "Formato padrão de _nome de arquivo:"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
-msgstr ""
+msgstr "Exportar para Squeezebox"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:24
 msgid ""
@@ -2834,18 +2840,23 @@ msgid ""
 "both share a directory structure. Shares configuration with <a href="
 "\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync plugin</a>."
 msgstr ""
+"Dinamicamente exporta uma lista de reprodução do Quod Libet para o "
+"Squeezebox da Logitech, desde que ambos compartilhem a mesma estrutura de "
+"diretório. Este plug-in compartilha a sua configuração com o <a href="
+"\"quodlibet:///prefs/plugins/Squeezebox Output\">plug-in Sincronizar com "
+"Squeezebox</a>."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
 msgid "Export playlist to Squeezebox"
-msgstr ""
+msgstr "Exportar lista de produção para o Squeezebox"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:79
 msgid "Playlist name (will overwrite existing)"
-msgstr ""
+msgstr "Nome da lista de reprodução (sobrescreve existente)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:96
 msgid "Export to Squeezebox playlist"
-msgstr ""
+msgstr "Exportar para lista de reprodução do Squeezebox"
 
 #: quodlibet/ext/playlist/remove_duplicates.py:20
 msgid "Remove Playlist Duplicates"
@@ -3023,11 +3034,12 @@ msgstr ""
 
 #: quodlibet/ext/query/missing.py:15
 msgid "Missing Query"
-msgstr ""
+msgstr "Pesquisa inclui etiquetas vazias"
 
 #: quodlibet/ext/query/missing.py:16
 msgid "Matches songs without the given tag."
 msgstr ""
+"Pesquisas também incluem músicas em que o valor da etiqueta está vazio."
 
 #: quodlibet/ext/query/missing.py:27
 msgid "Include empty tags"
@@ -3066,7 +3078,7 @@ msgstr ""
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
 msgid "Squeezebox OK. Using the only player (%s)."
-msgstr ""
+msgstr "Squeezebox está OK. Usando o único reprodutor (%s)"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:86
 #, python-format
@@ -3075,59 +3087,59 @@ msgstr "Não foi possível conectar a %s"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:110
 msgid "Hostname:"
-msgstr ""
+msgstr "Nome do servidor:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:116
 msgid "Port:"
-msgstr ""
+msgstr "Porta:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:121
 msgid "Username:"
-msgstr ""
+msgstr "Nome de usuário:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:126
 msgid "Password:"
-msgstr ""
+msgstr "Senha:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:130
 msgid "Library directory the server connects to."
-msgstr ""
+msgstr "Pasta de biblioteca que o servidor se conecta."
 
 #: quodlibet/ext/_shared/squeezebox/base.py:132
 msgid "Library path:"
-msgstr ""
+msgstr "Caminho da biblioteca:"
 
 #. Add verify button
 #: quodlibet/ext/_shared/squeezebox/base.py:141
 msgid "_Verify settings"
-msgstr ""
+msgstr "_Verificar configuração"
 
 #. Server settings Frame
 #: quodlibet/ext/_shared/squeezebox/base.py:147
 msgid "Squeezebox Server"
-msgstr ""
+msgstr "Servidor Squeezebox"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:150
 msgid "Debug"
-msgstr ""
+msgstr "Depurar"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:26
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
-msgstr ""
+msgstr "Servidor Squeezebox em {hostname}:{port}"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:28
 msgid "unidentified Squeezebox server"
-msgstr ""
+msgstr "servidor Squeezebox não identificado"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:37
 #, python-format
 msgid "unidentified Squeezebox player: %r"
-msgstr ""
+msgstr "reprodutor Squeezebox não identificado: %r"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
-msgstr ""
+msgstr "Escolha o reprodutor Squeezebox"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:20
 #: quodlibet/ext/songsmenu/importexport.py:39 quodlibet/qltk/getstring.py:21
@@ -3138,7 +3150,7 @@ msgstr "_OK"
 msgid ""
 "Found Squeezebox server.\n"
 "Please choose the player"
-msgstr ""
+msgstr "O servidor Squeezebox foi encontrado. Por favor escolha o reprodutor"
 
 #: quodlibet/ext/songsmenu/albumart.py:331
 msgid "Fit image to _window"
@@ -3255,31 +3267,32 @@ msgstr "Nenhum marcador"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:24
 msgid "MusicBrainz Lookup"
-msgstr ""
+msgstr "Procurar no MusicBrainz"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:26
 msgid "Re-tags an album based on a MusicBrainz search."
 msgstr ""
+"Re-etiqueta um álbum baseado em uma consulta ao banco de dados MusicBrainz."
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:50
 msgid "Only use year for \"date\" tag"
-msgstr ""
+msgstr "Usar apenas o ano para etiqueta \"data\""
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:51
 msgid "Write \"_albumartist\" when needed"
-msgstr ""
+msgstr "Escrever etiqueta \"_albumartist\" quando necessário"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:52
 msgid "Write sort tags for artist names"
-msgstr ""
+msgstr "Escrever etiquetas de ordenação para nomes de artista"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:53
 msgid "Write _standard MusicBrainz tags"
-msgstr ""
+msgstr "Escrever etiquetas MusicBrainz"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:54
 msgid "Write \"labelid\" tag"
-msgstr ""
+msgstr "Escrever etiqueta \"labelid\""
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:129
 msgid "Filename"
@@ -3304,37 +3317,37 @@ msgstr "Artista"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:352
 msgid "MusicBrainz lookup"
-msgstr ""
+msgstr "Procurar no MusicBrainz"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:375
 msgid "_Query:"
-msgstr ""
+msgstr "_Consulta:"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:378
 msgid "S_earch"
-msgstr ""
+msgstr "_Procurar"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:391
 msgid "Results <i>(drag to reorder)</i>"
-msgstr ""
+msgstr "Resultados <i>(arraste para reordenar)</i>"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:447
 msgid "Please enter a query."
-msgstr ""
+msgstr "Por favor, entre com uma consulta."
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:465
 #: quodlibet/ext/songsmenu/brainz/widgets.py:496
 msgid "Error encountered. Please retry."
-msgstr ""
+msgstr "Erro encontrado. Favor tentar novamente."
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:472
 #: quodlibet/ext/songsmenu/brainz/widgets.py:488
 msgid "Loading result…"
-msgstr ""
+msgstr "Carregando resultado…"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:475
 msgid "No results found."
-msgstr ""
+msgstr "Nenhum resultado encontrado."
 
 #: quodlibet/ext/songsmenu/console.py:40
 msgid "Python Console"
@@ -3371,36 +3384,36 @@ msgstr "O diretório de trabalho atual é:"
 
 #: quodlibet/ext/songsmenu/cover_download.py:119
 msgid "Classic"
-msgstr ""
+msgstr "Clássico"
 
 #: quodlibet/ext/songsmenu/cover_download.py:120
 msgid "Large"
-msgstr ""
+msgstr "Grande"
 
 #: quodlibet/ext/songsmenu/cover_download.py:121
 msgid "HD"
-msgstr ""
+msgstr "HD"
 
 #: quodlibet/ext/songsmenu/cover_download.py:122
 msgid "Full HD"
-msgstr ""
+msgstr "Full HD"
 
 #: quodlibet/ext/songsmenu/cover_download.py:123
 msgid "WQXGA"
-msgstr ""
+msgstr "WQXGA"
 
 #: quodlibet/ext/songsmenu/cover_download.py:124
 msgid "4K UHD"
-msgstr ""
+msgstr "4K UHD"
 
 #: quodlibet/ext/songsmenu/cover_download.py:129
 msgid "Cover Art Download"
-msgstr ""
+msgstr "Baixar capa de álbum"
 
 #: quodlibet/ext/songsmenu/cover_download.py:180
 #, python-format
 msgid "Loading %(source)s - %(dimensions)s…"
-msgstr ""
+msgstr "Carregando %(source)s - %(dimensions)s…"
 
 #: quodlibet/ext/songsmenu/cover_download.py:231
 #, python-format
@@ -3411,31 +3424,36 @@ msgid ""
 "Providers used:\n"
 "<tt>%(providers)s</tt>"
 msgstr ""
+"Nada foi encontrado para estes álbuns:\n"
+"<i>%(albums)s</i>.\n"
+"\n"
+"Provedores usados:\n"
+"<tt>%(providers)s</tt>"
 
 #: quodlibet/ext/songsmenu/cover_download.py:234
 msgid "No covers found"
-msgstr ""
+msgstr "Nenhuma capa foi encontrada"
 
 #: quodlibet/ext/songsmenu/cover_download.py:254
 #, python-format
 msgid "%(size)d ✕ %(size)d px"
-msgstr ""
+msgstr "%(size)d ✕ %(size)d px"
 
 #: quodlibet/ext/songsmenu/cover_download.py:267
 msgid "Preview size"
-msgstr ""
+msgstr "Tamanho da visualização"
 
 #: quodlibet/ext/songsmenu/cover_download.py:276
 msgid "Save destination"
-msgstr ""
+msgstr "Caminho de destino"
 
 #: quodlibet/ext/songsmenu/cover_download.py:336
 msgid "Download Cover Art"
-msgstr ""
+msgstr "Baixar capas de álbum"
 
 #: quodlibet/ext/songsmenu/cover_download.py:337
 msgid "Downloads high-quality album covers using cover plugins."
-msgstr ""
+msgstr "Baixa capas de álbum de alta qualidade, através de plug-ins."
 
 #: quodlibet/ext/songsmenu/custom_commands.py:41
 msgid "Command"
@@ -3611,7 +3629,7 @@ msgstr "Opções de emparelhamento"
 #: quodlibet/ext/songsmenu/editplaycount.py:19
 #: quodlibet/ext/songsmenu/editplaycount.py:41
 msgid "Edit Playcount"
-msgstr ""
+msgstr "Editar contagem de reproduções"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:20
 msgid ""
@@ -3624,42 +3642,50 @@ msgid ""
 "entries will be cleared. However, when setting a 0-play song to a positive "
 "play count, no play times will be created."
 msgstr ""
+"Edita o ~#playcount e ~#skipcount de uma música.\n"
+"\n"
+"Quando mais de uma música for selecionada, incrementa as contagens ao invés "
+"de sobrescrever.\n"
+"\n"
+"Se ~#playcount for definida como 0, as entradas~#lastplayed e ~#laststarted "
+"serão apagadas. No entando se o número de reproduções or alterado de zero "
+"para um número positivo não serão criados timestamps de reprodução."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:68
 msgid "Play Count"
-msgstr ""
+msgstr "Número de reproduções"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:69
 msgid "Skip Count"
-msgstr ""
+msgstr "Número de ignoradas"
 
 #: quodlibet/ext/songsmenu/embedded.py:25
 msgid "Edit Embedded Images"
-msgstr ""
+msgstr "Editar imagens embutidas"
 
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Removes or replaces embedded images."
-msgstr ""
+msgstr "Remove ou substitui imagens embutidas."
 
 #: quodlibet/ext/songsmenu/embedded.py:81
 msgid "_Remove all Images"
-msgstr ""
+msgstr "_Remover todas as imagens"
 
 #: quodlibet/ext/songsmenu/embedded.py:85
 msgid "_Embed Current Image"
-msgstr ""
+msgstr "_Embutir a imagem atual"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
-msgstr ""
+msgstr "Definir avaliação exata"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:24
 msgid "Allows setting the rating of songs with a number."
-msgstr ""
+msgstr "Permite definir a avaliação de uma música com um número."
 
 #: quodlibet/ext/songsmenu/exact_rating.py:36
 msgid "Please give your desired rating on a scale from 0.0 to 1.0"
-msgstr ""
+msgstr "Por favor, informe a avaliação desejada em uma escala de 0.0 a 1.0"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:54 quodlibet/qltk/ratingsmenu.py:98
 msgid "Change _Rating"
@@ -3667,60 +3693,67 @@ msgstr "Alterar _avaliação"
 
 #: quodlibet/ext/songsmenu/filterall.py:80
 msgid "Filter on Any Tag"
-msgstr ""
+msgstr "Filtrar por qualquer etiqueta"
 
 #: quodlibet/ext/songsmenu/filterall.py:81
 msgid "Creates a search query based on tags of the selected songs."
 msgstr ""
+"Cria uma consulta baseada nos valores das etiquetas das músicas selecionadas."
 
 #: quodlibet/ext/songsmenu/filterbrowser.py:19
 msgid "Filter on Directory"
-msgstr ""
+msgstr "Filtrar por pasta"
 
 #: quodlibet/ext/songsmenu/filterbrowser.py:20
 msgid "Filters on directory in a new browser window."
-msgstr ""
+msgstr "Filtra por pasta em uma nova janela."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:30
 msgid "Acoustic Fingerprint Lookup"
-msgstr ""
+msgstr "Pesquisar por impressão digital"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:31
 msgid "Looks up song metadata through acoustic fingerprinting."
 msgstr ""
+"Pesquisa por metadados pela impressão digital acústica (<i>fingerprint</i>) "
+"da música."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:51
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:40
 msgid "Submit Acoustic Fingerprints"
-msgstr ""
+msgstr "Submeter impressão digital"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:52
 msgid ""
 "Generates acoustic fingerprints using chromaprint and submits them to "
 "acoustid.org."
 msgstr ""
+"Gera impressões digitais acústicas usando o Chromaprint e as envia a "
+"acoustid.org."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:60
 msgid "API Key Missing"
-msgstr ""
+msgstr "A chave da API está faltando"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:61
 msgid ""
 "You have to specify an acoustid.org API key in the plugin preferences before "
 "you can submit fingerprints."
 msgstr ""
+"Você deve especificar uma chave para a API do acoustid.org nas configurações "
+"do plug-in antes de puder enviar uma impressão digital."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:75
 msgid "Request API key"
-msgstr ""
+msgstr "Requisitar chave de API"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:82
 msgid "API _key:"
-msgstr ""
+msgstr "_Chave da API:"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:89
 msgid "AcoustID Web Service"
-msgstr ""
+msgstr "Serviço web AcoustID"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:36
 msgid "Queued"
@@ -3728,125 +3761,136 @@ msgstr "Enfileirada"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:38
 msgid "Analyzing"
-msgstr ""
+msgstr "Analisando"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:40
 msgid "Lookup"
-msgstr ""
+msgstr "Procura"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:116
 msgid "Write"
-msgstr ""
+msgstr "Escreve"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:144
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #. Translators: album release ID
 #: quodlibet/ext/songsmenu/fingerprint/search.py:158
 msgid "Release"
-msgstr ""
+msgstr "Publicação"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:290
 msgid "Write MusicBrainz tags"
-msgstr ""
+msgstr "Escrever etiquetas MusicBrainz"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:296
 msgid "Group by directory"
-msgstr ""
+msgstr "Agrupar por pasta"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:305
 msgid "Album Mode"
-msgstr ""
+msgstr "Modo álbum"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:307
 msgid ""
 "Write album related tags and try to reduce the number of different album "
 "releases"
 msgstr ""
+"Escreve etiquetas relacionadas ao álbum, e tenta reduzir o número de versões "
+"e álbuns distintos"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:48
 msgid "Generating fingerprints:"
-msgstr ""
+msgstr "Gerando impressões digitais:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:64
 msgid "_Details"
-msgstr ""
+msgstr "_Detalhes"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:87
 msgid "_Submit"
-msgstr ""
+msgstr "_Enviar"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:117
 msgid ""
 "Songs either need a <i><b>musicbrainz_trackid</b></i>, or <i><b>artist</b></"
 "i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
 msgstr ""
+"As músicas precisam de uma das etiqueta <i><b>musicbrainz_trackid</b></i> ou "
+"das etiquetas <i><b>artist</b></i> / <i><b>title</b></i> / <i><b>album</b></"
+"i> para poderem ser enviadas."
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:120
 msgid "Fingerprints:"
-msgstr ""
+msgstr "Impressões digitais:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:122
 msgid "Songs with MBIDs:"
-msgstr ""
+msgstr "Músicas com IDs MusicBrainz:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:124
 msgid "Songs with sufficient tags:"
-msgstr ""
+msgstr "Músicas com etiquetas suficientes:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:126
 msgid "Songs to submit:"
-msgstr ""
+msgstr "Musicas a enviar:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:164
 #, python-format
 msgid "Done. %(to-send)d/%(all)d songs to submit."
-msgstr ""
+msgstr "Feito. %(to-send)d/%(all)d músicas a enviar."
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:180
 msgid "Submitting fingerprints:"
-msgstr ""
+msgstr "Enviando impressões digitais:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:188
 msgid "Submitting…"
-msgstr ""
+msgstr "Enviando…"
 
 #: quodlibet/ext/songsmenu/forcewrite.py:17
 msgid "Update Tags in Files"
-msgstr ""
+msgstr "Atualiza etiquetas nos arquivos"
 
 #: quodlibet/ext/songsmenu/forcewrite.py:18
 msgid ""
 "Update modified tags in files. This will ensure play counts and ratings are "
 "up to date."
 msgstr ""
+"Salva as atualizações de etiquetas nos arquivos correspondentes "
+"automaticamente. Isso garante que contagens de reprodução e avaliações estão "
+"sempre em dia."
 
 #: quodlibet/ext/songsmenu/html.py:65 quodlibet/ext/songsmenu/html.py:75
 msgid "Export to HTML"
-msgstr ""
+msgstr "Exportar para HTML"
 
 #: quodlibet/ext/songsmenu/html.py:66
 msgid "Exports the selected song list to HTML."
-msgstr ""
+msgstr "Exporta a lista de músicas selecionada em formato HTML."
 
 #: quodlibet/ext/songsmenu/ifp.py:21
 msgid "Send to iFP"
-msgstr ""
+msgstr "Enviar para iFP"
 
 #: quodlibet/ext/songsmenu/ifp.py:22
 msgid "Uploads songs to an iRiver iFP device."
-msgstr ""
+msgstr "Envia suas músicas para o dispositivo iRiver iFP."
 
 #: quodlibet/ext/songsmenu/ifp.py:30
 msgid "No iFP device found"
-msgstr ""
+msgstr "Nenhum dispositivo iFP foi encontrado"
 
 #: quodlibet/ext/songsmenu/ifp.py:31
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
 "plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
 msgstr ""
+"Não foi possível entrar em contato com seu dispositivo iFP. Verifique se o "
+"seu dispositivo está ligado e conectado, e que você instalou o ifp-line "
+"(http://ifp-driver.sf.net)."
 
 #: quodlibet/ext/songsmenu/ifp.py:39
 #, python-format
@@ -3862,14 +3906,16 @@ msgstr "Erro no envio"
 msgid ""
 "Unable to upload <b>%s</b>. The device may be out of space, or turned off."
 msgstr ""
+"Não foi possível enviar <b>%s</b>. O dispositivo pode não ter espaço "
+"disponível, ou pode estar desligado."
 
 #: quodlibet/ext/songsmenu/importexport.py:60
 msgid "Export Metadata"
-msgstr ""
+msgstr "Exportar metadados"
 
 #: quodlibet/ext/songsmenu/importexport.py:61
 msgid "Exports metadata of selected songs as a .tags file."
-msgstr ""
+msgstr "Exporta os metadados das músicas selecionadas em um arquivo \".tags\"."
 
 #: quodlibet/ext/songsmenu/importexport.py:105
 msgid "Import Metadata"
@@ -3878,6 +3924,7 @@ msgstr "Importar metadados"
 #: quodlibet/ext/songsmenu/importexport.py:106
 msgid "Imports metadata for selected songs from a .tags file."
 msgstr ""
+"Importa metadados para as músicas selecionadas de um arquivo \".tags\"."
 
 #: quodlibet/ext/songsmenu/k3b.py:23
 msgid "Burn CD"
@@ -3889,17 +3936,17 @@ msgstr "Grava em CDs com K3b, Brasero ou xfburn."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:97
 msgid "Updating chart list."
-msgstr ""
+msgstr "Atualizando lista de músicas favoritas."
 
 #. No charts to fetch, no update scheduled.
 #: quodlibet/ext/songsmenu/lastfmsync.py:116
 msgid "Already up-to-date."
-msgstr ""
+msgstr "Já está atualizada."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:124
 #, python-format
 msgid "Fetching chart for week of %s."
-msgstr ""
+msgstr "Obtendo a lista de músicas favoritas para a semana de %s."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:146
 msgid "Sync complete."
@@ -3907,20 +3954,21 @@ msgstr "Sincronização completa."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:152
 msgid "Error during sync"
-msgstr "Erro durante sincronização"
+msgstr "Erro durante a sincronização"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:217
 #: quodlibet/ext/songsmenu/lastfmsync.py:247
 msgid "Last.fm Sync"
-msgstr ""
+msgstr "Sincronizar com Last.fm"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:248
 msgid "Updates your library's statistics from your Last.fm profile."
 msgstr ""
+"Atualiza as estatísticas da sua biblioteca com base em seu perfil na Last.fm"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:301
 msgid "_Username:"
-msgstr ""
+msgstr "Nome de _usuário:"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:36
 msgid "Create Sort Tags"
@@ -4061,7 +4109,7 @@ msgstr "se <b>pelo menus uma</b> etiqueta Repaly Gain estiver faltando"
 
 #: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "if <b>album</b> RG tags are missing"
-msgstr "se as etiquetas Replay Gain de <b>álbum</b> estiverem faltando."
+msgstr "se as etiquetas Replay Gain de <b>álbum</b> estiverem faltando"
 
 #: quodlibet/ext/songsmenu/replaygain.py:627
 msgid "_Process albums:"
