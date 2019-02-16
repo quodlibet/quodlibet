@@ -112,6 +112,9 @@ def main():
         ],
         "search_provider":
             "data/io.github.quodlibet.QuodLibet-search-provider.ini",
+        "bash_completions": [
+            ("data/operon.bash", "operon"),
+        ],
         "zsh_completions": [
             ("data/quodlibet.zsh", "_quodlibet"),
         ],
