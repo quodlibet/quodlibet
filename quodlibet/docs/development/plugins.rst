@@ -5,7 +5,7 @@ Plugin Development
 
 A Quod Libet / Ex Falso Plugin is a simple python module or package which 
 contains sub-classes of special plugin classes and is placed anywhere in 
-``~/.quodlibet/plugins`` so it can be found by QL. These classes can provide 
+``~/.config/quodlibet/plugins`` so it can be found by QL. These classes can provide 
 special methods that get used by QL or can take action on certain events.
 
 At the moment the following plugin classes exist:
@@ -55,7 +55,7 @@ Cover Source Plugins
 Creating a new Plugin
 ^^^^^^^^^^^^^^^^^^^^^
 
-#. Create a file ``myplugin.py`` and place it under ``~/.quodlibet/plugins``
+#. Create a file ``myplugin.py`` and place it under ``~/.config/quodlibet/plugins``
    (create the folder if needed). Alternatively (better),
    if you are running from source, put it in ``quodlibet/ext`` under a
    directory according to its plugin type.
@@ -66,7 +66,7 @@ Creating a new Plugin
 
     class MyPlugin(EventPlugin):
         PLUGIN_ID = "myplugin"
-        PLUGIN_NAME = _("My Plugin")
+        PLUGIN_NAME = "My Plugin"
 
 #. Restart Quod Libet
 
