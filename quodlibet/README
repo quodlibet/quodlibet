@@ -31,3 +31,6 @@ https://quodlibet.readthedocs.org/en/latest/development/overview.html
 
 .. image:: https://codecov.io/gh/quodlibet/quodlibet/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/quodlibet/quodlibet
+
+.. image:: https://badges.gitter.im/Join%20Chat.svg
+    :target: https://gitter.im/quodlibet/Lobby
