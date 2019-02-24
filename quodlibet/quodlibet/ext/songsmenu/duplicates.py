@@ -1,7 +1,7 @@
 #
 #    Duplicates songs plugin.
 #
-#    Copyright (C) 2011-2017 Nick Boultbee
+#    Copyright (C) 2011-2019 Nick Boultbee
 #
 #    Finds "duplicates" of songs selected by searching the library for
 #    others with the same user-configurable "key", presenting a browser-like
@@ -12,9 +12,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import unicodedata
-
-import sys
 from gi.repository import Gtk, Pango
 
 from quodlibet import app
@@ -28,8 +25,9 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk import Icons, Button
-from quodlibet.util import connect_obj, connect_destroy, cached_func
+from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.util.i18n import numeric_phrase
+from quodlibet.util.string.filter import remove_diacritics, remove_punctuation
 
 
 class DuplicateSongsView(RCMHintedTreeView):
@@ -355,15 +353,6 @@ class DuplicateDialog(Gtk.Window):
         self.show_all()
 
 
-@cached_func
-def _remove_punctuation_trans():
-    """Lookup all Unicode punctuation, and remove it"""
-
-    return dict.fromkeys(
-        i for i in range(sys.maxunicode)
-        if unicodedata.category(chr(i)).startswith('P'))
-
-
 class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'Duplicates'
     PLUGIN_NAME = _('Duplicates Browser')
@@ -434,20 +423,15 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         vb.show_all()
         return vb
 
-    @staticmethod
-    def remove_accents(s):
-        return "".join(c for c in unicodedata.normalize('NFKD', str(s))
-                       if not unicodedata.combining(c))
-
     @classmethod
     def get_key(cls, song):
         key = song(cls.get_key_expression())
         if cls.config_get_bool(cls._CFG_REMOVE_DIACRITICS):
-            key = cls.remove_accents(key)
+            key = remove_diacritics(key)
         if cls.config_get_bool(cls._CFG_CASE_INSENSITIVE):
             key = key.lower()
         if cls.config_get_bool(cls._CFG_REMOVE_PUNCTUATION):
-            key = (key.translate(_remove_punctuation_trans()))
+            key = remove_punctuation(key)
         if cls.config_get_bool(cls._CFG_REMOVE_WHITESPACE):
             key = "_".join(key.split())
         return key
