@@ -12,7 +12,6 @@ from senf import uri2fsn
 
 from quodlibet import _
 from quodlibet import app
-from quodlibet import qltk
 from quodlibet import ngettext
 from quodlibet import util
 from quodlibet.qltk.entry import UndoEntry

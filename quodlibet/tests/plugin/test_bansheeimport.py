@@ -60,9 +60,9 @@ class TBansheeImport(PluginTestCase):
             lib.add([song])
 
             # test recovery of basic song
-            data = {"path" : song("~filename"), "rating" : 1,
-            "playcount" : 1, "skipcount" : 2,
-            "lastplayed" : 1371802107, "added" : 1260691996}
+            data = {"path": song("~filename"), "rating": 1,
+            "playcount": 1, "skipcount": 2,
+            "lastplayed": 1371802107, "added": 1260691996}
 
             db = get_example_db(data["path"], data["rating"],
                                 data["playcount"], data["skipcount"],
@@ -81,9 +81,9 @@ class TBansheeImport(PluginTestCase):
             self.assertEqual(count, 1)
 
             # test recovery of different version of same song
-            data_mod = {"path" : song("~filename"), "rating" : 2,
-            "playcount" : 4, "skipcount" : 1,
-            "lastplayed" : data["lastplayed"] - 1, "added" : data["added"] + 1}
+            data_mod = {"path": song("~filename"), "rating": 2,
+            "playcount": 4, "skipcount": 1,
+            "lastplayed": data["lastplayed"] - 1, "added": data["added"] + 1}
 
             db = get_example_db(data_mod["path"], data_mod["rating"],
                                 data_mod["playcount"], data_mod["skipcount"],
