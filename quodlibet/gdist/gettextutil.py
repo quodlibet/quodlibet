@@ -1,4 +1,5 @@
 # Copyright 2015-2017 Christoph Reiter
+#                2019 Nick Boultbee
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -27,7 +28,6 @@ import fnmatch
 import tempfile
 import shutil
 import functools
-
 
 # pattern -> (language, [keywords])
 XGETTEXT_CONFIG = {
@@ -125,9 +125,10 @@ def _create_pot(potfiles_path, src_root, strict):
                 _write_potfiles(src_root, potfiles_in, paths)
 
                 args = ["xgettext", "--from-code=utf-8", "--add-comments",
-                    "--files-from=" + potfiles_in, "--directory=" + src_root,
-                    "--output=" + out_path, "--force-po",
-                    "--join-existing"] + args
+                        "--files-from=" + potfiles_in,
+                        "--directory=" + src_root,
+                        "--output=" + out_path, "--force-po",
+                        "--join-existing"] + args
 
                 p = subprocess.Popen(
                     args,
@@ -135,7 +136,8 @@ def _create_pot(potfiles_path, src_root, strict):
                     universal_newlines=True)
                 stdout, stderr = p.communicate()
                 if p.returncode != 0:
-                    raise GettextError(p.returncode)
+                    raise GettextError(stderr
+                                       or ("Got error: %d" % p.returncode))
                 if strict and stderr:
                     raise GettextError(stderr)
             finally:
