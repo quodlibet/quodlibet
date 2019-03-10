@@ -19,6 +19,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
+from quodlibet.pattern import Pattern
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.dprint import print_d, print_w
@@ -709,10 +710,11 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
             if isinstance(song, str):
                 track = {"location": song}
             else:
+                creator = self.CREATOR_PATTERN.format(song)
                 track = {
                     "location": song("~filename"),
                     "title": song("title"),
-                    "creator": song("artist"),
+                    "creator": creator,
                     "album": song("album"),
                     "trackNum": song("~#track"),
                     "duration": int(song("~#length") * 1000.)
