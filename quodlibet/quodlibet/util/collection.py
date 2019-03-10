@@ -647,6 +647,7 @@ class FileBackedPlaylist(Playlist):
 
 class XSPFBackedPlaylist(FileBackedPlaylist):
     EXT = "xspf"
+    CREATOR_PATTERN = Pattern("<artist|<artist>|<~people>>")
 
     @classmethod
     def from_playlist(cls, old_pl: FileBackedPlaylist, library):
