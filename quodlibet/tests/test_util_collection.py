@@ -6,7 +6,10 @@
 import shutil
 import os
 from collections import defaultdict
+from os.path import exists
+from xml.etree.ElementTree import ElementTree
 
+import pytest
 from senf import fsnative
 
 from quodlibet import config
@@ -14,8 +17,8 @@ from quodlibet import config
 from tests import TestCase, mkdtemp
 from quodlibet.formats import AudioFile as Fakesong
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT, PEOPLE
-from quodlibet.util.collection import Album, Playlist, avg, bayesian_average, \
-    FileBackedPlaylist
+from quodlibet.util.collection import (Album, Playlist, avg, bayesian_average,
+                                       FileBackedPlaylist, XSPFBackedPlaylist)
 from quodlibet.library.libraries import FileLibrary
 from quodlibet.util import format_rating
 
@@ -265,8 +268,8 @@ class TAlbum(TestCase):
         config.quit()
 
 
-class MockPlaylistResource(object):
-    def __init__(self, pl):
+class PlaylistResource:
+    def __init__(self, pl: Playlist):
         self.pl = pl
 
     def __enter__(self):
@@ -305,11 +308,11 @@ class TPlaylist(TestCase):
     def setUp(self):
         self.FAKE_LIB.reset()
 
-    def pl(self, name, lib=None):
+    def pl(self, name, lib=None) -> Playlist:
         return Playlist(name, lib)
 
     def wrap(self, name, lib=FAKE_LIB):
-        return MockPlaylistResource(self.pl(name, lib))
+        return PlaylistResource(self.pl(name, lib))
 
     def test_equality(s):
         pl = s.pl("playlist")
@@ -529,9 +532,10 @@ class TPlaylist(TestCase):
 
 
 class TFileBackedPlaylist(TPlaylist):
+    Playlist = FileBackedPlaylist
 
     def setUp(self):
-        super(TFileBackedPlaylist, self).setUp()
+        super().setUp()
         self.temp = mkdtemp()
         self.temp2 = mkdtemp()
 
@@ -540,10 +544,14 @@ class TFileBackedPlaylist(TPlaylist):
         shutil.rmtree(self.temp2)
 
     def pl(self, name, lib=None):
-        return FileBackedPlaylist(self.temp, name, lib)
+        fn = self.Playlist.filename_for(name)
+        return self.Playlist(self.temp, fn, lib)
+
+    def new_pl(self, name, lib=None):
+        return self.Playlist.new(self.temp, name, lib)
 
     def test_from_songs(self):
-        pl = FileBackedPlaylist.from_songs(self.temp, NUMERIC_SONGS)
+        pl = self.Playlist.from_songs(self.temp, NUMERIC_SONGS)
         self.failUnlessEqual(pl.songs, NUMERIC_SONGS)
         pl.delete()
 
@@ -563,13 +571,13 @@ class TFileBackedPlaylist(TPlaylist):
             pl.extend([fsnative(u"xf0xf0")])
             pl.write()
 
-            with open(pl.filename, "rb") as h:
+            with open(pl.path, "rb") as h:
                 self.assertEqual(len(h.read().splitlines()),
                                  len(NUMERIC_SONGS) + 1)
 
     def test_make_dup(self):
-        p1 = FileBackedPlaylist.new(self.temp, "Does not exist")
-        p2 = FileBackedPlaylist.new(self.temp, "Does not exist")
+        p1 = self.new_pl("Does not exist")
+        p2 = self.new_pl("Does not exist")
         self.failUnlessEqual(p1.name, "Does not exist")
         self.failUnless(p2.name.startswith("Does not exist"))
         self.failIfEqual(p1.name, p2.name)
@@ -579,17 +587,17 @@ class TFileBackedPlaylist(TPlaylist):
     def test_rename_removes(self):
         with self.wrap("foo") as pl:
             pl.rename("bar")
-            self.failUnless(os.path.exists(os.path.join(self.temp, 'bar')))
-            self.failIf(os.path.exists(os.path.join(self.temp, 'foo')))
+            self.failUnless(exists(self.path_for('bar')))
+            self.failIf(exists(self.path_for('foo')))
+
+    def path_for(self, name: str):
+        return os.path.join(self.temp, self.Playlist.filename_for(name))
 
     def test_rename_fails_if_file_exists(self):
         with self.wrap("foo") as foo:
-            with self.wrap("bar") as bar:
-                try:
+            with self.wrap("bar"):
+                with pytest.raises(ValueError):
                     foo.rename("bar")
-                    self.fail("Should have raised, %s exists" % bar.filename)
-                except ValueError:
-                    pass
 
     def test_masked_handling(self):
         if os.name == "nt":
@@ -619,3 +627,37 @@ class TFileBackedPlaylist(TPlaylist):
             self.failUnless(song in pl)
 
             lib.destroy()
+
+
+class TestXPSFBackedPlaylist(TFileBackedPlaylist):
+    Playlist = XSPFBackedPlaylist
+
+    def setUp(self):
+        super().setUp()
+        self.temp = mkdtemp()
+        self.temp2 = mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.temp)
+        shutil.rmtree(self.temp2)
+
+    def test_from_songs(self):
+        pl = XSPFBackedPlaylist.from_songs(self.temp, NUMERIC_SONGS)
+        self.failUnlessEqual(pl.songs, NUMERIC_SONGS)
+        pl.delete()
+
+    def path_for(self, name: str):
+        return os.path.join(self.temp, "%s.xspf" % (name,))
+
+    def test_write(self):
+        with self.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            pl.extend([fsnative(u"xf0xf0")])
+            pl.write()
+
+            assert exists(pl.path), "File doesn't exist"
+            root = ElementTree().parse(pl.path)
+            assert root.tag == 'playlist'
+            tracks = root.findall(".//track")
+            assert len(tracks) == 4, "Hmm found %s" % tracks
+            assert tracks[-1].find('location').text == "xf0xf0"

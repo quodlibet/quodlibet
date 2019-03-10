@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig
-#    2012 - 2018 Nick Boultbee
+#    2012 - 2019 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.util import connect_obj
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.collection import FileBackedPlaylist
+from quodlibet.util.collection import XSPFBackedPlaylist, FileBackedPlaylist
 from quodlibet.util.urllib import urlopen
 
 from .util import parse_m3u, parse_pls, PLAYLISTS,\
@@ -75,13 +75,18 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         klass.library = library
         model = klass.__lists.get_model()
         for playlist in os.listdir(PLAYLISTS):
+            if os.path.isdir(os.path.join(PLAYLISTS, playlist)):
+                continue
             try:
-                playlist = FileBackedPlaylist(PLAYLISTS,
-                      FileBackedPlaylist.unquote(playlist), library=library)
+                playlist = XSPFBackedPlaylist(PLAYLISTS, playlist, library)
+                model.append(row=[playlist])
+            except TypeError:
+                legacy = FileBackedPlaylist(PLAYLISTS, playlist, library)
+                print_w("Converting \"%s\" to XSPF format" % playlist)
+                playlist = XSPFBackedPlaylist.from_playlist(legacy, library)
                 model.append(row=[playlist])
             except EnvironmentError:
                 print_w("Invalid Playlist '%s'" % playlist)
-                pass
 
         klass._ids = [
             library.connect('removed', klass.__removed),
@@ -119,6 +124,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     @classmethod
     def __removed(klass, library, songs):
+        print_d("Removing %d songs across %d playlist(s)" %
+                (len(songs), len(klass.playlists())))
         for playlist in klass.playlists():
             if playlist.remove_songs(songs):
                 klass.changed(playlist)
@@ -145,6 +152,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             return
         self.__last_render = markup
         cell.markup = markup
+        if isinstance(playlist, XSPFBackedPlaylist):
+            markup += " <small><tt>[XSPF]</tt></small>"
         cell.set_property('markup', markup)
 
     def Menu(self, songs, library, items):
@@ -399,7 +408,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             try:
                 path, pos = view.get_dest_row_at_pos(x, y)
             except TypeError:
-                playlist = FileBackedPlaylist.from_songs(PLAYLISTS, songs,
+                playlist = XSPFBackedPlaylist.from_songs(PLAYLISTS, songs,
                                                          library)
                 GLib.idle_add(self._select_playlist, playlist)
             else:
@@ -569,7 +578,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         config.set("browsers", "query_text", text)
 
     def __new_playlist(self, activator, library):
-        playlist = FileBackedPlaylist.new(PLAYLISTS, library=library)
+        playlist = XSPFBackedPlaylist.new(PLAYLISTS, library=library)
         self.model.append(row=[playlist])
         self._select_playlist(playlist, scroll=True)
 
@@ -647,7 +656,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             playlist = model[iter][0]
             playlist[:] = songs
         elif songs:
-            playlist = FileBackedPlaylist.from_songs(PLAYLISTS, songs,
+            playlist = XSPFBackedPlaylist.from_songs(PLAYLISTS, songs,
                                                      self.library)
             GLib.idle_add(self._select_playlist, playlist)
         if playlist:
