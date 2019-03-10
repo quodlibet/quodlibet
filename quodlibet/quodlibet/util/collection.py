@@ -670,6 +670,10 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         try:
             tree = ET.parse(self.path)
             # TODO: validate some top-level data I guess
+            node = tree.find("title")
+            if self.name != node.text:
+                print_w("Found name \"%s\" instead of \"%s\" for %s"
+                        % (node.text, self.name, self.path))
             for node in tree.iterfind('.//track'):
                 location = node.find('location')
                 path = location.text.replace('\n', '').replace('\r', '')
