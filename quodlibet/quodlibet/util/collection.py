@@ -21,7 +21,7 @@ from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.pattern import Pattern
 from collections import Iterable
-from quodlibet.util.path import escape_filename, unescape_filename
+from quodlibet.util.path import escape_filename, unescape_filename, limit_path
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.misc import total_ordering, hashable
 from .collections import HashedList
@@ -695,11 +695,12 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
 
     @classmethod
     def filename_for(cls, name: str) -> str:
-        return fsnative("%s.%s" % (name, cls.EXT))
+        safer = limit_path(escape_filename(name, safe=',\'\"+ '))
+        return fsnative("%s.%s" % (safer, cls.EXT))
 
     @classmethod
     def name_for(cls, filename: str) -> str:
-        filename, ext = splitext(filename)
+        filename, ext = splitext(unescape_filename(filename))
         if not ext or ext.lower() != (".%s" % cls.EXT):
             raise TypeError("XSPFs should end in '.%s', not '%s'"
                             % (cls.EXT, ext))

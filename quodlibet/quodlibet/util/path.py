@@ -1,5 +1,5 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2013 Nick Boultbee
+#           2011-2019 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -104,17 +104,18 @@ def filesize(filename):
         return 0
 
 
-def escape_filename(s):
+def escape_filename(s, safe=''):
     """Escape a string in a manner suitable for a filename.
 
     Args:
-        s (str)
+        s (str) The string to convert
+        safe (bytes) A string of
     Returns:
         fsnative
     """
 
     s = str(s)
-    s = quote(s.encode("utf-8"), safe=b"")
+    s = quote(s, safe=safe, encoding='utf-8')
     if isinstance(s, str):
         s = s.encode("ascii")
     return bytes2fsn(s, "utf-8")
