@@ -8,7 +8,7 @@
 import sqlite3
 
 from gi.repository import Gtk
-from senf import uri2fsn
+from senf import uri2fsn, text2fsn
 
 from quodlibet import _
 from quodlibet import app
@@ -96,11 +96,12 @@ class BansheeDBImporter:
 
 def do_import(parent, library):
     db_path = expanduser(BansheeImport.USR_PATH)
-    db = sqlite3.connect(db_path)
 
     importer = BansheeDBImporter(library)
     try:
+        db = sqlite3.connect(db_path)
         importer.read(db)
+        db.close()
     except sqlite3.OperationalError:
         msg = _("Specified Banshee database is malformed or missing")
         WarningMessage(parent, BansheeImport.PLUGIN_NAME, msg).run()
@@ -112,13 +113,12 @@ def do_import(parent, library):
         ErrorMessage(parent, BansheeImport.PLUGIN_NAME, msg).run()
     else:
         count = importer.finish()
-        preamble = "Successfully imported ratings and statistics for "
-        msg = ngettext(preamble + "%d song", preamble + "%d songs",
-                       count) % count
+        msg = ngettext(
+            "Successfully imported ratings and statistics for %d song",
+            "Successfully imported ratings and statistics for %d songs",
+            count) % count
         Message(Gtk.MessageType.INFO, parent, BansheeImport.PLUGIN_NAME,
                 msg).run()
-
-    db.close()
 
 
 class BansheeImport(EventPlugin):
@@ -142,7 +142,7 @@ class BansheeImport(EventPlugin):
         entry.set_text(BansheeImport.DEF_PATH)
 
         def path_activate(entry, *args):
-            path = entry.get_text()
+            path = text2fsn(entry.get_text())
             if BansheeImport.USR_PATH != path:
                 BansheeImport.USR_PATH = path
 
