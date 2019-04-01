@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: 🐛 Bug Report
 about: Report a bug in Quod Libet
 title: ''
 labels: 'bug'

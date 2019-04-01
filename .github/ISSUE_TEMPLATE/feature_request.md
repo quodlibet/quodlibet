@@ -1,5 +1,5 @@
 ---
-name: Feature Request
+name: ✨ Feature Request
 about: Request a change or new feature in Quod Libet. Please search the existing issues before starting a new one.
 title: ''
 labels: 'enhancement'
