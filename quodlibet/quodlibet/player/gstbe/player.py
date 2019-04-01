@@ -523,7 +523,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if not self.has_external_volume:
             # Restore volume/ReplayGain and mute state
-            self.volume = self._volume
+            self.props.volume = self._volume
             self.mute = self._mute
 
         # ReplayGain information gets lost when destroying

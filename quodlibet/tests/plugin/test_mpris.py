@@ -182,11 +182,11 @@ class TMPRIS(PluginTestCase):
             return float(self._wait()[0])
 
         assert get_volume() == 1.0
-        app.player.volume_cubic = 0.5
+        app.player.volume = 0.5
         assert get_volume() == 0.5
         self._prop().Set(piface, "Volume", 0.25, **args)
         self._wait()
-        assert app.player.volume_cubic == 0.25
+        assert app.player.volume == 0.25
 
     def test_metadata(self):
         args = {"reply_handler": self._reply, "error_handler": self._error}
