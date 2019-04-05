@@ -561,10 +561,10 @@ class WaveformScale(Gtk.EventBox):
 
     def do_scroll_event(self, event):
         if event.direction == Gdk.ScrollDirection.UP:
-            self._player.seek(self._player.get_position() + CONFIG.seek_amount)
+            self._player.seek(self._player.get_position() - CONFIG.seek_amount)
             self.queue_draw()
         elif event.direction == Gdk.ScrollDirection.DOWN:
-            self._player.seek(self._player.get_position() - CONFIG.seek_amount)
+            self._player.seek(self._player.get_position() + CONFIG.seek_amount)
             self.queue_draw()
 
     def set_position(self, position):
