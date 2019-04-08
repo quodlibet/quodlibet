@@ -217,7 +217,7 @@ msgstr "רכיב השרת הנוכחי אינו תומך ב URL, דפדפן הז
 
 #: quodlibet/browsers/_base.py:146 quodlibet/browsers/_base.py:149
 msgid "Library Browser"
-msgstr "דפדפן בספריה"
+msgstr "דפדפן ספריה"
 
 #: quodlibet/browsers/_base.py:273 quodlibet/ext/songsmenu/console.py:45
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
