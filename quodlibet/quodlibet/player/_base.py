@@ -151,19 +151,12 @@ class BasePlayer(GObject.GObject, Equalizer):
 
     @property
     def volume(self):
-        return self.props.volume
+        """Use a cubic scale for the externally exposed volume"""
+        return self.props.volume ** (1.0 / 3.0)
 
     @volume.setter
     def volume(self, v):
-        self.props.volume = min(1.0, max(0.0, v))
-
-    @property
-    def volume_cubic(self):
-        return self.volume ** (1.0 / 3.0)
-
-    @volume_cubic.setter
-    def volume_cubic(self, value):
-        self.volume = value ** 3.0
+        self.props.volume = min(1.0, max(0.0, v ** 3.0))
 
     @property
     def mute(self):

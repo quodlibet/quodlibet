@@ -63,7 +63,7 @@ msgstr "Заглавие"
 #: ../quodlibet/browsers/albums/main.py:169
 #: ../quodlibet/browsers/covergrid/main.py:55 ../quodlibet/qltk/prefs.py:49
 msgid "_Artist"
-msgstr "_Артист"
+msgstr "_Изпълнител"
 
 #: ../quodlibet/browsers/albums/main.py:170
 #: ../quodlibet/browsers/covergrid/main.py:56 ../quodlibet/qltk/prefs.py:54
@@ -74,7 +74,7 @@ msgstr "_Дата"
 #: ../quodlibet/browsers/covergrid/main.py:57 ../quodlibet/qltk/prefs.py:53
 #, fuzzy
 msgid "_Genre"
-msgstr "жанр"
+msgstr "_Жанр"
 
 #: ../quodlibet/browsers/albums/main.py:172
 #: ../quodlibet/browsers/covergrid/main.py:58 ../quodlibet/qltk/prefs.py:58
@@ -101,7 +101,7 @@ msgstr "Настройки"
 #: ../quodlibet/browsers/albums/main.py:361
 #, fuzzy
 msgid "Album List"
-msgstr "Спис_ък с албуми"
+msgstr "Списък с албуми"
 
 #: ../quodlibet/browsers/albums/main.py:362
 msgid "_Album List"
@@ -179,7 +179,7 @@ msgstr ""
 #: ../quodlibet/browsers/covergrid/prefs.py:120
 #, fuzzy
 msgid "Options"
-msgstr "[опции]"
+msgstr "[Опции]"
 
 #: ../quodlibet/browsers/albums/prefs.py:74
 #: ../quodlibet/browsers/covergrid/prefs.py:123
@@ -199,7 +199,7 @@ msgstr "Показване на албум"
 #: ../quodlibet/qltk/pluginwin.py:427 ../quodlibet/qltk/prefs.py:707
 #: ../quodlibet/qltk/textedit.py:164 ../quodlibet/update.py:148
 msgid "_Close"
-msgstr ""
+msgstr "_Затваряне"
 
 #: ../quodlibet/browsers/audiofeeds.py:55
 #: ../quodlibet/browsers/audiofeeds.py:67
@@ -211,7 +211,7 @@ msgstr ""
 #: ../quodlibet/qltk/information.py:240 ../quodlibet/qltk/information.py:247
 #: ../quodlibet/qltk/information.py:273 ../quodlibet/qltk/wlw.py:70
 msgid "Unknown"
-msgstr "непознат"
+msgstr "Неизвестен"
 
 #: ../quodlibet/browsers/audiofeeds.py:246
 msgid "New Feed"
@@ -230,7 +230,7 @@ msgstr "Въведете местоположението на аудио еми
 #: ../quodlibet/qltk/edittags.py:288 ../quodlibet/qltk/edittags.py:488
 #: ../quodlibet/qltk/quodlibetwindow.py:1354 ../quodlibet/qltk/scanbox.py:61
 msgid "_Add"
-msgstr ""
+msgstr "Добавяне"
 
 #: ../quodlibet/browsers/audiofeeds.py:265
 #, fuzzy
@@ -245,7 +245,7 @@ msgstr "_Аудио емисии"
 #: ../quodlibet/browsers/audiofeeds.py:350
 #, fuzzy
 msgid "_Download…"
-msgstr "Из_тегляне"
+msgstr "_Изтегляне…"
 
 #: ../quodlibet/browsers/audiofeeds.py:359
 msgid "Download Files"
@@ -266,7 +266,7 @@ msgstr "Изтегляне на файлове"
 #: ../quodlibet/qltk/lyrics.py:38 ../quodlibet/qltk/msg.py:52
 #: ../quodlibet/qltk/renamefiles.py:168 ../quodlibet/qltk/tracknumbers.py:113
 msgid "_Save"
-msgstr ""
+msgstr "_Запазване"
 
 #: ../quodlibet/browsers/audiofeeds.py:371
 msgid "Download File"
@@ -276,7 +276,7 @@ msgstr "Изтегляне на файл"
 #: ../quodlibet/browsers/playlists/main.py:213
 #: ../quodlibet/qltk/data_editors.py:96
 msgid "_New"
-msgstr ""
+msgstr "_Нов"
 
 #: ../quodlibet/browsers/audiofeeds.py:454
 #: ../quodlibet/browsers/audiofeeds.py:513
@@ -299,7 +299,7 @@ msgstr ""
 #: ../quodlibet/qltk/pluginwin.py:413
 #, fuzzy
 msgid "_Refresh"
-msgstr "Опресн_яване на фонотеката"
+msgstr "_Опресняване"
 
 #: ../quodlibet/browsers/audiofeeds.py:463
 #: ../quodlibet/browsers/playlists/main.py:457
@@ -308,7 +308,7 @@ msgstr "Опресн_яване на фонотеката"
 #: ../quodlibet/qltk/maskedbox.py:28 ../quodlibet/qltk/songsmenu.py:392
 #, fuzzy
 msgid "_Delete"
-msgstr "Изтриване на файлове"
+msgstr "Из_триване"
 
 #: ../quodlibet/browsers/audiofeeds.py:530
 msgid ""
@@ -341,22 +341,22 @@ msgstr ""
 
 #: ../quodlibet/browsers/collection/main.py:79
 msgid "Album _Collection"
-msgstr ""
+msgstr "Колекция от албуми"
 
 #: ../quodlibet/browsers/collection/models.py:24
 #, fuzzy, python-format
 msgid "Unknown %s"
-msgstr "непознат"
+msgstr "Неизвестен %s"
 
 #: ../quodlibet/browsers/collection/models.py:25
 #, fuzzy, python-format
 msgid "Multiple %s Values"
-msgstr "Разделяне на _множество стойности"
+msgstr "Множество %s стойности"
 
 #: ../quodlibet/browsers/collection/prefs.py:66
 #: ../quodlibet/browsers/paned/prefs.py:51
 msgid "_Custom"
-msgstr "_Лично"
+msgstr "_Потребителски"
 
 #. Remove button
 #: ../quodlibet/browsers/collection/prefs.py:94
@@ -373,7 +373,7 @@ msgstr "_Лично"
 #: ../quodlibet/qltk/scanbox.py:36 ../quodlibet/qltk/scanbox.py:63
 #, fuzzy
 msgid "_Remove"
-msgstr "_Премахване на станция"
+msgstr "_Премахване"
 
 #: ../quodlibet/browsers/collection/prefs.py:122
 #: ../quodlibet/ext/songsmenu/filterall.py:34
@@ -384,7 +384,7 @@ msgstr "Етикет"
 
 #: ../quodlibet/browsers/collection/prefs.py:128
 msgid "Merge"
-msgstr ""
+msgstr "Сливане"
 
 #: ../quodlibet/browsers/collection/prefs.py:188
 #, fuzzy
@@ -398,7 +398,7 @@ msgstr "Настройки на списъка с албуми"
 #: ../quodlibet/player/gstbe/prefs.py:40 ../quodlibet/qltk/prefs.py:127
 #: ../quodlibet/qltk/textedit.py:65
 msgid "_Apply"
-msgstr ""
+msgstr "_Прилагане"
 
 #: ../quodlibet/browsers/collection/prefs.py:198
 #: ../quodlibet/browsers/paned/prefs.py:213
@@ -426,7 +426,7 @@ msgstr ""
 #: ../quodlibet/qltk/ratingsmenu.py:33 ../quodlibet/qltk/songsmenu.py:45
 #: ../quodlibet/qltk/songsmenu.py:73 ../quodlibet/update.py:94
 msgid "_Cancel"
-msgstr ""
+msgstr "_Отказ"
 
 #: ../quodlibet/browsers/covergrid/main.py:125
 #, fuzzy

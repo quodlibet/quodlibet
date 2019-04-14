@@ -161,12 +161,11 @@ class TPlayerMixin(object):
 
     def test_volume_cubic(self):
         self.player.volume = 1
-        assert self.player.volume_cubic == 1
+        assert self.player.props.volume == 1
         self.player.volume = 0
-        assert self.player.volume_cubic == 0
-        self.player.volume_cubic = 0.5
-        assert self.player.volume_cubic == 0.5
-        assert self.player.volume == 0.125
+        assert self.player.props.volume == 0
+        self.player.volume = 0.5
+        assert self.player.props.volume == 0.125
 
     def test_remove(self):
         self.player.remove(None)
@@ -398,17 +397,17 @@ class TVolume(TestCase):
     def test_setget(self):
         for i in [0.0, 1.2, 0.24, 1.0, 0.9]:
             self.v.set_value(i)
-            self.failUnlessAlmostEqual(self.p.volume, self.v.get_value() ** 3)
+            self.failUnlessAlmostEqual(self.p.volume, self.v.get_value())
 
     def test_add(self):
         self.v.set_value(0.5)
         self.v += 0.1
-        self.failUnlessAlmostEqual(self.p.volume, 0.6 ** 3)
+        self.failUnlessAlmostEqual(self.p.volume, 0.6)
 
     def test_sub(self):
         self.v.set_value(0.5)
         self.v -= 0.1
-        self.failUnlessAlmostEqual(self.p.volume, 0.4 ** 3)
+        self.failUnlessAlmostEqual(self.p.volume, 0.4)
 
     def test_add_boundry(self):
         self.v.set_value(0.95)
