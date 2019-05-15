@@ -109,10 +109,6 @@ def _create_pot(potfiles_path, src_root, strict):
             if language:
                 args.append("--language=" + language)
 
-            # https://github.com/Alexpux/MINGW-packages/issues/4392
-            if os.name == "nt" and not language:
-                paths = []
-
             for kw in keywords:
                 if kw:
                     args.append("--keyword=" + kw)
