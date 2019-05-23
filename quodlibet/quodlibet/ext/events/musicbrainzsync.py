@@ -43,7 +43,10 @@ class MusicBrainzSyncPlugin(EventPlugin):
         musicbrainzngs.set_useragent(
             BRAINZ_APP, VERSION, "loveisgrief@tuta.io"
         )
-        musicbrainzngs.auth(plugin_config.get("username"), plugin_config.get("password"))
+        musicbrainzngs.auth(
+            plugin_config.get("username"),
+            plugin_config.get("password")
+        )
 
     def plugin_on_changed(self, songs):
         ratings_dict = {
@@ -60,7 +63,10 @@ class MusicBrainzSyncPlugin(EventPlugin):
         def changed(entry, key):
             if entry.get_property('sensitive'):
                 plugin_config.set(key, entry.get_text())
-                musicbrainzngs.auth(plugin_config.get("username"), plugin_config.get("password"))
+                musicbrainzngs.auth(
+                    plugin_config.get("username"),
+                    plugin_config.get("password")
+                )
 
         box = Gtk.VBox(spacing=12)
 
