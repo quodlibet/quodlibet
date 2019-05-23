@@ -31,6 +31,7 @@ function set_build_root {
     BUILD_ROOT="$1"
     REPO_CLONE="${BUILD_ROOT}"/quodlibet
     MINGW_ROOT="${BUILD_ROOT}/${MINGW}"
+    export PATH="${MINGW_ROOT}/bin:${PATH}"
 }
 
 set_build_root "${DIR}/_build_root"
