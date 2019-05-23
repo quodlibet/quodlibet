@@ -160,14 +160,10 @@ function install_quodlibet {
 }
 
 function cleanup_before {
-    # these all have svg variants
-    find "${MINGW_ROOT}"/share/icons -name "*.symbolic.png" -exec rm -f {} \;
-
     # remove some larger ones
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/512x512"
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/256x256"
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/96x96"
-    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/48x48"
     "${MINGW_ROOT}"/bin/gtk-update-icon-cache-3.0.exe \
         "${MINGW_ROOT}"/share/icons/Adwaita
 
