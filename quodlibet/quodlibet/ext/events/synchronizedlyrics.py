@@ -27,11 +27,8 @@ from quodlibet import qltk
 from quodlibet.plugins import PluginConfigMixin
 
 from quodlibet.plugins.events import EventPlugin
-
-from quodlibet.plugins.gui import UserInterfacePlugin
-from quodlibet.qltk import add_css, Button
-from quodlibet.qltk.information import Information
 from quodlibet.util.songwrapper import SongWrapper
+
 
 class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
