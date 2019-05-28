@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
 #            2016-17 Nick Boultbee
@@ -27,6 +28,14 @@ from quodlibet.plugins import PluginConfigMixin
 
 from quodlibet.plugins.events import EventPlugin
 
+from gi.repository import Gtk, Gdk
+
+from quodlibet import _, print_d, app
+from quodlibet.plugins.events import EventPlugin
+from quodlibet.plugins.gui import UserInterfacePlugin
+from quodlibet.qltk import Icons, add_css, Button
+from quodlibet.qltk.information import Information
+from quodlibet.util.songwrapper import SongWrapper
 
 class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
@@ -40,10 +49,12 @@ as the track.')
 
     DEFAULT_BGCOLOR = '#343428282C2C'
     DEFAULT_TXTCOLOR = '#FFFFFFFFFFFF'
+    DEFAULT_HIGHLIGHT = '#F222FDDD1BBB'
     DEFAULT_FONTSIZE = 25
 
     CFG_BGCOLOR_KEY = "backgroundColor"
     CFG_TXTCOLOR_KEY = "textColor"
+    CFG_HIGHLIGHT_KEY = "highlightColor"
     CFG_FONTSIZE_KEY = "fontSize"
 
     _lines = []
@@ -76,6 +87,16 @@ as the track.')
         t.attach(b, 1, 2, 1, 2)
         b.connect('color-set', cls._set_text_color)
 
+        l = Gtk.Label(label=_("Highlight"))
+        l.set_alignment(xalign=1.0, yalign=0.5)
+        t.attach(l, 0, 1, 3, 4, xoptions=Gtk.AttachOptions.FILL)
+
+        c = Gdk.RGBA()
+        c.parse(cls._get_highlight_color())
+        b = Gtk.ColorButton(rgba=c)
+        t.attach(b, 1, 2, 3, 4)
+        b.connect('color-set', cls._set_highlight_color)
+
         l = Gtk.Label(label=_("Background:"))
         l.set_alignment(xalign=1.0, yalign=0.5)
         t.attach(l, 0, 1, 2, 3, xoptions=Gtk.AttachOptions.FILL)
@@ -88,17 +109,17 @@ as the track.')
 
         font_section = Gtk.Label()
         font_section.set_markup("<b>" + _("Font") + "</b>")
-        t.attach(font_section, 0, 2, 3, 4)
+        t.attach(font_section, 0, 2, 5, 6)
 
         l = Gtk.Label(label=_("Size (px):"))
         l.set_alignment(xalign=1.0, yalign=0.5)
-        t.attach(l, 0, 1, 4, 5, xoptions=Gtk.AttachOptions.FILL)
+        t.attach(l, 0, 1, 6, 7, xoptions=Gtk.AttachOptions.FILL)
 
         a = Gtk.Adjustment.new(cls._get_font_size(), 10, 72, 2, 3, 0)
         s = Gtk.SpinButton(adjustment=a)
         s.set_numeric(True)
         s.set_text(str(cls._get_font_size()))
-        t.attach(s, 1, 2, 4, 5)
+        t.attach(s, 1, 2, 6, 7)
         s.connect('value-changed', cls._set_font_size)
 
         vb.pack_start(t, False, False, 0)
@@ -106,6 +127,10 @@ as the track.')
 
     def _get_text_color(self):
         v = self.config_get(self.CFG_TXTCOLOR_KEY, self.DEFAULT_TXTCOLOR)
+        return v[:3] + v[5:7] + v[9:11]
+
+    def _get_highlight_color(self):
+        v = self.config_get(self.CFG_HIGHLIGHT_KEY, self.DEFAULT_HIGHLIGHT)
         return v[:3] + v[5:7] + v[9:11]
 
     def _get_background_color(self):
@@ -118,6 +143,10 @@ as the track.')
 
     def _set_text_color(self, button):
         self.config_set(self.CFG_TXTCOLOR_KEY, button.get_color().to_string())
+        self._style_lyrics_window()
+
+    def _set_highlight_color(self, button):
+        self.config_set(self.CFG_HIGHLIGHT_KEY, button.get_color().to_string())
         self._style_lyrics_window()
 
     def _set_background_color(self, button):
@@ -141,8 +170,8 @@ as the track.')
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.scrolled_window.add_with_viewport(self.textview)
-
         self.textview.show()
+        self.adjustment = self.scrolled_window.get_vadjustment()
 
         app.window.get_child().pack_start(self.scrolled_window, False, True, 0)
         app.window.get_child().reorder_child(self.scrolled_window, 2)
@@ -156,6 +185,9 @@ as the track.')
         self._sync_timer = GLib.timeout_add(self.SYNC_PERIOD, self._sync)
         self._build_data()
         self._timer_control()
+        cur = app.player.info
+        if cur is not None:
+            cur = SongWrapper(cur)
 
     def disabled(self):
         self._clear_timers()
@@ -183,44 +215,85 @@ as the track.')
         return app.player.get_position()
 
     def _build_data(self):
+        cur = app.player.info
+        if cur is not None:
+            cur = SongWrapper(cur)
         self.text_buffer.set_text("")
         if app.player.song is not None:
             # check in same location as track
             track_name = app.player.song.get("~filename")
             new_lrc = os.path.splitext(track_name)[0] + ".lrc"
-            print_d("Checking for lyrics file %s" % new_lrc)
+            print_d("Checking for lyrics tag")
             if self._current_lrc != new_lrc:
                 self._lines = []
                 if os.path.exists(new_lrc):
-                    print_d("Found lyrics file: %s" % new_lrc)
-                    self._parse_lrc_file(new_lrc)
+                    print_d("Found lyrics file")
+                    self._parse_lrc_file(new_lrc, 0)
+                else:
+                    new_lrc = cur("~lyrics")
+                    print_d("Couldn't find lyrics filke, defaulting to tags")
+                    self._parse_lrc_file(new_lrc, 1)
             self._current_lrc = new_lrc
 
-    def _parse_lrc_file(self, filename):
-        with open(filename, 'r', encoding="utf-8") as f:
-            raw_file = f.read()
+    def _parse_lrc_file(self, lyrics, tagOrFile):
+        if tagOrFile == 0:
+            with open(lyrics, 'r', encoding="utf-8") as f:
+                raw_file = f.read()
+        if tagOrFile == 1:    
+            raw_file = lyrics
+            raw_file.encode(encoding="utf-8")
         raw_file = raw_file.replace("\n", "")
         begin = 0
+        beginELRC = 0
         keep_reading = len(raw_file) != 0
         tmp_dict = {}
         compressed = []
+        case = 0
+        goToNextLine = True
         while keep_reading:
-            next_find = raw_file.find("[", begin + 1)
-            if next_find == -1:
-                keep_reading = False
-                line = raw_file[begin:]
+            if goToNextLine:
+                next_line = raw_file.find("[", begin + 1)
+            goToNextLine = False
+
+            start_ELRC = raw_file.find("[", beginELRC, next_line)
+            case = 0
+            if start_ELRC == -1:
+                start_ELRC = raw_file.find("<", beginELRC, next_line)
+                case = 1
+            next_ELRC = raw_file.find("<", start_ELRC + 1, next_line)
+            
+            if next_ELRC == -1:
+                next_ELRC = next_line
+                goToNextLine = True
+            
+            if next_line == -1:
+                start_ELRC = raw_file.find("[", beginELRC)
+                case = 0
+                if start_ELRC == -1:
+                    start_ELRC = raw_file.find("<", beginELRC)
+                    case = 1
+                next_ELRC = raw_file.find("<", start_ELRC + 1)
+                word = raw_file[start_ELRC:next_ELRC]
+                if next_ELRC == -1:
+                    keep_reading = False
+                    word = raw_file[start_ELRC:]
             else:
-                line = raw_file[begin:next_find]
-            begin = next_find
+                word = raw_file[start_ELRC:next_ELRC]
+            
+            begin = next_line
+            beginELRC = next_ELRC
 
             # parse lyricsLine
-            if len(line) < 2 or not line[1].isdigit():
+            if len(word) < 2 or not word[1].isdigit():
                 continue
-            close_bracket = line.find("]")
-            t = datetime.strptime(line[1:close_bracket], '%M:%S.%f')
+            if case == 0:
+                close_bracket = word.find("]")
+            if case == 1:
+                close_bracket = word.find(">")
+            t = datetime.strptime(word[1:close_bracket], '%M:%S.%f')
             timestamp = (t.minute * 60000 + t.second * 1000 +
                          t.microsecond / 1000)
-            words = line[close_bracket + 1:]
+            words = word[close_bracket + 1:]
             if not words:
                 compressed.append(timestamp)
             else:
