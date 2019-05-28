@@ -28,12 +28,8 @@ from quodlibet.plugins import PluginConfigMixin
 
 from quodlibet.plugins.events import EventPlugin
 
-from gi.repository import Gtk, Gdk
-
-from quodlibet import _, print_d, app
-from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins.gui import UserInterfacePlugin
-from quodlibet.qltk import Icons, add_css, Button
+from quodlibet.qltk import add_css, Button
 from quodlibet.qltk.information import Information
 from quodlibet.util.songwrapper import SongWrapper
 
@@ -211,6 +207,14 @@ as the track.')
         """.format(self._get_background_color(), self._get_text_color(),
                    self._get_font_size()))
 
+    def highlightText():
+        qltk.add_css(self.textview, """
+            * {{
+                color: {0};
+                padding: 0.2em;
+            }}
+        """.format(self._get_highlight_color()))
+
     def _cur_position(self):
         return app.player.get_position()
 
@@ -248,7 +252,7 @@ as the track.')
         keep_reading = len(raw_file) != 0
         tmp_dict = {}
         compressed = []
-        case = 0
+        bracketType = 0
         goToNextLine = True
         while keep_reading:
             if goToNextLine:
@@ -256,10 +260,10 @@ as the track.')
             goToNextLine = False
 
             start_ELRC = raw_file.find("[", beginELRC, next_line)
-            case = 0
+            bracketType = 0
             if start_ELRC == -1:
                 start_ELRC = raw_file.find("<", beginELRC, next_line)
-                case = 1
+                bracketType = 1
             next_ELRC = raw_file.find("<", start_ELRC + 1, next_line)
             
             if next_ELRC == -1:
@@ -268,10 +272,10 @@ as the track.')
             
             if next_line == -1:
                 start_ELRC = raw_file.find("[", beginELRC)
-                case = 0
+                bracketType = 0
                 if start_ELRC == -1:
                     start_ELRC = raw_file.find("<", beginELRC)
-                    case = 1
+                    bracketType = 1
                 next_ELRC = raw_file.find("<", start_ELRC + 1)
                 word = raw_file[start_ELRC:next_ELRC]
                 if next_ELRC == -1:
@@ -286,9 +290,9 @@ as the track.')
             # parse lyricsLine
             if len(word) < 2 or not word[1].isdigit():
                 continue
-            if case == 0:
+            if bracketType == 0:
                 close_bracket = word.find("]")
-            if case == 1:
+            if bracketType == 1:
                 close_bracket = word.find(">")
             t = datetime.strptime(word[1:close_bracket], '%M:%S.%f')
             timestamp = (t.minute * 60000 + t.second * 1000 +
