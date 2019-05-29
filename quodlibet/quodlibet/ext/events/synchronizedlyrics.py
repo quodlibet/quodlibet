@@ -2,6 +2,7 @@
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
 #            2016-17 Nick Boultbee
+# Modified for embedded LRC and ELRC support by tralph3
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,6 +52,7 @@ as the track.')
     CFG_FONTSIZE_KEY = "fontSize"
 
     _lines = []
+    _words = []
     _timers = []
 
     _current_lrc = ""
@@ -140,7 +142,7 @@ as the track.')
 
     def _set_highlight_color(self, button):
         self.config_set(self.CFG_HIGHLIGHT_KEY, button.get_color().to_string())
-        self._style_lyrics_window()
+        self._highlight_text()
 
     def _set_background_color(self, button):
         self.config_set(self.CFG_BGCOLOR_KEY, button.get_color().to_string())
@@ -204,13 +206,14 @@ as the track.')
         """.format(self._get_background_color(), self._get_text_color(),
                    self._get_font_size()))
 
-    def highlightText():
-        qltk.add_css(self.textview, """
-            * {{
-                color: {0};
-                padding: 0.2em;
-            }}
-        """.format(self._get_highlight_color()))
+    def _highlight_text(self):
+        #qltk.add_css(self.textview, """
+        #    * {{
+        #        color: {0};
+        #        padding: 0.2em;
+        #    }}
+        #""".format(self._get_highlight_color()))
+        return self._get_highlight_color()
 
     def _cur_position(self):
         return app.player.get_position()
@@ -248,12 +251,15 @@ as the track.')
         beginELRC = 0
         keep_reading = len(raw_file) != 0
         tmp_dict = {}
+        tmp_word_dict = {}
         compressed = []
         bracketType = 0
         goToNextLine = True
+        wentToNextLine = False
         while keep_reading:
             if goToNextLine:
                 next_line = raw_file.find("[", begin + 1)
+                wentToNextLine = True
             goToNextLine = False
 
             start_ELRC = raw_file.find("[", beginELRC, next_line)
@@ -289,26 +295,55 @@ as the track.')
                 continue
             if bracketType == 0:
                 close_bracket = word.find("]")
+                line = raw_file[start_ELRC:next_line]
             if bracketType == 1:
                 close_bracket = word.find(">")
             t = datetime.strptime(word[1:close_bracket], '%M:%S.%f')
             timestamp = (t.minute * 60000 + t.second * 1000 +
                          t.microsecond / 1000)
+            if wentToNextLine:
+                wentToNextLine = False
+                removeELRC = True
+                newLineToStrip = line[close_bracket + 1:]
+                currentStrip = newLineToStrip
+                beginStrip = 0
+                while removeELRC:
+                    startRemovingELRC = newLineToStrip.find("<", beginStrip)
+                    endRemovingELRC = newLineToStrip.find(">", beginStrip + 1)
+                    strippedLine = currentStrip.replace(newLineToStrip[startRemovingELRC:endRemovingELRC + 1], "")
+                    currentStrip = strippedLine
+                    beginStrip = endRemovingELRC
+                    if startRemovingELRC and endRemovingELRC == -1:
+                        removeELRC = False
+                        thisLine = strippedLine
             words = word[close_bracket + 1:]
             if not words:
                 compressed.append(timestamp)
             else:
-                tmp_dict[timestamp] = words
+                tmp_word_dict[timestamp] = words
                 for t in compressed:
-                    tmp_dict[t] = words
+                    tmp_word_dict[t] = words
+                compressed = []
+            if not thisLine:
+                compressed.append(timestamp)
+            else:
+                tmp_dict[timestamp] = thisLine
+                for t in compressed:
+                    tmp_dict[t] = thisLine
                 compressed = []
 
         keys = list(tmp_dict.keys())
+        wordKey = list(tmp_word_dict.keys())
         keys.sort()
+        wordKey.sort()
         for key in keys:
             self._lines.append((key, tmp_dict[key]))
+        for key in wordKey:
+            self._words.append((key, tmp_word_dict[key]))
         del keys
         del tmp_dict
+        del wordKey
+        del tmp_word_dict
 
     def _set_timers(self):
         print_d("Setting timers")
@@ -321,8 +356,8 @@ as the track.')
 
                     timestamp = self._lines[cur_idx][0]
                     line = self._lines[cur_idx][1]
-                    tid = GLib.timeout_add(timestamp - cur_time, self._show,
-                                           line)
+                    word = self._words[cur_idx][1]
+                    tid = GLib.timeout_add(timestamp - cur_time, self._show, line, word)
                     self._timers.append((timestamp, tid))
                     cur_idx += 1
 
@@ -345,8 +380,12 @@ as the track.')
         self._timers = []
         self._start_clearing_from = 0
 
-    def _show(self, line):
+    def _show(self, line, word):
         self.text_buffer.set_text(line)
+        startIter = self.text_buffer.get_start_iter()
+        endIter = self.text_buffer.get_end_iter()
+        color = self.text_buffer.create_tag("highlight", foreground=self._highlight_text())
+        self.text_buffer.apply_tag(color, startIter, endIter)
         self._start_clearing_from += 1
         print_d("♪ %s ♪" % line.strip())
         return False
