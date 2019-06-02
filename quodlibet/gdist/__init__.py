@@ -31,7 +31,6 @@ Also supports setuptools but needs to be imported after setuptools
 (which does some monkey patching)
 """
 
-import os
 import sys
 
 from distutils.core import setup
@@ -184,10 +183,6 @@ class GDistribution(Distribution):
         return not is_osx and bool(self.shortcuts)
 
     def has_appdata(self):
-        if os.name == "nt":
-            # Translation merge is broken atm due to:
-            # https://github.com/Alexpux/MINGW-packages/issues/4392
-            return False
         return not is_osx and bool(self.appdata)
 
     def has_man_pages(self):

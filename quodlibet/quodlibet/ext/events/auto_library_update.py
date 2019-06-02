@@ -58,7 +58,9 @@ class LibraryEvent(ProcessEvent):
             GLib.idle_add(self.add, event)
             self._being_created.remove(event.path)
         else:
-            print_d("Ignoring modification on %s" % path)
+            # Refresh library on modification
+            self._log(event)
+            GLib.idle_add(self.update, event)
 
     def process_IN_MOVED_TO(self, event):
         self._log(event)

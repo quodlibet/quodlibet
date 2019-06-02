@@ -31,6 +31,7 @@ function set_build_root {
     BUILD_ROOT="$1"
     REPO_CLONE="${BUILD_ROOT}"/quodlibet
     MINGW_ROOT="${BUILD_ROOT}/${MINGW}"
+    export PATH="${MINGW_ROOT}/bin:${PATH}"
 }
 
 set_build_root "${DIR}/_build_root"
@@ -118,7 +119,6 @@ pyflakes==2.1.0
         mingw-w64-"${ARCH}"-tk \
         mingw-w64-"${ARCH}"-tcl \
         mingw-w64-"${ARCH}"-opencv \
-        mingw-w64-"${ARCH}"-daala-git \
         mingw-w64-"${ARCH}"-libdvdcss \
         mingw-w64-"${ARCH}"-libdvdnav \
         mingw-w64-"${ARCH}"-libdvdread \
@@ -160,14 +160,10 @@ function install_quodlibet {
 }
 
 function cleanup_before {
-    # these all have svg variants
-    find "${MINGW_ROOT}"/share/icons -name "*.symbolic.png" -exec rm -f {} \;
-
     # remove some larger ones
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/512x512"
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/256x256"
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/96x96"
-    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/48x48"
     "${MINGW_ROOT}"/bin/gtk-update-icon-cache-3.0.exe \
         "${MINGW_ROOT}"/share/icons/Adwaita
 
