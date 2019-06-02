@@ -12,7 +12,7 @@ from __future__ import absolute_import
 import os
 import random
 
-from senf import fsnative, fsn2bytes, bytes2fsn
+from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn
 
 from quodlibet import ngettext, _
 from quodlibet import util
@@ -671,7 +671,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         library = self.library
         try:
             tree = ET.parse(self.path)
-            # TODO: validate some top-level data I guess
+            # TODO: validate some top-level tag data
             node = tree.find("title")
             if self.name != node.text:
                 print_w("Found name \"%s\" instead of \"%s\" for %s"
@@ -695,11 +695,14 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
 
     @classmethod
     def filename_for(cls, name: str) -> str:
-        safer = limit_path(escape_filename(name, safe=',\'\"+ '))
-        return fsnative("%s.%s" % (safer, cls.EXT))
+        # Manually do *minimal* escaping, to allow near-readable filenames
+        safer = limit_path(name.replace('\\', '%5C')
+                               .replace('/', '%2F')
+                               .replace('\0', ''))
+        return path2fsn("%s.%s" % (safer, cls.EXT))
 
     @classmethod
-    def name_for(cls, filename: str) -> str:
+    def name_for(cls, filename: fsnative) -> str:
         filename, ext = splitext(unescape_filename(filename))
         if not ext or ext.lower() != (".%s" % cls.EXT):
             raise TypeError("XSPFs should end in '.%s', not '%s'"

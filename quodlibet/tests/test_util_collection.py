@@ -556,13 +556,11 @@ class TFileBackedPlaylist(TPlaylist):
         pl.delete()
 
     def test_read(self):
-        with self.wrap("playlist") as pl:
+        lib = FileLibrary("foobar")
+        lib.add(NUMERIC_SONGS)
+        with self.wrap("playlist", lib) as pl:
             pl.extend(NUMERIC_SONGS)
             pl.write()
-
-            lib = FileLibrary("foobar")
-            lib.add(NUMERIC_SONGS)
-            pl = self.pl("playlist", lib)
             self.assertEqual(len(pl), len(NUMERIC_SONGS))
 
     def test_write(self):
@@ -574,6 +572,17 @@ class TFileBackedPlaylist(TPlaylist):
             with open(pl.path, "rb") as h:
                 self.assertEqual(len(h.read().splitlines()),
                                  len(NUMERIC_SONGS) + 1)
+
+    def test_difficult_names(self):
+        lib = FileLibrary("foobar")
+        lib.add(NUMERIC_SONGS)
+        name = "?\"problem?\" / foo* / ə! COM"
+        with self.wrap(name, lib) as pl:
+            pl.extend(NUMERIC_SONGS)
+            pl.write()
+            assert pl.songs == NUMERIC_SONGS
+            with self.wrap(name, lib) as pl2:
+                assert pl2.songs == NUMERIC_SONGS
 
     def test_make_dup(self):
         p1 = self.new_pl("Does not exist")
