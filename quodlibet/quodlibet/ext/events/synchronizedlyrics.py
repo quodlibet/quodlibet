@@ -2,7 +2,7 @@
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
 #            2016-17 Nick Boultbee
-# Modified for embedded LRC and ELRC support by tralph3
+# Modified to support mp3 tags and ELRC syntax by Tomás Ralph
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -60,6 +60,8 @@ as the track.')
     textview = None
     scrolled_window = None
 
+    highlight_position = 0
+
     def PluginPreferences(cls, window):
         vb = Gtk.VBox(spacing=6)
         vb.set_border_width(6)
@@ -82,7 +84,7 @@ as the track.')
         t.attach(b, 1, 2, 1, 2)
         b.connect('color-set', cls._set_text_color)
 
-        l = Gtk.Label(label=_("Highlight"))
+        l = Gtk.Label(label=_("Highlight (Needs restart)"))
         l.set_alignment(xalign=1.0, yalign=0.5)
         t.attach(l, 0, 1, 3, 4, xoptions=Gtk.AttachOptions.FILL)
 
@@ -207,12 +209,6 @@ as the track.')
                    self._get_font_size()))
 
     def _highlight_text(self):
-        #qltk.add_css(self.textview, """
-        #    * {{
-        #        color: {0};
-        #        padding: 0.2em;
-        #    }}
-        #""".format(self._get_highlight_color()))
         return self._get_highlight_color()
 
     def _cur_position(self):
@@ -253,6 +249,7 @@ as the track.')
         tmp_dict = {}
         tmp_word_dict = {}
         compressed = []
+        compressedWords = []
         bracketType = 0
         goToNextLine = True
         wentToNextLine = False
@@ -298,32 +295,33 @@ as the track.')
                 line = raw_file[start_ELRC:next_line]
             if bracketType == 1:
                 close_bracket = word.find(">")
+                self.foundELRC = True
             t = datetime.strptime(word[1:close_bracket], '%M:%S.%f')
             timestamp = (t.minute * 60000 + t.second * 1000 +
                          t.microsecond / 1000)
             if wentToNextLine:
                 wentToNextLine = False
-                removeELRC = True
+                stripELRC = True
                 newLineToStrip = line[close_bracket + 1:]
                 currentStrip = newLineToStrip
                 beginStrip = 0
-                while removeELRC:
-                    startRemovingELRC = newLineToStrip.find("<", beginStrip)
-                    endRemovingELRC = newLineToStrip.find(">", beginStrip + 1)
-                    strippedLine = currentStrip.replace(newLineToStrip[startRemovingELRC:endRemovingELRC + 1], "")
+                while stripELRC:
+                    startStrippingELRC = newLineToStrip.find("<", beginStrip)
+                    endStrippingELRC = newLineToStrip.find(">", beginStrip + 1)
+                    strippedLine = currentStrip.replace(newLineToStrip[startStrippingELRC:endStrippingELRC + 1], "")
                     currentStrip = strippedLine
-                    beginStrip = endRemovingELRC
-                    if startRemovingELRC and endRemovingELRC == -1:
-                        removeELRC = False
+                    beginStrip = endStrippingELRC
+                    if startStrippingELRC and endStrippingELRC == -1:
+                        stripELRC = False
                         thisLine = strippedLine
             words = word[close_bracket + 1:]
             if not words:
-                compressed.append(timestamp)
+                compressedWords.append(timestamp)
             else:
                 tmp_word_dict[timestamp] = words
-                for t in compressed:
+                for t in compressedWords:
                     tmp_word_dict[t] = words
-                compressed = []
+                compressedWords = []
             if not thisLine:
                 compressed.append(timestamp)
             else:
@@ -346,20 +344,36 @@ as the track.')
         del tmp_word_dict
 
     def _set_timers(self):
-        print_d("Setting timers")
+        print_d("Setting timers", context="console")
         if len(self._timers) == 0:
-            cur_time = self._cur_position()
-            cur_idx = self._greater(self._lines, cur_time)
-            if cur_idx != -1:
-                while (cur_idx < len(self._lines) and
-                       self._lines[cur_idx][0] < cur_time + self.SYNC_PERIOD):
-
-                    timestamp = self._lines[cur_idx][0]
-                    line = self._lines[cur_idx][1]
-                    word = self._words[cur_idx][1]
-                    tid = GLib.timeout_add(timestamp - cur_time, self._show, line, word)
-                    self._timers.append((timestamp, tid))
-                    cur_idx += 1
+            if self.foundELRC == True:
+                cur_time = self._cur_position()
+                cur_idx = self._greater(self._words, cur_time)
+                if cur_idx != -1:
+                    cur_lin_idx = cur_idx
+                    while (cur_idx < len(self._words) and self._words[cur_idx][0] < cur_time + self.SYNC_PERIOD):
+                        timestamp = self._words[cur_idx][0]
+                        line = self._lines[cur_lin_idx][1]
+                        word = self._words[cur_idx][1]
+                        if cur_lin_idx < len(self._lines) - 1:
+                            if self._lines[cur_lin_idx + 1][0] == timestamp:
+                                cur_lin_idx += 1
+                                line = self._lines[cur_lin_idx][1]
+                        if timestamp - cur_time > 0:
+                            tid = GLib.timeout_add(timestamp - cur_time, self._show_ELRC, line, word)
+                        self._timers.append((timestamp, tid))
+                        cur_idx += 1
+            elif self.foundELRC == False:
+                cur_time = self._cur_position()
+                cur_idx = self._greater(self._lines, cur_time)
+                if cur_idx != -1:
+                    while (cur_idx < len(self._lines) and self._lines[cur_idx][0] < cur_time + self.SYNC_PERIOD):
+                        timestamp = self._lines[cur_idx][0]
+                        line = self._lines[cur_idx][1]
+                        tid = GLib.timeout_add(timestamp - cur_time, self._show,
+                                               line)
+                        self._timers.append((timestamp, tid))
+                        cur_idx += 1
 
     def _sync(self):
         if not app.player.paused:
@@ -380,17 +394,33 @@ as the track.')
         self._timers = []
         self._start_clearing_from = 0
 
-    def _show(self, line, word):
+    def _show_ELRC(self, line, word):
+        startOfLineCurrent = self.text_buffer.get_start_iter()
+        endOfLineCurrent = self.text_buffer.get_end_iter()
+        current = self.text_buffer.get_text(startOfLineCurrent, endOfLineCurrent, True)
         self.text_buffer.set_text(line)
-        startIter = self.text_buffer.get_start_iter()
-        endIter = self.text_buffer.get_end_iter()
+        startOfLine = self.text_buffer.get_start_iter()
+        endOfLine = self.text_buffer.get_end_iter()
+        modified = self.text_buffer.get_text(startOfLine, endOfLine, True)
+        if modified != current:
+            self.highlight_position = 0
+        self.highlight_position += len(word)
+        startIter = self.text_buffer.get_iter_at_offset(0)
+        endIter = self.text_buffer.get_iter_at_offset(self.highlight_position)
         color = self.text_buffer.create_tag("highlight", foreground=self._highlight_text())
-        self.text_buffer.apply_tag(color, startIter, endIter)
+        self.text_buffer.apply_tag_by_name("highlight", startIter, endIter)
+        self._start_clearing_from += 1
+        print_d("♪ %s ♪" % line.strip())
+        return False
+
+    def _show(self, line):
+        self.text_buffer.set_text(line)
         self._start_clearing_from += 1
         print_d("♪ %s ♪" % line.strip())
         return False
 
     def plugin_on_song_started(self, song):
+        self.foundELRC = False
         self._build_data()
         # delay so that current position is for current track, not previous one
         GLib.timeout_add(5, self._timer_control)
