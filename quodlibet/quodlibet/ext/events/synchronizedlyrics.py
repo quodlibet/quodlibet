@@ -275,7 +275,7 @@ as the track or embedded lyrics.')
                 start_ELRC = raw_file.find("<", beginELRC, next_line)
                 bracketType = 1
             next_ELRC = raw_file.find("<", start_ELRC + 1, next_line)
-            
+
             if next_ELRC == -1:
                 next_ELRC = next_line
                 goToNextLine = True
