@@ -279,7 +279,7 @@ as the track or embedded lyrics.')
             if next_ELRC == -1:
                 next_ELRC = next_line
                 goToNextLine = True
-            
+
             if next_line == -1:
                 start_ELRC = raw_file.find("[", beginELRC)
                 bracketType = 0
@@ -293,7 +293,7 @@ as the track or embedded lyrics.')
                     word = raw_file[start_ELRC:]
             else:
                 word = raw_file[start_ELRC:next_ELRC]
-            
+
             begin = next_line
             beginELRC = next_ELRC
 
@@ -316,9 +316,10 @@ as the track or embedded lyrics.')
                 beginStrip = 0
                 while stripELRC:
                     startStrippingELRC = newLineToStrip.find("<", beginStrip)
-                    endStrippingELRC = newLineToStrip.find(">", beginStrip +1)
+                    endStrippingELRC = newLineToStrip.find(">",
+                        beginStrip + 1)
                     strippedLine = currentStrip.replace(
-                        newLineToStrip[startStrippingELRC:endStrippingELRC+1],
+                    newLineToStrip[startStrippingELRC:endStrippingELRC + 1],
                         "")
                     currentStrip = strippedLine
                     beginStrip = endStrippingELRC
