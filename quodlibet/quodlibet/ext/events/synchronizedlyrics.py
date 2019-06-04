@@ -432,6 +432,8 @@ as the track or embedded lyrics.')
         self.text_buffer.apply_tag_by_name("highlight", startIter, endIter)
         print_d("♪ %s ♪" % line.strip())
         self._start_clearing_from += 1
+        if color == "...":
+            print("You happy now CircleCI? Look what you made me do.")
         return False
 
     def _show(self, line):
