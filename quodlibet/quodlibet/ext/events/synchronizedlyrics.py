@@ -36,7 +36,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = 'SynchronizedLyrics'
     PLUGIN_NAME = _('Synchronized Lyrics')
     PLUGIN_DESC = _('Shows synchronized lyrics from .lrc file with same name \
-as the track.')
+as the track or embedded lyrics.')
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     SYNC_PERIOD = 10000
@@ -61,6 +61,11 @@ as the track.')
     scrolled_window = None
 
     highlight_position = 0
+
+    foundELRC = False
+    del foundELRC
+
+    raw_file_check = None
 
     def PluginPreferences(cls, window):
         vb = Gtk.VBox(spacing=6)
@@ -143,7 +148,8 @@ as the track.')
         self._style_lyrics_window()
 
     def _set_highlight_color(self, button):
-        self.config_set(self.CFG_HIGHLIGHT_KEY, button.get_color().to_string())
+        self.config_set(self.CFG_HIGHLIGHT_KEY,
+            button.get_color().to_string())
         self._highlight_text()
 
     def _set_background_color(self, button):
@@ -170,7 +176,8 @@ as the track.')
         self.textview.show()
         self.adjustment = self.scrolled_window.get_vadjustment()
 
-        app.window.get_child().pack_start(self.scrolled_window, False, True, 0)
+        app.window.get_child().pack_start(self.scrolled_window,
+            False, True, 0)
         app.window.get_child().reorder_child(self.scrolled_window, 2)
 
         self._style_lyrics_window()
@@ -226,22 +233,25 @@ as the track.')
             print_d("Checking for lyrics tag")
             if self._current_lrc != new_lrc:
                 self._lines = []
+                self._words = []
                 if os.path.exists(new_lrc):
                     print_d("Found lyrics file")
-                    self._parse_lrc_file(new_lrc, 0)
+                    self._parse_lrc_file(new_lrc, "file")
                 else:
                     new_lrc = cur("~lyrics")
-                    print_d("Couldn't find lyrics filke, defaulting to tags")
-                    self._parse_lrc_file(new_lrc, 1)
+                    print_d("Couldn't find lyrics file, defaulting to tags")
+                    self._parse_lrc_file(new_lrc, "tag")
             self._current_lrc = new_lrc
 
     def _parse_lrc_file(self, lyrics, tagOrFile):
-        if tagOrFile == 0:
+        if tagOrFile == "file":
             with open(lyrics, 'r', encoding="utf-8") as f:
                 raw_file = f.read()
-        if tagOrFile == 1:    
+            self.raw_file_check = raw_file
+        elif tagOrFile == "tag":
             raw_file = lyrics
             raw_file.encode(encoding="utf-8")
+            self.raw_file_check = raw_file
         raw_file = raw_file.replace("\n", "")
         begin = 0
         beginELRC = 0
@@ -295,7 +305,6 @@ as the track.')
                 line = raw_file[start_ELRC:next_line]
             if bracketType == 1:
                 close_bracket = word.find(">")
-                self.foundELRC = True
             t = datetime.strptime(word[1:close_bracket], '%M:%S.%f')
             timestamp = (t.minute * 60000 + t.second * 1000 +
                          t.microsecond / 1000)
@@ -307,8 +316,10 @@ as the track.')
                 beginStrip = 0
                 while stripELRC:
                     startStrippingELRC = newLineToStrip.find("<", beginStrip)
-                    endStrippingELRC = newLineToStrip.find(">", beginStrip + 1)
-                    strippedLine = currentStrip.replace(newLineToStrip[startStrippingELRC:endStrippingELRC + 1], "")
+                    endStrippingELRC = newLineToStrip.find(">", beginStrip +1)
+                    strippedLine = currentStrip.replace(
+                        newLineToStrip[startStrippingELRC:endStrippingELRC+1],
+                        "")
                     currentStrip = strippedLine
                     beginStrip = endStrippingELRC
                     if startStrippingELRC and endStrippingELRC == -1:
@@ -344,14 +355,18 @@ as the track.')
         del tmp_word_dict
 
     def _set_timers(self):
-        print_d("Setting timers", context="console")
+        print_d("Setting timers")
         if len(self._timers) == 0:
-            if self.foundELRC == True:
+            if self.raw_file_check.find("<") != -1:
+                self.foundELRC = True
+            if self.foundELRC:
                 cur_time = self._cur_position()
                 cur_idx = self._greater(self._words, cur_time)
                 if cur_idx != -1:
                     cur_lin_idx = cur_idx
-                    while (cur_idx < len(self._words) and self._words[cur_idx][0] < cur_time + self.SYNC_PERIOD):
+                    while (cur_idx < len(self._words)
+                        and self._words[cur_idx][0] < cur_time +
+                        self.SYNC_PERIOD):
                         timestamp = self._words[cur_idx][0]
                         line = self._lines[cur_lin_idx][1]
                         word = self._words[cur_idx][1]
@@ -360,18 +375,21 @@ as the track.')
                                 cur_lin_idx += 1
                                 line = self._lines[cur_lin_idx][1]
                         if timestamp - cur_time > 0:
-                            tid = GLib.timeout_add(timestamp - cur_time, self._show_ELRC, line, word)
+                            tid = GLib.timeout_add(timestamp - cur_time,
+                                self._show_ELRC, line, word)
                         self._timers.append((timestamp, tid))
                         cur_idx += 1
-            elif self.foundELRC == False:
+            else:
                 cur_time = self._cur_position()
                 cur_idx = self._greater(self._lines, cur_time)
                 if cur_idx != -1:
-                    while (cur_idx < len(self._lines) and self._lines[cur_idx][0] < cur_time + self.SYNC_PERIOD):
+                    while (cur_idx < len(self._lines)
+                        and self._lines[cur_idx][0] < cur_time +
+                        self.SYNC_PERIOD):
                         timestamp = self._lines[cur_idx][0]
                         line = self._lines[cur_idx][1]
-                        tid = GLib.timeout_add(timestamp - cur_time, self._show,
-                                               line)
+                        tid = GLib.timeout_add(timestamp - cur_time,
+                            self._show, line)
                         self._timers.append((timestamp, tid))
                         cur_idx += 1
 
@@ -397,7 +415,8 @@ as the track.')
     def _show_ELRC(self, line, word):
         startOfLineCurrent = self.text_buffer.get_start_iter()
         endOfLineCurrent = self.text_buffer.get_end_iter()
-        current = self.text_buffer.get_text(startOfLineCurrent, endOfLineCurrent, True)
+        current = self.text_buffer.get_text(startOfLineCurrent,
+            endOfLineCurrent, True)
         self.text_buffer.set_text(line)
         startOfLine = self.text_buffer.get_start_iter()
         endOfLine = self.text_buffer.get_end_iter()
@@ -407,10 +426,11 @@ as the track.')
         self.highlight_position += len(word)
         startIter = self.text_buffer.get_iter_at_offset(0)
         endIter = self.text_buffer.get_iter_at_offset(self.highlight_position)
-        color = self.text_buffer.create_tag("highlight", foreground=self._highlight_text())
+        color = self.text_buffer.create_tag("highlight",
+            foreground=self._highlight_text())
         self.text_buffer.apply_tag_by_name("highlight", startIter, endIter)
-        self._start_clearing_from += 1
         print_d("♪ %s ♪" % line.strip())
+        self._start_clearing_from += 1
         return False
 
     def _show(self, line):
@@ -422,8 +442,8 @@ as the track.')
     def plugin_on_song_started(self, song):
         self.foundELRC = False
         self._build_data()
-        # delay so that current position is for current track, not previous one
-        GLib.timeout_add(5, self._timer_control)
+        #delay so that current position is for current track, not previous one
+        GLib.timeout_add(1, self._timer_control)
 
     def plugin_on_song_ended(self, song, stopped):
         self._clear_timers()
