@@ -427,13 +427,11 @@ as the track or embedded lyrics.')
         self.highlight_position += len(word)
         startIter = self.text_buffer.get_iter_at_offset(0)
         endIter = self.text_buffer.get_iter_at_offset(self.highlight_position)
-        color = self.text_buffer.create_tag("highlight",
+        self.text_buffer.create_tag("highlight",
             foreground=self._highlight_text())
         self.text_buffer.apply_tag_by_name("highlight", startIter, endIter)
         print_d("♪ %s ♪" % line.strip())
         self._start_clearing_from += 1
-        if color == "...":
-            print("You happy now CircleCI? Look what you made me do.")
         return False
 
     def _show(self, line):
