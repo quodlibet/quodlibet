@@ -7,7 +7,7 @@
 # (at your option) any later version.
 
 from quodlibet import _
-from quodlibet.util.dprint import print_d
+from quodlibet.util.dprint import print_w
 from quodlibet.formats import AudioFileError
 from quodlibet import util
 from quodlibet import qltk
@@ -118,12 +118,28 @@ def check_wrapper_changed(library, parent, songs):
                       "may be read-only, corrupted, or you "
                       "do not have permission to edit it.") %
                     util.escape(song('~basename'))).run()
-                print_d("Couldn't save song %s (%s)" % (song("~filename"), e))
+                print_w("Couldn't save song %s (%s)" % (song("~filename"), e))
 
             if win.step():
                 break
         win.destroy()
 
+    _inform_library_of_changed(library, songs)
+
+
+def background_check_wrapper_changed(library, songs):
+    need_write = [s for s in songs if s._needs_write]
+
+    for song in need_write:
+        try:
+            song._song.write()
+        except AudioFileError as e:
+            print_w("Couldn't save song %s (%s)" % (song("~filename"), e))
+
+    _inform_library_of_changed(library, songs)
+
+
+def _inform_library_of_changed(library, songs):
     changed = []
     for song in songs:
         if song._was_updated():
