@@ -33,7 +33,7 @@ from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
 from .misc import cached_func, get_module_dir, get_ca_file, \
     NamedTemporaryFile, cmp
 from .environment import is_plasma, is_unity, is_enlightenment, \
-    is_linux, is_windows, is_wine, is_osx, is_flatpak
+    is_linux, is_windows, is_wine, is_osx, is_flatpak, matches_flatpak_runtime
 from .enum import enum
 from .i18n import _, C_
 
@@ -41,7 +41,7 @@ from .i18n import _, C_
 # pyflakes
 cached_func, enum, print_w, print_exc, is_plasma, is_unity, is_enlightenment,
 is_linux, is_windows, is_wine, is_osx, get_module_dir, get_ca_file,
-NamedTemporaryFile, is_flatpak, cmp
+NamedTemporaryFile, is_flatpak, cmp, matches_flatpak_runtime
 
 
 class InstanceTracker(object):

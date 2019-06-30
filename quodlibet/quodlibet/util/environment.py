@@ -12,6 +12,8 @@ and under which environment.
 import os
 import sys
 import ctypes
+import configparser
+import fnmatch
 
 from gi.repository import GLib, Gio
 
@@ -29,6 +31,23 @@ def is_flatpak():
     """If we are running in a flatpak"""
 
     return is_linux() and os.path.exists("/.flatpak-info")
+
+
+def matches_flatpak_runtime(pattern: str) -> bool:
+    """Pass a fnmatch pattern for matching the flatpak runtime ID"""
+
+    if not is_linux():
+        return False
+
+    config = configparser.ConfigParser()
+    try:
+        with open("/.flatpak-info", "r", encoding="utf-8") as f:
+            config.read_file(f)
+        runtime = config.get("Application", "runtime")
+    except (OSError, configparser.Error):
+        return False
+
+    return fnmatch.fnmatchcase(runtime, pattern)
 
 
 def is_plasma():
