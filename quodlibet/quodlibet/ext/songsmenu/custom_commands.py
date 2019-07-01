@@ -126,7 +126,7 @@ class Command(JSONObject):
                 or "playlistindex" in self.pattern)
 
     def __str__(self):
-        return 'Command: "{command} {pattern}"'.format(**dict(self.data))
+        return _('Command: "{command} {pattern}"').format(**dict(self.data))
 
 
 class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
