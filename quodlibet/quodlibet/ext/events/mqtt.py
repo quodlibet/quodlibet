@@ -128,7 +128,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         (_("Broker hostname"), Config.HOST,
          _("broker hostname / IP (defaults to localhost)")),
 
-        (_("Broker port"), Config.PORT, _("broker port (defaults to 1883")),
+        (_("Broker port"), Config.PORT, _("broker port (defaults to 1883)")),
 
         (_("Topic"), Config.TOPIC, _("Topic")),
 
