@@ -204,8 +204,6 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         hb.set_border_width(0)
 
         button = qltk.Button(_("Edit Custom Commands") + "…", Icons.EDIT)
-        button.set_tooltip_markup(_("Supports QL patterns\neg "
-                                    "<tt>&lt;~artist~title&gt;</tt>"))
         button.connect("clicked", cls.edit_patterns)
         hb.pack_start(button, True, True, 0)
         hb.show_all()
