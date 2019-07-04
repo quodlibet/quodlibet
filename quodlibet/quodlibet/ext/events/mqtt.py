@@ -134,11 +134,11 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
 
         (_("Playing Pattern"),
          Config.PAT_PLAYING,
-         _("Status text when a song is started.") + _ACCEPTS_PATTERNS),
+         _("Status text when a song is started.") + ' ' + _ACCEPTS_PATTERNS),
 
         (_("Paused Pattern"),
          Config.PAT_PAUSED,
-         _("Text when a song is paused.") + _ACCEPTS_PATTERNS),
+         _("Text when a song is paused.") + ' ' + _ACCEPTS_PATTERNS),
 
         (_("No-song Text"),
          Config.STATUS_SONGLESS,
