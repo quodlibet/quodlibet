@@ -407,6 +407,7 @@ MENU = """
       <separator/>
       <menuitem action='RefreshLibrary' always-show-image='true'/>
       <separator/>
+      <menuitem action='Restart' always-show-image='true'/>
       <menuitem action='Quit' always-show-image='true'/>
     </menu>
 
@@ -911,6 +912,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         act = Action(name="Plugins", label=_('_Plugins'),
                      icon_name=Icons.SYSTEM_RUN)
         act.connect('activate', self.__plugins)
+        ag.add_action(act)
+
+        act = Action(name="Restart", label=_('_Restart'))
+        act.connect('activate', lambda *x: app.quit(restart=True))
         ag.add_action(act)
 
         act = Action(name="Quit", label=_('_Quit'),

@@ -101,7 +101,7 @@ def run_error_dialogs(exc_info, sentry_error):
         response = dialog.run()
         if response == ErrorDialog.RESPONSE_QUIT:
             dialog.destroy()
-            app.quit()
+            app.quit(restart=True)
         elif response == ErrorDialog.RESPONSE_SUBMIT:
             dialog.hide()
             submit_dialog = SubmitErrorDialog(
