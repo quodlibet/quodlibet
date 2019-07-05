@@ -144,7 +144,7 @@ class SearchBarBox(Gtk.Box):
             _("Search after _typing"), 'settings', 'eager_search',
             populate=True)
         cb.set_tooltip_text(
-            _("Show search results after the user stops typing."))
+            _("Show search results after the user stops typing"))
         cb.show()
         menu.prepend(cb)
 

@@ -570,7 +570,7 @@ class QLScrobbler(EventPlugin):
         entry = ValidatingEntry(Query.validator)
         entry.set_text(plugin_config.get('exclude'))
         entry.set_tooltip_text(
-                _("Songs matching this filter will not be submitted."))
+                _("Songs matching this filter will not be submitted"))
         entry.connect('changed', changed, 'exclude')
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
