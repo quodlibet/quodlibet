@@ -1795,10 +1795,10 @@ msgid "Add '[paused]'"
 msgstr "παυμένο"
 
 #: ../quodlibet/ext/events/gajim_status.py:163
-msgid "If checked, '[paused]' will be added to status message on pause."
+msgid "If checked, '[paused]' will be added to status message on pause"
 msgstr ""
 "Αν τσεκαριστεί κατά την παύση θα προστεθεί το '[paused]' στο μήνυμα "
-"κατάστασης."
+"κατάστασης"
 
 #: ../quodlibet/ext/events/gajim_status.py:187
 #, fuzzy
@@ -2239,8 +2239,8 @@ msgstr ""
 "για τη χρήση προκαθορισμένου."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:568
-msgid "Songs matching this filter will not be submitted."
-msgstr "Τα τραγούδια που ταιριάζουν με αυτό το φίλτρο δεν θα υποβάλλονται."
+msgid "Songs matching this filter will not be submitted"
+msgstr "Τα τραγούδια που ταιριάζουν με αυτό το φίλτρο δεν θα υποβάλλονται"
 
 #: ../quodlibet/ext/events/qlscrobbler.py:576
 msgid "_Offline mode (don't submit anything)"
@@ -3052,8 +3052,8 @@ msgid "Password:"
 msgstr "Κωδικός:"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:130
-msgid "Library directory the server connects to."
-msgstr "Κατάλογος μουσικοθήκης στον οποίο συνδέεται ο διακομιστής."
+msgid "Library directory the server connects to"
+msgstr "Κατάλογος μουσικοθήκης στον οποίο συνδέεται ο διακομιστής"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:132
 msgid "Library path:"
@@ -4408,10 +4408,10 @@ msgstr "Απενεργοποίηση αναπαραγωγής χωρίς κεν�
 #: ../quodlibet/player/gstbe/prefs.py:70
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
-"GStreamer versions."
+"GStreamer versions"
 msgstr ""
 "Η απενεργοποίηση της αναπαραγωγής χωρίς κενά μερικές φορές αποτρέπει "
-"προβλήματα αλλαγής τραγουδιών με ορισμένες εκδόσεις του Gstreamer."
+"προβλήματα αλλαγής τραγουδιών με ορισμένες εκδόσεις του Gstreamer"
 
 #: ../quodlibet/player/gstbe/util.py:93
 msgid "No GStreamer audio sink found"
@@ -5836,7 +5836,7 @@ msgid "Search after _typing"
 msgstr "Αναζήτηση με την _πληκτρολόγηση"
 
 #: ../quodlibet/qltk/searchbar.py:132
-msgid "Show search results after the user stops typing."
+msgid "Show search results after the user stops typing"
 msgstr ""
 "Εμφάνισε τα αποτελέσματα αναζήτησης αφού ο χρήστης σταματήσει την "
 "πληκτρολόγηση"

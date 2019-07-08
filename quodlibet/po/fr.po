@@ -1702,8 +1702,8 @@ msgid "Add '[paused]'"
 msgstr "Ajouter '[paused]'"
 
 #: quodlibet/ext/events/gajim_status.py:164
-msgid "If checked, '[paused]' will be added to status message on pause."
-msgstr "Si coché, '[paused]' sera ajouté au message de statut en pause."
+msgid "If checked, '[paused]' will be added to status message on pause"
+msgstr "Si coché, '[paused]' sera ajouté au message de statut en pause"
 
 #: quodlibet/ext/events/gajim_status.py:188
 msgid "Statuses for which message will be changed"
@@ -2098,8 +2098,8 @@ msgstr ""
 "la valeur par défaut."
 
 #: quodlibet/ext/events/qlscrobbler.py:573
-msgid "Songs matching this filter will not be submitted."
-msgstr "Les titres correspondant à cette recherche ne seront pas soumis."
+msgid "Songs matching this filter will not be submitted"
+msgstr "Les titres correspondant à cette recherche ne seront pas soumis"
 
 #: quodlibet/ext/events/qlscrobbler.py:581
 msgid "_Offline mode (don't submit anything)"
@@ -3107,8 +3107,8 @@ msgid "Password:"
 msgstr "Mot de passe :"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:130
-msgid "Library directory the server connects to."
-msgstr "Répertoire la bibliothèque auquel le serveur se connecte."
+msgid "Library directory the server connects to"
+msgstr "Répertoire la bibliothèque auquel le serveur se connecte"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:132
 msgid "Library path:"
@@ -4565,10 +4565,10 @@ msgstr "Désactiver la _lecture sans blanc"
 #: quodlibet/player/gstbe/prefs.py:70
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
-"GStreamer versions."
+"GStreamer versions"
 msgstr ""
 "Désactiver la lecture sans blanc peut éviter les problèmes de changement de "
-"piste avec certaines versions de GStreamer."
+"piste avec certaines versions de GStreamer"
 
 #: quodlibet/player/gstbe/util.py:101
 msgid "No GStreamer audio sink found"
@@ -6050,7 +6050,7 @@ msgid "Search after _typing"
 msgstr "Rechercher après avoir _tapé au clavier"
 
 #: quodlibet/qltk/searchbar.py:147
-msgid "Show search results after the user stops typing."
+msgid "Show search results after the user stops typing"
 msgstr ""
 "Afficher le résultat d'une recherche dès que l'utilisateur a terminé la "
 "saisie"

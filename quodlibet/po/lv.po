@@ -5884,9 +5884,9 @@ msgid "Search after _typing"
 msgstr "Meklēt pēc ieraks_tīšanas"
 
 #: ../quodlibet/qltk/searchbar.py:132
-msgid "Show search results after the user stops typing."
+msgid "Show search results after the user stops typing"
 msgstr ""
-"Parāda meklējuma rezultātus pēc tam, kad lietotājs ir pārtraucis rakstīt."
+"Parāda meklējuma rezultātus pēc tam, kad lietotājs ir pārtraucis rakstīt"
 
 #: ../quodlibet/qltk/searchbar.py:187
 msgid "_Limit:"

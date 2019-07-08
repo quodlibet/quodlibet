@@ -5921,8 +5921,8 @@ msgid "Search after _typing"
 msgstr "Procurar despois de _escrever"
 
 #: ../quodlibet/qltk/searchbar.py:132
-msgid "Show search results after the user stops typing."
-msgstr "Mostrar os resultados despois de rematar de escrever."
+msgid "Show search results after the user stops typing"
+msgstr "Mostrar os resultados despois de rematar de escrever"
 
 #: ../quodlibet/qltk/searchbar.py:187
 msgid "_Limit:"
