@@ -1674,9 +1674,9 @@ msgid "Add '[paused]'"
 msgstr "Adicionar \"[pausado]\""
 
 #: quodlibet/ext/events/gajim_status.py:164
-msgid "If checked, '[paused]' will be added to status message on pause."
+msgid "If checked, '[paused]' will be added to status message on pause"
 msgstr ""
-"Se marcada, adiciona \"[pausado]\" ao fim da mensagem durante uma pausa."
+"Se marcada, adiciona \"[pausado]\" ao fim da mensagem durante uma pausa"
 
 #: quodlibet/ext/events/gajim_status.py:188
 msgid "Statuses for which message will be changed"
@@ -2070,8 +2070,8 @@ msgstr ""
 "branco para usar o padrão."
 
 #: quodlibet/ext/events/qlscrobbler.py:573
-msgid "Songs matching this filter will not be submitted."
-msgstr "Músicas que corresponderem a este filtro não serão enviadas."
+msgid "Songs matching this filter will not be submitted"
+msgstr "Músicas que corresponderem a este filtro não serão enviadas"
 
 #: quodlibet/ext/events/qlscrobbler.py:581
 msgid "_Offline mode (don't submit anything)"
@@ -3102,8 +3102,8 @@ msgid "Password:"
 msgstr "Senha:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:130
-msgid "Library directory the server connects to."
-msgstr "Pasta de biblioteca que o servidor se conecta."
+msgid "Library directory the server connects to"
+msgstr "Pasta de biblioteca que o servidor se conecta"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:132
 msgid "Library path:"
@@ -4546,10 +4546,10 @@ msgstr "Desativar reprodução sem intervalos"
 #: quodlibet/player/gstbe/prefs.py:70
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
-"GStreamer versions."
+"GStreamer versions"
 msgstr ""
 "Desativar a reprodução sem intervalos pode evitar problemas na troca de "
-"faixas que ocorrem em certas versões do GStreamer."
+"faixas que ocorrem em certas versões do GStreamer"
 
 #: quodlibet/player/gstbe/util.py:101
 msgid "No GStreamer audio sink found"
@@ -6025,8 +6025,8 @@ msgid "Search after _typing"
 msgstr "Pesquise após digi_tar"
 
 #: quodlibet/qltk/searchbar.py:147
-msgid "Show search results after the user stops typing."
-msgstr "Exibir resultados da pesquisa após o usuário terminar de digitar."
+msgid "Show search results after the user stops typing"
+msgstr "Exibir resultados da pesquisa após o usuário terminar de digitar"
 
 #: quodlibet/qltk/searchbar.py:215
 msgid "_Limit:"

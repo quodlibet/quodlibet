@@ -1641,9 +1641,9 @@ msgid "Add '[paused]'"
 msgstr "Legg til «[på pause]»"
 
 #: ../quodlibet/ext/events/gajim_status.py:165
-msgid "If checked, '[paused]' will be added to status message on pause."
+msgid "If checked, '[paused]' will be added to status message on pause"
 msgstr ""
-"Hvis dette er valgt, blir «[paused]» lagt til statusmeldinger ved pause."
+"Hvis dette er valgt, blir «[paused]» lagt til statusmeldinger ved pause"
 
 #: ../quodlibet/ext/events/gajim_status.py:189
 msgid "Statuses for which message will be changed"
@@ -2032,8 +2032,8 @@ msgstr ""
 "bruke standardmønster."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:566
-msgid "Songs matching this filter will not be submitted."
-msgstr "Låter som samsvarer med dette filteret blir ikke sendt inn."
+msgid "Songs matching this filter will not be submitted"
+msgstr "Låter som samsvarer med dette filteret blir ikke sendt inn"
 
 #: ../quodlibet/ext/events/qlscrobbler.py:574
 msgid "_Offline mode (don't submit anything)"
@@ -3011,8 +3011,8 @@ msgid "Password:"
 msgstr "Passord:"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:131
-msgid "Library directory the server connects to."
-msgstr "Bibliotekmappe som tjener kobler til."
+msgid "Library directory the server connects to"
+msgstr "Bibliotekmappe som tjener kobler til"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:133
 msgid "Library path:"
@@ -4453,10 +4453,10 @@ msgstr "Slå av _sømløs avspilling"
 #: ../quodlibet/player/gstbe/prefs.py:71
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
-"GStreamer versions."
+"GStreamer versions"
 msgstr ""
 "Slå av sømløs avspilling for å omgå problemer som oppstår med enkelte "
-"versjoner av GStreamer."
+"versjoner av GStreamer"
 
 #: ../quodlibet/player/gstbe/util.py:104
 msgid "No GStreamer audio sink found"
@@ -5855,8 +5855,8 @@ msgid "Search after _typing"
 msgstr "Søk e_tter skriving"
 
 #: ../quodlibet/qltk/searchbar.py:142
-msgid "Show search results after the user stops typing."
-msgstr "Vil søketreff når bruker slutter å skrive."
+msgid "Show search results after the user stops typing"
+msgstr "Vil søketreff når bruker slutter å skrive"
 
 #: ../quodlibet/qltk/searchbar.py:201
 msgid "_Limit:"

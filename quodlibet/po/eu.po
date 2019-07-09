@@ -5903,9 +5903,9 @@ msgid "Search after _typing"
 msgstr "Bilatu ida_tzi ondoren"
 
 #: ../quodlibet/qltk/searchbar.py:132
-msgid "Show search results after the user stops typing."
+msgid "Show search results after the user stops typing"
 msgstr ""
-"Bistarazi bilaketa emaitzak erabiltzaileak tekleatzeari utzi bezain laster."
+"Bistarazi bilaketa emaitzak erabiltzaileak tekleatzeari utzi bezain laster"
 
 #: ../quodlibet/qltk/searchbar.py:187
 msgid "_Limit:"
