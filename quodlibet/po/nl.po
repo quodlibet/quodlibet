@@ -2461,7 +2461,7 @@ msgstr "Wordt afgespeeld:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:123
 #, python-format
-msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is started. Accepts QL Patterns e.g. %s."
 msgstr ""
 "Statustekst wanneer een liedje wordt gestart. Quod Libet-patronen zoals %s "
 "worden aanvaard."
@@ -2472,7 +2472,7 @@ msgstr "Gepauzeerd:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:140
 #, python-format
-msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s."
 msgstr ""
 "Statustekst wanneer een liedje is gepauzeerd. Quod Libet-patronen zoals %s "
 "worden aanvaard."
@@ -3366,12 +3366,12 @@ msgstr "parameter"
 msgid ""
 "If specified, a parameter whose occurrences in the command will be "
 "substituted with a user-supplied value, e.g. by using 'PARAM' all instances "
-"of '{PARAM}' in your command will have the value prompted for when run"
+"of '{PARAM}' in your command will have the value prompted for when run."
 msgstr ""
 "Indien opgegeven: een parameter waarvan de verschijningen in het commando "
 "vervangen zullen worden door een waarde opgegeven door de gebruiker, bv. "
 "door 'PARAM' te gebruiken zullen alle voorkomens van '{PARAM}' in je "
-"commando de opgegeven waarde hebben wanneer het commando wordt uitgevoerd"
+"commando de opgegeven waarde hebben wanneer het commando wordt uitgevoerd."
 
 #: ../quodlibet/ext/songsmenu/custom_commands.py:55
 msgid "pattern"

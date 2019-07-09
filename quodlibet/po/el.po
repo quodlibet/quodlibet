@@ -1982,7 +1982,7 @@ msgstr "Προτιμήσεις"
 msgid "Accepts QL Patterns e.g. %s"
 msgstr ""
 "Μήνυμα κατάστασης όταν κάποιο τραγούδι είναι παυμένο. Δέχεται πρότυπα QL π."
-"χ. %s"
+"χ. %s."
 
 #: ../quodlibet/ext/events/mqtt.py:56
 msgid "MQTT Publisher"
@@ -2452,10 +2452,10 @@ msgstr "Αναπαράγεται:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:123
 #, python-format
-msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is started. Accepts QL Patterns e.g. %s."
 msgstr ""
 "Μήνυμα κατάστασης όταν αναπαράγεται κάποιο τραγούδι. Δέχεται πρότυπα QL π.χ. "
-"%s"
+"%s."
 
 #: ../quodlibet/ext/events/telepathy_status.py:139
 msgid "Paused:"
@@ -2463,10 +2463,10 @@ msgstr "Παυμένο:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:140
 #, python-format
-msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s."
 msgstr ""
 "Μήνυμα κατάστασης όταν κάποιο τραγούδι είναι παυμένο. Δέχεται πρότυπα QL π."
-"χ. %s"
+"χ. %s."
 
 #: ../quodlibet/ext/events/telepathy_status.py:156
 msgid "Plain text for status when there is no current song"
@@ -3359,7 +3359,7 @@ msgstr "παράμετρος"
 msgid ""
 "If specified, a parameter whose occurrences in the command will be "
 "substituted with a user-supplied value, e.g. by using 'PARAM' all instances "
-"of '{PARAM}' in your command will have the value prompted for when run"
+"of '{PARAM}' in your command will have the value prompted for when run."
 msgstr ""
 "Αν οριστεί, μια παράμετρος η οποία θα αντικατασταθεί όπου βρεθεί με μια "
 "καθορισμένη από τον χρήστη τιμή, π.χ. χρησιμοποιώντας το 'PARAM' όλα τα "

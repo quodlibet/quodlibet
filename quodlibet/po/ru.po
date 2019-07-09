@@ -2301,9 +2301,9 @@ msgstr "Воспроизведение:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:124
 #, python-format
-msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is started. Accepts QL Patterns e.g. %s."
 msgstr ""
-"Текст статуса при запуске трека. Принимает QL шаблоны, например %s"
+"Текст статуса при запуске трека. Принимает QL шаблоны, например %s."
 
 #: ../quodlibet/ext/events/telepathy_status.py:140
 msgid "Paused:"
@@ -2311,9 +2311,9 @@ msgstr "Пауза:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:141
 #, python-format
-msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s."
 msgstr ""
-"Текст статуса при паузе песни. Принимает QL шаблоны, например %s"
+"Текст статуса при паузе песни. Принимает QL шаблоны, например %s."
 
 #: ../quodlibet/ext/events/telepathy_status.py:157
 msgid "Plain text for status when there is no current song"
@@ -3413,7 +3413,7 @@ msgstr "параметр"
 msgid ""
 "If specified, a parameter whose occurrences in the command will be "
 "substituted with a user-supplied value, e.g. by using 'PARAM' all instances "
-"of '{PARAM}' in your command will have the value prompted for when run"
+"of '{PARAM}' in your command will have the value prompted for when run."
 msgstr ""
 "Если указано, параметр вхождения которого, в команде, будут заменены "
 "пользовательским значением, например, с помощью параметра 'PARAM' все "
@@ -5512,7 +5512,7 @@ msgstr ""
 #: ../quodlibet/qltk/prefs.py:598
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Список разделителей (через пробел), которые будут использоваться для "
 "разделения тегов"

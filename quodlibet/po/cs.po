@@ -1789,8 +1789,8 @@ msgstr "Nastavení"
 
 #: ../quodlibet/ext/events/mqtt.py:51
 #, python-format
-msgid "Accepts QL Patterns e.g. %s"
-msgstr "Akceptuje QL vzory, např. %s"
+msgid "Accepts QL Patterns e.g. %s."
+msgstr "Akceptuje QL vzory, např. %s."
 
 #: ../quodlibet/ext/events/mqtt.py:57
 msgid "MQTT Publisher"
@@ -2284,7 +2284,7 @@ msgstr "Přehrává se:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:124
 #, python-format
-msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is started. Accepts QL Patterns e.g. %s."
 msgstr ""
 "Text statusu při začátku přehrávání. Je možné použít QL vzory jako např. %s."
 
@@ -2294,7 +2294,7 @@ msgstr "Zastaveno:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:141
 #, python-format
-msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s."
 msgstr ""
 "Text statusu, když je přehrávání pozastaveno. Je možné použít QL vzory jako "
 "např. %s."
@@ -3275,7 +3275,7 @@ msgstr "parametr"
 msgid ""
 "If specified, a parameter whose occurrences in the command will be "
 "substituted with a user-supplied value, e.g. by using 'PARAM' all instances "
-"of '{PARAM}' in your command will have the value prompted for when run"
+"of '{PARAM}' in your command will have the value prompted for when run."
 msgstr ""
 "Je-li specifikováno,výskyty parametru v příkazu budou nahrazeny uživatelem "
 "zadanou hodnotou, např. při použití 'PARAM' budou všechny výskyty '{PARAM}' "
@@ -5370,7 +5370,7 @@ msgstr "Uložit změny tagů bez potvrzení v případě úpravy více tagů naj
 #: ../quodlibet/qltk/prefs.py:588
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Seznam oddělovačů pro rozdělování hodnot tagů. Položky jsou odděleny mezerou."
 

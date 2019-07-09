@@ -1765,8 +1765,8 @@ msgstr "Preferencje"
 
 #: quodlibet/ext/events/mqtt.py:56
 #, python-format
-msgid "Accepts QL Patterns e.g. %s"
-msgstr "Przyjmuje wzorce QL, np. %s"
+msgid "Accepts QL Patterns e.g. %s."
+msgstr "Przyjmuje wzorce QL, np. %s."
 
 #: quodlibet/ext/events/mqtt.py:62
 msgid "MQTT Publisher"
@@ -2271,9 +2271,9 @@ msgstr "Odtwarzanie:"
 
 #: quodlibet/ext/events/telepathy_status.py:130
 #, python-format
-msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is started. Accepts QL Patterns e.g. %s."
 msgstr ""
-"Tekst stanu, kiedy utwór jest rozpoczynany. Przyjmuje wzorce QL, np. %s"
+"Tekst stanu, kiedy utwór jest rozpoczynany. Przyjmuje wzorce QL, np. %s."
 
 #: quodlibet/ext/events/telepathy_status.py:146
 msgid "Paused:"
@@ -2281,8 +2281,8 @@ msgstr "Wstrzymano:"
 
 #: quodlibet/ext/events/telepathy_status.py:147
 #, python-format
-msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
-msgstr "Tekst stanu, kiedy utwór jest wstrzymany. Przyjmuje wzorce QL, np. %s"
+msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s."
+msgstr "Tekst stanu, kiedy utwór jest wstrzymany. Przyjmuje wzorce QL, np. %s."
 
 #: quodlibet/ext/events/telepathy_status.py:163
 msgid "Plain text for status when there is no current song"
@@ -3392,11 +3392,11 @@ msgstr "parametr"
 msgid ""
 "If specified, a parameter whose occurrences in the command will be "
 "substituted with a user-supplied value, e.g. by using 'PARAM' all instances "
-"of '{PARAM}' in your command will have the value prompted for when run"
+"of '{PARAM}' in your command will have the value prompted for when run."
 msgstr ""
 "Jeśli podano, to parametr, którego wystąpienia w poleceniu będą zastępowane "
 "wartością podaną przez użytkownika, np. za pomocą „PARAM” wszystkie kopie "
-"„{PARAM}” w poleceniu będą prosiły o podanie wartości podczas wykonywania"
+"„{PARAM}” w poleceniu będą prosiły o podanie wartości podczas wykonywania."
 
 #: quodlibet/ext/songsmenu/custom_commands.py:56
 msgid "pattern"
@@ -5492,10 +5492,10 @@ msgstr ""
 #: quodlibet/qltk/prefs.py:598
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Zestaw separatorów do użycia podczas rozdzielania wartości etykiet "
-"w edytorze etykiet. Lista jest rozdzielana spacjami"
+"w edytorze etykiet. Lista jest rozdzielana spacjami."
 
 #: quodlibet/qltk/prefs.py:621
 msgid "Tags"
