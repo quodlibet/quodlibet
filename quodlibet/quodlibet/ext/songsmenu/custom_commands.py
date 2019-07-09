@@ -50,7 +50,7 @@ class Command(JSONObject):
                              "the command will be substituted with a "
                              "user-supplied value, e.g. by using 'PARAM' "
                              "all instances of '{PARAM}' in your command will "
-                             "have the value prompted for when run")),
+                             "have the value prompted for when run.")),
 
         "pattern": Field(_("pattern"),
                          _("The QL pattern, e.g. <~filename>, to use to "
