@@ -51,7 +51,7 @@ class Config(object):
     EMPTY_STATUS = ""
 
 
-_ACCEPTS_PATTERNS = (_("Accepts QL Patterns e.g. %s") %
+_ACCEPTS_PATTERNS = (_("Accepts QL Patterns e.g. %s.") %
                      monospace(escape('<~artist~title>')))
 
 
