@@ -1782,8 +1782,8 @@ msgstr "Innstillinger"
 
 #: ../quodlibet/ext/events/mqtt.py:51
 #, python-format
-msgid "Accepts QL Patterns e.g. %s"
-msgstr "Tillater QL-mønstre som f.eks. %s"
+msgid "Accepts QL Patterns e.g. %s."
+msgstr "Tillater QL-mønstre som f.eks. %s."
 
 #: ../quodlibet/ext/events/mqtt.py:57
 msgid "MQTT Publisher"
@@ -2284,8 +2284,8 @@ msgstr "Spiller:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:124
 #, python-format
-msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
-msgstr "Statustekst når du starter en låt. Godtar QL-mønstre som f.eks. %s"
+msgid "Status text when a song is started. Accepts QL Patterns e.g. %s."
+msgstr "Statustekst når du starter en låt. Godtar QL-mønstre som f.eks. %s."
 
 #: ../quodlibet/ext/events/telepathy_status.py:140
 msgid "Paused:"
@@ -2293,9 +2293,9 @@ msgstr "Pauset:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:141
 #, python-format
-msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s."
 msgstr ""
-"Statustekst når du setter en låt på pause. Godtar QL-mønstre som f.eks. %s"
+"Statustekst når du setter en låt på pause. Godtar QL-mønstre som f.eks. %s."
 
 #: ../quodlibet/ext/events/telepathy_status.py:157
 msgid "Plain text for status when there is no current song"
@@ -5490,10 +5490,10 @@ msgstr ""
 #: ../quodlibet/qltk/prefs.py:598
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Liste over skilletegn som skal brukes ved oppdeling av taggverdier. Selve "
-"lista bruker mellomrom som skilletegn"
+"lista bruker mellomrom som skilletegn."
 
 #: ../quodlibet/qltk/prefs.py:621
 msgid "Tags"

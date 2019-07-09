@@ -1847,8 +1847,8 @@ msgstr "Préférences"
 
 #: quodlibet/ext/events/mqtt.py:54
 #, python-format
-msgid "Accepts QL Patterns e.g. %s"
-msgstr "Accepte les modèles de QL, p. ex. %s"
+msgid "Accepts QL Patterns e.g. %s."
+msgstr "Accepte les modèles de QL, p. ex. %s."
 
 #: quodlibet/ext/events/mqtt.py:60
 msgid "MQTT Publisher"
@@ -2349,10 +2349,10 @@ msgstr "En cours de lecture :"
 
 #: quodlibet/ext/events/telepathy_status.py:129
 #, python-format
-msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is started. Accepts QL Patterns e.g. %s."
 msgstr ""
 "Texte de statut lorsqu'un morceau est lancé. Accepte les modèles de QL, p. "
-"ex. %s"
+"ex. %s."
 
 #: quodlibet/ext/events/telepathy_status.py:145
 msgid "Paused:"
@@ -2360,10 +2360,10 @@ msgstr "En pause :"
 
 #: quodlibet/ext/events/telepathy_status.py:146
 #, python-format
-msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s."
 msgstr ""
 "Texte de statut lorsqu'un morceau est mis en pause. Accepte les modèles de "
-"QL, p. ex. %s"
+"QL, p. ex. %s."
 
 #: quodlibet/ext/events/telepathy_status.py:162
 msgid "Plain text for status when there is no current song"
@@ -5636,10 +5636,10 @@ msgstr ""
 #: quodlibet/qltk/prefs.py:608
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Un ensemble de séparateurs à utiliser lors de la division des valeurs de "
-"balises dans l'éditeur de balises. La liste est séparée par des espaces"
+"balises dans l'éditeur de balises. La liste est séparée par des espaces."
 
 #: quodlibet/qltk/prefs.py:618
 msgid ""

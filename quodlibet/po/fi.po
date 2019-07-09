@@ -1801,8 +1801,8 @@ msgstr "Asetukset"
 
 #: ../quodlibet/ext/events/mqtt.py:56
 #, python-format
-msgid "Accepts QL Patterns e.g. %s"
-msgstr "Hyväksyy QL-kaavat, esim. %s"
+msgid "Accepts QL Patterns e.g. %s."
+msgstr "Hyväksyy QL-kaavat, esim. %s."
 
 #: ../quodlibet/ext/events/mqtt.py:62
 msgid "MQTT Publisher"
@@ -2305,8 +2305,8 @@ msgstr "Toistetaan:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:124
 #, python-format
-msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
-msgstr "Tilaviesti, kun kappaleen toisto alkaa. Hyväksyy QL-kaavoja, kuten %s"
+msgid "Status text when a song is started. Accepts QL Patterns e.g. %s."
+msgstr "Tilaviesti, kun kappaleen toisto alkaa. Hyväksyy QL-kaavoja, kuten %s."
 
 #: ../quodlibet/ext/events/telepathy_status.py:140
 msgid "Paused:"
@@ -2314,10 +2314,10 @@ msgstr "Keskeytetty:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:141
 #, python-format
-msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s."
 msgstr ""
 "Tilaviesti, kun kappaleen toisto on keskeytetty. Hyväksyy QL-kaavoja, kuten "
-"%s"
+"%s."
 
 #: ../quodlibet/ext/events/telepathy_status.py:157
 msgid "Plain text for status when there is no current song"
@@ -5539,7 +5539,7 @@ msgstr ""
 #: ../quodlibet/qltk/prefs.py:598
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Erotinmerkit, joita käytetään jaettaessa tunnisteiden arvoja osiin. Erota "
 "merkit välilyönnillä toisistaan."

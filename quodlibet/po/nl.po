@@ -2461,7 +2461,7 @@ msgstr "Wordt afgespeeld:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:123
 #, python-format
-msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is started. Accepts QL Patterns e.g. %s."
 msgstr ""
 "Statustekst wanneer een liedje wordt gestart. Quod Libet-patronen zoals %s "
 "worden aanvaard."
@@ -2472,7 +2472,7 @@ msgstr "Gepauzeerd:"
 
 #: ../quodlibet/ext/events/telepathy_status.py:140
 #, python-format
-msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
+msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s."
 msgstr ""
 "Statustekst wanneer een liedje is gepauzeerd. Quod Libet-patronen zoals %s "
 "worden aanvaard."
