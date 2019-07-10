@@ -4675,8 +4675,8 @@ msgid "Tag expression"
 msgstr "Tunnistelauseke"
 
 #: ../quodlibet/qltk/data_editors.py:373
-msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "Tunnistelauseke, esim. people:real tai ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
+msgstr "Tunnistelauseke, esim. people:real tai ~album~year"
 
 #: ../quodlibet/qltk/data_editors.py:374
 msgid "Enter new tag"

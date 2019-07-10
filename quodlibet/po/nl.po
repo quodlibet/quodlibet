@@ -4595,7 +4595,7 @@ msgid "Tag expression"
 msgstr "Tag-expressie"
 
 #: ../quodlibet/qltk/data_editors.py:382
-msgid "Tag expression e.g. people:real or ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
 msgstr "Tag-expressie, bv. personen:echt of ~album~jaar"
 
 #: ../quodlibet/qltk/data_editors.py:383

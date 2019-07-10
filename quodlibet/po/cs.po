@@ -4505,8 +4505,8 @@ msgid "Tag expression"
 msgstr "Výraz tagu"
 
 #: ../quodlibet/qltk/data_editors.py:373
-msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "Výraz tagu, např. people:real nebo ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
+msgstr "Výraz tagu, např. people:real nebo ~album~year"
 
 #: ../quodlibet/qltk/data_editors.py:374
 msgid "Enter new tag"

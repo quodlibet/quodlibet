@@ -4745,8 +4745,8 @@ msgid "Tag expression"
 msgstr "Motif d'étiquette"
 
 #: quodlibet/qltk/data_editors.py:371
-msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "Motif d'étiquette, c'est-à-dire people:nom ou ~album~année."
+msgid "Tag expression e.g. people:real or ~album~year"
+msgstr "Motif d'étiquette, c'est-à-dire people:nom ou ~album~année"
 
 #: quodlibet/qltk/data_editors.py:372
 msgid "Enter new tag"

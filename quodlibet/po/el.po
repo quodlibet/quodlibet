@@ -4597,8 +4597,8 @@ msgid "Tag expression"
 msgstr "Πρότυπο ετικέτας"
 
 #: ../quodlibet/qltk/data_editors.py:382
-msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "Πρότυπο ετικέτας π.χ. people:real ή ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
+msgstr "Πρότυπο ετικέτας π.χ. people:real ή ~album~year"
 
 #: ../quodlibet/qltk/data_editors.py:383
 msgid "Enter new tag"

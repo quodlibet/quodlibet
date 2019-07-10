@@ -4641,7 +4641,7 @@ msgid "Tag expression"
 msgstr "Tag-udtryk"
 
 #: ../quodlibet/qltk/data_editors.py:373
-msgid "Tag expression e.g. people:real or ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
 msgstr "Tag-udtryk. F.eks. people:real eller ~album~year."
 
 #: ../quodlibet/qltk/data_editors.py:374
