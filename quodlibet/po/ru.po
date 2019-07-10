@@ -5512,7 +5512,7 @@ msgstr ""
 #: ../quodlibet/qltk/prefs.py:598
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Список разделителей (через пробел), которые будут использоваться для "
 "разделения тегов"

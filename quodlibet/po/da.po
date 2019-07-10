@@ -5503,10 +5503,10 @@ msgstr "Gem ændringer til tags uden bekræftelse når flere filer redigeres"
 #: ../quodlibet/qltk/prefs.py:598
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Et sæt af separatorer som skal bruges når tag-værdier opdeles i tag-"
-"editoren. Listen er mellemrumssepareret"
+"editoren. Listen er mellemrumssepareret."
 
 #: ../quodlibet/qltk/prefs.py:621
 msgid "Tags"

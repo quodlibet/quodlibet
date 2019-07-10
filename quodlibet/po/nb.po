@@ -5490,10 +5490,10 @@ msgstr ""
 #: ../quodlibet/qltk/prefs.py:598
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Liste over skilletegn som skal brukes ved oppdeling av taggverdier. Selve "
-"lista bruker mellomrom som skilletegn"
+"lista bruker mellomrom som skilletegn."
 
 #: ../quodlibet/qltk/prefs.py:621
 msgid "Tags"

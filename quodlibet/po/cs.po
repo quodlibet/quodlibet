@@ -5370,7 +5370,7 @@ msgstr "Uložit změny tagů bez potvrzení v případě úpravy více tagů naj
 #: ../quodlibet/qltk/prefs.py:588
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Seznam oddělovačů pro rozdělování hodnot tagů. Položky jsou odděleny mezerou."
 
