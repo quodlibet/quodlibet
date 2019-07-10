@@ -368,7 +368,7 @@ class TagListEditor(qltk.Window):
         self.view.remove_selection()
 
     def __add(self, *args):
-        tooltip = _('Tag expression e.g. people:real or ~album~year.')
+        tooltip = _('Tag expression e.g. people:real or ~album~year')
         dialog = GetStringDialog(self, _("Enter new tag"), "",
                                  button_icon=None,
                                  tooltip=tooltip)
