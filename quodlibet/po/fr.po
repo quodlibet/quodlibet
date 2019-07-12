@@ -5636,10 +5636,10 @@ msgstr ""
 #: quodlibet/qltk/prefs.py:608
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Un ensemble de séparateurs à utiliser lors de la division des valeurs de "
-"balises dans l'éditeur de balises. La liste est séparée par des espaces"
+"balises dans l'éditeur de balises. La liste est séparée par des espaces."
 
 #: quodlibet/qltk/prefs.py:618
 msgid ""

@@ -5296,7 +5296,7 @@ msgstr "שמירת שינויים בתגים ללא בקשת אישור בעת �
 #: quodlibet/qltk/prefs.py:608
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The list "
-"is space-separated"
+"is space-separated."
 msgstr ""
 "סדרת תווי הפרדה לשימוש בעת פיצול ערכים בעורך התגים. ערכי הרשימה מופרדים בפסיקים"
 

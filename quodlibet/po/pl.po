@@ -5492,10 +5492,10 @@ msgstr ""
 #: quodlibet/qltk/prefs.py:598
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Zestaw separatorów do użycia podczas rozdzielania wartości etykiet "
-"w edytorze etykiet. Lista jest rozdzielana spacjami"
+"w edytorze etykiet. Lista jest rozdzielana spacjami."
 
 #: quodlibet/qltk/prefs.py:621
 msgid "Tags"
