@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet import print_d
+from quodlibet import print_d, config
 from quodlibet.util.dprint import frame_info
 from . import _match as match
 from ._match import error, Node, False_
@@ -70,6 +70,8 @@ class Query(Node):
             pass
 
         if not set("#=").intersection(string):
+            for c in config.get("browsers", "ignored_characters"):
+                string = string.replace(c, "")
             parts = ["/%s/d" % re_escape(s) for s in string.split()]
             string = "&(" + ",".join(parts) + ")"
             self.string = string

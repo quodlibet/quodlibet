@@ -112,6 +112,9 @@ INITIAL = {
         # "global" filter for SearchBar
         "background": "",
 
+        # characters ignored in queries
+        "ignored_characters": "",
+
         # album list
         "albums": "",
 
