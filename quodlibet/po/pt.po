@@ -4726,7 +4726,7 @@ msgid "Tag expression"
 msgstr "Expressão de etiqueta"
 
 #: quodlibet/qltk/data_editors.py:371
-msgid "Tag expression e.g. people:real or ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
 msgstr "Expressão de etiqueta. Por exemplo, people:real or ~album~year."
 
 #: quodlibet/qltk/data_editors.py:372

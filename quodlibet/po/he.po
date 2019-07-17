@@ -4507,8 +4507,8 @@ msgid "Tag expression"
 msgstr "ביטוי תג"
 
 #: quodlibet/qltk/data_editors.py:371
-msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "ביטוי תג לדוגמה, אנשים: אמיתי או ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
+msgstr "ביטוי תג לדוגמה, אנשים: אמיתי או ~album~year"
 
 #: quodlibet/qltk/data_editors.py:372
 msgid "Enter new tag"

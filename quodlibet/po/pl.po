@@ -4623,8 +4623,8 @@ msgid "Tag expression"
 msgstr "Wrażenie etykiety"
 
 #: quodlibet/qltk/data_editors.py:372
-msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "Wrażenie etykiety, np. people:real lub ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
+msgstr "Wrażenie etykiety, np. people:real lub ~album~year"
 
 #: quodlibet/qltk/data_editors.py:373
 msgid "Enter new tag"
