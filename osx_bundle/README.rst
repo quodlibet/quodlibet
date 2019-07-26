@@ -18,7 +18,11 @@ not be touched.
 Creating a Bundle
 -----------------
 
-Prerequisites: `macOS` 10.9+
+Prerequisites: `macOS` 10.11+
+
+Note: In case you want to target `macOS 10.11` with the resulting bundle you
+have to build everything on `10.11`.
+(see https://github.com/quodlibet/quodlibet/issues/2069)
 
 1) Go to https://developer.apple.com/download/more/ and download the "Command
    Line Tools" matching your macOS version and install it.
