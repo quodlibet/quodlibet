@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-02-08 00:53-0200\n"
-"PO-Revision-Date: 2019-02-12 00:32-0200\n"
+"PO-Revision-Date: 2019-02-18 12:29-0300\n"
 "Last-Translator: Hugo Musso Gualandi <hugo_musso_gualandi@hotmail.com>\n"
 "Language-Team: Portuguese/Brazil <gnome-l10n-br@listas.cipspa.org.br>\n"
 "Language: pt_BR\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: quodlibet/browsers/albums/main.py:206
 #: quodlibet/browsers/covergrid/main.py:54
@@ -486,7 +486,7 @@ msgstr "Universitária"
 
 #: quodlibet/browsers/iradio.py:389
 msgid "Talk / News"
-msgstr ""
+msgstr "Discussão / Notícias"
 
 #: quodlibet/browsers/iradio.py:390
 msgid "Ambient"
@@ -1834,65 +1834,65 @@ msgstr "Publica mensagens de status para um tópico MQTT."
 
 #: quodlibet/ext/events/mqtt.py:128
 msgid "Broker hostname"
-msgstr ""
+msgstr "Nome do host corretor"
 
 #: quodlibet/ext/events/mqtt.py:129
 msgid "broker hostname / IP (defaults to localhost)"
-msgstr ""
+msgstr "nome / IP do host corretor (padrão para localhost)"
 
 #: quodlibet/ext/events/mqtt.py:131
 msgid "Broker port"
-msgstr ""
+msgstr "Porta intermediária"
 
 #: quodlibet/ext/events/mqtt.py:131
 msgid "broker port (defaults to 1883"
-msgstr ""
+msgstr "Porta intermediária (o padrão para 1883"
 
 #: quodlibet/ext/events/mqtt.py:133
 msgid "Topic"
-msgstr ""
+msgstr "Tópico"
 
 #: quodlibet/ext/events/mqtt.py:135
 msgid "Playing Pattern"
-msgstr ""
+msgstr "Tocando padrão"
 
 #: quodlibet/ext/events/mqtt.py:137
 msgid "Status text when a song is started."
-msgstr ""
+msgstr "Texto status quando uma música é iniciada."
 
 #: quodlibet/ext/events/mqtt.py:139
 msgid "Paused Pattern"
-msgstr ""
+msgstr "Padrão pausado"
 
 #: quodlibet/ext/events/mqtt.py:141
 msgid "Text when a song is paused."
-msgstr ""
+msgstr "Texto quando uma música é pausada."
 
 #: quodlibet/ext/events/mqtt.py:143
 msgid "No-song Text"
-msgstr ""
+msgstr "Texto sem música"
 
 #: quodlibet/ext/events/mqtt.py:145
 msgid "Plain text for when there is no current song"
-msgstr ""
+msgstr "Texto simples para quando não há música atual"
 
 #: quodlibet/ext/events/mqtt.py:156
 msgid "MQTT Configuration"
-msgstr ""
+msgstr "Configuração MQTT"
 
 #: quodlibet/ext/events/mqtt.py:160
 msgid "Status Text"
-msgstr ""
+msgstr "Texto de status"
 
 #: quodlibet/ext/events/mqtt.py:192
 #, python-format
 msgid "Connected to broker at %(host)s:%(port)d"
-msgstr ""
+msgstr "Conectado a porta intermediária em %(host)s:%(port)d"
 
 #: quodlibet/ext/events/mqtt.py:196
 #, python-format
 msgid "Couldn't connect to %(host)s:%(port)d (%(msg)s)"
-msgstr ""
+msgstr "Não foi possível conectar a %(host)s:%(port)d (%(msg)s)"
 
 #: quodlibet/ext/events/mqtt.py:199
 msgid "Connection error"
@@ -1940,7 +1940,7 @@ msgstr "Apenas quando a janela principal não esteja em foco"
 
 #: quodlibet/ext/events/notify.py:185
 msgid "Show \"_Next\" button"
-msgstr "Incluir botão de \"_Próxima\""
+msgstr "Mostrar \"_Próximo\" como botão"
 
 #: quodlibet/ext/events/notify.py:207
 msgid "Connection Error"
@@ -1968,7 +1968,7 @@ msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
 msgstr ""
-"Por favor visite a jánela de plug-ins para configurar o QLScrobbler. Antes "
+"Por favor visite a janela de plug-ins para configurar o QLScrobbler. Antes "
 "disso ser feito as suas músicas não poderão ser enviadas."
 
 #: quodlibet/ext/events/qlscrobbler.py:252
@@ -2004,7 +2004,7 @@ msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
 msgstr ""
-"Um cliente Audioscrobbler para Last.fm, Libre.fm and outros serviços "
+"Um cliente Audioscrobbler para Last.fm, Libre.fm e outros serviços "
 "Audioscrobbler."
 
 #: quodlibet/ext/events/qlscrobbler.py:455
@@ -2347,7 +2347,7 @@ msgstr ""
 msgid "Plain text for status when there is no current song"
 msgstr ""
 "Mensagem de status quando não há uma música sendo reproduzida. (Texto "
-"simples, sem padroẽs QL)"
+"simples, sem padrões QL)"
 
 #: quodlibet/ext/events/telepathy_status.py:163
 msgid "No song:"
@@ -2387,7 +2387,7 @@ msgid ""
 "Adds a thumb-up/thumb-down scoring system which is converted to a rating "
 "value. Useful for keeping running vote totals and sorting by '~#score'."
 msgstr ""
-"Adiciona um sistema em que \"curtidas\" (👍) e \"descurtidas\" (👎) são "
+"Adiciona um sistema em que \"curti\" (👍) e \"não curti\" (👎) são "
 "internamente convertidas para uma nota numérica de sempre. É útil para "
 "contar o total de votos e ordenar por \"~#score\"."
 
@@ -2682,11 +2682,11 @@ msgstr "Frequência de corte do filtro de passa-baixa"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:21
 msgid "Feed _level:"
-msgstr ""
+msgstr "Nível de _Feed:"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:21
 msgid "Feed level"
-msgstr ""
+msgstr "Nível de Feed"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:25
 msgid "Default"
@@ -2722,7 +2722,7 @@ msgstr "Configurações customizadas"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:152
 msgid "Crossfeed"
-msgstr ""
+msgstr "Crossfeed"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:153
 msgid ""
@@ -3022,7 +3022,7 @@ msgstr "Número de vezes para repetir cada música:"
 
 #: quodlibet/ext/query/conditional.py:15
 msgid "Conditional Query"
-msgstr "Consuta condicional"
+msgstr "Consulta condicional"
 
 #: quodlibet/ext/query/conditional.py:16
 msgid ""
@@ -3276,7 +3276,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:50
 msgid "Only use year for \"date\" tag"
-msgstr "Usar apenas o ano para etiqueta \"data\""
+msgstr "Usar apenas \"date\" para a tag ano"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:51
 msgid "Write \"_albumartist\" when needed"
@@ -3376,7 +3376,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/console.py:75
 msgid "You can access the following objects by default:"
-msgstr "Você pode acessar os seguintes objetos por padrao:"
+msgstr "Você pode acessar os seguintes objetos por padrão:"
 
 #: quodlibet/ext/songsmenu/console.py:85
 msgid "Your current working directory is:"
@@ -3515,7 +3515,7 @@ msgstr "Se ativado, remove valores duplicados que forem produzidos pelo padrão"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:65
 msgid "max args"
-msgstr "max argumentos"
+msgstr "max. argumentos"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:66
 msgid ""
@@ -3962,9 +3962,11 @@ msgid "Last.fm Sync"
 msgstr "Sincronizar com Last.fm"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:248
+#, fuzzy
 msgid "Updates your library's statistics from your Last.fm profile."
 msgstr ""
-"Atualiza as estatísticas da sua biblioteca com base em seu perfil na Last.fm"
+"Atualiza as estatísticas da sua biblioteca com base em seu perfil na \"Last."
+"fm\"."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:301
 msgid "_Username:"
@@ -4066,7 +4068,7 @@ msgstr "Reescaneando músicas"
 
 #: quodlibet/ext/songsmenu/replaygain.py:351
 msgid "ReplayGain Analyzer"
-msgstr "Analizador ReplayGain"
+msgstr "Analisador ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:407
 msgid "Progress"
@@ -4195,14 +4197,14 @@ msgstr "Configurar pesquisas…"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:35
 msgid "Search Tag in Wikipedia"
-msgstr "Pesquisar etiqueta na Wikipedia"
+msgstr "Pesquisar etiqueta na Wikipédia"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:36
 msgid ""
 "Opens a browser window with the Wikipedia article on the selected song's "
 "corresponding tag."
 msgstr ""
-"Abre uma janela de navegador Web com o artigo da Wikipedia referente a uma "
+"Abre uma janela de navegador Web com o artigo da Wikipédia referente a uma "
 "das etiquetas da música selecionada."
 
 #: quodlibet/ext/songsmenu/wikipedia.py:56
@@ -5722,7 +5724,7 @@ msgstr "_Esvaziar fila"
 
 #: quodlibet/qltk/queue.py:178
 msgid "Disable queue - the queue will be ignored when playing"
-msgstr "Desativar a fila – a fila será ignorada pelo tocador"
+msgstr "Desativar a fila - a fila será ignorada pelo tocador"
 
 #: quodlibet/qltk/queue.py:290
 #, python-format
@@ -6722,43 +6724,43 @@ msgstr "país de lançamento"
 #. musicbrainz_releastrackid instead.
 #: quodlibet/util/tags.py:130
 msgid "MusicBrainz recording ID"
-msgstr ""
+msgstr "ID de gravação do MusicBrainz"
 
 #: quodlibet/util/tags.py:131
 msgid "MusicBrainz release track ID"
-msgstr ""
+msgstr "ID da faixa de versão do MusicBrainz"
 
 #: quodlibet/util/tags.py:132
 msgid "MusicBrainz release ID"
-msgstr ""
+msgstr "ID da versão do MusicBrainz"
 
 #: quodlibet/util/tags.py:133
 msgid "MusicBrainz artist ID"
-msgstr ""
+msgstr "ID do artista do MusicBrainz"
 
 #: quodlibet/util/tags.py:134
 msgid "MusicBrainz release artist ID"
-msgstr ""
+msgstr "ID do artista de versão do MusicBrainz"
 
 #: quodlibet/util/tags.py:135
 msgid "MusicBrainz TRM ID"
-msgstr ""
+msgstr "MusicBrainz TRM ID"
 
 #: quodlibet/util/tags.py:136
 msgid "MusicIP PUID"
-msgstr ""
+msgstr "MusicIP PUID"
 
 #: quodlibet/util/tags.py:137
 msgid "MusicBrainz album status"
-msgstr ""
+msgstr "Status do álbum MusicBrainz"
 
 #: quodlibet/util/tags.py:138
 msgid "MusicBrainz album type"
-msgstr ""
+msgstr "Tipo de álbum MusicBrainz"
 
 #: quodlibet/util/tags.py:139
 msgid "MusicBrainz release group ID"
-msgstr ""
+msgstr "ID do grupo de versão do MusicBrainz"
 
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:142
