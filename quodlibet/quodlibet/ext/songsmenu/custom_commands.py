@@ -94,7 +94,7 @@ class Command(JSONObject):
         if playlist_name:
             print_d("Playlist command for %s" % playlist_name)
             template_vars["PLAYLIST"] = playlist_name
-        
+
         actual_command = self.command.format(**template_vars)
         print_d("Actual command=%s" % actual_command)
         for i, song in enumerate(songs):
