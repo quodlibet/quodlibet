@@ -316,16 +316,18 @@ class PreferencesWindow(UniqueWindow):
             vb.pack_start(cb, False, True, 0)
 
             hb = Gtk.HBox(spacing=3)
-            cb = CCB(_("_Fixed image filename:"),
+
+            preferred_image_filename_tooltip = _(
+                "The album art image file to use when available "
+                "(supports wildcards)")
+
+            cb = CCB(_("_Preferred image filename:"),
                      'albumart', 'force_filename', populate=True,
-                     tooltip=_("The single image filename to use if "
-                               "selected"))
+                     tooltip=preferred_image_filename_tooltip)
             hb.pack_start(cb, False, True, 0)
 
             entry = UndoEntry()
-            entry.set_tooltip_text(
-                    _("The album art image file to use when forced"
-                      " (supports wildcards)"))
+            entry.set_tooltip_text(preferred_image_filename_tooltip)
             entry.set_text(config.get("albumart", "filename"))
             entry.connect('changed', self.__changed_text, 'filename')
             # Disable entry when not forcing
