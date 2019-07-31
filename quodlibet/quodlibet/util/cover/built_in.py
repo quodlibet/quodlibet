@@ -93,18 +93,29 @@ class FilesystemCover(CoverSourcePlugin):
         base = self.song('~dirname')
         images = []
 
-        # Issue 374: Specify artwork filename
+        score = 100
         if config.getboolean("albumart", "force_filename"):
-            escaped_path = os.path.join(glob.escape(base),
-                                        config.get("albumart", "filename"))
-            try:
-                for path in glob.glob(escaped_path):
-                    images.append((100, path))
-            except sre_constants.error:
-                # Use literal filename if globbing causes errors
-                path = os.path.join(base, config.get("albumart", "filename"))
-                images = [(100, path)]
-        else:
+            for filename in config.get("albumart", "filename").split(","):
+                # Remove white space to avoid confusion (e.g. "name, name2")
+                filename = filename.strip()
+
+                escaped_path = os.path.join(glob.escape(base), filename)
+                try:
+                    for path in glob.glob(escaped_path):
+                        images.append((score, path))
+                except sre_constants.error:
+                    # Use literal filename if globbing causes errors
+                    path = os.path.join(base, filename)
+
+                    # We check this here, so we can search for alternative 
+                    # files in case no preferred file was found.
+                    if os.path.isfile(path):
+                        images.append((score, path))
+
+                # So names and patterns at the start are preferred
+                score -= 1
+
+        if not images:
             entries = []
             try:
                 entries = os.listdir(base)
