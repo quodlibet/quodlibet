@@ -107,7 +107,7 @@ class FilesystemCover(CoverSourcePlugin):
                     # Use literal filename if globbing causes errors
                     path = os.path.join(base, filename)
 
-                    # We check this here, so we can search for alternative 
+                    # We check this here, so we can search for alternative
                     # files in case no preferred file was found.
                     if os.path.isfile(path):
                         images.append((score, path))
