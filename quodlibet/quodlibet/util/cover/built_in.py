@@ -94,8 +94,8 @@ class FilesystemCover(CoverSourcePlugin):
         base = self.song('~dirname')
         images = []
 
-        score = 100
         if config.getboolean("albumart", "force_filename"):
+            score = 100
             for filename in config.get("albumart", "filename").split(","):
                 # Remove white space to avoid confusion (e.g. "name, name2")
                 filename = filename.strip()
