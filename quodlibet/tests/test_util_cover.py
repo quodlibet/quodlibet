@@ -133,6 +133,18 @@ class TCoverManager(TestCase):
 
         self.song['~filename'] = old_song_path
 
+    def test_multiple_entries(self):
+        config.set("albumart", "force_filename", str(True))
+        # the order of these is important, since bar should be
+        # preferred to both 'foo' files
+        # the spaces after the comma and last name are intentional
+        config.set("albumart", "filename", "bar*,foo.png, foo.jpg ")
+
+        for fn in ["foo.jpg", "foo.png", "bar.jpg"]:
+            f = self.add_file(fn)
+            assert path_equal(
+                os.path.abspath(self._find_cover(self.song).name), f)
+
     def test_intelligent(self):
         song = self.song
         song["artist"] = "Q-Man"
