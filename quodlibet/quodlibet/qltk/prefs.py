@@ -318,10 +318,11 @@ class PreferencesWindow(UniqueWindow):
             hb = Gtk.HBox(spacing=3)
 
             preferred_image_filename_tooltip = _(
-                "The album art image file to use when available "
-                "(supports wildcards)")
+                "The album art image file(s) to use when available "
+                "(supports wildcards). If you want to supply more "
+                "than one, separate them with commas.)
 
-            cb = CCB(_("_Preferred image filename:"),
+            cb = CCB(_("_Preferred image filename(s):"),
                      'albumart', 'force_filename', populate=True,
                      tooltip=preferred_image_filename_tooltip)
             hb.pack_start(cb, False, True, 0)
