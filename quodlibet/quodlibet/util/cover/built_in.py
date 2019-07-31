@@ -1,5 +1,6 @@
 # Copyright 2013 Simonas Kazlauskas
 #      2015-2018 Nick Boultbee
+#           2019 Joschua Gandert
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
