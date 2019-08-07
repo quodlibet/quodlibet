@@ -267,7 +267,6 @@ class PreferencesWindow(UniqueWindow):
 
             def create_search_frame():
                 vb = Gtk.VBox(spacing=6)
-
                 hb = Gtk.HBox(spacing=6)
                 l = Gtk.Label(label=_("_Global filter:"))
                 l.set_use_underline(True)
@@ -280,21 +279,6 @@ class PreferencesWindow(UniqueWindow):
                 hb.pack_start(l, False, True, 0)
                 hb.pack_start(e, True, True, 0)
                 vb.pack_start(hb, False, True, 0)
-
-                hb = Gtk.HBox(spacing=6)
-                l = Gtk.Label(label=_("_Ignored characters:"))
-                l.set_use_underline(True)
-                entry = UndoEntry()
-                entry.set_tooltip_text(
-                    _("Characters to ignore in search queries"))
-                entry.set_text(config.get("browsers", "ignored_characters"))
-                entry.connect('changed', self._entry,
-                              'ignored_characters', 'browsers')
-                l.set_mnemonic_widget(entry)
-                hb.pack_start(l, False, True, 0)
-                hb.pack_start(entry, True, True, 0)
-                vb.pack_start(hb, False, True, 0)
-
                 # Translators: The heading of the preference group, no action
                 return qltk.Frame(C_("heading", "Search"), child=vb)
 

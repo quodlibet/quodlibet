@@ -1,6 +1,7 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2015-2018 Nick Boultbee,
-#                2016 Ryan Dellenbaugh
+#                2016 Ryan Dellenbaugh,
+#                2019 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
