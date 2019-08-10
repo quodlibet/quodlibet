@@ -9,7 +9,7 @@ Unicode true
 
 !define QL_NAME "Quod Libet"
 !define QL_ID "quodlibet"
-!define QL_DESC "Music Library/Editor/Player"
+!define QL_DESC "Music Library / Editor / Player"
 
 !define EF_NAME "Ex Falso"
 !define EF_ID "exfalso"
@@ -267,16 +267,16 @@ Function custom_gui_init
         IfFileExists "$uninst_bin_temp" exec_uninst rm_instdir
         exec_uninst:
             ; uninstall.exe exists, execute it and
-            ; if it returns success proceede, otherwise abort the
+            ; if it returns success proceed, otherwise abort the
             ; installer (uninstall aborted by user for example)
             ExecWait '"$uninst_bin_temp" _?=$INSTDIR' $R1
-            ; uninstall suceeded, since the uninstall.exe is still there
+            ; uninstall succeeded, since the uninstall.exe is still there
             ; goto rm_instdir as well
             StrCmp $R1 0 rm_instdir
             ; uninstall failed
             Abort
         rm_instdir:
-            ; either the uninstaller was sucessfull or
+            ; either the uninstaller was successfull or
             ; the uninstaller.exe wasn't found
             RMDir /r "$INSTDIR"
     do_continue:

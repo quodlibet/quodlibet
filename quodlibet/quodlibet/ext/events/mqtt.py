@@ -128,17 +128,17 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         (_("Broker hostname"), Config.HOST,
          _("broker hostname / IP (defaults to localhost)")),
 
-        (_("Broker port"), Config.PORT, _("broker port (defaults to 1883")),
+        (_("Broker port"), Config.PORT, _("broker port (defaults to 1883)")),
 
         (_("Topic"), Config.TOPIC, _("Topic")),
 
         (_("Playing Pattern"),
          Config.PAT_PLAYING,
-         _("Status text when a song is started.") + _ACCEPTS_PATTERNS),
+         _("Status text when a song is started.") + ' ' + _ACCEPTS_PATTERNS),
 
         (_("Paused Pattern"),
          Config.PAT_PAUSED,
-         _("Text when a song is paused.") + _ACCEPTS_PATTERNS),
+         _("Text when a song is paused.") + ' ' + _ACCEPTS_PATTERNS),
 
         (_("No-song Text"),
          Config.STATUS_SONGLESS,

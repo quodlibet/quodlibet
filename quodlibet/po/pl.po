@@ -1617,10 +1617,10 @@ msgid "Add '[paused]'"
 msgstr "Dodanie „[wstrzymano]”"
 
 #: quodlibet/ext/events/gajim_status.py:165
-msgid "If checked, '[paused]' will be added to status message on pause."
+msgid "If checked, '[paused]' will be added to status message on pause"
 msgstr ""
 "Jeśli jest zaznaczone, to „[wstrzymano]” będzie dodawane do wiadomości stanu "
-"podczas wstrzymania."
+"podczas wstrzymania"
 
 #: quodlibet/ext/events/gajim_status.py:189
 msgid "Statuses for which message will be changed"
@@ -2014,8 +2014,8 @@ msgstr ""
 "pola spowoduje użycie domyślnego."
 
 #: quodlibet/ext/events/qlscrobbler.py:574
-msgid "Songs matching this filter will not be submitted."
-msgstr "Utwory pasujące do tego filtru nie będą wysyłane."
+msgid "Songs matching this filter will not be submitted"
+msgstr "Utwory pasujące do tego filtru nie będą wysyłane"
 
 #: quodlibet/ext/events/qlscrobbler.py:582
 msgid "_Offline mode (don't submit anything)"
@@ -3002,8 +3002,8 @@ msgid "Password:"
 msgstr "Hasło:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:131
-msgid "Library directory the server connects to."
-msgstr "Katalog kolekcji, z którym serwer ma się łączyć."
+msgid "Library directory the server connects to"
+msgstr "Katalog kolekcji, z którym serwer ma się łączyć"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:133
 msgid "Library path:"
@@ -4444,10 +4444,10 @@ msgstr "Wyłączenie płynnego _odtwarzania"
 #: quodlibet/player/gstbe/prefs.py:71
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
-"GStreamer versions."
+"GStreamer versions"
 msgstr ""
 "Wyłączenie płynnego odtwarzania może pomóc uniknąć problemów podczas "
-"zmieniania utworów w niektórych wersjach biblioteki GStreamer."
+"zmieniania utworów w niektórych wersjach biblioteki GStreamer"
 
 #: quodlibet/player/gstbe/util.py:102
 msgid "No GStreamer audio sink found"
@@ -4623,8 +4623,8 @@ msgid "Tag expression"
 msgstr "Wrażenie etykiety"
 
 #: quodlibet/qltk/data_editors.py:372
-msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "Wrażenie etykiety, np. people:real lub ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
+msgstr "Wrażenie etykiety, np. people:real lub ~album~year"
 
 #: quodlibet/qltk/data_editors.py:373
 msgid "Enter new tag"
@@ -5492,10 +5492,10 @@ msgstr ""
 #: quodlibet/qltk/prefs.py:598
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Zestaw separatorów do użycia podczas rozdzielania wartości etykiet "
-"w edytorze etykiet. Lista jest rozdzielana spacjami"
+"w edytorze etykiet. Lista jest rozdzielana spacjami."
 
 #: quodlibet/qltk/prefs.py:621
 msgid "Tags"
@@ -5872,8 +5872,8 @@ msgid "Search after _typing"
 msgstr "Wy_szukiwanie podczas pisania"
 
 #: quodlibet/qltk/searchbar.py:145
-msgid "Show search results after the user stops typing."
-msgstr "Wyświetla wyniki wyszukiwania, kiedy użytkownik przestaje pisać."
+msgid "Show search results after the user stops typing"
+msgstr "Wyświetla wyniki wyszukiwania, kiedy użytkownik przestaje pisać"
 
 #: quodlibet/qltk/searchbar.py:212
 msgid "_Limit:"

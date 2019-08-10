@@ -136,7 +136,7 @@ class AudioFile(dict, ImageContainer):
             self[key] = value
 
     def __song_key(self):
-        return (self("~#disc", 1), self("~#track", 1),
+        return (self("~#disc", 0), self("~#track", 0),
             human(self("artistsort")),
             self.get("musicbrainz_artistid", ""),
             human(self.get("title", "")),

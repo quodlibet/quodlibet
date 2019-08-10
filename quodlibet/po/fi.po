@@ -1660,10 +1660,10 @@ msgid "Add '[paused]'"
 msgstr "Lisää ”[keskeytetty]”"
 
 #: ../quodlibet/ext/events/gajim_status.py:165
-msgid "If checked, '[paused]' will be added to status message on pause."
+msgid "If checked, '[paused]' will be added to status message on pause"
 msgstr ""
 "Jos valittu, teksti ”[keskeytetty]” lisätään tilaviestiin toiston ollessa "
-"keskeytetty."
+"keskeytetty"
 
 #: ../quodlibet/ext/events/gajim_status.py:189
 msgid "Statuses for which message will be changed"
@@ -2050,8 +2050,8 @@ msgstr ""
 "tyhjäksi käyttääksesi oletusasetusta."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:574
-msgid "Songs matching this filter will not be submitted."
-msgstr "Tähän suodattimeen täsmääviä kappaleita ei lähetetä."
+msgid "Songs matching this filter will not be submitted"
+msgstr "Tähän suodattimeen täsmääviä kappaleita ei lähetetä"
 
 #: ../quodlibet/ext/events/qlscrobbler.py:582
 msgid "_Offline mode (don't submit anything)"
@@ -3040,8 +3040,8 @@ msgid "Password:"
 msgstr "Salasana:"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:131
-msgid "Library directory the server connects to."
-msgstr "Kirjastokansio, johon palvelin kytkeytyy."
+msgid "Library directory the server connects to"
+msgstr "Kirjastokansio, johon palvelin kytkeytyy"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:133
 msgid "Library path:"
@@ -4497,10 +4497,10 @@ msgstr "Poista katkoton toisto käytöstä"
 #: ../quodlibet/player/gstbe/prefs.py:71
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
-"GStreamer versions."
+"GStreamer versions"
 msgstr ""
 "Katkottoman toiston poistamisella käytöstä voi välttää kappaleen vaihtumisen "
-"ongelmat joidenkin GStreamerin versioiden kanssa."
+"ongelmat joidenkin GStreamerin versioiden kanssa"
 
 #: ../quodlibet/player/gstbe/util.py:103
 msgid "No GStreamer audio sink found"
@@ -4675,8 +4675,8 @@ msgid "Tag expression"
 msgstr "Tunnistelauseke"
 
 #: ../quodlibet/qltk/data_editors.py:373
-msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "Tunnistelauseke, esim. people:real tai ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
+msgstr "Tunnistelauseke, esim. people:real tai ~album~year"
 
 #: ../quodlibet/qltk/data_editors.py:374
 msgid "Enter new tag"
@@ -5539,7 +5539,7 @@ msgstr ""
 #: ../quodlibet/qltk/prefs.py:598
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Erotinmerkit, joita käytetään jaettaessa tunnisteiden arvoja osiin. Erota "
 "merkit välilyönnillä toisistaan."
@@ -5919,7 +5919,7 @@ msgid "Search after _typing"
 msgstr "Päivitä hakutuloksia jatkuvasti"
 
 #: ../quodlibet/qltk/searchbar.py:145
-msgid "Show search results after the user stops typing."
+msgid "Show search results after the user stops typing"
 msgstr "Päivitä haun tuloksia jatkuvasti kirjoituksen aikana"
 
 #: ../quodlibet/qltk/searchbar.py:212

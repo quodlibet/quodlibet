@@ -6,7 +6,7 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 if [[ $1 == "inflatpak" ]]; then
     cd quodlibet
-    python3 -m pip install --user pytest pyflakes pep8
+    python3 -m pip install --user pytest pyflakes pycodestyle
     python3 setup.py test
 else
     sudo add-apt-repository --yes ppa:alexlarsson/flatpak

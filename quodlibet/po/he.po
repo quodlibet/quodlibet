@@ -1129,8 +1129,8 @@ msgid "Password:"
 msgstr "סיסמה:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:130
-msgid "Library directory the server connects to."
-msgstr "מחיצת הספריה אליה מתחבר השרת."
+msgid "Library directory the server connects to"
+msgstr "מחיצת הספריה אליה מתחבר השרת"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:132
 msgid "Library path:"
@@ -1637,8 +1637,8 @@ msgid "Add '[paused]'"
 msgstr "הוספה '[מושהה]'"
 
 #: quodlibet/ext/events/gajim_status.py:164
-msgid "If checked, '[paused]' will be added to status message on pause."
-msgstr "אם סומן, '[משהה]' יתווסף למצב הודעה בזמן השהיה."
+msgid "If checked, '[paused]' will be added to status message on pause"
+msgstr "אם סומן, '[משהה]' יתווסף למצב הודעה בזמן השהיה"
 
 #: quodlibet/ext/events/gajim_status.py:188
 msgid "Statuses for which message will be changed"
@@ -2016,8 +2016,8 @@ msgid "The pattern used to format the title for submission. Leave blank for defa
 msgstr "הדפוס משמש לתִּיבְנוּת כותרת לשגור. להשאיר ריק לברירת המחדל."
 
 #: quodlibet/ext/events/qlscrobbler.py:573
-msgid "Songs matching this filter will not be submitted."
-msgstr "שירים התואמים למסנן זה לא ישוגרו."
+msgid "Songs matching this filter will not be submitted"
+msgstr "שירים התואמים למסנן זה לא ישוגרו"
 
 #: quodlibet/ext/events/qlscrobbler.py:581
 msgid "_Offline mode (don't submit anything)"
@@ -4304,9 +4304,9 @@ msgstr "נטרול השמעת _נטול פערים"
 #: quodlibet/player/gstbe/prefs.py:70
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some GStreamer "
-"versions."
+"versions"
 msgstr ""
-"השבתת השמעת נטול פערים עשוי למנוע בעיות בהחלפת רצועה בעלת מספר גרסאות ג'סטרימר."
+"השבתת השמעת נטול פערים עשוי למנוע בעיות בהחלפת רצועה בעלת מספר גרסאות ג'סטרימר"
 
 #: quodlibet/player/gstbe/util.py:101
 msgid "No GStreamer audio sink found"
@@ -4507,8 +4507,8 @@ msgid "Tag expression"
 msgstr "ביטוי תג"
 
 #: quodlibet/qltk/data_editors.py:371
-msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "ביטוי תג לדוגמה, אנשים: אמיתי או ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
+msgstr "ביטוי תג לדוגמה, אנשים: אמיתי או ~album~year"
 
 #: quodlibet/qltk/data_editors.py:372
 msgid "Enter new tag"
@@ -5296,7 +5296,7 @@ msgstr "שמירת שינויים בתגים ללא בקשת אישור בעת �
 #: quodlibet/qltk/prefs.py:608
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The list "
-"is space-separated"
+"is space-separated."
 msgstr ""
 "סדרת תווי הפרדה לשימוש בעת פיצול ערכים בעורך התגים. ערכי הרשימה מופרדים בפסיקים"
 
@@ -5688,8 +5688,8 @@ msgid "Search after _typing"
 msgstr "חיפוש לאחר _הקלדה"
 
 #: quodlibet/qltk/searchbar.py:147
-msgid "Show search results after the user stops typing."
-msgstr "הצגת תוצאות חיפוש מיד לאחר סיום הקלדה."
+msgid "Show search results after the user stops typing"
+msgstr "הצגת תוצאות חיפוש מיד לאחר סיום הקלדה"
 
 #: quodlibet/qltk/searchbar.py:215
 msgid "_Limit:"

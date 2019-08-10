@@ -18,7 +18,7 @@ class PickleMe(object):
 
 
 class PickleTestPlugin(EventPlugin):
-    PLUGIN_ID = "pickle_test"
+    PLUGIN_ID = "pickle_plugin"
     PLUGIN_NAME = "This is a test"
 
     def enabled(self):

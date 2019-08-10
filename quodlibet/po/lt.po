@@ -5879,8 +5879,8 @@ msgid "Search after _typing"
 msgstr "Ieško_ti bevedant užklausą"
 
 #: ../quodlibet/qltk/searchbar.py:132
-msgid "Show search results after the user stops typing."
-msgstr "Rodyti paieškos rezultatus vartotojui baigus įvesti užklausą."
+msgid "Show search results after the user stops typing"
+msgstr "Rodyti paieškos rezultatus vartotojui baigus įvesti užklausą"
 
 #: ../quodlibet/qltk/searchbar.py:187
 msgid "_Limit:"

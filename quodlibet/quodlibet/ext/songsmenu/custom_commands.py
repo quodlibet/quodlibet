@@ -126,7 +126,7 @@ class Command(JSONObject):
                 or "playlistindex" in self.pattern)
 
     def __str__(self):
-        return 'Command: "{command} {pattern}"'.format(**dict(self.data))
+        return "{command} {pattern}".format(**dict(self.data))
 
 
 class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
@@ -144,7 +144,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         Command("Browse folders (Thunar)", "thunar", "<~dirname>", unique=True,
                 max_args=50, warn_threshold=20),
 
-        Command(name="Flash notification",
+        Command("Flash notification",
                 command="notify-send"
                     " -t 2000"
                     " -i "
@@ -157,7 +157,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
                 max_args=1,
                 warn_threshold=10),
 
-        Command(name="Output playlist to stdout",
+        Command("Output playlist to stdout",
                 command="echo -e",
                 pattern="<~playlistname>: <~playlistindex>. "
                         " <~artist~title>\\\\n",
@@ -165,7 +165,13 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
 
         Command("Fix MP3 VBR with mp3val", "mp3val -f", unique=True,
                 max_args=1),
+
+        Command("Record Stream",
+                command="x-terminal-emulator -e wget -P $HOME",
+                pattern="<~filename>",
+                max_args=1)
     ]
+
     COMS_FILE = os.path.join(
         quodlibet.get_user_dir(), 'lists', 'customcommands.json')
 
@@ -198,8 +204,6 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         hb.set_border_width(0)
 
         button = qltk.Button(_("Edit Custom Commands") + "…", Icons.EDIT)
-        button.set_tooltip_markup(_("Supports QL patterns\neg "
-                                    "<tt>&lt;~artist~title&gt;</tt>"))
         button.connect("clicked", cls.edit_patterns)
         hb.pack_start(button, True, True, 0)
         hb.show_all()

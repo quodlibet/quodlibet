@@ -1797,10 +1797,10 @@ msgid "Add '[paused]'"
 msgstr "gepauzeerd"
 
 #: ../quodlibet/ext/events/gajim_status.py:163
-msgid "If checked, '[paused]' will be added to status message on pause."
+msgid "If checked, '[paused]' will be added to status message on pause"
 msgstr ""
 "Indien aangevinkt wordt '[gepauzeerd]' toegevoegd aan het statusbericht "
-"wanneer het nummer gepauzeerd is."
+"wanneer het nummer gepauzeerd is"
 
 #: ../quodlibet/ext/events/gajim_status.py:187
 #, fuzzy
@@ -2249,8 +2249,8 @@ msgstr ""
 "standaardinstelling."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:568
-msgid "Songs matching this filter will not be submitted."
-msgstr "Nummers die overeenkomen met deze filter zullen niet worden ingediend."
+msgid "Songs matching this filter will not be submitted"
+msgstr "Nummers die overeenkomen met deze filter zullen niet worden ingediend"
 
 #: ../quodlibet/ext/events/qlscrobbler.py:576
 msgid "_Offline mode (don't submit anything)"
@@ -3059,8 +3059,8 @@ msgid "Password:"
 msgstr "Wachtwoord:"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:130
-msgid "Library directory the server connects to."
-msgstr "Bibliotheekdirectory waarmee de server verbindt."
+msgid "Library directory the server connects to"
+msgstr "Bibliotheekdirectory waarmee de server verbindt"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:132
 msgid "Library path:"
@@ -4410,10 +4410,10 @@ msgstr "_Gapless afspelen uitschakelen"
 #: ../quodlibet/player/gstbe/prefs.py:70
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
-"GStreamer versions."
+"GStreamer versions"
 msgstr ""
 "Uitschakelen van gapless afspelen kan trackwisselproblemen bij sommige "
-"GStreamer-versies vermijden."
+"GStreamer-versies vermijden"
 
 #: ../quodlibet/player/gstbe/util.py:93
 msgid "No GStreamer audio sink found"
@@ -4595,7 +4595,7 @@ msgid "Tag expression"
 msgstr "Tag-expressie"
 
 #: ../quodlibet/qltk/data_editors.py:382
-msgid "Tag expression e.g. people:real or ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
 msgstr "Tag-expressie, bv. personen:echt of ~album~jaar"
 
 #: ../quodlibet/qltk/data_editors.py:383
@@ -5831,8 +5831,8 @@ msgid "Search after _typing"
 msgstr "Zoeken na _typen"
 
 #: ../quodlibet/qltk/searchbar.py:132
-msgid "Show search results after the user stops typing."
-msgstr "Toon zoekresultaten nadat de gebruiker stopt met typen."
+msgid "Show search results after the user stops typing"
+msgstr "Toon zoekresultaten nadat de gebruiker stopt met typen"
 
 #: ../quodlibet/qltk/searchbar.py:187
 msgid "_Limit:"

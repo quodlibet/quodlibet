@@ -1665,8 +1665,8 @@ msgid "Add '[paused]'"
 msgstr "Добавлять '[paused]'"
 
 #: ../quodlibet/ext/events/gajim_status.py:165
-msgid "If checked, '[paused]' will be added to status message on pause."
-msgstr "Если отмечено, '[paused]' в статус будет добавлено сообщение о паузе."
+msgid "If checked, '[paused]' will be added to status message on pause"
+msgstr "Если отмечено, '[paused]' в статус будет добавлено сообщение о паузе"
 
 #: ../quodlibet/ext/events/gajim_status.py:189
 msgid "Statuses for which message will be changed"
@@ -2049,8 +2049,8 @@ msgstr ""
 "значения по умолчанию."
 
 #: ../quodlibet/ext/events/qlscrobbler.py:574
-msgid "Songs matching this filter will not be submitted."
-msgstr "Треки, соответствующие этому фильтру, не будут отправлены."
+msgid "Songs matching this filter will not be submitted"
+msgstr "Треки, соответствующие этому фильтру, не будут отправлены"
 
 #: ../quodlibet/ext/events/qlscrobbler.py:582
 msgid "_Offline mode (don't submit anything)"
@@ -3022,8 +3022,8 @@ msgid "Password:"
 msgstr "Пароль:"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:131
-msgid "Library directory the server connects to."
-msgstr "Каталог фонотеки, к которому подключается сервер."
+msgid "Library directory the server connects to"
+msgstr "Каталог фонотеки, к которому подключается сервер"
 
 #: ../quodlibet/ext/_shared/squeezebox/base.py:133
 msgid "Library path:"
@@ -4459,10 +4459,10 @@ msgstr "_Отключить воспроизведение без пауз"
 #: ../quodlibet/player/gstbe/prefs.py:71
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
-"GStreamer versions."
+"GStreamer versions"
 msgstr ""
 "Отключение воспроизведения без пауз (gapless) может помочь решить проблемы "
-"при смене треков с некоторыми версиями GStreamer."
+"при смене треков с некоторыми версиями GStreamer"
 
 #: ../quodlibet/player/gstbe/util.py:103
 msgid "No GStreamer audio sink found"
@@ -4640,8 +4640,8 @@ msgid "Tag expression"
 msgstr "Выражение тега"
 
 #: ../quodlibet/qltk/data_editors.py:373
-msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "Выражение тега, например, people:real или ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
+msgstr "Выражение тега, например, people:real или ~album~year"
 
 #: ../quodlibet/qltk/data_editors.py:374
 msgid "Enter new tag"
@@ -5881,8 +5881,8 @@ msgid "Search after _typing"
 msgstr "_Производить поиск по окончании ввода"
 
 #: ../quodlibet/qltk/searchbar.py:144
-msgid "Show search results after the user stops typing."
-msgstr "Производить поиск сразу после прекращения ввода."
+msgid "Show search results after the user stops typing"
+msgstr "Производить поиск сразу после прекращения ввода"
 
 #: ../quodlibet/qltk/searchbar.py:208
 msgid "_Limit:"
