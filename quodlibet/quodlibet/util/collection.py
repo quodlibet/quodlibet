@@ -11,6 +11,7 @@ from __future__ import absolute_import
 
 import os
 import random
+from urllib.parse import quote
 
 from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn
 
@@ -21,6 +22,8 @@ from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.pattern import Pattern
 from collections import Iterable
+
+from quodlibet.util import is_windows
 from quodlibet.util.path import escape_filename, unescape_filename, limit_path
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.misc import total_ordering, hashable
@@ -648,6 +651,8 @@ class FileBackedPlaylist(Playlist):
 class XSPFBackedPlaylist(FileBackedPlaylist):
     EXT = "xspf"
     CREATOR_PATTERN = Pattern("<artist|<artist>|<~people>>")
+    _SAFER = {c: quote(c, safe='')
+              for c in ("\\/:*?\"<>|" if is_windows() else "\0/")}
 
     @classmethod
     def from_playlist(cls, old_pl: FileBackedPlaylist, library):
@@ -696,10 +701,9 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
     @classmethod
     def filename_for(cls, name: str) -> str:
         # Manually do *minimal* escaping, to allow near-readable filenames
-        safer = limit_path(name.replace('\\', '%5C')
-                               .replace('/', '%2F')
-                               .replace('\0', ''))
-        return path2fsn("%s.%s" % (safer, cls.EXT))
+        for bad, good in cls._SAFER.items():
+            name = name.replace(bad, quote(good, safe=''))
+        return path2fsn("%s.%s" % (limit_path(name), cls.EXT))
 
     @classmethod
     def name_for(cls, filename: fsnative) -> str:
