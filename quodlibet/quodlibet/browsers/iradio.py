@@ -1,5 +1,5 @@
 # Copyright 2011 Joe Wreschnig, Christoph Reiter
-#      2013-2018 Nick Boultbee
+#      2013-2019 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,13 +11,14 @@ import sys
 import bz2
 import itertools
 from functools import reduce
+from http.client import HTTPException
 from urllib.request import urlopen
 
 import re
 from gi.repository import Gtk, GLib, Pango
 from senf import text2fsn
 
-from quodlibet.util.dprint import print_d
+from quodlibet.util.dprint import print_d, print_e
 
 import quodlibet
 from quodlibet import _
@@ -256,10 +257,10 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
 
         try:
             response = urlopen(STATION_LIST_URL)
-        except EnvironmentError:
+        except (EnvironmentError, HTTPException) as e:
+            print_e("Failed fetching from %s" % STATION_LIST_URL, e)
             GLib.idle_add(callback, None)
             return
-
         try:
             size = int(response.info().get("content-length", 0))
         except ValueError:

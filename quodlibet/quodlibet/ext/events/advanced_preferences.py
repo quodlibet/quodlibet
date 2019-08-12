@@ -1,5 +1,6 @@
-# Copyright 2015 Christoph Reiter
-#        2016-17 Nick Boultbee
+# Copyright 2015    Christoph Reiter
+#           2016-17 Nick Boultbee
+#           2019    Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -163,6 +164,12 @@ class AdvancedPreferences(EventPlugin):
                 "settings", "pangocairo_force_fontconfig",
                 "Force Use Fontconfig Backend:",
                 "It's not the default on win/macOS (restart required)"))
+
+        rows.append(
+            text_config(
+                "browsers", "ignored_characters",
+                "Ignored characters: ",
+                "Characters to ignore in queries"))
 
         for (row, (label, entry, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)

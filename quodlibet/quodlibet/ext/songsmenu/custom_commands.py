@@ -94,8 +94,9 @@ class Command(JSONObject):
         if playlist_name:
             print_d("Playlist command for %s" % playlist_name)
             template_vars["PLAYLIST"] = playlist_name
-        self.command = self.command.format(**template_vars)
-        print_d("Actual command=%s" % self.command)
+
+        actual_command = self.command.format(**template_vars)
+        print_d("Actual command=%s" % actual_command)
         for i, song in enumerate(songs):
             wrapped = SongWrapper(song)
             if playlist_name:
@@ -112,10 +113,10 @@ class Command(JSONObject):
             elif arg not in args:
                 args.append(arg)
         max = int((self.max_args or 10000))
-        com_words = self.command.split(" ")
+        com_words = actual_command.split(" ")
         while args:
             print_d("Running %s with %d substituted arg(s) (of %d%s total)..."
-                    % (self.command, min(max, len(args)), len(args),
+                    % (actual_command, min(max, len(args)), len(args),
                        " unique" if self.unique else ""))
             util.spawn(com_words + args[:max])
             args = args[max:]
