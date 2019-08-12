@@ -1,13 +1,14 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2015-2018 Nick Boultbee,
-#                2016 Ryan Dellenbaugh
+#                2016 Ryan Dellenbaugh,
+#                2019 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet import print_d
+from quodlibet import print_d, config
 from quodlibet.util.dprint import frame_info
 from . import _match as match
 from ._match import error, Node, False_
@@ -70,6 +71,8 @@ class Query(Node):
             pass
 
         if not set("#=").intersection(string):
+            for c in config.get("browsers", "ignored_characters"):
+                string = string.replace(c, "")
             parts = ["/%s/d" % re_escape(s) for s in string.split()]
             string = "&(" + ",".join(parts) + ")"
             self.string = string
