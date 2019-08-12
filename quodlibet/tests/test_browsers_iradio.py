@@ -163,6 +163,7 @@ class TIRFile(TestCase):
         assert len(self.received) > 100
         # TODO: some more targetted tests
 
+
 def run_loop():
     while Gtk.events_pending():
         Gtk.main_iteration()
