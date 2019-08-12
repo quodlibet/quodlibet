@@ -31,7 +31,7 @@ defaults: &defaults
     - run:
         command: |
           docker exec "$(cat container_id)" python3 -m coverage xml
-          docker exec "$(cat container_id)" curl https://codecov.io/bash -o _codecov
+          docker exec "$(cat container_id)" curl -s --fail --retry 3 --retry-connrefused https://codecov.io/bash -o _codecov
           docker exec "$(cat container_id)" bash _codecov
         when: always
     - run:
