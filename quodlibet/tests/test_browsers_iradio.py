@@ -5,13 +5,15 @@
 
 import io
 
-from tests import TestCase
+from quodlibet.util import is_windows, is_osx
+from tests import TestCase, skipIf
 
 from quodlibet.library import SongLibrary
 from quodlibet.formats import AudioFile
 from quodlibet.browsers.iradio import InternetRadio, IRFile, QuestionBar, \
-    parse_taglist, ParsePLS, ParseM3U
+    parse_taglist, ParsePLS, ParseM3U, download_taglist, STATION_LIST_URL
 import quodlibet.config
+from gi.repository import Gtk
 
 quodlibet.config.RATINGS = quodlibet.config.HardCodedRatingsPrefs()
 
@@ -143,3 +145,24 @@ class TIRFile(TestCase):
         new.from_dump(dump)
         self.assertTrue("title" not in new)
         self.assertTrue("artist" not in new)
+
+    @skipIf(is_windows() or is_osx(), "Don't need to test all the time")
+    def test_download_tags(self):
+        self.received = []
+        # TODO: parameterise this, spin up a local HTTP server, inject this.
+        url = STATION_LIST_URL
+
+        def cb(data):
+            assert data
+            self.received += data
+
+        ret = list(download_taglist(cb, None))
+        run_loop()
+        assert all(ret)
+        assert self.received, "No stations received from %s" % url
+        assert len(self.received) > 100
+        # TODO: some more targetted tests
+
+def run_loop():
+    while Gtk.events_pending():
+        Gtk.main_iteration()
