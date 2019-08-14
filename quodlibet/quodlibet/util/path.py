@@ -104,12 +104,12 @@ def filesize(filename):
         return 0
 
 
-def escape_filename(s, safe=''):
+def escape_filename(s, safe=b''):
     """Escape a string in a manner suitable for a filename.
 
     Args:
         s (str) The string to convert
-        safe (bytes) A string of
+        safe (bytes) A string of characters that needn't be quoted
     Returns:
         fsnative
     """
