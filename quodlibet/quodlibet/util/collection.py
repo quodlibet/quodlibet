@@ -702,7 +702,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
     def filename_for(cls, name: str) -> str:
         # Manually do *minimal* escaping, to allow near-readable filenames
         for bad, good in cls._SAFER.items():
-            name = name.replace(bad, quote(good, safe=''))
+            name = name.replace(bad, good)
         return path2fsn("%s.%s" % (limit_path(name), cls.EXT))
 
     @classmethod
