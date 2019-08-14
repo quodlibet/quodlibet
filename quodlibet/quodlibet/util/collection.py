@@ -728,10 +728,10 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                     "trackNum": song("~#track"),
                     "duration": int(song("~#length") * 1000.)
                 }
-            track_list.append(self.element_from("track", track))
+            track_list.append(self._element_from("track", track))
         playlist = Element("playlist", attrib={"version": "1"})
-        playlist.append(self.text_el("title", self.name))
-        playlist.append(self.text_el("date", datetime.now().isoformat()))
+        playlist.append(self._text_element("title", self.name))
+        playlist.append(self._text_element("date", datetime.now().isoformat()))
         playlist.append(track_list)
         tree = ElementTree(playlist)
         ET.register_namespace('', XSPF_NS)
@@ -741,19 +741,19 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
             self._last_fn = self.path
 
     @classmethod
-    def text_el(cls, name: str, value: any) -> Element:
+    def _text_element(cls, name: str, value: any) -> Element:
         el = Element("%s" % name)
         el.text = str(value)
         return el
 
     @classmethod
-    def element_from(cls, name: str, d: dict) -> Element:
+    def _element_from(cls, name: str, d: dict) -> Element:
         """Converts a dict to XML etree. Removes falsey nodes"""
         out = Element(name)
         for k, v in d.items():
             if k and v:
-                element = (cls.element_from(k, v)
+                element = (cls._element_from(k, v)
                            if isinstance(v, dict)
-                           else cls.text_el(k, v))
+                           else cls._text_element(k, v))
                 out.append(element)
         return out
