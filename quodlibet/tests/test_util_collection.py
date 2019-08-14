@@ -576,13 +576,19 @@ class TFileBackedPlaylist(TPlaylist):
     def test_difficult_names(self):
         lib = FileLibrary("foobar")
         lib.add(NUMERIC_SONGS)
-        name = "?\"problem?\" / foo* / ə! COM"
+        name = "c:?\"problem?\" / foo* / 100% ə! COM"
         with self.wrap(name, lib) as pl:
             pl.extend(NUMERIC_SONGS)
             pl.write()
             assert pl.songs == NUMERIC_SONGS
             with self.wrap(name, lib) as pl2:
                 assert pl2.songs == NUMERIC_SONGS
+
+    def test_symmetric(self):
+        P = self.Playlist
+        for name in ("bar & foo?", "100% cool.now 😀", "COM:", "a/b"):
+            new_name = P.name_for(P.filename_for(name))
+            assert new_name == name
 
     def test_make_dup(self):
         p1 = self.new_pl("Does not exist")
@@ -638,7 +644,7 @@ class TFileBackedPlaylist(TPlaylist):
             lib.destroy()
 
 
-class TestXPSFBackedPlaylist(TFileBackedPlaylist):
+class TXPSFBackedPlaylist(TFileBackedPlaylist):
     Playlist = XSPFBackedPlaylist
 
     def setUp(self):
