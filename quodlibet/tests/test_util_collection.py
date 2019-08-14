@@ -656,11 +656,6 @@ class TXPSFBackedPlaylist(TFileBackedPlaylist):
         shutil.rmtree(self.temp)
         shutil.rmtree(self.temp2)
 
-    def test_from_songs(self):
-        pl = XSPFBackedPlaylist.from_songs(self.temp, NUMERIC_SONGS)
-        self.failUnlessEqual(pl.songs, NUMERIC_SONGS)
-        pl.delete()
-
     def path_for(self, name: str):
         return os.path.join(self.temp, "%s.xspf" % (name,))
 
