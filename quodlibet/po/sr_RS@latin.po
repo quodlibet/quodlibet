@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-13 06:59+0200\n"
-"PO-Revision-Date: 2019-08-15 10:00+0200\n"
+"PO-Revision-Date: 2019-08-17 06:09+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: sr\n"
@@ -1232,28 +1232,30 @@ msgstr "_Preobrati enkodiranja…"
 
 #: quodlibet/ext/editing/kakasi.py:26
 msgid "Kana/Kanji Simple Inverter"
-msgstr ""
+msgstr "Kana/Kanji pretvarač uzorka"
 
 #: quodlibet/ext/editing/kakasi.py:27
 msgid "Converts kana/kanji to romaji before renaming."
-msgstr ""
+msgstr "Pretvara kana/kanji na romaji pre preimenovanja."
 
 #: quodlibet/ext/editing/kakasi.py:36
 msgid "Romanize _Japanese text"
-msgstr ""
+msgstr "Romanizuje _Japanski tekst"
 
 #: quodlibet/ext/editing/kakasi.py:68
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr ""
+msgstr "Ne mogu pronaći \"Kanji Kana Simple Inverter\" (kakasi)."
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
-msgstr ""
+msgstr "Zamena regularnog izraza"
 
 #: quodlibet/ext/editing/resub.py:19
 msgid ""
 "Allows arbitrary regex substitutions (s///) when tagging or renaming files."
 msgstr ""
+"Dozvoljava zadatu zamenu regularnog izraza (s///) pri označavanju ili "
+"preimenovanju datoteka."
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -3017,6 +3019,10 @@ msgid ""
 "number) timestamp at start of query. Modules 'time' and 'random' are also "
 "available, and the class 'Random' (==random.Random) too."
 msgstr ""
+"Koristi Python izraz u upitima. Sintaksa je \"@(python: expression)\". "
+"Promenljiva \"s\" (ili \"a\") je podudarna pesma / album. \"_ts\" je "
+"vremenska oznaka na početku upita. Moduli \"vreme\" i \"nasumično\" su "
+"dostupni, i klasa \"Nasimično\" (==random.Random) takođe."
 
 #: quodlibet/ext/query/savedsearch.py:19
 msgid "Include Saved Search"
@@ -3441,6 +3447,9 @@ msgid ""
 "substituted with a user-supplied value, e.g. by using 'PARAM' all instances "
 "of '{PARAM}' in your command will have the value prompted for when run"
 msgstr ""
+"Ako je naznačeno, parametar koji se pojavljuje u komandama će biti zamenjen "
+"vrednošću datom od strane korisnika, npr. koristeći 'PARAM' u svim "
+"slučajevima '{PARAM}' u vašoj komandi, imaće vrednost datu kada je pokrenuto"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:55
 msgid "pattern"
@@ -3452,6 +3461,8 @@ msgid ""
 "For playlists, this also supports virtual tags <~playlistname> and "
 "<~#playlistindex>."
 msgstr ""
+"QL šablon, npr. <~filename>, za izračunavanje vrednosti komande. Za liste "
+"izvođenja, ovo podržava virtuelne oznake <~playlistname> i <~#playlistindex>."
 
 #: quodlibet/ext/songsmenu/custom_commands.py:61
 msgid "unique"
@@ -3460,6 +3471,7 @@ msgstr "jedisntven"
 #: quodlibet/ext/songsmenu/custom_commands.py:62
 msgid "If set, this will remove duplicate computed values of the pattern"
 msgstr ""
+"Ako je postavljeno, ovo će ukloniti duplikate izračunatih vrednosti šablona"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:65
 msgid "max args"
@@ -3469,7 +3481,7 @@ msgstr "maks args"
 msgid ""
 "The maximum number of argument to pass to the command at one time (like "
 "xargs)"
-msgstr ""
+msgstr "Najveći broj argumenata poslatih komandi u datom trenutku (kao xargs)"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:91
 msgid "Input value"
@@ -3995,7 +4007,7 @@ msgstr "Ponovo pretraži pesme"
 
 #: quodlibet/ext/songsmenu/replaygain.py:351
 msgid "ReplayGain Analyzer"
-msgstr ""
+msgstr "ReplayGain ispitivač"
 
 #: quodlibet/ext/songsmenu/replaygain.py:407
 msgid "Progress"
@@ -4003,11 +4015,11 @@ msgstr "Napredak"
 
 #: quodlibet/ext/songsmenu/replaygain.py:422
 msgid "Gain"
-msgstr ""
+msgstr "Gain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:437
 msgid "Peak"
-msgstr ""
+msgstr "Peak"
 
 #: quodlibet/ext/songsmenu/replaygain.py:452
 #, python-format
@@ -4019,13 +4031,15 @@ msgstr[2] "Dostupno <b>%(to-process)s</b> albuma za ažuriranje (of %(all)s)"
 
 #: quodlibet/ext/songsmenu/replaygain.py:568
 msgid "Replay Gain"
-msgstr ""
+msgstr "Replay Gain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:569
 msgid ""
 "Analyzes and updates ReplayGain information, using GStreamer. Results are "
 "grouped by album."
 msgstr ""
+"Ispituje i ažurira ReplayGain informacije koristeći GStreamer. Rezultati su "
+"grupisani po albumu."
 
 #: quodlibet/ext/songsmenu/replaygain.py:607
 msgid "always"
@@ -4033,11 +4047,11 @@ msgstr "uvek"
 
 #: quodlibet/ext/songsmenu/replaygain.py:608
 msgid "if <b>any</b> RG tags are missing"
-msgstr ""
+msgstr "ako nedostaju <b>any</b> RG oznake"
 
 #: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "if <b>album</b> RG tags are missing"
-msgstr ""
+msgstr "ako nedostaju <b>album</b> RG oznake"
 
 #: quodlibet/ext/songsmenu/replaygain.py:627
 msgid "_Process albums:"
@@ -4069,7 +4083,7 @@ msgstr "Podeli broj diska."
 #: quodlibet/ext/songsmenu/tapbpm.py:23 quodlibet/ext/songsmenu/tapbpm.py:32
 #: quodlibet/ext/songsmenu/tapbpm.py:61
 msgid "n/a"
-msgstr ""
+msgstr "n/d"
 
 #. TRANSLATORS: BPM mean "beats per minute"
 #: quodlibet/ext/songsmenu/tapbpm.py:31
@@ -4082,15 +4096,15 @@ msgstr "Poništi"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:42
 msgid "Tap"
-msgstr ""
+msgstr "Tap"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:177 quodlibet/ext/songsmenu/tapbpm.py:184
 msgid "Tap BPM"
-msgstr ""
+msgstr "Tap BPM"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:178
 msgid "Tap BPM for the selected song."
-msgstr ""
+msgstr "Tap BPM za odabranu pesmu."
 
 #: quodlibet/ext/songsmenu/website_search.py:37
 msgid "Website Search"
@@ -4417,15 +4431,15 @@ msgstr "Strim"
 
 #: quodlibet/player/gstbe/player.py:98
 msgid "Buffering"
-msgstr ""
+msgstr "Punjenje memorije"
 
 #: quodlibet/player/gstbe/player.py:452
 msgid "Could not create GStreamer pipeline"
-msgstr ""
+msgstr "Ne mogu stvoriti GStreamer pipeline"
 
 #: quodlibet/player/gstbe/player.py:651
 msgid "No GStreamer element found to handle media format"
-msgstr ""
+msgstr "Nije pronađen ni jedan GStreamer element za obradu formata"
 
 #: quodlibet/player/gstbe/player.py:652
 #, python-format
@@ -4435,7 +4449,7 @@ msgstr "Format zapisa: %(format-description)s"
 #: quodlibet/player/gstbe/plugins.py:35
 #, python-format
 msgid "GStreamer plugin '%(name)s' could not be initialized"
-msgstr ""
+msgstr "GStreamer dodatak '%(name)s' ne može biti pokrenut"
 
 #: quodlibet/player/gstbe/prefs.py:25
 msgid ""
@@ -4443,10 +4457,12 @@ msgid ""
 "pipeline. In case the pipeline contains a sink, it will be used instead of "
 "the default one."
 msgstr ""
+"GStreamer output pipeline korišćen za reprodukciju. Ostavite prazno za "
+"podrazumevani. U drugim slučajevima, koristiće se pordrazumevani."
 
 #: quodlibet/player/gstbe/prefs.py:36
 msgid "_Output pipeline:"
-msgstr ""
+msgstr "_Output pipeline:"
 
 #: quodlibet/player/gstbe/prefs.py:43
 #, python-format
@@ -4455,25 +4471,27 @@ msgstr "%.1f sekundi"
 
 #: quodlibet/player/gstbe/prefs.py:57
 msgid "_Buffer duration:"
-msgstr ""
+msgstr "_Buffer duration:"
 
 #: quodlibet/player/gstbe/prefs.py:66
 msgid "Disable _gapless playback"
-msgstr ""
+msgstr "Onemogući _gapless reprodukciju"
 
 #: quodlibet/player/gstbe/prefs.py:70
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
 "GStreamer versions"
 msgstr ""
+"Onemogućavanje gapless reprodukcije može izbeći probleme pri menjanju pesama "
+"sa nekim verzijama GStreamer-a"
 
 #: quodlibet/player/gstbe/util.py:101
 msgid "No GStreamer audio sink found"
-msgstr ""
+msgstr "Nema nađenog GStreamer audio sink"
 
 #: quodlibet/player/gstbe/util.py:120
 msgid "Invalid GStreamer output pipeline"
-msgstr ""
+msgstr "Nevažeća GStreamer izlazna pipeline"
 
 #: quodlibet/player/xinebe/player.py:90
 msgid "Unable to create audio output"
@@ -4498,7 +4516,7 @@ msgstr ""
 #: quodlibet/plugins/__init__.py:70
 #, python-brace-format
 msgid "Couldn't find GStreamer element '{element}'."
-msgstr ""
+msgstr "Ne mogu pronaći GStreamer element '{element}'."
 
 #: quodlibet/plugins/playlist.py:23
 #, python-format
@@ -4520,7 +4538,7 @@ msgstr "Početak"
 
 #: quodlibet/qltk/bookmarks.py:38 quodlibet/qltk/bookmarks.py:78
 msgid "N/A"
-msgstr ""
+msgstr "N/D"
 
 #: quodlibet/qltk/bookmarks.py:83
 msgid "Time"
@@ -4624,7 +4642,7 @@ msgstr "_Utišaj"
 
 #: quodlibet/qltk/controls.py:128
 msgid "_Replay Gain Mode"
-msgstr ""
+msgstr "_Replay Gain Režim"
 
 #. Translators: New Command/Entry/Item/...
 #: quodlibet/qltk/data_editors.py:116
@@ -4966,7 +4984,7 @@ msgstr "Pesme"
 #: quodlibet/qltk/info.py:42
 #, python-format
 msgid "by %s"
-msgstr "po %s"
+msgstr "od %s"
 
 #: quodlibet/qltk/info.py:43 quodlibet/qltk/information.py:171
 #: quodlibet/qltk/information.py:452
@@ -5439,27 +5457,28 @@ msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr ""
+"Ako nema Replay Gain informacija za pesmu, postavi jačinu po ovoj vrednosti"
 
 #: quodlibet/qltk/prefs.py:377
 msgid "_Fall-back gain (dB):"
-msgstr ""
+msgstr "_Fall-back gain (dB):"
 
 #: quodlibet/qltk/prefs.py:388
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
-msgstr ""
+msgstr "Postavi jačinu za sve pesme po zadatoj vrednosti"
 
 #: quodlibet/qltk/prefs.py:391
 msgid "_Pre-amp gain (dB):"
-msgstr ""
+msgstr "_Pre-amp gain (dB):"
 
 #: quodlibet/qltk/prefs.py:396
 msgid "_Enable Replay Gain volume adjustment"
-msgstr ""
+msgstr "_Omogući Replay Gain promenu jačine"
 
 #: quodlibet/qltk/prefs.py:421
 msgid "Replay Gain Volume Adjustment"
-msgstr ""
+msgstr "Replay Gain promena jačine"
 
 #: quodlibet/qltk/prefs.py:428
 msgid "_Continue playback on startup"
@@ -5491,10 +5510,14 @@ msgid ""
 "tracks will have less extreme ratings. Changing this value triggers a re-"
 "calculation for all albums."
 msgstr ""
+"Bayesian Average factor (C) za nagomilane ocene.\n"
+"0 znači konvenvionalni prosek, više vrednosti znače da će album sa malo "
+"zapisa imati manje ekstremne ocene. Promena ove vrednosti uzrokuje ponovno "
+"računanje za sve albume."
 
 #: quodlibet/qltk/prefs.py:558
 msgid "_Bayesian averaging amount:"
-msgstr ""
+msgstr "_Bayesian prosečna količina:"
 
 #: quodlibet/qltk/prefs.py:567
 msgid "Save ratings and play _counts in tags"
@@ -6081,9 +6104,9 @@ msgstr "Ukloni iz biblioteke"
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Pokreni dodatak \"%(name)s\" za %(count)d pesmu?"
+msgstr[1] "Pokreni dodatak \"%(name)s\" za %(count)d pesme?"
+msgstr[2] "Pokreni dodatak \"%(name)s\" za %(count)d pesama?"
 
 #: quodlibet/qltk/songsmenu.py:62
 #, python-format
@@ -6410,15 +6433,15 @@ msgstr ""
 
 #: quodlibet/util/massagers.py:129
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
-msgstr ""
+msgstr "Replay Gain povećanja moraju biti uneta u 'x.yy dB' formatu."
 
 #: quodlibet/util/massagers.py:150
 msgid "Replay Gain peaks must be entered in 'x.yy' format."
-msgstr ""
+msgstr "Replay Gain peaks moraju biti uneti u 'x.yy' formatu."
 
 #: quodlibet/util/massagers.py:172
 msgid "MusicBrainz IDs must be in UUID format."
-msgstr ""
+msgstr "MusicBrainz IDs moraju biti u UUID formatu."
 
 #. Translators: Leave "official", "promotional", and "bootleg"
 #. untranslated. They are the three possible literal values.
@@ -6426,6 +6449,8 @@ msgstr ""
 msgid ""
 "MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
 msgstr ""
+"MusicBrainz status izdanja mora biti 'official', 'promotional', ili "
+"'bootleg'."
 
 #: quodlibet/util/massagers.py:207
 msgid "Language must be an ISO 639-2 three-letter code"
@@ -6625,61 +6650,61 @@ msgstr "zemlja izdanja"
 #. musicbrainz_releastrackid instead.
 #: quodlibet/util/tags.py:130
 msgid "MusicBrainz recording ID"
-msgstr ""
+msgstr "MusicBrainz ID snimanja"
 
 #: quodlibet/util/tags.py:131
 msgid "MusicBrainz release track ID"
-msgstr ""
+msgstr "MusicBrainz ID izdanja zapisa"
 
 #: quodlibet/util/tags.py:132
 msgid "MusicBrainz release ID"
-msgstr ""
+msgstr "MusicBrainz ID izdanja"
 
 #: quodlibet/util/tags.py:133
 msgid "MusicBrainz artist ID"
-msgstr ""
+msgstr "MusicBrainz ID umetnika"
 
 #: quodlibet/util/tags.py:134
 msgid "MusicBrainz release artist ID"
-msgstr ""
+msgstr "MusicBrainz ID izdanja umetnika"
 
 #: quodlibet/util/tags.py:135
 msgid "MusicBrainz TRM ID"
-msgstr ""
+msgstr "MusicBrainz TRM ID"
 
 #: quodlibet/util/tags.py:136
 msgid "MusicIP PUID"
-msgstr ""
+msgstr "MusicIP PUID"
 
 #: quodlibet/util/tags.py:137
 msgid "MusicBrainz album status"
-msgstr ""
+msgstr "MusicBrainz status albuma"
 
 #: quodlibet/util/tags.py:138
 msgid "MusicBrainz album type"
-msgstr ""
+msgstr "MusicBrainz tip albuma"
 
 #: quodlibet/util/tags.py:139
 msgid "MusicBrainz release group ID"
-msgstr ""
+msgstr "MusicBrainz ID izdanja grupe"
 
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:142
 msgid "track gain"
-msgstr ""
+msgstr "track gain"
 
 #: quodlibet/util/tags.py:143
 msgid "track peak"
-msgstr ""
+msgstr "track peak"
 
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:145
 msgid "album gain"
-msgstr ""
+msgstr "album gain"
 
 #: quodlibet/util/tags.py:146
 msgid "album peak"
-msgstr ""
+msgstr "album peak"
 
 #: quodlibet/util/tags.py:147
 msgid "reference loudness"
