@@ -720,7 +720,7 @@ class FileLibrary(PicklingLibrary):
             return False
 
         # first scan each path for new files
-        paths_to_load = []
+        elements_to_load = []
         for scan_path in paths:
             print_d("Scanning %r." % scan_path)
             desc = _("Scanning %s") % (fsn2text(unexpand(scan_path)))
@@ -738,7 +738,7 @@ class FileLibrary(PicklingLibrary):
                     # already loaded
                     if self.contains_filename(real_path):
                         continue
-                    paths_to_load.append(real_path)
+                    elements_to_load.append((scan_path, real_path))
 
         yield
 
@@ -748,10 +748,11 @@ class FileLibrary(PicklingLibrary):
                 task.copool(cofuncid)
 
             added = []
-            for real_path in task.gen(paths_to_load):
-                item = self.add_filename(real_path, False)
+            for element in task.gen(elements_to_load):
+                item = self.add_filename(element[1], False)
                 if item is not None:
                     added.append(item)
+                    item["~library"] = os.path.basename(element[0])
                     if len(added) > 100 or need_added():
                         self.add(added)
                         added = []
