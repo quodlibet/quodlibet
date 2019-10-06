@@ -1,7 +1,7 @@
 ---
 app-id: io.github.quodlibet.QuodLibet
 runtime: org.gnome.Platform
-runtime-version: '3.30'
+runtime-version: '3.34'
 sdk: org.gnome.Sdk
 command: quodlibet
 build-options:
@@ -55,6 +55,7 @@ finish-args:
 
 modules:
   - python-modules.yaml
+  - flathub-shared-modules/dbus-glib/dbus-glib-0.110.json
   - flathub-shared-modules/libappindicator/libappindicator-gtk3-introspection-12.10.json
   - name: kakasi
     sources:
@@ -98,14 +99,14 @@ modules:
   - name: gst-libav
     sources:
       - type: archive
-        url: https://gstreamer.freedesktop.org/src/gst-libav/gst-libav-1.14.4.tar.xz
-        sha256: dfd78591901df7853eab7e56a86c34a1b03635da0d3d56b89aa577f1897865da
+        url: https://gstreamer.freedesktop.org/src/gst-libav/gst-libav-1.16.1.tar.xz
+        sha256: e8a5748ae9a4a7be9696512182ea9ffa6efe0be9b7976916548e9d4381ca61c4
   - name: gst-plugins-ugly
     buildsystem: meson
     sources:
       - type: archive
-        url: https://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-1.14.4.tar.xz
-        sha256: ac02d837f166c35ff6ce0738e281680d0b90052cfb1f0255dcf6aaca5f0f6d23
+        url: https://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-1.16.1.tar.xz
+        sha256: 4bf913b2ca5195ac3b53b5e3ade2dc7c45d2258507552ddc850c5fa425968a1d
   - name: libgme
     buildsystem: cmake
     sources:
@@ -113,10 +114,11 @@ modules:
         url: https://bitbucket.org/mpyne/game-music-emu/downloads/game-music-emu-0.6.2.tar.xz
         sha256: 5046cb471d422dbe948b5f5dd4e5552aaef52a0899c4b2688e5a68a556af7342
   - name: gst-plugins-bad
+    buildsystem: meson
     sources:
       - type: archive
-        url: https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-1.14.4.tar.xz
-        sha256: 910b4e0e2e897e8b6d06767af1779d70057c309f67292f485ff988d087aa0de5
+        url: https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-1.16.1.tar.xz
+        sha256: 56481c95339b8985af13bac19b18bc8da7118c2a7d9440ed70e7dcd799c2adb5
   - name: quodlibet
     buildsystem: simple
     subdir: quodlibet
@@ -126,6 +128,8 @@ modules:
       - type: git
         url: https://github.com/quodlibet/quodlibet.git
         tag: release-4.2.1
+      - type: patch
+        path: patches/appdata-content-rating.patch
 cleanup:
   - /include
   - /share/gtk-doc
@@ -133,4 +137,4 @@ cleanup:
   - "*.la"
   - "*.a"
 cleanup-commands:
-  - python3 -m compileall --invalidation-mode=unchecked-hash /app
+  - python3 -m compileall -f --invalidation-mode=unchecked-hash /app
