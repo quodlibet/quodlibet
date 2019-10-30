@@ -21,7 +21,7 @@ def main(argv=None):
 
     import quodlibet
 
-    config_file = os.path.join(quodlibet.get_user_dir(), "config")
+    config_file = os.path.join(quodlibet.get_config_dir(), "config")
     quodlibet.init_cli(config_file=config_file)
 
     try:
@@ -159,7 +159,7 @@ def main(argv=None):
     mmkeys_handler.start()
 
     # TODO: get XDG_RUNTIME_DIR
-    current_path = os.path.join(quodlibet.get_user_dir(), "current")
+    current_path = os.path.join(quodlibet.get_config_dir(), "current")
     fsiface = FSInterface(current_path, player, library)
     remote = Remote(app, cmd_registry)
     try:

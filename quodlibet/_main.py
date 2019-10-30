@@ -138,7 +138,7 @@ def get_data_dir():
 
     if os.name == "nt" and build.BUILD_TYPE == u"windows-portable":
         # avoid writing things to the host system for the portable build
-        path = os.path.join(get_user_dir(), "cache")
+        path = os.path.join(get_config_dir(), "cache")
     else:
         path = os.path.join(xdg_get_data_home(), "quodlibet")
 
@@ -152,7 +152,7 @@ def get_cache_dir():
 
     if os.name == "nt" and build.BUILD_TYPE == u"windows-portable":
         # avoid writing things to the host system for the portable build
-        path = os.path.join(get_user_dir(), "cache")
+        path = os.path.join(get_config_dir(), "cache")
     else:
         path = os.path.join(xdg_get_cache_home(), "quodlibet")
 
@@ -166,7 +166,7 @@ def get_runtime_dir():
 
     if os.name == "nt" and build.BUILD_TYPE == u"windows-portable":
         # avoid writing things to the host system for the portable build
-        path = os.path.join(get_user_dir(), "runtime")
+        path = os.path.join(get_config_dir(), "runtime")
     else:
         path = os.path.join(xdg_get_runtime_dir(), "quodlibet")
 
@@ -175,8 +175,8 @@ def get_runtime_dir():
 
 
 @cached_func
-def get_user_dir():
-    """Place where QL saves its state, database, config etc."""
+def get_config_dir():
+    """The directory to store user-specific configuration files"""
 
     if os.name == "nt":
         USERDIR = os.path.join(windows.get_appdata_dir(), "Quod Libet")
@@ -250,7 +250,7 @@ def init_plugins(no_plugins=False):
     # FIXME: This should probably go to `~/.local/lib/quodlibet`
     folders = [os.path.join(get_base_dir(), "ext", kind)
                for kind in PLUGIN_DIRS]
-    folders.append(os.path.join(get_user_dir(), "plugins"))
+    folders.append(os.path.join(get_config_dir(), "plugins"))
     print_d("Scanning folders: %s" % folders)
     pm = plugins.init(folders, no_plugins)
     pm.rescan()
