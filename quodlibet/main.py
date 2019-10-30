@@ -52,7 +52,7 @@ def main(argv=None):
     app.process_name = "quodlibet"
     quodlibet.set_application_info(app)
 
-    library_path = os.path.join(quodlibet.get_user_dir(), "songs")
+    library_path = os.path.join(quodlibet.get_data_dir(), "songs")
 
     print_d("Initializing main library (%s)" % (
             quodlibet.util.path.unexpand(library_path)))
@@ -160,6 +160,7 @@ def main(argv=None):
     mmkeys_handler = MMKeysHandler(app)
     mmkeys_handler.start()
 
+    # TODO: get XDG_RUNTIME_DIR
     current_path = os.path.join(quodlibet.get_user_dir(), "current")
     fsiface = FSInterface(current_path, player)
     remote = Remote(app, cmd_registry)

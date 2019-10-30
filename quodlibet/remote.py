@@ -114,6 +114,7 @@ class QuodLibetWinRemote(RemoteBase):
 class QuodLibetUnixRemote(RemoteBase):
 
     _FIFO_NAME = "control"
+    # TODO: get XDG_RUNTIME_DIR
     _PATH = os.path.join(get_user_dir(), _FIFO_NAME)
 
     def __init__(self, app, cmd_registry):

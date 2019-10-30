@@ -14,7 +14,7 @@ from quodlibet import util
 from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
-outfile = os.path.join(quodlibet.get_user_dir(), "jabber")
+outfile = os.path.join(quodlibet.get_cache_dir(), "jabber")
 format = """\
 <tune xmlns='http://jabber.org/protocol/tune'>
  <artist>%s</artist>
@@ -28,7 +28,7 @@ format = """\
 class JEP118(EventPlugin):
     PLUGIN_ID = "JEP-118"
     PLUGIN_NAME = _("JEP-118")
-    PLUGIN_DESC = _("Outputs a Jabber User Tunes file to ~/.quodlibet/jabber.")
+    PLUGIN_DESC = _("Outputs a Jabber User Tunes file to $XDG_CACHE_HOME/jabber")
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def plugin_on_song_started(self, song):

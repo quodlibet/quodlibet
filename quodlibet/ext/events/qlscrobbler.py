@@ -89,7 +89,7 @@ class QLSubmitQueue:
     CLIENT = "qlb"
     CLIENT_VERSION = const.VERSION
     PROTOCOL_VERSION = "1.2"
-    DUMP = os.path.join(quodlibet.get_user_dir(), "scrobbler_cache_v2")
+    DUMP = os.path.join(quodlibet.get_cache_dir(), "scrobbler_cache_v2")
 
     # These objects are shared across instances, to allow other plugins to
     # queue scrobbles in future versions of QL

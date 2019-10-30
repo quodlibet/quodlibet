@@ -35,7 +35,7 @@ from quodlibet.qltk.x import ScrolledWindow, Align, Button, MenuItem
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 
-FEEDS = os.path.join(quodlibet.get_user_dir(), "feeds")
+FEEDS = os.path.join(quodlibet.get_data_dir(), "feeds")
 DND_URI_LIST, DND_MOZ_URL = range(2)
 
 # Migration path for pickle

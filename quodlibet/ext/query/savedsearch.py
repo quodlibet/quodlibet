@@ -11,7 +11,7 @@ from quodlibet import _
 from quodlibet.plugins.query import QueryPlugin, QueryPluginError
 from quodlibet.query import Query
 from quodlibet.query._match import error as QueryError
-from quodlibet import get_user_dir
+from quodlibet import get_data_dir
 
 
 class IncludeSavedSearchQuery(QueryPlugin):
@@ -32,7 +32,7 @@ class IncludeSavedSearchQuery(QueryPlugin):
         if query_path_:
             query_path = query_path_
         else:
-            query_path = os.path.join(get_user_dir(), 'lists', 'queries.saved')
+            query_path = os.path.join(get_data_dir(), 'lists', 'queries.saved')
         try:
             with open(query_path, 'r', encoding="utf-8") as query_file:
                 for query_string in query_file:

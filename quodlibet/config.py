@@ -49,6 +49,7 @@ INITIAL: Dict[str, Dict[str, str]] = {
         "refresh_on_start": "true",
     },
 
+    # TODO: Move this to a separate file in `get_cache_dir`
     # State about the player, to restore on startup
     "memory": {
 

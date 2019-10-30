@@ -22,7 +22,7 @@ from quodlibet.util.path import mkdir, uri_is_valid
 
 
 # Directory for playlist files
-PLAYLISTS = os.path.join(quodlibet.get_user_dir(), "playlists")
+PLAYLISTS = os.path.join(quodlibet.get_data_dir(), "playlists")
 assert isinstance(PLAYLISTS, fsnative)
 if not os.path.isdir(PLAYLISTS):
     mkdir(PLAYLISTS)
