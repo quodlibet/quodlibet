@@ -136,9 +136,9 @@ def get_image_dir():
 def get_data_dir():
     """The directory to store things considered user-specific data files"""
 
-    if os.name == "nt" and build.BUILD_TYPE == u"windows-portable":
-        # avoid writing things to the host system for the portable build
-        path = os.path.join(get_config_dir(), "cache")
+    fallback_dir = get_fallback_dir()
+    if fallback_dir:
+        path = os.path.join(fallback_dir, "data")
     else:
         path = os.path.join(xdg_get_data_home(), "quodlibet")
 
@@ -150,9 +150,9 @@ def get_data_dir():
 def get_cache_dir():
     """The directory to store things which can be deleted at any time"""
 
-    if os.name == "nt" and build.BUILD_TYPE == u"windows-portable":
-        # avoid writing things to the host system for the portable build
-        path = os.path.join(get_config_dir(), "cache")
+    fallback_dir = get_fallback_dir()
+    if fallback_dir:
+        path = os.path.join(fallback_dir, "cache")
     else:
         path = os.path.join(xdg_get_cache_home(), "quodlibet")
 
@@ -164,9 +164,9 @@ def get_cache_dir():
 def get_runtime_dir():
     """The directory to store user-specific runtime files and other file objects"""
 
-    if os.name == "nt" and build.BUILD_TYPE == u"windows-portable":
-        # avoid writing things to the host system for the portable build
-        path = os.path.join(get_config_dir(), "runtime")
+    fallback_dir = get_fallback_dir()
+    if fallback_dir:
+        path = os.path.join(fallback_dir, "runtime")
     else:
         path = os.path.join(xdg_get_runtime_dir(), "quodlibet")
 
@@ -178,28 +178,38 @@ def get_runtime_dir():
 def get_config_dir():
     """The directory to store user-specific configuration files"""
 
+    fallback_dir = get_fallback_dir()
+    if fallback_dir:
+        path = os.path.join(fallback_dir, "config")  # TODO: Maybe without the config?
+    else:
+        path = os.path.join(xdg_get_config_home(), "quodlibet")
+
+    mkdir(path, 0o750)
+    return path
+
+
+@cached_func
+def get_fallback_dir():
+    """The fallback for non-Linux and ~/.quodlibet"""
+    USERDIR = None
+
     if os.name == "nt":
         USERDIR = os.path.join(windows.get_appdata_dir(), "Quod Libet")
     elif is_osx():
         USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
-    else:
-        USERDIR = os.path.join(xdg_get_config_home(), "quodlibet")
+    else:  # Linux
+        homedir = os.path.join(os.path.expanduser("~"), ".quodlibet")
+        if os.path.exists(homedir):
+            USERDIR = homedir
 
-        if not os.path.exists(USERDIR):
-            tmp = os.path.join(os.path.expanduser("~"), ".quodlibet")
-            if os.path.exists(tmp):
-                USERDIR = tmp
-
+    # Bruteforce override
     if 'QUODLIBET_USERDIR' in os.environ:
         USERDIR = os.environ['QUODLIBET_USERDIR']
 
     if build.BUILD_TYPE == u"windows-portable":
+        # avoid writing things to the host system for the portable build
         USERDIR = os.path.normpath(os.path.join(
             os.path.dirname(path2fsn(sys.executable)), "..", "..", "config"))
-
-    # XXX: users shouldn't assume the dir is there, but we currently do in
-    # some places
-    mkdir(USERDIR, 0o750)
 
     return USERDIR
 
