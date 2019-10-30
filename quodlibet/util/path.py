@@ -238,6 +238,21 @@ def xdg_get_config_home():
         return os.path.join(os.path.expanduser("~"), ".config")
 
 
+def xdg_get_runtime_dir():
+    if os.name == "nt":
+        from gi.repository import GLib
+        return glib2fsn(GLib.get_user_runtime_dir())
+
+    data_home = os.getenv("XDG_RUNTIME_DIR")
+    if data_home:
+        return os.path.abspath(data_home)
+    else:
+        # > fall back to a replacement directory with similar capabilities and
+        # > print a warning message
+        # TODO: print a warning message?
+        return xdg_get_cache_home()
+
+
 def parse_xdg_user_dirs(data):
     """Parses xdg-user-dirs and returns a dict of keys and paths.
 
