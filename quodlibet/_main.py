@@ -16,7 +16,9 @@ from quodlibet import const
 from quodlibet import build
 from quodlibet.util import cached_func, windows, set_process_title, is_osx
 from quodlibet.util.dprint import print_d
-from quodlibet.util.path import mkdir, xdg_get_config_home, xdg_get_data_home, xdg_get_cache_home
+from quodlibet.util.path import mkdir, \
+        xdg_get_config_home, xdg_get_data_home, \
+        xdg_get_cache_home, xdg_get_runtime_dir
 
 
 PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
@@ -153,6 +155,20 @@ def get_cache_dir():
         path = os.path.join(get_user_dir(), "cache")
     else:
         path = os.path.join(xdg_get_cache_home(), "quodlibet")
+
+    mkdir(path, 0o700)
+    return path
+
+
+@cached_func
+def get_runtime_dir():
+    """The directory to store user-specific runtime files and other file objects"""
+
+    if os.name == "nt" and build.BUILD_TYPE == u"windows-portable":
+        # avoid writing things to the host system for the portable build
+        path = os.path.join(get_user_dir(), "runtime")
+    else:
+        path = os.path.join(xdg_get_runtime_dir(), "quodlibet")
 
     mkdir(path, 0o700)
     return path
