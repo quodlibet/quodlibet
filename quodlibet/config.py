@@ -63,6 +63,7 @@ INITIAL: Dict[str, Dict[str, str]] = {
         "watch": "false"
     },
 
+    # TODO: Move this to a separate file in `get_cache_dir`
     # State about the player, to restore on startup
     "memory": {
 

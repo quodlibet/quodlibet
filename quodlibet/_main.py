@@ -247,6 +247,7 @@ def init_plugins(no_plugins=False):
     print_d("Starting plugin manager")
 
     from quodlibet import plugins
+    # FIXME: This should probably go to `~/.local/lib/quodlibet`
     folders = [os.path.join(get_base_dir(), "ext", kind)
                for kind in PLUGIN_DIRS]
     folders.append(os.path.join(get_user_dir(), "plugins"))
@@ -399,7 +400,7 @@ def run(window, before_quit=None):
     # gtk+ on osx is just too crashy
     if not is_osx():
         try:
-            faulthandling.enable(os.path.join(get_user_dir(), "faultdump"))
+            faulthandling.enable(os.path.join(get_cache_dir(), "faultdump"))
         except IOError:
             util.print_exc()
         else:

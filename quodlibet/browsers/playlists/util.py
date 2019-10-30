@@ -20,6 +20,13 @@ from urllib.response import addinfourl
 from senf import uri2fsn, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 
+# Directory for playlist files
+PLAYLISTS = os.path.join(quodlibet.get_data_dir(), "playlists")
+assert isinstance(PLAYLISTS, fsnative)
+if not os.path.isdir(PLAYLISTS):
+    mkdir(PLAYLISTS)
+
+
 def confirm_remove_playlist_dialog_invoke(
     parent, playlist, Confirmer=ConfirmationPrompt):
     """Creates and invokes a confirmation dialog that asks the user whether or not

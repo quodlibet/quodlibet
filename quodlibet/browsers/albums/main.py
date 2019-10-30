@@ -424,7 +424,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
     __last_render = None
     __last_render_surface = None
 
-    _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
+    _PATTERN_FN = os.path.join(quodlibet.get_data_dir(), "album_pattern")  # TODO: Maybe on the Config folder?
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
 
     name = _("Album List")

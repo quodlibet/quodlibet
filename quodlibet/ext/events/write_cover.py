@@ -20,6 +20,7 @@ from quodlibet.qltk import Icons
 
 
 def get_path():
+    # TODO: get XDG_RUNTIME_DIR
     default = os.path.join(quodlibet.get_user_dir(), "current.cover")
     return config.get("plugins", __name__, default=default)
 

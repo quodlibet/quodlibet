@@ -35,6 +35,7 @@ class TQuodlibet(TestCase):
         self.assertTrue(isinstance(quodlibet.get_image_dir(), fsnative))
         self.assertTrue(isinstance(quodlibet.get_user_dir(), fsnative))
         self.assertTrue(isinstance(quodlibet.get_cache_dir(), fsnative))
+        self.assertTrue(isinstance(quodlibet.get_data_dir(), fsnative))
 
     def test_get_build_description(self):
         quodlibet.get_build_description()

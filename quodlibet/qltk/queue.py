@@ -36,7 +36,8 @@ from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
     SmallImageButton, SmallImageToggleButton, MenuItem, RadioMenuItem
 from quodlibet.qltk.songlistcolumns import CurrentColumn
 
-QUEUE = os.path.join(quodlibet.get_user_dir(), "queue")
+# TODO: get XDG_RUNTIME_DIR
+QUEUE = os.path.join(quodlibet.get_data_dir(), "queue")
 
 
 class PlaybackStatusIcon(Gtk.Box):
