@@ -16,7 +16,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util.path import unexpand
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import formats
-from quodlibet import app, get_user_dir, get_data_dir, \
+from quodlibet import app, get_config_dir, get_data_dir, \
         get_runtime_dir, get_cache_dir
 from quodlibet.util import fver, escape
 from quodlibet.qltk import gtk_version, pygobject_version, get_backend_name, \
@@ -69,7 +69,7 @@ class AppInformation(EventPlugin):
 
         grid.insert_row(row)
         l = label_title(_("Configuration Directory"))
-        v = label_path(get_user_dir())
+        v = label_path(get_config_dir())
         grid.attach(l, 0, row, 1, 1)
         grid.attach(v, 1, row, 1, 1)
         row += 1
