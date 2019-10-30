@@ -158,8 +158,7 @@ def main(argv=None):
     mmkeys_handler = MMKeysHandler(app)
     mmkeys_handler.start()
 
-    # TODO: get XDG_RUNTIME_DIR
-    current_path = os.path.join(quodlibet.get_config_dir(), "current")
+    current_path = os.path.join(quodlibet.get_runtime_dir(), "current")
     fsiface = FSInterface(current_path, player, library)
     remote = Remote(app, cmd_registry)
     try:
