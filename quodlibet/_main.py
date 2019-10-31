@@ -136,8 +136,10 @@ def get_image_dir():
 def get_data_dir():
     """The directory to store things considered user-specific data files"""
 
-    fallback_dir = get_fallback_dir()
-    if fallback_dir:
+    fallback_dir, legacy = get_fallback_dir()
+    if legacy:
+        path = fallback_dir
+    elif fallback_dir:
         path = os.path.join(fallback_dir, "data")
     else:
         path = os.path.join(xdg_get_data_home(), "quodlibet")
@@ -150,8 +152,10 @@ def get_data_dir():
 def get_cache_dir():
     """The directory to store things which can be deleted at any time"""
 
-    fallback_dir = get_fallback_dir()
-    if fallback_dir:
+    fallback_dir, legacy = get_fallback_dir()
+    if legacy:
+        path = fallback_dir
+    elif fallback_dir:
         path = os.path.join(fallback_dir, "cache")
     else:
         path = os.path.join(xdg_get_cache_home(), "quodlibet")
@@ -164,8 +168,10 @@ def get_cache_dir():
 def get_runtime_dir():
     """The directory to store user-specific runtime files and other file objects"""
 
-    fallback_dir = get_fallback_dir()
-    if fallback_dir:
+    fallback_dir, legacy = get_fallback_dir()
+    if legacy:
+        path = fallback_dir
+    elif fallback_dir:
         path = os.path.join(fallback_dir, "runtime")
     else:
         path = os.path.join(xdg_get_runtime_dir(), "quodlibet")
@@ -178,8 +184,10 @@ def get_runtime_dir():
 def get_config_dir():
     """The directory to store user-specific configuration files"""
 
-    fallback_dir = get_fallback_dir()
-    if fallback_dir:
+    fallback_dir, legacy = get_fallback_dir()
+    if legacy:
+        path = fallback_dir
+    elif fallback_dir:
         path = os.path.join(fallback_dir, "config")  # TODO: Maybe without the config?
     else:
         path = os.path.join(xdg_get_config_home(), "quodlibet")
@@ -191,7 +199,7 @@ def get_config_dir():
 @cached_func
 def get_fallback_dir():
     """The fallback for non-Linux and ~/.quodlibet"""
-    USERDIR = None
+    USERDIR, legacy = None, False
 
     if os.name == "nt":
         USERDIR = os.path.join(windows.get_appdata_dir(), "Quod Libet")
@@ -200,7 +208,8 @@ def get_fallback_dir():
     else:  # Linux
         homedir = os.path.join(os.path.expanduser("~"), ".quodlibet")
         if os.path.exists(homedir):
-            USERDIR = homedir
+            # This is a legacy path
+            USERDIR, legacy = homedir, True
 
     # Bruteforce override
     if 'QUODLIBET_USERDIR' in environ:
@@ -211,7 +220,7 @@ def get_fallback_dir():
         USERDIR = os.path.normpath(os.path.join(
             os.path.dirname(path2fsn(sys.executable)), "..", "..", "config"))
 
-    return USERDIR
+    return USERDIR, legacy
 
 
 def is_release():
