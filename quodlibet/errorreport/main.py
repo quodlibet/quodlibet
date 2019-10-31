@@ -159,7 +159,8 @@ def errorhook(exc_info=None):
         return
 
     # write error and logs to disk
-    dump_dir = os.path.join(quodlibet.get_cache_dir(), "dumps")  # TODO: maybe `get_data_dir`?
+    # TODO: maybe `get_data_dir`?
+    dump_dir = os.path.join(quodlibet.get_cache_dir(), "dumps")
     dump_to_disk(dump_dir, exc_info)
 
     sentry = get_sentry()

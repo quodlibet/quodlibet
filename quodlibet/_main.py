@@ -166,7 +166,8 @@ def get_cache_dir():
 
 @cached_func
 def get_runtime_dir():
-    """The directory to store user-specific runtime files and other file objects"""
+    """The directory to store user-specific runtime files and other file
+    objects"""
 
     fallback_dir, legacy = get_fallback_dir()
     if legacy:
@@ -188,7 +189,8 @@ def get_config_dir():
     if legacy:
         path = fallback_dir
     elif fallback_dir:
-        path = os.path.join(fallback_dir, "config")  # TODO: Maybe without the config?
+        # TODO: Maybe without the config?
+        path = os.path.join(fallback_dir, "config")
     else:
         path = os.path.join(xdg_get_config_home(), "quodlibet")
 
