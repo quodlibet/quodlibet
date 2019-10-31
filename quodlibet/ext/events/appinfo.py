@@ -29,7 +29,7 @@ class AppInformation(EventPlugin):
     PLUGIN_NAME = _("Application Information")
     PLUGIN_DESC = _("Various information about the application and its "
                     "environment.")
-    PLUGIN_CAN_ENABLE = False
+    PLUGIN_CAN_ENABLE = True
     PLUGIN_ICON = Icons.PREFERENCES_SYSTEM
 
     def PluginPreferences(self, *args):
