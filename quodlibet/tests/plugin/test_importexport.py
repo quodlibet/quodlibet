@@ -8,10 +8,9 @@
 
 from quodlibet import config, app
 from quodlibet.formats import AudioFile
-from quodlibet.util import is_osx
 from quodlibet.util.songwrapper import SongWrapper
 from quodlibet.util.path import normalize_path
-from tests import destroy_fake_app, init_fake_app, mkstemp, skipIf
+from tests import destroy_fake_app, init_fake_app, mkstemp
 from . import PluginTestCase
 from ..helper import temp_filename
 import os
@@ -45,7 +44,7 @@ def a_dummy_song():
     fd, filename = mkstemp()
     os.close(fd)
     return AudioFile({
-        '~#length': 234, '~filename': filename,
+        '~#length': 234, '~filename': normalize_path(filename, True),
         'artist': AN_ARTIST, 'album': 'An Example Album',
         'title': A_TITLE, 'tracknumber': 1,
         'date': '2010-12-31',
@@ -110,7 +109,6 @@ class TImport(PluginTestCase):
         # See #3068
         assert self.changed == self.songs, "Library wasn't notified correctly"
 
-    @skipIf(is_osx(), "TODO: Fix for osx")
     def test_file_rename(self):
         metadata = [{"artist": [ANOTHER_ARTIST],
                      "albumartist": [AN_ALBUM_ARTIST]}]
@@ -125,7 +123,7 @@ class TImport(PluginTestCase):
         self.plugin.update_files(wrap_songs(self.songs), metadata, new_names,
                                  append=False, rename=True)
 
-        for old, new in zip(old_names, map(normalize_path, new_names)):
+        for old, new in zip(old_names, new_names):
             assert new in app.library
             assert old not in app.library
             song = app.library[new]
