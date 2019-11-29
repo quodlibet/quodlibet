@@ -45,7 +45,7 @@ def a_dummy_song():
     fd, filename = mkstemp()
     os.close(fd)
     return AudioFile({
-        '~#length': 234, '~filename': filename,
+        '~#length': 234, '~filename': normalize_path(filename, True),
         'artist': AN_ARTIST, 'album': 'An Example Album',
         'title': A_TITLE, 'tracknumber': 1,
         'date': '2010-12-31',
@@ -125,7 +125,7 @@ class TImport(PluginTestCase):
         self.plugin.update_files(wrap_songs(self.songs), metadata, new_names,
                                  append=False, rename=True)
 
-        for old, new in zip(old_names, map(normalize_path, new_names)):
+        for old, new in zip(old_names, new_names):
             assert new in app.library
             assert old not in app.library
             song = app.library[new]
