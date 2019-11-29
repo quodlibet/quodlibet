@@ -183,11 +183,9 @@ class Import(SongsMenuPlugin):
                     values = song.list(key) + values
                 song[key] = '\n'.join(values)
             if rename:
-                origname = song['~filename']
-                path = os.path.dirname(origname)
-                suffix_index = origname.rfind('.')
-                suffix = origname[suffix_index:] if suffix_index >= 0 else ''
-                newname = os.path.join(path, name + suffix)
+                path = song('~dirname')
+                base = os.path.basename(name)
+                newname = os.path.join(path, base)
                 try:
                     app.library.rename(song._song, newname)
                 except ValueError:
