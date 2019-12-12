@@ -12,7 +12,7 @@ cd "${DIR}"
 
 # CONFIG START
 
-ARCH="i686"
+ARCH="x86_64"
 BUILD_VERSION="0"
 
 # CONFIG END
@@ -31,12 +31,13 @@ function set_build_root {
     BUILD_ROOT="$1"
     REPO_CLONE="${BUILD_ROOT}"/quodlibet
     MINGW_ROOT="${BUILD_ROOT}/${MINGW}"
+    export PATH="${MINGW_ROOT}/bin:${PATH}"
 }
 
 set_build_root "${DIR}/_build_root"
 
 function build_pacman {
-    pacman --root "${BUILD_ROOT}" "$@"
+    pacman --cachedir "/var/cache/pacman/pkg" --root "${BUILD_ROOT}" "$@"
 }
 
 function build_pip {
@@ -47,13 +48,17 @@ function build_python {
     "${BUILD_ROOT}"/"${MINGW}"/bin/python3.exe "$@"
 }
 
+function build_compileall_pyconly {
+    MSYSTEM= build_python -m compileall --invalidation-mode unchecked-hash -b "$@"
+}
+
 function build_compileall {
-    MSYSTEM= build_python -m compileall -b "$@"
+    MSYSTEM= build_python -m compileall --invalidation-mode unchecked-hash "$@"
 }
 
 function install_pre_deps {
     pacman -S --needed --noconfirm p7zip git dos2unix \
-        mingw-w64-"${ARCH}"-nsis wget intltool mingw-w64-"${ARCH}"-toolchain
+        mingw-w64-"${ARCH}"-nsis wget mingw-w64-"${ARCH}"-toolchain
 }
 
 function create_root {
@@ -76,22 +81,22 @@ function extract_installer {
 }
 
 function install_deps {
-
-    # We don't use the fontconfig backend, and this skips the lengthy
-    # cache update step during package installation
-    export MSYS2_FC_CACHE_SKIP=1
-
-    build_pacman --noconfirm -S git mingw-w64-"${ARCH}"-gdk-pixbuf2 \
+    build_pacman --noconfirm -S \
+        mingw-w64-"${ARCH}"-gettext \
+        mingw-w64-"${ARCH}"-gdk-pixbuf2 \
         mingw-w64-"${ARCH}"-librsvg \
-        mingw-w64-"${ARCH}"-gtk3 mingw-w64-"${ARCH}"-python3 \
+        mingw-w64-"${ARCH}"-gtk3 \
+        mingw-w64-"${ARCH}"-python3 \
         mingw-w64-"${ARCH}"-python3-gobject \
         mingw-w64-"${ARCH}"-python3-cairo \
         mingw-w64-"${ARCH}"-python3-pip \
-        mingw-w64-"${ARCH}"-libsoup mingw-w64-"${ARCH}"-gstreamer \
+        mingw-w64-"${ARCH}"-libsoup \
+        mingw-w64-"${ARCH}"-gstreamer \
         mingw-w64-"${ARCH}"-gst-plugins-base \
-        mingw-w64-"${ARCH}"-gst-plugins-good mingw-w64-"${ARCH}"-libsrtp \
-        mingw-w64-"${ARCH}"-gst-plugins-bad mingw-w64-"${ARCH}"-gst-libav \
+        mingw-w64-"${ARCH}"-gst-plugins-good \
+        mingw-w64-"${ARCH}"-gst-plugins-bad \
         mingw-w64-"${ARCH}"-gst-plugins-ugly \
+        mingw-w64-"${ARCH}"-gst-libav \
         mingw-w64-"${ARCH}"-python3-pytest \
         mingw-w64-"${ARCH}"-python3-certifi \
         mingw-w64-"${ARCH}"-python3-coverage
@@ -99,23 +104,28 @@ function install_deps {
     PIP_REQUIREMENTS="\
 feedparser==5.2.1
 musicbrainzngs==0.6
-mutagen==1.39
-pycodestyle==2.3.1
-pyflakes==1.6.0
+mutagen==1.42.0
+pycodestyle==2.4.0
+pyflakes==2.1.0
 "
 
     build_pip install --no-deps --no-binary ":all:" --upgrade \
         --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr ["\\n"] [" "])
 
-    build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-shared-mime-info \
-        mingw-w64-"${ARCH}"-python3-pip mingw-w64-"${ARCH}"-ncurses \
-        mingw-w64-"${ARCH}"-tk mingw-w64-"${ARCH}"-tcl \
-        mingw-w64-"${ARCH}"-opencv mingw-w64-"${ARCH}"-daala-git \
+    build_pacman --noconfirm -Rdds \
+        mingw-w64-"${ARCH}"-shared-mime-info \
+        mingw-w64-"${ARCH}"-python3-pip \
+        mingw-w64-"${ARCH}"-ncurses \
+        mingw-w64-"${ARCH}"-tk \
+        mingw-w64-"${ARCH}"-tcl \
+        mingw-w64-"${ARCH}"-opencv \
         mingw-w64-"${ARCH}"-libdvdcss \
-        mingw-w64-"${ARCH}"-libdvdnav mingw-w64-"${ARCH}"-libdvdread \
+        mingw-w64-"${ARCH}"-libdvdnav \
+        mingw-w64-"${ARCH}"-libdvdread \
         mingw-w64-"${ARCH}"-openexr \
-        mingw-w64-"${ARCH}"-openh264 mingw-w64-"${ARCH}"-zbar \
-        mingw-w64-"${ARCH}"-clutter  mingw-w64-"${ARCH}"-gsl || true
+        mingw-w64-"${ARCH}"-openh264 \
+        mingw-w64-"${ARCH}"-zbar \
+        mingw-w64-"${ARCH}"-gsl
 
     build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-python2 || true
 
@@ -150,14 +160,10 @@ function install_quodlibet {
 }
 
 function cleanup_before {
-    # these all have svg variants
-    find "${MINGW_ROOT}"/share/icons -name "*.symbolic.png" -exec rm -f {} \;
-
     # remove some larger ones
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/512x512"
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/256x256"
     rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/96x96"
-    rm -Rf "${MINGW_ROOT}/share/icons/Adwaita/48x48"
     "${MINGW_ROOT}"/bin/gtk-update-icon-cache-3.0.exe \
         "${MINGW_ROOT}"/share/icons/Adwaita
 
@@ -176,10 +182,10 @@ function cleanup_before {
 
     find "${MINGW_ROOT}"/bin -name "*.pyo" -exec rm -f {} \;
     find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
-    find "${MINGW_ROOT}" -type d -name "__pycache__" -prune -exec rm -rf {} \;
 
-    build_compileall -d "" -f -q "$(cygpath -w "${MINGW_ROOT}")"
+    build_compileall_pyconly -d "" -f -q "$(cygpath -w "${MINGW_ROOT}")"
     find "${MINGW_ROOT}" -name "*.py" -exec rm -f {} \;
+    find "${MINGW_ROOT}" -type d -name "__pycache__" -prune -exec rm -rf {} \;
 }
 
 function cleanup_after {
@@ -198,7 +204,10 @@ function cleanup_after {
     rm -Rf "${MINGW_ROOT}"/share/gtk-doc
     rm -Rf "${MINGW_ROOT}"/include
     rm -Rf "${MINGW_ROOT}"/var
-    rm -Rf "${MINGW_ROOT}"/etc
+    rm -Rf "${MINGW_ROOT}"/etc/config.site
+    rm -Rf "${MINGW_ROOT}"/etc/pki
+    rm -Rf "${MINGW_ROOT}"/etc/pkcs11
+    rm -Rf "${MINGW_ROOT}"/etc/gtk-3.0/im-multipress.conf
     rm -Rf "${MINGW_ROOT}"/share/zsh
     rm -Rf "${MINGW_ROOT}"/share/pixmaps
     rm -Rf "${MINGW_ROOT}"/share/gnome-shell
@@ -265,6 +274,8 @@ function cleanup_after {
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstschro.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstrtmp.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstzbar.dll
+    rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstfdkaac.dll
+    rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstaom.dll
 
     rm -f "${MINGW_ROOT}"/bin/libharfbuzz-icu-0.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstcacasink.dll
@@ -302,7 +313,6 @@ function cleanup_after {
 
     find "${MINGW_ROOT}"/bin -name "*.pyo" -exec rm -f {} \;
     find "${MINGW_ROOT}"/bin -name "*.pyc" -exec rm -f {} \;
-    find "${MINGW_ROOT}" -type d -name "__pycache__" -prune -exec rm -rf {} \;
 
     build_python "${MISC}/depcheck.py" --delete
 
@@ -315,13 +325,12 @@ function build_installer {
     echo 'BUILD_TYPE = u"windows"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
     (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
-    (cd $(dirname "$BUILDPY") && build_compileall -d "" -q -f -l .)
-    rm -f "$BUILDPY"
+    build_compileall -d "" -q -f "$BUILDPY"
 
     cp misc/quodlibet.ico "${BUILD_ROOT}"
-    (cd "$BUILD_ROOT" && makensis -NOCD -DVERSION="$QL_VERSION_DESC" "${MISC}"/win_installer.nsi)
+    (cd "${MINGW_ROOT}" && makensis -NOCD -DVERSION="$QL_VERSION_DESC" "${MISC}"/win_installer.nsi)
 
-    mv "$BUILD_ROOT/quodlibet-LATEST.exe" "$DIR/quodlibet-$QL_VERSION_DESC-installer.exe"
+    mv "${MINGW_ROOT}/quodlibet-LATEST.exe" "$DIR/quodlibet-$QL_VERSION_DESC-installer.exe"
 }
 
 function build_portable_installer {
@@ -330,8 +339,7 @@ function build_portable_installer {
     echo 'BUILD_TYPE = u"windows-portable"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
     (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
-    (cd $(dirname "$BUILDPY") && build_compileall -d "" -q -f -l .)
-    rm -f "$BUILDPY"
+    build_compileall -d "" -q -f "$BUILDPY"
 
     local PORTABLE="$DIR/quodlibet-$QL_VERSION_DESC-portable"
 

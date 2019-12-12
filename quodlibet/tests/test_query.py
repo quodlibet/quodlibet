@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -9,7 +8,6 @@ import time
 from senf import fsnative
 
 from quodlibet import config
-from quodlibet.compat import xrange
 from quodlibet.formats import AudioFile
 from quodlibet.query import Query, QueryType
 from quodlibet.query import _match as match
@@ -194,7 +192,7 @@ class TQuery(TestCase):
     @skip("Enable for basic benchmarking of Query")
     def test_inequality_performance(self):
         t = time.time()
-        for i in xrange(500):
+        for i in range(500):
             # Native assert is a bit lighter...
             assert Query("album!=foo the bar").search(self.s1)
             assert Query("album=foo the bar").search(self.s2)
@@ -207,11 +205,11 @@ class TQuery(TestCase):
     def test_inequality_equalish_performance(self):
         t0 = time.time()
         repeats = 2000
-        for i in xrange(repeats):
+        for i in range(repeats):
             assert Query("album!=foo the bar").search(self.s1)
         ineq_time = (time.time() - t0)
         t1 = time.time()
-        for i in xrange(repeats):
+        for i in range(repeats):
             assert Query("album=!foo the bar").search(self.s1)
         not_val_time = (time.time() - t1)
         self.assertAlmostEqual(ineq_time, not_val_time, places=1)
@@ -469,7 +467,7 @@ class TQuery(TestCase):
         # invalid regex
         Query(u'/Sigur [r-zos/d')
         # group refs unsupported for diacritic matching
-        Query(u'/(<)?(\w+@\w+(?:\.\w+)+)(?(1)>)/d')
+        Query(u'/(<)?(\\w+@\\w+(?:\\.\\w+)+)(?(1)>)/d')
 
     def test_numexpr(self):
         self.failUnless(Query("#(length = 224)").search(self.s1))
@@ -499,6 +497,15 @@ class TQuery(TestCase):
         self.failUnless(Query("#(date > 4)").search(self.s1))
         self.failUnless(Query("#(date > 0004)").search(self.s1))
         self.failUnless(Query("#(date > 0000)").search(self.s1))
+
+    def test_ignore_characters(self):
+        try:
+            config.set("browsers", "ignored_characters", "-")
+            self.failUnless(Query("Foo the Bar - mu").search(self.s2))
+            config.set("browsers", "ignored_characters", "1234")
+            self.failUnless(Query("4Fo13o 2th2e3 4Bar4").search(self.s2))
+        finally:
+            config.reset("browsers", "ignored_characters")
 
 
 class TQuery_get_type(TestCase):

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #           2015 Nick Boultbee
 #           2017 Fredrik Strupe
@@ -10,6 +9,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk
 from quodlibet import _
@@ -18,14 +18,55 @@ from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.x import SymbolicIconImage, MenuItem, Button
 from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk.ccb import ConfigCheckMenuItem, ConfigCheckButton
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import connect_obj, escape
-from quodlibet.compat import iteritems, iterkeys
 from .util import get_headers, save_headers
 
 
-class PatternEditor(Gtk.VBox):
+@util.enum
+class ColumnMode(int):
+    SMALL = 0
+    WIDE = 1
+    COLUMNAR = 2
 
+
+class ColumnModeSelection(Gtk.VBox):
+    def __init__(self, browser):
+        super(ColumnModeSelection, self).__init__(spacing=6)
+        self.browser = browser
+        self.buttons = []
+
+        group = None
+        mode_label = {
+                ColumnMode.SMALL: _("Small"),
+                ColumnMode.WIDE: _("Wide"),
+                ColumnMode.COLUMNAR: _("Columnar"),
+        }
+        for mode in ColumnMode.values:
+            lbl = mode_label[ColumnMode.value_of(mode)]
+            group = Gtk.RadioButton(group=group, label=lbl)
+            if mode == config.getint("browsers", "pane_mode",
+                                     ColumnMode.SMALL):
+                group.set_active(True)
+            self.pack_start(group, False, True, 0)
+            self.buttons.append(group)
+
+        # Connect to signal after the correct radio button has been
+        # selected
+        for button in self.buttons:
+            button.connect('toggled', self.toggled)
+
+    def toggled(self, button):
+        selected_mode = ColumnMode.SMALL
+        if self.buttons[1].get_active():
+            selected_mode = ColumnMode.WIDE
+        if self.buttons[2].get_active():
+            selected_mode = ColumnMode.COLUMNAR
+        config.set("browsers", "pane_mode", selected_mode)
+        self.browser.set_all_column_mode(selected_mode)
+
+
+class PatternEditor(Gtk.VBox):
     PRESETS = [
         ["genre", "~people", "album"],
         ["~people", "album"],
@@ -113,7 +154,7 @@ class PatternEditor(Gtk.VBox):
 
     @property
     def headers(self):
-        for button in iterkeys(self.__headers):
+        for button in self.__headers.keys():
             if button.get_active():
                 if button == self.__custom:
                     model_headers = [row[0] for row in self.__model]
@@ -122,7 +163,7 @@ class PatternEditor(Gtk.VBox):
 
     @headers.setter
     def headers(self, new_headers):
-        for button, headers in iteritems(self.__headers):
+        for button, headers in self.__headers.items():
             if headers == new_headers:
                 button.set_active(True)
                 button.emit("toggled")
@@ -159,11 +200,6 @@ class PreferencesButton(Gtk.HBox):
 
         self._menu = menu = Gtk.Menu()
 
-        wide_mode = ConfigCheckMenuItem(
-            _("_Wide Mode"), "browsers", "pane_wide_mode", True)
-        wide_mode.connect("toggled", self.__wide_mode_changed, browser)
-        menu.append(wide_mode)
-
         pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
 
         def preferences_cb(menu_item):
@@ -181,9 +217,6 @@ class PreferencesButton(Gtk.HBox):
         button.show()
         self.pack_start(button, True, True, 0)
 
-    def __wide_mode_changed(self, menu_item, browser):
-        browser.set_all_wide_mode(menu_item.get_active())
-
 
 class Preferences(qltk.UniqueWindow):
     def __init__(self, browser):
@@ -199,8 +232,12 @@ class Preferences(qltk.UniqueWindow):
 
         vbox = Gtk.VBox(spacing=12)
 
+        column_modes = ColumnModeSelection(browser)
+        column_mode_frame = qltk.Frame(_("Column layout"), child=column_modes)
+
         editor = PatternEditor()
         editor.headers = get_headers()
+        editor_frame = qltk.Frame(_("Column content"), child=editor)
 
         equal_width = ConfigCheckButton(_("Equal pane width"),
                                         "browsers",
@@ -223,7 +260,8 @@ class Preferences(qltk.UniqueWindow):
         if not self.has_close_button():
             box.pack_start(cancel, True, True, 0)
 
-        vbox.pack_start(editor, True, True, 0)
+        vbox.pack_start(column_mode_frame, False, False, 0)
+        vbox.pack_start(editor_frame, True, True, 0)
         vbox.pack_start(box, False, True, 0)
 
         self.add(vbox)

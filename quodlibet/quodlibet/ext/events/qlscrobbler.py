@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
 # version 0.11
 # (C) 2005-2016 by Joshua Kwan <joshk@triplehelix.org>,
@@ -17,6 +16,7 @@ import os
 import threading
 import time
 from hashlib import md5
+from urllib.parse import urlencode
 
 from gi.repository import Gtk, GLib
 
@@ -32,8 +32,8 @@ from quodlibet.qltk.msg import Message
 from quodlibet.qltk import Icons
 from quodlibet.util.dprint import print_d
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
-from quodlibet.compat import urlencode
 from quodlibet.util.urllib import urlopen, UrllibError
+from quodlibet.errorreport import errorhook
 
 
 SERVICES = {
@@ -88,7 +88,7 @@ class QLSubmitQueue(object):
     CLIENT = "qlb"
     CLIENT_VERSION = const.VERSION
     PROTOCOL_VERSION = "1.2"
-    DUMP = os.path.join(quodlibet.get_user_dir(), "scrobbler_cache")
+    DUMP = os.path.join(quodlibet.get_user_dir(), "scrobbler_cache_v2")
 
     # These objects are shared across instances, to allow other plugins to
     # queue scrobbles in future versions of QL
@@ -354,7 +354,14 @@ class QLScrobbler(EventPlugin):
     def __init__(self):
         self.__enabled = False
         self.queue = QLSubmitQueue()
-        queue_thread = threading.Thread(None, self.queue.run)
+
+        def queue_run():
+            try:
+                self.queue.run()
+            except Exception:
+                errorhook()
+
+        queue_thread = threading.Thread(None, queue_run)
         queue_thread.setDaemon(True)
         queue_thread.start()
 
@@ -563,7 +570,7 @@ class QLScrobbler(EventPlugin):
         entry = ValidatingEntry(Query.validator)
         entry.set_text(plugin_config.get('exclude'))
         entry.set_tooltip_text(
-                _("Songs matching this filter will not be submitted."))
+                _("Songs matching this filter will not be submitted"))
         entry.connect('changed', changed, 'exclude')
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)

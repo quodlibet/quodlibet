@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -11,7 +10,6 @@ import os
 from senf import fsnative
 
 from quodlibet.util.tagsfrompath import TagsFromPattern
-from quodlibet.compat import iteritems
 
 
 class TTagsFromPattern(TestCase):
@@ -36,7 +34,7 @@ class TTagsFromPattern(TestCase):
         from quodlibet import formats
         pat = TagsFromPattern('<tracknumber>. <title>')
         tracktitle = {'tracknumber': '01', 'title': 'Title'}
-        for ext, kind in iteritems(formats.loaders):
+        for ext, kind in formats.loaders.items():
             f = formats._audio.AudioFile()
             if not isinstance(kind, type):
                 continue

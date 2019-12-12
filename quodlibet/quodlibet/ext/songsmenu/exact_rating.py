@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014 Jan Path
 #           2014 Christoph Reiter
 #           2016 Nick Boultbee
@@ -52,7 +51,7 @@ class ExactRating(SongsMenuPlugin):
         if (count > 1 and config.getboolean("browsers",
                 "rating_confirm_multiple")):
             confirm_dialog = ConfirmRateMultipleDialog(
-                self.plugin_window, count, value)
+                self.plugin_window, _("Change _Rating"), count, value)
             if confirm_dialog.run() != Gtk.ResponseType.YES:
                 return
 

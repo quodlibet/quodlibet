@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -14,8 +13,7 @@ from .helper import preserve_environ, locale_numeric_conv
 from quodlibet.util import i18n
 from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
     set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, \
-    numeric_phrase, get_available_languages
-from quodlibet.compat import text_type
+    numeric_phrase, get_available_languages, iter_locale_dirs
 
 
 @contextlib.contextmanager
@@ -49,36 +47,44 @@ class TGlibTranslations(TestCase):
     def test_ugettext(self):
         t = self.t.ugettext("foo")
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
     def test_ungettext(self):
         t = self.t.ungettext("foo", "bar", 1)
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
         t = self.t.ungettext("foo", "bar", 2)
         self.assertEqual(t, "bar")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
     def test_upgettext(self):
         t = self.t.upgettext("ctx", "foo")
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
     def test_unpgettext(self):
         t = self.t.unpgettext("ctx", "foo", "bar", 1)
         self.assertEqual(t, "foo")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
         t = self.t.unpgettext("ctx", "foo", "bar", 2)
         self.assertEqual(t, "bar")
-        self.assertTrue(isinstance(t, text_type))
+        self.assertTrue(isinstance(t, str))
 
 
 class Tgettext(TestCase):
 
+    def test_iter_locale_dirs(self):
+        for dir_ in iter_locale_dirs():
+            assert isinstance(dir_, str)
+
+        dirs = list(iter_locale_dirs())
+        assert len(dirs) == len(set(dirs))
+
     def test_get_languages(self):
-        assert isinstance(get_available_languages("quodlibet"), list)
+        assert isinstance(get_available_languages("quodlibet"), set)
+        assert isinstance(get_available_languages("quodlibet_nope"), set)
 
     def test_bcp47(self):
         self.assertEqual(bcp47_to_language("zh-Hans"), "zh_CN")

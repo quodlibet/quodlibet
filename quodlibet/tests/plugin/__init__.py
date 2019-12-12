@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -11,7 +10,6 @@ from quodlibet import util
 from quodlibet.util import get_module_dir
 from quodlibet.util.modulescanner import ModuleScanner
 from quodlibet.plugins import list_plugins, Plugin, PluginImportException
-from quodlibet.compat import iteritems
 
 from tests import TestCase, init_fake_app, destroy_fake_app
 
@@ -45,7 +43,7 @@ for name, err in ms.failures.items():
 
 plugins = {}
 modules = {}
-for name, module in iteritems(ms.modules):
+for name, module in ms.modules.items():
     for plugin in list_plugins(module.module):
         plugins[plugin.PLUGIN_ID] = Plugin(plugin)
         modules[plugin.PLUGIN_ID] = module.module

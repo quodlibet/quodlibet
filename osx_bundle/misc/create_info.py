@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-from plistlib import Plist, Dict, writePlistToBytes
+import plistlib
 
 
 if __name__ == "__main__":
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     else:
         assert 0
 
-    print(writePlistToBytes(plist).decode("utf-8"))
+    print(plistlib.dumps(plist).decode("utf-8"))
 
 
 

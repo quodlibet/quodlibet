@@ -3684,7 +3684,7 @@ msgstr ""
 #: ../quodlibet/ext/songsmenu/ifp.py:40
 #, fuzzy, python-format
 msgid "Uploading %(current)d/%(total)d"
-msgstr "Přesouvání %(current)d/%(total).d."
+msgstr "Přesouvání %(current)d/%(total)d."
 
 #: ../quodlibet/ext/songsmenu/ifp.py:63
 #, fuzzy
@@ -4505,8 +4505,8 @@ msgid "Tag expression"
 msgstr "Výraz tagu"
 
 #: ../quodlibet/qltk/data_editors.py:373
-msgid "Tag expression e.g. people:real or ~album~year."
-msgstr "Výraz tagu, např. people:real nebo ~album~year."
+msgid "Tag expression e.g. people:real or ~album~year"
+msgstr "Výraz tagu, např. people:real nebo ~album~year"
 
 #: ../quodlibet/qltk/data_editors.py:374
 msgid "Enter new tag"
@@ -4565,7 +4565,7 @@ msgstr "_Přesunout do koše"
 #: ../quodlibet/qltk/delete.py:153 ../quodlibet/qltk/delete.py:188
 #, python-format
 msgid "Moving %(current)d/%(total)d."
-msgstr "Přesouvání %(current)d/%(total).d."
+msgstr "Přesouvání %(current)d/%(total)d."
 
 #: ../quodlibet/qltk/delete.py:174 ../quodlibet/qltk/delete.py:206
 msgid "Unable to move to trash"
@@ -5370,7 +5370,7 @@ msgstr "Uložit změny tagů bez potvrzení v případě úpravy více tagů naj
 #: ../quodlibet/qltk/prefs.py:588
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
-"list is space-separated"
+"list is space-separated."
 msgstr ""
 "Seznam oddělovačů pro rozdělování hodnot tagů. Položky jsou odděleny mezerou."
 

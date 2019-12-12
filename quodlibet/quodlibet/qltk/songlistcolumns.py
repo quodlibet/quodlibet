@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #      2011-2014 Nick Boultbee
@@ -12,18 +11,19 @@
 import time
 import datetime
 
-from gi.repository import Gtk, Pango, GLib
+from gi.repository import Gtk, Pango, GLib, Gio
 from senf import fsnative, fsn2text
 
 from quodlibet import _
 from quodlibet import util
 from quodlibet import config
+from quodlibet import app
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.views import TreeViewColumnButton
 from quodlibet.qltk import add_css
 from quodlibet.util.path import unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS
-from quodlibet.compat import text_type, string_types, listvalues, listitems
+from quodlibet.qltk.x import CellRendererPixbuf
 
 
 def create_songlist_column(t):
@@ -388,7 +388,7 @@ class NumericColumn(TextColumn):
         if isinstance(value, float):
             text = u"%.2f" % round(value, 2)
         else:
-            text = text_type(value)
+            text = str(value)
 
         cell.set_property('text', text)
         self._recalc_width(model.get_path(iter_), text)
@@ -407,15 +407,16 @@ class NumericColumn(TextColumn):
         end = end[0]
 
         # compute the cell width for all drawn cells in range +/- 3
-        for key, value in listitems(self._texts):
+        for key, value in list(self._texts.items()):
             if not (start - 3) <= key <= (end + 3):
                 del self._texts[key]
-            elif isinstance(value, string_types):
+            elif isinstance(value, str):
                 self._texts[key] = self._cell_width(value)
 
         # resize if too small or way too big and above the minimum
         width = self.get_width()
-        needed_width = max([self._get_min_width()] + listvalues(self._texts))
+        needed_width = max(
+            [self._get_min_width()] + list(self._texts.values()))
         if width < needed_width:
             self._resize(needed_width)
         elif width - needed_width >= self._cell_width("0"):
@@ -475,3 +476,50 @@ class FilesizeColumn(NumericColumn):
         text = util.format_size(value)
         cell.set_property('text', text)
         self._recalc_width(model.get_path(iter_), text)
+
+
+class CurrentColumn(SongListColumn):
+    """Displays the current song indicator, either a play or pause icon."""
+
+    def __init__(self):
+        super(CurrentColumn, self).__init__("~current")
+        self._render = CellRendererPixbuf()
+        self.pack_start(self._render, True)
+        self._render.set_property('xalign', 0.5)
+
+        self.set_fixed_width(24)
+        self.set_expand(False)
+        self.set_cell_data_func(self._render, self._cdf)
+
+    def _format_title(self, tag):
+        return u""
+
+    def _cdf(self, column, cell, model, iter_, user_data):
+        PLAY = "media-playback-start"
+        PAUSE = "media-playback-pause"
+        STOP = "media-playback-stop"
+        ERROR = "dialog-error"
+
+        row = model[iter_]
+
+        if row.path == model.current_path:
+            player = app.player
+            if player.error:
+                name = ERROR
+            elif model.sourced:
+                name = [PLAY, PAUSE][player.paused]
+            else:
+                name = STOP
+        else:
+            name = None
+
+        if not self._needs_update(name):
+            return
+
+        if name is not None:
+            gicon = Gio.ThemedIcon.new_from_names(
+                [name + "-symbolic", name])
+        else:
+            gicon = None
+
+        cell.set_property('gicon', gicon)

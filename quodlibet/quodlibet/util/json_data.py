@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012-2013 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -13,7 +12,6 @@ from collections import namedtuple
 
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.misc import total_ordering
-from quodlibet.compat import PY3
 
 
 @total_ordering
@@ -137,8 +135,7 @@ class JSONObjectDict(dict):
         except AttributeError:
             raise
         json_str = json.dumps(obj_dict, indent=4)
-        if PY3:
-            json_str = json_str.encode("utf-8")
+        json_str = json_str.encode("utf-8")
         if filename:
             try:
                 with open(filename, "wb") as f:

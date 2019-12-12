@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2015-2016 Christoph Reiter
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -24,11 +23,7 @@ from __future__ import absolute_import
 
 import os
 import sys
-
-try:
-    from urllib import pathname2url
-except:
-    from urllib.request import pathname2url
+from urllib.request import pathname2url
 
 from .util import Command
 

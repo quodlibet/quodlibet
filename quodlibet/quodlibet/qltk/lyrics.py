@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Eduardo Gonzalez, Joe Wreschnig
 #           2017 Nick Boultbee
 #
@@ -12,13 +11,13 @@
 
 import os
 import threading
+from urllib.parse import quote
 
 from gi.repository import Gtk
 
 from quodlibet import _, print_d, print_w, app
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet.compat import quote
 from quodlibet.errorreport import errorhook
 from quodlibet.formats import AudioFileError
 from quodlibet.qltk import Icons
@@ -89,7 +88,11 @@ class LyricsPane(Gtk.VBox):
 
     def _save_lyrics(self, song, text):
         # First, try writing to the tags.
-        song["lyrics"] = text
+        if "lyrics" not in song and "unsyncedlyrics" in song:
+            tag = "unsyncedlyrics"
+        else:
+            tag = "lyrics"
+        song[tag] = text
         try:
             song.write()
         except AudioFileError as e:

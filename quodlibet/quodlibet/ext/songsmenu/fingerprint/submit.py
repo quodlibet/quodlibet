@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2011,2013 Christoph Reiter
 #                2016 Nick Boultbee
 #
@@ -10,7 +9,6 @@
 from gi.repository import Gtk, Pango, GLib
 
 from quodlibet import _
-from quodlibet.compat import listfilter
 from quodlibet.qltk import Button, Window
 from quodlibet.util import connect_obj, print_w
 
@@ -112,7 +110,7 @@ class FingerprintDialog(Window):
     def __update_stats(self):
         all_ = len(self.__songs)
         results = self.__fp_results.values()
-        to_send = len(listfilter(can_submit, results))
+        to_send = len(list(filter(can_submit, results)))
         valid_fp = len(results)
         got_mbid, got_meta = get_stats(results)
 

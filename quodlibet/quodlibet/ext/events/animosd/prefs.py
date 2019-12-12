@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (C) 2012-13 Nick Boultbee, Thomas Vogt
 # Copyright (C) 2008 Andreas Bombe
 # Copyright (C) 2005  Michael Urman
@@ -80,9 +79,9 @@ class AnimOsdPrefs(Gtk.VBox):
             self.Conf.monitor = value
             show_preview()
 
-        def change_position(button):
-            value = button.get_active() / 2.0
-            self.Conf.pos_y = value
+        def change_position(button, x, y):
+            self.Conf.pos_x = x / 2.0
+            self.Conf.pos_y = y / 2.0
             show_preview()
 
         def change_align(button):
@@ -150,22 +149,40 @@ class AnimOsdPrefs(Gtk.VBox):
                 self.Conf.monitor = 0
 
             hb = Gtk.HBox(spacing=6)
-            cb = Gtk.ComboBoxText()
-            cb.append_text(_("Top of screen"))
-            cb.append_text(_("Middle of screen"))
-            cb.append_text(_("Bottom of screen"))
-            cb.set_active(int(self.Conf.pos_y * 2.0))
-            cb.connect('changed', change_position)
-            lbl = ConfigLabel(_("_Position:"), cb)
+            grid = Gtk.Grid(column_homogeneous=True,
+                            row_homogeneous=True,
+                            row_spacing=4,
+                            column_spacing=4)
+            arrows = [['↖', '↑', '↗'],
+                      ['←', '○', '→'],
+                      ['↙', '↓', '↘ ']]
 
+            group = None
+            for x in range(3):
+                for y in range(3):
+                    rb = Gtk.RadioButton(group=group, label=arrows[y][x])
+                    if (int(self.Conf.pos_x * 2.0) == x and
+                            int(self.Conf.pos_y * 2.0) == y):
+                        rb.set_active(True)
+                    grid.attach(rb, x, y, 1, 1)
+                    group = rb
+
+            # Connect to signal after the correct radio button has been
+            # selected
+            for x in range(3):
+                for y in range(3):
+                    rb = grid.get_child_at(x, y)
+                    rb.connect('toggled', change_position, x, y)
+
+            lbl = ConfigLabel(_("_Position:"), grid)
             hb.pack_start(lbl, False, True, 0)
-            hb.pack_start(cb, False, True, 0)
-            vb2.pack_start(hb, False, True, 0)
+            hb.pack_start(grid, False, True, 0)
+            vb2.pack_start(hb, False, True, 6)
 
             hb = Gtk.HBox(spacing=6)
             coversize = Gtk.SpinButton(
                 adjustment=Gtk.Adjustment.new(
-                    self.Conf.coversize, 120, 600, 1, 10, 0),
+                    self.Conf.coversize, 1, 600, 1, 10, 0),
                 climb_rate=1, digits=0)
             coversize.set_numeric(True)
             coversize.connect('value-changed', change_coversize)

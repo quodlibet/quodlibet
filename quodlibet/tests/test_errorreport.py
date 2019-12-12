@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,7 +17,6 @@ from quodlibet.errorreport.logdump import dump_to_disk
 from quodlibet.errorreport.ui import ErrorDialog, SubmitErrorDialog
 from quodlibet.errorreport.main import get_sentry
 from quodlibet.errorreport.sentrywrapper import SentryError, CapturedException
-from quodlibet.compat import text_type
 
 from . import TestCase, mkdtemp
 from .helper import temp_filename
@@ -109,7 +107,7 @@ class Tsentrywrapper(TestCase):
             return
 
         assert isinstance(err, CapturedException)
-        assert isinstance(err.get_report(), text_type)
+        assert isinstance(err.get_report(), str)
 
         err.set_comment(u"foo")
         err.set_comment(u"bar")

@@ -17,9 +17,9 @@ if you find them.
 Translation Software
 --------------------
 
-To translate, you'll want to have intltool, gettext and git installed::
+To translate, you'll want to have gettext and git installed::
 
-    apt-get install intltool gettext git
+    apt-get install gettext git
 
 
 For translating itself you need a PO editor like `Poedit 

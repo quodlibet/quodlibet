@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014, 2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,11 +8,11 @@
 import socket
 from telnetlib import Telnet
 import time
+from urllib.parse import quote, unquote
 
 from quodlibet import _
 from quodlibet import app
 from quodlibet.util.dprint import print_w, print_d, print_
-from quodlibet.compat import quote, unquote
 
 
 class SqueezeboxException(Exception):

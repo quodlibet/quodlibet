@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -42,11 +41,15 @@ class TOrderShuffle(TestCase):
     def test_remaining(self):
         order = OrderShuffle()
         pl = PlaylistModel()
-        pl.set([r3, r1, r2, r0])
+        songs = [r3, r1, r2, r0]
+        pl.set(songs)
         cur = pl.current_iter
-        for i in range(4, -1, -1):
+        for i in range(4, 0, -1):
             cur = order.next_explicit(pl, cur)
             self.failUnlessEqual(len(order.remaining(pl)), i)
+        # The playlist should reset after the last song
+        cur = order.next_explicit(pl, cur)
+        self.failUnlessEqual(len(order.remaining(pl)), len(songs))
 
 
 class TOrderOneSong(TestCase):

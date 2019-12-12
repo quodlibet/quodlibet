@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012-2017 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -95,8 +94,9 @@ class Command(JSONObject):
         if playlist_name:
             print_d("Playlist command for %s" % playlist_name)
             template_vars["PLAYLIST"] = playlist_name
-        self.command = self.command.format(**template_vars)
-        print_d("Actual command=%s" % self.command)
+
+        actual_command = self.command.format(**template_vars)
+        print_d("Actual command=%s" % actual_command)
         for i, song in enumerate(songs):
             wrapped = SongWrapper(song)
             if playlist_name:
@@ -113,10 +113,10 @@ class Command(JSONObject):
             elif arg not in args:
                 args.append(arg)
         max = int((self.max_args or 10000))
-        com_words = self.command.split(" ")
+        com_words = actual_command.split(" ")
         while args:
             print_d("Running %s with %d substituted arg(s) (of %d%s total)..."
-                    % (self.command, min(max, len(args)), len(args),
+                    % (actual_command, min(max, len(args)), len(args),
                        " unique" if self.unique else ""))
             util.spawn(com_words + args[:max])
             args = args[max:]
@@ -127,7 +127,7 @@ class Command(JSONObject):
                 or "playlistindex" in self.pattern)
 
     def __str__(self):
-        return 'Command: "{command} {pattern}"'.format(**dict(self.data))
+        return "{command} {pattern}".format(**dict(self.data))
 
 
 class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
@@ -145,10 +145,12 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         Command("Browse folders (Thunar)", "thunar", "<~dirname>", unique=True,
                 max_args=50, warn_threshold=20),
 
-        Command(name="Flash notification",
+        Command("Flash notification",
                 command="notify-send"
                     " -t 2000"
-                    " -i /usr/share/icons/hicolor/scalable/apps/quodlibet.svg",
+                    " -i "
+                        "/usr/share/icons/hicolor/scalable/apps/"
+                        "io.github.quodlibet.QuodLibet.svg",
                 pattern="<~rating> \"<title><version| (<version>)>\""
                         "<~people| by <~people>>"
                     "<album|, from <album><discnumber| : disk <discnumber>>"
@@ -156,7 +158,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
                 max_args=1,
                 warn_threshold=10),
 
-        Command(name="Output playlist to stdout",
+        Command("Output playlist to stdout",
                 command="echo -e",
                 pattern="<~playlistname>: <~playlistindex>. "
                         " <~artist~title>\\\\n",
@@ -164,7 +166,13 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
 
         Command("Fix MP3 VBR with mp3val", "mp3val -f", unique=True,
                 max_args=1),
+
+        Command("Record Stream",
+                command="x-terminal-emulator -e wget -P $HOME",
+                pattern="<~filename>",
+                max_args=1)
     ]
+
     COMS_FILE = os.path.join(
         quodlibet.get_user_dir(), 'lists', 'customcommands.json')
 
@@ -197,8 +205,6 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         hb.set_border_width(0)
 
         button = qltk.Button(_("Edit Custom Commands") + "…", Icons.EDIT)
-        button.set_tooltip_markup(_("Supports QL patterns\neg "
-                                    "<tt>&lt;~artist~title&gt;</tt>"))
         button.connect("clicked", cls.edit_patterns)
         hb.pack_start(button, True, True, 0)
         hb.show_all()

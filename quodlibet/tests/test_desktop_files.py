@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -54,8 +53,8 @@ class _TDesktopFileMixin(object):
 
 
 class TQLDesktopFile(TestCase, _TDesktopFileMixin):
-    PATH = os.path.join(QLDATA_DIR, "quodlibet.desktop.in")
+    PATH = os.path.join(QLDATA_DIR, "io.github.quodlibet.QuodLibet.desktop.in")
 
 
 class TEFDesktopFile(TestCase, _TDesktopFileMixin):
-    PATH = os.path.join(QLDATA_DIR, "exfalso.desktop.in")
+    PATH = os.path.join(QLDATA_DIR, "io.github.quodlibet.ExFalso.desktop.in")

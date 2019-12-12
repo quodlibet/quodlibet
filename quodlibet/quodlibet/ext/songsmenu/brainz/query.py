@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005-2010   Joshua Kwan <joshk@triplehelix.org>,
 #                       Michael Ball <michael.ball@gmail.com>,
 #                       Steven Robertson <steven@strobe.cc>

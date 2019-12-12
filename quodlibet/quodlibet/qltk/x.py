@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
@@ -11,12 +10,13 @@ Things that are more or less direct wrappers around GTK widgets to
 ease constructors.
 """
 
+from urllib.request import urlopen
+
 from gi.repository import Gtk, GObject, GLib, Gio, GdkPixbuf
 
 from quodlibet.util.dprint import print_d
 
 from quodlibet import util
-from quodlibet.compat import urlopen, xrange
 from quodlibet.util import print_w
 from quodlibet.util.thread import call_async, Cancellable
 from quodlibet.qltk import add_css, is_accel, gtk_version
@@ -150,7 +150,7 @@ class Notebook(Gtk.Notebook):
 
     def __key_pressed(self, widget, event):
         # alt+X switches to page X
-        for i in xrange(self.get_n_pages()):
+        for i in range(self.get_n_pages()):
             if is_accel(event, "<alt>%d" % (i + 1)):
                 self.set_current_page(i)
                 return True
@@ -289,7 +289,7 @@ def MenuItem(label, icon_name=None):
 
 def _Button(type_, label, icon_name, size):
     if icon_name is None:
-        return Gtk.Button.new_with_mnemonic(label)
+        return type_.new_with_mnemonic(label)
 
     align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
     hbox = Gtk.HBox(spacing=2)

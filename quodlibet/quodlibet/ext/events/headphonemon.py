@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2015 Christoph Reiter
 #           2017 Nick Boultbee
 #
@@ -36,7 +35,7 @@ def get_headphone_status():
     except OSError:
         return False
     for line in data.splitlines():
-        if line.strip() == "Active Port: analog-output-headphones":
+        if line.strip() == b"Active Port: analog-output-headphones":
             return True
     else:
         return False

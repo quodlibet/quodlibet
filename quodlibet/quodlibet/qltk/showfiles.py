@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-# Copyright 2012,2016 Nick Boultbee
+# Copyright 2012,2016,2018 Nick Boultbee
 #           2012,2014,2018 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,13 +11,10 @@
 import os
 import subprocess
 
+from gi.repository import GLib
+from gi.repository import Gio
 from gi.repository import Gtk
 from senf import fsn2uri, fsnative
-
-try:
-    import dbus
-except ImportError:
-    dbus = None
 
 from quodlibet.util import is_windows, is_osx
 
@@ -66,6 +62,20 @@ def show_files(dirname, entries=[]):
     return False
 
 
+def show_songs(songs):
+    """Returns False if showing any of them failed"""
+
+    dirs = {}
+    for s in songs:
+        dirs.setdefault(s("~dirname"), []).append(s("~basename"))
+
+    for dirname, entries in sorted(dirs.items()):
+        status = show_files(dirname, entries)
+        if not status:
+            return False
+    return True
+
+
 class BrowseError(Exception):
     pass
 
@@ -76,50 +86,47 @@ def _get_startup_id():
     return "%s_TIME%d" % (app_name, Gtk.get_current_event_time())
 
 
+def _get_dbus_proxy(name, path, iface):
+    bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+    return Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
+                                  name, path, iface, None)
+
+
 def _show_files_fdo(dirname, entries):
-    # http://www.freedesktop.org/wiki/Specifications/file-manager-interface
+    # https://www.freedesktop.org/wiki/Specifications/file-manager-interface/
     FDO_PATH = "/org/freedesktop/FileManager1"
     FDO_NAME = "org.freedesktop.FileManager1"
     FDO_IFACE = "org.freedesktop.FileManager1"
 
-    if not dbus:
-        raise BrowseError("no dbus")
-
     try:
-        bus = dbus.SessionBus()
-        bus_object = bus.get_object(FDO_NAME, FDO_PATH)
-        bus_iface = dbus.Interface(bus_object, dbus_interface=FDO_IFACE)
+        dbus_proxy = _get_dbus_proxy(FDO_NAME, FDO_PATH, FDO_IFACE)
 
         if not entries:
-            bus_iface.ShowFolders([fsn2uri(dirname)], _get_startup_id())
+            dbus_proxy.ShowFolders('(ass)',
+                                   [fsn2uri(dirname)], _get_startup_id())
         else:
             item_uri = fsn2uri(os.path.join(dirname, entries[0]))
-            bus_iface.ShowItems([item_uri], _get_startup_id())
-    except dbus.DBusException as e:
+            dbus_proxy.ShowItems('(ass)', [item_uri], _get_startup_id())
+    except GLib.Error as e:
         raise BrowseError(e)
 
 
 def _show_files_thunar(dirname, entries):
-    # http://git.xfce.org/xfce/thunar/tree/thunar/thunar-dbus-service-infos.xml
+    # https://git.xfce.org/xfce/thunar/tree/thunar/thunar-dbus-service-infos.xml
     XFCE_PATH = "/org/xfce/FileManager"
     XFCE_NAME = "org.xfce.FileManager"
     XFCE_IFACE = "org.xfce.FileManager"
 
-    if not dbus:
-        raise BrowseError("no dbus")
-
     try:
-        bus = dbus.SessionBus()
-        bus_object = bus.get_object(XFCE_NAME, XFCE_PATH)
-        bus_iface = dbus.Interface(bus_object, dbus_interface=XFCE_IFACE)
+        dbus_proxy = _get_dbus_proxy(XFCE_NAME, XFCE_PATH, XFCE_IFACE)
 
         if not entries:
-            bus_iface.DisplayFolder(fsn2uri(dirname), "", _get_startup_id())
+            dbus_proxy.DisplayFolder('(sss)',
+                                     fsn2uri(dirname), "", _get_startup_id())
         else:
-            item_name = os.path.join(dirname, entries[0])
-            bus_iface.DisplayFolderAndSelect(
-                fsn2uri(dirname), item_name, "", _get_startup_id())
-    except dbus.DBusException as e:
+            dbus_proxy.DisplayFolderAndSelect(
+                '(ssss)', fsn2uri(dirname), entries[0], "", _get_startup_id())
+    except GLib.Error as e:
         raise BrowseError(e)
 
 
@@ -155,7 +162,7 @@ def _show_files_win32(dirname, entries):
         from quodlibet.util.windows import open_folder_and_select_items
 
         try:
-            open_folder_and_select_items(dirname, [])
+            open_folder_and_select_items(dirname, entries)
         except WindowsError as e:
             raise BrowseError(e)
 

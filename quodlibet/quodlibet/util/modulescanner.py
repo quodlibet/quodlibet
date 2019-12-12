@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -7,7 +6,7 @@
 # (at your option) any later version.
 
 import sys
-import imp
+import importlib
 
 from os.path import dirname
 from traceback import format_exception
@@ -15,7 +14,6 @@ from traceback import format_exception
 from quodlibet.util.path import mtime
 from quodlibet.util.importhelper import get_importables, load_module
 from quodlibet.util import print_d
-from quodlibet.compat import iteritems, listitems
 
 
 class Module(object):
@@ -33,7 +31,7 @@ class Module(object):
         if set(self.deps.keys()) != set(dep_paths):
             return True
 
-        for path, old_mtime in iteritems(self.deps):
+        for path, old_mtime in self.deps.items():
             if mtime(path) != old_mtime:
                 return True
 
@@ -95,7 +93,7 @@ class ModuleScanner(object):
 
         # get what is there atm
         for folder in self.__folders:
-            for name, path, deps in get_importables(folder, True):
+            for name, path, deps in get_importables(folder):
                 # take the basename as module key, later modules win
                 info[name] = (path, deps)
 
@@ -107,7 +105,7 @@ class ModuleScanner(object):
         added = []
 
         # remove those that are gone and changed ones
-        for name, mod in listitems(self.__modules):
+        for name, mod in list(self.__modules.items()):
             # not here anymore, remove
             if name not in info:
                 del self.__modules[name]
@@ -123,7 +121,7 @@ class ModuleScanner(object):
         self.__failures.clear()
 
         # add new ones
-        for (name, (path, deps)) in iteritems(info):
+        for (name, (path, deps)) in info.items():
             if name in self.__modules:
                 continue
 
@@ -132,14 +130,14 @@ class ModuleScanner(object):
                 # https://github.com/quodlibet/quodlibet/issues/1093
                 parent = "quodlibet.fake"
                 if parent not in sys.modules:
-                    sys.modules[parent] = imp.new_module(parent)
+                    spec = importlib.machinery.ModuleSpec(
+                        parent, None, is_package=True)
+                    sys.modules[parent] = importlib.util.module_from_spec(spec)
                 vars(sys.modules["quodlibet"])["fake"] = sys.modules[parent]
 
-                mod = load_module(name, parent + ".plugins",
-                                  dirname(path), reload=True)
+                mod = load_module(name, parent + ".plugins", dirname(path))
                 if mod is None:
                     continue
-
             except Exception as err:
                 text = format_exception(*sys.exc_info())
                 self.__failures[name] = ModuleImportError(name, err, text)

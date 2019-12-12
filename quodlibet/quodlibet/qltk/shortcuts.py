@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -94,6 +93,7 @@ def show_shortcuts(parent):
         # window placement. This fixes the jumping around and wrong position
         # with some WMs and under Windows.
         window.hide()
+        window.unrealize()
         window.show()
     else:
         util.website(const.SHORTCUTS_HELP)

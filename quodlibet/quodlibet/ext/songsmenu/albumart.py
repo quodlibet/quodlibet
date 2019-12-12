@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Eduardo Gonzalez <wm.eddie@gmail.com>, Niklas Janlert
 #           2006 Joe Wreschnig
 #           2008 Antonio Riva, Eduardo Gonzalez <wm.eddie@gmail.com>,
@@ -19,6 +18,8 @@ import re
 import time
 import threading
 import gzip
+from io import BytesIO
+from urllib.parse import urlencode
 
 from xml.dom import minidom
 
@@ -41,7 +42,6 @@ from quodlibet.qltk.image import scale, add_border_widget, \
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util.urllib import urlopen, Request
-from quodlibet.compat import urlencode, cBytesIO
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
     "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
@@ -85,10 +85,10 @@ def get_url(url, post=None, get=None):
     # unzip the response if needed
     data = url_sock.read()
     if url_sock.headers.get("content-encoding", "") == "gzip":
-        data = gzip.GzipFile(fileobj=cBytesIO(data)).read()
+        data = gzip.GzipFile(fileobj=BytesIO(data)).read()
     url_sock.close()
     content_type = url_sock.headers.get('Content-Type', '').split(';', 1)[0]
-    domain = re.compile('\w+://([^/]+)/').search(url).groups(0)[0]
+    domain = re.compile(r'\w+://([^/]+)/').search(url).groups(0)[0]
     print_d("Got %s data from %s" % (content_type, domain))
     return (data if content_type.startswith('image')
             else data.decode(enc))
@@ -383,9 +383,9 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         set_fn = self.config_get('filename', fn_list[0])
 
         for i, fn in enumerate(fn_list):
-                self.name_combo.append_text(fn)
-                if fn == set_fn:
-                    self.name_combo.set_active(i)
+            self.name_combo.append_text(fn)
+            if fn == set_fn:
+                self.name_combo.set_active(i)
 
         if self.name_combo.get_active() < 0:
             self.name_combo.set_active(0)
@@ -555,7 +555,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         if not raw_data:
             pbloader.connect('area-updated', self.__update)
 
-            data_store = cBytesIO()
+            data_store = BytesIO()
 
             try:
                 request = Request(url)
@@ -567,7 +567,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
                 while not self.stop_loading:
                     tmp = url_sock.read(1024 * 10)
                     if not tmp:
-                            break
+                        break
                     pbloader.write(tmp)
                     data_store.write(tmp)
 

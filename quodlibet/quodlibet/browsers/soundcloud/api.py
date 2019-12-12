@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -7,6 +6,7 @@
 # (at your option) any later version.
 
 from datetime import datetime
+from urllib.parse import urlencode
 
 from gi.repository import GObject, Gio, Soup
 
@@ -14,7 +14,6 @@ from quodlibet import util, config
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w, print_d
 from quodlibet.util.http import download_json, download
-from quodlibet.compat import urlencode, iteritems, text_type
 
 from .library import SoundcloudFile
 from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH
@@ -160,7 +159,7 @@ class SoundcloudApiClient(RestApi):
             "limit": self.PAGE_SIZE,
             "duration[from]": self.MIN_DURATION_SECS * 1000,
         }
-        for k, v in iteritems(params):
+        for k, v in params.items():
             delim = " " if k == 'q' else ","
             merged[k] = delim.join(list(v))
         print_d("Getting tracks: params=%s" % merged)
@@ -252,7 +251,7 @@ class SoundcloudApiClient(RestApi):
         try:
             song.update(title=r.title,
                         artist=r.user["username"],
-                        soundcloud_user_id=text_type(r.user_id),
+                        soundcloud_user_id=str(r.user_id),
                         website=r.permalink_url,
                         genre=u"\n".join(r.genre and r.genre.split(",") or []))
             if dl:

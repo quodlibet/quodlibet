@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -12,6 +11,7 @@ from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
 from quodlibet.qltk.playorder import Order, OrderShuffle, OrderInOrder, \
     RepeatSongForever, RepeatListForever
+import quodlibet.config
 
 
 def do_events():
@@ -257,6 +257,7 @@ class TPlaylistMux(TestCase):
         self.mux = PlaylistMux(self.p, self.q, self.pl)
         self.p.setup(self.mux, None, 0)
         self.failUnless(self.pl.current is None)
+        quodlibet.config.init()
 
     def test_destroy(self):
         self.mux.destroy()
@@ -336,6 +337,28 @@ class TPlaylistMux(TestCase):
         do_events()
         return song
 
+    def previous(self):
+        self.mux.previous()
+        song = self.mux.current
+        self.p.emit('song-started', self.mux.current)
+        do_events()
+        return song
+
+    def test_previous(self):
+        self.pl.set(range(10))
+        self.mux.go_to(0)
+        self.next()
+        self.previous()
+        self.assertEqual(self.mux.current, 0)
+
+    def test_previous_shuffle(self):
+        self.pl.set(range(10))
+        self.pl.order = OrderShuffle()
+        self.mux.go_to(0)
+        self.next()
+        self.previous()
+        self.assertEqual(self.mux.current, 0)
+
     def test_goto(self):
         self.pl.set(range(10))
         self.q.set(range(10, 20))
@@ -401,6 +424,69 @@ class TPlaylistMux(TestCase):
         self.mux.go_to(self.q[-1].iter, source=self.q)
         self.assertTrue(self.q.sourced)
         self.assertEqual(self.mux.current, self.q[-1][0])
+
+    def test_queue_disable(self):
+        self.pl.set(range(10))
+        self.q.set(range(10))
+
+        quodlibet.config.set("memory", "queue_disable", True)
+        self.next()
+        self.failUnlessEqual(len(self.pl.get()), len(range(10)))
+        self.failUnlessEqual(len(self.q.get()), len(range(10)))
+        self.assertTrue(self.pl.sourced)
+
+        quodlibet.config.set("memory", "queue_disable", False)
+        self.next()
+        self.failUnlessEqual(len(self.pl.get()), len(range(10)))
+        self.failUnlessEqual(len(self.q.get()), len(range(10)) - 1)
+        self.assertTrue(self.q.sourced)
+
+    def test_queue_disable_next(self):
+        self.pl.set(range(10))
+        self.q.set(range(10))
+
+        self.mux.go_to(self.q[0].iter, source=self.q)
+        quodlibet.config.set("memory", "queue_disable", True)
+        self.next()
+        self.assertTrue(self.pl.sourced)
+
+    def test_queue_disable_prev(self):
+        self.pl.set(range(10))
+        self.q.set(range(10))
+
+        self.mux.go_to(self.q[0].iter, source=self.q)
+        quodlibet.config.set("memory", "queue_disable", True)
+        self.previous()
+        self.assertTrue(self.pl.sourced)
+
+    def test_queue_keep_songs(self):
+        self.q.set(range(10))
+
+        quodlibet.config.set("memory", "queue_keep_songs", True)
+        self.next()
+        self.failUnlessEqual(len(self.q.get()), len(range(10)))
+        self.failUnlessEqual(self.q.current, None)
+        self.mux.go_to(self.q[0].iter, source=self.q)
+        self.failUnlessEqual(self.q.current, 0)
+        self.next()
+        self.failUnlessEqual(len(self.q.get()), len(range(10)))
+        self.failUnlessEqual(self.q.current, 1)
+
+        quodlibet.config.set("memory", "queue_keep_songs", False)
+        self.next()
+        self.failUnlessEqual(len(self.q.get()), len(range(10)) - 1)
+        self.failUnless(self.q.current is None)
+
+    def test_queue_disable_and_keep_songs(self):
+        self.pl.set(range(10))
+        self.q.set(range(10))
+
+        self.mux.go_to(self.q[0].iter, source=self.q)
+        quodlibet.config.set("memory", "queue_disable", True)
+        quodlibet.config.set("memory", "queue_keep_songs", True)
+
+        self.next()
+        self.assertTrue(self.pl.sourced)
 
     def tearDown(self):
         self.p.destroy()

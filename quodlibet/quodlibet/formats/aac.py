@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -27,6 +26,7 @@ class AACFile(AudioFile):
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         if audio.info.channels:
             self["~#channels"] = audio.info.channels
+        self["~#samplerate"] = audio.info.sample_rate
         self.sanitize(filename)
 
     def write(self):

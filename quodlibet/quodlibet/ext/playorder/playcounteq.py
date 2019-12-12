@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012-2016 Ryan "ZDBioHazard" Turner <zdbiohazard2@gmail.com>
 #           2016-2017 Nick Boultbee
 #
@@ -15,7 +14,6 @@ from quodlibet.order.reorder import Reorder
 from quodlibet.plugins.playorder import ShufflePlugin
 from quodlibet.order import OrderRemembered
 from quodlibet.qltk import Icons
-from quodlibet.compat import iteritems
 
 
 class PlaycountEqualizer(ShufflePlugin, OrderRemembered):
@@ -40,11 +38,11 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered):
         # Set-up the search information.
         max_count = max([song('~#playcount') for song in remaining.values()])
         weights = {i: max_count - song('~#playcount')
-                   for i, song in iteritems(remaining)}
+                   for i, song in remaining.items()}
         choice = int(max(1, math.ceil(sum(weights) * random.random())))
 
         # Search for a track.
-        for i, weight in iteritems(weights):
+        for i, weight in weights.items():
             choice -= weight
             if choice <= 0:
                 return playlist.get_iter([i])

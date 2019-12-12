@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
 #            2016-17 Nick Boultbee
@@ -215,7 +214,7 @@ as the track.')
             begin = next_find
 
             # parse lyricsLine
-            if not line[1].isdigit():
+            if len(line) < 2 or not line[1].isdigit():
                 continue
             close_bracket = line.find("]")
             t = datetime.strptime(line[1:close_bracket], '%M:%S.%f')

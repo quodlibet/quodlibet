@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2017 Christoph Reiter,
 #           2017 Nick Boultbee
 #
@@ -65,4 +64,4 @@ class TWaveformSeekBar(PluginTestCase):
         bar = self.mod.WaveformSeekBar(player, library)
 
         message = FakeRMSMessage()
-        bar._on_bus_message(None, message)
+        bar._on_bus_message(None, message, 1234)

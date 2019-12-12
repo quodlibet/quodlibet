@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -31,3 +30,6 @@ class TAIFFFile(TestCase):
 
     def test_channels(self):
         assert self.song("~#channels") == 1
+
+    def test_samplerate(self):
+        assert self.song("~#samplerate") == 8000

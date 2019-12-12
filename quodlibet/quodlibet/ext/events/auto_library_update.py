@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Automatic library update plugin
 #
 # (c) 2009 Joe Higton
@@ -12,6 +11,7 @@
 import operator
 import os
 import sys
+from functools import reduce
 
 from quodlibet.qltk import Icons
 
@@ -22,7 +22,7 @@ if os.name == "nt" or sys.platform == "darwin":
 try:
     from pyinotify import WatchManager, EventsCodes, ProcessEvent
     from pyinotify import Notifier, ThreadedNotifier
-except ImportError as e:
+except ImportError:
     from quodlibet import plugins
     raise plugins.MissingModulePluginException("pyinotify")
 
@@ -30,7 +30,6 @@ from quodlibet import _
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.util.library import get_scan_dirs
-from quodlibet.compat import reduce
 from quodlibet import app
 from gi.repository import GLib
 
@@ -59,7 +58,9 @@ class LibraryEvent(ProcessEvent):
             GLib.idle_add(self.add, event)
             self._being_created.remove(event.path)
         else:
-            print_d("Ignoring modification on %s" % path)
+            # Refresh library on modification
+            self._log(event)
+            GLib.idle_add(self.update, event)
 
     def process_IN_MOVED_TO(self, event):
         self._log(event)

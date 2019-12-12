@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -128,7 +127,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
 
         ve = UndoEntry()
         ve.set_text(str(cfg["library_dir"]))
-        ve.set_tooltip_text(_("Library directory the server connects to."))
+        ve.set_tooltip_text(_("Library directory the server connects to"))
         ve.connect('changed', value_changed, 'server_library_dir')
         rows.append((Gtk.Label(label=_("Library path:")), ve))
 

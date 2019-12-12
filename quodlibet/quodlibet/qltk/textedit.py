@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
@@ -19,7 +18,6 @@ from quodlibet.formats import AudioFile
 from quodlibet.pattern import XMLFromPattern, XMLFromMarkupPattern, \
     error as PatternError
 from quodlibet.util import connect_obj
-from quodlibet.compat import text_type
 
 try:
     import gi
@@ -86,14 +84,14 @@ def validate_markup_pattern(text, alternative_markup=True, links=False):
 
     Args:
         text (unicode): the pattern
-        alternative_markup (bool): if "[b]" gets mapped to "\<b\>"
+        alternative_markup (bool): if "[b]" gets mapped to "\\<b\\>"
         links (bool): if link tags are allowed (for Gtk.Label only)
 
     Raises:
         ValueError: In case the pattern isn't valid
     """
 
-    assert isinstance(text, text_type)
+    assert isinstance(text, str)
 
     f = AudioFile({"~filename": fsnative(u"dummy")})
 

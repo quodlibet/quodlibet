@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -8,15 +7,10 @@
 
 from __future__ import absolute_import
 
-from quodlibet.compat import PY2
 from .misc import get_ca_file
 
-if PY2:
-    import urllib2 as request_module
-    from httplib import HTTPException
-else:
-    from urllib import request as request_module
-    from http.client import HTTPException
+from urllib import request as request_module
+from http.client import HTTPException
 
 
 Request = request_module.Request

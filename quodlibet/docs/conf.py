@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import types
+import sys
 
 dir_ = os.path.dirname(os.path.realpath(__file__))
 
@@ -14,11 +14,8 @@ def exec_module(path):
     # assert in const.py
     os.environ.pop("MSYSTEM", None)
     globals_ = {}
-    if sys.version_info[0] == 2:
-        execfile(path, globals_)
-    else:
-        with open(path, encoding="utf-8") as h:
-            exec(h.read(), globals_)
+    with open(path, encoding="utf-8") as h:
+        exec(h.read(), globals_)
     module = types.ModuleType("")
     module.__dict__.update(globals_)
     return module
@@ -27,22 +24,17 @@ const = exec_module(os.path.join(dir_, "..", "quodlibet", "const.py"))
 
 needs_sphinx = "1.3"
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.extlinks']
+sys.path.append(os.path.join(dir_, "ext"))
+
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.extlinks', 'contributors']
+
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'Quod Libet'
 copyright = u""
 exclude_patterns = ['_build', '_build_all', 'README.rst', '**/README.rst']
 html_theme = "sphinx_rtd_theme"
-
-if const.BRANCH_NAME != "master":
-    version = ".".join(const.VERSION.rsplit(".")[:2])
-    release = const.VERSION
-    if release.endswith(".-1"):
-        release = release[:-3]
-    html_title = "%s (%s)" % (project, version)
-else:
-    html_title = project
+html_title = project
 
 extlinks = {
     'bug': ('https://github.com/quodlibet/quodlibet/issues/%s', '#'),
@@ -53,7 +45,7 @@ extlinks = {
 linkcheck_anchors = True
 linkcheck_workers = 20
 linkcheck_ignore = [
-    ".*groups\.google\.com/.*",
+    r".*groups\.google\.com/.*",
     r".*keyserver\.ubuntu\.com.*"
 ]
 
@@ -75,12 +67,6 @@ html_theme_options = {
 html_favicon = "favicon/favicon.ico"
 html_show_copyright = False
 
-# on a stable branch which isn't a release
-if const.BRANCH_NAME != "master":
-    rst_prolog = """
 
-.. note::
-    There exists a newer version of this page and the content below may be
-    outdated. See %s for the latest documentation.
-
-""" % (const.DOCS_LATEST)
+def setup(app):
+    app.add_config_value('const', const, True)

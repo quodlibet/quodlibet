@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2012-2017 Nick Boultbee
 #
@@ -12,24 +11,26 @@
 # more readable, unless they're also faster.
 
 import os
+import re
 import shutil
 import time
+from collections import OrderedDict
+from itertools import zip_longest
 
 from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 
 from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
-from quodlibet.util.path import mkdir, mtime, expanduser, \
-    normalize_path, escape_filename, ismount
+from quodlibet.util.path import mkdir, mtime, expanduser, normalize_path, \
+                                ismount, get_home_dir, RootPathFile
 from quodlibet.util.string import encode, decode, isascii
+from quodlibet.util.environment import is_windows
 
 from quodlibet.util import iso639
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
-from quodlibet.compat import iteritems, string_types, text_type, \
-    number_types, listitems, izip_longest, integer_types, PY3, listfilter
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
@@ -60,7 +61,7 @@ NUMERIC_ZERO_DEFAULT.update(SIZE_TAGS)
 FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname", "~mountpoint"}
 """Values are bytes in Linux instead of unicode"""
 
-SORT_TO_TAG = dict([(v, k) for (k, v) in iteritems(TAG_TO_SORT)])
+SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.items()])
 """Reverse map, so sort tags can fall back to the normal ones"""
 
 PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
@@ -83,8 +84,8 @@ def decode_value(tag, value):
         if isinstance(value, float):
             return u"%.2f" % value
         else:
-            return text_type(value)
-    return text_type(value)
+            return str(value)
+    return str(value)
 
 
 class AudioFile(dict, ImageContainer):
@@ -135,7 +136,7 @@ class AudioFile(dict, ImageContainer):
             self[key] = value
 
     def __song_key(self):
-        return (self("~#disc", 1), self("~#track", 1),
+        return (self("~#disc", 0), self("~#track", 0),
             human(self("artistsort")),
             self.get("musicbrainz_artistid", ""),
             human(self.get("title", "")),
@@ -179,34 +180,18 @@ class AudioFile(dict, ImageContainer):
 
     def __setitem__(self, key, value):
         # validate key
-        if PY3:
-            if not isinstance(key, text_type):
-                raise TypeError("key has to be str")
-        else:
-            if isinstance(key, text_type):
-                # we try to save keys as encoded ASCII to save memory
-                # under PY2. Everything else besides ASCII combined with
-                # unicode breaks hashing even if the default encoding
-                # it utf-8.
-                try:
-                    key = key.encode("ascii")
-                except UnicodeEncodeError:
-                    pass
-            elif isinstance(key, bytes):
-                # make sure we set ascii keys only
-                key.decode("ascii")
-            else:
-                raise TypeError("key needs to be unicode or ASCII str")
+        if not isinstance(key, str):
+            raise TypeError("key has to be str")
 
         # validate value
         if key.startswith("~#"):
-            if not isinstance(value, number_types):
+            if not isinstance(value, (int, float)):
                 raise TypeError
         elif key in FILESYSTEM_TAGS:
             if not isinstance(value, fsnative):
                 value = path2fsn(value)
         else:
-            value = text_type(value)
+            value = str(value)
 
         dict.__setitem__(self, key, value)
 
@@ -274,7 +259,7 @@ class AudioFile(dict, ImageContainer):
         """Returns a list of keys that are not internal, i.e. they don't
         have '~' in them."""
 
-        return listfilter(lambda s: s[:1] != "~", self.keys())
+        return list(filter(lambda s: s[:1] != "~", self.keys()))
 
     def prefixkeys(self, prefix):
         """Returns a list of dict keys that either match prefix or start
@@ -292,7 +277,7 @@ class AudioFile(dict, ImageContainer):
         return "\n".join(self.list_unique(sorted(self.prefixkeys(tag))))
 
     def iterrealitems(self):
-        return ((k, v) for (k, v) in iteritems(self) if k[:1] != "~")
+        return ((k, v) for (k, v) in self.items() if k[:1] != "~")
 
     def __call__(self, key, default=u"", connector=" - ", joiner=', '):
         """Return the value(s) for a key, synthesizing if necessary.
@@ -391,7 +376,7 @@ class AudioFile(dict, ImageContainer):
                 except KeyError:
                     return fsn2uri(self["~filename"])
             elif key == "format":
-                return self.get("~format", text_type(self.format))
+                return self.get("~format", str(self.format))
             elif key == "codec":
                 codec = self.get("~codec")
                 if codec is None:
@@ -441,7 +426,12 @@ class AudioFile(dict, ImageContainer):
             elif key == "lyrics":
                 # First, try the embedded lyrics.
                 try:
-                    return self[key]
+                    return self["lyrics"]
+                except KeyError:
+                    pass
+
+                try:
+                    return self["unsyncedlyrics"]
                 except KeyError:
                     pass
 
@@ -510,8 +500,16 @@ class AudioFile(dict, ImageContainer):
 
         role_map = {}
         for key in role_tag_keys:
-            role = (TAG_ROLES.get(role_tag, role_tag) if key == role_tag
-                    else key.split(":", 1)[-1])
+            if key == role_tag:
+                # #2986: don't add a role description for the bare tag, unless
+                # this is a composite tag (e.g. only show "(Performance)" for
+                # ~people:roles and not ~performer:roles).
+                if sub_keys is None:
+                    continue
+                else:
+                    role = TAG_ROLES.get(role_tag, role_tag)
+            else:
+                role = key.split(":", 1)[-1]
             for name in self.list(key):
                 role_map.setdefault(name, []).append(role)
 
@@ -537,24 +535,127 @@ class AudioFile(dict, ImageContainer):
 
     @property
     def lyric_filename(self):
-        """Returns the (potential) lyrics filename for this file"""
+        """Returns the validated, or default, lyrics filename for this
+        file. User defined '[memory] lyric_rootpaths' and
+        '[memory] lyric_filenames' matches take precedence"""
 
-        filename = self.comma("title").replace(u'/', u'')[:128] + u'.lyric'
-        sub_dir = ((self.comma("lyricist") or self.comma("artist"))
-                  .replace(u'/', u'')[:128])
+        from quodlibet.pattern \
+            import ArbitraryExtensionFileFromPattern as expand_patterns
 
-        if os.name == "nt":
-            # this was added at a later point. only use escape_filename here
-            # to keep the linux case the same as before
-            filename = escape_filename(filename)
-            sub_dir = escape_filename(sub_dir)
-        else:
-            filename = fsnative(filename)
-            sub_dir = fsnative(sub_dir)
+        rx_params = re.compile(r'[^\\]<[^' + re.escape(os.sep) + r']*[^\\]>')
 
-        path = os.path.join(
-            expanduser(fsnative(u"~/.lyrics")), sub_dir, filename)
-        return path
+        def expand_pathfile(rpf):
+            """Return the expanded RootPathFile"""
+            expanded = []
+            root = expanduser(rpf.root)
+            pathfile = expanduser(rpf.pathfile)
+            if rx_params.search(pathfile):
+                root = expand_patterns(root).format(self)
+                pathfile = expand_patterns(pathfile).format(self)
+            rpf = RootPathFile(root, pathfile)
+            expanded.append(rpf)
+            if not os.path.exists(pathfile) and is_windows():
+                # prioritise a special character encoded version
+                #
+                # most 'alien' chars are supported for 'nix fs paths, and we
+                # only pass the proposed path through 'escape_filename' (which
+                # apparently doesn't respect case) if we don't care about case!
+                #
+                # FIX: assumes 'nix build used on a case-sensitive fs, nt case
+                # insensitive. clearly this is not biting anyone though (yet!)
+                pathfile = os.path.sep.join([rpf.root, rpf.end_escaped])
+                rpf = RootPathFile(rpf.root, pathfile)
+                expanded.insert(len(expanded) - 1, rpf)
+            return expanded
+
+        def sanitise(sep, parts):
+            """Return a santisied version of a path's parts"""
+            return sep.join(part.replace(os.path.sep, u'')[:128]
+                                for part in parts)
+
+        # setup defaults (user-defined take precedence)
+        # root search paths
+        lyric_paths = \
+            config.getstringlist("memory", "lyric_rootpaths", [])
+        # ensure default paths
+        lyric_paths.append(os.path.join(get_home_dir(), ".lyrics"))
+        lyric_paths.append(
+            os.path.join(os.path.dirname(self.comma('~filename'))))
+        # search pathfile names
+        lyric_filenames = \
+            config.getstringlist("memory", "lyric_filenames", [])
+        # ensure some default pathfile names
+        lyric_filenames.append(
+            sanitise(os.sep, [(self.comma("lyricist") or
+                              self.comma("artist")),
+                              self.comma("title")]) + u'.lyric')
+        lyric_filenames.append(
+            sanitise(' - ', [(self.comma("lyricist") or
+                             self.comma("artist")),
+                             self.comma("title")]) + u'.lyric')
+
+        # generate all potential paths (unresolved/unexpanded)
+        pathfiles = OrderedDict()
+        for r in lyric_paths:
+            for f in lyric_filenames:
+                pathfile = os.path.join(r, os.path.dirname(f),
+                                        fsnative(os.path.basename(f)))
+                rpf = RootPathFile(r, pathfile)
+                if not pathfile in pathfiles:
+                    pathfiles[pathfile] = rpf
+
+        #print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
+
+        # expand each raw pathfile in turn and test for existence
+        match_ = ""
+        pathfiles_expanded = OrderedDict()
+        for pf, rpf in pathfiles.items():
+            for rpf in expand_pathfile(rpf):  # resolved as late as possible
+                pathfile = rpf.pathfile
+                pathfiles_expanded[pathfile] = rpf
+                if os.path.exists(pathfile):
+                    match_ = pathfile
+                    break
+            if match_ != "":
+                break
+
+        if not match_:
+            # search even harder!
+            lyric_extensions = ['lyric', 'lyrics', '', 'txt']
+            #print_d("extending search to extensions: %s" % lyric_extensions)
+
+            def generate_mod_ext_paths(pathfile):
+                # separate pathfile's extension (if any)
+                ext = os.path.splitext(pathfile)[1][1:]
+                path = pathfile[:-1 * len(ext)].strip('.') if ext else pathfile
+                # skip the proposed lyric extension if it is the same as
+                # the original for a given search pathfile stub - it has
+                # already been tested without success!
+                extra_extensions = [x for x in lyric_extensions if x != ext]
+
+                # join valid new extensions to pathfile stub and return
+                return ['.'.join([path, ext]) if ext else path
+                           for ext in extra_extensions]
+
+            # look for a match by modifying the extension for each of the
+            # (now fully resolved) 'pathfiles_expanded' search items
+            for pathfile in pathfiles_expanded.keys():
+                # get alternatives for existence testing
+                paths_mod_ext = generate_mod_ext_paths(pathfile)
+                for path_ext in paths_mod_ext:
+                    if os.path.exists(path_ext):
+                        # persistence has paid off!
+                        #print_d("extended search match!")
+                        match_ = path_ext
+                        break
+                if match_:
+                    break
+
+        if not match_:
+            # default
+            match_ = list(pathfiles_expanded.keys())[0]
+
+        return match_
 
     @property
     def has_rating(self):
@@ -586,7 +687,7 @@ class AudioFile(dict, ImageContainer):
         else:
             v = self.get(key, u"")
 
-        if isinstance(v, number_types):
+        if isinstance(v, (int, float)):
             return v
         else:
             return v.replace("\n", ", ")
@@ -607,7 +708,7 @@ class AudioFile(dict, ImageContainer):
             if v == "":
                 return []
             else:
-                return v.split("\n") if isinstance(v, text_type) else [v]
+                return v.split("\n") if isinstance(v, str) else [v]
         else:
             v = self.get(key)
             return [] if v is None else v.split("\n")
@@ -631,7 +732,7 @@ class AudioFile(dict, ImageContainer):
             sort = sort.split("\n") if sort else []
 
         result = []
-        for d, s in izip_longest(display, sort):
+        for d, s in zip_longest(display, sort):
             if d is not None:
                 result.append((d, (s if s is not None and s != "" else d)))
         return result
@@ -672,7 +773,7 @@ class AudioFile(dict, ImageContainer):
 
         merged = AudioFile()
         text = {}
-        for key, value in iteritems(self):
+        for key, value in self.items():
             lower = key.lower()
             if key.startswith("~#"):
                 merged[lower] = value
@@ -754,9 +855,9 @@ class AudioFile(dict, ImageContainer):
         """
 
         # Replace nulls with newlines, trimming zero-length segments
-        for key, val in listitems(self):
+        for key, val in list(self.items()):
             self[key] = val
-            if isinstance(val, string_types) and '\0' in val:
+            if isinstance(val, str) and '\0' in val:
                 self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
             # Remove unnecessary defaults
             if key in NUMERIC_ZERO_DEFAULT and val == 0:
@@ -813,14 +914,14 @@ class AudioFile(dict, ImageContainer):
         """
 
         def encode_key(k):
-            return encode(k) if isinstance(k, text_type) else k
+            return encode(k) if isinstance(k, str) else k
 
         s = []
         for k in self.keys():
             enc_key = encode_key(k)
             assert isinstance(enc_key, bytes)
 
-            if isinstance(self[k], integer_types):
+            if isinstance(self[k], int):
                 l = enc_key + encode("=%d" % self[k])
                 s.append(l)
             elif isinstance(self[k], float):
@@ -848,23 +949,11 @@ class AudioFile(dict, ImageContainer):
             text (bytes)
         """
 
-        def decode_key(key):
-            """str if ascii, otherwise decode using utf-8"""
-
-            if PY3:
-                return decode(key)
-
-            try:
-                key.decode("ascii")
-            except ValueError:
-                return decode(key)
-            return key
-
         for line in text.split(b"\n"):
             if not line:
                 continue
             parts = line.split(b"=")
-            key = decode_key(parts[0])
+            key = decode(parts[0])
             val = b"=".join(parts[1:])
             if key == "~format":
                 pass
@@ -931,7 +1020,7 @@ class AudioFile(dict, ImageContainer):
         used when the song does not have replaygain information.
         """
         for profile in profiles:
-            if profile is "none":
+            if profile == "none":
                 return 1.0
             try:
                 db = float(self["replaygain_%s_gain" % profile].split()[0])

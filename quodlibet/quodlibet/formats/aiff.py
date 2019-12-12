@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -23,6 +22,7 @@ class AIFFFile(ID3File):
         self["~#length"] = info.length
         self["~#bitrate"] = int(info.bitrate / 1000)
         self["~#channels"] = info.channels
+        self["~#samplerate"] = info.sample_rate
 
 
 loader = AIFFFile

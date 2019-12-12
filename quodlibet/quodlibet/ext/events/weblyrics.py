@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
 #           2015 Joschua Gandert
 #           2017 Nick Boultbee
@@ -10,6 +9,8 @@
 
 import threading
 from xml.dom import minidom
+from urllib.parse import quote
+import queue
 
 from quodlibet import _, print_d
 from quodlibet.plugins.gui import UserInterfacePlugin
@@ -32,7 +33,6 @@ from quodlibet.util import escape, cached_property, connect_obj
 from quodlibet.qltk import Icons, Align
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.pattern import URLFromPattern
-from quodlibet.compat import quote, queue
 from quodlibet.util.urllib import urlopen
 
 

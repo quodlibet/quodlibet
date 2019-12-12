@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -10,11 +9,11 @@ from tests import get_data_path, skipUnless, mkstemp, TestCase
 import os
 import sys
 import base64
+from io import BytesIO
 
 from quodlibet import config, const, formats
 from quodlibet.formats.xiph import OggFile, FLACFile, OggOpusFile, OggOpus
 from quodlibet.formats._image import EmbeddedImage, APICType
-from quodlibet.compat import long, cBytesIO, iteritems
 
 from mutagen.flac import FLAC, Picture
 from mutagen.id3 import ID3, TIT2, ID3NoHeaderError
@@ -111,7 +110,7 @@ class TVCFileMixin(object):
         self.failUnlessEqual(song["~#rating"], 0.2)
 
     def test_huge_playcount(self):
-        count = long(1000000000000000)
+        count = 1000000000000000
         self.song["~#playcount"] = count
         self.song.write()
         song = type(self.song)(self.filename)
@@ -173,11 +172,11 @@ class TTotalTagsMixin(object):
 
     def __load_tags(self, tags, expected):
         m = OggVorbis(self.filename)
-        for key, value in iteritems(tags):
+        for key, value in tags.items():
             m.tags[key] = value
         m.save()
         song = OggFile(self.filename)
-        for key, value in iteritems(expected):
+        for key, value in expected.items():
             self.failUnlessEqual(song(key), value)
         if self.MAIN not in expected:
             self.failIf(self.MAIN in song)
@@ -224,12 +223,12 @@ class TTotalTagsMixin(object):
     def __save_tags(self, tags, expected):
         #return
         song = OggFile(self.filename)
-        for key, value in iteritems(tags):
+        for key, value in tags.items():
             song[key] = value
         song.write()
         m = OggVorbis(self.filename)
         # test if all values ended up where we wanted
-        for key, value in iteritems(expected):
+        for key, value in expected.items():
             self.failUnless(key in m.tags)
             self.failUnlessEqual(m.tags[key], [value])
 
@@ -297,6 +296,11 @@ class TFLACFile(TVCFile, TVCFileMixin):
         self.assertEqual(self.song("~format"), "FLAC")
         self.assertEqual(self.song("~codec"), "FLAC")
         self.assertEqual(self.song("~encoding"), "")
+
+    def test_audio_props(self):
+        assert self.song("~#channels") == 2
+        assert self.song("~#samplerate") == 44100
+        assert self.song("~#bitdepth") == 16
 
     def test_mime(self):
         self.failUnless(self.song.mimes)
@@ -472,7 +476,7 @@ class TVCCoverMixin(object):
         song["coverartmime"] = "image/jpeg"
         song.save()
 
-        fileobj = cBytesIO(b"foo")
+        fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = self.QLType(self.filename)
@@ -565,7 +569,7 @@ class TFlacPicture(TestCase):
         self.assertFalse(song.get_primary_image())
 
     def test_set_image(self):
-        fileobj = cBytesIO(b"foo")
+        fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = FLACFile(self.filename)
@@ -589,6 +593,9 @@ class TOggFile(TVCFile, TVCFileMixin):
         os.unlink(self.filename)
         config.quit()
 
+    def test_audio_props(self):
+        assert self.song("~#samplerate") == 44100
+
     def test_format_codec(self):
         self.assertEqual(self.song("~format"), "Ogg Vorbis")
         self.assertEqual(self.song("~codec"), "Ogg Vorbis")
@@ -609,6 +616,9 @@ class TOggOpusFile(TVCFile, TVCFileMixin):
 
     def test_channels(self):
         assert self.song("~#channels") == 2
+
+    def test_sample_rate(self):
+        assert self.song("~#samplerate") == 48000
 
     def test_format_codec(self):
         self.assertEqual(self.song("~format"), "Ogg Opus")

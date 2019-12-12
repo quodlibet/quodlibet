@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
 #           2013 Christoph Reiter
 #
@@ -11,7 +10,6 @@ from __future__ import absolute_import
 
 from collections import MutableSequence, defaultdict
 
-from quodlibet.compat import listkeys
 from .misc import total_ordering
 
 
@@ -59,7 +57,7 @@ class DictMixin(object):
         return iter(self.items())
 
     def clear(self):
-        for key in listkeys(self):
+        for key in list(self.keys()):
             del self[key]
 
     def pop(self, key, *args):
@@ -77,7 +75,7 @@ class DictMixin(object):
 
     def popitem(self):
         try:
-            key = listkeys(self)[0]
+            key = list(self.keys())[0]
             return key, self.pop(key)
         except IndexError:
             raise KeyError("dictionary is empty")

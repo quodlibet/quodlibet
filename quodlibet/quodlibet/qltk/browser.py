@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2016 Nick Boultbee
+#           2018 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@ from quodlibet import util
 from quodlibet import browsers
 from quodlibet import app
 from quodlibet import _
-from quodlibet.compat import listfilter, text_type
 
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.x import ScrolledWindow, Action
@@ -152,7 +151,7 @@ class FilterMenu(object):
             self._browser.unfilter()
 
     def _make_query(self, query):
-        assert isinstance(query, text_type)
+        assert isinstance(query, str)
         if self._browser.can_filter_text():
             self._browser.filter_text(query)
             self._browser.activate()
@@ -231,10 +230,8 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         so we can restore them on start.
         """
 
-        names = []
-        for browser in cls.instances():
-            names.append(browser.name)
-        config.set("memory", "open_browsers", "\n".join(names))
+        config.set("memory", "open_browsers",
+                   "\n".join(browser.name for browser in cls.instances()))
 
     @classmethod
     def restore(cls, library, player):
@@ -317,7 +314,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         if browser.background:
             bg = background_filter()
             if bg:
-                songs = listfilter(bg, songs)
+                songs = list(filter(bg, songs))
         self.songlist.set_songs(songs, sorted)
 
     def __enqueue(self, view, path, column, player):

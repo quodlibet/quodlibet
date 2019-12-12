@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,7 +11,7 @@ from gi.repository import Gtk
 
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort, ObjectTreeStore
-from quodlibet.compat import cmp, xrange
+from quodlibet.util import cmp
 
 
 class _TObjectStoreMixin(object):
@@ -128,12 +127,12 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
 
     def test_iter_append_many_iterable_int(self):
         m = ObjectStore()
-        for x in m.iter_append_many((i for i in xrange(10))):
+        for x in m.iter_append_many((i for i in range(10))):
             pass
         self.failUnlessEqual([r[0] for r in m], list(range(10)))
 
     def test_iter_append_many_iterable_object(self):
-        objects = [object() for i in xrange(10)]
+        objects = [object() for i in range(10)]
         m = ObjectStore()
         for x in m.iter_append_many((i for i in objects)):
             pass
@@ -217,7 +216,7 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
         m.insert_many(0, [1, 2, 3])
         m.append_many([1, 2, 3])
         list(m.iter_append_many([1, 2, 3]))
-        list(m.iter_append_many(xrange(3)))
+        list(m.iter_append_many(range(3)))
 
         self.assertEqual(changed[0], 0)
         self.assertEqual(inserted[0], len(m))
@@ -385,6 +384,46 @@ class TObjectTreeStore(TestCase, _TObjectTreeStoreMixin):
 
         self.assertEqual(changed[0], 0)
         self.assertEqual(inserted[0], len(m))
+
+    def test_tree_store_insert_before_none(self):
+        store = ObjectTreeStore()
+        root = store.append(None, [42])
+        sub = store.append(root, [24])
+
+        iter_ = store.insert_before(None, None, [1])
+        assert store.get_path(iter_).get_indices() == [1]
+
+        iter_ = store.insert_before(root, None, [1])
+        assert store.get_path(iter_).get_indices() == [0, 1]
+
+        iter_ = store.insert_before(sub, None, [1])
+        assert store.get_path(iter_).get_indices() == [0, 0, 0]
+
+        iter_ = store.insert_before(None, root, [1])
+        assert store.get_path(iter_).get_indices() == [0]
+
+        iter_ = store.insert_before(None, sub, [1])
+        assert store.get_path(iter_).get_indices() == [1, 0]
+
+    def test_tree_store_insert_after_none(self):
+        store = ObjectTreeStore()
+        root = store.append(None, [42])
+        sub = store.append(root, [24])
+
+        iter_ = store.insert_after(None, None, [1])
+        assert store.get_path(iter_).get_indices() == [0]
+
+        iter_ = store.insert_after(root, None, [1])
+        assert store.get_path(iter_).get_indices() == [1, 0]
+
+        iter_ = store.insert_after(sub, None, [1])
+        assert store.get_path(iter_).get_indices() == [1, 1, 0]
+
+        iter_ = store.insert_after(None, root, [1])
+        assert store.get_path(iter_).get_indices() == [2]
+
+        iter_ = store.insert_after(None, sub, [1])
+        assert store.get_path(iter_).get_indices() == [1, 2]
 
 
 class TObjectModelFilter(TestCase):

@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2011 Christoph Reiter
 #           2016 Ryan Dellenbaugh
 #        2016-17 Nick Boultbee
+#           2018 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@ import operator
 from senf import fsn2text, fsnative
 
 from quodlibet.unisearch import compile
-from quodlibet.compat import floordiv, text_type
 from quodlibet.util import parse_date
 from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 
@@ -52,8 +51,8 @@ class Node(object):
 class Regex(Node):
 
     def __init__(self, pattern, mod_string):
-        self.pattern = text_type(pattern)
-        self.mod_string = text_type(mod_string)
+        self.pattern = str(pattern)
+        self.mod_string = str(mod_string)
 
         ignore_case = "c" not in self.mod_string or "i" in self.mod_string
         dot_all = "s" in self.mod_string
@@ -336,14 +335,14 @@ class NumexprBinary(Numexpr):
         '-': operator.sub,
         '+': operator.add,
         '*': operator.mul,
-        '/': floordiv,
+        '/': operator.floordiv,
     }
 
     precedence = {
         operator.sub: 1,
         operator.add: 1,
         operator.mul: 2,
-        floordiv: 2,
+        operator.floordiv: 2,
     }
 
     def __init__(self, op, expr, expr2):
@@ -596,3 +595,19 @@ class Extension(Node):
     def __repr__(self):
         return ('<Extension name=%r valid=%r body=%r>'
                 % (self.__name, self.__valid, self.__body))
+
+    def __and__(self, other):
+        other = other._unpack()
+
+        if isinstance(other, (Inter, True_)):
+            return other.__and__(self)
+
+        return Inter([self] + [other])
+
+    def __or__(self, other):
+        other = other._unpack()
+
+        if isinstance(other, (Union, True_)):
+            return other.__or__(self)
+
+        return Union([self, other])

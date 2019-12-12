@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (C) 2012-13 Thomas Vogt
 # Copyright (C) 2012-17 Nick Boultbee
 # Copyright (C) 2008 Andreas Bombe
@@ -33,9 +32,6 @@ class OSDWindow(Gtk.Window):
     __gsignals__ = {
         'fade-finished': (GObject.SignalFlags.RUN_LAST, None, (bool,)),
     }
-
-    POS_X = 0.5
-    """position of window 0--1 horizontal"""
 
     MARGIN = 50
     """never any closer to the screen edge than this"""
@@ -109,7 +105,7 @@ class OSDWindow(Gtk.Window):
 
         self.cover_rectangle = rect
 
-        winx = int((mgeo.width - winw) * self.POS_X)
+        winx = int((mgeo.width - winw) * conf.pos_x)
         winx = max(self.MARGIN, min(mgeo.width - self.MARGIN - winw, winx))
         winy = int((mgeo.height - winh) * conf.pos_y)
         winy = max(self.MARGIN, min(mgeo.height - self.MARGIN - winh, winy))

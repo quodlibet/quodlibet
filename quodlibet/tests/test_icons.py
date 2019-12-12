@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -17,5 +16,9 @@ class TIconTheme(TestCase):
         theme = Gtk.IconTheme.get_default()
         theme.append_search_path(quodlibet.get_image_dir())
 
-        for i in ["quodlibet", "exfalso", "quodlibet-missing-cover"]:
+        for i in [
+            "io.github.quodlibet.QuodLibet",
+            "io.github.quodlibet.ExFalso",
+            "quodlibet-missing-cover"
+        ]:
             self.failUnless(theme.has_icon(i))

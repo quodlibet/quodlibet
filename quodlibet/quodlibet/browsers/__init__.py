@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2016 Nick Boultbee
+#           2016,18 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -9,7 +8,6 @@
 # (at your option) any later version.
 
 from quodlibet import util
-from quodlibet.compat import listfilter
 from quodlibet.util.importhelper import load_dir_modules
 
 from ._base import Browser
@@ -35,10 +33,7 @@ def init():
         return
 
     this_dir = util.get_module_dir()
-    load_pyc = util.is_windows() or util.is_osx()
-    modules = load_dir_modules(this_dir,
-                               package=__package__,
-                               load_compiled=load_pyc)
+    modules = load_dir_modules(this_dir, package=__package__)
 
     for browser in modules:
         try:
@@ -48,7 +43,7 @@ def init():
 
     def is_browser(Kind):
         return isinstance(Kind, type) and issubclass(Kind, Browser)
-    browsers = listfilter(is_browser, browsers)
+    browsers = list(filter(is_browser, browsers))
 
     if not browsers:
         raise SystemExit("No browsers found!")
@@ -95,4 +90,5 @@ def index(name):
         if name in keys:
             return j
 
-    raise ValueError("%r not found" % name)
+    raise ValueError("%r not found. Try: %s"
+                     % (name, [b.keys for b in browsers]))

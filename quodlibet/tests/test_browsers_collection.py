@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -17,7 +16,6 @@ from quodlibet.browsers.collection.prefs import save_headers, get_headers, \
     PatternEditor
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
-from quodlibet.compat import listvalues
 
 
 SONGS = [
@@ -88,7 +86,7 @@ class TCollectionAlbums(TestCase):
     def test_utils(self):
         model = CollectionTreeStore()
         model.set_albums([("~people", 0)], self.albums)
-        a = listvalues(self.albums)
+        a = list(self.albums.values())
         a.sort(key=lambda x: x.key)
 
         path = model.get_path_for_album(a[0])

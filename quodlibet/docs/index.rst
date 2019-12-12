@@ -1,4 +1,4 @@
-.. title:: A Music Library/Editor/Player
+.. title:: A Music Library / Editor / Player
 
 .. image:: images/paned.png
     :align: right

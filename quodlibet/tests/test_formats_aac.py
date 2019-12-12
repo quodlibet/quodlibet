@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -73,6 +72,9 @@ class TADTSFile(_TAACFile, _TAACFileMixin):
     def test_bitrate(self):
         self.assertEqual(self.song("~#bitrate"), 3)
 
+    def test_samplerate(self):
+        assert self.song("~#samplerate") == 44100
+
 
 @skipUnless(AAC, "too old mutagen")
 class TADIFFile(_TAACFile, _TAACFileMixin):
@@ -84,3 +86,6 @@ class TADIFFile(_TAACFile, _TAACFileMixin):
 
     def test_bitrate(self):
         self.assertEqual(self.song("~#bitrate"), 128)
+
+    def test_samplerate(self):
+        assert self.song("~#samplerate") == 48000

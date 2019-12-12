@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
 #           2012-2018 Nick Boultbee
@@ -127,7 +126,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     name = _("Cover Grid")
     accelerated_name = _("_Cover Grid")
     keys = ["CoverGrid"]
-    priority = 4
+    priority = 5
 
     def pack(self, songpane):
         container = self.songcontainer
@@ -142,6 +141,11 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     @classmethod
     def init(klass, library):
         super(CoverGrid, klass).load_pattern()
+
+    def finalize(self, restored):
+        if not restored:
+            # Select the "All Albums" album, which is None
+            self.select_by_func(lambda r: r[0].album is None, one=True)
 
     @classmethod
     def _destroy_model(klass):
@@ -330,6 +334,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         self.enable_row_update(view, sw, self.view)
 
+        self.__update_filter()
+
         self.connect('key-press-event', self.__key_pressed, library.librarian)
 
         if app.cover_manager:
@@ -353,6 +359,9 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             if songs:
                 window = Information(librarian, songs, self)
                 window.show()
+            return True
+        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+            qltk.enqueue(self.__get_selected_songs(sort=True))
             return True
         elif qltk.is_accel(event, "<alt>Return"):
             songs = self.__get_selected_songs()
@@ -397,7 +406,8 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         if not klass.instances():
             klass._destroy_model()
 
-    def __update_filter(self, entry, text, scroll_up=True, restore=False):
+    def __update_filter(self, entry=None, text=None, scroll_up=True,
+                        restore=False):
         model = self.view.get_model()
 
         self.__filter = None
@@ -413,7 +423,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         # way to implement this
 
         if (not restore or self.__filter or self.__bg_filter) or (not
-            config.getboolean("browsers", "covergrid_all", False)):
+            config.getboolean("browsers", "covergrid_all", True)):
             model.refilter()
 
         self.__uninhibit()
@@ -426,7 +436,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             return True
         else:
             if album is None:
-                return config.getboolean("browsers", "covergrid_all", False)
+                return config.getboolean("browsers", "covergrid_all", True)
             elif b is None:
                 return f(album)
             elif f is None:
@@ -437,7 +447,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     def __search_func(self, model, column, key, iter_, data):
         album = model.get_album(iter_)
         if album is None:
-            return config.getboolean("browsers", "covergrid_all", False)
+            return config.getboolean("browsers", "covergrid_all", True)
         key = key.lower()
         title = album.title.lower()
         if key in title:
@@ -603,13 +613,13 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         self.__inhibit()
         changed = self.select_by_func(
             lambda r: r[0].album and r[0].album.key in values)
+        self.view.grab_focus()
         self.__uninhibit()
         if changed:
             self.activate()
 
     def unfilter(self):
         self.filter_text("")
-        #self.view.set_cursor((0,), None, False)
 
     def activate(self):
         self.view.emit('selection-changed')
@@ -631,18 +641,16 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         keys = config.gettext("browsers", "covergrid", "").split("\n")
 
-        # FIXME: If albums is "" then it could be either all albums or
-        # no albums. If it's "" and some other stuff, assume no albums,
-        # otherwise all albums.
         self.__inhibit()
         if keys != [""]:
-
             def select_fun(row):
                 album = row[0].album
                 if not album:  # all
                     return False
                 return album.str_key in keys
             self.select_by_func(select_fun)
+        else:
+            self.select_by_func(lambda r: r[0].album is None)
         self.__uninhibit()
 
     def scroll(self, song):

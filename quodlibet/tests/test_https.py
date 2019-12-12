@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,10 +8,10 @@
 import pytest
 from gi.repository import Gio, Soup, GLib
 
+from urllib.request import urlopen, build_opener
 from tests import TestCase, skipIf
 
 from quodlibet.util import is_linux, get_ca_file
-from quodlibet.compat import urlopen, build_opener
 
 
 @pytest.mark.network

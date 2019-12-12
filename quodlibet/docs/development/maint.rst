@@ -9,7 +9,7 @@ Downstream Bug Trackers
 Some bug reports never make it to us so check these once in a while.
 
   * `Fedora <https://apps.fedoraproject.org/packages/quodlibet/bugs>`_
-  * `Debian <http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=quodlibet>`_
+  * `Debian <https://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=quodlibet>`_
   * `Arch Linux <https://bugs.archlinux.org/?project=1&string=quodlibet>`_
   * `Ubuntu <https://launchpad.net/ubuntu/+source/quodlibet/+bugs>`_
   * `Gentoo <https://bugs.gentoo.org/buglist.cgi?quicksearch=media-sound%2Fquodlibet>`_
@@ -53,13 +53,11 @@ Release Checklist
 New Stable branch:
 
     * git checkout -b quodlibet-x.y
-    * Change branch name in const.py to "quodlibet-x.y"
     * git commit -m "new stable branch
     * git push
     * git checkout master
     * Update version to (X, Y + 1, -1)
     * git commit -m "version bump"
-    * Enable branch version @readthedocs
 
 New Stable release:
 
@@ -68,7 +66,8 @@ New Stable release:
     * Update NEWS
     * git commit -m "update NEWS"
     * setup.py distcheck
-    * Update version to (X, Y, Z)
+    * Update version to (X, Y, Z) in const.py
+    * Update version to (X, Y, Z) in appdata.xml.in
     * git commit -m "release prep"
     * git tag release-x.y.z
     * git push origin release-x.y.z
@@ -79,4 +78,5 @@ New Stable release:
     * Create checksums / signature, attach everything to the github tag
     * Update release_db/make.py; run ./release_db/update.sh
     * Update stable PPAs (ubuntu/debian/OBS)
+    * Update the flathub repo
     * Write release mail

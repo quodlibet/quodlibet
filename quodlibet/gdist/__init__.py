@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2007 Joe Wreschnig
 #           2012-2016 Christoph Reiter
 #
@@ -26,7 +25,7 @@
 This module contains a Distribution subclass (GDistribution) which
 implements build and install commands for operations related to
 Python GTK+ and GObject support. This includes installation
-of man pages and gettext/intltool support.
+of man pages and gettext support.
 
 Also supports setuptools but needs to be imported after setuptools
 (which does some monkey patching)
@@ -38,7 +37,7 @@ from distutils.core import setup
 
 from .shortcuts import build_shortcuts, install_shortcuts
 from .man import install_man
-from .po import build_mo, install_mo, po_stats, update_po, create_po
+from .po import build_mo, install_mo, po_stats, update_po, create_po, build_po
 from .icons import install_icons
 from .search_provider import install_search_provider
 from .dbus_services import build_dbus_services, install_dbus_services
@@ -48,6 +47,7 @@ from .docs import build_sphinx
 from .scripts import build_scripts
 from .tests import quality_cmd, distcheck_cmd, test_cmd
 from .clean import clean
+from .bash_completions import install_bash_completions
 from .zsh_completions import install_zsh_completions
 from .util import get_dist_class, Distribution
 
@@ -60,6 +60,8 @@ class build(distutils_build):
 
     sub_commands = distutils_build.sub_commands + [
         ("build_mo",
+         lambda self: self.distribution.has_po()),
+        ("build_po",
          lambda self: self.distribution.has_po()),
         ("build_shortcuts",
          lambda self: self.distribution.has_shortcuts()),
@@ -92,6 +94,8 @@ class install(distutils_install):
          lambda self: self.distribution.has_dbus_services()),
         ("install_appdata",
          lambda self: self.distribution.has_appdata()),
+        ("install_bash_completions",
+         lambda self: self.distribution.has_bash_completions()),
         ("install_zsh_completions",
          lambda self: self.distribution.has_zsh_completions()),
     ]
@@ -118,7 +122,7 @@ class GDistribution(Distribution):
       man_pages -- list of man pages to install
       appdata -- list of appdata files to install
 
-    Using the translation features requires intltool.
+    Using the translation features requires gettext.
 
     Example:
       from distutils.core import setup
@@ -135,10 +139,12 @@ class GDistribution(Distribution):
     po_package = None
     search_provider = None
     coverage_options = {}
+    bash_completions = []
     zsh_completions = []
 
     def __init__(self, *args, **kwargs):
         Distribution.__init__(self, *args, **kwargs)
+        self.cmdclass.setdefault("build_po", build_po)
         self.cmdclass.setdefault("build_mo", build_mo)
         self.cmdclass.setdefault("build_shortcuts", build_shortcuts)
         self.cmdclass.setdefault("build_dbus_services", build_dbus_services)
@@ -153,6 +159,8 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("install_search_provider",
                                  install_search_provider)
         self.cmdclass.setdefault("install_appdata", install_appdata)
+        self.cmdclass.setdefault(
+            "install_bash_completions", install_bash_completions)
         self.cmdclass.setdefault(
             "install_zsh_completions", install_zsh_completions)
         self.cmdclass.setdefault("build", build)
@@ -182,6 +190,9 @@ class GDistribution(Distribution):
 
     def has_dbus_services(self):
         return not is_osx and bool(self.dbus_services)
+
+    def has_bash_completions(self):
+        return bool(self.bash_completions)
 
     def has_zsh_completions(self):
         return bool(self.zsh_completions)

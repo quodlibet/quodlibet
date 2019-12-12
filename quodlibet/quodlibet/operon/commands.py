@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -25,7 +24,6 @@ from quodlibet.util.path import mtime
 from quodlibet.pattern import Pattern, error as PatternError
 from quodlibet.util.tags import USER_TAGS, sortkey, MACHINE_TAGS
 from quodlibet.util.tagsfrompath import TagsFromPattern
-from quodlibet.compat import text_type, iteritems
 
 from .base import Command, CommandError
 from .util import print_terse_table, copy_mtime, list_tags, print_table, \
@@ -143,8 +141,9 @@ class CopyCommand(Command):
         for key in source.realkeys():
             self.log("Copy %r" % key)
             if not options.ignore_errors and not dest.can_change(key):
-                raise CommandError(_("Can't copy tag %r to file: %r") %
-                                   (key, dest_path))
+                raise CommandError(
+                    _("Can't copy tag {tagname} to file: {filename}").format(
+                        tagname=repr(key), filename=repr(dest_path)))
             for value in source.list(key):
                 dest.add(key, value)
 
@@ -181,7 +180,7 @@ class EditCommand(Command):
         return u"\n".join(lines)
 
     def _text_to_song(self, text, song):
-        assert isinstance(text, text_type)
+        assert isinstance(text, str)
 
         # parse
         tags = {}
@@ -208,7 +207,7 @@ class EditCommand(Command):
                     self.log("Add %s=%s" % (key, value))
                     song.add(key, value)
 
-        for key, values in iteritems(tags):
+        for key, values in tags.items():
             if not song.can_change(key):
                 raise CommandError(
                     "Can't change key '%(key-name)s'." % {"key-name": key})
@@ -248,10 +247,10 @@ class EditCommand(Command):
             try:
                 subprocess.check_call(editor_args + [path])
             except subprocess.CalledProcessError as e:
-                self.log(text_type(e))
+                self.log(str(e))
                 raise CommandError(_("Editing aborted"))
             except OSError as e:
-                self.log(text_type(e))
+                self.log(str(e))
                 raise CommandError(
                     _("Starting text editor '%(editor-name)s' failed.") % {
                         "editor-name": editor_args[0]})
@@ -364,7 +363,8 @@ class ClearCommand(Command):
                 self.log("Remove tag %r" % tag)
                 if not song.can_change(tag):
                     raise CommandError(
-                        _("Can't remove %r from %r") % (tag, path))
+                        _("Can't remove {tagname} from {filename}").format(
+                            tagname=repr(tag), filename=repr(path)))
                 del song[tag]
 
             if tags:
@@ -485,14 +485,14 @@ class InfoCommand(Command):
             tags = []
             for key in ["~format", "~codec", "~encoding", "~length",
                         "~bitrate", "~filesize"]:
-                tags.append((util.tag(key), text_type(song.comma(key))))
+                tags.append((util.tag(key), str(song.comma(key))))
 
             print_table(tags, headers, nicks, order)
         else:
             tags = []
             for key in ["~format", "~codec", "~encoding", "~#length",
                         "~#bitrate", "~#filesize"]:
-                tags.append((key.lstrip("#~"), text_type(song(key))))
+                tags.append((key.lstrip("#~"), str(song(key))))
 
             print_terse_table(tags, nicks, order)
 

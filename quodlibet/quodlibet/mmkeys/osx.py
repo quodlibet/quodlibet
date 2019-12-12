@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012 Martijn Pieters <mj@zopatista.com>
 # Copyright 2014 Eric Le Lay elelay.fr:dev
 #
@@ -84,7 +83,7 @@ class MacKeyEventsTap(threading.Thread):
 
         # Convert the Quartz CGEvent into something more useful
         keyEvent = NSEvent.eventWithCGEvent_(event)
-        if keyEvent.subtype() is 8: # subtype 8 is media keys
+        if keyEvent.subtype() == 8: # subtype 8 is media keys
             data = keyEvent.data1()
             keyCode = (data & 0xFFFF0000) >> 16
             keyState = (data & 0xFF00) >> 8

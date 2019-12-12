@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson
 #           2011-2016 Nick Boultbee
@@ -20,8 +19,6 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
-from quodlibet.compat import xrange, text_type, number_types, string_types, \
-    swap_to_string, listmap
 from collections import Iterable
 from quodlibet.util.path import escape_filename, unescape_filename
 from quodlibet.util.dprint import print_d
@@ -35,7 +32,7 @@ PEOPLE.remove("albumartist")
 PEOPLE.insert(0, "albumartist")
 
 ELPOEP = list(reversed(PEOPLE))
-PEOPLE_SCORE = [100 ** i for i in xrange(len(PEOPLE))]
+PEOPLE_SCORE = [100 ** i for i in range(len(PEOPLE))]
 
 
 def avg(nums):
@@ -103,7 +100,7 @@ class Collection(object):
         if not self.songs:
             return default
         if key[:1] == "~" and "~" in key[1:]:
-            if not isinstance(default, string_types):
+            if not isinstance(default, str):
                 return default
             keys = util.tagsplit(key)
             v = map(self.__get_cached_value, keys)
@@ -115,7 +112,7 @@ class Collection(object):
             v = map(default_funct, v)
             v = map(lambda x: (isinstance(x, float) and "%.2f" % x) or x, v)
             v = map(
-                lambda x: isinstance(x, string_types) and x or text_type(x), v)
+                lambda x: isinstance(x, str) and x or str(x), v)
             return connector.join(filter(None, v)) or default
         else:
             value = self.__get_cached_value(key)
@@ -127,12 +124,16 @@ class Collection(object):
 
     def comma(self, key):
         value = self.get(key)
-        return (value if isinstance(value, number_types)
+        return (value if isinstance(value, (int, float))
                 else value.replace("\n", ", "))
 
     def list(self, key):
         v = self.get(key, connector=u"\n") if "~" in key[1:] else self.get(key)
-        return [] if v == "" else v.split("\n")
+        if isinstance(v, float):
+            # Ignore insignificant differences in numeric tags caused
+            # by floating point imprecision when converting them to strings
+            v = round(v, 8)
+        return [] if v == "" else str(v).split("\n")
 
     def __get_cached_value(self, key):
         if key in self.__cache:
@@ -268,8 +269,8 @@ class Collection(object):
             for value in song.list(key):
                 result[value] = result.get(value, 0) - 1
 
-        values = listmap(lambda x: x[0],
-                     sorted(result.items(), key=lambda x: (x[1], x[0])))
+        values = list(map(lambda x: x[0],
+                          sorted(result.items(), key=lambda x: (x[1], x[0]))))
         return "\n".join(values) if values else None
 
 
@@ -315,7 +316,6 @@ class Album(Collection):
 
 
 @hashable
-@swap_to_string
 @total_ordering
 class Playlist(Collection, Iterable):
     """A Playlist is a `Collection` that has list-like features
@@ -376,14 +376,14 @@ class Playlist(Collection, Iterable):
 
     @property
     def songs(self):
-        return [s for s in self._list if not isinstance(s, string_types)]
+        return [s for s in self._list if not isinstance(s, str)]
 
     def __init__(self, name, library=None):
         super(Playlist, self).__init__()
         self.__inhibit_library_signals = False
         self.__instances.append(self)
 
-        name = text_type(name)
+        name = str(name)
         if not name:
             raise ValueError("Playlists must have a name")
 
@@ -420,7 +420,7 @@ class Playlist(Collection, Iterable):
         if the name is not allowed
         """
 
-        new_name = text_type(new_name)
+        new_name = str(new_name)
         if not new_name:
             raise ValueError(_("Playlists must have a name"))
         return new_name
@@ -428,7 +428,7 @@ class Playlist(Collection, Iterable):
     def add_songs(self, filenames, library):
         changed = []
         for i in range(len(self)):
-            if isinstance(self[i], string_types) \
+            if isinstance(self[i], str) \
                     and self._list[i] in filenames:
                 song = library[self._list[i]]
                 self._list[i] = song
@@ -623,7 +623,7 @@ class FileBackedPlaylist(Playlist):
         fn = self.filename
         with open(fn, "wb") as f:
             for song in self._list:
-                if isinstance(song, string_types):
+                if isinstance(song, str):
                     f.write(fsn2bytes(song, "utf-8") + b"\n")
                 else:
                     f.write(fsn2bytes(song("~filename"), "utf-8") + b"\n")

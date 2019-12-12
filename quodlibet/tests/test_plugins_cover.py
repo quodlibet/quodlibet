@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -11,6 +10,8 @@ import shutil
 from gi.repository import Gtk
 from gi.repository import GdkPixbuf
 
+from quodlibet.util.cover.http import ApiCoverSourcePlugin
+from quodlibet.util.thread import Cancellable
 from tests import TestCase, mkdtemp, mkstemp, get_data_path
 
 from quodlibet import config
@@ -58,7 +59,7 @@ class DummyCoverSource2(CoverSourcePlugin):
         return self.emit('fetch-success', self.cover)
 
 
-class DummyCoverSource3(CoverSourcePlugin):
+class DummyCoverSource3(ApiCoverSourcePlugin):
     @staticmethod
     def priority():
         return 0.3
@@ -68,13 +69,16 @@ class DummyCoverSource3(CoverSourcePlugin):
         DummyCoverSource3.cover_call = True
         return None
 
+    def search(self):
+        return self.emit('search-complete', [{'cover': DUMMY_COVER}])
+
     def fetch_cover(self):
         DummyCoverSource3.fetch_call = True
         return self.emit('fetch-success', DUMMY_COVER)
 
+
 dummy_sources = [Plugin(s) for s in
-    [DummyCoverSource1, DummyCoverSource2, DummyCoverSource3]
-]
+                 (DummyCoverSource1, DummyCoverSource2, DummyCoverSource3)]
 
 
 class TCoverManager(TestCase):
@@ -199,6 +203,37 @@ class TCoverManager(TestCase):
         self.assertFalse(dummy_sources[0].cls.fetch_call)
         self.assertFalse(dummy_sources[1].cls.fetch_call)
         self.assertTrue(dummy_sources[2].cls.fetch_call)
+
+    def test_search(self):
+        manager = CoverManager(use_built_in=False)
+        handler = manager.plugin_handler
+        for source in dummy_sources:
+            handler.plugin_handle(source)
+            handler.plugin_enable(source)
+            source.cls.cover_call = False
+            source.cls.fetch_call = False
+
+        song = AudioFile({
+            "~filename": os.path.join("/tmp/asong.ogg"),
+            "album": "Abbey Road",
+            "artist": "The Beatles"
+        })
+        songs = [song]
+        results = []
+
+        def done(manager, provider, result):
+            self.failUnless(result, msg="Shouldn't succeed with no results")
+            results.append(result)
+
+        def finished(manager, songs):
+            print("Finished!")
+
+        manager.connect('covers-found', done)
+        manager.search_cover(Cancellable(), songs)
+        manager.connect('searches-complete', finished)
+        run_loop()
+
+        self.failUnlessEqual(len(results), 1)
 
     def tearDown(self):
         pass

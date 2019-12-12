@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,6 +8,7 @@
 import os
 import stat
 import shlex
+import shutil
 
 from senf import environ
 
@@ -128,6 +128,8 @@ def get_editor_args(fallback_command="nano"):
         editor = environ["VISUAL"]
     elif "EDITOR" in environ:
         editor = environ["EDITOR"]
+    elif shutil.which("editor"):
+        editor = "editor"
     else:
         editor = fallback_command
 

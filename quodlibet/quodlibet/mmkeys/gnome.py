@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
+#           2018 Ludovic Druette
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -8,12 +8,26 @@
 
 import time
 
-from ._base import MMKeysBackend, MMKeysAction, MMKeysImportError
+from gi.repository import GLib, Gio
 
-try:
-    import dbus
-except ImportError:
-    raise MMKeysImportError
+from quodlibet.util import print_exc
+from ._base import MMKeysBackend, MMKeysAction
+
+
+def dbus_has_interface(dbus_name, dbus_path, dbus_interface):
+    try:
+        proxy = Gio.DBusProxy.new_for_bus_sync(
+            Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
+            dbus_name, dbus_path,
+            "org.freedesktop.DBus.Introspectable", None)
+        xml = proxy.Introspect()
+        node = Gio.DBusNodeInfo.new_for_xml(xml)
+        for iface in node.interfaces:
+            if iface.name == dbus_interface:
+                return True
+        return False
+    except GLib.Error:
+        return False
 
 
 class GnomeBackend(MMKeysBackend):
@@ -28,8 +42,11 @@ class GnomeBackend(MMKeysBackend):
         "Play": MMKeysAction.PLAYPAUSE,
         "Pause": MMKeysAction.PAUSE,
         "Stop": MMKeysAction.STOP,
+        "FastForward": MMKeysAction.FORWARD,
+        "Rewind": MMKeysAction.REWIND,
+        "Repeat": MMKeysAction.REPEAT,
+        "Shuffle": MMKeysAction.SHUFFLE
     }
-    # TODO: Rewind, FastForward, Repeat, Shuffle
 
     def __init__(self, name, callback):
         self.__interface = None
@@ -43,11 +60,8 @@ class GnomeBackend(MMKeysBackend):
     @classmethod
     def is_active(cls):
         """If the gsd plugin is active atm"""
-        try:
-            bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
-            return bus.name_has_owner(cls.DBUS_NAME)
-        except dbus.DBusException:
-            return False
+
+        return dbus_has_interface(cls.DBUS_NAME, cls.DBUS_PATH, cls.DBUS_IFACE)
 
     def cancel(self):
         if self.__callback:
@@ -61,8 +75,7 @@ class GnomeBackend(MMKeysBackend):
 
         if update:
             # so this breaks every 50 days.. ok..
-            t = int((time.time() * 1000)) & 0xFFFFFFFF
-            self.__grab_time = dbus.UInt32(t)
+            self.__grab_time = int((time.time() * 1000)) & 0xFFFFFFFF
         elif self.__grab_time < 0:
             # can not send the last event if there was none
             return
@@ -71,9 +84,10 @@ class GnomeBackend(MMKeysBackend):
         if not iface:
             return
 
-        iface.GrabMediaPlayerKeys(self.__name, self.__grab_time,
-                                  reply_handler=lambda *x: None,
-                                  error_handler=lambda *x: None)
+        try:
+            iface.GrabMediaPlayerKeys('(su)', self.__name, self.__grab_time)
+        except GLib.Error:
+            print_exc()
 
     def __update_interface(self):
         """If __interface is None, set a proxy interface object and connect
@@ -83,14 +97,14 @@ class GnomeBackend(MMKeysBackend):
             return self.__interface
 
         try:
-            bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
-            obj = bus.get_object(self.DBUS_NAME, self.DBUS_PATH)
-            iface = dbus.Interface(obj, self.DBUS_IFACE)
-        except dbus.DBusException:
-            pass
+            iface = Gio.DBusProxy.new_for_bus_sync(
+                Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
+                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_IFACE, None)
+        except GLib.Error:
+            print_exc()
         else:
-            self.__key_pressed_sig = iface.connect_to_signal(
-                    "MediaPlayerKeyPressed", self.__key_pressed)
+            self.__key_pressed_sig = iface.connect(
+                'g-signal', self.__on_signal)
             self.__interface = iface
 
         return self.__interface
@@ -100,28 +114,37 @@ class GnomeBackend(MMKeysBackend):
         if self.__watch:
             return
 
-        bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
         # This also triggers for existing name owners
-        self.__watch = bus.watch_name_owner(self.DBUS_NAME,
-                                            self.__owner_changed)
+        self.__watch = Gio.bus_watch_name(
+            Gio.BusType.SESSION, self.DBUS_NAME, Gio.BusNameWatcherFlags.NONE,
+            self.__owner_appeared, self.__owner_vanished)
 
     def __disable_watch(self):
         """Disable name owner change events"""
         if self.__watch:
-            self.__watch.cancel()
+            Gio.bus_unwatch_name(self.__watch)
             self.__watch = None
 
-    def __owner_changed(self, owner):
-        """This gets called when the owner of the dbus name changes so we can
-        handle gnome-settings-daemon restarts."""
+    def __owner_appeared(self, bus, name, owner):
+        """This gets called when the owner of the dbus name appears
+        so we can handle gnome-settings-daemon restarts."""
 
-        if not owner:
-            # owner gone, remove the signal matches/interface etc.
-            self.__release()
-        elif not self.__interface:
+        if not self.__interface:
             # new owner, get a new interface object and
             # resend the last grab event
             self.grab(update=False)
+
+    def __owner_vanished(self, bus, owner):
+        """This gets called when the owner of the dbus name disappears
+        so we can handle gnome-settings-daemon restarts."""
+
+        # owner gone, remove the signal matches/interface etc.
+        self.__release()
+
+    def __on_signal(self, proxy, sender, signal, args):
+        if signal == 'MediaPlayerKeyPressed':
+            application, action = tuple(args)[:2]
+            self.__key_pressed(application, action)
 
     def __key_pressed(self, application, action):
         if application != self.__name:
@@ -134,16 +157,18 @@ class GnomeBackend(MMKeysBackend):
         """Tells gsd that we don't want events anymore and
         removes all signal matches"""
 
+        if not self.__interface:
+            return
+
         if self.__key_pressed_sig:
-            self.__key_pressed_sig.remove()
+            self.__interface.disconnect(self.__key_pressed_sig)
             self.__key_pressed_sig = None
 
-        if self.__interface:
-            try:
-                self.__interface.ReleaseMediaPlayerKeys(self.__name)
-            except dbus.DBusException:
-                pass
-            self.__interface = None
+        try:
+            self.__interface.ReleaseMediaPlayerKeys('(s)', self.__name)
+        except GLib.Error:
+            print_exc()
+        self.__interface = None
 
 
 # https://mail.gnome.org/archives/desktop-devel-list/2017-April/msg00069.html

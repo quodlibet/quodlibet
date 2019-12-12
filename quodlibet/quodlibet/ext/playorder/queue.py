@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2009 Steven Robertson
 #        2016-17 Nick Boultbee
 #

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2017 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -24,6 +23,8 @@ class DSFFile(ID3File):
         self["~#length"] = info.length
         self["~#bitrate"] = int(info.bitrate / 1000)
         self["~#channels"] = info.channels
+        self["~#samplerate"] = info.sample_rate
+        self["~#bitdepth"] = info.bits_per_sample
 
 loader = DSFFile
 types = [DSFFile]

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Ex Falso
+GenericName=Audio tag editor
+Comment=Edit tags in your audio files
+Exec=exfalso
+Terminal=false
+StartupNotify=true
+StartupWMClass=io.github.quodlibet.ExFalso
+Type=Application
+Icon=io.github.quodlibet.ExFalso
+Categories=AudioVideo;Audio;AudioVideoEditing;GTK;

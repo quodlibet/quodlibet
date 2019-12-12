@@ -41,3 +41,7 @@
 .. |linux-logo| raw:: html
 
     <i class="fa fa-linux"></i>
+
+.. |flatpak-logo| raw:: html
+
+    <i class="fa fa-cubes"></i>

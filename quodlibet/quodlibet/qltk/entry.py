@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2011, 2012 Christoph Reiter
 #
@@ -15,7 +14,6 @@ from quodlibet import _
 from quodlibet.qltk import is_accel, add_fake_accel
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
-from quodlibet.compat import string_types
 
 
 class EditableUndo(object):
@@ -259,7 +257,7 @@ class ValidatingEntryMixin(object):
             color = self.VALID
         elif value is False:
             color = self.INVALID
-        elif value and isinstance(value, string_types):
+        elif value and isinstance(value, str):
             color = Gdk.RGBA()
             color.parse(value)
         else:

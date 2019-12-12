@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson
 #           2011-2017 Nick Boultbee
@@ -325,7 +324,8 @@ class PreferencesWindow(UniqueWindow):
 
             entry = UndoEntry()
             entry.set_tooltip_text(
-                    _("The album art image file to use when forced"))
+                    _("The album art image file to use when forced"
+                      " (supports wildcards)"))
             entry.set_text(config.get("albumart", "filename"))
             entry.connect('changed', self.__changed_text, 'filename')
             # Disable entry when not forcing
@@ -422,6 +422,16 @@ class PreferencesWindow(UniqueWindow):
 
             c.emit('toggled')
 
+            self.pack_start(f, False, True, 0)
+
+            vbox = Gtk.VBox()
+            c = CCB(_("_Continue playback on startup"),
+                    "player", "restore_playing", populate=True,
+                    tooltip=_("If music is playing on shutdown, automatically "
+                              "start playing on next startup"))
+            vbox.pack_start(c, False, False, 0)
+
+            f = qltk.Frame(_("Startup"), child=vbox)
             self.pack_start(f, False, True, 0)
 
             for child in self.get_children():
@@ -554,16 +564,25 @@ class PreferencesWindow(UniqueWindow):
             hb.pack_start(bayes_label, False, True, 0)
             hb.pack_start(bayes_spin, False, True, 0)
             vb.pack_start(hb, True, True, 0)
-            cb = CCB(_("Save ratings and play _counts"),
+            cb = CCB(_("Save ratings and play _counts in tags"),
                      "editing", "save_to_songs", populate=True)
+
+            def update_entry(widget, email_entry):
+                email_entry.set_sensitive(widget.get_active())
+
             vb.pack_start(cb, True, True, 0)
             hb = Gtk.HBox(spacing=6)
             lab = Gtk.Label(label=_("_Email:"))
             entry = UndoEntry()
-            entry.set_tooltip_text(_("Ratings and play counts will be set "
-                                     "for this email address"))
+            entry.set_tooltip_text(_("Ratings and play counts will be saved "
+                                     "in tags for this email address"))
             entry.set_text(config.get("editing", "save_email"))
             entry.connect('changed', self.__changed, 'editing', 'save_email')
+
+            # Disable the entry if not saving to tags
+            cb.connect('clicked', update_entry, entry)
+            update_entry(cb, entry)
+
             hb.pack_start(lab, False, True, 0)
             hb.pack_start(entry, True, True, 0)
             lab.set_mnemonic_widget(entry)
@@ -580,29 +599,62 @@ class PreferencesWindow(UniqueWindow):
                      tooltip=_("Save changes to tags without confirmation "
                                "when editing multiple files"))
             vbox.pack_start(cb, False, True, 0)
-            hb = Gtk.HBox(spacing=6)
-            e = UndoEntry()
-            e.set_text(config.get("editing", "split_on"))
-            e.connect('changed', self.__changed, 'editing', 'split_on')
-            e.set_tooltip_text(
+
+            split_entry = UndoEntry()
+            split_entry.set_text(config.get("editing", "split_on"))
+            split_entry.connect('changed', self.__changed, 'editing',
+                                'split_on')
+            split_entry.set_tooltip_text(
                 _("A set of separators to use when splitting tag values "
                   "in the tag editor. "
-                  "The list is space-separated"))
+                  "The list is space-separated."))
+            split_entry.props.expand = True
 
-            def do_revert_split(button, section, option):
+            sub_entry = UndoEntry()
+            sub_entry.set_text(config.get("editing", "sub_split_on"))
+            sub_entry.connect('changed', self.__changed, 'editing',
+                              'sub_split_on')
+            sub_entry.set_tooltip_text(
+                _("A set of separators to use when extracting subtags from "
+                  "tags in the tag editor. "
+                  "The list is space-separated, and each entry must only "
+                  "contain two characters."))
+            sub_entry.props.expand = True
+
+            def do_revert_split(button, entry, section, option):
                 config.reset(section, option)
-                e.set_text(config.get(section, option))
+                entry.set_text(config.get(section, option))
 
             split_revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
-            split_revert.connect("clicked", do_revert_split, "editing",
-                                 "split_on")
-            l = Gtk.Label(label=_("Split _on:"))
-            l.set_use_underline(True)
-            l.set_mnemonic_widget(e)
-            hb.pack_start(l, False, True, 0)
-            hb.pack_start(e, True, True, 0)
-            hb.pack_start(split_revert, False, True, 0)
-            vbox.pack_start(hb, False, True, 0)
+            split_revert.connect("clicked", do_revert_split, split_entry,
+                                 "editing", "split_on")
+            split_label = Gtk.Label(label=_("Split _tag on:"))
+            split_label.set_use_underline(True)
+            split_label.set_mnemonic_widget(split_entry)
+
+            sub_revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
+            sub_revert.connect("clicked", do_revert_split, sub_entry,
+                               "editing", "sub_split_on")
+            sub_label = Gtk.Label(label=_("Split _subtag on:"))
+            sub_label.set_use_underline(True)
+            sub_label.set_mnemonic_widget(split_entry)
+
+            split_align = Align(halign=Gtk.Align.START)
+            split_align.add(split_label)
+            sub_align = Align(halign=Gtk.Align.START)
+            sub_align.add(sub_label)
+
+            grid = Gtk.Grid(column_spacing=6, row_spacing=6)
+            grid.add(split_align)
+            grid.add(split_entry)
+            grid.add(split_revert)
+            grid.attach(sub_align, 0, 1, 1, 1)
+            grid.attach(sub_entry, 1, 1, 1, 1)
+            grid.attach(sub_revert, 2, 1, 1, 1)
+            grid.props.expand = False
+
+            vbox.pack_start(grid, False, False, 6)
+
             return vbox
 
         def __init__(self):
@@ -681,7 +733,7 @@ class PreferencesWindow(UniqueWindow):
             for child in self.get_children():
                 child.show_all()
 
-    def __init__(self, parent):
+    def __init__(self, parent, open_page=None):
         if self.is_not_unique():
             return
         super(PreferencesWindow, self).__init__()
@@ -691,14 +743,18 @@ class PreferencesWindow(UniqueWindow):
         self.set_transient_for(qltk.get_top_parent(parent))
 
         self.__notebook = notebook = qltk.Notebook()
-        for Page in [self.SongList, self.Browsers, self.Player,
-                     self.Library, self.Tagging]:
+        pages = [self.SongList, self.Browsers, self.Player, self.Library,
+                 self.Tagging]
+        for Page in pages:
             page = Page()
             page.show()
             notebook.append_page(page)
 
-        page_name = config.get("memory", "prefs_page", "")
-        self.set_page(page_name)
+        if open_page in [page.name for page in pages]:
+            self.set_page(open_page)
+        else:
+            page_name = config.get("memory", "prefs_page", "")
+            self.set_page(page_name)
 
         def on_switch_page(notebook, page, page_num):
             config.set("memory", "prefs_page", page.name)

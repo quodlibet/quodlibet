@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2011,2013 Christoph Reiter
 #                2016 Nick Boultbee
 #
@@ -16,7 +15,7 @@ from quodlibet import _
 from quodlibet import qltk
 from quodlibet import config
 from quodlibet.qltk import Icons
-from quodlibet.util.path import get_home_dir
+from quodlibet.util.path import get_home_dir, xdg_get_system_data_dirs
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.plugins.events import EventPlugin
 
@@ -97,16 +96,28 @@ class ThemeSwitcher(EventPlugin):
             theme_dir = Gtk.rc_get_theme_dir()
 
         theme_dirs = [theme_dir, os.path.join(get_home_dir(), ".themes")]
+        theme_dirs += [
+            os.path.join(d, "themes") for d in xdg_get_system_data_dirs()]
+
+        def is_valid_teme_dir(path):
+            """If the path contains a theme for the running gtk version"""
+
+            major = qltk.gtk_version[0]
+            minor = qltk.gtk_version[1]
+            names = ["gtk-%d.%d" % (major, m) for m in range(minor, -1, -1)]
+            for name in names:
+                if os.path.isdir(os.path.join(path, name)):
+                    return True
+            return False
 
         themes = set()
-        for theme_dir in theme_dirs:
+        for theme_dir in set(theme_dirs):
             try:
                 subdirs = os.listdir(theme_dir)
             except OSError:
                 continue
             for dir_ in subdirs:
-                gtk_dir = os.path.join(theme_dir, dir_, "gtk-3.0")
-                if os.path.isdir(gtk_dir):
+                if is_valid_teme_dir(os.path.join(theme_dir, dir_)):
                     themes.add(dir_)
 
         try:

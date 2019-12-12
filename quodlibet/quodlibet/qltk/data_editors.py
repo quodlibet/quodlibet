@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012-2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -19,7 +18,6 @@ from quodlibet.query import Query
 from quodlibet.util.json_data import JSONObjectDict
 from quodlibet.util import connect_obj
 from quodlibet.qltk.getstring import GetStringDialog
-from quodlibet.compat import string_types
 
 
 class JSONBasedEditor(qltk.UniqueWindow):
@@ -177,7 +175,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
                 widget.set_active(val)
             elif isinstance(val, int):
                 widget.set_value(int(val))
-            elif isinstance(val, string_types):
+            elif isinstance(val, str):
                 widget.set_text(val or "")
 
     def __build_input_frame(self):
@@ -220,7 +218,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         if not data:
             return
         for (name, obj) in data.items():
-            self.model.prepend(row=[obj])
+            self.model.append(row=[obj])
 
     def _update_current(self, new_selection=None):
         if new_selection:
@@ -370,7 +368,7 @@ class TagListEditor(qltk.Window):
         self.view.remove_selection()
 
     def __add(self, *args):
-        tooltip = _('Tag expression e.g. people:real or ~album~year.')
+        tooltip = _('Tag expression e.g. people:real or ~album~year')
         dialog = GetStringDialog(self, _("Enter new tag"), "",
                                  button_icon=None,
                                  tooltip=tooltip)

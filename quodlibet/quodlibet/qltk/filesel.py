@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
@@ -7,8 +6,8 @@
 # (at your option) any later version.
 
 import os
-from quodlibet.compat import urlsplit
 import errno
+from urllib.parse import urlsplit
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 from senf import uri2fsn, fsnative, fsn2text, bytes2fsn
@@ -25,9 +24,8 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
-from quodlibet.compat import xrange
 from quodlibet.util.path import listdir, \
-    glib2fsn, xdg_get_user_dirs, get_home_dir
+    glib2fsn, xdg_get_user_dirs, get_home_dir, xdg_get_config_home
 from quodlibet.util import connect_obj
 
 
@@ -125,27 +123,17 @@ def get_favorites():
         return paths
 
 
-def _get_win_drives():
-    """Returns a list of paths for all available drives e.g. ['C:\\']"""
-
-    assert os.name == "nt"
-    drives = [letter + u":\\" for letter in u"CDEFGHIJKLMNOPQRSTUVWXYZ"]
-    return [d for d in drives if os.path.isdir(d)]
-
-
 def get_drives():
     """A list of accessible drives"""
 
-    if os.name == "nt":
-        return _get_win_drives()
-    else:
-        paths = []
-        for mount in Gio.VolumeMonitor.get().get_mounts():
-            path = mount.get_root().get_path()
-            if path is not None:
-                paths.append(glib2fsn(path))
+    paths = []
+    for mount in Gio.VolumeMonitor.get().get_mounts():
+        path = mount.get_root().get_path()
+        if path is not None:
+            paths.append(glib2fsn(path))
+    if os.name != "nt":
         paths.append("/")
-        return paths
+    return sorted(paths)
 
 
 def parse_gtk_bookmarks(data):
@@ -181,7 +169,7 @@ def get_gtk_bookmarks():
     if os.name == "nt":
         return []
 
-    path = os.path.join(get_home_dir(), ".gtk-bookmarks")
+    path = os.path.join(xdg_get_config_home(), "gtk-3.0", "bookmarks")
     folders = []
     try:
         with open(path, "rb") as f:
@@ -288,7 +276,11 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
     def go_to(self, path_to_go):
         assert isinstance(path_to_go, fsnative)
 
-        # FIXME: what about non-normalized paths?
+        # The path should be normalized in normal situations.
+        # On some systems and special environments (pipenv) there might be
+        # a non-normalized path at least during tests, though.
+        path_to_go = os.path.normpath(path_to_go)
+
         model = self.get_model()
 
         # Find the top level row which has the largest common
@@ -431,7 +423,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         nchildren = model.iter_n_children(iter_)
         last = model.get_path(iter_)
 
-        for i in xrange(nchildren):
+        for i in range(nchildren):
             child = model.iter_nth_child(iter_, i)
             self.expand_row(model.get_path(child), False)
             last = self.__select_children(child, model, selection)
@@ -522,6 +514,7 @@ class FileSelector(Paned):
 
         model = ObjectStore()
         filelist = AllTreeView(model=model)
+        filelist.connect("draw", self.__restore_scroll_pos_on_draw)
 
         column = TreeViewColumn(title=_("Songs"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -634,6 +627,13 @@ class FileSelector(Paned):
 
         fselect.handler_unblock(self.__sig)
         fselect.emit('changed')
+        self._saved_scroll_pos = filelist.get_vadjustment().get_value()
+
+    def __restore_scroll_pos_on_draw(self, treeview, context):
+        if self._saved_scroll_pos:
+            vadj = treeview.get_vadjustment()
+            vadj.set_value(self._saved_scroll_pos)
+            self._saved_scroll_pos = None
 
 
 def _get_main_folders():

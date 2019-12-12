@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
 #           2016 Nick Boultbee
+#      2018-2019 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@ from gi.repository import Gtk
 from quodlibet.qltk.playorder import OrderInOrder
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util import print_d
-from quodlibet.compat import izip
+from quodlibet import config
 
 
 class PlaylistMux(object):
@@ -34,7 +34,8 @@ class PlaylistMux(object):
     def __song_started(self, player, song):
         if song is not None and self.q.sourced:
             iter = self.q.find(song)
-            if iter:
+            keep_song = config.getboolean("memory", "queue_keep_songs", False)
+            if iter and not keep_song:
                 self.q.remove(iter)
                 # we don't call _check_sourced here since we want the queue
                 # to stay sourced even if no current song is left
@@ -59,8 +60,17 @@ class PlaylistMux(object):
     def next(self):
         """Switch to the next song"""
 
-        if self.q.is_empty():
+        keep_songs = config.getboolean("memory", "queue_keep_songs", False)
+        q_disable = config.getboolean("memory", "queue_disable", False)
+
+        if (self.q.is_empty()
+                or q_disable
+                or (keep_songs and not self.q.sourced)):
             self.pl.next()
+            if q_disable and self.q.sourced:
+                # The go_to is to make sure the playlist begins playing
+                # when the queue is disabled while being sourced
+                self.go_to(self.pl.current)
         else:
             self.q.next()
         self._check_sourced()
@@ -68,8 +78,15 @@ class PlaylistMux(object):
     def next_ended(self):
         """Switch to the next song (action comes from the user)"""
 
-        if self.q.is_empty():
+        keep_songs = config.getboolean("memory", "queue_keep_songs", False)
+        q_disable = config.getboolean("memory", "queue_disable", False)
+
+        if (self.q.is_empty()
+                or q_disable
+                or (keep_songs and not self.q.sourced)):
             self.pl.next_ended()
+            if q_disable and self.q.sourced:
+                self.go_to(self.pl.current)
         else:
             self.q.next_ended()
         self._check_sourced()
@@ -77,7 +94,15 @@ class PlaylistMux(object):
     def previous(self):
         """Go to the previous song"""
 
-        self.pl.previous()
+        keep_songs = config.getboolean("memory", "queue_keep_songs", False)
+        q_disable = config.getboolean("memory", "queue_disable", False)
+
+        if q_disable or self.pl.sourced or not keep_songs:
+            self.pl.previous()
+            if q_disable and self.q.sourced:
+                self.go_to(self.pl.current)
+        else:
+            self.q.previous()
         self._check_sourced()
 
     def go_to(self, song, explicit=False, source=None):
@@ -136,7 +161,7 @@ class TrackCurrentModel(ObjectStore):
         self.__iter = None
 
         oldsong = self.last_current
-        for iter_, song in izip(self.iter_append_many(songs), songs):
+        for iter_, song in zip(self.iter_append_many(songs), songs):
             if song is oldsong:
                 self.__iter = iter_
 

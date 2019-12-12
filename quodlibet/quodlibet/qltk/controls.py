@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #
 # This program is free software; you can redistribute it and/or modify
@@ -76,12 +75,12 @@ class Volume(Gtk.VolumeButton):
 
     def __volume_changed(self, button, volume, player):
         player.handler_block(self._id2)
-        player.volume = volume ** 3.0
+        player.volume = volume
         player.handler_unblock(self._id2)
 
     def __volume_notify(self, player, prop):
         self.handler_block(self._id)
-        self.set_value(player.volume ** (1.0 / 3.0))
+        self.set_value(player.volume)
         self.handler_unblock(self._id)
 
     def __mute_notify(self, player, prop):
@@ -101,7 +100,7 @@ class Volume(Gtk.VolumeButton):
         # false starting point update the slider on any action on the
         # volume button.
         self.handler_block(self._id)
-        self.set_value(player.volume ** (1.0 / 3.0))
+        self.set_value(player.volume)
         self.handler_unblock(self._id)
         # same with mute
         self._update_mute(player)
@@ -202,6 +201,7 @@ class PlayPauseButton(Gtk.Button):
     def set_active(self, is_active):
         if self.get_active() == is_active:
             return
+        config.set("player", "is_playing", is_active)
         self._set_active(is_active)
 
     def get_active(self):

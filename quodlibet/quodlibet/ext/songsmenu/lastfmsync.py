@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2010 Steven Robertson
 #           2016 Mice Pápai
 #
@@ -12,6 +11,7 @@ import shelve
 import time
 from datetime import date
 from threading import Thread
+from urllib.parse import urlencode
 
 from gi.repository import Gtk, GLib
 
@@ -21,7 +21,6 @@ from quodlibet import config, util, qltk
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.compat import urlencode
 from quodlibet.util.urllib import urlopen
 
 try:

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,7 +11,7 @@ from tests.plugin import PluginTestCase
 class TTestPlugins(PluginTestCase):
 
     def test_pickle(self):
-        plugin = self.plugins["pickle_test"].cls
+        plugin = self.plugins["pickle_plugin"].cls
         instance = plugin()
         instance.enabled()
         instance.disabled()

@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005-2009 Joe Wreschnig, Steven Robertson
-#           2012,2016 Nick Boultbee
+#           2012-2018 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +16,7 @@ from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import util
 from quodlibet.util import print_d
+from quodlibet.browsers.playlists import PlaylistsBrowser
 try:
     from quodlibet.qltk import notif, Icons
 except Exception:
@@ -139,7 +139,7 @@ class RandomAlbum(EventPlugin):
         return vbox
 
     def _score(self, albums):
-        """Score each album. Returns a list of (score, name) tuples."""
+        """Score each album. Returns a list of (score, album) tuples."""
 
         # Score the album based on its weighted rank ordering for each key
         # Rank ordering is more resistant to clustering than weighting
@@ -159,7 +159,7 @@ class RandomAlbum(EventPlugin):
                 rank = ranked[tag].index(album)
                 scores[album] += rank * self.weights[tag]
 
-        return [(score, name) for name, score in scores.items()]
+        return [(score, album) for album, score in scores.items()]
 
     def plugin_on_song_started(self, song):
         one_song = app.player_options.single
@@ -167,6 +167,7 @@ class RandomAlbum(EventPlugin):
             browser = app.window.browser
 
             if self.disabled_for_browser(browser):
+                print_d("%s doesn't support album filtering" % browser.name)
                 return
 
             albumlib = app.library.albums
@@ -178,19 +179,35 @@ class RandomAlbum(EventPlugin):
             else:
                 keys = set(browser.list("album"))
                 values = [a for a in albumlib if a("album") in keys]
+            if not values:
+                print_d("No albums to randomly choose from.")
+                return
 
             if self.use_weights:
                 # Select 3% of albums, or at least 3 albums
-                nr_albums = int(min(len(values), max(0.03 * len(values), 3)))
+                total = len(values)
+                nr_albums = min(total, max(int(0.03 * total), 3))
+                print_d("Choosing from %d library albums:" % nr_albums)
                 chosen_albums = random.sample(values, nr_albums)
-                album_scores = sorted(self._score(chosen_albums))
-                for score, album in album_scores:
-                    print_d("%0.2f scored by %s" % (score, album("album")))
-                album = max(album_scores)[1]
+                album_scores = self._score(chosen_albums)
+                # Find highest score value
+                max_score = max(album_scores, key=lambda t: t[0])[0]
+                print_d("Maximum score found: %0.1f" % max_score)
+                # Filter albums by highest score value
+                albums = [(sc, al)
+                          for sc, al in album_scores
+                          if sc == max_score]
+                print_d("Albums with maximum score:")
+                for score, album in albums:
+                    print_d("  %s" % album("album"))
+
+                # Pick random album from list of highest scored albums
+                album = random.choice(albums)[1]
             else:
                 album = random.choice(values)
 
             if album is not None:
+                print_d("Chosen album: %s" % album("album"))
                 self.schedule_change(album)
 
     def schedule_change(self, album):
@@ -236,4 +253,5 @@ class RandomAlbum(EventPlugin):
             app.player.paused = True
 
     def disabled_for_browser(self, browser):
-        return not browser.can_filter_albums() or browser == "Playlists"
+        return (not browser.can_filter("album") or
+                isinstance(browser, PlaylistsBrowser))

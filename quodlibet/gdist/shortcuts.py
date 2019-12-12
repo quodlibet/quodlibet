@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2007-2008 Joe Wreschnig
 #           2009,2012-2016 Christoph Reiter
 #
@@ -25,14 +24,14 @@ import os
 from distutils.dep_util import newer
 
 from .util import Command
-from .gettextutil import intltool
+from .gettextutil import merge_file
 
 
 class build_shortcuts(Command):
     """Build .desktop files
 
     Move .desktop files to the appropriate location in the build tree.
-    If there is a .desktop.in file, process it with intltool.
+    If there is a .desktop.in file, process it with gettext.
     """
 
     description = "build .desktop files"
@@ -40,28 +39,26 @@ class build_shortcuts(Command):
 
     def initialize_options(self):
         self.build_base = None
+        self.shortcuts = None
+        self.po_build_dir = None
 
     def finalize_options(self):
         self.shortcuts = self.distribution.shortcuts
-        self.po_directory = self.distribution.po_directory
         self.set_undefined_options('build', ('build_base', 'build_base'))
-
-    def __check_po(self):
-        """Exit if translation is needed and not available"""
-        if not (self.po_directory and os.path.isdir(self.po_directory)):
-            raise SystemExit("PO directory %r not found." % self.po_directory)
+        self.set_undefined_options(
+            'build_po', ('po_build_dir', 'po_build_dir'))
 
     def run(self):
+        self.run_command("build_po")
+
         basepath = os.path.join(self.build_base, 'share', 'applications')
         self.mkpath(basepath)
         for shortcut in self.shortcuts:
             if os.path.exists(shortcut + ".in"):
                 fullpath = os.path.join(basepath, os.path.basename(shortcut))
-                self.__check_po()
                 if newer(shortcut + ".in", fullpath):
-                    self.spawn(
-                        intltool("merge", "-d", self.po_directory,
-                                 shortcut + ".in", fullpath))
+                    merge_file(self.po_build_dir, "desktop",
+                               shortcut + ".in", fullpath)
             else:
                 self.copy_file(shortcut, os.path.join(basepath, shortcut))
 

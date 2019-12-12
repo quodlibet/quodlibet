@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,7 +11,6 @@ from tests import TestCase
 from .helper import capture_output
 
 from quodlibet.util.dprint import print_e, format_exception_only, print_exc
-from quodlibet.compat import text_type
 
 
 class Tdprint(TestCase):
@@ -32,7 +30,7 @@ class Tdprint(TestCase):
             raise Exception
         except Exception:
             result = format_exception_only(*sys.exc_info()[:2])
-            assert all(isinstance(l, text_type) for l in result)
+            assert all(isinstance(l, str) for l in result)
 
     def test_no_stack(self):
         with capture_output():

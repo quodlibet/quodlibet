@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013-2015 Ryan "ZDBioHazard" Turner <zdbiohazard2@gmail.com>
 #                2017 Nick Boultbee
 #
@@ -121,8 +120,8 @@ class MetadataCopier(SongsMenuPlugin):
             # This tid will be what we index all of our tracks by,
             # so they will be easier to find when pasting metadata.
             if index.get_active() is True:
-                tid = "%d-%d" % (self.get_number(song, 'discnumber'),
-                                 self.get_number(song, 'tracknumber'))
+                tid = "%d-%d" % (get_number(song, 'discnumber'),
+                                 get_number(song, 'tracknumber'))
 
             # Erase track info if copying.
             if response == Gtk.ResponseType.OK:

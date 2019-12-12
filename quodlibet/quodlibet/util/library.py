@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2017 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #     Christoph Reiter, Nick Boultbee
 #

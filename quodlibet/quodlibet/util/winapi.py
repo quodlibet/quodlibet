@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,8 +17,6 @@ if os.name != "nt":
 
 import ctypes
 from ctypes import wintypes, cdll, windll, oledll
-
-from quodlibet.compat import long, add_metaclass
 
 from .enum import enum
 
@@ -368,8 +365,7 @@ class COMInterface(type(ctypes.c_void_p)):
         return type(ctypes.c_void_p).__new__(mcls, cls_name, bases, dict(d))
 
 
-@add_metaclass(COMInterface)
-class IUnknown(ctypes.c_void_p):
+class IUnknown(ctypes.c_void_p, metaclass=COMInterface):
 
     IID = GUID("{00000001-0000-0000-c000-000000000046}")
 
@@ -511,7 +507,7 @@ class CSIDLFlag(int):
 
 
 @enum
-class KnownFolderFlag(long):
+class KnownFolderFlag(int):
     SIMPLE_IDLIST = 0x00000100
     NOT_PARENT_RELATIVE = 0x00000200
     DEFAULT_PATH = 0x00000400

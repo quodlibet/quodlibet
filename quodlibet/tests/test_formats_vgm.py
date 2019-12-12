@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,7 +19,19 @@ class TVgmFile(TestCase):
     def test_reload(self):
         self.song["title"] = "foobar"
         self.song.reload()
-        self.failUnlessEqual(self.song("title"), "foobar")
+        self.failUnlessEqual(self.song("title"), "Chaos Emerald")
+
+    def test_gd3_tags(self):
+        expected_tags = {
+            "title": "Chaos Emerald",
+            "album": "Sonic the Hedgehog\nソニック・ザ・ヘッジホッグ",
+            "console": "Sega Mega Drive\nセガメガドライブ",
+            "artist": "Masato Nakamura\n中村正人",
+            "date": "1991"
+        }
+
+        for k, v in expected_tags.items():
+            self.failUnlessEqual(self.song[k], v)
 
     def test_write(self):
         self.song.write()

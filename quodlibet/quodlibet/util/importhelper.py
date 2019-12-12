@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012,2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -8,16 +7,16 @@
 
 import os
 import sys
-import imp
+import importlib
 
 from os.path import join, splitext, basename
 
 from quodlibet import util
 
 
-def load_dir_modules(path, package, load_compiled=False):
+def load_dir_modules(path, package):
     """Load all modules and packages in path (recursive).
-    Load pyc files if load_compiled is True.
+
     In case the module is already loaded, doesn't reload it.
     """
 
@@ -25,7 +24,7 @@ def load_dir_modules(path, package, load_compiled=False):
     assert package in sys.modules
 
     try:
-        modules = [e[0] for e in get_importables(path, load_compiled)]
+        modules = [e[0] for e in get_importables(path)]
     except OSError:
         util.print_w("%r not found" % path)
         return []
@@ -47,7 +46,7 @@ def load_dir_modules(path, package, load_compiled=False):
     return loaded
 
 
-def get_importables(folder, include_compiled=False):
+def get_importables(folder):
     """Searches a folder and its subfolders for modules and packages to import.
     No subfolders in packages, .so supported.
 
@@ -61,14 +60,10 @@ def get_importables(folder, include_compiled=False):
             return False
         if f.endswith(".py"):
             return True
-        elif include_compiled and f.endswith(".pyc"):
-            return True
         return False
 
     def is_init(f):
         if f == "__init__.py":
-            return True
-        elif include_compiled and f == "__init__.pyc":
             return True
         return False
 
@@ -86,10 +81,9 @@ def get_importables(folder, include_compiled=False):
         first = False
 
 
-def load_module(name, package, path, reload=False):
+def load_module(name, package, path):
     """Load a module/package. Returns the module or None.
        Doesn't catch any exceptions during the actual import.
-       If reload is True and the module is already loaded, reload it.
     """
 
     fullname = package + "." + name
@@ -98,21 +92,16 @@ def load_module(name, package, path, reload=False):
     except KeyError:
         pass
 
-    try:
-        # this also handles packages
-        fp, path, desc = imp.find_module(name, [path])
-    except ImportError:
+    loader = importlib.find_loader(fullname, [path])
+    if loader is None:
         return
 
     # modules need a parent package
     if package not in sys.modules:
-        sys.modules[package] = imp.new_module(package)
+        spec = importlib.machinery.ModuleSpec(package, None, is_package=True)
+        sys.modules[package] = importlib.util.module_from_spec(spec)
 
-    try:
-        mod = imp.load_module(fullname, fp, path, desc)
-    finally:
-        if fp:
-            fp.close()
+    mod = loader.load_module(fullname)
 
     # make it accessible from the parent, like __import__ does
     vars(sys.modules[package])[name] = mod

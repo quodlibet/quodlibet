@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2008 Joe Wreschnig
 #           2009-2017 Nick Boultbee
 #           2011-2014 Christoph Reiter
+#           2018-2019 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,20 +15,9 @@ from . import const
 from quodlibet.util.config import Config, Error
 from quodlibet.util import print_d, print_w
 from quodlibet.util import is_osx, is_windows
-from quodlibet.compat import PY2, iteritems, text_type
 
 # Some plugins can be enabled on first install
 AUTO_ENABLED_PLUGINS = ["Shuffle Playlist", "Remove Playlist Duplicates"]
-
-
-def _config_text(text):
-    # raw config values are utf-8 encoded on PY2, while they are unicode
-    # with surrogates on PY2. this makes initing the defaults work
-
-    assert isinstance(text, text_type)
-    if PY2:
-        return text.encode("utf-8")
-    return text
 
 
 # this defines the initial and default values
@@ -50,6 +39,9 @@ INITIAL = {
 
         "gst_device": "",
         "gst_disable_gapless": "false",
+
+        "is_playing": "false",
+        "restore_playing": "false",
     },
     "library": {
         "exclude": "",
@@ -74,7 +66,9 @@ INITIAL = {
         "queue": "false",
         "queue_expanded": "false",
         "shufflequeue": "false",
-        "queue_stop_once_empty": "false",
+        "queue_stop_at_end": "false",
+        "queue_keep_songs": "false",
+        "queue_disable": "false",
 
         # <reversed?>tagname, song list sort
         "sortby": "0album",
@@ -112,14 +106,14 @@ INITIAL = {
         # selected pane values
         "pane_selection": "",
 
-        # browser orientation
-        "pane_wide_mode": "0",
-
         # equal pane width in paned browser
         "equal_pane_width": "true",
 
         # "global" filter for SearchBar
         "background": "",
+
+        # characters ignored in queries
+        "ignored_characters": "",
 
         # album list
         "albums": "",
@@ -151,6 +145,9 @@ INITIAL = {
         # Show the limit widgets for SearchBar
         "search_limit": "false",
 
+        # Allow multiple queries in SearchBar
+        "multiple_queries": "false",
+
         # show text in covergrid view
         "album_text": "1",
 
@@ -158,7 +155,7 @@ INITIAL = {
         "covergrid_magnification": "3.0",
 
         # show "all albums" in covergrid view
-        "covergrid_all": "0",
+        "covergrid_all": "1",
     },
 
     # Kind of a dumping ground right now, should probably be
@@ -181,10 +178,10 @@ INITIAL = {
         "bayesian_rating_factor": "0.0",
 
         # rating symbol (black star)
-        "rating_symbol_full": _config_text(u'\u2605'),
+        "rating_symbol_full": u'\u2605',
 
         # rating symbol (hollow star)
-        "rating_symbol_blank": _config_text(u'\u2606'),
+        "rating_symbol_blank": u'\u2606',
 
         # Comma-separated columns to display in the song list
         "columns": ",".join(const.DEFAULT_COLUMNS),
@@ -218,6 +215,9 @@ INITIAL = {
         # scrollbar does not fade out when inactive
         "scrollbar_always_visible":
             "true" if (is_osx() or is_windows()) else "false",
+
+        # Force fontconfig as PangoCairo backend
+        "pangocairo_force_fontconfig": False,
     },
 
     "rename": {
@@ -247,6 +247,9 @@ INITIAL = {
     "editing": {
         # characters to split tags on
         "split_on": "/ & ,",
+
+        # characters used when extracting subtitles/subtags
+        "sub_split_on": "\u301c\u301c \uff08\uff09 [] () ~~ --",
 
         # ID3 encodings to try
         "id3encoding": "",
@@ -309,9 +312,9 @@ def init_defaults():
     """Fills in the defaults, so they are guaranteed to be available"""
 
     _config.defaults.clear()
-    for section, values in iteritems(INITIAL):
+    for section, values in INITIAL.items():
         _config.defaults.add_section(section)
-        for key, value in iteritems(values):
+        for key, value in values.items():
             _config.defaults.set(section, key, value)
 
 
@@ -444,9 +447,6 @@ class HardCodedRatingsPrefs(RatingsPrefs):
     default = float(INITIAL["settings"]["default_rating"])
     blank_symbol = INITIAL["settings"]["rating_symbol_blank"]
     full_symbol = INITIAL["settings"]["rating_symbol_full"]
-    if PY2:
-        blank_symbol = blank_symbol.decode("utf-8")
-        full_symbol = full_symbol.decode("utf-8")
 
 
 # Need an instance just for imports to work

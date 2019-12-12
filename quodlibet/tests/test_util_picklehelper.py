@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -7,8 +6,8 @@
 # (at your option) any later version.
 
 from tests import TestCase
+from io import BytesIO
 
-from quodlibet.compat import cBytesIO
 from quodlibet.util.picklehelper import pickle_load, pickle_loads, \
     pickle_dumps, pickle_dump, PicklingError, UnpicklingError
 
@@ -28,14 +27,14 @@ class Tpickle_load(TestCase):
 
         for protocol in [0, 1, 2]:
             assert pickle_loads(pickle_dumps(data)) == data
-            assert pickle_load(cBytesIO(pickle_dumps(data))) == data
+            assert pickle_load(BytesIO(pickle_dumps(data))) == data
 
     def test_invalid(self):
         with self.assertRaises(UnpicklingError):
             pickle_loads(b"")
 
         with self.assertRaises(UnpicklingError):
-            pickle_load(cBytesIO(b""))
+            pickle_load(BytesIO(b""))
 
     def test_switch_class(self):
 
@@ -62,7 +61,7 @@ class Tpickle_load(TestCase):
             pickle_dumps(A())
 
     def test_pickle_dump(self):
-        f = cBytesIO()
+        f = BytesIO()
         pickle_dump(42, f)
         assert pickle_loads(f.getvalue()) == 42
 

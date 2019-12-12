@@ -8,6 +8,8 @@ Why don't all my songs appear in the song list when searching for them?
 Do you have a global filter in use? Check the *Browsers* tab in *Preferences*.
 
 
+.. _MetadataLocation:
+
 Where does Quod Libet store all its metadata?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -42,8 +44,7 @@ Alternative, may hit this bug. In these layouts, the spacebar sends a
 non-breaking space character, which GTK+ interprets as
 ``<control>space``. This is a `known bug in GTK
 <https://bugzilla.gnome.org/show_bug.cgi?id=541466>`__. You can work
-around it by changing your keyboard layout to send a regular space, or
-by changing the keybinding for play/pause using the method above.
+around it by changing your keyboard layout to send a regular space.
 
 
 How do I add custom / unusual tags to the columns in the song list?
@@ -96,6 +97,21 @@ they are still not merged, they have different `albumartist`, `labelid` or
 ``musicbrainz_albumid`` tags. If they have different label ID tags, delete the
 incorrect one. If they have different MusicBrainz album ID tags, add a
 ``labelid`` tag that is the same for both albums.
+
+
+Where does Quod Libet store ratings and playcounts?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default these are in the internal database - and remember this is indexed by filename,
+so renames will lose data.
+For this and other reasons, some users prefer to save save them
+*in the tags themselves* (under an email address), using the most appropriate
+tag for that format (e.g. `ID3's popm tag <http://id3.org/id3v2.3.0#Popularimeter>`__ for ID3).
+See the configuration under
+*Preferences* -> *Tags* -> *Save ratings and play _counts in tags*.
+
+Note that some caching is used, so changes aren't written all the time.
+Try the *Update Tags In Files* plugins to control this explicitly.
 
 
 Can I show more than 0 to 4 notes when rating songs?

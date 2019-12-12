@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
 #     2012, 2016 Nick Boultbee
 #           2014 Christoph Reiter
@@ -17,7 +16,6 @@ import itertools
 from gi.repository import GObject
 
 from quodlibet.util.dprint import print_d
-from quodlibet.compat import itervalues
 
 
 class Librarian(GObject.GObject):
@@ -84,14 +82,14 @@ class Librarian(GObject.GObject):
     def changed(self, items):
         """Triage the items and inform their real libraries."""
 
-        for library in itervalues(self.libraries):
+        for library in self.libraries.values():
             in_library = set(item for item in items if item in library)
             if in_library:
                 library._changed(in_library)
 
     def __getitem__(self, key):
         """Find a item given its key."""
-        for library in itervalues(self.libraries):
+        for library in self.libraries.values():
             try:
                 return library[key]
             except KeyError:
@@ -107,12 +105,12 @@ class Librarian(GObject.GObject):
 
     def remove(self, items):
         """Remove items from all libraries."""
-        for library in itervalues(self.libraries):
+        for library in self.libraries.values():
             library.remove(items)
 
     def __contains__(self, item):
         """Check if a key or item is in the library."""
-        for library in itervalues(self.libraries):
+        for library in self.libraries.values():
             if item in library:
                 return True
         else:
@@ -120,7 +118,7 @@ class Librarian(GObject.GObject):
 
     def __iter__(self):
         """Iterate over all items in all libraries."""
-        return itertools.chain(*itervalues(self.libraries))
+        return itertools.chain(*self.libraries.values())
 
     def move(self, items, from_, to):
         """Move items from one library to another.
@@ -144,7 +142,7 @@ class SongLibrarian(Librarian):
 
     def tag_values(self, tag):
         """Return a set of all values for the given tag."""
-        return {value for lib in itervalues(self.libraries)
+        return {value for lib in self.libraries.values()
                 for value in lib.tag_values(tag)}
 
     def rename(self, song, newname, changed=None):
@@ -160,7 +158,7 @@ class SongLibrarian(Librarian):
         # changed. So, it needs to reimplement the method.
         re_add = []
         print_d("Renaming %r to %r" % (song.key, newname), self)
-        for library in itervalues(self.libraries):
+        for library in self.libraries.values():
             try:
                 del library._contents[song.key]
             except KeyError:
@@ -187,7 +185,7 @@ class SongLibrarian(Librarian):
 
         had_item = []
         print_d("Reloading %r" % item.key, self)
-        for library in itervalues(self.libraries):
+        for library in self.libraries.values():
             try:
                 del library._contents[item.key]
             except KeyError:

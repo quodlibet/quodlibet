@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013 Simonas Kazlauskas
 #
 # This program is free software; you can redistribute it and/or modify
@@ -11,8 +10,9 @@ from hashlib import sha1
 
 from gi.repository import GObject
 
+from quodlibet import get_cache_dir
 from quodlibet.qltk import Icons
-from quodlibet.util.path import escape_filename, xdg_get_cache_home
+from quodlibet.util.path import escape_filename
 from quodlibet.util import print_w
 
 
@@ -36,6 +36,14 @@ class CoverSourcePlugin(GObject.Object):
         'search-complete': (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
     PLUGIN_ICON = Icons.EMBLEM_DOWNLOADS
+
+    @property
+    def name(self):
+        """Human name of the source"""
+        return type(self).__name__
+
+    def __str__(self):
+        return "%s for %s" % (self.name, self.group_by(self.song))
 
     embedded = False
     """Whether the source is an embedded one"""
@@ -94,8 +102,8 @@ class CoverSourcePlugin(GObject.Object):
         uniquely identify most (or even better – all) of the albums.
 
         The string returned must not contain any characters illegal in
-        most common filesystems. These include /, ?, <, >, \, :, *, |, ” and ^.
-        Staying in the bounds of ASCII is highly encouraged.
+        most common filesystems. These include /, ?, <, >, \\, :, *, |, ” and
+        ^. Staying in the bounds of ASCII is highly encouraged.
 
         Perchance the song lacks data to generate the filename of cover for
         this provider, None shall be returned.
@@ -171,7 +179,7 @@ class CoverSourcePlugin(GObject.Object):
         self.emit('fetch-failure', message)
 
 
-cover_dir = path.join(xdg_get_cache_home(), 'quodlibet', 'covers')
+cover_dir = path.join(get_cache_dir(), 'covers')
 
 try:
     makedirs(cover_dir)

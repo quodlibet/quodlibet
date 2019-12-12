@@ -26,6 +26,12 @@ Browsers
 * :kbd:`Primary` + :kbd:`Shift` + :kbd:`J` - Reset filters and jump to the playing song.
 
 
+Queue and Playlist Browser
+--------------------------
+
+* :kbd:`Primary` + :kbd:`Left Click` on song(s), then drag and drop - Add a copy of the songs to the playlist / queue.
+
+
 Song Lists
 ----------
 
@@ -54,3 +60,4 @@ Paned Browser
 -------------
 
 * :kbd:`Primary` + :kbd:`Home` - Select all songs in all panes
+* :kbd:`Primary` + :kbd:`Return` - When the search entry is in focus: enqueue all songs in the song list

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Nick Boultbee
 #           2017 Jason Heard
 #           2017 Christoph Reiter

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
 #          2016-17 Nick Boultbee
@@ -11,17 +10,17 @@
 import os
 import signal
 import socket
+from urllib.parse import urlparse
 
 import gi
 gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk
 from gi.repository import Gdk
-from gi.repository import GLib, GObject
+from gi.repository import GLib, GObject, PangoCairo
 from senf import fsn2bytes, bytes2fsn, uri2fsn
 
 from quodlibet.util import print_d, print_w, is_windows, is_osx
-from quodlibet.compat import urlparse
 
 
 def show_uri(label, uri):
@@ -407,6 +406,17 @@ def get_backend_name():
     return u"Unknown"
 
 
+def get_font_backend_name() -> str:
+    """The PangoCairo font backend name"""
+
+    font_map = PangoCairo.FontMap.get_default()
+    name = font_map.__gtype__.name.lower()
+    name = name.split("pangocairo")[-1].split("fontmap")[0]
+    if name == "fc":
+        name = "fontconfig"
+    return name
+
+
 gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(),
                Gtk.get_micro_version())
 
@@ -483,6 +493,13 @@ def add_signal_watch(signal_action, _sockets=[]):
                  signal_notify)
 
     signal.set_wakeup_fd(write_socket.fileno())
+
+
+def enqueue(songs):
+    songs = [s for s in songs if s.can_add]
+    if songs:
+        from quodlibet import app
+        app.window.playlist.enqueue(songs)
 
 
 class ThemeOverrider(object):

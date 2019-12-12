@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2017 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -17,9 +16,10 @@ from quodlibet.qltk import Icons
 from quodlibet.util.path import unexpand
 from quodlibet.plugins.events import EventPlugin
 from quodlibet import formats
-from quodlibet import app, get_user_dir
+from quodlibet import app, get_user_dir, get_cache_dir
 from quodlibet.util import fver, escape
-from quodlibet.qltk import gtk_version, pygobject_version, get_backend_name
+from quodlibet.qltk import gtk_version, pygobject_version, get_backend_name, \
+    get_font_backend_name
 from quodlibet.qltk import show_uri
 
 
@@ -74,6 +74,13 @@ class AppInformation(EventPlugin):
         row += 1
 
         grid.insert_row(row)
+        l = label_title(_("Cache Directory"))
+        v = label_path(get_cache_dir())
+        grid.attach(l, 0, row, 1, 1)
+        grid.attach(v, 1, row, 1, 1)
+        row += 1
+
+        grid.insert_row(row)
         l = label_title(_("Audio Backend"))
         v = label_value("%s\n%s" % (app.player.name, app.player.version_info))
         grid.attach(l, 0, row, 1, 1)
@@ -96,7 +103,8 @@ class AppInformation(EventPlugin):
 
         grid.insert_row(row)
         l = label_title("Gtk+")
-        v = label_value("%s (%s)" % (fver(gtk_version), get_backend_name()))
+        v = label_value("%s (%s, %s)" % (
+            fver(gtk_version), get_backend_name(), get_font_backend_name()))
         grid.attach(l, 0, row, 1, 1)
         grid.attach(v, 1, row, 1, 1)
         row += 1

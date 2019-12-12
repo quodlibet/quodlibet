@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -10,7 +9,6 @@ import random
 
 from quodlibet import _
 from quodlibet.order import Order, OrderRemembered
-from quodlibet.compat import iteritems
 
 
 class Reorder(Order):
@@ -32,6 +30,8 @@ class OrderShuffle(Reorder, OrderRemembered):
 
         if remaining:
             return playlist.get_iter((random.choice(list(remaining)),))
+
+        self.reset(playlist)
         return None
 
 
@@ -46,12 +46,13 @@ class OrderWeighted(Reorder, OrderRemembered):
 
         # Don't try to search through an empty / played playlist.
         if len(remaining) <= 0:
+            self.reset(playlist)
             return None
 
         total_score = sum([song('~#rating') for song in remaining.values()])
         choice = random.random() * total_score
         current = 0.0
-        for i, song in iteritems(remaining):
+        for i, song in remaining.items():
             current += song("~#rating")
             if current >= choice:
                 return playlist.get_iter([i])

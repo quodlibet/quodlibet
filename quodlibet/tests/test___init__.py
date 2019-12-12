@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -35,6 +34,7 @@ class TQuodlibet(TestCase):
         self.assertTrue(isinstance(quodlibet.get_base_dir(), fsnative))
         self.assertTrue(isinstance(quodlibet.get_image_dir(), fsnative))
         self.assertTrue(isinstance(quodlibet.get_user_dir(), fsnative))
+        self.assertTrue(isinstance(quodlibet.get_cache_dir(), fsnative))
 
     def test_get_build_description(self):
         quodlibet.get_build_description()

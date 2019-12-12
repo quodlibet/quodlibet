@@ -44,6 +44,39 @@ BUILD_TYPE_SHORT_TITLES = {
 
 RELEASES = [
     {
+        "version": "4.2.1",
+        "date": "2018-12-26",
+        "builds": {
+            TARBALL: [GITHUB + "quodlibet-%(version)s.tar.gz"],
+            WIN: [GITHUB + "quodlibet-%(version)s-installer.exe"],
+            WIN_PORT: [GITHUB + "quodlibet-%(version)s-portable.exe"],
+            OSX_QL: [GITHUB + "QuodLibet-%(version)s.dmg"],
+            OSX_EF: [GITHUB + "ExFalso-%(version)s.dmg"],
+        }
+    },
+    {
+        "version": "4.2.0",
+        "date": "2018-10-31",
+        "builds": {
+            TARBALL: [GITHUB + "quodlibet-%(version)s.tar.gz"],
+            WIN: [GITHUB + "quodlibet-%(version)s-installer.exe"],
+            WIN_PORT: [GITHUB + "quodlibet-%(version)s-portable.exe"],
+            OSX_QL: [GITHUB + "QuodLibet-%(version)s.dmg"],
+            OSX_EF: [GITHUB + "ExFalso-%(version)s.dmg"],
+        }
+    },
+    {
+        "version": "4.1.0",
+        "date": "2018-06-03",
+        "builds": {
+            OSX_QL: [GITHUB + "QuodLibet-%(version)s.dmg"],
+            OSX_EF: [GITHUB + "ExFalso-%(version)s.dmg"],
+            WIN: [GITHUB + "quodlibet-%(version)s-installer.exe"],
+            WIN_PORT: [GITHUB + "quodlibet-%(version)s-portable.exe"],
+            TARBALL: [GITHUB + "quodlibet-%(version)s.tar.gz"],
+        }
+    },
+    {
         "version": "4.0.2",
         "date": "2018-01-17",
         "builds": {

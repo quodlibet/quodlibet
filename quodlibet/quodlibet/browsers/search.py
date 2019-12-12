@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2018 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#                     Christoph Reiter, Steven Robertson, Nick Boultbee
+#                     Christoph Reiter, Steven Robertson, Nick Boultbee,
+#           2018-2019 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,9 +16,9 @@ from quodlibet.browsers import Browser
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk.searchbar import LimitSearchBarBox
+from quodlibet.qltk.searchbar import MultiSearchBarBox
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.x import Align, SymbolicIconImage
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk import Icons
 
 
@@ -32,6 +32,12 @@ class PreferencesButton(Gtk.HBox):
             _("_Limit Results"), "browsers", "search_limit", True)
         limit_item.connect("toggled", search_bar_box.toggle_limit_widgets)
         menu.append(limit_item)
+
+        multi_item = ConfigCheckMenuItem(
+            _("_Allow multiple queries"), "browsers", "multiple_queries", True)
+        multi_item.connect("toggled", search_bar_box.toggle_multi)
+        menu.append(multi_item)
+
         menu.show_all()
 
         button = MenuButton(
@@ -60,9 +66,8 @@ class SearchBar(Browser):
         container.remove(self)
 
     def __init__(self, library):
-        super(SearchBar, self).__init__()
-        self.set_spacing(6)
-        self.set_orientation(Gtk.Orientation.VERTICAL)
+        super().__init__(margin=6, spacing=6,
+                         orientation=Gtk.Orientation.VERTICAL)
 
         self._query = None
         self._library = library
@@ -71,9 +76,11 @@ class SearchBar(Browser):
         self.accelerators = Gtk.AccelGroup()
 
         show_limit = config.getboolean("browsers", "search_limit")
-        sbb = LimitSearchBarBox(completion=completion,
+        show_multi = config.getboolean("browsers", "multiple_queries")
+        sbb = MultiSearchBarBox(completion=completion,
                                 accel_group=self.accelerators,
-                                show_limit=show_limit)
+                                show_limit=show_limit,
+                                show_multi=show_multi)
 
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
@@ -82,8 +89,8 @@ class SearchBar(Browser):
         prefs = PreferencesButton(sbb)
         sbb.pack_start(prefs, False, True, 0)
 
-        align = Align(sbb, left=6, right=6, top=6)
-        self.pack_start(align, False, True, 0)
+        self.pack_start(sbb, False, True, 0)
+        self.pack_start(sbb.flow_box, False, True, 0)
         self.connect('destroy', self.__destroy)
         self.show_all()
 
@@ -114,10 +121,12 @@ class SearchBar(Browser):
 
     def save(self):
         config.settext("browsers", "query_text", self._get_text())
+        self._sb_box.save()
 
     def restore(self):
         text = config.gettext("browsers", "query_text")
         self._set_text(text)
+        self._sb_box.load()
 
     def finalize(self, restore):
         config.set("browsers", "query_text", "")

@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
 #           2012-2018 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #           2018      Uriel Zajaczkovski
+#           2019      Ruud van Asseldonk
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,12 +40,11 @@ from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk import Icons
-from quodlibet.util import copool, connect_destroy
+from quodlibet.util import copool, connect_destroy, cmp
 from quodlibet.util.library import background_filter
 from quodlibet.util import connect_obj, DeferredSignal
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
-from quodlibet.compat import cmp
 
 
 def get_cover_size():
@@ -129,6 +128,27 @@ def compare_date(a1, a2):
             cmp(a1.key, a2.key))
 
 
+def compare_original_date(a1, a2):
+    a1, a2 = a1.album, a2.album
+    if a1 is None:
+        return -1
+    if a2 is None:
+        return 1
+    if not a1.title:
+        return 1
+    if not a2.title:
+        return -1
+
+    # Take the original date if it is set, or fall back to the regular date
+    # otherewise.
+    a1_date = a1.get("originaldate", a1.date)
+    a2_date = a2.get("originaldate", a2.date)
+
+    return (cmpa(a1_date, a2_date) or
+            cmpa(a1.sort, a2.sort) or
+            cmp(a1.key, a2.key))
+
+
 def compare_genre(a1, a2):
     a1, a2 = a1.album, a2.album
     if a1 is None:
@@ -186,6 +206,7 @@ class PreferencesButton(Gtk.HBox):
             (_("_Title"), self.__compare_title),
             (_("_Artist"), self.__compare_artist),
             (_("_Date"), self.__compare_date),
+            (_("_Original Date"), self.__compare_original_date),
             (_("_Genre"), self.__compare_genre),
             (_("_Rating"), self.__compare_rating),
             (_("_Playcount"), self.__compare_avgplaycount),
@@ -243,6 +264,10 @@ class PreferencesButton(Gtk.HBox):
     def __compare_date(self, model, i1, i2, data):
         a1, a2 = model.get_value(i1), model.get_value(i2)
         return compare_date(a1, a2)
+
+    def __compare_original_date(self, model, i1, i2, data):
+        a1, a2 = model.get_value(i1), model.get_value(i2)
+        return compare_original_date(a1, a2)
 
     def __compare_genre(self, model, i1, i2, data):
         a1, a2 = model.get_value(i1), model.get_value(i2)
@@ -399,6 +424,10 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
     @classmethod
     def init(klass, library):
         super(AlbumList, klass).load_pattern()
+
+    def finalize(self, restored):
+        if not restored:
+            self.view.set_cursor((0,))
 
     @classmethod
     def _destroy_model(klass):
@@ -567,6 +596,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
             if songs:
                 window = Information(librarian, songs, self)
                 window.show()
+            return True
+        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+            qltk.enqueue(self.__get_selected_songs(sort=True))
             return True
         elif qltk.is_accel(event, "<alt>Return"):
             songs = self.__get_selected_songs()
@@ -765,6 +797,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         self.__inhibit()
         changed = view.select_by_func(
             lambda r: r[0].album and r[0].album.key in values)
+        self.view.grab_focus()
         self.__uninhibit()
         if changed:
             self.activate()

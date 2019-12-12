@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -19,7 +18,6 @@ from quodlibet.util.collection import Album, Playlist, avg, bayesian_average, \
     FileBackedPlaylist
 from quodlibet.library.libraries import FileLibrary
 from quodlibet.util import format_rating
-from quodlibet.compat import long
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 
@@ -133,7 +131,7 @@ class TAlbum(TestCase):
 
     def test_numeric_comma(self):
         songs = [Fakesong({
-            "~#added": long(1),
+            "~#added": 1,
             "~#rating": 0.5,
             "~#bitrate": 42,
             "~#length": 1,
@@ -245,8 +243,12 @@ class TAlbum(TestCase):
 
     def test_methods(s):
         songs = [
-            Fakesong({"b": "bb4\nbb1\nbb1", "c": "cc1\ncc3\ncc3"}),
-            Fakesong({"b": "bb1\nbb1\nbb4", "c": "cc3\ncc1\ncc3"})
+            Fakesong({"b": "bb4\nbb1\nbb1",
+                      "c": "cc1\ncc3\ncc3",
+                      "#d": 0.1}),
+            Fakesong({"b": "bb1\nbb1\nbb4",
+                      "c": "cc3\ncc1\ncc3",
+                      "#d": 0.2})
         ]
 
         album = Album(songs[0])
@@ -254,6 +256,7 @@ class TAlbum(TestCase):
 
         s.failUnlessEqual(album.list("c"), ["cc3", "cc1"])
         s.failUnlessEqual(album.list("~c~b"), ["cc3", "cc1", "bb1", "bb4"])
+        s.failUnlessEqual(album.list("#d"), ["0.1", "0.2"])
 
         s.failUnlessEqual(album.comma("c"), "cc3, cc1")
         s.failUnlessEqual(album.comma("~c~b"), "cc3, cc1 - bb1, bb4")

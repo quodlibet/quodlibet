@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -10,10 +9,6 @@
 
 from io import BytesIO, BufferedReader
 
-from quodlibet.compat import cBytesIO, PY2
-
-if PY2:
-    import cPickle
 import pickle
 from pickle import PicklingError, UnpicklingError, PickleError
 
@@ -35,10 +30,7 @@ def pickle_dumps(obj, protocol=0):
         # pickle.PicklingError is not cPickle.PicklingError
         # so this makes sure we only raise pickle.PicklingError even if
         # we use cPickle
-        if PY2:
-            return cPickle.dumps(obj, protocol)
-        else:
-            return pickle.dumps(obj, protocol)
+        return pickle.dumps(obj, protocol)
     except PicklingError:
         raise
     except Exception as e:
@@ -56,10 +48,7 @@ def pickle_dump(obj, file, protocol=0):
         raise ValueError("Only protocol 0, 1, 2 allowed")
 
     try:
-        if PY2:
-            return cPickle.dump(obj, file, protocol)
-        else:
-            return pickle.dump(obj, file, protocol)
+        return pickle.dump(obj, file, protocol)
     except PicklingError:
         raise
     except Exception as e:
@@ -87,35 +76,23 @@ def pickle_load(file, lookup_func=None):
         pickle.UnpicklingError
     """
 
-    if PY2:
-        inst = cPickle.Unpickler(file)
+    if lookup_func is not None:
 
-        if lookup_func is not None:
-            # this is just a dummy unpickler we use for fallback class lookup
-            unpickler = pickle.Unpickler(cBytesIO())
+        class CustomUnpickler(pickle.Unpickler):
 
-            def find_global(mod, name):
-                return lookup_func(unpickler.find_class, mod, name)
+            def find_class(self, module, name):
+                func = super(CustomUnpickler, self).find_class
+                return lookup_func(func, module, name)
 
-            inst.find_global = find_global
+        unpickler_type = CustomUnpickler
     else:
-        if lookup_func is not None:
+        unpickler_type = pickle.Unpickler
 
-            class CustomUnpickler(pickle.Unpickler):
+    # helps a lot, but only on py3
+    if isinstance(file, BytesIO):
+        file = BufferedReader(file)
 
-                def find_class(self, module, name):
-                    func = super(CustomUnpickler, self).find_class
-                    return lookup_func(func, module, name)
-
-            unpickler_type = CustomUnpickler
-        else:
-            unpickler_type = pickle.Unpickler
-
-        # helps a lot, but only on py3
-        if isinstance(file, BytesIO):
-            file = BufferedReader(file)
-
-        inst = unpickler_type(file, encoding="bytes")
+    inst = unpickler_type(file, encoding="bytes")
 
     try:
         return inst.load()
@@ -138,4 +115,4 @@ def pickle_loads(data, lookup_func=None):
         pickle.UnpicklingError
     """
 
-    return pickle_load(cBytesIO(data), lookup_func=lookup_func)
+    return pickle_load(BytesIO(data), lookup_func=lookup_func)

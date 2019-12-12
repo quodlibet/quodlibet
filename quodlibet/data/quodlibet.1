@@ -49,35 +49,44 @@ documentation is available at
 .SH OPTIONS
 .INDENT 0.0
 .TP
-.B \-\-enqueue filename|query
+.BI \-\-add\-location\fB= <location>
+Add a file or directory to the library
+.TP
+.B \-\-debug
+Print debugging information
+.TP
+.BI \-\-enqueue\fB= <filename|query>
 Enqueue a filename or query results
 .TP
-.B \-\-filter tag=value
+.BI \-\-enqueue\-files\fB= <filename[,filename..]>
+Enqueue comma\-separated files
+.TP
+.BI \-\-filter \ <tag=value>
 Filter on a tag value
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-focus
 Focus the running player
 .TP
+.B \-\-force\-previous
+Jump to previous song
+.TP
+.B \-\-help
+Display brief usage information
+.TP
 .B \-\-hide\-window
 Hide main window
-.TP
-.B \-\-next
-Jump to next song
 .TP
 .B \-\-list\-browsers
 List available browsers
 .TP
+.B \-\-next
+Jump to next song
+.TP
+.B \-\-no\-plugins
+Start without plugins
+.TP
 .BI \-\-open\-browser\fB= BrowserName
 Open a new browser
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-order=inorder|shuffle|weighted|onesong|toggle
-Set or toggle the playback order
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-pause
 Pause playback
@@ -94,25 +103,28 @@ Toggle play/pause mode
 .B \-\-previous
 Jump to previous song if near the beginning, otherwise restart
 .TP
-.B \-\-force\-previous
-Jump to previous song
-.TP
-.B \-\-print\-playlist
-Print the current playlist
-.TP
-.B \-\-print\-queue
-Print the contents of the queue
-.TP
 .B \-\-print\-playing
 Print out information about the currently playing song. You may
 provide in a string like the kind described in the RENAMING FILES
 section below.
 .TP
+.B \-\-print\-playlist
+Print the current playlist
+.TP
+.BI \-\-print\-query\fB= <query>
+Print filenames of results of query
+.TP
+.B \-\-print\-query\-text
+Print the active text query
+.TP
+.B \-\-print\-queue
+Print the contents of the queue
+.TP
 .BI \-\-query\fB= search\-string
 Search your audio library
 .TP
-.B \-\-run
-Start Quod Libet if it isn\(aqt running
+.BI \-\-queue\fB= <on|off|t>
+Show or hide the queue
 .TP
 .B \-\-quit
 Exit Quod Libet
@@ -120,31 +132,43 @@ Exit Quod Libet
 .BI \-\-random\fB= tag
 Filter on a random value
 .TP
+.BI \-\-rating\fB= <[+|\-]0.0..1.0>
+Set rating of playing song
+.TP
+.B \-\-rating\-down
+Decrease rating of playing song by one star
+.TP
+.B \-\-rating\-up
+Increase rating of playing song by one star
+.TP
 .B \-\-refresh
 Refresh and rescan library
-.UNINDENT
-.INDENT 0.0
 .TP
-.B \-\-repeat=off|on|t
+.BI \-\-repeat\fB= <off|on|t>
 Turn repeat off, on, or toggle
 .TP
-.B \-\-seek=[+|\-][HH:]MM:SS
+.BI \-\-repeat\-type\fB= <current|all|one|off>
+Repeat the currently playing song, the current list, stop after
+one song, or turn repeat off
+.TP
+.B \-\-run
+Start Quod Libet if it isn\(aqt running
+.TP
+.BI \-\-seek\fB= <[+|\-][HH:]MM:SS>
 Seek within the playing song
-.UNINDENT
-.INDENT 0.0
 .TP
 .BI \-\-set\-browser\fB= BrowserName
 Set the current browser
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-set\-rating=0.0..1.0
-Rate the playing song
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-show\-window
 Show main window
+.TP
+.BI \-\-shuffle\fB= <off|on|t>
+Turn shuffle off, on, or toggle
+.TP
+.BI \-\-shuffle\-type\fB= <random|weighted|off>
+Set the shuffle type to be random, to prefer higher rated songs,
+or turn shuffle off
 .TP
 .B \-\-start\-hidden
 Don\(aqt show any windows on start
@@ -154,27 +178,33 @@ Begin playing immediately
 .TP
 .B \-\-status
 Print playing status
-.UNINDENT
-.INDENT 0.0
 .TP
-.B \-\-stop\-after=0|1|t
+.B \-\-stop
+Stop playback
+.TP
+.BI \-\-stop\-after\fB= <0|1|t>
 Stop after the playing song
-.UNINDENT
-.INDENT 0.0
 .TP
 .B \-\-toggle\-window
 Toggle main window visibility
 .TP
 .B \-\-unfilter
 Remove active browser filters
-.UNINDENT
-.INDENT 0.0
 .TP
-.B \-\-unqueue=filename|query
+.BI \-\-unqueue\fB= <filename|query>
 Unqueue a file or query
 .TP
-.B \-\-volume=(+|\-|)0..100
+.B \-\-version
+Display version and copyright
+.TP
+.BI \-\-volume\fB= <[+|\-]0..100>
 Set the volume
+.TP
+.B \-\-volume\-down
+Turn down the volume
+.TP
+.B \-\-volume\-up
+Turn up the volume
 .UNINDENT
 .SH ALBUM COVERS
 .sp

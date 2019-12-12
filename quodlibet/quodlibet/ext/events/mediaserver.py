@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012,2013 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -27,7 +26,6 @@ from quodlibet.qltk import Icons
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
 from quodlibet.util import NamedTemporaryFile
-from quodlibet.compat import iteritems, itervalues
 
 BASE_PATH = "/org/gnome/UPnP/MediaServer2"
 BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
@@ -39,6 +37,30 @@ class MediaServer(EventPlugin):
     PLUGIN_DESC = _("Exposes all albums to the Rygel UPnP Media Server "
                     "through the MediaServer2 D-Bus interface.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
+
+    def PluginPreferences(self, parent):
+        vbox = Gtk.VBox(spacing=12)
+
+        conf_exp = _("Ensure the following is in your rygel config file "
+                      "(~/.config/rygel.conf):")
+        conf_cont = ("[External]\n"
+                     "enabled=true\n\n"
+                     "[org.gnome.UPnP.MediaServer2.QuodLibet]\n"
+                     "enabled=true")
+
+        exp_lbl = Gtk.Label(label=conf_exp)
+        exp_lbl.set_selectable(True)
+        exp_lbl.set_line_wrap(True)
+        exp_lbl.set_alignment(0, 0)
+
+        conf_lbl = Gtk.Label()
+        conf_lbl.set_selectable(True)
+        conf_lbl.set_alignment(0, 0)
+        conf_lbl.set_markup("<span font='mono'>{}</span>".format(conf_cont))
+
+        vbox.pack_start(exp_lbl, True, False, 0)
+        vbox.pack_start(conf_lbl, True, False, 0)
+        return vbox
 
     def enabled(self):
         try:
@@ -418,8 +440,8 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         dbus.service.FallbackObject.__init__(self, bus, self.PATH)
 
         self.__library = library
-        self.__map = dict((id(v), v) for v in itervalues(self.__library))
-        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
+        self.__map = dict((id(v), v) for v in self.__library.values())
+        self.__reverse = dict((v, k) for k, v in self.__map.items())
 
         self.__song = DummySongObject(self)
 
@@ -496,8 +518,8 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         self.__library = library.albums
         self.__library.load()
 
-        self.__map = dict((id(v), v) for v in itervalues(self.__library))
-        self.__reverse = dict((v, k) for k, v in iteritems(self.__map))
+        self.__map = dict((id(v), v) for v in self.__library.values())
+        self.__reverse = dict((v, k) for k, v in self.__map.items())
 
         signals = [
             ("changed", self.__albums_changed),
@@ -623,7 +645,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
 
         # load into a pixbuf
         theme = Gtk.IconTheme.get_default()
-        pixbuf = theme.load_icon("quodlibet", Icon.SIZE, 0)
+        pixbuf = theme.load_icon(Icons.QUODLIBET, Icon.SIZE, 0)
 
         # make sure the size is right
         pixbuf = pixbuf.scale_simple(Icon.SIZE, Icon.SIZE,
@@ -643,7 +665,7 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
             elif name == "Path":
                 return Icon.PATH
             elif name == "DisplayName":
-                return "I'm an icon \o/"
+                return r"I'm an icon \o/"
         elif interface == MediaItem.IFACE:
             if name == "URLs":
                 return [fsn2uri(self.__f.name)]

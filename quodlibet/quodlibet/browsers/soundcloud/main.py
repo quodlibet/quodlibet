@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -6,10 +5,11 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from urllib.parse import parse_qs, urlparse
+
 from gi.repository import Gtk, Pango
 
 from quodlibet import _
-from quodlibet.compat import parse_qs, urlparse
 from quodlibet import config, app
 from quodlibet import qltk
 from quodlibet import util
@@ -263,6 +263,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                     model[model.get_iter(path)][self.ModelIndex.ALWAYS_ENABLE])
 
         selection.set_select_function(select_func)
+        selection.select_iter(model.get_iter_first())
         self._refresh_online_filters()
         self.__changed_sig = connect_destroy(selection, 'changed',
                                              DeferredSignal(self._on_select))
@@ -323,6 +324,23 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         return [self.library]
 
     def restore(self):
+        filter_type = config.getint("browsers",
+                                    "soundcloud_selection",
+                                    FilterType.SEARCH)
+        model = self.view.get_model()
+        it = model.get_iter_first()
+        while it:
+            if model.get_value(it, 0) == filter_type:
+                break
+            it = model.iter_next(it)
+
+        if filter_type == FilterType.SEARCH:
+            self.__searchbar.set_enabled()
+            self.__inhibit()
+
+        self.view.get_selection().select_iter(it)
+        self.__uninhibit()
+
         text = config.gettext("browsers", "query_text")
         self.__searchbar.set_text(text)
         self.__query_changed(None, text, restore=True)
@@ -334,11 +352,37 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         return True
 
     def filter_text(self, text):
-        self.__searchbar.set_text(text)
-        if SoundcloudQuery(text).is_parsable:
-            self.activate()
-        else:
-            print_d("Not parsable: %s" % text)
+        model = self.view.get_model()
+        it = model.get_iter_first()
+        selected = False
+        while it:
+            typ = model.get_value(it, 0)
+            if typ == FilterType.SEARCH:
+                search_it = it
+            elif ((typ == FilterType.FAVORITES and text == "#(rating = 1.0)")
+                    or (typ == FilterType.MINE and
+                         text == "soundcloud_user_id=%s"
+                         % self.api_client.user_id)):
+                self.view.get_selection().select_iter(it)
+                selected = True
+                break
+            it = model.iter_next(it)
+
+        if not selected:
+            # We don't want the selection to be cleared, so inhibit
+            # the selection callback method
+            self.__inhibit()
+            self.view.get_selection().select_iter(search_it)
+            self.__uninhibit()
+
+            self.__searchbar.set_enabled()
+            self.__searchbar.set_text(text)
+            self.__query_changed(None, text)
+
+            if SoundcloudQuery(text).is_parsable:
+                self.activate()
+            else:
+                print_d("Not parsable: %s" % text)
 
     def get_filter_text(self):
         return self.__searchbar.get_text()
@@ -362,6 +406,12 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         text = self.__searchbar.get_text()
         config.settext("browsers", "query_text", text)
         self.api_client.save_auth()
+
+        model, paths = self.view.get_selection().get_selected_rows()
+        if paths:
+            row = model[paths[0]]
+            filter_type = row[self.ModelIndex.TYPE]
+            config.set("browsers", "soundcloud_selection", filter_type)
 
     def _refresh_online_filters(self):
         model = self.view.get_model()

@@ -26,7 +26,8 @@ def get_moduleset_versions():
     root = tree.getroot()
     for x in root.iter():
         branch = x.find("branch")
-        if branch is not None:
+        if branch is not None and branch.attrib.get("repo", "") != "system" \
+                and "version" in branch.attrib:
             versions[x.attrib["id"]] = branch.attrib["version"]
     versions.pop("gtk-osx-docbook", None)
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2017 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -42,3 +41,15 @@ class TDSFFile(TestCase):
         assert self.song2("~#channels") == 1
         assert self.song3("~#channels") == 1
         assert self.song4("~#channels") == 2
+
+    def test_samplerate(self):
+        assert self.song1("~#samplerate") == 2822400
+        assert self.song2("~#samplerate") == 2822400
+        assert self.song3("~#samplerate") == 2822400
+        assert self.song4("~#samplerate") == 5644800
+
+    def test_bitdepth(self):
+        assert self.song1("~#bitdepth") == 1
+        assert self.song2("~#bitdepth") == 1
+        assert self.song3("~#bitdepth") == 1
+        assert self.song4("~#bitdepth") == 1

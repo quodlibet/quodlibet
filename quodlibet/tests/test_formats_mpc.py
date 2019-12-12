@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -25,6 +24,10 @@ class TMPCFile(TestCase):
     def test_channels(self):
         assert self.song("~#channels") == 2
         assert self.song2("~#channels") == 2
+
+    def test_samplerate(self):
+        assert self.song("~#samplerate") == 44100
+        assert self.song2("~#samplerate") == 44100
 
     def test_bitrate(self):
         self.failUnlessEqual(self.song("~#bitrate"), 239)

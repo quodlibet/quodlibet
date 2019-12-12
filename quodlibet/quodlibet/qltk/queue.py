@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2016-2017 Nick Boultbee
 #                2017 Fredrik Strupe
@@ -20,7 +19,8 @@ from quodlibet import util
 from quodlibet import qltk
 from quodlibet import app
 
-from quodlibet.util import connect_destroy, format_time_preferred, print_exc
+from quodlibet.util import connect_destroy, connect_after_destroy, \
+        format_time_preferred, print_exc
 from quodlibet.qltk import Icons, gtk_version, add_css
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
@@ -29,7 +29,8 @@ from quodlibet.qltk.menubutton import SmallMenuButton
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
 from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
-    SmallImageButton, MenuItem
+    SmallImageButton, SmallImageToggleButton, MenuItem, RadioMenuItem
+from quodlibet.qltk.songlistcolumns import CurrentColumn
 
 QUEUE = os.path.join(quodlibet.get_user_dir(), "queue")
 
@@ -117,6 +118,31 @@ class QueueExpander(Gtk.Expander):
 
         self.set_label_fill(True)
 
+        mode_menu = Gtk.Menu()
+
+        norm_mode_item = RadioMenuItem(
+            label=_("Ephemeral"),
+            tooltip_text=_("Remove songs from the queue after playing them"),
+            group=None)
+        mode_menu.append(norm_mode_item)
+        norm_mode_item.set_active(True)
+        norm_mode_item.connect("toggled",
+                                lambda b: self.__keep_songs_enable(False))
+
+        keep_mode_item = RadioMenuItem(
+            label=_("Persistent"),
+            tooltip_text=_("Keep songs in the queue after playing them"),
+            group=norm_mode_item)
+        mode_menu.append(keep_mode_item)
+        keep_mode_item.connect("toggled",
+                               lambda b: self.__keep_songs_enable(True))
+        keep_mode_item.set_active(
+                config.getboolean("memory", "queue_keep_songs", False))
+
+        mode_item = MenuItem(_("Mode"), Icons.SYSTEM_RUN)
+        mode_item.set_submenu(mode_menu)
+        menu.append(mode_item)
+
         rand_checkbox = ConfigCheckMenuItem(
                 _("_Random"), "memory", "shufflequeue", populate=True)
         rand_checkbox.connect('toggled', self.__queue_shuffle)
@@ -124,7 +150,7 @@ class QueueExpander(Gtk.Expander):
         menu.append(rand_checkbox)
 
         stop_checkbox = ConfigCheckMenuItem(
-            _("Stop Once Empty"), "memory", "queue_stop_once_empty",
+            _("Stop at End"), "memory", "queue_stop_at_end",
             populate=True)
         menu.append(stop_checkbox)
 
@@ -143,6 +169,19 @@ class QueueExpander(Gtk.Expander):
         button.set_menu(menu)
 
         outer.pack_start(button, False, False, 0)
+
+        toggle = SmallImageToggleButton(
+            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN,
+                                    Gtk.IconSize.MENU),
+            relief=Gtk.ReliefStyle.NONE,
+            tooltip_text=_(
+                "Disable queue - the queue will be ignored when playing"))
+        disabled = config.getboolean("memory", "queue_disable", False)
+        toggle.props.active = disabled
+        self.__queue_disable(disabled)
+        toggle.connect('toggled',
+                       lambda b: self.__queue_disable(b.props.active))
+        outer.pack_start(toggle, False, False, 6)
 
         close_button = SmallImageButton(
             image=SymbolicIconImage("window-close", Gtk.IconSize.MENU),
@@ -184,7 +223,9 @@ class QueueExpander(Gtk.Expander):
             state_icon, False)
 
         connect_destroy(
-            player, 'song-started', self.__update_queue_stop, self.queue.model)
+            player, 'song-started', self.__song_started, self.queue.model)
+        connect_destroy(
+            player, 'song-ended', self.__update_queue_stop, self.queue.model)
 
         # to make the children clickable if mapped
         # ....no idea why, but works
@@ -225,11 +266,17 @@ class QueueExpander(Gtk.Expander):
 
     def __clear_queue(self, activator):
         self.model.clear()
-        stop_queue = config.getboolean("memory",
-                                       "queue_stop_once_empty",
-                                       False)
-        if stop_queue:
-            app.player_options.stop_after = True
+
+    def __keep_songs_enable(self, enabled):
+        config.set("memory", "queue_keep_songs", enabled)
+        if enabled:
+            self.queue.set_first_column_type(CurrentColumn)
+        else:
+            for col in self.queue.get_columns():
+                # Remove the CurrentColum if it exists
+                if isinstance(col, CurrentColumn):
+                    self.queue.set_first_column_type(None)
+                    break
 
     def __motion(self, wid, context, x, y, time):
         Gdk.drag_status(context, Gdk.DragAction.COPY, time)
@@ -260,12 +307,17 @@ class QueueExpander(Gtk.Expander):
         self.queue.model.order = (OrderShuffle() if is_shuffled
                                   else OrderInOrder())
 
-    def __update_queue_stop(self, player, song, model):
-        enabled = config.getboolean("memory", "queue_stop_once_empty", False)
+    def __update_queue_stop(self, player, song, stopped, model):
+        enabled = config.getboolean("memory", "queue_stop_at_end", False)
         songs_left = len(model.get())
-        if enabled and songs_left == 1:
-            # Enable stop_after if this is the last song
-            app.player_options.stop_after = True
+        if (enabled
+                and not stopped
+                and songs_left == 0
+                and self._queue_sourced):
+            app.player.stop()
+
+    def __song_started(self, player, song, model):
+        self._queue_sourced = model.sourced
 
     def __expand(self, widget, prop, menu_button):
         expanded = self.get_expanded()
@@ -279,6 +331,10 @@ class QueueExpander(Gtk.Expander):
         menu_button.set_property('visible', expanded)
         config.set("memory", "queue_expanded", str(expanded))
 
+    def __queue_disable(self, disabled):
+        config.set("memory", "queue_disable", disabled)
+        self.queue.set_sensitive(not disabled)
+
 
 class QueueModel(PlaylistModel):
     """Own class for debugging"""
@@ -287,20 +343,19 @@ class QueueModel(PlaylistModel):
 class PlayQueue(SongList):
 
     sortable = False
-
-    class CurrentColumn(Gtk.TreeViewColumn):
-        # Match MainSongList column sizes by default.
-        header_name = "~current"
-
-        def __init__(self):
-            super(PlayQueue.CurrentColumn, self).__init__()
-            self.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-            self.set_fixed_width(24)
+    _activated = False
 
     def __init__(self, library, player):
         super(PlayQueue, self).__init__(library, player, model_cls=QueueModel)
+        keep_song = config.getboolean("memory", "queue_keep_songs", False)
+        if keep_song:
+            self.set_first_column_type(CurrentColumn)
         self.set_size_request(-1, 120)
         self.connect('row-activated', self.__go_to, player)
+
+        def reset_activated(*args):
+            self._activated = False
+        connect_after_destroy(player, 'song-started', reset_activated)
 
         self.connect('popup-menu', self.__popup, library)
         self.enable_drop()
@@ -316,6 +371,7 @@ class PlayQueue(SongList):
         return False
 
     def __go_to(self, view, path, column, player):
+        self._activated = True
         if player.go_to(self.model.get_iter(path), explicit=True,
                         source=self.model):
             player.paused = False

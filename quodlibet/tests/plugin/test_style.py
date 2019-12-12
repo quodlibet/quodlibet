@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2015 Anton Shestakov
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,7 +8,6 @@
 from tests.helper import ListWithUnused as L
 from tests.plugin import PluginTestCase
 from quodlibet.util.string.titlecase import human_title
-from quodlibet.compat import iteritems
 
 
 class TPluginStyle(PluginTestCase):
@@ -40,7 +38,7 @@ class TPluginStyle(PluginTestCase):
             'This is a test')
         fails = []
 
-        for pid, plugin in iteritems(self.plugins):
+        for pid, plugin in self.plugins.items():
             if not hasattr(plugin.cls, 'PLUGIN_NAME'):
                 fails.append((plugin, None, REASON_ABSENT))
                 continue
@@ -56,10 +54,10 @@ class TPluginStyle(PluginTestCase):
         REASON_ABSENT = "plugin should have PLUGIN_DESC"
         REASON_DOT = "PLUGIN_DESC should be a full sentence and end with a '.'"
 
-        skip_plugins = L('pickle_test')
+        skip_plugins = L('pickle_plugin')
         fails = []
 
-        for pid, plugin in iteritems(self.plugins):
+        for pid, plugin in self.plugins.items():
             if pid in skip_plugins:
                 continue
             if not hasattr(plugin.cls, 'PLUGIN_DESC'):

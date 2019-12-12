@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -126,6 +125,10 @@ class TQltk(TestCase):
         qltk.show_uri("foo", "quodlibet:///prefs/plugins/Squeezebox Output")
         # TODO: proper assertions, etc
         win.destroy()
+
+    def test_get_font_backend_name(self):
+        name = qltk.get_font_backend_name()
+        assert isinstance(name, str)
 
 
 class Tselection_data(TestCase):

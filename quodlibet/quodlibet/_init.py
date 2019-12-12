@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -19,7 +18,7 @@ from quodlibet.util import is_osx, is_windows, i18n
 from quodlibet.util.dprint import print_e, PrintHandler
 from quodlibet.util.urllib import install_urllib2_ca_file
 
-from ._main import get_base_dir, is_release, get_image_dir
+from ._main import get_base_dir, is_release, get_image_dir, get_cache_dir
 
 
 _cli_initialized = False
@@ -74,12 +73,10 @@ def _init_gettext(no_translations=False):
     i18n.init(language)
 
     # Use the locale dir in ../build/share/locale if there is one
-    base_dir = get_base_dir()
-    localedir = os.path.dirname(base_dir)
-    localedir = os.path.join(localedir, "build", "share", "locale")
-    if not os.path.isdir(localedir) and os.name == "nt":
-        localedir = os.path.join(
-            base_dir, "..", "..", "share", "locale")
+    localedir = os.path.join(
+        os.path.dirname(get_base_dir()), "build", "share", "locale")
+    if not os.path.isdir(localedir):
+        localedir = None
 
     i18n.register_translation("quodlibet", localedir)
     debug_text = environ.get("QUODLIBET_TEST_TRANS")
@@ -140,6 +137,11 @@ def init_cli(no_translations=False, config_file=None):
 
 def _init_dbus():
     """Setup dbus mainloop integration. Call before using dbus"""
+
+    # To make GDBus fail early and we don't have to wait for a timeout
+    if is_osx() or is_windows():
+        os.environ["DBUS_SYSTEM_BUS_ADDRESS"] = "something-invalid"
+        os.environ["DBUS_SESSION_BUS_ADDRESS"] = "something-invalid"
 
     try:
         from dbus.mainloop.glib import DBusGMainLoop, threads_init
@@ -217,12 +219,9 @@ def _init_gtk():
 
     import gi
 
-    # pygiaio 3.14rev16 switched to fontconfig for PangoCairo. As this results
-    # in 100% CPU under win7 revert it. Maybe we need to update the
-    # cache in the windows installer for it to work... but for now revert.
-    if is_windows():
-        environ['PANGOCAIRO_BACKEND'] = 'win32'
-        environ["GTK_CSD"] = "0"
+    if config.getboolean("settings", "pangocairo_force_fontconfig") and \
+            "PANGOCAIRO_BACKEND" not in environ:
+        environ["PANGOCAIRO_BACKEND"] = "fontconfig"
 
     # disable for consistency and trigger events seem a bit flaky here
     if config.getboolean("settings", "scrollbar_always_visible"):
@@ -240,6 +239,7 @@ def _init_gtk():
     gi.require_version("Gdk", "3.0")
     gi.require_version("Pango", "1.0")
     gi.require_version('Soup', '2.4')
+    gi.require_version('PangoCairo', "1.0")
 
     from gi.repository import Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version
@@ -267,7 +267,7 @@ def _init_gtk():
     warnings.filterwarnings(
         'ignore', '.*:use-stock.*', Warning)
     warnings.filterwarnings(
-        'ignore', '.*The property GtkAlignment:[^\s]+ is deprecated.*',
+        'ignore', r'.*The property GtkAlignment:[^\s]+ is deprecated.*',
         Warning)
 
     settings = Gtk.Settings.get_default()
@@ -310,15 +310,15 @@ def _init_gtk():
         style_provider = Gtk.CssProvider()
         style_provider.load_from_data(b"""
             spinbutton, button {
-                min-height: 1.8rem;
+                min-height: 22px;
             }
 
             .view button {
-                min-height: 2.0rem;
+                min-height: 24px;
             }
 
             entry {
-                min-height: 2.4rem;
+                min-height: 28px;
             }
 
             entry.cell {
@@ -340,6 +340,8 @@ def _init_gtk():
         css_override.register_provider("Radiance", style_provider)
         # https://github.com/quodlibet/quodlibet/issues/2677
         css_override.register_provider("Clearlooks-Phenix", style_provider)
+        # https://github.com/quodlibet/quodlibet/issues/2997
+        css_override.register_provider("Breeze", style_provider)
 
     if gtk_version[:2] >= (3, 18):
         # Hack to get some grab handle like thing for panes
@@ -373,6 +375,10 @@ def _init_gtk():
 
 def _init_gst():
     """Call once before importing GStreamer"""
+
+    arch_key = "64" if sys.maxsize > 2**32 else "32"
+    registry_name = "gst-registry-%s-%s.bin" % (sys.platform, arch_key)
+    environ["GST_REGISTRY"] = os.path.join(get_cache_dir(), registry_name)
 
     assert "gi.repository.Gst" not in sys.modules
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2011 Joe Wreschnig, Michael Urman, Steven Robertson,
 #           2011-2014 Christoph Reiter
 #
@@ -69,7 +68,7 @@ class GstPlayerPreferences(Gtk.VBox):
         gapless_button.set_alignment(0.0, 0.5)
         gapless_button.set_tooltip_text(
             _("Disabling gapless playback can avoid track changing problems "
-              "with some GStreamer versions."))
+              "with some GStreamer versions"))
 
         widgets = [(pipe_label, e, apply_button),
                    (buffer_label, scale, None),

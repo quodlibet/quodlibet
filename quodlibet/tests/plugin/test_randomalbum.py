@@ -1,14 +1,15 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet.util.collection import Album
+from quodlibet import config, app
+from quodlibet.browsers.albums import AlbumList
 from quodlibet.formats import AudioFile
-from quodlibet import config
-from tests.plugin import PluginTestCase
+from quodlibet.util.collection import Album
 from quodlibet.util.dprint import print_d
+from tests import init_fake_app, destroy_fake_app
+from tests.plugin import PluginTestCase
 
 A1S1 = AudioFile(
         {'album': 'greatness', 'title': 'excellent', 'artist': 'fooman',
@@ -50,17 +51,36 @@ class TRandomAlbum(PluginTestCase):
 
     def setUp(self):
         config.init()
+        init_fake_app()
+        app.player.paused = False
+        # Only album browsers are supported currently
+        app.library.clear()
+        app.window.browser = AlbumList(app.library)
         self.plugin = self.plugins["Random Album Playback"].cls()
         self.albums = [A1, A2, A3]
 
     def tearDown(self):
+        app.window.browser.destroy()
+        destroy_fake_app()
         config.quit()
 
     def get_winner(self, albums):
         print_d("Weights: %s " % self.plugin.weights)
         scores = self.plugin._score(albums)
         print_d("Scores: %s" % scores)
+        if not scores:
+            return None
         return max(scores)[1]
+
+    def test_empty_integration_weighted(self):
+        # See issue #2756
+        self.plugin.use_weights = True
+        self.failIf(self.plugin.plugin_on_song_started(None))
+
+    def test_empty_integration(self):
+        # See issue #2756
+        self.plugin.use_weights = False
+        self.failIf(self.plugin.plugin_on_song_started(None))
 
     def test_score_rating(self):
         weights = self.plugin.weights = self.WEIGHTS.copy()

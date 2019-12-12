@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2017 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -25,7 +24,7 @@ def format_dump_header(exc_info):
     Args:
         exc_info (tuple): sys.exc_info() result tuple
     Returns:
-        text_type
+        str
     """
 
     lines = [
@@ -50,7 +49,7 @@ def format_dump_log(limit=75):
     Args:
         limit (int): number of log entries to return
     Returns:
-        text_type
+        str
     """
 
     dump = [u"=== LOG:"]

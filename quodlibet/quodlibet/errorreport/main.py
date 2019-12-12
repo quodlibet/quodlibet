@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2017 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -17,7 +16,6 @@ import cairo
 
 import quodlibet
 from quodlibet import app
-from quodlibet.compat import text_type
 from quodlibet.build import BUILD_TYPE, BUILD_INFO
 from quodlibet.util import fver, cached_func, is_main_thread
 from quodlibet.util.dprint import format_exception, print_exc, print_e
@@ -45,7 +43,7 @@ def get_sentry():
     sentry = Sentry(SENTRY_DSN)
     sentry.add_tag("release", quodlibet.get_build_description())
     sentry.add_tag("build_type", BUILD_TYPE)
-    sentry.add_tag("build_info", BUILD_INFO)
+    sentry.add_tag("build_info", BUILD_INFO or "NONE")
     sentry.add_tag("mutagen_version", fver(mutagen.version))
     sentry.add_tag("python_version", platform.python_version())
     sentry.add_tag("gtk_version", fver(gtk_version))
@@ -84,7 +82,7 @@ def run_error_dialogs(exc_info, sentry_error):
 
     error_text = u"%s: %s" % (
         exc_info[0].__name__,
-        (text_type(exc_info[1]).strip() or u"\n").splitlines()[0])
+        (str(exc_info[1]).strip() or u"\n").splitlines()[0])
     error_text += u"\n------\n"
     error_text += u"\n".join(format_exception(*exc_info))
 

@@ -1,21 +1,23 @@
 matrix:
   include:
-    - os: osx
+    - name: "macOS 10.10"
+      os: osx
       osx_image: xcode6.4
       language: generic
-    - os: osx
-      osx_image: xcode9.1
+    - name: "macOS 10.11"
+      os: osx
+      osx_image: xcode8
       language: generic
-    - os: osx
-      osx_image: xcode9.3beta
+    - name: "macOS 10.13"
+      os: osx
+      osx_image: xcode9.4
       language: generic
-
-install:
- - travis_retry wget https://github.com/quodlibet/quodlibet/releases/download/latest/QuodLibet-latest.dmg
- - hdiutil attach -readonly -mountpoint _mount QuodLibet-latest.dmg
+    - name: "Flatpak"
+      os: linux
+      dist: xenial
+      sudo: required
+      language: generic
 
 script:
- - cd quodlibet
- - ../_mount/QuodLibet.app/Contents/MacOS/run -R -bb -m coverage run --branch setup.py test
- - ../_mount/QuodLibet.app/Contents/MacOS/run -R -bb -m coverage xml
- - bash <(curl -s https://codecov.io/bash)
+ - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then .travisci/test_macos.sh ; fi
+ - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then .travisci/test_flatpak.sh ; fi

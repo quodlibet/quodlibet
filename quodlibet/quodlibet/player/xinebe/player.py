@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2006-2007 Lukas Lalinsky
 #
 # This program is free software; you can redistribute it and/or modify
@@ -40,7 +39,7 @@ class XineHandle(object):
     def list_input_plugins(self):
         """
         Returns:
-            List[text_type]
+            List[str]
         """
 
         plugins = []
@@ -236,7 +235,7 @@ class XinePlaylistPlayer(BasePlayer):
             if paused:
                 if not self.song.is_file:
                     xine_close(self._stream)
-                    xine_open(self._stream, self.song("~uri"))
+                    xine_open(self._stream, self.song("~uri").encode("ascii"))
                 else:
                     self._pause()
             else:

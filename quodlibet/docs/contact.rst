@@ -20,3 +20,6 @@ Quod Libet has an IRC channel on `OFTC <https://www.oftc.net/>`_ ,
 *#quodlibet*. It is a good place to ask for help with installation and
 configuration, or discuss development (assuming people there are paying
 attention).
+
+There is also now a `Quod Libet Gitter chatroom <https://gitter.im/quodlibet/Lobby>`_ too,
+for people that prefer that.

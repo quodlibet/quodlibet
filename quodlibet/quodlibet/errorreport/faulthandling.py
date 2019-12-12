@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2017 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -19,7 +18,6 @@ import atexit
 
 import faulthandler
 
-from quodlibet.compat import text_type
 from quodlibet.util.dprint import print_exc
 
 
@@ -37,20 +35,20 @@ class FaultHandlerCrash(Exception):
         short string for grouping similar stacktraces together.
 
         Args:
-            stacktrace (text_type)
+            stacktrace (str)
         Returns:
-            text_type
+            str
         """
 
-        stacktrace = text_type(self)
+        stacktrace = str(self)
         if isinstance(stacktrace, bytes):
             stacktrace = stacktrace.decode("utf-8", "replace")
 
-        assert isinstance(stacktrace, text_type)
+        assert isinstance(stacktrace, str)
 
         # Extract the basename and the function name for each line and hash
         # them. Could be smarter, but let's try this for now..
-        reg = re.compile('.*?"([^"]+).*?(\w+$)')
+        reg = re.compile(r'.*?"([^"]+).*?(\w+$)')
         values = []
         for l in stacktrace.splitlines():
             m = reg.match(l)

@@ -9,7 +9,7 @@ Unicode true
 
 !define QL_NAME "Quod Libet"
 !define QL_ID "quodlibet"
-!define QL_DESC "Music Library/Editor/Player"
+!define QL_DESC "Music Library / Editor / Player"
 
 !define EF_NAME "Ex Falso"
 !define EF_ID "exfalso"
@@ -20,6 +20,7 @@ Unicode true
 !define QL_INSTDIR_KEY "Software\${QL_NAME}"
 !define QL_INSTDIR_VALUENAME "InstDir"
 
+!define MUI_CUSTOMFUNCTION_GUIINIT custom_gui_init
 !include "MUI2.nsh"
 !include "FileFunc.nsh"
 
@@ -35,9 +36,9 @@ Var QL_INST_BIN
 Var UNINST_BIN
 
 !define MUI_ABORTWARNING
-!define MUI_ICON "quodlibet.ico"
+!define MUI_ICON "..\quodlibet.ico"
 
-!insertmacro MUI_PAGE_LICENSE "quodlibet\quodlibet\COPYING"
+!insertmacro MUI_PAGE_LICENSE "..\quodlibet\quodlibet\COPYING"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 
@@ -112,7 +113,11 @@ Section "Install"
     ;~ File /r "mingw32\bin\*.exe"
 
     SetOutPath "$INSTDIR"
-    File /r "mingw32\*.*"
+    File /r "*.*"
+
+    StrCpy $EF_INST_BIN "$INSTDIR\bin\exfalso.exe"
+    StrCpy $QL_INST_BIN "$INSTDIR\bin\quodlibet.exe"
+    StrCpy $UNINST_BIN "$INSTDIR\uninstall.exe"
 
     ; Store installation folder
     WriteRegStr HKLM "${QL_INSTDIR_KEY}" "${QL_INSTDIR_VALUENAME}" $INSTDIR
@@ -232,39 +237,52 @@ Section "Install"
     CreateShortCut "$SMPROGRAMS\${QL_NAME}\${EF_NAME}.lnk" "$EF_INST_BIN"
 SectionEnd
 
-Function .onInit
+Function custom_gui_init
+    BringToFront
+
     ; Read the install dir and set it
     Var /GLOBAL instdir_temp
+    Var /GLOBAL uninst_bin_temp
+
+    SetRegView 32
     ReadRegStr $instdir_temp HKLM "${QL_INSTDIR_KEY}" "${QL_INSTDIR_VALUENAME}"
+    SetRegView lastused
     StrCmp $instdir_temp "" skip 0
         StrCpy $INSTDIR $instdir_temp
     skip:
 
-    StrCpy $EF_INST_BIN "$INSTDIR\bin\exfalso.exe"
-    StrCpy $QL_INST_BIN "$INSTDIR\bin\quodlibet.exe"
-    StrCpy $UNINST_BIN "$INSTDIR\uninstall.exe"
+    SetRegView 64
+    ReadRegStr $instdir_temp HKLM "${QL_INSTDIR_KEY}" "${QL_INSTDIR_VALUENAME}"
+    SetRegView lastused
+    StrCmp $instdir_temp "" skip2 0
+        StrCpy $INSTDIR $instdir_temp
+    skip2:
+
+    StrCpy $uninst_bin_temp "$INSTDIR\uninstall.exe"
 
     ; try to un-install existing installations first
     IfFileExists "$INSTDIR" do_uninst do_continue
     do_uninst:
         ; instdir exists
-        IfFileExists "$UNINST_BIN" exec_uninst rm_instdir
+        IfFileExists "$uninst_bin_temp" exec_uninst rm_instdir
         exec_uninst:
             ; uninstall.exe exists, execute it and
-            ; if it returns success proceede, otherwise abort the
+            ; if it returns success proceed, otherwise abort the
             ; installer (uninstall aborted by user for example)
-            ExecWait '"$UNINST_BIN" _?=$INSTDIR' $R1
-            ; uninstall suceeded, since the uninstall.exe is still there
+            ExecWait '"$uninst_bin_temp" _?=$INSTDIR' $R1
+            ; uninstall succeeded, since the uninstall.exe is still there
             ; goto rm_instdir as well
             StrCmp $R1 0 rm_instdir
             ; uninstall failed
             Abort
         rm_instdir:
-            ; either the uninstaller was sucessfull or
+            ; either the uninstaller was successfull or
             ; the uninstaller.exe wasn't found
             RMDir /r "$INSTDIR"
     do_continue:
         ; the instdir shouldn't exist from here on
+
+    BringToFront
 FunctionEnd
 
 Section "Uninstall"

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014 Christoph Reiter <reiter.christoph@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -8,10 +7,8 @@
 
 from contextlib import contextmanager
 
-try:
-    import dbus
-except ImportError:
-    dbus = None
+from gi.repository import GLib
+from gi.repository import Gio
 
 from quodlibet.util import print_d
 
@@ -101,11 +98,8 @@ class AvahiService(object):
         Can raise AvahiError
         """
 
-        if not dbus:
-            raise AvahiError("no dbus bindings")
-
         try:
-            dbus.UInt16(port)
+            GLib.Variant('q', port)  # guint16
         except OverflowError as e:
             raise AvahiError(e)
 
@@ -115,13 +109,14 @@ class AvahiService(object):
         self.stype = stype
 
         try:
-            bus = dbus.SystemBus()
+            bus = Gio.bus_get_sync(Gio.BusType.SYSTEM, None)
             if not self._watch:
-                self._watch = bus.watch_name_owner(
-                    self.DBUS_NAME, self._owner_changed)
+                self._watch = Gio.bus_watch_name_on_connection(
+                    bus, self.DBUS_NAME, Gio.BusNameWatcherFlags.NONE,
+                    self._owner_appeared, self._owner_vanished)
             else:
                 self._try_update_service()
-        except dbus.DBusException as e:
+        except GLib.Error as e:
             raise AvahiError(e)
 
     def unregister(self):
@@ -134,8 +129,8 @@ class AvahiService(object):
         """
 
         if self._watch:
-            with ignored(dbus.DBusException):
-                self._watch.cancel()
+            with ignored(GLib.Error):
+                Gio.bus_unwatch_name(self._watch)
             self._watch = None
 
         self._remove_server()
@@ -147,42 +142,49 @@ class AvahiService(object):
 
         self._group = None
         self._group_id = None
+        self._server = None
         self._server_id = None
         self._watch = None
         self._real_name = None
         self._last_server_state = None
+
+    def _on_group_signal(self, proxy, sender, signal, *args):
+        if signal == 'StateChanged':
+            self._group_state_change(args[0])
 
     def _group_state_change(self, state, *args):
         if state == AvahiEntryGroupState.COLLISION:
             self._real_name = alternative_service_name(self._real_name)
             self._try_update_service()
 
+    def _group_add_service_and_commit(self, group, flags):
+        print_d("name=%s, flags=%x, stype=%s, port=%d" % (
+            self._real_name, flags, self.stype, self.port))
+        group.AddService('(iiussssqaay)',
+             AVAHI_IF_UNSPEC, AvahiProtocol.UNSPEC, flags,
+             self._real_name, self.stype, '', '', self.port, [])
+        group.Commit()
+
     def _add_service(self):
         assert not self._group
         assert not self._group_id
 
         try:
-            bus = dbus.SystemBus()
-            server_obj = bus.get_object(self.DBUS_NAME, self.DBUS_PATH_SERVER)
-            server = dbus.Interface(server_obj, self.DBUS_INTERFACE_SERVER)
+            bus = Gio.bus_get_sync(Gio.BusType.SYSTEM, None)
+            server = Gio.DBusProxy.new_sync(
+                bus, Gio.DBusProxyFlags.NONE, None, self.DBUS_NAME,
+                self.DBUS_PATH_SERVER, self.DBUS_INTERFACE_SERVER, None)
 
             group_path = server.EntryGroupNew()
-            group_obj = bus.get_object(self.DBUS_NAME, group_path)
-            group = dbus.Interface(group_obj, self.DBUS_INTERFACE_ENTRY_GROUP)
+            group = Gio.DBusProxy.new_sync(
+                bus, Gio.DBusProxyFlags.NONE, None, self.DBUS_NAME,
+                group_path, self.DBUS_INTERFACE_ENTRY_GROUP, None)
 
-            self._group_id = group.connect_to_signal(
-                "StateChanged", self._group_state_change)
-            flags = AvahiPublishFlags.NONE
+            self._group_id = group.connect('g-signal', self._on_group_signal)
 
-            print_d("name=%s, flags=%x, stype=%s, port=%d" % (
-                self._real_name, flags, self.stype, self.port))
-            group.AddService(
-                AVAHI_IF_UNSPEC, AvahiProtocol.UNSPEC,
-                dbus.UInt32(flags), self._real_name, self.stype,
-                dbus.String(), dbus.String(), dbus.UInt16(self.port), [])
-            group.Commit()
+            self._group_add_service_and_commit(group, AvahiPublishFlags.NONE)
             self._group = group
-        except dbus.DBusException:
+        except GLib.Error:
             self._remove_service()
 
     def _try_update_service(self):
@@ -196,34 +198,29 @@ class AvahiService(object):
             # It's "documented" that Reset() shouldn't be called in this case
             # but it doesn't work otherwise...
             group.Reset()
-            flags = AvahiPublishFlags.UPDATE
 
-            print_d("name=%s, flags=%x, stype=%s, port=%d" % (
-                self._real_name, flags, self.stype, self.port))
-            group.AddService(
-                AVAHI_IF_UNSPEC, AvahiProtocol.UNSPEC,
-                dbus.UInt32(flags), self._real_name, self.stype,
-                dbus.String(), dbus.String(), dbus.UInt16(self.port), [])
-            group.Commit()
-        except dbus.DBusException:
+            self._group_add_service_and_commit(group, AvahiPublishFlags.UPDATE)
+        except GLib.Error:
             self._remove_service()
 
     def _remove_service(self):
-        if self._group_id:
-            with ignored(dbus.DBusException):
-                self._group_id.remove()
-            self._group_id = None
-
         if self._group:
-            with ignored(dbus.DBusException):
+            if self._group_id:
+                with ignored(GLib.Error):
+                    self._group.disconnect(self._group_id)
+                self._group_id = None
+
+            with ignored(GLib.Error):
                 self._group.Free()
             self._group = None
 
     def _remove_server(self):
-        if self._server_id:
-            with ignored(dbus.DBusException):
-                self._server_id.remove()
-            self._server_id = None
+        if self._server:
+            if self._server_id:
+                with ignored(GLib.Error):
+                    self._server.disconnect(self._server_id)
+                self._server_id = None
+            self._server = None
 
         self._last_server_state = None
 
@@ -233,14 +230,20 @@ class AvahiService(object):
         assert not self._server_id
 
         try:
-            bus = dbus.SystemBus()
-            server_obj = bus.get_object(self.DBUS_NAME, self.DBUS_PATH_SERVER)
-            server = dbus.Interface(server_obj, self.DBUS_INTERFACE_SERVER)
-            self._server_id = server.connect_to_signal(
-                "StateChanged", self._server_state_changed)
+            server = Gio.DBusProxy.new_for_bus_sync(
+                Gio.BusType.SYSTEM, Gio.DBusProxyFlags.NONE, None,
+                self.DBUS_NAME, self.DBUS_PATH_SERVER,
+                self.DBUS_INTERFACE_SERVER, None)
+            self._server_id = server.connect('g-signal',
+                                             self._on_server_signal)
             self._server_state_changed(server.GetState())
-        except dbus.DBusException:
+            self._server = server
+        except GLib.Error:
             self._remove_server()
+
+    def _on_server_signal(self, proxy, sender, signal, *args):
+        if signal == 'StateChanged':
+            self._server_state_changed(args[0])
 
     def _server_state_changed(self, state, *args):
         # protect from calling this twice in a row for the same state
@@ -256,8 +259,8 @@ class AvahiService(object):
                        AvahiServerState.REGISTERING):
             self._remove_service()
 
-    def _owner_changed(self, owner):
-        if owner:
-            self._add_server()
-        else:
-            self._remove_server()
+    def _owner_appeared(self, bus, name, owner):
+        self._add_server()
+
+    def _owner_vanished(self, bus, owner):
+        self._remove_server()

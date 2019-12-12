@@ -97,3 +97,29 @@ song or for several songs. Edit patterns the same way you would for *Edit
 tags from path* (see above). This feature even lets you move them to a
 different directory; for more info see the :ref:`renaming files
 guide <RenamingFiles>`.
+
+Splitting Tags
+--------------
+
+If a tag contains a value that can be regarded as multiple tag values, it is
+often possible to split the tag. This can be done by right-clicking on the tag
+and then selecting the appropriate split in the ``Split Tag`` menu. 
+
+There are in general two types of tag splitting possible: splitting on a single
+character and *subtag* splitting (extracting values in enclosures). The
+separating characters for both can be configured in the *Tags* tab in the
+preferences.
+
+Splitting on a single character - like ``,`` or ``&`` - will split a tag into
+multiple tags of the same type, but with different values. An example of this
+can be an artist tag with the value ``Foo, Bar``, that can be split into two
+separate tags *artist* = ``Foo`` and *artist* = ``Bar``.
+
+With *subtag* splitting, the end of the tag value must contain a value enclosed
+in some pair of characters - like ``()`` or ``[]``. Depending on the type of
+tag, the enclosed value can then be extracted and put in a new tag. An example
+of this can be an album tag with the value ``Album (CD 1)``, which can be split
+into *album* = ``Album`` and *discnumber* = ``1``. The enclosure can also
+contain multiple values separated by a single-character separator as explained
+above, like *artist* = ``Foo (Bar, Baz)``, which can be split into *artist* =
+``Foo``, *performer* = ``Bar`` and *performer* = ``Baz``.

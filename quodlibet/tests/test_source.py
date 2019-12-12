@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2014, 2015 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -24,6 +23,8 @@ def iter_py_paths():
     root = os.path.dirname(get_module_dir(quodlibet))
 
     skip = [
+        os.path.join(root, "build"),
+        os.path.join(root, "dist"),
         os.path.join(root, "docs"),
         os.path.join(root, "quodlibet", "packages"),
     ]
@@ -35,27 +36,6 @@ def iter_py_paths():
         for filename in filenames:
             if filename.endswith('.py'):
                 yield os.path.join(dirpath, filename)
-
-
-class TSourceEncoding(TestCase):
-    """Enforce utf-8 source encoding everywhere.
-    Plus give helpful message for fixing it.
-    """
-
-    def test_main(self):
-        for path in iter_py_paths():
-            with open(path, "rb") as h:
-                match = None
-                for i, line in enumerate(h):
-                    # https://www.python.org/dev/peps/pep-0263/
-                    match = match or re.search(b"coding[:=]\s*([-\w.]+)", line)
-                    if i >= 2:
-                        break
-                if match:
-                    match = match.group(1)
-                self.assertEqual(match, b"utf-8",
-                                 msg="%s has no utf-8 source encoding set\n"
-                                     "Insert:\n# -*- coding: utf-8 -*-" % path)
 
 
 class TLicense(TestCase):

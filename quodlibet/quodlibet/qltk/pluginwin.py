@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2016-2017 Nick Boultbee
 #
@@ -484,9 +483,12 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
                     flag == EnabledType.DIS and enabled):
                 return False
 
-        filter_ = entry.get_text().lower()
-        return (not filter_ or filter_ in plugin.name.lower()
-                or filter_ in (plugin.description or "").lower())
+        def matches(text, filter_):
+            return all(p in text.lower() for p in filter_.lower().split())
+
+        filter_ = entry.get_text()
+        return (matches(plugin.name, filter_) or
+                matches((plugin.description or ""), filter_))
 
     def __destroy(self, *args):
         config.save()

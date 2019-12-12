@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013 Christoph Reiter
 #     2013, 2016 Nick Boultbee
 #
@@ -16,6 +15,7 @@ from quodlibet.plugins.songshelpers import any_song, has_writable_image
 from quodlibet.qltk.x import MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.formats import EmbeddedImage, AudioFileError
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
@@ -46,6 +46,7 @@ class EditEmbedded(SongsMenuPlugin):
                     song.clear_images()
                 except AudioFileError:
                     util.print_exc()
+                    WriteFailedError(win, song).run()
 
             if win.step():
                 break
@@ -68,6 +69,7 @@ class EditEmbedded(SongsMenuPlugin):
                             song.set_image(image)
                         except AudioFileError:
                             util.print_exc()
+                            WriteFailedError(win, song).run()
 
             if win.step():
                 break

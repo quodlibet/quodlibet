@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -55,7 +54,6 @@ class TPyFlakes(TestCase):
         assert pyflakes is not None, "pyflakes is missing"
 
         files = iter_project_py_files()
-        files = (f for f in files if not f.endswith("compat.py"))
         errors = check_files(files)
         if errors:
             raise Exception("\n".join(errors))

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -19,10 +18,10 @@ from tests.helper import capture_output
 from .util import iter_project_py_files, setup_cfg
 
 try:
-    import pep8 as pycodestyle
+    import pycodestyle
 except ImportError:
     try:
-        import pycodestyle
+        import pep8 as pycodestyle
     except ImportError:
         pycodestyle = None
 
@@ -53,7 +52,7 @@ def check_files(files, ignore=[]):
 @pytest.mark.quality
 class TPEP8(TestCase):
     def test_all(self):
-        assert pycodestyle is not None, "pep8/pycodestyle is missing"
+        assert pycodestyle is not None, "pycodestyle/pep8 is missing"
 
         files = iter_project_py_files()
         errors = check_files(files, ignore=setup_cfg.ignore)

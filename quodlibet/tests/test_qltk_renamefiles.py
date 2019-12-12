@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -16,7 +15,6 @@ from quodlibet import config
 from quodlibet.formats import AudioFile
 from quodlibet.qltk.renamefiles import StripDiacriticals, StripNonASCII, \
     Lowercase, SpacesToUnderscores, StripWindowsIncompat, RenameFiles
-from quodlibet.compat import text_type
 
 
 class TFilter(TestCase):
@@ -33,7 +31,7 @@ class TFilterMixin(object):
         empty = fsnative(u"")
         v = self.c.filter(empty, u"")
         self.failUnlessEqual(v, u"")
-        self.failUnless(isinstance(v, text_type))
+        self.failUnless(isinstance(v, str))
 
     def test_mix_safe(self):
         empty = fsnative(u"")
@@ -86,7 +84,7 @@ class TStripDiacriticals(TFilter, TFilterMixin):
         out = u"A test"
         v = self.c.filter(empty, test)
         self.failUnlessEqual(v, out)
-        self.failUnless(isinstance(v, text_type))
+        self.failUnless(isinstance(v, str))
 
 
 class TStripNonASCII(TFilter, TFilterMixin):
@@ -98,7 +96,7 @@ class TStripNonASCII(TFilter, TFilterMixin):
         out = u"foo _ _"
         v = self.c.filter(empty, in_)
         self.failUnlessEqual(v, out)
-        self.failUnless(isinstance(v, text_type))
+        self.failUnless(isinstance(v, str))
 
 
 class TLowercase(TFilter, TFilterMixin):

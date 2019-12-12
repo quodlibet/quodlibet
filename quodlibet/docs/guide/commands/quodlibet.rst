@@ -22,36 +22,51 @@ ways to view your audio library, as well as support for Internet radio and
 audio feeds. It has extremely flexible metadata tag editing and searching
 capabilities.
 
-This manual page is only a short reference for Quod Libet. Complete 
-documentation is available at 
+This manual page is only a short reference for Quod Libet. Complete
+documentation is available at
 https://quodlibet.readthedocs.io/en/latest/guide/index.html.
 
 OPTIONS
 =======
 
---enqueue filename|query
+--add-location=<location>
+    Add a file or directory to the library
+
+--debug
+    Print debugging information
+
+--enqueue=<filename|query>
     Enqueue a filename or query results
 
---filter tag=value
+--enqueue-files=<filename[,filename..]>
+    Enqueue comma-separated files
+
+--filter <tag=value>
     Filter on a tag value
 
 --focus
     Focus the running player
 
+--force-previous
+    Jump to previous song
+
+--help
+    Display brief usage information
+
 --hide-window
     Hide main window
-
---next
-    Jump to next song
 
 --list-browsers
     List available browsers
 
+--next
+    Jump to next song
+
+--no-plugins
+    Start without plugins
+
 --open-browser=BrowserName
     Open a new browser
-
---order=inorder|shuffle|weighted|onesong|toggle
-    Set or toggle the playback order
 
 --pause
     Pause playback
@@ -68,25 +83,28 @@ OPTIONS
 --previous
     Jump to previous song if near the beginning, otherwise restart
 
---force-previous
-    Jump to previous song
-
---print-playlist
-    Print the current playlist
-
---print-queue
-    Print the contents of the queue
-
 --print-playing
     Print out information about the currently playing song. You may
     provide in a string like the kind described in the RENAMING FILES
     section below.
 
+--print-playlist
+    Print the current playlist
+
+--print-query=<query>
+    Print filenames of results of query
+
+--print-query-text
+    Print the active text query
+
+--print-queue
+    Print the contents of the queue
+
 --query=search-string
     Search your audio library
 
---run
-    Start Quod Libet if it isn't running
+--queue=<on|off|t>
+    Show or hide the queue
 
 --quit
     Exit Quod Libet
@@ -94,23 +112,43 @@ OPTIONS
 --random=tag
     Filter on a random value
 
+--rating=<[+|-]0.0..1.0>
+    Set rating of playing song
+
+--rating-down
+    Decrease rating of playing song by one star
+
+--rating-up
+    Increase rating of playing song by one star
+
 --refresh
     Refresh and rescan library
 
---repeat=off|on|t
+--repeat=<off|on|t>
     Turn repeat off, on, or toggle
 
---seek=[+|-][HH:]MM:SS
+--repeat-type=<current|all|one|off>
+    Repeat the currently playing song, the current list, stop after
+    one song, or turn repeat off
+
+--run
+    Start Quod Libet if it isn't running
+
+--seek=<[+|-][HH:]MM:SS>
     Seek within the playing song
 
 --set-browser=BrowserName
     Set the current browser
 
---set-rating=0.0..1.0
-    Rate the playing song
-
 --show-window
     Show main window
+
+--shuffle=<off|on|t>
+    Turn shuffle off, on, or toggle
+
+--shuffle-type=<random|weighted|off>
+    Set the shuffle type to be random, to prefer higher rated songs,
+    or turn shuffle off
 
 --start-hidden
     Don't show any windows on start
@@ -121,7 +159,10 @@ OPTIONS
 --status
     Print playing status
 
---stop-after=0|1|t
+--stop
+    Stop playback
+
+--stop-after=<0|1|t>
     Stop after the playing song
 
 --toggle-window
@@ -130,11 +171,20 @@ OPTIONS
 --unfilter
     Remove active browser filters
 
---unqueue=filename|query
+--unqueue=<filename|query>
     Unqueue a file or query
 
---volume=(+\|-\|)0..100
+--version
+    Display version and copyright
+
+--volume=<[+|-]0..100>
     Set the volume
+
+--volume-down
+    Turn down the volume
+
+--volume-up
+    Turn up the volume
 
 ALBUM COVERS
 ============

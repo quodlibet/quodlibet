@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2013 Christoph Reiter
 #
@@ -186,9 +185,9 @@ class HSlider(Gtk.Button):
         v = hscale.get_value()
         direction = event.direction
         if direction in [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]:
-            v += adj.props.step_increment
-        elif direction in [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]:
             v -= adj.props.step_increment
+        elif direction in [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]:
+            v += adj.props.step_increment
         else:
             # newer Gdk.ScrollDirection.SMOOTH
             return

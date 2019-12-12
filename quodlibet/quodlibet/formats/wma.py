@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2006 Lukas Lalinsky
 #
 # This program is free software; you can redistribute it and/or modify
@@ -11,7 +10,6 @@ import struct
 import mutagen.asf
 
 from quodlibet.util.path import get_temp_cover_file
-from quodlibet.compat import iteritems, text_type
 
 from ._audio import AudioFile
 from ._image import EmbeddedImage, APICType
@@ -64,7 +62,7 @@ class WMAFile(AudioFile):
         "WM/AuthorURL": "website",
         "Description": "comment"
     }
-    __rtranslate = dict([(v, k) for k, v in iteritems(__translate)])
+    __rtranslate = dict([(v, k) for k, v in __translate.items()])
 
     # http://msdn.microsoft.com/en-us/library/dd743065.aspx
     # note: not all names here are used by QL
@@ -89,7 +87,7 @@ class WMAFile(AudioFile):
     }
 
     __multi_value_keys = set()
-    for k, v in iteritems(__translate):
+    for k, v in __translate.items():
         if k in __multi_value_attr:
             __multi_value_keys.add(v)
 
@@ -103,6 +101,7 @@ class WMAFile(AudioFile):
         self["~#bitrate"] = int(info.bitrate / 1000)
         if info.channels:
             self["~#channels"] = info.channels
+        self["~#samplerate"] = info.sample_rate
 
         type_, name, desc = info.codec_type, info.codec_name, \
             info.codec_description
@@ -120,7 +119,7 @@ class WMAFile(AudioFile):
                 name = self.__translate[name]
             except KeyError:
                 continue
-            self[name] = u"\n".join(map(text_type, values))
+            self[name] = u"\n".join(map(str, values))
         self.sanitize(filename)
 
     def write(self):

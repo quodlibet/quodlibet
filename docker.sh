@@ -36,4 +36,4 @@ then
 fi
 
 sudo docker build --build-arg HOST_USER_ID="$UID" --tag "$IMAGENAME" --file "$DOCKERFILE" .
-sudo docker run --rm --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --interactive "$IMAGENAME" bash
+sudo docker run --cap-add=SYS_PTRACE --rm --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --interactive "$IMAGENAME" bash

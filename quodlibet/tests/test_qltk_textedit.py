@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -53,17 +52,17 @@ class TTextEdit2(TTextEditBox2):
 class Tvalidate_markup_pattern(TestCase):
 
     def test_valid(self):
-        for t in [u"", u"<foo>", u"\<b\><foo>bar\</b\>", u"[b]"]:
+        for t in [u"", u"<foo>", u"\\<b\\><foo>bar\\</b\\>", u"[b]"]:
             validate_markup_pattern(t, False, False)
 
         for t in [u"[b][/b]"]:
             validate_markup_pattern(t, True, False)
 
-        for t in [u"[a href=''][/a]", u"\<a href=''\>\</a\>"]:
+        for t in [u"[a href=''][/a]", u"\\<a href=''\\>\\</a\\>"]:
             validate_markup_pattern(t, True, True)
 
     def test_invalid(self):
-        for t in [u"\<", u"\<a href=''\>\</a\>"]:
+        for t in [u"\\<", u"\\<a href=''\\>\\</a\\>"]:
             self.assertRaises(
                 ValueError, validate_markup_pattern, t, False, False)
 

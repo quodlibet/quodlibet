@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -50,16 +49,17 @@ class TDirectoryTree(TestCase):
         quodlibet.config.quit()
 
     def test_initial(self):
-        paths = ["/", get_home_dir(), "/usr/bin"]
         if os.name == "nt":
             paths = [u"C:\\", get_home_dir()]
+        else:
+            paths = ["/", get_home_dir(), sys.prefix]
 
         for path in paths:
             dirlist = DirectoryTree(path, folders=self.ROOTS)
             model, rows = dirlist.get_selection().get_selected_rows()
             selected = [model[row][0] for row in rows]
             dirlist.destroy()
-            self.failUnlessEqual([path], selected)
+            self.failUnlessEqual([os.path.normpath(path)], selected)
 
     def test_bad_initial(self):
         invalid = os.path.join("bin", "file", "does", "not", "exist")

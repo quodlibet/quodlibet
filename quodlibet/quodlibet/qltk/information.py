@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2016-2018 Nick Boultbee
 #
@@ -29,7 +28,6 @@ from quodlibet.util import tag, connect_destroy
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.tags import readable
 from quodlibet.util.path import filesize, unexpand
-from quodlibet.compat import text_type
 
 
 def Label(label=None, markup=None, ellipsize=False):
@@ -53,6 +51,7 @@ class TitleLabel(Gtk.Label):
         markup = text if is_markup else ("<i>%s</i>" % util.escape(text))
         markup = "<span size='xx-large'>%s</span>" % markup
         self.set_markup(markup)
+        self.set_selectable(True)
 
 
 class ReactiveCoverImage(CoverImage):
@@ -244,7 +243,7 @@ class OneSong(qltk.Notebook):
             if t == 0:
                 return _("Unknown")
             else:
-                return text_type(time.strftime("%c", time.localtime(t)))
+                return str(time.strftime("%c", time.localtime(t)))
 
         playcount = counter(song.get("~#playcount", 0))
         skipcount = counter(song.get("~#skipcount", 0))
@@ -277,7 +276,7 @@ class OneSong(qltk.Notebook):
             if t == 0:
                 return _("Unknown")
             else:
-                return text_type(time.strftime("%c", time.localtime(t)))
+                return str(time.strftime("%c", time.localtime(t)))
 
         fn = fsn2text(unexpand(song["~filename"]))
         length = util.format_time_preferred(song.get("~#length", 0))

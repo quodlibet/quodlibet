@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2010, 2012-2014 Christoph Reiter
 #                      2017 Uriel Zajaczkovski
 #                 2017-2018 Nick Boultbee
@@ -17,15 +16,16 @@ from quodlibet import _
 from quodlibet.browsers.albums import AlbumTagCompletion
 from quodlibet.browsers import Browser
 from quodlibet.query import Query
-from quodlibet.compat import cmp
 
+from quodlibet.qltk.information import Information
+from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, cmp
 from quodlibet.util.library import background_filter
 
 from .models import (CollectionTreeStore, CollectionSortModel,
@@ -79,7 +79,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
     name = _("Album Collection")
     accelerated_name = _("Album _Collection")
     keys = ["AlbumCollection", "CollectionBrowser"]
-    priority = 5
+    priority = 6
 
     __model = None
 
@@ -259,6 +259,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         view.connect("drag-data-get", self.__drag_data_get)
 
         self.connect("destroy", self.__destroy)
+        self.connect('key-press-event', self.__key_pressed, library.librarian)
 
         self.show_all()
 
@@ -343,6 +344,24 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         if songs is not None:
             GLib.idle_add(self.songs_selected, songs)
 
+    def __key_pressed(self, widget, event, librarian):
+        if qltk.is_accel(event, "<Primary>I"):
+            songs = self.__get_selected_songs()
+            if songs:
+                window = Information(librarian, songs, self)
+                window.show()
+            return True
+        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+            qltk.enqueue(self.__get_selected_songs(sort=True))
+            return True
+        elif qltk.is_accel(event, "<alt>Return"):
+            songs = self.__get_selected_songs()
+            if songs:
+                window = SongProperties(librarian, songs, self)
+                window.show()
+            return True
+        return False
+
     def can_filter_albums(self):
         return True
 
@@ -351,6 +370,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
                   [self.__albums.get(k) for k in album_keys] if a is not None]
         if albums:
             self.view.select_album(albums[0], unselect=True)
+            self.view.grab_focus()
         for album in albums[1:]:
             self.view.select_album(album, unselect=False)
 
@@ -367,7 +387,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         return self.__search.get_text()
 
     def unfilter(self):
-        pass
+        self.filter_text("")
 
     def activate(self):
         self.view.get_selection().emit('changed')

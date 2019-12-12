@@ -50,3 +50,7 @@ quodlibet/coverage/*
 
 # mypy
 .mypy_cache
+
+.pytest_cache
+test-results
+Pipfile.lock

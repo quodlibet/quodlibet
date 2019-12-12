@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2006 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
@@ -27,6 +26,8 @@ class WAVEFile(AudioFile):
                 f = wave.open(h)
                 self["~#length"] = float(f.getnframes()) / f.getframerate()
                 self["~#channels"] = f.getnchannels()
+                self["~#samplerate"] = f.getframerate()
+                self["~#bitdepth"] = f.getsampwidth() * 8
         self.sanitize(filename)
 
     def sanitize(self, filename):

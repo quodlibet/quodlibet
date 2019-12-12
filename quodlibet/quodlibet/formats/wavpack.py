@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,6 +21,7 @@ class WavpackFile(APEv2File):
         super(WavpackFile, self).__init__(filename, audio)
         self["~#length"] = audio.info.length
         self["~#channels"] = audio.info.channels
+        self["~#samplerate"] = audio.info.sample_rate
         self.sanitize(filename)
 
 loader = WavpackFile

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -81,15 +80,18 @@ class TThumb(TestCase):
         self.assertTrue((os.sep + "large" + os.sep) in p)
 
     def test_recreate_broken_cache_file(self):
-        thumb = thumbnails.get_thumbnail(self.filename, (50, 60))
+        thumb = thumbnails.get_thumbnail(
+            self.filename, (50, 60), ignore_temp=False)
         self.assertTrue(thumb)
         path, size = thumbnails.get_cache_info(self.filename, (50, 60))
         open(path, "wb").close()
-        thumb = thumbnails.get_thumbnail(self.filename, (50, 60))
+        thumb = thumbnails.get_thumbnail(
+            self.filename, (50, 60), ignore_temp=False)
         self.assertTrue(thumb)
 
     def test_thumb(s):
-        thumb = thumbnails.get_thumbnail(s.filename, (50, 60))
+        thumb = thumbnails.get_thumbnail(
+            s.filename, (50, 60), ignore_temp=False)
 
         #check for right scaling
         s.failUnless(thumb)
