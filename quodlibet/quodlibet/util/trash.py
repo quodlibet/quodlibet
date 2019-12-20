@@ -19,6 +19,7 @@ from os.path import isdir, basename, exists, splitext
 
 from quodlibet import config
 from quodlibet.util.path import find_mount_point, xdg_get_data_home
+from quodlibet.util.environment import is_flatpak
 
 _TRASH_TMPL = """[Trash Info]
 Path={path}
@@ -144,6 +145,11 @@ def trash_free_desktop(path):
 
 def use_trash():
     """If the current platform supports moving files into a trash can."""
+
+    # TODO: Use the glib API for trashing which supports trashing there
+    if is_flatpak():
+        return False
+
     return (
         os.name == "posix" and sys.platform != "darwin" and
         not config.getboolean("settings", "bypass_trash"))
