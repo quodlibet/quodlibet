@@ -104,9 +104,9 @@ function install_deps {
     PIP_REQUIREMENTS="\
 feedparser==5.2.1
 musicbrainzngs==0.6
-mutagen==1.42.0
-pycodestyle==2.4.0
-pyflakes==2.1.0
+mutagen==1.43.0
+pycodestyle==2.5.0
+pyflakes==2.1.1
 "
 
     build_pip install --no-deps --no-binary ":all:" --upgrade \
@@ -114,7 +114,7 @@ pyflakes==2.1.0
 
     build_pacman --noconfirm -Rdds \
         mingw-w64-"${ARCH}"-shared-mime-info \
-        mingw-w64-"${ARCH}"-python3-pip \
+        mingw-w64-"${ARCH}"-python-pip \
         mingw-w64-"${ARCH}"-ncurses \
         mingw-w64-"${ARCH}"-tk \
         mingw-w64-"${ARCH}"-tcl \
@@ -245,6 +245,12 @@ function cleanup_after {
     rm -Rf "${MINGW_ROOT}"/share/gettext-*
     rm -Rf "${MINGW_ROOT}"/share/gstreamer-1.0
     rm -Rf "${MINGW_ROOT}"/share/installed-tests
+    rm -Rf "${MINGW_ROOT}"/share/fonts
+    rm -Rf "${MINGW_ROOT}"/share/vulcan
+    rm -Rf "${MINGW_ROOT}"/share/iso-codes
+    rm -Rf "${MINGW_ROOT}"/share/openal
+    rm -Rf "${MINGW_ROOT}"/share/GConf
+    rm -Rf "${MINGW_ROOT}"/share/metainfo
 
     find "${MINGW_ROOT}"/share/glib-2.0 -type f ! \
         -name "*.compiled" -exec rm -f {} \;
