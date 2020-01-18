@@ -6,6 +6,7 @@
 Packaging Changes:
   * Various installed files have been renamed
     ("exfalso" -> "io.github.quodlibet.ExFalso") to work better with Flatpak
+  * zsh completion file installation location changed to site-functions
 
 
 .. _release-4.2.1:
