@@ -91,71 +91,70 @@ class AdvancedPreferences(EventPlugin):
         rows.append(
             text_config(
                 "editing", "id3encoding",
-                "ID3 encodings:",
-                ("ID3 encodings separated by spaces. "
+                _("ID3 encodings:"),
+                (_("ID3 encodings separated by spaces. "
                  "UTF-8 is always tried first, and Latin-1 "
-                 "is always tried last.")))
+                 "is always tried last."))))
 
         rows.append(
             text_config(
                 "settings", "search_tags",
-                "Search tags:",
-                ("Tags which get searched in addition to "
-                 "the ones present in the song list. Separate with \",\"")))
+                _("Search tags:"),
+                (_("Tags which get searched in addition to "
+                 "the ones present in the song list. Separate with \",\""))))
 
-        rows.append(
-            text_config(
+        rows.append( text_config(
                 "settings", "rating_symbol_full",
-                "Rating symbol (full):"))
+                _("Rating symbol (full):")))
 
         rows.append(
             text_config(
                 "settings", "rating_symbol_blank",
-                "Rating symbol (blank):"))
+                _("Rating symbol (blank):")))
 
         rows.append(
             text_config(
                 "player", "backend",
-                "Backend:",
-                "Identifier of the playback backend to use"))
+                _("Backend:"),
+                _("Identifier of the playback backend to use")))
 
         rows.append(
             boolean_config(
                 "settings", "disable_hints",
-                "Disable hints:",
-                "Disable popup windows (treeview hints)"))
+                _("Disable hints:"),
+                _("Disable popup windows (treeview hints)")))
 
         rows.append(
             int_config(
                 "browsers", "cover_size",
-                "Album cover size:",
-                ("Size of the album cover images in the album list browser "
+                _("Album cover size:"),
+                _("Size of the album cover images in the album list browser "
                  "(restart required)")))
 
         rows.append(
             boolean_config(
                 "settings", "disable_mmkeys",
-                "Disable multimedia keys:",
-                "(restart required)"))
+                _("Disable multimedia keys:"),
+                _("(restart required)")))
 
         rows.append(
             text_config(
                 "settings", "window_title_pattern",
-                "Main window title:",
-                ("A (tied) tag for the main window title, e.g. ~title~~people "
+                _("Main window title:"),
+                _("A (tied) tag for the main window title, e.g. ~title~~people "
                  "(restart required)")))
 
         rows.append(
             text_config(
                 "settings", "datecolumn_timestamp_format",
-                "DateColumn timestamp format",
-                "A timestamp format, e.g. %Y%m%d %X "))
+                _("DateColumn timestamp format"),
+                _("A timestamp format, e.g. %Y%m%d %X ")))
 
         rows.append(
             text_config(
                 "settings", "scrollbar_always_visible",
-                "Scrollbars always visible:",
-                ("Toggles whether the scrollbars on the bottom and side of "
+                _("Scrollbars always visible:"),
+                _("Toggles whether the scrollbars on the bottom and side of "
                  "the window always are visible or get hidden when not in use "
                  "(restart required)")))
 
@@ -184,7 +183,7 @@ class AdvancedPreferences(EventPlugin):
             table.set_no_show_all(False)
             table.show_all()
 
-        button = Gtk.Button(label=_("I know what I'm doing"))
+        button = Gtk.Button(label=_("I know what I'm doing"), use_underline=True)
         button.connect("clicked", on_click)
         vb.pack_start(button, True, True, 0)
         vb.pack_start(table, True, True, 0)
