@@ -1,10 +1,10 @@
 #compdef quodlibet
 
-local browsers='(SearchBar Playlists PanedBrowser AlbumList '\
-'CoverGrid AlbumCollection FileSystem InternetRadio AudioFeeds '\
-'Soundcloud)'
+local browsers=(SearchBar Playlists PanedBrowser AlbumList
+CoverGrid AlbumCollection FileSystem InternetRadio AudioFeeds
+Soundcloud)
 
-local orders='(toggle inorder shuffle weighted onesong)'
+local orders=(toggle inorder shuffle weighted onesong)
 
 _arguments \
   '--add-location=[Add a file or directory to the library]:file or directory:_files'\
@@ -19,7 +19,7 @@ _arguments \
   '--list-browsers[List available browsers]'\
   '--next[Jump to next song]'\
   '--no-plugins[Start without plugins]'\
-  '--open-browser=[Open a new browser]:browser name:'$browsers\
+  '--open-browser=[Open a new browser]:browser name:($browsers)'\
   '--pause[Pause playback]'\
   '--play[Start playback]'\
   '--play-file=[Play a file]:filename:_files'\
@@ -40,7 +40,7 @@ _arguments \
   '--refresh[Refresh and rescan library]'\
   '--repeat=[Turn repeat off, on, or toggle it]:0|1|t:(0 1 t)'\
   '--seek=[Seek within the playing song]:[+|-][HH\:]MM\:SS'\
-  '--set-browser=[Set the current browser]:browser name:'$browsers\
+  '--set-browser=[Set the current browser]:browser name:($browsers)'\
   '--show-window[Show main window]'\
   '--shuffle=[Set or toggle shuffle mode]:0|1|t:(0 1 t)'\
   '--shuffle-type=[Set shuffle mode type]:random|weighted|off:(random weighted off)'\
