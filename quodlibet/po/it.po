@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.22\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-15 19:26+0100\n"
-"PO-Revision-Date: 2020-01-22 21:37+0100\n"
+"POT-Creation-Date: 2020-02-01 21:16+0100\n"
+"PO-Revision-Date: 2020-02-01 21:38+0100\n"
 "Last-Translator: Daniele Primon <ledebass@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -133,7 +133,7 @@ msgstr "Mostra le _copertine degli album"
 
 #: quodlibet/browsers/albums/prefs.py:68
 msgid "Inline _search includes people"
-msgstr "La ricerca in linea include gli artisti"
+msgstr "La ricerca in linea include le persone"
 
 #: quodlibet/browsers/albums/prefs.py:72
 #: quodlibet/browsers/covergrid/prefs.py:121
@@ -591,7 +591,6 @@ msgid "Favorites"
 msgstr "Preferiti"
 
 #: quodlibet/browsers/iradio.py:596
-#, fuzzy
 msgid "No Category"
 msgstr "Nessuna categoria"
 
@@ -997,7 +996,6 @@ msgid "Play a file"
 msgstr "Riproduci un file"
 
 #: quodlibet/cli.py:130 quodlibet/cli.py:139 quodlibet/cli.py:145
-#, fuzzy
 msgctxt "command"
 msgid "filename"
 msgstr "nome del file"
@@ -3318,7 +3316,6 @@ msgid "Track"
 msgstr "Traccia"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:133
-#, fuzzy
 msgid "Title"
 msgstr "Titolo"
 
@@ -4693,7 +4690,6 @@ msgid "Saved Values"
 msgstr "Valori salvati"
 
 #: quodlibet/qltk/cbes.py:265
-#, fuzzy
 msgid "Edit saved values…"
 msgstr "Modifica i valori salvati..."
 
@@ -4997,11 +4993,11 @@ msgid "_Plugins"
 msgstr "P_lugin"
 
 #: quodlibet/qltk/exfalsowindow.py:267
-#, fuzzy, python-format
+#, python-format
 msgid "%(title)s and %(count)s more"
 msgid_plural "%(title)s and %(count)s more"
-msgstr[0] "%(title)s e %(count)d altro"
-msgstr[1] "%(title)s e altri %(count)d"
+msgstr[0] "%(title)s e %(count)s altro"
+msgstr[1] "%(title)s e altri %(count)s"
 
 #: quodlibet/qltk/exfalsowindow.py:279
 msgid "Ex Falso Preferences"
@@ -5063,6 +5059,10 @@ msgstr "Disco %s"
 #, python-format
 msgid "Track %s"
 msgstr "Traccia %s"
+
+#: quodlibet/qltk/info.py:99
+msgid "Current _Song"
+msgstr "Brano cor_rente"
 
 #: quodlibet/qltk/info.py:109
 msgid "_Edit Display…"
@@ -5408,7 +5408,7 @@ msgstr "Il titolo include la _versione"
 
 #: quodlibet/qltk/prefs.py:107
 msgid "Artist includes all _people"
-msgstr "L'artista incl_ude tutti gli artisti"
+msgstr "L'artista incl_ude tutte le persone"
 
 #: quodlibet/qltk/prefs.py:109
 msgid "Album includes _disc subtitle"
@@ -5894,7 +5894,7 @@ msgstr ""
 
 #: quodlibet/qltk/renamefiles.py:196
 msgid "_Overwrite album art at target"
-msgstr "S_ovrascrivi grafica album all'obbiettivo"
+msgstr "S_ovrascrivi grafica album alla destinazione"
 
 #: quodlibet/qltk/renamefiles.py:204
 msgid "_Remove empty directories"
@@ -5987,7 +5987,6 @@ msgid "Show search results after the user stops typing."
 msgstr "Mostra i risultati della ricerca dopo che l'utente smette di digitare."
 
 #: quodlibet/qltk/searchbar.py:212
-#, fuzzy
 msgid "_Limit:"
 msgstr "_Limite:"
 
@@ -6094,7 +6093,7 @@ msgstr "Intestazioni degli _album"
 
 #: quodlibet/qltk/songlist.py:1097
 msgid "_People Headers"
-msgstr "Intestazioni degli a_rtisti"
+msgstr "Intestazioni delle pe_rsone"
 
 #: quodlibet/qltk/songlist.py:1098
 msgid "_Date Headers"
@@ -6640,7 +6639,7 @@ msgstr "traccia"
 
 #: quodlibet/util/tags.py:117
 msgid "label ID"
-msgstr ""
+msgstr "ID etichetta"
 
 #: quodlibet/util/tags.py:118
 msgid "original release date"
@@ -6679,7 +6678,6 @@ msgid "MusicBrainz release ID"
 msgstr "ID MusicBrainz del rilascio"
 
 #: quodlibet/util/tags.py:134
-#, fuzzy
 msgid "MusicBrainz artist ID"
 msgstr "ID MusicBrainz dell'artista"
 
@@ -6754,7 +6752,7 @@ msgstr "punto di mount"
 
 #: quodlibet/util/tags.py:166
 msgid "people"
-msgstr "artisti"
+msgstr "persone"
 
 #: quodlibet/util/tags.py:168
 msgid "year"
@@ -6783,7 +6781,7 @@ msgstr "scalette"
 #: quodlibet/util/tags.py:178
 #, fuzzy
 msgid "sample rate"
-msgstr "frequenza di campionamento"
+msgstr "ampiezza di campionamento"
 
 #: quodlibet/util/tags.py:179
 msgid "channel count"
