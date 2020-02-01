@@ -96,7 +96,7 @@ class SongInfo(Gtk.EventBox):
                 song_menu.remove(item)
                 menu.append(item)
         else:
-            sub = Gtk.MenuItem.new_with_mnemonic(("Current _Song"))
+            sub = Gtk.MenuItem.new_with_mnemonic(_("Current _Song"))
             sub.set_submenu(song_menu)
             sub.set_sensitive(player.song is not None)
             sub.show_all()
