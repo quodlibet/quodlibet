@@ -290,7 +290,7 @@ class AnimOsdPrefs(Gtk.VBox):
                                       Icons.EDIT)
             edit_button.connect('clicked', edit_pattern)
             hb.pack_start(edit_button, False, True, 0)
-            preview_button = Gtk.Button(label=_("Preview"))
+            preview_button = Gtk.Button(label=_("Preview"), use_underline=True)
             preview_button.connect("button-press-event", on_button_pressed)
             hb.pack_start(preview_button, False, True, 0)
             return hb
