@@ -36,7 +36,10 @@ def _config(section, option, label, tooltip=None, getter=None):
         Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
 
-    return (Gtk.Label(label=label), entry, revert)
+    lbl=Gtk.Label(label=label, use_underline=True)
+    lbl.set_mnemonic_widget(entry)
+
+    return (lbl, entry, revert)
 
 
 def text_config(section, option, label, tooltip=None):
