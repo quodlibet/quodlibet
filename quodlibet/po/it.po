@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.22\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-01 21:16+0100\n"
-"PO-Revision-Date: 2020-02-02 21:25+0100\n"
+"PO-Revision-Date: 2020-02-02 21:33+0100\n"
 "Last-Translator: Daniele Primon <ledebass@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -3108,7 +3108,7 @@ msgstr "Pass_word:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:131
 msgid "Library directory the server connects to."
-msgstr "Directory della libraria alla quale il server si connette."
+msgstr "Directory della libreria alla quale il server si connette."
 
 #: quodlibet/ext/_shared/squeezebox/base.py:133
 msgid "Library path:"
