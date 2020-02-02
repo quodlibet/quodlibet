@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.22\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-01 21:16+0100\n"
-"PO-Revision-Date: 2020-02-01 21:38+0100\n"
+"PO-Revision-Date: 2020-02-02 21:01+0100\n"
 "Last-Translator: Daniele Primon <ledebass@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -1260,7 +1260,7 @@ msgstr "Consenti la modifica delle impostazioni di configurazione avanzate."
 
 #: quodlibet/ext/events/advanced_preferences.py:94
 msgid "ID3 encodings:"
-msgstr "Codifiche ID3:"
+msgstr "Codifiche _ID3:"
 
 #: quodlibet/ext/events/advanced_preferences.py:95
 msgid ""
@@ -1272,7 +1272,7 @@ msgstr ""
 
 #: quodlibet/ext/events/advanced_preferences.py:102
 msgid "Search tags:"
-msgstr "Ricerca di tag:"
+msgstr "Ricerca di _tag:"
 
 #: quodlibet/ext/events/advanced_preferences.py:103
 msgid ""
@@ -1284,15 +1284,15 @@ msgstr ""
 
 #: quodlibet/ext/events/advanced_preferences.py:108
 msgid "Rating symbol (full):"
-msgstr "Simbolo di giudizio (pieno):"
+msgstr "Simbolo di giudizio (_pieno):"
 
 #: quodlibet/ext/events/advanced_preferences.py:113
 msgid "Rating symbol (blank):"
-msgstr "Simbolo di giudizio (vuoto):"
+msgstr "Simbolo di giudizio (_vuoto):"
 
 #: quodlibet/ext/events/advanced_preferences.py:118
 msgid "Backend:"
-msgstr "Backend:"
+msgstr "_Backend:"
 
 #: quodlibet/ext/events/advanced_preferences.py:119
 msgid "Identifier of the playback backend to use"
@@ -1300,7 +1300,7 @@ msgstr "Identificatore del backend di riproduzione da usare"
 
 #: quodlibet/ext/events/advanced_preferences.py:124
 msgid "Disable hints:"
-msgstr "Disattiva suggerimenti:"
+msgstr "Disattiva _suggerimenti:"
 
 #: quodlibet/ext/events/advanced_preferences.py:125
 msgid "Disable popup windows (treeview hints)"
@@ -1308,7 +1308,7 @@ msgstr "Disattiva finestre popup (suggerimenti della vista ad albero)"
 
 #: quodlibet/ext/events/advanced_preferences.py:130
 msgid "Album cover size:"
-msgstr "Dimensioni copertina album:"
+msgstr "Dimensioni _copertina album:"
 
 #: quodlibet/ext/events/advanced_preferences.py:131
 msgid ""
@@ -1319,7 +1319,7 @@ msgstr ""
 
 #: quodlibet/ext/events/advanced_preferences.py:137
 msgid "Disable multimedia keys:"
-msgstr "Disattiva tasti multimediali"
+msgstr "Disattiva tasti _multimediali"
 
 #: quodlibet/ext/events/advanced_preferences.py:138
 msgid "(restart required)"
@@ -1327,7 +1327,7 @@ msgstr "(richiede il riavvio)"
 
 #: quodlibet/ext/events/advanced_preferences.py:143
 msgid "Main window title:"
-msgstr "Titolo della finestra principale:"
+msgstr "Titolo della _finestra principale:"
 
 #: quodlibet/ext/events/advanced_preferences.py:144
 msgid ""
@@ -1339,7 +1339,7 @@ msgstr ""
 
 #: quodlibet/ext/events/advanced_preferences.py:150
 msgid "DateColumn timestamp format"
-msgstr "Formato data/ora della DateColumn"
+msgstr "Formato data/ora della _DateColumn"
 
 #: quodlibet/ext/events/advanced_preferences.py:151
 msgid "A timestamp format, e.g. %Y%m%d %X "
@@ -1347,7 +1347,7 @@ msgstr "Un formato data/ora, ad es. %Y%m%d %X "
 
 #: quodlibet/ext/events/advanced_preferences.py:156
 msgid "Scrollbars always visible:"
-msgstr "Barre di scorrimento sempre visibili:"
+msgstr "Barre di sc_orrimento sempre visibili:"
 
 #: quodlibet/ext/events/advanced_preferences.py:157
 msgid ""
