@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.22\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-01 21:16+0100\n"
-"PO-Revision-Date: 2020-02-02 21:01+0100\n"
+"PO-Revision-Date: 2020-02-02 21:25+0100\n"
 "Last-Translator: Daniele Primon <ledebass@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -3092,19 +3092,19 @@ msgstr "Impossibile connettersi a %s"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:111
 msgid "Hostname:"
-msgstr "Nome dell'host:"
+msgstr "Nome dell'_host:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:117
 msgid "Port:"
-msgstr "Porta:"
+msgstr "_Porta:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:122
 msgid "Username:"
-msgstr "Nome utente:"
+msgstr "Nome _utente:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:127
 msgid "Password:"
-msgstr "Password:"
+msgstr "Pass_word:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:131
 msgid "Library directory the server connects to."
@@ -3112,7 +3112,7 @@ msgstr "Directory della libraria alla quale il server si connette."
 
 #: quodlibet/ext/_shared/squeezebox/base.py:133
 msgid "Library path:"
-msgstr "Percorso libreria:"
+msgstr "Percorso _libreria:"
 
 #. Add verify button
 #: quodlibet/ext/_shared/squeezebox/base.py:142
