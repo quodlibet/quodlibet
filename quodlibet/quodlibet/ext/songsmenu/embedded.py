@@ -79,6 +79,7 @@ class EditEmbedded(SongsMenuPlugin):
     def _init_submenu_items(self, menu, songs):
         remove_item = MenuItem(_("_Remove all Images"), "edit-delete")
         remove_item.connect('activate', self.__remove_images, songs)
+        remove_item.set_sensitive(any(song.has_images for song in songs))
         menu.append(remove_item)
 
         set_item = MenuItem(_("_Embed Current Image"), "edit-paste")
