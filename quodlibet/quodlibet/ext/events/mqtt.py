@@ -206,7 +206,8 @@ def validator(pat):
     try:
         return bool(Pattern(pat).format(DUMMY_AF))
     except Exception as e:
-        print_e("Problem with %s" % (pat,), e)
+        print_d("Problem with pattern (%s)" % e)
+        return False
 
 
 class FakeAudioFile(AudioFile):
