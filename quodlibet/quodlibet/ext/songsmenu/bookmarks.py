@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig, 2010 Christoph Reiter
-#           2016 Nick Boultbee
+#           2016, 2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ class Bookmarks(SongsMenuPlugin):
     def __init__(self, songs, *args, **kwargs):
         super(Bookmarks, self).__init__(songs, *args, **kwargs)
         self.__menu = Gtk.Menu()
-        self.__menu.connect('map', self.__create_children, songs)
+        self.__create_children(self.__menu, songs)
         self.set_submenu(self.__menu)
 
     class FakePlayer(object):
