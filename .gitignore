@@ -54,3 +54,7 @@ quodlibet/coverage/*
 .pytest_cache
 test-results
 Pipfile.lock
+
+# Common virtualenvs
+.venv/
+venv/
