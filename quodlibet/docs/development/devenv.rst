@@ -22,20 +22,21 @@ In case your distribution is not supported you have to find/install the
 dependencies yourself. See the :ref:`PackagingGuide` for a list of
 dependencies.
 
-Now clone the git repository and start Quod Libet::
+Now clone the Git repository and start Quod Libet::
 
     $ git clone https://github.com/quodlibet/quodlibet.git
     $ ./quodlibet/quodlibet/quodlibet.py
 
 
-|macosx-logo| OS X
-------------------
+|macosx-logo| MacOS
+-------------------
 
-On OS X all the needed dependencies are included in the provided bundle
-itself. Download the latest bundle, which is guaranteed to work with current
-git master: `QuodLibet-latest.dmg
-<https://github.com/quodlibet/quodlibet/releases/download/latest/QuodLibet-latest.dmg>`__. It
-contains a "run" script which passes all arguments to the included Python with
+On MacOS (formerly OS X) all the needed dependencies are included in the provided bundle
+itself.
+Download the latest bundle, which is guaranteed to work with current
+Git ``master``: `QuodLibet-latest.dmg
+<https://github.com/quodlibet/quodlibet/releases/download/ci/QuodLibet-latest.dmg>`__.
+It contains a ``run`` script which passes all arguments to the included Python with
 the right environment set up.
 
 ::
@@ -43,10 +44,10 @@ the right environment set up.
     $ git clone https://github.com/quodlibet/quodlibet.git
     $ ./QuodLibet.app/Contents/MacOS/run <path_to_git_repo>/quodlibet/quodlibet.py
 
-If you want to build a bundle yourself or change/add dependencies check out
-the `"osx_bundle"
-<https://github.com/quodlibet/quodlibet/tree/master/osx_bundle>`__ directory
-in the git repo for further instructions.
+If you want to build a bundle yourself or change/add dependencies,
+see the `osx_bundle directory
+<https://github.com/quodlibet/quodlibet/tree/master/osx_bundle>`__
+in the Git repo for further instructions.
 
 
 |windows-logo| Windows
@@ -57,4 +58,4 @@ development.
 
 Check out the `win_installer
 <https://github.com/quodlibet/quodlibet/tree/master/win_installer>`__
-directory in the git repo for further instructions.
+directory in the Git repo for further instructions.
