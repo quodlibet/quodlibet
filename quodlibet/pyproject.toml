@@ -21,6 +21,8 @@ python = "^3.5"
 mutagen = "^1.44"
 senf = "^1.4"
 feedparser = "^5.2"
+pycairo = "^1.19"
+pygobject = "^3.34.0"
 musicbrainzngs = {version = "^0.5",  optional = true}
 pyinotify = {version = "*", optional = true}
 dbus-python = {version = "*", optional = true}
