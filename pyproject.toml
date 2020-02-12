@@ -1,4 +1,4 @@
-pyGObject-stubs = "*"[tool.poetry]
+[tool.poetry]
 name = "quodlibet"
 version = "4.3.1"
 description = "a music library, tagger, and player"
