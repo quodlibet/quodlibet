@@ -105,12 +105,8 @@
       <dep package="python-gobject"/>
       <dep package="python-musicbrainzngs"/>
       <dep package="python-mutagen"/>
-      <dep package="python-pycodestyle"/>
-      <dep package="python-pyflakes"/>
       <dep package="python-pyobjc"/>
-      <dep package="python-pytest"/>
-      <dep package="python-pytest-faulthandler"/>
-      <dep package="python-coverage"/>
+      <dep package="python-pip"/>
     </dependencies>
   </metamodule>
 
@@ -625,17 +621,6 @@
     </dependencies>
   </distutils>
 
-  <distutils id="python-setuptools_scm" python3="1">
-    <branch repo="pypi.org"
-            module="s/setuptools-scm/setuptools_scm-${version}.tar.gz"
-            version="3.1.0"
-            checkoutdir="python-setuptools_scm-${version}"
-            hash="sha256:1191f2a136b5e86f7ca8ab00a97ef7aef997131f1f6d4971be69a1ef387d8b40"/>
-    <dependencies>
-      <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
   <distutils id="dmgbuild" python3="1">
     <branch repo="pypi.org" checkoutdir="dmgbuild-${version}" module="d/dmgbuild/dmgbuild-${version}.tar.gz"
             version="1.3.2"
@@ -646,27 +631,6 @@
       <dep package="python-mac_alias"/>
       <dep package="python-ds_store"/>
       <dep package="python-pyobjc-framework-Quartz"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python-pycodestyle" python3="1">
-    <branch repo="pypi.org"
-            checkoutdir="python-pycodestyle-${version}"
-            module="p/pycodestyle/pycodestyle-${version}.tar.gz"
-            version="2.4.0"
-            hash="sha256:cbfca99bd594a10f674d0cd97a3d802a1fdef635d4361e1a2658de47ed261e3a"/>
-    <dependencies>
-      <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python-pyflakes" python3="1">
-    <branch repo="pypi.org"
-            checkoutdir="python-pyflakes-${version}" module="p/pyflakes/pyflakes-${version}.tar.gz"
-            version="2.0.0"
-            hash="sha256:9a7662ec724d0120012f6e29d6248ae3727d821bba522a0e6b356eff19126a49"/>
-    <dependencies>
-      <dep package="python-setuptools"/>
     </dependencies>
   </distutils>
 
@@ -697,85 +661,6 @@
             hash="sha256:4c0549764c5fe50b28042ec21aa2e14fe1a2224e239a1dae77d9e7f3932aa4c6"/>
     <dependencies>
       <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python-py" python3="1">
-    <branch repo="pypi.org"
-            checkoutdir="python-py-${version}" module="p/py/py-${version}.tar.gz"
-            version="1.7.0"
-            hash="sha256:bf92637198836372b520efcba9e020c330123be8ce527e535d185ed4b6f45694"/>
-    <dependencies>
-      <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python-pluggy" python3="1">
-    <branch repo="pypi.org"
-            checkoutdir="python-pluggy-${version}" module="p/pluggy/pluggy-${version}.tar.gz"
-            version="0.8.0"
-            hash="sha256:447ba94990e8014ee25ec853339faf7b0fc8050cdc3289d4d71f7f410fb90095"/>
-    <dependencies>
-      <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python-attrs" python3="1">
-    <branch repo="pypi.org"
-            checkoutdir="python-attrs-${version}" module="a/attrs/attrs-${version}.tar.gz"
-            version="18.2.0"
-            hash="sha256:10cbf6e27dbce8c30807caf056c8eb50917e0eaafe86347671b57254006c3e69"/>
-    <dependencies>
-      <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python-more-itertools" python3="1">
-    <branch repo="pypi.org"
-            checkoutdir="python-more-itertools-${version}" module="m/more-itertools/more-itertools-${version}.tar.gz"
-            version="4.3.0"
-            hash="sha256:c476b5d3a34e12d40130bc2f935028b5f636df8f372dc2c1c01dc19681b2039e"/>
-    <dependencies>
-      <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python-atomicwrites" python3="1">
-    <branch repo="pypi.org"
-            checkoutdir="python-atomicwrites-${version}"
-            module="a/atomicwrites/atomicwrites-${version}.tar.gz"
-            version="1.2.1"
-            hash="sha256:ec9ae8adaae229e4f8446952d204a3e4b5fdd2d099f9be3aaf556120135fb3ee"/>
-    <dependencies>
-      <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python-pytest" python3="1">
-    <branch repo="pypi.org"
-            checkoutdir="python-pytest-${version}"
-            module="p/pytest/pytest-${version}.tar.gz"
-            version="3.10.1"
-            hash="sha256:e246cf173c01169b9617fc07264b7b1316e78d7a650055235d6d897bc80d9660"/>
-    <dependencies>
-      <dep package="python-setuptools"/>
-      <dep package="python-setuptools_scm"/>
-      <dep package="python-py"/>
-      <dep package="python-pluggy"/>
-      <dep package="python-attrs"/>
-      <dep package="python-more-itertools"/>
-      <dep package="python-atomicwrites"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python-pytest-faulthandler" python3="1">
-    <branch repo="pypi.org"
-            checkoutdir="python-pytest-faulthandler-${version}" module="p/pytest-faulthandler/pytest-faulthandler-${version}.tar.gz"
-            version="1.5.0"
-            hash="sha256:bf8634c3fd6309ef786ec03b913a5366163fdb094ebcfdebc35626400d790e0d"/>
-    <dependencies>
-      <dep package="python-setuptools"/>
-      <dep package="python-pytest"/>
     </dependencies>
   </distutils>
 
@@ -816,10 +701,10 @@
     </dependencies>
   </distutils>
 
-  <distutils id="python-coverage" python3="1">
-    <branch repo="pypi.org" checkoutdir="python-coverage-${version}" module="c/coverage/coverage-${version}.tar.gz"
-            version="4.5.1"
-            hash="sha256:56e448f051a201c5ebbaa86a5efd0ca90d327204d8b059ab25ad0f35fbfd79f1"/>
+  <distutils id="python-pip" python3="1">
+    <branch repo="pypi.org" checkoutdir="python-pip-${version}" module="p/pip/pip-${version}.tar.gz"
+            version="20.0.2"
+            hash="sha256:7db0c8ea4c7ea51c8049640e8e6e7fde949de672bfa4949920675563a5a6967f"/>
     <dependencies>
       <dep package="python-setuptools"/>
     </dependencies>
