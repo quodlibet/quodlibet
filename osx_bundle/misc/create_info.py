@@ -9,10 +9,11 @@ if __name__ == "__main__":
 
     # "quodlibet" "3.4.0"
     app_id, app_version = sys.argv[1:]
+    app_id_lower = app_id.lower()
 
     plist = dict(
-        CFBundleExecutable=app_id,
-        CFBundleIconFile="%s.icns" % app_id,
+        CFBundleExecutable=app_id_lower,
+        CFBundleIconFile="%s.icns" % app_id_lower,
         CFBundleIdentifier="io.github.quodlibet.%s" % app_id,
         CFBundleInfoDictionaryVersion="6.0",
         CFBundlePackageType="APPL",
@@ -24,7 +25,7 @@ if __name__ == "__main__":
         CFBundleSignature="????",
     )
 
-    if app_id == "exfalso":
+    if app_id_lower == "exfalso":
         plist.update(dict(
             CFBundleName="Ex Falso",
             CFBundleDocumentTypes=[
@@ -34,7 +35,7 @@ if __name__ == "__main__":
                 ),
             ],
         ))
-    elif app_id == "quodlibet":
+    elif app_id_lower == "quodlibet":
         plist.update(dict(
             CFBundleName="Quod Libet",
             CFBundleDocumentTypes=[
@@ -56,7 +57,7 @@ if __name__ == "__main__":
             ],
         ))
     else:
-        assert 0
+        assert 0, app_id_lower
 
     print(plistlib.dumps(plist).decode("utf-8"))
 
