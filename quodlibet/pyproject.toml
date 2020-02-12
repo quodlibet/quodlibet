@@ -12,7 +12,7 @@ keywords = ["audio", "music", "player", "tags", "gtk"]
 license = "GPL-2.0-or-later"
 
 packages = [
-    { include = "quodlibet", from = "quodlibet"}
+    { include = "quodlibet", from = "."}
 ]
 
 
