@@ -18,7 +18,7 @@
   <repository type="tarball" name="cairographics"
               href="http://cairographics.org/releases/"/>
   <repository type='tarball' name='ftp.gnu.org' href="ftp://ftp.gnu.org/gnu/"/>
-  <repository type='tarball' name='ftp.gnupg.org' href="ftp://ftp.gnupg.org/" />
+  <repository type='tarball' name='ftp.gnupg.org' href="https://gnupg.org/ftp/" />
   <repository type="tarball" name="chromaprint"
               href="https://github.com/acoustid/chromaprint/releases/download/"/>
   <repository type="tarball" name="libgme"
@@ -30,7 +30,7 @@
   <repository type="tarball" name="mozilla"
           href="https://archive.mozilla.org/pub/"/>
   <repository type="tarball" name="ftp.gnutls.org"
-          href="ftp://ftp.gnutls.org/"/>
+          href="https://gnutls.org/ftp/"/>
   <repository type="tarball" name="gstreamer"
           href="http://gstreamer.freedesktop.org/src/"/>
   <repository type="tarball" name="sqlite" href="http://www.sqlite.org/"/>
@@ -74,7 +74,7 @@
   <repository type="tarball" name="nasm"
               href="http://www.nasm.us/pub/nasm/releasebuilds/"/>
   <repository type="tarball" name="autoconf-archive"
-              href="https://mirror.reismil.ch/gnu/autoconf-archive/"/>
+              href="https://ftpmirror.gnu.org/autoconf-archive/"/>
 
   <metamodule id="meta-bootstrap">
     <dependencies>
@@ -1033,7 +1033,7 @@
   <autotools id="gnutls" autogen-sh="configure"
          autogenargs="--with-libgcrypt --without-p11-kit">
     <branch repo="ftp.gnutls.org" version="3.5.19"
-            module="gcrypt/gnutls/v3.5/gnutls-${version}.tar.xz"
+            module="v3.5/gnutls-${version}.tar.xz"
             hash="sha256:1936eb64f03aaefd6eb16cef0567457777618573826b94d03376bb6a4afadc44"/>
     <dependencies>
       <dep package="nettle" />
