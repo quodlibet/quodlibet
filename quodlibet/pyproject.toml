@@ -42,6 +42,7 @@ sphinx = '*'
 sphinx_rtd_theme = '*'
 pyGObject-stubs = "*"
 xvfbwrapper = {version = "^0.2", platform = "linux"}
+flake8 = "^3.7.9"
 
 
 [build-system]
