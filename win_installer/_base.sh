@@ -99,12 +99,13 @@ function install_deps {
         mingw-w64-"${ARCH}"-gst-libav \
         mingw-w64-"${ARCH}"-python3-pytest \
         mingw-w64-"${ARCH}"-python3-certifi \
-        mingw-w64-"${ARCH}"-python3-coverage
+        mingw-w64-"${ARCH}"-python3-coverage \
+        mingw-w64-"${ARCH}"-python3-toml
 
     PIP_REQUIREMENTS="\
 feedparser==5.2.1
 musicbrainzngs==0.6
-mutagen==1.43.0
+mutagen==1.44.0
 pycodestyle==2.5.0
 pyflakes==2.1.1
 "

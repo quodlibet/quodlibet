@@ -21,7 +21,7 @@ USER user
 ENV WINEPREFIX /home/user/_wineprefix
 ENV WINEDEBUG -all
 
-RUN curl -o win-inst.exe -J -L https://github.com/quodlibet/quodlibet/releases/download/ci/quodlibet-latest-installer-v4.exe \
+RUN curl -o win-inst.exe -J -L https://github.com/quodlibet/quodlibet/releases/download/ci/quodlibet-installer-2020-02-13.exe \
     && wine win-inst.exe /S /D=$(winepath -w "$PWD/Quod Libet") \
     && mv "Quod Libet" _win_inst \
     && rm win-inst.exe \
