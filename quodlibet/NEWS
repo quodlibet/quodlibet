@@ -36,7 +36,7 @@ General:
   * Add option for ignoring characters in queries :pr:`3221` (:user:`blimmo`)
   * Disable the file trash support under flatpak for now :bug:`3093`
   * zsh completion improvements :pr:`3300` (:user:`Matthew Martin <phy1729>`)
-  * Add poetry support :pr:`3306`(:user:`Nick Boultbee <declension>`)
+  * Add poetry support :pr:`3306` (:user:`Nick Boultbee <declension>`)
 
 Plugins:
   * Import metadata plugin: Fix file renaming :bug:`3071` (:user:`Fredrik Strupe <frestr>`)
