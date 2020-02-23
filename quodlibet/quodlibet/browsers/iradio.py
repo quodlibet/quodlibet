@@ -13,6 +13,7 @@ import itertools
 from functools import reduce
 from http.client import HTTPException
 from os.path import splitext
+from threading import Thread
 from typing import List
 from urllib.request import urlopen
 
@@ -37,8 +38,8 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk import Icons, ErrorMessage, WarningMessage
-from quodlibet.util import copool, connect_destroy, sanitize_tags, \
-    connect_obj, escape
+from quodlibet.util import (copool, connect_destroy, sanitize_tags,
+                            connect_obj, escape)
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import uri_is_valid
 from quodlibet.util.string import decode, encode
@@ -50,18 +51,20 @@ from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
 
-
 STATION_LIST_URL = \
     "https://quodlibet.github.io/radio/radiolist.bz2"
 STATIONS_FAV = os.path.join(quodlibet.get_user_dir(), "stations")
 STATIONS_ALL = os.path.join(quodlibet.get_user_dir(), "stations_all")
 
-# TODO: - Do the update in a thread
-#       - Ranking: reduce duplicate stations (max 3 URLs per station)
+# TODO: - Ranking: reduce duplicate stations (max 3 URLs per station)
 #                  prefer stations that match a genre?
 
 # Migration path for pickle
 sys.modules["browsers.iradio"] = sys.modules[__name__]
+
+
+class IRadioError(Exception):
+    pass
 
 
 class IRFile(RemoteFile):
@@ -135,7 +138,7 @@ class IRFile(RemoteFile):
                 return k in self.__CAN_CHANGE
 
 
-def ParsePLS(file):
+def parse_pls(file, task=None):
     data = {}
 
     lines = file.read().decode('utf-8', 'replace').splitlines()
@@ -175,23 +178,22 @@ def ParsePLS(file):
                 except (KeyError, TypeError, ValueError):
                     pass
                 files.append(irf)
+                if task:
+                    task.pulse()
         else:
             break
         count += 1
 
     if warnings:
-        WarningMessage(
-            None, _("Unsupported file type"),
+        raise IRadioError(
             _("Station lists can only contain locations of stations, "
               "not other station lists or playlists. The following locations "
               "cannot be loaded:\n%s") %
-            "\n  ".join(map(util.escape, warnings))
-        ).run()
-
+            "\n  ".join(map(util.escape, warnings)))
     return files
 
 
-def ParseM3U(fileobj):
+def parse_m3u(fileobj, task=None):
     files = []
     pending_title = None
     lines = fileobj.read().decode('utf-8', 'replace').splitlines()
@@ -208,10 +210,12 @@ def ParseM3U(fileobj):
                 irf["title"] = pending_title
                 pending_title = None
             files.append(irf)
+            if task:
+                task.pulse()
     return files
 
 
-def _get_stations_from(uri: str) -> List[IRFile]:
+def _get_stations_from(uri: str, task=None) -> List[IRFile]:
     """Fetches the URI content and extracts IRFiles
     :raise: `OSError`, or other socket-type errors
     :return: or else a list of stations found (possibly empty)"""
@@ -233,18 +237,18 @@ def _get_stations_from(uri: str) -> List[IRFile]:
 
             _, ext = splitext(uri.lower())
             if ext == ".pls":
-                irfs = ParsePLS(sock)
+                irfs = parse_pls(sock, task)
             elif ext in (".m3u", ".m3u8"):
-                irfs = ParseM3U(sock)
+                irfs = parse_m3u(sock, task)
         finally:
             if sock:
                 sock.close()
     else:
         try:
             irfs = [IRFile(uri)]
-        except ValueError as msg:
-            ErrorMessage(None, _("Unable to add station"), msg).run()
-
+        except ValueError as e:
+            print_e("Can't add URI %s" % uri, e)
+            raise IRadioError("Can't add content in %s" % uri)
     return irfs
 
 
@@ -480,7 +484,6 @@ class QuestionBar(Gtk.InfoBar):
 
 
 class InternetRadio(Browser, util.InstanceTracker):
-
     __stations = None
     __fav_stations = None
     __librarian = None
@@ -819,32 +822,52 @@ class InternetRadio(Browser, util.InstanceTracker):
         parent = qltk.get_top_parent(self)
         uri = (AddNewStation(parent).run(clipboard=True) or "").strip()
         if uri != "":
-            self.__add_station(uri)
+            self._task = Task(_("Internet Radio"),
+                              _("Adding stations from %s") % uri,
+                              known_length=False, pause=False)
+            thread = Thread(target=self.__get_stations_from, args=(uri,))
+            thread.start()
 
-    def __add_station(self, uri):
+    def __add_stations(self, irfs, uri):
+        print_d("Got results: %s" % irfs)
+        self._task.pulse()
         try:
-            irfs = _get_stations_from(uri)
-        except EnvironmentError as e:
-            print_d("Got %s from %s" % (e, uri))
+            if not irfs:
+                ErrorMessage(
+                    None, _("No stations found"),
+                    _("No Internet radio stations were found at %s.") %
+                    util.escape(uri)).run()
+                return
+
+            irfs = set(irfs) - set(self.__fav_stations)
+            if irfs:
+                self._task.pulse()
+                self.__fav_stations.add(irfs)
+            else:
+                message = WarningMessage(
+                    None,
+                    _("Nothing to add"),
+                    _("All stations listed are already in your library."))
+                message.run()
+        finally:
+            self._task.finish()
+
+    def __get_stations_from(self, uri):
+        def error_for(e):
+            print_w("Got %r from %s" % (e, uri))
             msg = ("Couldn't add URL: <b>%s</b>)\n\n<tt>%s</tt>"
                    % (escape(str(e)), escape(uri)))
             ErrorMessage(None, _("Unable to add station"), msg).run()
-            return
-        if not irfs:
-            ErrorMessage(
-                None, _("No stations found"),
-                _("No Internet radio stations were found at %s.") %
-                util.escape(uri)).run()
+            self._task.finish()
             return
 
-        irfs = set(irfs) - set(self.__fav_stations)
-        if not irfs:
-            WarningMessage(
-                None, _("Unable to add station"),
-                _("All stations listed are already in your library.")).run()
-
-        if irfs:
-            self.__fav_stations.add(irfs)
+        try:
+            irfs = _get_stations_from(uri, self._task)
+            GLib.idle_add(self.__add_stations, irfs, uri)
+        except EnvironmentError as e:
+            GLib.idle_add(error_for, e)
+        except IRadioError as e:
+            GLib.idle_add(error_for, e)
 
     def Menu(self, songs, library, items):
         in_fav = False
