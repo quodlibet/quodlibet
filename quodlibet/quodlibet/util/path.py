@@ -182,7 +182,8 @@ def xdg_get_system_data_dirs():
 
     data_dirs = os.getenv("XDG_DATA_DIRS")
     if data_dirs:
-        return list(map(os.path.abspath, data_dirs.split(":")))
+        return [os.path.abspath(d)
+                for d in data_dirs.split(":")]
     else:
         return ("/usr/local/share/", "/usr/share/")
 
@@ -290,12 +291,14 @@ def _strip_win32_incompat(string, BAD=r'\:*?;"<>|'):
     if not string:
         return string
 
-    new = "".join(map(lambda s: (s in BAD and "_") or s, string))
+    new = "".join((s in BAD and "_") or s
+                  for s in string)
     parts = new.split(os.sep)
 
     def fix_end(string):
         return re.sub(r'[\. ]$', "_", string)
-    return os.sep.join(map(fix_end, parts))
+    return os.sep.join(fix_end(p)
+                       for p in parts)
 
 
 def strip_win32_incompat_from_path(string):
@@ -303,7 +306,8 @@ def strip_win32_incompat_from_path(string):
     and the drive part"""
 
     drive, tail = os.path.splitdrive(string)
-    tail = os.sep.join(map(_strip_win32_incompat, tail.split(os.sep)))
+    tail = os.sep.join(_strip_win32_incompat(s)
+                       for s in tail.split(os.sep))
     return drive + tail
 
 
@@ -341,7 +345,7 @@ if sys.platform == "darwin":
 
     def _osx_path_decode_error_handler(error):
         bytes_ = bytearray(error.object[error.start:error.end])
-        return (u"".join(map("%%%X".__mod__, bytes_)), error.end)
+        return u"".join("%%%X".__mod__(b) for b in bytes_), error.end
 
     codecs.register_error(
         "quodlibet-osx-path-decode", _osx_path_decode_error_handler)

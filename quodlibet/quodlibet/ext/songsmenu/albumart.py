@@ -57,8 +57,10 @@ REQUEST_LIMIT_MAX = 15
 
 def get_encoding_from_socket(socket):
     content_type = socket.headers.get("Content-Type", "")
-    p = map(str.strip, map(str.lower, content_type.split(";")))
-    enc = [t.split("=")[-1].strip() for t in p if t.startswith("charset")]
+    p = [s.lower().strip()
+         for s in content_type.split(";")]
+    enc = [t.split("=")[-1].strip()
+           for t in p if t.startswith("charset")]
     return (enc and enc[0]) or "utf-8"
 
 
