@@ -1,5 +1,5 @@
 # Copyright 2011 Joe Wreschnig, Christoph Reiter
-#      2013-2019 Nick Boultbee
+#      2013-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,6 +12,8 @@ import bz2
 import itertools
 from functools import reduce
 from http.client import HTTPException
+from os.path import splitext
+from typing import List
 from urllib.request import urlopen
 
 import re
@@ -209,9 +211,10 @@ def ParseM3U(fileobj):
     return files
 
 
-def add_station(uri):
+def _get_stations_from(uri: str) -> List[IRFile]:
     """Fetches the URI content and extracts IRFiles
-    Returns None in error, else a possibly filled list of stations"""
+    :raise: `OSError`, or other socket-type errors
+    :return: or else a list of stations found (possibly empty)"""
 
     irfs = []
 
@@ -222,25 +225,25 @@ def add_station(uri):
             # Assume HTTP if no protocol given. See #2731
             uri = 'http://' + uri
             print_d("Assuming http: %s" % uri)
+
+        # Error handling outside
+        sock = None
         try:
-            sock = urlopen(uri)
-        except EnvironmentError as err:
-            err = "%s\n\nURL: %s" % (str(err), uri)
-            print_d("Got %s from %s" % (err, uri))
-            ErrorMessage(None, _("Unable to add station"), escape(err)).run()
-            return None
+            sock = urlopen(uri, timeout=10)
 
-        if uri.lower().endswith(".pls"):
-            irfs = ParsePLS(sock)
-        elif uri.lower().endswith(".m3u") or uri.lower().endswith(".m3u8"):
-            irfs = ParseM3U(sock)
-
-        sock.close()
+            _, ext = splitext(uri.lower())
+            if ext == ".pls":
+                irfs = ParsePLS(sock)
+            elif ext in (".m3u", ".m3u8"):
+                irfs = ParseM3U(sock)
+        finally:
+            if sock:
+                sock.close()
     else:
         try:
             irfs = [IRFile(uri)]
-        except ValueError as err:
-            ErrorMessage(None, _("Unable to add station"), err).run()
+        except ValueError as msg:
+            ErrorMessage(None, _("Unable to add station"), msg).run()
 
     return irfs
 
@@ -816,12 +819,16 @@ class InternetRadio(Browser, util.InstanceTracker):
         parent = qltk.get_top_parent(self)
         uri = (AddNewStation(parent).run(clipboard=True) or "").strip()
         if uri != "":
-            self.__add_station(uri)
+            GLib.idle_add(self.__add_station, uri)
 
     def __add_station(self, uri):
-        irfs = add_station(uri)
-        if irfs is None:
-            # Error, rather than empty list
+        try:
+            irfs = _get_stations_from(uri)
+        except EnvironmentError as e:
+            print_d("Got %s from %s" % (e, uri))
+            msg = ("Couldn't add URL: <b>%s</b>)\n\n<tt>%s</tt>"
+                   % (escape(str(e)), escape(uri)))
+            ErrorMessage(None, _("Unable to add station"), msg).run()
             return
         if not irfs:
             ErrorMessage(

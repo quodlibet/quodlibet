@@ -1,4 +1,4 @@
-# Copyright 2012,2016,2018 Nick Boultbee
+# Copyright 2012-2020 Nick Boultbee
 #           2012,2014,2018 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -16,6 +16,7 @@ from gi.repository import Gio
 from gi.repository import Gtk
 from senf import fsn2uri, fsnative
 
+from quodlibet import print_d
 from quodlibet.util import is_windows, is_osx
 
 
@@ -55,7 +56,8 @@ def show_files(dirname, entries=[]):
     for impl in implementations:
         try:
             impl(dirname, entries)
-        except BrowseError:
+        except BrowseError as e:
+            print_d("Couldn't show files with %s (%s), ignoring." % (impl, e))
             continue
         else:
             return True

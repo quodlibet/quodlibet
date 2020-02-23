@@ -12,11 +12,12 @@ from quodlibet.qltk.chooser import choose_files, get_current_dir, \
     set_current_dir, choose_folders, create_chooser_filter, \
     choose_target_file, choose_target_folder, with_response
 from quodlibet.qltk import gtk_version
-from quodlibet.util import is_osx
+from quodlibet.util import is_osx, is_wine
 
 from . import TestCase, skipIf
 
 
+@skipIf(is_wine(), "hangs under wine")
 @skipIf(gtk_version < (3, 16, 0) or is_osx(), "crashy on older gtk+ and macOS")
 class Tchooser(TestCase):
 

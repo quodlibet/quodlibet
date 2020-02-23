@@ -35,9 +35,8 @@ For old releases see the `full file listing <https://github.com/quodlibet/quodli
 |flatpak-logo| Flatpak
 ----------------------
 
-`Quod Libet on Flathub
-<https://flathub.org/apps/details/io.github.quodlibet.QuodLibet>`__
-
+* `Quod Libet <https://flathub.org/apps/details/io.github.quodlibet.QuodLibet>`__ on Flathub
+* `Ex Falso <https://flathub.org/apps/details/io.github.quodlibet.ExFalso>`__ on Flathub
 
 .. _ubuntu:
 

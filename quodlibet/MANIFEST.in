@@ -18,12 +18,14 @@ include data/*.appdata.xml.in
 include data/*.1
 include data/*.sh
 include data/*.zsh
+include data/*.bash
 include data/README.rst
 include MANIFEST.in
 include quodlibet/packages/README.rst
 include *.py
 include setup.cfg
-include Pipfile
+include pyproject.toml
+include poetry.lock
 recursive-include docs *.py Makefile *.rst *.png *.ico *.svg *.css
 prune docs/_build_guide
 prune docs/_build_all

@@ -1,4 +1,4 @@
-# Copyright 2016, 2018 Nick Boultbee
+# Copyright 2016 - 2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ from quodlibet.util import copool
 
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet.util.dprint import print_d, print_w, print_e
+from quodlibet.util.dprint import print_d, print_w
 from quodlibet.qltk import Icons, ErrorMessage, Message
 
 EXPAND = Gtk.AttachOptions.EXPAND
@@ -206,7 +206,8 @@ def validator(pat):
     try:
         return bool(Pattern(pat).format(DUMMY_AF))
     except Exception as e:
-        print_e("Problem with %s" % (pat,), e)
+        print_d("Problem with pattern (%s)" % e)
+        return False
 
 
 class FakeAudioFile(AudioFile):

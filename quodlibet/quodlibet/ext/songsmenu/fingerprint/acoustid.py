@@ -331,7 +331,7 @@ class AcoustidLookupThread(threading.Thread):
                         releases[index] = parse_acoustid_response(result_data)
 
         for i, result in enumerate(results):
-            yield LookupResult(result, releases.get(str(i), []), error)
+            yield LookupResult(result, releases.get(i, []), error)
 
     def run(self):
         while 1:

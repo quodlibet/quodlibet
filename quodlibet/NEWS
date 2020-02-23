@@ -1,11 +1,54 @@
 .. _release-4.3.0:
 
-4.3.0 (WIP)
------------
+4.3.0 (2020-02-22) - Smaug-like figures, lurking on our planet filled with hoarded data
+---------------------------------------------------------------------------------------
 
 Packaging Changes:
   * Various installed files have been renamed
     ("exfalso" -> "io.github.quodlibet.ExFalso") to work better with Flatpak
+  * zsh completion file installation location changed to site-functions :pr:`3300`
+  * Installs a new bash completion file :pr:`3126` :pr:`3128`
+  * Windows: Moved everything from 32 bit to 64 bit. This means QL will no longer work with 32 bit Windows.
+
+Translations:
+  * Update brazilian portuguese translations :pr:`3123` (:user:`Hugo Gualandi <hugomg>`)
+  * Bulgarian translation fixes :pr`3147` (:user:`cybercop-montana`)
+  * Update Hebrew translation :pr:`3164` :pr:`3274` (:user:`Avi Markovitz <avma>`)
+  * French translation update :pr:`3183` (:user:`Bundy01`)
+  * Update German translation (:user:`Till Berger <Mellthas>`)
+  * Various translation related spelling/formatting/text improvements :pr:`3208` :pr:`3207` :pr:`3206` :pr:`3214` :pr:`3215` :pr:`3218` :pr:`3219` (:user:`Till Berger <Mellthas>`)
+  * New Serbian translation :pr:`3245` (:user:`leipero`)
+  * Update Finnish translation :pr:`3199` (:user:`Kristian Laakkonen <krisse7>`)
+
+General:
+  * Simplify launcher for macOS :pr:`3101` (:user:`a-vrma`)
+  * Add original date sort option to album browser :pr:`3103` (:user:`Ruud van Asseldonk <ruuda>`)
+  * Option for multiple queries in Search Browser :pr:`3082` (:user:`blimmo`)
+  * Improved `VGM` Metadata Tag Parsing (GD3 Support) :pr:`3100` (:user:`Eoin O'Neill <Eoin-ONeill-Yokai>`)
+  * cover: Always scale down to parent window size :pr:`3114` (:user:`Fredrik Strupe <frestr>`)
+  * tags: Support loading lyrics from 'unsyncedlyrics' tag :bug:`3115` (:user:`Fredrik Strupe <frestr>`)
+  * browsers: Focus album list on album filtering :bug:`3122` (:user:`Fredrik Strupe <frestr>`)
+  * Add bash completion :pr:`3126` :pr:`3128` (:user:`Arnaud Rebillout <elboulangero>`)
+  * Docs fixes :pr:`3133` :pr:`3192` (:user:`Petko Ditchev <petko10>`, :user:`CreamyCookie`)
+  * player: Make external volume cubic by default :pr:`3151` (:user:`Fredrik Strupe <frestr>`)
+  * desktop: Accept all selected files when opened from file browser :bug:`3159` (:user:`Fredrik Strupe <frestr>`)
+  * Tracks without track number are now sorted before first track :pr:`3196` (:user:`CreamyCookie`)
+  * Add option for ignoring characters in queries :pr:`3221` (:user:`blimmo`)
+  * Disable the file trash support under flatpak for now :bug:`3093`
+  * zsh completion improvements :pr:`3300` (:user:`Matthew Martin <phy1729>`)
+  * Add poetry support :pr:`3306` (:user:`Nick Boultbee <declension>`)
+
+Plugins:
+  * Import metadata plugin: Fix file renaming :bug:`3071` (:user:`Fredrik Strupe <frestr>`)
+  * Scale player volume properly in mpris2 API :pr:`3098` (:user:`luk1337`)
+  * mpris: Drop MPRIS1 support :pr:`3102`
+  * Add new Banshee import plugin :pr:`3141` (:user:`Phidica`)
+  * Library update plugin: Update on file modifications :bug:`3168` (:user:`Fredrik Strupe <frestr>`)
+  * Add "Record Stream" to default custom commands plugin :bug:`1617` (:user:`CreamyCookie`)
+  * Custom Commands: Don't modify command when using parameters :bug:`3185` :pr:`3232` (:user:`CreamyCookie`)
+  * Import/export plugin: accept full filenames when renaming :pr:`3282` (:user:`Fredrik Strupe <frestr>`)
+  * acoustid: fix queries always returning "unknown" :bug:`3269`
+  * Fix embed images plugin submenu not showing sometimes :pr`3303` (:user:`Nick Boultbee <declension>`)
 
 
 .. _release-4.2.1:

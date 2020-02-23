@@ -1,0 +1,11 @@
+.venv
+dist
+.azure
+.circleci
+.docker
+.github
+.travis.yml
+flatpak
+**/.pytest_cache
+osx_bundle
+quodlibet/build/

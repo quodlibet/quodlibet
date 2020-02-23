@@ -1,0 +1,16 @@
+diff --git a/quodlibet/data/io.github.quodlibet.QuodLibet.appdata.xml.in b/quodlibet/data/io.github.quodlibet.QuodLibet.appdata.xml.in
+index 111a0ae23..44dc75730 100644
+--- a/quodlibet/data/io.github.quodlibet.QuodLibet.appdata.xml.in
++++ b/quodlibet/data/io.github.quodlibet.QuodLibet.appdata.xml.in
+@@ -56,4 +56,8 @@
+     <url type="help">https://quodlibet.readthedocs.io/en/latest/guide/index.html</url>
+     <url type="translate">https://quodlibet.readthedocs.io/en/latest/translation/howto.html</url>
+     <update_contact>quod-libet-development@googlegroups.com</update_contact>
++
++    <content_rating type="oars-1.1">
++        <content_attribute id="social-info">moderate</content_attribute>
++    </content_rating>
+ </component>
+-- 
+2.20.1
+

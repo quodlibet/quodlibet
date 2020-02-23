@@ -44,7 +44,7 @@ class install_zsh_completions(Command):
 
     def run(self):
         basepath = os.path.join(
-            self.install_dir, 'share', 'zsh', 'vendor-completions')
+            self.install_dir, 'share', 'zsh', 'site-functions')
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
         for src, dest in self.zsh_completions:

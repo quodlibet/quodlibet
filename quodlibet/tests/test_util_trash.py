@@ -9,7 +9,7 @@ import os
 import sys
 
 from quodlibet import config
-from quodlibet.util import is_linux
+from quodlibet.util import is_linux, is_flatpak
 from quodlibet.util.trash import use_trash, trash
 from tests import TestCase, mkstemp, skipUnless
 
@@ -47,7 +47,8 @@ class Ttrash(TestCase):
         try:
             os.name = 'posix'
             sys.platform = 'linux'
-            self.assertTrue(use_trash())
+            if not is_flatpak():
+                self.assertTrue(use_trash())
         finally:
             os.name = old_os_name
             sys.platform = old_sys_platform

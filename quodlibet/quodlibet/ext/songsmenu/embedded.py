@@ -1,5 +1,5 @@
 # Copyright 2013 Christoph Reiter
-#     2013, 2016 Nick Boultbee
+#     2013,2016,2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,8 +32,7 @@ class EditEmbedded(SongsMenuPlugin):
     def __init__(self, songs, *args, **kwargs):
         super(EditEmbedded, self).__init__(songs, *args, **kwargs)
         self.__menu = Gtk.Menu()
-        self.__menu.connect('map', self.__map, songs)
-        self.__menu.connect('unmap', self.__unmap)
+        self._init_submenu_items(self.__menu, songs)
         self.set_submenu(self.__menu)
 
     def __remove_images(self, menu_item, songs):
@@ -77,9 +76,10 @@ class EditEmbedded(SongsMenuPlugin):
         win.destroy()
         self.plugin_finish()
 
-    def __map(self, menu, songs):
+    def _init_submenu_items(self, menu, songs):
         remove_item = MenuItem(_("_Remove all Images"), "edit-delete")
         remove_item.connect('activate', self.__remove_images, songs)
+        remove_item.set_sensitive(any(song.has_images for song in songs))
         menu.append(remove_item)
 
         set_item = MenuItem(_("_Embed Current Image"), "edit-paste")
@@ -87,10 +87,7 @@ class EditEmbedded(SongsMenuPlugin):
         menu.append(set_item)
 
         menu.show_all()
-
-    def __unmap(self, menu):
-        for child in self.__menu.get_children():
-            self.__menu.remove(child)
+        return menu
 
     def plugin_songs(self, songs):
         return True

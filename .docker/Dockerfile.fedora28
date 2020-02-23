@@ -27,7 +27,7 @@ RUN pip3 install --upgrade \
     pycodestyle \
     pyflakes \
     xvfbwrapper \
-    coverage \
+    "coverage[toml]" \
     pytest-faulthandler
 
 ARG HOST_USER_ID=5555
