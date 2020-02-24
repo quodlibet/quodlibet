@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.22\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-01 21:16+0100\n"
-"PO-Revision-Date: 2020-02-02 21:33+0100\n"
+"PO-Revision-Date: 2020-02-24 21:30+0100\n"
 "Last-Translator: Daniele Primon <ledebass@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -42,7 +42,7 @@ msgstr "_Genere"
 #: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:59
 #: quodlibet/qltk/ratingsmenu.py:40
 msgid "_Rating"
-msgstr "_Giudizio"
+msgstr "Giudi_zio"
 
 #: quodlibet/browsers/albums/main.py:190
 msgid "_Playcount"
@@ -2477,7 +2477,7 @@ msgstr "_Ripeti"
 
 #: quodlibet/ext/events/trayicon/menu.py:87
 msgid "Stop _After This Song"
-msgstr "Ferma dopo questo brano"
+msgstr "_Ferma dopo questo brano"
 
 #: quodlibet/ext/events/trayicon/menu.py:93
 #: quodlibet/qltk/quodlibetwindow.py:903
@@ -2797,6 +2797,7 @@ msgid "Downmixes audio channels to mono."
 msgstr "Rimissa i canali audio in mono."
 
 #: quodlibet/ext/gstreamer/pitch.py:22
+#, fuzzy
 msgid "R_ate:"
 msgstr "G_iudizio:"
 
@@ -4479,19 +4480,19 @@ msgstr "Ca_suale"
 
 #: quodlibet/order/reorder.py:41 quodlibet/order/reorder.py:42
 msgid "Prefer higher rated"
-msgstr "Preferisci i giudicati più alti"
+msgstr "Preferisci i _giudicati più alti"
 
 #: quodlibet/order/repeat.py:44 quodlibet/order/repeat.py:45
 msgid "Repeat this track"
-msgstr "Ripeti questa traccia"
+msgstr "_Ripeti questa traccia"
 
 #: quodlibet/order/repeat.py:58 quodlibet/order/repeat.py:59
 msgid "Repeat all"
-msgstr "Ripeti tutti"
+msgstr "Ripeti _tutti"
 
 #: quodlibet/order/repeat.py:74 quodlibet/order/repeat.py:75
 msgid "One Song"
-msgstr "Un brano"
+msgstr "_Un brano"
 
 #: quodlibet/player/gstbe/player.py:99
 msgid "Stream"
@@ -4712,7 +4713,7 @@ msgstr "_Muto"
 
 #: quodlibet/qltk/controls.py:129
 msgid "_Replay Gain Mode"
-msgstr "Modalità Replay Gain"
+msgstr "Modalità Replay _Gain"
 
 #. Translators: New Command/Entry/Item/...
 #: quodlibet/qltk/data_editors.py:117
@@ -5379,7 +5380,7 @@ msgstr "_Lunghezza"
 
 #: quodlibet/qltk/prefs.py:65
 msgid "_Jump to playing song automatically"
-msgstr "Salta automaticamente al brano in riprodu_zione"
+msgstr "Salta automaticamente al brano in _riproduzione"
 
 #: quodlibet/qltk/prefs.py:67
 msgid "When the playing song changes, scroll to it in the song list"
@@ -5660,15 +5661,15 @@ msgstr "Co_da"
 
 #: quodlibet/qltk/queue.py:129
 msgid "Stop at End"
-msgstr "Ferma alla fine"
+msgstr "_Ferma alla fine"
 
 #: quodlibet/qltk/queue.py:134
 msgid "Ignore"
-msgstr "Ignora"
+msgstr "_Ignora"
 
 #: quodlibet/qltk/queue.py:139
 msgid "Keep Songs"
-msgstr "Tieni i brani"
+msgstr "_Tieni i brani"
 
 #: quodlibet/qltk/queue.py:142
 msgid "Keep songs in the queue after playing them"
@@ -5768,7 +5769,7 @@ msgstr "Modifica segnali_bri..."
 
 #: quodlibet/qltk/quodlibetwindow.py:947
 msgid "Stop After This Song"
-msgstr "Ferma dopo questo brano"
+msgstr "_Ferma dopo questo brano"
 
 #: quodlibet/qltk/quodlibetwindow.py:953
 msgid "_Keyboard Shortcuts"
@@ -5980,7 +5981,7 @@ msgstr "Cerca nella tua libreria, usando testo libero o interrogazioni QL"
 
 #: quodlibet/qltk/searchbar.py:142
 msgid "Search after _typing"
-msgstr "Cerca dopo aver digi_tato"
+msgstr "Cerca _dopo aver digitato"
 
 #: quodlibet/qltk/searchbar.py:145
 msgid "Show search results after the user stops typing."
@@ -5996,7 +5997,7 @@ msgstr "_Peso"
 
 #: quodlibet/qltk/seekbutton.py:239
 msgid "Display remaining time"
-msgstr "Mostra il tempo rimanente"
+msgstr "_Mostra il tempo rimanente"
 
 #: quodlibet/qltk/shortcuts.py:17
 msgid "Main Window"
@@ -6109,7 +6110,7 @@ msgstr "Intestazioni della _produzione "
 
 #: quodlibet/qltk/songlist.py:1115
 msgid "_Customize Headers…"
-msgstr "_Personalizza intestazioni..."
+msgstr "Personali_zza intestazioni..."
 
 #: quodlibet/qltk/songlist.py:1120
 msgid "_Expand Column"
@@ -6165,8 +6166,8 @@ msgstr ""
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
-msgstr[0] "Mo_stra nel gestore file"
-msgstr[1] "Mo_stra %(total)d file nel gestore file"
+msgstr[0] "M_ostra nel gestore file"
+msgstr[1] "M_ostra %(total)d file nel gestore file"
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
