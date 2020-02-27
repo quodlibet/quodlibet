@@ -10,9 +10,9 @@
 from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import is_wayland, Icons
-from quodlibet.util import (is_unity, is_osx, is_plasma, is_enlightenment,
-                            print_exc, print_w, print_d)
+from quodlibet.qltk import Icons
+from quodlibet.util import (is_linux, is_osx, print_exc, print_w, print_d)
+from quodlibet.util.environment import dbus_name_owned
 
 from .prefs import Preferences
 from .systemtray import SystemTray
@@ -29,8 +29,8 @@ if is_osx():
 def get_indicator_impl():
     """Returns a BaseIndicator implementation depending on the environ"""
 
-    use_app_indicator = (is_unity() or is_wayland() or is_plasma() or
-                         is_enlightenment())
+    use_app_indicator = (
+        is_linux() and dbus_name_owned("org.kde.StatusNotifierWatcher"))
 
     print_d("use app indicator: %s" % use_app_indicator)
     if not use_app_indicator:
