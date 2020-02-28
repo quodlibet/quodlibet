@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.22\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-01 21:16+0100\n"
-"PO-Revision-Date: 2020-02-24 21:30+0100\n"
+"PO-Revision-Date: 2020-02-28 21:48+0100\n"
 "Last-Translator: Daniele Primon <ledebass@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -51,7 +51,7 @@ msgstr "Conteggio ri_produzioni"
 #: quodlibet/browsers/albums/main.py:196
 #: quodlibet/browsers/covergrid/main.py:65
 msgid "Sort _by…"
-msgstr "Ordina _per..."
+msgstr "Ordina _per…"
 
 #: quodlibet/browsers/albums/main.py:217
 #: quodlibet/browsers/covergrid/main.py:86
@@ -575,7 +575,7 @@ msgstr "Radio _Internet"
 
 #: quodlibet/browsers/iradio.py:554
 msgid "_New Station…"
-msgstr "_Nuova stazione..."
+msgstr "_Nuova stazione…"
 
 #: quodlibet/browsers/iradio.py:557
 msgid "_Update Stations"
@@ -711,7 +711,7 @@ msgstr "_Importa"
 
 #: quodlibet/browsers/playlists/menu.py:26
 msgid "_New Playlist…"
-msgstr "_Nuova scaletta..."
+msgstr "_Nuova scaletta…"
 
 #: quodlibet/browsers/playlists/menu.py:87
 #, python-format
@@ -823,7 +823,7 @@ msgstr "Uscita di %s"
 
 #: quodlibet/browsers/soundcloud/main.py:409
 msgid "Enter code…"
-msgstr "Inserisci il codice..."
+msgstr "Inserisci il codice…"
 
 #: quodlibet/browsers/soundcloud/main.py:410
 #, python-format
@@ -1130,7 +1130,7 @@ msgstr "_Invia"
 
 #: quodlibet/errorreport/ui.py:111
 msgid "Short description…"
-msgstr "Breve descrizione..."
+msgstr "Breve descrizione…"
 
 #: quodlibet/errorreport/ui.py:114
 msgid "Data to be sent:"
@@ -1194,7 +1194,7 @@ msgstr "Corregge codifiche errate dei valori dei tag nell'editor dei tag."
 
 #: quodlibet/ext/editing/iconv.py:34
 msgid "_Convert Encoding…"
-msgstr "_Converti codifica..."
+msgstr "_Converti codifica…"
 
 #: quodlibet/ext/editing/kakasi.py:27
 msgid "Kana/Kanji Simple Inverter"
@@ -1441,7 +1441,7 @@ msgstr "Effetti"
 
 #: quodlibet/ext/events/animosd/prefs.py:289
 msgid "Ed_it Display Pattern…"
-msgstr "Modifica modello _visualizzazione..."
+msgstr "Modifica modello _visualizzazione…"
 
 #: quodlibet/ext/events/animosd/prefs.py:293
 #: quodlibet/ext/events/trayicon/prefs.py:87
@@ -1624,7 +1624,7 @@ msgstr "Preset predefiniti"
 
 #: quodlibet/ext/events/equalizer.py:279 quodlibet/ext/events/equalizer.py:306
 msgid "Select…"
-msgstr "Seleziona..."
+msgstr "Seleziona…"
 
 #: quodlibet/ext/events/equalizer.py:294
 msgid "_Reset EQ"
@@ -2081,7 +2081,7 @@ msgstr ""
 #. Translators: Other service
 #: quodlibet/ext/events/qlscrobbler.py:485
 msgid "Other…"
-msgstr "Altro..."
+msgstr "Altro…"
 
 #. verify data
 #: quodlibet/ext/events/qlscrobbler.py:523
@@ -2965,7 +2965,7 @@ msgstr "Mischia raggruppando"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:95
 msgid "Waiting to start new group…"
-msgstr "In attesa di avviare un nuovo gruppo..."
+msgstr "In attesa di avviare un nuovo gruppo…"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:145
 msgid "Grouping tag:"
@@ -3228,7 +3228,7 @@ msgstr "_Cerca"
 #: quodlibet/ext/songsmenu/albumart.py:820
 #: quodlibet/ext/songsmenu/brainz/widgets.py:452
 msgid "Searching…"
-msgstr "Ricerca..."
+msgstr "Ricerca…"
 
 #: quodlibet/ext/songsmenu/albumart.py:885
 #: quodlibet/ext/songsmenu/fingerprint/search.py:43
@@ -3269,7 +3269,7 @@ msgstr "Gestisce i segnalibri nei file selezionati."
 
 #: quodlibet/ext/songsmenu/bookmarks.py:64 quodlibet/qltk/seekbutton.py:245
 msgid "_Edit Bookmarks…"
-msgstr "Aggiorna S_egnalibri..."
+msgstr "Aggiorna S_egnalibri…"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:74
 msgid "No Bookmarks"
@@ -3353,7 +3353,7 @@ msgstr "Incontrato errore. Per favore riprova."
 #: quodlibet/ext/songsmenu/brainz/widgets.py:473
 #: quodlibet/ext/songsmenu/brainz/widgets.py:489
 msgid "Loading result…"
-msgstr "Caricamento risultato..."
+msgstr "Caricamento risultato…"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:476
 msgid "No results found."
@@ -3855,7 +3855,7 @@ msgstr "Invio impronte:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:189
 msgid "Submitting…"
-msgstr "Invio..."
+msgstr "Invio…"
 
 #: quodlibet/ext/songsmenu/forcewrite.py:18
 msgid "Update Tags in Files"
@@ -3895,7 +3895,7 @@ msgid ""
 "plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
 msgstr ""
 "Impossibile contattare il tuo dispositivo iFP. Controlla che il dispositivo "
-"si alimentato e collegato, e che tu abbia ifp-line (http://ifp-driver.sf."
+"sia alimentato e collegato, e che tu abbia ifp-line (http://ifp-driver.sf."
 "net) installato."
 
 #: quodlibet/ext/songsmenu/ifp.py:40
@@ -4018,7 +4018,7 @@ msgid ""
 "<b>Note:</b> this must be enabled when metadata is copied for track "
 "information to be stored."
 msgstr ""
-"Attiva questo se vuoi migrare i metadati da un album ad un altro facendo "
+"Abilita questo se vuoi migrare i metadati da un album ad un altro facendo "
 "corrispondere i numeri di traccia e disco.\n"
 "\n"
 "<b>Nota:</b> questo deve essere abilitato quando i metadati sono copiati "
@@ -4054,7 +4054,7 @@ msgstr "Impossibile esportare la scaletta"
 #: quodlibet/ext/songsmenu/playlist.py:134
 #, python-format
 msgid "Writing to <b>%s</b> failed."
-msgstr "Scrittura di <b>%s</b> fallita."
+msgstr "Scrittura su <b>%s</b> fallita."
 
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:23
@@ -4188,7 +4188,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/website_search.py:81
 msgid "Search URL patterns"
-msgstr "modelli URL di ricerca"
+msgstr "Cerca modelli URL"
 
 #: quodlibet/ext/songsmenu/website_search.py:91
 msgid "Edit search URLs"
@@ -4197,7 +4197,7 @@ msgstr "Modifica _URL di ricerca"
 #. Add link to editor
 #: quodlibet/ext/songsmenu/website_search.py:117
 msgid "Configure Searches…"
-msgstr "Configura ricerche..."
+msgstr "Configura ricerche…"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:36
 msgid "Search Tag in Wikipedia"
@@ -4281,7 +4281,7 @@ msgstr "Colonne da mostrare e ordine in modalità breve (%s)"
 
 #: quodlibet/operon/commands.py:47 quodlibet/operon/commands.py:86
 msgid "Also list programmatic tags"
-msgstr "Mostra anche tag programmatici"
+msgstr "Elenca anche i tag programmatici"
 
 #: quodlibet/operon/commands.py:51 quodlibet/operon/commands.py:129
 #: quodlibet/operon/commands.py:221 quodlibet/operon/commands.py:294
@@ -4692,7 +4692,7 @@ msgstr "Valori salvati"
 
 #: quodlibet/qltk/cbes.py:265
 msgid "Edit saved values…"
-msgstr "Modifica i valori salvati..."
+msgstr "Modifica i valori salvati…"
 
 #: quodlibet/qltk/controls.py:112
 msgid "Auto_matic"
@@ -4970,7 +4970,7 @@ msgstr ""
 
 #: quodlibet/qltk/_editutils.py:144
 msgid "_More options…"
-msgstr "_Più opzioni..."
+msgstr "_Più opzioni…"
 
 #: quodlibet/qltk/entry.py:79
 msgid "_Undo"
@@ -4986,7 +4986,7 @@ msgstr "_A proposito"
 
 #: quodlibet/qltk/exfalsowindow.py:99 quodlibet/qltk/quodlibetwindow.py:979
 msgid "_Check for Updates…"
-msgstr "_Controlla per aggiornamenti..."
+msgstr "_Controlla per aggiornamenti…"
 
 #: quodlibet/qltk/exfalsowindow.py:105 quodlibet/qltk/quodlibetwindow.py:912
 #: quodlibet/qltk/songsmenu.py:290
@@ -5018,7 +5018,7 @@ msgstr "Cartelle"
 
 #: quodlibet/qltk/filesel.py:265
 msgid "_New Folder…"
-msgstr "_Nuova cartella..."
+msgstr "_Nuova cartella…"
 
 #: quodlibet/qltk/filesel.py:274
 msgid "_Select all Sub-Folders"
@@ -5067,7 +5067,7 @@ msgstr "Brano cor_rente"
 
 #: quodlibet/qltk/info.py:109
 msgid "_Edit Display…"
-msgstr "Mod_ifica visualizzazione..."
+msgstr "Mod_ifica visualizzazione…"
 
 #: quodlibet/qltk/information.py:107
 msgid "No songs are selected."
@@ -5233,7 +5233,7 @@ msgstr "Nessun testo trovato per questo brano."
 
 #: quodlibet/qltk/lyrics.py:76
 msgid "Searching for lyrics…"
-msgstr "Ricerca di testi..."
+msgstr "Ricerca di testi…"
 
 #: quodlibet/qltk/maskedbox.py:21
 msgid "Are you sure you want to remove all songs?"
@@ -5393,7 +5393,7 @@ msgstr "Altr_i:"
 
 #: quodlibet/qltk/prefs.py:89
 msgid "_Edit…"
-msgstr "M_odifica..."
+msgstr "M_odifica…"
 
 #: quodlibet/qltk/prefs.py:92
 msgid "Add or remove additional column headers"
@@ -5753,19 +5753,19 @@ msgstr "_Aiuto"
 
 #: quodlibet/qltk/quodlibetwindow.py:888
 msgid "_Add a Folder…"
-msgstr "_Aggiungi una cartella..."
+msgstr "_Aggiungi una cartella…"
 
 #: quodlibet/qltk/quodlibetwindow.py:893
 msgid "_Add a File…"
-msgstr "Aggiungi un _file..."
+msgstr "Aggiungi un _file…"
 
 #: quodlibet/qltk/quodlibetwindow.py:898
 msgid "_Add a Location…"
-msgstr "Aggiungi una _posizione"
+msgstr "Aggiungi una _posizione…"
 
 #: quodlibet/qltk/quodlibetwindow.py:927
 msgid "Edit Bookmarks…"
-msgstr "Modifica segnali_bri..."
+msgstr "Modifica segnali_bri…"
 
 #: quodlibet/qltk/quodlibetwindow.py:947
 msgid "Stop After This Song"
@@ -5872,7 +5872,7 @@ msgstr "Modelli del percorso"
 
 #: quodlibet/qltk/renamefiles.py:148 quodlibet/qltk/tagsfrompath.py:117
 msgid "Edit saved patterns…"
-msgstr "Modifica modelli salvati..."
+msgstr "Modifica modelli salvati…"
 
 #: quodlibet/qltk/renamefiles.py:151 quodlibet/qltk/tagsfrompath.py:120
 #: quodlibet/qltk/tracknumbers.py:58
@@ -5973,7 +5973,7 @@ msgstr "Ricerche salvate"
 
 #: quodlibet/qltk/searchbar.py:56
 msgid "Edit saved searches…"
-msgstr "Modifica ricerche salvate..."
+msgstr "Modifica ricerche salvate…"
 
 #: quodlibet/qltk/searchbar.py:80
 msgid "Search your library, using free text or QL queries"
@@ -6110,7 +6110,7 @@ msgstr "Intestazioni della _produzione "
 
 #: quodlibet/qltk/songlist.py:1115
 msgid "_Customize Headers…"
-msgstr "Personali_zza intestazioni..."
+msgstr "Personali_zza intestazioni…"
 
 #: quodlibet/qltk/songlist.py:1120
 msgid "_Expand Column"
@@ -6143,7 +6143,7 @@ msgstr[1] "Eseguire il plugin \"%(name)s\" su %(count)d album?"
 
 #: quodlibet/qltk/songsmenu.py:135
 msgid "Configure Plugins…"
-msgstr "_Configura i plugin..."
+msgstr "_Configura i plugin…"
 
 #: quodlibet/qltk/songsmenu.py:330
 msgid "Add to _Queue"
@@ -6151,7 +6151,7 @@ msgstr "Metti in _coda"
 
 #: quodlibet/qltk/songsmenu.py:350
 msgid "_Remove from Library…"
-msgstr "_Rimuovi dalla libreria"
+msgstr "_Rimuovi dalla libreria…"
 
 #: quodlibet/qltk/songsmenu.py:415
 msgid "Unable to show files"
@@ -6261,7 +6261,7 @@ msgstr "Precedente"
 #: quodlibet/qltk/views.py:924
 #, python-format
 msgid "and %d more…"
-msgstr "e altri %d..."
+msgstr "e altri %d…"
 
 #: quodlibet/qltk/wlw.py:200
 msgid "Saving the songs you changed."
