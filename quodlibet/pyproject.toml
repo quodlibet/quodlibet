@@ -19,7 +19,6 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.5"
 mutagen = "^1.44"
-senf = "^1.4"
 feedparser = "^5.2"
 pycairo = "^1.19"
 pygobject = "^3.34.0"
@@ -46,10 +45,10 @@ flake8 = "^3.7.9"
 coverage = {extras = ["toml"], version = "^5.0.3"}
 
 
+[tool.coverage.run]
+omit=["quodlibet/packages/*"]
+include=["quodlibet/*", "tests/*"]
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
-[tool.coverage.run]
-omit=["quodlibet/packages/*"]
-include=["quodlibet/*", "tests/*"]

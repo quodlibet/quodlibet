@@ -396,14 +396,6 @@ security = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)"]
 socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7)", "win-inet-pton"]
 
 [[package]]
-category = "main"
-description = "Consistent filename handling for all Python versions and platforms"
-name = "senf"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
-version = "1.4.1"
-
-[[package]]
 category = "dev"
 description = "Python 2 and 3 compatibility utilities"
 name = "six"
@@ -582,7 +574,7 @@ testing = ["pathlib2", "unittest2", "jaraco.itertools"]
 plugins = ["musicbrainzngs", "pyinotify", "dbus-python"]
 
 [metadata]
-content-hash = "659b5b797f68af4235b41c773ad5fe8070e0ce0ac300946dd19f128c31eab469"
+content-hash = "b9a223cbd04addb43132e05858a97e6db4415ca6741c32c77bc54e610dc93069"
 python-versions = "^3.5"
 
 [metadata.files]
@@ -792,10 +784,6 @@ pytz = [
 requests = [
     {file = "requests-2.22.0-py2.py3-none-any.whl", hash = "sha256:9cf5292fcd0f598c671cfc1e0d7d1a7f13bb8085e9a590f48c010551dc6c4b31"},
     {file = "requests-2.22.0.tar.gz", hash = "sha256:11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4"},
-]
-senf = [
-    {file = "senf-1.4.1-py2.py3-none-any.whl", hash = "sha256:ad7d25c33ef8a59f7ff87e8275da6097d402e30820789729ade4ec3581686313"},
-    {file = "senf-1.4.1.tar.gz", hash = "sha256:fec723cd50e928c9b18545fafae89d0d0d9d4053ea49d16fe0649f5c27c00c6c"},
 ]
 six = [
     {file = "six-1.14.0-py2.py3-none-any.whl", hash = "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"},
