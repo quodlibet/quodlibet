@@ -40,9 +40,9 @@ defaults: &defaults
 
 version: 2
 jobs:
-  job.ubuntu16.04:
+  job.ubuntu20.04:
     environment:
-      - DOCKERIMAGE: "ubuntu16.04"
+      - DOCKERIMAGE: "ubuntu20.04"
     <<: *defaults
   job.ubuntu18.04:
     environment:
@@ -52,9 +52,9 @@ jobs:
     environment:
       - DOCKERIMAGE: "win32"
     <<: *defaults
-  job.fedora28:
+  job.fedora31:
     environment:
-      - DOCKERIMAGE: "fedora28"
+      - DOCKERIMAGE: "fedora31"
     <<: *defaults
 
 workflows:
@@ -62,6 +62,6 @@ workflows:
   build_and_test:
     jobs:
       - job.win32
-      - job.ubuntu16.04
+      - job.ubuntu20.04
       - job.ubuntu18.04
-      - job.fedora28
+      - job.fedora31
