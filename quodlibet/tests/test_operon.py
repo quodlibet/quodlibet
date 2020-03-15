@@ -48,21 +48,21 @@ class TOperonBase(TestCase):
         os.unlink(self.f3)
         config.quit()
 
-    def check_true(self, args, so, se, **kwargs):
+    def check_true(self, args, stdout_not_empty, stderr_not_empty, **kwargs):
         """Assert success status code"""
 
-        return self._check(args, True, so, se, **kwargs)
+        return self._check(args, True, stdout_not_empty, stderr_not_empty, **kwargs)
 
-    def check_false(self, args, so, se, **kwargs):
+    def check_false(self, args, stdout_not_empty, stderr_not_empty, **kwargs):
         """Assert error status code"""
 
-        return self._check(args, False, so, se, **kwargs)
+        return self._check(args, False, stdout_not_empty, stderr_not_empty, **kwargs)
 
-    def _check(self, args, success, so, se):
+    def _check(self, args, command_succeeds, stdout_not_empty, stderr_not_empty):
         s, o, e = call(args)
-        self.failUnlessEqual(s == 0, success, msg=repr((s, o, e)))
-        self.failUnlessEqual(bool(o), so, msg=repr(o))
-        self.failUnlessEqual(bool(e), se, msg=repr(e))
+        self.failUnlessEqual(s == 0, command_succeeds, msg=repr((s, o, e)))
+        self.failUnlessEqual(bool(o), stdout_not_empty, msg=repr(o))
+        self.failUnlessEqual(bool(e), stderr_not_empty, msg=repr(e))
         return o, e
 
 
