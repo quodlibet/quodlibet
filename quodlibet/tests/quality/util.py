@@ -16,7 +16,8 @@ import quodlibet
 from quodlibet.util import get_module_dir
 
 
-SetupConfig = namedtuple("SetupConfig", ["ignore", "builtins", "exclude"])
+SetupConfig = namedtuple("SetupConfig", [
+    "ignore", "builtins", "exclude", "max_line_length"])
 
 
 def parse_setup_cfg():
@@ -33,12 +34,13 @@ def parse_setup_cfg():
     config.read(cfg)
 
     ignore = str(config.get("flake8", "ignore")).split(",")
+    max_line_length = int(config.get("flake8", "max-line-length"))
     builtins = str(config.get("flake8", "builtins")).split(",")
     exclude = str(config.get("flake8", "exclude")).split(",")
     exclude = [
         os.path.join(base_dir, e.replace("/", os.sep)) for e in exclude]
 
-    return SetupConfig(ignore, builtins, exclude)
+    return SetupConfig(ignore, builtins, exclude, max_line_length)
 
 
 setup_cfg = parse_setup_cfg()

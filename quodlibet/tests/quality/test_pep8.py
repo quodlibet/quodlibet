@@ -34,17 +34,19 @@ def create_pool():
         return ProcessPoolExecutor(None)
 
 
-def _check_file(f, ignore):
+def _check_file(f, ignore, max_line_length):
     style = pycodestyle.StyleGuide(ignore=ignore)
+    style.options.max_line_length = max_line_length
     with capture_output() as (o, e):
         style.check_files([f])
     return o.getvalue().splitlines()
 
 
-def check_files(files, ignore=[]):
+def check_files(files, ignore=[], max_line_length=-1):
     lines = []
     with create_pool() as pool:
-        for res in pool.map(_check_file, files, itertools.repeat(ignore)):
+        for res in pool.map(_check_file, files, itertools.repeat(ignore),
+                            itertools.repeat(max_line_length)):
             lines.extend(res)
     return sorted(lines)
 
@@ -55,6 +57,7 @@ class TPEP8(TestCase):
         assert pycodestyle is not None, "pycodestyle/pep8 is missing"
 
         files = iter_project_py_files()
-        errors = check_files(files, ignore=setup_cfg.ignore)
+        errors = check_files(
+            files, ignore=setup_cfg.ignore, max_line_length=setup_cfg.max_line_length)
         if errors:
             raise Exception("\n".join(errors))
