@@ -50,7 +50,7 @@ class TextExpander(Gtk.Expander):
 
 class ErrorDialog(Gtk.MessageDialog):
 
-    RESPONSE_QUIT = 1
+    RESPONSE_RESTART = 1
     RESPONSE_SUBMIT = 2
     RESPONSE_BUGREPORT = 3
 
@@ -67,7 +67,7 @@ class ErrorDialog(Gtk.MessageDialog):
         self.set_transient_for(parent)
         self.set_modal(True)
         self.add_button(_("Submit Error Report"), self.RESPONSE_SUBMIT)
-        self.add_button(_("Restart"), self.RESPONSE_QUIT)
+        self.add_button(_("Restart"), self.RESPONSE_RESTART)
         self.add_button(_("Ignore Error"), Gtk.ResponseType.CANCEL)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 

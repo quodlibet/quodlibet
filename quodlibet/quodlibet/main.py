@@ -216,5 +216,5 @@ def main(argv=None):
 
     print_d("Finished shutdown.")
 
-    if app.restart:
-        os.execv(sys.executable, ["python"] + sys.argv)
+    if app.is_restarting:
+        os.execv(sys.executable, [sys.executable] + sys.argv)

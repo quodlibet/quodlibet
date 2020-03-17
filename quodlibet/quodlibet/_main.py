@@ -59,7 +59,7 @@ class Application(object):
     is_quitting = False
     """True after quit() is called at least once"""
 
-    restart = False
+    is_restarting = False
     """True if the program should restart after quitting"""
 
     @property
@@ -78,10 +78,13 @@ class Application(object):
     def browser(self):
         return self.window.browser
 
-    def quit(self, *, restart=False):
+    def restart(self):
+        self.is_restarting = True
+        self.quit()
+
+    def quit(self):
         from gi.repository import GLib
 
-        self.restart = restart
         self.is_quitting = True
 
         def idle_quit():

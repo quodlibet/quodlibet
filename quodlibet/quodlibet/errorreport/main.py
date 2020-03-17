@@ -99,9 +99,9 @@ def run_error_dialogs(exc_info, sentry_error):
     dialog = ErrorDialog(window, error_text)
     while 1:
         response = dialog.run()
-        if response == ErrorDialog.RESPONSE_QUIT:
+        if response == ErrorDialog.RESPONSE_RESTART:
             dialog.destroy()
-            app.quit(restart=True)
+            app.restart()
         elif response == ErrorDialog.RESPONSE_SUBMIT:
             dialog.hide()
             submit_dialog = SubmitErrorDialog(
