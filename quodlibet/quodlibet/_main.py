@@ -59,6 +59,9 @@ class Application(object):
     is_quitting = False
     """True after quit() is called at least once"""
 
+    restart = False
+    """True if the program should restart after quitting"""
+
     @property
     def icon_name(self):
         return self.id
@@ -75,9 +78,10 @@ class Application(object):
     def browser(self):
         return self.window.browser
 
-    def quit(self):
+    def quit(self, *, restart=False):
         from gi.repository import GLib
 
+        self.restart = restart
         self.is_quitting = True
 
         def idle_quit():

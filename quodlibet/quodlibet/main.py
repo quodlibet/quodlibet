@@ -215,3 +215,6 @@ def main(argv=None):
     session_client.close()
 
     print_d("Finished shutdown.")
+
+    if app.restart:
+        os.execv(sys.executable, ["python"] + sys.argv)

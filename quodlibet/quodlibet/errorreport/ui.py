@@ -67,7 +67,7 @@ class ErrorDialog(Gtk.MessageDialog):
         self.set_transient_for(parent)
         self.set_modal(True)
         self.add_button(_("Submit Error Report"), self.RESPONSE_SUBMIT)
-        self.add_button(_("Quit Program"), self.RESPONSE_QUIT)
+        self.add_button(_("Restart"), self.RESPONSE_QUIT)
         self.add_button(_("Ignore Error"), Gtk.ResponseType.CANCEL)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
