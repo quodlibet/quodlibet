@@ -16,7 +16,7 @@ function main {
 
     # started from the wrong env -> switch
     if [ $(echo "$MSYSTEM" | tr '[A-Z]' '[a-z]') != "$MINGW" ]; then
-        "/${MINGW}.exe" "$0"
+        "/${MINGW}.exe" "$0" "$1"
         exit $?
     fi
 
