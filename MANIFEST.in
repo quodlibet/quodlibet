@@ -1,7 +1,7 @@
 include COPYING
 include HACKING
 include NEWS
-include README
+include README.rst
 include po/*.po
 include po/POTFILES.in
 include po/POTFILES.skip
