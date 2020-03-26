@@ -5,7 +5,6 @@ set -e
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 if [[ $1 == "inflatpak" ]]; then
-    cd quodlibet
     python3 -m pip install --user pytest pyflakes pycodestyle
     python3 setup.py test
 else

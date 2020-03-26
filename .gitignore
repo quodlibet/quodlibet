@@ -13,17 +13,18 @@
 MANIFEST
 .DS_Store
 *.egg-info
+*.exe
 
-quodlibet/po/missing
-quodlibet/po/notexist
+po/missing
+po/notexist
 
 # Sphinx build files
-quodlibet/docs/_build*/*
-quodlibet/docs/_rtd_theme*
+docs/_build*/*
+docs/_rtd_theme*
 
 # Ignore build files
-quodlibet/build/*
-quodlibet/dist/*
+build/*
+dist/*
 
 # Ignore Eclipse files
 .buildpath
@@ -35,17 +36,17 @@ quodlibet/dist/*
 .idea/*
 
 # Windows Installer
-win_installer/_build_root
-win_installer/_rebuild_root
+dev-utils/win_installer/_build_root
+dev-utils/win_installer/_rebuild_root
 
 # OS X Bundle
-osx_bundle/_home
-osx_bundle/_build
-osx_bundle/_bundler
-osx_bundle/_jhbuild
+dev-utils/osx_bundle/_home
+dev-utils/osx_bundle/_build
+dev-utils/osx_bundle/_bundler
+dev-utils/osx_bundle/_jhbuild
 
 # coverage.py html report
-quodlibet/coverage/*
+coverage/*
 .coverage
 
 # mypy

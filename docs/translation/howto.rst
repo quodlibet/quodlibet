@@ -33,8 +33,8 @@ Translation Process
 
 Get the QL code::
 
-    $ git clone https://github.com/quodlibet/quodlibet.git quodlibet 
-    $ cd quodlibet/quodlibet
+    $ git clone https://github.com/quodlibet/quodlibet.git
+    $ cd quodlibet
 
 To translate the last release, update to the stable branch::
 

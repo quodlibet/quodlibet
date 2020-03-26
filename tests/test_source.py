@@ -26,6 +26,7 @@ def iter_py_paths():
         os.path.join(root, "build"),
         os.path.join(root, "dist"),
         os.path.join(root, "docs"),
+        os.path.join(root, "dev-utils"),
         os.path.join(root, "quodlibet", "packages"),
     ]
     for dirpath, dirnames, filenames in os.walk(root):

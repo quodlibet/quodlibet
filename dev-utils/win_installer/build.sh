@@ -10,7 +10,9 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 source "$DIR"/_base.sh
 
 function main {
-    local GIT_TAG=${1:-"master"}
+    local CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+    local GIT_TAG=${1:-"$CURRENT_BRANCH"}
+    echo "Building: $GIT_TAG"
 
     [[ -d "${BUILD_ROOT}" ]] && (echo "${BUILD_ROOT} already exists"; exit 1)
 

@@ -38,7 +38,7 @@ Var UNINST_BIN
 !define MUI_ABORTWARNING
 !define MUI_ICON "..\quodlibet.ico"
 
-!insertmacro MUI_PAGE_LICENSE "..\quodlibet\quodlibet\COPYING"
+!insertmacro MUI_PAGE_LICENSE "..\quodlibet\COPYING"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 

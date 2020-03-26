@@ -137,11 +137,11 @@ function install_quodlibet {
     [ -z "$1" ] && (echo "Missing arg"; exit 1)
 
     rm -Rf "${REPO_CLONE}"
-    git clone "${DIR}"/.. "${REPO_CLONE}"
+    git clone "${DIR}"/../.. "${REPO_CLONE}"
 
     (cd "${REPO_CLONE}" && git checkout "$1") || exit 1
 
-    build_python "${REPO_CLONE}"/quodlibet/setup.py install
+    build_python "${REPO_CLONE}"/setup.py install
 
     # Create launchers
     python3 "${MISC}"/create-launcher.py \
@@ -328,7 +328,7 @@ function cleanup_after {
 
 function build_installer {
     BUILDPY=$(echo "${MINGW_ROOT}"/lib/python3.*/site-packages/quodlibet)/build.py
-    cp "${REPO_CLONE}"/quodlibet/quodlibet/build.py "$BUILDPY"
+    cp "${REPO_CLONE}"/quodlibet/build.py "$BUILDPY"
     echo 'BUILD_TYPE = u"windows"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
     (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
@@ -342,7 +342,7 @@ function build_installer {
 
 function build_portable_installer {
     BUILDPY=$(echo "${MINGW_ROOT}"/lib/python3.*/site-packages/quodlibet)/build.py
-    cp "${REPO_CLONE}"/quodlibet/quodlibet/build.py "$BUILDPY"
+    cp "${REPO_CLONE}"/quodlibet/build.py "$BUILDPY"
     echo 'BUILD_TYPE = u"windows-portable"' >> "$BUILDPY"
     echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
     (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")

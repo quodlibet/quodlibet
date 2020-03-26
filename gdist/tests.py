@@ -25,6 +25,7 @@ import os
 import sys
 import subprocess
 import tarfile
+import fnmatch
 from distutils import dir_util
 
 from .util import Command, get_dist_class
@@ -118,6 +119,21 @@ class distcheck_cmd(sdist):
             assert process.returncode == 0
 
             tracked_files = out.splitlines()
+            ignore_tracked = [
+                "dev-utils/*",
+                ".github/*",
+                ".azure/*",
+                ".docker/*",
+                ".travis*",
+                ".circleci*",
+                "docker.sh",
+                "test_flatpak.sh",
+                ".codecov.yml",
+                ".git*",
+            ]
+            tracked_files = [
+                p for p in tracked_files if not
+                any(fnmatch.fnmatch(p, i) for i in ignore_tracked)]
 
             diff = set(tracked_files) - set(included_files)
             assert not diff, (

@@ -30,9 +30,9 @@ Setting Up the MSYS2 Environment
 * Execute ``C:\msys64\mingw32.exe``
 * Run ``pacman -S git`` to install git
 * Run ``git clone https://github.com/quodlibet/quodlibet.git``
-* Run ``cd quodlibet/win_installer`` to end up where this README exists.
+* Run ``cd quodlibet/dev-utils/win_installer`` to end up where this README exists.
 * Execute ``./bootstrap.sh`` to install all the needed dependencies.
-* Now go to the application source code ``cd ../quodlibet``
+* Now go to the application source code ``cd ../..``
 * To run Quod Libet execute ``./quodlibet.py``
 
 If you want to use py.test directly you have to unset the MSYSTEM env var:
