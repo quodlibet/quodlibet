@@ -10,7 +10,7 @@ Ex Falso is a tag editor with the same tag editing interface as Quod Libet.
 
 https://quodlibet.readthedocs.io
 
-.. image:: https://github.com/quodlibet/quodlibet/raw/master/quodlibet/docs/images/paned.png
+.. image:: https://github.com/quodlibet/quodlibet/raw/master/docs/images/paned.png
     :align: center
     :width: 670
     :height: 594
