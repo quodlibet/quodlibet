@@ -35,8 +35,6 @@ plugins = ["musicbrainzngs", "pyinotify", "dbus-python"]
 [tool.poetry.dev-dependencies]
 pytest = '^5.0'
 polib = '*'
-pycodestyle = '*'
-pyflakes = '*'
 sphinx = '*'
 sphinx_rtd_theme = '*'
 pyGObject-stubs = "*"

@@ -43,8 +43,7 @@ function main {
         mingw-w64-$MSYS2_ARCH-python3-pytest \
         mingw-w64-$MSYS2_ARCH-python3-certifi \
         mingw-w64-$MSYS2_ARCH-python3-coverage \
-        mingw-w64-$MSYS2_ARCH-python3-pycodestyle \
-        mingw-w64-$MSYS2_ARCH-python3-pyflakes
+        mingw-w64-$MSYS2_ARCH-python3-flake8
 
     pip3 install --user -U feedparser musicbrainzngs mutagen
 }

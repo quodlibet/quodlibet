@@ -38,7 +38,7 @@ from .enum import enum
 from .i18n import _, C_
 
 
-# pyflakes
+# flake8
 cached_func, enum, print_w, print_exc, is_plasma, is_unity, is_enlightenment,
 is_linux, is_windows, is_wine, is_osx, get_module_dir, get_ca_file,
 NamedTemporaryFile, is_flatpak, cmp, matches_flatpak_runtime

@@ -31,8 +31,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m pip install --upgrade pip && python3 -m pip install --upgrade \
-    pycodestyle \
-    pyflakes \
+    flake8 \
     xvfbwrapper \
     "coverage[toml]" \
     pytest-faulthandler

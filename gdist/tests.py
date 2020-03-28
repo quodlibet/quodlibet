@@ -78,7 +78,7 @@ class test_cmd(Command):
 
 
 class quality_cmd(Command):
-    description = "Run pep8/pyflakes tests"
+    description = "Run flake8/mypy tests"
     user_options = []
 
     def initialize_options(self):

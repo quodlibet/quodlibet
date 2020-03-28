@@ -136,6 +136,5 @@ Testing Dependencies
 
 * The build dependencies
 * **pytest**
-* **pyflakes**
-* **pycodestyle**
+* **flake8**
 * **polib**

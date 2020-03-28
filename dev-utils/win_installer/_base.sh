@@ -106,6 +106,8 @@ function install_deps {
 feedparser==5.2.1
 musicbrainzngs==0.6
 mutagen==1.44.0
+flake8==3.7.9
+entrypoints==0.3
 pycodestyle==2.5.0
 pyflakes==2.1.1
 "

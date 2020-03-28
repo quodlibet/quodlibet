@@ -24,8 +24,7 @@ RUN dnf --best -y install \
     && dnf clean all
 
 RUN pip3 install --upgrade \
-    pycodestyle \
-    pyflakes \
+    flake8 \
     xvfbwrapper \
     "coverage[toml]" \
     pytest-faulthandler
