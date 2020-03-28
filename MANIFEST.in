@@ -1,6 +1,6 @@
 include COPYING
 include HACKING
-include NEWS
+include NEWS.rst
 include README.rst
 include po/*.po
 include po/POTFILES.in

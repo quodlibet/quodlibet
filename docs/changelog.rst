@@ -1,4 +1,4 @@
 Changelog
 =========
 
-.. include:: ../NEWS
+.. include:: ../NEWS.rst
