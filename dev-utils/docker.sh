@@ -12,7 +12,7 @@
 set -e
 
 IMAGENAME="ql-docker-image-$2"
-DOCKERFILE=".docker/Dockerfile.$2"
+DOCKERFILE="../.docker/Dockerfile.$2"
 
 if [[ ! "$1" == "run" ]] && [[ ! "$1" == "rm" ]]
 then
@@ -23,7 +23,7 @@ fi
 if [[ ! -e "$DOCKERFILE" ]]
 then
   echo -e "\e[31mPass one of the following:\e[0m"
-  ls -1 ".docker" | sort | cut -d. -f2-
+  ls -1 "../.docker" | sort | cut -d. -f2-
   exit 1
 fi
 
@@ -36,4 +36,4 @@ then
 fi
 
 sudo docker build --build-arg HOST_USER_ID="$UID" --tag "$IMAGENAME" --file "$DOCKERFILE" .
-sudo docker run --cap-add=SYS_PTRACE --rm --volume "$(pwd):/home/user/app" --workdir "/home/user/app/quodlibet" --tty --interactive "$IMAGENAME" bash
+sudo docker run --cap-add=SYS_PTRACE --rm --volume "$(pwd)/..:/home/user/app" --workdir "/home/user/app" --tty --interactive "$IMAGENAME" bash

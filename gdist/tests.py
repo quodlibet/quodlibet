@@ -126,8 +126,6 @@ class distcheck_cmd(sdist):
                 ".docker/*",
                 ".travis*",
                 ".circleci*",
-                "docker.sh",
-                "test_flatpak.sh",
                 ".codecov.yml",
                 ".git*",
             ]
