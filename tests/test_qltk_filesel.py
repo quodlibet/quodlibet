@@ -52,7 +52,7 @@ class TDirectoryTree(TestCase):
         if os.name == "nt":
             paths = [u"C:\\", get_home_dir()]
         else:
-            paths = ["/", get_home_dir(), sys.prefix]
+            paths = ["/", get_home_dir()]
 
         for path in paths:
             dirlist = DirectoryTree(path, folders=self.ROOTS)
