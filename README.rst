@@ -26,8 +26,8 @@ https://quodlibet.readthedocs.org/en/latest/development/overview.html
 .. image:: https://circleci.com/gh/quodlibet/quodlibet.svg?style=shield
     :target: https://circleci.com/gh/quodlibet/quodlibet
 
-.. image:: https://quodlibet.visualstudio.com/quodlibet/_apis/build/status/quodlibet.quodlibet
-    :target: https://quodlibet.visualstudio.com/quodlibet/_build/latest?definitionId=2
+.. image:: https://dev.azure.com/quodlibet/quodlibet/_apis/build/status/quodlibet?branchName=master
+    :target: https://dev.azure.com/quodlibet/quodlibet/_build/latest?definitionId=4&branchName=master
 
 .. image:: https://codecov.io/gh/quodlibet/quodlibet/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/quodlibet/quodlibet
