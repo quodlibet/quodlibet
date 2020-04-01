@@ -31,6 +31,7 @@ dist/*
 .project
 .settings/*
 .pydevproject
+.vscode/*
 
 # And IDEA
 .idea/*
