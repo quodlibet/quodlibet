@@ -5,6 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Dict, Set, List
 import unicodedata
 import sys
 from urllib.request import urlopen
@@ -251,7 +252,7 @@ _PUNCT_CONFUSABLES_CACHE = {
 }
 
 
-def get_decomps_mapping(regenerate=False):
+def get_decomps_mapping(regenerate=False) -> Dict[str, str]:
     """This takes the decomps.txt file of the Unicode UCA and gives us a cases
     where a letter can be decomposed for collation and that mapping isn't in
     NFKD.
@@ -260,7 +261,7 @@ def get_decomps_mapping(regenerate=False):
     if not regenerate:
         return _UCA_DECOMPS_CACHE
 
-    mapping = {}
+    mapping: Dict[str, str] = {}
 
     h = urlopen("http://unicode.org/Public/UCA/8.0.0/decomps.txt")
     for line in h.read().splitlines():
@@ -293,7 +294,7 @@ def get_decomps_mapping(regenerate=False):
     return mapping
 
 
-def get_punctuation_mapping(regenerate=False):
+def get_punctuation_mapping(regenerate=False) -> Dict[str, str]:
     """This takes the unicode confusables set and extracts punctuation
     which looks similar to one or more ASCII punctuation.
 
@@ -306,7 +307,7 @@ def get_punctuation_mapping(regenerate=False):
 
     h = urlopen("http://www.unicode.org/Public/security/9.0.0/confusables.txt")
     data = h.read()
-    mapping = {}
+    mapping: Dict[str, str] = {}
     for line in data.decode("utf-8-sig").splitlines():
         line = line.strip()
         if not line:
@@ -332,8 +333,8 @@ def get_punctuation_mapping(regenerate=False):
             return unicodedata.category(char).startswith("P")
 
         if all(is_ascii(c) and is_punct(c) for c in repls) and char:
-            repls = u"".join(repls)
-            mapping[repls] = mapping.get(repls, u"") + char
+            repls_joined = u"".join(repls)
+            mapping[repls_joined] = mapping.get(repls_joined, u"") + char
 
     # if any of the equal chars is also ascii + punct we can replace
     # it as well
@@ -345,7 +346,7 @@ def get_punctuation_mapping(regenerate=False):
     return mapping
 
 
-def diacritic_for_letters(regenerate=False):
+def diacritic_for_letters(regenerate=False) -> Dict[str, str]:
     """Returns a mapping for combining diacritic mark to ascii characters
     for which they can be used to combine to a single unicode char.
 
@@ -360,7 +361,7 @@ def diacritic_for_letters(regenerate=False):
     if not regenerate:
         return _DIACRITIC_CACHE
 
-    d = {}
+    d: Dict[str, Set[str]] = {}
     for i in range(sys.maxunicode):
         u = chr(i)
         n = unicodedata.normalize("NFKD", u)
@@ -372,14 +373,15 @@ def diacritic_for_letters(regenerate=False):
             continue
         d.setdefault(n[1:], set()).add(n[0])
 
+    d2: Dict[str, str] = {}
     for k, v in d.items():
-        d[k] = u"".join(sorted(v))
+        d2[k] = u"".join(sorted(v))
 
-    return d
+    return d2
 
 
-def generate_re_mapping(_diacritic_for_letters):
-    letter_to_variants = {}
+def generate_re_mapping(_diacritic_for_letters: Dict[str, str]) -> Dict[str, str]:
+    letter_to_variants: Dict[str, List[str]] = {}
 
     # combine combining characters with the ascii chars
     for dia, letters in _diacritic_for_letters.items():
@@ -387,15 +389,16 @@ def generate_re_mapping(_diacritic_for_letters):
             unichar = unicodedata.normalize("NFKC", c + dia)
             letter_to_variants.setdefault(c, []).append(unichar)
 
+    letter_to_variants_joined: Dict[str, str] = {}
     # create strings to replace ascii with
     for k, v in letter_to_variants.items():
-        letter_to_variants[k] = u"".join(sorted(v))
+        letter_to_variants_joined[k] = u"".join(sorted(v))
 
-    return letter_to_variants
+    return letter_to_variants_joined
 
 
 @cached_func
-def get_replacement_mapping():
+def get_replacement_mapping() -> Dict[str, List[str]]:
     """Returns a dict mapping a sequence of characters to another sequence
     of characters.
 
@@ -403,7 +406,7 @@ def get_replacement_mapping():
     in the value.
     """
 
-    mapping = {}
+    mapping: Dict[str, List[str]] = {}
 
     # use _DIACRITIC_CACHE and create a lookup table
     for cp, repl in generate_re_mapping(

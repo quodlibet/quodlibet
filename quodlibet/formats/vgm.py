@@ -6,6 +6,7 @@
 # (at your option) any later version.
 import struct
 import os
+from typing import List
 
 from senf import path2fsn, fsn2text
 from ._audio import AudioFile, translate_errors
@@ -33,7 +34,7 @@ GD3_COMMENT = 10
 
 class VgmFile(AudioFile):
     format = "VGM"
-    mimes = []
+    mimes: List[str] = []
 
     def __init__(self, filename):
         with translate_errors():

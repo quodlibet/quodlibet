@@ -14,6 +14,7 @@ import os
 import re
 import shutil
 import time
+from typing import List
 from collections import OrderedDict
 from itertools import zip_longest
 
@@ -126,7 +127,7 @@ class AudioFile(dict, ImageContainer):
     format = "Unknown Audio File"
     """The underlying file format"""
 
-    mimes = []
+    mimes: List[str] = []
     """MIME types this class can represent"""
 
     def __init__(self, default=tuple(), **kwargs):

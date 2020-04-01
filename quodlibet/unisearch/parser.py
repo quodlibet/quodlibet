@@ -5,8 +5,10 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import List, Dict, Callable
 import re
 import sre_parse
+import sre_constants
 import unicodedata
 
 from quodlibet import print_d
@@ -133,7 +135,8 @@ def _construct_in(pattern, mapping):
     return "[%s%s]" % ("^" if negate else "", u"".join(parts))
 
 
-def _construct_regexp(pattern, mapping, parent=""):
+def _construct_regexp(
+    pattern: sre_parse.SubPattern, mapping: Dict[str, List[str]], parent="") -> str:
     """Raises NotImplementedError"""
 
     parts = []
@@ -168,9 +171,9 @@ def _construct_regexp(pattern, mapping, parent=""):
         elif op == "max_repeat" or op == "min_repeat":
             min_, max_, pad = av
             pad = _construct_regexp(pad, mapping)
-            if min_ == 1 and max_ == sre_parse.MAXREPEAT:
+            if min_ == 1 and max_ == sre_constants.MAXREPEAT:
                 parts.append(u"%s+" % pad)
-            elif min_ == 0 and max_ == sre_parse.MAXREPEAT:
+            elif min_ == 0 and max_ == sre_constants.MAXREPEAT:
                 parts.append(u"%s*" % pad)
             elif min_ == 0 and max_ == 1:
                 parts.append(u"%s?" % pad)
@@ -238,7 +241,7 @@ def _construct_regexp(pattern, mapping, parent=""):
     return u"".join(parts)
 
 
-def re_replace_literals(text, mapping):
+def re_replace_literals(text: str, mapping: Dict[str, List[str]]) -> str:
     """Raises NotImplementedError or re.error"""
 
     assert isinstance(text, str)
@@ -247,7 +250,7 @@ def re_replace_literals(text, mapping):
     return _construct_regexp(pattern, mapping)
 
 
-def re_add_variants(text):
+def re_add_variants(text: str) -> str:
     """Will replace all occurrences of ascii chars
     by a bracket expression containing the character and all its
     variants with a diacritic mark.
@@ -266,7 +269,8 @@ def re_add_variants(text):
     return re_replace_literals(text, get_replacement_mapping())
 
 
-def compile(pattern, ignore_case=True, dot_all=False, asym=False):
+def compile(pattern: str, ignore_case=True, dot_all=False, asym=False
+    ) -> Callable[[str], bool]:
     """
     Args:
         pattern (str): a unicode regex
