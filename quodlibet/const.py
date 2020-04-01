@@ -55,8 +55,7 @@ class Version(tuple):
 class MinVersions(object):
     """Dependency requirements for Quod Libet / Ex Falso"""
 
-    PYTHON2 = Version("Python2", 2, 7)
-    PYTHON3 = Version("Python3", 3, 5)
+    PYTHON3 = Version("Python3", 3, 6)
     MUTAGEN = Version("Mutagen", 1, 34,
         message="Use the Quod Libet unstable PPAs/repos to get a newer "
                 "mutagen version.")

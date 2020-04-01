@@ -28,7 +28,7 @@ Non-Optional Runtime Dependencies
 
 The following software is needed to start Ex Falso or Quod Libet.
 
-* **Python** (>= 3.5)
+* **Python** (>= 3.6)
 * **PyGObject** including **cairo support** (>= 3.18)
 * **pycairo** (>= 1.8)
 * **mutagen** (>= 1.34)
@@ -121,7 +121,7 @@ plugin from loading.
 Build Dependencies
 ------------------
 
-* **Python** >= 3.5 (stdlib only)
+* **Python** >= 3.6 (stdlib only)
 * **gettext** >= 0.19.8 for translations.
 * (optional) **sphinx** >= 1.3
 

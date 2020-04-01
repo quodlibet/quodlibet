@@ -17,7 +17,7 @@ packages = [
 
 
 [tool.poetry.dependencies]
-python = "^3.5"
+python = "^3.6"
 mutagen = "^1.44"
 feedparser = "^5.2"
 pycairo = "^1.19"
