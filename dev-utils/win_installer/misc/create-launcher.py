@@ -87,10 +87,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     return template % launch_code
 
 
-def get_resouce_code(filename, file_version, file_desc, icon_path,
+def get_resouce_code(filename, file_version, file_desc, icon_path, manifest_path,
                      product_name, product_version, company_name):
 
     template = """\
+#include <winuser.h>
+1 RT_MANIFEST "%(manifest_path)s"
 1 ICON "%(icon_path)s"
 1 VERSIONINFO
 FILEVERSION     %(file_version_list)s
@@ -125,7 +127,8 @@ END
     product_version_list = to_ver_list(product_version)
 
     return template % {
-        "icon_path": icon_path, "file_version_list": file_version_list,
+        "icon_path": icon_path, "manifest_path": manifest_path,
+        "file_version_list": file_version_list,
         "product_version_list": product_version_list,
         "file_version": file_version, "product_version": product_version,
         "company_name": company_name, "filename": filename,
@@ -134,10 +137,11 @@ END
     }
 
 
-def build_launcher(out_path, icon_path, file_desc, product_name, product_version,
-                   company_name, entry_point, is_gui):
+def build_launcher(out_path, icon_path, manifest_path, file_desc, product_name,
+                   product_version, company_name, entry_point, is_gui):
 
     src_ico = os.path.abspath(icon_path)
+    src_manifest = os.path.abspath(manifest_path)
     target = os.path.abspath(out_path)
 
     file_version = product_version
@@ -149,10 +153,12 @@ def build_launcher(out_path, icon_path, file_desc, product_name, product_version
         with open("launcher.c", "w") as h:
             h.write(get_launcher_code(entry_point))
         shutil.copyfile(src_ico, "launcher.ico")
+        shutil.copyfile(src_manifest, "launcher.manifest")
         with open("launcher.rc", "w") as h:
             h.write(get_resouce_code(
                 os.path.basename(target), file_version, file_desc,
-                "launcher.ico", product_name, product_version, company_name))
+                "launcher.ico", "launcher.manifest",
+                product_name, product_version, company_name))
 
         build_resource("launcher.rc", "launcher.res")
         build_exe("launcher.c", "launcher.res", is_gui, target)
@@ -172,27 +178,37 @@ def main():
 
     build_launcher(
         os.path.join(target, "quodlibet.exe"),
-        os.path.join(misc, "quodlibet.ico"), "Quod Libet", "Quod Libet",
+        os.path.join(misc, "quodlibet.ico"),
+        os.path.join(misc, "launcher.manifest"),
+        "Quod Libet", "Quod Libet",
         version, company_name, "quodlibet.main:main", True)
 
     build_launcher(
         os.path.join(target, "quodlibet-cmd.exe"),
-        os.path.join(misc, "quodlibet.ico"), "Quod Libet", "Quod Libet",
+        os.path.join(misc, "quodlibet.ico"),
+        os.path.join(misc, "launcher.manifest"),
+        "Quod Libet", "Quod Libet",
         version, company_name, "quodlibet.main:main", False)
 
     build_launcher(
         os.path.join(target, "exfalso.exe"),
-        os.path.join(misc, "exfalso.ico"), "Ex Falso", "Quod Libet",
+        os.path.join(misc, "exfalso.ico"),
+        os.path.join(misc, "launcher.manifest"),
+        "Ex Falso", "Quod Libet",
         version, company_name, "quodlibet.exfalso:main", True)
 
     build_launcher(
         os.path.join(target, "exfalso-cmd.exe"),
-        os.path.join(misc, "exfalso.ico"), "Ex Falso", "Quod Libet",
+        os.path.join(misc, "exfalso.ico"),
+        os.path.join(misc, "launcher.manifest"),
+        "Ex Falso", "Quod Libet",
         version, company_name, "quodlibet.exfalso:main", False)
 
     build_launcher(
         os.path.join(target, "operon.exe"),
-        os.path.join(misc, "exfalso.ico"), "Operon", "Quod Libet",
+        os.path.join(misc, "exfalso.ico"),
+        os.path.join(misc, "launcher.manifest"),
+        "Operon", "Quod Libet",
         version, company_name, "quodlibet.operon:main", False)
 
 
