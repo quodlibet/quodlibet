@@ -22,23 +22,25 @@ class RadioAdMute(EventPlugin):
                     "Stations: di.fm.")
     PLUGIN_ICON = Icons.AUDIO_VOLUME_MUTED
 
-    SPAM = ["www.webex.co.uk",
-            "di.fm/premium",
-            "There's more to Digitally Imported!",
-            "Digitally Imported AMTAG_60 ADWTAG_30000_START=0",
-            "Digitally Imported TSTAG_60 ADWTAG",
-            "PhotonVPS.com",
-            "Get Digitally Imported Premium",
-            "More of the show after these messages",
-            "Choose premium for the best audio experience",
-            "www.di.fm/jobs",
-            ]
+    TEXT_SPAM = [
+        "www.webex.co.uk",
+        "di.fm/premium",
+        "There's more to Digitally Imported!",
+        "Digitally Imported AMTAG_60 ADWTAG_30000_START=0",
+        "Digitally Imported TSTAG_60 ADWTAG",
+        "PhotonVPS.com",
+        "Get Digitally Imported Premium",
+        "More of the show after these messages",
+        "Choose premium for the best audio experience",
+        "www.di.fm/jobs",
+    ]
 
-    RE_SPAM = [r"Sponsored Message\s+\([0-9]+\)",
-            ]
+    RE_SPAM = [
+        r"Sponsored Message\s+\([0-9]+\)",
+    ]
 
-    SPAM = list(map(re_escape, SPAM)) + RE_SPAM
-    SPAM = [re.compile(s, re.I) for s in SPAM]
+    _SPAM = list(map(re_escape, TEXT_SPAM)) + RE_SPAM
+    SPAM = [re.compile(s, re.I) for s in _SPAM]
 
     __old_volume = 0
     __muted = False

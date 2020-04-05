@@ -8,7 +8,6 @@
 # (at your option) any later version.
 
 import os
-from typing import Dict, List
 
 from gi.repository import Gtk
 from os.path import splitext, dirname
@@ -173,9 +172,9 @@ class Import(SongsMenuPlugin):
         self.update_files(songs, metadata, names, append=append, rename=rename)
 
     def update_files(self,
-                     songs: List,
-                     metadata: List[Dict[str, List]],
-                     names: List,
+                     songs,
+                     metadata,
+                     names,
                      append=True, rename=False):
         for song, meta, name in zip(songs, metadata, names):
             for key, values in meta.items():

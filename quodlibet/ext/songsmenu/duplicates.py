@@ -372,7 +372,6 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
     # Cached values
     key_expression = None
-    __cfg_cache = {}
 
     @classmethod
     def get_key_expression(cls):
@@ -438,7 +437,6 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
 
     def plugin_songs(self, songs):
         model = DuplicatesTreeModel()
-        self.__cfg_cache = {}
 
         # Index all songs by our custom key
         # TODO: make this cache-friendly

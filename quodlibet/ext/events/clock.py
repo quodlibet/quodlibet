@@ -44,6 +44,7 @@ class Alarm(EventPlugin):
     def disabled(self):
         self._enabled = False
 
+    @staticmethod
     def is_valid_time(time):
         try:
             hour, minute = map(int, time.split(":"))
@@ -51,7 +52,6 @@ class Alarm(EventPlugin):
             return False
         else:
             return (hour < 24 and minute < 60)
-    is_valid_time = staticmethod(is_valid_time)
 
     def plugin_on_song_started(self, song):
         pass

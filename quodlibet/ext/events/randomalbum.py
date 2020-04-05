@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 import random
+from typing import Dict
 
 from gi.repository import Gtk, GLib
 
@@ -17,10 +18,7 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet import util
 from quodlibet.util import print_d
 from quodlibet.browsers.playlists import PlaylistsBrowser
-try:
-    from quodlibet.qltk import notif, Icons
-except Exception:
-    notif = None
+from quodlibet.qltk import notif, Icons
 
 
 class RandomAlbum(EventPlugin):
@@ -31,7 +29,7 @@ class RandomAlbum(EventPlugin):
                     "filtering by album.")
     PLUGIN_ICON = Icons.MEDIA_SKIP_FORWARD
 
-    weights = {}
+    weights: Dict[str, float] = {}
     use_weights = False
     # Not a dict because we want to impose a particular order
     # Third item is to specify a non-default aggregation function
@@ -214,8 +212,6 @@ class RandomAlbum(EventPlugin):
         if self.delay:
             srcid = GLib.timeout_add(1000 * self.delay,
                                      self.change_album, album)
-            if notif is None:
-                return
             task = notif.Task(_("Random Album"),
                               _("Waiting to start %s") %
                                     util.bold(util.escape(album("album"))),

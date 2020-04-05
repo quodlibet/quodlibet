@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 import math
+from typing import Dict
 
 from gi.repository import Gtk
 
@@ -22,7 +23,7 @@ from quodlibet.qltk.window import Dialog
 # is stored so we can use it between plugin activations.
 # I know it's kinda ugly, but it's a lot more convenient
 # for the user than writing and parsing temporary files.
-songinfo = {}
+songinfo: Dict[str, str] = {}
 
 
 def get_number(song, tag):

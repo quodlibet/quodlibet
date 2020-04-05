@@ -5,6 +5,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Optional
+
 from quodlibet.plugins import PluginHandler, PluginManager
 from quodlibet.qltk import Icons
 
@@ -45,8 +47,12 @@ class QueryPlugin(object):
     the PLUGIN_NAME attribute. However, this can be changed by overriding
     the 'key' attribute to a different string to be used.
     """
-    search = None
-    key = None
+
+    def search(self, song, body):
+        raise NotImplementedError
+
+    key: Optional[str] = None
+
     PLUGIN_ICON = Icons.EDIT_FIND
 
     def parse_body(self, body):

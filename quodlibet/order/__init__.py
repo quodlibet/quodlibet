@@ -6,6 +6,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Optional
+
 from quodlibet import _, print_d
 
 
@@ -21,7 +23,7 @@ class Order(object):
                    If the song is not in the list, this iter will be `None`.
     """
 
-    name = "unknown_order"
+    name: Optional[str] = "unknown_order"
     """The name by which this order is known"""
 
     display_name = _("Unknown")
@@ -138,7 +140,7 @@ class OrderRemembered(Order):
 
 class OrderInOrder(Order):
     """Keep to the order of the supplied playlist"""
-    name = "in_order"
+    name: Optional[str] = "in_order"
     display_name = _("In Order")
     accelerated_name = _("_In Order")
     replaygain_profiles = ["album", "track"]

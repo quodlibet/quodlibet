@@ -15,7 +15,6 @@ from quodlibet.util import get_module_dir
 from tests import TestCase
 
 
-@pytest.mark.skip("mypy errors need to be fixed first")
 @pytest.mark.quality
 class Tmypy(TestCase):
 

@@ -11,7 +11,7 @@
 """Provides `Synchronized Lyrics` plugin for showing synchronized lyrics."""
 
 import os
-
+from typing import List, Tuple
 from datetime import datetime
 
 from gi.repository import Gtk, Gdk, GLib
@@ -46,8 +46,8 @@ as the track.')
     CFG_TXTCOLOR_KEY = "textColor"
     CFG_FONTSIZE_KEY = "fontSize"
 
-    _lines = []
-    _timers = []
+    _lines: List[Tuple] = []
+    _timers: List[Tuple[int, int]] = []
 
     _current_lrc = ""
     _start_clearing_from = 0

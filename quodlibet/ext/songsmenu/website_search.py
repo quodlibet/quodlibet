@@ -7,7 +7,6 @@
 
 import os
 from urllib.parse import quote_plus
-from typing import Optional
 
 from gi.repository import Gtk
 
@@ -142,7 +141,7 @@ class WebsiteSearch(SongsMenuPlugin):
         return True
 
 
-def website_for(pat: Pattern, song: AudioFile) -> Optional[str]:
+def website_for(pat, song):
     """Gets a utf-8 encoded string for a website from the given pattern"""
 
     # Generate a sanitised AudioFile; allow through most tags

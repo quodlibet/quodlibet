@@ -15,6 +15,7 @@
 import os
 import threading
 import time
+from typing import Dict, List
 from hashlib import md5
 from urllib.parse import urlencode
 
@@ -92,7 +93,7 @@ class QLSubmitQueue(object):
 
     # These objects are shared across instances, to allow other plugins to
     # queue scrobbles in future versions of QL
-    queue = []
+    queue: List[Dict[str, str]] = []
     changed_event = threading.Event()
 
     def set_nowplaying(self, song):
