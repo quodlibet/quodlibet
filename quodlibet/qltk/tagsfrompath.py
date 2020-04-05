@@ -31,6 +31,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.util.string.splitters import split_value
 from quodlibet.util import connect_obj
+from quodlibet.plugins.editing import TagsFromPathPlugin
 
 
 TBP = os.path.join(quodlibet.get_user_dir(), "lists", "tagpatterns")
@@ -75,7 +76,6 @@ class SplitTag(FilterCheckButton):
 
 
 class TagsFromPathPluginHandler(EditingPluginHandler):
-    from quodlibet.plugins.editing import TagsFromPathPlugin
     Kind = TagsFromPathPlugin
 
 

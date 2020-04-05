@@ -164,7 +164,7 @@ class TaskController(object):
     all tasks in flight on this controller.
     """
     parent = ParentProperty()
-    default_instance = None
+    default_instance: "TaskController"
 
     def __init__(self):
         self.active_tasks = []

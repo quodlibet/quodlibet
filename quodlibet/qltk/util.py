@@ -5,9 +5,15 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Gdk
+from typing import Tuple, Dict, Union, Type, Optional, Sequence
+
+from gi.repository import Gtk, Gdk, GObject
 
 from quodlibet.qltk import is_wayland
+
+
+GSignals = Dict[
+    str, Union[Tuple[GObject.SignalFlags, Optional[Type], Sequence[Type]], str]]
 
 
 def window_grab_and_map(window, mask):

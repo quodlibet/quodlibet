@@ -7,6 +7,7 @@
 
 from __future__ import absolute_import
 
+from typing import Dict
 import json
 from collections import namedtuple
 
@@ -30,7 +31,7 @@ class JSONObject(object):
     # Override this to specify a set of field names,
     # or a dict of field: FieldData
     # Must include "name" if dict is specified.
-    FIELDS = {}
+    FIELDS: Dict[str, Field] = {}
 
     @classmethod
     def _should_store(cls, field_name):

@@ -7,6 +7,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Optional, Type
+
 from gi.repository import Gtk, GObject
 from senf import fsn2text
 
@@ -61,7 +63,7 @@ class EditingPluginHandler(GObject.GObject, PluginHandler):
         "changed": (GObject.SignalFlags.RUN_LAST, None, ())
     }
 
-    Kind = None
+    Kind: Optional[Type] = None
 
     def __init__(self):
         super(EditingPluginHandler, self).__init__()

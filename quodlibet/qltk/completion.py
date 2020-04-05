@@ -6,6 +6,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Set
+
 from gi.repository import Gtk
 
 from quodlibet import formats, config, print_d
@@ -74,7 +76,7 @@ class EntryWordCompletion(Gtk.EntryCompletion):
 class LibraryTagCompletion(EntryWordCompletion):
     """A completion for text entries tied to a library's tag list."""
 
-    __tags = set()
+    __tags: Set[str] = set()
 
     def __init__(self, library):
         super(LibraryTagCompletion, self).__init__()

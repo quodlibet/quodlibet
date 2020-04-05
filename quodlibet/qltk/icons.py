@@ -16,7 +16,7 @@ https://docs.google.com/spreadsheet/pub?
     key=0AsPAM3pPwxagdGF4THNMMUpjUW5xMXZfdUNzMXhEa2c
 """
 
-from quodlibet.util import enum
+from quodlibet.util.enum import enum
 
 
 @enum

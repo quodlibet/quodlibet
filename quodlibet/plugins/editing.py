@@ -5,6 +5,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import List
+
 from gi.repository import Gtk
 
 from quodlibet.util import connect_obj
@@ -131,8 +133,8 @@ class EditTagsPlugin(Gtk.ImageMenuItem):
          clicked on, and your activate handler runs.
     """
 
-    tags = []
-    needs = []
+    tags: List[str] = []
+    needs: List[str] = []
     _order = 2.0
 
     def activated(self, tag, value):

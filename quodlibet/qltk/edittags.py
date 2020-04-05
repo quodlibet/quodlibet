@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 import sys
+from typing import List
 
 from gi.repository import Gtk, Pango, Gdk
 
@@ -189,7 +190,7 @@ class AudioFileGroup(dict):
 
 class SplitValues(Gtk.ImageMenuItem):
     tags = False
-    needs = []
+    needs: List[str] = []
     _order = 0.0
 
     def __init__(self, tag, value):

@@ -18,6 +18,8 @@ from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version, \
     menu_popup, get_primary_accel_mod
 from quodlibet.qltk.image import get_surface_extents
 
+from .util import GSignals
+
 
 class TreeViewHints(Gtk.Window):
     """Handle 'hints' for treeviews. This includes expansions of truncated
@@ -31,7 +33,7 @@ class TreeViewHints(Gtk.Window):
     # input_shape_combine_region does not work under Windows, we have
     # to pass all events to the treeview. In case it does work, this handlers
     # will never be called.
-    __gsignals__ = dict.fromkeys(
+    __gsignals__: GSignals = dict.fromkeys(
         ['button-press-event', 'button-release-event',
          'motion-notify-event', 'scroll-event',
          'enter-notify-event', 'leave-notify-event'],
@@ -613,7 +615,7 @@ class DragScroll(object):
 
 class BaseView(Gtk.TreeView):
 
-    __gsignals__ = {
+    __gsignals__: GSignals = {
         # like the tree selection changed signal but doesn't emit twice in case
         # a row is activated
         'selection-changed': (
@@ -1224,7 +1226,7 @@ class _TreeViewColumnLabel(Gtk.Label):
 
 class TreeViewColumn(Gtk.TreeViewColumn):
 
-    __gsignals__ = {
+    __gsignals__: GSignals = {
         # tree-view-changed(old_tree_view, new_tree_view)
         # Triggers when the columns gets added/removed from a tree view.
         # The passed values are either a TreeView or None
@@ -1277,9 +1279,9 @@ class TreeViewColumnButton(TreeViewColumn):
     """A TreeViewColumn that forwards its header events:
         button-press-event and popup-menu"""
 
-    __gsignals__ = {
+    __gsignals__: GSignals = {
         'button-press-event': (GObject.SignalFlags.RUN_LAST, bool, (object,)),
-        'popup-menu': (GObject.SignalFlags.RUN_LAST, bool, ()),
+        'popup-menu': (GObject.SignalFlags.RUN_LAST, bool, tuple()),
     }
 
     def __init__(self, **kwargs):

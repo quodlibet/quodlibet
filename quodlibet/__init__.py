@@ -8,7 +8,7 @@
 import sys
 import os
 
-if os.name == "nt":
+if sys.platform == "win32":
     # To prevent us loading DLLs in the system directory which clash
     # with the ones we ship.
     # https://github.com/quodlibet/quodlibet/issues/2817

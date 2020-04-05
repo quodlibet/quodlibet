@@ -5,13 +5,14 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import sys
 import ctypes
 
+from quodlibet.util import winapi
 from ._base import MMKeysBackend, MMKeysAction, MMKeysImportError
 
-try:
-    from quodlibet.util import winapi
-except ImportError:
+
+if sys.platform != "win32":
     raise MMKeysImportError
 
 

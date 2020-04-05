@@ -7,12 +7,14 @@
 # (at your option) any later version.
 
 import os
+from typing import Dict
 
 from gi.repository import Gtk, Pango, GObject
 
 from quodlibet import _
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
+from quodlibet.qltk.util import GSignals
 from quodlibet.util import connect_obj
 from quodlibet.qltk import entry
 from quodlibet.qltk import Icons
@@ -252,11 +254,11 @@ class ComboBoxEntrySave(Gtk.ComboBox):
 
     # gets emitted if the text entry changes
     # mainly to filter out model changes that don't have any effect
-    __gsignals__ = {
+    __gsignals__: GSignals = {
         'text-changed': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
-    __models = {}
+    __models: Dict[str, Gtk.TreeModel] = {}
     __last = ""
 
     def __init__(self, filename=None, initial=[], count=5, id=None,

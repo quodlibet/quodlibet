@@ -522,7 +522,7 @@ def _fill_mappings():
 _fill_mappings()
 
 
-ISO_639_2 = _ISO_639_2.keys()
+ISO_639_2 = list(_ISO_639_2.keys())
 
 
 def _gettext(name, cache=[]):

@@ -17,7 +17,7 @@ try:
     import fcntl
     fcntl
 except ImportError:
-    fcntl = None
+    fcntl = None  # type: ignore
 
 from gi.repository import GLib
 from senf import mkstemp, fsn2bytes

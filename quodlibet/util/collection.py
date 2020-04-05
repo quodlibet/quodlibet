@@ -11,6 +11,7 @@ from __future__ import absolute_import
 
 import os
 import random
+from typing import List
 
 from senf import fsnative, fsn2bytes, bytes2fsn
 
@@ -322,7 +323,7 @@ class Playlist(Collection, Iterable):
     Songs can appear more than once.
     """
 
-    __instances = []
+    __instances: "List[Playlist]" = []
 
     @classmethod
     def playlists_featuring(cls, song):

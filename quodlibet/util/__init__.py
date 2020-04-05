@@ -15,6 +15,7 @@ import sys
 import unicodedata
 import threading
 import locale
+from typing import Dict, List
 from functools import reduce
 
 # Windows doesn't have fcntl, just don't lock for now
@@ -22,7 +23,7 @@ try:
     import fcntl
     fcntl
 except ImportError:
-    fcntl = None
+    fcntl = None  # type: ignore
 
 from senf import fsnative, argv
 
@@ -48,7 +49,8 @@ class InstanceTracker(object):
     """A mixin for GObjects to return a list of all alive objects
     of a given type. Note that it must be used with a GObject or
     something with a connect method and destroy signal."""
-    __kinds = {}
+
+    __kinds: Dict[type, List[object]] = {}
 
     def _register_instance(self, klass=None):
         """Register this object to be returned in the active instance list."""
@@ -148,7 +150,7 @@ class OptionParser(object):
 {title} {version}
 <{email}>
 {copyright}\
-""").format(title=self.__name, version=self.__version, dates="2004-2012",
+""").format(title=self.__name, version=self.__version,
             email=SUPPORT_EMAIL, copyright=COPYRIGHT)
 
     def parse(self, args=None):

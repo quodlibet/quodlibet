@@ -8,6 +8,7 @@
 
 import sys
 import os
+from typing import List
 
 from gi.repository import Gtk, Gdk
 
@@ -109,7 +110,7 @@ class Window(Gtk.Window):
     ^W will close the window.
     """
 
-    windows = []
+    windows: List[Gtk.Window] = []
     _preven_inital_show = False
 
     def __init__(self, *args, **kwargs):

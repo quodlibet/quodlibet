@@ -29,7 +29,7 @@ except (ValueError, ImportError):
 else:
     TextView = GtkSource.View
 
-    class TextBuffer(GtkSource.Buffer):
+    class TextBuffer(GtkSource.Buffer):  # type: ignore
         def __init__(self, *args):
             super(TextBuffer, self).__init__(*args)
             self.set_highlight_matching_brackets(False)

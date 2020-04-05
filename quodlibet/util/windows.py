@@ -7,11 +7,12 @@
 
 from __future__ import absolute_import
 
+import sys
 import os
 import ctypes
 
 
-if os.name == "nt":
+if sys.platform == 'win32':
     from . import winapi
     from .winapi import SHGFPType, CSIDLFlag, CSIDL, GUID, \
         SHGetFolderPathW, S_OK, MAX_PATH, \

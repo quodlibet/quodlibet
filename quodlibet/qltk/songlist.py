@@ -9,6 +9,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import List
+
 from gi.repository import Gtk, GLib, Gdk, GObject
 from senf import uri2fsn
 
@@ -27,6 +29,7 @@ from quodlibet.qltk.views import AllTreeView, DragScroll
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk import Icons
+from quodlibet.qltk.util import GSignals
 from quodlibet.qltk.delete import trash_songs
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
@@ -60,7 +63,7 @@ class SongSelectionInfo(GObject.Object):
             ignore it for now.
     """
 
-    __gsignals__ = {
+    __gsignals__: GSignals = {
         # changed(songs:list)
         'changed': (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
@@ -354,12 +357,12 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                util.InstanceTracker):
     # A TreeView containing a list of songs.
 
-    __gsignals__ = {
+    __gsignals__: GSignals = {
         # changed(songs:list)
         'orders-changed': (GObject.SignalFlags.RUN_LAST, None, [])
     }
 
-    headers = [] # The list of current headers.
+    headers: List[str] = [] # The list of current headers.
     star = list(Query.STAR)
     sortable = True
 

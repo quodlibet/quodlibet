@@ -7,6 +7,7 @@
 
 import locale
 import re
+from typing import List, Dict
 
 from quodlibet import _
 
@@ -21,11 +22,11 @@ class Massager(object):
     """Massage a tag value from various 'okay' formats to the
     'correct' format."""
 
-    tags = []
+    tags: List[str] = []
     error = "Metaerror. This should be overridden in subclasses."
-    options = []
+    options: List[str] = []
 
-    _massagers = {}
+    _massagers: "Dict[str, Massager]" = {}
 
     def validate(self, value):
         """Returns a validated value.

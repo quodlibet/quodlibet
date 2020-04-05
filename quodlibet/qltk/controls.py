@@ -12,6 +12,7 @@ from quodlibet import qltk
 from quodlibet import _
 from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem
+from quodlibet.qltk.util import GSignals
 from quodlibet.qltk.seekbutton import SeekButton
 from quodlibet.util.dprint import print_e
 
@@ -170,7 +171,7 @@ class VolumeMenu(Gtk.Menu):
 
 class PlayPauseButton(Gtk.Button):
 
-    __gsignals__ = {
+    __gsignals__: GSignals = {
         'toggled': (GObject.SignalFlags.RUN_LAST, None, tuple()),
     }
 

@@ -6,6 +6,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Type, Optional
+
 from gi.repository import Gtk
 
 from quodlibet import config
@@ -56,7 +58,7 @@ class Paned(Gtk.Paned):
 class RPaned(Paned):
     """A Paned that supports relative (percentage) width/height setting."""
 
-    ORIENTATION = None
+    ORIENTATION: Gtk.Orientation = None
 
     def __init__(self, *args, **kwargs):
         if self.ORIENTATION is not None:
@@ -142,7 +144,7 @@ class MultiRPaned(object):
     """A Paned that supports an unlimited number of panes."""
 
     # The Paned type (horizontal or vertical)
-    PANED = None
+    PANED: Optional[Type[RPaned]] = None
 
     def __init__(self):
         self._root_paned = None
