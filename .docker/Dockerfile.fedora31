@@ -27,7 +27,8 @@ RUN pip3 install --upgrade \
     flake8 \
     xvfbwrapper \
     "coverage[toml]" \
-    pytest-faulthandler
+    pytest-faulthandler \
+    mypy
 
 ARG HOST_USER_ID=5555
 ENV HOST_USER_ID ${HOST_USER_ID}
