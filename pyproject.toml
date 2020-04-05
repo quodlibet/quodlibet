@@ -34,7 +34,6 @@ pytest = '^5.0'
 polib = '*'
 sphinx = '*'
 sphinx_rtd_theme = '*'
-pyGObject-stubs = "*"
 xvfbwrapper = {version = "^0.2", platform = "linux"}
 flake8 = "^3.7.9"
 coverage = {extras = ["toml"], version = "^5.0.3"}

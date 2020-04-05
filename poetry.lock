@@ -325,17 +325,6 @@ version = "3.36.0"
 pycairo = ">=1.11.1"
 
 [[package]]
-category = "dev"
-description = ""
-name = "pygobject-stubs"
-optional = false
-python-versions = "*"
-version = "0.0.2"
-
-[package.dependencies]
-PyGObject = "*"
-
-[[package]]
 category = "main"
 description = "Linux filesystem events monitoring"
 name = "pyinotify"
@@ -604,7 +593,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 plugins = ["musicbrainzngs", "pyinotify", "dbus-python"]
 
 [metadata]
-content-hash = "72988a11808f7b93485266034dd0b7c6ed857c9b08f8e8d4f2d918b6074de551"
+content-hash = "5d07a05ca3d47539ce2937131f7807e51363d09736c556d77927bea3ff41062f"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -809,9 +798,6 @@ pygments = [
 ]
 pygobject = [
     {file = "PyGObject-3.36.0.tar.gz", hash = "sha256:b97f570e55017fcd3732164811f24ecf63983a4834f61b55b0aaf64ecefac856"},
-]
-pygobject-stubs = [
-    {file = "PyGObject-stubs-0.0.2.tar.gz", hash = "sha256:fa3b258cbe3e384355750639e7e28276c36805639ab31d461fea6062a1b3b9ab"},
 ]
 pyinotify = [
     {file = "pyinotify-0.9.6.tar.gz", hash = "sha256:9c998a5d7606ca835065cdabc013ae6c66eb9ea76a00a1e3bc6e0cfe2b4f71f4"},
