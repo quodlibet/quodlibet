@@ -6,22 +6,10 @@
 # (at your option) any later version.
 
 try:
-    # https://github.com/alastair/python-musicbrainzngs/issues/157
-    # Work around warnings getting enabled in musicbrainzngs
-    import warnings
-    f = list(warnings.filters)
     import musicbrainzngs
-    warnings.filters[:] = f
 except ImportError:
     from quodlibet import plugins
     raise plugins.MissingModulePluginException("musicbrainzngs")
-
-
-# musicbrainzngs.get_url_by_id was added in version 0.5
-if not hasattr(musicbrainzngs, "get_url_by_id"):
-    from quodlibet import plugins
-    raise plugins.MissingModulePluginException("musicbrainzngs >= 0.5")
-
 
 from quodlibet import app
 from quodlibet import const

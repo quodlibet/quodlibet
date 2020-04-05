@@ -87,7 +87,7 @@ plugin from loading.
 **notification-daemon** (or any other implementation of the dbus spec):
     * For the notification plugin
 
-**python-musicbrainzngs** (>= 0.5):
+**python-musicbrainzngs** (>= 0.6):
     * For the musicbrainz plugin
 
 **GStreamer Plugins Good**:
