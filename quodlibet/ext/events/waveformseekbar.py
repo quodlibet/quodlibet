@@ -12,9 +12,11 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from math import ceil, floor
+from typing import List
+
 from gi.repository import Gtk, Gdk, Gst
 import cairo
-from math import ceil, floor
 
 from quodlibet import _, app
 from quodlibet import print_w
@@ -309,7 +311,7 @@ class WaveformSeekBar(Gtk.Box):
 class WaveformScale(Gtk.EventBox):
     """The waveform widget."""
 
-    _rms_vals = []
+    _rms_vals: List[int] = []
     _player = None
     _placeholder = True
 

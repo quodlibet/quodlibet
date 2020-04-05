@@ -35,7 +35,7 @@ class RenameFilesPlugin(object):
     default filters have orders between 1 and 2. Plugins have order 0 by
     default. Plugins with equal orders are sorted by class name."""
 
-    _order = 0.0
+    _order = 0
     active = False
 
     def filter(self, original_filename, value):

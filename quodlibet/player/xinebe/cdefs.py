@@ -213,8 +213,8 @@ xine_event_dispose_queue.argtypes = [ctypes.c_void_p]
 # void xine_event_create_listener_thread(xine_event_queue_t *queue,
 #    xine_event_listener_cb_t callback,
 #    void *user_data)
-xine_event_create_listener_thread = _libxine.xine_event_create_listener_thread
-xine_event_create_listener_thread.argtypes = [ctypes.c_void_p,
+_xine_event_create_listener_thread = _libxine.xine_event_create_listener_thread
+_xine_event_create_listener_thread.argtypes = [ctypes.c_void_p,
     ctypes.c_void_p, ctypes.c_void_p]
 
 xine_usec_sleep = _libxine.xine_usec_sleep
@@ -235,8 +235,8 @@ xine_get_status = _libxine.xine_get_status
 xine_get_status.argtypes = [ctypes.c_void_p]
 xine_get_status.restype = ctypes.c_int
 
-xine_get_pos_length = _libxine.xine_get_pos_length
-xine_get_pos_length.argtypes = [ctypes.c_void_p,
+_xine_get_pos_length = _libxine.xine_get_pos_length
+_xine_get_pos_length.argtypes = [ctypes.c_void_p,
     ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int),
     ctypes.POINTER(ctypes.c_int)]
 
@@ -267,14 +267,14 @@ _callbacks = []
 def xine_event_create_listener_thread(queue, callback, user_data):
     cb = xine_event_listener_cb_t(callback)
     _callbacks.append(cb)
-    _libxine.xine_event_create_listener_thread(queue, cb, user_data)
+    _xine_event_create_listener_thread(queue, cb, user_data)
 
 
 def xine_get_pos_length(stream):
     _pos_stream = ctypes.c_int()
     _pos_time = ctypes.c_int()
     _length_time = ctypes.c_int()
-    result = _libxine.xine_get_pos_length(stream, ctypes.byref(_pos_stream),
+    result = _xine_get_pos_length(stream, ctypes.byref(_pos_stream),
         ctypes.byref(_pos_time), ctypes.byref(_length_time))
     if result:
         return _pos_stream.value, _pos_time.value, _length_time.value

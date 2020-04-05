@@ -8,6 +8,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Dict
 import shutil
 
 from quodlibet.util import enum
@@ -21,7 +22,7 @@ AUTO_ENABLED_PLUGINS = ["Shuffle Playlist", "Remove Playlist Duplicates"]
 
 
 # this defines the initial and default values
-INITIAL = {
+INITIAL: Dict[str, Dict[str, str]] = {
     # User-defined tag name -> human name mappings
     "header_maps": {
     },
@@ -217,7 +218,7 @@ INITIAL = {
             "true" if (is_osx() or is_windows()) else "false",
 
         # Force fontconfig as PangoCairo backend
-        "pangocairo_force_fontconfig": False,
+        "pangocairo_force_fontconfig": "false",
     },
 
     "rename": {
@@ -241,7 +242,7 @@ INITIAL = {
         "active_plugins": "\n".join(AUTO_ENABLED_PLUGINS),
 
         # Issue 1231: Maximum number of SongsMenu plugins to run at once
-        "default_max_plugin_invocations": 30,
+        "default_max_plugin_invocations": "30",
     },
 
     "editing": {

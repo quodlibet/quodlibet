@@ -18,7 +18,7 @@ from .prefs import Preferences, DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.albums.models import (AlbumModel,
     AlbumFilterModel, AlbumSortModel)
 from quodlibet.browsers.albums.main import (get_cover_size,
-    AlbumTagCompletion, PreferencesButton, VisibleUpdate)
+    AlbumTagCompletion, PreferencesButton as AlbumPreferencesButton, VisibleUpdate)
 
 import quodlibet
 from quodlibet import app
@@ -46,7 +46,7 @@ from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk import popup_menu_at_widget
 
 
-class PreferencesButton(PreferencesButton):
+class PreferencesButton(AlbumPreferencesButton):
     def __init__(self, browser, model):
         Gtk.HBox.__init__(self)
 

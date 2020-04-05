@@ -12,6 +12,7 @@ import time
 from datetime import date
 from threading import Thread
 from urllib.parse import urlencode
+import json
 
 from gi.repository import Gtk, GLib
 
@@ -23,10 +24,6 @@ from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.urllib import urlopen
 
-try:
-    import json
-except ImportError:
-    import simplejson as json
 
 API_KEY = "f536cdadb4c2aec75ae15e2b719cb3a1"
 

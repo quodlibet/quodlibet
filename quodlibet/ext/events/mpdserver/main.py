@@ -7,6 +7,7 @@
 
 import re
 import shlex
+from typing import Dict, Tuple, Callable
 
 from senf import bytes2fsn, fsn2bytes
 
@@ -581,7 +582,7 @@ class MPDConnection(BaseTCPConnection):
         elif do_ack:
             self.ok()
 
-    _commands = {}
+    _commands: Dict[str, Tuple[Callable, bool, int]] = {}
 
     @classmethod
     def Command(cls, name, ack=True, permission=Permissions.PERMISSION_ADMIN):

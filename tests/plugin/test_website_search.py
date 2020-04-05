@@ -22,7 +22,8 @@ class TWebsiteSearch(PluginTestCase):
     def test_full(self):
         plugin = self.mod.WebsiteSearch()
         plugin.chosen_site = True
-        assert plugin.plugin_songs([A_SONG], launch=False)
+        plugin._no_launch = True
+        assert plugin.plugin_songs([A_SONG])
 
     def test_website_for(self):
         song = A_SONG

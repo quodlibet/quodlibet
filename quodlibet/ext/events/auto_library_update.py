@@ -12,6 +12,7 @@ import operator
 import os
 import sys
 from functools import reduce
+from typing import Set
 
 from quodlibet.qltk import Icons
 
@@ -38,7 +39,7 @@ class LibraryEvent(ProcessEvent):
     """pynotify event handler for library changes"""
 
     # Slightly dodgy state mechanism for updates
-    _being_created = set()
+    _being_created: Set[str] = set()
 
     def my_init(self, library=None):
         self._library = library

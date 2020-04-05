@@ -13,7 +13,7 @@ import itertools
 from functools import reduce
 from http.client import HTTPException
 from os.path import splitext
-from typing import List
+from typing import List, Dict
 from urllib.request import urlopen
 
 import re
@@ -416,7 +416,7 @@ class GenreFilter(object):
     }
 
     # parsing all above takes 350ms on an atom, so only generate when needed
-    __CACHE = {}
+    __CACHE: Dict[str, Query] = {}
 
     def keys(self):
         return self.GENRES.keys()

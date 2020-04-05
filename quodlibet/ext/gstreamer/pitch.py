@@ -11,6 +11,7 @@ from gi.repository import Gtk, GObject, Gst
 from quodlibet import _
 from quodlibet.plugins import PluginImportException
 from quodlibet.plugins.gstelement import GStreamerPlugin
+from quodlibet.qltk.util import GSignals
 from quodlibet import qltk
 from quodlibet import config
 
@@ -43,7 +44,7 @@ def set_cfg(option, value):
 
 
 class Preferences(Gtk.VBox):
-    __gsignals__ = {
+    __gsignals__: GSignals = {
         'changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
     }
 

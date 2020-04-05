@@ -155,7 +155,7 @@ def main(argv=None):
     try:
         from quodlibet.qltk.dbus_ import DBusHandler
     except ImportError:
-        DBusHandler = lambda player, library: None
+        DBusHandler = None
 
     mmkeys_handler = MMKeysHandler(app)
     mmkeys_handler.start()
@@ -168,7 +168,8 @@ def main(argv=None):
     except RemoteError:
         exit_(1, True)
 
-    DBusHandler(player, library)
+    if DBusHandler is not None:
+        DBusHandler(player, library)
     tracker = SongTracker(library.librarian, player, window.playlist)
 
     from quodlibet import session

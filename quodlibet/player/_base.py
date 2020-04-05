@@ -7,6 +7,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import List
+
 from gi.repository import GObject
 
 from quodlibet.formats import AudioFile
@@ -15,7 +17,7 @@ from quodlibet import config
 
 
 class Equalizer(object):
-    _eq_values = []
+    _eq_values: List[int] = []
 
     @property
     def eq_bands(self):
@@ -61,7 +63,6 @@ class BasePlayer(GObject.GObject, Equalizer):
 
     song = None
     info = None
-    volume = None
 
     # if the current song couldn't be played because of an error
     # gets reset automatically after 'song-ended' gets emitted

@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 import os
+from typing import Type
 
 from senf import path2fsn, fsn2bytes, bytes2fsn, fsnative
 
@@ -14,7 +15,7 @@ from quodlibet import get_user_dir
 try:
     from quodlibet.util import winpipe
 except ImportError:
-    winpipe = None
+    winpipe = None  # type: ignore
 
 
 class RemoteError(Exception):
@@ -158,6 +159,8 @@ class QuodLibetUnixRemote(RemoteBase):
                         assert isinstance(response, fsnative)
                         h.write(fsn2bytes(response, None))
 
+
+Remote: Type[RemoteBase]
 
 if os.name == "nt":
     Remote = QuodLibetWinRemote

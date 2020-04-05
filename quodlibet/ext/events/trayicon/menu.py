@@ -21,11 +21,12 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
+from quodlibet.qltk.util import GSignals
 
 
 class IndicatorMenu(Gtk.Menu):
 
-    __gsignals__ = {
+    __gsignals__: GSignals = {
         'action-item-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
     }
 

@@ -7,6 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Optional, Dict, List
 import random
 
 from gi.repository import Gtk, GObject, GLib, Pango
@@ -194,7 +195,7 @@ class Browser(Gtk.Box, Filter):
     the songs returned.
     """
 
-    headers = None
+    headers: Optional[List[str]] = None
     """A list of column headers to display; None means all are okay."""
 
     @classmethod
@@ -273,7 +274,7 @@ class Browser(Gtk.Box, Filter):
         tmpl = numeric_phrase("%d song", "%d songs", count)
         return tmpl + " (%s)" % time
 
-    replaygain_profiles = None
+    replaygain_profiles: Optional[List[str]] = None
     """Replay Gain profiles for this browser."""
 
 
@@ -283,7 +284,7 @@ class DisplayPatternMixin(object):
     _DEFAULT_PATTERN_TEXT = ""
     """The default pattern to display"""
 
-    _PATTERN_FN = None
+    _PATTERN_FN = ""
     """The filename to save the display pattern under"""
 
     __pattern = None
@@ -364,10 +365,10 @@ class FakeDisplayItem(dict):
 class EditDisplayPatternMixin(object):
     """Provides a display Pattern in an editable frame"""
 
-    _PREVIEW_ITEM = None
+    _PREVIEW_ITEM: Optional[Dict[str, str]] = None
     """The `FakeItem` (or similar) to use to interpolate into the pattern"""
 
-    _DEFAULT_PATTERN = None
+    _DEFAULT_PATTERN: Optional[str] = None
     """The display pattern to use when none is saved"""
 
     def edit_display_pane(self, browser, frame_title=None):

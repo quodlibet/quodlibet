@@ -59,6 +59,8 @@ class WebsiteSearch(SongsMenuPlugin):
     PATTERNS_FILE = os.path.join(
         quodlibet.get_user_dir(), 'lists', 'searchsites')
 
+    _no_launch = False
+
     def __set_site(self, name):
         self.chosen_site = name
 
@@ -122,7 +124,7 @@ class WebsiteSearch(SongsMenuPlugin):
         else:
             self.set_sensitive(False)
 
-    def plugin_songs(self, songs, launch=True) -> bool:
+    def plugin_songs(self, songs):
         # Check this is a launch, not a configure
         if self.chosen_site:
             url_pat = self.get_url_pattern(self.chosen_site)
@@ -134,7 +136,7 @@ class WebsiteSearch(SongsMenuPlugin):
                         "Check your pattern?" % url_pat)
                 return False
             print_d("Got %d websites from %d songs" % (len(urls), len(songs)))
-            if launch:
+            if not self._no_launch:
                 for url in urls:
                     website(url)
         return True

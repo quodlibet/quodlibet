@@ -13,6 +13,7 @@ from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
 from quodlibet import config
 from quodlibet.qltk import Icons
+from quodlibet.qltk.util import GSignals
 
 _PLUGIN_ID = "karaoke"
 
@@ -38,7 +39,7 @@ def set_cfg(option, value):
 
 
 class Preferences(Gtk.VBox):
-    __gsignals__ = {
+    __gsignals__: GSignals = {
         'changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
     }
 

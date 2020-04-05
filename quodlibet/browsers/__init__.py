@@ -7,13 +7,15 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import List, Type
+
 from quodlibet import util
 from quodlibet.util.importhelper import load_dir_modules
 
 from ._base import Browser
 
 
-browsers = []
+browsers: List[Type[Browser]] = []
 default = None
 
 

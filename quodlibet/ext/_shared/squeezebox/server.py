@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 import socket
+from typing import List
 from telnetlib import Telnet
 import time
 from urllib.parse import quote, unquote
@@ -45,7 +46,7 @@ class SqueezeboxServer(object):
     telnet = None
     is_connected = False
     current_player = 0
-    players = []
+    players: List[SqueezeboxPlayerSettings] = []
     config = SqueezeboxServerSettings()
     _debug = False
 

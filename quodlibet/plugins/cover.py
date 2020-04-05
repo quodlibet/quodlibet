@@ -140,7 +140,7 @@ class CoverSourcePlugin(GObject.Object):
         try:
             return open(cp, 'rb') if cp and path.isfile(cp) else None
         except IOError:
-            print_w('Failed reading album art "%s"'.format(path))
+            print_w('Failed reading album art "{}"'.format(path))
 
     def search(self):
         """
