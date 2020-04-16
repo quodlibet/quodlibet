@@ -1,0 +1,32 @@
+include COPYING
+include HACKING
+include NEWS.rst
+include README.rst
+include po/*.po
+include po/POTFILES.in
+include po/POTFILES.skip
+include quodlibet/images/Makefile
+recursive-include quodlibet/images/hicolor *.svg *.png *.svg.in
+include tests/data/*
+recursive-include tests *.py
+recursive-include quodlibet update.sh
+include gdist/*.py
+include data/*.desktop.in
+include data/*.ini
+include data/*.service.in
+include data/*.appdata.xml.in
+include data/*.1
+include data/*.sh
+include data/*.zsh
+include data/*.bash
+include data/README.rst
+include MANIFEST.in
+include quodlibet/packages/README.rst
+include *.py
+include setup.cfg
+include pyproject.toml
+include poetry.lock
+recursive-include docs *.py Makefile *.rst *.png *.ico *.svg *.css
+prune docs/_build_guide
+prune docs/_build_all
+prune docs/_rtd_theme*

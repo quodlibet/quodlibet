@@ -1,9 +1,5 @@
 matrix:
   include:
-    - name: "macOS 10.10"
-      os: osx
-      osx_image: xcode6.4
-      language: generic
     - name: "macOS 10.11"
       os: osx
       osx_image: xcode8

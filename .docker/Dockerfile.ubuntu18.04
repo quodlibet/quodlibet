@@ -29,12 +29,12 @@ RUN apt-get update && apt-get install -y \
     appstream-util \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --upgrade \
-    pycodestyle \
-    pyflakes \
+RUN python3 -m pip install --upgrade pip && python3 -m pip install --upgrade \
+    flake8 \
     xvfbwrapper \
-    coverage \
-    pytest-faulthandler
+    "coverage[toml]" \
+    pytest-faulthandler \
+    mypy
 
 ARG HOST_USER_ID=5555
 ENV HOST_USER_ID ${HOST_USER_ID}

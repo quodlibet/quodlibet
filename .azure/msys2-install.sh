@@ -25,6 +25,9 @@ pacman --noconfirm -S --needed \
     mingw-w64-$MSYS2_ARCH-python3-pip \
     mingw-w64-$MSYS2_ARCH-python3-pytest \
     mingw-w64-$MSYS2_ARCH-python3-certifi \
-    mingw-w64-$MSYS2_ARCH-python3-coverage
+    mingw-w64-$MSYS2_ARCH-python3-coverage \
+    mingw-w64-$MSYS2_ARCH-python3-flake8 \
+    mingw-w64-$MSYS2_ARCH-python-entrypoints \
+    mingw-w64-$MSYS2_ARCH-python3-toml
 
-pip3 install feedparser musicbrainzngs mutagen pycodestyle pyflakes
+pip3 install feedparser musicbrainzngs mutagen
