@@ -8,11 +8,11 @@ from time import localtime, strftime
 from typing import Text, Optional
 
 
-def format_date(stamp: float, format_setting: Optional[Text] = None) -> Text:
+def format_date(seconds: float, format_setting: Optional[Text] = None) -> Text:
     """Formats a date either with the default format,
      or the passed strftime-compatible format string"""
     try:
-        date = datetime.fromtimestamp(stamp).date()
+        date = datetime.fromtimestamp(seconds).date()
     except (OverflowError, ValueError, OSError):
         text = u""
     else:
@@ -29,6 +29,6 @@ def format_date(stamp: float, format_setting: Optional[Text] = None) -> Text:
             else:
                 format_ = "%x"
 
-        stamp = localtime(stamp)
+        stamp = localtime(seconds)
         text = strftime(format_, stamp)
     return text
