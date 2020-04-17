@@ -9,12 +9,12 @@
 import re
 from typing import Tuple, Text, List
 
-from formats import TIME_TAGS
+from quodlibet.formats import TIME_TAGS
 from quodlibet import config
 from quodlibet import util
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import XMLFromMarkupPattern as XMLFromPattern
-from util.string.date import format_date
+from quodlibet.util.string.date import format_date
 
 
 class PaneConfig(object):

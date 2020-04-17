@@ -4,7 +4,6 @@
 # (at your option) any later version.
 
 from tests import TestCase
-from util.string.date import format_date
 from .helper import realized
 
 from gi.repository import Gtk
@@ -22,6 +21,7 @@ from quodlibet.browsers.paned.prefs import PreferencesButton, ColumnMode
 from quodlibet.browsers.paned.pane import Pane
 from quodlibet.formats import AudioFile
 from quodlibet.util.collection import Collection
+from quodlibet.util.string.date import format_date
 from quodlibet.library import SongLibrary, SongLibrarian
 
 SONGS = [
