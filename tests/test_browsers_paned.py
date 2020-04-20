@@ -21,6 +21,7 @@ from quodlibet.browsers.paned.prefs import PreferencesButton, ColumnMode
 from quodlibet.browsers.paned.pane import Pane
 from quodlibet.formats import AudioFile
 from quodlibet.util.collection import Collection
+from quodlibet.util.string.date import format_date
 from quodlibet.library import SongLibrary, SongLibrarian
 
 SONGS = [
@@ -190,11 +191,14 @@ class TPaneConfig(TestCase):
         self.failIf(p.has_markup)
 
     def test_numeric(self):
+        a_date_format = "%Y-%m-%d"
+        config.set("settings", "datecolumn_timestamp_format", a_date_format)
         p = PaneConfig("~#lastplayed")
         self.failUnlessEqual(p.title, "Last Played")
         self.failUnlessEqual(p.tags, {"~#lastplayed"})
 
-        self.failUnlessEqual(p.format(SONGS[0]), [("0", "0")])
+        zero_date = format_date(0, a_date_format)
+        self.failUnlessEqual(p.format(SONGS[0]), [(zero_date, zero_date)])
         self.failIf(p.has_markup)
 
     def test_tied(self):

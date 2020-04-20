@@ -1,6 +1,6 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
-#      2011-2014 Nick Boultbee
+#      2011-2020 Nick Boultbee
 #           2014 Jan Path
 #
 # This program is free software; you can redistribute it and/or modify
@@ -8,12 +8,10 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import time
-import datetime
-
 from gi.repository import Gtk, Pango, GLib, Gio
 from senf import fsnative, fsn2text
 
+from quodlibet.util.string.date import format_date
 from quodlibet import _
 from quodlibet import util
 from quodlibet import config
@@ -86,7 +84,6 @@ def _highlight_current_cell(cr, background_area, cell_area, flags):
 
 
 class SongListCellAreaBox(Gtk.CellAreaBox):
-
     highlight = False
 
     def do_render(self, context, widget, cr, background_area, cell_area,
@@ -275,30 +272,8 @@ class DateColumn(WideTextColumn):
         if not stamp:
             cell.set_property('text', _("Never"))
         else:
-            try:
-                date = datetime.datetime.fromtimestamp(stamp).date()
-            except (OverflowError, ValueError, OSError):
-                text = u""
-            else:
-                format_setting = config.gettext("settings",
-                                      "datecolumn_timestamp_format")
-
-                # use format configured in Advanced Preferences
-                if format_setting:
-                    format_ = format_setting
-                # use default behaviour-format
-                else:
-                    today = datetime.datetime.now().date()
-                    days = (today - date).days
-                    if days == 0:
-                        format_ = "%X"
-                    elif days < 7:
-                        format_ = "%A"
-                    else:
-                        format_ = "%x"
-
-                stamp = time.localtime(stamp)
-                text = time.strftime(format_, stamp)
+            fmt = config.gettext("settings", "datecolumn_timestamp_format")
+            text = format_date(stamp, fmt)
             cell.set_property('text', text)
 
 

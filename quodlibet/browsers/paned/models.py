@@ -1,4 +1,5 @@
 # Copyright 2013 Christoph Reiter
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -6,6 +7,8 @@
 # (at your option) any later version.
 
 import re
+from typing import Tuple, Text
+from quodlibet.browsers.paned.util import PaneConfig
 
 from quodlibet import _
 from quodlibet import util
@@ -59,7 +62,7 @@ class SongsEntry(BaseEntry):
     def get_count_text(self, config):
         return config.format_display(self)
 
-    def get_text(self, config):
+    def get_text(self, config: PaneConfig) -> Tuple[bool, Text]:
         if config.has_markup:
             return True, self.key
         else:
