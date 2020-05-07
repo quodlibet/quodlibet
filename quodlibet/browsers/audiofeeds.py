@@ -33,6 +33,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, print_w
 from quodlibet.qltk.x import ScrolledWindow, Align, Button, MenuItem
+from quodlibet.util.path import gsturi2uri
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 
@@ -448,7 +449,7 @@ class AudioFeeds(Browser):
 
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
         if tid == DND_URI_LIST:
-            uri = sel.get_uris()[0]
+            uri = gsturi2uri(sel.get_uris()[0])
         elif tid == DND_MOZ_URL:
             uri = sel.data.decode('utf16', 'replace').split('\n')[0]
         else:

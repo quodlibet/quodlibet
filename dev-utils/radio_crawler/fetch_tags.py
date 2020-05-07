@@ -13,6 +13,7 @@ from gi.repository import Gst
 
 from util import TagListWrapper, get_cache, get_failed, set_cache, set_failed
 
+from quodlibet.util.path import uri2gsturi
 
 PROCESSES = 100
 TIMEOUT = 5
@@ -69,7 +70,7 @@ def get_tags(uri):
                 player.set_state(Gst.State.PAUSED)
 
     sig = bus.connect("message", message, player)
-    player.set_property("uri", uri)
+    player.set_property("uri", uri2gsturi(uri))
     player.set_state(Gst.State.PLAYING)
     player.get_state(Gst.SECOND)
 

@@ -36,6 +36,7 @@ from quodlibet.util import connect_obj
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.collection import FileBackedPlaylist
 from quodlibet.util.urllib import urlopen
+from quodlibet.util.path import gsturi2uri
 
 from .util import parse_m3u, parse_pls, PLAYLISTS,\
     ConfirmRemovePlaylistDialog, _name_for
@@ -415,7 +416,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 self.activate(resort=not songlist.is_sorted())
         else:
             if tid == DND_URI_LIST:
-                uri = sel.get_uris()[0]
+                uri = gsturi2uri(sel.get_uris()[0])
                 name = os.path.basename(uri)
             elif tid == DND_MOZ_URL:
                 data = sel.get_data()

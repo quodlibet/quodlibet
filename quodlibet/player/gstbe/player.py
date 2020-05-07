@@ -24,6 +24,7 @@ from quodlibet import _
 from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError, \
     MainRunnerAbortedError, MainRunnerTimeoutError, print_w, print_d, \
     print_e, print_
+from quodlibet.util.path import uri2gsturi
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.notif import Task
@@ -530,7 +531,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._reset_replaygain()
 
         if self.song:
-            self.bin.set_property('uri', self.song("~uri"))
+            self.bin.set_property('uri', uri2gsturi(self.song("~uri")))
 
         return True
 
@@ -745,7 +746,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if uri is not None:
             print_d("About to finish (async): setting uri")
-            playbin.set_property('uri', uri)
+            playbin.set_property('uri', uri2gsturi(uri))
         print_d("About to finish (async): done")
 
     def stop(self):

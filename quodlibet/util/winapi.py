@@ -172,6 +172,10 @@ if sys.platform == 'win32':
     WaitNamedPipeW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD]
     WaitNamedPipeW.restype = wintypes.BOOL
 
+    PathIsNetworkPathW = windll.shlwapi.PathIsNetworkPathW
+    PathIsNetworkPathW.argtypes = [wintypes.LPCWSTR]
+    PathIsNetworkPathW.restype = wintypes.BOOL
+
     LANGID = wintypes.WORD
 
     GetUserDefaultUILanguage = ctypes.windll.kernel32.GetUserDefaultUILanguage
