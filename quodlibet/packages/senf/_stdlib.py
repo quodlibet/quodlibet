@@ -57,14 +57,14 @@ def _get_userdir(user=None):
         raise TypeError
 
     if is_win:
-        if "HOME" in environ:
-            path = environ["HOME"]
-        elif "USERPROFILE" in environ:
+        if "USERPROFILE" in environ:
             path = environ["USERPROFILE"]
         elif "HOMEPATH" in environ and "HOMEDRIVE" in environ:
             path = os.path.join(environ["HOMEDRIVE"], environ["HOMEPATH"])
         else:
             return
+
+        path = os.path.normpath(path)
 
         if user is None:
             return path
