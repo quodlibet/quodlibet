@@ -57,7 +57,7 @@ from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs
 from quodlibet.util import connect_obj, print_d
 from quodlibet.util.library import background_filter, scan_library
-from quodlibet.util.path import uri_is_valid, gsturis2uris
+from quodlibet.util.path import uri_is_valid
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
 from quodlibet.qltk.songlistcolumns import CurrentColumn
 
@@ -815,7 +815,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
     def __drag_data_received(self, widget, ctx, x, y, sel, tid, etime):
         assert tid == DND_URI_LIST
 
-        uris = gsturis2uris(sel.get_uris())
+        uris = sel.get_uris()
 
         dirs = []
         error = False

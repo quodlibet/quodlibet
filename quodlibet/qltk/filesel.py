@@ -25,8 +25,7 @@ from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
 from quodlibet.util.path import listdir, \
-    glib2fsn, xdg_get_user_dirs, get_home_dir, xdg_get_config_home, \
-    gsturis2uris
+    glib2fsn, xdg_get_user_dirs, get_home_dir, xdg_get_config_home
 from quodlibet.util import connect_obj
 
 
@@ -328,7 +327,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
     def __drag_data_received(self, widget, drag_ctx, x, y, data, info, time):
         if info == 42:
-            uris = gsturis2uris(data.get_uris())
+            uris = data.get_uris()
             if uris:
                 try:
                     filename = uri2fsn(uris[0])

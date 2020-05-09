@@ -15,15 +15,14 @@ import codecs
 import shlex
 from urllib.parse import urlparse, quote, unquote
 
+from gi.repository import GLib
+
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
     fsn2text, path2fsn, uri2fsn
 
 from . import windows
 from .environment import is_windows
 from .misc import environ, NamedTemporaryFile
-
-if sys.platform == 'win32':
-    from .winapi import PathIsNetworkPathW
 
 if sys.platform == "darwin":
     from Foundation import NSString
@@ -58,31 +57,10 @@ def uri2gsturi(uri):
     if not is_windows():
         return uri
     try:
-        fsn = uri2fsn(uri)
-    except ValueError:
+        # gstreamer requires extra slashes for network shares
+        return GLib.filename_to_uri(uri2fsn(uri))
+    except GLib.Error:
         return uri
-    try:
-        is_network_share = PathIsNetworkPathW(fsn)
-    except WindowsError as e:
-        raise ValueError(e)
-    # gstreamer requires extra slashes for network shares
-    if is_network_share and uri.startswith('file://'):
-        return uri.replace('file://', 'file:////', 1)
-    return uri
-
-
-def gsturi2uri(uri):
-    """Takes a gstreamer-compatible uri and returns a correct uri"""
-    if not is_windows():
-        return uri
-    if uri.startswith('file:////'):
-        return uri.replace('file:////', 'file://', 1)
-    return uri
-
-
-def gsturis2uris(uris):
-    """Takes gstreamer-compatible uris and returns correct uris"""
-    return [gsturi2uri(uri) for uri in uris]
 
 
 def iscommand(s):

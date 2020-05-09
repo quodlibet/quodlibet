@@ -35,7 +35,6 @@ from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column
 from quodlibet.util import connect_destroy
-from quodlibet.util.path import gsturis2uris
 
 
 DND_QL, DND_URI_LIST = range(2)
@@ -295,7 +294,7 @@ class SongListDnDMixin(object):
                     return None
 
             filenames = list(filter(None, map(
-                to_filename, gsturis2uris(sel.get_uris()))))
+                to_filename, sel.get_uris())))
             move = False
         else:
             Gtk.drag_finish(ctx, False, False, etime)
