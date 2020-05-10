@@ -62,7 +62,7 @@ class ColumnModeSelection(Gtk.VBox):
             selected_mode = ColumnMode.WIDE
         if self.buttons[2].get_active():
             selected_mode = ColumnMode.COLUMNAR
-        config.set("browsers", "pane_mode", selected_mode)
+        config.set("browsers", "pane_mode", int(selected_mode))
         self.browser.set_all_column_mode(selected_mode)
 
 
