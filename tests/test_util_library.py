@@ -43,14 +43,18 @@ class Tlibrary_utils(TestCase):
             self.assertEquals(res, [STANDARD_PATH, GVFS_PATH])
 
     def test_get_exclude_dirs(self):
-        some_path = os.path.join(unexpand(get_home_dir()), "foo")
+        some_path = os.path.join(get_home_dir(), "foo")
+        if os.name != "nt":
+            some_path = unexpand(some_path)
         config.set('library', 'exclude', some_path)
         assert expanduser(some_path) in get_exclude_dirs()
 
         assert all([isinstance(p, fsnative) for p in get_exclude_dirs()])
 
     def test_get_scan_dirs(self):
-        some_path = os.path.join(unexpand(get_home_dir()), "foo")
+        some_path = os.path.join(get_home_dir(), "foo")
+        if os.name != "nt":
+            some_path = unexpand(some_path)
         config.set('settings', 'scan', some_path)
         assert expanduser(some_path) in get_scan_dirs()
 
