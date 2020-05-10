@@ -59,7 +59,7 @@ function main {
 
     # clone this repo and install into the bundle
     CLONE="$QL_OSXBUNDLE_BUNDLE_DEST"/_temp_clone
-    git clone ../ "$CLONE"
+    git clone ../.. "$CLONE"
     (cd "$CLONE"; git checkout "$GIT_TAG")
     jhbuild run "$PYTHON" "$CLONE"/setup.py install \
         --prefix="$APP_PREFIX" \
