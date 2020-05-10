@@ -533,12 +533,12 @@ def uri2fsn(uri):
     parsed = urlparse(uri)
     scheme = parsed.scheme
     netloc = parsed.netloc
-    path = parsed.path
+    parsed_path = parsed.path
 
     if scheme != "file":
         raise ValueError("Not a file URI: %r" % uri)
 
-    if not path:
+    if not parsed_path:
         raise ValueError("Invalid file URI: %r" % uri)
 
     uri = urlunparse(parsed)[7:]
@@ -556,7 +556,7 @@ def uri2fsn(uri):
             path += unquote(rest)
         else:
             path += unquote(rest, encoding="utf-8", errors="surrogatepass")
-        if netloc:
+        if netloc or parsed_path.startswith("//"):
             path = "\\\\" + path
         if PY2:
             path = path.decode("utf-8")

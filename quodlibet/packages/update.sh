@@ -5,12 +5,14 @@ set -e
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 rm -Rf "senf"
-pip install --system --no-compile --no-deps --target="$DIR/tmp" "senf==1.3.4"
+pip3 install --system --no-compile --no-deps --target="$DIR/tmp" "senf==1.5.0"
 mv "$DIR/tmp/senf" "$DIR"
 rm -R "$DIR/tmp"
 
+rm "$DIR/senf/py.typed"
+
 rm -Rf "raven"
-pip install --system --no-compile --no-deps --target="$DIR/tmp" "raven==6.5.0"
+pip3 install --system --no-compile --no-deps --target="$DIR/tmp" "raven==6.5.0"
 mv "$DIR/tmp/raven" "$DIR"
 rm -R "$DIR/tmp"
 

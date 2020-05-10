@@ -120,6 +120,11 @@ class Tunexpand(TestCase):
         path = unexpand(os.path.join(self.d, "la", "la"))
         self.failUnlessEqual(path, os.path.join(self.u, "la", "la"))
 
+    def test_case_insensitive_win(self):
+        if is_win:
+            assert unexpand(self.d.lower()) == "%USERPROFILE%"
+            assert unexpand(self.d.upper()) == "%USERPROFILE%"
+
 
 class Tformat_rating(TestCase):
     def setUp(self):

@@ -145,11 +145,12 @@ def unexpand(filename):
     """
 
     sub = (os.name == "nt" and fsnative(u"%USERPROFILE%")) or fsnative(u"~")
-    home = expanduser("~")
-    if filename == home:
+    home = os.path.normcase(get_home_dir()).rstrip(os.path.sep)
+    norm = os.path.normcase(filename)
+    if norm == home:
         return sub
-    elif filename.startswith(home + os.path.sep):
-        filename = filename.replace(home, sub, 1)
+    elif norm.startswith(home + os.path.sep):
+        filename = sub + filename[len(home):]
     return filename
 
 
