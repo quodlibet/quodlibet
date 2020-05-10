@@ -25,6 +25,7 @@ from quodlibet.qltk import Icons, Dialog
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
 from quodlibet.util import cached_property, print_w, print_e, format_int_locale
+from quodlibet.util.path import uri2gsturi
 
 __all__ = ['ReplayGain']
 
@@ -308,7 +309,7 @@ class ReplayGainPipeline(GObject.Object):
             self.pipe.set_state(Gst.State.NULL)
 
         self._current = self._songs.pop(0)
-        self.decode.set_property("uri", self._current.uri)
+        self.decode.set_property("uri", uri2gsturi(self._current.uri))
         if not first:
             # flush, so the element takes new data after EOS
             pad = self.analysis.get_static_pad("src")

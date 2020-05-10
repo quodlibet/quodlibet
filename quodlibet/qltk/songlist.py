@@ -293,7 +293,8 @@ class SongListDnDMixin(object):
                 except ValueError:
                     return None
 
-            filenames = list(filter(None, map(to_filename, sel.get_uris())))
+            filenames = list(filter(None, map(
+                to_filename, sel.get_uris())))
             move = False
         else:
             Gtk.drag_finish(ctx, False, False, etime)

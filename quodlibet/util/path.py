@@ -15,8 +15,10 @@ import codecs
 import shlex
 from urllib.parse import urlparse, quote, unquote
 
+from gi.repository import GLib
+
 from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
-    fsn2text, path2fsn
+    fsn2text, path2fsn, uri2fsn
 
 from . import windows
 from .environment import is_windows
@@ -48,6 +50,17 @@ def fsn2glib(path):
     """Takes a fsnative path and returns a glib filename"""
 
     return path
+
+
+def uri2gsturi(uri):
+    """Takes a correct uri and returns a gstreamer-compatible uri"""
+    if not is_windows():
+        return uri
+    try:
+        # gstreamer requires extra slashes for network shares
+        return GLib.filename_to_uri(uri2fsn(uri))
+    except GLib.Error:
+        return uri
 
 
 def iscommand(s):

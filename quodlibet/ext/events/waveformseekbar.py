@@ -30,6 +30,7 @@ from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.qltk import get_fg_highlight_color
 from quodlibet.util import connect_destroy, print_d
+from quodlibet.util.path import uri2gsturi
 
 
 class WaveformSeekBar(Gtk.Box):
@@ -107,7 +108,7 @@ class WaveformSeekBar(Gtk.Box):
 
         command = command_template.format(interval)
         pipeline = Gst.parse_launch(command)
-        pipeline.get_by_name("uridec").set_property("uri", song("~uri"))
+        pipeline.get_by_name("uridec").set_property("uri", uri2gsturi(song("~uri")))
 
         bus = pipeline.get_bus()
         self._bus_id = bus.connect("message", self._on_bus_message, points)
