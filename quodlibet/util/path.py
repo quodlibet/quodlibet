@@ -59,7 +59,7 @@ def uri2gsturi(uri):
     try:
         # gstreamer requires extra slashes for network shares
         return GLib.filename_to_uri(uri2fsn(uri))
-    except GLib.Error:
+    except (GLib.Error, ValueError):
         return uri
 
 

@@ -10,7 +10,7 @@ import unittest
 from senf import uri2fsn, fsn2uri, fsnative, environ
 
 from quodlibet.util.path import iscommand, limit_path, \
-    get_home_dir, uri_is_valid, ishidden
+    get_home_dir, uri_is_valid, ishidden, uri2gsturi
 from quodlibet.util import print_d
 
 from . import TestCase
@@ -18,6 +18,13 @@ from . import TestCase
 
 is_win = os.name == "nt"
 path_set = bool(environ.get('PATH', False))
+
+
+def test_uri2gsturi():
+    assert uri2gsturi("file:///foo/bar") == "file:///foo/bar"
+    if is_win:
+        assert uri2gsturi("file://foo/bar") == "file:////foo/bar"
+    assert uri2gsturi("https://foo.bar.org") == "https://foo.bar.org"
 
 
 class Tishidden(TestCase):
