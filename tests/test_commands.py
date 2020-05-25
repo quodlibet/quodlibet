@@ -34,6 +34,18 @@ class TCommands(TestCase):
         self.__send(u"query foo")
         self.assertEqual(self.__send("print-query-text"), u"foo\n")
 
+    def test_print_playing_elapsed(self):
+        app.player.info = AudioFile(
+            {"album": "foo", "~filename": fsnative("/dev/null")})
+        app.player.seek(123 * 1000)
+        assert self.__send("print-playing <album~~elapsed>") == "foo - 2:03\n"
+
+    def test_print_playing_elapsed_numeric(self):
+        app.player.info = AudioFile(
+            {"album": "foo", "~filename": fsnative("/dev/null")})
+        app.player.seek(234.56 * 1000)
+        assert self.__send("print-playing <~#elapsed>") == "234.56\n"
+
     def test_player(self):
         self.__send("previous")
         self.__send("force-previous")
@@ -41,6 +53,7 @@ class TCommands(TestCase):
         self.__send("pause")
         self.__send("play-pause")
         self.__send("play")
+        self.__send("print-playing <album~~elapsed>")
         self.__send("stop")
         self.__send("volume +1000")
         self.__send("volume 40")

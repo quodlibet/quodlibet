@@ -86,7 +86,7 @@ OPTIONS
 --print-playing
     Print out information about the currently playing song. You may
     provide in a string like the kind described in the RENAMING FILES
-    section below.
+    section below, plus special tags ~#elapsed or ~elapsed.
 
 --print-playlist
     Print the current playlist

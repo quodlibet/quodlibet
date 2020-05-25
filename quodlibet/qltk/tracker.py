@@ -1,5 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2013 Christoph Reiter
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -186,6 +187,7 @@ class FSInterface(object):
 
     def __started(self, player, song):
         if song:
+            song = player.with_elapsed_info(song)
             try:
                 with open(self.path, "wb") as f:
                     f.write(song.to_dump())

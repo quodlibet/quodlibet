@@ -22,8 +22,7 @@ from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.util.library import scan_library
 
-from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, \
-        OneSong
+from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, OneSong
 from quodlibet.order.reorder import OrderWeighted, OrderShuffle
 
 from quodlibet.config import RATINGS
@@ -57,6 +56,7 @@ class CommandRegistry(object):
         def wrap(func):
             self._commands[name] = (func, args, optional)
             return func
+
         return wrap
 
     def handle_line(self, app, line):
@@ -84,6 +84,7 @@ class CommandRegistry(object):
             return self.run(app, command, *args)
         except CommandError as e:
             print_e(e)
+            util.print_exc()
         except:
             util.print_exc()
 
@@ -554,7 +555,8 @@ def _print_playing(app, fstring=None):
     if song is None:
         song = AudioFile({"~filename": fsnative(u"/")})
         song.sanitize()
-
+    else:
+        song = app.player.with_elapsed_info(song)
     return text2fsn(Pattern(fstring).format(song) + u"\n")
 
 
