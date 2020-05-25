@@ -1,6 +1,6 @@
 # Copyright 2007-2008 Joe Wreschnig
 #           2014 Christoph Reiter
-#      2014-2016 Nick Boultbee
+#      2014-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ _TAGS = dict((t.name, t) for t in [
     T("labelid", "u", _("label ID")),
     T("originaldate", "u", _("original release date")),
     T("originalalbum", "u", _("original album")),
-    T("originalartist", "u", _("original artist")),
+    T("originalartist", "us", _("original artist")),
     T("recordingdate", "u", _("recording date")),
     T("releasecountry", "u", _("release country")),
 

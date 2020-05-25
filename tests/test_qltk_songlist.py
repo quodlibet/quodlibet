@@ -222,6 +222,7 @@ class TSongList(TestCase):
         self.assertEqual(get_sort_tag("~artist~date"), "~artistsort~date")
         self.assertEqual(get_sort_tag("~date~artist"), "~date~artistsort")
         self.assertEqual(get_sort_tag("composer"), "composersort")
+        self.assertEqual(get_sort_tag("originalartist"), "originalartistsort")
 
     def tearDown(self):
         self.songlist.destroy()
