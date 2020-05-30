@@ -110,3 +110,12 @@ class TFSInterface(TestCase):
         self.p.emit('song-ended', {}, False)
         self.do()
         self.failIf(os.path.exists(self.filename))
+
+    def test_elapsed(self):
+        self.p.seek(123456)
+        self.p.emit('song-started', AudioFile({"~#length": 10}))
+        self.do()
+        with open(self.filename, "rb") as h:
+            contents = h.read()
+        assert b"~#elapsed=123.456" in contents
+        assert b"~elapsed=2:03\n" in contents

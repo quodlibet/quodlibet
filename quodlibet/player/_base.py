@@ -12,7 +12,7 @@ from typing import List
 from gi.repository import GObject
 
 from quodlibet.formats import AudioFile
-from quodlibet.util import print_d
+from quodlibet.util import print_d, format_time
 from quodlibet import config
 
 
@@ -319,3 +319,11 @@ class BasePlayer(GObject.GObject, Equalizer):
         """Whether the player supports playing the given URI scheme"""
 
         raise NotImplementedError
+
+    def with_elapsed_info(self, song: AudioFile) -> AudioFile:
+        """Enhance the passed song with elapsed time information"""
+        seconds = self.get_position() / 1000
+        cs = AudioFile(song)
+        cs["~#elapsed"] = seconds
+        cs["~elapsed"] = format_time(seconds)
+        return cs

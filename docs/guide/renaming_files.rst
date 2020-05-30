@@ -8,7 +8,12 @@ Basic Syntax
 
 Quod Libet allows you to rename files based on their tags. In some cases
 you may wish to alter the filename depending on whether some tags are
-present or missing, in addition to their values. A common pattern might be::
+present or missing, in addition to their values.
+
+Quod Libet uses _pattern_ syntax for this interaction.
+A pattern is some text surrounded by angle brackets, typically containing tags.
+
+A common pattern might be::
 
     <tracknumber>. <title~version>
 
@@ -31,7 +36,7 @@ A reasonable use of albumartist would be::
 ..which uses the first of the following: Albumartist, Artist or "No artist".
 
 You can of course also move files across your filesystem to another
-directory by mixing path elements and ``<tag>`` syntax::
+directory by mixing path elements and ``<pattern>`` syntax::
 
     /home/*username*/Music/<artist>/<album>/...
 
