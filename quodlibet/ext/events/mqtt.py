@@ -66,7 +66,8 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
 
     def __init__(self) -> None:
         super().__init__()
-        self.song = self.host = self.port = self.username = self.password = self.topic = None
+        self.song = self.host = self.port = self.topic = None
+        self.username = self.password = None
         self.status = Config.EMPTY_STATUS
 
     def on_connect(self, client, userdata, flags, rc):
