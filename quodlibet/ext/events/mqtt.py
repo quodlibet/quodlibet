@@ -17,10 +17,11 @@ from quodlibet.formats import AudioFile
 from quodlibet.util import monospace, escape
 from quodlibet.util.tags import _TAGS
 
-_TOTAL_MQTT_ITEMS = 3
+_TOTAL_MQTT_ITEMS = 5
 
 try:
     import paho.mqtt.client as mqtt
+    import paho.mqtt.publish as publish
 except ImportError:
     from quodlibet.plugins import MissingModulePluginException
     raise MissingModulePluginException('paho-mqtt')
@@ -47,6 +48,8 @@ class Config(object):
     PAT_PAUSED = 'paused_pattern', "<~artist~title> [%s]" % _("paused")
     HOST = 'host', "localhost"
     PORT = 'port', 1883
+    USERNAME = 'username', ""
+    PASSWORD = 'password', ""
     TOPIC = 'topic', 'quodlibet/now-playing'
     EMPTY_STATUS = ""
 
@@ -63,7 +66,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
 
     def __init__(self) -> None:
         super().__init__()
-        self.song = self.host = self.port = self.topic = None
+        self.song = self.host = self.port = self.username = self.password = self.topic = None
         self.status = Config.EMPTY_STATUS
 
     def on_connect(self, client, userdata, flags, rc):
@@ -80,6 +83,10 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         self.client = client = mqtt.Client()
         client.on_connect = self.on_connect
         client.on_message = self.on_message
+        if self.username:
+            client.username_pw_set(self.username, None)
+            if self.password:
+                client.username_pw_set(self.username, self.password)
         client.connect(self.host, self.port, 60)
         # Uses Threading.Thread internally, so we don't have to...
         self.client.loop_start()
@@ -121,6 +128,8 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
     def enabled(self):
         self.host = self.config_get(*Config.HOST) or 'localhost'
         self.port = int(self.config_get(*Config.PORT)) or 1883
+        self.username = self.config_get(*Config.USERNAME)
+        self.password = self.config_get(*Config.PASSWORD)
         self.topic = self.config_get(*Config.TOPIC)
         self._set_up_mqtt_client()
 
@@ -129,6 +138,10 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
          _("broker hostname / IP (defaults to localhost)")),
 
         (_("Broker port"), Config.PORT, _("broker port (defaults to 1883)")),
+
+        (_("Broker username"), Config.USERNAME, _("broker username")),
+
+        (_("Broker password"), Config.PASSWORD, _("broker password")),
 
         (_("Topic"), Config.TOPIC, _("Topic")),
 
