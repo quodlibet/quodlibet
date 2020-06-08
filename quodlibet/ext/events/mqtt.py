@@ -21,7 +21,6 @@ _TOTAL_MQTT_ITEMS = 5
 
 try:
     import paho.mqtt.client as mqtt
-    import paho.mqtt.publish as publish
 except ImportError:
     from quodlibet.plugins import MissingModulePluginException
     raise MissingModulePluginException('paho-mqtt')
