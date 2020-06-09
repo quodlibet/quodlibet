@@ -1,6 +1,7 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2013-2017 Nick Boultbee
 #           2013,2014 Christoph Reiter
+#           2020 Max Galliers
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,6 +20,7 @@ from gi.repository import Gtk
 from senf import fsn2text
 
 from quodlibet import _
+from quodlibet import app
 from quodlibet import print_w
 from quodlibet.util import trash
 from quodlibet.qltk import get_top_parent
@@ -221,6 +223,8 @@ def _do_delete_songs(parent, songs, librarian):
     ok = []
     failed = []
     for song in songs:
+        if song == app.player.song:
+            app.player.stop()
         filename = song("~filename")
         try:
             os.unlink(filename)
