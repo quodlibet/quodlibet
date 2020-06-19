@@ -199,10 +199,18 @@ class TPlaylistsBrowser(TestCase):
 
         PlaylistsBrowser.init(self.lib)
 
-        self.bar = PlaylistsBrowser(self.lib)
+        self.bar = PlaylistsBrowser(self.lib, self.MockConfirmerAccepting)
         self.bar.connect('songs-selected', self._expected)
         self.bar._select_playlist(self.bar.playlists()[0])
         self.expected = None
+
+        # Uses the declining confirmer.
+        self.bar_decline = PlaylistsBrowser(self.lib, self.MockConfirmerDeclining)
+        self.bar_decline.connect('songs-selected', self._expected_decline)
+        self.bar_decline._select_playlist(self.bar_decline.playlists()[0])
+        # Note that _do() uses self.expected, but _do() is not called by the
+        # testcase for declining the prompt. Tests fail with a shared expected.
+        self.expected_decline = None
 
     def tearDown(self):
         self.bar.destroy()
@@ -215,6 +223,12 @@ class TPlaylistsBrowser(TestCase):
         songs.sort()
         if self.expected is not None:
             self.failUnlessEqual(self.expected, songs)
+        self.success = True
+
+    def _expected_decline(self, bar, songs, sort):
+        songs.sort()
+        if self.expected_decline is not None:
+            self.failUnlessEqual(self.expected_decline, songs)
         self.success = True
 
     def _do(self):
@@ -280,17 +294,11 @@ class TPlaylistsBrowser(TestCase):
         qltk.selection_set_songs(sel, [song])
         b._drag_data_get(None, None, sel, DND_QL, None)
 
+    # deletion of playlist tracks
     def test_deletion(self):
-        def a_delete_event():
-            ev = Gdk.Event()
-            ev.type = Gdk.EventType.KEY_PRESS
-            ev.keyval, accel_mod = Gtk.accelerator_parse("Delete")
-            ev.state = Gtk.accelerator_get_default_mod_mask() & accel_mod
-            return ev
-
         b = self.bar
         self._fake_browser_pack(b)
-        event = a_delete_event()
+        event = self.a_delete_event()
         # This is selected in setUp()
         first_pl = b.playlists()[0]
         app.window.songlist.set_songs(first_pl)
@@ -300,6 +308,33 @@ class TPlaylistsBrowser(TestCase):
         ret = b.key_pressed(event)
         self.failUnless(ret, msg="Didn't simulate a delete keypress")
         self.failUnlessEqual(len(first_pl), original_length - 1)
+
+    def test_playlist_deletion_ACCEPT(self):
+        b = self.bar
+        orig_length = len(b.playlists())
+        event = self.a_delete_event()
+        first_pl = b.playlists()[0]
+        second_pl = b.playlists()[1]
+        b._select_playlist(first_pl)
+
+        ret = b._PlaylistsBrowser__key_pressed(b, event)
+        self.failUnless(ret, msg="Didn't simulate a delete keypress")
+        self.failUnlessEqual(len(b.playlists()), orig_length - 1)
+        self.failUnlessEqual(b.playlists()[0], second_pl)
+
+    def test_playlist_deletion_CANCEL(self):
+        b = self.bar_decline
+        orig_length = len(b.playlists())
+        event = self.a_delete_event()
+        first_pl = b.playlists()[0]
+        second_pl = b.playlists()[1]
+        b._select_playlist(first_pl)
+
+        ret = b._PlaylistsBrowser__key_pressed(b, event)
+        self.failUnless(ret, msg="Didn't simulate a delete keypress")
+        self.failUnlessEqual(len(b.playlists()), orig_length)
+        self.failUnlessEqual(b.playlists()[0], first_pl)
+        self.failUnlessEqual(b.playlists()[1], second_pl)
 
     def test_import(self):
         pl_name = u"_€3 œufs à Noël"
@@ -323,8 +358,36 @@ class TPlaylistsBrowser(TestCase):
         self.failUnlessEqual(fns(imported.songs), fns(pl.songs))
 
     @staticmethod
+    def a_delete_event():
+        ev = Gdk.Event()
+        ev.type = Gdk.EventType.KEY_PRESS
+        ev.keyval, accel_mod = Gtk.accelerator_parse("Delete")
+        ev.state = Gtk.accelerator_get_default_mod_mask() & accel_mod
+        return ev
+
+    @staticmethod
     def _fake_browser_pack(b):
         app.window.get_child().pack_start(b, True, True, 0)
+
+    class MockConfirmerAccepting:
+
+        RESPONSE_INVOKE = Gtk.ResponseType.YES
+
+        def __init__(self, *args):
+            pass
+
+        def run(self, *args):
+            return self.RESPONSE_INVOKE
+
+    class MockConfirmerDeclining:
+
+        RESPONSE_INVOKE = Gtk.ResponseType.YES
+
+        def __init__(self, *args):
+            pass
+
+        def run(self, *args):
+            return Gtk.ResponseType.CANCEL
 
 
 class TPlaylistUtils(TestCase):
