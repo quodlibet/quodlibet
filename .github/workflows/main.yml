@@ -1,0 +1,21 @@
+on: [push, pull_request]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+
+      - name: setup-msys2
+        uses: msys2/setup-msys2@v1
+        with:
+          msystem: MINGW64
+          update: true
+
+      - name: CI-Build
+        shell: msys2 {0}
+        run: |
+          export MSYS2_ARCH=x86_64
+          ./.ci/msys2-install.sh
+          ./.ci/msys2-test.sh
