@@ -6,6 +6,7 @@
 from tests import TestCase, get_data_path
 
 import os
+import shutil
 import io
 from contextlib import contextmanager
 from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
@@ -595,6 +596,22 @@ class TAudioFile(TestCase):
                                  lyrics.splitlines())
             os.remove(af.lyric_filename)
             os.rmdir(lyrics_dir)
+
+    def test_lyrics_mp3_is_not_a_valid_lyrics_file(self):
+        # https://github.com/quodlibet/quodlibet/issues/3395
+        fn = get_data_path('silence-44-s.mp3')
+        with temp_filename() as filename:
+            af = AudioFile(artist='bar', title='foo')
+            af.sanitize(filename)
+            lyrics_dir = os.path.dirname(af.lyric_filename)
+            mkdir(lyrics_dir)
+            try:
+                with open(af.lyric_filename, "wb") as target:
+                    with open(fn, "rb") as source:
+                        target.write(source.read())
+                assert "\0" not in af("~lyrics")
+            finally:
+                shutil.rmtree(lyrics_dir)
 
     def test_unsynced_lyrics(self):
         song = AudioFile()
