@@ -107,7 +107,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         ve = UndoEntry()
         ve.set_text(cfg["hostname"])
         ve.connect('changed', value_changed, 'server_hostname')
-        lbl=Gtk.Label(label=_("Hostname:"), use_underline=True)
+        lbl = Gtk.Label(label=_("Hostname:"), use_underline=True)
         lbl.set_mnemonic_widget(ve)
         rows.append((lbl, ve))
 
@@ -115,21 +115,21 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         ve.set_width_chars(5)
         ve.set_text(str(cfg["port"]))
         ve.connect('changed', value_changed, 'server_port')
-        lbl=Gtk.Label(label=_("Port:"), use_underline=True)
+        lbl = Gtk.Label(label=_("Port:"), use_underline=True)
         lbl.set_mnemonic_widget(ve)
         rows.append((lbl, ve))
 
         ve = UndoEntry()
         ve.set_text(cfg["user"])
         ve.connect('changed', value_changed, 'server_user')
-        lbl=Gtk.Label(label=_("Username:"), use_underline=True)
+        lbl = Gtk.Label(label=_("Username:"), use_underline=True)
         lbl.set_mnemonic_widget(ve)
         rows.append((lbl, ve))
 
         ve = UndoEntry()
         ve.set_text(str(cfg["password"]))
         ve.connect('changed', value_changed, 'server_password')
-        lbl=Gtk.Label(label=_("Password:"), use_underline=True)
+        lbl = Gtk.Label(label=_("Password:"), use_underline=True)
         lbl.set_mnemonic_widget(ve)
         rows.append((lbl, ve))
 
@@ -137,7 +137,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         ve.set_text(str(cfg["library_dir"]))
         ve.set_tooltip_text(_("Library directory the server connects to"))
         ve.connect('changed', value_changed, 'server_library_dir')
-        lbl=Gtk.Label(label=_("Library path:"), use_underline=True)
+        lbl = Gtk.Label(label=_("Library path:"), use_underline=True)
         lbl.set_mnemonic_widget(ve)
         rows.append((lbl, ve))
 
