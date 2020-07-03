@@ -438,14 +438,16 @@ class AudioFile(dict, ImageContainer):
 
                 # If there are no embedded lyrics, try to read them from
                 # the external file.
-                fn = self.lyric_filename
                 try:
-                    fileobj = open(fn, "rb")
+                    with open(self.lyric_filename, "rb") as fileobj:
+                        print_d("Reading lyrics from %s" % self.lyric_filename)
+                        text = fileobj.read().decode("utf-8", "replace")
+                        # try to skip binary files
+                        if "\0" in text:
+                            return default
+                        return text
                 except EnvironmentError:
                     return default
-                else:
-                    print_d("Reading lyrics from %s" % fn)
-                    return fileobj.read().decode("utf-8", "replace")
             elif key == "filesize":
                 return util.format_size(self("~#filesize", 0))
             elif key == "playlists":
