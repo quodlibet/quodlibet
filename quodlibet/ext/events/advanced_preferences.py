@@ -36,7 +36,10 @@ def _config(section, option, label, tooltip=None, getter=None):
         Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
 
-    return (Gtk.Label(label=label), entry, revert)
+    lbl = Gtk.Label(label=label, use_underline=True)
+    lbl.set_mnemonic_widget(entry)
+
+    return (lbl, entry, revert)
 
 
 def text_config(section, option, label, tooltip=None):
@@ -184,7 +187,7 @@ class AdvancedPreferences(EventPlugin):
             table.set_no_show_all(False)
             table.show_all()
 
-        button = Gtk.Button(label=_("I know what I'm doing"))
+        button = Gtk.Button(label=_("I know what I'm doing"), use_underline=True)
         button.connect("clicked", on_click)
         vb.pack_start(button, True, True, 0)
         vb.pack_start(table, True, True, 0)
