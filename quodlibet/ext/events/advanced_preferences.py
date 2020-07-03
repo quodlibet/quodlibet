@@ -36,7 +36,7 @@ def _config(section, option, label, tooltip=None, getter=None):
         Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
 
-    lbl=Gtk.Label(label=label, use_underline=True)
+    lbl = Gtk.Label(label=label, use_underline=True)
     lbl.set_mnemonic_widget(entry)
 
     return (lbl, entry, revert)
@@ -94,70 +94,71 @@ class AdvancedPreferences(EventPlugin):
         rows.append(
             text_config(
                 "editing", "id3encoding",
-                _("ID3 encodings:"),
-                (_("ID3 encodings separated by spaces. "
+                "ID3 encodings:",
+                ("ID3 encodings separated by spaces. "
                  "UTF-8 is always tried first, and Latin-1 "
-                 "is always tried last."))))
+                 "is always tried last.")))
 
         rows.append(
             text_config(
                 "settings", "search_tags",
-                _("Search tags:"),
-                (_("Tags which get searched in addition to "
-                 "the ones present in the song list. Separate with \",\""))))
+                "Search tags:",
+                ("Tags which get searched in addition to "
+                 "the ones present in the song list. Separate with \",\"")))
 
-        rows.append( text_config(
+        rows.append(
+            text_config(
                 "settings", "rating_symbol_full",
-                _("Rating symbol (full):")))
+                "Rating symbol (full):"))
 
         rows.append(
             text_config(
                 "settings", "rating_symbol_blank",
-                _("Rating symbol (blank):")))
+                "Rating symbol (blank):"))
 
         rows.append(
             text_config(
                 "player", "backend",
-                _("Backend:"),
-                _("Identifier of the playback backend to use")))
+                "Backend:",
+                "Identifier of the playback backend to use"))
 
         rows.append(
             boolean_config(
                 "settings", "disable_hints",
-                _("Disable hints:"),
-                _("Disable popup windows (treeview hints)")))
+                "Disable hints:",
+                "Disable popup windows (treeview hints)"))
 
         rows.append(
             int_config(
                 "browsers", "cover_size",
-                _("Album cover size:"),
-                _("Size of the album cover images in the album list browser "
+                "Album cover size:",
+                ("Size of the album cover images in the album list browser "
                  "(restart required)")))
 
         rows.append(
             boolean_config(
                 "settings", "disable_mmkeys",
-                _("Disable multimedia keys:"),
-                _("(restart required)")))
+                "Disable multimedia keys:",
+                "(restart required)"))
 
         rows.append(
             text_config(
                 "settings", "window_title_pattern",
-                _("Main window title:"),
-                _("A (tied) tag for the main window title, e.g. ~title~~people "
+                "Main window title:",
+                ("A (tied) tag for the main window title, e.g. ~title~~people "
                  "(restart required)")))
 
         rows.append(
             text_config(
                 "settings", "datecolumn_timestamp_format",
-                _("DateColumn timestamp format"),
-                _("A timestamp format, e.g. %Y%m%d %X ")))
+                "DateColumn timestamp format",
+                "A timestamp format, e.g. %Y%m%d %X "))
 
         rows.append(
             text_config(
                 "settings", "scrollbar_always_visible",
-                _("Scrollbars always visible:"),
-                _("Toggles whether the scrollbars on the bottom and side of "
+                "Scrollbars always visible:",
+                ("Toggles whether the scrollbars on the bottom and side of "
                  "the window always are visible or get hidden when not in use "
                  "(restart required)")))
 
