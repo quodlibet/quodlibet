@@ -1,11 +1,13 @@
+name: test
+
 on: [push, pull_request]
 
 jobs:
-  build-windows:
+  msys2:
     runs-on: windows-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: setup-msys2
         uses: msys2/setup-msys2@v1
@@ -13,9 +15,41 @@ jobs:
           msystem: MINGW64
           update: true
 
-      - name: CI-Build
+      - name: Install dependencies
         shell: msys2 {0}
         run: |
           export MSYS2_ARCH=x86_64
           ./.ci/msys2-install.sh
+
+      - name: Run tests
+        shell: msys2 {0}
+        run: |
           ./.ci/msys2-test.sh
+
+  flatpak:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          ./.ci/flatpak-install.sh
+
+      - name: Run tests
+        run: |
+          ./.ci/flatpak-test.sh
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          ./.ci/macos-install.sh
+
+      - name: Run tests
+        run: |
+          ./.ci/macos-test.sh
