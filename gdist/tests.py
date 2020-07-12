@@ -122,10 +122,7 @@ class distcheck_cmd(sdist):
             ignore_tracked = [
                 "dev-utils/*",
                 ".github/*",
-                ".azure/*",
-                ".docker/*",
-                ".travis*",
-                ".circleci*",
+                ".ci/*",
                 ".codecov.yml",
                 ".git*",
             ]

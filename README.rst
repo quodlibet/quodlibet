@@ -19,18 +19,5 @@ For information on how to build/install/test Quod Libet check out
 
 https://quodlibet.readthedocs.org/en/latest/development/overview.html
 
-
-.. image:: https://travis-ci.org/quodlibet/quodlibet.svg?branch=master
-    :target: https://travis-ci.org/quodlibet/quodlibet
-
-.. image:: https://circleci.com/gh/quodlibet/quodlibet.svg?style=shield
-    :target: https://circleci.com/gh/quodlibet/quodlibet
-
-.. image:: https://dev.azure.com/quodlibet/quodlibet/_apis/build/status/quodlibet?branchName=master
-    :target: https://dev.azure.com/quodlibet/quodlibet/_build/latest?definitionId=4&branchName=master
-
-.. image:: https://codecov.io/gh/quodlibet/quodlibet/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/quodlibet/quodlibet
-
 .. image:: https://badges.gitter.im/Join%20Chat.svg
     :target: https://gitter.im/quodlibet/Lobby
