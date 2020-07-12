@@ -27,7 +27,7 @@ Setting Up the MSYS2 Environment
 
 * Download msys2 64-bit from https://msys2.github.io/
 * Follow instructions on https://msys2.github.io/
-* Execute ``C:\msys64\mingw32.exe``
+* Execute ``C:\msys64\mingw64.exe``
 * Run ``pacman -S git`` to install git
 * Run ``git clone https://github.com/quodlibet/quodlibet.git``
 * Run ``cd quodlibet/dev-utils/win_installer`` to end up where this README exists.

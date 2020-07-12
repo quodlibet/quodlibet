@@ -57,5 +57,5 @@ On Windows we use the `msys2 <http://www.msys2.org/>`__ environment for
 development.
 
 Check out the `win_installer
-<https://github.com/quodlibet/quodlibet/tree/master/win_installer>`__
+<https://github.com/quodlibet/quodlibet/tree/master/dev-utils/win_installer>`__
 directory in the Git repo for further instructions.
