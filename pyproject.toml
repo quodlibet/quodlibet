@@ -44,6 +44,4 @@ omit=["quodlibet/packages/*"]
 include=["quodlibet/*", "tests/*"]
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
-
+requires = ["setuptools", "wheel"]
