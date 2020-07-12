@@ -9,7 +9,7 @@ include quodlibet/images/Makefile
 recursive-include quodlibet/images/hicolor *.svg *.png *.svg.in
 include tests/data/*
 recursive-include tests *.py
-recursive-include quodlibet update.sh
+recursive-include quodlibet update.sh *.pyi
 include gdist/*.py
 include data/*.desktop.in
 include data/*.ini
