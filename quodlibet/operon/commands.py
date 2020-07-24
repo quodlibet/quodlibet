@@ -176,7 +176,8 @@ class EditCommand(Command):
 
     def _songs_to_text(self, songs):
         header = [
-            u"# Lines before the first 'File:' statement, or lines that are empty or start with '#' will be ignored.",
+            u"# Lines before the first 'File:' statement, or"
+            u" lines that are empty or start with '#' will be ignored.",
             u"",
         ]
         return u"\n".join(header + [self._song_to_text(song) for song in songs])
@@ -218,9 +219,9 @@ class EditCommand(Command):
                 song.add(key, value)
 
     def _text_to_songs(self, text, songs):
-        text = re.sub("^#.*", "", text, 0, re.MULTILINE) # remove comments
-        text = re.sub("(\r?\n){2,}", "\n", text.strip()) # remove empty lines
-        _, *texts = re.split("^File:\s+", text, 0, re.MULTILINE)
+        text = re.sub(r"^#.*", "", text, 0, re.MULTILINE) # remove comments
+        text = re.sub(r"(\r?\n){2,}", "\n", text.strip()) # remove empty lines
+        _, *texts = re.split(r"^File:\s+", text, 0, re.MULTILINE)
 
         for text in texts:
             filename, *lines = text.splitlines()
