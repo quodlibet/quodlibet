@@ -9,7 +9,7 @@ concerns us specifically. If you contact just us, it means no one else can
 help you, and we can be really bad about replying to email.
 
 If you have a question or want to report a bug please `open a new issue
-<https://github.com/quodlibet/quodlibet/issues/new>`_ on the GitHub issue
+<https://github.com/quodlibet/quodlibet/issues/new/choose>`_ on the GitHub issue
 tracker.
 
 If you want to address the wider Quod Libet community consider sending a mail

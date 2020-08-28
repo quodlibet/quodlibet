@@ -12,7 +12,7 @@ Bug Tracker / Git Repo
 We use the GitHub bug tracker:
 
 * List of existing issues: https://github.com/quodlibet/quodlibet/issues
-* Create a new issue: https://github.com/quodlibet/quodlibet/issues/new
+* Create a new issue: https://github.com/quodlibet/quodlibet/issues/new/choose
 
 
 .. _gitrepo:
