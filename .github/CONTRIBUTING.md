@@ -9,4 +9,4 @@ When raising a new issue:
 If you have related ideas, please file them separately and mention
 the issue numbers of previous ideas.
 
-For more details, see the [contributing guide](../quodlibet/docs/development/contributing.rst)
+For more details, see the [contributing guide](../docs/development/contributing.rst)
