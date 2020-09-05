@@ -21,7 +21,7 @@ quodlibet/browsers/playlists/main.py
 quodlibet/browsers/playlists/menu.py
 quodlibet/browsers/playlists/prefs.py
 quodlibet/browsers/playlists/util.py
-quodlibet/browsers/tracklist.py
+quodlibet/browsers/tracks.py
 quodlibet/browsers/soundcloud/main.py
 quodlibet/browsers/soundcloud/util.py
 quodlibet/cli.py
