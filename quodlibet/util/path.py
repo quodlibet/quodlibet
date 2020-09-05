@@ -17,8 +17,8 @@ from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
 
-from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
-    fsn2text, path2fsn, uri2fsn
+from senf import (fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars,
+                  fsn2text, path2fsn, uri2fsn)
 
 from . import windows
 from .environment import is_windows
@@ -117,7 +117,7 @@ def filesize(filename):
         return 0
 
 
-def escape_filename(s, safe=b''):
+def escape_filename(s: str, safe: bytes = b'') -> fsnative:
     """Escape a string in a manner suitable for a filename.
 
     Args:
@@ -134,7 +134,7 @@ def escape_filename(s, safe=b''):
     return bytes2fsn(s, "utf-8")
 
 
-def unescape_filename(s):
+def unescape_filename(filename: fsnative) -> str:
     """Unescape a string in a manner suitable for a filename.
 
     Args:
@@ -143,9 +143,8 @@ def unescape_filename(s):
         str
     """
 
-    assert isinstance(s, fsnative)
-
-    return fsn2text(unquote(s))
+    assert isinstance(filename, fsnative)
+    return fsn2text(unquote(filename))
 
 
 def unexpand(filename):
@@ -485,7 +484,7 @@ class RootPathFile:
     @property
     def end_escaped(self):
         escaped = [escape_filename(part)
-                    for part in self.end.split(os.path.sep)]
+                   for part in self.end.split(os.path.sep)]
         return os.path.sep.join(escaped)
 
     @property

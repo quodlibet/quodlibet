@@ -11,7 +11,7 @@ from __future__ import absolute_import
 
 import os
 import random
-from typing import List
+from typing import List, Any
 from urllib.parse import quote
 
 from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn
@@ -563,11 +563,11 @@ class FileBackedPlaylist(Playlist):
                 self.write()
 
     @classmethod
-    def name_for(cls, filename: str) -> str:
+    def name_for(cls, filename: fsnative) -> str:
         return unescape_filename(filename)
 
     @classmethod
-    def filename_for(cls, filename: str) -> str:
+    def filename_for(cls, filename: str) -> fsnative:
         return escape_filename(filename)
 
     def _populate_from_file(self):
@@ -742,7 +742,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
             self._last_fn = self.path
 
     @classmethod
-    def _text_element(cls, name: str, value: any) -> Element:
+    def _text_element(cls, name: str, value: Any) -> Element:
         el = Element("%s" % name)
         el.text = str(value)
         return el
