@@ -19,7 +19,7 @@ Playlist store
 Playlists are stored as files on disk, typically under
 ``~/.quodlibet/playlists``, depending on your home / XDG directories.
 
-New in Quod Libet 4.3
+New in Quod Libet 4.4
 ~~~~~~~~~~~~~~~~~~~~~
 Playlists are now stored in `XSPF format <http://xspf.org/>`_.
 The names are partially URL-encoded - that is, they can and should be URL-unencoded,
@@ -27,7 +27,7 @@ but efforts are taken to make them human-friendly names where reasonable.
 
 As before, these playlists are editable but it's recommended to leave them to Quod Libet.
 
-Quod Libet < 4.3
+Quod Libet < 4.4
 ~~~~~~~~~~~~~~~~
 
 Playlists are stored as plain text files, with the names URL-encoded.
