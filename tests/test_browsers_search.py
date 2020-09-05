@@ -8,10 +8,10 @@ from tests import TestCase
 from gi.repository import Gtk
 from senf import fsnative
 
-import quodlibet.browsers.search
+import quodlibet.browsers.tracklist
 import quodlibet.config
 
-from quodlibet.browsers.search import SearchBar
+from quodlibet.browsers.tracklist import TrackList
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 from quodlibet.qltk.songlist import SongList
@@ -45,16 +45,16 @@ SONGS = [AudioFile({
 
 
 class TSearchBar(TestCase):
-    Bar = SearchBar
+    Bar = TrackList
 
     def setUp(self):
         quodlibet.config.init()
-        quodlibet.browsers.search.library = SongLibrary()
-        quodlibet.browsers.search.library.librarian = SongLibrarian()
+        quodlibet.browsers.tracklist.library = SongLibrary()
+        quodlibet.browsers.tracklist.library.librarian = SongLibrarian()
         for af in SONGS:
             af.sanitize()
-        quodlibet.browsers.search.library.add(SONGS)
-        self.bar = self.Bar(quodlibet.browsers.search.library)
+        quodlibet.browsers.tracklist.library.add(SONGS)
+        self.bar = self.Bar(quodlibet.browsers.tracklist.library)
         self.bar.connect('songs-selected', self._expected)
         self.success = False
 
@@ -146,5 +146,5 @@ class TSearchBar(TestCase):
 
     def tearDown(self):
         self.bar.destroy()
-        quodlibet.browsers.search.library.destroy()
+        quodlibet.browsers.tracklist.library.destroy()
         quodlibet.config.quit()

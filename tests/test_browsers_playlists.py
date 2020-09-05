@@ -111,8 +111,8 @@ class TPlaylistIntegration(TestCase):
 
     def setUp(self):
         quodlibet.config.init()
-        self.lib = quodlibet.browsers.search.library = FileLibrary()
-        quodlibet.browsers.search.library.librarian = SongLibrarian()
+        self.lib = quodlibet.browsers.tracklist.library = FileLibrary()
+        quodlibet.browsers.tracklist.library.librarian = SongLibrarian()
         for af in self.SONGS:
             af.sanitize()
         self.lib.add(self.SONGS)
