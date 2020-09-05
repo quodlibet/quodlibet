@@ -23,7 +23,7 @@ class TLibraryBrowser(TestCase):
         win.destroy()
 
     def test_open(self):
-        from quodlibet.browsers.tracklist import TrackList
+        from quodlibet.browsers.tracks import TrackList
         from quodlibet.library import SongLibrary
 
         widget = LibraryBrowser.open(TrackList, SongLibrary(), NullPlayer())
