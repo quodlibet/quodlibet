@@ -600,8 +600,8 @@ class FileBackedPlaylist(Playlist):
             fn = cls.filename_for(name)
             try:
                 return cls(dir_, fn, library, validate=True)
-            except ValueError as last_error:
-                pass
+            except ValueError as e:
+                last_error = e
         raise ValueError("Couldn't create playlist of name '%s' (e.g. %s)"
                          % (base, last_error))
 
