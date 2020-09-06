@@ -28,7 +28,6 @@ from quodlibet.util import is_windows
 from quodlibet.util.path import escape_filename, unescape_filename, limit_path
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.misc import total_ordering, hashable
-from senf._fsnative import fsnative_type
 from .collections import HashedList
 from datetime import datetime
 from os.path import splitext, basename, dirname, exists
