@@ -128,10 +128,10 @@ def escape_filename(s: str, safe: bytes = b'') -> fsnative:
     """
 
     s = str(s)
-    s = quote(s, safe=safe, encoding='utf-8')
-    if isinstance(s, str):
-        s = s.encode("ascii")
-    return bytes2fsn(s, "utf-8")
+    b = quote(s, safe=safe, encoding='utf-8')
+    if isinstance(b, str):
+        b = b.encode("ascii")
+    return bytes2fsn(b, "utf-8")
 
 
 def unescape_filename(filename: fsnative) -> str:

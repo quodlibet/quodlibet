@@ -707,8 +707,8 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         return path2fsn("%s.%s" % (limit_path(name), cls.EXT))
 
     @classmethod
-    def name_for(cls, filename: fsnative) -> str:
-        filename, ext = splitext(unescape_filename(filename))
+    def name_for(cls, file_path: fsnative) -> str:
+        filename, ext = splitext(unescape_filename(file_path))
         if not ext or ext.lower() != (".%s" % cls.EXT):
             raise TypeError("XSPFs should end in '.%s', not '%s'"
                             % (cls.EXT, ext))
