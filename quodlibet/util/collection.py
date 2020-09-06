@@ -28,6 +28,7 @@ from quodlibet.util import is_windows
 from quodlibet.util.path import escape_filename, unescape_filename, limit_path
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.misc import total_ordering, hashable
+from senf._fsnative import fsnative_type
 from .collections import HashedList
 from datetime import datetime
 from os.path import splitext, basename, dirname, exists
@@ -567,7 +568,7 @@ class FileBackedPlaylist(Playlist):
         return unescape_filename(filename)
 
     @classmethod
-    def filename_for(cls, filename: str) -> fsnative:
+    def filename_for(cls, filename: str) -> fsnative_type:
         return escape_filename(filename)
 
     def _populate_from_file(self):
@@ -700,7 +701,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
             print_w("Couldn't load %s (%s)" % (self.path, e))
 
     @classmethod
-    def filename_for(cls, name: str) -> _fsnative:
+    def filename_for(cls, name: str) -> fsnative_type:
         # Manually do *minimal* escaping, to allow near-readable filenames
         for bad, good in cls._SAFER.items():
             name = name.replace(bad, good)
