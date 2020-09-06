@@ -587,22 +587,22 @@ class FileBackedPlaylist(Playlist):
                     self._list.append(line)
 
     @classmethod
-    def new(cls, dir_, base=_("New Playlist"), library=None, attempt=0):
+    def new(cls, dir_, base=_("New Playlist"), library=None):
         assert isinstance(dir_, fsnative)
 
         if not (dir_ and os.path.realpath(dir_)):
             raise ValueError("Invalid playlist directory %r" % (dir_,))
-        name = "%s %d" % (base, attempt) if attempt else base
-        fn = cls.filename_for(name)
-        last_err = None
-        try:
-            return cls(dir_, fn, library, validate=True)
-        except ValueError as e:
-            if attempt < 1000:
-                return cls.new(dir_, name, library, attempt + 1)
-            last_err = e
+
+        last_error = None
+        for i in range(1000):
+            name = "%s %d" % (base, i) if i else base
+            fn = cls.filename_for(name)
+            try:
+                return cls(dir_, fn, library, validate=True)
+            except ValueError as last_error:
+                pass
         raise ValueError("Couldn't create playlist of name '%s' (e.g. %s)"
-                         % (base, last_err))
+                         % (base, last_error))
 
     @classmethod
     def from_songs(cls, dir_, songs, library=None):
