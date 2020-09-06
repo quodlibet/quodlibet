@@ -47,11 +47,9 @@ class PreferencesButton(Gtk.HBox):
         self.pack_start(button, True, True, 0)
 
 
-class SearchBar(Browser):
-    """A browser in which queries are parsed and used to filter results"""
-
-    name = _("Search Library")
-    accelerated_name = _("_Search Library")
+class TrackList(Browser):
+    name = _("Track List")
+    accelerated_name = _("_Track List")
     keys = ["SearchBar"]
     priority = 1
 
@@ -151,4 +149,4 @@ class SearchBar(Browser):
             return True
 
 
-browsers = [SearchBar]
+browsers = [TrackList]

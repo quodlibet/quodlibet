@@ -23,10 +23,10 @@ class TLibraryBrowser(TestCase):
         win.destroy()
 
     def test_open(self):
-        from quodlibet.browsers.search import SearchBar
+        from quodlibet.browsers.tracks import TrackList
         from quodlibet.library import SongLibrary
 
-        widget = LibraryBrowser.open(SearchBar, SongLibrary(), NullPlayer())
+        widget = LibraryBrowser.open(TrackList, SongLibrary(), NullPlayer())
         self.assertTrue(widget)
         self.assertTrue(widget.get_visible())
         widget.destroy()
