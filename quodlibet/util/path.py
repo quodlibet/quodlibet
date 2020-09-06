@@ -117,7 +117,7 @@ def filesize(filename):
         return 0
 
 
-def escape_filename(s: str, safe: bytes = b'') -> fsnative:
+def escape_filename(s: str, safe: bytes = b'') -> _fsnative:
     """Escape a string in a manner suitable for a filename.
 
     Args:
@@ -128,10 +128,10 @@ def escape_filename(s: str, safe: bytes = b'') -> fsnative:
     """
 
     s = str(s)
-    b = quote(s, safe=safe, encoding='utf-8')
-    if isinstance(b, str):
-        b = b.encode("ascii")
-    return bytes2fsn(b, "utf-8")
+    quoted = quote(s, safe=safe, encoding='utf-8')
+    if isinstance(quoted, str):
+        quoted = quoted.encode("ascii")
+    return bytes2fsn(quoted, "utf-8")
 
 
 def unescape_filename(filename: fsnative) -> str:

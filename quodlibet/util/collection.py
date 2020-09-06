@@ -700,7 +700,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
             print_w("Couldn't load %s (%s)" % (self.path, e))
 
     @classmethod
-    def filename_for(cls, name: str) -> str:
+    def filename_for(cls, name: str) -> _fsnative:
         # Manually do *minimal* escaping, to allow near-readable filenames
         for bad, good in cls._SAFER.items():
             name = name.replace(bad, good)
