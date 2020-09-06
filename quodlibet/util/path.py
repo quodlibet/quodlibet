@@ -129,9 +129,9 @@ def escape_filename(s: str, safe: bytes = b''):
 
     s = str(s)
     quoted = quote(s, safe=safe, encoding='utf-8')
-    if isinstance(quoted, str):
-        quoted = quoted.encode("ascii")
-    return bytes2fsn(quoted, "utf-8")
+    if isinstance(quoted, bytes):
+        return bytes2fsn(quoted, "utf-8")
+    return bytes2fsn(quoted.encode("ascii"), "utf-8")
 
 
 def unescape_filename(filename: fsnative) -> str:
