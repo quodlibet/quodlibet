@@ -568,7 +568,7 @@ class FileBackedPlaylist(Playlist):
         return unescape_filename(filename)
 
     @classmethod
-    def filename_for(cls, filename: str) -> fsnative_type:
+    def filename_for(cls, filename: str):
         return escape_filename(filename)
 
     def _populate_from_file(self):
@@ -701,7 +701,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
             print_w("Couldn't load %s (%s)" % (self.path, e))
 
     @classmethod
-    def filename_for(cls, name: str) -> fsnative_type:
+    def filename_for(cls, name: str):
         # Manually do *minimal* escaping, to allow near-readable filenames
         for bad, good in cls._SAFER.items():
             name = name.replace(bad, good)

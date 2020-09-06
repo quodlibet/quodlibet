@@ -19,7 +19,6 @@ from gi.repository import GLib
 
 from senf import (fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars,
                   fsn2text, path2fsn, uri2fsn)
-from senf._fsnative import fsnative_type
 
 from . import windows
 from .environment import is_windows
@@ -118,7 +117,7 @@ def filesize(filename):
         return 0
 
 
-def escape_filename(s: str, safe: bytes = b'') -> fsnative_type:
+def escape_filename(s: str, safe: bytes = b''):
     """Escape a string in a manner suitable for a filename.
 
     Args:
