@@ -12,31 +12,25 @@ The Playlist Browser
 
 Choose the *Playlists* browser by clicking on *View* -> *Playlists*. The 
 usage is fairly simple - a list of songs in the right pane, and a list of 
-playlists (with summary information) in the right. 
+playlists (with summary information) in the right.
+
+Any file in your library can belong to any playlist or many playlists -
+it's up to you how you want to organize them...
 
 Playlist store
 --------------
 Playlists are stored as files on disk, typically under
 ``~/.quodlibet/playlists``, depending on your home / XDG directories.
 
-New in Quod Libet 4.4
-~~~~~~~~~~~~~~~~~~~~~
-Playlists are now stored in `XSPF format <http://xspf.org/>`_.
+Format
+~~~~~~
+:new: Playlists are now stored in `XSPF format <http://xspf.org/>`_.
 The names are partially URL-encoded - that is, they can and should be URL-unencoded,
 but efforts are taken to make them human-friendly names where reasonable.
 
 As before, these playlists are editable but it's recommended to leave them to Quod Libet.
+It's good to back them up (``git`` etc works well here too).
 
-Quod Libet < 4.4
-~~~~~~~~~~~~~~~~
-
-Playlists are stored as plain text files, with the names URL-encoded.
-Whilst these can be edited, it's recommended to leave it to Quod Libet.
-It's good to back
-them up (using ``svn`` / ``hg`` / ``git`` works well here too).
-
-Any file in your library can belong to any playlist or many playlists - 
-it's up to you how you want to organize them...
 
 Creating playlists
 ------------------
