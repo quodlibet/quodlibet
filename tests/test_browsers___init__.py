@@ -12,7 +12,7 @@ browsers.init()
 
 class TBrowsers(TestCase):
     def test_presence(self):
-        self.failUnless(browsers.search)
+        self.failUnless(browsers.tracks)
         self.failUnless(browsers.paned)
         self.failUnless(browsers.iradio)
         self.failUnless(browsers.audiofeeds)
@@ -21,7 +21,7 @@ class TBrowsers(TestCase):
         self.failUnless(browsers.filesystem)
 
     def test_get(self):
-        self.failUnless(browsers.get("SearchBar") is browsers.search.SearchBar)
+        self.failUnless(browsers.get("SearchBar") is browsers.tracks.TrackList)
         self.failUnless(
             browsers.get("FileSystem") is browsers.filesystem.FileSystem)
         self.assertEqual(browsers.get("Paned"), browsers.paned.PanedBrowser)
@@ -30,10 +30,10 @@ class TBrowsers(TestCase):
                          browsers.paned.PanedBrowser)
 
     def test_default(self):
-        self.assertEqual(browsers.default, browsers.search.SearchBar)
+        self.assertEqual(browsers.default, browsers.tracks.TrackList)
 
     def test_name(self):
-        self.assertEqual(browsers.name(browsers.search.SearchBar), "SearchBar")
+        self.assertEqual(browsers.name(browsers.tracks.TrackList), "SearchBar")
 
     def test_get_invalid(self):
         self.assertRaises(ValueError, browsers.get, "DoesNotExist")
@@ -41,7 +41,7 @@ class TBrowsers(TestCase):
     def test_index(self):
         self.assertEqual(
             browsers.browsers[browsers.index("SearchBar")],
-            browsers.search.SearchBar)
+            browsers.tracks.TrackList)
         self.assertEqual(
             browsers.browsers[browsers.index("FileSystem")],
             browsers.filesystem.FileSystem)

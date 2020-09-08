@@ -1,7 +1,7 @@
 Search Browser
 --------------
 
-The *Search Library* browser (which is the default one) lets you enter 
+The *Track List* browser (which is the default one) lets you enter
 search terms and play all matching songs. It also supports 
 :ref:`complex searches <Searching>`. Finally, it lets you 
 limit the number of results; right-click on the text bar and select *Limit 

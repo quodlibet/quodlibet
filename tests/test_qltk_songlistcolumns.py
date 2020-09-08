@@ -88,6 +88,16 @@ class TSongListColumns(TestCase):
         column = create_songlist_column("~people")
         self._render_column(column)
 
+    def test_bpm(self):
+        column = create_songlist_column("bpm")
+        text = self._render_column(column, **{"bpm": "123"})
+        self.assertEqual(text, "123")
+
+    def test_initialkey(self):
+        column = create_songlist_column("initialkey")
+        text = self._render_column(column, **{"initialkey": "F"})
+        self.assertEqual(text, "F")
+
     def test_custom_datecol_format(self):
         format = "%Y%m%d %H:%M:%S PLAINTEXT"
         quodlibet.config.settext("settings", "datecolumn_timestamp_format",

@@ -66,6 +66,7 @@ class ID3File(AudioFile):
            "TSOC": "composersort",
            "TMED": "media",
            "TCMP": "compilation",
+           "TKEY": "initialkey",
            # TLAN requires an ISO 639-2 language code, check manually
            #"TLAN": "language"
     }
