@@ -550,11 +550,13 @@ class FileBackedPlaylist(Playlist):
     def __init__(self, dir_, filename, library=None, validate=False):
         assert isinstance(dir_, fsnative)
         name = self.name_for(filename)
-        super(FileBackedPlaylist, self).__init__(name, library)
+        super().__init__(name, library)
         self.dir = dir_
         if validate:
             self.name = self._validated_name(name)
-        self._last_fn = self.path
+        # Store the actual filename used, not sanitised and validated name
+        # This means we can delete imported things properly, etc...
+        self._last_fn = os.path.join(dir_, filename)
         try:
             self._populate_from_file()
         except IOError:
@@ -626,15 +628,16 @@ class FileBackedPlaylist(Playlist):
         return new_name
 
     def delete(self):
-        super(FileBackedPlaylist, self).delete()
-        self._delete_file(self.path)
+        print_d("Deleting playlist file: %s" % self._last_fn)
+        self._delete_file(self._last_fn)
+        super().delete()
 
     @classmethod
     def _delete_file(cls, fn):
         try:
             os.unlink(fn)
-        except EnvironmentError:
-            pass
+        except OSError as e:
+            print_w("Couldn't delete %s (%s)" % (fn, e))
 
     def write(self):
         fn = self.path
