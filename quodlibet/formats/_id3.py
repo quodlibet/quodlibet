@@ -31,6 +31,7 @@ RG_KEYS = [
 
 # ID3 is absolutely the worst thing ever.
 class ID3File(AudioFile):
+    supports_rating_and_play_count_in_file = True
 
     # http://www.unixgods.org/~tilo/ID3/docs/ID3_comparison.html
     # http://www.id3.org/id3v2.4.0-frames.txt
@@ -264,6 +265,13 @@ class ID3File(AudioFile):
             else:
                 return None
         return text
+
+    def has_rating_and_playcount_in_file(self, email):
+        with translate_errors():
+            audio = self.Kind(self['~filename'])
+        if audio.tags is None:
+            return False
+        return ("POPM:" + email) in audio.tags
 
     def write(self):
         with translate_errors():

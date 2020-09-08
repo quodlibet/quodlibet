@@ -5,16 +5,10 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 from enum import IntEnum
-from traceback import format_exc
-
-import mutagen
-from mutagen._vorbis import VCommentDict
-from mutagen.mp3 import MP3
 
 from gi.repository import Gtk
-from quodlibet.formats import AudioFile
 
-from quodlibet import _, app, config, qltk
+from quodlibet import _, app, config, qltk, const
 from quodlibet.qltk import Icons, ErrorMessage, Message
 from quodlibet.plugins import PluginConfig, BoolConfProp, IntConfProp
 from quodlibet.plugins.events import EventPlugin
@@ -30,24 +24,34 @@ class UpdateStrategy(IntEnum):
     ONCE_ALBUM_RATED = 2
 
 
-STRATEGY_TO_NAME = [_("After every play (default)"),
-                    _("After every play or skip"),
-                    _("Once, when album fully rated")]
+class StrategyText:
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
 
-STRATEGY_TO_DESC = [  #
-    _("Whenever a song was played but not skipped, the plugin will write the "
-      "tags to the file. The skip count isn't saved, so this avoids "
-      "unnecessary writes."),
-    _("Whenever a song was played or skipped, the plugin will write the tags "
-      "to the file. Can be useful if you want to make sure that ratings of "
-      "songs you dislike and thus skipped are written to the files."),
-    _("When a song was played or skipped, the album of that song will be "
-      "checked. If every song in the album has been rated and at least one "
-      "has no ratings or play counts stored in its file, the plugin will "
-      "write the tags to the songs' files. \n\nUse this to avoid constant "
-      "file updates, but be aware that once an album was updated, you'll have "
-      "to use the 'Update Tags in Files' plugin whenever you want modified "
-      "ratings and play counts to be written to the files.")]
+
+STRATEGY_TEXTS = {  #
+    UpdateStrategy.AFTER_PLAY_NOT_SKIP: StrategyText(
+            _("After every play (default)"),  #
+            _("Whenever a song was played but not skipped, the plugin will "
+              "write the tags to the file. Skip counts aren't stored in "
+              "files at all, so this avoids unnecessary writes.")),  #
+    UpdateStrategy.AFTER_PLAY_OR_SKIP: StrategyText(
+            _("After every play or skip"),  #
+            _("Whenever a song was played or skipped, the plugin will write "
+              "the tags to the file. Can be useful if you want to make sure "
+              "that ratings of songs you dislike and thus skipped are written "
+              "to the files.")),  #
+    UpdateStrategy.ONCE_ALBUM_RATED: StrategyText(
+            _("Once, when album fully rated"),  #
+            _("When a song was played or skipped, the album of that song will "
+              "be checked. If every song in the album has been rated and at "
+              "least one has no ratings or play counts stored in its file, "
+              "the plugin will write the tags to the songs' files.\n\nUse "
+              "this to avoid constant file updates, but be aware that once an "
+              "album was updated, you'll have to use the 'Update Tags in "
+              "Files' plugin whenever you want modified ratings and play "
+              "counts to be written to the files."))}
 
 PLAY_COUNT_ABOVE_ZERO_TOOLTIP = _(
         "When the plugin writes the tags of an album, it will "
@@ -129,7 +133,12 @@ class AutoUpdateTagsInFiles(EventPlugin):
         if not songs or not all(song.has_rating for song in songs):
             return
 
-        if all(has_rating_and_play_count_in_file(song) for song in songs):
+        songs = [s for s in songs if s.supports_rating_and_play_count_in_file]
+        if not songs:
+            return
+
+        email = config.get("editing", "save_email", const.EMAIL).strip()
+        if all(s.has_rating_and_playcount_in_file(email) for s in songs):
             return
 
         # at least one song has no ratings or play counts stored in files
@@ -157,27 +166,14 @@ class AutoUpdateTagsInFiles(EventPlugin):
         background_check_wrapper_changed(app.library, song_wrappers)
 
 
-def has_rating_and_play_count_in_file(song: AudioFile):
-    save_email = config.get("editing", "save_email").strip()
-    f = mutagen.File(song['~filename'])
-
-    if isinstance(f, MP3):
-        if 'POPM:' + save_email in f:
-            return True
-    elif f.tags is not None and isinstance(f.tags, VCommentDict):
-        if 'rating:' + save_email in f and 'playcount:' + save_email in f:
-            return True
-
-    return False
-
-
 class AutoUpdateTagsPrefs(Gtk.Box):
     def __init__(self):
         super(AutoUpdateTagsPrefs, self).__init__(
                 orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         strategy_boxes = []
-        for desc in STRATEGY_TO_DESC:
+        for strategy in UpdateStrategy:
+            desc = STRATEGY_TEXTS[strategy].description
             desc_label = Gtk.Label(label=desc, wrap=True)
 
             box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -217,8 +213,9 @@ class AutoUpdateTagsPrefs(Gtk.Box):
             show_only_current_box()
 
         update_combobox = Gtk.ComboBoxText()
-        for name in STRATEGY_TO_NAME:
-            update_combobox.append_text(name)
+        for strategy in UpdateStrategy:
+            update_combobox.append_text(STRATEGY_TEXTS[strategy].name)
+
         update_combobox.set_active(CONFIG.update_strategy)
         update_combobox.connect('changed', change_strategy)
 
