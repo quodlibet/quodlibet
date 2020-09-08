@@ -119,6 +119,7 @@ _TAGS = dict((t.name, t) for t in [
     T("originalartist", "us", _("original artist")),
     T("recordingdate", "u", _("recording date")),
     T("releasecountry", "u", _("release country")),
+    T("initialkey", "u", _("initial key")),
 
     # for backwards compat
     T("performers", "ishr", _("performers")),
