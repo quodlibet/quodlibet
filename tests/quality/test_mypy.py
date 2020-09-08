@@ -21,4 +21,4 @@ class TMypy(TestCase):
     def test_all(self):
         root = os.path.dirname(get_module_dir(quodlibet))
         out, err, status = api.run([root])
-        assert not status, "Failed mypy checks: \n" + "\n".join([out, err])
+        assert status == 0, "Failed mypy checks: \n" + "\n".join([out, err])
