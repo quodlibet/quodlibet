@@ -152,8 +152,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             return
         self.__last_render = markup
         cell.markup = markup
-        if isinstance(playlist, XSPFBackedPlaylist):
-            markup += " <small><tt>[XSPF]</tt></small>"
         cell.set_property('markup', markup)
 
     def Menu(self, songs, library, items):
