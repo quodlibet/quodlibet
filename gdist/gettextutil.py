@@ -315,26 +315,26 @@ def get_missing(po_dir):
     src_root = _src_root(po_dir)
     potfiles_path = os.path.join(po_dir, "POTFILES.in")
     skip_path = os.path.join(po_dir, "POTFILES.skip")
-    potfiles = _read_potfiles(src_root, potfiles_path)
-    skipfiles = _read_potfiles(src_root, skip_path)
 
-    # generate a list of paths of files which are not marked translatable
+    # Generate a set of paths of files which are not marked translatable
     # and not skipped
-    potfiles = [os.path.relpath(p, src_root) for p in potfiles]
-    skipfiles = [os.path.relpath(p, src_root) for p in skipfiles]
-    not_translatable = []
+    pot_files = {os.path.relpath(p, src_root)
+                 for p in _read_potfiles(src_root, potfiles_path)}
+    skip_files = {os.path.relpath(p, src_root)
+                  for p in _read_potfiles(src_root, skip_path)}
+    not_translatable = set()
     for root, dirs, files in os.walk(src_root):
-        for dirname in list(dirs):
+        for dirname in dirs:
             dirpath = os.path.relpath(os.path.join(root, dirname), src_root)
-            if dirpath in skipfiles:
+            if dirpath in skip_files or dirpath.startswith("."):
                 dirs.remove(dirname)
 
         for name in files:
             path = os.path.relpath(os.path.join(root, name), src_root)
-            if path not in potfiles and path not in skipfiles:
-                not_translatable.append(path)
+            if path not in pot_files and path not in skip_files:
+                not_translatable.add(path)
 
-    # filter out any unknown filetypes
+    # Filter out any unknown filetypes
     fd, temp_path = tempfile.mkstemp("POTFILES.in")
     try:
         os.close(fd)
