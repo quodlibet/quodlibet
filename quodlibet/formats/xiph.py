@@ -30,6 +30,8 @@ class MutagenVCFile(AudioFile):
     format = "Unknown Mutagen + vorbiscomment"
     MutagenType = None
 
+    supports_rating_and_play_count_in_file = True
+
     can_change_images = True
 
     def __init__(self, filename, audio=None):
@@ -293,6 +295,14 @@ class MutagenVCFile(AudioFile):
                 comments[fallback] = lower.list(fallback)
             else:
                 comments[main] = lower.list(fallback)
+
+    def has_rating_and_playcount_in_file(self, email):
+        with translate_errors():
+            audio = self.MutagenType(self['~filename'])
+        tags = audio.tags
+        if tags is None:
+            return False
+        return 'rating:' + email in tags and 'playcount:' + email in tags
 
     def write(self):
         with translate_errors():

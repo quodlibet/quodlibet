@@ -127,6 +127,9 @@ class AudioFile(dict, ImageContainer):
     format = "Unknown Audio File"
     """The underlying file format"""
 
+    supports_rating_and_play_count_in_file = False
+    """Does this format support storing ratings and play counts in the file"""
+
     mimes: List[str] = []
     """MIME types this class can represent"""
 
@@ -231,6 +234,13 @@ class AudioFile(dict, ImageContainer):
 
     def __ne__(self, other):
         return self is not other
+
+    def has_rating_and_playcount_in_file(self, email):
+        """Returns True if the audio file has rating and play counts for the
+        provided email. Returns False otherwise, or if storing ratings and play
+        counts in the file is not supported for this audio format.
+        """
+        return False
 
     def reload(self):
         """Reload an audio file from disk. If reloading fails nothing will
