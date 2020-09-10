@@ -1,4 +1,5 @@
 # Copyright 2014, 2015 Christoph Reiter
+#                 2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,13 +8,14 @@
 
 import os
 import re
-import pprint
+from typing import List, Iterable
 
+import pytest
 from gi.repository import Gtk
+from pytest import fixture
 
 from quodlibet.util import get_module_dir
-
-from tests import TestCase
+from tests.test_po import QL_BASE_DIR
 
 
 def iter_py_paths():
@@ -30,6 +32,9 @@ def iter_py_paths():
         os.path.join(root, "quodlibet", "packages"),
     ]
     for dirpath, dirnames, filenames in os.walk(root):
+        for dirname in dirnames:
+            if dirname.startswith("."):
+                dirnames.remove(dirname)
         if any((dirpath.startswith(s + os.sep) or s == dirpath)
                for s in skip):
             continue
@@ -39,9 +44,17 @@ def iter_py_paths():
                 yield os.path.join(dirpath, filename)
 
 
-class TLicense(TestCase):
+def prettify_path(s: str) -> str:
+    return os.path.splitext(os.path.relpath(s, QL_BASE_DIR))[0]
 
-    ALLOWED = ["""
+
+@pytest.fixture(params=list(iter_py_paths()), ids=prettify_path)
+def py_path(request):
+    return request.param
+
+
+class TestLicense:
+    ALLOWED_RAW = ["""
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -65,69 +78,50 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-""",
-]
+"""]
+    ALLOWED = ["".join(license.split()) for license in ALLOWED_RAW]
 
-    def test_main(self):
-        allowed = []
-        for license in self.ALLOWED:
-            allowed.append("".join(license.split()))
-
-        found = set()
-        missing = []
-        for path in iter_py_paths():
-            header = b""
-            with open(path, "rb") as h:
-                for line in h:
-                    line = line.strip()
-                    if not line.startswith(b"#"):
-                        break
-                    header += line.lstrip(b"# ") + b"\n"
-
-            norm = b"".join(header.split())
-            norm = norm.decode("utf-8")
-
-            for license_ in allowed:
-                if license_ in norm:
-                    found.add(license_)
+    def test_license_is_compliant(self, py_path):
+        header = b""
+        with open(py_path, "rb") as h:
+            for line in h:
+                line = line.strip()
+                if not line.startswith(b"#"):
                     break
-            else:
-                missing.append(path)
+                header += line.lstrip(b"# ") + b"\n"
 
-        self.assertFalse(missing, msg="Missing license: %r" % missing)
-        assert len(allowed) == len(found)
+        norm = b"".join(header.split())
+        norm = norm.decode("utf-8")
+        assert any([l in norm for l in self.ALLOWED])
 
 
-class TStockIcons(TestCase):
+class TestStockIcons:
+    @fixture
+    def res(self) -> Iterable[re.Pattern]:
+        return [re.compile(r)
+                for r in ("(Gtk\\.STOCK_[_A-Z]*)",
+                          "[\"\'](gtk-[\\-a-z]*)")]
 
-    def test_main(self):
-
+    @fixture
+    def white(self) -> List[str]:
         # gtk setting keys start like stock icons, so white list them
         white = [x.replace("_", "-") for x in
-                 dir(Gtk.Settings.get_default().props) if x.startswith("gtk_")]
+                 dir(Gtk.Settings.get_default().props)
+                 if x.startswith("gtk_")]
         # older gtk doesn't have those, but we still have them in the source
-        white.append("gtk-dialogs-use-header")
-        white.append("gtk-primary-button-warps-slider")
+        white += ["gtk-dialogs-use-header",
+                  "gtk-primary-button-warps-slider"]
         # some more..
-        white.append("gtk-tooltip")
-        white.append("gtk-")
-        white.append("gtk-update-icon-cache-")
+        white += ["gtk-tooltip", "gtk-", "gtk-update-icon-cache-"]
+        return white
 
-        res = map(re.compile, [
-            "(Gtk\\.STOCK_[_A-Z]*)",
-            "[\"\'](gtk-[\\-a-z]*)",
-        ])
-        errors = {}
-        for path in iter_py_paths():
-            with open(path, "rb") as h:
-                if path.endswith(("icons.py", "test_source.py")):
-                    continue
-                data = h.read().decode("utf-8")
-                for r in res:
-                    match = r.search(data)
-                    if match:
-                        group = match.group(1)
-                        if group not in white:
-                            errors.setdefault(group, []).append(path)
-
-        self.assertFalse(errors, msg=pprint.pformat(errors))
+    def test_icons_used(self, py_path, res, white):
+        if py_path.endswith(("icons.py", "test_source.py")):
+            return
+        with open(py_path, "rb") as h:
+            data = h.read().decode("utf-8")
+            for r in res:
+                match = r.search(data)
+                if match:
+                    group = match.group(1)
+                    assert group in white
