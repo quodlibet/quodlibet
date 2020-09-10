@@ -8,7 +8,7 @@
 
 import os
 import re
-from typing import List, Iterable
+from typing import List, Iterable, Pattern
 
 import pytest
 from gi.repository import Gtk
@@ -97,7 +97,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class TestStockIcons:
     @fixture
-    def res(self) -> Iterable[re.Pattern]:
+    def res(self) -> Iterable[Pattern]:
         return [re.compile(r)
                 for r in ("(Gtk\\.STOCK_[_A-Z]*)",
                           "[\"\'](gtk-[\\-a-z]*)")]
